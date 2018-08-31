@@ -479,6 +479,7 @@ end
 InputManager.update_devices = function (self, dt, t)
 	local input_devices = self.input_devices
 	self.any_device_input_pressed = nil
+	self.any_device_input_released = nil
 	self.any_device_input_axis_moved = nil
 
 	for input_device, device_data in pairs(input_devices) do
@@ -534,6 +535,10 @@ InputManager.update_devices = function (self, dt, t)
 			self.any_device_input_pressed = true
 		end
 
+		if any_released then
+			self.any_device_input_released = true
+		end
+
 		if any_device_input_axis_moved then
 			self.any_device_input_axis_moved = true
 		end
@@ -581,6 +586,10 @@ end
 
 InputManager.any_input_pressed = function (self)
 	return self.any_device_input_pressed
+end
+
+InputManager.any_input_released = function (self)
+	return self.any_device_input_released
 end
 
 InputManager.any_input_axis_moved = function (self)
@@ -726,6 +735,18 @@ InputManager.get_gamepad_cursor_pos = function (self)
 	table.clear(GAMEPAD_CURSOR_POS)
 
 	return x_pos, y_pos
+end
+
+InputManager.disable_gamepad_cursor = function (self)
+	self._gamepad_cursor_active = false
+end
+
+InputManager.enable_gamepad_cursor = function (self)
+	self._gamepad_cursor_active = true
+end
+
+InputManager.gamepad_cursor_active = function (self)
+	return self._gamepad_cursor_active
 end
 
 InputManager.is_hovering = function (self)

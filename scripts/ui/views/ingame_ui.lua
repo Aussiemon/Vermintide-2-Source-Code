@@ -27,7 +27,18 @@ require("scripts/ui/views/character_selection_view/character_selection_view")
 require("scripts/ui/views/chat_view")
 require("scripts/ui/mission_vote_ui/mission_voting_ui")
 require("scripts/ui/views/start_menu_view/start_menu_view")
+require("scripts/ui/views/console_friends_view")
 require("scripts/ui/views/friends_ui_component")
+
+for name, dlc in pairs(DLCSettings) do
+	local uis = dlc.ingame_uis
+
+	if uis then
+		for ui_name, data in pairs(uis) do
+			require(data.filename)
+		end
+	end
+end
 
 local rpcs = {}
 local settings = require("scripts/ui/views/ingame_ui_settings")
@@ -44,13 +55,15 @@ IngameUI.init = function (self, ingame_ui_context)
 	self.is_in_inn = ingame_ui_context.is_in_inn
 	local world = Managers.world:world("level_world")
 	local top_world = Managers.world:world("top_ingame_view")
-	self.wwise_world = Managers.world:wwise_world(world)
+	local wwise_world = Managers.world:wwise_world(world)
+	self.wwise_world = wwise_world
 	self.world = world
 	self.top_world = top_world
 	local game_mode_key = Managers.state.game_mode:game_mode_key()
 	local is_tutorial = game_mode_key == "tutorial"
-	self.ui_renderer = self:create_ui_renderer(world, is_tutorial)
-	self.ui_top_renderer = self:create_ui_renderer(top_world, is_tutorial)
+	local is_in_inn = self.is_in_inn
+	self.ui_renderer = self:create_ui_renderer(world, is_tutorial, is_in_inn)
+	self.ui_top_renderer = self:create_ui_renderer(top_world, is_tutorial, is_in_inn)
 	self.blocked_transitions = view_settings.blocked_transitions
 	self.fps = 0
 	self._fps_cooldown = 0
@@ -68,6 +81,7 @@ IngameUI.init = function (self, ingame_ui_context)
 	ingame_ui_context.ui_renderer = self.ui_renderer
 	ingame_ui_context.ui_top_renderer = self.ui_top_renderer
 	ingame_ui_context.ingame_ui = self
+	ingame_ui_context.wwise_world = wwise_world
 	self.profile_synchronizer = ingame_ui_context.profile_synchronizer
 	self.peer_id = ingame_ui_context.peer_id
 	self.local_player_id = ingame_ui_context.local_player_id
@@ -96,6 +110,31 @@ IngameUI.init = function (self, ingame_ui_context)
 	GarbageLeakDetector.register_object(self, "IngameUI")
 
 	self.matchmaking_ui = MatchmakingUI:new(ingame_ui_context)
+	local dlc_uis = {}
+	local dlc_uis_hud_update_list = {}
+	local num_uis = 0
+
+	for name, dlc in pairs(DLCSettings) do
+		local uis = dlc.ingame_uis
+
+		if uis then
+			for ui_name, data in pairs(uis) do
+				local class_name = data.class_name
+				local ui = rawget(_G, class_name):new(ingame_ui_context)
+				ui.__UI_NAME = ui_name
+				ui.__CLASS_NAME = class_name
+				num_uis = num_uis + 1
+				dlc_uis[num_uis] = ui
+
+				if data.hud_update then
+					dlc_uis_hud_update_list[#dlc_uis_hud_update_list + 1] = ui
+				end
+			end
+		end
+	end
+
+	self.dlc_uis = dlc_uis
+	self.dlc_uis_hud_update_list = dlc_uis_hud_update_list
 
 	if not self.is_server and self.is_in_inn and self.views.map_view then
 		self.views.map_view:set_map_interaction_state(false)
@@ -113,8 +152,8 @@ IngameUI.init = function (self, ingame_ui_context)
 	rawset(_G, "ingame_ui", self)
 end
 
-IngameUI.create_ui_renderer = function (self, world, is_tutorial)
-	return view_settings.ui_renderer_function(world, is_tutorial)
+IngameUI.create_ui_renderer = function (self, world, is_tutorial, is_in_inn)
+	return view_settings.ui_renderer_function(world, is_tutorial, is_in_inn)
 end
 
 IngameUI.setup_views = function (self, ingame_ui_context)
@@ -206,6 +245,10 @@ IngameUI.destroy = function (self)
 	self.matchmaking_ui:destroy()
 
 	self.matchmaking_ui = nil
+
+	for _, ui in ipairs(self.dlc_uis) do
+		ui:destroy()
+	end
 
 	self.end_screen:destroy()
 
@@ -406,9 +449,26 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 		local gdc_build = Development.parameter("gdc")
 		local ingame_player_list_ui = self.ingame_hud.ingame_player_list_ui
 		local player_list_active = ingame_player_list_ui:is_active()
+		local fade_active = Managers.transition:in_fade_active()
 
-		if not player_list_active and not self:pending_transition() and not end_screen_active and not self.menu_active and not self.leave_game and not self.return_to_title_screen and not gdc_build and not self:unavailable_hero_popup_active() and input_service:get("toggle_menu", true) then
-			self:handle_transition("ingame_menu")
+		if not player_list_active and not self:pending_transition() and not fade_active and not self:cutscene_active() and not end_screen_active and not self.menu_active and not self.leave_game and not self.return_to_title_screen and not gdc_build and not self:unavailable_hero_popup_active() and input_service:get("toggle_menu", true) then
+			local use_gamepad_layout = PLATFORM == "ps4" or PLATFORM == "xb1" or Managers.input:is_device_active("gamepad") or UISettings.use_gamepad_menu_layout
+
+			if use_gamepad_layout then
+				local menu_state = "overview"
+
+				if is_in_inn then
+					local menu_sub_state = "equipment"
+
+					self:transition_with_fade("hero_view_force", menu_state, menu_sub_state)
+				else
+					local menu_sub_state = "system"
+
+					self:handle_transition("hero_view_force", menu_state, menu_sub_state)
+				end
+			else
+				self:handle_transition("ingame_menu")
+			end
 		end
 
 		if not self:pending_transition() then
@@ -469,6 +529,12 @@ IngameUI.post_update = function (self, dt, t)
 	self.ingame_hud:post_update(dt, t, self.hud_visible, active_cutscene)
 end
 
+IngameUI.cutscene_active = function (self)
+	local cutscene_system = self.cutscene_system
+
+	return cutscene_system.active_camera ~= nil
+end
+
 IngameUI._update_hud_visibility = function (self, disable_ingame_ui, in_score_screen)
 	local current_view = self.current_view
 	local cutscene_system = self.cutscene_system
@@ -523,10 +589,14 @@ IngameUI._update_ingame_hud = function (self, visible, dt, t)
 
 	if visible then
 		self.ingame_hud:update(dt, t, active_cutscene, self.ingame_ui_context)
-	end
 
-	if not active_cutscene then
-		self.ingame_voting_ui:update(self.menu_active, dt, t)
+		if not active_cutscene then
+			self.ingame_voting_ui:update(self.menu_active, dt, t)
+
+			for _, ui in ipairs(self.dlc_uis_hud_update_list) do
+				ui:update(dt, t)
+			end
+		end
 	end
 end
 
@@ -800,7 +870,11 @@ end
 
 IngameUI.get_transition = function (self)
 	if self.leave_game then
-		return "leave_game"
+		if Managers.play_go:installed() then
+			return "leave_game"
+		else
+			return "finish_tutorial"
+		end
 	elseif self.return_to_pc_menu then
 		return "return_to_pc_menu"
 	elseif self.return_to_title_screen then

@@ -97,7 +97,13 @@ UnitFramesHandler._create_unit_frame_by_type = function (self, frame_type, frame
 		definitions = local_require("scripts/ui/hud_ui/team_member_unit_frame_ui_definitions")
 	elseif frame_type == "player" then
 		local gamepad_active = self.input_manager:is_device_active("gamepad")
-		definitions = local_require("scripts/ui/hud_ui/player_unit_frame_ui_definitions")
+
+		if self.platform ~= "win32" or gamepad_active or UISettings.use_gamepad_hud_layout then
+			definitions = local_require("scripts/ui/hud_ui/player_console_unit_frame_ui_definitions")
+			unit_frame.gamepad_version = true
+		else
+			definitions = local_require("scripts/ui/hud_ui/player_unit_frame_ui_definitions")
+		end
 	else
 		definitions = local_require("scripts/ui/hud_ui/team_member_unit_frame_ui_definitions")
 	end
@@ -445,12 +451,14 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 		is_wounded = status_extension:is_wounded()
 		is_knocked_down = (status_extension:is_knocked_down() or status_extension:get_is_ledge_hanging()) and total_health_percent > 0
 		is_ready_for_assisted_respawn = status_extension:is_ready_for_assisted_respawn()
-		needs_help = status_extension:is_grabbed_by_pack_master() or status_extension:is_hanging_from_hook() or status_extension:is_pounced_down()
+		needs_help = status_extension:is_grabbed_by_pack_master() or status_extension:is_hanging_from_hook() or status_extension:is_pounced_down() or status_extension:is_grabbed_by_corruptor() or status_extension:is_in_vortex() or status_extension:is_grabbed_by_chaos_spawn()
 		local num_grimoires = buff_extension:num_buff_perk("skaven_grimoire")
 		local multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
 		local num_twitch_grimoires = buff_extension:num_buff_perk("twitch_grimoire")
 		local twitch_multiplier = PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF
-		active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier
+		local num_slayer_curses = buff_extension:num_buff_perk("slayer_curse")
+		local slayer_curse_multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.SLAYER_CURSE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
+		active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier + num_slayer_curses * slayer_curse_multiplier
 		equipment = inventory_extension:equipment()
 		career_index = career_extension:career_index()
 
@@ -468,7 +476,7 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 	local is_dead = total_health_percent <= 0
 	local is_player_controlled = player:is_player_controlled()
 	local display_name = UIRenderer.crop_text(player:name(), 17)
-	local level_text = (is_player_controlled and (ExperienceSettings.get_player_level(player) or "")) or "BOT"
+	local level_text = (is_player_controlled and (ExperienceSettings.get_player_level(player) or "")) or UISettings.bots_level_display_text
 	local portrait_texture = (career_index and get_portrait_name_by_profile_index(profile_index, career_index)) or "unit_frame_portrait_default"
 	local frame_texture = Managers.state.entity:system("cosmetic_system"):get_equipped_frame(player_unit)
 	local is_player_server = self.host_peer_id == peer_id
@@ -795,6 +803,8 @@ UnitFramesHandler.on_gamepad_activated = function (self)
 		new_unit_frame.player_data = my_unit_frame.player_data
 		new_unit_frame.sync = true
 		self._unit_frames[1] = new_unit_frame
+
+		self:set_visible(self._is_visible)
 	end
 end
 
@@ -808,6 +818,8 @@ UnitFramesHandler.on_gamepad_deactivated = function (self)
 		new_unit_frame.player_data = my_unit_frame.player_data
 		new_unit_frame.sync = true
 		self._unit_frames[1] = new_unit_frame
+
+		self:set_visible(self._is_visible)
 	end
 end
 
@@ -817,6 +829,18 @@ UnitFramesHandler.update = function (self, dt, t, ignore_own_player)
 	end
 
 	local gamepad_active = self.input_manager:is_device_active("gamepad")
+
+	if gamepad_active or UISettings.use_gamepad_hud_layout then
+		if not self.gamepad_active_last_frame then
+			self.gamepad_active_last_frame = true
+
+			self:on_gamepad_activated()
+		end
+	elseif self.gamepad_active_last_frame then
+		self.gamepad_active_last_frame = false
+
+		self:on_gamepad_deactivated()
+	end
 
 	self:_handle_unit_frame_assigning()
 	self:_sync_player_stats(self._unit_frames[self._current_frame_index])

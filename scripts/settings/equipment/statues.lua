@@ -40,6 +40,7 @@ weapon_template.actions = {
 			projectile_info = {
 				projectile_unit_template_name = "pickup_projectile_unit",
 				collision_filter = "n/a",
+				drop_on_player_destroyed = true,
 				use_dynamic_collision = false
 			}
 		}
@@ -79,6 +80,50 @@ weapon_template.actions = {
 			end
 		}
 	},
+	action_dropped = {
+		default = {
+			uppety = 0,
+			anim_time_scale = 0.8,
+			kind = "throw",
+			is_statue_and_needs_rotation_cause_reasons = true,
+			throw_time = 0.43749999999999994,
+			ammo_usage = 1,
+			weapon_action_hand = "left",
+			block_pickup = true,
+			speed = 2,
+			uninterruptible = true,
+			anim_event = "attack_throw",
+			total_time = 0.7249999999999999,
+			anim_end_event_condition_func = function (unit, end_reason)
+				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
+			end,
+			buff_data = {
+				{
+					start_time = 0,
+					external_multiplier = 0.5,
+					end_time = 0.35,
+					buff_name = "planted_fast_decrease_movement"
+				}
+			},
+			allowed_chain_actions = {},
+			angular_velocity = {
+				-1.85,
+				-0.25,
+				0
+			},
+			throw_offset = {
+				0.39,
+				1.15,
+				-0.57
+			},
+			projectile_info = {
+				projectile_unit_template_name = "pickup_projectile_unit",
+				collision_filter = "n/a",
+				drop_on_player_destroyed = true,
+				use_dynamic_collision = false
+			}
+		}
+	},
 	action_wield = ActionTemplates.wield_left
 }
 weapon_template.ammo_data = {
@@ -108,12 +153,6 @@ weapon_template.buffs = {
 	}
 }
 Weapons = Weapons or {}
-Weapons.drachenfels_statue = table.create_copy(Weapons.drachenfels_statue, weapon_template)
-Weapons.drachenfels_statue.actions.action_one.default.projectile_info.projectile_unit_name = "units/weapons/player/pup_drachenfels_statue/pup_drachenfels_statue"
-Weapons.drachenfels_statue.actions.action_one.default.projectile_info.pickup_name = "drachenfels_statue"
-Weapons.drachenfels_statue.pickup_data.pickup_name = "drachenfels_statue"
-Weapons.drachenfels_statue.left_hand_unit = "units/weapons/player/pup_drachenfels_statue/wpn_drachenfels_statue"
-Weapons.drachenfels_statue.wield_anim = "to_statue"
 Weapons.cannon_ball = Weapons.cannon_ball or table.clone(weapon_template)
 Weapons.cannon_ball.left_hand_unit = "units/weapons/player/wpn_cannon_ball_01/wpn_cannon_ball_01"
 Weapons.cannon_ball.actions.action_one.default.speed = 8
@@ -134,6 +173,13 @@ Weapons.cannon_ball.actions.action_one.default.buff_data = {
 Weapons.cannon_ball.actions.action_one.default.projectile_info = {
 	projectile_unit_template_name = "pickup_projectile_unit",
 	pickup_name = "cannon_ball",
+	drop_on_player_destroyed = true,
+	projectile_unit_name = "units/weapons/player/pup_cannon_ball_01/pup_cannon_ball_01"
+}
+Weapons.cannon_ball.actions.action_dropped.default.projectile_info = {
+	projectile_unit_template_name = "pickup_projectile_unit",
+	pickup_name = "cannon_ball",
+	drop_on_player_destroyed = true,
 	projectile_unit_name = "units/weapons/player/pup_cannon_ball_01/pup_cannon_ball_01"
 }
 Weapons.training_dummy = Weapons.training_dummy or table.clone(weapon_template)
@@ -156,11 +202,26 @@ Weapons.training_dummy.wield_anim_3p = "to_statue"
 Weapons.training_dummy.actions.action_one.default.projectile_info = {
 	projectile_unit_template_name = "pickup_training_dummy_unit",
 	pickup_name = "training_dummy",
+	drop_on_player_destroyed = true,
+	projectile_unit_name = "units/gameplay/training_dummy/training_dummy"
+}
+Weapons.training_dummy.actions.action_dropped.default.projectile_info = {
+	projectile_unit_template_name = "pickup_training_dummy_unit",
+	pickup_name = "training_dummy",
+	drop_on_player_destroyed = true,
 	projectile_unit_name = "units/gameplay/training_dummy/training_dummy"
 }
 Weapons.training_dummy_armored = Weapons.training_dummy_armored or table.clone(Weapons.training_dummy)
 Weapons.training_dummy_armored.left_hand_unit = "units/gameplay/training_dummy/wpn_training_dummy_armored"
 Weapons.training_dummy_armored.actions.action_one.default.projectile_info.projectile_unit_name = "units/gameplay/training_dummy/training_dummy_armored"
 Weapons.training_dummy_armored.actions.action_one.default.projectile_info.pickup_name = "training_dummy_armored"
+Weapons.training_dummy_armored.actions.action_dropped.default.projectile_info.projectile_unit_name = "units/gameplay/training_dummy/training_dummy_armored"
+Weapons.training_dummy_armored.actions.action_dropped.default.projectile_info.pickup_name = "training_dummy_armored"
+Weapons.training_dummy_skaven = Weapons.training_dummy_skaven or table.clone(Weapons.training_dummy)
+Weapons.training_dummy_skaven.left_hand_unit = "units/gameplay/training_dummy/training_dummy_skaven/wpn_training_dummy_skaven"
+Weapons.training_dummy_skaven.actions.action_one.default.projectile_info.projectile_unit_name = "units/gameplay/training_dummy/training_dummy_skaven/training_dummy_skaven"
+Weapons.training_dummy_skaven.actions.action_one.default.projectile_info.pickup_name = "training_dummy_skaven"
+Weapons.training_dummy_skaven.actions.action_dropped.default.projectile_info.projectile_unit_name = "units/gameplay/training_dummy/training_dummy_skaven/training_dummy_skaven"
+Weapons.training_dummy_skaven.actions.action_dropped.default.projectile_info.pickup_name = "training_dummy_skaven"
 
 return

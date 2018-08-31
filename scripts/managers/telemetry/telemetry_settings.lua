@@ -4,7 +4,9 @@ TelemetrySettings = {
 	enabled = not Development.parameter("telemetry-disable"),
 	title_id = ((BUILD == "debug" or BUILD == "dev") and Development.parameter("telemetry-title-id")) or GameSettingsDevelopment.backend_settings.title_id,
 	blacklist = {
-		"ai_death"
+		"ai_died",
+		"player_jumped",
+		"fatigue_gained"
 	},
 	collect_memory = (BUILD == "debug" or BUILD == "dev") and Development.parameter("telemetry-collect-memory"),
 	send = (BUILD ~= "debug" and BUILD ~= "dev") or Development.parameter("telemetry-force-send"),

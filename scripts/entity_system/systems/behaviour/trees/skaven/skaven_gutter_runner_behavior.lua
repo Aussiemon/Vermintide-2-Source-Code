@@ -99,6 +99,21 @@ BreedBehaviors.gutter_runner = {
 		name = "approach_target"
 	},
 	{
+		"BTSequence",
+		{
+			"BTSkulkAroundAction",
+			name = "skulk_around",
+			action_data = ACTIONS.skulking
+		},
+		{
+			"BTSkulkIdleAction",
+			name = "skulk_idle",
+			action_data = ACTIONS.skulk_idle
+		},
+		condition = "can_see_player",
+		name = "skulking"
+	},
+	{
 		"BTCirclePreyAction",
 		condition = "secondary_target",
 		name = "abide"

@@ -3,6 +3,7 @@ local data_fields = {
 	"DAMAGE_TYPE",
 	"ATTACKER",
 	"HIT_ZONE",
+	"POSITION",
 	"DIRECTION",
 	"DAMAGE_SOURCE_NAME",
 	"HIT_RAGDOLL_ACTOR_NAME",
@@ -40,24 +41,40 @@ GenericHealthExtension.init = function (self, extension_init_context, unit, exte
 		self.is_invincible = false
 	end
 
+	self.dead = false
 	self.state = "alive"
 	self.damage = extension_init_data.damage or 0
 	self._recent_damage_type = nil
 	self._recent_hit_react_type = nil
+	self._damage_cap_per_hit = Unit.get_data(unit, "damage_cap_per_hit") or health
 
-	self:set_max_health(health, true)
+	self:set_max_health(health)
+
+	self.unmodified_max_health = self.health
 end
 
 GenericHealthExtension.destroy = function (self)
 	return
 end
 
+GenericHealthExtension.freeze = function (self)
+	self:set_dead()
+end
+
+GenericHealthExtension.unfreeze = function (self)
+	self:reset()
+end
+
 GenericHealthExtension.reset = function (self)
-	self.damage = 0
 	self.state = "alive"
+	self.dead = false
+	self.damage = 0
+	self._recent_damage_type = nil
+	self._recent_hit_react_type = nil
 
 	pdArray.set_empty(self.damage_buffers[1])
 	pdArray.set_empty(self.damage_buffers[2])
+	self:set_max_health(self.unmodified_max_health)
 end
 
 GenericHealthExtension.hot_join_sync = function (self, sender)
@@ -77,6 +94,7 @@ GenericHealthExtension.hot_join_sync = function (self, sender)
 			local damage_amount = 0
 			local hit_zone_id = NetworkLookup.hit_zones.full
 			local damage_type_id = NetworkLookup.damage_types.sync_health
+			local hit_position = Unit.world_position(unit, 0)
 			local damage_direction = Vector3.up()
 			local damage_source_id = NetworkLookup.damage_sources["n/a"]
 			local hit_ragdoll_actor_id = NetworkLookup.hit_ragdoll_actors["n/a"]
@@ -85,7 +103,7 @@ GenericHealthExtension.hot_join_sync = function (self, sender)
 			local is_critical_strike = false
 			local added_dot = false
 
-			network_transmit:send_rpc("rpc_add_damage", sender, go_id, is_level_unit, go_id, is_level_unit, damage_amount, hit_zone_id, damage_type_id, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot)
+			network_transmit:send_rpc("rpc_add_damage", sender, go_id, is_level_unit, go_id, is_level_unit, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot)
 		end
 	end
 end
@@ -118,17 +136,12 @@ GenericHealthExtension.current_max_health_percent = function (self)
 	return 1
 end
 
-GenericHealthExtension.set_max_health = function (self, health, update_unmodfied)
+GenericHealthExtension.set_max_health = function (self, health)
 	local health_constant = NetworkConstants.health
 	local network_health = math.clamp(health, health_constant.min, health_constant.max)
 	local decimal = network_health % 1
 	local rounded_decimal = math.round(decimal * 4) * 0.25
 	network_health = math.floor(network_health) + rounded_decimal
-
-	if update_unmodfied then
-		self.unmodified_max_health = network_health
-	end
-
 	self.health = network_health
 	local network_manager = Managers.state.network
 	local go_id, is_level_unit = network_manager:game_object_or_level_id(self.unit)
@@ -140,7 +153,12 @@ GenericHealthExtension.set_max_health = function (self, health, update_unmodfied
 	end
 end
 
-GenericHealthExtension._add_to_damage_history_buffer = function (self, unit, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
+GenericHealthExtension._add_to_damage_history_buffer = function (self, unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
+	local hit_position_table = (hit_position and {
+		hit_position.x,
+		hit_position.y,
+		hit_position.z
+	}) or nil
 	local damage_direction_table = (damage_direction and {
 		damage_direction.x,
 		damage_direction.y,
@@ -155,6 +173,7 @@ GenericHealthExtension._add_to_damage_history_buffer = function (self, unit, att
 	temp_table[DamageDataIndex.DAMAGE_TYPE] = damage_type
 	temp_table[DamageDataIndex.ATTACKER] = attacker_unit
 	temp_table[DamageDataIndex.HIT_ZONE] = hit_zone_name
+	temp_table[DamageDataIndex.POSITION] = hit_position_table
 	temp_table[DamageDataIndex.DIRECTION] = damage_direction_table
 	temp_table[DamageDataIndex.DAMAGE_SOURCE_NAME] = damage_source_name or "n/a"
 	temp_table[DamageDataIndex.HIT_RAGDOLL_ACTOR_NAME] = hit_ragdoll_actor or "n/a"
@@ -162,7 +181,7 @@ GenericHealthExtension._add_to_damage_history_buffer = function (self, unit, att
 	temp_table[DamageDataIndex.HIT_REACT_TYPE] = hit_react_type or "light"
 	temp_table[DamageDataIndex.CRITICAL_HIT] = is_critical_strike or false
 
-	pdArray.push_back10(damage_queue, unpack(temp_table))
+	pdArray.push_back11(damage_queue, unpack(temp_table))
 
 	return temp_table
 end
@@ -171,11 +190,11 @@ GenericHealthExtension._should_die = function (self)
 	return self.health <= self.damage
 end
 
-GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot)
+GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot)
 	local unit = self.unit
 	local network_manager = Managers.state.network
 	local unit_id, is_level_unit = network_manager:game_object_or_level_id(unit)
-	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
+	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
 
 	StatisticsUtil.register_damage(unit, damage_table, self.statistics_db)
 	fassert(damage_type, "No damage_type!")
@@ -188,7 +207,7 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 	end
 
 	if not self.is_invincible and not self.dead then
-		self.damage = self.damage + damage_amount
+		self.damage = self.damage + math.min(damage_amount, self._damage_cap_per_hit)
 
 		if self:_should_die() and (self.is_server or not unit_id) then
 			local death_system = Managers.state.entity:system("death_system")
@@ -197,10 +216,10 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 		end
 	end
 
-	self:_sync_out_damage(attacker_unit, unit_id, is_level_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, hit_react_type, is_critical_strike, added_dot)
+	self:_sync_out_damage(attacker_unit, unit_id, is_level_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, hit_react_type, is_critical_strike, added_dot)
 end
 
-GenericHealthExtension._sync_out_damage = function (self, attacker_unit, unit_id, is_level_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, hit_react_type, is_critical_strike, added_dot)
+GenericHealthExtension._sync_out_damage = function (self, attacker_unit, unit_id, is_level_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, hit_react_type, is_critical_strike, added_dot)
 	if self.is_server and unit_id then
 		local network_manager = Managers.state.network
 		local attacker_unit_id, attacker_is_level_unit = network_manager:game_object_or_level_id(attacker_unit)
@@ -214,14 +233,14 @@ GenericHealthExtension._sync_out_damage = function (self, attacker_unit, unit_id
 		is_critical_strike = is_critical_strike or false
 		added_dot = added_dot or false
 
-		network_transmit:send_rpc_clients("rpc_add_damage", unit_id, is_level_unit, attacker_unit_id, attacker_is_level_unit, damage_amount, hit_zone_id, damage_type_id, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot)
+		network_transmit:send_rpc_clients("rpc_add_damage", unit_id, is_level_unit, attacker_unit_id, attacker_is_level_unit, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot)
 	end
 end
 
 GenericHealthExtension.add_heal = function (self, healer_unit, heal_amount, heal_source_name, heal_type)
 	local unit = self.unit
 
-	self:_add_to_damage_history_buffer(unit, healer_unit, -heal_amount, nil, "heal", nil, heal_source_name, nil, nil, nil, nil)
+	self:_add_to_damage_history_buffer(unit, healer_unit, -heal_amount, nil, "heal", nil, nil, heal_source_name, nil, nil, nil, nil)
 
 	if not self.dead then
 		self.damage = math.max(0, self.damage - heal_amount)

@@ -14,6 +14,9 @@ BTChaosSorcererPlagueSkulkAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	local breed = blackboard.breed
 	local target_dist = blackboard.target_dist
+
+	Managers.state.entity:system("surrounding_aware_system"):add_system_event(unit, "heard_enemy", DialogueSettings.hear_chaos_corruptor_sorcerer, "enemy_tag", "chaos_corruptor_sorcerer")
+
 	local skulk_data = blackboard.skulk_data or {}
 	blackboard.skulk_data = skulk_data
 	skulk_data.direction = skulk_data.direction or 1 - math.random(0, 1) * 2

@@ -100,7 +100,7 @@ local settings_by_screen = {
 		camera_rotation = {
 			0,
 			0,
-			0
+			-0.1
 		},
 		require_function = function ()
 			return
@@ -128,7 +128,7 @@ local settings_by_screen = {
 		camera_rotation = {
 			0,
 			0,
-			0
+			-0.1
 		},
 		require_function = function ()
 			return
@@ -340,53 +340,6 @@ local flow_events = {
 		unhovered = "empire_soldier_unhovered"
 	}
 }
-local generic_input_actions = {
-	default = {
-		{
-			input_action = "d_vertical",
-			priority = 2,
-			description_text = "dlc1_2_input_description_switch_game_mode",
-			ignore_keybinding = true
-		},
-		{
-			input_action = "confirm",
-			priority = 3,
-			description_text = "input_description_select"
-		},
-		{
-			input_action = "back",
-			priority = 4,
-			description_text = "input_description_close"
-		}
-	},
-	select_difficulty = {
-		actions = {
-			{
-				input_action = "refresh",
-				priority = 1,
-				description_text = "input_description_confirm"
-			}
-		}
-	},
-	select_mission = {
-		actions = {
-			{
-				input_action = "refresh",
-				priority = 1,
-				description_text = "input_description_confirm"
-			}
-		}
-	},
-	play_available = {
-		actions = {
-			{
-				input_action = "refresh",
-				priority = 1,
-				description_text = "input_description_play"
-			}
-		}
-	}
-}
 
 return {
 	scenegraph_definition = scenegraph_definition,
@@ -394,6 +347,5 @@ return {
 	settings_by_screen = settings_by_screen,
 	attachments = attachments,
 	flow_events = flow_events,
-	animations = animations,
-	generic_input_actions = generic_input_actions
+	animations = animations
 }

@@ -345,7 +345,7 @@ Attachments.es_hats_no_beard_skinned = table.clone(es_hats_no_beard_skinned)
 local es_beard = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
-	show_attachments_event = "lua_show_ears",
+	show_attachments_event = "lua_show_beard",
 	attachment_node_linking = AttachmentNodeLinking.hat,
 	slots = {
 		"slot_hat"

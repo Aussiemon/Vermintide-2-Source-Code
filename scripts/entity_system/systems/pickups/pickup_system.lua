@@ -220,12 +220,12 @@ PickupSystem.populate_pickups = function (self, checkpoint_data)
 	local difficulty_manager = Managers.state.difficulty
 	local difficulty_rank = difficulty_manager:get_difficulty_rank()
 	local difficulty = difficulty_manager:get_difficulty()
-	local pickup_settings = level_pickup_settings[difficulty_rank]
+	local pickup_settings = level_pickup_settings[difficulty]
 
 	if not pickup_settings then
 		Application.warning("[PickupSystem] CURRENT LEVEL HAS NO PICKUP DATA FOR CURRENT DIFFICULTY: %s, USING SETTINGS FOR EASY ", difficulty)
 
-		pickup_settings = level_pickup_settings[1]
+		pickup_settings = level_pickup_settings.default or level_pickup_settings[1]
 	end
 
 	local primary_pickup_spawners = self.primary_pickup_spawners
@@ -600,6 +600,12 @@ PickupSystem.debug_draw_spread_pickups = function (self)
 	self._debug_spread_pickups_draw_mode = draw_mode
 end
 
+PickupSystem.disable_teleporting_pickups = function (self)
+	for unit, data in pairs(self._teleporting_pickups) do
+		self._teleporting_pickups[unit] = nil
+	end
+end
+
 PickupSystem.spawn_guarenteed_pickups = function (self)
 	local spawners = self.guaranteed_pickup_spawners
 	local num_spawners = #spawners
@@ -817,7 +823,7 @@ PickupSystem.buff_spawn_pickup = function (self, pickup_name, position, raycast_
 		local physics_world = World.physics_world(self.world)
 		local direction = Vector3.down()
 		local length = 15
-		local result, new_position, _, _ = PhysicsWorld.immediate_raycast(physics_world, position, direction, length, "closest", "collision_filter", "filter_dropped_weapon")
+		local result, new_position, _, _ = PhysicsWorld.immediate_raycast(physics_world, position, direction, length, "closest", "collision_filter", "filter_pickup_collision")
 
 		if result then
 			position = new_position

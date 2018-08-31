@@ -46,7 +46,6 @@ CraftPageSalvage.on_enter = function (self, params, settings)
 	self._item_grid:hide_slots(true)
 	self._item_grid:disable_item_drag()
 	self.super_parent:clear_disabled_backend_ids()
-	self.parent:set_input_description(nil)
 end
 
 CraftPageSalvage.create_ui_elements = function (self, params)
@@ -376,8 +375,6 @@ end
 
 CraftPageSalvage._set_craft_button_disabled = function (self, disabled)
 	self._widgets_by_name.craft_button.content.button_hotspot.disable_button = disabled
-
-	self.parent:set_input_description((not disabled and self.settings.name) or nil)
 end
 
 CraftPageSalvage._exit = function (self, selected_level)

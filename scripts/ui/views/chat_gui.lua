@@ -271,7 +271,7 @@ ChatGui._update_chat_messages = function (self)
 			local new_message_table = {}
 
 			if new_message.type ~= Irc.PARTY_MSG then
-				local message = string.format("%s", tostring(new_message.message))
+				local message = new_message.message
 
 				if new_message.is_system_message then
 					new_message_table.is_system = true
@@ -295,20 +295,22 @@ ChatGui._update_chat_messages = function (self)
 
 				show_new_messages = new_message.pop_chat
 			else
-				local player = Managers.player:player_from_peer_id(new_message.message_sender)
-				local ingame_display_name = nil
+				local sender = new_message.message_sender
+				local player = Managers.player:player(sender, new_message.local_player_id)
+				local ingame_display_name, name = nil
 
 				if player then
 					local profile_index = self.profile_synchronizer:profile_by_peer(player.peer_id, player:local_player_id())
 					ingame_display_name = (SPProfiles[profile_index] and SPProfiles[profile_index].ingame_short_display_name) or nil
+					name = player:name()
+				else
+					name = (HAS_STEAM and Steam.user_name(sender)) or tostring(sender)
 				end
 
-				local localized_display_name = ingame_display_name and Localize(ingame_display_name)
-				local sender = (rawget(_G, "Steam") and Steam.user_name(new_message.message_sender)) or tostring(new_message.message_sender)
-				local message = string.format("%s", tostring(new_message.message))
+				local message = new_message.message
 				new_message_table.is_dev = new_message.is_dev
 				new_message_table.is_system = false
-				new_message_table.sender = (ingame_display_name and string.format("%s (%s): ", sender, localized_display_name)) or string.format("%s: ", sender)
+				new_message_table.sender = (ingame_display_name and string.format("%s (%s): ", name, Localize(ingame_display_name))) or string.format("%s: ", name)
 				new_message_table.message = message
 				new_message_table.type = new_message.type
 				show_new_messages = true
@@ -432,11 +434,13 @@ ChatGui.block_input = function (self, input_service_name)
 			input_manager:block_device_except_service(input_service_name, "mouse", 1)
 			input_manager:block_device_except_service(input_service_name, "gamepad", 1)
 		end
+
+		self:_hide_cursor()
 	else
 		input_manager:block_device_except_service("chat_input", "keyboard", 1)
 		input_manager:block_device_except_service("chat_input", "mouse", 1)
 		input_manager:block_device_except_service("chat_input", "gamepad", 1)
-		Window.set_show_cursor(true)
+		self:_show_cursor()
 	end
 end
 
@@ -455,7 +459,24 @@ ChatGui.unblock_input = function (self, no_unblock)
 		input_manager:device_unblock_all_services("keyboard", 1)
 		input_manager:device_unblock_all_services("mouse", 1)
 		input_manager:device_unblock_all_services("gamepad", 1)
-		Window.set_show_cursor(false)
+	end
+
+	self:_hide_cursor()
+end
+
+ChatGui._show_cursor = function (self)
+	if not self._cursor_visible then
+		self._cursor_visible = true
+
+		ShowCursorStack.push()
+	end
+end
+
+ChatGui._hide_cursor = function (self)
+	if self._cursor_visible then
+		self._cursor_visible = false
+
+		ShowCursorStack.pop()
 	end
 end
 
@@ -562,7 +583,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 						slot17 = debug + chrash
 					else
 						if self.chat_manager:has_channel(1) then
-							self.chat_manager:send_chat_message(1, self.chat_message, self.recent_message_index)
+							self.chat_manager:send_chat_message(1, 1, self.chat_message, self.recent_message_index)
 						end
 
 						self.chat_message = ""

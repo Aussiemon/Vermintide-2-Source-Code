@@ -16,6 +16,7 @@ BTSkulkIdleAction.enter = function (self, unit, blackboard, t)
 	Managers.state.network:anim_event(unit, "to_crouch")
 	Managers.state.network:anim_event(unit, "idle")
 	blackboard.navigation_extension:set_enabled(false)
+	blackboard.locomotion_extension:set_wanted_velocity(Vector3.zero())
 
 	local ai_simple_extension = ScriptUnit.extension(unit, "ai_system")
 

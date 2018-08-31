@@ -8,8 +8,9 @@ local daily_quests = {
 local weekly_quests = {
 	quest_type = "weekly",
 	name = "achv_menu_weekly_category_title",
+	type = "quest",
 	max_entry_amount = 1,
-	type = "quest"
+	entries = {}
 }
 local event_quests = {
 	quest_type = "event",
@@ -22,6 +23,7 @@ local quests = {
 	type = "quest",
 	categories = {
 		daily_quests,
+		weekly_quests,
 		event_quests
 	}
 }

@@ -260,6 +260,11 @@ local scenegraph_definition = {
 		}
 	}
 }
+
+if PLATFORM ~= "win32" then
+	scenegraph_definition.screen.scale = "hud_fit"
+end
+
 local color = table.clone(Colors.color_definitions.white)
 color[1] = 0
 local widget_definitions = {

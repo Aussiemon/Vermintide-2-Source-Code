@@ -201,17 +201,9 @@ PlayerCharacterStateStanding.update = function (self, unit, input, dt, context, 
 		local current_action_settings = CharacterStateHelper.get_current_action_data(left_hand_weapon_extension, right_hand_weapon_extension)
 
 		if not current_action_settings then
-			if Managers.input:is_device_active("gamepad") then
-				if Managers.state.game_mode:level_key() == "inn_level" then
-					csm:change_state("inspecting")
+			csm:change_state("inspecting")
 
-					return
-				end
-			else
-				csm:change_state("inspecting")
-
-				return
-			end
+			return
 		end
 	end
 

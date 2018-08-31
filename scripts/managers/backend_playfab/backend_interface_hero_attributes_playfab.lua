@@ -41,9 +41,15 @@ BackendInterfaceHeroAttributesPlayFab._refresh = function (self)
 	local mirror = self._backend_mirror
 	local read_only_data = mirror:get_read_only_data()
 
-	for attribute_name, default_value in pairs(DEFAULT_ATTRIBUTES) do
-		local backend_value = read_only_data[attribute_name]
-		self._attributes[attribute_name] = backend_value or default_value
+	if script_data.honduras_demo then
+		for attribute_name, default_value in pairs(DEFAULT_DEMO_ATTRIBUTES) do
+			self._attributes[attribute_name] = default_value
+		end
+	else
+		for attribute_name, default_value in pairs(DEFAULT_ATTRIBUTES) do
+			local backend_value = read_only_data[attribute_name]
+			self._attributes[attribute_name] = backend_value or default_value
+		end
 	end
 end
 

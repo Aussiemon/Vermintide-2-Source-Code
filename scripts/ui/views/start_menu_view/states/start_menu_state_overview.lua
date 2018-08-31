@@ -5,6 +5,7 @@ local widget_definitions = definitions.widgets
 local generic_input_actions = definitions.generic_input_actions
 local animation_definitions = definitions.animation_definitions
 local scenegraph_definition = definitions.scenegraph_definition
+local console_cursor_definition = definitions.console_cursor_definition
 local DO_RELOAD = false
 local fake_input_service = {
 	get = function ()
@@ -79,6 +80,7 @@ StartMenuStateOverview.on_enter = function (self, params)
 	local career_index = hero_attributes:get(hero_name, "career") or 1
 
 	self:_populate_career_page(hero_name, career_index)
+	Managers.input:enable_gamepad_cursor()
 end
 
 StartMenuStateOverview.create_ui_elements = function (self, params)
@@ -94,6 +96,14 @@ StartMenuStateOverview.create_ui_elements = function (self, params)
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
+
+	if script_data.settings.use_beta_overlay and PLATFORM == "xb1" then
+		local tutorial_button = widgets_by_name.tutorial_button
+		local tutorial_button_content = tutorial_button.content
+		tutorial_button_content.button_hotspot.disable_button = true
+	end
+
+	self._console_cursor = UIWidget.init(console_cursor_definition)
 
 	UIRenderer.clear_scenegraph_queue(self.ui_top_renderer)
 
@@ -114,6 +124,8 @@ StartMenuStateOverview._wanted_state = function (self)
 end
 
 StartMenuStateOverview.on_exit = function (self, params)
+	Managers.input:disable_gamepad_cursor()
+
 	if self.menu_input_description then
 		self.menu_input_description:destroy()
 
@@ -211,6 +223,10 @@ StartMenuStateOverview.draw = function (self, dt)
 
 	if self._player_portrait_widget then
 		UIRenderer.draw_widget(ui_top_renderer, self._player_portrait_widget)
+	end
+
+	if not self._active_view then
+		UIRenderer.draw_widget(ui_top_renderer, self._console_cursor)
 	end
 
 	UIRenderer.end_pass(ui_top_renderer)
@@ -518,6 +534,7 @@ StartMenuStateOverview._activate_view = function (self, new_view)
 	assert(views[new_view])
 
 	if new_view and views[new_view] and views[new_view].on_enter then
+		Managers.input:disable_gamepad_cursor()
 		views[new_view]:on_enter()
 	end
 end
@@ -540,6 +557,7 @@ StartMenuStateOverview.exit_current_view = function (self)
 	input_manager:block_device_except_service(input_service_name, "keyboard")
 	input_manager:block_device_except_service(input_service_name, "mouse")
 	input_manager:block_device_except_service(input_service_name, "gamepad")
+	Managers.input:enable_gamepad_cursor()
 end
 
 StartMenuStateOverview.input_service = function (self, ignore_view_input)

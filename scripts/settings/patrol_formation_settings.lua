@@ -364,10 +364,10 @@ PatrolFormationSettings.storm_vermin_shields_infront = {
 			"skaven_storm_vermin"
 		},
 		{
-			"",
+			EMPTY,
 			"skaven_storm_vermin",
 			"skaven_storm_vermin",
-			""
+			EMPTY
 		}
 	},
 	hardest = {
@@ -397,8 +397,8 @@ PatrolFormationSettings.storm_vermin_shields_infront = {
 		},
 		{
 			"skaven_storm_vermin",
-			"",
-			"",
+			EMPTY,
+			EMPTY,
 			"skaven_storm_vermin"
 		}
 	}
@@ -2466,6 +2466,95 @@ PatrolFormationSettings.double_dragon = {
 			"chaos_warrior"
 		}
 	}
+}
+local slaves = {
+	{
+		"skaven_slave",
+		"skaven_slave",
+		"skaven_slave"
+	},
+	{
+		"skaven_slave",
+		"skaven_slave",
+		"skaven_slave"
+	},
+	{
+		"skaven_slave",
+		"skaven_slave",
+		"skaven_slave"
+	},
+	{
+		"skaven_slave",
+		"skaven_slave",
+		"skaven_slave"
+	},
+	{
+		"skaven_slave",
+		"skaven_slave",
+		"skaven_slave"
+	},
+	{
+		"skaven_slave",
+		"skaven_slave",
+		"skaven_slave"
+	},
+	{
+		"skaven_slave",
+		"skaven_slave",
+		"skaven_slave"
+	},
+	{
+		"skaven_slave",
+		"skaven_slave",
+		"skaven_slave"
+	},
+	{
+		"skaven_slave",
+		"skaven_slave",
+		"skaven_slave"
+	},
+	{
+		"skaven_slave",
+		"skaven_slave",
+		"skaven_slave"
+	},
+	{
+		"skaven_slave",
+		"skaven_slave",
+		"skaven_slave"
+	},
+	{
+		"skaven_slave",
+		"skaven_slave",
+		"skaven_slave"
+	},
+	{
+		"skaven_slave",
+		"skaven_slave",
+		"skaven_slave"
+	},
+	{
+		"skaven_slave",
+		"skaven_slave",
+		"skaven_slave"
+	},
+	{
+		"skaven_slave",
+		"skaven_slave",
+		"skaven_slave"
+	},
+	{
+		"skaven_slave",
+		"skaven_slave",
+		"skaven_slave"
+	}
+}
+PatrolFormationSettings.skaven_slave_patrol = {
+	settings = PatrolFormationSettings.default_settings,
+	normal = slaves,
+	hard = slaves,
+	harder = slaves,
+	hardest = slaves
 }
 PatrolFormationSettings.chaos_warrior_small = {
 	settings = PatrolFormationSettings.default_marauder_settings,

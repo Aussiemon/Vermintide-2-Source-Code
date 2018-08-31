@@ -23,7 +23,7 @@ GameServerAux.create_network_hash = function (config_file_name, project_hash)
 end
 
 GameServerAux.verify_lobby_data = function (lobby)
-	return LobbyAux.verify_lobby_data(lobby)
+	return true
 end
 
 return

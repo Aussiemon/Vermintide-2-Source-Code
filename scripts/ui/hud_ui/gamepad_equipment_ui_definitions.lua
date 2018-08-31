@@ -2,16 +2,16 @@ local SIZE_X = 1920
 local SIZE_Y = 1080
 local RETAINED_MODE_ENABLED = true
 local slot_size = {
-	60,
-	60
+	70,
+	64
 }
 local slot_icon_size = {
-	56,
-	56
+	55,
+	55
 }
 local scenegraph_definition = {
 	root = {
-		is_root = true,
+		scale = "hud_scale_fit",
 		position = {
 			0,
 			0,
@@ -34,8 +34,54 @@ local scenegraph_definition = {
 			SIZE_Y
 		}
 	},
+	hud_base = {
+		vertical_alignment = "bottom",
+		parent = "root",
+		horizontal_alignment = "right",
+		position = {
+			0,
+			60,
+			0
+		}
+	},
+	hud_brush = {
+		parent = "hud_base",
+		position = {
+			-25,
+			-60,
+			0
+		}
+	},
+	health_bar_frame = {
+		vertical_alignment = "bottom",
+		parent = "root",
+		horizontal_alignment = "center",
+		position = {
+			0,
+			20,
+			10
+		},
+		size = {
+			576,
+			36
+		}
+	},
+	health_bar_frame_bg = {
+		vertical_alignment = "bottom",
+		parent = "root",
+		horizontal_alignment = "center",
+		position = {
+			0,
+			32,
+			-10
+		},
+		size = {
+			560,
+			19
+		}
+	},
 	screen_bottom_pivot = {
-		parent = "screen",
+		parent = "root",
 		position = {
 			0,
 			0,
@@ -62,7 +108,7 @@ local scenegraph_definition = {
 	},
 	background_panel = {
 		vertical_alignment = "bottom",
-		parent = "screen",
+		parent = "root",
 		horizontal_alignment = "center",
 		position = {
 			0,
@@ -104,11 +150,11 @@ local scenegraph_definition = {
 	},
 	weapon_slot = {
 		vertical_alignment = "bottom",
-		parent = "background_panel",
-		horizontal_alignment = "left",
+		parent = "hud_base",
+		horizontal_alignment = "right",
 		position = {
-			275,
-			40,
+			-50,
+			0,
 			100
 		},
 		size = {
@@ -118,22 +164,22 @@ local scenegraph_definition = {
 	},
 	slot = {
 		vertical_alignment = "bottom",
-		parent = "background_panel",
-		horizontal_alignment = "left",
+		parent = "hud_base",
+		horizontal_alignment = "right",
 		position = {
-			15,
-			42,
+			-270,
+			70,
 			100
 		},
 		size = slot_size
 	},
 	ammo_background = {
 		vertical_alignment = "bottom",
-		parent = "screen",
+		parent = "root",
 		horizontal_alignment = "right",
 		position = {
-			-50,
-			100,
+			-90,
+			40,
 			10
 		},
 		size = {
@@ -213,6 +259,12 @@ local scenegraph_definition = {
 	}
 }
 
+if PLATFORM ~= "win32" then
+	scenegraph_definition.root.scale = "hud_fit"
+	scenegraph_definition.root.is_root = nil
+	scenegraph_definition.screen.scale = "hud_fit"
+end
+
 local function create_weapon_slot_widget(scenegraph_id)
 	local frame_settings = UIFrameSettings.menu_frame_06
 
@@ -223,6 +275,15 @@ local function create_weapon_slot_widget(scenegraph_id)
 					pass_type = "texture",
 					style_id = "melee_weapon_texture",
 					texture_id = "melee_weapon_texture_id",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return content.wielded_slot == "melee"
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "melee_weapon_texture_glow",
+					texture_id = "melee_weapon_texture_glow_id",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content, style)
 						return content.wielded_slot == "melee"
@@ -248,21 +309,55 @@ local function create_weapon_slot_widget(scenegraph_id)
 				},
 				{
 					pass_type = "texture",
-					style_id = "highlight_weapon_texture",
-					texture_id = "highlight_weapon_texture_id",
+					style_id = "ranged_weapon_texture_glow",
+					texture_id = "ranged_weapon_texture_glow_id",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return content.wielded_slot == "ranged"
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "switch",
+					texture_id = "switch_id",
+					retained_mode = RETAINED_MODE_ENABLED
+				},
+				{
+					pass_type = "texture",
+					style_id = "wield_switch",
+					texture_id = "wield_switch_id",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return content.wield_switch_id
+					end
+				},
+				{
+					style_id = "input_text",
+					pass_type = "text",
+					text_id = "input_text",
+					retained_mode = RETAINED_MODE_ENABLED
+				},
+				{
+					style_id = "input_text_shadow",
+					pass_type = "text",
+					text_id = "input_text",
 					retained_mode = RETAINED_MODE_ENABLED
 				}
 			}
 		},
 		content = {
-			background_texture_id = "hud_inventory_slot_bg_01",
-			deselected_weapon_texture_id = "weapon_generic_icon_melee_deselected",
-			visible = true,
-			selected = false,
+			melee_weapon_texture_id = "hud_icon_melee",
 			is_expired = false,
+			visible = true,
+			input_text = "",
+			selected = false,
+			deselected_weapon_texture_id = "hud_icon_melee",
+			ranged_weapon_texture_glow_id = "hud_icon_ranged_glow",
+			melee_weapon_texture_glow_id = "hud_icon_melee_glow",
 			highlight_weapon_texture_id = "hud_inventory_slot_selection",
-			melee_weapon_texture_id = "weapon_generic_icon_melee",
-			ranged_weapon_texture_id = "weapon_generic_icon_range",
+			background_texture_id = "hud_inventory_slot_bg_01",
+			ranged_weapon_texture_id = "hud_icon_ranged",
+			switch_id = "button_y",
 			weapon_frame = frame_settings.texture
 		},
 		style = {
@@ -305,30 +400,95 @@ local function create_weapon_slot_widget(scenegraph_id)
 			melee_weapon_texture = {
 				vertical_alignment = "center",
 				horizontal_alignment = "center",
+				texture_size = {
+					58,
+					49
+				},
 				color = {
 					255,
-					128,
-					128,
-					128
+					255,
+					255,
+					255
 				},
 				offset = {
-					0,
-					0,
+					10,
+					-20,
 					1
+				}
+			},
+			melee_weapon_texture_glow = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					68,
+					59
+				},
+				color = {
+					255,
+					243,
+					159,
+					0
+				},
+				offset = {
+					10,
+					-20,
+					0
 				}
 			},
 			ranged_weapon_texture = {
 				vertical_alignment = "center",
 				horizontal_alignment = "center",
+				texture_size = {
+					57,
+					58
+				},
 				color = {
 					255,
-					128,
-					128,
-					128
+					255,
+					255,
+					255
 				},
 				offset = {
-					0,
-					0,
+					10,
+					-20,
+					1
+				}
+			},
+			ranged_weapon_texture_glow = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					67,
+					68
+				},
+				color = {
+					255,
+					243,
+					159,
+					0
+				},
+				offset = {
+					10,
+					-20,
+					0
+				}
+			},
+			switch = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					58,
+					40
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					40,
+					-50,
 					1
 				}
 			},
@@ -359,16 +519,75 @@ local function create_weapon_slot_widget(scenegraph_id)
 			deselected_weapon = {
 				vertical_alignment = "center",
 				horizontal_alignment = "center",
+				texture_size = {
+					58,
+					49
+				},
 				color = {
-					128,
+					255,
+					63,
+					63,
+					63
+				},
+				offset = {
+					10,
+					-20,
+					1
+				}
+			},
+			wield_switch = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					0,
+					0
+				},
+				color = {
+					255,
 					255,
 					255,
 					255
 				},
 				offset = {
-					0,
-					0,
+					40,
+					-50,
 					1
+				}
+			},
+			input_text = {
+				word_wrap = false,
+				font_size = 24,
+				localize = false,
+				horizontal_alignment = "left",
+				vertical_alignment = "center",
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				size = {
+					22,
+					18
+				},
+				offset = {
+					170,
+					-40,
+					4
+				}
+			},
+			input_text_shadow = {
+				word_wrap = false,
+				font_size = 24,
+				localize = false,
+				horizontal_alignment = "left",
+				vertical_alignment = "center",
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				size = {
+					22,
+					18
+				},
+				offset = {
+					172,
+					-42,
+					3
 				}
 			}
 		},
@@ -388,7 +607,7 @@ local function create_slot_widget(index, total_amount)
 	local total_slot_width = slot_width * total_amount
 	local total_width = total_slot_width + spacing * (total_amount - 1)
 	local frame_offset = {
-		actual_index * (slot_width + spacing),
+		(actual_index - 1) * (slot_width + spacing),
 		0,
 		-30
 	}
@@ -399,9 +618,9 @@ local function create_slot_widget(index, total_amount)
 		231
 	}
 	local generic_console_hud_icons = {
-		slot_healthkit = "default_heal_icon",
-		slot_grenade = "default_grenade_icon",
-		slot_potion = "default_potion_icon"
+		slot_healthkit = "hud_icon_heal_01",
+		slot_grenade = "hud_icon_bomb_01",
+		slot_potion = "hud_icon_heal_02"
 	}
 
 	return {
@@ -416,77 +635,59 @@ local function create_slot_widget(index, total_amount)
 				},
 				{
 					pass_type = "texture",
-					style_id = "texture_background",
-					texture_id = "texture_background",
-					retained_mode = RETAINED_MODE_ENABLED
-				},
-				{
-					pass_type = "texture",
-					style_id = "texture_empty_slot",
-					texture_id = "empty_slot_texture",
-					retained_mode = RETAINED_MODE_ENABLED
-				},
-				{
-					pass_type = "texture",
 					style_id = "texture_selected",
 					texture_id = "texture_selected",
 					retained_mode = RETAINED_MODE_ENABLED
 				},
 				{
-					pass_type = "rotated_texture",
-					style_id = "texture_highlight",
-					texture_id = "texture_highlight",
-					retained_mode = RETAINED_MODE_ENABLED
-				},
-				{
 					pass_type = "texture",
-					style_id = "texture_arrow_left",
-					texture_id = "texture_arrow",
+					style_id = "texture_selected_up_arrow",
+					texture_id = "texture_selected_up_arrow",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content, style)
-						return content.texture_arrow_left_enabled
-					end
-				},
-				{
-					pass_type = "rotated_texture",
-					style_id = "texture_arrow_up",
-					texture_id = "texture_arrow",
-					retained_mode = RETAINED_MODE_ENABLED,
-					content_check_function = function (content, style)
-						return content.texture_arrow_up_enabled
-					end
-				},
-				{
-					pass_type = "rotated_texture",
-					style_id = "texture_arrow_right",
-					texture_id = "texture_arrow",
-					retained_mode = RETAINED_MODE_ENABLED,
-					content_check_function = function (content, style)
-						return content.texture_arrow_right_enabled
+						return content.texture_arrow_up_enabled and content.is_filled
 					end
 				},
 				{
 					pass_type = "texture",
-					style_id = "texture_arrow_selected_left",
-					texture_id = "texture_arrow_selected",
+					style_id = "texture_selected_left_arrow",
+					texture_id = "texture_selected_left_arrow",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content, style)
-						return content.texture_arrow_left_enabled and content.selected
+						return content.texture_arrow_left_enabled and content.is_filled
 					end
 				},
 				{
-					pass_type = "rotated_texture",
-					style_id = "texture_arrow_selected_up",
-					texture_id = "texture_arrow_selected",
+					pass_type = "texture",
+					style_id = "texture_selected_right_arrow",
+					texture_id = "texture_selected_right_arrow",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return content.texture_arrow_right_enabled and content.is_filled
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "texture_selected_up_arrow_glow",
+					texture_id = "texture_selected_up_arrow_glow",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content, style)
 						return content.texture_arrow_up_enabled and content.selected
 					end
 				},
 				{
-					pass_type = "rotated_texture",
-					style_id = "texture_arrow_selected_right",
-					texture_id = "texture_arrow_selected",
+					pass_type = "texture",
+					style_id = "texture_selected_left_arrow_glow",
+					texture_id = "texture_selected_left_arrow_glow",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return content.texture_arrow_left_enabled and content.selected
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "texture_selected_right_arrow_glow",
+					texture_id = "texture_selected_right_arrow_glow",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content, style)
 						return content.texture_arrow_right_enabled and content.selected
@@ -495,16 +696,22 @@ local function create_slot_widget(index, total_amount)
 			}
 		},
 		content = {
-			is_expired = false,
-			texture_arrow_selected = "console_consumable_icon_arrow_02",
-			selected = false,
-			input_text = "-",
-			texture_frame = "hud_inventory_slot",
+			texture_selected_left_arrow = "hud_icon_left",
 			texture_selected = "hud_inventory_slot_selection",
+			texture_selected_right_arrow = "hud_icon_right",
+			input_text = "-",
+			selected = false,
+			texture_selected_up_arrow_glow = "hud_icon_up_glow",
 			texture_background = "hud_inventory_slot_bg_01",
-			texture_icon = "journal_icon_02",
-			texture_arrow = "console_consumable_icon_arrow_02",
+			texture_selected_right_arrow_glow = "hud_icon_right_glow",
+			texture_selected_up_arrow = "hud_icon_up",
 			visible = true,
+			texture_frame = "hud_inventory_slot",
+			is_expired = false,
+			texture_icon = "journal_icon_02",
+			is_filled = false,
+			texture_arrow = "console_consumable_icon_arrow_02",
+			texture_selected_left_arrow_glow = "hud_icon_left_glow",
 			texture_highlight = "hud_inventory_slot_small_pickup",
 			console_hud_index = index,
 			empty_slot_texture = generic_console_hud_icons[InventorySettings.slots_by_console_hud_index[index].name],
@@ -547,14 +754,128 @@ local function create_slot_widget(index, total_amount)
 				texture_size = slot_icon_size,
 				color = {
 					0,
+					128,
+					128,
+					128
+				},
+				offset = {
+					0,
+					0,
+					5
+				}
+			},
+			texture_selected_left_arrow = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					32,
+					32
+				},
+				color = {
+					255,
+					128,
+					128,
+					128
+				},
+				offset = {
+					0,
+					-32,
+					5
+				}
+			},
+			texture_selected_up_arrow = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					32,
+					32
+				},
+				color = {
+					255,
+					128,
+					128,
+					128
+				},
+				offset = {
+					0,
+					-32,
+					5
+				}
+			},
+			texture_selected_right_arrow = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					32,
+					32
+				},
+				color = {
+					255,
+					128,
+					128,
+					128
+				},
+				offset = {
+					0,
+					-32,
+					5
+				}
+			},
+			texture_selected_left_arrow_glow = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					32,
+					32
+				},
+				color = {
+					0,
 					255,
 					255,
 					255
 				},
 				offset = {
 					0,
+					-32,
+					6
+				}
+			},
+			texture_selected_up_arrow_glow = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					32,
+					32
+				},
+				color = {
+					128,
+					255,
+					255,
+					255
+				},
+				offset = {
 					0,
-					5
+					-32,
+					6
+				}
+			},
+			texture_selected_right_arrow_glow = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					32,
+					32
+				},
+				color = {
+					0,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					-32,
+					6
 				}
 			},
 			texture_frame = {
@@ -595,7 +916,7 @@ local function create_slot_widget(index, total_amount)
 				offset = {
 					0,
 					0,
-					4
+					6
 				}
 			},
 			texture_arrow_left = {
@@ -687,11 +1008,6 @@ local function create_slot_widget(index, total_amount)
 			texture_arrow_selected_up = {
 				vertical_alignment = "center",
 				horizontal_alignment = "center",
-				angle = math.pi * 0.5,
-				pivot = {
-					7.5,
-					20
-				},
 				texture_size = {
 					15,
 					40
@@ -711,11 +1027,6 @@ local function create_slot_widget(index, total_amount)
 			texture_arrow_selected_right = {
 				vertical_alignment = "center",
 				horizontal_alignment = "center",
-				angle = math.pi,
-				pivot = {
-					7.5,
-					20
-				},
 				texture_size = {
 					15,
 					40
@@ -757,16 +1068,16 @@ local function create_slot_widget(index, total_amount)
 				}
 			},
 			texture_selected = {
-				vertical_alignment = "bottom",
+				vertical_alignment = "center",
 				horizontal_alignment = "center",
 				offset = {
 					0,
-					2,
-					4
+					0,
+					6
 				},
 				texture_size = {
-					52,
-					22
+					55,
+					55
 				},
 				color = {
 					0,
@@ -825,7 +1136,7 @@ end
 
 local ammo_text_clip_style = {
 	word_wrap = false,
-	font_size = 72,
+	font_size = 65,
 	localize = false,
 	use_shadow = true,
 	horizontal_alignment = "right",
@@ -835,7 +1146,7 @@ local ammo_text_clip_style = {
 	default_text_color = Colors.get_color_table_with_alpha("white", 255),
 	offset = {
 		-5,
-		-8,
+		0,
 		2
 	}
 }
@@ -851,7 +1162,7 @@ local ammo_text_remaining_style = {
 	default_text_color = Colors.get_color_table_with_alpha("white", 255),
 	offset = {
 		3,
-		0,
+		-12,
 		2
 	}
 }
@@ -867,25 +1178,21 @@ local ammo_text_center_style = {
 	default_text_color = Colors.get_color_table_with_alpha("white", 255),
 	offset = {
 		0,
-		0,
+		-12,
 		2
 	}
 }
 local widget_definitions = {
-	background_panel = UIWidgets.create_simple_texture("hud_inventory_panel_gamepad", "background_panel", nil, RETAINED_MODE_ENABLED),
-	background_panel_bg = UIWidgets.create_simple_texture("hud_inventory_panel_bg", "background_panel_bg", nil, RETAINED_MODE_ENABLED),
+	ability_base = UIWidgets.create_simple_atlas_texture("ability_base", "hud_base", nil, RETAINED_MODE_ENABLED, nil, 5, "right", "bottom"),
+	hud_brushstroke = UIWidgets.create_simple_atlas_texture("hud_brushstroke", "hud_brush", nil, RETAINED_MODE_ENABLED, nil, nil, "right", "bottom"),
+	health_bar_frame = UIWidgets.create_simple_texture("console_hp_bar_frame", "health_bar_frame", nil, RETAINED_MODE_ENABLED, nil, nil, "center", "bottom"),
+	background_panel_bg = UIWidgets.create_simple_texture("console_hp_bar_background", "health_bar_frame_bg", nil, RETAINED_MODE_ENABLED),
 	weapon_slot = create_weapon_slot_widget("weapon_slot")
 }
 local ammo_widget_definitions = {
 	ammo_text_clip = UIWidgets.create_simple_text("-", "ammo_text_clip", nil, nil, ammo_text_clip_style, nil, RETAINED_MODE_ENABLED),
 	ammo_text_remaining = UIWidgets.create_simple_text("-", "ammo_text_remaining", nil, nil, ammo_text_remaining_style, nil, RETAINED_MODE_ENABLED),
 	ammo_text_center = UIWidgets.create_simple_text("/", "ammo_text_center", nil, nil, ammo_text_center_style, nil, RETAINED_MODE_ENABLED),
-	ammo_background = UIWidgets.create_simple_texture("loot_objective_bg", "ammo_background", nil, RETAINED_MODE_ENABLED, {
-		200,
-		255,
-		255,
-		255
-	}),
 	overcharge_background = UIWidgets.create_simple_texture("hud_inventory_charge_icon", "overcharge_background", nil, RETAINED_MODE_ENABLED),
 	overcharge = UIWidgets.create_simple_uv_texture("hud_inventory_charge_icon", {
 		{

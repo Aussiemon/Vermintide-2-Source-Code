@@ -14,6 +14,21 @@ local transitions = {
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_leave_game_topic"), "leave_game", Localize("popup_choice_yes"), "cancel_popup", Localize("popup_choice_no"))
 		end
 	end,
+	leave_group_hero_view = function (self)
+		if self.popup_id then
+			Managers.popup:cancel_popup(self.popup_id)
+		end
+
+		local network_server = Managers.state.network.network_server
+
+		if network_server and not network_server:are_all_peers_ingame() then
+			local text = Localize("player_join_block_exit_game")
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup_hero_view", Localize("menu_ok"))
+		else
+			local text = Localize("leave_game_popup_text")
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_leave_game_topic"), "leave_game", Localize("popup_choice_yes"), "cancel_popup_hero_view", Localize("popup_choice_no"))
+		end
+	end,
 	quit_game = function (self)
 		if self.popup_id then
 			Managers.popup:cancel_popup(self.popup_id)
@@ -21,6 +36,14 @@ local transitions = {
 
 		local text = Localize("exit_game_popup_text")
 		self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_game_topic"), "end_game", Localize("popup_choice_yes"), "cancel_popup", Localize("popup_choice_no"))
+	end,
+	quit_game_hero_view = function (self)
+		if self.popup_id then
+			Managers.popup:cancel_popup(self.popup_id)
+		end
+
+		local text = Localize("exit_game_popup_text")
+		self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_game_topic"), "end_game", Localize("popup_choice_yes"), "cancel_popup_hero_view", Localize("popup_choice_no"))
 	end,
 	return_to_title_screen = function (self)
 		if self.popup_id then
@@ -35,6 +58,21 @@ local transitions = {
 		else
 			local text = Localize("exit_to_title_popup_text")
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_to_title_topic"), "do_return_to_title_screen", Localize("popup_choice_yes"), "cancel_popup", Localize("popup_choice_no"))
+		end
+	end,
+	return_to_title_screen_hero_view = function (self)
+		if self.popup_id then
+			Managers.popup:cancel_popup(self.popup_id)
+		end
+
+		local network_server = Managers.state.network.network_server
+
+		if network_server and not network_server:are_all_peers_ingame() then
+			local text = Localize("player_join_block_exit_game")
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup_hero_view", Localize("menu_ok"))
+		else
+			local text = Localize("exit_to_title_popup_text")
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_to_title_topic"), "do_return_to_title_screen", Localize("popup_choice_yes"), "cancel_popup_hero_view", Localize("popup_choice_no"))
 		end
 	end,
 	return_to_demo_title_screen = function (self)
@@ -52,6 +90,21 @@ local transitions = {
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_to_title_topic"), "do_return_to_demo_title_screen", Localize("popup_choice_yes"), "cancel_popup", Localize("popup_choice_no"))
 		end
 	end,
+	return_to_demo_title_screen_hero_view = function (self)
+		if self.popup_id then
+			Managers.popup:cancel_popup(self.popup_id)
+		end
+
+		local network_server = Managers.state.network.network_server
+
+		if network_server and not network_server:are_all_peers_ingame() then
+			local text = Localize("player_join_block_exit_game")
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup_hero_view", Localize("menu_ok"))
+		else
+			local text = Localize("exit_to_title_popup_text")
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_to_title_topic"), "do_return_to_demo_title_screen", Localize("popup_choice_yes"), "cancel_popup_hero_view", Localize("popup_choice_no"))
+		end
+	end,
 	restart_demo = function (self)
 		if self.popup_id then
 			Managers.popup:cancel_popup(self.popup_id)
@@ -67,26 +120,38 @@ local transitions = {
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_restart_demo_topic"), "do_restart_demo", Localize("popup_choice_yes"), "cancel_popup", Localize("popup_choice_no"))
 		end
 	end,
+	restart_demo_hero_view = function (self)
+		if self.popup_id then
+			Managers.popup:cancel_popup(self.popup_id)
+		end
+
+		local network_server = Managers.state.network.network_server
+
+		if network_server and not network_server:are_all_peers_ingame() then
+			local text = Localize("player_join_block_restart_demo")
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup_hero_view", Localize("menu_ok"))
+		else
+			local text = Localize("restart_demo_popup_text")
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_restart_demo_topic"), "do_restart_demo", Localize("popup_choice_yes"), "cancel_popup_hero_view", Localize("popup_choice_no"))
+		end
+	end,
 	demo_invert_controls = function (self)
 		local views = self.views
-		local ingame_menu = views.ingame_menu
-		local active_button_data = ingame_menu.active_button_data
-		local button_widget = nil
+		local hero_view = views.hero_view
+		local state = hero_view:current_state()
+		local active_windows = state._active_windows
+		local ingame_menu_window = active_windows[4]
+		local layout_logic = ingame_menu_window.layout_logic
+		local active_button_data = layout_logic.active_button_data
+		local invert_button_data, button_name = nil
 
 		for _, button_data in pairs(active_button_data) do
 			if button_data.transition == "demo_invert_controls" then
-				button_widget = button_data.widget
+				invert_button_data = button_data
+				button_name = button_data.display_name
 
 				break
 			end
-		end
-
-		local button_name = nil
-		local button_widget_content = {}
-
-		if button_widget then
-			button_widget_content = button_widget.content
-			button_name = button_widget_content.title_text
 		end
 
 		local input_service = Managers.input:get_service("Player")
@@ -96,24 +161,24 @@ local transitions = {
 			local input_filters = input_service:get_active_filters(platform_key)
 			local look_filter = input_filters.look
 			local function_data = look_filter.function_data
-			function_data.filter_type = (button_name == "menu_invert_controls" and "scale_vector3") or "scale_vector3_invert_y"
+			function_data.filter_type = (function_data.filter_type == "scale_vector3" and "scale_vector3_invert_y") or "scale_vector3"
 		end
 
 		local platform_key = (PLATFORM == "ps4" and "ps4") or "xb1"
 		local input_filters = input_service:get_active_filters(platform_key)
 		local look_filter = input_filters.look_controller
 		local function_data = look_filter.function_data
-		function_data.filter_type = (button_name == "menu_invert_controls" and "scale_vector3_xy_accelerated_x_inverted") or "scale_vector3_xy_accelerated_x"
+		function_data.filter_type = (function_data.filter_type == "scale_vector3_xy_accelerated_x" and "scale_vector3_xy_accelerated_x_inverted") or "scale_vector3_xy_accelerated_x"
 		local look_filter = input_filters.look_controller_ranged
 		local function_data = look_filter.function_data
-		function_data.filter_type = (button_name == "menu_invert_controls" and "scale_vector3_xy_accelerated_x_inverted") or "scale_vector3_xy_accelerated_x"
+		function_data.filter_type = (function_data.filter_type == "scale_vector3_xy_accelerated_x" and "scale_vector3_xy_accelerated_x_inverted") or "scale_vector3_xy_accelerated_x"
 		local look_filter = input_filters.look_controller_melee
 		local function_data = look_filter.function_data
-		function_data.filter_type = (button_name == "menu_invert_controls" and "scale_vector3_xy_accelerated_x_inverted") or "scale_vector3_xy_accelerated_x"
+		function_data.filter_type = (function_data.filter_type == "scale_vector3_xy_accelerated_x" and "scale_vector3_xy_accelerated_x_inverted") or "scale_vector3_xy_accelerated_x"
 		local look_filter = input_filters.look_controller_zoom
 		local function_data = look_filter.function_data
-		function_data.filter_type = (button_name == "menu_invert_controls" and "scale_vector3_xy_accelerated_x_inverted") or "scale_vector3_xy_accelerated_x"
-		button_widget_content.title_text = (button_name == "menu_invert_controls" and "menu_non_invert_controls") or "menu_invert_controls"
+		function_data.filter_type = (function_data.filter_type == "scale_vector3_xy_accelerated_x" and "scale_vector3_xy_accelerated_x_inverted") or "scale_vector3_xy_accelerated_x"
+		invert_button_data.display_name = (button_name == "menu_invert_controls" and "menu_non_invert_controls") or "menu_invert_controls"
 	end,
 	end_game = function (self)
 		self.input_manager:block_device_except_service(nil, "keyboard", 1)
@@ -125,6 +190,7 @@ local transitions = {
 		local use_survey = TelemetrySettings.send and TelemetrySettings.use_session_survey
 		local is_answered = telemetry_survey_view:is_survey_answered()
 		local is_timed_out = telemetry_survey_view:is_survey_timed_out()
+		local backend_manager = Managers.backend
 
 		local function commit_complete_callback()
 			if (use_survey and (is_answered or is_timed_out)) or not use_survey or level_key == "inn_level" then
@@ -137,7 +203,12 @@ local transitions = {
 			end
 		end
 
-		Managers.backend:commit(true, commit_complete_callback)
+		if backend_manager:is_local() then
+			backend_manager:commit(true)
+			commit_complete_callback()
+		else
+			backend_manager:commit(true, commit_complete_callback)
+		end
 	end,
 	do_return_to_title_screen = function (self)
 		self.return_to_title_screen = true
@@ -182,6 +253,21 @@ local transitions = {
 		else
 			local text = Localize("exit_to_title_popup_text")
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_to_title_topic"), "do_return_to_pc_menu", Localize("popup_choice_yes"), "cancel_popup", Localize("popup_choice_no"))
+		end
+	end,
+	return_to_pc_menu_hero_view = function (self)
+		if self.popup_id then
+			Managers.popup:cancel_popup(self.popup_id)
+		end
+
+		local network_server = Managers.state.network.network_server
+
+		if network_server and not network_server:are_all_peers_ingame() then
+			local text = Localize("player_join_block_exit_game")
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup_hero_view", Localize("menu_ok"))
+		else
+			local text = Localize("exit_to_title_popup_text")
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_to_title_topic"), "do_return_to_pc_menu", Localize("popup_choice_yes"), "cancel_popup_hero_view", Localize("popup_choice_no"))
 		end
 	end,
 	ingame_menu = function (self)
@@ -278,11 +364,21 @@ local transitions = {
 		self.input_manager:block_device_except_service("ingame_menu", "mouse", 1)
 		self.input_manager:block_device_except_service("ingame_menu", "gamepad", 1)
 	end,
+	cancel_popup_hero_view = function (self)
+		self.popup_id = nil
+
+		self.input_manager:block_device_except_service("hero_view", "keyboard", 1)
+		self.input_manager:block_device_except_service("hero_view", "mouse", 1)
+		self.input_manager:block_device_except_service("hero_view", "gamepad", 1)
+	end,
 	credits_menu = function (self)
 		self.current_view = "credits_view"
 	end,
 	options_menu = function (self)
 		self.current_view = "options_view"
+	end,
+	console_friends_menu = function (self)
+		self.current_view = "console_friends_view"
 	end,
 	restart_game = function (self)
 		self.input_manager:device_unblock_all_services("keyboard", 1)
@@ -303,7 +399,7 @@ local transitions = {
 	end
 }
 view_settings = {
-	ui_renderer_function = function (world, is_tutorial)
+	ui_renderer_function = function (world, is_tutorial, is_in_inn)
 		local materials = {
 			"material",
 			"materials/ui/ui_1080p_hud_atlas_textures",
@@ -314,14 +410,25 @@ view_settings = {
 			"material",
 			"materials/ui/ui_1080p_menu_single_textures",
 			"material",
-			"materials/ui/ui_1080p_achievement_atlas_textures",
-			"material",
 			"materials/ui/ui_1080p_common",
 			"material",
 			"materials/ui/ui_1080p_chat",
 			"material",
 			"materials/fonts/gw_fonts"
 		}
+
+		if is_in_inn then
+			materials[#materials + 1] = "material"
+			materials[#materials + 1] = "materials/ui/ui_1080p_achievement_atlas_textures"
+			materials[#materials + 1] = "material"
+			materials[#materials + 1] = "materials/ui/ui_1080p_inn_single_textures"
+
+			for _, settings in pairs(AreaSettings) do
+				local video_settings = settings.video_settings
+				materials[#materials + 1] = "material"
+				materials[#materials + 1] = video_settings.resource
+			end
+		end
 
 		if is_tutorial then
 			materials[#materials + 1] = "material"
@@ -340,7 +447,7 @@ view_settings = {
 			return UIRenderer.create(world, unpack(materials))
 		end
 	end,
-	ui_top_renderer_function = function (top_world, is_tutorial)
+	ui_top_renderer_function = function (top_world, is_tutorial, is_in_inn)
 		local materials = {
 			"material",
 			"materials/ui/ui_1080p_hud_atlas_textures",
@@ -351,14 +458,25 @@ view_settings = {
 			"material",
 			"materials/ui/ui_1080p_menu_single_textures",
 			"material",
-			"materials/ui/ui_1080p_achievement_atlas_textures",
-			"material",
 			"materials/ui/ui_1080p_common",
 			"material",
 			"materials/ui/ui_1080p_chat",
 			"material",
 			"materials/fonts/gw_fonts"
 		}
+
+		if is_in_inn then
+			materials[#materials + 1] = "material"
+			materials[#materials + 1] = "materials/ui/ui_1080p_achievement_atlas_textures"
+			materials[#materials + 1] = "material"
+			materials[#materials + 1] = "materials/ui/ui_1080p_inn_single_textures"
+
+			for _, settings in pairs(AreaSettings) do
+				local video_settings = settings.video_settings
+				materials[#materials + 1] = "material"
+				materials[#materials + 1] = video_settings.resource
+			end
+		end
 
 		if is_tutorial then
 			materials[#materials + 1] = "material"
@@ -388,7 +506,8 @@ view_settings = {
 			start_menu_view = StartMenuView:new(ingame_ui_context),
 			start_game_view = StartGameView:new(ingame_ui_context),
 			ingame_menu = IngameView:new(ingame_ui_context),
-			chat_view = (PLATFORM == "win32" and ChatView:new(ingame_ui_context)) or nil
+			chat_view = (PLATFORM == "win32" and ChatView:new(ingame_ui_context)) or nil,
+			console_friends_view = ConsoleFriendsView:new(ingame_ui_context)
 		}
 	end,
 	hotkey_mapping = {
@@ -415,6 +534,14 @@ view_settings = {
 			error_message = "matchmaking_ready_interaction_message_inventory",
 			view = "hero_view",
 			transition_state = "overview",
+			disable_when_matchmaking_ready = true,
+			in_transition_menu = "hero_view"
+		},
+		hotkey_achievements = {
+			in_transition = "hero_view_force",
+			error_message = "matchmaking_ready_interaction_message_achievements",
+			view = "hero_view",
+			transition_state = "achievements",
 			disable_when_matchmaking_ready = true,
 			in_transition_menu = "hero_view"
 		}

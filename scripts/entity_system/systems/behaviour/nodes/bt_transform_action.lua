@@ -29,16 +29,12 @@ BTTransformAction.enter = function (self, unit, blackboard, t)
 	navigation_extension:set_enabled(false)
 	navigation_extension:set_max_speed(0)
 	blackboard.locomotion_extension:set_wanted_velocity(Vector3(0, 0, 0))
-
-	local enemy_package_loader = Managers.state.game_mode.level_transition_handler.enemy_package_loader
-
-	if not enemy_package_loader.breed_processed[action.wanted_breed_transform] then
-		enemy_package_loader:request_breed(action.wanted_breed_transform, true)
-	end
 end
 
 BTTransformAction.leave = function (self, unit, blackboard, t, reason, destroy)
-	return
+	if not blackboard.has_transformed then
+		self:transform(unit, blackboard)
+	end
 end
 
 BTTransformAction.run = function (self, unit, blackboard, t, dt)
@@ -65,7 +61,7 @@ BTTransformAction.transform = function (self, unit, blackboard)
 				local original_hp_percentage = optional_data.original_hp_percentage
 				local health_extension = ScriptUnit.extension(transformed_unit, "health_system")
 				local max_health = health_extension:get_max_health()
-				local damage = max_health * (1 - original_hp_percentage)
+				local damage = max_health * (1 - math.max(original_hp_percentage, 0.1))
 
 				health_extension:set_current_damage(damage)
 

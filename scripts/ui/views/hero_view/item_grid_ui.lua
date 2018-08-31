@@ -45,7 +45,7 @@ end
 ItemGridUI.set_item_page = function (self, page_index)
 	local total_item_pages = self._total_item_pages
 
-	if total_item_pages < page_index then
+	if total_item_pages < page_index or page_index < 1 then
 		return
 	end
 
@@ -86,6 +86,12 @@ end
 
 ItemGridUI.apply_item_sorting_function = function (self, item_sort_func)
 	self._item_sort_func = item_sort_func
+end
+
+ItemGridUI.set_locked_items_icon = function (self, locked_item_icon)
+	self._locked_item_icon = locked_item_icon
+
+	self:update_items_status()
 end
 
 ItemGridUI.disable_locked_items = function (self, disable)
@@ -144,6 +150,7 @@ ItemGridUI.update_items_status = function (self)
 	local careers = profile.careers
 	local career = careers[career_index]
 	local career_name = career.name
+	local locked_item_icon = self._locked_item_icon
 	local locked_items = self._mark_locked_items and self._locked_items
 	local equipped_items = self._mark_equipped_items and self:get_equipped_items(hero_name, career_index)
 	local item_drag_disabled = self._item_drag_disabled
@@ -161,6 +168,7 @@ ItemGridUI.update_items_status = function (self)
 		for k = 1, columns, 1 do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local item_icon_name = "item_icon" .. name_sufix
+			local locked_icon_name = "locked_icon" .. name_sufix
 			local hotspot_name = "hotspot" .. name_sufix
 			local item_content = content[hotspot_name]
 			local item_style = style[item_icon_name]
@@ -171,6 +179,7 @@ ItemGridUI.update_items_status = function (self)
 			local is_locked = backend_id and locked_items and locked_items[backend_id] ~= nil
 			local can_wield_table = item_data and item_data.can_wield
 			local can_wield = can_wield_table and table.contains(can_wield_table, career_name)
+			item_content[locked_icon_name] = locked_item_icon
 
 			if equipped_items then
 				item_content.equipped = is_equipped
@@ -219,6 +228,28 @@ ItemGridUI.update_items_status = function (self)
 			item_style.saturated = saturated
 		end
 	end
+
+	local item_interface = Managers.backend:get_interface("items")
+
+	if self._selected_item and item_interface:get_item_from_id(self._selected_item.backend_id) then
+		self:set_item_selected(self._selected_item)
+	end
+end
+
+ItemGridUI.has_item = function (self, item)
+	local items = self._items
+
+	if items then
+		for _, item_in_grid in ipairs(items) do
+			local backend_id = item_in_grid.backend_id
+
+			if item.backend_id == backend_id then
+				return true
+			end
+		end
+	end
+
+	return false
 end
 
 ItemGridUI.set_item_selected = function (self, item)
@@ -229,6 +260,7 @@ ItemGridUI.set_item_selected = function (self, item)
 	local columns = content.columns
 	self._selected_item_row = nil
 	self._selected_item_column = nil
+	self._selected_item_equipped = nil
 
 	for i = 1, rows, 1 do
 		for k = 1, columns, 1 do
@@ -237,11 +269,79 @@ ItemGridUI.set_item_selected = function (self, item)
 			local hotspot = content[hotspot_name]
 			local grid_item = content["item" .. name_sufix]
 			local is_selected = item and grid_item and item.backend_id == grid_item.backend_id
+			local is_equipped = hotspot.equipped
 			hotspot.is_selected = is_selected
 
 			if is_selected then
 				self._selected_item_row = i
 				self._selected_item_column = k
+				self._selected_item_equipped = is_equipped
+			end
+		end
+	end
+end
+
+ItemGridUI.is_item_wieldable = function (self, item)
+	local widget = self._widget
+	local content = widget.content
+	local rows = content.rows
+	local columns = content.columns
+
+	for i = 1, rows, 1 do
+		for k = 1, columns, 1 do
+			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
+			local hotspot_name = "hotspot" .. name_sufix
+			local hotspot = content[hotspot_name]
+			local grid_item = content["item" .. name_sufix]
+
+			if item and grid_item and item.backend_id == grid_item.backend_id then
+				local is_equipped = hotspot.equipped
+				local disable_button = hotspot.disable_button
+				local unwieldable = hotspot.unwieldable
+				local reserved = hotspot.reserved
+
+				if not is_equipped and not disable_button and not unwieldable and not reserved then
+					return true
+				end
+
+				return false
+			end
+		end
+	end
+
+	return false
+end
+
+ItemGridUI.handle_favorite_marking = function (self, input_service)
+	if input_service and input_service:has("hotkey_mark_favorite_item") then
+		local input_pressed = input_service:get("hotkey_mark_favorite_item")
+
+		if input_pressed then
+			local item = nil
+			local gamepad_active = Managers.input:is_device_active("gamepad")
+
+			if gamepad_active then
+				item = self:selected_item()
+			else
+				item = self:get_item_hovered()
+			end
+
+			local backend_id = item and item.backend_id
+
+			print("item", item, backend_id)
+
+			if backend_id then
+				local is_favorited = ItemHelper.is_favorite_backend_id(backend_id)
+
+				if is_favorited then
+					ItemHelper.unmark_backend_id_as_favorite(backend_id)
+
+					return true
+				else
+					ItemHelper.mark_backend_id_as_favorite(backend_id)
+
+					return true
+				end
 			end
 		end
 	end
@@ -262,18 +362,18 @@ ItemGridUI.handle_gamepad_selection = function (self, input_service)
 	if selected_row and selected_column then
 		local modified = false
 
-		if selected_column > 1 and input_service:get("move_left_raw") then
+		if selected_column > 1 and input_service:get("move_left_hold_continuous") then
 			selected_column = selected_column - 1
 			modified = true
-		elseif selected_column < columns and input_service:get("move_right_raw") then
+		elseif selected_column < columns and input_service:get("move_right_hold_continuous") then
 			selected_column = selected_column + 1
 			modified = true
 		end
 
-		if selected_row > 1 and input_service:get("move_up_raw") then
+		if selected_row > 1 and input_service:get("move_up_hold_continuous") then
 			selected_row = selected_row - 1
 			modified = true
-		elseif selected_row < rows and input_service:get("move_down_raw") then
+		elseif selected_row < rows and input_service:get("move_down_hold_continuous") then
 			selected_row = selected_row + 1
 			modified = true
 		end
@@ -284,7 +384,11 @@ ItemGridUI.handle_gamepad_selection = function (self, input_service)
 			local hotspot = content[hotspot_name]
 			local grid_item = content["item" .. name_sufix]
 
-			self:set_item_selected(grid_item)
+			if grid_item then
+				self:set_item_selected(grid_item)
+
+				return true
+			end
 		end
 	end
 end
@@ -316,7 +420,7 @@ ItemGridUI.set_backend_id_selected = function (self, backend_id)
 end
 
 ItemGridUI.selected_item = function (self)
-	return self._selected_item
+	return self._selected_item, self._selected_item_equipped
 end
 
 ItemGridUI.add_item_to_slot_index = function (self, slot_index, item, optional_amount)
@@ -330,6 +434,7 @@ ItemGridUI.add_item_to_slot_index = function (self, slot_index, item, optional_a
 	local name_sufix = "_" .. tostring(row_index) .. "_" .. tostring(column_index)
 	local item_icon_name = "item_icon" .. name_sufix
 	local item_amount_name = "amount_text" .. name_sufix
+	local locked_icon_name = "locked_icon" .. name_sufix
 	local hotspot_name = "hotspot" .. name_sufix
 	local item_content = content[hotspot_name]
 	local item_style = style[item_icon_name]
@@ -385,6 +490,7 @@ ItemGridUI.add_item_to_slot_index = function (self, slot_index, item, optional_a
 		content[item_tooltip_name] = display_name
 		item_content[item_icon_name] = inventory_icon
 		item_content[item_amount_name] = (item_data.can_stack and amount) or ""
+		item_content[locked_icon_name] = self._locked_item_icon
 
 		if not backend_id then
 			item_content.reserved = true
@@ -443,6 +549,7 @@ ItemGridUI._populate_inventory_page = function (self, items, start_read_index)
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local item_icon_name = "item_icon" .. name_sufix
 			local item_amount_name = "amount_text" .. name_sufix
+			local locked_icon_name = "locked_icon" .. name_sufix
 			local hotspot_name = "hotspot" .. name_sufix
 			local item_content = content[hotspot_name]
 			local item_style = style[item_icon_name]
@@ -499,6 +606,7 @@ ItemGridUI._populate_inventory_page = function (self, items, start_read_index)
 				content[item_tooltip_name] = display_name
 				item_content[item_icon_name] = inventory_icon
 				item_content[item_amount_name] = (item_data.can_stack and amount) or ""
+				item_content[locked_icon_name] = self._locked_item_icon
 
 				if not backend_id then
 					item_content.reserved = true
@@ -527,7 +635,11 @@ ItemGridUI._populate_inventory_page = function (self, items, start_read_index)
 		self:mark_locked_items(true)
 	end
 
-	self:set_item_selected(self._selected_item)
+	local item_interface = Managers.backend:get_interface("items")
+
+	if self._selected_item and item_interface:get_item_from_id(self._selected_item.backend_id) then
+		self:set_item_selected(self._selected_item)
+	end
 end
 
 ItemGridUI.clear_item_grid = function (self)
@@ -550,6 +662,7 @@ ItemGridUI.clear_item_grid = function (self)
 			item_content[item_amount_name] = ""
 			item_content.equipped = false
 			item_content.drag_disabled = false
+			item_content.disable_button = true
 			item_style.saturated = false
 		end
 	end
@@ -702,14 +815,18 @@ ItemGridUI.is_item_pressed = function (self, allow_single_press)
 	local content = widget.content
 	local rows = content.rows
 	local columns = content.columns
+	local disable_locked_items = self._disable_locked_items
+	local disable_unwieldable_items = self._disable_unwieldable_items
 
 	for i = 1, rows, 1 do
 		for k = 1, columns, 1 do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
+			local locked = disable_locked_items and slot_hotspot.reserved
+			local unwieldable_locked = disable_unwieldable_items and slot_hotspot.unwieldable
 
-			if not slot_hotspot.reserved and not slot_hotspot.unwieldable and (slot_hotspot.on_double_click or slot_hotspot.on_right_click or (allow_single_press and slot_hotspot.on_pressed)) then
+			if not locked and not unwieldable_locked and (slot_hotspot.on_double_click or slot_hotspot.on_right_click or (allow_single_press and slot_hotspot.on_pressed)) then
 				local item = content["item" .. name_sufix]
 				local is_equipped = slot_hotspot.equipped
 
@@ -732,6 +849,27 @@ ItemGridUI.is_item_hovered = function (self)
 			local slot_hotspot = content[hotspot_name]
 
 			if slot_hotspot.on_hover_enter then
+				local item = content["item" .. name_sufix]
+
+				return item
+			end
+		end
+	end
+end
+
+ItemGridUI.get_item_hovered = function (self)
+	local widget = self._widget
+	local content = widget.content
+	local rows = content.rows
+	local columns = content.columns
+
+	for i = 1, rows, 1 do
+		for k = 1, columns, 1 do
+			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
+			local hotspot_name = "hotspot" .. name_sufix
+			local slot_hotspot = content[hotspot_name]
+
+			if slot_hotspot.internal_is_hover then
 				local item = content["item" .. name_sufix]
 
 				return item

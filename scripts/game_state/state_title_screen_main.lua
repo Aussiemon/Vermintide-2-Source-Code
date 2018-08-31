@@ -6,7 +6,7 @@ end
 
 StateTitleScreenMain = class(StateTitleScreenMain)
 StateTitleScreenMain.NAME = "StateTitleScreenMain"
-ATTRACT_MODE_TIMER = (script_data.honduras_demo and DemoSettings.attract_timer) or 45
+local ATTRACT_MODE_TIMER = (script_data.honduras_demo and DemoSettings.attract_timer) or nil
 
 StateTitleScreenMain.on_enter = function (self, params)
 	print("[Gamestate] Enter Substate StateTitleScreenMain")
@@ -44,6 +44,10 @@ StateTitleScreenMain.on_enter = function (self, params)
 		Managers.account:reset()
 	end
 
+	if Managers.twitch then
+		Managers.twitch:reset()
+	end
+
 	if Managers.matchmaking then
 		Managers.matchmaking:destroy()
 
@@ -69,14 +73,17 @@ StateTitleScreenMain.on_enter = function (self, params)
 	end
 
 	if not self._params.menu_screen_music_playing and not GameSettingsDevelopment.skip_start_screen and not self._auto_start then
-		Managers.music:trigger_event("Play_menu_screen_music")
+		Managers.music:trigger_event("Play_console_menu_music")
 
 		self._params.menu_screen_music_playing = true
+	elseif self._params.menu_screen_music_playing then
+		Managers.music:trigger_event("Play_console_menu_music_reset_switch")
 	end
 end
 
 StateTitleScreenMain._update_ui_settings = function (self)
-	local ui_scale = 150
+	local w, h = Gui.resolution()
+	local ui_scale = math.ceil(h / 1080 * 100)
 	local console_type = XboxOne.console_type()
 
 	if console_type ~= XboxOne.CONSOLE_TYPE_XBOX_ONE_X_DEVKIT and console_type ~= XboxOne.CONSOLE_TYPE_XBOX_ONE_X then
@@ -161,7 +168,7 @@ StateTitleScreenMain._update_attract_mode = function (self, dt, t)
 		if self._title_start_ui:video_completed() then
 			self:_exit_attract_mode()
 		end
-	else
+	elseif self._attract_mode_timer then
 		self._attract_mode_timer = self._attract_mode_timer - dt
 
 		if self._attract_mode_timer <= 0 then
@@ -245,7 +252,7 @@ StateTitleScreenMain._update_input = function (self, dt, t)
 
 	if platform == "ps4" and Managers.invite:has_invitation() and not self._state then
 		if Managers.play_go:installed() then
-			Managers.music:trigger_event("hud_menu_press_start")
+			Managers.music:trigger_event("Play_console_menu_select")
 
 			if PS4.signed_in() then
 				self._title_start_ui:set_start_pressed(true)
@@ -287,7 +294,7 @@ StateTitleScreenMain._update_input = function (self, dt, t)
 
 			if can_proceed and user_id and Managers.account:user_exists(user_id) then
 				if Managers.account:sign_in(user_id, controller) then
-					Managers.music:trigger_event("hud_menu_press_start")
+					Managers.music:trigger_event("Play_console_menu_select")
 					self._title_start_ui:set_start_pressed(true)
 
 					self._params.switch_user_auto_sign_in = nil
@@ -317,7 +324,7 @@ StateTitleScreenMain._update_input = function (self, dt, t)
 				self._start_pressed = false
 			end
 		elseif platform == "ps4" then
-			Managers.music:trigger_event("hud_menu_press_start")
+			Managers.music:trigger_event("Play_console_menu_select")
 
 			if PS4.signed_in() then
 				Managers.input:set_exclusive_gamepad(controller)

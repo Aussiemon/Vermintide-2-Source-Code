@@ -17,20 +17,21 @@ local breed_data = {
 	shield_slashing_block_sound = "slashing_hit_shield_metal",
 	shield_stab_block_sound = "stab_hit_shield_metal",
 	hit_mass_count_block = 6,
-	uses_attack_sfx_callback = true,
+	shield_burning_block_sound = "Play_weapon_fire_torch_metal_shield_hit",
 	attack_general_sound_event = "Play_enemy_marauder_attack_husk_vce",
 	default_inventory_template = "marauder_sword_and_shield",
-	threat_value = 4,
+	uses_attack_sfx_callback = true,
 	patrol_detection_radius = 10,
 	flingable = true,
 	wwise_voice_switch_group = "marauder_vce_variations",
 	panic_close_detection_radius_sq = 9,
 	use_slot_type = "medium",
+	threat_value = 4,
 	hit_mass_count = 3,
 	patrol_active_perception = "perception_regular",
-	bone_lod_level = 1,
 	perception_previous_attacker_stickyness_value = -7.75,
 	race = "chaos",
+	bone_lod_level = 1,
 	smart_object_template = "chaos_marauder",
 	poison_resistance = 70,
 	armor_category = 1,
@@ -82,20 +83,8 @@ local breed_data = {
 		1,
 		1.05
 	},
-	max_health = {
-		13,
-		13,
-		19.5,
-		26,
-		39
-	},
-	diff_stagger_resist = {
-		2.4,
-		2.4,
-		3.2,
-		4,
-		4
-	},
+	max_health = BreedTweaks.max_health.marauder,
+	diff_stagger_resist = BreedTweaks.diff_stagger_resist.marauder,
 	stagger_duration = {
 		0.75,
 		1.5,
@@ -106,20 +95,8 @@ local breed_data = {
 		1,
 		1
 	},
-	stagger_duration_difficulty_mod = {
-		harder = 0.6,
-		hard = 0.8,
-		normal = 1,
-		hardest = 0.4,
-		easy = 1
-	},
-	hit_mass_counts = {
-		3,
-		3,
-		4.5,
-		6,
-		6
-	},
+	stagger_duration_difficulty_mod = BreedTweaks.stagger_duration_difficulty_mod.fast,
+	hit_mass_counts = BreedTweaks.hit_mass_counts.marauder,
 	hit_mass_counts_block = {
 		5,
 		5,
@@ -1090,6 +1067,8 @@ local action_data = {
 				6
 			}
 		},
+		dimishing_damage = {},
+		difficulty_diminishing_damage = BreedActionDimishingDamageDifficulty,
 		target_type_exceptions = {
 			poison_well = {
 				attack_anim = "poison_well"

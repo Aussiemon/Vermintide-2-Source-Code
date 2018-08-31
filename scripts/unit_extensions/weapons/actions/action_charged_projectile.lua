@@ -83,169 +83,180 @@ ActionChargedProjectile.client_owner_post_update = function (self, dt, t, world,
 	end
 
 	if self.state == "shooting" then
-		local overcharge_type = current_action.overcharge_type
+		self:_shoot()
+	end
+end
 
-		if overcharge_type and not self.extra_buff_shot then
-			local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[overcharge_type]
+ActionChargedProjectile._shoot = function (self)
+	local current_action = self.current_action
+	local owner_unit = self.owner_unit
+	local overcharge_type = current_action.overcharge_type
 
-			if current_action.scale_overcharge then
-				self.overcharge_extension:add_charge(overcharge_amount, self.charge_level)
-			else
-				self.overcharge_extension:add_charge(overcharge_amount)
-			end
-		end
+	if overcharge_type and not self.extra_buff_shot then
+		local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[overcharge_type]
 
-		if self.ammo_extension then
-			local ammo_usage = self.current_action.ammo_usage
-			local _, procced = self.owner_buff_extension:apply_buffs_to_value(0, StatBuffIndex.NOT_CONSUME_GRENADE)
-
-			if not procced then
-				self.ammo_extension:use_ammo(ammo_usage)
-			else
-				local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
-
-				inventory_extension:wield_previous_weapon()
-			end
-		end
-
-		if not Managers.player:owner(self.owner_unit).bot_player then
-			Managers.state.controller_features:add_effect("rumble", {
-				rumble_effect = "handgun_fire"
-			})
-		end
-
-		local _, procced = self.owner_buff_extension:apply_buffs_to_value(0, StatBuffIndex.EXTRA_SHOT)
-		local add_spread = not self.extra_buff_shot
-
-		if procced and not self.extra_buff_shot then
-			self.state = "waiting_to_shoot"
-			self.time_to_shoot = t + 0.1
-			self.extra_buff_shot = true
+		if current_action.scale_overcharge then
+			self.overcharge_extension:add_charge(overcharge_amount, self.charge_level)
 		else
-			self.state = "shot"
+			self.overcharge_extension:add_charge(overcharge_amount)
+		end
+	end
+
+	if self.ammo_extension then
+		local ammo_usage = self.current_action.ammo_usage
+		local _, procced = self.owner_buff_extension:apply_buffs_to_value(0, StatBuffIndex.NOT_CONSUME_GRENADE)
+
+		if not procced then
+			self.ammo_extension:use_ammo(ammo_usage)
+		else
+			local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
+
+			inventory_extension:wield_previous_weapon()
+		end
+	end
+
+	if not Managers.player:owner(self.owner_unit).bot_player then
+		Managers.state.controller_features:add_effect("rumble", {
+			rumble_effect = "handgun_fire"
+		})
+	end
+
+	local _, procced = self.owner_buff_extension:apply_buffs_to_value(0, StatBuffIndex.EXTRA_SHOT)
+	local add_spread = not self.extra_buff_shot
+
+	if procced and not self.extra_buff_shot then
+		self.state = "waiting_to_shoot"
+		self.time_to_shoot = t + 0.1
+		self.extra_buff_shot = true
+	else
+		self.state = "shot"
+	end
+
+	local network_manager = self.network_manager
+	local owner_unit_id = network_manager:unit_game_object_id(owner_unit)
+	local first_person_unit = self.first_person_unit
+	local position = Unit.world_position(first_person_unit, 0)
+	local rotation = Unit.local_rotation(first_person_unit, 0)
+	local gaze_settings = nil
+
+	if current_action.fire_at_gaze_setting and ScriptUnit.has_extension(owner_unit, "eyetracking_system") then
+		local eyetracking_extension = ScriptUnit.extension(owner_unit, "eyetracking_system")
+
+		if eyetracking_extension:get_is_feature_enabled("tobii_fire_at_gaze") then
+			rotation = eyetracking_extension:gaze_rotation()
+			gaze_settings = true
+		end
+	end
+
+	local spread_extension = self.spread_extension
+
+	if spread_extension then
+		rotation = spread_extension:get_randomised_spread(rotation)
+
+		if add_spread then
+			spread_extension:set_shooting()
+		end
+	end
+
+	local angle = ActionUtils.pitch_from_rotation(rotation)
+	local speed = current_action.speed
+	local target_vector = Vector3.normalize(Vector3.flat(Quaternion.forward(rotation)))
+	local projectile_info = current_action.projectile_info
+
+	if projectile_info.fire_from_muzzle then
+		local unit = self.weapon_unit
+		local muzzle_name = projectile_info.muzzle_name or "fx_muzzle"
+		local node = Unit.node(unit, muzzle_name)
+		local muzzle_pos = Unit.world_position(unit, node)
+		local life_time = 1
+
+		if projectile_info.timed_data then
+			life_time = projectile_info.timed_data.life_time
 		end
 
-		local network_manager = self.network_manager
-		local owner_unit_id = network_manager:unit_game_object_id(owner_unit)
-		local first_person_unit = self.first_person_unit
-		local position = Unit.world_position(first_person_unit, 0)
-		local rotation = Unit.local_rotation(first_person_unit, 0)
-		local gaze_settings = nil
+		local radians = math.degrees_to_radians(angle)
+		local gravity = ProjectileGravitySettings[projectile_info.gravity_settings]
+		local position_on_trajectory = WeaponHelper:position_on_trajectory(position, target_vector, speed / 100, radians, gravity, life_time)
+		target_vector = Vector3.normalize(Vector3.flat(position_on_trajectory - muzzle_pos))
+		position = muzzle_pos
+	end
 
-		if current_action.fire_at_gaze_setting and ScriptUnit.has_extension(owner_unit, "eyetracking_system") then
-			local eyetracking_extension = ScriptUnit.extension(owner_unit, "eyetracking_system")
+	if current_action.fire_at_gaze_setting and current_action.throw_up_this_much_in_target_direction and ScriptUnit.has_extension(owner_unit, "eyetracking_system") then
+		local eyetracking_extension = ScriptUnit.extension(owner_unit, "eyetracking_system")
 
-			if eyetracking_extension:get_is_feature_enabled("tobii_fire_at_gaze") then
-				rotation = eyetracking_extension:gaze_rotation()
-				gaze_settings = true
+		if eyetracking_extension:get_is_feature_enabled("tobii_fire_at_gaze") then
+			local hit_point = eyetracking_extension:get_gaze_rayhit()
+
+			if hit_point then
+				local dl = Vector3.distance(Vector3.flat(position), Vector3.flat(hit_point))
+				local dh = position[3] - hit_point[3]
+				local gravity = ProjectileGravitySettings[projectile_info.gravity_settings]
+				local throw_vector = Vector3.normalize(Quaternion.forward(rotation))
+				throw_vector = throw_vector + Vector3(0, 0, current_action.throw_up_this_much_in_target_direction)
+				throw_vector = Vector3.normalize(throw_vector)
+				local sin = -throw_vector[3]
+				local cos = math.sqrt(1 - sin * sin)
+				local speed_squared_limit = 22500
+				local speed_squared = math.clamp((-0.5 * gravity * dl * dl) / (dh * cos * cos - dl * sin * cos), 0.1, speed_squared_limit)
+				speed = math.sqrt(speed_squared) * 100
 			end
 		end
+	end
 
-		local spread_extension = self.spread_extension
+	local owner_player = Managers.player:owner(owner_unit)
+	local is_bot = owner_player and owner_player.bot_player
+	local throw_up_factor = current_action.throw_up_this_much_in_target_direction
 
-		if spread_extension then
-			rotation = spread_extension:get_randomised_spread(rotation)
+	if throw_up_factor and not is_bot then
+		target_vector = Vector3.normalize(target_vector + Vector3(0, 0, current_action.throw_up_this_much_in_target_direction))
+	end
 
-			if add_spread then
-				spread_extension:set_shooting()
-			end
-		end
+	local lookup_data = current_action.lookup_data
+	local item_name = self.item_name
+	local item_template_name = lookup_data.item_template_name
+	local action_name = lookup_data.action_name
+	local sub_action_name = lookup_data.sub_action_name
+	local charge_level = self.charge_level
+	local scale = math.round(math.max(charge_level, 0) * 100)
+	local projectile_power_level = ActionUtils.scale_charged_projectile_power_level(self.power_level, current_action, self.charge_level)
+	local item_data = ItemMasterList[item_name]
+	local item_template = BackendUtils.get_item_template(item_data)
 
-		local angle = ActionUtils.pitch_from_rotation(rotation)
-		local speed = current_action.speed
-		local target_vector = Vector3.normalize(Vector3.flat(Quaternion.forward(rotation)))
-		local projectile_info = current_action.projectile_info
+	ActionUtils.spawn_player_projectile(owner_unit, position, rotation, scale, angle, target_vector, speed, item_name, item_template_name, action_name, sub_action_name, self._is_critical_strike, projectile_power_level, gaze_settings)
 
-		if projectile_info.fire_from_muzzle then
-			local unit = self.weapon_unit
-			local muzzle_name = projectile_info.muzzle_name or "fx_muzzle"
-			local node = Unit.node(unit, muzzle_name)
-			local muzzle_pos = Unit.world_position(unit, node)
-			local life_time = 1
+	local fire_sound_event = self.current_action.fire_sound_event
 
-			if projectile_info.timed_data then
-				life_time = projectile_info.timed_data.life_time
-			end
+	if fire_sound_event then
+		local play_on_husk = self.current_action.fire_sound_on_husk
+		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
-			local radians = math.degrees_to_radians(angle)
-			local gravity = ProjectileGravitySettings[projectile_info.gravity_settings]
-			local position_on_trajectory = WeaponHelper:position_on_trajectory(position, target_vector, speed / 100, radians, gravity, life_time)
-			target_vector = Vector3.normalize(Vector3.flat(position_on_trajectory - muzzle_pos))
-			position = muzzle_pos
-		end
+		first_person_extension:play_hud_sound_event(fire_sound_event, nil, play_on_husk)
+	end
 
-		if current_action.fire_at_gaze_setting and current_action.throw_up_this_much_in_target_direction and ScriptUnit.has_extension(owner_unit, "eyetracking_system") then
-			local eyetracking_extension = ScriptUnit.extension(owner_unit, "eyetracking_system")
+	if current_action.alert_sound_range_fire then
+		Managers.state.entity:system("ai_system"):alert_enemies_within_range(owner_unit, POSITION_LOOKUP[owner_unit], current_action.alert_sound_range_fire)
+	end
 
-			if eyetracking_extension:get_is_feature_enabled("tobii_fire_at_gaze") then
-				local hit_point = eyetracking_extension:get_gaze_rayhit()
+	if current_action.hide_weapon_after_fire then
+		Unit.set_unit_visibility(self.weapon_unit, false)
+	end
 
-				if hit_point then
-					local dl = Vector3.distance(Vector3.flat(position), Vector3.flat(hit_point))
-					local dh = position[3] - hit_point[3]
-					local gravity = ProjectileGravitySettings[projectile_info.gravity_settings]
-					local throw_vector = Vector3.normalize(Quaternion.forward(rotation))
-					throw_vector = throw_vector + Vector3(0, 0, current_action.throw_up_this_much_in_target_direction)
-					throw_vector = Vector3.normalize(throw_vector)
-					local sin = -throw_vector[3]
-					local cos = math.sqrt(1 - sin * sin)
-					local speed_squared_limit = 22500
-					local speed_squared = math.clamp((-0.5 * gravity * dl * dl) / (dh * cos * cos - dl * sin * cos), 0.1, speed_squared_limit)
-					speed = math.sqrt(speed_squared) * 100
-				end
-			end
-		end
+	if projectile_info.pickup_name then
+		local dialogue_input = ScriptUnit.extension_input(self.owner_unit, "dialogue_system")
+		local event_data = FrameTable.alloc_table()
+		event_data.item_type = projectile_info.pickup_name
 
-		local owner_player = Managers.player:owner(owner_unit)
-		local is_bot = owner_player and owner_player.bot_player
-		local throw_up_factor = current_action.throw_up_this_much_in_target_direction
-
-		if throw_up_factor and not is_bot then
-			target_vector = Vector3.normalize(target_vector + Vector3(0, 0, current_action.throw_up_this_much_in_target_direction))
-		end
-
-		local lookup_data = current_action.lookup_data
-		local item_name = self.item_name
-		local item_template_name = lookup_data.item_template_name
-		local action_name = lookup_data.action_name
-		local sub_action_name = lookup_data.sub_action_name
-		local charge_level = self.charge_level
-		local scale = math.round(math.max(charge_level, 0) * 100)
-		local projectile_power_level = ActionUtils.scale_charged_projectile_power_level(self.power_level, current_action, self.charge_level)
-		local item_data = ItemMasterList[item_name]
-		local item_template = BackendUtils.get_item_template(item_data)
-
-		ActionUtils.spawn_player_projectile(owner_unit, position, rotation, scale, angle, target_vector, speed, item_name, item_template_name, action_name, sub_action_name, self._is_critical_strike, projectile_power_level, gaze_settings)
-
-		local fire_sound_event = self.current_action.fire_sound_event
-
-		if fire_sound_event then
-			local play_on_husk = self.current_action.fire_sound_on_husk
-			local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-
-			first_person_extension:play_hud_sound_event(fire_sound_event, nil, play_on_husk)
-		end
-
-		if current_action.alert_sound_range_fire then
-			Managers.state.entity:system("ai_system"):alert_enemies_within_range(owner_unit, POSITION_LOOKUP[owner_unit], current_action.alert_sound_range_fire)
-		end
-
-		if current_action.hide_weapon_after_fire then
-			Unit.set_unit_visibility(self.weapon_unit, false)
-		end
-
-		if projectile_info.pickup_name then
-			local dialogue_input = ScriptUnit.extension_input(self.owner_unit, "dialogue_system")
-			local event_data = FrameTable.alloc_table()
-			event_data.item_type = projectile_info.pickup_name
-
-			dialogue_input:trigger_networked_dialogue_event("throwing_item", event_data)
-		end
+		dialogue_input:trigger_networked_dialogue_event("throwing_item", event_data)
 	end
 end
 
 ActionChargedProjectile.finish = function (self, reason)
 	local owner_unit = self.owner_unit
+
+	if self.state == "waiting_to_shoot" then
+		self:_shoot()
+	end
+
 	local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
 
 	inventory_extension:set_loaded_projectile_override(nil)

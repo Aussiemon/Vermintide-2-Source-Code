@@ -22,6 +22,7 @@ AccountManager.init = function (self)
 	self._controller_id = nil
 	self._achievements = nil
 	self._initiated = false
+	self._offline_mode = nil
 	self._lobbies_to_free = {}
 	self._gamertags = {}
 	self._smartmatch_cleaner = SmartMatchCleaner:new()
@@ -31,14 +32,24 @@ AccountManager.init = function (self)
 	self._query_bandwidth_timer = AccountManager.QUERY_BANDWIDTH_TIMER
 	self._bandwidth_query_fails = 0
 	self._unlocked_achievements = {}
+	self._offline_achievement_progress = {}
+	self._social_graph_callbacks = {}
 end
 
-AccountManager.set_achievement_unlocked = function (self, name)
-	self._unlocked_achievements[name] = true
+AccountManager.set_achievement_unlocked = function (self, template_id)
+	self._unlocked_achievements[template_id] = true
 end
 
 AccountManager.get_unlocked_achievement_list = function (self)
 	return self._unlocked_achievements
+end
+
+AccountManager.set_offline_achievement_progress = function (self, template_id, progress)
+	self._offline_achievement_progress[template_id] = progress
+end
+
+AccountManager.offline_achievement_progress = function (self, template_id)
+	return self._offline_achievement_progress[template_id]
 end
 
 AccountManager.set_level_transition_handler = function (self, level_transition_handler)
@@ -54,10 +65,13 @@ AccountManager._set_user_id = function (self, id, controller)
 	self._backend_user_id = Application.make_hash(self:xbox_user_id())
 
 	Application.warning(string.format("[AccountManager] Console Backend User id: %s", self._backend_user_id))
-	XboxCallbacks.register_suspending_callback(callback(self, "cb_is_suspending"))
+
+	self._suspend_callback_id = XboxCallbacks.register_suspending_callback(callback(self, "cb_is_suspending"))
 end
 
 AccountManager.cb_is_suspending = function (self, ...)
+	print("############################ SUSPENDING")
+
 	self._has_suspended = true
 
 	if Managers.state.event then
@@ -123,6 +137,10 @@ AccountManager.has_privilege_error = function (self)
 	self._xbox_privileges:has_error()
 end
 
+AccountManager.get_privilege_async = function (self, privilege, attempt_resolution, external_cb)
+	self._xbox_privileges:get_privilege_async(self._user_id, privilege, attempt_resolution, external_cb)
+end
+
 AccountManager.active_controller = function (self, user_id)
 	return self._active_controller
 end
@@ -155,6 +173,18 @@ AccountManager.is_guest = function (self)
 	return self._user_info and self._user_info.guest
 end
 
+AccountManager.is_online = function (self)
+	return not self._offline_mode and XboxLive.online_state() == XboxOne.ONLINE
+end
+
+AccountManager.offline_mode = function (self)
+	return self._offline_mode
+end
+
+AccountManager.set_offline_mode = function (self, offline_mode)
+	self._offline_mode = offline_mode
+end
+
 AccountManager.update = function (self, dt)
 	if self._initiated then
 		local user_id = self._user_id
@@ -163,21 +193,71 @@ AccountManager.update = function (self, dt)
 			self:_handle_storage_token()
 		elseif user_id and not self:leaving_game() then
 			self:_check_session()
+			self:_verify_user_integrity()
 			self:_verify_user_profile(dt)
 			self:_verify_privileges()
 			self:_verify_user_in_cache()
 			self:_update_bandwidth_query(dt)
+			self:_update_social_manager(dt)
 			self._presence:update(dt)
 		end
 	end
 
+	self:_check_trigger_popups()
 	self:_process_popup_handle("_popup_id")
+	self:_process_popup_handle("_signout_popup_id")
 	self:_process_popup_handle("_privilege_popup_id")
 	self:_process_popup_handle("_xbox_live_connection_lost_popup_id")
 	self:_process_popup_handle("_not_connected_to_xbox_live_popup_id")
 	self:_update_sessions(dt)
 
 	self._user_cache_changed = XboxLive.user_cache_changed()
+end
+
+AccountManager.has_popup = function (self)
+	return self._popup_id or self._signout_popup_id or self._privilege_popup_id or self._xbox_live_connection_lost_popup_id or self._not_connected_to_xbox_live_popup_id
+end
+
+AccountManager.cancel_all_popups = function (self)
+	self._popup_id = nil
+	self._signout_popup_id = nil
+	self._privilege_popup_id = nil
+	self._xbox_live_connection_lost_popup_id = nil
+	self._not_connected_to_xbox_live_popup_id = nil
+end
+
+AccountManager._check_trigger_popups = function (self)
+	if not self._retrigger_popups_check then
+		return
+	end
+
+	if self._popup_id and not Managers.popup:has_popup_with_id(self._popup_id) then
+		self._popup_id = nil
+		local wanted_profile_id = self._user_info.xbox_user_id
+		local wanted_profile = self._gamertags[wanted_profile_id]
+		local cropped_profile = (wanted_profile and Managers.popup:fit_text_width_to_popup(wanted_profile)) or "?"
+		local wrong_profile_str = string.format(Localize("controller_pairing"), cropped_profile)
+
+		self:_create_popup(wrong_profile_str, "controller_pairing_header", "verify_profile", "menu_retry", "restart", "menu_return_to_title_screen", "show_profile_picker", "menu_select_profile", true)
+	end
+
+	if self._privilege_popup_id and not Managers.popup:has_popup_with_id(self._privilege_popup_id) then
+		self._privilege_popup_id = Managers.popup:queue_popup(Localize("popup_xbox_live_gold_error"), Localize("popup_xbox_live_gold_error_header"), "restart_network", Localize("menu_ok"))
+	end
+
+	if self._xbox_live_connection_lost_popup_id and not Managers.popup:has_popup_with_id(self._xbox_live_connection_lost_popup_id) then
+		self._xbox_live_connection_lost_popup_id = Managers.popup:queue_popup(Localize("xboxlive_connection_lost"), Localize("xboxlive_connection_lost_header"), "restart_network", Localize("menu_restart"))
+	end
+
+	if self._not_connected_to_xbox_live_popup_id and not Managers.popup:has_popup_with_id(self._not_connected_to_xbox_live_popup_id) then
+		self._not_connected_to_xbox_live_popup_id = Managers.popup:queue_popup(Localize("failure_start_xbox_lobby_create"), Localize("xboxlive_connection_lost_header"), "acknowledged", Localize("menu_ok"))
+	end
+
+	self._retrigger_popups_check = false
+end
+
+AccountManager.check_popup_retrigger = function (self)
+	self._retrigger_popups_check = true
 end
 
 AccountManager._process_popup_handle = function (self, popup_id_handle)
@@ -202,6 +282,8 @@ AccountManager.setup_friendslist = function (self)
 			Social.last_social_events()
 		}
 
+		table.dump(events, nil, 2)
+
 		if (table.contains(events, SocialEventType.RTA_DISCONNECT_ERR) or not self._added_local_user_to_graph) and not self._user_detached then
 			local user_id = self._user_id
 
@@ -213,6 +295,25 @@ AccountManager.setup_friendslist = function (self)
 			end
 
 			return true
+		end
+	end
+end
+
+AccountManager._update_social_manager = function (self, dt, t)
+	if self._added_local_user_to_graph then
+		local events = {
+			Social.last_social_events()
+		}
+
+		if table.contains(events, SocialEventType.GRAPH_LOADED) then
+			self._social_graph_loaded = true
+
+			for _, social_callback in pairs(self._social_graph_callbacks) do
+				self:get_friends(1000, social_callback)
+			end
+		end
+
+		if table.contains(events, SocialEventType.PRESENCE_CHANGED) then
 		end
 	end
 end
@@ -275,8 +376,18 @@ AccountManager._update_lobbies_to_free = function (self)
 	end
 end
 
+AccountManager._verify_user_integrity = function (self)
+	if self._offline_mode == nil or self._offline_mode or self._signout_popup_id then
+		return
+	end
+
+	if not self:user_exists(self._user_id) then
+		self._signout_popup_id = Managers.popup:queue_popup(Localize("profile_signed_out_header"), Localize("popup_xboxlive_profile_acquire_error_header"), "restart", Localize("menu_return_to_title_screen"))
+	end
+end
+
 AccountManager._verify_user_profile = function (self)
-	if self._popup_id then
+	if self._popup_id or self._signout_popup_id then
 		return
 	end
 
@@ -288,7 +399,7 @@ AccountManager._verify_user_profile = function (self)
 	end
 
 	local user_id = self._active_controller and self._active_controller.user_id()
-	local user_info = user_id and XboxLive.user_info(user_id)
+	local user_info = user_id and self:_user_id_in_cache(user_id) and XboxLive.user_info(user_id)
 
 	if not self._active_controller or not self._active_controller.user_id() or self._active_controller.disconnected() or not user_info or self._user_info.xbox_user_id ~= user_info.xbox_user_id or not user_info.signed_in or controller_changed then
 		local wanted_profile_id = self._user_info.xbox_user_id
@@ -305,11 +416,27 @@ AccountManager._verify_user_profile = function (self)
 end
 
 AccountManager._verify_privileges = function (self)
-	if not XboxLive.user_info_changed() then
+	if not XboxLive.user_info_changed() or self._privilege_popup_id or self:offline_mode() then
 		return
 	end
 
-	self._xbox_privileges:update_privilege("MULTIPLAYER_SESSIONS", callback(self, "cb_privileges_updated"))
+	if self:has_privilege(UserPrivilege.MULTIPLAYER_SESSIONS) then
+		self._xbox_privileges:update_privilege("MULTIPLAYER_SESSIONS", callback(self, "cb_privileges_updated"))
+	end
+end
+
+AccountManager._user_id_in_cache = function (self, user_id)
+	local users = {
+		XboxLive.users()
+	}
+
+	for _, user in pairs(users) do
+		if user.id == user_id then
+			return true
+		end
+	end
+
+	return false
 end
 
 AccountManager._verify_user_in_cache = function (self)
@@ -359,10 +486,14 @@ AccountManager.cb_privileges_updated = function (self, privilege)
 end
 
 AccountManager._check_session = function (self)
-	if Network.fatal_error() and not self._fatal_error then
+	if Network.fatal_error() and not self._fatal_error and (not Managers.invite or not Managers.invite:has_invitation()) and (not Managers.matchmaking or not Managers.matchmaking:is_joining_friend()) and not self:leaving_game() then
 		self._xbox_live_connection_lost_popup_id = Managers.popup:queue_popup(Localize("xboxlive_connection_lost"), Localize("xboxlive_connection_lost_header"), "restart_network", Localize("menu_restart"))
 		self._fatal_error = true
 	end
+end
+
+AccountManager.has_fatal_error = function (self)
+	return self._fatal_error or Network.fatal_error()
 end
 
 AccountManager._create_popup = function (self, error, header, right_action, right_button, left_action, left_button, extra_action, extra_button, disable_localize_error)
@@ -447,6 +578,10 @@ AccountManager.should_teardown_xboxlive = function (self)
 	return self._should_teardown_xboxlive
 end
 
+AccountManager.set_should_teardown_xboxlive = function (self)
+	self._should_teardown_xboxlive = true
+end
+
 AccountManager.teardown_xboxlive = function (self)
 	self._teardown_xboxlive = true
 end
@@ -523,14 +658,8 @@ AccountManager.sign_in = function (self, user_id, controller)
 
 			return false
 		end
-	elseif XboxLive.online_state() == XboxOne.ONLINE then
-		self:_hard_sign_in(user_id, controller)
 	else
-		if not self._not_connected_to_xbox_live_popup_id then
-			self._not_connected_to_xbox_live_popup_id = Managers.popup:queue_popup(Localize("failure_start_xbox_lobby_create"), Localize("xboxlive_connection_lost_header"), "acknowledged", Localize("menu_ok"))
-		end
-
-		return false
+		self:_hard_sign_in(user_id, controller)
 	end
 
 	return true
@@ -548,6 +677,7 @@ end
 
 AccountManager._hard_sign_in = function (self, user_id, controller)
 	dprint("Hard-sign in", user_id)
+	Crashify.print_property("user_id", user_id)
 	self:_set_user_id(user_id, controller)
 	self:_unmap_other_controllers()
 	self:_on_user_signed_in()
@@ -567,12 +697,20 @@ AccountManager._on_user_signed_in = function (self)
 end
 
 AccountManager.get_user_profiles = function (self, user_id, xbox_user_ids, cb)
-	local token = Xbone.get_user_profiles(user_id, xbox_user_ids, #xbox_user_ids)
-	local user_profile_token = ScriptUserProfileToken:new(token)
+	if XboxLive.online_state() == XboxOne.ONLINE then
+		local token = Xbone.get_user_profiles(user_id, xbox_user_ids, #xbox_user_ids)
+		local user_profile_token = ScriptUserProfileToken:new(token)
 
-	Managers.token:register_token(user_profile_token, callback(self, "cb_user_profiles"))
+		Managers.token:register_token(user_profile_token, callback(self, "cb_user_profiles"))
 
-	self._my_user_profile_cb = cb
+		self._my_user_profile_cb = cb
+	else
+		local user_info = self._user_info
+		local xuid = user_info.xbox_user_id
+		self._gamertags[xuid] = user_info.gamertag
+
+		cb({})
+	end
 end
 
 AccountManager.cb_user_profiles = function (self, data)
@@ -637,7 +775,9 @@ end
 AccountManager.initiate_leave_game = function (self)
 	self._leave_game = true
 
-	Presence.set(self._user_id, "")
+	if self:is_online() then
+		Presence.set(self._user_id, "")
+	end
 end
 
 AccountManager.leaving_game = function (self)
@@ -647,13 +787,14 @@ end
 AccountManager.reset = function (self)
 	if Network.xboxlive_client_exists() and self._user_id and self._added_local_user_to_graph then
 		Social.remove_local_user_from_graph(self._user_id)
-
-		self._added_local_user_to_graph = nil
 	end
 
+	self._added_local_user_to_graph = nil
+	self._social_graph_loaded = nil
 	self._user_id = nil
 	self._presence = ScriptPresence:new()
 	self._user_info = nil
+	self._offline_mode = nil
 	self._player_session_id = nil
 	self._active_controller = nil
 	self._leave_game = nil
@@ -664,6 +805,7 @@ AccountManager.reset = function (self)
 	self._should_teardown_xboxlive = nil
 	self._backend_user_id = nil
 	self._user_detached = nil
+	self._signout_popup_id = nil
 	self._popup_id = nil
 	self._xbox_live_connection_lost_popup_id = nil
 	self._not_connected_to_xbox_live_popup_id = nil
@@ -672,6 +814,18 @@ AccountManager.reset = function (self)
 	self._bandwidth_query_fails = 0
 	self._query_bandwidth_timer = AccountManager.QUERY_BANDWIDTH_TIMER
 	self._unlocked_achievements = {}
+	self._offline_achievement_progress = {}
+	self._social_graph_callbacks = {}
+
+	if Managers.popup then
+		Managers.popup:cancel_all_popups()
+	end
+
+	if self._suspend_callback_id then
+		XboxCallbacks.unregister_callback(self._suspend_callback_id)
+
+		self._suspend_callback_id = nil
+	end
 end
 
 AccountManager.destroy = function (self)
@@ -710,7 +864,7 @@ local friend_data = {}
 AccountManager.get_friends = function (self, friends_list_limit, callback)
 	table.clear(friend_data)
 
-	if self._added_local_user_to_graph then
+	if self._added_local_user_to_graph and self._social_graph_loaded then
 		local title_online_friends = {
 			Social.social_group(self.title_online_friends_group_id)
 		}
@@ -753,6 +907,8 @@ AccountManager.get_friends = function (self, friends_list_limit, callback)
 			data.playing_this_game = false
 			friend_data[id] = data
 		end
+	else
+		self._social_graph_callbacks[#self._social_graph_callbacks + 1] = callback
 	end
 
 	callback(friend_data)
@@ -776,7 +932,7 @@ AccountManager.reset_bandwidth_query = function (self)
 end
 
 AccountManager.query_bandwidth = function (self, down_kbps, up_kbps, timeout_in_ms)
-	if self._querying_bandwidth or not Network.xboxlive_client_exists() or (Managers.voice_chat and Managers.voice_chat:bandwidth_disabled()) then
+	if self._querying_bandwidth or not Network.xboxlive_client_exists() or (Managers.voice_chat and Managers.voice_chat:bandwidth_disabled()) or not GameSettingsDevelopment.bandwidth_queries_enabled then
 		return
 	end
 
@@ -823,7 +979,9 @@ AccountManager.cb_bandwidth_query = function (self, data)
 end
 
 AccountManager.show_player_profile = function (self, id)
-	XboxLive.show_gamercard(self._user_id, id)
+	if not self._user_detached then
+		XboxLive.show_gamercard(self._user_id, id)
+	end
 end
 
 return

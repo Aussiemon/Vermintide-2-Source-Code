@@ -74,7 +74,8 @@ MatchmakingStateHostGame._start_hosting_game = function (self)
 
 	if PLATFORM == "win32" then
 		if DEDICATED_SERVER then
-			eac_authorized = false
+			local eac_server = Managers.matchmaking.network_server:eac_server()
+			eac_authorized = EACServer.state(eac_server, Network.peer_id()) == "trusted"
 		else
 			local eac_state = EAC.state()
 

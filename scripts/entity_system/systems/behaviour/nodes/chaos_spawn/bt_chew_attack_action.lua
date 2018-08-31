@@ -50,6 +50,11 @@ BTChewAttackAction.leave = function (self, unit, blackboard, t, reason, destroy)
 		blackboard.has_grabbed_victim = nil
 		blackboard.victim_grabbed = nil
 	end
+
+	if not AiUtils.unit_alive(blackboard.victim_grabbed) then
+		blackboard.has_grabbed_victim = nil
+		blackboard.victim_grabbed = nil
+	end
 end
 
 local Unit_alive = Unit.alive

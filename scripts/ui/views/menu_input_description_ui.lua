@@ -1,19 +1,7 @@
 local scenegraph_definition = {
-	root = {
-		is_root = true,
-		position = {
-			0,
-			0,
-			UILayer.controller_description
-		},
-		size = {
-			1920,
-			1080
-		}
-	},
 	screen = {
 		vertical_alignment = "center",
-		parent = "root",
+		scale = "fit",
 		horizontal_alignment = "center",
 		size = {
 			1920,
@@ -22,7 +10,7 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			0
+			UILayer.controller_description
 		}
 	},
 	input_description_field = {
@@ -36,13 +24,26 @@ local scenegraph_definition = {
 		},
 		size = {
 			1800,
-			80
+			70
 		}
 	},
 	background = {
 		vertical_alignment = "bottom",
 		parent = "screen",
 		horizontal_alignment = "center"
+	},
+	fullscreen_background = {
+		vertical_alignment = "bottom",
+		scale = "fit_width",
+		size = {
+			1920,
+			79
+		},
+		position = {
+			0,
+			0,
+			UILayer.default + 1
+		}
 	}
 }
 
@@ -52,7 +53,7 @@ end
 
 local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name("tab_menu_bg_02")
 
-function create_background_widget(num_elements)
+local function create_background_widget(num_elements)
 	return {
 		scenegraph_id = "background",
 		element = {
@@ -78,6 +79,24 @@ function create_background_widget(num_elements)
 			}
 		}
 	}
+end
+
+local function create_fullscreen_background_widget()
+	return UIWidgets.create_simple_uv_texture("menu_panel_bg", {
+		{
+			0,
+			1
+		},
+		{
+			1,
+			0
+		}
+	}, "fullscreen_background", nil, nil, {
+		200,
+		10,
+		10,
+		10
+	})
 end
 
 local function create_input_description_widgets(amount)
@@ -194,7 +213,7 @@ end
 
 MenuInputDescriptionUI = class(MenuInputDescriptionUI)
 
-MenuInputDescriptionUI.init = function (self, ingame_ui_context, ui_renderer, input_service, number_of_elements, layer, generic_actions)
+MenuInputDescriptionUI.init = function (self, ingame_ui_context, ui_renderer, input_service, number_of_elements, layer, generic_actions, use_fullscreen_layout)
 	self:clear_input_descriptions()
 
 	self.input_service = input_service
@@ -203,14 +222,21 @@ MenuInputDescriptionUI.init = function (self, ingame_ui_context, ui_renderer, in
 	self.render_settings = {
 		snap_pixel_positions = true
 	}
-	scenegraph_definition.root.position[3] = layer + 10 or UILayer.controller_description
+	self._use_fullscreen_layout = use_fullscreen_layout
+	scenegraph_definition.screen.position[3] = layer + 10 or UILayer.controller_description
 
-	self:create_ui_elements(ui_renderer, number_of_elements)
+	self:create_ui_elements(ui_renderer, number_of_elements, use_fullscreen_layout)
 end
 
-MenuInputDescriptionUI.create_ui_elements = function (self, ui_renderer, number_of_elements)
+MenuInputDescriptionUI.create_ui_elements = function (self, ui_renderer, number_of_elements, use_fullscreen_layout)
 	self.console_input_description_widgets = create_input_description_widgets(number_of_elements or 5)
-	self.background_widget = UIWidget.init(create_background_widget(number_of_elements or 3))
+
+	if use_fullscreen_layout then
+		self.background_widget = nil
+	else
+		self.background_widget = UIWidget.init(create_background_widget(number_of_elements or 3))
+	end
+
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 
 	UIRenderer.clear_scenegraph_queue(ui_renderer)
@@ -231,7 +257,9 @@ MenuInputDescriptionUI.draw = function (self, ui_renderer, dt)
 			UIRenderer.draw_widget(ui_renderer, console_description_widgets[i])
 		end
 
-		UIRenderer.draw_widget(ui_renderer, self.background_widget)
+		if self.background_widget then
+			UIRenderer.draw_widget(ui_renderer, self.background_widget)
+		end
 	end
 
 	UIRenderer.end_pass(ui_renderer)
@@ -350,7 +378,9 @@ MenuInputDescriptionUI.set_input_description = function (self, console_selection
 
 		if generic_actions then
 			for _, action_data in ipairs(generic_actions) do
-				actions[#actions + 1] = action_data
+				if not action_data.content_check_function or action_data.content_check_function() then
+					actions[#actions + 1] = action_data
+				end
 			end
 		end
 	end
@@ -382,25 +412,21 @@ MenuInputDescriptionUI.set_input_description = function (self, console_selection
 			local font, scaled_font_size = UIFontByResolution(text_style)
 			local text_width, text_height, min = UIRenderer.text_size(ui_renderer, description_text, font[1], scaled_font_size)
 			local widget_length = action_texture_size[1] + text_width
-			ui_scenegraph[scenegraph_id].local_position[1] = -widget_length / 2
+
+			if self._use_fullscreen_layout then
+				ui_scenegraph[scenegraph_id].local_position[1] = 0
+			else
+				ui_scenegraph[scenegraph_id].local_position[1] = -widget_length / 2
+			end
+
 			total_width = total_width + widget_length + spacing
 			widgets_width_list[widget_use_index] = widget_length
 		end
 	end
 
-	total_width = total_width - spacing
-	local parent_width = ui_scenegraph.input_description_field.size[1]
-	local widget_start_position = parent_width / 2 - total_width / 2
-
-	for i = 1, widget_use_index, 1 do
-		local widget_width = widgets_width_list[i]
-		local new_x = widget_start_position + widget_width / 2
-		local scenegraph_root_id = "input_description_root_" .. i
-		ui_scenegraph[scenegraph_root_id].local_position[1] = new_x
-		widget_start_position = new_x + widget_width / 2 + spacing
-	end
-
 	self.number_of_descriptions_in_use = (widget_use_index ~= 0 and widget_use_index) or nil
+
+	self:_align_inputs(total_width, spacing, widgets_width_list)
 end
 
 MenuInputDescriptionUI.clear_input_descriptions = function (self)
@@ -420,6 +446,36 @@ MenuInputDescriptionUI.get_gamepad_input_texture_data = function (self, input_ac
 		local input_service = self.input_service
 
 		return UISettings.get_gamepad_input_texture_data(input_service, input_action, true)
+	end
+end
+
+MenuInputDescriptionUI._align_inputs = function (self, total_width, spacing, widgets_width_list)
+	local ui_scenegraph = self.ui_scenegraph
+	total_width = total_width - spacing
+	local parent_width = ui_scenegraph.input_description_field.size[1]
+	local widget_use_index = self.number_of_descriptions_in_use
+
+	if widget_use_index then
+		if self._use_fullscreen_layout then
+			local widget_start_position = 50
+
+			for i = 1, widget_use_index, 1 do
+				local widget_width = widgets_width_list[i]
+				local scenegraph_root_id = "input_description_root_" .. i
+				ui_scenegraph[scenegraph_root_id].local_position[1] = widget_start_position
+				widget_start_position = widget_start_position + widget_width + spacing
+			end
+		else
+			local widget_start_position = parent_width / 2 - total_width / 2
+
+			for i = 1, widget_use_index, 1 do
+				local widget_width = widgets_width_list[i]
+				local new_x = widget_start_position + widget_width / 2
+				local scenegraph_root_id = "input_description_root_" .. i
+				ui_scenegraph[scenegraph_root_id].local_position[1] = new_x
+				widget_start_position = new_x + widget_width / 2 + spacing
+			end
+		end
 	end
 end
 

@@ -44,12 +44,12 @@ local scenegraph_definition = {
 		parent = "background",
 		horizontal_alignment = "center",
 		size = {
-			1000,
-			40
+			350,
+			50
 		},
 		position = {
 			0,
-			-53,
+			-48,
 			1
 		}
 	},
@@ -261,9 +261,11 @@ local summary_title_style = {
 	word_wrap = true,
 	upper_case = true,
 	localize = false,
-	font_size = 32,
+	use_shadow = true,
+	font_size = 28,
 	horizontal_alignment = "center",
 	vertical_alignment = "center",
+	dynamic_font_size = true,
 	font_type = "hell_shark_header",
 	text_color = Colors.get_color_table_with_alpha("font_title", 255),
 	offset = {
@@ -371,7 +373,6 @@ local widgets = {
 	next_level_text = UIWidgets.create_simple_text("0", "next_level_text", nil, nil, level_text_style),
 	current_level_text = UIWidgets.create_simple_text("0", "current_level_text", nil, nil, level_text_style),
 	summary_title = UIWidgets.create_simple_text(Localize("end_screen_mission_summary"), "summary_title", nil, nil, summary_title_style),
-	summary_title_shadow = UIWidgets.create_simple_text(Localize("end_screen_mission_summary"), "summary_title", nil, nil, summary_title_style),
 	level_up_text = UIWidgets.create_simple_text(Localize("summary_screen_level_up"), "experience_bar", nil, nil, level_up_text_style),
 	background = UIWidgets.create_simple_texture("summary_screen", "background"),
 	experience_fg = UIWidgets.create_simple_texture("summary_screen_fg", "experience_fg"),
@@ -414,8 +415,8 @@ local animation_definitions = {
 	transition_exit = {
 		{
 			name = "fade_out",
-			start_progress = 3,
-			end_progress = 3.3,
+			start_progress = 1,
+			end_progress = 1.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 1
 			end,

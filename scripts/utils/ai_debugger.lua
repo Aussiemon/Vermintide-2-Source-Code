@@ -152,7 +152,7 @@ AIDebugger.update = function (self, t, dt)
 					local damage_type = "forced"
 					local damage_direction = Vector3(0, 0, 1)
 
-					DamageUtils.add_damage_network(kill_unit, kill_unit, damage_amount, hit_zone_name, damage_type, damage_direction, "debug")
+					DamageUtils.add_damage_network(kill_unit, kill_unit, damage_amount, hit_zone_name, damage_type, nil, damage_direction, "debug")
 				end
 			else
 				local blackboard = BLACKBOARDS[kill_unit]
@@ -360,7 +360,7 @@ AIDebugger.closest_unit_in_aim_dir = function (self, in_free_flight)
 	local best_unit = nil
 	local units = {}
 	local entity_manager = Managers.state.entity
-	local ai_units = (self.is_server and entity_manager:get_entities("AISimpleExtension")) or entity_manager:get_entities("AiHuskBaseExtension")
+	local ai_units = Managers.state.entity:system("ai_system").unit_extension_data
 	local player_bots = Managers.state.entity:get_entities("PlayerBotBase")
 
 	table.merge(units, ai_units)

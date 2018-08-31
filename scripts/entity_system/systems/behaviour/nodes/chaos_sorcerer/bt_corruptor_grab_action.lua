@@ -51,6 +51,9 @@ BTCorruptorGrabAction.leave = function (self, unit, blackboard, t, reason, destr
 	blackboard.target_dodged = nil
 	blackboard.projectile_target_position = nil
 
+	blackboard.locomotion_extension:use_lerp_rotation(false)
+	LocomotionUtils.set_animation_driven_movement(unit, false)
+
 	if reason == "aborted" and blackboard.stagger and blackboard.play_grabbed_loop then
 		blackboard.corruptor_grab_stagger = true
 	end

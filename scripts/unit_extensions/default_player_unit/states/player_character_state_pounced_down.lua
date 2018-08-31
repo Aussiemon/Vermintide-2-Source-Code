@@ -10,6 +10,7 @@ local liberate_duration = 1.2
 
 PlayerCharacterStatePouncedDown.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
 	CharacterStateHelper.stop_weapon_actions(self.inventory_extension, "pounced")
+	CharacterStateHelper.stop_career_abilities(self.career_extension, "pounced")
 
 	local first_person_extension = self.first_person_extension
 	local status_extension = self.status_extension

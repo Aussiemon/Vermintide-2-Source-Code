@@ -1,232 +1,154 @@
-local window_default_settings = UISettings.game_start_windows
-local window_background = window_default_settings.background
-local window_frame = window_default_settings.frame
-local window_size = window_default_settings.size
-local window_spacing = window_default_settings.spacing
+local console_menu_scenegraphs = UISettings.console_menu_scenegraphs
 local scenegraph_definition = {
-	root = {
-		is_root = true,
-		size = {
-			1920,
-			1080
-		},
-		position = {
-			0,
-			0,
-			UILayer.default
-		}
-	},
-	root_fit = {
-		scale = "fit",
-		size = {
-			1920,
-			1080
-		},
-		position = {
-			0,
-			0,
-			UILayer.default
-		}
-	},
-	window = {
-		vertical_alignment = "center",
-		parent = "root_fit",
-		horizontal_alignment = "left",
-		size = window_size,
-		position = {
-			50,
-			30,
-			1
-		}
-	},
-	item_grid = {
-		vertical_alignment = "bottom",
-		parent = "page_button_divider",
-		horizontal_alignment = "center",
-		size = {
-			window_size[1],
-			window_size[2] - 340
-		},
-		position = {
-			0,
-			-5,
-			-10
-		}
-	},
-	item_grid_divider = {
-		vertical_alignment = "top",
-		parent = "item_grid",
-		horizontal_alignment = "center",
-		size = {
-			window_size[1],
-			0
-		},
-		position = {
-			0,
-			15,
-			7
-		}
-	},
-	item_grid_header = {
-		vertical_alignment = "center",
-		parent = "item_grid_divider",
-		horizontal_alignment = "center",
-		size = {
-			window_size[1] - 20,
-			40
-		},
-		position = {
-			0,
-			8,
-			1
-		}
-	},
-	item_grid_header_detail = {
-		vertical_alignment = "bottom",
-		parent = "item_grid_header",
-		horizontal_alignment = "center",
-		size = {
-			264,
-			32
-		},
-		position = {
-			0,
-			-30,
-			0
-		}
-	},
+	screen = console_menu_scenegraphs.screen,
+	area = console_menu_scenegraphs.area,
+	area_left = console_menu_scenegraphs.area_left,
+	area_right = console_menu_scenegraphs.area_right,
+	area_divider = console_menu_scenegraphs.area_divider,
 	item_tooltip = {
 		vertical_alignment = "top",
-		parent = "window",
+		parent = "area_right",
 		horizontal_alignment = "left",
 		size = {
 			400,
 			0
 		},
 		position = {
-			window_size[1] + 30,
+			-60,
+			-90,
+			0
+		}
+	},
+	item_tooltip_compare = {
+		vertical_alignment = "top",
+		parent = "item_tooltip",
+		horizontal_alignment = "left",
+		size = {
+			400,
+			0
+		},
+		position = {
+			440,
 			0,
 			0
 		}
 	},
-	page_buttons_frame = {
-		vertical_alignment = "bottom",
-		parent = "window",
+	item_grid = {
+		vertical_alignment = "top",
+		parent = "area_left",
 		horizontal_alignment = "center",
 		size = {
-			window_size[1],
-			48
+			520,
+			690
 		},
 		position = {
-			0,
-			0,
-			20
-		}
-	},
-	page_button_next = {
-		vertical_alignment = "bottom",
-		parent = "window",
-		horizontal_alignment = "right",
-		size = {
-			window_size[1] * 0.4,
-			42
-		},
-		position = {
-			0,
-			0,
+			-9,
+			-100,
 			1
-		}
-	},
-	page_button_edge_right = {
-		vertical_alignment = "center",
-		parent = "page_button_next",
-		horizontal_alignment = "left",
-		size = {
-			0,
-			42
-		},
-		position = {
-			0,
-			0,
-			10
-		}
-	},
-	page_button_previous = {
-		vertical_alignment = "bottom",
-		parent = "window",
-		horizontal_alignment = "left",
-		size = {
-			window_size[1] * 0.4,
-			42
-		},
-		position = {
-			0,
-			0,
-			1
-		}
-	},
-	page_button_edge_left = {
-		vertical_alignment = "center",
-		parent = "page_button_previous",
-		horizontal_alignment = "right",
-		size = {
-			0,
-			42
-		},
-		position = {
-			0,
-			0,
-			10
-		}
-	},
-	page_button_divider = {
-		vertical_alignment = "bottom",
-		parent = "window",
-		horizontal_alignment = "center",
-		size = {
-			window_size[1],
-			0
-		},
-		position = {
-			0,
-			42,
-			14
 		}
 	},
 	page_text_area = {
 		vertical_alignment = "bottom",
-		parent = "window",
+		parent = "item_grid",
 		horizontal_alignment = "center",
 		size = {
-			window_size[1] * 0.2,
-			42
+			334,
+			60
 		},
 		position = {
 			0,
-			0,
+			10,
 			3
 		}
-	}
-}
-local item_grid_header_style = {
-	use_shadow = true,
-	upper_case = true,
-	localize = false,
-	font_size = 28,
-	horizontal_alignment = "center",
-	vertical_alignment = "center",
-	dynamic_font_size = true,
-	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("font_title", 255),
-	offset = {
-		0,
-		0,
-		2
+	},
+	input_icon_previous = {
+		vertical_alignment = "center",
+		parent = "page_text_area",
+		horizontal_alignment = "center",
+		size = {
+			0,
+			0
+		},
+		position = {
+			-60,
+			0,
+			1
+		}
+	},
+	input_icon_next = {
+		vertical_alignment = "center",
+		parent = "page_text_area",
+		horizontal_alignment = "center",
+		size = {
+			0,
+			0
+		},
+		position = {
+			60,
+			0,
+			1
+		}
+	},
+	input_arrow_next = {
+		vertical_alignment = "center",
+		parent = "input_icon_next",
+		horizontal_alignment = "center",
+		size = {
+			19,
+			27
+		},
+		position = {
+			40,
+			0,
+			1
+		}
+	},
+	input_arrow_previous = {
+		vertical_alignment = "center",
+		parent = "input_icon_previous",
+		horizontal_alignment = "center",
+		size = {
+			19,
+			27
+		},
+		position = {
+			-40,
+			0,
+			1
+		}
+	},
+	page_button_next = {
+		vertical_alignment = "center",
+		parent = "input_icon_next",
+		horizontal_alignment = "center",
+		size = {
+			0,
+			0
+		},
+		position = {
+			20,
+			0,
+			1
+		}
+	},
+	page_button_previous = {
+		vertical_alignment = "center",
+		parent = "input_icon_previous",
+		horizontal_alignment = "center",
+		size = {
+			0,
+			0
+		},
+		position = {
+			-20,
+			0,
+			1
+		}
 	}
 }
 local page_number_left_text_style = {
 	word_wrap = true,
-	font_size = 20,
+	font_size = 26,
 	localize = false,
 	use_shadow = true,
 	horizontal_alignment = "right",
@@ -234,14 +156,14 @@ local page_number_left_text_style = {
 	font_type = "hell_shark",
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
-		-(window_size[1] * 0.1 + 5),
+		-172,
 		4,
 		2
 	}
 }
 local page_number_right_text_style = {
 	word_wrap = true,
-	font_size = 20,
+	font_size = 26,
 	localize = false,
 	use_shadow = true,
 	horizontal_alignment = "left",
@@ -249,14 +171,14 @@ local page_number_right_text_style = {
 	font_type = "hell_shark",
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
-		window_size[1] * 0.1 + 4,
+		171,
 		4,
 		2
 	}
 }
 local page_number_center_text_style = {
 	word_wrap = true,
-	font_size = 20,
+	font_size = 26,
 	localize = false,
 	use_shadow = true,
 	horizontal_alignment = "center",
@@ -269,195 +191,6 @@ local page_number_center_text_style = {
 		2
 	}
 }
-
-local function create_window_divider(scenegraph_id, size)
-	local widget = {
-		element = {
-			passes = {
-				{
-					texture_id = "bottom_edge",
-					style_id = "bottom_edge",
-					pass_type = "tiled_texture"
-				},
-				{
-					texture_id = "edge_holder_left",
-					style_id = "edge_holder_left",
-					pass_type = "texture"
-				},
-				{
-					texture_id = "edge_holder_right",
-					style_id = "edge_holder_right",
-					pass_type = "texture"
-				}
-			}
-		},
-		content = {
-			edge_holder_right = "menu_frame_09_divider_right",
-			edge_holder_left = "menu_frame_09_divider_left",
-			bottom_edge = "menu_frame_09_divider"
-		},
-		style = {
-			bottom_edge = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					5,
-					0,
-					6
-				},
-				size = {
-					size[1] - 10,
-					5
-				},
-				texture_tiling_size = {
-					size[1] - 10,
-					5
-				}
-			},
-			edge_holder_left = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					3,
-					-6,
-					10
-				},
-				size = {
-					9,
-					17
-				}
-			},
-			edge_holder_right = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					size[1] - 12,
-					-6,
-					10
-				},
-				size = {
-					9,
-					17
-				}
-			}
-		},
-		scenegraph_id = scenegraph_id,
-		offset = {
-			0,
-			0,
-			0
-		}
-	}
-
-	return widget
-end
-
-local function create_vertical_window_divider(scenegraph_id, size)
-	local widget = {
-		element = {
-			passes = {
-				{
-					texture_id = "edge",
-					style_id = "edge",
-					pass_type = "tiled_texture"
-				},
-				{
-					texture_id = "edge_holder_top",
-					style_id = "edge_holder_top",
-					pass_type = "texture"
-				},
-				{
-					texture_id = "edge_holder_bottom",
-					style_id = "edge_holder_bottom",
-					pass_type = "texture"
-				}
-			}
-		},
-		content = {
-			edge = "menu_frame_09_divider_vertical",
-			edge_holder_top = "menu_frame_09_divider_top",
-			edge_holder_bottom = "menu_frame_09_divider_bottom"
-		},
-		style = {
-			edge = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					0,
-					6,
-					6
-				},
-				size = {
-					5,
-					size[2] - 9
-				},
-				texture_tiling_size = {
-					5,
-					size[2] - 9
-				}
-			},
-			edge_holder_top = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					-6,
-					size[2] - 7,
-					10
-				},
-				size = {
-					17,
-					9
-				}
-			},
-			edge_holder_bottom = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					-6,
-					3,
-					10
-				},
-				size = {
-					17,
-					9
-				}
-			}
-		},
-		scenegraph_id = scenegraph_id,
-		offset = {
-			0,
-			0,
-			0
-		}
-	}
-
-	return widget
-end
-
 local category_settings = {
 	{
 		wield = true,
@@ -513,48 +246,92 @@ local category_settings = {
 	}
 }
 local widgets = {
-	item_grid = UIWidgets.create_grid("item_grid", scenegraph_definition.item_grid.size, 4, 5, 16, 10, false),
-	item_grid_header = UIWidgets.create_simple_text(Localize("hero_view_inventory"), "item_grid_header", nil, nil, item_grid_header_style),
-	item_grid_header_detail = UIWidgets.create_simple_texture("divider_01_top", "item_grid_header_detail"),
-	page_button_next = UIWidgets.create_simple_window_button("page_button_next", scenegraph_definition.page_button_next.size, Localize("menu_next"), 16),
-	page_button_previous = UIWidgets.create_simple_window_button("page_button_previous", scenegraph_definition.page_button_previous.size, Localize("menu_previous"), 16),
-	page_button_edge_left = create_vertical_window_divider("page_button_edge_left", scenegraph_definition.page_button_edge_left.size),
-	page_button_edge_right = create_vertical_window_divider("page_button_edge_right", scenegraph_definition.page_button_edge_right.size),
+	item_grid = UIWidgets.create_grid("item_grid", scenegraph_definition.item_grid.size, 6, 5, 16, 10, false),
+	page_button_next = UIWidgets.create_arrow_button("page_button_next", math.pi),
+	page_button_previous = UIWidgets.create_arrow_button("page_button_previous"),
+	input_icon_next = UIWidgets.create_simple_texture("xbone_button_icon_a", "input_icon_next"),
+	input_icon_previous = UIWidgets.create_simple_texture("xbone_button_icon_a", "input_icon_previous"),
+	input_arrow_next = UIWidgets.create_simple_uv_texture("settings_arrow_normal", {
+		{
+			1,
+			0
+		},
+		{
+			0,
+			1
+		}
+	}, "input_arrow_next"),
+	input_arrow_previous = UIWidgets.create_simple_texture("settings_arrow_normal", "input_arrow_previous"),
 	page_text_center = UIWidgets.create_simple_text("/", "page_text_area", nil, nil, page_number_center_text_style),
 	page_text_left = UIWidgets.create_simple_text("0", "page_text_area", nil, nil, page_number_left_text_style),
 	page_text_right = UIWidgets.create_simple_text("0", "page_text_area", nil, nil, page_number_right_text_style),
-	page_text_area = UIWidgets.create_simple_rect("page_text_area", {
-		255,
-		0,
-		0,
-		0
-	}),
-	page_buttons_frame = UIWidgets.create_frame("page_buttons_frame", scenegraph_definition.page_buttons_frame.size, window_frame, 10),
-	item_tooltip = UIWidgets.create_simple_item_presentation("item_tooltip")
+	page_text_area = UIWidgets.create_simple_texture("tab_menu_bg_03", "page_text_area"),
+	item_tooltip = UIWidgets.create_simple_item_presentation("item_tooltip", UISettings.console_tooltip_pass_definitions),
+	item_tooltip_compare = UIWidgets.create_simple_item_presentation("item_tooltip_compare", UISettings.console_tooltip_pass_definitions)
 }
 local generic_input_actions = {
 	default = {
 		{
-			input_action = "d_vertical",
+			input_action = "d_pad",
 			priority = 1,
 			description_text = "input_description_navigate",
 			ignore_keybinding = true
 		},
 		{
-			input_action = "l1_r1",
+			input_action = "right_stick",
 			priority = 2,
-			description_text = "input_description_change_tab",
+			description_text = "input_description_rotate_hero",
 			ignore_keybinding = true
 		},
 		{
+			input_action = "special_1",
+			priority = 4,
+			description_text = "input_description_toggle_compare"
+		},
+		{
 			input_action = "confirm",
-			priority = 3,
-			description_text = "input_description_select"
+			priority = 5,
+			description_text = "input_description_equip"
 		},
 		{
 			input_action = "back",
+			priority = 6,
+			description_text = "input_description_back"
+		}
+	},
+	details = {
+		{
+			input_action = "d_pad",
+			priority = 1,
+			description_text = "input_description_navigate",
+			ignore_keybinding = true
+		},
+		{
+			input_action = "right_stick",
+			priority = 2,
+			description_text = "input_description_scroll_details",
+			ignore_keybinding = true
+		},
+		{
+			input_action = "right_thumb",
+			priority = 3,
+			description_text = "input_description_toggle_hero_details",
+			ignore_keybinding = true
+		},
+		{
+			input_action = "special_1",
 			priority = 4,
-			description_text = "input_description_close"
+			description_text = "input_description_toggle_compare"
+		},
+		{
+			input_action = "confirm",
+			priority = 5,
+			description_text = "input_description_equip"
+		},
+		{
+			input_action = "back",
+			priority = 6,
+			description_text = "input_description_back"
 		}
 	}
 }
@@ -570,6 +347,7 @@ local animation_definitions = {
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = anim_progress
+				ui_scenegraph.area_left.local_position[1] = scenegraph_definition.area_left.position[1] + math.floor(-100 * (1 - anim_progress))
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return

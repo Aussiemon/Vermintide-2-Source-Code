@@ -44,8 +44,6 @@ AICommanderSystem.on_remove_extension = function (self, unit, extension_name)
 end
 
 AICommanderSystem.update = function (self, context, t)
-	local lol = math.random()
-
 	if t < self.last_update_t + self.update_cooldown then
 		return
 	end

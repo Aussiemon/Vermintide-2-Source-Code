@@ -1153,6 +1153,12 @@ Colors.color_definitions = {
 		50,
 		100
 	},
+	console_menu_rect = {
+		ALPHA,
+		0,
+		0,
+		0
+	},
 	healthkit_first_aid_kit_01 = {
 		ALPHA,
 		53,

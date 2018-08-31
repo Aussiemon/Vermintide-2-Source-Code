@@ -190,7 +190,7 @@ weapon_template.actions = {
 				}
 			},
 			condition_func = function (unit, input_extension, ammo_extension)
-				if ammo_extension and ammo_extension:total_remaining_ammo() <= 0 then
+				if ammo_extension and (ammo_extension:total_remaining_ammo() <= 0 or ammo_extension:is_reloading()) then
 					return false
 				end
 

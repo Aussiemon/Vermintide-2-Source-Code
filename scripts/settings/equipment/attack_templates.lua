@@ -258,7 +258,7 @@ AttackTemplates = {
 		damage_type = "light_blunt_smiter"
 	},
 	blunt_smiter = {
-		stagger_value = 1,
+		stagger_value = 2,
 		stagger_angle = "down",
 		sound_type = "medium",
 		damage_type = "blunt_smiter"
@@ -1070,6 +1070,18 @@ AttackTemplates = {
 			1
 		}
 	},
+	loot_rat_explosion = {
+		sound_type = "heavy",
+		stagger_value = 6,
+		damage_type = "burn",
+		damage = {
+			1,
+			1,
+			1,
+			1,
+			1
+		}
+	},
 	chaos_magic_missile = {
 		sound_type = "heavy",
 		stagger_value = 6,
@@ -1081,6 +1093,11 @@ AttackTemplates = {
 			1,
 			1
 		}
+	},
+	corpse_explosion_default = {
+		stagger_type = "ai_stagger",
+		sound_type = "medium",
+		damage_type = "buff"
 	},
 	grenade = {
 		stagger_value = 2,
@@ -1101,6 +1118,16 @@ AttackTemplates = {
 		dot_template_name = "burning_1W_dot",
 		sound_type = "light",
 		damage_type = "drakegun_shot"
+	},
+	elven_magic = {
+		stagger_value = 2,
+		sound_type = "medium",
+		damage_type = "elven_magic"
+	},
+	military_finish = {
+		stagger_value = 2,
+		sound_type = "medium",
+		damage_type = "military_finish"
 	},
 	spike_trap = {
 		stagger_angle = "stab",

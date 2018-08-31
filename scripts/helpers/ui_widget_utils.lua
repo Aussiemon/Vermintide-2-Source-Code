@@ -178,7 +178,76 @@ UIWidgetUtils.animate_default_checkbox_button = function (widget, dt)
 	local input_alpha = 255 * input_progress
 	style[clicked_rect_name].color[1] = 100 * input_progress
 	local hover_glow_name = "hover_glow"
-	local hover_alpha = 255 * combined_progress
+	local hover_alpha = 255 * hover_progress
+	style[hover_glow_name].color[1] = hover_alpha
+	local text_disabled_name = "text_disabled"
+	local text_disabled_style = style[text_disabled_name]
+	local disabled_default_text_color = text_disabled_style.default_text_color
+	local disabled_text_color = text_disabled_style.text_color
+	disabled_text_color[2] = disabled_default_text_color[2] * 0.4
+	disabled_text_color[3] = disabled_default_text_color[3] * 0.4
+	disabled_text_color[4] = disabled_default_text_color[4] * 0.4
+	local text_name = "text"
+	local text_style = style[text_name]
+	local text_color = text_style.text_color
+	local default_text_color = text_style.default_text_color
+	local select_text_color = text_style.select_text_color
+
+	Colors.lerp_color_tables(default_text_color, select_text_color, combined_progress, text_color)
+
+	hotspot.hover_progress = hover_progress
+	hotspot.input_progress = input_progress
+	hotspot.selection_progress = selection_progress
+end
+
+UIWidgetUtils.animate_default_checkbox_button_console = function (widget, dt)
+	local content = widget.content
+	local style = widget.style
+	local speed = 8
+	local input_speed = 20
+	local hotspot_name = "button_hotspot"
+	local hotspot = content[hotspot_name]
+	local is_hover = not hotspot.disable_button and hotspot.is_hover
+	local is_selected = not hotspot.disable_button and hotspot.is_selected
+	local input_pressed = hotspot.is_clicked and hotspot.is_clicked == 0
+	local input_progress = hotspot.input_progress or 0
+	local hover_progress = hotspot.hover_progress or 0
+	local selection_progress = hotspot.selection_progress or 0
+
+	if input_pressed then
+		input_progress = math.min(input_progress + dt * input_speed, 1)
+	else
+		input_progress = math.max(input_progress - dt * input_speed, 0)
+	end
+
+	local input_easing_out_progress = math.easeOutCubic(input_progress)
+	local input_easing_in_progress = math.easeInCubic(input_progress)
+
+	if is_hover then
+		hover_progress = math.min(hover_progress + dt * speed, 1)
+	else
+		hover_progress = math.max(hover_progress - dt * speed, 0)
+	end
+
+	local hover_easing_out_progress = math.easeOutCubic(hover_progress)
+	local hover_easing_in_progress = math.easeInCubic(hover_progress)
+
+	if is_selected then
+		selection_progress = math.min(selection_progress + dt * speed, 1)
+	else
+		selection_progress = math.max(selection_progress - dt * speed, 0)
+	end
+
+	local select_easing_out_progress = math.easeOutCubic(selection_progress)
+	local select_easing_in_progress = math.easeInCubic(selection_progress)
+	local combined_progress = math.max(hover_progress, selection_progress)
+	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
+	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
+	local clicked_rect_name = "clicked_rect"
+	local input_alpha = 255 * input_progress
+	style[clicked_rect_name].color[1] = 100 * input_progress
+	local hover_glow_name = "hover_glow"
+	local hover_alpha = 255 * hover_progress
 	style[hover_glow_name].color[1] = hover_alpha
 	local text_disabled_name = "text_disabled"
 	local text_disabled_style = style[text_disabled_name]
@@ -348,6 +417,113 @@ UIWidgetUtils.animate_option_button = function (widget, dt)
 	background_icon_color[2] = background_icon_default_color[2] + combined_progress * (255 - background_icon_default_color[2])
 	background_icon_color[3] = background_icon_default_color[3] + combined_progress * (255 - background_icon_default_color[3])
 	background_icon_color[4] = background_icon_default_color[4] + combined_progress * (255 - background_icon_default_color[4])
+	hotspot.hover_progress = hover_progress
+	hotspot.input_progress = input_progress
+	hotspot.selection_progress = selection_progress
+end
+
+UIWidgetUtils.animate_start_game_console_setting_button = function (widget, dt)
+	local content = widget.content
+	local style = widget.style
+	local is_selected = content.is_selected
+	local selected_progress = content.selected_progress or 0
+	local speed = 15
+
+	if is_selected then
+		selected_progress = math.min(selected_progress + speed * dt, 1)
+	else
+		selected_progress = math.max(selected_progress - speed * dt, 0)
+	end
+
+	local alpha = 255 * selected_progress
+	style.bg_effect.color[1] = alpha
+	style.icon_texture_glow.color[1] = alpha
+	content.selected_progress = selected_progress
+end
+
+UIWidgetUtils.animate_arrow_button = function (widget, dt)
+	local content = widget.content
+	local style = widget.style
+	local hotspot = content.hotspot or content.button_hotspot
+	local has_focus = content.has_focus
+	local is_hover = hotspot.is_hover or has_focus
+	local is_selected = hotspot.is_selected
+	local input_pressed = not is_selected and hotspot.is_clicked and hotspot.is_clicked == 0
+	local hover_progress = hotspot.hover_progress or 0
+	local selection_progress = hotspot.selection_progress or 0
+	local speed = 8
+
+	if is_hover then
+		hover_progress = math.min(hover_progress + dt * speed, 1)
+	else
+		hover_progress = math.max(hover_progress - dt * speed, 0)
+	end
+
+	if is_selected then
+		selection_progress = math.min(selection_progress + dt * speed, 1)
+	else
+		selection_progress = math.max(selection_progress - dt * speed, 0)
+	end
+
+	local combined_progress = math.max(hover_progress, selection_progress)
+	style.texture_hover_id.color[1] = 255 * combined_progress
+	hotspot.hover_progress = hover_progress
+	hotspot.selection_progress = selection_progress
+end
+
+UIWidgetUtils.animate_play_button = function (widget, dt)
+	local content = widget.content
+	local style = widget.style
+	local hotspot = content.button_hotspot
+	local is_disabled = hotspot.disable_button
+	local is_hover = hotspot.is_hover
+	local is_selected = hotspot.is_selected
+	local input_pressed = not is_selected and hotspot.is_clicked and hotspot.is_clicked == 0
+	local input_progress = hotspot.input_progress or 0
+	local hover_progress = hotspot.hover_progress or 0
+	local selection_progress = hotspot.selection_progress or 0
+	local speed = 8
+	local input_speed = 20
+
+	if input_pressed then
+		input_progress = math.min(input_progress + dt * input_speed, 1)
+	else
+		input_progress = math.max(input_progress - dt * input_speed, 0)
+	end
+
+	local input_easing_out_progress = math.easeOutCubic(input_progress)
+	local input_easing_in_progress = math.easeInCubic(input_progress)
+
+	if is_hover then
+		hover_progress = math.min(hover_progress + dt * speed, 1)
+	else
+		hover_progress = math.max(hover_progress - dt * speed, 0)
+	end
+
+	local hover_easing_out_progress = math.easeOutCubic(hover_progress)
+	local hover_easing_in_progress = math.easeInCubic(hover_progress)
+
+	if is_selected then
+		selection_progress = math.min(selection_progress + dt * speed, 1)
+	else
+		selection_progress = math.max(selection_progress - dt * speed, 0)
+	end
+
+	local select_easing_out_progress = math.easeOutCubic(selection_progress)
+	local select_easing_in_progress = math.easeInCubic(selection_progress)
+	local combined_progress = math.max(hover_progress, selection_progress)
+	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
+	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
+	local hover_alpha = 255 * hover_progress
+	style.text.text_color[1] = 255 - hover_alpha
+	style.text_hover.text_color[1] = hover_alpha
+	style.texture_icon_id.color[1] = 255 - hover_alpha
+	style.texture_icon_hover_id.color[1] = hover_alpha
+	style.texture_text_bg_effect_id.color[1] = hover_alpha
+	local active_progress = (is_disabled and 0) or 1
+	local active_alpha_progress = 0.5 + math.sin(Application.time_since_launch() * 5) * 0.5
+	local active_alpha = math.max(hover_alpha, active_progress * (active_alpha_progress * 200 + 55))
+	style.texture_hover_id.color[1] = active_alpha
 	hotspot.hover_progress = hover_progress
 	hotspot.input_progress = input_progress
 	hotspot.selection_progress = selection_progress

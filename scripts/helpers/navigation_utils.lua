@@ -82,23 +82,117 @@ end
 
 NavigationUtils.get_closest_index_on_spline = function (spline_curve, position)
 	local splines = spline_curve:splines()
-	local smallest_distance = math.huge
+	local smallest_distance_sq = math.huge
 	local point = nil
 	local best_index = 1
+	local Vector3_distance_squared = Vector3.distance_squared
+	local num_splines = #splines
 
-	for index, spline in ipairs(splines) do
+	for i = 1, num_splines, 1 do
+		local spline = splines[i]
 		local points = spline.points
 		local point_position = points[2]:unbox()
-		local distance = Vector3.distance(position, point_position)
+		local distance_sq = Vector3_distance_squared(position, point_position)
 
-		if distance < smallest_distance then
-			smallest_distance = distance
+		if distance_sq < smallest_distance_sq then
+			smallest_distance_sq = distance_sq
 			point = point_position
-			best_index = index
+			best_index = i
 		end
 	end
 
 	return best_index, point
+end
+
+NavigationUtils.get_position_on_interpolated_spline = function (spline_curve, position)
+	local Vector3_distance_squared = Vector3.distance_squared
+	local splines = spline_curve:splines()
+	local num_splines = #splines
+	local best_distance_sq = math.huge
+	local best_spline_index, best_subdivision_index = nil
+
+	for j = 1, num_splines, 1 do
+		local spline = splines[j]
+		local subdivisions = spline.subdivisions
+		local num_subdivisions = #subdivisions
+
+		for k = 1, num_subdivisions, 1 do
+			local subdivision = subdivisions[k]
+			local subdivision_position = subdivision.points[2]:unbox()
+			local distance_sq = Vector3_distance_squared(position, subdivision_position)
+
+			if distance_sq < best_distance_sq then
+				best_distance_sq = distance_sq
+				best_spline_index = j
+				best_subdivision_index = k
+			end
+		end
+	end
+
+	local closest_subdivisions = splines[best_spline_index].subdivisions
+	local closest_subdivision = closest_subdivisions[best_subdivision_index]
+	local closest_subdivision_position = closest_subdivision.points[2]:unbox()
+	local previous_subdivision_index, previous_spline_index, previous_subdivision, previous_subdivision_position, next_subdivision_position, final_spline_index, final_subdivision_index, t = nil
+
+	if best_subdivision_index > 1 then
+		previous_subdivision_index = best_subdivision_index - 1
+		previous_subdivision = closest_subdivisions[previous_subdivision_index]
+		previous_subdivision_position = previous_subdivision.points[2]:unbox()
+	elseif best_spline_index > 1 then
+		previous_spline_index = best_spline_index - 1
+		local previous_spline = splines[previous_spline_index]
+		local previous_spline_subdivisions = previous_spline.subdivisions
+		previous_subdivision_index = #previous_spline_subdivisions
+		previous_subdivision = previous_spline_subdivisions[previous_subdivision_index]
+		previous_subdivision_position = previous_subdivision.points[2]:unbox()
+	end
+
+	if best_subdivision_index < #closest_subdivisions then
+		local next_subdivision = closest_subdivisions[best_subdivision_index + 1]
+		next_subdivision_position = next_subdivision.points[2]:unbox()
+	elseif best_spline_index < num_splines then
+		local next_spline = splines[best_spline_index + 1]
+		local next_spline_subdivisions = next_spline.subdivisions
+		local next_subdivision = next_spline_subdivisions[1]
+		next_subdivision_position = next_subdivision.points[2]:unbox()
+	else
+		local spline_points = splines[num_splines].points
+		next_subdivision_position = spline_points[#spline_points]:unbox()
+	end
+
+	if previous_subdivision_position then
+		local previous_to_position = position - previous_subdivision_position
+		local previous_to_closest = Vector3.normalize(closest_subdivision_position - previous_subdivision_position)
+		local previous_subdivision_length = previous_subdivision.length
+		local dot = Vector3.dot(previous_to_position, previous_to_closest)
+
+		if dot >= 0 and dot <= previous_subdivision_length then
+			t = dot / previous_subdivision_length
+		elseif next_subdivision_position == nil then
+			t = math.clamp(dot, 0, 1)
+		end
+	end
+
+	if t then
+		final_spline_index = previous_spline_index or best_spline_index
+		final_subdivision_index = previous_subdivision_index
+	else
+		local closest_to_position = position - closest_subdivision_position
+		local closest_to_next = Vector3.normalize(next_subdivision_position - closest_subdivision_position)
+		local next_subdivision_length = closest_subdivision.length
+		local dot = Vector3.dot(closest_to_position, closest_to_next)
+
+		if dot >= 0 and dot <= next_subdivision_length then
+			t = dot / next_subdivision_length
+		else
+			t = math.clamp(dot, 0, 1)
+		end
+
+		final_spline_index = best_spline_index
+		final_subdivision_index = best_subdivision_index
+	end
+
+	return final_spline_index, final_subdivision_index, t
 end
 
 return

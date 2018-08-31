@@ -2,8 +2,8 @@ local SIZE_X = 1920
 local SIZE_Y = 1080
 local RETAINED_MODE_ENABLED = true
 local scenegraph_definition = {
-	screen = {
-		scale = "fit",
+	root = {
+		scale = "hud_scale_fit",
 		position = {
 			0,
 			0,
@@ -16,7 +16,7 @@ local scenegraph_definition = {
 	},
 	pivot = {
 		vertical_alignment = "bottom",
-		parent = "screen",
+		parent = "root",
 		horizontal_alignment = "left",
 		position = {
 			150,
@@ -43,6 +43,12 @@ local scenegraph_definition = {
 		}
 	}
 }
+
+if PLATFORM ~= "win32" then
+	scenegraph_definition.root.scale = "hud_fit"
+	scenegraph_definition.root.is_root = false
+end
+
 local MAX_NUMBER_OF_BUFFS = 5
 local BUFF_SIZE = {
 	66,

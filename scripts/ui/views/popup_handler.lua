@@ -45,6 +45,20 @@ local scenegraph_definition = {
 			610
 		}
 	},
+	title_box = {
+		vertical_alignment = "top",
+		parent = "popup_root",
+		horizontal_alignment = "center",
+		size = {
+			700,
+			100
+		},
+		position = {
+			0,
+			-20,
+			40
+		}
+	},
 	popup_password_box = {
 		vertical_alignment = "center",
 		parent = "popup_root",
@@ -424,32 +438,36 @@ local function create_default_window(scenegraph_id, size)
 			}
 		},
 		title_text = {
-			word_wrap = true,
+			word_wrap = false,
+			scenegraph_id = "title_box",
 			font_size = 50,
 			pixel_perfect = true,
 			horizontal_alignment = "center",
-			vertical_alignment = "top",
+			vertical_alignment = "center",
 			dynamic_font = true,
+			dynamic_font_size = true,
 			font_type = "hell_shark_header",
 			text_color = Colors.get_color_table_with_alpha("font_title", 255),
 			offset = {
 				0,
-				-40,
+				0,
 				6
 			}
 		},
 		title_text_shadow = {
-			word_wrap = true,
+			word_wrap = false,
+			scenegraph_id = "title_box",
 			font_size = 50,
 			pixel_perfect = true,
 			horizontal_alignment = "center",
-			vertical_alignment = "top",
+			vertical_alignment = "center",
 			dynamic_font = true,
+			dynamic_font_size = true,
 			font_type = "hell_shark_header",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			offset = {
 				2,
-				-42,
+				-2,
 				5
 			}
 		},
@@ -1096,31 +1114,35 @@ local function create_password_window(scenegraph_id, size)
 		},
 		title_text = {
 			word_wrap = true,
+			scenegraph_id = "title_box",
 			font_size = 50,
 			pixel_perfect = true,
 			horizontal_alignment = "center",
-			vertical_alignment = "top",
+			vertical_alignment = "center",
 			dynamic_font = true,
+			dynamic_font_size = true,
 			font_type = "hell_shark_header",
 			text_color = Colors.get_color_table_with_alpha("font_title", 255),
 			offset = {
 				0,
-				-40,
+				0,
 				6
 			}
 		},
 		title_text_shadow = {
 			word_wrap = true,
+			scenegraph_id = "title_box",
 			font_size = 50,
 			pixel_perfect = true,
 			horizontal_alignment = "center",
-			vertical_alignment = "top",
+			vertical_alignment = "center",
 			dynamic_font = true,
+			dynamic_font_size = true,
 			font_type = "hell_shark_header",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			offset = {
 				2,
-				-42,
+				-2,
 				5
 			}
 		},

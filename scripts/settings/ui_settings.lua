@@ -1,21 +1,28 @@
 require("scripts/ui/ui_layer")
+require("scripts/utils/colors")
 
 UISettings = {
-	start_drag_threshold = 0.15,
+	tooltip_wait_duration = 0.1,
 	double_click_threshold = 0.1,
+	start_drag_threshold = 0.15,
 	tooltip_fade_in_speed = 4,
 	crafting_progress_time = 0.5,
+	bots_level_display_text = "BOT",
 	max_craft_material_presentation_amount = 999,
-	chest_upgrade_score_topics_min_duration = 0.5,
-	chest_upgrade_score_topics_max_duration = 7,
+	console_menu_camera_move_duration = 0.5,
 	max_inventory_items = 1000,
 	hero_panel_height = 120,
+	chest_upgrade_score_topics_min_duration = 0.5,
+	chest_upgrade_score_topics_max_duration = 7,
+	wait_for_mip_streaming_items = false,
 	use_subtitles = true,
 	max_fatigue_shields = 20,
 	crafting_animation_out_time = 0.3,
-	tooltip_wait_duration = 0.1,
 	crafting_animation_in_time = 0.3,
+	wait_for_mip_streaming_character = true,
 	crafting_animation_wait_time = 0.5,
+	console_menu_rect_color = Colors.get_color_table_with_alpha("console_menu_rect", 200),
+	console_start_game_menu_rect_color = Colors.get_color_table_with_alpha("console_menu_rect", 125),
 	game_start_windows = {
 		frame = "menu_frame_09",
 		background = "menu_frame_bg_01",
@@ -24,6 +31,20 @@ UISettings = {
 		size = {
 			520,
 			820
+		},
+		large_window_size = {
+			1680,
+			900
+		}
+	},
+	game_start_windows_console = {
+		frame = "menu_frame_09",
+		background = "menu_frame_bg_01",
+		spacing = 25,
+		large_window_frame = "menu_frame_08",
+		size = {
+			520,
+			740
 		},
 		large_window_size = {
 			1680,
@@ -46,6 +67,8 @@ UISettings = {
 	},
 	ui_scale = Application.user_setting("ui_scale") or 100,
 	use_hud_screen_fit = Application.user_setting("use_hud_screen_fit") or false,
+	use_gamepad_menu_layout = Application.user_setting("use_gamepad_menu_layout") or false,
+	use_gamepad_hud_layout = Application.user_setting("use_gamepad_hud_layout") or false,
 	interaction = {
 		bar = {
 			fade_in = 0.1,
@@ -135,9 +158,9 @@ UISettings = {
 		summary_dice_fade_in_time = 0.2,
 		element_presentation_time = 0.7,
 		element_presentation_experience_count_start_time = 0.2,
-		bar_progress_min_time = 1,
+		bar_progress_min_time = 2,
 		start_delay_time = 2,
-		bar_progress_max_time = 4,
+		bar_progress_max_time = 3,
 		bar_progress_experience_time_multiplier = 0.006,
 		speed_up_experience_time_multiplier = 2.5
 	},
@@ -669,6 +692,14 @@ UISettings = {
 		crafting_material_jewellery = "icon_crafting_jewellery_part_small",
 		crafting_material_dust_2 = "icon_crafting_dust_02_small"
 	},
+	crafting_material_order_by_item_key = {
+		crafting_material_scrap = 5,
+		crafting_material_dust_1 = 6,
+		crafting_material_weapon = 4,
+		crafting_material_dust_3 = 2,
+		crafting_material_jewellery = 3,
+		crafting_material_dust_2 = 1
+	},
 	loot_containers = {
 		epic = "loot_container_icon_02",
 		default = "loot_container_icon_01",
@@ -731,11 +762,11 @@ UISettings = {
 			parent = "screen",
 			horizontal_alignment = "left",
 			size = {
-				1560,
+				1820,
 				840
 			},
 			position = {
-				180,
+				50,
 				-120,
 				1
 			}
@@ -759,7 +790,7 @@ UISettings = {
 			parent = "area_divider",
 			horizontal_alignment = "left",
 			size = {
-				930,
+				1190,
 				840
 			},
 			position = {
@@ -781,8 +812,166 @@ UISettings = {
 				0,
 				1
 			}
+		},
+		craft_bg_root = {
+			vertical_alignment = "top",
+			parent = "area_right",
+			horizontal_alignment = "left",
+			size = {
+				512,
+				512
+			},
+			position = {
+				40,
+				-220,
+				1
+			}
+		},
+		craft_button = {
+			vertical_alignment = "center",
+			parent = "craft_bg_root",
+			horizontal_alignment = "center",
+			size = {
+				0,
+				0
+			},
+			position = {
+				0,
+				-294,
+				1
+			}
 		}
-	}
+	},
+	hero_selection_camera_position_by_character = {
+		witch_hunter = {
+			z = 0.9,
+			x = 0,
+			y = 0.8
+		},
+		bright_wizard = {
+			z = 0.7,
+			x = 0,
+			y = 0.4
+		},
+		dwarf_ranger = {
+			z = 0.4,
+			x = 0,
+			y = 0
+		},
+		wood_elf = {
+			z = 0.7,
+			x = 0,
+			y = 0.4
+		},
+		empire_soldier = {
+			z = 0.7,
+			x = 0,
+			y = 0.5
+		},
+		empire_soldier_tutorial = {
+			z = 0.7,
+			x = 0,
+			y = 0.5
+		}
+	},
+	hero_hat_camera_position_by_character = {
+		witch_hunter = {
+			z = 0.93,
+			x = 0,
+			y = -2.1
+		},
+		bright_wizard = {
+			z = 0.7,
+			x = 0,
+			y = -2.2
+		},
+		dwarf_ranger = {
+			z = 0.17,
+			x = 0,
+			y = -2
+		},
+		wood_elf = {
+			z = 0.7,
+			x = 0,
+			y = -2
+		},
+		empire_soldier = {
+			z = 0.88,
+			x = 0,
+			y = -2.1
+		},
+		empire_soldier_tutorial = {
+			z = 0.88,
+			x = 0,
+			y = -2.1
+		}
+	},
+	hero_skin_camera_position_by_character = {
+		witch_hunter = {
+			z = 0.4,
+			x = 0,
+			y = -1.2
+		},
+		bright_wizard = {
+			z = 0.2,
+			x = 0,
+			y = -1.4
+		},
+		dwarf_ranger = {
+			z = -0.2,
+			x = 0,
+			y = -1.5
+		},
+		wood_elf = {
+			z = 0.25,
+			x = 0,
+			y = -1.4
+		},
+		empire_soldier = {
+			z = 0.25,
+			x = 0,
+			y = -1.2
+		},
+		empire_soldier_tutorial = {
+			z = 0.25,
+			x = 0,
+			y = -1.2
+		}
+	},
+	console_tooltip_pass_definitions = {
+		"console_item_titles",
+		"skin_applied",
+		"deed_mission",
+		"deed_difficulty",
+		"mutators",
+		"deed_rewards",
+		"ammunition",
+		"fatigue",
+		"item_power_level",
+		"properties",
+		"traits",
+		"weapon_skin_title",
+		"item_information_text",
+		"loot_chest_difficulty",
+		"loot_chest_power_range",
+		"unwieldable",
+		"console_keywords",
+		"console_item_description",
+		"light_attack_stats",
+		"heavy_attack_stats",
+		"detailed_stats_light",
+		"detailed_stats_heavy",
+		"detailed_stats_push",
+		"detailed_stats_ranged_light",
+		"detailed_stats_ranged_heavy",
+		"console_item_background"
+	},
+	hero_fullscreen_menu_on_enter = function ()
+		print("hero_fullscreen_menu_on_enter")
+	end,
+	hero_fullscreen_menu_on_exit = function ()
+		print("hero_fullscreen_menu_on_exit")
+	end
 }
 local button_mapping = {
 	win32 = {

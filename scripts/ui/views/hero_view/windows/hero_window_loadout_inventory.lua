@@ -15,33 +15,43 @@ local function item_sort_func(item_1, item_2)
 	local item_key_2 = item_data_2.key
 	local item_1_power_level = item_1.power_level or 0
 	local item_2_power_level = item_2.power_level or 0
+	local item_1_backend_id = item_1.backend_id
+	local item_2_backend_id = item_2.backend_id
+	local item_1_favorited = ItemHelper.is_favorite_backend_id(item_1_backend_id)
+	local item_2_favorited = ItemHelper.is_favorite_backend_id(item_2_backend_id)
 
-	if item_1_power_level == item_2_power_level then
-		local item_1_rarity = item_1.rarity or item_data_1.rarity
-		local item_2_rarity = item_2.rarity or item_data_2.rarity
-		local item_rarity_order = UISettings.item_rarity_order
-		local item_1_rarity_order = item_rarity_order[item_1_rarity]
-		local item_2_rarity_order = item_rarity_order[item_2_rarity]
+	if item_1_favorited == item_2_favorited then
+		if item_1_power_level == item_2_power_level then
+			local item_1_rarity = item_1.rarity or item_data_1.rarity
+			local item_2_rarity = item_2.rarity or item_data_2.rarity
+			local item_rarity_order = UISettings.item_rarity_order
+			local item_1_rarity_order = item_rarity_order[item_1_rarity]
+			local item_2_rarity_order = item_rarity_order[item_2_rarity]
 
-		if item_1_rarity_order == item_2_rarity_order then
-			local item_type_1 = Localize(item_data_1.item_type)
-			local item_type_2 = Localize(item_data_2.item_type)
+			if item_1_rarity_order == item_2_rarity_order then
+				local item_type_1 = Localize(item_data_1.item_type)
+				local item_type_2 = Localize(item_data_2.item_type)
 
-			if item_type_1 == item_type_2 then
-				local _, item_1_display_name = UIUtils.get_ui_information_from_item(item_1)
-				local _, item_2_display_name = UIUtils.get_ui_information_from_item(item_2)
-				local item_name_1 = Localize(item_1_display_name)
-				local item_name_2 = Localize(item_2_display_name)
+				if item_type_1 == item_type_2 then
+					local _, item_1_display_name = UIUtils.get_ui_information_from_item(item_1)
+					local _, item_2_display_name = UIUtils.get_ui_information_from_item(item_2)
+					local item_name_1 = Localize(item_1_display_name)
+					local item_name_2 = Localize(item_2_display_name)
 
-				return item_name_1 < item_name_2
+					return item_name_1 < item_name_2
+				else
+					return item_type_1 < item_type_2
+				end
 			else
-				return item_type_1 < item_type_2
+				return item_1_rarity_order < item_2_rarity_order
 			end
 		else
-			return item_1_rarity_order < item_2_rarity_order
+			return item_2_power_level < item_1_power_level
 		end
+	elseif item_1_favorited then
+		return true
 	else
-		return item_2_power_level < item_1_power_level
+		return false
 	end
 end
 
@@ -102,11 +112,7 @@ HeroWindowLoadoutInventory.create_ui_elements = function (self, params, offset)
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
-	local input_service = Managers.input:get_service("hero_view")
-	local gui_layer = UILayer.default + 30
-	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 4, gui_layer, generic_input_actions.default)
 
-	self._menu_input_description:set_input_description(nil)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
@@ -316,6 +322,11 @@ HeroWindowLoadoutInventory._handle_input = function (self, dt, t)
 	local item_grid = self._item_grid
 	local allow_single_press = false
 	local item, is_equipped = item_grid:is_item_pressed(allow_single_press)
+	local input_service = parent:window_input_service()
+
+	if item_grid:handle_favorite_marking(input_service) then
+		self:_play_sound("play_gui_inventory_item_hover")
+	end
 
 	if item_grid:is_item_hovered() then
 		self:_play_sound("play_gui_inventory_item_hover")
@@ -449,10 +460,6 @@ HeroWindowLoadoutInventory.draw = function (self, dt)
 	end
 
 	UIRenderer.end_pass(ui_top_renderer)
-
-	if gamepad_active then
-		self._menu_input_description:draw(ui_top_renderer, dt)
-	end
 end
 
 HeroWindowLoadoutInventory._play_sound = function (self, event)

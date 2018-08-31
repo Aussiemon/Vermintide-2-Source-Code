@@ -155,6 +155,24 @@ BotBehaviors.default = {
 		}
 	},
 	{
+		"BTSelector",
+		{
+			"BTBotInventorySwitchAction",
+			name = "switch_grimoire",
+			condition = "is_slot_not_wielded",
+			condition_args = {
+				"slot_potion"
+			},
+			action_data = ACTIONS_DEFAULT.switch_potion
+		},
+		{
+			"BTBotDropPickupAction",
+			name = "do_drop_grimoire"
+		},
+		condition = "should_drop_grimoire",
+		name = "drop_grimoire"
+	},
+	{
 		"BTBotInteractAction",
 		condition = "can_loot",
 		name = "loot"

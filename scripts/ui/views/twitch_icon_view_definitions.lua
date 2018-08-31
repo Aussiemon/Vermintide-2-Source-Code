@@ -11,9 +11,21 @@ local scenegraph_definition = {
 			1080
 		}
 	},
+	screen = {
+		scale = "fit",
+		position = {
+			0,
+			0,
+			UILayer.transition
+		},
+		size = {
+			1920,
+			1080
+		}
+	},
 	twitch_icon = {
 		vertical_alignment = "bottom",
-		parent = "root",
+		parent = "screen",
 		horizontal_alignment = "right",
 		size = {
 			80,

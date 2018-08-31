@@ -19,7 +19,7 @@ BTSuicideRunAction.enter = function (self, unit, blackboard, t)
 	local suicide_run = blackboard.suicide_run
 	suicide_run.action = action
 	suicide_run.update_move_timer = 0
-	suicide_run.target = suicide_run.target or blackboard.previous_attacker
+	suicide_run.target = suicide_run.target or blackboard.previous_attacker or blackboard.target_unit
 	blackboard.target_unit = suicide_run.target
 	local params = {
 		unit = unit,
@@ -146,6 +146,7 @@ BTSuicideRunAction.StateMove.on_enter = function (self, params)
 	self.parent:play_unit_audio(unit, blackboard, sound_name)
 	Managers.state.network:anim_event(unit, "move_fwd_run")
 
+	blackboard.move_state = "moving"
 	local breed = blackboard.breed
 	local run_speed = breed.run_speed
 	local ai_navigation_extension = blackboard.navigation_extension

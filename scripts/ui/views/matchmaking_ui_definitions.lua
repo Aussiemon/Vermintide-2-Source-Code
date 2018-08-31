@@ -736,6 +736,7 @@ matchmaking_status_text_style.vertical_alignment = "center"
 matchmaking_status_text_style.horizontal_alignment = "center"
 matchmaking_status_text_style.font_size = 32
 matchmaking_status_text_style.dynamic_font_size = true
+matchmaking_status_text_style.word_wrap = false
 matchmaking_status_text_style.offset[2] = 2
 local cancel_input_text_style = table.clone(default_text_style)
 cancel_input_text_style.vertical_alignment = "center"
@@ -837,7 +838,9 @@ local widget_detail_definitions = {
 			1
 		}
 	}, "timer_fg"),
-	timer_glow = UIWidgets.create_simple_texture("timer_detail", "timer_glow"),
+	timer_glow = UIWidgets.create_simple_texture("timer_detail", "timer_glow")
+}
+local cancel_input_widgets = {
 	cancel_text_input = UIWidgets.create_simple_text(Localize("matchmaking_surfix_cancel"), "cancel_text_input", nil, nil, cancel_input_text_style),
 	cancel_text_suffix = UIWidgets.create_simple_text(Localize("matchmaking_surfix_cancel"), "cancel_text_suffix", nil, nil, cancel_text_style),
 	cancel_text_prefix = UIWidgets.create_simple_text(Localize("matchmaking_surfix_cancel"), "cancel_text_prefix", nil, nil, cancel_text_style),
@@ -1223,6 +1226,7 @@ local debug_widget_definitions = {
 
 return {
 	widget_definitions = widget_definitions,
+	cancel_input_widgets = cancel_input_widgets,
 	widget_detail_definitions = widget_detail_definitions,
 	debug_widget_definitions = debug_widget_definitions,
 	scenegraph_definition = scenegraph_definition

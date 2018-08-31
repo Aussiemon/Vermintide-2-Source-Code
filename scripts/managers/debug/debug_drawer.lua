@@ -99,10 +99,10 @@ DebugDrawer.box = function (self, pose, extents, color)
 	LineObject.add_box(self._line_object, color, pose, extents)
 end
 
-DebugDrawer.cone = function (self, from, to, radius, color, segements, bars)
+DebugDrawer.cone = function (self, from, to, radius, color, segments, bars)
 	color = color or Color(255, 255, 255)
 
-	LineObject.add_cone(self._line_object, color, from, to, radius, segements, bars)
+	LineObject.add_cone(self._line_object, color, from, to, radius, segments, bars)
 end
 
 DebugDrawer.circle = function (self, center, radius, normal, color, segments)

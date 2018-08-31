@@ -150,7 +150,7 @@ local Gui_bitmap_3d_uv = Gui.bitmap_3d_uv
 local Gui_update_bitmap_3d = Gui.update_bitmap_3d
 local Gui_bitmap_3d = Gui.bitmap_3d
 
-UIRenderer.script_draw_bitmap_3d = function (gui, render_settings, material, tm, gui_layer, gui_size, color, masked, retained_id)
+UIRenderer.script_draw_bitmap_3d = function (gui, render_settings, material, tm, gui_layer, gui_size, color, optional_uvs, masked, retained_id)
 	local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(material)
 	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
 	color = color and Color(color[1] * alpha_multiplier, color[2], color[3], color[4])
@@ -164,8 +164,18 @@ UIRenderer.script_draw_bitmap_3d = function (gui, render_settings, material, tm,
 			material_name = texture_settings.material_name
 		end
 
-		local uv00 = texture_settings.uv00
-		local uv11 = texture_settings.uv11
+		local uv00, uv11 = nil
+
+		if optional_uvs then
+			local new_uvs = get_relative_uvs(texture_settings.uv00, texture_settings.uv11, optional_uvs)
+			local new_uvs1 = new_uvs[1]
+			local new_uvs2 = new_uvs[2]
+			uv00 = Vector2(new_uvs1[1], new_uvs1[2])
+			uv11 = Vector2(new_uvs2[1], new_uvs2[2])
+		else
+			uv11 = texture_settings.uv11
+			uv00 = texture_settings.uv00
+		end
 
 		if retained_id then
 			return Gui_update_bitmap_3d_uv(gui, retained_id, material_name, Vector2(uv00[1], uv00[2]), Vector2(uv11[1], uv11[2]), tm, Vector3.zero(), gui_layer, gui_size, color)
@@ -183,6 +193,10 @@ UIRenderer.create = function (world, ...)
 	local gui = World.create_screen_gui(world, "immediate", ...)
 	local gui_retained = World.create_screen_gui(world, ...)
 
+	return UIRenderer.create_ui_renderer(world, gui, gui_retained)
+end
+
+UIRenderer.create_ui_renderer = function (world, gui, gui_retained)
 	UPDATE_RESOLUTION_LOOKUP()
 
 	return ProtectMetaTable(MakeTableStrict({
@@ -207,6 +221,10 @@ UIRenderer.create = function (world, ...)
 end
 
 UIRenderer.create_video_player = function (self, world, resource, set_loop)
+	if script_data.disable_video_player then
+		return
+	end
+
 	assert(not self.video_player)
 
 	self.video_player = world:create_video_player(resource, set_loop)
@@ -217,6 +235,10 @@ UIRenderer.create_video_player = function (self, world, resource, set_loop)
 end
 
 UIRenderer.destroy_video_player = function (self, world)
+	if script_data.disable_video_player then
+		return
+	end
+
 	assert(self.video_player)
 	World.destroy_video_player(world or self.world, self.video_player)
 
@@ -585,6 +607,41 @@ UIRenderer.draw_rect = function (self, lower_left_corner, size, color, retained_
 	end
 end
 
+UIRenderer.draw_triangle = function (self, lower_left_corner, size, ui_style, retained_id)
+	local render_settings = self.render_settings
+	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
+	local color = Color(ui_style.color[1] * alpha_multiplier, ui_style.color[2], ui_style.color[3], ui_style.color[4])
+	local layer = lower_left_corner[3]
+	local base_pos = Vector3(lower_left_corner[1], 0, lower_left_corner[2])
+	local pos1, pos2, pos3 = nil
+
+	if ui_style.triangle_alignment == "top_left" then
+		pos1 = base_pos
+		pos2 = base_pos + Vector3(0, 0, size[2])
+		pos3 = base_pos + Vector3(size[1], 0, size[2])
+	elseif ui_style.triangle_alignment == "top_right" then
+		pos1 = base_pos + Vector3(0, 0, size[2])
+		pos2 = base_pos + Vector3(size[1], 0, size[2])
+		pos3 = base_pos + Vector3(size[1], 0, 0)
+	elseif ui_style.triangle_alignment == "bottom_left" then
+		pos1 = base_pos
+		pos2 = base_pos + Vector3(size[1], 0, 0)
+		pos3 = base_pos + Vector3(0, 0, size[2])
+	else
+		pos1 = base_pos
+		pos2 = base_pos + Vector3(size[1], 0, 0)
+		pos3 = base_pos + Vector3(size[1], 0, size[2])
+	end
+
+	if retained_id == true then
+		return Gui.triangle(self.gui_retained, UIScaleVectorToResolution(pos1, nil, true), UIScaleVectorToResolution(pos2, nil, true), UIScaleVectorToResolution(pos3, nil, true), layer, color)
+	elseif retained_id then
+		return Gui.update_triangle(self.gui_retained, retained_id, UIScaleVectorToResolution(pos1, nil, true), UIScaleVectorToResolution(pos2, nil, true), UIScaleVectorToResolution(pos3, nil, true), layer, color)
+	else
+		return Gui.triangle(self.gui, UIScaleVectorToResolution(pos1, nil, true), UIScaleVectorToResolution(pos2, nil, true), UIScaleVectorToResolution(pos3, nil, true), layer, color)
+	end
+end
+
 UIRenderer.draw_rect_rotated = function (self, size, position, angle, pivot, color)
 	size = UIScaleVectorToResolution(size)
 	local scaled_pivot = UIScaleVectorToResolution(pivot)
@@ -733,7 +790,7 @@ UIRenderer.draw_texture_uv = function (self, material, lower_left_corner, size, 
 	end
 end
 
-UIRenderer.draw_gradient_mask_texture = function (self, material, lower_left_corner, size, color, gradient_threshold, retained_id)
+UIRenderer.draw_gradient_mask_texture = function (self, material, lower_left_corner, size, color, masked, gradient_threshold, retained_id)
 	if script_data.ui_debug_draw_texture and Keyboard.button(Keyboard.button_index("v")) > 0 then
 		debug_draw_texture(self, lower_left_corner, size, material)
 	end
@@ -742,7 +799,6 @@ UIRenderer.draw_gradient_mask_texture = function (self, material, lower_left_cor
 	local gui_retained = self.gui_retained
 	local gui_position = UIScaleVectorToResolution(lower_left_corner)
 	local gui_size = UIScaleVectorToResolution(size)
-	local masked = true
 	local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(material)
 	local gui_material = Gui.material((retained_id and gui_retained) or gui, (texture_settings and texture_settings.material_name) or material)
 
@@ -1029,7 +1085,7 @@ UIRenderer.draw_centered_uv_texture_amount = function (self, material, lower_lef
 	end
 end
 
-UIRenderer.draw_texture_rotated = function (self, material, size, position, angle, pivot, color, masked, retained_id)
+UIRenderer.draw_texture_rotated = function (self, material, size, position, angle, pivot, color, optional_uvs, masked, retained_id)
 	size = UIScaleVectorToResolution(size)
 	local scaled_pivot = UIScaleVectorToResolution(pivot)
 	local tm = Rotation2D(Vector3.zero(), angle, Vector2(scaled_pivot[1], scaled_pivot[2]))
@@ -1054,11 +1110,11 @@ UIRenderer.draw_texture_rotated = function (self, material, size, position, angl
 	local gui_retained = self.gui_retained
 
 	if retained_id == true then
-		return UIRenderer.script_draw_bitmap_3d(gui_retained, render_settings, material, tm, position[3], size, color, masked, nil)
+		return UIRenderer.script_draw_bitmap_3d(gui_retained, render_settings, material, tm, position[3], size, color, optional_uvs, masked, nil)
 	elseif retained_id then
-		return UIRenderer.script_draw_bitmap_3d(gui_retained, render_settings, material, tm, position[3], size, color, masked, retained_id)
+		return UIRenderer.script_draw_bitmap_3d(gui_retained, render_settings, material, tm, position[3], size, color, optional_uvs, masked, retained_id)
 	else
-		return UIRenderer.script_draw_bitmap_3d(gui, render_settings, material, tm, position[3], size, color, masked)
+		return UIRenderer.script_draw_bitmap_3d(gui, render_settings, material, tm, position[3], size, color, optional_uvs, masked)
 	end
 end
 
@@ -1166,9 +1222,22 @@ UIRenderer.text_size = function (self, text, font_material, font_size, ...)
 	return width, height, min
 end
 
-UIRenderer.draw_video = function (self, material_name, position, size, color)
+UIRenderer.text_alignment_size = function (self, text, font_material, font_size, ...)
+	local min, max, caret = Gui.text_extents(self.gui, text, font_material, font_size, ...)
+	local inv_scaling = RESOLUTION_LOOKUP.inv_scale
+	local width = (max.x + 0) * inv_scaling
+	local height = (max.y - min.y) * inv_scaling
+
+	return width, height, min
+end
+
+UIRenderer.draw_video = function (self, material_name, position, size, color, optional_video_player)
+	if script_data.disable_video_player then
+		return true
+	end
+
 	local gui = self.gui
-	local video_player = self.video_player
+	local video_player = optional_video_player or self.video_player
 	local pixel_snap = true
 	local render_settings = self.render_settings
 	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
@@ -1181,8 +1250,12 @@ UIRenderer.draw_video = function (self, material_name, position, size, color)
 	return is_complete
 end
 
-UIRenderer.draw_splash_video = function (self, material_name, position, size, color)
-	local video_player = self.video_player
+UIRenderer.draw_splash_video = function (self, material_name, position, size, color, optional_video_player)
+	if script_data.disable_video_player then
+		return true
+	end
+
+	local video_player = optional_video_player or self.video_player
 
 	if VideoPlayer.current_frame(video_player) == VideoPlayer.number_of_frames(video_player) then
 		return true
@@ -1209,7 +1282,7 @@ UIRenderer.draw_splash_video = function (self, material_name, position, size, co
 	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
 	color = color and Color(color[1] * alpha_multiplier, color[2], color[3], color[4])
 
-	Gui.video(gui, material_name, video_player, Vector2(w * 0.5 - width * 0.5, h * 0.5 - height * 0.5, position[3]), Vector2(width, height), color)
+	Gui.video(gui, material_name, video_player, Vector3(w * 0.5 - width * 0.5, h * 0.5 - height * 0.5, position[3]), Vector2(width, height), color)
 end
 
 local circleVerts = {}

@@ -73,7 +73,15 @@ LoadingView.texture_resource_loaded = function (self, level_key, act_progression
 	local loading_ui_package_name = level_settings.loading_ui_package_name
 	local game_mode = level_settings.game_mode or "adventure"
 	local bg_material = "materials/ui/loading_screens/" .. (loading_ui_package_name or self.default_loading_screen)
-	self.ui_renderer = UIRenderer.create(self.world, "material", "materials/ui/loading_screens/" .. self.default_loading_screen, "material", bg_material, "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_hud_atlas_textures", "material", "materials/ui/ui_1080p_chat")
+
+	if PLATFORM == "xb1" then
+		local gui = World.create_screen_gui(self.world, "immediate", "material", "materials/ui/loading_screens/" .. self.default_loading_screen, "material", bg_material, "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_hud_atlas_textures", "material", "materials/ui/ui_1080p_chat")
+		local gui_retained = World.create_screen_gui(self.world, "material", "materials/ui/loading_screens/" .. self.default_loading_screen, "material", bg_material, "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_hud_atlas_textures", "material", "materials/ui/ui_1080p_chat")
+		self.ui_renderer = UIRenderer.create_ui_renderer(self.world, gui, gui_retained)
+	else
+		self.ui_renderer = UIRenderer.create(self.world, "material", "materials/ui/loading_screens/" .. self.default_loading_screen, "material", bg_material, "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_hud_atlas_textures", "material", "materials/ui/ui_1080p_chat")
+	end
+
 	self.bg_widget.content.bg_texture = "loading_screen"
 
 	if level_key ~= "inn_level" and level_settings.level_type ~= "survival" then

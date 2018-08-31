@@ -165,7 +165,7 @@ local scenegraph_definition = {
 			1
 		},
 		size = {
-			500,
+			400,
 			0
 		}
 	},
@@ -726,12 +726,13 @@ local difficulty_text_style = {
 	}
 }
 local player_career_name_style = {
-	font_size = 36,
+	use_shadow = true,
 	upper_case = true,
 	localize = false,
-	use_shadow = true,
+	font_size = 36,
 	horizontal_alignment = "left",
 	vertical_alignment = "bottom",
+	dynamic_font_size = true,
 	font_type = "hell_shark_header",
 	text_color = Colors.get_table("font_title"),
 	offset = {
@@ -1082,6 +1083,14 @@ local function player_widget_definition(index)
 					end
 				},
 				{
+					style_id = "ping_text",
+					pass_type = "text",
+					text_id = "ping_text",
+					content_check_function = function (content, style)
+						return content.show_ping
+					end
+				},
+				{
 					pass_type = "texture",
 					style_id = "chat_button_background",
 					texture_id = "chat_button_texture"
@@ -1273,30 +1282,31 @@ local function player_widget_definition(index)
 			voice_button_texture = "tab_menu_icon_01",
 			name = "n/a",
 			show_chat_button = false,
-			voice_tooltip_text_unmute = "input_description_unmute_voice",
+			ping_texture = "ping_icon_03",
+			edge_holder_left = "menu_frame_09_divider_left",
 			hover_texture = "playerlist_hover",
 			edge_holder_right = "menu_frame_09_divider_right",
 			bottom_edge_sements_top = "menu_frame_09_divider_top",
 			host_texture = "host_icon",
-			edge_holder_left = "menu_frame_09_divider_left",
-			ping_texture = "ping_icon_03",
+			hero = "wh_captain",
+			voice_tooltip_text_unmute = "input_description_unmute_voice",
 			profile_tooltip_text = "input_description_show_profile",
+			kick_tooltip_text = "input_description_vote_kick_player",
 			profile_button_texture = "tab_menu_icon_05",
-			disabled_texture = "tab_menu_icon_03",
 			show_kick_button = false,
-			show_profile_button = false,
 			chat_tooltip_text_unmute = "input_description_unmute_chat",
+			show_profile_button = false,
 			show_ping = false,
 			voice_tooltip_text_mute = "input_description_mute_voice",
 			chat_button_texture = "tab_menu_icon_02",
 			hero_name_divider = "divider_01_top",
-			hero = "wh_captain",
+			ping_text = "n/a",
 			chat_tooltip_text_mute = "input_description_mute_chat",
 			bottom_edge_sements_bottom = "menu_frame_09_divider_bottom",
 			bottom_edge_sements = "menu_frame_09_divider_vertical",
 			bottom_edge = "menu_frame_09_divider",
 			kick_button_texture = "tab_menu_icon_04",
-			kick_tooltip_text = "input_description_vote_kick_player",
+			disabled_texture = "tab_menu_icon_03",
 			show_voice_button = false,
 			frame = frame_settings.texture,
 			button_hotspot = {
@@ -1681,6 +1691,26 @@ local function player_widget_definition(index)
 					size[2] - 50,
 					3
 				}
+			},
+			ping_text = {
+				horizontal_alignment = "center",
+				font_size = 20,
+				vertical_alignment = "center",
+				dynamic_font_size = true,
+				font_type = "arial",
+				size = {
+					60,
+					50
+				},
+				offset = {
+					size[1] - 110,
+					size[2] - 52,
+					3
+				},
+				text_color = Colors.get_table("font_default"),
+				high_ping_color = Colors.get_table("crimson"),
+				medium_ping_color = Colors.get_table("gold"),
+				low_ping_color = Colors.get_table("lime_green")
 			},
 			hover_texture = {
 				offset = {

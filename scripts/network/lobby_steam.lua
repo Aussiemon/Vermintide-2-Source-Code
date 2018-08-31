@@ -5,6 +5,7 @@ require("scripts/network/lobby_finder")
 require("scripts/network/lobby_members")
 
 LobbyInternal = LobbyInternal or {}
+LobbyInternal.TYPE = "steam"
 LobbyInternal.privacy_map = {
 	[LobbyPrivacy.PRIVATE] = Network.STEAM_LOBBY_PRIVATE,
 	[LobbyPrivacy.FRIENDS] = Network.STEAM_LOBBY_FRIENDS_ONLY,
@@ -61,16 +62,33 @@ LobbyInternal.init_client = function (network_options)
 	Network.set_explicit_connections()
 
 	LobbyInternal.client = Network.init_steam_client(network_options.config_file_name)
+	LobbyInternal.steam_ping_thread = SteamPingThread(LobbyInternal.client)
 
 	GameSettingsDevelopment.set_ignored_rpc_logs()
 end
 
 LobbyInternal.shutdown_client = function ()
+	LobbyInternal.steam_ping_thread:destroy()
+
+	LobbyInternal.steam_ping_thread = nil
+
 	Network.shutdown_steam_client(LobbyInternal.client)
 
 	LobbyInternal.client = nil
 
 	GameServerInternal.forget_server_browser()
+end
+
+LobbyInternal.ping = function (peer_id)
+	return LobbyInternal.steam_ping_thread:ping(peer_id)
+end
+
+LobbyInternal.add_ping_peer = function (peer_id)
+	LobbyInternal.steam_ping_thread:add_peer(peer_id)
+end
+
+LobbyInternal.remove_ping_peer = function (peer_id)
+	LobbyInternal.steam_ping_thread:remove_peer(peer_id)
 end
 
 LobbyInternal.get_lobby = function (lobby_browser, index)

@@ -9,6 +9,7 @@ DoorExtension.init = function (self, extension_init_context, unit, extension_ini
 	self.world = world
 	self.is_server = Managers.player.is_server
 	self.ignore_umbra = not World.umbra_available(world)
+	self.is_umbra_gate = Unit.get_data(unit, "umbra_gate")
 	local door_state = Unit.get_data(unit, "door_state")
 	self.current_state = (door_state == 0 and "open_forward") or (door_state == 1 and "closed") or (door_state == 2 and "open_backward")
 	self.animation_flow_events = {
@@ -109,7 +110,7 @@ DoorExtension.set_door_state = function (self, new_state)
 
 	local closed = new_state == "closed"
 
-	if not closed and not self.ignore_umbra then
+	if not closed and not self.ignore_umbra and self.is_umbra_gate then
 		World.umbra_set_gate_closed(self.world, unit, closed)
 	end
 
@@ -155,7 +156,7 @@ DoorExtension.update = function (self, unit, input, dt, context, t)
 		self.animation_stop_time = nil
 		local closed = self.current_state == "closed"
 
-		if closed and not self.ignore_umbra then
+		if closed and not self.ignore_umbra and self.is_umbra_gate then
 			World.umbra_set_gate_closed(self.world, unit, closed)
 		end
 	end

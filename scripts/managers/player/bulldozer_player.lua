@@ -12,7 +12,7 @@ BulldozerPlayer.init = function (self, network_manager, input_source, viewport_n
 	self.player_unit = nil
 	local peer_id = Network.peer_id()
 	self.peer_id = peer_id
-	self._debug_name = "Local #" .. peer_id:sub(1, 3)
+	self._debug_name = "Local #" .. peer_id:sub(-3, -1)
 	self._local_player_id = local_player_id
 	self._unique_id = unique_id
 	self.is_server = is_server
@@ -56,6 +56,12 @@ BulldozerPlayer.despawn = function (self)
 	end
 
 	Managers.state.camera:set_additional_fov_multiplier(1)
+
+	local first_person_extension = ScriptUnit.has_extension(self.player_unit, "first_person_system")
+
+	if first_person_extension then
+		first_person_extension:play_hud_sound_event("Stop_ability_loop_turn_off")
+	end
 
 	local player_unit = self.player_unit
 
@@ -363,7 +369,7 @@ BulldozerPlayer.create_game_object = function (self)
 end
 
 BulldozerPlayer.create_sync_data = function (self)
-	assert(self._player_sync_data == nil)
+	fassert(self._player_sync_data == nil)
 
 	self._player_sync_data = PlayerSyncData:new(self, self.network_manager)
 end
@@ -376,6 +382,12 @@ BulldozerPlayer.cb_game_session_disconnect = function (self)
 	end
 
 	self._player_sync_data = nil
+end
+
+BulldozerPlayer.game_object_destroyed = function (self)
+	printf("destroyed player game object with id %s callback", self.game_object_id)
+
+	self.game_object_id = nil
 end
 
 BulldozerPlayer.network_id = function (self)
@@ -448,7 +460,7 @@ BulldozerPlayer.name = function (self)
 			return self._cached_name
 		end
 
-		local name = Managers.state.network:lobby():user_name(self:network_id()) or "Remote #" .. tostring(self.peer_id:sub(1, 3))
+		local name = Managers.state.network:lobby():user_name(self:network_id()) or "Remote #" .. tostring(self.peer_id:sub(-3, -1))
 		self._cached_name = name
 
 		return name

@@ -30,7 +30,27 @@ end
 
 BackendInterfaceItemPlayfab._refresh_items = function (self)
 	local backend_mirror = self._backend_mirror
-	self._items = backend_mirror:get_all_inventory_items()
+	local items = backend_mirror:get_all_inventory_items()
+	self._items = items
+	local new_backend_ids = ItemHelper.get_new_backend_ids()
+
+	if new_backend_ids then
+		for backend_id, _ in pairs(new_backend_ids) do
+			if not items[backend_id] then
+				ItemHelper.unmark_backend_id_as_new(backend_id)
+			end
+		end
+	end
+
+	local favorite_backend_ids = ItemHelper.get_favorite_backend_ids()
+
+	if favorite_backend_ids then
+		for backend_id, _ in pairs(favorite_backend_ids) do
+			if not items[backend_id] then
+				ItemHelper.unmark_backend_id_as_favorite(backend_id)
+			end
+		end
+	end
 end
 
 BackendInterfaceItemPlayfab._refresh_loadouts = function (self)

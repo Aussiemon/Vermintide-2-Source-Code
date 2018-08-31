@@ -8,7 +8,7 @@ end
 
 ActionCareerCancel.finish = function (self, reason)
 	ActionCareerCancel.super.finish(self, reason)
-	self.inventory_extension:wield_previous_weapon()
+	self.inventory_extension:wield_previous_slot()
 end
 
 return

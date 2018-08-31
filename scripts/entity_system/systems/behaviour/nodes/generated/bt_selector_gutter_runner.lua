@@ -188,7 +188,10 @@ BTSelector_gutter_runner.run = function (self, unit, blackboard, t, dt)
 	end
 
 	local node_approach_target = children[9]
-	local condition_result = blackboard.target_unit or blackboard.comitted_to_target
+	local wwise_world = Managers.world:wwise_world(blackboard.world)
+	local t = Managers.time:time("game")
+	local pounce_timer_is_finished = blackboard.initial_pounce_timer < t
+	local condition_result = (blackboard.target_unit or blackboard.comitted_to_target) and pounce_timer_is_finished
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_approach_target, "aborted")
@@ -206,7 +209,26 @@ BTSelector_gutter_runner.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_abide = children[10]
+	local node_skulking = children[10]
+	local condition_result = unit_alive(blackboard.target_unit)
+
+	if condition_result then
+		self:set_running_child(unit, blackboard, t, node_skulking, "aborted")
+
+		local result, evaluate = node_skulking:run(unit, blackboard, t, dt)
+
+		if result ~= "running" then
+			self:set_running_child(unit, blackboard, t, nil, result)
+		end
+
+		if result ~= "failed" then
+			return result, evaluate
+		end
+	elseif node_skulking == child_running then
+		self:set_running_child(unit, blackboard, t, nil, "failed")
+	end
+
+	local node_abide = children[11]
 	local condition_result = blackboard.secondary_target
 
 	if condition_result then
@@ -225,7 +247,7 @@ BTSelector_gutter_runner.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_idle = children[11]
+	local node_idle = children[12]
 
 	self:set_running_child(unit, blackboard, t, node_idle, "aborted")
 

@@ -27,9 +27,8 @@ SoundSectorSystem.init = function (self, context, system_name)
 
 	network_event_delegate:register(self, unpack(RPCS))
 
-	self.unit_input_data = {}
-	self.unit_extension_data = {}
-	self.entities = {}
+	self._extensions = {}
+	self._frozen_extensions = {}
 	self._sectors = {}
 	self._sector_sound_source_ids = {}
 	self._sector_sound_source_units = {}
@@ -52,15 +51,11 @@ end
 
 SoundSectorSystem.on_add_extension = function (self, world, unit, extension_name)
 	local extension = {}
-	local input = {}
 
-	ScriptUnit.set_extension(unit, "sound_sector_system", extension, input)
-
-	self.unit_input_data[unit] = input
-	self.unit_extension_data[unit] = extension
+	ScriptUnit.set_extension(unit, "sound_sector_system", extension)
 
 	if extension_name == "SoundSectorExtension" then
-		self.entities[unit] = extension
+		self._extensions[unit] = extension
 
 		if self.camera_unit then
 			local camera_position = Unit.local_position(self.camera_unit, 0)
@@ -79,7 +74,7 @@ end
 
 SoundSectorSystem.extensions_ready = function (self, world, unit, extension_name)
 	if extension_name == "SoundSectorExtension" then
-		local extension = self.unit_extension_data[unit]
+		local extension = self._extensions[unit]
 		local sector_index = extension.sector_index
 
 		if sector_index then
@@ -90,12 +85,24 @@ SoundSectorSystem.extensions_ready = function (self, world, unit, extension_name
 end
 
 SoundSectorSystem.on_remove_extension = function (self, unit, extension_name)
-	self:on_freeze_extension(unit, extension_name)
+	self._frozen_extensions[unit] = nil
+
+	self:_cleanup_extension(unit, extension_name)
 	ScriptUnit.remove_extension(unit, self.NAME)
 end
 
 SoundSectorSystem.on_freeze_extension = function (self, unit, extension_name)
-	local extension = self.entities[unit]
+	local extension = self._extensions[unit]
+
+	fassert(extension, "Unit was already frozen.")
+
+	self._frozen_extensions[unit] = extension
+
+	self:_cleanup_extension(unit, extension_name)
+end
+
+SoundSectorSystem._cleanup_extension = function (self, unit, extension_name)
+	local extension = self._extensions[unit]
 
 	if extension == nil then
 		return
@@ -107,9 +114,43 @@ SoundSectorSystem.on_freeze_extension = function (self, unit, extension_name)
 		self._sectors[unit_sector_index][unit] = nil
 	end
 
-	self.entities[unit] = nil
-	self.unit_input_data[unit] = nil
-	self.unit_extension_data[unit] = nil
+	extension.has_target = nil
+	extension.target_unit = nil
+	self._extensions[unit] = nil
+end
+
+SoundSectorSystem.freeze = function (self, unit, extension_name, reason)
+	local frozen_extensions = self._frozen_extensions
+
+	if frozen_extensions[unit] then
+		return
+	end
+
+	local extension = self._extensions[unit]
+
+	fassert(extension, "Unit to freeze didn't have unfrozen extension")
+	self:_cleanup_extension(unit, extension_name)
+
+	self._extensions[unit] = nil
+	frozen_extensions[unit] = extension
+end
+
+SoundSectorSystem.unfreeze = function (self, unit)
+	local extension = self._frozen_extensions[unit]
+	self._frozen_extensions[unit] = nil
+	self._extensions[unit] = extension
+
+	if self.camera_unit then
+		local camera_position = Unit.local_position(self.camera_unit, 0)
+		local sector_index = self:calc_unit_sector(camera_position, unit)
+
+		if sector_index then
+			local death_extension = ScriptUnit.extension(unit, "death_system")
+			self._sectors[sector_index][unit] = death_extension
+		end
+
+		extension.sector_index = sector_index
+	end
 end
 
 local MIN_NUM_OF_UNITS = 7
@@ -125,7 +166,7 @@ SoundSectorSystem.update = function (self, context, t, dt)
 
 	self:update_sectors(camera_position)
 
-	local entities = self.entities
+	local entities = self._extensions
 	local sector_sound_source_units = self._sector_sound_source_units
 	local wwise_world = self.wwise_world
 	local Vector3_zero = Vector3.zero
@@ -136,16 +177,12 @@ SoundSectorSystem.update = function (self, context, t, dt)
 	local sector = self._sectors[sector_index]
 
 	for _, sound_event_template in pairs(SoundSectorEventTemplates) do
-		local should_play, units_center, num_units, particle_value = sound_event_template.evaluate(self._sectors, sector_index, t, self.entities, camera_position)
+		local should_play, units_center, num_units, particle_value = sound_event_template.evaluate(self._sectors, sector_index, t, self._extensions, camera_position)
 		local sector_sound_id = sound_event_template.sound_event_start .. sector_index
 		local wwise_source_id = sector_sound_source_ids[sector_sound_id]
 		local is_playing_sound = wwise_source_id ~= nil
 
-		if script_data.sound_sector_system_debug and should_play then
-			self:debug_draw(units_center, sector_index, camera_position)
-		end
-
-		if should_play and WwiseWorld.has_source(wwise_world, wwise_source_id) then
+		if should_play then
 			local sound_source_unit = sector_sound_source_units[sector_index]
 
 			Unit_set_local_position(sound_source_unit, 0, units_center)
@@ -161,14 +198,10 @@ SoundSectorSystem.update = function (self, context, t, dt)
 			self:stop_sector_sound_event(sector_index, sector_sound_id, sound_event_template.sound_event_stop)
 		end
 	end
-
-	if script_data.sound_sector_system_debug then
-		self:debug_draw_hud(camera_position)
-	end
 end
 
 SoundSectorSystem.update_sectors = function (self, camera_position)
-	for unit, extension in pairs(self.entities) do
+	for unit, extension in pairs(self._extensions) do
 		local sector_index = self:calc_unit_sector(camera_position, unit)
 		local unit_sector_index = extension.sector_index
 

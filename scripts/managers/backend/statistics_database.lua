@@ -95,7 +95,7 @@ StatisticsDatabase.unregister_network_event_delegate = function (self)
 	self.network_event_delegate = nil
 end
 
-local function init_stat(stat, backend_stats)
+local function init_backend_stat(stat, backend_stats)
 	local name = stat.name
 	local database_name = stat.database_name
 
@@ -111,7 +111,17 @@ local function init_stat(stat, backend_stats)
 		end
 	else
 		for stat_name, stat_definition in pairs(stat) do
-			init_stat(stat_definition, backend_stats)
+			init_backend_stat(stat_definition, backend_stats)
+		end
+	end
+end
+
+local function init_stat(stat)
+	if stat.value then
+		stat.default_value = stat.value
+	else
+		for stat_name, stat_definition in pairs(stat) do
+			init_stat(stat_definition)
 		end
 	end
 end
@@ -123,8 +133,10 @@ StatisticsDatabase.register = function (self, id, category, backend_stats)
 	local definitions = StatisticsDefinitions[category]
 	local stats = table.clone(definitions)
 
+	init_stat(stats)
+
 	if backend_stats then
-		init_stat(stats, backend_stats)
+		init_backend_stat(stats, backend_stats)
 	end
 
 	self.statistics[id] = stats
@@ -181,9 +193,13 @@ local function sync_stat(peer_id, stat_peer_id, stat_local_player_id, path, path
 			fassert(type(stat.value) == "number", "Not supporting hot join syncing of value %q", type(stat.value))
 			fassert(path_step <= NetworkConstants.statistics_path_max_size, "statistics path is longer than max size, increase in global.networks_config")
 
-			local networkified_path = networkified_path(path)
+			local default_value = stat.default_value
 
-			RPC.rpc_sync_statistics_number(peer_id, stat_peer_id, stat_local_player_id, networkified_path, cap_sync_value(stat.value), cap_sync_value(stat.persistent_value or 0))
+			if stat.value ~= default_value or (stat.persistent_value and stat.persistent_value ~= default_value) then
+				local networkified_path = networkified_path(path)
+
+				RPC.rpc_sync_statistics_number(peer_id, stat_peer_id, stat_local_player_id, networkified_path, cap_sync_value(stat.value), cap_sync_value(stat.persistent_value or 0))
+			end
 		end
 	else
 		for stat_name, stat_definition in pairs(stat) do
@@ -202,9 +218,13 @@ local function sync_stat_to_server(network_transmit, stat_peer_id, stat_local_pl
 			fassert(type(stat.persistent_value) == "number", "Not supporting hot join syncing of value %q", type(stat.persistent_value))
 			fassert(path_step <= NetworkConstants.statistics_path_max_size, "statistics path is longer than max size, increase in global.networks_config")
 
-			local networkified_path = networkified_path(path)
+			local default_value = stat.default_value
 
-			network_transmit:send_rpc_server("rpc_sync_statistics_number", stat_peer_id, stat_local_player_id, networkified_path, cap_sync_value(stat.value), cap_sync_value(stat.persistent_value))
+			if stat.value ~= default_value or (stat.persistent_value and stat.persistent_value ~= default_value) then
+				local networkified_path = networkified_path(path)
+
+				network_transmit:send_rpc_server("rpc_sync_statistics_number", stat_peer_id, stat_local_player_id, networkified_path, cap_sync_value(stat.value), cap_sync_value(stat.persistent_value))
+			end
 		end
 	else
 		for stat_name, stat_definition in pairs(stat) do
@@ -561,10 +581,6 @@ StatisticsDatabase.rpc_sync_statistics_number = function (self, sender, peer_id,
 	else
 		fassert(persistent_value == 0, "Got non-zero persistent_value for stat %q that didn't have database_name", stat.name)
 		dbprintf("StatisticsDatabase: Synced peer %q stat %30q to %d, persistent_value not present", peer_id, stat.name, value)
-	end
-
-	if Managers.state.network.is_server then
-		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_sync_statistics_number", sender, peer_id, local_player_id, statistics_path_names, value, persistent_value)
 	end
 end
 

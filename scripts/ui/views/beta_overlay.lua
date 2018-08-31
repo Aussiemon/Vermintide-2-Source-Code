@@ -35,8 +35,8 @@ local scenegraph_definition = {
 		parent = "screen",
 		horizontal_alignment = "right",
 		position = {
-			0,
-			0,
+			-50,
+			-50,
 			0
 		},
 		size = {
@@ -46,6 +46,7 @@ local scenegraph_definition = {
 	}
 }
 BetaOverlay = class(BetaOverlay)
+local DO_RELOAD = false
 local fake_input_service = {
 	get = function ()
 		return
@@ -59,17 +60,24 @@ BetaOverlay.init = function (self)
 	local top_world = Managers.world:world("top_ingame_view")
 	self.ui_renderer = UIRenderer.create(top_world, "material", "materials/ui/ui_1080p_loading")
 	self.top_world = top_world
-	local widget_definition = UIWidgets.create_simple_texture("beta_text", "beta_tag")
 
-	self:create_ui_elements(widget_definition)
+	self:create_ui_elements()
 end
 
 BetaOverlay.create_ui_elements = function (self, widget_definition)
+	local widget_definition = UIWidgets.create_simple_texture("beta_text", "beta_tag")
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self.widget = UIWidget.init(widget_definition)
+	DO_RELOAD = false
+
+	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 end
 
 BetaOverlay.update = function (self, dt)
+	if DO_RELOAD then
+		self:create_ui_elements()
+	end
+
 	self:draw(dt)
 end
 

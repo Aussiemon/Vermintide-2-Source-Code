@@ -3,24 +3,19 @@ local weapon_template = weapon_template or {}
 weapon_template.actions = {
 	action_one = {
 		geiser_launch = {
-			damage_window_start = 0.1,
-			boost_curve_coefficient = 1,
-			is_spell = true,
-			kind = "geiser",
-			particle_radius_variable = "spawn_cylinder",
-			attack_template = "wizard_staff_geiser",
-			particle_effect = "fx/wpnfx_staff_geiser_fire",
-			anim_event = "attack_geiser_placed",
-			fire_sound_event = "player_combat_weapon_staff_geiser_fire",
-			critical_attack_template = "wizard_staff_geiser_crit",
-			fire_sound_event_parameter = "drakegun_charge_fire",
-			boost_curve_type = "ninja_curve",
 			damage_window_end = 0,
 			overcharge_type = "geiser_charged",
+			is_spell = true,
 			anim_end_event = "attack_finished",
+			kind = "geiser",
 			fire_time = 0.1,
-			dot_template_name = "burning_1W_dot",
 			damage_profile = "geiser",
+			particle_effect = "fx/wpnfx_staff_geiser_fire",
+			particle_radius_variable = "spawn_cylinder",
+			fire_sound_event = "player_combat_weapon_staff_geiser_fire",
+			anim_event = "attack_geiser_placed",
+			fire_sound_event_parameter = "drakegun_charge_fire",
+			damage_window_start = 0.1,
 			total_time = 1,
 			buff_data = {
 				{
@@ -42,40 +37,6 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			},
-			armour_modifier = {
-				attack = {
-					1,
-					0.8,
-					2.5,
-					1,
-					1.5
-				},
-				impact = {
-					1,
-					0.8,
-					2.5,
-					1,
-					1.5
-				}
-			},
-			cleave_distribution = {
-				attack = 0.2,
-				impact = 0.2
-			},
-			power_distribution = {
-				attack = 0.9,
-				impact = 0.3
-			},
-			attack_template_list = {
-				"wizard_staff_geiser",
-				"wizard_staff_geiser_fryem",
-				"wizard_staff_geiser_crit"
-			},
-			dot_template_name_list = {
-				"burning_1W_dot",
-				"burning_3W_dot",
-				"burning_3W_dot"
 			}
 		},
 		default = {

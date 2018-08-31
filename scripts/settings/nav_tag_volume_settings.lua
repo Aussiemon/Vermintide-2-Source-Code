@@ -1,6 +1,6 @@
 require("scripts/settings/volume_settings")
 
-NavTagVolumeStartLayer = 21
+NavTagVolumeStartLayer = 20
 NavTagVolumeLayers = {
 	"20",
 	"21",

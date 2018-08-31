@@ -1,3 +1,6 @@
+require("scripts/settings/act_settings")
+require("scripts/settings/area_settings")
+
 GameActs = {}
 MainGameLevels = {}
 UnlockableLevels = {}
@@ -57,6 +60,12 @@ local function validate_level_data(level_key, level_data)
 			DebugLevels[level_key] = true
 		end
 
+		local act = level_data.act
+
+		if not act then
+			return false
+		end
+
 		if only_release then
 			local unlockable = level_data.unlockable
 			local available = is_level_available_on_disk(level_data)
@@ -93,15 +102,16 @@ for level_key, level_data in pairs(LevelSettings) do
 			GameActs[act] = {}
 		end
 
-		GameActs[act][#GameActs[act] + 1] = level_key
-		MainGameLevels[#MainGameLevels + 1] = level_key
-		UnlockableLevels[#UnlockableLevels + 1] = level_key
-	end
-end
+		if not table.find(MapPresentationActs, act) then
+			MapPresentationActs[#MapPresentationActs + 1] = act
+		end
 
-for id, act_name in pairs(GameActsOrder) do
-	if not GameActs[act_name] then
-		GameActsOrder[id] = nil
+		GameActs[act][#GameActs[act] + 1] = level_key
+		UnlockableLevels[#UnlockableLevels + 1] = level_key
+
+		if level_data.main_game_level then
+			MainGameLevels[#MainGameLevels + 1] = level_key
+		end
 	end
 end
 
@@ -126,70 +136,15 @@ for _, level_key in ipairs(UnlockableLevels) do
 	end
 end
 
-LevelUnlockUtils = {
-	current_act_progression_index = function (statistics_db, player_stats_id)
-		for act_index, key in ipairs(GameActsOrder) do
-			local act_levels = GameActs[key]
-
-			for _, level_key in ipairs(act_levels) do
-				local level_stat = statistics_db:get_persistent_stat(player_stats_id, "completed_levels", level_key)
-				local level_completed = level_stat and level_stat ~= 0
-
-				if not level_completed then
-					return math.max(act_index - 1, 0)
-				end
-			end
-		end
-
-		return math.max(#GameActsOrder - 1, 0)
-	end,
-	current_act_progression_raw = function ()
-		local stats = Managers.backend:get_stats()
-
-		for act_index, key in ipairs(GameActsOrder) do
-			local act_levels = GameActs[key]
-
-			for _, level_key in ipairs(act_levels) do
-				local level_stat = tonumber(stats[level_key])
-				local level_completed = level_stat and level_stat >= 1
-
-				if not level_completed then
-					return math.max(act_index - 1, 0)
-				end
-			end
-		end
-
-		return math.max(#GameActsOrder - 1, 0)
-	end
-}
+LevelUnlockUtils = {}
 
 LevelUnlockUtils.unlocked_level_difficulty_index = function (statistics_db, player_stats_id, level_key)
-	local level_settings = LevelSettings[level_key]
-	local game_mode = level_settings.game_mode
+	local difficulties, starting_difficulty = Managers.state.difficulty:get_level_difficulties(level_key)
+	local automatic_difficulty_unlock_index = table.find(difficulties, starting_difficulty)
+	local highest_available_difficulty_index = #difficulties
+	local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, player_stats_id, level_key)
 
-	if game_mode == "adventure" and PLATFORM ~= "win32" then
-		local difficulties, starting_difficulty = Managers.state.difficulty:get_level_difficulties(level_key)
-		local automatic_difficulty_unlock_index = table.find(difficulties, starting_difficulty)
-		local highest_available_difficulty_index = #difficulties
-		local highest_completed_difficulty_index = highest_available_difficulty_index
-
-		for _, level in ipairs(MainGameLevels) do
-			local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, player_stats_id, level)
-
-			if completed_difficulty_index < highest_completed_difficulty_index then
-				highest_completed_difficulty_index = completed_difficulty_index
-			end
-		end
-
-		return math.max(math.min(highest_completed_difficulty_index + 1, highest_available_difficulty_index), automatic_difficulty_unlock_index)
-	else
-		local difficulties, starting_difficulty = Managers.state.difficulty:get_level_difficulties(level_key)
-		local automatic_difficulty_unlock_index = table.find(difficulties, starting_difficulty)
-		local highest_available_difficulty_index = #difficulties
-		local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, player_stats_id, level_key)
-
-		return math.max(math.min(completed_difficulty_index + 1, highest_available_difficulty_index), automatic_difficulty_unlock_index)
-	end
+	return math.max(math.min(completed_difficulty_index + 1, highest_available_difficulty_index), automatic_difficulty_unlock_index)
 end
 
 LevelUnlockUtils.completed_level_difficulty_index = function (statistics_db, player_stats_id, level_key)
@@ -204,24 +159,67 @@ LevelUnlockUtils.completed_level_difficulty_index = function (statistics_db, pla
 	end
 end
 
-LevelUnlockUtils.completed_adventure_difficulty = function (statistics_db, player_stats_id)
-	local lowest_completed = math.huge
+LevelUnlockUtils.highest_completed_difficulty_index_by_act = function (statistics_db, player_stats_id, act_name)
+	local act_levels = GameActs[act_name]
+	local act_difficulty_completed_index = math.huge
 
-	for _, act_key in ipairs(GameActsOrder) do
-		for _, level_key in ipairs(GameActs[act_key]) do
-			local level_difficulty_name = LevelDifficultyDBNames[level_key]
+	for _, level_key in ipairs(act_levels) do
+		local difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, player_stats_id, level_key)
 
-			if level_difficulty_name then
-				local difficulty_index = statistics_db:get_persistent_stat(player_stats_id, "completed_levels_difficulty", level_difficulty_name)
-
-				if difficulty_index < lowest_completed then
-					lowest_completed = difficulty_index
-				end
-			end
+		if difficulty_index < act_difficulty_completed_index then
+			act_difficulty_completed_index = difficulty_index
 		end
 	end
 
-	return lowest_completed
+	return act_difficulty_completed_index
+end
+
+LevelUnlockUtils.completed_adventure_difficulty = function (statistics_db, player_stats_id)
+	return 1
+end
+
+LevelUnlockUtils.completed_main_game_difficulty = function (statistics_db, player_stats_id)
+	local main_game_difficulty_completed_index = math.huge
+
+	for _, level_key in ipairs(MainGameLevels) do
+		local difficulty_completed_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, player_stats_id, level_key)
+
+		if difficulty_completed_index < main_game_difficulty_completed_index then
+			main_game_difficulty_completed_index = difficulty_completed_index
+		end
+	end
+
+	return main_game_difficulty_completed_index
+end
+
+LevelUnlockUtils.completed_dlc_difficulty = function (statistics_db, player_stats_id, dlc_name)
+	local dlc_area_settings = nil
+
+	for area_name, area_settings in pairs(AreaSettings) do
+		if area_settings.dlc_name == dlc_name then
+			dlc_area_settings = area_settings
+
+			break
+		end
+	end
+
+	fassert(dlc_area_settings, "Area settings for dlc: %s does not exist.", dlc_name)
+
+	local acts = dlc_area_settings.acts
+
+	fassert(acts, "Acts for dlc: %s does not exist.", dlc_name)
+
+	local dlc_difficulty_completed_index = math.huge
+
+	for _, act_key in ipairs(acts) do
+		local difficulty_completed_index = LevelUnlockUtils.highest_completed_difficulty_index_by_act(statistics_db, player_stats_id, act_key)
+
+		if difficulty_completed_index < dlc_difficulty_completed_index then
+			dlc_difficulty_completed_index = difficulty_completed_index
+		end
+	end
+
+	return dlc_difficulty_completed_index
 end
 
 local function sort_levels_by_order(a, b)
@@ -234,44 +232,36 @@ local function sort_levels_by_order(a, b)
 	return a_order < b_order
 end
 
-LevelUnlockUtils.level_unlocked = function (statistics_db, player_stats_id, level_key)
-	if script_data.unlock_all_levels then
-		return true
-	end
+local required_completed_levels = {}
 
-	local act_key = LevelUnlockUtils.get_act_key_by_level(level_key)
-	local settings = LevelSettings[level_key]
+LevelUnlockUtils.get_required_completed_levels = function (statistics_db, player_stats_id, level_key)
+	table.clear(required_completed_levels)
 
-	if not act_key then
-		local level_game_mode = settings.game_mode
-		local dlc_name = settings.dlc_name
-		local required_act_completed = settings.required_act_completed
-
-		if required_act_completed then
-			if LevelUnlockUtils.act_completed(statistics_db, player_stats_id, required_act_completed) then
-				if dlc_name then
-					return Managers.unlock:is_dlc_unlocked(dlc_name)
-				else
-					return true
-				end
-			else
-				return false
-			end
-		elseif dlc_name then
-			return Managers.unlock:is_dlc_unlocked(dlc_name)
-		else
-			return true
-		end
-
-		return false
-	end
-
-	local required_acts = settings.required_acts
+	local level_settings = LevelSettings[level_key]
+	local required_acts = level_settings.required_acts
 
 	if required_acts then
 		for _, act_key in ipairs(required_acts) do
-			if not LevelUnlockUtils.act_unlocked(statistics_db, player_stats_id, act_key) then
-				return false
+			local last_act_level_key = nil
+			local highest_presentation_order = -1
+			local act_levels = GameActs[act_key]
+
+			for _, act_level_key in ipairs(act_levels) do
+				local settings = LevelSettings[act_level_key]
+
+				if highest_presentation_order < settings.act_presentation_order then
+					highest_presentation_order = settings.act_presentation_order
+					last_act_level_key = act_level_key
+				end
+			end
+
+			if last_act_level_key then
+				local level_stat = statistics_db:get_persistent_stat(player_stats_id, "completed_levels", last_act_level_key)
+				local level_completed = level_stat and level_stat ~= 0
+
+				if not level_completed then
+					required_completed_levels[last_act_level_key] = true
+				end
 			end
 		end
 	end
@@ -279,12 +269,74 @@ LevelUnlockUtils.level_unlocked = function (statistics_db, player_stats_id, leve
 	local required_levels_unlocked_in_act = RequiredLevelUnlocksByLevel[level_key]
 
 	if required_levels_unlocked_in_act then
-		for _, required_act_level in ipairs(required_levels_unlocked_in_act) do
-			local level_stat = statistics_db:get_persistent_stat(player_stats_id, "completed_levels", required_act_level)
+		local last_act_level_key = nil
+		local highest_presentation_order = -1
+
+		for _, required_act_level_key in ipairs(required_levels_unlocked_in_act) do
+			local settings = LevelSettings[required_act_level_key]
+
+			if highest_presentation_order < settings.act_presentation_order then
+				highest_presentation_order = settings.act_presentation_order
+				last_act_level_key = required_act_level_key
+			end
+		end
+
+		if last_act_level_key then
+			local level_stat = statistics_db:get_persistent_stat(player_stats_id, "completed_levels", last_act_level_key)
 			local level_completed = level_stat and level_stat ~= 0
 
 			if not level_completed then
-				return false
+				required_completed_levels[last_act_level_key] = true
+			end
+		end
+	end
+
+	return required_completed_levels
+end
+
+LevelUnlockUtils.level_unlocked = function (statistics_db, player_stats_id, level_key, ignore_dlc_check)
+	if script_data.unlock_all_levels then
+		return true
+	end
+
+	local act_key = LevelUnlockUtils.get_act_key_by_level(level_key)
+	local settings = LevelSettings[level_key]
+
+	if not ignore_dlc_check then
+		local dlc_name = settings.dlc_name
+
+		if dlc_name and not Managers.unlock:is_dlc_unlocked(dlc_name) then
+			return false
+		end
+	end
+
+	if not act_key then
+		local required_act_completed = settings.required_act_completed
+
+		if required_act_completed and not LevelUnlockUtils.act_completed(statistics_db, player_stats_id, required_act_completed) then
+			return false
+		end
+	else
+		local required_acts = settings.required_acts
+
+		if required_acts then
+			for _, act_key in ipairs(required_acts) do
+				if not LevelUnlockUtils.act_unlocked(statistics_db, player_stats_id, act_key) then
+					return false
+				end
+			end
+		end
+
+		local required_levels_unlocked_in_act = RequiredLevelUnlocksByLevel[level_key]
+
+		if required_levels_unlocked_in_act then
+			for _, required_act_level in ipairs(required_levels_unlocked_in_act) do
+				local level_stat = statistics_db:get_persistent_stat(player_stats_id, "completed_levels", required_act_level)
+				local level_completed = level_stat and level_stat ~= 0
+
+				if not level_completed then
+					return false
+				end
 			end
 		end
 	end
@@ -353,8 +405,8 @@ end
 LevelUnlockUtils.num_acts_completed = function (statistics_db, player_stats_id)
 	local num = 0
 
-	for _, key in ipairs(GameActsOrder) do
-		if LevelUnlockUtils.act_completed(statistics_db, player_stats_id, key) then
+	for act_key, _ in pairs(GameActs) do
+		if LevelUnlockUtils.act_completed(statistics_db, player_stats_id, act_key) then
 			num = num + 1
 		end
 	end
@@ -362,27 +414,25 @@ LevelUnlockUtils.num_acts_completed = function (statistics_db, player_stats_id)
 	return num
 end
 
-LevelUnlockUtils.all_acts_completed = function (statistics_db, player_stats_id)
-	for _, key in ipairs(GameActsOrder) do
-		if not LevelUnlockUtils.act_completed(statistics_db, player_stats_id, key) then
-			return false
+LevelUnlockUtils.all_dlc_levels_completed = function (statistics_db, player_stats_id, dlc_name)
+	local dlc_area_seetings = nil
+
+	for area_name, area_settings in pairs(AreaSettings) do
+		if area_settings.dlc_name == dlc_name then
+			dlc_area_seetings = area_settings
+
+			break
 		end
 	end
 
-	return true
-end
+	fassert(dlc_area_seetings, "Area settings for dlc: %s does not exist.", dlc_name)
 
-LevelUnlockUtils.all_dlc_levels_completed = function (statistics_db, player_stats_id, dlc_name)
-	local level_keys = DLCProgressionOrder[dlc_name]
+	local acts = dlc_area_seetings.acts
 
-	fassert(level_keys ~= nil, "DLC %s does not exist in DLCProgressionOrder.", dlc_name)
+	fassert(acts, "Acts for dlc: %s does not exist.", dlc_name)
 
-	for i = 1, #level_keys, 1 do
-		local level_key = level_keys[i]
-		local level_stat = statistics_db:get_persistent_stat(player_stats_id, "completed_levels", level_key)
-		local level_completed = level_stat and level_stat ~= 0
-
-		if not level_completed then
+	for _, act_key in ipairs(acts) do
+		if not LevelUnlockUtils.act_completed(statistics_db, player_stats_id, act_key) then
 			return false
 		end
 	end
@@ -400,7 +450,7 @@ LevelUnlockUtils.set_all_acts_incompleted = function ()
 		local actual_act_index = math.min(act_index + 1, #GameActsOrder)
 		local act_key = GameActsOrder[actual_act_index]
 
-		assert(act_key, "Could not find act for index %d.", actual_act_index)
+		fassert(act_key, "Could not find act for index %d.", actual_act_index)
 
 		for index, key in ipairs(GameActsOrder) do
 			local act_levels = GameActs[key]

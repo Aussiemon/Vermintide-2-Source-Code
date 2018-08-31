@@ -293,8 +293,9 @@ MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, searc
 			local discard_reason = nil
 			local secondary_option = false
 			local level_key = lobby_data.selected_level_key or lobby_data.level_key
+			local ignore_dlc_check = search_config.quick_game
 
-			if not discard and not matchmaking_manager:party_has_level_unlocked(level_key) then
+			if not discard and not matchmaking_manager:party_has_level_unlocked(level_key, ignore_dlc_check) then
 				discard = true
 				discard_reason = string.format("level(%s) is not unlocked by party", level_key)
 			end

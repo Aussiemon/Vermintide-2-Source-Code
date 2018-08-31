@@ -2,7 +2,7 @@ require("scripts/ui/views/subtitle_gui")
 require("scripts/ui/views/damage_indicator_gui")
 require("scripts/ui/views/tutorial_ui")
 require("scripts/ui/views/tutorial_input_ui")
-require("scripts/ui/views/tutorial_intro_ui")
+require("scripts/ui/views/cutscene_overlay_ui")
 require("scripts/ui/views/interaction_ui")
 require("scripts/ui/views/area_indicator_ui")
 require("scripts/ui/views/mission_objective_ui")
@@ -28,6 +28,7 @@ require("scripts/ui/hud_ui/overcharge_bar_ui")
 require("scripts/ui/hud_ui/equipment_ui")
 require("scripts/ui/hud_ui/gamepad_equipment_ui")
 require("scripts/ui/hud_ui/ability_ui")
+require("scripts/ui/hud_ui/gamepad_ability_ui")
 require("scripts/ui/hud_ui/loot_objective_ui")
 require("scripts/ui/hud_ui/boss_health_ui")
 require("scripts/ui/hud_ui/twitch_vote_ui")
@@ -38,6 +39,7 @@ require("scripts/ui/gift_popup/gift_popup_ui")
 require("scripts/ui/ui_cleanui")
 
 local definitions = local_require("scripts/ui/views/ingame_hud_definitions")
+local tutorial_template_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_tutorial")
 IngameHud = class(IngameHud)
 
 IngameHud.init = function (self, ingame_ui_context)
@@ -96,13 +98,14 @@ IngameHud.init = function (self, ingame_ui_context)
 	self.equipment_ui = EquipmentUI:new(ingame_ui_context)
 	self.gamepad_equipment_ui = GamePadEquipmentUI:new(ingame_ui_context)
 	self.ability_ui = AbilityUI:new(ingame_ui_context)
+	self.gamepad_ability_ui = GamePadAbilityUI:new(ingame_ui_context)
 	local backend_settings = GameSettingsDevelopment.backend_settings
 
 	if not self.is_in_inn and backend_settings.quests_enabled then
 		self.contract_log_ui = ContractLogUI:new(ingame_ui_context)
 	end
 
-	if self.is_in_inn or script_data.debug_show_damage_numbers then
+	if self.is_in_inn or script_data.debug_show_damage_numbers or script_data.debug_ai_attack_pattern then
 		self.damage_numbers_ui = DamageNumbersUI:new(ingame_ui_context)
 	end
 
@@ -126,7 +129,7 @@ IngameHud.init = function (self, ingame_ui_context)
 		self.difficulty_unlock_ui = DifficultyUnlockUI:new(ingame_ui_context)
 	elseif game_mode_key == "tutorial" then
 		self.tutorial_input_ui = TutorialInputUI:new(ingame_ui_context)
-		self.tutorial_intro_ui = TutorialIntroUI:new(ingame_ui_context)
+		self.cutscene_overlay_ui = CutsceneOverlayUI:new(self.ui_renderer, tutorial_template_settings)
 	end
 end
 
@@ -151,8 +154,8 @@ IngameHud.destroy = function (self)
 		self.tutorial_input_ui:destroy()
 	end
 
-	if self.tutorial_intro_ui then
-		self.tutorial_intro_ui:destroy()
+	if self.cutscene_overlay_ui then
+		self.cutscene_overlay_ui:destroy()
 	end
 
 	if self.buff_ui then
@@ -177,6 +180,10 @@ IngameHud.destroy = function (self)
 
 	if self.ability_ui then
 		self.ability_ui:destroy()
+	end
+
+	if self.gamepad_ability_ui then
+		self.gamepad_ability_ui:destroy()
 	end
 
 	if self.contract_log_ui then
@@ -310,6 +317,10 @@ IngameHud.set_visible = function (self, visible, draw_playerlist)
 
 	if self.ability_ui then
 		self.ability_ui:set_visible(visible)
+	end
+
+	if self.gamepad_ability_ui then
+		self.gamepad_ability_ui:set_visible(visible)
 	end
 
 	if self.contract_log_ui then
@@ -484,8 +495,8 @@ IngameHud._update_always = function (self, dt, t, player, context)
 		self.damage_numbers_ui:update(dt)
 	end
 
-	if self.tutorial_intro_ui then
-		self.tutorial_intro_ui:update(dt, t)
+	if self.cutscene_overlay_ui then
+		self.cutscene_overlay_ui:update(dt, t)
 	end
 
 	if self.twitch_vote_ui then
@@ -548,6 +559,10 @@ IngameHud._update_while_alive = function (self, dt, t, player, context)
 
 		if self.ability_ui then
 			self.ability_ui:update(dt, t)
+		end
+
+		if self.gamepad_ability_ui then
+			self.gamepad_ability_ui:update(dt, t)
 		end
 
 		self.loot_objective:update(dt, t)

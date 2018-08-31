@@ -807,7 +807,7 @@ return {
 		0
 	}),
 	create_video_func = create_video,
-	start_game_button_widget = UIWidgets.create_default_button("start_game_button", scenegraph_definition.start_game_button.size, nil, nil, Localize("LOC_BTN_LAUNCH")),
+	start_game_button_widget = UIWidgets.create_default_button("start_game_button", scenegraph_definition.start_game_button.size, nil, nil, Localize("start_game_menu_button_name")),
 	back_button_widget = UIWidgets.create_default_button("back_button", scenegraph_definition.start_game_button.size, nil, nil, Localize("back_menu_button_name")),
 	console_cursor_definition = UIWidgets.create_console_cursor("console_cursor"),
 	press_start_widget = create_simple_pulsating_text((PLATFORM == "win32" and "press_any_key_to_continue") or "press_any_button_to_continue", "press_start", nil, nil, press_start_style)

@@ -46,9 +46,6 @@ StateTitleScreenLoadSave.update = function (self, dt, t)
 		elseif self._state == "enumerate_dlc" then
 			title_start_ui:set_information_text(Localize("loading_checking_downloadable_content"))
 			self:_enumerate_dlc()
-		elseif self._state == "check_multiplayer_privileges" then
-			self:_check_prviileges()
-			title_start_ui:set_information_text(Localize("loading_checking_privileges"))
 		elseif self._state == "acquire_storage" then
 			self:_get_storage_space()
 			title_start_ui:set_information_text(Localize("loading_acquiring_storage"))
@@ -62,24 +59,9 @@ StateTitleScreenLoadSave.update = function (self, dt, t)
 			self:_check_popup()
 		elseif self._state == "create_save" then
 			self:_create_save()
-		elseif self._state == "signin_to_backend" then
-			self:_signin()
-			title_start_ui:set_information_text(Localize("loading_signing_in"))
-		elseif self._state == "check_invite" then
-			self:_check_invite()
-			title_start_ui:set_information_text(Localize("loading_checking_invites"))
-		elseif self._state == "signin_to_xsts" then
-			title_start_ui:set_information_text(Localize("loading_acquiring_xsts_token"))
-			self:_signin_to_xsts()
 		elseif self._state == "delete_save" then
 			self:_delete_save()
 			title_start_ui:set_information_text(Localize("loading_deleting_settings"))
-		elseif self._state == "complete" then
-			self:_close_menu()
-			Managers.account:close_storage()
-			title_start_ui:set_information_text(Localize("loading_returning_to_title"))
-
-			self._state = "none"
 		end
 	elseif self._popup_id then
 		self:_check_popup()
@@ -94,77 +76,12 @@ StateTitleScreenLoadSave._update_network = function (self, dt, t)
 	end
 end
 
-StateTitleScreenLoadSave._signin = function (self)
-	Managers.unlock = UnlockManager:new()
-	Managers.backend = BackendManagerPlayFab:new("ScriptBackendPlayFabXbox", "PlayFabMirror", "DataServerQueue")
-
-	Managers.backend:signin(self._xsts_result)
-
-	self._xsts_result = nil
-	self._state = "check_invite"
-end
-
-StateTitleScreenLoadSave._check_invite = function (self)
-	if Managers.play_go:installed() then
-		if Managers.invite:has_invitation() then
-			Managers.transition:show_loading_icon(false)
-			Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(self, "cb_fade_in_done", StateLoading))
-
-			self._state = "none"
-		else
-			self._new_state = StateTitleScreenMainMenu
-			self._state = "none"
-		end
-	elseif Managers.invite:has_invitation() then
-		self._popup_id = Managers.popup:queue_popup(Localize("popup_invite_not_installed"), Localize("popup_invite_not_installed_header"), "not_installed", Localize("menu_ok"))
-		self._state = "check_popup"
-	else
-		self._new_state = StateTitleScreenMainMenu
-		self._state = "none"
-	end
-end
-
 StateTitleScreenLoadSave._check_guest = function (self)
 	if Managers.account:is_guest() then
 		self._popup_id = Managers.popup:queue_popup(Localize("popup_is_guest"), Localize("popup_is_guest_header"), "verified_guest", Localize("menu_ok"))
 		self._state = "check_popup"
 	else
 		self._state = "enumerate_dlc"
-	end
-end
-
-StateTitleScreenLoadSave.cb_fade_in_done = function (self)
-	self.parent.state = StateLoading
-	local loading_context = self.parent.parent.loading_context
-	loading_context.restart_network = true
-	loading_context.gamma_correct = not SaveData.gamma_corrected
-	loading_context.play_trailer = false
-	loading_context.first_time = false
-end
-
-StateTitleScreenLoadSave._signin_to_xsts = function (self)
-	local token = UserXSTS.has(Managers.account:user_id())
-	local script_xsts_token = ScriptXSTSToken:new(token)
-
-	Managers.token:register_token(script_xsts_token, callback(self, "cb_xsts_token_received"))
-
-	self._state = "waiting_for_xsts"
-end
-
-StateTitleScreenLoadSave.cb_xsts_token_received = function (self, data)
-	print("[StateTitleScreenLoadSave] cb_xsts_token_received")
-
-	local title_start_ui = self._title_start_ui
-
-	if data.error then
-		self._popup_id = Managers.popup:queue_popup(Localize("popup_xsts_signin_failed"), Localize("popup_xsts_signin_failed_header"), "xsts_error", Localize("menu_ok"))
-		self._state = "check_popup"
-	else
-		print("[StateTitleScreenLoadSave] Successfully acquired an XSTS token")
-		print("XSTS OK!" .. tostring(data.result))
-
-		self._xsts_result = data.result
-		self._state = "signin_to_backend"
 	end
 end
 
@@ -193,21 +110,7 @@ StateTitleScreenLoadSave._enumerate_dlc = function (self)
 	XboxDLC.initialize()
 	XboxDLC.enumerate_dlc()
 
-	self._state = "check_multiplayer_privileges"
-end
-
-StateTitleScreenLoadSave._check_prviileges = function (self)
-	if Managers.account:is_privileges_initialized() then
-		if Managers.account:has_privilege_error() then
-			self._popup_id = Managers.popup:queue_popup(Localize("popup_privilege_error"), Localize("popup_privilege_error_header"), "privilege_error", Localize("menu_ok"))
-			self._state = "check_popup"
-		elseif Managers.account:has_privilege(UserPrivilege.MULTIPLAYER_SESSIONS) then
-			self._state = "acquire_storage"
-		else
-			self._popup_id = Managers.popup:queue_popup(Localize("popup_xbox_live_gold_error"), Localize("popup_xbox_live_gold_error_header"), "privilege_error", Localize("menu_ok"))
-			self._state = "check_popup"
-		end
-	end
+	self._state = "acquire_storage"
 end
 
 StateTitleScreenLoadSave._get_storage_space = function (self)
@@ -274,27 +177,18 @@ StateTitleScreenLoadSave.cb_load_done = function (self, data)
 		self._state = "check_popup"
 		self._popup_id = Managers.popup:queue_popup(Localize("popup_load_error"), Localize("popup_load_error_header"), "retry_load", Localize("menu_reload"), "reset_save", Localize("menu_reset"))
 	elseif Managers.account:is_guest() then
-		self._state = "signin_to_backend"
 		SaveData = table.clone(DefaultSaveData)
 
 		populate_save_data(SaveData)
+
+		self._new_state = StateTitleScreenMainMenu
+		self._state = "none"
 	else
 		populate_save_data(data)
 
-		local input_service = self.input_manager:get_service("main_menu")
-
-		if input_service:get("show_support_info") then
-			self:_show_support_info()
-		else
-			self._state = "signin_to_xsts"
-		end
+		self._new_state = StateTitleScreenMainMenu
+		self._state = "none"
 	end
-end
-
-StateTitleScreenLoadSave._show_support_info = function (self)
-	local support_id = BackendUtils.format_profile_hash(SaveData.backend_profile_hash, 14, 2, " ")
-	self._popup_id = Managers.popup:queue_popup(support_id, "Support ID", "support_info_done", Localize("button_back_to_title"))
-	self._state = "check_popup"
 end
 
 StateTitleScreenLoadSave._check_popup = function (self)
@@ -304,10 +198,6 @@ StateTitleScreenLoadSave._check_popup = function (self)
 		self._state = "load_save"
 	elseif result == "reset_save" then
 		self._state = "delete_save"
-	elseif result == "privilege_error" then
-		self:_close_menu()
-
-		self._state = "none"
 	elseif result == "profile_error" then
 		self:_close_menu()
 
@@ -331,20 +221,8 @@ StateTitleScreenLoadSave._check_popup = function (self)
 		Managers.account:close_storage()
 
 		self._state = "none"
-	elseif result == "xsts_error" then
-		self:_close_menu()
-		Managers.account:close_storage()
-
-		self._state = "none"
-	elseif result == "not_installed" then
-		Managers.invite:clear_invites()
-
-		self._new_state = StateTitleScreenMainMenu
-		self._state = "none"
 	elseif result == "verified_guest" then
 		self._state = "enumerate_dlc"
-	elseif result == "support_info_done" then
-		self._state = "signin_to_xsts"
 	elseif result then
 		fassert(false, "[StateTitleScreenLoadSave] The popup result doesn't exist (%s)", result)
 	end
@@ -372,11 +250,13 @@ StateTitleScreenLoadSave.cb_save_done = function (self, data)
 
 		populate_save_data(SaveData)
 
-		self._state = "signin_to_backend"
+		self._new_state = StateTitleScreenMainMenu
+		self._state = "none"
 	else
 		populate_save_data(SaveData)
 
-		self._state = "signin_to_xsts"
+		self._new_state = StateTitleScreenMainMenu
+		self._state = "none"
 	end
 end
 
@@ -414,18 +294,7 @@ StateTitleScreenLoadSave._next_state = function (self)
 			return
 		end
 
-		if Managers.backend and Managers.backend:is_disconnected() then
-			self:_close_menu()
-			Managers.account:close_storage()
-
-			return self._new_state
-		elseif Managers.backend and (Managers.backend:is_local() or Managers.backend:authenticated()) then
-			return self._new_state
-		elseif self._closing_menu then
-			return self._new_state
-		else
-			return nil
-		end
+		return self._new_state
 	end
 end
 

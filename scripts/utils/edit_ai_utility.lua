@@ -242,7 +242,7 @@ EditAiUtility.update = function (self, unit, t, dt, input_service, blackboard)
 							break
 						end
 
-						local consideration_name = unit_considerations.name
+						local consideration_name = UtilityConsiderationNames[unit_considerations]
 
 						if consideration_name ~= action then
 							break
@@ -648,11 +648,9 @@ EditAiUtility.save_considerations = function (self)
 
 	print("SAVING CONSIDERATIONS!")
 
-	local considerations_table_striped_names = table.clone(UtilityConsiderations)
+	local considerations_table_stripped_names = table.clone(UtilityConsiderations)
 
-	for name, consideration in pairs(considerations_table_striped_names) do
-		consideration.name = nil
-
+	for name, consideration in pairs(considerations_table_stripped_names) do
 		for name, data in pairs(consideration) do
 			if type(data) == "table" then
 				data.name = nil
@@ -660,7 +658,7 @@ EditAiUtility.save_considerations = function (self)
 		end
 	end
 
-	local write_string = "UtilityConsiderations = " .. serialize.save_simple(considerations_table_striped_names)
+	local write_string = "UtilityConsiderations = " .. serialize.save_simple(considerations_table_stripped_names)
 
 	print(write_string)
 

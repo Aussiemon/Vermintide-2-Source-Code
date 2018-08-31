@@ -35,14 +35,12 @@ local scenegraph_definition = {
 			1080
 		}
 	},
-	console_cursor = {
-		vertical_alignment = "center",
-		parent = "root",
-		horizontal_alignment = "center",
+	safe_rect = {
+		scale = "fit",
 		position = {
 			0,
 			0,
-			-10
+			0
 		},
 		size = {
 			1920,
@@ -85,7 +83,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			40,
+			0,
 			2
 		}
 	},
@@ -465,6 +463,262 @@ local scenegraph_definition = {
 		}
 	}
 }
+
+local function create_safe_rect_widget(scenegraph_id)
+	local border_size = {
+		5,
+		5
+	}
+	local widget = {
+		scenegraph_id = "safe_rect",
+		element = {
+			passes = {
+				{
+					style_id = "bottom_left_triangle",
+					pass_type = "triangle",
+					content_change_function = function (content, style)
+						local safe_rect = (Application.user_setting("safe_rect") or 0) * 0.01
+						style.offset[1] = border_size[1] + 1920 * safe_rect * 0.5
+						style.offset[2] = border_size[2] + 1080 * safe_rect * 0.5
+					end
+				},
+				{
+					style_id = "bottom_right_triangle",
+					pass_type = "triangle",
+					content_change_function = function (content, style)
+						local safe_rect = (Application.user_setting("safe_rect") or 0) * 0.01
+						style.offset[1] = -border_size[1] - 1920 * safe_rect * 0.5
+						style.offset[2] = border_size[2] + 1080 * safe_rect * 0.5
+					end
+				},
+				{
+					style_id = "top_right_triangle",
+					pass_type = "triangle",
+					content_change_function = function (content, style)
+						local safe_rect = (Application.user_setting("safe_rect") or 0) * 0.01
+						style.offset[1] = -border_size[1] - 1920 * safe_rect * 0.5
+						style.offset[2] = -border_size[2] - 1080 * safe_rect * 0.5
+					end
+				},
+				{
+					style_id = "top_left_triangle",
+					pass_type = "triangle",
+					content_change_function = function (content, style)
+						local safe_rect = (Application.user_setting("safe_rect") or 0) * 0.01
+						style.offset[1] = border_size[1] + 1920 * safe_rect * 0.5
+						style.offset[2] = -border_size[2] - 1080 * safe_rect * 0.5
+					end
+				},
+				{
+					style_id = "left_line",
+					pass_type = "rect",
+					content_change_function = function (content, style)
+						local safe_rect = (Application.user_setting("safe_rect") or 0) * 0.01
+						style.offset[1] = 1920 * safe_rect * 0.5
+						style.offset[2] = border_size[1] + 1080 * safe_rect * 0.5
+						style.texture_size[2] = 1080 - 1080 * safe_rect - border_size[2] * 2
+					end
+				},
+				{
+					style_id = "right_line",
+					pass_type = "rect",
+					content_change_function = function (content, style)
+						local safe_rect = (Application.user_setting("safe_rect") or 0) * 0.01
+						style.offset[1] = -1920 * safe_rect * 0.5
+						style.offset[2] = border_size[1] + 1080 * safe_rect * 0.5
+						style.texture_size[2] = 1080 - 1080 * safe_rect - border_size[2] * 2
+					end
+				},
+				{
+					style_id = "top_line",
+					pass_type = "rect",
+					content_change_function = function (content, style)
+						local safe_rect = (Application.user_setting("safe_rect") or 0) * 0.01
+						style.offset[1] = 1920 * safe_rect * 0.5
+						style.offset[2] = -1080 * safe_rect * 0.5
+						style.texture_size[1] = 1920 - 1920 * safe_rect
+					end
+				},
+				{
+					style_id = "bottom_line",
+					pass_type = "rect",
+					content_change_function = function (content, style)
+						local safe_rect = (Application.user_setting("safe_rect") or 0) * 0.01
+						style.offset[1] = 1920 * safe_rect * 0.5
+						style.offset[2] = 1080 * safe_rect * 0.5
+						style.texture_size[1] = 1920 - 1920 * safe_rect
+					end
+				}
+			}
+		},
+		content = {},
+		style = {
+			left_line = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "left",
+				texture_size = {
+					5,
+					1080
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			},
+			right_line = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "right",
+				texture_size = {
+					5,
+					1080
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			},
+			top_line = {
+				vertical_alignment = "top",
+				horizontal_alignment = "left",
+				texture_size = {
+					1920,
+					5
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			},
+			bottom_line = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "left",
+				texture_size = {
+					1920,
+					5
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			},
+			bottom_left_triangle = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "left",
+				triangle_alignment = "bottom_left",
+				texture_size = {
+					100,
+					100
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					500,
+					500,
+					0
+				}
+			},
+			bottom_right_triangle = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "right",
+				triangle_alignment = "bottom_right",
+				texture_size = {
+					100,
+					100
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					500,
+					500,
+					0
+				}
+			},
+			top_left_triangle = {
+				vertical_alignment = "top",
+				horizontal_alignment = "left",
+				triangle_alignment = "top_left",
+				texture_size = {
+					100,
+					100
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					500,
+					500,
+					0
+				}
+			},
+			top_right_triangle = {
+				vertical_alignment = "top",
+				horizontal_alignment = "right",
+				triangle_alignment = "top_right",
+				texture_size = {
+					100,
+					100
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					500,
+					500,
+					0
+				}
+			}
+		},
+		offset = {
+			0,
+			0,
+			999
+		}
+	}
+
+	return widget
+end
 
 local function create_window_divider(scenegraph_id, size)
 	local widget = {
@@ -1127,11 +1381,6 @@ local function create_simple_texture_widget(texture, texture_size, scenegraph_id
 					texture_id = "texture_id",
 					style_id = "texture_id",
 					pass_type = "texture"
-				},
-				{
-					pass_type = "texture",
-					style_id = "bottom_edge",
-					texture_id = "rect_masked"
 				}
 			}
 		},
@@ -1252,7 +1501,7 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 					pass_type = "option_tooltip",
 					text_id = "tooltip_text",
 					content_check_function = function (content)
-						return content.tooltip_text and content.highlight_hotspot.is_hover and not Managers.input:is_showing_tooltip()
+						return content.tooltip_text and content.highlight_hotspot.is_hover and not Managers.input:is_device_active("gamepad")
 					end
 				},
 				{
@@ -1915,7 +2164,7 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 					pass_type = "option_tooltip",
 					text_id = "tooltip_text",
 					content_check_function = function (ui_content)
-						return ui_content.tooltip_text and ui_content.highlight_hotspot.is_hover and not Managers.input:is_showing_tooltip()
+						return ui_content.tooltip_text and ui_content.highlight_hotspot.is_hover and not Managers.input:is_device_active("gamepad")
 					end
 				},
 				{
@@ -2056,7 +2305,7 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 							style_id = "highlight_texture",
 							texture_id = "highlight_texture",
 							content_check_function = function (content)
-								return content.hotspot.is_hover
+								return content.hotspot.is_hover or (Managers.input:is_device_active("gamepad") and content.hotspot.is_selected)
 							end
 						}
 					}
@@ -2101,9 +2350,7 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 			disabled = false,
 			active = false,
 			hotspot = {},
-			highlight_hotspot = {
-				allow_multi_hover = true
-			},
+			highlight_hotspot = {},
 			list_content = item_contents,
 			text = text,
 			selected_option = options_texts[selected_option],
@@ -2388,7 +2635,7 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 					pass_type = "option_tooltip",
 					text_id = "tooltip_text",
 					content_check_function = function (ui_content)
-						return ui_content.tooltip_text and ui_content.highlight_hotspot.is_hover and not Managers.input:is_showing_tooltip()
+						return ui_content.tooltip_text and ui_content.highlight_hotspot.is_hover and not Managers.input:is_device_active("gamepad")
 					end
 				},
 				{
@@ -3000,7 +3247,7 @@ local function create_text_link_widget(text, url, optional_font_size, optional_t
 			text = {
 				upper_case = true,
 				localize = true,
-				dynamic_font = true,
+				dynamic_font_size = true,
 				font_type = "hell_shark_header_masked",
 				offset = {
 					base_offset[1] + 2,
@@ -3015,7 +3262,7 @@ local function create_text_link_widget(text, url, optional_font_size, optional_t
 			text_hover = {
 				upper_case = true,
 				localize = true,
-				dynamic_font = true,
+				dynamic_font_size = true,
 				font_type = "hell_shark_header_masked",
 				offset = {
 					base_offset[1] + 2,
@@ -3132,7 +3379,7 @@ local function create_option_widget(ui_renderer, text, options, selected_option,
 		pass_type = "option_tooltip",
 		text_id = "tooltip_text",
 		content_check_function = function (ui_content)
-			return ui_content.tooltip_text and ui_content.highlight_hotspot.is_hover and not Managers.input:is_showing_tooltip()
+			return ui_content.tooltip_text and ui_content.highlight_hotspot.is_hover and not Managers.input:is_device_active("gamepad")
 		end
 	}
 	passes[#passes + 1] = {
@@ -3628,6 +3875,477 @@ local function create_keybind_widget(selected_key, keybind_description, actions,
 	return UIWidget.init(definition)
 end
 
+local SORTED_LIST_WIDGET_WIDTH = list_size_x - 100
+local SORTED_LIST_TITLE_TEXT_OFFSET = 28
+
+local function create_sorted_list_widget(text, tooltip_text, item_contents, item_styles, item_size, item_content_change_function, scenegraph_id, base_offset)
+	local num_items = #item_contents
+	local PADDING = 10
+	local SORTED_LIST_WIDGET_SIZE = {
+		SORTED_LIST_WIDGET_WIDTH,
+		num_items * item_size[2] + PADDING
+	}
+	local SORTED_LIST_BACKGROUND_HEIGHT = SORTED_LIST_WIDGET_SIZE[2] - PADDING
+	local SORTED_LIST_ARROW_BACKGROUND_SIZE = {
+		35,
+		(SORTED_LIST_WIDGET_SIZE[2] - PADDING) / 2 - 2
+	}
+	base_offset[2] = base_offset[2] - SORTED_LIST_WIDGET_SIZE[2]
+	local enabled_color = Colors.get_color_table_with_alpha("font_default", 255)
+	local disabled_color = Colors.get_color_table_with_alpha("font_default", 100)
+	local definition = {
+		element = {
+			passes = {
+				{
+					style_id = "text",
+					pass_type = "text",
+					text_id = "text"
+				},
+				{
+					pass_type = "texture",
+					style_id = "background",
+					texture_id = "rect_masked"
+				},
+				{
+					pass_type = "texture",
+					style_id = "background_fg",
+					texture_id = "rect_masked"
+				},
+				{
+					pass_type = "texture",
+					style_id = "bottom_edge",
+					texture_id = "rect_masked"
+				},
+				{
+					pass_type = "texture",
+					style_id = "arrow_buttons_edge_horizontal",
+					texture_id = "rect_masked"
+				},
+				{
+					pass_type = "texture",
+					style_id = "arrow_buttons_edge_vertical",
+					texture_id = "rect_masked"
+				},
+				{
+					pass_type = "hotspot",
+					content_id = "highlight_hotspot"
+				},
+				{
+					style_id = "tooltip_text",
+					pass_type = "option_tooltip",
+					text_id = "tooltip_text",
+					content_check_function = function (content)
+						return content.tooltip_text and content.highlight_hotspot.is_hover and not Managers.input:is_device_active("gamepad")
+					end
+				},
+				{
+					style_id = "down_arrow_background",
+					pass_type = "hotspot",
+					content_id = "down_hotspot",
+					content_check_function = function (content)
+						return content.active
+					end
+				},
+				{
+					style_id = "up_arrow_background",
+					pass_type = "hotspot",
+					content_id = "up_hotspot",
+					content_check_function = function (content)
+						return content.active
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "down_arrow_background",
+					texture_id = "rect_masked",
+					content_check_function = function (content)
+						local down_hotspot = content.down_hotspot
+
+						return down_hotspot.active and down_hotspot.is_hover
+					end
+				},
+				{
+					texture_id = "texture_id",
+					style_id = "down_arrow",
+					pass_type = "texture",
+					content_id = "arrow",
+					content_check_function = function (content, style)
+						local parent_content = content.parent
+						local parent_style = style.parent
+						local down_hotspot = parent_content.down_hotspot
+						style.color = (down_hotspot.active and parent_style.enabled_color) or parent_style.disabled_color
+
+						return true
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "up_arrow_background",
+					texture_id = "rect_masked",
+					content_check_function = function (content)
+						local up_hotspot = content.up_hotspot
+
+						return up_hotspot.active and up_hotspot.is_hover
+					end
+				},
+				{
+					texture_id = "texture_id",
+					style_id = "up_arrow",
+					pass_type = "texture_uv",
+					content_id = "arrow",
+					content_check_function = function (content, style)
+						local parent_content = content.parent
+						local parent_style = style.parent
+						local up_hotspot = parent_content.up_hotspot
+						style.color = (up_hotspot.active and parent_style.enabled_color) or parent_style.disabled_color
+
+						return true
+					end
+				},
+				{
+					texture_id = "texture_id",
+					style_id = "down_arrow_hover",
+					pass_type = "texture",
+					content_id = "arrow_hover",
+					content_check_function = function (content)
+						local parent_content = content.parent
+						local down_hotspot = parent_content.down_hotspot
+
+						return down_hotspot.active and down_hotspot.is_hover
+					end
+				},
+				{
+					texture_id = "texture_id",
+					style_id = "up_arrow_hover",
+					pass_type = "texture_uv",
+					content_id = "arrow_hover",
+					content_check_function = function (content)
+						local parent_content = content.parent
+						local up_hotspot = parent_content.up_hotspot
+
+						return up_hotspot.active and up_hotspot.is_hover
+					end
+				},
+				{
+					style_id = "list_style",
+					pass_type = "list_pass",
+					content_id = "list_content",
+					passes = {
+						{
+							pass_type = "hotspot",
+							content_id = "hotspot"
+						},
+						{
+							style_id = "texture",
+							texture_id = "texture",
+							pass_type = "texture",
+							content_check_function = function (content)
+								return not content.hotspot.is_hover and not content.hotspot.is_selected
+							end,
+							content_change_function = item_content_change_function
+						},
+						{
+							style_id = "highlight_texture",
+							texture_id = "highlight_texture",
+							pass_type = "texture",
+							content_check_function = function (content, style, index)
+								return content.hotspot.is_hover or content.hotspot.is_selected
+							end,
+							content_change_function = item_content_change_function
+						},
+						{
+							style_id = "background_highlight_texture",
+							texture_id = "background_highlight_texture",
+							pass_type = "texture",
+							content_check_function = function (content, style, index)
+								return content.hotspot.is_hover and not content.hotspot.is_selected
+							end,
+							content_change_function = item_content_change_function
+						},
+						{
+							style_id = "background_selected_texture",
+							texture_id = "background_highlight_texture",
+							pass_type = "texture",
+							content_check_function = function (content, style, index)
+								return content.hotspot.is_selected
+							end,
+							content_change_function = item_content_change_function
+						},
+						{
+							style_id = "index_text",
+							pass_type = "text",
+							text_id = "index_text",
+							content_change_function = item_content_change_function
+						},
+						{
+							style_id = "text",
+							pass_type = "text",
+							text_id = "text",
+							content_change_function = item_content_change_function
+						}
+					}
+				}
+			}
+		},
+		content = {
+			rect_masked = "rect_masked",
+			text = text,
+			tooltip_text = tooltip_text,
+			up_hotspot = {
+				active = false
+			},
+			down_hotspot = {
+				active = false
+			},
+			highlight_hotspot = {
+				allow_multi_hover = true
+			},
+			arrow = {
+				texture_id = "drop_down_menu_arrow",
+				uvs = {
+					{
+						0,
+						1
+					},
+					{
+						1,
+						0
+					}
+				}
+			},
+			arrow_hover = {
+				texture_id = "drop_down_menu_arrow_clicked",
+				uvs = {
+					{
+						0,
+						1
+					},
+					{
+						1,
+						0
+					}
+				}
+			},
+			hotspot_content_ids = {
+				"up_hotspot",
+				"down_hotspot"
+			},
+			list_content = item_contents
+		},
+		style = {
+			offset = table.clone(base_offset),
+			size = table.clone(SORTED_LIST_WIDGET_SIZE),
+			color = {
+				50,
+				255,
+				255,
+				255
+			},
+			enabled_color = enabled_color,
+			disabled_color = disabled_color,
+			background = {
+				offset = {
+					base_offset[1] + (7 * SORTED_LIST_WIDGET_SIZE[1]) / 10,
+					base_offset[2] + PADDING / 2,
+					base_offset[3]
+				},
+				color = INPUT_FIELD_COLOR,
+				size = {
+					(3 * SORTED_LIST_WIDGET_SIZE[1]) / 10,
+					SORTED_LIST_BACKGROUND_HEIGHT
+				}
+			},
+			background_fg = {
+				offset = {
+					base_offset[1] + (7 * SORTED_LIST_WIDGET_SIZE[1]) / 10 + 2,
+					base_offset[2] + PADDING / 2,
+					base_offset[3] + 1
+				},
+				color = {
+					255,
+					10,
+					10,
+					10
+				},
+				size = {
+					(3 * SORTED_LIST_WIDGET_SIZE[1]) / 10 - 2,
+					SORTED_LIST_BACKGROUND_HEIGHT - 2
+				}
+			},
+			text = {
+				upper_case = true,
+				localize = true,
+				dynamic_font = true,
+				font_size = 16,
+				font_type = "hell_shark_masked",
+				offset = {
+					base_offset[1] + 2,
+					(base_offset[2] + SORTED_LIST_WIDGET_SIZE[2]) - (SORTED_LIST_TITLE_TEXT_OFFSET + 4),
+					base_offset[3]
+				},
+				text_color = Colors.get_color_table_with_alpha("font_default", 255)
+			},
+			tooltip_text = {
+				font_type = "hell_shark",
+				localize = true,
+				font_size = 24,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				cursor_side = "left",
+				max_width = 600,
+				cursor_offset = {
+					-10,
+					-27
+				},
+				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				line_colors = {
+					Colors.get_color_table_with_alpha("font_title", 255)
+				},
+				offset = {
+					0,
+					(base_offset[2] + SORTED_LIST_WIDGET_SIZE[2]) - SORTED_LIST_TITLE_TEXT_OFFSET - 50,
+					base_offset[3] + 20
+				}
+			},
+			up_arrow = {
+				masked = true,
+				offset = {
+					(base_offset[1] + SORTED_LIST_WIDGET_SIZE[1]) - (SORTED_LIST_ARROW_BACKGROUND_SIZE[1] + 31) / 2,
+					(base_offset[2] + 1.5 * SORTED_LIST_ARROW_BACKGROUND_SIZE[2]) - 7.5 + PADDING / 2,
+					base_offset[3] + 2
+				},
+				size = {
+					31,
+					15
+				},
+				color = enabled_color
+			},
+			up_arrow_hover = {
+				masked = true,
+				offset = {
+					(base_offset[1] + SORTED_LIST_WIDGET_SIZE[1]) - (SORTED_LIST_ARROW_BACKGROUND_SIZE[1] + 31) / 2,
+					(base_offset[2] + 1.5 * SORTED_LIST_ARROW_BACKGROUND_SIZE[2]) - 27 + PADDING / 2,
+					base_offset[3] + 1
+				},
+				size = {
+					31,
+					28
+				},
+				color = enabled_color
+			},
+			up_arrow_background = {
+				offset = {
+					(base_offset[1] + SORTED_LIST_WIDGET_SIZE[1]) - SORTED_LIST_ARROW_BACKGROUND_SIZE[1],
+					base_offset[2] + SORTED_LIST_ARROW_BACKGROUND_SIZE[2] + 2 + PADDING / 2,
+					base_offset[3] + 1
+				},
+				color = {
+					200,
+					20,
+					20,
+					20
+				},
+				size = SORTED_LIST_ARROW_BACKGROUND_SIZE
+			},
+			arrow_buttons_edge_horizontal = {
+				offset = {
+					(base_offset[1] + SORTED_LIST_WIDGET_SIZE[1]) - SORTED_LIST_ARROW_BACKGROUND_SIZE[1] - 2,
+					base_offset[2] + SORTED_LIST_ARROW_BACKGROUND_SIZE[2] + PADDING / 2,
+					base_offset[3] + 1
+				},
+				color = INPUT_FIELD_COLOR,
+				size = {
+					SORTED_LIST_ARROW_BACKGROUND_SIZE[1],
+					2
+				}
+			},
+			arrow_buttons_edge_vertical = {
+				offset = {
+					(base_offset[1] + SORTED_LIST_WIDGET_SIZE[1]) - SORTED_LIST_ARROW_BACKGROUND_SIZE[1] - 2,
+					base_offset[2] + PADDING / 2,
+					base_offset[3] + 1
+				},
+				color = INPUT_FIELD_COLOR,
+				size = {
+					2,
+					SORTED_LIST_BACKGROUND_HEIGHT
+				}
+			},
+			down_arrow = {
+				masked = true,
+				offset = {
+					(base_offset[1] + SORTED_LIST_WIDGET_SIZE[1]) - (SORTED_LIST_ARROW_BACKGROUND_SIZE[1] + 31) / 2,
+					base_offset[2] + (SORTED_LIST_ARROW_BACKGROUND_SIZE[2] - 15) / 2 + PADDING / 2,
+					base_offset[3] + 2
+				},
+				size = {
+					31,
+					15
+				},
+				color = enabled_color
+			},
+			down_arrow_hover = {
+				masked = true,
+				offset = {
+					(base_offset[1] + SORTED_LIST_WIDGET_SIZE[1]) - (SORTED_LIST_ARROW_BACKGROUND_SIZE[1] + 31) / 2,
+					(base_offset[2] + SORTED_LIST_ARROW_BACKGROUND_SIZE[2] / 2 + PADDING / 2) - 1,
+					base_offset[3] + 1
+				},
+				size = {
+					31,
+					28
+				},
+				color = enabled_color
+			},
+			down_arrow_background = {
+				offset = {
+					(base_offset[1] + SORTED_LIST_WIDGET_SIZE[1]) - SORTED_LIST_ARROW_BACKGROUND_SIZE[1],
+					base_offset[2] + PADDING / 2,
+					base_offset[3] + 1
+				},
+				color = {
+					200,
+					20,
+					20,
+					20
+				},
+				size = SORTED_LIST_ARROW_BACKGROUND_SIZE
+			},
+			bottom_edge = {
+				offset = {
+					base_offset[1],
+					base_offset[2] - BOTTOM_EDGE_THICKNESS,
+					base_offset[3] + 1
+				},
+				color = BOTTOM_EDGE_COLOR,
+				size = {
+					SORTED_LIST_WIDGET_SIZE[1],
+					BOTTOM_EDGE_THICKNESS
+				}
+			},
+			list_style = {
+				active = true,
+				start_index = 1,
+				offset = {
+					base_offset[1] + (7 * SORTED_LIST_WIDGET_SIZE[1]) / 10 + 5,
+					(base_offset[2] + SORTED_LIST_WIDGET_SIZE[2]) - item_size[2] - PADDING / 2,
+					base_offset[3] + 5
+				},
+				num_draws = num_items,
+				list_member_offset = {
+					0,
+					-item_size[2],
+					0
+				},
+				item_styles = item_styles
+			}
+		},
+		scenegraph_id = scenegraph_id
+	}
+
+	return UIWidget.init(definition)
+end
+
 SettingsWidgetTypeTemplate = {
 	drop_down = {
 		input_function = function (widget, input_service)
@@ -3692,6 +4410,15 @@ SettingsWidgetTypeTemplate = {
 				if not content.active then
 					content.active = true
 					list_style.active = true
+
+					if Managers.input:is_device_active("gamepad") then
+						local current_selection = content.current_selection
+
+						if current_selection then
+							local list_content_entry = list_content[current_selection]
+							list_content_entry.hotspot.is_selected = true
+						end
+					end
 				else
 					content.active = false
 					list_style.active = false
@@ -3739,6 +4466,17 @@ SettingsWidgetTypeTemplate = {
 
 			return content.active
 		end,
+		input_description = {
+			name = "drop_down",
+			gamepad_support = true,
+			actions = {
+				{
+					input_action = "confirm",
+					priority = 3,
+					description_text = "input_description_open"
+				}
+			}
+		},
 		active_input_description = {
 			ignore_generic_actions = true,
 			name = "drop_down",
@@ -3753,6 +4491,12 @@ SettingsWidgetTypeTemplate = {
 					input_action = "confirm",
 					priority = 2,
 					description_text = "input_description_confirm"
+				},
+				{
+					input_action = "d_vertical",
+					priority = 1,
+					description_text = "input_description_change",
+					ignore_keybinding = true
 				}
 			}
 		}
@@ -3823,6 +4567,22 @@ SettingsWidgetTypeTemplate = {
 			actions = {}
 		}
 	},
+	sorted_list = {
+		input_function = function (widget, input_service)
+			local content = widget.content
+			local style = widget.style
+
+			if content.active and input_service:get("back", true) then
+				content.controller_input_pressed = true
+
+				return true
+			end
+
+			if content.active and (input_service:get("move_up") or input_service:get("move_down") or input_service:get("move_up_hold") or input_service:get("move_down_hold")) then
+				return true
+			end
+		end
+	},
 	stepper = {
 		input_function = function (widget, input_service)
 			local content = widget.content
@@ -3836,7 +4596,19 @@ SettingsWidgetTypeTemplate = {
 
 				return true
 			end
-		end
+		end,
+		input_description = {
+			name = "stepper",
+			gamepad_support = true,
+			actions = {
+				{
+					input_action = "d_horizontal",
+					priority = 2,
+					description_text = "input_description_change",
+					ignore_keybinding = true
+				}
+			}
+		}
 	},
 	slider = {
 		input_function = function (widget, input_service, dt)
@@ -3886,7 +4658,19 @@ SettingsWidgetTypeTemplate = {
 
 				return true
 			end
-		end
+		end,
+		input_description = {
+			name = "slider",
+			gamepad_support = true,
+			actions = {
+				{
+					input_action = "d_horizontal",
+					priority = 2,
+					description_text = "input_description_change",
+					ignore_keybinding = true
+				}
+			}
+		}
 	},
 	image = {
 		input_function = function ()
@@ -3937,7 +4721,6 @@ return {
 	widget_definitions = widget_definitions,
 	button_definitions = button_definitions,
 	scrollbar_definition = scrollbar_definition,
-	console_cursor_definition = UIWidgets.create_console_cursor("console_cursor"),
 	create_title_widget = create_title_widget,
 	create_checkbox_widget = create_checkbox_widget,
 	create_slider_widget = create_slider_widget,
@@ -3946,6 +4729,8 @@ return {
 	create_option_widget = create_option_widget,
 	create_text_link_widget = create_text_link_widget,
 	create_keybind_widget = create_keybind_widget,
+	create_sorted_list_widget = create_sorted_list_widget,
 	create_simple_texture_widget = create_simple_texture_widget,
-	create_gamepad_layout_widget = create_gamepad_layout_widget
+	create_gamepad_layout_widget = create_gamepad_layout_widget,
+	create_safe_rect_widget = create_safe_rect_widget
 }

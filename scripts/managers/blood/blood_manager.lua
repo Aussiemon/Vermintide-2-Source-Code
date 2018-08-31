@@ -1,14 +1,27 @@
 require("scripts/managers/blood/blood_settings")
 
+local blood_manager_reload = true
+local blood_manager_max_decals = 100
 BloodManager = class(BloodManager)
+local BLOOD_BALL_RING_BUFFER_SIZE = 64
+local NUM_BLOOD_BALLS_TO_SPAWN_PER_FRAME = 15
 
 BloodManager.init = function (self, world)
 	self._world = world
 	self._weapon_blood = {}
-	self._blood_units = {}
-	self._blood_fades = {}
 	self._blood_effect_data = {}
 	self._blood_active = true
+
+	self:_create_blood_ball_buffer()
+
+	blood_manager_reload = false
+	local max_bloodballs_per_frame = 5
+	self._blood_system = EngineOptimizedExtensions.blood_init_system(self._blood_system, self._world, "blood_ball", max_bloodballs_per_frame)
+end
+
+BloodManager.destroy = function (self)
+	self:clear_weapon_blood()
+	EngineOptimizedExtensions.blood_destroy_system(self._blood_system)
 end
 
 local debug_decals = false
@@ -25,13 +38,7 @@ BloodManager.update = function (self, dt, t)
 		local t = World.time(self._world)
 
 		self:_update_weapon_blood(dt, t)
-		self:_update_blood_decals(dt, t)
-		self:_handle_delayed_fade_units(dt, t)
-		self:_update_distance_fade(dt, t)
-
-		if debug_decals then
-			self:_update_debug(dt, t)
-		end
+		self:_update_blood_ball_buffer()
 	elseif self._blood_active then
 		self:clear_weapon_blood()
 		self:clear_blood_decals()
@@ -39,6 +46,7 @@ BloodManager.update = function (self, dt, t)
 	end
 
 	self:_update_blood_effects()
+	EngineOptimizedExtensions.blood_update(self._blood_system)
 end
 
 BloodManager._enable_blood = function (self, enable)
@@ -46,6 +54,7 @@ BloodManager._enable_blood = function (self, enable)
 	BloodSettings.enemy_blood.enabled = enable
 	BloodSettings.blood_decals.enabled = enable
 	BloodSettings.weapon_blood.enabled = enable
+	BloodSettings.screen_space.enabled = enable
 end
 
 BloodManager._update_weapon_blood = function (self, dt, t)
@@ -58,75 +67,12 @@ BloodManager._update_weapon_blood = function (self, dt, t)
 	end
 end
 
-BloodManager._update_blood_decals = function (self, dt, t)
-	local to_remove = nil
-
-	for unit, time in pairs(self._blood_fades) do
-		if time <= t then
-			self:_remove_blood_decal(unit)
-
-			to_remove = to_remove or {}
-			to_remove[#to_remove + 1] = unit
-		end
-	end
-
-	if to_remove then
-		for _, unit in pairs(to_remove) do
-			self._blood_fades[unit] = nil
-
-			if Unit.alive(unit) then
-				World.destroy_unit(self._world, unit)
-			end
-		end
-	end
+BloodManager.clear_blood_decals = function (self)
+	Managers.state.decal:clear_all_of_type("blood_decals")
 end
 
-BloodManager._remove_blood_decal = function (self, unit)
-	for idx, blood_unit in pairs(self._blood_units) do
-		if blood_unit == unit then
-			table.remove(self._blood_units, idx)
-
-			return
-		end
-	end
-end
-
-BloodManager._handle_delayed_fade_units = function (self, dt, t)
-	if self._delayed_fade_units then
-		for _, unit in pairs(self._delayed_fade_units) do
-			if Unit.alive(unit) then
-				self:_add_to_fade_list(unit, t)
-			end
-		end
-	end
-
-	self._delayed_fade_units = nil
-end
-
-BloodManager._update_distance_fade = function (self, dt, t)
-	local local_player = Managers.player:local_player()
-
-	if local_player then
-		local viewport_name = local_player.viewport_name
-		local viewport = ScriptWorld.viewport(self._world, viewport_name)
-		local camera = ScriptViewport.camera(viewport)
-		local camera_pos = Camera.world_position(camera)
-
-		for unit, time in pairs(self._blood_fades) do
-			if Unit.alive(unit) then
-				local pos = Unit.local_position(unit, 0)
-				local distance_sq = Vector3.distance_squared(pos, camera_pos)
-
-				if time > t + 2 and distance_sq >= BloodSettings.blood_decals.distance_despawn * BloodSettings.blood_decals.distance_despawn then
-					self:_set_fade_values(unit, t, 2)
-
-					self._blood_fades[unit] = t + 2
-				end
-			else
-				self._blood_fades[unit] = t
-			end
-		end
-	end
+BloodManager.clear_unit_decals = function (self, unit)
+	Unit.set_vector4_for_materials(unit, "hit_position", Color(0, 0, 0, 0))
 end
 
 BloodManager._update_blood_effects = function (self)
@@ -143,79 +89,9 @@ BloodManager._update_blood_effects = function (self)
 	end
 end
 
-BloodManager._update_debug = function (self, dt, t)
-	local drawer = Managers.state.debug:drawer({
-		mode = "immediate",
-		name = "blood"
-	})
-
-	for _, unit in pairs(self._blood_units) do
-		local position = Unit.local_position(unit, 0)
-		local vector = Quaternion.up(Unit.local_rotation(unit, 0))
-
-		drawer:vector(position, vector, Color(0, 255, 0))
-	end
-
-	local active_controller = Managers.account:active_controller()
-
-	if Keyboard.pressed(Keyboard.button_index("b")) or active_controller.pressed(active_controller.button_index("left_thumb")) then
-		self._world = self._world or Application.main_world()
-		local player = Managers.player:local_player()
-		local player_pos = Unit.local_position(player.player_unit, 0)
-		local blood_unit = "units/decals/projection_blood_" .. string.format("%02d", tostring(Math.random(1, 17)))
-		self._blood_units = self._blood_units or {}
-
-		if BloodSettings.blood_decals.num_decals < #self._blood_units then
-			if Unit.alive(self._blood_units[1]) then
-				World.destroy_unit(self._world, self._blood_units[1])
-			end
-
-			table.remove(self._blood_units, 1)
-		end
-
-		self._blood_units[#self._blood_units + 1] = World.spawn_unit(self._world, blood_unit, player_pos, Quaternion.identity())
-
-		Unit.set_local_scale(self._blood_units[#self._blood_units], 0, Vector3(BloodSettings.blood_decals.scale, BloodSettings.blood_decals.scale, 1))
-		self:_add_to_fade_list(self._blood_units[#self._blood_units], t)
-	end
-end
-
-BloodManager._add_to_fade_list = function (self, unit, t)
-	self:_set_fade_values(unit, t, BloodSettings.blood_decals.life_time)
-
-	self._blood_fades[unit] = t + BloodSettings.blood_decals.life_time
-end
-
-BloodManager._set_fade_values = function (self, unit, start_time, life_time)
-	local num_meshes = Unit.num_meshes(unit)
-
-	for i = 0, num_meshes - 1, 1 do
-		local mesh = Unit.mesh(unit, i)
-		local num_materials = Mesh.num_materials(mesh)
-
-		for j = 0, num_materials - 1, 1 do
-			local material = Mesh.material(mesh, j)
-
-			Material.set_scalar(material, "start_time", start_time)
-			Material.set_scalar(material, "life_time", life_time)
-		end
-	end
-end
-
 BloodManager._set_weapon_blood_intensity = function (self, attacker_unit, weapon, amount)
 	if Unit.alive(weapon) then
-		local num_meshes = Unit.num_meshes(weapon)
-
-		for i = 0, num_meshes - 1, 1 do
-			local mesh = Unit.mesh(weapon, i)
-			local num_materials = Mesh.num_materials(mesh)
-
-			for j = 0, num_materials - 1, 1 do
-				local material = Mesh.material(mesh, j)
-
-				Material.set_scalar(material, "blood_intensity", amount)
-			end
-		end
+		Unit.set_scalar_for_materials(weapon, "blood_intensity", amount)
 	else
 		self._weapon_blood[attacker_unit][weapon] = nil
 	end
@@ -249,27 +125,97 @@ BloodManager.clear_weapon_blood = function (self, attacker, weapon)
 	end
 end
 
-BloodManager.clear_blood_decals = function (self)
-	for _, unit in pairs(self._blood_units) do
-		if Unit.alive(unit) then
-			World.destroy_unit(self._world, unit)
-		end
+BloodManager._update_blood_ball_buffer = function (self)
+	local blood_ball_ring_buffer = self._blood_ball_ring_buffer
+	local size = blood_ball_ring_buffer.size
+
+	if size == 0 then
+		return
 	end
 
-	self._blood_units = {}
+	local buffer = blood_ball_ring_buffer.buffer
+	local read_index = blood_ball_ring_buffer.read_index
+	local max_size = blood_ball_ring_buffer.max_size
+	local num_updates = math.min(NUM_BLOOD_BALLS_TO_SPAWN_PER_FRAME, size)
+
+	for i = 1, num_updates, 1 do
+		local blood_ball_data = buffer[read_index]
+
+		self:_spawn_blood_ball(blood_ball_data)
+
+		read_index = read_index % max_size + 1
+		size = size - 1
+	end
+
+	blood_ball_ring_buffer.size = size
+	blood_ball_ring_buffer.read_index = read_index
 end
 
-BloodManager.spawn_blood_ball = function (self, position, direction, damage_type, hit_unit)
+BloodManager._create_blood_ball_buffer = function (self)
+	local buffer_size = BLOOD_BALL_RING_BUFFER_SIZE
+	self._blood_ball_ring_buffer = {
+		write_index = 1,
+		read_index = 1,
+		size = 0,
+		buffer = Script.new_array(buffer_size),
+		max_size = buffer_size
+	}
+
+	for index = 1, buffer_size, 1 do
+		self._blood_ball_ring_buffer.buffer[index] = {
+			velocity = 0,
+			position = Vector3Box(),
+			direction = Vector3Box()
+		}
+	end
+end
+
+BloodManager._spawn_blood_ball = function (self, blood_ball_data)
+	local position = blood_ball_data.position:unbox()
+	local direction = blood_ball_data.direction:unbox()
+	local rotation = Quaternion.look(direction, Vector3.up())
+	local velocity = blood_ball_data.velocity
+
+	EngineOptimizedExtensions.blood_spawn_blood_ball(self._blood_system, "units/decals/blood_ball", position, rotation, direction, velocity)
+end
+
+BloodManager.despawn_blood_ball = function (self, unit)
+	EngineOptimizedExtensions.blood_despawn_blood_ball(self._blood_system, unit)
+end
+
+BloodManager._add_blood_ball_data_to_buffer = function (self, position, direction, damage_type)
+	local blood_ball_ring_buffer = self._blood_ball_ring_buffer
+	local buffer = blood_ball_ring_buffer.buffer
+	local read_index = blood_ball_ring_buffer.read_index
+	local write_index = blood_ball_ring_buffer.write_index
+	local size = blood_ball_ring_buffer.size
+	local max_size = blood_ball_ring_buffer.max_size
+
+	if max_size < size + 1 then
+		local blood_ball_data = buffer[read_index]
+
+		self:_spawn_blood_ball(blood_ball_data)
+
+		blood_ball_ring_buffer.size = size - 1
+		blood_ball_ring_buffer.read_index = read_index % max_size + 1
+	end
+
+	local velocity = BloodSettings.blood_ball.damage_type_velocities[damage_type]
+	local default_velocity = BloodSettings.blood_ball.damage_type_velocities.default
+	local blood_ball_data = buffer[write_index]
+
+	blood_ball_data.position:store(position)
+	blood_ball_data.direction:store(direction)
+
+	blood_ball_data.velocity = velocity or default_velocity
+	blood_ball_ring_buffer.size = size + 1
+	blood_ball_ring_buffer.write_index = write_index % max_size + 1
+end
+
+BloodManager.add_blood_ball = function (self, position, direction, damage_type, hit_unit)
 	if BloodSettings.blood_decals.enabled then
 		if BloodSettings.blood_decals.num_decals > 0 and Vector3.is_valid(position) then
-			local rotation = Quaternion.look(direction, Vector3.up())
-			local unit = World.spawn_unit(self._world, "units/decals/blood_ball", position, rotation)
-			local actor = Unit.actor(unit, "blood_ball")
-			local default_velocity = BloodSettings.blood_ball.damage_type_velocities.default
-			local velocity = BloodSettings.blood_ball.damage_type_velocities[damage_type]
-			local real_velocity = velocity or default_velocity
-
-			Actor.add_velocity(actor, Vector3.normalize(direction) * real_velocity)
+			self:_add_blood_ball_data_to_buffer(position, direction, damage_type)
 		end
 
 		local health_ext = ScriptUnit.extension(hit_unit, "health_system")
@@ -344,33 +290,6 @@ BloodManager._update_blood_intensity = function (self, hit_unit, breed, health_e
 	end
 end
 
-BloodManager.add_blood_decal = function (self, touched_unit, actor, my_unit, position, normal, velocity)
-	local dot_value = Vector3.dot(normal, Vector3.normalize(velocity))
-	local tangent = Vector3.normalize(Vector3.normalize(velocity) - dot_value * normal)
-	local tangent_rotation = Quaternion.look(tangent, normal)
-	local blood_unit_name = "units/decals/projection_blood_" .. string.format("%02d", tostring(Math.random(1, 17)))
-	self._blood_units = self._blood_units or {}
-
-	if BloodSettings.blood_decals.num_decals <= #self._blood_units then
-		if Unit.alive(self._blood_units[1]) then
-			World.destroy_unit(self._world, self._blood_units[1])
-		end
-
-		table.remove(self._blood_units, 1)
-	end
-
-	self._blood_units[#self._blood_units + 1] = World.spawn_unit(self._world, blood_unit_name, position, tangent_rotation)
-
-	Unit.set_local_scale(self._blood_units[#self._blood_units], 0, Vector3(BloodSettings.blood_decals.scale, BloodSettings.blood_decals.scale, 1))
-
-	self._delayed_fade_units = self._delayed_fade_units or {}
-	self._delayed_fade_units[#self._delayed_fade_units + 1] = self._blood_units[#self._blood_units]
-
-	if Unit.alive(my_unit) then
-		World.destroy_unit(self._world, my_unit)
-	end
-end
-
 BloodManager.add_weapon_blood = function (self, attacker, damage_type)
 	if BloodSettings.weapon_blood.enabled then
 		local player = self:_is_player(attacker)
@@ -425,44 +344,17 @@ BloodManager.add_enemy_blood = function (self, position, normal, actor)
 			t_position = Color(t_position[1], t_position[2], t_position[3], 1)
 			t_normal = Color(t_normal[1], t_normal[2], t_normal[3], 0)
 			t_tangent = Color(t_tangent[1], t_tangent[2], t_tangent[3], 0)
-			local num_meshes = Unit.num_meshes(unit)
 
-			for i = 0, num_meshes - 1, 1 do
-				local mesh = Unit.mesh(unit, i)
-				local num_materials = Mesh.num_materials(mesh)
-
-				for j = 0, num_materials - 1, 1 do
-					local material = Mesh.material(mesh, j)
-
-					Material.set_vector4(material, "hit_position", t_position)
-					Material.set_vector4(material, "hit_normal", t_normal)
-					Material.set_vector4(material, "hit_tangent", t_tangent)
-				end
-			end
+			Unit.set_vector4_for_materials(unit, "hit_position", t_position)
+			Unit.set_vector4_for_materials(unit, "hit_normal", t_normal)
+			Unit.set_vector4_for_materials(unit, "hit_tangent", t_tangent)
 		end
 	end
 end
 
-BloodManager.test_enemy_blood = function (self, position)
-	return
-
-	local unit = World.units(Application.main_world())[716]
-
-	if Unit.alive(unit) then
-		local time = Application.time_since_launch() * 0.25
-
-		Unit.set_local_rotation(unit, 0, Quaternion.look(Vector3(0, 1, 0), Vector3.up()))
-
-		local normal = Vector3.normalize(Vector3(math.random(-100, 100), math.random(-100, 100), math.random(-100, 100)))
-		local pos = position or Vector3(math.sin(time) * 100, -math.cos(time) * 100, 75)
-		local enemy_dir = Quaternion.forward(Unit.local_rotation(unit, 0))
-		local actor = Unit.actor(unit, 0)
-
-		if not actor then
-			return
-		end
-
-		self:add_enemy_blood(pos, normal, actor)
+BloodManager.play_screen_space_blood = function (self, particle_name, position, optional_offset, option_rotation_offset, optional_scale)
+	if BloodSettings.screen_space.enabled then
+		World.create_particles(self._world, particle_name, position, optional_offset, option_rotation_offset, optional_scale)
 	end
 end
 
@@ -484,10 +376,6 @@ BloodManager._is_player = function (self, attacker)
 	end
 
 	return false
-end
-
-BloodManager.destroy = function (self)
-	self:clear_weapon_blood()
 end
 
 return

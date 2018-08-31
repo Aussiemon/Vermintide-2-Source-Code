@@ -226,7 +226,7 @@ VoteManager.update = function (self, dt)
 				if gamepad_active then
 					local input = vote_option.input
 
-					if input_source:get(input) then
+					if input_source:get(input, true) then
 						if input ~= active_voting.current_hold_input then
 							active_voting.current_hold_input = input
 							input_hold_timer = 0
@@ -247,7 +247,7 @@ VoteManager.update = function (self, dt)
 						active_voting.input_hold_timer = nil
 						active_voting.input_hold_progress = nil
 					end
-				elseif input_source:get(vote_option.input) then
+				elseif input_source:get(vote_option.input, true) then
 					self:vote(vote_option.vote)
 				end
 			end

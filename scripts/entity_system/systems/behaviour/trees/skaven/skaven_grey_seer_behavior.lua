@@ -27,8 +27,13 @@ BreedBehaviors.grey_seer = {
 		action_data = ACTIONS.mount_unit
 	},
 	{
+		"BTIdleAction",
+		condition = "grey_seer_waiting_for_pickup",
+		name = "waiting_for_pickup_idle"
+	},
+	{
 		"BTGreySeerMountedAction",
-		condition = "can_see_player_and_mounted",
+		condition = "is_mounted",
 		name = "mounted_combat"
 	},
 	{

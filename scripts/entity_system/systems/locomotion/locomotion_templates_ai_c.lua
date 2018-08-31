@@ -29,6 +29,7 @@ LocomotionTemplates.AILocomotionExtensionC = {
 				local ai_extension = ScriptUnit_extension(unit, "ai_system")
 				local blackboard = ai_extension._blackboard
 				killing_blow[DamageDataIndex.ATTACKER] = unit
+				killing_blow[DamageDataIndex.POSITION] = Unit.world_position(unit, 0)
 
 				StatisticsUtil.register_kill(unit, killing_blow, statistics_db, true)
 

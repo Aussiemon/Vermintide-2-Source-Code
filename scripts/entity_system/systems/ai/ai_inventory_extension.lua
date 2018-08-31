@@ -86,10 +86,6 @@ AIInventoryExtension._setup_configuration = function (self, unit, start_n, inven
 			self.inventory_item_helmet_unit = item_unit
 		end
 
-		if script_data.ai_debug_inventory then
-			printf("[AIInventorySystem] unit[%s] wielding item[%s] of category[%s] in slot[%d]", tostring(unit), item_unit_name, item_category_name, i)
-		end
-
 		if item.weak_spot and self.is_server then
 			self.inventory_weak_spot = item.weak_spot
 		end
@@ -109,6 +105,7 @@ AIInventoryExtension.init = function (self, unit, extension_init_data)
 	self.dropped_items = {}
 	self.gib_items = {}
 	self.stump_items = {}
+	self.gibbed_nodes = {}
 	local inventory_configuration_name = extension_init_data.inventory_configuration_name
 
 	if extension_init_data.is_server and not inventory_configuration_name then
@@ -198,11 +195,63 @@ AIInventoryExtension.destroy_dropped_items = function (self, inventory_item_inde
 	end
 end
 
-AIInventoryExtension.destroy_gibs = function (self)
+AIInventoryExtension.freeze = function (self)
+	local unit_spawner = Managers.state.unit_spawner
 	local world = self.world
+	local inventory_items_n = self.inventory_items_n
+	local inventory_item_units = self.inventory_item_units
+	local gibbed_nodes = self.gibbed_nodes
+	local unit = self.unit
+	local one_scale = Vector3(1, 1, 1)
 
-	for i = 1, #self.gib_items, 1 do
-		World.destroy_unit(world, self.gib_items[i])
+	for i = 1, #gibbed_nodes, 1 do
+		local node_index = gibbed_nodes[i]
+
+		Unit.set_local_scale(unit, node_index, one_scale)
+
+		gibbed_nodes[i] = nil
+	end
+
+	for i = 1, inventory_items_n, 1 do
+		local item_unit = inventory_item_units[i]
+
+		unit_spawner:mark_for_deletion(item_unit)
+		self:destroy_dropped_items(i)
+	end
+
+	self.inventory_items_n = 0
+	local gib_items = self.gib_items
+	local stump_items = self.stump_items
+
+	for i = 1, #gib_items, 1 do
+		World.destroy_unit(world, gib_items[i])
+
+		gib_items[i] = nil
+	end
+
+	for i = 1, #stump_items, 1 do
+		World.destroy_unit(world, stump_items[i])
+
+		stump_items[i] = nil
+	end
+end
+
+AIInventoryExtension.unfreeze = function (self)
+	local unit = self.unit
+	self.dropped = false
+	self.wielded = false
+	local item_extension_init_data = {
+		ai_inventory_item_system = {
+			wielding_unit = unit
+		}
+	}
+	local inventory_configuration = InventoryConfigurations[self.inventory_configuration_name]
+	local items_n = self:_setup_configuration(unit, 0, inventory_configuration, item_extension_init_data)
+	self.inventory_items_n = items_n
+	local anim_state_event = inventory_configuration.anim_state_event
+
+	if anim_state_event then
+		Unit.animation_event(unit, anim_state_event)
 	end
 end
 
@@ -243,11 +292,11 @@ AIInventoryExtension.drop_single_item = function (self, item_inventory_index, re
 	end
 
 	local item_unit = self.inventory_item_units[item_inventory_index]
-	local item_system = ScriptUnit.has_extension(item_unit, "ai_inventory_item_system")
+	local item_extension = ScriptUnit.has_extension(item_unit, "ai_inventory_item_system")
 	local item = self.inventory_item_definitions[item_inventory_index]
 	local item_unit_template_name = item.unit_extension_template or "ai_inventory_item"
 
-	if item_system and not item_system.dropped and item.drop_reasons[reason] and item_unit_template_name ~= "ai_helmet_unit" then
+	if item_extension and not item_extension.dropped and item.drop_reasons[reason] and item_unit_template_name ~= "ai_helmet_unit" then
 		if item.drop_unit_name ~= nil then
 			self:_drop_unit(item.drop_unit_name, item_unit, item, item_inventory_index, reason, false, optional_drop_direction)
 			self:disable_inventory_item(item, item_unit)
@@ -272,8 +321,8 @@ AIInventoryExtension.drop_single_item = function (self, item_inventory_index, re
 			Actor.add_angular_velocity(actor, Vector3(math.random(), math.random(), math.random()) * 40)
 			Actor.add_velocity(actor, optional_drop_direction or Vector3(2 * math.random() - 0.5, 2 * math.random() - 0.5, 4.5))
 
-			item_system.wielding_unit = nil
-			item_system.dropped = true
+			item_extension.wielding_unit = nil
+			item_extension.dropped = true
 			item.dropped = true
 		end
 
@@ -383,7 +432,7 @@ AIInventoryExtension.play_hit_sound = function (self, victim_unit, damage_type)
 end
 
 AIInventoryExtension.hot_join_sync = function (self, sender)
-	if self.hidden_item_index and Unit.alive(self.unit) then
+	if self.hidden_item_index and ALIVE[self.unit] then
 		local go_id = Managers.state.unit_storage:go_id(self.unit)
 
 		RPC.rpc_ai_show_single_item(sender, go_id, self.hidden_item_index, false)

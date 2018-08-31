@@ -52,20 +52,12 @@ end
 ScriptUnit.extension_input = function (unit, system_name)
 	local extension = local_extension(unit, system_name)
 
-	if not extension then
-		fassert(extension, "No extension found belonging to system %q for unit %q", tostring(system_name), tostring(unit))
-	end
-
 	return extension.input
 end
 
 ScriptUnit.extension = function (unit, system_name)
 	local unit_extensions = Entities[unit]
 	local extension = unit_extensions and unit_extensions[system_name]
-
-	if not extension then
-		fassert(extension, "No extension found belonging to system %q for unit %q", tostring(system_name), tostring(unit))
-	end
 
 	return extension
 end
@@ -173,6 +165,11 @@ ScriptUnit.extension_definitions = function (unit)
 	end
 
 	return extensions
+end
+
+ScriptUnit.move_extensions = function (unit, new_unit)
+	Entities[new_unit] = Entities[unit]
+	Entities[unit] = nil
 end
 
 ScriptUnit.save_scene_graph = function (unit)

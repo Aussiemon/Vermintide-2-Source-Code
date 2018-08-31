@@ -5,7 +5,7 @@ local function means_true(value)
 end
 
 EacManager.init = function (self)
-	local is_steam_build = means_true(script_data.packaged_build)
+	local is_steam_build = PACKAGED_BUILD
 	local suppress_messages = means_true(script_data["eac-untrusted"]) or not is_steam_build
 	self._suppress_popup = suppress_messages
 	self._suppress_panel = suppress_messages

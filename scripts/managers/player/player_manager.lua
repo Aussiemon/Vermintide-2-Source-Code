@@ -6,6 +6,7 @@ require("scripts/managers/player/player_sync_data")
 
 PlayerManager = class(PlayerManager)
 PlayerManager.MAX_PLAYERS = 4
+PlayerManager.CAMERA_CARRIER_REEVALUATE_PERIOD = 10
 
 PlayerManager.init = function (self)
 	self._players = {}
@@ -13,11 +14,19 @@ PlayerManager.init = function (self)
 	self._num_human_players = 0
 	self._human_players = {}
 	self._unit_owners = {}
+	self._carrier_camera_unit = nil
+	self._camera_carrier_unique_id = nil
+	self._camera_carrier_linked = false
+	self._time_since_reevaluate_camera_carrier = 0
 end
 
 local RPCS = {
 	"rpc_to_client_spawn_player"
 }
+
+PlayerManager.update = function (self, dt)
+	self:_update_camera_carrier(dt)
+end
 
 PlayerManager._unique_id = function (self, peer_id, local_player_id)
 	return peer_id .. ":" .. local_player_id
@@ -68,6 +77,11 @@ PlayerManager.rpc_to_client_spawn_player = function (self, sender, local_player_
 end
 
 PlayerManager.exit_ingame = function (self)
+	if self._carrier_camera_unit ~= nil then
+		self:_detach_carrier_camera()
+		self:_destroy_carrier_camera()
+	end
+
 	if self.is_server then
 		for _, player in pairs(self._players) do
 			if player.remote then
@@ -97,6 +111,8 @@ PlayerManager.assign_unit_ownership = function (self, unit, player, is_player_un
 
 	if is_player_unit then
 		player.player_unit = unit
+
+		self:_reevaluate_camera_carrier()
 	end
 
 	Managers.state.unit_spawner:add_destroy_listener(unit, "player_manager", callback(self, "unit_destroy_callback"))
@@ -127,11 +143,6 @@ PlayerManager.player_from_game_object_id = function (self, game_object_id)
 end
 
 PlayerManager.relinquish_unit_ownership = function (self, unit)
-	if script_data.network_debug_connections then
-		printf("PlayerManager:relinquish_unit_ownership")
-		print(Script.callstack())
-	end
-
 	fassert(self._unit_owners[unit], "[PlayerManager:relinquish_unit_ownership] Unit %s ownership cannot be relinquished, not owned.", unit)
 
 	local unit_owner = self._unit_owners[unit]
@@ -277,12 +288,13 @@ PlayerManager.remove_player = function (self, peer_id, local_player_id)
 		self._num_human_players = self._num_human_players - 1
 	end
 
+	self:_reevaluate_camera_carrier()
 	self._statistics_db:unregister(player:stats_id())
 	player:destroy()
 end
 
 PlayerManager.player = function (self, peer_id, local_player_id)
-	assert(peer_id and local_player_id)
+	assert(peer_id and local_player_id, "Required peer id and local player id.")
 
 	return self:player_from_peer_id(peer_id, local_player_id)
 end
@@ -408,6 +420,137 @@ PlayerManager.bots = function (self)
 	end
 
 	return player_bots
+end
+
+PlayerManager._create_carrier_camera = function (self)
+	assert(self._carrier_camera_unit == nil)
+	assert(DEDICATED_SERVER)
+
+	local unit_name = DefaultUnits.standard.backlit_camera
+	local position = Vector3.zero()
+	local rotation = Quaternion.identity()
+	local camera_unit = Managers.state.unit_spawner:spawn_local_unit(unit_name, position, rotation)
+	self._carrier_camera_unit = camera_unit
+end
+
+PlayerManager._destroy_carrier_camera = function (self)
+	assert(self._carrier_camera_unit ~= nil)
+	assert(DEDICATED_SERVER)
+	Managers.state.unit_spawner:mark_for_deletion(self._carrier_camera_unit)
+
+	self._carrier_camera_unit = nil
+	self._camera_carrier_unique_id = nil
+end
+
+PlayerManager._attach_carrier_camera = function (self, player)
+	assert(DEDICATED_SERVER)
+	assert(player ~= nil)
+
+	if player.player_unit == nil then
+		print(string.format("Failed to switching camera carrier to %s since there is no unit", player:name()))
+
+		return
+	end
+
+	if not Unit.alive(player.player_unit) then
+		print(string.format("Failed to switching camera carrier to %s since the player unit is not alive", player:name()))
+
+		return
+	end
+
+	if self._carrier_camera_unit == nil then
+		self:_create_carrier_camera()
+	end
+
+	local world = Unit.world(player.player_unit)
+
+	World.link_unit(world, self._carrier_camera_unit, player.player_unit)
+
+	self._camera_carrier_unique_id = player:profile_id()
+	self._camera_carrier_linked = true
+end
+
+PlayerManager._detach_carrier_camera = function (self)
+	assert(DEDICATED_SERVER)
+	assert(self._carrier_camera_unit ~= nil)
+
+	if not self._camera_carrier_linked then
+		return
+	end
+
+	local world = Unit.world(self._carrier_camera_unit)
+
+	World.unlink_unit(world, self._carrier_camera_unit)
+
+	self._camera_carrier_linked = false
+end
+
+PlayerManager._most_ahead_player = function (self)
+	local conflict_director = Managers.state.conflict
+
+	if conflict_director == nil then
+		return nil
+	end
+
+	local ahead_unit = conflict_director.main_path_info.ahead_unit
+
+	return self:unit_owner(ahead_unit)
+end
+
+PlayerManager._best_suited_camera_carrier = function (self)
+	local most_ahead = self:_most_ahead_player()
+
+	if most_ahead ~= nil then
+		return most_ahead
+	end
+
+	local leader_peer_id = Managers.party:leader()
+	local players = self:players_at_peer(leader_peer_id)
+
+	if players == nil then
+		return nil
+	end
+
+	return players[1]
+end
+
+PlayerManager._reevaluate_camera_carrier = function (self)
+	self._time_since_reevaluate_camera_carrier = 0
+
+	if not DEDICATED_SERVER then
+		return
+	end
+
+	local carrier_player = self:_best_suited_camera_carrier()
+
+	if self._camera_carrier_linked then
+		local player = self:player_from_unique_id(self._camera_carrier_unique_id)
+
+		if player == carrier_player then
+			return
+		end
+
+		self:_detach_carrier_camera()
+	end
+
+	if carrier_player == nil then
+		return
+	end
+
+	print(string.format("Switching camera carrier to %s", carrier_player:name()))
+	self:_attach_carrier_camera(carrier_player)
+end
+
+PlayerManager._update_camera_carrier = function (self, dt)
+	if not DEDICATED_SERVER then
+		return
+	end
+
+	self._time_since_reevaluate_camera_carrier = self._time_since_reevaluate_camera_carrier + dt
+
+	if PlayerManager.CAMERA_CARRIER_REEVALUATE_PERIOD < self._time_since_reevaluate_camera_carrier then
+		self:_reevaluate_camera_carrier()
+	end
 end
 
 function DEBUG_PLAYERS()

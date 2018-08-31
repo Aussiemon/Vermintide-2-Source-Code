@@ -11,6 +11,7 @@ end
 
 PlayerCharacterStateOverchargeExploding.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
 	CharacterStateHelper.stop_weapon_actions(self.inventory_extension, "exploding")
+	CharacterStateHelper.stop_career_abilities(self.career_extension, "exploding")
 
 	local unit = self.unit
 	local input_extension = self.input_extension
@@ -74,7 +75,7 @@ PlayerCharacterStateOverchargeExploding.explode = function (self)
 		local _, procced = buff_extension:apply_buffs_to_value(0, StatBuffIndex.OVERCHARGE_DAMAGE_IMMUNITY)
 
 		if not procced then
-			DamageUtils.add_damage_network(unit, unit, self_damage, "torso", "overcharge", Vector3(0, 1, 0), "overcharge")
+			DamageUtils.add_damage_network(unit, unit, self_damage, "torso", "overcharge", nil, Vector3(0, 1, 0), "overcharge")
 		end
 	end
 
@@ -150,7 +151,7 @@ PlayerCharacterStateOverchargeExploding.update = function (self, unit, input, dt
 		self.damage_timer = t + 0.5
 
 		if not self.inside_inn then
-			DamageUtils.add_damage_network(unit, unit, 10, "torso", "overcharge", Vector3(0, 0, 1), "overcharge")
+			DamageUtils.add_damage_network(unit, unit, 10, "torso", "overcharge", nil, Vector3(0, 0, 1), "overcharge")
 		end
 
 		Managers.state.controller_features:add_effect("rumble", {

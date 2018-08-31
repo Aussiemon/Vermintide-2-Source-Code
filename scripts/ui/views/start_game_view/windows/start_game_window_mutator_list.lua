@@ -228,9 +228,9 @@ StartGameWindowMutatorList._update_selected_item_backend_id = function (self)
 	end
 
 	if self._selected_backend_id then
-		self.parent.parent:set_input_description("play_available")
+		self.parent:set_input_description("play_available")
 	else
-		self.parent.parent:set_input_description(nil)
+		self.parent:set_input_description(nil)
 	end
 end
 

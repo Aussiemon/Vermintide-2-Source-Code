@@ -13,7 +13,6 @@ SplineCurve.init = function (self, points, class_name, movement_class, name, ...
 	self:_build_splines(splines, points, spline_class)
 
 	self._splines = splines
-	self._points = points
 	self._movement = rawget(_G, movement_class):new(self, splines, spline_class, ...)
 end
 
@@ -216,6 +215,7 @@ SplineMovementHermiteInterpolatedMetered.init = function (self, spline_curve, sp
 	self._current_spline_index = 1
 	self._t = 0
 	self._current_subdivision_index = 1
+	self._current_spline_curve_distance = 0
 
 	self:_build_subdivisions(subdivisions, splines, spline_class)
 end
@@ -315,7 +315,6 @@ end
 SplineMovementHermiteInterpolatedMetered.distance = function (self, from_index, from_subdiv, from_spline_t, to_index, to_subdiv, to_spline_t)
 	local distance = 0
 	local splines = self._splines
-	local len1, len2, len3, len4, len5 = nil
 
 	if to_index < from_index then
 		local from_spline = splines[from_index]
@@ -404,6 +403,9 @@ SplineMovementHermiteInterpolatedMetered.move = function (self, delta)
 
 	if new_t > 1 and self._current_spline_index == #self._splines and self._current_subdivision_index == #current_spline.subdivisions then
 		self._t = 1
+		local remainder = (new_t - 1) * current_subdivision_length
+		local moved_distance = delta - remainder
+		self._current_spline_curve_distance = self._current_spline_curve_distance + moved_distance
 
 		return "end"
 	elseif new_t > 1 then
@@ -415,11 +417,14 @@ SplineMovementHermiteInterpolatedMetered.move = function (self, delta)
 		end
 
 		self._t = 0
-		local remainder = delta - (new_t - 1) * current_subdivision_length
+		local remainder = (new_t - 1) * current_subdivision_length
+		local moved_distance = delta - remainder
+		self._current_spline_curve_distance = self._current_spline_curve_distance + moved_distance
 
 		return self:move(remainder)
 	elseif new_t <= 0 and self._current_spline_index == 1 and self._current_subdivision_index == 1 then
 		self._t = 0
+		self._current_spline_curve_distance = 0
 
 		return "start"
 	elseif new_t < 0 then
@@ -431,20 +436,48 @@ SplineMovementHermiteInterpolatedMetered.move = function (self, delta)
 		end
 
 		self._t = 1
-		local remainder = delta - new_t * current_subdivision_length
+		local remainder = new_t * current_subdivision_length
+		local moved_distance = delta - remainder
+		self._current_spline_curve_distance = self._current_spline_curve_distance + moved_distance
 
 		return self:move(remainder)
 	else
 		self._t = new_t
+		self._current_spline_curve_distance = self._current_spline_curve_distance + delta
 
 		return "moving"
 	end
+end
+
+SplineMovementHermiteInterpolatedMetered.reset_to_start = function (self)
+	self._current_spline_index = 1
+	self._current_subdivision_index = 1
+	self._t = 0
+	self._current_spline_curve_distance = 0
+end
+
+SplineMovementHermiteInterpolatedMetered.reset_to_end = function (self)
+	local current_spline = self:_current_spline()
+	self._current_spline_index = #self._splines
+	self._current_subdivision_index = #current_spline.subdivisions
+	self._t = 1
+	local from_spline_index = 1
+	local from_subdivision_index = 1
+	local from_t = 0
+	local to_spline_index = self._current_spline_index
+	local to_subdivision_index = self._current_subdivision_index
+	local to_t = self._t
+	self._current_spline_curve_distance = self:distance(from_spline_index, from_subdivision_index, from_t, to_spline_index, to_subdivision_index, to_t)
 end
 
 SplineMovementHermiteInterpolatedMetered.set_spline_index = function (self, spline_index, subdivision_index, t)
 	self._current_spline_index = spline_index
 	self._current_subdivision_index = subdivision_index
 	self._t = t
+	local from_spline_index = 1
+	local from_subdivision_index = 1
+	local from_t = 0
+	self._current_spline_curve_distance = self:distance(from_spline_index, from_subdivision_index, from_t, spline_index, subdivision_index, t)
 end
 
 SplineMovementHermiteInterpolatedMetered.current_spline_index = function (self)
@@ -457,6 +490,10 @@ end
 
 SplineMovementHermiteInterpolatedMetered.current_t = function (self)
 	return self._t
+end
+
+SplineMovementHermiteInterpolatedMetered.current_spline_curve_distance = function (self)
+	return self._current_spline_curve_distance
 end
 
 return

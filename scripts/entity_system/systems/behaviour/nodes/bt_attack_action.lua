@@ -31,7 +31,8 @@ BTAttackAction.enter = function (self, unit, blackboard, t)
 	blackboard.target_speed = 0
 	blackboard.moving_attack = action.moving_attack
 	local target_unit = blackboard.target_unit
-	local target_unit_status_extension = (ScriptUnit.has_extension(target_unit, "status_system") and ScriptUnit.extension(target_unit, "status_system")) or nil
+	local target_unit_status_extension = ScriptUnit.has_extension(target_unit, "status_system")
+	local target_unit_slot_extension = ScriptUnit.has_extension(target_unit, "ai_slot_system")
 	local attack = self:_select_attack(action, unit, target_unit, blackboard, target_unit_status_extension)
 	local attack_anim = randomize(attack.anims)
 	blackboard.attack_anim = attack_anim
@@ -62,9 +63,9 @@ BTAttackAction.enter = function (self, unit, blackboard, t)
 
 		target_unit_status_extension:add_attack_intensity(attack_intensity * (0.75 + 0.5 * math.random()))
 
-		local is_behind_player = AiUtils.unit_is_behind_player(unit, target_unit)
+		local is_flanking = AiUtils.unit_is_flanking_player(unit, target_unit)
 		local breed = blackboard.breed
-		local should_backstab = breed.use_backstab_vo and blackboard.total_slots_count < 5 and is_behind_player
+		local should_backstab = breed.use_backstab_vo and is_flanking and target_unit_slot_extension and target_unit_slot_extension.num_occupied_slots <= 5
 
 		if should_backstab then
 			DialogueSystem:TriggerBackstab(target_unit, unit, blackboard)
@@ -331,14 +332,13 @@ BTAttackAction.get_attack_cooldown_finished_at = function (self, unit, blackboar
 		return false, 0
 	end
 
-	local has_ai_slot_extension = ScriptUnit.has_extension(attacking_target, "ai_slot_system")
+	local target_unit_slot_extension = ScriptUnit.has_extension(attacking_target, "ai_slot_system")
 
-	if not has_ai_slot_extension then
+	if not target_unit_slot_extension then
 		return false, 0
 	end
 
-	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
-	local slots_n = ai_slot_system:slots_count(attacking_target)
+	local slots_n = target_unit_slot_extension.num_occupied_slots
 
 	if slots_n == 0 then
 		return false, 0

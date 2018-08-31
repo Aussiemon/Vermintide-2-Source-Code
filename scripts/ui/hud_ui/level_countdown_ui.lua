@@ -22,8 +22,6 @@ LevelCountdownUI.init = function (self, ingame_ui_context)
 		normal = Colors.get_table("font_default"),
 		selected = Colors.get_table("font_title")
 	}
-
-	self.network_event_delegate:register(self, "rpc_start_game_countdown", "rpc_stop_enter_game_countdown")
 end
 
 LevelCountdownUI.create_ui_elements = function (self)
@@ -59,15 +57,8 @@ LevelCountdownUI.update = function (self, dt)
 	if start_time and max_start_time then
 		if self:update_enter_game_counter(start_time, max_start_time, dt) then
 			self:draw(dt)
-
-			if not self._timer_active then
-				self.ingame_ui:handle_transition("close_active")
-
-				self._timer_active = true
-			end
 		else
 			self.last_timer_value = max_start_time
-			self._timer_active = false
 		end
 	end
 end
@@ -82,41 +73,7 @@ LevelCountdownUI.draw = function (self, dt)
 
 	UIRenderer.begin_pass(ui_renderer, self.ui_scenegraph, input_service, dt)
 	UIRenderer.draw_widget(ui_renderer, self.countdown_widget)
-
-	local w = RESOLUTION_LOOKUP.res_w
-	local h = RESOLUTION_LOOKUP.res_h
-	local inverse_scale = RESOLUTION_LOOKUP.inv_scale
-
 	UIRenderer.end_pass(ui_renderer)
-end
-
-LevelCountdownUI.rpc_start_game_countdown = function (self, sender)
-	self.ingame_ui:handle_transition("close_active")
-	self:start_enter_game_counter()
-end
-
-LevelCountdownUI.rpc_stop_enter_game_countdown = function (self, sender)
-	self:stop_enter_game_countdown()
-end
-
-LevelCountdownUI.start_enter_game_counter = function (self)
-	self.enter_game_started = true
-	self.enter_game = true
-	self.anim_t = 0
-	self.last_timer_value = 0
-	local widget = self.countdown_widget
-	local widget_content = widget.content
-	widget_content.timer_text = 0
-	local input_manager = self.input_manager
-
-	self:play_sound("Play_hud_matchmaking_countdown_enter")
-end
-
-LevelCountdownUI.stop_enter_game_countdown = function (self)
-	self.enter_game = nil
-	self.enter_game_started = nil
-	self.last_timer_value = nil
-	self._timer_active = nil
 end
 
 LevelCountdownUI.update_enter_game_counter = function (self, start_time, max_start_time, dt)
@@ -126,16 +83,15 @@ LevelCountdownUI.update_enter_game_counter = function (self, start_time, max_sta
 	local colors = self.colors
 	local new_timer_value = math.round(start_time)
 	local draw = new_timer_value ~= max_start_time
+	local play_sound_event = nil
 
 	if new_timer_value ~= self.last_timer_value then
 		if new_timer_value ~= 0 then
-			self:play_sound("Play_hud_matchmaking_countdown")
-
+			play_sound_event = "Play_hud_matchmaking_countdown"
 			widget_content.timer_text = new_timer_value
 			self.color_timer = 0
 		else
-			self:play_sound("Play_hud_matchmaking_countdown_final")
-
+			play_sound_event = "Play_hud_matchmaking_countdown_final"
 			widget_content.timer_text = ""
 		end
 
@@ -155,6 +111,10 @@ LevelCountdownUI.update_enter_game_counter = function (self, start_time, max_sta
 		end
 	end
 
+	if draw and play_sound_event then
+		self:play_sound(play_sound_event)
+	end
+
 	if start_time <= 0 then
 		self.matchmaking_manager:countdown_completed()
 	end
@@ -167,20 +127,7 @@ LevelCountdownUI.play_sound = function (self, event)
 end
 
 LevelCountdownUI.destroy = function (self)
-	self.network_event_delegate:unregister(self)
-	self:stop_enter_game_countdown()
-end
-
-LevelCountdownUI.set_waystone_activation = function (enable)
-	local waystone_unit = LevelCountdownUI._get_waystone_unit()
-
-	if waystone_unit == nil then
-		return
-	end
-
-	local event = (enable and "activate") or "deactivate"
-
-	Unit.flow_event(waystone_unit, event)
+	return
 end
 
 LevelCountdownUI._get_start_time = function (self)
@@ -194,12 +141,28 @@ LevelCountdownUI._get_start_time = function (self)
 		local status_extension = ScriptUnit.extension(unit, "props_system")
 
 		if status_extension then
-			local max_start_time = status_extension:end_time()
-			local current_start_time = status_extension:end_time_left()
+			local activated = status_extension:activated()
 
-			return current_start_time, max_start_time
+			if activated then
+				local max_start_time = status_extension:end_time()
+				local current_start_time = status_extension:end_time_left()
+
+				return current_start_time, max_start_time
+			end
 		end
 	end
+end
+
+LevelCountdownUI.set_waystone_activation = function (enable)
+	local waystone_unit = LevelCountdownUI._get_waystone_unit()
+
+	if waystone_unit == nil then
+		return
+	end
+
+	local event = (enable and "activate") or "deactivate"
+
+	Unit.flow_event(waystone_unit, event)
 end
 
 LevelCountdownUI._get_waystone_unit = function ()

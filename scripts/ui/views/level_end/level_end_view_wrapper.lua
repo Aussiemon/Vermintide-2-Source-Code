@@ -80,7 +80,7 @@ end
 LevelEndViewWrapper._create_input_service = function (self)
 	local input_manager = Managers.input
 
-	input_manager:create_input_service("end_of_level", "IngameMenuKeymaps", "IngameMenuFilters")
+	input_manager:create_input_service("end_of_level", "IngameMenuKeymaps", "EndLevelViewKeymapsFilters")
 	input_manager:map_device_to_service("end_of_level", "keyboard")
 	input_manager:map_device_to_service("end_of_level", "mouse")
 	input_manager:map_device_to_service("end_of_level", "gamepad")

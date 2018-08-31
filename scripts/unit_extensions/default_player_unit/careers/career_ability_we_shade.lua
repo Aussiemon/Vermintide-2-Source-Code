@@ -37,6 +37,12 @@ CareerAbilityWEShade.update = function (self, unit, input, dt, context, t)
 	end
 end
 
+CareerAbilityWEShade.stop = function (self, reason)
+	if self._is_priming then
+		self:_stop_priming()
+	end
+end
+
 CareerAbilityWEShade._ability_available = function (self)
 	local career_extension = self._career_extension
 	local status_extension = self._status_extension
@@ -53,6 +59,7 @@ CareerAbilityWEShade._run_ability = function (self)
 	local network_transmit = network_manager.network_transmit
 	local buff_extension = self._buff_extension
 	local career_extension = self._career_extension
+	local status_extension = self._status_extension
 	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 	local buff_name = "kerillian_shade_activated_ability"
 
@@ -84,8 +91,6 @@ CareerAbilityWEShade._run_ability = function (self)
 	end
 
 	if local_player or (is_server and bot_player) then
-		local status_extension = self._status_extension
-
 		status_extension:set_invisible(true)
 		status_extension:set_noclip(true)
 
@@ -93,9 +98,6 @@ CareerAbilityWEShade._run_ability = function (self)
 			"Play_career_ability_kerillian_shade_enter",
 			"Play_career_ability_kerillian_shade_loop_husk"
 		}
-		local network_manager = Managers.state.network
-		local network_transmit = network_manager.network_transmit
-		local is_server = Managers.player.is_server
 		local unit_id = network_manager:unit_game_object_id(owner_unit)
 		local node_id = 0
 
@@ -108,6 +110,14 @@ CareerAbilityWEShade._run_ability = function (self)
 				network_transmit:send_rpc_server("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
 			end
 		end
+	end
+
+	if Managers.state.network:game() then
+		status_extension:set_is_dodging(true)
+
+		local unit_id = network_manager:unit_game_object_id(owner_unit)
+
+		network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.dodging, true, unit_id, 0)
 	end
 
 	career_extension:start_activated_ability_cooldown()

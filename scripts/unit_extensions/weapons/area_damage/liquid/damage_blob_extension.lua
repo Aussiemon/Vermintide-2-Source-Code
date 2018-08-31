@@ -130,7 +130,7 @@ DamageBlobExtension._remove_blob = function (self, blob, blob_index, blobs)
 	local ai_units_inside_blob = blob[5]
 
 	for target_unit, inside_id in pairs(ai_units_inside_blob) do
-		if unit_alive(target_unit) then
+		if ALIVE[target_unit] then
 			buff_system:remove_server_controlled_buff(target_unit, inside_id)
 		end
 
@@ -176,7 +176,7 @@ DamageBlobExtension.destroy = function (self)
 		local ai_units_inside_blob = blob[5]
 
 		for target_unit, inside_id in pairs(ai_units_inside_blob) do
-			if unit_alive(target_unit) then
+			if ALIVE[target_unit] then
 				buff_system:remove_server_controlled_buff(target_unit, inside_id)
 			end
 		end
@@ -536,7 +536,7 @@ DamageBlobExtension.update_blob_overlaps = function (self, t)
 
 			for target_unit, inside_id in pairs(ai_units_inside_blob) do
 				if not inside_this_frame[target_unit] then
-					if unit_alive(target_unit) then
+					if ALIVE[target_unit] then
 						buff_system:remove_server_controlled_buff(target_unit, inside_id)
 					end
 
@@ -657,7 +657,7 @@ DamageBlobExtension._debug_render_blobs = function (self)
 		local ai_units_inside_blob = blob[5]
 
 		for unit, _ in pairs(ai_units_inside_blob) do
-			if unit_alive(unit) then
+			if ALIVE[unit] then
 				local pos = position_lookup[unit]
 
 				QuickDrawer:sphere(pos, 0.5, Color(70, 146, 60))

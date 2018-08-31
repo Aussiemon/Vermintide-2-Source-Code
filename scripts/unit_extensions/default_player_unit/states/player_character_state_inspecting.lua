@@ -11,6 +11,7 @@ PlayerCharacterStateInspecting.on_enter = function (self, unit, input, dt, conte
 	CharacterStateHelper.change_camera_state(self.player, "follow_third_person")
 	self.first_person_extension:set_first_person_mode(false)
 	CharacterStateHelper.stop_weapon_actions(self.inventory_extension, "inspecting")
+	CharacterStateHelper.stop_career_abilities(self.career_extension, "inspecting")
 	CharacterStateHelper.play_animation_event(unit, "idle")
 	CharacterStateHelper.play_animation_event_first_person(self.first_person_extension, "idle")
 	self.status_extension:set_inspecting(true)
@@ -31,6 +32,14 @@ PlayerCharacterStateInspecting.update = function (self, unit, input, dt, context
 	local status_extension = self.status_extension
 
 	if CharacterStateHelper.do_common_state_transitions(status_extension, csm) then
+		return
+	end
+
+	local world = self.world
+
+	if CharacterStateHelper.is_ledge_hanging(world, unit, self.temp_params) then
+		csm:change_state("ledge_hanging", self.temp_params)
+
 		return
 	end
 

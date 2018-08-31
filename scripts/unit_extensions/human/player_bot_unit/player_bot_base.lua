@@ -1,6 +1,6 @@
 require("scripts/unit_extensions/human/ai_player_unit/ai_brain")
 
-local alive = Unit.alive
+local unit_alive = Unit.alive
 local BLACKBOARDS = BLACKBOARDS
 local PROXIMITY_CHECK_RANGE = 5
 local PROXIMITY_CHECK_RANGE_ALLY_NEEDS_AID = 4.5
@@ -336,10 +336,11 @@ PlayerBotBase._update_blackboard = function (self, dt, t)
 	local unit = self._unit
 	local target_unit = bb.target_unit
 
-	if alive(target_unit) then
+	if ALIVE[target_unit] then
 		bb.target_dist = Vector3.distance(POSITION_LOOKUP[target_unit], POSITION_LOOKUP[unit])
 	else
 		bb.target_dist = math.huge
+		bb.target_unit = nil
 	end
 
 	for _, action_data in pairs(bb.utility_actions) do
@@ -395,11 +396,12 @@ end
 local BROADPHASE_QUERY_TEMP = {}
 
 PlayerBotBase._update_proximity_target = function (self, dt, t, self_position)
+	local blackboard = self._blackboard
+
 	if self._proximity_target_update_timer < t then
-		local blackboard = self._blackboard
 		local self_unit = self._unit
 		self._proximity_target_update_timer = t + 0.25 + Math.random() * 0.15
-		local prox_enemies = self._blackboard.proximite_enemies
+		local prox_enemies = blackboard.proximite_enemies
 
 		table.clear(prox_enemies)
 
@@ -408,7 +410,7 @@ PlayerBotBase._update_proximity_target = function (self, dt, t, self_position)
 		blackboard.force_aid = false
 		local search_position = nil
 
-		if alive(blackboard.target_ally_unit) and blackboard.target_ally_needs_aid and self:within_aid_range(blackboard) then
+		if ALIVE[blackboard.target_ally_unit] and blackboard.target_ally_needs_aid and self:within_aid_range(blackboard) then
 			search_position = POSITION_LOOKUP[blackboard.target_ally_unit]
 			local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 			local is_prioritized = ai_bot_group_system:is_prioritized_ally(self_unit, blackboard.target_ally_unit)
@@ -462,6 +464,9 @@ PlayerBotBase._update_proximity_target = function (self, dt, t, self_position)
 		end
 
 		blackboard.proximity_target_distance = closest_real_dist
+	elseif blackboard.proximity_target_enemy and not ALIVE[blackboard.proximity_target_enemy] then
+		blackboard.proximity_target_enemy = nil
+		blackboard.proximity_target_distance = math.huge
 	end
 end
 
@@ -502,7 +507,7 @@ PlayerBotBase._update_slot_target = function (self, dt, t, self_position)
 
 	local ally_unit = bb.target_ally_unit
 
-	if alive(ally_unit) then
+	if ALIVE[ally_unit] then
 		local enemy_targetting_ally = self:_get_closest_target_in_slot(pos, ally_unit, current_target)
 
 		if enemy_targetting_ally then
@@ -519,7 +524,7 @@ PlayerBotBase._update_slot_target = function (self, dt, t, self_position)
 	for _, player in pairs(players) do
 		local player_unit = player.player_unit
 
-		if alive(player_unit) and player_unit ~= ally_unit and player_unit ~= unit then
+		if ALIVE[player_unit] and player_unit ~= ally_unit and player_unit ~= unit then
 			local target, dist = self:_get_closest_target_in_slot(pos, player_unit, current_target)
 
 			if dist < best_dist then
@@ -556,7 +561,7 @@ PlayerBotBase._get_closest_target_in_slot = function (self, position, unit, curr
 			for slot_index, slot in pairs(slot_data) do
 				local enemy_unit = slot.ai_unit
 
-				if alive(enemy_unit) and ScriptUnit.extension(enemy_unit, "health_system"):is_alive() then
+				if ALIVE[enemy_unit] and ScriptUnit.extension(enemy_unit, "health_system"):is_alive() then
 					local dist = Vector3.length(POSITION_LOOKUP[enemy_unit] - position)
 
 					if enemy_unit == current_enemy_unit then
@@ -1011,7 +1016,7 @@ PlayerBotBase._should_re_evaluate_vortex_escape = function (self, current_positi
 	local re_evaluate_destination = false
 	local escape_completed = false
 
-	if Unit.alive(vortex_unit) then
+	if ALIVE[vortex_unit] then
 		local vortex_extension = ScriptUnit.extension(vortex_unit, "ai_supplementary_system")
 		escape_completed = not vortex_extension:is_position_inside(current_position, VORTEX_ESCAPE_DISTANCE)
 	else
@@ -1133,7 +1138,7 @@ PlayerBotBase._update_pickups = function (self, dt, t)
 	local blackboard = self._blackboard
 	blackboard.needs_ammo = false
 	local target_unit = blackboard.priority_target_enemy or blackboard.target_unit
-	local has_target = alive(target_unit)
+	local has_target = ALIVE[target_unit]
 	local ammo_percentage = (has_target and 0.1) or 0.9
 	local inventory_extension = blackboard.inventory_extension
 	local current, num_max = inventory_extension:current_ammo_status("slot_ranged")
@@ -1188,7 +1193,7 @@ PlayerBotBase._update_interactables = function (self, dt, t)
 			blackboard.interaction_unit = best_unit
 			blackboard.interaction_type = best_interaction_type
 		end
-	elseif alive(blackboard.interaction_unit) then
+	elseif unit_alive(blackboard.interaction_unit) then
 		local door_ext = ScriptUnit.has_extension(blackboard.interaction_unit, "door_system")
 
 		if door_ext and door_ext:is_open() then
@@ -1253,7 +1258,7 @@ PlayerBotBase._in_line_of_fire = function (self, self_unit, self_pos, take_cover
 	for attacker, victim in pairs(take_cover_targets) do
 		local already_in_cover_from = taking_cover_from[attacker]
 
-		if alive(victim) and (victim == self_unit or line_of_fire_check(POSITION_LOOKUP[attacker], POSITION_LOOKUP[victim], self_pos, (already_in_cover_from and sticky_width) or width, length)) then
+		if ALIVE[victim] and (victim == self_unit or line_of_fire_check(POSITION_LOOKUP[attacker], POSITION_LOOKUP[victim], self_pos, (already_in_cover_from and sticky_width) or width, length)) then
 			TAKE_COVER_TEMP_TABLE[attacker] = victim
 			changed = changed or not already_in_cover_from
 			in_line_of_fire = true
@@ -1398,11 +1403,11 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 	local target_ally_need_type = blackboard.target_ally_need_type
 	local target_ally_has_moved_from_start_position = true
 
-	if alive(target_ally_unit) then
+	if ALIVE[target_ally_unit] then
 		local ally_status_extension = ScriptUnit.extension(target_ally_unit, "status_system")
 		local transport_unit = ally_status_extension:get_inside_transport_unit()
 
-		if alive(transport_unit) and not blackboard.target_ally_needs_aid then
+		if unit_alive(transport_unit) and not blackboard.target_ally_needs_aid then
 			blackboard.ally_inside_transport_unit = transport_unit
 			local transportation_ext = ScriptUnit.extension(blackboard.ally_inside_transport_unit, "transportation_system")
 			local has_valid_transportation_unit = transportation_ext.story_state == "stopped_beginning"
@@ -1501,10 +1506,10 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 				blackboard.target_ally_aid_destination:store(target_position)
 
 				path_callback = callback(self, "cb_ally_path_result", target_ally_unit)
-			elseif goal_selection_func_name and alive(target_ally_unit) then
+			elseif goal_selection_func_name and ALIVE[target_ally_unit] then
 				local func = LocomotionUtils[goal_selection_func_name]
 				target_position = func(nav_world, unit, target_ally_unit)
-			elseif alive(blackboard.health_pickup) and blackboard.allowed_to_take_health_pickup and t < blackboard.health_pickup_valid_until and (self._last_health_pickup_attempt.unit ~= blackboard.health_pickup or not self._last_health_pickup_attempt.blacklist) then
+			elseif unit_alive(blackboard.health_pickup) and blackboard.allowed_to_take_health_pickup and t < blackboard.health_pickup_valid_until and (self._last_health_pickup_attempt.unit ~= blackboard.health_pickup or not self._last_health_pickup_attempt.blacklist) then
 				local pickup_unit = blackboard.health_pickup
 				target_position = self:_find_pickup_position_on_navmesh(nav_world, self_pos, pickup_unit, self._last_health_pickup_attempt)
 
@@ -1512,7 +1517,7 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 					path_callback = callback(self, "cb_health_pickup_path_result", pickup_unit)
 					blackboard.interaction_unit = pickup_unit
 				end
-			elseif alive(blackboard.mule_pickup) and (self._last_mule_pickup_attempt.unit ~= blackboard.mule_pickup or not self._last_mule_pickup_attempt.blacklist) then
+			elseif unit_alive(blackboard.mule_pickup) and (self._last_mule_pickup_attempt.unit ~= blackboard.mule_pickup or not self._last_mule_pickup_attempt.blacklist) then
 				local pickup_unit = blackboard.mule_pickup
 				target_position = self:_find_pickup_position_on_navmesh(nav_world, self_pos, pickup_unit, self._last_mule_pickup_attempt)
 
@@ -1522,7 +1527,7 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 				end
 			end
 
-			if not target_position and alive(blackboard.ammo_pickup) and blackboard.needs_ammo and t < blackboard.ammo_pickup_valid_until then
+			if not target_position and unit_alive(blackboard.ammo_pickup) and blackboard.needs_ammo and t < blackboard.ammo_pickup_valid_until then
 				local ammo_position = POSITION_LOOKUP[blackboard.ammo_pickup]
 				local dir = Vector3.normalize(self_pos - ammo_position)
 				local above = 0.5
@@ -1710,7 +1715,7 @@ PlayerBotBase._debug_draw_update = function (self, dt)
 	local ally = blackboard.target_ally_unit
 	local radius_offset = self._player:local_player_id() * 0.05
 
-	if alive(enemy) then
+	if ALIVE[enemy] then
 		local enemy_pose = Unit.world_pose(enemy, 0)
 		local z_offset = 1.5 + radius_offset
 
@@ -1719,7 +1724,7 @@ PlayerBotBase._debug_draw_update = function (self, dt)
 		drawer:box(enemy_pose, Vector3(0.5 + radius_offset, 0.5 + radius_offset, z_offset), color)
 	end
 
-	if alive(ally) then
+	if ALIVE[ally] then
 		drawer:circle(POSITION_LOOKUP[ally] + Vector3(0, 0, 0.2), 0.6 + radius_offset, Vector3.up(), color, 16)
 	end
 
@@ -1757,7 +1762,7 @@ PlayerBotBase.cb_enemy_path_result = function (self, enemy_unit, success, destin
 	path_status.last_path_destination:store(destination)
 
 	for unit, path in pairs(paths) do
-		if not alive(unit) then
+		if not unit_alive(unit) then
 			paths[unit] = nil
 		end
 	end
@@ -1819,7 +1824,7 @@ PlayerBotBase.cb_ally_path_result = function (self, ally_unit, success, destinat
 	end
 
 	for unit, path in pairs(paths) do
-		if not alive(unit) then
+		if not unit_alive(unit) then
 			paths[unit] = nil
 		end
 	end

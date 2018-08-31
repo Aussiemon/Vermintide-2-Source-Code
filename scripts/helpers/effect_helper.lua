@@ -57,19 +57,28 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 	local decal_settings = effect_settings.decal and effect_settings.decal.settings
 
 	if decal_settings then
-		local projector_rotation = rotation
-		local projection_position = position
-		local projector_space = Matrix4x4.from_quaternion_position(projector_rotation, projection_position)
-		local projector_extents = Vector3(decal_settings.height, decal_settings.width, decal_settings.depth)
+		local decal_system = Managers.state.decal
 
-		Managers.state.decal:add_projection_decal(effect_name, material, hit_unit, hit_actor, projection_position, projector_rotation, projector_extents, normal, rotation)
+		if decal_system ~= nil then
+			local extents = Vector3(decal_settings.height, decal_settings.width, decal_settings.depth)
+			local material_surface_decals = EffectHelper.create_surface_material_drawer_mapping(effect_name)
+			local decal_unit_name = material_surface_decals[material]
+
+			if not Application.can_get("unit", decal_unit_name) then
+				decal_unit_name = "units/projection_decals/projection_test_01"
+
+				Application.warning("[DecalManager] There is no decal_unit_name specified for effect: %q with material: %q--> Using Default: %q", effect_name, material, decal_unit_name)
+			end
+
+			decal_system:add_projection_decal(decal_unit_name, hit_unit, hit_actor, position, rotation, extents, normal)
+		end
 
 		if script_data.debug_material_effects then
 			local drawer = Managers.state.debug:drawer({
 				mode = "retained",
 				name = "DEBUG_DRAW_IMPACT_DECAL_HIT"
 			})
-			local drawer_space = Matrix4x4.from_quaternion_position(projector_rotation, projection_position + (Quaternion.forward(projector_rotation) * decal_settings.depth) / 2)
+			local drawer_space = Matrix4x4.from_quaternion_position(rotation, position + (Quaternion.forward(rotation) * decal_settings.depth) / 2)
 			local drawer_extents = Vector3(decal_settings.width / 2, decal_settings.depth / 2, decal_settings.height / 2)
 
 			drawer:box(drawer_space, drawer_extents, Color(150, 0, 255, 0))
@@ -96,7 +105,7 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 		end
 
 		if sound_character then
-			WwiseWorld.set_switch(wwise_world, "character", sound_character, wwise_source_id)
+			WwiseWorld.set_switch(wwise_world, "character_foley", sound_character, wwise_source_id)
 		end
 
 		WwiseWorld.set_switch(wwise_world, "husk", (husk and "true") or "false", wwise_source_id)
@@ -230,6 +239,18 @@ EffectHelper.player_critical_hit = function (world, is_critical_hit, attacker_un
 		return
 	end
 
+	local player = Managers.player:owner(attacker_unit)
+
+	if not player then
+		return
+	end
+
+	local local_real_player = player.local_player and not player.bot_player
+
+	if not local_real_player then
+		return
+	end
+
 	local critical_hit_hud_sound_event = "Play_player_combat_crit_hit_2D"
 	local first_person_extension = ScriptUnit.extension(attacker_unit, "first_person_system")
 
@@ -246,7 +267,7 @@ EffectHelper.player_melee_hit_particles = function (world, particles_name, hit_p
 	World.create_particles(world, particles_name, hit_position, hit_rotation)
 
 	if damage_type and damage_type ~= "no_damage" then
-		Managers.state.blood:spawn_blood_ball(hit_position, hit_direction, damage_type, hit_unit)
+		Managers.state.blood:add_blood_ball(hit_position, hit_direction, damage_type, hit_unit)
 	end
 end
 
@@ -349,6 +370,27 @@ EffectHelper.create_surface_material_drawer_mapping = function (effect_name)
 	return EffectHelper.temporary_material_drawer_mapping
 end
 
+EffectHelper.flow_cb_play_surface_material_effect = function (effect_name, unit, position, rotation, normal, sound_character, husk, offset, range)
+	local raycast_offset = offset or 0.6
+	local raycast_direction = -normal
+	local raycast_position = position + normal * raycast_offset
+	local raycast_range = range or 3
+	local debug = script_data.debug_material_effects
+	local world = Managers.world:world("level_world")
+	local physics_world = World.get_data(world, "physics_world")
+	local hit, position, distance, hit_normal, actor = PhysicsWorld.immediate_raycast(physics_world, raycast_position, raycast_direction, raycast_range, "closest", "types", "both", "collision_filter", "filter_ground_material_check")
+
+	if hit then
+		local hit_unit = Actor.unit(actor)
+		local rotation = Unit.world_rotation(unit, 0)
+		local up = Quaternion.up(rotation)
+		local forward = Quaternion.forward(rotation)
+		rotation = Quaternion.look(forward, up)
+
+		EffectHelper.play_surface_material_effects(effect_name, world, hit_unit, position, rotation, hit_normal, sound_character, husk, unit)
+	end
+end
+
 EffectHelper.flow_cb_play_footstep_surface_material_effects = function (effect_name, unit, object, foot_direction)
 	local foot_node_index = Unit.node(unit, object)
 	local raycast_offset = MaterialEffectSettings.footstep_raycast_offset
@@ -412,7 +454,7 @@ EffectHelper.flow_cb_play_footstep_surface_material_effects = function (effect_n
 					printf("   sound param: \"sound_character\", sound_value %q", sound_character)
 				end
 
-				WwiseWorld.set_switch(wwise_world, "character", sound_character, wwise_source_id)
+				WwiseWorld.set_switch(wwise_world, "character_foley", sound_character, wwise_source_id)
 			end
 
 			WwiseWorld.trigger_event(wwise_world, sound.event, wwise_source_id)
@@ -427,8 +469,8 @@ local material = {
 EffectHelper.query_material_surface = function (hit_unit, position, normal)
 	local query_forward = normal
 	local query_vector = query_forward * MaterialEffectSettings.material_query_depth
-	local query_start_position = position - query_vector / 2
-	local query_end_position = position + query_vector / 2
+	local query_start_position = position + query_vector / 2
+	local query_end_position = position - query_vector / 2
 
 	return Unit.query_material(hit_unit, query_start_position, query_end_position, material)
 end

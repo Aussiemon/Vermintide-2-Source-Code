@@ -42,9 +42,12 @@ if not rawget(_G, "G_IS_PROFILING") and PLATFORM == "win32" and BUILD ~= "releas
 
 	local exclude_from_patching = to_map({
 		"alive",
+		"is_valid",
 		"remove_decal",
 		"material_id",
-		"resource_name_hash"
+		"resource_name_hash",
+		"set_frozen",
+		"is_frozen"
 	})
 
 	for function_name, org_func in pairs(Unit) do
@@ -74,6 +77,9 @@ if not rawget(_G, "G_IS_PROFILING") and PLATFORM == "win32" and BUILD ~= "releas
 				end
 
 				local err_unit = unit_alive_info(unit)
+				local is_valid = (Unit.is_valid and Unit.is_valid(unit)) or "unknown"
+				local is_frozen = Unit.is_frozen(unit)
+				local go_id = (Managers.state and Managers.state.storage and Managers.state.storage.map_goid_to_unit[unit]) or "unknown"
 				local args = ""
 				local num_args = select("#", ...)
 

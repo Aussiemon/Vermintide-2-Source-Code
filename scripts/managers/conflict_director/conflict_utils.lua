@@ -173,7 +173,7 @@ ConflictUtils.average_player_position = function ()
 	for k, player in pairs(players) do
 		local unit = player.player_unit
 
-		if Unit.alive(unit) then
+		if ALIVE[unit] then
 			local pos = POSITION_LOOKUP[unit]
 			player_center_pos = player_center_pos + pos
 			player_count = player_count + 1

@@ -14,18 +14,17 @@ COLD_CAMERA_BACKLIGHT = {
 }
 LevelSettings = LevelSettings or {}
 LevelSettings.combat = {
-	display_name = "level_combat",
+	level_name = "levels/honduras/debug/combat/world",
+	player_aux_bus_name = "environment_reverb_outside",
 	ambient_sound_event = "silent_default_world_sound",
 	environment_state = "exterior",
-	player_aux_bus_name = "environment_reverb_outside",
-	package_name = "resource_packages/levels/honduras/debug/combat",
-	use_mini_patrols = true,
-	unlockable = false,
+	display_name = "level_combat",
 	level_image = "level_image_any",
-	boss_spawning_method = "hand_placed",
+	unlockable = false,
+	use_mini_patrols = true,
 	loading_ui_package_name = "loading_screen_1",
 	knocked_down_setting = "knocked_down",
-	level_name = "levels/honduras/debug/combat/world",
+	package_name = "resource_packages/levels/honduras/debug/combat",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
@@ -42,13 +41,6 @@ LevelSettings.combat = {
 		player_light_intensity = 0.1,
 		volumes = {
 			"environment_darkness"
-		}
-	},
-	map_settings = {
-		area = "helmgart",
-		map_location = {
-			1700,
-			0
 		}
 	}
 }
@@ -67,12 +59,7 @@ LevelSettings.sound = {
 	level_screen_effects = {
 		"fx/screenspace_raindrops"
 	},
-	locations = {},
-	map_settings = {
-		sorting = 1,
-		icon = "level_location_dlc_icon_01",
-		area = "world"
-	}
+	locations = {}
 }
 LevelSettings.whitebox = {
 	display_name = "Whitebox_Debug_Level",
@@ -87,12 +74,7 @@ LevelSettings.whitebox = {
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
-	locations = {},
-	map_settings = {
-		sorting = 1,
-		icon = "level_location_dlc_icon_01",
-		area = "world"
-	}
+	locations = {}
 }
 LevelSettings.farmlands = {
 	act_unlock_order = 0,
@@ -105,10 +87,11 @@ LevelSettings.farmlands = {
 	loading_ui_package_name = "loading_screen_7",
 	unlockable = true,
 	description_text = "nik_loading_screen_farmland_01",
-	boss_spawning_method = "hand_placed",
+	main_game_level = true,
 	act_presentation_order = 1,
 	level_image = "level_icon_09",
 	use_mini_patrols = false,
+	boss_spawning_method = "hand_placed",
 	default_surface_material = "dirt",
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras/farmlands/world",
@@ -116,7 +99,7 @@ LevelSettings.farmlands = {
 	level_particle_effects = {},
 	level_screen_effects = {},
 	pickup_settings = {
-		{
+		default = {
 			primary = {
 				ammo = 4,
 				potions = 4,
@@ -136,6 +119,27 @@ LevelSettings.farmlands = {
 				healing = 3,
 				potions = 6
 			}
+		},
+		normal = {
+			primary = {
+				ammo = 8,
+				potions = 8,
+				grenades = 8,
+				healing = {
+					first_aid_kit = 8,
+					healing_draught = 6
+				},
+				level_events = {
+					explosive_barrel = 4,
+					lamp_oil = 4
+				}
+			},
+			secondary = {
+				ammo = 6,
+				grenades = 8,
+				healing = 6,
+				potions = 12
+			}
 		}
 	},
 	loading_screen_wwise_events = {
@@ -149,14 +153,6 @@ LevelSettings.farmlands = {
 		"location_farmlands_farmstead_01",
 		"location_farmlands_farmstead_02",
 		"location_farmlands_farmstead_03"
-	},
-	map_settings = {
-		icon = "map_icon_farmlands",
-		area = "helmgart",
-		map_location = {
-			1450,
-			260
-		}
 	}
 }
 LevelSettings.catacombs = {
@@ -170,10 +166,11 @@ LevelSettings.catacombs = {
 	loading_ui_package_name = "loading_screen_4",
 	unlockable = true,
 	level_image = "level_icon_03",
-	use_mini_patrols = false,
+	main_game_level = true,
 	act_presentation_order = 2,
 	description_text = "nik_loading_screen_catacombs_02",
 	boss_spawning_method = "hand_placed",
+	use_mini_patrols = false,
 	default_surface_material = "stone",
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras/catacombs/world",
@@ -181,7 +178,7 @@ LevelSettings.catacombs = {
 	level_particle_effects = {},
 	level_screen_effects = {},
 	pickup_settings = {
-		{
+		default = {
 			primary = {
 				ammo = 7,
 				potions = 4,
@@ -194,13 +191,34 @@ LevelSettings.catacombs = {
 					explosive_barrel = 4,
 					lamp_oil = 4
 				}
+			},
+			secondary = {
+				ammo = 2,
+				grenades = 2,
+				healing = 2,
+				potions = 2
 			}
 		},
-		secondary = {
-			ammo = 2,
-			grenades = 2,
-			healing = 2,
-			potions = 2
+		normal = {
+			primary = {
+				ammo = 14,
+				potions = 8,
+				grenades = 8,
+				healing = {
+					first_aid_kit = 6,
+					healing_draught = 10
+				},
+				level_events = {
+					explosive_barrel = 4,
+					lamp_oil = 4
+				}
+			},
+			secondary = {
+				ammo = 6,
+				grenades = 8,
+				healing = 6,
+				potions = 12
+			}
 		}
 	},
 	loading_screen_wwise_events = {
@@ -224,14 +242,6 @@ LevelSettings.catacombs = {
 		"location_catacombs_large_cave_catacombs",
 		"location_catacombs_cave_road_to_ritual",
 		"location_catacombs_ritual_room"
-	},
-	map_settings = {
-		icon = "map_icon_shalya",
-		area = "helmgart",
-		map_location = {
-			515,
-			530
-		}
 	}
 }
 LevelSettings.elven_ruins = {
@@ -245,8 +255,9 @@ LevelSettings.elven_ruins = {
 	loading_ui_package_name = "loading_screen_6",
 	unlockable = true,
 	level_image = "level_icon_05",
-	act_presentation_order = 1,
+	main_game_level = true,
 	description_text = "nik_loading_screen_elven_ruins_02",
+	act_presentation_order = 1,
 	boss_spawning_method = "hand_placed",
 	default_surface_material = "forest_grass",
 	knocked_down_setting = "knocked_down",
@@ -256,7 +267,7 @@ LevelSettings.elven_ruins = {
 	level_screen_effects = {},
 	locations = {},
 	pickup_settings = {
-		{
+		default = {
 			primary = {
 				ammo = 3,
 				potions = 3,
@@ -276,6 +287,27 @@ LevelSettings.elven_ruins = {
 				healing = 6,
 				potions = 5
 			}
+		},
+		normal = {
+			primary = {
+				ammo = 6,
+				potions = 6,
+				grenades = 6,
+				healing = {
+					first_aid_kit = 6,
+					healing_draught = 8
+				},
+				level_events = {
+					explosive_barrel = 3,
+					lamp_oil = 3
+				}
+			},
+			secondary = {
+				ammo = 8,
+				grenades = 10,
+				healing = 12,
+				potions = 10
+			}
 		}
 	},
 	loading_screen_wwise_events = {
@@ -290,38 +322,36 @@ LevelSettings.elven_ruins = {
 		"location_elven_start",
 		"location_elven_puzzle",
 		"location_elven_cave"
-	},
-	map_settings = {
-		icon = "map_icon_elven_ruins",
-		area = "helmgart",
-		map_location = {
-			762,
-			787
-		}
 	}
 }
 LevelSettings.mines = {
 	act_unlock_order = 2,
 	display_name = "level_name_mines",
-	player_aux_bus_name = "environment_reverb_outside",
-	environment_state = "exterior",
 	level_name = "levels/honduras/mines/world",
-	act = "act_1",
-	loading_ui_package_name = "loading_screen_2",
-	use_mini_patrols = false,
-	level_image = "level_icon_02",
-	unlockable = true,
+	environment_state = "exterior",
 	description_text = "nik_loading_screen_mines_01",
-	act_presentation_order = 3,
-	boss_spawning_method = "hand_placed",
+	act = "act_1",
+	level_image = "level_icon_02",
+	loading_ui_package_name = "loading_screen_2",
+	main_game_level = true,
 	ambient_sound_event = "silent_default_world_sound",
+	unlockable = true,
+	boss_spawning_method = "hand_placed",
+	act_presentation_order = 3,
+	player_aux_bus_name = "environment_reverb_outside",
 	default_surface_material = "stone",
+	use_mini_patrols = false,
 	knocked_down_setting = "knocked_down",
 	package_name = "resource_packages/levels/honduras/mines",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
 	camera_backlight = COLD_CAMERA_BACKLIGHT,
+	boss_events = {
+		max_events_of_this_kind = {
+			event_boss = 1
+		}
+	},
 	darkness_settings = {
 		disable_screen_fx = true,
 		player_light_intensity = 0.15,
@@ -331,7 +361,7 @@ LevelSettings.mines = {
 		}
 	},
 	pickup_settings = {
-		{
+		default = {
 			primary = {
 				ammo = 5,
 				potions = 4,
@@ -344,13 +374,34 @@ LevelSettings.mines = {
 					explosive_barrel = 4,
 					lamp_oil = 4
 				}
+			},
+			secondary = {
+				ammo = 2,
+				grenades = 3,
+				healing = 2,
+				potions = 2
 			}
 		},
-		secondary = {
-			ammo = 2,
-			grenades = 3,
-			healing = 2,
-			potions = 2
+		normal = {
+			primary = {
+				ammo = 10,
+				potions = 8,
+				grenades = 8,
+				healing = {
+					first_aid_kit = 6,
+					healing_draught = 10
+				},
+				level_events = {
+					explosive_barrel = 4,
+					lamp_oil = 4
+				}
+			},
+			secondary = {
+				ammo = 4,
+				grenades = 6,
+				healing = 4,
+				potions = 4
+			}
 		}
 	},
 	loading_screen_wwise_events = {
@@ -371,14 +422,6 @@ LevelSettings.mines = {
 		"location_mines_troll_pantry",
 		"location_mines_large_troll_cave",
 		"location_mines_end_event_cave"
-	},
-	map_settings = {
-		icon = "map_icon_mines",
-		area = "helmgart",
-		map_location = {
-			187,
-			371
-		}
 	}
 }
 LevelSettings.ground_zero = {
@@ -393,9 +436,10 @@ LevelSettings.ground_zero = {
 	loading_ui_package_name = "loading_screen_10",
 	unlockable = true,
 	level_image = "level_icon_04",
-	act_presentation_order = 4,
+	main_game_level = true,
 	description_text = "nik_loading_screen_ground_zero_01",
 	boss_spawning_method = "hand_placed",
+	act_presentation_order = 4,
 	default_surface_material = "dirt",
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras/ground_zero/world",
@@ -404,7 +448,7 @@ LevelSettings.ground_zero = {
 	level_screen_effects = {},
 	locations = {},
 	pickup_settings = {
-		{
+		default = {
 			primary = {
 				ammo = 4,
 				potions = 3,
@@ -424,6 +468,27 @@ LevelSettings.ground_zero = {
 				healing = 5,
 				potions = 5
 			}
+		},
+		normal = {
+			primary = {
+				ammo = 8,
+				potions = 6,
+				grenades = 6,
+				healing = {
+					first_aid_kit = 4,
+					healing_draught = 6
+				},
+				level_events = {
+					explosive_barrel = 3,
+					lamp_oil = 3
+				}
+			},
+			secondary = {
+				ammo = 8,
+				grenades = 10,
+				healing = 10,
+				potions = 10
+			}
 		}
 	},
 	loading_screen_wwise_events = {
@@ -439,14 +504,6 @@ LevelSettings.ground_zero = {
 		"location_ground_zero_center_2",
 		"location_ground_zero_boss",
 		"location_ground_zero_end"
-	},
-	map_settings = {
-		icon = "map_icon_ground_zero",
-		area = "helmgart",
-		map_location = {
-			265,
-			586
-		}
 	}
 }
 LevelSettings.fort = {
@@ -459,9 +516,10 @@ LevelSettings.fort = {
 	loading_ui_package_name = "loading_screen_8",
 	unlockable = true,
 	level_name = "levels/honduras/fort/world",
-	act_presentation_order = 3,
+	main_game_level = true,
 	level_image = "level_icon_06",
 	description_text = "nik_loading_screen_fort_01",
+	act_presentation_order = 3,
 	boss_spawning_method = "hand_placed",
 	default_surface_material = "stone_wet",
 	knocked_down_setting = "knocked_down",
@@ -482,7 +540,7 @@ LevelSettings.fort = {
 		"location_fort_north_bridge"
 	},
 	pickup_settings = {
-		{
+		default = {
 			primary = {
 				ammo = 5,
 				potions = 5,
@@ -492,7 +550,7 @@ LevelSettings.fort = {
 					healing_draught = 6
 				},
 				level_events = {
-					explosive_barrel = 3,
+					explosive_barrel = 2,
 					lamp_oil = 2
 				}
 			},
@@ -502,19 +560,32 @@ LevelSettings.fort = {
 				healing = 5,
 				potions = 4
 			}
+		},
+		normal = {
+			primary = {
+				ammo = 10,
+				potions = 10,
+				grenades = 12,
+				healing = {
+					first_aid_kit = 12,
+					healing_draught = 12
+				},
+				level_events = {
+					explosive_barrel = 4,
+					lamp_oil = 4
+				}
+			},
+			secondary = {
+				ammo = 10,
+				grenades = 8,
+				healing = 10,
+				potions = 8
+			}
 		}
 	},
 	loading_screen_wwise_events = {
 		"nik_loading_screen_fort_01",
 		"nik_loading_screen_fort_02"
-	},
-	map_settings = {
-		icon = "map_icon_fort",
-		area = "helmgart",
-		map_location = {
-			1000,
-			570
-		}
 	}
 }
 LevelSettings.ussingen = {
@@ -528,11 +599,12 @@ LevelSettings.ussingen = {
 	level_image = "level_icon_10",
 	unlockable = true,
 	use_mini_patrols = true,
-	level_name = "levels/honduras/ussingen/world",
+	main_game_level = true,
 	loading_ui_package_name = "loading_screen_11",
 	description_text = "nik_loading_screen_ussingen_02",
 	act_presentation_order = 2,
 	boss_spawning_method = "hand_placed",
+	level_name = "levels/honduras/ussingen/world",
 	default_surface_material = "dirt",
 	knocked_down_setting = "knocked_down",
 	package_name = "resource_packages/levels/honduras/ussingen",
@@ -553,7 +625,7 @@ LevelSettings.ussingen = {
 		"location_ussingen_leaving_town"
 	},
 	pickup_settings = {
-		{
+		default = {
 			primary = {
 				ammo = 4,
 				potions = 3,
@@ -574,14 +646,14 @@ LevelSettings.ussingen = {
 				potions = 5
 			}
 		},
-		{
+		normal = {
 			primary = {
-				ammo = 4,
-				potions = 3,
-				grenades = 3,
+				ammo = 8,
+				potions = 6,
+				grenades = 6,
 				healing = {
-					first_aid_kit = 2,
-					healing_draught = 3
+					first_aid_kit = 4,
+					healing_draught = 6
 				},
 				level_events = {
 					explosive_barrel = 3,
@@ -589,91 +661,16 @@ LevelSettings.ussingen = {
 				}
 			},
 			secondary = {
-				ammo = 3,
-				grenades = 5,
-				healing = 5,
-				potions = 5
-			}
-		},
-		{
-			primary = {
-				ammo = 4,
-				potions = 3,
-				grenades = 3,
-				healing = {
-					first_aid_kit = 2,
-					healing_draught = 3
-				},
-				level_events = {
-					explosive_barrel = 3,
-					lamp_oil = 3
-				}
-			},
-			secondary = {
-				ammo = 3,
-				grenades = 5,
-				healing = 5,
-				potions = 5
-			}
-		},
-		{
-			primary = {
-				ammo = 4,
-				potions = 3,
-				grenades = 3,
-				healing = {
-					first_aid_kit = 2,
-					healing_draught = 3
-				},
-				level_events = {
-					explosive_barrel = 3,
-					lamp_oil = 3
-				}
-			},
-			secondary = {
-				ammo = 3,
-				grenades = 5,
-				healing = 5,
-				potions = 5
-			}
-		},
-		{
-			primary = {
-				ammo = 4,
-				potions = 3,
-				grenades = 3,
-				healing = {
-					first_aid_kit = 2,
-					healing_draught = 3
-				},
-				level_events = {
-					explosive_barrel = 0,
-					lamp_oil = 0
-				}
-			},
-			secondary = {
-				ammo = 3,
-				grenades = 5,
-				healing = 5,
-				potions = 5
+				ammo = 6,
+				grenades = 10,
+				healing = 10,
+				potions = 10
 			}
 		}
 	},
 	loading_screen_wwise_events = {
 		"nik_loading_screen_ussingen_01",
 		"nik_loading_screen_ussingen_02"
-	},
-	map_settings = {
-		icon = "map_icon_ussingen",
-		area = "helmgart",
-		map_location = {
-			1275,
-			358
-		},
-		wwise_events = {
-			"nik_map_brief_ussingen_01",
-			"nik_map_brief_ussingen_02"
-		}
 	}
 }
 LevelSettings.ussingen_demo = {
@@ -750,14 +747,6 @@ LevelSettings.ussingen_demo = {
 				lamp_oil = 3
 			}
 		}
-	},
-	map_settings = {
-		icon = "map_icon_ussingen",
-		area = "helmgart",
-		map_location = {
-			1320,
-			313
-		}
 	}
 }
 LevelSettings.skaven_stronghold = {
@@ -772,9 +761,10 @@ LevelSettings.skaven_stronghold = {
 	loading_ui_package_name = "loading_screen_3",
 	unlockable = true,
 	level_image = "level_icon_08",
-	act_presentation_order = 4,
+	main_game_level = true,
 	description_text = "nik_loading_screen_skaven_stronghold_01",
 	boss_spawning_method = "hand_placed",
+	act_presentation_order = 4,
 	default_surface_material = "stone",
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras/skaven_stronghold/world",
@@ -794,7 +784,7 @@ LevelSettings.skaven_stronghold = {
 		"location_stronghold_warlord_nest"
 	},
 	pickup_settings = {
-		{
+		default = {
 			primary = {
 				ammo = 4,
 				potions = 4,
@@ -814,19 +804,32 @@ LevelSettings.skaven_stronghold = {
 				healing = 4,
 				potions = 4
 			}
+		},
+		normal = {
+			primary = {
+				ammo = 8,
+				potions = 8,
+				grenades = 8,
+				healing = {
+					first_aid_kit = 10,
+					healing_draught = 10
+				},
+				level_events = {
+					explosive_barrel = 4,
+					lamp_oil = 4
+				}
+			},
+			secondary = {
+				ammo = 8,
+				grenades = 8,
+				healing = 8,
+				potions = 8
+			}
 		}
 	},
 	loading_screen_wwise_events = {
 		"nik_loading_screen_skaven_stronghold_01",
 		"nik_loading_screen_skaven_stronghold_02"
-	},
-	map_settings = {
-		icon = "map_icon_skaven_stronghold",
-		area = "helmgart",
-		map_location = {
-			956,
-			240
-		}
 	}
 }
 LevelSettings.military = {
@@ -840,10 +843,11 @@ LevelSettings.military = {
 	loading_ui_package_name = "loading_screen_13",
 	unlockable = true,
 	level_image = "level_icon_01",
-	use_mini_patrols = false,
+	main_game_level = true,
 	act_presentation_order = 1,
 	description_text = "nik_loading_screen_helmgart_military_01",
 	boss_spawning_method = "hand_placed",
+	use_mini_patrols = false,
 	default_surface_material = "stone",
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras/military/world",
@@ -851,7 +855,7 @@ LevelSettings.military = {
 	level_particle_effects = {},
 	level_screen_effects = {},
 	pickup_settings = {
-		{
+		default = {
 			primary = {
 				ammo = 4,
 				potions = 4,
@@ -864,13 +868,34 @@ LevelSettings.military = {
 					explosive_barrel = 4,
 					lamp_oil = 4
 				}
+			},
+			secondary = {
+				ammo = 3,
+				grenades = 2,
+				healing = 2,
+				potions = 2
 			}
 		},
-		secondary = {
-			ammo = 3,
-			grenades = 2,
-			healing = 2,
-			potions = 2
+		normal = {
+			primary = {
+				ammo = 4,
+				potions = 8,
+				grenades = 8,
+				healing = {
+					first_aid_kit = 6,
+					healing_draught = 10
+				},
+				level_events = {
+					explosive_barrel = 4,
+					lamp_oil = 4
+				}
+			},
+			secondary = {
+				ammo = 6,
+				grenades = 8,
+				healing = 6,
+				potions = 12
+			}
 		}
 	},
 	loading_screen_wwise_events = {
@@ -891,14 +916,6 @@ LevelSettings.military = {
 		"location_military_wall_03",
 		"location_military_road_to_temple",
 		"location_military_temple"
-	},
-	map_settings = {
-		icon = "map_icon_military",
-		area = "helmgart",
-		map_location = {
-			510,
-			230
-		}
 	}
 }
 LevelSettings.prologue = {
@@ -912,6 +929,7 @@ LevelSettings.prologue = {
 	boss_spawning_method = "hand_placed",
 	unlockable = true,
 	game_mode = "tutorial",
+	main_game_level = true,
 	conflict_settings = "tutorial",
 	level_image = "level_icon_01",
 	use_mini_patrols = false,
@@ -943,18 +961,19 @@ LevelSettings.skittergate = {
 	loading_ui_package_name = "loading_screen_14",
 	unlockable = true,
 	description_text = "nik_loading_screen_skittergate_01",
-	boss_spawning_method = "hand_placed",
+	main_game_level = true,
 	act_presentation_order = 1,
 	level_image = "level_icon_13",
 	use_mini_patrols = false,
 	default_surface_material = "dirt",
+	boss_spawning_method = "hand_placed",
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras/skittergate/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
 	pickup_settings = {
-		{
+		default = {
 			primary = {
 				ammo = 8,
 				potions = 7,
@@ -974,6 +993,27 @@ LevelSettings.skittergate = {
 				healing = 5,
 				potions = 4
 			}
+		},
+		normal = {
+			primary = {
+				ammo = 16,
+				potions = 14,
+				grenades = 14,
+				healing = {
+					first_aid_kit = 16,
+					healing_draught = 16
+				},
+				level_events = {
+					explosive_barrel = 4,
+					lamp_oil = 4
+				}
+			},
+			secondary = {
+				ammo = 10,
+				grenades = 8,
+				healing = 10,
+				potions = 8
+			}
 		}
 	},
 	loading_screen_wwise_events = {
@@ -989,14 +1029,6 @@ LevelSettings.skittergate = {
 		"location_skittergate_norsca_sea",
 		"location_skittergate_rotblood_docks",
 		"location_skittergate_rotblood_camp"
-	},
-	map_settings = {
-		icon = "map_icon_skittergate",
-		area = "helmgart",
-		map_location = {
-			0,
-			0
-		}
 	},
 	required_acts = {
 		"act_1",
@@ -1015,10 +1047,11 @@ LevelSettings.bell = {
 	loading_ui_package_name = "loading_screen_1",
 	unlockable = true,
 	description_text = "nik_loading_screen_bell_01",
-	boss_spawning_method = "hand_placed",
+	main_game_level = true,
 	act_presentation_order = 2,
 	level_image = "level_icon_07",
 	use_mini_patrols = false,
+	boss_spawning_method = "hand_placed",
 	default_surface_material = "stone_wet",
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras/bell/world",
@@ -1026,7 +1059,7 @@ LevelSettings.bell = {
 	level_particle_effects = {},
 	level_screen_effects = {},
 	pickup_settings = {
-		{
+		default = {
 			primary = {
 				ammo = 6,
 				potions = 6,
@@ -1045,6 +1078,27 @@ LevelSettings.bell = {
 				grenades = 5,
 				healing = 5,
 				potions = 5
+			}
+		},
+		normal = {
+			primary = {
+				ammo = 12,
+				potions = 12,
+				grenades = 12,
+				healing = {
+					first_aid_kit = 10,
+					healing_draught = 10
+				},
+				level_events = {
+					explosive_barrel = 4,
+					lamp_oil = 4
+				}
+			},
+			secondary = {
+				ammo = 12,
+				grenades = 10,
+				healing = 10,
+				potions = 10
 			}
 		}
 	},
@@ -1066,14 +1120,6 @@ LevelSettings.bell = {
 		"location_bell_mountain",
 		"location_bell_northside",
 		"location_bell_platz"
-	},
-	map_settings = {
-		icon = "map_icon_bell",
-		area = "helmgart",
-		map_location = {
-			720,
-			400
-		}
 	}
 }
 LevelSettings.nurgle = {
@@ -1086,11 +1132,12 @@ LevelSettings.nurgle = {
 	act = "act_3",
 	loading_ui_package_name = "loading_screen_5",
 	boss_spawning_method = "hand_placed",
-	description_text = "nik_loading_screen_nurgle_01",
+	main_game_level = true,
 	unlockable = true,
 	level_image = "level_icon_11",
 	act_presentation_order = 3,
 	use_mini_patrols = false,
+	description_text = "nik_loading_screen_nurgle_01",
 	default_surface_material = "mud",
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras/nurgle/world",
@@ -1098,7 +1145,7 @@ LevelSettings.nurgle = {
 	level_particle_effects = {},
 	level_screen_effects = {},
 	pickup_settings = {
-		{
+		default = {
 			primary = {
 				ammo = 5,
 				potions = 4,
@@ -1111,13 +1158,34 @@ LevelSettings.nurgle = {
 					explosive_barrel = 4,
 					lamp_oil = 4
 				}
+			},
+			secondary = {
+				ammo = 4,
+				grenades = 2,
+				healing = 4,
+				potions = 2
 			}
 		},
-		secondary = {
-			ammo = 4,
-			grenades = 2,
-			healing = 4,
-			potions = 2
+		normal = {
+			primary = {
+				ammo = 10,
+				potions = 8,
+				grenades = 8,
+				healing = {
+					first_aid_kit = 6,
+					healing_draught = 6
+				},
+				level_events = {
+					explosive_barrel = 4,
+					lamp_oil = 4
+				}
+			},
+			secondary = {
+				ammo = 8,
+				grenades = 4,
+				healing = 8,
+				potions = 4
+			}
 		}
 	},
 	loading_screen_wwise_events = {
@@ -1146,14 +1214,6 @@ LevelSettings.nurgle = {
 		volumes = {
 			"environment_darkness"
 		}
-	},
-	map_settings = {
-		icon = "map_icon_nurgle",
-		area = "helmgart",
-		map_location = {
-			1440,
-			520
-		}
 	}
 }
 LevelSettings.warcamp = {
@@ -1168,10 +1228,11 @@ LevelSettings.warcamp = {
 	loading_ui_package_name = "loading_screen_12",
 	unlockable = true,
 	description_text = "nik_loading_screen_chaos_war_camp_01",
-	boss_spawning_method = "hand_placed",
+	main_game_level = true,
 	act_presentation_order = 4,
 	level_image = "level_icon_12",
 	use_mini_patrols = false,
+	boss_spawning_method = "hand_placed",
 	default_surface_material = "mud",
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras/warcamp/world",
@@ -1179,7 +1240,7 @@ LevelSettings.warcamp = {
 	level_particle_effects = {},
 	level_screen_effects = {},
 	pickup_settings = {
-		{
+		default = {
 			primary = {
 				ammo = 5,
 				potions = 4,
@@ -1190,7 +1251,7 @@ LevelSettings.warcamp = {
 				},
 				level_events = {
 					explosive_barrel = 2,
-					lamp_oil = 3
+					lamp_oil = 2
 				}
 			},
 			secondary = {
@@ -1198,6 +1259,27 @@ LevelSettings.warcamp = {
 				grenades = 3,
 				healing = 3,
 				potions = 2
+			}
+		},
+		normal = {
+			primary = {
+				ammo = 10,
+				potions = 8,
+				grenades = 8,
+				healing = {
+					first_aid_kit = 6,
+					healing_draught = 10
+				},
+				level_events = {
+					explosive_barrel = 2,
+					lamp_oil = 3
+				}
+			},
+			secondary = {
+				ammo = 8,
+				grenades = 6,
+				healing = 6,
+				potions = 4
 			}
 		}
 	},
@@ -1218,15 +1300,22 @@ LevelSettings.warcamp = {
 		"location_warcamp_middle",
 		"location_warcamp_upper",
 		"location_warcamp_arena"
-	},
-	map_settings = {
-		icon = "map_icon_warcamp",
-		area = "helmgart",
-		map_location = {
-			1252,
-			652
-		}
 	}
+}
+LevelSettings.pierre_nilsson = {
+	display_name = "pierre_nilsson",
+	package_name = "resource_packages/levels/honduras/debug/pierre_nilsson",
+	environment_state = "exterior",
+	player_aux_bus_name = "environment_reverb_outside",
+	ambient_sound_event = "silent_default_world_sound",
+	knocked_down_setting = "knocked_down",
+	level_name = "levels/honduras/debug/pierre_nilsson/world",
+	level_image = "level_image_any",
+	loading_ui_package_name = "loading_screen_1",
+	source_aux_bus_name = "environment_reverb_outside_source",
+	level_particle_effects = {},
+	level_screen_effects = {},
+	locations = {}
 }
 
 return

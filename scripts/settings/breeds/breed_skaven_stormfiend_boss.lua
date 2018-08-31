@@ -946,31 +946,25 @@ local action_data = {
 		}
 	},
 	shoot = {
-		weapon_setup = "ratling_gun",
-		minimum_length = 2,
-		sync_with_linked_unit = false,
-		aim_start_offset = -1,
+		fire_rate_at_start = 20,
 		firing_time = 3.5,
 		fire_rate_at_end = 40,
-		max_fire_rate_at_percentage = 0.75,
-		start_distance = 4,
-		afro_hit_sound = "bullet_pass_by",
-		beam_sfx_stop_event = "Stop_stormfiend_torch_loop",
-		projectile_max_range = 50,
-		action_weight = 1,
-		global_sound_parameter = "stormfiend_mood",
 		environment_max_intensity = 100,
-		fire_rate_at_start = 20,
-		attack_template = "shot_machinegun",
-		projectile_speed = 80,
 		beam_sfx_start_event = "Play_stormfiend_torch_loop",
 		damage_type = "warpfire_ground",
-		hit_effect = "ratling_gunner",
-		maximum_length = 15,
+		start_distance = 4,
 		warpfire_switch_range = 8,
+		aim_start_offset = -1,
 		environment_intensity_increase_per_firewall = 10,
-		impact_push_speed = 3,
-		light_weight_projectile_particle_effect = "stormfiend_gun_bullet",
+		sync_with_linked_unit = false,
+		minimum_length = 2,
+		maximum_length = 15,
+		beam_sfx_stop_event = "Stop_stormfiend_torch_loop",
+		action_weight = 1,
+		max_fire_rate_at_percentage = 0.75,
+		global_sound_parameter = "stormfiend_mood",
+		weapon_setup = "ratling_gun",
+		light_weight_projectile_template_name = "stormfiend_boss",
 		considerations = UtilityConsiderations.stormfiend_boss_shoot,
 		ratling_gun_switch_range = math.huge,
 		aim_constraint_target = {
@@ -1113,38 +1107,6 @@ local action_data = {
 			skaven_rat_ogre = true,
 			skaven_stormfiend = true
 		},
-		attack_power_level = {
-			20,
-			40,
-			60,
-			80,
-			120
-		},
-		power_distribution = {
-			attack = 0.3,
-			impact = 0.7
-		},
-		cleave_distribution = {
-			attack = 0.25,
-			impact = 0.25
-		},
-		armour_modifier = {
-			attack = {
-				1,
-				0.5,
-				2.5,
-				1,
-				1.5
-			},
-			impact = {
-				1,
-				1,
-				0,
-				1,
-				1.5
-			}
-		},
-		spread = math.degrees_to_radians(4.5),
 		bot_threats = {
 			attack_fire_left_arm = {
 				{
@@ -1199,30 +1161,24 @@ local action_data = {
 		}
 	},
 	dual_shoot_intro = {
-		action_weight = 2,
-		minimum_length = 2,
-		damage_type = "warpfire_ground",
-		stop_shoot_sfx = "Stop_stormfiend_shooting_loop",
-		firing_time = 2,
-		fire_rate_at_end = 35,
-		max_fire_rate_at_percentage = 0.35,
-		start_distance = 4,
-		projectile_max_range = 50,
-		aim_start_offset = -1,
-		weapon_setup = "ratling_gun",
-		attack_time = 4,
 		fire_rate_at_start = 25,
+		minimum_length = 2,
+		firing_time = 2,
+		aim_start_offset = -1,
 		rotation_time = 2,
-		attack_template = "shot_machinegun",
-		projectile_speed = 80,
+		fire_rate_at_end = 35,
+		stop_shoot_sfx = "Stop_stormfiend_shooting_loop",
+		max_fire_rate_at_percentage = 0.35,
 		attack_animation = "intro_frenzy",
-		afro_hit_sound = "bullet_pass_by",
-		hit_effect = "ratling_gunner",
+		light_weight_projectile_template_name = "stormfiend_boss_dual_intro",
+		damage_type = "warpfire_ground",
+		start_distance = 4,
 		maximum_length = 15,
 		warpfire_switch_range = 8,
-		impact_push_speed = 2.5,
-		light_weight_projectile_particle_effect = "stormfiend_gun_bullet",
+		action_weight = 2,
 		shoot_sfx = "Play_stormfiend_shooting_loop",
+		weapon_setup = "ratling_gun",
+		attack_time = 4,
 		considerations = UtilityConsiderations.stormfiend_boss_shoot,
 		ratling_gun_switch_range = math.huge,
 		damage = {
@@ -1298,65 +1254,27 @@ local action_data = {
 			skaven_warpfire_thrower = true,
 			skaven_rat_ogre = true,
 			skaven_stormfiend = true
-		},
-		attack_power_level = {
-			40,
-			80,
-			120,
-			160,
-			180
-		},
-		power_distribution = {
-			attack = 0.3,
-			impact = 0.7
-		},
-		cleave_distribution = {
-			attack = 0.25,
-			impact = 0.25
-		},
-		armour_modifier = {
-			attack = {
-				1,
-				0.5,
-				2.5,
-				1,
-				1.5
-			},
-			impact = {
-				1,
-				1,
-				0,
-				1,
-				1.5
-			}
-		},
-		spread = math.degrees_to_radians(4)
+		}
 	},
 	dual_shoot_narrow = {
-		action_weight = 2,
-		minimum_length = 2,
-		damage_type = "warpfire_ground",
-		stop_shoot_sfx = "Stop_stormfiend_shooting_loop",
-		firing_time = 1.2,
-		fire_rate_at_end = 35,
-		max_fire_rate_at_percentage = 0.35,
-		start_distance = 4,
-		projectile_max_range = 50,
-		aim_start_offset = -1,
-		weapon_setup = "ratling_gun",
-		attack_time = 3,
 		fire_rate_at_start = 35,
+		minimum_length = 2,
+		firing_time = 1.2,
+		aim_start_offset = -1,
 		rotation_time = 1,
-		attack_template = "shot_machinegun",
-		projectile_speed = 80,
+		fire_rate_at_end = 35,
+		stop_shoot_sfx = "Stop_stormfiend_shooting_loop",
+		max_fire_rate_at_percentage = 0.35,
 		attack_animation = "attack_fire_dual_narrow",
-		afro_hit_sound = "bullet_pass_by",
-		hit_effect = "ratling_gunner",
+		light_weight_projectile_template_name = "stormfiend_boss_narrow",
+		damage_type = "warpfire_ground",
+		start_distance = 4,
 		maximum_length = 15,
 		warpfire_switch_range = 8,
-		impact_push_speed = 2.5,
-		light_weight_projectile_particle_effect = "stormfiend_gun_bullet",
+		action_weight = 2,
 		shoot_sfx = "Play_stormfiend_shooting_loop",
+		weapon_setup = "ratling_gun",
+		attack_time = 3,
 		considerations = UtilityConsiderations.stormfiend_boss_dual_shoot,
 		ratling_gun_switch_range = math.huge,
 		damage = {
@@ -1432,39 +1350,7 @@ local action_data = {
 			skaven_warpfire_thrower = true,
 			skaven_rat_ogre = true,
 			skaven_stormfiend = true
-		},
-		attack_power_level = {
-			40,
-			80,
-			120,
-			160,
-			180
-		},
-		power_distribution = {
-			attack = 0.3,
-			impact = 0.7
-		},
-		cleave_distribution = {
-			attack = 0.25,
-			impact = 0.25
-		},
-		armour_modifier = {
-			attack = {
-				1,
-				0.5,
-				2.5,
-				1,
-				1.5
-			},
-			impact = {
-				1,
-				1,
-				0,
-				1,
-				1.5
-			}
-		},
-		spread = math.degrees_to_radians(4)
+		}
 	},
 	smash_door = {
 		unblockable = true,

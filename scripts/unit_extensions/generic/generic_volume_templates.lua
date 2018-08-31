@@ -14,14 +14,14 @@ GenericVolumeTemplates.functions = {
 					}
 				}
 				local buff_extension = ScriptUnit.extension(unit, "buff_system")
-				data.buff_id = buff_extension:add_buff("damage_volume_generic_dot", params)
+				data[unit] = buff_extension:add_buff("damage_volume_generic_dot", params)
 			end,
 			on_exit = function (unit, data)
 				local buff_extension = ScriptUnit.extension(unit, "buff_system")
 
-				buff_extension:remove_buff(data.buff_id)
+				buff_extension:remove_buff(data[unit])
 
-				data.buff_id = nil
+				data[unit] = nil
 			end
 		},
 		generic_insta_kill = {
@@ -39,14 +39,20 @@ GenericVolumeTemplates.functions = {
 					attacker_unit = unit
 				}
 				local is_server_controlled = true
-				data.buff_id = buff_system:add_buff(unit, "catacombs_corpse_pit", unit, is_server_controlled)
+				data[unit] = buff_system:add_buff(unit, "catacombs_corpse_pit", unit, is_server_controlled)
 			end,
 			on_exit = function (unit, data)
+				local buff_id = data[unit]
+
+				if buff_id == nil then
+					return
+				end
+
 				local buff_system = Managers.state.entity:system("buff_system")
 
-				buff_system:remove_server_controlled_buff(unit, data.buff_id)
+				buff_system:remove_server_controlled_buff(unit, buff_id)
 
-				data.buff_id = nil
+				data[unit] = nil
 			end
 		}
 	},
@@ -99,6 +105,19 @@ GenericVolumeTemplates.functions = {
 			end
 		},
 		all_alive_players_outside = {
+			on_exit = function (unit, data)
+				local volume_system = Managers.state.entity:system("volume_system")
+
+				if not volume_system:volume_has_units_inside(data.volume_name) then
+					local event = data.params.event_on_triggered
+
+					if event then
+						Level.trigger_event(data.level, event)
+					end
+				end
+			end
+		},
+		all_alive_players_outside_no_alive_inside = {
 			on_exit = function (unit, data)
 				local volume_system = Managers.state.entity:system("volume_system")
 
@@ -165,19 +184,6 @@ GenericVolumeTemplates.functions = {
 
 					data.params.player_entered = false
 				end
-			end,
-			on_destroy = function (unit, data)
-				local volume_system = Managers.state.entity:system("volume_system")
-
-				if not volume_system:volume_has_units_inside(data.volume_name) then
-					local event = data.params.event_on_exit
-
-					if event then
-						Level.trigger_event(data.level, event)
-					end
-
-					data.params.player_entered = false
-				end
 			end
 		}
 	},
@@ -191,6 +197,7 @@ GenericVolumeTemplates.functions = {
 }
 GenericVolumeTemplates.functions.damage_volume.warpstone_meteor = GenericVolumeTemplates.functions.damage_volume.generic_dot
 GenericVolumeTemplates.functions.damage_volume.cemetery_plague_floor = GenericVolumeTemplates.functions.damage_volume.generic_dot
+GenericVolumeTemplates.functions.damage_volume.generic_fire = GenericVolumeTemplates.functions.damage_volume.generic_dot
 GenericVolumeTemplates.functions.damage_volume.ai_insta_kill = GenericVolumeTemplates.functions.damage_volume.generic_insta_kill
 GenericVolumeTemplates.functions.damage_volume.player_insta_kill = GenericVolumeTemplates.functions.damage_volume.generic_insta_kill
 GenericVolumeTemplates.functions.damage_volume.generic_insta_kill_no_cost = GenericVolumeTemplates.functions.damage_volume.generic_insta_kill
@@ -200,21 +207,33 @@ GenericVolumeTemplates.functions.damage_volume.ai_kill_dot = GenericVolumeTempla
 GenericVolumeTemplates.functions.damage_volume.ai_kill_dot_no_cost = GenericVolumeTemplates.functions.damage_volume.generic_dot
 GenericVolumeTemplates.functions.damage_volume.skaven_molten_steel = GenericVolumeTemplates.functions.damage_volume.generic_dot
 GenericVolumeTemplates.filters = {
-	unit_disabled = function (unit)
+	unit_not_disabled = function (unit, data)
 		local status_extension = ScriptUnit.extension(unit, "status_system")
 
-		return status_extension:is_disabled()
+		return not status_extension:is_disabled()
 	end,
-	all_players_inside = function (unit, volume_name)
+	unit_not_disabled_outside_or_disabled_inside_and_not_all_disabled_inside = function (unit, data)
+		local status_extension = ScriptUnit.extension(unit, "status_system")
+		local is_disabled = status_extension:is_disabled()
+		local volume_system = Managers.state.entity:system("volume_system")
+		local is_inside = volume_system:player_inside(data.volume_name, unit)
+		local all_inside_disabled = volume_system:all_human_players_inside_disabled(data.volume_name)
+		local is_inside_and_disabled = is_disabled and is_inside
+		local is_outside_and_not_disabled = not is_inside and not is_disabled
+		local result = (not is_inside_and_disabled and not is_outside_and_not_disabled) or not not all_inside_disabled
+
+		return result
+	end,
+	all_players_inside = function (unit, data)
 		local status_extension = ScriptUnit.extension(unit, "status_system")
 
 		if status_extension:is_disabled() then
-			return
+			return false
 		end
 
 		local volume_system = Managers.state.entity:system("volume_system")
 
-		return volume_system:all_human_players_inside(volume_name)
+		return volume_system:all_human_players_inside(data.volume_name)
 	end
 }
 

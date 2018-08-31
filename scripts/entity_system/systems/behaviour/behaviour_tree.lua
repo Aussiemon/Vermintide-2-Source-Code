@@ -125,6 +125,7 @@ require("scripts/entity_system/systems/behaviour/nodes/bot/bt_bot_inventory_swit
 require("scripts/entity_system/systems/behaviour/nodes/bot/bt_bot_teleport_to_ally_action")
 require("scripts/entity_system/systems/behaviour/nodes/bot/bt_bot_vent_overcharge_action")
 require("scripts/entity_system/systems/behaviour/nodes/bot/bt_bot_heal_action")
+require("scripts/entity_system/systems/behaviour/nodes/bot/bt_bot_drop_pickup_action")
 require("scripts/entity_system/systems/behaviour/utility/utility")
 require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_critter_pig")
 require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_critter_rat")
@@ -227,7 +228,7 @@ local function create_btnode_from_lua_node(lua_node, parent_btnode)
 	local class_type = rawget(_G, class_name)
 
 	if not class_type then
-		assert(false, "BehaviorTree: no class registered named( %q )", tostring(class_name))
+		fassert(false, "BehaviorTree: no class registered named( %q )", tostring(class_name))
 	else
 		return class_type:new(identifier, parent_btnode, condition_name, enter_hook_name, leave_hook_name, lua_node), action_data
 	end

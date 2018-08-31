@@ -101,6 +101,7 @@ AISystem.init = function (self, context, name)
 	self._should_recompute_nav_cost_maps = false
 	self._previous_nav_cost_map_recomputation_t = 0
 	self.unit_extension_data = {}
+	self.frozen_unit_extension_data = {}
 	self.blackboards = BLACKBOARDS
 	self.ai_blackboard_updates = {}
 	self.ai_blackboard_prioritized_updates = {}
@@ -361,6 +362,9 @@ AISystem.destroy = function (self)
 	end
 
 	self.broadphase = nil
+
+	Managers.state.bot_nav_transition:clear_transitions()
+
 	local nav_cost_maps_data = self._nav_cost_maps_data
 
 	for i = 1, NAV_COST_MAP_MAX_COST_MAPS, 1 do
@@ -459,14 +463,11 @@ AISystem.set_default_blackboard_values = function (self, unit, blackboard)
 	blackboard.total_occupied_slots = 0
 	blackboard.target_speed_away = 0
 	blackboard.target_speed_away_small_sample = 0
+	blackboard.spawn = true
 end
 
 AISystem.on_remove_extension = function (self, unit, extension_name)
-	self:on_freeze_extension(unit, extension_name)
-
-	if self._hot_join_sync_units[unit] then
-		self._hot_join_sync_units[unit] = nil
-	end
+	self:_cleanup_extension(unit, extension_name)
 
 	self.blackboards[unit] = nil
 
@@ -474,37 +475,125 @@ AISystem.on_remove_extension = function (self, unit, extension_name)
 end
 
 AISystem.on_freeze_extension = function (self, unit, extension_name)
+	local extension = self.unit_extension_data[unit]
+
+	fassert(extension, "Unit was already frozen.")
+
+	self.frozen_unit_extension_data[unit] = extension
+
+	self:_cleanup_extension(unit, extension_name)
+end
+
+AISystem._cleanup_extension = function (self, unit, extension_name)
 	if self.unit_extension_data[unit] == nil then
 		return
 	end
 
+	local extension = self.unit_extension_data[unit]
+
+	if extension.broadphase_id then
+		Broadphase.remove(self.broadphase, extension.broadphase_id)
+
+		extension.broadphase_id = nil
+	end
+
+	self._hot_join_sync_units[unit] = nil
 	self.unit_extension_data[unit] = nil
-	local ai_blackboard_updates = self.ai_blackboard_updates
-	local ai_blackboard_updates_n = #ai_blackboard_updates
-	local ai_blackboard_prioritized_updates = self.ai_blackboard_prioritized_updates
-	local ai_blackboard_prioritized_updates_n = #ai_blackboard_prioritized_updates
-
-	for i = 1, ai_blackboard_updates_n, 1 do
-		if ai_blackboard_updates[i] == unit then
-			ai_blackboard_updates[i] = ai_blackboard_updates[ai_blackboard_updates_n]
-			ai_blackboard_updates[ai_blackboard_updates_n] = nil
-		end
-	end
-
-	for i = 1, ai_blackboard_prioritized_updates_n, 1 do
-		if ai_blackboard_prioritized_updates[i] == unit then
-			ai_blackboard_prioritized_updates[i] = ai_blackboard_prioritized_updates[ai_blackboard_prioritized_updates_n]
-			ai_blackboard_prioritized_updates[ai_blackboard_prioritized_updates_n] = nil
-		end
-	end
-
-	self.ai_units_alive[unit] = nil
-	self.ai_units_perception[unit] = nil
-	self.ai_units_perception_continuous[unit] = nil
-	self.ai_units_perception_prioritized[unit] = nil
 
 	if extension_name == "AISimpleExtension" then
+		local ai_blackboard_updates = self.ai_blackboard_updates
+		local ai_blackboard_updates_n = #ai_blackboard_updates
+		local ai_blackboard_prioritized_updates = self.ai_blackboard_prioritized_updates
+		local ai_blackboard_prioritized_updates_n = #ai_blackboard_prioritized_updates
+
+		for i = 1, ai_blackboard_updates_n, 1 do
+			if ai_blackboard_updates[i] == unit then
+				ai_blackboard_updates[i] = ai_blackboard_updates[ai_blackboard_updates_n]
+				ai_blackboard_updates[ai_blackboard_updates_n] = nil
+
+				break
+			end
+		end
+
+		for i = 1, ai_blackboard_prioritized_updates_n, 1 do
+			if ai_blackboard_prioritized_updates[i] == unit then
+				ai_blackboard_prioritized_updates[i] = ai_blackboard_prioritized_updates[ai_blackboard_prioritized_updates_n]
+				ai_blackboard_prioritized_updates[ai_blackboard_prioritized_updates_n] = nil
+
+				break
+			end
+		end
+
+		self.ai_units_alive[unit] = nil
+		self.ai_units_perception[unit] = nil
+		self.ai_units_perception_continuous[unit] = nil
+		self.ai_units_perception_prioritized[unit] = nil
 		self.num_perception_units = self.num_perception_units - 1
+	end
+end
+
+AISystem.freeze = function (self, unit, extension_name, reason)
+	local frozen_extensions = self.frozen_unit_extension_data
+
+	if frozen_extensions[unit] then
+		return
+	end
+
+	local extension = self.unit_extension_data[unit]
+
+	self:_cleanup_extension(unit, extension_name)
+
+	self.unit_extension_data[unit] = nil
+	frozen_extensions[unit] = extension
+
+	if extension.freeze then
+		extension:freeze(unit)
+	end
+end
+
+AISystem.unfreeze = function (self, unit, extension_name, data)
+	local extension = self.frozen_unit_extension_data[unit]
+
+	fassert(extension, "Unit to unfreeze didn't have frozen extension")
+
+	self.frozen_unit_extension_data[unit] = nil
+	self.unit_extension_data[unit] = extension
+
+	if extension.unfreeze then
+		extension:unfreeze(unit, data)
+	end
+
+	if extension_name == "AISimpleExtension" then
+		fassert(not extension.is_husk, "bot freeze?")
+
+		self.ai_units_alive[unit] = extension
+		self.num_perception_units = self.num_perception_units + 1
+		self.ai_blackboard_updates[#self.ai_blackboard_updates + 1] = unit
+		local breed = extension._breed
+
+		if breed.perception_continuous then
+			self.ai_units_perception_continuous[unit] = extension
+		else
+			self.ai_units_perception[unit] = extension
+		end
+
+		if breed.immediate_threat then
+			AiUtils.activate_unit(extension._blackboard)
+		end
+
+		local sync_func = breed.hot_join_sync
+
+		if sync_func then
+			self._hot_join_sync_units[unit] = sync_func
+		end
+
+		self:set_default_blackboard_values(unit, extension._blackboard)
+
+		self.num_perception_units = self.num_perception_units + 1
+	end
+
+	if extension._health_extension then
+		extension.broadphase_id = Broadphase.add(self.broadphase, unit, POSITION_LOOKUP[unit], 1)
 	end
 end
 
@@ -696,7 +785,7 @@ end
 AISystem.update_debug_unit = function (self, t)
 	local unit = script_data.debug_unit
 
-	if not unit_alive(unit) then
+	if not ALIVE[unit] then
 		return
 	end
 
@@ -841,12 +930,39 @@ AISystem.update_debug_draw = function (self, t)
 			until true
 		end
 	end
+
+	if script_data.debug_ai_attack_pattern then
+		for unit, extension in pairs(self.ai_units_alive) do
+			repeat
+				local blackboard = BLACKBOARDS[unit]
+				local spine_node = Unit.node(unit, "j_spine")
+				local position = Unit.world_position(unit, spine_node)
+				local have_slot = blackboard.have_slot
+
+				if blackboard.stagger or blackboard.blocked then
+					QuickDrawer:sphere(position, 0.25, Colors.get("blue"))
+				elseif have_slot > 0 then
+					local attack_cooldown_at = blackboard.attack_cooldown_at
+
+					if blackboard.attack_token then
+						QuickDrawer:sphere(position, 0.35, Colors.get("red"))
+					elseif t < attack_cooldown_at then
+						QuickDrawer:sphere(position, 0.35, Colors.get("orange"))
+					else
+						QuickDrawer:sphere(position, 0.25, Colors.get("lime"))
+					end
+				else
+					QuickDrawer:sphere(position, 0.25, Colors.get("gray"))
+				end
+			until true
+		end
+	end
 end
 
 local PRIORITIZED_DISTANCE = 10
 
 local function update_blackboard(unit, blackboard, t, dt)
-	assert(blackboard)
+	fassert(blackboard, "Tried to update a non-existing blackboard!")
 
 	local POSITION_LOOKUP = POSITION_LOOKUP
 
@@ -949,7 +1065,11 @@ local function update_blackboard(unit, blackboard, t, dt)
 		breed.run_on_update(unit, blackboard, t, dt)
 	end
 
-	if target_alive then
+	local attacking_target = blackboard.attacking_target
+	local has_attacking_target = unit_alive(attacking_target)
+	local attacking_target_is_valid = not has_attacking_target or VALID_TARGETS_PLAYERS_AND_BOTS[attacking_target]
+
+	if target_alive and attacking_target_is_valid then
 		local unit_position = POSITION_LOOKUP[unit]
 		local target_position = POSITION_LOOKUP[target_unit]
 		local offset = target_position - unit_position
@@ -967,15 +1087,17 @@ local function update_blackboard(unit, blackboard, t, dt)
 		blackboard.slot_dist_z = slot_dist
 
 		return inside_priority_distance
-	else
+	elseif not target_alive or not attacking_target_is_valid then
 		blackboard.target_unit = nil
 		blackboard.target_dist = math.huge
 		blackboard.target_dist_z = math.huge
 		blackboard.target_dist_xy_sq = math.huge
 		blackboard.slot_dist_z = math.huge
-	end
 
-	return false
+		if not attacking_target_is_valid then
+			blackboard.attack_aborted = true
+		end
+	end
 end
 
 local MAX_PRIO_UPDATES_PER_FRAME = (PLATFORM == "win32" and 40) or 20
@@ -1088,7 +1210,7 @@ AISystem.set_allowed_layer = function (self, layer_name, allowed)
 			if not allowed then
 				local unit = extension._unit
 
-				if Unit.alive(unit) then
+				if ALIVE[unit] then
 					local unit_position = POSITION_LOOKUP[unit]
 
 					if NavTagVolumeUtils.inside_nav_tag_layer(nav_world, unit_position, 0.5, 0.5, layer_name) then

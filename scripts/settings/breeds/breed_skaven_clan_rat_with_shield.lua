@@ -303,6 +303,528 @@ local breed_data = {
 	}
 }
 Breeds.skaven_clan_rat_with_shield = table.create_copy(Breeds.skaven_clan_rat_with_shield, breed_data)
+local BreedActionDimishingDamageDifficulty = {
+	easy = {
+		{
+			damage = 2,
+			cooldown = {
+				1.25,
+				2
+			}
+		},
+		{
+			damage = 2,
+			cooldown = {
+				1.25,
+				2
+			}
+		},
+		{
+			damage = 1.5,
+			cooldown = {
+				1.25,
+				2
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1.5,
+				2.25
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1.75,
+				2.5
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2,
+				2.75
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2.25,
+				3
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2.5,
+				3.25
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2.75,
+				3.5
+			}
+		}
+	},
+	normal = {
+		{
+			damage = 2,
+			cooldown = {
+				1.25,
+				2
+			}
+		},
+		{
+			damage = 2,
+			cooldown = {
+				1.25,
+				2
+			}
+		},
+		{
+			damage = 1.5,
+			cooldown = {
+				1.25,
+				2
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1.5,
+				2.25
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1.75,
+				2.5
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2,
+				2.75
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2.25,
+				3
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2.5,
+				3.25
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2.75,
+				3.5
+			}
+		}
+	},
+	hard = {
+		{
+			damage = 2,
+			cooldown = {
+				1,
+				1.5
+			}
+		},
+		{
+			damage = 2,
+			cooldown = {
+				1,
+				1.5
+			}
+		},
+		{
+			damage = 1.5,
+			cooldown = {
+				1,
+				1.5
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1.25,
+				1.75
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1.5,
+				2
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1.75,
+				2.25
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2,
+				2.5
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2.25,
+				3.25
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2.5,
+				3.5
+			}
+		}
+	},
+	survival_hard = {
+		{
+			damage = 2,
+			cooldown = {
+				1,
+				1.5
+			}
+		},
+		{
+			damage = 2,
+			cooldown = {
+				1,
+				1.5
+			}
+		},
+		{
+			damage = 1.5,
+			cooldown = {
+				1,
+				1.5
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1.25,
+				1.75
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1.5,
+				2
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1.75,
+				2.25
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2,
+				2.5
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2.25,
+				3.25
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2.5,
+				3.5
+			}
+		}
+	},
+	harder = {
+		{
+			damage = 2.5,
+			cooldown = {
+				0.5,
+				1
+			}
+		},
+		{
+			damage = 2,
+			cooldown = {
+				0.5,
+				1
+			}
+		},
+		{
+			damage = 1.5,
+			cooldown = {
+				0.5,
+				1
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0.5,
+				1
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0.6,
+				1.1
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0.7,
+				1.2
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0.8,
+				1.3
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0.9,
+				1.4
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1,
+				1.5
+			}
+		}
+	},
+	survival_harder = {
+		{
+			damage = 2.5,
+			cooldown = {
+				0.5,
+				1
+			}
+		},
+		{
+			damage = 2,
+			cooldown = {
+				0.5,
+				1
+			}
+		},
+		{
+			damage = 1.5,
+			cooldown = {
+				0.5,
+				1
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0.5,
+				1
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0.6,
+				1.1
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0.7,
+				1.2
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0.8,
+				1.3
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0.9,
+				1.4
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1,
+				1.5
+			}
+		}
+	},
+	hardest = {
+		{
+			damage = 2.5,
+			cooldown = {
+				0,
+				0.25
+			}
+		},
+		{
+			damage = 2,
+			cooldown = {
+				0,
+				0.25
+			}
+		},
+		{
+			damage = 2,
+			cooldown = {
+				0,
+				0.25
+			}
+		},
+		{
+			damage = 1.8,
+			cooldown = {
+				0,
+				0.3
+			}
+		},
+		{
+			damage = 1.6,
+			cooldown = {
+				0,
+				0.35
+			}
+		},
+		{
+			damage = 1.4,
+			cooldown = {
+				0,
+				0.4
+			}
+		},
+		{
+			damage = 1.2,
+			cooldown = {
+				0,
+				0.45
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0,
+				0.5
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0,
+				0.5
+			}
+		}
+	},
+	survival_hardest = {
+		{
+			damage = 2.5,
+			cooldown = {
+				0,
+				0.25
+			}
+		},
+		{
+			damage = 2,
+			cooldown = {
+				0,
+				0.25
+			}
+		},
+		{
+			damage = 2,
+			cooldown = {
+				0,
+				0.25
+			}
+		},
+		{
+			damage = 1.8,
+			cooldown = {
+				0,
+				0.3
+			}
+		},
+		{
+			damage = 1.6,
+			cooldown = {
+				0,
+				0.35
+			}
+		},
+		{
+			damage = 1.4,
+			cooldown = {
+				0,
+				0.4
+			}
+		},
+		{
+			damage = 1.2,
+			cooldown = {
+				0,
+				0.45
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0,
+				0.5
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0,
+				0.5
+			}
+		}
+	}
+}
 local action_data = {
 	alerted = {
 		no_hesitation = true,
@@ -413,14 +935,16 @@ local action_data = {
 				4
 			}
 		},
+		dimishing_damage = {},
+		difficulty_diminishing_damage = BreedActionDimishingDamageDifficulty,
 		considerations = UtilityConsiderations.clan_rat_running_attack
 	},
 	normal_attack = {
-		player_push_speed = 3,
-		fatigue_type = "blocked_attack",
-		action_weight = 1,
 		damage_type = "cutting",
 		move_anim = "move_fwd",
+		fatigue_type = "blocked_attack",
+		player_push_speed = 3,
+		action_weight = 1,
 		default_attack = {
 			anims = "attack_pounce",
 			damage_box_range = {
@@ -540,6 +1064,8 @@ local action_data = {
 				4
 			}
 		},
+		dimishing_damage = {},
+		difficulty_diminishing_damage = BreedActionDimishingDamageDifficulty,
 		considerations = UtilityConsiderations.clan_rat_attack,
 		target_type_exceptions = {
 			poison_well = {

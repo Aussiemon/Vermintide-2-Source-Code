@@ -168,5 +168,74 @@ HordeCompositions.chaos_mini_patrol = {
 		}
 	}
 }
+HordeCompositions.mutator_chaos_warrior_mini_patrol = {
+	{
+		name = "few_chaos_warriors",
+		weight = 10,
+		breeds = {
+			"chaos_warrior",
+			{
+				3,
+				4
+			}
+		}
+	}
+}
+HordeCompositions.mutator_mixed_horde = {
+	{
+		name = "plain",
+		weight = 7,
+		breeds = {
+			"chaos_marauder",
+			{
+				5,
+				6
+			},
+			"chaos_fanatic",
+			{
+				5,
+				6
+			},
+			"chaos_marauder_with_shield",
+			{
+				2,
+				3
+			},
+			"chaos_warrior",
+			{
+				1,
+				2
+			},
+			"skaven_storm_vermin_with_shield",
+			1,
+			"chaos_berzerker",
+			{
+				2,
+				3
+			},
+			"skaven_storm_vermin_commander",
+			{
+				3,
+				3
+			},
+			"skaven_clan_rat",
+			{
+				5,
+				6
+			},
+			"skaven_slave",
+			{
+				5,
+				6
+			},
+			"skaven_plague_monk",
+			{
+				2,
+				3
+			}
+		}
+	},
+	sound_settings = HordeCompositionsSoundSettings.chaos
+}
 
 return

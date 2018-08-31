@@ -6,7 +6,6 @@ require("scripts/unit_extensions/human/ai_player_unit/ai_utils")
 
 PerceptionUtils = {}
 local AiUtils_unit_alive = AiUtils.unit_alive
-local unit_alive = Unit.alive
 local unit_knocked_down = AiUtils.unit_knocked_down
 local POSITION_LOOKUP = POSITION_LOOKUP
 local AI_TARGET_UNITS = AI_TARGET_UNITS
@@ -186,6 +185,10 @@ PerceptionUtils.special_opportunity = function (unit, blackboard)
 	local num_enemies = #PLAYER_AND_BOT_UNITS
 	local urgency_to_engage = 0
 
+	for i = 1, #healthy_target_positions, 1 do
+		healthy_target_positions[i] = nil
+	end
+
 	for i = 1, num_enemies, 1 do
 		local player_unit = PLAYER_AND_BOT_UNITS[i]
 		local status_extension = ScriptUnit.extension(player_unit, "status_system")
@@ -204,7 +207,7 @@ PerceptionUtils.special_opportunity = function (unit, blackboard)
 			elseif ScriptUnit.extension(player_unit, "health_system"):is_alive() then
 				num_healthy_targets = num_healthy_targets + 1
 				healthy_targets[num_healthy_targets] = player_unit
-				healthy_target_positions[#healthy_target_positions + 1] = PLAYER_AND_BOT_POSITIONS[i]
+				healthy_target_positions[num_healthy_targets] = PLAYER_AND_BOT_POSITIONS[i]
 			end
 		end
 	end
@@ -307,7 +310,7 @@ PerceptionUtils.pick_solitary_target = function (unit, blackboard, breed)
 
 	local target_unit = blackboard.target_unit
 
-	if unit_alive(target_unit) then
+	if ALIVE[target_unit] then
 		local status_extension = ScriptUnit.extension(target_unit, "status_system")
 		local is_pounced_by_me = status_extension:is_pounced_down() and status_extension:get_pouncer_unit() == unit
 
@@ -572,7 +575,7 @@ local function _calculate_closest_target_with_spillover_score(target_unit, targe
 			end
 		end
 
-		target_of_combo_score = status_ext:get_combo_target_count() * COMBO_TARGET_SCORE
+		target_of_combo_score = ((status_ext and status_ext:get_combo_target_count()) or 0) * COMBO_TARGET_SCORE
 	end
 
 	local aggro_extension = ScriptUnit.extension(target_unit, "aggro_system")
@@ -691,7 +694,7 @@ PerceptionUtils.patrol_passive_target_selection = function (ai_unit, blackboard,
 	local group = group_extension.group
 	local group_targets = group.target_units
 
-	if blackboard_target and AiUtils_unit_alive(blackboard_target) then
+	if blackboard_target and AiUtils_unit_alive(blackboard_target) and (not VALID_PLAYERS_AND_BOTS[blackboard_target] or VALID_TARGETS_PLAYERS_AND_BOTS[blackboard_target]) then
 		group_targets[blackboard_target] = true
 		local attacker_pos = POSITION_LOOKUP[blackboard_target]
 
@@ -699,7 +702,7 @@ PerceptionUtils.patrol_passive_target_selection = function (ai_unit, blackboard,
 			repeat
 				local target_unit = global_targets[i]
 
-				if not AiUtils_unit_alive(target_unit) then
+				if not VALID_TARGETS_PLAYERS_AND_BOTS[target_unit] then
 					break
 				end
 
@@ -727,7 +730,7 @@ PerceptionUtils.patrol_passive_target_selection = function (ai_unit, blackboard,
 		repeat
 			local target_unit = global_targets[i]
 
-			if not AiUtils_unit_alive(target_unit) then
+			if not VALID_TARGETS_PLAYERS_AND_BOTS[target_unit] then
 				break
 			end
 
@@ -883,7 +886,7 @@ end
 PerceptionUtils.pick_player_controller_allied = function (unit, blackboard, breed, t)
 	local player_controller = blackboard.player_controller
 
-	if player_controller and Unit.alive(player_controller) then
+	if player_controller and ALIVE[player_controller] then
 		local ai_unit_position = POSITION_LOOKUP[unit]
 		local target_unit_position = POSITION_LOOKUP[player_controller]
 		local distance_sq = Vector3.distance_squared(ai_unit_position, target_unit_position)
@@ -913,7 +916,7 @@ PerceptionUtils.pick_rat_ogre_target_idle = function (unit, blackboard, breed, t
 		local ogre_pos = POSITION_LOOKUP[unit]
 		local dist_squared = Vector3.distance_squared(ogre_pos, enemy_pos)
 
-		if dist_squared < breed.distance_sq_can_detect_target then
+		if VALID_PLAYERS_AND_BOTS[enemy_unit] and dist_squared < breed.distance_sq_can_detect_target then
 			local in_view_cone = true
 			local view_cone_dot = w.view_cone_dot
 
@@ -947,7 +950,7 @@ PerceptionUtils.pick_rat_ogre_target_idle = function (unit, blackboard, breed, t
 			local conflict_director = Managers.state.conflict
 			local ahead_unit = conflict_director.main_path_info.ahead_unit
 
-			if ahead_unit and Unit.alive(ahead_unit) then
+			if ahead_unit and ALIVE[ahead_unit] and VALID_PLAYERS_AND_BOTS[ahead_unit] then
 				local info = conflict_director.main_path_player_info[ahead_unit]
 
 				if w.travel_dist <= info.travel_dist then
@@ -961,7 +964,7 @@ PerceptionUtils.pick_rat_ogre_target_idle = function (unit, blackboard, breed, t
 
 		local attacker = blackboard.previous_attacker
 
-		if attacker or blackboard.is_angry then
+		if (attacker and VALID_PLAYERS_AND_BOTS[attacker]) or blackboard.is_angry then
 			local ai_simple = ScriptUnit_extension(unit, "ai_system")
 
 			ai_simple:set_perception(breed.perception, breed.target_selection_angry)
@@ -1162,7 +1165,7 @@ PerceptionUtils.debug_ai_perception = function (unit, ai_ext, blackboard, t, gui
 	local unit_name = "client"
 	local target_unit = blackboard.target_unit
 
-	if unit_alive(target_unit) then
+	if ALIVE[target_unit] then
 		local target_player = Managers.player:owner(target_unit)
 		local profile_index = target_player:profile_index()
 		local profile = SPProfiles[profile_index]
@@ -1211,7 +1214,7 @@ PerceptionUtils.debug_rat_ogre_perception = function (gui, t, x1, y1, blackboard
 	y2 = y2 + 20
 
 	for unit, player_scores in pairs(score_table) do
-		if Unit.alive(unit) then
+		if ALIVE[unit] then
 			local target_player = Managers.player:owner(unit)
 			local profile_index = target_player:profile_index()
 			local profile = SPProfiles[profile_index]
@@ -1266,6 +1269,60 @@ PerceptionUtils.pick_pack_master_target = function (unit, blackboard, breed)
 	end
 
 	return closest_enemy, closest_dist_sq
+end
+
+PerceptionUtils.pick_mutator_sorcerer_target = function (unit, blackboard, breed)
+	local is_of_interest_to_corruptor = AiUtils.is_of_interest_to_corruptor
+	local pos = POSITION_LOOKUP[unit]
+	local closest_enemy = nil
+	local closest_dist_sq = math.huge
+	local enemy_looking_at_you = nil
+	local highest_perception_bonus = 0
+
+	for k, player_unit in ipairs(PLAYER_AND_BOT_UNITS) do
+		if is_of_interest_to_corruptor(unit, player_unit) then
+			local enemy_pos = PLAYER_AND_BOT_POSITIONS[k]
+			local dist_sq = Vector3.distance_squared(pos, enemy_pos)
+
+			if player_unit == blackboard.target_unit then
+				dist_sq = dist_sq * 0.8
+			end
+
+			if blackboard.corruptor_target and blackboard.corruptor_target == player_unit then
+				return blackboard.corruptor_target, dist_sq
+			end
+
+			local first_person_extension = ScriptUnit.has_extension(player_unit, "first_person_system")
+			local unit_direction = nil
+
+			if first_person_extension then
+				unit_direction = Quaternion.forward(first_person_extension:current_rotation())
+			else
+				local network_manager = Managers.state.network
+				local unit_id = network_manager:unit_game_object_id(player_unit)
+				unit_direction = GameSession.game_object_field(network_manager:game(), unit_id, "aim_direction")
+			end
+
+			local target_unit_pos = Unit.world_position(player_unit, 0)
+			local unit_pos = Unit.world_position(unit, 0)
+			local target_unit_to_unit_dir = Vector3.normalize(unit_pos - target_unit_pos)
+			local angle = Vector3.dot(unit_direction, target_unit_to_unit_dir)
+			local is_infront = angle >= 0.6 and angle <= 1
+			local perception_bonus = math.abs((1 - angle) / 0.4 - 1)
+
+			if is_infront and highest_perception_bonus < perception_bonus then
+				highest_perception_bonus = perception_bonus
+				closest_dist_sq = dist_sq
+				closest_enemy = player_unit
+				enemy_looking_at_you = player_unit
+			elseif dist_sq < closest_dist_sq then
+				closest_dist_sq = dist_sq
+				closest_enemy = player_unit
+			end
+		end
+	end
+
+	return enemy_looking_at_you or closest_enemy, closest_dist_sq
 end
 
 PerceptionUtils.pick_corruptor_target = function (unit, blackboard, breed)
@@ -1479,6 +1536,43 @@ PerceptionUtils.is_position_in_line_of_sight = function (unit, from_position, ta
 	return no_hit, hit_position
 end
 
+PerceptionUtils.has_line_of_sight_to_any_player = function (unit, optional_z_offset)
+	local self_position = POSITION_LOOKUP[unit]
+	local blackboard = BLACKBOARDS[unit]
+	local physics_world = World.get_data(blackboard.world, "physics_world")
+	local z_offset = Vector3(0, 0, optional_z_offset or 1)
+
+	for i = 1, #PLAYER_AND_BOT_POSITIONS, 1 do
+		local target_position = PLAYER_AND_BOT_POSITIONS[i]
+		local has_los = PerceptionUtils.is_position_in_line_of_sight(nil, self_position + z_offset, target_position + z_offset, physics_world)
+
+		if has_los then
+			return true
+		end
+	end
+
+	return false
+end
+
+PerceptionUtils.position_has_line_of_sight_to_any_player = function (position)
+	local world_manager = Managers.world
+	local world_name = "level_world"
+	local world = world_manager:world(world_name)
+	local physics_world = World.get_data(world, "physics_world")
+	local z_offset = Vector3(0, 0, 1)
+
+	for i = 1, #PLAYER_AND_BOT_POSITIONS, 1 do
+		local target_position = PLAYER_AND_BOT_POSITIONS[i]
+		local has_los = PerceptionUtils.is_position_in_line_of_sight(nil, position, target_position + z_offset, physics_world)
+
+		if has_los then
+			return true
+		end
+	end
+
+	return false
+end
+
 PerceptionUtils.pick_area_target = function (unit, blackboard, breed, radius, max_distance)
 	local target = nil
 	local enemies_in_area = 0
@@ -1671,7 +1765,7 @@ PerceptionUtils.perception_continuous_keep_target = function (unit, blackboard, 
 	local target_unit = blackboard.target_unit
 	local target_alive = AiUtils_unit_alive(target_unit)
 
-	return not target_alive
+	return not target_alive or (DamageUtils.is_player_unit(target_unit) and not VALID_TARGETS_PLAYERS_AND_BOTS[target_unit])
 end
 
 PerceptionUtils.perception_no_seeing = function (self, unit, blackboard, breed, pick_target_func, t)
@@ -1717,16 +1811,6 @@ PerceptionUtils.perception_pack_master = function (unit, blackboard, breed, pick
 	end
 
 	local target_unit = blackboard.target_unit
-
-	if AiUtils_unit_alive(blackboard.drag_target_unit) then
-		local enemy_pos = POSITION_LOOKUP[blackboard.drag_target_unit]
-		local pos = POSITION_LOOKUP[unit]
-		local dist = Vector3.distance(pos, enemy_pos)
-		blackboard.target_dist = dist
-
-		return
-	end
-
 	local closest_enemy, closest_dist = pick_target_func(unit, blackboard, breed)
 
 	if closest_enemy and closest_enemy ~= target_unit then
@@ -1765,7 +1849,7 @@ PerceptionUtils.perception_rat_ogre = function (unit, blackboard, breed, pick_ta
 
 	local target_unit = blackboard.target_unit
 
-	if unit_alive(target_unit) then
+	if ALIVE[target_unit] then
 		local status_extension = ScriptUnit.extension(target_unit, "status_system")
 		blackboard.target_is_not_downed = not status_extension.is_ledge_hanging and not status_extension.knocked_down
 		local self_pos = POSITION_LOOKUP[unit]

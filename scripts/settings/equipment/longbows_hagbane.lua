@@ -58,73 +58,12 @@ weapon_template.actions = {
 			hit_effect = ARROW_HIT_EFFECT,
 			projectile_info = Projectiles.carbine_poison_arrow,
 			impact_data = {
+				wall_nail = true,
+				depth = 0.1,
 				targets = 1,
-				damage = {
-					enemy_unit_hit = {
-						default_target = {
-							boost_curve_coefficient = 1,
-							dot_template_name = "arrow_poison_dot",
-							boost_curve_type = "ninja_curve",
-							attack_template = "arrow_poison_carbine",
-							armour_modifier = {
-								attack = {
-									1,
-									0.8,
-									2.5,
-									1,
-									1.5
-								},
-								impact = {
-									1,
-									0.8,
-									2.5,
-									1,
-									1.5
-								}
-							},
-							cleave_distribution = {
-								attack = 0.2,
-								impact = 0.2
-							},
-							power_distribution = {
-								attack = 0.9,
-								impact = 0.3
-							}
-						},
-						critical_strike = {}
-					},
-					damagable_prop_hit = {
-						boost_curve_coefficient = 1,
-						dot_template_name = "arrow_poison_dot",
-						boost_curve_type = "ninja_curve",
-						attack_template = "arrow_poison_carbine",
-						armour_modifier = {
-							attack = {
-								1,
-								0.8,
-								2.5,
-								1,
-								1.5
-							},
-							impact = {
-								1,
-								0.8,
-								2.5,
-								1,
-								1.5
-							}
-						},
-						cleave_distribution = {
-							attack = 0.2,
-							impact = 0.2
-						},
-						power_distribution = {
-							attack = 0.9,
-							impact = 0.3
-						}
-					}
-				},
-				aoe = ExplosionTemplates.carbine_poison_arrow
+				damage_profile = "arrow_carbine",
+				link = true,
+				depth_offset = -0.6
 			},
 			alert_sound_range_fire = ALERT_SOUND_RANGE_FIRE,
 			alert_sound_range_hit = ALERT_SOUND_RANGE_HIT,
@@ -181,71 +120,12 @@ weapon_template.actions = {
 			hit_effect = ARROW_HIT_EFFECT,
 			projectile_info = Projectiles.sniper_poison_arrow,
 			impact_data = {
+				wall_nail = true,
+				depth = 0.1,
 				targets = 1,
-				damage = {
-					enemy_unit_hit = {
-						default_target = {
-							boost_curve_coefficient = 1,
-							boost_curve_type = "ninja_curve",
-							attack_template = "arrow_poison_sniper",
-							armour_modifier = {
-								attack = {
-									1,
-									0.8,
-									2.5,
-									1,
-									1.5
-								},
-								impact = {
-									1,
-									0.8,
-									2.5,
-									1,
-									1.5
-								}
-							},
-							cleave_distribution = {
-								attack = 0.2,
-								impact = 0.2
-							},
-							power_distribution = {
-								attack = 0.9,
-								impact = 0.3
-							}
-						},
-						critical_strike = {}
-					},
-					damagable_prop_hit = {
-						boost_curve_coefficient = 1,
-						boost_curve_type = "ninja_curve",
-						attack_template = "arrow_poison_sniper",
-						armour_modifier = {
-							attack = {
-								1,
-								0.8,
-								2.5,
-								1,
-								1.5
-							},
-							impact = {
-								1,
-								0.8,
-								2.5,
-								1,
-								1.5
-							}
-						},
-						cleave_distribution = {
-							attack = 0.2,
-							impact = 0.2
-						},
-						power_distribution = {
-							attack = 0.9,
-							impact = 0.3
-						}
-					}
-				},
-				aoe = ExplosionTemplates.sniper_poison_arrow
+				damage_profile = "arrow_carbine",
+				link = true,
+				depth_offset = -0.6
 			},
 			alert_sound_range_fire = ALERT_SOUND_RANGE_FIRE,
 			alert_sound_range_hit = ALERT_SOUND_RANGE_HIT,
@@ -320,7 +200,7 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action"
 			end,
 			condition_func = function (unit, input_extension, ammo_extension)
-				if ammo_extension and ammo_extension:total_remaining_ammo() <= 0 then
+				if ammo_extension and (ammo_extension:total_remaining_ammo() <= 0 or ammo_extension:is_reloading()) then
 					return false
 				end
 

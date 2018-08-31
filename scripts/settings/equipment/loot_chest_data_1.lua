@@ -312,6 +312,15 @@ LootChestData.chests_by_category = {
 		chest_unit_names = {
 			"units/gameplay/loot_chests/gameplay_loot_chest_level_up"
 		}
+	},
+	bogenhafen = {
+		package_name = "resource_packages/chests_bogenhafen",
+		backend_keys = {
+			"bogenhafen_chest"
+		},
+		chest_unit_names = {
+			"units/gameplay/loot_chests/gameplay_loot_chest_bghf_01"
+		}
 	}
 }
 LootChestData.rarity_weights_tables = {

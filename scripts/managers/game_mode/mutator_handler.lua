@@ -76,6 +76,41 @@ MutatorHandler.setup_done = function (self)
 	end
 end
 
+MutatorHandler.ai_killed = function (self, killed_unit, killer_unit)
+	local mutator_context = self._mutator_context
+	local active_mutators = self._active_mutators
+	local is_server = self._is_server
+	local has_local_client = self._has_local_client
+
+	for name, mutator_data in pairs(active_mutators) do
+		local template = mutator_data.template
+
+		if is_server then
+			template.server.ai_killed_function(mutator_context, mutator_data, killed_unit, killer_unit)
+		end
+
+		if has_local_client then
+			template.client.ai_killed_function(mutator_context, mutator_data, killed_unit, killer_unit)
+		end
+	end
+end
+
+MutatorHandler.conflict_director_updated_settings = function (self)
+	fassert(self._is_server, "conflict_director_updated_settings only runs on server")
+
+	local mutator_context = self._mutator_context
+	local active_mutators = self._active_mutators
+
+	for name, mutator_data in pairs(active_mutators) do
+		local template = mutator_data.template
+
+		if template.update_conflict_settings then
+			mutator_dprint("Updating settings for mutator '%s'", name)
+			template.update_conflict_settings(mutator_context, mutator_data)
+		end
+	end
+end
+
 MutatorHandler._activate_mutators = function (self, mutators)
 	local mutator_context = self._mutator_context
 	local active_mutators = self._active_mutators

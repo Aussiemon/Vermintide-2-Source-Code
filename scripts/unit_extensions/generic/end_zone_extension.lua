@@ -50,6 +50,10 @@ EndZoneExtension.rpc_activate_end_zone = function (self, sender, activate)
 	end
 end
 
+EndZoneExtension.activated = function (self)
+	return self._activated
+end
+
 EndZoneExtension._set_light_intensity = function (self, intensity)
 	local num_lights = Unit.num_lights(self._unit)
 

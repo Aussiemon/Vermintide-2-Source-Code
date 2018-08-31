@@ -120,9 +120,7 @@ BotActions.default = {
 			}
 		},
 		dr_ranger = {
-			activation = {
-				wait_on_career_weapon_done = true
-			}
+			activation = {}
 		},
 		es_mercenary = {
 			activation = {}

@@ -10,6 +10,7 @@ end
 
 PlayerCharacterStateCatapulted.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
 	CharacterStateHelper.stop_weapon_actions(self.inventory_extension, "stunned")
+	CharacterStateHelper.stop_career_abilities(self.career_extension, "stunned")
 
 	local direction = params.direction
 
@@ -106,6 +107,10 @@ PlayerCharacterStateCatapulted.update = function (self, unit, input, dt, context
 		return
 	end
 
+	if CharacterStateHelper.is_block_broken(status_extension) then
+		status_extension:set_block_broken(false)
+	end
+
 	if CharacterStateHelper.is_colliding_down(unit) and self.locomotion_extension:current_velocity().z < 0 then
 		local anim = DIRECTIONS[self._direction].land_animation
 
@@ -116,6 +121,22 @@ PlayerCharacterStateCatapulted.update = function (self, unit, input, dt, context
 		else
 			csm:change_state("standing")
 		end
+
+		return
+	end
+
+	if CharacterStateHelper.is_colliding_down(unit) and self.locomotion_extension:is_on_ground() and self.locomotion_extension:current_velocity().z >= 0 then
+		local anim = DIRECTIONS[self._direction].land_animation
+
+		CharacterStateHelper.play_animation_event(unit, anim)
+
+		if CharacterStateHelper.has_move_input(input_extension) then
+			csm:change_state("walking")
+		else
+			csm:change_state("standing")
+		end
+
+		self.locomotion_extension:add_external_velocity(self.locomotion_extension:current_velocity() * 0.2)
 
 		return
 	end

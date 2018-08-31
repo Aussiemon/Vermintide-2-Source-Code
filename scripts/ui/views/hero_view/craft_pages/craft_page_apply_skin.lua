@@ -61,7 +61,6 @@ CraftPageApplySkin.on_enter = function (self, params, settings)
 	self.super_parent:clear_disabled_backend_ids()
 	self:_weapon_slot_updated()
 	self:setup_recipe_requirements()
-	self.parent:set_input_description(nil)
 end
 
 CraftPageApplySkin.setup_recipe_requirements = function (self)
@@ -359,7 +358,7 @@ CraftPageApplySkin._update_craft_items = function (self)
 	local item_grid_2 = self._item_grid_2
 	local pressed_backend_id, is_drag_item = super_parent:get_pressed_item_backend_id()
 
-	if pressed_backend_id and not self._presenting_reward then
+	if pressed_backend_id then
 		if not self._craft_item then
 			self:_add_item(item_grid, pressed_backend_id)
 
@@ -367,9 +366,24 @@ CraftPageApplySkin._update_craft_items = function (self)
 
 			self:_weapon_slot_updated()
 		else
-			self:_add_item(item_grid_2, pressed_backend_id)
+			if self._skin_item then
+				self.super_parent:set_disabled_backend_id(self._skin_item, false)
+			end
 
-			self._skin_item = pressed_backend_id
+			local add_item = true
+
+			if self._skin_item == pressed_backend_id then
+				self:_remove_item(item_grid_2, pressed_backend_id)
+
+				self._skin_item = nil
+				add_item = false
+			end
+
+			if add_item then
+				self:_add_item(item_grid_2, pressed_backend_id)
+
+				self._skin_item = pressed_backend_id
+			end
 
 			self:_weapon_slot_updated()
 
@@ -443,8 +457,6 @@ end
 
 CraftPageApplySkin._set_craft_button_disabled = function (self, disabled)
 	self._widgets_by_name.craft_button.content.button_hotspot.disable_button = disabled
-
-	self.parent:set_input_description((not disabled and self.settings.name) or nil)
 end
 
 CraftPageApplySkin._exit = function (self, selected_level)

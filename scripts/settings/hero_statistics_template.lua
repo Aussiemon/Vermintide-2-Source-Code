@@ -472,14 +472,9 @@ HeroStatisticsTemplate = {
 		display_name = Localize("tooltip_hero_stats_max_overheat"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
-			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 			local overcharge_extension = ScriptUnit.has_extension(player_unit, "overcharge_system")
-			local value = nil
-			local max_overcharge = overcharge_extension:get_max_value()
-			local base_value = max_overcharge
-			local buffed_value = buff_extension:apply_buffs_to_value(base_value, StatBuffIndex.MAX_OVERCHARGE)
-			value = buffed_value
-			local presentation_text = tostring(value)
+			local max_value = overcharge_extension:get_max_value()
+			local presentation_text = tostring(max_value)
 
 			return presentation_text
 		end
@@ -490,9 +485,7 @@ HeroStatisticsTemplate = {
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
-			local overcharge_extension = ScriptUnit.has_extension(player_unit, "overcharge_system")
 			local value = nil
-			local max_overcharge = overcharge_extension:get_max_value()
 			local base_value = 100
 			local buffed_value = buff_extension:apply_buffs_to_value(base_value, StatBuffIndex.REDUCED_OVERCHARGE)
 			value = buffed_value - base_value

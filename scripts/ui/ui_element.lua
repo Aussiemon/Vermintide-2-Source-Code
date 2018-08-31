@@ -10,7 +10,7 @@ UIElement.init = function (element_definition, content, style, style_global)
 
 		local ui_pass = UIPasses[pass_type]
 
-		assert(ui_pass, "No such pass-type: %s", pass_type)
+		fassert(ui_pass, "No such pass-type: %s", pass_type)
 
 		pass_data[i] = ui_pass.init(pass, content, style, style_global)
 		local global_color_id = pass.global_color_id
@@ -21,7 +21,7 @@ UIElement.init = function (element_definition, content, style, style_global)
 			if style_id then
 				local color = style_global[global_color_id]
 
-				assert(color, "No global_color for id: %s.", global_color_id)
+				fassert(color, "No global_color for id: %s.", global_color_id)
 
 				if pass_type == "text" then
 					style[style_id].text_color = color

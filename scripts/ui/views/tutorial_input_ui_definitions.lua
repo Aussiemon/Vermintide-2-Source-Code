@@ -79,7 +79,7 @@ local scenegraph_definition = {
 			1
 		},
 		size = {
-			400,
+			1200,
 			0
 		}
 	},
@@ -93,7 +93,7 @@ local scenegraph_definition = {
 			1
 		},
 		size = {
-			400,
+			1200,
 			0
 		}
 	},
@@ -583,7 +583,7 @@ local widget_definitions = {
 				pixel_perfect = true,
 				font_size = 52,
 				vertical_alignment = "center",
-				dynamic_font = true,
+				dynamic_font_size = true,
 				font_type = "hell_shark_header",
 				text_color = Colors.get_color_table_with_alpha("white", alpha),
 				offset = {
@@ -600,7 +600,7 @@ local widget_definitions = {
 				pixel_perfect = true,
 				font_size = 52,
 				vertical_alignment = "center",
-				dynamic_font = true,
+				dynamic_font_size = true,
 				font_type = "hell_shark_header",
 				text_color = Colors.get_color_table_with_alpha("black", alpha),
 				offset = {
@@ -617,7 +617,7 @@ local widget_definitions = {
 				pixel_perfect = true,
 				font_size = 36,
 				vertical_alignment = "center",
-				dynamic_font = true,
+				dynamic_font_size = true,
 				font_type = "hell_shark_header",
 				text_color = Colors.get_color_table_with_alpha("font_default", alpha),
 				offset = {
@@ -634,7 +634,7 @@ local widget_definitions = {
 				pixel_perfect = true,
 				font_size = 36,
 				vertical_alignment = "center",
-				dynamic_font = true,
+				dynamic_font_size = true,
 				font_type = "hell_shark_header",
 				text_color = Colors.get_color_table_with_alpha("black", alpha),
 				offset = {

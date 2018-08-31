@@ -47,6 +47,7 @@ end
 
 StartGameWindowTwitchGameSettings.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+	local on_dedicated_server = self._network_lobby:is_dedicated_server()
 	local widgets = {}
 	local widgets_by_name = {}
 
@@ -60,6 +61,7 @@ StartGameWindowTwitchGameSettings.create_ui_elements = function (self, params, o
 
 	for name, widget_definition in pairs(other_options_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+		widget.content.visible = not on_dedicated_server
 		other_options_widgets[#other_options_widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -310,7 +312,7 @@ StartGameWindowTwitchGameSettings._handle_input = function (self, dt, t)
 	if self:_is_button_released(widgets_by_name.game_option_2) then
 		parent:set_layout(10)
 	elseif self:_is_button_released(widgets_by_name.game_option_1) then
-		parent:set_layout(11)
+		parent:set_layout(13)
 	end
 
 	local play_pressed = gamepad_active and self._enable_play and input_service:get("refresh_press")
@@ -411,9 +413,9 @@ StartGameWindowTwitchGameSettings._update_difficulty_option = function (self)
 		widgets_by_name.play_button.content.button_hotspot.disable_button = not self._enable_play
 
 		if self._enable_play then
-			self.parent.parent:set_input_description("play_available")
+			self.parent:set_input_description("play_available")
 		else
-			self.parent.parent:set_input_description(nil)
+			self.parent:set_input_description(nil)
 		end
 	end
 end

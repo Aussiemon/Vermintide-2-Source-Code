@@ -64,61 +64,6 @@ weapon_template.actions = {
 				return input_extension:reset_release_input()
 			end
 		},
-		default_right = {
-			kind = "melee_start",
-			anim_end_event = "attack_finished",
-			anim_event = "attack_swing_charge_left",
-			anim_end_event_condition_func = function (unit, end_reason)
-				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
-			end,
-			total_time = math.huge,
-			buff_data = {
-				{
-					start_time = 0,
-					external_multiplier = 0.2,
-					buff_name = "planted_charging_decrease_movement"
-				}
-			},
-			allowed_chain_actions = {
-				{
-					sub_action = "light_attack_left_up",
-					start_time = 0,
-					action = "action_one",
-					end_time = 0.35,
-					input = "action_one_release"
-				},
-				{
-					sub_action = "heavy_attack_left",
-					start_time = 0.5,
-					action = "action_one",
-					input = "action_one_release"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_two",
-					input = "action_two_hold"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_wield",
-					input = "action_wield"
-				},
-				{
-					start_time = 0.3,
-					blocker = true,
-					end_time = 1.5,
-					input = "action_one_hold"
-				},
-				{
-					sub_action = "heavy_attack_left",
-					start_time = 0.7,
-					action = "action_one",
-					auto_chain = true
-				}
-			}
-		},
 		default_left = {
 			kind = "melee_start",
 			anim_end_event = "attack_finished",
@@ -174,6 +119,61 @@ weapon_template.actions = {
 				}
 			}
 		},
+		default_right = {
+			kind = "melee_start",
+			anim_end_event = "attack_finished",
+			anim_event = "attack_swing_charge_left",
+			anim_end_event_condition_func = function (unit, end_reason)
+				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
+			end,
+			total_time = math.huge,
+			buff_data = {
+				{
+					start_time = 0,
+					external_multiplier = 0.2,
+					buff_name = "planted_charging_decrease_movement"
+				}
+			},
+			allowed_chain_actions = {
+				{
+					sub_action = "light_attack_left_up",
+					start_time = 0,
+					action = "action_one",
+					end_time = 0.35,
+					input = "action_one_release"
+				},
+				{
+					sub_action = "heavy_attack_left",
+					start_time = 0.5,
+					action = "action_one",
+					input = "action_one_release"
+				},
+				{
+					sub_action = "default",
+					start_time = 0,
+					action = "action_two",
+					input = "action_two_hold"
+				},
+				{
+					sub_action = "default",
+					start_time = 0,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
+					start_time = 0.3,
+					blocker = true,
+					end_time = 1.5,
+					input = "action_one_hold"
+				},
+				{
+					sub_action = "heavy_attack_left",
+					start_time = 0.7,
+					action = "action_one",
+					auto_chain = true
+				}
+			}
+		},
 		heavy_attack_right = {
 			damage_window_start = 0.35,
 			push_radius = 3,
@@ -184,7 +184,7 @@ weapon_template.actions = {
 			width_mod = 30,
 			hit_time = 0.29,
 			damage_window_end = 0.5,
-			use_target = false,
+			use_precision_sweep = false,
 			hit_effect = "melee_hit_hammers_2h",
 			damage_profile = "heavy_blunt_tank",
 			no_damage_impact_sound_event = "blunt_hit_armour",
@@ -259,7 +259,7 @@ weapon_template.actions = {
 			width_mod = 30,
 			range_mod = 1.3,
 			additional_critical_strike_chance = 0,
-			use_target = false,
+			use_precision_sweep = false,
 			hit_effect = "melee_hit_hammers_2h",
 			damage_profile = "heavy_blunt_tank",
 			no_damage_impact_sound_event = "blunt_hit_armour",
@@ -327,9 +327,9 @@ weapon_template.actions = {
 			kind = "sweep",
 			no_damage_impact_sound_event = "blunt_hit_armour",
 			additional_critical_strike_chance = 0,
-			use_target = true,
+			use_precision_sweep = true,
 			width_mod = 30,
-			damage_profile = "medium_blunt_smiter",
+			damage_profile = "medium_blunt_smiter_2h_hammer",
 			aim_assist_ramp_multiplier = 0.5,
 			aim_assist_max_ramp_multiplier = 0.8,
 			hit_effect = "melee_hit_hammers_2h",
@@ -409,7 +409,7 @@ weapon_template.actions = {
 			kind = "sweep",
 			no_damage_impact_sound_event = "blunt_hit_armour",
 			additional_critical_strike_chance = 0,
-			damage_profile = "medium_blunt_smiter_upper",
+			damage_profile = "medium_blunt_smiter_2h_hammer_upper",
 			width_mod = 30,
 			aim_assist_ramp_multiplier = 0.5,
 			aim_assist_max_ramp_multiplier = 0.8,
@@ -492,7 +492,7 @@ weapon_template.actions = {
 			additional_critical_strike_chance = 0,
 			sweep_z_offset = 0.2,
 			width_mod = 30,
-			damage_profile = "medium_blunt_smiter_diag",
+			damage_profile = "medium_blunt_smiter_2h_hammer_diag",
 			aim_assist_ramp_multiplier = 0.5,
 			aim_assist_max_ramp_multiplier = 0.8,
 			hit_effect = "melee_hit_hammers_2h",
@@ -573,9 +573,9 @@ weapon_template.actions = {
 			kind = "sweep",
 			no_damage_impact_sound_event = "blunt_hit_armour",
 			additional_critical_strike_chance = 0,
-			use_target = true,
+			use_precision_sweep = true,
 			width_mod = 30,
-			damage_profile = "medium_blunt_smiter",
+			damage_profile = "medium_blunt_smiter_2h_hammer",
 			aim_assist_ramp_multiplier = 0.5,
 			aim_assist_max_ramp_multiplier = 0.8,
 			hit_effect = "melee_hit_hammers_2h",

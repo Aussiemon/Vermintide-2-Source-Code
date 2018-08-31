@@ -48,9 +48,11 @@ CharacterSelectionView.init = function (self, ingame_ui_context)
 	input_manager:map_device_to_service("character_selection_view", "mouse")
 	input_manager:map_device_to_service("character_selection_view", "gamepad")
 
-	self.world_previewer = MenuWorldPreviewer:new(ingame_ui_context)
+	self.world_previewer = MenuWorldPreviewer:new(ingame_ui_context, UISettings.hero_selection_camera_position_by_character)
+
+	self.world_previewer:force_stream_highest_mip_levels()
+
 	local state_machine_params = {
-		allow_back_button = true,
 		wwise_world = self.wwise_world,
 		ingame_ui_context = ingame_ui_context,
 		parent = self,
@@ -82,6 +84,7 @@ CharacterSelectionView._setup_state_machine = function (self, state_machine_para
 
 	local start_state = optional_start_state or CharacterSelectionStateCharacter
 	local profiling_debugging_enabled = false
+	state_machine_params.allow_back_button = not self:initial_profile_view()
 	state_machine_params.start_state = optional_start_sub_state
 	self._machine = GameStateMachine:new(self, start_state, state_machine_params, profiling_debugging_enabled)
 	self._state_machine_params = state_machine_params
@@ -95,8 +98,12 @@ CharacterSelectionView.clear_wanted_state = function (self)
 	self._wanted_state = nil
 end
 
-CharacterSelectionView.input_service = function (self)
-	return (self._input_blocked and fake_input_service) or self.input_manager:get_service("character_selection_view")
+CharacterSelectionView.input_service = function (self, ignore_input_blocked)
+	if ignore_input_blocked then
+		return self.input_manager:get_service("character_selection_view")
+	else
+		return (self._input_blocked and fake_input_service) or self.input_manager:get_service("character_selection_view")
+	end
 end
 
 CharacterSelectionView.set_input_blocked = function (self, blocked)
@@ -120,7 +127,6 @@ CharacterSelectionView.create_ui_elements = function (self)
 	self._hero_prestige_level_text_widget = UIWidget.init(widget_definitions.hero_prestige_level_text)
 	self._title_description_widget = UIWidget.init(widget_definitions.title_description_text)
 	self._exit_button_widget = UIWidget.init(widget_definitions.exit_button)
-	self._console_cursor_widget = UIWidget.init(widget_definitions.console_cursor)
 
 	UIRenderer.clear_scenegraph_queue(self.ui_top_renderer)
 
@@ -188,10 +194,6 @@ CharacterSelectionView.draw = function (self, dt, input_service)
 		for _, widget in ipairs(self._static_widgets) do
 			UIRenderer.draw_widget(ui_top_renderer, widget)
 		end
-	end
-
-	if gamepad_active then
-		UIRenderer.draw_widget(ui_top_renderer, self._console_cursor_widget)
 	end
 
 	if self.viewport_widget and self._draw_menu_world then
@@ -294,6 +296,8 @@ CharacterSelectionView.on_enter = function (self, menu_state_name, menu_sub_stat
 			inventory_extension:check_and_drop_pickups("enter_inventory")
 		end
 	end
+
+	UISettings.hero_fullscreen_menu_on_enter()
 end
 
 CharacterSelectionView.set_current_hero = function (self, profile_index)
@@ -502,10 +506,11 @@ CharacterSelectionView.on_exit = function (self)
 	self:hide_hero_world()
 	self:play_sound("hud_in_inventory_state_off")
 	self:play_sound("play_gui_amb_hero_screen_loop_end")
+	UISettings.hero_fullscreen_menu_on_exit()
 end
 
 CharacterSelectionView.exit = function (self, return_to_game)
-	local exit_transition = (self:initial_profile_view() and "exit_initial_character_selection") or (return_to_game and "exit_menu") or "ingame_menu"
+	local exit_transition = (self:initial_profile_view() and "exit_initial_character_selection") or "exit_menu"
 
 	self.ingame_ui:transition_with_fade(exit_transition)
 	self:play_sound("Play_hud_button_close")
@@ -563,17 +568,20 @@ CharacterSelectionView.unsuspend = function (self)
 end
 
 CharacterSelectionView._handle_exit = function (self, dt, input_service)
+	local initial_profile_view = self:initial_profile_view()
 	local exit_button_widget = self._exit_button_widget
 
 	UIWidgetUtils.animate_default_button(exit_button_widget, dt)
 
-	if exit_button_widget.content.button_hotspot.on_hover_enter then
-		self:play_sound("play_gui_start_menu_button_hover")
-	end
+	if not initial_profile_view then
+		if exit_button_widget.content.button_hotspot.on_hover_enter then
+			self:play_sound("play_gui_start_menu_button_hover")
+		end
 
-	if exit_button_widget.content.button_hotspot.on_release or input_service:get("toggle_menu") then
-		self:play_sound("play_gui_start_menu_button_click")
-		self:close_menu(not self.exit_to_game)
+		if exit_button_widget.content.button_hotspot.on_release or input_service:get("toggle_menu") then
+			self:play_sound("play_gui_start_menu_button_click")
+			self:close_menu(not self.exit_to_game)
+		end
 	end
 end
 

@@ -5,9 +5,10 @@ AdminManager = class(AdminManager)
 AdminManager.init = function (self)
 	if DEDICATED_SERVER then
 		CommandWindow.open("Dedicated Server")
+		CommandWindow.print(string.format("Version: content '%s', engine '%s'", script_data.settings.content_revision, script_data.build_identifier))
 
 		local settings = {
-			port = Development.parameter("rcon_port") or script_data.settings.rcon_port or 20000
+			port = script_data.rcon_port or script_data.settings.rcon_port or 20000
 		}
 		self._rcon_server = ScriptRconServer:new(settings)
 	end

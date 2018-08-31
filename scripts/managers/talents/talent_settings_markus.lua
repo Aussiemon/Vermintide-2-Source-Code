@@ -182,6 +182,9 @@ local buff_tweak_data = {
 	},
 	markus_mercenary_activated_ability_cooldown = {
 		multiplier = -0.3
+	},
+	markus_mercenary_activated_ability_improved_healing = {
+		bonus = 45
 	}
 }
 TalentBuffTemplates = TalentBuffTemplates or {}
@@ -266,15 +269,26 @@ TalentBuffTemplates.empire_soldier = {
 	},
 	markus_huntsman_activated_ability = {
 		deactivation_effect = "fx/screenspace_huntsman_skill_02",
-		continuous_effect = "fx/screenspace_huntsman_skill_01",
 		buffs = {
 			{
-				icon = "markus_huntsman_activated_ability",
+				remove_buff_func = "end_huntsman_activated_ability",
 				name = "markus_huntsman_activated_ability",
+				continuous_effect = "fx/screenspace_huntsman_skill_01",
+				max_stacks = 1,
+				icon = "markus_huntsman_activated_ability",
+				apply_buff_func = "apply_huntsman_activated_ability",
+				refresh_durations = true,
+				duration = buff_tweak_data.markus_huntsman_activated_ability.duration
+			}
+		}
+	},
+	markus_huntsman_activated_ability_increased_zoom = {
+		buffs = {
+			{
+				name = "markus_huntsman_activated_ability_increased_zoom",
 				refresh_durations = true,
 				max_stacks = 1,
-				remove_buff_func = "end_huntsman_activated_ability",
-				apply_buff_func = "apply_huntsman_activated_ability",
+				perk = "increased_zoom",
 				duration = buff_tweak_data.markus_huntsman_activated_ability.duration
 			}
 		}
@@ -283,21 +297,10 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				name = "markus_huntsman_activated_ability_headshot_multiplier",
+				refresh_durations = true,
 				max_stacks = 1,
 				stat_buff = StatBuffIndex.HEADSHOT_MULTIPLIER,
 				multiplier = buff_tweak_data.markus_huntsman_activated_ability.headshot_multiplier,
-				duration = buff_tweak_data.markus_huntsman_activated_ability.duration
-			}
-		}
-	},
-	markus_huntsman_activated_ability_guaranteed_ranged_critical_strikes = {
-		buffs = {
-			{
-				name = "markus_huntsman_activated_ability_guaranteed_ranged_critical_strikes",
-				max_stacks = 1,
-				bonus = 0.25,
-				duration = buff_tweak_data.markus_huntsman_activated_ability.duration,
-				stat_buff = StatBuffIndex.CRITICAL_STRIKE_CHANCE_RANGED,
 				duration = buff_tweak_data.markus_huntsman_activated_ability.duration
 			}
 		}
@@ -306,6 +309,7 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				name = "markus_huntsman_activated_ability_increased_reload_speed",
+				refresh_durations = true,
 				max_stacks = 1,
 				stat_buff = StatBuffIndex.RELOAD_SPEED,
 				multiplier = buff_tweak_data.markus_huntsman_activated_ability.reload_speed_multiplier,
@@ -317,6 +321,7 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				name = "markus_huntsman_activated_ability_decrease_move_speed",
+				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
 				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_movement",
@@ -334,6 +339,7 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				name = "markus_huntsman_activated_ability_decrease_crouch_move_speed",
+				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
 				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_crouch_movement",
@@ -351,6 +357,7 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				name = "markus_huntsman_activated_ability_decrease_walk_move_speed",
+				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
 				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_walk_movement",
@@ -371,6 +378,7 @@ TalentBuffTemplates.empire_soldier = {
 				lerp_time = 1,
 				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				refresh_durations = true,
 				path_to_movement_setting_to_modify = {
 					"dodging",
 					"speed_modifier"
@@ -387,6 +395,7 @@ TalentBuffTemplates.empire_soldier = {
 				lerp_time = 1,
 				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				refresh_durations = true,
 				path_to_movement_setting_to_modify = {
 					"dodging",
 					"distance_modifier"
@@ -1077,7 +1086,7 @@ Talents.empire_soldier = {
 		buff_data = {}
 	},
 	{
-		description = "markus_huntsman_max_stamina_desc",
+		description = "markus_huntsman_max_stamina_desc_2",
 		name = "markus_huntsman_max_stamina",
 		num_ranks = 1,
 		icon = "markus_huntsman_max_stamina",
@@ -1110,12 +1119,17 @@ Talents.empire_soldier = {
 		buff_data = {}
 	},
 	{
-		description = "markus_huntsman_debuff_defence_on_crit_desc",
+		description = "markus_huntsman_debuff_defence_on_crit_desc_2",
 		name = "markus_huntsman_debuff_defence_on_crit",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "markus_huntsman_debuff_defence_on_crit",
-		description_values = {},
+		description_values = {
+			{
+				value_type = "percent",
+				value = BuffTemplates.defence_debuff_enemies.buffs[1].multiplier
+			}
+		},
 		requirements = {},
 		buffs = {
 			"markus_huntsman_debuff_defence_on_crit"
@@ -1193,12 +1207,16 @@ Talents.empire_soldier = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc",
+		description = "regrowth_desc_2",
 		name = "markus_huntsman_regrowth",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "markus_huntsman_regrowth",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.regrowth.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"regrowth"
@@ -1206,12 +1224,16 @@ Talents.empire_soldier = {
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc",
+		description = "bloodlust_desc_2",
 		name = "markus_huntsman_bloodlust",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "markus_huntsman_bloodlust",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.bloodlust.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"bloodlust"
@@ -1219,12 +1241,16 @@ Talents.empire_soldier = {
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc",
+		description = "conqueror_desc_2",
 		name = "markus_huntsman_conqueror",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "markus_huntsman_conqueror",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.conqueror.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"conqueror"
@@ -1391,7 +1417,7 @@ Talents.empire_soldier = {
 		buff_data = {}
 	},
 	{
-		description = "markus_knight_passive_stamina_aura_desc",
+		description = "markus_knight_passive_stamina_aura_desc_2",
 		name = "markus_knight_passive_stamina_aura",
 		num_ranks = 1,
 		buffer = "server",
@@ -1444,12 +1470,16 @@ Talents.empire_soldier = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc",
+		description = "regrowth_desc_2",
 		name = "markus_knight_regrowth",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "markus_knight_regrowth",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.regrowth.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"regrowth"
@@ -1457,12 +1487,16 @@ Talents.empire_soldier = {
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc",
+		description = "bloodlust_desc_2",
 		name = "markus_knight_bloodlust",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "markus_knight_bloodlust",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.bloodlust.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"bloodlust"
@@ -1470,12 +1504,16 @@ Talents.empire_soldier = {
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc",
+		description = "conqueror_desc_2",
 		name = "markus_knight_conqueror",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "markus_knight_conqueror",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.conqueror.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"conqueror"
@@ -1503,6 +1541,7 @@ Talents.empire_soldier = {
 		description = "markus_knight_activated_ability_damage_buff_desc",
 		name = "markus_knight_activated_ability_damage_buff",
 		num_ranks = 1,
+		buffer = "server",
 		icon = "markus_knight_activated_ability_damage_buff",
 		description_values = {
 			{
@@ -1694,12 +1733,16 @@ Talents.empire_soldier = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc",
+		description = "regrowth_desc_2",
 		name = "markus_mercenary_regrowth",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "markus_mercenary_regrowth",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.regrowth.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"regrowth"
@@ -1707,12 +1750,16 @@ Talents.empire_soldier = {
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc",
+		description = "bloodlust_desc_2",
 		name = "markus_mercenary_bloodlust",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "markus_mercenary_bloodlust",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.bloodlust.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"bloodlust"
@@ -1720,12 +1767,16 @@ Talents.empire_soldier = {
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc",
+		description = "conqueror_desc_2",
 		name = "markus_mercenary_conqueror",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "markus_mercenary_conqueror",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.conqueror.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"conqueror"
@@ -1750,10 +1801,15 @@ Talents.empire_soldier = {
 		buff_data = {}
 	},
 	{
-		description = "markus_mercenary_activated_ability_improved_healing_desc",
+		description = "markus_mercenary_activated_ability_improved_healing_desc_2",
 		name = "markus_mercenary_activated_ability_improved_healing",
 		num_ranks = 1,
 		icon = "markus_mercenary_activated_ability_improved_healing",
+		description_values = {
+			{
+				value = buff_tweak_data.markus_mercenary_activated_ability_improved_healing.bonus
+			}
+		},
 		requirements = {},
 		buffs = {},
 		buff_data = {}

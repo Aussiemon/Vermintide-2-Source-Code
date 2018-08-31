@@ -95,6 +95,36 @@ EndViewStateScore.create_ui_elements = function (self, params)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
+
+	self:_create_gamepad_elements()
+end
+
+EndViewStateScore._create_gamepad_elements = function (self)
+	local frame_settings = UIFrameSettings.frame_outer_glow_01
+	local scenegraph_name = "player_panel_1"
+	local scenegraph_entry = self.ui_scenegraph[scenegraph_name]
+	local scenegraph_size = scenegraph_entry.size
+	local offset = {
+		-frame_settings.texture_sizes.vertical[1],
+		-frame_settings.texture_sizes.horizontal[2],
+		0
+	}
+	local size = {
+		scenegraph_size[1] + frame_settings.texture_sizes.vertical[1] * 2,
+		scenegraph_size[2] + frame_settings.texture_sizes.horizontal[2] * 2
+	}
+	local style = {
+		color = {
+			255,
+			255,
+			255,
+			255
+		},
+		offset = offset,
+		size = size
+	}
+	self._gamepad_selection_screen = UIWidget.init(UIWidgets.create_simple_frame(frame_settings.texture, frame_settings.texture_size, frame_settings.texture_sizes.corner, frame_settings.texture_sizes.vertical, frame_settings.texture_sizes.horizontal, "player_panel_1", style))
+	self._current_gamepad_selection = 1
 end
 
 EndViewStateScore._wanted_state = function (self)
@@ -153,6 +183,7 @@ EndViewStateScore.update = function (self, dt, t)
 	self:_update_entry_hover(dt)
 	self.ui_animator:update(dt)
 	self:_update_animations(dt)
+	self:_update_gamepad_input(dt, input_service)
 
 	local transitioning = self.parent:transitioning()
 
@@ -163,6 +194,65 @@ end
 
 EndViewStateScore.post_update = function (self, dt, t)
 	return
+end
+
+EndViewStateScore._update_gamepad_input = function (self, dt, input_service)
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+
+	if not gamepad_active or not self.parent:input_enabled() then
+		return
+	end
+
+	local is_online = not Managers.account:offline_mode()
+	local new_selection = self._current_gamepad_selection
+	local old_selection = self._current_gamepad_selection
+
+	if input_service:get("move_left") then
+		new_selection = math.max(new_selection - 1, 1)
+	elseif input_service:get("move_right") then
+		new_selection = math.min(new_selection + 1, 4)
+	elseif input_service:get("confirm_press") then
+		local player_data = self._players_by_widget_index[new_selection]
+
+		if player_data.is_player_controlled and is_online then
+			self:show_gamercard(player_data.peer_id)
+		end
+	end
+
+	if new_selection ~= old_selection then
+		self._gamepad_selection_screen.scenegraph_id = "player_panel_" .. new_selection
+		self._current_gamepad_selection = new_selection
+		local player_data = self._players_by_widget_index[new_selection]
+
+		if player_data.is_player_controlled and is_online then
+			self.parent:set_input_description("profile_available")
+		else
+			self.parent:set_input_description(nil)
+		end
+	end
+end
+
+EndViewStateScore.show_gamercard = function (self, peer_id)
+	if peer_id then
+		if PLATFORM == "win32" and rawget(_G, "Steam") then
+			local id = Steam.id_hex_to_dec(peer_id)
+			local url = "http://steamcommunity.com/profiles/" .. id
+
+			Steam.open_url(url)
+		elseif PLATFORM == "xb1" then
+			if self._context.lobby and self._context.lobby.lobby then
+				local xuid = self._context.lobby.lobby:xuid(peer_id)
+
+				if xuid then
+					Managers.account:show_player_profile(xuid)
+				end
+			end
+		elseif PLATFORM == "ps4" then
+			local np_id = self._context.lobby.lobby:np_id_from_peer_id(peer_id)
+
+			Managers.account:show_player_profile_with_np_id(np_id)
+		end
+	end
 end
 
 EndViewStateScore._update_animations = function (self, dt)
@@ -278,6 +368,7 @@ EndViewStateScore.draw = function (self, input_service, dt)
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local render_settings = self.render_settings
+	local gamepad_active = Managers.input:is_device_active("gamepad")
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
@@ -291,6 +382,10 @@ EndViewStateScore.draw = function (self, input_service, dt)
 
 	for _, widget in ipairs(self._score_widgets) do
 		UIRenderer.draw_widget(ui_renderer, widget)
+	end
+
+	if gamepad_active and self.parent:input_enabled() then
+		UIRenderer.draw_widget(ui_renderer, self._gamepad_selection_screen)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
@@ -377,6 +472,8 @@ EndViewStateScore._setup_player_scores = function (self, players_session_scores)
 	local player_names = {}
 	local widget_index = 1
 	local score_index = 1
+	self._players_by_widget_index = {}
+	local players_by_widget_index = self._players_by_widget_index
 	local hero_widgets = self._hero_widgets
 
 	for stats_id, player_data in pairs(players_session_scores) do
@@ -384,6 +481,7 @@ EndViewStateScore._setup_player_scores = function (self, players_session_scores)
 		self:_group_scores_by_player_and_topic(score_panel_scores, player_data, widget_index)
 
 		player_names[widget_index] = player_data.name
+		players_by_widget_index[widget_index] = player_data
 		local peer_id = player_data.peer_id
 		local profile_index = player_data.profile_index
 		local career_index = player_data.career_index

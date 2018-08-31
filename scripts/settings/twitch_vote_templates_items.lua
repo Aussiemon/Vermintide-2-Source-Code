@@ -62,6 +62,7 @@ local function add_item(is_server, player_unit, pickup_type)
 			local network_manager = Managers.state.network
 			local network_transmit = network_manager.network_transmit
 			local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
+			local career_extension = ScriptUnit.extension(player_unit, "career_system")
 			local pickup_settings = AllPickups[pickup_type]
 			local slot_name = pickup_settings.slot_name
 			local item_name = pickup_settings.item_name
@@ -111,6 +112,7 @@ local function add_item(is_server, player_unit, pickup_type)
 
 			if wielded_slot_name == slot_name then
 				CharacterStateHelper.stop_weapon_actions(inventory_extension, "picked_up_object")
+				CharacterStateHelper.stop_career_abilities(career_extension, "picked_up_object")
 				inventory_extension:wield(slot_name)
 			end
 		end

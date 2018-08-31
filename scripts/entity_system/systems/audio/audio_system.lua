@@ -131,14 +131,32 @@ AudioSystem.play_audio_position_event = function (self, event, position)
 end
 
 AudioSystem._play_event = function (self, event, unit, object_id)
+	if PLATFORM == "ps4" then
+		Application.warning("[AudioSystem:_play_event] NO SOUND ON PS4 YET")
+
+		return
+	end
+
 	WwiseUtils.trigger_unit_event(self.world, event, unit, object_id)
 end
 
 AudioSystem._play_position_event = function (self, event, position)
+	if PLATFORM == "ps4" then
+		Application.warning("[AudioSystem:_play_position_event] NO SOUND ON PS4 YET")
+
+		return
+	end
+
 	WwiseUtils.trigger_position_event(self.world, event, position)
 end
 
 AudioSystem._play_event_with_source = function (self, wwise_world, event, source)
+	if PLATFORM == "ps4" then
+		Application.warning("[AudioSystem:_play_event_with_source] NO SOUND ON PS4 YET")
+
+		return
+	end
+
 	wwise_world:trigger_event(event, source)
 end
 
@@ -206,6 +224,12 @@ AudioSystem.play_audio_unit_param_float_event = function (self, event, param, va
 end
 
 AudioSystem._play_param_event = function (self, event, param, value, unit, object_id)
+	if PLATFORM == "ps4" then
+		Application.warning("[AudioSystem:_play_param_event] NO SOUND ON PS4 YET")
+
+		return
+	end
+
 	local source, wwise_world = WwiseUtils.make_unit_auto_source(self.world, unit, object_id)
 
 	WwiseWorld.set_source_parameter(wwise_world, source, param, value)

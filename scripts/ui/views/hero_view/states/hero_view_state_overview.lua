@@ -12,12 +12,16 @@ require("scripts/ui/views/hero_view/windows/hero_window_background_console")
 require("scripts/ui/views/hero_view/windows/hero_window_panel_console")
 require("scripts/ui/views/hero_view/windows/hero_window_loadout_inventory_console")
 require("scripts/ui/views/hero_view/windows/hero_window_loadout_console")
+require("scripts/ui/views/hero_view/windows/hero_window_character_info")
+require("scripts/ui/views/hero_view/windows/hero_window_crafting_list_console")
+require("scripts/ui/views/hero_view/windows/hero_window_crafting_console")
+require("scripts/ui/views/hero_view/windows/hero_window_crafting_inventory_console")
+require("scripts/ui/views/hero_view/windows/hero_window_hero_power_console")
+require("scripts/ui/views/hero_view/windows/hero_window_cosmetics_loadout_console")
+require("scripts/ui/views/hero_view/windows/hero_window_cosmetics_loadout_inventory_console")
+require("scripts/ui/views/hero_view/windows/hero_window_ingame_view")
 
 local definitions = local_require("scripts/ui/views/hero_view/states/definitions/hero_view_state_overview_definitions")
-local layout_settings = local_require("scripts/ui/views/hero_view/states/hero_window_layout")
-local windows_settings = layout_settings.windows
-local window_layouts = layout_settings.window_layouts
-local MAX_ACTIVE_WINDOWS = layout_settings.max_active_windows
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
@@ -44,6 +48,8 @@ HeroViewStateOverview.on_enter = function (self, params)
 	print("[HeroViewState] Enter Substate HeroViewStateOverview")
 
 	self.parent = params.parent
+	self.fake_input_service = fake_input_service
+	self._gamepad_style_active = self:_setup_menu_layout()
 	local ingame_ui_context = params.ingame_ui_context
 	self.ingame_ui_context = ingame_ui_context
 	self.ui_renderer = ingame_ui_context.ui_renderer
@@ -57,6 +63,7 @@ HeroViewStateOverview.on_enter = function (self, params)
 	}
 	self.wwise_world = params.wwise_world
 	self.ingame_ui = ingame_ui_context.ingame_ui
+	self.is_in_inn = ingame_ui_context.is_in_inn
 	self.world_previewer = params.world_previewer
 	self.platform = PLATFORM
 	local player_manager = Managers.player
@@ -85,6 +92,10 @@ HeroViewStateOverview.on_enter = function (self, params)
 	self.disabled_backend_ids_sync_id = 0
 	self._disabled_backend_ids = {}
 
+	if PLATFORM == "win32" then
+		self._friends_component_ui = FriendsUIComponent:new(ingame_ui_context)
+	end
+
 	self:create_ui_elements(params)
 
 	if params.initial_state then
@@ -97,7 +108,7 @@ HeroViewStateOverview.on_enter = function (self, params)
 		wwise_world = self.wwise_world,
 		ingame_ui_context = ingame_ui_context,
 		parent = self,
-		windows_settings = windows_settings,
+		windows_settings = self._windows_settings,
 		input_service = fake_input_service,
 		hero_name = self.hero_name,
 		career_index = self.career_index,
@@ -106,6 +117,33 @@ HeroViewStateOverview.on_enter = function (self, params)
 	}
 
 	self:_initial_windows_setups(window_params)
+
+	if self._gamepad_style_active then
+		UISettings.hero_fullscreen_menu_on_enter()
+
+		if self.is_in_inn then
+			self:play_sound("play_gui_amb_hero_screen_loop_begin")
+			self:disable_player_world()
+		else
+			self:enable_ingame_overlay()
+		end
+	end
+end
+
+HeroViewStateOverview._setup_menu_layout = function (self)
+	local use_gamepad_layout = PLATFORM == "ps4" or PLATFORM == "xb1" or Managers.input:is_device_active("gamepad") or UISettings.use_gamepad_menu_layout
+
+	if use_gamepad_layout then
+		self._layout_settings = local_require("scripts/ui/views/hero_view/states/hero_window_layout_console")
+	else
+		self._layout_settings = local_require("scripts/ui/views/hero_view/states/hero_window_layout")
+	end
+
+	self._windows_settings = self._layout_settings.windows
+	self._window_layouts = self._layout_settings.window_layouts
+	self._max_active_windows = self._layout_settings.max_active_windows
+
+	return use_gamepad_layout
 end
 
 HeroViewStateOverview.create_ui_elements = function (self, params)
@@ -127,6 +165,48 @@ HeroViewStateOverview.create_ui_elements = function (self, params)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
+end
+
+HeroViewStateOverview.disable_player_world = function (self)
+	if not self._player_world_disabled then
+		self._player_world_disabled = true
+		local viewport_name = "player_1"
+		local world = Managers.world:world("level_world")
+		local viewport = ScriptWorld.viewport(world, viewport_name)
+
+		ScriptWorld.deactivate_viewport(world, viewport)
+	end
+end
+
+HeroViewStateOverview.enable_player_world = function (self)
+	if self._player_world_disabled then
+		self._player_world_disabled = false
+		local viewport_name = "player_1"
+		local world = Managers.world:world("level_world")
+		local viewport = ScriptWorld.viewport(world, viewport_name)
+
+		ScriptWorld.activate_viewport(world, viewport)
+	end
+end
+
+HeroViewStateOverview.enable_ingame_overlay = function (self)
+	if not self._ingame_overlay_enabled then
+		self._ingame_overlay_enabled = true
+		local world = Managers.world:world("level_world")
+
+		World.set_data(world, "fullscreen_blur", 0.5)
+		World.set_data(world, "greyscale", 1)
+	end
+end
+
+HeroViewStateOverview.disable_ingame_overlay = function (self)
+	if self._ingame_overlay_enabled then
+		self._ingame_overlay_enabled = false
+		local world = Managers.world:world("level_world")
+
+		World.set_data(world, "fullscreen_blur", nil)
+		World.set_data(world, "greyscale", nil)
+	end
 end
 
 HeroViewStateOverview._initial_windows_setups = function (self, params)
@@ -160,7 +240,7 @@ end
 
 HeroViewStateOverview._change_window = function (self, window_index, window_name)
 	local active_windows = self._active_windows
-	local new_window_settings = windows_settings[window_name]
+	local new_window_settings = self._windows_settings[window_name]
 	local window_class_name = new_window_settings.class_name
 	local current_window = active_windows[window_index]
 
@@ -203,14 +283,28 @@ HeroViewStateOverview._change_window = function (self, window_index, window_name
 	active_windows[window_index] = window
 end
 
+HeroViewStateOverview.get_layout_name = function (self)
+	local index = self._selected_game_mode_index
+
+	for i, layout_setting in ipairs(self._window_layouts) do
+		if i == index then
+			return layout_setting.name
+		end
+	end
+end
+
 HeroViewStateOverview.set_layout_by_name = function (self, name)
-	for index, layout_setting in ipairs(window_layouts) do
+	for index, layout_setting in ipairs(self._window_layouts) do
 		if layout_setting.name == name then
 			self:set_layout(index)
 
 			return
 		end
 	end
+end
+
+HeroViewStateOverview.close_on_exit = function (self)
+	return self._close_on_exit
 end
 
 HeroViewStateOverview.set_layout = function (self, index)
@@ -228,7 +322,7 @@ HeroViewStateOverview.set_layout = function (self, index)
 	self._widgets_by_name.back_button.content.visible = not close_on_exit
 	self._close_on_exit = close_on_exit
 
-	for i = 1, MAX_ACTIVE_WINDOWS, 1 do
+	for i = 1, self._max_active_windows, 1 do
 		local window_changed = false
 
 		for window_name, window_position_index in pairs(windows) do
@@ -256,7 +350,7 @@ end
 HeroViewStateOverview.set_window_input_focus = function (self, window_name)
 	local layout_index = self._selected_game_mode_index
 	local layout_setting = self:_get_layout_setting(layout_index)
-	local window_setting = windows_settings[window_name]
+	local window_setting = self._windows_settings[window_name]
 	local window_class_name = window_setting and window_setting.class_name
 	local window_found = false
 	local active_windows = self._active_windows
@@ -290,7 +384,7 @@ HeroViewStateOverview.get_previous_selected_game_mode_index = function (self)
 end
 
 HeroViewStateOverview._get_layout_setting = function (self, index)
-	return window_layouts[index]
+	return self._window_layouts[index]
 end
 
 HeroViewStateOverview._windows_update = function (self, dt, t)
@@ -358,12 +452,28 @@ HeroViewStateOverview.on_exit = function (self, params)
 	print("[HeroViewState] Exit Substate HeroViewStateOverview")
 
 	self.ui_animator = nil
+	local friends_component_ui = self._friends_component_ui
+
+	if friends_component_ui and self:is_friends_list_active() then
+		friends_component_ui:deactivate_friends_ui()
+	end
 
 	if self._fullscreen_effect_enabled then
 		self:set_fullscreen_effect_enable_state(false)
 	end
 
 	self:_close_active_windows()
+
+	if self._gamepad_style_active then
+		UISettings.hero_fullscreen_menu_on_exit()
+
+		if self.is_in_inn then
+			self:play_sound("play_gui_amb_hero_screen_loop_end")
+			self:enable_player_world()
+		else
+			self:disable_ingame_overlay()
+		end
+	end
 end
 
 HeroViewStateOverview._close_active_windows = function (self)
@@ -404,8 +514,17 @@ HeroViewStateOverview.update = function (self, dt, t)
 
 	local input_manager = self.input_manager
 	local input_service = self:window_input_service()
+	local friends_component_ui = self._friends_component_ui
+	local gamepad_active = input_manager:is_device_active("gamepad")
 
-	self:draw(input_service, dt)
+	if friends_component_ui and not gamepad_active and Managers.account:is_online() then
+		friends_component_ui:update(dt, input_service)
+	end
+
+	if not self._gamepad_style_active then
+		self:draw(input_service, dt)
+	end
+
 	self:_update_transition_timer(dt)
 	self:_windows_update(dt, t)
 
@@ -429,6 +548,31 @@ HeroViewStateOverview.update = function (self, dt, t)
 			self._new_state = wanted_state
 		else
 			return self._new_state
+		end
+	end
+end
+
+HeroViewStateOverview.is_friends_list_active = function (self)
+	local friends_component_ui = self._friends_component_ui
+
+	if friends_component_ui then
+		return friends_component_ui:is_active()
+	end
+
+	return false
+end
+
+HeroViewStateOverview._handle_friend_joining = function (self)
+	local friends_component_ui = self._friends_component_ui
+
+	if friends_component_ui then
+		local join_lobby_data = friends_component_ui:join_lobby_data()
+
+		if join_lobby_data and Managers.matchmaking:allowed_to_initiate_join_lobby() then
+			Managers.matchmaking:request_join_lobby(join_lobby_data)
+			self:close_menu(true)
+
+			return true
 		end
 	end
 end
@@ -483,15 +627,19 @@ HeroViewStateOverview._handle_input = function (self, dt, t)
 	local input_blocked = self._input_blocked
 	local window_focused = self._window_focused
 
-	if input_blocked or window_focused then
+	if input_blocked then
+		return
+	end
+
+	if self:_handle_friend_joining() then
 		return
 	end
 
 	local widgets_by_name = self._widgets_by_name
 	local input_service = self.parent:input_service()
-	local input_pressed = input_service:get("toggle_menu")
+	local input_pressed = input_service:get("toggle_menu", true)
 	local gamepad_active = Managers.input:is_device_active("gamepad")
-	local back_pressed = gamepad_active and input_service:get("back_menu")
+	local back_pressed = gamepad_active and input_service:get("back_menu", true)
 	local close_on_exit = self._close_on_exit
 	local exit_button = widgets_by_name.exit_button
 	local back_button = widgets_by_name.back_button
@@ -503,7 +651,7 @@ HeroViewStateOverview._handle_input = function (self, dt, t)
 		self:play_sound("play_gui_equipment_button_hover")
 	end
 
-	if close_on_exit and (input_pressed or back_pressed or self:_is_button_pressed(exit_button)) then
+	if close_on_exit and (back_pressed or input_pressed or self:_is_button_pressed(exit_button)) then
 		self:play_sound("Play_hud_hover")
 		self:close_menu()
 
@@ -533,6 +681,7 @@ HeroViewStateOverview.draw = function (self, input_service, dt)
 	local ui_scenegraph = self.ui_scenegraph
 	local input_manager = self.input_manager
 	local render_settings = self.render_settings
+	local gamepad_active = input_manager:is_device_active("gamepad")
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
@@ -588,6 +737,14 @@ end
 HeroViewStateOverview.clear_disabled_backend_ids = function (self)
 	self._disabled_backend_ids = {}
 	self.disabled_backend_ids_sync_id = self.disabled_backend_ids_sync_id + 1
+end
+
+HeroViewStateOverview.disabled_item_icon = function (self)
+	return self._disabled_item_icon
+end
+
+HeroViewStateOverview.set_disabled_item_icon = function (self, icon)
+	self._disabled_item_icon = icon
 end
 
 HeroViewStateOverview.set_disabled_backend_id = function (self, backend_id, is_disabled)

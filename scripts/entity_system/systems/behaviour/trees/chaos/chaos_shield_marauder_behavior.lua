@@ -36,6 +36,11 @@ BreedBehaviors.shield_marauder = {
 	{
 		"BTSelector",
 		{
+			"BTTeleportAction",
+			condition = "at_teleport_smartobject",
+			name = "teleport"
+		},
+		{
 			"BTClimbAction",
 			condition = "at_climb_smartobject",
 			name = "climb"

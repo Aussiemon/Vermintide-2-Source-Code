@@ -216,8 +216,6 @@ SteamServerBrowserWrapper.update = function (self, dt, t)
 
 				break
 			end
-
-			assert(fetch_error == false, "fetch error")
 		end
 
 		if not is_fetching then

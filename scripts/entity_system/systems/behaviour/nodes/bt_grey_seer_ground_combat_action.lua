@@ -36,6 +36,8 @@ BTGreySeerGroundCombatAction.enter = function (self, unit, blackboard, t)
 	final_phase_data.num_teleports = final_phase_data.num_teleports or 1
 	final_phase_data.spawn_allies_timer = final_phase_data.spawn_allies_timer or t + 3
 	final_phase_data.teleport_timer = final_phase_data.teleport_timer or t
+	local health_extension = ScriptUnit.extension(unit, "health_system")
+	health_extension.is_invincible = false
 end
 
 BTGreySeerGroundCombatAction.leave = function (self, unit, blackboard, t, reason, destroy)

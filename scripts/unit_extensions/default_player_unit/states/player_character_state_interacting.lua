@@ -35,6 +35,7 @@ PlayerCharacterStateInteracting.on_enter = function (self, unit, input, dt, cont
 	self.deactivate_block_on_exit = false
 
 	if params.activate_block then
+		self.activate_block = params.activate_block
 		local status_extension = self.status_extension
 		self.deactivate_block_on_exit = not status_extension:is_blocking()
 
@@ -53,6 +54,8 @@ PlayerCharacterStateInteracting.on_enter = function (self, unit, input, dt, cont
 end
 
 PlayerCharacterStateInteracting.on_exit = function (self, unit, input, dt, context, t, next_state)
+	self.activate_block = nil
+
 	if self.swap_to_3p then
 		CharacterStateHelper.change_camera_state(self.player, "follow")
 
@@ -90,12 +93,34 @@ PlayerCharacterStateInteracting.update = function (self, unit, input, dt, contex
 	local status_extension = self.status_extension
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 
+	if self.activate_block then
+		if not status_extension:is_blocking() and not LEVEL_EDITOR_TEST and Managers.state.network:game() then
+			local game_object_id = Managers.state.unit_storage:go_id(unit)
+
+			if self.is_server then
+				Managers.state.network.network_transmit:send_rpc_clients("rpc_set_blocking", game_object_id, true)
+			else
+				Managers.state.network.network_transmit:send_rpc_server("rpc_set_blocking", game_object_id, true)
+			end
+		end
+
+		status_extension:set_blocking(true)
+	end
+
 	if CharacterStateHelper.do_common_state_transitions(status_extension, csm) then
 		return
 	end
 
 	if CharacterStateHelper.is_using_transport(status_extension) then
 		csm:change_state("using_transport")
+
+		return
+	end
+
+	local world = self.world
+
+	if CharacterStateHelper.is_ledge_hanging(world, unit, self.temp_params) then
+		csm:change_state("ledge_hanging", self.temp_params)
 
 		return
 	end

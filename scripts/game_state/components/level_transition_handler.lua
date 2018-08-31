@@ -149,6 +149,10 @@ LevelTransitionHandler.load_next_level = function (self)
 		self.picked_level_key = nil
 	elseif self.transition_type ~= "reload_level" then
 		self:load_level(self.transition_type)
+	elseif self.transition_type == "reload_level" then
+		local level_key = self.level_key
+
+		self.enemy_package_loader:setup_startup_enemies(level_key)
 	end
 
 	self.transition_type = nil

@@ -90,7 +90,7 @@ BackendUtils.get_item_units = function (item_data, backend_id, skin)
 	local material = item_data.material
 	local icon = item_data.hud_icon
 	local backend_id = item_data.backend_id or backend_id
-	local skin_name = nil
+	local skin_name, material_settings = nil
 
 	if backend_id or skin then
 		if not skin then
@@ -104,6 +104,7 @@ BackendUtils.get_item_units = function (item_data, backend_id, skin)
 			right_hand_unit = skin_template.right_hand_unit
 			icon = skin_template.hud_icon
 			skin_name = skin
+			material_settings = skin_template.material_settings
 		end
 	end
 
@@ -114,7 +115,8 @@ BackendUtils.get_item_units = function (item_data, backend_id, skin)
 			unit = unit,
 			material = material,
 			icon = icon,
-			skin = skin_name
+			skin = skin_name,
+			material_settings = material_settings
 		}
 
 		return units

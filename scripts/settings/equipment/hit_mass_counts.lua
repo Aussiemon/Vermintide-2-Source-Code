@@ -9,6 +9,21 @@ LINESMAN_HIT_MASS_COUNT = {
 	skaven_clan_rat = 0.6,
 	chaos_marauder = 0.6
 }
+HEAVY_LINESMAN_HIT_MASS_COUNT = {
+	skaven_plague_monk = 0.6,
+	chaos_raider = 0.6,
+	skaven_ratling_gunner = 0.5,
+	chaos_warrior = 0.5,
+	chaos_berzerker = 0.6,
+	skaven_clan_rat_with_shield = 0.6,
+	skaven_warpfire_thrower = 0.5,
+	chaos_marauder_with_shield = 0.6,
+	chaos_fanatic = 0.6,
+	skaven_slave = 0.6,
+	skaven_storm_vermin = 0.5,
+	skaven_clan_rat = 0.6,
+	chaos_marauder = 0.6
+}
 TANK_HIT_MASS_COUNT = {
 	skaven_storm_vermin_with_shield = 0.5,
 	chaos_raider = 0.5,

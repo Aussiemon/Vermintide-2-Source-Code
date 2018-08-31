@@ -1,18 +1,30 @@
 AlwaysUnlocked = class(AlwaysUnlocked)
 
-AlwaysUnlocked.init = function (self, name, app_id, backend_id)
+AlwaysUnlocked.init = function (self, name, app_id, backend_reward_id)
 	self._name = name
 	self._id = app_id or "0"
-	self._backend_id = nil
+	self._backend_reward_id = nil
 	self._unlocked = true
+end
+
+AlwaysUnlocked.ready = function (self)
+	return true
+end
+
+AlwaysUnlocked.has_error = function (self)
+	return false
 end
 
 AlwaysUnlocked.id = function (self)
 	return self._id
 end
 
-AlwaysUnlocked.backend_id = function (self)
-	return self._backend_id
+AlwaysUnlocked.backend_reward_id = function (self)
+	return self._backend_reward_id
+end
+
+AlwaysUnlocked.remove_backend_reward_id = function (self)
+	self._backend_reward_id = nil
 end
 
 AlwaysUnlocked.unlocked = function (self)

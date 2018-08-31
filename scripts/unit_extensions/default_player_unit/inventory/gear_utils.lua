@@ -6,11 +6,11 @@ GearUtils.create_equipment = function (world, slot_name, item_data, unit_1p, uni
 	local item_units = override_item_units or BackendUtils.get_item_units(item_data)
 
 	if item_units.right_hand_unit then
-		right_hand_weapon_unit_3p, right_hand_ammo_unit_3p, right_hand_weapon_unit_1p, right_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "right", item_template.third_person_extension_template, item_units.right_hand_unit, item_template.right_hand_attachment_node_linking, slot_name, item_data, unit_1p, unit_3p, unit_template, extra_extension_data, ammo_percent)
+		right_hand_weapon_unit_3p, right_hand_ammo_unit_3p, right_hand_weapon_unit_1p, right_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "right", item_template.third_person_extension_template, item_units.right_hand_unit, item_template.right_hand_attachment_node_linking, slot_name, item_data, unit_1p, unit_3p, unit_template, extra_extension_data, ammo_percent, item_units.material_settings)
 	end
 
 	if item_units.left_hand_unit then
-		left_hand_weapon_unit_3p, left_hand_ammo_unit_3p, left_hand_weapon_unit_1p, left_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "left", item_template.third_person_extension_template, item_units.left_hand_unit, item_template.left_hand_attachment_node_linking, slot_name, item_data, unit_1p, unit_3p, unit_template, extra_extension_data, ammo_percent)
+		left_hand_weapon_unit_3p, left_hand_ammo_unit_3p, left_hand_weapon_unit_1p, left_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "left", item_template.third_person_extension_template, item_units.left_hand_unit, item_template.left_hand_attachment_node_linking, slot_name, item_data, unit_1p, unit_3p, unit_template, extra_extension_data, ammo_percent, item_units.material_settings)
 	end
 
 	if right_hand_weapon_unit_3p then
@@ -61,7 +61,9 @@ GearUtils.create_equipment = function (world, slot_name, item_data, unit_1p, uni
 		left_unit_3p = left_hand_weapon_unit_3p,
 		left_ammo_unit_3p = left_hand_ammo_unit_3p,
 		left_unit_1p = left_hand_weapon_unit_1p,
-		left_ammo_unit_1p = left_hand_ammo_unit_1p
+		left_ammo_unit_1p = left_hand_ammo_unit_1p,
+		right_hand_unit_name = item_units.right_hand_unit,
+		left_hand_unit_name = item_units.left_hand_unit
 	}
 
 	return slot_data
@@ -91,7 +93,51 @@ GearUtils.apply_properties_to_item_template = function (template, backend_id)
 	return template
 end
 
-GearUtils.spawn_inventory_unit = function (world, hand, third_person_extension_template, unit_name, node_linking_settings, slot_name, item_data, owner_unit_1p, owner_unit_3p, unit_template, extra_extension_data, ammo_percent)
+GearUtils.apply_material_settings = function (unit, material_settings)
+	for variable_name, data in pairs(material_settings) do
+		if data.type == "color" then
+			if data.apply_to_children then
+				Unit.set_color_for_materials_in_unit_and_childs(unit, variable_name, Quaternion(data.alpha, data.r, data.g, data.b))
+			else
+				Unit.set_color_for_materials(unit, variable_name, Quaternion(data.alpha, data.r, data.g, data.b))
+			end
+		elseif data.type == "matrix4x4" then
+			local matrix = Matrix4x4(data.xx, data.xy, data.xz, data.yx, data.yy, data.yz, data.zx, data.zy, data.zz, data.tx, data.ty, data.tz)
+
+			if data.apply_to_children then
+				Unit.set_matrix4x4_for_materials_in_unit_and_childs(unit, variable_name, matrix)
+			else
+				Unit.set_matrix4x4_for_materials(unit, variable_name, matrix)
+			end
+		elseif data.type == "scalar" then
+			if data.apply_to_children then
+				Unit.set_scalar_for_materials_in_unit_and_childs(unit, variable_name, data.value)
+			else
+				Unit.set_scalar_for_materials(unit, variable_name, data.value)
+			end
+		elseif data.type == "vector2" then
+			if data.apply_to_children then
+				Unit.set_vector2_for_materials_in_unit_and_childs(unit, variable_name, Vector3(data.x, data.y, 0))
+			else
+				Unit.set_vector2_for_materials(unit, variable_name, Vector3(data.x, data.y, 0))
+			end
+		elseif data.type == "vector3" then
+			if data.apply_to_children then
+				Unit.set_vector3_for_materials_in_unit_and_childs(unit, variable_name, Vector3(data.x, data.y, data.z))
+			else
+				Unit.set_vector3_for_materials(unit, variable_name, Vector3(data.x, data.y, data.z))
+			end
+		elseif data.type == "vector4" then
+			if data.apply_to_children then
+				Unit.set_vector4_for_materials_in_unit_and_childs(unit, variable_name, Quaternion(data.x, data.y, data.z, data.w))
+			else
+				Unit.set_vector4_for_materials(unit, variable_name, Quaternion(data.x, data.y, data.z, data.w))
+			end
+		end
+	end
+end
+
+GearUtils.spawn_inventory_unit = function (world, hand, third_person_extension_template, unit_name, node_linking_settings, slot_name, item_data, owner_unit_1p, owner_unit_3p, unit_template, extra_extension_data, ammo_percent, material_settings)
 	local item_template = BackendUtils.get_item_template(item_data)
 	local ammo_data = item_template.ammo_data
 	local aim_data = item_template.aim_data
@@ -104,7 +150,7 @@ GearUtils.spawn_inventory_unit = function (world, hand, third_person_extension_t
 		if ammo_unit_name then
 			local ammo_unit_attachment_node_linking = ammo_data.ammo_unit_attachment_node_linking
 
-			assert(ammo_unit_attachment_node_linking, "ammo unit: %s defined in weapon without attachment node linking", ammo_unit_name)
+			fassert(ammo_unit_attachment_node_linking, "ammo unit: %s defined in weapon without attachment node linking", ammo_unit_name)
 
 			ammo_unit_3p = GearUtils._attach_ammo_unit(world, ammo_unit_name, ammo_unit_attachment_node_linking.third_person.wielded, owner_unit_3p)
 		end
@@ -117,6 +163,10 @@ GearUtils.spawn_inventory_unit = function (world, hand, third_person_extension_t
 	local scene_graph_links = {}
 
 	GearUtils.link(world, attachment_node_linking, scene_graph_links, owner_unit_3p, weapon_unit_3p)
+
+	if material_settings then
+		GearUtils.apply_material_settings(weapon_unit_3p, material_settings)
+	end
 
 	if owner_unit_1p then
 		local attachment_node_linking = node_linking_settings.first_person.wielded
@@ -162,7 +212,7 @@ GearUtils.spawn_inventory_unit = function (world, hand, third_person_extension_t
 			if ammo_unit_name then
 				local ammo_unit_attachment_node_linking = ammo_data.ammo_unit_attachment_node_linking
 
-				assert(ammo_unit_attachment_node_linking, "ammo unit: %s defined in weapon without attachment node linking", ammo_unit_name)
+				fassert(ammo_unit_attachment_node_linking, "ammo unit: %s defined in weapon without attachment node linking", ammo_unit_name)
 
 				ammo_unit_1p = GearUtils._attach_ammo_unit(world, ammo_unit_name, ammo_unit_attachment_node_linking.first_person.wielded, owner_unit_1p)
 			end
@@ -188,6 +238,10 @@ GearUtils.spawn_inventory_unit = function (world, hand, third_person_extension_t
 		local scene_graph_links = {}
 
 		GearUtils.link(world, attachment_node_linking, scene_graph_links, owner_unit_1p, weapon_unit_1p)
+
+		if material_settings then
+			GearUtils.apply_material_settings(weapon_unit_1p, material_settings)
+		end
 
 		return weapon_unit_3p, ammo_unit_3p, weapon_unit_1p, ammo_unit_1p
 	end

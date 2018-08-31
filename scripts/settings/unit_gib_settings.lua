@@ -1076,8 +1076,11 @@ UnitGibSettings.skaven_storm_vermin = {
 		}
 	}
 }
+UnitGibSettings.skaven_storm_vermin_baked = table.create_copy(UnitGibSettings.skaven_storm_vermin_baked, UnitGibSettings.skaven_storm_vermin)
 UnitGibSettings.skaven_storm_vermin_commander = table.create_copy(UnitGibSettings.skaven_storm_vermin_commander, UnitGibSettings.skaven_storm_vermin)
+UnitGibSettings.skaven_storm_vermin_commander_baked = table.create_copy(UnitGibSettings.skaven_storm_vermin_commander_baked, UnitGibSettings.skaven_storm_vermin)
 UnitGibSettings.skaven_storm_vermin_with_shield = table.create_copy(UnitGibSettings.skaven_storm_vermin_with_shield, UnitGibSettings.skaven_storm_vermin)
+UnitGibSettings.skaven_storm_vermin_with_shield_baked = table.create_copy(UnitGibSettings.skaven_storm_vermin_with_shield_baked, UnitGibSettings.skaven_storm_vermin)
 UnitGibSettings.chaos_marauder = {
 	parts = {
 		head = {

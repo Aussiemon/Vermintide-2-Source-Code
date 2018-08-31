@@ -62,10 +62,10 @@ end
 
 local IGNORED_DAMAGE_TYPES = {
 	temporary_health_degen = true,
-	buff = true,
 	buff_shared_medpack = true,
-	arrow_poison_dot = true,
 	damage_over_time = true,
+	buff = true,
+	arrow_poison_dot = true,
 	aoe_poison_dot = true,
 	health_degen = true,
 	poison = true,
@@ -74,8 +74,9 @@ local IGNORED_DAMAGE_TYPES = {
 	wounded_dot = true,
 	vomit_ground = true,
 	heal = true,
+	warpfire_ground = true,
 	burninating = true,
-	warpfire_ground = true
+	life_drain = true
 }
 
 GenericUnitInteractorExtension.update = function (self, unit, input, dt, context, t)
@@ -290,9 +291,6 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 			end
 		end
 	end
-
-	if script_data.debug_interactions then
-	end
 end
 
 GenericUnitInteractorExtension._check_if_interactable_in_chest = function (self, interactable_unit, camera_position)
@@ -376,6 +374,10 @@ GenericUnitInteractorExtension._stop_interaction = function (self, interactable_
 		local flow_event = "lua_interaction_stopped_" .. interaction_type .. "_" .. InteractionResult[interaction_result]
 
 		Unit.flow_event(interactable_unit, flow_event)
+
+		local local_flow_event = "lua_interaction_stopped_local_interactor_" .. interaction_type .. "_" .. InteractionResult[interaction_result]
+
+		Unit.flow_event(interactable_unit, local_flow_event)
 	end
 
 	self.state = "waiting_to_interact"

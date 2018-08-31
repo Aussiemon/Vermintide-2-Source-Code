@@ -103,9 +103,21 @@ CareerAbilityBWAdept.update = function (self, unit, input, dt, context, t)
 			return
 		end
 
-		if input_extension:get("action_career_release") then
+		if input_extension:get("weapon_reload") then
+			self:_stop_priming()
+
+			return
+		end
+
+		if not input_extension:get("action_career_hold") then
 			self:_run_ability(end_position)
 		end
+	end
+end
+
+CareerAbilityBWAdept.stop = function (self, reason)
+	if self._is_priming then
+		self:_stop_priming()
 	end
 end
 

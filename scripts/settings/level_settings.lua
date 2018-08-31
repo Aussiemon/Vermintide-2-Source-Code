@@ -49,16 +49,12 @@ LevelSettings.editor_level = {
 	knocked_down_setting = "knocked_down",
 	ambient_sound_event = "silent_default_world_sound",
 	level_name = "__level_editor_test",
-	loading_ui_package_name = "loading_screen_1",
 	level_image = "level_image_any",
+	loading_ui_package_name = "loading_screen_1",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
-	locations = {},
-	map_settings = {
-		area = "world",
-		sorting = 0
-	}
+	locations = {}
 }
 LevelSettings.inn_level = {
 	ambient_sound_event = "silent_default_world_sound",
@@ -79,10 +75,6 @@ LevelSettings.inn_level = {
 	level_particle_effects = {},
 	level_screen_effects = {},
 	locations = {},
-	map_settings = {
-		area = "world",
-		sorting = 0
-	},
 	locations = {
 		"location_keep_armoury",
 		"location_keep_bardins_room",
@@ -116,18 +108,17 @@ LevelSettings.inn_level = {
 	}
 }
 LevelSettings.whitebox_old = {
+	source_aux_bus_name = "environment_reverb_outside_source",
 	level_image = "level_image_any",
 	display_name = "level_whitebox",
 	knocked_down_setting = "knocked_down",
-	environment_state = "exterior",
-	player_aux_bus_name = "environment_reverb_outside",
-	package_name = "resource_packages/levels/debug/whitebox",
-	ambient_sound_event = "silent_default_world_sound",
-	boss_spawning_method = "hand_placed",
 	loading_ui_package_name = "loading_screen_1",
 	conflict_settings = "code_test",
+	player_aux_bus_name = "environment_reverb_outside",
 	level_name = "levels/debug/whitebox/world",
-	source_aux_bus_name = "environment_reverb_outside_source",
+	environment_state = "exterior",
+	package_name = "resource_packages/levels/debug/whitebox",
+	ambient_sound_event = "silent_default_world_sound",
 	level_particle_effects = {},
 	level_screen_effects = {},
 	locations = {},
@@ -143,10 +134,10 @@ LevelSettings.whitebox_old = {
 		event_lookup = {
 			event_boss = {
 				"boss_event_rat_ogre"
+			},
+			event_patrol = {
+				"boss_event_spline_patrol"
 			}
-		},
-		spline_patrol_events = {
-			"boss_event_spline_patrol"
 		}
 	},
 	boss_events = {
@@ -158,10 +149,6 @@ LevelSettings.whitebox_old = {
 		safe_dist = 50,
 		recurring_distance = 1500,
 		padding_dist = 100
-	},
-	map_settings = {
-		area = "world",
-		sorting = 0
 	}
 }
 LevelSettings.whitebox_basic = {
@@ -173,17 +160,12 @@ LevelSettings.whitebox_basic = {
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/debug/whitebox_basic/world",
 	level_image = "level_image_any",
-	conflict_settings = "disabled",
 	loading_ui_package_name = "loading_screen_1",
+	conflict_settings = "disabled",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
-	locations = {},
-	map_settings = {
-		sorting = 0,
-		icon = "level_location_long_icon_02",
-		area = "world"
-	}
+	locations = {}
 }
 LevelSettings.whitebox_zones = {
 	display_name = "level_whitebox_zones",
@@ -198,12 +180,7 @@ LevelSettings.whitebox_zones = {
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
-	locations = {},
-	map_settings = {
-		sorting = 0,
-		icon = "level_location_long_icon_02",
-		area = "world"
-	}
+	locations = {}
 }
 LevelSettings.whitebox_ta = {
 	package_name = "resource_packages/levels/debug/whitebox_ta",
@@ -219,11 +196,6 @@ LevelSettings.whitebox_ta = {
 	level_particle_effects = {},
 	level_screen_effects = {},
 	locations = {},
-	map_settings = {
-		sorting = 0,
-		icon = "level_location_long_icon_02",
-		area = "world"
-	},
 	pickup_settings = {
 		{
 			ammo = 10,
@@ -246,26 +218,21 @@ LevelSettings.whitebox_empty = {
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
-	locations = {},
-	map_settings = {
-		sorting = 0,
-		icon = "level_location_long_icon_02",
-		area = "world"
-	}
+	locations = {}
 }
 LevelSettings.whitebox_ai = {
-	ambient_sound_event = "silent_default_world_sound",
-	display_name = "level_whitebox_ai",
-	player_aux_bus_name = "environment_reverb_outside",
-	music_won_state = "won_boat",
-	environment_state = "exterior",
 	package_name = "resource_packages/levels/debug/whitebox_ai",
-	level_image = "level_image_any",
-	use_mini_patrols = true,
-	loading_ui_package_name = "loading_screen_1",
+	music_won_state = "won_boat",
+	player_aux_bus_name = "environment_reverb_outside",
+	environment_state = "exterior",
 	knocked_down_setting = "knocked_down",
+	ambient_sound_event = "silent_default_world_sound",
 	level_name = "levels/debug/whitebox_ai/world",
+	display_name = "level_whitebox_ai",
+	level_image = "level_image_any",
+	loading_ui_package_name = "loading_screen_1",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	use_mini_patrols = true,
 	level_particle_effects = {},
 	level_screen_effects = {},
 	pickup_settings = {
@@ -283,16 +250,7 @@ LevelSettings.whitebox_ai = {
 			}
 		}
 	},
-	locations = {},
-	map_settings = {
-		sorting = 0,
-		icon = "level_location_long_icon_02",
-		area = "world",
-		wwise_events = {
-			"nik_map_brief_magnus_tower_01",
-			"nik_map_brief_magnus_tower_02"
-		}
-	}
+	locations = {}
 }
 LevelSettings.whitebox_crossroads = {
 	ambient_sound_event = "silent_default_world_sound",
@@ -348,16 +306,7 @@ LevelSettings.whitebox_crossroads = {
 			healing = 10
 		}
 	},
-	locations = {},
-	map_settings = {
-		sorting = 0,
-		icon = "level_location_long_icon_02",
-		area = "world",
-		wwise_events = {
-			"nik_map_brief_magnus_tower_01",
-			"nik_map_brief_magnus_tower_02"
-		}
-	}
+	locations = {}
 }
 LevelSettings.whitebox_patrols = {
 	ambient_sound_event = "silent_default_world_sound",
@@ -367,9 +316,8 @@ LevelSettings.whitebox_patrols = {
 	player_aux_bus_name = "environment_reverb_outside",
 	package_name = "resource_packages/levels/debug/whitebox_patrols",
 	display_name = "level_whitebox_patrols",
-	use_mini_patrols = true,
 	level_image = "level_image_any",
-	boss_spawning_method = "hand_placed",
+	use_mini_patrols = true,
 	loading_ui_package_name = "loading_screen_1",
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/debug/whitebox_patrols/world",
@@ -413,16 +361,7 @@ LevelSettings.whitebox_patrols = {
 			healing = 10
 		}
 	},
-	locations = {},
-	map_settings = {
-		sorting = 0,
-		icon = "level_location_long_icon_02",
-		area = "world",
-		wwise_events = {
-			"nik_map_brief_magnus_tower_01",
-			"nik_map_brief_magnus_tower_02"
-		}
-	}
+	locations = {}
 }
 LevelSettings.whitebox_bosses = {
 	ambient_sound_event = "silent_default_world_sound",
@@ -432,9 +371,8 @@ LevelSettings.whitebox_bosses = {
 	player_aux_bus_name = "environment_reverb_outside",
 	package_name = "resource_packages/levels/debug/whitebox_bosses",
 	display_name = "level_whitebox_bosses",
-	use_mini_patrols = true,
 	level_image = "level_image_any",
-	boss_spawning_method = "hand_placed",
+	use_mini_patrols = true,
 	loading_ui_package_name = "loading_screen_1",
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/debug/whitebox_bosses/world",
@@ -484,15 +422,6 @@ LevelSettings.whitebox_bosses = {
 		"Chaos_exalted_sorcerer",
 		"Catacombs_end_event",
 		"Skaven_warlord"
-	},
-	map_settings = {
-		sorting = 0,
-		icon = "level_location_long_icon_02",
-		area = "world",
-		wwise_events = {
-			"nik_map_brief_magnus_tower_01",
-			"nik_map_brief_magnus_tower_02"
-		}
 	}
 }
 LevelSettings.whitebox_climb = {
@@ -504,17 +433,12 @@ LevelSettings.whitebox_climb = {
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/debug/whitebox_climb/world",
 	level_image = "level_image_any",
-	destroy_los_distance_squared = 40000,
 	loading_ui_package_name = "loading_screen_1",
+	destroy_los_distance_squared = 40000,
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
-	locations = {},
-	map_settings = {
-		sorting = 0,
-		icon = "level_location_long_icon_02",
-		area = "helmgart"
-	}
+	locations = {}
 }
 LevelSettings.whitebox_tutorial = {
 	display_name = "level_whitebox_tutorial",
@@ -532,11 +456,6 @@ LevelSettings.whitebox_tutorial = {
 	locations = {
 		"location_whitebox_MISSIONS",
 		"location_whitebox_HORSE"
-	},
-	map_settings = {
-		sorting = 0,
-		icon = "level_location_long_icon_02",
-		area = "helmgart"
 	}
 }
 LevelSettings.whitebox_profiling = {
@@ -552,12 +471,7 @@ LevelSettings.whitebox_profiling = {
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
-	locations = {},
-	map_settings = {
-		sorting = 0,
-		icon = "level_location_long_icon_02",
-		area = "helmgart"
-	}
+	locations = {}
 }
 LevelSettings.storm_vermin_patrol_test = {
 	display_name = "level_storm_vermin_patrol_test",
@@ -572,12 +486,7 @@ LevelSettings.storm_vermin_patrol_test = {
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
-	locations = {},
-	map_settings = {
-		sorting = 0,
-		icon = "level_location_long_icon_02",
-		area = "helmgart"
-	}
+	locations = {}
 }
 LevelSettings.umbratest = {
 	display_name = "Umbratest",
@@ -592,12 +501,7 @@ LevelSettings.umbratest = {
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
-	locations = {},
-	map_settings = {
-		sorting = 2,
-		icon = "level_location_dlc_icon_01",
-		area = "world"
-	}
+	locations = {}
 }
 LevelSettings.cutscene_test = {
 	aux_bus_name = "environment_reverb_outside",
@@ -611,12 +515,7 @@ LevelSettings.cutscene_test = {
 	ambient_sound_event = "silent_default_world_sound",
 	level_particle_effects = {},
 	level_screen_effects = {},
-	locations = {},
-	map_settings = {
-		sorting = 2,
-		icon = "level_location_dlc_icon_01",
-		area = "world"
-	}
+	locations = {}
 }
 LevelSettings.vector_field_test = {
 	aux_bus_name = "environment_reverb_outside",
@@ -630,12 +529,7 @@ LevelSettings.vector_field_test = {
 	ambient_sound_event = "silent_default_world_sound",
 	level_particle_effects = {},
 	level_screen_effects = {},
-	locations = {},
-	map_settings = {
-		sorting = 2,
-		icon = "level_location_dlc_icon_01",
-		area = "world"
-	}
+	locations = {}
 }
 LevelSettings.ai_benchmark = {
 	display_name = "GDC_AUTODESK_PRESENTATION",
@@ -646,17 +540,12 @@ LevelSettings.ai_benchmark = {
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/debug/ai_benchmark/world",
 	conflict_settings = "event_level_with_roaming_no_specials",
-	loading_ui_package_name = "loading_screen_1",
 	level_image = "level_image_any",
+	loading_ui_package_name = "loading_screen_1",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
-	locations = {},
-	map_settings = {
-		sorting = 2,
-		icon = "level_location_dlc_icon_01",
-		area = "world"
-	}
+	locations = {}
 }
 LevelSettings.ai_benchmark_cycle = {
 	map_sorting = 0,
@@ -667,18 +556,13 @@ LevelSettings.ai_benchmark_cycle = {
 	knocked_down_setting = "knocked_down",
 	ambient_sound_event = "silent_default_world_sound",
 	level_name = "levels/debug/ai_benchmark_cycle/world",
+	conflict_settings = "event_level_with_roaming_no_specials",
 	level_image = "level_image_any",
 	loading_ui_package_name = "loading_screen_1",
 	source_aux_bus_name = "environment_reverb_outside_source",
-	conflict_settings = "event_level_with_roaming_no_specials",
 	level_particle_effects = {},
 	level_screen_effects = {},
-	locations = {},
-	map_settings = {
-		sorting = 2,
-		icon = "level_location_dlc_icon_01",
-		area = "world"
-	}
+	locations = {}
 }
 
 local function check_event_overrides(override_data, override_table_name, level_name)

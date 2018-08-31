@@ -37,10 +37,28 @@ XboxUserPrivileges.add_user = function (self, user_id)
 		if token then
 			local script_token = ScriptXboxUserPrivilegeToken:new(token)
 
-			Managers.token:register_token(script_token, callback(self, "cb_user_privilege_done", user_id, privilege))
+			Managers.token:register_token(script_token, callback(self, "cb_user_privilege_done", user_id, privilege, nil))
 		else
 			self._has_error = true
 		end
+	end
+end
+
+XboxUserPrivileges.get_privilege_async = function (self, user_id, privilege, attempt_resolution, external_cb)
+	if not self._current_users[user_id] then
+		fassert(false, "ERROR ERROR")
+
+		return
+	end
+
+	local token = UserPrivilege.has(user_id, attempt_resolution, privilege)
+
+	if token then
+		local script_token = ScriptXboxUserPrivilegeToken:new(token)
+
+		Managers.token:register_token(script_token, callback(self, "cb_user_privilege_done", user_id, privilege, external_cb))
+	else
+		self._has_error = true
 	end
 end
 
@@ -64,7 +82,7 @@ XboxUserPrivileges.update_privilege = function (self, privilege, cb)
 		if token then
 			local script_token = ScriptXboxUserPrivilegeToken:new(token)
 
-			Managers.token:register_token(script_token, callback(self, "cb_user_privilege_done", user_id, privilege_id))
+			Managers.token:register_token(script_token, callback(self, "cb_user_privilege_done", user_id, privilege_id, nil))
 
 			if cb then
 				self._check_privilege_cb = self._check_privilege_cb or {}
@@ -77,7 +95,7 @@ XboxUserPrivileges.update_privilege = function (self, privilege, cb)
 	end
 end
 
-XboxUserPrivileges.cb_user_privilege_done = function (self, user_id, privilege, info)
+XboxUserPrivileges.cb_user_privilege_done = function (self, user_id, privilege, external_cb, info)
 	if info.error then
 		Application.error(string.format("[XboxUserPrivileges] Something went wrong when trying to fetch privilege [%s] for User [%s]. Error: %s", XBOX_PRIVILEGE_LUT[privilege] or "unknown", tostring(user_id), PRIVILEGES_ERROR_CODES[info.error] or "UNKNOWN"))
 
@@ -101,6 +119,10 @@ XboxUserPrivileges.cb_user_privilege_done = function (self, user_id, privilege, 
 		end
 
 		self._check_privilege_cb[privilege] = nil
+	end
+
+	if external_cb then
+		external_cb(privilege)
 	end
 end
 
@@ -172,7 +194,6 @@ XboxUserPrivileges._setup_lookup_tables = function (self)
 	DEFAULT_PRIVILEGES[#DEFAULT_PRIVILEGES + 1] = UserPrivilege.COMMUNICATION_VOICE_SKYPE
 	DEFAULT_PRIVILEGES[#DEFAULT_PRIVILEGES + 1] = UserPrivilege.GAME_DVR
 	DEFAULT_PRIVILEGES[#DEFAULT_PRIVILEGES + 1] = UserPrivilege.MULTIPLAYER_PARTIES
-	DEFAULT_PRIVILEGES[#DEFAULT_PRIVILEGES + 1] = UserPrivilege.MULTIPLAYER_SESSIONS
 	DEFAULT_PRIVILEGES[#DEFAULT_PRIVILEGES + 1] = UserPrivilege.PREMIUM_CONTENT
 	DEFAULT_PRIVILEGES[#DEFAULT_PRIVILEGES + 1] = UserPrivilege.PREMIUM_VIDEO
 	DEFAULT_PRIVILEGES[#DEFAULT_PRIVILEGES + 1] = UserPrivilege.PROFILE_VIEWING

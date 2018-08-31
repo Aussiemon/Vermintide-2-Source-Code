@@ -41,6 +41,8 @@ PlayerInputTutorialExtension.init = function (self, extension_init_context, unit
 	self.double_tap_timers = {}
 	self.allowed_table = {}
 	self.disallowed_table = {}
+	self.input_key_scale = {}
+	self._t = 0
 	self.minimum_dodge_input = 0.3
 	self.double_tap_dodge = Application.user_setting("double_tap_dodge")
 	self.toggle_crouch = Application.user_setting("toggle_crouch")
@@ -67,8 +69,7 @@ PlayerInputTutorialExtension.reset = function (self)
 end
 
 PlayerInputTutorialExtension.update = function (self, unit, input, dt, context, t)
-	if self.buffer_key then
-	end
+	self._t = t
 
 	if self.input_buffer_reset then
 		self.last_added_buffer_time = t
@@ -152,6 +153,32 @@ end
 
 PlayerInputTutorialExtension.set_enabled = function (self, enabled)
 	self.enabled = enabled
+end
+
+PlayerInputTutorialExtension.set_input_key_scale = function (self, input_key, scale, lerp_time)
+	fassert(lerp_time == nil or lerp_time > 0, "PlayerInputTutorialExtension:set_input_key_scale: Must enter a lerp_time larger than zero if lerp is to be used!")
+
+	local start_scale = 1
+	local t = self._t
+	local lerp_end_t = (lerp_time and t + lerp_time) or nil
+	local input_key_scale_data = self.input_key_scale[input_key]
+
+	if input_key_scale_data then
+		if input_key_scale_data.lerp_end_t == nil or input_key_scale_data.lerp_end_t <= t then
+			start_scale = input_key_scale_data.end_scale
+		else
+			local p = (t - input_key_scale_data.lerp_start_t) / (input_key_scale_data.lerp_end_t - input_key_scale_data.lerp_start_t)
+			start_scale = math.lerp(input_key_scale_data.start_scale, input_key_scale_data.end_scale, p)
+		end
+	else
+		input_key_scale_data = {}
+		self.input_key_scale[input_key] = input_key_scale_data
+	end
+
+	input_key_scale_data.lerp_start_t = t
+	input_key_scale_data.lerp_end_t = lerp_end_t
+	input_key_scale_data.start_scale = start_scale
+	input_key_scale_data.end_scale = scale
 end
 
 PlayerInputTutorialExtension.set_allowed_inputs = function (self, allowed_table)

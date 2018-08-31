@@ -17,10 +17,15 @@ if s3d then
 end
 
 GLOBAL_MUSIC_WORLD = true
+local dummy_wwise_world = {
+	stop_all = function ()
+		return
+	end
+}
 
 if GLOBAL_MUSIC_WORLD then
 	MUSIC_WORLD = Application.new_world("music_world", Application.DISABLE_PHYSICS, Application.DISABLE_RENDERING)
-	MUSIC_WWISE_WORLD = Wwise.wwise_world(MUSIC_WORLD) or "dedicated_server_no_wwise_dummy"
+	MUSIC_WWISE_WORLD = Wwise.wwise_world(MUSIC_WORLD) or (Application.platform() == "ps4" and dummy_wwise_world) or "dedicated_server_no_wwise_dummy"
 end
 
 BUILD = Application.build()
@@ -46,7 +51,7 @@ for _, arg in pairs(args) do
 end
 
 Application.build = function ()
-	error("Trying to use BUILD, use global variable BUILD instead.")
+	error("Trying to use Application.build, use global variable BUILD instead.")
 end
 
 Application.platform = function ()
@@ -93,7 +98,9 @@ elseif PLATFORM == "ps4" then
 		"resource_packages/levels/ui_loot_preview",
 		"resource_packages/levels/ui_end_screen",
 		"resource_packages/ingame",
-		"resource_packages/pickups"
+		"resource_packages/pickups",
+		"resource_packages/projection_decals",
+		"resource_packages/ingame_sounds_honduras"
 	}
 elseif PLATFORM == "xb1" then
 	GlobalResources = GlobalResources or {
@@ -137,6 +144,35 @@ else
 		"resource_packages/pickups",
 		"resource_packages/projection_decals"
 	}
+end
+
+if BUILD ~= "dev" then
+	if LAUNCH_MODE ~= "attract_benchmark" then
+		local input = io.input
+		local read = io.read
+		local write = io.write
+		_G.io = nil
+		local mod_settings = Application.user_setting("mod_settings")
+
+		if mod_settings and mod_settings.developer_mode then
+			_G.io = {
+				input = input,
+				read = read,
+				write = write,
+				stdout = {}
+			}
+		else
+			_G.io = {
+				stdout = {}
+			}
+		end
+	end
+
+	os.execute = nil
+	os.remove = nil
+	os.rename = nil
+	package.path = nil
+	package.cpath = nil
 end
 
 return

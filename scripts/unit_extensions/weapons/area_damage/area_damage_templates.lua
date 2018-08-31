@@ -47,7 +47,7 @@ AreaDamageTemplates.templates = {
 				local damage = data.damage
 				local damage_source = data.damage_source
 
-				DamageUtils.add_damage_network(unit, extension_unit, damage, "torso", "damage_over_time", Vector3(1, 0, 0), damage_source)
+				DamageUtils.add_damage_network(unit, extension_unit, damage, "torso", "damage_over_time", nil, Vector3(1, 0, 0), damage_source)
 			end
 		},
 		client = {
@@ -160,7 +160,7 @@ AreaDamageTemplates.templates = {
 				local damage = data.damage
 				local damage_source = data.damage_source
 
-				DamageUtils.add_damage_network(unit, unit, damage, "torso", "damage_over_time", Vector3(1, 0, 0), damage_source)
+				DamageUtils.add_damage_network(unit, unit, damage, "torso", "damage_over_time", nil, Vector3(1, 0, 0), damage_source)
 			end
 		},
 		client = {
@@ -410,7 +410,7 @@ AreaDamageTemplates.templates = {
 				local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
 				local weapon_system = Managers.state.entity:system("weapon_system")
 
-				weapon_system:send_rpc_attack_hit(damage_source_id, unit_id, unit_id, hit_zone_id, damage_direction, damage_profile_id, "power_level", power_level, "hit_target_index", nil, "blocking", false, "shield_break_procced", false, "boost_curve_multiplier", 0, "is_critical_strike", false)
+				weapon_system:send_rpc_attack_hit(damage_source_id, unit_id, unit_id, hit_zone_id, area_damage_position, damage_direction, damage_profile_id, "power_level", power_level, "hit_target_index", nil, "blocking", false, "shield_break_procced", false, "boost_curve_multiplier", 0, "is_critical_strike", false)
 
 				local is_ai_unit = DamageUtils.is_enemy(unit)
 

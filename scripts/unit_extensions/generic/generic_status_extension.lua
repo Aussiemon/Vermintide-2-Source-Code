@@ -59,6 +59,7 @@ GenericStatusExtension.init = function (self, extension_init_context, unit, exte
 	local difficulty_manager = Managers.state.difficulty
 	local difficulty_settings = difficulty_manager:get_difficulty_settings()
 	self.attack_intensity_threshold = difficulty_settings.attack_intensity_threshold or 3
+	self.attack_intensity_decay = difficulty_settings.attack_intensity_decay or ATTACK_INTENSITY_DECAY
 	self.inside_transport_unit = nil
 	self.using_transport = false
 	self.dodge_position = Vector3Box(0, 0, 0)
@@ -109,6 +110,7 @@ GenericStatusExtension.extensions_ready = function (self)
 	self.health_extension = ScriptUnit.extension(unit, "health_system")
 	self.buff_extension = ScriptUnit.extension(unit, "buff_system")
 	self.inventory_extension = ScriptUnit.extension(unit, "inventory_system")
+	self.career_extension = ScriptUnit.extension(unit, "career_system")
 	self.locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
 
 	if ScriptUnit.has_extension(unit, "first_person_system") and not self.locomotion_extension.is_bot then
@@ -197,7 +199,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 			self.attack_allowed = true
 		end
 
-		local attack_intensity_decay = ATTACK_INTENSITY_DECAY
+		local attack_intensity_decay = self.attack_intensity_threshold
 		local buff_extension = self.buff_extension
 
 		if buff_extension:has_buff_type("bardin_ironbreaker_activated_ability") or buff_extension:has_buff_type("bardin_ironbreaker_activated_ability_duration") then
@@ -322,7 +324,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 				if self.next_hanging_damage_time < t then
 					local h = PlayerUnitStatusSettings.hanging_by_pack_master
 
-					DamageUtils.add_damage_network(unit, unit, h.damage_amount, h.hit_zone_name, h.damage_type, Vector3.up(), "skaven_pack_master")
+					DamageUtils.add_damage_network(unit, unit, h.damage_amount, h.hit_zone_name, h.damage_type, nil, Vector3.up(), "skaven_pack_master")
 
 					self.next_hanging_damage_time = t + 1
 				end
@@ -368,7 +370,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 		if Unit.alive(self.poison_attacker) then
 			local damage = PlayerUnitStatusSettings.poison_dot_function(poison_level)
 
-			DamageUtils.add_damage_network(unit, self.poison_attacker, damage, "full", "globadier_gas_dot", Vector3(1, 0, 0), "skaven_poison_wind_globadier")
+			DamageUtils.add_damage_network(unit, self.poison_attacker, damage, "full", "globadier_gas_dot", nil, Vector3(1, 0, 0), "skaven_poison_wind_globadier")
 		end
 	end
 
@@ -390,14 +392,6 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 
 	for id, func in pairs(self.update_funcs) do
 		func(self, t)
-	end
-
-	if script_data.debug_draw_block_arcs then
-		self:_debug_draw_block_arcs(unit)
-	end
-
-	if script_data.debug_draw_push_arcs then
-		self:_debug_draw_push_arcs(unit)
 	end
 
 	if self.player.local_player then
@@ -423,9 +417,11 @@ GenericStatusExtension._debug_draw_block_arcs = function (self, unit)
 		if player then
 			local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 			local player_position = POSITION_LOOKUP[unit]
-			local player_rotation = (first_person_extension and first_person_extension:current_rotation()) or Unit.world_rotation(unit, 0)
-			local player_direction = Vector3.normalize(Quaternion.forward(player_rotation))
-			local player_direction_flat = Vector3.flat(player_direction)
+			local network_manager = Managers.state.network
+			local game = network_manager:game()
+			local unit_id = network_manager:unit_game_object_id(unit)
+			local aim_direction = GameSession.game_object_field(game, unit_id, "aim_direction")
+			local player_direction_flat = Vector3.flat(aim_direction)
 			local buff_extension = self.buff_extension
 			local block_angle = buff_extension:apply_buffs_to_value(weapon_template.block_angle or 90, StatBuffIndex.BLOCK_ANGLE)
 			local outer_block_angle = buff_extension:apply_buffs_to_value(weapon_template.outer_block_angle or 360, StatBuffIndex.BLOCK_ANGLE)
@@ -580,6 +576,7 @@ end
 
 GenericStatusExtension.can_block = function (self, attacking_unit, attack_direction)
 	local unit = self.unit
+	local player = self.player
 	local inventory_extension = self.inventory_extension
 	local equipment = inventory_extension:equipment()
 	local network_manager = Managers.state.network
@@ -590,15 +587,19 @@ GenericStatusExtension.can_block = function (self, attacking_unit, attack_direct
 		return false
 	end
 
-	local player = self.player
+	local game = network_manager:game()
+	local unit_id = network_manager:unit_game_object_id(unit)
+
+	if not game or not unit_id then
+		return false
+	end
 
 	if player then
 		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
+		local aim_direction = GameSession.game_object_field(game, unit_id, "aim_direction")
+		local player_direction_flat = Vector3.flat(aim_direction)
 		local player_position = POSITION_LOOKUP[unit]
-		local player_rotation = (first_person_extension and first_person_extension:current_rotation()) or Unit.world_rotation(unit, 0)
-		local player_direction = Vector3.normalize(Quaternion.forward(player_rotation))
-		local player_direction_flat = Vector3.flat(player_direction)
-		local attacker_position = POSITION_LOOKUP[attacking_unit]
+		local attacker_position = POSITION_LOOKUP[attacking_unit] or Unit.world_position(attacking_unit, 0)
 		local block_direction = Vector3.normalize(attacker_position - player_position)
 		local block_direction_flat = Vector3.flat(block_direction)
 		local buff_extension = self.buff_extension
@@ -642,6 +643,8 @@ GenericStatusExtension.can_block = function (self, attacking_unit, attack_direct
 
 		return true, fatigue_point_costs_multiplier, improved_block, attack_direction
 	end
+
+	return false
 end
 
 GenericStatusExtension.blocked_attack = function (self, fatigue_type, attacking_unit, fatigue_point_costs_multiplier, improved_block, attack_direction)
@@ -985,7 +988,7 @@ GenericStatusExtension.set_block_broken = function (self, block_broken, t)
 	self.block_broken = block_broken
 
 	if block_broken then
-		self.block_broken_degen_delay = 0
+		self.block_broken_degen_delay = 2
 		self.block_broken_at_t = t
 	end
 end
@@ -994,7 +997,7 @@ GenericStatusExtension.set_has_pushed = function (self, degen_delay)
 	local buff_extension = self.buff_extension
 
 	if not buff_extension:has_buff_perk("slayer_stamina") then
-		self.push_degen_delay = degen_delay or 3
+		self.push_degen_delay = 1.5
 	end
 end
 
@@ -1165,6 +1168,11 @@ GenericStatusExtension.set_ready_for_assisted_respawn = function (self, ready, f
 	self.ready_for_assisted_respawn = ready
 	self.assisted_respawn_flavour_unit = flavour_unit
 	local unit = self.unit
+
+	if not ScriptUnit.has_extension(unit, "outline_system") then
+		return
+	end
+
 	local player = self.player
 	local outline_extension = ScriptUnit.extension(unit, "outline_system")
 	local method_name, color_name = nil
@@ -1215,8 +1223,10 @@ GenericStatusExtension.set_dead = function (self, dead)
 
 	if dead and player and not player.remote then
 		local inventory_extension = self.inventory_extension
+		local career_extension = self.career_extension
 
 		CharacterStateHelper.stop_weapon_actions(inventory_extension, "dead")
+		CharacterStateHelper.stop_career_abilities(career_extension, "dead")
 	end
 
 	self.dead = dead
@@ -1244,7 +1254,7 @@ GenericStatusExtension.set_wounded = function (self, wounded, reason, t)
 
 	local unit = self.unit
 
-	if self.player.local_player then
+	if self.player.local_player and not Managers.state.game_mode:has_mutator("instant_death") then
 		MOOD_BLACKBOARD.wounded = self.wounds == 1
 
 		if not MOOD_BLACKBOARD.wounded then
@@ -1515,6 +1525,10 @@ GenericStatusExtension.set_outline_incapacitated = function (self, incapacitated
 	local player = self.player
 
 	if not player then
+		return
+	end
+
+	if not ScriptUnit.has_extension(unit, "outline_system") then
 		return
 	end
 
@@ -1826,6 +1840,16 @@ GenericStatusExtension.is_wounded = function (self)
 end
 
 GenericStatusExtension.is_permanent_heal = function (self, heal_type)
+	local buff_extension = ScriptUnit.has_extension(self.unit, "buff_system")
+
+	if buff_extension then
+		local disable_permanent_heal = buff_extension:has_buff_perk("disable_permanent_heal")
+
+		if disable_permanent_heal then
+			return false
+		end
+	end
+
 	return heal_type == "healing_draught" or heal_type == "bandage" or heal_type == "bandage_trinket" or heal_type == "buff_shared_medpack" or heal_type == "career_passive" or heal_type == "health_regen" or heal_type == "debug"
 end
 

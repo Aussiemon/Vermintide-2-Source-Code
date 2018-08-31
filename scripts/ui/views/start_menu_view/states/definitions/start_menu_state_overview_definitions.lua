@@ -53,6 +53,20 @@ local scenegraph_definition = {
 			1
 		}
 	},
+	console_cursor = {
+		vertical_alignment = "center",
+		parent = "screen",
+		horizontal_alignment = "center",
+		size = {
+			1920,
+			1080
+		},
+		position = {
+			0,
+			0,
+			0
+		}
+	},
 	menu_options_panel = {
 		vertical_alignment = "top",
 		parent = "left_side_root",
@@ -282,11 +296,11 @@ local scenegraph_definition = {
 		parent = "left_side_root",
 		horizontal_alignment = "left",
 		size = {
-			280,
-			200
+			390,
+			197
 		},
 		position = {
-			124,
+			64,
 			-45,
 			1
 		}
@@ -679,5 +693,6 @@ return {
 	widgets = widgets,
 	generic_input_actions = generic_input_actions,
 	scenegraph_definition = scenegraph_definition,
-	animation_definitions = animation_definitions
+	animation_definitions = animation_definitions,
+	console_cursor_definition = UIWidgets.create_console_cursor("console_cursor")
 }

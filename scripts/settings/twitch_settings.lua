@@ -1,9 +1,11 @@
 TwitchSettings = TwitchSettings or {
-	max_diff = 200,
+	cutoff_for_guaranteed_negative_vote = -300,
 	initial_downtime = 60,
-	cutoff_for_guaranteed_positive_vote = -200,
+	starting_funds = 0,
+	max_diff = 200,
+	max_a_b_vote_cost_diff = 100,
 	default_draw_vote = "twitch_vote_draw",
-	funds = 0,
+	cutoff_for_guaranteed_positive_vote = 300,
 	standard_vote = {
 		default_vote_a_str = "#a",
 		default_vote_b_str = "#b"
@@ -44,27 +46,42 @@ fassert(min_diff <= TwitchSettings.max_diff, "[TwitchSettings] The minimum diffe
 TwitchVoteTemplatesLookup = {}
 TwitchMultipleChoiceVoteTemplatesLookup = {}
 TwitchStandardVoteTemplatesLookup = {}
-TwitchPositiveStandardVoteTemplatesLookup = {}
-TwitchNegativeStandardVoteTemplatesLookup = {}
+TwitchPositiveVoteTemplatesLookup = {}
+TwitchNegativeVoteTemplatesLookup = {}
+TwitchBossEquivalentSpawnTemplatesLookup = {}
+TwitchBossesSpawnBreedNamesLookup = {}
+TwitchSpecialsSpawnBreedNamesLookup = {}
 
 for name, template in pairs(TwitchVoteTemplates) do
+	template.name = name
 	TwitchVoteTemplatesLookup[#TwitchVoteTemplatesLookup + 1] = name
-	TwitchVoteTemplatesLookup[name] = #TwitchVoteTemplatesLookup
 
 	if template.multiple_choice then
 		TwitchMultipleChoiceVoteTemplatesLookup[#TwitchMultipleChoiceVoteTemplatesLookup + 1] = name
-		TwitchMultipleChoiceVoteTemplatesLookup[name] = #TwitchMultipleChoiceVoteTemplatesLookup
 	else
 		TwitchStandardVoteTemplatesLookup[#TwitchStandardVoteTemplatesLookup + 1] = name
-		TwitchStandardVoteTemplatesLookup[name] = #TwitchStandardVoteTemplatesLookup
+	end
 
-		if template.cost < 0 then
-			TwitchPositiveStandardVoteTemplatesLookup[#TwitchPositiveStandardVoteTemplatesLookup + 1] = name
-			TwitchPositiveStandardVoteTemplatesLookup[name] = #TwitchPositiveStandardVoteTemplatesLookup
-		else
-			TwitchNegativeStandardVoteTemplatesLookup[#TwitchNegativeStandardVoteTemplatesLookup + 1] = name
-			TwitchNegativeStandardVoteTemplatesLookup[name] = #TwitchNegativeStandardVoteTemplatesLookup
+	if template.cost < 0 then
+		TwitchPositiveVoteTemplatesLookup[#TwitchPositiveVoteTemplatesLookup + 1] = name
+	else
+		TwitchNegativeVoteTemplatesLookup[#TwitchNegativeVoteTemplatesLookup + 1] = name
+	end
+
+	if template.breed_name then
+		local breed = Breeds[template.breed_name]
+
+		if breed.boss then
+			template.boss = true
+			TwitchBossesSpawnBreedNamesLookup[template.breed_name] = template
+		elseif breed.special then
+			template.special = true
+			TwitchSpecialsSpawnBreedNamesLookup[template.breed_name] = template
 		end
+	end
+
+	if template.boss_equivalent then
+		TwitchBossEquivalentSpawnTemplatesLookup[#TwitchBossEquivalentSpawnTemplatesLookup + 1] = name
 	end
 end
 

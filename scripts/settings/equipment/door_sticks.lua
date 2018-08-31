@@ -68,6 +68,37 @@ weapon_template.actions = {
 			end
 		}
 	},
+	action_dropped = {
+		default = {
+			throw_time = 0.36,
+			ammo_usage = 1,
+			kind = "throw",
+			block_pickup = true,
+			speed = 4,
+			uninterruptible = true,
+			anim_event = "attack_throw",
+			total_time = 1.08,
+			allowed_chain_actions = {},
+			angular_velocity = {
+				0,
+				11,
+				0
+			},
+			throw_offset = {
+				0.2,
+				0,
+				0
+			},
+			projectile_info = {
+				use_dynamic_collision = false,
+				collision_filter = "n/a",
+				projectile_unit_template_name = "pickup_projectile_unit",
+				pickup_name = "door_stick",
+				drop_on_player_destroyed = true,
+				projectile_unit_name = "units/gameplay/timed_door_base_02/pup_timed_door_stick"
+			}
+		}
+	},
 	action_wield = ActionTemplates.wield
 }
 weapon_template.ammo_data = {

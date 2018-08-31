@@ -65,4 +65,8 @@ InviteManager.clear_invites = function (self)
 	return
 end
 
+InviteManager.invites_handled = function (self)
+	return true
+end
+
 return

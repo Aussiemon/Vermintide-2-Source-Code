@@ -83,7 +83,6 @@ NavGraphConnectorExtension.destroy = function (self)
 	for i = 1, #self.navgraphs, 1 do
 		local navgraph = self.navgraphs[i]
 
-		GwNavGraph.remove_from_database(navgraph)
 		GwNavGraph.destroy(navgraph)
 	end
 end

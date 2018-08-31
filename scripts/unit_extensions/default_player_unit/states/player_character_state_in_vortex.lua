@@ -43,8 +43,10 @@ PlayerCharacterStateInVortex.on_enter = function (self, unit, input, dt, context
 		animation_event = "idle"
 	else
 		local inventory_extension = self.inventory_extension
+		local career_extension = self.career_extension
 
 		CharacterStateHelper.stop_weapon_actions(inventory_extension, "stunned")
+		CharacterStateHelper.stop_career_abilities(career_extension, "stunned")
 
 		local direction = "backward"
 		local directions = PlayerUnitMovementSettings.catapulted.directions

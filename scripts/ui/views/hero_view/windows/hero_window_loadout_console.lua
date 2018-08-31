@@ -1,8 +1,8 @@
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_loadout_console_definitions")
 local widget_definitions = definitions.widgets
-local category_settings = definitions.category_settings
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
+local generic_input_actions = definitions.generic_input_actions
 local DO_RELOAD = false
 HeroWindowLoadoutConsole = class(HeroWindowLoadoutConsole)
 HeroWindowLoadoutConsole.NAME = "HeroWindowLoadoutConsole"
@@ -10,6 +10,7 @@ HeroWindowLoadoutConsole.NAME = "HeroWindowLoadoutConsole"
 HeroWindowLoadoutConsole.on_enter = function (self, params, offset)
 	print("[HeroViewWindow] Enter Substate HeroWindowLoadoutConsole")
 
+	self.params = params
 	self.parent = params.parent
 	local ingame_ui_context = params.ingame_ui_context
 	self.ui_renderer = ingame_ui_context.ui_renderer
@@ -31,6 +32,18 @@ HeroWindowLoadoutConsole.on_enter = function (self, params, offset)
 
 	self.hero_name = params.hero_name
 	self.career_index = params.career_index
+
+	self:_start_transition_animation("on_enter")
+end
+
+HeroWindowLoadoutConsole._start_transition_animation = function (self, animation_name)
+	local params = {
+		wwise_world = self.wwise_world,
+		render_settings = self.render_settings
+	}
+	local widgets = {}
+	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+	self._animations[animation_name] = anim_id
 end
 
 HeroWindowLoadoutConsole.create_ui_elements = function (self, params, offset)
@@ -57,12 +70,32 @@ HeroWindowLoadoutConsole.create_ui_elements = function (self, params, offset)
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
 	end
+
+	local input_service = Managers.input:get_service("hero_view")
+	local gui_layer = UILayer.default + 30
+	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 5, gui_layer, generic_input_actions.default, true)
+
+	self._menu_input_description:set_input_description(nil)
 end
 
 HeroWindowLoadoutConsole.on_exit = function (self, params)
 	print("[HeroViewWindow] Exit Substate HeroWindowLoadoutConsole")
 
 	self.ui_animator = nil
+
+	self._menu_input_description:destroy()
+
+	self._menu_input_description = nil
+end
+
+HeroWindowLoadoutConsole._input_service = function (self)
+	local parent = self.parent
+
+	if parent:is_friends_list_active() then
+		return parent.fake_input_service
+	end
+
+	return parent:window_input_service()
 end
 
 HeroWindowLoadoutConsole.update = function (self, dt, t)
@@ -75,17 +108,29 @@ HeroWindowLoadoutConsole.update = function (self, dt, t)
 	self:_update_animations(dt)
 	self:_update_loadout_sync()
 	self:_update_selected_loadout_slot_index()
-
-	if self._focused then
-		self:_handle_input(dt, t)
-		self:_handle_gamepad_input(dt, t)
-	end
-
+	self:_update_input_description()
+	self:_handle_input(dt, t)
+	self:_handle_gamepad_input(dt, t)
 	self:draw(dt)
 end
 
 HeroWindowLoadoutConsole.post_update = function (self, dt, t)
 	return
+end
+
+HeroWindowLoadoutConsole._update_input_description = function (self)
+	local params = self.params
+	local hero_statistics_active = self.params.hero_statistics_active
+
+	if hero_statistics_active ~= self._hero_statistics_active then
+		self._hero_statistics_active = hero_statistics_active
+
+		if hero_statistics_active then
+			self._menu_input_description:change_generic_actions(generic_input_actions.details)
+		else
+			self._menu_input_description:change_generic_actions(generic_input_actions.default)
+		end
+	end
 end
 
 HeroWindowLoadoutConsole._update_animations = function (self, dt)
@@ -116,11 +161,6 @@ HeroWindowLoadoutConsole._is_button_pressed = function (self, widget)
 	end
 end
 
-HeroWindowLoadoutConsole.set_focus = function (self, focused)
-	self._focused = focused
-	self.render_settings.alpha_multiplier = (focused and 1) or 0.5
-end
-
 HeroWindowLoadoutConsole._handle_gamepad_input = function (self, dt, t)
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 
@@ -129,7 +169,7 @@ HeroWindowLoadoutConsole._handle_gamepad_input = function (self, dt, t)
 	end
 
 	local parent = self.parent
-	local input_service = parent:window_input_service()
+	local input_service = self:_input_service()
 	local widget = self._widgets_by_name.loadout_grid
 	local content = widget.content
 	local rows = content.rows
@@ -152,19 +192,17 @@ HeroWindowLoadoutConsole._handle_gamepad_input = function (self, dt, t)
 	end
 
 	if selected_row and selected_column then
-		if selected_column > 1 and input_service:get("move_left_raw") then
-			parent:set_selected_loadout_slot_index(selected_column - 1)
-			self:_play_sound("play_gui_equipment_selection_click")
-		elseif selected_column < columns and input_service:get("move_right_raw") then
-			parent:set_selected_loadout_slot_index(selected_column + 1)
-			self:_play_sound("play_gui_equipment_selection_click")
+		if selected_row > 1 and input_service:get("move_up_hold_continuous") then
+			parent:set_selected_loadout_slot_index(selected_row - 1)
+			self:_play_sound("play_gui_equipment_inventory_hover")
+		elseif selected_row < rows and input_service:get("move_down_hold_continuous") then
+			parent:set_selected_loadout_slot_index(selected_row + 1)
+			self:_play_sound("play_gui_equipment_inventory_hover")
 		end
 	end
 
 	if input_service:get("confirm", true) then
-		parent:set_window_input_focus("loadout_inventory")
-	elseif input_service:get("back_menu") then
-		parent:close_menu()
+		parent:set_layout_by_name("equipment_selection")
 	end
 end
 
@@ -173,14 +211,15 @@ HeroWindowLoadoutConsole._handle_input = function (self, dt, t)
 	local slot_index_hovered = self:_is_equipment_slot_hovered()
 
 	if slot_index_hovered then
+		parent:set_selected_loadout_slot_index(slot_index_hovered)
 		self:_play_sound("play_gui_equipment_selection_hover")
 	end
 
 	local slot_index_pressed = self:_is_equipment_slot_pressed()
 
 	if slot_index_pressed then
-		parent:set_selected_loadout_slot_index(slot_index_pressed)
 		self:_play_sound("play_gui_equipment_selection_click")
+		parent:set_layout_by_name("equipment_selection")
 	end
 end
 
@@ -189,6 +228,8 @@ HeroWindowLoadoutConsole._update_selected_loadout_slot_index = function (self)
 
 	if index ~= self._selected_loadout_slot_index then
 		self:_set_equipment_slot_selected(index)
+
+		self._selected_loadout_slot_index = index
 	end
 end
 
@@ -212,7 +253,8 @@ HeroWindowLoadoutConsole.draw = function (self, dt)
 	local ui_renderer = self.ui_renderer
 	local ui_top_renderer = self.ui_top_renderer
 	local ui_scenegraph = self.ui_scenegraph
-	local input_service = self.parent:window_input_service()
+	local input_service = self:_input_service()
+	local gamepad_active = Managers.input:is_device_active("gamepad")
 
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
 
@@ -229,6 +271,10 @@ HeroWindowLoadoutConsole.draw = function (self, dt)
 	end
 
 	UIRenderer.end_pass(ui_top_renderer)
+
+	if gamepad_active and self._menu_input_description then
+		self._menu_input_description:draw(ui_top_renderer, dt)
+	end
 end
 
 HeroWindowLoadoutConsole._play_sound = function (self, event)
@@ -290,7 +336,7 @@ HeroWindowLoadoutConsole._equip_item_presentation = function (self, item, slot)
 		local widget = widgets_by_name.loadout_grid
 		local content = widget.content
 		local style = widget.style
-		local name_sufix = "_1_" .. tostring(slot_index)
+		local name_sufix = "_" .. tostring(slot_index) .. "_1"
 		local item_icon_name = "item_icon" .. name_sufix
 		local hotspot_name = "hotspot" .. name_sufix
 		local item_tooltip_name = "item_tooltip" .. name_sufix
@@ -322,7 +368,7 @@ HeroWindowLoadoutConsole._clear_item_slot = function (self, slot)
 		local widget = widgets_by_name.loadout_grid
 		local content = widget.content
 		local style = widget.style
-		local name_sufix = "_1_" .. tostring(slot_index)
+		local name_sufix = "_" .. tostring(slot_index) .. "_1"
 		local item_icon_name = "item_icon" .. name_sufix
 		local hotspot_name = "hotspot" .. name_sufix
 		local item_tooltip_name = "item_tooltip" .. name_sufix
@@ -346,7 +392,7 @@ HeroWindowLoadoutConsole._is_equipment_slot_right_clicked = function (self)
 			local slot_hotspot = content[hotspot_name]
 
 			if slot_hotspot.on_right_click then
-				return k
+				return i
 			end
 		end
 	end
@@ -365,7 +411,7 @@ HeroWindowLoadoutConsole._is_equipment_slot_pressed = function (self)
 			local slot_hotspot = content[hotspot_name]
 
 			if slot_hotspot.on_pressed then
-				return k
+				return i
 			end
 		end
 	end
@@ -384,13 +430,13 @@ HeroWindowLoadoutConsole._is_equipment_slot_hovered = function (self)
 			local slot_hotspot = content[hotspot_name]
 
 			if slot_hotspot.on_hover_enter then
-				return k
+				return i
 			end
 		end
 	end
 end
 
-HeroWindowLoadoutConsole._set_equipment_slot_selected = function (self, column_index)
+HeroWindowLoadoutConsole._set_equipment_slot_selected = function (self, row_index)
 	local widget = self._widgets_by_name.loadout_grid
 	local content = widget.content
 	local rows = content.rows
@@ -401,7 +447,40 @@ HeroWindowLoadoutConsole._set_equipment_slot_selected = function (self, column_i
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
-			slot_hotspot.is_selected = column_index and column_index == k
+			slot_hotspot.is_selected = row_index and row_index == i
+			slot_hotspot.highlight = slot_hotspot.is_selected
+		end
+	end
+end
+
+HeroWindowLoadoutConsole._enable_selection_highlight = function (self)
+	local widget = self._widgets_by_name.loadout_grid
+	local content = widget.content
+	local rows = content.rows
+	local columns = content.columns
+
+	for i = 1, rows, 1 do
+		for k = 1, columns, 1 do
+			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
+			local hotspot_name = "hotspot" .. name_sufix
+			local slot_hotspot = content[hotspot_name]
+			slot_hotspot.highlight = slot_hotspot.is_selected
+		end
+	end
+end
+
+HeroWindowLoadoutConsole._disable_selection_highlight = function (self)
+	local widget = self._widgets_by_name.loadout_grid
+	local content = widget.content
+	local rows = content.rows
+	local columns = content.columns
+
+	for i = 1, rows, 1 do
+		for k = 1, columns, 1 do
+			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
+			local hotspot_name = "hotspot" .. name_sufix
+			local slot_hotspot = content[hotspot_name]
+			slot_hotspot.highlight = false
 		end
 	end
 end

@@ -13,7 +13,7 @@ GameStateMachine._change_state = function (self, new_state, ...)
 	local old_state = self._state
 
 	if notify and old_state then
-		Managers.mod:on_game_state_changed("exit", old_state.NAME)
+		Managers.mod:on_game_state_changed("exit", old_state.NAME, old_state)
 	end
 
 	self.super._change_state(self, new_state, ...)
@@ -21,7 +21,7 @@ GameStateMachine._change_state = function (self, new_state, ...)
 	local new_state = self._state
 
 	if notify then
-		Managers.mod:on_game_state_changed("enter", new_state.NAME)
+		Managers.mod:on_game_state_changed("enter", new_state.NAME, new_state)
 	end
 end
 

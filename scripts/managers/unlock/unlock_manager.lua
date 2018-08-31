@@ -1,5 +1,6 @@
 require("scripts/managers/unlock/unlock_clan")
 require("scripts/managers/unlock/unlock_dlc")
+require("scripts/managers/unlock/unlock_game")
 require("scripts/managers/unlock/always_unlocked")
 require("scripts/settings/unlock_settings")
 
@@ -11,13 +12,27 @@ UnlockManager.init = function (self)
 	self._state = "query_unlocked"
 	self._query_unlocked_index = 0
 	self._dlc_status_changed = nil
+	self._update_unlocks = false
+	self._popup_ids = {}
+	self._xbox_dlc_package_names = {}
 
 	if PLATFORM == "xb1" then
-		self._licensed_packages = XboxDLC.licensed_packages()
+		self._unlocks_ready = false
+		self._licensed_packages = XboxDLC.licensed_packages() or {}
+
+		for _, dlc in ipairs(self._licensed_packages) do
+			local display_name = XboxDLC.display_name(dlc) or " "
+			display_name = string.gsub(display_name, "%c", "")
+			self._xbox_dlc_package_names[dlc] = display_name
+		end
 	end
 
-	self._award_queue = {}
-	self._award_queue_id = 0
+	self._reward_queue = {}
+	self._reward_queue_id = 0
+end
+
+UnlockManager.enable_update_unlocks = function (self, enable)
+	self._update_unlocks = enable
 end
 
 UnlockManager._init_unlocks = function (self)
@@ -30,9 +45,9 @@ UnlockManager._init_unlocks = function (self)
 		for unlock_name, unlock_config in pairs(settings.unlocks) do
 			local class_name = unlock_config.class
 			local id = unlock_config.id
-			local backend_id = unlock_config.backend_id
+			local backend_reward_id = unlock_config.backend_reward_id
 			local class = rawget(_G, class_name)
-			local instance = class:new(unlock_name, id, backend_id)
+			local instance = class:new(unlock_name, id, backend_reward_id)
 			unlocks[unlock_name] = instance
 			unlocks_indexed[i][unlock_name] = instance
 		end
@@ -41,6 +56,8 @@ UnlockManager._init_unlocks = function (self)
 	self._unlocks = unlocks
 	self._unlocks_indexed = unlocks_indexed
 end
+
+local POPUP_IDS_TO_REMOVE = {}
 
 UnlockManager.update = function (self, dt)
 	if PLATFORM == "xb1" then
@@ -52,15 +69,28 @@ UnlockManager.update = function (self, dt)
 			self:_reinitialize_backend_dlc()
 		end
 
-		if self._popup_id then
-			local result = Managers.popup:query_result(self._popup_id)
+		if not table.is_empty(self._popup_ids) then
+			table.clear(POPUP_IDS_TO_REMOVE)
 
-			if result then
-				self._popup_id = nil
+			for idx, popup_id in ipairs(self._popup_ids) do
+				local result = Managers.popup:query_result(popup_id)
 
-				if nil then
+				if result then
+					POPUP_IDS_TO_REMOVE[#POPUP_IDS_TO_REMOVE + 1] = idx
 				end
 			end
+
+			if not table.is_empty(POPUP_IDS_TO_REMOVE) then
+				local num_popups = #POPUP_IDS_TO_REMOVE
+
+				for i = num_popups, 1, -1 do
+					local idx = POPUP_IDS_TO_REMOVE[i]
+
+					table.remove(self._popup_ids, idx)
+				end
+			end
+		elseif self._update_unlocks then
+			self:_update_xbox_backend_unlocks()
 		end
 	end
 end
@@ -79,13 +109,17 @@ UnlockManager._check_licenses = function (self)
 
 	for _, dlc in ipairs(licensed_packages) do
 		if not table.find(self._licensed_packages, dlc) then
-			new_licensed_dlc = new_licensed_dlc .. XboxDLC.display_name(dlc) .. "\n"
+			local display_name = XboxDLC.display_name(dlc) or " "
+			display_name = string.gsub(display_name, "%c", "")
+			new_licensed_dlc = new_licensed_dlc .. display_name .. "\n"
+			self._xbox_dlc_package_names[dlc] = display_name
 		end
 	end
 
 	for _, dlc in ipairs(self._licensed_packages) do
 		if not table.find(licensed_packages, dlc) then
-			removed_dlc_licenses = removed_dlc_licenses .. XboxDLC.display_name(dlc) .. "\n"
+			local display_name = self._xbox_dlc_package_names[dlc] or " "
+			removed_dlc_licenses = removed_dlc_licenses .. display_name .. "\n"
 		end
 	end
 
@@ -102,14 +136,14 @@ UnlockManager._check_licenses = function (self)
 			Managers.state.event:trigger("event_dlc_status_changed")
 		end
 
-		self._popup_id = Managers.popup:queue_popup(new_licensed_dlc, Localize("new_dlc_installed"), "ok", Localize("button_ok"))
+		self._popup_ids[#self._popup_ids + 1] = Managers.popup:queue_popup(new_licensed_dlc, Localize("new_dlc_installed"), "ok", Localize("button_ok"))
 		self._dlc_status_changed = true
 	elseif removed_dlc_licenses ~= "" then
 		if Managers.state.event then
 			Managers.state.event:trigger("event_dlc_status_changed")
 		end
 
-		self._popup_id = Managers.popup:queue_popup(removed_dlc_licenses, Localize("dlc_license_terminated"), "ok", Localize("button_ok"))
+		self._popup_ids[#self._popup_ids + 1] = Managers.popup:queue_popup(removed_dlc_licenses, Localize("dlc_license_terminated"), "ok", Localize("button_ok"))
 		self._dlc_status_changed = true
 	end
 end
@@ -118,14 +152,8 @@ UnlockManager.dlc_status_changed = function (self)
 	return self._dlc_status_changed
 end
 
-UnlockManager._update_backend_unlocks = function (self)
-	if self._state == "poll_update_required_popup" then
-		local result = Managers.popup:query_result(self._update_required_popup_id)
-
-		if result then
-			Application.quit()
-		end
-	elseif self._state == "query_unlocked" then
+UnlockManager._update_xbox_backend_unlocks = function (self)
+	if self._state == "query_unlocked" then
 		local backend_manager = Managers.backend
 
 		if backend_manager:profiles_loaded() then
@@ -135,36 +163,28 @@ UnlockManager._update_backend_unlocks = function (self)
 				return
 			end
 
-			if not self._startup_script_started then
-				local queue = backend_manager:get_data_server_queue()
+			if backend_manager:is_tutorial_backend() then
+				return
+			end
 
-				queue:register_executor("script_startup", callback(self, "_executor_script_startup"))
+			if not self._unlocks_ready then
+				local all_ready = true
 
-				local startup_script = GameSettingsDevelopment.backend_settings.startup_script
-				local backend_items = backend_manager:get_interface("items")
-				local startup_script_params = {}
+				for name, instance in pairs(self._unlocks) do
+					if not instance:ready() then
+						all_ready = false
 
-				if PLATFORM == "win32" then
-					queue:register_executor("revision_check", callback(self, "_executor_revision_check"))
-
-					local engine_revision = script_data.build_identifier
-
-					if engine_revision then
-						startup_script_params[#startup_script_params + 1] = "param_engine_revision"
-						startup_script_params[#startup_script_params + 1] = engine_revision
-					end
-
-					local content_revision = script_data.settings.content_revision
-
-					if content_revision then
-						startup_script_params[#startup_script_params + 1] = "param_content_revision"
-						startup_script_params[#startup_script_params + 1] = content_revision
+						break
 					end
 				end
 
-				backend_items:data_server_script(startup_script, unpack(startup_script_params))
+				if all_ready then
+					self._unlocks_ready = true
 
-				self._startup_script_started = true
+					print("[UnlockManager] All unlocks ready")
+				else
+					return
+				end
 			end
 
 			local index = self._query_unlocked_index + 1
@@ -177,146 +197,97 @@ UnlockManager._update_backend_unlocks = function (self)
 
 			self._query_unlocked_index = index
 			local settings = UnlockSettings[index]
-			local unlock_script = settings.unlock_script
+			local interface_name = settings.interface
 
-			if unlock_script then
-				local profile_attribute = settings.profile_attribute
-				local backend_profile_attributes = backend_manager:get_interface("profile_attributes")
-				local profile_unlocked_string = backend_profile_attributes:get_string(profile_attribute)
-				local profile_unlocked_table = {}
-
-				if profile_unlocked_string then
-					for id in string.gmatch(profile_unlocked_string, "([^,]+)") do
-						profile_unlocked_table[id] = true
-					end
-				end
-
+			if interface_name then
 				local unlocks = self._unlocks_indexed[index]
-				local new_unlocked = ""
-				local removed_unlocked = ""
-				local all_unlocked = ""
+				local unlock_interface = Managers.backend:get_interface(interface_name)
 
 				for _, unlock in pairs(unlocks) do
-					local id = unlock:backend_id()
+					local reward_id = unlock:backend_reward_id()
 
-					if id then
-						if unlock:unlocked() then
-							all_unlocked = string.format("%s%s,", all_unlocked, id)
+					if reward_id then
+						if unlock:has_error() then
+							unlock:remove_backend_reward_id()
 
-							if not profile_unlocked_table[id] then
-								new_unlocked = string.format("%s%s,", new_unlocked, id)
-							end
-						elseif profile_unlocked_table[id] then
-							removed_unlocked = string.format("%s%s,", removed_unlocked, id)
+							break
+						end
+
+						local reward_claimed = unlock_interface:reward_claimed(reward_id)
+						local is_unlocked = unlock:unlocked()
+
+						if is_unlocked and not reward_claimed then
+							unlock_interface:claim_reward(reward_id, callback(self, "cb_reward_claimed", unlock))
+
+							self._state = "claiming_reward"
+
+							return
+						elseif not is_unlocked and reward_claimed then
 						end
 					end
 				end
-
-				local unlock_script_param = settings.unlock_script_param
-				local remove_script_param = settings.remove_script_param
-
-				if new_unlocked ~= "" or (remove_script_param and removed_unlocked ~= "") then
-					local backend_items = backend_manager:get_interface("items")
-
-					if remove_script_param then
-						self._data_server_request = backend_items:data_server_script(unlock_script, unlock_script_param, new_unlocked, remove_script_param, removed_unlocked)
-					else
-						self._data_server_request = backend_items:data_server_script(unlock_script, unlock_script_param, new_unlocked)
-					end
-
-					self._data_server_request:disable_registered_commands()
-
-					self._set_profile_attribute = {
-						name = profile_attribute,
-						value = all_unlocked
-					}
-					self._state = "generating"
-				end
 			end
 		end
-	elseif self._state == "generating" then
-		local request = self._data_server_request
-
-		if request:is_done() then
-			if request:error_message() then
-				print("[DlcManager] ERROR generating unlock loot:", request:error_message())
-
-				self._state = "query_unlocked"
-			else
-				table.dump(request:items(), "dlc items")
-
-				local attribute_name = self._set_profile_attribute.name
-				local attribute_value = self._set_profile_attribute.value
-				local backend_manager = Managers.backend
-				local backend_profile_attributes = backend_manager:get_interface("profile_attributes")
-
-				backend_profile_attributes:set_string(attribute_name, attribute_value)
-				backend_manager:commit()
-
-				self._set_profile_attribute = nil
-				self._state = "query_unlocked"
-				local parameters = request:parameters()
-				local presentation_data_json = parameters.presentation_data
-
-				if presentation_data_json then
-					local presentation_data = cjson.decode(presentation_data_json)
-
-					for _, popup_data in ipairs(presentation_data) do
-						self:_add_startup_award(popup_data)
-					end
-				end
-			end
-		end
-	elseif self._state == "backend_not_available" and Managers.backend:available() then
-		self._state = "query_unlocked"
 	end
 end
 
-UnlockManager._executor_revision_check = function (self, revision_check_data)
-	local valid_engine = revision_check_data.valid_engine
-	local valid_content = revision_check_data.valid_content
-
-	if not valid_engine or not valid_content then
-		self._update_required_popup_id = Managers.popup:queue_popup(Localize("new_version_available_on_steam"), Localize("update_required"), "quit", Localize("menu_quit"))
-		self._state = "poll_update_required_popup"
-	end
-end
-
-UnlockManager._executor_script_startup = function (self, script_startup_data)
-	for _, data in ipairs(script_startup_data) do
-		self:_add_startup_award(data)
+UnlockManager.cb_reward_claimed = function (self, unlock, success, rewarded_items, presentation_text)
+	if not success then
+		unlock:remove_backend_reward_id()
+	elseif rewarded_items and presentation_text then
+		self:_add_reward(rewarded_items, presentation_text)
 	end
 
-	local queue = Managers.backend:get_data_server_queue()
-
-	queue:unregister_executor("script_startup")
+	self._state = "query_unlocked"
 end
 
-UnlockManager._add_startup_award = function (self, data)
-	self._award_queue[#self._award_queue + 1] = data
+UnlockManager.cb_reward_removed = function (self, unlock, success)
+	if not success then
+		unlock:remove_backend_reward_id()
+	end
+
+	self._state = "query_unlocked"
 end
 
-UnlockManager.poll_script_startup_data = function (self)
-	if #self._award_queue <= self._award_queue_id then
+UnlockManager._add_reward = function (self, items, presentation_text)
+	self._reward_queue[#self._reward_queue + 1] = {
+		items = items,
+		presentation_text = presentation_text
+	}
+end
+
+UnlockManager.poll_rewards = function (self)
+	if #self._reward_queue <= self._reward_queue_id then
 		return
 	end
 
-	self._award_queue_id = self._award_queue_id + 1
-	local data = self._award_queue[self._award_queue_id]
-
-	if data.silent then
-		return
-	end
+	self._reward_queue_id = self._reward_queue_id + 1
+	local data = self._reward_queue[self._reward_queue_id]
 
 	return data
 end
 
-UnlockManager.is_dlc_unlocked = function (self, name)
-	if PLATFORM == "xb1" then
-		return true
+UnlockManager.get_unlocked_dlcs = function (self)
+	local unlocks = self._unlocks
+	local unlocked_unlocks = {}
+
+	for unlock_name, unlock in pairs(unlocks) do
+		if unlock:unlocked() then
+			unlocked_unlocks[#unlocked_unlocks + 1] = unlock_name
+		end
 	end
 
+	return unlocked_unlocks
+end
+
+UnlockManager.is_dlc_unlocked = function (self, name)
 	local unlock = self._unlocks[name]
+
+	if PLATFORM ~= "win32" and not unlock then
+		Application.warning(string.format("[UnlockManager] The DLC %q isn't setup for %s", name, string.upper(PLATFORM)))
+
+		return false
+	end
 
 	fassert(unlock, "No such unlock %q", name or "nil")
 
@@ -339,6 +310,81 @@ UnlockManager.ps4_dlc_product_label = function (self, name)
 	fassert(unlock, "No such unlock %q", name or "nil")
 
 	return unlock:product_label()
+end
+
+UnlockManager.debug_add_console_dlc_reward = function (self, reward_id)
+	local unlock, index = nil
+
+	for i, unlocks in ipairs(self._unlocks_indexed) do
+		for _, u in pairs(unlocks) do
+			local backend_reward_id = u:backend_reward_id()
+
+			if backend_reward_id and backend_reward_id == reward_id then
+				unlock = u
+				index = i
+
+				break
+			end
+		end
+	end
+
+	fassert(unlock, "No unlock with reward_id", reward_id)
+
+	local settings = UnlockSettings[index]
+	local interface_name = settings.interface
+	local unlock_interface = Managers.backend:get_interface(interface_name)
+
+	local function claim_reward_cb(success, rewarded_items, presentation_text)
+		if not success then
+			print("Failed adding reward")
+		elseif rewarded_items and presentation_text then
+			print("Reward added")
+			self:_add_reward(rewarded_items, presentation_text)
+
+			self._state = "query_unlocked"
+		end
+	end
+
+	unlock_interface:claim_reward(reward_id, claim_reward_cb)
+
+	self._state = "claiming_reward"
+end
+
+UnlockManager.debug_remove_console_dlc_reward = function (self, reward_id)
+	local unlock, index = nil
+
+	for i, unlocks in ipairs(self._unlocks_indexed) do
+		for _, u in pairs(unlocks) do
+			local backend_reward_id = u:backend_reward_id()
+
+			if backend_reward_id and backend_reward_id == reward_id then
+				unlock = u
+				index = i
+
+				break
+			end
+		end
+	end
+
+	fassert(unlock, "No unlock with reward_id", reward_id)
+
+	local settings = UnlockSettings[index]
+	local interface_name = settings.interface
+	local unlock_interface = Managers.backend:get_interface(interface_name)
+
+	local function remove_reward_cb(success)
+		if not success then
+			print("Failed removing reward")
+		else
+			print("Reward removed")
+
+			self._state = "query_unlocked"
+		end
+	end
+
+	unlock_interface:remove_reward(reward_id, remove_reward_cb)
+
+	self._state = "removing_reward"
 end
 
 return

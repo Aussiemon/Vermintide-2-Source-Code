@@ -55,11 +55,11 @@ end
 UnitSpawner.set_gameobject_initializer_data = function (self, initializer_function_table, extraction_function_table, gameobject_context)
 	self.game_session = Network.game_session()
 
-	assert(self.game_session, "No game session when initializing game object")
+	fassert(self.game_session, "No game session when initializing game object")
 
 	self.own_peer_id = Network.peer_id()
 
-	assert(self.own_peer_id, "No own peer id when initializing game object")
+	fassert(self.own_peer_id, "No own peer id when initializing game object")
 
 	self.gameobject_functor_context = gameobject_context
 	self.gameobject_initializers = initializer_function_table
@@ -79,8 +79,6 @@ UnitSpawner.set_unit_template_lookup_table = function (self, template_lut)
 end
 
 UnitSpawner.push_unit_to_death_watch_list = function (self, unit, t, data)
-	local is_husk = NetworkUnit.is_husk_unit(unit)
-
 	self:freeze_unit_extensions(unit, t, data)
 
 	self.unit_death_watch_list_n = self.unit_death_watch_list_n + 1
@@ -164,8 +162,8 @@ UnitSpawner.update_death_watch_list = function (self)
 	end
 end
 
-UnitSpawner.mark_for_deletion = function (self, unit, recycle_type)
-	assert(Unit_alive(unit), "Tried to destroy a unit (%s) that was already destroyed.", tostring(unit))
+UnitSpawner.mark_for_deletion = function (self, unit)
+	fassert(Unit_alive(unit), "Tried to destroy a unit (%s) that was already destroyed.", tostring(unit))
 	self.deletion_queue:push_back(unit)
 
 	local my_death_data = self.unit_death_watch_lookup[unit]
@@ -200,7 +198,7 @@ UnitSpawner.commit_and_remove_pending_units = function (self)
 end
 
 UnitSpawner.commit_pending_unit_system_registrations = function (self)
-	assert(not self.locked)
+	fassert(not self.locked)
 
 	local num_pending_units = self.pending_extension_adds_list_n
 
@@ -218,7 +216,7 @@ UnitSpawner.commit_pending_unit_system_registrations = function (self)
 		pending_extension_adds_list[count] = unit
 	end
 
-	assert(count == num_pending_units)
+	fassert(count == num_pending_units)
 	self.entity_manager:register_units_extensions(pending_extension_adds_list, num_pending_units)
 
 	self.pending_extension_adds_list_n = 0
@@ -227,7 +225,7 @@ UnitSpawner.commit_pending_unit_system_registrations = function (self)
 end
 
 UnitSpawner.remove_units_marked_for_deletion = function (self)
-	assert(not self.locked)
+	fassert(not self.locked)
 
 	local pending_extension_adds_map = self.pending_extension_adds_map
 	local pending_extension_adds_list_n = self.pending_extension_adds_list_n
@@ -277,6 +275,7 @@ UnitSpawner.spawn_local_unit = function (self, unit_name, position, rotation, ma
 	self.unit_unique_id = unit_unique_id + 1
 
 	Unit.set_data(unit, "unique_id", unit_unique_id)
+	Unit.set_data(unit, "unit_name", unit_name)
 
 	POSITION_LOOKUP[unit] = Unit.world_position(unit, 0)
 
@@ -340,12 +339,12 @@ UnitSpawner.world_delete_units = function (self, world, units_list, units_list_n
 			local go_id_to_remove = unit_storage:go_id(unit)
 
 			if not unit_is_alive then
-				assert(false)
+				fassert(false)
 			end
 
 			if go_id_to_remove then
 				GameSession.destroy_game_object(game_session, go_id_to_remove)
-				unit_storage:remove(go_id_to_remove)
+				unit_storage:remove(unit, go_id_to_remove)
 				NetworkUnit.remove_unit(unit)
 			end
 
@@ -360,13 +359,13 @@ UnitSpawner.world_delete_units = function (self, world, units_list, units_list_n
 			local unit_is_alive, unit_alive_name = Unit_alive(unit)
 
 			if not unit_is_alive then
-				assert(false)
+				fassert(false)
 			end
 
 			local go_id_to_remove = unit_storage:go_id(unit)
 
 			if go_id_to_remove then
-				unit_storage:remove(go_id_to_remove)
+				unit_storage:remove(unit, go_id_to_remove)
 				NetworkUnit.remove_unit(unit)
 			end
 
@@ -390,7 +389,7 @@ UnitSpawner.spawn_unit_from_game_object = function (self, go_id, owner_id, go_te
 
 	local go_extract_functor = self.gameobject_extractors[go_type]
 
-	assert(type(go_extract_functor) == "function")
+	fassert(type(go_extract_functor) == "function")
 
 	local unit_template_name, extension_init_data = go_extract_functor(self.game_session, go_id, owner_id, unit, self.gameobject_functor_context)
 	local is_husk = true
@@ -400,12 +399,17 @@ end
 
 UnitSpawner.destroy_game_object_unit = function (self, go_id, owner_id)
 	local unit_storage = self.unit_storage
-	local unit = unit_storage:unit(go_id)
+	local unit = unit_storage:units()[go_id]
 
-	assert(unit)
+	fassert(unit, "Couldn't find unit with go_id %d", go_id)
+
+	if Unit.is_frozen(unit) then
+		Unit.set_frozen(unit, false)
+	end
+
 	self.entity_manager:game_object_unit_destroyed(unit)
 	self:mark_for_deletion(unit)
-	unit_storage:remove(go_id)
+	unit_storage:remove(unit, go_id)
 end
 
 UnitSpawner.add_destroy_listener = function (self, unit, identifier, callback, post_cleanup_listener)
@@ -417,7 +421,7 @@ UnitSpawner.add_destroy_listener = function (self, unit, identifier, callback, p
 		destroy_listeners[unit] = listeners
 	end
 
-	assert(listeners[identifier] == nil, "Tried to register a unit destroy listener identifier (%s) twice for the same unit %s", tostring(identifier), tostring(unit))
+	fassert(listeners[identifier] == nil, "Tried to register a unit destroy listener identifier (%s) twice for the same unit %s", tostring(identifier), tostring(unit))
 
 	listeners[identifier] = callback
 end

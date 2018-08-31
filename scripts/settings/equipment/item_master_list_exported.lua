@@ -224,9 +224,9 @@ ItemMasterList.skin_dr_slayer_wing = {
 	}
 }
 ItemMasterList.skin_dr_slayer_skull = {
-	description = "description_skin_dr_slayer_ravenslayer",
+	description = "description_skin_dr_slayer_skullslayer",
 	temporary_template = "skin_dr_slayer_skull",
-	display_name = "skin_dr_slayer_ravenslayer",
+	display_name = "skin_dr_slayer_skullslayer",
 	name = "skin_dr_slayer_skull",
 	inventory_icon = "icons_placeholder",
 	slot_type = "skin",
@@ -1618,7 +1618,7 @@ ItemMasterList.skin_bw_adept_ostland = {
 ItemMasterList.frame_dev = {
 	description = "frame_dev_description",
 	temporary_template = "frame_dev",
-	display_name = "Prestige_1",
+	display_name = "frame_dev_name",
 	hud_icon = "unit_frame_02",
 	inventory_icon = "icon_portrait_frame_dev",
 	slot_type = "frame",
@@ -1649,6 +1649,34 @@ ItemMasterList.frame_collectors_edition = {
 	display_name = "frame_collectors_edition_name",
 	hud_icon = "unit_frame_02",
 	inventory_icon = "icon_portrait_frame_collectors_edition",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.frame_collectors_edition_preorder = {
+	description = "frame_collectors_edition_preorder_description",
+	temporary_template = "frame_collectors_edition_preorder",
+	display_name = "frame_collectors_edition_preorder_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_collectors_edition_preorder",
 	slot_type = "frame",
 	information_text = "information_text_frame",
 	rarity = "promo",
@@ -1733,6 +1761,118 @@ ItemMasterList.frame_summer = {
 	display_name = "frame_summer_name",
 	hud_icon = "unit_frame_02",
 	inventory_icon = "icon_portrait_frame_summer",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.frame_bogenhafen_01 = {
+	description = "frame_bogenhafen_01_description",
+	temporary_template = "frame_bogenhafen_01",
+	display_name = "frame_bogenhafen_01_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_bogenhafen_1",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.frame_bogenhafen_02 = {
+	description = "frame_bogenhafen_02_description",
+	temporary_template = "frame_bogenhafen_02",
+	display_name = "frame_bogenhafen_02_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_bogenhafen_2",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.frame_bogenhafen_03 = {
+	description = "frame_bogenhafen_03_description",
+	temporary_template = "frame_bogenhafen_03",
+	display_name = "frame_bogenhafen_03_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_bogenhafen_3",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.frame_bogenhafen_04 = {
+	description = "frame_bogenhafen_04_description",
+	temporary_template = "frame_bogenhafen_04",
+	display_name = "frame_bogenhafen_04_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_bogenhafen_4",
 	slot_type = "frame",
 	information_text = "information_text_frame",
 	rarity = "promo",
@@ -4742,7 +4882,7 @@ ItemMasterList.unchained_hat_0002 = {
 }
 ItemMasterList.unchained_hat_0003 = {
 	description = "description_unchained_hat_0003",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_unchained_hat_0003",
 	template = "bw_hat",
 	inventory_icon = "icon_unchained_hat_0003",
@@ -4772,7 +4912,7 @@ ItemMasterList.unchained_hat_0004 = {
 }
 ItemMasterList.unchained_hat_0005 = {
 	description = "description_unchained_hat_0005",
-	rarity = "exotic",
+	rarity = "unique",
 	display_name = "display_name_unchained_hat_0005",
 	template = "bw_hat",
 	inventory_icon = "icon_unchained_hat_0005",
@@ -4787,7 +4927,7 @@ ItemMasterList.unchained_hat_0005 = {
 }
 ItemMasterList.unchained_hat_0006 = {
 	description = "description_unchained_hat_0006",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_unchained_hat_0006",
 	template = "bw_hat",
 	inventory_icon = "icon_unchained_hat_0006",
@@ -4802,7 +4942,7 @@ ItemMasterList.unchained_hat_0006 = {
 }
 ItemMasterList.unchained_hat_0007 = {
 	description = "description_unchained_hat_0007",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_unchained_hat_0007",
 	template = "bw_hat",
 	inventory_icon = "icon_unchained_hat_0007",
@@ -4817,7 +4957,7 @@ ItemMasterList.unchained_hat_0007 = {
 }
 ItemMasterList.unchained_hat_0008 = {
 	description = "description_unchained_hat_0008",
-	rarity = "exotic",
+	rarity = "promo",
 	display_name = "display_name_unchained_hat_0008",
 	template = "bw_hat",
 	inventory_icon = "icon_unchained_hat_0008",
@@ -4879,7 +5019,7 @@ ItemMasterList.adept_hat_0000 = {
 }
 ItemMasterList.adept_hat_0001 = {
 	description = "description_adept_hat_0001",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_adept_hat_0001",
 	template = "bw_gates",
 	inventory_icon = "icon_adept_hat_0001",
@@ -4894,7 +5034,7 @@ ItemMasterList.adept_hat_0001 = {
 }
 ItemMasterList.adept_hat_0002 = {
 	description = "description_adept_hat_0002",
-	rarity = "exotic",
+	rarity = "promo",
 	display_name = "display_name_adept_hat_0002",
 	template = "bw_gates",
 	inventory_icon = "icon_adept_hat_0002",
@@ -4924,7 +5064,7 @@ ItemMasterList.adept_hat_0003 = {
 }
 ItemMasterList.adept_hat_0004 = {
 	description = "description_adept_hat_0004",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_adept_hat_0004",
 	template = "bw_gates",
 	inventory_icon = "icon_adept_hat_0004",
@@ -4939,7 +5079,7 @@ ItemMasterList.adept_hat_0004 = {
 }
 ItemMasterList.adept_hat_0005 = {
 	description = "description_adept_hat_0005",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_adept_hat_0005",
 	template = "bw_gates",
 	inventory_icon = "icon_adept_hat_0005",
@@ -4954,7 +5094,7 @@ ItemMasterList.adept_hat_0005 = {
 }
 ItemMasterList.adept_hat_0006 = {
 	description = "description_adept_hat_0006",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_adept_hat_0006",
 	template = "bw_gates",
 	inventory_icon = "icon_adept_hat_0006",
@@ -5016,7 +5156,7 @@ ItemMasterList.scholar_hat_0000 = {
 }
 ItemMasterList.scholar_hat_0001 = {
 	description = "description_scholar_hat_0001",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_scholar_hat_0001",
 	template = "bw_gates",
 	inventory_icon = "icon_scholar_hat_0001",
@@ -5031,7 +5171,7 @@ ItemMasterList.scholar_hat_0001 = {
 }
 ItemMasterList.scholar_hat_0002 = {
 	description = "description_scholar_hat_0002",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_scholar_hat_0002",
 	template = "bw_gates",
 	inventory_icon = "icon_scholar_hat_0002",
@@ -5046,7 +5186,7 @@ ItemMasterList.scholar_hat_0002 = {
 }
 ItemMasterList.scholar_hat_0003 = {
 	description = "description_scholar_hat_0003",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_scholar_hat_0003",
 	template = "bw_gates",
 	inventory_icon = "icon_scholar_hat_0003",
@@ -5061,7 +5201,7 @@ ItemMasterList.scholar_hat_0003 = {
 }
 ItemMasterList.scholar_hat_0004 = {
 	description = "description_scholar_hat_0004",
-	rarity = "exotic",
+	rarity = "promo",
 	display_name = "display_name_scholar_hat_0004",
 	template = "bw_gates",
 	inventory_icon = "icon_scholar_hat_0004",
@@ -5091,7 +5231,7 @@ ItemMasterList.scholar_hat_0005 = {
 }
 ItemMasterList.scholar_hat_0006 = {
 	description = "description_scholar_hat_0006",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_scholar_hat_0006",
 	template = "bw_gates",
 	inventory_icon = "icon_scholar_hat_0006",
@@ -5106,7 +5246,7 @@ ItemMasterList.scholar_hat_0006 = {
 }
 ItemMasterList.scholar_hat_0007 = {
 	description = "description_scholar_hat_0007",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_scholar_hat_0007",
 	template = "bw_gates",
 	inventory_icon = "icon_scholar_hat_0007",
@@ -5151,7 +5291,7 @@ ItemMasterList.scholar_hat_0009 = {
 }
 ItemMasterList.scholar_hat_0010 = {
 	description = "description_scholar_hat_0010",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_scholar_hat_0010",
 	template = "bw_gates",
 	inventory_icon = "icon_scholar_hat_0010",
@@ -5160,6 +5300,36 @@ ItemMasterList.scholar_hat_0010 = {
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/bright_wizard_scholar/headpiece/bw_s_hat_11",
+	can_wield = {
+		"bw_scholar"
+	}
+}
+ItemMasterList.scholar_hat_0011 = {
+	description = "description_scholar_hat_0011",
+	rarity = "unique",
+	display_name = "display_name_scholar_hat_0011",
+	template = "bw_gates",
+	inventory_icon = "icon_scholar_hat_0011",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/bright_wizard_scholar/headpiece/bw_s_hat_12",
+	can_wield = {
+		"bw_scholar"
+	}
+}
+ItemMasterList.scholar_hat_0012 = {
+	description = "description_scholar_hat_0012",
+	rarity = "unique",
+	display_name = "display_name_scholar_hat_0012",
+	template = "bw_gates_facemask",
+	inventory_icon = "icon_scholar_hat_0012",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/bright_wizard_scholar/headpiece/bw_s_hat_13",
 	can_wield = {
 		"bw_scholar"
 	}
@@ -5230,7 +5400,7 @@ ItemMasterList.ranger_hat_0000 = {
 }
 ItemMasterList.ranger_hat_0001 = {
 	description = "description_ranger_hat_0001",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_ranger_hat_0001",
 	template = "dr_helmets_no_ear",
 	inventory_icon = "icon_ranger_hat_0001",
@@ -5245,7 +5415,7 @@ ItemMasterList.ranger_hat_0001 = {
 }
 ItemMasterList.ranger_hat_0002 = {
 	description = "description_ranger_hat_0002",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_ranger_hat_0002",
 	template = "dr_helmets",
 	inventory_icon = "icon_ranger_hat_0002",
@@ -5260,7 +5430,7 @@ ItemMasterList.ranger_hat_0002 = {
 }
 ItemMasterList.ranger_hat_0003 = {
 	description = "description_ranger_hat_0003",
-	rarity = "exotic",
+	rarity = "promo",
 	display_name = "display_name_ranger_hat_0003",
 	template = "dr_helmets",
 	inventory_icon = "icon_ranger_hat_0003",
@@ -5290,7 +5460,7 @@ ItemMasterList.ranger_hat_0004 = {
 }
 ItemMasterList.ranger_hat_0005 = {
 	description = "description_ranger_hat_0005",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_ranger_hat_0005",
 	template = "dr_helmets",
 	inventory_icon = "icon_ranger_hat_0005",
@@ -5318,17 +5488,137 @@ ItemMasterList.ranger_hat_0006 = {
 		"dr_ranger"
 	}
 }
+ItemMasterList.ranger_hat_0007 = {
+	description = "description_ranger_hat_0007",
+	rarity = "unique",
+	display_name = "display_name_ranger_hat_0007",
+	template = "dr_helmets_skinned_long",
+	inventory_icon = "icon_ranger_hat_0007",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/dwarf_ranger_upgraded/headpiece/dr_u_hat_08",
+	can_wield = {
+		"dr_ranger"
+	}
+}
 ItemMasterList.ranger_hat_0008 = {
 	description = "description_ranger_hat_0008",
 	rarity = "exotic",
 	display_name = "display_name_ranger_hat_0008",
 	template = "dr_helmets",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_ranger_hat_0008",
 	slot_type = "hat",
 	information_text = "information_text_hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/dwarf_ranger_upgraded/headpiece/dr_u_hat_09",
+	can_wield = {
+		"dr_ranger"
+	}
+}
+ItemMasterList.ranger_hat_0009 = {
+	description = "description_ranger_hat_0009",
+	rarity = "common",
+	display_name = "display_name_ranger_hat_0009",
+	template = "dr_helmets",
+	inventory_icon = "icon_ranger_hat_0009",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/dwarf_ranger_upgraded/headpiece/dr_u_hat_06_brown",
+	can_wield = {
+		"dr_ranger"
+	}
+}
+ItemMasterList.ranger_hat_0010 = {
+	description = "description_ranger_hat_0010",
+	rarity = "common",
+	display_name = "display_name_ranger_hat_0010",
+	template = "dr_helmets",
+	inventory_icon = "icon_ranger_hat_0010",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/dwarf_ranger_upgraded/headpiece/dr_u_hat_06_green",
+	can_wield = {
+		"dr_ranger"
+	}
+}
+ItemMasterList.ranger_hat_0011 = {
+	description = "description_ranger_hat_0011",
+	rarity = "rare",
+	display_name = "display_name_ranger_hat_0011",
+	template = "dr_helmets",
+	inventory_icon = "icon_ranger_hat_0011",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/dwarf_ranger_upgraded/headpiece/dr_u_hat_06_red",
+	can_wield = {
+		"dr_ranger"
+	}
+}
+ItemMasterList.ranger_hat_0012 = {
+	description = "description_ranger_hat_0012",
+	rarity = "exotic",
+	display_name = "display_name_ranger_hat_0012",
+	template = "dr_helmets_skinned_long",
+	inventory_icon = "icon_ranger_hat_0012",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/dwarf_ranger_upgraded/headpiece/dr_u_hat_07_brown",
+	can_wield = {
+		"dr_ranger"
+	}
+}
+ItemMasterList.ranger_hat_0013 = {
+	description = "description_ranger_hat_0013",
+	rarity = "exotic",
+	display_name = "display_name_ranger_hat_0013",
+	template = "dr_helmets_skinned_long",
+	inventory_icon = "icon_ranger_hat_0013",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/dwarf_ranger_upgraded/headpiece/dr_u_hat_07_green",
+	can_wield = {
+		"dr_ranger"
+	}
+}
+ItemMasterList.ranger_hat_0014 = {
+	description = "description_ranger_hat_0014",
+	rarity = "exotic",
+	display_name = "display_name_ranger_hat_0014",
+	template = "dr_helmets_skinned_long",
+	inventory_icon = "icon_ranger_hat_0014",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/dwarf_ranger_upgraded/headpiece/dr_u_hat_08_brown",
+	can_wield = {
+		"dr_ranger"
+	}
+}
+ItemMasterList.ranger_hat_0015 = {
+	description = "description_ranger_hat_0015",
+	rarity = "exotic",
+	display_name = "display_name_ranger_hat_0015",
+	template = "dr_helmets_skinned_long",
+	inventory_icon = "icon_ranger_hat_0015",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/dwarf_ranger_upgraded/headpiece/dr_u_hat_08_green",
 	can_wield = {
 		"dr_ranger"
 	}
@@ -5397,7 +5687,7 @@ ItemMasterList.ironbreaker_hat_0001 = {
 }
 ItemMasterList.ironbreaker_hat_0004 = {
 	description = "description_ironbreaker_hat_0004",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_ironbreaker_hat_0004",
 	template = "dr_helmets_beard_ears",
 	inventory_icon = "icon_ironbreaker_hat_0004",
@@ -5412,7 +5702,7 @@ ItemMasterList.ironbreaker_hat_0004 = {
 }
 ItemMasterList.ironbreaker_hat_0005 = {
 	description = "description_ironbreaker_hat_0005",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_ironbreaker_hat_0005",
 	template = "dr_helmets_beard_ears",
 	inventory_icon = "icon_ironbreaker_hat_0005",
@@ -5425,9 +5715,39 @@ ItemMasterList.ironbreaker_hat_0005 = {
 		"dr_ironbreaker"
 	}
 }
+ItemMasterList.ironbreaker_hat_0006 = {
+	description = "description_ironbreaker_hat_0006",
+	rarity = "common",
+	display_name = "display_name_ironbreaker_hat_0006",
+	template = "dr_helmets_beard_ears",
+	inventory_icon = "icon_ironbreaker_hat_0006",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/dwarf_ranger_ironbreaker/headpiece/dr_i_hat_07",
+	can_wield = {
+		"dr_ironbreaker"
+	}
+}
+ItemMasterList.ironbreaker_hat_0007 = {
+	description = "description_ironbreaker_hat_0007",
+	rarity = "promo",
+	display_name = "display_name_ironbreaker_hat_0007",
+	template = "dr_helmets_beard_ears",
+	inventory_icon = "icon_ironbreaker_hat_0007",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/dwarf_ranger_ironbreaker/headpiece/dr_i_hat_08",
+	can_wield = {
+		"dr_ironbreaker"
+	}
+}
 ItemMasterList.ironbreaker_hat_0008 = {
 	description = "description_ironbreaker_hat_0008",
-	rarity = "exotic",
+	rarity = "unique",
 	display_name = "display_name_ironbreaker_hat_0008",
 	template = "dr_helmets_beard_ears",
 	inventory_icon = "icon_ironbreaker_hat_0008",
@@ -5457,7 +5777,7 @@ ItemMasterList.ironbreaker_hat_0009 = {
 }
 ItemMasterList.ironbreaker_hat_0010 = {
 	description = "description_ironbreaker_hat_0010",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_ironbreaker_hat_0010",
 	template = "dr_helmets_beard_ears",
 	inventory_icon = "icon_ironbreaker_hat_0010",
@@ -5487,7 +5807,7 @@ ItemMasterList.ironbreaker_hat_0011 = {
 }
 ItemMasterList.ironbreaker_hat_0012 = {
 	description = "description_ironbreaker_hat_0012",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_ironbreaker_hat_0012",
 	template = "dr_helmets_beard_ears",
 	inventory_icon = "icon_ironbreaker_hat_0012",
@@ -5580,7 +5900,7 @@ ItemMasterList.slayer_hat_0000 = {
 }
 ItemMasterList.slayer_hat_0001 = {
 	description = "description_slayer_hat_0001",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_slayer_hat_0001",
 	template = "dr_hair_tattoo_00",
 	inventory_icon = "icon_slayer_hat_0001",
@@ -5595,7 +5915,7 @@ ItemMasterList.slayer_hat_0001 = {
 }
 ItemMasterList.slayer_hat_0002 = {
 	description = "description_slayer_hat_0002",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_slayer_hat_0002",
 	template = "dr_hair_tattoo_03",
 	inventory_icon = "icon_slayer_hat_0002",
@@ -5610,7 +5930,7 @@ ItemMasterList.slayer_hat_0002 = {
 }
 ItemMasterList.slayer_hat_0003 = {
 	description = "description_slayer_hat_0003",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_slayer_hat_0003",
 	template = "dr_hair_nose_big_tattoo_02",
 	inventory_icon = "icon_slayer_hat_0003",
@@ -5625,7 +5945,7 @@ ItemMasterList.slayer_hat_0003 = {
 }
 ItemMasterList.slayer_hat_0004 = {
 	description = "description_slayer_hat_0004",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_slayer_hat_0004",
 	template = "dr_hair_tattoo_04",
 	inventory_icon = "icon_slayer_hat_0004",
@@ -5640,7 +5960,7 @@ ItemMasterList.slayer_hat_0004 = {
 }
 ItemMasterList.slayer_hat_0005 = {
 	description = "description_slayer_hat_0005",
-	rarity = "exotic",
+	rarity = "unique",
 	display_name = "display_name_slayer_hat_0005",
 	template = "dr_hair_tattoo_00",
 	inventory_icon = "icon_slayer_hat_0005",
@@ -5670,7 +5990,7 @@ ItemMasterList.slayer_hat_0006 = {
 }
 ItemMasterList.slayer_hat_0007 = {
 	description = "description_slayer_hat_0007",
-	rarity = "exotic",
+	rarity = "promo",
 	display_name = "display_name_slayer_hat_0007",
 	template = "dr_hair_nose_big_tattoo_03",
 	inventory_icon = "icon_slayer_hat_0007",
@@ -5685,7 +6005,7 @@ ItemMasterList.slayer_hat_0007 = {
 }
 ItemMasterList.slayer_hat_0008 = {
 	description = "description_slayer_hat_0008",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_slayer_hat_0008",
 	template = "dr_hair_nose_big_tattoo_01",
 	inventory_icon = "icon_slayer_hat_0008",
@@ -5700,7 +6020,7 @@ ItemMasterList.slayer_hat_0008 = {
 }
 ItemMasterList.slayer_hat_0009 = {
 	description = "description_slayer_hat_0009",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_slayer_hat_0009",
 	template = "dr_hair_nose_big_tattoo_02",
 	inventory_icon = "icon_slayer_hat_0009",
@@ -5715,7 +6035,7 @@ ItemMasterList.slayer_hat_0009 = {
 }
 ItemMasterList.slayer_hat_0010 = {
 	description = "description_slayer_hat_0010",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_slayer_hat_0010",
 	template = "dr_hair_nose_big_tattoo_04",
 	inventory_icon = "icon_slayer_hat_0010",
@@ -5824,7 +6144,7 @@ ItemMasterList.huntsman_hat_0000 = {
 }
 ItemMasterList.huntsman_hat_0001 = {
 	description = "description_huntsman_hat_0001",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_huntsman_hat_0001",
 	template = "es_hats",
 	inventory_icon = "icon_huntsman_hat_0001",
@@ -5869,7 +6189,7 @@ ItemMasterList.huntsman_hat_0003 = {
 }
 ItemMasterList.huntsman_hat_0004 = {
 	description = "description_huntsman_hat_0004",
-	rarity = "exotic",
+	rarity = "promo",
 	display_name = "display_name_huntsman_hat_0004",
 	template = "es_hats_no_ears_skinned",
 	inventory_icon = "icon_huntsman_hat_0004",
@@ -5884,7 +6204,7 @@ ItemMasterList.huntsman_hat_0004 = {
 }
 ItemMasterList.huntsman_hat_0005 = {
 	description = "description_huntsman_hat_0005",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_huntsman_hat_0005",
 	template = "es_hats_no_ear",
 	inventory_icon = "icon_huntsman_hat_0005",
@@ -5899,7 +6219,7 @@ ItemMasterList.huntsman_hat_0005 = {
 }
 ItemMasterList.huntsman_hat_0006 = {
 	description = "description_huntsman_hat_0006",
-	rarity = "exotic",
+	rarity = "unique",
 	display_name = "display_name_huntsman_hat_0006",
 	template = "es_hats",
 	inventory_icon = "icon_huntsman_hat_0006",
@@ -5914,7 +6234,7 @@ ItemMasterList.huntsman_hat_0006 = {
 }
 ItemMasterList.huntsman_hat_0007 = {
 	description = "description_huntsman_hat_0007",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_huntsman_hat_0007",
 	template = "es_hats_no_beard",
 	inventory_icon = "icon_huntsman_hat_0007",
@@ -5929,7 +6249,7 @@ ItemMasterList.huntsman_hat_0007 = {
 }
 ItemMasterList.huntsman_hat_0008 = {
 	description = "description_huntsman_hat_0008",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_huntsman_hat_0008",
 	template = "es_hats_no_ears_skinned",
 	inventory_icon = "icon_huntsman_hat_0008",
@@ -5991,7 +6311,7 @@ ItemMasterList.mercenary_hat_0000 = {
 }
 ItemMasterList.mercenary_hat_0001 = {
 	description = "description_mercenary_hat_0001",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_mercenary_hat_0001",
 	template = "es_hats_no_ear",
 	inventory_icon = "icon_mercenary_hat_0001",
@@ -6006,7 +6326,7 @@ ItemMasterList.mercenary_hat_0001 = {
 }
 ItemMasterList.mercenary_hat_0002 = {
 	description = "description_mercenary_hat_0002",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_mercenary_hat_0002",
 	template = "es_hats",
 	inventory_icon = "icon_mercenary_hat_0002",
@@ -6036,7 +6356,7 @@ ItemMasterList.mercenary_hat_0003 = {
 }
 ItemMasterList.mercenary_hat_0004 = {
 	description = "description_mercenary_hat_0004",
-	rarity = "exotic",
+	rarity = "unique",
 	display_name = "display_name_mercenary_hat_0004",
 	template = "es_hats",
 	inventory_icon = "icon_mercenary_hat_0004",
@@ -6051,7 +6371,7 @@ ItemMasterList.mercenary_hat_0004 = {
 }
 ItemMasterList.mercenary_hat_0005 = {
 	description = "description_mercenary_hat_0005",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_mercenary_hat_0005",
 	template = "es_hats",
 	inventory_icon = "icon_mercenary_hat_0005",
@@ -6066,7 +6386,7 @@ ItemMasterList.mercenary_hat_0005 = {
 }
 ItemMasterList.mercenary_hat_0006 = {
 	description = "description_mercenary_hat_0006",
-	rarity = "exotic",
+	rarity = "promo",
 	display_name = "display_name_mercenary_hat_0006",
 	template = "es_hats",
 	inventory_icon = "icon_mercenary_hat_0006",
@@ -6096,7 +6416,7 @@ ItemMasterList.mercenary_hat_0007 = {
 }
 ItemMasterList.mercenary_hat_0008 = {
 	description = "description_mercenary_hat_0008",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_mercenary_hat_0008",
 	template = "es_hats",
 	inventory_icon = "icon_mercenary_hat_0008",
@@ -6114,7 +6434,7 @@ ItemMasterList.mercenary_hat_0009 = {
 	rarity = "exotic",
 	display_name = "display_name_mercenary_hat_0009",
 	template = "es_beard_skinned",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_mercenary_hat_0009",
 	slot_type = "hat",
 	information_text = "information_text_hat",
 	hud_icon = "hud_icon_default",
@@ -6158,7 +6478,7 @@ ItemMasterList.knight_hat_0000 = {
 }
 ItemMasterList.knight_hat_0001 = {
 	description = "description_knight_hat_0001",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_knight_hat_0001",
 	template = "es_hats_no_ear",
 	inventory_icon = "icon_knight_hat_0001",
@@ -6173,7 +6493,7 @@ ItemMasterList.knight_hat_0001 = {
 }
 ItemMasterList.knight_hat_0002 = {
 	description = "description_knight_hat_0002",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_knight_hat_0002",
 	template = "es_hats_no_ear",
 	inventory_icon = "icon_knight_hat_0002",
@@ -6188,7 +6508,7 @@ ItemMasterList.knight_hat_0002 = {
 }
 ItemMasterList.knight_hat_0003 = {
 	description = "description_knight_hat_0003",
-	rarity = "exotic",
+	rarity = "promo",
 	display_name = "display_name_knight_hat_0003",
 	template = "es_hats_no_ear",
 	inventory_icon = "icon_knight_hat_0003",
@@ -6233,7 +6553,7 @@ ItemMasterList.knight_hat_0005 = {
 }
 ItemMasterList.knight_hat_0006 = {
 	description = "description_knight_hat_0006",
-	rarity = "exotic",
+	rarity = "unique",
 	display_name = "display_name_knight_hat_0006",
 	template = "es_hats_no_ear",
 	inventory_icon = "icon_knight_hat_0006",
@@ -6278,7 +6598,7 @@ ItemMasterList.knight_hat_0008 = {
 }
 ItemMasterList.knight_hat_0009 = {
 	description = "description_knight_hat_0009",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_knight_hat_0009",
 	template = "es_hats_no_ear",
 	inventory_icon = "icon_knight_hat_0009",
@@ -6293,7 +6613,7 @@ ItemMasterList.knight_hat_0009 = {
 }
 ItemMasterList.knight_hat_0010 = {
 	description = "description_knight_hat_0010",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_knight_hat_0010",
 	template = "es_hats_no_ear",
 	inventory_icon = "icon_knight_hat_0010",
@@ -6311,7 +6631,7 @@ ItemMasterList.knight_hat_0011 = {
 	rarity = "exotic",
 	display_name = "display_name_knight_hat_0011",
 	template = "es_beard",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_knight_hat_0011",
 	slot_type = "hat",
 	information_text = "information_text_hat",
 	hud_icon = "hud_icon_default",
@@ -6419,7 +6739,7 @@ ItemMasterList.witchhunter_hat_0002 = {
 }
 ItemMasterList.witchhunter_hat_0003 = {
 	description = "description_witchhunter_hat_0003",
-	rarity = "exotic",
+	rarity = "promo",
 	display_name = "display_name_witchhunter_hat_0003",
 	template = "wh_hats",
 	inventory_icon = "icon_witchhunter_hat_0003",
@@ -6434,7 +6754,7 @@ ItemMasterList.witchhunter_hat_0003 = {
 }
 ItemMasterList.witchhunter_hat_0004 = {
 	description = "description_witchhunter_hat_0004",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_witchhunter_hat_0004",
 	template = "wh_hats",
 	inventory_icon = "icon_witchhunter_hat_0004",
@@ -6464,7 +6784,7 @@ ItemMasterList.witchhunter_hat_0005 = {
 }
 ItemMasterList.witchhunter_hat_0006 = {
 	description = "description_witchhunter_hat_0006",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_witchhunter_hat_0006",
 	template = "wh_hats",
 	inventory_icon = "icon_witchhunter_hat_0006",
@@ -6509,7 +6829,7 @@ ItemMasterList.witchhunter_hat_0008 = {
 }
 ItemMasterList.witchhunter_hat_0009 = {
 	description = "description_witchhunter_hat_0009",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_witchhunter_hat_0009",
 	template = "wh_hats",
 	inventory_icon = "icon_witchhunter_hat_0009",
@@ -6524,7 +6844,7 @@ ItemMasterList.witchhunter_hat_0009 = {
 }
 ItemMasterList.witchhunter_hat_0010 = {
 	description = "description_witchhunter_hat_0010",
-	rarity = "exotic",
+	rarity = "unique",
 	display_name = "display_name_witchhunter_hat_0010",
 	template = "wh_hats_skinned",
 	inventory_icon = "icon_witchhunter_hat_0010",
@@ -6571,7 +6891,7 @@ ItemMasterList.zealot_hat_0000 = {
 }
 ItemMasterList.zealot_hat_0001 = {
 	description = "description_zealot_hat_0001",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_zealot_hat_0001",
 	template = "wh_z_hats_tattoo_01",
 	inventory_icon = "icon_zealot_hat_0001",
@@ -6586,7 +6906,7 @@ ItemMasterList.zealot_hat_0001 = {
 }
 ItemMasterList.zealot_hat_0002 = {
 	description = "description_zealot_hat_0002",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_zealot_hat_0002",
 	template = "wh_z_hats_tattoo_00",
 	inventory_icon = "icon_zealot_hat_0002",
@@ -6616,7 +6936,7 @@ ItemMasterList.zealot_hat_0003 = {
 }
 ItemMasterList.zealot_hat_0004 = {
 	description = "description_zealot_hat_0004",
-	rarity = "exotic",
+	rarity = "unique",
 	display_name = "display_name_zealot_hat_0004",
 	template = "wh_z_hats_tattoo_00",
 	inventory_icon = "icon_zealot_hat_0004",
@@ -6646,7 +6966,7 @@ ItemMasterList.zealot_hat_0005 = {
 }
 ItemMasterList.zealot_hat_0006 = {
 	description = "description_zealot_hat_0006",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_zealot_hat_0006",
 	template = "wh_z_hats_tattoo_00",
 	inventory_icon = "icon_zealot_hat_0006",
@@ -6661,10 +6981,10 @@ ItemMasterList.zealot_hat_0006 = {
 }
 ItemMasterList.zealot_hat_0007 = {
 	description = "description_zealot_hat_0007",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_zealot_hat_0007",
-	template = "wh_z_hats_tattoo_01",
-	inventory_icon = "icons_placeholder",
+	template = "wh_z_hats_tattoo_03",
+	inventory_icon = "icon_zealot_hat_0007",
 	slot_type = "hat",
 	information_text = "information_text_hat",
 	hud_icon = "hud_icon_default",
@@ -6676,10 +6996,10 @@ ItemMasterList.zealot_hat_0007 = {
 }
 ItemMasterList.zealot_hat_0008 = {
 	description = "description_zealot_hat_0008",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_zealot_hat_0008",
-	template = "wh_z_hats_tattoo_03",
-	inventory_icon = "icons_placeholder",
+	template = "wh_z_hats_tattoo_01",
+	inventory_icon = "icon_zealot_hat_0008",
 	slot_type = "hat",
 	information_text = "information_text_hat",
 	hud_icon = "hud_icon_default",
@@ -6691,10 +7011,10 @@ ItemMasterList.zealot_hat_0008 = {
 }
 ItemMasterList.zealot_hat_0009 = {
 	description = "description_zealot_hat_0009",
-	rarity = "exotic",
+	rarity = "promo",
 	display_name = "display_name_zealot_hat_0009",
-	template = "wh_z_hats_tattoo_04",
-	inventory_icon = "icons_placeholder",
+	template = "wh_z_hats_tattoo_05",
+	inventory_icon = "icon_zealot_hat_0009",
 	slot_type = "hat",
 	information_text = "information_text_hat",
 	hud_icon = "hud_icon_default",
@@ -6708,8 +7028,8 @@ ItemMasterList.zealot_hat_0010 = {
 	description = "description_zealot_hat_0010",
 	rarity = "exotic",
 	display_name = "display_name_zealot_hat_0010",
-	template = "wh_z_hats_tattoo_05",
-	inventory_icon = "icons_placeholder",
+	template = "wh_z_hats_tattoo_06",
+	inventory_icon = "icon_zealot_hat_0010",
 	slot_type = "hat",
 	information_text = "information_text_hat",
 	hud_icon = "hud_icon_default",
@@ -6723,8 +7043,8 @@ ItemMasterList.zealot_hat_0011 = {
 	description = "description_zealot_hat_0011",
 	rarity = "exotic",
 	display_name = "display_name_zealot_hat_0011",
-	template = "wh_z_hats_tattoo_06",
-	inventory_icon = "icons_placeholder",
+	template = "wh_z_hats_tattoo_04",
+	inventory_icon = "icon_zealot_hat_0011",
 	slot_type = "hat",
 	information_text = "information_text_hat",
 	hud_icon = "hud_icon_default",
@@ -6766,7 +7086,7 @@ ItemMasterList.bountyhunter_hat_0000 = {
 }
 ItemMasterList.bountyhunter_hat_0001 = {
 	description = "description_bountyhunter_hat_0001",
-	rarity = "exotic",
+	rarity = "unique",
 	display_name = "display_name_bountyhunter_hat_0001",
 	template = "wh_hats_skinned",
 	inventory_icon = "icon_bountyhunter_hat_0001",
@@ -6781,7 +7101,7 @@ ItemMasterList.bountyhunter_hat_0001 = {
 }
 ItemMasterList.bountyhunter_hat_0002 = {
 	description = "description_bountyhunter_hat_0002",
-	rarity = "exotic",
+	rarity = "promo",
 	display_name = "display_name_bountyhunter_hat_0002",
 	template = "wh_hats",
 	inventory_icon = "icon_bountyhunter_hat_0002",
@@ -6826,7 +7146,7 @@ ItemMasterList.bountyhunter_hat_0004 = {
 }
 ItemMasterList.bountyhunter_hat_0005 = {
 	description = "description_bountyhunter_hat_0005",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_bountyhunter_hat_0005",
 	template = "wh_hats",
 	inventory_icon = "icon_bountyhunter_hat_0005",
@@ -6856,7 +7176,7 @@ ItemMasterList.bountyhunter_hat_0006 = {
 }
 ItemMasterList.bountyhunter_hat_0007 = {
 	description = "description_bountyhunter_hat_0007",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_bountyhunter_hat_0007",
 	template = "wh_hats",
 	inventory_icon = "icon_bountyhunter_hat_0007",
@@ -6871,7 +7191,7 @@ ItemMasterList.bountyhunter_hat_0007 = {
 }
 ItemMasterList.bountyhunter_hat_0008 = {
 	description = "description_bountyhunter_hat_0008",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_bountyhunter_hat_0008",
 	template = "wh_hats",
 	inventory_icon = "icon_bountyhunter_hat_0008",
@@ -6886,7 +7206,7 @@ ItemMasterList.bountyhunter_hat_0008 = {
 }
 ItemMasterList.bountyhunter_hat_0009 = {
 	description = "description_bountyhunter_hat_0009",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_bountyhunter_hat_0009",
 	template = "wh_hats",
 	inventory_icon = "icon_bountyhunter_hat_0009",
@@ -6992,7 +7312,7 @@ ItemMasterList.waywatcher_hat_0002 = {
 }
 ItemMasterList.waywatcher_hat_0003 = {
 	description = "description_waywatcher_hat_0003",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_waywatcher_hat_0003",
 	template = "ww_hoods",
 	inventory_icon = "icon_waywatcher_hat_0003",
@@ -7022,7 +7342,7 @@ ItemMasterList.waywatcher_hat_0004 = {
 }
 ItemMasterList.waywatcher_hat_0005 = {
 	description = "description_waywatcher_hat_0005",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_waywatcher_hat_0005",
 	template = "ww_hoods",
 	inventory_icon = "icon_waywatcher_hat_0005",
@@ -7037,7 +7357,7 @@ ItemMasterList.waywatcher_hat_0005 = {
 }
 ItemMasterList.waywatcher_hat_0006 = {
 	description = "description_waywatcher_hat_0006",
-	rarity = "exotic",
+	rarity = "promo",
 	display_name = "display_name_waywatcher_hat_0006",
 	template = "ww_hoods",
 	inventory_icon = "icon_waywatcher_hat_0006",
@@ -7052,7 +7372,7 @@ ItemMasterList.waywatcher_hat_0006 = {
 }
 ItemMasterList.waywatcher_hat_0007 = {
 	description = "description_waywatcher_hat_0007",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_waywatcher_hat_0007",
 	template = "ww_hoods",
 	inventory_icon = "icon_waywatcher_hat_0007",
@@ -7067,7 +7387,7 @@ ItemMasterList.waywatcher_hat_0007 = {
 }
 ItemMasterList.waywatcher_hat_0008 = {
 	description = "description_waywatcher_hat_0008",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_waywatcher_hat_0008",
 	template = "ww_hoods",
 	inventory_icon = "icon_waywatcher_hat_0008",
@@ -7082,7 +7402,7 @@ ItemMasterList.waywatcher_hat_0008 = {
 }
 ItemMasterList.waywatcher_hat_0009 = {
 	description = "description_waywatcher_hat_0009",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_waywatcher_hat_0009",
 	template = "ww_hoods",
 	inventory_icon = "icon_waywatcher_hat_0009",
@@ -7112,7 +7432,7 @@ ItemMasterList.waywatcher_hat_0010 = {
 }
 ItemMasterList.waywatcher_hat_0011 = {
 	description = "description_waywatcher_hat_0011",
-	rarity = "exotic",
+	rarity = "unique",
 	display_name = "display_name_waywatcher_hat_0011",
 	template = "ww_hoods",
 	inventory_icon = "icon_waywatcher_hat_0011",
@@ -7173,7 +7493,7 @@ ItemMasterList.shade_hat_0001 = {
 }
 ItemMasterList.shade_hat_0002 = {
 	description = "description_shade_hat_0002",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_shade_hat_0002",
 	template = "ww_helmet",
 	inventory_icon = "icon_shade_hat_0002",
@@ -7203,7 +7523,7 @@ ItemMasterList.shade_hat_0003 = {
 }
 ItemMasterList.shade_hat_0004 = {
 	description = "description_shade_hat_0004",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_shade_hat_0004",
 	template = "ww_helmet",
 	inventory_icon = "icon_shade_hat_0004",
@@ -7233,7 +7553,7 @@ ItemMasterList.shade_hat_0005 = {
 }
 ItemMasterList.shade_hat_0006 = {
 	description = "description_shade_hat_0006",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_shade_hat_0006",
 	template = "ww_helmet_mask",
 	inventory_icon = "icon_shade_hat_0006",
@@ -7248,7 +7568,7 @@ ItemMasterList.shade_hat_0006 = {
 }
 ItemMasterList.shade_hat_0007 = {
 	description = "description_shade_hat_0007",
-	rarity = "exotic",
+	rarity = "unique",
 	display_name = "display_name_shade_hat_0007",
 	template = "ww_helmet_mask",
 	inventory_icon = "icon_shade_hat_0007",
@@ -7263,7 +7583,7 @@ ItemMasterList.shade_hat_0007 = {
 }
 ItemMasterList.shade_hat_0008 = {
 	description = "description_shade_hat_0008",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_shade_hat_0008",
 	template = "ww_helmet_mask",
 	inventory_icon = "icon_shade_hat_0008",
@@ -7278,7 +7598,7 @@ ItemMasterList.shade_hat_0008 = {
 }
 ItemMasterList.shade_hat_0009 = {
 	description = "description_shade_hat_0009",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_shade_hat_0009",
 	template = "ww_helmet_mask",
 	inventory_icon = "icon_shade_hat_0009",
@@ -7293,7 +7613,7 @@ ItemMasterList.shade_hat_0009 = {
 }
 ItemMasterList.shade_hat_0010 = {
 	description = "description_shade_hat_0010",
-	rarity = "exotic",
+	rarity = "promo",
 	display_name = "display_name_shade_hat_0010",
 	template = "ww_hat",
 	inventory_icon = "icon_shade_hat_0010",
@@ -7369,7 +7689,7 @@ ItemMasterList.maidenguard_hat_0002 = {
 }
 ItemMasterList.maidenguard_hat_0003 = {
 	description = "description_maidenguard_hat_0003",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_maidenguard_hat_0003",
 	template = "ww_hoods",
 	inventory_icon = "icon_maidenguard_hat_0003",
@@ -7384,7 +7704,7 @@ ItemMasterList.maidenguard_hat_0003 = {
 }
 ItemMasterList.maidenguard_hat_0004 = {
 	description = "description_maidenguard_hat_0004",
-	rarity = "exotic",
+	rarity = "rare",
 	display_name = "display_name_maidenguard_hat_0004",
 	template = "ww_hoods",
 	inventory_icon = "icon_maidenguard_hat_0004",
@@ -7399,7 +7719,7 @@ ItemMasterList.maidenguard_hat_0004 = {
 }
 ItemMasterList.maidenguard_hat_0005 = {
 	description = "description_maidenguard_hat_0005",
-	rarity = "exotic",
+	rarity = "promo",
 	display_name = "display_name_maidenguard_hat_0005",
 	template = "ww_hoods",
 	inventory_icon = "icon_maidenguard_hat_0005",
@@ -7414,7 +7734,7 @@ ItemMasterList.maidenguard_hat_0005 = {
 }
 ItemMasterList.maidenguard_hat_0006 = {
 	description = "description_maidenguard_hat_0006",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_maidenguard_hat_0006",
 	template = "ww_hoods",
 	inventory_icon = "icon_maidenguard_hat_0006",
@@ -7429,7 +7749,7 @@ ItemMasterList.maidenguard_hat_0006 = {
 }
 ItemMasterList.maidenguard_hat_0007 = {
 	description = "description_maidenguard_hat_0007",
-	rarity = "exotic",
+	rarity = "common",
 	display_name = "display_name_maidenguard_hat_0007",
 	template = "ww_helmet_mask",
 	inventory_icon = "icon_maidenguard_hat_0007",
@@ -7444,7 +7764,7 @@ ItemMasterList.maidenguard_hat_0007 = {
 }
 ItemMasterList.maidenguard_hat_0008 = {
 	description = "description_maidenguard_hat_0008",
-	rarity = "exotic",
+	rarity = "unique",
 	display_name = "display_name_maidenguard_hat_0008",
 	template = "ww_helmet_mask",
 	inventory_icon = "icon_maidenguard_hat_0008",
@@ -7778,14 +8098,14 @@ ItemMasterList.es_handgun = {
 	}
 }
 ItemMasterList.es_repeating_handgun = {
-	description = "es_repeating_handgun_skin_02_description",
+	description = "es_repeating_handgun_skin_01_description",
 	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_emp_handgun_repeater_t1/wpn_emp_handgun_repeater_t1",
 	hud_icon = "weapon_generic_icon_repeating_handgun",
 	skin_combination_table = "es_repeating_handgun_skins",
 	slot_type = "ranged",
 	inventory_icon = "icon_wpn_emp_handgun_repeater_t1",
-	display_name = "es_repeating_handgun_skin_02_name",
+	display_name = "es_repeating_handgun_skin_01_name",
 	has_power_level = true,
 	template = "repeating_handgun_template_1",
 	property_table_name = "ranged",
@@ -14063,6 +14383,84 @@ ItemMasterList.deed_2040 = {
 		"harder"
 	}
 }
+ItemMasterList.deed_2041 = {
+	description = "description_deed_generic",
+	rarity = "exotic",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_specials",
+		"more_specials",
+		"same_specials"
+	},
+	rewards = {
+		"loot_chest_03_06",
+		"loot_chest_03_06",
+		"loot_chest_03_06"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2042 = {
+	description = "description_deed_generic",
+	rarity = "exotic",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"big_specials",
+		"more_specials",
+		"multiple_bosses"
+	},
+	rewards = {
+		"loot_chest_03_06",
+		"loot_chest_03_06",
+		"loot_chest_03_06"
+	},
+	difficulties = {
+		"harder"
+	}
+}
 ItemMasterList.deed_3001 = {
 	description = "description_deed_generic",
 	rarity = "common",
@@ -15537,6 +15935,40 @@ ItemMasterList.level_chest = {
 		"es_mercenary"
 	}
 }
+ItemMasterList.bogenhafen_chest = {
+	description = "bogenhafen_chest_description",
+	rarity = "plentiful",
+	display_name = "display_name_bogenhafen_chest",
+	rarity_key = "level_up",
+	inventory_icon = "icon_loot_chest_bgh",
+	slot_type = "loot_chest",
+	power_level_key = "category_24",
+	temporary_template = "",
+	content_key = "bogenhafen_chest",
+	can_stack = true,
+	display_unit = "chest_1",
+	item_type = "loot_chest",
+	chest_category = "bogenhafen",
+	chest_sort_order = 1,
+	chest_tier = 1,
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
 ItemMasterList.loot_chest_01_01 = {
 	item_type = "loot_chest",
 	content_key = "standard_loot_chest",
@@ -16377,46 +16809,12 @@ ItemMasterList.loot_chest_04_06 = {
 		"es_mercenary"
 	}
 }
-ItemMasterList.loot_chest_deed = {
-	description = "I_HAVE_DEED",
-	rarity = "plentiful",
-	display_name = "I_AM_DEED_CHEST",
-	rarity_key = "tier_6",
-	inventory_icon = "icon_loot_chest_d4_t6",
-	slot_type = "loot_chest",
-	power_level_key = "category_24",
-	temporary_template = "",
-	content_key = "debug",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
-	chest_category = "deed",
-	chest_sort_order = 4,
-	chest_tier = 6,
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
-}
 ItemMasterList.wh_1h_axe_skin = {
-	matching_item_type = "wh_1h_axe",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "wh_1h_axe",
 	can_wield = {
 		"wh_zealot",
 		"wh_bountyhunter",
@@ -16424,11 +16822,11 @@ ItemMasterList.wh_1h_axe_skin = {
 	}
 }
 ItemMasterList.wh_crossbow_skin = {
-	matching_item_type = "wh_crossbow",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "wh_crossbow",
 	can_wield = {
 		"wh_zealot",
 		"wh_bountyhunter",
@@ -16436,11 +16834,11 @@ ItemMasterList.wh_crossbow_skin = {
 	}
 }
 ItemMasterList.es_1h_flail_skin = {
-	matching_item_type = "es_1h_flail",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "es_1h_flail",
 	can_wield = {
 		"wh_zealot",
 		"wh_bountyhunter",
@@ -16448,12 +16846,12 @@ ItemMasterList.es_1h_flail_skin = {
 	}
 }
 ItemMasterList.wh_brace_of_pistols_skin = {
-	matching_item_type = "wh_brace_of_pistols",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_emp_pistol_01_t1/wpn_emp_pistol_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "wh_brace_of_pistols",
 	can_wield = {
 		"wh_zealot",
 		"wh_bountyhunter",
@@ -16461,12 +16859,12 @@ ItemMasterList.wh_brace_of_pistols_skin = {
 	}
 }
 ItemMasterList.wh_1h_falchion_skin = {
-	matching_item_type = "wh_1h_falchion",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_emp_sword_04_t1/wpn_emp_sword_04_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "wh_1h_falchion",
 	can_wield = {
 		"wh_zealot",
 		"wh_bountyhunter",
@@ -16474,12 +16872,12 @@ ItemMasterList.wh_1h_falchion_skin = {
 	}
 }
 ItemMasterList.wh_2h_sword_skin = {
-	matching_item_type = "wh_2h_sword",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_empire_2h_sword_02_t1/wpn_empire_2h_sword_02_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "wh_2h_sword",
 	can_wield = {
 		"wh_zealot",
 		"wh_bountyhunter",
@@ -16487,12 +16885,12 @@ ItemMasterList.wh_2h_sword_skin = {
 	}
 }
 ItemMasterList.wh_repeating_pistols_skin = {
-	matching_item_type = "wh_repeating_pistols",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_empire_pistol_repeater/wpn_empire_pistol_repeater_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "wh_repeating_pistols",
 	can_wield = {
 		"wh_zealot",
 		"wh_bountyhunter",
@@ -16500,12 +16898,12 @@ ItemMasterList.wh_repeating_pistols_skin = {
 	}
 }
 ItemMasterList.wh_fencing_sword_skin = {
-	matching_item_type = "wh_fencing_sword",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_fencingsword_01_t1/wpn_fencingsword_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "wh_fencing_sword",
 	can_wield = {
 		"wh_zealot",
 		"wh_bountyhunter",
@@ -16513,11 +16911,11 @@ ItemMasterList.wh_fencing_sword_skin = {
 	}
 }
 ItemMasterList.wh_crossbow_repeater_skin = {
-	matching_item_type = "wh_crossbow_repeater",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "wh_crossbow_repeater",
 	can_wield = {
 		"wh_zealot",
 		"wh_bountyhunter",
@@ -16525,12 +16923,12 @@ ItemMasterList.wh_crossbow_repeater_skin = {
 	}
 }
 ItemMasterList.bw_dagger_skin = {
-	matching_item_type = "bw_dagger",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_brw_dagger_01/wpn_brw_dagger_01",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "bw_dagger",
 	can_wield = {
 		"bw_unchained",
 		"bw_adept",
@@ -16538,12 +16936,12 @@ ItemMasterList.bw_dagger_skin = {
 	}
 }
 ItemMasterList.bw_skullstaff_flamethrower_skin = {
-	matching_item_type = "bw_skullstaff_flamethrower",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_brw_flame_staff_01/wpn_brw_flame_staff_01",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "bw_skullstaff_flamethrower",
 	can_wield = {
 		"bw_unchained",
 		"bw_adept",
@@ -16551,12 +16949,12 @@ ItemMasterList.bw_skullstaff_flamethrower_skin = {
 	}
 }
 ItemMasterList.bw_skullstaff_spear_skin = {
-	matching_item_type = "bw_skullstaff_spear",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_brw_spear_staff_01/wpn_brw_spear_staff_01",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "bw_skullstaff_spear",
 	can_wield = {
 		"bw_unchained",
 		"bw_adept",
@@ -16564,12 +16962,12 @@ ItemMasterList.bw_skullstaff_spear_skin = {
 	}
 }
 ItemMasterList.bw_skullstaff_beam_skin = {
-	matching_item_type = "bw_skullstaff_beam",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_brw_beam_staff_01/wpn_brw_beam_staff_01",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "bw_skullstaff_beam",
 	can_wield = {
 		"bw_unchained",
 		"bw_adept",
@@ -16577,12 +16975,12 @@ ItemMasterList.bw_skullstaff_beam_skin = {
 	}
 }
 ItemMasterList.bw_skullstaff_geiser_skin = {
-	matching_item_type = "bw_skullstaff_geiser",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_brw_spear_staff_01/wpn_brw_spear_staff_01",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "bw_skullstaff_geiser",
 	can_wield = {
 		"bw_unchained",
 		"bw_adept",
@@ -16590,12 +16988,12 @@ ItemMasterList.bw_skullstaff_geiser_skin = {
 	}
 }
 ItemMasterList.bw_skullstaff_fireball_skin = {
-	matching_item_type = "bw_skullstaff_fireball",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_brw_spear_staff_01/wpn_brw_spear_staff_01",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "bw_skullstaff_fireball",
 	can_wield = {
 		"bw_unchained",
 		"bw_adept",
@@ -16603,12 +17001,12 @@ ItemMasterList.bw_skullstaff_fireball_skin = {
 	}
 }
 ItemMasterList.bw_1h_mace_skin = {
-	matching_item_type = "bw_1h_mace",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_brw_mace_01/wpn_brw_mace_01",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "bw_1h_mace",
 	can_wield = {
 		"bw_unchained",
 		"bw_adept",
@@ -16616,12 +17014,12 @@ ItemMasterList.bw_1h_mace_skin = {
 	}
 }
 ItemMasterList.bw_sword_skin = {
-	matching_item_type = "bw_sword",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_brw_sword_01_t1/wpn_brw_sword_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "bw_sword",
 	can_wield = {
 		"bw_unchained",
 		"bw_adept",
@@ -16629,12 +17027,12 @@ ItemMasterList.bw_sword_skin = {
 	}
 }
 ItemMasterList.bw_flame_sword_skin = {
-	matching_item_type = "bw_flame_sword",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_brw_sword_01_t1/wpn_brw_flaming_sword_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "bw_flame_sword",
 	can_wield = {
 		"bw_unchained",
 		"bw_adept",
@@ -16642,12 +17040,12 @@ ItemMasterList.bw_flame_sword_skin = {
 	}
 }
 ItemMasterList.dr_2h_axe_skin = {
-	matching_item_type = "dr_2h_axe",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_dw_2h_axe_01_t1/wpn_dw_2h_axe_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "dr_2h_axe",
 	can_wield = {
 		"dr_ironbreaker",
 		"dr_slayer",
@@ -16655,12 +17053,12 @@ ItemMasterList.dr_2h_axe_skin = {
 	}
 }
 ItemMasterList.dr_2h_hammer_skin = {
-	matching_item_type = "dr_2h_hammer",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_dw_2h_hammer_01_t1/wpn_dw_2h_hammer_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "dr_2h_hammer",
 	can_wield = {
 		"dr_ironbreaker",
 		"dr_slayer",
@@ -16668,12 +17066,12 @@ ItemMasterList.dr_2h_hammer_skin = {
 	}
 }
 ItemMasterList.dr_1h_axe_skin = {
-	matching_item_type = "dr_1h_axe",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_dw_axe_01_t1/wpn_dw_axe_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "dr_1h_axe",
 	can_wield = {
 		"dr_ironbreaker",
 		"dr_slayer",
@@ -16681,12 +17079,12 @@ ItemMasterList.dr_1h_axe_skin = {
 	}
 }
 ItemMasterList.dr_dual_wield_axes_skin = {
-	matching_item_type = "dr_dual_wield_axes",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_dw_axe_01_t1/wpn_dw_axe_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "dr_dual_wield_axes",
 	can_wield = {
 		"dr_ironbreaker",
 		"dr_slayer",
@@ -16694,12 +17092,12 @@ ItemMasterList.dr_dual_wield_axes_skin = {
 	}
 }
 ItemMasterList.dr_shield_axe_skin = {
-	matching_item_type = "dr_shield_axe",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_dw_axe_01_t1/wpn_dw_axe_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "dr_shield_axe",
 	can_wield = {
 		"dr_ironbreaker",
 		"dr_slayer",
@@ -16707,12 +17105,12 @@ ItemMasterList.dr_shield_axe_skin = {
 	}
 }
 ItemMasterList.dr_drake_pistol_skin = {
-	matching_item_type = "dr_drake_pistol",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_dw_drake_pistol_01_t1/wpn_dw_drake_pistol_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "dr_drake_pistol",
 	can_wield = {
 		"dr_ironbreaker",
 		"dr_slayer",
@@ -16720,12 +17118,12 @@ ItemMasterList.dr_drake_pistol_skin = {
 	}
 }
 ItemMasterList.dr_1h_hammer_skin = {
-	matching_item_type = "dr_1h_hammer",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_dw_hammer_01_t1/wpn_dw_hammer_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "dr_1h_hammer",
 	can_wield = {
 		"dr_ironbreaker",
 		"dr_slayer",
@@ -16733,12 +17131,12 @@ ItemMasterList.dr_1h_hammer_skin = {
 	}
 }
 ItemMasterList.dr_shield_hammer_skin = {
-	matching_item_type = "dr_shield_hammer",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_dw_hammer_01_t1/wpn_dw_hammer_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "dr_shield_hammer",
 	can_wield = {
 		"dr_ironbreaker",
 		"dr_slayer",
@@ -16746,12 +17144,12 @@ ItemMasterList.dr_shield_hammer_skin = {
 	}
 }
 ItemMasterList.dr_handgun_skin = {
-	matching_item_type = "dr_handgun",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_dw_handgun_01_t1/wpn_dw_handgun_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "dr_handgun",
 	can_wield = {
 		"dr_ironbreaker",
 		"dr_slayer",
@@ -16759,12 +17157,12 @@ ItemMasterList.dr_handgun_skin = {
 	}
 }
 ItemMasterList.dr_drakegun_skin = {
-	matching_item_type = "dr_drakegun",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_dw_iron_drake_01/wpn_dw_iron_drake_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "dr_drakegun",
 	can_wield = {
 		"dr_ironbreaker",
 		"dr_slayer",
@@ -16772,12 +17170,12 @@ ItemMasterList.dr_drakegun_skin = {
 	}
 }
 ItemMasterList.dr_2h_pick_skin = {
-	matching_item_type = "dr_2h_pick",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_dw_pick_01_t1/wpn_dw_pick_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "dr_2h_pick",
 	can_wield = {
 		"dr_ironbreaker",
 		"dr_slayer",
@@ -16785,12 +17183,12 @@ ItemMasterList.dr_2h_pick_skin = {
 	}
 }
 ItemMasterList.dr_rakegun_skin = {
-	matching_item_type = "dr_rakegun",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_dw_rakegun_t1/wpn_dw_rakegun_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "dr_rakegun",
 	can_wield = {
 		"dr_ironbreaker",
 		"dr_slayer",
@@ -16798,12 +17196,12 @@ ItemMasterList.dr_rakegun_skin = {
 	}
 }
 ItemMasterList.dr_crossbow_skin = {
-	matching_item_type = "dr_crossbow",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_dw_xbox_01_t1/wpn_dw_xbox_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "dr_crossbow",
 	can_wield = {
 		"dr_ironbreaker",
 		"dr_slayer",
@@ -16811,12 +17209,12 @@ ItemMasterList.dr_crossbow_skin = {
 	}
 }
 ItemMasterList.es_repeating_handgun_skin = {
-	matching_item_type = "es_repeating_handgun",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_emp_handgun_repeater_t1/wpn_emp_handgun_repeater_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "es_repeating_handgun",
 	can_wield = {
 		"es_mercenary",
 		"es_knight",
@@ -16824,12 +17222,12 @@ ItemMasterList.es_repeating_handgun_skin = {
 	}
 }
 ItemMasterList.es_1h_mace_skin = {
-	matching_item_type = "es_1h_mace",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_emp_mace_02_t1/wpn_emp_mace_02_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "es_1h_mace",
 	can_wield = {
 		"es_mercenary",
 		"es_knight",
@@ -16837,12 +17235,12 @@ ItemMasterList.es_1h_mace_skin = {
 	}
 }
 ItemMasterList.es_mace_shield_skin = {
-	matching_item_type = "es_mace_shield",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_emp_mace_02_t1/wpn_emp_mace_02_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "es_mace_shield",
 	can_wield = {
 		"es_mercenary",
 		"es_knight",
@@ -16850,12 +17248,12 @@ ItemMasterList.es_mace_shield_skin = {
 	}
 }
 ItemMasterList.es_1h_sword_skin = {
-	matching_item_type = "es_1h_sword",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_emp_sword_02_t1/wpn_emp_sword_02_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "es_1h_sword",
 	can_wield = {
 		"es_mercenary",
 		"es_knight",
@@ -16863,12 +17261,12 @@ ItemMasterList.es_1h_sword_skin = {
 	}
 }
 ItemMasterList.es_sword_shield_skin = {
-	matching_item_type = "es_sword_shield",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_emp_sword_02_t1/wpn_emp_sword_02_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "es_sword_shield",
 	can_wield = {
 		"es_mercenary",
 		"es_knight",
@@ -16876,12 +17274,12 @@ ItemMasterList.es_sword_shield_skin = {
 	}
 }
 ItemMasterList.es_2h_sword_executioner_skin = {
-	matching_item_type = "es_2h_sword_executioner",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_emp_sword_exe_01_t1/wpn_emp_sword_exe_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "es_2h_sword_executioner",
 	can_wield = {
 		"es_mercenary",
 		"es_knight",
@@ -16889,12 +17287,12 @@ ItemMasterList.es_2h_sword_executioner_skin = {
 	}
 }
 ItemMasterList.es_2h_hammer_skin = {
-	matching_item_type = "es_2h_hammer",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_empire_2h_hammer_01_t1/wpn_empire_2h_hammer_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "es_2h_hammer",
 	can_wield = {
 		"es_mercenary",
 		"es_knight",
@@ -16902,12 +17300,12 @@ ItemMasterList.es_2h_hammer_skin = {
 	}
 }
 ItemMasterList.es_2h_sword_skin = {
-	matching_item_type = "es_2h_sword",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_empire_2h_sword_01_t1/wpn_empire_2h_sword_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "es_2h_sword",
 	can_wield = {
 		"es_mercenary",
 		"es_knight",
@@ -16915,12 +17313,12 @@ ItemMasterList.es_2h_sword_skin = {
 	}
 }
 ItemMasterList.es_blunderbuss_skin = {
-	matching_item_type = "es_blunderbuss",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_empire_blunderbuss_02_t1/wpn_empire_blunderbuss_02_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "es_blunderbuss",
 	can_wield = {
 		"es_mercenary",
 		"es_knight",
@@ -16928,12 +17326,12 @@ ItemMasterList.es_blunderbuss_skin = {
 	}
 }
 ItemMasterList.es_longbow_skin = {
-	matching_item_type = "es_longbow",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_empire_bow_tutorial/wpn_empire_bow_tutorial",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "es_longbow",
 	can_wield = {
 		"es_mercenary",
 		"es_knight",
@@ -16941,12 +17339,12 @@ ItemMasterList.es_longbow_skin = {
 	}
 }
 ItemMasterList.es_handgun_skin = {
-	matching_item_type = "es_handgun",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_empire_handgun_02_t1/wpn_empire_handgun_02_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "es_handgun",
 	can_wield = {
 		"es_mercenary",
 		"es_knight",
@@ -16954,12 +17352,12 @@ ItemMasterList.es_handgun_skin = {
 	}
 }
 ItemMasterList.es_halberd_skin = {
-	matching_item_type = "es_halberd",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_wh_halberd_01/wpn_wh_halberd_01",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "es_halberd",
 	can_wield = {
 		"es_mercenary",
 		"es_knight",
@@ -16967,12 +17365,12 @@ ItemMasterList.es_halberd_skin = {
 	}
 }
 ItemMasterList.we_2h_axe_skin = {
-	matching_item_type = "we_2h_axe",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_we_2h_axe_01_t1/wpn_we_2h_axe_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "we_2h_axe",
 	can_wield = {
 		"we_waywatcher",
 		"we_maidenguard",
@@ -16980,12 +17378,12 @@ ItemMasterList.we_2h_axe_skin = {
 	}
 }
 ItemMasterList.we_2h_sword_skin = {
-	matching_item_type = "we_2h_sword",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_we_2h_sword_01_t1/wpn_we_2h_sword_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "we_2h_sword",
 	can_wield = {
 		"we_waywatcher",
 		"we_maidenguard",
@@ -16993,11 +17391,11 @@ ItemMasterList.we_2h_sword_skin = {
 	}
 }
 ItemMasterList.we_crossbow_repeater_skin = {
-	matching_item_type = "we_crossbow_repeater",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "we_crossbow_repeater",
 	can_wield = {
 		"we_waywatcher",
 		"we_maidenguard",
@@ -17005,11 +17403,11 @@ ItemMasterList.we_crossbow_repeater_skin = {
 	}
 }
 ItemMasterList.we_longbow_skin = {
-	matching_item_type = "we_longbow",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "we_longbow",
 	can_wield = {
 		"we_waywatcher",
 		"we_maidenguard",
@@ -17017,11 +17415,11 @@ ItemMasterList.we_longbow_skin = {
 	}
 }
 ItemMasterList.we_shortbow_skin = {
-	matching_item_type = "we_shortbow",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "we_shortbow",
 	can_wield = {
 		"we_waywatcher",
 		"we_maidenguard",
@@ -17029,11 +17427,11 @@ ItemMasterList.we_shortbow_skin = {
 	}
 }
 ItemMasterList.we_shortbow_hagbane_skin = {
-	matching_item_type = "we_shortbow_hagbane",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "we_shortbow_hagbane",
 	can_wield = {
 		"we_waywatcher",
 		"we_maidenguard",
@@ -17041,12 +17439,12 @@ ItemMasterList.we_shortbow_hagbane_skin = {
 	}
 }
 ItemMasterList.we_dual_wield_daggers_skin = {
-	matching_item_type = "we_dual_wield_daggers",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_we_dagger_01_t1/wpn_we_dagger_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "we_dual_wield_daggers",
 	can_wield = {
 		"we_waywatcher",
 		"we_maidenguard",
@@ -17054,12 +17452,12 @@ ItemMasterList.we_dual_wield_daggers_skin = {
 	}
 }
 ItemMasterList.we_dual_wield_swords_skin = {
-	matching_item_type = "we_dual_wield_swords",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_we_sword_01_t1/wpn_we_sword_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "we_dual_wield_swords",
 	can_wield = {
 		"we_waywatcher",
 		"we_maidenguard",
@@ -17067,12 +17465,12 @@ ItemMasterList.we_dual_wield_swords_skin = {
 	}
 }
 ItemMasterList.we_1h_sword_skin = {
-	matching_item_type = "we_1h_sword",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_we_sword_01_t1/wpn_we_sword_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "we_1h_sword",
 	can_wield = {
 		"we_waywatcher",
 		"we_maidenguard",
@@ -17080,12 +17478,12 @@ ItemMasterList.we_1h_sword_skin = {
 	}
 }
 ItemMasterList.we_dual_wield_sword_dagger_skin = {
-	matching_item_type = "we_dual_wield_sword_dagger",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_we_dagger_01_t1/wpn_we_dagger_01_t1",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "we_dual_wield_sword_dagger",
 	can_wield = {
 		"we_waywatcher",
 		"we_maidenguard",
@@ -17093,12 +17491,12 @@ ItemMasterList.we_dual_wield_sword_dagger_skin = {
 	}
 }
 ItemMasterList.we_spear_skin = {
-	matching_item_type = "we_spear",
-	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_we_spear_01/wpn_we_spear_01",
+	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	matching_item_key = "we_spear",
 	can_wield = {
 		"we_waywatcher",
 		"we_maidenguard",

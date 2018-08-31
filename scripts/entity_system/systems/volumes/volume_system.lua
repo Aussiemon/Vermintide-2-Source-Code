@@ -1,5 +1,5 @@
-require("scripts/unit_extensions/generic/generic_volume_extension")
 require("scripts/settings/volume_settings")
+require("scripts/unit_extensions/generic/generic_volume_templates")
 
 VolumeSystem = class(VolumeSystem, ExtensionSystemBase)
 local extensions = {
@@ -12,109 +12,60 @@ local extensions = {
 VolumeSystem.init = function (self, context, name)
 	VolumeSystem.super.init(self, context, name, extensions)
 
-	self.world = context.world
-	self.unit_array = {}
-	self.extension_array = {}
-	self.unit_index_map = {}
-	self.extension_volumes = {}
-	self.extension_update_index = {}
-
-	for _, extension_name in pairs(extensions) do
-		self.unit_array[extension_name] = {}
-		self.extension_array[extension_name] = {}
-		self.unit_index_map[extension_name] = {}
-		self.extension_update_index[extension_name] = 1
-		self.extension_volumes[extension_name] = {}
-	end
-
+	self._volume_system = EngineOptimizedExtensions.volume_init_system(self._volume_system, VolumeSystemSettings.updates_per_frame)
 	self.nav_tag_volume_handler = nil
 	self.nav_tag_volumes_to_create = {}
 end
 
-local dummy_input = {}
+VolumeSystem.destroy = function (self)
+	VolumeSystem.super.destroy(self)
+	EngineOptimizedExtensions.volume_destroy_system(self._volume_system)
+
+	self._volume_system = nil
+	self.nav_tag_volume_handler = nil
+	self.nav_tag_volumes_to_create = nil
+end
+
+local dummy_table = {}
 
 VolumeSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
-	assert(self.is_server, "Volume Extensions are only allowed on server!")
+	fassert(self.is_server, "Volume Extensions are only allowed on server!")
+	EngineOptimizedExtensions.volume_on_add_extension(self._volume_system, unit, extension_name)
+	ScriptUnit.set_extension(unit, self.name, dummy_table)
 
-	local extension = ScriptUnit.add_extension(self.extension_init_context, unit, "GenericVolumeExtension", self.NAME, extension_init_data)
-	local unit_array = self.unit_array[extension_name]
-	local extension_array = self.extension_array[extension_name]
-	local unit_index_map = self.unit_index_map[extension_name]
-	local index_n = #unit_array
-	local index = index_n + 1
-	unit_array[index] = unit
-	extension_array[index] = extension
-	unit_index_map[unit] = index
-
-	return extension
+	return dummy_table
 end
 
 VolumeSystem.on_remove_extension = function (self, unit, extension_name)
-	self:on_freeze_extension(unit, extension_name)
-	ScriptUnit.remove_extension(unit, self.NAME)
+	self:_cleanup_extension(unit, extension_name)
 end
 
 VolumeSystem.on_freeze_extension = function (self, unit, extension_name)
-	local unit_index_map = self.unit_index_map[extension_name]
-	local index = unit_index_map[unit]
+	self:_cleanup_extension(unit, extension_name)
+end
 
-	if index == nil then
+VolumeSystem.freeze = function (self, unit, extension_name, reason)
+	self:_cleanup_extension(unit, extension_name)
+end
+
+VolumeSystem.unfreeze = function (self, unit, extension_name)
+	EngineOptimizedExtensions.volume_on_add_extension(self._volume_system, unit, extension_name)
+	ScriptUnit.set_extension(unit, self.name, dummy_table)
+end
+
+VolumeSystem._cleanup_extension = function (self, unit, extension_name)
+	local extension = ScriptUnit.has_extension(unit, "volume_system")
+
+	if extension == nil then
 		return
 	end
 
-	local unit_array = self.unit_array[extension_name]
-	local extension_array = self.extension_array[extension_name]
-	local index_n = #extension_array
-
-	if index ~= index_n then
-		unit_array[index] = unit_array[index_n]
-		extension_array[index] = extension_array[index_n]
-		unit_index_map[unit_array[index]] = index
-	end
-
-	unit_array[index_n] = nil
-	extension_array[index_n] = nil
-	unit_index_map[unit] = nil
+	EngineOptimizedExtensions.volume_on_remove_extension(self._volume_system, unit, extension_name)
+	ScriptUnit.remove_extension(unit, self.name)
 end
 
-VolumeSystem.update = function (self, context, t, dt)
-	local updates_n = VolumeSystemSettings.updates_per_frame
-	local extension_array = self.extension_array
-
-	for extension_name, extensions in pairs(extension_array) do
-		local extensions_n = #extensions
-		local update_index = self.extension_update_index[extension_name]
-		local start_index = (extensions_n < update_index and 1) or update_index
-		local end_index = math.min((start_index + updates_n[extension_name]) - 1, extensions_n)
-
-		for i = start_index, end_index, 1 do
-			local extension = extensions[i]
-
-			self:update_volumes(dt, t, extension_name, extension)
-		end
-
-		self.extension_update_index[extension_name] = end_index + 1
-
-		for i = 1, extensions_n, 1 do
-			local extension = extensions[i]
-
-			if extension:do_update() then
-				extension:update(dt, t, context)
-			end
-		end
-	end
-end
-
-VolumeSystem.destroy = function (self)
-	VolumeSystem.super.destroy(self)
-
-	self.unit_array = nil
-	self.extension_array = nil
-	self.unit_index_map = nil
-	self.extension_update_index = nil
-	self.extension_volumes = nil
-	self.nav_tag_volume_handler = nil
-	self.nav_tag_volumes_to_create = nil
+VolumeSystem.update = function (self, context, t)
+	EngineOptimizedExtensions.volume_update(self._volume_system, t, context.dt)
 end
 
 VolumeSystem.register_volume = function (self, volume_name, volume_type, params)
@@ -124,11 +75,11 @@ VolumeSystem.register_volume = function (self, volume_name, volume_type, params)
 
 	local sub_type = params.sub_type
 
-	for extension_name, volumes in pairs(self.extension_volumes) do
+	for _, extension_name in ipairs(extensions) do
 		local settings = VolumeExtensionSettings[volume_type][sub_type][extension_name]
 
 		if settings then
-			volumes[volume_name] = {
+			local volume = {
 				volume_name = volume_name,
 				volume_type = volume_type,
 				level = level,
@@ -136,6 +87,16 @@ VolumeSystem.register_volume = function (self, volume_name, volume_type, params)
 				settings = settings,
 				inverted = params.invert_volume
 			}
+			local on_enter, on_exit = nil
+
+			if GenericVolumeTemplates.functions and GenericVolumeTemplates.functions[volume.volume_type] and GenericVolumeTemplates.functions[volume.volume_type][volume.params.sub_type] then
+				on_enter = GenericVolumeTemplates.functions[volume.volume_type][volume.params.sub_type].on_enter
+				on_exit = GenericVolumeTemplates.functions[volume.volume_type][volume.params.sub_type].on_exit
+			end
+
+			local filter = settings.filter
+
+			EngineOptimizedExtensions.volume_register_volume(self._volume_system, level, volume_name, extension_name, params.invert_volume, volume, on_enter, on_exit, filter)
 		end
 	end
 
@@ -157,6 +118,16 @@ VolumeSystem.register_volume = function (self, volume_name, volume_type, params)
 				}
 			end
 		end
+	end
+end
+
+VolumeSystem.unregister_volume = function (self, volume_name)
+	local level = LevelHelper:current_level(self.world)
+
+	fassert(Level.has_volume(level, volume_name), "No volume named %q exists in current level", volume_name)
+
+	for _, extension_name in ipairs(extensions) do
+		EngineOptimizedExtensions.volume_unregister_volume(self._volume_system, level, volume_name, extension_name)
 	end
 end
 
@@ -233,116 +204,64 @@ VolumeSystem.create_nav_tag_volume = function (self, volume_name, layer_name, la
 	end
 end
 
-VolumeSystem.unregister_volume = function (self, volume_name)
-	local level = LevelHelper:current_level(self.world)
-
-	fassert(Level.has_volume(level, volume_name), "No volume named %q exists in current level", volume_name)
-
-	local extension_array = self.extension_array
-
-	for extension_name, volumes in pairs(self.extension_volumes) do
-		local volume = volumes[volume_name]
-
-		if volume then
-			local extensions = extension_array[extension_name]
-
-			for i = 1, #extensions, 1 do
-				local extension = extensions[i]
-
-				if extension:is_inside_volume(volume_name) then
-					extension:on_volume_exit(volume)
-				end
-
-				extension:on_volume_unregistered(volume)
-			end
-
-			volumes[volume_name] = nil
-		end
-	end
-end
-
-VolumeSystem.update_volumes = function (self, dt, t, extension_name, extension)
-	local unit = extension.unit
-	local unit_position = POSITION_LOOKUP[unit]
-	local volumes = self.extension_volumes[extension_name]
-	local GenericVolumeTemplates = GenericVolumeTemplates
-
-	for volume_name, volume in pairs(volumes) do
-		local is_inside_volume = Level.is_point_inside_volume(volume.level, volume_name, unit_position)
-
-		if volume.inverted then
-			is_inside_volume = not is_inside_volume
-		end
-
-		local volume_filters = volume.settings.filters
-		local passed_filters = true
-
-		if volume_filters then
-			local filter_functions = GenericVolumeTemplates.filters
-
-			for filter_name, filter_value in pairs(volume_filters) do
-				if filter_functions[filter_name](unit, volume_name) ~= filter_value then
-					passed_filters = false
-
-					break
-				end
-			end
-		end
-
-		if is_inside_volume and passed_filters then
-			if not extension:is_inside_volume(volume_name) then
-				extension:on_volume_enter(dt, t, volume)
-			end
-		elseif extension:is_inside_volume(volume_name) then
-			extension:on_volume_exit(volume)
-		end
-	end
-end
-
 VolumeSystem.volume_has_units_inside = function (self, volume_name)
-	local extension_array = self.extension_array
-	local extension_volumes = self.extension_volumes
-
-	for extension_name, extensions in pairs(extension_array) do
-		if extension_volumes[extension_name][volume_name] then
-			for i = 1, #extensions, 1 do
-				local extension = extensions[i]
-
-				if extension:is_inside_volume(volume_name) then
-					return true
-				end
-			end
-		end
-	end
+	return EngineOptimizedExtensions.volume_has_any_units_inside(self._volume_system, volume_name)
 end
 
 VolumeSystem.all_human_players_inside = function (self, volume_name)
-	local extension_array = self.extension_array
-	local extension_volumes = self.extension_volumes
+	local human_players = Managers.player:human_players()
+	local to_test_count = 0
+	local to_test = {}
 
-	for extension_name, extensions in pairs(extension_array) do
-		local volume = extension_volumes[extension_name][volume_name]
+	for _, player in pairs(human_players) do
+		local player_unit = player.player_unit
+		local status_ext = Unit.alive(player_unit) and ScriptUnit.has_extension(player_unit, "status_system")
 
-		if volume then
-			local human_players = Managers.player:human_players()
-
-			for _, player in pairs(human_players) do
-				local player_unit = player.player_unit
-				local status_ext = Unit.alive(player_unit) and ScriptUnit.has_extension(player_unit, "status_system")
-
-				if status_ext and not status_ext:is_disabled() then
-					local unit_position = POSITION_LOOKUP[player_unit]
-					local is_inside_volume = Level.is_point_inside_volume(volume.level, volume_name, unit_position)
-
-					if not is_inside_volume then
-						return false
-					end
-				end
+		if status_ext then
+			if status_ext:is_disabled() then
+				return false
 			end
+
+			to_test_count = to_test_count + 1
+			to_test[to_test_count] = player_unit
 		end
 	end
 
-	return true
+	if to_test_count ~= 0 then
+		return EngineOptimizedExtensions.volume_has_all_units_inside(self._volume_system, volume_name, unpack(to_test))
+	end
+
+	return false
+end
+
+VolumeSystem.all_human_players_inside_disabled = function (self, volume_name)
+	local human_players = Managers.player:human_players()
+	local to_test_count = 0
+	local to_test = {}
+
+	for _, player in pairs(human_players) do
+		local player_unit = player.player_unit
+		local status_ext = Unit.alive(player_unit) and ScriptUnit.has_extension(player_unit, "status_system")
+
+		if status_ext then
+			if not status_ext:is_disabled() then
+				return false
+			end
+
+			to_test_count = to_test_count + 1
+			to_test[to_test_count] = player_unit
+		end
+	end
+
+	if to_test_count ~= 0 then
+		return EngineOptimizedExtensions.volume_has_all_units_inside(self._volume_system, volume_name, unpack(to_test))
+	end
+
+	return false
+end
+
+VolumeSystem.player_inside = function (self, volume_name, unit)
+	return EngineOptimizedExtensions.volume_has_all_units_inside(self._volume_system, volume_name, unit)
 end
 
 return

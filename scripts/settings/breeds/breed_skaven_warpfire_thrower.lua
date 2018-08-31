@@ -261,6 +261,7 @@ local action_data = {
 		bot_threat_radius = 15,
 		action_weight = 1,
 		hit_radius = 0.4,
+		buff_name = "warpfire_thrower_face_base",
 		aim_rotation_override_distance = 3,
 		muzzle_node = "p_fx",
 		bot_threat_duration = 4.233333333333333,

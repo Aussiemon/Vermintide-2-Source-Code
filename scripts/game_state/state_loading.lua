@@ -9,6 +9,7 @@ StateLoading.NAME = "StateLoading"
 local CHAT_INPUT_DEFAULT_COMMAND = "say"
 local MAX_CHAT_INPUT_CHARS = 150
 local DO_RELOAD = true
+local AFK_TIMER = 30
 StateLoading.round_start_auto_join = 10
 StateLoading.round_start_join_allowed = 20
 StateLoading.join_lobby_timeout = 120
@@ -26,15 +27,6 @@ end
 StateLoading.on_enter = function (self, param_block)
 	print("[Gamestate] Enter state StateLoading")
 
-	if DEDICATED_SERVER then
-		local leader_peer_id = Managers.party:leader()
-
-		if leader_peer_id ~= nil then
-			print(string.format("Start loading leader %s's characters and gear in the backend", leader_peer_id))
-			Managers.backend:update_items(leader_peer_id)
-		end
-	end
-
 	if not Managers.play_go:installed() then
 		Managers.play_go:set_install_speed("suspended")
 	end
@@ -43,10 +35,7 @@ StateLoading.on_enter = function (self, param_block)
 		Application.set_kinect_enabled(true)
 	end
 
-	if PLATFORM == "win32" then
-		Application.set_time_step_policy("throttle", 60)
-	end
-
+	Framerate.set_low_power()
 	Wwise.set_state("inside_waystone", "false")
 
 	self._registered_rpcs = false
@@ -78,6 +67,8 @@ StateLoading.on_enter = function (self, param_block)
 		Managers.backend:start_tutorial()
 
 		self.parent.loading_context.switch_to_tutorial_backend = nil
+	elseif LAUNCH_MODE == "attract_benchmark" then
+		Managers.backend:start_benchmark()
 	end
 
 	if self._lobby_client ~= nil and not self._lobby_client:is_dedicated_server() then
@@ -92,7 +83,6 @@ StateLoading.on_enter = function (self, param_block)
 
 	if PLATFORM == "xb1" and self._lobby_host then
 		Managers.account:set_round_id()
-		Managers.account:update_popup_status()
 	end
 
 	if PLATFORM == "ps4" then
@@ -113,19 +103,11 @@ StateLoading.on_enter = function (self, param_block)
 
 		if not Managers.play_go:installed() then
 			self._wanted_state = StateTitleScreen
-			self.parent.loading_context.skip_signin = true
 			self._teardown_network = true
 		end
 	end
 
-	if BUILD == "dev" or BUILD == "debug" then
-		local debug_resource_package = "resource_packages/debug/ui_debug"
-
-		if script_data.load_ui_debug_package and not Managers.package:has_loaded(debug_resource_package, "global") then
-			GlobalResources.loaded = nil
-			GlobalResources[#GlobalResources + 1] = debug_resource_package
-		end
-	end
+	self._has_invitation_error = false
 end
 
 StateLoading._setup_input = function (self)
@@ -228,7 +210,7 @@ StateLoading._setup_first_time_ui = function (self)
 			auto_skip = level_name ~= LevelSettings.default_start_level
 			auto_skip = loading_context.join_lobby_data or Development.parameter("auto_join") or auto_skip or Development.parameter("skip_splash")
 			params.gamma = loading_context.gamma_correct
-			params.trailer = loading_context.play_trailer
+			params.trailer = loading_context.play_trailer or Application.user_setting("play_intro_cinematic")
 
 			if params.gamma or params.trailer then
 				auto_skip = false
@@ -438,6 +420,10 @@ StateLoading._handle_do_reload = function (self)
 	end
 end
 
+StateLoading.set_invitation_error = function (self)
+	self._has_invitation_error = true
+end
+
 StateLoading.update = function (self, dt, t)
 	if script_data.subtitle_debug then
 		self:_handle_do_reload()
@@ -456,6 +442,13 @@ StateLoading.update = function (self, dt, t)
 			self._handled_psn_client_error = true
 			self._wanted_state = StateTitleScreen
 		end
+	end
+
+	if PLATFORM == "xb1" and self._has_invitation_error and not self._popup_id then
+		self:create_popup("invite_broken", "invite_error", "restart_as_server", "menu_accept")
+
+		self._wanted_state = StateTitleScreen
+		self._has_invitation_error = false
 	end
 
 	if script_data.debug_enabled then
@@ -480,7 +473,7 @@ StateLoading.update = function (self, dt, t)
 			self:_tear_down_level_end_view_wrappers()
 		end
 	elseif self._first_time_view then
-		self._first_time_view:update(dt)
+		self._first_time_view:update(dt, t)
 	elseif self._loading_view then
 		if self._activate_loading_view then
 			self._loading_view:activate()
@@ -527,7 +520,7 @@ StateLoading.update = function (self, dt, t)
 	Managers.chat:update(dt, t, menu_active, menu_input_service)
 	Network.update_transmit(dt)
 
-	return self:_try_next_state()
+	return self:_try_next_state(dt)
 end
 
 StateLoading._update_network = function (self, dt)
@@ -562,8 +555,7 @@ StateLoading._update_network = function (self, dt)
 			self._in_post_game_popup_id = nil
 		end
 
-		local state = self._network_client.state
-		local bad_state = state == "denied_enter_game" or state == "lost_connection_to_host" or state == "eac_match_failed"
+		local bad_state = self._network_client:has_bad_state()
 
 		if bad_state and not self._popup_id then
 			self._wanted_state = StateTitleScreen
@@ -579,6 +571,8 @@ StateLoading._update_network = function (self, dt)
 			self._network_client:destroy()
 
 			self._network_client = nil
+
+			self._level_transition_handler.enemy_package_loader:network_context_destroyed()
 
 			if self._lobby_client then
 				self:create_popup(fail_reason, "popup_error_topic", "restart_as_server", "menu_accept")
@@ -647,7 +641,7 @@ StateLoading._update_lobbies = function (self, dt, t)
 
 		lobby_host:update(dt)
 
-		if old_state ~= lobby_host.state and lobby_host.state == LobbyState.JOINED then
+		if old_state ~= lobby_host.state and lobby_host:is_joined() and not lobby_host:network_initialized() then
 			local lobby_host = self._lobby_host
 			local own_peer_id = Network.peer_id()
 			local host_peer_id = lobby_host:lobby_host()
@@ -659,6 +653,8 @@ StateLoading._update_lobbies = function (self, dt, t)
 			if not self._network_server then
 				self:host_joined()
 			end
+
+			lobby_host:set_network_initialized(true)
 		elseif self._lobby_host.state == LobbyState.FAILED and not self._popup_id then
 			local text_id = nil
 
@@ -940,7 +936,7 @@ StateLoading._update_loading_screen = function (self, dt, t)
 	end
 end
 
-StateLoading._try_next_state = function (self)
+StateLoading._try_next_state = function (self, dt)
 	if self._popup_id then
 		self:_handle_popup()
 	end
@@ -984,6 +980,16 @@ StateLoading._try_next_state = function (self)
 			self._teardown_network = true
 			self._new_state = StateTitleScreen
 		end
+	elseif self.offline_invite then
+		self._teardown_network = true
+		self._join_popup_id = nil
+		self._permission_to_go_to_next_state = true
+
+		if self._first_time_view then
+			self._first_time_view:force_done()
+		end
+
+		self._new_state = StateTitleScreen
 	elseif not self._transitioning then
 		local ui_done = true
 
@@ -1079,6 +1085,10 @@ StateLoading._try_next_state = function (self)
 		end
 	end
 
+	if PLATFORM ~= "win32" then
+		self:_handle_afk_timer(dt)
+	end
+
 	if (Managers.popup:has_popup() or Managers.account:user_detached()) and not Managers.account:leaving_game() then
 		return
 	end
@@ -1086,6 +1096,39 @@ StateLoading._try_next_state = function (self)
 	Managers.popup:cancel_all_popups()
 
 	return self._new_state
+end
+
+StateLoading._handle_afk_timer = function (self, dt)
+	if Managers.account:leaving_game() then
+		return
+	end
+
+	if Managers.account:has_popup() or self._popup_id then
+		local time = Managers.time:time("main")
+		self._afk_timer = self._afk_timer or time + AFK_TIMER
+
+		if self._afk_timer < time and (not self._ui_package_name or (self._ui_package_name and Managers.package:has_loaded(self._ui_package_name))) then
+			if self._first_time_view then
+				self._first_time_view:destroy()
+
+				self._first_time_view = nil
+			end
+
+			Managers.transition:show_loading_icon()
+
+			Managers.transition._callback = nil
+
+			Managers.transition:force_fade_in()
+
+			self._teardown_network = true
+			self._new_state = StateTitleScreen
+			self._previous_session_error = "afk_kick"
+
+			Managers.account:initiate_leave_game()
+		end
+	elseif self._afk_timer then
+		self._afk_timer = nil
+	end
 end
 
 StateLoading._level_end_view_done = function (self)
@@ -1182,15 +1225,7 @@ StateLoading._set_packages_loaded = function (self)
 end
 
 StateLoading.on_exit = function (self, application_shutdown)
-	if PLATFORM == "win32" then
-		local max_fps = Application.user_setting("max_fps")
-
-		if max_fps == nil or max_fps == 0 then
-			Application.set_time_step_policy("no_throttle")
-		else
-			Application.set_time_step_policy("throttle", max_fps)
-		end
-	end
+	Framerate.set_playing()
 
 	if self._registered_rpcs then
 		self:_unregister_rpcs()
@@ -1280,6 +1315,7 @@ StateLoading.on_exit = function (self, application_shutdown)
 		self._loading_view = nil
 	end
 
+	self:_tear_down_level_end_view_wrappers()
 	self._machine:destroy(application_shutdown)
 
 	if self.parent.loading_context then
@@ -1288,6 +1324,7 @@ StateLoading.on_exit = function (self, application_shutdown)
 		self.parent.loading_context.players = nil
 		self.parent.loading_context.local_player_index = nil
 		self.parent.loading_context.skip_signin = skip_signin
+		self.parent.loading_context.previous_session_error = self._previous_session_error
 
 		if self._restart_network then
 			self.parent.loading_context.restart_network = true
@@ -1304,7 +1341,13 @@ StateLoading.on_exit = function (self, application_shutdown)
 	end
 
 	Managers.music:trigger_event("Stop_loading_screen_music")
-	fassert(application_shutdown or self._popup_id == nil, "StateLoading added a popup right before exiting")
+
+	if PLATFORM == "win32" then
+		fassert(application_shutdown or self._popup_id == nil, "StateLoading added a popup right before exiting")
+	else
+		Managers.popup:cancel_all_popups()
+	end
+
 	Managers.popup:remove_input_manager(application_shutdown)
 	Managers.chat:set_input_manager(nil)
 	Managers.chat:enable_gui(true)
@@ -1441,6 +1484,11 @@ StateLoading._destroy_network = function (self)
 
 	self.parent.loading_context = {}
 
+	if self.offline_invite then
+		self.offline_invite = nil
+		self.parent.loading_context.offline_invite = true
+	end
+
 	self._level_transition_handler:release_level_resources(self:get_current_level_keys())
 
 	self._level_transition_handler = nil
@@ -1480,8 +1528,10 @@ end
 StateLoading._tear_down_level_end_view_wrappers = function (self)
 	local level_end_view_wrappers = self._level_end_view_wrappers
 
-	for i = 1, #level_end_view_wrappers, 1 do
-		level_end_view_wrappers[i]:destroy()
+	if level_end_view_wrappers then
+		for i = 1, #level_end_view_wrappers, 1 do
+			level_end_view_wrappers[i]:destroy()
+		end
 	end
 
 	self._level_end_view_wrappers = nil
@@ -1494,7 +1544,11 @@ end
 StateLoading.setup_network_options = function (self)
 	if not self._network_options then
 		local development_port = script_data.server_port or script_data.settings.server_port or GameSettingsDevelopment.network_port
-		development_port = development_port + LOBBY_PORT_INCREMENT
+
+		if PLATFORM == "win32" then
+			development_port = development_port + LOBBY_PORT_INCREMENT
+		end
+
 		local lobby_port = (LEVEL_EDITOR_TEST and GameSettingsDevelopment.editor_lobby_port) or development_port
 		local network_options = {
 			map = "None",
@@ -1612,7 +1666,12 @@ StateLoading.setup_join_lobby = function (self)
 		self.parent.loading_context.join_lobby_data = nil
 		self._handle_new_lobby_connection = true
 
-		Managers.account:set_current_lobby(self._lobby_client.lobby)
+		if self._lobby_client ~= nil then
+			Managers.account:set_current_lobby(self._lobby_client.lobby)
+		end
+
+		local main_time = Managers.time:time("main")
+		self._lobby_finder_timeout = main_time + StateLoading.join_lobby_timeout
 	end
 end
 

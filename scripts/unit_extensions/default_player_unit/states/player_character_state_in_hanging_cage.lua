@@ -6,6 +6,7 @@ end
 
 PlayerCharacterStateInHangingCage.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
 	CharacterStateHelper.stop_weapon_actions(self.inventory_extension, "in_hanging_cage")
+	CharacterStateHelper.stop_career_abilities(self.career_extension, "in_hanging_cage")
 
 	local cage_unit = params.cage_unit
 	self.cage_unit = cage_unit

@@ -1,11 +1,8 @@
 CameraStateObserver = class(CameraStateObserver, CameraState)
-local NUM_PLAYERS = 4
-local LERP_DISTANCE = 50
 
 CameraStateObserver.init = function (self, camera_state_init_context)
 	CameraState.init(self, camera_state_init_context, "observer")
 
-	self._observer_targets = {}
 	self._follow_node_name = "camera_attach"
 end
 
@@ -29,9 +26,15 @@ CameraStateObserver.update = function (self, unit, input, dt, context, t)
 	local viewport_name = camera_extension.viewport_name
 	local camera_manager = Managers.state.camera
 	local input_source = Managers.input:get_service("Player")
+	local find_next_observer_target = input_source:get("next_observer_target") or not Unit.alive(self._follow_unit)
+	local find_previous_observer_target = input_source:get("previous_observer_target")
 
-	if input_source:get("next_observer_target") or not Unit.alive(self._follow_unit) then
-		self:follow_next_unit()
+	if find_next_observer_target or find_previous_observer_target then
+		if find_next_observer_target then
+			self:follow_next_unit()
+		else
+			self:follow_previous_unit()
+		end
 
 		if not Unit.alive(self._follow_unit) then
 			csm:change_state("idle")
@@ -49,16 +52,16 @@ CameraStateObserver.update = function (self, unit, input, dt, context, t)
 		return
 	end
 
-	local rotation = Unit.local_rotation(unit, 0)
-	local look_sensitivity = (camera_manager:has_viewport(viewport_name) and camera_manager:fov(viewport_name) / 0.785) or 1
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local look_input = (gamepad_active and input_source:get("look_controller_3p")) or input_source:get("look")
 	local look_delta = Vector3(0, 0, 0)
 
 	if look_input then
+		local look_sensitivity = (camera_manager:has_viewport(viewport_name) and camera_manager:fov(viewport_name) / 0.785) or 1
 		look_delta = look_delta + look_input * look_sensitivity
 	end
 
+	local rotation = Unit.local_rotation(unit, 0)
 	local yaw = Quaternion.yaw(rotation) - look_delta.x
 	local pitch = math.clamp(Quaternion.pitch(rotation) + look_delta.y, -MAX_MIN_PITCH, MAX_MIN_PITCH)
 	local yaw_rotation = Quaternion(Vector3.up(), yaw)
@@ -71,7 +74,8 @@ CameraStateObserver.update = function (self, unit, input, dt, context, t)
 	local follow_node = Unit.node(follow_unit, self._follow_node_name)
 	local position = Unit.world_position(follow_unit, follow_node)
 	local previous_position = Unit.world_position(unit, 0)
-	local new_position = Vector3.lerp(previous_position, position, dt * 10)
+	local lerp_t = math.min(dt * 10, 1)
+	local new_position = Vector3.lerp(previous_position, position, lerp_t)
 
 	if self._snap_camera then
 		new_position = position
@@ -80,7 +84,7 @@ CameraStateObserver.update = function (self, unit, input, dt, context, t)
 		Managers.state.event:trigger("camera_teleported")
 	end
 
-	assert(Vector3.is_valid(new_position), "Camera position invalid.")
+	fassert(Vector3.is_valid(new_position), "Camera position invalid.")
 	Unit.set_local_position(unit, 0, new_position)
 end
 
@@ -91,40 +95,63 @@ CameraStateObserver.follow_next_unit = function (self)
 	local follow_unit = nil
 
 	for i = 1, table.size(players), 1 do
-		repeat
-			if follow_unit then
+		if players[observed_player_id] then
+			observed_player_id = next(players, observed_player_id)
+			observed_player_id = not observed_player_id and next(players) and next(players)
+			local player = players[observed_player_id]
+			local player_unit = player.player_unit
+
+			if Unit.alive(player_unit) then
+				follow_unit = player_unit
+
 				break
 			end
-
-			if players[observed_player_id] then
-				observed_player_id = next(players, observed_player_id)
-				observed_player_id = not observed_player_id and next(players) and next(players)
-				local player = players[observed_player_id]
-				local player_unit = player.player_unit
-
-				if Unit.alive(player_unit) then
-					follow_unit = player_unit
-				end
-			end
-		until true
+		end
 	end
 
+	self:_set_follow_unit(observed_player_id, follow_unit)
+end
+
+CameraStateObserver.follow_previous_unit = function (self)
+	local player_manager = Managers.player
+	local players = player_manager:players()
+	local observed_player_id = self._observed_player_id
+	local current_player_id, current_player, previous_player_id, previous_player_unit = nil
+
+	repeat
+		current_player_id, current_player = next(players, current_player_id)
+
+		if current_player_id == observed_player_id and previous_player_id then
+			break
+		elseif current_player_id then
+			local player_unit = current_player.player_unit
+
+			if Unit.alive(player_unit) then
+				previous_player_id = current_player_id
+				previous_player_unit = player_unit
+			end
+		end
+	until current_player_id == nil
+
+	self:_set_follow_unit(previous_player_id, previous_player_unit)
+end
+
+CameraStateObserver._set_follow_unit = function (self, observed_player_id, follow_unit)
 	local snap_camera = nil
 
 	if follow_unit then
 		local unit = self.unit
 		local camera_extension = self.camera_extension
 		local viewport_name = camera_extension.viewport_name
-		local camera_manager = Managers.state.camera
 		local root_look_dir = Vector3.normalize(Vector3.flat(Quaternion.forward(Unit.local_rotation(follow_unit, 0))))
 		local yaw = math.atan2(root_look_dir.y, root_look_dir.x)
+		local camera_manager = Managers.state.camera
 
 		camera_manager:set_pitch_yaw(viewport_name, -0.6, yaw)
 		Unit.set_data(unit, "camera", "settings_node", "observer")
 
-		local current_position = Unit.world_position(follow_unit, 0)
-		local follow_node = Unit.node(follow_unit, self._follow_node_name)
-		local follow_unit_position = Unit.world_position(unit, 0)
+		local current_position = Unit.world_position(unit, 0)
+		local follow_unit_position = Unit.world_position(follow_unit, 0)
 		local distance = Vector3.distance(current_position, follow_unit_position)
 
 		if distance > 50 then

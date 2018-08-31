@@ -1,5 +1,6 @@
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_settings_definitions")
 local widget_definitions = definitions.widgets
+local other_options_widget_definitions = definitions.other_options_widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
@@ -42,6 +43,7 @@ end
 
 StartGameWindowSettings.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+	local on_dedicated_server = self._network_lobby:is_dedicated_server()
 	local widgets = {}
 	local widgets_by_name = {}
 
@@ -51,7 +53,17 @@ StartGameWindowSettings.create_ui_elements = function (self, params, offset)
 		widgets_by_name[name] = widget
 	end
 
+	local other_options_widgets = {}
+
+	for name, widget_definition in pairs(other_options_widget_definitions) do
+		local widget = UIWidget.init(widget_definition)
+		widget.content.visible = not on_dedicated_server
+		other_options_widgets[#other_options_widgets + 1] = widget
+		widgets_by_name[name] = widget
+	end
+
 	self._widgets = widgets
+	self._other_options_widgets = other_options_widgets
 	self._widgets_by_name = widgets_by_name
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
@@ -297,7 +309,7 @@ StartGameWindowSettings._handle_input = function (self, dt, t)
 	if self:_is_button_released(widgets_by_name.game_option_2) then
 		parent:set_layout(5)
 	elseif self:_is_button_released(widgets_by_name.game_option_1) then
-		parent:set_layout(6)
+		parent:set_layout(11)
 	end
 
 	local play_pressed = gamepad_active and self._enable_play and input_service:get("refresh_press")
@@ -391,16 +403,18 @@ StartGameWindowSettings._update_difficulty_option = function (self)
 
 		self._difficulty_key = difficulty_key
 
-		self:_set_additional_options_enabled_state(true)
+		if not Managers.account:offline_mode() then
+			self:_set_additional_options_enabled_state(true)
+		end
 
 		local widgets_by_name = self._widgets_by_name
 		self._enable_play = DifficultySettings[difficulty_key] ~= nil
 		widgets_by_name.play_button.content.button_hotspot.disable_button = not self._enable_play
 
 		if self._enable_play then
-			self.parent.parent:set_input_description("play_available")
+			self.parent:set_input_description("play_available")
 		else
-			self.parent.parent:set_input_description(nil)
+			self.parent:set_input_description(nil)
 		end
 	end
 end
@@ -476,7 +490,11 @@ StartGameWindowSettings.draw = function (self, dt)
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
 
-	for _, widget in ipairs(self._widgets) do
+	for name, widget in ipairs(self._widgets) do
+		UIRenderer.draw_widget(ui_renderer, widget)
+	end
+
+	for name, widget in ipairs(self._other_options_widgets) do
 		UIRenderer.draw_widget(ui_renderer, widget)
 	end
 

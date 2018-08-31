@@ -121,12 +121,6 @@ ActionUtils.get_armor_power_modifier = function (power_type, damage_profile, tar
 	return armor_power_modifier
 end
 
-local POWER_LEVEL_DIFF_RATIO = {
-	impact = 2,
-	attack = 3.5,
-	cleave = 3.5
-}
-
 ActionUtils.scale_power_levels = function (power_level, power_type, attacker_unit, difficulty_level)
 	local actual_power_level = power_level
 
@@ -195,35 +189,32 @@ ActionUtils.get_power_level_for_target = function (original_power_level, damage_
 	local attack_armor_power_modifer = 1
 	local impact_armor_power_modifer = 1
 	local power_level = original_power_level
-	local is_valid_target = breed or dummy_unit_armor
+	local is_enemy_target = breed or dummy_unit_armor
+	local target_unit_armor_attack = target_unit_armor
+	local target_unit_armor_impact = target_unit_armor
+	local target_unit_primary_armor_attack = target_unit_primary_armor
+	local target_unit_primary_armor_impact = target_unit_primary_armor
 
-	if is_valid_target then
-		local target_unit_armor_attack = target_unit_armor
-		local target_unit_armor_impact = target_unit_armor
-		local target_unit_primary_armor_attack = target_unit_primary_armor
-		local target_unit_primary_armor_impact = target_unit_primary_armor
+	if armor_type_override then
+		target_unit_armor_attack = armor_type_override
+		target_unit_armor_impact = armor_type_override
+		target_unit_primary_armor_attack = armor_type_override
+		target_unit_primary_armor_impact = armor_type_override
+	end
 
-		if armor_type_override then
-			target_unit_armor_attack = armor_type_override
-			target_unit_armor_impact = armor_type_override
-			target_unit_primary_armor_attack = armor_type_override
-			target_unit_primary_armor_impact = armor_type_override
-		end
+	attack_armor_power_modifer = ActionUtils.get_armor_power_modifier("attack", damage_profile, target_settings, target_unit_armor_attack, target_unit_primary_armor_attack, critical_strike_settings, dropoff_scalar)
+	impact_armor_power_modifer = ActionUtils.get_armor_power_modifier("impact", damage_profile, target_settings, target_unit_armor_impact, target_unit_primary_armor_impact, critical_strike_settings, dropoff_scalar)
+	local lord_armor = breed and breed.lord_armor
 
-		attack_armor_power_modifer = ActionUtils.get_armor_power_modifier("attack", damage_profile, target_settings, target_unit_armor_attack, target_unit_primary_armor_attack, critical_strike_settings, dropoff_scalar)
-		impact_armor_power_modifer = ActionUtils.get_armor_power_modifier("impact", damage_profile, target_settings, target_unit_armor_impact, target_unit_primary_armor_impact, critical_strike_settings, dropoff_scalar)
-		local lord_armor = breed and breed.lord_armor
-
-		if lord_armor and target_unit_primary_armor_attack == 6 and attack_armor_power_modifer == 0 then
-			local new_armor_power_modifer = ActionUtils.get_armor_power_modifier("attack", damage_profile, target_settings, target_unit_armor_attack, nil, critical_strike_settings, dropoff_scalar)
-			attack_armor_power_modifer = attack_armor_power_modifer + new_armor_power_modifer * lord_armor
-		end
+	if lord_armor and target_unit_primary_armor_attack == 6 and attack_armor_power_modifer == 0 then
+		local new_armor_power_modifer = ActionUtils.get_armor_power_modifier("attack", damage_profile, target_settings, target_unit_armor_attack, nil, critical_strike_settings, dropoff_scalar)
+		attack_armor_power_modifer = attack_armor_power_modifer + new_armor_power_modifer * lord_armor
 	end
 
 	local attack_power = ActionUtils.get_power_level("attack", power_level, damage_profile, target_settings, critical_strike_settings, dropoff_scalar, attacker_unit, difficulty_level)
 	local impact_power = ActionUtils.get_power_level("impact", power_level, damage_profile, target_settings, critical_strike_settings, dropoff_scalar, attacker_unit, difficulty_level)
 
-	if is_valid_target then
+	if is_enemy_target then
 		attack_power = ActionUtils.apply_buffs_to_power_level_on_hit(attacker_unit, attack_power, breed, damage_source, dummy_unit_armor)
 		impact_power = ActionUtils.apply_buffs_to_power_level_on_hit(attacker_unit, impact_power, breed, damage_source, dummy_unit_armor)
 	end

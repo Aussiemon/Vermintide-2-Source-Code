@@ -71,7 +71,7 @@ AttachmentUtils.link = function (world, source, target, node_linking)
 	end
 end
 
-AttachmentUtils.hot_join_sync = function (sender, unit, slots)
+AttachmentUtils.hot_join_sync = function (sender, unit, slots, synced_buffs)
 	local unit_go_id = Managers.state.unit_storage:go_id(unit)
 
 	for slot_name, slot_data in pairs(slots) do
@@ -86,8 +86,71 @@ AttachmentUtils.hot_join_sync = function (sender, unit, slots)
 			local attachment_id = NetworkLookup.item_names[slot_data.name]
 
 			RPC.rpc_create_attachment(sender, unit_go_id, slot_id, attachment_id)
+
+			local slot_synced_buffs = synced_buffs[slot_name]
+
+			if slot_synced_buffs then
+				local params = AttachmentUtils.get_syncable_buff_params(slot_synced_buffs)
+
+				RPC.rpc_add_attachment_buffs(sender, unit_go_id, slot_id, unpack(params))
+			end
 		until true
 	end
+end
+
+AttachmentUtils.get_syncable_buff_params = function (synced_buffs)
+	local buff_name_1, buff_variable_data_1, buff_data_type_1, buff_value_1, buff_name_2, buff_variable_data_2, buff_data_type_2, buff_value_2, buff_name_3, buff_variable_data_3, buff_data_type_3, buff_value_3, buff_name_4, buff_variable_data_4, buff_data_type_4, buff_value_4 = nil
+	buff_name_1, buff_variable_data_1 = next(synced_buffs)
+
+	if buff_name_1 then
+		buff_data_type_1, buff_value_1 = next(buff_variable_data_1)
+		buff_name_2, buff_variable_data_2 = next(synced_buffs, buff_name_1)
+
+		if buff_name_2 then
+			buff_data_type_2, buff_value_2 = next(buff_variable_data_2)
+			buff_name_3, buff_variable_data_3 = next(synced_buffs, buff_name_2)
+
+			if buff_name_3 then
+				buff_data_type_3, buff_value_3 = next(buff_variable_data_3)
+				buff_name_4, buff_variable_data_4 = next(synced_buffs, buff_name_3)
+
+				if buff_name_4 then
+					buff_data_type_4, buff_value_4 = next(buff_variable_data_4)
+				end
+			end
+		end
+	end
+
+	local default_buff_id = NetworkLookup.buff_templates["n/a"]
+	local buff_1_id = (buff_name_1 and NetworkLookup.buff_templates[buff_name_1]) or default_buff_id
+	local buff_2_id = (buff_name_2 and NetworkLookup.buff_templates[buff_name_2]) or default_buff_id
+	local buff_3_id = (buff_name_3 and NetworkLookup.buff_templates[buff_name_3]) or default_buff_id
+	local buff_4_id = (buff_name_4 and NetworkLookup.buff_templates[buff_name_4]) or default_buff_id
+	local default_buff_data_type_id = NetworkLookup.buff_data_types["n/a"]
+	local buff_data_type_1_id = (buff_name_1 and NetworkLookup.buff_data_types[buff_data_type_1]) or default_buff_data_type_id
+	local buff_data_type_2_id = (buff_name_2 and NetworkLookup.buff_data_types[buff_data_type_2]) or default_buff_data_type_id
+	local buff_data_type_3_id = (buff_name_3 and NetworkLookup.buff_data_types[buff_data_type_3]) or default_buff_data_type_id
+	local buff_data_type_4_id = (buff_name_4 and NetworkLookup.buff_data_types[buff_data_type_4]) or default_buff_data_type_id
+	buff_value_1 = buff_value_1 or 1
+	buff_value_2 = buff_value_2 or 1
+	buff_value_3 = buff_value_3 or 1
+	buff_value_4 = buff_value_4 or 1
+	local params = {
+		buff_1_id,
+		buff_data_type_1_id,
+		buff_value_1,
+		buff_2_id,
+		buff_data_type_2_id,
+		buff_value_2,
+		buff_3_id,
+		buff_data_type_3_id,
+		buff_value_3,
+		buff_4_id,
+		buff_data_type_4_id,
+		buff_value_4
+	}
+
+	return params
 end
 
 return

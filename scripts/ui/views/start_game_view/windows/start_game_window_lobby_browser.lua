@@ -28,18 +28,6 @@ local network_options = {
 	lobby_port = GameSettingsDevelopment.network_port,
 	max_members = MAX_NUMBER_OF_PLAYERS
 }
-
-local function lobby_status_text(lobby_data)
-	local is_private = lobby_data.matchmaking == "false"
-	local is_full = lobby_data.num_players == MatchmakingSettings.MAX_NUMBER_OF_PLAYERS
-	local is_in_inn = lobby_data.level_key == "inn_level"
-	local is_broken = lobby_data.is_broken
-	local status = (is_broken and "lb_broken") or (is_private and "lb_private") or (is_full and "lb_full") or (is_in_inn and "lb_in_inn") or "lb_started"
-	local status_text = (status and Localize(status)) or ""
-
-	return status_text
-end
-
 local fake_input_service = {
 	get = function ()
 		return
@@ -90,11 +78,16 @@ StartGameWindowLobbyBrowser.on_enter = function (self, params, offset)
 	self._current_lobby_type = "lobbies"
 	local input_service = self.parent:window_input_service()
 	local input_service_name = input_service.name
+	local lobby_list_offset = {
+		0,
+		0,
+		0
+	}
 	local settings = {
 		use_top_renderer = false,
 		num_list_items = 15,
 		input_service_name = input_service_name,
-		offset = offset
+		offset = lobby_list_offset
 	}
 	self.lobby_list = LobbyItemsList:new(ingame_ui_context, settings)
 	self.lobby_list_update_timer = MatchmakingSettings.TIME_BETWEEN_EACH_SEARCH
@@ -408,7 +401,7 @@ StartGameWindowLobbyBrowser._setup_lobby_info_box = function (self, lobby_data)
 
 	info_box_widgets_lobbies.info_frame_players_text.content.text = num_players_text
 	info_box_widgets_servers.info_frame_players_text.content.text = num_players_text
-	local status_text = lobby_status_text(lobby_data)
+	local status_text = LobbyItemsList.lobby_status_text(lobby_data)
 	info_box_widgets_lobbies.info_frame_status_text.content.text = status_text
 	info_box_widgets_servers.info_frame_status_text.content.text = status_text
 	local is_dedicated_server = lobby_data.server_info ~= nil
@@ -847,11 +840,15 @@ StartGameWindowLobbyBrowser._create_filter_requirements = function (self)
 	local statistics_db = player_manager:statistics_db()
 	local player_stats_id = player:stats_id()
 	local requirements = {
-		free_slots = free_slots,
-		distance_filter = platform ~= "ps4" and distance_filter,
 		filters = {},
 		near_filters = {}
 	}
+	local current_lobby_type = self._current_lobby_type
+
+	if current_lobby_type == "lobbies" then
+		requirements.free_slots = free_slots
+		requirements.distance_filter = platform ~= "ps4" and distance_filter
+	end
 
 	if platform == "ps4" then
 		local user_region = Managers.account:region()
@@ -897,7 +894,7 @@ StartGameWindowLobbyBrowser._create_filter_requirements = function (self)
 		}
 	end
 
-	if matchmaking then
+	if matchmaking and current_lobby_type == "lobbies" then
 		requirements.filters.matchmaking = {
 			value = "false",
 			comparison = LobbyComparison.NOT_EQUAL
@@ -931,7 +928,7 @@ StartGameWindowLobbyBrowser._search = function (self)
 				full = "valuenotused",
 				gamedir = "vermintide2"
 			},
-			matchmaking_filters = {}
+			matchmaking_filters = requirements.filters
 		}
 		local skip_verify_lobby_data = true
 

@@ -478,15 +478,13 @@ SurroundingAwareSystem.update_events = function (self, context, t)
 					local dialogue_input = ScriptUnit.extension_input(target, "dialogue_system")
 					local event_data = FrameTable.alloc_table()
 					local distance = 0
-					local height_distance = 0
 
 					if unit then
 						local target_world_pos = POSITION_LOOKUP[target] or Unit.local_position(target, 0)
-						slot25 = Vector3.distance(source_wp, target_world_pos)
+						slot24 = Vector3.distance(source_wp, target_world_pos)
 					end
 
 					event_data.distance = distance
-					event_data.height_distance = height_distance
 
 					for k = 1, num_args / 2, 1 do
 						local array_data_index = i + 3 + (k - 1) * 2 + 1

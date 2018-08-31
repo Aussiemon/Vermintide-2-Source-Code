@@ -244,9 +244,9 @@ StatusSystem.rpc_set_blocking = function (self, sender, game_object_id, blocking
 	end
 end
 
-StatusSystem.rpc_player_blocked_attack = function (self, sender, game_object_id, fatigue_type_id, attacking_unit_id, fatigue_point_costs_multiplier, improved_block, attack_direction)
+StatusSystem.rpc_player_blocked_attack = function (self, sender, game_object_id, fatigue_type_id, attacking_unit_id, fatigue_point_costs_multiplier, improved_block, attack_direction, attacker_is_level_unit)
 	local unit = self.unit_storage:unit(game_object_id)
-	local attacking_unit = self.unit_storage:unit(attacking_unit_id)
+	local attacking_unit = Managers.state.network:game_object_or_level_unit(attacking_unit_id, attacker_is_level_unit)
 
 	if not unit or not Unit.alive(unit) then
 		return

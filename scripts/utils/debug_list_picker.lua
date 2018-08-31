@@ -19,7 +19,7 @@ DebugListPicker.init = function (self, list, save_data_name, max_cols_seen)
 	self:setup(save_data_name)
 
 	self.column = self.pick_list[self.column_index]
-	self.item = self.column[self.row_index]
+	self.item = self.column[self.row_index] or "?"
 	self.max_cols_seen = max_cols_seen or 3
 end
 
@@ -91,6 +91,25 @@ end
 
 DebugListPicker.current_item_name = function (self)
 	return self.item[1]
+end
+
+DebugListPicker.set_current_item = function (self, wanted_item)
+	for col_index = 1, #self.pick_list, 1 do
+		local column = self.pick_list[col_index]
+
+		for row_index = 1, #column, 1 do
+			local item_name = column[row_index][1]
+
+			if item_name == wanted_item then
+				self.column_index = col_index
+				self.row_index = row_index
+				self.column = self.pick_list[col_index]
+				self.item = self.column[self.row_index]
+
+				return
+			end
+		end
+	end
 end
 
 DebugListPicker.update = function (self, t, dt)

@@ -23,6 +23,96 @@ local scenegraph_definition = {
 			0
 		}
 	},
+	screen = {
+		scale = "fit",
+		size = {
+			1920,
+			1080
+		},
+		position = {
+			0,
+			0,
+			0
+		}
+	},
+	info_icon = {
+		vertical_alignment = "top",
+		parent = "screen",
+		horizontal_alignment = "left",
+		position = {
+			100,
+			-350,
+			30
+		},
+		size = {
+			87,
+			87
+		}
+	},
+	info_icon_text = {
+		vertical_alignment = "top",
+		parent = "info_icon",
+		horizontal_alignment = "left",
+		position = {
+			95,
+			-15,
+			0
+		},
+		size = {
+			400,
+			100
+		}
+	},
+	sidebar_fade_bg = {
+		scale = "fit_height",
+		size = {
+			256,
+			256
+		},
+		position = {
+			-256,
+			0,
+			3
+		}
+	},
+	sidebar = {
+		scale = "fit_height",
+		size = {
+			544,
+			1080
+		},
+		position = {
+			-800,
+			0,
+			3
+		}
+	},
+	sidebar_mask = {
+		scale = "fit_height",
+		size = {
+			1920,
+			1080
+		},
+		position = {
+			0,
+			1080,
+			3
+		}
+	},
+	engage_prompt = {
+		vertical_alignment = "center",
+		parent = "dead_space_filler",
+		horizontal_alignment = "center",
+		size = {
+			1920,
+			1080
+		},
+		position = {
+			0,
+			0,
+			10
+		}
+	},
 	background = {
 		vertical_alignment = "center",
 		parent = "root",
@@ -38,7 +128,7 @@ local scenegraph_definition = {
 		}
 	},
 	information_text = {
-		vertical_alignment = "bottom",
+		vertical_alignment = "center",
 		parent = "background",
 		horizontal_alignment = "center",
 		size = {
@@ -47,7 +137,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			50,
+			-375,
 			2
 		}
 	},
@@ -61,6 +151,20 @@ local scenegraph_definition = {
 			0,
 			0,
 			700
+		}
+	},
+	start_screen_video = {
+		vertical_alignment = "center",
+		parent = "root",
+		horizontal_alignment = "center",
+		size = {
+			1920,
+			1080
+		},
+		position = {
+			0,
+			0,
+			2
 		}
 	},
 	loop_video = {
@@ -78,14 +182,14 @@ local scenegraph_definition = {
 	logo = {
 		vertical_alignment = "top",
 		parent = "background",
-		horizontal_alignment = "center",
+		horizontal_alignment = "left",
 		size = {
-			1240,
-			698
+			682,
+			383.90000000000003
 		},
 		position = {
 			0,
-			100,
+			20,
 			0
 		}
 	},
@@ -99,8 +203,22 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			55,
+			10,
 			0
+		}
+	},
+	game_type_text = {
+		vertical_alignment = "bottom",
+		parent = "change_profile_input_icon",
+		horizontal_alignment = "left",
+		size = {
+			1200,
+			50
+		},
+		position = {
+			0,
+			60,
+			1
 		}
 	},
 	user_gamertag = {
@@ -145,6 +263,34 @@ local scenegraph_definition = {
 			1
 		}
 	},
+	update_offline_data_input_icon = {
+		vertical_alignment = "bottom",
+		parent = "background",
+		horizontal_alignment = "left",
+		size = {
+			26,
+			26
+		},
+		position = {
+			250,
+			15,
+			30
+		}
+	},
+	update_offline_data_input_text = {
+		vertical_alignment = "center",
+		parent = "update_offline_data_input_icon",
+		horizontal_alignment = "left",
+		size = {
+			1200,
+			1
+		},
+		position = {
+			30,
+			-5,
+			1
+		}
+	},
 	playgo_status = {
 		vertical_alignment = "top",
 		parent = "background",
@@ -162,14 +308,14 @@ local scenegraph_definition = {
 	menu_anchor_point = {
 		vertical_alignment = "center",
 		parent = "background",
-		horizontal_alignment = "center",
+		horizontal_alignment = "left",
 		size = {
 			0,
 			0
 		},
 		position = {
-			0,
-			-250.5,
+			340,
+			-100,
 			4
 		}
 	},
@@ -241,62 +387,6 @@ local scenegraph_definition = {
 			-4,
 			-2,
 			1
-		}
-	},
-	fog_parent_back_1 = {
-		vertical_alignment = "bottom",
-		parent = "background",
-		horizontal_alignment = "left",
-		size = {
-			1920,
-			500
-		},
-		position = {
-			0,
-			50,
-			1
-		}
-	},
-	fog_parent_back_2 = {
-		vertical_alignment = "bottom",
-		parent = "background",
-		horizontal_alignment = "left",
-		size = {
-			1920,
-			500
-		},
-		position = {
-			-1920,
-			0,
-			1
-		}
-	},
-	fog_parent_front_1 = {
-		vertical_alignment = "bottom",
-		parent = "background",
-		horizontal_alignment = "left",
-		size = {
-			1920,
-			300
-		},
-		position = {
-			0,
-			100,
-			2
-		}
-	},
-	fog_parent_front_2 = {
-		vertical_alignment = "bottom",
-		parent = "background",
-		horizontal_alignment = "left",
-		size = {
-			1920,
-			300
-		},
-		position = {
-			-1920,
-			150,
-			2
 		}
 	},
 	input_icon = {
@@ -425,7 +515,35 @@ local scenegraph_definition = {
 			60
 		}
 	},
-	start_game_button = {
+	online_button = {
+		vertical_alignment = "center",
+		parent = "menu_anchor_point",
+		horizontal_alignment = "center",
+		position = {
+			0,
+			-100,
+			10
+		},
+		size = {
+			300,
+			60
+		}
+	},
+	offline_button = {
+		vertical_alignment = "center",
+		parent = "menu_anchor_point",
+		horizontal_alignment = "center",
+		position = {
+			0,
+			-150,
+			10
+		},
+		size = {
+			300,
+			60
+		}
+	},
+	menu_option_1 = {
 		vertical_alignment = "center",
 		parent = "menu_anchor_point",
 		horizontal_alignment = "center",
@@ -435,49 +553,63 @@ local scenegraph_definition = {
 			10
 		},
 		size = {
-			1000,
+			300,
 			60
 		}
 	},
-	tutorial = {
+	menu_option_2 = {
 		vertical_alignment = "center",
 		parent = "menu_anchor_point",
 		horizontal_alignment = "center",
 		position = {
 			0,
-			30,
+			40,
 			10
 		},
 		size = {
-			1000,
+			300,
 			60
 		}
 	},
-	options = {
+	menu_option_3 = {
 		vertical_alignment = "center",
 		parent = "menu_anchor_point",
 		horizontal_alignment = "center",
 		position = {
 			0,
-			-30,
+			-10,
 			10
 		},
 		size = {
-			1000,
+			300,
 			60
 		}
 	},
-	credits = {
+	menu_option_4 = {
 		vertical_alignment = "center",
 		parent = "menu_anchor_point",
 		horizontal_alignment = "center",
 		position = {
 			0,
-			-90,
+			-60,
 			10
 		},
 		size = {
-			1000,
+			300,
+			60
+		}
+	},
+	menu_option_5 = {
+		vertical_alignment = "center",
+		parent = "menu_anchor_point",
+		horizontal_alignment = "center",
+		position = {
+			0,
+			-110,
+			10
+		},
+		size = {
+			300,
 			60
 		}
 	},
@@ -539,6 +671,458 @@ local scenegraph_definition = {
 	}
 }
 
+local function create_engage_prompt(ui_renderer)
+	local font_type = "hell_shark"
+	local font_size = 52
+	local button_size = {
+		50,
+		50
+	}
+	local press_str = Localize("interaction_prefix_press")
+	local to_start_str = Localize("to_start_game")
+	local spacing = 10
+	local button_alignment = 7.5
+	local font, scaled_font_size = UIFontByResolution({
+		font_type = font_type,
+		font_size = font_size
+	})
+	local press_text_width = UIRenderer.text_size(ui_renderer, press_str, font[1], scaled_font_size)
+	local to_start_width = UIRenderer.text_size(ui_renderer, to_start_str, font[1], scaled_font_size)
+	local total_size = press_text_width + spacing + button_size[1] + spacing + to_start_width + button_alignment
+	local press_offset_x = -total_size * 0.5 + press_text_width * 0.5
+	local button_offset = -total_size * 0.5 + button_size[1] * 0.5 + press_text_width + spacing + button_alignment
+	local to_start_offset = button_offset + button_size[1] * 0.5 + spacing + to_start_width * 0.5
+
+	return {
+		scenegraph_id = "engage_prompt",
+		element = {
+			passes = {
+				{
+					style_id = "press",
+					pass_type = "text",
+					text_id = "press_str",
+					content_change_function = function (content, style)
+						local t = Managers.time:time("main")
+						local alpha = 192 + math.sin(t * 5) * 63
+						style.text_color[2] = alpha
+						style.text_color[3] = alpha
+						style.text_color[4] = alpha
+					end
+				},
+				{
+					style_id = "to_start",
+					pass_type = "text",
+					text_id = "to_start_str",
+					content_change_function = function (content, style)
+						local t = Managers.time:time("main")
+						local alpha = 192 + math.sin(t * 5) * 63
+						style.text_color[2] = alpha
+						style.text_color[3] = alpha
+						style.text_color[4] = alpha
+					end
+				},
+				{
+					style_id = "button",
+					texture_id = "button_id",
+					pass_type = "texture",
+					content_change_function = function (content, style)
+						local t = Managers.time:time("main")
+						local alpha = 192 + math.sin(t * 5) * 63
+						style.color[2] = alpha
+						style.color[3] = alpha
+						style.color[4] = alpha
+					end
+				}
+			}
+		},
+		content = {
+			press_str = press_str,
+			button_id = (PLATFORM == "ps4" and "ps4_button_icon_cross_large") or "xbone_button_icon_a_large",
+			to_start_str = to_start_str
+		},
+		style = {
+			press = {
+				vertical_alignment = "center",
+				localize = false,
+				horizontal_alignment = "center",
+				word_wrap = false,
+				font_size = font_size,
+				font_type = font_type,
+				text_color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					press_offset_x,
+					0,
+					0
+				}
+			},
+			to_start = {
+				vertical_alignment = "center",
+				localize = false,
+				horizontal_alignment = "center",
+				word_wrap = false,
+				font_size = font_size,
+				font_type = font_type,
+				text_color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					to_start_offset,
+					0,
+					0
+				}
+			},
+			button = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = button_size,
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					button_offset,
+					0,
+					0
+				}
+			},
+			rect_press = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					press_text_width,
+					30
+				},
+				color = {
+					255,
+					255,
+					0,
+					0
+				},
+				offset = {
+					press_offset_x,
+					50,
+					0
+				}
+			},
+			rect_button = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					button_size[1],
+					30
+				},
+				color = {
+					255,
+					0,
+					255,
+					0
+				},
+				offset = {
+					button_offset,
+					50,
+					0
+				}
+			},
+			rect_to_start = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					to_start_width,
+					30
+				},
+				color = {
+					255,
+					0,
+					0,
+					255
+				},
+				offset = {
+					to_start_offset,
+					50,
+					0
+				}
+			},
+			rect_total = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					total_size,
+					30
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					100,
+					0
+				}
+			}
+		},
+		offset = {
+			0,
+			-375,
+			0
+		}
+	}
+end
+
+UIWidgets.create_game_type_text = function (text, scenegraph_id, size, color)
+	local text_color = color or {
+		255,
+		255,
+		255,
+		255
+	}
+
+	return {
+		element = {
+			passes = {
+				{
+					style_id = "text",
+					pass_type = "text",
+					text_id = "text"
+				},
+				{
+					style_id = "status_text",
+					pass_type = "text",
+					text_id = "status_text",
+					content_check_function = function (content, style)
+						return content.text ~= ""
+					end
+				}
+			}
+		},
+		content = {
+			text = text,
+			status_text = Localize("lb_status") .. ":",
+			color = text_color
+		},
+		style = {
+			text = {
+				localize = false,
+				word_wrap = true,
+				font_type = "hell_shark",
+				font_size = size,
+				text_color = text_color,
+				offset = {
+					0,
+					0,
+					2
+				}
+			},
+			status_text = {
+				localize = false,
+				word_wrap = true,
+				font_type = "hell_shark",
+				font_size = size * 0.4,
+				text_color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					size,
+					2
+				}
+			}
+		},
+		offset = {
+			0,
+			0,
+			0
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
+
+local function create_info_text(text, scenegraph_id, font_size)
+	return {
+		element = {
+			passes = {
+				{
+					style_id = "text",
+					pass_type = "text",
+					text_id = "text"
+				}
+			}
+		},
+		content = {
+			text = text
+		},
+		style = {
+			text = {
+				localize = true,
+				word_wrap = true,
+				pixel_perfect = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				dynamic_font = true,
+				font_type = "hell_shark_header",
+				font_size = font_size,
+				text_color = Colors.get_table("dark_gray"),
+				offset = {
+					0,
+					0,
+					1
+				}
+			}
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
+
+local function create_menu_button(scenegraph_id, text, font_size, optional_default_color_name, show_icon)
+	return {
+		element = {
+			passes = {
+				{
+					pass_type = "hotspot",
+					content_id = "button_text"
+				},
+				{
+					style_id = "text",
+					pass_type = "text",
+					text_id = "text_field",
+					content_check_function = function (content)
+						return not content.button_text.disable_button and not content.button_text.is_hover and not content.button_text.is_selected
+					end
+				},
+				{
+					style_id = "text_disabled",
+					pass_type = "text",
+					text_id = "text_field",
+					content_check_function = function (content)
+						return content.button_text.disable_button
+					end
+				},
+				{
+					texture_id = "icon_id",
+					style_id = "icon",
+					pass_type = "texture_uv",
+					content_id = "icon_content",
+					content_check_function = function (content)
+						local parent_content = content.parent
+
+						if not parent_content.show_icon or parent_content.disabled then
+							return false
+						end
+
+						if parent_content.selection_callback then
+							local current_index = parent_content.selection_callback()
+
+							return parent_content.index ~= current_index
+						end
+
+						return false
+					end
+				}
+			}
+		},
+		content = {
+			button_text = {},
+			text_field = text,
+			default_font_size = font_size,
+			show_icon = show_icon,
+			icon_content = {
+				icon_id = "info",
+				uvs = {
+					{
+						0,
+						1
+					},
+					{
+						1,
+						0
+					}
+				}
+			}
+		},
+		style = {
+			text = {
+				word_wrap = false,
+				upper_case = true,
+				localize = true,
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				font_type = "hell_shark",
+				font_size = font_size,
+				text_color = Colors.get_color_table_with_alpha(optional_default_color_name or "font_button_normal", 255),
+				offset = {
+					0,
+					0,
+					4
+				}
+			},
+			text_hover = {
+				word_wrap = false,
+				upper_case = true,
+				localize = true,
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				font_type = "hell_shark",
+				font_size = font_size,
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					0,
+					0,
+					4
+				}
+			},
+			text_disabled = {
+				word_wrap = false,
+				upper_case = true,
+				localize = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "center",
+				font_type = "hell_shark",
+				font_size = font_size,
+				text_color = Colors.get_color_table_with_alpha("gray", 50),
+				offset = {
+					0,
+					0,
+					4
+				}
+			},
+			icon = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					font_size * 1.5,
+					font_size * 1.5
+				},
+				offset = {
+					0,
+					2,
+					4
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				}
+			}
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
+
 if PLATFORM == "ps4" then
 	scenegraph_definition.user_gamertag.position[1] = 61
 	scenegraph_definition.user_gamertag.position[2] = 45
@@ -552,31 +1136,46 @@ local attract_mode_video = {
 	material_name = "vermintide_2",
 	sound_stop = "Stop_v2_teaser_demo"
 }
+local engage_screen_video = {
+	video_name = "video/start_1",
+	scenegraph_id = "start_screen_video",
+	material_name = "start_1",
+	loop = true
+}
+local main_menu_video = {
+	loop = true,
+	scenegraph_id = "start_screen_video",
+	video_name = "video/start_2",
+	main_menu = true,
+	material_name = "start_2"
+}
 local background_widget_definitions = {
-	background = UIWidgets.create_simple_texture("start_screen_bg", "background"),
-	fog_front_1 = UIWidgets.create_simple_texture("start_screen_bg_fog_01", "fog_parent_front_1"),
-	fog_front_2 = UIWidgets.create_simple_texture("start_screen_bg_fog_02", "fog_parent_front_2"),
-	fog_front_3 = UIWidgets.create_simple_texture("start_screen_bg_fog_02", "fog_parent_front_1"),
-	fog_front_4 = UIWidgets.create_simple_texture("start_screen_bg_fog_01", "fog_parent_front_2"),
-	fog_back_1 = UIWidgets.create_simple_texture("start_screen_bg_fog_01", "fog_parent_back_1"),
-	fog_back_2 = UIWidgets.create_simple_texture("start_screen_bg_fog_02", "fog_parent_back_2"),
-	fog_back_3 = UIWidgets.create_simple_texture("start_screen_bg_fog_02", "fog_parent_back_1"),
-	fog_back_4 = UIWidgets.create_simple_texture("start_screen_bg_fog_01", "fog_parent_back_2"),
 	logo = UIWidgets.create_simple_texture("vermintide_logo_title", "logo"),
 	dead_space_filler_widget = UIWidgets.create_simple_rect("dead_space_filler", {
 		255,
 		0,
 		0,
 		0
+	}),
+	sidebar_fill = UIWidgets.create_simple_texture("rect_masked", "sidebar", false, false, {
+		245,
+		0,
+		0,
+		0
+	}),
+	sidebar_fade_bg = UIWidgets.create_tiled_texture("sidebar_fade_bg", "fade_bg", {
+		256,
+		256
+	}, nil, nil, {
+		245,
+		255,
+		255,
+		255
 	})
 }
-local widget_definitions = {
-	frame_top = UIWidgets.create_simple_texture("start_screen_menu_fg_top", "frame_top"),
-	frame_bottom = UIWidgets.create_simple_texture("start_screen_menu_fg_bottom", "frame_bottom"),
-	frame_background = UIWidgets.create_simple_texture("start_screen_menu_bg", "frame_background"),
-	frame_line_glow = UIWidgets.create_simple_texture("start_screen_menu_glow_02", "frame_line_glow"),
-	frame_circle_glow = UIWidgets.create_simple_texture("start_screen_menu_glow_01", "frame_circle_glow"),
-	input_icon = UIWidgets.create_simple_texture("ps4_button_icon_cross_large", "input_icon")
+local info_texts = {
+	"menu_desc_online_mode",
+	"menu_desc_offline_mode"
 }
 local single_widget_definitions = {
 	legal_text = UIWidgets.create_simple_text("n/a", "legal_text", 12, {
@@ -593,649 +1192,110 @@ local single_widget_definitions = {
 	}),
 	start_screen_selection_left = UIWidgets.create_simple_texture("start_screen_selection_left", "selection_glow_left"),
 	start_screen_selection_right = UIWidgets.create_simple_texture("start_screen_selection_right", "selection_glow_right"),
-	lock_center = UIWidgets.create_simple_rotated_texture("start_screen_menu_lock_part_05", 0, {
-		25,
-		25
-	}, "lock_center"),
-	lock_middle_top = UIWidgets.create_simple_rotated_texture("start_screen_menu_lock_part_03", 0, {
-		25,
-		25
-	}, "lock_middle_top"),
-	lock_middle_bottom = UIWidgets.create_simple_rotated_texture("start_screen_menu_lock_part_04", 0, {
-		25,
-		25
-	}, "lock_middle_bottom"),
-	lock_outer_top = UIWidgets.create_simple_rotated_texture("start_screen_menu_lock_part_01", 0, {
-		25,
-		25
-	}, "lock_outer_top"),
-	lock_outer_bottom = UIWidgets.create_simple_rotated_texture("start_screen_menu_lock_part_02", 0, {
-		25,
-		25
-	}, "lock_outer_bottom"),
+	game_type_text = UIWidgets.create_game_type_text("", "game_type_text", 46, Colors.get_color_table_with_alpha("font_title", 255)),
 	user_gamertag = UIWidgets.create_simple_rect_text("user_gamertag", "Gamertag not assigned"),
 	playgo_status = UIWidgets.create_simple_rect_text("playgo_status", "n/a"),
 	change_profile_input_icon = UIWidgets.create_simple_texture("xbone_button_icon_x", "change_profile_input_icon"),
 	change_profile_input_text = UIWidgets.create_simple_rect_text("change_profile_input_text", Localize("xb1_switch_profile"), 20),
-	support_info = UIWidgets.create_simple_text("", "support_info", 20, Colors.get_color_table_with_alpha("white", 150))
-}
-local animations = {
-	scale_and_position_in = {
-		{
-			name = "scale_and_position_in",
-			start_progress = 0,
-			end_progress = 0.5,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local widget = widgets[1]
-				local size = widget.style.texture_style.size
-				local offset = widget.style.texture_style.offset
-				local text_color = widget.style.texts_style.text_color
-				local original_size = params.title_content.texture_size
-				size[1] = math.lerp(original_size[1], original_size[1] * 0.25, math.smoothstep(local_progress, 0, 1))
-				size[2] = math.lerp(original_size[2], original_size[2] * 0.25, math.smoothstep(local_progress, 0, 1))
-				offset[1] = math.lerp(title_content.texture_offset[1], -150, math.smoothstep(local_progress, 0, 1))
-				offset[2] = math.lerp(title_content.texture_offset[2], 550, math.smoothstep(local_progress, 0, 1))
-				text_color[1] = math.lerp(Colors.color_definitions.white[1], 0, math.smoothstep(local_progress, 0, 1))
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	},
-	sidebar_fade_in = {
-		{
-			name = "sidebar_fade_in",
-			start_progress = 0,
-			end_progress = 0.5,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local widget = widgets[1]
-				local color = widget.style.sidebar.color
-				color[1] = math.lerp(0, 255, math.smoothstep(local_progress, 0, 1))
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	},
-	scale_and_position_out = {
-		{
-			name = "scale_and_position_out",
-			start_progress = 0,
-			end_progress = 0.5,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local widget = widgets[1]
-				local size = widget.style.texture_style.size
-				local offset = widget.style.texture_style.offset
-				local text_color = widget.style.texts_style.text_color
-				local original_size = params.title_content.texture_size
-				size[1] = math.lerp(original_size[1], original_size[1] * 0.25, math.smoothstep(local_progress, 1, 0))
-				size[2] = math.lerp(original_size[2], original_size[2] * 0.25, math.smoothstep(local_progress, 1, 0))
-				offset[1] = math.lerp(title_content.texture_offset[1], -150, math.smoothstep(local_progress, 1, 0))
-				offset[2] = math.lerp(title_content.texture_offset[2], 600, math.smoothstep(local_progress, 1, 0))
-				text_color[1] = math.lerp(Colors.color_definitions.white[1], 0, math.smoothstep(local_progress, 1, 0))
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	},
-	sidebar_fade_out = {
-		{
-			name = "sidebar_fade_out",
-			start_progress = 0,
-			end_progress = 0.5,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local widget = widgets[1]
-				local color = widget.style.sidebar.color
-				color[1] = math.lerp(0, 255, math.smoothstep(local_progress, 1, 0))
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	},
-	input_icon_fade_out = {
-		{
-			name = "input_icon_out",
-			start_progress = 0,
-			end_progress = 0.1,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local anim_progress = math.smoothstep(local_progress, 1, 0)
-				widgets.input_icon.style.texture_id.color[1] = anim_progress * 255
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "circle_glow_in",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local anim_progress = math.smoothstep(local_progress, 1, 0)
-				local circle_glow_color = widgets.frame_circle_glow.style.texture_id.color
-				local alpha = anim_progress * 255
-
-				if circle_glow_color[1] < alpha then
-					circle_glow_color[1] = alpha
-				end
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "line_glow_in",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local ease_progress = math.catmullrom(local_progress, -5, 1, 1, -5)
-				local anim_progress = math.easeOutCubic(local_progress)
-				widgets.frame_line_glow.style.texture_id.color[1] = anim_progress * 255
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	},
-	frame_open = {
-		{
-			name = "bounce",
-			start_progress = 0,
-			end_progress = 0.2,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				widgets.input_icon.style.texture_id.color[1] = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local input_icon_size = ui_scenegraph.input_icon.size
-				local frame_top_size = ui_scenegraph.frame_top.size
-				local frame_bottom_size = ui_scenegraph.frame_bottom.size
-				local frame_circle_glow_size = ui_scenegraph.frame_circle_glow.size
-				local default_input_icon_size = scenegraph_definition.input_icon.size
-				local default_frame_top_size = scenegraph_definition.frame_top.size
-				local default_frame_bottom_size = scenegraph_definition.frame_bottom.size
-				local default_frame_circle_glow_size = scenegraph_definition.frame_circle_glow.size
-				local anim_progress = math.catmullrom(math.easeOutCubic(local_progress), 2, 1, 1, 1.5)
-				frame_top_size[1] = default_frame_top_size[1] * anim_progress
-				frame_top_size[2] = default_frame_top_size[2] * anim_progress
-				frame_bottom_size[1] = default_frame_bottom_size[1] * anim_progress
-				frame_bottom_size[2] = default_frame_bottom_size[2] * anim_progress
-				frame_circle_glow_size[1] = default_frame_circle_glow_size[1] * anim_progress
-				frame_circle_glow_size[2] = default_frame_circle_glow_size[2] * anim_progress
-				input_icon_size[1] = default_input_icon_size[1] * anim_progress
-				input_icon_size[2] = default_input_icon_size[2] * anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "lock_bounce",
-			start_progress = 0,
-			end_progress = 0.2,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				widgets.input_icon.style.texture_id.color[1] = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local anim_progress = math.catmullrom(math.easeOutCubic(local_progress), 2, 1, 1, 1.5)
-				local lock_center_size = ui_scenegraph.lock_center.size
-				local lock_outer_bottom_size = ui_scenegraph.lock_outer_bottom.size
-				local lock_middle_bottom_size = ui_scenegraph.lock_middle_bottom.size
-				local lock_middle_top_size = ui_scenegraph.lock_middle_top.size
-				local lock_outer_top_size = ui_scenegraph.lock_outer_top.size
-				local default_lock_center_size = scenegraph_definition.lock_center.size
-				local default_lock_outer_bottom_size = scenegraph_definition.lock_outer_bottom.size
-				local default_lock_middle_bottom_size = scenegraph_definition.lock_middle_bottom.size
-				local default_lock_middle_top_size = scenegraph_definition.lock_middle_top.size
-				local default_lock_outer_top_size = scenegraph_definition.lock_outer_top.size
-				lock_center_size[1] = default_lock_center_size[1] * anim_progress
-				lock_center_size[2] = default_lock_center_size[2] * anim_progress
-				lock_outer_bottom_size[1] = default_lock_outer_bottom_size[1] * anim_progress
-				lock_outer_bottom_size[2] = default_lock_outer_bottom_size[2] * anim_progress
-				lock_middle_bottom_size[1] = default_lock_middle_bottom_size[1] * anim_progress
-				lock_middle_bottom_size[2] = default_lock_middle_bottom_size[2] * anim_progress
-				lock_middle_top_size[1] = default_lock_middle_top_size[1] * anim_progress
-				lock_middle_top_size[2] = default_lock_middle_top_size[2] * anim_progress
-				lock_outer_top_size[1] = default_lock_outer_top_size[1] * anim_progress
-				lock_outer_top_size[2] = default_lock_outer_top_size[2] * anim_progress
-				local lock_outer_top_position = ui_scenegraph.lock_outer_top.local_position
-				local lock_middle_top_position = ui_scenegraph.lock_middle_top.local_position
-				local default_lock_outer_top_position = scenegraph_definition.lock_outer_top.position
-				local default_lock_middle_top_position = scenegraph_definition.lock_middle_top.position
-				lock_outer_top_position[2] = default_lock_outer_top_position[2] * anim_progress
-				lock_middle_top_position[2] = default_lock_middle_top_position[2] * anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "line_glow_out",
-			start_progress = 0,
-			end_progress = 0.15,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local ease_progress = math.catmullrom(local_progress, -5, 1, 1, -5)
-				local anim_progress = math.smoothstep(local_progress, 1, 0)
-				widgets.frame_line_glow.style.texture_id.color[1] = anim_progress * 255
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "circle_glow_out",
-			start_progress = 0,
-			end_progress = 0.15,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local anim_progress = math.smoothstep(local_progress, 1, 0)
-				widgets.frame_circle_glow.style.texture_id.color[1] = anim_progress * 255
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "frame_open",
-			start_progress = 0.3,
-			end_progress = 0.5,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local widget_top = widgets.frame_top
-				local widget_bottom = widgets.frame_bottom
-				local anim_progress = math.ease_out_quad(local_progress)
-				local default_frame_bottom_position = scenegraph_definition.frame_bottom.position
-				ui_scenegraph.frame_top.local_position[2] = 140 * anim_progress
-				ui_scenegraph.frame_bottom.local_position[2] = default_frame_bottom_position[2] + -140 * anim_progress
-				ui_scenegraph.frame_background.size[2] = 280 * anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	},
-	frame_close = {
-		{
-			name = "frame_close",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local widget_top = widgets.frame_top
-				local widget_bottom = widgets.frame_bottom
-				local default_frame_bottom_position = scenegraph_definition.frame_bottom.position
-				local anim_progress = math.smoothstep(local_progress, 1, 0)
-				ui_scenegraph.frame_top.local_position[2] = 140 * anim_progress
-				ui_scenegraph.frame_bottom.local_position[2] = default_frame_bottom_position[2] - 140 * anim_progress
-				ui_scenegraph.frame_background.size[2] = 280 * anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "input_icon_in",
-			start_progress = 0.3,
-			end_progress = 0.45,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local ease_progress = math.catmullrom(local_progress, -5, 1, 1, -5)
-				local anim_progress = math.smoothstep(local_progress, 0, 1)
-				widgets.input_icon.style.texture_id.color[1] = anim_progress * 255
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	},
-	circle_glow_pulse_in = {
-		{
-			name = "circle_glow_pulse_in",
-			start_progress = 0,
-			end_progress = 0.5,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local widget_circle_glow = widgets.frame_circle_glow
-				local anim_progress = math.smoothstep(local_progress, 1, 0)
-				widget_circle_glow.style.texture_id.color[1] = 155 + anim_progress * 100
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	},
-	circle_glow_pulse_out = {
-		{
-			name = "circle_glow_pulse_out",
-			start_progress = 0,
-			end_progress = 0.5,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local widget_circle_glow = widgets.frame_circle_glow
-				local anim_progress = math.smoothstep(local_progress, 1, 0)
-				widget_circle_glow.style.texture_id.color[1] = 255 - anim_progress * 100
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	},
-	fog_move_back = {
-		{
-			name = "fog_back_1",
-			start_progress = 0,
-			end_progress = 100,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				local widget = widgets.fog_back_1
-				widget.style.texture_id.color[1] = 90
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local widget = widgets.fog_back_1
-
-				if widget then
-					local scenegraph_id = widget.scenegraph_id
-					local anim_progress = math.smoothstep(local_progress, 1, 0)
-					local size = ui_scenegraph[scenegraph_id].size
-					local screen_width = 1820
-					local total_distance = size[1] + screen_width
-					local x_offset = local_progress * total_distance
-
-					if screen_width < x_offset then
-						widget.offset[1] = -total_distance + x_offset
-					else
-						widget.offset[1] = x_offset
-					end
-				end
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "fog_back_2",
-			start_progress = 0,
-			end_progress = 100,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				local widget = widgets.fog_back_2
-
-				if widget then
-					widget.style.texture_id.color[1] = 90
-				end
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local widget = widgets.fog_back_2
-
-				if widget then
-					local scenegraph_id = widget.scenegraph_id
-					local anim_progress = math.smoothstep(local_progress, 1, 0)
-					local size = ui_scenegraph[scenegraph_id].size
-					local screen_width = 1820
-					local total_distance = size[1] + screen_width
-					local x_offset = local_progress * total_distance
-					widget.offset[1] = x_offset
-				end
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "fog_back_3",
-			start_progress = 0,
-			end_progress = 100,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				local widget = widgets.fog_back_3
-				widget.style.texture_id.color[1] = 70
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local widget = widgets.fog_back_3
-
-				if widget then
-					local scenegraph_id = widget.scenegraph_id
-					local anim_progress = math.smoothstep(local_progress, 1, 0)
-					local size = ui_scenegraph[scenegraph_id].size
-					local screen_width = 1820
-					local start_offset = -(screen_width * 0.5)
-					local total_distance = size[1] + screen_width
-					local x_offset = start_offset + local_progress * total_distance
-
-					if screen_width < x_offset then
-						widget.offset[1] = -total_distance + x_offset
-					else
-						widget.offset[1] = x_offset
-					end
-				end
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "fog_back_4",
-			start_progress = 0,
-			end_progress = 100,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				local widget = widgets.fog_back_4
-
-				if widget then
-					widget.style.texture_id.color[1] = 70
-				end
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local widget = widgets.fog_back_4
-
-				if widget then
-					local scenegraph_id = widget.scenegraph_id
-					local anim_progress = math.smoothstep(local_progress, 1, 0)
-					local size = ui_scenegraph[scenegraph_id].size
-					local screen_width = 1820
-					local start_offset = -(screen_width * 0.5)
-					local total_distance = size[1] + screen_width
-					local x_offset = -start_offset + local_progress * total_distance
-					widget.offset[1] = x_offset
-				end
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	},
-	fog_move_front = {
-		{
-			name = "fog_front_1",
-			start_progress = 0,
-			end_progress = 70,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				local widget = widgets.fog_front_1
-				widget.style.texture_id.color[1] = 50
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local widget = widgets.fog_front_1
-
-				if widget then
-					local scenegraph_id = widget.scenegraph_id
-					local anim_progress = math.smoothstep(local_progress, 1, 0)
-					local size = ui_scenegraph[scenegraph_id].size
-					local screen_width = 1820
-					local length_to_screen_edge = size[1]
-					local total_distance = size[1] + screen_width
-					local x_offset = local_progress * total_distance
-
-					if screen_width < x_offset then
-						widget.offset[1] = -total_distance + x_offset
-					else
-						widget.offset[1] = x_offset
-					end
-				end
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "fog_front_2",
-			start_progress = 0,
-			end_progress = 70,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				local widget = widgets.fog_front_2
-
-				if widget then
-					widget.style.texture_id.color[1] = 50
-				end
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local widget = widgets.fog_front_2
-
-				if widget then
-					local scenegraph_id = widget.scenegraph_id
-					local anim_progress = math.smoothstep(local_progress, 1, 0)
-					local size = ui_scenegraph[scenegraph_id].size
-					local screen_width = 1820
-					local length_to_screen_edge = size[1]
-					local total_distance = size[1] + screen_width
-					local x_offset = local_progress * total_distance
-					widget.offset[1] = x_offset
-				end
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "fog_front_3",
-			start_progress = 0,
-			end_progress = 70,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				local widget = widgets.fog_front_3
-				widget.style.texture_id.color[1] = 25
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local widget = widgets.fog_front_3
-
-				if widget then
-					local scenegraph_id = widget.scenegraph_id
-					local anim_progress = math.smoothstep(local_progress, 1, 0)
-					local size = ui_scenegraph[scenegraph_id].size
-					local screen_width = 1820
-					local start_offset = -(screen_width * 0.5)
-					local total_distance = size[1] + screen_width
-					local x_offset = start_offset + local_progress * total_distance
-
-					if screen_width < x_offset then
-						widget.offset[1] = -total_distance + x_offset
-					else
-						widget.offset[1] = x_offset
-					end
-				end
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "fog_front_4",
-			start_progress = 0,
-			end_progress = 70,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				local widget = widgets.fog_front_4
-
-				if widget then
-					widget.style.texture_id.color[1] = 25
-				end
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local widget = widgets.fog_front_4
-
-				if widget then
-					local scenegraph_id = widget.scenegraph_id
-					local anim_progress = math.smoothstep(local_progress, 1, 0)
-					local size = ui_scenegraph[scenegraph_id].size
-					local screen_width = 1820
-					local start_offset = -(screen_width * 0.5)
-					local total_distance = size[1] + screen_width
-					local x_offset = -start_offset + local_progress * total_distance
-					widget.offset[1] = x_offset
-				end
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	}
+	support_info = UIWidgets.create_simple_text("", "support_info", 20, Colors.get_color_table_with_alpha("white", 150)),
+	update_offline_data_input_icon = UIWidgets.create_simple_texture("xbone_button_icon_y", "update_offline_data_input_icon"),
+	update_offline_data_input_text = UIWidgets.create_simple_rect_text("update_offline_data_input_text", Localize("update_offline_data"), 20),
+	sidebar_mask = UIWidgets.create_simple_texture("mask_rect", "sidebar_mask", false, false, {
+		255,
+		255,
+		255,
+		255
+	}),
+	create_engage_prompt = create_engage_prompt,
+	info_icon = UIWidgets.create_simple_texture("info", "info_icon"),
+	info_icon_text = create_info_text(info_texts[1], "info_icon_text", 25)
 }
 local menu_item_index_lookup = {
-	options = 3,
+	store = 4,
+	offline = 2,
 	credits = 4,
-	start_game = 1,
-	tutorial = 2
+	tutorial = 2,
+	options = 3,
+	online = 1,
+	start_game = 1
 }
 local menu_button_font_size = 24
+local base_menu_button_definitions = {
+	create_menu_button("online_button", "status_online", menu_button_font_size, "font_title"),
+	create_menu_button("offline_button", "status_offline", menu_button_font_size, "font_title")
+}
 local menu_button_definitions = nil
 
 if script_data.honduras_demo then
 	menu_button_definitions = {
-		UIWidgets.create_text_button("start_game_button", "start_demo_menu_button_name", menu_button_font_size)
+		create_menu_button("menu_option_1", "start_demo_menu_button_name", menu_button_font_size, "font_title")
 	}
+elseif script_data.settings.use_beta_overlay then
+	if script_data.settings.disable_tutorial_at_start then
+		menu_button_definitions = {
+			create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
+			create_menu_button("menu_option_2", "options_menu_button_name", menu_button_font_size, "font_title"),
+			create_menu_button("menu_option_3", "credits_menu_button_name", menu_button_font_size, "font_title")
+		}
+	else
+		menu_button_definitions = {
+			create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
+			create_menu_button("menu_option_2", "tutorial_menu_button_name", menu_button_font_size, "font_title"),
+			create_menu_button("menu_option_3", "options_menu_button_name", menu_button_font_size, "font_title"),
+			create_menu_button("menu_option_4", "credits_menu_button_name", menu_button_font_size, "font_title")
+		}
+	end
 elseif BUILD == "dev" or BUILD == "debug" then
 	menu_button_definitions = {
-		UIWidgets.create_text_button("start_game_button", "start_game_menu_button_name", menu_button_font_size),
-		UIWidgets.create_text_button("tutorial", "tutorial_menu_button_name", menu_button_font_size),
-		UIWidgets.create_text_button("options", "options_menu_button_name", menu_button_font_size),
-		UIWidgets.create_text_button("credits", "credits_menu_button_name", menu_button_font_size)
+		create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
+		create_menu_button("menu_option_2", "tutorial_menu_button_name", menu_button_font_size, "font_title"),
+		create_menu_button("menu_option_3", "options_menu_button_name", menu_button_font_size, "font_title"),
+		create_menu_button("menu_option_4", "title_screen_store_xb1", menu_button_font_size, "font_title", true),
+		create_menu_button("menu_option_5", "credits_menu_button_name", menu_button_font_size, "font_title")
+	}
+elseif PLATFORM == "xb1" then
+	menu_button_definitions = {
+		create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
+		create_menu_button("menu_option_2", "tutorial_menu_button_name", menu_button_font_size, "font_title"),
+		create_menu_button("menu_option_3", "options_menu_button_name", menu_button_font_size, "font_title"),
+		create_menu_button("menu_option_4", "title_screen_store_xb1", menu_button_font_size, "font_title"),
+		create_menu_button("menu_option_5", "credits_menu_button_name", menu_button_font_size, "font_title")
 	}
 else
 	menu_button_definitions = {
-		UIWidgets.create_text_button("start_game_button", "start_game_menu_button_name", menu_button_font_size),
-		UIWidgets.create_text_button("tutorial", "tutorial_menu_button_name", menu_button_font_size),
-		UIWidgets.create_text_button("options", "options_menu_button_name", menu_button_font_size),
-		UIWidgets.create_text_button("credits", "credits_menu_button_name", menu_button_font_size)
+		create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
+		create_menu_button("menu_option_2", "tutorial_menu_button_name", menu_button_font_size, "font_title"),
+		create_menu_button("menu_option_3", "options_menu_button_name", menu_button_font_size, "font_title"),
+		create_menu_button("menu_option_4", "credits_menu_button_name", menu_button_font_size, "font_title")
 	}
 end
+
+local menu_videos = {
+	main = {
+		loop = true,
+		scenegraph_id = "start_screen_video",
+		video_name = "video/start_1",
+		main_menu = true,
+		material_name = "start_1"
+	},
+	main_menu = {
+		loop = true,
+		scenegraph_id = "start_screen_video",
+		video_name = "video/start_2",
+		main_menu = true,
+		material_name = "start_2"
+	}
+}
 
 return {
 	background_widget_definitions = background_widget_definitions,
 	single_widget_definitions = single_widget_definitions,
 	menu_button_definitions = menu_button_definitions,
+	base_menu_button_definitions = base_menu_button_definitions,
 	scenegraph_definition = scenegraph_definition,
 	attract_mode_video = attract_mode_video,
-	widget_definitions = widget_definitions,
 	menu_button_font_size = menu_button_font_size,
 	menu_item_index_lookup = menu_item_index_lookup,
-	animations = animations
+	menu_videos = menu_videos,
+	info_texts = info_texts
 }

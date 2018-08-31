@@ -74,13 +74,7 @@ local breed_data = {
 		6,
 		9
 	},
-	stagger_duration_difficulty_mod = {
-		harder = 0.6,
-		hard = 0.7,
-		normal = 0.8,
-		hardest = 0.4,
-		easy = 1
-	},
+	stagger_duration_difficulty_mod = BreedTweaks.stagger_duration_difficulty_mod.fast,
 	debug_color = {
 		255,
 		200,

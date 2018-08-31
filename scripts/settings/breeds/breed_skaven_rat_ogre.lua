@@ -146,7 +146,6 @@ local breed_data = {
 	hit_effect_template = "HitEffectsRatOgre",
 	smart_targeting_height_multiplier = 1.5,
 	unit_template = "ai_unit_rat_ogre",
-	combat_spawn_stinger = "enemy_ratogre_stinger",
 	smart_object_template = "rat_ogre",
 	perception = "perception_rat_ogre",
 	player_locomotion_constrain_radius = 1.5,

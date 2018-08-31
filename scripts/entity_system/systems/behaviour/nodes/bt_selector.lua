@@ -1,13 +1,14 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTSelector = class(BTSelector, BTNode)
-BTSelector.name = "BTSelector"
 
 BTSelector.init = function (self, ...)
 	BTSelector.super.init(self, ...)
 
 	self._children = {}
 end
+
+BTSelector.name = "BTSelector"
 
 BTSelector.leave = function (self, unit, blackboard, t, reason)
 	self:set_running_child(unit, blackboard, t, nil, reason)
@@ -38,7 +39,7 @@ BTSelector.run = function (self, unit, blackboard, t, dt)
 		print("BTSelector fail: ", self:id())
 	end
 
-	assert(self:current_running_child(blackboard) == nil)
+	fassert(self:current_running_child(blackboard) == nil)
 
 	return "failed"
 end

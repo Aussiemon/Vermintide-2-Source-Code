@@ -24,6 +24,13 @@ local scenegraph_info = {
 	tabs_active_size = tabs_active_size
 }
 local FRIEND_LIST_LIMIT = 400
+
+if PLATFORM == "xb1" then
+	FRIEND_LIST_LIMIT = 1000
+elseif PLATFORM == "ps4" then
+	FRIEND_LIST_LIMIT = 2000
+end
+
 local friends_entry_size = {
 	ui_size[1],
 	40
@@ -1061,6 +1068,7 @@ local function create_hotspot_area(scenegraph_id, size)
 		style_id = "hotspot"
 	}
 	style.hotspot = {
+		allow_multi_hover = true,
 		size = size
 	}
 	local widget = {

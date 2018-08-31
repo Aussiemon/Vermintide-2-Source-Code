@@ -13,7 +13,7 @@ local career_window_size = {
 }
 local career_info_size = {
 	math.floor(career_window_size[1] / 2 - 10),
-	140
+	160
 }
 local scenegraph_definition = {
 	root = {
@@ -374,7 +374,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			-60,
+			-50,
 			1
 		}
 	},

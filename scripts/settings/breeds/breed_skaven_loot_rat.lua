@@ -277,6 +277,21 @@ local action_data = {
 		dodge_distance = 2,
 		dodge_anim = "dodge_run_fwd"
 	},
+	follow = {
+		distance_to_attack = 3,
+		start_anims_name = {
+			bwd = "move_fwd",
+			fwd = "move_fwd",
+			left = "move_fwd",
+			right = "move_fwd"
+		},
+		start_anims_data = {
+			move_fwd = {}
+		}
+	},
+	explosion_attack = {
+		action_weight = 10
+	},
 	stagger = {
 		custom_exit_function = AiBreedSnippets.on_loot_rat_stagger_action_done,
 		stagger_anims = {

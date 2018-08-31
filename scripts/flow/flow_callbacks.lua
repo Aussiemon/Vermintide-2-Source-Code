@@ -5,6 +5,7 @@ require("core/wwise/lua/wwise_flow_callbacks")
 require("core/volumetrics/lua/volumetrics_flow_callbacks")
 require("scripts/helpers/nav_tag_volume_utils")
 require("scripts/settings/difficulty_settings")
+require("scripts/settings/attachment_node_linking")
 
 local flow_return_table = Boot.flow_return_table
 
@@ -178,6 +179,22 @@ function flow_callback_switchcase_range(params)
 	return ret
 end
 
+function flow_callback_switchcase_unit(params)
+	local ret_unit = nil
+
+	if params.case ~= "" then
+		for k, v in pairs(params) do
+			if k ~= "case" and params.case == tonumber(string.sub(k, -1)) then
+				ret_unit = params[k]
+			end
+		end
+	end
+
+	flow_return_table.out_unit = ret_unit
+
+	return flow_return_table
+end
+
 function flow_callback_relay_trigger(params)
 	return {
 		out = true
@@ -294,6 +311,40 @@ function flow_callback_activate_triggered_pickup_spawners(params)
 	return flow_return_table
 end
 
+function flow_callback_disable_torch(params)
+	local player_unit = params.touching_unit
+	local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
+	local weapon_slot = inventory_extension:get_wielded_slot_name()
+	local weapon_data = inventory_extension:get_slot_data(weapon_slot)
+
+	if weapon_data then
+		local item_data = weapon_data.item_data
+		local item_name = item_data and item_data.name
+
+		if item_name == "torch" then
+			CharacterStateHelper.stop_weapon_actions(inventory_extension, "wield")
+			inventory_extension:destroy_slot("slot_level_event", true)
+			inventory_extension:wield("slot_melee")
+		end
+	end
+
+	if Managers.player.is_server then
+		local pickup_system = Managers.state.entity:system("pickup_system")
+
+		pickup_system:disable_teleporting_pickups()
+	end
+end
+
+function flow_wield_slot(params)
+	local unit = params.unit
+	local slot_name = params.slot_name
+	local inventory_extension = ScriptUnit.has_extension(unit, "inventory_system")
+
+	if inventory_extension then
+		inventory_extension:wield(slot_name)
+	end
+end
+
 function flow_query_wielded_weapon(params)
 	local player_unit = params.player_unit
 	local equipment = nil
@@ -351,6 +402,13 @@ end
 
 function flow_callback_trigger_event(params)
 	Unit.flow_event(params.unit, params.event)
+end
+
+function flow_callback_play_screen_space_blood(params)
+	local effect_name = params.effect
+	local position = params.position
+
+	Managers.state.blood:play_screen_space_blood(effect_name, Vector3.zero())
 end
 
 function flow_callback_play_network_synched_particle_effect(params)
@@ -572,12 +630,14 @@ end
 
 function flow_callback_play_surface_material_effect(params)
 	local hit_unit = params.hit_unit
-	local world = Unit.world(hit_unit)
+	local world = Managers.world:world("level_world")
 	local sound_character, player_unit = nil
+	local range = params.range
+	local offset = params.offset
 	local normal = params.normal
 	local rotation = Quaternion.look(params.normal, Vector3.up())
 
-	EffectHelper.play_surface_material_effects(params.effect_name, world, hit_unit, params.position, rotation, normal, sound_character, player_unit, params.husk)
+	EffectHelper.flow_cb_play_surface_material_effect(params.effect_name, hit_unit, params.position, rotation, normal, sound_character, params.husk, offset, range)
 end
 
 function flow_callback_play_voice(params)
@@ -884,6 +944,10 @@ function flow_callback_trigger_dialogue_event(params)
 end
 
 function flow_callback_change_outline_params(params)
+	if DEDICATED_SERVER then
+		return
+	end
+
 	local unit = params.unit
 
 	assert(ScriptUnit.has_extension(unit, "outline_system"), "Trying to change outline params through flow without an outline extension on the unit")
@@ -1112,6 +1176,10 @@ function flow_callback_register_spline_properties(params)
 end
 
 function flow_callback_register_sound_environment(params)
+	if DEDICATED_SERVER then
+		return
+	end
+
 	local volume_name = params.volume_name
 	local prio = params.prio
 	local ambient_sound_event = params.ambient_sound_event
@@ -1124,6 +1192,13 @@ function flow_callback_register_sound_environment(params)
 end
 
 function flow_callback_wwise_trigger_event_with_environment(params)
+	if DEDICATED_SERVER then
+		flow_return_table.playing_id = 1
+		flow_return_table.source_id = 1
+
+		return flow_return_table
+	end
+
 	local position = params.position
 	local unit = params.unit
 	local node_name = params.unit_node
@@ -1400,6 +1475,20 @@ function flow_callback_get_players_and_bots(params)
 	return nil
 end
 
+function flow_callback_add_group_buff(params)
+	if not Managers.player.is_server then
+		return
+	end
+
+	local group_buff_template = params.group_buff_template
+	local group_buff_name_id = NetworkLookup.group_buff_templates[group_buff_template]
+	local buff_system = Managers.state.entity:system("buff_system")
+
+	buff_system:rpc_add_group_buff(nil, group_buff_name_id, 1)
+
+	return nil
+end
+
 function flow_is_carrying_explosive_barrel(params)
 	local player_unit = params.player_unit
 	local equipment = nil
@@ -1484,10 +1573,11 @@ function flow_callback_damage_player_bot_ai(params)
 
 		local hit_zone_name = "full"
 		local damage_type = "forced"
+		local hit_position = Unit.world_position(unit, 0)
 		local damage_direction = Vector3.up()
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 
-		health_extension:add_damage(unit, damage, hit_zone_name, damage_type, damage_direction)
+		health_extension:add_damage(unit, damage, hit_zone_name, damage_type, hit_position, damage_direction)
 	end
 end
 
@@ -1586,9 +1676,10 @@ function flow_callback_overcharge_init_unit(params)
 
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 		local hit_zone_name = "full"
+		local hit_position = Unit.world_position(unit, 0)
 		local attack_direction = Vector3.up()
 
-		health_extension:add_damage(unit, init_damage, hit_zone_name, "destructible_level_object_hit", attack_direction, "wounded_degen")
+		health_extension:add_damage(unit, init_damage, hit_zone_name, "destructible_level_object_hit", hit_position, attack_direction, "wounded_degen")
 	end
 end
 
@@ -1596,10 +1687,11 @@ function flow_callback_overcharge_sync_damage(params)
 	local unit = params.unit
 	local damage = params.damage
 	local hit_zone_name = "full"
+	local hit_position = Unit.world_position(unit, 0)
 	local health_extension = ScriptUnit.extension(unit, "health_system")
 	local attack_direction = Vector3.up()
 
-	health_extension:add_damage(unit, damage, hit_zone_name, "destructible_level_object_hit", attack_direction, "wounded_degen")
+	health_extension:add_damage(unit, damage, hit_zone_name, "destructible_level_object_hit", hit_position, attack_direction, "wounded_degen")
 end
 
 function flow_callback_overcharge_damage_unit(params)
@@ -1614,10 +1706,11 @@ function flow_callback_overcharge_damage_unit(params)
 		fassert(ScriptUnit.has_extension(unit, "health_system"), "Tried to damage overcharge unit %s from flow but the unit has no health extension", unit)
 
 		local hit_zone_name = "full"
+		local hit_position = Unit.world_position(unit, 0)
 		local attack_direction = Vector3.up()
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 
-		health_extension:add_damage(unit, damage, hit_zone_name, "destructible_level_object_hit", attack_direction, "wounded_degen")
+		health_extension:add_damage(unit, damage, hit_zone_name, "destructible_level_object_hit", hit_position, attack_direction, "wounded_degen")
 	end
 end
 
@@ -1632,6 +1725,43 @@ function flow_callback_overcharge_reset_unit(params)
 
 		health_extension:set_max_health(max_health)
 		health_extension:set_current_damage(0)
+	end
+end
+
+function flow_callback_fire_light_weight_projectile(params)
+	if not Managers.player.is_server then
+		return
+	end
+
+	local unit = params.unit
+	local shots_to_fire = params.shots_to_fire or 1
+	local light_weight_projectile_template_name = params.light_weight_projectile_template_name
+	local light_weight_projectile_template = LightWeightProjectiles[light_weight_projectile_template_name]
+	local item_name = "skaven_ratling_gunner"
+	local position = Unit.world_position(unit, 0)
+
+	for i = 1, shots_to_fire, 1 do
+		local spread_angle = Math.random() * light_weight_projectile_template.spread
+		local direction = Quaternion.forward(Unit.world_rotation(unit, 0))
+		local pitch = Quaternion(Vector3.right(), spread_angle)
+		local roll = Quaternion(Vector3.forward(), Math.random() * math.pi * 2)
+		local dir_rot = Quaternion.look(direction, Vector3.up())
+		local spread_rot = Quaternion.multiply(Quaternion.multiply(dir_rot, roll), pitch)
+		local spread_direction = Quaternion.forward(spread_rot)
+		local collision_filter = "filter_enemy_player_afro_ray_projectile"
+		local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+		local power_level = light_weight_projectile_template.attack_power_level[difficulty_rank]
+		local action_data = {
+			attack_template = light_weight_projectile_template.attack_template,
+			power_level = power_level,
+			damage_profile = light_weight_projectile_template.damage_profile,
+			hit_effect = light_weight_projectile_template.hit_effect,
+			afro_hit_sound = light_weight_projectile_template.afro_hit_sound,
+			player_push_velocity = Vector3Box(direction * light_weight_projectile_template.impact_push_speed)
+		}
+		local projectile_system = Managers.state.entity:system("projectile_system")
+
+		projectile_system:create_light_weight_projectile(item_name, unit, position, spread_direction, light_weight_projectile_template.projectile_speed, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_particle_effect)
 	end
 end
 
@@ -1664,6 +1794,26 @@ function flow_callback_enable_climb_unit(params)
 		local nav_graph_system = Managers.state.entity:system("nav_graph_system")
 
 		nav_graph_system:init_nav_graph_from_flow(unit)
+	end
+end
+
+function flow_callback_add_nav_graph_on_climb_unit(params)
+	local unit = params.unit
+
+	if Unit.alive(unit) then
+		local nav_graph_system = Managers.state.entity:system("nav_graph_system")
+
+		nav_graph_system:queue_add_nav_graph_from_flow(unit)
+	end
+end
+
+function flow_callback_remove_nav_graph_on_climb_unit(params)
+	local unit = params.unit
+
+	if Unit.alive(unit) then
+		local nav_graph_system = Managers.state.entity:system("nav_graph_system")
+
+		nav_graph_system:queue_remove_nav_graph_from_flow(unit)
 	end
 end
 
@@ -1712,19 +1862,36 @@ function flow_callback_limited_item_spawner_group_deactivate(params)
 end
 
 function flow_callback_blood_collision(params)
-	local touched_unit = params.unit
-	local actor = params.actor
-	local my_unit = Actor.unit(actor)
-	local position = params.position
-	local normal = params.normal
-	local velocity = Actor.velocity(actor)
-	local MAX_VELOCITY = 1000
+	if Managers.state.decal ~= nil then
+		local touched_unit = params.unit
+		local actor = params.actor
+		local my_unit = Actor.unit(actor)
+		local position = params.position
+		local normal = params.normal
+		local velocity = Actor.velocity(actor)
+		local MAX_VELOCITY = 1000
 
-	if MAX_VELOCITY < velocity.x or velocity.x < -MAX_VELOCITY or MAX_VELOCITY < velocity.y or velocity.y < -MAX_VELOCITY or MAX_VELOCITY < velocity.z or velocity.z < -MAX_VELOCITY then
-		velocity = Vector3(0, 0, -1)
+		if MAX_VELOCITY < velocity.x or velocity.x < -MAX_VELOCITY or MAX_VELOCITY < velocity.y or velocity.y < -MAX_VELOCITY or MAX_VELOCITY < velocity.z or velocity.z < -MAX_VELOCITY then
+			velocity = Vector3(0, 0, -1)
+		end
+
+		local dot_value = Vector3.dot(normal, Vector3.normalize(velocity))
+		local tangent = Vector3.normalize(Vector3.normalize(velocity) - dot_value * normal)
+		local tangent_rotation = Quaternion.look(tangent, normal)
+		local blood_unit_name = "units/decals/projection_blood_" .. string.format("%02d", tostring(Math.random(1, 17)))
+		local extents = Vector3(BloodSettings.blood_decals.scale, BloodSettings.blood_decals.scale, 1)
+
+		Managers.state.decal:add_projection_decal(blood_unit_name, nil, nil, position, tangent_rotation, extents, normal)
+		Managers.state.blood:despawn_blood_ball(my_unit)
 	end
+end
 
-	Managers.state.blood:add_blood_decal(touched_unit, actor, my_unit, position, normal, velocity)
+function flow_callback_blood_ball_despawn(params)
+	if Managers.state.decal ~= nil then
+		local my_unit = params.unit
+
+		Managers.state.blood:despawn_blood_ball(my_unit)
+	end
 end
 
 function flow_callback_enable_poison_wind(params)
@@ -1863,10 +2030,11 @@ function flow_callback_damage_unit(params)
 		fassert(ScriptUnit.has_extension(unit, "health_system"), "Tried to damage unit %s from flow but the unit has no health extension", unit)
 
 		local hit_zone_name = "full"
+		local hit_position = Unit.world_position(unit, 0)
 		local attack_direction = Vector3.up()
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 
-		health_extension:add_damage(unit, damage, hit_zone_name, "destructible_level_object_hit", attack_direction, "wounded_degen")
+		health_extension:add_damage(unit, damage, hit_zone_name, "destructible_level_object_hit", hit_position, attack_direction, "wounded_degen")
 	end
 end
 
@@ -1977,6 +2145,20 @@ function flow_callback_breakable_object_destroyed(params)
 		statistics_db:increment_stat(stats_id, "dynamic_objects_destroyed")
 		Unit.set_data(unit, "destroyed_dynamic", true)
 	end
+end
+
+function flow_callback_increment_player_stat(params)
+	local player = Managers.player:local_player()
+
+	if not player then
+		return
+	end
+
+	local statistics_db = Managers.player:statistics_db()
+	local stats_id = player:stats_id()
+	local stat_name = params.stat_name
+
+	statistics_db:increment_stat(stats_id, stat_name)
 end
 
 function flow_callback_add_subtitle(params)
@@ -2289,7 +2471,7 @@ function flow_callback_broadphase_deal_damage(params)
 		for i = 1, num_hits, 1 do
 			local hit_unit = RESULT_TABLE[i]
 
-			DamageUtils.server_apply_hit(t, attacker_unit, hit_unit, hit_zone_name, Vector3.normalize(attack_direction), hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit)
+			DamageUtils.server_apply_hit(t, attacker_unit, hit_unit, hit_zone_name, nil, Vector3.normalize(attack_direction), hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit)
 		end
 	end
 
@@ -2368,7 +2550,7 @@ function flow_callback_barrel_explode(params)
 	local health_extension = ScriptUnit.extension(unit, "health_system")
 
 	health_extension:set_max_health(1)
-	health_extension:add_damage(unit, 1, "full", "grenade", Vector3(1, 0, 0))
+	health_extension:add_damage(unit, 1, "full", "grenade", Unit.world_position(unit, 0), Vector3(1, 0, 0))
 end
 
 function flow_callback_set_game_mode_variable(params)
@@ -2498,6 +2680,81 @@ function flow_callback_link_objects_in_units_and_store(params)
 end
 
 function flow_callback_unlink_objects_in_units_and_remove(params)
+	local parentunit = params.parent_unit
+	local childunit = params.child_unit
+	local world = Unit.world(parentunit)
+
+	World.unlink_unit(world, childunit)
+
+	local unit_attachments = Unit.get_data(parentunit, "flow_unit_attachments") or {}
+	local key = table.find(unit_attachments, childunit)
+
+	if key then
+		table.remove(unit_attachments, key)
+	end
+
+	Unit.set_data(parentunit, "flow_unit_attachments", unit_attachments)
+
+	return {
+		unlinked = true
+	}
+end
+
+function flow_callback_attach_unit(params)
+	local node_link_table = AttachmentNodeLinking
+	local node_linking_template = split_string(params.node_link_template, "/")
+
+	if not node_linking_template then
+		print("No attachment node linking defined in flow!")
+
+		return
+	end
+
+	for _, key in ipairs(node_linking_template) do
+		node_link_table = node_link_table[key]
+	end
+
+	if type(node_link_table) ~= "table" then
+		print("No attachment node linking with name %s", tostring(params.node_link_template))
+
+		return
+	end
+
+	local parentunit = params.parent_unit
+	local childunit = params.child_unit
+	local index_offset = Script.index_offset()
+	local world = Unit.world(parentunit)
+
+	for _, link_data in ipairs(node_link_table) do
+		local parent_node = link_data.source
+		local child_node = link_data.target
+		local parent_node_index = (type(parent_node) == "string" and Unit.node(parentunit, parent_node)) or parent_node + index_offset
+		local child_node_index = (type(child_node) == "string" and Unit.node(childunit, child_node)) or child_node + index_offset
+
+		World.link_unit(world, childunit, child_node_index, parentunit, parent_node_index)
+	end
+
+	if params.link_lod_groups and Unit.num_lod_objects(parentunit) ~= 0 and Unit.num_lod_objects(childunit) ~= 0 then
+		local parent_lod_object = Unit.lod_object(parentunit, index_offset)
+		local child_lod_object = Unit.lod_object(childunit, index_offset)
+
+		LODObject.set_bounding_volume(child_lod_object, LODObject.bounding_volume(parent_lod_object))
+		LODObject.set_orientation_node(child_lod_object, parentunit, LODObject.node(parent_lod_object))
+	end
+
+	if params.store_in_parent then
+		local unit_attachments = Unit.get_data(parentunit, "flow_unit_attachments") or {}
+
+		table.insert(unit_attachments, childunit)
+		Unit.set_data(parentunit, "flow_unit_attachments", unit_attachments)
+	end
+
+	return {
+		linked = true
+	}
+end
+
+function flow_callback_unattach_unit(params)
 	local parentunit = params.parent_unit
 	local childunit = params.child_unit
 	local world = Unit.world(parentunit)

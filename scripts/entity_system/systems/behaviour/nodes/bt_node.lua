@@ -14,7 +14,7 @@ BTNode.init = function (self, identifier, parent, condition_name, enter_hook_nam
 	self._tree_node = tree_node
 	local condition = CONDITIONS[condition_name]
 
-	assert(condition, "No condition called %q", condition_name)
+	fassert(condition, "No condition called %q", condition_name)
 
 	self._condition_name = condition_name
 

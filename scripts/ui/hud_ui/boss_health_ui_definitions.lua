@@ -31,6 +31,10 @@ local scenegraph_definition = {
 	}
 }
 
+if platform ~= "win32" then
+	scenegraph_definition.screen.scale = "hud_fit"
+end
+
 local function create_health_bar_widget()
 	local default_color = {
 		255,

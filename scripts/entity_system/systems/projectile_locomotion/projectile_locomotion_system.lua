@@ -53,14 +53,16 @@ ProjectileLocomotionSystem._server_sync_position_rotation = function (self, dt, 
 	local game = Managers.state.network:game()
 
 	if game then
+		local POSITION_LOOKUP = POSITION_LOOKUP
 		local GameSession_set_game_object_field = GameSession.set_game_object_field
 		local unit_storage = Managers.state.unit_storage
 		local Unit_local_rotation = Unit.local_rotation
+		local position_network_info_min = NetworkConstants.position.min
+		local position_network_info_max = NetworkConstants.position.max
 
 		for unit, _ in pairs(self._server_position_corrected_pickups) do
 			local game_object_id = unit_storage:go_id(unit)
-			local position_network_info = NetworkConstants.position
-			local pos = Vector3.clamp(POSITION_LOOKUP[unit], position_network_info.min, position_network_info.max)
+			local pos = Vector3.clamp(POSITION_LOOKUP[unit], position_network_info_min, position_network_info_max)
 			local rot = Unit_local_rotation(unit, 0)
 
 			GameSession_set_game_object_field(game, game_object_id, "position", pos)
@@ -76,6 +78,7 @@ ProjectileLocomotionSystem._client_validate_position_rotation = function (self, 
 	local game = Managers.state.network:game()
 
 	if game then
+		local POSITION_LOOKUP = POSITION_LOOKUP
 		local GameSession_game_object_field = GameSession.game_object_field
 		local Vector3_distance_squared = Vector3.distance_squared
 		local ScriptUnit_extension = ScriptUnit.extension

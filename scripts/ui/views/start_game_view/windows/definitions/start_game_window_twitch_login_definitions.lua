@@ -269,6 +269,37 @@ local scenegraph_definition = {
 	}
 }
 
+if PLATFORM == "xb1" then
+	scenegraph_definition.connect_button = {
+		vertical_alignment = "center",
+		parent = "login_text_area",
+		horizontal_alignment = "center",
+		size = {
+			160,
+			45
+		},
+		position = {
+			-10,
+			-2,
+			1
+		}
+	}
+	scenegraph_definition.connect_button_frame = {
+		vertical_alignment = "center",
+		parent = "connect_button",
+		horizontal_alignment = "center",
+		size = {
+			160,
+			50
+		},
+		position = {
+			0,
+			2,
+			10
+		}
+	}
+end
+
 local function create_window(scenegraph_id, size)
 	local background_texture = "menu_frame_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
@@ -919,6 +950,7 @@ local function connecting_content_check_function(content)
 	return Managers.twitch:is_connecting() or not Managers.twitch:is_connected()
 end
 
+local streaming_desc_str = (PLATFORM == "win32" and "start_game_window_twitch_connect_description") or "start_game_window_mixer_connect_description"
 local widgets = {
 	background_fade = UIWidgets.create_simple_texture("options_window_fade_01", "window"),
 	background_mask = UIWidgets.create_simple_texture("mask_rect", "window"),
@@ -932,7 +964,7 @@ local widgets = {
 		window_text_width - 20,
 		250
 	}, "menu_frame_09", 1),
-	description_text = UIWidgets.create_simple_text(Localize("start_game_window_twitch_connect_description"), "description_text", nil, nil, description_text_style),
+	description_text = UIWidgets.create_simple_text(Localize(streaming_desc_str), "description_text", nil, nil, description_text_style),
 	twitch_texture = UIWidgets.create_simple_texture("twitch_logo", "twitch_texture"),
 	twitch_title_divider = UIWidgets.create_simple_texture("divider_01_top", "twitch_title_divider"),
 	chat_output_widget = chat_output_widget,
@@ -947,6 +979,12 @@ widgets.disconnect_button_frame.element.passes[1].content_check_function = disco
 widgets.chat_feed_frame.element.passes[1].content_check_function = disconnected_content_check_function
 widgets.description_text.element.passes[1].content_check_function = connecting_content_check_function
 widgets.description_text.element.passes[2].content_check_function = connecting_content_check_function
+
+if PLATFORM == "xb1" then
+	widgets.frame_widget = nil
+	widgets.login_text_frame = nil
+end
+
 local animation_definitions = {
 	on_enter = {
 		{

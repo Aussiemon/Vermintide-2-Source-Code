@@ -124,6 +124,12 @@ DebugManager.update = function (self, dt, t)
 		self:_adjust_player_speed()
 	end
 
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+
+	if gamepad_active then
+		self:_adjust_gamepad_player_speed()
+	end
+
 	local speed_scale = speed_scale_list[self.speed_scale_index]
 
 	if speed_scale ~= 100 then
@@ -135,6 +141,22 @@ DebugManager.update = function (self, dt, t)
 
 			Debug.text(speed_scale_string)
 		end
+	end
+
+	if script_data.debug_wwise_timestamp then
+		local timestamp = Wwise.get_timestamp()
+		local hours = math.floor(timestamp / 3600000)
+		local remaining = timestamp - hours * 1000 * 60 * 60
+		local minutes = math.floor(remaining / 60000)
+		remaining = remaining - minutes * 1000 * 60
+		local seconds = math.floor(remaining / 1000)
+		remaining = remaining - seconds * 1000
+
+		Debug.text("Wwise Timestamp: %.2d:%.2d:%.2d.%.3d", hours, minutes, seconds, remaining)
+	end
+
+	if script_data.debug_particle_simulation then
+		Debug.text("Particles simulated: " .. World.num_particles(self._world))
 	end
 
 	if script_data.debug_enemy_package_loader then
@@ -304,6 +326,54 @@ DebugManager._adjust_player_speed = function (self)
 				PlayerUnitMovementSettings.get_movement_settings_table(unit).player_speed_scale = speed_scale_list[speed_scale_index] * 0.01
 			end
 		elseif Vector3.y(Mouse.axis(wheel_axis)) < 0 then
+			speed_scale_index = math.max(speed_scale_index - 1, 1)
+			local units = PlayerUnitMovementSettings.get_active_units_in_movement_settings()
+
+			for __, unit in pairs(units) do
+				PlayerUnitMovementSettings.get_movement_settings_table(unit).player_speed_scale = speed_scale_list[speed_scale_index] * 0.01
+			end
+		end
+
+		self.speed_scale_index = speed_scale_index
+	end
+end
+
+DebugManager._adjust_gamepad_player_speed = function (self)
+	local active_controller = Managers.account:active_controller()
+
+	if not active_controller then
+		return
+	end
+
+	local right_held = nil
+
+	if PLATFORM ~= "ps4" then
+		right_held = active_controller.button(active_controller.button_index("right_thumb")) > 0.5
+	else
+		right_held = active_controller.button(active_controller.button_index("r3")) > 0.5
+	end
+
+	if right_held then
+		local up_pressed, down_pressed = nil
+
+		if PLATFORM ~= "ps4" then
+			up_pressed = active_controller.pressed(active_controller.button_index("d_up"))
+			down_pressed = active_controller.pressed(active_controller.button_index("d_down"))
+		else
+			up_pressed = active_controller.pressed(active_controller.button_index("up"))
+			down_pressed = active_controller.pressed(active_controller.button_index("down"))
+		end
+
+		local speed_scale_index = self.speed_scale_index
+
+		if up_pressed then
+			speed_scale_index = math.min(speed_scale_index + 1, #speed_scale_list)
+			local units = PlayerUnitMovementSettings.get_active_units_in_movement_settings()
+
+			for __, unit in pairs(units) do
+				PlayerUnitMovementSettings.get_movement_settings_table(unit).player_speed_scale = speed_scale_list[speed_scale_index] * 0.01
+			end
+		elseif down_pressed then
 			speed_scale_index = math.max(speed_scale_index - 1, 1)
 			local units = PlayerUnitMovementSettings.get_active_units_in_movement_settings()
 

@@ -21,10 +21,6 @@ Utility.GetUtilityValueFromSpline = function (spline, norm_value)
 end
 
 Utility.get_action_utility = function (breed_action, action_name, blackboard, from_draw_ai_behavior)
-	if not from_draw_ai_behavior then
-		slot4 = true
-	end
-
 	local total_utility = 1
 	local blackboard_action_data = blackboard.utility_actions[action_name]
 	local get_utility_from_spline = Utility.GetUtilityValueFromSpline
@@ -32,12 +28,6 @@ Utility.get_action_utility = function (breed_action, action_name, blackboard, fr
 
 	for name, consideration in pairs(considerations) do
 		repeat
-			local is_table = type(consideration) == "table"
-
-			if not is_table then
-				break
-			end
-
 			local input = consideration.blackboard_input
 			local blackboard_value = blackboard_action_data[input] or blackboard[input]
 			local utility = 0
@@ -63,10 +53,6 @@ Utility.get_action_utility = function (breed_action, action_name, blackboard, fr
 			end
 
 			total_utility = total_utility * utility
-
-			if not from_draw_ai_behavior then
-				AiUtils.print("ai_debug_utility_considerations", "------------> action:", action_name, " consideration:", name, " utility:", utilily)
-			end
 		until true
 	end
 

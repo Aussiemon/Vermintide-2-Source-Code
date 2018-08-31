@@ -376,8 +376,9 @@ AimTemplates.chaos_warrior = {
 			local target_distance = blackboard.target_dist
 			local breed = blackboard.breed
 			local use_head_constraint = nil
+			local _, is_level_unit = Managers.state.network:game_object_or_level_id(target_unit)
 
-			if target_distance < (breed.look_at_range or 30) then
+			if not is_level_unit and target_distance < (breed.look_at_range or 30) then
 				use_head_constraint = true
 			end
 
@@ -432,8 +433,16 @@ AimTemplates.chaos_warrior = {
 					local first_person_extension = ScriptUnit.extension(target_unit, "first_person_system")
 					aim_target = first_person_extension:current_position()
 				else
-					local head_index = Unit.node(target_unit, "j_head")
-					aim_target = Unit.world_position(target_unit, head_index)
+					local has_head_index = Unit.has_node(target_unit, "j_head")
+
+					if has_head_index then
+						local head_index = Unit.node(target_unit, "j_head")
+						aim_target = Unit.world_position(target_unit, head_index)
+					else
+						AiUtils.set_default_anim_constraint(unit, constraint_target)
+
+						return
+					end
 				end
 
 				local target_unit = Managers.state.unit_storage:unit(target_unit_id)
@@ -477,9 +486,19 @@ AimTemplates.chaos_marauder = {
 			local use_head_constraint = false
 			local target_distance = blackboard.target_dist
 			local breed = blackboard.breed
+			local target_unit = blackboard.target_unit
+			local head_constraint_target = data.head_constraint_target
+
+			if not target_unit or not Unit.alive(target_unit) then
+				AiUtils.set_default_anim_constraint(unit, head_constraint_target)
+
+				return
+			end
+
+			local _, is_level_unit = Managers.state.network:game_object_or_level_id(target_unit)
 			local is_correct_action = current_action == "follow" or current_action == "combat_step"
 
-			if is_correct_action and target_distance < (breed.look_at_range or 30) then
+			if not is_level_unit and is_correct_action and target_distance < (breed.look_at_range or 30) then
 				use_head_constraint = true
 			end
 
@@ -490,9 +509,7 @@ AimTemplates.chaos_marauder = {
 			end
 
 			if use_head_constraint then
-				local target_unit = blackboard.target_unit
 				local previous_aim_target_unit = data.previous_aim_target_unit
-				local head_constraint_target = data.head_constraint_target
 				data.lerp_aiming_disabled = true
 
 				if not DEDICATED_SERVER then

@@ -62,7 +62,9 @@ AttachmentSystem.rpc_remove_attachment = function (self, sender, unit_go_id, slo
 end
 
 AttachmentSystem.rpc_add_attachment_buffs = function (self, sender, go_id, slot_id, buff_1_id, buff_data_type_1_id, value_1, buff_2_id, buff_data_type_2_id, value_2, buff_3_id, buff_data_type_3_id, value_3, buff_4_id, buff_data_type_4_id, value_4)
-	fassert(self.is_server, "attempting to add buffs as a client VIA rpc_add_attachment_buffs")
+	if self.is_server then
+		self.network_transmit:send_rpc_clients_except("rpc_add_attachment_buffs", sender, go_id, slot_id, buff_1_id, buff_data_type_1_id, value_1, buff_2_id, buff_data_type_2_id, value_2, buff_3_id, buff_data_type_3_id, value_3, buff_4_id, buff_data_type_4_id, value_4)
+	end
 
 	local unit = self.unit_storage:unit(go_id)
 	local slot_name = NetworkLookup.equipment_slots[slot_id]

@@ -3,238 +3,47 @@ local weapon_template = weapon_template or {}
 weapon_template.actions = {
 	action_one = {
 		default = {
-			overcharge_type = "fireball_basic",
+			anim_event = "attack_shoot_fireball",
+			fire_time = 0.27,
+			is_spell = true,
 			alert_sound_range_fire = 12,
 			kind = "charged_projectile",
 			fire_sound_event_parameter = "drakegun_charge_fire",
-			fire_time = 0.27,
-			speed = 4000,
-			fire_sound_event = "player_combat_weapon_staff_fireball_fire",
-			anim_event = "attack_shoot_fireball",
 			hit_effect = "drakefire_pistol",
-			alert_sound_range_hit = 2,
+			overcharge_type = "fireball_basic",
 			charge_value = "light_attack",
-			is_spell = true,
+			fire_sound_event = "player_combat_weapon_staff_fireball_fire",
+			speed = 4000,
+			alert_sound_range_hit = 2,
 			total_time = 0.6,
 			allowed_chain_actions = {},
 			projectile_info = Projectiles.bouncing_fireball,
 			impact_data = {
-				targets = 1,
-				damage = {
-					enemy_unit_hit = {
-						default_target = {
-							boost_curve_coefficient = 1,
-							dot_template_name = "burning_1W_dot",
-							boost_curve_type = "ninja_curve",
-							attack_template = "fireball",
-							armour_modifier = {
-								attack = {
-									1,
-									0.8,
-									2.5,
-									1,
-									1.5
-								},
-								impact = {
-									1,
-									0.8,
-									2.5,
-									1,
-									1.5
-								}
-							},
-							cleave_distribution = {
-								attack = 0.2,
-								impact = 0.2
-							},
-							power_distribution = {
-								attack = 0.9,
-								impact = 0.3
-							}
-						},
-						critical_strike = {}
-					},
-					damagable_prop_hit = {
-						boost_curve_coefficient = 1,
-						dot_template_name = "burning_1W_dot",
-						boost_curve_type = "ninja_curve",
-						attack_template = "fireball",
-						armour_modifier = {
-							attack = {
-								1,
-								0.8,
-								2.5,
-								1,
-								1.5
-							},
-							impact = {
-								1,
-								0.8,
-								2.5,
-								1,
-								1.5
-							}
-						},
-						cleave_distribution = {
-							attack = 0.2,
-							impact = 0.2
-						},
-						power_distribution = {
-							attack = 0.9,
-							impact = 0.3
-						}
-					}
-				},
-				projectile_spawn = {
-					spawner_function = "split_bounce",
-					sub_action_name = "bouncing_fireball_2"
-				}
+				damage_profile = "staff_fireball"
+			},
+			timed_data = {
+				life_time = 1.5,
+				aoe = ExplosionTemplates.fireball
 			}
 		},
 		bouncing_fireball_2 = {
 			projectile_info = Projectiles.bouncing_fireball,
 			impact_data = {
-				targets = 1,
-				damage = {
-					enemy_unit_hit = {
-						default_target = {
-							boost_curve_coefficient = 1,
-							dot_template_name = "burning_1W_dot",
-							boost_curve_type = "ninja_curve",
-							attack_template = "fireball",
-							armour_modifier = {
-								attack = {
-									1,
-									0.8,
-									2.5,
-									1,
-									1.5
-								},
-								impact = {
-									1,
-									0.8,
-									2.5,
-									1,
-									1.5
-								}
-							},
-							cleave_distribution = {
-								attack = 0.2,
-								impact = 0.2
-							},
-							power_distribution = {
-								attack = 0.9,
-								impact = 0.3
-							}
-						},
-						critical_strike = {}
-					},
-					damagable_prop_hit = {
-						boost_curve_coefficient = 1,
-						dot_template_name = "burning_1W_dot",
-						boost_curve_type = "ninja_curve",
-						attack_template = "fireball",
-						armour_modifier = {
-							attack = {
-								1,
-								0.8,
-								2.5,
-								1,
-								1.5
-							},
-							impact = {
-								1,
-								0.8,
-								2.5,
-								1,
-								1.5
-							}
-						},
-						cleave_distribution = {
-							attack = 0.2,
-							impact = 0.2
-						},
-						power_distribution = {
-							attack = 0.9,
-							impact = 0.3
-						}
-					}
-				},
-				projectile_spawn = {
-					spawner_function = "split_bounce",
-					sub_action_name = "bouncing_fireball_3"
-				}
+				damage_profile = "staff_fireball"
+			},
+			timed_data = {
+				life_time = 1.5,
+				aoe = ExplosionTemplates.fireball
 			}
 		},
 		bouncing_fireball_3 = {
 			projectile_info = Projectiles.bouncing_fireball,
 			impact_data = {
-				targets = 1,
-				damage = {
-					enemy_unit_hit = {
-						default_target = {
-							boost_curve_coefficient = 1,
-							dot_template_name = "burning_1W_dot",
-							boost_curve_type = "ninja_curve",
-							attack_template = "fireball",
-							armour_modifier = {
-								attack = {
-									1,
-									0.8,
-									2.5,
-									1,
-									1.5
-								},
-								impact = {
-									1,
-									0.8,
-									2.5,
-									1,
-									1.5
-								}
-							},
-							cleave_distribution = {
-								attack = 0.2,
-								impact = 0.2
-							},
-							power_distribution = {
-								attack = 0.9,
-								impact = 0.3
-							}
-						},
-						critical_strike = {}
-					},
-					damagable_prop_hit = {
-						boost_curve_coefficient = 1,
-						dot_template_name = "burning_1W_dot",
-						boost_curve_type = "ninja_curve",
-						attack_template = "fireball",
-						armour_modifier = {
-							attack = {
-								1,
-								0.8,
-								2.5,
-								1,
-								1.5
-							},
-							impact = {
-								1,
-								0.8,
-								2.5,
-								1,
-								1.5
-							}
-						},
-						cleave_distribution = {
-							attack = 0.2,
-							impact = 0.2
-						},
-						power_distribution = {
-							attack = 0.9,
-							impact = 0.3
-						}
-					}
-				}
+				damage_profile = "staff_fireball"
+			},
+			timed_data = {
+				life_time = 1.5,
+				aoe = ExplosionTemplates.fireball
 			}
 		},
 		shoot_charged = {
@@ -246,8 +55,8 @@ weapon_template.actions = {
 			fire_sound_event_parameter = "drakegun_charge_fire",
 			reload_when_out_of_ammo = true,
 			attack_template = "shot_carbine",
-			fire_sound_event = "player_combat_weapon_staff_fireball_fire",
 			overcharge_type = "fireball_charged",
+			fire_sound_event = "player_combat_weapon_staff_fireball_fire",
 			alert_sound_range_fire = 12,
 			throw_up_this_much_in_target_direction = 0.15,
 			charge_value = "light_attack",
@@ -273,149 +82,17 @@ weapon_template.actions = {
 			},
 			projectile_info = Projectiles.flame_wave_fireball,
 			impact_data = {
-				targets = 1,
-				damage = {
-					enemy_unit_hit = {
-						default_target = {
-							boost_curve_coefficient = 1,
-							dot_template_name = "burning_1W_dot",
-							boost_curve_type = "ninja_curve",
-							attack_template = "fireball",
-							armour_modifier = {
-								attack = {
-									1,
-									0.8,
-									2.5,
-									1,
-									1.5
-								},
-								impact = {
-									1,
-									0.8,
-									2.5,
-									1,
-									1.5
-								}
-							},
-							cleave_distribution = {
-								attack = 0.2,
-								impact = 0.2
-							},
-							power_distribution = {
-								attack = 0.9,
-								impact = 0.3
-							}
-						},
-						critical_strike = {}
-					},
-					damagable_prop_hit = {
-						boost_curve_coefficient = 1,
-						dot_template_name = "burning_1W_dot",
-						boost_curve_type = "ninja_curve",
-						attack_template = "fireball",
-						armour_modifier = {
-							attack = {
-								1,
-								0.8,
-								2.5,
-								1,
-								1.5
-							},
-							impact = {
-								1,
-								0.8,
-								2.5,
-								1,
-								1.5
-							}
-						},
-						cleave_distribution = {
-							attack = 0.2,
-							impact = 0.2
-						},
-						power_distribution = {
-							attack = 0.9,
-							impact = 0.3
-						}
-					}
-				},
-				projectile_spawn = {
-					scale = 0,
-					initial_forward_speed = 20,
-					spawner_function = "flame_wave",
-					sub_action_name = "flame_wave"
-				}
+				damage_profile = "staff_fireball"
+			},
+			timed_data = {
+				life_time = 1.5,
+				aoe = ExplosionTemplates.fireball
 			}
 		},
 		flame_wave = {
 			projectile_info = Projectiles.flame_wave,
 			impact_data = {
-				targets = math.huge,
-				damage = {
-					enemy_unit_hit = {
-						default_target = {
-							boost_curve_coefficient = 1,
-							dot_template_name = "burning_dot",
-							boost_curve_type = "ninja_curve",
-							attack_template = "flame_wave",
-							armour_modifier = {
-								attack = {
-									1,
-									0.8,
-									2.5,
-									1,
-									1.5
-								},
-								impact = {
-									1,
-									0.8,
-									2.5,
-									1,
-									1.5
-								}
-							},
-							cleave_distribution = {
-								attack = 0.2,
-								impact = 0.2
-							},
-							power_distribution = {
-								attack = 0.9,
-								impact = 0.3
-							}
-						},
-						critical_strike = {}
-					},
-					damagable_prop_hit = {
-						boost_curve_coefficient = 1,
-						dot_template_name = "burning_dot",
-						boost_curve_type = "ninja_curve",
-						attack_template = "flame_wave",
-						armour_modifier = {
-							attack = {
-								1,
-								0.8,
-								2.5,
-								1,
-								1.5
-							},
-							impact = {
-								1,
-								0.8,
-								2.5,
-								1,
-								1.5
-							}
-						},
-						cleave_distribution = {
-							attack = 0.2,
-							impact = 0.2
-						},
-						power_distribution = {
-							attack = 0.9,
-							impact = 0.3
-						}
-					}
-				}
+				damage_profile = "staff_fireball"
 			}
 		}
 	},

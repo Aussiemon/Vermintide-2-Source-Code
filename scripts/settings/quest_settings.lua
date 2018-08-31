@@ -26,6 +26,7 @@ QuestSettings = {
 	event_skulls_for_the_skull_throne = 10,
 	event_sonnstill_quickplay_levels = 10,
 	event_sonnstill_difficulty_levels = 10,
+	weekly_complete_quickplay_missions = 25,
 	allowed_difficulties = {
 		elven_ruins_speed_event = {
 			hardest = true
@@ -113,6 +114,11 @@ QuestSettings.stat_mappings = {
 		"event_quest_3_stat_1",
 		"event_quest_3_stat_2",
 		"event_quest_3_stat_3"
+	},
+	weekly_quest_1 = {
+		"weekly_quest_1_stat_1",
+		"weekly_quest_1_stat_2",
+		"weekly_quest_1_stat_3"
 	}
 }
 

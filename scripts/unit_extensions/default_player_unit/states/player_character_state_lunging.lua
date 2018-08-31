@@ -29,6 +29,8 @@ PlayerCharacterStateLunging.on_enter = function (self, unit, input, dt, context,
 	self._lunge_data = lunge_data
 	self.status_extension.do_lunge = false
 	self.career_extension = ScriptUnit.extension(unit, "career_system")
+	local first_person_unit = first_person_extension:get_first_person_unit()
+	self._first_person_unit = first_person_unit
 	self.damage_start_time = (lunge_data.damage_start_time and t + lunge_data.damage_start_time) or t
 	local forward_direction = Quaternion.forward(self.first_person_extension:current_rotation())
 
@@ -41,7 +43,8 @@ PlayerCharacterStateLunging.on_enter = function (self, unit, input, dt, context,
 	CharacterStateHelper.look(input_extension, self.player.viewport_name, first_person_extension, status_extension, self.inventory_extension)
 	self:_on_enter_animation(unit, lunge_data.animation_event, lunge_data.animation_variable_name, lunge_data.animation_variable_value, lunge_data.first_person_animation_event)
 
-	self.amount_of_mass_hit = 0
+	self._num_impacts = 0
+	self._amount_of_mass_hit = 0
 	self._hit_units = {}
 	self._start_time = t
 
@@ -49,14 +52,13 @@ PlayerCharacterStateLunging.on_enter = function (self, unit, input, dt, context,
 	self._direction:store(forward_direction)
 
 	self._falling = false
-	local flow_events = lunge_data.flow_events
+	local lunge_events = lunge_data.lunge_events
 
-	if flow_events then
-		local start_flow = flow_events.start
+	if lunge_events then
+		local start_event_function = lunge_events.start
 
-		if start_flow then
-			Unit.flow_event(first_person_extension:get_first_person_unit(), start_flow)
-			Unit.flow_event(unit, start_flow)
+		if start_event_function then
+			start_event_function(self)
 		end
 	end
 
@@ -109,14 +111,13 @@ PlayerCharacterStateLunging.on_exit = function (self, unit, input, dt, context, 
 		end
 	end
 
-	local flow_events = self._lunge_data.flow_events
+	local lunge_events = self._lunge_data.lunge_events
 
-	if flow_events then
-		local finished_flow = flow_events.finished
+	if lunge_events then
+		local finished_event_function = lunge_events.finished
 
-		if finished_flow then
-			Unit.flow_event(self.first_person_extension:get_first_person_unit(), finished_flow)
-			Unit.flow_event(unit, finished_flow)
+		if finished_event_function then
+			finished_event_function(self)
 		end
 	end
 
@@ -146,6 +147,7 @@ end
 PlayerCharacterStateLunging.update = function (self, unit, input, dt, context, t)
 	local csm = self.csm
 	local unit = self.unit
+	local first_person_unit = self._first_person_unit
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local input_extension = self.input_extension
 	local status_extension = self.status_extension
@@ -169,21 +171,20 @@ PlayerCharacterStateLunging.update = function (self, unit, input, dt, context, t
 	end
 
 	local lunge_data = self._lunge_data
-	local flow_events = lunge_data.flow_events
+	local lunge_events = lunge_data.lunge_events
 
-	if flow_events then
-		local first_flow = flow_events[1]
+	if lunge_events then
+		local first_event_data = lunge_events[1]
 		local start_time = self._start_time
 
-		while first_flow do
-			if first_flow.t < t - start_time then
-				local event_name = first_flow.event_name
+		while first_event_data do
+			if first_event_data.t < t - start_time then
+				local event_function = first_event_data.event_function
 
-				Unit.flow_event(unit, event_name)
-				Unit.flow_event(first_person_extension:get_first_person_unit(), event_name)
-				table.remove(flow_events, 1)
+				event_function(self)
+				table.remove(lunge_events, 1)
 
-				first_flow = flow_events[1]
+				first_event_data = lunge_events[1]
 			else
 				break
 			end
@@ -196,6 +197,14 @@ PlayerCharacterStateLunging.update = function (self, unit, input, dt, context, t
 
 	if CharacterStateHelper.is_using_transport(status_extension) then
 		csm:change_state("using_transport")
+
+		return
+	end
+
+	local world = self.world
+
+	if CharacterStateHelper.is_ledge_hanging(world, unit, self.temp_params) then
+		csm:change_state("ledge_hanging", self.temp_params)
 
 		return
 	end
@@ -384,7 +393,7 @@ PlayerCharacterStateLunging._calculate_hit_mass = function (self, shield_blocked
 			hit_mass_total = hit_mass_total * (mass_cost_multiplier or 1)
 		end
 
-		self.amount_of_mass_hit = self.amount_of_mass_hit + hit_mass_total
+		self._amount_of_mass_hit = self._amount_of_mass_hit + hit_mass_total
 	else
 		shield_blocked = false
 	end
@@ -471,16 +480,16 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 				local can_damage = true
 				local can_stagger = true
 
-				weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, final_stagger_direction, damage_profile_id, "power_level", power_level, "hit_target_index", actual_hit_target_index, "blocking", shield_blocked, "shield_break_procced", shield_break_procc, "boost_curve_multiplier", boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", can_damage, "can_stagger", can_stagger)
+				weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_unit_pos, final_stagger_direction, damage_profile_id, "power_level", power_level, "hit_target_index", actual_hit_target_index, "blocking", shield_blocked, "shield_break_procced", shield_break_procc, "boost_curve_multiplier", boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", can_damage, "can_stagger", can_stagger)
 
-				local flow_events = self._lunge_data.flow_events
+				self._num_impacts = self._num_impacts + 1
+				local lunge_events = self._lunge_data.lunge_events
 
-				if flow_events then
-					local impact_flow = flow_events.impact
+				if lunge_events then
+					local impact_event_function = lunge_events.impact
 
-					if impact_flow then
-						Unit.flow_event(first_person_extension:get_first_person_unit(), impact_flow)
-						Unit.flow_event(unit, impact_flow)
+					if impact_event_function then
+						impact_event_function(self)
 					end
 				end
 
@@ -488,7 +497,7 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 					CharacterStateHelper.play_animation_event_first_person(first_person_extension, self._lunge_data.first_person_hit_animation_event)
 				end
 
-				local hit_mass_count_reached = self.max_targets <= self.amount_of_mass_hit or breed.armor_category == 2 or breed.armor_category == 3
+				local hit_mass_count_reached = self.max_targets <= self._amount_of_mass_hit or breed.armor_category == 2 or breed.armor_category == 3
 
 				if AiUtils.unit_alive(hit_unit) and (damage_data.interrupt_on_first_hit or (hit_mass_count_reached and damage_data.interrupt_on_max_hit_mass)) then
 					self:_do_blast(new_pos, forward_direction)
@@ -538,7 +547,8 @@ PlayerCharacterStateLunging._do_blast = function (self, new_pos, forward_directi
 					local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
 					local damage_source = "career_ability"
 					local damage_source_id = NetworkLookup.damage_sources[damage_source]
-					local attack_direction = Vector3.normalize(blast_pos - POSITION_LOOKUP[hit_unit])
+					local target_position = POSITION_LOOKUP[hit_unit]
+					local attack_direction = Vector3.normalize(blast_pos - target_position)
 					local boost_curve_multiplier = 0
 					local actual_hit_target_index = nil
 					local shield_blocked = not ignore_shield and AiUtils.attack_is_shield_blocked(hit_unit, unit)
@@ -547,7 +557,7 @@ PlayerCharacterStateLunging._do_blast = function (self, new_pos, forward_directi
 					local can_damage = true
 					local can_stagger = true
 
-					weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", actual_hit_target_index, "blocking", shield_blocked, "shield_break_procced", shield_break_procc, "boost_curve_multiplier", boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", can_damage, "can_stagger", can_stagger)
+					weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, target_position, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", actual_hit_target_index, "blocking", shield_blocked, "shield_break_procced", shield_break_procc, "boost_curve_multiplier", boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", can_damage, "can_stagger", can_stagger)
 				end
 			end
 		end

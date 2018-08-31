@@ -78,15 +78,74 @@ StateLoadingRestartNetwork._init_network = function (self)
 				host_to_join = script_data.host_to_join
 			end
 		elseif platform == "xb1" then
-			require("scripts/network/lobby_xbox_live")
+			if Managers.account:offline_mode() then
+				if package.loaded["scripts/network/lobby_xbox_live"] then
+					package.loaded["scripts/network/lobby_xbox_live"] = nil
+					package.load_order[#package.load_order] = nil
+				end
+
+				require("scripts/network/lobby_lan")
+			else
+				if package.loaded["scripts/network/lobby_lan"] then
+					package.loaded["scripts/network/lobby_lan"] = nil
+					package.load_order[#package.load_order] = nil
+				end
+
+				require("scripts/network/lobby_xbox_live")
+			end
 		elseif platform == "ps4" then
-			require("scripts/network/lobby_psn")
+			if Managers.account:offline_mode() then
+				if package.loaded["scripts/network/lobby_psn"] then
+					package.loaded["scripts/network/lobby_psn"] = nil
+					package.load_order[#package.load_order] = nil
+				end
+
+				require("scripts/network/lobby_lan")
+			else
+				if package.loaded["scripts/network/lobby_lan"] then
+					package.loaded["scripts/network/lobby_lan"] = nil
+					package.load_order[#package.load_order] = nil
+				end
+
+				require("scripts/network/lobby_psn")
+			end
 		end
 
 		LobbyInternal.init_client(self.parent:network_options())
 	elseif PLATFORM == "xb1" then
-		require("scripts/network/lobby_xbox_live")
-		LobbyInternal.init_client(self.parent:network_options())
+		if Managers.account:offline_mode() then
+			if package.loaded["scripts/network/lobby_xbox_live"] then
+				package.loaded["scripts/network/lobby_xbox_live"] = nil
+				package.load_order[#package.load_order] = nil
+			end
+
+			require("scripts/network/lobby_lan")
+		else
+			if package.loaded["scripts/network/lobby_lan"] then
+				package.loaded["scripts/network/lobby_lan"] = nil
+				package.load_order[#package.load_order] = nil
+			end
+
+			require("scripts/network/lobby_xbox_live")
+			LobbyInternal.init_client(self.parent:network_options())
+		end
+	elseif PLATFORM == "ps4" then
+		if Managers.account:offline_mode() then
+			if package.loaded["scripts/network/lobby_psn"] then
+				package.loaded["scripts/network/lobby_psn"] = nil
+				package.load_order[#package.load_order] = nil
+			end
+
+			require("scripts/network/lobby_lan")
+		else
+			if package.loaded["scripts/network/lobby_lan"] then
+				package.loaded["scripts/network/lobby_lan"] = nil
+				package.load_order[#package.load_order] = nil
+			end
+
+			require("scripts/network/lobby_psn")
+			LobbyInternal.init_client(self.parent:network_options())
+		end
 	end
 
 	if script_data.done_initial_join then
@@ -101,7 +160,7 @@ StateLoadingRestartNetwork._init_network = function (self)
 
 	slot7 = self._starting_tutorial and Managers.invite:get_invited_lobby_data()
 
-	if Managers.invite:has_invitation() then
+	if Managers.invite:has_invitation() and not self._starting_tutorial then
 		self._has_invitation = true
 	elseif loading_context.join_lobby_data or loading_context.join_server_data then
 		self.parent:setup_join_lobby()
@@ -127,19 +186,34 @@ StateLoadingRestartNetwork._init_network = function (self)
 end
 
 StateLoadingRestartNetwork.update = function (self, dt, t)
+	if self._has_invitation_error then
+		return
+	end
+
 	if self._has_invitation then
-		local lobby_data = Managers.invite:get_invited_lobby_data()
+		if Managers.invite:invites_handled() then
+			if not Managers.account:offline_mode() then
+				local lobby_data = Managers.invite:get_invited_lobby_data()
 
-		if lobby_data then
-			if lobby_data.is_server_invite then
-				self.parent.parent.loading_context.join_server_data = lobby_data
+				if lobby_data then
+					if lobby_data.is_server_invite then
+						self.parent.parent.loading_context.join_server_data = lobby_data
+					else
+						self.parent.parent.loading_context.join_lobby_data = lobby_data
+					end
+
+					self.parent:setup_join_lobby()
+
+					self._has_invitation = false
+				else
+					self.parent:set_invitation_error()
+
+					self._has_invitation_error = true
+				end
 			else
-				self.parent.parent.loading_context.join_lobby_data = lobby_data
+				self.parent.offline_invite = true
+				self._has_invitation = false
 			end
-
-			self.parent:setup_join_lobby()
-
-			self._has_invitation = false
 		end
 	elseif self._server_created and self._lobby_joined then
 		return StateLoadingRunning

@@ -53,7 +53,7 @@ UISceneGraph.init_scenegraph = function (scenegraph)
 			local parent = scene_object_data.parent
 
 			if parent and not scene_object_data.world_position then
-				assert(scenegraph[parent], "No such parent %s in scene graph for object %s", parent, name)
+				fassert(scenegraph[parent], "No such parent %s in scene graph for object %s", parent, name)
 				fassert(parent ~= name, "Object %q can't have itself as parent", name)
 
 				local parent_data = scenegraph[parent]
@@ -204,8 +204,9 @@ UISceneGraph.update_scenegraph = function (scenegraph, parent_scenegraph, sceneg
 	local inverse_scale = RESOLUTION_LOOKUP.inv_scale
 	local root_scale_x = UISettings.root_scale[1] * UISettings.ui_scale / 100
 	local root_scale_y = UISettings.root_scale[2] * UISettings.ui_scale / 100
+	local use_hud_screen_fit = UISettings.use_hud_screen_fit
 
-	if UISettings.use_hud_screen_fit then
+	if use_hud_screen_fit then
 		root_scale_x = w / (UIResolutionWidthFragments() * scale)
 	else
 		root_scale_x = UISettings.root_scale[1]
@@ -249,6 +250,21 @@ UISceneGraph.update_scenegraph = function (scenegraph, parent_scenegraph, sceneg
 
 			Vector3_set_x(current_world_position, 0)
 			Vector3_set_y(current_world_position, 0)
+		elseif scenegraph_object.scale == "hud_scale_fit" then
+			size_x = size_x * root_scale_x
+			size_y = h * inverse_scale
+			local scaled_x = size_x * scale
+			local x = ((Vector3_x(current_world_position) + w / 2) - scaled_x / 2) * inverse_scale
+
+			Vector3_set_x(current_world_position, x)
+			Vector3_set_y(current_world_position, 0)
+		elseif scenegraph_object.scale == "hud_fit" then
+			local safe_rect = (Application.user_setting("safe_rect") or 0) * 0.01
+			size_x = w * inverse_scale * (1 - safe_rect)
+			size_y = h * inverse_scale * (1 - safe_rect)
+
+			Vector3_set_x(current_world_position, w * safe_rect * 0.5 * inverse_scale)
+			Vector3_set_y(current_world_position, h * safe_rect * 0.5 * inverse_scale)
 		elseif scenegraph_object.scale == "aspect_ratio" then
 			local aspect_ratio = w / h
 			local default_aspect_ratio = size_x / size_y
@@ -278,7 +294,7 @@ UISceneGraph.update_scenegraph = function (scenegraph, parent_scenegraph, sceneg
 		elseif scenegraph_object.scale == "fit_height" then
 			Vector3_set_y(current_world_position, 0)
 
-			size_z = h * inverse_scale
+			size_y = h * inverse_scale
 
 			handle_alignment(current_world_position, scenegraph_object, size_x, nil, w * inverse_scale, nil)
 		end
@@ -298,7 +314,7 @@ UISceneGraph.update_scenegraph = function (scenegraph, parent_scenegraph, sceneg
 end
 
 UISceneGraph.get_world_position = function (scenegraph, scenegraph_object_name)
-	assert(rawget(scenegraph, scenegraph_object_name), "No such object name in scenegraph: %s", tostring(scenegraph_object_name))
+	fassert(rawget(scenegraph, scenegraph_object_name), "No such object name in scenegraph: %s", tostring(scenegraph_object_name))
 
 	return scenegraph[scenegraph_object_name].world_position
 end
@@ -342,6 +358,13 @@ UISceneGraph.get_size_scaled = function (scenegraph, scenegraph_object_name, opt
 		local inverse_scale = RESOLUTION_LOOKUP.inv_scale
 
 		return Vector2(w * inverse_scale, h * inverse_scale)
+	elseif scenegraph_object.scale == "hud_fit" then
+		local safe_rect = (Application.user_setting("safe_rect") or 0) * 0.01
+		local w = RESOLUTION_LOOKUP.res_w
+		local h = RESOLUTION_LOOKUP.res_h
+		local inverse_scale = RESOLUTION_LOOKUP.inv_scale
+
+		return Vector2(w * inverse_scale * (1 - safe_rect), h * inverse_scale * (1 - safe_rect))
 	elseif scenegraph_object.scale == "fit_width" then
 		local w = RESOLUTION_LOOKUP.res_w
 		local h = RESOLUTION_LOOKUP.res_h

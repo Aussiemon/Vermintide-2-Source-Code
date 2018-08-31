@@ -3,18 +3,81 @@ require("scripts/settings/hero_statistics_template")
 
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_background_console_definitions")
 local widget_definitions = definitions.widgets
-local viewport_widget_definition = definitions.viewport_widget
+local background_rect = definitions.background_rect
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local camera_position_by_character = definitions.camera_position_by_character
 local loading_overlay_widget_definitions = definitions.loading_overlay_widgets
 local DO_RELOAD = false
+local object_sets_per_layout = {
+	equipment = {
+		equipment_view = true
+	},
+	talents = {
+		talents_view = true
+	},
+	forge = {
+		crafting_view = true
+	},
+	cosmetics = {
+		cosmetics_view = true
+	},
+	crafting_recipe = {
+		crafting_view = true
+	},
+	equipment_selection = {
+		equipment_view = true
+	},
+	cosmetics_selection = {
+		cosmetics_view = true
+	},
+	system = {
+		main_menu = true
+	}
+}
+local level_events_per_layout = {
+	equipment = {
+		"equipment_view"
+	},
+	talents = {
+		"talents_view"
+	},
+	forge = {
+		"crafting_view"
+	},
+	cosmetics = {
+		"cosmetics_view"
+	},
+	crafting_recipe = {
+		"crafting_view"
+	},
+	equipment_selection = {
+		"equipment_view"
+	},
+	cosmetics_selection = {
+		"cosmetics_view"
+	},
+	system = {
+		"main_menu"
+	}
+}
+local character_visibility_per_layout = {
+	equipment = true,
+	cosmetics = true,
+	forge = false,
+	crafting_recipe = false,
+	system = false,
+	equipment_selection = true,
+	talents = false,
+	cosmetics_selection = true
+}
 HeroWindowBackgroundConsole = class(HeroWindowBackgroundConsole)
 HeroWindowBackgroundConsole.NAME = "HeroWindowBackgroundConsole"
 
 HeroWindowBackgroundConsole.on_enter = function (self, params, offset)
 	print("[HeroViewWindow] Enter Substate HeroWindowBackgroundConsole")
 
+	self.params = params
 	self.parent = params.parent
 	local ingame_ui_context = params.ingame_ui_context
 	self.ingame_ui_context = ingame_ui_context
@@ -30,12 +93,53 @@ HeroWindowBackgroundConsole.on_enter = function (self, params, offset)
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
+	self.is_in_inn = ingame_ui_context.is_in_inn
 	self.hero_name = params.hero_name
 	self.career_index = params.career_index
 	self.skin_sync_id = self.parent.skin_sync_id
+	self._camera_move_duration = UISettings.console_menu_camera_move_duration
 	self._animations = {}
 
 	self:create_ui_elements(params, offset)
+end
+
+HeroWindowBackgroundConsole._create_viewport_definition = function (self)
+	return {
+		scenegraph_id = "screen",
+		element = UIElements.Viewport,
+		style = {
+			viewport = {
+				layer = 990,
+				viewport_name = "character_preview_viewport",
+				clear_screen_on_create = true,
+				level_name = "levels/ui_keep_menu/world",
+				enable_sub_gui = false,
+				fov = 50,
+				world_name = "character_preview",
+				world_flags = {
+					Application.DISABLE_SOUND,
+					Application.DISABLE_ESRAM,
+					Application.ENABLE_VOLUMETRICS
+				},
+				object_sets = LevelResource.object_set_names("levels/ui_keep_menu/world"),
+				camera_position = {
+					0,
+					0,
+					0
+				},
+				camera_lookat = {
+					0,
+					0,
+					0
+				}
+			}
+		},
+		content = {
+			button_hotspot = {
+				allow_multi_hover = true
+			}
+		}
+	}
 end
 
 HeroWindowBackgroundConsole.create_ui_elements = function (self, params, offset)
@@ -80,16 +184,26 @@ HeroWindowBackgroundConsole.create_ui_elements = function (self, params, offset)
 		window_position[3] = window_position[3] + offset[3]
 	end
 
-	self._level_package_name = viewport_widget_definition.style.viewport.level_package_name
-	local callback = nil
-	local asynchronous = true
+	if self.is_in_inn then
+		self._viewport_widget_definition = self:_create_viewport_definition()
 
-	Managers.package:load(self._level_package_name, "HeroWindowBackgroundConsole", callback, asynchronous)
-
-	self._show_loading_overlay = true
+		self:_setup_object_sets()
+	else
+		self._background_widget = UIWidget.init(background_rect)
+	end
 
 	if not Development.parameter("hero_statistics") then
 		widgets_by_name.detailed.content.visible = false
+	end
+end
+
+HeroWindowBackgroundConsole._setup_object_sets = function (self)
+	local level_name = self._viewport_widget_definition.style.viewport.level_name
+	local object_set_names = LevelResource.object_set_names(level_name)
+	self._object_sets = {}
+
+	for _, object_set_name in ipairs(object_set_names) do
+		self._object_sets[object_set_name] = LevelResource.unit_indices_in_object_set(level_name, object_set_name)
 	end
 end
 
@@ -109,10 +223,6 @@ HeroWindowBackgroundConsole.on_exit = function (self, params)
 
 		self._viewport_widget = nil
 	end
-
-	Managers.package:unload(self._level_package_name, "HeroWindowBackgroundConsole")
-
-	self._level_package_name = nil
 end
 
 HeroWindowBackgroundConsole.update = function (self, dt, t)
@@ -123,10 +233,9 @@ HeroWindowBackgroundConsole.update = function (self, dt, t)
 	end
 
 	if self.world_previewer and self.hero_unit_spawned then
-		self:_handle_input(dt, t)
-
 		local input_service = self.parent:window_input_service()
 
+		self:_handle_input(input_service, dt, t)
 		self:_update_statistics_widget(input_service, dt)
 	end
 
@@ -138,12 +247,52 @@ HeroWindowBackgroundConsole.update = function (self, dt, t)
 		local disable_hero_unit_input = statistics_activate
 
 		self.world_previewer:update(dt, t, disable_hero_unit_input)
+
+		local layout_name = self.parent:get_layout_name()
+
+		if layout_name ~= self._current_layout_name then
+			self._current_layout_name = layout_name
+
+			self:_update_object_sets(layout_name)
+			self:_update_level_events(layout_name)
+			self:_update_character_visibility(layout_name)
+		end
+	end
+end
+
+HeroWindowBackgroundConsole._update_character_visibility = function (self, layout_name)
+	local draw_character = character_visibility_per_layout[layout_name] or false
+
+	self.world_previewer:_set_character_visibility(draw_character)
+
+	self._draw_character = draw_character
+
+	if not draw_character and self.params.hero_statistics_active then
+		self:_handle_statistics_pressed()
+	end
+end
+
+HeroWindowBackgroundConsole._update_level_events = function (self, layout_name)
+	local level_events_to_trigger = level_events_per_layout[layout_name]
+
+	for _, event_name in ipairs(level_events_to_trigger) do
+		self.world_previewer:trigger_level_event(event_name)
+	end
+end
+
+HeroWindowBackgroundConsole._update_object_sets = function (self, layout_name)
+	local object_set_to_enable = object_sets_per_layout[layout_name]
+
+	for object_set_name, object_set_units in pairs(self._object_sets) do
+		local enable_visibility = (object_set_to_enable and object_set_to_enable[object_set_name]) or false
+
+		self.world_previewer:show_level_units(object_set_units, enable_visibility)
 	end
 end
 
 HeroWindowBackgroundConsole.post_update = function (self, dt, t)
-	if not self._viewport_widget and Managers.package:has_loaded(self._level_package_name, "HeroWindowBackgroundConsole") then
-		self._viewport_widget = UIWidget.init(viewport_widget_definition)
+	if self._viewport_widget_definition and not self._viewport_widget then
+		self._viewport_widget = UIWidget.init(self._viewport_widget_definition)
 		self._fadeout_loading_overlay = true
 	end
 
@@ -159,7 +308,7 @@ HeroWindowBackgroundConsole.post_update = function (self, dt, t)
 		self.hero_unit_spawned = false
 
 		world_previewer:on_enter(self._viewport_widget, self.hero_name)
-		world_previewer:request_spawn_hero_unit(self.hero_name, self.career_index, false, callback)
+		world_previewer:request_spawn_hero_unit(self.hero_name, self.career_index, false, callback, nil, self._camera_move_duration)
 
 		self.world_previewer = world_previewer
 		self.initialized = true
@@ -198,7 +347,7 @@ HeroWindowBackgroundConsole.respawn_hero = function (self)
 		self:_update_wielded_slot()
 	end
 
-	world_previewer:respawn_hero_unit(self.hero_name, self.career_index, false, callback)
+	world_previewer:respawn_hero_unit(self.hero_name, self.career_index, false, callback, self._camera_move_duration)
 end
 
 HeroWindowBackgroundConsole._update_animations = function (self, dt)
@@ -254,7 +403,9 @@ HeroWindowBackgroundConsole._update_wielded_slot = function (self)
 				local slot_type = slot.type
 
 				if slot_type == "melee" or slot_type == "ranged" then
-					self.world_previewer:wield_weapon_slot(slot_type)
+					if self.world_previewer:wielded_slot_type() ~= slot_type then
+						self.world_previewer:wield_weapon_slot(slot_type)
+					end
 
 					break
 				end
@@ -291,8 +442,11 @@ HeroWindowBackgroundConsole._populate_loadout = function (self)
 
 			if item_name ~= current_item_name or item_slot_type == "melee" or item_slot_type == "ranged" then
 				local backend_id = item.backend_id
+				local item_info = world_previewer:get_equipped_item_info(slot)
 
-				world_previewer:equip_item(item_name, slot, backend_id)
+				if not item_info or item_info.backend_id ~= backend_id then
+					world_previewer:equip_item(item_name, slot, backend_id)
+				end
 			end
 		end
 	end
@@ -325,12 +479,11 @@ HeroWindowBackgroundConsole._is_stepper_button_pressed = function (self, widget)
 	end
 end
 
-HeroWindowBackgroundConsole._handle_input = function (self, dt, t)
+HeroWindowBackgroundConsole._handle_input = function (self, input_service, dt, t)
 	local widgets_by_name = self._widgets_by_name
 	local detailed_widget = widgets_by_name.detailed
 
-	if self:_is_button_pressed(detailed_widget) then
-		self:_handle_statistics_pressed()
+	if self._draw_character then
 	end
 end
 
@@ -362,6 +515,10 @@ HeroWindowBackgroundConsole.draw = function (self, dt)
 	if self._viewport_widget then
 		UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
 		UIRenderer.draw_widget(ui_renderer, self._viewport_widget)
+		UIRenderer.end_pass(ui_renderer)
+	elseif self._background_widget then
+		UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
+		UIRenderer.draw_widget(ui_renderer, self._background_widget)
 		UIRenderer.end_pass(ui_renderer)
 	end
 end
@@ -397,13 +554,13 @@ HeroWindowBackgroundConsole._update_loading_overlay_fadeout_animation = function
 end
 
 HeroWindowBackgroundConsole._handle_statistics_pressed = function (self)
-	local widgets_by_name = self._widgets_by_name
-	local widget = widgets_by_name.detailed
+	local statistics_activate = self:_statistics_activate()
+	self.params.hero_statistics_active = not statistics_activate
 
-	if widget.content.active then
+	if statistics_activate then
 		self:_deactivate_statistics()
 	else
-		self:_activate_statistics(widget)
+		self:_activate_statistics()
 	end
 end
 
@@ -459,6 +616,13 @@ HeroWindowBackgroundConsole._update_statistics_widget = function (self, input_se
 
 	if not widget.content.active then
 		return
+	end
+
+	local gamepad_input_axis = input_service:get("gamepad_right_axis")
+
+	if gamepad_input_axis and Vector3.length(gamepad_input_axis) > 0.01 then
+		local current_scroll_value = widget.content.scrollbar.scroll_value
+		widget.content.scrollbar.scroll_value = math.clamp(current_scroll_value + gamepad_input_axis.y * dt * 5, 0, 1)
 	end
 
 	local detailed_button_size = scenegraph_definition.detailed_button.size

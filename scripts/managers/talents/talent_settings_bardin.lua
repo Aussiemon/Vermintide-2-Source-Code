@@ -59,6 +59,7 @@ local buff_tweak_data = {
 		duration = 15
 	},
 	bardin_ironbreaker_activated_ability_taunt_range = {
+		display_multiplier = 0.5,
 		range = 15
 	},
 	bardin_slayer_ability_cooldown_on_hit = {
@@ -108,6 +109,9 @@ local buff_tweak_data = {
 	bardin_slayer_activated_ability_movement = {
 		multiplier = 1.25
 	},
+	bardin_slayer_activated_ability_impact_damage = {
+		display_multiplier = 1
+	},
 	bardin_ranger_ability_cooldown_on_hit = {
 		bonus = 0.3
 	},
@@ -143,6 +147,9 @@ local buff_tweak_data = {
 	},
 	bardin_ranger_defence_on_disabled = {
 		multiplier = -0.5
+	},
+	bardin_ranger_passive_improved_ammo = {
+		multiplier = 0.3
 	},
 	bardin_ranger_increased_ammunition = {
 		multiplier = 0.5
@@ -360,8 +367,6 @@ TalentBuffTemplates.dwarf_ranger = {
 	},
 	bardin_ironbreaker_activated_ability = {
 		activation_effect = "fx/screenspace_potion_03",
-		deactivation_sound = "hud_gameplay_stance_deactivate",
-		activation_sound = "hud_gameplay_stance_tank_activate",
 		buffs = {
 			{
 				update_func = "update_bardin_ironbreaker_activated_ability",
@@ -680,13 +685,13 @@ TalentBuffTemplates.dwarf_ranger = {
 	},
 	bardin_ranger_activated_ability = {
 		deactivation_effect = "fx/screenspace_ranger_skill_02",
-		continuous_effect = "fx/screenspace_ranger_skill_01",
 		buffs = {
 			{
-				max_stacks = 1,
 				icon = "bardin_ranger_activated_ability",
-				remove_buff_func = "end_ranger_activated_ability",
-				refresh_durations = true
+				refresh_durations = true,
+				continuous_effect = "fx/screenspace_ranger_skill_01",
+				max_stacks = 1,
+				remove_buff_func = "end_ranger_activated_ability"
 			}
 		}
 	},
@@ -771,12 +776,12 @@ TalentBuffTemplates.dwarf_ranger = {
 	},
 	bardin_ranger_activated_ability_duration = {
 		deactivation_effect = "fx/screenspace_ranger_skill_02",
-		continuous_effect = "fx/screenspace_ranger_skill_01",
 		buffs = {
 			{
 				icon = "bardin_ranger_activated_ability",
 				name = "bardin_ranger_activated_ability",
 				refresh_durations = true,
+				continuous_effect = "fx/screenspace_ranger_skill_01",
 				max_stacks = 1,
 				remove_buff_func = "end_ranger_activated_ability"
 			}
@@ -912,7 +917,7 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "bardin_ironbreaker_max_stamina_desc",
+		description = "bardin_ironbreaker_max_stamina_desc_2",
 		name = "bardin_ironbreaker_max_stamina",
 		num_ranks = 1,
 		icon = "bardin_ironbreaker_max_stamina",
@@ -1034,12 +1039,16 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc",
+		description = "regrowth_desc_2",
 		name = "bardin_ironbreaker_regrowth",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "bardin_ironbreaker_regrowth",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.regrowth.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"regrowth"
@@ -1047,12 +1056,16 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc",
+		description = "bloodlust_desc_2",
 		name = "bardin_ironbreaker_bloodlust",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "bardin_ironbreaker_bloodlust",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.bloodlust.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"bloodlust"
@@ -1060,12 +1073,16 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc",
+		description = "conqueror_desc_2",
 		name = "bardin_ironbreaker_conqueror",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "bardin_ironbreaker_conqueror",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.conqueror.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"conqueror"
@@ -1087,13 +1104,14 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "bardin_ironbreaker_activated_ability_taunt_range_desc",
+		description = "bardin_ironbreaker_activated_ability_taunt_range_desc_2",
 		name = "bardin_ironbreaker_activated_ability_taunt_range",
 		num_ranks = 1,
 		icon = "bardin_ironbreaker_activated_ability_taunt_range",
 		description_values = {
 			{
-				value = buff_tweak_data.bardin_ironbreaker_activated_ability_taunt_range.range
+				value_type = "percent",
+				value = buff_tweak_data.bardin_ironbreaker_activated_ability_taunt_range.display_multiplier
 			}
 		},
 		requirements = {},
@@ -1197,12 +1215,17 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "bardin_slayer_debuff_defence_on_crit_desc",
+		description = "bardin_slayer_debuff_defence_on_crit_desc_2",
 		name = "bardin_slayer_debuff_defence_on_crit",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "bardin_slayer_debuff_defence_on_crit",
-		description_values = {},
+		description_values = {
+			{
+				value_type = "percent",
+				value = BuffTemplates.defence_debuff_enemies.buffs[1].multiplier
+			}
+		},
 		requirements = {},
 		buffs = {
 			"bardin_slayer_debuff_defence_on_crit"
@@ -1210,18 +1233,22 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "bardin_slayer_passive_stacking_damage_buff_increased_duration_desc",
+		description = "bardin_slayer_passive_stacking_damage_buff_increased_duration_desc_2",
 		name = "bardin_slayer_passive_stacking_damage_buff_increased_duration",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "bardin_slayer_passive_stacking_damage_buff_increased_duration",
-		description_values = {},
+		description_values = {
+			{
+				value = buff_tweak_data.bardin_slayer_passive_stacking_damage_buff_increased_duration.duration
+			}
+		},
 		requirements = {},
 		buffs = {},
 		buff_data = {}
 	},
 	{
-		description = "bardin_slayer_passive_stacking_damage_buff_grants_defence_desc",
+		description = "bardin_slayer_passive_stacking_damage_buff_grants_defence_desc_2",
 		name = "bardin_slayer_passive_stacking_damage_buff_grants_defence",
 		num_ranks = 1,
 		buffer = "server",
@@ -1248,12 +1275,16 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc",
+		description = "regrowth_desc_2",
 		name = "bardin_slayer_regrowth",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "bardin_slayer_regrowth",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.regrowth.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"regrowth"
@@ -1261,12 +1292,16 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc",
+		description = "bloodlust_desc_2",
 		name = "bardin_slayer_bloodlust",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "bardin_slayer_bloodlust",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.bloodlust.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"bloodlust"
@@ -1274,12 +1309,16 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc",
+		description = "conqueror_desc_2",
 		name = "bardin_slayer_conqueror",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "bardin_slayer_conqueror",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.conqueror.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"conqueror"
@@ -1287,16 +1326,22 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "bardin_slayer_activated_ability_impact_damage_desc",
+		description = "bardin_slayer_activated_ability_impact_damage_desc_2",
 		name = "bardin_slayer_activated_ability_impact_damage",
 		num_ranks = 1,
 		icon = "bardin_slayer_activated_ability_impact_damage",
+		description_values = {
+			{
+				value_type = "percent",
+				value = buff_tweak_data.bardin_slayer_activated_ability_impact_damage.display_multiplier
+			}
+		},
 		requirements = {},
 		buffs = {},
 		buff_data = {}
 	},
 	{
-		description = "bardin_slayer_activated_ability_movement_desc",
+		description = "bardin_slayer_activated_ability_movement_desc_2",
 		name = "bardin_slayer_activated_ability_movement",
 		num_ranks = 1,
 		icon = "bardin_slayer_activated_ability_movement",
@@ -1311,7 +1356,7 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "bardin_slayer_activated_ability_uninterruptible_desc",
+		description = "bardin_slayer_activated_ability_uninterruptible_desc_2",
 		name = "bardin_slayer_activated_ability_uninterruptible",
 		num_ranks = 1,
 		icon = "bardin_slayer_activated_ability_uninterruptible",
@@ -1444,22 +1489,31 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "bardin_ranger_passive_improved_ammo_desc",
+		description = "bardin_ranger_passive_improved_ammo_desc_2",
 		name = "bardin_ranger_passive_improved_ammo",
 		num_ranks = 1,
 		icon = "bardin_ranger_passive_improved_ammo",
-		description_values = {},
+		description_values = {
+			{
+				value_type = "percent",
+				value = buff_tweak_data.bardin_ranger_passive_improved_ammo.multiplier
+			}
+		},
 		requirements = {},
 		buffs = {},
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc",
+		description = "regrowth_desc_2",
 		name = "bardin_ranger_regrowth",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "bardin_ranger_regrowth",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.regrowth.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"regrowth"
@@ -1467,12 +1521,16 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc",
+		description = "bloodlust_desc_2",
 		name = "bardin_ranger_bloodlust",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "bardin_ranger_bloodlust",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.bloodlust.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"bloodlust"
@@ -1480,12 +1538,16 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc",
+		description = "conqueror_desc_2",
 		name = "bardin_ranger_conqueror",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "bardin_ranger_conqueror",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.conqueror.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"conqueror"
@@ -1524,7 +1586,7 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "bardin_ranger_activated_ability_heal_desc",
+		description = "bardin_ranger_activated_ability_heal_desc_2",
 		name = "bardin_ranger_activated_ability_heal",
 		num_ranks = 1,
 		icon = "bardin_ranger_activated_ability_heal",

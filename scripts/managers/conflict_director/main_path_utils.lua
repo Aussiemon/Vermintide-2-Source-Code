@@ -7,11 +7,27 @@ MainPathUtils.total_path_dist = function ()
 	return EngineOptimized.main_path_total_length()
 end
 
-MainPathUtils.closest_pos_at_main_path = function (not_used, p)
-	return EngineOptimized.closest_pos_at_main_path(p)
+MainPathUtils.closest_pos_at_main_path = function (not_used, p, search_main_path_index)
+	local start_node_index, end_node_index = nil
+
+	if search_main_path_index then
+		local level_analysis = Managers.state.conflict.level_analysis
+		local main_path_data = level_analysis.main_path_data
+		local breaks_order = main_path_data.breaks_order
+
+		if search_main_path_index == 1 then
+			start_node_index = 1
+		else
+			start_node_index = breaks_order[search_main_path_index - 1] + 1
+		end
+
+		end_node_index = breaks_order[search_main_path_index]
+	end
+
+	return EngineOptimized.closest_pos_at_main_path(p, start_node_index, end_node_index)
 end
 
-MainPathUtils.closest_pos_at_main_path_lua = function (main_paths, p)
+MainPathUtils.closest_pos_at_main_path_lua = function (main_paths, p, search_main_path_index)
 	local best_dist = math.huge
 	local best_main_path, best_sub_index = nil
 	local best_point = Vector3(0, 0, 0)
@@ -24,9 +40,10 @@ MainPathUtils.closest_pos_at_main_path_lua = function (main_paths, p)
 	local Geometry_closest_point_on_line = Geometry.closest_point_on_line
 	local Script_set_temp_count = Script.set_temp_count
 	local Script_temp_count = Script.temp_count
-	local Vector3_distance = Vector3.distance
+	local start_index = search_main_path_index or 1
+	local end_index = search_main_path_index or #main_paths
 
-	for i = 1, #main_paths, 1 do
+	for i = start_index, end_index, 1 do
 		local sub_path = main_paths[i]
 		local nodes = sub_path.nodes
 		total_path_dist = total_path_dist + sub_path.path_length
@@ -413,9 +430,8 @@ MainPathUtils.ray_along_node_list = function (nav_world, node_list, start_node_i
 	end
 end
 
-MainPathUtils.find_equidistant_points_in_node_list = function (node_list, start_node_index, node_list_direction, point_distance, num_wanted_points)
+MainPathUtils.find_equidistant_points_in_node_list = function (node_list, start_node_index, node_list_direction, point_distance, num_wanted_points, points)
 	local node_index = start_node_index
-	local points = {}
 	local point_index = 1
 	local segment_offset = 0
 

@@ -5,9 +5,9 @@ DefaultAnimationFunctions = {
 		local player = Managers.player:local_player()
 		local player_unit = player.player_unit
 		local player_input = ScriptUnit.extension(player_unit, "input_system")
-		this.player_input_enabled = player_input.enabled
-		this.allowed_input = player_input:allowed_input_table()
-		this.disallowed_input = player_input:disallowed_input_table()
+		this.old_player_input_enabled = player_input.enabled
+		this.old_allowed_input = player_input:allowed_input_table()
+		this.old_disallowed_input = player_input:disallowed_input_table()
 		local allowed_input = {}
 
 		for _, input in pairs(this.allowed_input) do
@@ -103,6 +103,10 @@ DefaultAnimationFunctions = {
 						success = false
 
 						break
+					elseif result == nil then
+						success = false
+
+						break
 					end
 				end
 
@@ -190,9 +194,9 @@ DefaultAnimationFunctions = {
 		local player_unit = player.player_unit
 		local player_input = ScriptUnit.extension(player_unit, "input_system")
 
-		player_input:set_enabled(this.player_input_enabled)
-		player_input:set_allowed_inputs(this.allowed_input)
-		player_input:set_disallowed_inputs(this.disallowed_input)
+		player_input:set_enabled(this.old_player_input_enabled)
+		player_input:set_allowed_inputs(this.old_allowed_input)
+		player_input:set_disallowed_inputs(this.old_disallowed_input)
 		Managers.input:device_unblock_service("gamepad", 1, "ingame_menu")
 		Managers.input:device_unblock_service("keyboard", 1, "ingame_menu")
 		Managers.input:device_unblock_service("mouse", 1, "ingame_menu")

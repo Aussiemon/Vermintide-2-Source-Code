@@ -1,4 +1,5 @@
 require("scripts/managers/backend_playfab/playfab_mirror_dedicated")
+require("scripts/managers/backend_playfab/script_backend_playfab")
 
 local IPlayFabHttps = require("PlayFab.IPlayFabHttps")
 local playfab_https_curl = require("scripts/managers/backend/playfab_https_curl")
@@ -7,7 +8,7 @@ IPlayFabHttps.SetHttp(playfab_https_curl)
 
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
 PlayFabClientApi.settings.titleId = GameSettingsDevelopment.backend_settings.title_id
-ScriptBackendPlayFabDedicated = class(ScriptBackendPlayFabDedicated)
+ScriptBackendPlayFabDedicated = class(ScriptBackendPlayFabDedicated, ScriptBackendPlayFab)
 
 ScriptBackendPlayFabDedicated.init = function (self)
 	local unique_id = self.generate_unique_id()
@@ -15,10 +16,12 @@ ScriptBackendPlayFabDedicated.init = function (self)
 		CreateAccount = true,
 		CustomId = unique_id,
 		InfoRequestParameters = {
-			GetUserReadOnlyData = true
+			GetUserReadOnlyData = true,
+			GetTitleData = true
 		},
 		TitleId = PlayFabClientApi.settings.titleId
 	}
+	self._signed_in = false
 
 	print("Logging in to Playfab using custom ID")
 
@@ -27,50 +30,18 @@ ScriptBackendPlayFabDedicated.init = function (self)
 	PlayFabClientApi.LoginWithCustomID(login_request, login_request_cb, login_request_cb)
 end
 
-ScriptBackendPlayFabDedicated.destroy = function (self)
-	return
-end
-
-ScriptBackendPlayFabDedicated.update_state = function (self)
-	assert(false)
-end
-
-ScriptBackendPlayFabDedicated.update_signin = function (self)
-	local signin_result = self._signin_result_error
-
-	if signin_result then
-		local error_code = signin_result.errorCode
-		local error_message = signin_result.errorMessage
-
-		return {
-			reason = error_code,
-			details = error_message
-		}
-	end
-
-	return nil
-end
-
 ScriptBackendPlayFabDedicated.login_request_cb = function (self, result)
 	self._signin_result = result
 
 	if result.error then
-		print("Sign-in failed")
+		cprint("Backend sign-in failed")
 
-		return
+		self._signin_result_error = result
+	else
+		cprint("Backend sign-in success")
+
+		self._signed_in = true
 	end
-
-	print("Signed In")
-
-	self._signed_in = true
-end
-
-ScriptBackendPlayFabDedicated.authenticated = function (self)
-	return self._signed_in
-end
-
-ScriptBackendPlayFabDedicated.get_signin_result = function (self)
-	return self._signin_result
 end
 
 ScriptBackendPlayFabDedicated.generate_unique_id = function ()

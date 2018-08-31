@@ -7,20 +7,26 @@ PingTargetExtension.init = function (self, extension_init_context, unit, extensi
 end
 
 PingTargetExtension.extensions_ready = function (self, world, unit)
-	if ScriptUnit.has_extension(unit, "outline_system") then
-		self.outline_extension = ScriptUnit.extension(unit, "outline_system")
-	end
-
+	self._outline_extension = ScriptUnit.has_extension(unit, "outline_system")
 	self._buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+	self._locomotion_extension = ScriptUnit.has_extension(unit, "locomotion_system")
 end
 
-PingTargetExtension.set_pinged = function (self, pinged, pinger_unit)
+PingTargetExtension.set_pinged = function (self, pinged, flash)
 	self._pinged = pinged
-	local unit = self._unit
 
-	if self.outline_extension then
-		self.outline_extension.set_pinged(pinged)
-		self:_add_witch_hunter_buff(unit, pinger_unit)
+	if self._outline_extension then
+		self._outline_extension.set_pinged(pinged, flash)
+
+		if pinged then
+			self:_add_witch_hunter_buff()
+		end
+	end
+
+	if self._locomotion_extension and self._locomotion_extension.bone_lod_extension_id then
+		local bone_lod_extension_id = self._locomotion_extension.bone_lod_extension_id
+
+		EngineOptimized.bone_lod_set_ignore_umbra(bone_lod_extension_id, pinged)
 	end
 end
 
@@ -29,15 +35,14 @@ PingTargetExtension.pinged = function (self)
 end
 
 PingTargetExtension.update = function (self, unit, input, dt, context, t)
-	if self._pinged and self.outline_extension then
-	end
+	return
 end
 
 PingTargetExtension.destroy = function (self)
 	return
 end
 
-PingTargetExtension._add_witch_hunter_buff = function (self, unit, pinger_unit)
+PingTargetExtension._add_witch_hunter_buff = function (self)
 	if not Managers.state.network.is_server then
 		return
 	end
@@ -46,20 +51,16 @@ PingTargetExtension._add_witch_hunter_buff = function (self, unit, pinger_unit)
 
 	if buff_extension then
 		local wh_buff_name = "defence_debuff_enemies"
-		local has_buff = buff_extension:has_buff_type(wh_buff_name)
+		local player_and_bot_units = PLAYER_AND_BOT_UNITS
+		local num_units = #player_and_bot_units
 
-		if not has_buff then
-			local player_and_bot_units = PLAYER_AND_BOT_UNITS
-			local num_units = #player_and_bot_units
+		for i = 1, num_units, 1 do
+			local player_unit = player_and_bot_units[i]
+			local career_extension = ScriptUnit.has_extension(player_unit, "career_system")
+			local career_name = career_extension and career_extension:career_name()
 
-			for i = 1, num_units, 1 do
-				local player_unit = player_and_bot_units[i]
-				local career_extension = ScriptUnit.has_extension(player_unit, "career_system")
-				local career_name = career_extension and career_extension:career_name()
-
-				if career_name and career_name == "wh_captain" then
-					buff_extension:add_buff(wh_buff_name)
-				end
+			if career_name == "wh_captain" then
+				buff_extension:add_buff(wh_buff_name)
 			end
 		end
 	end

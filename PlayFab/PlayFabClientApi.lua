@@ -231,6 +231,24 @@ local PlayFabClientApi = {
 
 		IPlayFabHttps.MakePlayFabApiCall("/Client/LoginWithXbox", request, nil, nil, onSuccess, onError)
 	end,
+	LoginWithPSN = function (request, onSuccess, onError)
+		request.TitleId = PlayFabSettings.settings.titleId
+		local externalOnSuccess = onSuccess
+
+		local function wrappedOnSuccess(result)
+			PlayFabSettings._internalSettings.sessionTicket = result.SessionTicket
+
+			if externalOnSuccess then
+				externalOnSuccess(result)
+			end
+
+			PlayFabClientApi._MultiStepClientLogin(result.SettingsForUser.NeedsAttribution)
+		end
+
+		onSuccess = wrappedOnSuccess
+
+		IPlayFabHttps.MakePlayFabApiCall("/Client/LoginWithPSN", request, nil, nil, onSuccess, onError)
+	end,
 	LoginWithTwitch = function (request, onSuccess, onError)
 		request.TitleId = PlayFabSettings.settings.titleId
 		local externalOnSuccess = onSuccess

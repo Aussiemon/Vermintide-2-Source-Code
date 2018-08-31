@@ -68,6 +68,10 @@ SubtitleGui.init = function (self, ingame_ui_context)
 	if use_subtitles ~= nil then
 		UISettings.use_subtitles = use_subtitles
 	end
+
+	if LAUNCH_MODE == "attract_benchmark" then
+		UISettings.use_subtitles = false
+	end
 end
 
 SubtitleGui.create_ui_elements = function (self)

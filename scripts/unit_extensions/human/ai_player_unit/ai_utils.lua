@@ -24,36 +24,10 @@ AiUtils.special_dead_cleanup = function (unit, blackboard)
 	disabled_by_special[blackboard.target_unit] = nil
 end
 
-local broadphase_query_result = {}
-
-AiUtils.aggro_nearby_friends_of_enemy = function (unit, broadphase, enemy_unit)
-	enemy_unit = AiUtils.get_actual_attacker_unit(enemy_unit)
-
-	if not unit_alive(enemy_unit) then
-		return
-	end
-
-	local num_broadphase_query_result = Broadphase.query(broadphase, Unit.local_position(unit, 0), 5, broadphase_query_result)
-
-	for i = 1, num_broadphase_query_result, 1 do
-		local other_unit = broadphase_query_result[i]
-
-		if other_unit ~= unit then
-			local ai_simple_extension = ScriptUnit.has_extension(unit, "ai_system")
-
-			if ai_simple_extension then
-				ai_simple_extension:enemy_aggro(unit, enemy_unit)
-			end
-		end
-
-		broadphase_query_result[i] = nil
-	end
-end
-
 AiUtils.aggro_unit_of_enemy = function (unit, enemy_unit)
 	enemy_unit = AiUtils.get_actual_attacker_unit(enemy_unit)
 
-	if not unit_alive(enemy_unit) then
+	if not ALIVE[enemy_unit] then
 		return
 	end
 
@@ -129,7 +103,7 @@ end
 AiUtils.alert_unit_of_enemy = function (unit, enemy_unit)
 	enemy_unit = AiUtils.get_actual_attacker_unit(enemy_unit)
 
-	if not unit_alive(enemy_unit) then
+	if not ALIVE[enemy_unit] then
 		return
 	end
 
@@ -140,11 +114,13 @@ AiUtils.alert_unit_of_enemy = function (unit, enemy_unit)
 	end
 end
 
+local broadphase_query_result = {}
+
 AiUtils.alert_nearby_friends_of_enemy = function (unit, broadphase, enemy_unit, range)
 	range = range or 5
 	enemy_unit = AiUtils.get_actual_attacker_unit(enemy_unit)
 
-	if not unit_alive(enemy_unit) then
+	if not ALIVE[enemy_unit] then
 		return
 	end
 
@@ -200,14 +176,13 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage_tri
 	damage_source = damage_source or AiUtils.breed_name(attacker_unit)
 
 	if is_level_unit then
-		DamageUtils.add_damage_network(target_unit, attacker_unit, damage, "torso", action.damage_type, damage_direction, damage_source, nil, nil, nil, action.hit_react_type)
+		DamageUtils.add_damage_network(target_unit, attacker_unit, damage, "torso", action.damage_type, nil, damage_direction, damage_source, nil, nil, nil, action.hit_react_type)
 	else
 		local dimishing_damage_data = action.dimishing_damage
-		local has_ai_slot_extension = ScriptUnit.has_extension(target_unit, "ai_slot_system")
+		local target_slot_extension = ScriptUnit.has_extension(target_unit, "ai_slot_system")
 
-		if dimishing_damage_data and has_ai_slot_extension then
-			local ai_slot_system = Managers.state.entity:system("ai_slot_system")
-			local slots_n = ai_slot_system:slots_count(target_unit)
+		if dimishing_damage_data and target_slot_extension then
+			local slots_n = target_slot_extension.num_occupied_slots
 
 			if slots_n > 0 then
 				local dimishing_damage = dimishing_damage_data[math.min(slots_n, 9)]
@@ -216,7 +191,7 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage_tri
 			end
 		end
 
-		DamageUtils.add_damage_network(target_unit, attacker_unit, damage, "torso", action.damage_type, damage_direction, damage_source, nil, nil, nil, action.hit_react_type)
+		DamageUtils.add_damage_network(target_unit, attacker_unit, damage, "torso", action.damage_type, nil, damage_direction, damage_source, nil, nil, nil, action.hit_react_type)
 
 		local is_player_unit = DamageUtils.is_player_unit(target_unit)
 		local push_speed = action.player_push_speed
@@ -344,7 +319,7 @@ AiUtils.chaos_zombie_explosion = function (unit, action, blackboard, delete_unit
 
 	local blood_dir = Quaternion.up(Unit.local_rotation(unit, 0))
 
-	Managers.state.blood:spawn_blood_ball(position, blood_dir, "default", unit)
+	Managers.state.blood:add_blood_ball(position, blood_dir, "default", unit)
 end
 
 AiUtils.ai_explosion = function (exploding_unit, owner_unit, blackboard, damage_source, explosion_template)
@@ -361,6 +336,23 @@ AiUtils.ai_explosion = function (exploding_unit, owner_unit, blackboard, damage_
 
 	Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0)
 	Managers.state.unit_spawner:mark_for_deletion(exploding_unit)
+end
+
+AiUtils.loot_rat_explosion = function (exploding_unit, owner_unit, blackboard, damage_source, explosion_template)
+	local explosion_position = Unit.local_position(exploding_unit, 0)
+	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+	local damage_source = blackboard.breed.name
+	local world = blackboard.world
+
+	DamageUtils.create_explosion(world, exploding_unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, owner_unit)
+
+	local attacker_unit_id = Managers.state.unit_storage:go_id(owner_unit)
+	local explosion_template_id = NetworkLookup.explosion_templates[explosion_template.name]
+	local damage_source_id = NetworkLookup.damage_sources[damage_source]
+
+	Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0)
+
+	blackboard.delete_at_t = Managers.time:time("game") + 0.1
 end
 
 AiUtils.spawn_overpowering_blob = function (network_manager, target_unit, blob_health, life_time)
@@ -482,7 +474,7 @@ AiUtils.get_actual_attacker_unit = function (attacker_unit)
 end
 
 AiUtils.unit_breed = function (unit)
-	if not unit_alive(unit) then
+	if not ALIVE[unit] then
 		return
 	end
 
@@ -501,7 +493,7 @@ AiUtils.unit_alive = function (unit)
 end
 
 AiUtils.unit_invincible = function (unit)
-	if not unit_alive(unit) then
+	if not ALIVE[unit] then
 		return false
 	end
 
@@ -512,7 +504,7 @@ AiUtils.unit_invincible = function (unit)
 end
 
 AiUtils.unit_knocked_down = function (unit)
-	if not unit_alive(unit) then
+	if not ALIVE[unit] then
 		return false
 	end
 
@@ -528,7 +520,7 @@ AiUtils.unit_knocked_down = function (unit)
 end
 
 AiUtils.unit_disabled = function (unit)
-	if not unit_alive(unit) then
+	if not ALIVE[unit] then
 		return false
 	end
 
@@ -935,16 +927,17 @@ AiUtils.initialize_nav_cost_map_cost_table = function (cost_table, allowed_layer
 	end
 end
 
-AiUtils.kill_unit = function (victim_unit, attacker_unit, hit_zone_name, damage_type, damage_direction)
+AiUtils.kill_unit = function (victim_unit, attacker_unit, hit_zone_name, damage_type, damage_direction, damage_source)
 	local damage_amount = NetworkConstants.damage.max
 	local attacker_unit = attacker_unit or victim_unit
 	local hit_zone_name = hit_zone_name or "full"
 	local damage_type = damage_type or "kinetic"
+	local damage_source = damage_source or "suicide"
 	local damage_direction = damage_direction or Vector3(0, 0, 1)
 	local health = ScriptUnit.extension(victim_unit, "health_system"):current_health()
 
 	for i = 1, math.ceil(health / damage_amount), 1 do
-		DamageUtils.add_damage_network(victim_unit, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, "suicide")
+		DamageUtils.add_damage_network(victim_unit, attacker_unit, damage_amount, hit_zone_name, damage_type, nil, damage_direction, damage_source)
 	end
 end
 
@@ -1023,7 +1016,7 @@ AiUtils.debug_bot_transitions = function (gui, t, x1, y1)
 		if player.bot_player then
 			local unit = player.player_unit
 
-			if unit_alive(unit) then
+			if ALIVE[unit] then
 				local profile_index = player:profile_index()
 				local profile = SPProfiles[profile_index]
 				local unit_name = profile and profile.unit_name
@@ -1181,7 +1174,7 @@ AiUtils.attack_is_dodged = function (hit_unit)
 	return dodged
 end
 
-AiUtils.unit_is_behind_player = function (enemy_unit, player_unit)
+AiUtils.unit_is_flanking_player = function (enemy_unit, player_unit)
 	local network_manager = Managers.state.network
 	local player_unit_id = network_manager:unit_game_object_id(player_unit)
 	local game = network_manager:game()

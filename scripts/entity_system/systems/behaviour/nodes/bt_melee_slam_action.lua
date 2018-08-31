@@ -29,6 +29,7 @@ BTMeleeSlamAction.enter = function (self, unit, blackboard, t)
 	blackboard.attack_finished = false
 	blackboard.attack_aborted = false
 	blackboard.keep_target = true
+	blackboard.rotate_towards_target = true
 
 	Managers.state.conflict:freeze_intensity_decay(15)
 end
@@ -87,6 +88,8 @@ BTMeleeSlamAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.create_bot_threat_at_t = nil
 	blackboard.current_bot_threat_index = nil
 	blackboard.bot_threats_data = nil
+	blackboard.attack_aborted = nil
+	blackboard.rotate_towards_target = nil
 end
 
 BTMeleeSlamAction._calculate_collision = function (self, action, self_pos, forward_direction)
@@ -202,18 +205,20 @@ BTMeleeSlamAction.anim_cb_damage = function (self, unit, blackboard)
 		end
 	end
 
-	blackboard.attacking_target = nil
+	blackboard.rotate_towards_target = false
 end
 
 BTMeleeSlamAction.run = function (self, unit, blackboard, t, dt)
-	if blackboard.attack_finished then
+	local attacking_target = blackboard.attacking_target
+
+	if blackboard.attack_finished or not Unit.alive(attacking_target) or blackboard.attack_aborted then
 		return "done"
 	end
 
 	if t < blackboard.anim_locked then
-		if not blackboard.attack_anim_driven then
+		if not blackboard.attack_anim_driven and blackboard.rotate_towards_target then
 			local locomotion_extension = blackboard.locomotion_extension
-			local rot = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.target_unit)
+			local rot = LocomotionUtils.rotation_towards_unit_flat(unit, attacking_target)
 
 			locomotion_extension:set_wanted_rotation(rot)
 			blackboard.attack_rotation:store(rot)

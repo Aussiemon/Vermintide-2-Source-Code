@@ -25,6 +25,18 @@ PlayGoTutorialSystem.destroy = function (self)
 		Unit.animation_event = self._unit_animation_event
 		self._unit_animation_event = nil
 	end
+
+	if self._current_pause_event then
+		self._current_pause_event.on_exit(self._current_pause_event)
+
+		self._current_pause_event = nil
+	end
+
+	if self._current_animation_hook and self._current_animation_hook.activated then
+		self._current_animation_hook.on_exit(self._current_animation_hook)
+
+		self._current_animation_hook = nil
+	end
 end
 
 PlayGoTutorialSystem.active = function (self)
@@ -324,6 +336,25 @@ PlayGoTutorialSystem._update_ai_units = function (self)
 
 			break
 		end
+	end
+end
+
+PlayGoTutorialSystem.clear_hooks = function (self)
+	if self._unit_animation_event then
+		Unit.animation_event = self._unit_animation_event
+		self._unit_animation_event = nil
+	end
+
+	if self._current_pause_event then
+		self._current_pause_event.on_exit(self._current_pause_event)
+
+		self._current_pause_event = nil
+	end
+
+	if self._current_animation_hook and self._current_animation_hook.activated then
+		self._current_animation_hook.on_exit(self._current_animation_hook)
+
+		self._current_animation_hook = nil
 	end
 end
 

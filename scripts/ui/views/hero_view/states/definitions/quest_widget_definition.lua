@@ -35,7 +35,9 @@ local function create_quest_entry(scenegraph_id, size)
 			text = "n/a",
 			checkbox_marker = "matchmaking_checkbox",
 			checkbox = "achievement_checkbox",
-			button_hotspot = {}
+			button_hotspot = {
+				allow_multi_hover = true
+			}
 		}
 		checklist_item_styles[i] = {
 			list_member_offset = {
@@ -402,25 +404,32 @@ local function create_quest_entry(scenegraph_id, size)
 			texture_id = "reward_icon"
 		},
 		{
-			style_id = "reward_icon",
+			pass_type = "texture",
+			style_id = "reward_hover",
+			texture_id = "reward_hover",
+			content_check_function = function (content)
+				local reward_button_hotspot = content.reward_button_hotspot
+
+				return reward_button_hotspot.is_hover and reward_button_hotspot.draw
+			end
+		},
+		{
 			item_id = "reward_item",
 			pass_type = "item_tooltip",
+			style_id = "reward_icon",
 			content_check_function = function (content)
-				return content.reward_button_hotspot.is_hover
+				local reward_button_hotspot = content.reward_button_hotspot
+
+				return reward_button_hotspot.is_hover and reward_button_hotspot.draw
+			end,
+			content_change_function = function (content)
+				content.reward_button_hotspot.draw = false
 			end
 		},
 		{
 			pass_type = "texture",
 			style_id = "reward_frame",
 			texture_id = "reward_frame"
-		},
-		{
-			pass_type = "texture",
-			style_id = "reward_hover",
-			texture_id = "reward_hover",
-			content_check_function = function (content)
-				return content.reward_button_hotspot.is_hover
-			end
 		},
 		{
 			style_id = "reward_icon",
@@ -449,6 +458,22 @@ local function create_quest_entry(scenegraph_id, size)
 			text_id = "claimed_text",
 			content_check_function = function (content)
 				return content.completed and content.claimed
+			end
+		},
+		{
+			style_id = "locked_text",
+			pass_type = "text",
+			text_id = "locked_text",
+			content_check_function = function (content)
+				return content.locked
+			end
+		},
+		{
+			style_id = "locked_text_shadow",
+			pass_type = "text",
+			text_id = "locked_text",
+			content_check_function = function (content)
+				return content.locked
 			end
 		},
 		{
@@ -539,28 +564,28 @@ local function create_quest_entry(scenegraph_id, size)
 		}
 	}
 	local content = {
-		progress_bar = "chest_upgrade_fill",
-		close_icon_bg = "achievement_refresh_off",
-		expand_background_edge = "achievement_paper_bottom",
+		reward_hover = "item_icon_hover",
+		close_background = "quest_close",
 		reward_icon = "icons_placeholder",
+		expand_background_edge = "achievement_paper_bottom",
 		progress_text = "n/a",
 		glass = "button_glass_02",
-		reward_hover = "item_icon_hover",
-		expand_background = "achievement_paper_middle",
 		draw_bar = true,
-		icon_background_ribbon = "quest_book_ribbon",
+		progress_bar = "chest_upgrade_fill",
 		icon = "quest_book_skull",
 		arrow = "achievement_arrow",
-		icon_background = "quest_book_skull",
+		expand_background = "achievement_paper_middle",
+		close_icon_bg = "achievement_refresh_off",
+		completed = false,
 		title_divider = "divider_01_bottom",
-		background_fade = "options_window_fade_01",
-		close_background = "quest_close",
 		reward_icon_claimed = "achievement_banner",
+		background_fade = "options_window_fade_01",
 		background = "quests_background",
+		icon_background = "quest_book_skull",
 		arrow_hover = "achievement_arrow_hover",
 		expand_background_shadow = "edge_fade_small",
 		hover_glow = "button_state_default",
-		completed = false,
+		icon_background_ribbon = "quest_book_ribbon",
 		title = "n/a",
 		claimed = false,
 		expanded = false,
@@ -572,8 +597,11 @@ local function create_quest_entry(scenegraph_id, size)
 		can_close = false,
 		claiming = false,
 		reward_background = "quest_right",
+		locked_text = "n/a",
 		close_icon_hover = "achievement_refresh_on",
-		button_hotspot = {},
+		button_hotspot = {
+			allow_multi_hover = true
+		},
 		progress_button_hotspot = {},
 		reward_button_hotspot = {},
 		claimed_text = Localize("achv_menu_reward_claimed"),
@@ -1345,6 +1373,40 @@ local function create_quest_entry(scenegraph_id, size)
 			offset = {
 				size[1] / 2 - progress_bar_size[1] / 2 + 2,
 				2,
+				9
+			}
+		},
+		locked_text = {
+			vertical_alignment = "bottom",
+			upper_case = true,
+			font_size = 18,
+			horizontal_alignment = "center",
+			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			text_color = Colors.get_color_table_with_alpha("red", 255),
+			size = {
+				progress_bar_size[1],
+				progress_bar_size[2]
+			},
+			offset = {
+				size[1] / 2 - progress_bar_size[1] / 2,
+				10,
+				10
+			}
+		},
+		locked_text_shadow = {
+			vertical_alignment = "bottom",
+			upper_case = true,
+			font_size = 18,
+			horizontal_alignment = "center",
+			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			text_color = Colors.get_color_table_with_alpha("black", 255),
+			size = {
+				progress_bar_size[1],
+				progress_bar_size[2]
+			},
+			offset = {
+				size[1] / 2 - progress_bar_size[1] / 2 + 2,
+				8,
 				9
 			}
 		},

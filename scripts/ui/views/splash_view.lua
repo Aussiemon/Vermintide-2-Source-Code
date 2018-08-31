@@ -56,6 +56,30 @@ local scenegraph_definition = {
 			99
 		}
 	},
+	background_fit = {
+		vertical_alignment = "center",
+		scale = "fit",
+		horizontal_alignment = "center",
+		size = {
+			1920,
+			1080
+		},
+		position = {
+			0,
+			0,
+			99
+		}
+	},
+	input_background = {
+		vertical_alignment = "center",
+		parent = "background_fit",
+		horizontal_alignment = "center",
+		position = {
+			0,
+			0,
+			100
+		}
+	},
 	foreground = {
 		vertical_alignment = "center",
 		parent = "background",
@@ -248,6 +272,92 @@ local scenegraph_definition = {
 		}
 	}
 }
+
+function create_xbox_beta_widget(input)
+	return {
+		element = {
+			passes = {
+				{
+					style_id = "foreground",
+					scenegraph_id = "foreground",
+					pass_type = "rect",
+					content_check_function = function (content)
+						return content.foreground.disable_foreground ~= true
+					end
+				},
+				{
+					texture_id = "material_name",
+					style_id = "texture_style",
+					pass_type = "texture",
+					content_id = "texture_content",
+					scenegraph_id = input.scenegraph_id,
+					content_check_function = function (content)
+						return content.material_name
+					end
+				},
+				{
+					style_id = "input_style",
+					pass_type = "texture",
+					texture_id = "material_name",
+					content_id = "input_texture_content",
+					scenegraph_id = input.input_scenegraph_id,
+					content_check_function = function (content)
+						return content.material_name
+					end,
+					content_change_function = function (content, style, ui_animations, dt)
+						content.timer = (content.timer or 0) + dt
+						local intensity = 192 + 63 * math.sin(content.timer * 4)
+						style.color[2] = intensity
+						style.color[3] = intensity
+						style.color[4] = intensity
+					end
+				}
+			}
+		},
+		content = {
+			texture_content = {
+				material_name = input.material_name
+			},
+			input_texture_content = {
+				material_name = input.input_material_name
+			},
+			foreground = {
+				disable_foreground = input.disable_foreground
+			}
+		},
+		style = {
+			foreground = {
+				color = Colors.color_definitions.black
+			},
+			input_style = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = input.input_texture_size,
+				offset = input.input_texture_offset or {
+					0,
+					0,
+					0
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				}
+			},
+			texture_style = {
+				size = input.texture_size,
+				offset = input.texture_offset or {
+					0,
+					0,
+					0
+				}
+			}
+		},
+		scenegraph_id = input.scenegraph_id
+	}
+end
+
 local dead_space_filler = {
 	scenegraph_id = "dead_space_filler",
 	element = {
@@ -346,42 +456,39 @@ local splash_content = {
 	}
 }
 
-if Development.parameter("use_beta_overlay") or script_data.settings.use_beta_overlay then
+if (Development.parameter("use_beta_overlay") or script_data.settings.use_beta_overlay) and PLATFORM == "xb1" then
+	local is_xbox_one_x = false
+	local console_type = XboxOne.console_type()
+
+	if console_type == XboxOne.CONSOLE_TYPE_XBOX_ONE_X_DEVKIT or console_type == XboxOne.CONSOLE_TYPE_XBOX_ONE_X then
+		is_xbox_one_x = true
+	end
+
 	splash_content[#splash_content + 1] = {
-		scenegraph_id = "background",
-		type = "texture",
-		axis = 2,
-		time = 10,
-		text_vertical_alignment = "center",
-		forced = true,
-		text_horizontal_alignment = "center",
-		spacing = 5,
-		dynamic_font = false,
-		direction = 1,
-		pixel_perfect = false,
+		input_scenegraph_id = "input_background",
+		product_id = "ADAA6515-8206-49E5-B34C-405244800B46",
+		type = "beta_end",
+		scenegraph_id = "background_fit",
 		texts_scenegraph_id = "texts",
-		font_type = "hell_shark",
-		localize = false,
-		font_size = 52,
-		texts = {
-			"PRE-RELEASE SOFTWARE",
-			"***",
-			"This game is in a pre-release stage of development. This means ",
-			"that some parts of the game, including Xbox Live features (like",
-			"chat and multiplayer), might not function as expected (or might",
-			"not function at all). The game might even crash. Because this is",
-			"a pre-release game, Microsoft and the publisher do not commit",
-			"to providing customer support for the game."
+		input_material_name = "storepage_button",
+		forced = true,
+		music_name = "Play_menu_screen_music",
+		material_name = "beta_end_overlay",
+		input_texture_size = (is_xbox_one_x and {
+			1776,
+			346
+		}) or {
+			888,
+			173
 		},
-		size = {
-			1920,
-			70
+		input_texture_offset = (is_xbox_one_x and {
+			550,
+			-260
+		}) or {
+			275,
+			-130
 		},
-		offset = {
-			0,
-			750,
-			0
-		}
+		time = math.huge
 	}
 end
 
@@ -509,6 +616,47 @@ SplashView._update_texture = function (self, gui, dt)
 	end
 end
 
+SplashView._update_beta_end = function (self, gui, dt)
+	local w, h = Gui.resolution()
+	local timer = self._current_splash_data.timer
+	local texts = self._current_splash_data.texts
+	local total_time = self._current_splash_data.time
+
+	if self._current_splash_data.music_name and not self._sound_started then
+		Managers.music:stop_all_sounds()
+		Managers.music:trigger_event(self._current_splash_data.music_name)
+
+		self._sound_started = true
+	end
+
+	dt = math.min(dt, 0.03333333333333333)
+
+	if timer <= 0.5 then
+		local value = 255 * (1 - timer / 0.5)
+		self._current_widget.style.foreground.color[1] = value
+	else
+		self._current_widget.style.foreground.color[1] = 0
+	end
+
+	UIRenderer.draw_widget(self.ui_renderer, self._current_widget)
+
+	self._current_splash_data.timer = self._current_splash_data.timer - dt
+	local pad = "Pad"
+
+	for i = 1, 8, 1 do
+		local pad_name = pad .. tostring(i)
+		local pad_controller = rawget(_G, pad_name)
+
+		if pad_controller and pad_controller.pressed(pad_controller.button_index("y")) then
+			local user_id = pad_controller.user_id()
+
+			if user_id then
+				XboxLive.show_product_details(user_id, self._current_splash_data.product_id)
+			end
+		end
+	end
+end
+
 if PLATFORM == "xb1" or PLATFORM == "ps4" then
 	SplashView._wait_for_allow_console_skip = function (self)
 		if self._allow_console_skip then
@@ -534,6 +682,8 @@ SplashView._create_ui_elements = function (self)
 
 		if splash.type == "video" then
 			widget = UIWidgets.create_splash_video(splash)
+		elseif splash.type == "beta_end" then
+			widget = create_xbox_beta_widget(splash)
 		elseif splash.partner_splash then
 			widget = UIWidgets.create_partner_splash_widget(splash)
 		else

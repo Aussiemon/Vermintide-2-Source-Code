@@ -256,53 +256,15 @@ local action_data = {
 	},
 	shoot_ratling_gun = {
 		fire_rate_at_start = 10,
-		attack_template = "shot_machinegun",
 		angle_speed = 20,
 		nav_obstacle_layer_name = "bot_ratling_gun_fire",
 		fire_rate_at_end = 25,
-		projectile_speed = 80,
-		impact_push_speed = 1.5,
+		light_weight_projectile_template_name = "ratling_gunner",
 		max_fire_rate_at_percentage = 0.25,
-		hit_effect = "ratling_gunner",
-		afro_hit_sound = "bullet_pass_by",
-		projectile_max_range = 50,
-		light_weight_projectile_particle_effect = "ratling_gun_bullet",
 		attack_time = {
 			7,
 			10
 		},
-		attack_power_level = {
-			50,
-			100,
-			150,
-			200,
-			250
-		},
-		power_distribution = {
-			attack = 0.3,
-			impact = 0.7
-		},
-		cleave_distribution = {
-			attack = 0.25,
-			impact = 0.25
-		},
-		armour_modifier = {
-			attack = {
-				1,
-				0.5,
-				2.5,
-				1,
-				1.5
-			},
-			impact = {
-				1,
-				1,
-				0,
-				1,
-				1.5
-			}
-		},
-		spread = math.degrees_to_radians(7),
 		target_switch_distance = {
 			15,
 			15

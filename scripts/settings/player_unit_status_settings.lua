@@ -78,8 +78,7 @@ PlayerUnitStatusSettings.overcharge_values = {
 	drakegun_charging = 0.1,
 	geiser_push = 1,
 	geiser_charged = 8,
-	spark = 1,
-	drakegun_charged = 8
+	spark = 1
 }
 PlayerUnitStatusSettings.hanging_by_pack_master = {
 	release_unhook_time_dead = 3,

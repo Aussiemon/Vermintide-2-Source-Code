@@ -6,18 +6,19 @@ local weapon_template = weapon_template or {}
 weapon_template.actions = {
 	action_one = {
 		default = {
-			anim_event = "attack_shoot_fast",
-			ammo_usage = 1,
+			charge_value = "arrow_hit",
 			kind = "bow",
+			weapon_action_hand = "left",
+			fire_sound_event = "player_combat_weapon_imperial_bow_fire_light",
 			apply_recoil = true,
+			ammo_usage = 1,
 			aim_assist_max_ramp_multiplier = 0.8,
 			aim_assist_ramp_decay_delay = 0.3,
 			anim_event_last_ammo = "attack_shoot_fast_last",
-			charge_value = "arrow_hit",
-			weapon_action_hand = "left",
-			fire_sound_event = "player_combat_weapon_imperial_bow_fire_light",
+			override_reload_time = 0.25,
 			speed = 6500,
 			aim_assist_ramp_multiplier = 0.4,
+			anim_event = "attack_shoot_fast",
 			total_time = 1,
 			buff_data = {
 				{
@@ -30,7 +31,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.6,
+					start_time = 0.25,
 					action = "action_wield",
 					input = "action_wield"
 				},
@@ -55,6 +56,13 @@ weapon_template.actions = {
 
 				return input_extension:reset_release_input()
 			end,
+			condition_func = function (unit, input_extension, ammo_extension)
+				if ammo_extension and (ammo_extension:total_remaining_ammo() <= 0 or ammo_extension:is_reloading()) then
+					return false
+				end
+
+				return true
+			end,
 			hit_effect = ARROW_HIT_EFFECT,
 			projectile_info = Projectiles.carbine_arrow,
 			impact_data = {
@@ -63,11 +71,7 @@ weapon_template.actions = {
 				targets = 1,
 				damage_profile = "arrow_carbine",
 				link = true,
-				depth_offset = -0.6,
-				cleave_distribution = {
-					attack = 0.1,
-					impact = 0.1
-				}
+				depth_offset = -0.6
 			},
 			alert_sound_range_fire = ALERT_SOUND_RANGE_FIRE,
 			alert_sound_range_hit = ALERT_SOUND_RANGE_HIT,
@@ -82,27 +86,30 @@ weapon_template.actions = {
 		},
 		shoot_charged = {
 			reset_aim_on_attack = true,
-			anim_end_event = "to_unzoom",
+			play_reload_animation = true,
 			kind = "bow",
 			charge_value = "zoomed_arrow_hit",
 			weapon_action_hand = "left",
-			apply_recoil = true,
-			unzoom_time = 0.5,
-			anim_event_last_ammo = "attack_shoot_last",
-			minimum_hold_time = 0.4,
-			ammo_usage = 1,
+			unzoom_time = 0.3,
 			fire_sound_event = "player_combat_weapon_imperial_bow_fire_heavy",
+			anim_event_last_ammo = "attack_shoot_last",
+			anim_end_event = "to_unzoom",
+			apply_recoil = true,
+			ammo_usage = 1,
+			override_reload_time = 0.5,
+			reload_event_delay_time = 0.3,
 			speed = 10000,
+			reload_animation_override = "reload",
 			anim_event = "attack_shoot",
 			scale_total_time_on_mastercrafted = true,
-			total_time = 1.5,
+			total_time = 2.5,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action"
 			end,
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.65,
+					start_time = 0.25,
 					action = "action_wield",
 					input = "action_wield"
 				},
@@ -135,11 +142,7 @@ weapon_template.actions = {
 				targets = 1,
 				damage_profile = "longbow_empire",
 				link = true,
-				depth_offset = -0.6,
-				cleave_distribution = {
-					attack = 0.2,
-					impact = 0.2
-				}
+				depth_offset = -0.6
 			},
 			alert_sound_range_fire = ALERT_SOUND_RANGE_FIRE,
 			alert_sound_range_hit = ALERT_SOUND_RANGE_HIT,
@@ -154,27 +157,30 @@ weapon_template.actions = {
 		},
 		shoot_charged_heavy = {
 			reset_aim_on_attack = true,
-			anim_end_event = "to_unzoom",
+			play_reload_animation = true,
 			kind = "bow",
 			charge_value = "zoomed_arrow_hit",
 			weapon_action_hand = "left",
-			apply_recoil = true,
-			unzoom_time = 0.5,
-			anim_event_last_ammo = "attack_shoot_last",
-			minimum_hold_time = 0.4,
-			ammo_usage = 1,
+			unzoom_time = 0.3,
 			fire_sound_event = "player_combat_weapon_imperial_bow_fire_heavy",
+			anim_event_last_ammo = "attack_shoot_last",
+			reload_event_delay_time = 0.3,
+			apply_recoil = true,
+			ammo_usage = 1,
+			override_reload_time = 0.5,
+			anim_end_event = "to_unzoom",
 			speed = 16000,
+			reload_animation_override = "reload",
 			anim_event = "attack_shoot",
 			scale_total_time_on_mastercrafted = true,
-			total_time = 1.5,
+			total_time = 2.5,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action"
 			end,
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.75,
+					start_time = 0.25,
 					action = "action_wield",
 					input = "action_wield"
 				},
@@ -206,11 +212,7 @@ weapon_template.actions = {
 				targets = 1,
 				damage_profile = "arrow_sniper_kruber",
 				link = true,
-				depth_offset = -0.6,
-				cleave_distribution = {
-					attack = 0.2,
-					impact = 0.2
-				}
+				depth_offset = -0.6
 			},
 			alert_sound_range_fire = ALERT_SOUND_RANGE_FIRE,
 			alert_sound_range_hit = ALERT_SOUND_RANGE_HIT,
@@ -226,22 +228,24 @@ weapon_template.actions = {
 	},
 	action_two = {
 		default = {
+			cooldown = 0.2,
 			anim_time_scale = 2.2,
 			kind = "aim",
+			weapon_action_hand = "left",
+			aim_sound_event = "player_combat_weapon_bow_tighten_grip_loop",
 			aim_zoom_delay = 1,
-			aim_at_gaze_setting = "tobii_aim_at_gaze_longbow_empire",
-			anim_end_event = "draw_cancel",
 			spread_template_override = "empire_longbow",
 			aim_sound_delay = 0.1,
+			anim_end_event = "draw_cancel",
+			aim_at_gaze_setting = "tobii_aim_at_gaze_longbow_empire",
 			aim_assist_ramp_multiplier = 0.6,
-			aim_assist_max_ramp_multiplier = 0.8,
-			aim_assist_ramp_decay_delay = 0.2,
-			aim_sound_event = "player_combat_weapon_bow_tighten_grip_loop",
+			wield_blend_event = "equip_end",
 			minimum_hold_time = 0.2,
+			aim_assist_max_ramp_multiplier = 0.8,
 			heavy_aim_flow_delay = 0.9,
 			ammo_usage = 1,
-			weapon_action_hand = "left",
 			unaim_sound_event = "stop_player_combat_weapon_bow_tighten_grip_loop",
+			aim_assist_ramp_decay_delay = 0.2,
 			charge_time = 0.5,
 			heavy_aim_flow_event = "lua_heavy_zoom",
 			hold_input = "action_two_hold",
@@ -262,7 +266,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.3,
+					start_time = 0,
 					action = "action_wield",
 					input = "action_wield",
 					end_time = math.huge
@@ -289,7 +293,7 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action"
 			end,
 			condition_func = function (unit, input_extension, ammo_extension)
-				if ammo_extension and ammo_extension:total_remaining_ammo() <= 0 then
+				if ammo_extension and (ammo_extension:total_remaining_ammo() <= 0 or ammo_extension:is_reloading()) then
 					return false
 				end
 
@@ -316,7 +320,7 @@ weapon_template.ammo_data = {
 	ammo_unit_3p = "units/weapons/player/wpn_emp_arrows/wpn_es_arrow_t1_3p",
 	max_ammo = 20,
 	reload_on_ammo_pickup = true,
-	reload_time = 0,
+	reload_time = 0.65,
 	ammo_unit_attachment_node_linking = AttachmentNodeLinking.arrow
 }
 weapon_template.attack_meta_data = {
@@ -341,10 +345,12 @@ weapon_template.default_spread_template = "bow"
 weapon_template.left_hand_unit = "units/weapons/player/wpn_we_bow_01_t1/wpn_we_bow_01_t1"
 weapon_template.display_unit = "units/weapons/weapon_display/display_bow"
 weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.bow
+weapon_template.wield_anim_not_loaded = "to_es_longbow"
 weapon_template.wield_anim = "to_es_longbow"
 weapon_template.wield_anim_no_ammo = "to_es_longbow_noammo"
 weapon_template.crosshair_style = "projectile"
 weapon_template.no_ammo_reload_event = "reload"
+weapon_template.reload_event = "reload"
 weapon_template.buff_type = "RANGED"
 weapon_template.weapon_type = "LONGBOW"
 weapon_template.default_projectile_action = weapon_template.actions.action_one.default

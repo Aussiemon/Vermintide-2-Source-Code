@@ -2,10 +2,10 @@ require("scripts/helpers/steam_helper")
 
 UnlockClan = class(UnlockClan)
 
-UnlockClan.init = function (self, name, clan_id, backend_id)
+UnlockClan.init = function (self, name, clan_id, backend_reward_id)
 	self._name = name
 	self._id = clan_id
-	self._backend_id = backend_id
+	self._backend_reward_id = backend_reward_id
 	self._unlocked = false
 
 	if rawget(_G, "Steam") then
@@ -17,12 +17,24 @@ UnlockClan.init = function (self, name, clan_id, backend_id)
 	end
 end
 
+UnlockClan.ready = function (self)
+	return true
+end
+
+UnlockClan.has_error = function (self)
+	return false
+end
+
 UnlockClan.id = function (self)
 	return self._id
 end
 
-UnlockClan.backend_id = function (self)
-	return self._backend_id
+UnlockClan.backend_reward_id = function (self)
+	return self._backend_reward_id
+end
+
+UnlockClan.remove_backend_reward_id = function (self)
+	self._backend_reward_id = nil
 end
 
 UnlockClan.unlocked = function (self)

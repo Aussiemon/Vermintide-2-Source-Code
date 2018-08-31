@@ -39,10 +39,39 @@ AILocomotionExtensionC.ready = function (self, go_id, blackboard)
 end
 
 AILocomotionExtensionC.destroy = function (self)
+	if self._engine_extension_id then
+		EngineOptimizedExtensions.ai_locomotion_destroy_extension(self._engine_extension_id)
+
+		self._engine_extension_id = nil
+	end
+end
+
+AILocomotionExtensionC.freeze = function (self)
 	EngineOptimizedExtensions.ai_locomotion_destroy_extension(self._engine_extension_id)
+
+	self._engine_extension_id = nil
+end
+
+AILocomotionExtensionC.unfreeze = function (self, unit)
+	local locomotion_gravity = 20
+	local blackboard = BLACKBOARDS[unit]
+	local breed = blackboard.breed
+	local breed_run_speed = breed.run_speed
+	local unit_template = Managers.state.unit_spawner.unit_template_lut[breed.unit_template]
+	local go_type = unit_template and unit_template.go_type
+	local game_object_template = Managers.state.network:game_object_template(go_type)
+	local should_sync_rotation = game_object_template and not game_object_template.syncs_rotation and false
+	self._engine_extension_id = EngineOptimizedExtensions.ai_locomotion_register_extension(unit, locomotion_gravity, breed_run_speed, should_sync_rotation)
+
+	MoverHelper.set_active_mover(unit, self._mover_state, "mover")
+	self:teleport_to(POSITION_LOOKUP[unit], Unit.local_rotation(unit, 0))
 end
 
 AILocomotionExtensionC.hot_join_sync = function (self, sender)
+	if FROZEN[self._unit] then
+		return
+	end
+
 	local unit = self._unit
 
 	if Unit.has_animation_state_machine(unit) then

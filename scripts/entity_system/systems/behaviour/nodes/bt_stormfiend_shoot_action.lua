@@ -25,6 +25,7 @@ BTStormfiendShootAction.enter = function (self, unit, blackboard, t)
 	blackboard.attack_finished = false
 	blackboard.shoot_data = blackboard.shoot_data or {}
 	blackboard.physics_world = blackboard.physics_world or World.get_data(world, "physics_world")
+	blackboard.attacking_target = blackboard.target_unit
 
 	if self:init_attack(unit, blackboard, action, t) then
 		local data = blackboard.shoot_data
@@ -213,15 +214,15 @@ BTStormfiendShootAction.init_attack = function (self, unit, blackboard, action, 
 	end
 
 	local unit_position = POSITION_LOOKUP[unit]
-	local target_unit = blackboard.target_unit
-	local target_position = POSITION_LOOKUP[target_unit]
+	local attacking_target = blackboard.attacking_target
+	local target_position = POSITION_LOOKUP[attacking_target]
 	local target_direction = Vector3.normalize(target_position - unit_position)
 	local attack_anims = action.attack_anims
 	local rotation = Unit.world_rotation(unit, 0)
 	local forward_vector = Quaternion.forward(rotation)
 	local right_vector = Quaternion.right(rotation)
 	local attack_animation, attack_arm, anim_driven = self:_calculate_attack_animation(right_vector, forward_vector, target_direction, attack_anims, unit_position)
-	local firewall_start_position, aim_start_position, aim_end_position = self:_calculate_aim(unit, unit_position, attack_arm, forward_vector, anim_driven, blackboard, action, target_unit, target_position, target_direction)
+	local firewall_start_position, aim_start_position, aim_end_position = self:_calculate_aim(unit, unit_position, attack_arm, forward_vector, anim_driven, blackboard, action, attacking_target, target_position, target_direction)
 	local attack_is_ok = aim_end_position ~= nil
 
 	if attack_is_ok then
@@ -325,10 +326,11 @@ BTStormfiendShootAction.leave = function (self, unit, blackboard, t, reason, des
 	blackboard.create_bot_threat_at_t = nil
 	blackboard.bot_threat_range = nil
 	blackboard.shoot_sfx_id = nil
+	blackboard.attacking_target = nil
 end
 
 BTStormfiendShootAction.run = function (self, unit, blackboard, t, dt)
-	if blackboard.attack_aborted then
+	if not Unit.alive(blackboard.attacking_target) or blackboard.attack_aborted then
 		return "failed"
 	end
 
@@ -471,6 +473,7 @@ BTStormfiendShootAction.shoot_hit_check = function (self, unit, blackboard)
 			local hit = result[i]
 			local actor = hit.actor
 			local hit_unit = Actor.unit(actor)
+			local hit_position = hit.position
 			local is_character = DamageUtils.is_character(hit_unit)
 
 			if not is_character then
@@ -504,7 +507,7 @@ BTStormfiendShootAction.shoot_hit_check = function (self, unit, blackboard)
 					local damage_direction = data.direction:unbox()
 					local damage_source = blackboard.breed.name
 
-					DamageUtils.add_damage_network(hit_unit, attacker_unit, damage, "torso", damage_type, damage_direction, damage_source)
+					DamageUtils.add_damage_network(hit_unit, attacker_unit, damage, "torso", damage_type, hit_position, damage_direction, damage_source)
 
 					hit_enemies[hit_unit] = true
 				end
@@ -531,7 +534,7 @@ BTStormfiendShootAction._fire_from_position_direction = function (self, unit, bl
 	local node_name = action.muzzle_nodes[attack_arm]
 	local muzzle_node = Unit.node(unit, node_name)
 	local muzzle_pos = Unit.world_position(unit, muzzle_node)
-	local unit_spine_pos = Unit.world_position(blackboard.target_unit, Unit.node(blackboard.target_unit, "j_spine"))
+	local unit_spine_pos = Unit.world_position(blackboard.attacking_target, Unit.node(blackboard.attacking_target, "j_spine"))
 	local target_position = unit_spine_pos
 	local current_pos = data.current_gun_aim_position:unbox()
 	local lerp_value = math.min(dt * 6, 1)
@@ -565,9 +568,11 @@ BTStormfiendShootAction._shoot_ratling_gun = function (self, unit, blackboard, t
 	local data = blackboard.shoot_data
 	local world = blackboard.world
 	local physics_world = World.get_data(world, "physics_world")
+	local light_weight_projectile_template_name = action.light_weight_projectile_template_name
+	local light_weight_projectile_template = LightWeightProjectiles[light_weight_projectile_template_name]
 	local from_position, direction = self:_fire_from_position_direction(unit, blackboard, data, dt)
 	local normalized_direction = Vector3.normalize(direction)
-	local spread_angle = Math.random() * action.spread
+	local spread_angle = Math.random() * light_weight_projectile_template.spread
 	local dir_rot = Quaternion.look(normalized_direction, Vector3.up())
 	local pitch = Quaternion(Vector3.right(), spread_angle)
 	local roll = Quaternion(Vector3.forward(), Math.random() * two_pi)
@@ -576,16 +581,14 @@ BTStormfiendShootAction._shoot_ratling_gun = function (self, unit, blackboard, t
 	local distance = 40
 	local collision_filter = "filter_enemy_player_ray_projectile"
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-	local power_level = action.attack_power_level[difficulty_rank]
+	local power_level = light_weight_projectile_template.attack_power_level[difficulty_rank]
 	local action_data = {
-		attack_template = action.attack_template,
+		attack_template = light_weight_projectile_template.attack_template,
 		power_level = power_level,
-		armour_modifier = action.armour_modifier,
-		power_distribution = action.power_distribution,
-		cleave_distribution = action.cleave_distribution,
-		hit_effect = action.hit_effect,
-		afro_hit_sound = action.afro_hit_sound,
-		player_push_velocity = Vector3Box(normalized_direction * action.impact_push_speed)
+		damage_profile = light_weight_projectile_template.damage_profile,
+		hit_effect = light_weight_projectile_template.hit_effect,
+		afro_hit_sound = light_weight_projectile_template.afro_hit_sound,
+		player_push_velocity = Vector3Box(normalized_direction * light_weight_projectile_template.impact_push_speed)
 	}
 	local attack_arm = data.attack_arm
 	local node_name = action.muzzle_nodes[attack_arm]
@@ -597,7 +600,7 @@ BTStormfiendShootAction._shoot_ratling_gun = function (self, unit, blackboard, t
 
 	local projectile_system = Managers.state.entity:system("projectile_system")
 
-	projectile_system:create_light_weight_projectile(Unit.get_data(unit, "breed").name, unit, from_position, spread_direction, action.projectile_speed, action.projectile_max_range, collision_filter, action_data, action.light_weight_projectile_particle_effect)
+	projectile_system:create_light_weight_projectile(Unit.get_data(unit, "breed").name, unit, from_position, spread_direction, light_weight_projectile_template.projectile_speed, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_particle_effect)
 end
 
 BTStormfiendShootAction.anim_cb_attack_fire = function (self, unit, blackboard)
@@ -626,7 +629,7 @@ BTStormfiendShootAction.anim_cb_attack_fire = function (self, unit, blackboard)
 			data.time_between_shots_at_start = 1 / action.fire_rate_at_start
 			data.time_between_shots_at_end = 1 / action.fire_rate_at_end
 			data.max_fire_rate_at_percentage_modifier = 1 / action.max_fire_rate_at_percentage
-			data.current_gun_aim_position = Vector3Box(POSITION_LOOKUP[blackboard.target_unit])
+			data.current_gun_aim_position = Vector3Box(POSITION_LOOKUP[blackboard.attacking_target])
 		end
 
 		data.is_firing = true

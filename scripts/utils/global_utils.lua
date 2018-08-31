@@ -2,12 +2,16 @@ local release_build = BUILD == "release"
 local script_data = script_data
 script_data.disable_debug_position_lookup = (release_build and true) or nil
 local unit_alive = Unit.alive
+PACKAGED_BUILD = (script_data.packaged_build and true) or false
 DEDICATED_SERVER = Application.is_dedicated_server()
 RESOLUTION_LOOKUP = RESOLUTION_LOOKUP or {}
 POSITION_LOOKUP = POSITION_LOOKUP or Script.new_map(256)
 BLACKBOARDS = BLACKBOARDS or Script.new_map(256)
+ALIVE = POSITION_LOOKUP
+FROZEN = FROZEN or {}
 local position_lookup = POSITION_LOOKUP
 local resolution_lookup = RESOLUTION_LOOKUP
+BREED_DIE_LOOKUP = BREED_DIE_LOOKUP or {}
 
 function CLEAR_POSITION_LOOKUP()
 	table.clear(position_lookup)
@@ -208,7 +212,11 @@ function CLEAR_ALL_PLAYER_LISTS()
 	assert(next(AI_TARGET_UNITS) == nil)
 	table.clear(BLACKBOARDS)
 	assert(next(BLACKBOARDS) == nil)
+	table.clear(ALIVE)
+	assert(next(ALIVE) == nil)
 	CLEAR_POSITION_LOOKUP()
+	table.clear(FROZEN)
+	table.clear(BREED_DIE_LOOKUP)
 end
 
 return

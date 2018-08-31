@@ -337,6 +337,7 @@ BTMeleeOverlapAttackAction.leave = function (self, unit, blackboard, t, reason, 
 	blackboard.bot_threat_duration = nil
 	blackboard.damage_done_time = nil
 	blackboard.attack_finished = nil
+	blackboard.attack_aborted = nil
 
 	if blackboard.continous_overlap_data then
 		table.clear(blackboard.continous_overlap_data)
@@ -443,6 +444,10 @@ BTMeleeOverlapAttackAction._check_wall_collision = function (self, unit, blackbo
 end
 
 BTMeleeOverlapAttackAction.run = function (self, unit, blackboard, t, dt)
+	if blackboard.attack_aborted then
+		return "done"
+	end
+
 	if t <= blackboard.anim_locked then
 		local attack = blackboard.attack
 

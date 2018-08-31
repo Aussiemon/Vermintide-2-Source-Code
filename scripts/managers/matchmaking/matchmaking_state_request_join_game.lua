@@ -27,18 +27,36 @@ MatchmakingStateRequestJoinGame.on_enter = function (self, state_context)
 	self._connected_to_server = false
 	self._connect_timeout = nil
 	self._join_timeout = nil
+	self._pre_verification_error = nil
+	local passed_verification, error_message = self:_run_pre_connection_verification(self._join_lobby_data)
 
-	self:_setup_lobby_connection(self._join_lobby_data, state_context.password)
+	if passed_verification then
+		self:_setup_lobby_connection(self._join_lobby_data, state_context.password)
 
-	local host = self._join_lobby_data.host or "nohostname"
-	self._matchmaking_manager.debug.text = "Joining lobby"
-	self._matchmaking_manager.debug.state = "hosted by: " .. host
+		local host = self._join_lobby_data.host or "nohostname"
+		self._matchmaking_manager.debug.text = "Joining lobby"
+		self._matchmaking_manager.debug.state = "hosted by: " .. host
 
-	self._matchmaking_manager:send_system_chat_message("matchmaking_status_starting_handshake")
+		self._matchmaking_manager:send_system_chat_message("matchmaking_status_starting_handshake")
+	else
+		self._state = "failed_pre_connection_verification"
+		self._pre_verification_error = error_message or "pre_verification_failed"
+	end
 end
 
 MatchmakingStateRequestJoinGame.on_exit = function (self)
 	return
+end
+
+MatchmakingStateRequestJoinGame._run_pre_connection_verification = function (self, join_lobby_data)
+	local current_lobby_id = self._lobby:id()
+	local lobby_id = join_lobby_data.id or join_lobby_data.name
+
+	if lobby_id == current_lobby_id then
+		return false, "popup_already_in_same_lobby"
+	end
+
+	return true
 end
 
 MatchmakingStateRequestJoinGame._setup_lobby_connection = function (self, join_lobby_data, password)
@@ -78,7 +96,9 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 
 	local state = self._state
 
-	if state == "waiting_for_password" then
+	if state == "failed_pre_connection_verification" then
+		return self:_join_game_failed(lobby_id, self._pre_verification_error, t, false)
+	elseif state == "waiting_for_password" then
 		self._password_request:update(dt)
 
 		local action, user_data, password = self._password_request:result()

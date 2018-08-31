@@ -207,6 +207,8 @@ StateInGameRunning.on_enter = function (self, params)
 	if self.is_in_inn then
 		Managers.state.achievement:setup_achievement_data()
 	end
+
+	self._waiting_for_peers_message_timer = Managers.time:time("game") + 10
 end
 
 StateInGameRunning.create_ingame_ui = function (self, ingame_ui_context)
@@ -320,10 +322,19 @@ StateInGameRunning.check_invites = function (self)
 		return
 	end
 
+	local platform = PLATFORM
+
+	if platform == "xb1" and (Managers.account:offline_mode() or Managers.account:has_fatal_error()) then
+		if Managers.invite:has_invitation() then
+			self._offline_invite = true
+		end
+
+		return
+	end
+
 	local invite_data = Managers.invite:get_invited_lobby_data()
 
 	if invite_data then
-		local platform = PLATFORM
 		local lobby_id = invite_data.id or invite_data.name
 		local current_lobby_id = nil
 
@@ -378,6 +389,9 @@ StateInGameRunning.wanted_transition = function (self)
 
 	if wanted_transition then
 		mm_printf("Doing transition %s from UI", wanted_transition)
+	elseif self._offline_invite then
+		wanted_transition = "offline_invite"
+		self._offline_invite = nil
 	elseif self._invite_lobby_data then
 		if self._invite_lobby_data.is_server_invite then
 			mm_printf("Found a server invite, joining.")
@@ -438,6 +452,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 	local is_server = self.is_server
 	local player = self.player
 	self.end_conditions_met = true
+	local difficulty_key = Managers.state.difficulty:get_difficulty()
 	local level_key = Managers.state.game_mode:level_key()
 	local game_mode_key = self.game_mode_key
 	local game_won = reason and reason == "won"
@@ -457,6 +472,10 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 	if Managers.twitch then
 		Managers.twitch:deactivate_twitch_game_mode()
 	end
+
+	local achievement_manager = Managers.state.achievement
+
+	achievement_manager:evaluate_end_of_level_achievements(statistics_db, stats_id, level_key, difficulty_key)
 
 	local stats_interface = Managers.backend:get_interface("statistics")
 
@@ -479,8 +498,8 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 
 	local is_booted_unstrusted = self._booted_eac_untrusted
 
-	local function callback()
-		if game_mode_key ~= "inn" then
+	local function callback(status)
+		if game_mode_key ~= "inn" and status ~= "commit_error" then
 			local profile_synchronizer = self.profile_synchronizer
 			local peer_id = Network.peer_id()
 			local local_player_id = self.local_player_id
@@ -495,7 +514,6 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 			ingame_ui:activate_end_screen_ui(game_won, checkpoint_available, level_key, previous_completed_difficulty_index)
 
 			if not is_booted_unstrusted then
-				local difficulty_key = Managers.state.difficulty:get_difficulty()
 				local chest_settings = LootChestData.chests_by_category[difficulty_key]
 				local chests_package_name = chest_settings.package_name
 				self.chests_package_name = chests_package_name
@@ -525,8 +543,10 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 			self:_xbone_end_of_round_events(statistics_db)
 		end
 
-		if not self.is_in_inn and not self.is_in_tutorial then
-			Managers.xbox_stats:update_hero_stats()
+		if not self.is_in_inn and not self.is_in_tutorial and not self.parent.hero_stats_updated then
+			Managers.xbox_stats:update_hero_stats(game_won)
+
+			self.parent.hero_stats_updated = true
 		end
 	end
 end
@@ -585,6 +605,23 @@ end
 StateInGameRunning.update = function (self, dt, t)
 	if DebugKeyHandler.key_pressed("f5", "reload_ui", "ui") then
 		self:create_ingame_ui(self.ingame_ui_context)
+	end
+
+	if self._waiting_for_peers_message_timer and self._waiting_for_peers_message_timer < t then
+		if self.is_server then
+			local lobby_members_class = self._lobby_host:members()
+			local lobby_members = lobby_members_class:get_members()
+
+			if #lobby_members > 1 then
+				Managers.transition:show_waiting_for_peers_message(true)
+
+				self._waiting_for_peers_message_timer = nil
+			end
+		else
+			Managers.transition:show_waiting_for_peers_message(true)
+
+			self._waiting_for_peers_message_timer = nil
+		end
 	end
 
 	if script_data.debug_rooms then
@@ -852,7 +889,7 @@ if PLATFORM == "xb1" then
 	end
 
 	StateInGameRunning._xbone_round_start_events = function (self)
-		if self.is_in_inn or self.is_in_tutorial or Development.parameter("auto-host-level") ~= nil then
+		if self.is_in_inn or self.is_in_tutorial or Development.parameter("auto-host-level") ~= nil or not Managers.account:is_online() then
 			return
 		end
 
@@ -885,7 +922,7 @@ if PLATFORM == "xb1" then
 	end
 
 	StateInGameRunning._xbone_end_of_round_events = function (self, statistics_db)
-		if self.is_in_inn or self.is_in_tutorial or Development.parameter("auto-host-level") ~= nil then
+		if self.is_in_inn or self.is_in_tutorial or Development.parameter("auto-host-level") ~= nil or not Managers.account:is_online() then
 			return
 		end
 
@@ -958,11 +995,15 @@ StateInGameRunning.game_actually_starts = function (self)
 		local level_key = Managers.state.game_mode:level_key()
 
 		if show_profile_on_startup and level_key == "inn_level" and not LEVEL_EDITOR_TEST and not Development.parameter("skip-start-menu") then
-			local show_hero_selection = not backend_waiting_for_input and (platform == "ps4" or platform == "xb1" or not first_hero_selection_made)
-			local menu_state = (show_hero_selection and "character") or "overview"
-			local view = "initial_start_menu_view_force"
+			if platform == "ps4" or platform == "xb1" then
+				self.ingame_ui:transition_with_fade("initial_character_selection_force", "character")
+			else
+				local show_hero_selection = not backend_waiting_for_input and not first_hero_selection_made
+				local menu_state = (show_hero_selection and "character") or "overview"
+				local view = "initial_start_menu_view_force"
 
-			self.ingame_ui:transition_with_fade(view, menu_state)
+				self.ingame_ui:transition_with_fade(view, menu_state)
+			end
 
 			loading_context.show_profile_on_startup = nil
 		else
@@ -984,6 +1025,9 @@ StateInGameRunning.game_actually_starts = function (self)
 		self._player_has_spawned = nil
 
 		Managers.transition:hide_loading_icon()
+		Managers.transition:show_waiting_for_peers_message(false)
+
+		self._waiting_for_peers_message_timer = nil
 
 		if PLATFORM == "ps4" then
 			Managers.account:set_realtime_multiplay_state("pre_game", false)

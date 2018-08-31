@@ -99,7 +99,7 @@ HordeSettings = {
 		chance_of_vector = 1,
 		ambush_composition = "chaos_medium",
 		mini_patrol_composition = "chaos_mini_patrol",
-		chance_of_vector_blob = 0.75,
+		chance_of_vector_blob = 1,
 		vector_blob_composition = "chaos_medium",
 		disabled = false,
 		mix_paced_hordes = true,
@@ -130,7 +130,7 @@ HordeSettings = {
 		chance_of_vector = 1,
 		ambush_composition = "chaos_medium",
 		mini_patrol_composition = "chaos_mini_patrol",
-		chance_of_vector_blob = 0.75,
+		chance_of_vector_blob = 1,
 		vector_blob_composition = "chaos_medium",
 		disabled = false,
 		mix_paced_hordes = true,
@@ -215,19 +215,19 @@ PackDistributions = {
 RoamingSettings = {
 	default = {
 		despawn_distance = 45,
-		despawn_path_distance = 60,
+		despawn_path_distance = 75,
 		despawn_distance_z = 30,
 		disabled = false
 	},
 	disabled = {
 		despawn_distance = 45,
-		despawn_path_distance = 60,
+		despawn_path_distance = 75,
 		despawn_distance_z = 30,
 		disabled = true
 	},
 	gdc_build = {
 		despawn_distance = 45,
-		despawn_path_distance = 60,
+		despawn_path_distance = 75,
 		despawn_distance_z = 30
 	}
 }
@@ -1111,11 +1111,11 @@ BossSettings = {
 			safe_dist = 150,
 			recurring_distance = 300,
 			name = "boss_events",
-			chance_of_encampment = 0,
 			terror_events_using_packs = false,
 			padding_dist = 100,
 			debug_color = "deep_sky_blue",
 			hand_placed_padding_dist = 10,
+			chance_of_encampment = 0,
 			events = {
 				"event_boss",
 				"event_patrol",
@@ -1129,11 +1129,8 @@ BossSettings = {
 					"boss_event_rat_ogre"
 				},
 				event_patrol = {
-					"boss_event_storm_vermin_patrol"
+					"boss_event_spline_patrol"
 				}
-			},
-			spline_patrol_events = {
-				"boss_event_spline_patrol"
 			},
 			max_events_of_this_kind = {
 				event_boss = 2
@@ -1162,11 +1159,11 @@ BossSettings = {
 			safe_dist = 150,
 			recurring_distance = 300,
 			name = "boss_events",
-			chance_of_encampment = 0,
 			terror_events_using_packs = false,
 			padding_dist = 100,
 			debug_color = "deep_sky_blue",
 			hand_placed_padding_dist = 10,
+			chance_of_encampment = 0,
 			events = {
 				"event_boss",
 				"event_patrol",
@@ -1180,11 +1177,8 @@ BossSettings = {
 					"boss_event_rat_ogre"
 				},
 				event_patrol = {
-					"boss_event_storm_vermin_patrol"
+					"boss_event_spline_patrol"
 				}
-			},
-			spline_patrol_events = {
-				"boss_event_spline_patrol"
 			},
 			max_events_of_this_kind = {
 				event_boss = 2
@@ -1213,11 +1207,11 @@ BossSettings = {
 			safe_dist = 150,
 			recurring_distance = 300,
 			name = "boss_events",
-			chance_of_encampment = 0,
 			terror_events_using_packs = false,
 			padding_dist = 100,
 			debug_color = "deep_sky_blue",
 			hand_placed_padding_dist = 10,
+			chance_of_encampment = 0,
 			events = {
 				"event_boss",
 				"event_patrol",
@@ -1229,11 +1223,8 @@ BossSettings = {
 					"boss_event_rat_ogre"
 				},
 				event_patrol = {
-					"boss_event_storm_vermin_patrol"
+					"boss_event_skaven_spline_patrol"
 				}
-			},
-			spline_patrol_events = {
-				"boss_event_skaven_spline_patrol"
 			},
 			max_events_of_this_kind = {
 				event_boss = 2
@@ -1262,11 +1253,11 @@ BossSettings = {
 			safe_dist = 150,
 			recurring_distance = 300,
 			name = "boss_events",
-			chance_of_encampment = 0,
 			terror_events_using_packs = false,
 			padding_dist = 100,
 			debug_color = "deep_sky_blue",
 			hand_placed_padding_dist = 10,
+			chance_of_encampment = 0,
 			events = {
 				"event_boss",
 				"event_patrol",
@@ -1278,11 +1269,8 @@ BossSettings = {
 					"boss_event_rat_ogre"
 				},
 				event_patrol = {
-					"boss_event_storm_vermin_patrol"
+					"boss_event_skaven_spline_patrol"
 				}
-			},
-			spline_patrol_events = {
-				"boss_event_skaven_spline_patrol"
 			},
 			max_events_of_this_kind = {
 				event_boss = 2
@@ -1311,11 +1299,11 @@ BossSettings = {
 			safe_dist = 150,
 			recurring_distance = 300,
 			name = "boss_events",
-			chance_of_encampment = 0,
 			terror_events_using_packs = false,
 			padding_dist = 100,
 			debug_color = "deep_sky_blue",
 			hand_placed_padding_dist = 10,
+			chance_of_encampment = 0,
 			events = {
 				"event_boss",
 				"event_patrol",
@@ -1327,11 +1315,8 @@ BossSettings = {
 					"boss_event_chaos_spawn"
 				},
 				event_patrol = {
-					"boss_event_storm_vermin_patrol"
+					"boss_event_chaos_spline_patrol"
 				}
-			},
-			spline_patrol_events = {
-				"boss_event_chaos_spline_patrol"
 			},
 			max_events_of_this_kind = {
 				event_boss = 2
@@ -1360,11 +1345,11 @@ BossSettings = {
 			safe_dist = 150,
 			recurring_distance = 300,
 			name = "boss_events",
-			chance_of_encampment = 0,
 			terror_events_using_packs = false,
 			padding_dist = 100,
 			debug_color = "deep_sky_blue",
 			hand_placed_padding_dist = 10,
+			chance_of_encampment = 0,
 			events = {
 				"event_boss",
 				"event_patrol",
@@ -1376,11 +1361,8 @@ BossSettings = {
 					"boss_event_chaos_spawn"
 				},
 				event_patrol = {
-					"boss_event_storm_vermin_patrol"
+					"boss_event_spline_patrol"
 				}
-			},
-			spline_patrol_events = {
-				"boss_event_spline_patrol"
 			},
 			max_events_of_this_kind = {
 				event_boss = 2

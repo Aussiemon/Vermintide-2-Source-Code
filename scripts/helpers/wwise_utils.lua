@@ -17,8 +17,11 @@ end
 WwiseUtils.make_position_auto_source = function (world, position)
 	local wwise_world = Managers.world:wwise_world(world)
 	local source = WwiseWorld.make_auto_source(wwise_world, position)
+	local system = Managers.state.entity:system("sound_environment_system")
 
-	Managers.state.entity:system("sound_environment_system"):set_source_environment(source, position)
+	if system ~= nil then
+		system:set_source_environment(source, position)
+	end
 
 	return source, wwise_world
 end
@@ -35,7 +38,11 @@ WwiseUtils.make_unit_auto_source = function (world, unit, node_id)
 		position = Unit.world_position(unit, 0)
 	end
 
-	Managers.state.entity:system("sound_environment_system"):set_source_environment(source, position)
+	local system = Managers.state.entity:system("sound_environment_system")
+
+	if system ~= nil then
+		system:set_source_environment(source, position)
+	end
 
 	return source, wwise_world
 end

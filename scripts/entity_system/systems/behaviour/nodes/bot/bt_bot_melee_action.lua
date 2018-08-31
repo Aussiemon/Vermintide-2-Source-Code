@@ -308,7 +308,7 @@ BTBotMeleeAction._is_attacking_me = function (self, self_unit, enemy_unit)
 	local action = bb.action
 	local unblockable = action and action.unblockable
 
-	return not unblockable and ((bb.attacking_target == self_unit and not bb.attack_success and "attack") or (bb.special_attacking_target == self_unit and not bb.attack_success and "special_attack")), bb.breed
+	return not unblockable and bb.attacking_target == self_unit and not bb.attack_success
 end
 
 BTBotMeleeAction._is_targeting_me = function (self, self_unit, enemy_unit)
@@ -409,23 +409,8 @@ BTBotMeleeAction._allow_engage = function (self, self_unit, target_unit, blackbo
 
 	local priority_target = blackboard.priority_target_enemy
 
-	if target_unit ~= priority_target then
-		if priority_target then
-			return false
-		end
-
-		local ai_groups = Managers.state.entity:system("ai_group_system").groups
-		local self_travel_dist = conflict_director:get_player_unit_travel_distance(self_unit) or -math.huge
-
-		for _, group in pairs(ai_groups) do
-			if group.template == "storm_vermin_formation_patrol" and group.state ~= "in_combat" then
-				local patrol_travel_dist = group.main_path_travel_dist
-
-				if not patrol_travel_dist or self_travel_dist < patrol_travel_dist + PATROL_PASSIVE_RANGE then
-					return false
-				end
-			end
-		end
+	if target_unit ~= priority_target and priority_target then
+		return false
 	end
 
 	local stay_near_player, max_allowed_distance = ai_extension:should_stay_near_player()
@@ -565,7 +550,8 @@ BTBotMeleeAction._time_to_next_attack = function (self, attack_input, blackboard
 
 	if weapon_extension then
 		local wielded_item_template = blackboard.wielded_item_template
-		local attack_meta_data = wielded_item_template.attack_meta_data[attack_input]
+		local weapon_meta_data = wielded_item_template.attack_meta_data or DEFAULT_ATTACK_META_DATA
+		local attack_meta_data = weapon_meta_data[attack_input]
 
 		return weapon_extension:time_to_next_attack(attack_input, wielded_item_template.actions, wielded_item_template.name, t, attack_meta_data.attack_chain)
 	end
@@ -576,7 +562,8 @@ BTBotMeleeAction._attack = function (self, attack_input, blackboard)
 
 	if weapon_extension then
 		local wielded_item_template = blackboard.wielded_item_template
-		local attack_meta_data = wielded_item_template.attack_meta_data[attack_input]
+		local weapon_meta_data = wielded_item_template.attack_meta_data or DEFAULT_ATTACK_META_DATA
+		local attack_meta_data = weapon_meta_data[attack_input]
 
 		weapon_extension:request_bot_attack_action(attack_input, wielded_item_template.actions, wielded_item_template.name, attack_meta_data.attack_chain)
 	end
@@ -665,8 +652,6 @@ BTBotMeleeAction._debug_draw_melee_range = function (self, unit, target_unit, bl
 	debug_text_manager:clear_unit_text(unit, category)
 	debug_text_manager:output_unit_text(text, text_size, unit, head_node, offset, 0.5, category, color_vector, viewport_name)
 
-	offset = offset + Vector3.up() * text_size
-	text = blackboard.wielded_item_template.name
 	offset = offset + Vector3.up() * text_size
 	text = blackboard.wielded_item_template.name
 

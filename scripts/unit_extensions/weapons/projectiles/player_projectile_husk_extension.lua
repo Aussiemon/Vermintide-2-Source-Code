@@ -172,7 +172,6 @@ PlayerProjectileHuskExtension.hit_enemy = function (self, impact_data, hit_unit,
 	end
 
 	local owner_unit = self.owner_unit
-	local shield_blocked = false
 	local damage_profile_name = impact_data.damage_profile or "default"
 	local damage_profile = DamageProfileTemplates[damage_profile_name]
 	local allow_link = true
@@ -187,7 +186,7 @@ PlayerProjectileHuskExtension.hit_enemy = function (self, impact_data, hit_unit,
 			local charge_value = damage_profile.charge_value or "projectile"
 			local is_critical_strike = self._is_critical_strike
 			local owner_unit = self.owner_unit
-			local num_targets_hit = self.num_targets_hit
+			local num_targets_hit = self.num_targets_hit + 1
 
 			DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, num_targets_hit, send_to_server)
 		end
@@ -223,33 +222,45 @@ end
 
 PlayerProjectileHuskExtension.hit_enemy_damage = function (self, damage_profile, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, breed, ranged_boost_curve_multiplier, hit_units)
 	local network_manager = Managers.state.network
-	local owner_unit = self.owner_unit
 	local owner = self.owner_player
+	local owner_unit = self.owner_unit
 	local action = self.current_action
 	local node = Actor.node(hit_actor)
 	local hit_zone = breed.hit_zones_lookup[node]
-	local hit_zone_name = hit_zone.name
+	local hit_zone_name = action.projectile_info.forced_hitzone or hit_zone.name
 	local attack_direction = hit_direction
-	local num_targets_hit = self.num_targets_hit + 1
-	self.num_targets_hit = num_targets_hit
-	hit_units[hit_unit] = true
+	local was_alive = AiUtils.unit_alive(hit_unit)
+
+	if was_alive then
+		self.num_targets_hit = self.num_targets_hit + 1
+		hit_units[hit_unit] = true
+	end
+
 	local target_settings = damage_profile.default_target
 	local is_critical_strike = self._is_critical_strike
 	local attack_template = AttackTemplates[target_settings.attack_template]
+	local shield_blocked = false
 	local trueflight_blocking = target_settings.trueflight_blocking
-	local shield_blocked = AiUtils.attack_is_shield_blocked(hit_unit, owner_unit, trueflight_blocking, hit_direction)
-	local action_mass_override = action.hit_mass_count
-	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-	local hit_mass_total = (shield_blocked and ((breed.hit_mass_counts_block and breed.hit_mass_counts_block[difficulty_rank]) or breed.hit_mass_count_block)) or (breed.hit_mass_counts and breed.hit_mass_counts[difficulty_rank]) or breed.hit_mass_count or 1
 
-	if self.ignore_mass_and_armour then
-		hit_mass_total = 1
-	elseif action_mass_override and action_mass_override[breed.name] then
-		local mass_cost_multiplier = action_mass_override[breed.name]
-		hit_mass_total = hit_mass_total * (mass_cost_multiplier or 1)
+	if not action.ignore_shield_hit then
+		shield_blocked = AiUtils.attack_is_shield_blocked(hit_unit, owner_unit, trueflight_blocking, hit_direction)
 	end
 
-	self.amount_of_mass_hit = self.amount_of_mass_hit + hit_mass_total
+	if was_alive then
+		local action_mass_override = action.hit_mass_count
+		local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+		local hit_mass_total = (shield_blocked and ((breed.hit_mass_counts_block and breed.hit_mass_counts_block[difficulty_rank]) or breed.hit_mass_count_block)) or (breed.hit_mass_counts and breed.hit_mass_counts[difficulty_rank]) or breed.hit_mass_count or 1
+
+		if self.ignore_mass_and_armour then
+			hit_mass_total = 1
+		elseif action_mass_override and action_mass_override[breed.name] then
+			local mass_cost_multiplier = action_mass_override[breed.name]
+			hit_mass_total = hit_mass_total * (mass_cost_multiplier or 1)
+		end
+
+		self.amount_of_mass_hit = self.amount_of_mass_hit + hit_mass_total
+	end
+
 	local actual_target_index = math.ceil(self.amount_of_mass_hit)
 	local hit_effect = action.hit_effect
 	local is_husk = not owner.local_player
@@ -261,8 +272,14 @@ PlayerProjectileHuskExtension.hit_enemy_damage = function (self, damage_profile,
 	local predicted_damage = DamageUtils.calculate_damage(DamageOutput, hit_unit, owner_unit, hit_zone_name, power_level, BoostCurves[target_settings.boost_curve_type], ranged_boost_curve_multiplier, is_critical_strike, damage_profile, actual_target_index, nil, damage_source)
 	local no_damage = predicted_damage <= 0
 
-	if no_damage then
-		self.did_damage = false
+	if was_alive and no_damage then
+		self.did_damage = predicted_damage
+		self.amount_of_mass_hit = self.max_mass
+
+		self:stop()
+	elseif was_alive and not action.ignore_armor and (breed.armor_category == 2 or breed.armor_category == 3 or shield_blocked) then
+		self.did_damage = predicted_damage
+		self.amount_of_mass_hit = self.max_mass
 
 		self:stop()
 	else
@@ -273,12 +290,6 @@ PlayerProjectileHuskExtension.hit_enemy_damage = function (self, damage_profile,
 		end
 
 		EffectHelper.player_critical_hit(self.world, is_critical_strike, owner_unit, hit_unit, hit_position)
-	end
-
-	local breed = hit_unit and Unit.get_data(hit_unit, "breed")
-
-	if breed.armor_category == 2 or breed.armor_category == 3 then
-		self.num_targets_hit = self.max_mass
 	end
 
 	if hit_effect then
@@ -529,26 +540,28 @@ end
 
 PlayerProjectileHuskExtension.do_aoe = function (self, aoe_data, position)
 	local world = self.world
-	local owner_unit = self.owner_unit
 	local unit = self.unit
+	local owner_unit = self.owner_unit
 	local item_name = self.item_name
+	local is_server = self.is_server
 
 	if aoe_data.explosion then
 		local rotation = Unit.local_rotation(unit, 0)
 		local scale = self.scale
-		local is_server = self.is_server
 		local power_level = self.power_level
 		local is_husk = true
 
 		DamageUtils.create_explosion(world, owner_unit, position, rotation, aoe_data, scale, item_name, is_server, is_husk, unit, power_level)
 	end
 
-	if aoe_data.aoe and self.is_server then
-		DamageUtils.create_aoe(world, owner_unit, position, item_name, aoe_data)
-	end
+	if is_server then
+		if aoe_data.aoe then
+			DamageUtils.create_aoe(world, owner_unit, position, item_name, aoe_data)
+		end
 
-	if aoe_data.taunt and self.is_server then
-		DamageUtils.create_taunt(world, owner_unit, unit, position, aoe_data)
+		if aoe_data.taunt then
+			DamageUtils.create_taunt(world, owner_unit, unit, position, aoe_data)
+		end
 	end
 end
 

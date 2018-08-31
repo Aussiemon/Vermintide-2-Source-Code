@@ -1,4 +1,5 @@
-local achievement_templates = require("scripts/managers/achievements/achievement_templates")
+require("scripts/managers/achievements/achievement_templates")
+
 local outline = require("scripts/managers/achievements/achievements_outline")
 local World = rawget(_G, "World")
 local script_data = rawget(_G, "script_data")
@@ -34,7 +35,7 @@ AchievementManager.init = function (self, world, statistics_db)
 
 	local template_count = 0
 
-	for id, template in pairs(achievement_templates.achievements) do
+	for id, template in pairs(AchievementTemplates.achievements) do
 		if (self.platform == "steam" and template.ID_STEAM) or (self.platform == "ps4" and template.ID_PS4) or (self.platform == "xb1" and template.ID_XB1) or self.platform == "debug" then
 			local idx = template_count + 1
 			self._templates[idx] = template
@@ -52,7 +53,7 @@ AchievementManager.init = function (self, world, statistics_db)
 	printf("[AchievementManager] Achievements using the %s platform", self.platform)
 	self:event_enable_achievements(true)
 
-	if script_data.settings.use_beta_overlay then
+	if template_count == 0 or script_data.settings.use_beta_overlay then
 		self._enabled = false
 	end
 
@@ -276,6 +277,32 @@ AchievementManager.has_any_unclaimed_achievement = function (self)
 	return false
 end
 
+AchievementManager.evaluate_end_of_level_achievements = function (self, statistics_db, stats_id, level_key, difficulty_key)
+	local evaluations = AchievementTemplates.end_of_level_achievement_evaluations
+
+	print("yep")
+
+	for _, data in pairs(evaluations) do
+		local levels = data.levels
+
+		print("ok")
+
+		if not levels or table.contains(levels, level_key) then
+			local evaluation_func = data.evaluation_func
+			local allowed_difficulties = data.allowed_difficulties
+
+			print("cool")
+
+			if (not allowed_difficulties or allowed_difficulties[difficulty_key]) and evaluation_func(statistics_db, stats_id) then
+				local stat_to_increment = data.stat_to_increment
+
+				print("its working")
+				statistics_db:increment_stat(stats_id, stat_to_increment)
+			end
+		end
+	end
+end
+
 AchievementManager._update_reward_polling = function (self)
 	local reward_poll_id = self._reward_poll_id
 
@@ -340,11 +367,11 @@ AchievementManager._check_initialized_achievements = function (self)
 end
 
 AchievementManager._setup_achievement_data = function (self, achievement_id)
-	local achievement_data = achievement_templates.achievements[achievement_id]
+	local achievement_data = AchievementTemplates.achievements[achievement_id]
 
 	assert(achievement_data)
 
-	local name, desc, completed, progress, requirements, claimed = nil
+	local name, desc, completed, progress, requirements, claimed, required_dlc = nil
 	local player_manager = Managers.player
 	local player = player_manager:local_player()
 
@@ -425,6 +452,7 @@ AchievementManager._setup_achievement_data = function (self, achievement_id)
 		name = name,
 		desc = desc,
 		icon = achievement_data.icon,
+		required_dlc = achievement_data.required_dlc,
 		completed = completed,
 		progress = progress,
 		requirements = requirements,

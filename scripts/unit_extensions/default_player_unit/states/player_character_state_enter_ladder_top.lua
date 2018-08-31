@@ -22,6 +22,7 @@ PlayerCharacterStateEnterLadderTop.on_enter = function (self, unit, input, dt, c
 	local unit = self.unit
 
 	CharacterStateHelper.stop_weapon_actions(self.inventory_extension, "ladder")
+	CharacterStateHelper.stop_career_abilities(self.career_extension, "ladder")
 
 	local input_extension = self.input_extension
 	local first_person_extension = self.first_person_extension

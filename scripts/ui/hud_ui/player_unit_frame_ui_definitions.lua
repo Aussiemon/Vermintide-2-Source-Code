@@ -20,19 +20,7 @@ local portrait_area = {
 }
 local scenegraph_definition = {
 	root = {
-		is_root = true,
-		position = {
-			0,
-			0,
-			UILayer.hud
-		},
-		size = {
-			SIZE_X,
-			SIZE_Y
-		}
-	},
-	screen = {
-		scale = "fit",
+		scale = "hud_scale_fit",
 		position = {
 			0,
 			0,
@@ -45,7 +33,7 @@ local scenegraph_definition = {
 	},
 	pivot = {
 		vertical_alignment = "bottom",
-		parent = "screen",
+		parent = "root",
 		horizontal_alignment = "center",
 		position = {
 			0,
@@ -59,7 +47,7 @@ local scenegraph_definition = {
 	},
 	portrait_pivot = {
 		vertical_alignment = "bottom",
-		parent = "screen",
+		parent = "root",
 		horizontal_alignment = "left",
 		position = {
 			80,
@@ -164,7 +152,7 @@ local function create_static_widget()
 				offset = {
 					-42,
 					-56,
-					1
+					50
 				},
 				color = {
 					150,
@@ -210,8 +198,26 @@ local function create_dynamic_portait_widget()
 				},
 				{
 					pass_type = "texture",
+					style_id = "talk_indicator",
+					texture_id = "talk_indicator",
+					retained_mode = RETAINED_MODE_ENABLED
+				},
+				{
+					pass_type = "texture",
+					style_id = "talk_indicator_glow",
+					texture_id = "talk_indicator_glow",
+					retained_mode = RETAINED_MODE_ENABLED
+				},
+				{
+					pass_type = "texture",
 					style_id = "talk_indicator_highlight",
 					texture_id = "talk_indicator_highlight",
+					retained_mode = RETAINED_MODE_ENABLED
+				},
+				{
+					pass_type = "texture",
+					style_id = "talk_indicator_highlight_glow",
+					texture_id = "talk_indicator_highlight_glow",
 					retained_mode = RETAINED_MODE_ENABLED
 				},
 				{
@@ -226,23 +232,26 @@ local function create_dynamic_portait_widget()
 			}
 		},
 		content = {
-			display_portrait_overlay = false,
+			talk_indicator_highlight = "voip_wave",
 			connecting = false,
 			display_portrait_icon = false,
+			portrait_icon = "status_icon_needs_assist",
+			display_portrait_overlay = false,
 			connecting_icon = "matchmaking_connecting_icon",
-			talk_indicator_highlight = "speaking_icon",
-			portrait_icon = "status_icon_needs_assist"
+			talk_indicator_highlight_glow = "voip_wave_glow",
+			talk_indicator = "voip_speaker",
+			talk_indicator_glow = "voip_speaker_glow"
 		},
 		style = {
-			talk_indicator_highlight = {
+			talk_indicator = {
 				scenegraph_id = "portrait_pivot",
 				size = {
-					40,
-					30
+					64,
+					64
 				},
 				offset = {
-					-70,
-					70,
+					60,
+					6,
 					3
 				},
 				color = {
@@ -250,6 +259,60 @@ local function create_dynamic_portait_widget()
 					255,
 					255,
 					255
+				}
+			},
+			talk_indicator_glow = {
+				scenegraph_id = "portrait_pivot",
+				size = {
+					64,
+					64
+				},
+				offset = {
+					60,
+					6,
+					2
+				},
+				color = {
+					0,
+					0,
+					0,
+					0
+				}
+			},
+			talk_indicator_highlight = {
+				scenegraph_id = "portrait_pivot",
+				size = {
+					64,
+					64
+				},
+				offset = {
+					60,
+					6,
+					3
+				},
+				color = {
+					0,
+					255,
+					255,
+					255
+				}
+			},
+			talk_indicator_highlight_glow = {
+				scenegraph_id = "portrait_pivot",
+				size = {
+					64,
+					64
+				},
+				offset = {
+					60,
+					6,
+					2
+				},
+				color = {
+					0,
+					0,
+					0,
+					0
 				}
 			},
 			connecting_icon = {
@@ -288,7 +351,7 @@ local function create_dynamic_portait_widget()
 				offset = {
 					0,
 					0,
-					11
+					7
 				},
 				color = {
 					150,
@@ -465,7 +528,7 @@ local function create_dynamic_health_widget()
 				offset = {
 					settings.hp_bar.x,
 					settings.hp_bar.y,
-					settings.hp_bar.z + 1
+					settings.hp_bar.z + 4
 				}
 			},
 			grimoire_debuff_divider = {

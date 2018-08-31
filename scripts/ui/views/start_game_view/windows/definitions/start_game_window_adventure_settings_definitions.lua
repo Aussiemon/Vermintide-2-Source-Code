@@ -231,7 +231,7 @@ local function create_settings_option(scenegraph_id, size, title_text, button_te
 		icon_texture_size[1],
 		icon_texture_size[2]
 	}
-	background_texture = background_texture or "play_screen_bg"
+	background_texture = background_texture or "game_options_bg_02"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local frame_name = "menu_frame_08"
 	local frame_settings = UIFrameSettings[frame_name]

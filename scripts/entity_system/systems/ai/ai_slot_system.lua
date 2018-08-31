@@ -21,6 +21,7 @@ AISlotSystem.init = function (self, context, system_name)
 	self.unit_storage = context.unit_storage
 	self.nav_world = Managers.state.entity:system("ai_system"):nav_world()
 	self.unit_extension_data = {}
+	self.frozen_unit_extension_data = {}
 	self.update_slots_ai_units = {}
 	self.update_slots_ai_units_prioritized = {}
 	self.target_units = {}
@@ -279,7 +280,10 @@ local RAYCANGO_OFFSET = NAVMESH_DISTANCE_FROM_WALL + MOVER_RADIUS
 
 AISlotSystem.do_slot_search = function (self, ai_unit, set)
 	local ai_unit_extension = self.unit_extension_data[ai_unit]
-	ai_unit_extension.do_search = set
+
+	if ai_unit_extension then
+		ai_unit_extension.do_search = set
+	end
 end
 
 local TARGET_OUTSIDE_NAVMESH_TIMEOUT = 2
@@ -342,7 +346,7 @@ local function get_slot_queue_position(unit_extension_data, slot, nav_world, dis
 	local target_unit = slot.target_unit
 	local ai_unit = slot.ai_unit
 
-	if not unit_alive(target_unit) or not unit_alive(ai_unit) then
+	if not unit_alive(target_unit) or not ALIVE[ai_unit] then
 		return
 	end
 
@@ -406,7 +410,7 @@ local function offset_slot(target_unit, slot_absolute_position, target_unit_posi
 end
 
 AISlotSystem.improve_slot_position = function (self, ai_unit, t)
-	if not unit_alive(ai_unit) then
+	if not ALIVE[ai_unit] then
 		return
 	end
 
@@ -1675,14 +1679,11 @@ AISlotSystem.physics_async_update = function (self, context, t)
 	end
 
 	local update_slots_ai_units_prioritized = self.update_slots_ai_units_prioritized
-	local update_slots_ai_units_prioritized_n = #update_slots_ai_units_prioritized
 
-	for i = 1, update_slots_ai_units_prioritized_n, 1 do
-		local ai_unit = update_slots_ai_units_prioritized[i]
-
+	for ai_unit, _ in pairs(update_slots_ai_units_prioritized) do
 		self:update_ai_unit_slot(ai_unit, target_units, unit_extension_data, nav_world, t)
 
-		update_slots_ai_units_prioritized[i] = nil
+		update_slots_ai_units_prioritized[ai_unit] = nil
 	end
 
 	local update_slots_ai_units = self.update_slots_ai_units
@@ -1709,7 +1710,7 @@ AISlotSystem.physics_async_update = function (self, context, t)
 end
 
 AISlotSystem.update_ai_unit_slot = function (self, ai_unit, target_units, unit_extension_data, nav_world, t)
-	local ai_unit_dead = not unit_alive(ai_unit)
+	local ai_unit_dead = not ALIVE[ai_unit]
 
 	if ai_unit_dead then
 		detach_ai_unit_from_slot(ai_unit, unit_extension_data)
@@ -1720,7 +1721,7 @@ AISlotSystem.update_ai_unit_slot = function (self, ai_unit, target_units, unit_e
 	local ai_unit_extension = unit_extension_data[ai_unit]
 	local ai_system_extension = ScriptUnit.extension(ai_unit, "ai_system")
 	local blackboard = ai_system_extension:blackboard()
-	local target_unit = blackboard.target_unit or blackboard.SVP_target_unit
+	local target_unit = blackboard.target_unit
 
 	update_target(target_unit, ai_unit, blackboard, unit_extension_data, t)
 
@@ -1844,17 +1845,18 @@ AISlotSystem.update_total_slots_count = function (self)
 	local target_units = self.target_units
 	local target_units_n = #target_units
 	local target_unit_extensions = self.unit_extension_data
-	local slots_n = 0
-	local slots_occupied_n = 0
+	local num_slots = 0
+	local num_slots_occupied_total = 0
 
 	for i = 1, target_units_n, 1 do
 		local target_unit = target_units[i]
 		local target_unit_extension = target_unit_extensions[target_unit]
 		local all_slots = target_unit_extension.all_slots
+		local num_occupied = 0
 
 		for slot_type, slot_data in pairs(all_slots) do
 			local target_unit_slots = slot_data.slots_count
-			slots_n = slots_n + target_unit_slots
+			num_slots = num_slots + target_unit_slots
 			local target_slots = slot_data.slots
 			local total_slots_count = slot_data.total_slots_count
 
@@ -1863,20 +1865,21 @@ AISlotSystem.update_total_slots_count = function (self)
 				local occupied = not slot.released and slot.ai_unit
 
 				if occupied then
-					slots_occupied_n = slots_occupied_n + 1
+					num_occupied = num_occupied + 1
 				end
 			end
 		end
+
+		target_unit_extension.num_occupied_slots = num_occupied
+		num_slots_occupied_total = num_slots_occupied_total + num_occupied
 	end
 
-	self.num_total_enemies = slots_n
-	self.num_occupied_slots = slots_occupied_n
+	self.num_total_enemies = num_slots
+	self.num_occupied_slots = num_slots_occupied_total
 end
 
 AISlotSystem.register_prioritized_ai_unit_update = function (self, unit)
-	local update_slots_ai_units_prioritized = self.update_slots_ai_units_prioritized
-	local update_slots_ai_units_prioritized_n = #update_slots_ai_units_prioritized
-	update_slots_ai_units_prioritized[update_slots_ai_units_prioritized_n + 1] = unit
+	self.update_slots_ai_units_prioritized[unit] = true
 end
 
 local AGGROABLE_SLOT_COLOR_INDEX = 5
@@ -1928,6 +1931,7 @@ AISlotSystem.on_add_extension = function (self, world, unit, extension_name, ext
 		extension.valid_target = true
 		extension.index = target_index
 		extension.debug_color_name = SLOT_COLORS[debug_color_index][1]
+		extension.num_occupied_slots = 0
 
 		create_target_slots(unit, extension, debug_color_index)
 
@@ -1961,11 +1965,27 @@ AISlotSystem.extensions_ready = function (self, world, unit, extension_name)
 end
 
 AISlotSystem.on_remove_extension = function (self, unit, extension_name)
-	self:on_freeze_extension(unit, extension_name)
+	self.frozen_unit_extension_data[unit] = nil
+
+	self:_cleanup_extension(unit, extension_name)
 	ScriptUnit.remove_extension(unit, self.NAME)
 end
 
 AISlotSystem.on_freeze_extension = function (self, unit, extension_name)
+	local extension = self.unit_extension_data[unit]
+
+	fassert(extension, "Unit was already frozen.")
+
+	if extension == nil then
+		return
+	end
+
+	self.frozen_unit_extension_data[unit] = extension
+
+	self:_cleanup_extension(unit, extension_name)
+end
+
+AISlotSystem._cleanup_extension = function (self, unit, extension_name)
 	local extension = self.unit_extension_data[unit]
 
 	if extension == nil then
@@ -1975,8 +1995,6 @@ AISlotSystem.on_freeze_extension = function (self, unit, extension_name)
 	local world = self.world
 	local update_slots_ai_units = self.update_slots_ai_units
 	local update_slots_ai_units_n = #update_slots_ai_units
-	local update_slots_ai_units_prioritized = self.update_slots_ai_units_prioritized
-	local update_slots_ai_units_prioritized_n = #update_slots_ai_units_prioritized
 	local slots = self.slots
 
 	if extension_name == "AIEnemySlotExtension" then
@@ -1984,16 +2002,7 @@ AISlotSystem.on_freeze_extension = function (self, unit, extension_name)
 			detach_ai_unit_from_slot(unit, self.unit_extension_data)
 		end
 
-		for i = 1, update_slots_ai_units_prioritized_n, 1 do
-			local ai_unit = update_slots_ai_units_prioritized[i]
-
-			if ai_unit == unit then
-				update_slots_ai_units_prioritized[i] = update_slots_ai_units_prioritized[update_slots_ai_units_prioritized_n]
-				update_slots_ai_units_prioritized[update_slots_ai_units_prioritized_n] = nil
-
-				break
-			end
-		end
+		self.update_slots_ai_units_prioritized[unit] = nil
 
 		for i = 1, update_slots_ai_units_n, 1 do
 			local ai_unit = update_slots_ai_units[i]
@@ -2040,6 +2049,34 @@ AISlotSystem.on_freeze_extension = function (self, unit, extension_name)
 	end
 
 	self.unit_extension_data[unit] = nil
+end
+
+AISlotSystem.freeze = function (self, unit, extension_name, reason)
+	local frozen_extensions = self.frozen_unit_extension_data
+
+	if frozen_extensions[unit] then
+		return
+	end
+
+	local extension = self.unit_extension_data[unit]
+
+	fassert(extension, "Unit to freeze didn't have unfrozen extension")
+	self:_cleanup_extension(unit, extension_name)
+
+	self.unit_extension_data[unit] = nil
+	frozen_extensions[unit] = extension
+end
+
+AISlotSystem.unfreeze = function (self, unit)
+	local extension = self.frozen_unit_extension_data[unit]
+	self.frozen_unit_extension_data[unit] = nil
+	self.unit_extension_data[unit] = extension
+
+	fassert(extension, "Unit to freeze didn't have unfrozen extension")
+
+	extension.target = nil
+	extension.improve_wait_slot_position_t = 0
+	self.update_slots_ai_units[#self.update_slots_ai_units + 1] = unit
 end
 
 function debug_draw_slots(unit_extension_data, nav_world, t)
@@ -2092,7 +2129,7 @@ function debug_draw_slots(unit_extension_data, nav_world, t)
 						if slot.absolute_position then
 							local slot_absolute_position = slot.absolute_position:unbox()
 
-							if unit_alive(ai_unit) then
+							if ALIVE[ai_unit] then
 								local ai_unit_position = POSITION_LOOKUP[ai_unit]
 								local ai_unit_extension = unit_extension_data[ai_unit]
 

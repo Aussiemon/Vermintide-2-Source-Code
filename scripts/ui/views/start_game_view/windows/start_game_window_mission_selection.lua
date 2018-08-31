@@ -1,8 +1,6 @@
-require("scripts/settings/act_settings")
-
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_mission_selection_definitions")
 local widget_definitions = definitions.widgets
-local map_size = definitions.map_size
+local large_window_size = definitions.large_window_size
 local act_widget_definitions = definitions.act_widgets
 local node_widget_definitions = definitions.node_widgets
 local end_act_widget_definition = definitions.end_act_widget
@@ -42,12 +40,14 @@ StartGameWindowMissionSelection.on_enter = function (self, params, offset)
 	self:create_ui_elements(params, offset)
 
 	self._widgets_by_name.select_button.content.button_hotspot.disable_button = true
+	local area_name = self.parent:get_selected_area_name()
 
 	self:_set_presentation_info()
-	self:_setup_level_acts()
-	self:_present_act_levels()
+	self:_setup_levels_by_area(area_name)
 	self:_update_level_option()
-	self.parent.parent:set_input_description("select_mission")
+	self.parent:set_input_description("select_mission")
+
+	params.return_layout_index = nil
 end
 
 StartGameWindowMissionSelection.create_ui_elements = function (self, params, offset)
@@ -99,6 +99,18 @@ StartGameWindowMissionSelection.create_ui_elements = function (self, params, off
 	end
 end
 
+StartGameWindowMissionSelection._setup_levels_by_area = function (self, area_name)
+	local area_settings = AreaSettings[area_name]
+	local acts = area_settings.acts
+	local dlc_name = area_settings.dlc_name
+	self._is_dlc = dlc_name ~= nil
+
+	self:_setup_level_acts()
+	self:_present_acts(acts)
+
+	self._widgets_by_name.dlc_background.content.visible = self._is_dlc
+end
+
 StartGameWindowMissionSelection._setup_level_acts = function (self)
 	local statistics_db = self.statistics_db
 	local stats_id = self._stats_id
@@ -128,24 +140,17 @@ StartGameWindowMissionSelection._setup_level_acts = function (self)
 	self._levels_by_act = levels_by_act
 end
 
-StartGameWindowMissionSelection._verify_act = function (self, act)
-	if not act then
-		return false
-	end
-
-	for _, act_key in ipairs(MapPresentationActs) do
-		if act == act_key then
-			return true
-		end
-	end
-
-	return false
-end
-
-StartGameWindowMissionSelection._present_act_levels = function (self, act)
+StartGameWindowMissionSelection._present_acts = function (self, acts)
 	local ui_scenegraph = self.ui_scenegraph
-	local map_width = map_size[1]
-	local map_height = map_size[2]
+	local is_dlc = self._is_dlc
+	local large_window_width = large_window_size[1]
+	local large_window_height = large_window_size[2]
+
+	if is_dlc then
+		local level_root_node = ui_scenegraph.level_root_node
+		level_root_node.local_position[1] = large_window_width / 2
+	end
+
 	local node_widgets = self._node_widgets
 	local levels_by_act = self._levels_by_act
 	local temp_y_pos = 0
@@ -154,26 +159,33 @@ StartGameWindowMissionSelection._present_act_levels = function (self, act)
 	local stats_id = self._stats_id
 	local assigned_widgets = {}
 	local act_widgets = {}
-	local level_width_spacing = 214
+	local level_width = 180
+	local level_width_spacing = (is_dlc and 80) or 34
 	local level_height_spacing = 250
 	local max_act_number = 3
 
 	for act_key, levels in pairs(levels_by_act) do
-		local act_verified = self:_verify_act(act_key)
-
-		if act_verified and (not act or act == act_key) then
+		if not acts or table.contains(acts, act_key) then
 			local act_settings = ActSettings[act_key]
 			local act_sorting = act_settings.sorting
 			local act_index = (act_sorting - 1) % max_act_number + 1
 			local is_end_act = max_act_number < act_sorting
+			local num_levels_in_act = #levels
+			local level_position_x = 0
+			local level_position_y = 0
 			local act_position_y = 0
 			local act_widget = nil
 
-			if not is_end_act then
-				act_position_y = -level_height_spacing + (max_act_number - act_index) * level_height_spacing
-				act_widget = self._act_widgets[act_index]
-			else
+			if is_end_act then
 				act_widget = self.end_act_widget
+			else
+				if is_dlc then
+					level_position_x = -((level_width + level_width_spacing) * num_levels_in_act) / 2 + (level_width + level_width_spacing) / 2
+				else
+					act_position_y = -level_height_spacing + (max_act_number - act_index) * level_height_spacing
+				end
+
+				act_widget = self._act_widgets[act_index]
 			end
 
 			act_widgets[#act_widgets + 1] = act_widget
@@ -182,19 +194,14 @@ StartGameWindowMissionSelection._present_act_levels = function (self, act)
 			local act_display_name = act_settings.display_name
 			act_widget.content.background = act_settings.banner_texture
 			act_widget.content.text = Localize(act_display_name)
-			local num_levels_in_act = #levels
-			local level_position_x = 0
-			local level_position_y = 0
 
 			for level_index, level_data in ipairs(levels) do
-				if is_end_act then
-					level_position_x = level_width_spacing * 4
-				elseif act_index == 1 and not is_end_act then
-					if level_index == 1 then
-						level_position_x = level_position_x + level_width_spacing / 2
+				if not is_dlc then
+					if is_end_act then
+						level_position_x = (level_width + level_width_spacing) * 4
+					elseif act_index ~= 2 and level_index == 1 then
+						level_position_x = level_position_x + (level_width + level_width_spacing) / 2
 					end
-				elseif act_index ~= 2 and level_index == 1 then
-					level_position_x = level_position_x + level_width_spacing / 2
 				end
 
 				local index = #assigned_widgets + 1
@@ -230,14 +237,14 @@ StartGameWindowMissionSelection._present_act_levels = function (self, act)
 				if level_index < num_levels_in_act then
 					local next_level_key = levels[level_index + 1].level_id
 					local next_level_unlocked = LevelUnlockUtils.level_unlocked(statistics_db, stats_id, next_level_key)
-					content.draw_path = true
+					content.draw_path = not is_dlc
 					content.draw_path_fill = next_level_unlocked
-					style.path.texture_size[1] = level_width_spacing
-					style.path_glow.texture_size[1] = level_width_spacing
+					style.path.texture_size[1] = level_width + level_width_spacing
+					style.path_glow.texture_size[1] = level_width + level_width_spacing
 				end
 
 				assigned_widgets[index] = widget
-				level_position_x = level_position_x + level_width_spacing
+				level_position_x = level_position_x + level_width + level_width_spacing
 			end
 		end
 	end
@@ -327,6 +334,36 @@ StartGameWindowMissionSelection._get_selection_frame_by_difficulty_index = funct
 	return completed_frame_texture
 end
 
+StartGameWindowMissionSelection._get_first_level_id = function (self)
+	local active_node_widgets = self._active_node_widgets
+
+	if active_node_widgets then
+		for index, widget in ipairs(active_node_widgets) do
+			local content = widget.content
+			local level_settings = content.level_data
+
+			return level_settings.level_id
+		end
+	end
+end
+
+StartGameWindowMissionSelection._is_level_presented = function (self, level_id)
+	local active_node_widgets = self._active_node_widgets
+
+	if active_node_widgets then
+		for index, widget in ipairs(active_node_widgets) do
+			local content = widget.content
+			local level_settings = content.level_data
+
+			if level_settings.level_id == level_id then
+				return true
+			end
+		end
+	end
+
+	return false
+end
+
 StartGameWindowMissionSelection._select_level = function (self, level_id)
 	local active_node_widgets = self._active_node_widgets
 
@@ -388,7 +425,7 @@ StartGameWindowMissionSelection.on_exit = function (self, params)
 
 	self.ui_animator = nil
 
-	self.parent.parent:set_input_description(nil)
+	self.parent:set_input_description(nil)
 
 	self._has_exited = true
 end
@@ -466,7 +503,13 @@ StartGameWindowMissionSelection._update_level_option = function (self)
 	local level_id = self.parent:get_selected_level_id()
 
 	if level_id ~= self._selected_level_id then
-		self:_select_level(level_id)
+		if self:_is_level_presented(level_id) then
+			self:_select_level(level_id)
+		elseif not self._selected_level_id then
+			local first_level_id = self:_get_first_level_id()
+
+			self:_select_level(first_level_id)
+		end
 	end
 end
 

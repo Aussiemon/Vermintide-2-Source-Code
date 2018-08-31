@@ -7,7 +7,6 @@ local scenegraph_definition = definitions.scenegraph_definition
 local settings_by_screen = definitions.settings_by_screen
 local attachments = definitions.attachments
 local flow_events = definitions.flow_events
-local generic_input_actions = definitions.generic_input_actions
 
 local function dprint(...)
 	print("[StartGameView]", ...)
@@ -31,6 +30,17 @@ end
 local DO_RELOAD = true
 local debug_draw_scenegraph = false
 local debug_menu = true
+local menu_functions = {}
+
+if PLATFORM ~= "win32" then
+	menu_functions.console_friends_menu = function (this)
+		local input_manager = Managers.input
+
+		input_manager:block_device_except_service("console_friends_menu", "gamepad")
+		this:_activate_view("console_friends_view")
+	end
+end
+
 StartGameView = class(StartGameView)
 local fake_input_service = {
 	get = function ()
@@ -78,6 +88,55 @@ StartGameView.init = function (self, ingame_ui_context)
 	self.ui_animations = {}
 	self.ingame_ui_context = ingame_ui_context
 	DO_RELOAD = false
+end
+
+StartGameView._init_menu_views = function (self)
+	local ingame_ui_context = self.ingame_ui_context
+	self._views = {
+		console_friends_view = ingame_ui_context.ingame_ui.views.console_friends_view
+	}
+
+	for name, view in pairs(self._views) do
+		view.exit = function ()
+			self:exit_current_view()
+		end
+	end
+end
+
+StartGameView._activate_view = function (self, new_view)
+	self._active_view = new_view
+	local views = self._views
+
+	assert(views[new_view])
+
+	if new_view and views[new_view] and views[new_view].on_enter then
+		views[new_view]:on_enter()
+	end
+end
+
+StartGameView.active_view = function (self)
+	return self._active_view
+end
+
+StartGameView.exit_current_view = function (self)
+	local active_view = self._active_view
+	local views = self._views
+
+	assert(active_view)
+
+	if views[active_view] and views[active_view].on_exit then
+		views[active_view]:on_exit()
+	end
+
+	self._active_view = nil
+	local input_service = Managers.input:get_service("start_game_view")
+	local input_service_name = input_service.name
+	local input_manager = Managers.input
+
+	input_manager:block_device_except_service(input_service_name, "keyboard")
+	input_manager:block_device_except_service(input_service_name, "mouse")
+	input_manager:block_device_except_service(input_service_name, "gamepad")
+	input_manager:disable_gamepad_cursor()
 end
 
 StartGameView.initial_profile_view = function (self)
@@ -130,21 +189,10 @@ StartGameView.create_ui_elements = function (self)
 		text = UIWidget.init(widget_definitions.loading_text)
 	}
 	self._console_cursor_widget = UIWidget.init(widget_definitions.console_cursor)
-	local input_service = Managers.input:get_service("start_game_view")
-	local gui_layer = UILayer.default + 30
-	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 4, gui_layer, generic_input_actions.default)
 
-	self._menu_input_description:set_input_description(nil)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, definitions.animations)
-end
-
-StartGameView.set_input_description = function (self, input_description)
-	local test = generic_input_actions
-
-	fassert(not input_description or generic_input_actions[input_description], "[StartGameView:set_input_description] There is no such input_description (%s)", input_description)
-	self._menu_input_description:set_input_description(generic_input_actions[input_description])
 end
 
 StartGameView.draw = function (self, dt, input_service)
@@ -177,10 +225,6 @@ StartGameView.draw = function (self, dt, input_service)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
-
-	if gamepad_active then
-		self._menu_input_description:draw(ui_top_renderer, dt)
-	end
 end
 
 StartGameView.post_update = function (self, dt, t)
@@ -227,6 +271,14 @@ StartGameView.update = function (self, dt, t)
 
 	if not transitioning then
 		self:_handle_mouse_input(dt, t, input_service)
+
+		local active_view = self._active_view
+
+		if active_view then
+			self._views[active_view]:update(dt, t)
+		else
+			self:_handle_input(dt, t)
+		end
 	end
 
 	self._machine:update(dt, t)
@@ -260,6 +312,8 @@ StartGameView.on_enter = function (self, menu_state_name, menu_sub_state_name)
 	self:play_sound("hud_in_inventory_state_on")
 
 	self._draw_loading = false
+
+	self:_init_menu_views()
 end
 
 StartGameView.set_current_hero = function (self, profile_index)
@@ -288,6 +342,18 @@ end
 
 StartGameView._handle_mouse_input = function (self, dt, t, input_service)
 	return
+end
+
+StartGameView._handle_input = function (self, dt, t)
+	if Managers.account:offline_mode() then
+		return
+	end
+
+	local input_service = self:input_service()
+
+	if input_service:get("show_gamercard") and menu_functions.console_friends_menu then
+		menu_functions.console_friends_menu(self)
+	end
 end
 
 StartGameView._is_selection_widget_pressed = function (self, widget)

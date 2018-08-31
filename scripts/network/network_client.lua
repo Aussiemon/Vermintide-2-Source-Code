@@ -109,8 +109,8 @@ NetworkClient.rpc_notify_connected = function (self, sender)
 		EAC.set_host(self.server_peer_id)
 
 		self._eac_has_set_host = true
-		self._next_eac_match_check = 0
 
+		EAC.validate_host()
 		RPC.rpc_notify_lobby_joined(self.server_peer_id, self.wanted_profile_index, Application.user_setting("clan_tag") or "0")
 
 		self._notification_sent = true
@@ -186,6 +186,12 @@ NetworkClient.set_state = function (self, new_state)
 	self.state = new_state
 end
 
+NetworkClient.has_bad_state = function (self)
+	local state = self.state
+
+	return state == "denied_enter_game" or state == "lost_connection_to_host" or state == "eac_match_failed"
+end
+
 NetworkClient.on_game_entered = function (self)
 	self:set_state("is_ingame")
 	RPC.rpc_is_ingame(self.server_peer_id)
@@ -214,27 +220,21 @@ NetworkClient.on_level_loaded = function (self, level_name)
 end
 
 NetworkClient.update = function (self, dt)
-	self.profile_synchronizer:update()
-	self.connection_handler:update(dt)
+	local connection_handler = self.connection_handler
 
-	if not self.wait_for_state_loading then
-		if self.level_transition_handler:all_packages_loaded() then
-			if self.state == "loading" then
-				network_printf("All level packages loaded!", self.level_transition_handler:get_current_level_keys())
-				self:set_state("loaded")
-				self:on_level_loaded(self.level_transition_handler:get_current_level_keys())
-			end
-		elseif self.state ~= "loading" then
-			network_printf("Forcing state to 'loading'")
-			self:set_state("loading")
-		end
+	self.profile_synchronizer:update()
+	connection_handler:update(dt)
+
+	if not self.wait_for_state_loading and self.state == "loading" and self.level_transition_handler:all_packages_loaded() then
+		network_printf("All level packages loaded!", self.level_transition_handler:get_current_level_keys())
+		self:set_state("loaded")
+		self:on_level_loaded(self.level_transition_handler:get_current_level_keys())
 	end
 
-	local connection_handler = self.connection_handler
-	local broken_connections = connection_handler:get_broken_connections()
+	local broken_connections, num_broken_connections = connection_handler:get_broken_connections()
 
-	for index, peer_id in pairs(broken_connections) do
-		broken_connections[peer_id] = nil
+	for i = 1, num_broken_connections, 1 do
+		local peer_id = broken_connections[i]
 
 		if peer_id == self.server_peer_id and self.state ~= "lost_connection_to_host" then
 			self.fail_reason = "broken_connection"
@@ -242,6 +242,8 @@ NetworkClient.update = function (self, dt)
 			network_printf("broken_connection to %s", peer_id)
 			self:set_state("lost_connection_to_host")
 		end
+
+		broken_connections[i] = nil
 	end
 
 	if self.state == "connecting" then
@@ -273,14 +275,6 @@ end
 NetworkClient._update_eac_match = function (self, dt)
 	if not self._eac_has_set_host then
 		return
-	end
-
-	self._next_eac_match_check = math.max(0, (self._next_eac_match_check or 0) - dt)
-
-	if self._next_eac_match_check == 0 then
-		EAC.validate_host()
-
-		self._next_eac_match_check = 10
 	end
 
 	local state_determined, can_play = self:_eac_host_check()

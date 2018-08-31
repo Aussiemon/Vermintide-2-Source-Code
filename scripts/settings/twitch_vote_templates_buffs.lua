@@ -24,10 +24,10 @@ TwitchVoteTemplates.twitch_add_speed_potion_buff = {
 				local unit = player.player_unit
 
 				if Unit.alive(unit) then
-					local buff_extension = Managers.state.entity:system("buff_system")
+					local buff_system = Managers.state.entity:system("buff_system")
 					local server_controlled = false
 
-					buff_extension:add_buff(unit, "twitch_speed_boost", unit, server_controlled)
+					buff_system:add_buff(unit, "twitch_speed_boost", unit, server_controlled)
 				end
 			end
 		end
@@ -52,10 +52,10 @@ TwitchVoteTemplates.twitch_add_damage_potion_buff = {
 				local unit = player.player_unit
 
 				if Unit.alive(unit) then
-					local buff_extension = Managers.state.entity:system("buff_system")
+					local buff_system = Managers.state.entity:system("buff_system")
 					local server_controlled = false
 
-					buff_extension:add_buff(unit, "twitch_damage_boost", unit, server_controlled)
+					buff_system:add_buff(unit, "twitch_damage_boost", unit, server_controlled)
 				end
 			end
 		end
@@ -80,10 +80,10 @@ TwitchVoteTemplates.twitch_add_cooldown_potion_buff = {
 				local unit = player.player_unit
 
 				if Unit.alive(unit) then
-					local buff_extension = Managers.state.entity:system("buff_system")
+					local buff_system = Managers.state.entity:system("buff_system")
 					local server_controlled = false
 
-					buff_extension:add_buff(unit, "twitch_cooldown_reduction_boost", unit, server_controlled)
+					buff_system:add_buff(unit, "twitch_cooldown_reduction_boost", unit, server_controlled)
 				end
 			end
 		end
@@ -108,10 +108,10 @@ TwitchVoteTemplates.twitch_grimoire_health_debuff = {
 				local unit = player.player_unit
 
 				if Unit.alive(unit) then
-					local buff_extension = Managers.state.entity:system("buff_system")
+					local buff_system = Managers.state.entity:system("buff_system")
 					local server_controlled = false
 
-					buff_extension:add_buff(unit, "twitch_grimoire_health_debuff", unit, server_controlled)
+					buff_system:add_buff(unit, "twitch_grimoire_health_debuff", unit, server_controlled)
 				end
 			end
 		end
@@ -136,10 +136,10 @@ TwitchVoteTemplates.twitch_no_overcharge_no_ammo_reloads = {
 				local unit = player.player_unit
 
 				if Unit.alive(unit) then
-					local buff_extension = Managers.state.entity:system("buff_system")
+					local buff_system = Managers.state.entity:system("buff_system")
 					local server_controlled = false
 
-					buff_extension:add_buff(unit, "twitch_no_overcharge_no_ammo_reloads", unit, server_controlled)
+					buff_system:add_buff(unit, "twitch_no_overcharge_no_ammo_reloads", unit, server_controlled)
 
 					local weapon_slot = "slot_ranged"
 					local ammo_amount = 1
@@ -178,10 +178,10 @@ TwitchVoteTemplates.twitch_health_regen = {
 				local unit = player.player_unit
 
 				if Unit.alive(unit) then
-					local buff_extension = Managers.state.entity:system("buff_system")
+					local buff_system = Managers.state.entity:system("buff_system")
 					local server_controlled = false
 
-					buff_extension:add_buff(unit, "twitch_health_regen", unit, server_controlled)
+					buff_system:add_buff(unit, "twitch_health_regen", unit, server_controlled)
 				end
 			end
 		end
@@ -213,10 +213,10 @@ TwitchVoteTemplates.twitch_health_degen = {
 					local unit = player.player_unit
 
 					if Unit.alive(unit) then
-						local buff_extension = Managers.state.entity:system("buff_system")
+						local buff_system = Managers.state.entity:system("buff_system")
 						local server_controlled = false
 
-						buff_extension:add_buff(unit, "twitch_health_degen", unit, server_controlled)
+						buff_system:add_buff(unit, "twitch_health_degen", unit, server_controlled)
 					end
 				end
 			end

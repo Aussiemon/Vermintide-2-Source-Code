@@ -27,7 +27,7 @@ EntityManager2.set_extension_extractor_function = function (self, extension_extr
 end
 
 EntityManager2.register_system = function (self, system, system_name, extension_list)
-	assert(self._systems[system_name] == nil, "Tried to register system whose name '%s' was already registered.", system_name)
+	assert(self._systems[system_name] == nil, string.format("Tried to register system whose name '%s' was already registered.", system_name))
 
 	self._systems[system_name] = system
 	system.NAME = system_name
@@ -117,7 +117,7 @@ EntityManager2.add_unit_extensions = function (self, world, unit, unit_template_
 
 			local extension_system_name = extension_to_system_map[extension_name]
 
-			assert(extension_system_name, "No such registered extension %q", extension_name)
+			assert(extension_system_name, string.format("No such registered extension %q", extension_name))
 
 			local extension_init_data = all_extension_init_data[extension_system_name] or EMPTY_TABLE
 
@@ -125,11 +125,11 @@ EntityManager2.add_unit_extensions = function (self, world, unit, unit_template_
 
 			local system = self_systems[extension_system_name]
 
-			assert(system ~= nil, "Adding extension %q with no system is registered.", extension_name)
+			assert(system ~= nil, string.format("Adding extension %q with no system is registered.", extension_name))
 
 			local extension = system:on_add_extension(world, unit, extension_name, extension_init_data)
 
-			assert(extension, "System (%s) must return the created extension (%s)", extension_system_name, extension_name)
+			assert(extension, string.format("System (%s) must return the created extension (%s)", extension_system_name, extension_name))
 
 			self_extensions[extension_name] = self_extensions[extension_name] or {}
 			self_units[unit] = self_units[unit] or {}
@@ -250,7 +250,7 @@ EntityManager2.register_units_extensions = function (self, unit_list, num_units)
 			end
 
 			for extension_name, extension in pairs(unit_extensions) do
-				assert(not self_extensions[extension_name][unit], "Unit %q already has extension %s registered.", unit, extension_name)
+				assert(not self_extensions[extension_name][unit], string.format("Unit %q already has extension %s registered.", unit, extension_name))
 
 				self_extensions[extension_name][unit] = extension
 			end
@@ -282,19 +282,19 @@ EntityManager2.remove_extensions_from_unit = function (self, unit, extensions_to
 		local system = self:system_by_extension(extension_name)
 
 		system:on_remove_extension(unit, extension_name)
-		assert(not ScriptUnit.has_extension(unit, system.NAME), "Extension was not properly destroyed for extension %s", extension_name)
+		assert(not ScriptUnit.has_extension(unit, system.NAME), string.format("Extension was not properly destroyed for extension %s", extension_name))
 
 		self_extensions[extension_name][unit] = nil
 	end
 end
 
-EntityManager2.freeze_extensions = function (self, unit, extensions_to_freeze)
+EntityManager2.freeze_extensions = function (self, unit, extensions_to_freeze, freeze_reason)
 	for i = 1, #extensions_to_freeze, 1 do
 		local extension_name = extensions_to_freeze[i]
 		local system = self:system_by_extension(extension_name)
 
-		if system.on_freeze_extension then
-			system:on_freeze_extension(unit, extension_name)
+		if system and system.on_freeze_extension then
+			system:on_freeze_extension(unit, extension_name, freeze_reason)
 		end
 	end
 end
@@ -336,7 +336,7 @@ EntityManager2.unregister_units = function (self, units, num_units)
 					local system = self._systems[system_name]
 
 					system:on_remove_extension(unit, extension_name)
-					assert(not ScriptUnit.has_extension(unit, system.NAME), "Extension was not properly destroyed for extension %s", extension_name)
+					assert(not ScriptUnit.has_extension(unit, system.NAME), string.format("Extension was not properly destroyed for extension %s", extension_name))
 
 					self_extensions[extension_name][unit] = nil
 				end
@@ -348,7 +348,7 @@ EntityManager2.unregister_units = function (self, units, num_units)
 						local system = self:system_by_extension(extension_name)
 
 						system:on_remove_extension(unit, extension_name)
-						assert(not ScriptUnit.has_extension(unit, system.NAME), "Extension was not properly destroyed for extension %s", extension_name)
+						assert(not ScriptUnit.has_extension(unit, system.NAME), string.format("Extension was not properly destroyed for extension %s", extension_name))
 
 						self_extensions[extension_name][unit] = nil
 					end

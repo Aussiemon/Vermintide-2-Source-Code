@@ -12,7 +12,7 @@ StateDemoEnd.on_enter = function (self)
 end
 
 StateDemoEnd._handle_video_playback = function (self)
-	Application.set_time_step_policy("throttle", 30)
+	Framerate.set_low_power()
 	Managers.music:stop_all_sounds()
 end
 
@@ -29,7 +29,7 @@ StateDemoEnd.on_exit = function (self)
 	Managers.input = nil
 
 	Managers.state:destroy()
-	Application.set_time_step_policy("no_throttle")
+	Framerate.set_playing()
 	ScriptWorld.destroy_viewport(self._world, self._viewport_name)
 	Managers.world:destroy_world(self._world)
 end

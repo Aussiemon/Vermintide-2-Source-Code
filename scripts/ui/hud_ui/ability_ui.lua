@@ -160,16 +160,48 @@ end
 
 AbilityUI.set_visible = function (self, visible)
 	self._is_visible = visible
+
+	self:_set_elements_visible(visible)
+end
+
+AbilityUI._set_elements_visible = function (self, visible)
 	local ui_renderer = self.ui_renderer
 
 	for _, widget in ipairs(self._widgets) do
 		UIRenderer.set_element_visible(ui_renderer, widget.element, visible)
 	end
 
+	self._retained_elements_visible = visible
+
 	self:set_dirty()
 end
 
+AbilityUI._handle_gamepad = function (self)
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+
+	if gamepad_active or UISettings.use_gamepad_hud_layout then
+		if self._retained_elements_visible then
+			self:_set_elements_visible(false)
+		end
+
+		return false
+	else
+		if not self._retained_elements_visible then
+			self:_set_elements_visible(true)
+			self:event_input_changed()
+		end
+
+		return true
+	end
+end
+
 AbilityUI.update = function (self, dt, t)
+	local should_render = self:_handle_gamepad()
+
+	if not should_render then
+		return
+	end
+
 	if not self._initialized then
 		self:_setup_activated_ability()
 	else

@@ -3,23 +3,6 @@ local time_between_resend_rpc_notify_connected = 2
 PeerStates.Connecting = {
 	on_enter = function (self, previous_state)
 		Network.write_dump_tag(string.format("%s connecting", self.peer_id))
-
-		local ban_list_manager = Managers.ban_list
-
-		if ban_list_manager ~= nil and ban_list_manager:is_banned(self.peer_id) then
-			printf("[PSM] Disconnecting banned player (%s)", self.peer_id)
-
-			self._disconnect_peer = true
-
-			return
-		end
-
-		if self.server.level_key == "prologue" and self.peer_id ~= self.server.my_peer_id then
-			self._disconnect_peer = true
-
-			return
-		end
-
 		self.server.network_transmit:send_rpc("rpc_notify_connected", self.peer_id)
 
 		self.loaded_level = nil
@@ -43,7 +26,27 @@ PeerStates.Connecting = {
 		self.loaded_level = NetworkLookup.level_keys[level_id]
 	end,
 	update = function (self, dt)
-		if self._disconnect_peer then
+		local ban_list_manager = Managers.ban_list
+
+		if ban_list_manager ~= nil and ban_list_manager:is_banned(self.peer_id) then
+			printf("[PSM] Disconnecting banned player (%s)", self.peer_id)
+			self.server:disconnect_peer(self.peer_id, "client_is_banned")
+
+			return PeerStates.Disconnecting
+		end
+
+		if self.server.level_key == "prologue" and self.peer_id ~= self.server.my_peer_id then
+			self.server:disconnect_peer(self.peer_id, "host_plays_prologue")
+
+			return PeerStates.Disconnecting
+		end
+
+		local backend_manager = Managers.backend
+
+		if not backend_manager:signed_in() then
+			printf("[PSM] Disconnecting player (%s) due to no connection with backend", self.peer_id)
+			self.server:disconnect_peer(self.peer_id, "host_has_no_backend_connection")
+
 			return PeerStates.Disconnecting
 		end
 
@@ -106,6 +109,12 @@ PeerStates.Loading = {
 	on_enter = function (self, previous_state)
 		Network.write_dump_tag(string.format("%s loading", self.peer_id))
 
+		local party = Managers.party
+
+		if DEDICATED_SERVER and party:leader() == nil then
+			Managers.game_server:set_leader_peer_id(self.peer_id)
+		end
+
 		self.game_started = false
 		self.is_ingame = nil
 		local level_key = self.server.level_key
@@ -128,12 +137,23 @@ PeerStates.Loading = {
 	end,
 	rpc_level_loaded = function (self, level_id)
 		self.loaded_level = NetworkLookup.level_keys[level_id]
+		local enemies_are_loaded = self.server.level_transition_handler.enemy_package_loader:load_sync_done_for_peer(self.peer_id)
+
+		if enemies_are_loaded then
+			printf("Peer %s has loaded the level and all enemies are loaded", self.peer_id)
+		else
+			printf("Peer %s has loaded the level but not all enemies, so we wait", self.peer_id)
+		end
 	end,
 	update = function (self, dt)
 		local server_level_key = self.server.level_key
 
 		if self.loaded_level == server_level_key then
-			return PeerStates.LoadingProfilePackages
+			local enemies_are_loaded = self.server.level_transition_handler.enemy_package_loader:load_sync_done_for_peer(self.peer_id)
+
+			if enemies_are_loaded then
+				return PeerStates.LoadingProfilePackages
+			end
 		end
 	end,
 	on_exit = function (self, new_state)
@@ -388,6 +408,19 @@ PeerStates.Disconnecting = {
 		local game_session = server.game_session
 		local peer_id = self.peer_id
 		local game_network_manager = server.game_network_manager
+		local party = Managers.party
+
+		if DEDICATED_SERVER and party:leader() == self.peer_id then
+			local leader_candidates = server:players_past_connecting()
+			local _, leader_id = next(leader_candidates)
+
+			if leader_id == nil then
+				Managers.game_server:set_leader_peer_id(nil)
+				Managers.game_server:restart()
+			else
+				Managers.game_server:set_leader_peer_id(leader_id)
+			end
+		end
 
 		if game_session and server.peers_added_to_gamesession[peer_id] then
 			printf("[PSM] Disconnected peer %s is being removed from session.", peer_id)

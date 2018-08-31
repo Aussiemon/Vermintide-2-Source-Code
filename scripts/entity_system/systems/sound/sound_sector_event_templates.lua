@@ -190,7 +190,7 @@ SoundSectorEventTemplates.marauder_mass_idle = {
 			local ai_base_extension = ScriptUnit.extension(unit, "ai_system")
 			local breed = ai_base_extension:breed()
 
-			if breed.behavior == "marauder" and not death_extension:has_death_started() then
+			if breed.behavior == "marauder" and not death_extension:has_death_started() and not entities[unit].has_target then
 				local contains_this_unit = marauder_units[unit]
 
 				if not contains_this_unit then

@@ -272,6 +272,27 @@ UIFrameSettings = {
 			}
 		}
 	},
+	menu_frame_15 = {
+		texture = "menu_frame_15",
+		texture_size = {
+			128,
+			128
+		},
+		texture_sizes = {
+			corner = {
+				50,
+				50
+			},
+			vertical = {
+				50,
+				1
+			},
+			horizontal = {
+				1,
+				50
+			}
+		}
+	},
 	menu_slot_frame_01 = {
 		texture = "menu_slot_frame_01",
 		texture_size = {
@@ -311,6 +332,50 @@ UIFrameSettings = {
 			horizontal = {
 				139,
 				6
+			}
+		}
+	},
+	frame_outer_fade_01 = {
+		texture = "menu_frame_13",
+		outer_frame = true,
+		texture_size = {
+			84,
+			84
+		},
+		texture_sizes = {
+			corner = {
+				32,
+				32
+			},
+			vertical = {
+				27,
+				1
+			},
+			horizontal = {
+				1,
+				27
+			}
+		}
+	},
+	frame_outer_fade_02 = {
+		texture = "menu_frame_14",
+		outer_frame = true,
+		texture_size = {
+			84,
+			84
+		},
+		texture_sizes = {
+			corner = {
+				32,
+				32
+			},
+			vertical = {
+				27,
+				1
+			},
+			horizontal = {
+				1,
+				27
 			}
 		}
 	},

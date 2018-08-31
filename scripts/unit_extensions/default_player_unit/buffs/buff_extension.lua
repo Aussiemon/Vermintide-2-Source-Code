@@ -11,6 +11,7 @@ BuffExtension.init = function (self, extension_init_context, unit, extension_ini
 	self._buffs = {}
 	self._stat_buffs = {}
 	self._event_buffs = {}
+	self._event_buffs_index = 1
 	self._deactivation_sounds = {}
 	self._continuous_screen_effects = {}
 	self._deactivation_screen_effects = {}
@@ -53,36 +54,55 @@ BuffExtension.extensions_ready = function (self, world, unit)
 			recipients[unit] = id
 		end
 	end
+
+	if #self._buffs > 0 then
+		Managers.state.entity:system("buff_system"):set_buff_ext_active(self._unit, true)
+	end
 end
 
 BuffExtension.destroy = function (self)
+	self:clear()
+end
+
+BuffExtension.freeze = function (self)
+	self:clear()
+end
+
+BuffExtension.clear = function (self)
 	local buffs = self._buffs
 	local num_buffs = #buffs
 	local end_time = Managers.time:time("game")
-	local i = 1
 
-	while num_buffs >= i do
-		local buff = buffs[i]
+	while num_buffs > 0 do
+		local buff = buffs[num_buffs]
 		buff_extension_function_params.bonus = buff.bonus
 		buff_extension_function_params.multiplier = buff.multiplier
 		buff_extension_function_params.t = end_time
 		buff_extension_function_params.end_time = end_time
 		buff_extension_function_params.attacker_unit = buff.attacker_unit
 
-		self:_remove_sub_buff(buff, i, buff_extension_function_params)
+		self:_remove_sub_buff(buff, num_buffs, buff_extension_function_params)
 
-		num_buffs = num_buffs - 1
+		num_buffs = #buffs
 	end
 
-	self._buffs = nil
+	Managers.state.entity:system("buff_system"):set_buff_ext_active(self._unit, false)
 end
 
 BuffExtension.add_buff = function (self, template_name, params)
+	if FROZEN[self._unit] then
+		return
+	end
+
 	local buff_template = BuffTemplates[template_name]
 	local buffs = buff_template.buffs
 	local start_time = Managers.time:time("game")
 	local id = self.id
 	local world = self.world
+
+	if #self._buffs == 0 then
+		Managers.state.entity:system("buff_system"):set_buff_ext_active(self._unit, true)
+	end
 
 	for i, sub_buff_template in ipairs(buffs) do
 		repeat
@@ -178,7 +198,7 @@ BuffExtension.add_buff = function (self, template_name, params)
 			local multiplier = sub_buff_template.multiplier
 			local proc_chance = sub_buff_template.proc_chance
 			local range = sub_buff_template.range
-			local damage_source, power_level, spawned_unit_go_id = nil
+			local damage_source, power_level = nil
 
 			if params then
 				local variable_value = params.variable_value
@@ -207,7 +227,6 @@ BuffExtension.add_buff = function (self, template_name, params)
 				range = params.external_optional_range or range
 				damage_source = params.damage_source
 				power_level = params.power_level
-				spawned_unit_go_id = params.spawned_unit_go_id
 			end
 
 			buff.bonus = bonus
@@ -217,7 +236,6 @@ BuffExtension.add_buff = function (self, template_name, params)
 			buff.range = range
 			buff.damage_source = damage_source
 			buff.power_level = power_level
-			buff.spawned_unit_go_id = spawned_unit_go_id
 			buff_extension_function_params.bonus = bonus
 			buff_extension_function_params.multiplier = multiplier
 			buff_extension_function_params.t = start_time
@@ -239,14 +257,19 @@ BuffExtension.add_buff = function (self, template_name, params)
 				local event = sub_buff_template.event
 				buff.buff_func = buff_func
 				local event_buffs = self._event_buffs[event]
-				local index = #event_buffs + 1
+				local index = self._event_buffs_index
 				buff.event_buff_index = index
 				event_buffs[index] = buff
+				self._event_buffs_index = index + 1
 			end
 
 			if sub_buff_template.buff_after_delay then
 				local delayed_buff_name = sub_buff_template.delayed_buff_name
 				buff.delayed_buff_name = delayed_buff_name
+			end
+
+			if sub_buff_template.continuous_effect then
+				self._continuous_screen_effects[id] = self:_play_screen_effect(sub_buff_template.continuous_effect)
 			end
 
 			self._buffs[#self._buffs + 1] = buff
@@ -263,12 +286,6 @@ BuffExtension.add_buff = function (self, template_name, params)
 
 	if activation_effect then
 		self:_play_screen_effect(activation_effect)
-	end
-
-	local continuous_effect = buff_template.continuous_effect
-
-	if continuous_effect then
-		self._continuous_screen_effects[id] = self:_play_screen_effect(continuous_effect)
 	end
 
 	local deactivation_effect = buff_template.deactivation_effect
@@ -289,6 +306,10 @@ BuffExtension.add_buff = function (self, template_name, params)
 end
 
 BuffExtension._add_stat_buff = function (self, sub_buff_template, buff)
+	if FROZEN[self._unit] then
+		return
+	end
+
 	local bonus = buff.bonus or 0
 	local multiplier = buff.multiplier or 0
 	local proc_chance = buff.proc_chance or 1
@@ -334,10 +355,6 @@ BuffExtension._add_stat_buff = function (self, sub_buff_template, buff)
 end
 
 BuffExtension.update = function (self, unit, input, dt, context, t)
-	self:_update_buffs(dt, t)
-end
-
-BuffExtension._update_buffs = function (self, dt, t)
 	local world = self.world
 	local buffs = self._buffs
 	local unit = self._unit
@@ -379,6 +396,10 @@ BuffExtension._update_buffs = function (self, dt, t)
 
 		num_buffs = #buffs
 	end
+
+	if num_buffs == 0 then
+		Managers.state.entity:system("buff_system"):set_buff_ext_active(unit, false)
+	end
 end
 
 BuffExtension.update_stat_buff = function (self, stat_buff_index, difference)
@@ -398,7 +419,7 @@ BuffExtension.update_stat_buff = function (self, stat_buff_index, difference)
 	end
 end
 
-BuffExtension.remove_buff = function (self, id, handled_in_buff_update_function)
+BuffExtension.remove_buff = function (self, id)
 	local buffs = self._buffs
 	local num_buffs = #buffs
 	local end_time = Managers.time:time("game")
@@ -422,6 +443,10 @@ BuffExtension.remove_buff = function (self, id, handled_in_buff_update_function)
 		else
 			i = i + 1
 		end
+	end
+
+	if num_buffs == 0 then
+		Managers.state.entity:system("buff_system"):set_buff_ext_active(self._unit, false)
 	end
 
 	return num_buffs_removed
@@ -455,11 +480,14 @@ BuffExtension._remove_sub_buff = function (self, buff, index, buff_extension_fun
 	if template.event_buff then
 		local event = template.event
 		local event_buff_index = buff.event_buff_index
-
-		table.remove(self._event_buffs[event], event_buff_index)
+		self._event_buffs[event][event_buff_index] = nil
 	end
 
 	table.remove(self._buffs, index)
+
+	if #self._buffs == 0 then
+		Managers.state.entity:system("buff_system"):set_buff_ext_active(self._unit, false)
+	end
 
 	local id = buff.id
 	local deactivation_sound = self._deactivation_sounds[id]
@@ -590,7 +618,7 @@ end
 
 BuffExtension.trigger_procs = function (self, event, ...)
 	local event_buffs = self._event_buffs[event]
-	local num_event_buffs = #event_buffs
+	local num_event_buffs = table.size(event_buffs)
 
 	if num_event_buffs == 0 then
 		return
@@ -606,8 +634,7 @@ BuffExtension.trigger_procs = function (self, event, ...)
 		params[#params + 1] = arg
 	end
 
-	for i = 1, num_event_buffs, 1 do
-		local buff = event_buffs[i]
+	for index, buff in pairs(event_buffs) do
 		local proc_chance = buff.proc_chance or 1
 
 		if math.random() <= proc_chance then

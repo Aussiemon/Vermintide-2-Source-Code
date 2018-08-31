@@ -26,6 +26,7 @@ AIInventorySystem.init = function (self, context, system_name)
 	network_event_delegate:register(self, unpack(RPCS))
 
 	self.unit_extension_data = {}
+	self.frozen_unit_extension_data = {}
 	self.units_to_wield = {}
 	self.units_to_wield_n = 0
 	self.units_to_drop = {}
@@ -72,6 +73,25 @@ AIInventorySystem.on_add_extension = function (self, world, unit, extension_name
 end
 
 AIInventorySystem.on_remove_extension = function (self, unit, extension_name)
+	self:_cleanup_extension(unit, extension_name)
+	ScriptUnit.remove_extension(unit, self.NAME)
+end
+
+AIInventorySystem.on_freeze_extension = function (self, unit, extension_name)
+	local extension = self._extensions[unit]
+
+	fassert(extension, "Unit was already frozen.")
+
+	if extension == nil then
+		return
+	end
+
+	self.frozen_unit_extension_data[unit] = extension
+
+	self:_cleanup_extension(unit, extension_name)
+end
+
+AIInventorySystem._cleanup_extension = function (self, unit, extension_name)
 	local units_to_wield = self.units_to_wield
 	local units_to_wield_n = self.units_to_wield_n
 	local i = 1
@@ -100,8 +120,35 @@ AIInventorySystem.on_remove_extension = function (self, unit, extension_name)
 	end
 
 	self.units_to_drop_n = units_to_drop_n
+end
 
-	ScriptUnit.remove_extension(unit, self.NAME)
+AIInventorySystem.freeze = function (self, unit, extension_name, reason)
+	local frozen_extensions = self.frozen_unit_extension_data
+
+	if frozen_extensions[unit] then
+		return
+	end
+
+	local extension = self.unit_extension_data[unit]
+
+	fassert(extension, "Unit to freeze didn't have unfrozen extension")
+	self:_cleanup_extension(unit, extension_name)
+
+	self.unit_extension_data[unit] = nil
+	frozen_extensions[unit] = extension
+
+	extension:freeze()
+end
+
+AIInventorySystem.unfreeze = function (self, unit)
+	local extension = self.frozen_unit_extension_data[unit]
+
+	fassert(extension, "Unit to unfreeze didn't have frozen extension")
+
+	self.frozen_unit_extension_data[unit] = nil
+	self.unit_extension_data[unit] = extension
+
+	extension:unfreeze()
 end
 
 AIInventorySystem.update = function (self, context, t, dt)
@@ -149,8 +196,7 @@ AIInventorySystem.update = function (self, context, t, dt)
 		local inventory_item_units = extension.inventory_item_units
 		local inventory_items_n = (extension.dropped and 0) or extension.inventory_items_n
 
-		if script_data.ai_debug_inventory and extension.dropped then
-			printf("[AIInventorySystem] unit[%s] wants to wield items, but have already been told to drop everything", tostring(unit))
+		if script_data.ai_debug_inventory then
 		end
 
 		for j = start_index, end_index, 1 do
@@ -162,10 +208,6 @@ AIInventorySystem.update = function (self, context, t, dt)
 				local item_unit = inventory_item_units[j]
 
 				link_unit(wielded, world, item_unit, unit)
-
-				if script_data.ai_debug_inventory then
-					printf("[AIInventorySystem] unit[%s] wielding %s", tostring(unit), tostring(item_unit))
-				end
 			end
 		end
 	end
@@ -178,7 +220,7 @@ AIInventorySystem.update = function (self, context, t, dt)
 		local unit = units_to_drop[i]
 		local extension = self.unit_extension_data[unit]
 
-		fassert(extension.dropped == nil)
+		fassert(not extension.dropped, "Tried to drop weapon twice")
 
 		extension.dropped = true
 		local inventory_item_definitions = extension.inventory_item_definitions
@@ -186,10 +228,6 @@ AIInventorySystem.update = function (self, context, t, dt)
 
 		for j = 1, inventory_items_n, 1 do
 			extension:drop_single_item(j, "death")
-		end
-
-		if script_data.ai_debug_inventory then
-			printf("[AIInventorySystem] unit[%s] dropping all items", tostring(unit))
 		end
 	end
 
@@ -200,6 +238,10 @@ AIInventorySystem.rpc_ai_inventory_wield = function (self, sender, go_id, item_s
 	local unit = self.unit_storage:unit(go_id)
 
 	if unit == nil then
+		return
+	end
+
+	if self.frozen_unit_extension_data[unit] then
 		return
 	end
 
@@ -215,6 +257,10 @@ AIInventorySystem.rpc_ai_drop_single_item = function (self, sender, unit_id, ite
 		return
 	end
 
+	if self.frozen_unit_extension_data[unit] then
+		return
+	end
+
 	local ai_inventory_extension = ScriptUnit.extension(unit, "ai_inventory_system")
 
 	ai_inventory_extension:drop_single_item(item_inventory_index, NetworkLookup.item_drop_reasons[item_drop_reason_id])
@@ -224,6 +270,10 @@ AIInventorySystem.rpc_ai_show_single_item = function (self, sender, unit_id, ite
 	local unit = self.unit_storage:unit(unit_id)
 
 	if unit == nil then
+		return
+	end
+
+	if self.frozen_unit_extension_data[unit] then
 		return
 	end
 

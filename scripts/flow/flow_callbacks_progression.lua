@@ -7,22 +7,6 @@ function flow_callback_check_progression_unlocked(params)
 	return flow_return_table
 end
 
-function flow_callback_get_current_inn_level_progression(params)
-	local player_manager = Managers.player
-	local statistics_db = player_manager:statistics_db()
-	local server_player = Managers.player:server_player()
-
-	if server_player then
-		local stats_id = server_player:stats_id()
-		local result = LevelUnlockUtils.current_act_progression_index(statistics_db, stats_id)
-		flow_return_table.progression_step = result
-	else
-		flow_return_table.progression_step = 0
-	end
-
-	return flow_return_table
-end
-
 function flow_callback_get_last_level_played(params)
 	local last_played_level = SaveData.last_played_level or "N/A"
 	local last_played_level_won = SaveData.last_played_level_result == "won"
@@ -201,7 +185,82 @@ function flow_query_leader_completed_difficulty(params)
 	local statistics_db = player_manager:statistics_db()
 	local leader_player = player_manager:player(leader_peer_id, 1)
 	local stats_id = leader_player:stats_id()
-	local completed_difficulty = LevelUnlockUtils.completed_adventure_difficulty(statistics_db, stats_id)
+	local completed_difficulty = LevelUnlockUtils.completed_main_game_difficulty(statistics_db, stats_id)
+	flow_return_table.value = completed_difficulty
+
+	return flow_return_table
+end
+
+function flow_query_leader_completed_dlc_difficulty(params)
+	local leader_peer_id = Managers.party:leader()
+	local local_peer_id = Network.peer_id()
+
+	fassert(leader_peer_id == local_peer_id, "Flow node \"Leader Completed DLC Difficulty\" should only be called by the leader player")
+
+	local dlc_name = params.dlc_name
+	local player_manager = Managers.player
+	local statistics_db = player_manager:statistics_db()
+	local leader_player = player_manager:player(leader_peer_id, 1)
+	local stats_id = leader_player:stats_id()
+	local completed_difficulty = LevelUnlockUtils.completed_dlc_difficulty(statistics_db, stats_id, dlc_name)
+	flow_return_table.value = completed_difficulty
+
+	return flow_return_table
+end
+
+local function get_presistent_stat_from_peer_id(peer_id, ...)
+	local player_manager = Managers.player
+	local statistics_db = player_manager:statistics_db()
+	local player = player_manager:player(peer_id, 1)
+	local stats_id = player:stats_id()
+	local stat_value = statistics_db:get_persistent_stat(stats_id, ...)
+
+	return stat_value
+end
+
+function flow_query_leader_completed_exalted_champion_difficulty(params)
+	local leader_peer_id = Managers.party:leader()
+	local local_peer_id = Network.peer_id()
+
+	fassert(leader_peer_id == local_peer_id, "Flow node \"Leader Completed Bodvarr Difficulty\" should only be called by the leader player")
+
+	local completed_difficulty = get_presistent_stat_from_peer_id(leader_peer_id, "kill_chaos_exalted_champion_difficulty_rank")
+	flow_return_table.value = completed_difficulty
+
+	return flow_return_table
+end
+
+function flow_query_leader_completed_exalted_sorcerer_difficulty(params)
+	local leader_peer_id = Managers.party:leader()
+	local local_peer_id = Network.peer_id()
+
+	fassert(leader_peer_id == local_peer_id, "Flow node \"Leader Completed Haleschmorg Burglederp Difficulty\" should only be called by the leader player")
+
+	local completed_difficulty = get_presistent_stat_from_peer_id(leader_peer_id, "kill_chaos_exalted_sorcerer_difficulty_rank")
+	flow_return_table.value = completed_difficulty
+
+	return flow_return_table
+end
+
+function flow_query_leader_completed_grey_seer_difficulty(params)
+	local leader_peer_id = Managers.party:leader()
+	local local_peer_id = Network.peer_id()
+
+	fassert(leader_peer_id == local_peer_id, "Flow node \"Leader Completed Rasknitt Difficulty\" should only be called by the leader player")
+
+	local completed_difficulty = get_presistent_stat_from_peer_id(leader_peer_id, "kill_skaven_grey_seer_difficulty_rank")
+	flow_return_table.value = completed_difficulty
+
+	return flow_return_table
+end
+
+function flow_query_leader_completed_storm_vermin_warlord_difficulty(params)
+	local leader_peer_id = Managers.party:leader()
+	local local_peer_id = Network.peer_id()
+
+	fassert(leader_peer_id == local_peer_id, "Flow node \"Leader Completed Skarrik Spinemanglr Difficulty\" should only be called by the leader player")
+
+	local completed_difficulty = get_presistent_stat_from_peer_id(leader_peer_id, "kill_skaven_storm_vermin_warlord_difficulty_rank")
 	flow_return_table.value = completed_difficulty
 
 	return flow_return_table
@@ -219,17 +278,11 @@ function flow_query_leader_achievement_completed(params)
 		return flow_return_table
 	end
 
-	local achievement_name = params.achievement_name
-	local achievement_template = AchievementTemplates[achievement_name]
-
-	fassert(achievement_template, "Flow node \"Leader Achievement Completed\" tried to fetch non-existing achievement \"" .. tostring(achievement_name) .. "\"")
-
-	local player_manager = Managers.player
-	local statistics_db = player_manager:statistics_db()
-	local leader_player = player_manager:player(leader_peer_id, 1)
-	local stats_id = leader_player:stats_id()
-	local is_completed = achievement_template.evaluate(statistics_db, stats_id)
-	flow_return_table.value = is_completed
+	local achievement_id = params.achievement_name
+	local achievement_manager = Managers.state.achievement
+	local achievement_data = achievement_manager:get_data_by_id(achievement_id)
+	local completed = achievement_data.completed
+	flow_return_table.value = completed
 
 	return flow_return_table
 end
@@ -357,6 +410,19 @@ function flow_query_leader_completed_all_dlc_levels(params)
 	local stats_id = leader_player:stats_id()
 	local all_completed = LevelUnlockUtils.all_dlc_levels_completed(statistics_db, stats_id, dlc_name)
 	flow_return_table.value = all_completed
+
+	return flow_return_table
+end
+
+function flow_query_leader_early_owner(params)
+	local leader_peer_id = Managers.party:leader()
+	local local_peer_id = Network.peer_id()
+
+	fassert(leader_peer_id == local_peer_id, "Flow node \"Leader Early Owner\" should only be called by the leader player")
+
+	local backend_manager = Managers.backend
+	local eary_owner = backend_manager:get_read_only_data("early_owner")
+	flow_return_table.value = eary_owner
 
 	return flow_return_table
 end

@@ -95,7 +95,7 @@ GameObjectSystem.on_remove_extension = function (self, unit, extension_name)
 		end
 
 		if game_object_id then
-			self.unit_storage:remove(game_object_id)
+			self.unit_storage:remove(unit, game_object_id)
 		end
 
 		if NetworkUnit.is_network_unit(unit) then

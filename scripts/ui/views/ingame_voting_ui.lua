@@ -143,6 +143,7 @@ IngameVotingUI.start_vote = function (self, active_voting)
 	self.vote_successful = nil
 
 	self:play_sound("play_gui_ban_popup")
+	self:update_can_vote(not self.menu_active)
 end
 
 IngameVotingUI.update_vote = function (self, votes)
@@ -274,7 +275,7 @@ IngameVotingUI.update = function (self, menu_active, dt, t)
 		if menu_active ~= self.menu_active then
 			self.menu_active = menu_active
 
-			self:update_can_vote(menu_active)
+			self:update_can_vote(not menu_active)
 		end
 
 		if not self.vote_started then
@@ -322,7 +323,7 @@ IngameVotingUI.update = function (self, menu_active, dt, t)
 		draw = true
 	end
 
-	if draw then
+	if draw and not self.menu_active then
 		local input_manager = self.input_manager
 		local gamepad_active = input_manager:is_device_active("gamepad")
 
@@ -400,11 +401,11 @@ IngameVotingUI.update_pulse_animations = function (self, dt, hold_input_pressed)
 	end
 
 	local menu_active = self.menu_active
-	local speed_multiplier = (menu_active and 5) or 8
+	local speed_multiplier = (menu_active and 8) or 5
 	local time_since_launch = Application.time_since_launch()
-	local progress = (menu_active and hold_input_pressed and 0) or 0.5 + math.sin(time_since_launch * speed_multiplier) * 0.5
+	local progress = (not menu_active and hold_input_pressed and 0) or 0.5 + math.sin(time_since_launch * speed_multiplier) * 0.5
 
-	if menu_active then
+	if not menu_active then
 		slot7 = 50 + progress * 50
 	else
 		local alpha = 100 + progress * 155

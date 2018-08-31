@@ -36,6 +36,11 @@ BreedBehaviors.shield_rat = {
 	{
 		"BTSelector",
 		{
+			"BTTeleportAction",
+			condition = "at_teleport_smartobject",
+			name = "teleport"
+		},
+		{
 			"BTClimbAction",
 			name = "climb",
 			condition = "at_climb_smartobject",

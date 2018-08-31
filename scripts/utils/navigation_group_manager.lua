@@ -1,5 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 require("foundation/scripts/util/math")
 require("scripts/utils/navigation_group")
 
@@ -188,6 +186,66 @@ NavigationGroupManager.form_groups_end = function (self)
 	end
 
 	print("NavigationGroupManager -> form_groups_end time:", os.clock() - time1)
+end
+
+NavigationGroupManager._breadth_first_fill_main_path_index = function (self, main_path_index, starting_nav_group)
+	local added_to_queue = {
+		starting_nav_group = true
+	}
+	local queue = {
+		starting_nav_group
+	}
+	local read_index = 1
+	local write_index = #queue + 1
+
+	while read_index < write_index do
+		local group = queue[read_index]
+		local group_index = group:get_main_path_index()
+
+		if group_index == nil then
+			group:set_main_path_index(main_path_index)
+
+			local neighbours = group:get_group_neighbours()
+			local ledge_neighbours = group:get_group_ledge_neighbours()
+
+			for neighbour_group, _ in pairs(neighbours) do
+				if not added_to_queue[neighbour_group] and not ledge_neighbours[neighbour_group] then
+					added_to_queue[neighbour_group] = true
+					queue[write_index] = neighbour_group
+					write_index = write_index + 1
+				end
+			end
+		end
+
+		read_index = read_index + 1
+	end
+end
+
+NavigationGroupManager.assign_main_path_indexes = function (self, main_paths)
+	local time1 = os.clock()
+	local Script_set_temp_count = Script.set_temp_count
+	local Script_temp_count = Script.temp_count
+
+	for main_path_index = 1, #main_paths, 1 do
+		local sub_path = main_paths[main_path_index]
+		local nodes = sub_path.nodes
+
+		for node_index = 1, #nodes, 1 do
+			local num_v, num_q, num_m = Script_temp_count()
+			local node = nodes[node_index]:unbox()
+			local group = self:get_group_from_position(node)
+
+			if group then
+				self:_breadth_first_fill_main_path_index(main_path_index, group)
+
+				break
+			end
+
+			Script_set_temp_count(num_v, num_q, num_m)
+		end
+	end
+
+	print("NavigationGroupManager -> assign_main_path_indexes time:", os.clock() - time1)
 end
 
 NavigationGroupManager.assign_group = function (self, group, in_group_queue, rejected_queue)
@@ -504,12 +562,6 @@ NavigationGroupManager.calc_distance_from_finish = function (self, group, first_
 	return distance_from_finish
 end
 
-NavigationGroupManager.calc_neighour_distances = function (self)
-	for group, _ in nil do
-		group:recalc_neighbour_distances()
-	end
-end
-
 NavigationGroupManager.calc_polygon_center = function (self, poly)
 	local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(self.nav_world, poly)
 	local center = (p1 + p2 + p3) / 3
@@ -822,11 +874,11 @@ NavigationGroupManager.knit_groups_with_ledges = function (self)
 
 				if group2 and group1 ~= group2 then
 					if not group1._group_neighbours[group2] then
-						group1._group_neighbours[group2] = true
+						group1:add_neighbour_group(group2, true)
 					end
 
 					if smart_object.data.is_bidirectional and not group2._group_neighbours[group1] then
-						group2._group_neighbours[group1] = true
+						group2:add_neighbour_group(group1, true)
 					end
 				end
 			end

@@ -502,7 +502,7 @@ local news_ticker_text_style = {
 	horizontal_alignment = "left",
 	vertical_alignment = "bottom",
 	font_type = "hell_shark_masked",
-	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	text_color = Colors.get_color_table_with_alpha("cheeseburger", 255),
 	offset = {
 		0,
 		0,

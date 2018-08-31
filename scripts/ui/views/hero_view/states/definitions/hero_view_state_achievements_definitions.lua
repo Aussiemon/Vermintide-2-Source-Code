@@ -96,6 +96,20 @@ local scenegraph_definition = {
 			UILayer.default
 		}
 	},
+	console_cursor = {
+		vertical_alignment = "center",
+		parent = "screen",
+		horizontal_alignment = "center",
+		size = {
+			1920,
+			1080
+		},
+		position = {
+			0,
+			0,
+			0
+		}
+	},
 	header = {
 		vertical_alignment = "top",
 		parent = "menu_root",
@@ -747,6 +761,20 @@ local scenegraph_definition = {
 			5
 		}
 	},
+	summary_quest_bar_background_3 = {
+		vertical_alignment = "center",
+		parent = "summary_quest_bar_background_2",
+		horizontal_alignment = "center",
+		size = {
+			left_window_size[1] - 40,
+			60
+		},
+		position = {
+			0,
+			-100,
+			5
+		}
+	},
 	summary_quest_bar_1 = {
 		vertical_alignment = "center",
 		parent = "summary_quest_bar_background_1",
@@ -775,6 +803,20 @@ local scenegraph_definition = {
 			1
 		}
 	},
+	summary_quest_bar_3 = {
+		vertical_alignment = "center",
+		parent = "summary_quest_bar_background_3",
+		horizontal_alignment = "center",
+		size = {
+			left_window_size[1] - 100,
+			16
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
 	summary_quest_bar_title_1 = {
 		vertical_alignment = "bottom",
 		parent = "summary_quest_bar_1",
@@ -792,6 +834,20 @@ local scenegraph_definition = {
 	summary_quest_bar_title_2 = {
 		vertical_alignment = "bottom",
 		parent = "summary_quest_bar_2",
+		horizontal_alignment = "center",
+		size = {
+			left_window_size[1] - 100,
+			16
+		},
+		position = {
+			0,
+			40,
+			5
+		}
+	},
+	summary_quest_bar_title_3 = {
+		vertical_alignment = "bottom",
+		parent = "summary_quest_bar_3",
 		horizontal_alignment = "center",
 		size = {
 			left_window_size[1] - 100,
@@ -1976,7 +2032,9 @@ local function create_window_button(scenegraph_id, background_texture)
 				texture_id = background_texture
 			},
 			hover_frame = frame_settings.texture,
-			button_hotspot = {}
+			button_hotspot = {
+				allow_multi_hover = true
+			}
 		},
 		style = {
 			fade = {
@@ -2221,6 +2279,7 @@ local function create_quest_book(scenegraph_id)
 	}
 end
 
+local disable_with_gamepad = true
 local widgets = {
 	window = UIWidgets.create_frame("window", scenegraph_definition.window.size, "menu_frame_11", 40),
 	window_background = UIWidgets.create_tiled_texture("window_background", "menu_frame_bg_01", {
@@ -2260,10 +2319,10 @@ local widgets = {
 		15
 	}, "achievement_window_mask_bottom"),
 	achievement_window_mask_top = UIWidgets.create_simple_texture("mask_rect_edge_fade", "achievement_window_mask_top"),
-	exit_button = UIWidgets.create_default_button("exit_button", scenegraph_definition.exit_button.size, nil, nil, Localize("menu_close"), 24, nil, "button_detail_04", 34),
+	exit_button = UIWidgets.create_default_button("exit_button", scenegraph_definition.exit_button.size, nil, nil, Localize("menu_close"), 24, nil, "button_detail_04", 34, disable_with_gamepad),
 	summary_button = UIWidgets.create_default_button("summary_button", scenegraph_definition.summary_button.size, nil, nil, Localize("achv_menu_summary_category_title"), 24),
-	quests_button = UIWidgets.create_window_category_button("quests_button", scenegraph_definition.quests_button.size, Localize("achv_menu_quests_category_title"), "achievement_button_icon_quests", "achievement_button_background_quests"),
-	achievements_button = UIWidgets.create_window_category_button_mirrored("achievements_button", scenegraph_definition.achievements_button.size, Localize("achv_menu_achievements_category_title"), "achievement_button_icon_achievements", "achievement_button_background_achievements", "summary_right_window"),
+	quests_button = UIWidgets.create_window_category_button("quests_button", scenegraph_definition.quests_button.size, Localize("achv_menu_quests_category_title"), "achievement_button_icon_quests", "achievement_button_background_quests", true),
+	achievements_button = UIWidgets.create_window_category_button_mirrored("achievements_button", scenegraph_definition.achievements_button.size, Localize("achv_menu_achievements_category_title"), "achievement_button_icon_achievements", "achievement_button_background_achievements", true),
 	title = UIWidgets.create_simple_texture("frame_title_bg", "title"),
 	title_bg = UIWidgets.create_background("title_bg", scenegraph_definition.title_bg.size, "menu_frame_bg_02"),
 	title_text = UIWidgets.create_simple_text(Localize("achv_menu_title"), "title_text", nil, nil, title_text_style),
@@ -2311,7 +2370,9 @@ local widgets = {
 		content = {
 			scroll_amount = 0.1,
 			scroll_value = 1,
-			hotspot = {}
+			hotspot = {
+				allow_multi_hover = true
+			}
 		},
 		style = {}
 	}
@@ -2397,12 +2458,16 @@ local summary_widgets = {
 	summary_achievement_bar_6 = UIWidgets.create_statistics_bar("summary_achievement_bar_6", scenegraph_definition.summary_achievement_bar_6.size),
 	summary_quest_bar_background_1 = UIWidgets.create_simple_texture("tab_menu_bg_02", "summary_quest_bar_background_1"),
 	summary_quest_bar_background_2 = UIWidgets.create_simple_texture("tab_menu_bg_02", "summary_quest_bar_background_2"),
+	summary_quest_bar_background_3 = UIWidgets.create_simple_texture("tab_menu_bg_02", "summary_quest_bar_background_3"),
 	summary_quest_bar_1 = UIWidgets.create_quest_bar("summary_quest_bar_1", scenegraph_definition.summary_quest_bar_1.size),
 	summary_quest_bar_2 = UIWidgets.create_quest_bar("summary_quest_bar_2", scenegraph_definition.summary_quest_bar_2.size),
+	summary_quest_bar_3 = UIWidgets.create_quest_bar("summary_quest_bar_3", scenegraph_definition.summary_quest_bar_3.size),
 	summary_quest_bar_title_1 = UIWidgets.create_simple_text(Localize("achv_menu_daily_category_title"), "summary_quest_bar_title_1", nil, nil, quest_bar_title_text),
-	summary_quest_bar_title_2 = UIWidgets.create_simple_text(Localize("achv_menu_daily_category_title"), "summary_quest_bar_title_2", nil, nil, quest_bar_title_text),
-	summary_quest_bar_timer_1 = UIWidgets.create_simple_text("00:00:00", "summary_quest_bar_title_1", nil, nil, quest_bar_timer_text),
+	summary_quest_bar_title_2 = UIWidgets.create_simple_text(Localize("achv_menu_weekly_category_title"), "summary_quest_bar_title_2", nil, nil, quest_bar_title_text),
+	summary_quest_bar_title_3 = UIWidgets.create_simple_text(Localize("achv_menu_event_category_title"), "summary_quest_bar_title_3", nil, nil, quest_bar_title_text),
+	summary_quest_bar_timer_1 = UIWidgets.create_simple_text("", "summary_quest_bar_title_1", nil, nil, quest_bar_timer_text),
 	summary_quest_bar_timer_2 = UIWidgets.create_simple_text("", "summary_quest_bar_title_2", nil, nil, quest_bar_timer_text),
+	summary_quest_bar_timer_3 = UIWidgets.create_simple_text("", "summary_quest_bar_title_3", nil, nil, quest_bar_timer_text),
 	summary_left_window_frame = UIWidgets.create_frame("summary_left_window", scenegraph_definition.summary_left_window.size, "menu_frame_11", 20),
 	summary_left_window_button = create_window_button("summary_left_window_fade", "achievement_quests_bg"),
 	summary_left_arrow = UIWidgets.create_simple_texture("achievement_arrow_hover", "summary_left_arrow"),
@@ -2485,8 +2550,21 @@ local animation_definitions = {
 		}
 	}
 }
+local generic_input_actions = {
+	{
+		input_action = "confirm",
+		priority = 2,
+		description_text = "input_description_select"
+	},
+	{
+		input_action = "back",
+		priority = 3,
+		description_text = "input_description_close"
+	}
+}
 
 return {
+	generic_input_actions = generic_input_actions,
 	quest_widgets = quest_widgets,
 	achievement_widgets = achievement_widgets,
 	category_tab_info = category_tab_info,
@@ -2503,5 +2581,6 @@ return {
 	scenegraph_definition = scenegraph_definition,
 	animation_definitions = animation_definitions,
 	quest_entry_definition = quest_entry_definition,
-	achievement_entry_definition = achievement_entry_definition
+	achievement_entry_definition = achievement_entry_definition,
+	console_cursor_definition = UIWidgets.create_console_cursor("console_cursor")
 }

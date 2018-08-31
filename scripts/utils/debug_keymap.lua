@@ -437,6 +437,11 @@ DebugKeymap.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 		"right",
 		"axis"
 	},
+	console_favorite_key = {
+		"gamepad",
+		"y",
+		"pressed"
+	},
 	["left ctrl"] = {},
 	["left shift"] = {}
 }
@@ -625,6 +630,11 @@ DebugKeymap.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 		"gamepad",
 		"right",
 		"axis"
+	},
+	console_favorite_key = {
+		"gamepad",
+		"triangle",
+		"pressed"
 	}
 }
 DebugInputFilters.ps4 = InputUtils.keymaps_key_approved("ps4") and {

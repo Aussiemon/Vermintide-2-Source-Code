@@ -23,6 +23,16 @@ LightWeightProjectileParticleEffects = {
 			unit_function = INVENTORY_UNIT
 		}
 	},
+	autocannon_backdrop_bullet = {
+		{
+			particle_name = "fx/wpnfx_skaven_autocannon_bullet",
+			kill_policy = "destroy"
+		},
+		{
+			particle_name = "fx/wpnfx_skaven_autocannon_bullet_trail",
+			kill_policy = "stop"
+		}
+	},
 	stormfiend_gun_bullet = {
 		{
 			particle_name = "fx/wpnfx_skaven_ratlinggun_bullet",

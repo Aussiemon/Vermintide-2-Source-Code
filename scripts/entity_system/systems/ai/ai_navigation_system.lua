@@ -11,6 +11,7 @@ AINavigationSystem.init = function (self, entity_system_creation_context, system
 	AINavigationSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 
 	self.unit_extension_data = {}
+	self.frozen_unit_extension_data = {}
 	self.enabled_units = {}
 	self.delayed_units = {}
 	self.navbots_to_release = {}
@@ -33,11 +34,27 @@ AINavigationSystem.on_add_extension = function (self, world, unit, extension_nam
 end
 
 AINavigationSystem.on_remove_extension = function (self, unit, extension_name)
-	self:on_freeze_extension(unit, extension_name)
+	self.frozen_unit_extension_data[unit] = nil
+
+	self:_cleanup_extension(unit, extension_name)
 	AINavigationSystem.super.on_remove_extension(self, unit, extension_name)
 end
 
 AINavigationSystem.on_freeze_extension = function (self, unit, extension_name)
+	local extension = self.unit_extension_data[unit] or self.delayed_units[unit]
+
+	fassert(extension, "Unit was already frozen.")
+
+	if extension == nil then
+		return
+	end
+
+	self.frozen_unit_extension_data[unit] = extension
+
+	self:_cleanup_extension(unit, extension_name)
+end
+
+AINavigationSystem._cleanup_extension = function (self, unit, extension_name)
 	self.unit_extension_data[unit] = nil
 	self.enabled_units[unit] = nil
 
@@ -46,6 +63,35 @@ AINavigationSystem.on_freeze_extension = function (self, unit, extension_name)
 	end
 
 	self.delayed_units[unit] = nil
+end
+
+AINavigationSystem.freeze = function (self, unit, extension_name, reason)
+	local frozen_extensions = self.frozen_unit_extension_data
+
+	if frozen_extensions[unit] then
+		return
+	end
+
+	local extension = self.unit_extension_data[unit] or self.delayed_units[unit]
+
+	fassert(extension, "Unit to freeze didn't have unfrozen extension")
+	self:_cleanup_extension(unit, extension_name)
+
+	self.unit_extension_data[unit] = nil
+	frozen_extensions[unit] = extension
+
+	extension:freeze()
+end
+
+AINavigationSystem.unfreeze = function (self, unit)
+	local extension = self.frozen_unit_extension_data[unit]
+
+	fassert(extension, "Unit to unfreeze didn't have frozen extension")
+
+	self.frozen_unit_extension_data[unit] = nil
+	self.unit_extension_data[unit] = extension
+
+	extension:unfreeze()
 end
 
 AINavigationSystem.simulate_dummy_target = function (self, t)
@@ -100,7 +146,6 @@ AINavigationSystem.update_navbots_to_release = function (self)
 		extension:release_bot()
 
 		self.navbots_to_release[unit] = nil
-		self.unit_extension_data[unit] = nil
 		self.enabled_units[unit] = nil
 
 		if self.delayed_unit == unit then

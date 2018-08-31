@@ -3286,7 +3286,7 @@ if #InterestPointPickListIndexLookup == 0 then
 			end
 
 			for j = 1, #data, 1 do
-				unit_name = data[j]
+				local unit_name = data[j]
 				SizeOfInterestPoint[unit_name] = i
 			end
 

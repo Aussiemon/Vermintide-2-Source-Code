@@ -289,8 +289,8 @@ weapon_template.actions = {
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			sweep_z_offset = 0.1,
-			use_target = true,
 			additional_critical_strike_chance = 0,
+			use_precision_sweep = true,
 			damage_profile = "heavy_slashing_smiter_executioner",
 			hit_effect = "melee_hit_sword_2h",
 			damage_window_end = 0.43,
@@ -309,6 +309,18 @@ weapon_template.actions = {
 					start_time = 0,
 					external_multiplier = 1.2,
 					end_time = 0.2,
+					buff_name = "planted_fast_decrease_movement"
+				},
+				{
+					start_time = 0.15,
+					external_multiplier = 2,
+					end_time = 0.45,
+					buff_name = "planted_fast_decrease_movement"
+				},
+				{
+					start_time = 0.45,
+					external_multiplier = 0.5,
+					end_time = 0.65,
 					buff_name = "planted_fast_decrease_movement"
 				}
 			},
@@ -357,8 +369,8 @@ weapon_template.actions = {
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			sweep_z_offset = 0.1,
-			use_target = true,
 			additional_critical_strike_chance = 0,
+			use_precision_sweep = true,
 			damage_profile = "heavy_slashing_smiter_executioner",
 			hit_effect = "melee_hit_sword_2h",
 			damage_window_end = 0.41,
@@ -376,8 +388,20 @@ weapon_template.actions = {
 				{
 					start_time = 0,
 					external_multiplier = 1.2,
-					end_time = 0.2,
+					end_time = 0.15,
 					buff_name = "planted_charging_decrease_movement"
+				},
+				{
+					start_time = 0.15,
+					external_multiplier = 2,
+					end_time = 0.45,
+					buff_name = "planted_fast_decrease_movement"
+				},
+				{
+					start_time = 0.45,
+					external_multiplier = 0.5,
+					end_time = 0.65,
+					buff_name = "planted_fast_decrease_movement"
 				}
 			},
 			allowed_chain_actions = {
@@ -421,12 +445,12 @@ weapon_template.actions = {
 		light_attack_left = {
 			damage_window_start = 0.58,
 			hit_armor_anim = "attack_hit_shield",
-			range_mod = 1.45,
+			range_mod = 1.5,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			width_mod = 25,
 			additional_critical_strike_chance = 0,
-			use_target = false,
+			use_precision_sweep = false,
 			damage_profile = "medium_slashing_linesman_executioner",
 			hit_effect = "melee_hit_sword_2h",
 			damage_window_end = 0.7,
@@ -488,13 +512,13 @@ weapon_template.actions = {
 		light_attack_right = {
 			damage_window_start = 0.52,
 			hit_armor_anim = "attack_hit_shield",
-			range_mod = 1.45,
+			range_mod = 1.5,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			width_mod = 25,
 			additional_critical_strike_chance = 0,
-			use_target = false,
+			use_precision_sweep = false,
 			hit_effect = "melee_hit_sword_2h",
 			damage_profile = "medium_slashing_linesman_executioner",
 			damage_window_end = 0.7,
@@ -556,7 +580,7 @@ weapon_template.actions = {
 		light_attack_left_diagonal = {
 			damage_window_start = 0.2,
 			hit_armor_anim = "attack_hit_shield",
-			range_mod = 1.45,
+			range_mod = 1.6,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			sweep_z_offset = 0.1,
@@ -564,7 +588,7 @@ weapon_template.actions = {
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			additional_critical_strike_chance = 0,
 			hit_effect = "melee_hit_sword_2h",
-			use_target = false,
+			use_precision_sweep = false,
 			damage_profile = "medium_slashing_linesman_executioner",
 			damage_window_end = 0.45,
 			impact_sound_event = "slashing_hit",
@@ -632,14 +656,14 @@ weapon_template.actions = {
 			width_mod = 25,
 			additional_critical_strike_chance = 0,
 			hit_effect = "melee_hit_sword_2h",
-			use_target = false,
-			damage_profile = "medium_slashing_linesman_executioner",
+			use_precision_sweep = false,
+			damage_profile = "heavy_slashing_linesman",
 			damage_window_end = 0.875,
 			impact_sound_event = "slashing_hit",
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 3,
 			uninterruptible = true,
-			anim_event = "attack_swing_right_diagonal",
+			anim_event = "attack_swing_left_diagonal",
 			hit_stop_anim = "attack_hit",
 			total_time = 1.86,
 			anim_end_event_condition_func = function (unit, end_reason)

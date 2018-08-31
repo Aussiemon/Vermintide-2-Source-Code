@@ -11,7 +11,7 @@ local slot_icon_size = {
 }
 local scenegraph_definition = {
 	root = {
-		is_root = true,
+		scale = "hud_scale_fit",
 		position = {
 			0,
 			0,
@@ -35,7 +35,7 @@ local scenegraph_definition = {
 		}
 	},
 	screen_bottom_pivot = {
-		parent = "screen",
+		parent = "root",
 		position = {
 			0,
 			0,
@@ -62,7 +62,7 @@ local scenegraph_definition = {
 	},
 	background_panel = {
 		vertical_alignment = "bottom",
-		parent = "screen",
+		parent = "root",
 		horizontal_alignment = "center",
 		position = {
 			0,
@@ -115,7 +115,7 @@ local scenegraph_definition = {
 	},
 	ammo_background = {
 		vertical_alignment = "bottom",
-		parent = "screen",
+		parent = "root",
 		horizontal_alignment = "right",
 		position = {
 			-50,

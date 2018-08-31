@@ -1,13 +1,12 @@
 local NUM_PROJECTILES = 1
 local weapon_template = weapon_template or {}
 weapon_template.actions = {
-	action_career = {
+	action_career_hold = {
 		default = {
 			aim_time = 0,
 			default_zoom = "zoom_in_trueflight",
 			anim_end_event = "ability_finished",
 			kind = "true_flight_bow_aim",
-			hold_input = "action_career_hold",
 			uninterruptible = true,
 			anim_event = "scholar_burning_head_ability_charge",
 			anim_end_event_condition_func = function (unit, end_reason)
@@ -15,11 +14,6 @@ weapon_template.actions = {
 			end,
 			total_time = math.huge,
 			num_projectiles = NUM_PROJECTILES,
-			buffed_zoom_thresholds = {
-				"zoom_in_trueflight",
-				"zoom_in",
-				"increased_zoom_in"
-			},
 			zoom_thresholds = {
 				"zoom_in_trueflight",
 				"zoom_in"
@@ -35,35 +29,43 @@ weapon_template.actions = {
 					input = "action_two"
 				},
 				{
-					sub_action = "shoot_charged",
+					sub_action = "default",
 					start_time = 0,
+					action = "action_two",
+					input = "weapon_reload"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.1,
 					action = "action_career_release",
 					input = "action_career_release"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.1,
+					action = "action_career_release",
+					input = "action_career_not_hold"
+				},
+				{
+					sub_action = "hold",
+					start_time = 1.67,
+					action = "action_career_hold",
+					auto_chain = true
 				}
 			}
-		}
-	},
-	action_career_hold = {
-		default = {
+		},
+		hold = {
+			aim_time = 0,
 			default_zoom = "zoom_in_trueflight",
 			anim_end_event = "ability_finished",
 			kind = "true_flight_bow_aim",
-			hold_input = "action_career_hold",
-			aim_time = 0,
 			uninterruptible = true,
 			anim_event = "scholar_burning_head_ability_hold",
-			weapon_action_hand = "left",
-			minimum_hold_time = 0,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action"
 			end,
 			total_time = math.huge,
 			num_projectiles = NUM_PROJECTILES,
-			buffed_zoom_thresholds = {
-				"zoom_in_trueflight",
-				"zoom_in",
-				"increased_zoom_in"
-			},
 			zoom_thresholds = {
 				"zoom_in_trueflight",
 				"zoom_in"
@@ -79,41 +81,28 @@ weapon_template.actions = {
 					input = "action_two"
 				},
 				{
-					sub_action = "shoot_charged",
+					sub_action = "default",
+					start_time = 0,
+					action = "action_two",
+					input = "weapon_reload"
+				},
+				{
+					sub_action = "default",
 					start_time = 0,
 					action = "action_career_release",
-					input = "action_career_release",
-					end_time = math.huge
+					input = "action_career_release"
+				},
+				{
+					sub_action = "default",
+					start_time = 0,
+					action = "action_career_release",
+					input = "action_career_not_hold"
 				}
 			}
 		}
 	},
 	action_career_release = {
-		hold_charge = {
-			aim_time = 0,
-			anim_end_event = "ability_finished",
-			uninterruptible = true,
-			kind = "chain_action_passthrough",
-			anim_end_event_condition_func = function (unit, end_reason)
-				return end_reason ~= "new_interupting_action"
-			end,
-			total_time = math.huge,
-			allowed_chain_actions = {
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_two",
-					input = "action_two"
-				},
-				{
-					sub_action = "shoot_charged",
-					start_time = 0.1,
-					action = "action_career_release",
-					auto_chain = true
-				}
-			}
-		},
-		shoot_charged = {
+		default = {
 			damage_window_start = 0.1,
 			alert_sound_range_hit = 20,
 			fire_sound_event = "weapon_staff_spark_spear_charged",
@@ -148,11 +137,6 @@ weapon_template.actions = {
 			end,
 			allowed_chain_actions = {},
 			num_projectiles = NUM_PROJECTILES,
-			buffed_zoom_thresholds = {
-				"zoom_in_trueflight",
-				"zoom_in",
-				"increased_zoom_in"
-			},
 			zoom_thresholds = {
 				"zoom_in_trueflight",
 				"zoom_in"
@@ -175,62 +159,11 @@ weapon_template.actions = {
 				climb_function = math.easeInCubic,
 				restore_function = math.ease_out_quad
 			}
-		},
-		default = {
-			damage_window_start = 0.1,
-			alert_sound_range_hit = 20,
-			fire_sound_event = "weapon_staff_spark_spear_charged",
-			kind = "career_bw_one",
-			sphere_sweep_length = 50,
-			fire_sound_event_parameter = "drakegun_charge_fire",
-			sphere_sweep_dot_threshold = 0.5,
-			true_flight_template = "active_ability_sienna_scholar",
-			charge_value = "light_attack",
-			alert_sound_range_fire = 12,
-			damage_window_end = 0,
-			anim_end_event = "ability_finished",
-			fire_time = 0.35,
-			speed = 3500,
-			sphere_sweep_max_nr_of_results = 100,
-			anim_event = "scholar_burning_head_ability_shoot",
-			reload_time = 2.5,
-			apply_recoil = true,
-			reset_aim_on_attack = true,
-			is_spell = true,
-			spread_template_override = "spear",
-			hit_effect = "sienna_scholar_career_ability",
-			sphere_sweep_radius = 2,
-			ammo_usage = 1,
-			fire_sound_on_husk = true,
-			uninterruptible = true,
-			ignore_shield_hit = true,
-			total_time = 1,
-			anim_end_event_condition_func = function (unit, end_reason)
-				return end_reason ~= "new_interupting_action"
-			end,
-			allowed_chain_actions = {},
-			num_projectiles = NUM_PROJECTILES,
-			hit_mass_count = LINESMAN_HIT_MASS_COUNT,
-			projectile_info = Projectiles.burning_head,
-			impact_data = {
-				max_bounces = 8,
-				damage_profile = "fire_spear_trueflight",
-				bounce_on_level_units = true
-			},
-			recoil_settings = {
-				horizontal_climb = 0,
-				restore_duration = 0.2,
-				vertical_climb = -1,
-				climb_duration = 0.1,
-				climb_function = math.easeInCubic,
-				restore_function = math.ease_out_quad
-			}
 		}
 	},
 	action_two = {
 		default = {
 			kind = "career_cancel",
-			weapon_action_hand = "left",
 			anim_end_event = "ability_finished",
 			anim_event = "scholar_burning_head_ability_cancel",
 			total_time = 0.65,
@@ -254,21 +187,18 @@ weapon_template.actions = {
 }
 weapon_template.ammo_data = {
 	ammo_immediately_available = true,
-	ammo_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
 	ammo_per_reload = 1,
 	ammo_per_clip = 1,
-	ammo_hand = "left",
-	ammo_unit_3p = "units/weapons/projectile/burning_head/burning_head",
 	reload_on_ammo_pickup = true,
 	reload_time = 0,
-	max_ammo = math.huge,
-	ammo_unit_attachment_node_linking = AttachmentNodeLinking.burning_head
+	ammo_hand = "left",
+	max_ammo = math.huge
 }
 weapon_template.attack_meta_data = {
 	aim_at_node = "j_spine1",
 	charge_shot_delay = 0.1,
 	always_charge_before_firing = true,
-	charged_attack_action_name = "shoot_charged",
+	charged_attack_action_name = "default",
 	can_charge_shot = true,
 	ignore_enemies_for_obstruction_charged = false,
 	base_action_name = "action_career_release",

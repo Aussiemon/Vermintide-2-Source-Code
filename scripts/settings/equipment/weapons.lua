@@ -9,6 +9,7 @@ dofile("scripts/settings/equipment/power_level_templates")
 dofile("scripts/settings/equipment/hit_mass_counts")
 dofile("scripts/settings/equipment/power_level_settings")
 dofile("scripts/settings/equipment/projectiles")
+dofile("scripts/settings/equipment/light_weight_projectiles")
 require("scripts/settings/action_templates")
 dofile("scripts/settings/equipment/1h_swords")
 dofile("scripts/settings/equipment/1h_swords_wood_elf")
@@ -52,7 +53,6 @@ dofile("scripts/settings/equipment/repeating_crossbows_elf")
 dofile("scripts/settings/equipment/bardin_ranger_career_skill")
 dofile("scripts/settings/equipment/kerillian_waywatcher_career_skill")
 dofile("scripts/settings/equipment/sienna_scholar_career_skill")
-dofile("scripts/settings/equipment/markus_huntsman_career_skill")
 dofile("scripts/settings/equipment/victor_bountyhunter_career_skill")
 dofile("scripts/settings/equipment/brace_of_pistols")
 dofile("scripts/settings/equipment/brace_of_drake_pistols")
@@ -106,6 +106,14 @@ local function add_dot(dot_template_name, hit_unit, attacker_unit, damage_source
 	end
 end
 
+local function add_dot_network_synced(dot_template_name, hit_unit, attacker_unit, damage_source, power_level)
+	if ScriptUnit.has_extension(hit_unit, "buff_system") then
+		local buff_system = Managers.state.entity:system("buff_system")
+
+		buff_system:add_buff(hit_unit, dot_template_name, attacker_unit, false)
+	end
+end
+
 Dots = {
 	poison_dot = function (dot_template_name, damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike)
 		if not damage_profile then
@@ -134,7 +142,11 @@ Dots = {
 		end
 
 		if do_dot then
-			add_dot(dot_template_name, target_unit, attacker_unit, damage_source, power_level)
+			if target_settings.network_sync_dot then
+				add_dot_network_synced(dot_template_name, target_unit, attacker_unit, damage_source, power_level)
+			else
+				add_dot(dot_template_name, target_unit, attacker_unit, damage_source, power_level)
+			end
 		end
 
 		return do_dot
@@ -169,6 +181,7 @@ Dots = {
 DotTypeLookup = {
 	burning_dot = "burning_dot",
 	burning_3W_dot = "burning_dot",
+	corpse_explosion_default = "poison_dot",
 	arrow_poison_dot = "poison_dot",
 	beam_burning_dot = "burning_dot",
 	weapon_bleed_dot_test = "poison_dot",
@@ -189,8 +202,8 @@ local checked_templates = {
 for item_name, item in pairs(ItemMasterList) do
 	local slot_type = item.slot_type
 
-	if slot_type == "melee" or slot_type == "ranged" then
-		local template_name = item.template
+	if slot_type == "melee" or slot_type == "ranged" or slot_type == "grenade" or slot_type == "healthkit" or slot_type == "potion" then
+		local template_name = item.template or item.temporary_template
 		local careers = item.can_wield
 
 		for i = 1, #careers, 1 do

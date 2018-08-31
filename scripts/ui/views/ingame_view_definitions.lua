@@ -163,8 +163,8 @@ IngameViewDefinitions = {
 			parent = "screen",
 			horizontal_alignment = "left",
 			size = {
-				280,
-				200
+				390,
+				197
 			},
 			position = {
 				45,

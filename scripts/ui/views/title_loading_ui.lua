@@ -1,6 +1,7 @@
 require("scripts/settings/controller_settings")
 require("scripts/ui/ui_widgets")
 
+local first_time_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_trailer")
 local scenegraph_definition = {
 	screen = {
 		vertical_alignment = "center",
@@ -810,7 +811,8 @@ first_time_video = {
 	sound_start = "vermintide_2_prologue_intro",
 	scenegraph_id = "splash_video",
 	material_name = "vermintide_2_prologue_intro",
-	sound_stop = "Stop_vermintide_2_prologue_intro"
+	sound_stop = "Stop_vermintide_2_prologue_intro",
+	subtitle_template_settings = first_time_video_subtitle_settings
 }
 
 local function get_slider_progress(min, max, value)
@@ -871,12 +873,24 @@ local dynamic_range_value_settings = {
 		low = 1
 	}
 }
+local generic_input_actions = {
+	default = {
+		{
+			input_action = "analog_input",
+			priority = 1,
+			description_text = "scoreboard_navigation"
+		},
+		{
+			input_action = "confirm",
+			priority = 2,
+			description_text = "input_description_confirm"
+		}
+	}
+}
 TitleLoadingUI = class(TitleLoadingUI)
 
 TitleLoadingUI.init = function (self, world, params, force_done)
-	if PLATFORM == "win32" then
-		Application.set_time_step_policy("no_smoothing", "clear_history", "throttle", 60)
-	end
+	Framerate.set_low_power()
 
 	self.render_settings = {
 		snap_pixel_positions = true
@@ -903,7 +917,7 @@ TitleLoadingUI.init = function (self, world, params, force_done)
 end
 
 TitleLoadingUI._setup_gui = function (self)
-	self._ui_renderer = UIRenderer.create(self._world, "material", "materials/ui/ui_1080p_splash_screen", "material", "materials/ui/ui_1080p_title_screen", "material", "materials/ui/ui_1080p_common", "material", first_time_video.video_name, "material", "materials/fonts/gw_fonts")
+	self._ui_renderer = UIRenderer.create(self._world, "material", "materials/ui/ui_1080p_splash_screen", "material", "materials/ui/ui_1080p_title_screen", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_menu_atlas_textures", "material", first_time_video.video_name, "material", "materials/fonts/gw_fonts")
 
 	self:_create_elements()
 end
@@ -967,6 +981,10 @@ TitleLoadingUI._create_elements = function (self)
 		gamma_adjuster.content.gamepad_navigation_icon = texture_data.texture
 		self._ui_scenegraph.console_input_icon_1.size[1] = texture_data.size[1]
 		self._ui_scenegraph.console_input_icon_1.size[2] = texture_data.size[2]
+		local input_service = Managers.input:get_service("title_loading_ui")
+		self._menu_input_description = MenuInputDescriptionUI:new(nil, self._ui_renderer, input_service, 5, 10, generic_input_actions.default)
+
+		self._menu_input_description:set_input_description(nil)
 	else
 		self._startup_settings_done = true
 	end
@@ -1023,7 +1041,7 @@ TitleLoadingUI.setup_sound_dynamic_range_menu = function (self)
 	self:_change_sound_dynamic_range_display_by_value(start_value)
 end
 
-TitleLoadingUI.update = function (self, dt)
+TitleLoadingUI.update = function (self, dt, t)
 	if DO_RELOAD then
 		self:_create_elements()
 	end
@@ -1105,6 +1123,10 @@ TitleLoadingUI.update = function (self, dt)
 	end
 
 	self:_render(dt)
+
+	if self.cutscene_overlay_ui then
+		self.cutscene_overlay_ui:update(dt)
+	end
 end
 
 TitleLoadingUI._change_sound_panning_display_by_value = function (self, value)
@@ -1628,6 +1650,24 @@ TitleLoadingUI._render = function (self, dt)
 
 	UIRenderer.draw_widget(self._ui_renderer, self._dead_space_filler_widget)
 	UIRenderer.end_pass(self._ui_renderer)
+
+	if self._start_subtitles then
+		local subtitle_template_settings = first_time_video.subtitle_template_settings
+
+		if subtitle_template_settings then
+			self:_start_subtitles_by_template(subtitle_template_settings)
+		end
+
+		self._start_subtitles = false
+	end
+
+	if gamepad_active and not self._startup_settings_done then
+		self._menu_input_description:draw(self._ui_renderer, dt)
+	end
+
+	if self._done and self:_has_active_subtitles() then
+		self:_stop_subtitles()
+	end
 end
 
 TitleLoadingUI._render_video = function (self, dt)
@@ -1665,6 +1705,7 @@ TitleLoadingUI._render_video = function (self, dt)
 				end
 
 				self._sound_started = true
+				self._start_subtitles = true
 			end
 
 			UIRenderer.draw_widget(self._ui_renderer, self._video_widget)
@@ -1673,21 +1714,14 @@ TitleLoadingUI._render_video = function (self, dt)
 end
 
 TitleLoadingUI.destroy = function (self)
+	self:_stop_subtitles()
 	UIRenderer.destroy(self._ui_renderer, self._world)
 
 	if self._sound_started and first_time_video.sound_stop then
 		Managers.music:trigger_event(first_time_video.sound_stop)
 	end
 
-	if PLATFORM == "win32" then
-		local max_fps = Application.user_setting("max_fps")
-
-		if max_fps == nil or max_fps == 0 then
-			Application.set_time_step_policy("no_throttle", "smoothing", 11, 2, 0.1)
-		else
-			Application.set_time_step_policy("throttle", max_fps, "smoothing", 11, 2, 0.1)
-		end
-	end
+	Framerate.set_playing()
 
 	if self._needs_cursor_pop then
 		ShowCursorStack.pop()
@@ -1709,6 +1743,31 @@ TitleLoadingUI.force_done = function (self)
 	end
 
 	self._skip_widget.style.input_icon_bar.gradient_threshold = 0
+end
+
+TitleLoadingUI._start_subtitles_by_template = function (self, subtitle_template_settings)
+	if not Application.user_setting("use_subtitles") then
+		return
+	end
+
+	if self.cutscene_overlay_ui then
+		self.cutscene_overlay_ui:destroy()
+	end
+
+	self.cutscene_overlay_ui = CutsceneOverlayUI:new(self._ui_renderer, subtitle_template_settings)
+
+	self.cutscene_overlay_ui:start()
+	print("_start_subtitles_by_template----------------------")
+end
+
+TitleLoadingUI._stop_subtitles = function (self)
+	if self.cutscene_overlay_ui then
+		self.cutscene_overlay_ui:destroy()
+	end
+end
+
+TitleLoadingUI._has_active_subtitles = function (self)
+	return self.cutscene_overlay_ui ~= nil
 end
 
 return

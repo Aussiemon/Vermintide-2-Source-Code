@@ -1,4 +1,5 @@
 require("foundation/scripts/util/table")
+require("scripts/settings/attachment_node_linking")
 
 local unit_alive = Unit.alive
 
@@ -408,6 +409,81 @@ function flow_callback_link_objects_in_units_and_store(params)
 end
 
 function flow_callback_unlink_objects_in_units_and_remove(params)
+	local parentunit = params.parent_unit
+	local childunit = params.child_unit
+	local world = Unit.world(parentunit)
+
+	World.unlink_unit(world, childunit)
+
+	local unit_attachments = Unit.get_data(parentunit, "flow_unit_attachments") or {}
+	local key = table.find(unit_attachments, childunit)
+
+	if key then
+		table.remove(unit_attachments, key)
+	end
+
+	Unit.set_data(parentunit, "flow_unit_attachments", unit_attachments)
+
+	return {
+		unlinked = true
+	}
+end
+
+function flow_callback_attach_unit(params)
+	local node_link_table = AttachmentNodeLinking
+	local node_linking_template = split_string(params.node_link_template, "/")
+
+	if not node_linking_template then
+		print("No attachment node linking defined in flow!")
+
+		return
+	end
+
+	for _, key in ipairs(node_linking_template) do
+		node_link_table = node_link_table[key]
+	end
+
+	if type(node_link_table) ~= "table" then
+		print("No attachment node linking with name %s", tostring(params.node_link_template))
+
+		return
+	end
+
+	local parentunit = params.parent_unit
+	local childunit = params.child_unit
+	local index_offset = Script.index_offset()
+	local world = Unit.world(parentunit)
+
+	for _, link_data in ipairs(node_link_table) do
+		local parent_node = link_data.source
+		local child_node = link_data.target
+		local parent_node_index = (type(parent_node) == "string" and Unit.node(parentunit, parent_node)) or parent_node + index_offset
+		local child_node_index = (type(child_node) == "string" and Unit.node(childunit, child_node)) or child_node + index_offset
+
+		World.link_unit(world, childunit, child_node_index, parentunit, parent_node_index)
+	end
+
+	if params.link_lod_groups and Unit.num_lod_objects(parentunit) ~= 0 and Unit.num_lod_objects(childunit) ~= 0 then
+		local parent_lod_object = Unit.lod_object(parentunit, index_offset)
+		local child_lod_object = Unit.lod_object(childunit, index_offset)
+
+		LODObject.set_bounding_volume(child_lod_object, LODObject.bounding_volume(parent_lod_object))
+		LODObject.set_orientation_node(child_lod_object, parentunit, LODObject.node(parent_lod_object))
+	end
+
+	if params.store_in_parent then
+		local unit_attachments = Unit.get_data(parentunit, "flow_unit_attachments") or {}
+
+		table.insert(unit_attachments, childunit)
+		Unit.set_data(parentunit, "flow_unit_attachments", unit_attachments)
+	end
+
+	return {
+		linked = true
+	}
+end
+
+function flow_callback_unattach_unit(params)
 	local parentunit = params.parent_unit
 	local childunit = params.child_unit
 	local world = Unit.world(parentunit)

@@ -3,7 +3,7 @@ local SIZE_Y = 1080
 local RETAINED_MODE_ENABLED = true
 local scenegraph_definition = {
 	screen = {
-		scale = "fit",
+		scale = "hud_scale_fit",
 		position = {
 			0,
 			0,

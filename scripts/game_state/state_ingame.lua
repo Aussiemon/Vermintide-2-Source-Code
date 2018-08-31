@@ -44,6 +44,7 @@ require("scripts/managers/voting/vote_templates")
 require("scripts/game_state/components/dice_keeper")
 require("foundation/scripts/util/datacounter")
 require("scripts/managers/blood/blood_manager")
+require("scripts/managers/blood/blood_manager_dummy")
 require("scripts/managers/crafting/crafting_manager")
 require("scripts/managers/performance/performance_manager")
 require("scripts/managers/world_interaction/world_interaction_manager")
@@ -59,6 +60,8 @@ StateIngame.NAME = "StateIngame"
 StateIngame.on_enter = function (self)
 	if PLATFORM == "xb1" then
 		Application.set_kinect_enabled(false)
+
+		self.hero_stats_updated = false
 	end
 
 	local loading_context = self.parent.loading_context
@@ -109,6 +112,15 @@ StateIngame.on_enter = function (self)
 	DamageUtils.is_in_inn = self.is_in_inn
 
 	Managers.light_fx:set_lightfx_color_scheme((self.is_in_inn and "inn_level") or "ingame")
+
+	if PLATFORM ~= "win32" then
+		if self.is_in_tutorial then
+			Managers.backend:set_user_data("prologue_started", true)
+			Managers.backend:commit()
+		elseif self.is_in_inn then
+			Managers.unlock:enable_update_unlocks(true)
+		end
+	end
 
 	local db = StatisticsDatabase:new()
 
@@ -405,6 +417,8 @@ StateIngame.on_enter = function (self)
 		local volume_system = Managers.state.entity:system("volume_system")
 
 		volume_system:ai_ready()
+	else
+		Managers.state.conflict:client_ready()
 	end
 
 	if self.is_server and checkpoint_data then
@@ -484,8 +498,9 @@ StateIngame.on_enter = function (self)
 	local res_x, res_y = Application.resolution()
 	local resolution_string = string.format("%dx%d", res_x, res_y)
 	local graphics_quality = Application.user_setting("graphics_quality")
+	local rendering_backend = Renderer.render_device_string()
 
-	Managers.telemetry.events:tech_settings(resolution_string, graphics_quality, screen_mode)
+	Managers.telemetry.events:tech_settings(resolution_string, graphics_quality, screen_mode, rendering_backend)
 
 	local system_info = Application.sysinfo()
 	local adapter_index = Application.user_setting("adapter_index")
@@ -704,6 +719,7 @@ StateIngame.pre_update = function (self, dt)
 	end
 
 	Managers.state.spawn:update(dt, t)
+	Managers.state.conflict:pre_update()
 	self.entity_system:commit_and_remove_pending_units()
 
 	if self:_safe_to_do_entity_update() then
@@ -729,15 +745,9 @@ StateIngame.update = function (self, dt, main_t)
 	Managers.state.network:update(dt)
 	Managers.backend:update(dt)
 	self.input_manager:update(dt, main_t)
-
-	local debug_input_service = self.input_manager:get_service("DebugMenu")
-
-	self.free_flight_manager:update(dt)
 	self.level_transition_handler:update()
 
 	local t = Managers.time:time("game")
-
-	self._ducking_handler:update(dt)
 
 	if self._lobby_host then
 		self._lobby_host:update(dt)
@@ -765,7 +775,10 @@ StateIngame.update = function (self, dt, main_t)
 	end
 
 	Managers.state.achievement:update(dt, t)
-	Managers.state.decal:update(dt, t)
+
+	if Managers.state.decal ~= nil then
+		Managers.state.decal:update(dt, t)
+	end
 
 	if Managers.eac ~= nil then
 		Managers.eac:update(dt, t)
@@ -784,6 +797,8 @@ StateIngame.update = function (self, dt, main_t)
 		if self._lobby_host:is_joined() and Managers.state.network:game() then
 			Managers.state.conflict:update(dt, t)
 		end
+	elseif Managers.state.network:game() then
+		Managers.state.conflict:update_client(dt, t)
 	end
 
 	for _, machine in pairs(self.machines) do
@@ -832,18 +847,6 @@ StateIngame.update = function (self, dt, main_t)
 
 	Managers.state.bot_nav_transition:update(dt, t)
 	Managers.state.performance:update(dt, t)
-
-	if script_data.debug_enabled then
-		Managers.state.debug:update(dt, t)
-		Debug.update(t, dt)
-		VisualAssertLog.update(dt)
-		DebugScreen.update(dt, t, debug_input_service, self.input_manager)
-		DebugKeyHandler.render()
-		DebugKeyHandler.frame_clear()
-		FunctionCallProfiler.render()
-		PoolTableVisualizer.render(t)
-	end
-
 	self:_generate_ingame_clock()
 end
 
@@ -951,8 +954,12 @@ StateIngame._check_exit = function (self, t)
 
 			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
 			Managers.transition:show_loading_icon()
-		elseif transition == "return_to_title_screen" then
-			self.exit_type = "return_to_title_screen"
+		elseif transition == "offline_invite" then
+			self.exit_type = "offline_invite"
+
+			if not Managers.account:leaving_game() then
+				Managers.account:initiate_leave_game()
+			end
 
 			if network_manager:in_game_session() then
 				local force_diconnect = true
@@ -962,6 +969,25 @@ StateIngame._check_exit = function (self, t)
 
 			self.leave_lobby = true
 
+			Managers.account:set_should_teardown_xboxlive()
+			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
+			Managers.transition:show_loading_icon()
+		elseif transition == "return_to_title_screen" then
+			self.exit_type = "return_to_title_screen"
+
+			if not Managers.account:leaving_game() then
+				Managers.account:initiate_leave_game()
+			end
+
+			if network_manager:in_game_session() then
+				local force_diconnect = true
+
+				network_manager:leave_game(force_diconnect)
+			end
+
+			self.leave_lobby = true
+
+			Managers.account:set_should_teardown_xboxlive()
 			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
 			Managers.transition:show_loading_icon()
 		elseif transition == "return_to_demo_title_screen" then
@@ -1270,6 +1296,14 @@ StateIngame._check_exit = function (self, t)
 			if platform == "xb1" then
 				self.machines[1]:state():trigger_xbox_multiplayer_round_end_events()
 			end
+
+			if self.is_in_tutorial then
+				local play_go_tutorial_system = Managers.state.entity:system("play_go_tutorial_system")
+
+				if play_go_tutorial_system then
+					play_go_tutorial_system:clear_hooks()
+				end
+			end
 		end
 	end
 
@@ -1284,6 +1318,9 @@ StateIngame._check_exit = function (self, t)
 	end
 
 	if self.exit_time and self.exit_time <= t then
+		Managers.popup:cancel_all_popups()
+		Managers.account:check_popup_retrigger()
+
 		local exit_type = self.exit_type
 		local has_left = network_manager:has_left_game()
 		local game_session_is_closed = has_left or not network_manager:in_game_session()
@@ -1414,6 +1451,15 @@ StateIngame._check_exit = function (self, t)
 			self.parent.loading_context = {}
 
 			return StateTitleScreen
+		elseif exit_type == "offline_invite" then
+			printf("[StateIngame] Transition to StateTitleScreen on %q", self.exit_type)
+
+			self.release_level_resources = true
+			self.parent.loading_context = {
+				offline_invite = true
+			}
+
+			return StateTitleScreen
 		elseif exit_type == "return_to_title_screen" then
 			printf("[StateIngame] Transition to StateTitleScreen on %q", self.exit_type)
 
@@ -1490,6 +1536,7 @@ StateIngame.post_update = function (self, dt)
 
 	network_manager.network_transmit:transmit_local_rpcs()
 	Managers.state.unit_spawner:update_death_watch_list(dt, t)
+	Managers.state.conflict:post_update()
 	self.entity_system:commit_and_remove_pending_units()
 	Managers.state.spawn:post_unit_destroy_update()
 	network_manager:update_transmit(dt)
@@ -1502,6 +1549,14 @@ end
 StateIngame.on_exit = function (self, application_shutdown)
 	UPDATE_POSITION_LOOKUP()
 	UPDATE_PLAYER_LISTS()
+	self.free_flight_manager:cleanup_free_flight()
+
+	if PLATFORM == "xb1" and not self.hero_stats_updated then
+		Managers.xbox_stats:update_hero_stats(nil)
+
+		self.hero_stats_updated = true
+	end
+
 	self:_check_and_add_end_game_telemetry(application_shutdown)
 
 	if TelemetrySettings.collect_memory then
@@ -1552,12 +1607,14 @@ StateIngame.on_exit = function (self, application_shutdown)
 	Managers.music:on_exit_level()
 
 	local current_difficulty = Managers.state.difficulty:get_difficulty()
-	self.parent.loading_context.difficulty = current_difficulty
+
+	if self.exit_type ~= "return_to_title_screen" then
+		self.parent.loading_context.difficulty = current_difficulty
+	end
 
 	self.level_transition_handler:unregister_rpcs()
 	self.level_transition_handler:unregister_events(Managers.state.event)
 	self.level_transition_handler:clear_transition_exit_type()
-	self._ducking_handler:destroy()
 
 	local unit_spawner = Managers.state.unit_spawner
 	unit_spawner.locked = false
@@ -1695,13 +1752,20 @@ StateIngame.on_exit = function (self, application_shutdown)
 			local level_key = self.level_transition_handler:get_next_level_key()
 			local difficulty = current_difficulty
 
-			if level_key == "inn_level" or level_key == "tutorial" then
+			if level_key == "inn_level" or level_key == "prologue" then
 				Application.warning("Cancelling matchmaking")
 				self._lobby_host:enable_matchmaking(false)
 			else
 				Application.warning(string.format("Reissuing Ticket for %s and difficulty %s", level_key, difficulty))
 				Managers.matchmaking:reissue_smartmatch_ticket(level_key, difficulty, self.game_mode_key)
 			end
+		end
+
+		if DEDICATED_SERVER and self.is_in_inn then
+			local leader_peer_id = Managers.party:leader()
+
+			print(string.format("Start loading leader %s's characters and gear in the backend", leader_peer_id))
+			Managers.backend:update_items(leader_peer_id)
 		end
 	end
 
@@ -1750,6 +1814,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 	end
 
 	self:_remove_ingame_clock()
+	Managers.unlock:enable_update_unlocks(false)
 end
 
 StateIngame._check_and_add_end_game_telemetry = function (self, application_shutdown)
@@ -1802,9 +1867,7 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 		self._debug_event_manager_rpc = DebugEventManagerRPC:new(network_event_delegate)
 	end
 
-	self._ducking_handler = DuckingHandler:new()
 	Managers.state.event = EventManager:new()
-	Managers.state.decal = DecalManager:new()
 
 	self.level_transition_handler:register_events(Managers.state.event)
 
@@ -1835,7 +1898,11 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 
 	local entity_manager = EntityManager2:new()
 	Managers.state.entity = entity_manager
-	Managers.state.decal = DecalManager:new(world)
+
+	if not DEDICATED_SERVER then
+		Managers.state.decal = DecalManager:new(world)
+	end
+
 	local unit_templates = require("scripts/network/unit_extension_templates")
 
 	local function extension_extractor_function(unit, unit_template_name)
@@ -1851,7 +1918,7 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 
 		assert(is_server or is_client)
 
-		local extensions, num_extensions = unit_templates.get_extensions(unit, unit_template_name, is_husk, is_server)
+		local extensions, num_extensions = unit_templates.get_extensions(unit_template_name, is_husk, is_server)
 
 		return extensions, num_extensions
 	end
@@ -1969,10 +2036,19 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 	Managers.state.network:set_unit_storage(unit_storage)
 	Managers.state.network:set_unit_spawner(unit_spawner)
 
-	Managers.state.bot_nav_transition = BotNavTransitionManager:new(self.world, is_server, network_event_delegate)
+	local ai_system = Managers.state.entity:system("ai_system")
+	local nav_world = ai_system:nav_world()
+	local physics_world = World.get_data(world, "physics_world")
+	Managers.state.bot_nav_transition = BotNavTransitionManager:new(world, physics_world, nav_world, is_server, network_event_delegate)
 	Managers.state.quest = QuestManager:new(self.statistics_db)
 	Managers.state.achievement = AchievementManager:new(self.world, self.statistics_db)
-	Managers.state.blood = BloodManager:new(self.world)
+
+	if DEDICATED_SERVER then
+		Managers.state.blood = BloodManagerDummy:new()
+	else
+		Managers.state.blood = BloodManager:new(self.world)
+	end
+
 	Managers.state.performance_title = PerformanceTitleManager:new(self.network_transmit, self.statistics_db, is_server)
 
 	Managers.state.performance_title:register_rpcs(network_event_delegate)
@@ -2035,6 +2111,7 @@ StateIngame.gm_event_end_conditions_met = function (self, reason, checkpoint_ava
 
 	print("gm_event_end_conditions_met", game_won, game_lost)
 	Managers.popup:cancel_all_popups()
+	Managers.account:check_popup_retrigger()
 
 	if game_mode_key == "survival" then
 		if game_won and self.is_server then

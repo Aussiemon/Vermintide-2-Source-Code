@@ -208,6 +208,7 @@ StateDedicatedServer.setup_network_server = function (self, game_server)
 
 	self._profile_synchronizer = self._network_server.profile_synchronizer
 	local network_context = {
+		network_server = self._network_server,
 		network_transmit = self._network_transmit,
 		game_server = game_server,
 		profile_synchronizer = self._profile_synchronizer

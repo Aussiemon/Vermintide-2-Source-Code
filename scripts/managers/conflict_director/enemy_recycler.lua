@@ -8,9 +8,10 @@ local U_POSITION = 3
 local U_ROTATION = 4
 local U_OPTIONAL_DATA = 5
 local AREA_PACK_SIZE_OR_EVENT_NAME = 5
-local AREA_ROTATION = 8
+local AREA_ROTATION_OR_EVENT_DATA = 8
 local AREA_PACK_TYPE = 9
 local ZONE_DATA = 10
+local AREA_ID = 11
 local MP_TRAVEL_DIST = 1
 local MP_BOXED_POS = 2
 local MP_TERROR_EVENT_NAME = 3
@@ -381,9 +382,20 @@ EnemyRecycler.add_breed = function (self, breed_name, boxed_pos, boxed_rot)
 		0,
 		false,
 		zone,
-		"breed",
-		self.unique_area_id
+		"breed"
 	}
+end
+
+EnemyRecycler.breed_spawned_callback = function (ai_unit, breed, optional_data)
+	local unit_data = optional_data.dead_breed_data
+	BREED_DIE_LOOKUP[ai_unit] = {
+		EnemyRecycler.cleanup_dead_breed,
+		unit_data
+	}
+end
+
+EnemyRecycler.cleanup_dead_breed = function (ai_unit, unit_data)
+	unit_data[U_UNIT] = nil
 end
 
 EnemyRecycler.activate_area = function (self, area, threat_population)
@@ -402,7 +414,7 @@ EnemyRecycler.activate_area = function (self, area, threat_population)
 				local zone_data = area[ZONE_DATA]
 				local position = area[1]
 				local do_spawn_yes = true
-				local interest_point_unit = self:spawn_interest_point(unit_name, position, do_spawn_yes, area[AREA_ROTATION], pack_type, zone_data)
+				local interest_point_unit = self:spawn_interest_point(unit_name, position, do_spawn_yes, area[AREA_ROTATION_OR_EVENT_DATA], pack_type, zone_data)
 				local units_in_area = {
 					{
 						interest_point_unit,
@@ -416,7 +428,7 @@ EnemyRecycler.activate_area = function (self, area, threat_population)
 			local boxed_pos = area[1]
 			local event_data = area[8]
 			local event_name = area[AREA_PACK_SIZE_OR_EVENT_NAME]
-			local event_data = area[AREA_ROTATION]
+			local event_data = area[AREA_ROTATION_OR_EVENT_DATA]
 
 			if not event_data then
 				local data = {
@@ -436,7 +448,7 @@ EnemyRecycler.activate_area = function (self, area, threat_population)
 		assert(interest_point_unit == nil, "lolwut")
 
 		local do_spawn_no = false
-		interest_point_unit = self:spawn_interest_point(interest_point_unit_name, interest_point_position, do_spawn_no, area[AREA_ROTATION])
+		interest_point_unit = self:spawn_interest_point(interest_point_unit_name, interest_point_position, do_spawn_no, area[AREA_ROTATION_OR_EVENT_DATA])
 		units_in_area[1][1] = interest_point_unit
 
 		for i = 2, #units_in_area, 1 do
@@ -444,7 +456,9 @@ EnemyRecycler.activate_area = function (self, area, threat_population)
 			local breed_name = unit_data[U_BREED_NAME]
 			local spawn_pos = unit_data[U_POSITION]
 			local spawn_rot = unit_data[U_ROTATION]
-			local optional_data = unit_data[U_OPTIONAL_DATA]
+			local optional_data = unit_data[U_OPTIONAL_DATA] or {}
+			optional_data.spawned_func = EnemyRecycler.breed_spawned_callback
+			optional_data.dead_breed_data = unit_data
 			local breed = Breeds[breed_name]
 			local spawn_category = "enemy_recycler"
 			local spawn_type = "roam"
@@ -457,7 +471,9 @@ EnemyRecycler.activate_area = function (self, area, threat_population)
 		local breed_name = unit_data[U_BREED_NAME]
 		local spawn_pos = unit_data[U_POSITION]
 		local spawn_rot = unit_data[U_ROTATION]
-		local optional_data = unit_data[U_OPTIONAL_DATA]
+		local optional_data = unit_data[U_OPTIONAL_DATA] or {}
+		optional_data.spawned_func = EnemyRecycler.breed_spawned_callback
+		optional_data.dead_breed_data = unit_data
 		local breed = Breeds[breed_name]
 		local spawn_category = "enemy_recycler"
 		local spawn_type = "roam"
@@ -501,7 +517,7 @@ EnemyRecycler.deactivate_area = function (self, area)
 						[5] = d[7]
 					}
 					sleepy = true
-				elseif Unit.alive(queue_id) then
+				elseif AiUtils.unit_alive(queue_id) then
 					local unit = queue_id
 					local blackboard = BLACKBOARDS[unit]
 
@@ -547,7 +563,7 @@ EnemyRecycler.deactivate_area = function (self, area)
 
 					local claim_unit = point.claim_unit or (type(point[1]) ~= "number" and point[1])
 
-					if claim_unit and unit_alive(claim_unit) then
+					if claim_unit and AiUtils.unit_alive(claim_unit) then
 						local blackboard = BLACKBOARDS[claim_unit]
 
 						if not blackboard.target_unit_found_time then
@@ -599,7 +615,7 @@ EnemyRecycler.deactivate_area = function (self, area)
 			return true
 		end
 
-		local alive = unit_alive(unit) and ScriptUnit.extension(unit, "health_system"):is_alive()
+		local alive = ALIVE[unit] and ScriptUnit.extension(unit, "health_system"):is_alive()
 		local sleep_unit = false
 		local blackboard = nil
 
@@ -752,16 +768,20 @@ EnemyRecycler.add_terror_event_in_area = function (self, boxed_pos, terror_event
 		terror_event_name,
 		nav_group,
 		"event",
-		event_data or false
+		event_data or false,
+		[11] = self.unique_area_id
 	}
 end
 
-EnemyRecycler.add_main_path_terror_event = function (self, boxed_pos, terror_event_name, activation_dist, event_data)
+EnemyRecycler.add_main_path_terror_event = function (self, boxed_pos, terror_event_name, activation_dist, event_data, optional_spawn_distance)
 	print("Adding main path event:", boxed_pos, terror_event_name, activation_dist, event_data)
 
 	local main_path_events = self.main_path_events
 	local path_pos, travel_dist, move_percent, path_index, sub_index = MainPathUtils.closest_pos_at_main_path(nil, boxed_pos:unbox())
-	travel_dist = math.max(0, travel_dist - (activation_dist or 45))
+
+	if not optional_spawn_distance then
+		travel_dist = math.max(0, travel_dist - (activation_dist or 45))
+	end
 
 	if script_data.debug_ai_recycler then
 		local trigger_pos = MainPathUtils.point_on_mainpath(nil, travel_dist)
@@ -835,6 +855,7 @@ EnemyRecycler.draw_debug = function (self, player_positions)
 	local cone_height = Vector3(0, 0, 12)
 	local cone_height2 = Vector3(0, 0, 9.5)
 	local cone_height3 = Vector3(0, 0, 8.5)
+	local head_height = Vector3(0, 0, 3)
 	local roaming = CurrentRoamingSettings
 	local pos = player_positions[1]
 
@@ -879,25 +900,25 @@ EnemyRecycler.draw_debug = function (self, player_positions)
 		end
 
 		if seen > 0 then
-			t = t .. " I " .. i .. "= " .. seen
-
 			drawer:line(pos, pos + cone_height, inside_color)
+			Debug.world_text(pos + head_height, string.format("%s id(%s) S%s/%s", area[7], area[11], area[3], area[4]), "teal")
 		else
-			s = s .. " I " .. i .. "= " .. seen
-
 			drawer:line(pos, pos + cone_height, outside_color)
+			Debug.world_text(pos + head_height, string.format("%s id(%s) S%s/%s", area[7], area[11], area[3], area[4]), "tomato")
 		end
 	end
 
 	for i = 1, #shutdown, 1 do
-		local pos = shutdown[i][1]:unbox()
+		local area = shutdown[i]
+		local pos = area[1]:unbox()
 
-		drawer:line(pos, pos + cone_height, shutdown_color)
+		drawer:line(pos, pos + cone_height * 0.66, shutdown_color)
+		Debug.world_text(pos + head_height, string.format("%s id(%s) S%s/%s", area[7], area[11], area[3], area[4]), "red")
 	end
 
 	local local_player_unit = Managers.player:local_player().player_unit
 
-	if Unit.alive(local_player_unit) then
+	if ALIVE[local_player_unit] then
 		local main_path_player_info = self.conflict_director.main_path_player_info
 		local info = main_path_player_info[local_player_unit]
 

@@ -4,13 +4,16 @@ PlayerCharacterStateStunned.init = function (self, character_state_init_context)
 	PlayerCharacterState.init(self, character_state_init_context, "stunned")
 
 	local context = character_state_init_context
-	self.wield_inputs_to_buffer = {
-		wield_5 = true,
+	self.inputs_to_buffer = {
 		wield_2 = true,
-		wield_switch = true,
+		wield_5 = true,
+		action_career_release = true,
+		action_career = true,
+		wield_3 = true,
 		wield_1 = true,
 		wield_4 = true,
-		wield_3 = true
+		action_one = true,
+		wield_switch = true
 	}
 	self.movement_speed = 0
 	self.movement_speed_limit = 1
@@ -20,6 +23,7 @@ end
 
 PlayerCharacterStateStunned.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
 	CharacterStateHelper.stop_weapon_actions(self.inventory_extension, "stunned")
+	CharacterStateHelper.stop_career_abilities(self.career_extension, "stunned")
 	CharacterStateHelper.play_animation_event_first_person(self.first_person_extension, params.first_person_anim_name)
 	CharacterStateHelper.play_animation_event(unit, params.third_person_anim_name)
 
@@ -213,11 +217,7 @@ PlayerCharacterStateStunned.queue_input = function (self, input, input_extension
 		input_extension:add_buffer(wield_input)
 	end
 
-	if input_extension:get("action_one") then
-		input_extension:add_stun_buffer("action_one")
-	end
-
-	for input, buffer in pairs(self.wield_inputs_to_buffer) do
+	for input, buffer in pairs(self.inputs_to_buffer) do
 		if input_extension:get(input) then
 			input_extension:add_stun_buffer(input)
 

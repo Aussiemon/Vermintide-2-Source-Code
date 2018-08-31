@@ -1,7 +1,6 @@
-PatrolAnalysis = class(PatrolAnalysis)
-
 require("scripts/utils/util")
 
+PatrolAnalysis = class(PatrolAnalysis)
 local NAVTAG_LAYERS_STANDARD = {
 	jumps = 1.5,
 	ledges_with_fence = 1.5,
@@ -145,6 +144,38 @@ PatrolAnalysis.init = function (self, nav_world, using_editor, drawer)
 	}
 end
 
+PatrolAnalysis.destroy = function (self)
+	local navbot_setups = self.navbot_setups
+
+	for _, data in pairs(navbot_setups) do
+		local nav_cost_table = data.nav_cost_table
+		local nav_cost_map_cost_table = data.nav_cost_map_cost_table
+
+		GwNavTagLayerCostTable.destroy(nav_cost_table)
+		GwNavCostMap.destroy_tag_cost_table(nav_cost_map_cost_table)
+	end
+
+	local running_splines = self.running_splines
+	local num_running_splines = #running_splines
+
+	for i = 1, num_running_splines, 1 do
+		local spline = running_splines[i]
+		local navbot = spline.navbot
+
+		GwNavBot.destroy(navbot)
+	end
+
+	local free_navbots_lists = self.free_navbots_lists
+
+	for _, free_navbots in pairs(free_navbots_lists) do
+		for i = 1, #free_navbots, 1 do
+			local navbot = free_navbots[i]
+
+			GwNavBot.destroy(navbot)
+		end
+	end
+end
+
 PatrolAnalysis.setup_nav = function (self, navtag_layer, cost_table)
 	for layer_name, layer_cost in pairs(navtag_layer) do
 		local layer_id = LAYER_ID_MAPPING[layer_name]
@@ -267,6 +298,7 @@ PatrolAnalysis._generate_patrol_spline = function (self, level_name, main_paths,
 			local script_data = object:script_data_overrides()
 			local patrol_id = Unit.get_data(unit, "patrol_id")
 			local map_section = Unit.get_data(unit, "map_section")
+			local one_directional = Unit.get_data(unit, "one_directional")
 			local spline = patrol_waypoints[patrol_id]
 
 			if not spline then
@@ -276,7 +308,8 @@ PatrolAnalysis._generate_patrol_spline = function (self, level_name, main_paths,
 					patrol_type = patrol_type,
 					map_section = map_section,
 					navbot_kind = navbot_kind,
-					index = self._spline_counter
+					index = self._spline_counter,
+					one_directional = one_directional
 				}
 				patrol_waypoints[patrol_id] = spline
 				self._spline_counter = self._spline_counter + 1
@@ -363,10 +396,9 @@ PatrolAnalysis.inject_spline_path = function (self, spline, line_drawer)
 	local node_count = GwNavBot.get_path_nodes_count(navbot)
 	local spline_points = spline.spline_points or {}
 	local spline_points_index = spline.spline_points_index or 1
-	local draw = self.using_editor or script_data.debug_storm_vermin_patrol
+	local draw = self.using_editor or script_data.debug_patrols
 
 	if node_count > 0 then
-		local previous_node_position = nil
 		local current_node_index = GwNavBot.get_path_current_node_index(navbot)
 		local offset = Vector3.up() * 0.05
 
@@ -374,20 +406,6 @@ PatrolAnalysis.inject_spline_path = function (self, spline, line_drawer)
 			local position = GwNavBot.get_path_node_pos(navbot, i)
 			spline_points[spline_points_index] = Vector3Box(position)
 			spline_points_index = spline_points_index + 1
-
-			if draw and line_drawer then
-				local color_index = (spline.index - 1) % num_debug_colors + 1
-				local ct = debug_colors_lookup[color_index]
-				local color = Color(ct[1], ct[2], ct[3], ct[4])
-
-				line_drawer:sphere(position + offset, 0.1, color)
-
-				if previous_node_position then
-					line_drawer:line(position + offset, previous_node_position + offset, color)
-				end
-
-				previous_node_position = position
-			end
 		end
 	end
 

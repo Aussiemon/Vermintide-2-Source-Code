@@ -1,50 +1,57 @@
 StateTitleScreenMainMenu = class(StateTitleScreenMainMenu)
 StateTitleScreenMainMenu.NAME = "StateTitleScreenMainMenu"
-local menu_functions = {
-	function (this)
-		this._input_disabled = true
-
-		Managers.transition:show_loading_icon(false)
-		Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(this, "cb_fade_in_done"))
-		Managers.music:trigger_event("hud_menu_start_game")
-		this:_fetch_restrictions()
-	end,
-	function (this)
-		this._input_disabled = true
-
-		Managers.transition:show_loading_icon(false)
-		Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(this, "cb_fade_in_done", "tutorial"))
-		Managers.music:trigger_event("hud_menu_start_game")
-		this:_fetch_restrictions()
-	end,
-	function (this)
-		local input_manager = Managers.input
-
-		input_manager:block_device_except_service("options_menu", "gamepad")
-		this:activate_view("options_view")
-	end,
-	function (this)
-		this:activate_view("credits_view")
-	end,
-	function (this)
-		this._input_disabled = true
-
-		Managers.transition:show_loading_icon(false)
-		Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(this, "cb_fade_in_done", "ai_benchmark"))
-	end,
-	function (this)
-		this._input_disabled = true
-
-		Managers.transition:show_loading_icon(false)
-		Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(this, "cb_fade_in_done", "ai_benchmark_cycle"))
-	end,
-	function (this)
-		this._input_disabled = true
-
-		Managers.transition:show_loading_icon(false)
-		Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(this, "cb_fade_in_done", "whitebox_combat"))
-	end
+local game_types = {
+	INVITATION = "invitation",
+	OFFLINE = "offline",
+	ONLINE = "online"
 }
+local menu_functions = nil
+
+if script_data.honduras_demo then
+	menu_functions = {
+		function (this)
+			this:_start_game(game_types.OFFLINE, DemoSettings.demo_level)
+			Managers.music:trigger_event("Play_console_menu_start_game")
+		end
+	}
+elseif script_data.settings.use_beta_overlay then
+else
+	menu_functions = {
+		function (this)
+			local game_type = this._title_start_ui:game_type() or game_types.ONLINE
+
+			this:_start_game(game_type)
+			this._title_start_ui:menu_option_activated(true)
+			Managers.music:trigger_event("Play_console_menu_start_game")
+		end,
+		function (this)
+			local game_type = this._title_start_ui:game_type() or game_types.ONLINE
+
+			this:_start_game(game_type, "prologue")
+			this._title_start_ui:menu_option_activated(true)
+			Managers.music:trigger_event("Play_console_menu_start_game")
+		end,
+		function (this)
+			local input_manager = Managers.input
+
+			input_manager:block_device_except_service("options_menu", "gamepad")
+			this:activate_view("options_view")
+			this._title_start_ui:menu_option_activated(true)
+			Managers.music:trigger_event("Play_console_menu_select")
+		end,
+		function (this)
+			this:activate_view("credits_view")
+			this._title_start_ui:menu_option_activated(true)
+			Managers.music:trigger_event("Play_console_menu_select")
+		end,
+		function (this)
+			this:_start_game(game_types.OFFLINE)
+			this._title_start_ui:menu_option_activated(true)
+			Managers.music:trigger_event("Play_console_menu_start_game")
+		end
+	}
+end
+
 local DO_RELOAD = true
 
 StateTitleScreenMainMenu.on_enter = function (self, params)
@@ -64,12 +71,16 @@ StateTitleScreenMainMenu.on_enter = function (self, params)
 		self._title_start_ui:set_start_pressed(true)
 	end
 
+	if script_data.honduras_demo then
+		Wwise.set_state("menu_mute_ingame_sounds", "false")
+	end
+
 	self._is_installed = Managers.play_go:installed()
 
 	if not self._is_installed then
-		self._title_start_ui:set_menu_item_enable_state_by_index("start_game", false, "start_game_disabled_playgo")
+		self._title_start_ui:set_menu_item_enable_state_by_index("start_game", false, true, "start_game_disabled_playgo")
 	else
-		self._title_start_ui:set_menu_item_enable_state_by_index("start_game", true)
+		self._title_start_ui:set_menu_item_enable_state_by_index("start_game", true, true)
 	end
 
 	local user_id = Managers.account:user_id()
@@ -96,6 +107,18 @@ StateTitleScreenMainMenu._setup_sound = function (self)
 	Managers.music:set_music_volume(music_bus_volume)
 end
 
+StateTitleScreenMainMenu.cb_camera_animation_complete = function (self)
+	ShowCursorStack.push()
+	self._title_start_ui:activate_career_ui(true)
+	Managers.input:enable_gamepad_cursor()
+end
+
+StateTitleScreenMainMenu.cb_camera_animation_complete_back = function (self)
+	self._new_state = StateTitleScreenMain
+
+	Managers.input:disable_gamepad_cursor()
+end
+
 StateTitleScreenMainMenu._setup_input = function (self)
 	local input_manager = Managers.input
 	self.input_manager = input_manager
@@ -105,13 +128,21 @@ StateTitleScreenMainMenu._init_menu_views = function (self)
 	local ui_renderer = self._title_start_ui:get_ui_renderer()
 	local view_context = {
 		ui_renderer = ui_renderer,
+		ui_top_renderer = ui_renderer,
 		input_manager = Managers.input,
 		world_manager = Managers.world
 	}
-	self._views = {
-		credits_view = CreditsView:new(view_context),
-		options_view = OptionsView:new(view_context)
-	}
+
+	if script_data.honduras_demo then
+		self._title_start_ui:animate_to_camera(DemoSettings.camera_end_position, nil, callback(self, "cb_camera_animation_complete"))
+
+		self._views = {}
+	else
+		self._views = {
+			credits_view = CreditsView:new(view_context),
+			options_view = OptionsView:new(view_context)
+		}
+	end
 
 	for name, view in pairs(self._views) do
 		view.exit = function ()
@@ -126,26 +157,12 @@ StateTitleScreenMainMenu.update = function (self, dt, t)
 	local title_start_ui = self._title_start_ui
 
 	self:_update_play_go(dt, t)
-
-	if Managers.invite:has_invitation() and not self._handled_invite and not self._input_disabled then
-		if self._is_installed then
-			self._input_disabled = true
-
-			Managers.transition:show_loading_icon(false)
-			Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(self, "cb_fade_in_done", nil, true))
-			self:_fetch_restrictions()
-		else
-			self._popup_id = Managers.popup:queue_popup(Localize("popup_invite_not_installed"), Localize("popup_invite_not_installed_header"), "not_installed", Localize("menu_ok"))
-		end
-
-		self._handled_invite = true
-	end
+	self:_check_invites()
 
 	local active_view = self._active_view
 
 	if active_view then
 		self._views[active_view]:update(dt, t)
-		title_start_ui:update(dt, t, BACKGROUND_ONLY)
 	else
 		local input_service = self.input_manager:get_service("main_menu")
 
@@ -159,40 +176,56 @@ StateTitleScreenMainMenu.update = function (self, dt, t)
 
 		title_start_ui:update(dt, t)
 
-		local current_menu_index = title_start_ui:current_menu_index()
-		local active_menu_selection = title_start_ui:active_menu_selection()
-		local has_popup = Managers.popup:has_popup()
-
-		if active_menu_selection and not self._input_disabled and not has_popup then
-			if current_menu_index and input_service:get("start") then
-				menu_functions[current_menu_index](self)
-			elseif input_service:get("back") then
-				self.parent:show_menu(false)
-
-				self._new_state = StateTitleScreenMain
-			end
+		if script_data.honduras_demo then
+			self:_update_demo_input(dt, t)
+		else
+			self:_update_input(dt, t)
 		end
 	end
 
-	self:_update_start_game(dt, t)
-
-	if self._popup_id then
-		local result = Managers.popup:query_result(self._popup_id)
-
-		if result == "not_installed" then
-			Managers.invite:clear_invites()
-
-			self._popup_id = nil
-		elseif result == "ok" then
-			self._popup_id = nil
-		elseif result then
-			fassert(false, "[StateTitleScreenMainMenu] The popup result doesn't exist (%s)", result)
+	if not self._popup_id then
+		if not Managers.account:user_detached() then
+			if self._state == "check_restrictions" then
+				self:_check_restrictions()
+				title_start_ui:set_information_text(Localize("loading_checking_online_state"))
+			elseif self._state == "signin_to_backend" then
+				self:_signin_to_backend()
+				title_start_ui:set_information_text(Localize("loading_signing_in"))
+			elseif self._state == "waiting_for_backend_signin" then
+				self:_waiting_for_backend_signin()
+			elseif self._state == "check_popup" then
+				self:_check_popup()
+			end
 		end
-
-		return
+	elseif self._popup_id then
+		self:_check_popup()
 	end
 
 	return self:_next_state()
+end
+
+StateTitleScreenMainMenu._check_invites = function (self)
+	local has_offline_invitation = false
+
+	if self._auto_start then
+		local loading_context = self.parent.parent.loading_context
+
+		if loading_context.offline_invite then
+			has_offline_invitation = true
+			loading_context.offline_invite = nil
+		end
+	end
+
+	if (Managers.invite:has_invitation() or has_offline_invitation) and not self._handled_invite and not self._input_disabled and not self._popup_id then
+		if self._is_installed then
+			self:_start_game(game_types.INVITATION, nil, true)
+			self:_fetch_restrictions()
+		else
+			self._popup_id = Managers.popup:queue_popup(Localize("popup_invite_not_installed"), Localize("popup_invite_not_installed_header"), "not_installed", Localize("menu_ok"))
+		end
+
+		self._handled_invite = true
+	end
 end
 
 StateTitleScreenMainMenu._fetch_restrictions = function (self)
@@ -205,6 +238,64 @@ StateTitleScreenMainMenu._fetch_restrictions = function (self)
 	self._should_evaluate_playstation_plus = true
 end
 
+StateTitleScreenMainMenu._update_input = function (self, dt, t)
+	local title_start_ui = self._title_start_ui
+	local input_service = self.input_manager:get_service("main_menu")
+	local current_menu_index = title_start_ui:current_menu_index()
+	local active_menu_selection = title_start_ui:active_menu_selection()
+	local has_popup = Managers.popup:has_popup()
+	local user_detached = Managers.account:user_detached()
+	local active_controller = Managers.account:active_controller()
+
+	if active_menu_selection and not self._input_disabled and not has_popup and not user_detached and not self._popup_id then
+		if current_menu_index and input_service:get("start", true) then
+			menu_functions[current_menu_index](self)
+		elseif input_service:get("back") then
+			self:_close_menu()
+		elseif title_start_ui:offline_data_available() and active_controller.pressed(active_controller.button_index("y")) then
+			self._popup_id = Managers.popup:queue_popup(Localize("popup_update_offline_data"), Localize("popup_update_offline_data_header"), "update_offline_data", Localize("popup_choice_yes"), "do_nothing", Localize("popup_choice_no"))
+			self._state = "check_popup"
+		end
+	end
+end
+
+StateTitleScreenMainMenu._update_demo_input = function (self, dt, t)
+	local demo_ui = self._title_start_ui
+	local input_service = self.input_manager:get_service("main_menu")
+	local has_popup = Managers.popup:has_popup()
+	local user_detached = Managers.account:user_detached()
+	local active_controller = Managers.account:active_controller()
+
+	if demo_ui:should_start() and not self._input_disabled then
+		local profile_name, career_index = demo_ui:selected_profile()
+
+		self:_start_game(game_types.OFFLINE, DemoSettings.demo_level, true, profile_name)
+		Managers.music:trigger_event("Play_console_menu_start_game")
+
+		return
+	end
+
+	if Managers.time:get_demo_transition() and not demo_ui:in_transition() then
+		demo_ui:animate_to_camera(DemoSettings.starting_camera_name, nil, callback(self, "cb_camera_animation_complete_back"))
+		demo_ui:activate_career_ui(false)
+		self.parent:show_menu(false)
+	end
+
+	if not self._input_disabled and not has_popup and not user_detached and not self._popup_id then
+		if input_service:get("back") then
+			if not demo_ui:in_transition() then
+				demo_ui:animate_to_camera(DemoSettings.starting_camera_name, nil, callback(self, "cb_camera_animation_complete_back"))
+				demo_ui:activate_career_ui(false)
+				self:_close_menu()
+			end
+		elseif active_controller.pressed(active_controller.button_index("square")) and not demo_ui:in_transition() then
+			self:_close_menu()
+			demo_ui:animate_to_camera(DemoSettings.starting_camera_name, nil, callback(self, "cb_camera_animation_complete_back"))
+			demo_ui:activate_career_ui(false)
+		end
+	end
+end
+
 StateTitleScreenMainMenu._update_play_go = function (self, dt, t)
 	if self._is_installed then
 		return
@@ -213,13 +304,13 @@ StateTitleScreenMainMenu._update_play_go = function (self, dt, t)
 	local installed = Managers.play_go:installed()
 
 	if installed then
-		self._title_start_ui:set_menu_item_enable_state_by_index("start_game", true)
+		self._title_start_ui:set_menu_item_enable_state_by_index("start_game", true, true)
 
 		self._is_installed = true
 	end
 end
 
-StateTitleScreenMainMenu._update_start_game = function (self, dt, t)
+StateTitleScreenMainMenu._check_restrictions = function (self)
 	if self._should_evaluate_network_availability and not Managers.account:restriction_access_fetched("network_availability") then
 		return
 	end
@@ -244,6 +335,8 @@ StateTitleScreenMainMenu._update_start_game = function (self, dt, t)
 		end
 
 		self._should_evaluate_network_availability = false
+		self._has_evaluated_network_availability = true
+	else
 		self._has_evaluated_network_availability = true
 	end
 
@@ -270,6 +363,8 @@ StateTitleScreenMainMenu._update_start_game = function (self, dt, t)
 		end
 
 		self._should_evaluate_playstation_plus = false
+	elseif not self._playstation_plus_dialog then
+		self._has_evaluated_playstation_plus = true
 	end
 
 	if self._playstation_plus_dialog then
@@ -295,6 +390,62 @@ StateTitleScreenMainMenu._update_start_game = function (self, dt, t)
 			self._playstation_plus_dialog = nil
 		end
 	end
+
+	if self._has_evaluated_playstation_plus and self._has_evaluated_network_availability then
+		self._state = "signin_to_backend"
+	end
+end
+
+StateTitleScreenMainMenu._signin_to_backend = function (self)
+	Managers.unlock = UnlockManager:new()
+
+	if self._game_type == game_types.OFFLINE then
+		print("Using Offline Backend")
+		Managers.account:set_offline_mode(true)
+
+		if not Managers.rest_transport_offline then
+			require("scripts/managers/rest_transport_offline/rest_transport_manager_offline")
+
+			local offline_backend = require("scripts/managers/rest_transport_offline/offline_backend_playfab")
+			Managers.rest_transport_offline = RestTransportManagerOffline:new(offline_backend.endpoints)
+		end
+
+		Managers.rest_transport = Managers.rest_transport_offline
+		Managers.backend = BackendManagerPlayFab:new("ScriptBackendPlayFabPS4", "PlayFabMirror", "DataServerQueue")
+
+		Managers.backend:signin("")
+	else
+		print("Using Online Backend")
+
+		self._popup_id = Managers.popup:queue_popup("Online Mode not implemented yet for PS4", Localize("popup_error_topic"), "online_mode_not_implemented", Localize("menu_ok"))
+
+		return
+
+		Managers.account:set_offline_mode(false)
+
+		Managers.rest_transport = Managers.rest_transport_online
+		Managers.backend = BackendManagerPlayFab:new("ScriptBackendPlayFabPS4", "PlayFabMirror", "DataServerQueue")
+
+		Managers.backend:signin(self._xsts_result)
+	end
+
+	self._state = "waiting_for_backend_signin"
+end
+
+StateTitleScreenMainMenu._waiting_for_backend_signin = function (self)
+	local backend_manager = Managers.backend
+
+	if backend_manager and (backend_manager:is_local() or backend_manager:authenticated()) then
+		self._params.menu_screen_music_playing = false
+
+		Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(self, "cb_fade_in_done"))
+
+		self._state = "none"
+	end
+end
+
+StateTitleScreenMainMenu._update_start_game = function (self, dt, t)
+	self:_check_restrictions()
 
 	local start_game = self._fade_in_done and self._has_evaluated_network_availability and self._has_evaluated_playstation_plus
 
@@ -328,32 +479,71 @@ StateTitleScreenMainMenu.on_exit = function (self)
 	self._views = nil
 end
 
-StateTitleScreenMainMenu._start_game = function (self, level_key)
+StateTitleScreenMainMenu.cb_fade_in_done = function (self)
+	local game_type = self._game_type
+	local level_key = self._level_key
+	local disable_trailer = self._disable_trailer or not Application.user_setting("play_intro_cinematic")
+	local profile_name = self._profile_name
+
+	if level_key == "prologue" then
+		self._popup_id = Managers.popup:queue_popup("Prologue is not working yet", Localize("popup_error_topic"), "prologue_not_working", Localize("popup_choice_ok"))
+
+		return
+	end
+
+	if PLATFORM ~= "win32" and not Managers.backend:get_user_data("prologue_started") and not script_data.settings.disable_tutorial_at_start and not script_data.disable_prologue then
+		disable_trailer = false
+		level_key = "prologue"
+	end
+
 	self.parent.state = StateLoading
 	local loading_context = self.parent.parent.loading_context
 	loading_context.restart_network = true
 	loading_context.level_key = level_key
 
+	if game_type == game_types.INVITATION then
+		loading_context.first_time = false
+	end
+
 	if level_key and loading_context.level_transition_handler then
 		loading_context.level_transition_handler:set_next_level(level_key)
 	end
 
-	if level_key == "tutorial" then
-		Managers.backend:start_tutorial()
-
-		loading_context.wanted_profile_index = 4
+	if level_key == "prologue" then
 		loading_context.gamma_correct = not SaveData.gamma_corrected
-		loading_context.play_trailer = false
+		loading_context.play_trailer = true
+		loading_context.switch_to_tutorial_backend = true
+	elseif script_data.honduras_demo then
+		self.parent.parent.loading_context.wanted_profile_index = (profile_name and FindProfileIndex(profile_name)) or DemoSettings.wanted_profile_index
+		GameSettingsDevelopment.disable_free_flight = DemoSettings.disable_free_flight
+		GameSettingsDevelopment.disable_intro_trailer = DemoSettings.disable_intro_trailer
 	elseif not level_key then
 		loading_context.gamma_correct = not SaveData.gamma_corrected
-		loading_context.play_trailer = false
-		loading_context.show_profile_on_startup = true
+
+		if not disable_trailer then
+			loading_context.play_trailer = true
+			loading_context.show_profile_on_startup = true
+		else
+			loading_context.show_profile_on_startup = false
+		end
 	end
 end
 
-StateTitleScreenMainMenu.cb_fade_in_done = function (self, level_key)
-	self._fade_in_done = true
+StateTitleScreenMainMenu._start_game = function (self, game_type, level_key, disable_trailer, profile_name)
+	self._game_type = game_type
 	self._level_key = level_key
+	self._disable_trailer = disable_trailer or not Application.user_setting("play_intro_cinematic")
+	self._profile_name = profile_name
+	self._input_disabled = true
+
+	Managers.transition:show_loading_icon(false)
+	self._title_start_ui:disable_input(true)
+
+	if game_type == game_types.OFFLINE then
+		self._state = "signin_to_backend"
+	else
+		self._state = "check_restrictions"
+	end
 end
 
 StateTitleScreenMainMenu.activate_view = function (self, new_view)
@@ -381,9 +571,55 @@ StateTitleScreenMainMenu.exit_current_view = function (self)
 	local input_manager = Managers.input
 
 	input_manager:block_device_except_service("main_menu", "gamepad")
+	self._title_start_ui:menu_option_activated(false)
+end
+
+StateTitleScreenMainMenu._close_menu = function (self)
+	self.parent:show_menu(false)
+	self._title_start_ui:set_start_pressed(false)
+	self._title_start_ui:disable_input(false)
+	self._title_start_ui:set_game_type(nil)
+
+	self._closing_menu = true
+
+	Managers.transition:hide_loading_icon()
+
+	self._new_state = StateTitleScreenMain
+	self._state = "none"
+end
+
+StateTitleScreenMainMenu._check_popup = function (self)
+	if self._popup_id then
+		local result = Managers.popup:query_result(self._popup_id)
+
+		if result == "not_installed" then
+			Managers.invite:clear_invites()
+
+			self._popup_id = nil
+		elseif result == "ok" then
+			self._popup_id = nil
+		elseif result == "online_mode_not_implemented" then
+			self._popup_id = nil
+
+			self:_close_menu()
+		elseif result == "prologue_not_working" then
+			self._popup_id = nil
+
+			Managers.transition:force_fade_out()
+			self:_close_menu()
+		elseif result then
+			fassert(false, "[StateTitleScreenMainMenu] The popup result doesn't exist (%s)", result)
+		end
+
+		return
+	end
 end
 
 StateTitleScreenMainMenu._next_state = function (self)
+	if self._popup_id then
+		return
+	end
+
 	if self._show_error_dialog then
 		return
 	end

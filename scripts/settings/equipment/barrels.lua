@@ -32,6 +32,7 @@ weapon_template.actions = {
 			projectile_info = {
 				projectile_unit_template_name = "explosive_pickup_projectile_unit",
 				pickup_name = "explosive_barrel",
+				drop_on_player_destroyed = true,
 				projectile_unit_name = "units/weapons/player/pup_explosive_barrel/pup_explosive_barrel_01"
 			}
 		}
@@ -72,6 +73,42 @@ weapon_template.actions = {
 			end
 		}
 	},
+	action_dropped = {
+		default = {
+			alert_sound_range_hit = 10,
+			anim_end_event = "attack_finished",
+			kind = "throw",
+			velocity_multiplier = 1,
+			throw_time = 0.35,
+			ammo_usage = 1,
+			weapon_action_hand = "left",
+			block_pickup = true,
+			speed = 5,
+			uninterruptible = true,
+			anim_event = "attack_throw",
+			total_time = 0.7,
+			anim_end_event_condition_func = function (unit, end_reason)
+				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
+			end,
+			allowed_chain_actions = {},
+			angular_velocity = {
+				0,
+				-5,
+				0
+			},
+			throw_offset = {
+				0.25,
+				1.2,
+				0
+			},
+			projectile_info = {
+				projectile_unit_template_name = "explosive_pickup_projectile_unit",
+				pickup_name = "explosive_barrel",
+				drop_on_player_destroyed = true,
+				projectile_unit_name = "units/weapons/player/pup_explosive_barrel/pup_explosive_barrel_01"
+			}
+		}
+	},
 	action_wield = ActionTemplates.wield_left
 }
 weapon_template.ammo_data = {
@@ -102,20 +139,21 @@ Weapons.explosive_barrel_objective.left_hand_unit = "units/weapons/player/wpn_ex
 Weapons.explosive_barrel_objective.actions.action_one.default.projectile_info = {
 	projectile_unit_template_name = "pickup_projectile_unit",
 	pickup_name = "explosive_barrel_objective",
+	drop_on_player_destroyed = true,
 	projectile_unit_name = "units/weapons/player/pup_explosive_barrel/pup_gun_powder_barrel_01"
-}
-Weapons.dwarf_explosive_barrel = table.clone(Weapons.explosive_barrel)
-Weapons.dwarf_explosive_barrel.left_hand_unit = "units/weapons/player/wpn_dwarf_barrel_01/wpn_dwarf_barrel_01"
-Weapons.dwarf_explosive_barrel.actions.action_one.default.projectile_info = {
-	projectile_unit_template_name = "pickup_projectile_unit",
-	pickup_name = "dwarf_explosive_barrel",
-	projectile_unit_name = "units/weapons/player/pup_dwarf_barrel_01/pup_dwarf_barrel_01"
 }
 Weapons.lamp_oil = Weapons.lamp_oil or table.clone(weapon_template)
 Weapons.lamp_oil.left_hand_unit = "units/weapons/player/wpn_oil_jug_01/wpn_oil_jug_01"
 Weapons.lamp_oil.actions.action_one.default.projectile_info = {
 	projectile_unit_template_name = "explosive_pickup_projectile_unit",
 	pickup_name = "lamp_oil",
+	drop_on_player_destroyed = true,
+	projectile_unit_name = "units/weapons/player/pup_oil_jug_01/pup_oil_jug_01"
+}
+Weapons.lamp_oil.actions.action_dropped.default.projectile_info = {
+	projectile_unit_template_name = "explosive_pickup_projectile_unit",
+	pickup_name = "lamp_oil",
+	drop_on_player_destroyed = true,
 	projectile_unit_name = "units/weapons/player/pup_oil_jug_01/pup_oil_jug_01"
 }
 Weapons.beer_barrel = Weapons.beer_barrel or table.clone(weapon_template)
@@ -124,6 +162,7 @@ Weapons.beer_barrel.actions.action_one.default.speed = 8
 Weapons.beer_barrel.actions.action_one.default.projectile_info = {
 	projectile_unit_template_name = "pickup_projectile_unit",
 	pickup_name = "beer_barrel",
+	drop_on_player_destroyed = true,
 	projectile_unit_name = "units/weapons/player/pup_explosive_barrel/pup_explosive_barrel_01"
 }
 

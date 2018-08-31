@@ -3,16 +3,18 @@ require("scripts/managers/spawn/respawn_handler")
 
 SpawnManager = class(SpawnManager)
 local NUM_PLAYERS = 4
-local NUM_PROFILE_INDICES = 6
+local NUM_PROFILE_INDICES = #SPProfiles
 local CONSUMABLE_SLOTS = {
 	"slot_healthkit",
 	"slot_potion",
 	"slot_grenade"
 }
+local NUM_CONSUMABLE_SLOTS = #CONSUMABLE_SLOTS
 local CONSUMABLES_TEMP = {}
 
 local function netpack_consumables(consumables, temp_table)
-	for i, slot_name in ipairs(CONSUMABLE_SLOTS) do
+	for i = 1, NUM_CONSUMABLE_SLOTS, 1 do
+		local slot_name = CONSUMABLE_SLOTS[i]
 		temp_table[i] = NetworkLookup.item_names[consumables[slot_name] or "n/a"]
 	end
 end
@@ -48,9 +50,34 @@ SpawnManager.init = function (self, world, is_server, network_event_delegate, un
 	self._disable_spawning_reason_filter = {}
 	self._checkpoint_data = nil
 	self._forced_bot_profile_index = nil
+
+	self:_setup_bot_spawn_priority_lookup()
+
 	self._respawns_enabled = true
 	self._despawn_queue = {}
-	self._debug_HON6842 = false
+	self._despawn_queue_size = 0
+end
+
+SpawnManager._setup_bot_spawn_priority_lookup = function (self)
+	local saved_priority = PlayerData.bot_spawn_priority
+	local num_saved_priority = #saved_priority
+
+	if LAUNCH_MODE == "game" then
+		if num_saved_priority > 0 then
+			self._bot_profile_id_to_priority_id = {}
+
+			for i = 1, num_saved_priority, 1 do
+				local profile_id = saved_priority[i]
+				self._bot_profile_id_to_priority_id[profile_id] = i
+			end
+		else
+			self._bot_profile_id_to_priority_id = ProfileIndexToPriorityIndex
+		end
+	elseif LAUNCH_MODE == "attract_benchmark" then
+		self._bot_profile_id_to_priority_id = ProfileIndexToPriorityIndex
+	else
+		self._bot_profile_id_to_priority_id = ProfileIndexToPriorityIndex
+	end
 end
 
 SpawnManager.disable_spawning = function (self, set, reason, safe_position, safe_rotation)
@@ -115,7 +142,8 @@ SpawnManager._default_player_statuses = function (self)
 		if not gamemode_settings.disable_difficulty_spawning_items then
 			local consumables = status.consumables
 
-			for _, slot_name in ipairs(CONSUMABLE_SLOTS) do
+			for i = 1, NUM_CONSUMABLE_SLOTS, 1 do
+				local slot_name = CONSUMABLE_SLOTS[i]
 				consumables[slot_name] = settings[slot_name]
 			end
 		end
@@ -285,9 +313,9 @@ SpawnManager.update = function (self, dt, t)
 	self.hero_spawner_handler:update(dt, t)
 
 	if self._is_server and Managers.state.network:game() then
-		local allow_respawns = Managers.state.difficulty:get_difficulty_settings().allow_respawns
-
 		self:_update_player_status(dt, t)
+
+		local allow_respawns = Managers.state.difficulty:get_difficulty_settings().allow_respawns
 
 		if self._respawns_enabled and allow_respawns then
 			self.respawn_handler:update(dt, t, self._player_statuses)
@@ -306,26 +334,29 @@ SpawnManager.update = function (self, dt, t)
 		end
 	end
 
-	if #self._despawn_queue > 0 then
+	if self._despawn_queue_size > 0 then
 		self:_update_despawns()
 	end
 end
 
 SpawnManager.delayed_despawn = function (self, player)
 	local despawn_queue = self._despawn_queue
-	despawn_queue[#despawn_queue + 1] = player
+	self._despawn_queue_size = self._despawn_queue_size + 1
+	despawn_queue[self._despawn_queue_size] = player
 end
 
 SpawnManager._update_despawns = function (self)
 	local despawn_queue = self._despawn_queue
 
-	for i = #despawn_queue, 1, -1 do
+	for i = self._despawn_queue_size, 1, -1 do
 		local player = despawn_queue[i]
 
 		player:despawn()
 
 		despawn_queue[i] = nil
 	end
+
+	self._despawn_queue_size = 0
 end
 
 SpawnManager._update_respawns = function (self, dt, t)
@@ -411,6 +442,7 @@ end
 SpawnManager._update_player_status = function (self, dt, t)
 	local player_manager = Managers.player
 	local statuses = self._player_statuses
+	local ScriptUnit_extension = ScriptUnit.extension
 
 	for i = 1, NUM_PLAYERS, 1 do
 		local status = statuses[i]
@@ -427,12 +459,12 @@ SpawnManager._update_player_status = function (self, dt, t)
 
 				if player_unit then
 					status.spawn_state = "spawned"
-					local safe_position = ScriptUnit.extension(player_unit, "locomotion_system"):last_position_on_navmesh()
+					local safe_position = ScriptUnit_extension(player_unit, "locomotion_system"):last_position_on_navmesh()
 
 					status.position:store(safe_position)
 					status.rotation:store(Unit.local_rotation(player_unit, 0))
 
-					local status_extension = ScriptUnit.extension(player_unit, "status_system")
+					local status_extension = ScriptUnit_extension(player_unit, "status_system")
 					local old_state = status.health_state
 					local is_dead = status_extension:is_dead()
 
@@ -457,7 +489,7 @@ SpawnManager._update_player_status = function (self, dt, t)
 						end
 					end
 
-					local health_ext = ScriptUnit.extension(player_unit, "health_system")
+					local health_ext = ScriptUnit_extension(player_unit, "health_system")
 
 					if not is_dead or status.health_state ~= "respawning" then
 						status.health_percentage = health_ext:current_permanent_health_percent()
@@ -465,10 +497,11 @@ SpawnManager._update_player_status = function (self, dt, t)
 					end
 
 					status.last_update = t
-					local inventory = ScriptUnit.extension(player_unit, "inventory_system")
+					local inventory = ScriptUnit_extension(player_unit, "inventory_system")
 					local consumables = status.consumables
 
-					for _, slot_name in ipairs(CONSUMABLE_SLOTS) do
+					for i = 1, NUM_CONSUMABLE_SLOTS, 1 do
+						local slot_name = CONSUMABLE_SLOTS[i]
 						local slot_data = inventory:get_slot_data(slot_name)
 						local item_key = slot_data and slot_data.item_data.key
 
@@ -480,35 +513,6 @@ SpawnManager._update_player_status = function (self, dt, t)
 			else
 				self:_free_status_slot(i)
 			end
-		end
-
-		if script_data.debug_spawn_status then
-			Debug.text(i .. ":" .. tostring(peer_id) .. ":" .. tostring(local_player_id))
-
-			if status.position and status.rotation then
-				local position = tostring(status.position:unbox())
-				local rotation = tostring(status.rotation:unbox())
-
-				Debug.text("    position: " .. position .. " rotation: " .. rotation)
-			end
-
-			Debug.text("    health_state: " .. status.health_state .. " health_percentage: " .. status.health_percentage .. " temporary_health_percentage: " .. status.temporary_health_percentage)
-			Debug.text("    ammo, melee: " .. status.ammo.slot_melee * 100 .. "%% ranged:" .. status.ammo.slot_ranged * 100 .. "%%")
-
-			if status.profile_index then
-				Debug.text("    profile_index: " .. status.profile_index)
-			end
-
-			Debug.text("    last_update: " .. status.last_update)
-
-			local str = "  "
-
-			for i, slot_name in ipairs(CONSUMABLE_SLOTS) do
-				str = str .. " " .. slot_name .. ": " .. tostring(status.consumables[slot_name])
-			end
-
-			Debug.text(str)
-			Debug.text("")
 		end
 	end
 end
@@ -568,27 +572,6 @@ SpawnManager._update_bot_spawns = function (self, dt, t)
 	local bot_delta = allowed_bots - bots
 	local local_peer_id = Network.peer_id()
 
-	if self._debug_HON6842 then
-		self._debug_HON6842 = false
-
-		print(string.format("[HON6842] delta: %s, humans: %s, bots: %s", tostring(delta), tostring(humans), tostring(bots)))
-		print(string.format("[HON6842] bot_delta: %s, allowed_bots: %s", tostring(bot_delta), tostring(allowed_bots)))
-
-		for profile_index = 1, NUM_PROFILE_INDICES, 1 do
-			local owner_type = profile_synchronizer:owner_type(profile_index)
-			local owner_table = profile_synchronizer:owner(profile_index)
-			local owner = nil
-
-			if owner_table == nil then
-				owner = "000000000000000:0"
-			else
-				owner = string.format("%s:%d", owner_table.peer_id, owner_table.local_player_id)
-			end
-
-			print(string.format("[HON6842] %d: %s %s", profile_index, owner, owner_type))
-		end
-	end
-
 	if bot_delta > 0 then
 		local i = 1
 		local bots_spawned = 0
@@ -604,7 +587,7 @@ SpawnManager._update_bot_spawns = function (self, dt, t)
 
 				if owner_type == "available" then
 					local local_player_id = player_manager:next_available_local_player_id(local_peer_id)
-					local bot_player = player_manager:add_bot_player(SPProfiles[profile_index].display_name, local_peer_id, "default", profile_index, local_player_id)
+					local bot_player = player_manager:add_bot_player(profile.display_name, local_peer_id, "default", profile_index, local_player_id)
 					local is_initial_spawn, status_slot_index = self:_assign_status_slot(local_peer_id, local_player_id, profile_index)
 					bot_player.status_slot_index = status_slot_index
 
@@ -665,10 +648,13 @@ SpawnManager._update_bot_spawns = function (self, dt, t)
 		end
 	end
 
-	local statuses = self._player_statuses
-
 	if self._network_server:has_all_peers_loaded_packages() then
-		for _, bot_player in ipairs(self._spawn_list) do
+		local statuses = self._player_statuses
+		local spawn_list = self._spawn_list
+		local num_to_spawn = #spawn_list
+
+		for i = 1, num_to_spawn, 1 do
+			local bot_player = spawn_list[i]
 			local bot_local_player_id = bot_player:local_player_id()
 			local bot_peer_id = bot_player:network_id()
 
@@ -690,7 +676,7 @@ SpawnManager._update_bot_spawns = function (self, dt, t)
 			end
 		end
 
-		table.clear(self._spawn_list)
+		table.clear(spawn_list)
 	end
 end
 
@@ -783,35 +769,45 @@ SpawnManager._update_available_profiles = function (self, profile_synchronizer, 
 	local delta = 0
 	local bots = 0
 	local humans = 0
+	local order_changed = false
 
 	for profile_index = 1, NUM_PROFILE_INDICES, 1 do
 		local owner_type = profile_synchronizer:owner_type(profile_index)
 
 		if owner_type == "human" then
 			humans = humans + 1
-			local index = table.find(available_profile_order, profile_index)
 
-			if index then
+			if available_profiles[profile_index] then
+				local index = table.find(available_profile_order, profile_index)
+
 				table.remove(available_profile_order, index)
 
 				available_profiles[profile_index] = false
 				delta = delta - 1
+				order_changed = true
 			end
-		elseif (owner_type == "available" or owner_type == "bot") and not table.contains(available_profile_order, profile_index) then
-			table.insert(available_profile_order, 1, profile_index)
+		elseif owner_type == "available" or owner_type == "bot" then
+			if owner_type == "bot" then
+				bots = bots + 1
+			end
 
-			available_profiles[profile_index] = true
-			delta = delta + 1
-		end
+			if not available_profiles[profile_index] then
+				table.insert(available_profile_order, 1, profile_index)
 
-		if owner_type == "bot" then
-			bots = bots + 1
+				available_profiles[profile_index] = true
+				delta = delta + 1
+				order_changed = true
+			end
 		end
 	end
 
-	table.sort(available_profile_order, function (a, b)
-		return (ProfilePriority[a] or math.huge) < (ProfilePriority[b] or math.huge)
-	end)
+	if order_changed then
+		local bot_profile_id_to_priority_id = self._bot_profile_id_to_priority_id
+
+		table.sort(available_profile_order, function (a, b)
+			return (bot_profile_id_to_priority_id[a] or math.huge) < (bot_profile_id_to_priority_id[b] or math.huge)
+		end)
+	end
 
 	if self._forced_bot_profile_index then
 		local forced_bot_profile_index = self._forced_bot_profile_index

@@ -684,7 +684,7 @@ ProcFunctions = {
 			local result = math.random(1, 100)
 
 			if result < drop_chance * 100 then
-				local enemy_pos = POSITION_LOOKUP[killed_unit]
+				local enemy_pos = POSITION_LOOKUP[killed_unit] + Vector3.up() * 0.1
 				local raycast_down = true
 				local pickup_system = Managers.state.entity:system("pickup_system")
 
@@ -695,12 +695,18 @@ ProcFunctions = {
 						pickup_system:buff_spawn_pickup("frag_grenade_t1", enemy_pos, raycast_down)
 					end
 				elseif talent_extension:has_talent("bardin_ranger_passive_spawn_potions", "dwarf_ranger", true) then
-					local drop_result = math.random(1, 6)
+					local drop_result = math.random(1, 3)
 
 					if drop_result == 1 then
-						pickup_system:buff_spawn_pickup("damage_boost_potion", enemy_pos, raycast_down)
-					elseif drop_result == 2 then
-						pickup_system:buff_spawn_pickup("speed_boost_potion", enemy_pos, raycast_down)
+						local potion_result = math.random(1, 3)
+
+						if potion_result == 1 then
+							pickup_system:buff_spawn_pickup("damage_boost_potion", enemy_pos, raycast_down)
+						elseif potion_result == 2 then
+							pickup_system:buff_spawn_pickup("speed_boost_potion", enemy_pos, raycast_down)
+						elseif potion_result == 3 then
+							pickup_system:buff_spawn_pickup("cooldown_reduction_potion", enemy_pos, raycast_down)
+						end
 					else
 						pickup_system:buff_spawn_pickup("ammo_ranger", enemy_pos, raycast_down)
 					end
@@ -798,9 +804,11 @@ ProcFunctions = {
 		local attacking_unit = params[1]
 
 		if Unit.alive(attacking_unit) then
-			local buff_extension = ScriptUnit.extension(attacking_unit, "buff_system")
+			local attacker_buff_extension = ScriptUnit.has_extension(attacking_unit, "buff_system")
 
-			buff_extension:add_buff("defence_debuff_enemies")
+			if attacker_buff_extension then
+				attacker_buff_extension:add_buff("defence_debuff_enemies")
+			end
 		end
 	end,
 	add_buff = function (player, buff, params)
@@ -916,7 +924,7 @@ ProcFunctions = {
 			local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
 			local wielded_slot = inventory_extension:get_wielded_slot_name()
 
-			if wielded_slot == "slot_melee" or (wielded_slot == "slot_ranged" and not ranged_stealth) then
+			if wielded_slot == "slot_melee" or (wielded_slot == "slot_ranged" and not ranged_stealth) or wielded_slot == "slot_level_event" then
 				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 				local shade_activated_ability_buff = nil
 
@@ -979,8 +987,6 @@ ProcFunctions = {
 		local player_unit = player.player_unit
 
 		if Unit.alive(player_unit) then
-			local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
-			local wielded_slot = inventory_extension:get_wielded_slot_name()
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 			local huntsman_activated_ability_buff = buff_extension:get_non_stacking_buff("markus_huntsman_activated_ability")
 
@@ -993,13 +999,16 @@ ProcFunctions = {
 		local player_unit = player.player_unit
 
 		if Unit.alive(player_unit) then
-			local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
-			local wielded_slot = inventory_extension:get_wielded_slot_name()
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 			local ranger_activated_ability_buff = buff_extension:get_non_stacking_buff("bardin_ranger_activated_ability")
+			local ranger_activated_ability_duration_buff = buff_extension:get_non_stacking_buff("bardin_ranger_activated_ability_duration")
 
 			if ranger_activated_ability_buff then
 				buff_extension:remove_buff(ranger_activated_ability_buff.id)
+			end
+
+			if ranger_activated_ability_duration_buff then
+				buff_extension:remove_buff(ranger_activated_ability_duration_buff.id)
 			end
 		end
 	end,
@@ -1161,8 +1170,14 @@ ProcFunctions = {
 	reset_tranquility = function (player, buff, params)
 		local player_unit = player.player_unit
 		local attacker_unit = params[1]
+		local damage_amount = params[2]
+		local damaged = true
 
-		if Unit.alive(player_unit) and attacker_unit ~= player_unit then
+		if damage_amount and damage_amount == 0 then
+			damaged = false
+		end
+
+		if Unit.alive(player_unit) and attacker_unit ~= player_unit and damaged then
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 			local tranquility_buff = buff_extension:get_non_stacking_buff("tranquility")
 
@@ -1331,7 +1346,9 @@ ProcFunctions = {
 			return
 		end
 
-		local melee_weapon = slot_type == "melee"
+		local damage_type = killing_blow_data[DamageDataIndex.DAMAGE_TYPE]
+		local rapier_pistol = damage_type == "shot_carbine"
+		local melee_weapon = slot_type == "melee" and not rapier_pistol
 
 		if melee_weapon and Unit.alive(player_unit) then
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
@@ -1573,6 +1590,16 @@ BuffTemplates = {
 			}
 		}
 	},
+	blightreaper_curse = {
+		buffs = {
+			{
+				max_stacks = 1,
+				name = "blightreaper_curse",
+				apply_buff_func = "convert_permanent_to_temporary_health",
+				perk = "disable_permanent_heal"
+			}
+		}
+	},
 	damage_boost_potion = {
 		activation_effect = "fx/screenspace_potion_01",
 		deactivation_sound = "hud_gameplay_stance_deactivate",
@@ -1791,6 +1818,18 @@ BuffTemplates = {
 		buffs = {
 			{
 				perk = "skaven_grimoire",
+				name = "grimoire_health_debuff",
+				debuff = true,
+				icon = "buff_icon_grimoire_health_debuff",
+				dormant = true
+			}
+		}
+	},
+	slayer_curse_debuff = {
+		activation_sound = "hud_info_state_grimoire_pickup",
+		buffs = {
+			{
+				perk = "slayer_curse",
 				name = "grimoire_health_debuff",
 				debuff = true,
 				icon = "buff_icon_grimoire_health_debuff",
@@ -2433,7 +2472,7 @@ BuffTemplates = {
 				time_between_ticks = 2,
 				debuff = true,
 				max_stacks = 1,
-				icon = "troll_vomit_debuff"
+				icon = "convocation_debuff"
 			}
 		}
 	},
@@ -2929,7 +2968,7 @@ BuffTemplates = {
 	damage_taken_powerful_elites = {
 		buffs = {
 			{
-				multiplier = 2,
+				multiplier = 1,
 				name = "damage_taken_from_powerful_elites",
 				stat_buff = StatBuffIndex.DAMAGE_TAKEN_ELITES
 			}
@@ -3942,6 +3981,84 @@ BuffTemplates = {
 					},
 					survival_hardest = {
 						5,
+						4,
+						0,
+						9,
+						4
+					}
+				}
+			}
+		}
+	},
+	warpfire_thrower_face_base_mutator = {
+		buffs = {
+			{
+				slowdown_buff_name = "warpfire_thrower_fire_slowdown",
+				name = "warpfire_thrower_base",
+				update_func = "update_warpfirethrower_in_face",
+				dormant = true,
+				damage_type = "warpfire_ground",
+				remove_buff_func = "remove_warpfirethrower_in_face",
+				apply_buff_func = "apply_warpfirethrower_in_face",
+				fatigue_type = "warpfire_ground",
+				push_speed = 30,
+				time_between_dot_damages = 0.75,
+				duration = 0.3,
+				debuff = true,
+				max_stacks = 1,
+				icon = "troll_vomit_debuff",
+				difficulty_damage = {
+					easy = {
+						2,
+						1,
+						0,
+						5.5,
+						1
+					},
+					normal = {
+						10,
+						1,
+						0,
+						6.5,
+						1
+					},
+					hard = {
+						12,
+						2,
+						0,
+						7.5,
+						2
+					},
+					survival_hard = {
+						12,
+						2,
+						0,
+						7,
+						2
+					},
+					harder = {
+						15,
+						3,
+						0,
+						8.5,
+						3
+					},
+					survival_harder = {
+						15,
+						3,
+						0,
+						8,
+						3
+					},
+					hardest = {
+						20,
+						4,
+						0,
+						9.5,
+						4
+					},
+					survival_hardest = {
+						20,
 						4,
 						0,
 						9,
@@ -5216,6 +5333,118 @@ BuffTemplates = {
 				max_stacks = 5,
 				duration = 5,
 				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+			}
+		}
+	},
+	corpse_explosion_default = {
+		buffs = {
+			{
+				slowdown_buff_name = "bile_troll_vomit_face_slowdown",
+				name = "corpse_explosion_default",
+				update_func = "update_vomit_in_face",
+				dormant = true,
+				damage_type = "vomit_face",
+				remove_buff_func = "remove_vomit_in_face",
+				apply_buff_func = "apply_vomit_in_face",
+				fatigue_type = "vomit_face",
+				time_between_dot_damages = 0.65,
+				duration = 2,
+				debuff = true,
+				max_stacks = 1,
+				icon = "troll_vomit_debuff",
+				refresh_durations = true,
+				push_speed = 6,
+				difficulty_damage = {
+					easy = {
+						1,
+						1,
+						0,
+						0.5,
+						1
+					},
+					normal = {
+						1,
+						1,
+						0,
+						1,
+						1
+					},
+					hard = {
+						1,
+						1,
+						0,
+						1,
+						1
+					},
+					survival_hard = {
+						1,
+						1,
+						0,
+						1,
+						1
+					},
+					harder = {
+						1,
+						1,
+						0,
+						2,
+						1
+					},
+					survival_harder = {
+						1,
+						1,
+						0,
+						2,
+						1
+					},
+					hardest = {
+						1,
+						1,
+						0,
+						4,
+						1
+					},
+					survival_hardest = {
+						1,
+						1,
+						0,
+						4,
+						1
+					}
+				}
+			},
+			{
+				name = "decrease_jump_speed",
+				multiplier = 0.3,
+				duration = 2,
+				remove_buff_func = "remove_movement_buff",
+				apply_buff_func = "apply_movement_buff",
+				path_to_movement_setting_to_modify = {
+					"jump",
+					"initial_vertical_speed"
+				}
+			},
+			{
+				name = "decrease_dodge_speed",
+				multiplier = 0.3,
+				duration = 2,
+				remove_buff_func = "remove_movement_buff",
+				apply_buff_func = "apply_movement_buff",
+				path_to_movement_setting_to_modify = {
+					"dodging",
+					"speed_modifier"
+				}
+			},
+			{
+				name = "decrease_dodge_distance",
+				multiplier = 0.3,
+				duration = 2,
+				remove_buff_func = "remove_movement_buff",
+				apply_buff_func = "apply_movement_buff",
+				path_to_movement_setting_to_modify = {
+					"dodging",
+					"distance_modifier"
+				}
 			}
 		}
 	},

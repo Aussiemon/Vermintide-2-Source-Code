@@ -7,8 +7,8 @@ local WIDGET_SIZE = {
 local MAX_NUMBER_OF_NEWS = 5
 local NEWS_SPACING = 10
 local scenegraph_definition = {
-	screen = {
-		scale = "fit",
+	root = {
+		scale = "hud_scale_fit",
 		position = {
 			0,
 			0,
@@ -21,7 +21,7 @@ local scenegraph_definition = {
 	},
 	pivot = {
 		vertical_alignment = "top",
-		parent = "screen",
+		parent = "root",
 		horizontal_alignment = "right",
 		position = {
 			-20,
@@ -34,6 +34,11 @@ local scenegraph_definition = {
 		}
 	}
 }
+
+if PLATFORM ~= "win32" then
+	scenegraph_definition.root.scale = "hud_fit"
+	scenegraph_definition.root.is_root = false
+end
 
 local function create_news_widget(index, specific_scenegraph_id)
 	local scenegraph_id = specific_scenegraph_id

@@ -51,6 +51,8 @@ local function update_option(cs, option_index, dont_save)
 		printf("DebugScreen: script_data.%-35s = %s", cs.title, tostring(cs.options[option_index]))
 		Application.save_user_settings()
 	end
+
+	Profiler.event("%s = %s", cs.title, tostring(cs.options[option_index]))
 end
 
 local function activate_preset(cs)

@@ -10,6 +10,7 @@ local FULL_WEIGHT = 1
 SoundEnvironmentSystem.init = function (self, entity_system_creation_context, system_name)
 	SoundEnvironmentSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 
+	self._highest_prio_system = EngineOptimized.highest_prio_environment_init()
 	local world = self.world
 	self.wwise_world = Managers.world:wwise_world(world)
 
@@ -31,6 +32,11 @@ SoundEnvironmentSystem.init = function (self, entity_system_creation_context, sy
 	self._updated_sources = {}
 	self._num_sources = 0
 	self._current_source_index = 0
+	self._check_timer = 0
+end
+
+SoundEnvironmentSystem.destroy = function (self)
+	EngineOptimized.highest_prio_environment_destroy(self._highest_prio_system)
 end
 
 local environment_base = {
@@ -67,21 +73,36 @@ SoundEnvironmentSystem.register_sound_environment = function (self, volume_name,
 
 	environment.environment_state = environment_state
 	self._environments[volume_name] = environment
-end
-
-SoundEnvironmentSystem._highest_prio_environment_at_position = function (self, position)
-	local level = LevelHelper:current_level(self.world)
-	local highest_prio = -math.huge
-	local highest_prio_env_name = nil
+	local array_to_sort = {}
+	local count = 1
 
 	for volume_name, data in pairs(self._environments) do
 		local prio = data.prio
-
-		if highest_prio < prio and Level.is_point_inside_volume(level, volume_name, position) then
-			highest_prio = data.prio
-			highest_prio_env_name = volume_name
-		end
+		array_to_sort[count] = {
+			p = prio,
+			n = volume_name
+		}
+		count = count + 1
 	end
+
+	table.sort(array_to_sort, function (a, b)
+		return b.p < a.p
+	end)
+
+	local sorted_environment = {}
+	count = count - 1
+
+	for i = 1, count, 1 do
+		sorted_environment[i] = array_to_sort[i].n
+	end
+
+	EngineOptimized.highest_prio_environment_reorder(self._highest_prio_system, unpack(sorted_environment))
+end
+
+SoundEnvironmentSystem._highest_prio_environment_at_position = function (self, position)
+	local highest_prio_env_name = nil
+	local level = LevelHelper:current_level(self.world)
+	highest_prio_env_name = EngineOptimized.highest_prio_environment_at_position(self._highest_prio_system, level, position)
 
 	return highest_prio_env_name
 end
@@ -180,41 +201,30 @@ SoundEnvironmentSystem.local_player_created = function (self, player)
 end
 
 SoundEnvironmentSystem.update = function (self, context, t)
-	if not self.player then
-		return
-	end
+	if self._check_timer < t then
+		self._check_timer = t + 1
 
-	local local_player = self.player
-	local viewport_name = local_player.viewport_name
-	local pose = Managers.state.camera:listener_pose(viewport_name)
-	local position = Matrix4x4.translation(pose)
-	local highest_prio_env_name = self:_highest_prio_environment_at_position(position)
-
-	if highest_prio_env_name then
-		if highest_prio_env_name ~= self._current_environment then
-			self:enter_environment(t, highest_prio_env_name, self._current_environment)
+		if not self.player then
+			return
 		end
-	elseif self._current_environment ~= "global" then
-		self:enter_environment(t, "global", self._current_environment)
+
+		local local_player = self.player
+		local viewport_name = local_player.viewport_name
+		local pose = Managers.state.camera:listener_pose(viewport_name)
+		local position = Matrix4x4.translation(pose)
+		local highest_prio_env_name = self:_highest_prio_environment_at_position(position)
+
+		if highest_prio_env_name then
+			if highest_prio_env_name ~= self._current_environment then
+				self:enter_environment(t, highest_prio_env_name, self._current_environment)
+			end
+		elseif self._current_environment ~= "global" then
+			self:enter_environment(t, "global", self._current_environment)
+		end
 	end
 
 	if GameSettingsDevelopment.fade_environments then
 		self:_update_fade(t)
-
-		if script_data.debug_sound_environments then
-			local current_environment = self._current_environment
-
-			Debug.text("SoundEnvironmentSystem: Inside volume %q", current_environment)
-
-			local environments = self._environments
-
-			for volume_name, data in pairs(environments) do
-				local fade_info = data.fade_info
-
-				Debug.text("%q has aux_bus_value == %.2f", volume_name, fade_info.current_value)
-			end
-		end
-
 		self:_update_source_environments()
 	end
 end

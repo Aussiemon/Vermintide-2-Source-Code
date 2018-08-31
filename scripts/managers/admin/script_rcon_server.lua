@@ -55,6 +55,13 @@ local Commands = {
 		max_args = 0,
 		method = "_command_shutdown"
 	},
+	status = {
+		arg_help = "",
+		min_args = 0,
+		help = "rcon_server_command_help_status",
+		max_args = 0,
+		method = "_command_status"
+	},
 	unban = {
 		arg_help = "rcon_server_command_args_unban",
 		min_args = 1,
@@ -297,21 +304,41 @@ ScriptRconServer._command_players = function (self)
 	return player_list
 end
 
+ScriptRconServer._command_say = function (self, ...)
+	local say_text = varargs.join(" ", ...)
+	say_text = UTF8Utils.sub_string(say_text, 1, 128)
+	local chat = Managers.chat
+
+	if chat:has_channel(1) then
+		chat:send_system_chat_message(1, "rcon_server_command_say_header", say_text, true)
+	end
+
+	return string.format("%s\n", tr("rcon_server_command_response_ok"))
+end
+
 ScriptRconServer._command_shutdown = function (self)
 	Application.quit()
 
 	return string.format("%s\n", tr("rcon_server_command_response_shutting_down"))
 end
 
-ScriptRconServer._command_say = function (self, ...)
-	local say_text = varargs.join(" ", ...)
-	local chat = Managers.chat
+ScriptRconServer._command_status = function (self)
+	local backend = Managers.backend
+	local sign_in_state = tr("rcon_backend_no_backend")
+	local status = ""
 
-	if chat:has_channel(1) then
-		chat:send_chat_message(1, say_text)
+	if backend ~= nil then
+		sign_in_state = (backend:signed_in() and tr("rcon_backend_signed_in")) or tr("rcon_backend_not_signed_in")
+		status = tr("rcon_backend_state") .. ": " .. tr("rcon_backend_state_ok") .. "\n"
+
+		if backend:has_error() then
+			status = tr("rcon_backend_state") .. ": " .. backend:error_string() .. "\n"
+		end
 	end
 
-	return string.format("%s\n", tr("rcon_server_command_response_ok"))
+	local result = string.format("%s\n%s", sign_in_state, status)
+
+	return result
 end
 
 ScriptRconServer._command_unban = function (self, id_or_name)

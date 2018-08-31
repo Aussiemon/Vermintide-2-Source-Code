@@ -10,6 +10,10 @@ function cprintf(f, ...)
 	CommandWindow.print(s)
 end
 
+function printf(...)
+	print(string.format(...))
+end
+
 string.split = function (str, sep)
 	local fields = {}
 	local pattern = string.format("([^%s]+)", sep or " ")

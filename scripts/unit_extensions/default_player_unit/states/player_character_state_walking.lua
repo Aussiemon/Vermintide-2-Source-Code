@@ -265,6 +265,10 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 
 		if is_moving then
 			current_movement_speed_scale = math.min(1, current_movement_speed_scale + move_acceleration_up_dt)
+
+			if gamepad_active then
+				current_movement_speed_scale = Vector3.length(move_input) * current_movement_speed_scale
+			end
 		else
 			current_movement_speed_scale = math.max(0, current_movement_speed_scale - move_acceleration_down_dt)
 		end

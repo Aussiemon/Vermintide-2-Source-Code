@@ -24,6 +24,7 @@ DemoTitleUI.init = function (self, world, viewport, parent)
 	self._character_previewers = {}
 	self._fps = 0
 	self._fps_cooldown = 0
+	self._draw_information_text = false
 
 	self:_setup_gui()
 	self:_setup_level()
@@ -32,6 +33,10 @@ DemoTitleUI.init = function (self, world, viewport, parent)
 	self:_setup_world_gui(parent)
 	self:_create_ui_elements()
 	self:_setup_input()
+end
+
+DemoTitleUI.menu_input_enabled = function (self)
+	return true
 end
 
 DemoTitleUI._setup_gui = function (self)
@@ -53,7 +58,7 @@ DemoTitleUI._setup_gui = function (self)
 end
 
 DemoTitleUI._setup_world_gui = function (self)
-	self._world_gui = World.create_world_gui(self._world, Matrix4x4.identity(), WORLD_GUI_RESOLUTION, WORLD_GUI_RESOLUTION, "material", "materials/ui/ui_1080p_title_screen", "immediate")
+	self._world_gui = World.create_world_gui(self._world, Matrix4x4.identity(), WORLD_GUI_RESOLUTION, WORLD_GUI_RESOLUTION, "material", "materials/ui/ui_1080p_demo_textures", "immediate")
 	local camera_poses = self._camera_poses
 	local pose = camera_poses[DemoSettings.starting_camera_name] or Matrix4x4Box(Matrix4x4.identity())
 	local position = Matrix4x4.translation(pose:unbox())
@@ -322,7 +327,7 @@ DemoTitleUI._recreate_characters = function (self)
 	self:_setup_characters()
 end
 
-local DO_RELOAD = true
+local DO_RELOAD = false
 
 DemoTitleUI.update = function (self, dt, t)
 	script_data.demo_ui = self
@@ -572,7 +577,7 @@ DemoTitleUI._draw_3d_logo = function (self, dt, t)
 	local base_size = Vector2(1920, 1080)
 	local w, h = Gui.resolution()
 
-	Gui.bitmap(self._world_gui, "vermintide_logo_title", Vector3((-base_size[1] * w) / WORLD_GUI_RESOLUTION * 0.5, (-base_size[2] * w) / WORLD_GUI_RESOLUTION * 0.3, 1), Vector2((base_size[1] * w) / WORLD_GUI_RESOLUTION, (base_size[2] * w) / WORLD_GUI_RESOLUTION))
+	Gui.bitmap(self._world_gui, "vermintide_2_logo_demo", Vector3((-base_size[1] * w) / WORLD_GUI_RESOLUTION * 0.5, (-base_size[2] * w) / WORLD_GUI_RESOLUTION * 0.3, 1), Vector2((base_size[1] * w) / WORLD_GUI_RESOLUTION, (base_size[2] * w) / WORLD_GUI_RESOLUTION))
 end
 
 DemoTitleUI._draw = function (self, dt, t)
@@ -841,16 +846,7 @@ DemoTitleUI.destroy = function (self)
 end
 
 DemoTitleUI.set_information_text = function (self, optinal_text)
-	self._draw_information_text = true
-	local widget = self._information_text
-	local widget_content = widget.content
-	local widget_style = widget.style
-
-	if not optinal_text then
-		widget_content.text = Localize("state_info")
-	else
-		widget_content.text = optinal_text
-	end
+	return
 end
 
 DemoTitleUI.set_user_name = function (self, username)
@@ -865,6 +861,18 @@ end
 DemoTitleUI.clear_user_name = function (self)
 	self._draw_gamertag = nil
 	self._switch_profile_blocked = nil
+end
+
+DemoTitleUI.set_update_offline_data_enabled = function (self, enable)
+	return
+end
+
+DemoTitleUI.disable_input = function (self, disable)
+	return
+end
+
+DemoTitleUI.set_game_type = function (self, game_type)
+	return
 end
 
 return

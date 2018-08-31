@@ -3,12 +3,13 @@ local DamageDataIndex = DamageDataIndex
 local ignored_damage_types = {
 	temporary_health_degen = true,
 	kinetic = true,
-	wounded_dot = true,
+	buff_shared_medpack = true,
 	buff = true,
+	health_degen = true,
+	wounded_dot = true,
 	heal = true,
 	knockdown_bleed = true,
-	health_degen = true,
-	buff_shared_medpack = true
+	life_drain = true
 }
 
 local function trigger_player_friendly_fire_dialogue(player_unit, attacker_unit)
@@ -136,21 +137,7 @@ HitReactions.templates = {
 				Unit.set_flow_variable(unit, "current_health", current_health)
 				Unit.flow_event(unit, "lua_on_damage_taken")
 			end
-		end,
-		hit_zones = {
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			"full",
-			nil,
-			"head",
-			"head"
-		}
+		end
 	}
 }
 

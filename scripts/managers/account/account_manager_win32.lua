@@ -107,4 +107,36 @@ AccountManager.friends_list_initiated = function (self)
 	return
 end
 
+AccountManager.check_popup_retrigger = function (self)
+	return
+end
+
+AccountManager.set_offline_mode = function (self, offline)
+	return
+end
+
+AccountManager.is_online = function (self)
+	return true
+end
+
+AccountManager.offline_mode = function (self)
+	return false
+end
+
+AccountManager.has_fatal_error = function (self)
+	return false
+end
+
+AccountManager.has_popup = function (self)
+	return false
+end
+
+AccountManager.cancel_all_popups = function (self)
+	return
+end
+
+AccountManager.active_controller = function (self)
+	return
+end
+
 return

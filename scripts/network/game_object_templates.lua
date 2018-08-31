@@ -274,6 +274,13 @@ local game_object_templates = {
 		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
 		is_level_unit = false
 	},
+	timed_explosion_unit = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		syncs_rotation = true,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false
+	},
 	liquid_aoe_unit = {
 		game_object_created_func_name = "game_object_created_network_unit",
 		syncs_position = true,
@@ -309,6 +316,12 @@ local game_object_templates = {
 		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
 		is_level_unit = false,
 		has_uniform_scaling = true
+	},
+	buff_aoe_unit = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		is_level_unit = false,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit"
 	},
 	thrown_weapon_unit = {
 		game_object_created_func_name = "game_object_created_network_unit",

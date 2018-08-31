@@ -1,4 +1,5 @@
 AreaDamageSystem = class(AreaDamageSystem, ExtensionSystemBase)
+local unit_alive = Unit.alive
 local RPCS = {
 	"rpc_add_liquid_damage_blob",
 	"rpc_area_damage",
@@ -14,6 +15,7 @@ local RPCS = {
 }
 local extensions = {
 	"AreaDamageExtension",
+	"TimedExplosionExtension",
 	"LiquidAreaDamageExtension",
 	"LiquidAreaDamageHuskExtension",
 	"DamageWaveExtension",
@@ -21,6 +23,8 @@ local extensions = {
 	"DamageBlobExtension",
 	"DamageBlobHuskExtension"
 }
+local AOE_DAMAGE_RING_BUFFER_SIZE = 128
+local NUM_UNITS_TO_DAMAGE_PER_FRAME = 15
 
 AreaDamageSystem.init = function (self, entity_system_creation_context, system_name)
 	AreaDamageSystem.super.init(self, entity_system_creation_context, system_name, extensions)
@@ -33,6 +37,8 @@ AreaDamageSystem.init = function (self, entity_system_creation_context, system_n
 	self.liquid_extensions = {}
 	self.liquid_extension_indexes = {}
 	self.num_liquid_extensions = 0
+
+	self:_create_aoe_damage_buffer()
 end
 
 local LIQUID_EXTENSIONS = {
@@ -76,6 +82,11 @@ end
 
 AreaDamageSystem.destroy = function (self)
 	self.network_event_delegate:unregister(self)
+end
+
+AreaDamageSystem.update = function (self, context, t)
+	AreaDamageSystem.super.update(self, context, t)
+	self:_update_aoe_damage_buffer()
 end
 
 AreaDamageSystem.create_explosion = function (self, attacker_unit, position, rotation, explosion_template_name, scale, damage_source, attacker_power_level)
@@ -130,6 +141,235 @@ AreaDamageSystem.is_position_in_liquid = function (self, position, nav_cost_map_
 	end
 
 	return result
+end
+
+AreaDamageSystem._create_aoe_damage_buffer = function (self)
+	local buffer_size = AOE_DAMAGE_RING_BUFFER_SIZE
+	self._aoe_damage_ring_buffer = {
+		write_index = 1,
+		read_index = 1,
+		size = 0,
+		buffer = Script.new_array(buffer_size),
+		max_size = buffer_size
+	}
+
+	for index = 1, buffer_size, 1 do
+		self._aoe_damage_ring_buffer.buffer[index] = {
+			radius = 0,
+			radius_max = 0,
+			max_damage_radius = 0,
+			shield_blocked = false,
+			do_damage = false,
+			radius_min = 0,
+			full_power_level = 0,
+			hit_distance = 0,
+			hit_zone_name = "n/a",
+			actual_power_level = 0,
+			damage_source = "n/a",
+			explosion_template_name = "n/a",
+			push_speed = 0,
+			impact_position = Vector3Box(),
+			hit_direction = Vector3Box()
+		}
+	end
+end
+
+AreaDamageSystem.add_aoe_damage_target = function (self, hit_unit, attacker_unit, impact_position, shield_blocked, do_damage, hit_zone_name, damage_source, hit_distance, push_speed, radius, max_damage_radius, radius_min, radius_max, full_power_level, actual_power_level, hit_direction, explosion_template_name)
+	local aoe_damage_ring_buffer = self._aoe_damage_ring_buffer
+	local buffer = aoe_damage_ring_buffer.buffer
+	local read_index = aoe_damage_ring_buffer.read_index
+	local write_index = aoe_damage_ring_buffer.write_index
+	local size = aoe_damage_ring_buffer.size
+	local max_size = aoe_damage_ring_buffer.max_size
+
+	if max_size < size + 1 then
+		local aoe_damage_data = buffer[read_index]
+
+		self:_damage_unit(aoe_damage_data)
+
+		aoe_damage_ring_buffer.size = size - 1
+		aoe_damage_ring_buffer.read_index = read_index % max_size + 1
+	end
+
+	local aoe_damage_data = buffer[write_index]
+	aoe_damage_data.hit_unit = hit_unit
+	aoe_damage_data.attacker_unit = attacker_unit
+
+	aoe_damage_data.impact_position:store(impact_position)
+
+	aoe_damage_data.shield_blocked = shield_blocked
+	aoe_damage_data.do_damage = do_damage
+	aoe_damage_data.hit_zone_name = hit_zone_name
+	aoe_damage_data.damage_source = damage_source
+	aoe_damage_data.hit_distance = hit_distance
+	aoe_damage_data.push_speed = push_speed
+	aoe_damage_data.radius = radius
+	aoe_damage_data.max_damage_radius = max_damage_radius
+	aoe_damage_data.radius_min = radius_min
+	aoe_damage_data.radius_max = radius_max
+	aoe_damage_data.full_power_level = full_power_level
+	aoe_damage_data.actual_power_level = actual_power_level
+
+	aoe_damage_data.hit_direction:store(hit_direction)
+
+	aoe_damage_data.explosion_template_name = explosion_template_name
+	aoe_damage_ring_buffer.size = size + 1
+	aoe_damage_ring_buffer.write_index = write_index % max_size + 1
+end
+
+AreaDamageSystem._update_aoe_damage_buffer = function (self)
+	local aoe_damage_ring_buffer = self._aoe_damage_ring_buffer
+	local size = aoe_damage_ring_buffer.size
+
+	if size == 0 then
+		return
+	end
+
+	local buffer = aoe_damage_ring_buffer.buffer
+	local read_index = aoe_damage_ring_buffer.read_index
+	local max_size = aoe_damage_ring_buffer.max_size
+	local num_updates = math.min(NUM_UNITS_TO_DAMAGE_PER_FRAME, size)
+
+	for i = 1, num_updates, 1 do
+		local aoe_damage_data = buffer[read_index]
+
+		self:_damage_unit(aoe_damage_data)
+
+		read_index = read_index % max_size + 1
+		size = size - 1
+	end
+
+	aoe_damage_ring_buffer.size = size
+	aoe_damage_ring_buffer.read_index = read_index
+end
+
+AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
+	local hit_unit = aoe_damage_data.hit_unit
+	local attacker_unit = aoe_damage_data.attacker_unit
+	local impact_position = aoe_damage_data.impact_position:unbox()
+	local shield_blocked = aoe_damage_data.shield_blocked
+	local do_damage = aoe_damage_data.do_damage
+	local hit_zone_name = aoe_damage_data.hit_zone_name
+	local damage_source = aoe_damage_data.damage_source
+	local hit_distance = aoe_damage_data.hit_distance
+	local push_speed = aoe_damage_data.push_speed
+	local radius = aoe_damage_data.radius
+	local max_damage_radius = aoe_damage_data.max_damage_radius
+	local radius_min = aoe_damage_data.radius_min
+	local radius_max = aoe_damage_data.radius_max
+	local full_power_level = aoe_damage_data.full_power_level
+	local actual_power_level = aoe_damage_data.actual_power_level
+	local hit_direction = aoe_damage_data.hit_direction:unbox()
+	local explosion_template_name = aoe_damage_data.explosion_template_name
+	local hit_unit_alive = unit_alive(hit_unit)
+
+	if not hit_unit_alive then
+		return
+	end
+
+	local attacker_unit_alive = unit_alive(attacker_unit)
+
+	if not attacker_unit_alive then
+		return
+	end
+
+	local explosion_template = ExplosionTemplates[explosion_template_name]
+	local explosion_data = explosion_template.explosion
+	local breed = AiUtils.unit_breed(hit_unit)
+	local is_immune = breed and explosion_data.immune_breeds and (explosion_data.immune_breeds[breed.name] or explosion_data.immune_breeds.all)
+
+	if shield_blocked then
+		hit_distance = math.lerp(hit_distance, radius, 0.5)
+	end
+
+	local glancing_hit = max_damage_radius < hit_distance
+	local attacker_player = Managers.player:owner(attacker_unit)
+	local attacker_is_player = attacker_player ~= nil
+
+	if attacker_is_player then
+		local item_data = rawget(ItemMasterList, damage_source)
+
+		if breed and item_data and not IGNORED_ITEM_TYPES_FOR_BUFFS[item_data.item_type] then
+			local attack_type = "aoe"
+
+			if item_data and item_data.item_type == "grenade" then
+				attack_type = item_data.item_type
+			end
+
+			local send_to_server = false
+			local is_critical = false
+
+			if attacker_player and attacker_player.remote then
+				local peer_id = attacker_player.peer_id
+				local attack_type_id = NetworkLookup.buff_attack_types.aoe
+				local network_manager = Managers.state.network
+				local attacker_unit_id = network_manager:unit_game_object_id(attacker_unit)
+				local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
+				local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
+
+				RPC.rpc_buff_on_attack(peer_id, attacker_unit_id, hit_unit_id, attack_type_id, is_critical, hit_zone_id, 1)
+				DamageUtils.buff_on_attack(attacker_unit, hit_unit, attack_type, is_critical, hit_zone_name, 1, send_to_server)
+			elseif attacker_player then
+				DamageUtils.buff_on_attack(attacker_unit, hit_unit, attack_type, is_critical, hit_zone_name, 1, send_to_server)
+			end
+
+			if not explosion_template.no_aggro then
+				AiUtils.aggro_unit_of_enemy(hit_unit, attacker_unit)
+			end
+		end
+	end
+
+	if not is_immune then
+		local blocking = false
+		local blackboard = BLACKBOARDS[hit_unit]
+
+		if blackboard and radius < hit_distance and blackboard.shield_user then
+			local stagger = blackboard.stagger
+			blocking = not stagger or stagger < 1
+		end
+
+		local hit_ragdoll_actor = nil
+
+		if not blocking and breed and breed.hitbox_ragdoll_translation then
+			hit_ragdoll_actor = breed.hitbox_ragdoll_translation.j_spine or breed.hitbox_ragdoll_translation.j_spine1
+		end
+
+		local damage_profile_name = (glancing_hit and explosion_data.damage_profile_glance) or explosion_data.damage_profile or "default"
+
+		if not do_damage or is_immune then
+			damage_profile_name = damage_profile_name .. "_no_damage"
+		end
+
+		local t = Managers.time:time("game")
+		local damage_profile = DamageProfileTemplates[damage_profile_name]
+		local target_index = nil
+		local boost_curve_multiplier = 0
+		local shield_break_procc = false
+		local is_critical_strike = false
+		local backstab_multiplier = 1
+
+		DamageUtils.add_damage_network_player(damage_profile, target_index, actual_power_level, hit_unit, attacker_unit, hit_zone_name, impact_position, hit_direction, damage_source, hit_ragdoll_actor, boost_curve_multiplier, is_critical_strike, backstab_multiplier)
+
+		local target_alive = AiUtils.unit_alive(hit_unit)
+
+		if target_alive then
+			DamageUtils.stagger_ai(t, damage_profile, target_index, actual_power_level, hit_unit, attacker_unit, hit_zone_name, hit_direction, boost_curve_multiplier, is_critical_strike, shield_blocked, damage_source)
+		elseif explosion_data.on_death_func then
+			explosion_data.on_death_func(hit_unit)
+		end
+
+		DamageUtils.apply_dot(damage_profile, target_index, full_power_level, hit_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike)
+
+		if push_speed and DamageUtils.is_player_unit(hit_unit) then
+			local status_extension = ScriptUnit.extension(hit_unit, "status_system")
+
+			if not status_extension:is_disabled() then
+				local locomotion_system = ScriptUnit.extension(hit_unit, "locomotion_system")
+
+				locomotion_system:add_external_velocity(hit_direction * push_speed)
+			end
+		end
+	end
 end
 
 AreaDamageSystem.rpc_area_damage = function (self, sender, go_id, position)

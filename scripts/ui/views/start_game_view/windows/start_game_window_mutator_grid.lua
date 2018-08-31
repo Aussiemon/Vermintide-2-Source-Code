@@ -25,23 +25,33 @@ local function item_sort_func(item_1, item_2)
 	local item_rarity_order = UISettings.item_rarity_order
 	local item_1_rarity_order = item_rarity_order[item_1_rarity]
 	local item_2_rarity_order = item_rarity_order[item_2_rarity]
+	local item_1_backend_id = item_1.backend_id
+	local item_2_backend_id = item_2.backend_id
+	local item_1_favorited = ItemHelper.is_favorite_backend_id(item_1_backend_id)
+	local item_2_favorited = ItemHelper.is_favorite_backend_id(item_2_backend_id)
 
-	if item_1_rarity_order == item_2_rarity_order then
-		local item_type_1 = Localize(item_data_1.item_type)
-		local item_type_2 = Localize(item_data_2.item_type)
+	if item_1_favorited == item_2_favorited then
+		if item_1_rarity_order == item_2_rarity_order then
+			local item_type_1 = Localize(item_data_1.item_type)
+			local item_type_2 = Localize(item_data_2.item_type)
 
-		if item_type_1 == item_type_2 then
-			local _, item_1_display_name = UIUtils.get_ui_information_from_item(item_1)
-			local _, item_2_display_name = UIUtils.get_ui_information_from_item(item_2)
-			local item_name_1 = Localize(item_1_display_name)
-			local item_name_2 = Localize(item_2_display_name)
+			if item_type_1 == item_type_2 then
+				local _, item_1_display_name = UIUtils.get_ui_information_from_item(item_1)
+				local _, item_2_display_name = UIUtils.get_ui_information_from_item(item_2)
+				local item_name_1 = Localize(item_1_display_name)
+				local item_name_2 = Localize(item_2_display_name)
 
-			return item_name_1 < item_name_2
+				return item_name_1 < item_name_2
+			else
+				return item_type_1 < item_type_2
+			end
 		else
-			return item_type_1 < item_type_2
+			return item_1_rarity_order < item_2_rarity_order
 		end
+	elseif item_1_favorited then
+		return true
 	else
-		return item_1_rarity_order < item_2_rarity_order
+		return false
 	end
 end
 

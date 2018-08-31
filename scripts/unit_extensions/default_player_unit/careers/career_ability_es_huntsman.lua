@@ -42,6 +42,12 @@ CareerAbilityESHuntsman.update = function (self, unit, input, dt, context, t)
 	end
 end
 
+CareerAbilityESHuntsman.stop = function (self, reason)
+	if self._is_priming then
+		self:_stop_priming()
+	end
+end
+
 CareerAbilityESHuntsman._ability_available = function (self)
 	local career_extension = self._career_extension
 	local status_extension = self._status_extension
@@ -64,6 +70,7 @@ CareerAbilityESHuntsman._run_ability = function (self)
 		"markus_huntsman_activated_ability_headshot_multiplier"
 	}
 	local local_buff_names = {
+		"markus_huntsman_activated_ability_increased_zoom",
 		"markus_huntsman_activated_ability_increased_reload_speed",
 		"markus_huntsman_activated_ability_decrease_move_speed",
 		"markus_huntsman_activated_ability_decrease_crouch_move_speed",
@@ -109,13 +116,38 @@ CareerAbilityESHuntsman._run_ability = function (self)
 	local ammo_extension = right_hand_ammo_extension or left_hand_ammo_extension
 
 	if ammo_extension then
-		if ammo_extension:total_remaining_ammo() < ammo_extension:clip_size() then
-			local extra_ammo_for_full_reload = ammo_extension:clip_size() - ammo_extension:ammo_count()
+		local clip_size = ammo_extension:clip_size()
+		local ammo_count = ammo_extension:ammo_count()
+		local reserve_ammo = ammo_extension:remaining_ammo()
+		local clip_empty = ammo_count == 0
+		local clip_full = ammo_count == clip_size
+		local instant_ammo = 0
 
-			ammo_extension:add_ammo_to_reserve(extra_ammo_for_full_reload)
+		if clip_empty then
+			instant_ammo = clip_size
+		elseif clip_full then
+			if reserve_ammo == 0 then
+				instant_ammo = clip_size
+			elseif reserve_ammo < clip_size then
+				instant_ammo = clip_size - reserve_ammo
+			end
+		elseif reserve_ammo == 0 then
+			instant_ammo = clip_size - ammo_count + clip_size
+		elseif reserve_ammo < clip_size then
+			instant_ammo = clip_size - ammo_count + clip_size - reserve_ammo
+		else
+			instant_ammo = clip_size - ammo_count
 		end
 
-		ammo_extension:instant_reload(false, "reload")
+		ammo_extension:add_ammo_to_reserve(instant_ammo)
+
+		if ammo_extension:can_reload() then
+			if clip_empty then
+				ammo_extension:start_reload(true)
+			else
+				ammo_extension:instant_reload(false, "reload")
+			end
+		end
 	end
 
 	if local_player then
@@ -126,6 +158,7 @@ CareerAbilityESHuntsman._run_ability = function (self)
 		first_person_extension:animation_event("shade_stealth_ability")
 		career_extension:set_state("markus_activate_huntsman")
 
+		MOOD_BLACKBOARD.skill_huntsman_surge = false
 		MOOD_BLACKBOARD.skill_huntsman_stealth = true
 	end
 

@@ -1,7 +1,5 @@
-require("scripts/settings/sound_ducking_settings")
 require("scripts/settings/music_settings")
 require("scripts/managers/music/music_player")
-require("foundation/scripts/util/sound_ducking/ducking_handler")
 
 local function dprint(...)
 	if script_data.debug_music then
@@ -99,6 +97,12 @@ MusicManager.update = function (self, dt, t)
 
 	for _, player in pairs(self._music_players) do
 		player:update(flags, self._game_object_id)
+	end
+end
+
+MusicManager.destroy = function (self)
+	if not GLOBAL_MUSIC_WORLD then
+		Application.release_world(self._world)
 	end
 end
 
@@ -276,21 +280,10 @@ MusicManager._update_boss_state = function (self, conflict_director)
 
 	if music_player and self._is_server then
 		local angry_boss = conflict_director:angry_boss()
-		local storm_vermin_patrol = false
-		local ai_groups = Managers.state.entity:system("ai_group_system").groups
-
-		for _, group in pairs(ai_groups) do
-			if group.template == "storm_vermin_formation_patrol" and group.state == "in_combat" then
-				storm_vermin_patrol = true
-			end
-		end
-
 		local state = nil
 
 		if angry_boss then
 			state = self:_get_combat_music_state(conflict_director)
-		elseif storm_vermin_patrol then
-			state = "storm_vermin_patrol"
 		else
 			state = "no_boss"
 		end
@@ -408,9 +401,10 @@ MusicManager.check_last_man_standing_music_state = function (self)
 				local dialogue_extension = ScriptUnit.has_extension(player_unit, "dialogue_system")
 
 				if dialogue_extension then
-					local player_profile = dialogue_extension.context.player_profile
+					local dialogue_input = ScriptUnit.extension_input(player_unit, "dialogue_system")
+					local event_data = FrameTable.alloc_table()
 
-					SurroundingAwareSystem.add_event(player_unit, "last_hero_standing", DialogueSettings.discover_enemy_attack_distance)
+					dialogue_input:trigger_dialogue_event("last_hero_standing", event_data)
 				end
 			end
 		else

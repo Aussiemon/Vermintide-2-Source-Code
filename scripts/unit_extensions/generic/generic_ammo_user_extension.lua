@@ -8,6 +8,7 @@ GenericAmmoUserExtension.init = function (self, extension_init_context, unit, ex
 	local ammo_percent = extension_init_data.ammo_percent or 1
 	local ammo_data = extension_init_data.ammo_data
 	self.reload_time = ammo_data.reload_time
+	self.override_reload_time = nil
 	self.single_clip = ammo_data.single_clip
 	self.max_ammo = ammo_data.max_ammo
 	self.start_ammo = math.floor(ammo_percent * self.max_ammo)
@@ -27,7 +28,8 @@ GenericAmmoUserExtension.init = function (self, extension_init_context, unit, ex
 	self.slot_name = extension_init_data.slot_name
 
 	if ScriptUnit.has_extension(self.owner_unit, "first_person_system") then
-		self.first_person_extension = ScriptUnit.extension(self.owner_unit, "first_person_system")
+		local first_person_extension = ScriptUnit.extension(self.owner_unit, "first_person_system")
+		self.first_person_extension = first_person_extension
 	end
 end
 
@@ -131,7 +133,8 @@ GenericAmmoUserExtension.update = function (self, unit, input, dt, context, t)
 			local num_missing = self.ammo_per_clip - self.current_ammo
 
 			if num_missing > 0 and self.available_ammo > 0 then
-				local reload_time = self.reload_time
+				local reload_time = self.override_reload_time or self.reload_time
+				self.override_reload_time = nil
 				local unmodded_reload_time = reload_time
 
 				if self.owner_buff_extension then
@@ -232,7 +235,7 @@ GenericAmmoUserExtension.add_ammo = function (self, amount)
 		floored_ammo = math.floor(math.clamp(self.current_ammo + amount, 0, self.max_ammo))
 		self.current_ammo = floored_ammo
 	elseif amount then
-		floored_ammo = math.floor(math.clamp(self.available_ammo + amount, 0, self.max_ammo))
+		floored_ammo = math.floor(math.clamp(self.available_ammo + amount, 0, self.max_ammo - (self.current_ammo - self.shots_fired)))
 		self.available_ammo = floored_ammo
 	elseif self.ammo_immediately_available then
 		self.current_ammo = self.max_ammo
@@ -245,8 +248,13 @@ GenericAmmoUserExtension.add_ammo_to_reserve = function (self, amount)
 	if self.ammo_immediately_available then
 		self.current_ammo = math.min(self.max_ammo, self.current_ammo + amount)
 	else
-		self.available_ammo = math.min(self.max_ammo - self.current_ammo, self.available_ammo + amount)
+		local ammo_count = self:ammo_count()
+		self.available_ammo = math.min(self.max_ammo - ammo_count, self.available_ammo + amount)
 	end
+
+	local buff_extension = self.owner_buff_extension
+
+	buff_extension:trigger_procs("on_gained_ammo_from_no_ammo")
 end
 
 GenericAmmoUserExtension.use_ammo = function (self, ammo_used)
@@ -294,10 +302,11 @@ GenericAmmoUserExtension.use_ammo = function (self, ammo_used)
 	assert(self:ammo_count() >= 0, "ammo went below 0")
 end
 
-GenericAmmoUserExtension.start_reload = function (self, play_reload_animation)
+GenericAmmoUserExtension.start_reload = function (self, play_reload_animation, override_reload_time)
 	assert(self:can_reload(), "Tried to start reloading without being able to reload")
 	assert(self.next_reload_time == nil, "next_reload_time is nil")
 
+	self.override_reload_time = override_reload_time
 	self.start_reloading = true
 	self.next_reload_time = 0
 	self.play_reload_animation = play_reload_animation

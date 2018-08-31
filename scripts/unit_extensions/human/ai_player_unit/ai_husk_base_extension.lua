@@ -12,18 +12,14 @@ AiHuskBaseExtension.init = function (self, extension_init_context, unit, extensi
 		DamageUtils.create_hit_zone_lookup(unit, breed)
 	end
 
-	if breed.combat_spawn_stinger then
-		Managers.music:music_trigger("combat_music", breed.combat_spawn_stinger)
-	end
-
-	if breed.special_spawn_stinger then
-		WwiseUtils.trigger_unit_event(extension_init_context.world, breed.special_spawn_stinger, unit, 0)
-	end
-
 	local run_on_husk_spawn = breed.run_on_husk_spawn
 
 	if run_on_husk_spawn then
 		run_on_husk_spawn(unit)
+	end
+
+	if breed.special_on_spawn_stinger then
+		WwiseUtils.trigger_unit_event(extension_init_context.world, breed.special_on_spawn_stinger, unit, 0)
 	end
 end
 
@@ -35,6 +31,15 @@ AiHuskBaseExtension.extensions_ready = function (self, world, unit)
 		local broadphase = ai_system.broadphase
 		self.broadphase_id = Broadphase.add(broadphase, unit, Unit.local_position(unit, 0), 1)
 		self.broadphase = broadphase
+		self._health_extension = health_extension
+	end
+end
+
+AiHuskBaseExtension.unfreeze = function (self)
+	local run_on_husk_spawn = self._breed.run_on_husk_spawn
+
+	if run_on_husk_spawn then
+		run_on_husk_spawn(self.unit)
 	end
 end
 
@@ -61,9 +66,7 @@ AiHuskBaseExtension.update = function (self, unit, input, dt, context)
 end
 
 AiHuskBaseExtension.destroy = function (self, unit, input)
-	if self.broadphase_id then
-		Broadphase.remove(self.broadphase, self.broadphase_id)
-	end
+	return
 end
 
 return

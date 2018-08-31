@@ -186,6 +186,10 @@ UnitFrameUI.update = function (self, dt, t)
 		dirty = true
 	end
 
+	if self:_update_voice_animation(dt, t, is_talking) then
+		dirty = true
+	end
+
 	if self:_update_bar_animations(dt, t) then
 		dirty = true
 	end
@@ -288,6 +292,7 @@ UnitFrameUI.reset = function (self)
 	self:set_talking(false)
 	self:set_icon_visibility(false)
 	self:set_connecting_status(true)
+	self:_reset_voice_animation()
 
 	local show_health_bar = true
 	local is_knocked_down = false
@@ -624,11 +629,30 @@ UnitFrameUI._update_portrait_opacity = function (self, is_dead, is_knocked_down,
 	end
 end
 
+UnitFrameUI._reset_voice_animation = function (self)
+	local widget = self:_widget_by_feature("default", "dynamic")
+	local style = widget.style
+	local talk_indicator_color = style.talk_indicator.color
+	local talk_indicator_glow_color = style.talk_indicator_glow.color
+	local talk_indicator_highlight_color = style.talk_indicator_highlight.color
+	local talk_indicator_highlight_glow_color = style.talk_indicator_highlight_glow.color
+	talk_indicator_color[1] = 0
+	talk_indicator_glow_color[1] = 0
+	talk_indicator_highlight_color[1] = 0
+	talk_indicator_highlight_glow_color[1] = 0
+
+	self:_set_widget_dirty(widget)
+end
+
 UnitFrameUI._update_voice_animation = function (self, dt, t, is_talking)
 	local widget = self:_widget_by_feature("default", "dynamic")
+	local style = widget.style
+	local talk_indicator_color = style.talk_indicator.color
+	local talk_indicator_glow_color = style.talk_indicator_glow.color
 	local highlight_style = widget.style.talk_indicator_highlight
 	local color = highlight_style.color
-	local size = highlight_style.size
+	local old_talk_indicator_alpha = talk_indicator_color[1]
+	local new_talk_indicator_alpha = old_talk_indicator_alpha + ((is_talking and 1) or -1) * 255 * dt
 	local old_alpha = color[1]
 	old_alpha = old_alpha + ((is_talking and 1) or -1) * 255 * dt
 
@@ -638,9 +662,13 @@ UnitFrameUI._update_voice_animation = function (self, dt, t, is_talking)
 	end
 
 	old_alpha = math.clamp(old_alpha, 0, 255)
+	new_talk_indicator_alpha = math.clamp(new_talk_indicator_alpha, 0, 255)
 
-	if old_alpha ~= color[1] then
+	if old_alpha ~= color[1] or old_talk_indicator_alpha ~= new_talk_indicator_alpha then
+		talk_indicator_color[1] = new_talk_indicator_alpha
+		talk_indicator_glow_color[1] = new_talk_indicator_alpha
 		color[1] = old_alpha
+		style.talk_indicator_highlight_glow.color[1] = old_alpha
 
 		self:_set_widget_dirty(widget)
 

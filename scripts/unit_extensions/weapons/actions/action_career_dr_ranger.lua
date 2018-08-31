@@ -43,17 +43,22 @@ ActionCareerDRRanger._create_smoke_screen = function (self)
 	end
 
 	local unit_spawner = Managers.state.unit_spawner
-	local unit_name = "units/gameplay/line_of_sight_blocker/hemisphere_los_blocker"
-	local unit_template_name = "network_synched_dummy_unit"
-	local unit, unit_go_id = unit_spawner:spawn_network_unit(unit_name, unit_template_name, nil, POSITION_LOOKUP[owner_unit], Quaternion.identity(), nil)
+	local unit_name = "units/hub_elements/empty"
+	local unit_template_name = "buff_aoe_unit"
 	local explosion_template_name = (has_extended_duration_talent and "bardin_ranger_activated_ability_upgraded_stagger") or "bardin_ranger_activated_ability_stagger"
 	local explosion_template = ExplosionTemplates[explosion_template_name]
-	local scale = explosion_template.explosion.radius
+	local extension_init_data = {
+		buff_area_system = {
+			removal_proc_function_name = "end_ranger_activated_ability",
+			life_time = (has_extended_duration_talent and 14) or 10,
+			radius = explosion_template.explosion.radius,
+			owner_player = self.owner_player
+		}
+	}
+	local unit, unit_go_id = unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, POSITION_LOOKUP[owner_unit], Quaternion.identity(), nil)
 
-	Unit.set_local_scale(unit, 0, Vector3(scale, scale, scale))
 	buff_extension:add_buff(buff_name, {
-		attacker_unit = owner_unit,
-		spawned_unit_go_id = unit_go_id
+		attacker_unit = owner_unit
 	})
 
 	local owner_player = self.owner_player
@@ -90,11 +95,7 @@ ActionCareerDRRanger.client_owner_post_update = function (self, dt, t, world, ca
 	local throw_time = self.action_time_started + current_action.throw_time
 
 	if t >= throw_time then
-		self:_create_smoke_screen()
-		self:_stagger_explosion()
-		self:_play_vo()
-
-		self.thrown = true
+		self:_throw()
 	end
 end
 
@@ -123,25 +124,28 @@ ActionCareerDRRanger._stagger_explosion = function (self)
 	else
 		network_transmit:send_rpc_server("rpc_create_explosion", owner_unit_go_id, false, position, rotation, explosion_template_id, scale, damage_source_id, 0)
 	end
+end
 
-	local duration = 10
-	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
+ActionCareerDRRanger._throw = function (self)
+	self:_create_smoke_screen()
+	self:_stagger_explosion()
+	self:_play_vo()
 
-	if talent_extension:has_talent("bardin_ranger_activated_ability_duration", "dwarf_ranger", true) then
-		duration = 14
-	end
-
-	self.career_extension:create_aoe(position, explosion_template.explosion.radius, duration, "end_ranger_activated_ability")
+	self.thrown = true
 end
 
 ActionCareerDRRanger.finish = function (self, reason)
 	ActionCareerDRRanger.super.finish(self, reason)
-	self.inventory_extension:wield_previous_weapon()
+
+	if not self.thrown then
+		self:_throw()
+	end
 
 	if reason ~= "action_complete" then
 		return
 	end
 
+	self.inventory_extension:wield_previous_slot()
 	self.career_extension:start_activated_ability_cooldown()
 end
 

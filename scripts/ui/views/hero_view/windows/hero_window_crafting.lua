@@ -13,8 +13,6 @@ local widget_definitions = definitions.widgets
 local category_settings = definitions.category_settings
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
-local generic_input_actions = definitions.generic_input_actions
-local input_actions = definitions.input_actions
 local DO_RELOAD = false
 local page_settings = {
 	{
@@ -123,11 +121,7 @@ HeroWindowCrafting.create_ui_elements = function (self, params, offset)
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
-	local input_service = Managers.input:get_service("hero_view")
-	local gui_layer = UILayer.default + 30
-	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 5, gui_layer, generic_input_actions.default)
 
-	self._menu_input_description:set_input_description(nil)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
@@ -151,14 +145,6 @@ HeroWindowCrafting.on_exit = function (self, params)
 		local params = self._page_params
 
 		self._active_page:on_exit(params)
-	end
-end
-
-HeroWindowCrafting.set_input_description = function (self, input_desc_name)
-	if not input_desc_name or input_actions[input_desc_name] then
-		self._menu_input_description:set_input_description(input_desc_name and input_actions[input_desc_name])
-	else
-		Application.warning("[HeroWindowCrafting:set_input_description] Could not set input desc: " .. tostring(input_desc_name))
 	end
 end
 
@@ -324,10 +310,6 @@ HeroWindowCrafting.draw = function (self, dt)
 	end
 
 	UIRenderer.end_pass(ui_top_renderer)
-
-	if gamepad_active then
-		self._menu_input_description:draw(ui_top_renderer, dt)
-	end
 end
 
 HeroWindowCrafting._play_sound = function (self, event)

@@ -49,8 +49,6 @@ end
 local new_connections = {}
 
 ConnectionHandler.update = function (self, dt)
-	table.clear(new_connections)
-
 	local num_new_connections = 0
 	local pending_connects = self.pending_connects
 	local current_connections = self.current_connections

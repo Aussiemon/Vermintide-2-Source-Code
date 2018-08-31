@@ -33,7 +33,7 @@ StartGameWindowDifficulty.on_enter = function (self, params, offset)
 	local difficulty_key = self.parent:get_difficulty_option() or Managers.state.difficulty:get_difficulty()
 
 	self:_update_selected_difficulty_option(difficulty_key)
-	self.parent.parent:set_input_description("select_difficulty")
+	self.parent:set_input_description("select_difficulty")
 end
 
 StartGameWindowDifficulty.create_ui_elements = function (self, params, offset)
@@ -97,7 +97,7 @@ StartGameWindowDifficulty.on_exit = function (self, params)
 
 	self.ui_animator = nil
 
-	self.parent.parent:set_input_description(nil)
+	self.parent:set_input_description(nil)
 
 	self._has_exited = true
 end
@@ -291,7 +291,7 @@ StartGameWindowDifficulty._update_difficulty_lock = function (self)
 			widgets_by_name.difficulty_is_locked_text.content.text = Localize("required_power_level_not_met_in_party")
 
 			if not self._has_exited then
-				self.parent.parent:set_input_description(nil)
+				self.parent:set_input_description(nil)
 			end
 		else
 			select_button.content.button_hotspot.disable_button = false
@@ -299,14 +299,14 @@ StartGameWindowDifficulty._update_difficulty_lock = function (self)
 			widgets_by_name.difficulty_is_locked_text.content.text = ""
 
 			if not self._has_exited then
-				self.parent.parent:set_input_description("select_difficulty")
+				self.parent:set_input_description("select_difficulty")
 			end
 		end
 	else
 		select_button.content.button_hotspot.disable_button = true
 
 		if not self._has_exited then
-			self.parent.parent:set_input_description(nil)
+			self.parent:set_input_description(nil)
 		end
 	end
 end

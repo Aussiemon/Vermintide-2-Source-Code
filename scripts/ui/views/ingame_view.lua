@@ -1,6 +1,8 @@
 require("scripts/ui/views/ingame_view_definitions")
+require("scripts/ui/views/ingame_view_layout_logic")
 require("scripts/ui/views/menu_input_description_ui")
 
+local layout_definitions = local_require("scripts/ui/views/ingame_view_menu_layout")
 local generic_input_actions = {
 	{
 		input_action = "confirm",
@@ -13,759 +15,6 @@ local generic_input_actions = {
 		description_text = "input_description_close"
 	}
 }
-local tobii_contest_url = "https://vermintide2beta.com/?utm_medium=referral&utm_campaign=vermintide2beta&utm_source=ingame#challenge"
-local leave_party_button_text = (PLATFORM == "xb1" and "leave_party_menu_button_name_xb1") or "leave_party_menu_button_name"
-local disband_party_button_text = (PLATFORM == "xb1" and "disband_party_menu_button_name_xb1") or "disband_party_menu_button_name"
-local menu_layouts = {}
-
-local function player_stuck_cb()
-	local level_key = Managers.state.game_mode:level_key()
-	local player = Managers.player:local_player()
-
-	if player and Unit.alive(player.player_unit) then
-		Managers.telemetry.events:player_stuck(player, level_key)
-	end
-end
-
-if PLATFORM == "ps4" then
-	menu_layouts = {
-		in_menu = {
-			alone = {
-				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					display_name = "profile_menu_button_name",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "character",
-					transition = "character_selection",
-					disable_when_matchmaking = true
-				},
-				{
-					display_name = "interact_open_inventory_chest",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "overview",
-					transition = "hero_view_force"
-				},
-				{
-					fade = true,
-					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
-				},
-				{
-					fade = false,
-					transition = "return_to_title_screen",
-					display_name = "quit_menu_button_name_xb1"
-				}
-			},
-			host = {
-				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					display_name = "profile_menu_button_name",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "character",
-					transition = "character_selection",
-					disable_when_matchmaking = true
-				},
-				{
-					display_name = "interact_open_inventory_chest",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "overview",
-					transition = "hero_view_force"
-				},
-				{
-					fade = true,
-					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
-				},
-				{
-					fade = false,
-					transition = "leave_group",
-					display_name = disband_party_button_text
-				},
-				{
-					fade = false,
-					transition = "return_to_title_screen",
-					display_name = "quit_menu_button_name_xb1"
-				}
-			},
-			client = {
-				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					display_name = "profile_menu_button_name",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "character",
-					transition = "character_selection",
-					disable_when_matchmaking = true
-				},
-				{
-					display_name = "interact_open_inventory_chest",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "overview",
-					transition = "hero_view_force"
-				},
-				{
-					fade = true,
-					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
-				},
-				{
-					fade = false,
-					transition = "leave_group",
-					display_name = leave_party_button_text
-				},
-				{
-					fade = false,
-					transition = "return_to_title_screen",
-					display_name = "quit_menu_button_name_xb1"
-				}
-			},
-			demo = {
-				{
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					transition = "restart_demo",
-					display_name = "menu_restart"
-				},
-				{
-					transition = "demo_invert_controls",
-					display_name = "menu_invert_controls"
-				},
-				{
-					transition = "return_to_demo_title_screen",
-					display_name = "menu_return_to_title_screen"
-				}
-			}
-		},
-		in_game = {
-			alone = {
-				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					fade = true,
-					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
-				},
-				{
-					fade = false,
-					transition = "leave_group",
-					display_name = "leave_game_menu_button_name"
-				},
-				{
-					fade = false,
-					transition = "return_to_title_screen",
-					display_name = "quit_menu_button_name_xb1"
-				}
-			},
-			host = {
-				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					fade = true,
-					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
-				},
-				{
-					fade = false,
-					transition = "leave_group",
-					display_name = disband_party_button_text
-				},
-				{
-					fade = false,
-					transition = "return_to_title_screen",
-					display_name = "quit_menu_button_name_xb1"
-				}
-			},
-			client = {
-				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					fade = true,
-					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
-				},
-				{
-					fade = false,
-					transition = "leave_group",
-					display_name = leave_party_button_text
-				},
-				{
-					fade = false,
-					transition = "return_to_title_screen",
-					display_name = "quit_menu_button_name_xb1"
-				}
-			},
-			tutorial = {
-				{
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					transition = "options_menu",
-					display_name = "options_menu_button_name"
-				},
-				{
-					transition = "return_to_title_screen",
-					display_name = "quit_menu_button_name_xb1"
-				}
-			},
-			demo = {
-				{
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					transition = "restart_demo",
-					display_name = "menu_restart"
-				},
-				{
-					transition = "demo_invert_controls",
-					display_name = "menu_invert_controls"
-				},
-				{
-					transition = "return_to_demo_title_screen",
-					display_name = "menu_return_to_title_screen"
-				}
-			}
-		}
-	}
-elseif PLATFORM == "xb1" then
-	menu_layouts = {
-		in_menu = {
-			alone = {
-				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					display_name = "profile_menu_button_name",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "character",
-					transition = "character_selection",
-					disable_when_matchmaking = true
-				},
-				{
-					display_name = "interact_open_inventory_chest",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "overview",
-					transition = "hero_view_force"
-				},
-				{
-					fade = true,
-					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
-				},
-				{
-					fade = false,
-					transition = "leave_group",
-					display_name = "leave_game_menu_button_name"
-				},
-				{
-					fade = false,
-					transition = "return_to_title_screen",
-					display_name = "quit_menu_button_name_xb1"
-				}
-			},
-			host = {
-				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					display_name = "profile_menu_button_name",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "character",
-					transition = "character_selection",
-					disable_when_matchmaking = true
-				},
-				{
-					display_name = "interact_open_inventory_chest",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "overview",
-					transition = "hero_view_force"
-				},
-				{
-					fade = true,
-					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
-				},
-				{
-					fade = false,
-					transition = "leave_group",
-					display_name = disband_party_button_text
-				},
-				{
-					fade = false,
-					transition = "return_to_title_screen",
-					display_name = "quit_menu_button_name_xb1"
-				}
-			},
-			client = {
-				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					display_name = "profile_menu_button_name",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "character",
-					transition = "character_selection",
-					disable_when_matchmaking = true
-				},
-				{
-					display_name = "interact_open_inventory_chest",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "overview",
-					transition = "hero_view_force"
-				},
-				{
-					fade = true,
-					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
-				},
-				{
-					fade = false,
-					transition = "leave_group",
-					display_name = leave_party_button_text
-				},
-				{
-					fade = false,
-					transition = "return_to_title_screen",
-					display_name = "quit_menu_button_name_xb1"
-				}
-			},
-			demo = {
-				{
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					transition = "restart_demo",
-					display_name = "menu_restart"
-				},
-				{
-					transition = "demo_invert_controls",
-					display_name = "menu_invert_controls"
-				},
-				{
-					transition = "return_to_demo_title_screen",
-					display_name = "menu_return_to_title_screen"
-				}
-			}
-		},
-		in_game = {
-			alone = {
-				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					fade = true,
-					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
-				},
-				{
-					fade = false,
-					transition = "leave_group",
-					display_name = "leave_game_menu_button_name"
-				},
-				{
-					fade = false,
-					transition = "return_to_title_screen",
-					display_name = "quit_menu_button_name_xb1"
-				}
-			},
-			host = {
-				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					fade = true,
-					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
-				},
-				{
-					fade = false,
-					transition = "leave_group",
-					display_name = disband_party_button_text
-				},
-				{
-					fade = false,
-					transition = "return_to_title_screen",
-					display_name = "quit_menu_button_name_xb1"
-				}
-			},
-			client = {
-				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					fade = true,
-					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
-				},
-				{
-					fade = false,
-					transition = "leave_group",
-					display_name = leave_party_button_text
-				},
-				{
-					fade = false,
-					transition = "return_to_title_screen",
-					display_name = "quit_menu_button_name_xb1"
-				}
-			},
-			tutorial = {
-				{
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					transition = "options_menu",
-					display_name = "options_menu_button_name"
-				},
-				{
-					transition = "return_to_title_screen",
-					display_name = "quit_menu_button_name_xb1"
-				}
-			},
-			demo = {
-				{
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					transition = "restart_demo",
-					display_name = "menu_restart"
-				},
-				{
-					transition = "demo_invert_controls",
-					display_name = "menu_invert_controls"
-				},
-				{
-					transition = "return_to_demo_title_screen",
-					display_name = "menu_return_to_title_screen"
-				}
-			}
-		}
-	}
-else
-	menu_layouts = {
-		in_menu = {
-			alone = {
-				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					display_name = "profile_menu_button_name",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "character",
-					transition = "character_selection",
-					disable_when_matchmaking = true
-				},
-				{
-					fade = true,
-					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
-				},
-				{
-					fade = false,
-					transition = "return_to_pc_menu",
-					display_name = "menu_return_to_title_screen"
-				},
-				{
-					fade = false,
-					transition = "quit_game",
-					display_name = "quit_menu_button_name"
-				}
-			},
-			host = {
-				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					display_name = "profile_menu_button_name",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "character",
-					transition = "character_selection",
-					disable_when_matchmaking = true
-				},
-				{
-					fade = true,
-					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
-				},
-				{
-					fade = false,
-					transition = "leave_group",
-					display_name = disband_party_button_text
-				},
-				{
-					fade = false,
-					transition = "return_to_pc_menu",
-					display_name = "menu_return_to_title_screen"
-				},
-				{
-					fade = false,
-					transition = "quit_game",
-					display_name = "quit_menu_button_name"
-				}
-			},
-			client = {
-				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					display_name = "profile_menu_button_name",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "character",
-					transition = "character_selection",
-					disable_when_matchmaking = true
-				},
-				{
-					fade = true,
-					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
-				},
-				{
-					fade = false,
-					transition = "leave_group",
-					display_name = leave_party_button_text
-				},
-				{
-					fade = false,
-					transition = "return_to_pc_menu",
-					display_name = "menu_return_to_title_screen"
-				},
-				{
-					fade = false,
-					transition = "quit_game",
-					display_name = "quit_menu_button_name"
-				}
-			},
-			demo = {
-				{
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					transition = "restart_demo",
-					display_name = "menu_restart"
-				},
-				{
-					transition = "demo_invert_controls",
-					display_name = "menu_invert_controls"
-				},
-				{
-					transition = "return_to_demo_title_screen",
-					display_name = "menu_return_to_title_screen"
-				}
-			}
-		},
-		in_game = {
-			alone = {
-				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					fade = true,
-					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
-				},
-				{
-					fade = false,
-					transition = "leave_group",
-					display_name = "leave_game_menu_button_name"
-				},
-				{
-					fade = false,
-					transition = "quit_game",
-					display_name = "quit_menu_button_name"
-				}
-			},
-			host = {
-				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					fade = true,
-					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
-				},
-				{
-					fade = false,
-					transition = "leave_group",
-					display_name = disband_party_button_text
-				},
-				{
-					fade = false,
-					transition = "quit_game",
-					display_name = "quit_menu_button_name"
-				}
-			},
-			client = {
-				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					fade = true,
-					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
-				},
-				{
-					fade = false,
-					transition = "leave_group",
-					display_name = leave_party_button_text
-				},
-				{
-					fade = false,
-					transition = "quit_game",
-					display_name = "quit_menu_button_name"
-				}
-			},
-			tutorial = {
-				{
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					transition = "options_menu",
-					display_name = "options_menu_button_name"
-				},
-				{
-					transition = "quit_game",
-					display_name = "quit_menu_button_name_xb1"
-				}
-			},
-			demo = {
-				{
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					transition = "restart_demo",
-					display_name = "menu_restart"
-				},
-				{
-					transition = "demo_invert_controls",
-					display_name = "menu_invert_controls"
-				},
-				{
-					transition = "return_to_demo_title_screen",
-					display_name = "menu_return_to_title_screen"
-				}
-			}
-		}
-	}
-end
-
-if GameSettingsDevelopment.use_global_chat and PLATFORM == "win32" then
-	table.insert(menu_layouts.in_menu.host, 4, {
-		fade = false,
-		transition = "chat_view",
-		display_name = "chat_menu_button_name"
-	})
-	table.insert(menu_layouts.in_menu.client, 4, {
-		fade = false,
-		transition = "chat_view",
-		display_name = "chat_menu_button_name"
-	})
-	table.insert(menu_layouts.in_menu.alone, 4, {
-		fade = false,
-		transition = "chat_view",
-		display_name = "chat_menu_button_name"
-	})
-	table.insert(menu_layouts.in_game.host, 4, {
-		fade = false,
-		transition = "chat_view",
-		display_name = "chat_menu_button_name"
-	})
-	table.insert(menu_layouts.in_game.client, 4, {
-		fade = false,
-		transition = "chat_view",
-		display_name = "chat_menu_button_name"
-	})
-	table.insert(menu_layouts.in_game.alone, 4, {
-		fade = false,
-		transition = "chat_view",
-		display_name = "chat_menu_button_name"
-	})
-end
-
 IngameView = class(IngameView)
 
 IngameView.init = function (self, ingame_ui_context)
@@ -780,7 +29,7 @@ IngameView.init = function (self, ingame_ui_context)
 	self.network_lobby = ingame_ui_context.network_lobby
 	local is_in_inn = ingame_ui_context.is_in_inn
 	self.is_server = ingame_ui_context.is_server
-	self.layout_list = (is_in_inn and menu_layouts.in_menu) or menu_layouts.in_game
+	self.layout_logic = IngameViewLayoutLogic:new(ingame_ui_context, layout_definitions.menu_layouts, layout_definitions.full_access_layout)
 	self.menu_definition = IngameViewDefinitions
 
 	self:create_ui_elements()
@@ -811,8 +60,6 @@ IngameView.on_enter = function (self, menu_to_enter)
 	self.active_menu = menu_to_enter
 	self.controller_cooldown = 0.2
 
-	self:update_menu_options()
-	self:update_menu_options_enabled_states()
 	self.input_manager:block_device_except_service("ingame_menu", "keyboard", 1)
 	self.input_manager:block_device_except_service("ingame_menu", "mouse", 1)
 	self.input_manager:block_device_except_service("ingame_menu", "gamepad", 1)
@@ -827,6 +74,8 @@ IngameView.on_enter = function (self, menu_to_enter)
 		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", 0.75)
 		ShadingEnvironment.apply(shading_env)
 	end
+
+	Managers.state.event:trigger("ingame_menu_opened", "interacting")
 end
 
 IngameView.on_exit = function (self)
@@ -888,179 +137,32 @@ IngameView.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(self.menu_definition.scenegraph_definition)
 end
 
-IngameView.update_menu_options = function (self)
-	if script_data.pause_menu_full_access then
-		if not self.pause_menu_full_access then
-			self.pause_menu_full_access = true
-			local full_access_layout = {
-				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
-				},
-				{
-					display_name = "profile_menu_button_name",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "character",
-					transition = "character_selection",
-					disable_when_matchmaking = false
-				},
-				{
-					display_name = "inventory_menu_button_name",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "overview",
-					transition = "hero_view"
-				},
-				{
-					fade = false,
-					transition = "keep_decoration_view",
-					display_name = "keep_decoration_view",
-					requires_player_unit = true
-				},
-				{
-					fade = false,
-					transition = "start_menu_view",
-					display_name = "start_menu_view",
-					requires_player_unit = true
-				},
-				{
-					fade = true,
-					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
-				},
-				{
-					fade = false,
-					transition = "leave_group",
-					display_name = "leave_game_menu_button_name"
-				},
-				{
-					fade = false,
-					transition = "quit_game",
-					display_name = "quit_menu_button_name"
-				},
-				[#full_access_layout + 1] = {
-					display_name = "achievements",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "achievements",
-					transition = "hero_view"
-				}
-			}
+IngameView._update_presentation = function (self)
+	local layout_logic = self.layout_logic
+	local layout_data = layout_logic:layout_data()
+	local num_entries = #layout_data
 
-			self:setup_button_layout(full_access_layout)
+	if num_entries ~= self._num_entries then
+		local controller_selection_index = self.controller_selection_index
+
+		if controller_selection_index and num_entries < controller_selection_index then
+			self:controller_select_button_index(num_entries, true)
 		end
-	else
-		self.pause_menu_full_access = nil
-		local num_human_players = Managers.player:num_human_players()
 
-		if self.num_players ~= num_human_players then
-			self.num_players = num_human_players
-			local layout_list = self.layout_list
-			local new_menu_layout = nil
-			local level_key = Managers.state.game_mode:level_key()
+		self:set_background_height(num_entries)
 
-			if script_data.honduras_demo then
-				new_menu_layout = layout_list.demo
-			elseif level_key == "tutorial" then
-				new_menu_layout = layout_list.tutorial
-			elseif num_human_players == 1 then
-				new_menu_layout = layout_list.alone
-			elseif self.is_server then
-				new_menu_layout = layout_list.host
-			else
-				new_menu_layout = layout_list.client
-			end
-
-			self:setup_button_layout(new_menu_layout)
-		end
+		self._num_entries = num_entries
 	end
-end
-
-IngameView.update_menu_options_enabled_states = function (self)
-	local active_button_data = self.active_button_data
-
-	if active_button_data then
-		local player_ready_for_game = self.ingame_ui:is_local_player_ready_for_game()
-		local is_game_matchmaking = Managers.matchmaking:is_game_matchmaking()
-		local is_server = self.is_server
-		local player_manager = Managers.player
-		local local_player = player_manager:local_player()
-		local has_player = local_player and local_player.player_unit ~= nil
-
-		for index, menu_option in ipairs(active_button_data) do
-			local transition = menu_option.transition
-			local disable_when_matchmaking = menu_option.disable_when_matchmaking
-			local disable_when_matchmaking_ready = menu_option.disable_when_matchmaking_ready
-			local requires_player_unit = menu_option.requires_player_unit
-			local transition_not_allowed = (player_ready_for_game and disable_when_matchmaking_ready) or (is_game_matchmaking and disable_when_matchmaking) or (requires_player_unit and not has_player)
-			local widget = menu_option.widget
-			local widget_button_hotspot = widget.content.button_hotspot
-
-			if transition_not_allowed and not widget_button_hotspot.disable_button then
-				widget_button_hotspot.disable_button = true
-				widget_button_hotspot.on_release = nil
-			elseif not transition_not_allowed and widget_button_hotspot.disable_button then
-				widget_button_hotspot.disable_button = false
-			end
-		end
-	end
-end
-
-IngameView.setup_button_layout = function (self, layout_data)
-	local active_button_data = self.active_button_data
-
-	if active_button_data then
-		table.clear(active_button_data)
-	else
-		self.active_button_data = {}
-		active_button_data = self.active_button_data
-	end
-
-	local stored_buttons = self.stored_buttons
-
-	for index, data in ipairs(layout_data) do
-		local button_widget = stored_buttons[index]
-		local display_name = data.display_name
-		local url = data.url
-		local callback = data.callback
-		local transition = data.transition
-		local transition_state = data.transition_state
-		local transition_sub_state = data.transition_sub_state
-		local disable_when_matchmaking = data.disable_when_matchmaking
-		local disable_when_matchmaking_ready = data.disable_when_matchmaking_ready
-		local requires_player_unit = data.requires_player_unit
-		local fade = data.fade
-		button_widget.content.title_text = display_name
-		active_button_data[index] = {
-			widget = button_widget,
-			url = url,
-			callback = callback,
-			transition = transition,
-			transition_state = transition_state,
-			transition_sub_state = transition_sub_state,
-			disable_when_matchmaking = disable_when_matchmaking,
-			disable_when_matchmaking_ready = disable_when_matchmaking_ready,
-			requires_player_unit = requires_player_unit,
-			fade = fade
-		}
-	end
-
-	local controller_selection_index = self.controller_selection_index
-
-	if controller_selection_index and controller_selection_index > #active_button_data then
-		self:controller_select_button_index(#active_button_data, true)
-	end
-
-	self:set_background_height(#active_button_data)
 end
 
 IngameView.destroy = function (self)
 	self.menu_input_description:destroy()
 
 	self.menu_input_description = nil
+
+	self.layout_logic:destroy()
+
+	self.layout_logic = nil
 end
 
 IngameView.set_background_height = function (self, num_buttons)
@@ -1080,8 +182,10 @@ IngameView.set_background_height = function (self, num_buttons)
 end
 
 IngameView.update = function (self, dt)
-	self:update_menu_options()
-	self:update_menu_options_enabled_states()
+	local layout_logic = self.layout_logic
+
+	layout_logic:update(dt)
+	self:_update_presentation()
 
 	if self._reinit_menu_input_description_next_update then
 		self._reinit_menu_input_description_next_update = nil
@@ -1094,7 +198,9 @@ IngameView.update = function (self, dt)
 	local input_service = input_manager:get_service("ingame_menu")
 	local gamepad_active = input_manager:is_device_active("gamepad")
 
-	self._friends_component_ui:update(dt, input_service)
+	if Managers.account:is_online() then
+		self._friends_component_ui:update(dt, input_service)
+	end
 
 	local ui_animations = self.ui_animations
 
@@ -1116,12 +222,18 @@ IngameView.update = function (self, dt)
 		UIRenderer.draw_widget(ui_top_renderer, self.console_cursor_widget)
 	end
 
-	local active_button_data = self.active_button_data
+	local layout_data = layout_logic:layout_data()
 	local ingame_ui = self.ingame_ui
 
-	if active_button_data then
-		for index, data in ipairs(active_button_data) do
-			local widget = data.widget
+	if layout_data then
+		local stored_buttons = self.stored_buttons
+
+		for index, data in ipairs(layout_data) do
+			local widget = stored_buttons[index]
+			local content = widget.content
+			local button_hotspot = content.button_hotspot
+			button_hotspot.disable_button = data.disabled
+			content.title_text = data.display_name
 
 			UIWidgetUtils.animate_default_button(widget, dt)
 			UIRenderer.draw_widget(ui_top_renderer, widget)
@@ -1138,29 +250,7 @@ IngameView.update = function (self, dt)
 					widget.content.button_hotspot.on_release = nil
 
 					self:play_sound("Play_hud_select")
-
-					local url = data.url
-
-					if url then
-						Application.open_url_in_browser(url)
-					else
-						local callback = data.callback
-
-						if callback then
-							callback()
-						end
-
-						local transition = data.transition
-						local transition_state = data.transition_state
-						local transition_sub_state = data.transition_sub_state
-						local fade = data.fade
-
-						if fade then
-							ingame_ui:transition_with_fade(transition, transition_state, transition_sub_state)
-						else
-							ingame_ui:handle_transition(transition, transition_state, transition_sub_state)
-						end
-					end
+					layout_logic:execute_layout_option(index)
 
 					self._reinit_menu_input_description_next_update = true
 					self.controller_cooldown = GamepadSettings.menu_cooldown
@@ -1192,10 +282,13 @@ end
 
 IngameView.controller_select_button_index = function (self, index, ignore_sound)
 	local selection_accepted = false
-	local active_button_data = self.active_button_data
-	local new_selection_data = active_button_data[index]
+	local layout_logic = self.layout_logic
+	local stored_buttons = self.stored_buttons
+	local layout_data = layout_logic:layout_data()
+	local widget = stored_buttons[index]
+	local new_selection_data = layout_data[index]
 
-	if not new_selection_data or new_selection_data.widget.content.button_hotspot.disable_button then
+	if not new_selection_data or widget.content.button_hotspot.disable_button then
 		return selection_accepted
 	end
 
@@ -1203,13 +296,13 @@ IngameView.controller_select_button_index = function (self, index, ignore_sound)
 	local gamepad_selection_default_position = self.menu_definition.scenegraph_definition[gamepad_selection_scenegraph_id].position
 	local gamepad_selection_current_position = self.ui_scenegraph[gamepad_selection_scenegraph_id].local_position
 
-	for i, data in ipairs(active_button_data) do
-		local widget = data.widget
+	for i, data in ipairs(layout_data) do
+		local button_widget = stored_buttons[i]
 		local is_selected = i == index
-		widget.content.button_hotspot.is_selected = is_selected
+		button_widget.content.button_hotspot.is_selected = is_selected
 
 		if is_selected then
-			local widget_scenegraph_id = widget.scenegraph_id
+			local widget_scenegraph_id = button_widget.scenegraph_id
 			local widget_current_position = self.ui_scenegraph[widget_scenegraph_id].local_position
 			gamepad_selection_current_position[2] = gamepad_selection_default_position[2] - i * 84
 		end
@@ -1226,16 +319,20 @@ IngameView.controller_select_button_index = function (self, index, ignore_sound)
 end
 
 IngameView.clear_controller_selection = function (self)
-	local active_button_data = self.active_button_data
+	local layout_logic = self.layout_logic
+	local stored_buttons = self.stored_buttons
+	local layout_data = layout_logic:layout_data()
 
-	for i, data in ipairs(active_button_data) do
-		local widget = data.widget
+	for i, data in ipairs(layout_data) do
+		local widget = stored_buttons[i]
 		widget.content.button_hotspot.is_selected = false
 	end
 end
 
 IngameView.update_controller_input = function (self, input_service, dt)
-	local num_buttons = #self.active_button_data
+	local layout_logic = self.layout_logic
+	local layout_data = layout_logic:layout_data()
+	local num_buttons = #layout_data
 
 	if self.controller_cooldown > 0 then
 		self.controller_cooldown = self.controller_cooldown - dt

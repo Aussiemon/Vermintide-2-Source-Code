@@ -150,7 +150,13 @@ InputFilters.scale_vector3_xy_accelerated_x = {
 		local elapsed_time = time - filter_data.input_x_t
 		local turnaround_elapsed_time = time - filter_data.input_x_turnaround_t
 
-		if filter_data.turnaround_threshold and turnaround_elapsed_time >= filter_data.acceleration_delay + filter_data.turnaround_delay and filter_data.turnaround_threshold <= math.abs(val.x) then
+		if math.abs(val.x) > 0.75 then
+			val.y = val.y * (1 - (math.abs(val.x) - 0.75) / 0.25)
+		end
+
+		if not Application.user_setting("enable_gamepad_acceleration") then
+			x = val.x * filter_data.min_multiplier_x * Managers.time._mean_dt
+		elseif filter_data.turnaround_threshold and turnaround_elapsed_time >= filter_data.acceleration_delay + filter_data.turnaround_delay and filter_data.turnaround_threshold <= math.abs(val.x) then
 			local value = math.clamp(elapsed_time - (filter_data.acceleration_delay + filter_data.turnaround_delay) / filter_data.turnaround_time_ref, 0, 1)
 			x = val.x * math.lerp(filter_data.min_multiplier_x, filter_data.turnaround_multiplier_x, math.pow(value, filter_data.turnaround_power_of)) * Managers.time._mean_dt
 		elseif filter_data.acceleration_delay <= elapsed_time then
@@ -160,7 +166,32 @@ InputFilters.scale_vector3_xy_accelerated_x = {
 			x = val.x * filter_data.min_multiplier_x * Managers.time._mean_dt
 		end
 
-		local y = val.y * filter_data.multiplier_y * Managers.time._mean_dt
+		local multiplier_y = filter_data.multiplier_y
+
+		if val.y ~= 0 and filter_data.multiplier_return_y and filter_data.angle_to_slow_down_inside then
+			local player = Managers.player:local_player()
+			local viewport_name = player.viewport_name
+			local world = Managers.world:world("level_world")
+			local viewport = ScriptWorld.viewport(world, viewport_name)
+			local camera = ScriptViewport.camera(viewport)
+			local camera_rotation = ScriptCamera.rotation(camera)
+			local camera_forward = Quaternion.forward(camera_rotation)
+			local camera_horizon = Vector3.flat(camera_forward)
+			local dot = Vector3.dot(camera_forward, camera_horizon)
+			local acos = math.acos(math.clamp(dot, -1, 1))
+			local atan2 = math.atan2(camera_forward.z - camera_horizon.z, camera_forward.y - camera_horizon.y)
+			local above_horizont = atan2 > 0
+			local moving_down = val.y < 0
+			local moving_towards_horizont = (above_horizont and moving_down) or (not above_horizont and not moving_down)
+
+			if moving_towards_horizont then
+				local slow_down_angle = filter_data.angle_to_slow_down_inside
+				local lerp_value = math.clamp(acos / slow_down_angle, 0, 1)
+				multiplier_y = math.lerp(filter_data.multiplier_y, filter_data.multiplier_return_y, lerp_value)
+			end
+		end
+
+		local y = val.y * multiplier_y * Managers.time._mean_dt
 		local z = val.z
 
 		return Vector3(x, y, z)
@@ -215,7 +246,9 @@ InputFilters.scale_vector3_xy_accelerated_x_inverted = {
 		local elapsed_time = time - filter_data.input_x_t
 		local turnaround_elapsed_time = time - filter_data.input_x_turnaround_t
 
-		if filter_data.turnaround_threshold and turnaround_elapsed_time >= filter_data.acceleration_delay + filter_data.turnaround_delay and filter_data.turnaround_threshold <= math.abs(val.x) then
+		if not Application.user_setting("enable_gamepad_acceleration") then
+			x = val.x * filter_data.min_multiplier_x * Managers.time._mean_dt
+		elseif filter_data.turnaround_threshold and turnaround_elapsed_time >= filter_data.acceleration_delay + filter_data.turnaround_delay and filter_data.turnaround_threshold <= math.abs(val.x) then
 			local value = math.clamp(elapsed_time - (filter_data.acceleration_delay + filter_data.turnaround_delay) / filter_data.turnaround_time_ref, 0, 1)
 			x = val.x * math.lerp(filter_data.min_multiplier_x, filter_data.turnaround_multiplier_x, math.pow(value, filter_data.turnaround_power_of)) * Managers.time._mean_dt
 		elseif filter_data.acceleration_delay <= elapsed_time then
@@ -285,6 +318,12 @@ InputFilters.gamepad_cursor = {
 	end,
 	update = function (filter_data, input_service)
 		if filter_data.frame_index < GLOBAL_FRAME_INDEX and not input_service:is_blocked() then
+			local input_manager = Managers.input
+
+			if not input_manager:gamepad_cursor_active() then
+				return nil
+			end
+
 			local val = Vector3(Vector3.to_elements(input_service:get(filter_data.input_mapping)))
 
 			input_threshold(val, filter_data.input_threshold or 0)
@@ -292,7 +331,7 @@ InputFilters.gamepad_cursor = {
 			local mean_dt = Managers.time._mean_dt
 			local time = Application.time_since_launch()
 			local x, y = nil
-			local is_hovering = Managers.input:is_hovering()
+			local is_hovering = input_manager:is_hovering()
 
 			if is_hovering then
 				x = val.x * filter_data.multiplier_x * mean_dt * filter_data.hover_multiplier
@@ -317,7 +356,7 @@ InputFilters.gamepad_cursor = {
 				y = val.y * speed_y * mean_dt
 			end
 
-			local x_pos, y_pos = Managers.input:get_gamepad_cursor_pos()
+			local x_pos, y_pos = input_manager:get_gamepad_cursor_pos()
 			filter_data.pos_x = x_pos or filter_data.pos_x
 			filter_data.pos_y = y_pos or filter_data.pos_y
 			local res_x, res_y = UIResolution()
@@ -387,6 +426,60 @@ InputFilters.move_filter = {
 			else
 				filter_data.axis_pressed = false
 			end
+		end
+
+		return false
+	end
+}
+InputFilters.move_filter_continuous = {
+	init = function (filter_data)
+		local new_filter_data = table.clone(filter_data)
+		local axis = Vector3(unpack(filter_data.axis))
+		axis = Vector3.normalize(axis)
+		new_filter_data.axis = Vector3Box(axis)
+		new_filter_data.cooldown = 0
+		new_filter_data.cooldown_speed_multiplier = 1
+
+		return new_filter_data
+	end,
+	update = function (filter_data, input_service)
+		local dt = Managers.time:mean_dt()
+		filter_data.cooldown = math.max(filter_data.cooldown - dt, 0)
+		local disabled = filter_data.cooldown > 0
+		local input_mapping_found = false
+
+		for _, input_mapping in pairs(filter_data.input_mappings) do
+			if input_service:get(input_mapping) then
+				input_mapping_found = true
+			end
+		end
+
+		local axis_mapping_found = false
+		local axis = filter_data.axis:unbox()
+
+		for _, axis_mapping in pairs(filter_data.axis_mappings) do
+			local axis_state = input_service:get(axis_mapping)
+
+			if axis_state and filter_data.threshold <= Vector3.dot(axis_state, axis) then
+				axis_mapping_found = true
+			end
+		end
+
+		if disabled and (input_mapping_found or axis_mapping_found) then
+			local min_multiplier = GamepadSettings.menu_min_speed_multiplier
+			local menu_speed_multiplier_decrease = GamepadSettings.menu_speed_multiplier_decrease
+			filter_data.cooldown_speed_multiplier = math.max(filter_data.cooldown_speed_multiplier - menu_speed_multiplier_decrease * dt, min_multiplier)
+		end
+
+		if not input_mapping_found and not axis_mapping_found then
+			filter_data.cooldown_speed_multiplier = 1
+			filter_data.cooldown = 0
+		end
+
+		if not disabled and (input_mapping_found or axis_mapping_found) then
+			filter_data.cooldown = GamepadSettings.menu_cooldown * filter_data.cooldown_speed_multiplier
+
+			return true
 		end
 
 		return false
@@ -538,6 +631,18 @@ InputFilters.axis_check = {
 		end
 
 		return axis_requirement <= Vector3.dot(filter_data.axis:unbox(), input)
+	end
+}
+InputFilters.not = {
+	init = function (filter_data)
+		return table.clone(filter_data)
+	end,
+	update = function (filter_data, input_service)
+		for _, input_mapping in pairs(filter_data.input_mappings) do
+			if not input_service:get(input_mapping) then
+				return true
+			end
+		end
 	end
 }
 

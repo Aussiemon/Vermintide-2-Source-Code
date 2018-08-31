@@ -254,37 +254,10 @@ local breed_data = {
 		poison_well = true,
 		wizard_destructible = true
 	},
-	max_health = {
-		5,
-		5,
-		7.5,
-		10,
-		15
-	},
-	diff_stagger_resist = {
-		2.1,
-		2.1,
-		2.8,
-		3.5,
-		3.5
-	},
-	stagger_duration = {
-		1,
-		2,
-		3.25,
-		1.5,
-		2,
-		5,
-		1,
-		1
-	},
-	hit_mass_counts = {
-		1.5,
-		1.5,
-		2.25,
-		3,
-		3
-	},
+	max_health = BreedTweaks.max_health.clan_rat,
+	diff_stagger_resist = BreedTweaks.diff_stagger_resist.clan_rat,
+	stagger_duration = BreedTweaks.stagger_duration.clan_rat,
+	hit_mass_counts = BreedTweaks.hit_mass_counts.clan_rat,
 	num_push_anims = {
 		push_backward = 2
 	},
@@ -308,13 +281,7 @@ local breed_data = {
 		40,
 		40
 	},
-	stagger_duration_difficulty_mod = {
-		harder = 0.75,
-		hard = 0.9,
-		normal = 1,
-		hardest = 0.6,
-		easy = 1
-	},
+	stagger_duration_difficulty_mod = BreedTweaks.stagger_duration_difficulty_mod.default,
 	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed, direction)
 		if blackboard.stagger_type == 3 then
 			if stagger == 3 and blackboard.heavy_stagger_immune_time then

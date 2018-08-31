@@ -64,7 +64,7 @@ PowerLevelTemplates = {
 		attack_template = "basic_sweep_push",
 		power_distribution = {
 			attack = 0,
-			impact = 0.125
+			impact = 0.15
 		}
 	},
 	armor_modifier_push_H = {
@@ -89,6 +89,54 @@ PowerLevelTemplates = {
 		power_distribution = {
 			attack = 0,
 			impact = 0.4
+		}
+	},
+	armor_modifier_push_slayer_leap = {
+		attack = {
+			0,
+			0,
+			0,
+			0,
+			0
+		},
+		impact = {
+			1,
+			0.5,
+			0.5,
+			1,
+			0.5
+		}
+	},
+	target_push_slayer_leap = {
+		boost_curve_type = "default",
+		attack_template = "basic_sweep_push",
+		power_distribution = {
+			attack = 0,
+			impact = 0.4
+		}
+	},
+	armor_modifier_push_slayer_leap_impact = {
+		attack = {
+			0,
+			0,
+			0,
+			0,
+			0
+		},
+		impact = {
+			1,
+			0.5,
+			0.5,
+			1,
+			0.5
+		}
+	},
+	target_push_slayer_leap_impact = {
+		boost_curve_type = "default",
+		attack_template = "basic_sweep_push",
+		power_distribution = {
+			attack = 0,
+			impact = 0.8
 		}
 	},
 	armor_modifier_push_Ability = {
@@ -186,7 +234,7 @@ PowerLevelTemplates = {
 	armor_modifier_slam_tank_M = {
 		attack = {
 			1,
-			0.5,
+			0,
 			1,
 			1,
 			0.75
@@ -197,6 +245,38 @@ PowerLevelTemplates = {
 			0.5,
 			1,
 			0.75
+		}
+	},
+	armor_modifier_slam_tank_default_target_M = {
+		attack = {
+			1,
+			0.5,
+			1,
+			1,
+			0.5
+		},
+		impact = {
+			1,
+			1,
+			1,
+			1,
+			1
+		}
+	},
+	armor_modifier_slam_tank_default_target_M = {
+		attack = {
+			1,
+			0.5,
+			1,
+			1,
+			0.5
+		},
+		impact = {
+			1,
+			1,
+			1,
+			1,
+			1
 		}
 	},
 	target_settings_slam_tank_M = {
@@ -214,6 +294,22 @@ PowerLevelTemplates = {
 		power_distribution = {
 			attack = 0,
 			impact = 0.125
+		}
+	},
+	default_target_settings_slam_tank_M = {
+		boost_curve_type = "tank_curve",
+		attack_template = "heavy_blunt_fencer",
+		power_distribution = {
+			attack = 0.25,
+			impact = 0.35
+		}
+	},
+	default_target_settings_slam_tank_M = {
+		boost_curve_type = "tank_curve",
+		attack_template = "heavy_blunt_fencer",
+		power_distribution = {
+			attack = 0.25,
+			impact = 0.35
 		}
 	},
 	target_settings_dagger_burning_slam_tank_M = {
@@ -239,7 +335,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1.5,
+			2.5,
 			1,
 			1
 		},
@@ -259,7 +355,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0,
-			1.5,
+			2,
 			1,
 			1
 		},
@@ -304,7 +400,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1.5,
+			2.5,
 			1,
 			1
 		},
@@ -324,7 +420,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0,
-			1,
+			2,
 			1,
 			1
 		},
@@ -340,7 +436,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.25,
-			1,
+			2,
 			1,
 			1
 		},
@@ -384,7 +480,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1,
+			2,
 			1,
 			1
 		},
@@ -404,7 +500,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0,
-			1,
+			1.5,
 			1,
 			1
 		},
@@ -439,7 +535,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1.5,
+			2,
 			1,
 			0.75
 		},
@@ -597,7 +693,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1.5,
+			2.5,
 			1,
 			0.75
 		},
@@ -988,7 +1084,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.75,
-			1.5,
+			2.75,
 			1,
 			1
 		},
@@ -1004,7 +1100,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.3,
-			1.5,
+			2.75,
 			1,
 			1
 		},
@@ -1020,7 +1116,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.75,
-			1.5,
+			2.5,
 			1,
 			0.75
 		},
@@ -1036,7 +1132,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.3,
-			1.5,
+			2.5,
 			1,
 			0.75
 		},
@@ -1102,7 +1198,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.8,
-			1.5,
+			2.5,
 			1,
 			1
 		},
@@ -1118,7 +1214,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.8,
-			1.5,
+			2,
 			1,
 			0.75
 		},
@@ -1207,6 +1303,40 @@ PowerLevelTemplates = {
 			0.75
 		}
 	},
+	critical_strike_blunt_smiter_2h_hammer_H = {
+		attack_armor_power_modifer = {
+			1,
+			0.8,
+			2.5,
+			1,
+			1,
+			1
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1
+		}
+	},
+	armor_modifier_blunt_smiter_2h_hammer_H = {
+		attack = {
+			1,
+			0.8,
+			2,
+			1,
+			0.75,
+			1
+		},
+		impact = {
+			1,
+			0.8,
+			1,
+			1,
+			0.75
+		}
+	},
 	default_target_smiter_H = {
 		boost_curve_coefficient_headshot = 0.75,
 		boost_curve_type = "smiter_curve",
@@ -1252,7 +1382,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1.5,
+			2,
 			1,
 			1
 		},
@@ -1306,7 +1436,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1.5,
+			2.5,
 			1,
 			1
 		},
@@ -1322,7 +1452,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0,
-			1.5,
+			2.25,
 			1,
 			0.75
 		},
@@ -1347,7 +1477,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.5,
-			1.5,
+			2.25,
 			1,
 			0.75
 		},
@@ -1374,7 +1504,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.3,
-			1.5,
+			2.5,
 			1,
 			1
 		},
@@ -1390,7 +1520,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.3,
-			1.5,
+			2,
 			1,
 			0.75
 		},
@@ -1413,11 +1543,11 @@ PowerLevelTemplates = {
 		}
 	},
 	targets_stab_smiter_H = {},
-	critical_strikel_fencer_stab_L = {
+	critical_strike_fencer_stab_L = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1,
+			2,
 			1,
 			1
 		},
@@ -1433,7 +1563,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0,
-			1,
+			1.5,
 			1,
 			0.75
 		},
@@ -1448,8 +1578,8 @@ PowerLevelTemplates = {
 	armor_modifier_fencer_stab_L_AP = {
 		attack = {
 			1,
-			0.1,
-			1,
+			0.25,
+			1.5,
 			1,
 			0.75
 		},
@@ -1483,11 +1613,11 @@ PowerLevelTemplates = {
 		}
 	},
 	targets_fencer_stab_L = {},
-	critical_fencer_stab_M = {
+	critical_strike_fencer_stab_M = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1,
+			2,
 			1,
 			1
 		},
@@ -1503,7 +1633,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.4,
-			1,
+			1.5,
 			1,
 			0.75,
 			0.25
@@ -1603,7 +1733,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1,
+			2,
 			1,
 			1
 		},
@@ -1623,7 +1753,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.25,
-			1,
+			1.5,
 			1,
 			1
 		},

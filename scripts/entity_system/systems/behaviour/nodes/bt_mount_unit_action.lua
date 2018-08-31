@@ -22,6 +22,7 @@ BTMountUnitAction.enter = function (self, unit, blackboard, t)
 	network_manager:anim_event(unit, animation)
 
 	local mounted_data = blackboard.mounted_data
+	blackboard.waiting_for_pickup = nil
 
 	if mounted_data then
 		local mount_unit = mounted_data.mount_unit

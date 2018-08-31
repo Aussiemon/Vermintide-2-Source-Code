@@ -42,6 +42,7 @@ player.damage_dealt = {
 }
 local max_daily_quests = 3
 local max_event_quests = 3
+local max_weekly_quests = 1
 local num_quest_statistics_per_quest = 3
 player.quest_statistics = {}
 
@@ -60,6 +61,19 @@ end
 
 for i = 1, max_event_quests, 1 do
 	local stat_prefix = "event_quest_" .. i
+
+	for j = 1, num_quest_statistics_per_quest, 1 do
+		local stat_name = stat_prefix .. "_stat_" .. j
+		player.quest_statistics[stat_name] = {
+			value = 0,
+			source = "player_data",
+			database_name = "quest_statistics_" .. stat_name
+		}
+	end
+end
+
+for i = 1, max_weekly_quests, 1 do
+	local stat_prefix = "weekly_quest_" .. i
 
 	for j = 1, num_quest_statistics_per_quest, 1 do
 		local stat_name = stat_prefix .. "_stat_" .. j
@@ -224,6 +238,59 @@ player.exalted_champion_charge_chaos_warrior = {
 player.storm_vermin_warlord_kills_enemies = {
 	value = 0,
 	database_name = "storm_vermin_warlord_kills_enemies",
+	source = "player_data"
+}
+player.bogenhafen_city_no_braziers_lit = {
+	value = 0,
+	database_name = "bogenhafen_city_no_braziers_lit",
+	source = "player_data"
+}
+player.bogenhafen_city_torch_not_picked_up = {
+	value = 0,
+	database_name = "bogenhafen_city_torch_not_picked_up",
+	source = "player_data"
+}
+player.bogenhafen_city_fast_switches = {
+	value = 0,
+	database_name = "bogenhafen_city_fast_switches",
+	source = "player_data"
+}
+player.bogenhafen_city_all_wine_collected = {
+	value = 0,
+	database_name = "bogenhafen_city_all_wine_collected",
+	source = "player_data"
+}
+player.bogenhafen_city_jumping_puzzle = {
+	value = 0,
+	database_name = "bogenhafen_city_jumping_puzzle",
+	source = "player_data"
+}
+player.bogenhafen_slum_no_ratling_damage = {
+	value = 0,
+	database_name = "bogenhafen_slum_no_ratling_damage",
+	source = "player_data"
+}
+player.damage_taken_from_ratling_gunner = {
+	value = 0
+}
+player.bogenhafen_slum_no_windows_broken = {
+	value = 0,
+	database_name = "bogenhafen_slum_no_windows_broken",
+	source = "player_data"
+}
+player.bogenhafen_slum_find_hidden_stash = {
+	value = 0,
+	database_name = "bogenhafen_slum_find_hidden_stash",
+	source = "player_data"
+}
+player.bogenhafen_slum_jumping_puzzle = {
+	value = 0,
+	database_name = "bogenhafen_slum_jumping_puzzle",
+	source = "player_data"
+}
+player.bogenhafen_slum_event_speedrun = {
+	value = 0,
+	database_name = "bogenhafen_slum_event_speedrun",
 	source = "player_data"
 }
 player.globadier_kill_before_throwing = {
@@ -421,16 +488,18 @@ for career, _ in pairs(CareerSettings) do
 	if career ~= "empire_soldier_tutorial" then
 		player.completed_career_levels[career] = {}
 
-		for _, level in ipairs(MainGameLevels) do
-			player.completed_career_levels[career][level] = {}
+		for level_key, level in pairs(LevelSettings) do
+			if table.contains(UnlockableLevels, level_key) then
+				player.completed_career_levels[career][level_key] = {}
 
-			for diff, _ in pairs(DifficultySettings) do
-				local database_name = "completed_career_levels_" .. career .. "_" .. level .. "_" .. diff
-				player.completed_career_levels[career][level][diff] = {
-					value = 0,
-					source = "player_data",
-					database_name = database_name
-				}
+				for diff, _ in pairs(DifficultySettings) do
+					local database_name = "completed_career_levels_" .. career .. "_" .. level_key .. "_" .. diff
+					player.completed_career_levels[career][level_key][diff] = {
+						value = 0,
+						source = "player_data",
+						database_name = database_name
+					}
+				end
 			end
 		end
 	end
@@ -465,17 +534,30 @@ LevelDifficultyDBNames = {}
 
 for level_key, level in pairs(LevelSettings) do
 	if table.contains(UnlockableLevels, level_key) then
-		player.completed_levels[level_key] = {
+		local is_dlc_level = level.dlc_name ~= nil
+		local completed_levels_definition = {
 			value = 0,
 			sync_on_hot_join = true,
 			sync_to_host = true,
 			database_name = "completed_levels_" .. level_key
 		}
-		player.played_levels_quickplay[level_key] = {
+
+		if is_dlc_level then
+			completed_levels_definition.source = "player_data"
+		end
+
+		player.completed_levels[level_key] = completed_levels_definition
+		local played_levels_quickplay_definition = {
 			value = 0,
 			sync_to_host = true,
 			database_name = "played_levels_quickplay_" .. level_key
 		}
+
+		if is_dlc_level then
+			played_levels_quickplay_definition.source = "player_data"
+		end
+
+		player.played_levels_quickplay[level_key] = played_levels_quickplay_definition
 		local heroes = {
 			"bright_wizard",
 			"wood_elf",
@@ -487,31 +569,53 @@ for level_key, level in pairs(LevelSettings) do
 		for _, hero in ipairs(heroes) do
 			local key = "completed_levels_" .. hero
 			local t = player[key]
-			t[level_key] = {
+			local definition = {
 				value = 0,
-				sync_on_hot_join = true,
-				sync_to_host = true,
 				database_name = key .. "_" .. level_key
 			}
+
+			if is_dlc_level then
+				definition.source = "player_data"
+			end
+
+			t[level_key] = definition
 		end
 
 		local level_difficulty_name = level_key .. "_difficulty_completed"
 		LevelDifficultyDBNames[level_key] = level_difficulty_name
-		player.completed_levels_difficulty[level_difficulty_name] = {
+		local completed_levels_difficulty_definition = {
 			value = 0,
 			sync_on_hot_join = true,
 			database_name = level_difficulty_name
 		}
+
+		if is_dlc_level then
+			completed_levels_difficulty_definition.source = "player_data"
+		end
+
+		player.completed_levels_difficulty[level_difficulty_name] = completed_levels_difficulty_definition
 		local grimoire_name = "collected_grimoire_" .. level_key
-		player.collected_grimoires[level_key] = {
+		local collected_grimoires_definition = {
 			value = 0,
 			database_name = grimoire_name
 		}
+
+		if is_dlc_level then
+			collected_grimoires_definition.source = "player_data"
+		end
+
+		player.collected_grimoires[level_key] = collected_grimoires_definition
 		local tome_name = "collected_tome_" .. level_key
-		player.collected_tomes[level_key] = {
+		local tome_name_definition = {
 			value = 0,
 			database_name = tome_name
 		}
+
+		if is_dlc_level then
+			tome_name_definition.source = "player_data"
+		end
+
+		player.collected_tomes[level_key] = tome_name_definition
 	end
 end
 

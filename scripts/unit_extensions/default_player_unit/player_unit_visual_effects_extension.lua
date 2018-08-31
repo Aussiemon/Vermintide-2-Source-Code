@@ -6,7 +6,7 @@ PlayerUnitVisualEffectsExtension.init = function (self, extension_init_context, 
 	self.network_manager = Managers.state.network
 	self.world = extension_init_context.world
 	self.unit = unit
-	self.threshold_changed = true
+	self.overcharge_threshold_changed = true
 end
 
 PlayerUnitVisualEffectsExtension.extensions_ready = function (self, world, unit)
@@ -25,45 +25,31 @@ PlayerUnitVisualEffectsExtension.destroy = function (self)
 end
 
 PlayerUnitVisualEffectsExtension.update = function (self, unit, input, dt, context, t)
-	local overcharge_extension = self.overcharge_extension
-	local overcharge_value, overcharge_threshold, max_overcharge = overcharge_extension:current_overcharge_status()
-
-	self:_update_game_object_field(overcharge_threshold, max_overcharge)
-	self:_update_thresholds(overcharge_value, overcharge_threshold)
-	self:_set_flow_values()
+	self:_update_overcharge_thresholds()
+	self:_set_overcharge_flow_values()
 end
 
-PlayerUnitVisualEffectsExtension._update_thresholds = function (self, overcharge_value, overcharge_threshold)
-	if self.above_threshold and overcharge_value < overcharge_threshold then
-		self.above_threshold = false
-		self.threshold_changed = true
-	elseif not self.above_threshold and overcharge_threshold <= overcharge_value then
-		self.above_threshold = true
-		self.threshold_changed = true
+PlayerUnitVisualEffectsExtension._update_overcharge_thresholds = function (self)
+	local overcharge_extension = self.overcharge_extension
+	local value, threshold, _ = overcharge_extension:current_overcharge_status()
+
+	if self.above_overcharge_threshold and value < threshold then
+		self.above_overcharge_threshold = false
+		self.overcharge_threshold_changed = true
+	elseif not self.above_overcharge_threshold and threshold <= value then
+		self.above_overcharge_threshold = true
+		self.overcharge_threshold_changed = true
 	else
-		self.threshold_changed = false
+		self.overcharge_threshold_changed = false
 	end
 end
 
-PlayerUnitVisualEffectsExtension._update_game_object_field = function (self, overcharge_threshold, max_overcharge)
-	local network_manager = self.network_manager
-	local unit = self.unit
-	local game = network_manager:game()
-	local go_id = Managers.state.unit_storage:go_id(unit)
-	local overcharge_extension = self.overcharge_extension
-	local overcharge_percentage = overcharge_extension:get_anim_blend_overcharge()
-	local overcharge_threshold_percentage = overcharge_threshold / max_overcharge
-
-	GameSession.set_game_object_field(game, go_id, "overcharge_percentage", overcharge_percentage)
-	GameSession.set_game_object_field(game, go_id, "overcharge_threshold_percentage", overcharge_threshold_percentage)
-end
-
-PlayerUnitVisualEffectsExtension._set_flow_values = function (self)
-	local overcharge_extension = self.overcharge_extension
-	local anim_blend_overcharge = overcharge_extension:get_anim_blend_overcharge()
+PlayerUnitVisualEffectsExtension._set_overcharge_flow_values = function (self)
 	local unit = self.unit
 	local first_person_unit = self.first_person_unit
 	local first_person_mesh_unit = self.first_person_mesh_unit
+	local overcharge_extension = self.overcharge_extension
+	local anim_blend_overcharge = overcharge_extension:get_anim_blend_overcharge()
 
 	if unit and Unit.alive(unit) then
 		unit_set_flow_variable(unit, "current_overcharge", anim_blend_overcharge)
@@ -80,13 +66,14 @@ PlayerUnitVisualEffectsExtension._set_flow_values = function (self)
 		unit_flow_event(first_person_mesh_unit, "lua_update_overcharge")
 	end
 
-	self:_set_weapon_flow_variable("current_overcharge", anim_blend_overcharge)
-	self:_weapon_flow_event("lua_update_overcharge")
+	self:_set_weapons_flow_variable("current_overcharge", anim_blend_overcharge)
+	self:_weapons_flow_event("lua_update_overcharge")
 
-	if self.threshold_changed then
+	if self.overcharge_threshold_changed then
+		self.overcharge_threshold_changed = false
 		local event_name = "below_overcharge_threshold"
 
-		if self.above_threshold then
+		if self.above_overcharge_threshold then
 			event_name = "above_overcharge_threshold"
 		end
 
@@ -102,11 +89,11 @@ PlayerUnitVisualEffectsExtension._set_flow_values = function (self)
 			unit_flow_event(first_person_mesh_unit, event_name)
 		end
 
-		self:_weapon_flow_event(event_name)
+		self:_weapons_flow_event(event_name)
 	end
 end
 
-PlayerUnitVisualEffectsExtension._set_weapon_flow_variable = function (self, variable_name, value)
+PlayerUnitVisualEffectsExtension._set_weapons_flow_variable = function (self, variable_name, value)
 	local inventory_extension = self.inventory_extension
 	local wielded_slot_data = inventory_extension:get_wielded_slot_data()
 
@@ -124,7 +111,7 @@ PlayerUnitVisualEffectsExtension._set_weapon_flow_variable = function (self, var
 	end
 end
 
-PlayerUnitVisualEffectsExtension._weapon_flow_event = function (self, event)
+PlayerUnitVisualEffectsExtension._weapons_flow_event = function (self, event)
 	local inventory_extension = self.inventory_extension
 	local wielded_slot_data = inventory_extension:get_wielded_slot_data()
 

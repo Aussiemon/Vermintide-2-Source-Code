@@ -246,6 +246,36 @@ PlayerControllerKeymaps = {
 			"t",
 			"pressed"
 		},
+		ping_hold = {
+			"keyboard",
+			"t",
+			"held"
+		},
+		ping_release = {
+			"keyboard",
+			"t",
+			"released"
+		},
+		social_wheel_only = {
+			"keyboard",
+			UNASSIGNED_KEY,
+			"pressed"
+		},
+		social_wheel_only_hold = {
+			"keyboard",
+			UNASSIGNED_KEY,
+			"held"
+		},
+		social_wheel_only_release = {
+			"keyboard",
+			UNASSIGNED_KEY,
+			"released"
+		},
+		ping_only = {
+			"keyboard",
+			UNASSIGNED_KEY,
+			"pressed"
+		},
 		voip_push_to_talk = {
 			"keyboard",
 			"g",
@@ -299,6 +329,11 @@ PlayerControllerKeymaps = {
 		next_observer_target = {
 			"mouse",
 			"left",
+			"pressed"
+		},
+		previous_observer_target = {
+			"mouse",
+			"right",
 			"pressed"
 		}
 	},
@@ -402,12 +437,12 @@ PlayerControllerKeymaps = {
 		action_one_mouse = {},
 		weapon_reload_input = {
 			"gamepad",
-			"left_shoulder",
+			"x",
 			"pressed"
 		},
 		weapon_reload_hold_input = {
 			"gamepad",
-			"left_shoulder",
+			"x",
 			"held"
 		},
 		character_inspecting = {
@@ -485,6 +520,21 @@ PlayerControllerKeymaps = {
 			"b",
 			"held"
 		},
+		ability = {
+			"gamepad",
+			"left_shoulder",
+			"pressed"
+		},
+		ability_hold = {
+			"gamepad",
+			"left_shoulder",
+			"held"
+		},
+		ability_release = {
+			"gamepad",
+			"left_shoulder",
+			"released"
+		},
 		look_raw = {},
 		look_raw_controller = {
 			"gamepad",
@@ -506,6 +556,20 @@ PlayerControllerKeymaps = {
 			"right_shoulder",
 			"pressed"
 		},
+		ping_hold = {
+			"gamepad",
+			"right_shoulder",
+			"held"
+		},
+		ping_release = {
+			"gamepad",
+			"right_shoulder",
+			"released"
+		},
+		social_wheel_only = {},
+		social_wheel_only_hold = {},
+		social_wheel_only_release = {},
+		ping_only = {},
 		voip_push_to_talk = {},
 		move_left = {},
 		move_right = {},
@@ -518,6 +582,11 @@ PlayerControllerKeymaps = {
 		next_observer_target = {
 			"gamepad",
 			"a",
+			"pressed"
+		},
+		previous_observer_target = {
+			"gamepad",
+			"b",
 			"pressed"
 		}
 	},
@@ -699,13 +768,28 @@ PlayerControllerKeymaps = {
 		dodge_2 = {},
 		crouch = {
 			"gamepad",
-			"circle",
+			"r1",
 			"pressed"
 		},
 		crouching = {
 			"gamepad",
+			"r1",
+			"held"
+		},
+		ability = {
+			"gamepad",
+			"circle",
+			"pressed"
+		},
+		ability_hold = {
+			"gamepad",
 			"circle",
 			"held"
+		},
+		ability_release = {
+			"gamepad",
+			"circle",
+			"released"
 		},
 		look_raw = {},
 		look_raw_controller = {
@@ -728,6 +812,20 @@ PlayerControllerKeymaps = {
 			"r1",
 			"pressed"
 		},
+		ping_hold = {
+			"gamepad",
+			"r1",
+			"held"
+		},
+		ping_release = {
+			"gamepad",
+			"r1",
+			"released"
+		},
+		social_wheel_only = {},
+		social_wheel_only_hold = {},
+		social_wheel_only_release = {},
+		ping_only = {},
 		voip_push_to_talk = {},
 		move_left = {},
 		move_right = {},
@@ -740,6 +838,11 @@ PlayerControllerKeymaps = {
 		next_observer_target = {
 			"gamepad",
 			"cross",
+			"pressed"
+		},
+		previous_observer_target = {
+			"gamepad",
+			"circle",
 			"pressed"
 		}
 	}
@@ -776,49 +879,57 @@ PlayerControllerFilters = {
 		},
 		look_controller = {
 			filter_type = "scale_vector3_xy_accelerated_x",
-			multiplier_min_x = 1.5,
+			multiplier_return_y = 1.75,
 			acceleration_delay = 0.2,
-			threshold = 0.925,
-			accelerate_time_ref = 0.5,
 			multiplier_y = 0.75,
+			threshold = 0.925,
+			multiplier_min_x = 1.5,
+			accelerate_time_ref = 0.5,
+			angle_to_slow_down_inside = 0.5,
 			input_mapping = "look_raw_controller",
 			power_of = 1.75,
 			multiplier_x = 4
 		},
 		look_controller_ranged = {
 			filter_type = "scale_vector3_xy_accelerated_x",
-			multiplier_min_x = 1.25,
+			multiplier_return_y = 1.75,
 			acceleration_delay = 0.2,
-			threshold = 0.925,
-			accelerate_time_ref = 0.6,
 			multiplier_y = 0.75,
+			threshold = 0.925,
+			multiplier_min_x = 1.25,
+			accelerate_time_ref = 0.6,
+			angle_to_slow_down_inside = 0.5,
 			input_mapping = "look_raw_controller",
 			power_of = 2,
 			multiplier_x = 4
 		},
 		look_controller_melee = {
 			filter_type = "scale_vector3_xy_accelerated_x",
-			multiplier_min_x = 2.5,
+			multiplier_return_y = 2,
 			acceleration_delay = 0.2,
 			turnaround_time_ref = 0.75,
 			threshold = 0.65,
-			accelerate_time_ref = 0.15,
-			turnaround_delay = 0.2,
-			turnaround_multiplier_x = 3,
-			multiplier_y = 1,
-			multiplier_x = 2,
-			input_mapping = "look_raw_controller",
-			power_of = 1.5,
+			multiplier_min_x = 2.5,
 			turnaround_threshold = 0.925,
+			turnaround_delay = 0.2,
+			angle_to_slow_down_inside = 0.5,
+			multiplier_y = 1,
+			turnaround_multiplier_x = 3,
+			input_mapping = "look_raw_controller",
+			accelerate_time_ref = 0.15,
+			power_of = 1.5,
+			multiplier_x = 2,
 			turnaround_power_of = 2
 		},
 		look_controller_zoom = {
 			filter_type = "scale_vector3_xy_accelerated_x",
-			multiplier_min_x = 0.5,
+			multiplier_return_y = 1.5,
 			acceleration_delay = 0,
-			threshold = 0.95,
-			accelerate_time_ref = 0.3,
 			multiplier_y = 0.5,
+			threshold = 0.95,
+			multiplier_min_x = 0.5,
+			accelerate_time_ref = 0.3,
+			angle_to_slow_down_inside = 0.5,
 			input_mapping = "look_raw_controller",
 			power_of = 1.1,
 			multiplier_x = 1
@@ -833,65 +944,81 @@ PlayerControllerFilters = {
 			input_mapping = "look_raw_controller",
 			power_of = 1.5,
 			multiplier_x = 1.5
+		},
+		action_career_not_hold = {
+			filter_type = "not",
+			input_mappings = {
+				button_1 = "action_career_hold"
+			}
 		}
 	},
 	xb1 = InputUtils.keymaps_key_approved("xb1") and {
 		look_controller = {
 			filter_type = "scale_vector3_xy_accelerated_x",
-			multiplier_min_x = 1.5,
-			acceleration_delay = 0.2,
-			threshold = 0.925,
-			accelerate_time_ref = 0.5,
+			multiplier_return_y = 1.75,
+			acceleration_delay = 0.01,
 			multiplier_y = 0.75,
+			threshold = 0.925,
+			accelerate_time_ref = 0.3,
+			multiplier_min_x = 1.5,
+			angle_to_slow_down_inside = 0.5,
 			input_mapping = "look_raw_controller",
-			power_of = 1.75,
-			multiplier_x = 4
+			power_of = 2,
+			multiplier_x = 5
 		},
 		look_controller_ranged = {
 			filter_type = "scale_vector3_xy_accelerated_x",
-			multiplier_min_x = 1.25,
-			acceleration_delay = 0.2,
-			threshold = 0.925,
-			accelerate_time_ref = 0.6,
+			multiplier_return_y = 1.75,
+			acceleration_delay = 0.01,
 			multiplier_y = 0.75,
+			threshold = 0.925,
+			accelerate_time_ref = 0.3,
+			multiplier_min_x = 1.25,
+			angle_to_slow_down_inside = 0.5,
 			input_mapping = "look_raw_controller",
-			power_of = 2,
-			multiplier_x = 4
+			power_of = 1.25,
+			multiplier_x = 5
 		},
 		look_controller_melee = {
 			filter_type = "scale_vector3_xy_accelerated_x",
-			multiplier_min_x = 2.5,
+			multiplier_return_y = 2,
 			acceleration_delay = 0.2,
-			turnaround_time_ref = 0.75,
+			turnaround_time_ref = 0.15,
 			threshold = 0.65,
-			accelerate_time_ref = 0.15,
-			turnaround_delay = 0.2,
-			turnaround_multiplier_x = 3,
-			multiplier_y = 1,
-			multiplier_x = 2,
-			input_mapping = "look_raw_controller",
-			power_of = 1.5,
+			multiplier_min_x = 2.5,
 			turnaround_threshold = 0.925,
+			turnaround_delay = 0.01,
+			angle_to_slow_down_inside = 0.5,
+			multiplier_y = 1,
+			turnaround_multiplier_x = 5,
+			input_mapping = "look_raw_controller",
+			accelerate_time_ref = 0.15,
+			power_of = 1.5,
+			multiplier_x = 2,
 			turnaround_power_of = 2
 		},
 		look_controller_zoom = {
 			filter_type = "scale_vector3_xy_accelerated_x",
-			multiplier_min_x = 0.5,
+			multiplier_return_y = 1.5,
 			acceleration_delay = 0,
-			threshold = 0.95,
-			accelerate_time_ref = 0.3,
 			multiplier_y = 0.5,
+			threshold = 0.95,
+			multiplier_min_x = 0.5,
+			accelerate_time_ref = 0.3,
+			angle_to_slow_down_inside = 0.5,
 			input_mapping = "look_raw_controller",
 			power_of = 1.1,
 			multiplier_x = 1
 		},
 		look_controller_3p = {
 			filter_type = "scale_vector3_xy_accelerated_x",
-			multiplier_min_x = 0.5,
+			multiplier_return_y = 1.5,
 			acceleration_delay = 0,
-			threshold = 0.95,
-			accelerate_time_ref = 0.3,
 			multiplier_y = 0.5,
+			threshold = 0.95,
+			multiplier_min_x = 0.5,
+			accelerate_time_ref = 0.3,
+			angle_to_slow_down_inside = 0.5,
 			input_mapping = "look_raw_controller",
 			power_of = 1.5,
 			multiplier_x = 1.5
@@ -958,50 +1085,42 @@ PlayerControllerFilters = {
 		},
 		action_career = {
 			max_delay = 0.05,
-			filter_type = "delayed_and",
+			filter_type = "or",
 			input_mappings = {
-				button_1 = "active_ability_left_pressed",
-				button_2 = "active_ability_right_pressed"
+				button_1 = "ability"
 			},
 			held = {
-				button_1 = "active_ability_left_held",
-				button_2 = "active_ability_right_held"
+				button_1 = "ability_hold"
 			}
 		},
 		action_career_hold = {
-			filter_type = "and",
+			filter_type = "or",
 			input_mappings = {
-				button_1 = "active_ability_left_held",
-				button_2 = "active_ability_right_held"
+				button_1 = "ability_hold"
+			}
+		},
+		action_career_not_hold = {
+			filter_type = "not",
+			input_mappings = {
+				button_1 = "ability_hold"
 			}
 		},
 		action_career_release = {
 			filter_type = "or",
 			input_mappings = {
-				button_1 = "active_ability_left_release",
-				button_2 = "active_ability_right_release"
+				button_1 = "ability_release"
 			}
 		},
 		weapon_reload_hold = {
-			filter_type = "exclusive_and",
+			filter_type = "or",
 			input_mappings = {
 				button_1 = "weapon_reload_hold_input"
-			},
-			exclusive_input_mappings = {
-				button_2 = "action_career_hold",
-				button_3 = "action_career_release",
-				button_1 = "action_career"
 			}
 		},
 		weapon_reload = {
-			filter_type = "exclusive_and",
+			filter_type = "or",
 			input_mappings = {
 				button_1 = "weapon_reload_input"
-			},
-			exclusive_input_mappings = {
-				button_2 = "action_career_hold",
-				button_3 = "action_career_release",
-				button_1 = "action_career"
 			}
 		}
 	},
@@ -1127,24 +1246,31 @@ PlayerControllerFilters = {
 			}
 		},
 		action_career = {
-			filter_type = "and",
+			max_delay = 0.05,
+			filter_type = "or",
 			input_mappings = {
-				button_1 = "active_ability_left_pressed",
-				button_2 = "active_ability_right_pressed"
+				button_1 = "ability"
+			},
+			held = {
+				button_1 = "ability_hold"
 			}
 		},
 		action_career_hold = {
-			filter_type = "and",
+			filter_type = "or",
 			input_mappings = {
-				button_1 = "active_ability_left_held",
-				button_2 = "active_ability_right_held"
+				button_1 = "ability_hold"
+			}
+		},
+		action_career_not_hold = {
+			filter_type = "not",
+			input_mappings = {
+				button_1 = "ability_hold"
 			}
 		},
 		action_career_release = {
 			filter_type = "or",
 			input_mappings = {
-				button_1 = "active_ability_left_release",
-				button_2 = "active_ability_right_release"
+				button_1 = "ability_release"
 			}
 		},
 		weapon_reload_hold = {
@@ -1582,9 +1708,14 @@ FreeFlightKeymaps = {
 			"f8",
 			"pressed"
 		},
+		global_free_flight_toggle = {
+			"keyboard",
+			"f9",
+			"pressed"
+		},
 		frustum_freeze_toggle = {
 			"keyboard",
-			"left shift",
+			"right shift",
 			"pressed"
 		},
 		set_drop_position = {
@@ -1977,6 +2108,26 @@ FreeFlightKeymaps = {
 		action_two = {
 			"mouse",
 			"right",
+			"pressed"
+		},
+		gamepad_x_pressed = {
+			"gamepad",
+			"x",
+			"pressed"
+		},
+		gamepad_y_pressed = {
+			"gamepad",
+			"y",
+			"pressed"
+		},
+		gamepad_b_pressed = {
+			"gamepad",
+			"b",
+			"pressed"
+		},
+		gamepad_a_pressed = {
+			"gamepad",
+			"a",
 			"pressed"
 		},
 		gamepad_x_held = {
@@ -2397,14 +2548,12 @@ FreeFlightFilters = {
 				button_4 = "right_shoulder"
 			}
 		},
-		frustum_freeze_toggle = {
+		global_free_flight_toggle = {
 			filter_type = "and",
-			name = "frustum_freeze_toggle",
+			name = "global_free_flight_toggle",
 			input_mappings = {
-				button_2 = "left_thumb_held",
-				button_3 = "left_shoulder_held",
-				button_1 = "right_thumb_held",
-				button_4 = "right_trigger"
+				button_1 = "left_thumb_held",
+				button_2 = "gamepad_a_pressed"
 			}
 		}
 	},
@@ -2687,25 +2836,30 @@ TitleLoadingFilters = {
 }
 TitleScreenKeyMaps = {
 	win32 = InputUtils.keymaps_key_approved("win32") and {
-		left = {
+		move_left_raw = {
 			"gamepad",
 			"d_left",
 			"pressed"
 		},
-		right = {
+		move_right_raw = {
 			"gamepad",
 			"d_right",
 			"pressed"
 		},
-		up = {
+		move_up_raw = {
 			"gamepad",
 			"d_up",
 			"pressed"
 		},
-		down = {
+		move_down_raw = {
 			"gamepad",
 			"d_down",
 			"pressed"
+		},
+		analog_input = {
+			"gamepad",
+			"left",
+			"axis"
 		},
 		cursor = {
 			"mouse",
@@ -2774,25 +2928,30 @@ TitleScreenKeyMaps = {
 		}
 	},
 	xb1 = InputUtils.keymaps_key_approved("xb1") and {
-		left = {
+		move_left_raw = {
 			"gamepad",
 			"d_left",
 			"pressed"
 		},
-		right = {
+		move_right_raw = {
 			"gamepad",
 			"d_right",
 			"pressed"
 		},
-		up = {
+		move_up_raw = {
 			"gamepad",
 			"d_up",
 			"pressed"
 		},
-		down = {
+		move_down_raw = {
 			"gamepad",
 			"d_down",
 			"pressed"
+		},
+		analog_input = {
+			"gamepad",
+			"left",
+			"axis"
 		},
 		axis_cursor = {
 			"gamepad",
@@ -2817,7 +2976,7 @@ TitleScreenKeyMaps = {
 		start = {
 			"gamepad",
 			"a",
-			"released"
+			"pressed"
 		},
 		back = {
 			"gamepad",
@@ -2841,25 +3000,30 @@ TitleScreenKeyMaps = {
 		}
 	},
 	ps4 = InputUtils.keymaps_key_approved("ps4") and {
-		left = {
+		move_left_raw = {
 			"gamepad",
 			"left",
 			"pressed"
 		},
-		right = {
+		move_right_raw = {
 			"gamepad",
 			"right",
 			"pressed"
 		},
-		up = {
+		move_up_raw = {
 			"gamepad",
 			"up",
 			"pressed"
 		},
-		down = {
+		move_down_raw = {
 			"gamepad",
 			"down",
 			"pressed"
+		},
+		analog_input = {
+			"gamepad",
+			"left",
+			"axis"
 		},
 		axis_cursor = {
 			"gamepad",
@@ -2884,7 +3048,7 @@ TitleScreenKeyMaps = {
 		start = {
 			"gamepad",
 			"cross",
-			"released"
+			"pressed"
 		},
 		back = {
 			"gamepad",
@@ -2921,6 +3085,66 @@ TitleScreenFilters = {
 				button_1 = "back_1",
 				button_2 = "back_2"
 			}
+		},
+		down = {
+			filter_type = "move_filter",
+			threshold = 0.7,
+			input_mappings = {
+				"move_down_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				0,
+				-1,
+				0
+			}
+		},
+		up = {
+			filter_type = "move_filter",
+			threshold = 0.7,
+			input_mappings = {
+				"move_up_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				0,
+				1,
+				0
+			}
+		},
+		left = {
+			filter_type = "move_filter",
+			threshold = 0.7,
+			input_mappings = {
+				"move_left_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				-1,
+				0,
+				0
+			}
+		},
+		right = {
+			filter_type = "move_filter",
+			threshold = 0.7,
+			input_mappings = {
+				"move_right_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				1,
+				0,
+				0
+			}
 		}
 	},
 	xb1 = InputUtils.keymaps_key_approved("xb1") and {
@@ -2937,6 +3161,66 @@ TitleScreenFilters = {
 			multiplier_x = 40,
 			min_multiplier_x = 25,
 			hover_multiplier = 0.3
+		},
+		down = {
+			filter_type = "move_filter",
+			threshold = 0.7,
+			input_mappings = {
+				"move_down_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				0,
+				-1,
+				0
+			}
+		},
+		up = {
+			filter_type = "move_filter",
+			threshold = 0.7,
+			input_mappings = {
+				"move_up_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				0,
+				1,
+				0
+			}
+		},
+		left = {
+			filter_type = "move_filter",
+			threshold = 0.7,
+			input_mappings = {
+				"move_left_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				-1,
+				0,
+				0
+			}
+		},
+		right = {
+			filter_type = "move_filter",
+			threshold = 0.7,
+			input_mappings = {
+				"move_right_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				1,
+				0,
+				0
+			}
 		}
 	},
 	ps4 = InputUtils.keymaps_key_approved("ps4") and {
@@ -2953,6 +3237,66 @@ TitleScreenFilters = {
 			multiplier_x = 40,
 			min_multiplier_x = 25,
 			hover_multiplier = 0.3
+		},
+		down = {
+			filter_type = "move_filter",
+			threshold = 0.7,
+			input_mappings = {
+				"move_down_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				0,
+				-1,
+				0
+			}
+		},
+		up = {
+			filter_type = "move_filter",
+			threshold = 0.7,
+			input_mappings = {
+				"move_up_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				0,
+				1,
+				0
+			}
+		},
+		left = {
+			filter_type = "move_filter",
+			threshold = 0.7,
+			input_mappings = {
+				"move_left_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				-1,
+				0,
+				0
+			}
+		},
+		right = {
+			filter_type = "move_filter",
+			threshold = 0.7,
+			input_mappings = {
+				"move_right_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				1,
+				0,
+				0
+			}
 		}
 	}
 }
@@ -3507,6 +3851,8 @@ IngameMenuKeymaps = {
 		refresh_hold = {},
 		refresh_press = {},
 		special_1 = {},
+		special_1_hold = {},
+		special_1_press = {},
 		left_stick_press = {},
 		right_stick_press = {},
 		cycle_next = {},
@@ -3547,11 +3893,6 @@ IngameMenuKeymaps = {
 			"j",
 			"pressed"
 		},
-		hotkey_forge = {
-			"keyboard",
-			"o",
-			"pressed"
-		},
 		hotkey_altar = {
 			"keyboard",
 			"h",
@@ -3565,6 +3906,16 @@ IngameMenuKeymaps = {
 		hotkey_quests = {
 			"keyboard",
 			"u",
+			"pressed"
+		},
+		hotkey_achievements = {
+			"keyboard",
+			"o",
+			"pressed"
+		},
+		hotkey_mark_favorite_item = {
+			"keyboard",
+			"f",
 			"pressed"
 		},
 		item_compare_1 = {
@@ -3606,12 +3957,12 @@ IngameMenuKeymaps = {
 	xb1 = InputUtils.keymaps_key_approved("xb1") and {
 		ingame_vote_yes = {
 			"gamepad",
-			"left_shoulder",
+			"back",
 			"held"
 		},
 		ingame_vote_no = {
 			"gamepad",
-			"right_shoulder",
+			"start",
 			"held"
 		},
 		ui_reload_debug = {
@@ -3626,8 +3977,8 @@ IngameMenuKeymaps = {
 		},
 		cancel_matchmaking = {
 			"gamepad",
-			"right_shoulder",
-			"held"
+			"b",
+			"pressed"
 		},
 		matchmaking_ready_instigate = {
 			"gamepad",
@@ -3738,6 +4089,16 @@ IngameMenuKeymaps = {
 			"gamepad",
 			"x",
 			"released"
+		},
+		special_1_hold = {
+			"gamepad",
+			"x",
+			"held"
+		},
+		special_1_press = {
+			"gamepad",
+			"x",
+			"pressed"
 		},
 		left_stick_press = {
 			"gamepad",
@@ -3881,8 +4242,8 @@ IngameMenuKeymaps = {
 		},
 		cancel_matchmaking = {
 			"gamepad",
-			"r1",
-			"held"
+			"circle",
+			"pressed"
 		},
 		matchmaking_ready_instigate = {
 			"gamepad",
@@ -3993,6 +4354,16 @@ IngameMenuKeymaps = {
 			"gamepad",
 			"square",
 			"released"
+		},
+		special_1_hold = {
+			"gamepad",
+			"square",
+			"held"
+		},
+		special_1_press = {
+			"gamepad",
+			"square",
+			"pressed"
 		},
 		left_stick_press = {
 			"gamepad",
@@ -4233,6 +4604,70 @@ IngameMenuFilters = {
 				0
 			}
 		},
+		move_down_hold_continuous = {
+			filter_type = "move_filter_continuous",
+			hold = true,
+			threshold = 0.7,
+			input_mappings = {
+				"move_down_hold_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				0,
+				-1,
+				0
+			}
+		},
+		move_up_hold_continuous = {
+			filter_type = "move_filter_continuous",
+			hold = true,
+			threshold = 0.7,
+			input_mappings = {
+				"move_up_hold_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				0,
+				1,
+				0
+			}
+		},
+		move_left_hold_continuous = {
+			filter_type = "move_filter_continuous",
+			hold = true,
+			threshold = 0.7,
+			input_mappings = {
+				"move_left_hold_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				-1,
+				0,
+				0
+			}
+		},
+		move_right_hold_continuous = {
+			filter_type = "move_filter_continuous",
+			hold = true,
+			threshold = 0.7,
+			input_mappings = {
+				"move_right_hold_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				1,
+				0,
+				0
+			}
+		},
 		item_compare = {
 			filter_type = "or",
 			input_mappings = {
@@ -4387,6 +4822,70 @@ IngameMenuFilters = {
 				0
 			}
 		},
+		move_down_hold_continuous = {
+			filter_type = "move_filter_continuous",
+			hold = true,
+			threshold = 0.7,
+			input_mappings = {
+				"move_down_hold_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				0,
+				-1,
+				0
+			}
+		},
+		move_up_hold_continuous = {
+			filter_type = "move_filter_continuous",
+			hold = true,
+			threshold = 0.7,
+			input_mappings = {
+				"move_up_hold_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				0,
+				1,
+				0
+			}
+		},
+		move_left_hold_continuous = {
+			filter_type = "move_filter_continuous",
+			hold = true,
+			threshold = 0.7,
+			input_mappings = {
+				"move_left_hold_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				-1,
+				0,
+				0
+			}
+		},
+		move_right_hold_continuous = {
+			filter_type = "move_filter_continuous",
+			hold = true,
+			threshold = 0.7,
+			input_mappings = {
+				"move_right_hold_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				1,
+				0,
+				0
+			}
+		},
 		cursor = {
 			filter_type = "gamepad_cursor",
 			multiplier = 1000,
@@ -4527,6 +5026,70 @@ IngameMenuFilters = {
 		},
 		move_right_hold = {
 			filter_type = "move_filter",
+			hold = true,
+			threshold = 0.7,
+			input_mappings = {
+				"move_right_hold_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				1,
+				0,
+				0
+			}
+		},
+		move_down_hold_continuous = {
+			filter_type = "move_filter_continuous",
+			hold = true,
+			threshold = 0.7,
+			input_mappings = {
+				"move_down_hold_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				0,
+				-1,
+				0
+			}
+		},
+		move_up_hold_continuous = {
+			filter_type = "move_filter_continuous",
+			hold = true,
+			threshold = 0.7,
+			input_mappings = {
+				"move_up_hold_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				0,
+				1,
+				0
+			}
+		},
+		move_left_hold_continuous = {
+			filter_type = "move_filter_continuous",
+			hold = true,
+			threshold = 0.7,
+			input_mappings = {
+				"move_left_hold_raw"
+			},
+			axis_mappings = {
+				"analog_input"
+			},
+			axis = {
+				-1,
+				0,
+				0
+			}
+		},
+		move_right_hold_continuous = {
+			filter_type = "move_filter_continuous",
 			hold = true,
 			threshold = 0.7,
 			input_mappings = {
@@ -4723,11 +5286,22 @@ BenchmarkControllerSettings = {
 		}
 	}
 }
+EndLevelViewKeymapsFilters = table.clone(IngameMenuFilters)
+
+if EndLevelViewKeymapsFilters.xb1 then
+	EndLevelViewKeymapsFilters.xb1.cursor = nil
+end
+
+if EndLevelViewKeymapsFilters.ps4 then
+	EndLevelViewKeymapsFilters.ps4.cursor = nil
+end
+
 GamepadSettings = {
+	menu_cooldown = 0.25,
 	menu_analog_deadzone = 0.5,
 	menu_speed_multiplier_frame_decrease = 0.025,
-	menu_cooldown = 0.2,
-	menu_min_speed_multiplier = 0.2,
+	menu_speed_multiplier_decrease = 1.3,
+	menu_min_speed_multiplier = 0.5,
 	quest_menu_navigation_cooldown = 0.15
 }
 

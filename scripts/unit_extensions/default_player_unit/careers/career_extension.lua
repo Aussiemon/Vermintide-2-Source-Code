@@ -50,22 +50,11 @@ CareerExtension.extensions_ready = function (self, world, unit)
 	if self._activated_ability then
 		self._activated_ability:extensions_ready(world, unit)
 	end
+
+	Managers.state.event:register(self, "ingame_menu_opened", "stop_ability")
 end
 
 CareerExtension.update = function (self, unit, input, dt, context, t)
-	local player = self.player
-	local aoe_data = self._aoe_data
-
-	if aoe_data then
-		aoe_data.duration_left = math.max(aoe_data.duration_left - dt, 0)
-
-		if aoe_data.duration_left <= 0 or not self:is_in_aoe(POSITION_LOOKUP[unit]) then
-			ProcFunctions[aoe_data.end_function_name](player)
-
-			self._aoe_data = nil
-		end
-	end
-
 	if self._cooldown_paused then
 		return
 	end
@@ -75,6 +64,8 @@ CareerExtension.update = function (self, unit, input, dt, context, t)
 	self._cooldown = math.max(self._cooldown - dt * cooldown_speed_multiplier, 0)
 
 	if self._is_ready then
+		local player = self.player
+
 		if self._activated_ability and ((self.is_server and player.bot_player) or player.local_player) then
 			self._activated_ability:update(unit, input, dt, context, t)
 		end
@@ -90,6 +81,16 @@ CareerExtension.update = function (self, unit, input, dt, context, t)
 	end
 
 	self:_update_game_object_field(unit)
+end
+
+CareerExtension.stop_ability = function (self, reason)
+	local activated_ability = self._activated_ability
+	local is_server = self.is_server
+	local player = self.player
+
+	if activated_ability and ((is_server and player.bot_player) or player.local_player) then
+		activated_ability:stop(reason)
+	end
 end
 
 CareerExtension._update_game_object_field = function (self, unit)
@@ -126,17 +127,18 @@ end
 CareerExtension.start_activated_ability_cooldown = function (self, refund_percent)
 	self._is_ready = false
 	local activated_ability_data = self:get_activated_ability_data()
-	local cooldown = activated_ability_data.cooldown
-	self._max_cooldown = activated_ability_data.cooldown
-	local buff_extension = ScriptUnit.extension(self._unit, "buff_system")
-	local cooldown = buff_extension:apply_buffs_to_value(cooldown, StatBuffIndex.ACTIVATED_COOLDOWN)
-	self._cooldown = cooldown * (1 - (refund_percent or 0))
-	self._cooldown_paused = false
+	local cooldown = activated_ability_data.cooldown * (1 - (refund_percent or 0))
 
 	if self._initial_cooldown then
-		self._cooldown = (Development.parameter("short_ability_cooldowns") and cooldown) or self._initial_cooldown
+		cooldown = (Development.parameter("short_ability_cooldowns") and cooldown) or self._initial_cooldown
 		self._initial_cooldown = nil
 	end
+
+	local buff_extension = ScriptUnit.extension(self._unit, "buff_system")
+	local cooldown = buff_extension:apply_buffs_to_value(cooldown, StatBuffIndex.ACTIVATED_COOLDOWN)
+	self._cooldown = cooldown
+	self._max_cooldown = activated_ability_data.cooldown
+	self._cooldown_paused = false
 
 	if Development.parameter("short_ability_cooldowns") then
 		self._cooldown = 5
@@ -189,26 +191,6 @@ end
 
 CareerExtension.get_base_critical_strike_chance = function (self)
 	return self._career_data.attributes.base_critical_strike_chance or 0
-end
-
-CareerExtension.create_aoe = function (self, position, radius, duration, end_function_name)
-	self._aoe_data = {
-		position = Vector3Box(position),
-		radius_squared = radius * radius,
-		duration_left = duration,
-		end_function_name = end_function_name
-	}
-end
-
-CareerExtension.is_in_aoe = function (self, position)
-	if not self._aoe_data then
-		return false
-	end
-
-	local distance = Vector3.length_squared(position - self._aoe_data.position:unbox())
-	local within_distance = distance <= self._aoe_data.radius_squared
-
-	return within_distance
 end
 
 CareerExtension.has_melee_boost = function (self)

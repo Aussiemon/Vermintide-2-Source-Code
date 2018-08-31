@@ -146,11 +146,12 @@ TerrorEventMixer.init_functions = {
 	end,
 	force_load_breed_package = function (event, element, t)
 		local enemy_package_loader = Managers.state.game_mode.level_transition_handler.enemy_package_loader
+		local breed_name = element.breed_name
 
 		if not enemy_package_loader.breed_processed[breed_name] then
 			local ignore_breed_limits = true
 
-			enemy_package_loader:request_breed(element.breed_name, ignore_breed_limits)
+			enemy_package_loader:request_breed(breed_name, ignore_breed_limits)
 		end
 	end,
 	enable_bots_in_carry_event = function (event, element, t)
@@ -307,16 +308,15 @@ TerrorEventMixer.init_functions = {
 TerrorEventMixer.run_functions = {
 	spawn = function (event, element, t, dt)
 		local data = event.data
-		local optional_data = nil
+		local optional_data = element.optional_data
 		local gizmo_unit = data.gizmo_unit
 
 		if gizmo_unit then
 			local spawn_behind_door = Unit.get_data(gizmo_unit, "is_behind_door")
 
 			if spawn_behind_door then
-				optional_data = {
-					spawn_behind_door = spawn_behind_door
-				}
+				optional_data = optional_data or {}
+				optional_data.spawn_behind_door = spawn_behind_door
 			end
 		end
 
@@ -324,6 +324,10 @@ TerrorEventMixer.run_functions = {
 		local conflict_director = Managers.state.conflict
 		local group_data = data.group_data
 		local breed_name = element.breed_name
+
+		if type(breed_name) == "table" then
+			breed_name = breed_name[Math.random(1, #breed_name)]
+		end
 
 		conflict_director:spawn_one(Breeds[breed_name], position, group_data, optional_data)
 
@@ -366,19 +370,20 @@ TerrorEventMixer.run_functions = {
 				spline_name = data and data.spline_id
 			end
 
-			local ai_group_system = Managers.state.entity:system("ai_group_system")
 			local spline_start_position = nil
 			local difficulty = Managers.state.difficulty:get_difficulty()
 			local formation = PatrolFormationSettings[formation_name][difficulty]
+			local despawn_at_end = data.one_directional
 			formation.settings = PatrolFormationSettings[formation_name].settings
 			local spline_way_points = data and data.spline_way_points
 
 			if not spline_way_points then
-				local route_data, waypoints, start_pos = conflict_director.level_analysis:get_waypoint_spline(spline_name)
+				local route_data, waypoints, start_pos, one_directional = conflict_director.level_analysis:get_waypoint_spline(spline_name)
 
 				if route_data then
 					spline_way_points = waypoints
 					spline_start_position = start_pos
+					despawn_at_end = one_directional
 				end
 			end
 
@@ -388,7 +393,8 @@ TerrorEventMixer.run_functions = {
 			patrol_data.group_type = "spline_patrol"
 			patrol_data.spline_way_points = spline_way_points
 			patrol_data.spline_type = spline_type
-			patrol_data.despawn_at_end = true
+			patrol_data.despawn_at_end = despawn_at_end
+			patrol_data.spawn_all_at_same_position = true
 
 			conflict_director:spawn_spline_group(patrol_template, spline_start_position, patrol_data)
 		end
@@ -412,6 +418,7 @@ TerrorEventMixer.run_functions = {
 		patrol_data.spline_type = data.spline_type
 		patrol_data.despawn_at_end = false
 		patrol_data.zone_data = data.zone_data
+		patrol_data.spawn_all_at_same_position = false
 
 		conflict_director:spawn_spline_group(patrol_template, position, patrol_data)
 
@@ -489,7 +496,7 @@ TerrorEventMixer.run_functions = {
 			if pos then
 				local dir = center_pos - pos
 				local spawn_rot = Quaternion.look(Vector3(dir.x, dir.y, 1))
-				local breed = Breeds[conflict_director._debug_breed]
+				local breed = Breeds[conflict_director._debug_breed or "skaven_slave"]
 
 				conflict_director:spawn_queued_unit(breed, Vector3Box(pos), QuaternionBox(spawn_rot), "constant_70", nil, "horde_hidden")
 			end
@@ -588,14 +595,11 @@ TerrorEventMixer.run_functions = {
 
 				break
 			end
+		end
 
-			local volume_extension = ScriptUnit.extension(player_unit, "volume_system")
-
-			if not volume_extension:is_inside_volume(volume_name) then
-				all_inside = false
-
-				break
-			end
+		if all_inside then
+			local volume_system = Managers.state.entity:system("volume_system")
+			all_inside = EngineOptimizedExtensions.volume_has_all_units_inside(volume_system._volume_system, volume_name, unpack(human_players))
 		end
 
 		if all_inside then

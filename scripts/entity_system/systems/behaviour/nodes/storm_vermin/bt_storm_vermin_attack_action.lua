@@ -36,7 +36,7 @@ BTStormVerminAttackAction.enter = function (self, unit, blackboard, t)
 
 	network_manager:anim_event(unit, "to_combat")
 
-	blackboard.special_attacking_target = blackboard.target_unit
+	blackboard.attacking_target = blackboard.target_unit
 
 	self:_init_attack(unit, blackboard, t)
 
@@ -46,9 +46,9 @@ BTStormVerminAttackAction.enter = function (self, unit, blackboard, t)
 	end
 
 	blackboard.spawn_to_running = nil
-	local is_behind_player = AiUtils.unit_is_behind_player(unit, target_unit)
+	local is_flanking = AiUtils.unit_is_flanking_player(unit, target_unit)
 	local breed = blackboard.breed
-	local should_backstab = breed.use_backstab_vo and blackboard.total_slots_count < 5 and is_behind_player
+	local should_backstab = breed.use_backstab_vo and is_flanking
 
 	if should_backstab then
 		DialogueSystem:TriggerBackstab(target_unit, unit, blackboard)
@@ -104,7 +104,7 @@ BTStormVerminAttackAction._init_attack = function (self, unit, blackboard, t)
 
 	Managers.state.network:anim_event(unit, attack_anim)
 
-	local rotation = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.special_attacking_target)
+	local rotation = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.attacking_target)
 	blackboard.attack_rotation = QuaternionBox(rotation)
 
 	if blackboard.moving_attack and action.rotation_time_step then
@@ -140,7 +140,7 @@ BTStormVerminAttackAction.leave = function (self, unit, blackboard, t, reason, d
 	blackboard.reset_attack = nil
 	blackboard.anim_cb_stagger_immune = nil
 	blackboard.moving_attack = nil
-	blackboard.special_attacking_target = nil
+	blackboard.attacking_target = nil
 	blackboard.reset_attack = nil
 	blackboard.reset_attack_delay = nil
 	blackboard.reset_attack_animation_locked = nil
@@ -159,7 +159,13 @@ end
 BTStormVerminAttackAction.run = function (self, unit, blackboard, t, dt)
 	self:update_reset_attack(unit, t, dt, blackboard)
 
-	if Unit.alive(blackboard.special_attacking_target) then
+	if blackboard.attack_aborted then
+		return "done"
+	end
+
+	local target_is_valid = Unit.alive(blackboard.attacking_target)
+
+	if target_is_valid then
 		self:attack(unit, t, dt, blackboard)
 	end
 
@@ -167,7 +173,7 @@ BTStormVerminAttackAction.run = function (self, unit, blackboard, t, dt)
 		BTStormVerminAttackAction.catapult_enemies(unit, blackboard)
 	end
 
-	if blackboard.attack_finished then
+	if blackboard.attack_finished or not target_is_valid then
 		return "done"
 	end
 
@@ -198,7 +204,7 @@ BTStormVerminAttackAction.run = function (self, unit, blackboard, t, dt)
 		end
 	end
 
-	if Unit.alive(blackboard.special_attacking_target) and blackboard.bot_threat_at_t and blackboard.bot_threat_at_t < t then
+	if target_is_valid and blackboard.bot_threat_at_t and blackboard.bot_threat_at_t < t then
 		self:_create_bot_threat(unit, blackboard)
 
 		blackboard.bot_threat_at_t = nil
@@ -213,13 +219,13 @@ BTStormVerminAttackAction._create_bot_threat = function (self, unit, blackboard)
 
 	if bot_threat_duration then
 		if action.collision_type == "cylinder" then
-			local rot = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.special_attacking_target)
+			local rot = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.attacking_target)
 			local pos = self:_calculate_cylinder_collision(action, POSITION_LOOKUP[unit], rot)
 			local size = Vector3(action.radius, action.radius, action.height * 0.5)
 
 			Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(pos, "cylinder", size, nil, bot_threat_duration)
 		elseif action.collision_type == "oobb" or not action.collision_type then
-			local rot = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.special_attacking_target)
+			local rot = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.attacking_target)
 			local pos, rot, size = self:_calculate_oobb_collision(action, POSITION_LOOKUP[unit], rot)
 
 			Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(pos, "oobb", size, rot, bot_threat_duration)
@@ -269,7 +275,7 @@ BTStormVerminAttackAction.attack = function (self, unit, t, dt, blackboard)
 	local target_status_ext = blackboard.target_unit_status_extension
 
 	if t < blackboard.attack_rotation_update_timer and target_status_ext and not target_status_ext:get_is_dodging() and not target_status_ext:is_invisible() then
-		local rotation = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.special_attacking_target)
+		local rotation = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.attacking_target)
 		blackboard.attack_rotation = QuaternionBox(rotation)
 	end
 
@@ -368,8 +374,6 @@ BTStormVerminAttackAction.anim_cb_damage = function (self, unit, blackboard)
 			end
 		end
 	end
-
-	blackboard.special_attacking_target = nil
 end
 
 BTStormVerminAttackAction._calculate_cylinder_collision = function (self, action, self_pos, self_rot)

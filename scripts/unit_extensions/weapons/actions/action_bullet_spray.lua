@@ -175,7 +175,7 @@ ActionBulletSpray._clear_targets = function (self)
 end
 
 local actor_unit = Actor.unit
-local vector3_distance = Vector3.distance
+local vector3_distance_squared = Vector3.distance_squared
 local unit_local_position = Unit.local_position
 
 ActionBulletSpray._select_targets = function (self, world, show_outline)
@@ -207,8 +207,8 @@ ActionBulletSpray._select_targets = function (self, world, show_outline)
 		local b_unit = actor_unit(b.actor)
 		local a_pos = unit_local_position(a_unit, 0)
 		local b_pos = unit_local_position(b_unit, 0)
-		local a_distance = vector3_distance(player_position, a_pos)
-		local b_distance = vector3_distance(player_position, b_pos)
+		local a_distance = vector3_distance_squared(player_position, a_pos)
+		local b_distance = vector3_distance_squared(player_position, b_pos)
 
 		return a_distance < b_distance
 	end)

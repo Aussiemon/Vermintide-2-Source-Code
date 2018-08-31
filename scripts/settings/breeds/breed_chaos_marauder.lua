@@ -81,44 +81,11 @@ local breed_data = {
 		0.95,
 		1.125
 	},
-	max_health = {
-		13,
-		13,
-		19.5,
-		26,
-		39
-	},
-	diff_stagger_resist = {
-		2.4,
-		2.4,
-		3.2,
-		4,
-		4
-	},
-	stagger_duration = {
-		0.75,
-		2,
-		3,
-		1,
-		1.5,
-		4,
-		1,
-		1
-	},
-	stagger_duration_difficulty_mod = {
-		harder = 0.6,
-		hard = 0.8,
-		normal = 1,
-		hardest = 0.4,
-		easy = 1
-	},
-	hit_mass_counts = {
-		3,
-		3,
-		4.5,
-		6,
-		6
-	},
+	max_health = BreedTweaks.max_health.marauder,
+	diff_stagger_resist = BreedTweaks.diff_stagger_resist.marauder,
+	stagger_duration = BreedTweaks.stagger_duration.marauder,
+	stagger_duration_difficulty_mod = BreedTweaks.stagger_duration_difficulty_mod.fast,
+	hit_mass_counts = BreedTweaks.hit_mass_counts.marauder,
 	wwise_voices = {
 		"marauder_andreas",
 		"marauder_olof"

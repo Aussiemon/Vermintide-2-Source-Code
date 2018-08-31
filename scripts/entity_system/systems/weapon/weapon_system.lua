@@ -99,6 +99,10 @@ local ARGS = {
 	{
 		default = 1,
 		name = "backstab_multiplier"
+	},
+	{
+		default = false,
+		name = "attacker_is_level_unit"
 	}
 }
 
@@ -108,7 +112,7 @@ end
 
 local RPC_ATTACK_HIT_TEMP = {}
 
-WeaponSystem.send_rpc_attack_hit = function (self, damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, attack_direction, damage_profile_id, ...)
+WeaponSystem.send_rpc_attack_hit = function (self, damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, ...)
 	table.clear(RPC_ATTACK_HIT_TEMP)
 
 	local num_args = select("#", ...)
@@ -126,9 +130,9 @@ WeaponSystem.send_rpc_attack_hit = function (self, damage_source_id, attacker_un
 	end
 
 	if self.is_server or LEVEL_EDITOR_TEST then
-		self:rpc_attack_hit(nil, damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, attack_direction, damage_profile_id, unpack(RPC_ATTACK_HIT_TEMP))
+		self:rpc_attack_hit(nil, damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, unpack(RPC_ATTACK_HIT_TEMP))
 	else
-		Managers.state.network.network_transmit:send_rpc_server("rpc_attack_hit", damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, attack_direction, damage_profile_id, unpack(RPC_ATTACK_HIT_TEMP))
+		Managers.state.network.network_transmit:send_rpc_server("rpc_attack_hit", damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, unpack(RPC_ATTACK_HIT_TEMP))
 	end
 
 	local hit_unit = self.unit_storage:unit(hit_unit_id)
@@ -149,9 +153,9 @@ end
 
 local BLACKBOARDS = BLACKBOARDS
 
-WeaponSystem.rpc_attack_hit = function (self, sender, damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, attack_direction, damage_profile_id, power_level, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, hit_ragdoll_actor_id, blocking, shield_break_procced, backstab_multiplier)
+WeaponSystem.rpc_attack_hit = function (self, sender, damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, power_level, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, hit_ragdoll_actor_id, blocking, shield_break_procced, backstab_multiplier, attacker_is_level_unit)
 	local hit_unit = self.unit_storage:unit(hit_unit_id)
-	local attacker_unit = self.unit_storage:unit(attacker_unit_id)
+	local attacker_unit = self.network_manager:game_object_or_level_unit(attacker_unit_id, attacker_is_level_unit)
 
 	if not Unit.alive(hit_unit) or not Unit.alive(attacker_unit) then
 		return
@@ -200,7 +204,7 @@ WeaponSystem.rpc_attack_hit = function (self, sender, damage_source_id, attacker
 
 	local t = self.t
 
-	DamageUtils.server_apply_hit(t, attacker_unit, hit_unit, hit_zone_name or "full", attack_direction, hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit, backstab_multiplier)
+	DamageUtils.server_apply_hit(t, attacker_unit, hit_unit, hit_zone_name or "full", hit_position, attack_direction, hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit, backstab_multiplier)
 end
 
 WeaponSystem.destroy = function (self)
@@ -367,37 +371,44 @@ end
 WeaponSystem._update_debug = function (self)
 	if script_data.player_mechanics_goodness_debug and not DEDICATED_SERVER then
 		local player = Managers.player:player_from_peer_id(Network.peer_id())
+
+		if not player then
+			return
+		end
+
 		local unit = player.player_unit
 		local is_server = Managers.player.is_server
 
-		if DebugKeyHandler.key_pressed("b", "take some damage", "player") then
-			DamageUtils.debug_deal_damage(unit, "basic_debug_damage_player")
-		elseif DebugKeyHandler.key_pressed("v", "kill player", "player", "left ctrl") then
-			local status_extension = ScriptUnit.extension(unit, "status_system")
-			status_extension.wounds = 0
+		if Unit.alive(unit) then
+			if DebugKeyHandler.key_pressed("b", "take some damage", "player") then
+				DamageUtils.debug_deal_damage(unit, "basic_debug_damage_player")
+			elseif DebugKeyHandler.key_pressed("v", "kill player", "player", "left ctrl") then
+				local status_extension = ScriptUnit.extension(unit, "status_system")
+				status_extension.wounds = 0
 
-			DamageUtils.debug_deal_damage(unit, "basic_debug_damage_kill")
-		elseif DebugKeyHandler.key_pressed("b", "revive player", "player", "left shift") then
-			local network_manager = self.network_manager
-			local unit_id = network_manager:unit_game_object_id(unit)
-			local status_extension = ScriptUnit.extension(unit, "status_system")
+				DamageUtils.debug_deal_damage(unit, "basic_debug_damage_kill")
+			elseif DebugKeyHandler.key_pressed("b", "revive player", "player", "left shift") then
+				local network_manager = self.network_manager
+				local unit_id = network_manager:unit_game_object_id(unit)
+				local status_extension = ScriptUnit.extension(unit, "status_system")
 
-			if status_extension:is_knocked_down() then
-				network_manager.network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.revived, true, unit_id, unit_id)
-				status_extension:set_respawned(true)
-			elseif status_extension:is_ready_for_assisted_respawn() then
-				network_manager.network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.assisted_respawning, true, unit_id, unit_id)
-				status_extension:set_assisted_respawning(true, unit)
+				if status_extension:is_knocked_down() then
+					network_manager.network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.revived, true, unit_id, unit_id)
+					status_extension:set_respawned(true)
+				elseif status_extension:is_ready_for_assisted_respawn() then
+					network_manager.network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.assisted_respawning, true, unit_id, unit_id)
+					status_extension:set_assisted_respawning(true, unit)
+				end
+			elseif DebugKeyHandler.key_pressed("b", "heal player", "player", "left ctrl") then
+				DamageUtils.debug_heal(unit, 20)
+			elseif DebugKeyHandler.key_pressed("b", "block", "player", "left alt") then
+				local status_extension = ScriptUnit.extension(unit, "status_system")
+				local network_manager = self.network_manager
+				local unit_id = network_manager:unit_game_object_id(unit)
+
+				network_manager.network_transmit:send_rpc_server("rpc_set_blocking", unit_id, true)
+				status_extension:set_blocking(true)
 			end
-		elseif DebugKeyHandler.key_pressed("b", "heal player", "player", "left ctrl") then
-			DamageUtils.debug_heal(unit, 20)
-		elseif DebugKeyHandler.key_pressed("b", "block", "player", "left alt") then
-			local status_extension = ScriptUnit.extension(unit, "status_system")
-			local network_manager = self.network_manager
-			local unit_id = network_manager:unit_game_object_id(unit)
-
-			network_manager.network_transmit:send_rpc_server("rpc_set_blocking", unit_id, true)
-			status_extension:set_blocking(true)
 		end
 	end
 

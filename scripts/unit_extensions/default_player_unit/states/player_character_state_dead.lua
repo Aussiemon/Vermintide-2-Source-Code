@@ -23,10 +23,11 @@ PlayerCharacterStateDead.on_enter = function (self, unit, input, dt, context, t,
 	CharacterStateHelper.show_inventory_3p(unit, false, include_local_player, self.is_server, self.inventory_extension)
 	CharacterStateHelper.change_camera_state(self.player, "follow_third_person")
 
-	self.dead_player_destroy_time = (Development.parameter("fast_respawns") and 1) or PlayerUnitDamageSettings.dead_player_destroy_time
-	local drop_items_delay = (params and params.drop_items_delay and not Development.parameter("fast_respawns")) or 0
+	local fast_respawns = Development.parameter("fast_respawns")
+	self.dead_player_destroy_time = (fast_respawns and 1) or PlayerUnitDamageSettings.dead_player_destroy_time
+	local drop_items_delay = (not fast_respawns and params and params.drop_items_delay) or 0
 
-	assert(drop_items_delay < self.dead_player_destroy_time, "Drop items delay too large - this will cause a drop attempt when the player is already despawned!")
+	fassert(drop_items_delay < self.dead_player_destroy_time, "Drop items delay too large - this will cause a drop attempt when the player is already despawned!")
 
 	self.drop_items_time = t + drop_items_delay
 	local override_item_drop_position = (params and params.override_item_drop_position) or nil
@@ -65,9 +66,12 @@ PlayerCharacterStateDead.update = function (self, unit, input, dt, context, t)
 		Managers.state.spawn:delayed_despawn(player)
 
 		self.despawned = true
-		MOOD_BLACKBOARD.knocked_down = false
-		MOOD_BLACKBOARD.wounded = false
-		MOOD_BLACKBOARD.bleeding_out = false
+
+		if player.local_player then
+			MOOD_BLACKBOARD.knocked_down = false
+			MOOD_BLACKBOARD.wounded = false
+			MOOD_BLACKBOARD.bleeding_out = false
+		end
 	end
 end
 

@@ -44,7 +44,7 @@ PlayerBot.local_player_id = function (self)
 end
 
 PlayerBot.platform_id = function (self)
-	assert(false)
+	ferror("Not implemented")
 end
 
 PlayerBot.type = function (self)
@@ -60,6 +60,17 @@ PlayerBot.profile_display_name = function (self)
 	local display_name = profile and profile.display_name
 
 	return display_name
+end
+
+PlayerBot.despawn = function (self)
+	local player_unit = self.player_unit
+
+	if Unit.alive(player_unit) then
+		REMOVE_PLAYER_UNIT_FROM_LISTS(player_unit)
+		Managers.state.unit_spawner:mark_for_deletion(player_unit)
+	else
+		print("player_bot was already despanwed. Should not happen.")
+	end
 end
 
 PlayerBot.name = function (self)
@@ -143,6 +154,9 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 			player = self,
 			bot_profile = self.bot_profile,
 			nav_world = nav_world
+		},
+		ai_bot_group_system = {
+			initial_inventory = initial_inventory
 		},
 		input_system = {
 			player = self

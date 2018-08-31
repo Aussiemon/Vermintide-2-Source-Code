@@ -14,6 +14,14 @@ if script_data.honduras_demo then
 		1,
 		2
 	}
+elseif LAUNCH_MODE == "attract_benchmark" then
+	ProfilePriority = {
+		3,
+		4,
+		2,
+		1,
+		5
+	}
 else
 	ProfilePriority = {
 		5,

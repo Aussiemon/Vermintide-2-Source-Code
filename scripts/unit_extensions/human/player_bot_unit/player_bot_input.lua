@@ -599,6 +599,10 @@ PlayerBotInput.get_last_scroll_value = function (self)
 	return
 end
 
+PlayerBotInput.set_input_key_scale = function (self, input_key, scale, lerp_time)
+	return
+end
+
 PlayerBotInput.move = function (self, vector)
 	self.move.x = vector.x
 	self.move.y = vector.y

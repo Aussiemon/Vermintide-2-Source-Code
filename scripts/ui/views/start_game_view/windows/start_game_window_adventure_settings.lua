@@ -212,9 +212,9 @@ StartGameWindowAdventureSettings._update_difficulty_option = function (self)
 		self._widgets_by_name.game_option_reward.content.button_hotspot.disable_button = not self._enable_play
 
 		if self._enable_play then
-			self.parent.parent:set_input_description("play_available")
+			self.parent:set_input_description("play_available")
 		else
-			self.parent.parent:set_input_description(nil)
+			self.parent:set_input_description(nil)
 		end
 	end
 end

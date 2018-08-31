@@ -10,6 +10,7 @@ local num_experience_entries = definitions.num_experience_entries
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animations
 local console_cursor_definition = definitions.console_cursor_definition
+local generic_input_actions = definitions.generic_input_actions
 
 local function dprint(...)
 	print("[LevelEndView]", ...)
@@ -383,7 +384,11 @@ LevelEndView.create_ui_elements = function (self)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
-	self._console_cursor = UIWidget.init(console_cursor_definition)
+	local input_service = self.input_manager:get_service("end_of_level")
+	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_renderer, input_service, 5, 10, generic_input_actions.default)
+
+	self._menu_input_description:set_input_description(nil)
+
 	self.active = true
 
 	if self.game_won then
@@ -455,6 +460,7 @@ local cam_shake_settings = {
 
 LevelEndView.add_camera_shake = function (self, settings, start_time, scale)
 	local data = {}
+	local current_rot = self:get_camera_rotation()
 	local settings = settings or cam_shake_settings
 	local duration = settings.duration
 	local fade_in = settings.fade_in
@@ -467,6 +473,7 @@ LevelEndView.add_camera_shake = function (self, settings, start_time, scale)
 	data.fade_out_time = fade_out and data.end_time - fade_out
 	data.seed = settings.seed or Math.random(1, 100)
 	data.scale = scale or 1
+	data.camera_rotation_boxed = QuaternionBox(current_rot)
 	self._active_camera_shakes = {
 		[data] = true
 	}
@@ -487,12 +494,12 @@ LevelEndView._apply_shake_event = function (self, settings, t)
 
 	local pitch_noise_value = self:_calculate_perlin_value(t - settings.start_time, settings) * settings.scale
 	local yaw_noise_value = self:_calculate_perlin_value(t - settings.start_time + 10, settings) * settings.scale
-	local current_rot = self:get_camera_rotation()
+	local starting_rotation = settings.camera_rotation_boxed:unbox()
 	local deg_to_rad = math.pi / 180
 	local yaw_offset = Quaternion(Vector3.up(), yaw_noise_value * deg_to_rad)
 	local pitch_offset = Quaternion(Vector3.right(), pitch_noise_value * deg_to_rad)
 	local total_offset = Quaternion.multiply(yaw_offset, pitch_offset)
-	local rotation = Quaternion.multiply(Quaternion.identity(), total_offset)
+	local rotation = Quaternion.multiply(starting_rotation, total_offset)
 
 	self:set_camera_rotation(rotation)
 
@@ -642,10 +649,12 @@ LevelEndView.draw = function (self, dt, input_service)
 
 	UIRenderer.end_pass(ui_renderer)
 
-	if gamepad_active and not Managers.popup:has_popup() then
-		UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
-		UIRenderer.draw_widget(ui_top_renderer, self._console_cursor)
-		UIRenderer.end_pass(ui_top_renderer)
+	if self._cursor_visible and gamepad_active then
+		local ready_available = not self._ready_button_widget.content.button_hotspot.disable_button
+
+		if ready_available then
+			self._menu_input_description:draw(ui_top_renderer, dt)
+		end
 	end
 end
 
@@ -752,6 +761,35 @@ LevelEndView.update = function (self, dt, t)
 
 		button_pressed = true
 	end
+
+	if not button_pressed then
+		self:_update_gamepad_input(dt, t)
+	end
+end
+
+LevelEndView._update_gamepad_input = function (self, dt, t)
+	local input_service = self:input_service()
+	local button_available = not self._ready_button_widget.content.button_hotspot.disable_button
+
+	if button_available and (input_service:get("refresh") or Managers.invite:has_invitation()) then
+		self:play_sound("play_gui_mission_summary_button_return_to_keep_click")
+
+		if self._left_lobby then
+			self:_exit_to_game()
+		else
+			self:_signal_done()
+		end
+	end
+end
+
+LevelEndView.input_enabled = function (self)
+	return not self._ready_button_widget.content.button_hotspot.disable_button
+end
+
+LevelEndView.set_input_description = function (self, input_desc)
+	local input_desc = definitions.generic_input_actions[input_desc]
+
+	self._menu_input_description:set_input_description(input_desc)
 end
 
 LevelEndView._handle_state_auto_change = function (self)
@@ -953,12 +991,16 @@ LevelEndView._signal_done = function (self)
 	if not self._left_lobby then
 		if self.is_server then
 			local lobby = self._lobby
-			local members = lobby:members():get_members()
-			local own_peer_id = Network.peer_id()
+			local lobby_members = lobby:members()
 
-			for i, peer_id in ipairs(members) do
-				if peer_id ~= own_peer_id then
-					RPC.rpc_signal_end_of_level_done(peer_id)
+			if lobby_members then
+				local members = lobby_members:get_members()
+				local own_peer_id = Network.peer_id()
+
+				for i, peer_id in ipairs(members) do
+					if peer_id ~= own_peer_id then
+						RPC.rpc_signal_end_of_level_done(peer_id)
+					end
 				end
 			end
 		else
@@ -996,13 +1038,17 @@ LevelEndView._update_force_shutdown = function (self, dt)
 		self:_exit_to_game()
 	elseif not self._left_lobby then
 		local all_done = true
-		local members = self._lobby:members():get_members()
+		local lobby_members = self._lobby:members()
 
-		for i, peer_id in ipairs(members) do
-			if not self._done_peers[peer_id] then
-				all_done = false
+		if lobby_members then
+			local members = self._lobby:members():get_members()
 
-				break
+			for i, peer_id in ipairs(members) do
+				if not self._done_peers[peer_id] then
+					all_done = false
+
+					break
+				end
 			end
 		end
 

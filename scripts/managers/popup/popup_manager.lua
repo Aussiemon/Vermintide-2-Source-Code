@@ -91,6 +91,8 @@ PopupManager.cancel_popup = function (self, popup_id)
 end
 
 PopupManager.cancel_all_popups = function (self)
+	Managers.account:cancel_all_popups()
+
 	return self._handler:cancel_all_popups()
 end
 

@@ -270,7 +270,7 @@ local settings_by_screen = {
 		camera_rotation = {
 			0,
 			0,
-			0
+			-0.1
 		},
 		contains_new_content = function ()
 			return false
@@ -358,6 +358,7 @@ local widgets_definitions = {
 				viewport_name = "inventory_preview_viewport",
 				level_name = "levels/ui_character_selection/world",
 				enable_sub_gui = false,
+				fov = 50,
 				world_name = "inventory_preview",
 				world_flags = {
 					Application.DISABLE_SOUND,
@@ -367,13 +368,13 @@ local widgets_definitions = {
 				layer = UILayer.default,
 				camera_position = {
 					0,
-					6,
-					2
+					0,
+					0
 				},
 				camera_lookat = {
 					0,
 					0,
-					1
+					-0.1
 				}
 			}
 		},
@@ -385,8 +386,7 @@ local widgets_definitions = {
 	hero_level_text = UIWidgets.create_simple_text("n/a", "hero_level_text", nil, nil, hero_level_text_style),
 	hero_prestige_level_text = UIWidgets.create_simple_text("n/a", "hero_prestige_level_text", nil, nil, hero_level_text_style),
 	background = UIWidgets.create_simple_texture("large_frame_01", "dead_space_filler"),
-	exit_button = UIWidgets.create_default_button("exit_button", scenegraph_definition.exit_button.size, nil, nil, Localize("interaction_action_close"), nil, nil, nil, nil, disable_with_gamepad),
-	console_cursor = UIWidgets.create_console_cursor("console_cursor")
+	exit_button = UIWidgets.create_default_button("exit_button", scenegraph_definition.exit_button.size, nil, nil, Localize("interaction_action_close"), nil, nil, nil, nil, disable_with_gamepad)
 }
 local animations = {}
 local attachments = {

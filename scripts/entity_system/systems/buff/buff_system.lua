@@ -31,6 +31,7 @@ BuffSystem.init = function (self, entity_system_creation_context, system_name)
 
 	self.network_manager = entity_system_creation_context.network_manager
 	self.unit_extension_data = {}
+	self.frozen_unit_extension_data = {}
 	self.player_group_buffs = {}
 	self.volume_buffs = {}
 	self.server_controlled_buffs = {}
@@ -39,6 +40,8 @@ BuffSystem.init = function (self, entity_system_creation_context, system_name)
 		self.next_server_buff_id = 1
 		self.free_server_buff_ids = {}
 	end
+
+	self.active_buff_units = {}
 end
 
 BuffSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
@@ -77,8 +80,9 @@ BuffSystem.hot_join_sync = function (self, sender)
 end
 
 BuffSystem.on_remove_extension = function (self, unit, extension_name)
-	self:on_freeze_extension(unit, extension_name)
-
+	self.frozen_unit_extension_data[unit] = nil
+	self.unit_extension_data[unit] = nil
+	self.active_buff_units[unit] = nil
 	local unit_data = self.server_controlled_buffs[unit]
 
 	if unit_data then
@@ -97,11 +101,56 @@ BuffSystem.on_remove_extension = function (self, unit, extension_name)
 end
 
 BuffSystem.on_freeze_extension = function (self, unit, extension_name)
-	self.unit_extension_data[unit] = nil
+	return
 end
 
+BuffSystem.freeze = function (self, unit, extension_name, reason)
+	local frozen_extensions = self.frozen_unit_extension_data
+
+	if frozen_extensions[unit] then
+		return
+	end
+
+	local extension = self.unit_extension_data[unit]
+
+	fassert(extension, "Unit to freeze didn't have unfrozen extension")
+
+	self.unit_extension_data[unit] = nil
+	frozen_extensions[unit] = extension
+
+	extension:freeze()
+	fassert(self.active_buff_units[unit] == nil, "Unit had active buffs after freeze!")
+end
+
+BuffSystem.unfreeze = function (self, unit)
+	local extension = self.frozen_unit_extension_data[unit]
+
+	fassert(extension, "Unit to unfreeze didn't have frozen extension")
+
+	self.frozen_unit_extension_data[unit] = nil
+	self.unit_extension_data[unit] = extension
+end
+
+local dummy_input = {}
+
 BuffSystem.update = function (self, context, t)
-	BuffSystem.super.update(self, context, t)
+	if not script_data.buff_no_opt then
+		local dt = context.dt
+		local active_buff_units = self.active_buff_units
+		self.in_update = true
+
+		for unit, extension in pairs(active_buff_units) do
+			local extension = active_buff_units[unit]
+
+			assert(#extension._buffs > 0, "Unit was active but didn't have buffs")
+			extension:update(unit, dummy_input, dt, context, t)
+		end
+
+		self.in_update = false
+	else
+		Debug.text("Unoptimized buff update")
+		BuffSystem.super.update(self, context, t)
+	end
 end
 
 BuffSystem.get_player_group_buffs = function (self)
@@ -113,6 +162,7 @@ BuffSystem.destroy = function (self)
 
 	self.network_event_delegate = nil
 	self.unit_extension_data = nil
+	self.active_buff_units = nil
 end
 
 BuffSystem._next_free_server_buff_id = function (self)
@@ -463,6 +513,16 @@ BuffSystem.rpc_remove_gromril_armour = function (self, sender, unit_id)
 	end
 
 	buff_extension:trigger_procs("on_gromril_armour_removed")
+end
+
+BuffSystem.set_buff_ext_active = function (self, unit, is_active)
+	if is_active then
+		fassert(not self.in_update, "Tried to activate extension while in BuffSystem:update()")
+
+		self.active_buff_units[unit] = self.unit_extension_data[unit]
+	else
+		self.active_buff_units[unit] = nil
+	end
 end
 
 return

@@ -36,6 +36,10 @@ ProjectileLinkerSystem.on_remove_extension = function (self, unit, extension_nam
 	return ProjectileLinkerSystem.super.on_remove_extension(self, unit, extension_name)
 end
 
+ProjectileLinkerSystem.freeze = function (self, unit, extension_name, extension_name)
+	self:clear_linked_projectiles(unit)
+end
+
 ProjectileLinkerSystem.clear_linked_projectiles = function (self, unit)
 	local extension = ScriptUnit.extension(unit, "projectile_linker_system")
 	local linked_projectiles = extension.linked_projectiles
@@ -44,6 +48,7 @@ ProjectileLinkerSystem.clear_linked_projectiles = function (self, unit)
 
 	for i = 1, num_linked_projectiles, 1 do
 		local linked_projectile_unit = linked_projectiles[i]
+		linked_projectiles[i] = nil
 
 		if self:_has_reference(linked_projectile_unit) then
 			self:_remove_linked_projectile_reference(linked_projectile_unit)

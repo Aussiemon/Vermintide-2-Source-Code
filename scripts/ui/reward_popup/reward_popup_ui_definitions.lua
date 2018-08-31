@@ -576,8 +576,8 @@ local animations = {
 		},
 		{
 			name = "fade_out_title_text",
-			start_progress = 3.6,
-			end_progress = 3.8,
+			start_progress = 2.5,
+			end_progress = 2.7,
 			init = function (ui_scenegraph, scenegraph_definition, widget_type, params)
 				return
 			end,
@@ -629,7 +629,7 @@ local animations = {
 		{
 			name = "fade_in_blur",
 			start_progress = 0,
-			end_progress = 0.2,
+			end_progress = 0.1,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
 			end,
@@ -643,8 +643,8 @@ local animations = {
 		},
 		{
 			name = "background_fade_in",
-			start_progress = 0.2,
-			end_progress = 0.5,
+			start_progress = 0.1,
+			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				if not params.played_start_sound then
 					params.played_start_sound = true
@@ -666,8 +666,8 @@ local animations = {
 		},
 		{
 			name = "background_entry",
-			start_progress = 0.4,
-			end_progress = 0.5,
+			start_progress = 0.25,
+			end_progress = 0.4,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
 			end,
@@ -693,8 +693,8 @@ local animations = {
 		},
 		{
 			name = "background_expand",
-			start_progress = 0.6,
-			end_progress = 0.9,
+			start_progress = 0.4,
+			end_progress = 0.5,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
 			end,
@@ -741,7 +741,7 @@ local animations = {
 		{
 			name = "background_collapse",
 			start_progress = 0,
-			end_progress = 0.3,
+			end_progress = 0.15,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
 			end,
@@ -790,8 +790,8 @@ local animations = {
 		},
 		{
 			name = "fade_out_background",
-			start_progress = 0.3,
-			end_progress = 0.8,
+			start_progress = 0.15,
+			end_progress = 0.4,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
 			end,
@@ -811,8 +811,8 @@ local animations = {
 		},
 		{
 			name = "fade_out_blur",
-			start_progress = 0.8,
-			end_progress = 1,
+			start_progress = 0.4,
+			end_progress = 0.5,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
 			end,

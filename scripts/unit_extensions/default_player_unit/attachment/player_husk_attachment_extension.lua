@@ -10,7 +10,7 @@ PlayerHuskAttachmentExtension.init = function (self, extension_init_context, uni
 	self._attachments = {
 		slots = {}
 	}
-	self._slot_buffs = {}
+	self._synced_slot_buffs = {}
 	self.current_item_buffs = {}
 end
 
@@ -32,7 +32,7 @@ PlayerHuskAttachmentExtension.update = function (self, unit, input, dt, context,
 end
 
 PlayerHuskAttachmentExtension.hot_join_sync = function (self, sender)
-	AttachmentUtils.hot_join_sync(sender, self._unit, self._attachments.slots)
+	AttachmentUtils.hot_join_sync(sender, self._unit, self._attachments.slots, self._synced_slot_buffs)
 end
 
 PlayerHuskAttachmentExtension.create_attachment = function (self, slot_name, item_data)
@@ -59,9 +59,12 @@ PlayerHuskAttachmentExtension.create_attachment = function (self, slot_name, ite
 	self:_show_attachment(slot_name, slot_data, true)
 
 	attachments.slots[slot_name] = slot_data
-	local outline_extension = ScriptUnit.extension(unit, "outline_system")
 
-	outline_extension:reapply_outline()
+	if not DEDICATED_SERVER then
+		local outline_extension = ScriptUnit.extension(unit, "outline_system")
+
+		outline_extension:reapply_outline()
+	end
 
 	local cosmetic_extension = ScriptUnit.has_extension(unit, "cosmetic_system")
 
@@ -161,7 +164,9 @@ PlayerHuskAttachmentExtension._remove_buffs = function (self, slot_name)
 end
 
 PlayerHuskAttachmentExtension.add_buffs_to_slot = function (self, slot_name, buff_name_1, buff_data_type_1, value_1, buff_name_2, buff_data_type_2, value_2, buff_name_3, buff_data_type_3, value_3, buff_name_4, buff_data_type_4, value_4)
-	local slot_buffs = self._slot_buffs[slot_name] or {}
+	local slot_buffs = self._synced_slot_buffs[slot_name] or {}
+
+	table.clear(slot_buffs)
 
 	if buff_name_1 ~= "n/a" then
 		slot_buffs[buff_name_1] = {
@@ -187,11 +192,9 @@ PlayerHuskAttachmentExtension.add_buffs_to_slot = function (self, slot_name, buf
 		}
 	end
 
-	self._slot_buffs[slot_name] = slot_buffs
+	self._synced_slot_buffs[slot_name] = slot_buffs
 
-	if Managers.player.is_server then
-		self:_apply_buffs(slot_buffs, slot_name)
-	end
+	self:_apply_buffs(slot_buffs, slot_name)
 end
 
 return

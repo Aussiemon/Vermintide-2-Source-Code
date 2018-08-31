@@ -68,9 +68,29 @@ GameServer.update = function (self, dt, t)
 
 	if members then
 		members:update()
+
+		local members_joined = members:get_members_joined()
+
+		for i = 1, #members_joined, 1 do
+			local peer_id = members_joined[i]
+
+			GameServerInternal.add_ping_peer(peer_id)
+		end
+
+		local members_left = members:get_members_left()
+
+		for i = 1, #members_left, 1 do
+			local peer_id = members_left[i]
+
+			GameServerInternal.remove_ping_peer(peer_id)
+		end
 	end
 
 	return self._state
+end
+
+GameServer.ping_by_peer = function (self, peer_id)
+	return GameServerInternal.ping(peer_id)
 end
 
 GameServer.remove_peer = function (self, peer_id)

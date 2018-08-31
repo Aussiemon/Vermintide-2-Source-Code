@@ -608,7 +608,7 @@ local generic_input_actions = {
 		}
 	}
 }
-input_actions = {
+local input_actions = {
 	salvage = {
 		actions = {
 			{

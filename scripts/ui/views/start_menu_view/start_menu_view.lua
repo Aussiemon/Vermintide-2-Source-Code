@@ -64,7 +64,10 @@ StartMenuView.init = function (self, ingame_ui_context)
 	input_manager:map_device_to_service("start_menu_view", "mouse")
 	input_manager:map_device_to_service("start_menu_view", "gamepad")
 
-	self.world_previewer = MenuWorldPreviewer:new(ingame_ui_context)
+	self.world_previewer = MenuWorldPreviewer:new(ingame_ui_context, UISettings.hero_selection_camera_position_by_character)
+
+	self.world_previewer:force_stream_highest_mip_levels()
+
 	local state_machine_params = {
 		wwise_world = self.wwise_world,
 		ingame_ui_context = ingame_ui_context,
@@ -281,6 +284,7 @@ StartMenuView.on_enter = function (self, menu_state_name, menu_sub_state_name)
 	self:play_sound("play_gui_amb_start_screen_enter")
 	self:play_sound("play_gui_amb_hero_screen_loop_begin")
 	self:play_sound("Play_menu_screen_music")
+	UISettings.hero_fullscreen_menu_on_enter()
 end
 
 StartMenuView.set_current_hero = function (self, profile_index)
@@ -488,6 +492,7 @@ StartMenuView.on_exit = function (self)
 	self:play_sound("hud_in_inventory_state_off")
 	self:play_sound("play_gui_amb_hero_screen_loop_end")
 	self:play_sound("Stop_menu_screen_music")
+	UISettings.hero_fullscreen_menu_on_exit()
 end
 
 StartMenuView.exit = function (self, return_to_game)

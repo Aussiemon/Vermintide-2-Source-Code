@@ -28,7 +28,8 @@ ScriptBackendPlayFab.update_signin = function (self)
 				SteamTicket = ticket,
 				InfoRequestParameters = {
 					GetUserReadOnlyData = true,
-					GetTitleData = true
+					GetTitleData = true,
+					GetUserData = true
 				}
 			}
 			local login_request_cb = callback(self, "login_request_cb")
@@ -129,11 +130,7 @@ ScriptBackendPlayFab.authenticated = function (self)
 		return false
 	end
 
-	if self._signed_in then
-		return true
-	end
-
-	return false
+	return self._signed_in
 end
 
 ScriptBackendPlayFab.get_signin_result = function (self)

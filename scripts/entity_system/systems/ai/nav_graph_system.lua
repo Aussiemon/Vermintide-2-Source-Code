@@ -205,6 +205,58 @@ NavGraphSystem._level_unit_smart_object_id = function (self, unit)
 	return smart_object_id
 end
 
+NavGraphSystem.queue_add_nav_graph_from_flow = function (self, unit)
+	local extension = self.unit_extension_data[unit]
+
+	fassert(extension, "Tried to add nav graph from flow for a unit without nav graph extension. %s", unit)
+
+	self.nav_graphs_units_to_add = self.nav_graphs_units_to_add or {}
+	self.nav_graphs_units_to_add[#self.nav_graphs_units_to_add + 1] = unit
+end
+
+NavGraphSystem.queue_remove_nav_graph_from_flow = function (self, unit)
+	local extension = self.unit_extension_data[unit]
+
+	fassert(extension, "Tried to add nav graph from flow for a unit without nav graph extension. %s", unit)
+
+	self.nav_graphs_units_to_remove = self.nav_graphs_units_to_remove or {}
+	self.nav_graphs_units_to_remove[#self.nav_graphs_units_to_remove + 1] = unit
+end
+
+NavGraphSystem.add_nav_graph = function (self, unit)
+	local extension = self.unit_extension_data[unit]
+
+	fassert(extension, "Tried to add nav graph from flow for a unit without nav graph extension. %s", unit)
+
+	if extension.nav_graph_removed then
+		local navgraphs = extension.navgraphs
+
+		for i, navgraph in ipairs(navgraphs) do
+			GwNavGraph.add_to_database(navgraph)
+			print("adding navgraph")
+		end
+
+		extension.nav_graph_removed = false
+	end
+end
+
+NavGraphSystem.remove_nav_graph = function (self, unit)
+	local extension = self.unit_extension_data[unit]
+
+	fassert(extension, "Tried to remove nav graph from flow for a unit without nav graph extension. %s", unit)
+
+	if not extension.nav_graph_removed then
+		local navgraphs = extension.navgraphs
+
+		for i, navgraph in ipairs(navgraphs) do
+			GwNavGraph.remove_from_database(navgraph)
+			print("removing navgraph")
+		end
+
+		extension.nav_graph_removed = true
+	end
+end
+
 NavGraphSystem.init_nav_graph_from_flow = function (self, unit)
 	local extension = self.unit_extension_data[unit]
 
@@ -322,6 +374,24 @@ NavGraphSystem.update = function (self, context, t, dt)
 			LineObject.reset(self.line_object)
 			LineObject.dispatch(self.world, self.line_object)
 		end
+	end
+
+	if self.nav_graphs_units_to_add then
+		for i = 1, #self.nav_graphs_units_to_add, 1 do
+			local nav_graphs_unit_to_add = self.nav_graphs_units_to_add[i]
+
+			self:add_nav_graph(nav_graphs_unit_to_add)
+		end
+
+		self.nav_graphs_units_to_add = nil
+	elseif self.nav_graphs_units_to_remove then
+		for i = 1, #self.nav_graphs_units_to_remove, 1 do
+			local nav_graphs_unit_to_remove = self.nav_graphs_units_to_remove[i]
+
+			self:remove_nav_graph(nav_graphs_unit_to_remove)
+		end
+
+		self.nav_graphs_units_to_remove = nil
 	end
 
 	if not LEVEL_EDITOR_TEST and self.ledgelator_version ~= WANTED_LEDGELATOR_VERSION and math.floor(t) % 10 > 3 then

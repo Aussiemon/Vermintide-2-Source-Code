@@ -302,24 +302,28 @@ VoteTemplates = {
 		end
 	},
 	game_settings_vote = {
-		priority = 110,
 		ingame_vote = false,
 		client_start_vote_rpc = "rpc_server_request_start_vote_lookup",
-		min_required_voters = 1,
+		gamepad_support = true,
 		text = "game_settings_vote",
 		minimum_voter_percent = 1,
 		success_percent = 1,
 		server_start_vote_rpc = "rpc_client_start_vote_lookup",
 		duration = 30,
+		priority = 110,
+		min_required_voters = 1,
+		gamepad_input_desc = "default_voting",
 		timeout_vote_option = 2,
 		vote_options = {
 			{
 				text = "popup_choice_accept",
+				gamepad_input = "confirm",
 				vote = 1,
 				input = "ingame_vote_yes"
 			},
 			{
 				text = "dlc1_3_1_decline",
+				gamepad_input = "back",
 				vote = 2,
 				input = "ingame_vote_no"
 			}
@@ -396,24 +400,28 @@ VoteTemplates = {
 		end
 	},
 	game_settings_deed_vote = {
-		priority = 110,
 		ingame_vote = false,
 		client_start_vote_rpc = "rpc_server_request_start_vote_deed",
-		min_required_voters = 1,
+		gamepad_support = true,
 		text = "game_settings_deed_vote",
 		minimum_voter_percent = 1,
 		success_percent = 1,
 		server_start_vote_rpc = "rpc_client_start_vote_deed",
 		duration = 30,
+		priority = 110,
+		min_required_voters = 1,
+		gamepad_input_desc = "default_voting",
 		timeout_vote_option = 2,
 		vote_options = {
 			{
 				text = "popup_choice_accept",
+				gamepad_input = "confirm",
 				vote = 1,
 				input = "ingame_vote_yes"
 			},
 			{
 				text = "dlc1_3_1_decline",
+				gamepad_input = "back",
 				vote = 2,
 				input = "ingame_vote_no"
 			}

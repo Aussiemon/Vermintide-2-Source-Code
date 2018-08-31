@@ -23,6 +23,8 @@ NavTagVolumeUtils.nav_tags_from_position = function (nav_world, position, above,
 				}
 			end
 		end
+
+		GwNavQueries.destroy_query_dynamic_output(query_output)
 	end
 
 	return nav_tags
@@ -31,6 +33,7 @@ end
 NavTagVolumeUtils.inside_nav_tag_layer = function (nav_world, position, above, below, layer_name)
 	local layer = LAYER_ID_MAPPING[layer_name]
 	local query_output = GwNavQueries.tag_volumes_from_position(nav_world, position, above, below)
+	local result = nil
 
 	if query_output then
 		local tag_volume_n = GwNavQueries.nav_tag_volume_count(query_output)
@@ -40,10 +43,16 @@ NavTagVolumeUtils.inside_nav_tag_layer = function (nav_world, position, above, b
 			local is_exclusive, color, layer_id, smart_object_id, user_data_id = GwNavTagVolume.navtag(tag_volume)
 
 			if layer == layer_id then
-				return true
+				result = true
+
+				break
 			end
 		end
+
+		GwNavQueries.destroy_query_dynamic_output(query_output)
 	end
+
+	return result
 end
 
 NavTagVolumeUtils.inside_level_volume_layer = function (level, nav_tag_volume_handler, position, layer_name)

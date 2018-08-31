@@ -180,7 +180,11 @@ DebugTextManager.clear_unit_text = function (self, clear_unit, clear_category)
 		if not clear_unit or clear_unit == unit then
 			for category, gui_texts in pairs(categories) do
 				if not clear_category or category == "none" or clear_category == category then
-					for i, gui_text in ipairs(gui_texts) do
+					local num_gui_texts = #gui_texts
+
+					for i = num_gui_texts, 1, -1 do
+						local gui_text = gui_texts[i]
+
 						Gui.destroy_text_3d(self._world_gui, gui_text.id)
 						table.remove(gui_texts, i)
 					end

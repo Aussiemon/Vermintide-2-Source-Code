@@ -19,9 +19,15 @@ BackendInterfaceQuestsPlayfab._refresh = function (self)
 	local backend_mirror = self._backend_mirror
 	local quest_data = backend_mirror:get_quest_data()
 	self._quests.daily = quest_data.current_daily_quests
+	self._quests.weekly = quest_data.current_weekly_quests
 	self._quests.event = quest_data.current_event_quests
 	self._refresh_available = quest_data.daily_quest_refresh_available
 	self._daily_quest_update_time = quest_data.daily_quest_update_time / 1000
+	local weekly_quest_update_time = quest_data.weekly_quest_update_time
+
+	if weekly_quest_update_time ~= nil then
+		self._weekly_quest_update_time = weekly_quest_update_time / 1000
+	end
 
 	for key, data in pairs(self._quests.event) do
 		self._event_quest_update_times[key] = data.end_time / 1000
@@ -46,10 +52,20 @@ end
 
 BackendInterfaceQuestsPlayfab.update = function (self, dt)
 	local request_quest_update = false
-	local update_time = self:get_daily_quest_update_time() - self._quest_timer
+	local daily_update_time = self:get_daily_quest_update_time() - self._quest_timer
 
-	if update_time < 0 and not self._quests_updating then
+	if daily_update_time < 0 and not self._quests_updating then
 		request_quest_update = true
+	end
+
+	local weekly_update_time = self:get_weekly_quest_update_time()
+
+	if weekly_update_time then
+		weekly_update_time = weekly_update_time - self._quest_timer
+
+		if weekly_update_time < 0 and not self._quests_updating then
+			request_quest_update = true
+		end
 	end
 
 	for key, data in pairs(self._quests.event) do
@@ -83,11 +99,15 @@ BackendInterfaceQuestsPlayfab.get_quests_cb = function (self, result)
 	local current_daily_quests = function_result.current_daily_quests
 	local daily_quest_refresh_available = function_result.daily_quest_refresh_available
 	local daily_quest_update_time = function_result.daily_quest_update_time
+	local current_weekly_quests = function_result.current_weekly_quests
+	local weekly_quest_update_time = function_result.weekly_quest_update_time
 	local current_event_quests = function_result.current_event_quests
 
 	backend_mirror:set_quest_data("current_daily_quests", current_daily_quests)
 	backend_mirror:set_quest_data("daily_quest_refresh_available", to_boolean(daily_quest_refresh_available))
 	backend_mirror:set_quest_data("daily_quest_update_time", tonumber(daily_quest_update_time))
+	backend_mirror:set_quest_data("current_weekly_quests", current_weekly_quests)
+	backend_mirror:set_quest_data("weekly_quest_update_time", tonumber(weekly_quest_update_time))
 	backend_mirror:set_quest_data("current_event_quests", current_event_quests)
 
 	self._quests_updating = false
@@ -113,6 +133,18 @@ BackendInterfaceQuestsPlayfab.get_daily_quest_update_time = function (self)
 	end
 
 	return self._daily_quest_update_time - self._quest_timer
+end
+
+BackendInterfaceQuestsPlayfab.get_weekly_quest_update_time = function (self)
+	if self._dirty then
+		self:_refresh()
+	end
+
+	if not self._weekly_quest_update_time then
+		return nil
+	end
+
+	return self._weekly_quest_update_time - self._quest_timer
 end
 
 BackendInterfaceQuestsPlayfab.get_time_left_on_event_quest = function (self, key)
@@ -184,9 +216,10 @@ end
 BackendInterfaceQuestsPlayfab.can_claim_quest_rewards = function (self, key)
 	local quests = self:get_quests()
 	local daily_quests = self._quests.daily
+	local weekly_quests = self._quests.weekly
 	local event_quests = self._quests.event
 
-	if daily_quests[key] or event_quests[key] then
+	if daily_quests[key] or weekly_quests[key] or event_quests[key] then
 		return true
 	end
 
@@ -245,9 +278,11 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 	end
 
 	local current_daily_quests = function_result.current_daily_quests
+	local current_weekly_quests = function_result.current_weekly_quests
 	local current_event_quests = function_result.current_event_quests
 
 	backend_mirror:set_quest_data("current_daily_quests", current_daily_quests)
+	backend_mirror:set_quest_data("current_weekly_quests", current_weekly_quests)
 	backend_mirror:set_quest_data("current_event_quests", current_event_quests)
 
 	self._quest_reward_requests[id] = rewards
@@ -257,9 +292,18 @@ end
 BackendInterfaceQuestsPlayfab.get_quest_key = function (self, quest_id)
 	local quests = self:get_quests()
 	local daily_quests = quests.daily
+	local weekly_quests = quests.weekly
 	local event_quests = quests.event
 
 	for quest_key, quest_data in pairs(daily_quests) do
+		local id = quest_data.name
+
+		if id == quest_id then
+			return quest_key
+		end
+	end
+
+	for quest_key, quest_data in pairs(weekly_quests) do
 		local id = quest_data.name
 
 		if id == quest_id then

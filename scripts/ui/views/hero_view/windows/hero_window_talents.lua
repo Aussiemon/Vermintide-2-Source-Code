@@ -79,11 +79,7 @@ HeroWindowTalents.create_ui_elements = function (self, params, offset)
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
-	local input_service = Managers.input:get_service("hero_view")
-	local gui_layer = UILayer.default + 30
-	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 4, gui_layer, generic_input_actions.default)
 
-	self._menu_input_description:set_input_description(nil)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
@@ -243,10 +239,6 @@ HeroWindowTalents.draw = function (self, dt)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
-
-	if gamepad_active then
-		self._menu_input_description:draw(ui_top_renderer, dt)
-	end
 end
 
 HeroWindowTalents._play_sound = function (self, event)

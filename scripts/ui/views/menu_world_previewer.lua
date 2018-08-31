@@ -42,10 +42,10 @@ MenuWorldPreviewer.init = function (self, ingame_ui_context, optional_camera_cha
 	self._item_info_by_slot = {}
 	self._equipment_units = {}
 	self._hidden_units = {}
+	self._requested_mip_streaming_units = {}
 	local player_manager = Managers.player
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
-	self._attachment_flow_events = {}
 	self.unique_id = unique_id
 	self._equipment_units[InventorySettings.slots_by_name.slot_melee.slot_index] = {}
 	self._equipment_units[InventorySettings.slots_by_name.slot_ranged.slot_index] = {}
@@ -78,13 +78,18 @@ end
 MenuWorldPreviewer.destroy = function (self)
 	self._session_id = self._session_id + 1
 
+	Renderer.set_automatic_streaming(true)
 	GarbageLeakDetector.register_object(self, "MenuWorldPreviewer")
 end
 
 MenuWorldPreviewer.on_enter = function (self, viewport_widget, hero_name)
+	table.clear(self._requested_mip_streaming_units)
+	table.clear(self._hidden_units)
+
 	self.viewport_widget = viewport_widget
 	local preview_pass_data = self.viewport_widget.element.pass_data[1]
 	self.world = preview_pass_data.world
+	self.level = preview_pass_data.level
 	self.viewport = preview_pass_data.viewport
 	self.camera = ScriptViewport.camera(self.viewport)
 	self.character_camera_position_adjustments = {}
@@ -107,6 +112,28 @@ MenuWorldPreviewer.on_enter = function (self, viewport_widget, hero_name)
 	self._session_id = self._session_id or 0
 end
 
+MenuWorldPreviewer.trigger_level_event = function (self, event_name)
+	Level.trigger_event(self.level, event_name)
+end
+
+MenuWorldPreviewer.show_level_units = function (self, unit_indices, visibility)
+	local level = self.level
+
+	for _, unit_index in pairs(unit_indices) do
+		local unit = Level.unit_by_index(level, unit_index)
+
+		if Unit.alive(unit) then
+			Unit.set_unit_visibility(unit, visibility)
+
+			if visibility then
+				Unit.flow_event(unit, "unit_object_set_enabled")
+			else
+				Unit.flow_event(unit, "unit_object_set_disabled")
+			end
+		end
+	end
+end
+
 MenuWorldPreviewer.has_units_spawned = function (self)
 	return self.character_unit ~= nil
 end
@@ -125,6 +152,8 @@ MenuWorldPreviewer.on_exit = function (self)
 
 	local inventory_package_synchronizer = self.profile_synchronizer:inventory_package_synchronizer()
 	self._session_id = self._session_id + 1
+
+	Renderer.set_automatic_streaming(true)
 end
 
 MenuWorldPreviewer.update = function (self, dt, t, input_disabled)
@@ -179,7 +208,7 @@ MenuWorldPreviewer.update = function (self, dt, t, input_disabled)
 
 	local input_service = self.input_manager:get_service("hero_view")
 
-	if not input_disabled then
+	if not input_disabled and self.character_unit_visible then
 		self:handle_mouse_input(input_service, dt)
 		self:handle_controller_input(input_service, dt)
 	end
@@ -192,29 +221,62 @@ MenuWorldPreviewer.post_update = function (self, dt)
 	self:_poll_item_package_loading()
 end
 
-MenuWorldPreviewer.force_unhide_character = function (self)
-	self._force_unhide_character = true
+MenuWorldPreviewer.force_stream_highest_mip_levels = function (self)
+	self._use_highest_mip_levels = true
 end
 
-MenuWorldPreviewer.wait_for_force_unhide = function (self)
-	self._wait_for_force_unhide = true
+MenuWorldPreviewer.force_hide_character = function (self)
+	self._force_hide_character = true
+end
+
+MenuWorldPreviewer.force_unhide_character = function (self)
+	self._force_hide_character = false
 end
 
 MenuWorldPreviewer._update_units_visibility = function (self, dt)
 	local items_loaded = self:_is_all_items_loaded()
 
-	if items_loaded and Unit.alive(self.character_unit) and (not self._wait_for_force_unhide or self._force_unhide_character) then
-		local unit_visibility_frame_delay = self.unit_visibility_frame_delay
+	if not items_loaded then
+		return
+	end
 
-		if unit_visibility_frame_delay and unit_visibility_frame_delay > 0 then
-			self.unit_visibility_frame_delay = unit_visibility_frame_delay - 1
+	local character_unit = self.character_unit
 
-			return
+	if not Unit.alive(character_unit) then
+		return
+	end
+
+	if self._force_hide_character then
+		return
+	end
+
+	if self:_update_unit_mip_streaming() then
+		return
+	end
+
+	if self._stored_character_animation then
+		local force_play_animation = true
+
+		self:play_character_animation(self._stored_character_animation, force_play_animation)
+
+		self._stored_character_animation = nil
+
+		return
+	end
+
+	if self.character_unit_hidden_after_spawn then
+		self.character_unit_hidden_after_spawn = false
+
+		Unit.flow_event(character_unit, "lua_spawn_attachments")
+
+		if self._draw_character == false then
+			self:_set_character_visibility(false)
+		else
+			self:_set_character_visibility(true)
 		end
 
-		local peer_id = self.peer_id
-		local player = self.player_manager:player_from_peer_id(peer_id)
-
+		table.clear(self._hidden_units)
+	else
 		for unit, _ in pairs(self._hidden_units) do
 			if Unit.alive(unit) then
 				Unit.set_unit_visibility(unit, true)
@@ -222,16 +284,115 @@ MenuWorldPreviewer._update_units_visibility = function (self, dt)
 
 			self._hidden_units[unit] = nil
 		end
+	end
+end
 
-		if self.character_unit_hidden and Unit.alive(self.character_unit) then
-			Unit.flow_event(self.character_unit, "lua_spawn_attachments")
+MenuWorldPreviewer._update_unit_mip_streaming = function (self)
+	local mip_streaming_completed = true
+	local num_units_handled = 0
+	local requested_mip_streaming_units = self._requested_mip_streaming_units
 
+	for unit, _ in pairs(requested_mip_streaming_units) do
+		local unit_mip_streaming_completed = Renderer.is_all_mips_loaded_for_unit(unit)
+
+		if unit_mip_streaming_completed then
+			requested_mip_streaming_units[unit] = nil
+		else
+			mip_streaming_completed = false
+		end
+
+		num_units_handled = num_units_handled + 1
+	end
+
+	if not mip_streaming_completed then
+		return true
+	elseif num_units_handled > 0 then
+		Renderer.set_automatic_streaming(true)
+	end
+end
+
+MenuWorldPreviewer._request_mip_streaming_for_unit = function (self, unit)
+	local requested_mip_streaming_units = self._requested_mip_streaming_units
+	requested_mip_streaming_units[unit] = true
+
+	Renderer.set_automatic_streaming(false)
+
+	for unit, _ in pairs(requested_mip_streaming_units) do
+		Renderer.request_to_stream_all_mips_for_unit(unit)
+	end
+end
+
+MenuWorldPreviewer._set_character_visibility = function (self, visible)
+	self._draw_character = visible
+
+	if self.character_unit_hidden_after_spawn then
+		return
+	end
+
+	local character_unit = self.character_unit
+
+	if Unit.alive(character_unit) then
+		Unit.set_unit_visibility(character_unit, visible)
+
+		local flow_unit_attachments = Unit.get_data(character_unit, "flow_unit_attachments") or {}
+
+		for _, unit in pairs(flow_unit_attachments) do
+			Unit.set_unit_visibility(unit, visible)
+		end
+
+		local slots_by_slot_index = InventorySettings.slots_by_slot_index
+		local attachment_lua_event = (visible and "lua_attachment_unhidden") or "lua_attachment_hidden"
+
+		Unit.flow_event(character_unit, attachment_lua_event)
+
+		local equipment_units = self._equipment_units
+
+		for slot_index, data in pairs(equipment_units) do
+			local slot = slots_by_slot_index[slot_index]
+			local category = slot.category
+			local slot_type = slot.type
+			local is_weapon = category == "weapon"
+			local show_unit = nil
+
+			if is_weapon then
+				show_unit = visible and slot_type == self._wielded_slot_type
+			else
+				show_unit = visible
+			end
+
+			local weapon_lua_event = (show_unit and "lua_wield") or "lua_unwield"
+
+			if type(data) == "table" then
+				local left_unit = data.left
+				local right_unit = data.right
+
+				if Unit.alive(left_unit) then
+					Unit.flow_event(left_unit, weapon_lua_event)
+					Unit.set_unit_visibility(left_unit, show_unit)
+				end
+
+				if Unit.alive(right_unit) then
+					Unit.flow_event(right_unit, weapon_lua_event)
+					Unit.set_unit_visibility(right_unit, show_unit)
+				end
+			elseif Unit.alive(data) then
+				if not is_weapon then
+					local attachment_lua_event = (show_unit and "lua_attachment_unhidden") or "lua_attachment_hidden"
+
+					Unit.flow_event(data, attachment_lua_event)
+				end
+
+				Unit.flow_event(data, weapon_lua_event)
+				Unit.set_unit_visibility(data, show_unit)
+			end
+		end
+
+		if visible then
 			local skin_data = self.character_unit_skin_data
 			local material_changes = skin_data.material_changes
 
 			if material_changes then
 				local third_person_changes = material_changes.third_person
-				local flow_unit_attachments = Unit.get_data(self.character_unit, "flow_unit_attachments") or {}
 
 				for slot_name, material_name in pairs(third_person_changes) do
 					for _, unit in pairs(flow_unit_attachments) do
@@ -240,25 +401,49 @@ MenuWorldPreviewer._update_units_visibility = function (self, dt)
 				end
 			end
 
-			local attachment_flow_events = self._attachment_flow_events
+			for slot_name, data in pairs(self._item_info_by_slot) do
+				if data.loaded then
+					local item_name = data.name
+					local item_template = ItemHelper.get_template_by_item_name(item_name)
+					local show_attachments_event = item_template.show_attachments_event
 
-			for unit, events in pairs(attachment_flow_events) do
-				if Unit.alive(unit) then
-					for i = 1, #events, 1 do
-						local event_name = events[i]
-
-						Unit.flow_event(unit, event_name)
+					if show_attachments_event then
+						Unit.flow_event(character_unit, show_attachments_event)
 					end
 				end
 			end
-
-			table.clear(attachment_flow_events)
-
-			self.character_unit_hidden = false
 		end
 
-		self._force_unhide_character = false
+		self.character_unit_visible = visible
 	end
+
+	local camera_move_duration = self._camera_move_duration
+
+	if camera_move_duration then
+		local x = 0
+		local y = 0
+		local z = 0
+
+		if visible then
+			local profile_name = self._current_profile_name
+
+			if profile_name then
+				local character_camera_positions = self._character_camera_positions
+				local new_character_position = character_camera_positions[profile_name]
+				x = new_character_position.x
+				y = new_character_position.y
+				z = new_character_position.z
+			end
+		end
+
+		self:set_character_axis_offset("x", x, camera_move_duration, math.easeOutCubic)
+		self:set_character_axis_offset("y", y, camera_move_duration, math.easeOutCubic)
+		self:set_character_axis_offset("z", z, camera_move_duration, math.easeOutCubic)
+	end
+end
+
+MenuWorldPreviewer.character_visible = function (self)
+	return self.character_unit_visible and Unit.alive(self.character_unit)
 end
 
 MenuWorldPreviewer._update_camera_animation_data = function (self, animation_data, dt)
@@ -317,7 +502,7 @@ local mouse_pos_temp = {}
 MenuWorldPreviewer.handle_mouse_input = function (self, input_service, dt)
 	local character_unit = self.character_unit
 
-	if character_unit == nil or self.character_unit_hidden then
+	if character_unit == nil then
 		return
 	end
 
@@ -389,14 +574,18 @@ MenuWorldPreviewer.end_character_rotation = function (self)
 	print("end_character_rotation", self.rotation_direction)
 end
 
-MenuWorldPreviewer.play_character_animation = function (self, animation_event)
+MenuWorldPreviewer.play_character_animation = function (self, animation_event, force_play_animation)
 	local character_unit = self.character_unit
 
 	if character_unit == nil then
 		return
 	end
 
-	Unit.animation_event(character_unit, animation_event)
+	if not self.character_unit_visible and not force_play_animation then
+		self._stored_character_animation = animation_event
+	else
+		Unit.animation_event(character_unit, animation_event)
+	end
 end
 
 MenuWorldPreviewer.request_spawn_hero_unit = function (self, profile_name, career_index, state_character, callback, optional_scale, camera_move_duration, optional_skin, reset_camera)
@@ -450,6 +639,8 @@ MenuWorldPreviewer._load_hero_unit = function (self, profile_name, career_index,
 	self:set_character_axis_offset("y", new_character_position.y, camera_move_duration, math.easeOutCubic)
 	self:set_character_axis_offset("z", new_character_position.z, camera_move_duration, math.easeOutCubic)
 
+	self._camera_move_duration = camera_move_duration
+	self._current_profile_name = profile_name
 	local world = self.world
 	local profile_index = FindProfileIndex(profile_name)
 	local profile = SPProfiles[profile_index]
@@ -556,16 +747,16 @@ MenuWorldPreviewer._spawn_hero_unit = function (self, skin_data, optional_scale)
 		local gradient_variation = tint_data.gradient_variation
 		local gradient_value = tint_data.gradient_value
 
-		CosmeticUtils.color_tint_unit(character_unit, self.hero_name, gradient_variation, gradient_value)
+		CosmeticUtils.color_tint_unit(character_unit, self._current_profile_name, gradient_variation, gradient_value)
 	end
 
 	Unit.set_unit_visibility(character_unit, false)
 
-	self._hidden_units[character_unit] = true
 	self.character_unit = character_unit
-	self.character_unit_hidden = true
+	self.character_unit_hidden_after_spawn = true
+	self.character_unit_visible = false
 	self.character_unit_skin_data = skin_data
-	self.unit_visibility_frame_delay = 3
+	self._stored_character_animation = nil
 
 	if Unit.has_lod_object(character_unit, "lod") then
 		local lod_object = Unit.lod_object(character_unit, "lod")
@@ -601,12 +792,23 @@ MenuWorldPreviewer._spawn_hero_unit = function (self, skin_data, optional_scale)
 
 		Unit.set_local_scale(character_unit, 0, scale)
 	end
+
+	if self._use_highest_mip_levels or UISettings.wait_for_mip_streaming_character then
+		self:_request_mip_streaming_for_unit(character_unit)
+	end
 end
 
-MenuWorldPreviewer.respawn_hero_unit = function (self, profile_name, career_index, state_character, callback)
+MenuWorldPreviewer.respawn_hero_unit = function (self, profile_name, career_index, state_character, callback, camera_move_duration)
 	local reset_camera = true
 
-	self:request_spawn_hero_unit(profile_name, career_index, state_character, callback, nil, nil, nil, reset_camera)
+	self:request_spawn_hero_unit(profile_name, career_index, state_character, callback, nil, camera_move_duration, nil, reset_camera)
+end
+
+MenuWorldPreviewer.get_equipped_item_info = function (self, slot)
+	local item_slot_type = slot.type
+	local item_info_by_slot = self._item_info_by_slot
+
+	return item_info_by_slot[item_slot_type]
 end
 
 MenuWorldPreviewer.equip_item = function (self, item_name, slot, backend_id)
@@ -641,6 +843,7 @@ MenuWorldPreviewer.equip_item = function (self, item_name, slot, backend_id)
 	if item_slot_type == "melee" or item_slot_type == "ranged" then
 		local left_hand_unit = item_units.left_hand_unit
 		local right_hand_unit = item_units.right_hand_unit
+		local material_settings = item_units.material_settings
 		local despawn_both_hands_units = right_hand_unit == nil or left_hand_unit == nil
 
 		if left_hand_unit then
@@ -651,7 +854,8 @@ MenuWorldPreviewer.equip_item = function (self, item_name, slot, backend_id)
 				unit_name = left_unit,
 				item_slot_type = item_slot_type,
 				slot_index = slot_index,
-				unit_attachment_node_linking = item_template.left_hand_attachment_node_linking.third_person
+				unit_attachment_node_linking = item_template.left_hand_attachment_node_linking.third_person,
+				material_settings = material_settings
 			}
 			package_names[#package_names + 1] = left_unit
 		end
@@ -664,7 +868,8 @@ MenuWorldPreviewer.equip_item = function (self, item_name, slot, backend_id)
 				unit_name = right_unit,
 				item_slot_type = item_slot_type,
 				slot_index = slot_index,
-				unit_attachment_node_linking = item_template.right_hand_attachment_node_linking.third_person
+				unit_attachment_node_linking = item_template.right_hand_attachment_node_linking.third_person,
+				material_settings = material_settings
 			}
 
 			if right_hand_unit ~= left_hand_unit then
@@ -783,6 +988,8 @@ MenuWorldPreviewer._spawn_item = function (self, item_name, spawn_data)
 	local item_data = ItemMasterList[item_name]
 	local item_units = BackendUtils.get_item_units(item_data)
 	local item_template = ItemHelper.get_template_by_item_name(item_name)
+	local hero_material_changed = false
+	local character_visible = self:character_visible()
 
 	for _, unit_spawn_data in ipairs(spawn_data) do
 		local unit_name = unit_spawn_data.unit_name
@@ -790,11 +997,12 @@ MenuWorldPreviewer._spawn_item = function (self, item_name, spawn_data)
 		local slot_index = unit_spawn_data.slot_index
 		local unit_attachment_node_linking = unit_spawn_data.unit_attachment_node_linking
 		local character_material_changes = unit_spawn_data.character_material_changes
+		local material_settings = unit_spawn_data.material_settings
 
 		if item_slot_type == "melee" or item_slot_type == "ranged" then
 			local unit = World.spawn_unit(world, unit_name)
 
-			self:_spawn_item_unit(unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links)
+			self:_spawn_item_unit(unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links, material_settings)
 
 			if unit_spawn_data.right_hand then
 				self._equipment_units[slot_index].right = unit
@@ -810,20 +1018,13 @@ MenuWorldPreviewer._spawn_item = function (self, item_name, spawn_data)
 
 		local show_attachments_event = item_template.show_attachments_event
 
-		if show_attachments_event then
-			if self.character_unit_hidden then
-				local attachment_flow_events = self._attachment_flow_events
-				local unit_flow_events = attachment_flow_events[character_unit] or {}
-				unit_flow_events[#unit_flow_events + 1] = show_attachments_event
-				self._attachment_flow_events[character_unit] = unit_flow_events
-			else
-				Unit.flow_event(character_unit, show_attachments_event)
-			end
+		if show_attachments_event and self.character_unit_visible then
+			Unit.flow_event(character_unit, show_attachments_event)
 		end
 
 		if character_material_changes then
 			local third_person_changes = character_material_changes.third_person
-			local flow_unit_attachments = Unit.get_data(self.character_unit, "flow_unit_attachments") or {}
+			local flow_unit_attachments = Unit.get_data(character_unit, "flow_unit_attachments") or {}
 
 			for slot_name, material_name in pairs(third_person_changes) do
 				for _, unit in pairs(flow_unit_attachments) do
@@ -831,32 +1032,44 @@ MenuWorldPreviewer._spawn_item = function (self, item_name, spawn_data)
 				end
 
 				Unit.set_material(character_unit, slot_name, material_name)
+
+				hero_material_changed = true
 			end
 		end
 	end
+
+	if hero_material_changed and (self._use_highest_mip_levels or UISettings.wait_for_mip_streaming_character) then
+		self:_request_mip_streaming_for_unit(character_unit)
+	end
 end
 
-MenuWorldPreviewer._spawn_item_unit = function (self, unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links)
+MenuWorldPreviewer._spawn_item_unit = function (self, unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links, material_settings)
 	local world = self.world
 	local character_unit = self.character_unit
+	local character_visible = self:character_visible()
 
 	if item_slot_type == "melee" or item_slot_type == "ranged" then
 		if self._wielded_slot_type == item_slot_type then
 			unit_attachment_node_linking = unit_attachment_node_linking.wielded
-
-			Unit.flow_event(unit, "lua_wield")
 
 			if item_template.wield_anim then
 				Unit.animation_event(character_unit, item_template.wield_anim)
 			end
 
 			self._hidden_units[unit] = true
+			local flow_event = (character_visible and "lua_wield") or "lua_unwield"
+
+			Unit.flow_event(unit, flow_event)
 		else
 			unit_attachment_node_linking = unit_attachment_node_linking.unwielded
 
 			Unit.flow_event(unit, "lua_unwield")
 		end
 	else
+		local attachment_lua_event = (character_visible and "lua_attachment_unhidden") or "lua_attachment_hidden"
+
+		Unit.flow_event(unit, attachment_lua_event)
+
 		self._hidden_units[unit] = true
 	end
 
@@ -869,10 +1082,20 @@ MenuWorldPreviewer._spawn_item_unit = function (self, unit, item_slot_type, item
 	end
 
 	GearUtils.link(world, unit_attachment_node_linking, scene_graph_links, character_unit, unit)
+
+	if material_settings then
+		GearUtils.apply_material_settings(unit, material_settings)
+	end
+
+	if self._use_highest_mip_levels or UISettings.wait_for_mip_streaming_items then
+		self:_request_mip_streaming_for_unit(unit)
+	end
 end
 
 MenuWorldPreviewer._destroy_item_units_by_slot = function (self, slot_type)
 	local world = self.world
+	local hidden_units = self._hidden_units
+	local requested_mip_streaming_units = self._requested_mip_streaming_units
 	local item_info_by_slot = self._item_info_by_slot
 	local data = item_info_by_slot[slot_type]
 	local spawn_data = data.spawn_data
@@ -887,6 +1110,9 @@ MenuWorldPreviewer._destroy_item_units_by_slot = function (self, slot_type)
 					local old_unit_right = self._equipment_units[slot_index].right
 
 					if old_unit_right ~= nil then
+						hidden_units[old_unit_right] = nil
+						requested_mip_streaming_units[old_unit_right] = nil
+
 						World.destroy_unit(world, old_unit_right)
 
 						self._equipment_units[slot_index].right = nil
@@ -897,6 +1123,9 @@ MenuWorldPreviewer._destroy_item_units_by_slot = function (self, slot_type)
 					local old_unit_left = self._equipment_units[slot_index].left
 
 					if old_unit_left ~= nil then
+						hidden_units[old_unit_left] = nil
+						requested_mip_streaming_units[old_unit_left] = nil
+
 						World.destroy_unit(world, old_unit_left)
 
 						self._equipment_units[slot_index].left = nil
@@ -906,6 +1135,9 @@ MenuWorldPreviewer._destroy_item_units_by_slot = function (self, slot_type)
 				local old_unit = self._equipment_units[slot_index]
 
 				if old_unit ~= nil then
+					hidden_units[old_unit] = nil
+					requested_mip_streaming_units[old_unit] = nil
+
 					World.destroy_unit(world, old_unit)
 
 					self._equipment_units[slot_index] = nil
@@ -1016,6 +1248,8 @@ MenuWorldPreviewer._unload_item_packages_by_slot = function (self, slot_type)
 end
 
 MenuWorldPreviewer.clear_units = function (self, reset_camera)
+	table.clear(self._requested_mip_streaming_units)
+
 	local world = self.world
 
 	for i = 1, 6, 1 do

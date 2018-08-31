@@ -19,6 +19,8 @@ local checklist_entry_size = definitions.checklist_entry_size
 local category_tab_info = definitions.category_tab_info
 local achievement_spacing = definitions.achievement_spacing
 local achievement_presentation_amount = definitions.achievement_presentation_amount
+local generic_input_actions = definitions.generic_input_actions
+local console_cursor_definition = definitions.console_cursor_definition
 local DO_RELOAD = false
 local CHECKLIST_ENTRY_HEIGHT = checklist_entry_size[2]
 local ACHIEVEMENT_DEFAULT_HEIGHT = achievement_entry_size[2]
@@ -63,7 +65,7 @@ HeroViewStateAchievements.on_enter = function (self, params)
 		input_manager = self.input_manager
 	}
 	self._timer_title = Localize("achv_menu_summary_quest_refresh")
-	self._timer_type = "daily"
+	self._active_quest_tab_timer_type = "daily"
 	self.reward_popup = RewardPopupUI:new(reward_params)
 
 	self.reward_popup:set_input_manager(self.input_manager)
@@ -83,6 +85,11 @@ HeroViewStateAchievements.on_enter = function (self, params)
 	local character_name = profile_settings.character_name
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
 	local career_index = hero_attributes:get(display_name, "career")
+	local input_service = self:input_service()
+	self.menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self.ui_top_renderer, input_service, 3, 100, generic_input_actions)
+
+	self.menu_input_description:set_input_description(nil)
+
 	self.hero_name = display_name
 	self.career_index = career_index
 	self.profile_index = profile_index
@@ -107,6 +114,7 @@ HeroViewStateAchievements.on_enter = function (self, params)
 
 	self:_on_layout_button_pressed(summary_button, nil, "summary")
 	self:play_sound("Play_gui_achivements_menu_open")
+	Managers.input:enable_gamepad_cursor()
 end
 
 HeroViewStateAchievements._update_buttons_new_status = function (self)
@@ -116,51 +124,80 @@ HeroViewStateAchievements._update_buttons_new_status = function (self)
 	self._widgets_by_name.achievements_button.content.new = self:_has_any_unclaimed_completed_challenge_in_category(achievement_layout)
 end
 
-HeroViewStateAchievements._update_quest_timer = function (self, dt)
-	local time_left_in_seconds = nil
+HeroViewStateAchievements._update_summary_quest_timers = function (self, dt)
+	local layout_type = "quest"
+	local layout = self:_get_layout(layout_type)
+	local categories = layout.categories
+	local widget_prefix_timer = "summary_quest_bar_timer_"
+	local summary_widgets_by_name = self._summary_widgets_by_name
 
-	if self._timer_type == "daily" then
-		time_left_in_seconds = math.max(self._quest_manager:time_until_new_daily_quest(), 0)
-	elseif self._timer_type == "event" then
-		time_left_in_seconds = math.max(self._quest_manager:time_left_on_event_quest(), 0)
-	end
+	for category_index, category in ipairs(categories) do
+		local name = category.name
+		local entries = category.entries
+		local quest_type = category.quest_type
+		local max_entry_amount = category.max_entry_amount or 1
+		local has_entries = entries ~= nil
+		local time_left_in_seconds = nil
 
-	local seconds = math.max(time_left_in_seconds, 0)
-	local minutes = math.floor(seconds / 60)
-	local hours = math.floor(minutes / 60)
-	local days = math.floor(hours / 24)
-	local time_text = nil
-
-	if days > 0 then
-		time_text = string.format("%02d:%02d:%02d:%02d", days, hours % 24, minutes - hours * 60, seconds % 60)
-	else
-		time_text = string.format("%02d:%02d:%02d", hours, minutes - hours * 60, seconds % 60)
-	end
-
-	local time_left_text = self._additional_quest_widgets_by_name.time_left_text
-	local summary_widget = self._summary_widgets_by_name.summary_quest_bar_timer_1
-	summary_widget.content.text = time_text
-	time_left_text.content.text = self._timer_title .. " " .. time_text
-
-	if time_left_in_seconds > 0 and self._previous_time_in_seconds == 0 then
-		local quests_tab_index = 1
-		local daily_quest_tab_list_index = 1
-
-		if self._active_tab_index == quests_tab_index then
-			local tab_widget = self._category_tab_widgets[quests_tab_index]
-
-			self:_setup_layout("quest")
-			self:_activate_tab(tab_widget, quests_tab_index, daily_quest_tab_list_index, true)
+		if quest_type == "daily" then
+			time_left_in_seconds = self._quest_manager:time_until_new_daily_quest()
+		elseif quest_type == "weekly" then
+			time_left_in_seconds = self._quest_manager:time_until_new_weekly_quest()
+		elseif quest_type == "event" then
+			time_left_in_seconds = self._quest_manager:time_left_on_event_quest()
 		end
 
-		self:_setup_quest_summary_progress()
-	end
+		if time_left_in_seconds then
+			time_left_in_seconds = math.max(time_left_in_seconds, 0)
+		else
+			time_left_in_seconds = 0
+		end
 
-	self._previous_time_in_seconds = time_left_in_seconds
+		local seconds = math.max(time_left_in_seconds, 0)
+		local minutes = math.floor(seconds / 60)
+		local hours = math.floor(minutes / 60)
+		local days = math.floor(hours / 24)
+		local time_text = nil
+
+		if days > 0 then
+			time_text = string.format("%02d:%02d:%02d:%02d", days, hours % 24, minutes - hours * 60, seconds % 60)
+		else
+			time_text = string.format("%02d:%02d:%02d", hours, minutes - hours * 60, seconds % 60)
+		end
+
+		local timer_widget_name = widget_prefix_timer .. tostring(category_index)
+		local timer_widget = summary_widgets_by_name[timer_widget_name]
+		local timer_widget_content = timer_widget.content
+		timer_widget_content.text = time_text
+		local previous_time_in_seconds = timer_widget_content.previous_time_in_seconds or math.huge
+		timer_widget_content.previous_time_in_seconds = time_left_in_seconds
+		local update_quest_summary = previous_time_in_seconds < time_left_in_seconds
+
+		if update_quest_summary then
+			local quests_tab_index = 1
+			local daily_quest_tab_list_index = 1
+			local update_active_quest_tab = self._active_tab_index == quests_tab_index
+
+			if update_active_quest_tab then
+				local tab_widget = self._category_tab_widgets[quests_tab_index]
+
+				self:_setup_layout("quest")
+				self:_activate_tab(tab_widget, quests_tab_index, daily_quest_tab_list_index, true)
+			end
+
+			self:_setup_quest_summary_progress()
+		end
+
+		if self._active_quest_tab_timer_type == quest_type then
+			local time_left_text = self._additional_quest_widgets_by_name.time_left_text
+			time_left_text.content.text = self._timer_title .. " " .. time_text
+		end
+	end
 end
 
 HeroViewStateAchievements.create_ui_elements = function (self, params)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+	self._console_cursor_widget = UIWidget.init(console_cursor_definition)
 	local widgets = {}
 	local widgets_by_name = {}
 
@@ -304,7 +341,7 @@ HeroViewStateAchievements._handle_layout_buttons_hovered = function (self)
 	local play_sound = false
 
 	if self:_is_button_hover_enter(quests_button) or self:_is_button_hover_enter(quest_window_button) then
-		play_sound = true
+		self:play_sound("Play_gui_achivements_menu_hover_epic")
 	end
 
 	if self:_is_button_hover_enter(achievements_button) or self:_is_button_hover_enter(achievement_window_button) then
@@ -363,6 +400,13 @@ HeroViewStateAchievements._on_layout_button_pressed = function (self, widget, wi
 	widget.content.has_focus = false
 
 	if layout_type == "summary" then
+		if not self._looping_summary_sounds then
+			self:play_sound("Play_gui_achivements_menu_flag_loop")
+			self:play_sound("Play_gui_achivements_menu_daily_quest_loop")
+
+			self._looping_summary_sounds = true
+		end
+
 		self._draw_summary = true
 
 		self:_deactivate_active_tab()
@@ -377,6 +421,13 @@ HeroViewStateAchievements._on_layout_button_pressed = function (self, widget, wi
 		else
 			self._additional_type_widgets = self._additional_quest_widgets
 			self._additional_type_widgets_by_name = self._additional_quest_widgets_by_name
+		end
+
+		if self._looping_summary_sounds then
+			self:play_sound("Stop_gui_achivements_menu_flag_loop")
+			self:play_sound("Stop_gui_achivements_menu_daily_quest_loop")
+
+			self._looping_summary_sounds = false
 		end
 
 		self._draw_summary = false
@@ -557,14 +608,22 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 		local style = widget.style
 		local entry_id = entries[i]
 		local entry_data = manager:get_data_by_id(entry_id)
+		local required_dlc = entry_data.required_dlc
+		local unlocked = not required_dlc or Managers.unlock:is_dlc_unlocked(required_dlc)
+
+		if not unlocked then
+			content.locked_text = Localize("dlc1_2_dlc_level_locked_tooltip")
+		end
+
 		local requirements = entry_data.requirements
 		local completed = entry_data.completed
 		local progress = entry_data.progress
 		local claimed = entry_data.claimed
 		local reward = entry_data.reward
-		content.can_close = can_close
-		content.completed = completed
-		content.claimed = claimed
+		content.locked = not unlocked
+		content.can_close = unlocked and can_close and not completed
+		content.completed = unlocked and completed
+		content.claimed = unlocked and claimed
 		content.id = entry_id
 		local name = entry_data.name
 		local display_name = name
@@ -597,7 +656,7 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 
 		self:_set_achievement_expand_height(widget, expand_height)
 
-		if progress and not completed then
+		if unlocked and progress and not completed then
 			local accuired = progress[1]
 			local required = progress[2]
 			local progress_fraction = accuired / required
@@ -862,6 +921,7 @@ HeroViewStateAchievements._on_achievement_pressed = function (self, widget)
 		self._quest_refresh_poll_id = quest_refresh_poll_id
 
 		self:block_input()
+		self:play_sound("Play_gui_achivements_menu_destroy_item")
 	elseif progress_button_hotspot.is_hover then
 		progress_button_hotspot.is_hover = false
 
@@ -1227,6 +1287,15 @@ HeroViewStateAchievements.on_exit = function (self, params)
 
 		self.reward_popup = nil
 	end
+
+	if self._looping_summary_sounds then
+		self:play_sound("Stop_gui_achivements_menu_flag_loop")
+		self:play_sound("Stop_gui_achivements_menu_daily_quest_loop")
+
+		self._looping_summary_sounds = false
+	end
+
+	Managers.input:disable_gamepad_cursor()
 end
 
 HeroViewStateAchievements._update_transition_timer = function (self, dt)
@@ -1259,7 +1328,7 @@ HeroViewStateAchievements.update = function (self, dt, t)
 		self:_handle_queued_presentations()
 	end
 
-	self:_update_quest_timer(dt)
+	self:_update_summary_quest_timers(dt)
 	self:draw(input_service, dt)
 	self:_update_transition_timer(dt)
 
@@ -1377,7 +1446,9 @@ end
 
 HeroViewStateAchievements._handle_input = function (self, dt, t)
 	local input_service = (self._input_blocked and fake_input_service) or self:input_service()
+	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local input_pressed = input_service:get("toggle_menu")
+	local input_close_pressed = gamepad_active and input_service:get("back")
 	local widgets_by_name = self._widgets_by_name
 	local summary_widgets_by_name = self._summary_widgets_by_name
 	local exit_button = widgets_by_name.exit_button
@@ -1469,6 +1540,10 @@ HeroViewStateAchievements._handle_input = function (self, dt, t)
 					self:play_sound("Play_gui_achivements_menu_hover_item")
 				end
 
+				if self:_is_button_hover(widget) then
+					widget.content.reward_button_hotspot.draw = true
+				end
+
 				if self:_is_button_pressed(widget) then
 					self:_on_achievement_pressed(widget)
 				end
@@ -1476,7 +1551,7 @@ HeroViewStateAchievements._handle_input = function (self, dt, t)
 		end
 	end
 
-	if input_pressed or self:_is_button_pressed(exit_button) then
+	if input_pressed or self:_is_button_pressed(exit_button) or input_close_pressed then
 		self:play_sound("Play_hud_hover")
 		self:close_menu()
 
@@ -1538,15 +1613,20 @@ HeroViewStateAchievements._activate_tab = function (self, widget, index, tab_lis
 	local categories = data and data.categories
 
 	if data then
-		if data.quest_type == "daily" then
+		local quest_type = data.quest_type
+
+		if quest_type == "daily" then
 			self._timer_title = Localize("achv_menu_summary_quest_refresh")
-			self._timer_type = "daily"
-		elseif data.quest_type == "event" then
+			self._active_quest_tab_timer_type = "daily"
+		elseif quest_type == "weekly" then
+			self._timer_title = Localize("achv_menu_summary_quest_refresh")
+			self._active_quest_tab_timer_type = "weekly"
+		elseif quest_type == "event" then
 			self._timer_title = Localize("join_popup_timer_title") .. ":"
-			self._timer_type = "event"
+			self._active_quest_tab_timer_type = "event"
 		end
 
-		local use_days = data.quest_type == "event"
+		local use_days = quest_type == "event" or quest_type == "weekly"
 
 		self:_setup_quest_timer_position(self._timer_title, use_days)
 	end
@@ -1623,6 +1703,7 @@ HeroViewStateAchievements.draw = function (self, input_service, dt)
 	local ui_scenegraph = self.ui_scenegraph
 	local input_manager = self.input_manager
 	local render_settings = self.render_settings
+	local gamepad_active = input_manager:is_device_active("gamepad")
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
@@ -1755,6 +1836,13 @@ HeroViewStateAchievements.draw = function (self, input_service, dt)
 	UIRenderer.end_pass(ui_renderer)
 
 	render_settings.alpha_multiplier = alpha_multiplier
+
+	if gamepad_active then
+		self.menu_input_description:draw(ui_top_renderer, dt)
+		UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt)
+		UIRenderer.draw_widget(ui_top_renderer, self._console_cursor_widget)
+		UIRenderer.end_pass(ui_top_renderer)
+	end
 end
 
 HeroViewStateAchievements._is_button_pressed = function (self, widget)
@@ -1884,6 +1972,7 @@ HeroViewStateAchievements._setup_quest_summary_progress = function (self)
 	local summary_widgets_by_name = self._summary_widgets_by_name
 	local widget_prefix_bar = "summary_quest_bar_"
 	local widget_prefix_title = "summary_quest_bar_title_"
+	local widget_prefix_timer = "summary_quest_bar_timer_"
 	local alpha = 255
 	local default_title_color = Colors.get_color_table_with_alpha("font_title", 255)
 	local disabled_title_color = {
@@ -1897,8 +1986,23 @@ HeroViewStateAchievements._setup_quest_summary_progress = function (self)
 	for category_index, category in ipairs(categories) do
 		local name = category.name
 		local entries = category.entries
+		local quest_type = category.quest_type
 		local max_entry_amount = category.max_entry_amount or 1
 		local has_entries = entries ~= nil
+		local timer_active = true
+
+		if quest_type == "event" then
+			max_entry_amount = (has_entries and #entries) or 0
+			timer_active = has_entries
+		end
+
+		local timer_widget_name = widget_prefix_timer .. tostring(category_index)
+		local timer_widget = summary_widgets_by_name[timer_widget_name]
+		local timer_text_color = timer_widget.style.text.text_color
+		timer_text_color[1] = (timer_active and default_title_color[1]) or disabled_title_color[1]
+		timer_text_color[2] = (timer_active and default_title_color[2]) or disabled_title_color[2]
+		timer_text_color[3] = (timer_active and default_title_color[3]) or disabled_title_color[3]
+		timer_text_color[4] = (timer_active and default_title_color[4]) or disabled_title_color[4]
 		local title_widget_name = widget_prefix_title .. tostring(category_index)
 		local title_widget = summary_widgets_by_name[title_widget_name]
 		title_widget.content.text = Localize(name)
@@ -1931,7 +2035,7 @@ HeroViewStateAchievements._setup_quest_summary_progress = function (self)
 		local icon_cooldown_colors = icon_cooldown_style.texture_colors
 		local icon_available_colors = icon_available_style.texture_colors
 		local refresh_icon_color = refresh_icon_style.color
-		local draw_refresh_icon = category.quest_type == "daily" and can_refresh_quest and has_entries
+		local draw_refresh_icon = quest_type == "daily" and can_refresh_quest and has_entries
 
 		self:_set_color_values(refresh_icon_color, (draw_refresh_icon and alpha) or 0)
 
@@ -1944,6 +2048,12 @@ HeroViewStateAchievements._setup_quest_summary_progress = function (self)
 			local claimed = data and data.claimed
 			local completed = data and data.completed
 			local summary_icon = (data and data.summary_icon) or "achievement_symbol_book"
+			local required_dlc = data and data.required_dlc
+
+			if required_dlc then
+				locked = Managers.unlock:is_dlc_unlocked(required_dlc)
+			end
+
 			local loot_color_fraction = 0
 			local frame_color_fraction = 0
 			local locked_color_fraction = 0

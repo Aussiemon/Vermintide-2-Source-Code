@@ -113,6 +113,7 @@ StatisticsSystem.rpc_register_kill = function (self, sender, victim_unit_go_id)
 	TEMP_ARGS[DamageDataIndex.DAMAGE_TYPE] = "forced"
 	TEMP_ARGS[DamageDataIndex.ATTACKER] = victim_unit
 	TEMP_ARGS[DamageDataIndex.HIT_ZONE] = "full"
+	TEMP_ARGS[DamageDataIndex.POSITION] = Unit.world_position(victim_unit, 0)
 	TEMP_ARGS[DamageDataIndex.DIRECTION] = Vector3.down()
 	TEMP_ARGS[DamageDataIndex.DAMAGE_SOURCE_NAME] = "suicide"
 	TEMP_ARGS[DamageDataIndex.HIT_RAGDOLL_ACTOR_NAME] = "n/a"

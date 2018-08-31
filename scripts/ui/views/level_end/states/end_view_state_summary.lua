@@ -375,8 +375,8 @@ EndViewStateSummary._get_experience_earned = function (self, game_won, game_mode
 end
 
 EndViewStateSummary._get_total_experience_progress_data = function (self, current_experience, experience_gained)
-	local min_time = 4
-	local max_time = 7
+	local min_time = UISettings.summary_screen.bar_progress_min_time
+	local max_time = UISettings.summary_screen.bar_progress_max_time
 	local time_multiplier = UISettings.summary_screen.bar_progress_experience_time_multiplier
 	local time = math.min(math.max(time_multiplier * experience_gained, min_time), max_time)
 	local total_experience = current_experience + experience_gained
@@ -458,15 +458,12 @@ EndViewStateSummary._set_current_experience = function (self, current_experience
 	style.experience_bar.size[1] = default_size[1] * progress
 	style.experience_bar_end.offset[1] = default_size[1] * progress
 
-	if initialize or progress < 1 then
-		widgets_by_name.current_level_text.content.text = tostring(level)
-		widgets_by_name.next_level_text.content.text = tostring(next_level)
-	elseif extra_levels and extra_levels > 0 then
-		widgets_by_name.current_level_text.content.text = tostring(level)
-		widgets_by_name.next_level_text.content.text = tostring(next_level)
-	else
+	if progress == 1 and level ~= next_level then
 		widgets_by_name.current_level_text.content.text = tostring(level - 1)
 		widgets_by_name.next_level_text.content.text = tostring(next_level - 1)
+	else
+		widgets_by_name.current_level_text.content.text = tostring(level)
+		widgets_by_name.next_level_text.content.text = tostring(next_level)
 	end
 
 	WwiseWorld.set_global_parameter(self.wwise_world, "summary_meter_progress", progress)

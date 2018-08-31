@@ -20,6 +20,7 @@ LevelAnalysis.init = function (self, nav_world, using_editor)
 		}
 	}
 	self.terror_spawners = terror_spawners
+	self.boss_waypoints = {}
 	self.override_spawners = {}
 	self.boss_settings_section = {}
 	self.num_override_spawners = 0
@@ -93,61 +94,106 @@ LevelAnalysis.get_path_markers = function (self)
 	return self.path_markers
 end
 
-LevelAnalysis.get_data_via_editor = function (self, path_markers)
+LevelAnalysis._add_path_marker_data = function (self, pos, marker_type, order, main_path_index, crossroads_string, roaming_set_string, nav_world, path_markers)
+	local kind = nil
+	local index = #path_markers + 1
+	local on_mesh = GwNavTraversal.get_seed_triangle(nav_world, pos)
+
+	if not on_mesh then
+		kind = "outside"
+
+		printf("Path marker with order %s is outside of navigation mesh (%s).", tostring(order), tostring(pos))
+	end
+
+	for i = 1, #path_markers, 1 do
+		if order < path_markers[i].order then
+			index = i
+			kind = kind or "good"
+
+			break
+		elseif order == path_markers[i].order then
+			index = i
+			kind = kind or "duplicate"
+
+			printf("Two path markers in the level has the same order: %s (%s)", tostring(order), tostring(pos))
+
+			break
+		end
+	end
+
+	kind = kind or "good"
+
+	table.insert(path_markers, index, {
+		pos = Vector3Box(pos),
+		marker_type = marker_type,
+		main_path_index = main_path_index,
+		order = order,
+		kind = kind,
+		crossroads = crossroads_string,
+		roaming_set = roaming_set_string
+	})
+
+	return kind == "good"
+end
+
+LevelAnalysis._initialize_path_markers_from_editor = function (self, path_markers, drawer)
+	local Unit_alive = Unit.alive
+	local Unit_is_a = Unit.is_a
+	local Unit_get_data = Unit.get_data
+	local Unit_local_position = Unit.local_position
 	local index_offset = Script.index_offset()
 	local level_objects = LevelEditor.objects
+	local nav_world = self.nav_world
+	local success = true
 
 	for object_id, object in pairs(level_objects) do
 		local unit = object._unit
 
-		if Unit.alive(unit) and Unit.is_a(unit, "units/gamemode/path_marker") then
-			local pos = Unit.local_position(unit, index_offset)
-			local order = Unit.get_data(unit, "order")
-			local marker_type = Unit.get_data(unit, "marker_type")
-			local crossroads_string = Unit.get_data(unit, "crossroads")
-			local roaming_set_string = Unit.get_data(unit, "roaming_set")
-			local order = tonumber(order)
-			local index = #path_markers + 1
-			local kind = "good"
-			local on_mesh = GwNavTraversal.get_seed_triangle(self.nav_world, pos)
+		if Unit_alive(unit) and Unit_is_a(unit, "units/gamemode/path_marker") then
+			local order = tonumber(Unit.get_data(unit, "order"))
+			local marker_type = Unit_get_data(unit, "marker_type")
+			local pos = Unit_local_position(unit, index_offset)
+			local crossroads_string = Unit_get_data(unit, "crossroads")
+			local roaming_set_string = Unit_get_data(unit, "roaming_set")
+			roaming_set_string = (roaming_set_string ~= "" and roaming_set_string) or nil
+			local entry_success = self:_add_path_marker_data(pos, marker_type, order, 1, crossroads_string, roaming_set_string, nav_world, path_markers)
 
-			if not on_mesh then
-				kind = "outside"
-				result = string.format("Path marker with order %s is outside of navigation mesh.", tostring(order))
+			if not entry_success then
+				success = false
 			end
-
-			for i = 1, #path_markers, 1 do
-				if order < path_markers[i].order then
-					index = i
-					kind = kind or "good"
-
-					break
-				elseif order == path_markers[i] then
-					index = i
-					kind = kind or "duplicate"
-					result = string.format("Two path markers in the level has the same order: %s", tostring(order))
-
-					break
-				end
-			end
-
-			table.insert(path_markers, index, {
-				main_path_index = 1,
-				pos = Vector3Box(pos),
-				marker_type = marker_type,
-				order = order,
-				kind = kind,
-				crossroads = crossroads_string,
-				roaming_set = roaming_set_string,
-				conflict_director = roaming_set_string
-			})
 		end
 	end
+
+	return success
 end
 
-LevelAnalysis.generate_main_path = function (self, level_name, path_markers, in_editor)
-	local result = "success"
+LevelAnalysis._initialize_path_markers_from_ingame = function (self, path_markers, level_name)
+	local LevelResource_unit_position = LevelResource.unit_position
+	local LevelResource_unit_data = LevelResource.unit_data
+	local DynamicData_get = DynamicData.get
+	local unit_ind = LevelResource.unit_indices(level_name, "units/gamemode/path_marker")
+	local nav_world = self.nav_world
+	local success = true
 
+	for _, id in ipairs(unit_ind) do
+		local pos = LevelResource_unit_position(level_name, id)
+		local unit_data = LevelResource_unit_data(level_name, id)
+		local order = tonumber(DynamicData_get(unit_data, "order"))
+		local marker_type = DynamicData_get(unit_data, "marker_type")
+		local crossroads_string = DynamicData_get(unit_data, "crossroads")
+		local roaming_set_string = DynamicData_get(unit_data, "roaming_set")
+		roaming_set_string = (roaming_set_string ~= "" and roaming_set_string) or nil
+		local entry_success = self:_add_path_marker_data(pos, marker_type, order, 1, crossroads_string, roaming_set_string, nav_world, path_markers)
+
+		if not entry_success then
+			success = false
+		end
+	end
+
+	return success
+end
+
+LevelAnalysis.generate_main_path = function (self, level_name, path_markers, in_editor, drawer)
 	if not path_markers then
 		path_markers = {}
 
@@ -159,52 +205,16 @@ LevelAnalysis.generate_main_path = function (self, level_name, path_markers, in_
 		print("[LevelAnalysis] Generating main-path for level:", level_name)
 
 		if in_editor then
-			self:get_data_via_editor(path_markers)
+			local success = self:_initialize_path_markers_from_editor(path_markers, drawer)
+
+			if not success then
+				return "[LevelAnalysis] Failed to initialize all path markers from editor (see Console for conflicting markers)."
+			end
 		else
-			local unit_ind = LevelResource.unit_indices(level_name, "units/gamemode/path_marker")
+			local success = self:_initialize_path_markers_from_ingame(path_markers, level_name)
 
-			for _, id in ipairs(unit_ind) do
-				local pos = LevelResource.unit_position(level_name, id)
-				local unit_data = LevelResource.unit_data(level_name, id)
-				local order = DynamicData.get(unit_data, "order")
-				local marker_type = DynamicData.get(unit_data, "marker_type")
-				local crossroads_string = DynamicData.get(unit_data, "crossroads")
-				local roaming_set_string = DynamicData.get(unit_data, "roaming_set")
-				local order = tonumber(order)
-				local index = #path_markers + 1
-				local kind = "good"
-				local on_mesh = GwNavTraversal.get_seed_triangle(self.nav_world, pos)
-
-				if not on_mesh then
-					kind = "outside"
-					result = string.format("Path marker with order %s is outside of navigation mesh.", tostring(order))
-				end
-
-				for i = 1, #path_markers, 1 do
-					if order < path_markers[i].order then
-						index = i
-						kind = kind or "good"
-
-						break
-					elseif order == path_markers[i] then
-						index = i
-						kind = kind or "duplicate"
-						result = string.format("Two path markers in the level has the same order: %s", tostring(order))
-
-						break
-					end
-				end
-
-				table.insert(path_markers, index, {
-					main_path_index = 1,
-					pos = Vector3Box(pos),
-					marker_type = marker_type,
-					order = order,
-					kind = kind,
-					crossroads = crossroads_string,
-					roaming_set = roaming_set_string,
-					conflict_director = roaming_set_string
-				})
+			if not success then
+				print("[LevelAnalysis] Failed to initialize all path markers from ingame.")
 			end
 		end
 	else
@@ -215,21 +225,9 @@ LevelAnalysis.generate_main_path = function (self, level_name, path_markers, in_
 		return "Missing path markers in level. Need at least 2."
 	end
 
-	local done = false
-
-	while not done do
-		done = true
-
-		for i = 1, #path_markers - 1, 1 do
-			if path_markers[i + 1].order < path_markers[i].order then
-				local temp = path_markers[i]
-				path_markers[i] = path_markers[i + 1]
-				path_markers[i + 1] = temp
-				done = false
-			end
-		end
-	end
-
+	table.sort(path_markers, function (a, b)
+		return a.order < b.order
+	end)
 	print("[LevelAnalysis] Path-markers:")
 
 	local main_path_index = 1
@@ -240,14 +238,14 @@ LevelAnalysis.generate_main_path = function (self, level_name, path_markers, in_
 	for i = 1, #path_markers, 1 do
 		local path_marker = path_markers[i]
 
-		print("read path_marker crossroad: ", path_marker.crossroads)
+		printf("\tread path_marker (crossroad: %s)", path_marker.crossroads)
 
 		if path_marker.crossroads and path_marker.crossroads ~= "" then
 			local parts = string.split(path_marker.crossroads, ":")
 			local crossroads_id = parts[1]
 			local road_id = tonumber(parts[2])
 
-			assert(road_id, "bad road_id")
+			fassert(road_id, "bad road_id")
 
 			path_marker.crossroads_id = crossroads_id
 			path_marker.road_id = road_id
@@ -282,11 +280,11 @@ LevelAnalysis.generate_main_path = function (self, level_name, path_markers, in_
 			count = count + 1
 		end
 
-		print("[LevelAnalysis] \tmarker: " .. i .. ", order:" .. path_marker.order .. ", main path index: " .. path_marker.main_path_index, ", crossroads:", path_marker.crossroads_id, path_marker.road_id)
+		printf("\t\tmarker: %d,\torder: %d,\tmain_path_index: %d,\tcrossroads: %s %s", i, path_marker.order, path_marker.main_path_index, path_marker.crossroads_id, path_marker.road_id)
 	end
 
 	if count < 2 then
-		return "If using breaks in main-path, then each sub-path needs at least 2 path markers. Last path marker is loonely!"
+		return "If using breaks in main-path, then each sub-path needs at least 2 path markers. Last path marker is lonely!"
 	end
 
 	self.crossroads = crossroads
@@ -297,13 +295,14 @@ LevelAnalysis.generate_main_path = function (self, level_name, path_markers, in_
 
 	self:start_main_path_generation(main_path_index)
 
-	return result
+	return "success", path_markers
 end
 
 LevelAnalysis.start_main_path_generation = function (self, num_main_paths)
 	print("[LevelAnalysis] start_main_path_generation")
 
 	self.stitching_path = true
+	local nav_world = self.nav_world
 	local path_markers = self.path_markers
 	self.astar_list = {}
 	self.main_paths = {}
@@ -320,11 +319,12 @@ LevelAnalysis.start_main_path_generation = function (self, num_main_paths)
 	AiUtils.initialize_nav_cost_map_cost_table(nav_cost_map_cost_table)
 
 	self.nav_cost_map_cost_table = nav_cost_map_cost_table
-	self.traverse_logic = GwNavTraverseLogic.create(self.nav_world, nav_cost_map_cost_table)
+	local traverse_logic = GwNavTraverseLogic.create(nav_world, nav_cost_map_cost_table)
+	self.traverse_logic = traverse_logic
 	self.navtag_layer_cost_table = GwNavTagLayerCostTable.create()
 
 	self:initialize_cost_table(self.navtag_layer_cost_table, layer_costs)
-	GwNavTraverseLogic.set_navtag_layer_cost_table(self.traverse_logic, self.navtag_layer_cost_table)
+	GwNavTraverseLogic.set_navtag_layer_cost_table(traverse_logic, self.navtag_layer_cost_table)
 
 	local j = 1
 	local sub_index = 1
@@ -343,7 +343,7 @@ LevelAnalysis.start_main_path_generation = function (self, num_main_paths)
 				i
 			}
 
-			GwNavAStar.start(self.astar_list[j][1], self.nav_world, pos1, pos2, self.traverse_logic)
+			GwNavAStar.start(self.astar_list[j][1], nav_world, pos1, pos2, traverse_logic)
 
 			j = j + 1
 			sub_index = sub_index + 1
@@ -359,7 +359,7 @@ LevelAnalysis.start_main_path_generation = function (self, num_main_paths)
 		}
 	end
 
-	print("[LevelAnalysis] main path generation - found " .. tostring(num_main_paths) .. " main paths, total of " .. tostring(#self.astar_list) .. " sub-paths.")
+	printf("[LevelAnalysis] main path generation - found %d main paths, total of %d sub-paths.", num_main_paths, #self.astar_list)
 end
 
 LevelAnalysis.initialize_cost_table = function (self, navtag_layer_cost_table, layer_costs)
@@ -397,6 +397,7 @@ end
 LevelAnalysis.inject_travel_dists = function (main_paths, overrride)
 	print("[LevelAnalysis] Injecting travel distances")
 
+	local Vector3_distance = Vector3.distance
 	local first_path = main_paths[1]
 	local travel_dist = first_path.travel_dist
 
@@ -408,7 +409,7 @@ LevelAnalysis.inject_travel_dists = function (main_paths, overrride)
 			local path = main_paths[i]
 			local nodes = path.nodes
 			local p2 = nodes[1]:unbox()
-			total_travel_dist = total_travel_dist + Vector3.distance(p1, p2)
+			total_travel_dist = total_travel_dist + Vector3_distance(p1, p2)
 			local travel_dist = {
 				total_travel_dist
 			}
@@ -416,7 +417,7 @@ LevelAnalysis.inject_travel_dists = function (main_paths, overrride)
 			for j = 2, #nodes, 1 do
 				p1 = nodes[j - 1]:unbox()
 				p2 = nodes[j]:unbox()
-				total_travel_dist = total_travel_dist + Vector3.distance(p1, p2)
+				total_travel_dist = total_travel_dist + Vector3_distance(p1, p2)
 				travel_dist[j] = total_travel_dist
 			end
 
@@ -427,34 +428,41 @@ LevelAnalysis.inject_travel_dists = function (main_paths, overrride)
 end
 
 LevelAnalysis.update_main_path_generation = function (self)
+	local GwNavAStar_processing_finished = GwNavAStar.processing_finished
+	local GwNavAStar_path_found = GwNavAStar.path_found
+	local GwNavAStar_node_count = GwNavAStar.node_count
+	local GwNavAStar_node_at_index = GwNavAStar.node_at_index
+	local GwNavAStar_path_cost = GwNavAStar.path_cost
+	local GwNavAStar_path_distance = GwNavAStar.path_distance
+	local GwNavAStar_destroy = GwNavAStar.destroy
 	local astar_list = self.astar_list
 	local size = #astar_list
 	local main_paths = self.main_paths
-	local i = 1
+	local a_star_index = 1
 
-	while size >= i do
-		local a_star = astar_list[i][1]
-		local result = GwNavAStar.processing_finished(a_star)
+	while size >= a_star_index do
+		local a_star = astar_list[a_star_index][1]
+		local result = GwNavAStar_processing_finished(a_star)
 
-		if result and GwNavAStar.path_found(a_star) then
-			local num_nodes = GwNavAStar.node_count(a_star)
+		if result and GwNavAStar_path_found(a_star) then
+			local num_nodes = GwNavAStar_node_count(a_star)
 
 			print("[LevelAnalysis] Found path! node-count:", num_nodes)
 
 			local node_list = {}
 
-			for j = 1, num_nodes, 1 do
-				node_list[j] = GwNavAStar.node_at_index(a_star, j)
+			for i = 1, num_nodes, 1 do
+				node_list[i] = GwNavAStar_node_at_index(a_star, i)
 			end
 
 			LevelAnalysis.boxify_pos_array(node_list)
 
-			local cost = GwNavAStar.path_cost(a_star)
-			local dist = GwNavAStar.path_distance(a_star)
-			local main_path_index = astar_list[i][3]
+			local cost = GwNavAStar_path_cost(a_star)
+			local dist = GwNavAStar_path_distance(a_star)
+			local main_path_index = astar_list[a_star_index][3]
 			local main_path = main_paths[main_path_index]
-			local sub_index = astar_list[i][2]
-			local path_marker_index = astar_list[i][4]
+			local sub_index = astar_list[a_star_index][2]
+			local path_marker_index = astar_list[a_star_index][4]
 			main_path.astar_paths[sub_index] = {
 				dist,
 				cost,
@@ -463,9 +471,9 @@ LevelAnalysis.update_main_path_generation = function (self)
 				path_marker_index
 			}
 
-			GwNavAStar.destroy(a_star)
+			GwNavAStar_destroy(a_star)
 
-			astar_list[i] = astar_list[size]
+			astar_list[a_star_index] = astar_list[size]
 			astar_list[size] = nil
 			size = size - 1
 
@@ -481,8 +489,8 @@ LevelAnalysis.update_main_path_generation = function (self)
 
 					for j = 1, #astar_paths, 1 do
 						local data = astar_paths[j]
-						local nodes = data[3]
 						local path_dist = data[1]
+						local nodes = data[3]
 						local index = #main_nodes + 1
 						local start_index = index
 
@@ -498,7 +506,7 @@ LevelAnalysis.update_main_path_generation = function (self)
 						local crossroads_id = path_marker.crossroads_id
 
 						if crossroads_id then
-							assert(not main_path.crossroads_id or main_path.crossroads_id == crossroads_id, "If using crossroads, all path-markers in the same main-path must be have the same crossroads id")
+							fassert(not main_path.crossroads_id or main_path.crossroads_id == crossroads_id, "If using crossroads, all path-markers in the same main-path must be have the same crossroads id")
 
 							main_path.crossroads_id = crossroads_id
 							main_path.road_id = path_marker.road_id
@@ -507,7 +515,7 @@ LevelAnalysis.update_main_path_generation = function (self)
 
 					main_path.dist_from_start = dist_from_start
 					dist_from_start = dist_from_start + main_path.path_length
-					local data = main_path.astar_paths[#main_path.astar_paths]
+					local data = astar_paths[#astar_paths]
 					local last_nodes = data[3]
 					main_nodes[#main_nodes + 1] = last_nodes[#last_nodes]
 				end
@@ -526,7 +534,7 @@ LevelAnalysis.update_main_path_generation = function (self)
 				return "done"
 
 				if "done" then
-					local p1 = astar_list[i][4]
+					local p1 = astar_list[a_star_index][4]
 					local order1 = self.path_markers[p1].order
 					local s = string.format("[LevelAnalysis] Level fail: No path found between path-markers with order %s and the next. Cannot create main path. No bosses will spawn.", tostring(order1))
 
@@ -541,7 +549,7 @@ LevelAnalysis.update_main_path_generation = function (self)
 					return "fail", s
 
 					if "fail" then
-						i = i + 1
+						a_star_index = a_star_index + 1
 					end
 				end
 			end
@@ -705,17 +713,57 @@ LevelAnalysis.boxify_waypoint_table = function (self, waypoint_table)
 	return waypoints
 end
 
+LevelAnalysis.print_boss_waypoints = function (self)
+	local boss_waypoints = self.boss_waypoints
+
+	for i = 1, #boss_waypoints, 1 do
+		local section = boss_waypoints[i]
+
+		print("Section:", i)
+
+		for j = 1, #section, 1 do
+			local data = section[j]
+
+			print(string.format("BossWaypoint section: %q, #wp %q travel-dist: %.1f", i, j, data.travel_dist))
+		end
+	end
+end
+
+LevelAnalysis.get_boss_spline_travel_distance = function (self, waypoints_table)
+	local final_travel_dist = nil
+
+	if waypoints_table.main_path_connector then
+		local mpc = waypoints_table.main_path_connector
+		local main_path_connector_pos = Vector3(mpc[1], mpc[2], mpc[3])
+		local path_pos, travel_dist = MainPathUtils.closest_pos_at_main_path(nil, main_path_connector_pos)
+		final_travel_dist = travel_dist
+
+		print("MAIN PATH CONNECTOR ", final_travel_dist)
+	else
+		local wp = waypoints_table.waypoints[1]
+		local position = Vector3(wp[1], wp[2], wp[3])
+		local path_pos, travel_dist = MainPathUtils.closest_pos_at_main_path(nil, position)
+		final_travel_dist = travel_dist
+
+		print("NORMAL PATROL MAIN PATH ", final_travel_dist)
+	end
+
+	table.dump(waypoints_table)
+
+	return final_travel_dist
+end
+
 LevelAnalysis.pick_boss_spline = function (self, map_section, padding, last_travel_dist)
 	local boss_waypoints = self.boss_waypoints
 
 	if not boss_waypoints then
-		return false
+		return false, "no boss waypoints table, you need to regenerate boss waypoints in editor!"
 	end
 
 	local section_waypoints = boss_waypoints[map_section]
 
 	if not section_waypoints then
-		return false
+		return false, string.format("no section waypoints for section %d - You need to add boss waypoints or set boss_spawning_method to nil in level_settings.", map_section)
 	end
 
 	local section_travel_dist = section_waypoints[1].travel_dist
@@ -733,27 +781,35 @@ LevelAnalysis.pick_boss_spline = function (self, map_section, padding, last_trav
 		end
 	end
 
-	if start_index then
-		local spawner_index = self:_random(start_index, #section_waypoints)
-		local waypoints_table = section_waypoints[spawner_index]
-		local spline_waypoints = self:boxify_waypoint_table(waypoints_table.waypoints)
-		local event_data = {
-			spline_type = "patrol",
-			event_kind = "event_spline_patrol",
-			spline_id = waypoints_table.id,
-			spline_way_points = spline_waypoints
-		}
+	local fail_message = nil
 
-		return true, spline_waypoints[1], event_data, waypoints_table.travel_dist
+	if not start_index then
+		printf("[LevelAnalysis] waypoint is too close to the last section's waypoint (map section=%d) -> using fallback (last waypoint in section)", map_section)
+
+		start_index = #section_waypoints
 	end
 
-	return false
+	local spawner_index = self:_random(start_index, #section_waypoints)
+	local waypoints_table = section_waypoints[spawner_index]
+	local spline_waypoints = self:boxify_waypoint_table(waypoints_table.waypoints)
+	local event_data = {
+		spline_type = "patrol",
+		event_kind = "event_spline_patrol",
+		spline_id = waypoints_table.id,
+		spline_way_points = spline_waypoints,
+		one_directional = waypoints_table.one_directional
+	}
+	local travel_dist = self:get_boss_spline_travel_distance(waypoints_table)
+
+	return true, fail_message, spline_waypoints[1], event_data, travel_dist
 end
 
 LevelAnalysis.spawn_all_boss_spline_patrols = function (self, optional_id)
 	local boss_waypoints = self.boss_waypoints
 
 	if not boss_waypoints then
+		print("No boss_waypoints found in level!")
+
 		return false
 	end
 
@@ -774,7 +830,7 @@ LevelAnalysis.spawn_all_boss_spline_patrols = function (self, optional_id)
 					spline_way_points = spline_waypoints
 				}
 
-				self.enemy_recycler:add_main_path_terror_event(spline_waypoints[1], "boss_event_spline_patrol", 65, event_data)
+				self.enemy_recycler:add_main_path_terror_event(spline_waypoints[1], "boss_event_spline_patrol", 45, event_data)
 				print("INJECTING BOSS SPLINE ID", waypoints_table.id)
 			end
 		end
@@ -819,33 +875,27 @@ LevelAnalysis.give_events = function (self, main_paths, terror_spawners, num_sec
 	for i = 1, num_sections, 1 do
 		local boxed_pos, gizmo_unit, event_data = nil
 		local terror_event_kind = generated_event_list[i]
-		local terror_event_name = nil
+		local terror_event_name, override_spawn_distance = nil
 
 		if boss_settings_section[i] then
 			event_settings = boss_settings_section[i].boss_events or event_settings
 		end
 
 		if terror_event_kind == "event_boss" or terror_event_kind == "event_patrol" then
-			local patrol_success, dist = nil
+			local event_lookup = (level_overrides and level_overrides.event_lookup) or event_settings.event_lookup
+			local terror_events = event_lookup[terror_event_kind]
+			terror_event_name = terror_events[Math.random(#terror_events)]
+			local patrol_success, dist, fail_reason = nil
 
 			if terror_event_kind == "event_patrol" then
-				patrol_success, boxed_pos, event_data, dist = self:pick_boss_spline(i, padding, spawn_distance)
+				patrol_success, fail_reason, boxed_pos, event_data, dist = self:pick_boss_spline(i, padding, spawn_distance)
 
-				print(" ----> using event patrol!")
-			end
-
-			if patrol_success then
-				local spline_patrol_events = (level_overrides and level_overrides.spline_patrol_events) or event_settings.spline_patrol_events
-				terror_event_name = spline_patrol_events[Math.random(#spline_patrol_events)]
-
+				fassert(patrol_success, "[LevelAnalysis] Failed finding patrol spline! [reason=%s]", fail_reason)
 				print(" ----> using boss spline path!")
 
 				spawn_distance = dist
+				override_spawn_distance = dist
 			else
-				local event_lookup = (level_overrides and level_overrides.event_lookup) or event_settings.event_lookup
-				local terror_events = event_lookup[terror_event_kind]
-				terror_event_name = terror_events[Math.random(#terror_events)]
-
 				print(" ----> using boss gizmo!")
 
 				local data = terror_spawners[terror_event_kind]
@@ -953,9 +1003,14 @@ LevelAnalysis.give_events = function (self, main_paths, terror_spawners, num_sec
 			if event_settings.terror_events_using_packs then
 				self.enemy_recycler:add_terror_event_in_area(boxed_pos, terror_event_name, event_data)
 			else
-				local activation_distance = (terror_event_kind == "event_patrol" and 65) or 45
+				local activation_distance = 45
+				local spawn_dist = nil
 
-				self.enemy_recycler:add_main_path_terror_event(boxed_pos, terror_event_name, activation_distance, event_data)
+				if override_spawn_distance then
+					spawn_dist = override_spawn_distance - activation_distance
+				end
+
+				self.enemy_recycler:add_main_path_terror_event(boxed_pos, terror_event_name, activation_distance, event_data, spawn_dist)
 			end
 		end
 
@@ -1220,7 +1275,10 @@ LevelAnalysis.debug_spawn_boss_from_closest_spawner_to_player = function (self, 
 
 		if not draw_only then
 			print("\t spawning ogre")
-			Managers.state.conflict:spawn_unit(Breeds.skaven_rat_ogre, best_pos, Quaternion(Vector3.up(), 0), "debug_spawn")
+
+			local rot = Quaternion(Vector3.up(), 0)
+
+			Managers.state.conflict:spawn_queued_unit(Breeds.skaven_rat_ogre, Vector3Box(best_pos), QuaternionBox(rot), "debug_spawn")
 		end
 	end
 end
@@ -1425,6 +1483,127 @@ LevelAnalysis.draw_patrol_routes = function (self)
 	end
 end
 
+LevelAnalysis.draw_patrol_start_position = function (self, route_data, drawer, col, map_section)
+	local h = Vector3(0, 0, 1)
+	local waypoints = route_data.waypoints
+	local wp = waypoints[1]
+	local p1 = Vector3(wp[1], wp[2], wp[3]) + h
+
+	drawer:sphere(p1, 1, col)
+	drawer:line(p1, p1 + Vector3(0, 0, 50), Colors.get("red"))
+	table.dump(route_data)
+
+	local debug_text = nil
+
+	if route_data.one_directional then
+		debug_text = "Patrol " .. route_data.id .. " one_directional " .. " MS: " .. map_section
+	else
+		debug_text = "Patrol " .. route_data.id .. " MS: " .. map_section
+	end
+
+	local main_path_connector = nil
+
+	if route_data.main_path_connector then
+		local pos = Vector3(route_data.main_path_connector[1], route_data.main_path_connector[2], route_data.main_path_connector[3])
+
+		drawer:sphere(pos, 1, Colors.get("lime"))
+		print("Found main path connector")
+
+		main_path_connector = pos
+	end
+
+	Managers.state.debug_text:output_world_text(debug_text, 0.5, p1 + Vector3(0, 0, 1), nil, "patrol_start_position_debug", Vector3(255, 255, 0))
+
+	local travel_dist = nil
+
+	if main_path_connector then
+		local path_pos, dist = MainPathUtils.closest_pos_at_main_path(nil, main_path_connector)
+
+		drawer:sphere(path_pos, 1, Colors.get("cyan"))
+
+		debug_text = "" .. route_data.id .. " using main path connection "
+
+		Managers.state.debug_text:output_world_text(debug_text, 0.5, path_pos + Vector3(0, 0, 1), nil, "patrol_start_position_debug", Vector3(255, 255, 0))
+		drawer:line(p1, path_pos, Colors.get("cyan"))
+
+		travel_dist = dist
+
+		print("Main path connector travel dist ", travel_dist)
+	else
+		local path_pos, dist = MainPathUtils.closest_pos_at_main_path(nil, p1)
+
+		drawer:sphere(path_pos, 1, Colors.get("cyan"))
+
+		debug_text = "" .. route_data.id .. " connection "
+
+		Managers.state.debug_text:output_world_text(debug_text, 0.5, path_pos + Vector3(0, 0, 1), nil, "patrol_start_position_debug", Vector3(255, 255, 0))
+		drawer:line(p1, path_pos, Colors.get("cyan"))
+
+		travel_dist = dist
+	end
+
+	local main_path_pos = MainPathUtils.point_on_mainpath(nil, travel_dist - 45)
+
+	if main_path_pos then
+		drawer:line(p1, main_path_pos, Colors.get("yellow"))
+		drawer:sphere(main_path_pos, 1, col)
+
+		local main_path_spawn_text = "" .. route_data.id .. " trigger "
+
+		Managers.state.debug_text:output_world_text(main_path_spawn_text, 0.4, main_path_pos + Vector3(0, 0, 1), nil, "patrol_start_position_debug", Vector3(255, 255, 0))
+	end
+end
+
+LevelAnalysis.draw_patrol_start_positions = function (self)
+	local drawer = QuickDrawerStay
+	local color = Colors.get("purple")
+	local boss_waypoints = self.boss_waypoints
+
+	Managers.state.debug_text:clear_world_text("patrol_start_position_debug")
+
+	if boss_waypoints then
+		for i = 1, #boss_waypoints, 1 do
+			local section = boss_waypoints[i]
+
+			for j = 1, #section, 1 do
+				local route_data = section[j]
+
+				self:draw_patrol_start_position(route_data, drawer, color, i)
+			end
+		end
+	end
+end
+
+LevelAnalysis.debug_get_closest_boss_patrol_spawn = function (self, player_position)
+	local boss_waypoints = self.boss_waypoints
+	local closest_route = nil
+	local closest_dist = math.huge
+
+	if boss_waypoints then
+		for i = 1, #boss_waypoints, 1 do
+			local section = boss_waypoints[i]
+
+			for j = 1, #section, 1 do
+				local route_data = section[j]
+				local h = Vector3(0, 0, 1)
+				local waypoints = route_data.waypoints
+				local wp = waypoints[1]
+				local p1 = Vector3(wp[1], wp[2], wp[3]) + h
+				local dist = Vector3.distance(player_position, p1)
+
+				if dist < closest_dist then
+					closest_route = route_data
+					closest_dist = dist
+				end
+			end
+		end
+	end
+
+	local waypoints = self:boxify_waypoint_table(closest_route.waypoints)
+
+	return closest_route, waypoints
+end
+
 LevelAnalysis.get_waypoint_spline = function (self, spline_id)
 	local route_data = nil
 	local route_data = self.waypoint_lookup_table and self.waypoint_lookup_table[spline_id]
@@ -1433,8 +1612,13 @@ LevelAnalysis.get_waypoint_spline = function (self, spline_id)
 		local waypoints = route_data.waypoints
 		local wp = waypoints[1]
 		local start_pos = Vector3(wp[1], wp[2], wp[3])
+		local one_directional = route_data.one_directional
 
-		return route_data, waypoints, start_pos
+		if one_directional then
+			print("Getting waypoint spline, is one one_directional")
+		end
+
+		return route_data, waypoints, start_pos, route_data.one_directional
 	end
 end
 
@@ -1461,6 +1645,8 @@ LevelAnalysis.get_closest_waypoint_spline = function (self, pos, spline_type)
 
 		return best_id, waypoints, waypoints[1]:unbox()
 	end
+
+	print("Closest")
 
 	return nil
 end
@@ -1635,6 +1821,49 @@ LevelAnalysis.remove_terror_spawners_due_to_crossroads = function (self, removed
 			table.remove(spawners, to_remove[i])
 		end
 	end
+
+	local boss_waypoints = self.boss_waypoints
+
+	if not boss_waypoints then
+		return false, "no boss waypoints table, you need to regenerate boss waypoints in editor!"
+	end
+
+	table.clear(to_remove)
+
+	for i = 1, #boss_waypoints, 1 do
+		local section_waypoints = boss_waypoints[i]
+
+		for j = 1, #section_waypoints, 1 do
+			local waypoints_table = section_waypoints[j]
+			local travel_dist = waypoints_table.travel_dist
+
+			for y = 1, num_removed_dist_pairs, 1 do
+				local dist_pair = removed_path_distances[y]
+
+				if dist_pair[1] < travel_dist and travel_dist < dist_pair[2] then
+					to_remove[#to_remove + 1] = waypoints_table.id
+
+					break
+				end
+			end
+		end
+
+		for k = 1, #to_remove, 1 do
+			local id = to_remove[k]
+
+			for j = 1, #section_waypoints, 1 do
+				local waypoints_table = section_waypoints[j]
+
+				if waypoints_table.id == id then
+					table.remove(section_waypoints, j)
+
+					break
+				end
+			end
+		end
+
+		table.dump(section_waypoints)
+	end
 end
 
 LevelAnalysis.remove_zones_due_to_crossroads = function (self, zones, num_main_zones, removed_path_distances)
@@ -1697,22 +1926,23 @@ end
 LevelAnalysis.get_path_point = function (path_list, path_length, move_percent)
 	local travel_dist = 0
 	local goal_dist = move_percent * path_length
+	local Vector3_length = Vector3.length
 
 	for i = 1, #path_list - 1, 1 do
 		local p1 = path_list[i]:unbox()
 		local p2 = path_list[i + 1]:unbox()
 		local vec = p2 - p1
-		local p1p2_dist = Vector3.length(vec)
+		local p1p2_dist = Vector3_length(vec)
 		travel_dist = travel_dist + p1p2_dist
 
 		if goal_dist < travel_dist then
-			local missing = travel_dist - goal_dist
-			local left_over = p1p2_dist - missing
-			local part = left_over / p1p2_dist
+			local left_over = travel_dist - goal_dist
+			local missing = p1p2_dist - left_over
+			local part = missing / p1p2_dist
 			local part_vec = vec * part
-			local move_vec = p1 + part_vec
+			local final_position = p1 + part_vec
 
-			return move_vec, i
+			return final_position, i
 		end
 	end
 
@@ -1947,7 +2177,7 @@ LevelAnalysis.process_unreachable = function (work_data)
 	local translate_vec = (work_data.translate_vec and Vector3(unpack(work_data.translate_vec))) or Vector3(0, 0, 0)
 
 	Debug.text("Processing points: %d, %d/%d, astars: free %d running %d", work_data.num_points_started, work_data.investigated_points, total_points, #free_astars, #running_astars)
-	print(string.format("[LevelAnalysis] Processing points: %d, %d/%d, astars: free %d running %d", work_data.num_points_started, work_data.investigated_points, total_points, #free_astars, #running_astars))
+	printf("[LevelAnalysis] Processing points: %d, %d/%d, astars: free %d running %d", work_data.num_points_started, work_data.investigated_points, total_points, #free_astars, #running_astars)
 
 	if total_points <= work_data.investigated_points then
 		print("[LevelAnalysis] -->processing done!")
@@ -1964,20 +2194,22 @@ LevelAnalysis.process_unreachable = function (work_data)
 					print("[LevelAnalysis] \tpoint", index, "removed")
 				end
 			else
-				print("[LevelAnalysis] -->no bad points were found!")
+				print("[LevelAnalysis] --> no bad points were found!")
 			end
 		end
 
-		print("[LevelAnalysis] -->clearing up free_astars:", #free_astars)
+		print("[LevelAnalysis] --> clearing up free_astars:", #free_astars)
+
+		local GwNavAStar_destroy = GwNavAStar.destroy
 
 		for i = 1, #free_astars, 1 do
-			GwNavAStar.destroy(free_astars[i].astar)
+			GwNavAStar_destroy(free_astars[i].astar)
 		end
 
 		print("[LevelAnalysis] -->clearing up running_astars:", #running_astars)
 
 		for i = 1, #running_astars, 1 do
-			GwNavAStar.destroy(running_astars[i].astar)
+			GwNavAStar_destroy(running_astars[i].astar)
 		end
 
 		print("[LevelAnalysis] -->bye!")
@@ -1990,6 +2222,8 @@ LevelAnalysis.process_unreachable = function (work_data)
 	local astar = nil
 
 	if max_running_astars > #running_astars - #free_astars then
+		local GwNavAStar_start = GwNavAStar.start
+
 		while j < total_points and i < max_running_astars do
 			local data = nil
 
@@ -2017,31 +2251,35 @@ LevelAnalysis.process_unreachable = function (work_data)
 			data.goal_pos_boxed = Vector3Box(pos2)
 			j = j + 1
 
-			assert(pos2, "no main-path pos found")
-			GwNavAStar.start(astar, work_data.nav_world, pos1, pos2, traverse_logic)
+			fassert(pos2, "No main-path pos found")
+			GwNavAStar_start(astar, work_data.nav_world, pos1, pos2, traverse_logic)
 		end
 	end
 
 	work_data.num_points_started = j
 	i = 1
 	local size = #running_astars
+	local GwNavAStar_processing_finished = GwNavAStar.processing_finished
+	local GwNavAStar_path_found = GwNavAStar.path_found
+	local GwNavAStar_node_at_index = GwNavAStar.node_at_index
+	local GwNavAStar_node_count = GwNavAStar.node_count
 
 	while i <= size do
 		local data = running_astars[i]
 		local astar = data.astar
-		local result = GwNavAStar.processing_finished(astar)
+		local result = GwNavAStar_processing_finished(astar)
 
 		if result then
 			work_data.investigated_points = work_data.investigated_points + 1
 
-			if GwNavAStar.path_found(astar) then
+			if GwNavAStar_path_found(astar) then
 				if line_object then
 					local a, b, c = Script.temp_count()
-					local p1 = GwNavAStar.node_at_index(astar, 1)
+					local p1 = GwNavAStar_node_at_index(astar, 1)
 					local h = Vector3(0, 0, 0.2) + translate_vec
 
-					for k = 2, GwNavAStar.node_count(astar), 1 do
-						local p2 = GwNavAStar.node_at_index(astar, k)
+					for k = 2, GwNavAStar_node_count(astar), 1 do
+						local p2 = GwNavAStar_node_at_index(astar, k)
 
 						line_object:line(p1 + h, p2 + h, ok_color)
 
@@ -2051,7 +2289,7 @@ LevelAnalysis.process_unreachable = function (work_data)
 					Script.set_temp_count(a, b, c)
 				end
 
-				print(string.format("[LevelAnalysis] \tpoint: %d ok! (%d/%d)", data.point_index, work_data.investigated_points, total_points))
+				printf("[LevelAnalysis] \tpoint: %d ok! (%d/%d)", data.point_index, work_data.investigated_points, total_points)
 				path_found_func(point_list, data.point_index, data)
 			else
 				if line_object then
@@ -2064,7 +2302,7 @@ LevelAnalysis.process_unreachable = function (work_data)
 					line_object:sphere(p2 + h, 0.2, fail_color)
 				end
 
-				print(string.format("[LevelAnalysis] \tpoint: %d failed! (%d/%d)", data.point_index, work_data.investigated_points, total_points))
+				printf("[LevelAnalysis] \tpoint: %d failed! (%d/%d)", data.point_index, work_data.investigated_points, total_points)
 				path_not_found_func(point_list, data.point_index)
 
 				if delete_failed_points then
@@ -2079,6 +2317,189 @@ LevelAnalysis.process_unreachable = function (work_data)
 		else
 			i = i + 1
 		end
+	end
+end
+
+LevelAnalysis.setup_main_path_breaks_check = function (nav_world, main_paths, traverse_logic, drawer)
+	local setup_data = {
+		max_running_astars = 50,
+		nav_world = nav_world,
+		traverse_logic = traverse_logic,
+		running_astar_list = {},
+		free_astar_list = {},
+		nodes_to_check = {},
+		drawer = drawer,
+		failed_main_path_breaks = {}
+	}
+	local nodes_to_check = setup_data.nodes_to_check
+	local num_main_paths = #main_paths
+
+	for i = num_main_paths, 1, -1 do
+		local from_main_path = main_paths[i]
+		local from_nodes = from_main_path.nodes
+		local from_node = from_nodes[1]
+
+		for j = i - 1, 1, -1 do
+			local to_main_path = main_paths[j]
+			local to_nodes = to_main_path.nodes
+			local to_node = to_nodes[#to_nodes]
+			local is_crossroad = to_main_path.crossroads_id or from_main_path.crossroads_id
+			nodes_to_check[#nodes_to_check + 1] = {
+				from_node_box = from_node,
+				to_node_box = to_node,
+				from_main_path_index = i,
+				to_main_path_index = j,
+				is_crossroad = is_crossroad
+			}
+		end
+	end
+
+	return setup_data
+end
+
+LevelAnalysis.process_main_path_breaks_check = function (work_data)
+	local nav_world = work_data.nav_world
+	local traverse_logic = work_data.traverse_logic
+	local running_astar_list = work_data.running_astar_list
+	local free_astar_list = work_data.free_astar_list
+	local nodes_to_check = work_data.nodes_to_check
+	local max_running_astars = work_data.max_running_astars
+	local drawer = work_data.drawer
+	local failed_main_path_breaks = work_data.failed_main_path_breaks
+	local GwNavAStar_create = GwNavAStar.create
+	local GwNavAStar_start = GwNavAStar.start
+	local GwNavAStar_processing_finished = GwNavAStar.processing_finished
+	local GwNavAStar_path_found = GwNavAStar.path_found
+	local GwNavAStar_node_count = GwNavAStar.node_count
+	local GwNavAStar_node_at_index = GwNavAStar.node_at_index
+	local GwNavAStar_destroy = GwNavAStar.destroy
+
+	while #nodes_to_check > 0 and max_running_astars > #running_astar_list do
+		local num_nodes_to_check = #nodes_to_check
+		local next_check_data = nodes_to_check[num_nodes_to_check]
+		nodes_to_check[num_nodes_to_check] = nil
+		local astar_data = nil
+
+		if #free_astar_list > 0 then
+			astar_data = free_astar_list[#free_astar_list]
+			free_astar_list[#free_astar_list] = nil
+		else
+			astar_data = {
+				astar = GwNavAStar_create()
+			}
+		end
+
+		local astar = astar_data.astar
+		local start_position = next_check_data.from_node_box:unbox()
+		local end_position = next_check_data.to_node_box:unbox()
+		astar_data.from_main_path_index = next_check_data.from_main_path_index
+		astar_data.to_main_path_index = next_check_data.to_main_path_index
+		astar_data.from_node_box = next_check_data.from_node_box
+		astar_data.to_node_box = next_check_data.to_node_box
+		astar_data.is_crossroad = next_check_data.is_crossroad
+
+		GwNavAStar_start(astar, nav_world, start_position, end_position, traverse_logic)
+
+		running_astar_list[#running_astar_list + 1] = astar_data
+	end
+
+	local i = 1
+	local num_running_astars = #running_astar_list
+
+	while i <= num_running_astars do
+		local current_astar_data = running_astar_list[i]
+		local current_astar = current_astar_data.astar
+
+		if GwNavAStar_processing_finished(current_astar) then
+			local from_main_path_index = current_astar_data.from_main_path_index
+			local to_main_path_index = current_astar_data.to_main_path_index
+			local from_node_box = current_astar_data.from_node_box
+			local to_node_box = current_astar_data.to_node_box
+
+			if GwNavAStar_path_found(current_astar) then
+				local a, b, c = Script.temp_count()
+				local fail_color = Colors.get("red")
+				local small_offset = Vector3.up() * 0.25
+				local large_offset = Vector3.up() * 25
+				local node_count = GwNavAStar_node_count(current_astar)
+
+				for j = 2, node_count, 1 do
+					local previous_node = GwNavAStar_node_at_index(current_astar, j - 1) + small_offset
+					local current_node = GwNavAStar_node_at_index(current_astar, j) + small_offset
+
+					drawer:sphere(previous_node, 0.25, fail_color)
+					drawer:line(previous_node, current_node, fail_color)
+
+					if j == 2 then
+						drawer:line(previous_node, previous_node + large_offset, fail_color)
+					end
+
+					if j == node_count then
+						drawer:sphere(current_node, 0.25, fail_color)
+						drawer:line(current_node, current_node + large_offset, fail_color)
+					end
+				end
+
+				Script.set_temp_count(a, b, c)
+
+				local is_crossroad = current_astar_data.is_crossroad
+				local failed_data = failed_main_path_breaks[from_main_path_index] or {}
+				failed_data[to_main_path_index] = {
+					node = to_node_box,
+					is_crossroad = is_crossroad
+				}
+				failed_main_path_breaks[from_main_path_index] = failed_data
+
+				printf("[LevelAnalysis] Error! Path exist between main_path_index %d and %d (start=%s end=%s)!", from_main_path_index, to_main_path_index, tostring(from_node_box:unbox()), tostring(to_node_box:unbox()))
+			else
+				printf("[LevelAnalysis] Break between main_path_index %d and %d seems good (start=%s end=%s).", from_main_path_index, to_main_path_index, tostring(from_node_box:unbox()), tostring(to_node_box:unbox()))
+			end
+
+			free_astar_list[#free_astar_list + 1] = current_astar_data
+			running_astar_list[i] = running_astar_list[num_running_astars]
+			running_astar_list[num_running_astars] = nil
+			num_running_astars = num_running_astars - 1
+		else
+			i = i + 1
+		end
+	end
+
+	if #nodes_to_check == 0 and #running_astar_list == 0 then
+		local num_free_astars = #free_astar_list
+
+		for j = 1, num_free_astars, 1 do
+			local current_astar_data = free_astar_list[j]
+			local current_astar = current_astar_data.astar
+
+			GwNavAStar_destroy(current_astar)
+
+			free_astar_list[j] = nil
+		end
+
+		local error_string = nil
+
+		for from_main_path_index, data in pairs(failed_main_path_breaks) do
+			if error_string == nil then
+				error_string = "Found player path(s) between the main path indexes listed below. Either remove main path break or the path that allows the player to traverse back."
+			end
+
+			for to_main_path_index, sub_data in pairs(data) do
+				local node = sub_data.node
+				local crossroad_string = ""
+
+				if sub_data.is_crossroad then
+					crossroad_string = "\nNote: Break check for crossroad paths is currently not fully implemented."
+				end
+
+				error_string = string.format("%s\n%d -> %d:\t%s %s", error_string, from_main_path_index, to_main_path_index, tostring(node:unbox()), crossroad_string)
+			end
+		end
+
+		printf("[LevelAnalysis] Main Path Break Check Done!")
+
+		return true, error_string
+	else
+		return false
 	end
 end
 

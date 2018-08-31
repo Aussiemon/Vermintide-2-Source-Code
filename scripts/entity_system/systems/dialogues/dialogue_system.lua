@@ -27,7 +27,7 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 	entity_manager:register_system(self, system_name, extensions)
 
 	self.entity_manager = entity_manager
-	self.unit_input_data = {}
+	self.frozen_unit_extension_data = {}
 	self.unit_extension_data = {}
 	self.playing_dialogues = {}
 	self.playing_units = {}
@@ -241,9 +241,6 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 			dialogue_system.tagquery_database:debug_test_query(concept, source, test_query, test_user_context_list, test_global_context)
 		end
 	})
-
-	GarbageLeakDetector.register_object(input, "dialogue_input")
-
 	extension.input = input
 
 	self.tagquery_database:add_object_context(unit, "user_memory", extension.user_memory)
@@ -258,9 +255,8 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 		extension.faction_memory = self.faction_memories[extension_init_data.faction]
 	end
 
-	ScriptUnit.set_extension(unit, "dialogue_system", extension, input)
+	ScriptUnit.set_extension(unit, "dialogue_system", extension)
 
-	self.unit_input_data[unit] = input
 	self.unit_extension_data[unit] = extension
 	local breed_name = extension_init_data.breed_name
 
@@ -301,35 +297,6 @@ DialogueSystem.extensions_ready = function (self, world, unit)
 	if ScriptUnit.has_extension(unit, "status_system") then
 		extension.status_extension = ScriptUnit.extension(unit, "status_system")
 		self.global_context[player_profile] = true
-		local current_level = self.global_context.current_level
-		local game_mode_key = Managers.state.game_mode:game_mode_key()
-		local is_game_level = not DebugLevels[current_level]
-		local completed_times = 0
-
-		if game_mode_key ~= "inn" and is_game_level then
-			local player = Managers.player:local_player()
-
-			if player then
-				local stats_id = player:stats_id()
-				completed_times = self.statistics_db:get_persistent_stat(stats_id, "completed_levels", current_level)
-			end
-		end
-
-		self.global_context.completed_times = completed_times
-		local player = Managers.player:local_player()
-
-		for index, key in ipairs(GameActsOrder) do
-			local act_levels = GameActs[key]
-
-			if player then
-				for _, level_key in ipairs(act_levels) do
-					local stats_id = player:stats_id()
-					local completed_times_specific_level = self.statistics_db:get_persistent_stat(stats_id, "completed_levels", level_key)
-					self.global_context["completed_times_" .. level_key] = completed_times_specific_level
-				end
-			end
-		end
-
 		local career_ext = ScriptUnit.extension(unit, "career_system")
 		local career_name = career_ext:career_name()
 		self.global_context[career_name] = true
@@ -357,24 +324,66 @@ DialogueSystem.extensions_ready = function (self, world, unit)
 	extension.play_unit = play_unit
 	extension.voice_node = voice_node
 	extension.vo_center_percent = vo_center_percent
-
-	if script_data.sound_debug then
-		printf("Spawned unit %q with play_unit=%s, voice_node=%d, vo_center_percent=%d, local_player=%s", tostring(unit), tostring(play_unit), voice_node, vo_center_percent, tostring(extension.local_player))
-	end
 end
 
 DialogueSystem.on_remove_extension = function (self, unit, extension_name)
-	self:on_freeze_extension(unit, extension_name)
-	ScriptUnit.remove_extension(unit, "dialogue_system")
+	self.frozen_unit_extension_data[unit] = nil
+
+	self:_cleanup_extension(unit, extension_name)
+	ScriptUnit.remove_extension(unit, self.NAME)
 end
 
 DialogueSystem.on_freeze_extension = function (self, unit, extension_name)
+	local extension = self.unit_extension_data[unit]
+
+	fassert(extension, "Unit was already frozen.")
+
+	self.frozen_unit_extension_data[unit] = extension
+
+	self:_cleanup_extension(unit, extension_name)
+end
+
+DialogueSystem.freeze = function (self, unit, extension_name, reason)
+	local frozen_extensions = self.frozen_unit_extension_data
+
+	if frozen_extensions[unit] then
+		return
+	end
+
+	local extension = self.unit_extension_data[unit]
+
+	fassert(extension, "Unit to freeze didn't have unfrozen extension")
+	self:_cleanup_extension(unit, extension_name)
+
+	self.unit_extension_data[unit] = nil
+	frozen_extensions[unit] = extension
+end
+
+DialogueSystem.unfreeze = function (self, unit)
+	local extension = self.frozen_unit_extension_data[unit]
+
+	fassert(extension, "Unit to unfreeze didn't have frozen extension")
+
+	self.frozen_unit_extension_data[unit] = nil
+	self.unit_extension_data[unit] = extension
+
+	self.tagquery_database:add_object_context(unit, "user_memory", extension.user_memory)
+	self.tagquery_database:add_object_context(unit, "user_context", extension.context)
+	self.tagquery_database:add_object_context(unit, "faction_memory", self.faction_memories[extension.faction])
+end
+
+DialogueSystem._cleanup_extension = function (self, unit, extension_name)
 	local extension = self.unit_extension_data[unit]
 
 	if extension == nil then
 		return
 	end
 
+	table.clear(extension.user_memory)
+	table.clear(extension.context)
+
+	extension.context.health = 1
+	extension.dialogue_timer = nil
 	local player_profile = extension.context.player_profile
 
 	if player_profile then
@@ -393,8 +402,8 @@ DialogueSystem.on_freeze_extension = function (self, unit, extension_name)
 		currently_playing_dialogue.currently_playing_unit = nil
 	end
 
+	extension.currently_playing_dialogue = nil
 	self.playing_units[unit] = nil
-	self.unit_input_data[unit] = nil
 	self.unit_extension_data[unit] = nil
 
 	self.tagquery_database:remove_object(unit)
@@ -405,6 +414,10 @@ DialogueSystem.rpc_trigger_dialogue_event = function (self, sender, go_id, event
 	local unit = Managers.state.unit_storage:unit(go_id)
 
 	if not unit then
+		return
+	end
+
+	if FROZEN[unit] then
 		return
 	end
 
@@ -688,6 +701,10 @@ DialogueSystem.rpc_play_marker_event = function (self, sender, go_id, marker_id)
 		return
 	end
 
+	if FROZEN[marker_unit] then
+		return
+	end
+
 	if self.playing_units[marker_unit] then
 		Application.error(string.format("[DialogueSystem] Marker couldn't play since %s was already talking", source_name))
 	end
@@ -960,9 +977,9 @@ DialogueSystem.update_incapacitation = function (self, t)
 end
 
 DialogueSystem.update_new_events = function (self, t)
-	local unit_input_data_list = self.unit_input_data
 	local unit_extension_data = self.unit_extension_data
 	local tagquery_database = self.tagquery_database
+	local unit_alive = Unit.alive
 	local input_event_queue = self.input_event_queue
 	local input_event_queue_n = self.input_event_queue_n
 
@@ -970,7 +987,7 @@ DialogueSystem.update_new_events = function (self, t)
 		repeat
 			local unit = input_event_queue[i]
 
-			if not Unit.alive(unit) then
+			if not unit_alive(unit) then
 				break
 			end
 
@@ -1381,9 +1398,7 @@ DialogueSystem.TriggerAttack = function (self, player_unit, enemy_unit, should_b
 	local player_manager = Managers.player
 	local owner = player_manager:unit_owner(player_unit)
 
-	if Unit.alive(player_unit) and owner and Unit.alive(enemy_unit) then
-		local event_data = FrameTable.alloc_table()
-		event_data.target_name = ScriptUnit.extension(player_unit, "dialogue_system").context.player_profile
+	if Unit.alive(player_unit) and owner and ALIVE[enemy_unit] then
 		local dialogue_extension = ScriptUnit.extension(enemy_unit, "dialogue_system")
 		local switch_group = dialogue_extension.wwise_voice_switch_group
 		local wwise_source, wwise_world = WwiseUtils.make_unit_auto_source(blackboard.world, enemy_unit, dialogue_extension.voice_node)
@@ -1436,9 +1451,7 @@ DialogueSystem.TriggerBackstab = function (self, player_unit, enemy_unit, blackb
 	local player_manager = Managers.player
 	local owner = player_manager:unit_owner(player_unit)
 
-	if Unit.alive(player_unit) and owner and Unit.alive(enemy_unit) then
-		local event_data = FrameTable.alloc_table()
-		event_data.target_name = ScriptUnit.extension(player_unit, "dialogue_system").context.player_profile
+	if Unit.alive(player_unit) and owner and ALIVE[enemy_unit] then
 		local dialogue_extension = ScriptUnit.extension(enemy_unit, "dialogue_system")
 		local switch_group = dialogue_extension.wwise_voice_switch_group
 		local wwise_source, wwise_world = WwiseUtils.make_unit_auto_source(blackboard.world, enemy_unit, dialogue_extension.voice_node)
@@ -1473,10 +1486,8 @@ end
 DialogueSystem.TriggerFlanking = function (self, player_unit, enemy_unit)
 	local player_manager = Managers.player
 	local owner = player_manager:unit_owner(player_unit)
-	local event_data = FrameTable.alloc_table()
-	event_data.target_name = ScriptUnit.extension(player_unit, "dialogue_system").context.player_profile
 
-	if Unit.alive(player_unit) and owner and Unit.alive(enemy_unit) then
+	if Unit.alive(player_unit) and owner and ALIVE[enemy_unit] then
 		local ai_base_extension = ScriptUnit.extension(enemy_unit, "ai_system")
 		local breed = ai_base_extension:breed()
 
@@ -1507,7 +1518,7 @@ DialogueSystem.TriggerBackstabHit = function (self, player_unit, enemy_unit)
 	local owner = player_manager:unit_owner(player_unit)
 	local game = Managers.state.network:game()
 
-	if Unit.alive(player_unit) and owner and Unit.alive(enemy_unit) and game and not owner.bot_player then
+	if Unit.alive(player_unit) and owner and ALIVE[enemy_unit] and game and not owner.bot_player then
 		local drawer = Managers.state.debug:drawer({
 			mode = "retained",
 			name = "Dialoge_debug"
@@ -1683,6 +1694,10 @@ DialogueSystem.rpc_play_dialogue_event = function (self, sender, go_id, is_level
 		return
 	end
 
+	if FROZEN[dialogue_actor_unit] then
+		return
+	end
+
 	local dialogue_name = NetworkLookup.dialogues[dialogue_id]
 	local dialogue = self.dialogues[dialogue_name]
 
@@ -1752,6 +1767,10 @@ DialogueSystem.rpc_interrupt_dialogue_event = function (self, sender, go_id, is_
 	local dialogue_actor_unit = Managers.state.network:game_object_or_level_unit(go_id, is_level_unit)
 
 	if not dialogue_actor_unit then
+		return
+	end
+
+	if self.frozen_unit_extension_data[dialogue_actor_unit] then
 		return
 	end
 

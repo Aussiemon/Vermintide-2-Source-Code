@@ -1,3 +1,5 @@
+require("scripts/unit_extensions/generic/generic_volume_templates")
+
 local PLAYER = "PlayerVolumeExtension"
 local BOT = "BotVolumeExtension"
 local AI = "AIVolumeExtension"
@@ -167,6 +169,29 @@ VolumeExtensionSettings = VolumeExtensionSettings or {
 				}
 			}
 		},
+		generic_fire = {
+			[PLAYER] = {
+				time_between_damage = 0.5,
+				damage = {
+					1,
+					1,
+					1,
+					1,
+					1
+				}
+			},
+			[BOT] = {
+				traversal_cost = "high",
+				time_between_damage = 0.5,
+				damage = {
+					1,
+					1,
+					1,
+					1,
+					1
+				}
+			}
+		},
 		catacombs_corpse_pit = {
 			[PLAYER] = {}
 		},
@@ -202,6 +227,11 @@ VolumeExtensionSettings = VolumeExtensionSettings or {
 					3,
 					3
 				}
+			}
+		},
+		bot_avoid_area = {
+			[BOT] = {
+				traversal_cost = "inferno"
 			}
 		}
 	},
@@ -239,28 +269,28 @@ VolumeExtensionSettings = VolumeExtensionSettings or {
 	trigger_volume = {
 		all_alive_humans_outside = {
 			[PLAYER] = {
-				filters = {
-					unit_disabled = false
-				}
+				filter = GenericVolumeTemplates.filters.unit_not_disabled
 			}
 		},
 		all_alive_players_outside = {
 			[PLAYER] = {
-				filters = {
-					unit_disabled = false
-				}
+				filter = GenericVolumeTemplates.filters.unit_not_disabled
 			},
 			[BOT] = {
-				filters = {
-					unit_disabled = false
-				}
+				filter = GenericVolumeTemplates.filters.unit_not_disabled
+			}
+		},
+		all_alive_players_outside_no_alive_inside = {
+			[PLAYER] = {
+				filter = GenericVolumeTemplates.filters.unit_not_disabled_outside_or_disabled_inside_and_not_all_disabled_inside
+			},
+			[BOT] = {
+				filter = GenericVolumeTemplates.filters.unit_not_disabled_outside_or_disabled_inside_and_not_all_disabled_inside
 			}
 		},
 		all_alive_players_inside = {
 			[PLAYER] = {
-				filters = {
-					all_players_inside = true
-				}
+				filter = GenericVolumeTemplates.filters.all_players_inside
 			}
 		},
 		ai_inside = {

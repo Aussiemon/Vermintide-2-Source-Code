@@ -340,20 +340,20 @@ SpreadTemplates = {
 				max_pitch = 1.5
 			},
 			zoomed_still = {
-				max_yaw = 0,
-				max_pitch = 0
+				max_yaw = 0.8,
+				max_pitch = 0.8
 			},
 			zoomed_moving = {
-				max_yaw = 0.3,
-				max_pitch = 0.3
+				max_yaw = 1,
+				max_pitch = 1
 			},
 			zoomed_crouch_still = {
-				max_yaw = 0,
-				max_pitch = 0
+				max_yaw = 0.6,
+				max_pitch = 0.6
 			},
 			zoomed_crouch_moving = {
-				max_yaw = 0.2,
-				max_pitch = 0.2
+				max_yaw = 1.5,
+				max_pitch = 1.5
 			}
 		},
 		immediate = {
@@ -524,12 +524,12 @@ SpreadTemplates = {
 				max_pitch = 2
 			},
 			zoomed_still = {
-				max_yaw = 1,
-				max_pitch = 1
+				max_yaw = 0.25,
+				max_pitch = 0.25
 			},
 			zoomed_moving = {
-				max_yaw = 3.5,
-				max_pitch = 3.5
+				max_yaw = 1.5,
+				max_pitch = 1.5
 			},
 			zoomed_crouch_still = {
 				max_yaw = 1.5,
@@ -597,7 +597,7 @@ SpreadTemplates = {
 			}
 		}
 	},
-	blunderbuss_bountyhunter = {
+	bounty_hunter_shotgun = {
 		continuous = {
 			still = {
 				max_yaw = 12,
@@ -616,20 +616,20 @@ SpreadTemplates = {
 				max_pitch = 6
 			},
 			zoomed_still = {
-				max_yaw = 0,
-				max_pitch = 0
+				max_yaw = 12,
+				max_pitch = 6
 			},
 			zoomed_moving = {
-				max_yaw = 0.4,
-				max_pitch = 0.4
+				max_yaw = 12,
+				max_pitch = 6
 			},
 			zoomed_crouch_still = {
-				max_yaw = 0,
-				max_pitch = 0
+				max_yaw = 12,
+				max_pitch = 6
 			},
 			zoomed_crouch_moving = {
-				max_yaw = 0.4,
-				max_pitch = 0.4
+				max_yaw = 12,
+				max_pitch = 6
 			}
 		},
 		immediate = {
@@ -1124,7 +1124,7 @@ SpreadTemplates.brace_of_drake_pistols = SpreadTemplates.brace_of_drake_pistols 
 SpreadTemplates.drakegun = SpreadTemplates.drakegun or table.clone(SpreadTemplates.default)
 SpreadTemplates.bow = table.create_copy(SpreadTemplates.bow, SpreadTemplates.bow) or table.clone(SpreadTemplates.default)
 SpreadTemplates.blunderbuss = table.create_copy(SpreadTemplates.blunderbuss, SpreadTemplates.blunderbuss) or table.clone(SpreadTemplates.default)
-SpreadTemplates.blunderbuss_bountyhunter = table.create_copy(SpreadTemplates.blunderbuss_bountyhunter, SpreadTemplates.blunderbuss_bountyhunter) or table.clone(SpreadTemplates.default)
+SpreadTemplates.bounty_hunter_shotgun = table.create_copy(SpreadTemplates.bounty_hunter_shotgun, SpreadTemplates.bounty_hunter_shotgun) or table.clone(SpreadTemplates.default)
 SpreadTemplates.drake_pistol_charged = SpreadTemplates.drake_pistol_charged or table.clone(SpreadTemplates.default)
 SpreadTemplates.rake_shot = table.create_copy(SpreadTemplates.rake_shot, SpreadTemplates.rake_shot) or table.clone(SpreadTemplates.default)
 SpreadTemplates.rake_twin_shot = table.create_copy(SpreadTemplates.rake_twin_shot, SpreadTemplates.rake_twin_shot) or table.clone(SpreadTemplates.default)

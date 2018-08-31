@@ -7,17 +7,17 @@ weapon_template.actions = {
 	action_one = {
 		default = {
 			anim_event = "attack_shoot_fast",
-			kind = "bow",
-			weapon_action_hand = "left",
-			apply_recoil = true,
 			ammo_usage = 1,
-			aim_assist_ramp_multiplier = 0.4,
+			kind = "bow",
+			apply_recoil = true,
 			aim_assist_max_ramp_multiplier = 0.8,
 			aim_assist_ramp_decay_delay = 0.3,
 			anim_event_last_ammo = "attack_shoot_fast_last",
 			charge_value = "arrow_hit",
+			weapon_action_hand = "left",
 			fire_sound_event = "player_combat_weapon_bow_fire_light",
 			speed = 9000,
+			aim_assist_ramp_multiplier = 0.4,
 			total_time = 0.83,
 			buff_data = {
 				{
@@ -56,10 +56,6 @@ weapon_template.actions = {
 				return input_extension:reset_release_input()
 			end,
 			hit_effect = ARROW_HIT_EFFECT,
-			cleave_distribution = {
-				attack = 0.15,
-				impact = 0.15
-			},
 			projectile_info = Projectiles.carbine_arrow,
 			impact_data = {
 				wall_nail = true,
@@ -87,9 +83,9 @@ weapon_template.actions = {
 			charge_value = "zoomed_arrow_hit",
 			weapon_action_hand = "left",
 			apply_recoil = true,
+			anim_end_event = "to_unzoom",
 			anim_event_last_ammo = "attack_shoot_last",
 			minimum_hold_time = 0.4,
-			anim_end_event = "to_unzoom",
 			ammo_usage = 1,
 			fire_sound_event = "player_combat_weapon_bow_fire_heavy",
 			speed = 16000,
@@ -128,10 +124,6 @@ weapon_template.actions = {
 				return input_extension:reset_release_input()
 			end,
 			hit_effect = ARROW_HIT_EFFECT,
-			cleave_distribution = {
-				attack = 0.25,
-				impact = 0.25
-			},
 			projectile_info = Projectiles.sniper_arrow,
 			impact_data = {
 				depth = 0.15,
@@ -287,7 +279,6 @@ weapon_template.actions = {
 				}
 			},
 			buffed_zoom_thresholds = {
-				"zoom_in_trueflight",
 				"zoom_in",
 				"increased_zoom_in"
 			},
@@ -298,7 +289,7 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action"
 			end,
 			condition_func = function (unit, input_extension, ammo_extension)
-				if ammo_extension and ammo_extension:total_remaining_ammo() <= 0 then
+				if ammo_extension and (ammo_extension:total_remaining_ammo() <= 0 or ammo_extension:is_reloading()) then
 					return false
 				end
 

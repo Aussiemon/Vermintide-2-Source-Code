@@ -6,6 +6,7 @@ require("scripts/network/lobby_members")
 require("scripts/network_lookup/network_lookup")
 
 LobbyInternal = LobbyInternal or {}
+LobbyInternal.TYPE = "psn"
 LobbyInternal.state_map = {
 	[PsnRoom.WAITING_TO_CREATE] = LobbyState.WAITING_TO_CREATE,
 	[PsnRoom.CREATING] = LobbyState.CREATING,
@@ -74,6 +75,35 @@ end
 
 LobbyInternal.client_ready = function ()
 	return PsnClient.ready(LobbyInternal.psn_client)
+end
+
+LobbyInternal.ping = function (peer_id)
+	local matchmaking_manager = Managers.matchmaking
+	local pings_by_peer_id = matchmaking_manager:get_players_ping()
+	local ping_data = pings_by_peer_id[peer_id]
+
+	if ping_data then
+		local number_of_ping_values = #ping_data
+		local total_value = 0
+
+		for i = 1, number_of_ping_values, 1 do
+			total_value = total_value + ping_data[i]
+		end
+
+		local average_value = (total_value > 0 and total_value / number_of_ping_values) or 0
+
+		return average_value
+	else
+		return 255
+	end
+end
+
+LobbyInternal.add_ping_peer = function (peer_id)
+	return
+end
+
+LobbyInternal.remove_ping_peer = function (peer_id)
+	return
 end
 
 LobbyInternal.shutdown_client = function ()

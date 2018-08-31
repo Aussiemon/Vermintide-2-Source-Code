@@ -71,7 +71,7 @@ BTTargetPouncedAction.enter = function (self, unit, blackboard, t)
 	local breed_name = breed.name
 	local impact_damage = DamageUtils.calculate_damage(breed.pounce_impact_damage) + dist * breed.pounce_bonus_dmg_per_meter
 
-	DamageUtils.add_damage_network(target_unit, unit, impact_damage, "torso", "cutting", Vector3(1, 0, 0), breed_name, nil, nil, nil, action.hit_react_type)
+	DamageUtils.add_damage_network(target_unit, unit, impact_damage, "torso", "cutting", nil, Vector3(1, 0, 0), breed_name, nil, nil, nil, action.hit_react_type)
 	BTTargetPouncedAction.impact_pushback(target_position, action.close_impact_radius, action.far_impact_radius, action.impact_speed_given, blackboard.target_unit)
 
 	local disabled_by_special = blackboard.group_blackboard.disabled_by_special

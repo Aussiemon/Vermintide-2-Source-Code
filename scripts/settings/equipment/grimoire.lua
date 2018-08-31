@@ -98,6 +98,35 @@ weapon_template.buffs = {
 		external_optional_multiplier = 1.2
 	}
 }
+weapon_template.attack_meta_data = {
+	tap_attack = {
+		arc = 0,
+		penetrating = false,
+		max_range = math.huge
+	},
+	hold_attack = {
+		arc = 0,
+		penetrating = false,
+		max_range = math.huge,
+		attack_chain = {
+			start_sub_action_name = "default",
+			start_action_name = "action_one",
+			transitions = {
+				action_one = {
+					default = {
+						wanted_sub_action_name = "action_throw",
+						wanted_action_name = "action_one",
+						bot_wait_input = "hold_attack",
+						bot_wanted_input = "hold_attack"
+					}
+				}
+			}
+		}
+	}
+}
+
+WeaponUtils.add_bot_meta_data_chain_actions(weapon_template.actions, weapon_template.attack_meta_data.hold_attack.attack_chain.transitions)
+
 Weapons = Weapons or {}
 Weapons.wpn_grimoire_01 = weapon_template
 Weapons.wpn_side_objective_tome_01 = table.clone(weapon_template)

@@ -81,13 +81,31 @@ CareerAbilityDRSlayer.update = function (self, unit, input, dt, context, t)
 			return
 		end
 
+		if input_extension:get("weapon_reload") then
+			self:_stop_priming()
+
+			return
+		end
+
 		if landing_position then
 			self._last_valid_landing_position = Vector3Box(landing_position)
 		end
 
-		if input_extension:get("action_career_release") then
+		if not self._last_valid_landing_position then
+			self:_stop_priming()
+
+			return
+		end
+
+		if self._last_valid_landing_position and not input_extension:get("action_career_hold") then
 			self:_run_ability()
 		end
+	end
+end
+
+CareerAbilityDRSlayer.stop = function (self, reason)
+	if self._is_priming then
+		self:_stop_priming()
 	end
 end
 
@@ -242,7 +260,7 @@ CareerAbilityDRSlayer._run_ability = function (self)
 
 	status_extension:set_noclip(true)
 
-	local has_impact_damage_buff = talent_extension:has_talent("bardin_slayer_activated_ability_impact_damage", "dwarf_ranger", true)
+	local has_impact_buff = talent_extension:has_talent("bardin_slayer_activated_ability_impact_damage")
 	local landing_position = self._last_valid_landing_position:unbox()
 	local physics_world = World.get_data(world, "physics_world")
 	local velocity, time_of_flight, hit_pos = get_leap_data(physics_world, POSITION_LOOKUP[owner_unit], landing_position)
@@ -255,9 +273,9 @@ CareerAbilityDRSlayer._run_ability = function (self)
 		sfx_event_land = local_player and "Play_career_ability_bardin_slayer_impact",
 		leap_finish = function (owner_unit, position)
 			local rotation = Quaternion.identity()
-			local explosion_template = "bardin_slayer_activated_ability_landing_stagger"
+			local explosion_template = (has_impact_buff and "bardin_slayer_activated_ability_landing_stagger_impact") or "bardin_slayer_activated_ability_landing_stagger"
 			local scale = 1
-			local career_power_level = career_extension:get_career_power_level() * ((has_impact_damage_buff and 2) or 1)
+			local career_power_level = career_extension:get_career_power_level()
 			local area_damage_system = Managers.state.entity:system("area_damage_system")
 
 			area_damage_system:create_explosion(owner_unit, position, rotation, explosion_template, scale, "career_ability", career_power_level)

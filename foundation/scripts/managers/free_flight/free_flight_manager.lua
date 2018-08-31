@@ -143,12 +143,13 @@ end
 
 FreeFlightManager._update_global = function (self, dt)
 	local data = self.data.global
-	local button_pressed = Keyboard.pressed(Keyboard.button_index("f9"))
-	local frustum_modifier = Keyboard.button(Keyboard.button_index("left shift")) > 0 or Keyboard.button(Keyboard.button_index("right shift")) > 0
+	local input_service = self:_resolve_input_service()
+	local button_pressed = input_service:get("global_free_flight_toggle")
+	local frustum_modifier = input_service:get("frustum_freeze_toggle")
 
 	if data.active and not Managers.world:has_world(data.viewport_world_name) then
 		self:_clear_global_free_flight(data)
-	elseif data.active and button_pressed and frustum_modifier then
+	elseif data.active and frustum_modifier then
 		local world = Managers.world:world(data.viewport_world_name)
 
 		self:_toggle_frustum_freeze(dt, data, world, ScriptWorld.global_free_flight_viewport(world), true)
@@ -157,8 +158,6 @@ FreeFlightManager._update_global = function (self, dt)
 	elseif button_pressed then
 		self:_enter_global_free_flight(data)
 	elseif data.active then
-		local input_service = self:_resolve_input_service()
-
 		self:_update_global_free_flight(dt, data, input_service)
 	end
 end
@@ -176,6 +175,11 @@ FreeFlightManager._exit_frustum_freeze = function (self, data, world, viewport, 
 
 	local camera = data.frustum_freeze_camera
 	local camera_unit = Camera.get_data(camera, "unit")
+	local cam = ScriptViewport.camera(viewport)
+	local cam_unit = Camera.get_data(cam, "unit")
+	local pose = Camera.local_pose(camera)
+
+	Camera.set_local_pose(cam, cam_unit, pose)
 
 	if destroy_camera then
 		World.destroy_unit(world, camera_unit)
@@ -187,6 +191,7 @@ end
 FreeFlightManager._enter_frustum_freeze = function (self, data, world, viewport, create_new_camera)
 	local camera = nil
 	local cam = ScriptViewport.camera(viewport)
+	local cam_fov = Camera.vertical_fov(cam)
 
 	if create_new_camera then
 		local camera_unit = World.spawn_unit(world, "core/units/camera")
@@ -197,6 +202,7 @@ FreeFlightManager._enter_frustum_freeze = function (self, data, world, viewport,
 		local pose = Camera.local_pose(cam)
 
 		Camera.set_local_pose(camera, camera_unit, pose)
+		Camera.set_vertical_fov(camera, cam_fov)
 	else
 		camera = cam
 	end
@@ -295,9 +301,9 @@ FreeFlightManager._update_global_free_flight = function (self, dt, data, input_s
 		local y_trans = input_service:get("move_forward") - input_service:get("move_back")
 
 		if PLATFORM == "xb1" then
-			local move = input_service:get("move_controller")
-			x_trans = move.x
-			y_trans = move.y
+			local move = input_service:get("move")
+			x_trans = move.x * 2
+			y_trans = move.y * 2
 		end
 
 		local z_trans = input_service:get("move_up") - input_service:get("move_down")
@@ -362,6 +368,24 @@ FreeFlightManager._update_global_free_flight = function (self, dt, data, input_s
 	end
 
 	ScriptCamera.set_local_pose(cam, cm)
+end
+
+FreeFlightManager.cleanup_free_flight = function (self)
+	local global_data = self.data.global
+
+	if global_data.active then
+		self:_exit_global_free_flight(global_data)
+	end
+
+	local player_manager = Managers.player
+
+	for local_player_id, data in pairs(self.data) do
+		if local_player_id ~= "global" and data.active then
+			local player = player_manager:local_player(local_player_id)
+
+			self:_exit_free_flight(player, data)
+		end
+	end
 end
 
 FreeFlightManager._enter_global_free_flight = function (self, data)
@@ -448,7 +472,7 @@ FreeFlightManager._update_player = function (self, dt, player, data)
 	elseif data.active and frustum_freeze_toggle then
 		local world = Managers.world:world(data.viewport_world_name)
 
-		self:_toggle_frustum_freeze(dt, data, world, ScriptWorld.viewport(world, data.viewport_name))
+		self:_toggle_frustum_freeze(dt, data, world, ScriptWorld.free_flight_viewport(world, data.viewport_name))
 	elseif data.active and free_flight_toggle then
 		self:_exit_free_flight(player, data)
 	elseif free_flight_toggle then

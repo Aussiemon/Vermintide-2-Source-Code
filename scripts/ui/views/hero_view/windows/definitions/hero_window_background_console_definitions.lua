@@ -6,19 +6,7 @@ local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[
 local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
 local window_text_width = window_size[1] - (window_frame_width * 2 + 60)
 local scenegraph_definition = {
-	root = {
-		is_root = true,
-		size = {
-			1920,
-			1080
-		},
-		position = {
-			0,
-			0,
-			UILayer.default
-		}
-	},
-	root_fit = {
+	screen = {
 		scale = "fit",
 		size = {
 			1920,
@@ -30,10 +18,8 @@ local scenegraph_definition = {
 			UILayer.default
 		}
 	},
-	menu_root = {
-		vertical_alignment = "center",
-		parent = "root",
-		horizontal_alignment = "center",
+	loading_overlay = {
+		scale = "fit",
 		size = {
 			1920,
 			1080
@@ -41,65 +27,12 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			0
+			UILayer.default + 100
 		}
 	},
-	window = {
+	loading_detail = {
 		vertical_alignment = "center",
-		parent = "menu_root",
-		horizontal_alignment = "center",
-		size = window_size,
-		position = {
-			0,
-			0,
-			1
-		}
-	},
-	preview = {
-		vertical_alignment = "top",
-		parent = "window",
-		horizontal_alignment = "center",
-		size = {
-			window_size[1],
-			window_size[2] - 120
-		},
-		position = {
-			0,
-			0,
-			8
-		}
-	},
-	detailed_button = {
-		vertical_alignment = "top",
-		parent = "preview",
-		horizontal_alignment = "right",
-		size = {
-			50,
-			50
-		},
-		position = {
-			0,
-			0,
-			1
-		}
-	},
-	detailed_list = {
-		vertical_alignment = "top",
-		parent = "detailed_button",
-		horizontal_alignment = "right",
-		size = {
-			window_size[1],
-			window_size[2] - 120 - 50
-		},
-		position = {
-			0,
-			-40,
-			1
-		}
-	},
-	loading_overlay = {
-		vertical_alignment = "center",
-		parent = "window",
+		parent = "loading_overlay",
 		horizontal_alignment = "center",
 		size = {
 			314,
@@ -108,7 +41,35 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			40
+			1
+		}
+	},
+	detailed_button = {
+		vertical_alignment = "top",
+		parent = "screen",
+		horizontal_alignment = "right",
+		size = {
+			50,
+			50
+		},
+		position = {
+			0,
+			-100,
+			1
+		}
+	},
+	detailed_list = {
+		vertical_alignment = "top",
+		parent = "detailed_button",
+		horizontal_alignment = "right",
+		size = {
+			window_size[1] - 100,
+			window_size[2]
+		},
+		position = {
+			0,
+			-40,
+			1
 		}
 	}
 }
@@ -168,41 +129,6 @@ local description_text_style = {
 		0,
 		0,
 		2
-	}
-}
-local viewport_widget = {
-	scenegraph_id = "root_fit",
-	element = UIElements.Viewport,
-	style = {
-		viewport = {
-			layer = 990,
-			viewport_name = "character_preview_viewport",
-			clear_screen_on_create = true,
-			level_name = "levels/ui_character_selection/world",
-			level_package_name = "resource_packages/levels/ui_inventory_preview",
-			enable_sub_gui = false,
-			world_name = "character_preview",
-			world_flags = {
-				Application.DISABLE_SOUND,
-				Application.DISABLE_ESRAM,
-				Application.ENABLE_VOLUMETRICS
-			},
-			camera_position = {
-				0,
-				0,
-				0
-			},
-			camera_lookat = {
-				0,
-				0,
-				0
-			}
-		}
-	},
-	content = {
-		button_hotspot = {
-			allow_multi_hover = true
-		}
 	}
 }
 
@@ -590,7 +516,7 @@ local function create_detailed_stat_widget(scenegraph_id, size, list_scenegraph_
 		list_background = {
 			size = list_background_size,
 			color = {
-				255,
+				150,
 				255,
 				255,
 				255
@@ -748,7 +674,7 @@ local function create_detailed_stat_widget(scenegraph_id, size, list_scenegraph_
 					entry_size[2]
 				},
 				color = {
-					255,
+					100,
 					255,
 					255,
 					255
@@ -778,50 +704,56 @@ local function create_detailed_stat_widget(scenegraph_id, size, list_scenegraph_
 end
 
 local loading_overlay_widgets = {
-	loading_overlay = UIWidgets.create_simple_rect("window", {
+	loading_overlay = UIWidgets.create_simple_rect("loading_overlay", {
 		255,
 		12,
 		12,
 		12
 	}),
-	loading_overlay_loading_glow = UIWidgets.create_simple_texture("loading_title_divider", "loading_overlay", nil, nil, nil, 1),
-	loading_overlay_loading_frame = UIWidgets.create_simple_texture("loading_title_divider_background", "loading_overlay")
+	loading_overlay_loading_glow = UIWidgets.create_simple_texture("loading_title_divider", "loading_detail", nil, nil, nil, 2),
+	loading_overlay_loading_frame = UIWidgets.create_simple_texture("loading_title_divider_background", "loading_detail", nil, nil, nil, 1)
 }
 local camera_position_by_character = {
 	witch_hunter = {
-		z = 0.5,
-		x = 0.8,
+		z = 0.6,
+		x = 0.6,
 		y = -1.3
 	},
 	bright_wizard = {
-		z = 0.3,
-		x = 0.8,
+		z = 0.4,
+		x = 0.6,
 		y = -1.3
 	},
 	dwarf_ranger = {
-		z = -0.1,
-		x = 0.8,
+		z = 0,
+		x = 0.6,
 		y = -1.2
 	},
 	wood_elf = {
-		z = 0.15,
-		x = 0.8,
+		z = 0.35,
+		x = 0.6,
 		y = -1.3
 	},
 	empire_soldier = {
 		z = 0.5,
-		x = 0.8,
+		x = 0.6,
 		y = -1.3
 	},
 	empire_soldier_tutorial = {
-		z = 0.2,
-		x = 1.3,
-		y = -0.8
+		z = 0.5,
+		x = 0.6,
+		y = -1.3
 	}
 }
 local widgets = {
 	detailed = create_detailed_stat_widget("detailed_button", scenegraph_definition.detailed_button.size, "detailed_list", scenegraph_definition.detailed_list.size)
 }
+local background_rect = UIWidgets.create_simple_texture("gradient_dice_game_reward", "screen", nil, nil, {
+	80,
+	255,
+	255,
+	255
+})
 local animation_definitions = {
 	on_enter = {
 		{
@@ -861,8 +793,7 @@ local animation_definitions = {
 
 return {
 	widgets = widgets,
-	node_widgets = node_widgets,
-	viewport_widget = viewport_widget,
+	background_rect = background_rect,
 	scenegraph_definition = scenegraph_definition,
 	animation_definitions = animation_definitions,
 	camera_position_by_character = camera_position_by_character,

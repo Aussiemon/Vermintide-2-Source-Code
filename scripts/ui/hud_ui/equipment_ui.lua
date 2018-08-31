@@ -900,7 +900,7 @@ EquipmentUI._handle_gamepad = function (self)
 	local should_render = true
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 
-	if gamepad_active then
+	if gamepad_active or UISettings.use_gamepad_hud_layout then
 		if self._retained_elements_visible then
 			self:_set_elements_visible(false)
 		end

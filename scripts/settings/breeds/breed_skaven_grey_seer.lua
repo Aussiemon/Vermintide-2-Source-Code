@@ -467,15 +467,8 @@ local action_data = {
 		scale_animation_speeds = true,
 		stagger_animation_scale = 1.3,
 		custom_enter_function = function (unit, blackboard, t, action)
-			local stagger_anims, idle_event = nil
-
-			if blackboard.mounted_data and blackboard.knocked_off_mount then
-				stagger_anims = action.stagger_anims[blackboard.stagger_type]
-				idle_event = "idle_eat_warpstone"
-			else
-				stagger_anims = action.mounted_stagger_anims[blackboard.stagger_type]
-				idle_event = "idle_eat_warpstone"
-			end
+			local stagger_anims = action.stagger_anims[blackboard.stagger_type]
+			local idle_event = "idle_eat_warpstone"
 
 			return stagger_anims, idle_event
 		end,
@@ -658,72 +651,6 @@ local action_data = {
 				dwn = {
 					"stun_down"
 				}
-			},
-			{
-				fwd = {
-					"stagger_weakspot"
-				},
-				bwd = {
-					"stagger_weakspot"
-				},
-				left = {
-					"stagger_weakspot"
-				},
-				right = {
-					"stagger_weakspot"
-				}
-			}
-		},
-		mounted_stagger_anims = {
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
-			},
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
-			},
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
-			},
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
-			},
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
-			},
-			{
-				fwd = {
-					"stagger_fwd_exp"
-				},
-				bwd = {
-					"stagger_bwd_exp"
-				},
-				left = {
-					"stagger_left_exp"
-				},
-				right = {
-					"stagger_right_exp"
-				}
-			},
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
 			},
 			{
 				fwd = {

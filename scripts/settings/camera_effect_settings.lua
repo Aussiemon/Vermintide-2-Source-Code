@@ -492,11 +492,11 @@ CameraEffectSettings = {
 						time_stamp = 0
 					},
 					{
-						value = -0.56,
+						value = -0.14,
 						time_stamp = 0.16
 					},
 					{
-						value = 0.11,
+						value = 0.0275,
 						time_stamp = 0.34
 					},
 					{
@@ -514,11 +514,11 @@ CameraEffectSettings = {
 						time_stamp = 0
 					},
 					{
-						value = -1.7300000000000002,
+						value = -0.73,
 						time_stamp = 0.16
 					},
 					{
-						value = -0.4466666666666667,
+						value = -0.27999999999999997,
 						time_stamp = 0.34
 					},
 					{

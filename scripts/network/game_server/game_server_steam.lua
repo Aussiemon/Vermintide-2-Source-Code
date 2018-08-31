@@ -25,11 +25,31 @@ GameServerInternal.init_server = function (network_options, server_name)
 		server_port = network_options.server_port
 	}
 	local use_eac = true
+	local server = Network.init_steam_server(config_file_name, settings, use_eac)
+	GameServerInternal.steam_ping_thread = SteamPingThread(server)
 
-	return Network.init_steam_server(config_file_name, settings, use_eac)
+	CommandWindow.print(string.format("Appid: %s", SteamGameServer.app_id()))
+
+	return server
+end
+
+GameServerInternal.ping = function (peer_id)
+	return GameServerInternal.steam_ping_thread:ping(peer_id)
+end
+
+GameServerInternal.add_ping_peer = function (peer_id)
+	GameServerInternal.steam_ping_thread:add_peer(peer_id)
+end
+
+GameServerInternal.remove_ping_peer = function (peer_id)
+	GameServerInternal.steam_ping_thread:remove_peer(peer_id)
 end
 
 GameServerInternal.shutdown_server = function (game_server)
+	GameServerInternal.steam_ping_thread:destroy()
+
+	GameServerInternal.steam_ping_thread = nil
+
 	Network.shutdown_steam_server(game_server)
 end
 

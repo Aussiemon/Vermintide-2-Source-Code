@@ -268,4 +268,62 @@ ItemHelper.on_inventory_item_added = function (item)
 	end
 end
 
+ItemHelper.mark_backend_id_as_favorite = function (backend_id, save)
+	local item_interface = Managers.backend:get_interface("items")
+	local item = item_interface:get_item_from_id(backend_id)
+	local item_data = item.data
+	local slot_type = item_data.slot_type
+	local can_wield = item_data.can_wield
+	local favorite_item_ids = PlayerData.favorite_item_ids or {}
+	favorite_item_ids[backend_id] = true
+	local career_settings = CareerSettings
+	local favorite_item_ids_by_career = PlayerData.favorite_item_ids_by_career or {}
+
+	for _, career_name in ipairs(can_wield) do
+		local item_ids_by_career = favorite_item_ids_by_career[career_name] or {}
+		local item_ids_by_slot_type = item_ids_by_career[slot_type] or {}
+		item_ids_by_slot_type[backend_id] = true
+		item_ids_by_career[slot_type] = item_ids_by_slot_type
+		favorite_item_ids_by_career[career_name] = item_ids_by_career
+	end
+
+	PlayerData.favorite_item_ids = favorite_item_ids
+	PlayerData.favorite_item_ids_by_career = favorite_item_ids_by_career
+
+	if save then
+		Managers.save:auto_save(SaveFileName, SaveData, nil)
+	end
+end
+
+ItemHelper.unmark_backend_id_as_favorite = function (backend_id)
+	local favorite_item_ids = PlayerData.favorite_item_ids
+	local favorite_item_ids_by_career = PlayerData.favorite_item_ids_by_career
+
+	assert(favorite_item_ids, "Requested to unmark item backend id %d without any save data.", backend_id)
+
+	favorite_item_ids[backend_id] = nil
+
+	for career_name, item_ids_by_slot_type in pairs(favorite_item_ids_by_career) do
+		for slot_type, backend_ids in pairs(item_ids_by_slot_type) do
+			for item_backend_id, _ in pairs(backend_ids) do
+				if item_backend_id == backend_id then
+					backend_ids[backend_id] = nil
+
+					break
+				end
+			end
+		end
+	end
+end
+
+ItemHelper.get_favorite_backend_ids = function ()
+	return PlayerData.favorite_item_ids
+end
+
+ItemHelper.is_favorite_backend_id = function (backend_id)
+	local favorite_item_ids = PlayerData.favorite_item_ids
+
+	return favorite_item_ids and favorite_item_ids[backend_id]
+end
+
 return

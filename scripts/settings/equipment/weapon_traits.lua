@@ -102,6 +102,7 @@ WeaponTraits.buff_templates = {
 		buffs = {
 			{
 				max_stacks = 1,
+				icon = "melee_attack_speed_on_crit",
 				refresh_durations = true,
 				stat_buff = StatBuffIndex.ATTACK_SPEED
 			}

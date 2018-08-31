@@ -1,4 +1,6 @@
 PACKAGED_LEVEL_PACKAGE_NAMES = {
+	["resource_packages/levels/dlcs/bogenhafen/city"] = true,
+	["resource_packages/levels/dlcs/bogenhafen/slum"] = true,
 	["resource_packages/levels/honduras/bell"] = true,
 	["resource_packages/levels/honduras/catacombs"] = true,
 	["resource_packages/levels/honduras/elven_ruins"] = true,

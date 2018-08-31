@@ -23,12 +23,9 @@ go_type_table = {
 			local player = ScriptUnit.extension(unit, "input_system").player
 			local mover = Unit.mover(unit)
 			local profile_id = player:profile_index()
-
-			assert(profile_id)
-
 			local profile = SPProfiles[profile_id]
 
-			assert(profile, "No such profile with index %s", tostring(profile_id))
+			fassert(profile, "No such profile with index %s", tostring(profile_id))
 
 			local hero_attributes = Managers.backend:get_interface("hero_attributes")
 			local career_extension = ScriptUnit.extension(unit, "career_system")
@@ -46,8 +43,11 @@ go_type_table = {
 			local max_wounds = ScriptUnit.extension(unit, "status_system"):max_wounds_network_safe()
 			local data_table = {
 				ammo_percentage = 1,
+				overcharge_threshold_percentage = 0,
 				has_moved_from_start_position = false,
+				overcharge_max_value = 40,
 				ability_percentage = 0,
+				overcharge_percentage = 0,
 				moving_platform = 0,
 				go_type = NetworkLookup.go_types.player_unit,
 				husk_unit = NetworkLookup.husks[husk_unit],
@@ -75,12 +75,9 @@ go_type_table = {
 			local player = Managers.player:owner(unit)
 			local mover = Unit.mover(unit)
 			local profile_id = player:profile_index()
-
-			assert(profile_id)
-
 			local profile = SPProfiles[profile_id]
 
-			assert(profile, "No such profile with index %s", tostring(profile_id))
+			fassert(profile, "No such profile with index %s", tostring(profile_id))
 
 			local cosmetic_extension = ScriptUnit.extension(unit, "cosmetic_system")
 			local skin = cosmetic_extension:get_equipped_skin()
@@ -93,9 +90,12 @@ go_type_table = {
 			local rotation = Unit.local_rotation(unit, 0)
 			local data_table = {
 				ammo_percentage = 1,
+				overcharge_threshold_percentage = 0,
 				ability_percentage = 0,
 				prestige_level = 0,
+				overcharge_max_value = 40,
 				level = 0,
+				overcharge_percentage = 0,
 				moving_platform = 0,
 				go_type = NetworkLookup.go_types.player_bot_unit,
 				husk_unit = NetworkLookup.husks[husk_unit],
@@ -1181,6 +1181,16 @@ go_type_table = {
 
 			return data_table
 		end,
+		timed_explosion_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
+			local data_table = {
+				go_type = NetworkLookup.go_types.timed_explosion_unit,
+				husk_unit = NetworkLookup.husks[unit_name],
+				position = Unit.local_position(unit, 0),
+				rotation = Unit.local_rotation(unit, 0)
+			}
+
+			return data_table
+		end,
 		pickup_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
 			local pickup_extension = ScriptUnit.extension(unit, "pickup_system")
 			local pickup_name = pickup_extension.pickup_name
@@ -1245,6 +1255,36 @@ go_type_table = {
 
 			return data_table
 		end,
+		buff_aoe_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
+			local buff_aoe_extension = ScriptUnit.extension(unit, "buff_area_system")
+			local owner_player = buff_aoe_extension.owner_player
+			local life_time = buff_aoe_extension.life_time
+			local radius = buff_aoe_extension.radius
+			local removal_proc_function_name = buff_aoe_extension.removal_proc_function_name
+			local removal_proc_function_id = NetworkConstants.invalid_game_object_id
+
+			if removal_proc_function_name then
+				removal_proc_function_id = NetworkLookup.buff_templates[removal_proc_function_name]
+			end
+
+			local owner_player_id = NetworkConstants.invalid_game_object_id
+
+			if owner_player then
+				owner_player_id = owner_player.game_object_id
+			end
+
+			local data_table = {
+				go_type = NetworkLookup.go_types.buff_aoe_unit,
+				husk_unit = NetworkLookup.husks[unit_name],
+				position = Unit.local_position(unit, 0),
+				life_time = life_time,
+				removal_proc_function_id = removal_proc_function_id,
+				radius = radius,
+				owner_player_id = owner_player_id
+			}
+
+			return data_table
+		end,
 		thrown_weapon_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
 			local data_table = {
 				go_type = NetworkLookup.go_types.thrown_weapon_unit,
@@ -1293,7 +1333,7 @@ go_type_table = {
 			local has_moved_from_start_position = GameSession.game_object_field(game_session, go_id, "has_moved_from_start_position")
 			local profile = SPProfiles[profile_id]
 
-			assert(profile, "No such profile with index %s", tostring(profile_id))
+			fassert(profile, "No such profile with index %s", tostring(profile_id))
 
 			local career = profile.careers[career_id]
 			local sound_character = career.sound_character
@@ -1318,6 +1358,9 @@ go_type_table = {
 			local player = Managers.player:player(peer_id, player_id)
 			local skin_name = NetworkLookup.cosmetics[skin_id]
 			local frame_name = NetworkLookup.cosmetics[frame_id]
+			local career_name = career.name
+			local overcharge_data = OverchargeData[career_name] or {}
+			local overcharge_max_value = GameSession.game_object_field(game_session, go_id, "overcharge_max_value")
 			local extension_init_data = {
 				locomotion_system = {
 					id = go_id,
@@ -1386,6 +1429,10 @@ go_type_table = {
 					profile_index = profile_id,
 					career_index = career_id,
 					initial_ability_percentage = initial_ability_percentage
+				},
+				overcharge_system = {
+					overcharge_max_value = overcharge_max_value,
+					overcharge_data = overcharge_data
 				}
 			}
 
@@ -1412,7 +1459,7 @@ go_type_table = {
 			local has_moved_from_start_position = GameSession.game_object_field(game_session, go_id, "has_moved_from_start_position")
 			local profile = SPProfiles[profile_id]
 
-			assert(profile, "No such profile with index %s", tostring(profile_id))
+			fassert(profile, "No such profile with index %s", tostring(profile_id))
 
 			local career = profile.careers[career_id]
 
@@ -1436,6 +1483,9 @@ go_type_table = {
 			local player = Managers.player:player(peer_id, player_id)
 			local skin_name = NetworkLookup.cosmetics[skin_id]
 			local frame_name = NetworkLookup.cosmetics[frame_id]
+			local career_name = career.name
+			local overcharge_data = OverchargeData[career_name] or {}
+			local overcharge_max_value = GameSession.game_object_field(game_session, go_id, "overcharge_max_value")
 			local extension_init_data = {
 				locomotion_system = {
 					id = go_id,
@@ -1504,6 +1554,10 @@ go_type_table = {
 					profile_index = profile_id,
 					career_index = career_id,
 					initial_ability_percentage = initial_ability_percentage
+				},
+				overcharge_system = {
+					overcharge_max_value = overcharge_max_value,
+					overcharge_data = overcharge_data
 				}
 			}
 
@@ -2870,6 +2924,12 @@ go_type_table = {
 
 			return unit_template_name, extension_init_data
 		end,
+		timed_explosion_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
+			local extension_init_data = {}
+			local unit_template_name = "timed_explosion_unit"
+
+			return unit_template_name, extension_init_data
+		end,
 		pickup_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
 			local pickup_name = GameSession.game_object_field(game_session, go_id, "pickup_name")
 			local has_physics = GameSession.game_object_field(game_session, go_id, "has_physics")
@@ -2927,6 +2987,35 @@ go_type_table = {
 
 			return unit_template_name, extension_init_data
 		end,
+		buff_aoe_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
+			local life_time = GameSession.game_object_field(game_session, go_id, "life_time")
+			local removal_proc_function_id = GameSession.game_object_field(game_session, go_id, "removal_proc_function_id")
+			local radius = GameSession.game_object_field(game_session, go_id, "radius")
+			local owner_player_id = GameSession.game_object_field(game_session, go_id, "owner_player_id")
+			local removal_proc_function_name = nil
+
+			if removal_proc_function_id ~= NetworkConstants.invalid_game_object_id then
+				removal_proc_function_name = NetworkLookup.buff_templates[removal_proc_function_id]
+			end
+
+			local owner_player = nil
+
+			if owner_player_id ~= NetworkConstants.invalid_game_object_id then
+				owner_player = Managers.player:player_from_game_object_id(owner_player_id)
+			end
+
+			local extension_init_data = {
+				buff_area_system = {
+					life_time = life_time,
+					removal_proc_function_name = removal_proc_function_name,
+					radius = radius,
+					player = owner_player
+				}
+			}
+			local unit_template_name = "buff_aoe_unit"
+
+			return unit_template_name, extension_init_data
+		end,
 		ai_unit_dummy_sorcerer = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
 			local unit_template_name = "ai_unit_dummy_sorcerer"
 			local extension_init_data = nil
@@ -2952,7 +3041,7 @@ go_type_table = {
 			return unit_template_name, extension_init_data
 		end,
 		sync_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
-			assert(false)
+			error("We don't use this path for this kind of game object")
 		end
 	},
 	unit_from_gameobject_creator_func = function (unit_spawner, game_session, go_id, go_template)
@@ -2962,7 +3051,7 @@ go_type_table = {
 		if is_level_unit then
 			local unit_index = GameSession.game_object_field(game_session, go_id, "level_id")
 
-			assert(false, "NetworkLookup.levels doesn´t exist. Talk to Anders E")
+			error("NetworkLookup.levels doesn´t exist. Talk to Anders E")
 
 			local level_name = NetworkLookup.levels[GameSession.game_object_field(game_session, go_id, "level_name_id")]
 			local level = GLOBAL.current_levels[level_name]

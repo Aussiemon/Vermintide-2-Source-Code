@@ -25,6 +25,8 @@ PlayFabMirror.init = function (self, signin_result)
 
 		if tonumber(value) then
 			value = tonumber(value)
+		elseif value == "true" or value == "false" then
+			value = to_boolean(value)
 		end
 
 		read_only_data_values[key] = value
@@ -32,7 +34,7 @@ PlayFabMirror.init = function (self, signin_result)
 
 	self._read_only_data = read_only_data_values
 	self._read_only_data_mirror = table.clone(read_only_data_values)
-	local title_data = info_result_payload.TitleData
+	local title_data = info_result_payload.TitleData or {}
 	local title_data_values = {}
 
 	for key, value in pairs(title_data) do
@@ -44,11 +46,32 @@ PlayFabMirror.init = function (self, signin_result)
 	end
 
 	self._title_data = title_data_values
+	local user_data = info_result_payload.UserData or {}
+	local user_data_values = {}
+
+	for key, value_table in pairs(user_data) do
+		local value = value_table.Value
+
+		if value then
+			if tonumber(value) then
+				value = tonumber(value)
+			end
+
+			user_data_values[key] = value
+		end
+	end
+
+	self._user_data = user_data_values
+	self._user_data_mirror = table.clone(self._user_data)
 	self._commit_limit_timer = REDUCTION_INTERVAL
 	self._commit_limit_total = 1
 	self._claimed_achievements = self:_parse_claimed_achievements(read_only_data_values)
 
-	self:_request_best_power_levels()
+	if PLATFORM == "xb1" then
+		self._claimed_console_dlc_rewards = self:_parse_claimed_console_dlc_rewards(read_only_data_values)
+	end
+
+	self:_execute_dlc_specific_logic_challenge()
 end
 
 PlayFabMirror._parse_claimed_achievements = function (self, read_only_data_values)
@@ -66,6 +89,93 @@ PlayFabMirror._parse_claimed_achievements = function (self, read_only_data_value
 	end
 
 	return claimed_achievements
+end
+
+PlayFabMirror._parse_claimed_console_dlc_rewards = function (self, read_only_data_values)
+	local claimed_rewards = {}
+	local claimed_rewards_string = read_only_data_values.claimed_console_dlc_rewards
+
+	if claimed_rewards_string then
+		local claimed_rewards_table = cjson.decode(claimed_rewards_string)
+
+		for reward_id, _ in pairs(claimed_rewards_table) do
+			claimed_rewards[reward_id] = true
+		end
+	end
+
+	return claimed_rewards
+end
+
+PlayFabMirror._update_dlc_ownership = function (self)
+	local request = {
+		FunctionName = "updateDLCOwnership",
+		FunctionParameter = {}
+	}
+	local request_cb = callback(self, "dlc_ownership_request_cb")
+
+	PlayFabClientApi.ExecuteCloudScript(request, request_cb)
+
+	self._num_items_to_load = self._num_items_to_load + 1
+end
+
+PlayFabMirror.dlc_ownership_request_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+
+	self:_execute_dlc_specific_logic_challenge()
+end
+
+PlayFabMirror._execute_dlc_specific_logic_challenge = function (self)
+	local success_cb = callback(self, "eac_challenge_success_cb")
+	local generate_challenge_request = {
+		FunctionName = "generateChallenge"
+	}
+
+	PlayFabClientApi.ExecuteCloudScript(generate_challenge_request, success_cb)
+
+	self._num_items_to_load = self._num_items_to_load + 1
+end
+
+PlayFabMirror.eac_challenge_success_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+	local function_result = result.FunctionResult
+	local challenge = function_result.challenge
+	local eac_response, response = nil
+
+	if challenge then
+		eac_response, response = self:_get_eac_response(challenge)
+	end
+
+	if not challenge then
+		self:_execute_dlc_specific_logic()
+	elseif not eac_response then
+		self:_request_best_power_levels()
+	else
+		self:_execute_dlc_specific_logic(response)
+	end
+end
+
+PlayFabMirror._execute_dlc_specific_logic = function (self, response)
+	local unlock_manager = Managers.unlock
+	local unlocked_dlcs = unlock_manager:get_unlocked_dlcs()
+	local json_string = cjson.encode(unlocked_dlcs)
+	local request = {
+		FunctionName = "executeDLCLogic",
+		FunctionParameter = {
+			active_dlcs = json_string,
+			response = response
+		}
+	}
+	local request_cb = callback(self, "execute_dlc_logic_request_cb")
+
+	PlayFabClientApi.ExecuteCloudScript(request, request_cb)
+
+	self._num_items_to_load = self._num_items_to_load + 1
+end
+
+PlayFabMirror.execute_dlc_logic_request_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+
+	self:_request_best_power_levels()
 end
 
 PlayFabMirror._request_best_power_levels = function (self)
@@ -149,11 +259,15 @@ PlayFabMirror.get_quests_cb = function (self, result)
 	local daily_quest_refresh_available = function_result.daily_quest_refresh_available
 	local daily_quest_update_time = function_result.daily_quest_update_time
 	local current_event_quests = function_result.current_event_quests
+	local current_weekly_quests = function_result.current_weekly_quests
+	local weekly_quest_update_time = function_result.weekly_quest_update_time
 
 	self:set_quest_data("current_daily_quests", current_daily_quests)
 	self:set_quest_data("daily_quest_refresh_available", to_boolean(daily_quest_refresh_available))
 	self:set_quest_data("daily_quest_update_time", tonumber(daily_quest_update_time))
 	self:set_quest_data("current_event_quests", current_event_quests)
+	self:set_quest_data("current_weekly_quests", current_weekly_quests)
+	self:set_quest_data("weekly_quest_update_time", weekly_quest_update_time)
 	self:_request_fix_inventory_data_1()
 end
 
@@ -469,7 +583,7 @@ PlayFabMirror.update = function (self, dt)
 	if queued_commit.active then
 		queued_commit.timer = queued_commit.timer - dt
 
-		if queued_commit.timer <= 0 and not self._commit_current_id then
+		if queued_commit.timer <= 0 and not self._commit_current_id and not Managers.account:user_detached() then
 			self:_commit_internal(queued_commit.id)
 		end
 	end
@@ -525,7 +639,11 @@ PlayFabMirror._commit_status = function (self, commit_id)
 		return "commit_error"
 	elseif commit_data.status == "commit_error" then
 		return "commit_error"
-	elseif commit_data.num_updates == commit_data.updates_to_make and not commit_data.wait_for_stats and not commit_data.wait_for_keep_decorations and not commit_data.wait_for_hero_attributes then
+	elseif commit_data.num_updates == commit_data.updates_to_make and not commit_data.wait_for_stats and not commit_data.wait_for_keep_decorations and not commit_data.wait_for_user_data and not commit_data.wait_for_hero_attributes then
+		if PLATFORM == "xb1" and not Managers.account:offline_mode() then
+			PlayfabBackendSaveDataUtils.store_online_data(self)
+		end
+
 		return "success"
 	end
 
@@ -554,6 +672,46 @@ end
 
 PlayFabMirror.get_title_data = function (self)
 	return self._title_data
+end
+
+PlayFabMirror.get_user_data = function (self)
+	return self._user_data
+end
+
+PlayFabMirror.set_user_data = function (self, key, value)
+	self._user_data[key] = value
+end
+
+PlayFabMirror._commit_user_data = function (self, new_data, commit, commit_id)
+	table.clear(new_data)
+
+	for key, value in pairs(self._user_data) do
+		if self._user_data_mirror[key] ~= value then
+			new_data[key] = value
+		end
+	end
+
+	if not table.is_empty(new_data) then
+		local user_data_request = {
+			Data = new_data
+		}
+		self._user_data_mirror = table.clone(self._user_data)
+		local cb_user_data = callback(self, "update_user_data_cb", commit_id)
+
+		PlayFabClientApi.UpdateUserData(user_data_request, cb_user_data, cb_user_data)
+
+		commit.status = "waiting"
+		commit.wait_for_user_data = true
+	end
+end
+
+PlayFabMirror.update_user_data_cb = function (self, commit_id, result)
+	if result.error then
+		Application.warning("[PlayFabMirror] Something went wrong when trying to submit user_data")
+	end
+
+	local commit = self._commits[commit_id]
+	commit.wait_for_user_data = false
 end
 
 PlayFabMirror.get_read_only_data = function (self)
@@ -587,6 +745,15 @@ end
 PlayFabMirror.set_achievement_claimed = function (self, achievement_id)
 	local claimed_achievements = self._claimed_achievements
 	claimed_achievements[achievement_id] = true
+end
+
+PlayFabMirror.get_claimed_console_dlc_rewards = function (self)
+	return self._claimed_console_dlc_rewards
+end
+
+PlayFabMirror.set_console_dlc_reward_claimed = function (self, reward_id, claimed)
+	local claimed_rewards = self._claimed_console_dlc_rewards
+	claimed_rewards[reward_id] = (claimed and true) or nil
 end
 
 PlayFabMirror.get_quest_data = function (self)
@@ -860,6 +1027,8 @@ PlayFabMirror._commit_internal = function (self, queue_id, commit_complete_callb
 		commit.wait_for_hero_attributes = true
 	end
 
+	self:_commit_user_data(new_data, commit, commit_id)
+
 	self._commits[commit_id] = commit
 
 	return commit_id
@@ -930,6 +1099,32 @@ end
 
 PlayFabMirror.destroy = function (self)
 	return
+end
+
+PlayFabMirror._get_eac_response = function (self, challenge)
+	local i = 0
+	local str = ""
+
+	while challenge[tostring(i)] do
+		str = str .. string.char(challenge[tostring(i)])
+		i = i + 1
+	end
+
+	local eac_response = EAC.challenge_response(str)
+	local response = nil
+
+	if eac_response then
+		local index = 1
+		response = {}
+
+		while string.byte(eac_response, index, index) do
+			local byte_value = string.byte(eac_response, index, index)
+			response[tostring(index - 1)] = byte_value
+			index = index + 1
+		end
+	end
+
+	return eac_response, response
 end
 
 return

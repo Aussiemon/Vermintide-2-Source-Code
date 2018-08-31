@@ -25,14 +25,16 @@ ScriptPresence.set_presence = function (self, presence)
 end
 
 ScriptPresence.update = function (self, dt)
-	if Managers.account:user_detached() then
+	local account_manager = Managers.account
+
+	if account_manager:user_detached() or not account_manager:is_online() then
 		return
 	end
 
 	self._presence_update_timer = (self._presence_update_timer or 0) - dt
 
 	if self._presence_update_timer < 0 then
-		local user_id = Managers.account:user_id()
+		local user_id = account_manager:user_id()
 
 		self[self._presence_func](self, user_id)
 
@@ -66,14 +68,15 @@ ScriptPresence.update_playing = function (self, user_id)
 	local current_level = Managers.state.game_mode and Managers.state.game_mode:level_key()
 	local current_difficulty = Managers.state.difficulty and Managers.state.difficulty:get_difficulty()
 	local current_num_players = Managers.player and Managers.player:num_human_players()
+	local is_private = Managers.matchmaking and Managers.matchmaking:is_game_private()
 
 	if not current_level or not current_difficulty or not current_num_players then
 		self:set_presence("menu")
 	else
 		local prefix = ""
 
-		if self:_has_new_data(current_level, current_difficulty, current_num_players) then
-			if current_num_players == 4 then
+		if self:_has_new_data(current_level, current_difficulty, current_num_players, is_private) then
+			if current_num_players == 4 or is_private then
 				prefix = "playing"
 			else
 				prefix = "needs_assistance"
@@ -129,29 +132,37 @@ ScriptPresence._extract_stat_data = function (self, current_level, current_diffi
 	return data
 end
 
-ScriptPresence._has_new_data = function (self, current_level, current_difficulty, current_num_players)
+ScriptPresence._has_new_data = function (self, current_level, current_difficulty, current_num_players, is_private)
 	if ACTIVE_PRESENCE_DATA.current_level ~= current_level then
 		return true
 	elseif ACTIVE_PRESENCE_DATA.current_difficulty ~= current_difficulty then
 		return true
 	elseif ACTIVE_PRESENCE_DATA.current_num_players ~= current_num_players then
 		return true
+	elseif ACTIVE_PRESENCE_DATA.is_private ~= is_private then
+		return true
 	end
 
 	return false
 end
 
-ScriptPresence._setup_stat_data = function (self, current_level, current_difficulty, current_num_players)
+ScriptPresence._setup_stat_data = function (self, current_level, current_difficulty, current_num_players, is_private)
 	ACTIVE_PRESENCE_DATA.current_level = current_level
 	ACTIVE_PRESENCE_DATA.current_difficulty = current_difficulty
 	ACTIVE_PRESENCE_DATA.current_num_players = current_num_players
+	ACTIVE_PRESENCE_DATA.is_private = is_private
 end
 
 ScriptPresence.destroy = function (self)
-	local user_id = Managers.account and Managers.account:user_id()
+	local account_manager = Managers.account
 
-	if user_id then
-		self:_set_presence(user_id, "")
+	if account_manager then
+		local user_id = account_manager:user_id()
+		local is_online = account_manager:is_online()
+
+		if user_id and is_online then
+			self:_set_presence(user_id, "")
+		end
 	end
 end
 

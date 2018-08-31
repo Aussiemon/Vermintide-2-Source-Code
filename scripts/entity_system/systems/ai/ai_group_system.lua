@@ -1,5 +1,4 @@
 require("scripts/entity_system/systems/ai/ai_group_templates/ai_group_templates")
-require("scripts/entity_system/systems/ai/ai_group_templates/ai_group_templates_storm_vermin")
 require("scripts/entity_system/systems/ai/ai_group_templates/ai_group_templates_patrol")
 
 AIGroupSystem = class(AIGroupSystem, ExtensionSystemBase)
@@ -7,18 +6,6 @@ local AIGroupTemplates = AIGroupTemplates
 local extensions = {
 	"AIGroupMember"
 }
-
-local function readonlytable(table)
-	return setmetatable({}, {
-		__metatable = false,
-		__index = table,
-		__newindex = function (table, key, value)
-			error("Coder trying to modify a AI group system read-only empty table. Don't do it!")
-		end
-	})
-end
-
-local EMPTY_TABLE = readonlytable({})
 
 AIGroupSystem.init = function (self, context, system_name)
 	local entity_manager = context.entity_manager
@@ -34,7 +21,7 @@ AIGroupSystem.init = function (self, context, system_name)
 	self.groups_to_initialize = {}
 	self.groups_to_update = {}
 	self.unit_extension_data = {}
-	self.dummy_extension = readonlytable({})
+	self.frozen_unit_extension_data = {}
 	self.group_uid = 0
 	self._spline_properties = {}
 	self._spline_lookup = {}
@@ -102,26 +89,27 @@ AIGroupSystem.ai_ready = function (self, patrol_analysis)
 	self.patrol_analysis = patrol_analysis
 end
 
-local dummy_input = readonlytable({})
-
 AIGroupSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
-	local id = extension_init_data.id
+	local extension = {}
 
-	if id == nil then
-		ScriptUnit.set_extension(unit, "ai_group_system", self.dummy_extension, dummy_input)
-
-		self.unit_extension_data[unit] = self.dummy_extension
-
-		return self.dummy_extension
+	if extension_init_data.id ~= nil then
+		self:init_extension(unit, extension, extension_init_data)
 	end
 
+	ScriptUnit.set_extension(unit, "ai_group_system", extension)
+
+	self.unit_extension_data[unit] = extension
+
+	return extension
+end
+
+AIGroupSystem.init_extension = function (self, unit, extension, extension_init_data)
+	local id = extension_init_data.id
 	local template = extension_init_data.template
-	local extension = {}
 	local group = self.groups[id]
 	local formation = extension_init_data.formation
 	local formation_settings = (formation and formation.settings) or PatrolFormationSettings.default_settings
-	local group_data = extension_init_data.group_data
-	local despawn_at_end = group_data and group_data.despawn_at_end
+	local despawn_at_end = extension_init_data.despawn_at_end
 
 	if group == nil then
 		group = {
@@ -132,7 +120,6 @@ AIGroupSystem.on_add_extension = function (self, world, unit, extension_name, ex
 			members = {},
 			size = extension_init_data.size,
 			template = template,
-			group_data = group_data,
 			spline_name = extension_init_data.spline_name,
 			formation = formation,
 			formation_settings = formation_settings,
@@ -146,15 +133,6 @@ AIGroupSystem.on_add_extension = function (self, world, unit, extension_name, ex
 		if spline then
 			local spline_points = spline.spline_points
 			group.spline_points = spline_points
-			local spline_properties = self._spline_properties[spline_name]
-
-			if spline_properties then
-				local despawn_patrol_at_end_of_spline = spline_properties.despawn_patrol_at_end_of_spline
-
-				if despawn_patrol_at_end_of_spline ~= nil then
-					group.despawn_at_end = despawn_patrol_at_end_of_spline
-				end
-			end
 		end
 
 		fassert(group.size, "Created group without size!")
@@ -162,15 +140,10 @@ AIGroupSystem.on_add_extension = function (self, world, unit, extension_name, ex
 
 		self.groups[id] = group
 		self.groups_to_initialize[id] = group
-
-		if script_data.ai_group_debug then
-			Unit.set_animation_logging(unit, true)
-		end
-
 		local setup_group = AIGroupTemplates[template].setup_group
 
 		if setup_group then
-			setup_group(world, self.nav_world, group, unit)
+			setup_group(self.world, self.nav_world, group, unit)
 		end
 	end
 
@@ -189,7 +162,6 @@ AIGroupSystem.on_add_extension = function (self, world, unit, extension_name, ex
 	extension.group = group
 	extension.template = template
 	extension.id = id
-	extension.frozen = false
 	local template_data = AIGroupTemplates[template]
 	local in_patrol = template_data.in_patrol
 	local use_patrol_perception = template_data.use_patrol_perception
@@ -197,40 +169,79 @@ AIGroupSystem.on_add_extension = function (self, world, unit, extension_name, ex
 	extension.use_patrol_perception = extension_init_data.group_type == "spline_patrol"
 
 	fassert(group.num_spawned_members <= group.size, "An AI group was initialized with size=%d but %d AIs was assigned to it.", group.size, group.num_spawned_members)
-	ScriptUnit.set_extension(unit, "ai_group_system", extension, dummy_input)
 
-	self.unit_extension_data[unit] = extension
 	local pre_unit_init = AIGroupTemplates[template].pre_unit_init
 
 	if pre_unit_init then
 		pre_unit_init(unit, group.template)
 	end
-
-	return extension
 end
 
 AIGroupSystem.on_remove_extension = function (self, unit, extension_name)
-	local extension = self.unit_extension_data[unit]
+	self.frozen_unit_extension_data[unit] = nil
 
-	if extension == self.dummy_extension then
-		fassert(next(extension) == nil, "No extension data for unit %s", unit)
-		ScriptUnit.remove_extension(unit, self.NAME)
-
-		return
-	end
-
-	self:on_freeze_extension(unit, extension_name)
+	self:_cleanup_extension(unit, extension_name)
 	ScriptUnit.remove_extension(unit, self.NAME)
 end
 
 AIGroupSystem.on_freeze_extension = function (self, unit, extension_name)
 	local extension = self.unit_extension_data[unit]
 
-	if extension == self.dummy_extension or extension == nil or extension.frozen then
+	fassert(extension, "Unit was already frozen.")
+
+	if extension == nil then
 		return
 	end
 
+	self.frozen_unit_extension_data[unit] = extension
+
+	self:_cleanup_extension(unit, extension_name)
+end
+
+AIGroupSystem.freeze = function (self, unit, extension_name, reason)
+	local frozen_extensions = self.frozen_unit_extension_data
+
+	if frozen_extensions[unit] then
+		return
+	end
+
+	local extension = self.unit_extension_data[unit]
+
+	fassert(extension, "Unit to freeze didn't have unfrozen extension")
+	self:_cleanup_extension(unit, extension_name)
+
+	self.unit_extension_data[unit] = nil
+	frozen_extensions[unit] = extension
+end
+
+AIGroupSystem.unfreeze = function (self, unit, extension_name, data)
+	local extension = self.frozen_unit_extension_data[unit]
+
+	fassert(extension, "Unit to unfreeze didn't have frozen extension")
+
+	self.frozen_unit_extension_data[unit] = nil
+	self.unit_extension_data[unit] = extension
+	local extension_init_data = data[8]
+
+	if extension_init_data and extension_init_data.id then
+		self:init_extension(unit, extension, extension_init_data)
+	end
+end
+
+AIGroupSystem._cleanup_extension = function (self, unit, extension_name)
+	local extension = self.unit_extension_data[unit]
+
+	if extension == nil then
+		return
+	end
+
+	self.unit_extension_data[unit] = nil
 	local id = extension.id
+
+	if not id then
+		return
+	end
+
 	local group = self.groups[id]
 
 	fassert(group ~= nil, "Trying to remove group extension for unit %s that does not belong to a group.", unit)
@@ -258,7 +269,11 @@ AIGroupSystem.on_freeze_extension = function (self, unit, extension_name)
 		end
 	end
 
-	extension.frozen = true
+	extension.id = nil
+	extension.group = nil
+	extension.template = nil
+	extension.in_patrol = nil
+	extension.use_patrol_perception = nil
 end
 
 local MAX_PATROL_SPLINES = 100
@@ -668,7 +683,6 @@ AIGroupSystem.set_allowed_layer = function (self, layer_name, allowed)
 end
 
 AIGroupSystem.create_spline_from_way_points = function (self, spline_name, spline_way_points, spline_type)
-	local USING_EDITOR = false
 	local navbot_kind = (spline_type == "roaming" and "roaming") or "standard"
 
 	self.patrol_analysis:compute_spline_path(spline_name, spline_way_points, navbot_kind)
@@ -760,7 +774,7 @@ AIGroupSystem.draw_spline = function (self, spline, drawer, color)
 	end
 end
 
-AIGroupSystem.create_formation_data = function (self, position, formation, spline_name)
+AIGroupSystem.create_formation_data = function (self, position, formation, spline_name, spawn_all_at_same_position)
 	local anchor_offset_y = PatrolFormationSettings.default_settings.offsets.ANCHOR_OFFSET.y
 	local anchor_offset_x = PatrolFormationSettings.default_settings.speeds.SPLINE_SPEED
 	local start_direction = self:spline_start_direction(spline_name)
@@ -783,53 +797,87 @@ AIGroupSystem.create_formation_data = function (self, position, formation, splin
 	end
 
 	local start_spline_index = NavigationUtils.get_closest_index_on_spline(spline_curve, position)
+	local above = 1
+	local below = 1
+	local inside_position_from_outside_position = GwNavQueries.inside_position_from_outside_position
+	local nav_world = self.nav_world
+	local position_on_spline, direction_on_spline, flat_start_direction, direction_on_spline_normal = nil
+
+	if spawn_all_at_same_position then
+		position_on_spline, direction_on_spline = self:_get_position_on_spline_by_distance(0, spline_curve, start_spline_index)
+
+		if position_on_spline == nil then
+			position_on_spline = position
+			direction_on_spline = start_direction
+		end
+
+		direction_on_spline_normal = Vector3(direction_on_spline.y, -direction_on_spline.x, 0)
+		flat_start_direction = Vector3.flat(direction_on_spline)
+	end
+
+	local current_row = 1
 
 	for row, columns in ipairs(formation) do
-		for column, breed_name in ipairs(columns) do
-			local num_columns_in_row = #columns
-			local distance = formation_length - (row - 1) * anchor_offset_x
-			local position_on_spline, direction_on_spline = self:_get_position_on_spline_by_distance(distance, spline_curve, start_spline_index)
+		table.clear(formation_data[row])
+
+		if not spawn_all_at_same_position then
+			local distance = formation_length - (current_row - 1) * anchor_offset_x
+			position_on_spline, direction_on_spline = self:_get_position_on_spline_by_distance(distance, spline_curve, start_spline_index)
 
 			if position_on_spline == nil then
 				position_on_spline = position
 				direction_on_spline = start_direction
 			end
 
-			local direction_on_spline_normal = Vector3(direction_on_spline.y, -direction_on_spline.x, 0)
-			local column_length = (num_columns_in_row - 1) * anchor_offset_y * 2
-			local offset_y = direction_on_spline_normal * (-column_length / 2 + anchor_offset_y * 2 * (column - 1))
-			local offset = offset_y
-			local wanted_spawn_position = position_on_spline + offset
-			local start_direction = Vector3.flat(direction_on_spline)
+			direction_on_spline_normal = Vector3(direction_on_spline.y, -direction_on_spline.x, 0)
+			flat_start_direction = Vector3.flat(direction_on_spline)
+		end
 
-			if script_data.debug_storm_vermin_patrol then
-				QuickDrawerStay:sphere(wanted_spawn_position, 0.2, Colors.get("dark_orchid"))
-				QuickDrawerStay:sphere(position_on_spline, 0.24, Colors.get("yellow"))
-			end
+		local patrol_unit_spot_found = false
+
+		for column, breed_name in ipairs(columns) do
+			local num_columns_in_row = #columns
+			local column_length = (num_columns_in_row - 1) * anchor_offset_y * 2
+			local offset = direction_on_spline_normal * (-column_length / 2 + anchor_offset_y * 2 * (column - 1))
+			local wanted_spawn_position = position_on_spline + offset
 
 			if Breeds[breed_name] then
-				local spawn_pos = LocomotionUtils.pos_on_mesh(self.nav_world, wanted_spawn_position)
-				spawn_pos = spawn_pos or LocomotionUtils.pos_on_mesh(self.nav_world, position_on_spline)
+				local spawn_pos = LocomotionUtils.pos_on_mesh(nav_world, wanted_spawn_position, above, below)
+				spawn_pos = spawn_pos or LocomotionUtils.pos_on_mesh(nav_world, position_on_spline, above, below)
+				spawn_pos = spawn_pos or inside_position_from_outside_position(nav_world, wanted_spawn_position, above, below, 0.5, 0.2)
 
 				if spawn_pos then
-					formation_data[row][column] = {
-						slot_taken = false,
+					formation_data[current_row][column] = {
 						breed_name = breed_name,
 						start_position = Vector3Box(spawn_pos),
-						start_direction = Vector3Box(start_direction)
+						start_direction = Vector3Box(flat_start_direction)
 					}
 					group_size = group_size + 1
-				elseif script_data.debug_storm_vermin_patrol then
-					QuickDrawerStay:sphere(wanted_spawn_position, 1, Colors.get("red"))
+					patrol_unit_spot_found = true
+
+					if true then
+					end
 				end
 			else
-				formation_data[row][column] = {
-					slot_taken = false,
+				formation_data[current_row][column] = {
 					start_position = Vector3Box(wanted_spawn_position),
-					start_direction = Vector3Box(start_direction)
+					start_direction = Vector3Box(flat_start_direction)
 				}
 			end
 		end
+
+		if not patrol_unit_spot_found then
+			table.clear(formation_data[current_row])
+		end
+
+		if #formation_data[current_row] > 0 then
+			current_row = current_row + 1
+		end
+	end
+
+	for i = current_row, num_rows, 1 do
+		local columns = formation_data[i]
+		formation_data[i] = nil
 	end
 
 	formation_data.group_size = group_size
@@ -845,12 +893,11 @@ AIGroupSystem._get_position_on_spline_by_distance = function (self, distance, sp
 	movement:set_speed(2)
 
 	if start_spline_index then
-		movement:set_current_spline_index(start_spline_index)
+		movement:set_spline_index(start_spline_index, 1, 0)
 	end
 
-	fassert(movement._t == movement._t, "Nan in spline: %s", spline_curve._name)
-
 	local start_position = movement:current_position()
+	local previous_spline_curve_distance = movement:current_spline_curve_distance()
 	local previous_position = start_position
 	local dt = 0.1
 
@@ -862,10 +909,9 @@ AIGroupSystem._get_position_on_spline_by_distance = function (self, distance, sp
 			return nil
 		end
 
-		fassert(movement._t == movement._t, "Nan in spline: %s", spline_curve._name)
-
 		local current_position = movement:current_position()
-		local current_distance = Vector3.distance(current_position, previous_position)
+		local current_spline_curve_distance = movement:current_spline_curve_distance()
+		local current_distance = math.abs(current_spline_curve_distance - previous_spline_curve_distance)
 		total_distance = current_distance + total_distance
 
 		if distance <= total_distance or current_distance <= 0 then
@@ -875,6 +921,9 @@ AIGroupSystem._get_position_on_spline_by_distance = function (self, distance, sp
 		end
 
 		Vector3.set_xyz(previous_position, current_position.x, current_position.y, current_position.z)
+
+		previous_spline_curve_distance = current_spline_curve_distance
+
 		Script.set_temp_count(a, b, c)
 	end
 end

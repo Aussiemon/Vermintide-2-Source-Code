@@ -205,11 +205,17 @@ function UIScalePositionTableToResolution(position, pixel_snap)
 	end
 end
 
-function UIScaleVectorToResolution(position, pixel_snap)
+function UIScaleVectorToResolution(position, pixel_snap, use_real_coordinates)
 	local scale = RESOLUTION_LOOKUP.scale
 
 	if pixel_snap then
-		return Vector3(math.round(position[1] * scale), math.round(position[2] * scale), position[3] or 0)
+		if use_real_coordinates then
+			return Vector3(math.round(position[1] * scale), position[2] or 0, math.round(position[3] * scale))
+		else
+			return Vector3(math.round(position[1] * scale), math.round(position[2] * scale), position[3] or 0)
+		end
+	elseif use_real_coordinates then
+		return Vector3(position[1] * scale, position[2] or 0, position[3] * scale)
 	else
 		return Vector3(position[1] * scale, position[2] * scale, position[3] or 0)
 	end

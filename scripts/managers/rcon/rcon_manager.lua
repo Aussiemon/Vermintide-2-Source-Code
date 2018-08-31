@@ -103,6 +103,8 @@ RconManager.rcon_accepted = function (self, id)
 	self._connected = true
 	local command_id = RConClient.command(self._connection_id, "id")
 	self._intercept_ids[command_id] = RconManager._id_reply
+
+	RConClient.command(self._connection_id, "status")
 end
 
 RconManager.rcon_denied = function (self, id)

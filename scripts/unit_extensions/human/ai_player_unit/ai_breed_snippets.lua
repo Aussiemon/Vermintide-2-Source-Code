@@ -78,6 +78,7 @@ AiBreedSnippets.on_rat_ogre_spawn = function (unit, blackboard)
 	setup_start_angry(unit, blackboard, conflict_director)
 	conflict_director:freeze_intensity_decay(10)
 	conflict_director:add_unit_to_bosses(unit)
+	Managers.music:music_trigger("combat_music", "enemy_ratogre_stinger")
 end
 
 AiBreedSnippets.on_rat_ogre_death = function (unit, blackboard)
@@ -530,22 +531,21 @@ AiBreedSnippets.on_storm_vermin_champion_update = function (unit, blackboard, t,
 		end
 
 		if blackboard.defensive_mode_duration then
-			local remaining = blackboard.defensive_mode_duration - dt
+			if not blackboard.defensive_mode_duration_at_t then
+				blackboard.defensive_mode_duration_at_t = t + blackboard.defensive_mode_duration
+			end
 
-			if remaining <= 0 then
+			if blackboard.defensive_mode_duration_at_t <= t then
 				blackboard.defensive_mode_duration = nil
+				blackboard.defensive_mode_duration_at_t = nil
 			else
-				blackboard.defensive_mode_duration = remaining
+				blackboard.defensive_mode_duration = t - blackboard.defensive_mode_duration_at_t
 				blackboard.dual_wield_mode = false
 			end
 		elseif blackboard.dual_wield_timer < t and not blackboard.active_node then
 			blackboard.dual_wield_mode = true
 			blackboard.dual_wield_timer = t + 20
 		end
-	end
-
-	if blackboard.ward_active and script_data.ai_champion_spawn_debug then
-		QuickDrawer:sphere(POSITION_LOOKUP[unit] + Vector3(0, 0, 1.5), 1.5, Color(255, 0, 0))
 	end
 
 	if blackboard.displaced_units then
@@ -561,7 +561,7 @@ AiBreedSnippets.on_storm_vermin_champion_death = function (unit, blackboard)
 
 	local t = Managers.time:time("game")
 
-	Managers.state.conflict.specials_pacing:delay_spawning(t, 160, 20)
+	Managers.state.conflict.specials_pacing:delay_spawning(t, 160, 20, true)
 
 	if blackboard.is_angry then
 		conflict_director:add_angry_boss(-1)
@@ -632,6 +632,7 @@ AiBreedSnippets.on_chaos_spawn_spawn = function (unit, blackboard)
 	setup_start_angry(unit, blackboard, conflict_director)
 	conflict_director:freeze_intensity_decay(10)
 	conflict_director:add_unit_to_bosses(unit)
+	Managers.music:music_trigger("combat_music", "enemy_chaos_spawn_stinger")
 end
 
 AiBreedSnippets.on_chaos_spawn_death = function (unit, blackboard)
@@ -660,82 +661,63 @@ AiBreedSnippets.on_chaos_vortex_sorcerer_spawn = function (unit, blackboard)
 	local breed = blackboard.breed
 	blackboard.max_vortex_units = breed.max_vortex_units
 	blackboard.spell_count = 0
+
+	Managers.state.entity:system("surrounding_aware_system"):add_system_event(unit, "heard_enemy", DialogueSettings.hear_chaos_vortex_sorcerer, "enemy_tag", "chaos_vortex_sorcerer")
+end
+
+function remove_vortex_units(unit, blackboard)
+	local vortex_data = blackboard.vortex_data
+	local conflict_director = Managers.state.conflict
+
+	if blackboard.breed.no_despawn_when_master_dies then
+		return
+	end
+
+	local vortex_units = vortex_data and vortex_data.vortex_units
+
+	if vortex_units then
+		for _, vortex_unit in ipairs(vortex_units) do
+			if Unit.alive(vortex_unit) then
+				local vortex_blackboard = BLACKBOARDS[vortex_unit]
+
+				conflict_director:destroy_unit(vortex_unit, vortex_blackboard, "vortex")
+			end
+		end
+
+		table.clear(vortex_units)
+	end
+
+	local queued_vortex = vortex_data and vortex_data.queued_vortex
+
+	if queued_vortex then
+		local unit_spawner = Managers.state.unit_spawner
+
+		for id, queue_data in pairs(queued_vortex) do
+			conflict_director:remove_queued_unit(id)
+
+			local inner_decal_unit = queue_data.inner_decal_unit
+
+			if Unit.alive(inner_decal_unit) then
+				unit_spawner:mark_for_deletion(inner_decal_unit)
+			end
+
+			local outer_decal_unit = queue_data.outer_decal_unit
+
+			if Unit.alive(outer_decal_unit) then
+				unit_spawner:mark_for_deletion(outer_decal_unit)
+			end
+
+			queued_vortex[id] = nil
+		end
+	end
 end
 
 AiBreedSnippets.on_chaos_vortex_sorcerer_death = function (unit, blackboard)
-	local vortex_data = blackboard.vortex_data
-	local conflict_director = Managers.state.conflict
-	local vortex_units = vortex_data and vortex_data.vortex_units
-
-	if vortex_units then
-		for _, vortex_unit in ipairs(vortex_units) do
-			if Unit.alive(vortex_unit) then
-				local vortex_blackboard = BLACKBOARDS[vortex_unit]
-
-				conflict_director:destroy_unit(vortex_unit, vortex_blackboard, "vortex")
-			end
-		end
-	end
-
-	local queued_vortex = vortex_data and vortex_data.queued_vortex
-
-	if queued_vortex then
-		local unit_spawner = Managers.state.unit_spawner
-
-		for id, queue_data in pairs(queued_vortex) do
-			conflict_director:remove_queued_unit(id)
-
-			local inner_decal_unit = queue_data.inner_decal_unit
-
-			if Unit.alive(inner_decal_unit) then
-				unit_spawner:mark_for_deletion(inner_decal_unit)
-			end
-
-			local outer_decal_unit = queue_data.outer_decal_unit
-
-			if Unit.alive(outer_decal_unit) then
-				unit_spawner:mark_for_deletion(outer_decal_unit)
-			end
-		end
-	end
+	remove_vortex_units(unit, blackboard)
 end
 
 AiBreedSnippets.on_chaos_vortex_sorcerer_despawn = function (unit, blackboard)
-	local vortex_data = blackboard.vortex_data
-	local conflict_director = Managers.state.conflict
-	local vortex_units = vortex_data and vortex_data.vortex_units
-
-	if vortex_units then
-		for _, vortex_unit in ipairs(vortex_units) do
-			if Unit.alive(vortex_unit) then
-				local vortex_blackboard = BLACKBOARDS[vortex_unit]
-
-				conflict_director:destroy_unit(vortex_unit, vortex_blackboard, "vortex")
-			end
-		end
-	end
-
-	local queued_vortex = vortex_data and vortex_data.queued_vortex
-
-	if queued_vortex then
-		local unit_spawner = Managers.state.unit_spawner
-
-		for id, queue_data in pairs(queued_vortex) do
-			conflict_director:remove_queued_unit(id)
-
-			local inner_decal_unit = queue_data.inner_decal_unit
-
-			if Unit.alive(inner_decal_unit) then
-				unit_spawner:mark_for_deletion(inner_decal_unit)
-			end
-
-			local outer_decal_unit = queue_data.outer_decal_unit
-
-			if Unit.alive(outer_decal_unit) then
-				unit_spawner:mark_for_deletion(outer_decal_unit)
-			end
-		end
-	end
+	remove_vortex_units(unit, blackboard)
 end
 
 AiBreedSnippets.on_chaos_plague_sorcerer_spawn = function (unit, blackboard)
@@ -974,7 +956,7 @@ function check_for_recent_attackers(unit, blackboard, t)
 	if nr_damages > 0 then
 		local attacking_unit = recent_damages[DamageDataIndex.ATTACKER]
 
-		if Unit.alive(attacking_unit) and VALID_PLAYERS_AND_BOTS[attacking_unit] then
+		if Unit.alive(attacking_unit) and VALID_TARGETS_PLAYERS_AND_BOTS[attacking_unit] then
 			local dist_sqr = Vector3.distance_squared(POSITION_LOOKUP[unit], POSITION_LOOKUP[attacking_unit])
 
 			if min_retaliation_dist_sqr < dist_sqr then
@@ -1081,7 +1063,7 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_death = function (unit, blackboard)
 
 	local t = Managers.time:time("game")
 
-	Managers.state.conflict.specials_pacing:delay_spawning(t, 120, 20)
+	Managers.state.conflict.specials_pacing:delay_spawning(t, 120, 20, true)
 
 	if blackboard.is_angry then
 		conflict_director:add_angry_boss(-1)
@@ -1161,6 +1143,13 @@ AiBreedSnippets.on_chaos_exalted_champion_norsca_spawn = function (unit, blackbo
 	blackboard.is_angry = true
 	blackboard.ray_can_go_update_time = t + 0.5
 	blackboard.is_valid_target_func = GenericStatusExtension.is_lord_target
+	local enemy_package_loader = Managers.state.game_mode.level_transition_handler.enemy_package_loader
+	local transform_action_data = BreedActions.chaos_exalted_champion.transform
+	local transform_breed_name = transform_action_data.wanted_breed_transform
+
+	if not enemy_package_loader.breed_processed[transform_breed_name] then
+		enemy_package_loader:request_breed(transform_breed_name, true)
+	end
 end
 
 AiBreedSnippets.on_chaos_exalted_champion_update = function (unit, blackboard, t, dt)
@@ -1204,11 +1193,13 @@ AiBreedSnippets.on_chaos_exalted_champion_update = function (unit, blackboard, t
 		end
 	end
 
-	if blackboard.current_phase == 1 and hp < 0.7 then
-		blackboard.current_phase = 2
-		blackboard.trickle_timer = t + 10
-	elseif blackboard.current_phase == 2 and hp < 0.4 then
-		blackboard.current_phase = 3
+	if blackboard.override_spawn_allies_call_position then
+		if blackboard.current_phase == 1 and hp < 0.7 then
+			blackboard.current_phase = 2
+			blackboard.trickle_timer = t + 10
+		elseif blackboard.current_phase == 2 and hp < 0.4 then
+			blackboard.current_phase = 3
+		end
 	end
 
 	local conflict_director = Managers.state.conflict
@@ -1325,7 +1316,7 @@ AiBreedSnippets.on_chaos_exalted_champion_death = function (unit, blackboard)
 	blackboard.override_spawn_allies_call_position = nil
 	local t = Managers.time:time("game")
 
-	Managers.state.conflict.specials_pacing:delay_spawning(t, 120, 20)
+	Managers.state.conflict.specials_pacing:delay_spawning(t, 120, 20, true)
 
 	if blackboard.is_angry then
 		conflict_director:add_angry_boss(-1)
@@ -1342,7 +1333,7 @@ AiBreedSnippets.on_chaos_exalted_champion_norsca_death = function (unit, blackbo
 
 	local t = Managers.time:time("game")
 
-	Managers.state.conflict.specials_pacing:delay_spawning(t, 40, 20)
+	Managers.state.conflict.specials_pacing:delay_spawning(t, 40, 20, true)
 
 	if blackboard.is_angry then
 		conflict_director:add_angry_boss(-1)
@@ -1362,9 +1353,6 @@ end
 AiBreedSnippets.on_stormfiend_boss_spawn = function (unit, blackboard)
 	AiBreedSnippets.on_stormfiend_spawn(unit, blackboard)
 
-	local conflict_director = Managers.state.conflict
-	local grey_seer_breed = Breeds.skaven_grey_seer
-	local spawn_category = "misc"
 	local hp = ScriptUnit.extension(blackboard.unit, "health_system"):current_health_percent()
 	blackboard.hp_at_mounted = hp
 	local health_extension = ScriptUnit.extension(unit, "health_system")
@@ -1674,7 +1662,7 @@ AiBreedSnippets.on_grey_seer_death = function (unit, blackboard, t)
 
 	local t = Managers.time:time("game")
 
-	Managers.state.conflict.specials_pacing:delay_spawning(t, 120, 20)
+	Managers.state.conflict.specials_pacing:delay_spawning(t, 120, 20, true)
 
 	if blackboard.is_angry then
 		conflict_director:add_angry_boss(-1)
@@ -1691,6 +1679,13 @@ AiBreedSnippets.on_grey_seer_despawn = function (unit, blackboard, t)
 	if blackboard.is_angry then
 		conflict_director:add_angry_boss(-1)
 	end
+end
+
+AiBreedSnippets.on_gutter_runner_spawn = function (unit, blackboard)
+	local t = Managers.time:time("game")
+	blackboard.initial_pounce_timer = t + math.random(2, 3)
+
+	Managers.state.entity:system("surrounding_aware_system"):add_system_event(unit, "heard_enemy", DialogueSettings.enemies_distant_distance, "enemy_tag", "skaven_gutter_runner")
 end
 
 return

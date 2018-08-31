@@ -114,7 +114,7 @@ local settings_by_screen = {
 		camera_rotation = {
 			0,
 			0,
-			0
+			-0.1
 		},
 		contains_new_content = function ()
 			return false
@@ -139,7 +139,7 @@ local settings_by_screen = {
 		camera_rotation = {
 			0,
 			0,
-			0
+			-0.1
 		},
 		contains_new_content = function ()
 			return false
@@ -189,6 +189,7 @@ local widgets_definitions = {
 				viewport_name = "inventory_preview_viewport",
 				level_name = "levels/ui_character_selection/world",
 				enable_sub_gui = false,
+				fov = 50,
 				world_name = "inventory_preview",
 				world_flags = {
 					Application.DISABLE_SOUND,
@@ -198,13 +199,13 @@ local widgets_definitions = {
 				layer = UILayer.default,
 				camera_position = {
 					0,
-					6,
-					2
+					0,
+					0
 				},
 				camera_lookat = {
 					0,
 					0,
-					1
+					-0.1
 				}
 			}
 		},

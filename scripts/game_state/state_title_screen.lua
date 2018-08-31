@@ -19,14 +19,28 @@ StateTitleScreen.on_enter = function (self, params)
 
 	if PLATFORM == "xb1" then
 		Application.set_kinect_enabled(true)
+
+		if Managers.voice_chat then
+			Managers.voice_chat:destroy()
+
+			Managers.voice_chat = nil
+		end
+
+		if Managers.backend then
+			Managers.backend:reset()
+		end
 	end
 
 	if script_data.honduras_demo then
 		Wwise.set_state("menu_mute_ingame_sounds", "true")
 	end
 
-	if PLATFORM == "ps4" and rawget(_G, "LobbyInternal") and LobbyInternal.network_initialized() then
-		LobbyInternal.shutdown_client()
+	if (PLATFORM == "ps4" or PLATFORM == "xb1") and rawget(_G, "LobbyInternal") and LobbyInternal.network_initialized() then
+		if PLATFORM == "xb1" and not Managers.account:offline_mode() then
+			LobbyInternal.shutdown_xboxlive_client()
+		else
+			LobbyInternal.shutdown_client()
+		end
 	end
 
 	local loading_context = self.parent.loading_context
@@ -35,16 +49,14 @@ StateTitleScreen.on_enter = function (self, params)
 	}
 
 	for _, parameter in pairs(args) do
-		if parameter == "-auto-host-level" or parameter == "-auto-join" or parameter == "-skip-splash" or loading_context.join_lobby_data then
+		if parameter == "-auto-host-level" or parameter == "-auto-join" or parameter == "-skip-splash" or loading_context.join_lobby_data or loading_context.offline_invite then
 			self._auto_start = true
 
 			break
 		end
 	end
 
-	if PLATFORM == "win32" then
-		Application.set_time_step_policy("throttle", 60)
-	end
+	Framerate.set_low_power()
 
 	if script_data.honduras_demo then
 		self:_demo_hack_state_managers()
@@ -131,7 +143,7 @@ StateTitleScreen._fade_out = function (self)
 			Managers.account:teardown_xboxlive()
 
 			self._wait_for_xboxlive_teardown = true
-		else
+		elseif not self._auto_start then
 			Managers.transition:hide_loading_icon()
 			Managers.transition:fade_out(1)
 		end
@@ -152,6 +164,10 @@ end
 StateTitleScreen._setup_world = function (self)
 	if not Managers.package:has_loaded("resource_packages/start_menu_splash", "StateSplashScreen") and not GameSettingsDevelopment.skip_start_screen then
 		Managers.package:load("resource_packages/start_menu_splash", "StateSplashScreen")
+	end
+
+	if PLATFORM ~= "win32" and not Managers.package:has_loaded("resource_packages/news_splash/news_splash", "state_splash_screen") and not GameSettingsDevelopment.skip_start_screen then
+		Managers.package:load("resource_packages/news_splash/news_splash", "state_splash_screen")
 	end
 
 	self._world_name = "title_screen_world"
@@ -286,7 +302,7 @@ StateTitleScreen._next_state = function (self)
 		self.state = StateTitleScreen
 
 		Managers.popup:cancel_all_popups()
-	elseif Managers.backend and Managers.backend:is_disconnected() then
+	elseif PLATFORM == "xb1" and Managers.backend and Managers.backend:is_disconnected() then
 		print("Reloading StateTitleScreen due to backend disconnect")
 
 		self.state = StateTitleScreen
@@ -298,11 +314,12 @@ StateTitleScreen._next_state = function (self)
 end
 
 StateTitleScreen._handle_delayed_fade_in = function (self)
-	if self._platform == "xb1" and self._wait_for_xboxlive_teardown and not Managers.account:should_teardown_xboxlive() then
-		Managers.transition:hide_loading_icon()
+	if self._platform == "xb1" and self._wait_for_xboxlive_teardown and not Managers.account:should_teardown_xboxlive() and not self._auto_start then
 		Managers.transition:fade_out(1)
 
 		self._wait_for_xboxlive_teardown = nil
+
+		Managers.transition:hide_loading_icon()
 	end
 end
 
@@ -334,21 +351,12 @@ StateTitleScreen._render = function (self, dt, render_only_background)
 	return
 end
 
-StateTitleScreen.show_menu = function (self, show)
-	self._title_start_ui:show_menu(show)
+StateTitleScreen.show_menu = function (self, show, force)
+	self._title_start_ui:show_menu(show, force)
 end
 
 StateTitleScreen.on_exit = function (self, application_shutdown)
-	if PLATFORM == "win32" then
-		local max_fps = Application.user_setting("max_fps")
-
-		if max_fps == nil or max_fps == 0 then
-			Application.set_time_step_policy("no_throttle")
-		else
-			Application.set_time_step_policy("throttle", max_fps)
-		end
-	end
-
+	Framerate.set_playing()
 	self._machine:destroy()
 	VisualAssertLog.cleanup()
 
@@ -356,6 +364,10 @@ StateTitleScreen.on_exit = function (self, application_shutdown)
 		self._title_start_ui:destroy()
 
 		self._title_start_ui = nil
+	end
+
+	if application_shutdown and rawget(_G, "LobbyInternal") and LobbyInternal.client then
+		LobbyInternal.shutdown_client()
 	end
 
 	ScriptWorld.destroy_viewport(self._world, self._viewport_name)
@@ -373,6 +385,11 @@ StateTitleScreen.on_exit = function (self, application_shutdown)
 	end
 
 	Managers.state:destroy()
+
+	if Managers.package:has_loaded("resource_packages/news_splash/news_splash", "state_splash_screen") then
+		Managers.package:unload("resource_packages/news_splash/news_splash", "state_splash_screen")
+	end
+
 	Managers.music:trigger_event("Stop_menu_screen_music")
 end
 

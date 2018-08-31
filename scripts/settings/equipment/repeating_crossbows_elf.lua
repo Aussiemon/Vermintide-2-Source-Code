@@ -1,6 +1,7 @@
 local push_radius = 2
 local weapon_template = weapon_template or {}
 weapon_template.actions = {
+	action_wield = ActionTemplates.wield_left,
 	action_one = {
 		default = {
 			anim_event = "attack_shoot",
@@ -203,7 +204,7 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action"
 			end,
 			condition_func = function (unit, input_extension, ammo_extension)
-				if ammo_extension and ammo_extension:total_remaining_ammo() <= 0 then
+				if ammo_extension and (ammo_extension:total_remaining_ammo() <= 0 or ammo_extension:is_reloading()) then
 					return false
 				end
 
@@ -212,7 +213,6 @@ weapon_template.actions = {
 		}
 	},
 	action_inspect = ActionTemplates.action_inspect_left,
-	action_wield = ActionTemplates.wield_left,
 	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
 	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
 	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,

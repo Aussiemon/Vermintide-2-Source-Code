@@ -188,8 +188,7 @@ weapon_template.actions = {
 			},
 			buffed_zoom_thresholds = {
 				"zoom_in_trueflight",
-				"zoom_in",
-				"increased_zoom_in"
+				"zoom_in"
 			},
 			zoom_condition_function = function ()
 				return true
@@ -198,7 +197,7 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action"
 			end,
 			condition_func = function (unit, input_extension, ammo_extension)
-				if ammo_extension and ammo_extension:total_remaining_ammo() <= 0 then
+				if ammo_extension and (ammo_extension:total_remaining_ammo() <= 0 or ammo_extension:is_reloading()) then
 					return false
 				end
 

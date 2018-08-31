@@ -5,7 +5,10 @@ local PROGRESS_TASK_FAILED = Achievements2017.PROGRESS_TASK_FAILED
 
 local function initialize_xbox_achivements()
 	rawset(_G, "XB1Achievements", Achievements2017(Managers.account:user_id()))
-	Achievements2017.refresh(XB1Achievements)
+
+	if Managers.account:is_online() then
+		Achievements2017.refresh(XB1Achievements)
+	end
 end
 
 local function try_set_progress(template, progress)
@@ -13,34 +16,67 @@ local function try_set_progress(template, progress)
 		return
 	end
 
+	local account_manager = Managers.account
+
+	if account_manager:user_detached() then
+		return
+	end
+
 	if Achievements2017.is_refreshing(XB1Achievements) or Achievements2017.progress_task_status(XB1Achievements) == PROGRESS_TASK_STARTED then
 		return
 	end
 
+	local is_online = not account_manager:offline_mode()
 	local template_id = template.id
 	local achievement_id = template.ID_XB1
-	local current_progress = Achievements2017.progress(XB1Achievements, achievement_id)
+	local current_progress = nil
+
+	if is_online then
+		current_progress = Achievements2017.progress(XB1Achievements, achievement_id)
+	else
+		current_progress = account_manager:offline_achievement_progress(template_id)
+
+		if not current_progress then
+			print("[AchievementManager] [Offline] No current progress, setting", template_id, progress)
+			account_manager:set_offline_achievement_progress(template_id, progress)
+
+			return
+		end
+	end
 
 	if current_progress == -1 then
-		Managers.account:set_achievement_unlocked(template_id)
+		account_manager:set_achievement_unlocked(template_id)
 
 		return false, string.format("[AchievementManager] Error when fetching current progress for achievement %q", template_id)
 	end
 
 	if current_progress == 100 then
-		Managers.account:set_achievement_unlocked(template_id)
+		account_manager:set_achievement_unlocked(template_id)
 
 		return
 	end
 
-	if progress <= current_progress then
+	if not current_progress or progress <= current_progress then
 		return
 	end
 
-	local error_msg = Achievements2017.set_progress(XB1Achievements, achievement_id, progress)
+	local error_msg = nil
+
+	if is_online then
+		error_msg = Achievements2017.set_progress(XB1Achievements, achievement_id, progress)
+	else
+		print("[AchievementManager] [Offline] Setting progress", template_id, current_progress, "->", progress)
+
+		error_msg = Achievements2017.set_progress_offline(XB1Achievements, achievement_id, progress)
+
+		if not error_msg then
+			print("[AchievementManager] [Offline] Updating current progress", template_id, progress)
+			account_manager:set_offline_achievement_progress(template_id, progress)
+		end
+	end
 
 	if error_msg then
-		Managers.account:set_achievement_unlocked(template_id)
+		account_manager:set_achievement_unlocked(template_id)
 
 		return false, error_msg
 	end
@@ -107,10 +143,13 @@ local platform_functions = {
 		if result == PROGRESS_TASK_STARTED then
 			return false
 		elseif result == PROGRESS_TASK_COMPLETED then
-			Achievements2017.refresh(XB1Achievements)
+			if Managers.account:is_online() then
+				Achievements2017.refresh(XB1Achievements)
+			end
 
 			return true
 		elseif result == PROGRESS_TASK_FAILED then
+			print("[AchievementManager] PROGRESS_TASK_FAILED", template_id)
 			Managers.account:set_achievement_unlocked(template_id)
 
 			return true, "error"

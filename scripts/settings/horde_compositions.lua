@@ -279,6 +279,32 @@ HordeCompositions = {
 			}
 		}
 	},
+	chaos_warriors = {
+		{
+			name = "plain",
+			weight = 7,
+			breeds = {
+				"chaos_warrior",
+				{
+					2,
+					3
+				}
+			}
+		}
+	},
+	event_small_fanatics = {
+		{
+			name = "plain",
+			weight = 7,
+			breeds = {
+				"chaos_fanatic",
+				{
+					5,
+					6
+				}
+			}
+		}
+	},
 	stronghold_boss_event_defensive_easy = {
 		{
 			name = "plain",
@@ -2860,6 +2886,142 @@ HordeCompositions = {
 				"skaven_clan_rat",
 				{
 					4,
+					6
+				}
+			}
+		}
+	},
+	warcamp_inside_camp = {
+		{
+			name = "plain",
+			weight = 7,
+			breeds = {
+				"chaos_marauder",
+				{
+					5,
+					6
+				},
+				"chaos_fanatic",
+				{
+					5,
+					6
+				}
+			}
+		},
+		{
+			name = "mixed",
+			weight = 3,
+			breeds = {
+				"chaos_marauder_with_shield",
+				{
+					2,
+					3
+				},
+				"chaos_marauder",
+				{
+					2,
+					3
+				},
+				"chaos_fanatic",
+				{
+					5,
+					6
+				}
+			}
+		}
+	},
+	military_end_event_chaos_01 = {
+		{
+			name = "plain",
+			weight = 7,
+			breeds = {
+				"chaos_marauder",
+				{
+					5,
+					6
+				},
+				"chaos_fanatic",
+				{
+					5,
+					6
+				}
+			}
+		},
+		{
+			name = "mixed",
+			weight = 3,
+			breeds = {
+				"chaos_marauder_with_shield",
+				{
+					2,
+					3
+				},
+				"chaos_marauder",
+				{
+					2,
+					3
+				},
+				"chaos_fanatic",
+				{
+					5,
+					6
+				}
+			}
+		}
+	},
+	military_end_event_berzerkers = {
+		{
+			name = "plain",
+			weight = 7,
+			breeds = {
+				"chaos_berzerker",
+				3,
+				"chaos_marauder_with_shield",
+				4
+			}
+		}
+	},
+	military_end_event_plague_monks = {
+		{
+			name = "military_plague_monks",
+			weight = 1,
+			breeds = {
+				"skaven_plague_monk",
+				{
+					3,
+					4
+				}
+			}
+		}
+	},
+	military_end_event_chaos_warriors = {
+		{
+			name = "plain",
+			weight = 2,
+			breeds = {
+				"chaos_warrior",
+				3,
+				"chaos_fanatic",
+				{
+					7,
+					8
+				}
+			}
+		},
+		{
+			name = "plain",
+			weight = 1,
+			breeds = {
+				"chaos_warrior",
+				2,
+				"chaos_marauder",
+				{
+					3,
+					4
+				},
+				"chaos_fanatic",
+				{
+					5,
 					6
 				}
 			}

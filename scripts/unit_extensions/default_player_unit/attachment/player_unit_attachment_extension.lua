@@ -15,6 +15,7 @@ PlayerUnitAttachmentExtension.init = function (self, extension_init_context, uni
 	self._attachments = {
 		slots = {}
 	}
+	self._synced_slot_buffs = {}
 end
 
 PlayerUnitAttachmentExtension.extensions_ready = function (self, world, unit)
@@ -59,10 +60,18 @@ PlayerUnitAttachmentExtension.game_object_initialized = function (self, unit, un
 			network_manager.network_transmit:send_rpc_clients("rpc_create_attachment", unit_go_id, slot_id, item_id)
 		else
 			network_manager.network_transmit:send_rpc_server("rpc_create_attachment", unit_go_id, slot_id, item_id)
+		end
 
-			local backend_id = slot_data.item_data.backend_id
+		local backend_id = slot_data.item_data.backend_id
+		local buffs = self:_get_property_and_trait_buffs(backend_id)
+		local synced_buffs = {}
+		synced_buffs = table.merge(synced_buffs, buffs.server)
+		synced_buffs = table.merge(synced_buffs, buffs.both)
 
-			self:_send_rpc_add_attachment_buffs(unit_go_id, slot_id, item_id, backend_id)
+		if table.size(synced_buffs) > 0 then
+			self:_send_rpc_add_attachment_buffs(unit_go_id, slot_id, synced_buffs)
+
+			self._synced_slot_buffs[slot_name] = synced_buffs
 		end
 	end
 end
@@ -80,7 +89,7 @@ PlayerUnitAttachmentExtension.update = function (self, unit, input, dt, context,
 end
 
 PlayerUnitAttachmentExtension.hot_join_sync = function (self, sender)
-	AttachmentUtils.hot_join_sync(sender, self._unit, self._attachments.slots)
+	AttachmentUtils.hot_join_sync(sender, self._unit, self._attachments.slots, self._synced_slot_buffs)
 end
 
 PlayerUnitAttachmentExtension.create_attachment = function (self, slot_name, item_data)
@@ -184,6 +193,10 @@ PlayerUnitAttachmentExtension.show_attachments = function (self, show)
 			self:_show_attachment(slot_name, slot_data, show)
 		end
 	end
+
+	local attachment_event = (show and "lua_attachment_unhidden") or "lua_attachment_hidden"
+
+	Unit.flow_event(self._unit, attachment_event)
 end
 
 PlayerUnitAttachmentExtension.create_attachment_in_slot = function (self, slot_name, backend_id)
@@ -259,58 +272,35 @@ PlayerUnitAttachmentExtension.spawn_resynced_loadout = function (self, item_to_s
 		network_manager.network_transmit:send_rpc_clients("rpc_create_attachment", unit_object_id, slot_id, item_id)
 	else
 		network_manager.network_transmit:send_rpc_server("rpc_create_attachment", unit_object_id, slot_id, item_id)
+	end
 
-		local backend_id = item_data.backend_id
+	local backend_id = item_data.backend_id
+	local buffs = self:_get_property_and_trait_buffs(backend_id)
+	local synced_buffs = {}
+	synced_buffs = table.merge(synced_buffs, buffs.server)
+	synced_buffs = table.merge(synced_buffs, buffs.both)
 
-		self:_send_rpc_add_attachment_buffs(unit_object_id, slot_id, item_id, backend_id)
+	if table.size(synced_buffs) > 0 then
+		self:_send_rpc_add_attachment_buffs(unit_object_id, slot_id, synced_buffs)
+
+		self._synced_slot_buffs[slot_name] = synced_buffs
 	end
 
 	self:create_attachment(slot_name, item_data)
 end
 
-PlayerUnitAttachmentExtension._send_rpc_add_attachment_buffs = function (self, unit_go_id, slot_id, item_id, backend_id)
-	local buffs = self:_get_property_and_trait_buffs(backend_id)
-	local server_buffs = {}
-	server_buffs = table.merge(server_buffs, buffs.server)
-	server_buffs = table.merge(server_buffs, buffs.both)
-	local buff_name_1, buff_variable_data_1, buff_data_type_1, buff_value_1, buff_name_2, buff_variable_data_2, buff_data_type_2, buff_value_2, buff_name_3, buff_variable_data_3, buff_data_type_3, buff_value_3, buff_name_4, buff_variable_data_4, buff_data_type_4, buff_value_4 = nil
-	buff_name_1, buff_variable_data_1 = next(server_buffs)
+PlayerUnitAttachmentExtension._send_rpc_add_attachment_buffs = function (self, unit_object_id, slot_id, synced_buffs)
+	local params = AttachmentUtils.get_syncable_buff_params(synced_buffs)
 
-	if buff_name_1 then
-		buff_data_type_1, buff_value_1 = next(buff_variable_data_1)
-		buff_name_2, buff_variable_data_2 = next(server_buffs, buff_name_1)
-
-		if buff_name_2 then
-			buff_data_type_2, buff_value_2 = next(buff_variable_data_2)
-			buff_name_3, buff_variable_data_3 = next(server_buffs, buff_name_2)
-
-			if buff_name_3 then
-				buff_data_type_3, buff_value_3 = next(buff_variable_data_3)
-				buff_name_4, buff_variable_data_4 = next(server_buffs, buff_name_3)
-
-				if buff_name_4 then
-					buff_data_type_4, buff_value_4 = next(buff_variable_data_4)
-				end
-			end
-		end
-	end
-
-	local default_buff_id = NetworkLookup.buff_templates["n/a"]
-	local buff_1_id = (buff_name_1 and NetworkLookup.buff_templates[buff_name_1]) or default_buff_id
-	local buff_2_id = (buff_name_2 and NetworkLookup.buff_templates[buff_name_2]) or default_buff_id
-	local buff_3_id = (buff_name_3 and NetworkLookup.buff_templates[buff_name_3]) or default_buff_id
-	local buff_4_id = (buff_name_4 and NetworkLookup.buff_templates[buff_name_4]) or default_buff_id
-	local default_buff_data_type_id = NetworkLookup.buff_data_types["n/a"]
-	local buff_data_type_1_id = (buff_name_1 and NetworkLookup.buff_data_types[buff_data_type_1]) or default_buff_data_type_id
-	local buff_data_type_2_id = (buff_name_2 and NetworkLookup.buff_data_types[buff_data_type_2]) or default_buff_data_type_id
-	local buff_data_type_3_id = (buff_name_3 and NetworkLookup.buff_data_types[buff_data_type_3]) or default_buff_data_type_id
-	local buff_data_type_4_id = (buff_name_4 and NetworkLookup.buff_data_types[buff_data_type_4]) or default_buff_data_type_id
-
-	if buff_name_1 then
+	if #params > 0 then
 		local network_manager = Managers.state.network
 		local network_transmit = network_manager.network_transmit
 
-		network_transmit:send_rpc_server("rpc_add_attachment_buffs", unit_go_id, slot_id, buff_1_id, buff_data_type_1_id, buff_value_1 or 1, buff_2_id, buff_data_type_2_id, buff_value_2 or 1, buff_3_id, buff_data_type_3_id, buff_value_3 or 1, buff_4_id, buff_data_type_4_id, buff_value_4 or 1)
+		if self._is_server then
+			network_transmit:send_rpc_clients("rpc_add_attachment_buffs", unit_object_id, slot_id, unpack(params))
+		else
+			network_transmit:send_rpc_server("rpc_add_attachment_buffs", unit_object_id, slot_id, unpack(params))
+		end
 	end
 end
 

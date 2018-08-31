@@ -31,7 +31,7 @@ local function error_print(string, ...)
 	Application.error(string.format(s, ...))
 end
 
-local fake_restrictions = false
+local fake_restrictions = script_data.fake_restrictions
 
 PSRestrictions.init = function (self)
 	self._current_users = {}

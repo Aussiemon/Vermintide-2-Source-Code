@@ -10,8 +10,10 @@ end
 
 PlayerCharacterStateGrabbedByTentacle.on_enter = function (self, unit, input, dt, context, t, previous_state)
 	local inventory_extension = self.inventory_extension
+	local career_extension = self.career_extension
 
 	CharacterStateHelper.stop_weapon_actions(inventory_extension, "grabbed")
+	CharacterStateHelper.stop_career_abilities(career_extension, "grabbed")
 	inventory_extension:check_and_drop_pickups("grabbed_by_tentacle")
 
 	local first_person_extension = self.first_person_extension

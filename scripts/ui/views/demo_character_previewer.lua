@@ -374,6 +374,7 @@ DemoCharacterPreviewer._equip_item = function (self, item_name, slot)
 	if item_slot_type == "melee" or item_slot_type == "ranged" then
 		local left_hand_unit = item_units.left_hand_unit
 		local right_hand_unit = item_units.right_hand_unit
+		local material_settings = item_units.material_settings
 		local despawn_both_hands_units = right_hand_unit == nil or left_hand_unit == nil
 
 		if left_hand_unit then
@@ -384,7 +385,8 @@ DemoCharacterPreviewer._equip_item = function (self, item_name, slot)
 				unit_name = left_unit,
 				item_slot_type = item_slot_type,
 				slot_index = slot_index,
-				unit_attachment_node_linking = item_template.left_hand_attachment_node_linking.third_person
+				unit_attachment_node_linking = item_template.left_hand_attachment_node_linking.third_person,
+				material_settings = material_settings
 			}
 			package_names[#package_names + 1] = left_unit
 		end
@@ -397,7 +399,8 @@ DemoCharacterPreviewer._equip_item = function (self, item_name, slot)
 				unit_name = right_unit,
 				item_slot_type = item_slot_type,
 				slot_index = slot_index,
-				unit_attachment_node_linking = item_template.right_hand_attachment_node_linking.third_person
+				unit_attachment_node_linking = item_template.right_hand_attachment_node_linking.third_person,
+				material_settings = material_settings
 			}
 
 			if right_hand_unit ~= left_hand_unit then
@@ -491,6 +494,7 @@ DemoCharacterPreviewer._spawn_item = function (self, item_name)
 			local item_slot_type = unit_spawn_data.item_slot_type
 			local slot_index = unit_spawn_data.slot_index
 			local unit_attachment_node_linking = unit_spawn_data.unit_attachment_node_linking
+			local material_settings = unit_spawn_data.material_settings
 
 			if item_slot_type == "melee" or item_slot_type == "ranged" then
 				if unit_spawn_data.right_hand or unit_spawn_data.despawn_both_hands_units then
@@ -515,7 +519,7 @@ DemoCharacterPreviewer._spawn_item = function (self, item_name)
 
 				local unit = World.spawn_unit(world, unit_name)
 
-				self:equip_item_unit(unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links)
+				self:equip_item_unit(unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links, material_settings)
 
 				if unit_spawn_data.right_hand then
 					self._equipment_units[slot_index].right = unit
@@ -546,7 +550,7 @@ DemoCharacterPreviewer._spawn_item = function (self, item_name)
 	end
 end
 
-DemoCharacterPreviewer.equip_item_unit = function (self, unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links)
+DemoCharacterPreviewer.equip_item_unit = function (self, unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links, material_settings)
 	local world = self._world
 	local character_unit = self._character_unit
 
@@ -573,6 +577,10 @@ DemoCharacterPreviewer.equip_item_unit = function (self, unit, item_slot_type, i
 	end
 
 	GearUtils.link(world, unit_attachment_node_linking, scene_graph_links, character_unit, unit)
+
+	if material_settings then
+		GearUtils.apply_material_settings(unit, material_settings)
+	end
 end
 
 DemoCharacterPreviewer.destroy = function (self)

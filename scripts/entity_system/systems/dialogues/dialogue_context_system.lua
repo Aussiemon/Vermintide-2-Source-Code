@@ -9,6 +9,7 @@ DialogueContextSystem.init = function (self, context, system_name)
 	entity_manager:register_system(self, system_name, extensions)
 
 	self.entity_manager = entity_manager
+	self._next_player_key = nil
 	self.unit_extension_data = {}
 
 	GarbageLeakDetector.register_object(self, "dialogue_context_system")
@@ -48,27 +49,26 @@ DialogueContextSystem.on_remove_extension = function (self, unit, extension_name
 end
 
 DialogueContextSystem.update = function (self, system_context, t)
-	for unit, extension in pairs(self.unit_extension_data) do
-		local context = extension.context
-		context.health = extension.health_extension:current_health_percent()
-		local status_extension = extension.status_extension
-		context.is_pounced_down = not not status_extension:is_pounced_down()
-		context.is_knocked_down = not not status_extension:is_knocked_down()
-		context.intensity = status_extension:get_intensity()
-		context.pacing_state = Managers.state.conflict.pacing.pacing_state
-		local proximity_extension = extension.proximity_extension
-		local proximity_types = proximity_extension.proximity_types
-		context.friends_close = proximity_types.friends_close.num
-		context.friends_distant = proximity_types.friends_distant.num
-		context.enemies_close = proximity_types.enemies_close.num
-		context.enemies_distant = proximity_types.enemies_distant.num
-		local new_foe = status_extension.primary_foe
+	local next_player_key, extension = next(self.unit_extension_data, self._next_player_key)
+	self._next_player_key = next_player_key
 
-		if context.primary_foe ~= new_foe then
-			context.primary_foe = status_extension.new_foe
-			context.primary_foe_name = (context.primary_foe and Unit.get_data(context.primary_foe, "breed").name) or nil
-		end
+	if not next_player_key then
+		return
 	end
+
+	local context = extension.context
+	context.health = extension.health_extension:current_health_percent()
+	local status_extension = extension.status_extension
+	context.is_pounced_down = not not status_extension:is_pounced_down()
+	context.is_knocked_down = not not status_extension:is_knocked_down()
+	context.intensity = status_extension:get_intensity()
+	context.pacing_state = Managers.state.conflict.pacing.pacing_state
+	local proximity_extension = extension.proximity_extension
+	local proximity_types = proximity_extension.proximity_types
+	context.friends_close = proximity_types.friends_close.num
+	context.friends_distant = proximity_types.friends_distant.num
+	context.enemies_close = proximity_types.enemies_close.num
+	context.enemies_distant = proximity_types.enemies_distant.num
 end
 
 DialogueContextSystem.hot_join_sync = function (self, sender)

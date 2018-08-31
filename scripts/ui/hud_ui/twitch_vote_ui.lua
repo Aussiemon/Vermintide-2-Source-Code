@@ -1,15 +1,18 @@
 local definitions = local_require("scripts/ui/hud_ui/twitch_vote_ui_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local definition_settings = definitions.settings
+local vote_texts_definition = definitions.vote_texts
 local DEBUG_VOTE_UI = false
 local DO_RELOAD = true
 local RESULT_TIMER = 3
+local INIT_AUDIO_COUNTDOWN_AT = 5
 TwitchVoteUI = class(TwitchVoteUI)
 
 TwitchVoteUI.init = function (self, ingame_ui_context)
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ingame_ui = ingame_ui_context.ingame_ui
 	self._input_manager = ingame_ui_context.input_manager
+	self._world_manager = ingame_ui_context.world_manager
 	self.active = false
 	self._active_vote = nil
 	self._vote_activated = false
@@ -19,6 +22,9 @@ TwitchVoteUI.init = function (self, ingame_ui_context)
 	self._render_settings = {
 		alpha_multiplier = 1
 	}
+	self._last_played_countdown_sfx = INIT_AUDIO_COUNTDOWN_AT + 1
+	local world = self._world_manager:world("level_world")
+	self.wwise_world = Managers.world:wwise_world(world)
 
 	self:_create_elements()
 	Managers.state.event:register(self, "add_vote_ui", "event_add_vote_ui")
@@ -169,8 +175,6 @@ TwitchVoteUI._create_elements = function (self)
 end
 
 TwitchVoteUI.update = function (self, dt, t)
-	script_data.vote_ui = self
-
 	if DO_RELOAD then
 		DO_RELOAD = false
 
@@ -474,7 +478,12 @@ TwitchVoteUI._show_multiple_choice_vote = function (self)
 			content.profile_index = profile_index
 			local vote_widget_index = "hero_vote_" .. index
 			local vote_widget = self._widgets[vote_widget_index]
-			vote_widget.content.text = option_strings[profile_index]
+
+			if PLATFORM == "win32" then
+				vote_widget.content.text = option_strings[profile_index]
+			else
+				vote_widget.content.text = vote_texts_definition.multiple_choice[index]
+			end
 		until true
 	end
 
@@ -487,6 +496,8 @@ TwitchVoteUI._show_multiple_choice_vote = function (self)
 	local vote_text_widget = self._widgets.vote_text
 	local text = vote_template.text
 	vote_text_widget.content.text = text
+
+	self:_play_multiple_vote_start()
 end
 
 TwitchVoteUI._update_multiple_votes_ui = function (self, dt)
@@ -527,6 +538,8 @@ TwitchVoteUI._update_multiple_votes_ui = function (self, dt)
 	local time_left = math.abs(math.ceil(timer))
 	local timer_widget = self._widgets.timer
 	timer_widget.content.text = time_left
+
+	self:_play_timer_sfx(time_left)
 end
 
 TwitchVoteUI._show_multiple_choice_result = function (self)
@@ -534,6 +547,7 @@ TwitchVoteUI._show_multiple_choice_result = function (self)
 	local vote_result = self._vote_result
 
 	assert(vote_result)
+	WwiseWorld.trigger_event(self.wwise_world, "Play_twitch_vote_end")
 
 	self._widgets = {}
 	local widgets = definitions.widgets.multiple_choice_result
@@ -627,6 +641,8 @@ TwitchVoteUI._show_standard_vote = function (self)
 	vote_text_a_widget.content.text = vote_template_a.text
 	local vote_text_b_widget = self._widgets.vote_text_b
 	vote_text_b_widget.content.text = vote_template_b.text
+
+	self:_play_standard_vote_start()
 end
 
 TwitchVoteUI._update_standard_vote = function (self)
@@ -640,6 +656,9 @@ TwitchVoteUI._update_standard_vote = function (self)
 	local time_left = math.abs(math.ceil(timer))
 	local timer_widget = self._widgets.timer
 	timer_widget.content.text = time_left
+
+	self:_play_timer_sfx(time_left)
+
 	local vote_percentages = active_vote.vote_percentages
 	local vote_percentage_a = vote_percentages[1]
 	local vote_percentage_b = vote_percentages[2]
@@ -675,6 +694,10 @@ TwitchVoteUI._show_standard_vote_result = function (self)
 	local texture_id = winning_template.texture_id
 	local result_icon_widget = self._widgets.result_icon
 	result_icon_widget.content.texture_id = texture_id
+	local cost = winning_template.cost
+
+	self:_play_winning_sfx(cost)
+
 	local result_icon_widget = self._widgets.result_icon
 	local texture = winning_template.texture_id
 	local texture_size = winning_template.texture_size
@@ -705,6 +728,34 @@ TwitchVoteUI._sorted_player_list = function (self)
 	table.sort(players, sort_by_profile_index)
 
 	return players
+end
+
+TwitchVoteUI._play_winning_sfx = function (self, cost)
+	if cost == nil then
+		return
+	end
+
+	if cost <= 0 then
+		WwiseWorld.trigger_event(self.wwise_world, "Play_twitch_vote_end")
+	else
+		WwiseWorld.trigger_event(self.wwise_world, "Play_twitch_vote_evil_won")
+	end
+end
+
+TwitchVoteUI._play_timer_sfx = function (self, time_left)
+	if time_left <= INIT_AUDIO_COUNTDOWN_AT and time_left ~= self._last_played_countdown_sfx then
+		WwiseWorld.trigger_event(self.wwise_world, "Play_twitch_count")
+
+		self._last_played_countdown_sfx = time_left
+	end
+end
+
+TwitchVoteUI._play_multiple_vote_start = function (self)
+	WwiseWorld.trigger_event(self.wwise_world, "Play_twitch_vote_multiple_start")
+end
+
+TwitchVoteUI._play_standard_vote_start = function (self)
+	WwiseWorld.trigger_event(self.wwise_world, "Play_twitch_vote_standard_buff_start")
 end
 
 return

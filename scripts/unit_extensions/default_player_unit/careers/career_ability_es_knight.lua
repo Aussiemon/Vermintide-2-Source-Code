@@ -14,6 +14,32 @@ CareerAbilityESKnight.init = function (self, extension_init_context, unit, exten
 	self._decal_unit = nil
 	self._decal_unit_name = "units/decals/decal_arrow"
 	self._fov_lerp_time = 0
+	self._lunge_events = {
+		start = function (this)
+			local first_person_extension = this.first_person_extension
+			local unit_3p = this.unit
+
+			first_person_extension:play_unit_sound_event("Play_career_ability_kruber_charge_enter", unit_3p, 0, true)
+			first_person_extension:play_unit_sound_event("Play_career_ability_kruber_charge_forward", unit_3p, 0, true)
+		end,
+		impact = function (this)
+			local first_person_extension = this.first_person_extension
+			local unit_1p = this._first_person_unit
+			local unit_3p = this.unit
+			local wwise_world = this.wwise_world
+			local num_impacts = this._num_impacts
+
+			Unit.flow_event(unit_1p, "lua_es_knight_activated_impact")
+			WwiseWorld.set_global_parameter(wwise_world, "knight_charge_num_impacts", num_impacts)
+			first_person_extension:play_unit_sound_event("Play_career_ability_kruber_charge_hit_player", unit_3p, 0, true)
+		end,
+		finished = function (this)
+			local first_person_extension = this.first_person_extension
+			local unit_3p = this.unit
+
+			first_person_extension:play_unit_sound_event("Stop_career_ability_kruber_charge_forward", unit_3p, 0, true)
+		end
+	}
 end
 
 CareerAbilityESKnight.extensions_ready = function (self, world, unit)
@@ -56,9 +82,27 @@ CareerAbilityESKnight.update = function (self, unit, input, dt, context, t)
 			return
 		end
 
-		if input_extension:get("action_career_release") then
+		if input_extension:get("weapon_reload") then
+			self:_stop_priming()
+
+			return
+		end
+
+		if input_extension:get("toggle_menu") then
+			self:_stop_priming()
+
+			return
+		end
+
+		if not input_extension:get("action_career_hold") then
 			self:_run_ability()
 		end
+	end
+end
+
+CareerAbilityESKnight.stop = function (self, reason)
+	if self._is_priming then
+		self:_stop_priming()
 	end
 end
 
@@ -144,11 +188,14 @@ CareerAbilityESKnight._run_ability = function (self)
 	self:_stop_priming()
 
 	local owner_unit = self._owner_unit
-	local local_player = self._local_player
+	local is_server = self._is_server
 	local status_extension = self._status_extension
 	local career_extension = self._career_extension
 	local buff_extension = self._buff_extension
 	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
+	local network_manager = self._network_manager
+	local network_transmit = network_manager.network_transmit
+	local owner_unit_id = network_manager:unit_game_object_id(owner_unit)
 	local buff_name = "markus_knight_activated_ability"
 
 	buff_extension:add_buff(buff_name, {
@@ -156,30 +203,25 @@ CareerAbilityESKnight._run_ability = function (self)
 	})
 
 	if talent_extension:has_talent("markus_knight_activated_ability_damage_buff", "empire_soldier", true) then
-		buff_extension:add_buff("markus_knight_activated_ability_damage_buff", {
+		buff_name = "markus_knight_activated_ability_damage_buff"
+
+		buff_extension:add_buff(buff_name, {
 			attacker_unit = owner_unit
 		})
+
+		local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
+
+		if is_server then
+			network_transmit:send_rpc_clients("rpc_add_buff", owner_unit_id, buff_template_name_id, owner_unit_id, 0, false)
+		else
+			network_transmit:send_rpc_server("rpc_add_buff", owner_unit_id, buff_template_name_id, owner_unit_id, 0, false)
+		end
 	end
 
 	if talent_extension:has_talent("markus_knight_activated_ability_infinite_block", "empire_soldier", true) then
 		buff_extension:add_buff("markus_knight_activated_ability_infinite_block", {
 			attacker_unit = owner_unit
 		})
-	end
-
-	local flow_events = nil
-
-	if local_player then
-		local first_person_extension = self._first_person_extension
-
-		first_person_extension:play_hud_sound_event("Play_career_ability_kruber_charge_enter")
-		first_person_extension:play_hud_sound_event("Play_career_ability_kruber_charge_forward")
-
-		flow_events = {
-			impact = "lua_es_knight_activated_impact",
-			start = "lua_es_knight_activated_start_move",
-			finished = "lua_es_knight_activated_finished"
-		}
 	end
 
 	status_extension:set_noclip(true)
@@ -189,8 +231,8 @@ CareerAbilityESKnight._run_ability = function (self)
 	status_extension.do_lunge = {
 		animation_end_event = "foot_knight_ability_charge_hit",
 		allow_rotation = false,
-		first_person_animation_end_event = "foot_knight_ability_charge_hit",
 		falloff_to_speed = 5,
+		first_person_animation_end_event = "foot_knight_ability_charge_hit",
 		dodge = true,
 		first_person_animation_event = "foot_knight_ability_charge_start",
 		first_person_hit_animation_event = "charge_react",
@@ -198,7 +240,7 @@ CareerAbilityESKnight._run_ability = function (self)
 		duration = 1.5,
 		initial_speed = 20,
 		animation_event = "foot_knight_ability_charge_start",
-		flow_events = flow_events,
+		lunge_events = self._lunge_events,
 		speed_function = function (lunge_time, duration)
 			local end_duration = 0.25
 			local rush_time = lunge_time - hold_duration - windup_duration

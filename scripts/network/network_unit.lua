@@ -79,4 +79,9 @@ NetworkUnit.on_game_object_sync_done = function (unit)
 	Unit.flow_event(unit, "on_game_object_sync_done")
 end
 
+NetworkUnit.transfer_unit = function (unit, unit_new)
+	unit_network_data[unit_new] = unit_network_data[unit]
+	unit_network_data[unit] = nil
+end
+
 return

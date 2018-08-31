@@ -3,6 +3,8 @@ require("scripts/settings/profiles/sp_profiles")
 local definitions = local_require("scripts/ui/views/character_selection_view/states/definitions/character_selection_state_character_definitions")
 local character_selection_widget_definitions = definitions.character_selection_widgets
 local widget_definitions = definitions.widgets
+local hero_widget_definition = definitions.hero_widget
+local hero_icon_widget_definition = definitions.hero_icon_widget
 local generic_input_actions = definitions.generic_input_actions
 local animation_definitions = definitions.animation_definitions
 local scenegraph_definition = definitions.scenegraph_definition
@@ -50,17 +52,37 @@ CharacterSelectionStateCharacter.on_enter = function (self, params)
 	local input_service = self:input_service()
 	local gui_layer = UILayer.default + 30
 	local input_description_input_service = parent:input_service(true)
-	self.menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self.ui_top_renderer, input_description_input_service, 3, gui_layer, (params.allow_back_button and generic_input_actions.default_back) or generic_input_actions.default)
+	self.menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self.ui_top_renderer, input_description_input_service, 3, gui_layer, (params.allow_back_button and generic_input_actions.default_back) or generic_input_actions.default, true)
 
 	self.menu_input_description:set_input_description(nil)
 	self:create_ui_elements(params)
 	self:_start_transition_animation("on_enter", "on_enter")
 
 	self._hero_preview_skin = nil
+	local hero_name = self._hero_name
 	local profile_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
+	local hero_attributes = Managers.backend:get_interface("hero_attributes")
+	local career_index = hero_attributes:get(hero_name, "career") or 1
 
-	self:_select_hero_tab_by_profile_index(profile_index)
+	self:_select_hero(profile_index, career_index, true)
 	self.parent:set_input_blocked(false)
+end
+
+CharacterSelectionStateCharacter._update_video_player_settings = function (self)
+	local is_character_visible = self.world_previewer:character_visible()
+
+	if is_character_visible and not self._video_widget then
+		local material_name = self._current_video_settings.material_name
+		local resource = self._current_video_settings.resource
+
+		if material_name and resource then
+			self:_setup_video_player(material_name, resource)
+
+			self._draw_video_next_frame = true
+		end
+	elseif not is_character_visible then
+		self:_destroy_video_player()
+	end
 end
 
 CharacterSelectionStateCharacter._setup_video_player = function (self, material_name, resource)
@@ -112,11 +134,220 @@ CharacterSelectionStateCharacter.create_ui_elements = function (self, params)
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
 
+	self:_setup_hero_selection_widgets()
 	UIRenderer.clear_scenegraph_queue(self.ui_top_renderer)
 
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
+end
 
-	self:_assign_hero_portraits()
+CharacterSelectionStateCharacter._set_hero_icon_selected = function (self, index)
+	for icon_index, widget in ipairs(self._hero_icon_widgets) do
+		widget.content.selected = icon_index == index
+	end
+end
+
+CharacterSelectionStateCharacter._setup_hero_selection_widgets = function (self)
+	local hero_widgets = {}
+	self._hero_widgets = hero_widgets
+	local hero_icon_widgets = {}
+	self._hero_icon_widgets = hero_icon_widgets
+	local hero_attributes = Managers.backend:get_interface("hero_attributes")
+	local num_max_rows = #SPProfilesAbbreviation
+	local num_max_columns = 0
+
+	for i, profile_index in ipairs(ProfilePriority) do
+		local profile_settings = SPProfiles[profile_index]
+		local hero_name = profile_settings.display_name
+		local hero_experience = hero_attributes:get(hero_name, "experience") or 0
+		local hero_level = ExperienceSettings.get_level(hero_experience)
+		local careers = profile_settings.careers
+		num_max_columns = math.max(num_max_columns, #careers)
+		local icon_widget = UIWidget.init(hero_icon_widget_definition)
+		hero_icon_widgets[#hero_icon_widgets + 1] = icon_widget
+		local hero_icon_offset = icon_widget.offset
+		hero_icon_offset[2] = -((i - 1) * 144)
+		local hero_icon_texture = "hero_icon_large_" .. hero_name
+		icon_widget.content.icon = hero_icon_texture
+		icon_widget.content.icon_selected = hero_icon_texture .. "_glow"
+
+		for j, career in ipairs(careers) do
+			local widget = UIWidget.init(hero_widget_definition)
+			hero_widgets[#hero_widgets + 1] = widget
+			local offset = widget.offset
+			local content = widget.content
+			content.career_settings = career
+			local portrait_image = career.portrait_image
+			content.portrait = "medium_" .. portrait_image
+			local is_career_unlocked = career.is_unlocked_function(hero_name, hero_level)
+			content.locked = not is_career_unlocked
+			offset[1] = (j - 1) * 124
+			offset[2] = -((i - 1) * 144)
+		end
+	end
+
+	self._num_max_hero_rows = num_max_rows
+	self._num_max_hero_columns = num_max_columns
+end
+
+CharacterSelectionStateCharacter._update_available_profiles = function (self)
+	local available_profiles = self._available_profiles
+	local hero_widgets = self._hero_widgets
+	local player = Managers.player:local_player()
+	local profile_synchronizer = self.profile_synchronizer
+	local own_player_profile_index = player ~= nil and player:profile_index()
+	local own_player_career_index = player ~= nil and player:career_index()
+	local widget_index = 1
+	local is_button_enabled = true
+	local selected_career_index = self._selected_career_index
+	local selected_profile_index = self._selected_profile_index
+
+	for i, profile_index in ipairs(ProfilePriority) do
+		local profile_settings = SPProfiles[profile_index]
+		local is_profile_available = not profile_synchronizer:owner(profile_index)
+		available_profiles[profile_index] = is_profile_available
+		local is_currently_played_profile = own_player_profile_index == profile_index
+		local can_play_profile = is_currently_played_profile or is_profile_available
+		local careers = profile_settings.careers
+
+		for j, career in ipairs(careers) do
+			local widget = hero_widgets[widget_index]
+			local content = widget.content
+			local is_career_locked = content.locked
+			content.taken = not can_play_profile
+
+			if j == selected_career_index and selected_profile_index == profile_index then
+				is_button_enabled = can_play_profile and not is_career_locked
+			end
+
+			widget_index = widget_index + 1
+		end
+	end
+
+	self:_set_select_button_enabled(is_button_enabled)
+end
+
+CharacterSelectionStateCharacter._handle_mouse_selection = function (self)
+	local hero_widgets = self._hero_widgets
+	local num_max_rows = self._num_max_hero_rows
+	local num_max_columns = self._num_max_hero_columns
+	local selected_row = self._selected_hero_row
+	local selected_column = self._selected_hero_column
+
+	if selected_row and selected_column then
+		local widget_index = 1
+
+		for i = 1, num_max_rows, 1 do
+			for j = 1, num_max_columns, 1 do
+				local widget = hero_widgets[widget_index]
+				local content = widget.content
+				local button_hotspot = content.button_hotspot
+
+				if button_hotspot.on_pressed and (i ~= selected_row or j ~= selected_column) then
+					local profile_index = ProfilePriority[i]
+					local career_index = j
+
+					self:_select_hero(profile_index, career_index)
+
+					return
+				end
+
+				widget_index = widget_index + 1
+			end
+		end
+	end
+end
+
+CharacterSelectionStateCharacter._handle_gamepad_selection = function (self, input_service)
+	local num_max_rows = self._num_max_hero_rows
+	local num_max_columns = self._num_max_hero_columns
+	local selected_row = self._selected_hero_row
+	local selected_column = self._selected_hero_column
+
+	if selected_row and selected_column then
+		local modified = false
+
+		if selected_column > 1 and input_service:get("move_left_hold_continuous") then
+			selected_column = selected_column - 1
+			modified = true
+		elseif selected_column < num_max_columns and input_service:get("move_right_hold_continuous") then
+			selected_column = selected_column + 1
+			modified = true
+		end
+
+		if selected_row > 1 and input_service:get("move_up_hold_continuous") then
+			selected_row = selected_row - 1
+			modified = true
+		elseif selected_row < num_max_rows and input_service:get("move_down_hold_continuous") then
+			selected_row = selected_row + 1
+			modified = true
+		end
+
+		if modified then
+			local profile_index = ProfilePriority[selected_row]
+			local career_index = selected_column
+
+			self:_select_hero(profile_index, career_index)
+		end
+	end
+end
+
+CharacterSelectionStateCharacter._select_hero = function (self, profile_index, career_index, ignore_sound)
+	if not ignore_sound then
+		self:_play_sound("play_gui_hero_select_career_click")
+	end
+
+	local profile_settings = SPProfiles[profile_index]
+	local career_settings = profile_settings.careers[career_index]
+	local hero_name = profile_settings.display_name
+	local character_name = profile_settings.character_name
+	local character_career_name = career_settings.display_name
+	local hero_display_name = Localize(character_name)
+	local career_display_name = Localize(character_career_name)
+	local hero_attributes = Managers.backend:get_interface("hero_attributes")
+	local hero_experience = hero_attributes:get(hero_name, "experience") or 0
+	local level = ExperienceSettings.get_level(hero_experience)
+
+	self:_set_hero_info(hero_display_name, career_display_name, level)
+	self:_populate_career_info(profile_index, career_index)
+
+	local hero_widgets = self._hero_widgets
+	local num_max_rows = self._num_max_hero_rows
+	local num_max_columns = self._num_max_hero_columns
+	self._spawn_hero = true
+	self._selected_career_index = career_index
+	self._selected_profile_index = profile_index
+	self._selected_hero_name = hero_name
+	self._selected_hero_row = ProfileIndexToPriorityIndex[profile_index]
+	self._selected_hero_column = career_index
+
+	self:_set_hero_icon_selected(self._selected_hero_row)
+
+	local widget_index = 1
+	local is_career_locked = false
+
+	for i = 1, num_max_rows, 1 do
+		for j = 1, num_max_columns, 1 do
+			local is_selected = i == self._selected_hero_row and j == self._selected_hero_column
+			local widget = hero_widgets[widget_index]
+			local content = widget.content
+			content.button_hotspot.is_selected = is_selected
+
+			if is_selected then
+				is_career_locked = content.locked
+			end
+
+			widget_index = widget_index + 1
+		end
+	end
+
+	local locked_info_text = self._widgets_by_name.locked_info_text
+
+	if is_career_locked then
+		local required_level = career_settings.unlocked_at_level_function(hero_name)
+		locked_info_text.content.text = Localize("career_locked_info") .. " " .. tostring(required_level)
+	end
+
+	locked_info_text.content.visible = is_career_locked
 end
 
 CharacterSelectionStateCharacter._get_skin_item_data = function (self, index, career_index)
@@ -136,81 +367,6 @@ CharacterSelectionStateCharacter._align_hero_selection_frames = function (self)
 		local scenegraph_id = widget.scenegraph_id
 		local size = scenegraph_definition[scenegraph_id].size
 		widget.offset[2] = -(size[2] * (index - 1) + spacing * (index - 1))
-	end
-end
-
-CharacterSelectionStateCharacter._assign_hero_portraits = function (self)
-	local widget = self._widgets_by_name.hero_tabs
-	local content = widget.content
-	local style = widget.style
-	local gui = self.ui_top_renderer.gui
-
-	for index, profile_index in ipairs(ProfilePriority) do
-		local name_sufix = "_" .. tostring(index)
-		local hotspot_name = "hotspot" .. name_sufix
-		local hotspot_content = content[hotspot_name]
-		local profile_settings = SPProfiles[profile_index]
-		local hero_selection_image = profile_settings.hero_selection_image
-		local icon_name = "icon" .. name_sufix
-		hotspot_content[icon_name] = hero_selection_image
-		local icon_size = style[icon_name].size
-		local selection_glow_texture = "hero_icon_glow"
-		local selection_glow_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(selection_glow_texture)
-		local selection_glow_texture_size = selection_glow_texture_settings.size
-		local selection_icon_name = "selection_icon" .. name_sufix
-		hotspot_content[selection_icon_name] = selection_glow_texture
-		local selection_style = style[selection_icon_name]
-		local selection_texture_size = selection_style.size
-		local selection_offset = selection_style.offset
-		local selection_default_offset = selection_style.default_offset
-		selection_texture_size[1] = selection_glow_texture_size[1]
-		selection_texture_size[2] = selection_glow_texture_size[2]
-		selection_offset[1] = (selection_default_offset[1] + icon_size[1] / 2) - selection_texture_size[1] / 2
-		selection_offset[2] = (selection_default_offset[2] + icon_size[2] / 2) - selection_texture_size[2] / 2
-	end
-end
-
-CharacterSelectionStateCharacter._assign_career_data_by_hero = function (self, hero_name)
-	local widget = self._widgets_by_name.career_tabs
-	local content = widget.content
-	local style = widget.style
-	local amount = content.amount
-	local gui = self.ui_top_renderer.gui
-	local profile_index = FindProfileIndex(hero_name)
-	local profile = SPProfiles[profile_index]
-	local careers = profile.careers
-	local selection_texture = "portrait_glow"
-	local selection_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(selection_texture)
-	local selection_texture_size = selection_texture_settings.size
-	local hero_attributes = Managers.backend:get_interface("hero_attributes")
-	local hero_experience = hero_attributes:get(hero_name, "experience") or 0
-	local hero_level = ExperienceSettings.get_level(hero_experience)
-
-	for i = 1, amount, 1 do
-		local name_sufix = "_" .. tostring(i)
-		local hotspot_name = "hotspot" .. name_sufix
-		local hotspot_content = content[hotspot_name]
-		local career_settings = careers[i]
-		local is_career_unlocked = career_settings.is_unlocked_function(hero_name, hero_level)
-		hotspot_content.locked = not is_career_unlocked
-		local portrait_image = career_settings.portrait_image
-		local character_selection_image = career_settings.character_selection_image
-		local display_name = career_settings.display_name
-		local image_name = "icon" .. name_sufix
-		hotspot_content[image_name] = portrait_image
-		local icon_size = style[image_name].size
-		local title_text_name = "title_text" .. name_sufix
-		hotspot_content[title_text_name] = display_name
-		local selection_image = "selection_icon" .. name_sufix
-		hotspot_content[selection_image] = selection_texture
-		local selection_style = style[selection_image]
-		local selection_size = selection_style.size
-		local selection_offset = selection_style.offset
-		local selection_default_offset = selection_style.default_offset
-		selection_size[1] = selection_texture_size[1]
-		selection_size[2] = selection_texture_size[2]
-		selection_offset[1] = (selection_default_offset[1] + icon_size[1] / 2) - selection_size[1] / 2
-		selection_offset[2] = (selection_default_offset[2] + icon_size[2] / 2) - selection_size[2] / 2
 	end
 end
 
@@ -277,6 +433,7 @@ CharacterSelectionStateCharacter.update = function (self, dt, t)
 
 	self:_update_available_profiles()
 	self:_update_profile_request()
+	self:_update_video_player_settings()
 
 	if not self._prepare_exit then
 		self:_handle_input(dt, t)
@@ -338,10 +495,19 @@ CharacterSelectionStateCharacter.draw = function (self, dt)
 	local input_service = self:input_service()
 	local render_settings = self.render_settings
 	local gamepad_active = Managers.input:is_device_active("gamepad")
+	self._widgets_by_name.bottom_panel.content.visible = gamepad_active
 
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
 	for _, widget in ipairs(self._widgets) do
+		UIRenderer.draw_widget(ui_top_renderer, widget)
+	end
+
+	for _, widget in ipairs(self._hero_widgets) do
+		UIRenderer.draw_widget(ui_top_renderer, widget)
+	end
+
+	for _, widget in ipairs(self._hero_icon_widgets) do
 		UIRenderer.draw_widget(ui_top_renderer, widget)
 	end
 
@@ -379,7 +545,7 @@ end
 
 CharacterSelectionStateCharacter._spawn_hero_unit = function (self, hero_name)
 	local world_previewer = self.world_previewer
-	local career_index = self.career_index
+	local career_index = self._selected_career_index
 	local callback = callback(self, "cb_hero_unit_spawned", hero_name)
 
 	world_previewer:request_spawn_hero_unit(hero_name, career_index, true, callback, nil, 0.5)
@@ -387,7 +553,7 @@ end
 
 CharacterSelectionStateCharacter.cb_hero_unit_spawned = function (self, hero_name)
 	local world_previewer = self.world_previewer
-	local career_index = self.career_index
+	local career_index = self._selected_career_index
 	local profile_index = FindProfileIndex(hero_name)
 	local profile = SPProfiles[profile_index]
 	local careers = profile.careers
@@ -442,184 +608,14 @@ CharacterSelectionStateCharacter._is_button_hover_exit = function (self, widget)
 	return hotspot.on_hover_exit
 end
 
-CharacterSelectionStateCharacter._is_hero_tab_selected = function (self)
-	local widget = self._widgets_by_name.hero_tabs
-	local widget_content = widget.content
-	local amount = widget_content.amount
-
-	for i = 1, amount, 1 do
-		local name_sufix = "_" .. tostring(i)
-		local hotspot_name = "hotspot" .. name_sufix
-		local hotspot_content = widget_content[hotspot_name]
-
-		if hotspot_content.on_pressed then
-			return i
-		end
-	end
-end
-
-CharacterSelectionStateCharacter._is_tab_hovered = function (self, widget)
-	local widget_content = widget.content
-	local amount = widget_content.amount
-
-	for i = 1, amount, 1 do
-		local name_sufix = "_" .. tostring(i)
-		local hotspot_name = "hotspot" .. name_sufix
-		local hotspot_content = widget_content[hotspot_name]
-
-		if hotspot_content.on_hover_enter and not hotspot_content.is_selected then
-			return i
-		end
-	end
-end
-
-CharacterSelectionStateCharacter._is_tab_dehovered = function (self, widget)
-	local widget_content = widget.content
-	local amount = widget_content.amount
-
-	for i = 1, amount, 1 do
-		local name_sufix = "_" .. tostring(i)
-		local hotspot_name = "hotspot" .. name_sufix
-		local hotspot_content = widget_content[hotspot_name]
-
-		if hotspot_content.on_hover_exit and not hotspot_content.is_selected then
-			return i
-		end
-	end
-end
-
-CharacterSelectionStateCharacter._is_career_tab_selected = function (self)
-	local widget = self._widgets_by_name.career_tabs
-	local widget_content = widget.content
-	local amount = widget_content.amount
-
-	for i = 1, amount, 1 do
-		local name_sufix = "_" .. tostring(i)
-		local hotspot_name = "hotspot" .. name_sufix
-		local hotspot_content = widget_content[hotspot_name]
-
-		if hotspot_content.on_pressed then
-			return i
-		end
-	end
-end
-
-CharacterSelectionStateCharacter._select_hero_tab_by_profile_index = function (self, profile_index)
-	self:_select_hero_tab_by_index(ProfileIndexToPriorityIndex[profile_index])
-end
-
-CharacterSelectionStateCharacter._select_hero_tab_by_index = function (self, index, play_sound)
-	if self._hero_tab_index == index then
-		return
-	end
-
-	if play_sound then
-		self:_play_sound("play_gui_hero_select_hero_click")
-	end
-
-	local gui = self.ui_top_renderer.gui
-	local widget = self._widgets_by_name.hero_tabs
-	local widget_content = widget.content
-	local widget_style = widget.style
-	local amount = widget_content.amount
-
-	for i = 1, amount, 1 do
-		local name_sufix = "_" .. tostring(i)
-		local hotspot_name = "hotspot" .. name_sufix
-		local hotspot_content = widget_content[hotspot_name]
-		local icon_name = "icon" .. name_sufix
-		local selected = i == index
-		hotspot_content.is_selected = selected
-		local icon_style = widget_style[icon_name]
-		local icon_color = icon_style.color
-		icon_color[2] = (selected and 255) or 100
-		icon_color[3] = (selected and 255) or 100
-		icon_color[4] = (selected and 255) or 100
-	end
-
-	local profile_index = ProfilePriority[index]
-	local profile_settings = SPProfiles[profile_index]
-	local hero_name = profile_settings.display_name
-	local character_name = profile_settings.character_name
-	self._selected_hero_name = hero_name
-	self._selected_profile_index = profile_index
-	local hero_attributes = Managers.backend:get_interface("hero_attributes")
-	local exp = hero_attributes:get(hero_name, "experience") or 0
-	local level = ExperienceSettings.get_level(exp)
-
-	self:_set_hero_info(Localize(character_name), level)
-
-	local career_index = hero_attributes:get(hero_name, "career") or 1
-	self._hero_tab_index = index
-
-	self:_select_career_tab_by_index(career_index, true)
-end
-
-CharacterSelectionStateCharacter._select_career_tab_by_index = function (self, career_index, force_set, play_sound)
-	if not force_set and self.career_index == career_index then
-		return
-	end
-
-	if play_sound then
-		self:_play_sound("play_gui_hero_select_career_click")
-	end
-
-	local gui = self.ui_top_renderer.gui
+CharacterSelectionStateCharacter._populate_career_info = function (self, profile_index, career_index)
+	local ui_scenegraph = self.ui_scenegraph
+	local ui_top_renderer = self.ui_top_renderer
 	local widgets_by_name = self._widgets_by_name
-	local widget = widgets_by_name.career_tabs
-	local widget_content = widget.content
-	local widget_style = widget.style
-	local amount = widget_content.amount
-	local hero_name = self._selected_hero_name or self._hero_name
-
-	self:_populate_career_page(hero_name, career_index)
-	self:_assign_career_data_by_hero(hero_name)
-
-	local is_career_locked = false
-
-	for i = 1, amount, 1 do
-		local name_sufix = "_" .. tostring(i)
-		local hotspot_name = "hotspot" .. name_sufix
-		local hotspot_content = widget_content[hotspot_name]
-		local image_name = "icon" .. name_sufix
-		local selected = i == career_index
-		hotspot_content.is_selected = selected
-
-		if selected then
-			is_career_locked = hotspot_content.locked
-		end
-
-		local image_style = widget_style[image_name]
-		local image_color = image_style.color
-		image_color[2] = (selected and 255) or 100
-		image_color[3] = (selected and 255) or 100
-		image_color[4] = (selected and 255) or 100
-	end
-
-	self._spawn_hero = true
-	self.career_index = career_index
-
-	if is_career_locked then
-		local profile_index = FindProfileIndex(hero_name)
-		local profile_settings = SPProfiles[profile_index]
-		local careers = profile_settings.careers
-		local career_settings = careers[career_index]
-		local required_level = career_settings.unlocked_at_level_function(hero_name)
-		widgets_by_name.locked_info_text.content.text = Localize("career_locked_info") .. " " .. tostring(required_level)
-	end
-
-	widgets_by_name.locked_info_text.content.visible = is_career_locked
-end
-
-CharacterSelectionStateCharacter._populate_career_page = function (self, hero_name, career_index)
-	local profile_index = FindProfileIndex(hero_name)
-	local profile_settings = SPProfiles[profile_index]
-	local careers = profile_settings.careers
-	local career_settings = careers[career_index]
-	local name = career_settings.name
-	local display_name = career_settings.display_name
-	local description = career_settings.description
-	local icon = career_settings.icon
+	local profile = SPProfiles[profile_index]
+	local hero_name = profile.display_name
+	local career_settings = profile.careers[career_index]
+	local career_name = career_settings.name
 	local passive_ability_data = career_settings.passive_ability
 	local activated_ability_data = career_settings.activated_ability
 	local passive_display_name = passive_ability_data.display_name
@@ -628,57 +624,100 @@ CharacterSelectionStateCharacter._populate_career_page = function (self, hero_na
 	local activated_display_name = activated_ability_data.display_name
 	local activated_description = activated_ability_data.description
 	local activated_icon = activated_ability_data.icon
-	local widgets_by_name = self._widgets_by_name
-	widgets_by_name.info_passive_icon.content.texture_id = passive_icon
-	widgets_by_name.info_ability_icon.content.texture_id = activated_icon
-	widgets_by_name.info_passive_title.content.text = Localize(passive_display_name)
-	widgets_by_name.info_passive_description.content.text = Localize(passive_description)
-	widgets_by_name.info_ability_title.content.text = Localize(activated_display_name)
-	widgets_by_name.info_ability_description.content.text = Localize(activated_description)
-	widgets_by_name.info_career_name.content.text = display_name
+	widgets_by_name.passive_title_text.content.text = Localize(passive_display_name)
+	widgets_by_name.passive_description_text.content.text = Localize(passive_description)
+	widgets_by_name.passive_icon.content.texture_id = passive_icon
+	widgets_by_name.active_title_text.content.text = Localize(activated_display_name)
+	widgets_by_name.active_description_text.content.text = Localize(activated_description)
+	widgets_by_name.active_icon.content.texture_id = activated_icon
+	local passive_perks = passive_ability_data.perks
+	local total_perks_height = 0
+	local perks_height_spacing = 10
+
+	for i = 1, 3, 1 do
+		local widget = widgets_by_name["career_perk_" .. i]
+		local content = widget.content
+		local style = widget.style
+		local scenegraph_id = widget.scenegraph_id
+		local scenegraph = ui_scenegraph[scenegraph_id]
+		local size = scenegraph.size
+		local offset = widget.offset
+		offset[2] = -total_perks_height
+		local data = passive_perks[i]
+
+		if data then
+			local display_name = Localize(data.display_name)
+			local description = Localize(data.description)
+			local title_text_style = style.title_text
+			local description_text_style = style.description_text
+			local description_text_shadow_style = style.description_text_shadow
+			content.title_text = display_name
+			content.description_text = description
+			local title_height = self:_get_text_height(ui_top_renderer, size, title_text_style, display_name)
+			local description_height = self:_get_text_height(ui_top_renderer, size, description_text_style, description)
+			description_text_style.offset[2] = -description_height
+			description_text_shadow_style.offset[2] = -(description_height + 2)
+			total_perks_height = total_perks_height + title_height + description_height + perks_height_spacing
+		end
+
+		content.visible = data ~= nil
+	end
+
 	local video = career_settings.video
 	local material_name = video.material_name
 	local resource = video.resource
+	self._current_video_settings = {
+		video = video,
+		material_name = material_name,
+		resource = resource
+	}
 
-	self:_setup_video_player(material_name, resource)
-
-	self._draw_video_next_frame = true
+	self:_destroy_video_player()
 end
 
-CharacterSelectionStateCharacter._handle_tab_hover = function (self, widget, style_prefix)
-	local hover_index = self:_is_tab_hovered(widget)
+CharacterSelectionStateCharacter._get_text_height = function (self, ui_renderer, size, ui_style, text, ui_style_global)
+	local widget_scale = nil
 
-	if hover_index then
-		self:_on_option_button_hover(widget, style_prefix .. "_" .. hover_index)
+	if ui_style_global then
+		widget_scale = ui_style_global.scale
 	end
 
-	local dehover_index = self:_is_tab_dehovered(widget)
+	local font_material, font_size, font_name = nil
 
-	if dehover_index then
-		self:_on_option_button_dehover(widget, style_prefix .. "_" .. dehover_index)
+	if ui_style.font_type then
+		local font, size_of_font = UIFontByResolution(ui_style, widget_scale)
+		font_name = font[3]
+		font_size = font[2]
+		font_material = font[1]
+		font_size = size_of_font
+	else
+		local font = ui_style.font
+		font_name = font[3]
+		font_size = font[2]
+		font_material = font[1]
+		font_size = ui_style.font_size or font_size
 	end
+
+	if ui_style.localize then
+		text = Localize(text)
+	end
+
+	local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_name, font_size)
+	local texts = UIRenderer.word_wrap(ui_renderer, text, font_material, font_size, size[1])
+	local text_start_index = 1
+	local max_texts = #texts
+	local num_texts = math.min(#texts - (text_start_index - 1), max_texts)
+	local inv_scale = RESOLUTION_LOOKUP.inv_scale
+	local full_font_height = (font_max + math.abs(font_min)) * inv_scale * num_texts
+
+	return full_font_height
 end
 
 CharacterSelectionStateCharacter._handle_input = function (self, dt, t)
-	if self:_is_tab_hovered(self._widgets_by_name.hero_tabs) then
-		self:_play_sound("play_gui_hero_select_hero_hover")
-	end
+	local input_service = self:input_service()
 
-	if self:_is_tab_hovered(self._widgets_by_name.career_tabs) then
-		self:_play_sound("play_gui_hero_select_career_hover")
-	end
-
-	local hero_index = self:_is_hero_tab_selected()
-
-	if hero_index then
-		self:_select_hero_tab_by_index(hero_index, true)
-	end
-
-	local career_index = self:_is_career_tab_selected()
-
-	if career_index then
-		self:_select_career_tab_by_index(career_index, nil, true)
-	end
+	self:_handle_gamepad_selection(input_service)
+	self:_handle_mouse_selection()
 
 	local current_profile_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
 	local select_button = self._widgets_by_name.select_button
@@ -691,34 +730,29 @@ CharacterSelectionStateCharacter._handle_input = function (self, dt, t)
 
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local confirm_available = not select_button.content.button_hotspot.disable_button
-	local input_service = self:input_service()
-	local confirm_pressed = gamepad_active and confirm_available and input_service:get("refresh_press", true)
+	local confirm_pressed = gamepad_active and confirm_available and input_service:get("confirm", true)
 	local back_pressed = gamepad_active and self.allow_back_button and input_service:get("back_menu", true)
 
 	if self:_is_button_pressed(select_button) or confirm_pressed then
 		self:_play_sound("play_gui_start_menu_button_click")
 
 		if current_profile_index ~= self._selected_profile_index then
-			self:_change_profile(self._selected_profile_index, self.career_index)
+			self:_change_profile(self._selected_profile_index, self._selected_career_index)
 		else
-			self:_change_career(self._selected_profile_index, self.career_index)
+			self:_change_career(self._selected_profile_index, self._selected_career_index)
 		end
 
 		self.parent:set_input_blocked(true)
 	elseif back_pressed then
 		self.parent:close_menu()
 	end
-
-	local widgets_by_name = self._widgets_by_name
-
-	self:_handle_tab_hover(widgets_by_name.hero_tabs, "icon")
-	self:_handle_tab_hover(widgets_by_name.career_tabs, "icon")
 end
 
-CharacterSelectionStateCharacter._set_hero_info = function (self, name, level)
+CharacterSelectionStateCharacter._set_hero_info = function (self, hero_name, career_name, level)
 	local widgets_by_name = self._widgets_by_name
-	widgets_by_name.info_hero_name.content.text = name
-	widgets_by_name.info_hero_level.content.text = Localize("level") .. ": " .. level
+	widgets_by_name.info_hero_name.content.text = hero_name
+	widgets_by_name.info_career_name.content.text = career_name
+	widgets_by_name.info_hero_level.content.text = level
 end
 
 CharacterSelectionStateCharacter._set_select_button_enabled = function (self, enabled)
@@ -873,34 +907,6 @@ CharacterSelectionStateCharacter._update_profile_request = function (self)
 	end
 end
 
-CharacterSelectionStateCharacter._update_available_profiles = function (self)
-	local available_profiles = self._available_profiles
-	local player = Managers.player:local_player()
-	local profile_synchronizer = self.profile_synchronizer
-	local own_player_profile_index = player ~= nil and player:profile_index()
-	local own_player_career_index = player ~= nil and player:career_index()
-
-	for _, profile_index in ipairs(ProfilePriority) do
-		local is_profile_available = not profile_synchronizer:owner(profile_index)
-		available_profiles[profile_index] = is_profile_available
-
-		if profile_index == self._selected_profile_index then
-			local profile = SPProfiles[profile_index]
-			local careers = profile.careers
-			local selected_career_index = self.career_index
-			local selected_career_settings = careers[selected_career_index]
-			local hero_name = profile.display_name
-			local hero_attributes = Managers.backend:get_interface("hero_attributes")
-			local hero_experience = hero_attributes:get(hero_name, "experience") or 0
-			local hero_level = ExperienceSettings.get_level(hero_experience)
-			local is_career_unlocked = selected_career_settings.is_unlocked_function(hero_name, hero_level)
-			local button_enabled = (own_player_profile_index == profile_index or is_profile_available) and is_career_unlocked
-
-			self:_set_select_button_enabled(button_enabled)
-		end
-	end
-end
-
 CharacterSelectionStateCharacter._on_option_button_hover = function (self, widget, style_id)
 	local ui_animations = self._ui_animations
 	local animation_name = "option_button_" .. style_id
@@ -956,7 +962,7 @@ CharacterSelectionStateCharacter._animate_element_by_catmullrom = function (self
 end
 
 CharacterSelectionStateCharacter.input_service = function (self)
-	return ((self._pending_profile_request or self._resync_id) and fake_input_service) or self.parent:input_service(true)
+	return ((self._pending_profile_request or self._resync_id or self.parent:input_blocked()) and fake_input_service) or self.parent:input_service(true)
 end
 
 return

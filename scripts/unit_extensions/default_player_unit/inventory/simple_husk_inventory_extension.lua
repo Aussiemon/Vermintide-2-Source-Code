@@ -32,7 +32,7 @@ end
 
 SimpleHuskInventoryExtension.drop_level_event_item = function (self, slot_data)
 	local item_template = self:get_item_template(slot_data)
-	local action = item_template.actions.action_one.default
+	local action = item_template.actions.action_dropped.default
 	local projectile_info = action.projectile_info
 
 	if projectile_info.drop_on_player_destroyed then
@@ -409,11 +409,11 @@ SimpleHuskInventoryExtension._wield_slot = function (self, world, equipment, slo
 	local right_hand_weapon_unit_3p, right_hand_weapon_unit_1p, left_hand_weapon_unit_3p, left_hand_weapon_unit_1p, right_hand_ammo_unit_3p, right_hand_ammo_unit_1p, left_hand_ammo_unit_3p, left_hand_ammo_unit_1p = nil
 
 	if item_units.right_hand_unit then
-		right_hand_weapon_unit_3p, right_hand_ammo_unit_3p, right_hand_weapon_unit_1p, right_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "right", item_template.third_person_extension_template, item_units.right_hand_unit, item_template.right_hand_attachment_node_linking, slot_name, item_data, unit_1p, unit_3p)
+		right_hand_weapon_unit_3p, right_hand_ammo_unit_3p, right_hand_weapon_unit_1p, right_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "right", item_template.third_person_extension_template, item_units.right_hand_unit, item_template.right_hand_attachment_node_linking, slot_name, item_data, unit_1p, unit_3p, nil, nil, nil, item_units.material_settings)
 	end
 
 	if item_units.left_hand_unit then
-		left_hand_weapon_unit_3p, left_hand_ammo_unit_3p, left_hand_weapon_unit_1p, left_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "left", item_template.third_person_extension_template, item_units.left_hand_unit, item_template.left_hand_attachment_node_linking, slot_name, item_data, unit_1p, unit_3p)
+		left_hand_weapon_unit_3p, left_hand_ammo_unit_3p, left_hand_weapon_unit_1p, left_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "left", item_template.third_person_extension_template, item_units.left_hand_unit, item_template.left_hand_attachment_node_linking, slot_name, item_data, unit_1p, unit_3p, nil, nil, nil, item_units.material_settings)
 	end
 
 	local career_extension = ScriptUnit.extension(unit_3p, "career_system")

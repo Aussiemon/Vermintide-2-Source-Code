@@ -33,6 +33,7 @@ PlayerCharacterStateLedgeHanging.on_enter = function (self, unit, input, dt, con
 	self.ledge_unit = ledge_unit
 
 	CharacterStateHelper.stop_weapon_actions(self.inventory_extension, "ledge_hanging")
+	CharacterStateHelper.stop_career_abilities(self.career_extension, "ledge_hanging")
 	self.locomotion_extension:enable_script_driven_ladder_movement()
 	self.locomotion_extension:set_forced_velocity(Vector3:zero())
 
@@ -156,8 +157,10 @@ PlayerCharacterStateLedgeHanging.calculate_start_position = function (self)
 
 	self.time_for_position_lerp = distance * movement_settings_table.ledge_hanging.attach_position_lerp_time_per_meter
 	self.position_lerp_timer = 0
+	local hang_ledge_spawn_offset = 0.5
+	local hang_ledge_spawn_position = new_position - Quaternion.forward(ledge_rotation) * hang_ledge_spawn_offset
 
-	ScriptUnit.extension(unit, "whereabouts_system"):set_new_hang_ledge_position(finger_box_position)
+	ScriptUnit.extension(unit, "whereabouts_system"):set_new_hang_ledge_position(hang_ledge_spawn_position)
 end
 
 PlayerCharacterStateLedgeHanging.calculate_and_start_rotation_to_ledge = function (self)

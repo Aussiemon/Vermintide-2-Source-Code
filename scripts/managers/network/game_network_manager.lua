@@ -15,7 +15,7 @@ GameNetworkManager.init = function (self, world, lobby, is_server, event_delegat
 
 	local session = Network.game_session()
 
-	assert(session, "Failed to create game session")
+	fassert(session, "Failed to create game session")
 
 	self.game_session = session
 
@@ -39,7 +39,7 @@ GameNetworkManager.init = function (self, world, lobby, is_server, event_delegat
 
 	self.peer_id = Network.peer_id()
 
-	debug_print("My own peer_id = ", tostring(self.peer_id))
+	debug_print("My own peer_id = %s", tostring(self.peer_id))
 	debug_print("self.is_server = %s", tostring(self.is_server))
 	self:set_max_upload_speed(Application.user_setting("max_upload_speed") or DefaultUserSettings.get("user_settings", "max_upload_speed"))
 	self:set_small_network_packets(Application.user_setting("small_network_packets") or DefaultUserSettings.get("user_settings", "small_network_packets"))
@@ -156,6 +156,25 @@ GameNetworkManager.update_transmit = function (self, dt)
 end
 
 GameNetworkManager.update = function (self, dt)
+	if self.is_server and self:in_game_session() then
+		local lobby = self._lobby
+		local game_session = self.game_session
+		local players = self.player_manager:human_players()
+		local min_ping = NetworkConstants.ping.min
+		local max_ping = NetworkConstants.ping.max
+
+		for _, player in pairs(players) do
+			local peer_id = player.peer_id
+
+			if peer_id ~= self.peer_id then
+				local game_object_id = player.game_object_id
+				local ping_in_ms = math.clamp(math.floor(lobby:ping_by_peer(peer_id) * 1000), min_ping, max_ping)
+
+				GameSession.set_game_object_field(game_session, game_object_id, "ping", ping_in_ms)
+			end
+		end
+	end
+
 	if self._shutdown_server_timer then
 		self._shutdown_server_timer = self._shutdown_server_timer - dt
 		local shutdown = self.network_server:all_client_peers_disconnected() or self._shutdown_server_timer < 0
@@ -312,7 +331,7 @@ GameNetworkManager.game_object_template = function (self, go_type)
 end
 
 GameNetworkManager.spawn_peer_player = function (self, peer_id, local_player_id, clan_tag)
-	assert(self.is_server)
+	fassert(self.is_server, "Only server is allowed to spawn peer player!")
 
 	local player_manager = self.player_manager
 	local player_controlled = true
@@ -355,7 +374,7 @@ GameNetworkManager.create_game_object = function (self, object_template, data_ta
 end
 
 GameNetworkManager.create_player_game_object = function (self, profile, data_table, session_disconnect_callback)
-	assert(self.is_server, "create_player_game_object: FAIL")
+	fassert(self.is_server, "create_player_game_object: FAIL")
 
 	local go_id = GameSession.create_game_object(self.game_session, profile, data_table)
 	self._game_object_types[go_id] = "player"
@@ -425,6 +444,10 @@ GameNetworkManager.game_object_destroyed_player = function (self, go_id, owner_p
 		debug_print("removing peer_id=%s local_player_id=%d", peer_id, local_player_id)
 	else
 		debug_print("not removing peer_id=%s local_player_id=%d", peer_id, local_player_id)
+
+		local player = player_manager:player_from_peer_id(peer_id, local_player_id)
+
+		player:game_object_destroyed()
 	end
 end
 
@@ -687,8 +710,8 @@ GameNetworkManager._hot_join_sync = function (self, peer_id)
 		self.room_manager:hot_join_sync(peer_id)
 	end
 
-	if script_data.unlimited_ammo then
-		RPC.rpc_toggle_unlimited_ammo(peer_id, true)
+	if Managers.state.conflict then
+		Managers.state.conflict:hot_join_sync(peer_id)
 	end
 
 	self._object_synchronizing_clients[peer_id] = nil

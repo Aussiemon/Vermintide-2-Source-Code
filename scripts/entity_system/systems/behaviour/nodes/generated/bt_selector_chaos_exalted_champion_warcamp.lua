@@ -128,7 +128,7 @@ BTSelector_chaos_exalted_champion_warcamp.run = function (self, unit, blackboard
 	end
 
 	local node_in_defensive = children[6]
-	local condition_result = blackboard.defensive_mode_duration
+	local condition_result = blackboard.defensive_mode_duration and unit_alive(blackboard.target_unit)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_in_defensive, "aborted")

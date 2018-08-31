@@ -64,20 +64,6 @@ local scenegraph_definition = {
 			-150,
 			1
 		}
-	},
-	console_cursor = {
-		vertical_alignment = "center",
-		parent = "root_1",
-		horizontal_alignment = "center",
-		size = {
-			1920,
-			1080
-		},
-		position = {
-			0,
-			0,
-			0
-		}
 	}
 }
 local settings_by_screen = {
@@ -101,7 +87,6 @@ local settings_by_screen = {
 	},
 	{
 		name = "achievements",
-		hotkey_disabled = true,
 		state_name = "HeroViewStateAchievements",
 		draw_background_world = false,
 		camera_position = {
@@ -219,7 +204,6 @@ local widgets_definitions = {
 	title_text = UIWidgets.create_simple_text("n/a", "title_text", nil, nil, title_text_style),
 	title_description_text = UIWidgets.create_simple_text("n/a", "title_description_text", nil, nil, title_description_text_style),
 	background = UIWidgets.create_simple_texture("large_frame_01", "dead_space_filler"),
-	console_cursor = UIWidgets.create_console_cursor("console_cursor"),
 	loading_bg = {
 		scenegraph_id = "screen",
 		element = UIElements.SimpleTexture,

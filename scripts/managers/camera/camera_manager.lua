@@ -364,6 +364,17 @@ CameraManager.shading_callback = function (self, world, shading_env, viewport)
 			World.set_data(world, "fullscreen_blur", nil)
 			ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", 0)
 		end
+
+		local greyscale_value = World.get_data(world, "greyscale") or 0
+
+		if greyscale_value > 0 then
+			ShadingEnvironment.set_scalar(shading_env, "grey_scale_enabled", 1)
+			ShadingEnvironment.set_scalar(shading_env, "grey_scale_amount", math.clamp(greyscale_value, 0, 1))
+			ShadingEnvironment.set_vector3(shading_env, "grey_scale_weights", Vector3(0.33, 0.33, 0.33))
+		else
+			World.set_data(world, "greyscale", nil)
+			ShadingEnvironment.set_scalar(shading_env, "grey_scale_enabled", 0)
+		end
 	end
 end
 
@@ -737,6 +748,10 @@ CameraManager._current_node = function (self, camera_nodes)
 end
 
 CameraManager.camera_effect_sequence_event = function (self, event, start_time)
+	if not Application.user_setting("camera_shake") then
+		return
+	end
+
 	local sequence_event_settings = self._sequence_event_settings
 	local previous_values = nil
 

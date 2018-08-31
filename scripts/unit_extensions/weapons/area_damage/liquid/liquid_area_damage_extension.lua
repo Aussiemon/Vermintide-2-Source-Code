@@ -662,7 +662,7 @@ LiquidAreaDamageExtension._pulse_damage = function (self)
 			if (is_player and do_direct_damage_player) or (not is_player and do_direct_damage_ai) then
 				local damage = damage_table[armor_category] or damage_table[1]
 
-				DamageUtils.add_damage_network(unit, unit, damage, "torso", damage_type, damage_dir)
+				DamageUtils.add_damage_network(unit, unit, damage, "torso", damage_type, nil, damage_dir)
 
 				if damage_buff_template_name then
 					local buff_extension = ScriptUnit.extension(unit, "buff_system")

@@ -281,7 +281,7 @@ RewardPopupUI._setup_presentation = function (self, presentation_data)
 		entry_play_index = 1,
 		started = false,
 		animations_played = 0,
-		animation_wait_time = 4,
+		animation_wait_time = 0.5,
 		animation_time = 0,
 		animations_list = {
 			"present_entry"

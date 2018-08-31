@@ -350,21 +350,21 @@ function smoketest_change_items()
 		end
 
 		local careers = {
-			"sienna_1",
-			"sienna_2",
-			"sienna_3",
-			"kerillian_1",
-			"kerillian_2",
-			"kerillian_3",
-			"bardin_1",
-			"bardin_2",
-			"bardin_3",
-			"victor_1",
-			"victor_2",
-			"victor_3",
-			"markus_1",
-			"markus_2",
-			"markus_3"
+			"bw_scholar",
+			"bw_adept",
+			"bw_unchained",
+			"we_shade",
+			"we_maidenguard",
+			"we_waywatcher",
+			"wh_captain",
+			"wh_bountyhunter",
+			"wh_zealot",
+			"es_mercenary",
+			"es_knight",
+			"es_huntsman",
+			"dr_ranger",
+			"dr_slayer",
+			"dr_ironbreaker"
 		}
 		local player_career = ScriptUnit.extension(Managers.player:local_player().player_unit, "career_system")._career_name
 
@@ -375,6 +375,8 @@ function smoketest_change_items()
 			local career_ranged_weapon_slots = {}
 			local backend_items_interface = Managers.backend:get_interface("items")
 			local backend_items = backend_items_interface:get_all_backend_items()
+
+			print("NumBackendItems ", #backend_items)
 
 			for _, item in pairs(backend_items) do
 				local item_key = item.key
@@ -395,13 +397,35 @@ function smoketest_change_items()
 			print(#career_melee_weapon_slots, #career_ranged_weapon_slots)
 			print(m, r)
 
-			local career_melee_weapon = career_melee_weapon_slots[m]
-			local career_ranged_weapon = career_ranged_weapon_slots[r]
+			local career_melee_weapon = nil
 
-			print(career_melee_weapon, career_ranged_weapon)
-			print(career_melee_weapon.key, career_ranged_weapon.key)
-			backend_items_interface:set_loadout_item(career_melee_weapon.backend_id, career, "slot_melee")
-			backend_items_interface:set_loadout_item(career_ranged_weapon.backend_id, career, "slot_ranged")
+			if #career_melee_weapon_slots > 0 then
+				career_melee_weapon = career_melee_weapon_slots[m]
+			end
+
+			local career_ranged_weapon = nil
+
+			if #career_ranged_weapon_slots > 0 then
+				career_ranged_weapon = career_ranged_weapon_slots[r]
+			end
+
+			if #career_ranged_weapon_slots > 0 and #career_melee_weapon_slots > 0 then
+				print(career_melee_weapon, career_ranged_weapon)
+				print(career_melee_weapon.key, career_ranged_weapon.key)
+			end
+
+			if #career_melee_weapon_slots > 0 then
+				backend_items_interface:set_loadout_item(career_melee_weapon.backend_id, career, "slot_melee")
+			else
+				print("!! Skipped broken melee slot!")
+			end
+
+			if #career_ranged_weapon_slots > 0 then
+				backend_items_interface:set_loadout_item(career_ranged_weapon.backend_id, career, "slot_ranged")
+			else
+				print("!! Skipped broken ranged slot!")
+			end
+
 			print(career)
 			print("-------------")
 		end

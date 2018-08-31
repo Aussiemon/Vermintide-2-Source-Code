@@ -32,7 +32,7 @@ local function play_screen_space_blood(world, unit, attacker_unit, killing_blow,
 			if Vector3.distance_squared(cam_pos, pos) < 9 and (not script_data.disable_behind_blood_splatter or camera_manager:is_in_view(vp_name, pos)) then
 				local particle_name = SCREENSPACE_DEATH_EFFECTS[damage_type] or "fx/screenspace_blood_drops"
 
-				World.create_particles(world, particle_name, Vector3.zero())
+				Managers.state.blood:play_screen_space_blood(particle_name, Vector3.zero())
 			end
 		end
 	end
@@ -128,10 +128,10 @@ local function ai_default_unit_start(unit, context, t, killing_blow, is_server)
 		locomotion:set_movement_type("disabled")
 	end
 
-	if ScriptUnit.has_extension(unit, "ai_inventory_system") and not breed.keep_weapon_on_death then
-		local inventory_system = Managers.state.entity:system("ai_inventory_system")
+	if not breed.keep_weapon_on_death and ScriptUnit.has_extension(unit, "ai_inventory_system") then
+		local inventory_extension = Managers.state.entity:system("ai_inventory_system")
 
-		inventory_system:drop_item(unit)
+		inventory_extension:drop_item(unit)
 	end
 
 	local statistics_db = context.statistics_db
@@ -181,6 +181,22 @@ local function ai_default_unit_start(unit, context, t, killing_blow, is_server)
 		Managers.state.unit_spawner:mark_for_deletion(unit)
 	elseif not breed.ignore_death_watch_timer then
 		data.push_to_death_watch_timer = 0
+	end
+
+	Managers.state.game_mode:ai_killed(unit, owner_unit)
+
+	if Managers.state.game_mode:has_mutator("corpse_explosion") then
+		local unit_name = "units/hub_elements/empty"
+		local unit_template_name = "timed_explosion_unit"
+		local position = POSITION_LOOKUP[unit]
+		local rotation = Quaternion.identity()
+		local extension_init_data = {
+			area_damage_system = {
+				explosion_template_name = breed.corpse_explosion_template_name or "corpse_explosion_default"
+			}
+		}
+
+		Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, position, rotation)
 	end
 
 	return data, DeathReactions.IS_NOT_DONE
@@ -337,7 +353,7 @@ local function ai_default_unit_update(unit, dt, context, t, data, is_server)
 		return DeathReactions.IS_NOT_DONE
 	end
 
-	Managers.state.unit_spawner:mark_for_deletion(unit)
+	Managers.state.conflict:register_unit_destroyed(unit, "death_done")
 
 	return DeathReactions.IS_DONE
 end
@@ -404,6 +420,7 @@ local function ai_default_husk_start(unit, context, t, killing_blow, is_server)
 	}
 
 	Managers.state.unit_spawner:freeze_unit_extensions(unit, t, data)
+	Managers.state.game_mode:ai_killed(unit, owner_unit)
 
 	return data, DeathReactions.IS_NOT_DONE
 end
@@ -1033,48 +1050,52 @@ DeathReactions.templates = {
 				trigger_unit_dialogue_death_event(unit, killing_blow[DamageDataIndex.ATTACKER], killing_blow[DamageDataIndex.HIT_ZONE], killing_blow[DamageDataIndex.DAMAGE_TYPE])
 				trigger_player_killing_blow_ai_buffs(unit, killing_blow, true)
 
-				local amount_of_loot_drops = math.random(2, 4)
+				if Managers.state.game_mode:has_mutator("explosive_loot_rats") then
+					AiUtils.loot_rat_explosion(unit, unit, BLACKBOARDS[unit], nil, ExplosionTemplates.loot_rat_explosion)
+				else
+					local amount_of_loot_drops = math.random(2, 4)
 
-				for i = 1, amount_of_loot_drops, 1 do
-					local spawn_value = math.random()
-					local pickups = LootRatPickups
-					local spawn_weighting_total = 0
+					for i = 1, amount_of_loot_drops, 1 do
+						local spawn_value = math.random()
+						local pickups = LootRatPickups
+						local spawn_weighting_total = 0
 
-					for pickup_name, spawn_weighting in pairs(pickups) do
-						table.clear(pickup_params)
+						for pickup_name, spawn_weighting in pairs(pickups) do
+							table.clear(pickup_params)
 
-						local dice_keeper = context.dice_keeper
-						local can_spawn_pickup_type = true
-						local pickup_settings = AllPickups[pickup_name]
-						local can_spawn_func = pickup_settings.can_spawn_func
-						pickup_params.dice_keeper = dice_keeper
+							local dice_keeper = context.dice_keeper
+							local can_spawn_pickup_type = true
+							local pickup_settings = AllPickups[pickup_name]
+							local can_spawn_func = pickup_settings.can_spawn_func
+							pickup_params.dice_keeper = dice_keeper
 
-						if can_spawn_func and not can_spawn_func(pickup_params) then
-							can_spawn_pickup_type = false
-						end
-
-						spawn_weighting_total = spawn_weighting_total + spawn_weighting
-
-						if spawn_value <= spawn_weighting_total and can_spawn_pickup_type then
-							local extension_init_data = {
-								pickup_system = {
-									has_physics = true,
-									spawn_type = "loot",
-									pickup_name = pickup_name
-								}
-							}
-							local unit_name = pickup_settings.unit_name
-							local unit_template_name = pickup_settings.unit_template_name or "pickup_unit"
-							local position = POSITION_LOOKUP[unit] + Vector3(math.random() - 0.5, math.random() - 0.5, 1)
-							local rotation = Quaternion(Vector3.right(), math.random() * 2 * math.pi)
-
-							Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, position, rotation)
-
-							if pickup_name == "loot_die" then
-								dice_keeper:bonus_dice_spawned()
+							if can_spawn_func and not can_spawn_func(pickup_params) then
+								can_spawn_pickup_type = false
 							end
 
-							break
+							spawn_weighting_total = spawn_weighting_total + spawn_weighting
+
+							if spawn_value <= spawn_weighting_total and can_spawn_pickup_type then
+								local extension_init_data = {
+									pickup_system = {
+										has_physics = true,
+										spawn_type = "loot",
+										pickup_name = pickup_name
+									}
+								}
+								local unit_name = pickup_settings.unit_name
+								local unit_template_name = pickup_settings.unit_template_name or "pickup_unit"
+								local position = POSITION_LOOKUP[unit] + Vector3(math.random() - 0.5, math.random() - 0.5, 1)
+								local rotation = Quaternion(Vector3.right(), math.random() * 2 * math.pi)
+
+								Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, position, rotation)
+
+								if pickup_name == "loot_die" then
+									dice_keeper:bonus_dice_spawned()
+								end
+
+								break
+							end
 						end
 					end
 				end
@@ -1086,6 +1107,12 @@ DeathReactions.templates = {
 				return data, result
 			end,
 			update = function (unit, dt, context, t, data)
+				if Managers.state.game_mode:has_mutator("explosive_loot_rats") and BLACKBOARDS[unit].delete_at_t < t and not data.marked_for_deletion then
+					Managers.state.unit_spawner:mark_for_deletion(unit)
+
+					data.marked_for_deletion = true
+				end
+
 				local result = ai_default_unit_update(unit, dt, context, t, data)
 
 				return result
@@ -1376,8 +1403,6 @@ DeathReactions.templates = {
 				local result = DeathReactions.IS_NOT_DONE
 
 				if not data.destroyed then
-					Unit.set_unit_visibility(unit, false)
-
 					local num_actors = Unit.num_actors(unit)
 
 					for i = 0, num_actors - 1, 1 do

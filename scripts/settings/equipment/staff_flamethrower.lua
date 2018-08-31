@@ -268,18 +268,22 @@ weapon_template.overcharge_data = {
 	hit_overcharge_threshold_sound = "ui_special_attack_ready"
 }
 weapon_template.attack_meta_data = {
-	max_range = 50,
-	obstruction_fuzzyness_range_charged = 1,
+	max_range = 7,
 	always_charge_before_firing = false,
+	can_charge_shot = false,
 	charged_attack_action_name = "shoot_charged",
 	aim_at_node = "j_spine1",
-	can_charge_shot = true,
-	minimum_charge_time = 0.1,
+	ignore_enemies_for_obstruction = true,
+	minimum_charge_time = 0.65,
 	charge_when_obstructed = false,
 	charge_when_outside_max_range = false,
-	obstruction_fuzzyness_range = 1
+	aim_data = {
+		min_radius_pseudo_random_c = 0.3021,
+		max_radius_pseudo_random_c = 0.03222,
+		min_radius = math.pi / 72,
+		max_radius = math.pi / 16
+	}
 }
-local action = weapon_template.actions.action_one.default
 weapon_template.default_spread_template = "drakegun"
 weapon_template.right_hand_unit = "units/weapons/player/wpn_brw_skullstaff/wpn_brw_skullstaff"
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.spear_staff
@@ -328,6 +332,6 @@ weapon_template.tooltip_detail = {
 	}
 }
 Weapons = Weapons or {}
-Weapons.staff_flamethrower_template = table.clone(weapon_template)
+Weapons.staff_flamethrower_template = table.create_copy(Weapons.staff_flamethrower_template, weapon_template)
 
 return

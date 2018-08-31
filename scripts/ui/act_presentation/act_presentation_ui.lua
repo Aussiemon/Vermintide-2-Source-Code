@@ -55,6 +55,7 @@ ActPresentationUI.start = function (self, level_key, previous_completed_difficul
 	local act_key = LevelUnlockUtils.get_act_key_by_level(level_key)
 
 	if not act_key then
+		self.active = true
 		self._presentation_aborted = true
 
 		return false

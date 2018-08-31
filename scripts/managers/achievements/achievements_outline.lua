@@ -14,6 +14,9 @@ local heroes = {
 		{
 			name = "inventory_name_empire_soldier",
 			entries = {
+				"achievement_markus_level_1",
+				"achievement_markus_level_2",
+				"achievement_markus_level_3",
 				"level_thirty_empire_soldier",
 				"complete_all_helmgart_levels_recruit_es_mercenary",
 				"complete_all_helmgart_levels_veteran_es_mercenary",
@@ -35,6 +38,9 @@ local heroes = {
 		{
 			name = "inventory_name_dwarf_ranger",
 			entries = {
+				"achievement_bardin_level_1",
+				"achievement_bardin_level_2",
+				"achievement_bardin_level_3",
 				"level_thirty_dwarf_ranger",
 				"complete_all_helmgart_levels_recruit_dr_ranger",
 				"complete_all_helmgart_levels_veteran_dr_ranger",
@@ -56,6 +62,9 @@ local heroes = {
 		{
 			name = "inventory_name_wood_elf",
 			entries = {
+				"achievement_kerillian_level_1",
+				"achievement_kerillian_level_2",
+				"achievement_kerillian_level_3",
 				"level_thirty_wood_elf",
 				"complete_all_helmgart_levels_recruit_we_waywatcher",
 				"complete_all_helmgart_levels_veteran_we_waywatcher",
@@ -77,6 +86,9 @@ local heroes = {
 		{
 			name = "inventory_name_witch_hunter",
 			entries = {
+				"achievement_victor_level_1",
+				"achievement_victor_level_2",
+				"achievement_victor_level_3",
 				"level_thirty_witch_hunter",
 				"complete_all_helmgart_levels_recruit_wh_captain",
 				"complete_all_helmgart_levels_veteran_wh_captain",
@@ -98,6 +110,9 @@ local heroes = {
 		{
 			name = "inventory_name_bright_wizard",
 			entries = {
+				"achievement_sienna_level_1",
+				"achievement_sienna_level_2",
+				"achievement_sienna_level_3",
 				"level_thirty_bright_wizard",
 				"complete_all_helmgart_levels_recruit_bw_adept",
 				"complete_all_helmgart_levels_veteran_bw_adept",
@@ -121,36 +136,74 @@ local heroes = {
 local levels = {
 	name = "achv_menu_levels_category_title",
 	entries = {
-		"complete_tutorial",
-		"complete_act_one",
-		"complete_act_two",
-		"complete_act_three",
-		"complete_skittergate_recruit",
-		"complete_skittergate_veteran",
-		"complete_skittergate_champion",
-		"complete_skittergate_legend",
-		"kill_bodvarr_burblespew_recruit",
-		"kill_bodvarr_burblespew_veteran",
-		"kill_bodvarr_burblespew_champion",
-		"kill_bodvarr_burblespew_legend",
-		"kill_skarrik_rasknitt_recruit",
-		"kill_skarrik_rasknitt_veteran",
-		"kill_skarrik_rasknitt_champion",
-		"kill_skarrik_rasknitt_legend",
-		"elven_ruins_align_leylines_timed",
-		"farmlands_rescue_prisoners_timed",
-		"military_kill_chaos_warriors_in_event",
-		"ground_zero_burblespew_tornado_enemies",
-		"fort_kill_enemies_cannonball",
-		"nurgle_player_showered_in_pus",
-		"bell_destroy_bell_flee_timed",
-		"catacombs_stay_inside_ritual_pool",
-		"mines_kill_final_troll_timed",
-		"warcamp_bodvarr_charge_warriors",
-		"skaven_stronghold_skarrik_kill_skaven",
-		"ussingen_no_event_barrels",
-		"skittergate_deathrattler_rasknitt_timed",
-		"complete_all_helmgart_level_achievements"
+		"complete_all_helmgart_levels_recruit",
+		"complete_all_helmgart_levels_veteran",
+		"complete_all_helmgart_levels_champion",
+		"complete_all_helmgart_levels_legend",
+		"complete_bogenhafen_recruit",
+		"complete_bogenhafen_veteran",
+		"complete_bogenhafen_champion",
+		"complete_bogenhafen_legend"
+	},
+	categories = {
+		{
+			name = "achv_menu_levels_helmgart_category_title",
+			entries = {
+				"complete_tutorial",
+				"complete_act_one",
+				"complete_act_two",
+				"complete_act_three",
+				"complete_skittergate_recruit",
+				"complete_skittergate_veteran",
+				"complete_skittergate_champion",
+				"complete_skittergate_legend",
+				"kill_bodvarr_burblespew_recruit",
+				"kill_bodvarr_burblespew_veteran",
+				"kill_bodvarr_burblespew_champion",
+				"kill_bodvarr_burblespew_legend",
+				"kill_skarrik_rasknitt_recruit",
+				"kill_skarrik_rasknitt_veteran",
+				"kill_skarrik_rasknitt_champion",
+				"kill_skarrik_rasknitt_legend",
+				"elven_ruins_align_leylines_timed",
+				"farmlands_rescue_prisoners_timed",
+				"military_kill_chaos_warriors_in_event",
+				"ground_zero_burblespew_tornado_enemies",
+				"fort_kill_enemies_cannonball",
+				"nurgle_player_showered_in_pus",
+				"bell_destroy_bell_flee_timed",
+				"catacombs_stay_inside_ritual_pool",
+				"mines_kill_final_troll_timed",
+				"warcamp_bodvarr_charge_warriors",
+				"skaven_stronghold_skarrik_kill_skaven",
+				"ussingen_no_event_barrels",
+				"skittergate_deathrattler_rasknitt_timed",
+				"complete_all_helmgart_level_achievements"
+			}
+		},
+		{
+			name = "achv_menu_levels_bogenhafen_category_title",
+			entries = {
+				"complete_bogenhafen_slum_recruit",
+				"complete_bogenhafen_slum_veteran",
+				"complete_bogenhafen_slum_champion",
+				"complete_bogenhafen_slum_legend",
+				"complete_bogenhafen_city_recruit",
+				"complete_bogenhafen_city_veteran",
+				"complete_bogenhafen_city_champion",
+				"complete_bogenhafen_city_legend",
+				"bogenhafen_city_all_wine_collected",
+				"bogenhafen_city_jumping_puzzle",
+				"bogenhafen_slum_find_hidden_stash",
+				"bogenhafen_slum_jumping_puzzle",
+				"bogenhafen_city_no_braziers_lit",
+				"bogenhafen_city_torch_not_picked_up",
+				"bogenhafen_city_fast_switches",
+				"bogenhafen_slum_no_ratling_damage",
+				"bogenhafen_slum_no_windows_broken",
+				"bogenhafen_slum_event_speedrun"
+			}
+		}
 	}
 }
 local crafting = {

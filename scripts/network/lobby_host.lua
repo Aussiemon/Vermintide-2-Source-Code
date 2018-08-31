@@ -16,12 +16,13 @@ LobbyHost.init = function (self, network_options, lobby)
 	self.network_hash = LobbyAux.create_network_hash(config_file_name, project_hash)
 
 	if PLATFORM == "win32" then
-		assert(network_options.max_members, "Must provide max members to LobbyHost")
+		fassert(network_options.max_members, "Must provide max members to LobbyHost")
 	end
 
 	self.max_members = PLATFORM == "win32" and network_options.max_members
 	self.lobby = lobby or LobbyInternal.create_lobby(network_options)
 	self.peer_id = Network.peer_id()
+	self._network_initialized = false
 	self.platform = PLATFORM
 end
 
@@ -94,6 +95,47 @@ LobbyHost.update = function (self, dt)
 
 	if self.lobby_members then
 		self.lobby_members:update()
+
+		local members_joined = self.lobby_members:get_members_joined()
+
+		for i = 1, #members_joined, 1 do
+			local peer_id = members_joined[i]
+
+			LobbyInternal.add_ping_peer(peer_id)
+		end
+
+		local members_left = self.lobby_members:get_members_left()
+
+		for i = 1, #members_left, 1 do
+			local peer_id = members_left[i]
+
+			LobbyInternal.remove_ping_peer(peer_id)
+		end
+	end
+end
+
+LobbyHost.ping_by_peer = function (self, peer_id)
+	return LobbyInternal.ping(peer_id)
+end
+
+LobbyHost._update_debug = function (self)
+	local my_peer_id = self.peer_id
+	local lobby = self.lobby
+	local members = lobby:members()
+	local num_members = #members
+
+	if num_members > 0 then
+		Debug.text("Reliable Send Buffer Left (peer : bytes):")
+
+		for i = 1, num_members, 1 do
+			local peer_id = members[i]
+
+			if peer_id ~= my_peer_id then
+				local remaining_buffer_size = Network.reliable_send_buffer_left(peer_id)
+
+				Debug.text("    %s : %d", peer_id, remaining_buffer_size)
+			end
+		end
 	end
 end
 
@@ -117,6 +159,14 @@ LobbyHost.set_lobby_data = function (self, lobby_data_table)
 	end
 
 	dprintf("Set lobby end.")
+end
+
+LobbyHost.set_network_initialized = function (self, initialized)
+	self._network_initialized = initialized
+end
+
+LobbyHost.network_initialized = function (self)
+	return self._network_initialized
 end
 
 LobbyHost.get_stored_lobby_data = function (self)

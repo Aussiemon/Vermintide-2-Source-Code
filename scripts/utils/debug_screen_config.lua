@@ -1,5 +1,6 @@
 require("scripts/utils/debug_hero_templates")
 
+local mutator_settings = require("scripts/settings/mutator_settings")
 local settings = {
 	{
 		description = [[
@@ -361,8 +362,9 @@ local settings = {
 		setting_name = "Show Graphs",
 		category = "Presets",
 		preset = {
+			debug_player_intensity = true,
 			debug_ai_pacing = true,
-			debug_player_intensity = true
+			ai_pacing_disabled = false
 		}
 	},
 	{
@@ -439,6 +441,12 @@ Features that make player mechanics nicer to work with.
 			wood_elf = true,
 			bright_wizard = true
 		}
+	},
+	{
+		description = "Show the units currently equipped in left/right hand.",
+		is_boolean = true,
+		setting_name = "show_equipped_weapon_units",
+		category = "Player mechanics"
 	},
 	{
 		description = "For enabling melee weapon debugging.",
@@ -564,6 +572,12 @@ Features that make player mechanics nicer to work with.
 		description = "Enable Buff Debug Information",
 		is_boolean = true,
 		setting_name = "buff_debug",
+		category = "Player mechanics"
+	},
+	{
+		description = "Disable Buff system optimization",
+		is_boolean = true,
+		setting_name = "buff_no_opt",
 		category = "Player mechanics"
 	},
 	{
@@ -741,6 +755,12 @@ Features that make player mechanics nicer to work with.
 		category = "Weapons"
 	},
 	{
+		description = "Will show debug lines for projectiles when true",
+		is_boolean = true,
+		setting_name = "debug_light_weight_projectiles",
+		category = "Weapons"
+	},
+	{
 		description = "Add/remove test attachments",
 		is_boolean = true,
 		setting_name = "attachment_debug",
@@ -774,6 +794,12 @@ Features that make player mechanics nicer to work with.
 		description = "Disables AI roam spawning.",
 		is_boolean = true,
 		setting_name = "ai_roaming_spawning_disabled",
+		category = "AI recommended"
+	},
+	{
+		description = "Disables AI roaming patrols spawning. (there will only be normal packs)",
+		is_boolean = true,
+		setting_name = "ai_roaming_patrols_disabled",
 		category = "AI recommended"
 	},
 	{
@@ -1035,6 +1061,12 @@ Features that make player mechanics nicer to work with.
 		category = "AI"
 	},
 	{
+		description = "Shows attack patterns for enemies. Gray -> has no slot. Lime -> has slot. Red -> is attacking. Orange -> is in attack cooldown. Blue -> is staggered or blocked.",
+		is_boolean = true,
+		setting_name = "debug_ai_attack_pattern",
+		category = "AI"
+	},
+	{
 		description = "Automagically destroys AI that are at a far enough distance from all the players.",
 		is_boolean = true,
 		setting_name = "ai_far_off_despawn_disabled",
@@ -1044,6 +1076,18 @@ Features that make player mechanics nicer to work with.
 		description = "Shows the workings of the ai recycler and area sets",
 		is_boolean = true,
 		setting_name = "debug_ai_recycler",
+		category = "AI"
+	},
+	{
+		description = "Shows frozen breed units",
+		is_boolean = true,
+		setting_name = "debug_breed_freeze",
+		category = "AI"
+	},
+	{
+		description = "Disables AI freeze optimization",
+		is_boolean = true,
+		setting_name = "disable_breed_freeze_opt",
 		category = "AI"
 	},
 	{
@@ -1076,6 +1120,22 @@ Features that make player mechanics nicer to work with.
 		setting_name = "draw_patrol_routes",
 		func = function ()
 			Managers.state.conflict.level_analysis:draw_patrol_routes()
+		end
+	},
+	{
+		description = "Draws patrol start positions",
+		category = "AI",
+		setting_name = "draw_patrol_start_positions",
+		func = function ()
+			Managers.state.conflict.level_analysis:draw_patrol_start_positions()
+		end
+	},
+	{
+		description = "Spawns a boss patrol at the closest spawner, use draw_patrol_start_positions to see spawners",
+		category = "AI",
+		setting_name = "spawn_patrol_at_closest_spawner",
+		func = function ()
+			Managers.state.conflict:debug_spawn_spline_patrol_closest_spawner()
 		end
 	},
 	{
@@ -1166,6 +1226,18 @@ Features that make player mechanics nicer to work with.
 		}
 	},
 	{
+		description = "Visual debugging for skeleton for debug_unit.",
+		is_boolean = true,
+		setting_name = "debug_skeleton",
+		category = "AI"
+	},
+	{
+		description = "Fades out debug_unit.",
+		is_boolean = true,
+		setting_name = "fade_debug_unit",
+		category = "AI"
+	},
+	{
 		description = "Visual debugging for big boy turning.",
 		is_boolean = true,
 		setting_name = "debug_big_boy_turning",
@@ -1219,12 +1291,6 @@ Features that make player mechanics nicer to work with.
 		description = "Only enables AI debugger during freeflight",
 		is_boolean = true,
 		setting_name = "ai_debugger_freeflight_only",
-		category = "AI"
-	},
-	{
-		description = "Shows considerations and utility values in console",
-		is_boolean = true,
-		setting_name = "ai_debug_utility_considerations",
 		category = "AI"
 	},
 	{
@@ -1318,9 +1384,9 @@ Features that make player mechanics nicer to work with.
 		category = "AI"
 	},
 	{
-		description = "Debug storm vermin patrol",
+		description = "Debug patrols",
 		is_boolean = true,
-		setting_name = "debug_storm_vermin_patrol",
+		setting_name = "debug_patrols",
 		category = "AI"
 	},
 	{
@@ -1460,10 +1526,10 @@ Features that make player mechanics nicer to work with.
 					return true
 				elseif act_a_index == act_b_index then
 					local act_presentation_order_a = settings_a.act_presentation_order
-					local act_presentation_order_b = settings_b.act_presentation_order or math.huge
+					local act_presentation_order_b = settings_b.act_presentation_order
 
-					if settings_a.act_presentation_order then
-						return act_presentation_order_a < act_presentation_order_b
+					if act_presentation_order_a or act_presentation_order_b then
+						return (act_presentation_order_a or math.huge) < (act_presentation_order_b or math.huge)
 					else
 						local debug_sorting_a = settings_a.map_settings and settings_a.map_settings.sorting
 						local debug_sorting_b = settings_b.map_settings and settings_b.map_settings.sorting
@@ -1546,6 +1612,12 @@ Features that make player mechanics nicer to work with.
 		category = "Visual/audio"
 	},
 	{
+		description = "Prints total ammount of particles currently simulated in the game world",
+		is_boolean = true,
+		setting_name = "debug_particle_simulation",
+		category = "Visual/audio"
+	},
+	{
 		description = "Disabled blood splatter on screen from other players' kills",
 		is_boolean = true,
 		setting_name = "disable_remote_blood_splatter",
@@ -1573,6 +1645,12 @@ Features that make player mechanics nicer to work with.
 		description = "Sound debugging",
 		is_boolean = true,
 		setting_name = "sound_debug",
+		category = "Visual/audio"
+	},
+	{
+		description = "Shows Wwise Timestamp.",
+		is_boolean = true,
+		setting_name = "debug_wwise_timestamp",
 		category = "Visual/audio"
 	},
 	{
@@ -4827,6 +4905,12 @@ Features that make player mechanics nicer to work with.
 		category = "Network"
 	},
 	{
+		description = "Shows lobby data key/values",
+		is_boolean = true,
+		setting_name = "debug_lobby_data",
+		category = "Network"
+	},
+	{
 		description = "Debug draw peer state machine states.",
 		is_boolean = true,
 		setting_name = "network_draw_peer_states",
@@ -5585,6 +5669,12 @@ Features that make player mechanics nicer to work with.
 		category = "Bots"
 	},
 	{
+		description = "Enable debug information related to bot orders - press t to order bot to pickup item using raycast.",
+		is_boolean = true,
+		setting_name = "ai_bots_order_debug",
+		category = "Bots"
+	},
+	{
 		description = "Shows which inputs that the bot is doing at the moment.",
 		is_boolean = true,
 		setting_name = "ai_bots_input_debug",
@@ -5755,6 +5845,15 @@ Features that make player mechanics nicer to work with.
 		category = "Progression",
 		func = function ()
 			Managers.state.game_mode:complete_level()
+		end
+	},
+	{
+		description = "Restart",
+		close_when_selected = true,
+		setting_name = "Retry current level",
+		category = "Progression",
+		func = function ()
+			Managers.state.game_mode:retry_level()
 		end
 	},
 	{
@@ -6098,301 +6197,6 @@ Features that make player mechanics nicer to work with.
 		end
 	},
 	{
-		description = "",
-		category = "Rune Weapons",
-		setting_name = "Generate weapons with properties",
-		func = function ()
-			local loot_interface = Managers.backend:get_interface("loot")
-			local weapons = {
-				"es_1h_mace_2001",
-				"es_1h_sword_2001",
-				"es_2h_sword_2001",
-				"es_2h_hammer_2001",
-				"es_sword_shield_2001",
-				"es_mace_shield_2001",
-				"es_1h_flail_2001",
-				"es_halberd_2001",
-				"we_dual_wield_daggers_2001",
-				"we_dual_wield_swords_2001",
-				"we_1h_sword_2001",
-				"we_dual_wield_sword_dagger_2001",
-				"we_2h_axe_2001",
-				"bw_1h_mace_2001",
-				"bw_flame_sword_2001",
-				"bw_sword_2001",
-				"dr_1h_axe_2001",
-				"dr_2h_axe_2001",
-				"dr_2h_hammer_2001",
-				"dr_1h_hammer_2001",
-				"dr_shield_axe_2001",
-				"dr_shield_hammer_2001",
-				"dr_2h_pick_2001",
-				"wh_1h_axe_2001",
-				"wh_2h_sword_2001",
-				"wh_fencing_sword_2001",
-				"wh_1h_falchion_2001"
-			}
-			local properties = {
-				{
-					rune_value = "rune_circle_3001",
-					property = "damage_property",
-					rune_slot = "circle"
-				},
-				{
-					rune_value = "rune_circle_3001",
-					property = "stagger_property",
-					rune_slot = "circle"
-				},
-				{
-					rune_value = "rune_circle_3001",
-					property = "attack_targets",
-					rune_slot = "circle"
-				},
-				{
-					rune_value = "rune_circle_3001",
-					property = "agility_property",
-					rune_slot = "circle"
-				},
-				{
-					rune_value = "rune_circle_3001",
-					property = "crit_chance_property",
-					rune_slot = "circle"
-				},
-				{
-					rune_value = "rune_circle_3001",
-					property = "max_stamina",
-					rune_slot = "circle"
-				},
-				{
-					rune_value = "rune_circle_3001",
-					property = "block_arc_property",
-					rune_slot = "circle"
-				},
-				{
-					rune_value = "rune_circle_3001",
-					property = "dodge_distance_property",
-					rune_slot = "circle"
-				}
-			}
-
-			for _, item_key in pairs(weapons) do
-				local properties_serialized = ""
-
-				for _, property in pairs(properties) do
-					properties_serialized = properties_serialized .. property.rune_slot .. ":" .. property.property .. "," .. property.rune_value .. ","
-				end
-
-				loot_interface:generate_weapon_with_properties(item_key, properties_serialized)
-			end
-		end
-	},
-	{
-		description = "",
-		category = "Cosmetics",
-		setting_name = "Add skins to inventory",
-		func = function ()
-			local item_interface = Managers.backend:get_interface("items")
-
-			item_interface:award_item("skin_color_tint_red")
-			item_interface:award_item("skin_color_tint_green")
-			item_interface:award_item("skin_color_tint_blue")
-			item_interface:award_item("dr_slayer_hair_0001")
-			item_interface:award_item("dr_slayer_hair_0002")
-		end
-	},
-	{
-		description = "",
-		category = "Cosmetics",
-		setting_name = "Add frames to inventory",
-		func = function ()
-			local item_interface = Managers.backend:get_interface("items")
-
-			item_interface:award_item("frame_0001")
-			item_interface:award_item("frame_0002")
-			item_interface:award_item("frame_0003")
-			item_interface:award_item("frame_0004")
-			item_interface:award_item("frame_0005")
-			item_interface:award_item("frame_0006")
-		end
-	},
-	{
-		description = "",
-		category = "Misc items",
-		setting_name = "Add Rings and Necklaces to inventory",
-		func = function ()
-			local item_interface = Managers.backend:get_interface("items")
-
-			item_interface:award_item("ring_attackspeed_0001")
-			item_interface:award_item("ring_attackspeed_0002")
-			item_interface:award_item("ring_attackspeed_0003")
-			item_interface:award_item("necklace_health_0001")
-			item_interface:award_item("necklace_health_0002")
-			item_interface:award_item("necklace_health_0003")
-			item_interface:award_item("necklace_stamina_0001")
-			item_interface:award_item("necklace_stamina_0002")
-			item_interface:award_item("necklace_stamina_0003")
-		end
-	},
-	{
-		description = "Will remove all items for current hero.",
-		category = "Hero Templates",
-		setting_name = "Remove all items on current hero.",
-		func = function ()
-			BackendUtils.remove_items_for_prestige(true)
-			ProgressionUnlocks.debug_reset_current_hero_template()
-		end
-	},
-	{
-		description = "Will reset the level, prestige level, and items on this hero. And then use the values set in scripts/utils/debug_hero_templates",
-		category = "Hero Templates Dwarf Ranger",
-		setting_name = "Bardin Ironbreaker Preset Template",
-		func = function ()
-			local hero_template = DebugHeroTemplates.dr_ironbreaker
-
-			ProgressionUnlocks.debug_use_hero_template(hero_template)
-		end
-	},
-	{
-		description = "Will reset the level, prestige level, and items on this hero. And then use the values set in scripts/utils/debug_hero_templates",
-		category = "Hero Templates Dwarf Ranger",
-		setting_name = "Bardin Slayer Preset Template",
-		func = function ()
-			local hero_template = DebugHeroTemplates.dr_slayer
-
-			ProgressionUnlocks.debug_use_hero_template(hero_template)
-		end
-	},
-	{
-		description = "Will reset the level, prestige level, and items on this hero. And then use the values set in scripts/utils/debug_hero_templates",
-		category = "Hero Templates Dwarf Ranger",
-		setting_name = "Bardin Ranger Preset Template",
-		func = function ()
-			local hero_template = DebugHeroTemplates.dr_ranger
-
-			ProgressionUnlocks.debug_use_hero_template(hero_template)
-		end
-	},
-	{
-		description = "Will reset the level, prestige level, and items on this hero. And then use the values set in scripts/utils/debug_hero_templates",
-		category = "Hero Templates Witch Hunter",
-		setting_name = "Saltzpyre Zealot Preset Template",
-		func = function ()
-			local hero_template = DebugHeroTemplates.wh_zealot
-
-			ProgressionUnlocks.debug_use_hero_template(hero_template)
-		end
-	},
-	{
-		description = "Will reset the level, prestige level, and items on this hero. And then use the values set in scripts/utils/debug_hero_templates",
-		category = "Hero Templates Witch Hunter",
-		setting_name = "Saltzpyre Bounty Hunter Preset Template",
-		func = function ()
-			local hero_template = DebugHeroTemplates.wh_bountyhunter
-
-			ProgressionUnlocks.debug_use_hero_template(hero_template)
-		end
-	},
-	{
-		description = "Will reset the level, prestige level, and items on this hero. And then use the values set in scripts/utils/debug_hero_templates",
-		category = "Hero Templates Witch Hunter",
-		setting_name = "Saltzpyre Captain Preset Template",
-		func = function ()
-			local hero_template = DebugHeroTemplates.wh_captain
-
-			ProgressionUnlocks.debug_use_hero_template(hero_template)
-		end
-	},
-	{
-		description = "Will reset the level, prestige level, and items on this hero. And then use the values set in scripts/utils/debug_hero_templates",
-		category = "Hero Templates Empire Soldier",
-		setting_name = "Kruber Poacher Preset Template",
-		func = function ()
-			local hero_template = DebugHeroTemplates.es_poacher
-
-			ProgressionUnlocks.debug_use_hero_template(hero_template)
-		end
-	},
-	{
-		description = "Will reset the level, prestige level, and items on this hero. And then use the values set in scripts/utils/debug_hero_templates",
-		category = "Hero Templates Empire Soldier",
-		setting_name = "Kruber Full Plate Preset Template",
-		func = function ()
-			local hero_template = DebugHeroTemplates.es_fullplate
-
-			ProgressionUnlocks.debug_use_hero_template(hero_template)
-		end
-	},
-	{
-		description = "Will reset the level, prestige level, and items on this hero. And then use the values set in scripts/utils/debug_hero_templates",
-		category = "Hero Templates Empire Soldier",
-		setting_name = "Kruber Vanilla Preset Template",
-		func = function ()
-			local hero_template = DebugHeroTemplates.es_vanilla
-
-			ProgressionUnlocks.debug_use_hero_template(hero_template)
-		end
-	},
-	{
-		description = "Will reset the level, prestige level, and items on this hero. And then use the values set in scripts/utils/debug_hero_templates",
-		category = "Hero Templates Wood Elf",
-		setting_name = "Kerillian Shade Preset Template",
-		func = function ()
-			local hero_template = DebugHeroTemplates.we_shade
-
-			ProgressionUnlocks.debug_use_hero_template(hero_template)
-		end
-	},
-	{
-		description = "Will reset the level, prestige level, and items on this hero. And then use the values set in scripts/utils/debug_hero_templates",
-		category = "Hero Templates Wood Elf",
-		setting_name = "Kerillian Maiden Preset Template",
-		func = function ()
-			local hero_template = DebugHeroTemplates.we_maiden
-
-			ProgressionUnlocks.debug_use_hero_template(hero_template)
-		end
-	},
-	{
-		description = "Will reset the level, prestige level, and items on this hero. And then use the values set in scripts/utils/debug_hero_templates",
-		category = "Hero Templates Wood Elf",
-		setting_name = "Kerillian Waywatcher Preset Template",
-		func = function ()
-			local hero_template = DebugHeroTemplates.we_waywatcher
-
-			ProgressionUnlocks.debug_use_hero_template(hero_template)
-		end
-	},
-	{
-		description = "Will reset the level, prestige level, and items on this hero. And then use the values set in scripts/utils/debug_hero_templates",
-		category = "Hero Templates Bright Wizard",
-		setting_name = "Sienna Sniper Preset Template",
-		func = function ()
-			local hero_template = DebugHeroTemplates.bw_sniper
-
-			ProgressionUnlocks.debug_use_hero_template(hero_template)
-		end
-	},
-	{
-		description = "Will reset the level, prestige level, and items on this hero. And then use the values set in scripts/utils/debug_hero_templates",
-		category = "Hero Templates Bright Wizard",
-		setting_name = "Sienna Boomer Preset Template",
-		func = function ()
-			local hero_template = DebugHeroTemplates.bw_boomer
-
-			ProgressionUnlocks.debug_use_hero_template(hero_template)
-		end
-	},
-	{
-		description = "Will reset the level, prestige level, and items on this hero. And then use the values set in scripts/utils/debug_hero_templates",
-		category = "Hero Templates Bright Wizard",
-		setting_name = "Sienna Melee Preset Template",
-		func = function ()
-			local hero_template = DebugHeroTemplates.bw_melee
-
-			ProgressionUnlocks.debug_use_hero_template(hero_template)
-		end
-	},
-	{
 		{},
 		description = "Will display all active buffs on the player (max 30 at once)",
 		category = "HUD",
@@ -6650,7 +6454,7 @@ Features that make player mechanics nicer to work with.
 	},
 	{
 		description = "Lists all items with functionality to add them to inventory.",
-		setting_name = "Add Rune Items",
+		setting_name = "Add Chest Items",
 		category = "Items",
 		item_source = {},
 		load_items_source_func = function (options)
@@ -6659,7 +6463,7 @@ Features that make player mechanics nicer to work with.
 			local item_master_list = ItemMasterList
 
 			for key, item in pairs(item_master_list) do
-				if item.slot_type == "rune" then
+				if item.slot_type == "loot_chest" then
 					options[#options + 1] = key
 				end
 			end
@@ -6700,6 +6504,76 @@ Features that make player mechanics nicer to work with.
 			if item then
 				item_interface:award_item(item)
 			end
+		end
+	},
+	{
+		description = "Adds one weapon per skin with that skin applied. This only works on local backend!",
+		setting_name = "Add All Weapon Skins",
+		category = "Items",
+		func = function ()
+			local item_master_list = ItemMasterList
+			local item_interface = Managers.backend:get_interface("items")
+			local added_skins = {}
+
+			for key, item in pairs(item_master_list) do
+				if (item.slot_type == "melee" or item.slot_type == "ranged") and item.skin_combination_table then
+					table.clear(added_skins)
+
+					local skin_combinations_by_rarity = WeaponSkins.skin_combinations[item.skin_combination_table]
+
+					for rarity, skins in pairs(skin_combinations_by_rarity) do
+						for _, skin_name in ipairs(skins) do
+							if not added_skins[skin_name] then
+								added_skins[skin_name] = true
+								local backend_id = item_interface:award_item(key)
+								local weapon = item_interface:get_item_from_id(backend_id)
+								weapon.skin = skin_name
+								weapon.rarity = rarity
+							end
+						end
+					end
+				end
+			end
+
+			Managers.backend:commit()
+		end
+	},
+	{
+		description = "Lists all mutators with functionality to activate them. Requires restart of level",
+		setting_name = "Activate or Deactivate Mutator",
+		category = "Items",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			for key, item in pairs(mutator_settings) do
+				options[#options + 1] = key
+			end
+
+			table.sort(options)
+		end,
+		func = function (options, index)
+			local activated_mutators = script_data.debug_activated_mutators or {}
+			local key = options[index]
+			local mutator_deactivation_index = nil
+
+			for i = 1, #activated_mutators, 1 do
+				if activated_mutators[i] == key then
+					mutator_deactivation_index = i
+				end
+			end
+
+			if mutator_deactivation_index then
+				activated_mutators[mutator_deactivation_index] = nil
+
+				print("Deactivated mutator ", key)
+			else
+				activated_mutators[#activated_mutators + 1] = key
+
+				print("Activated mutator ", key)
+			end
+
+			script_data.debug_activated_mutators = activated_mutators
 		end
 	},
 	{

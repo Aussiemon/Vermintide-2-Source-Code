@@ -65,6 +65,10 @@ end
 AILocomotionExtension.hot_join_sync = function (self, sender)
 	local unit = self._unit
 
+	if FROZEN[unit] then
+		return
+	end
+
 	if Unit.has_animation_state_machine(unit) then
 		local game_object_id = Managers.state.network:unit_game_object_id(unit)
 		local breed = Unit.get_data(unit, "breed")

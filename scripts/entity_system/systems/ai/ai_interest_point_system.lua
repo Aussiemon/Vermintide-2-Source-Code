@@ -199,7 +199,7 @@ AIInterestPointSystem.on_add_extension = function (self, world, unit, extension_
 					rotation = QuaternionBox(point_rotation)
 				}
 
-				assert(not is_position_on_navmesh or point.animations_n > 0, "There is an interest point %q (point index=%d, node name=%s) on the level with no valid animations at position=%s", tostring(unit), point_i + 1, node_name, tostring(point_position))
+				fassert(not is_position_on_navmesh or point.animations_n > 0, "There is an interest point %q (point index=%d, node name=%s) on the level with no valid animations at position=%s", tostring(unit), point_i + 1, node_name, tostring(point_position))
 
 				extension.points[point_i + 1] = point
 				point_i = point_i + 1
@@ -307,6 +307,18 @@ AIInterestPointSystem.debug_draw_baker_data = function (self, hi_data, data, bre
 	end
 end
 
+AIInterestPointSystem.breed_spawned_callback = function (ai_unit, breed, optional_data)
+	local point = optional_data.dead_breed_data
+	BREED_DIE_LOOKUP[ai_unit] = {
+		AIInterestPointSystem.cleanup_dead_breed,
+		point
+	}
+end
+
+AIInterestPointSystem.cleanup_dead_breed = function (ai_unit, point)
+	point[1] = false
+end
+
 local spawned_interest_points = {}
 local spawned_interest_points_n = 0
 
@@ -341,7 +353,9 @@ AIInterestPointSystem.spawn_interest_points = function (self)
 				local breed = members[member_index]
 				local optional_data = nil
 				local spawn_category = "enemy_recycler"
-				local spawn_animation, spawn_type, group_data = nil
+				local spawn_animation = nil
+				local spawn_type = "roam"
+				local group_data = nil
 
 				if hi_data then
 					local breed_count = hi_data.breed_count
@@ -685,7 +699,7 @@ AIInterestPointSystem.api_start_async_claim_request = function (self, claim_unit
 end
 
 AIInterestPointSystem.api_get_claim = function (self, request_id)
-	assert(request_id, "Tried to get claim with no request_id")
+	fassert(request_id, "Tried to get claim with no request_id")
 
 	return self.requests[request_id]
 end
@@ -785,7 +799,7 @@ AIInterestPointSystem.rpc_interest_point_chatter_update = function (self, sender
 
 		WwiseWorld.set_source_parameter(wwise_world, extension.wwise_source_id, "chatter_number", percent_claimed)
 	elseif percent_claimed < 0 then
-		assert(false, "[AIInterestPointExtension] percent_claimed can never be a negative value")
+		fassert(false, "[AIInterestPointExtension] percent_claimed can never be a negative value")
 	else
 		if not extension.wwise_source_id or not WwiseWorld.has_source(wwise_world, extension.wwise_source_id) then
 			print("[AIInterestPointExtension] Trying to set parameter on non-existing wwise_source_id", extension.wwise_source_id)

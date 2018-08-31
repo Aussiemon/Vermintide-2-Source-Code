@@ -58,7 +58,7 @@ ActionCareerWHBountyhunter.finish = function (self, reason)
 		network_transmit:send_rpc_server("rpc_request_heal", unit_id, 35, heal_type_id)
 	end
 
-	inventory_extension:wield_previous_weapon()
+	inventory_extension:wield_previous_slot()
 	career_extension:start_activated_ability_cooldown()
 end
 

@@ -55,9 +55,21 @@ CareerAbilityWEMaidenGuard.update = function (self, unit, input, dt, context, t)
 			return
 		end
 
-		if input_extension:get("action_career_release") then
+		if input_extension:get("weapon_reload") then
+			self:_stop_priming()
+
+			return
+		end
+
+		if not input_extension:get("action_career_hold") then
 			self:_run_ability()
 		end
+	end
+end
+
+CareerAbilityWEMaidenGuard.stop = function (self, reason)
+	if self._is_priming then
+		self:_stop_priming()
 	end
 end
 
@@ -138,13 +150,21 @@ CareerAbilityWEMaidenGuard._run_ability = function (self)
 
 		first_person_extension:animation_event("shade_stealth_ability")
 		career_extension:set_state("kerillian_activate_maiden_guard")
-		WwiseUtils.trigger_unit_event(world, "Play_career_ability_maiden_guard_charge", owner_unit, 0)
+		first_person_extension:play_unit_sound_event("Play_career_ability_maiden_guard_charge", owner_unit, 0, true)
 	end
 
 	status_extension:set_noclip(true)
 
 	if talent_extension:has_talent("kerillian_maidenguard_activated_ability_invis_duration", "wood_elf", true) then
 		status_extension:set_invisible(true)
+	end
+
+	if network_manager:game() then
+		status_extension:set_is_dodging(true)
+
+		local unit_id = network_manager:unit_game_object_id(owner_unit)
+
+		network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.dodging, true, unit_id, 0)
 	end
 
 	local has_impact_damage_buff = talent_extension:has_talent("kerillian_maidenguard_activated_ability_damage", "wood_elf", true)

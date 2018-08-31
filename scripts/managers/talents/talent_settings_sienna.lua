@@ -609,7 +609,7 @@ TalentBuffTemplates.bright_wizard = {
 		buffs = {
 			{
 				buff_to_add = "sienna_unchained_passive_melee_power_on_overcharge",
-				update_func = "activate_buff_stacks_based_on_overcharge_chunks"
+				update_func = "activate_server_buff_stacks_based_on_overcharge_chunks"
 			}
 		}
 	},
@@ -1010,12 +1010,16 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc",
+		description = "regrowth_desc_2",
 		name = "sienna_scholar_regrowth",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "sienna_scholar_regrowth",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.regrowth.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"regrowth"
@@ -1023,12 +1027,16 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc",
+		description = "bloodlust_desc_2",
 		name = "sienna_scholar_bloodlust",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "sienna_scholar_bloodlust",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.bloodlust.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"bloodlust"
@@ -1036,12 +1044,16 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc",
+		description = "conqueror_desc_2",
 		name = "sienna_scholar_conqueror",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "sienna_scholar_conqueror",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.conqueror.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"conqueror"
@@ -1107,7 +1119,7 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "sienna_adept_max_stamina_desc",
+		description = "sienna_adept_max_stamina_desc_2",
 		name = "sienna_adept_max_stamina",
 		num_ranks = 1,
 		icon = "sienna_adept_max_stamina",
@@ -1230,7 +1242,7 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "sienna_adept_passive_improved_desc",
+		description = "sienna_adept_passive_improved_desc_2",
 		name = "sienna_adept_passive_improved",
 		num_ranks = 1,
 		icon = "sienna_adept_passive_improved",
@@ -1247,12 +1259,16 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc",
+		description = "regrowth_desc_2",
 		name = "sienna_adept_regrowth",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "sienna_adept_regrowth",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.regrowth.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"regrowth"
@@ -1260,12 +1276,16 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc",
+		description = "bloodlust_desc_2",
 		name = "sienna_adept_bloodlust",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "sienna_adept_bloodlust",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.bloodlust.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"bloodlust"
@@ -1273,12 +1293,16 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc",
+		description = "conqueror_desc_2",
 		name = "sienna_adept_conqueror",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "sienna_adept_conqueror",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.conqueror.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"conqueror"
@@ -1346,6 +1370,7 @@ Talents.bright_wizard = {
 		description = "sienna_unchained_max_health_desc",
 		name = "sienna_unchained_max_health",
 		num_ranks = 1,
+		buffer = "both",
 		icon = "sienna_unchained_max_health",
 		description_values = {
 			{
@@ -1433,7 +1458,7 @@ Talents.bright_wizard = {
 		description = "sienna_unchained_reduced_vent_damage_desc",
 		name = "sienna_unchained_reduced_vent_damage",
 		num_ranks = 1,
-		buffer = "server",
+		buffer = "both",
 		icon = "sienna_unchained_reduced_vent_damage",
 		description_values = {
 			{
@@ -1482,12 +1507,16 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc",
+		description = "regrowth_desc_2",
 		name = "sienna_unchained_regrowth",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "sienna_unchained_regrowth",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.regrowth.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"regrowth"
@@ -1495,12 +1524,16 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc",
+		description = "bloodlust_desc_2",
 		name = "sienna_unchained_bloodlust",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "sienna_unchained_bloodlust",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.bloodlust.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"bloodlust"
@@ -1508,12 +1541,16 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc",
+		description = "conqueror_desc_2",
 		name = "sienna_unchained_conqueror",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "sienna_unchained_conqueror",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.conqueror.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"conqueror"
@@ -1536,11 +1573,16 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "sienna_unchained_activated_ability_damage_desc",
+		description = "sienna_unchained_activated_ability_damage_desc_2",
 		name = "sienna_unchained_activated_ability_damage",
 		num_ranks = 1,
 		icon = "sienna_unchained_activated_ability_damage",
-		description_values = {},
+		description_values = {
+			{
+				value_type = "percent",
+				value = buff_tweak_data.sienna_unchained_activated_ability_damage.multiplier
+			}
+		},
 		requirements = {},
 		buffs = {},
 		buff_data = {}

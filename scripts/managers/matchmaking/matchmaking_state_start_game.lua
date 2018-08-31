@@ -51,16 +51,16 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 	end
 
 	if quick_game then
-		level_key = self._matchmaking_manager:get_weighed_random_unlocked_level()
+		local ignore_dlc_check = true
+		level_key = self._matchmaking_manager:get_weighed_random_unlocked_level(ignore_dlc_check)
 	end
 
-	local level_settings = LevelSettings[level_key]
-	local game_mode = level_settings.game_mode
 	local eac_authorized = false
 
 	if PLATFORM == "win32" then
 		if DEDICATED_SERVER then
-			eac_authorized = false
+			local eac_server = Managers.matchmaking.network_server:eac_server()
+			eac_authorized = EACServer.state(eac_server, Network.peer_id()) == "trusted"
 		else
 			local eac_state = EAC.state()
 
@@ -95,6 +95,9 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 
 		self._lobby:enable_matchmaking(not search_config.private_game, ticket_params, 600)
 	end
+
+	local level_settings = LevelSettings[level_key]
+	local game_mode = level_settings.game_mode
 
 	self._matchmaking_manager:set_matchmaking_data(level_key, difficulty, act_key, game_mode, private_game, quick_game, eac_authorized)
 	Managers.state.difficulty:set_difficulty(difficulty)

@@ -231,7 +231,6 @@ WorldInteractionManager._update_water_ripples = function (self, dt, t)
 	local default_ripple_multiplier = water_settings.default_ripple_multiplier
 	local default_ripple_timer = water_settings.default_ripple_timer
 	local duplicate_edge_cases = water_settings.duplicate_edge_cases
-	local debug_water = water_settings.debug_water
 	local ripple_stretch_multiplier = water_settings.ripple_stretch_multiplier
 	local w, h = Gui.resolution()
 	local window_size = math.clamp(water_settings.window_size, 1, 100)
@@ -265,10 +264,6 @@ WorldInteractionManager._update_water_ripples = function (self, dt, t)
 
 		counter = counter + 1
 
-		if debug_water then
-			Gui.bitmap_3d(self._gui, "default_water_ripple_screen", tm, realtive_start_pos, layer, relative_texture_size, Color(alpha, 255, 255, 255))
-		end
-
 		if duplicate_edge_cases then
 			if realtive_start_pos.x < 0 then
 				local offset = realtive_start_pos + Vector3(w, 0, 0)
@@ -277,10 +272,6 @@ WorldInteractionManager._update_water_ripples = function (self, dt, t)
 				Gui.bitmap_3d(self._gui, water_data.material, tm, offset, layer, relative_texture_size, Color(alpha, 255, 255, 255))
 
 				counter = counter + 1
-
-				if debug_water then
-					Gui.bitmap_3d(self._gui, "default_water_ripple_screen", tm, offset, layer, relative_texture_size, Color(alpha, 255, 255, 255))
-				end
 			elseif w < realtive_start_pos.x + relative_texture_size.x then
 				local offset = realtive_start_pos + Vector3(-w, 0, 0)
 				local tm = Rotation2D(Vector3(0, 0, 0), angle, offset + relative_texture_size * 0.5)
@@ -288,10 +279,6 @@ WorldInteractionManager._update_water_ripples = function (self, dt, t)
 				Gui.bitmap_3d(self._gui, water_data.material, tm, offset, layer, relative_texture_size, Color(alpha, 255, 255, 255))
 
 				counter = counter + 1
-
-				if debug_water then
-					Gui.bitmap_3d(self._gui, "default_water_ripple_screen", tm, offset, layer, relative_texture_size, Color(alpha, 255, 255, 255))
-				end
 			end
 
 			if realtive_start_pos.y < 0 then
@@ -301,10 +288,6 @@ WorldInteractionManager._update_water_ripples = function (self, dt, t)
 				Gui.bitmap_3d(self._gui, water_data.material, tm, offset, layer, relative_texture_size, Color(alpha, 255, 255, 255))
 
 				counter = counter + 1
-
-				if debug_water then
-					Gui.bitmap_3d(self._gui, "default_water_ripple_screen", tm, offset, layer, relative_texture_size, Color(alpha, 255, 255, 255))
-				end
 			elseif h < realtive_start_pos.y + relative_texture_size.x then
 				local offset = realtive_start_pos + Vector3(0, -h, 0)
 				local tm = Rotation2D(Vector3(0, 0, 0), angle, offset + relative_texture_size * 0.5)
@@ -312,10 +295,6 @@ WorldInteractionManager._update_water_ripples = function (self, dt, t)
 				Gui.bitmap_3d(self._gui, water_data.material, tm, offset, layer, relative_texture_size, Color(alpha, 255, 255, 255))
 
 				counter = counter + 1
-
-				if debug_water then
-					Gui.bitmap_3d(self._gui, "default_water_ripple_screen", tm, offset, layer, relative_texture_size, Color(alpha, 255, 255, 255))
-				end
 			end
 		end
 

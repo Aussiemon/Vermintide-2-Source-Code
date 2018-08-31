@@ -536,9 +536,11 @@ BTRatlingGunnerShootAction._shoot = function (self, unit, blackboard)
 	local data = blackboard.attack_pattern_data
 	local world = blackboard.world
 	local physics_world = World.get_data(world, "physics_world")
+	local light_weight_projectile_template_name = action.light_weight_projectile_template_name
+	local light_weight_projectile_template = LightWeightProjectiles[light_weight_projectile_template_name]
 	local from_position, direction = self:_fire_from_position_direction(blackboard, data)
 	local normalized_direction = Vector3.normalize(direction)
-	local spread_angle = Math.random() * action.spread
+	local spread_angle = Math.random() * light_weight_projectile_template.spread
 	local dir_rot = Quaternion.look(normalized_direction, Vector3.up())
 	local pitch = Quaternion(Vector3.right(), spread_angle)
 	local roll = Quaternion(Vector3.forward(), Math.random() * TWO_PI)
@@ -547,20 +549,18 @@ BTRatlingGunnerShootAction._shoot = function (self, unit, blackboard)
 	local distance = 40
 	local collision_filter = "filter_enemy_player_afro_ray_projectile"
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-	local power_level = action.attack_power_level[difficulty_rank]
+	local power_level = light_weight_projectile_template.attack_power_level[difficulty_rank]
 	local action_data = {
-		attack_template = action.attack_template,
+		attack_template = light_weight_projectile_template.attack_template,
 		power_level = power_level,
-		armour_modifier = action.armour_modifier,
-		power_distribution = action.power_distribution,
-		cleave_distribution = action.cleave_distribution,
-		hit_effect = action.hit_effect,
-		afro_hit_sound = action.afro_hit_sound,
-		player_push_velocity = Vector3Box(normalized_direction * action.impact_push_speed)
+		damage_profile = light_weight_projectile_template.damage_profile,
+		hit_effect = light_weight_projectile_template.hit_effect,
+		afro_hit_sound = light_weight_projectile_template.afro_hit_sound,
+		player_push_velocity = Vector3Box(normalized_direction * light_weight_projectile_template.impact_push_speed)
 	}
 	local projectile_system = Managers.state.entity:system("projectile_system")
 
-	projectile_system:create_light_weight_projectile(Unit.get_data(unit, "breed").name, unit, from_position, spread_direction, action.projectile_speed, action.projectile_max_range, collision_filter, action_data, action.light_weight_projectile_particle_effect)
+	projectile_system:create_light_weight_projectile(Unit.get_data(unit, "breed").name, unit, from_position, spread_direction, light_weight_projectile_template.projectile_speed, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_particle_effect)
 end
 
 return

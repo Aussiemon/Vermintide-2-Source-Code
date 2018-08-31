@@ -49,7 +49,7 @@ StartGameWindowGameMode.create_ui_elements = function (self, params, offset)
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
-	self._disabled_widgets.game_option_4 = not GameSettingsDevelopment.twitch_enabled
+	self._disabled_widgets.game_option_4 = not GameSettingsDevelopment.twitch_enabled or Managers.account:offline_mode()
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
@@ -170,7 +170,8 @@ local layout_indices = {
 	xb1 = {
 		1,
 		2,
-		3
+		3,
+		(GameSettingsDevelopment.twitch_enabled and 4) or nil
 	},
 	ps4 = {
 		1,
@@ -199,7 +200,11 @@ StartGameWindowGameMode._handle_input = function (self, dt, t)
 
 		self.parent:set_layout(layout_index)
 	elseif self:_is_button_pressed(widgets_by_name.game_option_4) then
-		self.parent:set_layout(4)
+		local layout_index = 4
+
+		self.parent:set_layout(layout_index)
+
+		PlayerData.mission_selection.start_layout = layout_index
 	elseif widgets_by_name.game_option_5 and self:_is_button_pressed(widgets_by_name.game_option_5) then
 		self.parent:set_layout(8)
 	elseif gamepad_active then

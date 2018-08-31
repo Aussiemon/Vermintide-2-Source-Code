@@ -7,8 +7,11 @@ local weapon_template = weapon_template or {}
 weapon_template.actions = {
 	action_one = {
 		default = {
-			kind = "melee_start",
+			aim_assist_ramp_decay_delay = 0.2,
 			anim_end_event = "attack_finished",
+			kind = "melee_start",
+			aim_assist_max_ramp_multiplier = 0.8,
+			aim_assist_ramp_multiplier = 0.4,
 			anim_event = "attack_swing_charge",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
@@ -17,7 +20,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.75,
+					external_multiplier = 0.85,
 					buff_name = "planted_charging_decrease_movement"
 				}
 			},
@@ -50,7 +53,6 @@ weapon_template.actions = {
 				{
 					start_time = 0.6,
 					blocker = true,
-					end_time = 1.5,
 					input = "action_one_hold"
 				},
 				{
@@ -72,7 +74,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.75,
+					external_multiplier = 0.85,
 					buff_name = "planted_charging_decrease_movement"
 				}
 			},
@@ -105,7 +107,6 @@ weapon_template.actions = {
 				{
 					start_time = 0.6,
 					blocker = true,
-					end_time = 1.5,
 					input = "action_one_hold"
 				},
 				{
@@ -117,8 +118,11 @@ weapon_template.actions = {
 			}
 		},
 		default_right = {
-			kind = "melee_start",
+			aim_assist_ramp_decay_delay = 0.2,
 			anim_end_event = "attack_finished",
+			kind = "melee_start",
+			aim_assist_max_ramp_multiplier = 0.8,
+			aim_assist_ramp_multiplier = 0.4,
 			anim_event = "attack_swing_charge",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
@@ -127,7 +131,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.75,
+					external_multiplier = 0.85,
 					buff_name = "planted_charging_decrease_movement"
 				}
 			},
@@ -160,7 +164,6 @@ weapon_template.actions = {
 				{
 					start_time = 0.6,
 					blocker = true,
-					end_time = 1.5,
 					input = "action_one_hold"
 				},
 				{
@@ -178,9 +181,9 @@ weapon_template.actions = {
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			sweep_z_offset = -0.05,
-			use_target = false,
 			additional_critical_strike_chance = 0,
 			hit_shield_stop_anim = "attack_hit_shield",
+			use_precision_sweep = false,
 			hit_effect = "melee_hit_sword_2h",
 			damage_profile = "medium_slashing_linesman",
 			damage_window_end = 0.51,
@@ -251,11 +254,11 @@ weapon_template.actions = {
 			first_person_hit_anim = "shake_hit",
 			range_mod = 1.35,
 			sweep_z_offset = -0.05,
-			use_target = false,
+			no_damage_impact_sound_event = "slashing_hit_armour",
 			hit_shield_stop_anim = "attack_hit_shield",
 			additional_critical_strike_chance = 0,
 			hit_effect = "melee_hit_sword_2h",
-			no_damage_impact_sound_event = "slashing_hit_armour",
+			use_precision_sweep = false,
 			damage_profile = "medium_slashing_linesman",
 			damage_window_end = 0.5,
 			impact_sound_event = "slashing_hit",
@@ -326,20 +329,24 @@ weapon_template.actions = {
 			damage_window_start = 0.35,
 			range_mod = 1.2,
 			kind = "sweep",
+			sweep_z_offset = 0,
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			additional_critical_strike_chance = 0,
-			sweep_z_offset = 0,
-			use_target = false,
-			damage_profile = "heavy_slashing_smiter_stab",
+			use_precision_sweep = false,
 			hit_shield_stop_anim = "attack_hit_shield",
+			damage_profile = "heavy_slashing_smiter_stab",
 			hit_effect = "melee_hit_sword_2h",
+			aim_assist_ramp_multiplier = 0.4,
+			aim_assist_max_ramp_multiplier = 0.8,
 			damage_window_end = 0.45,
 			impact_sound_event = "slashing_hit",
+			aim_assist_ramp_decay_delay = 0.1,
 			anim_end_event = "attack_finished",
+			reset_aim_on_attack = true,
 			dedicated_target_range = 3,
 			uninterruptible = true,
 			anim_event = "attack_swing_heavy",
-			total_time = 2.5,
+			total_time = 1.5,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
@@ -347,30 +354,37 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 1.25,
-					end_time = 0.25,
+					external_multiplier = 1.75,
+					end_time = 0.4,
 					buff_name = "planted_fast_decrease_movement"
 				},
 				{
 					start_time = 0.5,
-					external_multiplier = 0.8,
+					external_multiplier = 0.25,
 					end_time = 0.7,
 					buff_name = "planted_fast_decrease_movement"
 				}
 			},
 			allowed_chain_actions = {
 				{
+					sub_action = "default_right",
+					start_time = 0.9,
+					action = "action_one",
+					release_required = "action_one_hold",
+					input = "action_one_hold"
+				},
+				{
+					start_time = 0.5,
+					blocker = true,
+					end_time = 1.5,
+					input = "action_one_hold"
+				},
+				{
 					sub_action = "heavy_attack_down_second",
 					start_time = 0.6,
 					action = "action_one",
-					end_time = 1,
-					input = "action_one"
-				},
-				{
-					sub_action = "default",
-					start_time = 1,
-					action = "action_one",
-					input = "action_one"
+					release_required = "action_one_hold",
+					input = "action_one_release"
 				},
 				{
 					sub_action = "default",
@@ -384,7 +398,12 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			}
+			},
+			enter_function = function (attacker_unit, input_extension)
+				input_extension:clear_input_buffer()
+
+				return input_extension:reset_release_input()
+			end
 		},
 		heavy_attack_down_second = {
 			damage_window_start = 0.55,
@@ -392,8 +411,8 @@ weapon_template.actions = {
 			kind = "sweep",
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			sweep_z_offset = -0.05,
-			use_target = false,
 			additional_critical_strike_chance = 0,
+			use_precision_sweep = false,
 			hit_shield_stop_anim = "attack_hit_shield",
 			damage_profile = "heavy_slashing_linesman_executioner",
 			hit_effect = "melee_hit_sword_2h",
@@ -457,10 +476,10 @@ weapon_template.actions = {
 			first_person_hit_anim = "shake_hit",
 			range_mod = 1.35,
 			sweep_z_offset = -0.05,
-			use_target = false,
+			no_damage_impact_sound_event = "slashing_hit_armour",
 			additional_critical_strike_chance = 0,
 			hit_shield_stop_anim = "attack_hit_shield",
-			no_damage_impact_sound_event = "slashing_hit_armour",
+			use_precision_sweep = false,
 			hit_effect = "melee_hit_sword_2h",
 			damage_profile = "medium_slashing_linesman",
 			damage_window_end = 0.5,
@@ -637,6 +656,18 @@ weapon_template.actions = {
 					sub_action = "push",
 					start_time = 0.3,
 					action = "action_one",
+					doubleclick_window = 0,
+					input = "action_one",
+					hold_required = {
+						"action_two_hold"
+					}
+				},
+				{
+					sub_action = "default",
+					start_time = 0.3,
+					action = "action_one",
+					release_required = "action_two_hold",
+					doubleclick_window = 0,
 					input = "action_one"
 				},
 				{
@@ -673,10 +704,10 @@ weapon_template.block_fatigue_point_multiplier = 0.5
 weapon_template.outer_block_fatigue_point_multiplier = 2
 weapon_template.buffs = {
 	change_dodge_distance = {
-		external_optional_multiplier = 1
+		external_optional_multiplier = 1.1
 	},
 	change_dodge_speed = {
-		external_optional_multiplier = 1
+		external_optional_multiplier = 1.1
 	}
 }
 weapon_template.attack_meta_data = {
@@ -702,6 +733,18 @@ weapon_template.tooltip_compare = {
 	heavy = {
 		action_name = "action_one",
 		sub_action_name = "heavy_attack_down_first"
+	}
+}
+weapon_template.aim_assist_settings = {
+	max_range = 5,
+	no_aim_input_multiplier = 0,
+	base_multiplier = 0,
+	target_node = "j_neck",
+	effective_max_range = 4,
+	breed_scalars = {
+		skaven_storm_vermin = 1,
+		skaven_clan_rat = 1,
+		skaven_slave = 1
 	}
 }
 weapon_template.tooltip_detail = {

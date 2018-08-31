@@ -4,22 +4,23 @@ weapon_template.actions = {
 	action_one = {
 		default = {
 			anim_event = "attack_shoot",
+			ammo_usage = 1,
 			kind = "crossbow",
 			anim_event_no_ammo_left = "attack_shoot_last",
 			charge_value = "arrow_hit",
 			attack_template = "bolt_sniper",
 			reload_when_out_of_ammo = true,
-			aim_assist_ramp_multiplier = 0.3,
 			aim_assist_max_ramp_multiplier = 1,
 			aim_assist_ramp_decay_delay = 0.1,
+			apply_recoil = true,
 			hit_effect = "arrow_impact",
 			anim_event_last_ammo = "attack_shoot_last",
-			apply_recoil = true,
-			ammo_usage = 1,
 			alert_sound_range_fire = 4,
 			weapon_action_hand = "left",
+			anim_event_infinite_ammo = "attack_shoot_no_reload",
 			speed = 12000,
 			active_reload_time = 0.25,
+			aim_assist_ramp_multiplier = 0.3,
 			alert_sound_range_hit = 2,
 			total_time = 0.42,
 			allowed_chain_actions = {
@@ -29,10 +30,6 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			},
-			cleave_distribution = {
-				attack = 0.5,
-				impact = 0.1
 			},
 			projectile_info = Projectiles.crossbow_bolt,
 			impact_data = {
@@ -55,19 +52,20 @@ weapon_template.actions = {
 		zoomed_shot = {
 			reset_aim_on_attack = true,
 			anim_end_event = "to_unzoom",
+			additional_critical_strike_chance = 0.1,
 			kind = "crossbow",
 			anim_event_no_ammo_left = "attack_shoot_last",
-			additional_critical_strike_chance = 0.1,
 			weapon_action_hand = "left",
+			attack_template = "bolt_sniper",
 			alert_sound_range_fire = 4,
 			alert_sound_range_hit = 2,
 			reload_when_out_of_ammo = true,
+			charge_value = "zoomed_arrow_hit",
 			hit_effect = "arrow_impact",
 			anim_event_last_ammo = "attack_shoot_last",
 			minimum_hold_time = 0.5,
-			charge_value = "zoomed_arrow_hit",
 			ammo_usage = 1,
-			attack_template = "bolt_sniper",
+			anim_event_infinite_ammo = "attack_shoot_no_reload",
 			apply_recoil = true,
 			speed = 12000,
 			active_reload_time = 0.25,
@@ -105,10 +103,6 @@ weapon_template.actions = {
 
 				return input_extension:reset_release_input()
 			end,
-			cleave_distribution = {
-				attack = 0.5,
-				impact = 0.1
-			},
 			projectile_info = Projectiles.crossbow_bolt,
 			impact_data = {
 				wall_nail = true,
@@ -184,7 +178,7 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action"
 			end,
 			condition_func = function (unit, input_extension, ammo_extension)
-				if ammo_extension and ammo_extension:total_remaining_ammo() <= 0 then
+				if ammo_extension and (ammo_extension:total_remaining_ammo() <= 0 or ammo_extension:is_reloading()) then
 					return false
 				end
 

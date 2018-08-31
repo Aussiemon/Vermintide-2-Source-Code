@@ -188,10 +188,11 @@ CameraSystem.update = function (self, context)
 
 	for player, camera_unit in pairs(self.camera_units) do
 		local viewport_name = player.viewport_name
-		local tree_name = Unit.get_data(camera_unit, "camera", "settings_tree")
 		local node_name = Unit.get_data(camera_unit, "camera", "settings_node")
 
 		if node_name ~= camera_manager:current_camera_node(viewport_name) then
+			local tree_name = Unit.get_data(camera_unit, "camera", "settings_tree")
+
 			camera_manager:set_camera_node(viewport_name, tree_name, node_name)
 		end
 

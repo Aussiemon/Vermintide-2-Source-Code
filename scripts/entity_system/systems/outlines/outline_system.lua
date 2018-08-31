@@ -24,10 +24,13 @@ OutlineSystem.init = function (self, context, system_name)
 	self.world = context.world
 	self.physics_world = World.get_data(self.world, "physics_world")
 	self.unit_extension_data = {}
+	self.frozen_unit_extension_data = {}
 	self.units = {}
 	self.current_index = 0
 	self.darkness_system = Managers.state.entity:system("darkness_system")
 	self.cutscene_system = Managers.state.entity:system("cutscene_system")
+	self._pulsing_units = {}
+	self._pulse_id = 0
 end
 
 OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
@@ -161,10 +164,20 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 		extension.distance = OutlineSettings.ranges[distance_type]
 	end
 
-	extension.set_pinged = function (pinged)
+	extension.set_pinged = function (pinged, flash)
+		if extension.ping_pulse_id then
+			self:set_pulsing(unit, false, extension.ping_pulse_id)
+
+			extension.ping_pulse_id = nil
+		end
+
 		if pinged then
 			if not extension.pinged then
 				extension.previous_flag = extension.flag
+			end
+
+			if flash then
+				extension.ping_pulse_id = self:set_pulsing(unit, true, "flash")
 			end
 
 			local c = extension.outline_color.channel
@@ -204,10 +217,72 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 end
 
 OutlineSystem.on_remove_extension = function (self, unit, extension_name)
+	self.frozen_unit_extension_data[unit] = nil
+
+	self:_cleanup_extension(unit, extension_name)
+	ScriptUnit.remove_extension(unit, self.NAME)
+end
+
+OutlineSystem.on_freeze_extension = function (self, unit, extension_name)
+	local extension = self.unit_extension_data[unit]
+
+	fassert(extension, "Unit was already frozen.")
+
+	self.frozen_unit_extension_data[unit] = extension
+
+	self:_cleanup_extension(unit, extension_name)
+end
+
+OutlineSystem._cleanup_extension = function (self, unit, extension_name)
+	local extension = self.unit_extension_data[unit]
+
+	if extension == nil then
+		return
+	end
+
 	self.unit_extension_data[unit] = nil
 
 	table.remove(self.units, table.find(self.units, unit))
-	ScriptUnit.remove_extension(unit, self.NAME)
+end
+
+OutlineSystem.freeze = function (self, unit, extension_name, reason)
+	local frozen_extensions = self.frozen_unit_extension_data
+
+	if frozen_extensions[unit] then
+		return
+	end
+
+	local extension = self.unit_extension_data[unit]
+
+	fassert(extension, "Unit to freeze didn't have unfrozen extension")
+	self:_cleanup_extension(unit, extension_name)
+
+	self.unit_extension_data[unit] = nil
+	frozen_extensions[unit] = extension
+
+	fassert(extension_name == "EnemyOutlineExtension", "Only support for freezing enemy outline extensions")
+
+	if extension.outlined then
+		local c = extension.outline_color.channel
+		local channel = Color(c[1], c[2], c[3], c[4])
+
+		self:outline_unit(unit, extension.flag, channel, false, extension.apply_method, extension.reapply)
+
+		extension.outlined = false
+	end
+
+	extension.method = "never"
+	extension.pinged = false
+end
+
+OutlineSystem.unfreeze = function (self, unit)
+	local extension = self.frozen_unit_extension_data[unit]
+
+	fassert(extension, "Unit to unfreeze didn't have frozen extension")
+
+	self.frozen_unit_extension_data[unit] = nil
+	self.unit_extension_data[unit] = extension
+	self.units[#self.units + 1] = unit
 end
 
 OutlineSystem.local_player_created = function (self, player)
@@ -225,6 +300,8 @@ OutlineSystem._is_cutscene_active = function (self)
 end
 
 OutlineSystem.update = function (self, context, t)
+	local dt = context.dt
+
 	if #self.units == 0 then
 		return
 	end
@@ -283,6 +360,64 @@ OutlineSystem.update = function (self, context, t)
 	end
 
 	self.current_index = current_index
+
+	self:_update_pulsing(dt, t)
+end
+
+local PULSE_METHODS = {
+	flash = function (t)
+		return math.round((t * 3) % 1)
+	end,
+	pulse = function (t)
+		return math.round((t * 3) % 1.5)
+	end
+}
+
+OutlineSystem.set_pulsing = function (self, unit, enable, method_or_id)
+	if enable then
+		local method = method_or_id
+		local id = self._pulse_id + 1
+		self._pulsing_units[unit] = {
+			f = PULSE_METHODS[method],
+			id = id
+		}
+		self._pulse_id = id
+
+		return id
+	else
+		local id = method_or_id
+		local pulsing = self._pulsing_units[unit]
+
+		if pulsing and pulsing.id == id then
+			self._pulsing_units[unit] = nil
+			local channel = Color(0, 0, 0, 0)
+			local extension = self.unit_extension_data[unit]
+
+			self:outline_unit(unit, extension.flag, channel, false, extension.apply_method, extension.reapply)
+
+			extension.outlined = false
+		end
+	end
+end
+
+OutlineSystem._update_pulsing = function (self, dt, t)
+	for unit, data in pairs(self._pulsing_units) do
+		local extension = self.unit_extension_data[unit]
+
+		if extension then
+			local is_pinged = extension.pinged
+			local method = (is_pinged and extension.pinged_method) or extension.method
+			local c = (is_pinged and OutlineSettings.colors.player_attention.channel) or extension.outline_color.channel
+			local t_val = data.f(t)
+			local channel = Color(c[1] * t_val, c[2] * t_val, c[3] * t_val, c[4] * t_val)
+
+			self:outline_unit(unit, extension.flag, channel, true, extension.apply_method, extension.reapply)
+
+			extension.outlined = true
+		else
+			self._pulsing_units[unit] = nil
+		end
+	end
 end
 
 OutlineSystem.outline_unit = function (self, unit, flag, channel, do_outline, apply_method, is_reapply)

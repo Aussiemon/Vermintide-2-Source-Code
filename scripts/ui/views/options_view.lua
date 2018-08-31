@@ -1,5 +1,11 @@
 -- WARNING: Error occurred during decompilation.
 --   Code may be incomplete or incorrect.
+-- Decompilation Error: _run_step(_unwarp_expressions, node)
+
+-- WARNING: Error occurred during decompilation.
+--   Code may be incomplete or incorrect.
+-- WARNING: Error occurred during decompilation.
+--   Code may be incomplete or incorrect.
 require("scripts/ui/views/ui_calibration_view")
 
 OptionsView = class(OptionsView)
@@ -11,7 +17,6 @@ local widget_definitions = definitions.widget_definitions
 local title_button_definitions = settings_definitions.title_button_definitions
 local button_definitions = definitions.button_definitions
 local child_input_services = definitions.child_input_services
-local console_cursor_definition = definitions.console_cursor_definition
 local SettingsMenuNavigation = SettingsMenuNavigation
 local SettingsWidgetTypeTemplate = SettingsWidgetTypeTemplate
 
@@ -34,15 +39,16 @@ local generic_input_actions = {
 	main_menu = {
 		default = {
 			{
+				priority = 49,
+				description_text = "input_description_information",
+				ignore_keybinding = true,
+				input_action = (PLATFORM == "ps4" and "l2") or "left_trigger"
+			},
+			{
 				input_action = "l1_r1",
 				priority = 49,
 				description_text = "input_description_change_tab",
 				ignore_keybinding = true
-			},
-			{
-				input_action = "confirm",
-				priority = 49,
-				description_text = "input_description_change"
 			},
 			{
 				input_action = "back",
@@ -52,15 +58,16 @@ local generic_input_actions = {
 		},
 		reset = {
 			{
+				priority = 46,
+				description_text = "input_description_information",
+				ignore_keybinding = true,
+				input_action = (PLATFORM == "ps4" and "l2") or "left_trigger"
+			},
+			{
 				input_action = "l1_r1",
 				priority = 47,
 				description_text = "input_description_change_tab",
 				ignore_keybinding = true
-			},
-			{
-				input_action = "confirm",
-				priority = 48,
-				description_text = "input_description_change"
 			},
 			{
 				input_action = "special_1",
@@ -75,15 +82,16 @@ local generic_input_actions = {
 		},
 		reset_and_apply = {
 			{
+				priority = 45,
+				description_text = "input_description_information",
+				ignore_keybinding = true,
+				input_action = (PLATFORM == "ps4" and "l2") or "left_trigger"
+			},
+			{
 				input_action = "l1_r1",
 				priority = 46,
 				description_text = "input_description_change_tab",
 				ignore_keybinding = true
-			},
-			{
-				input_action = "confirm",
-				priority = 47,
-				description_text = "input_description_change"
 			},
 			{
 				input_action = "special_1",
@@ -103,15 +111,16 @@ local generic_input_actions = {
 		},
 		apply = {
 			{
+				priority = 46,
+				description_text = "input_description_information",
+				ignore_keybinding = true,
+				input_action = (PLATFORM == "ps4" and "l2") or "left_trigger"
+			},
+			{
 				input_action = "l1_r1",
 				priority = 47,
 				description_text = "input_description_change_tab",
 				ignore_keybinding = true
-			},
-			{
-				input_action = "confirm",
-				priority = 48,
-				description_text = "input_description_change"
 			},
 			{
 				input_action = "refresh",
@@ -128,15 +137,16 @@ local generic_input_actions = {
 	sub_menu = {
 		default = {
 			{
+				priority = 47,
+				description_text = "input_description_information",
+				ignore_keybinding = true,
+				input_action = (PLATFORM == "ps4" and "l2") or "left_trigger"
+			},
+			{
 				input_action = "l1_r1",
 				priority = 48,
 				description_text = "input_description_change_tab",
 				ignore_keybinding = true
-			},
-			{
-				input_action = "confirm",
-				priority = 49,
-				description_text = "input_description_change"
 			},
 			{
 				input_action = "back",
@@ -146,15 +156,16 @@ local generic_input_actions = {
 		},
 		reset = {
 			{
+				priority = 47,
+				description_text = "input_description_information",
+				ignore_keybinding = true,
+				input_action = (PLATFORM == "ps4" and "l2") or "left_trigger"
+			},
+			{
 				input_action = "l1_r1",
 				priority = 48,
 				description_text = "input_description_change_tab",
 				ignore_keybinding = true
-			},
-			{
-				input_action = "confirm",
-				priority = 49,
-				description_text = "input_description_change"
 			},
 			{
 				input_action = "special_1",
@@ -169,15 +180,16 @@ local generic_input_actions = {
 		},
 		reset_and_apply = {
 			{
+				priority = 46,
+				description_text = "input_description_information",
+				ignore_keybinding = true,
+				input_action = (PLATFORM == "ps4" and "l2") or "left_trigger"
+			},
+			{
 				input_action = "l1_r1",
 				priority = 47,
 				description_text = "input_description_change_tab",
 				ignore_keybinding = true
-			},
-			{
-				input_action = "confirm",
-				priority = 48,
-				description_text = "input_description_change"
 			},
 			{
 				input_action = "special_1",
@@ -197,15 +209,16 @@ local generic_input_actions = {
 		},
 		apply = {
 			{
+				priority = 47,
+				description_text = "input_description_information",
+				ignore_keybinding = true,
+				input_action = (PLATFORM == "ps4" and "l2") or "left_trigger"
+			},
+			{
 				input_action = "l1_r1",
 				priority = 48,
 				description_text = "input_description_change_tab",
 				ignore_keybinding = true
-			},
-			{
-				input_action = "confirm",
-				priority = 49,
-				description_text = "input_description_change"
 			},
 			{
 				input_action = "refresh",
@@ -245,6 +258,8 @@ local function mouse_input_allowed(content_actions, mouse_input)
 	return true
 end
 
+local SAFE_RECT_ALPHA_TIMER = 1
+
 OptionsView.init = function (self, ingame_ui_context)
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
@@ -280,7 +295,7 @@ OptionsView.init = function (self, ingame_ui_context)
 
 	local input_service = input_manager:get_service("options_menu")
 	local gui_layer = definitions.scenegraph_definition.root.position[3]
-	self.menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self.ui_top_renderer, input_service, 6, gui_layer, generic_input_actions.main_menu.reset)
+	self.menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self.ui_top_renderer, input_service, 7, gui_layer, generic_input_actions.main_menu.reset)
 
 	self:_setup_input_functions()
 end
@@ -432,7 +447,7 @@ OptionsView._setup_input_functions = function (self)
 					end
 				end
 
-				if content.active and input_source:get("left_release") then
+				if content.active and input_source:get("left_release") and not Managers.input:is_device_active("gamepad") then
 					content.active = false
 					list_style.active = false
 					self.disable_all_input = false
@@ -544,6 +559,92 @@ OptionsView._setup_input_functions = function (self)
 				end
 			end
 		end,
+		sorted_list = function (widget, input_source, dt)
+			local content = widget.content
+			local style = widget.style
+			local list_content = content.list_content
+			local list_style = style.list_style
+			local item_styles = list_style.item_styles
+			local previous_selection = content.current_selection
+			local previous_selected_item_content = list_content[previous_selection]
+			local wwise_world = self.wwise_world
+			local num_items = #list_content
+			local up_hotspot = content.up_hotspot
+			local down_hotspot = content.down_hotspot
+
+			if up_hotspot.on_hover_enter or down_hotspot.on_hover_enter then
+				WwiseWorld.trigger_event(wwise_world, "Play_hud_hover")
+			end
+
+			if previous_selection then
+				if previous_selection > 1 then
+					if not up_hotspot.active then
+						up_hotspot.active = true
+					end
+				elseif up_hotspot.active then
+					up_hotspot.active = false
+				end
+
+				if previous_selection < num_items then
+					if not down_hotspot.active then
+						down_hotspot.active = true
+					end
+				elseif down_hotspot.active then
+					down_hotspot.active = false
+				end
+			elseif up_hotspot.active or down_hotspot.active then
+				up_hotspot.active = false
+				down_hotspot.active = false
+			end
+
+			if up_hotspot.on_release or down_hotspot.on_release then
+				local current_selection = content.current_selection
+				local new_index = nil
+
+				if up_hotspot.on_release then
+					new_index = current_selection - 1
+				else
+					new_index = current_selection + 1
+				end
+
+				list_content[new_index].index_text = list_content[current_selection].index_text
+				list_content[current_selection].index_text = list_content[new_index].index_text
+				list_content[new_index] = list_content[current_selection]
+				list_content[current_selection] = list_content[new_index]
+				item_styles[new_index] = item_styles[current_selection]
+				item_styles[current_selection] = item_styles[new_index]
+				content.current_selection = new_index
+
+				WwiseWorld.trigger_event(wwise_world, "Play_hud_select")
+				content:callback(style)
+			else
+				for i = 1, num_items, 1 do
+					local item_content = list_content[i]
+
+					if item_content ~= previous_selected_item_content then
+						local hotspot = item_content.hotspot
+
+						if hotspot.on_hover_enter then
+							WwiseWorld.trigger_event(wwise_world, "Play_hud_hover")
+						end
+
+						if hotspot.on_release then
+							WwiseWorld.trigger_event(wwise_world, "Play_hud_select")
+
+							content.current_selection = i
+							hotspot.is_selected = true
+
+							if previous_selected_item_content then
+								local previous_hotspot = previous_selected_item_content.hotspot
+								previous_hotspot.is_selected = false
+							end
+
+							break
+						end
+					end
+				end
+			end
+		end,
 		text_link = function (widget, input_source, dt)
 			if widget.content.hotspot.on_release then
 				local url = widget.content.url
@@ -583,6 +684,12 @@ OptionsView.cleanup_popups = function (self)
 		self.apply_popup_id = nil
 
 		self:handle_apply_popup_results("revert_changes")
+	end
+
+	if self.apply_bot_spawn_priority_popup_id then
+		Managers.popup:cancel_popup(self.apply_bot_spawn_priority_popup_id)
+
+		self.apply_bot_spawn_priority_popup_id = nil
 	end
 
 	if self.title_popup_id then
@@ -648,7 +755,7 @@ OptionsView.create_ui_elements = function (self)
 	self.reset_to_default = UIWidget.init(button_definitions.reset_to_default)
 	self.scrollbar = UIWidget.init(definitions.scrollbar_definition)
 	self.scrollbar.content.disable_frame = true
-	self._console_cursor = UIWidget.init(console_cursor_definition)
+	self.safe_rect_widget = UIWidget.init(definitions.create_safe_rect_widget())
 	local calibrate_ui_settings_list_dummy = {
 		hide_reset = true,
 		widgets_n = 0,
@@ -816,14 +923,19 @@ OptionsView.build_settings_list = function (self, definition, scenegraph_id)
 			widget = self:build_stepper_widget(element, scenegraph_id_start, base_offset)
 		elseif widget_type == "keybind" then
 			widget = self:build_keybind_widget(element, scenegraph_id_start, base_offset)
+		elseif widget_type == "sorted_list" then
+			widget = self:build_sorted_list_widget(element, scenegraph_id_start, base_offset)
 		elseif widget_type == "image" then
 			widget = self:build_image(element, scenegraph_id_start, base_offset)
 		elseif widget_type == "gamepad_layout" then
 			widget = self:build_gamepad_layout(element, scenegraph_id_start, base_offset)
 			self.gamepad_layout_widget = widget
+			local gamepad_layout = assigned(self.changed_user_settings.gamepad_layout, Application.user_setting("gamepad_layout"))
 			local using_left_handed_option = assigned(self.changed_user_settings.gamepad_left_handed, Application.user_setting("gamepad_left_handed"))
+			local gamepad_keymaps_layout = (using_left_handed_option and AlternatateGamepadKeymapsLayoutsLeftHanded) or AlternatateGamepadKeymapsLayouts
+			local gamepad_keymaps = gamepad_keymaps_layout[gamepad_layout]
 
-			self:update_gamepad_layout_widget(DefaultGamepadLayoutKeymaps, using_left_handed_option)
+			self:update_gamepad_layout_widget(gamepad_keymaps, using_left_handed_option)
 		elseif widget_type == "empty" then
 			size_y = element.size_y
 		elseif widget_type == "title" then
@@ -1199,6 +1311,22 @@ OptionsView.build_keybind_widget = function (self, element, scenegraph_id, base_
 	return widget
 end
 
+OptionsView.build_sorted_list_widget = function (self, element, scenegraph_id, base_offset)
+	local callback_name = element.callback
+	local callback_func = callback(self, callback_name)
+	local saved_value_cb_name = element.saved_value
+	local saved_value_cb = callback(self, saved_value_cb_name)
+	local setup_name = element.setup
+	local text, list_contents, list_styles, entry_size, item_content_change_function, default_value = self[setup_name](self)
+	local widget = definitions.create_sorted_list_widget(text, element.tooltip_text, list_contents, list_styles, entry_size, item_content_change_function, scenegraph_id, base_offset)
+	local content = widget.content
+	content.callback = callback_func
+	content.saved_value_cb = saved_value_cb
+	content.default_value = default_value
+
+	return widget
+end
+
 OptionsView.widget_from_name = function (self, name)
 	local selected_settings_list = self.selected_settings_list
 
@@ -1268,6 +1396,7 @@ OptionsView.on_enter = function (self)
 	WwiseWorld.trigger_event(self.wwise_world, "Play_hud_button_open")
 
 	self.active = true
+	self.safe_rect_alpha_timer = 0
 
 	self.input_manager:block_device_except_service("options_menu", "keyboard", 1)
 	self.input_manager:block_device_except_service("options_menu", "mouse", 1)
@@ -1306,7 +1435,7 @@ OptionsView.on_exit = function (self)
 	end
 end
 
-OptionsView.exit = function (self, return_to_game)
+OptionsView.exit_reset_params = function (self)
 	self:cleanup_popups()
 
 	if self.selected_title then
@@ -1317,12 +1446,18 @@ OptionsView.exit = function (self, return_to_game)
 
 	self.gamepad_active_generic_actions_name = nil
 	self.gamepad_tooltip_available = nil
-	local exit_transition = (return_to_game and "exit_menu") or "ingame_menu"
 
-	self.ingame_ui:transition_with_fade(exit_transition)
 	WwiseWorld.trigger_event(self.wwise_world, "Play_hud_button_close")
 
 	self.exiting = true
+end
+
+OptionsView.exit = function (self, return_to_game)
+	self:exit_reset_params()
+
+	local exit_transition = (return_to_game and "exit_menu") or "ingame_menu"
+
+	self.ingame_ui:transition_with_fade(exit_transition)
 end
 
 OptionsView.transitioning = function (self)
@@ -1399,12 +1534,24 @@ OptionsView.get_keymaps = function (self, include_saved_keybinds, optional_platf
 	return keybindings_mappings
 end
 
+OptionsView._get_original_bot_spawn_priority = function (self)
+	local saved_priority = PlayerData.bot_spawn_priority
+
+	if #saved_priority > 0 then
+		return saved_priority
+	else
+		return ProfilePriority
+	end
+end
+
 OptionsView.reset_changed_settings = function (self)
 	self.changed_user_settings = {}
 	self.changed_render_settings = {}
 	local include_saved_keybinds = true
 	self.session_keymaps = self:get_keymaps(include_saved_keybinds, "win32")
 	self.changed_keymaps = false
+	self.session_bot_spawn_priority = table.create_copy(self.session_bot_spawn_priority, self:_get_original_bot_spawn_priority())
+	self.changed_bot_spawn_priority = false
 end
 
 OptionsView.set_original_settings = function (self)
@@ -1412,6 +1559,7 @@ OptionsView.set_original_settings = function (self)
 	self.original_render_settings = {}
 	local include_saved_keybinds = true
 	self.original_keymaps = self:get_keymaps(include_saved_keybinds, "win32")
+	self.original_bot_spawn_priority = table.create_copy(self.original_bot_spawn_priority, self:_get_original_bot_spawn_priority())
 end
 
 OptionsView.set_wwise_parameter = function (self, name, value)
@@ -1419,13 +1567,13 @@ OptionsView.set_wwise_parameter = function (self, name, value)
 end
 
 OptionsView.changes_been_made = function (self)
-	return table.size(self.changed_user_settings) > 0 or table.size(self.changed_render_settings) > 0 or self.changed_keymaps
+	return table.size(self.changed_user_settings) > 0 or table.size(self.changed_render_settings) > 0 or self.changed_keymaps or self.changed_bot_spawn_priority
 end
 
 local needs_reload_settings = settings_definitions.needs_reload_settings
 local needs_restart_settings = settings_definitions.needs_restart_settings
 
-OptionsView.apply_changes = function (self, user_settings, render_settings, pending_user_settings)
+OptionsView.apply_changes = function (self, user_settings, render_settings, bot_spawn_priority, show_bot_spawn_priority_popup)
 	local needs_reload = false
 
 	for setting, value in pairs(user_settings) do
@@ -1464,17 +1612,7 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, pend
 		end
 	end
 
-	if PLATFORM == "win32" then
-		local max_fps = user_settings.max_fps
-
-		if max_fps then
-			if max_fps == 0 then
-				Application.set_time_step_policy("no_throttle")
-			else
-				Application.set_time_step_policy("throttle", max_fps)
-			end
-		end
-	end
+	Framerate.set_playing()
 
 	local max_upload = user_settings.max_upload_speed
 	local network_manager = Managers.state.network
@@ -1498,6 +1636,18 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, pend
 
 	if use_hud_screen_fit ~= nil then
 		UISettings.use_hud_screen_fit = use_hud_screen_fit
+	end
+
+	local use_gamepad_menu_layout = user_settings.use_gamepad_menu_layout
+
+	if use_gamepad_menu_layout ~= nil then
+		UISettings.use_gamepad_menu_layout = use_gamepad_menu_layout
+	end
+
+	local use_gamepad_hud_layout = user_settings.use_gamepad_hud_layout
+
+	if use_gamepad_hud_layout ~= nil then
+		UISettings.use_gamepad_hud_layout = use_gamepad_hud_layout
 	end
 
 	local use_subtitles = user_settings.use_subtitles
@@ -1855,20 +2005,34 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, pend
 	local twitch_vote_time = user_settings.twitch_vote_time
 
 	if twitch_vote_time then
-		TwitchSettings.default_vote_time = twitch_vote_time
+		if PLATFORM == "xb1" then
+			MixerSettings.default_vote_time = twitch_vote_time
+		else
+			TwitchSettings.default_vote_time = twitch_vote_time
+		end
 	end
 
 	local twitch_time_between_votes = user_settings.twitch_time_between_votes
 
 	if twitch_time_between_votes then
-		TwitchSettings.default_downtime = twitch_time_between_votes
+		if PLATFORM == "xb1" then
+			MixerSettings.default_downtime = twitch_time_between_votes
+		else
+			TwitchSettings.default_downtime = twitch_time_between_votes
+		end
 	end
 
 	local twitch_difficulty = user_settings.twitch_difficulty
 
 	if twitch_difficulty then
-		TwitchSettings.difficulty = twitch_difficulty
+		if PLATFORM == "xb1" then
+			MixerSettings.difficulty = twitch_difficulty
+		else
+			TwitchSettings.difficulty = twitch_difficulty
+		end
 	end
+
+	self:apply_bot_spawn_priority_changes(bot_spawn_priority, show_bot_spawn_priority_popup)
 
 	if PLATFORM == "win32" then
 		Application.save_user_settings()
@@ -1882,6 +2046,25 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, pend
 	end
 
 	ShowCursorStack.update_clip_cursor()
+end
+
+OptionsView.apply_bot_spawn_priority_changes = function (self, new_priority_order, show_popup)
+	local saved_priority = PlayerData.bot_spawn_priority
+
+	for i = 1, #new_priority_order, 1 do
+		saved_priority[i] = new_priority_order[i]
+	end
+
+	if PLATFORM == "win32" then
+		Managers.save:auto_save(SaveFileName, SaveData)
+	else
+		Managers.save:auto_save(SaveFileName, SaveData, callback(self, "cb_save_done"))
+	end
+
+	if show_popup then
+		local text = Localize("will_be_applied_on_next_map_popup_text")
+		self.apply_bot_spawn_priority_popup_id = Managers.popup:queue_popup(text, Localize("popup_will_be_applied_on_next_map_popup"), "continue", Localize("popup_choice_continue"))
+	end
 end
 
 OptionsView.apply_keymap_changes = function (self, keymaps_data, save_keymaps)
@@ -1928,7 +2111,9 @@ OptionsView.apply_keymap_changes = function (self, keymaps_data, save_keymaps)
 		end
 	end
 
-	Managers.state.event:trigger("input_changed")
+	if Managers.state.event then
+		Managers.state.event:trigger("input_changed")
+	end
 end
 
 OptionsView._apply_keybinding_changes = function (self, keybinding_table_name, keybinding_table_key, action, keybind)
@@ -1982,7 +2167,7 @@ OptionsView.apply_gamepad_changes = function (self, keymaps, using_left_handed_o
 end
 
 OptionsView.has_popup = function (self)
-	return self.exit_popup_id or self.title_popup_id or self.apply_popup_id
+	return self.exit_popup_id or self.title_popup_id or self.apply_popup_id or self.apply_bot_spawn_priority_popup_id
 end
 
 OPTIONS_VIEW_PRINT_ORIGINAL_VALUES = false
@@ -2097,6 +2282,18 @@ OptionsView.update = function (self, dt)
 		end
 	end
 
+	if self.apply_bot_spawn_priority_popup_id then
+		local result = Managers.popup:query_result(self.apply_bot_spawn_priority_popup_id)
+
+		if result then
+			Managers.popup:cancel_popup(self.apply_bot_spawn_priority_popup_id)
+
+			self.apply_bot_spawn_priority_popup_id = nil
+
+			self:handle_apply_popup_results(result)
+		end
+	end
+
 	if self.exit_popup_id then
 		local result = Managers.popup:query_result(self.exit_popup_id)
 
@@ -2139,7 +2336,7 @@ OptionsView.update = function (self, dt)
 			WwiseWorld.trigger_event(self.wwise_world, "Play_hud_hover")
 		end
 
-		if not disable_all_input and not self:has_popup() and not self.draw_gamepad_tooltip and ((not selected_widget and input_service:get("toggle_menu")) or (exit_button_hotspot.is_hover and exit_button_hotspot.on_release)) then
+		if not disable_all_input and not self:has_popup() and not self.draw_gamepad_tooltip and ((not selected_widget and input_service:get("toggle_menu", true)) or (exit_button_hotspot.is_hover and exit_button_hotspot.on_release)) then
 			WwiseWorld.trigger_event(self.wwise_world, "Play_hud_select")
 			self:on_exit_pressed()
 		end
@@ -2220,7 +2417,7 @@ OptionsView.handle_apply_popup_results = function (self, result)
 		if self.changed_keymaps then
 			self:apply_keymap_changes(self.original_keymaps, true)
 		else
-			self:apply_changes(self.original_user_settings, self.original_render_settings)
+			self:apply_changes(self.original_user_settings, self.original_render_settings, self.original_bot_spawn_priority, false)
 		end
 
 		if self.delayed_title_change then
@@ -2255,7 +2452,7 @@ OptionsView.handle_title_buttons_popup_results = function (self, result)
 		if self.changed_keymaps then
 			self:apply_keymap_changes(self.original_keymaps, true)
 		else
-			self:apply_changes(self.original_user_settings, self.original_render_settings)
+			self:apply_changes(self.original_user_settings, self.original_render_settings, self.original_bot_spawn_priority, false)
 		end
 
 		self:reset_changed_settings()
@@ -2280,7 +2477,7 @@ OptionsView.handle_exit_button_popup_results = function (self, result)
 		if self.changed_keymaps then
 			self:apply_keymap_changes(self.original_keymaps, true)
 		else
-			self:apply_changes(self.original_user_settings, self.original_render_settings)
+			self:apply_changes(self.original_user_settings, self.original_render_settings, self.original_bot_spawn_priority, false)
 		end
 
 		self:set_original_settings()
@@ -2332,7 +2529,7 @@ OptionsView._handle_apply_changes = function (self)
 	if self.changed_keymaps then
 		self:apply_keymap_changes(self.session_keymaps, true)
 	else
-		self:apply_changes(self.changed_user_settings, self.changed_render_settings)
+		self:apply_changes(self.changed_user_settings, self.changed_render_settings, self.session_bot_spawn_priority, self.changed_bot_spawn_priority)
 	end
 
 	if self.selected_settings_list.needs_apply_confirmation then
@@ -2432,6 +2629,27 @@ OptionsView.reset_to_default_keybind = function (self, widget)
 	content.callback(default_value.key, default_value.controller, content)
 end
 
+OptionsView.reset_to_default_sorted_list = function (self, widget)
+	local content = widget.content
+	local style = widget.style
+	local default_value = content.default_value
+	local current_selection = content.current_selection
+
+	if current_selection then
+		local list_content = content.list_content
+		local item_content = list_content[current_selection]
+		local item_hotspot = item_content.hotspot
+		item_hotspot.is_selected = false
+		content.current_selection = nil
+		local up_hotspot = content.up_hotspot
+		up_hotspot.active = false
+		local down_hotspot = content.down_hotspot
+		down_hotspot.active = false
+	end
+
+	content:callback(style, default_value)
+end
+
 OptionsView.reset_current_settings_list_to_default = function (self)
 	local selected_settings_list = self.selected_settings_list
 	local widgets = selected_settings_list.widgets
@@ -2455,6 +2673,8 @@ OptionsView.reset_current_settings_list_to_default = function (self)
 				self:reset_to_default_option(widget)
 			elseif widget_type == "keybind" then
 				self:reset_to_default_keybind(widget)
+			elseif widget_type == "sorted_list" then
+				self:reset_to_default_sorted_list(widget)
 			else
 				error("Not supported widget type..")
 			end
@@ -2489,6 +2709,7 @@ OptionsView.draw_widgets = function (self, dt, disable_all_input)
 	local input_service = input_manager:get_service("options_menu")
 	local gamepad_active = input_manager:is_device_active("gamepad")
 	local draw_gamepad_tooltip = self.draw_gamepad_tooltip
+	local render_settings = self.render_settings
 
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
 
@@ -2516,12 +2737,18 @@ OptionsView.draw_widgets = function (self, dt, disable_all_input)
 
 		UIRenderer.draw_widget(ui_top_renderer, self.apply_button)
 		UIRenderer.draw_widget(ui_top_renderer, self.exit_button)
-	else
-		if draw_gamepad_tooltip then
-			UIRenderer.draw_widget(ui_top_renderer, self.gamepad_tooltip_text_widget)
-		end
+	elseif draw_gamepad_tooltip then
+		UIRenderer.draw_widget(ui_top_renderer, self.gamepad_tooltip_text_widget)
+	end
 
-		UIRenderer.draw_widget(ui_top_renderer, self._console_cursor)
+	if self.safe_rect_widget then
+		local old_alpha_multiplier = render_settings.alpha_multiplier
+		render_settings.alpha_multiplier = math.ease_out_exp(self.safe_rect_alpha_timer / SAFE_RECT_ALPHA_TIMER)
+
+		UIRenderer.draw_widget(ui_top_renderer, self.safe_rect_widget)
+
+		render_settings.alpha_multiplier = old_alpha_multiplier
+		self.safe_rect_alpha_timer = math.max(self.safe_rect_alpha_timer - dt, 0)
 	end
 
 	UIRenderer.end_pass(ui_top_renderer)
@@ -2533,7 +2760,7 @@ OptionsView.draw_widgets = function (self, dt, disable_all_input)
 	end
 
 	if gamepad_active then
-		local popup_active = self.save_data_error_popup_id or self.exit_popup_id or self.title_popup_id or self.apply_popup_id
+		local popup_active = self.save_data_error_popup_id or self.exit_popup_id or self.title_popup_id or self.apply_popup_id or self.apply_bot_spawn_priority_popup_id
 
 		if not popup_active and not self.disable_all_input then
 			self.menu_input_description:draw(ui_top_renderer, dt)
@@ -2630,7 +2857,7 @@ OptionsView.update_settings_list = function (self, settings_list, ui_renderer, u
 
 		UIRenderer.draw_widget(ui_renderer, widget)
 
-		if widget.content.is_highlighted or gamepad_active then
+		if widget.content.is_highlighted then
 			self:handle_mouse_widget_input(widget, input_service, dt)
 		end
 
@@ -3021,12 +3248,50 @@ OptionsView.handle_controller_navigation_input = function (self, dt, input_servi
 	else
 		local in_settings_sub_menu = self.in_settings_sub_menu
 
-		if in_settings_sub_menu then
-		elseif input_service:get("confirm") then
+		if not in_settings_sub_menu then
 			in_settings_sub_menu = true
 			self.in_settings_sub_menu = in_settings_sub_menu
 
 			self:set_console_setting_list_selection(1, true, false)
+		end
+
+		self.draw_gamepad_tooltip = self.gamepad_tooltip_available and input_service:get("trigger_cycle_previous_hold")
+
+		if self.draw_gamepad_tooltip then
+			return
+		end
+
+		local input_handled, is_active = self:handle_settings_list_widget_input(input_service, dt)
+
+		if input_handled then
+			if is_active ~= nil then
+				self:set_selected_input_description_by_active(is_active)
+			end
+
+			return
+		elseif input_service:get("back", true) then
+			local selected_settings_list = self.selected_settings_list
+
+			if selected_settings_list.scrollbar then
+				self:setup_scrollbar(selected_settings_list)
+			end
+
+			in_settings_sub_menu = false
+			self.in_settings_sub_menu = in_settings_sub_menu
+
+			self:clear_console_setting_list_selection()
+
+			self.gamepad_active_generic_actions_name = nil
+
+			self:change_gamepad_generic_input_action(true)
+			WwiseWorld.trigger_event(self.wwise_world, "Play_hud_select")
+
+			if self:changes_been_made() then
+				local text = Localize("unapplied_changes_popup_text")
+				self.title_popup_id = Managers.popup:queue_popup(text, Localize("popup_discard_changes_topic"), "apply_changes", Localize("menu_settings_apply"), "revert_changes", Localize("popup_choice_discard"))
+			else
+				self:on_exit_pressed()
+			end
 		end
 
 		local new_tab_index = nil
@@ -3044,18 +3309,72 @@ OptionsView.handle_controller_navigation_input = function (self, dt, input_servi
 				self.delayed_title_change = new_tab_index
 			else
 				self:select_settings_title(new_tab_index)
+				self:set_console_setting_list_selection(1, true)
 
 				self.in_settings_sub_menu = true
 			end
 		end
 
-		if input_service:get("back", true) then
-			WwiseWorld.trigger_event(self.wwise_world, "Play_hud_select")
-			self:on_exit_pressed()
+		if in_settings_sub_menu then
+			local speed_multiplier = self.speed_multiplier or 1
+			local selected_settings_list = self.selected_settings_list
+			local list_widgets = selected_settings_list.widgets
+			local selected_list_index = selected_settings_list.selected_index or 0
+
+			repeat
+
+				-- Decompilation error in this vicinity:
+				local move_up = input_service:get("move_up")
+				local move_up_hold = input_service:get("move_up_hold")
+
+				if move_up or move_up_hold then
+					self.controller_cooldown = GamepadSettings.menu_cooldown * speed_multiplier
+
+					self:set_console_setting_list_selection(selected_list_index - 1, false)
+
+					return
+				end
+
+				local move_down = input_service:get("move_down")
+				local move_down_hold = input_service:get("move_down_hold")
+				self.controller_cooldown = GamepadSettings.menu_cooldown * speed_multiplier
+
+				self:set_console_setting_list_selection(selected_list_index + 1, true)
+
+				return
+			until true
+		else
+			local speed_multiplier = self.speed_multiplier or 1
+			local selected_title_index = self.selected_title or 0
+
+			repeat
+				local move_up = input_service:get("move_up")
+				local move_up_hold = input_service:get("move_up_hold")
+
+				if move_up or move_up_hold then
+					self.controller_cooldown = GamepadSettings.menu_cooldown * speed_multiplier
+
+					self:set_console_title_selection(selected_title_index - 1)
+
+					return
+				end
+
+				local move_down = input_service:get("move_down")
+				local move_down_hold = input_service:get("move_down_hold")
+
+				if move_down or move_down_hold then
+					self.controller_cooldown = GamepadSettings.menu_cooldown * speed_multiplier
+
+					self:set_console_title_selection(selected_title_index + 1)
+
+					return
+				end
+			until true
 		end
 	end
 
-	self.speed_multiplier = 1
+	local in_settings_sub_menu = 1
+	self.speed_multiplier = in_settings_sub_menu
 end
 
 OptionsView.handle_mouse_widget_input = function (self, widget, input_service, dt)
@@ -3067,7 +3386,11 @@ end
 OptionsView.handle_settings_list_widget_input = function (self, input_service, dt)
 	local selected_settings_list = self.selected_settings_list
 	local widgets = selected_settings_list.widgets
-	local selected_list_index = selected_settings_list.selected_index or 1
+
+	if not selected_settings_list.selected_index then
+		local selected_list_index = 1
+	end
+
 	local selected_widget = widgets[selected_list_index]
 	local widgets_n = selected_settings_list.widgets_n
 
@@ -3142,7 +3465,15 @@ OptionsView.set_console_setting_list_selection = function (self, index, incremen
 end
 
 OptionsView.is_widget_selectable = function (self, widget)
-	return widget and widget.type ~= "image" and widget.type ~= "gamepad_layout"
+	if widget then
+		if widget.type == "image" or widget.type == "gamepad_layout" or widget.type == "title" then
+			slot2 = false
+		else
+			slot2 = true
+		end
+	end
+
+	return slot2
 end
 
 OptionsView.clear_console_setting_list_selection = function (self)
@@ -3167,9 +3498,20 @@ end
 OptionsView.move_scrollbar_based_on_selection = function (self, index)
 	local selected_settings_list = self.selected_settings_list
 	local selected_list_index = selected_settings_list.selected_index
-	local going_downwards = (not selected_list_index and true) or selected_list_index < index
+
+	if not selected_list_index then
+		slot4 = true
+	elseif selected_list_index >= index then
+		slot4 = false
+	else
+		local going_downwards = true
+	end
+
 	local widgets = selected_settings_list.widgets
-	local base_widget = (going_downwards and widgets[index + 1]) or widgets[index - 1]
+
+	if not going_downwards or not widgets[index + 1] then
+		local base_widget = widgets[index - 1]
+	end
 
 	if base_widget then
 		local max_offset_y = selected_settings_list.max_offset_y
@@ -3187,7 +3529,10 @@ OptionsView.move_scrollbar_based_on_selection = function (self, index)
 			temp_pos_table[2] = list_position[2] + selected_widget_offset[2]
 			local selected_widget_visible = math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
 			temp_pos_table[2] = temp_pos_table[2] + selected_widget_size[2]
-			selected_widget_visible = selected_widget_visible and math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
+
+			if selected_widget_visible then
+				selected_widget_visible = math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
+			end
 
 			if not selected_widget_visible then
 				local below_baseline = nil
@@ -3212,7 +3557,10 @@ OptionsView.move_scrollbar_based_on_selection = function (self, index)
 		temp_pos_table[2] = list_position[2] + base_widget_offset[2]
 		local widget_visible = math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
 		temp_pos_table[2] = temp_pos_table[2] + base_widget_size[2]
-		widget_visible = widget_visible and math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
+
+		if widget_visible then
+			widget_visible = math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
+		end
 
 		if not widget_visible then
 			local step = 0
@@ -3258,7 +3606,10 @@ OptionsView.set_selected_input_description_by_active = function (self, is_active
 	local is_disabled = widget.content.disabled
 	local widget_type = widget.type
 	local widget_type_template = SettingsWidgetTypeTemplate[widget_type]
-	local widget_input_description = (is_active and widget_type_template.active_input_description) or widget_type_template.input_description
+
+	if not is_active or not widget_type_template.active_input_description then
+		local widget_input_description = widget_type_template.input_description
+	end
 
 	if is_disabled then
 		self.menu_input_description:set_input_description(nil)
@@ -3446,16 +3797,37 @@ OptionsView.cb_vsync_setup = function (self)
 			text = Localize("menu_settings_on")
 		}
 	}
-	local vsync = Application.user_setting("vsync") or false
-	local selection = (vsync and 2) or 1
-	local default_value = (DefaultUserSettings.get("user_settings", "vsync") and 2) or 1
+
+	if not Application.user_setting("vsync") then
+		local vsync = false
+	end
+
+	if vsync then
+		slot3 = 2
+	else
+		local selection = 1
+	end
+
+	if DefaultUserSettings.get("user_settings", "vsync") then
+		slot4 = 2
+	else
+		local default_value = 1
+	end
 
 	return selection, options, "settings_menu_vsync", default_value
 end
 
 OptionsView.cb_vsync_saved_value = function (self, widget)
 	local vsync = assigned(self.changed_user_settings.vsync, Application.user_setting("vsync"))
-	widget.content.current_selection = (vsync and 2) or 1
+	slot3 = widget.content
+
+	if vsync then
+		slot4 = 2
+	else
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_vsync = function (self, content)
@@ -3475,22 +3847,143 @@ OptionsView.cb_hud_screen_fit_setup = function (self)
 			text = Localize("menu_settings_on")
 		}
 	}
-	local use_hud_screen_fit = Application.user_setting("use_hud_screen_fit") or false
-	local selection = (use_hud_screen_fit and 2) or 1
-	local default_value = (DefaultUserSettings.get("user_settings", "use_hud_screen_fit") and 2) or 1
+
+	if not Application.user_setting("use_hud_screen_fit") then
+		local use_hud_screen_fit = false
+	end
+
+	if use_hud_screen_fit then
+		slot3 = 2
+	else
+		local selection = 1
+	end
+
+	if DefaultUserSettings.get("user_settings", "use_hud_screen_fit") then
+		slot4 = 2
+	else
+		local default_value = 1
+	end
 
 	return selection, options, "settings_menu_hud_screen_fit", default_value
 end
 
 OptionsView.cb_hud_screen_fit_saved_value = function (self, widget)
 	local use_hud_screen_fit = assigned(self.changed_user_settings.use_hud_screen_fit, Application.user_setting("use_hud_screen_fit"))
-	widget.content.current_selection = (use_hud_screen_fit and 2) or 1
+	slot3 = widget.content
+
+	if use_hud_screen_fit then
+		slot4 = 2
+	else
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_hud_screen_fit = function (self, content)
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.use_hud_screen_fit = options_values[current_selection]
+end
+
+OptionsView.cb_enabled_gamepad_menu_layout_setup = function (self)
+	local options = {
+		{
+			value = false,
+			text = Localize("menu_settings_off")
+		},
+		{
+			value = true,
+			text = Localize("menu_settings_on")
+		}
+	}
+
+	if not Application.user_setting("use_gamepad_menu_layout") then
+		local use_gamepad_menu_layout = false
+	end
+
+	if use_gamepad_menu_layout then
+		slot3 = 2
+	else
+		local selection = 1
+	end
+
+	if DefaultUserSettings.get("user_settings", "use_gamepad_menu_layout") then
+		slot4 = 2
+	else
+		local default_value = 1
+	end
+
+	return selection, options, "settings_menu_enabled_gamepad_menu_layout", default_value
+end
+
+OptionsView.cb_enabled_gamepad_menu_layout_saved_value = function (self, widget)
+	local use_gamepad_menu_layout = assigned(self.changed_user_settings.use_gamepad_menu_layout, Application.user_setting("use_gamepad_menu_layout"))
+	slot3 = widget.content
+
+	if use_gamepad_menu_layout then
+		slot4 = 2
+	else
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
+end
+
+OptionsView.cb_enabled_gamepad_menu_layout = function (self, content)
+	local options_values = content.options_values
+	local current_selection = content.current_selection
+	self.changed_user_settings.use_gamepad_menu_layout = options_values[current_selection]
+end
+
+OptionsView.cb_enabled_gamepad_hud_layout_setup = function (self)
+	local options = {
+		{
+			value = false,
+			text = Localize("menu_settings_off")
+		},
+		{
+			value = true,
+			text = Localize("menu_settings_on")
+		}
+	}
+
+	if not Application.user_setting("use_gamepad_hud_layout") then
+		local use_gamepad_hud_layout = false
+	end
+
+	if use_gamepad_hud_layout then
+		slot3 = 2
+	else
+		local selection = 1
+	end
+
+	if DefaultUserSettings.get("user_settings", "use_gamepad_hud_layout") then
+		slot4 = 2
+	else
+		local default_value = 1
+	end
+
+	return selection, options, "settings_menu_enabled_gamepad_hud_layout", default_value
+end
+
+OptionsView.cb_enabled_gamepad_hud_layout_saved_value = function (self, widget)
+	local use_gamepad_hud_layout = assigned(self.changed_user_settings.use_gamepad_hud_layout, Application.user_setting("use_gamepad_hud_layout"))
+	slot3 = widget.content
+
+	if use_gamepad_hud_layout then
+		slot4 = 2
+	else
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
+end
+
+OptionsView.cb_enabled_gamepad_hud_layout = function (self, content)
+	local options_values = content.options_values
+	local current_selection = content.current_selection
+	self.changed_user_settings.use_gamepad_hud_layout = options_values[current_selection]
 end
 
 OptionsView.cb_fullscreen_setup = function (self)
@@ -3510,11 +4003,35 @@ OptionsView.cb_fullscreen_setup = function (self)
 	}
 	local fullscreen = Application.user_setting("fullscreen")
 	local borderless_fullscreen = Application.user_setting("borderless_fullscreen")
-	local windowed = not fullscreen and not borderless_fullscreen
-	local selected_option = (fullscreen and 1) or (borderless_fullscreen and 2) or 3
+
+	if not fullscreen then
+		slot4 = not borderless_fullscreen
+	else
+		slot4 = false
+
+		if false then
+			local windowed = true
+		end
+	end
+
+	if fullscreen then
+		slot5 = 1
+	elseif borderless_fullscreen then
+		slot5 = 2
+	else
+		local selected_option = 3
+	end
+
 	local default_fullscreen = DefaultUserSettings.get("user_settings", "fullscreen")
 	local default_borderless_fullscreen = DefaultUserSettings.get("user_settings", "borderless_fullscreen")
-	local default_option = (default_fullscreen and 1) or (borderless_fullscreen and 2) or 3
+
+	if default_fullscreen then
+		slot8 = 1
+	elseif borderless_fullscreen then
+		slot8 = 2
+	else
+		local default_option = 3
+	end
 
 	return selected_option, options, "menu_settings_windowed_mode", default_option
 end
@@ -3524,8 +4041,25 @@ OptionsView.cb_fullscreen_saved_value = function (self, widget)
 	local options_texts = widget.content.options_texts
 	local fullscreen = assigned(self.changed_user_settings.fullscreen, Application.user_setting("fullscreen"))
 	local borderless_fullscreen = assigned(self.changed_user_settings.borderless_fullscreen, Application.user_setting("borderless_fullscreen"))
-	local windowed = not fullscreen and not borderless_fullscreen
-	local selected_option = (fullscreen and 1) or (borderless_fullscreen and 2) or 3
+
+	if not fullscreen then
+		slot6 = not borderless_fullscreen
+	else
+		slot6 = false
+
+		if false then
+			local windowed = true
+		end
+	end
+
+	if fullscreen then
+		slot7 = 1
+	elseif borderless_fullscreen then
+		slot7 = 2
+	else
+		local selected_option = 3
+	end
+
 	widget.content.current_selection = selected_option
 end
 
@@ -3720,7 +4254,13 @@ OptionsView.cb_resolutions_setup = function (self)
 	end
 
 	local function comparator(a, b)
-		return b.value[1] < a.value[1]
+		if b.value[1] >= a.value[1] then
+			slot2 = false
+		else
+			slot2 = true
+		end
+
+		return slot2
 	end
 
 	table.sort(options, comparator)
@@ -3798,12 +4338,23 @@ OptionsView.cb_lock_framerate_setup = function (self)
 		{
 			text = "120",
 			value = 120
+		},
+		{
+			text = "144",
+			value = 144
+		},
+		{
+			text = "165",
+			value = 165
 		}
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "max_fps")
 	local default_option = nil
 	local selected_option = 1
-	local max_fps = Application.user_setting("max_fps") or 0
+
+	if not Application.user_setting("max_fps") then
+		local max_fps = 0
+	end
 
 	for i = 1, #options, 1 do
 		if max_fps == options[i].value then
@@ -3822,7 +4373,10 @@ OptionsView.cb_lock_framerate_saved_value = function (self, widget)
 	local options_values = widget.content.options_values
 	local options_texts = widget.content.options_texts
 	local selected_option = nil
-	local max_fps = assigned(self.changed_user_settings.max_fps, Application.user_setting("max_fps")) or 0
+
+	if not assigned(self.changed_user_settings.max_fps, Application.user_setting("max_fps")) then
+		local max_fps = 0
+	end
 
 	for i = 1, #options_values, 1 do
 		if max_fps == options_values[i] then
@@ -3867,7 +4421,10 @@ OptionsView.cb_max_stacking_frames_setup = function (self)
 	local default_value = DefaultUserSettings.get("user_settings", "max_stacking_frames")
 	local default_option = nil
 	local selected_option = 1
-	local max_stacking_frames = Application.user_setting("max_stacking_frames") or -1
+
+	if not Application.user_setting("max_stacking_frames") then
+		local max_stacking_frames = -1
+	end
 
 	for i = 1, #options, 1 do
 		if max_stacking_frames == options[i].value then
@@ -3885,7 +4442,10 @@ end
 OptionsView.cb_max_stacking_frames_saved_value = function (self, widget)
 	local options_values = widget.content.options_values
 	local current_selection = nil
-	local max_stacking_frames = assigned(self.changed_user_settings.max_stacking_frames, Application.user_setting("max_stacking_frames")) or -1
+
+	if not assigned(self.changed_user_settings.max_stacking_frames, Application.user_setting("max_stacking_frames")) then
+		local max_stacking_frames = -1
+	end
 
 	for i = 1, #options_values, 1 do
 		if max_stacking_frames == options_values[i] then
@@ -3919,10 +4479,25 @@ OptionsView.cb_anti_aliasing_setup = function (self)
 	}
 	local fxaa_enabled = Application.user_setting("render_settings", "fxaa_enabled")
 	local taa_enabled = Application.user_setting("render_settings", "taa_enabled")
-	local selected_option = (fxaa_enabled and 2) or (taa_enabled and 3) or 1
+
+	if fxaa_enabled then
+		slot4 = 2
+	elseif taa_enabled then
+		slot4 = 3
+	else
+		local selected_option = 1
+	end
+
 	local default_fxaa_enabled = DefaultUserSettings.get("render_settings", "fxaa_enabled")
 	local default_taa_enabled = DefaultUserSettings.get("render_settings", "taa_enabled")
-	local default_option = (default_fxaa_enabled and 2) or (default_taa_enabled and 3) or 1
+
+	if default_fxaa_enabled then
+		slot7 = 2
+	elseif default_taa_enabled then
+		slot7 = 3
+	else
+		local default_option = 1
+	end
 
 	return selected_option, options, "menu_settings_anti_aliasing", default_option
 end
@@ -3930,7 +4505,15 @@ end
 OptionsView.cb_anti_aliasing_saved_value = function (self, widget)
 	local fxaa_enabled = assigned(self.changed_render_settings.fxaa_enabled, Application.user_setting("render_settings", "fxaa_enabled"))
 	local taa_enabled = assigned(self.changed_render_settings.taa_enabled, Application.user_setting("render_settings", "taa_enabled"))
-	local selected_option = (fxaa_enabled and 2) or (taa_enabled and 3) or 1
+
+	if fxaa_enabled then
+		slot4 = 2
+	elseif taa_enabled then
+		slot4 = 3
+	else
+		local selected_option = 1
+	end
+
 	widget.content.current_selection = selected_option
 end
 
@@ -3957,7 +4540,11 @@ end
 OptionsView.cb_gamma_setup = function (self)
 	local min = 1.5
 	local max = 5
-	local gamma = Application.user_setting("render_settings", "gamma") or 2.2
+
+	if not Application.user_setting("render_settings", "gamma") then
+		local gamma = 2.2
+	end
+
 	local value = get_slider_value(min, max, gamma)
 	local default_value = math.clamp(DefaultUserSettings.get("render_settings", "gamma"), min, max)
 
@@ -3970,7 +4557,11 @@ OptionsView.cb_gamma_saved_value = function (self, widget)
 	local content = widget.content
 	local min = content.min
 	local max = content.max
-	local gamma = assigned(self.changed_render_settings.gamma, Application.user_setting("render_settings", "gamma")) or 2.2
+
+	if not assigned(self.changed_render_settings.gamma, Application.user_setting("render_settings", "gamma")) then
+		local gamma = 2.2
+	end
+
 	gamma = math.clamp(gamma, min, max)
 	content.internal_value = get_slider_value(min, max, gamma)
 	content.value = gamma
@@ -4091,7 +4682,11 @@ OptionsView.cb_lod_quality_setup = function (self)
 	}
 	local default_value = DefaultUserSettings.get("render_settings", "lod_object_multiplier")
 	local default_option = nil
-	local saved_option = Application.user_setting("render_settings", "lod_object_multiplier") or 1
+
+	if not Application.user_setting("render_settings", "lod_object_multiplier") then
+		local saved_option = 1
+	end
+
 	local selected_option = 1
 
 	for i = 1, #options, 1 do
@@ -4110,7 +4705,10 @@ end
 OptionsView.cb_lod_quality_saved_value = function (self, widget)
 	local options_values = widget.content.options_values
 	local selected_option = 1
-	local lod_object_multiplier = assigned(self.changed_render_settings.lod_object_multiplier, Application.user_setting("render_settings", "lod_object_multiplier")) or 1
+
+	if not assigned(self.changed_render_settings.lod_object_multiplier, Application.user_setting("render_settings", "lod_object_multiplier")) then
+		local lod_object_multiplier = 1
+	end
 
 	for i = 1, #options_values, 1 do
 		if lod_object_multiplier == options_values[i] then
@@ -4124,7 +4722,10 @@ OptionsView.cb_lod_quality_saved_value = function (self, widget)
 end
 
 OptionsView.cb_lod_quality = function (self, content)
-	local value = content.options_values[content.current_selection] or 1
+	if not content.options_values[content.current_selection] then
+		local value = 1
+	end
+
 	self.changed_render_settings.lod_object_multiplier = value
 end
 
@@ -4153,7 +4754,11 @@ OptionsView.cb_scatter_density_setup = function (self)
 	}
 	local default_value = DefaultUserSettings.get("render_settings", "lod_scatter_density")
 	local default_option = nil
-	local saved_option = Application.user_setting("render_settings", "lod_scatter_density") or 1
+
+	if not Application.user_setting("render_settings", "lod_scatter_density") then
+		local saved_option = 1
+	end
+
 	local selected_option = 1
 
 	for i = 1, #options, 1 do
@@ -4172,7 +4777,10 @@ end
 OptionsView.cb_scatter_density_saved_value = function (self, widget)
 	local options_values = widget.content.options_values
 	local selected_option = 1
-	local lod_scatter_density = assigned(self.changed_render_settings.lod_scatter_density, Application.user_setting("render_settings", "lod_scatter_density")) or 1
+
+	if not assigned(self.changed_render_settings.lod_scatter_density, Application.user_setting("render_settings", "lod_scatter_density")) then
+		local lod_scatter_density = 1
+	end
 
 	for i = 1, #options_values, 1 do
 		if lod_scatter_density == options_values[i] then
@@ -4186,7 +4794,10 @@ OptionsView.cb_scatter_density_saved_value = function (self, widget)
 end
 
 OptionsView.cb_scatter_density = function (self, content, called_from_graphics_quality)
-	local value = content.options_values[content.current_selection] or 1
+	if not content.options_values[content.current_selection] then
+		local value = 1
+	end
+
 	self.changed_render_settings.lod_scatter_density = value
 
 	if not called_from_graphics_quality then
@@ -4217,7 +4828,11 @@ OptionsView.cb_decoration_density_setup = function (self)
 			value = 1
 		}
 	}
-	local saved_option = Application.user_setting("render_settings", "lod_decoration_density") or 1
+
+	if not Application.user_setting("render_settings", "lod_decoration_density") then
+		local saved_option = 1
+	end
+
 	local selected_option = 1
 
 	for i = 1, #options, 1 do
@@ -4234,7 +4849,10 @@ end
 OptionsView.cb_decoration_density_saved_value = function (self, widget)
 	local options_values = widget.content.options_values
 	local selected_option = 1
-	local lod_decoration_density = assigned(self.changed_render_settings.lod_decoration_density, Application.user_setting("render_settings", "lod_decoration_density")) or 1
+
+	if not assigned(self.changed_render_settings.lod_decoration_density, Application.user_setting("render_settings", "lod_decoration_density")) then
+		local lod_decoration_density = 1
+	end
 
 	for i = 1, #options_values, 1 do
 		if lod_decoration_density == options_values[i] then
@@ -4248,7 +4866,10 @@ OptionsView.cb_decoration_density_saved_value = function (self, widget)
 end
 
 OptionsView.cb_decoration_density = function (self, content)
-	local value = content.options_values[content.current_selection] or 1
+	if not content.options_values[content.current_selection] then
+		local value = 1
+	end
+
 	self.changed_render_settings.lod_decoration_density = value
 end
 
@@ -4382,15 +5003,37 @@ OptionsView.cb_motion_blur_setup = function (self)
 			text = Localize("menu_settings_on")
 		}
 	}
-	local motion_blur_enabled = Application.user_setting("render_settings", "motion_blur_enabled") or true
-	local selected_option = (motion_blur_enabled and 2) or 1
 
-	return selected_option, options, "menu_settings_motion_blur"
+	if not Application.user_setting("render_settings", "motion_blur_enabled") then
+		local motion_blur_enabled = true
+	end
+
+	local default_motion_blur_enabled = DefaultUserSettings.get("render_settings", "motion_blur_enabled")
+
+	if motion_blur_enabled then
+		slot4 = 2
+	else
+		local selected_option = 1
+	end
+
+	if default_motion_blur_enabled then
+		slot5 = 2
+	else
+		local default_option = 1
+	end
+
+	return selected_option, options, "menu_settings_motion_blur", default_option
 end
 
 OptionsView.cb_motion_blur_saved_value = function (self, widget)
 	local motion_blur_enabled = assigned(self.changed_render_settings.motion_blur_enabled, Application.user_setting("render_settings", "motion_blur_enabled"))
-	local selected_option = (motion_blur_enabled and 2) or 1
+
+	if motion_blur_enabled then
+		slot3 = 2
+	else
+		local selected_option = 1
+	end
+
 	widget.content.current_selection = selected_option
 end
 
@@ -4400,6 +5043,8 @@ OptionsView.cb_motion_blur = function (self, content, called_from_graphics_quali
 
 	if PLATFORM == "win32" and not called_from_graphics_quality then
 		self:force_set_widget_value("graphics_quality_settings", "custom")
+	elseif PLATFORM ~= "win32" then
+		Application.set_render_setting("motion_blur_enabled", tostring(value))
 	end
 end
 
@@ -4415,14 +5060,25 @@ OptionsView.cb_dof_setup = function (self)
 		}
 	}
 	local dof_enabled = Application.user_setting("render_settings", "dof_enabled")
-	local selected_option = (dof_enabled and 2) or 1
+
+	if dof_enabled then
+		slot3 = 2
+	else
+		local selected_option = 1
+	end
 
 	return selected_option, options, "menu_settings_dof"
 end
 
 OptionsView.cb_dof_saved_value = function (self, widget)
 	local dof_enabled = assigned(self.changed_render_settings.dof_enabled, Application.user_setting("render_settings", "dof_enabled"))
-	local selected_option = (dof_enabled and 2) or 1
+
+	if dof_enabled then
+		slot3 = 2
+	else
+		local selected_option = 1
+	end
+
 	widget.content.current_selection = selected_option
 end
 
@@ -4446,17 +5102,42 @@ OptionsView.cb_bloom_setup = function (self)
 			text = Localize("menu_settings_on")
 		}
 	}
-	local bloom_enabled = Application.user_setting("render_settings", "bloom_enabled") or false
+
+	if not Application.user_setting("render_settings", "bloom_enabled") then
+		local bloom_enabled = false
+	end
+
 	local default_value = DefaultUserSettings.get("render_settings", "bloom_enabled")
-	local selection = (bloom_enabled and 2) or 1
-	local default_option = (default_value and 2) or 1
+
+	if bloom_enabled then
+		slot4 = 2
+	else
+		local selection = 1
+	end
+
+	if default_value then
+		slot5 = 2
+	else
+		local default_option = 1
+	end
 
 	return selection, options, "menu_settings_bloom", default_option
 end
 
 OptionsView.cb_bloom_saved_value = function (self, widget)
-	local bloom_enabled = assigned(self.changed_render_settings.bloom_enabled, Application.user_setting("render_settings", "bloom_enabled")) or false
-	widget.content.current_selection = (bloom_enabled and 2) or 1
+	if not assigned(self.changed_render_settings.bloom_enabled, Application.user_setting("render_settings", "bloom_enabled")) then
+		local bloom_enabled = false
+	end
+
+	slot3 = widget.content
+
+	if bloom_enabled then
+		slot4 = 2
+	else
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_bloom = function (self, content, called_from_graphics_quality)
@@ -4480,17 +5161,42 @@ OptionsView.cb_light_shafts_setup = function (self)
 			text = Localize("menu_settings_on")
 		}
 	}
-	local light_shafts_enabled = Application.user_setting("render_settings", "light_shafts_enabled") or false
+
+	if not Application.user_setting("render_settings", "light_shafts_enabled") then
+		local light_shafts_enabled = false
+	end
+
 	local default_value = DefaultUserSettings.get("render_settings", "light_shafts_enabled")
-	local selection = (light_shafts_enabled and 2) or 1
-	local default_option = (default_value and 2) or 1
+
+	if light_shafts_enabled then
+		slot4 = 2
+	else
+		local selection = 1
+	end
+
+	if default_value then
+		slot5 = 2
+	else
+		local default_option = 1
+	end
 
 	return selection, options, "menu_settings_light_shafts", default_option
 end
 
 OptionsView.cb_light_shafts_saved_value = function (self, widget)
-	local light_shafts_enabled = assigned(self.changed_render_settings.light_shafts_enabled, Application.user_setting("render_settings", "light_shafts_enabled")) or false
-	widget.content.current_selection = (light_shafts_enabled and 2) or 1
+	if not assigned(self.changed_render_settings.light_shafts_enabled, Application.user_setting("render_settings", "light_shafts_enabled")) then
+		local light_shafts_enabled = false
+	end
+
+	slot3 = widget.content
+
+	if light_shafts_enabled then
+		slot4 = 2
+	else
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_light_shafts = function (self, content, called_from_graphics_quality)
@@ -4514,17 +5220,42 @@ OptionsView.cb_sun_flare_setup = function (self)
 			text = Localize("menu_settings_on")
 		}
 	}
-	local sun_flare_enabled = Application.user_setting("render_settings", "sun_flare_enabled") or false
+
+	if not Application.user_setting("render_settings", "sun_flare_enabled") then
+		local sun_flare_enabled = false
+	end
+
 	local default_value = DefaultUserSettings.get("render_settings", "sun_flare_enabled")
-	local selection = (sun_flare_enabled and 2) or 1
-	local default_option = (default_value and 2) or 1
+
+	if sun_flare_enabled then
+		slot4 = 2
+	else
+		local selection = 1
+	end
+
+	if default_value then
+		slot5 = 2
+	else
+		local default_option = 1
+	end
 
 	return selection, options, "menu_settings_sun_flare", default_option
 end
 
 OptionsView.cb_sun_flare_saved_value = function (self, widget)
-	local sun_flare_enabled = assigned(self.changed_render_settings.sun_flare_enabled, Application.user_setting("render_settings", "sun_flare_enabled")) or false
-	widget.content.current_selection = (sun_flare_enabled and 2) or 1
+	if not assigned(self.changed_render_settings.sun_flare_enabled, Application.user_setting("render_settings", "sun_flare_enabled")) then
+		local sun_flare_enabled = false
+	end
+
+	slot3 = widget.content
+
+	if sun_flare_enabled then
+		slot4 = 2
+	else
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_sun_flare = function (self, content, called_from_graphics_quality)
@@ -4548,17 +5279,42 @@ OptionsView.cb_sharpen_setup = function (self)
 			text = Localize("menu_settings_on")
 		}
 	}
-	local sharpen_enabled = Application.user_setting("render_settings", "sharpen_enabled") or false
+
+	if not Application.user_setting("render_settings", "sharpen_enabled") then
+		local sharpen_enabled = false
+	end
+
 	local default_value = DefaultUserSettings.get("render_settings", "sharpen_enabled")
-	local selection = (sharpen_enabled and 2) or 1
-	local default_option = (default_value and 2) or 1
+
+	if sharpen_enabled then
+		slot4 = 2
+	else
+		local selection = 1
+	end
+
+	if default_value then
+		slot5 = 2
+	else
+		local default_option = 1
+	end
 
 	return selection, options, "menu_settings_sharpen", default_option
 end
 
 OptionsView.cb_sharpen_saved_value = function (self, widget)
-	local sharpen_enabled = assigned(self.changed_render_settings.sharpen_enabled, Application.user_setting("render_settings", "sharpen_enabled")) or false
-	widget.content.current_selection = (sharpen_enabled and 2) or 1
+	if not assigned(self.changed_render_settings.sharpen_enabled, Application.user_setting("render_settings", "sharpen_enabled")) then
+		local sharpen_enabled = false
+	end
+
+	slot3 = widget.content
+
+	if sharpen_enabled then
+		slot4 = 2
+	else
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_sharpen = function (self, content, called_from_graphics_quality)
@@ -4583,17 +5339,42 @@ OptionsView.cb_lens_quality_setup = function (self)
 			text = Localize("menu_settings_on")
 		}
 	}
-	local lens_quality_enabled = Application.user_setting("render_settings", "lens_quality_enabled") or false
+
+	if not Application.user_setting("render_settings", "lens_quality_enabled") then
+		local lens_quality_enabled = false
+	end
+
 	local default_value = DefaultUserSettings.get("render_settings", "lens_quality_enabled")
-	local selection = (lens_quality_enabled and 2) or 1
-	local default_option = (default_value and 2) or 1
+
+	if lens_quality_enabled then
+		slot4 = 2
+	else
+		local selection = 1
+	end
+
+	if default_value then
+		slot5 = 2
+	else
+		local default_option = 1
+	end
 
 	return selection, options, "menu_settings_lens_quality", default_option
 end
 
 OptionsView.cb_lens_quality_saved_value = function (self, widget)
-	local lens_quality_enabled = assigned(self.changed_render_settings.lens_quality_enabled, Application.user_setting("render_settings", "lens_quality_enabled")) or false
-	widget.content.current_selection = (lens_quality_enabled and 2) or 1
+	if not assigned(self.changed_render_settings.lens_quality_enabled, Application.user_setting("render_settings", "lens_quality_enabled")) then
+		local lens_quality_enabled = false
+	end
+
+	slot3 = widget.content
+
+	if lens_quality_enabled then
+		slot4 = 2
+	else
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_lens_quality = function (self, content, called_from_graphics_quality)
@@ -4617,17 +5398,42 @@ OptionsView.cb_skin_shading_setup = function (self)
 			text = Localize("menu_settings_on")
 		}
 	}
-	local skin_material_enabled = Application.user_setting("render_settings", "skin_material_enabled") or false
+
+	if not Application.user_setting("render_settings", "skin_material_enabled") then
+		local skin_material_enabled = false
+	end
+
 	local default_value = DefaultUserSettings.get("render_settings", "skin_material_enabled")
-	local selection = (skin_material_enabled and 2) or 1
-	local default_option = (default_value and 2) or 1
+
+	if skin_material_enabled then
+		slot4 = 2
+	else
+		local selection = 1
+	end
+
+	if default_value then
+		slot5 = 2
+	else
+		local default_option = 1
+	end
 
 	return selection, options, "menu_settings_skin_shading", default_option
 end
 
 OptionsView.cb_skin_shading_saved_value = function (self, widget)
-	local skin_material_enabled = assigned(self.changed_render_settings.skin_material_enabled, Application.user_setting("render_settings", "skin_material_enabled")) or false
-	widget.content.current_selection = (skin_material_enabled and 2) or 1
+	if not assigned(self.changed_render_settings.skin_material_enabled, Application.user_setting("render_settings", "skin_material_enabled")) then
+		local skin_material_enabled = false
+	end
+
+	slot3 = widget.content
+
+	if skin_material_enabled then
+		slot4 = 2
+	else
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_skin_shading = function (self, content, called_from_graphics_quality)
@@ -4832,16 +5638,40 @@ OptionsView.cb_subtitles_setup = function (self)
 			text = Localize("menu_settings_on")
 		}
 	}
-	local use_subtitles = Application.user_setting("use_subtitles") or false
-	local selection = (use_subtitles and 2) or 1
-	local default_value = (DefaultUserSettings.get("user_settings", "use_subtitles") and 2) or 1
+
+	if not Application.user_setting("use_subtitles") then
+		local use_subtitles = false
+	end
+
+	if use_subtitles then
+		slot3 = 2
+	else
+		local selection = 1
+	end
+
+	if DefaultUserSettings.get("user_settings", "use_subtitles") then
+		slot4 = 2
+	else
+		local default_value = 1
+	end
 
 	return selection, options, "menu_settings_subtitles", default_value
 end
 
 OptionsView.cb_subtitles_saved_value = function (self, widget)
-	local use_subtitles = assigned(self.changed_user_settings.use_subtitles, Application.user_setting("use_subtitles")) or false
-	widget.content.current_selection = (use_subtitles and 2) or 1
+	if not assigned(self.changed_user_settings.use_subtitles, Application.user_setting("use_subtitles")) then
+		local use_subtitles = false
+	end
+
+	slot3 = widget.content
+
+	if use_subtitles then
+		slot4 = 2
+	else
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_subtitles = function (self, content)
@@ -4885,8 +5715,15 @@ OptionsView.cb_language_setup = function (self)
 			text = Localize("russian")
 		}
 	}
-	local language_id = Application.user_setting("language_id") or (rawget(_G, "Steam") and Steam.language()) or "en"
-	local default_value = DefaultUserSettings.get("user_settings", "language_id") or "en"
+
+	if not Application.user_setting("language_id") and (not rawget(_G, "Steam") or not Steam.language()) then
+		local language_id = "en"
+	end
+
+	if not DefaultUserSettings.get("user_settings", "language_id") then
+		local default_value = "en"
+	end
+
 	local selection = 1
 
 	for idx, option in ipairs(options) do
@@ -4903,7 +5740,10 @@ OptionsView.cb_language_setup = function (self)
 end
 
 OptionsView.cb_language_saved_value = function (self, widget)
-	local language_id = assigned(self.changed_user_settings.language_id, Application.user_setting("language_id")) or "en"
+	if not assigned(self.changed_user_settings.language_id, Application.user_setting("language_id")) then
+		local language_id = "en"
+	end
+
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
@@ -4933,15 +5773,24 @@ OptionsView.reload_language = function (self, language_id)
 	Managers.localizer = LocalizationManager:new("localization/game", language_id)
 
 	local function tweak_parser(tweak_name)
-		return LocalizerTweakData[tweak_name] or "<missing LocalizerTweakData \"" .. tweak_name .. "\">"
+		if not LocalizerTweakData[tweak_name] then
+			slot1 = "<missing LocalizerTweakData \"" .. tweak_name .. "\">"
+		end
+
+		return slot1
 	end
 
 	Managers.localizer:add_macro("TWEAK", tweak_parser)
 
 	local function key_parser(input_service_and_key_name)
 		local split_start, split_end = string.find(input_service_and_key_name, "__")
+		slot3 = assert
 
-		assert(split_start and split_end, "[key_parser] You need to specify a key using this format $KEY;<input_service>__<key>. Example: $KEY;options_menu__back (note the dubbel underline separating input service and key")
+		if split_start then
+			slot4 = split_end
+		end
+
+		slot3(slot4, "[key_parser] You need to specify a key using this format $KEY;<input_service>__<key>. Example: $KEY;options_menu__back (note the dubbel underline separating input service and key")
 
 		local input_service_name = string.sub(input_service_and_key_name, 1, split_start - 1)
 		local key_name = string.sub(input_service_and_key_name, split_end + 1)
@@ -4970,8 +5819,8 @@ OptionsView.reload_language = function (self, language_id)
 		if button_index then
 			key_locale_name = device.button_name(button_index)
 
-			if device_type == "keyboard" then
-				key_locale_name = device.button_locale_name(button_index) or key_locale_name
+			if device_type == "keyboard" and not device.button_locale_name(button_index) then
+				key_locale_name = key_locale_name
 			end
 
 			if device_type == "mouse" then
@@ -4991,7 +5840,10 @@ OptionsView.reload_language = function (self, language_id)
 
 			if button_index then
 				key_locale_name = Keyboard.button_name(button_index)
-				key_locale_name = Keyboard.button_locale_name(button_index) or key_locale_name
+
+				if not Keyboard.button_locale_name(button_index) then
+					key_locale_name = key_locale_name
+				end
 			else
 				key_locale_name = Localize(unassigned_keymap)
 			end
@@ -5006,7 +5858,11 @@ end
 OptionsView.cb_mouse_look_sensitivity_setup = function (self)
 	local min = -10
 	local max = 10
-	local sensitivity = Application.user_setting("mouse_look_sensitivity") or 0
+
+	if not Application.user_setting("mouse_look_sensitivity") then
+		local sensitivity = 0
+	end
+
 	local default_value = DefaultUserSettings.get("user_settings", "mouse_look_sensitivity")
 	local value = get_slider_value(min, max, sensitivity)
 	sensitivity = math.clamp(sensitivity, min, max)
@@ -5026,7 +5882,11 @@ OptionsView.cb_mouse_look_sensitivity_saved_value = function (self, widget)
 	local content = widget.content
 	local min = content.min
 	local max = content.max
-	local sensitivity = assigned(self.changed_user_settings.mouse_look_sensitivity, Application.user_setting("mouse_look_sensitivity")) or 0
+
+	if not assigned(self.changed_user_settings.mouse_look_sensitivity, Application.user_setting("mouse_look_sensitivity")) then
+		local sensitivity = 0
+	end
+
 	sensitivity = math.clamp(sensitivity, min, max)
 	content.internal_value = get_slider_value(min, max, sensitivity)
 	content.value = sensitivity
@@ -5039,7 +5899,11 @@ end
 OptionsView.cb_ui_scale_setup = function (self)
 	local min = 70
 	local max = 100
-	local ui_scale = Application.user_setting("ui_scale") or 100
+
+	if not Application.user_setting("ui_scale") then
+		local ui_scale = 100
+	end
+
 	local value = get_slider_value(min, max, ui_scale)
 	local default_value = math.clamp(DefaultUserSettings.get("user_settings", "ui_scale"), min, max)
 
@@ -5050,7 +5914,11 @@ OptionsView.cb_ui_scale_saved_value = function (self, widget)
 	local content = widget.content
 	local min = content.min
 	local max = content.max
-	local ui_scale = assigned(self.changed_user_settings.ui_scale, Application.user_setting("ui_scale")) or 100
+
+	if not assigned(self.changed_user_settings.ui_scale, Application.user_setting("ui_scale")) then
+		local ui_scale = 100
+	end
+
 	ui_scale = math.clamp(ui_scale, min, max)
 	content.internal_value = get_slider_value(min, max, ui_scale)
 	content.value = ui_scale
@@ -5060,23 +5928,78 @@ OptionsView.cb_ui_scale = function (self, content)
 	local value = content.value
 	self.changed_user_settings.ui_scale = value
 	UISettings.ui_scale = value
-
-	print("cb_ui_scale", value)
-
 	local force_update = true
 
 	UPDATE_RESOLUTION_LOOKUP(force_update)
 	self:_setup_text_buttons_width()
 end
 
+OptionsView.cb_safe_rect_setup = function (self)
+	local w, h = Gui.resolution()
+	local min = 0
+	local max = 20
+
+	if not Application.user_setting("safe_rect") then
+		local ui_safe_rect = 0
+	end
+
+	local value = get_slider_value(min, max, ui_safe_rect)
+	local default_value = math.clamp(DefaultUserSettings.get("user_settings", "safe_rect"), min, max)
+
+	return value, min, max, 0, "settings_menu_hud_safe_rect", default_value
+end
+
+OptionsView.cb_safe_rect_saved_value = function (self, widget)
+	local w, h = Gui.resolution()
+	local min = 0
+	local max = 20
+	local content = widget.content
+	local min = content.min
+	local max = content.max
+
+	if not assigned(self.changed_user_settings.safe_rect, Application.user_setting("safe_rect")) then
+		local safe_rect = 0
+	end
+
+	safe_rect = math.clamp(safe_rect, min, max)
+	content.internal_value = get_slider_value(min, max, safe_rect)
+	content.value = safe_rect
+end
+
+OptionsView.cb_safe_rect = function (self, content)
+	local value = content.value
+
+	if not Application.user_setting("safe_rect") then
+		local saved_value = 0
+	end
+
+	self.changed_user_settings.safe_rect = value
+
+	Application.set_user_setting("safe_rect", value)
+
+	if value ~= saved_value then
+		self.safe_rect_alpha_timer = SAFE_RECT_ALPHA_TIMER
+	end
+end
+
 OptionsView.cb_gamepad_look_sensitivity_setup = function (self)
 	local min = -10
 	local max = 10
-	local sensitivity = Application.user_setting("gamepad_look_sensitivity") or 0
+
+	if not Application.user_setting("gamepad_look_sensitivity") then
+		local sensitivity = 0
+	end
+
 	local default_value = DefaultUserSettings.get("user_settings", "gamepad_look_sensitivity")
 	local value = get_slider_value(min, max, sensitivity)
 	sensitivity = math.clamp(sensitivity, min, max)
-	local platform_key = (self.platform == "win32" and "xb1") or self.platform
+
+	if self.platform == "win32" then
+		slot6 = "xb1"
+	else
+		local platform_key = self.platform
+	end
+
 	local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
 	local base_look_multiplier = base_filter.look_controller.multiplier_x
 	local base_melee_look_multiplier = base_filter.look_controller_melee.multiplier_x
@@ -5086,15 +6009,30 @@ OptionsView.cb_gamepad_look_sensitivity_setup = function (self)
 	local look_filter = input_filters.look_controller
 	local function_data = look_filter.function_data
 	function_data.multiplier_x = base_look_multiplier * 0.85^(-sensitivity)
-	function_data.min_multiplier_x = (base_filter.look_controller.multiplier_min_x and base_filter.look_controller.multiplier_min_x * 0.85^(-sensitivity)) or function_data.multiplier_x * 0.25
+
+	if not base_filter.look_controller.multiplier_min_x or not (base_filter.look_controller.multiplier_min_x * 0.85^(-sensitivity)) then
+		slot15 = function_data.multiplier_x * 0.25
+	end
+
+	function_data.min_multiplier_x = slot15
 	local melee_look_filter = input_filters.look_controller_melee
 	local function_data = melee_look_filter.function_data
 	function_data.multiplier_x = base_melee_look_multiplier * 0.85^(-sensitivity)
-	function_data.min_multiplier_x = (base_filter.look_controller_melee.multiplier_min_x and base_filter.look_controller_melee.multiplier_min_x * 0.85^(-sensitivity)) or function_data.multiplier_x * 0.25
+
+	if not base_filter.look_controller_melee.multiplier_min_x or not (base_filter.look_controller_melee.multiplier_min_x * 0.85^(-sensitivity)) then
+		slot17 = function_data.multiplier_x * 0.25
+	end
+
+	function_data.min_multiplier_x = slot17
 	local ranged_look_filter = input_filters.look_controller_ranged
 	local function_data = ranged_look_filter.function_data
 	function_data.multiplier_x = base_ranged_look_multiplier * 0.85^(-sensitivity)
-	function_data.min_multiplier_x = (base_filter.look_controller_ranged.multiplier_min_x and base_filter.look_controller_ranged.multiplier_min_x * 0.85^(-sensitivity)) or function_data.multiplier_x * 0.25
+
+	if not base_filter.look_controller_ranged.multiplier_min_x or not (base_filter.look_controller_ranged.multiplier_min_x * 0.85^(-sensitivity)) then
+		slot19 = function_data.multiplier_x * 0.25
+	end
+
+	function_data.min_multiplier_x = slot19
 
 	return value, min, max, 1, "menu_settings_gamepad_look_sensitivity", default_value
 end
@@ -5103,7 +6041,11 @@ OptionsView.cb_gamepad_look_sensitivity_saved_value = function (self, widget)
 	local content = widget.content
 	local min = content.min
 	local max = content.max
-	local sensitivity = assigned(self.changed_user_settings.gamepad_look_sensitivity, Application.user_setting("gamepad_look_sensitivity")) or 0
+
+	if not assigned(self.changed_user_settings.gamepad_look_sensitivity, Application.user_setting("gamepad_look_sensitivity")) then
+		local sensitivity = 0
+	end
+
 	sensitivity = math.clamp(sensitivity, min, max)
 	content.internal_value = get_slider_value(min, max, sensitivity)
 	content.value = sensitivity
@@ -5116,11 +6058,21 @@ end
 OptionsView.cb_gamepad_look_sensitivity_y_setup = function (self)
 	local min = -10
 	local max = 10
-	local sensitivity = Application.user_setting("gamepad_look_sensitivity_y") or 0
+
+	if not Application.user_setting("gamepad_look_sensitivity_y") then
+		local sensitivity = 0
+	end
+
 	local default_value = DefaultUserSettings.get("user_settings", "gamepad_look_sensitivity_y")
 	local value = get_slider_value(min, max, sensitivity)
 	sensitivity = math.clamp(sensitivity, min, max)
-	local platform_key = (self.platform == "win32" and "xb1") or self.platform
+
+	if self.platform == "win32" then
+		slot6 = "xb1"
+	else
+		local platform_key = self.platform
+	end
+
 	local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
 	local base_look_multiplier = base_filter.look_controller.multiplier_y
 	local base_melee_look_multiplier = base_filter.look_controller_melee.multiplier_y
@@ -5144,7 +6096,11 @@ OptionsView.cb_gamepad_look_sensitivity_y_saved_value = function (self, widget)
 	local content = widget.content
 	local min = content.min
 	local max = content.max
-	local sensitivity = assigned(self.changed_user_settings.gamepad_look_sensitivity_y, Application.user_setting("gamepad_look_sensitivity_y")) or 0
+
+	if not assigned(self.changed_user_settings.gamepad_look_sensitivity_y, Application.user_setting("gamepad_look_sensitivity_y")) then
+		local sensitivity = 0
+	end
+
 	sensitivity = math.clamp(sensitivity, min, max)
 	content.internal_value = get_slider_value(min, max, sensitivity)
 	content.value = sensitivity
@@ -5157,11 +6113,21 @@ end
 OptionsView.cb_gamepad_zoom_sensitivity_setup = function (self)
 	local min = -10
 	local max = 10
-	local sensitivity = Application.user_setting("gamepad_zoom_sensitivity") or 0
+
+	if not Application.user_setting("gamepad_zoom_sensitivity") then
+		local sensitivity = 0
+	end
+
 	local default_value = DefaultUserSettings.get("user_settings", "gamepad_zoom_sensitivity")
 	local value = get_slider_value(min, max, sensitivity)
 	sensitivity = math.clamp(sensitivity, min, max)
-	local platform_key = (self.platform == "win32" and "xb1") or self.platform
+
+	if self.platform == "win32" then
+		slot6 = "xb1"
+	else
+		local platform_key = self.platform
+	end
+
 	local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
 	local base_look_multiplier = base_filter.look_controller_zoom.multiplier_x
 	local input_service = self.input_manager:get_service("Player")
@@ -5169,7 +6135,12 @@ OptionsView.cb_gamepad_zoom_sensitivity_setup = function (self)
 	local look_filter = input_filters.look_controller_zoom
 	local function_data = look_filter.function_data
 	function_data.multiplier_x = base_look_multiplier * 0.85^(-sensitivity)
-	function_data.min_multiplier_x = (base_filter.look_controller_zoom.multiplier_min_x and base_filter.look_controller_zoom.multiplier_min_x * 0.85^(-sensitivity)) or function_data.multiplier_x * 0.25
+
+	if not base_filter.look_controller_zoom.multiplier_min_x or not (base_filter.look_controller_zoom.multiplier_min_x * 0.85^(-sensitivity)) then
+		slot13 = function_data.multiplier_x * 0.25
+	end
+
+	function_data.min_multiplier_x = slot13
 
 	return value, min, max, 1, "menu_settings_gamepad_zoom_sensitivity", default_value
 end
@@ -5178,7 +6149,11 @@ OptionsView.cb_gamepad_zoom_sensitivity_saved_value = function (self, widget)
 	local content = widget.content
 	local min = content.min
 	local max = content.max
-	local sensitivity = assigned(self.changed_user_settings.gamepad_zoom_sensitivity, Application.user_setting("gamepad_zoom_sensitivity")) or 0
+
+	if not assigned(self.changed_user_settings.gamepad_zoom_sensitivity, Application.user_setting("gamepad_zoom_sensitivity")) then
+		local sensitivity = 0
+	end
+
 	sensitivity = math.clamp(sensitivity, min, max)
 	content.internal_value = get_slider_value(min, max, sensitivity)
 	content.value = sensitivity
@@ -5191,11 +6166,21 @@ end
 OptionsView.cb_gamepad_zoom_sensitivity_y_setup = function (self)
 	local min = -10
 	local max = 10
-	local sensitivity = Application.user_setting("gamepad_zoom_sensitivity_y") or 0
+
+	if not Application.user_setting("gamepad_zoom_sensitivity_y") then
+		local sensitivity = 0
+	end
+
 	local default_value = DefaultUserSettings.get("user_settings", "gamepad_zoom_sensitivity_y")
 	local value = get_slider_value(min, max, sensitivity)
 	sensitivity = math.clamp(sensitivity, min, max)
-	local platform_key = (self.platform == "win32" and "xb1") or self.platform
+
+	if self.platform == "win32" then
+		slot6 = "xb1"
+	else
+		local platform_key = self.platform
+	end
+
 	local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
 	local base_look_multiplier = base_filter.look_controller_zoom.multiplier_y
 	local input_service = self.input_manager:get_service("Player")
@@ -5211,7 +6196,11 @@ OptionsView.cb_gamepad_zoom_sensitivity_y_saved_value = function (self, widget)
 	local content = widget.content
 	local min = content.min
 	local max = content.max
-	local sensitivity = assigned(self.changed_user_settings.gamepad_zoom_sensitivity_y, Application.user_setting("gamepad_zoom_sensitivity_y")) or 0
+
+	if not assigned(self.changed_user_settings.gamepad_zoom_sensitivity_y, Application.user_setting("gamepad_zoom_sensitivity_y")) then
+		local sensitivity = 0
+	end
+
 	sensitivity = math.clamp(sensitivity, min, max)
 	content.internal_value = get_slider_value(min, max, sensitivity)
 	content.value = sensitivity
@@ -5262,11 +6251,18 @@ OptionsView.cb_max_upload_speed_setup = function (self)
 
 	fassert(default_option, "default option %i does not exist in cb_max_upload_speed_setup options table", default_value)
 
-	return selected_option or default_option, options, "menu_settings_max_upload", default_option
+	if not selected_option then
+		slot6 = default_option
+	end
+
+	return slot6, options, "menu_settings_max_upload", default_option
 end
 
 OptionsView.cb_max_upload_speed_saved_value = function (self, widget)
-	local value = assigned(self.changed_user_settings.max_upload_speed, Application.user_setting("max_upload_speed")) or DefaultUserSettings.get("user_settings", "max_upload_speed")
+	if not assigned(self.changed_user_settings.max_upload_speed, Application.user_setting("max_upload_speed")) then
+		local value = DefaultUserSettings.get("user_settings", "max_upload_speed")
+	end
+
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
@@ -5300,15 +6296,36 @@ OptionsView.cb_small_network_packets_setup = function (self)
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "small_network_packets")
 	local small_network_packets = Application.user_setting("small_network_packets")
-	local selection = (small_network_packets and 2) or 1
-	local default_option = (default_value and 2) or 1
+
+	if small_network_packets then
+		slot4 = 2
+	else
+		local selection = 1
+	end
+
+	if default_value then
+		slot5 = 2
+	else
+		local default_option = 1
+	end
 
 	return selection, options, "menu_settings_small_network_packets", default_option
 end
 
 OptionsView.cb_small_network_packets_saved_value = function (self, widget)
-	local small_network_packets = assigned(self.changed_user_settings.small_network_packets, Application.user_setting("small_network_packets")) or false
-	widget.content.current_selection = (small_network_packets and 2) or 1
+	if not assigned(self.changed_user_settings.small_network_packets, Application.user_setting("small_network_packets")) then
+		local small_network_packets = false
+	end
+
+	slot3 = widget.content
+
+	if small_network_packets then
+		slot4 = 2
+	else
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_max_quick_play_search_range = function (self, content)
@@ -5344,11 +6361,18 @@ OptionsView.cb_max_quick_play_search_range_setup = function (self)
 
 	fassert(default_option, "default option %i does not exist in cb_max_quick_play_search_range_setup options table", default_value)
 
-	return selected_option or default_option, options, "menu_settings_max_quick_play_search_range", default_option
+	if not selected_option then
+		slot6 = default_option
+	end
+
+	return slot6, options, "menu_settings_max_quick_play_search_range", default_option
 end
 
 OptionsView.cb_max_quick_play_search_range_saved_value = function (self, widget)
-	local value = assigned(self.changed_user_settings.max_quick_play_search_range, Application.user_setting("max_quick_play_search_range")) or DefaultUserSettings.get("user_settings", "max_quick_play_search_range")
+	if not assigned(self.changed_user_settings.max_quick_play_search_range, Application.user_setting("max_quick_play_search_range")) then
+		local value = DefaultUserSettings.get("user_settings", "max_quick_play_search_range")
+	end
+
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
@@ -5382,15 +6406,36 @@ OptionsView.cb_allow_occupied_hero_lobbies_setup = function (self)
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "allow_occupied_hero_lobbies")
 	local allow_occupied_hero_lobbies = Application.user_setting("allow_occupied_hero_lobbies")
-	local selection = (allow_occupied_hero_lobbies and 2) or 1
-	local default_option = (default_value and 2) or 1
+
+	if allow_occupied_hero_lobbies then
+		slot4 = 2
+	else
+		local selection = 1
+	end
+
+	if default_value then
+		slot5 = 2
+	else
+		local default_option = 1
+	end
 
 	return selection, options, "menu_settings_allow_occupied_hero_lobbies", default_option
 end
 
 OptionsView.cb_allow_occupied_hero_lobbies_saved_value = function (self, widget)
-	local allow_occupied_hero_lobbies = assigned(self.changed_user_settings.allow_occupied_hero_lobbies, Application.user_setting("allow_occupied_hero_lobbies")) or false
-	widget.content.current_selection = (allow_occupied_hero_lobbies and 2) or 1
+	if not assigned(self.changed_user_settings.allow_occupied_hero_lobbies, Application.user_setting("allow_occupied_hero_lobbies")) then
+		local allow_occupied_hero_lobbies = false
+	end
+
+	slot3 = widget.content
+
+	if allow_occupied_hero_lobbies then
+		slot4 = 2
+	else
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_mouse_look_invert_y_setup = function (self)
@@ -5411,16 +6456,44 @@ OptionsView.cb_mouse_look_invert_y_setup = function (self)
 	local input_filters = input_service:get_active_filters(platform_key)
 	local look_filter = input_filters.look
 	local function_data = look_filter.function_data
-	function_data.filter_type = (invert_mouse_y and "scale_vector3") or "scale_vector3_invert_y"
-	local selection = (invert_mouse_y and 2) or 1
-	local default_option = (default_value and 2) or 1
+
+	if invert_mouse_y then
+		slot9 = "scale_vector3"
+	else
+		slot9 = "scale_vector3_invert_y"
+	end
+
+	function_data.filter_type = slot9
+
+	if invert_mouse_y then
+		slot9 = 2
+	else
+		local selection = 1
+	end
+
+	if default_value then
+		slot10 = 2
+	else
+		local default_option = 1
+	end
 
 	return selection, options, "menu_settings_mouse_look_invert_y", default_option
 end
 
 OptionsView.cb_mouse_look_invert_y_saved_value = function (self, widget)
-	local invert_mouse_y = assigned(self.changed_user_settings.mouse_look_invert_y, Application.user_setting("mouse_look_invert_y")) or false
-	widget.content.current_selection = (invert_mouse_y and 2) or 1
+	if not assigned(self.changed_user_settings.mouse_look_invert_y, Application.user_setting("mouse_look_invert_y")) then
+		local invert_mouse_y = false
+	end
+
+	slot3 = widget.content
+
+	if invert_mouse_y then
+		slot4 = 2
+	else
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_mouse_look_invert_y = function (self, content)
@@ -5440,32 +6513,91 @@ OptionsView.cb_gamepad_look_invert_y_setup = function (self)
 			text = Localize("menu_settings_on")
 		}
 	}
-	local default_value = DefaultUserSettings.get("user_settings", "gamepad_look_invert_y") or false
+
+	if not DefaultUserSettings.get("user_settings", "gamepad_look_invert_y") then
+		local default_value = false
+	end
+
 	local invert_gamepad_y = Application.user_setting("gamepad_look_invert_y")
 	local input_service = self.input_manager:get_service("Player")
-	local platform_key = (self.platform == "win32" and "xb1") or self.platform
+
+	if self.platform == "win32" then
+		slot5 = "xb1"
+	else
+		local platform_key = self.platform
+	end
+
 	local input_filters = input_service:get_active_filters(platform_key)
 	local look_filter = input_filters.look_controller
 	local function_data = look_filter.function_data
-	function_data.filter_type = (invert_gamepad_y and "scale_vector3_xy_accelerated_x_inverted") or "scale_vector3_xy_accelerated_x"
+
+	if invert_gamepad_y then
+		slot9 = "scale_vector3_xy_accelerated_x_inverted"
+	else
+		slot9 = "scale_vector3_xy_accelerated_x"
+	end
+
+	function_data.filter_type = slot9
 	local look_filter = input_filters.look_controller_ranged
 	local function_data = look_filter.function_data
-	function_data.filter_type = (invert_gamepad_y and "scale_vector3_xy_accelerated_x_inverted") or "scale_vector3_xy_accelerated_x"
+
+	if invert_gamepad_y then
+		slot11 = "scale_vector3_xy_accelerated_x_inverted"
+	else
+		slot11 = "scale_vector3_xy_accelerated_x"
+	end
+
+	function_data.filter_type = slot11
 	local look_filter = input_filters.look_controller_melee
 	local function_data = look_filter.function_data
-	function_data.filter_type = (invert_gamepad_y and "scale_vector3_xy_accelerated_x_inverted") or "scale_vector3_xy_accelerated_x"
+
+	if invert_gamepad_y then
+		slot13 = "scale_vector3_xy_accelerated_x_inverted"
+	else
+		slot13 = "scale_vector3_xy_accelerated_x"
+	end
+
+	function_data.filter_type = slot13
 	local look_filter = input_filters.look_controller_zoom
 	local function_data = look_filter.function_data
-	function_data.filter_type = (invert_gamepad_y and "scale_vector3_xy_accelerated_x_inverted") or "scale_vector3_xy_accelerated_x"
-	local selection = (invert_gamepad_y and 2) or 1
-	local default_option = (default_value and 2) or 1
+
+	if invert_gamepad_y then
+		slot15 = "scale_vector3_xy_accelerated_x_inverted"
+	else
+		slot15 = "scale_vector3_xy_accelerated_x"
+	end
+
+	function_data.filter_type = slot15
+
+	if invert_gamepad_y then
+		slot15 = 2
+	else
+		local selection = 1
+	end
+
+	if default_value then
+		slot16 = 2
+	else
+		local default_option = 1
+	end
 
 	return selection, options, "menu_settings_gamepad_look_invert_y", default_option
 end
 
 OptionsView.cb_gamepad_look_invert_y_saved_value = function (self, widget)
-	local invert_gamepad_y = assigned(self.changed_user_settings.gamepad_look_invert_y, Application.user_setting("gamepad_look_invert_y")) or false
-	widget.content.current_selection = (invert_gamepad_y and 2) or 1
+	if not assigned(self.changed_user_settings.gamepad_look_invert_y, Application.user_setting("gamepad_look_invert_y")) then
+		local invert_gamepad_y = false
+	end
+
+	slot3 = widget.content
+
+	if invert_gamepad_y then
+		slot4 = 2
+	else
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_gamepad_look_invert_y = function (self, content)
@@ -5485,23 +6617,97 @@ OptionsView.cb_gamepad_auto_aim_enabled_setup = function (self)
 			text = Localize("menu_settings_off")
 		}
 	}
-	local default_value = DefaultUserSettings.get("user_settings", "gamepad_auto_aim_enabled") or true
+
+	if not DefaultUserSettings.get("user_settings", "gamepad_auto_aim_enabled") then
+		local default_value = true
+	end
+
 	local enable_auto_aim = Application.user_setting("gamepad_auto_aim_enabled")
-	local selection = (enable_auto_aim and 1) or 2
-	local default_option = (default_value and 1) or 2
+
+	if enable_auto_aim then
+		slot4 = 1
+	else
+		local selection = 2
+	end
+
+	if default_value then
+		slot5 = 1
+	else
+		local default_option = 2
+	end
 
 	return selection, options, "menu_settings_gamepad_auto_aim_enabled", default_option
 end
 
 OptionsView.cb_gamepad_auto_aim_enabled_saved_value = function (self, widget)
 	local gamepad_auto_aim_enabled = assigned(self.changed_user_settings.gamepad_auto_aim_enabled, Application.user_setting("gamepad_auto_aim_enabled"))
-	widget.content.current_selection = (gamepad_auto_aim_enabled and 1) or 2
+	slot3 = widget.content
+
+	if gamepad_auto_aim_enabled then
+		slot4 = 1
+	else
+		slot4 = 2
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_gamepad_auto_aim_enabled = function (self, content)
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.gamepad_auto_aim_enabled = options_values[current_selection]
+end
+
+OptionsView.cb_gamepad_acceleration_enabled_setup = function (self)
+	local options = {
+		{
+			value = true,
+			text = Localize("menu_settings_on")
+		},
+		{
+			value = false,
+			text = Localize("menu_settings_off")
+		}
+	}
+
+	if not DefaultUserSettings.get("user_settings", "enable_gamepad_acceleration") then
+		local default_value = true
+	end
+
+	local enable_gamepad_acceleration = Application.user_setting("enable_gamepad_acceleration")
+
+	if enable_gamepad_acceleration then
+		slot4 = 1
+	else
+		local selection = 2
+	end
+
+	if default_value then
+		slot5 = 1
+	else
+		local default_option = 2
+	end
+
+	return selection, options, "menu_settings_enable_gamepad_acceleration", default_option
+end
+
+OptionsView.cb_gamepad_acceleration_enabled_saved_value = function (self, widget)
+	local enable_gamepad_acceleration = assigned(self.changed_user_settings.enable_gamepad_acceleration, Application.user_setting("enable_gamepad_acceleration"))
+	slot3 = widget.content
+
+	if enable_gamepad_acceleration then
+		slot4 = 1
+	else
+		slot4 = 2
+	end
+
+	slot3.current_selection = slot4
+end
+
+OptionsView.cb_gamepad_acceleration_enabled = function (self, content)
+	local options_values = content.options_values
+	local current_selection = content.current_selection
+	self.changed_user_settings.enable_gamepad_acceleration = options_values[current_selection]
 end
 
 OptionsView.cb_gamepad_rumble_enabled_setup = function (self)
@@ -5515,17 +6721,39 @@ OptionsView.cb_gamepad_rumble_enabled_setup = function (self)
 			text = Localize("menu_settings_off")
 		}
 	}
-	local default_value = DefaultUserSettings.get("user_settings", "gamepad_rumble_enabled") or true
+
+	if not DefaultUserSettings.get("user_settings", "gamepad_rumble_enabled") then
+		local default_value = true
+	end
+
 	local enable_rumble = Application.user_setting("gamepad_rumble_enabled")
-	local selection = (enable_rumble and 1) or 2
-	local default_option = (default_value and 1) or 2
+
+	if enable_rumble then
+		slot4 = 1
+	else
+		local selection = 2
+	end
+
+	if default_value then
+		slot5 = 1
+	else
+		local default_option = 2
+	end
 
 	return selection, options, "menu_settings_gamepad_rumble_enabled", default_option
 end
 
 OptionsView.cb_gamepad_rumble_enabled_saved_value = function (self, widget)
 	local gamepad_rumble_enabled = assigned(self.changed_user_settings.gamepad_rumble_enabled, Application.user_setting("gamepad_rumble_enabled"))
-	widget.content.current_selection = (gamepad_rumble_enabled and 1) or 2
+	slot3 = widget.content
+
+	if gamepad_rumble_enabled then
+		slot4 = 1
+	else
+		slot4 = 2
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_gamepad_rumble_enabled = function (self, content)
@@ -5545,17 +6773,39 @@ OptionsView.cb_gamepad_use_ps4_style_input_icons_setup = function (self)
 			text = Localize("menu_settings_ps4_input_icons")
 		}
 	}
-	local default_value = DefaultUserSettings.get("user_settings", "gamepad_use_ps4_style_input_icons") or false
+
+	if not DefaultUserSettings.get("user_settings", "gamepad_use_ps4_style_input_icons") then
+		local default_value = false
+	end
+
 	local use_ps4_style_icons = Application.user_setting("gamepad_use_ps4_style_input_icons")
-	local selection = (use_ps4_style_icons and 2) or 1
-	local default_option = (default_value and 2) or 1
+
+	if use_ps4_style_icons then
+		slot4 = 2
+	else
+		local selection = 1
+	end
+
+	if default_value then
+		slot5 = 2
+	else
+		local default_option = 1
+	end
 
 	return selection, options, "menu_settings_gamepad_use_ps4_style_input_icons", default_option
 end
 
 OptionsView.cb_gamepad_use_ps4_style_input_icons_saved_value = function (self, widget)
 	local gamepad_use_ps4_style_input_icons = assigned(self.changed_user_settings.gamepad_use_ps4_style_input_icons, Application.user_setting("gamepad_use_ps4_style_input_icons"))
-	widget.content.current_selection = (gamepad_use_ps4_style_input_icons and 2) or 1
+	slot3 = widget.content
+
+	if gamepad_use_ps4_style_input_icons then
+		slot4 = 2
+	else
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_gamepad_use_ps4_style_input_icons = function (self, content)
@@ -5569,7 +6819,11 @@ end
 
 OptionsView.cb_gamepad_layout_setup = function (self)
 	local options = AlternatateGamepadKeymapsOptionsMenu
-	local default_value = DefaultUserSettings.get("user_settings", "gamepad_layout") or "default"
+
+	if not DefaultUserSettings.get("user_settings", "gamepad_layout") then
+		local default_value = "default"
+	end
+
 	local gamepad_layout = Application.user_setting("gamepad_layout")
 	local selected_option = 1
 	local default_option = nil
@@ -5650,17 +6904,39 @@ OptionsView.cb_gamepad_left_handed_enabled_setup = function (self)
 			text = Localize("menu_settings_off")
 		}
 	}
-	local default_value = DefaultUserSettings.get("user_settings", "gamepad_left_handed") or false
+
+	if not DefaultUserSettings.get("user_settings", "gamepad_left_handed") then
+		local default_value = false
+	end
+
 	local enable_left_handed = Application.user_setting("gamepad_left_handed")
-	local selection = (enable_left_handed and 1) or 2
-	local default_option = (default_value and 1) or 2
+
+	if enable_left_handed then
+		slot4 = 1
+	else
+		local selection = 2
+	end
+
+	if default_value then
+		slot5 = 1
+	else
+		local default_option = 2
+	end
 
 	return selection, options, "menu_settings_gamepad_left_handed_enabled", default_option
 end
 
 OptionsView.cb_gamepad_left_handed_enabled_saved_value = function (self, widget)
 	local gamepad_left_handed = assigned(self.changed_user_settings.gamepad_left_handed, Application.user_setting("gamepad_left_handed"))
-	widget.content.current_selection = (gamepad_left_handed and 1) or 2
+	slot3 = widget.content
+
+	if gamepad_left_handed then
+		slot4 = 1
+	else
+		slot4 = 2
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_gamepad_left_handed_enabled = function (self, content)
@@ -5685,15 +6961,33 @@ OptionsView.cb_toggle_crouch_setup = function (self)
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "toggle_crouch")
 	local toggle_crouch = Application.user_setting("toggle_crouch")
-	local selection = (toggle_crouch and 1) or 2
-	local default_option = (default_value and 1) or 2
+
+	if toggle_crouch then
+		slot4 = 1
+	else
+		local selection = 2
+	end
+
+	if default_value then
+		slot5 = 1
+	else
+		local default_option = 2
+	end
 
 	return selection, options, "menu_settings_toggle_crouch", default_option
 end
 
 OptionsView.cb_toggle_crouch_saved_value = function (self, widget)
 	local toggle_crouch = assigned(self.changed_user_settings.toggle_crouch, Application.user_setting("toggle_crouch"))
-	widget.content.current_selection = (toggle_crouch and 1) or 2
+	slot3 = widget.content
+
+	if toggle_crouch then
+		slot4 = 1
+	else
+		slot4 = 2
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_toggle_crouch = function (self, content)
@@ -5715,15 +7009,33 @@ OptionsView.cb_toggle_stationary_dodge_setup = function (self)
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "toggle_stationary_dodge")
 	local toggle_stationary_dodge = Application.user_setting("toggle_stationary_dodge")
-	local selection = (toggle_stationary_dodge and 1) or 2
-	local default_option = (default_value and 1) or 2
+
+	if toggle_stationary_dodge then
+		slot4 = 1
+	else
+		local selection = 2
+	end
+
+	if default_value then
+		slot5 = 1
+	else
+		local default_option = 2
+	end
 
 	return selection, options, "menu_settings_toggle_stationary_dodge", default_option
 end
 
 OptionsView.cb_toggle_stationary_dodge_saved_value = function (self, widget)
 	local toggle_stationary_dodge = assigned(self.changed_user_settings.toggle_stationary_dodge, Application.user_setting("toggle_stationary_dodge"))
-	widget.content.current_selection = (toggle_stationary_dodge and 1) or 2
+	slot3 = widget.content
+
+	if toggle_stationary_dodge then
+		slot4 = 1
+	else
+		slot4 = 2
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_toggle_stationary_dodge = function (self, content)
@@ -5796,7 +7108,11 @@ end
 OptionsView.cb_overcharge_opacity_setup = function (self)
 	local min = 0
 	local max = 100
-	local overcharge_opacity = Application.user_setting("overcharge_opacity") or DefaultUserSettings.get("user_settings", "overcharge_opacity")
+
+	if not Application.user_setting("overcharge_opacity") then
+		local overcharge_opacity = DefaultUserSettings.get("user_settings", "overcharge_opacity")
+	end
+
 	local default_value = DefaultUserSettings.get("user_settings", "overcharge_opacity")
 	local value = get_slider_value(min, max, overcharge_opacity)
 
@@ -5807,7 +7123,14 @@ OptionsView.cb_overcharge_opacity_saved_value = function (self, widget)
 	local content = widget.content
 	local min = content.min
 	local max = content.max
-	local overcharge_opacity = assigned(self.changed_user_settings.overcharge_opacity, Application.user_setting("overcharge_opacity") or DefaultUserSettings.get("user_settings", "overcharge_opacity"))
+	slot5 = assigned
+	slot6 = self.changed_user_settings.overcharge_opacity
+
+	if not Application.user_setting("overcharge_opacity") then
+		slot7 = DefaultUserSettings.get("user_settings", "overcharge_opacity")
+	end
+
+	local overcharge_opacity = slot5(slot6, slot7)
 	overcharge_opacity = math.clamp(overcharge_opacity, min, max)
 	content.internal_value = get_slider_value(min, max, overcharge_opacity)
 	content.value = overcharge_opacity
@@ -5833,16 +7156,46 @@ OptionsView.cb_weapon_scroll_type_setup = function (self)
 		}
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "weapon_scroll_type")
-	local scroll_type = Application.user_setting("weapon_scroll_type") or "scroll_wrap"
-	local selection = (scroll_type == "scroll_clamp" and 2) or (scroll_type == "scroll_disabled" and 3) or 1
-	local default_option = (default_value == "scroll_clamp" and 2) or (default_value == "scroll_disabled" and 3) or 1
+
+	if not Application.user_setting("weapon_scroll_type") then
+		local scroll_type = "scroll_wrap"
+	end
+
+	if scroll_type == "scroll_clamp" then
+		slot4 = 2
+	elseif scroll_type == "scroll_disabled" then
+		slot4 = 3
+	else
+		local selection = 1
+	end
+
+	if default_value == "scroll_clamp" then
+		slot5 = 2
+	elseif default_value == "scroll_disabled" then
+		slot5 = 3
+	else
+		local default_option = 1
+	end
 
 	return selection, options, "menu_settings_weapon_scroll_type", default_option
 end
 
 OptionsView.cb_weapon_scroll_type_saved_value = function (self, widget)
-	local scroll_type = assigned(self.changed_user_settings.weapon_scroll_type, Application.user_setting("weapon_scroll_type")) or "scroll_wrap"
-	widget.content.current_selection = (scroll_type == "scroll_clamp" and 2) or (scroll_type == "scroll_disabled" and 3) or 1
+	if not assigned(self.changed_user_settings.weapon_scroll_type, Application.user_setting("weapon_scroll_type")) then
+		local scroll_type = "scroll_wrap"
+	end
+
+	slot3 = widget.content
+
+	if scroll_type == "scroll_clamp" then
+		slot4 = 2
+	elseif scroll_type == "scroll_disabled" then
+		slot4 = 3
+	else
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_weapon_scroll_type = function (self, content)
@@ -5875,8 +7228,17 @@ OptionsView.cb_double_tap_dodge_setup = function (self)
 		enabled = default_value
 	end
 
-	local selection = (enabled and 1) or 2
-	local default_option = (default_value and 1) or 2
+	if enabled then
+		slot4 = 1
+	else
+		local selection = 2
+	end
+
+	if default_value then
+		slot5 = 1
+	else
+		local default_option = 2
+	end
 
 	return selection, options, "menu_settings_double_tap_dodge", default_option
 end
@@ -5888,7 +7250,15 @@ OptionsView.cb_double_tap_dodge_saved_value = function (self, widget)
 		enabled = DefaultUserSettings.get("user_settings", "double_tap_dodge")
 	end
 
-	widget.content.current_selection = (enabled and 1) or 2
+	slot3 = widget.content
+
+	if enabled then
+		slot4 = 1
+	else
+		slot4 = 2
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_tutorials_enabled_setup = function (self)
@@ -5909,8 +7279,17 @@ OptionsView.cb_tutorials_enabled_setup = function (self)
 		tutorials_enabled = true
 	end
 
-	local selection = (tutorials_enabled and 1) or 2
-	local default_option = (default_value and 1) or 2
+	if tutorials_enabled then
+		slot4 = 1
+	else
+		local selection = 2
+	end
+
+	if default_value then
+		slot5 = 1
+	else
+		local default_option = 2
+	end
 
 	return selection, options, "menu_settings_tutorials_enabled", default_option
 end
@@ -5922,7 +7301,15 @@ OptionsView.cb_tutorials_enabled_saved_value = function (self, widget)
 		tutorials_enabled = true
 	end
 
-	widget.content.current_selection = (tutorials_enabled and 1) or 2
+	slot3 = widget.content
+
+	if tutorials_enabled then
+		slot4 = 1
+	else
+		slot4 = 2
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_tutorials_enabled = function (self, content)
@@ -5934,7 +7321,11 @@ end
 OptionsView.cb_master_volume_setup = function (self)
 	local min = 0
 	local max = 100
-	local master_bus_volume = Application.user_setting("master_bus_volume") or 90
+
+	if not Application.user_setting("master_bus_volume") then
+		local master_bus_volume = 90
+	end
+
 	local value = get_slider_value(min, max, master_bus_volume)
 
 	return value, min, max, 0, "menu_settings_master_volume", DefaultUserSettings.get("user_settings", "master_bus_volume")
@@ -5944,7 +7335,11 @@ OptionsView.cb_master_volume_saved_value = function (self, widget)
 	local content = widget.content
 	local min = content.min
 	local max = content.max
-	local master_bus_volume = assigned(self.changed_user_settings.master_bus_volume, Application.user_setting("master_bus_volume")) or 90
+
+	if not assigned(self.changed_user_settings.master_bus_volume, Application.user_setting("master_bus_volume")) then
+		local master_bus_volume = 90
+	end
+
 	content.internal_value = get_slider_value(min, max, master_bus_volume)
 	content.value = master_bus_volume
 end
@@ -5960,7 +7355,11 @@ end
 OptionsView.cb_music_bus_volume_setup = function (self)
 	local min = 0
 	local max = 100
-	local music_bus_volume = Application.user_setting("music_bus_volume") or 90
+
+	if not Application.user_setting("music_bus_volume") then
+		local music_bus_volume = 90
+	end
+
 	local value = get_slider_value(min, max, music_bus_volume)
 
 	return value, min, max, 0, "menu_settings_music_volume", DefaultUserSettings.get("user_settings", "music_bus_volume")
@@ -5970,7 +7369,11 @@ OptionsView.cb_music_bus_volume_saved_value = function (self, widget)
 	local content = widget.content
 	local min = content.min
 	local max = content.max
-	local music_bus_volume = assigned(self.changed_user_settings.music_bus_volume, Application.user_setting("music_bus_volume")) or 90
+
+	if not assigned(self.changed_user_settings.music_bus_volume, Application.user_setting("music_bus_volume")) then
+		local music_bus_volume = 90
+	end
+
 	content.internal_value = get_slider_value(min, max, music_bus_volume)
 	content.value = music_bus_volume
 end
@@ -5985,7 +7388,11 @@ end
 OptionsView.cb_sfx_bus_volume_setup = function (self)
 	local min = 0
 	local max = 100
-	local sfx_bus_volume = Application.user_setting("sfx_bus_volume") or 90
+
+	if not Application.user_setting("sfx_bus_volume") then
+		local sfx_bus_volume = 90
+	end
+
 	local value = get_slider_value(min, max, sfx_bus_volume)
 
 	return value, min, max, 0, "menu_settings_sfx_volume", DefaultUserSettings.get("user_settings", "sfx_bus_volume")
@@ -5995,7 +7402,11 @@ OptionsView.cb_sfx_bus_volume_saved_value = function (self, widget)
 	local content = widget.content
 	local min = content.min
 	local max = content.max
-	local sfx_bus_volume = assigned(self.changed_user_settings.sfx_bus_volume, Application.user_setting("sfx_bus_volume")) or 90
+
+	if not assigned(self.changed_user_settings.sfx_bus_volume, Application.user_setting("sfx_bus_volume")) then
+		local sfx_bus_volume = 90
+	end
+
 	content.internal_value = get_slider_value(min, max, sfx_bus_volume)
 	content.value = sfx_bus_volume
 end
@@ -6010,7 +7421,11 @@ end
 OptionsView.cb_voice_bus_volume_setup = function (self)
 	local min = 0
 	local max = 100
-	local voice_bus_volume = Application.user_setting("voice_bus_volume") or 90
+
+	if not Application.user_setting("voice_bus_volume") then
+		local voice_bus_volume = 90
+	end
+
 	local value = get_slider_value(min, max, voice_bus_volume)
 
 	return value, min, max, 0, "menu_settings_voice_volume", DefaultUserSettings.get("user_settings", "voice_bus_volume")
@@ -6020,7 +7435,11 @@ OptionsView.cb_voice_bus_volume_saved_value = function (self, widget)
 	local content = widget.content
 	local min = content.min
 	local max = content.max
-	local voice_bus_volume = assigned(self.changed_user_settings.voice_bus_volume, Application.user_setting("voice_bus_volume")) or 90
+
+	if not assigned(self.changed_user_settings.voice_bus_volume, Application.user_setting("voice_bus_volume")) then
+		local voice_bus_volume = 90
+	end
+
 	content.internal_value = get_slider_value(min, max, voice_bus_volume)
 	content.value = voice_bus_volume
 end
@@ -6035,7 +7454,11 @@ end
 OptionsView.cb_voip_bus_volume_setup = function (self)
 	local min = 0
 	local max = 100
-	local voip_bus_volume = Application.user_setting("voip_bus_volume") or 0
+
+	if not Application.user_setting("voip_bus_volume") then
+		local voip_bus_volume = 0
+	end
+
 	local value = get_slider_value(min, max, voip_bus_volume)
 
 	return value, min, max, 0, "menu_settings_voip_volume", DefaultUserSettings.get("user_settings", "voip_bus_volume")
@@ -6045,7 +7468,11 @@ OptionsView.cb_voip_bus_volume_saved_value = function (self, widget)
 	local content = widget.content
 	local min = content.min
 	local max = content.max
-	local voip_bus_volume = assigned(self.changed_user_settings.voip_bus_volume, Application.user_setting("voip_bus_volume")) or 90
+
+	if not assigned(self.changed_user_settings.voip_bus_volume, Application.user_setting("voip_bus_volume")) then
+		local voip_bus_volume = 90
+	end
+
 	content.internal_value = get_slider_value(min, max, voip_bus_volume)
 	content.value = voip_bus_volume
 end
@@ -6199,14 +7626,25 @@ OptionsView.cb_particles_resolution_setup = function (self)
 		}
 	}
 	local low_res_transparency = Application.user_setting("render_settings", "low_res_transparency")
-	local selected_option = (low_res_transparency and 2) or 1
+
+	if low_res_transparency then
+		slot3 = 2
+	else
+		local selected_option = 1
+	end
 
 	return selected_option, options, "menu_settings_low_res_transparency"
 end
 
 OptionsView.cb_particles_resolution_saved_value = function (self, widget)
 	local low_res_transparency = assigned(self.changed_render_settings.low_res_transparency, Application.user_setting("render_settings", "low_res_transparency"))
-	local selected_option = (low_res_transparency and 2) or 1
+
+	if low_res_transparency then
+		slot3 = 2
+	else
+		local selected_option = 1
+	end
+
 	widget.content.current_selection = selected_option
 end
 
@@ -6348,7 +7786,11 @@ end
 OptionsView.cb_auto_exposure_speed_setup = function (self)
 	local min = 0.1
 	local max = 2
-	local auto_exposure_speed = Application.user_setting("render_settings", "eye_adaptation_speed") or 1
+
+	if not Application.user_setting("render_settings", "eye_adaptation_speed") then
+		local auto_exposure_speed = 1
+	end
+
 	local value = get_slider_value(min, max, auto_exposure_speed)
 	local default_value = math.clamp(DefaultUserSettings.get("render_settings", "eye_adaptation_speed"), min, max)
 
@@ -6459,8 +7901,17 @@ OptionsView.cb_physic_debris_setup = function (self)
 		use_physic_debris = true
 	end
 
-	local selection = (use_physic_debris and 2) or 1
-	local default_selection = (DefaultUserSettings.get("user_settings", "use_physic_debris") and 2) or 1
+	if use_physic_debris then
+		slot3 = 2
+	else
+		local selection = 1
+	end
+
+	if DefaultUserSettings.get("user_settings", "use_physic_debris") then
+		slot4 = 2
+	else
+		local default_selection = 1
+	end
 
 	return selection, options, "menu_settings_physic_debris", default_selection
 end
@@ -6472,65 +7923,21 @@ OptionsView.cb_physic_debris_saved_value = function (self, widget)
 		use_physic_debris = true
 	end
 
-	widget.content.current_selection = (use_physic_debris and 2) or 1
+	slot3 = widget.content
+
+	if use_physic_debris then
+		slot4 = 2
+	else
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_physic_debris = function (self, content, called_from_graphics_quality)
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.use_physic_debris = options_values[current_selection]
-
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
-	end
-end
-
-OptionsView.cb_high_quality_fur_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		}
-	}
-	local use_high_quality_fur = Application.user_setting("use_high_quality_fur")
-
-	if use_high_quality_fur == nil then
-		use_high_quality_fur = true
-	end
-
-	local selection = (use_high_quality_fur and 2) or 1
-	local default_selection = (DefaultUserSettings.get("user_settings", "use_high_quality_fur") and 2) or 1
-
-	return selection, options, "menu_settings_high_quality_fur", default_selection
-end
-
-OptionsView.cb_high_quality_fur_saved_value = function (self, widget)
-	local use_high_quality_fur = assigned(self.changed_user_settings.use_high_quality_fur, Application.user_setting("use_high_quality_fur"))
-
-	if use_high_quality_fur == nil then
-		use_high_quality_fur = true
-	end
-
-	widget.content.current_selection = (use_high_quality_fur and 2) or 1
-end
-
-OptionsView.cb_high_quality_fur = function (self, content, called_from_graphics_quality)
-	local options_values = content.options_values
-	local current_selection = content.current_selection
-	self.changed_user_settings.use_high_quality_fur = options_values[current_selection]
-	GameSettingsDevelopment.use_high_quality_fur = options_values[current_selection]
-	local entity_manager = Managers.state.entity
-	local ai_units = (Managers.player.is_server and entity_manager:get_entities("AISimpleExtension")) or entity_manager:get_entities("AiHuskBaseExtension")
-
-	for unit, extension in pairs(ai_units) do
-		if Unit.alive(unit) then
-			Unit.flow_event(unit, "lua_settings_updated")
-		end
-	end
 
 	if not called_from_graphics_quality then
 		self:force_set_widget_value("graphics_quality_settings", "custom")
@@ -6554,8 +7961,18 @@ OptionsView.cb_alien_fx_setup = function (self)
 		use_alien_fx = true
 	end
 
-	local selection = (use_alien_fx and 2) or 1
-	local default_selection = (DefaultUserSettings.get("user_settings", "use_alien_fx") and 2) or 1
+	if use_alien_fx then
+		slot3 = 2
+	else
+		local selection = 1
+	end
+
+	if DefaultUserSettings.get("user_settings", "use_alien_fx") then
+		slot4 = 2
+	else
+		local default_selection = 1
+	end
+
 	GameSettingsDevelopment.use_alien_fx = use_alien_fx
 
 	return selection, options, "menu_settings_alien_fx", default_selection
@@ -6568,7 +7985,15 @@ OptionsView.cb_alien_fx_saved_value = function (self, widget)
 		use_alien_fx = true
 	end
 
-	widget.content.current_selection = (use_alien_fx and 2) or 1
+	slot3 = widget.content
+
+	if use_alien_fx then
+		slot4 = 2
+	else
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_alien_fx = function (self, content)
@@ -6589,17 +8014,42 @@ OptionsView.cb_ssr_setup = function (self)
 			text = Localize("menu_settings_on")
 		}
 	}
-	local ssr_enabled = Application.user_setting("render_settings", "ssr_enabled") or false
+
+	if not Application.user_setting("render_settings", "ssr_enabled") then
+		local ssr_enabled = false
+	end
+
 	local default_value = DefaultUserSettings.get("render_settings", "ssr_enabled")
-	local selection = (ssr_enabled and 2) or 1
-	local default_option = (default_value and 2) or 1
+
+	if ssr_enabled then
+		slot4 = 2
+	else
+		local selection = 1
+	end
+
+	if default_value then
+		slot5 = 2
+	else
+		local default_option = 1
+	end
 
 	return selection, options, "menu_settings_ssr", default_option
 end
 
 OptionsView.cb_ssr_saved_value = function (self, widget)
-	local ssr_enabled = assigned(self.changed_render_settings.ssr_enabled, Application.user_setting("render_settings", "ssr_enabled")) or false
-	widget.content.current_selection = (ssr_enabled and 2) or 1
+	if not assigned(self.changed_render_settings.ssr_enabled, Application.user_setting("render_settings", "ssr_enabled")) then
+		local ssr_enabled = false
+	end
+
+	slot3 = widget.content
+
+	if ssr_enabled then
+		slot4 = 2
+	else
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_ssr = function (self, content, called_from_graphics_quality)
@@ -6616,7 +8066,11 @@ OptionsView.cb_fov_setup = function (self)
 	local min = 45
 	local max = 120
 	local base_fov = CameraSettings.first_person._node.vertical_fov
-	local fov = Application.user_setting("render_settings", "fov") or base_fov
+
+	if not Application.user_setting("render_settings", "fov") then
+		local fov = base_fov
+	end
+
 	local value = get_slider_value(min, max, fov)
 	fov = math.clamp(fov, min, max)
 	local fov_multiplier = fov / base_fov
@@ -6636,7 +8090,11 @@ OptionsView.cb_fov_saved_value = function (self, widget)
 	local min = content.min
 	local max = content.max
 	local base_fov = CameraSettings.first_person._node.vertical_fov
-	local fov = assigned(self.changed_render_settings.fov, Application.user_setting("render_settings", "fov")) or base_fov
+
+	if not assigned(self.changed_render_settings.fov, Application.user_setting("render_settings", "fov")) then
+		local fov = base_fov
+	end
+
 	fov = math.clamp(fov, min, max)
 	content.internal_value = get_slider_value(min, max, fov)
 	content.value = fov
@@ -6687,11 +8145,18 @@ OptionsView.cb_enabled_crosshairs_setup = function (self)
 
 	fassert(default_option, "default option %i does not exist in cb_enabled_crosshairs_setup options table", default_value)
 
-	return selected_option or default_option, options, "menu_settings_enabled_crosshairs", default_option
+	if not selected_option then
+		slot6 = default_option
+	end
+
+	return slot6, options, "menu_settings_enabled_crosshairs", default_option
 end
 
 OptionsView.cb_enabled_crosshairs_saved_value = function (self, widget)
-	local value = assigned(self.changed_user_settings.enabled_crosshairs, Application.user_setting("enabled_crosshairs")) or DefaultUserSettings.get("user_settings", "enabled_crosshairs")
+	if not assigned(self.changed_user_settings.enabled_crosshairs, Application.user_setting("enabled_crosshairs")) then
+		local value = DefaultUserSettings.get("user_settings", "enabled_crosshairs")
+	end
+
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
@@ -6871,11 +8336,18 @@ OptionsView.cb_chat_font_size_setup = function (self)
 
 	fassert(default_option, "default option %i does not exist in cb_chat_font_size_setup options table", default_value)
 
-	return selected_option or default_option, options, "menu_settings_chat_font_size", default_option
+	if not selected_option then
+		slot6 = default_option
+	end
+
+	return slot6, options, "menu_settings_chat_font_size", default_option
 end
 
 OptionsView.cb_chat_font_size_saved_value = function (self, widget)
-	local value = assigned(self.changed_user_settings.chat_font_size, Application.user_setting("chat_font_size")) or DefaultUserSettings.get("user_settings", "chat_font_size")
+	if not assigned(self.changed_user_settings.chat_font_size, Application.user_setting("chat_font_size")) then
+		local value = DefaultUserSettings.get("user_settings", "chat_font_size")
+	end
+
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
@@ -6888,6 +8360,249 @@ OptionsView.cb_chat_font_size_saved_value = function (self, widget)
 	end
 
 	widget.content.current_selection = selected_option
+end
+
+OptionsView.cb_bot_spawn_priority = function (self, content, style, new_priority_order)
+	local list_content = content.list_content
+
+	if new_priority_order then
+		local list_style = style.list_style
+		local item_styles = list_style.item_styles
+
+		for i = 1, #new_priority_order, 1 do
+			local profile_id = new_priority_order[i]
+			local current_priority_index = nil
+
+			for j = i, #list_content, 1 do
+				local item_content = list_content[j]
+
+				if item_content.profile_id == profile_id then
+					current_priority_index = j
+
+					break
+				end
+			end
+
+			fassert(current_priority_index, "cb_bot_spawn_priority: Could not find profile index %s in priority order list.", profile_id)
+
+			list_content[current_priority_index].index_text = list_content[i].index_text
+			list_content[i].index_text = list_content[current_priority_index].index_text
+			list_content[current_priority_index] = list_content[i]
+			list_content[i] = list_content[current_priority_index]
+			item_styles[current_priority_index] = item_styles[i]
+			item_styles[i] = item_styles[current_priority_index]
+		end
+	end
+
+	local original_bot_spawn_priority = self.original_bot_spawn_priority
+	local session_bot_spawn_priority = self.session_bot_spawn_priority
+	local order_changed = false
+
+	for i = 1, #list_content, 1 do
+		local profile_id = original_bot_spawn_priority[i]
+		local new_profile_id = list_content[i].profile_id
+
+		if profile_id ~= new_profile_id then
+			order_changed = true
+		end
+
+		self.session_bot_spawn_priority[i] = new_profile_id
+	end
+
+	self.changed_bot_spawn_priority = order_changed
+end
+
+OptionsView.cb_bot_spawn_priority_setup = function (self)
+	local list_contents = {}
+	local list_styles = {}
+	local icon_size = {
+		34,
+		34
+	}
+	local text = "menu_settings_bot_spawn_priority"
+	local enabled_text_color = Colors.get_color_table_with_alpha("font_default", 255)
+	local disabled_text_color = Colors.get_color_table_with_alpha("red", 200)
+	local default_priority = ProfilePriority
+	local saved_priority = self.session_bot_spawn_priority
+
+	if #saved_priority <= 0 or not saved_priority then
+		local profile_priority = default_priority
+	end
+
+	local num_entries = #profile_priority
+
+	for i = 1, num_entries, 1 do
+		local profile_id = profile_priority[i]
+		local profile = SPProfiles[profile_id]
+
+		if not profile.tutorial_profile then
+			local unit_name = profile.unit_name
+			local display_name = profile.ingame_display_name
+			local content = {
+				background_highlight_texture = "playerlist_hover",
+				selected = false,
+				hotspot = {},
+				texture = string.format("tabs_class_icon_%s_normal", unit_name),
+				highlight_texture = string.format("tabs_class_icon_%s_selected", unit_name),
+				profile_id = profile_id,
+				text = display_name,
+				index_text = string.format("%d.", i)
+			}
+			local style = {
+				size = {
+					icon_size[1] + 280 + 28,
+					icon_size[2]
+				},
+				color = {
+					50,
+					255,
+					255,
+					255
+				},
+				texture = {
+					masked = true,
+					offset = {
+						280,
+						0,
+						25
+					},
+					color = Colors.get_color_table_with_alpha("white", 255),
+					size = icon_size
+				},
+				background_highlight_texture = {
+					masked = true,
+					offset = {
+						0,
+						0,
+						25
+					},
+					color = Colors.get_color_table_with_alpha("white", 150),
+					size = {
+						icon_size[1] + 280 + 28,
+						icon_size[2]
+					}
+				},
+				background_selected_texture = {
+					masked = true,
+					offset = {
+						0,
+						0,
+						25
+					},
+					color = Colors.get_color_table_with_alpha("white", 255),
+					size = {
+						icon_size[1] + 280 + 28,
+						icon_size[2]
+					}
+				},
+				highlight_texture = {
+					masked = true,
+					offset = {
+						280,
+						0,
+						25
+					},
+					color = Colors.get_color_table_with_alpha("white", 255),
+					size = icon_size
+				},
+				text = {
+					upper_case = false,
+					localize = true,
+					font_size = 16,
+					dynamic_font = true,
+					font_type = "hell_shark_masked",
+					offset = {
+						28,
+						5,
+						25
+					},
+					text_color = enabled_text_color,
+					enabled_color = enabled_text_color,
+					disabled_color = disabled_text_color
+				},
+				index_text = {
+					upper_case = false,
+					localize = false,
+					font_size = 16,
+					dynamic_font = true,
+					font_type = "hell_shark_masked",
+					offset = {
+						0,
+						5,
+						25
+					},
+					text_color = enabled_text_color,
+					enabled_color = enabled_text_color,
+					disabled_color = disabled_text_color
+				}
+			}
+			list_contents[i] = content
+			list_styles[i] = style
+		end
+	end
+
+	local function item_content_change_function(content, style, index)
+		if style.text_color then
+			if index > PlayerManager.MAX_PLAYERS or not style.enabled_color then
+				slot3 = style.disabled_color
+			end
+
+			style.text_color = slot3
+		end
+	end
+
+	return text, list_contents, list_styles, icon_size, item_content_change_function, default_priority
+end
+
+OptionsView.cb_bot_spawn_priority_saved_value = function (self, widget)
+	local content = widget.content
+	local list_content = content.list_content
+	local default_priority = content.default_value
+	local style = widget.style
+	local list_style = style.list_style
+	local item_styles = list_style.item_styles
+	local selected_index = content.current_selection
+
+	if selected_index then
+		local item_content = list_content[selected_index]
+		local hotspot = item_content.hotspot
+		hotspot.is_selected = false
+		content.current_selection = nil
+		local up_hotspot = content.up_hotspot
+		up_hotspot.active = false
+		local down_hotspot = content.down_hotspot
+		down_hotspot.active = false
+	end
+
+	local original_bot_spawn_priority = self.original_bot_spawn_priority
+
+	if #original_bot_spawn_priority <= 0 or not original_bot_spawn_priority then
+		local profile_priority = default_priority
+	end
+
+	for i = 1, #profile_priority, 1 do
+		local profile_id = profile_priority[i]
+		local current_priority_index = nil
+
+		for j = i, #list_content, 1 do
+			local item_content = list_content[j]
+
+			if item_content.profile_id == profile_id then
+				current_priority_index = j
+
+				break
+			end
+		end
+
+		fassert(current_priority_index, "cb_bot_spawn_priority_saved_value: Could not find profile index %s in priority order list.", profile_id)
+
+		list_content[current_priority_index].index_text = list_content[i].index_text
+		list_content[i].index_text = list_content[current_priority_index].index_text
+		list_content[current_priority_index] = list_content[i]
+		list_content[i] = list_content[current_priority_index]
+		item_styles[current_priority_index] = item_styles[i]
+		item_styles[i] = item_styles[current_priority_index]
+	end
 end
 
 OptionsView.cb_clan_tag_setup = function (self)
@@ -6951,7 +8666,11 @@ end
 OptionsView.cb_blood_decals_setup = function (self)
 	local min = 0
 	local max = 500
-	local num_blood_decals = Application.user_setting("num_blood_decals") or BloodSettings.blood_decals.num_decals
+
+	if not Application.user_setting("num_blood_decals") then
+		local num_blood_decals = BloodSettings.blood_decals.num_decals
+	end
+
 	local default_value = DefaultUserSettings.get("user_settings", "num_blood_decals")
 	local value = get_slider_value(min, max, num_blood_decals)
 	num_blood_decals = math.clamp(num_blood_decals, min, max)
@@ -6964,7 +8683,11 @@ OptionsView.cb_blood_decals_saved_value = function (self, widget)
 	local content = widget.content
 	local min = content.min
 	local max = content.max
-	local num_blood_decals = assigned(self.changed_user_settings.num_blood_decals, Application.user_setting("num_blood_decals")) or BloodSettings.blood_decals.num_decals
+
+	if not assigned(self.changed_user_settings.num_blood_decals, Application.user_setting("num_blood_decals")) then
+		local num_blood_decals = BloodSettings.blood_decals.num_decals
+	end
+
 	num_blood_decals = math.clamp(num_blood_decals, min, max)
 	content.internal_value = get_slider_value(min, max, num_blood_decals)
 	content.value = num_blood_decals
@@ -6994,7 +8717,11 @@ OptionsView.cb_dynamic_range_sound_setup = function (self)
 		}
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "dynamic_range_sound")
-	local dynamic_range_sound = Application.user_setting("dynamic_range_sound") or default_value
+
+	if not Application.user_setting("dynamic_range_sound") then
+		local dynamic_range_sound = default_value
+	end
+
 	local selected_option = 1
 
 	if dynamic_range_sound == "high" then
@@ -7011,7 +8738,10 @@ OptionsView.cb_dynamic_range_sound_setup = function (self)
 end
 
 OptionsView.cb_dynamic_range_sound_saved_value = function (self, widget)
-	local dynamic_range_sound = assigned(self.changed_user_settings.dynamic_range_sound, Application.user_setting("dynamic_range_sound")) or "low"
+	if not assigned(self.changed_user_settings.dynamic_range_sound, Application.user_setting("dynamic_range_sound")) then
+		local dynamic_range_sound = "low"
+	end
+
 	local selected_option = 1
 
 	if dynamic_range_sound == "high" then
@@ -7055,7 +8785,10 @@ OptionsView.cb_sound_panning_rule_setup = function (self)
 	local selected_option = 1
 	local default_option = nil
 	local default_value = DefaultUserSettings.get("user_settings", "sound_panning_rule")
-	local sound_panning_rule = Application.user_setting("sound_panning_rule") or default_value
+
+	if not Application.user_setting("sound_panning_rule") then
+		local sound_panning_rule = default_value
+	end
 
 	if sound_panning_rule == "headphones" then
 		selected_option = 1
@@ -7074,7 +8807,10 @@ end
 
 OptionsView.cb_sound_panning_rule_saved_value = function (self, widget)
 	local selected_option = 1
-	local sound_panning_rule = assigned(self.changed_user_settings.sound_panning_rule, Application.user_setting("sound_panning_rule")) or "headphones"
+
+	if not assigned(self.changed_user_settings.sound_panning_rule, Application.user_setting("sound_panning_rule")) then
+		local sound_panning_rule = "headphones"
+	end
 
 	if sound_panning_rule == "headphones" then
 		selected_option = 1
@@ -7152,7 +8888,11 @@ end
 OptionsView.cb_animation_lod_distance_setup = function (self)
 	local min = 0
 	local max = 1
-	local animation_lod_distance_multiplier = Application.user_setting("animation_lod_distance_multiplier") or GameSettingsDevelopment.bone_lod_husks.lod_multiplier
+
+	if not Application.user_setting("animation_lod_distance_multiplier") then
+		local animation_lod_distance_multiplier = GameSettingsDevelopment.bone_lod_husks.lod_multiplier
+	end
+
 	local value = get_slider_value(min, max, animation_lod_distance_multiplier)
 
 	return value, min, max, 1, "menu_settings_animation_lod_multiplier"
@@ -7162,7 +8902,11 @@ OptionsView.cb_animation_lod_distance_saved_value = function (self, widget)
 	local content = widget.content
 	local min = content.min
 	local max = content.max
-	local animation_lod_distance_multiplier = assigned(self.changed_user_settings.animation_lod_distance_multiplier, Application.user_setting("animation_lod_distance_multiplier")) or GameSettingsDevelopment.bone_lod_husks.lod_multiplier
+
+	if not assigned(self.changed_user_settings.animation_lod_distance_multiplier, Application.user_setting("animation_lod_distance_multiplier")) then
+		local animation_lod_distance_multiplier = GameSettingsDevelopment.bone_lod_husks.lod_multiplier
+	end
+
 	animation_lod_distance_multiplier = math.clamp(animation_lod_distance_multiplier, min, max)
 	content.internal_value = get_slider_value(min, max, animation_lod_distance_multiplier)
 	content.value = animation_lod_distance_multiplier
@@ -7252,8 +8996,18 @@ local function AddStepperSetting(setting_name, setter_cb)
 			use_tobii = true
 		end
 
-		local selection = (use_tobii and 2) or 1
-		local default_selection = (DefaultUserSettings.get("user_settings", setting_name) and 2) or 1
+		if use_tobii then
+			slot3 = 2
+		else
+			local selection = 1
+		end
+
+		if DefaultUserSettings.get("user_settings", setting_name) then
+			slot4 = 2
+		else
+			local default_selection = 1
+		end
+
 		GameSettingsDevelopment[setting_name] = use_tobii
 
 		return selection, options, "menu_settings_" .. setting_name, default_selection
@@ -7266,7 +9020,15 @@ local function AddStepperSetting(setting_name, setter_cb)
 		GameSettingsDevelopment[setting_name] = options_values[current_selection]
 
 		if setter_cb ~= nil then
-			setter_cb(content.current_selection == 2)
+			slot4 = setter_cb
+
+			if content.current_selection ~= 2 then
+				slot5 = false
+			else
+				slot5 = true
+			end
+
+			slot4(slot5)
 		end
 	end
 
@@ -7279,7 +9041,15 @@ local function AddStepperSetting(setting_name, setter_cb)
 			use_tobii = true
 		end
 
-		widget.content.current_selection = (use_tobii and 2) or 1
+		slot3 = widget.content
+
+		if use_tobii then
+			slot4 = 2
+		else
+			slot4 = 1
+		end
+
+		slot3.current_selection = slot4
 	end
 end
 
@@ -7304,7 +9074,10 @@ local function AddSliderSetting(setting_name, setting_min, setting_max, num_deci
 	local value_setup_name = value_set_name .. "_setup"
 
 	OptionsView[value_setup_name] = function (self)
-		local value = Application.user_setting(setting_name) or DefaultUserSettings[setting_name]
+		if not Application.user_setting(setting_name) then
+			local value = DefaultUserSettings[setting_name]
+		end
+
 		local default_value = DefaultUserSettings.get("user_settings", setting_name)
 		local new_value = get_slider_value(setting_min, setting_max, value)
 
@@ -7344,10 +9117,23 @@ local function get_button_locale_name(controller_type, button_name)
 		button_locale_name = string.format("%s %s", "mouse", button_name)
 	elseif controller_type == "gamepad" then
 		local button_index = Pad1.button_index(button_name)
-		button_locale_name = Pad1.button_locale_name(button_index) ~= "" or button_name
+
+		if Pad1.button_locale_name(button_index) == "" then
+			button_locale_name = button_name
+
+			if button_name then
+				button_locale_name = false
+			end
+		else
+			button_locale_name = true
+		end
 	end
 
-	return (button_locale_name ~= "" and button_locale_name) or TextToUpper(button_name)
+	if button_locale_name == "" or not button_locale_name then
+		slot3 = TextToUpper(button_name)
+	end
+
+	return slot3
 end
 
 OptionsView.cb_keybind_setup = function (self, keymappings_key, keymappings_table_key, actions)
@@ -7505,11 +9291,26 @@ OptionsView.cb_twitch_vote_time_setup = function (self)
 
 	fassert(default_option, "default option %i does not exist in cb_chat_font_size_setup options table", default_value)
 
-	return selected_option or default_option, options, "menu_settings_twitch_vote_time", default_option
+	if PLATFORM == "win32" then
+		if not selected_option then
+			slot6 = default_option
+		end
+
+		return slot6, options, "menu_settings_twitch_vote_time", default_option
+	else
+		if not selected_option then
+			slot6 = default_option
+		end
+
+		return slot6, options, "menu_settings_mixer_vote_time", default_option
+	end
 end
 
 OptionsView.cb_twitch_vote_time_saved_value = function (self, widget)
-	local value = assigned(self.changed_user_settings.twitch_vote_time, Application.user_setting("twitch_vote_time")) or DefaultUserSettings.get("user_settings", "twitch_vote_time")
+	if not assigned(self.changed_user_settings.twitch_vote_time, Application.user_setting("twitch_vote_time")) then
+		local value = DefaultUserSettings.get("user_settings", "twitch_vote_time")
+	end
+
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
@@ -7570,11 +9371,26 @@ OptionsView.cb_twitch_time_between_votes_setup = function (self)
 
 	fassert(default_option, "default option %i does not exist in cb_chat_font_size_setup options table", default_value)
 
-	return selected_option or default_option, options, "menu_settings_twitch_time_between_votes", default_option
+	if PLATFORM == "win32" then
+		if not selected_option then
+			slot6 = default_option
+		end
+
+		return slot6, options, "menu_settings_twitch_time_between_votes", default_option
+	else
+		if not selected_option then
+			slot6 = default_option
+		end
+
+		return slot6, options, "menu_settings_mixer_time_between_votes", default_option
+	end
 end
 
 OptionsView.cb_twitch_time_between_votes_saved_value = function (self, widget)
-	local value = assigned(self.changed_user_settings.twitch_time_between_votes, Application.user_setting("twitch_time_between_votes")) or DefaultUserSettings.get("user_settings", "twitch_time_between_votes")
+	if not assigned(self.changed_user_settings.twitch_time_between_votes, Application.user_setting("twitch_time_between_votes")) then
+		local value = DefaultUserSettings.get("user_settings", "twitch_time_between_votes")
+	end
+
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
@@ -7592,7 +9408,11 @@ end
 OptionsView.cb_twitch_difficulty_setup = function (self)
 	local min = 0
 	local max = 100
-	local twitch_difficulty = Application.user_setting("twitch_difficulty") or DefaultUserSettings.get("user_settings", "twitch_difficulty")
+
+	if not Application.user_setting("twitch_difficulty") then
+		local twitch_difficulty = DefaultUserSettings.get("user_settings", "twitch_difficulty")
+	end
+
 	local default_value = DefaultUserSettings.get("user_settings", "twitch_difficulty")
 	local value = get_slider_value(min, max, twitch_difficulty)
 
@@ -7603,7 +9423,14 @@ OptionsView.cb_twitch_difficulty_saved_value = function (self, widget)
 	local content = widget.content
 	local min = content.min
 	local max = content.max
-	local twitch_difficulty = assigned(self.changed_user_settings.twitch_difficulty, Application.user_setting("twitch_difficulty") or DefaultUserSettings.get("user_settings", "twitch_difficulty"))
+	slot5 = assigned
+	slot6 = self.changed_user_settings.twitch_difficulty
+
+	if not Application.user_setting("twitch_difficulty") then
+		slot7 = DefaultUserSettings.get("user_settings", "twitch_difficulty")
+	end
+
+	local twitch_difficulty = slot5(slot6, slot7)
 	twitch_difficulty = math.clamp(twitch_difficulty, min, max)
 	content.internal_value = get_slider_value(min, max, twitch_difficulty)
 	content.value = twitch_difficulty

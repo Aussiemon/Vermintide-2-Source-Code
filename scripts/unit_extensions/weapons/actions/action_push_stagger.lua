@@ -34,7 +34,7 @@ ActionPushStagger.client_owner_start_action = function (self, new_action, t, cha
 	local career_extension = ScriptUnit.extension(owner_unit, "career_system")
 	local has_melee_boost, boost_amount = career_extension:has_melee_boost()
 	self.melee_boost_curve_multiplier = boost_amount
-	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t) or has_melee_boost
+	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
 	self.power_level = power_level
 	self.owner_buff_extension = buff_extension
 	self.owner_career_extension = career_extension
@@ -162,7 +162,7 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 		callback_context.num_hits = 0
 		local physics_world = World.get_data(world, "physics_world")
 		local pos = POSITION_LOOKUP[owner_unit]
-		local radius = current_action.push_radius
+		local radius = math.max(current_action.push_radius, 2.5)
 		local collision_filter = "filter_melee_push"
 
 		PhysicsWorld.overlap(physics_world, callback, "shape", "sphere", "position", pos, "size", radius, "types", "dynamics", "collision_filter", collision_filter)
@@ -254,7 +254,7 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 							network_manager.network_transmit:send_rpc_server("rpc_play_melee_hit_effects", sound_event_id, hit_position, sound_type_id, hit_unit_id)
 						end
 					else
-						Application.warning("[ActionSweep] Missing sound event for push action in unit %q.", self.weapon_unit)
+						Application.warning("[ActionPushStagger] Missing sound event for push action in unit %q.", self.weapon_unit)
 					end
 
 					local shield_blocked = AiUtils.attack_is_shield_blocked(hit_unit, owner_unit)
@@ -262,7 +262,7 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 					local damage_source_id = NetworkLookup.damage_sources[damage_source]
 					local is_critical_strike = self._is_critical_strike
 
-					weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, attack_direction, damage_profile_id_to_use, "power_level", power_level, "hit_target_index", nil, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", false, "can_stagger", true)
+					weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id_to_use, "power_level", power_level, "hit_target_index", nil, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", false, "can_stagger", true)
 
 					if Managers.state.controller_features and self.owner.local_player and not self.has_played_rumble_effect then
 						Managers.state.controller_features:add_effect("rumble", {

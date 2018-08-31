@@ -316,6 +316,23 @@ local function array_push_back10(a, item1, item2, item3, item4, item5, item6, it
 	a[2] = n + 10
 end
 
+local function array_push_back11(a, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11)
+	local t = a[1]
+	local n = a[2]
+	t[n + 1] = item1
+	t[n + 2] = item2
+	t[n + 3] = item3
+	t[n + 4] = item4
+	t[n + 5] = item5
+	t[n + 6] = item6
+	t[n + 7] = item7
+	t[n + 8] = item8
+	t[n + 9] = item9
+	t[n + 10] = item10
+	t[n + 11] = item11
+	a[2] = n + 11
+end
+
 local array_push_back_table_lut = {
 	function (a, t)
 		local at = a[1]
@@ -532,6 +549,7 @@ local a = {
 	push_back8 = array_push_back8,
 	push_back9 = array_push_back9,
 	push_back10 = array_push_back10,
+	push_back11 = array_push_back11,
 	push_back_table = array_push_back_table,
 	insert_at = array_insert_at,
 	insert_sorted = array_insert_sorted,

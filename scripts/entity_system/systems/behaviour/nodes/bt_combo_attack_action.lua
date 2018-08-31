@@ -35,16 +35,6 @@ BTComboAttackAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.attacking_target = target_unit
 	blackboard.move_state = "attacking"
-	local breed = blackboard.breed
-
-	if breed.attack_general_sound_event then
-		local should_backstab = breed.use_backstab_vo
-		local is_behind = AiUtils.unit_is_behind_player(unit, target_unit)
-		local should_backstab = should_backstab and is_behind and blackboard.total_slots_count < 5
-
-		DialogueSystem:TriggerAttack(target_unit, unit, should_backstab, blackboard)
-	end
-
 	local current_rotation = Unit.local_rotation(unit, 0)
 	local target_locomotion_extension = ScriptUnit.has_extension(target_unit, "locomotion_system")
 	blackboard.target_locomotion_extension = target_locomotion_extension
@@ -235,9 +225,10 @@ end
 BTComboAttackAction.run = function (self, unit, blackboard, t, dt)
 	local combo = blackboard.combo_attack_data
 	local attacking_target = combo.attacking_target
-	blackboard.target_unit = attacking_target
 
-	if not Unit.alive(attacking_target) or blackboard.attack_aborted then
+	if blackboard.attack_aborted or not Unit.alive(attacking_target) then
+		combo.aborted = true
+
 		return "done"
 	end
 
@@ -537,6 +528,15 @@ BTComboAttackAction.get_attack_cooldown_finished_at = function (self, unit, blac
 	local cooldown = AiUtils.random(cooldown_data[1], cooldown_data[2])
 
 	return true, cooldown + t
+end
+
+BTComboAttackAction.anim_cb_attack_vce = function (self, unit, blackboard)
+	local network_manager = Managers.state.network
+	local game = network_manager:game()
+
+	if game then
+		DialogueSystem:TriggerAttack(blackboard.target_unit, unit, false, blackboard)
+	end
 end
 
 return

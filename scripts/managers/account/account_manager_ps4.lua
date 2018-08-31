@@ -25,6 +25,7 @@ AccountManager.init = function (self)
 
 	self._room_state = nil
 	self._current_room = nil
+	self._offline_mode = nil
 	self._session = nil
 	self._has_presence_game_data = false
 	self._np_title_id = PS4.title_id()
@@ -92,12 +93,21 @@ AccountManager.set_current_lobby = function (self, lobby)
 	self._current_room = lobby
 end
 
+AccountManager.initiate_leave_game = function (self)
+	self._leave_game = true
+
+	if self:is_online() and self._has_presence_game_data then
+		self:delete_presence_game_data()
+	end
+end
+
 AccountManager.leaving_game = function (self)
-	return
+	return self._leave_game
 end
 
 AccountManager.reset = function (self)
-	return
+	self._offline_mode = nil
+	self._leave_game = nil
 end
 
 AccountManager.destroy = function (self)
@@ -120,6 +130,18 @@ AccountManager.destroy = function (self)
 	end
 end
 
+AccountManager.is_online = function (self)
+	return not self._offline_mode
+end
+
+AccountManager.offline_mode = function (self)
+	return self._offline_mode
+end
+
+AccountManager.set_offline_mode = function (self, offline_mode)
+	self._offline_mode = offline_mode
+end
+
 AccountManager.update = function (self, dt)
 	self:_update_psn_client(dt)
 	self:_aquire_np_title_id(dt)
@@ -134,7 +156,7 @@ end
 local PSN_CLIENT_READY_TIMEOUT = 20
 
 AccountManager._update_psn_client = function (self, dt)
-	if not LobbyInternal.psn_client then
+	if not rawget(_G, "LobbyInternal") or not LobbyInternal.psn_client then
 		self._psn_client_error = nil
 
 		return
@@ -706,6 +728,26 @@ AccountManager._set_presence_status_content = function (self, presence, append)
 	str = str .. "}"
 
 	return str
+end
+
+AccountManager.check_popup_retrigger = function (self)
+	return
+end
+
+AccountManager.set_should_teardown_xboxlive = function (self)
+	return
+end
+
+AccountManager.has_fatal_error = function (self)
+	return false
+end
+
+AccountManager.has_popup = function (self)
+	return false
+end
+
+AccountManager.cancel_all_popups = function (self)
+	return
 end
 
 return

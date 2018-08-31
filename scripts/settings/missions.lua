@@ -1583,14 +1583,9 @@ Missions.prologue_use_special_ability = {
 	},
 	tooltip_gamepad_inputs = {
 		{
-			suffix = "+",
-			prefix = "",
-			action = "active_ability_left_pressed"
-		},
-		{
 			suffix = "",
 			prefix = "",
-			action = "active_ability_right_pressed"
+			action = "ability"
 		}
 	}
 }

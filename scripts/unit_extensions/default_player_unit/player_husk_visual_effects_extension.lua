@@ -6,11 +6,11 @@ PlayerHuskVisualEffectsExtension.init = function (self, extension_init_context, 
 	self.network_manager = Managers.state.network
 	self.world = extension_init_context.world
 	self.unit = unit
-	self.threshold_changed = true
+	self.overcharge_threshold_changed = true
 end
 
 PlayerHuskVisualEffectsExtension.extensions_ready = function (self, world, unit)
-	return
+	self.overcharge_extension = ScriptUnit.extension(unit, "overcharge_system")
 end
 
 PlayerHuskVisualEffectsExtension.destroy = function (self)
@@ -18,57 +18,46 @@ PlayerHuskVisualEffectsExtension.destroy = function (self)
 end
 
 PlayerHuskVisualEffectsExtension.update = function (self, unit, input, dt, context, t)
-	local overcharge_percentage, overcharge_threshold_percentage = self:_update_game_object_field()
-
-	self:_update_thresholds(overcharge_percentage, overcharge_threshold_percentage)
-	self:_set_flow_values(overcharge_percentage)
+	self:_update_overcharge_thresholds()
+	self:_set_overcharge_flow_values()
 end
 
-PlayerHuskVisualEffectsExtension._update_thresholds = function (self, overcharge_percentage, overcharge_threshold_percentage)
-	if self.above_threshold and overcharge_percentage < overcharge_threshold_percentage then
-		self.above_threshold = false
-		self.threshold_changed = true
-	elseif not self.above_threshold and overcharge_threshold_percentage <= overcharge_percentage then
-		self.above_threshold = true
-		self.threshold_changed = true
+PlayerHuskVisualEffectsExtension._update_overcharge_thresholds = function (self)
+	local overcharge_extension = self.overcharge_extension
+	local value, threshold, _ = overcharge_extension:current_overcharge_status()
+
+	if self.above_overcharge_threshold and value < threshold then
+		self.above_overcharge_threshold = false
+		self.overcharge_threshold_changed = true
+	elseif not self.above_overcharge_threshold and threshold <= value then
+		self.above_overcharge_threshold = true
+		self.overcharge_threshold_changed = true
 	else
-		self.threshold_changed = false
+		self.overcharge_threshold_changed = false
 	end
 end
 
-PlayerHuskVisualEffectsExtension._update_game_object_field = function (self)
-	local network_manager = self.network_manager
-	local unit = self.unit
-	local game = network_manager:game()
-	local go_id = Managers.state.unit_storage:go_id(unit)
-
-	if game and go_id then
-		local overcharge_percentage = GameSession.game_object_field(game, go_id, "overcharge_percentage")
-		local overcharge_threshold_percentage = GameSession.game_object_field(game, go_id, "overcharge_threshold_percentage")
-
-		return overcharge_percentage, overcharge_threshold_percentage
-	end
-
-	return 0, 0
-end
-
-PlayerHuskVisualEffectsExtension._set_flow_values = function (self, overcharge_percentage)
-	local unit = self.unit
-
-	if unit and Unit.alive(unit) then
-		unit_set_flow_variable(unit, "current_overcharge", overcharge_percentage)
-		unit_flow_event(unit, "lua_update_overcharge")
-	end
-
-	if self.threshold_changed then
-		local event_name = "below_overcharge_threshold"
-
-		if self.above_threshold then
-			event_name = "above_overcharge_threshold"
-		end
+PlayerHuskVisualEffectsExtension._set_overcharge_flow_values = function (self)
+	if self.overcharge_extension then
+		local anim_blend_overcharge = self.overcharge_extension:get_anim_blend_overcharge()
+		local unit = self.unit
 
 		if unit and Unit.alive(unit) then
-			unit_flow_event(unit, event_name)
+			unit_set_flow_variable(unit, "current_overcharge", anim_blend_overcharge)
+			unit_flow_event(unit, "lua_update_overcharge")
+		end
+
+		if self.overcharge_threshold_changed then
+			self.overcharge_threshold_changed = false
+			local event_name = "below_overcharge_threshold"
+
+			if self.above_overcharge_threshold then
+				event_name = "above_overcharge_threshold"
+			end
+
+			if unit and Unit.alive(unit) then
+				unit_flow_event(unit, event_name)
+			end
 		end
 	end
 end

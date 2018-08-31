@@ -8,6 +8,7 @@ end
 
 PlayerCharacterStateKnockedDown.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
 	CharacterStateHelper.stop_weapon_actions(self.inventory_extension, "knocked_down")
+	CharacterStateHelper.stop_career_abilities(self.career_extension, "knocked_down")
 
 	local unit = self.unit
 	local input_source = self.player.input_source
@@ -56,6 +57,10 @@ PlayerCharacterStateKnockedDown.on_enter = function (self, unit, input, dt, cont
 	local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
 
 	inventory_extension:check_and_drop_pickups("knocked_down")
+
+	local overcharge_extension = ScriptUnit.extension(unit, "overcharge_system")
+
+	overcharge_extension:reset()
 	status_extension:set_catapulted(false)
 end
 

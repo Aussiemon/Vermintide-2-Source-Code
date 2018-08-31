@@ -3,8 +3,8 @@ local_require("scripts/ui/ui_widgets")
 local FONT_SIZE = 18
 local MAX_NUMBER_OF_MESSAGES = 5
 local scenegraph_definition = {
-	screen = {
-		scale = "fit",
+	root = {
+		scale = "hud_scale_fit",
 		position = {
 			0,
 			0,
@@ -17,7 +17,7 @@ local scenegraph_definition = {
 	},
 	message_animated = {
 		vertical_alignment = "top",
-		parent = "screen",
+		parent = "root",
 		horizontal_alignment = "right",
 		position = {
 			-190,
@@ -30,6 +30,12 @@ local scenegraph_definition = {
 		}
 	}
 }
+
+if platform ~= "win32" then
+	scenegraph_definition.root.scale = "hud_fit"
+	scenegraph_definition.root.is_root = false
+end
+
 local widget_definitions = {
 	message_animated = {
 		scenegraph_id = "message_animated",

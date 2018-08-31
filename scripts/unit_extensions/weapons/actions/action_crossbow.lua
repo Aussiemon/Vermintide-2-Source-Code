@@ -50,6 +50,7 @@ ActionCrossbow.client_owner_start_action = function (self, new_action, t, chain_
 	end
 
 	self._is_critical_strike = is_critical_strike
+	self._unhide_ammo_at_action_end = self.owner_buff_extension:get_non_stacking_buff("victor_bountyhunter_passive_infinite_ammo_buff")
 end
 
 ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_damage)
@@ -245,6 +246,10 @@ ActionCrossbow.finish = function (self, reason)
 
 	if hud_extension then
 		hud_extension.show_critical_indication = false
+	end
+
+	if self._unhide_ammo_at_action_end then
+		Unit.flow_event(self.first_person_unit, "anim_cb_unhide_ammo")
 	end
 end
 

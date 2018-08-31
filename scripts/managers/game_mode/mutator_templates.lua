@@ -66,7 +66,7 @@ local function default_start_game_mode_function_server(context, data)
 	end
 end
 
-local function default_start_game_mode_function_client(context, data)
+local function default_ai_killed_function_server(context, data, killed_unit, killer_unit)
 	return
 end
 
@@ -75,6 +75,14 @@ local function default_start_function_client(context, data)
 end
 
 local function default_stop_function_client(context, data)
+	return
+end
+
+local function default_start_game_mode_function_client(context, data)
+	return
+end
+
+local function default_ai_killed_function_client(context, data, killed_unit, killer_unit)
 	return
 end
 
@@ -124,6 +132,17 @@ for name, template in pairs(mutator_settings) do
 		template.server.start_game_mode_function = default_start_game_mode_function_server
 	end
 
+	if template.server_ai_killed_function then
+		local function ai_killed_function(context, data, killed_unit, killer_unit)
+			default_ai_killed_function_server(context, data, killed_unit, killer_unit)
+			template.server_ai_killed_function(context, data, killed_unit, killer_unit)
+		end
+
+		template.server.ai_killed_function = ai_killed_function
+	else
+		template.server.ai_killed_function = default_ai_killed_function_server
+	end
+
 	if template.client_start_function then
 		local function start_function(context, data)
 			default_start_function_client(context, data)
@@ -155,6 +174,17 @@ for name, template in pairs(mutator_settings) do
 		template.client.start_game_mode_function = start_game_mode_function
 	else
 		template.client.start_game_mode_function = default_start_game_mode_function_client
+	end
+
+	if template.client_ai_killed_function then
+		local function ai_killed_function(context, data, killed_unit, killer_unit)
+			default_ai_killed_function_client(context, data, killed_unit, killer_unit)
+			template.client_ai_killed_function(context, data, killed_unit, killer_unit)
+		end
+
+		template.client.ai_killed_function = ai_killed_function
+	else
+		template.client.ai_killed_function = default_ai_killed_function_client
 	end
 
 	if template.server_update_function then

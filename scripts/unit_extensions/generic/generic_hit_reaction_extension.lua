@@ -3,6 +3,9 @@ require("scripts/settings/breeds")
 require("scripts/utils/hit_reactions_template_compiler")
 require("scripts/helpers/damage_utils")
 
+local HitTemplates = HitTemplates
+local Dismemberments = Dismemberments
+local SoundEvents = SoundEvents
 local script_data = script_data
 
 local function print_debug()
@@ -140,7 +143,6 @@ GenericHitReactionExtension.init = function (self, extension_init_context, unit,
 	self.is_husk = extension_init_data.is_husk
 	self.unit = unit
 	self.is_server = Managers.player.is_server
-	self._breed = Unit.get_data(unit, "breed")
 
 	if extension_init_data.is_husk == nil then
 		self.is_husk = not Managers.player.is_server
@@ -166,10 +168,17 @@ GenericHitReactionExtension.extensions_ready = function (self, world, unit)
 	self.dialogue_extension = ScriptUnit.has_extension(unit, "dialogue_system") and ScriptUnit.extension(unit, "dialogue_system")
 	self.locomotion_extension = ScriptUnit.has_extension(unit, "locomotion_system") and ScriptUnit.extension(unit, "locomotion_system")
 	self.ai_extension = ScriptUnit.has_extension(unit, "ai_system") and ScriptUnit.extension(unit, "ai_system")
+	self._breed = (BLACKBOARDS[unit] and BLACKBOARDS[unit].breed) or nil
 end
 
 GenericHitReactionExtension.destroy = function (self)
 	return
+end
+
+GenericHitReactionExtension.unfreeze = function (self)
+	self._delayed_animation = nil
+	self._delayed_flow = nil
+	self._delayed_push = nil
 end
 
 GenericHitReactionExtension.reset = function (self)
@@ -237,9 +246,10 @@ GenericHitReactionExtension.update = function (self, unit, input, dt, context, t
 
 	pack_index[stride](biggest_hit, 1, unpack_index[stride](damages, best_damage_index))
 
-	local is_dead = not health_extension:is_alive()
+	local is_alive = health_extension:is_alive()
+	local is_dead = not is_alive
 
-	if not is_dead then
+	if is_alive then
 		local hit_reaction = HitReactions.get_reaction(self.hit_reaction_template, self.is_husk)
 
 		hit_reaction(unit, dt, context, t, biggest_hit)
@@ -250,6 +260,7 @@ GenericHitReactionExtension.update = function (self, unit, input, dt, context, t
 	end
 
 	local damage_type = biggest_hit[DamageDataIndex.DAMAGE_TYPE]
+	local hit_position = Vector3Aux.unbox(biggest_hit[DamageDataIndex.POSITION])
 	local damage_direction = Vector3Aux.unbox(biggest_hit[DamageDataIndex.DIRECTION])
 	local hit_zone_name = biggest_hit[DamageDataIndex.HIT_ZONE]
 	local damage_amount = biggest_hit[DamageDataIndex.DAMAGE_AMOUNT]
@@ -266,6 +277,7 @@ GenericHitReactionExtension.update = function (self, unit, input, dt, context, t
 
 	conditions.damage_type = damage_type
 	conditions.hit_zone = hit_zone_name
+	conditions.hit_position = hit_position
 	conditions.hit_direction = hit_direction
 	conditions.death = is_dead
 	conditions.weapon_type = offending_weapon
@@ -368,11 +380,9 @@ local allowed_diagonal_hit_zones = {
 	torso = true
 }
 
-GenericHitReactionExtension._check_for_diagonal_dismemberment = function (self, unit, actor_name, hit_direction, flow_event, hit_zone)
-	local dismember_event = flow_event
-
+GenericHitReactionExtension._check_for_diagonal_dismemberment = function (self, unit, actor_name, hit_direction, hit_zone)
 	if not Unit.actor(unit, actor_name) then
-		return dismember_event
+		return nil, false
 	end
 
 	local impact_position = Actor.center_of_mass(Unit.actor(unit, actor_name))
@@ -394,21 +404,21 @@ GenericHitReactionExtension._check_for_diagonal_dismemberment = function (self, 
 		direction = "left"
 	end
 
+	local new_dismember_event = nil
+	local should_replace_old = true
+
 	if is_diagonal and direction then
+		new_dismember_event = "dismember_torso_" .. direction
+
 		if hit_zone ~= "torso" and math.random() > 0.5 then
-			dismember_event = "dismember_torso_" .. direction
-			dismember_event = {
-				dismember_event,
-				flow_event
-			}
-		else
-			dismember_event = "dismember_torso_" .. direction
+			should_replace_old = false
 		end
 	end
 
-	return dismember_event
+	return new_dismember_event, should_replace_old
 end
 
+local FLOW_EVENTS = {}
 local WWISE_PARAMETERS = {}
 
 GenericHitReactionExtension._execute_effect = function (self, unit, effect_template, biggest_hit, parameters, t, dt)
@@ -424,7 +434,6 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 	fassert(breed_data.hit_zones[hit_zone], "error no hitzone in breed that matches hitzone: %s", hit_zone)
 
 	local actors = breed_data.hit_zones and breed_data.hit_zones[hit_zone].actors
-	local flow_event = (type(effect_template.flow_event) == "table" and table.clone(effect_template.flow_event)) or effect_template.flow_event
 	local death_ext = self.death_extension
 	local hit_ragdoll_actor_name = biggest_hit[DamageDataIndex.HIT_RAGDOLL_ACTOR_NAME]
 	local can_wall_nail = self:_can_wall_nail(effect_template)
@@ -436,48 +445,74 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 		buff_system:add_buff(self.unit, effect_template.buff, attacker_unit)
 	end
 
+	local has_flow_event = false
+	local flow_events = FLOW_EVENTS
+
+	table.clear(flow_events)
+
+	local hit_reaction_flow_event = effect_template.flow_event
+
+	if hit_reaction_flow_event then
+		if type(hit_reaction_flow_event) == "table" then
+			for i = 1, #hit_reaction_flow_event, 1 do
+				flow_events[#flow_events + 1] = hit_reaction_flow_event[i]
+			end
+		else
+			flow_events[#flow_events + 1] = hit_reaction_flow_event
+		end
+
+		has_flow_event = true
+	end
+
 	local dismember = effect_template.do_dismember or (parameters.force_dismember and parameters.death)
 
 	if dismember and (not death_ext or not death_ext:is_wall_nailed()) then
 		local event_table = Dismemberments[breed_data.name]
-		local dismember_event = event_table[hit_zone]
-
-		if flow_event and type(flow_event) == "table" then
-			flow_event[#flow_event + 1] = dismember_event
-		elseif flow_event then
-			flow_event = {
-				dismember_event,
-				flow_event
-			}
-		else
-			flow_event = dismember_event
-		end
+		local dismember_flow_event = event_table[hit_zone]
+		local new_dismember_flow_event, should_replace_old = nil
 
 		if effect_template.do_diagonal_dismemberments and allowed_diagonal_hit_zones[hit_zone] then
-			flow_event = self:_check_for_diagonal_dismemberment(unit, actors[1], hit_direction, flow_event, hit_zone)
+			new_dismember_flow_event, should_replace_old = self:_check_for_diagonal_dismemberment(unit, actors[1], hit_direction, hit_zone)
 		end
 
-		if ScriptUnit.has_extension(unit, "projectile_linker_system") then
-			local projectile_linker_system = Managers.state.entity:system("projectile_linker_system")
+		if dismember_flow_event or new_dismember_flow_event then
+			if new_dismember_flow_event and should_replace_old then
+				table.clear(flow_events)
 
-			projectile_linker_system:clear_linked_projectiles(unit)
+				flow_events[#flow_events + 1] = new_dismember_flow_event
+			else
+				flow_events[#flow_events + 1] = dismember_flow_event
+				flow_events[#flow_events + 1] = new_dismember_flow_event
+			end
+
+			has_flow_event = true
+
+			if ScriptUnit.has_extension(unit, "projectile_linker_system") then
+				local projectile_linker_system = Managers.state.entity:system("projectile_linker_system")
+
+				projectile_linker_system:clear_linked_projectiles(unit)
+			end
 		end
 	end
 
-	if flow_event then
+	if has_flow_event then
 		if parameters.death and death_ext then
-			if death_has_started and flow_event == "dismember_torso" then
-				flow_event = nil
+			if death_has_started and table.contains(flow_events, "dismember_torso") then
+				has_flow_event = false
 			end
 
-			self._delayed_flow = flow_event
+			local temp_table = FrameTable.alloc_table()
+
+			for i = 1, #flow_events, 1 do
+				temp_table[#temp_table + 1] = flow_events[i]
+			end
+
+			self._delayed_flow = temp_table
 		elseif death_has_started then
-			flow_event = nil
+			has_flow_event = false
 		else
-			map_function(flow_event, function (event, unit)
-				Unit.flow_event(unit, event)
-			end, unit)
-			debug_printf("Started flow event %q", tostring(flow_event))
+			map_function(flow_events, send_flow_event, unit)
+			debug_printf("Started flow event %q", tostring(flow_events))
 		end
 	end
 
@@ -528,7 +563,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 			animation_event = nil
 		end
 
-		if animation_event and (flow_event or parameters.death) then
+		if animation_event and (has_flow_event or parameters.death) then
 			self._delayed_animation = animation_event
 
 			debug_printf("Delayed animation %q", animation_event)
@@ -551,34 +586,39 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 	local impact_position = nil
 
 	if hit_effect or should_spawn_blood or sound_event then
-		for _, actor_name in ipairs(actors) do
-			if Unit.find_actor(unit, actor_name) then
-				local actor = Unit.actor(unit, actor_name)
+		if self.health_extension:is_alive() then
+			local hit_position = Vector3Aux.unbox(biggest_hit[DamageDataIndex.POSITION])
+			impact_position = hit_position
+		else
+			for _, actor_name in ipairs(actors) do
+				if Unit.has_node(unit, actor_name) then
+					impact_position = Unit.world_position(unit, Unit.node(unit, actor_name))
 
-				if actor then
-					impact_position = Actor.center_of_mass(actor)
+					break
+				elseif Unit.find_actor(unit, actor_name) then
+					impact_position = Actor.center_of_mass(Unit.actor(unit, actor_name))
 
 					break
 				end
 			end
-		end
 
-		if (not impact_position or (impact_position and not Vector3.is_valid(impact_position))) and Unit.find_actor(unit, "c_hips") then
-			local actor = Unit.actor(unit, "c_hips")
-
-			if actor then
-				impact_position = Actor.center_of_mass(actor)
+			if not impact_position then
+				if Unit.has_node(unit, "c_hips") then
+					impact_position = Unit.world_position(unit, Unit.node(unit, "c_hips"))
+				elseif Unit.find_actor(unit, "c_hips") then
+					impact_position = Actor.center_of_mass(Unit.actor(unit, "c_hips"))
+				end
 			end
-		end
 
-		if not impact_position or (impact_position and not Vector3.is_valid(impact_position)) then
-			hit_effect = nil
-			should_spawn_blood, sound_event = nil
+			if not impact_position then
+				hit_effect = nil
+				should_spawn_blood, sound_event = nil
+			end
 		end
 	end
 
 	if should_spawn_blood then
-		Managers.state.blood:spawn_blood_ball(impact_position, hit_direction, damage_type, unit)
+		Managers.state.blood:add_blood_ball(impact_position, hit_direction, damage_type, unit)
 	end
 
 	if hit_effect then

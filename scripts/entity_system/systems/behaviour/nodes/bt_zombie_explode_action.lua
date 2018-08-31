@@ -11,13 +11,18 @@ BTZombieExplodeAction.name = "BTZombieExplodeAction"
 BTZombieExplodeAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	blackboard.action = action
-	local explode_animation = action.explode_animation
-	local network_manager = Managers.state.network
 
-	network_manager:anim_event(unit, explode_animation)
+	if action.explode_animation then
+		local explode_animation = action.explode_animation
+		local network_manager = Managers.state.network
 
-	blackboard.explosion_timer = t + action.explosion_at_time
-	blackboard.bot_threat_timer = t + action.explosion_at_time * 0.75
+		network_manager:anim_event(unit, explode_animation)
+
+		blackboard.explosion_timer = t + action.explosion_at_time
+		blackboard.bot_threat_timer = t + action.explosion_at_time * 0.75
+	else
+		blackboard.explosion_timer = t
+	end
 end
 
 BTZombieExplodeAction.leave = function (self, unit, blackboard, t, reason, destroy)

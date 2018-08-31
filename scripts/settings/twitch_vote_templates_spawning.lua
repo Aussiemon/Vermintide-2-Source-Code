@@ -7,8 +7,9 @@ end
 TwitchVoteTemplates = TwitchVoteTemplates or {}
 TwitchVoteTemplates.twitch_spawn_rat_ogre = {
 	text = "twitch_vote_spawn_rat_ogre",
-	cost = 180,
+	breed_name = "skaven_rat_ogre",
 	texture_id = "unit_frame_portrait_enemy_rat_ogre",
+	cost = 180,
 	texture_size = {
 		60,
 		70
@@ -27,8 +28,9 @@ TwitchVoteTemplates.twitch_spawn_rat_ogre = {
 }
 TwitchVoteTemplates.twitch_spawn_stormfiend = {
 	text = "twitch_vote_spawn_stormfiend",
-	cost = 180,
+	breed_name = "skaven_stormfiend",
 	texture_id = "unit_frame_portrait_enemy_stormfiend",
+	cost = 180,
 	texture_size = {
 		60,
 		70
@@ -47,8 +49,9 @@ TwitchVoteTemplates.twitch_spawn_stormfiend = {
 }
 TwitchVoteTemplates.twitch_spawn_chaos_troll = {
 	text = "twitch_vote_spawn_chaos_troll",
-	cost = 180,
+	breed_name = "chaos_troll",
 	texture_id = "unit_frame_portrait_enemy_chaos_troll",
+	cost = 180,
 	texture_size = {
 		60,
 		70
@@ -67,8 +70,9 @@ TwitchVoteTemplates.twitch_spawn_chaos_troll = {
 }
 TwitchVoteTemplates.twitch_spawn_chaos_spawn = {
 	text = "twitch_vote_spawn_chaos_spawn",
-	cost = 180,
+	breed_name = "chaos_spawn",
 	texture_id = "unit_frame_portrait_enemy_chaos_spawn",
+	cost = 180,
 	texture_size = {
 		60,
 		70
@@ -87,8 +91,9 @@ TwitchVoteTemplates.twitch_spawn_chaos_spawn = {
 }
 TwitchVoteTemplates.twitch_spawn_corruptor_sorcerer = {
 	text = "twitch_vote_spawn_corruptor_sorcerer",
-	cost = 150,
+	breed_name = "chaos_corruptor_sorcerer",
 	texture_id = "unit_frame_portrait_enemy_sorcerer_corruptor",
+	cost = 150,
 	texture_size = {
 		60,
 		70
@@ -109,8 +114,9 @@ TwitchVoteTemplates.twitch_spawn_corruptor_sorcerer = {
 }
 TwitchVoteTemplates.twitch_spawn_vortex_sorcerer = {
 	text = "twitch_vote_spawn_vortex_sorcerer",
-	cost = 100,
+	breed_name = "chaos_vortex_sorcerer",
 	texture_id = "unit_frame_portrait_enemy_sorcerer_vortex",
+	cost = 100,
 	texture_size = {
 		60,
 		70
@@ -131,8 +137,9 @@ TwitchVoteTemplates.twitch_spawn_vortex_sorcerer = {
 }
 TwitchVoteTemplates.twitch_spawn_gutter_runner = {
 	text = "twitch_vote_spawn_gutter_runner",
-	cost = 150,
+	breed_name = "skaven_gutter_runner",
 	texture_id = "unit_frame_portrait_enemy_gutter_runner",
+	cost = 150,
 	texture_size = {
 		60,
 		70
@@ -153,8 +160,9 @@ TwitchVoteTemplates.twitch_spawn_gutter_runner = {
 }
 TwitchVoteTemplates.twitch_spawn_pack_master = {
 	text = "twitch_vote_spawn_pack_master",
-	cost = 150,
+	breed_name = "skaven_pack_master",
 	texture_id = "unit_frame_portrait_enemy_packmaster",
+	cost = 150,
 	texture_size = {
 		60,
 		70
@@ -175,8 +183,9 @@ TwitchVoteTemplates.twitch_spawn_pack_master = {
 }
 TwitchVoteTemplates.twitch_spawn_poison_wind_globadier = {
 	text = "twitch_vote_spawn_poison_wind_globadier",
-	cost = 100,
+	breed_name = "skaven_poison_wind_globadier",
 	texture_id = "unit_frame_portrait_enemy_poison_wind",
+	cost = 100,
 	texture_size = {
 		60,
 		70
@@ -197,8 +206,9 @@ TwitchVoteTemplates.twitch_spawn_poison_wind_globadier = {
 }
 TwitchVoteTemplates.twitch_spawn_ratling_gunner = {
 	text = "twitch_vote_spawn_ratling_gunner",
-	cost = 100,
+	breed_name = "skaven_ratling_gunner",
 	texture_id = "unit_frame_portrait_enemy_ratling_gunner",
+	cost = 100,
 	texture_size = {
 		60,
 		70
@@ -219,8 +229,9 @@ TwitchVoteTemplates.twitch_spawn_ratling_gunner = {
 }
 TwitchVoteTemplates.twitch_spawn_warpfire_thrower = {
 	text = "twitch_vote_spawn_warpfire_thrower",
-	cost = 100,
+	breed_name = "skaven_warpfire_thrower",
 	texture_id = "unit_frame_portrait_enemy_warpfire",
+	cost = 100,
 	texture_size = {
 		60,
 		70
@@ -264,6 +275,7 @@ TwitchVoteTemplates.twitch_spawn_death_squad_storm_vermin = {
 	text = "twitch_vote_spawn_death_squad_storm_vermin",
 	cost = 250,
 	texture_id = "unit_frame_portrait_enemy_stormvermin",
+	boss_equivalent = true,
 	texture_size = {
 		60,
 		70
@@ -286,6 +298,7 @@ TwitchVoteTemplates.twitch_spawn_death_squad_chaos_warrior = {
 	text = "twitch_vote_spawn_death_squad_chaos_warrior",
 	cost = 250,
 	texture_id = "unit_frame_portrait_enemy_chaos_warrior",
+	boss_equivalent = true,
 	texture_size = {
 		60,
 		70

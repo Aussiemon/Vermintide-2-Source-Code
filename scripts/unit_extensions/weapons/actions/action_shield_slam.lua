@@ -33,7 +33,7 @@ ActionShieldSlam.client_owner_start_action = function (self, new_action, t, chai
 	self.melee_boost_curve_multiplier = melee_boost_curve_multiplier
 	self.owner_career_extension = career_extension
 	self.owner_buff_extension = buff_extension
-	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t) or has_melee_boost
+	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
 	self.power_level = power_level
 
 	if not Managers.player:owner(owner_unit).bot_player then
@@ -211,7 +211,7 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 						local send_to_server = true
 
 						DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, target_hit_zone_name, num_hit_targets, send_to_server)
-						weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, attack_direction, self.damage_profile_aoe_id, "power_level", power_level, "hit_target_index", nil, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", self._is_critical_strike, "can_damage", true, "can_stagger", true)
+						weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, target_hit_position, attack_direction, self.damage_profile_aoe_id, "power_level", power_level, "hit_target_index", nil, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", self._is_critical_strike, "can_damage", true, "can_stagger", true)
 					end
 				end
 			end
@@ -253,7 +253,7 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 			local damage_source_id = NetworkLookup.damage_sources[self.item_name]
 			local weapon_system = self.weapon_system
 
-			weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, attack_direction, self.damage_profile_id, "power_level", power_level, "hit_target_index", target_index, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", true, "can_stagger", true)
+			weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, self.damage_profile_id, "power_level", power_level, "hit_target_index", target_index, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", true, "can_stagger", true)
 
 			if self.is_critical_strike and self.critical_strike_particle_id then
 				World.destroy_particles(self.world, self.critical_strike_particle_id)

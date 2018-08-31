@@ -25,8 +25,8 @@ ProximitySystem.init = function (self, context, system_name)
 
 	self.world = context.world
 	self.physics_world = World.get_data(context.world, "physics_world")
-	self.unit_input_data = {}
 	self.unit_extension_data = {}
+	self.frozen_unit_extension_data = {}
 	self.player_unit_extensions_map = {}
 	self.ai_unit_extensions_map = {}
 	self.special_unit_extension_map = {}
@@ -52,7 +52,6 @@ ProximitySystem.destroy = function (self)
 	end
 
 	self.broadphase = nil
-	self.unit_input_data = nil
 	self.unit_extension_data = nil
 end
 
@@ -61,11 +60,9 @@ ProximitySystem.on_add_extension = function (self, world, unit, extension_name)
 		last_num_enemies_nearby = 0,
 		last_num_friends_nearby = 0
 	}
-	local input = {}
 
-	ScriptUnit.set_extension(unit, "proximity_system", extension, input)
+	ScriptUnit.set_extension(unit, "proximity_system", extension)
 
-	self.unit_input_data[unit] = input
 	self.unit_extension_data[unit] = extension
 
 	if extension_name == "PlayerProximityExtension" then
@@ -116,11 +113,23 @@ ProximitySystem.on_add_extension = function (self, world, unit, extension_name)
 end
 
 ProximitySystem.on_remove_extension = function (self, unit, extension_name)
-	self:on_freeze_extension(unit, extension_name)
-	ScriptUnit.remove_extension(unit, "proximity_system")
+	self.frozen_unit_extension_data[unit] = nil
+
+	self:_cleanup_extension(unit, extension_name)
+	ScriptUnit.remove_extension(unit, self.NAME)
 end
 
 ProximitySystem.on_freeze_extension = function (self, unit, extension_name)
+	local extension = self.unit_extension_data[unit]
+
+	fassert(extension, "Unit was already frozen.")
+
+	self.frozen_unit_extension_data[unit] = extension
+
+	self:_cleanup_extension(unit, extension_name)
+end
+
+ProximitySystem._cleanup_extension = function (self, unit, extension_name)
 	local extension = self.unit_extension_data[unit]
 
 	if extension == nil then
@@ -129,21 +138,64 @@ ProximitySystem.on_freeze_extension = function (self, unit, extension_name)
 
 	if extension.enemy_broadphase_id then
 		Broadphase.remove(self.enemy_broadphase, extension.enemy_broadphase_id)
+
+		extension.enemy_broadphase_id = nil
 	end
 
 	if extension.player_broadphase_id then
 		Broadphase.remove(self.player_units_broadphase, extension.player_broadphase_id)
+
+		extension.player_broadphase_id = nil
 	end
 
 	if extension.special_broadphase_id then
 		Broadphase.remove(self.special_units_broadphase, extension.special_broadphase_id)
+
+		extension.special_broadphase_id = nil
 	end
 
-	self.unit_input_data[unit] = nil
 	self.unit_extension_data[unit] = nil
 	self.player_unit_extensions_map[unit] = nil
 	self.ai_unit_extensions_map[unit] = nil
 	self.special_unit_extension_map[unit] = nil
+end
+
+ProximitySystem.freeze = function (self, unit, extension_name, reason)
+	local frozen_extensions = self.frozen_unit_extension_data
+
+	if frozen_extensions[unit] then
+		return
+	end
+
+	local extension = self.unit_extension_data[unit]
+
+	fassert(extension, "Unit to freeze didn't have unfrozen extension")
+	self:_cleanup_extension(unit, extension_name)
+
+	self.unit_extension_data[unit] = nil
+	frozen_extensions[unit] = extension
+end
+
+ProximitySystem.unfreeze = function (self, unit, extension_name)
+	local extension = self.frozen_unit_extension_data[unit]
+
+	fassert(extension, "Unit to unfreeze didn't have frozen extension")
+
+	self.frozen_unit_extension_data[unit] = nil
+	self.unit_extension_data[unit] = extension
+
+	fassert(extension_name == "AIProximityExtension", "Unexpected unfreeze extension")
+
+	extension.enemy_broadphase_id = Broadphase.add(self.enemy_broadphase, unit, Unit.world_position(unit, 0), 0.5)
+	extension.bot_reaction_times = {}
+	extension.has_been_seen = false
+	self.ai_unit_extensions_map[unit] = extension
+	local breed = Unit.get_data(unit, "breed")
+
+	if breed.proximity_system_check then
+		extension.special_broadphase_id = Broadphase.add(self.special_units_broadphase, unit, Unit.world_position(unit, 0), 0.5)
+		self.special_unit_extension_map[unit] = extension
+	end
 end
 
 local function unit_world_forward(unit)
@@ -336,7 +388,6 @@ ProximitySystem.physics_async_update = function (self, context, t)
 
 							event_data.enemy_unit = nearby_unit
 							event_data.distance = Vector3.distance(nearby_unit_pos_flat, my_pos_flat)
-							event_data.height_distance = position.z - nearby_unit_pos.z
 
 							dialogue_input:trigger_dialogue_event("heard_enemy", event_data)
 
@@ -649,7 +700,6 @@ ProximitySystem.post_update = function (self, context, t)
 
 				event_data.enemy_unit = nearby_unit
 				event_data.distance = Vector3.distance(nearby_unit_pos_flat, my_pos_flat)
-				event_data.height_distance = position.z - nearby_unit_pos.z
 				local proximity_ext = ScriptUnit.extension(nearby_unit, "proximity_system")
 				proximity_ext.has_been_seen = true
 

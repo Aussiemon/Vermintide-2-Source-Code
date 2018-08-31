@@ -28,7 +28,11 @@ end
 
 GameModeDemo.complete_level = function (self)
 	if self._transition ~= "demo_completed" then
-		self._transition = "demo_completed"
+		if script_data.disable_video_player then
+			self._transition = "return_to_demo_title_screen"
+		else
+			self._transition = "demo_completed"
+		end
 
 		Managers.music:trigger_event("Play_stinger_ending_demo")
 		Managers.time:set_global_time_scale(1)

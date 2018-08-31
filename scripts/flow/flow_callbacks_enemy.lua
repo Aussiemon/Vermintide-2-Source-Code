@@ -161,6 +161,18 @@ function flow_callback_enemy_variation(params)
 	return {}
 end
 
+local function enemy_dismember_can_spawn_gib(unit, gibsettings)
+	if gibsettings.parent_destroy_actors then
+		for _, actor_name in ipairs(gibsettings.parent_destroy_actors) do
+			if not Unit.actor(unit, actor_name) then
+				return false
+			end
+		end
+	end
+
+	return true
+end
+
 local function enemy_dismember_spawn_gib(unit, world, gibsettings, unit_inventory_extension, unit_ai_system_extension)
 	local node_id = Unit.node(unit, gibsettings.gib_parent_align_node)
 	local spawn_pose = Matrix4x4.from_quaternion_position(Unit.world_rotation(unit, node_id), Unit.world_position(unit, node_id))
@@ -364,6 +376,12 @@ local function enemy_dismember(params, spawn_gib)
 		unit_ai_system_extension = ScriptUnit.extension(unit, "ai_system")
 	end
 
+	local can_spawn_gib = enemy_dismember_can_spawn_gib(unit, gibsettings)
+
+	if not can_spawn_gib then
+		return
+	end
+
 	local gib_unit = nil
 
 	if spawn_gib then
@@ -377,8 +395,11 @@ local function enemy_dismember(params, spawn_gib)
 
 	enemy_dismember_set_variations(unit, gib_unit, stump_unit)
 
+	local gibbed_nodes = unit_inventory_extension.gibbed_nodes
+
 	for i = 1, #gibsettings.parent_scale_nodes, 1 do
 		node_id = Unit.node(unit, gibsettings.parent_scale_nodes[i])
+		gibbed_nodes[#gibbed_nodes + 1] = node_id
 
 		Unit.set_local_scale(unit, node_id, Vector3(gibsettings.parent_scale, gibsettings.parent_scale, gibsettings.parent_scale))
 	end

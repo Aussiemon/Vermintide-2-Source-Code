@@ -192,7 +192,7 @@ DamageWaveExtension.destroy = function (self)
 		local ai_units_inside_blob = blob[5]
 
 		for target_unit, inside_id in pairs(ai_units_inside_blob) do
-			if unit_alive(target_unit) then
+			if ALIVE[target_unit] then
 				buff_system:remove_server_controlled_buff(target_unit, inside_id)
 			end
 		end
@@ -262,7 +262,9 @@ DamageWaveExtension.move_wave = function (self, unit, t, dt, total_dist, grow)
 	self.travel_dist = self.travel_dist + frame_dist
 	position = position + wave_dir * frame_dist
 	local nav_world = self.nav_world
-	local success, altitude, p1, p2, p3 = GwNavQueries.triangle_from_position(nav_world, position, 1.5, 1.5)
+	local above = 1.5
+	local below = (self.template.ignore_obstacles and 15) or 1.5
+	local success, altitude, p1, p2, p3 = GwNavQueries.triangle_from_position(nav_world, position, above, below)
 
 	if success then
 		position = Vector3(position.x, position.y, altitude)
@@ -300,7 +302,7 @@ DamageWaveExtension.move_wave = function (self, unit, t, dt, total_dist, grow)
 	GameSession.set_game_object_field(self.game, self.unit_id, "position", position)
 	GameSession.set_game_object_field(self.game, self.unit_id, "rotation", current_rotation)
 
-	return to_target_dir, dist, success
+	return to_target_dir, dist, success or self.template.ignore_obstacles
 end
 
 DamageWaveExtension.on_hit_by_wave = function (hit_unit, unit, parent)
@@ -694,7 +696,7 @@ DamageWaveExtension.update_blob_overlaps = function (self)
 
 		for target_unit, inside_id in pairs(ai_units_inside_blob) do
 			if not inside_this_frame[target_unit] then
-				if unit_alive(target_unit) then
+				if ALIVE[target_unit] then
 					buff_system:remove_server_controlled_buff(target_unit, inside_id)
 				end
 
@@ -801,7 +803,7 @@ DamageWaveExtension.debug_render_blobs = function (self)
 		local ai_units_inside_blob = blob[5]
 
 		for unit, _ in pairs(ai_units_inside_blob) do
-			if unit_alive(unit) then
+			if ALIVE[unit] then
 				local pos = position_lookup[unit]
 
 				QuickDrawer:sphere(pos, 0.5, Color(70, 146, 60))

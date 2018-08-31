@@ -56,7 +56,8 @@ GameModeManager.init = function (self, world, lobby_host, lobby_client, level_tr
 		ring_buffer = Script.new_array(max_size),
 		max_size = max_size
 	}
-	local mutators = Managers.deed:mutators()
+	local debug_activated_mutators = nil
+	local mutators = debug_activated_mutators or Managers.deed:mutators()
 	local has_local_client = not DEDICATED_SERVER
 	self._mutator_handler = MutatorHandler:new(mutators, self.is_server, has_local_client)
 end
@@ -71,6 +72,10 @@ GameModeManager.destroy = function (self)
 	self.network_event_delegate:unregister(self)
 
 	self.network_event_delegate = nil
+end
+
+GameModeManager.conflict_director_updated_settings = function (self)
+	self._mutator_handler:conflict_director_updated_settings()
 end
 
 GameModeManager.settings = function (self)
@@ -98,6 +103,10 @@ end
 
 GameModeManager.setup_done = function (self)
 	self._mutator_handler:setup_done()
+end
+
+GameModeManager.ai_killed = function (self, killed_unit, killer_unit)
+	self._mutator_handler:ai_killed(killed_unit, killer_unit)
 end
 
 GameModeManager.has_mutator = function (self, name)

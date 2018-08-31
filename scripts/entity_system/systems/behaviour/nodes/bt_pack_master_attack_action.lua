@@ -33,13 +33,14 @@ BTPackMasterAttackAction.leave = function (self, unit, blackboard, t, reason, de
 
 	if reason ~= "done" then
 		blackboard.packmaster_target_group = nil
-		blackboard.target_unit = nil
-		blackboard.drag_target_unit = nil
 
 		if blackboard.attack_success and Unit.alive(blackboard.drag_target_unit) then
-			StatusUtils.set_grabbed_by_pack_master_network("pack_master_pulling", blackboard.target_unit, false, unit)
+			StatusUtils.set_grabbed_by_pack_master_network("pack_master_pulling", blackboard.drag_target_unit, false, unit)
 			print("Packmaster weird case")
 		end
+
+		blackboard.target_unit = nil
+		blackboard.drag_target_unit = nil
 
 		LocomotionUtils.set_animation_driven_movement(unit, false)
 	end

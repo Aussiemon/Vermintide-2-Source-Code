@@ -7,17 +7,17 @@ weapon_template.actions = {
 	action_one = {
 		default = {
 			anim_event = "attack_shoot_fast",
-			kind = "bow",
-			weapon_action_hand = "left",
-			apply_recoil = true,
 			ammo_usage = 1,
-			aim_assist_ramp_multiplier = 0.25,
+			kind = "bow",
+			apply_recoil = true,
 			aim_assist_max_ramp_multiplier = 0.7,
 			aim_assist_ramp_decay_delay = 0.3,
 			anim_event_last_ammo = "attack_shoot_fast_last",
 			charge_value = "arrow_hit",
+			weapon_action_hand = "left",
 			fire_sound_event = "player_combat_weapon_shortbow_fire_light",
 			speed = 8000,
+			aim_assist_ramp_multiplier = 0.25,
 			total_time = 0.83,
 			buff_data = {
 				{
@@ -57,10 +57,6 @@ weapon_template.actions = {
 			end,
 			hit_effect = ARROW_HIT_EFFECT,
 			projectile_info = Projectiles.machinegun_arrow,
-			cleave_distribution = {
-				attack = 0.15,
-				impact = 0.15
-			},
 			impact_data = {
 				wall_nail = true,
 				depth = 0.075,
@@ -82,11 +78,11 @@ weapon_template.actions = {
 		},
 		shoot_charged = {
 			reset_aim_on_attack = true,
+			anim_end_event = "to_unzoom",
 			kind = "bow",
 			charge_value = "zoomed_arrow_hit",
 			weapon_action_hand = "left",
 			apply_recoil = true,
-			anim_end_event = "to_unzoom",
 			anim_event_last_ammo = "attack_shoot_last",
 			minimum_hold_time = 0.25,
 			ammo_usage = 1,
@@ -128,10 +124,6 @@ weapon_template.actions = {
 				return input_extension:reset_release_input()
 			end,
 			hit_effect = ARROW_HIT_EFFECT,
-			cleave_distribution = {
-				attack = 0.15,
-				impact = 0.15
-			},
 			projectile_info = Projectiles.carbine_arrow,
 			impact_data = {
 				wall_nail = true,
@@ -154,13 +146,13 @@ weapon_template.actions = {
 		},
 		shoot_special_charged = {
 			reset_aim_on_attack = true,
+			anim_end_event = "to_unzoom",
 			kind = "bow",
 			charge_value = "zoomed_arrow_hit",
 			weapon_action_hand = "left",
 			apply_recoil = true,
 			anim_event_last_ammo = "attack_shoot_last",
 			minimum_hold_time = 0.25,
-			anim_end_event = "to_unzoom",
 			ammo_usage = 1,
 			fire_sound_event = "player_combat_weapon_shortbow_fire_heavy",
 			speed = 7000,
@@ -200,10 +192,6 @@ weapon_template.actions = {
 				return input_extension:reset_release_input()
 			end,
 			hit_effect = ARROW_HIT_EFFECT,
-			cleave_distribution = {
-				attack = 0.2,
-				impact = 0.2
-			},
 			projectile_info = Projectiles.carbine_arrow,
 			impact_data = {
 				wall_nail = true,
@@ -296,8 +284,7 @@ weapon_template.actions = {
 			},
 			buffed_zoom_thresholds = {
 				"zoom_in_trueflight",
-				"zoom_in",
-				"increased_zoom_in"
+				"zoom_in"
 			},
 			zoom_condition_function = function ()
 				return true
@@ -306,7 +293,7 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action"
 			end,
 			condition_func = function (unit, input_extension, ammo_extension)
-				if ammo_extension and ammo_extension:total_remaining_ammo() <= 0 then
+				if ammo_extension and (ammo_extension:total_remaining_ammo() <= 0 or ammo_extension:is_reloading()) then
 					return false
 				end
 

@@ -53,6 +53,7 @@ EnemyPackageLoaderSettings.categories = {
 			"chaos_zombie",
 			"chaos_tentacle",
 			"chaos_tentacle_sorcerer",
+			"chaos_mutator_sorcerer",
 			"pet_rat",
 			"pet_pig",
 			"skaven_stormfiend_demo"
@@ -125,12 +126,13 @@ if category_changes then
 end
 
 EnemyPackageLoaderSettings.opt_lookup_breed_names = {
-	chaos_marauder_with_shield = "chaos_marauder_with_shield_opt",
 	chaos_raider = "chaos_raider_opt",
-	chaos_fanatic = "chaos_fanatic_opt",
-	skaven_slave = "skaven_slave_opt",
 	chaos_berzerker = "chaos_berzerker_opt",
 	skaven_clan_rat_with_shield = "skaven_clan_rat_with_shield_opt",
+	chaos_marauder_with_shield = "chaos_marauder_with_shield_opt",
+	chaos_fanatic = "chaos_fanatic_opt",
+	skaven_slave = "skaven_slave_opt",
+	skaven_storm_vermin = "skaven_storm_vermin_opt",
 	skaven_clan_rat = "skaven_clan_rat_opt",
 	chaos_marauder = "chaos_marauder_opt"
 }

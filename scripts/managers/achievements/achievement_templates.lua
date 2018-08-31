@@ -1,4 +1,4 @@
-local achievement_templates = {}
+AchievementTemplates = {}
 local ExperienceSettings = rawget(_G, "ExperienceSettings")
 local LevelSettings = rawget(_G, "LevelSettings")
 local LevelUnlockUtils = rawget(_G, "LevelUnlockUtils")
@@ -109,18 +109,18 @@ local function equipped_items_of_rarity(statistics_db, stats_id, required_rarity
 end
 
 local rewards_lookup = {
-	skaven_gutter_runner_3 = "level_chest",
+	bogenhafen_city_no_braziers_lit = "bogenhafen_chest",
 	complete_all_helmgart_levels_champion_wh_zealot = "skin_wh_zealot_crimson",
 	complete_deeds_4 = "frame_0009",
 	complete_all_helmgart_levels_veteran = "loot_chest_02_06",
 	complete_all_helmgart_levels_legend_dr_ranger = "skin_dr_ranger_black_and_gold",
 	complete_all_helmgart_levels_recruit_bw_adept = "frame_0075",
-	complete_all_helmgart_levels_recruit_es_mercenary = "frame_0063",
+	achievement_markus_level_3 = "knight_hat_0003",
 	fort_kill_enemies_cannonball = "loot_chest_04_06",
 	skaven_rat_ogre_1 = "level_chest",
 	skaven_poison_wind_globardier_3 = "level_chest",
 	complete_100_missions_champion_wh_captain = "witchhunter_hat_0002",
-	complete_deeds_7 = "frame_0012",
+	achievement_kerillian_level_3 = "shade_hat_0010",
 	kill_bodvarr_burblespew_recruit = "level_chest",
 	complete_all_helmgart_levels_champion_we_waywatcher = "skin_ww_waywatcher_anmyr",
 	helmgart_lord_1 = "level_chest",
@@ -147,7 +147,7 @@ local rewards_lookup = {
 	complete_100_missions_champion_dr_ironbreaker = "ironbreaker_hat_0013",
 	complete_all_helmgart_levels_legend_bw_adept = "skin_bw_adept_black_and_gold",
 	complete_all_helmgart_levels_veteran_bw_unchained = "frame_0080",
-	complete_all_helmgart_levels_all_careers_veteran = "frame_0036",
+	complete_bogenhafen_slum_veteran = "bogenhafen_chest",
 	complete_all_helmgart_levels_veteran_dr_slayer = "frame_0056",
 	complete_all_helmgart_levels_veteran_dr_ranger = "frame_0054",
 	complete_all_helmgart_levels_all_careers_recruit = "frame_0035",
@@ -155,7 +155,7 @@ local rewards_lookup = {
 	complete_all_helmgart_levels_veteran_es_huntsman = "frame_0067",
 	skaven_warpfire_thrower_1 = "level_chest",
 	skaven_poison_wind_globardier_1 = "level_chest",
-	kill_helmgart_lords_within_time = "level_chest",
+	bogenhafen_complete_veteran = "frame_bogenhafen_02",
 	complete_all_helmgart_levels_legend_dr_ironbreaker = "skin_dr_ironbreaker_black_and_gold",
 	complete_all_helmgart_levels_legend_wh_zealot = "skin_wh_zealot_black_and_gold",
 	complete_all_helmgart_levels_champion_wh_bountyhunter = "skin_wh_bountyhunter_yellow_and_red",
@@ -184,8 +184,8 @@ local rewards_lookup = {
 	complete_all_helmgart_levels_legend_bw_scholar = "skin_bw_scholar_black_and_gold",
 	complete_all_helmgart_levels_recruit_es_huntsman = "frame_0064",
 	ussingen_no_event_barrels = "loot_chest_04_06",
-	chaos_corruptor_sorcerer_1 = "level_chest",
-	complete_all_helmgart_levels_legend_wh_bountyhunter = "skin_wh_bountyhunter_black_and_gold",
+	bogenhafen_complete_champion = "frame_bogenhafen_03",
+	achievement_markus_level_2 = "huntsman_hat_0004",
 	complete_all_helmgart_levels_champion_bw_unchained = "skin_bw_unchained_ostermark",
 	chaos_vortex_sorcerer_3 = "level_chest",
 	chaos_spawn_1 = "level_chest",
@@ -197,25 +197,55 @@ local rewards_lookup = {
 	complete_all_helmgart_levels_veteran_es_mercenary = "frame_0066",
 	skaven_stronghold_skarrik_kill_skaven = "loot_chest_04_06",
 	complete_100_missions_champion_bw_unchained = "unchained_hat_0004",
+	kill_helmgart_lords_within_time = "level_chest",
 	complete_100_missions_champion_wh_zealot = "zealot_hat_0003",
+	chaos_corruptor_sorcerer_1 = "level_chest",
+	complete_bogenhafen_slum_recruit = "bogenhafen_chest",
 	complete_all_helmgart_levels_champion_dr_slayer = "skin_dr_slayer_runes",
+	complete_all_helmgart_levels_all_careers_veteran = "frame_0036",
+	complete_bogenhafen_slum_champion = "bogenhafen_chest",
+	achievement_kerillian_level_1 = "waywatcher_hat_0006",
+	complete_bogenhafen_city_recruit = "bogenhafen_chest",
+	complete_bogenhafen_city_veteran = "bogenhafen_chest",
 	military_kill_chaos_warriors_in_event = "loot_chest_04_06",
 	complete_all_helmgart_levels_veteran_we_maidenguard = "frame_0061",
+	complete_bogenhafen_city_champion = "bogenhafen_chest",
+	complete_bogenhafen_city_legend = "bogenhafen_chest",
 	complete_all_helmgart_levels_legend = "loot_chest_04_06",
+	bogenhafen_slum_no_windows_broken = "bogenhafen_chest",
+	bogenhafen_slum_find_hidden_stash = "bogenhafen_chest",
 	skaven_stormfiend_1 = "level_chest",
+	bogenhafen_city_fast_switches = "bogenhafen_chest",
 	complete_100_missions_champion_es_knight = "knight_hat_0005",
+	skaven_gutter_runner_3 = "level_chest",
+	bogenhafen_city_all_wine_collected = "bogenhafen_chest",
+	bogenhafen_city_torch_not_picked_up = "bogenhafen_chest",
+	achievement_bardin_level_1 = "ranger_hat_0003",
 	complete_all_helmgart_levels_legend_we_maidenguard = "skin_ww_maidenguard_black_and_gold",
+	achievement_bardin_level_3 = "slayer_hat_0007",
+	achievement_markus_level_1 = "mercenary_hat_0006",
 	mines_kill_final_troll_timed = "loot_chest_04_06",
+	complete_all_helmgart_levels_legend_wh_bountyhunter = "skin_wh_bountyhunter_black_and_gold",
+	bogenhafen_complete_recruit = "frame_bogenhafen_01",
 	complete_all_helmgart_levels_champion_we_maidenguard = "skin_ww_maidenguard_red_and_yellow",
 	complete_all_helmgart_levels_champion = "loot_chest_03_06",
 	complete_100_missions_champion_we_waywatcher = "waywatcher_hat_0002",
+	complete_all_helmgart_levels_recruit_es_mercenary = "frame_0063",
 	complete_all_helmgart_levels_legend_we_waywatcher = "skin_ww_waywatcher_black_and_gold",
 	complete_all_helmgart_levels_champion_es_huntsman = "skin_es_huntsman_ostermark",
+	complete_bogenhafen_slum_legend = "bogenhafen_chest",
 	equip_all_veteran_quality = "level_chest",
 	skaven_ratling_gunner_2 = "level_chest",
+	achievement_kerillian_level_2 = "maidenguard_hat_0005",
+	complete_deeds_7 = "frame_0012",
+	achievement_sienna_level_1 = "adept_hat_0002",
 	skaven_poison_wind_globardier_2 = "level_chest",
 	catacombs_stay_inside_ritual_pool = "loot_chest_04_06",
+	achievement_sienna_level_3 = "unchained_hat_0008",
+	achievement_victor_level_1 = "witchhunter_hat_0003",
+	achievement_victor_level_2 = "bountyhunter_hat_0002",
 	complete_100_missions_champion_bw_scholar = "scholar_hat_0005",
+	achievement_victor_level_3 = "zealot_hat_0009",
 	complete_all_helmgart_levels_champion_bw_scholar = "skin_bw_scholar_ostermark",
 	complete_deeds_8 = "frame_0013",
 	skittergate_deathrattler_rasknitt_timed = "loot_chest_04_06",
@@ -224,9 +254,11 @@ local rewards_lookup = {
 	skaven_pack_master_1 = "level_chest",
 	nurgle_player_showered_in_pus = "loot_chest_04_06",
 	chaos_spawn_2 = "level_chest",
+	bogenhafen_city_jumping_puzzle = "bogenhafen_chest",
 	kill_bodvarr_burblespew_legend = "level_chest",
 	complete_all_helmgart_levels_all_careers_champion = "frame_0037",
 	skaven_pack_master_3 = "level_chest",
+	achievement_sienna_level_2 = "scholar_hat_0004",
 	kill_skarrik_rasknitt_champion = "level_chest",
 	skaven_ratling_gunner_3 = "level_chest",
 	chaos_troll_1 = "level_chest",
@@ -237,8 +269,10 @@ local rewards_lookup = {
 	complete_all_helmgart_levels_all_careers_legend = "frame_0038",
 	farmlands_rescue_prisoners_timed = "loot_chest_04_06",
 	elven_ruins_align_leylines_timed = "loot_chest_04_06",
+	bogenhafen_slum_no_ratling_damage = "bogenhafen_chest",
 	complete_all_helmgart_levels_legend_we_shade = "skin_ww_shade_black_and_gold",
 	complete_deeds_6 = "frame_0011",
+	bogenhafen_complete_legend = "frame_bogenhafen_04",
 	complete_all_helmgart_levels_legend_dr_slayer = "skin_dr_slayer_dragon",
 	complete_all_helmgart_levels_champion_we_shade = "skin_ww_shade_crimson",
 	complete_deeds_5 = "frame_0010",
@@ -249,13 +283,30 @@ local rewards_lookup = {
 	skaven_warpfire_thrower_2 = "level_chest",
 	complete_100_missions_champion_es_huntsman = "huntsman_hat_0009",
 	complete_deeds_2 = "frame_0007",
+	achievement_bardin_level_2 = "ironbreaker_hat_0007",
+	bogenhafen_slum_jumping_puzzle = "bogenhafen_chest",
+	bogenhafen_slum_event_speedrun = "bogenhafen_chest",
 	complete_deeds_1 = "frame_0006",
 	skaven_gutter_runner_2 = "level_chest",
 	complete_all_helmgart_levels_recruit_dr_ranger = "frame_0051",
 	skaven_warpfire_thrower_3 = "level_chest",
 	complete_all_helmgart_levels_champion_bw_adept = "skin_bw_adept_ostermark"
 }
-achievement_templates.achievements = {
+AchievementTemplates.end_of_level_achievement_evaluations = {
+	no_ratling_damage = {
+		stat_to_increment = "bogenhafen_slum_no_ratling_damage",
+		levels = {
+			"dlc_bogenhafen_slum"
+		},
+		evaluation_func = function (statistics_db, stats_id)
+			return statistics_db:get_stat(stats_id, "damage_taken_from_ratling_gunner") == 0
+		end,
+		allowed_difficulties = {
+			hardest = true
+		}
+	}
+}
+AchievementTemplates.achievements = {
 	complete_tutorial = {
 		ID_XB1 = 2,
 		name = "achv_complete_tutorial_name",
@@ -324,6 +375,735 @@ achievement_templates.achievements = {
 			local complete_ground_zero = check_level_list(statistics_db, stats_id, {
 				LevelSettings.ground_zero.level_id
 			})
+
+			return {
+				{
+					name = "level_name_military",
+					completed = complete_military
+				},
+				{
+					name = "level_name_catacombs",
+					completed = complete_catacombs
+				},
+				{
+					name = "level_name_mines",
+					completed = complete_mines
+				},
+				{
+					name = "level_name_ground_zero",
+					completed = complete_ground_zero
+				}
+			}
+		end
+	},
+	complete_act_one_veteran = {
+		reward = "level_chest",
+		name = "achv_complete_act_one_veteran_name",
+		icon = "icons_placeholder",
+		desc = "achv_complete_act_one_veteran_desc",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hard.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.military.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.catacombs.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.mines.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.ground_zero.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 4
+		end,
+		progress = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hard.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.military.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.catacombs.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.mines.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.ground_zero.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return {
+				count,
+				4
+			}
+		end,
+		requirements = function (statistics_db, stats_id)
+			local diff = DifficultySettings.hard.rank
+			local complete_military = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.military.level_id
+			}, diff)
+			local complete_catacombs = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.catacombs.level_id
+			}, diff)
+			local complete_mines = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.mines.level_id
+			}, diff)
+			local complete_ground_zero = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.ground_zero.level_id
+			}, diff)
+
+			return {
+				{
+					name = "level_name_military",
+					completed = complete_military
+				},
+				{
+					name = "level_name_catacombs",
+					completed = complete_catacombs
+				},
+				{
+					name = "level_name_mines",
+					completed = complete_mines
+				},
+				{
+					name = "level_name_ground_zero",
+					completed = complete_ground_zero
+				}
+			}
+		end
+	},
+	complete_bogenhafen_slum_recruit = {
+		reward = "bogenhafen_chest",
+		name = "achv_bogenhafen_slum_recruit_name",
+		required_dlc = "bogenhafen",
+		icon = "achievement_trophy_bogenhafen_slum_recruit",
+		desc = "achv_bogenhafen_slum_recruit_desc",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.normal.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 1
+		end
+	},
+	complete_bogenhafen_slum_veteran = {
+		reward = "bogenhafen_chest",
+		name = "achv_bogenhafen_slum_veteran_name",
+		required_dlc = "bogenhafen",
+		icon = "achievement_trophy_bogenhafen_slum_veteran",
+		desc = "achv_bogenhafen_slum_veteran_desc",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hard.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 1
+		end
+	},
+	complete_bogenhafen_slum_champion = {
+		reward = "bogenhafen_chest",
+		name = "achv_bogenhafen_slum_champion_name",
+		required_dlc = "bogenhafen",
+		icon = "achievement_trophy_bogenhafen_slum_champion",
+		desc = "achv_bogenhafen_slum_champion_desc",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.harder.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 1
+		end
+	},
+	complete_bogenhafen_slum_legend = {
+		reward = "bogenhafen_chest",
+		name = "achv_bogenhafen_slum_legend_name",
+		required_dlc = "bogenhafen",
+		icon = "achievement_trophy_bogenhafen_slum_legend",
+		desc = "achv_bogenhafen_slum_legend_desc",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hardest.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 1
+		end
+	},
+	complete_bogenhafen_city_recruit = {
+		reward = "bogenhafen_chest",
+		name = "achv_bogenhafen_city_recruit_name",
+		required_dlc = "bogenhafen",
+		icon = "achievement_trophy_bogenhafen_city_recruit",
+		desc = "achv_bogenhafen_city_recruit_desc",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.normal.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 1
+		end
+	},
+	complete_bogenhafen_city_veteran = {
+		reward = "bogenhafen_chest",
+		name = "achv_bogenhafen_city_veteran_name",
+		required_dlc = "bogenhafen",
+		icon = "achievement_trophy_bogenhafen_city_veteran",
+		desc = "achv_bogenhafen_city_veteran_desc",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hard.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 1
+		end
+	},
+	complete_bogenhafen_city_champion = {
+		reward = "bogenhafen_chest",
+		name = "achv_bogenhafen_city_champion_name",
+		required_dlc = "bogenhafen",
+		icon = "achievement_trophy_bogenhafen_city_champion",
+		desc = "achv_bogenhafen_city_champion_desc",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.harder.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 1
+		end
+	},
+	complete_bogenhafen_city_legend = {
+		reward = "bogenhafen_chest",
+		name = "achv_bogenhafen_city_legend_name",
+		required_dlc = "bogenhafen",
+		icon = "achievement_trophy_bogenhafen_city_legend",
+		desc = "achv_bogenhafen_city_legend_desc",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hardest.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 1
+		end
+	},
+	complete_bogenhafen_recruit = {
+		ID_XB1 = 52,
+		name = "achv_bogenhafen_complete_recruit_name",
+		reward = "frame_bogenhafen_01",
+		desc = "achv_bogenhafen_complete_recruit_desc",
+		icon = "achievement_trophy_bogenhafen_complete_recruit",
+		required_dlc = "bogenhafen",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.normal.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 2
+		end,
+		progress = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.normal.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return {
+				count,
+				2
+			}
+		end,
+		requirements = function (statistics_db, stats_id)
+			local diff = DifficultySettings.normal.rank
+			local complete_bogenhafen_slum = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff)
+			local complete_bogenhafen_city = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff)
+
+			return {
+				{
+					name = "level_name_bogenhafen_slum",
+					completed = complete_bogenhafen_slum
+				},
+				{
+					name = "level_name_bogenhafen_city",
+					completed = complete_bogenhafen_city
+				}
+			}
+		end
+	},
+	complete_bogenhafen_veteran = {
+		ID_XB1 = 53,
+		name = "achv_bogenhafen_complete_veteran_name",
+		reward = "frame_bogenhafen_02",
+		desc = "achv_bogenhafen_complete_veteran_desc",
+		icon = "achievement_trophy_bogenhafen_complete_veteran",
+		required_dlc = "bogenhafen",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hard.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 2
+		end,
+		progress = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hard.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return {
+				count,
+				2
+			}
+		end,
+		requirements = function (statistics_db, stats_id)
+			local diff = DifficultySettings.hard.rank
+			local complete_bogenhafen_slum = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff)
+			local complete_bogenhafen_city = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff)
+
+			return {
+				{
+					name = "level_name_bogenhafen_slum",
+					completed = complete_bogenhafen_slum
+				},
+				{
+					name = "level_name_bogenhafen_city",
+					completed = complete_bogenhafen_city
+				}
+			}
+		end
+	},
+	complete_bogenhafen_champion = {
+		ID_XB1 = 54,
+		name = "achv_bogenhafen_complete_champion_name",
+		reward = "frame_bogenhafen_03",
+		desc = "achv_bogenhafen_complete_champion_desc",
+		icon = "achievement_trophy_bogenhafen_complete_champion",
+		required_dlc = "bogenhafen",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.harder.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 2
+		end,
+		progress = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.harder.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return {
+				count,
+				2
+			}
+		end,
+		requirements = function (statistics_db, stats_id)
+			local diff = DifficultySettings.harder.rank
+			local complete_bogenhafen_slum = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff)
+			local complete_bogenhafen_city = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff)
+
+			return {
+				{
+					name = "level_name_bogenhafen_slum",
+					completed = complete_bogenhafen_slum
+				},
+				{
+					name = "level_name_bogenhafen_city",
+					completed = complete_bogenhafen_city
+				}
+			}
+		end
+	},
+	complete_bogenhafen_legend = {
+		ID_XB1 = 55,
+		name = "achv_bogenhafen_complete_legend_name",
+		reward = "frame_bogenhafen_04",
+		desc = "achv_bogenhafen_complete_legend_desc",
+		icon = "achievement_trophy_bogenhafen_complete_legend",
+		required_dlc = "bogenhafen",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hardest.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 2
+		end,
+		progress = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hardest.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return {
+				count,
+				2
+			}
+		end,
+		requirements = function (statistics_db, stats_id)
+			local diff = DifficultySettings.hardest.rank
+			local complete_bogenhafen_slum = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff)
+			local complete_bogenhafen_city = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff)
+
+			return {
+				{
+					name = "level_name_bogenhafen_slum",
+					completed = complete_bogenhafen_slum
+				},
+				{
+					name = "level_name_bogenhafen_city",
+					completed = complete_bogenhafen_city
+				}
+			}
+		end
+	},
+	complete_act_one_champion = {
+		reward = "level_chest",
+		name = "achv_complete_act_one_champion_name",
+		icon = "icons_placeholder",
+		desc = "achv_complete_act_one_champion_desc",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.harder.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.military.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.catacombs.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.mines.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.ground_zero.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 4
+		end,
+		progress = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.harder.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.military.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.catacombs.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.mines.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.ground_zero.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return {
+				count,
+				4
+			}
+		end,
+		requirements = function (statistics_db, stats_id)
+			local diff = DifficultySettings.harder.rank
+			local complete_military = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.military.level_id
+			}, diff)
+			local complete_catacombs = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.catacombs.level_id
+			}, diff)
+			local complete_mines = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.mines.level_id
+			}, diff)
+			local complete_ground_zero = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.ground_zero.level_id
+			}, diff)
+
+			return {
+				{
+					name = "level_name_military",
+					completed = complete_military
+				},
+				{
+					name = "level_name_catacombs",
+					completed = complete_catacombs
+				},
+				{
+					name = "level_name_mines",
+					completed = complete_mines
+				},
+				{
+					name = "level_name_ground_zero",
+					completed = complete_ground_zero
+				}
+			}
+		end
+	},
+	complete_act_one_legend = {
+		reward = "level_chest",
+		name = "achv_complete_act_one_legend_name",
+		icon = "icons_placeholder",
+		desc = "achv_complete_act_one_legend_desc",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hardest.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.military.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.catacombs.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.mines.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.ground_zero.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 4
+		end,
+		progress = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hardest.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.military.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.catacombs.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.mines.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.ground_zero.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return {
+				count,
+				4
+			}
+		end,
+		requirements = function (statistics_db, stats_id)
+			local diff = DifficultySettings.hardest.rank
+			local complete_military = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.military.level_id
+			}, diff)
+			local complete_catacombs = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.catacombs.level_id
+			}, diff)
+			local complete_mines = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.mines.level_id
+			}, diff)
+			local complete_ground_zero = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.ground_zero.level_id
+			}, diff)
 
 			return {
 				{
@@ -421,6 +1201,315 @@ achievement_templates.achievements = {
 			}
 		end
 	},
+	complete_act_two_veteran = {
+		reward = "level_chest",
+		name = "achv_complete_act_two_veteran_name",
+		icon = "icons_placeholder",
+		desc = "achv_complete_act_two_veteran_desc",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hard.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.elven_ruins.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.bell.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.fort.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.skaven_stronghold.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 4
+		end,
+		progress = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hard.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.elven_ruins.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.bell.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.fort.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.skaven_stronghold.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return {
+				count,
+				4
+			}
+		end,
+		requirements = function (statistics_db, stats_id)
+			local diff = DifficultySettings.hard.rank
+			local complete_elven_ruins = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.elven_ruins.level_id
+			}, diff)
+			local complete_bell = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.bell.level_id
+			}, diff)
+			local complete_fort = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.fort.level_id
+			}, diff)
+			local complete_skaven_stronghold = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.skaven_stronghold.level_id
+			}, diff)
+
+			return {
+				{
+					name = "level_name_elven_ruins",
+					completed = complete_elven_ruins
+				},
+				{
+					name = "level_name_bell",
+					completed = complete_bell
+				},
+				{
+					name = "level_name_forest_fort",
+					completed = complete_fort
+				},
+				{
+					name = "level_name_skaven_stronghold",
+					completed = complete_skaven_stronghold
+				}
+			}
+		end
+	},
+	complete_act_two_champion = {
+		reward = "level_chest",
+		name = "achv_complete_act_two_champion_name",
+		icon = "icons_placeholder",
+		desc = "achv_complete_act_two_champion_desc",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.harder.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.elven_ruins.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.bell.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.fort.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.skaven_stronghold.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 4
+		end,
+		progress = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.harder.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.elven_ruins.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.bell.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.fort.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.skaven_stronghold.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return {
+				count,
+				4
+			}
+		end,
+		requirements = function (statistics_db, stats_id)
+			local diff = DifficultySettings.harder.rank
+			local complete_elven_ruins = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.elven_ruins.level_id
+			}, diff)
+			local complete_bell = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.bell.level_id
+			}, diff)
+			local complete_fort = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.fort.level_id
+			}, diff)
+			local complete_skaven_stronghold = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.skaven_stronghold.level_id
+			}, diff)
+
+			return {
+				{
+					name = "level_name_elven_ruins",
+					completed = complete_elven_ruins
+				},
+				{
+					name = "level_name_bell",
+					completed = complete_bell
+				},
+				{
+					name = "level_name_forest_fort",
+					completed = complete_fort
+				},
+				{
+					name = "level_name_skaven_stronghold",
+					completed = complete_skaven_stronghold
+				}
+			}
+		end
+	},
+	complete_act_two_legend = {
+		reward = "level_chest",
+		name = "achv_complete_act_two_legend_name",
+		icon = "icons_placeholder",
+		desc = "achv_complete_act_two_legend_desc",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hardest.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.elven_ruins.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.bell.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.fort.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.skaven_stronghold.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 4
+		end,
+		progress = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hardest.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.elven_ruins.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.bell.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.fort.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.skaven_stronghold.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return {
+				count,
+				4
+			}
+		end,
+		requirements = function (statistics_db, stats_id)
+			local diff = DifficultySettings.hardest.rank
+			local complete_elven_ruins = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.elven_ruins.level_id
+			}, diff)
+			local complete_bell = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.bell.level_id
+			}, diff)
+			local complete_fort = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.fort.level_id
+			}, diff)
+			local complete_skaven_stronghold = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.skaven_stronghold.level_id
+			}, diff)
+
+			return {
+				{
+					name = "level_name_elven_ruins",
+					completed = complete_elven_ruins
+				},
+				{
+					name = "level_name_bell",
+					completed = complete_bell
+				},
+				{
+					name = "level_name_forest_fort",
+					completed = complete_fort
+				},
+				{
+					name = "level_name_skaven_stronghold",
+					completed = complete_skaven_stronghold
+				}
+			}
+		end
+	},
 	complete_act_three = {
 		ID_XB1 = 5,
 		name = "achv_complete_act_three_name",
@@ -476,6 +1565,315 @@ achievement_templates.achievements = {
 			local complete_warcamp = check_level_list(statistics_db, stats_id, {
 				LevelSettings.warcamp.level_id
 			})
+
+			return {
+				{
+					name = "level_name_farmlands",
+					completed = complete_farmlands
+				},
+				{
+					name = "level_name_ussingen",
+					completed = complete_ussingen
+				},
+				{
+					name = "level_name_nurgle",
+					completed = complete_nurgle
+				},
+				{
+					name = "level_name_warcamp",
+					completed = complete_warcamp
+				}
+			}
+		end
+	},
+	complete_act_three_veteran = {
+		reward = "level_chest",
+		name = "achv_complete_act_three_veteran_name",
+		icon = "icons_placeholder",
+		desc = "achv_complete_act_three_veteran_desc",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hard.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.farmlands.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.ussingen.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.nurgle.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.warcamp.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 4
+		end,
+		progress = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hard.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.farmlands.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.ussingen.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.nurgle.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.warcamp.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return {
+				count,
+				4
+			}
+		end,
+		requirements = function (statistics_db, stats_id)
+			local diff = DifficultySettings.hard.rank
+			local complete_farmlands = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.farmlands.level_id
+			}, diff)
+			local complete_ussingen = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.ussingen.level_id
+			}, diff)
+			local complete_nurgle = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.nurgle.level_id
+			}, diff)
+			local complete_warcamp = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.warcamp.level_id
+			}, diff)
+
+			return {
+				{
+					name = "level_name_farmlands",
+					completed = complete_farmlands
+				},
+				{
+					name = "level_name_ussingen",
+					completed = complete_ussingen
+				},
+				{
+					name = "level_name_nurgle",
+					completed = complete_nurgle
+				},
+				{
+					name = "level_name_warcamp",
+					completed = complete_warcamp
+				}
+			}
+		end
+	},
+	complete_act_three_champion = {
+		reward = "level_chest",
+		name = "achv_complete_act_three_champion_name",
+		icon = "icons_placeholder",
+		desc = "achv_complete_act_three_champion_desc",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.harder.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.farmlands.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.ussingen.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.nurgle.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.warcamp.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 4
+		end,
+		progress = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.harder.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.farmlands.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.ussingen.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.nurgle.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.warcamp.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return {
+				count,
+				4
+			}
+		end,
+		requirements = function (statistics_db, stats_id)
+			local diff = DifficultySettings.harder.rank
+			local complete_farmlands = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.farmlands.level_id
+			}, diff)
+			local complete_ussingen = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.ussingen.level_id
+			}, diff)
+			local complete_nurgle = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.nurgle.level_id
+			}, diff)
+			local complete_warcamp = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.warcamp.level_id
+			}, diff)
+
+			return {
+				{
+					name = "level_name_farmlands",
+					completed = complete_farmlands
+				},
+				{
+					name = "level_name_ussingen",
+					completed = complete_ussingen
+				},
+				{
+					name = "level_name_nurgle",
+					completed = complete_nurgle
+				},
+				{
+					name = "level_name_warcamp",
+					completed = complete_warcamp
+				}
+			}
+		end
+	},
+	complete_act_three_legend = {
+		reward = "level_chest",
+		name = "achv_complete_act_three_legend_name",
+		icon = "icons_placeholder",
+		desc = "achv_complete_act_three_legend_desc",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hardest.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.farmlands.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.ussingen.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.nurgle.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.warcamp.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 4
+		end,
+		progress = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hardest.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.farmlands.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.ussingen.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.nurgle.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.warcamp.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return {
+				count,
+				4
+			}
+		end,
+		requirements = function (statistics_db, stats_id)
+			local diff = DifficultySettings.hardest.rank
+			local complete_farmlands = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.farmlands.level_id
+			}, diff)
+			local complete_ussingen = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.ussingen.level_id
+			}, diff)
+			local complete_nurgle = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.nurgle.level_id
+			}, diff)
+			local complete_warcamp = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.warcamp.level_id
+			}, diff)
 
 			return {
 				{
@@ -556,6 +1954,376 @@ achievement_templates.achievements = {
 				LevelSettings.skittergate.level_id
 			}, diff)
 		end
+	},
+	bogenhafen_complete_recruit = {
+		reward = "frame_bogenhafen_01",
+		name = "achv_bogenhafen_complete_recruit_name",
+		icon = "icons_placeholder",
+		required_dlc = "bogenhafen",
+		desc = "achv_bogenhafen_complete_recruit_desc",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.normal.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 2
+		end,
+		progress = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.normal.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return {
+				count,
+				2
+			}
+		end,
+		requirements = function (statistics_db, stats_id)
+			local diff = DifficultySettings.normal.rank
+			local complete_slum = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff)
+			local complete_city = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff)
+
+			return {
+				{
+					name = "level_name_slum",
+					completed = complete_slum
+				},
+				{
+					name = "level_name_city",
+					completed = complete_city
+				}
+			}
+		end
+	},
+	bogenhafen_complete_veteran = {
+		reward = "frame_bogenhafen_02",
+		name = "achv_bogenhafen_complete_veteran_name",
+		icon = "icons_placeholder",
+		required_dlc = "bogenhafen",
+		desc = "achv_bogenhafen_complete_veteran_desc",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hard.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 2
+		end,
+		progress = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hard.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return {
+				count,
+				2
+			}
+		end,
+		requirements = function (statistics_db, stats_id)
+			local diff = DifficultySettings.hard.rank
+			local complete_slum = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff)
+			local complete_city = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff)
+
+			return {
+				{
+					name = "level_name_slum",
+					completed = complete_slum
+				},
+				{
+					name = "level_name_city",
+					completed = complete_city
+				}
+			}
+		end
+	},
+	bogenhafen_complete_champion = {
+		reward = "frame_bogenhafen_03",
+		name = "achv_bogenhafen_complete_champion_name",
+		icon = "icons_placeholder",
+		required_dlc = "bogenhafen",
+		desc = "achv_bogenhafen_complete_champion_desc",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.harder.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 2
+		end,
+		progress = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.harder.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return {
+				count,
+				2
+			}
+		end,
+		requirements = function (statistics_db, stats_id)
+			local diff = DifficultySettings.harder.rank
+			local complete_slum = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff)
+			local complete_city = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff)
+
+			return {
+				{
+					name = "level_name_slum",
+					completed = complete_slum
+				},
+				{
+					name = "level_name_city",
+					completed = complete_city
+				}
+			}
+		end
+	},
+	bogenhafen_complete_legend = {
+		reward = "frame_bogenhafen_04",
+		name = "achv_bogenhafen_complete_legend_name",
+		icon = "icons_placeholder",
+		required_dlc = "bogenhafen",
+		desc = "achv_bogenhafen_complete_legend_desc",
+		completed = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hardest.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return count >= 2
+		end,
+		progress = function (statistics_db, stats_id)
+			local count = 0
+			local diff = DifficultySettings.hardest.rank
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			if check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff) then
+				count = count + 1
+			end
+
+			return {
+				count,
+				2
+			}
+		end,
+		requirements = function (statistics_db, stats_id)
+			local diff = DifficultySettings.hardest.rank
+			local complete_slum = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_slum.level_id
+			}, diff)
+			local complete_city = check_level_list_difficulty(statistics_db, stats_id, {
+				LevelSettings.dlc_bogenhafen_city.level_id
+			}, diff)
+
+			return {
+				{
+					name = "level_name_slum",
+					completed = complete_slum
+				},
+				{
+					name = "level_name_city",
+					completed = complete_city
+				}
+			}
+		end
+	},
+	bogenhafen_city_no_braziers_lit = {
+		ID_XB1 = 56,
+		name = "achv_bogenhafen_city_no_braziers_lit_name",
+		required_dlc = "bogenhafen",
+		reward = "bogenhafen_chest",
+		icon = "achievement_trophy_bogenhafen_city_no_braziers_lit",
+		desc = "achv_bogenhafen_city_no_braziers_lit_desc",
+		completed = function (statistics_db, stats_id)
+			return statistics_db:get_persistent_stat(stats_id, "bogenhafen_city_no_braziers_lit") > 0
+		end
+	},
+	bogenhafen_city_torch_not_picked_up = {
+		reward = "bogenhafen_chest",
+		name = "achv_bogenhafen_city_torch_not_picked_up_name",
+		required_dlc = "bogenhafen",
+		icon = "achievement_trophy_bogenhafen_city_torch_not_picked_up",
+		desc = "achv_bogenhafen_city_torch_not_picked_up_desc",
+		completed = function (statistics_db, stats_id)
+			return statistics_db:get_persistent_stat(stats_id, "bogenhafen_city_torch_not_picked_up") > 0
+		end
+	},
+	bogenhafen_city_fast_switches = {
+		ID_XB1 = 57,
+		name = "achv_bogenhafen_city_fast_switches_name",
+		required_dlc = "bogenhafen",
+		reward = "bogenhafen_chest",
+		icon = "achievement_trophy_bogenhafen_city_fast_switches",
+		desc = "achv_bogenhafen_city_fast_switches_desc",
+		completed = function (statistics_db, stats_id)
+			return statistics_db:get_persistent_stat(stats_id, "bogenhafen_city_fast_switches") > 0
+		end
+	},
+	bogenhafen_city_all_wine_collected = {
+		ID_XB1 = 58,
+		name = "achv_bogenhafen_city_all_wine_collected_name",
+		required_dlc = "bogenhafen",
+		reward = "bogenhafen_chest",
+		icon = "achievement_trophy_bogenhafen_city_all_wine_collected",
+		desc = "achv_bogenhafen_city_all_wine_collected_desc",
+		completed = function (statistics_db, stats_id)
+			return statistics_db:get_persistent_stat(stats_id, "bogenhafen_city_all_wine_collected") > 0
+		end
+	},
+	bogenhafen_city_jumping_puzzle = {
+		reward = "bogenhafen_chest",
+		name = "achv_bogenhafen_city_jumping_puzzle_name",
+		required_dlc = "bogenhafen",
+		icon = "achievement_trophy_bogenhafen_city_jumping_puzzle",
+		desc = "achv_bogenhafen_city_jumping_puzzle_desc",
+		completed = function (statistics_db, stats_id)
+			return statistics_db:get_persistent_stat(stats_id, "bogenhafen_city_jumping_puzzle") > 0
+		end
+	},
+	bogenhafen_slum_no_ratling_damage = {
+		ID_XB1 = 59,
+		name = "achv_bogenhafen_slum_no_ratling_damage_name",
+		required_dlc = "bogenhafen",
+		reward = "bogenhafen_chest",
+		icon = "achievement_trophy_bogenhafen_slum_no_ratling_damage",
+		desc = "achv_bogenhafen_slum_no_ratling_damage_desc",
+		completed = function (statistics_db, stats_id)
+			return statistics_db:get_persistent_stat(stats_id, "bogenhafen_slum_no_ratling_damage") > 0
+		end
+	},
+	bogenhafen_slum_no_windows_broken = {
+		reward = "bogenhafen_chest",
+		name = "achv_bogenhafen_slum_no_windows_broken_name",
+		required_dlc = "bogenhafen",
+		icon = "achievement_trophy_bogenhafen_slum_no_windows_broken",
+		desc = "achv_bogenhafen_slum_no_windows_broken_desc",
+		completed = function (statistics_db, stats_id)
+			return statistics_db:get_persistent_stat(stats_id, "bogenhafen_slum_no_windows_broken") > 0
+		end
+	},
+	bogenhafen_slum_find_hidden_stash = {
+		ID_XB1 = 60,
+		name = "achv_bogenhafen_slum_find_hidden_stash_name",
+		required_dlc = "bogenhafen",
+		reward = "bogenhafen_chest",
+		icon = "achievement_trophy_bogenhafen_slum_find_hidden_stash",
+		desc = "achv_bogenhafen_slum_find_hidden_stash_desc",
+		completed = function (statistics_db, stats_id)
+			return statistics_db:get_persistent_stat(stats_id, "bogenhafen_slum_find_hidden_stash") > 0
+		end
+	},
+	bogenhafen_slum_jumping_puzzle = {
+		reward = "bogenhafen_chest",
+		name = "achv_bogenhafen_slum_jumping_puzzle_name",
+		required_dlc = "bogenhafen",
+		icon = "achievement_trophy_bogenhafen_slum_jumping_puzzle",
+		desc = "achv_bogenhafen_slum_jumping_puzzle_desc",
+		completed = function (statistics_db, stats_id)
+			return statistics_db:get_persistent_stat(stats_id, "bogenhafen_slum_jumping_puzzle") > 0
+		end
+	},
+	bogenhafen_slum_event_speedrun = {
+		ID_XB1 = 61,
+		name = "achv_bogenhafen_slum_event_speedrun_name",
+		required_dlc = "bogenhafen",
+		reward = "bogenhafen_chest",
+		icon = "achievement_trophy_bogenhafen_slum_event_speedrun",
+		desc = "achv_bogenhafen_slum_event_speedrun_desc",
+		completed = function (statistics_db, stats_id)
+			return statistics_db:get_persistent_stat(stats_id, "bogenhafen_slum_event_speedrun") > 0
+		end
 	}
 }
 
@@ -579,7 +2347,7 @@ end
 
 local main_game_levels = remove_prologue(MainGameLevels)
 local completed_all_levels = {}
-achievement_templates.achievements.completed_all_levels = {
+AchievementTemplates.achievements.completed_all_levels = {
 	name = "achv_complete_all_levels_name",
 	desc = "achv_complete_all_levels_desc",
 	completed = function (statistics_db, stats_id)
@@ -618,7 +2386,322 @@ achievement_templates.achievements.completed_all_levels = {
 		return completed_all_levels
 	end
 }
-achievement_templates.achievements.level_thirty_wood_elf = {
+AchievementTemplates.achievements.achievement_bardin_level_1 = {
+	reward = "ranger_hat_0003",
+	name = "achv_achievement_bardin_level_1_name",
+	icon = "achievement_trophy_bardin_level_1",
+	desc = "achv_achievement_bardin_level_1_desc",
+	completed = function (statistics_db, stats_id)
+		return hero_level("dwarf_ranger") >= 17
+	end,
+	progress = function (statistics_db, stats_id)
+		local level = hero_level("dwarf_ranger")
+
+		if level > 17 then
+			level = 17
+		end
+
+		return {
+			level,
+			17
+		}
+	end
+}
+AchievementTemplates.achievements.achievement_bardin_level_2 = {
+	reward = "ironbreaker_hat_0007",
+	name = "achv_achievement_bardin_level_2_name",
+	icon = "achievement_trophy_bardin_level_2",
+	desc = "achv_achievement_bardin_level_2_desc",
+	completed = function (statistics_db, stats_id)
+		return hero_level("dwarf_ranger") >= 22
+	end,
+	progress = function (statistics_db, stats_id)
+		local level = hero_level("dwarf_ranger")
+
+		if level > 22 then
+			level = 22
+		end
+
+		return {
+			level,
+			22
+		}
+	end
+}
+AchievementTemplates.achievements.achievement_bardin_level_3 = {
+	reward = "slayer_hat_0007",
+	name = "achv_achievement_bardin_level_3_name",
+	icon = "achievement_trophy_bardin_level_3",
+	desc = "achv_achievement_bardin_level_3_desc",
+	completed = function (statistics_db, stats_id)
+		return hero_level("dwarf_ranger") >= 27
+	end,
+	progress = function (statistics_db, stats_id)
+		local level = hero_level("dwarf_ranger")
+
+		if level > 27 then
+			level = 27
+		end
+
+		return {
+			level,
+			27
+		}
+	end
+}
+AchievementTemplates.achievements.achievement_markus_level_1 = {
+	reward = "mercenary_hat_0006",
+	name = "achv_achievement_markus_level_1_name",
+	icon = "achievement_trophy_markus_level_1",
+	desc = "achv_achievement_markus_level_1_desc",
+	completed = function (statistics_db, stats_id)
+		return hero_level("empire_soldier") >= 17
+	end,
+	progress = function (statistics_db, stats_id)
+		local level = hero_level("empire_soldier")
+
+		if level > 17 then
+			level = 17
+		end
+
+		return {
+			level,
+			17
+		}
+	end
+}
+AchievementTemplates.achievements.achievement_markus_level_2 = {
+	reward = "huntsman_hat_0004",
+	name = "achv_achievement_markus_level_2_name",
+	icon = "achievement_trophy_markus_level_2",
+	desc = "achv_achievement_markus_level_2_desc",
+	completed = function (statistics_db, stats_id)
+		return hero_level("empire_soldier") >= 22
+	end,
+	progress = function (statistics_db, stats_id)
+		local level = hero_level("empire_soldier")
+
+		if level > 22 then
+			level = 22
+		end
+
+		return {
+			level,
+			22
+		}
+	end
+}
+AchievementTemplates.achievements.achievement_markus_level_3 = {
+	reward = "knight_hat_0003",
+	name = "achv_achievement_markus_level_3_name",
+	icon = "achievement_trophy_markus_level_3",
+	desc = "achv_achievement_markus_level_3_desc",
+	completed = function (statistics_db, stats_id)
+		return hero_level("empire_soldier") >= 27
+	end,
+	progress = function (statistics_db, stats_id)
+		local level = hero_level("empire_soldier")
+
+		if level > 27 then
+			level = 27
+		end
+
+		return {
+			level,
+			27
+		}
+	end
+}
+AchievementTemplates.achievements.achievement_kerillian_level_1 = {
+	reward = "waywatcher_hat_0006",
+	name = "achv_achievement_kerillian_level_1_name",
+	icon = "achievement_trophy_kerillian_level_1",
+	desc = "achv_achievement_kerillian_level_1_desc",
+	completed = function (statistics_db, stats_id)
+		return hero_level("wood_elf") >= 17
+	end,
+	progress = function (statistics_db, stats_id)
+		local level = hero_level("wood_elf")
+
+		if level > 17 then
+			level = 17
+		end
+
+		return {
+			level,
+			17
+		}
+	end
+}
+AchievementTemplates.achievements.achievement_kerillian_level_2 = {
+	reward = "maidenguard_hat_0005",
+	name = "achv_achievement_kerillian_level_2_name",
+	icon = "achievement_trophy_kerillian_level_2",
+	desc = "achv_achievement_kerillian_level_2_desc",
+	completed = function (statistics_db, stats_id)
+		return hero_level("wood_elf") >= 22
+	end,
+	progress = function (statistics_db, stats_id)
+		local level = hero_level("wood_elf")
+
+		if level > 22 then
+			level = 22
+		end
+
+		return {
+			level,
+			22
+		}
+	end
+}
+AchievementTemplates.achievements.achievement_kerillian_level_3 = {
+	reward = "shade_hat_0010",
+	name = "achv_achievement_kerillian_level_3_name",
+	icon = "achievement_trophy_kerillian_level_3",
+	desc = "achv_achievement_kerillian_level_3_desc",
+	completed = function (statistics_db, stats_id)
+		return hero_level("wood_elf") >= 27
+	end,
+	progress = function (statistics_db, stats_id)
+		local level = hero_level("wood_elf")
+
+		if level > 27 then
+			level = 27
+		end
+
+		return {
+			level,
+			27
+		}
+	end
+}
+AchievementTemplates.achievements.achievement_sienna_level_1 = {
+	reward = "adept_hat_0002",
+	name = "achv_achievement_sienna_level_1_name",
+	icon = "achievement_trophy_sienna_level_1",
+	desc = "achv_achievement_sienna_level_1_desc",
+	completed = function (statistics_db, stats_id)
+		return hero_level("bright_wizard") >= 17
+	end,
+	progress = function (statistics_db, stats_id)
+		local level = hero_level("bright_wizard")
+
+		if level > 17 then
+			level = 17
+		end
+
+		return {
+			level,
+			17
+		}
+	end
+}
+AchievementTemplates.achievements.achievement_sienna_level_2 = {
+	reward = "scholar_hat_0004",
+	name = "achv_achievement_sienna_level_2_name",
+	icon = "achievement_trophy_sienna_level_2",
+	desc = "achv_achievement_sienna_level_2_desc",
+	completed = function (statistics_db, stats_id)
+		return hero_level("bright_wizard") >= 22
+	end,
+	progress = function (statistics_db, stats_id)
+		local level = hero_level("bright_wizard")
+
+		if level > 22 then
+			level = 22
+		end
+
+		return {
+			level,
+			22
+		}
+	end
+}
+AchievementTemplates.achievements.achievement_sienna_level_3 = {
+	reward = "unchained_hat_0008",
+	name = "achv_achievement_sienna_level_3_name",
+	icon = "achievement_trophy_sienna_level_3",
+	desc = "achv_achievement_sienna_level_3_desc",
+	completed = function (statistics_db, stats_id)
+		return hero_level("bright_wizard") >= 27
+	end,
+	progress = function (statistics_db, stats_id)
+		local level = hero_level("bright_wizard")
+
+		if level > 27 then
+			level = 27
+		end
+
+		return {
+			level,
+			27
+		}
+	end
+}
+AchievementTemplates.achievements.achievement_victor_level_1 = {
+	reward = "witchhunter_hat_0003",
+	name = "achv_achievement_victor_level_1_name",
+	icon = "achievement_trophy_victor_level_1",
+	desc = "achv_achievement_victor_level_1_desc",
+	completed = function (statistics_db, stats_id)
+		return hero_level("witch_hunter") >= 17
+	end,
+	progress = function (statistics_db, stats_id)
+		local level = hero_level("witch_hunter")
+
+		if level > 17 then
+			level = 17
+		end
+
+		return {
+			level,
+			17
+		}
+	end
+}
+AchievementTemplates.achievements.achievement_victor_level_2 = {
+	reward = "bountyhunter_hat_0002",
+	name = "achv_achievement_victor_level_2_name",
+	icon = "achievement_trophy_victor_level_2",
+	desc = "achv_achievement_victor_level_2_desc",
+	completed = function (statistics_db, stats_id)
+		return hero_level("witch_hunter") >= 22
+	end,
+	progress = function (statistics_db, stats_id)
+		local level = hero_level("witch_hunter")
+
+		if level > 22 then
+			level = 22
+		end
+
+		return {
+			level,
+			22
+		}
+	end
+}
+AchievementTemplates.achievements.achievement_victor_level_3 = {
+	reward = "zealot_hat_0009",
+	name = "achv_achievement_victor_level_3_name",
+	icon = "achievement_trophy_victor_level_3",
+	desc = "achv_achievement_victor_level_3_desc",
+	completed = function (statistics_db, stats_id)
+		return hero_level("witch_hunter") >= 27
+	end,
+	progress = function (statistics_db, stats_id)
+		local level = hero_level("witch_hunter")
+
+		if level > 27 then
+			level = 27
+		end
+
+		return {
+			level,
+			27
+		}
+	end
+}
+AchievementTemplates.achievements.level_thirty_wood_elf = {
 	ID_XB1 = 10,
 	name = "achv_level_thirty_wood_elf_name",
 	ID_STEAM = "level_thirty_wood_elf",
@@ -641,7 +2724,7 @@ achievement_templates.achievements.level_thirty_wood_elf = {
 		}
 	end
 }
-achievement_templates.achievements.level_thirty_witch_hunter = {
+AchievementTemplates.achievements.level_thirty_witch_hunter = {
 	ID_XB1 = 11,
 	name = "achv_level_thirty_witch_hunter_name",
 	ID_STEAM = "level_thirty_witch_hunter",
@@ -664,7 +2747,7 @@ achievement_templates.achievements.level_thirty_witch_hunter = {
 		}
 	end
 }
-achievement_templates.achievements.level_thirty_empire_soldier = {
+AchievementTemplates.achievements.level_thirty_empire_soldier = {
 	ID_XB1 = 12,
 	name = "achv_level_thirty_empire_soldier_name",
 	ID_STEAM = "level_thirty_empire_soldier",
@@ -687,7 +2770,7 @@ achievement_templates.achievements.level_thirty_empire_soldier = {
 		}
 	end
 }
-achievement_templates.achievements.level_thirty_bright_wizard = {
+AchievementTemplates.achievements.level_thirty_bright_wizard = {
 	ID_XB1 = 13,
 	name = "achv_level_thirty_bright_wizard_name",
 	ID_STEAM = "level_thirty_bright_wizard",
@@ -710,7 +2793,7 @@ achievement_templates.achievements.level_thirty_bright_wizard = {
 		}
 	end
 }
-achievement_templates.achievements.level_thirty_dwarf_ranger = {
+AchievementTemplates.achievements.level_thirty_dwarf_ranger = {
 	ID_XB1 = 14,
 	name = "achv_level_thirty_dwarf_ranger_name",
 	ID_STEAM = "level_thirty_dwarf_ranger",
@@ -733,7 +2816,7 @@ achievement_templates.achievements.level_thirty_dwarf_ranger = {
 		}
 	end
 }
-achievement_templates.achievements.level_thirty_all = {
+AchievementTemplates.achievements.level_thirty_all = {
 	ID_XB1 = 15,
 	name = "achv_level_thirty_all_name",
 	reward = "level_chest",
@@ -802,7 +2885,7 @@ achievement_templates.achievements.level_thirty_all = {
 		}
 	end
 }
-achievement_templates.achievements.unlock_first_talent_point = {
+AchievementTemplates.achievements.unlock_first_talent_point = {
 	ID_XB1 = 16,
 	name = "achv_unlock_first_talent_point_name",
 	ID_STEAM = "unlock_first_talent_point",
@@ -827,7 +2910,7 @@ achievement_templates.achievements.unlock_first_talent_point = {
 		return false
 	end
 }
-achievement_templates.achievements.unlock_all_talent_points = {
+AchievementTemplates.achievements.unlock_all_talent_points = {
 	ID_XB1 = 17,
 	name = "achv_unlock_all_talent_points_name",
 	ID_STEAM = "unlock_all_talent_points",
@@ -852,7 +2935,7 @@ achievement_templates.achievements.unlock_all_talent_points = {
 		return false
 	end
 }
-achievement_templates.achievements.craft_item = {
+AchievementTemplates.achievements.craft_item = {
 	ID_XB1 = 18,
 	name = "achv_craft_item_name",
 	ID_STEAM = "craft_item",
@@ -865,7 +2948,7 @@ achievement_templates.achievements.craft_item = {
 		return crafted_items >= 1
 	end
 }
-achievement_templates.achievements.craft_fifty_items = {
+AchievementTemplates.achievements.craft_fifty_items = {
 	ID_XB1 = 19,
 	name = "achv_craft_fifty_items_name",
 	ID_STEAM = "craft_fifty_items",
@@ -890,7 +2973,7 @@ achievement_templates.achievements.craft_fifty_items = {
 		}
 	end
 }
-achievement_templates.achievements.salvage_item = {
+AchievementTemplates.achievements.salvage_item = {
 	ID_XB1 = 20,
 	name = "achv_salvage_item_name",
 	ID_STEAM = "salvage_item",
@@ -903,7 +2986,7 @@ achievement_templates.achievements.salvage_item = {
 		return crafted_items >= 1
 	end
 }
-achievement_templates.achievements.salvage_hundred_items = {
+AchievementTemplates.achievements.salvage_hundred_items = {
 	ID_XB1 = 21,
 	name = "achv_salvage_hundred_items_name",
 	ID_STEAM = "salvage_hundred_items",
@@ -928,7 +3011,7 @@ achievement_templates.achievements.salvage_hundred_items = {
 		}
 	end
 }
-achievement_templates.achievements.equip_common_quality = {
+AchievementTemplates.achievements.equip_common_quality = {
 	ID_XB1 = 22,
 	name = "achv_equip_common_quality_name",
 	ID_STEAM = "equip_common_quality",
@@ -941,7 +3024,7 @@ achievement_templates.achievements.equip_common_quality = {
 		return items >= 1
 	end
 }
-achievement_templates.achievements.equip_rare_quality = {
+AchievementTemplates.achievements.equip_rare_quality = {
 	ID_XB1 = 23,
 	name = "achv_equip_rare_quality_name",
 	ID_STEAM = "equip_rare_quality",
@@ -954,7 +3037,7 @@ achievement_templates.achievements.equip_rare_quality = {
 		return items >= 1
 	end
 }
-achievement_templates.achievements.equip_exotic_quality = {
+AchievementTemplates.achievements.equip_exotic_quality = {
 	ID_XB1 = 24,
 	name = "achv_equip_exotic_quality_name",
 	ID_STEAM = "equip_exotic_quality",
@@ -967,7 +3050,7 @@ achievement_templates.achievements.equip_exotic_quality = {
 		return items >= 1
 	end
 }
-achievement_templates.achievements.equip_all_exotic_quality = {
+AchievementTemplates.achievements.equip_all_exotic_quality = {
 	ID_XB1 = 25,
 	name = "achv_equip_all_exotic_quality_name",
 	reward = "level_chest",
@@ -1019,7 +3102,7 @@ achievement_templates.achievements.equip_all_exotic_quality = {
 		}
 	end
 }
-achievement_templates.achievements.equip_veteran_quality = {
+AchievementTemplates.achievements.equip_veteran_quality = {
 	ID_XB1 = 26,
 	name = "achv_equip_veteran_quality_name",
 	ID_STEAM = "equip_veteran_quality",
@@ -1032,7 +3115,7 @@ achievement_templates.achievements.equip_veteran_quality = {
 		return items >= 1
 	end
 }
-achievement_templates.achievements.equip_all_veteran_quality = {
+AchievementTemplates.achievements.equip_all_veteran_quality = {
 	reward = "level_chest",
 	name = "achv_equip_all_veteran_quality_name",
 	icon = "achievement_trophy_equip_all_veteran_quality",
@@ -1082,7 +3165,7 @@ achievement_templates.achievements.equip_all_veteran_quality = {
 		}
 	end
 }
-achievement_templates.achievements.complete_level_all = {
+AchievementTemplates.achievements.complete_level_all = {
 	ID_XB1 = 27,
 	name = "achv_complete_level_all_name",
 	ID_STEAM = "complete_level_all",
@@ -1121,7 +3204,7 @@ achievement_templates.achievements.complete_level_all = {
 		return false
 	end
 }
-achievement_templates.completed_deed_limits = {
+AchievementTemplates.completed_deed_limits = {
 	10,
 	25,
 	50,
@@ -1132,9 +3215,9 @@ achievement_templates.completed_deed_limits = {
 	500
 }
 
-for i, limit in ipairs(achievement_templates.completed_deed_limits) do
+for i, limit in ipairs(AchievementTemplates.completed_deed_limits) do
 	local id = "complete_deeds_" .. i
-	achievement_templates.achievements[id] = {
+	AchievementTemplates.achievements[id] = {
 		name = "achv_complete_deeds_" .. i .. "_name",
 		desc = function ()
 			return string.format(Localize("achv_complete_deeds_desc"), limit)
@@ -1156,18 +3239,19 @@ for i, limit in ipairs(achievement_templates.completed_deed_limits) do
 	}
 end
 
-achievement_templates.difficulties = {
+AchievementTemplates.difficulties = {
 	harder = "champion",
 	hard = "veteran",
 	hardest = "legend",
 	normal = "recruit"
 }
 
-for diff_key, diff_id in pairs(achievement_templates.difficulties) do
+for diff_key, diff_id in pairs(AchievementTemplates.difficulties) do
 	local id = "complete_all_helmgart_levels_" .. diff_id
-	achievement_templates.achievements[id] = {
+	AchievementTemplates.achievements[id] = {
 		name = "achv_complete_all_helmgart_levels_" .. diff_id .. "_name",
 		desc = "achv_complete_all_helmgart_levels_" .. diff_id .. "_desc",
+		icon = "achievement_trophy_complete_all_helmgart_levels_" .. diff_id,
 		reward = rewards_lookup[id],
 		completed = function (statistics_db, stats_id)
 			return check_level_list_difficulty(statistics_db, stats_id, main_game_levels, DifficultySettings[diff_key].rank)
@@ -1209,9 +3293,9 @@ end
 
 for career, _ in pairs(CareerSettings) do
 	if career ~= "empire_soldier_tutorial" then
-		for diff_key, diff_id in pairs(achievement_templates.difficulties) do
+		for diff_key, diff_id in pairs(AchievementTemplates.difficulties) do
 			local id = "complete_all_helmgart_levels_" .. diff_id .. "_" .. career
-			achievement_templates.achievements[id] = {
+			AchievementTemplates.achievements[id] = {
 				name = "achv_complete_all_helmgart_levels_" .. diff_id .. "_" .. career .. "_name",
 				desc = "achv_complete_all_helmgart_levels_" .. diff_id .. "_" .. career .. "_desc",
 				icon = "achievement_trophy_" .. diff_id .. "_" .. career,
@@ -1256,9 +3340,9 @@ for career, _ in pairs(CareerSettings) do
 	end
 end
 
-for diff_key, diff_id in pairs(achievement_templates.difficulties) do
+for diff_key, diff_id in pairs(AchievementTemplates.difficulties) do
 	local id = "complete_all_helmgart_levels_all_careers_" .. diff_id
-	achievement_templates.achievements[id] = {
+	AchievementTemplates.achievements[id] = {
 		name = "achv_complete_all_helmgart_levels_all_careers_" .. diff_id .. "_name",
 		desc = "achv_complete_all_helmgart_levels_all_careers_" .. diff_id .. "_desc",
 		icon = "achievement_trophy_all_careers_" .. diff_id,
@@ -1318,7 +3402,7 @@ end
 for career, _ in pairs(CareerSettings) do
 	if career ~= "empire_soldier_tutorial" then
 		local id = "complete_100_missions_champion_" .. career
-		achievement_templates.achievements[id] = {
+		AchievementTemplates.achievements[id] = {
 			name = "achv_complete_100_missions_champion_" .. career .. "_name",
 			desc = "achv_complete_100_missions_champion_" .. career .. "_desc",
 			icon = "achievement_trophy_100_missions_champion_" .. career,
@@ -1354,7 +3438,7 @@ for career, _ in pairs(CareerSettings) do
 	end
 end
 
-achievement_templates.achievements.elven_ruins_align_leylines_timed = {
+AchievementTemplates.achievements.elven_ruins_align_leylines_timed = {
 	ID_XB1 = 28,
 	name = "achv_elven_ruins_align_leylines_timed_name",
 	icon = "achievement_trophy_elven_ruins_align_leylines_timed",
@@ -1366,7 +3450,7 @@ achievement_templates.achievements.elven_ruins_align_leylines_timed = {
 		return statistics_db:get_persistent_stat(stats_id, "elven_ruins_speed_event") > 0
 	end
 }
-achievement_templates.achievements.farmlands_rescue_prisoners_timed = {
+AchievementTemplates.achievements.farmlands_rescue_prisoners_timed = {
 	ID_XB1 = 29,
 	name = "achv_farmlands_rescue_prisoners_timed_name",
 	icon = "achievement_trophy_farmlands_rescue_prisoners_timed",
@@ -1378,7 +3462,7 @@ achievement_templates.achievements.farmlands_rescue_prisoners_timed = {
 		return statistics_db:get_persistent_stat(stats_id, "farmlands_speed_event") > 0
 	end
 }
-achievement_templates.achievements.military_kill_chaos_warriors_in_event = {
+AchievementTemplates.achievements.military_kill_chaos_warriors_in_event = {
 	ID_XB1 = 30,
 	name = "achv_military_kill_chaos_warriors_in_event_name",
 	icon = "achievement_trophy_military_kill_chaos_warriors_in_event",
@@ -1390,7 +3474,7 @@ achievement_templates.achievements.military_kill_chaos_warriors_in_event = {
 		return statistics_db:get_persistent_stat(stats_id, "military_statue_kill_chaos_warriors") > 0
 	end
 }
-achievement_templates.achievements.ground_zero_burblespew_tornado_enemies = {
+AchievementTemplates.achievements.ground_zero_burblespew_tornado_enemies = {
 	ID_XB1 = 31,
 	name = "achv_ground_zero_burblespew_tornado_enemies_name",
 	icon = "achievement_trophy_ground_zero_burblespew_tornado_enemies",
@@ -1402,7 +3486,7 @@ achievement_templates.achievements.ground_zero_burblespew_tornado_enemies = {
 		return statistics_db:get_persistent_stat(stats_id, "halescourge_tornado_enemies") > 0
 	end
 }
-achievement_templates.achievements.fort_kill_enemies_cannonball = {
+AchievementTemplates.achievements.fort_kill_enemies_cannonball = {
 	ID_XB1 = 32,
 	name = "achv_fort_kill_enemies_cannonball_name",
 	icon = "achievement_trophy_fort_kill_enemies_cannonball",
@@ -1414,7 +3498,7 @@ achievement_templates.achievements.fort_kill_enemies_cannonball = {
 		return statistics_db:get_persistent_stat(stats_id, "forest_fort_kill_cannonball") > 0
 	end
 }
-achievement_templates.achievements.nurgle_player_showered_in_pus = {
+AchievementTemplates.achievements.nurgle_player_showered_in_pus = {
 	ID_XB1 = 33,
 	name = "achv_nurgle_player_showered_in_pus_name",
 	icon = "achievement_trophy_nurgle_player_showered_in_pus",
@@ -1426,7 +3510,7 @@ achievement_templates.achievements.nurgle_player_showered_in_pus = {
 		return statistics_db:get_persistent_stat(stats_id, "nurgle_bathed_all") > 0
 	end
 }
-achievement_templates.achievements.bell_destroy_bell_flee_timed = {
+AchievementTemplates.achievements.bell_destroy_bell_flee_timed = {
 	ID_XB1 = 34,
 	name = "achv_bell_destroy_bell_flee_timed_name",
 	icon = "achievement_trophy_bell_destroy_bell_flee_timed",
@@ -1438,7 +3522,7 @@ achievement_templates.achievements.bell_destroy_bell_flee_timed = {
 		return statistics_db:get_persistent_stat(stats_id, "bell_speed_event") > 0
 	end
 }
-achievement_templates.achievements.catacombs_stay_inside_ritual_pool = {
+AchievementTemplates.achievements.catacombs_stay_inside_ritual_pool = {
 	ID_XB1 = 35,
 	name = "achv_catacombs_stay_inside_ritual_pool_name",
 	icon = "achievement_trophy_catacombs_stay_inside_ritual_pool",
@@ -1450,7 +3534,7 @@ achievement_templates.achievements.catacombs_stay_inside_ritual_pool = {
 		return statistics_db:get_persistent_stat(stats_id, "catacombs_added_souls") > 0
 	end
 }
-achievement_templates.achievements.mines_kill_final_troll_timed = {
+AchievementTemplates.achievements.mines_kill_final_troll_timed = {
 	ID_XB1 = 36,
 	name = "achv_mines_kill_final_troll_timed_name",
 	icon = "achievement_trophy_mines_kill_final_troll_timed",
@@ -1462,7 +3546,7 @@ achievement_templates.achievements.mines_kill_final_troll_timed = {
 		return statistics_db:get_persistent_stat(stats_id, "mines_speed_event") > 0
 	end
 }
-achievement_templates.achievements.warcamp_bodvarr_charge_warriors = {
+AchievementTemplates.achievements.warcamp_bodvarr_charge_warriors = {
 	ID_XB1 = 37,
 	name = "achv_warcamp_bodvarr_charge_warriors_name",
 	icon = "achievement_trophy_warcamp_bodvarr_charge_warriors",
@@ -1474,7 +3558,7 @@ achievement_templates.achievements.warcamp_bodvarr_charge_warriors = {
 		return statistics_db:get_persistent_stat(stats_id, "exalted_champion_charge_chaos_warrior") > 0
 	end
 }
-achievement_templates.achievements.skaven_stronghold_skarrik_kill_skaven = {
+AchievementTemplates.achievements.skaven_stronghold_skarrik_kill_skaven = {
 	ID_XB1 = 38,
 	name = "achv_skaven_stronghold_skarrik_kill_skaven_name",
 	icon = "achievement_trophy_skaven_stronghold_skarrik_kill_skaven",
@@ -1486,7 +3570,7 @@ achievement_templates.achievements.skaven_stronghold_skarrik_kill_skaven = {
 		return statistics_db:get_persistent_stat(stats_id, "storm_vermin_warlord_kills_enemies") > 0
 	end
 }
-achievement_templates.achievements.ussingen_no_event_barrels = {
+AchievementTemplates.achievements.ussingen_no_event_barrels = {
 	ID_XB1 = 39,
 	name = "achv_ussingen_no_event_barrels_name",
 	icon = "achievement_trophy_ussingen_no_event_barrels",
@@ -1496,7 +3580,7 @@ achievement_templates.achievements.ussingen_no_event_barrels = {
 		return statistics_db:get_persistent_stat(stats_id, "ussingen_used_no_barrels") > 0
 	end
 }
-achievement_templates.achievements.skittergate_deathrattler_rasknitt_timed = {
+AchievementTemplates.achievements.skittergate_deathrattler_rasknitt_timed = {
 	ID_XB1 = 40,
 	name = "achv_skittergate_deathrattler_rasknitt_timed_name",
 	icon = "achievement_trophy_skittergate_deathrattler_rasknitt_timed",
@@ -1523,7 +3607,7 @@ local helmgart_level_name_stats = {
 	achv_ussingen_no_event_barrels_name = "ussingen_used_no_barrels",
 	achv_bell_destroy_bell_flee_timed_name = "bell_speed_event"
 }
-achievement_templates.achievements.complete_all_helmgart_level_achievements = {
+AchievementTemplates.achievements.complete_all_helmgart_level_achievements = {
 	ID_XB1 = 41,
 	name = "achv_complete_all_helmgart_level_achievements_name",
 	icon = "achievement_trophy_complete_all_helmgart_level_achievements",
@@ -1573,7 +3657,7 @@ achievement_templates.achievements.complete_all_helmgart_level_achievements = {
 		return reqs
 	end
 }
-achievement_templates.achievements.skaven_warpfire_thrower_1 = {
+AchievementTemplates.achievements.skaven_warpfire_thrower_1 = {
 	ID_XB1 = 42,
 	name = "achv_skaven_warpfire_thrower_1_name",
 	reward = "level_chest",
@@ -1583,7 +3667,7 @@ achievement_templates.achievements.skaven_warpfire_thrower_1 = {
 		return statistics_db:get_persistent_stat(stats_id, "warpfire_kill_before_shooting") > 0
 	end
 }
-achievement_templates.achievements.skaven_warpfire_thrower_2 = {
+AchievementTemplates.achievements.skaven_warpfire_thrower_2 = {
 	ID_XB1 = 43,
 	name = "achv_skaven_warpfire_thrower_2_name",
 	reward = "level_chest",
@@ -1593,7 +3677,7 @@ achievement_templates.achievements.skaven_warpfire_thrower_2 = {
 		return statistics_db:get_persistent_stat(stats_id, "warpfire_kill_on_power_cell") > 0
 	end
 }
-achievement_templates.achievements.skaven_warpfire_thrower_3 = {
+AchievementTemplates.achievements.skaven_warpfire_thrower_3 = {
 	reward = "level_chest",
 	name = "achv_skaven_warpfire_thrower_3_name",
 	icon = "achievement_trophy_skaven_warpfire_thrower_3",
@@ -1604,7 +3688,7 @@ achievement_templates.achievements.skaven_warpfire_thrower_3 = {
 		return statistics_db:get_persistent_stat(stats_id, "warpfire_enemies_killed_by_warpfire") > 0
 	end
 }
-achievement_templates.achievements.skaven_pack_master_1 = {
+AchievementTemplates.achievements.skaven_pack_master_1 = {
 	ID_XB1 = 44,
 	name = "achv_skaven_pack_master_1_name",
 	reward = "level_chest",
@@ -1614,7 +3698,7 @@ achievement_templates.achievements.skaven_pack_master_1 = {
 		return statistics_db:get_persistent_stat(stats_id, "pack_master_kill_abducting_ally") > 0
 	end
 }
-achievement_templates.achievements.skaven_pack_master_2 = {
+AchievementTemplates.achievements.skaven_pack_master_2 = {
 	ID_XB1 = 45,
 	name = "achv_skaven_pack_master_2_name",
 	reward = "level_chest",
@@ -1624,7 +3708,7 @@ achievement_templates.achievements.skaven_pack_master_2 = {
 		return statistics_db:get_persistent_stat(stats_id, "pack_master_dodged_attack") > 0
 	end
 }
-achievement_templates.achievements.skaven_pack_master_3 = {
+AchievementTemplates.achievements.skaven_pack_master_3 = {
 	reward = "level_chest",
 	name = "achv_skaven_pack_master_3_name",
 	icon = "achievement_trophy_skaven_pack_master_3",
@@ -1633,7 +3717,7 @@ achievement_templates.achievements.skaven_pack_master_3 = {
 		return statistics_db:get_persistent_stat(stats_id, "pack_master_rescue_hoisted_ally") > 0
 	end
 }
-achievement_templates.achievements.skaven_gutter_runner_1 = {
+AchievementTemplates.achievements.skaven_gutter_runner_1 = {
 	ID_XB1 = 46,
 	name = "achv_skaven_gutter_runner_1_name",
 	reward = "level_chest",
@@ -1643,7 +3727,7 @@ achievement_templates.achievements.skaven_gutter_runner_1 = {
 		return statistics_db:get_persistent_stat(stats_id, "gutter_runner_killed_on_pounce") > 0
 	end
 }
-achievement_templates.achievements.skaven_gutter_runner_2 = {
+AchievementTemplates.achievements.skaven_gutter_runner_2 = {
 	reward = "level_chest",
 	name = "achv_skaven_gutter_runner_2_name",
 	icon = "achievement_trophy_skaven_gutter_runner_2",
@@ -1652,7 +3736,7 @@ achievement_templates.achievements.skaven_gutter_runner_2 = {
 		return statistics_db:get_persistent_stat(stats_id, "gutter_runner_push_on_target_pounced") > 0
 	end
 }
-achievement_templates.achievements.skaven_gutter_runner_3 = {
+AchievementTemplates.achievements.skaven_gutter_runner_3 = {
 	reward = "level_chest",
 	name = "achv_skaven_gutter_runner_3_name",
 	icon = "achievement_trophy_skaven_gutter_runner_3",
@@ -1661,7 +3745,7 @@ achievement_templates.achievements.skaven_gutter_runner_3 = {
 		return statistics_db:get_persistent_stat(stats_id, "gutter_runner_push_on_pounce") > 0
 	end
 }
-achievement_templates.achievements.skaven_poison_wind_globardier_1 = {
+AchievementTemplates.achievements.skaven_poison_wind_globardier_1 = {
 	ID_XB1 = 47,
 	name = "achv_skaven_poison_wind_globardier_1_name",
 	reward = "level_chest",
@@ -1671,7 +3755,7 @@ achievement_templates.achievements.skaven_poison_wind_globardier_1 = {
 		return statistics_db:get_persistent_stat(stats_id, "globadier_kill_during_suicide") > 0
 	end
 }
-achievement_templates.achievements.skaven_poison_wind_globardier_2 = {
+AchievementTemplates.achievements.skaven_poison_wind_globardier_2 = {
 	reward = "level_chest",
 	name = "achv_skaven_poison_wind_globardier_2_name",
 	icon = "achievement_trophy_skaven_poison_wind_globardier_2",
@@ -1680,7 +3764,7 @@ achievement_templates.achievements.skaven_poison_wind_globardier_2 = {
 		return statistics_db:get_persistent_stat(stats_id, "globadier_kill_before_throwing") > 0
 	end
 }
-achievement_templates.achievements.skaven_poison_wind_globardier_3 = {
+AchievementTemplates.achievements.skaven_poison_wind_globardier_3 = {
 	reward = "level_chest",
 	name = "achv_skaven_poison_wind_globardier_3_name",
 	icon = "achievement_trophy_skaven_poison_wind_globardier_3",
@@ -1691,7 +3775,7 @@ achievement_templates.achievements.skaven_poison_wind_globardier_3 = {
 		return statistics_db:get_persistent_stat(stats_id, "globadier_enemies_killed_by_poison") > 0
 	end
 }
-achievement_templates.achievements.skaven_ratling_gunner_1 = {
+AchievementTemplates.achievements.skaven_ratling_gunner_1 = {
 	ID_XB1 = 48,
 	name = "achv_skaven_ratling_gunner_1_name",
 	reward = "level_chest",
@@ -1701,7 +3785,7 @@ achievement_templates.achievements.skaven_ratling_gunner_1 = {
 		return statistics_db:get_persistent_stat(stats_id, "ratling_gunner_killed_by_melee") > 0
 	end
 }
-achievement_templates.achievements.skaven_ratling_gunner_2 = {
+AchievementTemplates.achievements.skaven_ratling_gunner_2 = {
 	reward = "level_chest",
 	name = "achv_skaven_ratling_gunner_2_name",
 	icon = "achievement_trophy_skaven_ratling_gunner_2",
@@ -1710,7 +3794,7 @@ achievement_templates.achievements.skaven_ratling_gunner_2 = {
 		return statistics_db:get_persistent_stat(stats_id, "ratling_gunner_killed_while_shooting") > 0
 	end
 }
-achievement_templates.achievements.skaven_ratling_gunner_3 = {
+AchievementTemplates.achievements.skaven_ratling_gunner_3 = {
 	reward = "level_chest",
 	name = "achv_skaven_ratling_gunner_3_name",
 	icon = "achievement_trophy_skaven_ratling_gunner_3",
@@ -1719,7 +3803,7 @@ achievement_templates.achievements.skaven_ratling_gunner_3 = {
 		return statistics_db:get_persistent_stat(stats_id, "ratling_gunner_blocked_shot") > 0
 	end
 }
-achievement_templates.achievements.chaos_corruptor_sorcerer_1 = {
+AchievementTemplates.achievements.chaos_corruptor_sorcerer_1 = {
 	ID_XB1 = 49,
 	name = "achv_chaos_corruptor_sorcerer_1_name",
 	reward = "level_chest",
@@ -1729,7 +3813,7 @@ achievement_templates.achievements.chaos_corruptor_sorcerer_1 = {
 		return statistics_db:get_persistent_stat(stats_id, "corruptor_dodged_attack") > 0
 	end
 }
-achievement_templates.achievements.chaos_corruptor_sorcerer_2 = {
+AchievementTemplates.achievements.chaos_corruptor_sorcerer_2 = {
 	reward = "level_chest",
 	name = "achv_chaos_corruptor_sorcerer_2_name",
 	icon = "achievement_trophy_chaos_corruptor_sorcerer_2",
@@ -1740,7 +3824,7 @@ achievement_templates.achievements.chaos_corruptor_sorcerer_2 = {
 		return statistics_db:get_persistent_stat(stats_id, "corruptor_killed_at_teleport_time") > 0
 	end
 }
-achievement_templates.achievements.chaos_corruptor_sorcerer_3 = {
+AchievementTemplates.achievements.chaos_corruptor_sorcerer_3 = {
 	ID_XB1 = 50,
 	name = "achv_chaos_corruptor_sorcerer_3_name",
 	reward = "level_chest",
@@ -1750,7 +3834,7 @@ achievement_templates.achievements.chaos_corruptor_sorcerer_3 = {
 		return statistics_db:get_persistent_stat(stats_id, "corruptor_killed_while_grabbing") > 0
 	end
 }
-achievement_templates.achievements.chaos_vortex_sorcerer_1 = {
+AchievementTemplates.achievements.chaos_vortex_sorcerer_1 = {
 	ID_XB1 = 51,
 	name = "achv_chaos_vortex_sorcerer_1_name",
 	reward = "level_chest",
@@ -1760,7 +3844,7 @@ achievement_templates.achievements.chaos_vortex_sorcerer_1 = {
 		return statistics_db:get_persistent_stat(stats_id, "vortex_sorcerer_killed_while_summoning") > 0
 	end
 }
-achievement_templates.achievements.chaos_vortex_sorcerer_2 = {
+AchievementTemplates.achievements.chaos_vortex_sorcerer_2 = {
 	reward = "level_chest",
 	name = "achv_chaos_vortex_sorcerer_2_name",
 	icon = "achievement_trophy_chaos_vortex_sorcerer_2",
@@ -1769,7 +3853,7 @@ achievement_templates.achievements.chaos_vortex_sorcerer_2 = {
 		return statistics_db:get_persistent_stat(stats_id, "vortex_sorcerer_killed_while_ally_in_vortex") > 0
 	end
 }
-achievement_templates.achievements.chaos_vortex_sorcerer_3 = {
+AchievementTemplates.achievements.chaos_vortex_sorcerer_3 = {
 	reward = "level_chest",
 	name = "achv_chaos_vortex_sorcerer_3_name",
 	icon = "achievement_trophy_chaos_vortex_sorcerer_3",
@@ -1778,7 +3862,7 @@ achievement_templates.achievements.chaos_vortex_sorcerer_3 = {
 		return statistics_db:get_persistent_stat(stats_id, "vortex_sorcerer_killed_by_melee") > 0
 	end
 }
-achievement_templates.achievements.chaos_spawn_1 = {
+AchievementTemplates.achievements.chaos_spawn_1 = {
 	reward = "level_chest",
 	name = "achv_chaos_spawn_1_name",
 	icon = "achievement_trophy_chaos_spawn_1",
@@ -1787,7 +3871,7 @@ achievement_templates.achievements.chaos_spawn_1 = {
 		return statistics_db:get_persistent_stat(stats_id, "chaos_spawn_killed_while_grabbing") > 0
 	end
 }
-achievement_templates.achievements.chaos_spawn_2 = {
+AchievementTemplates.achievements.chaos_spawn_2 = {
 	reward = "level_chest",
 	name = "achv_chaos_spawn_2_name",
 	icon = "achievement_trophy_chaos_spawn_2",
@@ -1796,7 +3880,7 @@ achievement_templates.achievements.chaos_spawn_2 = {
 		return statistics_db:get_persistent_stat(stats_id, "chaos_spawn_killed_without_having_grabbed") > 0
 	end
 }
-achievement_templates.achievements.chaos_troll_1 = {
+AchievementTemplates.achievements.chaos_troll_1 = {
 	reward = "level_chest",
 	name = "achv_chaos_troll_1_name",
 	icon = "achievement_trophy_chaos_troll_1",
@@ -1805,7 +3889,7 @@ achievement_templates.achievements.chaos_troll_1 = {
 		return statistics_db:get_persistent_stat(stats_id, "chaos_troll_killed_without_regen") > 0
 	end
 }
-achievement_templates.achievements.chaos_troll_2 = {
+AchievementTemplates.achievements.chaos_troll_2 = {
 	reward = "level_chest",
 	name = "achv_chaos_troll_2_name",
 	icon = "achievement_trophy_chaos_troll_2",
@@ -1814,7 +3898,7 @@ achievement_templates.achievements.chaos_troll_2 = {
 		return statistics_db:get_persistent_stat(stats_id, "chaos_troll_killed_without_bile_damage") > 0
 	end
 }
-achievement_templates.achievements.skaven_rat_ogre_1 = {
+AchievementTemplates.achievements.skaven_rat_ogre_1 = {
 	reward = "level_chest",
 	name = "achv_skaven_rat_ogre_1_name",
 	icon = "achievement_trophy_skaven_rat_ogre_1",
@@ -1823,7 +3907,7 @@ achievement_templates.achievements.skaven_rat_ogre_1 = {
 		return statistics_db:get_persistent_stat(stats_id, "rat_ogre_killed_mid_leap") > 0
 	end
 }
-achievement_templates.achievements.skaven_rat_ogre_2 = {
+AchievementTemplates.achievements.skaven_rat_ogre_2 = {
 	reward = "level_chest",
 	name = "achv_skaven_rat_ogre_2_name",
 	icon = "achievement_trophy_skaven_rat_ogre_2",
@@ -1832,7 +3916,7 @@ achievement_templates.achievements.skaven_rat_ogre_2 = {
 		return statistics_db:get_persistent_stat(stats_id, "rat_ogre_killed_without_dealing_damage") > 0
 	end
 }
-achievement_templates.achievements.skaven_stormfiend_1 = {
+AchievementTemplates.achievements.skaven_stormfiend_1 = {
 	reward = "level_chest",
 	name = "achv_skaven_stormfiend_1_name",
 	icon = "achievement_trophy_skaven_stormfiend_1",
@@ -1841,7 +3925,7 @@ achievement_templates.achievements.skaven_stormfiend_1 = {
 		return statistics_db:get_persistent_stat(stats_id, "stormfiend_killed_without_burn_damage") > 0
 	end
 }
-achievement_templates.achievements.skaven_stormfiend_2 = {
+AchievementTemplates.achievements.skaven_stormfiend_2 = {
 	reward = "level_chest",
 	name = "achv_skaven_stormfiend_2_name",
 	icon = "achievement_trophy_skaven_stormfiend_2",
@@ -1850,7 +3934,7 @@ achievement_templates.achievements.skaven_stormfiend_2 = {
 		return statistics_db:get_persistent_stat(stats_id, "stormfiend_killed_on_controller") > 0
 	end
 }
-achievement_templates.achievements.helmgart_lord_1 = {
+AchievementTemplates.achievements.helmgart_lord_1 = {
 	reward = "level_chest",
 	name = "achv_helmgart_lord_1_name",
 	icon = "achievement_trophy_helmgart_lord_1",
@@ -1860,10 +3944,10 @@ achievement_templates.achievements.helmgart_lord_1 = {
 	end
 }
 
-for difficulty_id, difficulty_name in pairs(achievement_templates.difficulties) do
+for difficulty_id, difficulty_name in pairs(AchievementTemplates.difficulties) do
 	local id = "kill_bodvarr_burblespew_" .. difficulty_name
 	local difficulty_rank = DifficultySettings[difficulty_id].rank
-	achievement_templates.achievements[id] = {
+	AchievementTemplates.achievements[id] = {
 		name = "achv_kill_bodvarr_burblespew_" .. difficulty_name .. "_name",
 		desc = "achv_kill_bodvarr_burblespew_" .. difficulty_name .. "_desc",
 		icon = "achievement_trophy_kill_bodvarr_burblespew_" .. difficulty_name,
@@ -1891,7 +3975,7 @@ for difficulty_id, difficulty_name in pairs(achievement_templates.difficulties) 
 		end
 	}
 	id = "kill_skarrik_rasknitt_" .. difficulty_name
-	achievement_templates.achievements[id] = {
+	AchievementTemplates.achievements[id] = {
 		name = "achv_kill_skarrik_rasknitt_" .. difficulty_name .. "_name",
 		desc = "achv_kill_skarrik_rasknitt_" .. difficulty_name .. "_desc",
 		icon = "achievement_trophy_kill_skarrik_rasknitt_" .. difficulty_name,
@@ -1920,4 +4004,4 @@ for difficulty_id, difficulty_name in pairs(achievement_templates.difficulties) 
 	}
 end
 
-return achievement_templates
+return AchievementTemplates

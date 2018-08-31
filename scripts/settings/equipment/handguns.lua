@@ -1,6 +1,7 @@
 local push_radius = 2
 local weapon_template = weapon_template or {}
 weapon_template.actions = {
+	action_wield = ActionTemplates.wield,
 	action_one = {
 		default = {
 			damage_window_start = 0.1,
@@ -16,11 +17,14 @@ weapon_template.actions = {
 			hit_effect = "bullet_impact",
 			anim_event_last_ammo = "attack_shoot_last",
 			headshot_multiplier = 2,
+			aim_assist_max_ramp_multiplier = 1,
 			damage_window_end = 0,
+			aim_assist_ramp_decay_delay = 0.1,
 			ammo_usage = 1,
 			fire_time = 0,
 			anim_event_secondary = "reload",
 			active_reload_time = 0.35,
+			aim_assist_ramp_multiplier = 0.3,
 			anim_event = "attack_shoot",
 			scale_total_time_on_mastercrafted = true,
 			total_time = 0.66,
@@ -82,7 +86,11 @@ weapon_template.actions = {
 			ammo_usage = 1,
 			fire_time = 0,
 			headshot_multiplier = 3,
+			aim_assist_ramp_multiplier = 0.3,
+			aim_assist_auto_hit_chance = 0.5,
+			aim_assist_max_ramp_multiplier = 1,
 			active_reload_time = 0.35,
+			aim_assist_ramp_decay_delay = 0.1,
 			hold_input = "action_two_hold",
 			anim_event = "attack_shoot",
 			scale_total_time_on_mastercrafted = true,
@@ -142,10 +150,14 @@ weapon_template.actions = {
 			anim_event = "to_zoom",
 			kind = "aim",
 			cooldown = 0.3,
+			aim_assist_ramp_multiplier = 0.6,
+			aim_assist_ramp_decay_delay = 0.3,
 			ammo_requirement = 1,
 			minimum_hold_time = 0.3,
 			keep_buffer = true,
+			reset_aim_assist_on_exit = true,
 			aim_at_gaze_setting = "tobii_aim_at_gaze_handgun",
+			aim_assist_max_ramp_multiplier = 1,
 			hold_input = "action_two_hold",
 			can_abort_reload = false,
 			allow_hold_toggle = true,
@@ -163,7 +175,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.4,
+					start_time = 0,
 					action = "action_wield",
 					input = "action_wield"
 				},
@@ -181,29 +193,15 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action"
 			end,
 			condition_func = function (unit, input_extension, ammo_extension)
-				if ammo_extension and ammo_extension:total_remaining_ammo() <= 0 then
+				if ammo_extension and (ammo_extension:total_remaining_ammo() <= 0 or ammo_extension:is_reloading()) then
 					return false
 				end
 
 				return true
-			end,
-			aim_assist_settings = {
-				max_range = 22,
-				no_aim_input_multiplier = 0,
-				always_auto_aim = true,
-				base_multiplier = 0.15,
-				target_node = "j_head",
-				effective_max_range = 10,
-				breed_scalars = {
-					skaven_storm_vermin = 0.25,
-					skaven_clan_rat = 1,
-					skaven_slave = 1
-				}
-			}
+			end
 		}
 	},
 	action_inspect = ActionTemplates.action_inspect,
-	action_wield = ActionTemplates.wield,
 	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
 	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
 	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,

@@ -137,11 +137,11 @@ PlayerCharacterStateLeaveLedgeHangingPullUp.calculate_end_position = function (s
 	end
 
 	if nav_mesh_pos and is_close then
-		if script_data.debug_hang_ledges then
-			QuickDrawerStay:sphere(nav_mesh_pos, 0.1, Color(0, 255, 0))
-		end
-
 		new_position = nav_mesh_pos
+
+		if script_data.debug_hang_ledges then
+			QuickDrawerStay:sphere(new_position, 0.2, Color(0, 255, 255))
+		end
 	elseif script_data.debug_hang_ledges then
 		local debug_text_manager = Managers.state.debug_text
 

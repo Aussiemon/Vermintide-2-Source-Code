@@ -78,44 +78,11 @@ local breed_data = {
 		0.9,
 		1
 	},
-	max_health = {
-		6,
-		6,
-		9,
-		12,
-		18
-	},
-	diff_stagger_resist = {
-		1.75,
-		1.75,
-		2.3,
-		2.9,
-		2.9
-	},
-	stagger_duration = {
-		0.75,
-		2,
-		3,
-		0.75,
-		1.5,
-		4,
-		1,
-		1
-	},
-	stagger_duration_difficulty_mod = {
-		harder = 0.6,
-		hard = 0.8,
-		normal = 1,
-		hardest = 0.4,
-		easy = 1
-	},
-	hit_mass_counts = {
-		1.25,
-		1.25,
-		2,
-		2.5,
-		2.5
-	},
+	max_health = BreedTweaks.max_health.fanatic,
+	diff_stagger_resist = BreedTweaks.diff_stagger_resist.fanatic,
+	stagger_duration = BreedTweaks.stagger_duration.fanatic,
+	stagger_duration_difficulty_mod = BreedTweaks.stagger_duration_difficulty_mod.fast,
+	hit_mass_counts = BreedTweaks.hit_mass_counts.fanatic,
 	wwise_voices = {
 		"fanatic"
 	},

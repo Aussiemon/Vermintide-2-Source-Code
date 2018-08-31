@@ -228,19 +228,19 @@ end
 StatisticsUtil.register_damage = function (victim_unit, damage_data, statistics_db)
 	local damage_amount = damage_data[DamageDataIndex.DAMAGE_AMOUNT]
 	local player_manager = Managers.player
-	local player = player_manager:owner(victim_unit)
+	local victim_player = player_manager:owner(victim_unit)
 
-	if player then
-		local stats_id = player:stats_id()
+	if victim_player then
+		local stats_id = victim_player:stats_id()
 
 		statistics_db:modify_stat_by_amount(stats_id, "damage_taken", damage_amount)
 	end
 
 	local attacker_unit = damage_data[DamageDataIndex.ATTACKER]
 	attacker_unit = AiUtils.get_actual_attacker_unit(attacker_unit)
-	player = player_manager:owner(attacker_unit)
+	local attacker_player = player_manager:owner(attacker_unit)
 
-	if player then
+	if attacker_player then
 		local breed = Unit_alive(victim_unit) and Unit_get_data(victim_unit, "breed")
 
 		if breed then
@@ -249,13 +249,21 @@ StatisticsUtil.register_damage = function (victim_unit, damage_data, statistics_
 			local current_health = health_extension:current_health()
 
 			if current_health > 0 then
-				local stats_id = player:stats_id()
+				local stats_id = attacker_player:stats_id()
 				damage_amount = math.clamp(damage_amount, 0, current_health)
 
 				statistics_db:modify_stat_by_amount(stats_id, "damage_dealt", damage_amount)
 				statistics_db:modify_stat_by_amount(stats_id, "damage_dealt_per_breed", breed_name, damage_amount)
 			end
 		end
+	end
+
+	local damage_source_name = damage_data[DamageDataIndex.DAMAGE_SOURCE_NAME]
+
+	if damage_source_name == "skaven_ratling_gunner" and victim_player then
+		local stats_id = victim_player:stats_id()
+
+		statistics_db:modify_stat_by_amount(stats_id, "damage_taken_from_ratling_gunner", damage_amount)
 	end
 end
 

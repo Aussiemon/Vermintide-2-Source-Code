@@ -4627,8 +4627,8 @@ UIWidgets.create_simple_two_state_button = function (scenegraph_id, normal_textu
 	}
 end
 
-UIWidgets.create_simple_rect = function (scenegraph_id, color, layer)
-	return {
+UIWidgets.create_simple_rect = function (scenegraph_id, color, layer, offset)
+	slot4 = {
 		element = {
 			passes = {
 				{
@@ -4637,29 +4637,37 @@ UIWidgets.create_simple_rect = function (scenegraph_id, color, layer)
 				}
 			}
 		},
-		content = {},
-		style = {
-			rect = {
-				color = color or {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					0,
-					0,
-					layer or 0
-				}
-			}
-		},
-		offset = {
-			0,
-			0,
-			0
-		},
-		scenegraph_id = scenegraph_id
+		content = {}
 	}
+	slot5 = {}
+	slot6 = {
+		color = color or {
+			255,
+			255,
+			255,
+			255
+		}
+	}
+
+	if not offset then
+		slot7 = {
+			0,
+			0,
+			layer or 0
+		}
+	end
+
+	slot6.offset = slot7
+	slot5.rect = slot6
+	slot4.style = slot5
+	slot4.offset = {
+		0,
+		0,
+		0
+	}
+	slot4.scenegraph_id = scenegraph_id
+
+	return slot4
 end
 
 UIWidgets.create_simple_rounded_rect = function (scenegraph_id, corner_radius, color)
@@ -4949,7 +4957,7 @@ UIWidgets.create_simple_gradient_mask_texture = function (texture, scenegraph_id
 	}
 end
 
-UIWidgets.create_simple_rotated_texture = function (texture, angle, pivot, scenegraph_id, masked, retained, color)
+UIWidgets.create_simple_rotated_texture = function (texture, angle, pivot, scenegraph_id, masked, retained, color, layer)
 	return {
 		element = {
 			passes = {
@@ -4978,7 +4986,50 @@ UIWidgets.create_simple_rotated_texture = function (texture, angle, pivot, scene
 				offset = {
 					0,
 					0,
-					0
+					layer or 0
+				}
+			}
+		},
+		offset = {
+			0,
+			0,
+			0
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
+
+UIWidgets.create_simple_uv_rotated_texture = function (texture, uvs, angle, pivot, scenegraph_id, masked, retained, color, layer)
+	return {
+		element = {
+			passes = {
+				{
+					texture_id = "texture_id",
+					style_id = "texture_id",
+					pass_type = "rotated_texture",
+					retained_mode = retained
+				}
+			}
+		},
+		content = {
+			texture_id = texture
+		},
+		style = {
+			texture_id = {
+				masked = masked,
+				angle = angle,
+				pivot = pivot,
+				uvs = uvs,
+				color = color or {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					layer or 0
 				}
 			}
 		},
@@ -5439,7 +5490,7 @@ UIWidgets.create_matchmaking_portrait = function (size, scenegraph_id)
 					style_id = "ready_icon",
 					pass_type = "texture",
 					content_check_function = function (content)
-						return not content.is_connecting and content.is_ready
+						return not content.is_connecting and content.is_connected and content.is_ready
 					end
 				},
 				{
@@ -5447,7 +5498,7 @@ UIWidgets.create_matchmaking_portrait = function (size, scenegraph_id)
 					style_id = "voted_yes_icon",
 					pass_type = "texture",
 					content_check_function = function (content)
-						return not content.is_connecting and content.is_voting and content.voted_yes
+						return not content.is_connecting and content.is_connected and content.is_voting and content.voted_yes
 					end
 				},
 				{
@@ -5455,7 +5506,7 @@ UIWidgets.create_matchmaking_portrait = function (size, scenegraph_id)
 					style_id = "waiting_for_vote",
 					pass_type = "texture",
 					content_check_function = function (content)
-						return not content.is_connecting and content.is_voting and not content.voted_yes
+						return not content.is_connecting and content.is_connected and content.is_voting and not content.voted_yes
 					end
 				},
 				{
@@ -5514,7 +5565,7 @@ UIWidgets.create_matchmaking_portrait = function (size, scenegraph_id)
 				offset = {
 					size[1] / 2 - 18.5,
 					size[2] / 2 - 15.5,
-					2
+					3
 				},
 				color = {
 					255,
@@ -5531,7 +5582,7 @@ UIWidgets.create_matchmaking_portrait = function (size, scenegraph_id)
 				offset = {
 					size[1] / 2 - 18.5,
 					size[2] / 2 - 15.5,
-					2
+					3
 				},
 				color = {
 					255,
@@ -5548,7 +5599,7 @@ UIWidgets.create_matchmaking_portrait = function (size, scenegraph_id)
 				offset = {
 					size[1] / 2 - 18.5,
 					size[2] / 2 - 15.5,
-					2
+					3
 				},
 				color = {
 					255,
@@ -6088,7 +6139,7 @@ UIWidgets.create_attach_icon_button = function (background_texture, scenegraph_i
 				disable_interaction = disable_interaction
 			},
 			background_texture_id = background_texture,
-			glow_animation = animation_glow_texture or "item_slot_glow"
+			glow_animation = animation_glow_texture or "icons_placeholder"
 		},
 		style = {
 			background_texture_id = {
@@ -8839,7 +8890,7 @@ UIWidgets.create_story_level_map_widget = function (scenegraph_id, level_key, de
 	}
 end
 
-UIWidgets.create_text_button = function (scenegraph_id, text, font_size, optional_offset, optional_horizontal_alignment)
+UIWidgets.create_text_button = function (scenegraph_id, text, font_size, optional_offset, optional_horizontal_alignment, optional_default_color_name)
 	return {
 		element = {
 			passes = {
@@ -8887,7 +8938,7 @@ UIWidgets.create_text_button = function (scenegraph_id, text, font_size, optiona
 				font_type = "hell_shark",
 				font_size = font_size,
 				horizontal_alignment = optional_horizontal_alignment or "left",
-				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				text_color = Colors.get_color_table_with_alpha(optional_default_color_name or "font_button_normal", 255),
 				offset = optional_offset or {
 					0,
 					0,
@@ -8929,10 +8980,25 @@ UIWidgets.create_text_button = function (scenegraph_id, text, font_size, optiona
 	}
 end
 
-UIWidgets.create_console_panel_button = function (scenegraph_id, text, font_size, optional_offset, optional_horizontal_alignment)
+UIWidgets.create_console_panel_button = function (scenegraph_id, size, text, font_size, optional_offset, optional_horizontal_alignment)
+	local new_marker_offset = {
+		-19,
+		-25,
+		10
+	}
+	local marker_offset = {
+		0,
+		0,
+		1
+	}
+	local selection_offset = {
+		0,
+		-4,
+		0
+	}
 	local shadow_offset = {
 		2,
-		-2,
+		3,
 		3
 	}
 
@@ -8940,6 +9006,15 @@ UIWidgets.create_console_panel_button = function (scenegraph_id, text, font_size
 		shadow_offset[1] = shadow_offset[1] + optional_offset[1]
 		shadow_offset[2] = shadow_offset[2] + optional_offset[2]
 		shadow_offset[3] = optional_offset[3] - 1
+		selection_offset[1] = selection_offset[1] + optional_offset[1]
+		selection_offset[2] = selection_offset[2] + optional_offset[2]
+		selection_offset[3] = optional_offset[3] - 3
+		marker_offset[1] = marker_offset[1] + optional_offset[1]
+		marker_offset[2] = marker_offset[2] + optional_offset[2]
+		marker_offset[3] = optional_offset[3] - 2
+		new_marker_offset[1] = new_marker_offset[1] + optional_offset[1]
+		new_marker_offset[2] = new_marker_offset[2] + optional_offset[2]
+		new_marker_offset[3] = optional_offset[3] - 2
 	end
 
 	return {
@@ -8977,10 +9052,39 @@ UIWidgets.create_console_panel_button = function (scenegraph_id, text, font_size
 					content_check_function = function (content)
 						return content.button_hotspot.disable_button
 					end
+				},
+				{
+					texture_id = "selected_texture",
+					style_id = "selected_texture",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return not content.button_hotspot.disable_button
+					end
+				},
+				{
+					texture_id = "marker",
+					style_id = "marker_left",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "marker",
+					style_id = "marker_right",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "new_marker",
+					style_id = "new_marker",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.new
+					end
 				}
 			}
 		},
 		content = {
+			marker = "frame_detail_04",
+			new_marker = "list_item_tag_new",
+			selected_texture = "hero_panel_selection_glow",
 			button_hotspot = {},
 			text_field = text,
 			default_font_size = font_size
@@ -8996,11 +9100,17 @@ UIWidgets.create_console_panel_button = function (scenegraph_id, text, font_size
 				font_size = font_size,
 				horizontal_alignment = optional_horizontal_alignment or "left",
 				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				default_offset = optional_offset or {
+					0,
+					10,
+					4
+				},
 				offset = optional_offset or {
 					0,
-					0,
+					5,
 					4
-				}
+				},
+				size = size
 			},
 			text_shadow = {
 				word_wrap = false,
@@ -9012,7 +9122,9 @@ UIWidgets.create_console_panel_button = function (scenegraph_id, text, font_size
 				font_size = font_size,
 				horizontal_alignment = optional_horizontal_alignment or "left",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
-				offset = shadow_offset
+				default_offset = shadow_offset,
+				offset = shadow_offset,
+				size = size
 			},
 			text_hover = {
 				word_wrap = false,
@@ -9024,11 +9136,17 @@ UIWidgets.create_console_panel_button = function (scenegraph_id, text, font_size
 				font_size = font_size,
 				horizontal_alignment = optional_horizontal_alignment or "left",
 				text_color = Colors.get_color_table_with_alpha("white", 255),
+				default_offset = optional_offset or {
+					0,
+					10,
+					4
+				},
 				offset = optional_offset or {
 					0,
-					0,
+					5,
 					4
-				}
+				},
+				size = size
 			},
 			text_disabled = {
 				word_wrap = false,
@@ -9040,12 +9158,75 @@ UIWidgets.create_console_panel_button = function (scenegraph_id, text, font_size
 				font_size = font_size,
 				horizontal_alignment = optional_horizontal_alignment or "left",
 				text_color = Colors.get_color_table_with_alpha("gray", 50),
+				default_offset = optional_offset or {
+					0,
+					10,
+					4
+				},
 				offset = optional_offset or {
 					0,
-					0,
+					5,
 					4
+				},
+				size = size
+			},
+			selected_texture = {
+				vertical_alignment = "top",
+				horizontal_alignment = "center",
+				texture_size = {
+					169,
+					35
+				},
+				color = Colors.get_color_table_with_alpha("font_title", 255),
+				offset = selection_offset
+			},
+			marker_left = {
+				vertical_alignment = "top",
+				horizontal_alignment = "left",
+				texture_size = {
+					55,
+					28
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					marker_offset[1] - 27.5,
+					marker_offset[2],
+					marker_offset[3]
+				}
+			},
+			marker_right = {
+				vertical_alignment = "top",
+				horizontal_alignment = "right",
+				texture_size = {
+					55,
+					28
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					marker_offset[1] + 27.5,
+					marker_offset[2],
+					marker_offset[3]
+				}
+			},
+			new_marker = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					math.floor(88.19999999999999),
+					math.floor(35.699999999999996)
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					new_marker_offset[1],
+					new_marker_offset[2],
+					new_marker_offset[3]
 				}
 			}
+		},
+		offset = {
+			0,
+			0,
+			0
 		},
 		scenegraph_id = scenegraph_id
 	}
@@ -10079,6 +10260,52 @@ UIWidgets.create_gamepad_selection = function (scenegraph_id, retained, masked, 
 		},
 		scenegraph_id = scenegraph_id
 	}
+end
+
+UIWidgets.create_simple_atlas_texture = function (texture, scenegraph_id, masked, retained, color, layer, horizontal_alignment, vertical_alignment)
+	local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture)
+	local definition = {
+		element = {
+			passes = {
+				{
+					texture_id = "texture_id",
+					style_id = "texture_id",
+					pass_type = "texture",
+					retained_mode = retained
+				}
+			}
+		},
+		content = {
+			texture_id = texture
+		},
+		style = {
+			texture_id = {
+				texture_size = texture_settings.size,
+				color = color or {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				},
+				masked = masked,
+				horizontal_alignment = horizontal_alignment,
+				vertical_alignment = vertical_alignment
+			}
+		},
+		offset = {
+			0,
+			0,
+			layer or 0
+		},
+		scenegraph_id = scenegraph_id
+	}
+
+	return definition
 end
 
 return

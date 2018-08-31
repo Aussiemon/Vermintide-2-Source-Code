@@ -31,53 +31,51 @@ WeightedRandomTerrorEvents = {
 		"gz_elevator_guards_a",
 		1
 	},
+	military_end_event_survival_01 = {
+		"military_end_event_survival_01_back",
+		1,
+		"military_end_event_survival_01_right",
+		1
+	},
 	military_end_event_survival_02 = {
 		"military_end_event_survival_02_right",
-		1,
+		5,
 		"military_end_event_survival_02_left",
-		1,
+		5,
 		"military_end_event_survival_02_middle",
-		1
+		3,
+		"military_end_event_survival_02_back",
+		5
 	},
 	military_end_event_survival_03 = {
 		"military_end_event_survival_03_right",
-		1,
+		5,
 		"military_end_event_survival_03_left",
-		1,
+		5,
 		"military_end_event_survival_03_middle",
-		1,
+		3,
 		"military_end_event_survival_03_back",
-		1
+		5
 	},
 	military_end_event_survival_04 = {
 		"military_end_event_survival_04_right",
-		1,
+		5,
 		"military_end_event_survival_04_left",
-		1,
+		5,
 		"military_end_event_survival_04_middle",
-		1,
+		3,
 		"military_end_event_survival_04_back",
-		1
+		5
 	},
 	military_end_event_survival_05 = {
 		"military_end_event_survival_05_right",
-		1,
+		5,
 		"military_end_event_survival_05_left",
-		1,
+		5,
 		"military_end_event_survival_05_middle",
-		1,
+		3,
 		"military_end_event_survival_05_back",
-		1
-	},
-	military_end_event_survival_06 = {
-		"military_end_event_survival_06_right",
-		1,
-		"military_end_event_survival_06_left",
-		1,
-		"military_end_event_survival_06_middle",
-		1,
-		"military_end_event_survival_06_back",
-		1
+		5
 	},
 	military_end_event_specials = {
 		"military_end_event_specials_01",
@@ -133,7 +131,15 @@ WeightedRandomTerrorEvents = {
 TerrorEventBlueprints = {
 	boss_event_rat_ogre = {
 		{
+			"create_boss_door_group",
+			group_size = 1
+		},
+		{
 			"spawn",
+			breed_name = "skaven_rat_ogre"
+		},
+		{
+			"close_boss_doors",
 			breed_name = "skaven_rat_ogre"
 		}
 	},
@@ -167,24 +173,16 @@ TerrorEventBlueprints = {
 	},
 	boss_event_chaos_spawn = {
 		{
+			"create_boss_door_group",
+			group_size = 1
+		},
+		{
 			"spawn",
 			breed_name = "chaos_spawn"
-		}
-	},
-	boss_event_storm_vermin_patrol = {
+		},
 		{
-			"spawn_patrol",
-			main_path_patrol = true,
-			breed_name = "skaven_storm_vermin",
-			patrol_template = "storm_vermin_formation_patrol"
-		}
-	},
-	boss_event_chaos_warrior_patrol = {
-		{
-			"spawn_patrol",
-			main_path_patrol = true,
-			breed_name = "chaos_warrior",
-			patrol_template = "storm_vermin_formation_patrol"
+			"close_boss_doors",
+			breed_name = "chaos_spawn"
 		}
 	},
 	boss_event_spline_patrol = {
@@ -244,6 +242,10 @@ TerrorEventBlueprints = {
 		}
 	},
 	benchmark_dummy_troll = {
+		{
+			"force_load_breed_package",
+			breed_name = "chaos_dummy_troll"
+		},
 		{
 			"spawn_at_raw",
 			spawner_id = "dummy_troll_spawn",
@@ -623,6 +625,10 @@ TerrorEventBlueprints = {
 		}
 	},
 	whitebox_dummy_troll_test = {
+		{
+			"force_load_breed_package",
+			breed_name = "chaos_dummy_troll"
+		},
 		{
 			"spawn_at_raw",
 			spawner_id = "test_spawner_1",
@@ -2060,6 +2066,12 @@ TerrorEventBlueprints = {
 			enable = true
 		}
 	},
+	catacombs_load_sorcerers = {
+		{
+			"force_load_breed_package",
+			breed_name = "chaos_dummy_sorcerer"
+		}
+	},
 	elven_ruins_end_event = {
 		{
 			"set_freeze_condition",
@@ -2664,6 +2676,10 @@ TerrorEventBlueprints = {
 	},
 	farmlands_rat_ogre = {
 		{
+			"set_master_event_running",
+			name = "farmlands_boss_barn"
+		},
+		{
 			"spawn_at_raw",
 			spawner_id = "farmlands_rat_ogre",
 			breed_name = {
@@ -2672,6 +2688,34 @@ TerrorEventBlueprints = {
 				"chaos_troll",
 				"chaos_spawn"
 			}
+		},
+		{
+			"delay",
+			duration = 1
+		},
+		{
+			"continue_when",
+			condition = function (t)
+				return count_event_breed("skaven_rat_ogre") == 1 or count_event_breed("skaven_stormfiend") == 1 or count_event_breed("chaos_troll") == 1 or count_event_breed("chaos_spawn") == 1
+			end
+		},
+		{
+			"delay",
+			duration = 1
+		},
+		{
+			"flow_event",
+			flow_event_name = "farmlands_barn_boss_spawned"
+		},
+		{
+			"continue_when",
+			condition = function (t)
+				return count_event_breed("skaven_rat_ogre") < 1 and count_event_breed("skaven_stormfiend") < 1 and count_event_breed("chaos_troll") < 1 and count_event_breed("chaos_spawn") < 1
+			end
+		},
+		{
+			"flow_event",
+			flow_event_name = "farmlands_barn_boss_dead"
 		}
 	},
 	farmlands_spawn_guards = {
@@ -3673,6 +3717,10 @@ TerrorEventBlueprints = {
 			name = "fort_terror_event_inner_yard"
 		},
 		{
+			"play_stinger",
+			stinger_name = "enemy_horde_stinger"
+		},
+		{
 			"event_horde",
 			spawner_id = "terror_event_inner_yard",
 			composition_type = "event_smaller"
@@ -3696,6 +3744,10 @@ TerrorEventBlueprints = {
 		{
 			"set_master_event_running",
 			name = "fort_horde_gate"
+		},
+		{
+			"play_stinger",
+			stinger_name = "enemy_horde_stinger"
 		},
 		{
 			"disable_kick"
@@ -3797,6 +3849,10 @@ TerrorEventBlueprints = {
 		{
 			"set_master_event_running",
 			name = "fort_horde_cannon"
+		},
+		{
+			"play_stinger",
+			stinger_name = "enemy_horde_stinger"
 		},
 		{
 			"set_freeze_condition",
@@ -4081,6 +4137,12 @@ TerrorEventBlueprints = {
 		{
 			"continue_when",
 			condition = function (t)
+				return count_event_breed("chaos_spawn_exalted_champion_norsca") == 1
+			end
+		},
+		{
+			"continue_when",
+			condition = function (t)
 				return count_event_breed("chaos_exalted_champion_norsca") < 1 and count_event_breed("chaos_spawn_exalted_champion_norsca") < 1
 			end
 		},
@@ -4164,7 +4226,17 @@ TerrorEventBlueprints = {
 		},
 		{
 			"delay",
-			duration = 20
+			duration = 3
+		},
+		{
+			"continue_when",
+			condition = function (t)
+				return count_event_breed("skaven_stormfiend_boss") == 1
+			end
+		},
+		{
+			"delay",
+			duration = 5
 		},
 		{
 			"continue_when",
@@ -4821,6 +4893,10 @@ TerrorEventBlueprints = {
 			name = "end_event"
 		},
 		{
+			"play_stinger",
+			stinger_name = "enemy_horde_stinger"
+		},
+		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_chaos",
@@ -4840,6 +4916,10 @@ TerrorEventBlueprints = {
 		{
 			"set_master_event_running",
 			name = "end_event"
+		},
+		{
+			"play_stinger",
+			stinger_name = "enemy_horde_stinger"
 		},
 		{
 			"event_horde",
@@ -4933,6 +5013,10 @@ TerrorEventBlueprints = {
 		{
 			"set_master_event_running",
 			name = "end_event"
+		},
+		{
+			"play_stinger",
+			stinger_name = "enemy_horde_stinger"
 		},
 		{
 			"event_horde",
@@ -5119,6 +5203,10 @@ TerrorEventBlueprints = {
 	},
 	mines_end_event_intro_trolls = {
 		{
+			"force_load_breed_package",
+			breed_name = "chaos_dummy_troll"
+		},
+		{
 			"spawn_at_raw",
 			spawner_id = "troll_09",
 			breed_name = "chaos_dummy_troll"
@@ -5134,6 +5222,10 @@ TerrorEventBlueprints = {
 		}
 	},
 	mines_end_event_trolls = {
+		{
+			"force_load_breed_package",
+			breed_name = "chaos_dummy_troll"
+		},
 		{
 			"spawn_at_raw",
 			spawner_id = "troll_01",
@@ -5820,7 +5912,7 @@ TerrorEventBlueprints = {
 			flow_event_name = "military_end_event_survival_start_done"
 		}
 	},
-	military_end_event_survival_01 = {
+	military_end_event_survival_01_back = {
 		{
 			"set_master_event_running",
 			name = "military_end_event_survival"
@@ -5843,7 +5935,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_back_hidden",
-			composition_type = "event_small_chaos"
+			composition_type = "military_end_event_chaos_01"
 		},
 		{
 			"delay",
@@ -5853,7 +5945,48 @@ TerrorEventBlueprints = {
 			"continue_when",
 			duration = 80,
 			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2
+				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2 and count_event_breed("chaos_fanatic") < 4
+			end
+		},
+		{
+			"flow_event",
+			flow_event_name = "military_end_event_survival_01_done"
+		}
+	},
+	military_end_event_survival_01_right = {
+		{
+			"set_master_event_running",
+			name = "military_end_event_survival"
+		},
+		{
+			"play_stinger",
+			stinger_name = "enemy_horde_stinger"
+		},
+		{
+			"set_freeze_condition",
+			max_active_enemies = 100
+		},
+		{
+			"event_horde",
+			limit_spawners = 4,
+			spawner_id = "end_event_right",
+			composition_type = "event_medium"
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "end_event_right_hidden",
+			composition_type = "military_end_event_chaos_01"
+		},
+		{
+			"delay",
+			duration = 10
+		},
+		{
+			"continue_when",
+			duration = 80,
+			condition = function (t)
+				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2 and count_event_breed("chaos_fanatic") < 4
 			end
 		},
 		{
@@ -5888,7 +6021,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_left_hidden",
-			composition_type = "event_small_chaos"
+			composition_type = "military_end_event_chaos_01"
 		},
 		{
 			"delay",
@@ -5898,7 +6031,7 @@ TerrorEventBlueprints = {
 			"continue_when",
 			duration = 80,
 			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 1 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2
+				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 1 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2 and count_event_breed("chaos_fanatic") < 4
 			end
 		},
 		{
@@ -5933,7 +6066,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_right_hidden",
-			composition_type = "event_small_chaos"
+			composition_type = "military_end_event_chaos_01"
 		},
 		{
 			"delay",
@@ -5943,7 +6076,7 @@ TerrorEventBlueprints = {
 			"continue_when",
 			duration = 80,
 			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 1 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2
+				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 1 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2 and count_event_breed("chaos_fanatic") < 4
 			end
 		},
 		{
@@ -5978,7 +6111,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_back_hidden",
-			composition_type = "event_small_chaos"
+			composition_type = "military_end_event_chaos_01"
 		},
 		{
 			"delay",
@@ -5988,7 +6121,52 @@ TerrorEventBlueprints = {
 			"continue_when",
 			duration = 80,
 			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 1 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2
+				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 1 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2 and count_event_breed("chaos_fanatic") < 4
+			end
+		},
+		{
+			"flow_event",
+			flow_event_name = "military_end_event_survival_02_done"
+		}
+	},
+	military_end_event_survival_02_back = {
+		{
+			"set_master_event_running",
+			name = "military_end_event_survival"
+		},
+		{
+			"play_stinger",
+			stinger_name = "enemy_horde_stinger"
+		},
+		{
+			"set_freeze_condition",
+			max_active_enemies = 100
+		},
+		{
+			"event_horde",
+			limit_spawners = 4,
+			spawner_id = "end_event_back",
+			composition_type = "event_small"
+		},
+		{
+			"delay",
+			duration = 10
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "end_event_back_hidden",
+			composition_type = "military_end_event_chaos_01"
+		},
+		{
+			"delay",
+			duration = 10
+		},
+		{
+			"continue_when",
+			duration = 80,
+			condition = function (t)
+				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 1 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2 and count_event_breed("chaos_fanatic") < 4
 			end
 		},
 		{
@@ -6012,7 +6190,7 @@ TerrorEventBlueprints = {
 		{
 			"event_horde",
 			limit_spawners = 4,
-			spawner_id = "end_event_left",
+			spawner_id = "end_event_left_hidden",
 			composition_type = "event_large"
 		},
 		{
@@ -6193,7 +6371,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 4,
 			spawner_id = "end_event_left_hidden",
-			composition_type = "chaos_berzerkers"
+			composition_type = "military_end_event_berzerkers"
 		},
 		{
 			"event_horde",
@@ -6209,7 +6387,7 @@ TerrorEventBlueprints = {
 			"continue_when",
 			duration = 80,
 			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 4 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("chaos_berzerker") < 2 and count_event_breed("chaos_marauder") < 2
+				return count_event_breed("skaven_clan_rat") < 4 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("chaos_berzerker") < 2 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2
 			end
 		},
 		{
@@ -6234,7 +6412,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 4,
 			spawner_id = "end_event_right_hidden",
-			composition_type = "chaos_berzerkers"
+			composition_type = "military_end_event_berzerkers"
 		},
 		{
 			"event_horde",
@@ -6250,7 +6428,7 @@ TerrorEventBlueprints = {
 			"continue_when",
 			duration = 80,
 			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 4 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("chaos_berzerker") < 2 and count_event_breed("chaos_marauder") < 2
+				return count_event_breed("skaven_clan_rat") < 4 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("chaos_berzerker") < 2 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2
 			end
 		},
 		{
@@ -6275,7 +6453,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 4,
 			spawner_id = "end_event_back_hidden",
-			composition_type = "chaos_berzerkers"
+			composition_type = "military_end_event_berzerkers"
 		},
 		{
 			"event_horde",
@@ -6291,7 +6469,7 @@ TerrorEventBlueprints = {
 			"continue_when",
 			duration = 80,
 			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 4 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("chaos_berzerker") < 2 and count_event_breed("chaos_marauder") < 2
+				return count_event_breed("skaven_clan_rat") < 4 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("chaos_berzerker") < 2 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2
 			end
 		},
 		{
@@ -6316,7 +6494,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 4,
 			spawner_id = "end_event_back_hidden",
-			composition_type = "chaos_berzerkers"
+			composition_type = "military_end_event_berzerkers"
 		},
 		{
 			"event_horde",
@@ -6332,7 +6510,7 @@ TerrorEventBlueprints = {
 			"continue_when",
 			duration = 80,
 			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 4 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("chaos_berzerker") < 2 and count_event_breed("chaos_marauder") < 2
+				return count_event_breed("skaven_clan_rat") < 4 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("chaos_berzerker") < 2 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2
 			end
 		},
 		{
@@ -6377,7 +6555,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_left_hidden",
-			composition_type = "event_few_plague_monks"
+			composition_type = "military_end_event_plague_monks"
 		},
 		{
 			"delay",
@@ -6432,7 +6610,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_right_hidden",
-			composition_type = "event_few_plague_monks"
+			composition_type = "military_end_event_plague_monks"
 		},
 		{
 			"delay",
@@ -6487,7 +6665,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_back_hidden",
-			composition_type = "event_few_plague_monks"
+			composition_type = "military_end_event_plague_monks"
 		},
 		{
 			"delay",
@@ -6542,7 +6720,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_back_hidden",
-			composition_type = "event_few_plague_monks"
+			composition_type = "military_end_event_plague_monks"
 		},
 		{
 			"delay",
@@ -6731,10 +6909,7 @@ TerrorEventBlueprints = {
 		},
 		{
 			"spawn",
-			{
-				2,
-				3
-			},
+			3,
 			breed_name = "skaven_poison_wind_globadier"
 		},
 		{
@@ -6826,6 +7001,11 @@ TerrorEventBlueprints = {
 			breed_name = "skaven_ratling_gunner"
 		},
 		{
+			"spawn",
+			1,
+			breed_name = "skaven_pack_master"
+		},
+		{
 			"delay",
 			duration = 10
 		},
@@ -6833,7 +7013,7 @@ TerrorEventBlueprints = {
 			"continue_when",
 			duration = 80,
 			condition = function (t)
-				return count_event_breed("skaven_ratling_gunner") < 1
+				return count_event_breed("skaven_ratling_gunner") < 1 and count_event_breed("skaven_pack_master") < 1
 			end
 		},
 		{
@@ -6852,6 +7032,11 @@ TerrorEventBlueprints = {
 			breed_name = "skaven_warpfire_thrower"
 		},
 		{
+			"spawn",
+			1,
+			breed_name = "skaven_poison_wind_globadier"
+		},
+		{
 			"delay",
 			duration = 10
 		},
@@ -6859,7 +7044,7 @@ TerrorEventBlueprints = {
 			"continue_when",
 			duration = 80,
 			condition = function (t)
-				return count_event_breed("skaven_warpfire_thrower") < 1
+				return count_event_breed("skaven_warpfire_thrower") < 1 and count_event_breed("skaven_poison_wind_globadier") < 1
 			end
 		},
 		{
@@ -9010,7 +9195,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "camp_event",
-			composition_type = "event_small_chaos"
+			composition_type = "warcamp_inside_camp"
 		},
 		{
 			"delay",
@@ -9020,7 +9205,7 @@ TerrorEventBlueprints = {
 			"continue_when",
 			duration = 80,
 			condition = function (t)
-				return count_event_breed("chaos_berzerker") < 3 and count_event_breed("chaos_raider") < 3 and count_event_breed("chaos_marauder") < 3 and count_event_breed("chaos_marauder_with_shield") < 2
+				return count_event_breed("chaos_berzerker") < 3 and count_event_breed("chaos_raider") < 3 and count_event_breed("chaos_marauder") < 3 and count_event_breed("chaos_marauder_with_shield") < 2 and count_event_breed("chaos_fanatic") < 4
 			end
 		},
 		{
@@ -9030,6 +9215,12 @@ TerrorEventBlueprints = {
 		{
 			"flow_event",
 			flow_event_name = "warcamp_camp_restart"
+		}
+	},
+	warcamp_load_chaos_exalted_champion = {
+		{
+			"force_load_breed_package",
+			breed_name = "chaos_exalted_champion_warcamp"
 		}
 	},
 	warcamp_arena_chase = {
@@ -9069,6 +9260,32 @@ TerrorEventBlueprints = {
 		{
 			"flow_event",
 			flow_event_name = "warcamp_chase_restart"
+		}
+	},
+	boss_event_dual_spawn = {
+		{
+			"spawn",
+			breed_name = {
+				"skaven_rat_ogre",
+				"skaven_stormfiend",
+				"chaos_troll",
+				"chaos_spawn"
+			},
+			optional_data = {
+				max_health_modifier = 0.5
+			}
+		},
+		{
+			"spawn",
+			breed_name = {
+				"skaven_rat_ogre",
+				"skaven_stormfiend",
+				"chaos_troll",
+				"chaos_spawn"
+			},
+			optional_data = {
+				max_health_modifier = 0.5
+			}
 		}
 	}
 }

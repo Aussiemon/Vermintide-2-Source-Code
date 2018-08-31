@@ -384,25 +384,32 @@ local function create_achievement_entry(scenegraph_id, size)
 			texture_id = "reward_icon"
 		},
 		{
-			style_id = "reward_icon",
+			pass_type = "texture",
+			style_id = "reward_hover",
+			texture_id = "reward_hover",
+			content_check_function = function (content)
+				local reward_button_hotspot = content.reward_button_hotspot
+
+				return reward_button_hotspot.is_hover and reward_button_hotspot.draw
+			end
+		},
+		{
 			item_id = "reward_item",
 			pass_type = "item_tooltip",
+			style_id = "reward_icon",
 			content_check_function = function (content)
-				return content.reward_button_hotspot.is_hover
+				local reward_button_hotspot = content.reward_button_hotspot
+
+				return reward_button_hotspot.is_hover and reward_button_hotspot.draw
+			end,
+			content_change_function = function (content)
+				content.reward_button_hotspot.draw = false
 			end
 		},
 		{
 			pass_type = "texture",
 			style_id = "reward_frame",
 			texture_id = "reward_frame"
-		},
-		{
-			pass_type = "texture",
-			style_id = "reward_hover",
-			texture_id = "reward_hover",
-			content_check_function = function (content)
-				return content.reward_button_hotspot.is_hover
-			end
 		},
 		{
 			style_id = "reward_icon",
@@ -431,6 +438,22 @@ local function create_achievement_entry(scenegraph_id, size)
 			text_id = "claimed_text",
 			content_check_function = function (content)
 				return content.completed and content.claimed
+			end
+		},
+		{
+			style_id = "locked_text",
+			pass_type = "text",
+			text_id = "locked_text",
+			content_check_function = function (content)
+				return content.locked
+			end
+		},
+		{
+			style_id = "locked_text_shadow",
+			pass_type = "text",
+			text_id = "locked_text",
+			content_check_function = function (content)
+				return content.locked
 			end
 		},
 		{
@@ -521,36 +544,39 @@ local function create_achievement_entry(scenegraph_id, size)
 		}
 	}
 	local content = {
-		progress_bar = "experience_bar_fill",
-		reward_icon = "icons_placeholder",
+		icon_background = "achievement_left",
 		expand_background_edge = "achievement_paper_bottom",
-		completed = false,
+		expand_background = "achievement_paper_middle",
 		progress_text = "n/a",
 		glass = "button_glass_02",
-		expandable = false,
+		progress_bar = "experience_bar_fill",
 		draw_bar = true,
-		title_divider = "divider_01_bottom",
 		icon = "achievement_trophy_01",
 		arrow = "achievement_arrow",
+		title_divider = "divider_01_bottom",
 		background_fade = "options_window_fade_01",
-		icon_background = "achievement_left",
+		reward_icon = "icons_placeholder",
 		reward_icon_claimed = "achievement_banner",
 		background_completed = "achievement_background",
 		background = "achievement_background_dark",
 		arrow_hover = "achievement_arrow_hover",
 		expand_background_shadow = "edge_fade_small",
 		hover_glow = "button_state_default",
-		expand_background = "achievement_paper_middle",
+		completed = false,
 		title = "n/a",
 		claimed = false,
 		expanded = false,
 		description = "n/a",
+		expandable = false,
 		reward_frame = "item_frame",
 		rect_masked = "rect_masked",
 		claiming = false,
 		reward_background = "achievement_right",
+		locked_text = "n/a",
 		reward_hover = "item_icon_hover",
-		button_hotspot = {},
+		button_hotspot = {
+			allow_multi_hover = true
+		},
 		progress_button_hotspot = {},
 		reward_button_hotspot = {},
 		claimed_text = Localize("achv_menu_reward_claimed"),
@@ -1306,6 +1332,40 @@ local function create_achievement_entry(scenegraph_id, size)
 			offset = {
 				size[1] / 2 - progress_bar_size[1] / 2 + 2,
 				2,
+				9
+			}
+		},
+		locked_text = {
+			vertical_alignment = "bottom",
+			upper_case = true,
+			font_size = 18,
+			horizontal_alignment = "center",
+			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			text_color = Colors.get_color_table_with_alpha("red", 255),
+			size = {
+				progress_bar_size[1],
+				progress_bar_size[2]
+			},
+			offset = {
+				size[1] / 2 - progress_bar_size[1] / 2,
+				10,
+				10
+			}
+		},
+		locked_text_shadow = {
+			vertical_alignment = "bottom",
+			upper_case = true,
+			font_size = 18,
+			horizontal_alignment = "center",
+			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			text_color = Colors.get_color_table_with_alpha("black", 255),
+			size = {
+				progress_bar_size[1],
+				progress_bar_size[2]
+			},
+			offset = {
+				size[1] / 2 - progress_bar_size[1] / 2 + 2,
+				8,
 				9
 			}
 		},

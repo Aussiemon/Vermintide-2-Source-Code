@@ -52,7 +52,6 @@ CraftPageRollProperties.on_enter = function (self, params, settings)
 	self._recipe_grid:disable_item_drag()
 	self.super_parent:clear_disabled_backend_ids()
 	self:setup_recipe_requirements()
-	self.parent:set_input_description(nil)
 end
 
 CraftPageRollProperties.setup_recipe_requirements = function (self)
@@ -444,8 +443,6 @@ end
 
 CraftPageRollProperties._set_craft_button_disabled = function (self, disabled)
 	self._widgets_by_name.craft_button.content.button_hotspot.disable_button = disabled
-
-	self.parent:set_input_description((not disabled and self.settings.name) or nil)
 end
 
 CraftPageRollProperties._exit = function (self, selected_level)

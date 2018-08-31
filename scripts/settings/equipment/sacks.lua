@@ -41,6 +41,7 @@ weapon_template.actions = {
 				collision_filter = "n/a",
 				projectile_unit_template_name = "pickup_projectile_unit",
 				pickup_name = "grain_sack",
+				drop_on_player_destroyed = true,
 				projectile_unit_name = "units/weapons/player/pup_sacks/pup_sacks_01"
 			}
 		}
@@ -79,6 +80,51 @@ weapon_template.actions = {
 
 				return not status_extension:fatigued()
 			end
+		}
+	},
+	action_dropped = {
+		default = {
+			anim_end_event = "attack_finished",
+			kind = "throw",
+			velocity_multiplier = 0.5,
+			throw_time = 0.35,
+			ammo_usage = 1,
+			weapon_action_hand = "left",
+			block_pickup = true,
+			speed = 2.5,
+			uninterruptible = true,
+			anim_event = "attack_throw",
+			total_time = 0.7,
+			anim_end_event_condition_func = function (unit, end_reason)
+				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
+			end,
+			buff_data = {
+				{
+					start_time = 0,
+					external_multiplier = 0.5,
+					end_time = 0.35,
+					buff_name = "planted_fast_decrease_movement"
+				}
+			},
+			allowed_chain_actions = {},
+			angular_velocity = {
+				0,
+				200,
+				-500
+			},
+			throw_offset = {
+				0.3,
+				1,
+				0.3
+			},
+			projectile_info = {
+				use_dynamic_collision = false,
+				collision_filter = "n/a",
+				projectile_unit_template_name = "pickup_projectile_unit",
+				pickup_name = "grain_sack",
+				drop_on_player_destroyed = true,
+				projectile_unit_name = "units/weapons/player/pup_sacks/pup_sacks_01"
+			}
 		}
 	},
 	action_wield = ActionTemplates.wield_left,

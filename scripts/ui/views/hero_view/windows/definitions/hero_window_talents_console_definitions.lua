@@ -12,109 +12,27 @@ local career_window_size = {
 	window_size[2]
 }
 local career_info_size = {
-	math.floor(career_window_size[1] / 2 - 10),
+	450,
 	140
 }
+local console_menu_scenegraphs = UISettings.console_menu_scenegraphs
 local scenegraph_definition = {
-	root = {
-		is_root = true,
-		size = {
-			1920,
-			1080
-		},
-		position = {
-			0,
-			0,
-			UILayer.default
-		}
-	},
-	root_fit = {
-		scale = "fit",
-		size = {
-			1920,
-			1080
-		},
-		position = {
-			0,
-			0,
-			UILayer.default + 1
-		}
-	},
+	screen = console_menu_scenegraphs.screen,
+	area = console_menu_scenegraphs.area,
+	area_left = console_menu_scenegraphs.area_left,
+	area_right = console_menu_scenegraphs.area_right,
+	area_divider = console_menu_scenegraphs.area_divider,
 	info_window = {
-		vertical_alignment = "center",
-		parent = "root_fit",
-		horizontal_alignment = "left",
-		size = {
-			window_size[1] + 40,
-			window_size[2]
-		},
-		position = {
-			50,
-			0,
-			1
-		}
-	},
-	window = {
-		vertical_alignment = "center",
-		parent = "root_fit",
-		horizontal_alignment = "left",
-		size = window_size,
-		position = {
-			0,
-			0,
-			1
-		}
-	},
-	window_frame = {
-		vertical_alignment = "center",
-		parent = "info_window",
-		horizontal_alignment = "left",
-		size = career_window_size,
-		position = {
-			window_size[1] + 100,
-			0,
-			1
-		}
-	},
-	career_window = {
 		vertical_alignment = "top",
-		parent = "window_frame",
-		horizontal_alignment = "center",
+		parent = "area_right",
+		horizontal_alignment = "right",
 		size = {
-			career_window_size[1] - 20,
-			career_info_size[2] + 40
+			career_info_size[1],
+			600
 		},
 		position = {
-			0,
-			-10,
-			1
-		}
-	},
-	career_window_edge = {
-		vertical_alignment = "bottom",
-		parent = "career_window",
-		horizontal_alignment = "center",
-		size = {
-			career_window_size[1] - 20,
-			0
-		},
-		position = {
-			0,
-			40,
-			1
-		}
-	},
-	career_window_center_edge = {
-		vertical_alignment = "top",
-		parent = "career_window",
-		horizontal_alignment = "center",
-		size = {
-			0,
-			career_info_size[2] - 5
-		},
-		position = {
-			0,
-			-5,
+			-50,
+			-90,
 			1
 		}
 	},
@@ -125,7 +43,7 @@ local scenegraph_definition = {
 		size = career_info_size,
 		position = {
 			0,
-			0,
+			-20,
 			1
 		}
 	},
@@ -308,97 +226,69 @@ local scenegraph_definition = {
 			1
 		}
 	},
-	career_perks = {
+	perk_title_text = {
 		vertical_alignment = "bottom",
-		parent = "career_window",
-		horizontal_alignment = "center",
+		parent = "active_window",
+		horizontal_alignment = "left",
 		size = {
-			career_window_size[1] - 40,
-			40
+			career_info_size[1] * 0.6,
+			50
+		},
+		position = {
+			10,
+			-50,
+			1
+		}
+	},
+	perk_title_divider = {
+		vertical_alignment = "bottom",
+		parent = "perk_title_text",
+		horizontal_alignment = "left",
+		size = {
+			450,
+			4
 		},
 		position = {
 			0,
 			10,
-			4
+			1
 		}
 	},
 	career_perk_1 = {
-		vertical_alignment = "center",
-		parent = "career_perks",
-		horizontal_alignment = "center",
+		vertical_alignment = "bottom",
+		parent = "perk_title_divider",
+		horizontal_alignment = "left",
 		size = {
-			200,
-			40
+			420,
+			1
 		},
 		position = {
-			-350,
-			-6,
+			10,
+			-30,
 			1
 		}
 	},
 	career_perk_2 = {
 		vertical_alignment = "center",
-		parent = "career_perks",
-		horizontal_alignment = "center",
+		parent = "career_perk_1",
+		horizontal_alignment = "left",
 		size = {
-			200,
-			40
+			420,
+			1
 		},
 		position = {
 			0,
-			-6,
+			0,
 			1
 		}
 	},
 	career_perk_3 = {
 		vertical_alignment = "center",
-		parent = "career_perks",
-		horizontal_alignment = "center",
+		parent = "career_perk_2",
+		horizontal_alignment = "left",
 		size = {
-			200,
-			40
-		},
-		position = {
-			350,
-			-6,
+			420,
 			1
-		}
-	},
-	talent_title_text = {
-		vertical_alignment = "bottom",
-		parent = "career_window",
-		horizontal_alignment = "center",
-		size = {
-			career_window_size[1],
-			50
-		},
-		position = {
-			0,
-			-60,
-			1
-		}
-	},
-	talent_title_divider = {
-		vertical_alignment = "bottom",
-		parent = "talent_title_text",
-		horizontal_alignment = "center",
-		size = {
-			264,
-			21
-		},
-		position = {
-			0,
-			-10,
-			1
-		}
-	},
-	talents_window = {
-		vertical_alignment = "bottom",
-		parent = "window_frame",
-		horizontal_alignment = "center",
-		size = {
-			career_window_size[1],
-			505
 		},
 		position = {
 			0,
@@ -409,7 +299,7 @@ local scenegraph_definition = {
 	talent_row_1 = {
 		vertical_alignment = "bottom",
 		parent = "talent_row_2",
-		horizontal_alignment = "center",
+		horizontal_alignment = "left",
 		size = {
 			career_window_size[1] - 20,
 			100
@@ -423,7 +313,7 @@ local scenegraph_definition = {
 	talent_row_2 = {
 		vertical_alignment = "bottom",
 		parent = "talent_row_3",
-		horizontal_alignment = "center",
+		horizontal_alignment = "left",
 		size = {
 			career_window_size[1] - 20,
 			100
@@ -437,7 +327,7 @@ local scenegraph_definition = {
 	talent_row_3 = {
 		vertical_alignment = "bottom",
 		parent = "talent_row_4",
-		horizontal_alignment = "center",
+		horizontal_alignment = "left",
 		size = {
 			career_window_size[1] - 20,
 			100
@@ -451,7 +341,7 @@ local scenegraph_definition = {
 	talent_row_4 = {
 		vertical_alignment = "bottom",
 		parent = "talent_row_5",
-		horizontal_alignment = "center",
+		horizontal_alignment = "left",
 		size = {
 			career_window_size[1] - 20,
 			100
@@ -464,8 +354,8 @@ local scenegraph_definition = {
 	},
 	talent_row_5 = {
 		vertical_alignment = "bottom",
-		parent = "window_frame",
-		horizontal_alignment = "center",
+		parent = "area_left",
+		horizontal_alignment = "left",
 		size = {
 			career_window_size[1] - 20,
 			100
@@ -474,6 +364,62 @@ local scenegraph_definition = {
 			0,
 			10,
 			5
+		}
+	},
+	tooltip_area = {
+		vertical_alignment = "top",
+		parent = "area_left",
+		horizontal_alignment = "left",
+		size = {
+			career_window_size[1] - 20,
+			170
+		},
+		position = {
+			0,
+			-90,
+			1
+		}
+	},
+	tooltip_title = {
+		vertical_alignment = "top",
+		parent = "tooltip_area",
+		horizontal_alignment = "center",
+		size = {
+			career_window_size[1] - 40,
+			40
+		},
+		position = {
+			0,
+			-10,
+			1
+		}
+	},
+	tooltip_description = {
+		vertical_alignment = "top",
+		parent = "tooltip_area",
+		horizontal_alignment = "center",
+		size = {
+			career_window_size[1] - 40,
+			40
+		},
+		position = {
+			0,
+			-60,
+			1
+		}
+	},
+	tooltip_info = {
+		vertical_alignment = "bottom",
+		parent = "tooltip_area",
+		horizontal_alignment = "center",
+		size = {
+			career_window_size[1] - 40,
+			40
+		},
+		position = {
+			0,
+			0,
+			1
 		}
 	}
 }
@@ -501,6 +447,36 @@ local description_text_style = {
 	vertical_alignment = "top",
 	font_type = "hell_shark",
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local tooltip_text_style = {
+	word_wrap = true,
+	font_size = 24,
+	localize = false,
+	use_shadow = true,
+	horizontal_alignment = "left",
+	vertical_alignment = "top",
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local tooltip_info_text_style = {
+	word_wrap = true,
+	font_size = 24,
+	localize = false,
+	use_shadow = true,
+	horizontal_alignment = "left",
+	vertical_alignment = "center",
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("red", 255),
 	offset = {
 		0,
 		0,
@@ -540,394 +516,6 @@ local sub_title_text_style = {
 		2
 	}
 }
-local talent_title_text_style = {
-	font_size = 36,
-	upper_case = true,
-	localize = false,
-	use_shadow = true,
-	word_wrap = true,
-	horizontal_alignment = "center",
-	vertical_alignment = "center",
-	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("font_title", 255),
-	offset = {
-		0,
-		-6,
-		2
-	}
-}
-
-local function create_window_button(scenegraph_id, size, button_text, font_size, use_bottom_edge, optional_color_name)
-	local button_color_name = nil
-
-	if optional_color_name then
-		button_color_name = "button_" .. optional_color_name
-	else
-		button_color_name = "button_normal"
-	end
-
-	local background_color = Colors.get_color_table_with_alpha(button_color_name, 255)
-	local button_background_texture = "button_bg_01"
-	local button_background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(button_background_texture)
-	local widget = {
-		element = {
-			passes = {
-				{
-					style_id = "button_background",
-					pass_type = "hotspot",
-					content_id = "button_hotspot"
-				},
-				{
-					style_id = "button_background",
-					pass_type = "texture_uv",
-					content_id = "button_background"
-				},
-				{
-					texture_id = "bottom_edge",
-					style_id = "button_edge",
-					pass_type = "tiled_texture"
-				},
-				{
-					texture_id = "glass_top",
-					style_id = "glass_top",
-					pass_type = "texture"
-				},
-				{
-					texture_id = "glow",
-					style_id = "glow",
-					pass_type = "texture"
-				},
-				{
-					texture_id = "hover_glow",
-					style_id = "hover_glow",
-					pass_type = "texture",
-					content_check_function = function (content)
-						local button_hotspot = content.button_hotspot
-
-						return not button_hotspot.disable_button and (button_hotspot.is_selected or button_hotspot.is_hover)
-					end
-				},
-				{
-					style_id = "button_text",
-					pass_type = "text",
-					text_id = "button_text",
-					content_check_function = function (content)
-						local button_hotspot = content.button_hotspot
-
-						return not button_hotspot.disable_button
-					end
-				},
-				{
-					style_id = "button_text_disabled",
-					pass_type = "text",
-					text_id = "button_text",
-					content_check_function = function (content)
-						local button_hotspot = content.button_hotspot
-
-						return button_hotspot.disable_button
-					end
-				},
-				{
-					style_id = "button_text_shadow",
-					pass_type = "text",
-					text_id = "button_text"
-				},
-				{
-					style_id = "button_clicked_rect",
-					pass_type = "rect",
-					content_check_function = function (content)
-						local button_hotspot = content.button_hotspot
-						local is_clicked = button_hotspot.is_clicked
-
-						return not is_clicked or is_clicked == 0
-					end
-				},
-				{
-					style_id = "button_disabled_rect",
-					pass_type = "rect",
-					content_check_function = function (content)
-						local button_hotspot = content.button_hotspot
-
-						return button_hotspot.disable_button
-					end
-				},
-				{
-					texture_id = "bottom_edge",
-					style_id = "bottom_edge",
-					pass_type = "tiled_texture",
-					content_check_function = function (content)
-						return content.use_bottom_edge
-					end
-				},
-				{
-					texture_id = "edge_holder_left",
-					style_id = "edge_holder_left",
-					pass_type = "texture",
-					content_check_function = function (content)
-						return content.use_bottom_edge
-					end
-				},
-				{
-					texture_id = "edge_holder_right",
-					style_id = "edge_holder_right",
-					pass_type = "texture",
-					content_check_function = function (content)
-						return content.use_bottom_edge
-					end
-				}
-			}
-		},
-		content = {
-			edge_holder_left = "menu_frame_09_divider_left",
-			edge_holder_right = "menu_frame_09_divider_right",
-			glass_top = "button_glass_01",
-			bottom_edge = "menu_frame_09_divider",
-			use_bottom_edge = use_bottom_edge,
-			button_hotspot = {},
-			button_text = button_text or "n/a",
-			hover_glow = (optional_color_name and "button_state_hover_" .. optional_color_name) or "button_state_hover",
-			glow = (optional_color_name and "button_state_normal_" .. optional_color_name) or "button_state_normal",
-			button_background = {
-				uvs = {
-					{
-						0,
-						1 - math.min(size[2] / button_background_texture_settings.size[2], 1)
-					},
-					{
-						math.min(size[1] / button_background_texture_settings.size[1], 1),
-						1
-					}
-				},
-				texture_id = button_background_texture
-			}
-		},
-		style = {
-			button_background = {
-				color = background_color,
-				offset = {
-					0,
-					0,
-					2
-				},
-				size = size
-			},
-			button_edge = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					0,
-					size[2],
-					3
-				},
-				size = {
-					size[1],
-					5
-				},
-				texture_tiling_size = {
-					1,
-					5
-				}
-			},
-			glass_top = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					0,
-					size[2] - 4,
-					3
-				},
-				size = {
-					size[1],
-					5
-				}
-			},
-			glow = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					0,
-					5,
-					3
-				},
-				size = {
-					size[1],
-					size[2] - 5
-				}
-			},
-			hover_glow = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					0,
-					5,
-					2
-				},
-				size = {
-					size[1],
-					size[2] - 5
-				}
-			},
-			bottom_edge = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					5,
-					0,
-					6
-				},
-				size = {
-					size[1] - 10,
-					5
-				},
-				texture_tiling_size = {
-					1,
-					5
-				}
-			},
-			edge_holder_left = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					3,
-					-6,
-					10
-				},
-				size = {
-					9,
-					17
-				}
-			},
-			edge_holder_right = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					size[1] - 12,
-					-6,
-					10
-				},
-				size = {
-					9,
-					17
-				}
-			},
-			button_text = {
-				upper_case = true,
-				word_wrap = true,
-				horizontal_alignment = "center",
-				vertical_alignment = "center",
-				font_type = "hell_shark",
-				font_size = font_size or 24,
-				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
-				offset = {
-					0,
-					5,
-					4
-				},
-				size = size
-			},
-			button_text_disabled = {
-				upper_case = true,
-				word_wrap = true,
-				horizontal_alignment = "center",
-				vertical_alignment = "center",
-				font_type = "hell_shark",
-				font_size = font_size or 24,
-				text_color = Colors.get_color_table_with_alpha("gray", 255),
-				offset = {
-					0,
-					5,
-					4
-				},
-				size = size
-			},
-			button_text_shadow = {
-				upper_case = true,
-				word_wrap = true,
-				horizontal_alignment = "center",
-				vertical_alignment = "center",
-				font_type = "hell_shark",
-				font_size = font_size or 24,
-				text_color = Colors.get_color_table_with_alpha("black", 255),
-				offset = {
-					2,
-					3,
-					3
-				},
-				size = size
-			},
-			button_clicked_rect = {
-				color = {
-					100,
-					0,
-					0,
-					0
-				},
-				offset = {
-					5,
-					0,
-					5
-				},
-				size = {
-					size[1] - 10,
-					size[2]
-				}
-			},
-			button_disabled_rect = {
-				color = {
-					150,
-					5,
-					5,
-					5
-				},
-				offset = {
-					5,
-					0,
-					5
-				},
-				size = {
-					size[1] - 10,
-					size[2]
-				}
-			}
-		},
-		scenegraph_id = scenegraph_id,
-		offset = {
-			0,
-			0,
-			0
-		}
-	}
-
-	return widget
-end
 
 local function talent_row(scenegraph_id, size, amount)
 	local frame_settings = UIFrameSettings.menu_frame_09
@@ -1150,10 +738,10 @@ local function talent_row(scenegraph_id, size, amount)
 		style[background_name] = {
 			size = button_size,
 			color = {
-				100,
-				0,
-				0,
-				0
+				220,
+				10,
+				10,
+				10
 			},
 			offset = {
 				offset[1],
@@ -1341,7 +929,7 @@ local function talent_row(scenegraph_id, size, amount)
 			content_check_function = function (content)
 				local hotspot = content[hotspot_name]
 
-				return hotspot.is_hover
+				return hotspot.is_hover or hotspot.focused
 			end
 		}
 		style[background_glow_name] = {
@@ -1499,294 +1087,117 @@ local function talent_row(scenegraph_id, size, amount)
 	return widget
 end
 
-local function create_window_divider(scenegraph_id, size, optional_texture_version)
-	local texture_version = optional_texture_version or "09"
-	local widget = {
-		element = {
-			passes = {
-				{
-					texture_id = "bottom_edge",
-					style_id = "bottom_edge",
-					pass_type = "tiled_texture"
-				},
-				{
-					texture_id = "edge_holder_left",
-					style_id = "edge_holder_left",
-					pass_type = "texture"
-				},
-				{
-					texture_id = "edge_holder_right",
-					style_id = "edge_holder_right",
-					pass_type = "texture"
-				}
-			}
-		},
-		content = {
-			edge_holder_left = "menu_frame_" .. texture_version .. "_divider_left",
-			edge_holder_right = "menu_frame_" .. texture_version .. "_divider_right",
-			bottom_edge = "menu_frame_" .. texture_version .. "_divider"
-		},
-		style = {
-			bottom_edge = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					5,
-					0,
-					6
-				},
-				size = {
-					size[1] - 10,
-					5
-				},
-				texture_tiling_size = {
-					size[1] - 10,
-					5
-				}
-			},
-			edge_holder_left = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					3,
-					-6,
-					10
-				},
-				size = {
-					9,
-					17
-				}
-			},
-			edge_holder_right = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					size[1] - 12,
-					-6,
-					10
-				},
-				size = {
-					9,
-					17
-				}
-			}
-		},
-		scenegraph_id = scenegraph_id,
-		offset = {
-			0,
-			0,
-			0
-		}
-	}
-
-	return widget
-end
-
-local function create_vertical_window_divider(scenegraph_id, size, optional_texture_version)
-	local texture_version = optional_texture_version or "09"
-	local widget = {
-		element = {
-			passes = {
-				{
-					texture_id = "edge",
-					style_id = "edge",
-					pass_type = "tiled_texture"
-				},
-				{
-					texture_id = "edge_holder_top",
-					style_id = "edge_holder_top",
-					pass_type = "texture"
-				},
-				{
-					texture_id = "edge_holder_bottom",
-					style_id = "edge_holder_bottom",
-					pass_type = "texture"
-				}
-			}
-		},
-		content = {
-			edge_holder_top = "menu_frame_" .. texture_version .. "_divider_top",
-			edge_holder_bottom = "menu_frame_" .. texture_version .. "_divider_bottom",
-			edge = "menu_frame_" .. texture_version .. "_divider_vertical"
-		},
-		style = {
-			edge = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					0,
-					6,
-					6
-				},
-				size = {
-					5,
-					size[2] - 9
-				},
-				texture_tiling_size = {
-					5,
-					size[2] - 9
-				}
-			},
-			edge_holder_top = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					-6,
-					size[2] - 7,
-					10
-				},
-				size = {
-					17,
-					9
-				}
-			},
-			edge_holder_bottom = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					-6,
-					3,
-					10
-				},
-				size = {
-					17,
-					9
-				}
-			}
-		},
-		scenegraph_id = scenegraph_id,
-		offset = {
-			0,
-			0,
-			0
-		}
-	}
-
-	return widget
-end
-
-local function create_career_perk_text(text, scenegraph_id)
+local function create_career_perk_text(scenegraph_id)
 	return {
 		element = {
 			passes = {
 				{
-					pass_type = "hotspot",
-					content_id = "button_hotspot"
-				},
-				{
-					style_id = "text",
+					style_id = "title_text",
 					pass_type = "text",
-					text_id = "text",
-					content_check_function = function (content)
-						return not content.button_hotspot.is_hover
-					end
+					text_id = "title_text"
 				},
 				{
-					style_id = "text_hover",
+					style_id = "title_text_shadow",
 					pass_type = "text",
-					text_id = "text",
-					content_check_function = function (content)
-						return content.button_hotspot.is_hover
-					end
+					text_id = "title_text"
 				},
 				{
-					style_id = "text_shadow",
+					style_id = "description_text",
 					pass_type = "text",
-					text_id = "text"
+					text_id = "description_text"
 				},
 				{
-					style_id = "tooltip",
-					additional_option_id = "tooltip_data",
-					pass_type = "additional_option_tooltip",
-					content_check_function = function (content)
-						return content.button_hotspot.is_hover
-					end
+					style_id = "description_text_shadow",
+					pass_type = "text",
+					text_id = "description_text"
+				},
+				{
+					pass_type = "texture",
+					style_id = "icon",
+					texture_id = "icon"
 				}
 			}
 		},
 		content = {
-			text = text,
-			button_hotspot = {
-				allow_multi_hover = true
-			}
+			icon = "tooltip_marker",
+			title_text = "n/a",
+			description_text = "n/a"
 		},
 		style = {
-			text = {
-				word_wrap = true,
-				upper_case = false,
-				localize = false,
-				font_size = 20,
-				horizontal_alignment = "center",
-				vertical_alignment = "center",
-				dynamic_font_size = true,
-				font_type = "hell_shark",
-				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+			icon = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "left",
+				texture_size = {
+					13,
+					13
+				},
 				offset = {
 					0,
-					0,
+					6,
 					2
 				}
 			},
-			text_hover = {
+			title_text = {
 				word_wrap = true,
 				upper_case = false,
 				localize = false,
-				font_size = 20,
-				horizontal_alignment = "center",
-				vertical_alignment = "center",
+				font_size = 22,
+				horizontal_alignment = "left",
+				vertical_alignment = "bottom",
 				dynamic_font_size = true,
 				font_type = "hell_shark",
-				text_color = Colors.get_color_table_with_alpha("white", 255),
+				text_color = Colors.get_color_table_with_alpha("font_title", 255),
 				offset = {
-					0,
-					0,
+					20,
+					-5,
 					2
 				}
 			},
-			text_shadow = {
+			title_text_shadow = {
 				word_wrap = true,
 				upper_case = false,
 				localize = false,
-				font_size = 20,
-				horizontal_alignment = "center",
-				vertical_alignment = "center",
+				font_size = 22,
+				horizontal_alignment = "left",
+				vertical_alignment = "bottom",
 				dynamic_font_size = true,
 				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
-					2,
-					-2,
+					22,
+					-7,
 					0
 				}
 			},
-			tooltip = {
-				vertical_alignment = "top",
-				localize = true,
-				horizontal_alignment = "center"
+			description_text = {
+				word_wrap = true,
+				upper_case = false,
+				localize = false,
+				font_size = 18,
+				horizontal_alignment = "left",
+				vertical_alignment = "bottom",
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				offset = {
+					20,
+					0,
+					2
+				}
+			},
+			description_text_shadow = {
+				word_wrap = true,
+				upper_case = false,
+				localize = false,
+				font_size = 18,
+				horizontal_alignment = "left",
+				vertical_alignment = "bottom",
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					22,
+					-2,
+					0
+				}
 			}
 		},
 		offset = {
@@ -1799,41 +1210,21 @@ local function create_career_perk_text(text, scenegraph_id)
 end
 
 local widgets = {
-	talent_title_text = UIWidgets.create_simple_text(Localize("hero_window_talents"), "talent_title_text", nil, nil, talent_title_text_style),
-	talent_row_1 = talent_row("talent_row_1", scenegraph_definition.talent_row_1.size, 3, "green"),
+	tooltip_area = UIWidgets.create_rect_with_outer_frame("tooltip_area", scenegraph_definition.tooltip_area.size, "frame_outer_fade_02", 0, UISettings.console_menu_rect_color),
+	tooltip_title = UIWidgets.create_simple_text("n/a", "tooltip_title", nil, nil, sub_title_text_style),
+	tooltip_description = UIWidgets.create_simple_text("n/a", "tooltip_description", nil, nil, tooltip_text_style),
+	tooltip_info = UIWidgets.create_simple_text("n/a", "tooltip_info", nil, nil, tooltip_info_text_style),
+	talent_row_1 = talent_row("talent_row_1", scenegraph_definition.talent_row_1.size, 3),
 	talent_row_2 = talent_row("talent_row_2", scenegraph_definition.talent_row_2.size, 3),
 	talent_row_3 = talent_row("talent_row_3", scenegraph_definition.talent_row_3.size, 3),
 	talent_row_4 = talent_row("talent_row_4", scenegraph_definition.talent_row_4.size, 3),
 	talent_row_5 = talent_row("talent_row_5", scenegraph_definition.talent_row_5.size, 3),
-	info_window_background = UIWidgets.create_simple_texture("info_window_background", "info_window"),
-	career_background = UIWidgets.create_background("window_frame", scenegraph_definition.window_frame.size, "talent_tree_bg_01"),
-	career_window = UIWidgets.create_frame("window_frame", scenegraph_definition.window_frame.size, window_frame, 10),
-	career_background_rect = UIWidgets.create_simple_rect("window_frame", {
-		150,
-		0,
-		0,
-		0
-	}, 1),
-	career_info_window = UIWidgets.create_frame("career_window", scenegraph_definition.window_frame.size, window_frame, 10),
-	career_info_window_rect = UIWidgets.create_simple_rect("career_window", {
-		150,
-		0,
-		0,
-		0
-	}, 1),
-	career_info_window_bottom_edge = create_window_divider("career_window_edge", scenegraph_definition.career_window_edge.size),
-	career_info_window_center_edge = create_vertical_window_divider("career_window_center_edge", scenegraph_definition.career_window_center_edge.size),
-	career_perks_dots = UIWidgets.create_simple_centered_texture_amount("mission_objective_01", {
-		54,
-		22
-	}, "career_perks", 2),
-	career_perks_dots_glow = UIWidgets.create_simple_centered_texture_amount("mission_objective_glow_02", {
-		54,
-		22
-	}, "career_perks", 2),
-	career_perk_1 = create_career_perk_text("", "career_perk_1"),
-	career_perk_2 = create_career_perk_text("", "career_perk_2"),
-	career_perk_3 = create_career_perk_text("", "career_perk_3"),
+	info_window_background = UIWidgets.create_rect_with_outer_frame("info_window", scenegraph_definition.info_window.size, "frame_outer_fade_02", 0, UISettings.console_menu_rect_color),
+	perk_title_text = UIWidgets.create_simple_text(Localize("hero_view_perk_title"), "perk_title_text", nil, nil, sub_title_text_style),
+	perk_title_divider = UIWidgets.create_simple_texture("infoslate_frame_02_horizontal", "perk_title_divider"),
+	career_perk_1 = create_career_perk_text("career_perk_1"),
+	career_perk_2 = create_career_perk_text("career_perk_2"),
+	career_perk_3 = create_career_perk_text("career_perk_3"),
 	passive_title_text = UIWidgets.create_simple_text("n/a", "passive_title_text", nil, nil, sub_title_text_style),
 	passive_type_title = UIWidgets.create_simple_text(Localize("hero_view_passive_ability"), "passive_type_title", nil, nil, type_title_text_style),
 	passive_title_divider = UIWidgets.create_simple_texture("infoslate_frame_02_horizontal", "passive_title_divider"),
@@ -1850,7 +1241,7 @@ local widgets = {
 local generic_input_actions = {
 	default = {
 		{
-			input_action = "d_vertical",
+			input_action = "d_pad",
 			priority = 1,
 			description_text = "input_description_navigate",
 			ignore_keybinding = true
@@ -1879,6 +1270,8 @@ local animation_definitions = {
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = anim_progress
+				ui_scenegraph.area_left.local_position[1] = scenegraph_definition.area_left.position[1] + -100 * (1 - anim_progress)
+				ui_scenegraph.area_right.local_position[1] = scenegraph_definition.area_right.position[1] + -100 * (1 - anim_progress)
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return

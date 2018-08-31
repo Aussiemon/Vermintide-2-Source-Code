@@ -14,52 +14,99 @@ local scenegraph_definition = {
 			980
 		}
 	},
+	screen = {
+		vertical_alignment = "center",
+		scale = "aspect_ratio",
+		horizontal_alignment = "center",
+		size = {
+			1920,
+			1080
+		},
+		position = {
+			0,
+			0,
+			2
+		}
+	},
 	news_ticker_text = {
-		vertical_alignment = "bottom",
-		parent = "root",
-		horizontal_alignment = "right",
+		vertical_alignment = "top",
+		parent = "screen",
+		horizontal_alignment = "center",
 		size = {
 			1920,
 			20
 		},
 		position = {
-			1920,
-			0,
+			1960,
+			-2,
 			2
 		}
 	},
 	news_ticker_mask = {
-		vertical_alignment = "bottom",
-		parent = "root",
-		horizontal_alignment = "right",
+		vertical_alignment = "top",
+		parent = "screen",
+		horizontal_alignment = "center",
 		size = {
-			650,
-			30
+			880,
+			40
+		},
+		position = {
+			6,
+			0,
+			3
+		}
+	},
+	news_ticker_bg = {
+		vertical_alignment = "top",
+		parent = "screen",
+		horizontal_alignment = "center",
+		size = {
+			1920,
+			40
 		},
 		position = {
 			0,
-			0,
-			3
+			20,
+			0
 		}
 	}
 }
 local text_style = {
-	word_wrap = true,
+	vertical_alignment = "bottom",
 	font_size = 18,
 	localize = false,
-	use_shadow = true,
 	horizontal_alignment = "left",
-	vertical_alignment = "bottom",
+	word_wrap = false,
 	font_type = "hell_shark_masked",
-	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	text_color = Colors.get_color_table_with_alpha("cheeseburger", 255),
 	offset = {
 		0,
 		0,
 		2
 	}
 }
+local text_style_shadow = {
+	vertical_alignment = "bottom",
+	font_size = 18,
+	localize = false,
+	horizontal_alignment = "left",
+	word_wrap = false,
+	font_type = "hell_shark_masked",
+	text_color = Colors.get_color_table_with_alpha("black", 255),
+	offset = {
+		1,
+		-1,
+		1
+	}
+}
 local widget_definitions = {
+	simple_rect = UIWidgets.create_simple_rect("news_ticker_bg", Colors.get_color_table_with_alpha("black", 192), -1, {
+		0,
+		-5,
+		-1
+	}),
 	news_ticker_text_widget = UIWidgets.create_simple_text("", "news_ticker_text", nil, nil, text_style),
+	news_ticker_text_shadow_widget = UIWidgets.create_simple_text("", "news_ticker_text", nil, nil, text_style_shadow),
 	news_ticker_mask_widget = UIWidgets.create_simple_texture("mask_rect", "news_ticker_mask")
 }
 
@@ -82,8 +129,13 @@ IngameNewsTickerUI.create_ui_elements = function (self)
 
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self.news_ticker_text_widget = UIWidget.init(widget_definitions.news_ticker_text_widget)
+	self.news_ticker_text_shadow_widget = UIWidget.init(widget_definitions.news_ticker_text_shadow_widget)
 	self.news_ticker_mask_widget = UIWidget.init(widget_definitions.news_ticker_mask_widget)
+	self.simple_rect = UIWidget.init(widget_definitions.simple_rect)
 	local text_style = self.news_ticker_text_widget.style.text
+	text_style.localize = false
+	text_style.horizontal_alignment = "left"
+	local text_style = self.news_ticker_text_shadow_widget.style.text
 	text_style.localize = false
 	text_style.horizontal_alignment = "left"
 end
@@ -99,7 +151,20 @@ IngameNewsTickerUI.refresh_message = function (self)
 	self.news_ticker_manager:refresh_ingame_message()
 end
 
+local DO_RELOAD = true
+
 IngameNewsTickerUI.update = function (self, dt, t)
+	if DO_RELOAD then
+		self:create_ui_elements()
+
+		self.news_ticker_speed = 100
+		self.news_ticker_manager = Managers.news_ticker
+
+		self:refresh_message()
+
+		DO_RELOAD = false
+	end
+
 	local news_ticker_manager = self.news_ticker_manager
 	local news_ticker_started = self.news_ticker_started
 	local refreshing_ingame_message = news_ticker_manager:refreshing_ingame_message()
@@ -169,14 +234,19 @@ IngameNewsTickerUI.draw = function (self, dt, t)
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
 	UIRenderer.draw_widget(ui_renderer, self.news_ticker_mask_widget)
 	UIRenderer.draw_widget(ui_renderer, self.news_ticker_text_widget)
+	UIRenderer.draw_widget(ui_renderer, self.news_ticker_text_shadow_widget)
+	UIRenderer.draw_widget(ui_renderer, self.simple_rect)
 	UIRenderer.end_pass(ui_renderer)
 end
 
 IngameNewsTickerUI.setup_news_ticker = function (self, text)
 	local widget = self.news_ticker_text_widget
+	local shadow_widget = self.news_ticker_text_shadow_widget
 	local widget_content = widget.content
+	local shadow_widget_content = shadow_widget.content
 	local widget_style = widget.style
 	widget_content.text = text
+	shadow_widget_content.text = text
 	local text_style = widget_style.text
 	local font_type = text_style.font_type
 	local font, scaled_font_size = UIFontByResolution(text_style)

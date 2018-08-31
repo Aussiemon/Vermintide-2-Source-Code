@@ -196,9 +196,7 @@ PlayerCharacterStateLeaping._finish = function (self, unit, t)
 	local land_sound_event = self._leap_data.sfx_event_land
 
 	if land_sound_event and not self._played_landing_event then
-		local position = first_person_extension:current_position()
-
-		WwiseUtils.trigger_position_event(world, land_sound_event, position)
+		first_person_extension:play_unit_sound_event(land_sound_event, unit, 0, true)
 
 		self._played_landing_event = true
 	end
@@ -218,9 +216,7 @@ PlayerCharacterStateLeaping._start_leap = function (self, unit, velocity, t)
 	local jump_sound_event = self._leap_data.sfx_event_jump
 
 	if jump_sound_event then
-		local position = first_person_extension:current_position()
-
-		WwiseUtils.trigger_position_event(world, jump_sound_event, position)
+		first_person_extension:play_unit_sound_event(jump_sound_event, unit, 0, true)
 	end
 
 	locomotion_extension:set_maximum_upwards_velocity(velocity.z)

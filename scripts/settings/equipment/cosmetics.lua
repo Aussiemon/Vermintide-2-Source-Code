@@ -2558,6 +2558,10 @@ local frame_collectors_edition = {
 	icon = "unit_frame_02"
 }
 Cosmetics.frame_collectors_edition = table.clone(frame_collectors_edition)
+local frame_collectors_edition_preorder = {
+	icon = "unit_frame_02"
+}
+Cosmetics.frame_collectors_edition_preorder = table.clone(frame_collectors_edition_preorder)
 local frame_community_01 = {
 	icon = "unit_frame_02"
 }
@@ -2570,6 +2574,22 @@ local frame_summer = {
 	icon = "unit_frame_02"
 }
 Cosmetics.frame_summer = table.clone(frame_summer)
+local frame_bogenhafen_01 = {
+	icon = "unit_frame_02"
+}
+Cosmetics.frame_bogenhafen_01 = table.clone(frame_bogenhafen_01)
+local frame_bogenhafen_02 = {
+	icon = "unit_frame_02"
+}
+Cosmetics.frame_bogenhafen_02 = table.clone(frame_bogenhafen_02)
+local frame_bogenhafen_03 = {
+	icon = "unit_frame_02"
+}
+Cosmetics.frame_bogenhafen_03 = table.clone(frame_bogenhafen_03)
+local frame_bogenhafen_04 = {
+	icon = "unit_frame_02"
+}
+Cosmetics.frame_bogenhafen_04 = table.clone(frame_bogenhafen_04)
 
 for name, cosmetic_data in pairs(Cosmetics) do
 	cosmetic_data.name = name

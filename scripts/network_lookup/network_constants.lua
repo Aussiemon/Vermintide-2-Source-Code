@@ -19,6 +19,7 @@ NetworkConstants.damage_profile = Network.type_info("damage_profile")
 
 fassert(#NetworkLookup.damage_profiles <= NetworkConstants.damage_profile.max, "Too many damage profiles, global config max value needs to be upped")
 
+NetworkConstants.max_overcharge = Network.type_info("max_overcharge")
 NetworkConstants.statistics_path_max_size = Network.type_info("statistics_path").max_size
 NetworkConstants.anim_event = Network.type_info("anim_event")
 
@@ -139,5 +140,7 @@ local num_bitmasks_bits = enemy_package_loader_bitmask_array.max_size * uint_32.
 local num_breeds = #NetworkLookup.breeds
 
 fassert(num_breeds <= num_bitmasks_bits, "Need to update enemy_package_loader_bitmask_array so that it enough 32-bit elements to contain number of breeds (%i).", num_breeds)
+
+NetworkConstants.max_breed_freezer_units_per_rpc = Network.type_info("packed_breed_go_ids").max_size
 
 return

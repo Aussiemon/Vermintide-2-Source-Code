@@ -1,4 +1,12 @@
 print("boot.lua start, os clock:", os.clock())
+
+local io_input = io.input
+local io_read = io.read
+local io_open = io.open
+local io_close = io.close
+local os_execute = os.execute
+local os_remove = os.remove
+
 dofile("scripts/boot_init")
 
 local BUILD = BUILD
@@ -37,6 +45,16 @@ local function foundation_require(path, ...)
 end
 
 require("scripts/settings/dlc_settings")
+
+for dlc_name, dlc in pairs(DLCSettings) do
+	local data = dlc.script_data
+
+	if data then
+		for key, value in pairs(data) do
+			script_data[key] = value
+		end
+	end
+end
 
 Boot = Boot or {}
 Boot.flow_return_table = Script.new_map(32)
@@ -86,6 +104,7 @@ local function profile_end(t)
 end
 
 Boot.setup = function (self)
+	foundation_require("util", "crashify")
 	Script.set_index_offset(0)
 	print("Boot:setup() entered. time: ", 0, "os-clock: ", os.clock())
 
@@ -248,6 +267,9 @@ local function init_development_parameters()
 	end
 
 	print("*****************************************************************")
+
+	script_data.honduras_demo = script_data.settings.honduras_demo or script_data["honduras-demo"]
+	script_data.settings.use_beta_overlay = script_data.settings.use_beta_overlay or script_data.use_beta_overlay
 end
 
 Boot.booting_update = function (self, dt)
@@ -329,6 +351,24 @@ Boot.booting_update = function (self, dt)
 			Boot.startup_state = "ready"
 		end
 	elseif Boot.startup_state == "ready" then
+		Crashify.print_property("project", "Vermintide 2")
+		Crashify.print_property("build", BUILD)
+		Crashify.print_property("platform", PLATFORM)
+		Crashify.print_property("title_id", GameSettingsDevelopment.backend_settings.title_id)
+		Crashify.print_property("engine_revision", script_data.build_identifier)
+		Crashify.print_property("content_revision", script_data.settings.content_revision)
+		Crashify.print_property("rendering_backend", Renderer.render_device_string())
+
+		if PLATFORM == "win32" then
+			if rawget(_G, "Steam") then
+				Crashify.print_property("user_id", Steam.user_id())
+			end
+
+			Crashify.print_property("machine_id", Application.machine_id())
+		elseif PLATFORM == "xb1" then
+			Crashify.print_property("console_type", XboxOne.console_type())
+		end
+
 		local frame_table_start = os.clock()
 
 		FrameTable.init()
@@ -344,7 +384,7 @@ Boot.booting_update = function (self, dt)
 		Game:setup()
 
 		local start_state, params = Game:select_starting_state()
-		params.notify_mod_manager = true
+		params.notify_mod_manager = PLATFORM == "win32"
 		local project_setup_end = os.clock()
 		local state_machine_start = os.clock()
 
@@ -370,7 +410,7 @@ Boot.booting_render = function (self)
 end
 
 Boot._require_foundation_scripts = function (self)
-	base_require("util", "verify_plugins", "clipboard", "error", "patches", "class", "callback", "rectangle", "state_machine", "visual_state_machine", "misc_util", "stack", "grow_queue", "table", "math", "vector3", "quaternion", "script_world", "script_viewport", "script_camera", "script_unit", "frame_table", "path")
+	base_require("util", "verify_plugins", "clipboard", "error", "patches", "class", "callback", "rectangle", "state_machine", "visual_state_machine", "misc_util", "stack", "circular_queue", "grow_queue", "table", "math", "vector3", "quaternion", "script_world", "script_viewport", "script_camera", "script_unit", "frame_table", "path")
 	base_require("debug", "table_trap")
 	base_require("managers", "world/world_manager", "player/player", "free_flight/free_flight_manager", "state/state_machine_manager", "time/time_manager", "token/token_manager")
 	base_require("managers", "localization/localization_manager", "event/event_manager")
@@ -460,8 +500,6 @@ end
 ReplayBoot = ReplayBoot or {}
 
 ReplayBoot.init = function (self)
-	Application.set_time_step_policy("throttle", 60, "no_smoothing", "debt_payback", 0)
-
 	self._packages = {}
 
 	for _, name in ipairs(ExtendedReplay.packages_to_load()) do
@@ -474,8 +512,9 @@ ReplayBoot.init = function (self)
 		table.insert(self._packages, package)
 	end
 
-	base_require("util", "verify_plugins", "clipboard", "error", "patches", "class", "callback", "rectangle", "misc_util", "stack", "grow_queue", "table", "math", "vector3", "quaternion", "frame_table", "path", "script_extended_replay")
+	base_require("util", "verify_plugins", "clipboard", "error", "framerate", "patches", "class", "callback", "rectangle", "misc_util", "stack", "circular_queue", "grow_queue", "table", "math", "vector3", "quaternion", "frame_table", "path", "script_extended_replay")
 	base_require("managers", "managers", "replay/replay_manager")
+	Framerate.set_replay()
 
 	self._world = Application.new_world("replay")
 
@@ -582,6 +621,12 @@ Boot.game_update = function (self, real_world_dt)
 		Managers.twitch:update(dt)
 	elseif PLATFORM == "xb1" then
 		Managers.rest_transport:update(true)
+
+		if GameSettingsDevelopment.twitch_enabled then
+			Managers.twitch:update(dt)
+		end
+	elseif PLATFORM == "ps4" then
+		Managers.rest_transport:update(true)
 	end
 
 	Managers.news_ticker:update(dt)
@@ -613,6 +658,10 @@ Boot.game_update = function (self, real_world_dt)
 		Managers.popup:update(dt)
 	end
 
+	if Managers.player then
+		Managers.player:update(dt)
+	end
+
 	if Managers.beta_overlay then
 		Managers.beta_overlay:update(dt)
 	end
@@ -621,10 +670,10 @@ Boot.game_update = function (self, real_world_dt)
 
 	if PLATFORM == "xb1" then
 		Managers.xbox_events:update(dt)
-	end
 
-	if (BUILD == "dev" or BUILD == "debug") and SynergyMouse.connected() then
-		print("[Boot] SynergyMouse enabled")
+		if Managers.xbox_stats ~= nil then
+			Managers.xbox_stats:update()
+		end
 	end
 
 	end_function_call_collection()
@@ -643,7 +692,12 @@ Boot.shutdown = function (self, dt)
 	for package_name, handle in pairs(Boot.startup_package_handles) do
 		if ResourcePackage.has_loaded(handle) then
 			ResourcePackage.unload(handle)
+			Application.release_resource_package(handle)
 		end
+	end
+
+	if GLOBAL_MUSIC_WORLD then
+		Application.release_world(MUSIC_WORLD)
 	end
 end
 
@@ -704,9 +758,7 @@ Game.setup = function (self)
 	end
 
 	profile(p, "set frame times")
-	Application.set_time_step_policy("external_step_range", 0, 100)
-	Application.set_time_step_policy("system_step_range", 0, 100)
-	Application.set_time_step_policy("no_smoothing", "debt_payback", 0)
+	Framerate.set_playing()
 	profile(p, "set frame times")
 
 	if Development.parameter("network_log_spew") then
@@ -1026,7 +1078,6 @@ Game._set_ps4_content_restrictions = function (self)
 end
 
 Game._handle_revision_info = function (self)
-	script_data.honduras_demo = script_data.settings.honduras_demo or script_data["honduras-demo"]
 	local content_revision = script_data.settings.content_revision
 	local no_revision = content_revision == nil or content_revision == ""
 	local trunk_path = Development.parameter("trunk_path")
@@ -1043,7 +1094,7 @@ Game._handle_revision_info = function (self)
 
 			svn_info_path = Path.tostring(svn_info_path, "\\")
 
-			os.remove(svn_info_path)
+			os_remove(svn_info_path)
 
 			local script_path = Path.copy(path)
 
@@ -1055,7 +1106,7 @@ Game._handle_revision_info = function (self)
 
 			print(command)
 
-			local execute_result = os.execute(command)
+			local execute_result = os_execute(command)
 
 			if execute_result ~= 0 then
 				print("[Boot] Could not execute command, result ", tostring(execute_result))
@@ -1066,13 +1117,13 @@ Game._handle_revision_info = function (self)
 			while os.clock() - t0 <= 1 do
 			end
 
-			local svn_info_file = io.open(svn_info_path, "r")
+			local svn_info_file = io_open(svn_info_path, "r")
 
 			if svn_info_file then
-				io.input(svn_info_file)
+				io_input(svn_info_file)
 
 				while true do
-					local svn_info_line = io.read()
+					local svn_info_line = io_read()
 
 					if svn_info_line == nil then
 						break
@@ -1088,7 +1139,7 @@ Game._handle_revision_info = function (self)
 					end
 				end
 
-				io.close(svn_info_file)
+				io_close(svn_info_file)
 			else
 				print("[Boot] Could not open ", svn_info_path)
 			end
@@ -1120,7 +1171,7 @@ end
 
 Game.require_game_scripts = function (self)
 	foundation_require("util", "local_require")
-	game_require("utils", "patches", "colors", "random_table", "global_utils", "function_call_stats", "util", "loaded_dice", "script_application", "benchmark/benchmark_handler")
+	game_require("utils", "patches", "colors", "framerate", "random_table", "global_utils", "function_call_stats", "util", "loaded_dice", "script_application", "benchmark/benchmark_handler")
 	game_require("ui", "views/show_cursor_stack", "ui_fonts")
 	game_require("settings", "demo_settings", "game_settings_development", "controller_settings", "default_user_settings")
 	game_require("entity_system", "entity_system")
@@ -1130,7 +1181,9 @@ Game.require_game_scripts = function (self)
 	if PLATFORM == "win32" then
 		game_require("managers", "irc/irc_manager", "curl/curl_manager", "twitch/twitch_manager")
 	elseif PLATFORM == "xb1" then
-		game_require("managers", "events/xbox_event_manager", "rest_transport/rest_transport_manager")
+		game_require("managers", "events/xbox_event_manager", "rest_transport/rest_transport_manager", "twitch/mixer_manager")
+	elseif PLATFORM == "ps4" then
+		game_require("managers", "rest_transport/rest_transport_manager")
 	end
 
 	game_require("helpers", "effect_helper", "weapon_helper", "item_helper", "lorebook_helper", "ui_atlas_helper", "scoreboard_helper")
@@ -1298,6 +1351,8 @@ Game._init_managers = function (self)
 
 	if PLATFORM == "xb1" then
 		self:_init_backend_xbox()
+	elseif PLATFORM == "ps4" then
+		self:_init_backend_ps4()
 	else
 		self:_init_backend()
 	end
@@ -1318,7 +1373,15 @@ Game._init_managers = function (self)
 		Managers.unlock = UnlockManager:new()
 	elseif PLATFORM == "xb1" then
 		Managers.xbox_events = XboxEventManager:new()
-		Managers.rest_transport = RestTransportManager:new()
+		Managers.rest_transport_online = RestTransportManager:new()
+		Managers.rest_transport = Managers.rest_transport_online
+
+		if GameSettingsDevelopment.twitch_enabled then
+			Managers.twitch = MixerManager:new()
+		end
+	elseif PLATFORM == "ps4" then
+		Managers.rest_transport_online = RestTransportManager:new()
+		Managers.rest_transport = Managers.rest_transport_online
 	end
 
 	Managers.telemetry = CreateTelemetryManager()
@@ -1355,17 +1418,13 @@ Game._init_backend_xbox = function (self)
 	Managers.backend = BackendManagerPlayFab:new(backend, mirror, "DataServerQueue")
 end
 
+Game._init_backend_ps4 = function (self)
+	local backend = "ScriptBackendPlayFabPS4"
+	local mirror = "PlayFabMirror"
+	Managers.backend = BackendManagerPlayFab:new(backend, mirror, "DataServerQueue")
+end
+
 Game._load_win32_user_settings = function (self)
-	local max_fps = Application.user_setting("max_fps")
-
-	if max_fps then
-		if max_fps == 0 then
-			Application.set_time_step_policy("no_throttle")
-		else
-			Application.set_time_step_policy("throttle", max_fps)
-		end
-	end
-
 	local max_frames = Application.win32_user_setting("max_stacking_frames")
 
 	if max_frames then

@@ -2799,14 +2799,36 @@ HitEffectsSkavenClanRat = {
 		}
 	},
 	elven_magic_death = {
-		inherits = "default",
-		explosion_push = true,
 		flow_event = "elven_magic",
+		disable_blood = true,
+		explosion_push = true,
+		armour_type = "cloth",
 		extra_conditions = {
 			death = true,
 			damage_type = {
 				"elven_magic",
 				"elven_magic_glance"
+			}
+		},
+		animations = {
+			"ragdoll"
+		},
+		push = {
+			distal_force = 200,
+			vertical_force = 70,
+			lateral_force = 0
+		}
+	},
+	military_finish_death = {
+		flow_event = "military_finish",
+		disable_blood = true,
+		explosion_push = true,
+		armour_type = "cloth",
+		extra_conditions = {
+			death = true,
+			damage_type = {
+				"military_finish",
+				"military_finish_glance"
 			}
 		},
 		animations = {

@@ -5,7 +5,7 @@ require("scripts/settings/ui_frame_settings")
 require("scripts/utils/utf8_utils")
 require("scripts/ui/ui_passes_tooltips")
 
-local function get_line_color_override(line_index, line_length, line_global_start_index, ui_style)
+local function get_line_color_override(line_index, line_length, line_global_start_index, global_text_length, ui_style)
 	local color_override = ui_style.color_override
 	local internal_color_overrides = ui_style.internal_color_overrides
 
@@ -26,36 +26,47 @@ local function get_line_color_override(line_index, line_length, line_global_star
 		local num_updates = math.max(num_color_overrides, #line_color_override)
 
 		for k = 1, num_updates, 1 do
+			local clear_line_override = true
 			local override = color_override[k]
 
 			if override then
+				local line_break_adjustment = line_index - 1
 				local color = override.color
-				local start_index = override.start_index
-				local end_index = override.end_index
-				local vector_color = Color(color[1], color[2], color[3], color[4])
+				local start_index = override.start_index + line_break_adjustment
+				local end_index = override.end_index + line_break_adjustment
 
-				if line_global_start_index < start_index and end_index <= line_global_start_index + line_length then
-					if not line_color_override[k] then
-						line_color_override[k] = {}
+				if start_index <= line_global_start_index + line_length then
+					local line_start_index, line_end_index = nil
+					local color_whole_line = start_index <= line_global_start_index and end_index >= line_global_start_index + line_length
+
+					if color_whole_line then
+						line_start_index = 1
+						line_end_index = line_length
+					else
+						line_start_index = math.max(1, start_index - line_global_start_index)
+
+						if end_index <= line_global_start_index + line_length then
+							line_end_index = end_index - line_global_start_index
+						else
+							line_end_index = line_length
+						end
 					end
 
-					local line_color_values = line_color_override[k]
-					line_color_values.color = vector_color
-					line_color_values.start_index = start_index - line_global_start_index
-					line_color_values.end_index = math.min(line_length, end_index - line_global_start_index)
-				elseif end_index <= line_global_start_index - line_length and start_index >= line_global_start_index - line_length then
-					if not line_color_override[k] then
-						line_color_override[k] = {}
-					end
+					if line_start_index and line_end_index then
+						if not line_color_override[k] then
+							line_color_override[k] = {}
+						end
 
-					local line_color_values = line_color_override[k]
-					line_color_values.color = vector_color
-					line_color_values.start_index = 1
-					line_color_values.end_index = (line_global_start_index + line_length) - end_index
-				else
-					line_color_override[k] = nil
+						local line_color_values = line_color_override[k]
+						line_color_values.color = Color(color[1], color[2], color[3], color[4])
+						line_color_values.start_index = line_start_index
+						line_color_values.end_index = line_end_index
+						clear_line_override = false
+					end
 				end
-			else
+			end
+
+			if clear_line_override then
 				line_color_override[k] = nil
 			end
 		end
@@ -333,14 +344,14 @@ UIPasses.list_pass = {
 				local draw = pass_element_content.visible ~= false
 				local content_check_function = sub_pass_definition.content_check_function
 
-				if content_check_function and not content_check_function(pass_element_content, pass_element_style) then
+				if content_check_function and not content_check_function(pass_element_content, pass_element_style, i) then
 					draw = false
 				end
 
 				local content_change_function = sub_pass_definition.content_change_function
 
 				if draw and content_change_function then
-					content_change_function(pass_element_content, pass_element_style)
+					content_change_function(pass_element_content, pass_element_style, i)
 				end
 
 				if draw then
@@ -398,11 +409,11 @@ UIPasses.gradient_mask_texture = {
 
 		if pass_definition.retained_mode then
 			local retained_id = pass_definition.retained_mode and ((pass_data.retained_id and pass_data.retained_id) or true)
-			retained_id = UIRenderer.draw_gradient_mask_texture(ui_renderer, ui_content[pass_definition.texture_id], position, size, ui_style and ui_style.color, ui_style.gradient_threshold or 1, retained_id)
+			retained_id = UIRenderer.draw_gradient_mask_texture(ui_renderer, ui_content[pass_definition.texture_id], position, size, ui_style and ui_style.color, ui_style and ui_style.masked, ui_style.gradient_threshold or 1, retained_id)
 			pass_data.retained_id = (retained_id and retained_id) or pass_data.retained_id
 			pass_data.dirty = false
 		else
-			UIRenderer.draw_gradient_mask_texture(ui_renderer, ui_content[pass_definition.texture_id], position, size, ui_style and ui_style.color, ui_style.gradient_threshold or 1)
+			UIRenderer.draw_gradient_mask_texture(ui_renderer, ui_content[pass_definition.texture_id], position, size, ui_style and ui_style.color, ui_style and ui_style.masked, ui_style.gradient_threshold or 1)
 		end
 	end
 }
@@ -862,6 +873,7 @@ UIPasses.rotated_texture = {
 		local angle = ui_style.angle
 		local pivot = ui_style.pivot
 		local color = ui_style.color
+		local uvs = ui_style.uvs
 
 		if ui_style then
 			local texture_size = ui_style.texture_size
@@ -887,11 +899,11 @@ UIPasses.rotated_texture = {
 
 		if pass_definition.retained_mode then
 			local retained_id = pass_definition.retained_mode and ((pass_data.retained_id and pass_data.retained_id) or true)
-			retained_id = UIRenderer.draw_texture_rotated(ui_renderer, texture, size, position, angle, pivot, color, ui_style and ui_style.masked, retained_id)
+			retained_id = UIRenderer.draw_texture_rotated(ui_renderer, texture, size, position, angle, pivot, color, uvs, ui_style and ui_style.masked, retained_id)
 			pass_data.retained_id = (retained_id and retained_id) or pass_data.retained_id
 			pass_data.dirty = false
 		else
-			UIRenderer.draw_texture_rotated(ui_renderer, texture, size, position, angle, pivot, color, ui_style and ui_style.masked)
+			UIRenderer.draw_texture_rotated(ui_renderer, texture, size, position, angle, pivot, color, uvs, ui_style and ui_style.masked)
 		end
 	end
 }
@@ -972,6 +984,56 @@ UIPasses.rect = {
 			pass_data.dirty = false
 		else
 			UIRenderer.draw_rect(ui_renderer, position, size, ui_style.color)
+		end
+	end
+}
+UIPasses.triangle = {
+	init = function (pass_definition)
+		if pass_definition.retained_mode then
+			return {
+				dirty = true
+			}
+		end
+	end,
+	destroy = function (ui_renderer, pass_data, pass_definition)
+		assert(pass_definition.retained_mode, "why u destroy immediate pass?")
+
+		if pass_data.retained_id then
+			UIRenderer.destroy_bitmap(ui_renderer, pass_data.retained_id)
+
+			pass_data.retained_id = nil
+		end
+	end,
+	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
+		if ui_style then
+			local texture_size = ui_style.texture_size
+
+			if texture_size then
+				if ui_style.horizontal_alignment == "right" then
+					position[1] = (position[1] + size[1]) - texture_size[1]
+				elseif ui_style.horizontal_alignment == "center" then
+					position[1] = position[1] + (size[1] - texture_size[1]) / 2
+				end
+
+				local inv_scale = RESOLUTION_LOOKUP.inv_scale
+
+				if ui_style.vertical_alignment == "center" then
+					position[2] = position[2] + (size[2] - texture_size[2]) / 2
+				elseif ui_style.vertical_alignment == "top" then
+					position[2] = (position[2] + size[2]) - texture_size[2]
+				end
+
+				size = texture_size
+			end
+		end
+
+		if pass_definition.retained_mode then
+			local retained_id = pass_definition.retained_mode and ((pass_data.retained_id and pass_data.retained_id) or true)
+			retained_id = UIRenderer.draw_triangle(ui_renderer, position, size, ui_style, retained_id)
+			pass_data.retained_id = (retained_id and retained_id) or pass_data.retained_id
+			pass_data.dirty = false
+		else
+			UIRenderer.draw_triangle(ui_renderer, position, size, ui_style)
 		end
 	end
 }
@@ -1209,6 +1271,28 @@ UIPasses.rect_rotated = {
 		return nil
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
+		if ui_style then
+			local texture_size = ui_style.texture_size
+
+			if texture_size then
+				if ui_style.horizontal_alignment == "right" then
+					position[1] = (position[1] + size[1]) - texture_size[1]
+				elseif ui_style.horizontal_alignment == "center" then
+					position[1] = position[1] + (size[1] - texture_size[1]) / 2
+				end
+
+				local inv_scale = RESOLUTION_LOOKUP.inv_scale
+
+				if ui_style.vertical_alignment == "center" then
+					position[2] = position[2] + (size[2] - texture_size[2]) / 2
+				elseif ui_style.vertical_alignment == "top" then
+					position[2] = (position[2] + size[2]) - texture_size[2]
+				end
+
+				size = texture_size
+			end
+		end
+
 		return UIRenderer.draw_rect_rotated(ui_renderer, size, position, ui_style.angle, ui_style.pivot, ui_style.color)
 	end
 }
@@ -1231,7 +1315,7 @@ UIPasses.video = {
 		return nil
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
-		local is_complete = UIRenderer.draw_video(ui_renderer, ui_content.material_name, position, size, ui_style.color)
+		local is_complete = UIRenderer.draw_video(ui_renderer, ui_content.material_name, position, size, ui_style.color, ui_content.video_player)
 		ui_content.video_completed = is_complete
 	end
 }
@@ -1240,7 +1324,7 @@ UIPasses.splash_video = {
 		return nil
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
-		local is_complete = UIRenderer.draw_splash_video(ui_renderer, ui_content.material_name, position, size, ui_style.color)
+		local is_complete = UIRenderer.draw_splash_video(ui_renderer, ui_content.material_name, position, size, ui_style.color, ui_content.video_player)
 		ui_content.video_completed = is_complete
 	end
 }
@@ -1616,6 +1700,8 @@ UIPasses.text = {
 			font_size = ui_style.font_size or font_size
 		end
 
+		local global_text_length = UTF8Utils.string_length(text)
+
 		if ui_style.word_wrap then
 			local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_name, font_size)
 			local texts = UIRenderer.word_wrap(ui_renderer, text, font_material, font_size, size[1])
@@ -1659,7 +1745,7 @@ UIPasses.text = {
 					local line_color_override = ui_style.line_color_override
 
 					if ui_style.color_override then
-						line_color_override = get_line_color_override(i, text_length, line_start_index, ui_style)
+						line_color_override = get_line_color_override(i, text_length, line_start_index, global_text_length, ui_style)
 					end
 
 					local retained_id = retained_ids and ((new_retained_ids and true) or retained_ids[i])
@@ -1689,7 +1775,7 @@ UIPasses.text = {
 					local line_color_override = ui_style.line_color_override
 
 					if ui_style.color_override then
-						line_color_override = get_line_color_override(i, text_length, line_start_index, ui_style)
+						line_color_override = get_line_color_override(i, text_length, line_start_index, global_text_length, ui_style)
 					end
 
 					local retained_id = retained_ids and ((new_retained_ids and true) or retained_ids[i])
@@ -1721,7 +1807,7 @@ UIPasses.text = {
 					local line_color_override = ui_style.line_color_override
 
 					if ui_style.color_override then
-						line_color_override = get_line_color_override(i, text_length, line_start_index, ui_style)
+						line_color_override = get_line_color_override(i, text_length, line_start_index, global_text_length, ui_style)
 					end
 
 					local retained_id = retained_ids and ((new_retained_ids and true) or retained_ids[i])
@@ -1738,12 +1824,12 @@ UIPasses.text = {
 
 			if ui_style.draw_text_rect then
 				local padding_x = 4
-				local padding_y = 2
+				local padding_y = 4
 				position[3] = position[3] - 1
-				position[2] = (position[2] + full_font_height + font_min) - padding_y
-				position[1] = position[1] - 2 - padding_x
+				position[2] = position[2] - padding_y * 2 - text_offset[2]
+				position[1] = position[1] - padding_x
 				size[1] = size[1] + padding_x * 2
-				size[2] = num_texts * full_font_height + padding_y * 2
+				size[2] = num_texts * -text_offset[2]
 
 				if ui_style.masked then
 					UIRenderer_draw_texture(ui_renderer, "rect_masked", position, size, ui_style.rect_color, ui_style.masked, ui_style and ui_style.saturated)
@@ -2169,11 +2255,11 @@ UIPasses.viewport = {
 		local resx = RESOLUTION_LOOKUP.res_w
 		local resy = RESOLUTION_LOOKUP.res_h
 		local viewport_size = Vector3.zero()
-		viewport_size.x = scaled_size.x / resx
-		viewport_size.y = scaled_size.y / resy
+		viewport_size.x = math.clamp(scaled_size.x / resx, 0, 1)
+		viewport_size.y = math.clamp(scaled_size.y / resy, 0, 1)
 		local viewport_position = Vector3.zero()
-		viewport_position.x = scaled_position.x / resx
-		viewport_position.y = 1 - scaled_position.y / resy - viewport_size.y
+		viewport_position.x = math.clamp(scaled_position.x / resx, 0, 1)
+		viewport_position.y = math.clamp(1 - scaled_position.y / resy - viewport_size.y, 0, 1)
 
 		if Viewport.get_data(pass_data.viewport, "initialize") then
 			Viewport.set_data(pass_data.viewport, "initialize", false)
@@ -2338,6 +2424,10 @@ UIPasses.gamepad_cursor = {
 		return nil
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
+		if not Managers.input:gamepad_cursor_active() then
+			return
+		end
+
 		if ui_content.ui_top_renderer then
 			ui_renderer = ui_content.ui_top_renderer
 		end
@@ -2906,6 +2996,10 @@ UIPasses.hero_power_tooltip = {
 			local data = end_pass.data
 			slot29 = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
 		end
+
+		position[1] = position_x
+		position[2] = position_y
+		position[3] = position_z
 	end
 }
 UIPasses.option_tooltip = {
@@ -3023,7 +3117,7 @@ UIPasses.option_tooltip = {
 UIPasses.item_tooltip = {
 	init = function (pass_definition, ui_content, ui_style, style_global)
 		local pass_data = {}
-		local pass_definitions = {
+		local pass_definitions = pass_definition.content_passes or {
 			"equipped_item_title",
 			"item_titles",
 			"skin_applied",
@@ -3042,7 +3136,14 @@ UIPasses.item_tooltip = {
 			"loot_chest_power_range",
 			"unwieldable",
 			"keywords",
-			"item_description"
+			"item_description",
+			"light_attack_stats",
+			"heavy_attack_stats",
+			"detailed_stats_light",
+			"detailed_stats_heavy",
+			"detailed_stats_push",
+			"detailed_stats_ranged_light",
+			"detailed_stats_ranged_heavy"
 		}
 		local passes = {}
 
@@ -3158,7 +3259,7 @@ UIPasses.item_tooltip = {
 			end
 		end
 
-		local scale = UIResolutionScale()
+		local scale = RESOLUTION_LOOKUP.scale
 		local scale_inversed = UIInverseResolutionScale()
 		local wanted_max_height = nil
 		local size = pass_data.size
@@ -3610,6 +3711,7 @@ UIPasses.rect_text = {
 		local num_texts = math.min(#texts - (text_start_index - 1), max_texts)
 		local full_font_height = (font_max + math.abs(font_min)) * RESOLUTION_LOOKUP.inv_scale
 		local text_offset = Vector3(0, (ui_style.grow_downward and full_font_height) or -full_font_height, 0)
+		local global_text_length = UTF8Utils.string_length(text)
 		rect_text_size[2] = full_font_height * num_texts
 		rect_text_size[1] = 0
 
@@ -3637,7 +3739,7 @@ UIPasses.rect_text = {
 				local line_color_override = nil
 
 				if ui_style.color_override then
-					line_color_override = get_line_color_override(i, text_length, line_start_index, ui_style)
+					line_color_override = get_line_color_override(i, text_length, line_start_index, global_text_length, ui_style)
 				end
 
 				UIRenderer.draw_text(ui_renderer, text, font_material, font_size, font_name, position + alignment_offset, ui_style.text_color, nil, line_color_override)
@@ -3686,8 +3788,10 @@ UIPasses.hotspot = {
 		return
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
-		local gamepad_active = Managers.input:is_device_active("gamepad")
-		local is_already_hovering = Managers.input:is_frame_hovering()
+		local input_manager = Managers.input
+		local gamepad_active = input_manager:is_device_active("gamepad")
+		local gamepad_cursor_active = input_manager:gamepad_cursor_active()
+		local is_already_hovering = input_manager:is_frame_hovering()
 		local was_hover = ui_content.is_hover
 		local is_hover = nil
 		local cursor_name = "cursor"
@@ -3705,7 +3809,9 @@ UIPasses.hotspot = {
 		local pixel_size = size
 
 		if gamepad_active then
-			if is_already_hovering and not ui_content.allow_multi_hover then
+			if not gamepad_cursor_active then
+				is_hover = false
+			elseif is_already_hovering and not ui_content.allow_multi_hover then
 				is_hover = false
 			else
 				local scale = RESOLUTION_LOOKUP.scale
@@ -3741,7 +3847,7 @@ UIPasses.hotspot = {
 		end
 
 		if gamepad_active and is_hover and not ui_content.allow_multi_hover then
-			Managers.input:set_hovering(is_hover)
+			input_manager:set_hovering(is_hover)
 		end
 
 		if script_data.ui_debug_hover then
@@ -4067,7 +4173,7 @@ UIPasses.held = {
 UIPasses.item_presentation = {
 	init = function (pass_definition, ui_content, ui_style, style_global)
 		local pass_data = {}
-		local pass_definitions = {
+		local pass_definitions = pass_definition.content_passes or {
 			"item_titles",
 			"deed_mission",
 			"deed_difficulty",

@@ -247,12 +247,6 @@ BTConditions.can_see_player = function (blackboard)
 	return unit_alive(blackboard.target_unit)
 end
 
-BTConditions.can_see_player_and_mounted = function (blackboard)
-	local mount_unit = blackboard.mounted_data.mount_unit
-
-	return unit_alive(blackboard.target_unit) and not blackboard.knocked_off_mount and unit_alive(mount_unit)
-end
-
 BTConditions.no_target = function (blackboard)
 	return not unit_alive(blackboard.target_unit)
 end
@@ -326,7 +320,11 @@ BTConditions.approach_target = function (blackboard)
 end
 
 BTConditions.comitted_to_target = function (blackboard)
-	return blackboard.target_unit or blackboard.comitted_to_target
+	local wwise_world = Managers.world:wwise_world(blackboard.world)
+	local t = Managers.time:time("game")
+	local pounce_timer_is_finished = blackboard.initial_pounce_timer < t
+
+	return (blackboard.target_unit or blackboard.comitted_to_target) and pounce_timer_is_finished
 end
 
 BTConditions.in_sprint_dist = function (blackboard)
@@ -476,7 +474,7 @@ BTConditions.should_defensive_idle = function (blackboard)
 end
 
 BTConditions.should_be_defensive = function (blackboard)
-	return blackboard.defensive_mode_duration
+	return blackboard.defensive_mode_duration and unit_alive(blackboard.target_unit)
 end
 
 BTConditions.boss_phase_two = function (blackboard)
@@ -493,6 +491,12 @@ end
 
 BTConditions.switching_weapons = function (blackboard)
 	return blackboard.switching_weapons and not blackboard.defensive_mode_duration
+end
+
+BTConditions.is_mounted = function (blackboard)
+	local mount_unit = blackboard.mounted_data.mount_unit
+
+	return not blackboard.knocked_off_mount and AiUtils.unit_alive(mount_unit)
 end
 
 BTConditions.knocked_off_mount = function (blackboard)
@@ -525,6 +529,14 @@ end
 
 BTConditions.grey_seer_call_stormfiend = function (blackboard)
 	return blackboard.call_stormfiend
+end
+
+BTConditions.grey_seer_waiting_for_pickup = function (blackboard)
+	return blackboard.waiting_for_pickup
+end
+
+BTConditions.explosive_loot_rat_combat = function (blackboard)
+	return Managers.state.game_mode:has_mutator("explosive_loot_rats") and unit_alive(blackboard.target_unit)
 end
 
 return

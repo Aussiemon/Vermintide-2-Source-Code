@@ -30,7 +30,7 @@ InputService.unmap_device = function (self, input_device_type, input_device)
 	local index = table.find(input_device_type_list, input_device)
 
 	if not index then
-		Application.error("[InputService] No mapped input called %s for input service %s", input_device.name(), self.name)
+		Application.warning("[InputService] No mapped input called %s for input service %s", input_device.name(), self.name)
 
 		return
 	end

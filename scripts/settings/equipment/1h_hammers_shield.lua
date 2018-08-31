@@ -379,6 +379,7 @@ weapon_template.actions = {
 			aim_assist_ramp_decay_delay = 0.2,
 			anim_end_event = "attack_finished",
 			damage_profile_aoe = "shield_slam_aoe",
+			damage_profile_default_target = "shield_slam_default_target",
 			dedicated_target_range = 3,
 			uninterruptible = true,
 			anim_event = "attack_swing_heavy",
@@ -436,7 +437,7 @@ weapon_template.actions = {
 			width_mod = 25,
 			headshot_multiplier = 2,
 			additional_critical_strike_chance = 0,
-			use_target = false,
+			use_precision_sweep = false,
 			hit_effect = "melee_hit_hammers_1h",
 			damage_profile = "medium_blunt_tank_1h",
 			damage_window_end = 0.39,
@@ -454,9 +455,15 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 1,
-					end_time = 0.2,
-					buff_name = "planted_charging_decrease_movement"
+					external_multiplier = 1.5,
+					end_time = 0.3,
+					buff_name = "planted_fast_decrease_movement"
+				},
+				{
+					start_time = 0.3,
+					external_multiplier = 0.75,
+					end_time = 0.5,
+					buff_name = "planted_fast_decrease_movement"
 				}
 			},
 			allowed_chain_actions = {
@@ -500,7 +507,7 @@ weapon_template.actions = {
 			width_mod = 25,
 			headshot_multiplier = 2,
 			additional_critical_strike_chance = 0,
-			use_target = false,
+			use_precision_sweep = false,
 			hit_effect = "melee_hit_hammers_1h",
 			damage_profile = "medium_blunt_tank_1h",
 			damage_window_end = 0.26,
@@ -563,7 +570,7 @@ weapon_template.actions = {
 			no_damage_impact_sound_event = "blunt_hit_armour",
 			additional_critical_strike_chance = 0,
 			width_mod = 25,
-			use_target = false,
+			use_precision_sweep = false,
 			damage_profile = "light_blunt_tank",
 			hit_effect = "melee_hit_hammers_2h",
 			damage_window_end = 0.52,
@@ -622,7 +629,7 @@ weapon_template.actions = {
 			no_damage_impact_sound_event = "blunt_hit_armour",
 			additional_critical_strike_chance = 0,
 			width_mod = 25,
-			use_target = false,
+			use_precision_sweep = false,
 			damage_profile = "light_blunt_tank_diag",
 			hit_effect = "melee_hit_hammers_2h",
 			damage_window_end = 0.52,
@@ -683,7 +690,7 @@ weapon_template.actions = {
 			no_damage_impact_sound_event = "blunt_hit_armour",
 			additional_critical_strike_chance = 0,
 			width_mod = 25,
-			use_target = false,
+			use_precision_sweep = false,
 			damage_profile = "light_blunt_tank_upper",
 			hit_effect = "melee_hit_hammers_2h",
 			damage_window_end = 0.34,
@@ -738,31 +745,31 @@ weapon_template.actions = {
 		},
 		light_attack_bopp = {
 			damage_window_start = 0.4,
-			range_mod = 1,
+			range_mod = 1.1,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "blunt_hit_armour",
-			use_target = false,
 			additional_critical_strike_chance = 0,
-			damage_profile = "light_blunt_tank",
+			use_precision_sweep = false,
+			damage_profile = "medium_blunt_smiter",
 			hit_effect = "melee_hit_hammers_2h",
 			damage_window_end = 0.48,
 			impact_sound_event = "blunt_hit",
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 2.5,
-			anim_event = "attack_swing_left_diagonal",
+			anim_event = "attack_swing_down",
 			hit_stop_anim = "attack_hit",
 			total_time = 1.5,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.25,
+			anim_time_scale = time_mod * 1.35,
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.5,
+					external_multiplier = 1.25,
 					end_time = 0.3,
-					buff_name = "planted_decrease_movement"
+					buff_name = "planted_fast_decrease_movement"
 				},
 				{
 					start_time = 0.3,

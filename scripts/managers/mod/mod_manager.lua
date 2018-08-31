@@ -270,25 +270,11 @@ ModManager._load_mod = function (self, index)
 
 		self:print("spew", "<mod info> \n%s\n<\\mod info>", info)
 
-		local success, data_file = pcall(loadstring, info)
+		local data_file, info_error = loadstring(info)
 
-		if not success then
-			local err_text = data_file
-
+		if not data_file then
 			self:print("error", "Syntax error in .mod file. Mod %q skipped.", mod_name(mod))
-			self:print("info", err_text)
-
-			mod.enabled = false
-
-			return self:_load_mod(index + 1)
-		elseif not data_file then
-			self:print("error", "Missing return value from .mod file. Mod %q skipped.", mod_name(mod))
-
-			mod.enabled = false
-
-			return self:_load_mod(index + 1)
-		elseif type(data_file) ~= "function" then
-			self:print("error", "Return value from .mod file is not a function. Mod %q skipped.", mod_name(mod))
+			self:print("info", info_error)
 
 			mod.enabled = false
 
@@ -470,13 +456,13 @@ ModManager._reload_mods = function (self)
 	self._reload_requested = false
 end
 
-ModManager.on_game_state_changed = function (self, status, state)
+ModManager.on_game_state_changed = function (self, status, state_name, state_object)
 	if self._state == "done" then
 		for i = 1, self._num_mods, 1 do
 			local mod = self._mods[i]
 
 			if mod and mod.enabled and not mod.callbacks_disabled then
-				self:_run_callback(mod, "on_game_state_changed", status, state)
+				self:_run_callback(mod, "on_game_state_changed", status, state_name, state_object)
 			end
 		end
 	else

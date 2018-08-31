@@ -243,13 +243,6 @@ local video_settings_definition = {
 		widget_type = "stepper"
 	},
 	{
-		setup = "cb_high_quality_fur_setup",
-		saved_value = "cb_high_quality_fur_saved_value",
-		callback = "cb_high_quality_fur",
-		tooltip_text = "tooltip_high_quality_fur",
-		widget_type = "stepper"
-	},
-	{
 		setup = "cb_auto_exposure_speed_setup",
 		saved_value = "cb_auto_exposure_speed_saved_value",
 		callback = "cb_auto_exposure_speed",
@@ -595,10 +588,17 @@ local gameplay_settings_definition = {
 		widget_type = "slider"
 	},
 	{
-		setup = "cb_tutorials_enabled_setup",
-		saved_value = "cb_tutorials_enabled_saved_value",
-		callback = "cb_tutorials_enabled",
-		tooltip_text = "tooltip_tutorials_enabled",
+		setup = "cb_enabled_gamepad_menu_layout_setup",
+		saved_value = "cb_enabled_gamepad_menu_layout_saved_value",
+		callback = "cb_enabled_gamepad_menu_layout",
+		tooltip_text = "tooltip_enabled_gamepad_menu_layout",
+		widget_type = "stepper"
+	},
+	{
+		setup = "cb_enabled_gamepad_hud_layout_setup",
+		saved_value = "cb_enabled_gamepad_hud_layout_saved_value",
+		callback = "cb_enabled_gamepad_hud_layout",
+		tooltip_text = "tooltip_enabled_gamepad_hud_layout",
 		widget_type = "stepper"
 	},
 	{
@@ -628,6 +628,21 @@ local gameplay_settings_definition = {
 		callback = "cb_chat_font_size",
 		tooltip_text = "tooltip_chat_font_size",
 		widget_type = "drop_down"
+	},
+	{
+		size_y = 30,
+		widget_type = "empty"
+	},
+	{
+		text = "settings_view_header_bots",
+		widget_type = "title"
+	},
+	{
+		setup = "cb_bot_spawn_priority_setup",
+		saved_value = "cb_bot_spawn_priority_saved_value",
+		callback = "cb_bot_spawn_priority",
+		tooltip_text = "tooltip_bot_spawn_priority",
+		widget_type = "sorted_list"
 	},
 	{
 		size_y = 30,
@@ -851,7 +866,9 @@ local keybind_settings_definition = {
 		keybind_description = "ping",
 		widget_type = "keybind",
 		actions = {
-			"ping"
+			"ping",
+			"ping_hold",
+			"ping_release"
 		}
 	},
 	{
@@ -978,6 +995,14 @@ local keybind_settings_definition = {
 		}
 	},
 	{
+		keybind_description = "hotkey_achievements",
+		keymappings_key = "IngameMenuKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"hotkey_achievements"
+		}
+	},
+	{
 		size_y = 30,
 		widget_type = "empty"
 	},
@@ -1091,7 +1116,7 @@ local gamepad_settings_definition = {
 		setup = "cb_gamepad_look_sensitivity_y_setup",
 		saved_value = "cb_gamepad_look_sensitivity_y_saved_value",
 		callback = "cb_gamepad_look_sensitivity_y",
-		tooltip_text = "tooltip_gamepad_look_sensitivity_xb1",
+		tooltip_text = "tooltip_gamepad_look_sensitivity",
 		widget_type = "slider"
 	},
 	{
@@ -1113,7 +1138,7 @@ local gamepad_settings_definition = {
 		setup = "cb_gamepad_zoom_sensitivity_y_setup",
 		saved_value = "cb_gamepad_zoom_sensitivity_y_saved_value",
 		callback = "cb_gamepad_zoom_sensitivity_y",
-		tooltip_text = "tooltip_gamepad_zoom_sensitivity_xb1",
+		tooltip_text = "tooltip_gamepad_zoom_sensitivity",
 		widget_type = "slider"
 	},
 	{

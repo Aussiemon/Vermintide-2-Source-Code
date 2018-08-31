@@ -2,7 +2,7 @@ require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTNinjaHighGroundAction = class(BTNinjaHighGroundAction, BTClimbAction)
 local position_lookup = POSITION_LOOKUP
-local alive = POSITION_LOOKUP
+local ALIVE = ALIVE
 
 BTNinjaHighGroundAction.init = function (self, ...)
 	BTNinjaHighGroundAction.super.init(self, ...)
@@ -13,7 +13,7 @@ BTNinjaHighGroundAction.name = "BTNinjaHighGroundAction"
 BTNinjaHighGroundAction.enter = function (self, unit, blackboard, t)
 	blackboard.high_ground_opportunity = nil
 
-	if alive[blackboard.target_unit] then
+	if ALIVE[blackboard.target_unit] then
 		local smart_data = blackboard.next_smart_object_data
 		local pos1 = smart_data.entrance_pos:unbox()
 		local pos2 = smart_data.exit_pos:unbox()
@@ -110,7 +110,7 @@ end
 BTNinjaHighGroundAction.try_jump = function (self, unit, blackboard, t, pos1, force_idle)
 	local target_unit = blackboard.target_unit
 
-	if not alive[target_unit] then
+	if not ALIVE[target_unit] then
 		return
 	end
 

@@ -152,10 +152,6 @@ ProfileSynchronizer.update = function (self)
 	end
 
 	self._all_synced = all_synced
-
-	if Development.parameter("network_draw_profile_synchronizer") then
-		self:_draw_state()
-	end
 end
 
 local inventory_map_to_network_array = nil

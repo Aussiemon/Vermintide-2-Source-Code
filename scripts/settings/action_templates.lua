@@ -7,6 +7,7 @@ ActionTemplates.wield = {
 		weapon_action_hand = "either",
 		kind = "wield",
 		keep_buffer = true,
+		action_priority = 2,
 		uninterruptible = true,
 		total_time = 0,
 		condition_func = function (action_user, input_extension)
@@ -538,6 +539,8 @@ ActionTemplates.instant_give_item = {
 }
 ActionTemplates.wield_left = table.clone(ActionTemplates.wield)
 ActionTemplates.wield_left.default.weapon_action_hand = "left"
+ActionTemplates.wield_left_delay = table.clone(ActionTemplates.wield)
+ActionTemplates.wield_left_delay.default.total_time = 0.5
 ActionTemplates.action_inspect_left = table.clone(ActionTemplates.action_inspect)
 ActionTemplates.action_inspect_left.default.weapon_action_hand = "left"
 ActionTemplates.action_inspect_left.action_inspect_hold.weapon_action_hand = "left"
@@ -617,6 +620,13 @@ ActionTemplates.action_career_we_3 = {
 		kind = "instant_wield",
 		total_time = 0,
 		condition_func = function (action_user, input_extension)
+			local inventory_extension = ScriptUnit.extension(action_user, "inventory_system")
+			local slot_data = inventory_extension:get_slot_data("slot_career_skill_weapon")
+
+			if not slot_data then
+				return false
+			end
+
 			local career_extension = ScriptUnit.extension(action_user, "career_system")
 			local activated_ability_data = career_extension:get_activated_ability_data()
 

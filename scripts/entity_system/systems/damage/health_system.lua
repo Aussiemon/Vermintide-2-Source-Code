@@ -47,6 +47,7 @@ HealthSystem.init = function (self, entity_system_creation_context, system_name)
 	network_event_delegate:register(self, unpack(RPCS))
 
 	self.unit_extensions = {}
+	self.frozen_unit_extensions = {}
 	self.player_unit_extensions = {}
 	self.updateable_unit_extensions = {}
 	self.active_damage_buffer_index = 1
@@ -77,8 +78,39 @@ HealthSystem.on_remove_extension = function (self, unit, extension_name)
 	ScriptUnit.remove_extension(unit, self.NAME)
 
 	self.unit_extensions[unit] = nil
+	self.frozen_unit_extensions[unit] = nil
 	self.player_unit_extensions[unit] = nil
 	self.updateable_unit_extensions[unit] = nil
+end
+
+HealthSystem.freeze = function (self, unit, extension_name)
+	fassert(self.frozen_unit_extensions[unit] == nil, "Tried to freeze an already frozen unit.")
+
+	local extension = self.unit_extensions[unit]
+
+	fassert(extension, "Unit to freeze didn't have unfrozen extension")
+
+	if extension.freeze then
+		extension:freeze()
+	end
+
+	self.unit_extensions[unit] = nil
+	self.frozen_unit_extensions[unit] = extension
+
+	fassert(extension.unit, "Should this extension have a unit member?")
+end
+
+HealthSystem.unfreeze = function (self, unit)
+	local extension = self.frozen_unit_extensions[unit]
+
+	fassert(extension, "Unit to unfreeze didn't have frozen extension")
+
+	self.frozen_unit_extensions[unit] = nil
+	self.unit_extensions[unit] = extension
+
+	if extension.unfreeze then
+		extension:unfreeze()
+	end
 end
 
 HealthSystem.hot_join_sync = function (self, sender)
@@ -137,7 +169,7 @@ HealthSystem.suicide = function (self, unit)
 
 	health_extension.state = "knocked_down"
 
-	DamageUtils.add_damage_network(unit, unit, 255, "torso", "cutting", Vector3(1, 0, 0), "suicide")
+	DamageUtils.add_damage_network(unit, unit, 255, "torso", "cutting", nil, Vector3(1, 0, 0), "suicide")
 end
 
 local debug_units = {}
@@ -283,7 +315,7 @@ HealthSystem.update_debug = function (self)
 	end
 end
 
-HealthSystem.rpc_add_damage = function (self, sender, victim_unit_go_id, victim_unit_is_level_unit, attacker_unit_go_id, attacker_is_level_unit, damage_amount, hit_zone_id, damage_type_id, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot)
+HealthSystem.rpc_add_damage = function (self, sender, victim_unit_go_id, victim_unit_is_level_unit, attacker_unit_go_id, attacker_is_level_unit, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot)
 	fassert(not self.is_server, "Tried sending rpc_add_damage to something other than client")
 
 	local victim_unit = nil
@@ -316,27 +348,29 @@ HealthSystem.rpc_add_damage = function (self, sender, victim_unit_go_id, victim_
 	local victim_health_extension = self.unit_extensions[victim_unit]
 
 	if damage_type ~= "sync_health" then
-		victim_health_extension:add_damage((attacker_unit_alive and attacker_unit) or victim_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source, hit_ragdoll_actor, nil, hit_react_type, is_critical_strike, added_dot)
+		victim_health_extension:add_damage((attacker_unit_alive and attacker_unit) or victim_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source, hit_ragdoll_actor, nil, hit_react_type, is_critical_strike, added_dot)
 	end
 
 	if victim_health_extension:is_alive() and is_dead then
 		local killing_blow = FrameTable.alloc_table()
+		local hit_position_table = hit_position and Vector3Aux.box(nil, hit_position)
 		local damage_direction_table = Vector3Aux.box(nil, damage_direction)
 		killing_blow[1] = damage_amount
 		killing_blow[2] = damage_type
 		killing_blow[3] = (attacker_unit_alive and attacker_unit) or victim_unit
 		killing_blow[4] = hit_zone_name
-		killing_blow[5] = damage_direction_table
-		killing_blow[6] = damage_source
-		killing_blow[7] = hit_ragdoll_actor
-		killing_blow[8] = "n/a"
+		killing_blow[5] = hit_position_table
+		killing_blow[6] = damage_direction_table
+		killing_blow[7] = damage_source
+		killing_blow[8] = hit_ragdoll_actor
+		killing_blow[9] = "n/a"
 		local death_system = Managers.state.entity:system("death_system")
 
 		death_system:kill_unit(victim_unit, killing_blow)
 	end
 end
 
-HealthSystem.rpc_add_damage_network = function (self, sender, victim_unit_go_id, victim_unit_is_level_unit, attacker_unit_go_id, attacker_is_level_unit, damage_amount, hit_zone_id, damage_type_id, damage_direction, damage_source_id, hit_react_type_id, is_critical_strike, added_dot)
+HealthSystem.rpc_add_damage_network = function (self, sender, victim_unit_go_id, victim_unit_is_level_unit, attacker_unit_go_id, attacker_is_level_unit, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_react_type_id, is_critical_strike, added_dot)
 	fassert(self.is_server, "Tried sending rpc_add_damage_network to something other than the server")
 
 	local victim_unit = nil
@@ -365,7 +399,7 @@ HealthSystem.rpc_add_damage_network = function (self, sender, victim_unit_go_id,
 	local damage_source = NetworkLookup.damage_sources[damage_source_id]
 	local hit_react_type = NetworkLookup.hit_react_types[hit_react_type_id]
 
-	DamageUtils.add_damage_network(victim_unit, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source, nil, nil, nil, hit_react_type, is_critical_strike, added_dot)
+	DamageUtils.add_damage_network(victim_unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source, nil, nil, nil, hit_react_type, is_critical_strike, added_dot)
 end
 
 HealthSystem.rpc_damage_taken_overcharge = function (self, sender, unit_go_id, damage)
@@ -513,7 +547,7 @@ HealthSystem.rpc_take_falling_damage = function (self, sender, go_id, fall_heigh
 		local hit_zone_name = "full"
 		local damage_type = "kinetic"
 
-		DamageUtils.add_damage_network(unit, unit, fall_damage, hit_zone_name, damage_type, damage_direction, "ground_impact")
+		DamageUtils.add_damage_network(unit, unit, fall_damage, hit_zone_name, damage_type, nil, damage_direction, "ground_impact")
 	end
 end
 

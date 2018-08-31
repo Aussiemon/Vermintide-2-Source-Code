@@ -152,6 +152,7 @@ local buff_tweak_data = {
 		multiplier = 0.5
 	},
 	kerillian_waywatcher_improved_regen = {
+		display_multiplier = 0.5,
 		bonus = 3
 	},
 	kerillian_waywatcher_regenerate_ammunition = {
@@ -225,16 +226,16 @@ TalentBuffTemplates.wood_elf = {
 	},
 	kerillian_shade_activated_ability = {
 		deactivation_effect = "fx/screenspace_shade_skill_02",
-		continuous_effect = "fx/screenspace_shade_skill_01",
 		buffs = {
 			{
-				dormant = true,
+				apply_buff_func = "apply_shade_activated_ability",
 				name = "kerillian_shade_activated_ability",
 				remove_buff_func = "end_shade_activated_ability",
-				refresh_durations = true,
+				continuous_effect = "fx/screenspace_shade_skill_01",
 				max_stacks = 1,
 				icon = "passive_bonus_kerillian_shade",
-				apply_buff_func = "apply_shade_activated_ability"
+				dormant = true,
+				refresh_durations = true
 			}
 		}
 	},
@@ -360,16 +361,16 @@ TalentBuffTemplates.wood_elf = {
 	},
 	kerillian_shade_activated_ability_duration = {
 		deactivation_effect = "fx/screenspace_shade_skill_02",
-		continuous_effect = "fx/screenspace_shade_skill_01",
 		buffs = {
 			{
-				dormant = true,
+				apply_buff_func = "apply_shade_activated_ability",
 				name = "kerillian_shade_activated_ability",
 				remove_buff_func = "end_shade_activated_ability",
-				refresh_durations = true,
+				continuous_effect = "fx/screenspace_shade_skill_01",
 				max_stacks = 1,
 				icon = "passive_bonus_kerillian_shade",
-				apply_buff_func = "apply_shade_activated_ability"
+				dormant = true,
+				refresh_durations = true
 			}
 		}
 	},
@@ -583,8 +584,11 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_maidenguard_activated_ability_invis_duration = {
 		buffs = {
 			{
-				remove_buff_func = "end_maidenguard_activated_ability",
-				name = "kerillian_maidenguard_activated_ability"
+				refresh_durations = true,
+				name = "kerillian_maidenguard_activated_ability",
+				icon = "kerillian_maidenguard_activated_ability_invis_duration",
+				max_stacks = 1,
+				remove_buff_func = "end_maidenguard_activated_ability"
 			}
 		}
 	},
@@ -954,12 +958,16 @@ Talents.wood_elf = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc",
+		description = "regrowth_desc_2",
 		name = "kerillian_shade_regrowth",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "kerillian_shade_regrowth",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.regrowth.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"regrowth"
@@ -967,12 +975,16 @@ Talents.wood_elf = {
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc",
+		description = "bloodlust_desc_2",
 		name = "kerillian_shade_bloodlust",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "kerillian_shade_bloodlust",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.bloodlust.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"bloodlust"
@@ -980,12 +992,16 @@ Talents.wood_elf = {
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc",
+		description = "conqueror_desc_2",
 		name = "kerillian_shade_conqueror",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "kerillian_shade_conqueror",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.conqueror.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"conqueror"
@@ -1033,7 +1049,7 @@ Talents.wood_elf = {
 		buff_data = {}
 	},
 	{
-		description = "kerillian_maidenguard_max_stamina_desc",
+		description = "kerillian_maidenguard_max_stamina_desc_2",
 		name = "kerillian_maidenguard_max_stamina",
 		num_ranks = 1,
 		icon = "kerillian_maidenguard_max_stamina",
@@ -1188,12 +1204,16 @@ Talents.wood_elf = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc",
+		description = "regrowth_desc_2",
 		name = "kerillian_maidenguard_regrowth",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "kerillian_maidenguard_regrowth",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.regrowth.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"regrowth"
@@ -1201,12 +1221,16 @@ Talents.wood_elf = {
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc",
+		description = "bloodlust_desc_2",
 		name = "kerillian_maidenguard_bloodlust",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "kerillian_maidenguard_bloodlust",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.bloodlust.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"bloodlust"
@@ -1214,12 +1238,16 @@ Talents.wood_elf = {
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc",
+		description = "conqueror_desc_2",
 		name = "kerillian_maidenguard_conqueror",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "kerillian_maidenguard_conqueror",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.conqueror.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"conqueror"
@@ -1328,7 +1356,7 @@ Talents.wood_elf = {
 		description = "kerillian_waywatcher_gain_ammo_on_boss_death_desc",
 		name = "kerillian_waywatcher_gain_ammo_on_boss_death",
 		num_ranks = 1,
-		buffer = "server",
+		buffer = "both",
 		icon = "kerillian_waywatcher_gain_ammo_on_boss_death",
 		description_values = {
 			{
@@ -1365,7 +1393,7 @@ Talents.wood_elf = {
 		buff_data = {}
 	},
 	{
-		description = "kerillian_waywatcher_headshot_multiplier_desc",
+		description = "kerillian_waywatcher_headshot_multiplier_desc_2",
 		name = "kerillian_waywatcher_headshot_multiplier",
 		num_ranks = 1,
 		buffer = "server",
@@ -1383,13 +1411,14 @@ Talents.wood_elf = {
 		buff_data = {}
 	},
 	{
-		description = "kerillian_waywatcher_improved_regen_desc",
+		description = "kerillian_waywatcher_improved_regen_desc_2",
 		name = "kerillian_waywatcher_improved_regen",
 		num_ranks = 1,
 		icon = "kerillian_waywatcher_improved_regen",
 		description_values = {
 			{
-				value = buff_tweak_data.kerillian_waywatcher_improved_regen.bonus
+				value_type = "percent",
+				value = buff_tweak_data.kerillian_waywatcher_improved_regen.display_multiplier
 			}
 		},
 		requirements = {},
@@ -1397,7 +1426,7 @@ Talents.wood_elf = {
 		buff_data = {}
 	},
 	{
-		description = "kerillian_waywatcher_regenerate_ammunition_desc",
+		description = "kerillian_waywatcher_regenerate_ammunition_desc_2",
 		name = "kerillian_waywatcher_regenerate_ammunition",
 		num_ranks = 1,
 		icon = "kerillian_waywatcher_regenerate_ammunition",
@@ -1411,7 +1440,7 @@ Talents.wood_elf = {
 		buff_data = {}
 	},
 	{
-		description = "kerillian_waywatcher_group_regen_desc",
+		description = "kerillian_waywatcher_group_regen_desc_2",
 		name = "kerillian_waywatcher_group_regen",
 		num_ranks = 1,
 		icon = "kerillian_waywatcher_group_regen",
@@ -1420,12 +1449,16 @@ Talents.wood_elf = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc",
+		description = "regrowth_desc_2",
 		name = "kerillian_waywatcher_regrowth",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "kerillian_waywatcher_regrowth",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.regrowth.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"regrowth"
@@ -1433,12 +1466,16 @@ Talents.wood_elf = {
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc",
+		description = "bloodlust_desc_2",
 		name = "kerillian_waywatcher_bloodlust",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "kerillian_waywatcher_bloodlust",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.bloodlust.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"bloodlust"
@@ -1446,12 +1483,16 @@ Talents.wood_elf = {
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc",
+		description = "conqueror_desc_2",
 		name = "kerillian_waywatcher_conqueror",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "kerillian_waywatcher_conqueror",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.conqueror.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"conqueror"

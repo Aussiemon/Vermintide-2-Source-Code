@@ -681,6 +681,7 @@ InteractionDefinitions.smartobject = {
 			local interactor_animation_name = Unit.get_data(interactable_unit, "interaction_data", "interactor_animation")
 			local interactor_animation_time_variable = Unit.get_data(interactable_unit, "interaction_data", "interactor_animation_time_variable")
 			local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
+			local career_extension = ScriptUnit.extension(interactor_unit, "career_system")
 
 			if interactor_animation_name then
 				local interactor_animation_time_variable = Unit.animation_find_variable(interactor_unit, interactor_animation_time_variable)
@@ -700,6 +701,7 @@ InteractionDefinitions.smartobject = {
 			end
 
 			CharacterStateHelper.stop_weapon_actions(inventory_extension, "interacting")
+			CharacterStateHelper.stop_career_abilities(career_extension, "interacting")
 			Unit.set_data(interactable_unit, "interaction_data", "being_used", true)
 		end,
 		update = function (world, interactor_unit, interactable_unit, data, config, dt, t)
@@ -807,9 +809,9 @@ InteractionDefinitions.pickup_object = {
 				local player = Managers.player:owner(interactor_unit)
 				local local_human = player.local_player
 				local local_bot_or_human = not player.remote
-				local interactor_is_local_player = player.local_player
 				local network_manager = Managers.state.network
 				local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
+				local career_extension = ScriptUnit.extension(interactor_unit, "career_system")
 				local pickup_extension = ScriptUnit.extension(interactable_unit, "pickup_system")
 				local pickup_settings = pickup_extension:get_pickup_settings()
 
@@ -869,6 +871,14 @@ InteractionDefinitions.pickup_object = {
 							end
 						end
 					end
+				end
+
+				local on_pick_up_func = pickup_settings.on_pick_up_func
+
+				if on_pick_up_func then
+					local is_server = data.is_server
+
+					on_pick_up_func(world, interactor_unit, is_server)
 				end
 
 				local local_pickup_sound = pickup_settings.local_pickup_sound
@@ -938,6 +948,7 @@ InteractionDefinitions.pickup_object = {
 
 						if pickup_settings.wield_on_pickup or wielded_slot_name == slot_name then
 							CharacterStateHelper.stop_weapon_actions(inventory_extension, "picked_up_object")
+							CharacterStateHelper.stop_career_abilities(career_extension, "picked_up_object")
 						end
 
 						local slot_data = inventory_extension:get_slot_data(slot_name)
@@ -1096,6 +1107,7 @@ InteractionDefinitions.pickup_object = {
 
 						if pickup_settings.wield_on_pickup then
 							CharacterStateHelper.stop_weapon_actions(inventory_extension, "picked_up_object")
+							CharacterStateHelper.stop_career_abilities(career_extension, "picked_up_object")
 							inventory_extension:wield(slot_name)
 						end
 					elseif pickup_settings.type == "ammo" then

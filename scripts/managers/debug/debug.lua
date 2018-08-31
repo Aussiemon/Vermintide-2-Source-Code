@@ -15,6 +15,7 @@ Debug.setup = function (world, world_name)
 
 	Debug.create_line_object("default")
 
+	Debug.world_texts = {}
 	Debug.world_sticky_texts = {}
 	Debug.world_sticky_index = 0
 	Debug.num_world_sticky_texts = 0
@@ -107,6 +108,7 @@ Debug.update = function (t, dt)
 		end
 	end
 
+	Debug.update_world_texts()
 	Debug.update_world_sticky_texts()
 
 	local w = Debug.world
@@ -205,6 +207,29 @@ local debug_colors = {
 	}
 }
 
+Debug.update_world_texts = function ()
+	if not Managers.state.debug_text then
+		return
+	end
+
+	local world_gui = Managers.state.debug_text._world_gui
+	local wt = Debug.world_texts
+	local num_texts = #wt
+	local tm = Matrix4x4.identity()
+
+	for i = 1, num_texts, 1 do
+		local item = wt[i]
+		local text = item[1]
+		local min, max, caret = Gui.text_extents(world_gui, text, font_mtrl, 2)
+		local textpos = Vector3(item[2], item[3], item[4])
+		textpos.x = textpos.x - (max.x - min.x) / 2
+
+		Gui.text_3d(world_gui, text, font_mtrl, 1.5, font, tm, textpos, 1, Color(item[5], item[6], item[7]))
+
+		wt[i] = nil
+	end
+end
+
 Debug.update_world_sticky_texts = function ()
 	if not Managers.state.debug_text then
 		return
@@ -220,6 +245,36 @@ Debug.update_world_sticky_texts = function ()
 		local text = item[1]
 
 		Gui.text_3d(world_gui, text, font_mtrl, 0.3, font, tm, Vector3(item[2], item[3], item[4]), 1, Color(item[5], item[6], item[7]))
+	end
+end
+
+Debug.world_text = function (pos, text, color_name)
+	if not Debug.active then
+		return
+	end
+
+	local wt = Debug.world_texts
+	local color = debug_colors[color_name] or debug_colors.white
+	local index = #wt + 1
+
+	if wt[index] then
+		wt[index][1] = text
+		wt[index][2] = pos[1]
+		wt[index][3] = pos[3]
+		wt[index][4] = pos[2]
+		wt[index][5] = color[1]
+		wt[index][6] = color[2]
+		wt[index][7] = color[3]
+	else
+		wt[index] = {
+			text,
+			pos[1],
+			pos[3],
+			pos[2],
+			color[1],
+			color[2],
+			color[3]
+		}
 	end
 end
 

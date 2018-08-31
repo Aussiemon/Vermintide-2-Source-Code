@@ -49,6 +49,14 @@ ActionBow.client_owner_start_action = function (self, new_action, t, chain_actio
 	self._is_critical_strike = is_critical_strike
 end
 
+ActionBow.reload = function (self, current_action)
+	if self.ammo_extension:can_reload() then
+		local play_reload_animation = current_action.play_reload_animation
+
+		self.ammo_extension:start_reload(play_reload_animation, current_action.override_reload_time)
+	end
+end
+
 ActionBow.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local current_action = self.current_action
 
@@ -76,6 +84,18 @@ ActionBow.client_owner_post_update = function (self, dt, t, world, can_damage)
 
 		self:fire(current_action, add_spread)
 
+		if self.ammo_extension and not self.extra_buff_shot then
+			local ammo_usage = self.current_action.ammo_usage
+
+			self.ammo_extension:use_ammo(ammo_usage)
+
+			if current_action.reload_event_delay_time then
+				self.time_to_reload = t + current_action.reload_event_delay_time
+			else
+				self:reload(current_action)
+			end
+		end
+
 		if procced and not self.extra_buff_shot then
 			self.state = "waiting_to_shoot"
 			self.time_to_shoot = t + 0.1
@@ -96,6 +116,12 @@ ActionBow.client_owner_post_update = function (self, dt, t, world, can_damage)
 			first_person_extension:play_hud_sound_event(fire_sound_event)
 		end
 	end
+
+	if self.time_to_reload and self.time_to_reload < t then
+		self:reload(current_action)
+
+		self.time_to_reload = nil
+	end
 end
 
 ActionBow.finish = function (self, reason, data)
@@ -106,6 +132,8 @@ ActionBow.finish = function (self, reason, data)
 		self:fire(current_action)
 
 		self.state = "shot"
+
+		self:reload(current_action)
 	end
 
 	if not data or data.new_action ~= "action_two" or data.new_sub_action ~= "default" then
@@ -145,18 +173,6 @@ ActionBow.fire = function (self, current_action, add_spread)
 	local lookup_data = current_action.lookup_data
 
 	ActionUtils.spawn_player_projectile(owner_unit, position, rotation, 0, angle, target_vector, speed, self.item_name, lookup_data.item_template_name, lookup_data.action_name, lookup_data.sub_action_name, self._is_critical_strike, self.power_level)
-
-	if self.ammo_extension and not self.extra_buff_shot then
-		local ammo_usage = self.current_action.ammo_usage
-
-		self.ammo_extension:use_ammo(ammo_usage)
-
-		if self.ammo_extension:can_reload() then
-			local play_reload_animation = false
-
-			self.ammo_extension:start_reload(play_reload_animation)
-		end
-	end
 
 	if current_action.alert_sound_range_fire then
 		Managers.state.entity:system("ai_system"):alert_enemies_within_range(owner_unit, POSITION_LOOKUP[owner_unit], current_action.alert_sound_range_fire)

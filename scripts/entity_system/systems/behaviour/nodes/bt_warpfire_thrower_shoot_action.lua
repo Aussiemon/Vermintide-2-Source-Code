@@ -350,7 +350,7 @@ BTWarpfireThrowerShootAction._close_range_attack = function (self, unit, attack_
 					local buff_extension = ScriptUnit.has_extension(hit_unit, "buff_system")
 
 					if buff_extension then
-						local buff_name = "warpfire_thrower_face_base"
+						local buff_name = action.buff_name
 
 						if is_ai_unit and not hit_ai_units[hit_unit] and AiUtils.unit_alive(hit_unit) then
 							local ai_push_data = action.ai_push_data

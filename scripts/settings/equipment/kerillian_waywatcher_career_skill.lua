@@ -1,16 +1,13 @@
 local NUM_PROJECTILES = 3
 local weapon_template = weapon_template or {}
 weapon_template.actions = {
-	action_career = {
+	action_career_hold = {
 		default = {
 			aim_time = 0,
 			default_zoom = "zoom_in_trueflight",
 			anim_end_event = "ability_finished",
 			kind = "true_flight_bow_aim",
-			hold_input = "action_career_hold",
 			weapon_action_hand = "left",
-			aim_sound_event = "Play_career_ability_waywatcher_start",
-			minimum_hold_time = 0.83,
 			uninterruptible = true,
 			anim_event = "waywatcher_trueflight_ability_charge",
 			anim_end_event_condition_func = function (unit, end_reason)
@@ -18,11 +15,6 @@ weapon_template.actions = {
 			end,
 			total_time = math.huge,
 			num_projectiles = NUM_PROJECTILES,
-			buffed_zoom_thresholds = {
-				"zoom_in_trueflight",
-				"zoom_in",
-				"increased_zoom_in"
-			},
 			zoom_thresholds = {
 				"zoom_in_trueflight",
 				"zoom_in"
@@ -36,6 +28,65 @@ weapon_template.actions = {
 					start_time = 0,
 					action = "action_two",
 					input = "action_two"
+				},
+				{
+					sub_action = "default",
+					start_time = 0,
+					action = "action_two",
+					input = "weapon_reload"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.65,
+					action = "action_career_release",
+					input = "action_career_release"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.65,
+					action = "action_career_release",
+					input = "action_career_not_hold"
+				},
+				{
+					sub_action = "hold",
+					start_time = 0.83,
+					action = "action_career_hold",
+					auto_chain = true
+				}
+			}
+		},
+		hold = {
+			aim_time = 0,
+			default_zoom = "zoom_in_trueflight",
+			anim_end_event = "ability_finished",
+			kind = "true_flight_bow_aim",
+			weapon_action_hand = "left",
+			uninterruptible = true,
+			anim_event = "waywatcher_trueflight_ability_hold",
+			anim_end_event_condition_func = function (unit, end_reason)
+				return end_reason ~= "new_interupting_action"
+			end,
+			total_time = math.huge,
+			num_projectiles = NUM_PROJECTILES,
+			zoom_thresholds = {
+				"zoom_in_trueflight",
+				"zoom_in"
+			},
+			zoom_condition_function = function ()
+				return true
+			end,
+			allowed_chain_actions = {
+				{
+					sub_action = "default",
+					start_time = 0,
+					action = "action_two",
+					input = "action_two"
+				},
+				{
+					sub_action = "default",
+					start_time = 0,
+					action = "action_two",
+					input = "weapon_reload"
 				},
 				{
 					sub_action = "default",
@@ -45,88 +96,16 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.83,
-					action = "action_career_hold",
-					input = "action_career_hold",
-					end_time = math.huge
-				}
-			}
-		}
-	},
-	action_career_hold = {
-		default = {
-			default_zoom = "zoom_in_trueflight",
-			anim_end_event = "ability_finished",
-			kind = "true_flight_bow_aim",
-			hold_input = "action_career_hold",
-			aim_time = 0,
-			uninterruptible = true,
-			anim_event = "waywatcher_trueflight_ability_hold",
-			weapon_action_hand = "left",
-			minimum_hold_time = 0,
-			anim_end_event_condition_func = function (unit, end_reason)
-				return end_reason ~= "new_interupting_action"
-			end,
-			total_time = math.huge,
-			num_projectiles = NUM_PROJECTILES,
-			buffed_zoom_thresholds = {
-				"zoom_in_trueflight",
-				"zoom_in",
-				"increased_zoom_in"
-			},
-			zoom_thresholds = {
-				"zoom_in_trueflight",
-				"zoom_in"
-			},
-			zoom_condition_function = function ()
-				return true
-			end,
-			allowed_chain_actions = {
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_two",
-					input = "action_two"
-				},
-				{
-					sub_action = "default",
 					start_time = 0,
 					action = "action_career_release",
-					input = "action_career_release",
-					end_time = math.huge
+					input = "action_career_not_hold"
 				}
 			}
 		}
 	},
 	action_career_release = {
-		hold_charge = {
-			aim_time = 0,
-			anim_end_event = "ability_finished",
-			weapon_action_hand = "left",
-			kind = "chain_action_passthrough",
-			uninterruptible = true,
-			anim_event = "waywatcher_trueflight_ability_charge",
-			anim_end_event_condition_func = function (unit, end_reason)
-				return end_reason ~= "new_interupting_action"
-			end,
-			total_time = math.huge,
-			allowed_chain_actions = {
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_two",
-					input = "action_two"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.83,
-					action = "action_career_release",
-					auto_chain = true
-				}
-			}
-		},
 		default = {
-			speed = 6000,
+			speed = 9000,
 			ammo_usage = 0,
 			fire_sound_event = "player_combat_weapon_bow_fire_light_homing",
 			sphere_sweep_length = 50,
@@ -181,10 +160,11 @@ weapon_template.actions = {
 	},
 	action_two = {
 		default = {
+			kind = "career_cancel",
 			weapon_action_hand = "left",
 			anim_end_event = "ability_finished",
-			kind = "career_cancel",
-			total_time = 0,
+			anim_event = "waywatcher_trueflight_ability_cancel",
+			total_time = 0.35,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action"
 			end,

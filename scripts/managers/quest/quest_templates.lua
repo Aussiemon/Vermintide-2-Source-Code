@@ -7,8 +7,8 @@ local daily_complete_quickplay_missions_mappings = {
 	}
 }
 
-for i = 1, #MainGameLevels, 1 do
-	local level_key = MainGameLevels[i]
+for i = 1, #UnlockableLevels, 1 do
+	local level_key = UnlockableLevels[i]
 	local complete_quickplay_missions_mapping = daily_complete_quickplay_missions_mappings[1].played_levels_quickplay
 	complete_quickplay_missions_mapping[level_key] = true
 end
@@ -174,8 +174,8 @@ local daily_complete_levels_hero_wood_elf_mappings = {
 	}
 }
 
-for i = 1, #MainGameLevels, 1 do
-	local level_key = MainGameLevels[i]
+for i = 1, #UnlockableLevels, 1 do
+	local level_key = UnlockableLevels[i]
 	local complete_levels_hero_wood_elf_mapping = daily_complete_levels_hero_wood_elf_mappings[1].completed_levels_wood_elf
 	complete_levels_hero_wood_elf_mapping[level_key] = true
 end
@@ -209,8 +209,8 @@ local daily_complete_levels_hero_witch_hunter_mappings = {
 	}
 }
 
-for i = 1, #MainGameLevels, 1 do
-	local level_key = MainGameLevels[i]
+for i = 1, #UnlockableLevels, 1 do
+	local level_key = UnlockableLevels[i]
 	local complete_levels_hero_witch_hunter_mapping = daily_complete_levels_hero_witch_hunter_mappings[1].completed_levels_witch_hunter
 	complete_levels_hero_witch_hunter_mapping[level_key] = true
 end
@@ -244,8 +244,8 @@ local daily_complete_levels_hero_dwarf_ranger_mappings = {
 	}
 }
 
-for i = 1, #MainGameLevels, 1 do
-	local level_key = MainGameLevels[i]
+for i = 1, #UnlockableLevels, 1 do
+	local level_key = UnlockableLevels[i]
 	local complete_levels_hero_dwarf_ranger_mapping = daily_complete_levels_hero_dwarf_ranger_mappings[1].completed_levels_dwarf_ranger
 	complete_levels_hero_dwarf_ranger_mapping[level_key] = true
 end
@@ -279,8 +279,8 @@ local daily_complete_levels_hero_bright_wizard_mappings = {
 	}
 }
 
-for i = 1, #MainGameLevels, 1 do
-	local level_key = MainGameLevels[i]
+for i = 1, #UnlockableLevels, 1 do
+	local level_key = UnlockableLevels[i]
 	local complete_levels_hero_bright_wizard_mapping = daily_complete_levels_hero_bright_wizard_mappings[1].completed_levels_bright_wizard
 	complete_levels_hero_bright_wizard_mapping[level_key] = true
 end
@@ -314,8 +314,8 @@ local daily_complete_levels_hero_empire_soldier_mappings = {
 	}
 }
 
-for i = 1, #MainGameLevels, 1 do
-	local level_key = MainGameLevels[i]
+for i = 1, #UnlockableLevels, 1 do
+	local level_key = UnlockableLevels[i]
 	local complete_levels_hero_empire_soldier_mapping = daily_complete_levels_hero_empire_soldier_mappings[1].completed_levels_empire_soldier
 	complete_levels_hero_empire_soldier_mapping[level_key] = true
 end
@@ -349,8 +349,8 @@ local event_quickplay_mappings = {
 	}
 }
 
-for i = 1, #MainGameLevels, 1 do
-	local level_key = MainGameLevels[i]
+for i = 1, #UnlockableLevels, 1 do
+	local level_key = UnlockableLevels[i]
 	local complete_quickplay_missions_mapping = event_quickplay_mappings[1].played_levels_quickplay
 	complete_quickplay_missions_mapping[level_key] = true
 end
@@ -460,6 +460,42 @@ quest_templates.quests.event_sonnstill_played_legend_2018 = {
 		return {
 			count,
 			QuestSettings.event_sonnstill_quickplay_levels
+		}
+	end
+}
+local weekly_complete_quickplay_missions_mappings = {
+	{
+		played_levels_quickplay = {}
+	}
+}
+
+for i = 1, #UnlockableLevels, 1 do
+	local level_key = UnlockableLevels[i]
+	local complete_quickplay_missions_mapping = weekly_complete_quickplay_missions_mappings[1].played_levels_quickplay
+	complete_quickplay_missions_mapping[level_key] = true
+end
+
+quest_templates.quests.weekly_complete_quickplay_missions = {
+	reward = "bogenhafen_chest",
+	name = "quest_weekly_bogenhafen_complete_quickplay_missions_name",
+	icon = "quest_book_event_bogenhafen",
+	required_dlc = "bogenhafen",
+	desc = function ()
+		return string.format(Localize("quest_weekly_bogenhafen_complete_quickplay_missions_desc"), QuestSettings.weekly_complete_quickplay_missions)
+	end,
+	stat_mappings = weekly_complete_quickplay_missions_mappings,
+	completed = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+		return QuestSettings.weekly_complete_quickplay_missions <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+	end,
+	progress = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+		local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+
+		return {
+			count,
+			QuestSettings.weekly_complete_quickplay_missions
 		}
 	end
 }

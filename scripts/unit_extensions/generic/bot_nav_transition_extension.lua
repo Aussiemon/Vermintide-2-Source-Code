@@ -5,19 +5,33 @@ BotNavTransitionExtension.init = function (self, extension_init_context, unit)
 	self._is_server = Managers.state.network.is_server
 
 	if self._is_server then
-		local from = Unit.world_position(unit, 0)
-		local via = Unit.world_position(unit, Unit.node(unit, "waypoint"))
-		local to = Unit.world_position(unit, Unit.node(unit, "destination"))
-		local jump_transition = Unit.get_data(unit, "jump")
+		self._transition_unit = BotNavTransitionExtension.try_create_transition(unit, 0, Managers.state.bot_nav_transition, QuickDrawerStay)
+	end
+end
 
-		if jump_transition and Vector3.distance_squared(from, via) > 0.5 then
+BotNavTransitionExtension.try_create_transition = function (unit, index_offset, bot_nav_transition_manager, drawer, called_from_editor)
+	local index_offset = index_offset or 0
+	local from = Unit.world_position(unit, index_offset)
+	local via = Unit.world_position(unit, Unit.node(unit, "waypoint"))
+	local to = Unit.world_position(unit, Unit.node(unit, "destination"))
+	local jump_transition = Unit.get_data(unit, "jump")
+	local error_message = nil
+
+	if jump_transition and Vector3.distance_squared(from, via) > 0.25 then
+		return nil, error_message
+	else
+		local success, transition_unit = bot_nav_transition_manager:create_transition(from, via, to, jump_transition, true, drawer)
+
+		if called_from_editor and not success then
+			error_message = string.format("Hand placed bot nav transition from %s to %s does not result in valid transition", tostring(from), tostring(to))
+
+			Application.error(error_message)
+			drawer:line(from, from + Vector3.up() * 15, Colors.get("red"))
 		else
-			local success, transition_unit = Managers.state.bot_nav_transition:create_transition(from, via, to, jump_transition, true)
-
 			fassert(success, "Hand placed bot nav transition from %s to %s does not result in valid transition", from, to)
-
-			self._transition_unit = transition_unit
 		end
+
+		return transition_unit, error_message
 	end
 end
 

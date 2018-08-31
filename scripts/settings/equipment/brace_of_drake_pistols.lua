@@ -89,24 +89,20 @@ weapon_template.actions = {
 		},
 		shoot_charged = {
 			damage_window_start = 0.1,
+			fire_sound_event = "player_combat_weapon_drakepistol_fire",
 			fire_at_gaze_setting = false,
+			charge_value = "light_attack",
 			kind = "bullet_spray",
 			fire_sound_event_parameter = "drakegun_charge_fire",
-			alert_sound_range_fire = 12,
-			attack_template = "drake_pistol_charged",
-			spread_template_override = "drake_pistol_charged",
-			fire_sound_event = "player_combat_weapon_drakepistol_fire",
-			boost_curve_type = "ninja_curve",
-			hit_effect = "fireball_impact",
 			alert_sound_range_hit = 5,
+			spread_template_override = "drake_pistol_charged",
 			area_damage = true,
 			apply_recoil = true,
+			hit_effect = "fireball_impact",
 			damage_window_end = 0,
 			overcharge_type = "brace_of_drake_pistols_charged",
-			charge_value = "light_attack",
+			alert_sound_range_fire = 12,
 			fire_time = 0,
-			boost_curve_coefficient = 1,
-			dot_template_name = "burning_1W_dot",
 			anim_event = "attack_shoot_charged",
 			total_time = 1,
 			allowed_chain_actions = {
@@ -142,38 +138,6 @@ weapon_template.actions = {
 
 				return input_extension:reset_release_input()
 			end,
-			armour_modifier = {
-				attack = {
-					1,
-					0.8,
-					2.5,
-					1,
-					1.5
-				},
-				impact = {
-					1,
-					0.8,
-					2.5,
-					1,
-					1.5
-				}
-			},
-			cleave_distribution = {
-				attack = 0.2,
-				impact = 0.2
-			},
-			power_distribution_near = {
-				attack = 0.25,
-				impact = 0.3
-			},
-			power_distribution_far = {
-				attack = 0,
-				impact = 0
-			},
-			range_dropoff_settings = {
-				dropoff_start = 5,
-				dropoff_end = 15
-			},
 			recoil_settings = {
 				horizontal_climb = 0,
 				restore_duration = 0.6,

@@ -124,9 +124,7 @@ MatchmakingStateJoinGame.update = function (self, dt, t)
 		local waiting_for_item_poll = backend_items:num_current_item_server_requests() ~= 0
 
 		if not waiting_user_input and not waiting_for_item_poll then
-			self._show_popup = false
-
-			self:_spawn_join_popup()
+			self:_spawn_join_popup(dt, t)
 		end
 	end
 
@@ -229,7 +227,13 @@ MatchmakingStateJoinGame.get_transition = function (self)
 	end
 end
 
-MatchmakingStateJoinGame._spawn_join_popup = function (self)
+MatchmakingStateJoinGame._spawn_join_popup = function (self, dt, t)
+	if Managers.popup:has_popup() then
+		self:_update_popup_timeout(dt, t)
+
+		return
+	end
+
 	local state_context = self.state_context
 	local peer_id = Network.peer_id()
 	local player = Managers.player:player_from_peer_id(peer_id)
@@ -244,6 +248,19 @@ MatchmakingStateJoinGame._spawn_join_popup = function (self)
 
 	local time_manager = Managers.time
 	self._hero_popup_at_t = time_manager:time("game")
+	self._show_popup = false
+	self._popup_auto_cancel_time = nil
+end
+
+MatchmakingStateJoinGame._update_popup_timeout = function (self, dt, t)
+	self._popup_auto_cancel_time = self._popup_auto_cancel_time or t + MatchmakingSettings.JOIN_LOBBY_TIME_UNTIL_AUTO_CANCEL
+
+	if self._popup_auto_cancel_time < t then
+		local status_message = "matchmaking_status_character_select_timed_out"
+
+		self._matchmaking_manager:send_system_chat_message(status_message)
+		self._matchmaking_manager:cancel_matchmaking()
+	end
 end
 
 MatchmakingStateJoinGame._remove_join_popup = function (self)

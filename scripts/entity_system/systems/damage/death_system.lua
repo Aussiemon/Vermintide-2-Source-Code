@@ -19,6 +19,7 @@ DeathSystem.init = function (self, entity_system_creation_context, system_name)
 	network_event_delegate:register(self, unpack(RPCS))
 
 	self.unit_extensions = {}
+	self.frozen_unit_extensions = {}
 	self.death_reactions_to_start = {}
 	self.active_reactions = {
 		unit = {},
@@ -56,13 +57,48 @@ DeathSystem.extensions_ready = function (self, world, unit, extension_name)
 end
 
 DeathSystem.on_remove_extension = function (self, unit, extension_name)
-	fassert(ScriptUnit.has_extension(unit, self.NAME), "Trying to remove non-existing extension %q from unit %s", extension_name, unit)
-	ScriptUnit.remove_extension(unit, self.NAME)
+	self.frozen_unit_extensions[unit] = nil
 
+	self:_cleanup_extension(unit, extension_name)
+	ScriptUnit.remove_extension(unit, self.NAME)
+end
+
+DeathSystem.on_freeze_extension = function (self, unit, extension_name)
+	ferror("Shouldn't get called, should run during death until unspawned/frozen.")
+end
+
+DeathSystem._cleanup_extension = function (self, unit, extension_name)
 	local extension = self.unit_extensions[unit]
+
+	if extension == nil then
+		return
+	end
+
+	extension.death_has_started = false
 	self.unit_extensions[unit] = nil
 	self.death_reactions_to_start[unit] = nil
 	self.active_reactions[extension.network_type][extension.death_reaction_template][unit] = nil
+end
+
+DeathSystem.freeze = function (self, unit, extension_name, reason)
+	fassert(self.frozen_unit_extensions[unit] == nil, "Extension shouldn't be frozen on death")
+
+	local extension = self.unit_extensions[unit]
+
+	fassert(extension, "Unit to freeze didn't have unfrozen extension")
+	self:_cleanup_extension(unit, extension_name)
+
+	self.unit_extensions[unit] = nil
+	self.frozen_unit_extensions[unit] = extension
+end
+
+DeathSystem.unfreeze = function (self, unit, extension_name)
+	local extension = self.frozen_unit_extensions[unit]
+
+	fassert(extension, "Unit to unfreeze didn't have frozen extension")
+
+	self.frozen_unit_extensions[unit] = nil
+	self.unit_extensions[unit] = extension
 end
 
 DeathSystem.hot_join_sync = function (self, sender)

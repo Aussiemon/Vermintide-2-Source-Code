@@ -52,6 +52,18 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_collectors_edition_preorder = {
+		{
+			texture = "portrait_frame_collectors_edition_preorder",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
 	frame_community_01 = {
 		{
 			texture = "portrait_frame_community_01",
@@ -79,6 +91,54 @@ UIPlayerPortraitFrameSettings = {
 	frame_summer = {
 		{
 			texture = "portrait_frame_summer",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_bogenhafen_01 = {
+		{
+			texture = "portrait_frame_bogenhafen_1",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_bogenhafen_02 = {
+		{
+			texture = "portrait_frame_bogenhafen_2",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_bogenhafen_03 = {
+		{
+			texture = "portrait_frame_bogenhafen_3",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_bogenhafen_04 = {
+		{
+			texture = "portrait_frame_bogenhafen_4",
 			layer = 10,
 			color = {
 				255,

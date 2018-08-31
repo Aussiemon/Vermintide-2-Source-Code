@@ -21,6 +21,10 @@ PlayFabMirrorDedicated.is_update_items_done = function (self)
 end
 
 PlayFabMirrorDedicated._request_signin_reward = function (self)
+	self:_request_quests()
+end
+
+PlayFabMirrorDedicated._request_fix_inventory_data_1 = function (self)
 	return
 end
 

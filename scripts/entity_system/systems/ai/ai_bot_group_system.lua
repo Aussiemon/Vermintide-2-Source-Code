@@ -59,76 +59,93 @@ AIBotGroupSystem.init = function (self, context, system_name)
 	self._is_server = context.is_server
 	self._world = world
 	self._physics_world = World.physics_world(world)
+	self._unit_storage = context.unit_storage
+	self._network_transmit = context.network_transmit
 	self._bot_ai_data = {}
 	self._num_bots = 0
-	self._last_move_target_rotations = {}
-	self._last_move_target_unit = nil
-	self._urgent_targets = {}
-	self._ally_needs_aid_priority = {}
 	self._bot_breakables_broadphase = Broadphase(2, 60)
-	self._disallowed_tag_layers = {
-		bot_poison_wind = true,
-		barrel_explosion = true
-	}
-	self._t = 0
-	self._in_carry_event = false
-	local up = Vector3.up()
-	self._left_vectors_outside_volume = {
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 1) / 8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 2) / 8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 3) / 8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 4) / 8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 5) / 8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 6) / 8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 7) / 8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 0) / 8)))
-	}
-	self._right_vectors_outside_volume = {
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 1) / 8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 2) / 8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 3) / 8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 4) / 8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 5) / 8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 6) / 8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 7) / 8)))
-	}
-	self._left_vectors = {
-		Vector3Box(Quaternion.forward(Quaternion(up, math.pi * 0.5))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 5) / 8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 3) / 8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 6) / 8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 2) / 8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 7) / 8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 1) / 8)))
-	}
-	self._right_vectors = {
-		Vector3Box(Quaternion.forward(Quaternion(up, -math.pi * 0.5))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 5) / 8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 3) / 8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 6) / 8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 2) / 8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 7) / 8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 1) / 8)))
-	}
-	self._available_health_pickups = {}
-	local mule_pickups = {}
 
-	for name, pickup_settings in pairs(AllPickups) do
-		if pickup_settings.bots_mule_pickup then
-			local slot = pickup_settings.slot_name
-			mule_pickups[slot] = mule_pickups[slot] or {}
+	if self._is_server then
+		self._last_move_target_rotations = {}
+		self._last_move_target_unit = nil
+		self._urgent_targets = {}
+		self._ally_needs_aid_priority = {}
+		self._disallowed_tag_layers = {
+			bot_poison_wind = true,
+			barrel_explosion = true
+		}
+		self._t = 0
+		self._in_carry_event = false
+		local up = Vector3.up()
+		self._left_vectors_outside_volume = {
+			Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 1) / 8))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 2) / 8))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 3) / 8))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 4) / 8))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 5) / 8))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 6) / 8))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 7) / 8))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 0) / 8)))
+		}
+		self._right_vectors_outside_volume = {
+			Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 1) / 8))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 2) / 8))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 3) / 8))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 4) / 8))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 5) / 8))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 6) / 8))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 7) / 8)))
+		}
+		self._left_vectors = {
+			Vector3Box(Quaternion.forward(Quaternion(up, math.pi * 0.5))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 5) / 8))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 3) / 8))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 6) / 8))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 2) / 8))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 7) / 8))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 1) / 8)))
+		}
+		self._right_vectors = {
+			Vector3Box(Quaternion.forward(Quaternion(up, -math.pi * 0.5))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 5) / 8))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 3) / 8))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 6) / 8))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 2) / 8))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 7) / 8))),
+			Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 1) / 8)))
+		}
+		self._available_health_pickups = {}
+		local mule_pickups = {}
+
+		for name, pickup_settings in pairs(AllPickups) do
+			if pickup_settings.bots_mule_pickup then
+				local slot = pickup_settings.slot_name
+				mule_pickups[slot] = mule_pickups[slot] or {}
+			end
 		end
-	end
 
-	self._available_mule_pickups = mule_pickups
-	self._last_key_in_available_pickups = nil
-	self._update_pickups_at = -math.huge
-	self._used_covers = {}
-	self._pathing_points = {}
+		self._available_mule_pickups = mule_pickups
+		self._last_key_in_available_pickups = nil
+		self._update_pickups_at = -math.huge
+		self._used_covers = {}
+		self._pathing_points = {}
+		local rpcs = {}
+
+		for order_type, order_data in pairs(AIBotGroupSystem.bot_orders) do
+			rpcs[#rpcs + 1] = order_data.rpc_type
+		end
+
+		local network_event_delegate = context.network_event_delegate
+		self.network_event_delegate = network_event_delegate
+
+		network_event_delegate:register(self, unpack(rpcs))
+	end
 end
 
 AIBotGroupSystem.destroy = function (self)
-	return
+	if self._is_server then
+		self.network_event_delegate:unregister(self)
+	end
 end
 
 AIBotGroupSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
@@ -142,6 +159,7 @@ AIBotGroupSystem.on_add_extension = function (self, world, unit, extension_name,
 
 		return {}
 	else
+		local initial_inventory = extension_init_data.initial_inventory
 		local data = {
 			priority_target_distance = math.huge,
 			priority_targets = {},
@@ -152,14 +170,36 @@ AIBotGroupSystem.on_add_extension = function (self, world, unit, extension_name,
 				escape_direction = Vector3Box()
 			},
 			previous_bot_breakables = {},
-			current_bot_breakables = {}
+			current_bot_breakables = {},
+			pickup_orders = {}
 		}
+		local slot_name = "slot_potion"
+		local item_name = initial_inventory[slot_name]
+		local item_data = rawget(ItemMasterList, item_name)
+
+		if item_data then
+			local template_name = item_data.template or item_data.temporary_template
+
+			if Weapons[template_name].is_grimoire then
+				local pickup_name = "grimoire"
+				data.pickup_orders[slot_name] = {
+					pickup_name = pickup_name
+				}
+			end
+		end
+
 		self._bot_ai_data[unit] = data
 		local ext = ScriptUnit.add_extension(nil, unit, "AIBotGroupExtension", self.NAME)
 		ext.data = data
 		self._num_bots = self._num_bots + 1
 
 		return ext
+	end
+end
+
+AIBotGroupSystem.extensions_ready = function (self, world, unit, extension_name)
+	if extension_name ~= "BotBreakableExtension" then
+		self._bot_ai_data[unit].status_extension = ScriptUnit.extension(unit, "status_system")
 	end
 end
 
@@ -197,6 +237,142 @@ AIBotGroupSystem.update = function (self, context, t)
 	self:_update_priority_targets(dt, t)
 	self:_update_pickups(dt, t)
 	self:_update_ally_needs_aid_priority()
+end
+
+AIBotGroupSystem.bot_orders = {
+	pickup = {
+		rpc_type = "rpc_bot_unit_order",
+		function_name = "_order_pickup"
+	},
+	drop = {
+		rpc_type = "rpc_bot_lookup_order",
+		lookup = "pickup_names",
+		function_name = "_order_drop"
+	}
+}
+
+AIBotGroupSystem.order = function (self, order_type, bot_unit, order_target, ordering_player)
+	local order_data = AIBotGroupSystem.bot_orders[order_type]
+
+	if self._is_server then
+		local func = self[order_data.function_name]
+
+		func(self, bot_unit, order_target, ordering_player)
+	else
+		local rpc_type = order_data.rpc_type
+		local target_id, rpc_name = nil
+
+		if rpc_type == "rpc_bot_unit_order" then
+			target_id = self._unit_storage:go_id(order_target)
+		elseif rpc_type == "rpc_bot_lookup_order" then
+			target_id = NetworkLookup[order_data.lookup][order_target]
+		else
+			fassert(false, "Incorrect rpc_type %q.", rpc_type)
+		end
+
+		if Managers.state.network:game() then
+			local order_type_id = NetworkLookup.bot_orders[order_type]
+			local bot_unit_id = self._unit_storage:go_id(bot_unit)
+
+			self._network_transmit:send_rpc_server(rpc_type, order_type_id, bot_unit_id, target_id, ordering_player:network_id(), ordering_player:local_player_id())
+		end
+	end
+end
+
+AIBotGroupSystem.get_pickup_order = function (self, bot_unit, slot_name)
+	local bot_data = self._bot_ai_data[bot_unit]
+	local order = bot_data.pickup_orders[slot_name]
+
+	return order
+end
+
+AIBotGroupSystem.rpc_bot_unit_order = function (self, sender, order_type_id, bot_unit_id, order_target_id, ordering_player_peer, ordering_local_player_id)
+	local order_type = NetworkLookup.bot_orders[order_type_id]
+	local bot_unit = self._unit_storage:unit(bot_unit_id)
+	local target_unit = self._unit_storage:unit(order_target_id)
+	local ordering_player = Managers.player:player(ordering_player_peer, ordering_local_player_id)
+
+	if Unit.alive(bot_unit) and Unit.alive(target_unit) and ordering_player then
+		self:order(order_type, bot_unit, target_unit, ordering_player)
+	end
+end
+
+AIBotGroupSystem.rpc_bot_lookup_order = function (self, sender, order_type_id, bot_unit_id, order_target_id, ordering_player_peer, ordering_local_player_id)
+	local order_type = NetworkLookup.bot_orders[order_type_id]
+	local bot_unit = self._unit_storage:unit(bot_unit_id)
+	local target = NetworkLookup[AIBotGroupSystem.bot_orders[order_type].lookup][order_target_id]
+	local ordering_player = Managers.player:player(ordering_player_peer, ordering_local_player_id)
+
+	if Unit.alive(bot_unit) and ordering_player then
+		self:order(order_type, bot_unit, target, ordering_player)
+	end
+end
+
+AIBotGroupSystem._order_pickup = function (self, bot_unit, pickup_unit, ordering_player)
+	if self._is_server then
+		local pickup_ext = ScriptUnit.extension(pickup_unit, "pickup_system")
+		local settings = pickup_ext:get_pickup_settings()
+		local slot_name = settings.slot_name
+
+		if not slot_name then
+			return
+		end
+
+		local bot_data = self._bot_ai_data[bot_unit]
+
+		if bot_data then
+			for unit, data in pairs(self._bot_ai_data) do
+				local order = data.pickup_orders[slot_name]
+
+				if order and order.unit == pickup_unit then
+					if unit == bot_unit then
+						self:_chat_message(bot_unit, ordering_player, "already_picking_up")
+
+						return
+					end
+
+					self:_chat_message(unit, ordering_player, "abort_pickup_assigned_to_other")
+
+					data.pickup_orders[slot_name] = nil
+					data.blackboard.needs_target_position_refresh = true
+				end
+			end
+
+			self:_chat_message(bot_unit, ordering_player, "acknowledge_pickup", Localize(Unit.get_data(pickup_unit, "interaction_data", "hud_description")))
+
+			bot_data.pickup_orders[slot_name] = {
+				unit = pickup_unit,
+				pickup_name = pickup_ext.pickup_name
+			}
+			bot_data.blackboard.needs_target_position_refresh = true
+		else
+			for unit, data in pairs(self._bot_ai_data) do
+				local order = data.pickup_orders[slot_name]
+
+				if order and order.unit == pickup_unit then
+					self:_chat_message(unit, ordering_player, "abort_pickup_assigned_to_other")
+
+					data.pickup_orders[slot_name] = nil
+					data.blackboard.needs_target_position_refresh = true
+				end
+			end
+		end
+	end
+end
+
+AIBotGroupSystem._order_drop = function (self, bot_unit, pickup_name, ordering_player)
+	if self._is_server then
+		local pickup_settings = AllPickups[pickup_name]
+		local bot_data = self._bot_ai_data[bot_unit]
+		local slot_name = pickup_settings.slot_name
+		local order = bot_data.pickup_orders[slot_name]
+
+		if bot_data and order and order.pickup_name == pickup_name then
+			bot_data.pickup_orders[slot_name] = nil
+
+			self:_chat_message(bot_unit, ordering_player, "acknowledge_drop")
+		end
+	end
 end
 
 local PRIORITY_TARGETS_TEMP = {}
@@ -346,6 +522,8 @@ AIBotGroupSystem._selected_unit_is_in_disallowed_nav_tag_volume = function (self
 				return true, current_mapping
 			end
 		end
+
+		GwNavQueries.destroy_query_dynamic_output(tag_volumes_query)
 
 		return false
 	else
@@ -529,11 +707,10 @@ AIBotGroupSystem._find_cluster_position = function (self, nav_world, selected_un
 	elseif self._last_move_target_rotations[selected_unit] then
 		rotation = self._last_move_target_rotations[selected_unit]:unbox()
 	else
-		local network_manager = Managers.state.network
-		local game = network_manager:game()
+		local game = Managers.state.network:game()
 
 		if game and not LEVEL_EDITOR_TEST then
-			local game_object_id = network_manager:unit_game_object_id(selected_unit)
+			local game_object_id = self._unit_storage:go_id(selected_unit)
 			local aim_direction = GameSession.game_object_field(game, game_object_id, "aim_direction")
 			rotation = Quaternion.look(Vector3.flat(aim_direction), Vector3.up())
 		else
@@ -766,11 +943,11 @@ AIBotGroupSystem._update_priority_targets = function (self, dt, t)
 	end
 
 	for unit, data in pairs(self._bot_ai_data) do
-		if not Unit.alive(data.current_priority_target) then
+		if not ALIVE[data.current_priority_target] then
 			data.current_priority_target = nil
 		end
 
-		local status_ext = ScriptUnit.extension(unit, "status_system")
+		local status_ext = data.status_extension
 
 		table.clear(data.priority_targets)
 
@@ -1021,12 +1198,48 @@ AIBotGroupSystem._update_pickups = function (self, dt, t)
 		end
 	end
 
+	self:_update_orders(dt, t)
 	self:_update_health_pickups(dt, t)
 	self:_update_mule_pickups(dt, t)
 end
 
 local PICKUP_CHECK_RANGE = 15
 local PICKUP_FETCH_RESULTS = {}
+
+AIBotGroupSystem._update_orders = function (self, dt, t)
+	for unit, data in pairs(self._bot_ai_data) do
+		if not AiUtils.unit_alive(unit) or data.status_extension:is_knocked_down() then
+			table.clear(data.pickup_orders)
+
+			return
+		end
+
+		local orders = data.pickup_orders
+		local inventory_ext = ScriptUnit.extension(unit, "inventory_system")
+
+		for slot_name, order in pairs(orders) do
+			local slot_data = inventory_ext:get_slot_data(slot_name)
+
+			if slot_data then
+				local current_item_template = inventory_ext:get_item_template(slot_data)
+				local has_picked_up_item = nil
+				has_picked_up_item = (order.pickup_name ~= "grimoire" or current_item_template.is_grimoire) and current_item_template.pickup_data and current_item_template.pickup_data.pickup_name == order.pickup_name
+
+				if has_picked_up_item then
+					order.unit = nil
+				elseif order.unit == nil then
+					orders[slot_name] = nil
+				end
+			elseif order.unit == nil then
+				orders[slot_name] = nil
+			end
+
+			if order.unit and not Unit.alive(order.unit) then
+				orders[slot_name] = nil
+			end
+		end
+	end
+end
 
 AIBotGroupSystem._update_pickups_near_player = function (self, unit, t)
 	local self_pos = POSITION_LOOKUP[unit]
@@ -1111,6 +1324,7 @@ AIBotGroupSystem._update_pickups_near_player = function (self, unit, t)
 	table.clear(PICKUP_FETCH_RESULTS)
 end
 
+local RESERVED_HEALTH_ITEMS_TEMP = {}
 local HEALTH_ITEMS_TEMP = {}
 local HEALTH_ITEMS_TEMP_TEMP = {}
 local AUXILIARY_HEALTH_SLOT_ITEMS_TEMP = {}
@@ -1169,16 +1383,51 @@ AIBotGroupSystem._update_mule_pickups = function (self, dt, t)
 	local Vector3_distance_squared = Vector3.distance_squared
 	local num_human_players = #PLAYER_UNITS
 	local max_pickup_dist_sq = 400
-	local assigned_pickup_valid_until = t + 15
 
 	table.clear(ASSIGNED_MULE_PICKUPS_TEMP)
+
+	for unit, data in pairs(self._bot_ai_data) do
+		local best_dist = math.huge
+		local best_order = nil
+		local pickup_orders = data.pickup_orders
+
+		for slot_name, available_pickups in pairs(self._available_mule_pickups) do
+			local order = pickup_orders[slot_name]
+			local ordered_unit = order and order.unit
+
+			if ordered_unit then
+				available_pickups[ordered_unit] = nil
+				ASSIGNED_MULE_PICKUPS_TEMP[ordered_unit] = true
+				local dist = Vector3_distance_squared(POSITION_LOOKUP[ordered_unit], POSITION_LOOKUP[unit])
+
+				if dist < best_dist then
+					best_order = ordered_unit
+					best_dist = dist
+				end
+			end
+		end
+
+		if best_order then
+			local blackboard = data.blackboard
+			blackboard.mule_pickup = best_order
+			blackboard.mule_pickup_dist_squared = best_dist
+		end
+	end
 
 	for unit, data in pairs(self._bot_ai_data) do
 		local blackboard = data.blackboard
 		local current_pickup = blackboard.mule_pickup
 
 		if current_pickup then
-			if not Unit.alive(current_pickup) or max_pickup_dist_sq < Vector3_distance_squared(POSITION_LOOKUP[current_pickup], data.follow_position or POSITION_LOOKUP[current_pickup]) then
+			if ASSIGNED_MULE_PICKUPS_TEMP[current_pickup] then
+				local pickup_extension = ScriptUnit.extension(current_pickup, "pickup_system")
+				local slot_name = pickup_extension:get_pickup_settings().slot_name
+				local order = data.pickup_orders[slot_name]
+
+				if not order or order.unit ~= current_pickup then
+					blackboard.mule_pickup = nil
+				end
+			elseif not Unit.alive(current_pickup) or max_pickup_dist_sq < Vector3_distance_squared(POSITION_LOOKUP[current_pickup], data.follow_position or POSITION_LOOKUP[current_pickup]) then
 				blackboard.mule_pickup = nil
 			else
 				local pickup_ext = ScriptUnit.extension(current_pickup, "pickup_system")
@@ -1233,8 +1482,9 @@ AIBotGroupSystem._update_mule_pickups = function (self, dt, t)
 		if num_players == 0 then
 			for unit, data in pairs(self._bot_ai_data) do
 				local blackboard = data.blackboard
+				local order = data.pickup_orders[slot_name]
 
-				if not blackboard.mule_pickup and not ScriptUnit.extension(unit, "inventory_system"):get_slot_data(slot_name) then
+				if not blackboard.mule_pickup and not ScriptUnit.extension(unit, "inventory_system"):get_slot_data(slot_name) and not order then
 					local best_pickup_dist_sq = math.huge
 					local best_pickup = nil
 
@@ -1281,6 +1531,27 @@ AIBotGroupSystem._update_health_pickups = function (self, dt, t)
 		end
 	end
 
+	table.clear(RESERVED_HEALTH_ITEMS_TEMP)
+
+	for bot_unit, data in pairs(self._bot_ai_data) do
+		local reservation = data.pickup_orders.slot_healthkit
+
+		if reservation then
+			local pickup_unit = reservation.unit
+
+			if not pickup_unit then
+			elseif HEALTH_ITEMS_TEMP[pickup_unit] then
+				num_health_items = num_health_items - 1
+				HEALTH_ITEMS_TEMP[pickup_unit] = nil
+			elseif AUXILIARY_HEALTH_SLOT_ITEMS_TEMP[pickup_unit] then
+				num_aux_items = num_aux_items - 1
+				AUXILIARY_HEALTH_SLOT_ITEMS_TEMP[pickup_unit] = nil
+			end
+
+			RESERVED_HEALTH_ITEMS_TEMP[bot_unit] = reservation
+		end
+	end
+
 	local lowest_human_hp_percent = math.huge
 	local num_human_players = #PLAYER_UNITS
 
@@ -1291,7 +1562,7 @@ AIBotGroupSystem._update_health_pickups = function (self, dt, t)
 			local inventory_ext = ScriptUnit.extension(player_unit, "inventory_system")
 			local med_item = inventory_ext:get_slot_data("slot_healthkit")
 
-			if not med_item then
+			if not med_item and not RESERVED_HEALTH_ITEMS_TEMP[player_unit] then
 				local closest_dist = math.huge
 				local closest_item = nil
 				local pos = POSITION_LOOKUP[player_unit]
@@ -1342,16 +1613,17 @@ AIBotGroupSystem._update_health_pickups = function (self, dt, t)
 	local lowest_hp_bot_has_item = false
 	local lowest_hp_bot_blackboard = nil
 
-	for unit, _ in pairs(self._bot_ai_data) do
+	for unit, data in pairs(self._bot_ai_data) do
 		local blackboard = BLACKBOARDS[unit]
 		blackboard.allowed_to_take_health_pickup = false
 		blackboard.force_use_health_pickup = false
 		local inventory_ext = ScriptUnit.extension(unit, "inventory_system")
-		local status_ext = ScriptUnit.extension(unit, "status_system")
+		local status_ext = data.status_extension
 		local health_slot_data = inventory_ext:get_slot_data("slot_healthkit")
 		local has_heal_item = health_slot_data and inventory_ext:get_item_template(health_slot_data).can_heal_self
 
-		if not has_heal_item and AiUtils.unit_alive(unit) and not status_ext:is_ready_for_assisted_respawn() then
+		if RESERVED_HEALTH_ITEMS_TEMP[unit] then
+		elseif not has_heal_item and AiUtils.unit_alive(unit) and not status_ext:is_ready_for_assisted_respawn() then
 			num_valid_bots = num_valid_bots + 1
 			BOT_UNITS[num_valid_bots] = unit
 			BOT_BBS[num_valid_bots] = blackboard
@@ -1418,6 +1690,13 @@ AIBotGroupSystem._update_health_pickups = function (self, dt, t)
 				bb.health_dist = nil
 				bb.health_pickup_valid_until = nil
 			end
+		elseif RESERVED_HEALTH_ITEMS_TEMP[unit] and RESERVED_HEALTH_ITEMS_TEMP[unit].unit then
+			local bb = BLACKBOARDS[unit]
+			local pickup_unit = RESERVED_HEALTH_ITEMS_TEMP[unit].unit
+			bb.health_pickup = pickup_unit
+			bb.health_dist = Vector3.distance(POSITION_LOOKUP[unit], POSITION_LOOKUP[pickup_unit])
+			bb.health_pickup_valid_until = math.huge
+			bb.allowed_to_take_health_pickup = true
 		else
 			local bb = BLACKBOARDS[unit]
 
@@ -1570,6 +1849,65 @@ AIBotGroupSystem._update_weapon_debug = function (self)
 			local oc_substring = (current_oc and string.format(" %02d|%d|%d", current_oc, threshold_oc, max_oc)) or ""
 
 			Debug.text("%-16s:%s%s [%s]", bot_name, ammo_substring, oc_substring, weapon_name)
+		end
+	end
+end
+
+AIBotGroupSystem._update_order_debug = function (self)
+	if not script_data.ai_bots_order_debug then
+		return
+	end
+
+	local debug_colors = {
+		slot_healthkit = Color(255, 0, 0),
+		slot_potion = Color(0, 255, 0),
+		slot_level_event = Color(0, 0, 255),
+		slot_grenade = Color(0, 255, 255)
+	}
+
+	for bot_unit, data in pairs(self._bot_ai_data) do
+		local orders = data.pickup_orders
+
+		for slot_name, order_data in pairs(orders) do
+			local unit = order_data.unit
+
+			if unit then
+				local pos = POSITION_LOOKUP[unit]
+				local color = debug_colors[slot_name] or Color(Math.random() * 255, Math.random() * 255, Math.random() * 255)
+
+				QuickDrawer:line(POSITION_LOOKUP[bot_unit], pos, color)
+				QuickDrawer:sphere(pos, 0.25, color)
+			end
+		end
+	end
+
+	if Keyboard.pressed(Keyboard.button_index("t")) then
+		local ph_world = World.physics_world(self._world)
+		local local_player = Managers.player:local_player()
+		local vp_name = local_player.viewport_name
+		local vp = ScriptWorld.viewport(self._world, vp_name, true)
+		local camera = ScriptViewport.camera(vp)
+		local pos = ScriptCamera.position(camera)
+		local rot = ScriptCamera.rotation(camera)
+		local hit, pos, dist, normal, actor = PhysicsWorld.immediate_raycast(ph_world, pos, Quaternion.forward(rot), 100, "closest", "collision_filter", "filter_pickups")
+
+		if hit then
+			local unit = Actor.unit(actor)
+			local selected_bot = nil
+
+			for bot_unit, data in pairs(self._bot_ai_data) do
+				if AiUtils.unit_alive(bot_unit) then
+					selected_bot = bot_unit
+
+					if Math.random() < 0.3 then
+						break
+					end
+				end
+			end
+
+			if selected_bot then
+				self:order("pickup", selected_bot, unit, local_player)
+			end
 		end
 	end
 end
@@ -1986,6 +2324,131 @@ AIBotGroupSystem.aoe_threat_created = function (self, position, shape, size, rot
 			end
 		end
 	end
+end
+
+local MESSAGES = {
+	abort_pickup_assigned_to_other = {
+		default = {
+			"Oh, sure, they can have it.",
+			"Oh, sure, they can have it.",
+			"Oh, sure, they can have it.",
+			"Oh, sure, they can have it.",
+			"Oh, you take it, go ahead.",
+			"Oh, you take it, go ahead.",
+			"Oh, you take it, go ahead.",
+			"Oh, you take it, go ahead.",
+			"No worries, they're better off with it.",
+			"Sure, they can have it.",
+			"I'll hold on to the next one.",
+			"I'll just eh... ok",
+			"No worries, they're better off with it.",
+			"Sure, they can have it.",
+			"I'll hold on to the next one.",
+			"I'll just eh... ok",
+			"I didn't want it anyway."
+		},
+		wood_elf = {
+			"Make up your mind, lumberfoot.",
+			"Make up your mind, lumberfoot.",
+			"Make up your mind, lumberfoot.",
+			"Make up your mind, lumberfoot.",
+			"Make up your mind, lumberfoot.",
+			"Make up your mind, lumberfoot.",
+			"Make up your mind, lumberfoot.",
+			"Make up your mind, lumberfoot.",
+			"Make up your mind, lumberfoot.",
+			"Lumberfoots and their attention span...",
+			"Lumberfoots and their attention span...",
+			"Lumberfoots and their attention span...",
+			"Lumberfoots and their attention span...",
+			"Lumberfoots and their attention span...",
+			"Lumberfoots and their attention span...",
+			"Lumberfoots and their attention span...",
+			"Lumberfoots and their attention span...",
+			"Lumberfoots and their attention span...",
+			"Even elder races get tired of waiting... for you to make up your mind!"
+		}
+	},
+	acknowledge_pickup = {
+		default = {
+			"Alright, picking up the %s.",
+			"Alright, picking up the %s.",
+			"Alright, picking up the %s.",
+			"Alright, picking up the %s.",
+			"Yes, I'll hold onto the %s.",
+			"Yes, I'll hold onto the %s.",
+			"Yes, I'll hold onto the %s.",
+			"Yes, I'll hold onto the %s.",
+			"Sure thing, taking the %s.",
+			"Sure thing, taking the %s.",
+			"Sure thing, taking the %s.",
+			"Sure thing, taking the %s.",
+			"The %s? Yeah, I'll grab it.",
+			"The %s? Yeah, I'll grab it.",
+			"I'll take the %s! Hold on.",
+			"I'll take the %s! Hold on.",
+			"Heh %s, it's mine.. mine... MINE!"
+		}
+	},
+	already_picking_up = {
+		default = {
+			"Hold your horses, I'm on my way!",
+			"Yes, I heard you the first time.",
+			"Acknowledged.",
+			"Uh. Yes.",
+			"Sure, already on my way."
+		}
+	},
+	acknowledge_drop = {
+		default = {
+			"Alright, I won't hold it as tightly."
+		}
+	}
+}
+local VO = {
+	acknowledge_pickup = {
+		dwarf_ranger = {
+			bright_wizard = {
+				"pdr_act3_dwarf_quest_story_two_02"
+			},
+			default = {
+				"pdr_gameplay_response_25"
+			}
+		},
+		empire_soldier = {
+			default = {
+				"pes_gameplay_special_enemy_kill_melee_08"
+			}
+		},
+		bright_wizard = {
+			default = {
+				"pbw_gameplay_special_enemy_kill_ranged_01"
+			}
+		},
+		wood_elf = {
+			default = {
+				"pwe_gameplay_special_enemy_kill_ranged_13"
+			}
+		}
+	},
+	acknowledge_drop = {
+		dwarf_ranger = {
+			default = {
+				"pdr_objective_dropping_grimoire_01"
+			}
+		}
+	}
+}
+
+AIBotGroupSystem._chat_message = function (self, unit, ordering_player, message, ...)
+	local player = Managers.player:owner(unit)
+	local character = SPProfiles[player:profile_index()].display_name
+	local ordering_character = SPProfiles[ordering_player:profile_index()].display_name
+	local msg_table = MESSAGES[message]
+	local chr_table = msg_table[character] or msg_table.default
+	local message_string = chr_table[Math.random(1, #chr_table)]
+
+	Managers.chat:send_chat_message(1, player:local_player_id(), string.format(message_string, ...))
 end
 
 return

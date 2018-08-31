@@ -41,6 +41,27 @@ AINavigationExtension.destroy = function (self)
 	GwNavSmartObjectInterval.destroy(self._next_smartobject_interval)
 end
 
+AINavigationExtension.freeze = function (self)
+	self:release_bot()
+end
+
+AINavigationExtension.unfreeze = function (self)
+	local blackboard = self._blackboard
+	local next_smart_object_data = blackboard.next_smart_object_data
+	next_smart_object_data.next_smart_object_id = nil
+	next_smart_object_data.smart_object_type = nil
+	self._far_pathing_allowed = blackboard.breed.cannot_far_path ~= true
+	self._enabled = true
+	self._using_smartobject = false
+	self._is_navbot_following_path = false
+	self._is_computing_path = false
+	self._failed_move_attempts = 0
+	self._wait_timer = 0
+	self._raycast_timer = 0
+	self._num_movement_modifiers = 0
+	self._last_movement_modifier_index = 1
+end
+
 AINavigationExtension.set_far_pathing_allowed = function (self, far_pathing_allowed)
 	self._far_pathing_allowed = far_pathing_allowed
 end
@@ -82,11 +103,17 @@ AINavigationExtension.init_position = function (self)
 	end
 
 	local nav_cost_map_cost_table = GwNavCostMap.create_tag_cost_table()
+
+	fassert(self._nav_cost_map_cost_table == nil, "Tried to create navbot cost table but already had one, freeze bug?")
+
 	self._nav_cost_map_cost_table = nav_cost_map_cost_table
 
 	AiUtils.initialize_nav_cost_map_cost_table(nav_cost_map_cost_table, nav_cost_map_allowed_layers)
 
 	local nav_bot = GwNavBot.create(nav_world, height, NAVIGATION_NAVMESH_RADIUS, speed, pos, nav_cost_map_cost_table, enable_crowd_dispersion)
+
+	fassert(self._nav_bot == nil, "Tried to create navbot but already had one, freeze bug?")
+
 	self._nav_bot = nav_bot
 	self._max_speed = speed
 
@@ -102,6 +129,9 @@ AINavigationExtension.init_position = function (self)
 	end
 
 	local traverse_logic = GwNavBot.traverse_logic_data(nav_bot)
+
+	fassert(self._traverse_logic == nil, "Tried to create _traverse_logic but already had one, freeze bug?")
+
 	self._traverse_logic = traverse_logic
 	local allowed_layers = {}
 

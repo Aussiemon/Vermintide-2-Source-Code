@@ -37,22 +37,29 @@ ActionBeam.client_owner_start_action = function (self, new_action, t, chain_acti
 	self.consecutive_hits = 0
 	self.power_level = power_level
 	self.owner_buff_extension = buff_extension
-	local world = self.world
+	self._is_critical_strike = false
 	local beam_effect = new_action.particle_effect_trail
 	local beam_effect_3p = new_action.particle_effect_trail_3p
 	local beam_end_effect = new_action.particle_effect_target
-	local beam_effect_id = NetworkLookup.effects[beam_effect_3p]
-	local beam_end_effect_id = NetworkLookup.effects[beam_end_effect]
-	self.beam_effect = World.create_particles(world, beam_effect, Vector3.zero())
-	self.beam_end_effect = World.create_particles(world, beam_end_effect, Vector3.zero())
-	self.beam_effect_length_id = World.find_particles_variable(world, beam_effect, "trail_length")
-	self._is_critical_strike = false
+	local beam_effect_lookup_id = NetworkLookup.effects[beam_effect_3p]
+	local beam_end_effect_lookup_id = NetworkLookup.effects[beam_end_effect]
+	local world = self.world
+
+	if self.owner_player.bot_player then
+		self.beam_effect_id = World.create_particles(world, beam_effect_3p, Vector3.zero())
+		self.beam_effect_length_id = World.find_particles_variable(world, beam_effect_3p, "trail_length")
+	else
+		self.beam_effect_id = World.create_particles(world, beam_effect, Vector3.zero())
+		self.beam_effect_length_id = World.find_particles_variable(world, beam_effect, "trail_length")
+	end
+
+	self.beam_end_effect_id = World.create_particles(world, beam_end_effect, Vector3.zero())
 	local go_id = self.unit_id
 
 	if self.is_server or LEVEL_EDITOR_TEST then
-		self.network_transmit:send_rpc_clients("rpc_start_beam", go_id, beam_effect_id, beam_end_effect_id, new_action.range)
+		self.network_transmit:send_rpc_clients("rpc_start_beam", go_id, beam_effect_lookup_id, beam_end_effect_lookup_id, new_action.range)
 	else
-		self.network_transmit:send_rpc_server("rpc_start_beam", go_id, beam_effect_id, beam_end_effect_id, new_action.range)
+		self.network_transmit:send_rpc_server("rpc_start_beam", go_id, beam_effect_lookup_id, beam_end_effect_lookup_id, new_action.range)
 	end
 
 	local status_extension = ScriptUnit.extension(owner_unit, "status_system")
@@ -256,9 +263,9 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 		local direction = Vector3.normalize(end_of_staff_position - beam_end_position)
 		local rotation = Quaternion.look(direction)
 
-		World.move_particles(world, self.beam_end_effect, beam_end_position, rotation)
-		World.move_particles(world, self.beam_effect, beam_end_position, rotation)
-		World.set_particles_variable(world, self.beam_effect, self.beam_effect_length_id, Vector3(0.3, distance, 0))
+		World.move_particles(world, self.beam_effect_id, beam_end_position, rotation)
+		World.set_particles_variable(world, self.beam_effect_id, self.beam_effect_length_id, Vector3(0.3, distance, 0))
+		World.move_particles(world, self.beam_end_effect_id, beam_end_position, rotation)
 
 		self.current_target = hit_unit
 	end
@@ -272,9 +279,13 @@ ActionBeam.finish = function (self, reason)
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
 	status_extension:set_zooming(false)
-	World.destroy_particles(self.world, self.beam_end_effect)
 
-	self.beam_end_effect = nil
+	if self.beam_end_effect_id then
+		World.destroy_particles(self.world, self.beam_end_effect_id)
+
+		self.beam_end_effect_id = nil
+	end
+
 	local charging_sound_id = self.charging_sound_id
 
 	if charging_sound_id then
@@ -296,9 +307,11 @@ ActionBeam.finish = function (self, reason)
 		self._rumble_effect_id = nil
 	end
 
-	World.destroy_particles(self.world, self.beam_effect)
+	if self.beam_effect_id then
+		World.destroy_particles(self.world, self.beam_effect_id)
 
-	self.beam_effect = nil
+		self.beam_effect_id = nil
+	end
 
 	if self.is_server or LEVEL_EDITOR_TEST then
 		self.network_transmit:send_rpc_clients("rpc_end_beam", go_id)
@@ -312,16 +325,16 @@ ActionBeam.finish = function (self, reason)
 end
 
 ActionBeam.destroy = function (self)
-	if self.beam_end_effect then
-		World.destroy_particles(self.world, self.beam_end_effect)
+	if self.beam_end_effect_id then
+		World.destroy_particles(self.world, self.beam_end_effect_id)
 
-		self.beam_end_effect = nil
+		self.beam_end_effect_id = nil
 	end
 
-	if self.beam_effect then
-		World.destroy_particles(self.world, self.beam_effect)
+	if self.beam_effect_id then
+		World.destroy_particles(self.world, self.beam_effect_id)
 
-		self.beam_effect = nil
+		self.beam_effect_id = nil
 	end
 
 	if self._rumble_effect_id then

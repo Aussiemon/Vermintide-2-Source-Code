@@ -13,7 +13,10 @@ BTLeaveHooks.check_if_victim_was_grabbed = function (unit, blackboard, t)
 
 		PerceptionUtils.clear_target_unit(blackboard)
 
-		if blackboard.stagger then
+		local status_extension = ScriptUnit.has_extension(blackboard.victim_grabbed, "status_system")
+		local is_grabbed = status_extension and status_extension:is_grabbed_by_chaos_spawn()
+
+		if blackboard.stagger or (is_grabbed and not AiUtils.unit_alive(unit)) then
 			StatusUtils.set_grabbed_by_chaos_spawn_network(blackboard.victim_grabbed, false, unit)
 
 			blackboard.has_grabbed_victim = nil
@@ -112,6 +115,7 @@ BTLeaveHooks.on_grey_seer_intro_leave = function (unit, blackboard, t)
 			local stormfiend_boss_breed = Breeds.skaven_stormfiend_boss
 			local spawn_category = "misc"
 			blackboard.knocked_off_mount = true
+			blackboard.waiting_for_pickup = true
 			local optional_data = {
 				spawned_func = cb_grey_seer_intro_spawn_stormfiend,
 				mounted_data = blackboard.mounted_data,

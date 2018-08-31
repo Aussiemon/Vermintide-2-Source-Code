@@ -18,31 +18,17 @@ local scenegraph_definition = {
 			UILayer.matchmaking
 		}
 	},
-	console_cursor = {
-		vertical_alignment = "center",
-		parent = "screen",
-		horizontal_alignment = "center",
-		size = {
-			1920,
-			1080
-		},
-		position = {
-			0,
-			0,
-			-10
-		}
-	},
 	window = {
 		vertical_alignment = "center",
 		parent = "screen",
 		horizontal_alignment = "center",
 		size = {
-			800,
-			820
+			900,
+			940
 		},
 		position = {
 			0,
-			50,
+			10,
 			1
 		}
 	},
@@ -51,138 +37,222 @@ local scenegraph_definition = {
 		parent = "window",
 		horizontal_alignment = "center",
 		size = {
-			680,
-			430
+			606,
+			530
 		},
 		position = {
 			0,
-			25,
+			60,
 			3
 		}
 	},
-	window_title = {
+	title = {
 		vertical_alignment = "top",
 		parent = "window",
 		horizontal_alignment = "center",
 		size = {
-			800,
+			658,
+			60
+		},
+		position = {
+			0,
+			34,
+			22
+		}
+	},
+	title_bg = {
+		vertical_alignment = "top",
+		parent = "title",
+		horizontal_alignment = "center",
+		size = {
+			410,
+			40
+		},
+		position = {
+			0,
+			-15,
+			-1
+		}
+	},
+	title_text = {
+		vertical_alignment = "center",
+		parent = "title",
+		horizontal_alignment = "center",
+		size = {
+			350,
 			50
 		},
 		position = {
 			0,
-			-35,
-			3
+			-3,
+			2
 		}
 	},
 	window_sub_title = {
-		vertical_alignment = "center",
-		parent = "window_title",
+		vertical_alignment = "top",
+		parent = "window",
 		horizontal_alignment = "center",
 		size = {
-			800,
+			500,
 			50
 		},
 		position = {
 			0,
-			-70,
-			1
+			-75,
+			3
 		}
 	},
-	selection_divider = {
-		vertical_alignment = "center",
+	hero_info_panel = {
+		vertical_alignment = "bottom",
 		parent = "inner_window",
-		horizontal_alignment = "center",
+		horizontal_alignment = "left",
 		size = {
-			264,
-			21
+			441,
+			118
 		},
 		position = {
-			0,
-			-5,
+			55,
+			-130,
 			1
 		}
 	},
-	hero_tabs = {
+	hero_info_level_bg = {
 		vertical_alignment = "center",
-		parent = "selection_divider",
-		horizontal_alignment = "center",
+		parent = "hero_info_panel",
+		horizontal_alignment = "left",
 		size = {
-			0,
-			0
+			124,
+			138
 		},
 		position = {
+			-62,
 			0,
-			45,
-			1
+			2
 		}
 	},
-	career_tabs = {
-		vertical_alignment = "bottom",
-		parent = "selection_divider",
-		horizontal_alignment = "center",
-		size = {
-			0,
-			0
-		},
-		position = {
-			0,
-			-(career_entry_height + 60),
-			1
-		}
-	},
-	hero_text = {
-		vertical_alignment = "bottom",
-		parent = "selection_divider",
-		horizontal_alignment = "center",
-		size = {
-			500,
-			20
-		},
-		position = {
-			0,
-			5,
-			1
-		}
-	},
-	career_text = {
+	info_career_name = {
 		vertical_alignment = "top",
-		parent = "selection_divider",
-		horizontal_alignment = "center",
+		parent = "hero_info_panel",
+		horizontal_alignment = "left",
 		size = {
-			500,
-			20
+			450,
+			25
+		},
+		position = {
+			76,
+			-16,
+			1
+		}
+	},
+	info_hero_name = {
+		vertical_alignment = "top",
+		parent = "info_career_name",
+		horizontal_alignment = "left",
+		size = {
+			450,
+			25
 		},
 		position = {
 			0,
-			-20,
+			-40,
+			1
+		}
+	},
+	info_hero_level = {
+		vertical_alignment = "center",
+		parent = "hero_info_level_bg",
+		horizontal_alignment = "center",
+		size = {
+			450,
+			25
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	hero_root = {
+		vertical_alignment = "top",
+		parent = "inner_window",
+		horizontal_alignment = "left",
+		size = {
+			110,
+			130
+		},
+		position = {
+			0,
+			-100,
+			1
+		}
+	},
+	hero_icon_root = {
+		vertical_alignment = "top",
+		parent = "hero_root",
+		horizontal_alignment = "center",
+		size = {
+			48,
+			144
+		},
+		position = {
+			0,
+			100,
+			1
+		}
+	},
+	hero_icon_edge_left = {
+		vertical_alignment = "center",
+		parent = "hero_icon_root",
+		horizontal_alignment = "center",
+		size = {
+			28,
+			22
+		},
+		position = {
+			-82,
+			-10,
+			1
+		}
+	},
+	hero_icon_edge_right = {
+		vertical_alignment = "center",
+		parent = "hero_icon_root",
+		horizontal_alignment = "center",
+		size = {
+			28,
+			22
+		},
+		position = {
+			578,
+			-10,
 			1
 		}
 	},
 	timer_title_text = {
-		vertical_alignment = "bottom",
-		parent = "inner_window",
-		horizontal_alignment = "center",
+		vertical_alignment = "top",
+		parent = "window",
+		horizontal_alignment = "right",
 		size = {
 			500,
 			20
 		},
 		position = {
-			0,
 			-30,
+			-20,
 			1
 		}
 	},
 	timer_text = {
-		vertical_alignment = "bottom",
-		parent = "inner_window",
-		horizontal_alignment = "center",
+		vertical_alignment = "top",
+		parent = "window",
+		horizontal_alignment = "right",
 		size = {
 			500,
 			20
 		},
 		position = {
-			0,
-			-65,
+			-30,
+			-50,
 			1
 		}
 	},
@@ -213,22 +283,36 @@ local scenegraph_definition = {
 			40,
 			3
 		}
+	},
+	center_button = {
+		vertical_alignment = "bottom",
+		parent = "window",
+		horizontal_alignment = "center",
+		size = {
+			300,
+			70
+		},
+		position = {
+			0,
+			40,
+			3
+		}
 	}
 }
-local window_title_text_style = {
-	font_size = 52,
+local title_text_style = {
+	use_shadow = true,
 	upper_case = true,
 	localize = false,
-	use_shadow = true,
-	word_wrap = true,
+	font_size = 28,
 	horizontal_alignment = "center",
 	vertical_alignment = "center",
+	dynamic_font_size = true,
 	font_type = "hell_shark_header",
 	text_color = Colors.get_color_table_with_alpha("font_title", 255),
 	offset = {
 		0,
 		0,
-		1
+		2
 	}
 }
 local window_sub_title_text_style = {
@@ -238,7 +322,7 @@ local window_sub_title_text_style = {
 	use_shadow = true,
 	word_wrap = true,
 	horizontal_alignment = "center",
-	vertical_alignment = "bottom",
+	vertical_alignment = "center",
 	font_type = "hell_shark",
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
@@ -247,36 +331,65 @@ local window_sub_title_text_style = {
 		1
 	}
 }
-local hero_text_style = {
-	font_size = 28,
-	upper_case = false,
+local hero_career_style = {
+	word_wrap = true,
+	upper_case = true,
 	localize = false,
 	use_shadow = true,
-	word_wrap = true,
-	horizontal_alignment = "center",
-	vertical_alignment = "bottom",
-	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("font_default", 255),
-	offset = {
-		0,
-		0,
-		1
-	}
-}
-local career_text_style = {
-	font_size = 36,
-	upper_case = false,
-	localize = false,
-	use_shadow = true,
-	word_wrap = true,
-	horizontal_alignment = "center",
+	font_size = 40,
+	horizontal_alignment = "left",
 	vertical_alignment = "top",
 	font_type = "hell_shark_header",
 	text_color = Colors.get_color_table_with_alpha("font_title", 255),
 	offset = {
 		0,
 		0,
-		1
+		2
+	}
+}
+local hero_name_style = {
+	word_wrap = true,
+	font_size = 30,
+	localize = false,
+	use_shadow = true,
+	horizontal_alignment = "left",
+	vertical_alignment = "top",
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local hero_level_style = {
+	word_wrap = true,
+	font_size = 52,
+	localize = false,
+	use_shadow = true,
+	horizontal_alignment = "center",
+	vertical_alignment = "center",
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local locked_info_text_style = {
+	word_wrap = true,
+	font_size = 26,
+	localize = false,
+	use_shadow = true,
+	horizontal_alignment = "left",
+	vertical_alignment = "top",
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("red", 255),
+	offset = {
+		0,
+		0,
+		2
 	}
 }
 local timer_text_style = {
@@ -285,7 +398,7 @@ local timer_text_style = {
 	localize = false,
 	use_shadow = true,
 	word_wrap = true,
-	horizontal_alignment = "center",
+	horizontal_alignment = "right",
 	vertical_alignment = "top",
 	font_type = "hell_shark_header",
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
@@ -301,7 +414,7 @@ local timer_title_text_style = {
 	localize = false,
 	use_shadow = true,
 	word_wrap = true,
-	horizontal_alignment = "center",
+	horizontal_alignment = "right",
 	vertical_alignment = "top",
 	font_type = "hell_shark_header",
 	text_color = Colors.get_color_table_with_alpha("font_title", 255),
@@ -323,43 +436,429 @@ local generic_input_actions = {
 		description_text = "popup_keep_searching"
 	}
 }
-local hero_icons = {}
 
-for index, profile_index in ipairs(ProfilePriority) do
-	hero_icons[#hero_icons + 1] = "unit_frame_portrait_default"
+local function create_gamepad_button(input_action, text, scenegraph_id)
+	return {
+		element = {
+			passes = {
+				{
+					style_id = "text",
+					pass_type = "text",
+					text_id = "text",
+					content_check_function = function (content)
+						return content.is_gamepad_active
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "icon",
+					texture_id = "icon",
+					content_check_function = function (content)
+						return content.is_gamepad_active
+					end
+				}
+			}
+		},
+		content = {
+			input_action = input_action,
+			text = text or ""
+		},
+		style = {
+			text = {
+				vertical_alignment = "center",
+				font_type = "hell_shark",
+				font_size = 28,
+				horizontal_alignment = "center",
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					0,
+					0,
+					1
+				}
+			},
+			icon = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					34,
+					34
+				},
+				offset = {
+					0,
+					0,
+					1
+				}
+			}
+		},
+		scenegraph_id = scenegraph_id
+	}
 end
 
-local career_images = {
-	"icons_placeholder",
-	"icons_placeholder",
-	"icons_placeholder"
-}
+local function create_hero_icon_widget(scenegraph_id, size)
+	local icon_size = {
+		80,
+		80
+	}
+
+	return {
+		element = {
+			passes = {
+				{
+					texture_id = "icon",
+					style_id = "icon",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return not content.selected
+					end
+				},
+				{
+					texture_id = "icon_selected",
+					style_id = "icon_selected",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.selected
+					end
+				},
+				{
+					texture_id = "holder",
+					style_id = "holder",
+					pass_type = "rotated_texture"
+				}
+			}
+		},
+		content = {
+			icon = "hero_icon_large_bright_wizard",
+			holder = "divider_vertical_hero_decoration",
+			icon_selected = "hero_icon_large_bright_wizard"
+		},
+		style = {
+			icon = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = icon_size,
+				color = {
+					200,
+					80,
+					80,
+					80
+				},
+				offset = {
+					0,
+					40,
+					1
+				}
+			},
+			icon_selected = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = icon_size,
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					40,
+					1
+				}
+			},
+			holder = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				angle = math.pi / 2,
+				pivot = {
+					size[1] / 2,
+					size[2] / 2
+				},
+				texture_size = size,
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					1
+				}
+			}
+		},
+		offset = {
+			0,
+			0,
+			0
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
+
+local function create_hero_widget(scenegraph_id, size)
+	local frame_style = "menu_frame_12"
+	local frame_settings = UIFrameSettings[frame_style]
+	local hover_frame_style = "frame_outer_glow_01"
+	local hover_frame_settings = UIFrameSettings[hover_frame_style]
+	local hover_frame_width = hover_frame_settings.texture_sizes.horizontal[2]
+
+	return {
+		element = {
+			passes = {
+				{
+					pass_type = "hotspot",
+					content_id = "button_hotspot"
+				},
+				{
+					texture_id = "portrait",
+					style_id = "portrait",
+					pass_type = "texture"
+				},
+				{
+					pass_type = "rect",
+					style_id = "rect"
+				},
+				{
+					texture_id = "lock_texture",
+					style_id = "lock_texture",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.locked
+					end
+				},
+				{
+					texture_id = "taken_texture",
+					style_id = "taken_texture",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.taken and not content.locked
+					end
+				},
+				{
+					pass_type = "texture_frame",
+					style_id = "frame",
+					texture_id = "frame"
+				},
+				{
+					style_id = "overlay",
+					pass_type = "rect",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return not button_hotspot.is_hover and not button_hotspot.is_selected and not content.locked
+					end
+				},
+				{
+					style_id = "overlay_locked",
+					pass_type = "rect",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return content.locked
+					end
+				},
+				{
+					pass_type = "texture_frame",
+					style_id = "hover_frame",
+					texture_id = "hover_frame",
+					content_check_function = function (content)
+						return content.button_hotspot.is_selected
+					end
+				}
+			}
+		},
+		content = {
+			portrait = "icons_placeholder",
+			locked = false,
+			lock_texture = "hero_icon_locked",
+			taken = false,
+			taken_texture = "hero_icon_unavailable",
+			button_hotspot = {},
+			frame = frame_settings.texture,
+			hover_frame = hover_frame_settings.texture
+		},
+		style = {
+			rect = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = size,
+				color = {
+					200,
+					0,
+					0,
+					0
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			},
+			portrait = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = size,
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					1
+				}
+			},
+			lock_texture = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					76,
+					87
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					5
+				}
+			},
+			taken_texture = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					112,
+					112
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					6
+				}
+			},
+			overlay = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = size,
+				color = {
+					80,
+					0,
+					0,
+					0
+				},
+				offset = {
+					0,
+					0,
+					2
+				}
+			},
+			overlay_locked = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = size,
+				color = {
+					200,
+					0,
+					0,
+					0
+				},
+				offset = {
+					0,
+					0,
+					2
+				}
+			},
+			frame = {
+				texture_size = frame_settings.texture_size,
+				texture_sizes = frame_settings.texture_sizes,
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					4
+				}
+			},
+			hover_frame = {
+				size = {
+					size[1] + hover_frame_width * 2,
+					size[2] + hover_frame_width * 2
+				},
+				texture_size = hover_frame_settings.texture_size,
+				texture_sizes = hover_frame_settings.texture_sizes,
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					-hover_frame_width,
+					-hover_frame_width,
+					0
+				}
+			}
+		},
+		offset = {
+			0,
+			0,
+			0
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
+
+local hero_widget_definition = create_hero_widget("hero_root", scenegraph_definition.hero_root.size)
+local hero_icon_widget_definition = create_hero_icon_widget("hero_icon_root", scenegraph_definition.hero_icon_root.size)
+local disable_with_gamepad = true
 local widget_definitions = {
 	window = UIWidgets.create_background_with_frame("window", scenegraph_definition.window.size, "menu_frame_bg_02", "menu_frame_11"),
 	window_shadow = UIWidgets.create_simple_texture("options_window_fade_01", "window", nil, nil, nil, 1),
-	inner_window = UIWidgets.create_rect_with_frame("inner_window", scenegraph_definition.inner_window.size, {
-		150,
-		5,
-		5,
-		5
-	}, "menu_frame_06"),
-	window_title = UIWidgets.create_simple_text(Localize("join_popup_title"), "window_title", nil, nil, window_title_text_style),
+	title = UIWidgets.create_simple_texture("frame_title_bg", "title"),
+	title_bg = UIWidgets.create_background("title_bg", scenegraph_definition.title_bg.size, "menu_frame_bg_02"),
+	title_text = UIWidgets.create_simple_text(Localize("join_popup_title"), "title_text", nil, nil, title_text_style),
 	window_sub_title = UIWidgets.create_simple_text(Localize("join_popup_sub_title"), "window_sub_title", nil, nil, window_sub_title_text_style),
-	hero_tabs = UIWidgets.create_icon_selector("hero_tabs", {
-		hero_entry_width,
-		hero_entry_height
-	}, hero_icons, hero_entry_spacing),
-	career_tabs = UIWidgets.create_icon_selector("career_tabs", {
-		career_entry_width,
-		career_entry_height
-	}, career_images, career_entry_spacing, true),
-	select_button = UIWidgets.create_default_button("select_button", scenegraph_definition.select_button.size, nil, nil, Localize("input_description_confirm")),
-	cancel_button = UIWidgets.create_default_button("cancel_button", scenegraph_definition.cancel_button.size, nil, nil, Localize("input_description_cancel")),
-	selection_divider = UIWidgets.create_simple_texture("divider_01_bottom", "selection_divider"),
-	hero_text = UIWidgets.create_simple_text("n/a", "hero_text", nil, nil, hero_text_style),
-	career_text = UIWidgets.create_simple_text("n/a", "career_text", nil, nil, career_text_style),
+	select_button = UIWidgets.create_default_button("select_button", scenegraph_definition.select_button.size, nil, nil, Localize("input_description_confirm"), nil, nil, nil, nil, disable_with_gamepad),
+	cancel_button = UIWidgets.create_default_button("cancel_button", scenegraph_definition.cancel_button.size, nil, nil, Localize("input_description_cancel"), nil, nil, nil, nil, disable_with_gamepad),
+	gamepad_select_button = create_gamepad_button("confirm", Localize("input_description_confirm"), "select_button"),
+	gamepad_cancel_button = create_gamepad_button("back", Localize("input_description_cancel"), "cancel_button"),
+	hero_info_panel = UIWidgets.create_simple_texture("item_slot_side_fade", "hero_info_panel", nil, nil, {
+		255,
+		0,
+		0,
+		0
+	}),
+	hero_info_panel_glow = UIWidgets.create_simple_texture("item_slot_side_effect", "hero_info_panel", nil, nil, Colors.get_color_table_with_alpha("font_title", 255), 1),
+	hero_info_level_bg = UIWidgets.create_simple_texture("hero_level_bg", "hero_info_level_bg"),
+	info_career_name = UIWidgets.create_simple_text("n/a", "info_career_name", nil, nil, hero_career_style),
+	info_hero_name = UIWidgets.create_simple_text("n/a", "info_hero_name", nil, nil, hero_name_style),
+	info_hero_level = UIWidgets.create_simple_text("n/a", "info_hero_level", nil, nil, hero_level_style),
 	timer_text = UIWidgets.create_simple_text("00:00", "timer_text", nil, nil, timer_text_style),
-	timer_title_text = UIWidgets.create_simple_text(Localize("join_popup_timer_title"), "timer_title_text", nil, nil, timer_title_text_style)
+	timer_title_text = UIWidgets.create_simple_text(Localize("join_popup_timer_title"), "timer_title_text", nil, nil, timer_title_text_style),
+	hero_icon_edge_left = UIWidgets.create_simple_rotated_texture("divider_vertical_hero_end", math.pi / 2, {
+		14,
+		11
+	}, "hero_icon_edge_left"),
+	hero_icon_edge_right = UIWidgets.create_simple_rotated_texture("divider_vertical_hero_end", -math.pi / 2, {
+		14,
+		11
+	}, "hero_icon_edge_right")
 }
 local DO_RELOAD = true
 
@@ -408,12 +907,55 @@ PopupJoinLobbyHandler.create_ui_elements = function (self)
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
-	local console_cursor_definition = UIWidgets.create_console_cursor("console_cursor")
-	self._console_cursor = UIWidget.init(console_cursor_definition)
+
+	self:_setup_hero_selection_widgets()
+
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 
 	UIRenderer.clear_scenegraph_queue(self.ui_top_renderer)
-	self:_assign_hero_portraits()
+end
+
+PopupJoinLobbyHandler._setup_hero_selection_widgets = function (self)
+	local hero_widgets = {}
+	self._hero_widgets = hero_widgets
+	local hero_icon_widgets = {}
+	self._hero_icon_widgets = hero_icon_widgets
+	local hero_attributes = Managers.backend:get_interface("hero_attributes")
+	local num_max_rows = 0
+	local num_max_columns = #SPProfilesAbbreviation
+
+	for i, profile_index in ipairs(ProfilePriority) do
+		local profile_settings = SPProfiles[profile_index]
+		local hero_name = profile_settings.display_name
+		local hero_experience = hero_attributes:get(hero_name, "experience") or 0
+		local hero_level = ExperienceSettings.get_level(hero_experience)
+		local careers = profile_settings.careers
+		num_max_rows = math.max(num_max_rows, #careers)
+		local icon_widget = UIWidget.init(hero_icon_widget_definition)
+		hero_icon_widgets[#hero_icon_widgets + 1] = icon_widget
+		local hero_icon_offset = icon_widget.offset
+		hero_icon_offset[1] = (i - 1) * 124
+		local hero_icon_texture = "hero_icon_large_" .. hero_name
+		icon_widget.content.icon = hero_icon_texture
+		icon_widget.content.icon_selected = hero_icon_texture .. "_glow"
+
+		for j, career in ipairs(careers) do
+			local widget = UIWidget.init(hero_widget_definition)
+			hero_widgets[#hero_widgets + 1] = widget
+			local offset = widget.offset
+			local content = widget.content
+			content.career_settings = career
+			local portrait_image = career.portrait_image
+			content.portrait = "medium_" .. portrait_image
+			local is_career_unlocked = career.is_unlocked_function(hero_name, hero_level)
+			content.locked = not is_career_unlocked
+			offset[1] = (i - 1) * 124
+			offset[2] = -(j - 1) * 144
+		end
+	end
+
+	self._num_max_hero_rows = num_max_rows
+	self._num_max_hero_columns = num_max_columns
 end
 
 PopupJoinLobbyHandler._get_widget = function (self, name)
@@ -425,7 +967,16 @@ PopupJoinLobbyHandler.update = function (self, dt, t)
 		DO_RELOAD = false
 
 		self:create_ui_elements()
+
+		local profile_index = self._selected_hero_column or 1
+		local career_index = self._selected_hero_row or 1
+		local ignore_sound = true
+
+		self:_select_hero(profile_index, career_index, ignore_sound)
 	end
+
+	self:_update_occupied_profiles()
+	self:_update_gamepad_input_buttons()
 
 	local ui_top_renderer = self.ui_top_renderer
 	local input_service = self:input_service()
@@ -443,14 +994,6 @@ PopupJoinLobbyHandler.update = function (self, dt, t)
 		end
 	end
 
-	local disable_select_button = self._selected_career_locked or self._selected_hero_disabled
-
-	if self._disable_select_button ~= disable_select_button then
-		self._disable_select_button = disable_select_button
-
-		self:set_select_button_enable_state(not disable_select_button)
-	end
-
 	self:_handle_input(dt, t)
 
 	for name, animation in pairs(self._ui_animations) do
@@ -466,9 +1009,6 @@ end
 
 PopupJoinLobbyHandler.show = function (self, current_profile_index, current_career_index, time_until_cancel, join_by_lobby_browser, difficulty)
 	self.join_lobby_result = nil
-	self._selected_hero_disabled = nil
-	self._selected_career_locked = nil
-	self._disable_select_button = nil
 	self._difficulty = difficulty
 	local transition = (join_by_lobby_browser and "exit_menu") or "close_active"
 
@@ -477,8 +1017,9 @@ PopupJoinLobbyHandler.show = function (self, current_profile_index, current_care
 
 	local profile_index = current_profile_index or 1
 	local career_index = current_career_index or 1
+	local ignore_sound = true
 
-	self:_select_hero_and_career(profile_index, career_index)
+	self:_select_hero(profile_index, career_index, ignore_sound)
 
 	self.cancel_timer = time_until_cancel
 	local input_manager = self.input_manager
@@ -527,8 +1068,12 @@ PopupJoinLobbyHandler.draw = function (self, ui_top_renderer, input_service, dt)
 		UIRenderer.draw_widget(ui_top_renderer, widget)
 	end
 
-	if gamepad_active then
-		UIRenderer.draw_widget(ui_top_renderer, self._console_cursor)
+	for _, widget in ipairs(self._hero_widgets) do
+		UIRenderer.draw_widget(ui_top_renderer, widget)
+	end
+
+	for _, widget in ipairs(self._hero_icon_widgets) do
+		UIRenderer.draw_widget(ui_top_renderer, widget)
 	end
 
 	UIRenderer.end_pass(ui_top_renderer)
@@ -555,29 +1100,10 @@ end
 
 PopupJoinLobbyHandler._handle_input = function (self, dt, t)
 	local widgets_by_name = self._widgets_by_name
+	local input_service = Managers.input:get_service("popup_join_lobby_handler")
 
-	if self:_is_tab_hovered(widgets_by_name.hero_tabs) then
-		self:_play_sound("play_gui_hero_select_hero_hover")
-	end
-
-	if self:_is_tab_hovered(widgets_by_name.career_tabs) then
-		self:_play_sound("play_gui_hero_select_career_hover")
-	end
-
-	self:_handle_tab_hover(widgets_by_name.hero_tabs, "icon")
-	self:_handle_tab_hover(widgets_by_name.career_tabs, "icon")
-
-	local hero_index = self:_is_hero_tab_selected()
-
-	if hero_index then
-		self:_select_hero_tab_by_index(hero_index, nil, true)
-	end
-
-	local career_index = self:_is_career_tab_selected()
-
-	if career_index then
-		self:_select_career_tab_by_index(career_index, nil, true)
-	end
+	self:_handle_mouse_selection()
+	self:_handle_gamepad_selection(input_service)
 
 	local select_button = widgets_by_name.select_button
 	local cancel_button = widgets_by_name.cancel_button
@@ -589,12 +1115,137 @@ PopupJoinLobbyHandler._handle_input = function (self, dt, t)
 		self:_play_sound("play_gui_start_menu_button_hover")
 	end
 
-	if self:_is_button_pressed(widgets_by_name.select_button) and not self._selected_career_locked then
+	if self._selection_approved and (self:_is_button_pressed(widgets_by_name.select_button) or input_service:get("confirm", true)) then
 		self:_play_sound("play_gui_start_menu_button_click")
 		self:set_result(true)
-	elseif self:_is_button_pressed(widgets_by_name.cancel_button) then
+	elseif self:_is_button_pressed(widgets_by_name.cancel_button) or input_service:get("back_menu", true) then
 		self:_play_sound("play_gui_start_menu_button_click")
 		self:set_result(false)
+	end
+end
+
+PopupJoinLobbyHandler._handle_mouse_selection = function (self)
+	local hero_widgets = self._hero_widgets
+	local num_max_rows = self._num_max_hero_rows
+	local num_max_columns = self._num_max_hero_columns
+	local selected_row = self._selected_hero_row
+	local selected_column = self._selected_hero_column
+
+	if selected_row and selected_column then
+		local widget_index = 1
+
+		for i = 1, num_max_columns, 1 do
+			for j = 1, num_max_rows, 1 do
+				local widget = hero_widgets[widget_index]
+				local content = widget.content
+				local button_hotspot = content.button_hotspot
+
+				if button_hotspot.on_hover_enter then
+					self:_play_sound("play_gui_hero_select_hero_hover")
+				end
+
+				if not content.taken and button_hotspot.on_pressed and (i ~= selected_column or j ~= selected_row) then
+					local profile_index = ProfilePriority[i]
+					local career_index = j
+
+					self:_select_hero(profile_index, career_index)
+
+					return
+				end
+
+				widget_index = widget_index + 1
+			end
+		end
+	end
+end
+
+PopupJoinLobbyHandler._handle_gamepad_selection = function (self, input_service)
+	local num_max_rows = self._num_max_hero_rows
+	local num_max_columns = self._num_max_hero_columns
+	local selected_row = self._selected_hero_row
+	local selected_column = self._selected_hero_column
+
+	if selected_row and selected_column then
+		local modified = false
+
+		if selected_column > 1 and input_service:get("move_left_hold_continuous") then
+			selected_column = selected_column - 1
+			modified = true
+		elseif selected_column < num_max_columns and input_service:get("move_right_hold_continuous") then
+			selected_column = selected_column + 1
+			modified = true
+		end
+
+		if selected_row > 1 and input_service:get("move_up_hold_continuous") then
+			selected_row = selected_row - 1
+			modified = true
+		elseif selected_row < num_max_rows and input_service:get("move_down_hold_continuous") then
+			selected_row = selected_row + 1
+			modified = true
+		end
+
+		if modified then
+			local profile_index = ProfilePriority[selected_column]
+			local career_index = selected_row
+
+			self:_select_hero(profile_index, career_index)
+		end
+	end
+end
+
+PopupJoinLobbyHandler._select_hero = function (self, profile_index, career_index, ignore_sound)
+	if not ignore_sound then
+		self:_play_sound("play_gui_hero_select_hero_click")
+	end
+
+	local profile_settings = SPProfiles[profile_index]
+	local career_settings = profile_settings.careers[career_index]
+	local hero_name = profile_settings.display_name
+	local character_name = profile_settings.character_name
+	local career_name = career_settings.name
+	local career_display_name = career_settings.display_name
+	local hero_display_text = Localize(character_name)
+	local career_display_text = Localize(career_display_name)
+	local hero_attributes = Managers.backend:get_interface("hero_attributes")
+	local hero_experience = hero_attributes:get(hero_name, "experience") or 0
+	local level = ExperienceSettings.get_level(hero_experience)
+
+	self:_set_hero_info(hero_display_text, career_display_text, level)
+
+	local hero_widgets = self._hero_widgets
+	local num_max_rows = self._num_max_hero_rows
+	local num_max_columns = self._num_max_hero_columns
+	self._selected_career_index = career_index
+	self._selected_profile_index = profile_index
+	self._selected_hero_name = hero_name
+	self._selected_career_name = career_name
+	self._selected_hero_row = career_index
+	self._selected_hero_column = ProfileIndexToPriorityIndex[profile_index]
+
+	self:_set_hero_icon_selected(self._selected_hero_column)
+
+	local widget_index = 1
+	local is_career_locked = false
+
+	for i = 1, num_max_columns, 1 do
+		for j = 1, num_max_rows, 1 do
+			local is_selected = i == self._selected_hero_column and j == self._selected_hero_row
+			local widget = hero_widgets[widget_index]
+			local content = widget.content
+			content.button_hotspot.is_selected = is_selected
+
+			if is_selected then
+				is_career_locked = content.locked
+			end
+
+			widget_index = widget_index + 1
+		end
+	end
+end
+
+PopupJoinLobbyHandler._set_hero_icon_selected = function (self, index)
+	for icon_index, widget in ipairs(self._hero_icon_widgets) do
+		widget.content.selected = icon_index == index
 	end
 end
 
@@ -616,311 +1267,11 @@ PopupJoinLobbyHandler._is_button_hover_enter = function (self, widget)
 	return hotspot.on_hover_enter
 end
 
-PopupJoinLobbyHandler._is_hero_tab_selected = function (self)
-	local widget = self._widgets_by_name.hero_tabs
-	local widget_content = widget.content
-	local amount = widget_content.amount
-
-	for i = 1, amount, 1 do
-		local name_sufix = "_" .. tostring(i)
-		local hotspot_name = "hotspot" .. name_sufix
-		local hotspot_content = widget_content[hotspot_name]
-
-		if hotspot_content.on_pressed then
-			return i
-		end
-	end
-end
-
-PopupJoinLobbyHandler._is_tab_hovered = function (self, widget)
-	local widget_content = widget.content
-	local amount = widget_content.amount
-
-	for i = 1, amount, 1 do
-		local name_sufix = "_" .. tostring(i)
-		local hotspot_name = "hotspot" .. name_sufix
-		local hotspot_content = widget_content[hotspot_name]
-
-		if hotspot_content.on_hover_enter and not hotspot_content.is_selected then
-			return i
-		end
-	end
-end
-
-PopupJoinLobbyHandler._is_tab_dehovered = function (self, widget)
-	local widget_content = widget.content
-	local amount = widget_content.amount
-
-	for i = 1, amount, 1 do
-		local name_sufix = "_" .. tostring(i)
-		local hotspot_name = "hotspot" .. name_sufix
-		local hotspot_content = widget_content[hotspot_name]
-
-		if hotspot_content.on_hover_exit and not hotspot_content.is_selected then
-			return i
-		end
-	end
-end
-
-PopupJoinLobbyHandler._is_career_tab_selected = function (self)
-	local widget = self._widgets_by_name.career_tabs
-	local widget_content = widget.content
-	local amount = widget_content.amount
-
-	for i = 1, amount, 1 do
-		local name_sufix = "_" .. tostring(i)
-		local hotspot_name = "hotspot" .. name_sufix
-		local hotspot_content = widget_content[hotspot_name]
-
-		if hotspot_content.on_pressed then
-			return i
-		end
-	end
-end
-
-PopupJoinLobbyHandler._handle_tab_hover = function (self, widget, style_prefix)
-	local hover_index = self:_is_tab_hovered(widget)
-
-	if hover_index then
-		self:_on_option_button_hover(widget, style_prefix .. "_" .. hover_index)
-	end
-
-	local dehover_index = self:_is_tab_dehovered(widget)
-
-	if dehover_index then
-		self:_on_option_button_dehover(widget, style_prefix .. "_" .. dehover_index)
-	end
-end
-
-PopupJoinLobbyHandler._on_option_button_hover = function (self, widget, style_id)
-	local ui_animations = self._ui_animations
-	local animation_name = "option_button_" .. style_id
-	local widget_style = widget.style
-	local pass_style = widget_style[style_id]
-	local current_color_value = pass_style.color[2]
-	local target_color_value = 255
-	local total_time = UISettings.scoreboard.topic_hover_duration
-	local animation_duration = (1 - current_color_value / target_color_value) * total_time
-
-	for i = 2, 4, 1 do
-		if animation_duration > 0 then
-			ui_animations[animation_name .. "_hover_" .. i] = self:_animate_element_by_time(pass_style.color, i, current_color_value, target_color_value, animation_duration)
-		else
-			pass_style.color[i] = target_color_value
-		end
-	end
-end
-
-PopupJoinLobbyHandler._on_option_button_dehover = function (self, widget, style_id)
-	local ui_animations = self._ui_animations
-	local animation_name = "option_button_" .. style_id
-	local widget_style = widget.style
-	local pass_style = widget_style[style_id]
-	local current_color_value = pass_style.color[1]
-	local target_color_value = 100
-	local total_time = UISettings.scoreboard.topic_hover_duration
-	local animation_duration = current_color_value / 255 * total_time
-
-	for i = 2, 4, 1 do
-		if animation_duration > 0 then
-			ui_animations[animation_name .. "_hover_" .. i] = self:_animate_element_by_time(pass_style.color, i, current_color_value, target_color_value, animation_duration)
-		else
-			pass_style.color[1] = target_color_value
-		end
-	end
-end
-
-PopupJoinLobbyHandler._select_hero_and_career = function (self, profile_index, career_index)
-	local profile_order_index = ProfileIndexToPriorityIndex[profile_index]
-
-	self:_select_hero_tab_by_index(profile_order_index, career_index)
-end
-
-PopupJoinLobbyHandler._select_hero_tab_by_index = function (self, index, optional_career_index, play_sound)
-	if self._hero_tab_index == index then
-		return
-	end
-
-	if play_sound then
-		self:_play_sound("play_gui_hero_select_hero_click")
-	end
-
-	local gui = self.ui_top_renderer.gui
-	local widget = self._widgets_by_name.hero_tabs
-	local widget_content = widget.content
-	local widget_style = widget.style
-	local amount = widget_content.amount
-
-	for i = 1, amount, 1 do
-		local name_sufix = "_" .. tostring(i)
-		local hotspot_name = "hotspot" .. name_sufix
-		local hotspot_content = widget_content[hotspot_name]
-		local icon_name = "icon" .. name_sufix
-		local selected = i == index
-		hotspot_content.is_selected = selected
-		local icon_style = widget_style[icon_name]
-		local icon_color = icon_style.color
-		icon_color[2] = (selected and 255) or 100
-		icon_color[3] = (selected and 255) or 100
-		icon_color[4] = (selected and 255) or 100
-	end
-
-	local profile_index = ProfilePriority[index]
-	local profile_settings = SPProfiles[profile_index]
-	local hero_name = profile_settings.display_name
-	local character_name = profile_settings.character_name
-	self._selected_hero_name = hero_name
-	local hero_attributes = Managers.backend:get_interface("hero_attributes")
-	local exp = hero_attributes:get(hero_name, "experience") or 0
-	local level = ExperienceSettings.get_level(exp)
-
-	self:_set_hero_info(Localize(character_name), level)
-
-	local career_index = optional_career_index or hero_attributes:get(hero_name, "career") or 1
-	self._hero_tab_index = index
-
-	self:_select_career_tab_by_index(career_index, true)
-	self:enable_career_selection()
-
-	self._selected_hero_disabled = false
-end
-
-PopupJoinLobbyHandler._select_career_tab_by_index = function (self, career_index, force_set, play_sound)
-	if not force_set and self.career_index == career_index then
-		return
-	end
-
-	if play_sound then
-		self:_play_sound("play_gui_hero_select_career_click")
-	end
-
-	local gui = self.ui_top_renderer.gui
-	local widget = self._widgets_by_name.career_tabs
-	local widget_content = widget.content
-	local widget_style = widget.style
-	local amount = widget_content.amount
-	local hero_name = self._selected_hero_name
-
-	self:_assign_career_data_by_hero(hero_name)
-
-	local selected_career_locked = false
-
-	for i = 1, amount, 1 do
-		local name_sufix = "_" .. tostring(i)
-		local hotspot_name = "hotspot" .. name_sufix
-		local hotspot_content = widget_content[hotspot_name]
-		local image_name = "icon" .. name_sufix
-		local selected = i == career_index
-		hotspot_content.is_selected = selected
-
-		if selected then
-			selected_career_locked = hotspot_content.locked
-		end
-
-		local image_style = widget_style[image_name]
-		local image_color = image_style.color
-		image_color[2] = (selected and 255) or 100
-		image_color[3] = (selected and 255) or 100
-		image_color[4] = (selected and 255) or 100
-	end
-
-	local profile_index = FindProfileIndex(hero_name)
-	local profile = SPProfiles[profile_index]
-	local careers = profile.careers
-	local career_settings = careers[career_index]
-	local career_display_name = career_settings.display_name
-	local career_name = career_settings.name
-
-	self:_set_career_info(Localize(career_display_name))
-
-	self.career_index = career_index
-	self._selected_career_name = career_name
-	self._selected_career_locked = selected_career_locked
-end
-
-PopupJoinLobbyHandler._assign_career_data_by_hero = function (self, hero_name)
-	local widget = self._widgets_by_name.career_tabs
-	local content = widget.content
-	local style = widget.style
-	local amount = content.amount
-	local gui = self.ui_top_renderer.gui
-	local profile_index = FindProfileIndex(hero_name)
-	local profile = SPProfiles[profile_index]
-	local careers = profile.careers
-	local hero_attributes = Managers.backend:get_interface("hero_attributes")
-	local hero_experience = hero_attributes:get(hero_name, "experience") or 0
-	local hero_level = ExperienceSettings.get_level(hero_experience)
-	local selection_texture = "portrait_glow"
-	local selection_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(selection_texture)
-	local selection_texture_size = selection_texture_settings.size
-	local difficulty = self._difficulty
-
-	for i = 1, amount, 1 do
-		local name_sufix = "_" .. tostring(i)
-		local hotspot_name = "hotspot" .. name_sufix
-		local hotspot_content = content[hotspot_name]
-		local career_settings = careers[i]
-		local is_career_unlocked = career_settings.is_unlocked_function(hero_name, hero_level)
-		hotspot_content.locked = not is_career_unlocked
-		local display_name = career_settings.display_name
-		local portrait_image = career_settings.portrait_image
-		local title_text_name = "title_text" .. name_sufix
-		hotspot_content[title_text_name] = display_name
-		local image_name = "icon" .. name_sufix
-		hotspot_content[image_name] = portrait_image
-		local icon_size = style[image_name].size
-		local selection_image = "selection_icon" .. name_sufix
-		hotspot_content[selection_image] = selection_texture
-		local selection_style = style[selection_image]
-		local selection_size = selection_style.size
-		local selection_offset = selection_style.offset
-		local selection_default_offset = selection_style.default_offset
-		selection_size[1] = selection_texture_size[1]
-		selection_size[2] = selection_texture_size[2]
-		selection_offset[1] = (selection_default_offset[1] + icon_size[1] / 2) - selection_size[1] / 2
-		selection_offset[2] = (selection_default_offset[2] + icon_size[2] / 2) - selection_size[2] / 2
-	end
-end
-
-PopupJoinLobbyHandler._assign_hero_portraits = function (self)
-	local widget = self._widgets_by_name.hero_tabs
-	local content = widget.content
-	local style = widget.style
-	local gui = self.ui_top_renderer.gui
-	local selection_texture = "hero_icon_glow"
-	local selection_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(selection_texture)
-	local selection_texture_size = selection_texture_settings.size
-
-	for index, profile_index in ipairs(ProfilePriority) do
-		local name_sufix = "_" .. tostring(index)
-		local hotspot_name = "hotspot" .. name_sufix
-		local hotspot_content = content[hotspot_name]
-		local icon_name = "icon" .. name_sufix
-		local selection_image = "selection_icon" .. name_sufix
-		local profile_settings = SPProfiles[profile_index]
-		local hero_selection_image = profile_settings.hero_selection_image
-		hotspot_content[icon_name] = hero_selection_image
-		hotspot_content[selection_image] = selection_texture
-		local selection_style = style[selection_image]
-		local selection_size = selection_style.size
-		local selection_offset = selection_style.offset
-		local selection_default_offset = selection_style.default_offset
-		selection_size[1] = selection_texture_size[1]
-		selection_size[2] = selection_texture_size[2]
-		local icon_size = style[icon_name].size
-		selection_offset[1] = (selection_default_offset[1] + icon_size[1] / 2) - selection_size[1] / 2
-		selection_offset[2] = (selection_default_offset[2] + icon_size[2] / 2) - selection_size[2] / 2
-	end
-end
-
-PopupJoinLobbyHandler._set_hero_info = function (self, name, level)
+PopupJoinLobbyHandler._set_hero_info = function (self, hero_name, career_name, level)
 	local widgets_by_name = self._widgets_by_name
-	widgets_by_name.hero_text.content.text = name
-end
-
-PopupJoinLobbyHandler._set_career_info = function (self, name, power_level)
-	local widgets_by_name = self._widgets_by_name
-	widgets_by_name.career_text.content.text = name
+	widgets_by_name.info_hero_name.content.text = hero_name
+	widgets_by_name.info_career_name.content.text = career_name
+	widgets_by_name.info_hero_level.content.text = level
 end
 
 PopupJoinLobbyHandler._set_timer_text = function (self, timer_text)
@@ -929,62 +1280,47 @@ PopupJoinLobbyHandler._set_timer_text = function (self, timer_text)
 end
 
 PopupJoinLobbyHandler.set_unavailable_heroes = function (self, occupied_heroes)
-	local widget = self._widgets_by_name.hero_tabs
-	local content = widget.content
-	local gui = self.ui_top_renderer.gui
-	local selected_hero_disabled = false
+	self._occupied_heroes = occupied_heroes
 
-	for index, profile_index in ipairs(ProfilePriority) do
-		local name_sufix = "_" .. tostring(index)
-		local hotspot_name = "hotspot" .. name_sufix
-		local hotspot_content = content[hotspot_name]
-		local disable = occupied_heroes[profile_index]
-		hotspot_content.disable_button = disable
-
-		if disable and hotspot_content.is_selected then
-			selected_hero_disabled = true
-		end
-	end
-
-	if selected_hero_disabled then
-		self:disable_career_selection()
-
-		self._selected_hero_disabled = true
-	else
-		self._selected_hero_disabled = false
-
-		self:enable_career_selection()
-	end
+	self:_update_occupied_profiles()
 end
 
 PopupJoinLobbyHandler.set_difficulty = function (self, difficulty)
 	self._difficulty = difficulty
 end
 
-PopupJoinLobbyHandler.enable_career_selection = function (self)
-	local widget = self._widgets_by_name.career_tabs
-	local content = widget.content
-	local amount = content.amount
+PopupJoinLobbyHandler._update_occupied_profiles = function (self)
+	local occupied_heroes = self._occupied_heroes
 
-	for i = 1, amount, 1 do
-		local name_sufix = "_" .. tostring(i)
-		local hotspot_name = "hotspot" .. name_sufix
-		local hotspot_content = content[hotspot_name]
-		hotspot_content.disable_button = false
+	if not occupied_heroes then
+		return
 	end
-end
 
-PopupJoinLobbyHandler.disable_career_selection = function (self)
-	local widget = self._widgets_by_name.career_tabs
-	local content = widget.content
-	local amount = content.amount
+	local hero_widgets = self._hero_widgets
+	local num_max_rows = self._num_max_hero_rows
+	local num_max_columns = self._num_max_hero_columns
+	local is_button_enabled = false
+	local widget_index = 1
 
-	for i = 1, amount, 1 do
-		local name_sufix = "_" .. tostring(i)
-		local hotspot_name = "hotspot" .. name_sufix
-		local hotspot_content = content[hotspot_name]
-		hotspot_content.disable_button = not hotspot_content.locked
+	for i = 1, num_max_columns, 1 do
+		local profile_index = ProfilePriority[i]
+		local occupied = occupied_heroes[profile_index]
+
+		for j = 1, num_max_rows, 1 do
+			local widget = hero_widgets[widget_index]
+			local content = widget.content
+			local button_hotspot = content.button_hotspot
+			content.taken = occupied
+
+			if button_hotspot.is_selected then
+				is_button_enabled = not occupied and not content.locked
+			end
+
+			widget_index = widget_index + 1
+		end
 	end
+
+	self:set_select_button_enable_state(is_button_enabled)
 end
 
 PopupJoinLobbyHandler._animate_element_by_time = function (self, target, target_index, from, to, time)
@@ -997,10 +1333,51 @@ PopupJoinLobbyHandler.set_select_button_enable_state = function (self, enabled)
 	local button_content = self._widgets_by_name.select_button.content
 	button_content.title_text = (enabled and Localize("input_description_confirm")) or Localize("dlc1_2_difficulty_unavailable")
 	button_content.button_hotspot.disable_button = not enabled
+	local widgets_by_name = self._widgets_by_name
+	local gamepad_select_button = widgets_by_name.gamepad_select_button
+	local gamepad_cancel_button = widgets_by_name.gamepad_cancel_button
+	gamepad_select_button.content.visible = enabled
+	gamepad_cancel_button.scenegraph_id = (enabled and "cancel_button") or "center_button"
+	self._selection_approved = enabled
 end
 
 PopupJoinLobbyHandler._play_sound = function (self, event)
 	WwiseWorld.trigger_event(self.wwise_world, event)
+end
+
+PopupJoinLobbyHandler._get_gamepad_input_texture_data = function (self, input_service, input_action, ignore_keybinding)
+	local platform = PLATFORM
+
+	if platform == "win32" then
+		platform = "xb1"
+	end
+
+	if ignore_keybinding then
+		return ButtonTextureByName(input_action, platform)
+	else
+		return UISettings.get_gamepad_input_texture_data(input_service, input_action, true)
+	end
+end
+
+PopupJoinLobbyHandler._update_gamepad_input_buttons = function (self)
+	local ui_renderer = self.ui_renderer
+	local widgets_by_name = self._widgets_by_name
+	local gamepad_select_button = widgets_by_name.gamepad_select_button
+	local gamepad_cancel_button = widgets_by_name.gamepad_cancel_button
+	local input_service = Managers.input:get_service("popup_join_lobby_handler")
+	local select_action_texture_data = self:_get_gamepad_input_texture_data(input_service, gamepad_select_button.content.input_action)
+	local cancel_action_texture_data = self:_get_gamepad_input_texture_data(input_service, gamepad_cancel_button.content.input_action)
+	gamepad_select_button.content.icon = select_action_texture_data.texture
+	gamepad_cancel_button.content.icon = cancel_action_texture_data.texture
+	local select_button_text = gamepad_select_button.content.text
+	local cancel_button_text = gamepad_cancel_button.content.text
+	local button_style = gamepad_select_button.style
+	local text_style = button_style.text
+	local font, scaled_font_size = UIFontByResolution(text_style)
+	local select_text_width = UIRenderer.text_size(ui_renderer, select_button_text, font[1], scaled_font_size)
+	local cancel_text_width = UIRenderer.text_size(ui_renderer, cancel_button_text, font[1], scaled_font_size)
+	gamepad_select_button.style.icon.offset[1] = -(select_text_width * 0.5) - 40
+	gamepad_cancel_button.style.icon.offset[1] = -(cancel_text_width * 0.5) - 40
 end
 
 return

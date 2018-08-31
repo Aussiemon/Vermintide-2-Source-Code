@@ -1,4 +1,4 @@
-local window_default_settings = UISettings.game_start_windows
+local window_default_settings = (PLATFORM == "win32" and UISettings.game_start_windows) or UISettings.game_start_windows_console
 local small_window_background = window_default_settings.background
 local window_frame = window_default_settings.frame
 local small_window_size = window_default_settings.size
@@ -124,7 +124,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			25,
+			(PLATFORM == "win32" and 25) or 15,
 			3
 		}
 	},
@@ -162,7 +162,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		size = {
 			game_option_size[1],
-			72
+			(PLATFORM == "win32" and 72) or 0
 		},
 		position = {
 			0,
@@ -441,7 +441,7 @@ local function create_settings_option(scenegraph_id, size, title_text, icon_text
 		150,
 		150
 	}
-	background_texture = background_texture or "play_screen_bg"
+	background_texture = background_texture or "game_options_bg_02"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local frame_name = "menu_frame_08"
 	local frame_settings = UIFrameSettings[frame_name]
@@ -706,7 +706,7 @@ local function create_settings_option(scenegraph_id, size, title_text, icon_text
 end
 
 local function create_additional_settings_option(scenegraph_id, size, title_text, background_texture)
-	background_texture = background_texture or "play_screen_bg"
+	background_texture = background_texture or "game_options_bg_02"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local frame_name = "menu_frame_08"
 	local frame_settings = UIFrameSettings[frame_name]
@@ -1165,6 +1165,7 @@ local function create_reward_presentation(scenegraph_id, size)
 	return widget
 end
 
+local disable_with_gamepad = true
 local widgets = {
 	background = {
 		scenegraph_id = "screen",
@@ -1192,8 +1193,8 @@ local widgets = {
 		100
 	}),
 	window_fade = UIWidgets.create_simple_texture("options_window_fade_01", "window_fade"),
-	button_confirm = UIWidgets.create_play_button("button_confirm", scenegraph_definition.button_confirm.size, "n/a", 34),
-	button_abort = UIWidgets.create_default_button("button_abort", scenegraph_definition.button_abort.size, nil, nil, "n/a", 24, nil, "button_detail_04", 34),
+	button_confirm = UIWidgets.create_play_button("button_confirm", scenegraph_definition.button_confirm.size, "n/a", 34, disable_with_gamepad),
+	button_abort = UIWidgets.create_default_button("button_abort", scenegraph_definition.button_abort.size, nil, nil, "n/a", 24, nil, "button_detail_04", 34, disable_with_gamepad),
 	game_options_left_chain = UIWidgets.create_tiled_texture("game_options_left_chain", "chain_link_01", {
 		16,
 		19
@@ -1247,8 +1248,26 @@ local deed_game_widgets = {
 	item_presentation_bg = UIWidgets.create_simple_texture("game_options_bg_04", "deed_option_bg"),
 	item_presentation = UIWidgets.create_simple_item_presentation("item_presentation")
 }
+local generic_input_actions = {
+	default = {},
+	default_voting = {
+		actions = {
+			{
+				input_action = "confirm",
+				priority = 1,
+				description_text = "menu_accept"
+			},
+			{
+				input_action = "back",
+				priority = 2,
+				description_text = "dlc1_3_1_decline"
+			}
+		}
+	}
+}
 
 return {
+	generic_input_actions = generic_input_actions,
 	scenegraph_definition = scenegraph_definition,
 	adventure_game_widgets = adventure_game_widgets,
 	custom_game_widgets = custom_game_widgets,

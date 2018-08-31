@@ -55,6 +55,7 @@ PlayerCharacterStateClimbingLadder.on_enter = function (self, unit, input, dt, c
 
 	if previous_state ~= "enter_ladder_top" then
 		CharacterStateHelper.stop_weapon_actions(self.inventory_extension, "ladder")
+		CharacterStateHelper.stop_career_abilities(self.career_extension, "ladder")
 
 		local network_manager = Managers.state.network
 		local unit_id = network_manager:unit_game_object_id(unit)

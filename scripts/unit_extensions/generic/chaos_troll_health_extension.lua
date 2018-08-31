@@ -8,6 +8,7 @@ ChaosTrollHealthExtension.init = function (self, extension_init_context, unit, .
 	self._blackboard = blackboard
 	local t = Managers.time:time("game")
 	self._regen_time = t + 1
+	self._regen_paused_time = t
 	self.pulse_time = 0
 	self.state = "unhurt"
 	local breed = Breeds[blackboard.breed.name]
@@ -19,6 +20,7 @@ ChaosTrollHealthExtension.init = function (self, extension_init_context, unit, .
 	self.downed_pulse_interval = breed.downed_pulse_interval
 	self.regen_pulse_intensity = breed.regen_pulse_intensity
 	self.downed_pulse_intensity = breed.downed_pulse_intensity
+	self.regen_taken_damage_pause_time = breed.regen_taken_damage_pause_time
 	self.action = action
 	self.original_health = self.health
 end
@@ -69,7 +71,7 @@ ChaosTrollHealthExtension.update = function (self, dt, context, t)
 	elseif self.state == "unhurt" or self.state == "wounded" then
 		self:update_regen_effect(t, dt, self.regen_pulse_interval, self.regen_pulse_intensity)
 
-		if self._regen_time < t then
+		if self._regen_time < t and self._regen_paused_time < t then
 			self:add_heal(self.unit, self._blackboard.health_regen_per_sec * self.regen_pulse_interval, nil, "buff")
 
 			self._regen_time = t + self.regen_pulse_interval
@@ -85,12 +87,14 @@ ChaosTrollHealthExtension._should_die = function (self)
 	return self.state == "wounded" and self.health <= self.damage
 end
 
-ChaosTrollHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
-	ChaosTrollHealthExtension.super.add_damage(self, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
+ChaosTrollHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
+	ChaosTrollHealthExtension.super.add_damage(self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
 
 	if self.state == "dead" then
 		return
 	end
+
+	local t = Managers.time:time("game")
 
 	if self.state == "unhurt" then
 		local percent_damage = 1
@@ -99,7 +103,6 @@ ChaosTrollHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 			self.damage = 0
 			self.state = "down"
 			self._blackboard.downed_state = "downed"
-			local t = Managers.time:time("game")
 			self.start_reset_time = t + (self.action.downed_duration + self.action.standup_anim_duration) - self.action.reset_duration
 			self.down_reset_timer = 0
 		else
@@ -123,6 +126,8 @@ ChaosTrollHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 			set_material_property(self.unit, "damage_value", "mtr_skin", percent_damage, true)
 		end
 	end
+
+	self._regen_paused_time = t + self.regen_taken_damage_pause_time
 
 	self:sync_health_to_clients()
 end

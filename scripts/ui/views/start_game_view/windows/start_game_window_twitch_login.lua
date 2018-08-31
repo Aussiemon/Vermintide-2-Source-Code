@@ -81,10 +81,12 @@ end
 StartGameWindowTwitchLogin.set_active = function (self, active, skip_block)
 	self._active = active
 
-	if active then
-		Managers.irc:register_message_callback("twitch", Irc.CHANNEL_MSG, callback(self, "cb_on_message_received"))
-	else
-		Managers.irc:unregister_message_callback("twitch")
+	if PLATFORM == "win32" then
+		if active then
+			Managers.irc:register_message_callback("twitch", Irc.CHANNEL_MSG, callback(self, "cb_on_message_received"))
+		else
+			Managers.irc:unregister_message_callback("twitch")
+		end
 	end
 end
 
@@ -101,46 +103,49 @@ StartGameWindowTwitchLogin._update_popup = function (self)
 end
 
 StartGameWindowTwitchLogin._handle_input = function (self, dt, t)
-	local frame_widget = self._widgets_by_name.frame_widget
-	local frame_widget_content = frame_widget.content
 	local input_service = self.parent:window_input_service()
 	local is_connecting = Managers.twitch:is_connecting()
 	local is_connected = Managers.twitch:is_connected()
 
 	if not is_connecting then
-		local text_input_hotspot = frame_widget_content.text_input_hotspot
-		local screen_hotspot = frame_widget_content.screen_hotspot
-		local frame_hotspot = frame_widget_content.frame_hotspot
+		local frame_widget = self._widgets_by_name.frame_widget
 
-		if text_input_hotspot.on_pressed and not is_connected then
-			self.parent.parent:set_input_blocked(true)
+		if PLATFORM == "win32" then
+			local frame_widget_content = frame_widget.content
+			local text_input_hotspot = frame_widget_content.text_input_hotspot
+			local screen_hotspot = frame_widget_content.screen_hotspot
+			local frame_hotspot = frame_widget_content.frame_hotspot
 
-			frame_widget_content.text_field_active = true
-		elseif screen_hotspot.on_pressed or is_connected then
-			if screen_hotspot.on_pressed and not frame_widget_content.text_field_active and not frame_hotspot.on_pressed then
-				self:set_active(false)
+			if text_input_hotspot.on_pressed and not is_connected then
+				self.parent.parent:set_input_blocked(true)
+
+				frame_widget_content.text_field_active = true
+			elseif screen_hotspot.on_pressed or is_connected then
+				if screen_hotspot.on_pressed and not frame_widget_content.text_field_active and not frame_hotspot.on_pressed then
+					self:set_active(false)
+
+					frame_widget_content.text_field_active = false
+
+					self.parent.parent:set_input_blocked(false)
+
+					return
+				end
 
 				frame_widget_content.text_field_active = false
 
 				self.parent.parent:set_input_blocked(false)
-
-				return
 			end
 
-			frame_widget_content.text_field_active = false
+			if frame_widget_content.text_field_active then
+				local keystrokes = Keyboard.keystrokes()
+				frame_widget_content.twitch_name, frame_widget_content.caret_index = KeystrokeHelper.parse_strokes(frame_widget_content.twitch_name, frame_widget_content.caret_index, "insert", keystrokes)
 
-			self.parent.parent:set_input_blocked(false)
-		end
+				if input_service:get("execute_login", true) then
+					frame_widget_content.text_field_active = false
+					local user_name = string.gsub(frame_widget_content.twitch_name, " ", "")
 
-		if frame_widget_content.text_field_active then
-			local keystrokes = Keyboard.keystrokes()
-			frame_widget_content.twitch_name, frame_widget_content.caret_index = KeystrokeHelper.parse_strokes(frame_widget_content.twitch_name, frame_widget_content.caret_index, "insert", keystrokes)
-
-			if input_service:get("execute_login", true) then
-				frame_widget_content.text_field_active = false
-				local user_name = string.gsub(frame_widget_content.twitch_name, " ", "")
-
-				Managers.twitch:connect(user_name, callback(self, "cb_connection_error_callback"), callback(self, "cb_connection_success_callback"))
+					Managers.twitch:connect(user_name, callback(self, "cb_connection_error_callback"), callback(self, "cb_connection_success_callback"))
+				end
 			end
 		end
 
@@ -154,7 +159,12 @@ StartGameWindowTwitchLogin._handle_input = function (self, dt, t)
 			local button_pressed = self:_is_button_pressed(connect_button_widget)
 
 			if button_pressed then
-				local user_name = string.gsub(frame_widget_content.twitch_name, " ", "")
+				local user_name = ""
+
+				if frame_widget then
+					local frame_widget_content = frame_widget.content
+					user_name = string.gsub(frame_widget_content.twitch_name, " ", "")
+				end
 
 				Managers.twitch:connect(user_name, callback(self, "cb_connection_error_callback"), callback(self, "cb_connection_success_callback"))
 				self:_play_sound("Play_hud_select")

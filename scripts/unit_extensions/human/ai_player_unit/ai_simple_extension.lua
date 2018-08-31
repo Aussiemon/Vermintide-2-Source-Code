@@ -3,7 +3,6 @@ require("scripts/unit_extensions/human/ai_player_unit/ai_locomotion_extension_c"
 require("scripts/unit_extensions/human/ai_player_unit/ai_husk_locomotion_extension")
 require("scripts/unit_extensions/human/ai_player_unit/ai_navigation_extension")
 require("scripts/unit_extensions/human/ai_player_unit/ai_brain")
-require("scripts/unit_extensions/human/ai_player_unit/ai_event_handler")
 require("scripts/unit_extensions/human/ai_player_unit/perception_utils")
 require("scripts/utils/pool_tables/pool_blackboard")
 require("scripts/utils/pool_tables/pool_generic_extension")
@@ -24,12 +23,6 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 	Unit.set_data(unit, "breed", breed)
 
 	self._breed = breed
-	local dogpile_value = breed.dogpile_value
-
-	if dogpile_value then
-		Unit.set_data(unit, "dogpile_value", dogpile_value)
-	end
-
 	local is_passive = (breed.initial_is_passive == nil and true) or breed.initial_is_passive
 	local blackboard = Script.new_map(breed.blackboard_allocation_size or 75)
 	blackboard.world = extension_init_context.world
@@ -51,11 +44,6 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 	blackboard.stagger_count_reset_at = 0
 	blackboard.override_targets = {}
 	blackboard.optional_spawn_data = extension_init_data.optional_spawn_data
-
-	if breed.stagger_immunity then
-		blackboard.stagger_immunity = table.clone(breed.stagger_immunity)
-	end
-
 	local blackboard_init_data = breed.blackboard_init_data
 
 	if blackboard_init_data then
@@ -68,32 +56,97 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 		DamageUtils.create_hit_zone_lookup(unit, breed)
 	end
 
-	if breed.combat_spawn_stinger then
-		Managers.music:music_trigger("combat_music", breed.combat_spawn_stinger)
+	if breed.special_on_spawn_stinger then
+		WwiseUtils.trigger_unit_event(self._world, breed.special_on_spawn_stinger, unit, 0)
 	end
 
-	if breed.special_spawn_stinger then
-		WwiseUtils.trigger_unit_event(self._world, breed.special_spawn_stinger, unit, 0)
-	end
-
-	self:_init_event_handler()
 	self:_init_brain(breed, is_horde)
 	self:_set_size_variation(extension_init_data.size_variation, extension_init_data.size_variation_normalized)
-	GarbageLeakDetector.register_object(blackboard, "ai_blackboard")
 end
 
 AISimpleExtension.destroy = function (self)
 	local blackboard = self._blackboard
 
 	AiUtils.special_dead_cleanup(self._unit, self._blackboard)
+	self._brain:destroy()
+end
 
-	if self.broadphase_id then
-		Broadphase.remove(blackboard.group_blackboard.broadphase, self.broadphase_id)
+STATIC_BLACKBOARD_KEYS = STATIC_BLACKBOARD_KEYS or {
+	target_dist = true,
+	stagger_count = true,
+	node_data = true,
+	is_in_attack_cooldown = true,
+	world = true,
+	health_extension = true,
+	stagger_count_reset_at = true,
+	override_targets = true,
+	next_smart_object_data = true,
+	navigation_extension = true,
+	locomotion_extension = true,
+	move_orders = true,
+	unit = true,
+	level = true,
+	system_api = true,
+	spawn_type = true,
+	running_nodes = true,
+	group_blackboard = true,
+	attack_cooldown_at = true,
+	stuck_check_time = true,
+	inventory_extension = true,
+	is_passive = true,
+	optional_spawn_dat = true,
+	breed = true,
+	nav_world = true
+}
 
-		self.broadphase_id = nil
+AISimpleExtension.freeze = function (self)
+	self._brain:exit_last_action()
+end
+
+AISimpleExtension.unfreeze = function (self, unit, data)
+	local blackboard = self._blackboard
+
+	for k, v in pairs(blackboard) do
+		if not STATIC_BLACKBOARD_KEYS[k] then
+			blackboard[k] = nil
+		end
 	end
 
-	self._brain:destroy()
+	local spawn_category = data[4]
+	local spawn_type = data[6]
+	local optional_spawn_data = data[7]
+
+	table.clear(blackboard.move_orders)
+	table.clear(blackboard.node_data)
+	table.clear(blackboard.running_nodes)
+	table.clear(blackboard.override_targets)
+
+	blackboard.target_dist = math.huge
+	blackboard.spawn_type = spawn_type
+	blackboard.spawn_category = spawn_category
+	blackboard.stuck_check_time = Managers.time:time("game") + RecycleSettings.ai_stuck_check_start_time
+	blackboard.is_in_attack_cooldown = false
+	blackboard.attack_cooldown_at = 0
+	blackboard.stagger_count = 0
+	blackboard.stagger_count_reset_at = 0
+	blackboard.optional_spawn_data = optional_spawn_data
+	self._current_action = nil
+
+	self._brain:unfreeze(blackboard)
+
+	local breed = blackboard.breed
+	local spawn_type = blackboard.spawn_type
+	local is_horde = spawn_type == "horde_hidden" or spawn_type == "horde"
+
+	self:init_perception(breed, is_horde)
+
+	if breed.far_off_despawn_immunity or (optional_spawn_data and optional_spawn_data.far_off_despawn_immunity) then
+		blackboard.far_off_despawn_immunity = true
+	end
+
+	if breed.run_on_spawn then
+		breed.run_on_spawn(unit, blackboard)
+	end
 end
 
 AISimpleExtension.extensions_ready = function (self, world, unit)
@@ -116,7 +169,9 @@ AISimpleExtension.extensions_ready = function (self, world, unit)
 		self.broadphase_id = Broadphase.add(blackboard.group_blackboard.broadphase, unit, Unit.local_position(unit, 0), 1)
 	end
 
-	if breed.far_off_despawn_immunity then
+	local optional_spawn_data = blackboard.optional_spawn_data
+
+	if breed.far_off_despawn_immunity or (optional_spawn_data and optional_spawn_data.far_off_despawn_immunity) then
 		blackboard.far_off_despawn_immunity = true
 	end
 
@@ -229,15 +284,6 @@ AISimpleExtension.set_perception = function (self, perception_func_name, target_
 	end
 end
 
-AISimpleExtension._init_event_handler = function (self)
-	if self._breed.event then
-		local class_name = self._breed.event.class_name
-		self._event_handler = _G[class_name]:new(self._unit)
-	else
-		self._event_handler = AIEventHandler:new(self._unit)
-	end
-end
-
 AISimpleExtension._init_brain = function (self, breed, is_horde)
 	local behavior = (is_horde and breed.horde_behavior) or breed.behavior
 	self._brain = AIBrain:new(self._world, self._unit, self._blackboard, self._breed, behavior)
@@ -323,7 +369,6 @@ AISimpleExtension.attacked = function (self, attacker_unit, t, damage_hit)
 		end
 
 		blackboard.previous_attacker = attacker_unit
-		blackboard.previous_attacker_hit_time = t
 	end
 
 	if not damage_hit and blackboard.stagger == 1 and AiUtils.unit_alive(unit) then

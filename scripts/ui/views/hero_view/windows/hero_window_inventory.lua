@@ -185,12 +185,12 @@ HeroWindowInventory._handle_input = function (self, dt, t)
 		local next_page_index = self._current_page + 1
 
 		item_grid:set_item_page(next_page_index)
-		self:_play_sound("play_gui_craft_inventory_next_click")
+		self:_play_sound("play_gui_craft_inventory_next")
 	elseif self:_is_button_pressed(page_button_previous) then
 		local next_page_index = self._current_page - 1
 
 		item_grid:set_item_page(next_page_index)
-		self:_play_sound("play_gui_craft_inventory_next_click")
+		self:_play_sound("play_gui_craft_inventory_next")
 	end
 end
 

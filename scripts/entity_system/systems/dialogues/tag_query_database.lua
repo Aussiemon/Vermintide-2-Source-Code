@@ -556,7 +556,7 @@ TagQueryDatabase.debug_test_query = function (self, concept, source, test_query,
 		for key, value in pairs(context) do
 			print(string.format("\t\t%-15s : %-15s", key, tostring(value)))
 
-			user_context_list[key] = value
+			user_context_list[name][key] = value
 		end
 	end
 

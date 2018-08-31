@@ -124,7 +124,7 @@ local definitions = {
 			horizontal_alignment = "center",
 			size = inner_window_size,
 			position = {
-				window_width_offset,
+				0,
 				0,
 				1
 			}
@@ -486,17 +486,6 @@ local function lobby_difficulty_rank(lobby_data)
 	return difficulty_rank
 end
 
-local function lobby_status_text(lobby_data)
-	local is_private = lobby_data.matchmaking == "false"
-	local is_full = lobby_data.num_players == MatchmakingSettings.MAX_NUMBER_OF_PLAYERS
-	local is_in_inn = lobby_data.level_key == "inn_level"
-	local is_broken = lobby_data.is_broken
-	local status = (is_broken and "lb_broken") or (is_private and "lb_private") or (is_full and "lb_full") or (is_in_inn and "lb_in_inn") or "lb_started"
-	local status_text = (status and Localize(status)) or ""
-
-	return status_text
-end
-
 local function lobby_country_text(lobby_data)
 	local country_code = lobby_data.country_code
 	local country_text = (country_code and iso_countries[country_code]) or ""
@@ -578,7 +567,7 @@ local function create_lobby_list_entry_content(lobby_data)
 	local level_text = lobby_level_display_name(lobby_data)
 	local num_players_text = lobby_data.num_players or 0
 	local difficulty_text = lobby_difficulty_display_name(lobby_data)
-	local status_text = lobby_status_text(lobby_data)
+	local status_text = LobbyItemsList.lobby_status_text(lobby_data)
 	local is_invalid = not lobby_data.valid
 	local status_text_parsed = (is_invalid and "[INV]" .. status_text) or status_text
 	local country_text = lobby_country_text(lobby_data)
@@ -820,6 +809,18 @@ LobbyItemsList.destroy = function (self)
 	return
 end
 
+LobbyItemsList.lobby_status_text = function (lobby_data)
+	local is_dedicated_server = lobby_data.server_info ~= nil
+	local is_private = (is_dedicated_server and lobby_data.server_info.password) or (not is_dedicated_server and lobby_data.matchmaking == "false")
+	local is_full = lobby_data.num_players == MatchmakingSettings.MAX_NUMBER_OF_PLAYERS
+	local is_in_inn = lobby_data.level_key == "inn_level"
+	local is_broken = lobby_data.is_broken
+	local status = (is_broken and "lb_broken") or (is_private and "lb_private") or (is_full and "lb_full") or (is_in_inn and "lb_in_inn") or "lb_started"
+	local status_text = (status and Localize(status)) or ""
+
+	return status_text
+end
+
 LobbyItemsList.create_ui_elements = function (self, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(self.scenegraph_definition)
 	local scrollbar_scenegraph_id = "scrollbar_root"
@@ -890,15 +891,15 @@ local function sort_lobbies_on_difficulty_desc(lobby_a, lobby_b)
 end
 
 local function sort_lobbies_on_status_asc(lobby_a, lobby_b)
-	local status_a = lobby_status_text(lobby_a)
-	local status_b = lobby_status_text(lobby_b)
+	local status_a = LobbyItemsList.lobby_status_text(lobby_a)
+	local status_b = LobbyItemsList.lobby_status_text(lobby_b)
 
 	return status_a < status_b
 end
 
 local function sort_lobbies_on_status_desc(lobby_a, lobby_b)
-	local status_a = lobby_status_text(lobby_a)
-	local status_b = lobby_status_text(lobby_b)
+	local status_a = LobbyItemsList.lobby_status_text(lobby_a)
+	local status_b = LobbyItemsList.lobby_status_text(lobby_b)
 
 	return status_b < status_a
 end

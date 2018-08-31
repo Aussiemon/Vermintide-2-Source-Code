@@ -9,6 +9,7 @@ require("scripts/network_lookup/network_lookup")
 require("scripts/network/voice_chat_xb1")
 
 LobbyInternal = LobbyInternal or {}
+LobbyInternal.TYPE = "xboxlive"
 LobbyInternal.HOPPER_NAME = "new_stage_hopper"
 LobbyInternal.SESSION_TEMPLATE_NAME = "default_game"
 LobbyInternal.SMARTMATCH_SESSION_TEMPLATE_NAME = "ticket_default"
@@ -46,6 +47,35 @@ end
 
 LobbyInternal.network_initialized = function ()
 	return not not LobbyInternal.client
+end
+
+LobbyInternal.ping = function (peer_id)
+	local matchmaking_manager = Managers.matchmaking
+	local pings_by_peer_id = matchmaking_manager:get_players_ping()
+	local ping_data = pings_by_peer_id[peer_id]
+
+	if ping_data then
+		local number_of_ping_values = #ping_data
+		local total_value = 0
+
+		for i = 1, number_of_ping_values, 1 do
+			total_value = total_value + ping_data[i]
+		end
+
+		local average_value = (total_value > 0 and total_value / number_of_ping_values) or 0
+
+		return average_value
+	else
+		return 255
+	end
+end
+
+LobbyInternal.add_ping_peer = function (peer_id)
+	return
+end
+
+LobbyInternal.remove_ping_peer = function (peer_id)
+	return
 end
 
 LobbyInternal.leave_lobby = function (xboxlive_lobby)
@@ -350,7 +380,7 @@ XboxLiveLobby.update_activity = function (self, dt, level_key)
 	if MultiplayerSession.status(session_id) == MultiplayerSession.READY then
 		local game_mode_ended = Managers.state.game_mode and Managers.state.game_mode:is_game_mode_ended()
 
-		if num_members == MatchmakingSettings.MAX_NUMBER_OF_PLAYERS or level_key == "tutorial" or game_mode_ended then
+		if num_members == MatchmakingSettings.MAX_NUMBER_OF_PLAYERS or level_key == "prologue" or game_mode_ended then
 			if self._activity_set then
 				if not Network.fatal_error() then
 					Network.clear_activity(user_id)
@@ -373,7 +403,7 @@ end
 XboxLiveLobby.update_host_matchmaking = function (self, dt)
 	local state = MultiplayerSession.status(self._session_id)
 
-	if state ~= MultiplayerSession.READY or not self._smartmatch_enabled then
+	if state ~= MultiplayerSession.READY or not self._smartmatch_enabled or Managers.account:user_detached() then
 		return
 	end
 

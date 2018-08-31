@@ -228,7 +228,9 @@ ObserverUI.update_follow_player_health_bar = function (self, peer_id)
 		local multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
 		local num_twitch_grimoires = buff_extension:num_buff_perk("twitch_grimoire")
 		local twitch_multiplier = PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF
-		active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier
+		local num_slayer_curses = buff_extension:num_buff_perk("slayer_curse")
+		local slayer_curse_multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.SLAYER_CURSE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
+		active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier + num_slayer_curses * slayer_curse_multiplier
 	else
 		health_percent = 0
 		is_knocked_down = false

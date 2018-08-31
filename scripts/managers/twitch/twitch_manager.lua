@@ -1,6 +1,8 @@
 require("scripts/settings/twitch_settings")
 
 DEBUG_TWITCH = false
+local NUM_ROUNDS_TO_DISABLE_USED_VOTES = 15
+local MIN_VOTES_LEFT_IN_ROTATION = 2
 
 local function debug_print(message, ...)
 	if DEBUG_TWITCH then
@@ -21,9 +23,11 @@ TwitchManager.init = function (self)
 	self._vote_key_index = 1
 	self._connecting = false
 	self._connected = false
+	self._sound_bank_loaded = false
 	self._twitch_user_name = ""
 	self._game_object_ids = {}
 	self._vote_key_to_go_id = {}
+	self.locked_breed_packages = {}
 	local settings = Application.settings()
 	self._twitch_settings = settings.twitch
 
@@ -37,6 +41,32 @@ TwitchManager.init = function (self)
 	TwitchSettings.default_vote_time = Application.user_setting("twitch_vote_time")
 	TwitchSettings.difficulty = Application.user_setting("twitch_difficulty")
 	self._debug_vote_timer = 0.25
+end
+
+TwitchManager.stream_type = function (self)
+	return "twitch"
+end
+
+TwitchManager._load_sound_bank = function (self)
+	if not self._sound_bank_loaded then
+		local package_to_load = "resource_packages/ingame_sounds_twitch_mode"
+
+		debug_print("Loading twitch mode sound bank resource package %s", package_to_load)
+		Managers.package:load(package_to_load, "twitch", nil, true)
+
+		self._sound_bank_loaded = true
+	end
+end
+
+TwitchManager._unload_sound_bank = function (self)
+	if self._sound_bank_loaded then
+		local package_to_unload = "resource_packages/ingame_sounds_twitch_mode"
+
+		debug_print("Unloading twitch mode sound bank resource package %s", package_to_unload)
+		Managers.package:unload(package_to_unload, "twitch")
+
+		self._sound_bank_loaded = false
+	end
 end
 
 TwitchManager.connect = function (self, twitch_user_name, optional_connection_failure_callback, optional_connection_success_callback)
@@ -227,6 +257,12 @@ end
 
 TwitchManager.cb_game_session_disconnect = function (self)
 	return
+end
+
+TwitchManager.cb_connection_error_callback = function (self, message)
+	if not self._error_popup_id then
+		self._error_popup_id = Managers.popup:queue_popup(message, Localize("popup_header_error_twitch"), "ok", Localize("popup_choice_ok"))
+	end
 end
 
 TwitchManager.add_game_object_id = function (self, game_object_id)
@@ -616,6 +652,7 @@ TwitchManager.disconnect = function (self)
 end
 
 TwitchManager.update = function (self, dt, t)
+	self:_handle_disconnect_popup()
 	self:_handle_popup()
 	self:_validate_data(dt, t)
 	self:_update_vote_data(dt, t)
@@ -634,6 +671,20 @@ TwitchManager._handle_popup = function (self)
 			end
 
 			self._popup_id = nil
+		end
+	end
+end
+
+TwitchManager._handle_disconnect_popup = function (self)
+	if self._error_popup_id then
+		local result = Managers.popup:query_result(self._error_popup_id)
+
+		if result then
+			if result == "ok" then
+				self._error_popup_id = nil
+			elseif result then
+				fassert(false, "[MixerManager] The popup result doesn't exist (%s)", result)
+			end
 		end
 	end
 end
@@ -685,6 +736,7 @@ TwitchManager._update_vote_data = function (self, dt, t)
 end
 
 TwitchManager._handle_results = function (self, vote_results)
+	local package_loader = Managers.state.game_mode.level_transition_handler.enemy_package_loader
 	local network_manager = Managers.state.network
 	local is_server = network_manager.is_server
 	local best_option = -1
@@ -721,7 +773,20 @@ TwitchManager._handle_results = function (self, vote_results)
 		until true
 	end
 
+	for i = 1, num_options, 1 do
+		local vote_template_name = vote_results.vote_templates[i]
+		local vote_template = TwitchVoteTemplates[vote_template_name]
+		local breed_name = vote_template.breed_name
+
+		if breed_name then
+			package_loader:unlock_breed_package(breed_name)
+
+			self.locked_breed_packages[breed_name] = nil
+		end
+	end
+
 	local vote_template_name = vote_results.vote_templates[best_option_index]
+	vote_results.winning_template_name = vote_template_name
 
 	if not Development.parameter("twitch_disable_result") then
 		TwitchVoteTemplates[vote_template_name].on_success(is_server, best_option_index)
@@ -768,6 +833,10 @@ TwitchManager.is_activated = function (self)
 	return self._activated
 end
 
+TwitchManager.reset = function (self)
+	self:destroy()
+end
+
 TwitchManager.destroy = function (self)
 	if Managers.state and Managers.state.event then
 		Managers.state.event:trigger("reset_vote_ui")
@@ -801,6 +870,8 @@ TwitchManager.activate_twitch_game_mode = function (self, network_event_delegate
 		if Development.parameter("twitch_debug_voting") then
 			self._activated = true
 		end
+
+		self:_load_sound_bank()
 	end
 end
 
@@ -832,6 +903,8 @@ TwitchManager.deactivate_twitch_game_mode = function (self)
 	end
 
 	self._activated = false
+
+	self:_unload_sound_bank()
 end
 
 TwitchManager._update_twitch_game_mode = function (self, dt, t)
@@ -907,15 +980,19 @@ TwitchGameMode = class(TwitchGameMode)
 
 TwitchGameMode.init = function (self, parent)
 	self._timer = TwitchSettings.initial_downtime
-	self._max_diff = TwitchSettings.max_diff
-	self._funds = TwitchSettings.funds
+	self._funds = TwitchSettings.starting_funds
 	self._parent = parent
 	self._vote_keys = {}
+	self._used_vote_templates = {}
 
 	Debug.text("Activating Twitch Game Mode")
 end
 
 TwitchGameMode.update = function (self, dt, t)
+	if DEBUG_TWITCH then
+		Debug.text("Funds: %d Last won: %s", self._funds, self._last_winning_vote)
+	end
+
 	self._timer = self._timer - dt
 
 	if self._timer > 0 then
@@ -929,98 +1006,243 @@ TwitchGameMode.update = function (self, dt, t)
 	end
 end
 
-TwitchGameMode._decide_next_vote_templates = function (self)
-	if math.random(3) % 3 == 0 then
-		return self:_next_multiple_choice_vote()
-	else
-		return self:_next_standard_vote()
+TwitchGameMode._update_used_votes = function (self)
+	local used_vote_templates = self._used_vote_templates
+
+	for template_name, rounds_left in pairs(used_vote_templates) do
+		if rounds_left - 1 == 0 then
+			used_vote_templates[template_name] = nil
+		else
+			used_vote_templates[template_name] = rounds_left - 1
+		end
+	end
+
+	self:_clear_used_votes()
+end
+
+TwitchGameMode._clear_used_votes = function (self, force_clear)
+	local used_vote_templates = self._used_vote_templates
+
+	if force_clear or #TwitchVoteTemplatesLookup - table.size(used_vote_templates) <= MIN_VOTES_LEFT_IN_ROTATION then
+		table.clear(used_vote_templates)
 	end
 end
 
-TwitchGameMode._next_multiple_choice_vote = function (self)
-	local vote_templates = {}
-	local vote_template = TwitchMultipleChoiceVoteTemplatesLookup[Math.random(#TwitchMultipleChoiceVoteTemplatesLookup)]
+TwitchGameMode._check_breed_package_loading = function (self, wanted_template, previous_template)
+	local wanted_breed_name = wanted_template.breed_name
 
-	for idx = 1, 5, 1 do
-		vote_templates[idx] = vote_template
+	if not wanted_breed_name then
+		return wanted_template
 	end
 
-	local validation_func = TwitchVoteTemplates[vote_template].validation_func
+	local is_boss = wanted_template.boss
+	local is_special = wanted_template.special
+
+	if not is_boss and not is_special then
+		return wanted_template
+	end
+
+	local package_loader = Managers.state.game_mode.level_transition_handler.enemy_package_loader
+	local breed_processed = package_loader.breed_processed
+	local request_success = true
+	local replacement_breed_name = nil
+
+	if not breed_processed[wanted_breed_name] then
+		request_success, replacement_breed_name = package_loader:request_breed(wanted_breed_name)
+	end
+
+	if request_success then
+		package_loader:lock_breed_package(wanted_breed_name)
+
+		self._parent.locked_breed_packages[wanted_breed_name] = true
+
+		return wanted_template
+	end
+
+	local use_boss_equivalent = is_boss and previous_template and previous_template.breed_name == replacement_breed_name
+	local override_template = nil
+	local used_vote_templates = self._used_vote_templates
+
+	if use_boss_equivalent then
+		local best_diff = math.huge
+		local templates = TwitchBossEquivalentSpawnTemplatesLookup
+
+		table.shuffle(templates)
+
+		for i = 1, #templates, 1 do
+			local replacement_template_name = templates[i]
+
+			if not used_vote_templates[replacement_template_name] then
+				local replacement_template = TwitchVoteTemplates[replacement_template_name]
+
+				if wanted_template.name ~= replacement_template.name then
+					local diff = math.abs(math.abs(wanted_template.cost) - math.abs(replacement_template.cost))
+
+					if diff < best_diff then
+						override_template = replacement_template
+						best_diff = diff
+					end
+				end
+			end
+		end
+	elseif is_boss then
+		local templates = TwitchBossesSpawnBreedNamesLookup
+		local replacement_template = templates[replacement_breed_name]
+		override_template = replacement_template
+	elseif is_special then
+		local templates = TwitchSpecialsSpawnBreedNamesLookup
+		local replacement_template = templates[replacement_breed_name]
+
+		if not used_vote_templates[replacement_template.name] and (previous_template == nil or (previous_template and previous_template.name ~= replacement_template.name)) and wanted_template.name ~= replacement_template.name then
+			override_template = replacement_template
+		end
+	end
+
+	if not override_template then
+		self:_clear_used_votes(true)
+
+		return self:_check_breed_package_loading(wanted_template, previous_template)
+	end
+
+	return override_template
+end
+
+TwitchGameMode._get_next_vote = function (self)
+	self:_update_used_votes()
+
+	local funds = self._funds
+	local used_vote_templates = self._used_vote_templates
+	local best_template = nil
+
+	if TwitchSettings.cutoff_for_guaranteed_positive_vote <= funds then
+		local templates = table.clone(TwitchPositiveVoteTemplatesLookup)
+
+		table.shuffle(templates)
+
+		local best_diff = -math.huge
+
+		for i = 1, #templates, 1 do
+			local template_name = templates[i]
+
+			if not used_vote_templates[template_name] then
+				local template = TwitchVoteTemplates[template_name]
+				local cost = template.cost
+				local diff = funds - cost
+
+				if best_diff < diff then
+					best_template = template
+					best_diff = diff
+				end
+			end
+		end
+	elseif funds <= TwitchSettings.cutoff_for_guaranteed_negative_vote then
+		local templates = table.clone(TwitchNegativeVoteTemplatesLookup)
+
+		table.shuffle(templates)
+
+		local best_diff = math.huge
+
+		for i = 1, #templates, 1 do
+			local template_name = templates[i]
+
+			if not used_vote_templates[template_name] then
+				local template = TwitchVoteTemplates[template_name]
+				local cost = template.cost
+				local diff = funds + cost
+
+				if best_diff > diff then
+					best_template = template
+					best_diff = diff
+				end
+			end
+		end
+	else
+		local templates = table.clone(TwitchVoteTemplatesLookup)
+
+		table.shuffle(templates)
+
+		local best_diff = math.huge
+
+		for i = 1, #templates, 1 do
+			local template_name = templates[i]
+
+			if not used_vote_templates[template_name] then
+				local template = TwitchVoteTemplates[template_name]
+				best_template = template
+			end
+		end
+	end
+
+	if best_template.multiple_choice then
+		return self:_next_multiple_choice_vote(best_template)
+	else
+		return self:_next_standard_vote(best_template)
+	end
+end
+
+TwitchGameMode._next_multiple_choice_vote = function (self, template)
+	local vote_templates = {}
+
+	for i = 1, 5, 1 do
+		vote_templates[i] = template.name
+	end
+
+	local validation_func = template.validation_func
 
 	return "multiple_choice", vote_templates, validation_func
 end
 
-TwitchGameMode._get_first_option = function (self)
-	local want_positive_effect = self._funds < TwitchSettings.cutoff_for_guaranteed_positive_vote
-	local templates = nil
+TwitchGameMode._next_standard_vote = function (self, template_a)
+	local funds = self._funds
+	local used_vote_templates = self._used_vote_templates
+	local template_a_name = template_a.name
+	local cost_a = template_a.cost
+	local sign = math.sign(cost_a)
+	local inverted_sign = (sign > 0 and -1) or 1
+	local templates = table.clone(TwitchStandardVoteTemplatesLookup)
 
-	if want_positive_effect then
-		templates = TwitchPositiveStandardVoteTemplatesLookup
-	elseif math.random(3) % 3 == 0 then
-		templates = TwitchStandardVoteTemplatesLookup
-	else
-		templates = TwitchNegativeStandardVoteTemplatesLookup
-	end
+	table.shuffle(templates)
 
-	local num_templates = #templates
-	local random_template_index = Math.random(num_templates)
-	local vote_template_name = templates[random_template_index]
-	local selected_vote_info = TwitchVoteTemplates[vote_template_name]
+	local best_template = nil
+	local best_diff = math.huge
 
-	return selected_vote_info, vote_template_name
-end
+	for i = 1, #templates, 1 do
+		local template_b_name = templates[i]
 
-TwitchGameMode._next_standard_vote = function (self)
-	self._selected_templates = self._selected_templates or {}
-	local selected_templates = self._selected_templates
-	local first_vote_info, first_template_name = self:_get_first_option()
-	local first_vote_cost = first_vote_info.cost
-	local first_is_positive = first_vote_cost < 0
-	local sign = math.sign(first_vote_cost)
-	local sign_diff = (sign > 0 and -1) or 1
-	local best_template_diff = math.huge
-	local best_template_name, total_cost = nil
-	selected_templates[first_template_name] = true
+		if template_a_name ~= template_b_name and not used_vote_templates[template_b_name] then
+			local template_b = TwitchVoteTemplates[template_b_name]
+			local invalid_matchup = template_a.boss and not template_b.boss and not template_b.boss_equivalent
 
-	for selected_template_name, vote_info in pairs(TwitchVoteTemplates) do
-		repeat
-			if not selected_templates[selected_template_name] and not vote_info.multiple_choice and selected_template_name ~= first_template_name then
-				local second_vote_cost = vote_info.cost
-				local second_is_positive = second_vote_cost < 0
+			if not invalid_matchup then
+				local cost_b = template_b.cost
+				local vote_cost_diff = math.abs(cost_a - cost_b)
 
-				if first_is_positive ~= second_is_positive and math.random(1, 100) > 5 then
-					break
-				end
-
-				local diff = first_vote_cost - second_vote_cost * sign_diff
-
-				if best_template_diff > diff then
-					best_template_name = selected_template_name
-					best_template_diff = diff
-					total_cost = first_vote_cost + second_vote_cost
+				if vote_cost_diff <= TwitchSettings.max_a_b_vote_cost_diff and vote_cost_diff < best_diff then
+					best_template = template_b
+					best_diff = vote_cost_diff
 				end
 			end
-		until true
+		end
 	end
 
-	if not best_template_name or self._max_diff < best_template_diff then
-		table.clear(selected_templates)
+	if not best_template then
+		self:_clear_used_votes(true)
 
-		return self:_next_standard_vote()
-	else
-		self._funds = self._funds - total_cost
-		selected_templates[best_template_name] = true
-		local vote_templates = {
-			first_template_name,
-			best_template_name
-		}
-
-		return "standard_vote", vote_templates, nil
+		return self:_next_standard_vote(template_a)
 	end
+
+	template_a = self:_check_breed_package_loading(template_a)
+	best_template = self:_check_breed_package_loading(best_template, template_a)
+	local vote_templates = {
+		template_a.name,
+		best_template.name
+	}
+
+	return "standard_vote", vote_templates, nil
 end
 
 TwitchGameMode._trigger_new_vote = function (self)
-	local vote_type, vote_templates, validation_func = self:_decide_next_vote_templates()
+	local vote_type, vote_templates, validation_func = self:_get_next_vote()
 	local time = TwitchSettings.default_vote_time
 	local vote_key = self._parent:register_vote(time, vote_type, validation_func, vote_templates, true, callback(self, "cb_on_vote_complete"))
 	self._vote_keys[vote_key] = true
@@ -1028,6 +1250,9 @@ TwitchGameMode._trigger_new_vote = function (self)
 end
 
 TwitchGameMode.cb_on_vote_complete = function (self, current_vote)
+	local winning_template = TwitchVoteTemplates[current_vote.winning_template_name]
+	self._funds = self._funds + winning_template.cost
+	self._used_vote_templates[winning_template.name] = NUM_ROUNDS_TO_DISABLE_USED_VOTES
 	self._vote_keys[current_vote.vote_key] = nil
 end
 
@@ -1041,6 +1266,16 @@ TwitchGameMode.destroy = function (self)
 
 		self._parent:unregister_vote(vote_key)
 		debug_print("Destroying Twitch Vote %s", vote_key)
+	end
+
+	local game_mode_manager = Managers.state.game_mode
+
+	if game_mode_manager then
+		local enemy_package_loader = game_mode_manager.level_transition_handler.enemy_package_loader
+
+		for breed_name, _ in pairs(self._parent.locked_breed_packages) do
+			enemy_package_loader:unlock_breed_package(breed_name)
+		end
 	end
 
 	if Managers.state and Managers.state.event then

@@ -1,4 +1,4 @@
-AIGroupTemplates = {}
+AIGroupTemplates = AIGroupTemplates or {}
 local ScriptUnit_extension = ScriptUnit.extension
 local BLACKBOARDS = BLACKBOARDS
 AIGroupTemplates.mini_patrol = {
@@ -24,7 +24,7 @@ AIGroupTemplates.horde = {
 		end
 	end,
 	init = function (world, nav_world, group, t, unit)
-		return
+		Managers.state.conflict.horde_spawner:set_horde_has_spawned(group.id)
 	end,
 	update = function (world, nav_world, group, t)
 		local group_data = group and group.group_data
@@ -34,6 +34,7 @@ AIGroupTemplates.horde = {
 	end,
 	destroy = function (world, nav_world, group)
 		Managers.state.conflict:horde_killed((group.group_data and group.group_data.horde_wave) or "?")
+		Managers.state.conflict.horde_spawner:set_horde_is_done(group.id)
 	end
 }
 AIGroupTemplates.boss_door_closers = {

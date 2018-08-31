@@ -1,6 +1,11 @@
 MIN_POWER_LEVEL = 0
 MAX_POWER_LEVEL = 1000
 MIN_POWER_LEVEL_CAP = 200
+POWER_LEVEL_DIFF_RATIO = {
+	impact = 2,
+	attack = 3.5,
+	cleave = 3.5
+}
 BoostCurves = {
 	default = {
 		0,
@@ -42,6 +47,9 @@ Cleave = {
 	max = 50,
 	min = 0
 }
+SweepRangeMod = 1.1
+SweepWidthMod = 1.25
+SweepHeigthMod = 1
 ImpactTypeOutput = {
 	{
 		max = 100,

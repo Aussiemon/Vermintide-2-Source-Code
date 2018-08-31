@@ -230,7 +230,7 @@ local function create_settings_option(scenegraph_id, size, title_text, button_te
 		150,
 		150
 	}
-	background_texture = background_texture or "play_screen_bg"
+	background_texture = background_texture or "game_options_bg_02"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local frame_name = "menu_frame_08"
 	local frame_settings = UIFrameSettings[frame_name]
@@ -867,7 +867,7 @@ local function create_settings_option(scenegraph_id, size, title_text, button_te
 end
 
 local function create_additional_settings_option(scenegraph_id, size, title_text, background_texture)
-	background_texture = background_texture or "play_screen_bg"
+	background_texture = background_texture or "game_options_bg_02"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local frame_name = "menu_frame_08"
 	local frame_settings = UIFrameSettings[frame_name]
@@ -1129,7 +1129,6 @@ local widgets = {
 	play_button = UIWidgets.create_play_button("play_button", scenegraph_definition.play_button.size, Localize("start_game_window_play"), 34),
 	game_option_1 = create_settings_option("game_option_1", scenegraph_definition.game_option_1.size, Localize("start_game_window_mission"), Localize("start_game_window_change_mission"), nil, "game_options_bg_01"),
 	game_option_2 = create_settings_option("game_option_2", scenegraph_definition.game_option_2.size, Localize("start_game_window_difficulty"), Localize("start_game_window_change_difficulty"), "difficulty_option_1", "game_options_bg_02"),
-	additional_option = create_additional_settings_option("additional_option", scenegraph_definition.additional_option.size, Localize("start_game_window_other_options_title"), "game_options_bg_03"),
 	game_options_left_chain = UIWidgets.create_tiled_texture("game_options_left_chain", "chain_link_01", {
 		16,
 		19
@@ -1137,7 +1136,10 @@ local widgets = {
 	game_options_right_chain = UIWidgets.create_tiled_texture("game_options_right_chain", "chain_link_01", {
 		16,
 		19
-	}),
+	})
+}
+local other_options_widgets = {
+	additional_option = create_additional_settings_option("additional_option", scenegraph_definition.additional_option.size, Localize("start_game_window_other_options_title"), "game_options_bg_03"),
 	private_frame = UIWidgets.create_frame("private_button_frame", scenegraph_definition.private_button_frame.size, window_frame, 1),
 	private_button = UIWidgets.create_default_checkbox_button("private_button", scenegraph_definition.private_button.size, Localize("start_game_window_other_options_private"), 24, {
 		title = Localize("start_game_window_other_options_private"),
@@ -1193,6 +1195,7 @@ local animation_definitions = {
 
 return {
 	widgets = widgets,
+	other_options_widgets = other_options_widgets,
 	node_widgets = node_widgets,
 	scenegraph_definition = scenegraph_definition,
 	animation_definitions = animation_definitions

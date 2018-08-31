@@ -137,6 +137,7 @@ Pacing.advance_pacing = function (self, t, reason)
 		self._specials_population = 1
 		self._horde_population = 1
 
+		Managers.state.conflict.specials_pacing:delay_spawning(t, 10, math.random(5, 10))
 		Managers.state.conflict:stop_rush_check()
 	end
 

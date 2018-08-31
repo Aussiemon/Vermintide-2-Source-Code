@@ -1,7 +1,11 @@
 require("scripts/ui/views/hero_view/loot_item_unit_previewer")
 
 local definitions = local_require("scripts/ui/views/hero_view/states/definitions/hero_view_state_loot_definitions")
+local INPUT_ACTION_NEXT = "trigger_cycle_next"
+local INPUT_ACTION_PREVIOUS = "trigger_cycle_previous"
 local widget_definitions = definitions.widgets
+local gamepad_tooltip_widget_definitions = definitions.gamepad_tooltip_widgets
+local input_desc_widget_definitions = definitions.input_description_widgets
 local continue_button_definition = definitions.continue_button
 local option_widget_definitions = definitions.option_widgets
 local debug_button_widget_definitions = definitions.debug_button_widgets
@@ -13,6 +17,7 @@ local generic_input_actions = definitions.generic_input_actions
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local background_fade_definition = definitions.background_fade_definition
+local loot_option_positions_by_amount = definitions.loot_option_positions_by_amount
 local camera_entry_shake_settings = {
 	persistance = 0.9,
 	fade_out = 0.3,
@@ -189,38 +194,6 @@ local glow_rarity_colors = {
 		}
 	}
 }
-local skin_camera_position_by_character = {
-	witch_hunter = {
-		z = 0.4,
-		x = 0,
-		y = -1.2
-	},
-	bright_wizard = {
-		z = 0.2,
-		x = 0,
-		y = -1.4
-	},
-	dwarf_ranger = {
-		z = -0.2,
-		x = 0,
-		y = -1.5
-	},
-	wood_elf = {
-		z = 0,
-		x = 0,
-		y = -1.2
-	},
-	empire_soldier = {
-		z = 0.4,
-		x = 0,
-		y = -1.2
-	},
-	empire_soldier_tutorial = {
-		z = 0.4,
-		x = 0,
-		y = -1.2
-	}
-}
 local RELOAD_UI = false
 local DEBUG_MODE = false
 HeroViewStateLoot = class(HeroViewStateLoot)
@@ -275,7 +248,7 @@ HeroViewStateLoot.on_enter = function (self, params, optional_ignore_item_popula
 	self.loot_ui_world = world
 	local input_service = self.input_manager:get_service("hero_view")
 	local gui_layer = UILayer.default + 30
-	self.menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self.loot_ui_renderer, input_service, 3, gui_layer, generic_input_actions.default)
+	self.menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self.loot_ui_renderer, input_service, 4, gui_layer, generic_input_actions.default, true)
 
 	self.menu_input_description:set_input_description(generic_input_actions.chest_not_selected)
 	self:create_ui_elements(params)
@@ -283,17 +256,58 @@ HeroViewStateLoot.on_enter = function (self, params, optional_ignore_item_popula
 	self.viewport_widget = UIWidget.init(viewport_widget_definition)
 
 	self:_setup_camera()
+	self:set_chest_title_alpha_progress(0)
 
 	self._enter_animation_duration = 0
 
 	self:populate_items()
-	self:set_chest_title_alpha_progress(0)
 	self:_setup_info_window()
 
 	DEBUG_MODE = script_data.debug_loot_opening
 
 	self:play_sound("play_gui_chestroom_start")
 	self:disable_player_world()
+	self:_setup_input_buttons()
+
+	self._console_selection_index = 1
+	self._draw_input_desc_widgets = true
+end
+
+HeroViewStateLoot._setup_input_buttons = function (self)
+	local input_service = Managers.input:get_service("hero_view")
+	local input_1_texture_data = UISettings.get_gamepad_input_texture_data(input_service, INPUT_ACTION_NEXT, true)
+	local input_2_texture_data = UISettings.get_gamepad_input_texture_data(input_service, INPUT_ACTION_PREVIOUS, true)
+	local widgets_by_name = self._widgets_by_name
+	local input_1_widget = widgets_by_name.input_icon_next
+	local input_2_widget = widgets_by_name.input_icon_previous
+	local icon_style_input_1 = input_1_widget.style.texture_id
+	icon_style_input_1.horizontal_alignment = "center"
+	icon_style_input_1.vertical_alignment = "center"
+	icon_style_input_1.texture_size = {
+		input_1_texture_data.size[1],
+		input_1_texture_data.size[2]
+	}
+	input_1_widget.content.texture_id = input_1_texture_data.texture
+	local icon_style_input_2 = input_2_widget.style.texture_id
+	icon_style_input_2.horizontal_alignment = "center"
+	icon_style_input_2.vertical_alignment = "center"
+	icon_style_input_2.texture_size = {
+		input_2_texture_data.size[1],
+		input_2_texture_data.size[2]
+	}
+	input_2_widget.content.texture_id = input_2_texture_data.texture
+end
+
+HeroViewStateLoot._set_gamepad_input_buttons_visibility = function (self, visible)
+	local widgets_by_name = self._widgets_by_name
+	local input_1_widget = widgets_by_name.input_icon_next
+	local input_2_widget = widgets_by_name.input_icon_previous
+	local input_arrow_1_widget = widgets_by_name.input_arrow_next
+	local input_arrow_2_widget = widgets_by_name.input_arrow_previous
+	input_1_widget.content.visible = visible
+	input_2_widget.content.visible = visible
+	input_arrow_1_widget.content.visible = visible
+	input_arrow_2_widget.content.visible = visible
 end
 
 HeroViewStateLoot.disable_player_world = function (self)
@@ -367,8 +381,9 @@ HeroViewStateLoot.populate_items = function (self)
 	end
 
 	self._item_grid = item_grid
+	local first_item = item_grid:get_item_in_slot(1, 1)
 
-	self:_select_grid_item(nil)
+	self:_select_grid_item(first_item)
 end
 
 HeroViewStateLoot._get_items_by_filter = function (self, item_filter)
@@ -483,6 +498,28 @@ HeroViewStateLoot.create_ui_elements = function (self)
 
 	self._preview_loot_widgets = preview_loot_widgets
 	self._preview_loot_widgets_by_name = preview_loot_widgets_by_name
+	local input_desc_widgets = {}
+	local input_desc_widgets_by_name = {}
+
+	for name, widget_definition in pairs(input_desc_widget_definitions) do
+		local widget = UIWidget.init(widget_definition)
+		input_desc_widgets[#input_desc_widgets + 1] = widget
+		input_desc_widgets_by_name[name] = widget
+	end
+
+	self._input_desc_widgets = input_desc_widgets
+	self._input_desc_widgets_by_name = input_desc_widgets_by_name
+	local gamepad_tooltip_widgets = {}
+	local gamepad_tooltip_widgets_by_name = {}
+
+	for name, widget_definition in pairs(gamepad_tooltip_widget_definitions) do
+		local widget = UIWidget.init(widget_definition)
+		gamepad_tooltip_widgets[#gamepad_tooltip_widgets + 1] = widget
+		gamepad_tooltip_widgets_by_name[name] = widget
+	end
+
+	self._gamepad_tooltip_widgets = gamepad_tooltip_widgets
+	self._gamepad_tooltip_widgets_by_name = gamepad_tooltip_widgets_by_name
 	self._continue_button_widget = UIWidget.init(continue_button_definition)
 
 	UIRenderer.clear_scenegraph_queue(self.loot_ui_renderer)
@@ -676,16 +713,19 @@ HeroViewStateLoot.update = function (self, dt, t)
 	self:_update_chest_open_wait_time(dt, t)
 	self:_update_camera_look_down_time(dt, t)
 	self:_update_continue_button_animation_time(dt, t)
+	self:_handle_gamepad_activity()
 	self:draw(dt)
 	self:_update_transition_timer(dt)
 
 	local wanted_state = self:_wanted_state()
 
 	if not self._transition_timer then
-		local reward_options = self._reward_options
+		local active_reward_options = self._active_reward_options
 
-		if reward_options then
-			for _, data in ipairs(reward_options) do
+		if active_reward_options then
+			for _, data in ipairs(active_reward_options) do
+				local widget = data.widget
+				local content = widget.content
 				local item_previewer = data.item_previewer
 
 				if item_previewer then
@@ -696,6 +736,10 @@ HeroViewStateLoot.update = function (self, dt, t)
 
 				if world_previewer then
 					world_previewer:update(dt, t)
+
+					if content.is_loading and world_previewer:character_visible() then
+						content.is_loading = false
+					end
 				end
 			end
 		end
@@ -751,12 +795,13 @@ HeroViewStateLoot.post_update = function (self, dt, t)
 
 		self:_update_camera_shake_chest_spawn_time(dt, t)
 		self:_handle_input(dt, t)
+		self:_handle_gamepad_input(dt, t)
 		self:_update_page_info()
 
-		local reward_options = self._reward_options
+		local active_reward_options = self._active_reward_options
 
-		if reward_options then
-			for _, data in ipairs(reward_options) do
+		if active_reward_options then
+			for _, data in ipairs(active_reward_options) do
 				local item_previewer = data.item_previewer
 
 				if item_previewer then
@@ -775,6 +820,8 @@ end
 
 HeroViewStateLoot._update_animations = function (self, dt)
 	if self._chest_presentation_active then
+		local gamepad_active = Managers.input:is_device_active("gamepad")
+
 		self:_animate_reward_options_entry(dt)
 
 		for index, widget in ipairs(self._option_widgets) do
@@ -797,7 +844,9 @@ HeroViewStateLoot._update_animations = function (self, dt)
 					self:play_sound(sound_event)
 				end
 
-				if button_hotspot.is_hover then
+				local is_console_selected = gamepad_active and self._console_selection_index == index
+
+				if button_hotspot.is_hover or is_console_selected then
 					glow_alpha_progress = math.min(glow_alpha_progress + speed, 1)
 					anim_progress = math.easeOutCubic(glow_alpha_progress)
 				else
@@ -815,6 +864,13 @@ HeroViewStateLoot._update_animations = function (self, dt)
 			end
 		end
 	end
+
+	local widgets_by_name = self._widgets_by_name
+	local page_button_next = widgets_by_name.page_button_next
+	local page_button_previous = widgets_by_name.page_button_previous
+
+	UIWidgetUtils.animate_arrow_button(page_button_next, dt)
+	UIWidgetUtils.animate_arrow_button(page_button_previous, dt)
 end
 
 HeroViewStateLoot.draw = function (self, dt)
@@ -824,7 +880,7 @@ HeroViewStateLoot.draw = function (self, dt)
 	local input_manager = self.input_manager
 	local render_settings = self.render_settings
 	local input_service = input_manager:get_service("hero_view")
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local gamepad_active = input_manager:is_device_active("gamepad")
 	render_settings.alpha_multiplier = 1
 
 	UIRenderer.begin_pass(loot_ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
@@ -858,16 +914,30 @@ HeroViewStateLoot.draw = function (self, dt)
 		UIRenderer.draw_widget(loot_ui_renderer, self.background_fade_widget)
 	end
 
+	if self._draw_input_desc_widgets and gamepad_active then
+		for _, widget in pairs(self._input_desc_widgets) do
+			UIRenderer.draw_widget(loot_ui_renderer, widget)
+		end
+	end
+
 	UIRenderer.end_pass(loot_ui_renderer)
 
 	local present_reward_options = self._present_reward_options
-	local reward_options = self._reward_options
+	local active_reward_options = self._active_reward_options
 
-	if reward_options then
+	if active_reward_options then
 		UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
-		for _, data in ipairs(reward_options) do
+		for _, data in ipairs(active_reward_options) do
+			local preview_widget = data.preview_widget
+
 			if present_reward_options then
+				if gamepad_active and input_service:get("special_1_hold") then
+					for _, tooltip_widget in pairs(self._gamepad_tooltip_widgets) do
+						UIRenderer.draw_widget(ui_top_renderer, tooltip_widget)
+					end
+				end
+
 				local widget = data.widget
 
 				UIRenderer.draw_widget(ui_top_renderer, widget)
@@ -877,11 +947,16 @@ HeroViewStateLoot.draw = function (self, dt)
 				if frame_widget then
 					UIRenderer.draw_widget(ui_top_renderer, frame_widget)
 				end
+
+				if data.opened then
+					self:_activate_widget_viewport(preview_widget, true)
+					UIRenderer.draw_widget(ui_top_renderer, preview_widget)
+				else
+					self:_activate_widget_viewport(preview_widget, false)
+				end
+			else
+				self:_activate_widget_viewport(preview_widget, false)
 			end
-
-			local preview_widget = data.preview_widget
-
-			UIRenderer.draw_widget(ui_top_renderer, preview_widget)
 		end
 
 		if present_reward_options and self._rewards_presented then
@@ -898,19 +973,45 @@ HeroViewStateLoot.draw = function (self, dt)
 	end
 end
 
+HeroViewStateLoot._activate_widget_viewport = function (self, preview_widget, activate)
+	if not preview_widget then
+		return
+	end
+
+	local preview_widget_content = preview_widget.content
+
+	if preview_widget_content.activated ~= activate then
+		local element = preview_widget.element
+		local pass_data = element.pass_data
+		local viewport_pass_data = pass_data[1]
+		local world = viewport_pass_data.world
+		local viewport = viewport_pass_data.viewport
+
+		if activate then
+			ScriptWorld.activate_viewport(world, viewport)
+			print("ENABLING LOOT PREVIEW VIEWPORT")
+		else
+			ScriptWorld.deactivate_viewport(world, viewport)
+			print("DISABLING LOOT PREVIEW VIEWPORT")
+		end
+
+		preview_widget_content.activated = activate
+	end
+end
+
 HeroViewStateLoot._set_debug_buttons_disable_state = function (self, is_disabled)
 	local debug_widgets = self._debug_widgets
 
 	for _, widget in ipairs(debug_widgets) do
 		local content = widget.content
-		local hotspot = content.button_hotspot
+		local hotspot = content.hotspot or content.button_hotspot
 		hotspot.disable_button = is_disabled
 	end
 end
 
 HeroViewStateLoot._is_button_pressed = function (self, widget)
 	local content = widget.content
-	local hotspot = content.button_hotspot
+	local hotspot = content.hotspot or content.button_hotspot
 
 	if hotspot.on_release then
 		hotspot.on_release = false
@@ -921,7 +1022,7 @@ end
 
 HeroViewStateLoot._is_button_hovered = function (self, widget)
 	local content = widget.content
-	local hotspot = content.button_hotspot
+	local hotspot = content.hotspot or content.button_hotspot
 
 	if hotspot.on_hover_enter then
 		return true
@@ -1008,6 +1109,105 @@ HeroViewStateLoot._select_grid_item = function (self, item, t)
 	widgets_by_name.open_button.content.button_hotspot.disable_button = not can_open or item == nil
 end
 
+HeroViewStateLoot._play_sound = function (self, sound_event)
+	WwiseWorld.trigger_event(self.wwise_world, sound_event)
+end
+
+HeroViewStateLoot._handle_gamepad_input = function (self, dt, t)
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+
+	if not gamepad_active then
+		return
+	end
+
+	local input_service = self.input_manager:get_service("hero_view")
+	local item_grid = self._item_grid
+
+	if not self._chest_presentation_active and not self._opening_chest then
+		item_grid:handle_gamepad_selection(input_service)
+
+		local selected_item = item_grid:selected_item()
+
+		if selected_item ~= self._selected_item then
+			self:_select_grid_item(selected_item)
+		end
+
+		local page_index = self._current_page
+		local total_pages = self._total_pages
+
+		if page_index and total_pages then
+			if page_index < total_pages and input_service:get(INPUT_ACTION_NEXT) then
+				item_grid:set_item_page(page_index + 1)
+				self:_play_sound("play_gui_equipment_inventory_next_click")
+
+				local first_item = item_grid:get_item_in_slot(1, 1)
+
+				item_grid:set_item_selected(first_item)
+			elseif page_index > 1 and input_service:get(INPUT_ACTION_PREVIOUS) then
+				item_grid:set_item_page(page_index - 1)
+				self:_play_sound("play_gui_equipment_inventory_next_click")
+
+				local first_item = item_grid:get_item_in_slot(1, 1)
+
+				item_grid:set_item_selected(first_item)
+			end
+		end
+	elseif self._reward_option_animation_complete and not self._rewards_presented and not input_service:get("special_1_hold") then
+		if input_service:get("move_left") then
+			local find_next_index = false
+			self._console_selection_index = self:_find_console_selection_index(find_next_index)
+		elseif input_service:get("move_right") then
+			local find_next_index = true
+			self._console_selection_index = self:_find_console_selection_index(find_next_index)
+		end
+
+		if input_service:get("confirm_press", true) then
+			self:open_reward_option(self._console_selection_index)
+		end
+	end
+end
+
+HeroViewStateLoot._find_console_selection_index = function (self, next_index)
+	local active_reward_options = self._active_reward_options
+	local num_rewards = #active_reward_options
+
+	if next_index then
+		local new_index = self._console_selection_index
+		local potential_index = new_index
+
+		for i = 1, num_rewards - 1, 1 do
+			potential_index = 1 + potential_index % num_rewards
+
+			if not active_reward_options[potential_index].widget.content.button_hotspot.disable_button then
+				new_index = potential_index
+
+				break
+			end
+		end
+
+		return new_index
+	else
+		local new_index = self._console_selection_index
+		local potential_index = new_index
+
+		for i = 1, num_rewards - 1, 1 do
+			potential_index = potential_index - 1
+
+			if potential_index < 1 then
+				potential_index = num_rewards
+			end
+
+			if not active_reward_options[potential_index].widget.content.button_hotspot.disable_button then
+				new_index = potential_index
+
+				break
+			end
+		end
+
+		return new_index
+	end
+end
+
 HeroViewStateLoot._handle_input = function (self, dt, t)
 	local widgets_by_name = self._widgets_by_name
 	local input_manager = self.input_manager
@@ -1055,13 +1255,16 @@ HeroViewStateLoot._handle_input = function (self, dt, t)
 			self._present_reward_options = nil
 			self._chest_zoom_out_duration = 0
 			self._camera_look_down_duration = 0
+			self._reward_option_animation_complete = nil
 
 			self:set_continue_button_animation_progress(0)
+			self:_reset_gamepad_tooltips()
 
-			local reward_options = self._reward_options
+			self._console_selection_index = 1
+			local active_reward_options = self._active_reward_options
 
-			if reward_options then
-				for _, data in ipairs(reward_options) do
+			if active_reward_options then
+				for _, data in ipairs(active_reward_options) do
 					local widget = data.widget
 					local preview_widget = data.preview_widget
 					local background_widget = data.background_widget
@@ -1124,7 +1327,7 @@ HeroViewStateLoot._handle_input = function (self, dt, t)
 			self:_select_grid_item(item, t)
 		end
 
-		local open_button_pressed = gamepad_active and input_service:get("refresh")
+		local open_button_pressed = gamepad_active and input_service:get("confirm_press")
 
 		if (self:_is_button_pressed(open_button) or open_button_pressed) and self._selected_item then
 			self:_open_chest(self._selected_item)
@@ -1143,6 +1346,14 @@ HeroViewStateLoot._handle_input = function (self, dt, t)
 				backend_loot:generate_loot_chest("normal", math.random(0, 3), math.random(0, 2), math.random(0, 2), nil, DEBUG_MODE)
 
 				debug_pressed = true
+			end
+
+			if Pad1.pressed(Pad1.button_index("y")) then
+				local backend_loot = Managers.backend:get_interface("loot")
+				local hero_attributes = Managers.backend:get_interface("hero_attributes")
+				local start_experience = hero_attributes:get("wood_elf", "experience")
+
+				backend_loot:generate_end_of_level_loot(true, true, "hardest", "ussingen", math.random(0, 3), math.random(0, 2), math.random(0, 2), "wood_elf", start_experience, start_experience + 100, nil, nil)
 			end
 
 			if self:_is_button_pressed(debug_widgets_by_name.debug_add_chest_2) then
@@ -1189,14 +1400,21 @@ HeroViewStateLoot._update_page_info = function (self)
 		local widgets_by_name = self._widgets_by_name
 		widgets_by_name.page_text_left.content.text = tostring(current_page)
 		widgets_by_name.page_text_right.content.text = tostring(total_pages)
-		widgets_by_name.page_button_next.content.button_hotspot.disable_button = current_page == total_pages
-		widgets_by_name.page_button_previous.content.button_hotspot.disable_button = current_page == 1
+		widgets_by_name.page_button_next.content.hotspot.disable_button = current_page == total_pages
+		widgets_by_name.page_button_previous.content.hotspot.disable_button = current_page == 1
 	end
 end
 
+local rarity_sound_mapping = {
+	common = "play_hud_rewards_tier1",
+	exotic = "play_hud_rewards_tier3",
+	rare = "play_hud_rewards_tier2",
+	unique = "play_hud_rewards_tier4"
+}
+
 HeroViewStateLoot.open_reward_option = function (self, index)
-	local reward_options = self._reward_options
-	local reward_option = reward_options[index]
+	local active_reward_options = self._active_reward_options
+	local reward_option = active_reward_options[index]
 	local params = {
 		wwise_world = self.wwise_world,
 		render_settings = self.render_settings,
@@ -1211,158 +1429,229 @@ HeroViewStateLoot.open_reward_option = function (self, index)
 
 	self._num_rewards_opened = self._num_rewards_opened + 1
 
-	if self._num_rewards_opened == #reward_options then
+	if self._num_rewards_opened == #active_reward_options then
 		self._rewards_presented = true
 		self._continue_button_animation_duration = 0
 
 		self.menu_input_description:set_input_description(generic_input_actions.loot_presented)
+	end
+
+	local rarity = content.rarity
+	local sound_event = rarity_sound_mapping[rarity]
+
+	if sound_event then
+		self:play_sound(sound_event)
+	end
+
+	self:_setup_gamepad_tooltip(index, reward_option)
+
+	local find_next_index = true
+	self._console_selection_index = self:_find_console_selection_index(find_next_index)
+end
+
+HeroViewStateLoot._setup_gamepad_tooltip = function (self, index, reward_option)
+	local widget = self._gamepad_tooltip_widgets_by_name["item_tooltip_" .. index]
+
+	if widget then
+		local reward_option_widget = reward_option.widget
+		local reward_option_widget_content = reward_option_widget.content
+		widget.content.item = reward_option_widget_content.item
+	end
+end
+
+HeroViewStateLoot._reset_gamepad_tooltips = function (self)
+	for _, widget in pairs(self._gamepad_tooltip_widgets) do
+		local widget_content = widget.content
+		widget_content.item = nil
 	end
 end
 
 HeroViewStateLoot._setup_rewards = function (self, rewards)
 	local backend_items = Managers.backend:get_interface("items")
 	local reward_options = self._reward_options
-	local player = self.player
-	local hero_name = self.hero_name
-	local career_index = self.career_index
-	local profile_index = self.profile_index
+	local active_reward_options = {}
+	local num_rewards = #rewards
+	local loot_option_positions = loot_option_positions_by_amount[num_rewards]
+	local ui_scenegraph = self.ui_scenegraph
 
 	for index, data in ipairs(reward_options) do
-		local backend_id = rewards[index]
-		local item = backend_items:get_item_from_id(backend_id)
-		local item_data = item.data
-		local item_key = item_data.key
-		local item_rarity = backend_items:get_item_rarity(backend_id)
-		local item_type = item_data.item_type
-		local slot_type = item_data.slot_type
-		local inventory_icon, display_name, _ = UIUtils.get_ui_information_from_item(item)
-		local background_widget = data.background_widget
-		background_widget.style.background.color = Colors.get_color_table_with_alpha(item_rarity, 255)
-		local rarity_frame_texture = UISettings.item_rarity_textures[item_rarity]
-		local rarity_glow_color_data = glow_rarity_colors[item_rarity]
-		data.reward_backend_id = backend_id
-		data.reward_key = item_key
 		local widget = data.widget
 		local content = widget.content
 		local style = widget.style
-		content.rarity = item_rarity
-		content.item = item
-		content.item_icon = inventory_icon
-		content.item_icon_rarity = rarity_frame_texture
-		content.item_name = Localize(display_name)
-		content.item_type = Localize(item_type)
-		content.presentation_complete = nil
-		content.draw_frame = nil
-		content.button_hotspot.disable_button = false
-		content.glow_alpha_progress = 0
 
 		table.clear(content.item_hotspot)
 		table.clear(content.item_hotspot_2)
 
-		content.item_hotspot_2.allow_multi_hover = true
-		style.item_name.text_color[1] = 0
-		style.item_name_shadow.text_color[1] = 0
-		style.item_type.text_color[1] = 0
-		style.item_type_shadow.text_color[1] = 0
-		style.item_icon.offset[2] = -40
-		style.item_tooltip.offset[2] = -40
-		style.item_type.text_color = Colors.get_color_table_with_alpha(item_rarity, 0)
-		local glow_color_back = rarity_glow_color_data.back
-		local glow_color_front = rarity_glow_color_data.front
-		local glow_color_center = rarity_glow_color_data.center
+		local backend_id = rewards[index]
 
-		self:_apply_color_to_glow_style(style.lock_bottom_glow, glow_color_back)
-		self:_apply_color_to_glow_style(style.lock_bottom_glow_2, glow_color_front)
-		self:_apply_color_to_glow_style(style.lock_glow, glow_color_back)
-		self:_apply_color_to_glow_style(style.lock_glow_1, glow_color_center)
-		self:_apply_color_to_glow_style(style.lock_glow_2, glow_color_front)
-		self:_apply_color_to_glow_style(style.final_glow, glow_color_back)
-		self:_apply_color_to_glow_style(style.final_glow_1, glow_color_center)
-		self:_apply_color_to_glow_style(style.final_glow_2, glow_color_front)
+		if backend_id then
+			local option_position = loot_option_positions[index]
+			local scenegraph_id = widget.scenegraph_id
+			local local_position = ui_scenegraph[scenegraph_id].local_position
+			local_position[1] = option_position[1]
+			local_position[2] = option_position[2]
+			local item = backend_items:get_item_from_id(backend_id)
+			local item_data = item.data
+			local item_key = item_data.key
+			local item_rarity = backend_items:get_item_rarity(backend_id)
+			local item_type = item_data.item_type
+			local slot_type = item_data.slot_type
+			local inventory_icon, display_name, _ = UIUtils.get_ui_information_from_item(item)
+			local background_widget = data.background_widget
+			background_widget.style.background.color = Colors.get_color_table_with_alpha(item_rarity, 255)
+			local rarity_frame_texture = UISettings.item_rarity_textures[item_rarity]
+			local rarity_glow_color_data = glow_rarity_colors[item_rarity]
+			data.reward_backend_id = backend_id
+			data.reward_key = item_key
+			data.opened = false
+			content.is_loading = false
+			content.rarity = item_rarity
+			content.item = item
+			content.item_icon = inventory_icon
+			content.item_icon_rarity = rarity_frame_texture
+			content.item_name = Localize(display_name)
+			content.item_type = Localize(item_type)
+			content.presentation_complete = nil
+			content.draw_frame = nil
+			content.button_hotspot.disable_button = false
+			content.glow_alpha_progress = 0
+			content.item_hotspot_2.allow_multi_hover = true
+			style.item_name.text_color[1] = 0
+			style.item_name_shadow.text_color[1] = 0
+			style.item_type.text_color[1] = 0
+			style.item_type_shadow.text_color[1] = 0
+			style.item_icon.offset[2] = -40
+			style.item_tooltip.offset[2] = -40
+			style.item_type.text_color = Colors.get_color_table_with_alpha(item_rarity, 0)
+			local glow_color_back = rarity_glow_color_data.back
+			local glow_color_front = rarity_glow_color_data.front
+			local glow_color_center = rarity_glow_color_data.center
 
-		content.lock_glow = "loot_presentation_circle_glow_" .. item_rarity
-		content.final_glow = "loot_presentation_circle_glow_" .. item_rarity .. "_large"
-		content.image = nil
-		content.amount_text = nil
-		content.item_icon_frame = "item_frame"
+			self:_apply_color_to_glow_style(style.lock_bottom_glow, glow_color_back)
+			self:_apply_color_to_glow_style(style.lock_bottom_glow_2, glow_color_front)
+			self:_apply_color_to_glow_style(style.lock_glow, glow_color_back)
+			self:_apply_color_to_glow_style(style.lock_glow_1, glow_color_center)
+			self:_apply_color_to_glow_style(style.lock_glow_2, glow_color_front)
+			self:_apply_color_to_glow_style(style.final_glow, glow_color_back)
+			self:_apply_color_to_glow_style(style.final_glow_1, glow_color_center)
+			self:_apply_color_to_glow_style(style.final_glow_2, glow_color_front)
 
-		if slot_type == "melee" or slot_type == "ranged" or slot_type == "weapon_skin" or slot_type == "hat" then
-			local preview_widget = data.preview_widget
-			local previewer_pass_data = preview_widget.element.pass_data[1]
-			local viewport = previewer_pass_data.viewport
-			local world = previewer_pass_data.world
-			local reward = {
-				data = item_data,
-				backend_id = backend_id
-			}
-			local preview_position = {
-				0,
-				0,
-				0
-			}
-			local item_previewer = LootItemUnitPreviewer:new(reward, preview_position, world, viewport, index)
-			data.item_previewer = item_previewer
+			content.lock_glow = "loot_presentation_circle_glow_" .. item_rarity
+			content.final_glow = "loot_presentation_circle_glow_" .. item_rarity .. "_large"
+			content.image = nil
+			content.amount_text = nil
+			content.item_icon_frame = "item_frame"
 
-			if slot_type == "weapon_skin" then
-				content.item_icon_frame = "item_skin_frame_03"
+			if slot_type == "melee" or slot_type == "ranged" or slot_type == "weapon_skin" then
+				local preview_widget = data.preview_widget
+				local previewer_pass_data = preview_widget.element.pass_data[1]
+				local viewport = previewer_pass_data.viewport
+				local world = previewer_pass_data.world
+				local preview_position = {
+					0,
+					0,
+					0
+				}
+				local item_previewer = LootItemUnitPreviewer:new(item, preview_position, world, viewport, index)
+				data.item_previewer = item_previewer
+			elseif slot_type == "hat" then
+				local preview_widget = data.preview_widget
+				local world_previewer = MenuWorldPreviewer:new(self.ingame_ui_context, UISettings.hero_hat_camera_position_by_character, index)
+
+				world_previewer:on_enter(preview_widget)
+				world_previewer:force_hide_character()
+
+				local profile_name, profile_index, career_name, career_index = self:_get_hero_wield_info_by_item(item)
+				local career_settings = CareerSettings[career_name]
+				local base_skin = career_settings.base_skin
+				local item_name = item_data.key
+
+				self:_spawn_hero_with_hat(world_previewer, profile_name, career_index, base_skin, item_name)
+
+				data.world_previewer = world_previewer
+				content.is_loading = true
+			elseif slot_type == "skin" then
+				local preview_widget = data.preview_widget
+				local world_previewer = MenuWorldPreviewer:new(self.ingame_ui_context, UISettings.hero_skin_camera_position_by_character, index)
+
+				world_previewer:on_enter(preview_widget)
+				world_previewer:force_hide_character()
+
+				local optional_skin = item_data.name
+				local profile_name, profile_index, career_name, career_index = self:_get_hero_wield_info_by_item(item)
+
+				self:_spawn_hero_skin(world_previewer, profile_name, career_index, optional_skin)
+
+				data.world_previewer = world_previewer
+				content.is_loading = true
+			elseif slot_type == "crafting_material" or slot_type == "deed" or slot_type == "trinket" or slot_type == "necklace" or slot_type == "ring" then
+				local texture_name = nil
+
+				if item_key == "crafting_material_scrap" then
+					texture_name = "loot_image_scrap"
+				elseif item_key == "crafting_material_weapon" then
+					texture_name = "loot_image_weapon_part"
+				elseif item_key == "crafting_material_jewellery" then
+					texture_name = "loot_image_jewellery_part"
+				elseif slot_type == "trinket" then
+					texture_name = "loot_image_trinket"
+				elseif slot_type == "necklace" then
+					texture_name = "loot_image_jewellery"
+				elseif slot_type == "ring" then
+					texture_name = "loot_image_charm"
+				end
+
+				if slot_type == "crafting_material" then
+					local amount = backend_items:get_item_amount(backend_id)
+					content.amount_text = "x" .. tostring(amount)
+				elseif slot_type == "deed" then
+					texture_name = "loot_image_deed"
+				end
+
+				local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture_name)
+				content.image = texture_name
+				style.image.texture_size[1] = texture_settings.size[1]
+				style.image.texture_size[2] = texture_settings.size[2]
+			elseif slot_type == "frame" then
+				local profile = SPProfiles[self.profile_index]
+				local career_settings = profile.careers[self.career_index]
+				local portrait_image = career_settings.portrait_image
+				local item_template = ItemMasterList[item_key]
+				local portrait_frame = item_template.temporary_template
+				local scenegraph_id = "loot_option_" .. index .. "_center"
+				local scale = 1.5
+				local frame_widget = self:_create_player_portrait(scenegraph_id, portrait_frame, portrait_image, "", scale)
+				data.frame_widget = frame_widget
 			end
-		elseif slot_type == "skin" then
-			local preview_widget = data.preview_widget
-			local world_previewer = MenuWorldPreviewer:new(self.ingame_ui_context, skin_camera_position_by_character, index)
 
-			world_previewer:on_enter(preview_widget, hero_name)
-			world_previewer:wait_for_force_unhide()
-
-			local optional_skin = item_data.name
-
-			self:_spawn_hero_skin_unit(world_previewer, hero_name, career_index, optional_skin)
-
-			data.world_previewer = world_previewer
-			content.item_icon_frame = "item_skin_frame_03"
-		elseif slot_type == "crafting_material" or slot_type == "deed" or slot_type == "trinket" or slot_type == "necklace" or slot_type == "ring" then
-			local texture_name = nil
-
-			if item_key == "crafting_material_scrap" then
-				texture_name = "loot_image_scrap"
-			elseif item_key == "crafting_material_weapon" then
-				texture_name = "loot_image_weapon_part"
-			elseif item_key == "crafting_material_jewellery" then
-				texture_name = "loot_image_jewellery_part"
-			elseif slot_type == "trinket" then
-				texture_name = "loot_image_trinket"
-			elseif slot_type == "necklace" then
-				texture_name = "loot_image_jewellery"
-			elseif slot_type == "ring" then
-				texture_name = "loot_image_charm"
-			end
-
-			if slot_type == "crafting_material" then
-				local amount = backend_items:get_item_amount(backend_id)
-				content.amount_text = "x" .. tostring(amount)
-			elseif slot_type == "deed" then
-				texture_name = "loot_image_deed"
-			end
-
-			local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture_name)
-			content.image = texture_name
-			style.image.texture_size[1] = texture_settings.size[1]
-			style.image.texture_size[2] = texture_settings.size[2]
-		elseif slot_type == "frame" then
-			local profile = SPProfiles[profile_index]
-			local career_settings = profile.careers[career_index]
-			local portrait_image = career_settings.portrait_image
-			local item_template = ItemMasterList[item_key]
-			local portrait_frame = item_template.temporary_template
-			local scenegraph_id = "loot_option_" .. index .. "_center"
-			local scale = 1.5
-			local frame_widget = self:_create_player_portrait(scenegraph_id, portrait_frame, portrait_image, "", scale)
-			data.frame_widget = frame_widget
+			active_reward_options[#active_reward_options + 1] = data
 		end
 	end
 
+	self._active_reward_options = active_reward_options
 	self._present_reward_options = true
 
 	self:_set_background_blur_progress(1)
+end
+
+HeroViewStateLoot._get_hero_wield_info_by_item = function (self, item)
+	local item_data = item.data
+	local can_wield = item_data.can_wield
+	local career_name = can_wield[1]
+
+	for _, profile_settings in ipairs(SPProfiles) do
+		local careers = profile_settings.careers
+
+		for index, career_settings in ipairs(careers) do
+			if career_settings.name == career_name then
+				local profile_name = profile_settings.display_name
+				local profile_index = FindProfileIndex(profile_name)
+				local career_index = career_settings.sort_order
+
+				return profile_name, profile_index, career_name, career_index
+			end
+		end
+	end
 end
 
 HeroViewStateLoot._apply_color_to_glow_style = function (self, style, color)
@@ -1378,13 +1667,19 @@ HeroViewStateLoot._apply_color_to_glow_style = function (self, style, color)
 	style_default_color[4] = color[4]
 end
 
-HeroViewStateLoot._spawn_hero_skin_unit = function (self, world_previewer, hero_name, career_index, optional_skin)
-	local callback = callback(self, "cb_hero_unit_spawned", world_previewer, hero_name, career_index)
+HeroViewStateLoot._spawn_hero_skin = function (self, world_previewer, hero_name, career_index, optional_skin)
+	local callback = callback(self, "cb_hero_unit_spawned_skin_preview", world_previewer, hero_name, career_index)
 
-	world_previewer:request_spawn_hero_unit(hero_name, career_index, false, callback, 0.01, nil, optional_skin)
+	world_previewer:request_spawn_hero_unit(hero_name, career_index, false, callback, 1, nil, optional_skin)
 end
 
-HeroViewStateLoot.cb_hero_unit_spawned = function (self, world_previewer, hero_name, career_index)
+HeroViewStateLoot._spawn_hero_with_hat = function (self, world_previewer, hero_name, career_index, optional_skin, item_name)
+	local callback = callback(self, "cb_hero_unit_spawned_hat_preview", world_previewer, hero_name, career_index, item_name)
+
+	world_previewer:request_spawn_hero_unit(hero_name, career_index, false, callback, 1, nil, optional_skin)
+end
+
+HeroViewStateLoot.cb_hero_unit_spawned_skin_preview = function (self, world_previewer, hero_name, career_index)
 	local profile_index = FindProfileIndex(hero_name)
 	local profile = SPProfiles[profile_index]
 	local careers = profile.careers
@@ -1411,6 +1706,34 @@ HeroViewStateLoot.cb_hero_unit_spawned = function (self, world_previewer, hero_n
 
 	if preview_idle_animation then
 		world_previewer:play_character_animation(preview_idle_animation)
+	end
+end
+
+HeroViewStateLoot.cb_hero_unit_spawned_hat_preview = function (self, world_previewer, hero_name, career_index, hat_item_name)
+	local profile_index = FindProfileIndex(hero_name)
+	local profile = SPProfiles[profile_index]
+	local careers = profile.careers
+	local career_settings = careers[career_index]
+	local preview_idle_animation = career_settings.preview_idle_animation
+	local preview_wield_slot = career_settings.preview_wield_slot
+	local preview_items = career_settings.preview_items
+	local hat_slot = InventorySettings.slots_by_name.slot_hat
+
+	world_previewer:equip_item(hat_item_name, hat_slot)
+
+	if preview_items then
+		for _, item_name in ipairs(preview_items) do
+			local item_template = ItemMasterList[item_name]
+			local slot_type = item_template.slot_type
+
+			if slot_type ~= "melee" and slot_type ~= "ranged" and slot_type ~= "hat" then
+				local slot_names = InventorySettings.slot_names_by_type[slot_type]
+				local slot_name = slot_names[1]
+				local slot = InventorySettings.slots_by_name[slot_name]
+
+				world_previewer:equip_item(item_name, slot)
+			end
+		end
 	end
 end
 
@@ -1460,6 +1783,8 @@ HeroViewStateLoot._start_animation = function (self, key, animation_name, widget
 end
 
 HeroViewStateLoot._open_chest = function (self, selected_item)
+	self:_reset_camera()
+
 	local backend_loot = Managers.backend:get_interface("loot")
 	local hero_name = self.hero_name
 	local backend_id = selected_item.backend_id
@@ -1467,6 +1792,7 @@ HeroViewStateLoot._open_chest = function (self, selected_item)
 
 	self.menu_input_description:set_input_description(nil)
 
+	self._draw_input_desc_widgets = false
 	self._chest_zoom_in_duration = 0
 	self._chest_zoom_out_duration = nil
 
@@ -1552,6 +1878,9 @@ HeroViewStateLoot._animate_reward_options_entry = function (self, dt)
 		self._reward_options_entry_progress = nil
 
 		self.menu_input_description:set_input_description(generic_input_actions.chest_opened)
+
+		self._draw_input_desc_widgets = true
+		self._reward_option_animation_complete = true
 	else
 		self._reward_options_entry_progress = progress
 	end
@@ -1575,7 +1904,7 @@ HeroViewStateLoot._spawn_chest_unit = function (self, unit_name, instant_spawn, 
 		World.destroy_unit(world, self._chest_unit)
 	end
 
-	local unit = World.spawn_unit(world, unit_name)
+	local unit = World.spawn_unit(world, unit_name, Vector3(0, 0, 10))
 	local link_unit = self:get_world_link_unit()
 
 	World.link_unit(world, unit, 0, link_unit, 0)
@@ -1758,6 +2087,13 @@ HeroViewStateLoot._update_camera_look_down_time = function (self, dt, t)
 	end
 end
 
+HeroViewStateLoot._reset_camera = function (self)
+	self._camera_look_down_duration = nil
+	self.background_fade_widget.style.rect.color[1] = 0
+
+	self:_position_camera()
+end
+
 HeroViewStateLoot._update_chest_open_wait_time = function (self, dt, t)
 	local chest_open_wait_duration = self._chest_open_wait_duration
 
@@ -1846,6 +2182,7 @@ end
 
 HeroViewStateLoot.add_camera_shake = function (self, settings, start_time, scale)
 	local data = {}
+	local current_rot = self:get_camera_rotation()
 	local settings = settings or camera_default_shake_settings
 	local duration = settings.duration
 	local fade_in = settings.fade_in
@@ -1858,13 +2195,13 @@ HeroViewStateLoot.add_camera_shake = function (self, settings, start_time, scale
 	data.fade_out_time = fade_out and data.end_time - fade_out
 	data.seed = settings.seed or Math.random(1, 100)
 	data.scale = scale or 1
+	data.camera_rotation_boxed = QuaternionBox(current_rot)
 	self._active_camera_shakes = {
 		[data] = true
 	}
 end
 
 HeroViewStateLoot._apply_shake_event = function (self, settings, t)
-	local active_camera_shakes = self._active_camera_shakes
 	local start_time = settings.start_time
 	local end_time = settings.end_time
 	local fade_in_time = settings.fade_in_time
@@ -1878,17 +2215,17 @@ HeroViewStateLoot._apply_shake_event = function (self, settings, t)
 
 	local pitch_noise_value = self:_calculate_perlin_value(t - settings.start_time, settings) * settings.scale
 	local yaw_noise_value = self:_calculate_perlin_value(t - settings.start_time + 10, settings) * settings.scale
-	local current_rot = self:get_camera_rotation()
+	local starting_rotation = settings.camera_rotation_boxed:unbox()
 	local deg_to_rad = math.pi / 180
 	local yaw_offset = Quaternion(Vector3.up(), yaw_noise_value * deg_to_rad)
 	local pitch_offset = Quaternion(Vector3.right(), pitch_noise_value * deg_to_rad)
 	local total_offset = Quaternion.multiply(yaw_offset, pitch_offset)
-	local rotation = Quaternion.multiply(Quaternion.identity(), total_offset)
+	local rotation = Quaternion.multiply(starting_rotation, total_offset)
 
 	self:set_camera_rotation(rotation)
 
 	if settings.end_time and settings.end_time <= t then
-		active_camera_shakes[settings] = nil
+		self._active_camera_shakes[settings] = nil
 	end
 end
 
@@ -1969,6 +2306,23 @@ HeroViewStateLoot._setup_info_window = function (self)
 	local portrait_widget = self:_create_portrait_frame_widget(portrait_frame, portrait_image, player_level_text)
 	self._portrait_widget = portrait_widget
 	self._widgets_by_name.info_text_title.content.text = Localize(character_name)
+end
+
+HeroViewStateLoot._handle_gamepad_activity = function (self)
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local force_update = self.gamepad_active_last_frame == nil
+
+	if gamepad_active then
+		if not self.gamepad_active_last_frame or force_update then
+			self.gamepad_active_last_frame = true
+
+			self:_set_gamepad_input_buttons_visibility(true)
+		end
+	elseif self.gamepad_active_last_frame or force_update then
+		self.gamepad_active_last_frame = false
+
+		self:_set_gamepad_input_buttons_visibility(false)
+	end
 end
 
 return

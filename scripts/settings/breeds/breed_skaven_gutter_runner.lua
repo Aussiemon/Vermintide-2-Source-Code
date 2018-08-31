@@ -40,6 +40,7 @@ local breed_data = {
 	bone_lod_level = 1,
 	jump_range = 20,
 	smart_targeting_width = 0.3,
+	special_spawn_stinger_time = 6,
 	is_bot_aid_threat = true,
 	initial_is_passive = false,
 	base_unit = "units/beings/enemies/skaven_gutter_runner/chr_skaven_gutter_runner",
@@ -80,6 +81,7 @@ local breed_data = {
 		0
 	},
 	disabled = Development.setting("disable_gutter_runner") or false,
+	run_on_spawn = AiBreedSnippets.on_gutter_runner_spawn,
 	hitzone_multiplier_types = {
 		head = "headshot"
 	},
@@ -201,6 +203,7 @@ local breed_data = {
 
 		QuestSettings.check_gutter_killed_while_pouncing(blackboard, killer_unit, damage_source)
 	end,
+	run_on_spawn = AiBreedSnippets.on_gutter_runner_spawn,
 	before_stagger_enter_function = function (unit, blackboard, attacker_unit, is_push)
 		if is_push then
 			QuestSettings.check_gutter_runner_push_on_pounce(blackboard, attacker_unit)

@@ -55,9 +55,21 @@ CareerAbilityDRIronbreaker.update = function (self, unit, input, dt, context, t)
 			return
 		end
 
-		if input_extension:get("action_career_release") then
+		if input_extension:get("weapon_reload") then
+			self:_stop_priming()
+
+			return
+		end
+
+		if not input_extension:get("action_career_hold") then
 			self:_run_ability()
 		end
+	end
+end
+
+CareerAbilityDRIronbreaker.stop = function (self, reason)
+	if self._is_priming then
+		self:_stop_priming()
 	end
 end
 
@@ -178,6 +190,7 @@ CareerAbilityDRIronbreaker._run_ability = function (self)
 		local first_person_extension = self._first_person_extension
 
 		first_person_extension:animation_event("ability_shout")
+		first_person_extension:play_unit_sound_event("Play_career_ability_bardin_ironbreaker_enter", owner_unit, 0, true)
 	end
 
 	self:_play_vfx()

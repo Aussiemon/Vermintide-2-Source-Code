@@ -10,8 +10,8 @@ NewsTickerManager.init = function (self)
 		self._ingame_url = Development.parameter("news_ticker_ingame_url") or "http://cdn.fatsharkgames.se/vermintide_2_news_ticker_ingame.txt"
 	else
 		self._server_name = "cdn.fatsharkgames.se"
-		self._loading_screen_url = "empty.txt"
-		self._ingame_url = "empty.txt"
+		self._loading_screen_url = Development.parameter("news_ticker_url_xb1") or "vermintide_2_news_ticker_" .. PLATFORM .. ".txt"
+		self._ingame_url = Development.parameter("news_ticker_ingame_url_xb1") or "vermintide_2_news_ticker_ingame_" .. PLATFORM .. ".txt"
 	end
 
 	self._loading_screen_text = nil
@@ -50,7 +50,7 @@ NewsTickerManager._load = function (self, url, callback)
 		local message = Http.get_uri(self._server_name, 80, url)
 
 		if message then
-			local is_ok = string.find(message, "HTTP/1.1 200 OK")
+			local is_ok = string.find(message, "HTTP/1.1 200 OK") or string.find(message, "HTTP/1.0 200 OK")
 
 			if is_ok then
 				local start_idx, end_idx = string.find(message, "\r\n\r\n")
@@ -88,7 +88,7 @@ NewsTickerManager.refresh_loading_screen_message = function (self)
 		return
 	end
 
-	self:_load(self._loading_screen_url, callback(self, "cb_loading_screen_loaded"))
+	self:_load(Development.parameter("news_ticker_url_xb1") or self._loading_screen_url, callback(self, "cb_loading_screen_loaded"))
 end
 
 NewsTickerManager.cb_loading_screen_loaded = function (self, info)
@@ -122,7 +122,7 @@ NewsTickerManager.refresh_ingame_message = function (self)
 		return
 	end
 
-	self:_load(self._ingame_url, callback(self, "cb_ingame_loaded"))
+	self:_load(Development.parameter("news_ticker_ingame_url_xb1") or self._ingame_url, callback(self, "cb_ingame_loaded"))
 end
 
 NewsTickerManager.refreshing_ingame_message = function (self)

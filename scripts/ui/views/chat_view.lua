@@ -64,6 +64,7 @@ ChatView.init = function (self, ingame_ui_context)
 	}
 	self._network_server = ingame_ui_context.network_server
 	self._current_channel_name = Managers.irc:home_channel()
+	self._local_player_id = ingame_ui_context.local_player_id
 	self._chat_message = ""
 	self._chat_index = 1
 	self._emoji_scroll = 0
@@ -380,8 +381,6 @@ end
 local DO_RELOAD = true
 
 ChatView.update = function (self, dt, t, is_sub_menu)
-	script_data.chat_view = self
-
 	if DO_RELOAD then
 		DO_RELOAD = false
 
@@ -470,7 +469,7 @@ ChatView._update_recent_channels_input = function (self, dt, t)
 		elseif join_button_hotspot.on_pressed then
 			if recent_channels_window_content.selected_channel ~= nil then
 				self:_destroy_recent_channels_window(true)
-				Managers.chat:send_chat_message(1, "/join " .. recent_channels_window_content.selected_channel, self._recent_message_index, Irc.CHANNEL_MSG, recent_channels_window_content.selected_channel)
+				Managers.chat:send_chat_message(1, nil, "/join " .. recent_channels_window_content.selected_channel, self._recent_message_index, Irc.CHANNEL_MSG, recent_channels_window_content.selected_channel)
 			end
 		else
 			local base_name = "channel_entry_"
@@ -712,7 +711,7 @@ ChatView._update_create_channel_input = function (self, dt, t)
 			create_channel_window_content.text_field_active = true
 		elseif create_button_hotspot.on_pressed then
 			self:_destroy_create_channel_window(true)
-			Managers.chat:send_chat_message(1, "/join #" .. create_channel_window_content.chat_text_id, self._recent_message_index, Irc.CHANNEL_MSG, create_channel_window_content.chat_text_id)
+			Managers.chat:send_chat_message(1, nil, "/join #" .. create_channel_window_content.chat_text_id, self._recent_message_index, Irc.CHANNEL_MSG, create_channel_window_content.chat_text_id)
 		elseif widget_hotspot.on_pressed then
 			create_channel_window_content.text_field_active = false
 		end
@@ -726,7 +725,7 @@ ChatView._update_create_channel_input = function (self, dt, t)
 		if input_service:get("execute_chat_input") then
 			if create_channel_window_content.chat_text_id ~= "" then
 				self:_destroy_create_channel_window(true)
-				Managers.chat:send_chat_message(1, "/join #" .. create_channel_window_content.chat_text_id, self._recent_message_index, Irc.CHANNEL_MSG, create_channel_window_content.chat_text_id)
+				Managers.chat:send_chat_message(1, nil, "/join #" .. create_channel_window_content.chat_text_id, self._recent_message_index, Irc.CHANNEL_MSG, create_channel_window_content.chat_text_id)
 			end
 
 			create_channel_window_content.text_field_active = false
@@ -961,7 +960,7 @@ ChatView._update_channels_list_input = function (self, dt, t)
 			if self._channels[channel_to_join] then
 				self:_change_channel(channel_to_join)
 			else
-				Managers.chat:send_chat_message(1, "/join " .. channel_to_join, self._recent_message_index, Irc.CHANNEL_MSG, channel_to_join)
+				Managers.chat:send_chat_message(1, nil, "/join " .. channel_to_join, self._recent_message_index, Irc.CHANNEL_MSG, channel_to_join)
 			end
 		elseif create_button_hotspot.on_pressed then
 			self:_destroy_channels_list()
@@ -1569,7 +1568,7 @@ ChatView._handle_channel_list_input = function (self)
 
 			return
 		elseif widget_content.exit_button_hotspot and widget_content.exit_button_hotspot.on_pressed then
-			Managers.chat:send_chat_message(1, "/leave " .. widget_content.channel_name, self._recent_message_index, Irc.CHANNEL_MSG, widget_content.channel_name)
+			Managers.chat:send_chat_message(1, nil, "/leave " .. widget_content.channel_name, self._recent_message_index, Irc.CHANNEL_MSG, widget_content.channel_name)
 			self:_destroy_channel_list()
 
 			return
@@ -1721,7 +1720,7 @@ ChatView._show_welcome_message = function (self)
 end
 
 ChatView._send_channel_message = function (self, content, emojis)
-	local command, parameters, context_data = Managers.chat:send_chat_message(1, content.chat_text.text, self._recent_message_index, Irc.CHANNEL_MSG, self._current_channel_name)
+	local command, parameters, context_data = Managers.chat:send_chat_message(1, self._local_player_id, content.chat_text.text, self._recent_message_index, Irc.CHANNEL_MSG, self._current_channel_name)
 
 	if not command then
 		if content.chat_text.text ~= "" then
@@ -1821,7 +1820,7 @@ end
 
 ChatView._send_private_message = function (self, content, emojis)
 	local user_name = content.private_user_name
-	local command, parameters, context_data = Managers.chat:send_chat_message(1, content.chat_text.text, self._recent_message_index, Irc.PRIVATE_MSG, user_name)
+	local command, parameters, context_data = Managers.chat:send_chat_message(1, self._local_player_id, content.chat_text.text, self._recent_message_index, Irc.PRIVATE_MSG, user_name)
 
 	if not command then
 		if content.chat_text.text ~= "" then

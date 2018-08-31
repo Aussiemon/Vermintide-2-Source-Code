@@ -1,5 +1,4 @@
 BTConditions.can_activate = BTConditions.can_activate or {}
-local unit_alive = Unit.alive
 local ScriptUnit = ScriptUnit
 
 BTConditions.can_activate.dr_ironbreaker = function (blackboard)
@@ -15,7 +14,7 @@ BTConditions.can_activate.dr_ironbreaker = function (blackboard)
 		local enemy_unit = proximite_enemies[i]
 		local enemy_position = POSITION_LOOKUP[enemy_unit]
 
-		if unit_alive(enemy_unit) and Vector3.distance_squared(self_position, enemy_position) <= max_distance_sq then
+		if ALIVE[enemy_unit] and Vector3.distance_squared(self_position, enemy_position) <= max_distance_sq then
 			local enemy_blackboard = BLACKBOARDS[enemy_unit]
 			local enemy_breed = enemy_blackboard.breed
 			local is_targeting_bot = enemy_blackboard.target_unit == self_unit
@@ -100,7 +99,7 @@ BTConditions.can_activate.dr_ranger = function (blackboard)
 		local enemy_unit = proximite_enemies[i]
 		local enemy_position = POSITION_LOOKUP[enemy_unit]
 
-		if unit_alive(enemy_unit) and Vector3.distance_squared(self_position, enemy_position) <= max_distance_sq then
+		if ALIVE[enemy_unit] and Vector3.distance_squared(self_position, enemy_position) <= max_distance_sq then
 			local enemy_blackboard = BLACKBOARDS[enemy_unit]
 			local enemy_breed = enemy_blackboard.breed
 			local is_targeting_bot = enemy_blackboard.target_unit == self_unit
@@ -156,7 +155,7 @@ BTConditions.can_activate.es_mercenary = function (blackboard)
 		local enemy_unit = proximite_enemies[i]
 		local enemy_position = POSITION_LOOKUP[enemy_unit]
 
-		if unit_alive(enemy_unit) and Vector3.distance_squared(self_position, enemy_position) <= max_threat_distance_sq then
+		if ALIVE[enemy_unit] and Vector3.distance_squared(self_position, enemy_position) <= max_threat_distance_sq then
 			local enemy_blackboard = BLACKBOARDS[enemy_unit]
 			local enemy_breed = enemy_blackboard.breed
 			local is_targeting_bot = enemy_blackboard.target_unit == self_unit
@@ -255,7 +254,7 @@ BTConditions.can_activate.we_waywatcher = function (blackboard, can_use_ranged_s
 
 	local target = blackboard.target_unit
 
-	if not unit_alive(target) then
+	if not ALIVE[target] then
 		return false
 	end
 
@@ -390,7 +389,7 @@ BTConditions.can_activate.wh_captain = function (blackboard)
 		local enemy_unit = proximite_enemies[i]
 		local enemy_position = POSITION_LOOKUP[enemy_unit]
 
-		if unit_alive(enemy_unit) and Vector3.distance_squared(self_position, enemy_position) <= max_threat_distance_sq then
+		if ALIVE[enemy_unit] and Vector3.distance_squared(self_position, enemy_position) <= max_threat_distance_sq then
 			local enemy_blackboard = BLACKBOARDS[enemy_unit]
 			local enemy_breed = enemy_blackboard.breed
 			local is_targeting_bot = enemy_blackboard.target_unit == self_unit
@@ -413,7 +412,7 @@ BTConditions.can_activate.wh_bountyhunter = function (blackboard, can_use_ranged
 
 	local target = blackboard.target_unit
 
-	if not unit_alive(target) then
+	if not ALIVE[target] then
 		return false
 	end
 
@@ -522,7 +521,7 @@ BTConditions.can_activate.bw_scholar = function (blackboard, can_use_ranged_shot
 
 	local target = blackboard.target_unit
 
-	if not unit_alive(target) then
+	if not ALIVE[target] then
 		return false
 	end
 
@@ -560,7 +559,7 @@ BTConditions.can_activate.bw_unchained = function (blackboard)
 		local enemy_unit = proximite_enemies[i]
 		local enemy_position = POSITION_LOOKUP[enemy_unit]
 
-		if unit_alive(enemy_unit) and Vector3.distance_squared(self_position, enemy_position) <= max_distance_sq then
+		if ALIVE[enemy_unit] and Vector3.distance_squared(self_position, enemy_position) <= max_distance_sq then
 			local enemy_blackboard = BLACKBOARDS[enemy_unit]
 			local enemy_breed = enemy_blackboard.breed
 			local is_targeting_bot = enemy_blackboard.target_unit == self_unit
@@ -582,7 +581,7 @@ BTConditions.can_activate_ability = function (blackboard, args)
 	local career_name = career_extension:career_name()
 	local can_use_ranged_shot_ability = args[1]
 
-	if can_use_ranged_shot_ability and (not unit_alive(blackboard.target_unit) or not Unit.has_data(blackboard.target_unit, "breed")) then
+	if can_use_ranged_shot_ability and (not ALIVE[blackboard.target_unit] or not Unit.has_data(blackboard.target_unit, "breed")) then
 		return false
 	end
 
@@ -629,7 +628,7 @@ local function is_there_threat_to_aid(self_unit, proximite_enemies, force_aid)
 	for i = 1, num_proximite_enemies, 1 do
 		local enemy_unit = proximite_enemies[i]
 
-		if unit_alive(enemy_unit) then
+		if ALIVE[enemy_unit] then
 			local enemy_blackboard = BLACKBOARDS[enemy_unit]
 			local enemy_breed = enemy_blackboard.breed
 
@@ -854,7 +853,7 @@ end
 BTConditions.has_priority_or_opportunity_target = function (blackboard)
 	local target = blackboard.target_unit
 
-	if not unit_alive(target) then
+	if not ALIVE[target] then
 		return false
 	end
 
@@ -865,13 +864,13 @@ BTConditions.has_priority_or_opportunity_target = function (blackboard)
 end
 
 BTConditions.ally_within_range_or_solo = function (blackboard)
-	return not unit_alive(blackboard.target_ally_unit) or blackboard.ally_distance < 40
+	return not ALIVE[blackboard.target_ally_unit] or blackboard.ally_distance < 40
 end
 
 BTConditions.bot_in_melee_range = function (blackboard)
 	local target_unit = blackboard.target_unit
 
-	if not unit_alive(target_unit) then
+	if not ALIVE[target_unit] then
 		return false
 	end
 
@@ -915,7 +914,7 @@ end
 BTConditions.has_target_and_ammo_greater_than = function (blackboard, args)
 	local target_unit = blackboard.target_unit
 
-	if not unit_alive(target_unit) or Unit.get_data(target_unit, "breed") == nil then
+	if not ALIVE[target_unit] or Unit.get_data(target_unit, "breed") == nil then
 		return false
 	end
 
@@ -969,7 +968,7 @@ BTConditions.can_open_door = function (blackboard)
 
 	if blackboard.interaction_type == "door" then
 		local interaction_unit = blackboard.interaction_unit
-		local door_extension = unit_alive(interaction_unit) and ScriptUnit.has_extension(interaction_unit, "door_system")
+		local door_extension = Unit.alive(interaction_unit) and ScriptUnit.has_extension(interaction_unit, "door_system")
 
 		if door_extension then
 			can_interact = door_extension:get_current_state() == "closed"
@@ -1044,6 +1043,23 @@ BTConditions.can_teleport = function (blackboard)
 	end
 
 	return true
+end
+
+BTConditions.should_drop_grimoire = function (blackboard)
+	local inventory_extension = blackboard.inventory_extension
+	local slot_name = "slot_potion"
+	local slot_data = inventory_extension:get_slot_data(slot_name)
+
+	if slot_data then
+		local item_template = inventory_extension:get_item_template(slot_data)
+		local is_grimoire = item_template.is_grimoire
+		local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
+		local order = ai_bot_group_system:get_pickup_order(blackboard.unit, slot_name)
+
+		return is_grimoire and (order == nil or order.pickup_name ~= "grimoire")
+	end
+
+	return false
 end
 
 return

@@ -9,7 +9,7 @@ local buff_tweak_data = {
 		chunk_size = 25
 	},
 	victor_zealot_passive_damage = {
-		max_stacks = 5,
+		description_stacks = 6,
 		multiplier = 0.05
 	},
 	victor_zealot_passive_attack_speed_aura_buff = {
@@ -59,21 +59,21 @@ local buff_tweak_data = {
 		chunk_size = 25
 	},
 	victor_zealot_block_arc_from_passive = {
-		max_stacks = 5,
+		description_stacks = 6,
 		multiplier = 0.1
 	},
 	victor_zealot_increased_critical_hit_damage_from_passive = {
 		chunk_size = 25
 	},
 	victor_zealot_critical_hit_damage_from_passive = {
-		max_stacks = 5,
+		description_stacks = 6,
 		multiplier = 0.1
 	},
 	victor_zealot_increased_stamina_from_passive = {
 		chunk_size = 25
 	},
 	victor_zealot_stamina_from_passive = {
-		max_stacks = 5,
+		description_stacks = 6,
 		bonus = 1
 	},
 	victor_zealot_activated_ability_duration = {
@@ -1086,7 +1086,7 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_zealot_increased_block_arc_from_passive.chunk_size
 			},
 			{
-				value = buff_tweak_data.victor_zealot_block_arc_from_passive.max_stacks
+				value = buff_tweak_data.victor_zealot_block_arc_from_passive.description_stacks
 			}
 		},
 		requirements = {},
@@ -1110,7 +1110,7 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_zealot_increased_critical_hit_damage_from_passive.chunk_size
 			},
 			{
-				value = buff_tweak_data.victor_zealot_critical_hit_damage_from_passive.max_stacks
+				value = buff_tweak_data.victor_zealot_critical_hit_damage_from_passive.description_stacks
 			}
 		},
 		requirements = {},
@@ -1129,7 +1129,7 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_zealot_increased_stamina_from_passive.chunk_size
 			},
 			{
-				value = buff_tweak_data.victor_zealot_stamina_from_passive.max_stacks
+				value = buff_tweak_data.victor_zealot_stamina_from_passive.description_stacks
 			}
 		},
 		requirements = {},
@@ -1139,12 +1139,16 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc",
+		description = "regrowth_desc_2",
 		name = "victor_zealot_regrowth",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "victor_zealot_regrowth",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.regrowth.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"regrowth"
@@ -1152,12 +1156,16 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc",
+		description = "bloodlust_desc_2",
 		name = "victor_zealot_bloodlust",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "victor_zealot_bloodlust",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.bloodlust.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"bloodlust"
@@ -1165,12 +1173,16 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc",
+		description = "conqueror_desc_2",
 		name = "victor_zealot_conqueror",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "victor_zealot_conqueror",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.conqueror.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"conqueror"
@@ -1373,12 +1385,16 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc",
+		description = "regrowth_desc_2",
 		name = "victor_bountyhunter_regrowth",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "victor_bountyhunter_regrowth",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.regrowth.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"regrowth"
@@ -1386,12 +1402,16 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc",
+		description = "bloodlust_desc_2",
 		name = "victor_bountyhunter_bloodlust",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "victor_bountyhunter_bloodlust",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.bloodlust.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"bloodlust"
@@ -1399,12 +1419,16 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc",
+		description = "conqueror_desc_2",
 		name = "victor_bountyhunter_conqueror",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "victor_bountyhunter_conqueror",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.conqueror.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"conqueror"
@@ -1471,7 +1495,7 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "victor_witchhunter_max_stamina_desc",
+		description = "victor_witchhunter_max_stamina_desc_2",
 		name = "victor_witchhunter_max_stamina",
 		num_ranks = 1,
 		icon = "victor_witchhunter_max_stamina",
@@ -1522,7 +1546,7 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "victor_witchhunter_headshot_damage_increase_desc",
+		description = "victor_witchhunter_headshot_damage_increase_desc_2",
 		name = "victor_witchhunter_headshot_damage_increase",
 		num_ranks = 1,
 		buffer = "server",
@@ -1616,12 +1640,16 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc",
+		description = "regrowth_desc_2",
 		name = "victor_witchhunter_regrowth",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "victor_witchhunter_regrowth",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.regrowth.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"regrowth"
@@ -1629,12 +1657,16 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc",
+		description = "bloodlust_desc_2",
 		name = "victor_witchhunter_bloodlust",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "victor_witchhunter_bloodlust",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.bloodlust.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"bloodlust"
@@ -1642,12 +1674,16 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc",
+		description = "conqueror_desc_2",
 		name = "victor_witchhunter_conqueror",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "victor_witchhunter_conqueror",
-		description_values = {},
+		description_values = {
+			{
+				value = BuffTemplates.conqueror.buffs[1].bonus
+			}
+		},
 		requirements = {},
 		buffs = {
 			"conqueror"

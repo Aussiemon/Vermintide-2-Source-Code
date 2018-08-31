@@ -536,11 +536,12 @@ local player_title_style = {
 }
 local leave_party_text = (PLATFORM == "xb1" and "leave_party_xb1") or "leave_party"
 local masked = true
+local disable_with_gamepad = true
 local widgets_definitions = {
 	timer_text = UIWidgets.create_simple_text(Localize("timer_prefix_time_left"), "timer_text", nil, nil, timer_text_style),
 	timer_bg = UIWidgets.create_simple_texture("tab_menu_bg_03", "timer_bg"),
 	retry_button = UIWidgets.create_default_button("retry_button", scenegraph_definition.retry_button.size, nil, nil, Localize("button_retry"), 32),
-	ready_button = UIWidgets.create_default_button("ready_button", scenegraph_definition.ready_button.size, nil, nil, Localize("return_to_inn"), 32),
+	ready_button = UIWidgets.create_default_button("ready_button", scenegraph_definition.ready_button.size, nil, nil, Localize("return_to_inn"), 32, nil, nil, nil, disable_with_gamepad),
 	reset_button = UIWidgets.create_simple_two_state_button("reset_button", "scroll_bar_button_up", "scroll_bar_button_up_clicked"),
 	page_background = UIWidgets.create_simple_rect("page_background", {
 		150,
@@ -570,6 +571,29 @@ local animations = {
 		}
 	}
 }
+local generic_input_actions = {
+	default = {
+		{
+			input_action = "analog_input",
+			priority = 1,
+			description_text = "scoreboard_navigation"
+		},
+		{
+			input_action = "refresh",
+			priority = 3,
+			description_text = "return_to_inn"
+		}
+	},
+	profile_available = {
+		actions = {
+			{
+				input_action = "confirm",
+				priority = 2,
+				description_text = "input_description_show_profile"
+			}
+		}
+	}
+}
 
 return {
 	num_reward_entries = num_reward_entries,
@@ -577,5 +601,6 @@ return {
 	scenegraph_definition = scenegraph_definition,
 	widgets_definitions = widgets_definitions,
 	animations = animations,
+	generic_input_actions = generic_input_actions,
 	console_cursor_definition = UIWidgets.create_console_cursor("console_cursor")
 }

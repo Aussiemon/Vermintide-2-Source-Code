@@ -117,6 +117,10 @@ CutsceneSystem.flow_cb_activate_cutscene_camera = function (self, camera_unit, t
 		Managers.account:set_realtime_multiplay_state("cinematic", true)
 	end
 
+	if PLATFORM ~= "win32" then
+		Application.set_time_step_policy("throttle", 30)
+	end
+
 	pdArray.push_back2(self.ui_event_queue, "set_letterbox_enabled", letterbox_enabled)
 end
 
@@ -134,6 +138,10 @@ CutsceneSystem.flow_cb_deactivate_cutscene_cameras = function (self)
 
 	if PLATFORM == "ps4" then
 		Managers.account:set_realtime_multiplay_state("cinematic", false)
+	end
+
+	if PLATFORM ~= "win32" then
+		Application.set_time_step_policy("no_throttle")
 	end
 
 	pdArray.push_back2(self.ui_event_queue, "set_letterbox_enabled", false)

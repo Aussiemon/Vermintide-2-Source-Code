@@ -131,15 +131,6 @@ ActionBountyHunterHandgun._railgun_shoot = function (self)
 	local lookup_data = current_action.lookup_data
 
 	ActionUtils.spawn_player_projectile(owner_unit, position, rotation, 0, angle, target_vector, speed, self.item_name, lookup_data.item_template_name, lookup_data.action_name, lookup_data.sub_action_name, self.is_critical_strike, self.power_level)
-
-	local fire_sound_event = self.current_action.railgun_fire_sound_event
-
-	if fire_sound_event then
-		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-
-		first_person_extension:play_hud_sound_event(fire_sound_event)
-	end
-
 	first_person_extension:reset_aim_assist_multiplier()
 end
 
@@ -210,14 +201,6 @@ ActionBountyHunterHandgun._shotgun_shoot = function (self)
 	if current_action.alert_sound_range_fire then
 		Managers.state.entity:system("ai_system"):alert_enemies_within_range(owner_unit, POSITION_LOOKUP[owner_unit], current_action.alert_sound_range_fire)
 	end
-
-	local fire_sound_event = self.current_action.shotgun_fire_sound_event
-
-	if fire_sound_event then
-		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-
-		first_person_extension:play_hud_sound_event(fire_sound_event)
-	end
 end
 
 ActionBountyHunterHandgun._do_aoe = function (self)
@@ -262,7 +245,6 @@ ActionBountyHunterHandgun._do_aoe = function (self)
 				self.target_hit_zones_names[hit_unit] = target_hit_zone_name
 				self.target_hit_unit_positions[hit_unit] = target_hit_position
 				local attack_direction = Vector3.normalize(POSITION_LOOKUP[hit_unit] - attack_pos)
-				local node = Actor.node(hit_actor)
 				local hit_zone = breed.hit_zones_lookup[node]
 				local hit_zone_name = hit_zone.name
 				local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
@@ -279,7 +261,7 @@ ActionBountyHunterHandgun._do_aoe = function (self)
 				local can_stagger = true
 				local target_index = nil
 
-				weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", target_index, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", ranged_boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", can_damage, "can_stagger", can_stagger)
+				weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, target_hit_position, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", target_index, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", ranged_boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", can_damage, "can_stagger", can_stagger)
 			end
 		until true
 	end

@@ -1,5 +1,5 @@
 require("scripts/settings/payload_speed_settings")
-require("scripts/utils/spline_curve")
+require("foundation/scripts/util/spline_curve")
 
 local FRAMES = 100
 local WHEEL_DIAMETER = 0.095
@@ -116,46 +116,53 @@ local STAGGERED = {}
 
 PayloadExtension._hit_enemies = function (self, abs_speed, t)
 	local payload_unit = self._unit
-	local payload_pos = POSITION_LOOKUP[payload_unit]
+	local payload_position = POSITION_LOOKUP[payload_unit]
+	local payload_position_flat = Vector3.flat(payload_position)
 	local payload_pose, half_extents = Unit.box(payload_unit, true)
+	local payload_forward = Vector3.normalize(Matrix4x4.forward(payload_pose))
 	local largest_extent = (half_extents.y < half_extents.x and half_extents.x) or half_extents.y
 	largest_extent = (half_extents.z < largest_extent and largest_extent) or half_extents.z
 	local radius = largest_extent * 2
-	local num_hits = AiUtils.broadphase_query(payload_pos, radius, RESULT_TABLE)
+	local small_box_extents = half_extents * 1.2
+	local large_box_extents = half_extents * 2
+	local hazard_type = "payload"
+	local hazard_settings = EnvironmentalHazards[hazard_type]
+	local hit_zone_name = "torso"
+	local hit_ragdoll_actor = nil
+	local damage_source = hazard_type
+	local power_level = hazard_settings.enemy.power_level or DefaultPowerLevel
+	local damage_profile_name = hazard_settings.enemy.damage_profile or "default"
+	local damage_profile = DamageProfileTemplates[damage_profile_name]
+	local target_index = nil
+	local boost_curve_multiplier = 0
+	local is_critical_strike = false
+	local can_damage = false
+	local can_stagger = true
+	local blocking = false
+	local shield_breaking_hit = false
+	local num_hits = AiUtils.broadphase_query(payload_position, radius, RESULT_TABLE)
 
 	for i = 1, num_hits, 1 do
 		local hit_unit = RESULT_TABLE[i]
-		local enemy_pos = POSITION_LOOKUP[hit_unit]
-		local inside_small_box = math.point_is_inside_oobb(enemy_pos, payload_pose, half_extents * 1.2)
-		local inside_large_box = math.point_is_inside_oobb(enemy_pos, payload_pose, half_extents * 2)
+		local enemy_position = POSITION_LOOKUP[hit_unit]
+		local inside_small_box = math.point_is_inside_oobb(enemy_position, payload_pose, small_box_extents)
+		local inside_large_box = math.point_is_inside_oobb(enemy_position, payload_pose, large_box_extents)
 
 		if inside_small_box and not STAGGERED[hit_unit] then
 			STAGGERED[hit_unit] = true
-			local payload_forward = Vector3.normalize(Matrix4x4.forward(payload_pose))
-			local dot = Vector3.dot(payload_forward, enemy_pos - payload_pos)
+			local power_level_multiplier = 0.5
+			local dot = Vector3.dot(payload_forward, enemy_position - payload_position)
 			local enemy_in_front = dot > 0
-			local stagger_multiplier = (enemy_in_front and abs_speed > 1 and 2) or 1
-			local payload_unit_pos_flat = Vector3.flat(payload_pos)
-			local enemy_pos_flat = Vector3.flat(enemy_pos)
-			local push_direction = Vector3.normalize(enemy_pos_flat - payload_unit_pos_flat)
-			local hazard_type = "payload"
-			local hazard_settings = EnvironmentalHazards[hazard_type]
-			local hit_ragdoll_actor = nil
-			local damage_source = hazard_type
-			local power_level = hazard_settings.enemy.power_level or DefaultPowerLevel
-			local damage_profile_name = hazard_settings.enemy.damage_profile or "default"
-			local damage_profile = DamageProfileTemplates[damage_profile_name]
-			local target_index = nil
-			local boost_curve_multiplier = 0
-			local is_critical_strike = false
-			local can_damage = false
-			local can_stagger = false
-			local blocking = false
-			local shield_breaking_hit = false
-			local hit_zone_name = "torso"
-			local hit_unit = RESULT_TABLE[i]
 
-			DamageUtils.server_apply_hit(t, payload_unit, hit_unit, hit_zone_name, push_direction, hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit)
+			if enemy_in_front and abs_speed > 2 then
+				power_level_multiplier = abs_speed * 1.3
+			end
+
+			local current_power_level = power_level * power_level_multiplier
+			local enemy_position_flat = Vector3.flat(enemy_position)
+			local push_direction = Vector3.normalize(enemy_position_flat - payload_position_flat)
+
+			DamageUtils.server_apply_hit(t, payload_unit, hit_unit, hit_zone_name, nil, push_direction, hit_ragdoll_actor, damage_source, current_power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit)
 		elseif not inside_small_box and inside_large_box and STAGGERED[hit_unit] then
 			STAGGERED[hit_unit] = false
 		end
@@ -226,7 +233,9 @@ PayloadExtension.update = function (self, unit, input, dt, context, t)
 				end
 			end
 
-			self:_hit_enemies(push_speed, t)
+			if push_speed > 0 then
+				self:_hit_enemies(push_speed, t)
+			end
 
 			if current_spline_index ~= self._previous_spline_index and flow_event and not event_thrown then
 				LevelHelper:flow_event(self._world, flow_event)
@@ -268,7 +277,6 @@ PayloadExtension.update = function (self, unit, input, dt, context, t)
 	self._previous_spline_index = current_spline_index
 
 	Unit.set_simple_animation_speed(self._unit, new_speed / ANIM_SPEED, "wheels")
-	fassert(movement._t == movement._t, "Nan in spline: %s", self._spline_curve._name)
 	Unit.set_local_position(unit, 0, movement:current_position())
 
 	local dir = movement:current_tangent_direction()

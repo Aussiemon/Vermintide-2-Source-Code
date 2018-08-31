@@ -171,7 +171,7 @@ VortexExtension.destroy = function (self)
 	end
 
 	for ai_unit, _ in pairs(ai_units_inside) do
-		if unit_alive(ai_unit) then
+		if ALIVE[ai_unit] then
 			local velocity = Vector3(0, 0, -6)
 			local target_blackboard = BLACKBOARDS[ai_unit]
 
@@ -510,7 +510,7 @@ VortexExtension._update_attract_players = function (self, unit, blackboard, vort
 					local breed_name = blackboard.breed.name
 					local impact_damage = DamageUtils.calculate_damage(vortex_template.damage, player_unit, unit)
 
-					DamageUtils.add_damage_network(player_unit, unit, impact_damage, "torso", "cutting", -player_velocity_normalized, breed_name, nil, nil, nil, vortex_template.hit_react_type)
+					DamageUtils.add_damage_network(player_unit, unit, impact_damage, "torso", "cutting", nil, -player_velocity_normalized, breed_name, nil, nil, nil, vortex_template.hit_react_type)
 				end
 			elseif target_status_extension.smacked_into_wall and target_status_extension.smacked_into_wall < t then
 				target_status_extension.smacked_into_wall = false

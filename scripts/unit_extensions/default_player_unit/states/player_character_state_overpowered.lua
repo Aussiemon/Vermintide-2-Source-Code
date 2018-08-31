@@ -6,6 +6,7 @@ end
 
 PlayerCharacterStateOverpowered.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
 	CharacterStateHelper.stop_weapon_actions(self.inventory_extension, "overpowered")
+	CharacterStateHelper.stop_career_abilities(self.career_extension, "overpowered")
 
 	local anim = "to_cloud_of_flies"
 

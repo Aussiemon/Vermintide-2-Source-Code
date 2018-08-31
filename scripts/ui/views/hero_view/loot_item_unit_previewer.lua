@@ -64,23 +64,29 @@ LootItemUnitPreviewer.load_reward_units = function (self, reward)
 	local reward_units_to_spawn = {}
 	local reward_data = reward.data
 	local backend_id = reward.backend_id
+	local item_skin = reward.skin
 	local item_key = reward_data.key
 	local item_data = ItemMasterList[item_key]
+	local item_template = nil
 	local item_type = item_data.item_type
 
 	if item_type == "rune" or item_type == "material" or item_type == "ring" or item_type == "necklace" then
 		item_key = "trinket_reduce_activated_ability_cooldown"
 		item_data = ItemMasterList[item_key]
+	elseif item_type == "weapon_skin" then
+		local matching_item_key = item_data.matching_item_key
+		item_template = ItemHelper.get_template_by_item_name(matching_item_key)
 	end
 
-	local item_units = BackendUtils.get_item_units(item_data, backend_id)
-	local item_template = ItemHelper.get_template_by_item_name(item_key)
+	item_template = item_template or ItemHelper.get_template_by_item_name(item_key)
+	local item_units = BackendUtils.get_item_units(item_data, backend_id, item_skin)
 	local units_to_spawn_data = {}
 	local slot_type = item_data.slot_type
 
-	if slot_type == "melee" or slot_type == "ranged" then
+	if slot_type == "melee" or slot_type == "ranged" or slot_type == "weapon_skin" then
 		local left_hand_unit = item_units.left_hand_unit
 		local right_hand_unit = item_units.right_hand_unit
+		local material_settings = item_units.material_settings
 
 		if left_hand_unit then
 			local left_unit = left_hand_unit .. "_3p"
@@ -89,7 +95,8 @@ LootItemUnitPreviewer.load_reward_units = function (self, reward)
 
 			units_to_spawn_data[#units_to_spawn_data + 1] = {
 				unit_name = left_unit,
-				unit_attachment_node_linking = item_template.left_hand_attachment_node_linking.third_person.display
+				unit_attachment_node_linking = item_template.left_hand_attachment_node_linking.third_person.display,
+				material_settings = material_settings
 			}
 		end
 
@@ -102,7 +109,8 @@ LootItemUnitPreviewer.load_reward_units = function (self, reward)
 
 			units_to_spawn_data[#units_to_spawn_data + 1] = {
 				unit_name = right_unit,
-				unit_attachment_node_linking = item_template.right_hand_attachment_node_linking.third_person.display
+				unit_attachment_node_linking = item_template.right_hand_attachment_node_linking.third_person.display,
+				material_settings = material_settings
 			}
 		end
 	else
@@ -214,6 +222,7 @@ LootItemUnitPreviewer.spawn_link_units = function (self, reward)
 	local link_units = {}
 	local reward_data = reward.data
 	local backend_id = reward.backend_id
+	local item_skin = reward.skin
 	local spawn_position = self.spawn_position
 	local item_key = reward_data.key
 	local item_data = ItemMasterList[item_key]
@@ -225,7 +234,10 @@ LootItemUnitPreviewer.spawn_link_units = function (self, reward)
 
 	local unit_name = item_data.display_unit
 
-	if not unit_name then
+	if item_type == "weapon_skin" then
+		local skin_template = WeaponSkins.skins[item_skin]
+		unit_name = skin_template.display_unit
+	elseif not unit_name then
 		local item_template = ItemHelper.get_template_by_item_name(item_key)
 		unit_name = item_template.display_unit
 	end
@@ -325,6 +337,7 @@ LootItemUnitPreviewer.spawn_units = function (self, item_key, spawn_data)
 			local spawn_unit_data = spawn_data[i]
 			local unit_name = spawn_unit_data.unit_name
 			local unit_attachment_node_linking = spawn_unit_data.unit_attachment_node_linking
+			local material_settings = spawn_unit_data.material_settings
 			local reward_unit = World.spawn_unit(world, unit_name)
 
 			Unit.set_unit_visibility(reward_unit, false)
@@ -332,6 +345,10 @@ LootItemUnitPreviewer.spawn_units = function (self, item_key, spawn_data)
 			units[#units + 1] = reward_unit
 
 			GearUtils.link(world, unit_attachment_node_linking, scene_graph_links, link_unit, reward_unit)
+
+			if material_settings then
+				GearUtils.apply_material_settings(reward_unit, material_settings)
+			end
 		end
 
 		self.units_spawned = true

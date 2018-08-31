@@ -67,6 +67,7 @@ PlayerUnitHealthExtension.create_health_game_object = function (self)
 		unit_game_object_id = game_object_id,
 		current_health = max_health_alive,
 		max_health = max_health_alive,
+		uncursed_max_health = max_health_alive,
 		current_wounds = difficulty_settings.wounds,
 		max_wounds = difficulty_settings.wounds
 	}
@@ -108,12 +109,11 @@ PlayerUnitHealthExtension._get_base_max_health = function (self)
 	return attributes.max_hp, attributes.max_hp_kd
 end
 
-PlayerUnitHealthExtension._calculate_max_health = function (self)
+PlayerUnitHealthExtension._calculate_buffed_max_health = function (self)
 	local buff_extension = self.buff_extension
 	local health_state = self.state
 	local max_health_alive, max_health_kd = self:_get_base_max_health()
 	local max_health = nil
-	local modifier = 1
 
 	if health_state == "alive" then
 		max_health = buff_extension:apply_buffs_to_value(max_health_alive, StatBuffIndex.MAX_HEALTH_ALIVE)
@@ -122,17 +122,31 @@ PlayerUnitHealthExtension._calculate_max_health = function (self)
 	end
 
 	max_health = buff_extension:apply_buffs_to_value(max_health, StatBuffIndex.MAX_HEALTH)
-	local num_grimoires = buff_extension:num_buff_perk("skaven_grimoire")
-	local multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
-	local num_twitch_grimoires = buff_extension:num_buff_perk("twitch_grimoire")
-	local twitch_multiplier = PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF
 
-	if num_grimoires + num_twitch_grimoires > 0 then
-		modifier = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier
+	return max_health
+end
+
+PlayerUnitHealthExtension._calculate_max_health = function (self)
+	local buff_extension = self.buff_extension
+	local health_state = self.state
+	local modifier = 1
+	local num_grimoires = buff_extension:num_buff_perk("skaven_grimoire")
+	local grimoire_multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
+	local num_twitch_grimoires = buff_extension:num_buff_perk("twitch_grimoire")
+	local twitch_grimoire_multiplier = PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF
+	local num_slayer_curses = buff_extension:num_buff_perk("slayer_curse")
+	local slayer_curse_multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.SLAYER_CURSE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
+
+	if health_state == "knocked_down" then
+		num_slayer_curses = 0
 	end
 
+	if num_grimoires + num_twitch_grimoires + num_slayer_curses > 0 then
+		modifier = 1 + num_grimoires * grimoire_multiplier + num_twitch_grimoires * twitch_grimoire_multiplier + num_slayer_curses * slayer_curse_multiplier
+	end
+
+	local max_health = self:_calculate_buffed_max_health()
 	max_health = max_health * modifier
-	max_health = DamageUtils.networkify_health(max_health)
 
 	return max_health
 end
@@ -183,8 +197,12 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 
 		local game = self.game
 		local max_health = self:_calculate_max_health()
+		max_health = DamageUtils.networkify_health(max_health)
+		local uncursed_max_health = self:_calculate_buffed_max_health()
+		uncursed_max_health = DamageUtils.networkify_health(uncursed_max_health)
 
 		GameSession.set_game_object_field(game, game_object_id, "max_health", max_health)
+		GameSession.set_game_object_field(game, game_object_id, "uncursed_max_health", uncursed_max_health)
 
 		local state = self.state
 		local previous_state = self.previous_state
@@ -201,8 +219,18 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 				temporary_health = max_health / 2
 			end
 		elseif max_health ~= previous_max_health then
-			local previous_health_percentage = health / previous_max_health
+			local previous_health_percentage, previous_temporary_health_percentage = nil
+
+			if previous_max_health == 0 then
+				previous_health_percentage = 0
+				previous_temporary_health_percentage = 0
+			else
+				previous_health_percentage = health / previous_max_health
+				previous_temporary_health_percentage = temporary_health / previous_max_health
+			end
+
 			health = max_health * previous_health_percentage
+			temporary_health = max_health * previous_temporary_health_percentage
 		end
 
 		local set_health_percentage = self.set_health_percentage
@@ -225,13 +253,6 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 		GameSession.set_game_object_field(game, game_object_id, "current_health", health)
 		GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", temporary_health)
 
-		if script_data.show_player_health then
-			local max_wounds = status_extension:max_wounds_network_safe()
-			local current_wounds = status_extension:num_wounds_remaining()
-
-			Debug.text("[%s] perm=%.2f (%.3f%%) temp=%.2f (%.3f%%) max=%.2f wounds=%.0f/%.0f", SPProfilesAbbreviation[self._profile_index], health, self:current_permanent_health_percent(), temporary_health, self:current_temporary_health_percent(), max_health, current_wounds, max_wounds)
-		end
-
 		if self.wounded_degen_timer <= t then
 			if temporary_health > 0 and state == "alive" then
 				local new_temporary_health = temporary_health - PlayerUnitStatusSettings.WOUNDED_DEGEN_AMOUNT
@@ -239,7 +260,7 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 				local damage = temporary_health - math.max(new_temporary_health, min_temporary_health_left)
 
 				if damage > 0 then
-					DamageUtils.add_damage_network(unit, unit, damage, "torso", "temporary_health_degen", Vector3(1, 0, 0), "temporary_health_degen")
+					DamageUtils.add_damage_network(unit, unit, damage, "torso", "temporary_health_degen", nil, Vector3(1, 0, 0), "temporary_health_degen")
 				end
 			end
 
@@ -253,7 +274,7 @@ end
 
 local FORCED_PERMANENT_DAMAGE_TYPES = {}
 
-PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot)
+PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot)
 	if DamageUtils.is_in_inn then
 		return
 	end
@@ -277,7 +298,7 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 	fassert(damage_type, "No damage_type!")
 
 	local unit = self.unit
-	local damage_table = PlayerUnitHealthExtension.super._add_to_damage_history_buffer(self, unit, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
+	local damage_table = PlayerUnitHealthExtension.super._add_to_damage_history_buffer(self, unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
 
 	if damage_type ~= "temporary_health_degen" then
 		StatisticsUtil.register_damage(unit, damage_table, self.statistics_db)
@@ -365,7 +386,7 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 			is_critical_strike = is_critical_strike or false
 			added_dot = added_dot or false
 
-			self.network_transmit:send_rpc_clients("rpc_add_damage", unit_id, false, attacker_unit_id, attacker_is_level_unit, damage_amount, hit_zone_id, damage_type_id, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot)
+			self.network_transmit:send_rpc_clients("rpc_add_damage", unit_id, false, attacker_unit_id, attacker_is_level_unit, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot)
 		end
 	end
 end
@@ -441,9 +462,10 @@ PlayerUnitHealthExtension.die = function (self, damage_type)
 
 	local damage_amount = NetworkConstants.damage.max
 	local hit_zone_name = "full"
+	local hit_position = Unit.world_position(unit, 0)
 	local damage_direction = Vector3.up()
 
-	self:add_damage(unit, damage_amount, hit_zone_name, damage_type, damage_direction)
+	self:add_damage(unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction)
 end
 
 PlayerUnitHealthExtension.destroy = function (self)
@@ -493,7 +515,11 @@ PlayerUnitHealthExtension.current_health_percent = function (self)
 		local temporary_health = GameSession.game_object_field(game, game_object_id, "current_temporary_health")
 		local max_health = GameSession.game_object_field(game, game_object_id, "max_health")
 
-		return (health + temporary_health) / max_health
+		if max_health == 0 then
+			return 0
+		else
+			return (health + temporary_health) / max_health
+		end
 	end
 
 	return 1
@@ -507,7 +533,11 @@ PlayerUnitHealthExtension.current_permanent_health_percent = function (self)
 		local health = GameSession.game_object_field(game, game_object_id, "current_health")
 		local max_health = GameSession.game_object_field(game, game_object_id, "max_health")
 
-		return health / max_health
+		if max_health == 0 then
+			return 0
+		else
+			return health / max_health
+		end
 	end
 
 	return 1
@@ -521,7 +551,11 @@ PlayerUnitHealthExtension.current_temporary_health_percent = function (self)
 		local temporary_health = GameSession.game_object_field(game, game_object_id, "current_temporary_health")
 		local max_health = GameSession.game_object_field(game, game_object_id, "max_health")
 
-		return temporary_health / max_health
+		if max_health == 0 then
+			return 0
+		else
+			return temporary_health / max_health
+		end
 	end
 
 	return 1
@@ -538,7 +572,10 @@ PlayerUnitHealthExtension.current_health = function (self)
 		return health + temporary_health
 	end
 
-	return self:_calculate_max_health()
+	local max_health = self:_calculate_max_health()
+	max_health = DamageUtils.networkify_health(max_health)
+
+	return max_health
 end
 
 PlayerUnitHealthExtension.current_permanent_health = function (self)
@@ -551,7 +588,10 @@ PlayerUnitHealthExtension.current_permanent_health = function (self)
 		return health
 	end
 
-	return self:_calculate_max_health()
+	local max_health = self:_calculate_max_health()
+	max_health = DamageUtils.networkify_health(max_health)
+
+	return max_health
 end
 
 PlayerUnitHealthExtension.current_temporary_health = function (self)
@@ -564,7 +604,10 @@ PlayerUnitHealthExtension.current_temporary_health = function (self)
 		return temporary_health
 	end
 
-	return self:_calculate_max_health()
+	local max_health = self:_calculate_max_health()
+	max_health = DamageUtils.networkify_health(max_health)
+
+	return max_health
 end
 
 PlayerUnitHealthExtension.get_max_health = function (self)
@@ -577,7 +620,26 @@ PlayerUnitHealthExtension.get_max_health = function (self)
 		return max_health
 	end
 
-	return self:_calculate_max_health()
+	local max_health = self:_calculate_max_health()
+	max_health = DamageUtils.networkify_health(max_health)
+
+	return max_health
+end
+
+PlayerUnitHealthExtension.get_uncursed_max_health = function (self)
+	local game = self.game
+	local game_object_id = self.health_game_object_id
+
+	if game and game_object_id then
+		local uncursed_max_health = GameSession.game_object_field(game, game_object_id, "uncursed_max_health")
+
+		return uncursed_max_health
+	end
+
+	local max_health = self:_calculate_max_health()
+	max_health = DamageUtils.networkify_health(max_health)
+
+	return max_health
 end
 
 PlayerUnitHealthExtension.get_damage_taken = function (self)
@@ -593,6 +655,45 @@ PlayerUnitHealthExtension.get_damage_taken = function (self)
 	end
 
 	return 0
+end
+
+PlayerUnitHealthExtension.convert_permanent_to_temporary_health = function (self)
+	local game = self.game
+	local game_object_id = self.health_game_object_id
+
+	if game and game_object_id then
+		local health = GameSession.game_object_field(game, game_object_id, "current_health")
+		local temporary_health = GameSession.game_object_field(game, game_object_id, "current_temporary_health")
+
+		GameSession.set_game_object_field(game, game_object_id, "current_health", 0)
+		GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", health + temporary_health)
+	end
+end
+
+PlayerUnitHealthExtension.convert_temporary_to_permanent_health = function (self)
+	local game = self.game
+	local game_object_id = self.health_game_object_id
+
+	if game and game_object_id then
+		local health = GameSession.game_object_field(game, game_object_id, "current_health")
+		local temporary_health = GameSession.game_object_field(game, game_object_id, "current_temporary_health")
+
+		GameSession.set_game_object_field(game, game_object_id, "current_health", health + temporary_health)
+		GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", 0)
+	end
+end
+
+PlayerUnitHealthExtension.switch_permanent_and_temporary_health = function (self)
+	local game = self.game
+	local game_object_id = self.health_game_object_id
+
+	if game and game_object_id then
+		local health = GameSession.game_object_field(game, game_object_id, "current_health")
+		local temporary_health = GameSession.game_object_field(game, game_object_id, "current_temporary_health")
+
+		GameSession.set_game_object_field(game, game_object_id, "current_health", temporary_health)
+		GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", health)
+	end
 end
 
 PlayerUnitHealthExtension.shield = function (self, shield_amount)
@@ -631,12 +732,26 @@ PlayerUnitHealthExtension.set_dead = function (self)
 	SurroundingAwareSystem.add_event(unit, "player_death", death_discover_distance, "target", unit, "target_name", player_profile)
 end
 
-PlayerUnitHealthExtension.set_max_health = function (self, health, update_unmodfied)
+PlayerUnitHealthExtension.set_max_health = function (self, health)
 	return
 end
 
 PlayerUnitHealthExtension.set_current_damage = function (self, damage)
 	return
+end
+
+PlayerUnitHealthExtension.debug_show_health = function (self)
+	local profile_abbreviation = SPProfilesAbbreviation[self._profile_index]
+	local status_extension = self.status_extension
+	local max_wounds = status_extension:max_wounds_network_safe()
+	local current_wounds = status_extension:num_wounds_remaining()
+	local current_health = self:current_health()
+	local current_permanent_health_percent = self:current_permanent_health_percent()
+	local current_temporary_health = self:current_temporary_health()
+	local current_temporary_health_percent = self:current_temporary_health_percent()
+	local max_health = self:get_max_health()
+
+	Debug.text("[%s] perm=%.2f (%.2f%%) temp=%.2f (%.2f%%) max=%.2f wounds=%.0f/%.0f", profile_abbreviation, current_health, current_permanent_health_percent * 100, current_temporary_health, current_temporary_health_percent * 100, max_health, current_wounds, max_wounds)
 end
 
 return

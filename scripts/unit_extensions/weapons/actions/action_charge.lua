@@ -135,9 +135,11 @@ ActionCharge.client_owner_post_update = function (self, dt, t, world, can_damage
 
 	local overcharge_extension = self.overcharge_extension
 	local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
+	local career_extension = ScriptUnit.extension(self.owner_unit, "career_system")
 
 	if overcharge_type and overcharge_extension:get_overcharge_value() == 0 and self.venting_overcharge then
 		CharacterStateHelper.stop_weapon_actions(inventory_extension, "no_more_overcharge")
+		CharacterStateHelper.stop_career_abilities(career_extension, "no_more_overcharge")
 	end
 
 	if current_action.overcharge_interval then

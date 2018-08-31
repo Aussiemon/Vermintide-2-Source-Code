@@ -132,7 +132,6 @@ HeroView.create_ui_elements = function (self)
 		background = UIWidget.init(widget_definitions.loading_bg),
 		text = UIWidget.init(widget_definitions.loading_text)
 	}
-	self._console_cursor_widget = UIWidget.init(widget_definitions.console_cursor)
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
@@ -167,12 +166,6 @@ HeroView.draw = function (self, dt, input_service)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
-
-	if gamepad_active then
-		UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt)
-		UIRenderer.draw_widget(ui_top_renderer, self._console_cursor_widget)
-		UIRenderer.end_pass(ui_top_renderer)
-	end
 end
 
 HeroView.post_update = function (self, dt, t)
@@ -406,21 +399,39 @@ HeroView.on_exit = function (self)
 
 	self.exiting = nil
 
+	self:_handle_view_popups()
 	self:play_sound("hud_in_inventory_state_off")
 
 	self._draw_loading = false
 end
 
-HeroView.exit = function (self, return_to_game, ignore_sound)
-	local exit_transition = (return_to_game and "exit_menu") or "ingame_menu"
+HeroView._handle_view_popups = function (self)
+	local console_friends_view = self.ingame_ui.views.console_friends_view
 
-	self.ingame_ui:transition_with_fade(exit_transition)
+	if console_friends_view then
+		console_friends_view:cleanup_popups()
+	end
+
+	local options_view = self.ingame_ui.views.options_view
+
+	if options_view then
+		options_view:cleanup_popups()
+	end
+end
+
+HeroView.exit = function (self, return_to_game, ignore_sound)
+	local exit_transition = "exit_menu"
+	self.exiting = true
+
+	if self.is_in_inn then
+		self.ingame_ui:transition_with_fade(exit_transition)
+	else
+		self.ingame_ui:handle_transition(exit_transition)
+	end
 
 	if not ignore_sound then
 		self:play_sound("Play_hud_button_close")
 	end
-
-	self.exiting = true
 end
 
 HeroView.transitioning = function (self)
@@ -495,6 +506,10 @@ HeroView._set_loading_overlay_enabled = function (self, enabled, message)
 	loading_text_widget.style.text.text_color[1] = alpha
 	loading_text_widget.content.text = message or ""
 	self._draw_loading = enabled
+end
+
+HeroView.current_state = function (self)
+	return self._machine:state()
 end
 
 return

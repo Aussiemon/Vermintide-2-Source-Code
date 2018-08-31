@@ -1,5 +1,6 @@
 local definitions = local_require("scripts/ui/mission_vote_ui/mission_voting_ui_definitions")
 local widget_definitions = definitions.widgets
+local generic_input_actions = definitions.generic_input_actions
 local deed_game_widget_definitions = definitions.deed_game_widgets
 local custom_game_widget_definitions = definitions.custom_game_widgets
 local adventure_game_widget_definitions = definitions.adventure_game_widgets
@@ -73,6 +74,11 @@ MissionVotingUI.init = function (self, ingame_ui_context)
 	input_manager:map_device_to_service("mission_voting", "keyboard")
 	input_manager:map_device_to_service("mission_voting", "mouse")
 	input_manager:map_device_to_service("mission_voting", "gamepad")
+
+	local input_service = input_manager:get_service("mission_voting")
+	self._menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self.ui_top_renderer, input_service, 3, 900, generic_input_actions.default)
+
+	self._menu_input_description:set_input_description(nil)
 end
 
 MissionVotingUI.create_ui_elements = function (self)
@@ -128,7 +134,6 @@ MissionVotingUI.create_ui_elements = function (self)
 
 	self._adventure_game_widgets = adventure_game_widgets
 	self._adventure_game_widgets_by_name = adventure_game_widgets_by_name
-	self._console_cursor = UIWidget.init(console_cursor_definition)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	self.scenegraph_definition = definitions.scenegraph_definition
 	RELOAD_UI = false
@@ -251,6 +256,17 @@ MissionVotingUI.start_vote = function (self, active_voting)
 	end
 
 	self:_check_initial_votes()
+	self:_setup_gamepad_input_desc(vote_template)
+end
+
+MissionVotingUI._setup_gamepad_input_desc = function (self, vote_template)
+	local input_desc = vote_template.gamepad_input_desc
+
+	if input_desc then
+		self._menu_input_description:set_input_description(generic_input_actions[input_desc])
+	else
+		self._menu_input_description:set_input_description(nil)
+	end
 end
 
 MissionVotingUI._check_initial_votes = function (self)
@@ -422,6 +438,8 @@ MissionVotingUI._is_button_pressed = function (self, widget)
 end
 
 MissionVotingUI.update = function (self, menu_active, dt, t)
+	local input_service = self.input_manager:get_service("mission_voting")
+	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local widgets_by_name = self._widgets_by_name
 	local ingame_ui = self.ingame_ui
 
@@ -457,7 +475,16 @@ MissionVotingUI.update = function (self, menu_active, dt, t)
 				if vote_template then
 					local vote_options = vote_template.vote_options
 
-					if self:_is_button_pressed(widgets_by_name.button_confirm) then
+					if gamepad_active and vote_template.gamepad_support then
+						for _, vote_option in ipairs(vote_options) do
+							if input_service:get(vote_option.gamepad_input) then
+								voting_manager:vote(vote_option.vote)
+								self:on_vote_casted()
+
+								break
+							end
+						end
+					elseif self:_is_button_pressed(widgets_by_name.button_confirm) then
 						voting_manager:vote(1)
 						self:on_vote_casted()
 					elseif self:_is_button_pressed(widgets_by_name.button_abort) then
@@ -555,11 +582,11 @@ MissionVotingUI.draw = function (self, dt)
 		end
 	end
 
-	if gamepad_active then
-		UIRenderer.draw_widget(ui_top_renderer, self._console_cursor)
-	end
-
 	UIRenderer.end_pass(ui_top_renderer)
+
+	if gamepad_active then
+		self._menu_input_description:draw(ui_top_renderer, dt)
+	end
 end
 
 MissionVotingUI.update_pulse_animations = function (self, dt)

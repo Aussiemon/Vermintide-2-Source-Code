@@ -101,6 +101,34 @@ math.box_overlap_box = function (box_pos, box_extent, box2_pos, box2_extent)
 	end
 end
 
+math.point_is_inside_aabb = function (pos, aabb_pos, aabb_half_extents)
+	if pos.x < aabb_pos.x - aabb_half_extents.x then
+		return false
+	end
+
+	if pos.x > aabb_pos.x + aabb_half_extents.x then
+		return false
+	end
+
+	if pos.y < aabb_pos.y - aabb_half_extents.y then
+		return false
+	end
+
+	if pos.y > aabb_pos.y + aabb_half_extents.y then
+		return false
+	end
+
+	if pos.z < aabb_pos.z - aabb_half_extents.z then
+		return false
+	end
+
+	if pos.z > aabb_pos.z + aabb_half_extents.z then
+		return false
+	end
+
+	return true
+end
+
 math.point_is_inside_oobb = function (pos, oobb_pose, oobb_radius)
 	local to_local_matrix = Matrix4x4.inverse(oobb_pose)
 	local local_pos = Matrix4x4.transform(to_local_matrix, pos)
@@ -393,6 +421,33 @@ math.bounce = function (t)
 	return math.abs(math.sin(6.28 * (t + 1) * (t + 1)) * (1 - t))
 end
 
+math.ease_out_elastic = function (t)
+	local s = 1.70158
+	local p = 0
+	local a = 1
+
+	if t == 0 then
+		return 0
+	end
+
+	if t == 1 then
+		return 1
+	end
+
+	if p == 0 then
+		p = 0.3
+	end
+
+	if a < 1 then
+		a = 1
+		s = p / 4
+	else
+		s = p / (2 * math.pi) * math.asin(1 / a)
+	end
+
+	return a * math.pow(2, -10 * t) * math.sin(((t * 1 - s) * 2 * math.pi) / p) + 1
+end
+
 local function internal_rand_normal()
 	local x1, x2, w, y1, y2 = nil
 
@@ -499,6 +554,10 @@ end
 
 math.angle = function (x1, y1, x2, y2)
 	return math.atan2(y2 - y1, x2 - x1)
+end
+
+math.index_wrapper = function (index, max_index)
+	return (index - 1) % max_index + 1
 end
 
 return

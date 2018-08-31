@@ -800,7 +800,9 @@ UnitVariationSettings.skaven_storm_vermin = {
 		}
 	}
 }
+UnitVariationSettings.skaven_storm_vermin_baked = table.create_copy(UnitVariationSettings.skaven_storm_vermin_baked, UnitVariationSettings.skaven_storm_vermin)
 UnitVariationSettings.skaven_storm_vermin_commander = table.create_copy(UnitVariationSettings.skaven_storm_vermin_commander, UnitVariationSettings.skaven_storm_vermin)
+UnitVariationSettings.skaven_storm_vermin_commander_baked = table.create_copy(UnitVariationSettings.skaven_storm_vermin_commander_baked, UnitVariationSettings.skaven_storm_vermin)
 UnitVariationSettings.skaven_storm_vermin_with_shield = table.create_copy(UnitVariationSettings.skaven_storm_vermin_with_shield, UnitVariationSettings.skaven_storm_vermin)
 UnitVariationSettings.skaven_storm_vermin_with_shield.material_variations.tint_set_1 = {
 	min = 0,
@@ -828,6 +830,7 @@ UnitVariationSettings.skaven_storm_vermin_with_shield.materials_enabled_from_sta
 	"tint_set_1",
 	"tint_set_2"
 }
+UnitVariationSettings.skaven_storm_vermin_with_shield_baked = table.create_copy(UnitVariationSettings.skaven_storm_vermin_with_shield_baked, UnitVariationSettings.skaven_storm_vermin_with_shield)
 UnitVariationSettings.skaven_storm_vermin_champion = table.create_copy(UnitVariationSettings.skaven_storm_vermin_champion, UnitVariationSettings.skaven_storm_vermin_with_shield)
 UnitVariationSettings.skaven_storm_vermin_champion.material_variations.tint_set_1 = {
 	min = 4,

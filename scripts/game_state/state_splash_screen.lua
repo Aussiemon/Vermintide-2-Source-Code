@@ -16,10 +16,12 @@ StateSplashScreen.packages_to_load = {
 	"resource_packages/loading_screens/loading_screen_default"
 }
 
+if PLATFORM ~= "win32" then
+	StateSplashScreen.packages_to_load[#StateSplashScreen.packages_to_load + 1] = "resource_packages/news_splash/news_splash"
+end
+
 StateSplashScreen.on_enter = function (self)
-	if PLATFORM == "win32" then
-		Application.set_time_step_policy("no_smoothing", "clear_history", "throttle", 60)
-	end
+	Framerate.set_low_power()
 
 	if PLATFORM == "win32" then
 		local assert_on_leak = true
@@ -44,6 +46,7 @@ StateSplashScreen.on_enter = function (self)
 	end
 
 	Managers.transition:force_fade_in()
+	Managers.transition:show_loading_icon(false)
 	self:setup_world()
 
 	if PLATFORM == "win32" then
@@ -263,6 +266,8 @@ StateSplashScreen.load_packages = function (self)
 			package_manager:load(name, "state_splash_screen", nil, true)
 		end
 	end
+
+	self._base_packages_loading = true
 end
 
 StateSplashScreen.packages_loaded = function (self)
@@ -272,6 +277,12 @@ StateSplashScreen.packages_loaded = function (self)
 		if not package_manager:has_loaded(name) then
 			return false
 		end
+	end
+
+	if self._base_packages_loading then
+		Managers.transition:hide_loading_icon()
+
+		self._base_packages_loading = nil
 	end
 
 	if (PLATFORM == "xb1" or PLATFORM == "ps4") and self.splash_view then
@@ -296,15 +307,7 @@ StateSplashScreen.cb_fade_in_done = function (self)
 end
 
 StateSplashScreen.on_exit = function (self, application_shutdown)
-	if PLATFORM == "win32" then
-		local max_fps = Application.user_setting("max_fps")
-
-		if max_fps == nil or max_fps == 0 then
-			Application.set_time_step_policy("no_throttle", "smoothing", 11, 2, 0.1)
-		else
-			Application.set_time_step_policy("throttle", max_fps, "smoothing", 11, 2, 0.1)
-		end
-	end
+	Framerate.set_playing()
 
 	if self.splash_view then
 		self.splash_view:destroy()

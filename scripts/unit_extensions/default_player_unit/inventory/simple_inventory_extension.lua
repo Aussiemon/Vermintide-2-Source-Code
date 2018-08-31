@@ -40,6 +40,7 @@ SimpleInventoryExtension.init = function (self, extension_init_context, unit, ex
 	self._loaded_projectile_settings = {}
 	self._selected_consumable_slot = nil
 	self._previously_wielded_weapon_slot = "slot_melee"
+	self._previously_wielded_slot = "slot_melee"
 	self._backend_items = Managers.backend:get_interface("items")
 end
 
@@ -68,7 +69,7 @@ SimpleInventoryExtension.extensions_ready = function (self, world, unit)
 
 		if not slot_data then
 			table.dump(self._equipment.slots, "self._equipment.slots", 1)
-			Application.error("Tried to wield default slot %s that contained no weapon.", default_wielded_slot)
+			Application.error("Tried to wield default slot %s for %s that contained no weapon.", default_wielded_slot, self.career_extension:career_name())
 		end
 
 		self:_wield_slot(equipment, slot_data, unit_1p, unit_3p)
@@ -241,6 +242,15 @@ SimpleInventoryExtension.update = function (self, unit, input, dt, context, t)
 	self:_update_loaded_projectile_settings()
 	self:_update_resync_loadout()
 
+	if script_data.show_equipped_weapon_units then
+		local slot_data = self:get_wielded_slot_data()
+		local left_hand_unit_name = slot_data.left_hand_unit_name
+		local right_hand_unit_name = slot_data.right_hand_unit_name
+
+		Debug.text("Left hand unit: %s", left_hand_unit_name)
+		Debug.text("Right hand unit: %s", right_hand_unit_name)
+	end
+
 	local current_ammo, max_ammo = self:current_ammo_status("slot_ranged")
 	local ammo_percentage = 1
 
@@ -313,6 +323,12 @@ SimpleInventoryExtension.wield_previous_weapon = function (self)
 	self:wield(slot_name)
 end
 
+SimpleInventoryExtension.wield_previous_slot = function (self)
+	local slot_name = self._previously_wielded_slot
+
+	self:wield(slot_name)
+end
+
 SimpleInventoryExtension.rewield_wielded_slot = function (self)
 	local equipment = self._equipment
 	local wielded_slot = equipment.wielded_slot
@@ -338,8 +354,10 @@ SimpleInventoryExtension.wield = function (self, slot_name)
 	local item_template = BackendUtils.get_item_template(item_data)
 	local wielded_weapon = self:_wield_slot(equipment, slot_data, self._first_person_unit, self._unit)
 	equipment.wielded_slot = slot_name
+	local career_extension = self.career_extension
 
 	CharacterStateHelper.stop_weapon_actions(self, "weapon_wielded")
+	CharacterStateHelper.stop_career_abilities(career_extension, "weapon_wielded")
 
 	local backend_id = item_data.backend_id
 	local buffs = self:_get_property_and_trait_buffs(backend_id)
@@ -375,6 +393,10 @@ SimpleInventoryExtension.wield = function (self, slot_name)
 
 	if slot_name == "slot_melee" or slot_name == "slot_ranged" then
 		self._previously_wielded_weapon_slot = slot_name
+	end
+
+	if slot_name == "slot_melee" or slot_name == "slot_ranged" or slot_name == "slot_grenade" or slot_name == "slot_healthkit" or slot_name == "slot_potion" or slot_name == "slot_level_event" then
+		self._previously_wielded_slot = slot_name
 	end
 end
 
@@ -729,13 +751,15 @@ SimpleInventoryExtension.current_ammo_status = function (self, slot_name)
 	local ammo_data = item_template.ammo_data
 
 	if ammo_data then
-		local max = ammo_data.max_ammo
 		local right_unit = slot_data.right_unit_1p
 		local left_unit = slot_data.left_unit_1p
 		local ammo_extension = GearUtils.get_ammo_extension(right_unit, left_unit)
 
 		if ammo_extension then
-			return ammo_extension:total_remaining_ammo(), max
+			local remaining_ammo = ammo_extension:total_remaining_ammo()
+			local max_ammo = ammo_extension:get_max_ammo()
+
+			return remaining_ammo, max_ammo
 		end
 	end
 end
@@ -1025,7 +1049,10 @@ end
 SimpleInventoryExtension.drop_level_event_item = function (self, slot_data)
 	local item_template = self:get_item_template(slot_data)
 	local weapon_unit = slot_data.right_unit_1p or slot_data.left_unit_1p
-	local action = item_template.actions.action_one.default
+	local action = item_template.actions.action_dropped.default
+
+	fassert(action, "Action template needs a action_dropped defined if it's supposed to be force-dropped")
+
 	local projectile_info = action.projectile_info
 	local unit = self._unit
 	local position = Unit.world_position(unit, 0) + Vector3(0, 0, 2)

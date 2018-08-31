@@ -3,6 +3,7 @@ local data_fields = {
 	"DAMAGE_TYPE",
 	"ATTACKER",
 	"HIT_ZONE",
+	"POSITION",
 	"DIRECTION",
 	"DAMAGE_SOURCE_NAME",
 	"HIT_RAGDOLL_ACTOR_NAME",

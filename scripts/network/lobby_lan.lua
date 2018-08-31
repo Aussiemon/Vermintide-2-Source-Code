@@ -5,6 +5,7 @@ require("scripts/network/lobby_finder")
 require("scripts/network/lobby_members")
 
 LobbyInternal = LobbyInternal or {}
+LobbyInternal.TYPE = "lan"
 LobbyInternal.state_map = {
 	[LanLobby.CREATING] = LobbyState.CREATING,
 	[LanLobby.JOINING] = LobbyState.JOINING,
@@ -15,7 +16,7 @@ LobbyInternal.state_map = {
 LobbyInternal.create_lobby = function (network_options)
 	local lobby_port = network_options.lobby_port
 
-	assert(lobby_port, "Must provide port to LobbyHostLan.")
+	fassert(lobby_port, "Must provide port to LobbyHostLan.")
 
 	return Network.create_lan_lobby(lobby_port, network_options.max_members)
 end
@@ -67,6 +68,35 @@ LobbyInternal.shutdown_client = function ()
 	LobbyInternal.client = nil
 end
 
+LobbyInternal.ping = function (peer_id)
+	local matchmaking_manager = Managers.matchmaking
+	local pings_by_peer_id = matchmaking_manager:get_players_ping()
+	local ping_data = pings_by_peer_id[peer_id]
+
+	if ping_data then
+		local number_of_ping_values = #ping_data
+		local total_value = 0
+
+		for i = 1, number_of_ping_values, 1 do
+			total_value = total_value + ping_data[i]
+		end
+
+		local average_value = (total_value > 0 and total_value / number_of_ping_values) or 0
+
+		return average_value
+	else
+		return 255
+	end
+end
+
+LobbyInternal.add_ping_peer = function (peer_id)
+	return
+end
+
+LobbyInternal.remove_ping_peer = function (peer_id)
+	return
+end
+
 LobbyInternal.get_lobby = LanLobbyBrowser.lobby
 
 LobbyInternal.clear_filter_requirements = function ()
@@ -79,10 +109,6 @@ end
 
 LobbyInternal.lobby_id = function (lobby)
 	return 10000
-end
-
-LobbyInternal.user_name = function (user)
-	return user
 end
 
 LobbyInternal.lobby_id_match = function (id1, id2)

@@ -106,19 +106,6 @@ Pickups.level_events.door_stick = {
 	wield_on_pickup = true,
 	hud_description = "door_stick"
 }
-Pickups.level_events.drachenfels_statue = {
-	only_once = true,
-	slot_name = "slot_level_event",
-	type = "inventory_item",
-	item_description = "statue",
-	spawn_weighting = 1e-06,
-	debug_pickup_category = "level_event",
-	item_name = "drachenfels_statue",
-	unit_name = "units/weapons/player/pup_drachenfels_statue/pup_drachenfels_statue",
-	unit_template_name = "pickup_projectile_unit_limited",
-	wield_on_pickup = true,
-	hud_description = "drachenfels_statue"
-}
 Pickups.level_events.training_dummy = {
 	only_once = true,
 	slot_name = "slot_level_event",
@@ -145,19 +132,37 @@ Pickups.level_events.training_dummy_armored = {
 	wield_on_pickup = true,
 	hud_description = "dummy_description"
 }
-Pickups.level_events.torch = {
+Pickups.level_events.training_dummy_skaven = {
 	only_once = true,
 	slot_name = "slot_level_event",
 	type = "inventory_item",
-	item_description = "torch",
+	item_description = "dummy_description",
+	spawn_weighting = 1e-06,
+	debug_pickup_category = "level_event",
+	item_name = "training_dummy_skaven",
+	unit_name = "units/gameplay/training_dummy/training_dummy_skaven/training_dummy_skaven",
+	unit_template_name = "pickup_training_dummy_unit",
+	wield_on_pickup = true,
+	hud_description = "dummy_description"
+}
+Pickups.level_events.torch = {
+	only_once = true,
+	type = "inventory_item",
+	item_description = "interaction_torch",
 	spawn_weighting = 1e-06,
 	debug_pickup_category = "level_event",
 	teleport_time = 40,
+	slot_name = "slot_level_event",
 	item_name = "torch",
 	unit_name = "units/weapons/player/pup_torch/pup_torch",
 	unit_template_name = "pickup_torch_unit_init",
 	wield_on_pickup = true,
-	hud_description = "torch"
+	hud_description = "interaction_torch",
+	on_pick_up_func = function (world, interactor_unit, is_server)
+		if is_server then
+			LevelHelper:flow_event(world, "lua_torch_picked_up")
+		end
+	end
 }
 Pickups.level_events.explosive_barrel = {
 	only_once = true,
@@ -186,20 +191,6 @@ Pickups.level_events.lamp_oil = {
 	unit_template_name = "explosive_pickup_projectile_unit",
 	wield_on_pickup = true,
 	hud_description = "lamp_oil"
-}
-Pickups.level_events.dwarf_explosive_barrel = {
-	only_once = true,
-	slot_name = "slot_level_event",
-	type = "explosive_inventory_item",
-	item_description = "dwarf_explosive_barrel",
-	spawn_weighting = 1e-06,
-	debug_pickup_category = "level_event",
-	item_name = "dwarf_explosive_barrel",
-	unit_name = "units/weapons/player/pup_dwarf_barrel_01/pup_dwarf_barrel_01",
-	additional_data_func = "explosive_barrel",
-	unit_template_name = "explosive_pickup_projectile_unit_limited",
-	wield_on_pickup = true,
-	hud_description = "dwarf_explosive_barrel"
 }
 Pickups.level_events.explosive_barrel_objective = {
 	only_once = true,

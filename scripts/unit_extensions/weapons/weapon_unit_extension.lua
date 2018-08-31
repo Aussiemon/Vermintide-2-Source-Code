@@ -1,7 +1,6 @@
 require("scripts/unit_extensions/weapons/actions/action_charge")
 require("scripts/unit_extensions/weapons/actions/action_dummy")
 require("scripts/unit_extensions/weapons/actions/action_melee_start")
-require("scripts/unit_extensions/weapons/actions/action_chain_action_passthrough")
 require("scripts/unit_extensions/weapons/actions/action_wield")
 require("scripts/unit_extensions/weapons/actions/action_bounty_hunter_handgun")
 require("scripts/unit_extensions/weapons/actions/action_handgun")
@@ -56,7 +55,6 @@ local action_classes = {
 	charge = ActionCharge,
 	dummy = ActionDummy,
 	melee_start = ActionMeleeStart,
-	chain_action_passthrough = ChainActionPassthrough,
 	wield = ActionWield,
 	bounty_hunter_handgun = ActionBountyHunterHandgun,
 	handgun = ActionHandgun,
@@ -177,7 +175,7 @@ WeaponUnitExtension.init = function (self, extension_init_context, unit, extensi
 		action_buffs_in_progress = {},
 		buff_identifiers = {}
 	}
-	self.cooldown_timer = 0
+	self.cooldown_timer = {}
 	self.chain_action_sound_played = {}
 	self.is_server = Managers.state.network.network_transmit.is_server
 	local player_manager = Managers.player
@@ -225,14 +223,6 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 	local new_sub_action = sub_action_name
 
 	table.clear(interupting_action_data)
-
-	if t < self.cooldown_timer and new_action then
-		local action_settings = self:get_action(new_action, new_sub_action, actions)
-
-		if action_settings.cooldown ~= nil then
-			new_action, new_sub_action = nil
-		end
-	end
 
 	if new_action then
 		local action_settings = self:get_action(new_action, new_sub_action, actions)
@@ -309,7 +299,9 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 		local first_person_unit = self.first_person_unit
 
 		if not current_action_settings.looping_anim then
-			Unit.animation_event(first_person_unit, "equip_interrupt")
+			local equip_event = current_action_settings.wield_blend_event or "equip_interrupt"
+
+			Unit.animation_event(first_person_unit, equip_event)
 		end
 
 		table.clear(self.chain_action_sound_played)
@@ -367,11 +359,20 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 			end
 		end
 
+		if buff_extension then
+			local infinite_ammo = buff_extension:get_non_stacking_buff("victor_bountyhunter_passive_infinite_ammo_buff")
+
+			if infinite_ammo then
+				event = current_action_settings.anim_event_infinite_ammo or event
+			end
+		end
+
 		self.action_time_started = t
 		self.action_time_done = t + time_to_complete
 
 		if current_action_settings.cooldown then
-			self.cooldown_timer = t + current_action_settings.cooldown
+			local lookup_data = current_action_settings.lookup_data
+			self.cooldown_timer[lookup_data.action_name] = t + current_action_settings.cooldown
 		end
 
 		if current_action_settings.enter_function then
@@ -550,8 +551,9 @@ WeaponUnitExtension.update = function (self, unit, input, dt, context, t)
 
 			action:client_owner_post_update(dt, t, self.world, can_damage, current_time_in_action)
 
-			if current_action_settings.cooldown then
-				self.cooldown_timer = t + current_action_settings.cooldown
+			if current_action_settings.cooldown and not current_action_settings.cooldown_from_start then
+				local lookup_data = current_action_settings.lookup_data
+				self.cooldown_timer[lookup_data.action_name] = t + current_action_settings.cooldown
 			end
 		end
 	end
@@ -614,6 +616,12 @@ WeaponUnitExtension.can_stop_hold_action = function (self, t)
 	end
 
 	return minimum_hold_time < current_time_in_action
+end
+
+WeaponUnitExtension.get_action_cooldown = function (self, action)
+	local action_cooldown = self.cooldown_timer[action]
+
+	return action_cooldown
 end
 
 WeaponUnitExtension.get_current_action = function (self)

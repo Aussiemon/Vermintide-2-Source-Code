@@ -589,9 +589,9 @@ ProjectileSystem.create_light_weight_projectile = function (self, damage_source,
 		fassert(min <= speed and speed <= max, "Trying to create particle with speed (%i) outside of global.network_config bounds (%i:%i), raise \"light_weight_projectile_speed\" max.", speed, min, max)
 
 		local network_manager = Managers.state.network
-		local owner_unit_id = network_manager:unit_game_object_id(owner_unit)
+		local owner_unit_id, owner_is_level_unit = network_manager:game_object_or_level_id(owner_unit)
 
-		network_manager.network_transmit:send_rpc_clients("rpc_client_spawn_light_weight_projectile", NetworkLookup.damage_sources[damage_source], owner_unit_id, position, direction, speed, NetworkLookup.light_weight_projectile_particle_effects[effect_name])
+		network_manager.network_transmit:send_rpc_clients("rpc_client_spawn_light_weight_projectile", NetworkLookup.damage_sources[damage_source], owner_unit_id, position, direction, speed, NetworkLookup.light_weight_projectile_particle_effects[effect_name], owner_is_level_unit)
 	end
 
 	data.projectiles[new_index] = projectile
@@ -612,15 +612,15 @@ ProjectileSystem.hot_join_sync = function (self, joining_client)
 		local direction = projectile.direction:unbox()
 		local speed = projectile.speed
 		local effect_name = projectile.effect_name
-		local owner_unit_id = network_manager:unit_game_object_id(projectile.owner_unit)
+		local owner_unit_id, owner_is_level_unit = network_manager:game_object_or_level_id(projectile.owner_unit)
 
-		transmit:send_rpc("rpc_client_spawn_light_weight_projectile", joining_client, NetworkLookup.damage_sources[projectile.damage_source], owner_unit_id, position, direction, speed, NetworkLookup.light_weight_projectile_particle_effects[effect_name])
+		transmit:send_rpc("rpc_client_spawn_light_weight_projectile", joining_client, NetworkLookup.damage_sources[projectile.damage_source], owner_unit_id, position, direction, speed, NetworkLookup.light_weight_projectile_particle_effects[effect_name], owner_is_level_unit)
 	end
 end
 
-ProjectileSystem.rpc_client_spawn_light_weight_projectile = function (self, sender, damage_source_id, owner_unit_id, position, direction, speed, effect_id)
+ProjectileSystem.rpc_client_spawn_light_weight_projectile = function (self, sender, damage_source_id, owner_unit_id, position, direction, speed, effect_id, owner_is_level_unit)
 	local effect_name = NetworkLookup.light_weight_projectile_particle_effects[effect_id]
-	local owner_unit = self.unit_storage:unit(owner_unit_id)
+	local owner_unit = self.network_manager:game_object_or_level_unit(owner_unit_id, owner_is_level_unit)
 	local damage_source = NetworkLookup.damage_sources[damage_source_id]
 
 	self:create_light_weight_projectile(damage_source, owner_unit, position, direction, speed, nil, nil, nil, effect_name)

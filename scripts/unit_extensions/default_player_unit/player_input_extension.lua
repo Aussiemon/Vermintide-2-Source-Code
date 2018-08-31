@@ -38,6 +38,8 @@ PlayerInputExtension.init = function (self, extension_init_context, unit, extens
 	self.wield_cooldown_timer_clock = 0
 	self.wield_scroll_value = nil
 	self.double_tap_timers = {}
+	self.input_key_scale = {}
+	self._t = 0
 	self.minimum_dodge_input = 0.3
 	self.double_tap_dodge = Application.user_setting("double_tap_dodge")
 	self.toggle_crouch = Application.user_setting("toggle_crouch")
@@ -64,8 +66,7 @@ PlayerInputExtension.reset = function (self)
 end
 
 PlayerInputExtension.update = function (self, unit, input, dt, context, t)
-	if self.buffer_key then
-	end
+	self._t = t
 
 	if self.input_buffer_reset then
 		self.last_added_buffer_time = t
@@ -132,11 +133,53 @@ PlayerInputExtension.get = function (self, input_key, consume)
 		return nil
 	end
 
+	local input_key_scale_data = self.input_key_scale[input_key]
+
+	if value and input_key_scale_data then
+		local t = self._t
+		local scale = nil
+
+		if input_key_scale_data.lerp_end_t == nil or input_key_scale_data.lerp_end_t <= t then
+			scale = input_key_scale_data.end_scale
+		else
+			local p = (t - input_key_scale_data.lerp_start_t) / (input_key_scale_data.lerp_end_t - input_key_scale_data.lerp_start_t)
+			scale = math.lerp(input_key_scale_data.start_scale, input_key_scale_data.end_scale, p)
+		end
+
+		return value * scale
+	end
+
 	return value
 end
 
 PlayerInputExtension.set_enabled = function (self, enabled)
 	self.enabled = enabled
+end
+
+PlayerInputExtension.set_input_key_scale = function (self, input_key, scale, lerp_time)
+	fassert(lerp_time == nil or lerp_time > 0, "PlayerInputExtension:set_input_key_scale: Must enter a lerp_time larger than zero if lerp is to be used!")
+
+	local start_scale = 1
+	local t = self._t
+	local lerp_end_t = (lerp_time and t + lerp_time) or nil
+	local input_key_scale_data = self.input_key_scale[input_key]
+
+	if input_key_scale_data then
+		if input_key_scale_data.lerp_end_t == nil or input_key_scale_data.lerp_end_t <= t then
+			start_scale = input_key_scale_data.end_scale
+		else
+			local p = (t - input_key_scale_data.lerp_start_t) / (input_key_scale_data.lerp_end_t - input_key_scale_data.lerp_start_t)
+			start_scale = math.lerp(input_key_scale_data.start_scale, input_key_scale_data.end_scale, p)
+		end
+	else
+		input_key_scale_data = {}
+		self.input_key_scale[input_key] = input_key_scale_data
+	end
+
+	input_key_scale_data.lerp_start_t = t
+	input_key_scale_data.lerp_end_t = lerp_end_t
+	input_key_scale_data.start_scale = start_scale
+	input_key_scale_data.end_scale = scale
 end
 
 PlayerInputExtension.get_last_scroll_value = function (self)
@@ -216,7 +259,12 @@ PlayerInputExtension.add_buffer = function (self, input_key, doubleclick_window)
 			self.new_input_buffer_timer = 0.6
 			self.new_input_buffer = value
 			self.new_buffer_key = input_key
-			self.new_buffer_key_doubleclick_window = doubleclick_window
+
+			if self.buffer_key ~= input_key then
+				self.new_buffer_key_doubleclick_window = 0
+			else
+				self.new_buffer_key_doubleclick_window = doubleclick_window
+			end
 		end
 	end
 end

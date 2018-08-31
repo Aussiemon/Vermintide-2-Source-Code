@@ -256,7 +256,7 @@ end
 IngamePlayerListUI.add_player = function (self, player)
 	local ingame_ui_context = self.ingame_ui_context
 	local is_local_player = player.local_player
-	local is_bot_player = player.bot_player
+	local is_bot_player = player.bot_player or not player:is_player_controlled()
 	local ui_id = player:ui_id()
 	local player_level = ExperienceSettings.get_player_level(player)
 	local peer_id = player:network_id()
@@ -308,7 +308,7 @@ IngamePlayerListUI.update_widgets = function (self)
 	local vote_manager = Managers.state.voting
 	local vote_kick_enabled = vote_manager:vote_kick_enabled()
 	local private_game = Managers.matchmaking:is_game_private()
-	local is_pc = self.platform == "win32"
+	local is_not_ps4 = self.platform ~= "ps4"
 	local leader = Managers.party:leader()
 
 	for i = 1, num_players, 1 do
@@ -332,7 +332,7 @@ IngamePlayerListUI.update_widgets = function (self)
 			widget_content.show_kick_button = false
 			widget_content.show_voice_button = false
 			widget_content.show_profile_button = false
-			widget_content.show_ping = not is_bot_player
+			widget_content.show_ping = not is_server and not is_bot_player
 			widget_content.chat_button_hotspot.disable_button = true
 			widget_content.kick_button_hotspot.disable_button = true
 			widget_content.voice_button_hotspot.disable_button = true
@@ -347,11 +347,11 @@ IngamePlayerListUI.update_widgets = function (self)
 			end
 
 			widget_content.show_profile_button = true
-			widget_content.show_chat_button = is_pc
+			widget_content.show_chat_button = is_not_ps4
 			widget_content.show_voice_button = true
-			widget_content.show_ping = true
+			widget_content.show_ping = not is_server
 			widget_content.profile_button_hotspot.disable_button = false
-			widget_content.chat_button_hotspot.disable_button = not is_pc
+			widget_content.chat_button_hotspot.disable_button = not is_not_ps4
 			widget_content.voice_button_hotspot.disable_button = false
 			widget_content.chat_button_hotspot.is_selected = self:ignoring_chat_peer_id(peer_id)
 			widget_content.voice_button_hotspot.is_selected = self:muted_peer_id(peer_id)
@@ -532,75 +532,44 @@ IngamePlayerListUI._create_portrait_frame_widget = function (self, frame_setting
 	return widget
 end
 
-IngamePlayerListUI.update_player_ping_list = function (self, dt)
-	local delay_time = self.time_to_next_ping_update
-
-	if delay_time then
-		local new_time = delay_time - dt
-
-		if new_time <= 0 then
-			new_time = nil
-		end
-
-		self.time_to_next_ping_update = new_time
-
-		return
-	end
-
-	local matchmaking_manager = Managers.matchmaking
-	self.pings_by_peer_id = matchmaking_manager:get_players_ping()
-	self.time_to_next_ping_update = 2.5
-end
-
-IngamePlayerListUI.get_ping_by_peer_id = function (self, peer_id)
-	local pings_by_peer_id = self.pings_by_peer_id
-
-	if pings_by_peer_id then
-		local ping_data = pings_by_peer_id[peer_id]
-
-		if ping_data then
-			local number_of_ping_values = #ping_data
-			local total_value = 0
-
-			for i = 1, number_of_ping_values, 1 do
-				total_value = total_value + ping_data[i]
-			end
-
-			local avrage_value = (total_value > 0 and total_value / number_of_ping_values) or 0
-
-			return avrage_value * 1000
-		end
-	end
-
-	return 255
-end
-
 IngamePlayerListUI.get_ping_texture_by_ping_value = function (self, ping_value)
 	if ping_value <= 100 then
-		return "ping_icon_01"
+		return "ping_icon_01", "low_ping_color"
 	elseif ping_value > 100 and ping_value <= 150 then
-		return "ping_icon_02"
+		return "ping_icon_02", "medium_ping_color"
 	elseif ping_value > 150 then
-		return "ping_icon_03"
+		return "ping_icon_03", "high_ping_color"
 	end
 end
 
 IngamePlayerListUI.ignoring_chat_peer_id = function (self, peer_id)
-	local chat_gui = Managers.chat.chat_gui
+	if PLATFORM == "win32" then
+		local chat_gui = Managers.chat.chat_gui
 
-	return chat_gui:ignoring_peer_id(peer_id)
+		return chat_gui:ignoring_peer_id(peer_id)
+	elseif PLATFORM == "xb1" then
+		return Managers.chat:ignoring_peer_id(peer_id)
+	end
 end
 
 IngamePlayerListUI.ignore_chat_message_from_peer_id = function (self, peer_id)
-	local chat_gui = Managers.chat.chat_gui
+	if PLATFORM == "win32" then
+		local chat_gui = Managers.chat.chat_gui
 
-	chat_gui:ignore_peer_id(peer_id)
+		chat_gui:ignore_peer_id(peer_id)
+	elseif PLATFORM == "xb1" then
+		Managers.chat:ignore_peer_id(peer_id)
+	end
 end
 
 IngamePlayerListUI.remove_ignore_chat_message_from_peer_id = function (self, peer_id)
-	local chat_gui = Managers.chat.chat_gui
+	if PLATFORM == "win32" then
+		local chat_gui = Managers.chat.chat_gui
 
-	chat_gui:remove_ignore_peer_id(peer_id)
+		chat_gui:remove_ignore_peer_id(peer_id)
+	elseif PLATFORM == "xb1" then
+		Managers.chat:remove_ignore_peer_id(peer_id)
+	end
 end
 
 IngamePlayerListUI.muted_peer_id = function (self, peer_id)
@@ -680,7 +649,6 @@ IngamePlayerListUI.update = function (self, dt)
 			self.cursor_active = true
 		end
 
-		self:update_player_ping_list(dt)
 		self:update_player_list(dt)
 		self:update_difficulty()
 
@@ -793,6 +761,8 @@ IngamePlayerListUI.set_active = function (self, active)
 			ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", 0.75)
 			ShadingEnvironment.apply(shading_env)
 		end
+
+		Managers.input:enable_gamepad_cursor()
 	else
 		local world = self.ui_renderer.world
 		local shading_env = World.get_data(world, "shading_environment")
@@ -804,6 +774,7 @@ IngamePlayerListUI.set_active = function (self, active)
 		end
 
 		chat_gui:hide_chat()
+		Managers.input:disable_gamepad_cursor()
 	end
 
 	self.active = active
@@ -855,39 +826,10 @@ IngamePlayerListUI.get_background_world = function (self)
 	return world, viewport
 end
 
-local debug_players = {
-	[999] = {
-		peer_id = 999,
-		local_player_id = 1,
-		name = function ()
-			return "Playername_01"
-		end
-	},
-	[91092] = {
-		peer_id = 91092,
-		local_player_id = 1,
-		name = function ()
-			return "Playername_02"
-		end
-	},
-	[2109456] = {
-		peer_id = 2109456,
-		local_player_id = 1,
-		name = function ()
-			return "Playername_03"
-		end
-	},
-	[588120] = {
-		peer_id = 588120,
-		local_player_id = 1,
-		name = function ()
-			return "Playername_04"
-		end
-	}
-}
 local temp_players = {}
 
 IngamePlayerListUI.update_player_list = function (self, dt)
+	local game_session = Managers.state.network:game()
 	local player_manager = self.player_manager
 
 	table.clear(temp_players)
@@ -910,11 +852,20 @@ IngamePlayerListUI.update_player_list = function (self, dt)
 			removed_players = removed_players + 1
 		else
 			local is_local_player = data.is_local_player
-			temp_players[ui_id] = true
+			local is_bot_player = data.is_bot_player
+			local is_server = data.is_server
 			local widget = data.widget
-			local ping = self:get_ping_by_peer_id(peer_id)
-			local ping_texture = self:get_ping_texture_by_ping_value(ping)
-			widget.content.ping_texture = ping_texture
+			local game_object_id = player.game_object_id
+			temp_players[ui_id] = true
+
+			if not is_server and not is_bot_player and game_session and game_object_id then
+				local ping = GameSession.game_object_field(game_session, game_object_id, "ping")
+				local ping_texture, ping_color = self:get_ping_texture_by_ping_value(ping)
+				widget.content.ping_texture = ping_texture
+				widget.content.ping_text = ping
+				local ping_style = widget.style.ping_text
+				ping_style.text_color = ping_style[ping_color]
+			end
 
 			if not is_local_player then
 				local chat_button_hotspot = widget.content.chat_button_hotspot
@@ -957,7 +908,6 @@ IngamePlayerListUI.update_player_list = function (self, dt)
 					self:show_profile_by_peer_id(peer_id)
 				end
 
-				local is_server = data.is_server
 				local kick_button_hotspot = widget.content.kick_button_hotspot
 
 				if not is_server and kick_button_hotspot.on_pressed then

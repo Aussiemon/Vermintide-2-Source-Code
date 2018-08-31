@@ -32,7 +32,11 @@ ActionInstantWield.client_owner_post_update = function (self, dt, t, world, can_
 end
 
 ActionInstantWield.finish = function (self)
-	return
+	local status_extension = self.status_extension
+
+	if status_extension:is_zooming() then
+		status_extension:set_zooming(false)
+	end
 end
 
 return

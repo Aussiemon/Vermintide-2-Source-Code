@@ -346,9 +346,10 @@ HordeSpawner.execute_ambush_horde = function (self, extra_data, fallback, overri
 
 	print("-> spawning:", num_to_spawn)
 
+	local group_id = Managers.state.entity:system("ai_group_system"):generate_group_id()
 	local group_template = {
 		template = "horde",
-		id = Managers.state.entity:system("ai_group_system"):generate_group_id(),
+		id = group_id,
 		size = num_to_spawn,
 		group_data = extra_data
 	}
@@ -361,7 +362,8 @@ HordeSpawner.execute_ambush_horde = function (self, extra_data, fallback, overri
 		main_target_pos = Vector3Box(main_target_pos),
 		start_time = t + start_delay,
 		group_template = group_template,
-		sound_settings = sound_settings
+		sound_settings = sound_settings,
+		group_id = group_id
 	}
 
 	if #horde_spawners > 0 then
@@ -687,9 +689,10 @@ HordeSpawner.execute_vector_horde = function (self, extra_data, fallback)
 
 	print("-> spawning:", num_to_spawn)
 
+	local group_id = Managers.state.entity:system("ai_group_system"):generate_group_id()
 	local group_template = {
 		template = "horde",
-		id = Managers.state.entity:system("ai_group_system"):generate_group_id(),
+		id = group_id,
 		size = num_to_spawn,
 		sneaky = spawn_horde_ahead,
 		group_data = extra_data
@@ -704,7 +707,8 @@ HordeSpawner.execute_vector_horde = function (self, extra_data, fallback)
 		epicenter_pos = Vector3Box(epicenter_pos),
 		start_time = t + start_delay,
 		group_template = group_template,
-		sound_settings = sound_settings
+		sound_settings = sound_settings,
+		group_id = group_id
 	}
 	local n_horde_spawners = #horde_spawners
 	local n_cover_spawners = #found_cover_points
@@ -847,6 +851,69 @@ HordeSpawner.execute_vector_horde = function (self, extra_data, fallback)
 	print("vector horde has started")
 end
 
+HordeSpawner.execute_custom_horde = function (self, spawn_list, only_ahead)
+	local settings = CurrentHordeSettings.vector_blob
+	local roll = math.random()
+	local spawn_horde_ahead = only_ahead or roll <= settings.main_path_chance_spawning_ahead
+
+	print("wants to spawn " .. ((spawn_horde_ahead and "ahead") or "behind") .. " within distance: ", settings.main_path_dist_from_players)
+
+	local success, blob_pos, to_player_dir = self:get_pos_ahead_or_behind_players_on_mainpath(spawn_horde_ahead, settings.main_path_dist_from_players, settings.raw_dist_from_players)
+
+	if not success then
+		success, blob_pos, to_player_dir = self:get_pos_ahead_or_behind_players_on_mainpath(not spawn_horde_ahead, settings.main_path_dist_from_players, settings.raw_dist_from_players)
+
+		if not success then
+			local roll = math.random()
+			local spawn_horde_ahead = roll <= settings.main_path_chance_spawning_ahead
+			local distance_bonus = 20
+			success, blob_pos, to_player_dir = self:get_pos_ahead_or_behind_players_on_mainpath(spawn_horde_ahead, settings.main_path_dist_from_players + distance_bonus, settings.raw_dist_from_players)
+		end
+	end
+
+	if not blob_pos then
+		print("\no spawn position found at all, failing horde")
+
+		return
+	end
+
+	local num_to_spawn = #spawn_list
+	local num_columns = 6
+	local group_size = 0
+	local rot = Quaternion.look(Vector3(to_player_dir.x, to_player_dir.y, 1))
+	local max_attempts = 8
+	local conflict_director = self.conflict_director
+	local nav_world = conflict_director.nav_world
+
+	for i = 1, num_to_spawn, 1 do
+		local spawn_pos = nil
+
+		for j = 1, max_attempts, 1 do
+			local offset = nil
+
+			if j == 1 then
+				offset = Vector3(-num_columns / 2 + i % num_columns, -num_columns / 2 + math.floor(i / num_columns), 0)
+			else
+				offset = Vector3(4 * math.random() - 2, 4 * math.random() - 2, 0)
+			end
+
+			spawn_pos = LocomotionUtils.pos_on_mesh(nav_world, blob_pos + offset * 2)
+
+			if spawn_pos then
+				local breed = Breeds[spawn_list[i]]
+
+				conflict_director:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(rot), "hidden_spawn", nil, "horde_hidden", nil, nil)
+
+				group_size = group_size + 1
+
+				break
+			end
+		end
+	end
+
+	print("custom blob horde has started")
+end
+
 HordeSpawner.get_pos_ahead_or_behind_players_on_mainpath = function (self, check_ahead, dist, raw_dist)
 	local conflict_director = Managers.state.conflict
 	local main_path_info = conflict_director.main_path_info
@@ -872,13 +939,11 @@ HordeSpawner.get_pos_ahead_or_behind_players_on_mainpath = function (self, check
 	end
 
 	if wanted_pos then
-		local ignore_umbra = not World.umbra_available(self.world)
 		local h = Vector3(0, 0, 1)
 
 		for j = 1, #player_positions, 1 do
 			local avoid_pos = player_positions[j]
-			local to_vec = wanted_pos - avoid_pos
-			local los = ignore_umbra or World.umbra_has_line_of_sight(self.world, wanted_pos + h, avoid_pos + h)
+			local los = PerceptionUtils.position_has_line_of_sight_to_any_player(wanted_pos + h)
 
 			if los then
 				hidden = false
@@ -935,15 +1000,24 @@ HordeSpawner.execute_vector_blob_horde = function (self, extra_data, fallback)
 		return
 	end
 
-	local composition_type = CurrentHordeSettings.vector_blob_composition or "medium"
+	local composition_type = (extra_data and extra_data.override_composition_type) or CurrentHordeSettings.vector_blob_composition or "medium"
 
 	assert(composition_type, "Vector Blob Horde missing composition_type")
 
 	local composition = CurrentHordeSettings.compositions[composition_type]
-	local spawn_list, num_to_spawn = self:compose_blob_horde_spawn_list(composition_type)
+	local spawn_list, num_to_spawn = nil
+
+	if extra_data and extra_data.spawn_list then
+		num_to_spawn = #extra_data.spawn_list
+		spawn_list = extra_data.spawn_list
+	else
+		spawn_list, num_to_spawn = self:compose_blob_horde_spawn_list(composition_type)
+	end
+
+	local group_id = Managers.state.entity:system("ai_group_system"):generate_group_id()
 	local group_template = {
 		template = "horde",
-		id = Managers.state.entity:system("ai_group_system"):generate_group_id(),
+		id = group_id,
 		size = num_to_spawn,
 		sneaky = spawn_horde_ahead,
 		group_data = extra_data
@@ -957,7 +1031,8 @@ HordeSpawner.execute_vector_blob_horde = function (self, extra_data, fallback)
 		epicenter_pos = Vector3Box(blob_pos),
 		start_time = t + settings.start_delay,
 		group_template = group_template,
-		sound_settings = sound_settings
+		sound_settings = sound_settings,
+		group_id = group_id
 	}
 	local num_columns = 6
 	local group_size = 0
@@ -1221,7 +1296,10 @@ HordeSpawner.update_horde = function (self, horde, t)
 		end
 	end
 
-	if horde.num_to_spawn <= horde.spawned then
+	local has_spawned_enough = horde.num_to_spawn <= horde.spawned
+	local group_has_spawned = horde.is_done_spawning
+
+	if has_spawned_enough or not group_has_spawned then
 		return true
 	end
 end
@@ -1272,6 +1350,32 @@ HordeSpawner.update = function (self, t, dt)
 
 	if script_data.debug_hordes then
 		self:debug_hordes(t)
+	end
+end
+
+HordeSpawner.set_horde_has_spawned = function (self, group_id)
+	local hordes = self.hordes
+
+	for i = 1, #hordes, 1 do
+		local horde = hordes[i]
+		local horde_group_id = horde.group_id
+
+		if horde_group_id and horde_group_id == group_id then
+			horde.is_done_spawning = true
+		end
+	end
+end
+
+HordeSpawner.set_horde_is_done = function (self, group_id)
+	local hordes = self.hordes
+
+	for i = 1, #hordes, 1 do
+		local horde = hordes[i]
+		local horde_group_id = horde.group_id
+
+		if horde_group_id and horde_group_id == group_id then
+			horde.is_dead = true
+		end
 	end
 end
 

@@ -28,6 +28,7 @@ end
 
 ScriptApplication.set_crashify_tag = function (tag, data)
 	printf("[CrashifyCustomTag] %s, %s", tag, data)
+	Crashify.print_property(tag, data)
 end
 
 return

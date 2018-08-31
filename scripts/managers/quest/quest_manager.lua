@@ -6,6 +6,9 @@ local quest_keys = {
 		"daily_quest_2",
 		"daily_quest_3"
 	},
+	weekly = {
+		"weekly_quest_1"
+	},
 	event = {
 		"event_quest_1",
 		"event_quest_2",
@@ -26,10 +29,15 @@ QuestManager.event_stat_incremented = function (self, stats_id, ...)
 	local statistics_db = self._statistics_db
 	local quests = self._backend_interface_quests:get_quests()
 	local daily_quests = quests.daily
+	local weekly_quests = quests.weekly
 	local event_quests = quests.event
 
 	if daily_quests then
 		self:_increment_quest_stats(daily_quests, stats_id, ...)
+	end
+
+	if weekly_quests then
+		self:_increment_quest_stats(weekly_quests, stats_id, ...)
 	end
 
 	if event_quests then
@@ -137,6 +145,7 @@ end
 QuestManager.get_quest_outline = function (self)
 	local quests = self._backend_interface_quests:get_quests()
 	local daily_quests = quests.daily or {}
+	local weekly_quests = quests.weekly or {}
 	local event_quests = quests.event or {}
 	local outline = table.clone(outline)
 	local quest_categories = outline.categories
@@ -152,6 +161,22 @@ QuestManager.get_quest_outline = function (self)
 			for j = 1, #keys, 1 do
 				local key = keys[j]
 				local quest_data = daily_quests[key]
+
+				if quest_data then
+					local quest_name = quest_data.name
+
+					if quest_templates.quests[quest_name] then
+						entries[#entries + 1] = quest_name
+					end
+				end
+			end
+		elseif quest_type == "weekly" then
+			local entries = category.entries
+			local keys = quest_keys.weekly
+
+			for j = 1, #keys, 1 do
+				local key = keys[j]
+				local quest_data = weekly_quests[key]
 
 				if quest_data then
 					local quest_name = quest_data.name
@@ -375,6 +400,13 @@ end
 QuestManager.time_until_new_daily_quest = function (self)
 	local backend_interface_quests = self._backend_interface_quests
 	local next_quest_time = backend_interface_quests:get_daily_quest_update_time()
+
+	return next_quest_time
+end
+
+QuestManager.time_until_new_weekly_quest = function (self)
+	local backend_interface_quests = self._backend_interface_quests
+	local next_quest_time = backend_interface_quests:get_weekly_quest_update_time()
 
 	return next_quest_time
 end

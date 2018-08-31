@@ -41,6 +41,9 @@ BloodSettingsDefault = BloodSettingsDefault or {
 			arrow_sniper = "15",
 			arrow_machinegun = "15"
 		}
+	},
+	screen_space = {
+		enabled = true
 	}
 }
 BloodSettings = BloodSettings or table.clone(BloodSettingsDefault)

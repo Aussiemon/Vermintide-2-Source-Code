@@ -43,10 +43,11 @@ ExplosiveBarrelHealthExtension.update = function (self, dt, context, t)
 					self:add_heal(attacker_unit, -damage_amount, nil, "n/a")
 				else
 					local hit_zone_name = recent_damages[j + DamageDataIndex.HIT_ZONE]
+					local hit_position = Vector3Aux.unbox(recent_damages[j + DamageDataIndex.POSITION])
 					local damage_direction = Vector3Aux.unbox(recent_damages[j + DamageDataIndex.DIRECTION])
 					local damage_source_name = recent_damages[j + DamageDataIndex.DAMAGE_SOURCE_NAME]
 
-					self:add_damage(attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name)
+					self:add_damage(attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name)
 				end
 			end
 		end
@@ -62,7 +63,7 @@ ExplosiveBarrelHealthExtension.update = function (self, dt, context, t)
 		if self.explode_time <= network_time then
 			self.insta_explode = true
 
-			self:add_damage(self.unit, self.health, "full", "undefined", Vector3(0, 0, -1))
+			self:add_damage(self.unit, self.health, "full", "undefined", Unit.world_position(self.unit, 0), Vector3(0, 0, -1))
 		elseif not self.in_hand and not self.insta_explode and self.insta_explode_time <= network_time then
 			self.insta_explode = true
 		elseif not self.played_fuse_out and network_time >= self.explode_time - 1.2 then
@@ -73,12 +74,12 @@ ExplosiveBarrelHealthExtension.update = function (self, dt, context, t)
 	end
 end
 
-ExplosiveBarrelHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot)
+ExplosiveBarrelHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot)
 	local did_damage = damage_amount > 0
 	local unit = self.unit
 	local network_manager = Managers.state.network
 	local unit_id, is_level_unit = network_manager:game_object_or_level_id(unit)
-	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
+	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
 
 	StatisticsUtil.register_damage(unit, damage_table, self.statistics_db)
 	fassert(damage_type, "No damage_type!")
@@ -90,7 +91,7 @@ ExplosiveBarrelHealthExtension.add_damage = function (self, attacker_unit, damag
 		DamageUtils.handle_hit_indication(attacker_unit, unit, damage_amount, hit_zone_name, added_dot)
 	end
 
-	if self.is_server and not self.dead then
+	if not self.is_invincible and not self.dead then
 		local internal_damage_amount = (did_damage and self.insta_explode and self.health) or 0
 		self.damage = self.damage + internal_damage_amount
 
@@ -101,7 +102,7 @@ ExplosiveBarrelHealthExtension.add_damage = function (self, attacker_unit, damag
 		end
 	end
 
-	self:_sync_out_damage(attacker_unit, unit_id, is_level_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, hit_react_type, is_critical_strike, added_dot)
+	self:_sync_out_damage(attacker_unit, unit_id, is_level_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, hit_react_type, is_critical_strike, added_dot)
 
 	if did_damage and not self.ignited then
 		local unit = self.unit

@@ -15,9 +15,21 @@ local scenegraph_definition = {
 			UILayer.popup + 1
 		}
 	},
+	screen = {
+		scale = "fit",
+		size = {
+			1920,
+			1080
+		},
+		position = {
+			0,
+			0,
+			UILayer.popup + 1
+		}
+	},
 	base_area = {
 		vertical_alignment = "bottom",
-		parent = "root",
+		parent = "screen",
 		horizontal_alignment = "center",
 		size = {
 			811,
@@ -25,7 +37,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			110,
+			120,
 			1
 		}
 	},
@@ -227,7 +239,7 @@ local scenegraph_definition = {
 	},
 	result_area = {
 		vertical_alignment = "bottom",
-		parent = "root",
+		parent = "screen",
 		horizontal_alignment = "center",
 		size = {
 			811,
@@ -633,7 +645,7 @@ local scenegraph_definition = {
 	},
 	sv_result_area = {
 		vertical_alignment = "bottom",
-		parent = "root",
+		parent = "screen",
 		horizontal_alignment = "center",
 		size = {
 			811,
@@ -943,7 +955,42 @@ local function create_vertical_window_divider(scenegraph_id, size)
 	return widget
 end
 
+local VOTE_TEXTS = nil
+
+if PLATFORM == "xb1" then
+	VOTE_TEXTS = {
+		standard_vote = {
+			"Left",
+			"Right"
+		},
+		multiple_choice = {
+			"A",
+			"B",
+			"C",
+			"D",
+			"E"
+		}
+	}
+else
+	VOTE_TEXTS = {
+		standard_vote = {
+			"#A",
+			"#B"
+		},
+		multiple_choice = {
+			"#A",
+			"#B",
+			"#C",
+			"#D",
+			"#E"
+		}
+	}
+end
+
+local streaming_icon = (PLATFORM == "win32" and "twitch_icon_small") or "mixer_icon_small"
+
 return {
+	vote_texts = VOTE_TEXTS,
 	scenegraph_definition = scenegraph_definition,
 	settings = {
 		vote_icon_padding = 10
@@ -987,17 +1034,17 @@ return {
 			hero_glow_2 = UIWidgets.create_texture_with_style("portrait_glow", "portrait_b", portrait_glow_style),
 			hero_glow_3 = UIWidgets.create_texture_with_style("portrait_glow", "portrait_c", portrait_glow_style),
 			hero_glow_4 = UIWidgets.create_texture_with_style("portrait_glow", "portrait_d", portrait_glow_style),
-			hero_vote_1 = UIWidgets.create_simple_text("#A", "vote_input_a", nil, nil, hero_vote_text_style),
-			hero_vote_2 = UIWidgets.create_simple_text("#B", "vote_input_b", nil, nil, hero_vote_text_style),
-			hero_vote_3 = UIWidgets.create_simple_text("#C", "vote_input_c", nil, nil, hero_vote_text_style),
-			hero_vote_4 = UIWidgets.create_simple_text("#D", "vote_input_d", nil, nil, hero_vote_text_style),
+			hero_vote_1 = UIWidgets.create_simple_text(VOTE_TEXTS.multiple_choice[1], "vote_input_a", nil, nil, hero_vote_text_style),
+			hero_vote_2 = UIWidgets.create_simple_text(VOTE_TEXTS.multiple_choice[2], "vote_input_b", nil, nil, hero_vote_text_style),
+			hero_vote_3 = UIWidgets.create_simple_text(VOTE_TEXTS.multiple_choice[3], "vote_input_c", nil, nil, hero_vote_text_style),
+			hero_vote_4 = UIWidgets.create_simple_text(VOTE_TEXTS.multiple_choice[4], "vote_input_d", nil, nil, hero_vote_text_style),
 			divider = UIWidgets.create_simple_texture("divider_01_top", "mc_divider"),
-			twitch_icon_small = UIWidgets.create_simple_texture("twitch_icon_small", "mc_twitch_icon_small")
+			twitch_icon_small = UIWidgets.create_simple_texture(streaming_icon, "mc_twitch_icon_small")
 		},
 		multiple_choice_result = {
 			background = UIWidgets.create_simple_texture("tab_menu_bg_02", "result_area"),
 			divider = UIWidgets.create_simple_texture("divider_01_top", "mcr_divider"),
-			twitch_icon_small = UIWidgets.create_simple_texture("twitch_icon_small", "mcr_twitch_icon_small"),
+			twitch_icon_small = UIWidgets.create_simple_texture(streaming_icon, "mcr_twitch_icon_small"),
 			result_icon_rect = UIWidgets.create_simple_texture("item_frame", "result_icon_rect"),
 			result_icon = UIWidgets.create_simple_texture("markus_mercenary_crit_chance", "result_icon"),
 			result_text = UIWidgets.create_simple_text("heal_all", "result_text", nil, nil, result_text_style),
@@ -1010,11 +1057,11 @@ return {
 			vote_icon_rect_a = UIWidgets.create_simple_texture("item_frame", "vote_icon_rect_a"),
 			vote_icon_a = UIWidgets.create_simple_texture("markus_mercenary_crit_chance", "vote_icon_a"),
 			vote_text_a = UIWidgets.create_simple_text("vote_text_a_default_text", "vote_text_rect_a", nil, nil, vote_text_left_style),
-			vote_input_text_a = UIWidgets.create_simple_text("#A", "vote_input_text_a", nil, nil, hero_vote_text_style),
+			vote_input_text_a = UIWidgets.create_simple_text(VOTE_TEXTS.standard_vote[1], "vote_input_text_a", nil, nil, hero_vote_text_style),
 			vote_icon_rect_b = UIWidgets.create_simple_texture("item_frame", "vote_icon_rect_b"),
 			vote_icon_b = UIWidgets.create_simple_texture("markus_mercenary_activated_ability_clear_wounds", "vote_icon_b"),
 			vote_text_b = UIWidgets.create_simple_text("vote_text_b_default_text", "vote_text_rect_b", nil, nil, vote_text_right_style),
-			vote_input_text_b = UIWidgets.create_simple_text("#B", "vote_input_text_b", nil, nil, hero_vote_text_style),
+			vote_input_text_b = UIWidgets.create_simple_text(VOTE_TEXTS.standard_vote[2], "vote_input_text_b", nil, nil, hero_vote_text_style),
 			result_bar_fg = UIWidgets.create_simple_texture("crafting_button_fg", "result_bar_fg"),
 			result_bar_glass = UIWidgets.create_simple_texture("button_glass_01", "result_bar_glass"),
 			result_bar_bg = UIWidgets.create_simple_rect("result_bar_bg", {
@@ -1075,12 +1122,12 @@ return {
 				}
 			}, "result_b_bar", nil, nil, Colors.get_table("yellow")),
 			result_bar_b_eyes = UIWidgets.create_simple_texture("mission_objective_glow_02", "result_bar_b_eyes"),
-			twitch_icon_small = UIWidgets.create_simple_texture("twitch_icon_small", "sv_twitch_icon_small")
+			twitch_icon_small = UIWidgets.create_simple_texture(streaming_icon, "sv_twitch_icon_small")
 		},
 		standard_vote_result = {
 			background = UIWidgets.create_simple_texture("tab_menu_bg_02", "sv_result_area"),
 			divider = UIWidgets.create_simple_texture("divider_01_top", "sv_divider"),
-			twitch_icon_small = UIWidgets.create_simple_texture("twitch_icon_small", "svr_twitch_icon_small"),
+			twitch_icon_small = UIWidgets.create_simple_texture(streaming_icon, "svr_twitch_icon_small"),
 			result_icon_rect = UIWidgets.create_simple_texture("item_frame", "sv_result_icon_rect"),
 			result_icon = UIWidgets.create_simple_texture("markus_mercenary_crit_chance", "sv_result_icon"),
 			result_text = UIWidgets.create_simple_text("default_result_text", "sv_result_text", nil, nil, result_text_style)

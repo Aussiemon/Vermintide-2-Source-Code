@@ -43,6 +43,349 @@ if not Demosettings then
 end
 
 DemoSettings = slot0
+DemoOfflineBackendTitleInternalData = {
+	character_starting_gear = {
+		wh_bountyhunter = {
+			slot_necklace = "necklace",
+			slot_hat = "bountyhunter_hat_0000",
+			slot_trinket_1 = "trinket",
+			slot_skin = "skin_wh_bountyhunter",
+			slot_frame = "frame_0000",
+			slot_melee = "wh_1h_falchion_0001",
+			slot_ring = "ring",
+			slot_ranged = "wh_repeating_pistols_0000"
+		},
+		wh_zealot = {
+			slot_necklace = "necklace",
+			slot_hat = "zealot_hat_0000",
+			slot_trinket_1 = "trinket",
+			slot_skin = "skin_wh_zealot",
+			slot_frame = "frame_0000",
+			slot_melee = "wh_fencing_sword",
+			slot_ring = "ring",
+			slot_ranged = "wh_brace_of_pistols"
+		},
+		bw_unchained = {
+			slot_necklace = "necklace",
+			slot_hat = "unchained_hat_0000",
+			slot_trinket_1 = "trinket",
+			slot_skin = "skin_bw_unchained",
+			slot_frame = "frame_0000",
+			slot_melee = "bw_sword",
+			slot_ring = "ring",
+			slot_ranged = "bw_skullstaff_fireball"
+		},
+		we_shade = {
+			slot_necklace = "necklace",
+			slot_hat = "shade_hat_0000",
+			slot_trinket_1 = "trinket",
+			slot_skin = "skin_ww_shade",
+			slot_frame = "frame_0000",
+			slot_melee = "we_spear_0001",
+			slot_ring = "ring",
+			slot_ranged = "we_crossbow_repeater_0001"
+		},
+		dr_ironbreaker = {
+			slot_necklace = "necklace",
+			slot_hat = "ironbreaker_hat_0000",
+			slot_trinket_1 = "trinket",
+			slot_skin = "skin_dr_ironbreaker",
+			slot_frame = "frame_0000",
+			slot_melee = "dr_shield_hammer_0000",
+			slot_ring = "ring",
+			slot_ranged = "dr_rakegun_0001"
+		},
+		es_knight = {
+			slot_necklace = "necklace",
+			slot_hat = "knight_hat_0000",
+			slot_trinket_1 = "trinket",
+			slot_skin = "skin_es_knight",
+			slot_frame = "frame_0000",
+			slot_melee = "es_2h_hammer_0000",
+			slot_ring = "ring",
+			slot_ranged = "es_repeating_handgun_0001"
+		},
+		bw_scholar = {
+			slot_necklace = "necklace",
+			slot_hat = "scholar_hat_0000",
+			slot_trinket_1 = "trinket",
+			slot_skin = "skin_bw_scholar",
+			slot_frame = "frame_0000",
+			slot_melee = "bw_sword",
+			slot_ring = "ring",
+			slot_ranged = "bw_skullstaff_fireball"
+		},
+		bw_adept = {
+			slot_necklace = "necklace",
+			slot_hat = "adept_hat_0000",
+			slot_trinket_1 = "trinket",
+			slot_skin = "skin_bw_adept",
+			slot_frame = "frame_0000",
+			slot_melee = "bw_sword",
+			slot_ring = "ring",
+			slot_ranged = "bw_skullstaff_fireball"
+		},
+		we_maidenguard = {
+			slot_necklace = "necklace",
+			slot_hat = "maidenguard_hat_0000",
+			slot_trinket_1 = "trinket",
+			slot_skin = "skin_ww_maidenguard",
+			slot_frame = "frame_0000",
+			slot_melee = "we_1h_sword",
+			slot_ring = "ring",
+			slot_ranged = "we_longbow"
+		},
+		dr_slayer = {
+			slot_necklace = "necklace",
+			slot_hat = "slayer_hat_0000",
+			slot_trinket_1 = "trinket",
+			slot_skin = "skin_dr_slayer",
+			slot_frame = "frame_0000",
+			slot_melee = "dr_2h_hammer",
+			slot_ring = "ring",
+			slot_ranged = "dr_2h_hammer"
+		},
+		es_mercenary = {
+			slot_necklace = "necklace",
+			slot_hat = "mercenary_hat_0000",
+			slot_trinket_1 = "trinket",
+			slot_skin = "skin_es_mercenary",
+			slot_frame = "frame_0000",
+			slot_melee = "es_2h_sword",
+			slot_ring = "ring",
+			slot_ranged = "es_blunderbuss"
+		},
+		wh_captain = {
+			slot_necklace = "necklace",
+			slot_hat = "witchhunter_hat_0000",
+			slot_trinket_1 = "trinket",
+			slot_skin = "skin_wh_captain",
+			slot_frame = "frame_0000",
+			slot_melee = "wh_fencing_sword",
+			slot_ring = "ring",
+			slot_ranged = "wh_brace_of_pistols"
+		},
+		we_waywatcher = {
+			slot_necklace = "necklace",
+			slot_hat = "waywatcher_hat_0000",
+			slot_trinket_1 = "trinket",
+			slot_skin = "skin_ww_waywatcher",
+			slot_frame = "frame_0000",
+			slot_melee = "we_1h_sword",
+			slot_ring = "ring",
+			slot_ranged = "we_longbow"
+		},
+		es_huntsman = {
+			slot_necklace = "necklace",
+			slot_hat = "huntsman_hat_0000",
+			slot_trinket_1 = "trinket",
+			slot_skin = "skin_es_huntsman",
+			slot_frame = "frame_0000",
+			slot_melee = "es_2h_sword",
+			slot_ring = "ring",
+			slot_ranged = "es_blunderbuss"
+		},
+		dr_ranger = {
+			slot_necklace = "necklace",
+			slot_hat = "ranger_hat_0000",
+			slot_trinket_1 = "trinket",
+			slot_skin = "skin_dr_ranger",
+			slot_frame = "frame_0000",
+			slot_melee = "dr_2h_hammer",
+			slot_ring = "ring",
+			slot_ranged = "dr_crossbow"
+		}
+	},
+	starting_inventory_items = {
+		{
+			name = "starting_inventory_items"
+		},
+		{
+			name = "mercenary_hat_0000"
+		},
+		{
+			name = "es_2h_hammer_0000",
+			custom_data = {
+				power_level = 5,
+				rarity = "default"
+			}
+		},
+		{
+			name = "es_repeating_handgun_0001",
+			custom_data = {
+				power_level = 5,
+				rarity = "default"
+			}
+		},
+		{
+			name = "skin_es_mercenary"
+		},
+		{
+			name = "frame_0000"
+		},
+		{
+			name = "huntsman_hat_0000"
+		},
+		{
+			name = "skin_es_huntsman"
+		},
+		{
+			name = "knight_hat_0000"
+		},
+		{
+			name = "skin_es_knight"
+		},
+		{
+			name = "ranger_hat_0000"
+		},
+		{
+			name = "dr_shield_hammer_0000",
+			custom_data = {
+				power_level = 5,
+				rarity = "default"
+			}
+		},
+		{
+			name = "dr_rakegun_0001",
+			custom_data = {
+				power_level = 5,
+				rarity = "default"
+			}
+		},
+		{
+			name = "skin_dr_ranger"
+		},
+		{
+			name = "ironbreaker_hat_0000"
+		},
+		{
+			name = "skin_dr_ironbreaker"
+		},
+		{
+			name = "slayer_hat_0000"
+		},
+		{
+			name = "skin_dr_slayer"
+		},
+		{
+			name = "waywatcher_hat_0000"
+		},
+		{
+			name = "we_spear_0001",
+			custom_data = {
+				power_level = 5,
+				rarity = "default"
+			}
+		},
+		{
+			name = "we_crossbow_repeater_0001",
+			custom_data = {
+				power_level = 5,
+				rarity = "default"
+			}
+		},
+		{
+			name = "skin_ww_waywatcher"
+		},
+		{
+			name = "shade_hat_0000"
+		},
+		{
+			name = "skin_ww_shade"
+		},
+		{
+			name = "maidenguard_hat_0000"
+		},
+		{
+			name = "skin_ww_maidenguard"
+		},
+		{
+			name = "witchhunter_hat_0000"
+		},
+		{
+			name = "wh_1h_falchion_0001",
+			custom_data = {
+				power_level = 5,
+				rarity = "default"
+			}
+		},
+		{
+			name = "wh_repeating_pistols_0000",
+			custom_data = {
+				power_level = 5,
+				rarity = "default"
+			}
+		},
+		{
+			name = "skin_wh_captain"
+		},
+		{
+			name = "zealot_hat_0000"
+		},
+		{
+			name = "skin_wh_zealot"
+		},
+		{
+			name = "bountyhunter_hat_0000"
+		},
+		{
+			name = "skin_wh_bountyhunter"
+		},
+		{
+			name = "adept_hat_0000"
+		},
+		{
+			name = "bw_sword",
+			custom_data = {
+				power_level = 5,
+				rarity = "default"
+			}
+		},
+		{
+			name = "bw_skullstaff_fireball",
+			custom_data = {
+				power_level = 5,
+				rarity = "default"
+			}
+		},
+		{
+			name = "skin_bw_adept"
+		},
+		{
+			name = "scholar_hat_0000"
+		},
+		{
+			name = "skin_bw_scholar"
+		},
+		{
+			name = "unchained_hat_0000"
+		},
+		{
+			name = "skin_bw_unchained"
+		},
+		{
+			name = "ring",
+			custom_data = {
+				power_level = 5,
+				rarity = "default"
+			}
+		},
+		{
+			name = "necklace",
+			custom_data = {
+				power_level = 5,
+				rarity = "default"
+			}
+		},
+		{
+			name = "trinket",
+			custom_data = {
+				power_level = 5,
+				rarity = "default"
+			}
+		}
+	}
+}
 DemoBackendSaveDataVersion = 4
 DefaultDemoLocalBackendData = {
 	items = {
@@ -593,36 +936,24 @@ DefaultDemoLocalBackendData = {
 	save_data_version = DemoBackendSaveDataVersion
 }
 DEFAULT_DEMO_ATTRIBUTES = {
-	hero_attributes_witch_hunter = {
-		hero_attribute_experience = "0",
-		hero_attribute_career = "2",
-		hero_attribute_prestige = "0"
-	},
-	hero_attributes_bright_wizard = {
-		hero_attribute_experience = "0",
-		hero_attribute_career = "3",
-		hero_attribute_prestige = "0"
-	},
-	hero_attributes_dwarf_ranger = {
-		hero_attribute_experience = "0",
-		hero_attribute_career = "2",
-		hero_attribute_prestige = "0"
-	},
-	hero_attributes_wood_elf = {
-		hero_attribute_experience = "0",
-		hero_attribute_career = "3",
-		hero_attribute_prestige = "0"
-	},
-	hero_attributes_empire_soldier = {
-		hero_attribute_experience = "0",
-		hero_attribute_career = "3",
-		hero_attribute_prestige = "0"
-	},
-	hero_attributes_empire_soldier_tutorial = {
-		hero_attribute_experience = "0",
-		hero_attribute_career = "1",
-		hero_attribute_prestige = "0"
-	}
+	dwarf_ranger_career = 2,
+	empire_soldier_tutorial_career = 2,
+	wood_elf_experience = 0,
+	dwarf_ranger_experience = 0,
+	bright_wizard_prestige = 0,
+	dwarf_ranger_prestige = 0,
+	empire_soldier_prestige = 0,
+	bright_wizard_experience = 0,
+	witch_hunter_prestige = 0,
+	empire_soldier_tutorial_prestige = 0,
+	wood_elf_career = 3,
+	empire_soldier_career = 3,
+	wood_elf_prestige = 0,
+	witch_hunter_career = 2,
+	bright_wizard_career = 3,
+	witch_hunter_experience = 0,
+	empire_soldier_experience = 0,
+	empire_soldier_tutorial_experience = 0
 }
 
 return

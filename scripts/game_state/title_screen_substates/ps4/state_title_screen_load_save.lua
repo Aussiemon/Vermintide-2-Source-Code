@@ -1,5 +1,3 @@
-require("scripts/network/lobby_psn")
-
 StateTitleScreenLoadSave = class(StateTitleScreenLoadSave)
 StateTitleScreenLoadSave.NAME = "StateTitleScreenLoadSave"
 
@@ -125,7 +123,7 @@ StateTitleScreenLoadSave.update = function (self, dt, t)
 		end
 	elseif self._state == "fetching_dlcs" then
 		if PS4DLC.has_fetched_dlcs() then
-			self._state = "signin_to_backend"
+			self:_finish()
 		end
 	elseif self._state == "signin_to_backend" then
 		self._title_start_ui:set_information_text(Localize("loading_signing_in"))
@@ -211,12 +209,22 @@ StateTitleScreenLoadSave._fetch_dlcs = function (self)
 end
 
 StateTitleScreenLoadSave._signin = function (self)
-	require("scripts/managers/backend/backend_manager")
-
 	Managers.unlock = UnlockManager:new()
-	Managers.backend = BackendManager:new()
 
-	Managers.backend:signin()
+	print("Using Offline Backend")
+	Managers.account:set_offline_mode(true)
+
+	if not Managers.rest_transport_offline then
+		require("scripts/managers/rest_transport_offline/rest_transport_manager_offline")
+
+		local offline_backend = require("scripts/managers/rest_transport_offline/offline_backend_playfab")
+		Managers.rest_transport_offline = RestTransportManagerOffline:new(offline_backend.endpoints)
+	end
+
+	Managers.rest_transport = Managers.rest_transport_offline
+	Managers.backend = BackendManagerPlayFab:new("ScriptBackendPlayFabPS4", "PlayFabMirror", "DataServerQueue")
+
+	Managers.backend:signin("")
 
 	self._state = "signing_in"
 
@@ -243,6 +251,13 @@ StateTitleScreenLoadSave._signed_in_to_backend = function (self, result)
 			self._new_state = StateTitleScreenMainMenu
 		end
 	end
+end
+
+StateTitleScreenLoadSave._finish = function (self)
+	self._title_start_ui:set_information_text("")
+
+	self._new_state = StateTitleScreenMainMenu
+	self._state = "none"
 end
 
 StateTitleScreenLoadSave.cb_fade_in_done = function (self)
@@ -321,6 +336,10 @@ end
 
 StateTitleScreenLoadSave._next_state = function (self)
 	if not Managers.popup:has_popup() then
+		if script_data.honduras_demo and not self._title_start_ui:is_ready() then
+			return
+		end
+
 		return self._new_state
 	end
 end

@@ -1,6 +1,7 @@
+require("scripts/ui/views/disconnect_indicator_view")
 require("scripts/ui/views/loading_icon_view")
 
-if PLATFORM == "win32" then
+if PLATFORM ~= "ps4" then
 	require("scripts/ui/views/twitch_icon_view")
 end
 
@@ -18,6 +19,10 @@ TransitionManager.init = function (self)
 	self._loading_icon_view = LoadingIconView:new(self._world)
 
 	if PLATFORM == "win32" then
+		self._disconnect_indicator_view = DisconnectIndicatorView:new(self._world)
+	end
+
+	if PLATFORM ~= "ps4" then
 		self._twitch_icon_view = TwitchIconView:new(self._world)
 	end
 
@@ -75,6 +80,12 @@ TransitionManager.destroy = function (self)
 
 	self._loading_icon_view = nil
 
+	if self._disconnect_indicator_view then
+		self._disconnect_indicator_view:destroy()
+
+		self._disconnect_indicator_view = nil
+	end
+
 	if self._twitch_icon_view then
 		self._twitch_icon_view:destroy()
 	end
@@ -92,6 +103,11 @@ TransitionManager.destroy = function (self)
 	self._transition_video = nil
 
 	Managers.world:destroy_world(self._world_name)
+end
+
+TransitionManager.show_waiting_for_peers_message = function (self, enable)
+	self._waiting_for_peers_message = enable
+	self._waiting_for_peers_timer = Managers.time:time("main")
 end
 
 TransitionManager.show_loading_icon = function (self, show_background)
@@ -216,6 +232,45 @@ TransitionManager._render = function (self, dt)
 	Gui.rect(self._gui, Vector3(0, 0, UILayer.transition), Vector2(w, h), Color(self._fade * 255, color.x, color.y, color.z))
 end
 
+local FONT_STYLE = {
+	font_type = "hell_shark",
+	font_size = 56
+}
+
+TransitionManager._render_waiting_message = function (self, dt)
+	if not self._waiting_for_peers_message then
+		return
+	end
+
+	if PLATFORM == "win32" then
+		self:show_waiting_for_peers_message(false)
+
+		return
+	end
+
+	if self._fade_state == "fade_out" or self._fade_state == "out" then
+		self:show_waiting_for_peers_message(false)
+
+		return
+	end
+
+	local w, h = Gui.resolution()
+	local alpha = 192 + 63 * math.sin(self._waiting_for_peers_timer * 4)
+	local text = Localize("matchmaking_status_waiting_for_other_players")
+	local font, size_of_font = UIFontByResolution(FONT_STYLE)
+	local font_name = font[1]
+	local font_size = font[2]
+	local font_material = font[3]
+	local color = Color(255, alpha, alpha, alpha)
+	local min, max = Gui.text_extents(self._gui, text, font_name, font_size)
+	local text_width = max.x - min.x
+	local position = Vector3(w * 0.5 - text_width * 0.5, h * 0.1, UILayer.transition + 1)
+
+	Gui.text(self._gui, text, font_name, font_size, font_material, position, color)
+
+	self._waiting_for_peers_timer = self._waiting_for_peers_timer + dt
+end
+
 TransitionManager.force_render = function (self, dt)
 	local is_loading_icon_active = self:loading_icon_active()
 
@@ -239,6 +294,10 @@ TransitionManager.update = function (self, dt)
 		Managers.eac:draw_panel(self._gui, dt)
 	end
 
+	if self._disconnect_indicator_view then
+		self._disconnect_indicator_view:update(dt)
+	end
+
 	local is_loading_icon_active = self:loading_icon_active()
 
 	if is_loading_icon_active and not Development.parameter("disable_loading_icon") then
@@ -248,6 +307,8 @@ TransitionManager.update = function (self, dt)
 	if self._twitch_icon_view then
 		self._twitch_icon_view:update(dt)
 	end
+
+	self:_render_waiting_message(dt)
 
 	if script_data.honduras_demo then
 		if not Development.parameter("disable_water_mark") then

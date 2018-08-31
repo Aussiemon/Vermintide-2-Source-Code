@@ -19,25 +19,24 @@ BenchmarkSettings = {
 	destroy_close_enemies_timer = 90,
 	initial_overview_time = math.huge,
 	parameters = {
-		disable_debug_draw = true,
-		use_local_backend = true,
-		use_lan_backend = true,
+		hide_fps = true,
+		network_debug = false,
+		disable_tutorial_at_start = true,
 		disable_gutter_runner = true,
 		hide_version_info = true,
 		network_debug_connections = false,
-		hide_fps = true,
+		honduras_demo = false,
 		spawn_empty_chest = true,
-		honduras_demo = true,
-		network_debug = false,
+		disable_debug_draw = true,
 		disable_pack_master = true,
 		network_log_messages = false,
 		disable_intro_trailer = true,
-		force_steam = false,
+		force_steam = true,
 		debug_interactions = false,
 		screen_space_player_camera_reactions = false,
 		infinite_ammo = true,
 		player_invincible = true,
-		wanted_profile = "bright_wizard"
+		wanted_profile = "empire_soldier_tutorial"
 	},
 	attract_mode_settings = {
 		display_name = "intel_loading_screen_attract_mode",
@@ -52,6 +51,8 @@ BenchmarkSettings = {
 local function setup_parameters(parameters)
 	for parameter, value in pairs(parameters) do
 		Development.set_parameter(parameter, value)
+
+		script_data[parameter] = value
 	end
 end
 
@@ -61,6 +62,14 @@ local function override_display_name(mode_settings)
 	level_settings.display_name = mode_settings.display_name
 	level_settings.loading_screen_wwise_events = mode_settings.loading_screen_wwise_events
 	script_data.no_loading_screen_tip_texts = true
+end
+
+local function override_development_parameter_func(parameters)
+	local function development_parameter(param)
+		return parameters[param]
+	end
+
+	Development.parameter = development_parameter
 end
 
 local DEMO_MODE = false
@@ -81,15 +90,13 @@ for _, arg in pairs(args) do
 
 	if arg == "-benchmark-mode" then
 		LAUNCH_MODE = "attract_benchmark"
-
-		Development.set_parameter("attract_mode", true)
-
 		BenchmarkSettings.attract_benchmark = true
 		BenchmarkSettings.parameters.hide_fps = false
 		BenchmarkSettings.parameters.show_fps = true
+		BenchmarkSettings.parameters.attract_mode = true
 
-		setup_parameters(BenchmarkSettings.parameters)
 		override_display_name(BenchmarkSettings.benchmark_mode_settings)
+		override_development_parameter_func(BenchmarkSettings.parameters)
 
 		break
 	end

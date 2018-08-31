@@ -112,11 +112,11 @@ local rewards_lookup = {
 	complete_all_helmgart_levels_legend_bw_scholar = "skin_bw_scholar_black_and_gold",
 	complete_all_helmgart_levels_champion_dr_ironbreaker = "skin_dr_ironbreaker_crimson",
 	complete_all_helmgart_levels_champion_dr_ranger = "skin_dr_ranger_karak_norn",
-	catacombs_stay_inside_ritual_pool = "loot_chest_04_06",
+	catacombs_stay_inside_ritual_pool = "level_chest",
 	complete_all_helmgart_levels_veteran_wh_bountyhunter = "frame_0073",
 	complete_all_helmgart_levels_veteran_dr_ironbreaker = "frame_0055",
 	complete_all_helmgart_levels_recruit_we_waywatcher = "frame_0057",
-	complete_100_missions_champion_bw_scholar = "scholar_hat_0005",
+	complete_100_missions_champion_bw_scholar = "level_chest",
 	complete_all_helmgart_levels_veteran_bw_scholar = "frame_0079",
 	complete_all_helmgart_levels_veteran_bw_adept = "frame_0078",
 	complete_all_helmgart_levels_champion_bw_scholar = "skin_bw_scholar_ostermark",
@@ -139,20 +139,20 @@ local rewards_lookup = {
 	complete_all_helmgart_levels_recruit_we_shade = "frame_0059",
 	complete_all_helmgart_levels_champion_wh_captain = "skin_wh_captain_ostland",
 	complete_all_helmgart_levels_legend_wh_bountyhunter = "skin_wh_bountyhunter_black_and_gold",
-	warcamp_bodvarr_charge_warriors = "loot_chest_04_06",
+	warcamp_bodvarr_charge_warriors = "level_chest",
 	complete_all_helmgart_levels_recruit_dr_ironbreaker = "frame_0052",
 	complete_all_helmgart_levels_recruit_wh_bountyhunter = "frame_0070",
 	complete_all_helmgart_levels_champion_es_knight = "skin_es_knight_red",
 	complete_all_helmgart_levels_recruit_bw_scholar = "frame_0076",
-	complete_100_missions_champion_dr_ironbreaker = "ironbreaker_hat_0013",
+	complete_100_missions_champion_dr_ironbreaker = "level_chest",
 	complete_all_helmgart_levels_all_careers_veteran = "frame_0036",
 	complete_all_helmgart_levels_all_careers_champion = "frame_0037",
 	complete_100_missions_champion_es_knight = "knight_hat_0005",
 	complete_100_missions_champion_dr_ranger = "ranger_hat_0004",
-	complete_100_missions_champion_es_mercenary = "mercenary_hat_0007",
+	complete_100_missions_champion_es_mercenary = "level_chest",
 	complete_100_missions_champion_dr_slayer = "level_chest",
 	complete_all_helmgart_levels_champion_bw_unchained = "skin_bw_unchained_ostermark",
-	complete_100_missions_champion_we_maidenguard = "maidenguard_hat_0010",
+	complete_100_missions_champion_we_maidenguard = "maidenguard_hat_0003",
 	complete_100_missions_champion_we_shade = "shade_hat_0003",
 	complete_100_missions_champion_wh_captain = "witchhunter_hat_0002",
 	complete_100_missions_champion_wh_bountyhunter = "bountyhunter_hat_0003",
@@ -175,30 +175,30 @@ local rewards_lookup = {
 	complete_deeds_7 = "frame_0012",
 	complete_all_helmgart_levels_recruit_es_mercenary = "frame_0063",
 	complete_all_helmgart_levels_veteran_we_shade = "frame_0062",
-	farmlands_rescue_prisoners_timed = "loot_chest_04_06",
+	farmlands_rescue_prisoners_timed = "level_chest",
 	complete_all_helmgart_levels_recruit_wh_zealot = "frame_0071",
-	ground_zero_burblespew_tornado_enemies = "loot_chest_04_06",
+	ground_zero_burblespew_tornado_enemies = "level_chest",
 	complete_all_helmgart_levels_legend_es_mercenary = "skin_es_mercenary_black_and_gold",
-	fort_kill_enemies_cannonball = "loot_chest_04_06",
-	elven_ruins_align_leylines_timed = "loot_chest_04_06",
-	nurgle_player_showered_in_pus = "loot_chest_04_06",
+	fort_kill_enemies_cannonball = "level_chest",
+	elven_ruins_align_leylines_timed = "level_chest",
+	nurgle_player_showered_in_pus = "level_chest",
 	complete_all_helmgart_levels_recruit_es_huntsman = "frame_0064",
-	ussingen_no_event_barrels = "loot_chest_04_06",
+	ussingen_no_event_barrels = "level_chest",
 	complete_all_helmgart_levels_legend_bw_adept = "skin_bw_adept_black_and_gold",
 	complete_all_helmgart_levels_recruit_bw_adept = "frame_0075",
 	complete_all_helmgart_levels_legend_we_shade = "skin_ww_shade_black_and_gold",
 	complete_deeds_6 = "frame_0011",
-	skaven_stronghold_skarrik_kill_skaven = "loot_chest_04_06",
+	skaven_stronghold_skarrik_kill_skaven = "level_chest",
 	complete_all_helmgart_levels_legend_dr_slayer = "skin_dr_slayer_dragon",
-	bell_destroy_bell_flee_timed = "loot_chest_04_06",
-	skittergate_deathrattler_rasknitt_timed = "loot_chest_04_06",
+	bell_destroy_bell_flee_timed = "level_chest",
+	skittergate_deathrattler_rasknitt_timed = "level_chest",
 	complete_all_helmgart_level_achievements = "frame_0081",
 	complete_all_helmgart_levels_legend_dr_ranger = "skin_dr_ranger_black_and_gold",
 	complete_all_helmgart_levels_veteran_es_mercenary = "frame_0066",
 	complete_all_helmgart_levels_champion_we_shade = "skin_ww_shade_crimson",
 	kill_bodvarr_burblespew_recruit = "level_chest",
 	complete_deeds_5 = "frame_0010",
-	complete_100_missions_champion_wh_zealot = "level_chest",
+	complete_100_missions_champion_wh_zealot = "zealot_hat_0003",
 	kill_bodvarr_burblespew_champion = "level_chest",
 	kill_bodvarr_burblespew_veteran = "level_chest",
 	complete_all_helmgart_levels_champion_dr_slayer = "skin_dr_slayer_runes",
@@ -207,14 +207,14 @@ local rewards_lookup = {
 	kill_skarrik_rasknitt_veteran = "level_chest",
 	kill_skarrik_rasknitt_champion = "level_chest",
 	kill_skarrik_rasknitt_legend = "level_chest",
-	military_kill_chaos_warriors_in_event = "loot_chest_04_06",
+	military_kill_chaos_warriors_in_event = "level_chest",
 	complete_all_helmgart_levels_veteran_we_maidenguard = "frame_0061",
-	complete_100_missions_champion_es_huntsman = "huntsman_hat_0009",
+	complete_100_missions_champion_es_huntsman = "level_chest",
 	complete_deeds_2 = "frame_0007",
 	complete_all_helmgart_levels_champion_wh_zealot = "skin_wh_zealot_crimson",
 	complete_all_helmgart_levels_legend_we_maidenguard = "skin_ww_maidenguard_black_and_gold",
 	complete_all_helmgart_levels_recruit_dr_ranger = "frame_0051",
-	mines_kill_final_troll_timed = "loot_chest_04_06",
+	mines_kill_final_troll_timed = "level_chest",
 	complete_all_helmgart_levels_champion_we_maidenguard = "skin_ww_maidenguard_red_and_yellow",
 	complete_100_missions_champion_we_waywatcher = "level_chest",
 	complete_all_helmgart_levels_legend_we_waywatcher = "skin_ww_waywatcher_black_and_gold",
@@ -1001,7 +1001,6 @@ achievement_templates.achievements.equip_veteran_quality = {
 achievement_templates.achievements.equip_all_veteran_quality = {
 	reward = "level_chest",
 	name = "achv_equip_all_veteran_quality_name",
-	icon = "achievement_trophy_equip_all_veteran_quality",
 	desc = "achv_equip_all_veteran_quality_desc",
 	completed = function (statistics_db, stats_id)
 		local items = equipped_items_of_rarity(statistics_db, stats_id, "unique")
@@ -1105,7 +1104,6 @@ for i, limit in ipairs(achievement_templates.completed_deed_limits) do
 		desc = function ()
 			return string.format(Localize("achv_complete_deeds_desc"), limit)
 		end,
-		icon = "achievement_trophy_deeds_" .. i,
 		reward = rewards_lookup[id],
 		completed = function (statistics_db, stats_id)
 			return limit <= statistics_db:get_persistent_stat(stats_id, "completed_heroic_deeds")
@@ -1243,7 +1241,6 @@ for career, _ in pairs(CareerSettings) do
 		achievement_templates.achievements[id] = {
 			name = "achv_complete_100_missions_champion_" .. career .. "_name",
 			desc = "achv_complete_100_missions_champion_" .. career .. "_desc",
-			icon = "achievement_trophy_100_missions_champion_" .. career,
 			reward = rewards_lookup[id],
 			completed = function (statistics_db, stats_id)
 				local wins = 0
@@ -1278,7 +1275,6 @@ end
 
 achievement_templates.achievements.elven_ruins_align_leylines_timed = {
 	name = "achv_elven_ruins_align_leylines_timed_name",
-	icon = "achievement_trophy_elven_ruins_align_leylines_timed",
 	desc = function ()
 		return string.format(Localize("achv_elven_ruins_align_leylines_timed_desc"), QuestSettings.elven_ruins_speed_event)
 	end,
@@ -1289,7 +1285,6 @@ achievement_templates.achievements.elven_ruins_align_leylines_timed = {
 }
 achievement_templates.achievements.farmlands_rescue_prisoners_timed = {
 	name = "achv_farmlands_rescue_prisoners_timed_name",
-	icon = "achievement_trophy_farmlands_rescue_prisoners_timed",
 	desc = function ()
 		return string.format(Localize("achv_farmlands_rescue_prisoners_timed_desc"), QuestSettings.farmlands_speed_event)
 	end,
@@ -1300,7 +1295,6 @@ achievement_templates.achievements.farmlands_rescue_prisoners_timed = {
 }
 achievement_templates.achievements.military_kill_chaos_warriors_in_event = {
 	name = "achv_military_kill_chaos_warriors_in_event_name",
-	icon = "achievement_trophy_military_kill_chaos_warriors_in_event",
 	desc = function ()
 		return string.format(Localize("achv_military_kill_chaos_warriors_in_event_desc"), 3)
 	end,
@@ -1311,7 +1305,6 @@ achievement_templates.achievements.military_kill_chaos_warriors_in_event = {
 }
 achievement_templates.achievements.ground_zero_burblespew_tornado_enemies = {
 	name = "achv_ground_zero_burblespew_tornado_enemies_name",
-	icon = "achievement_trophy_ground_zero_burblespew_tornado_enemies",
 	desc = function ()
 		return string.format(Localize("achv_ground_zero_burblespew_tornado_enemies_desc"), QuestSettings.halescourge_tornado_enemies)
 	end,
@@ -1322,7 +1315,6 @@ achievement_templates.achievements.ground_zero_burblespew_tornado_enemies = {
 }
 achievement_templates.achievements.fort_kill_enemies_cannonball = {
 	name = "achv_fort_kill_enemies_cannonball_name",
-	icon = "achievement_trophy_fort_kill_enemies_cannonball",
 	desc = function ()
 		return string.format(Localize("achv_fort_kill_enemies_cannonball_desc"), QuestSettings.forest_fort_kill_cannonball)
 	end,
@@ -1333,7 +1325,6 @@ achievement_templates.achievements.fort_kill_enemies_cannonball = {
 }
 achievement_templates.achievements.nurgle_player_showered_in_pus = {
 	name = "achv_nurgle_player_showered_in_pus_name",
-	icon = "achievement_trophy_nurgle_player_showered_in_pus",
 	desc = function ()
 		return string.format(Localize("achv_nurgle_player_showered_in_pus_desc"), QuestSettings.nurgle_bathed_all)
 	end,
@@ -1344,7 +1335,6 @@ achievement_templates.achievements.nurgle_player_showered_in_pus = {
 }
 achievement_templates.achievements.bell_destroy_bell_flee_timed = {
 	name = "achv_bell_destroy_bell_flee_timed_name",
-	icon = "achievement_trophy_bell_destroy_bell_flee_timed",
 	desc = function ()
 		return string.format(Localize("achv_bell_destroy_bell_flee_timed_desc"), QuestSettings.bell_speed_event)
 	end,
@@ -1355,7 +1345,6 @@ achievement_templates.achievements.bell_destroy_bell_flee_timed = {
 }
 achievement_templates.achievements.catacombs_stay_inside_ritual_pool = {
 	name = "achv_catacombs_stay_inside_ritual_pool_name",
-	icon = "achievement_trophy_catacombs_stay_inside_ritual_pool",
 	desc = function ()
 		return string.format(Localize("achv_catacombs_stay_inside_ritual_pool_desc"), QuestSettings.volume_corpse_pit_damage)
 	end,
@@ -1366,7 +1355,6 @@ achievement_templates.achievements.catacombs_stay_inside_ritual_pool = {
 }
 achievement_templates.achievements.mines_kill_final_troll_timed = {
 	name = "achv_mines_kill_final_troll_timed_name",
-	icon = "achievement_trophy_mines_kill_final_troll_timed",
 	desc = function ()
 		return string.format(Localize("achv_mines_kill_final_troll_timed_desc"), QuestSettings.mines_speed_event)
 	end,
@@ -1377,7 +1365,6 @@ achievement_templates.achievements.mines_kill_final_troll_timed = {
 }
 achievement_templates.achievements.warcamp_bodvarr_charge_warriors = {
 	name = "achv_warcamp_bodvarr_charge_warriors_name",
-	icon = "achievement_trophy_warcamp_bodvarr_charge_warriors",
 	desc = function ()
 		return string.format(Localize("achv_warcamp_bodvarr_charge_warriors_desc"), QuestSettings.exalted_champion_charge_chaos_warrior)
 	end,
@@ -1388,7 +1375,6 @@ achievement_templates.achievements.warcamp_bodvarr_charge_warriors = {
 }
 achievement_templates.achievements.skaven_stronghold_skarrik_kill_skaven = {
 	name = "achv_skaven_stronghold_skarrik_kill_skaven_name",
-	icon = "achievement_trophy_skaven_stronghold_skarrik_kill_skaven",
 	desc = function ()
 		return string.format(Localize("achv_skaven_stronghold_skarrik_kill_skaven_desc"), QuestSettings.storm_vermin_warlord_kills_enemies)
 	end,
@@ -1399,7 +1385,6 @@ achievement_templates.achievements.skaven_stronghold_skarrik_kill_skaven = {
 }
 achievement_templates.achievements.ussingen_no_event_barrels = {
 	name = "achv_ussingen_no_event_barrels_name",
-	icon = "achievement_trophy_ussingen_no_event_barrels",
 	desc = "achv_ussingen_no_event_barrels_desc",
 	reward = rewards_lookup.ussingen_no_event_barrels,
 	completed = function (statistics_db, stats_id)
@@ -1408,7 +1393,6 @@ achievement_templates.achievements.ussingen_no_event_barrels = {
 }
 achievement_templates.achievements.skittergate_deathrattler_rasknitt_timed = {
 	name = "achv_skittergate_deathrattler_rasknitt_timed_name",
-	icon = "achievement_trophy_skittergate_deathrattler_rasknitt_timed",
 	desc = function ()
 		return string.format(Localize("achv_skittergate_deathrattler_rasknitt_timed_desc"), QuestSettings.skittergate_speed_event)
 	end,
@@ -1434,7 +1418,6 @@ local helmgart_level_name_stats = {
 }
 achievement_templates.achievements.complete_all_helmgart_level_achievements = {
 	name = "achv_complete_all_helmgart_level_achievements_name",
-	icon = "achievement_trophy_complete_all_helmgart_level_achievements",
 	desc = "achv_complete_all_helmgart_level_achievements_desc",
 	reward = rewards_lookup.complete_all_helmgart_level_achievements,
 	completed = function (statistics_db, stats_id)
@@ -1488,7 +1471,6 @@ for difficulty_id, difficulty_name in pairs(achievement_templates.difficulties) 
 	achievement_templates.achievements[id] = {
 		name = "achv_kill_bodvarr_burblespew_" .. difficulty_name .. "_name",
 		desc = "achv_kill_bodvarr_burblespew_" .. difficulty_name .. "_desc",
-		icon = "achievement_trophy_kill_bodvarr_burblespew_" .. difficulty_name,
 		reward = rewards_lookup[id],
 		completed = function (statistics_db, stats_id)
 			local champion_completed = difficulty_rank <= statistics_db:get_persistent_stat(stats_id, "kill_chaos_exalted_champion_difficulty_rank")
@@ -1516,7 +1498,6 @@ for difficulty_id, difficulty_name in pairs(achievement_templates.difficulties) 
 	achievement_templates.achievements[id] = {
 		name = "achv_kill_skarrik_rasknitt_" .. difficulty_name .. "_name",
 		desc = "achv_kill_skarrik_rasknitt_" .. difficulty_name .. "_desc",
-		icon = "achievement_trophy_kill_skarrik_rasknitt_" .. difficulty_name,
 		reward = rewards_lookup[id],
 		completed = function (statistics_db, stats_id)
 			local gray_seer_completed = difficulty_rank <= statistics_db:get_persistent_stat(stats_id, "kill_skaven_grey_seer_difficulty_rank")

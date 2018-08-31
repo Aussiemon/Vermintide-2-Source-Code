@@ -32,7 +32,7 @@ BTPackMasterDragAction.enter = function (self, unit, blackboard, t)
 	local walk_speed = blackboard.breed.walk_speed
 	local navigation_extension = blackboard.navigation_extension
 
-	navigation_extension:set_max_speed(walk_speed)
+	navigation_extension:set_max_speed(action.override_movement_speed or walk_speed)
 	AiUtils.allow_smart_object_layers(navigation_extension, false)
 
 	blackboard.destination_test_astar = GwNavAStar.create()
@@ -218,7 +218,7 @@ BTPackMasterDragAction.run = function (self, unit, blackboard, t, dt)
 	if blackboard.time_to_damage < t then
 		local action = blackboard.action
 
-		DamageUtils.add_damage_network(drag_target_unit, unit, action.damage_amount, action.hit_zone_name, action.damage_type, Vector3.up(), blackboard.breed.name, nil, nil, nil, action.hit_react_type)
+		DamageUtils.add_damage_network(drag_target_unit, unit, action.damage_amount, action.hit_zone_name, action.damage_type, nil, Vector3.up(), blackboard.breed.name, nil, nil, nil, action.hit_react_type)
 
 		blackboard.time_to_damage = t + action.time_to_damage
 	end

@@ -112,7 +112,7 @@ TelemetryEvents.fatigue_gained = function (self, player, position, fatigue_type,
 	params.fatigue_type = fatigue_type
 	params.block_breaking = block_breaking
 
-	self.manager:register_event("fatigue_gain", params)
+	self.manager:register_event("fatigue_gained", params)
 end
 
 TelemetryEvents.matchmaking_connection = function (self, player, connection_state, time_taken, strict_matchmaking)
@@ -337,12 +337,13 @@ TelemetryEvents.player_used_item = function (self, player, item_name, position)
 	self.manager:register_event("player_used_item", params)
 end
 
-TelemetryEvents.tech_settings = function (self, resolution, graphics_quality, screen_mode)
+TelemetryEvents.tech_settings = function (self, resolution, graphics_quality, screen_mode, rendering_backend)
 	table.clear(params)
 
 	params.resolution = resolution
 	params.graphics_quality = graphics_quality
 	params.screen_mode = screen_mode
+	params.rendering_backend = rendering_backend
 
 	self.manager:register_event("tech_settings", params)
 end

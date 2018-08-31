@@ -1,4 +1,5 @@
 local ai_locomotion_name = (_G.GameSettingsDevelopment and GameSettingsDevelopment.use_engine_optimized_ai_locomotion and "AILocomotionExtensionC") or "AILocomotionExtension"
+local eye_tracking_name = (PLATFORM == "win32" and "PlayerEyeTrackingExtension") or nil
 local unit_templates = {
 	player_unit_3rd = {
 		go_type = "player_unit",
@@ -17,7 +18,6 @@ local unit_templates = {
 			"GenericDeathExtension",
 			"PlayerUnitLocomotionExtension",
 			"PlayerUnitFirstPerson",
-			"PlayerEyeTrackingExtension",
 			"GenericUnitAimExtension",
 			"PlayerHud",
 			"PlayerUnitAttachmentExtension",
@@ -37,7 +37,8 @@ local unit_templates = {
 			"PlayerUnitSmartTargetingExtension",
 			"PlayerUnitOverchargeExtension",
 			"PlayerSoundEffectExtension",
-			"PlayerUnitVisualEffectsExtension"
+			"PlayerUnitVisualEffectsExtension",
+			eye_tracking_name
 		},
 		self_owned_extensions_server = {
 			"PlayerInputExtension",
@@ -54,7 +55,6 @@ local unit_templates = {
 			"GenericDeathExtension",
 			"PlayerUnitLocomotionExtension",
 			"PlayerUnitFirstPerson",
-			"PlayerEyeTrackingExtension",
 			"GenericUnitAimExtension",
 			"PlayerHud",
 			"PlayerUnitAttachmentExtension",
@@ -79,7 +79,8 @@ local unit_templates = {
 			"PlayerUnitSmartTargetingExtension",
 			"PlayerUnitOverchargeExtension",
 			"PlayerSoundEffectExtension",
-			"PlayerUnitVisualEffectsExtension"
+			"PlayerUnitVisualEffectsExtension",
+			eye_tracking_name
 		},
 		husk_extensions = {
 			"SimpleHuskInventoryExtension",
@@ -105,6 +106,7 @@ local unit_templates = {
 			"PingTargetExtension",
 			"PlayerUnitFadeExtension",
 			"PlayerUnitDarknessExtension",
+			"PlayerHuskOverchargeExtension",
 			"PlayerHuskVisualEffectsExtension"
 		},
 		husk_extensions_server = {
@@ -138,6 +140,7 @@ local unit_templates = {
 			"PingTargetExtension",
 			"PlayerUnitFadeExtension",
 			"PlayerUnitDarknessExtension",
+			"PlayerHuskOverchargeExtension",
 			"PlayerHuskVisualEffectsExtension"
 		}
 	},
@@ -243,6 +246,7 @@ local unit_templates = {
 			"PingTargetExtension",
 			"PlayerUnitFadeExtension",
 			"PlayerUnitDarknessExtension",
+			"PlayerHuskOverchargeExtension",
 			"PlayerHuskVisualEffectsExtension"
 		},
 		husk_extensions_server = {
@@ -275,6 +279,7 @@ local unit_templates = {
 			"PingTargetExtension",
 			"PlayerUnitFadeExtension",
 			"PlayerUnitDarknessExtension",
+			"PlayerHuskOverchargeExtension",
 			"PlayerHuskVisualEffectsExtension"
 		}
 	},
@@ -343,6 +348,7 @@ local unit_templates = {
 			"PlayerUnitFadeExtension",
 			"PlayerUnitCosmeticExtension",
 			"PlayerUnitDarknessExtension",
+			"PlayerHuskOverchargeExtension",
 			"PlayerHuskVisualEffectsExtension"
 		}
 	},
@@ -989,6 +995,7 @@ local unit_templates = {
 			"GenericDeathExtension",
 			"AIProximityExtension",
 			"BuffExtension",
+			"AIGroupMember",
 			"ProjectileLinkerExtension",
 			"DialogueActorExtension",
 			"AIVolumeExtension",
@@ -1105,12 +1112,10 @@ local unit_templates = {
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
-				"PingTargetExtension",
-				"GenericHitReactionExtension"
+				"PingTargetExtension"
 			},
 			husk_extensions = {
-				"PingTargetExtension",
-				"GenericHitReactionExtension"
+				"PingTargetExtension"
 			}
 		}
 	},
@@ -1130,13 +1135,11 @@ local unit_templates = {
 		remove_when_killed = {
 			self_owned_extensions = {
 				"PingTargetExtension",
-				"CorruptorBeamExtension",
-				"GenericHitReactionExtension"
+				"CorruptorBeamExtension"
 			},
 			husk_extensions = {
 				"PingTargetExtension",
-				"CorruptorBeamExtension",
-				"GenericHitReactionExtension"
+				"CorruptorBeamExtension"
 			}
 		}
 	},
@@ -1153,12 +1156,10 @@ local unit_templates = {
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
-				"PingTargetExtension",
-				"GenericHitReactionExtension"
+				"PingTargetExtension"
 			},
 			husk_extensions = {
-				"PingTargetExtension",
-				"GenericHitReactionExtension"
+				"PingTargetExtension"
 			}
 		}
 	},
@@ -1367,6 +1368,13 @@ local unit_templates = {
 			"GenericImpactProjectileUnitExtension",
 			"AreaDamageExtension"
 		}
+	},
+	timed_explosion_unit = {
+		go_type = "timed_explosion_unit",
+		self_owned_extensions = {
+			"TimedExplosionExtension"
+		},
+		husk_extensions = {}
 	},
 	liquid_aoe_unit = {
 		go_type = "liquid_aoe_unit",
@@ -1675,6 +1683,13 @@ local unit_templates = {
 		self_owned_extensions = {},
 		husk_extensions = {}
 	},
+	buff_aoe_unit = {
+		go_type = "buff_aoe_unit",
+		self_owned_extensions = {
+			"BuffAreaExtension"
+		},
+		husk_extensions = {}
+	},
 	thrown_weapon_unit = {
 		go_type = "thrown_weapon_unit",
 		self_owned_extensions = {},
@@ -1938,7 +1953,7 @@ for unit_template_name, template_data in pairs(unit_templates) do
 	end
 end
 
-unit_templates.get_extensions = function (unit, unit_template_name, is_husk, is_server)
+unit_templates.get_extensions = function (unit_template_name, is_husk, is_server)
 	local extensions, num_extensions = nil
 	local template = unit_templates[unit_template_name]
 
@@ -1983,10 +1998,6 @@ unit_templates.extensions_to_remove_on_death = function (unit_template_name, is_
 	else
 		num_extensions = remove_when_killed.num_self_owned_extensions
 		extensions = remove_when_killed.self_owned_extensions
-	end
-
-	if type(extensions) ~= "table" or type(num_extensions) ~= "number" then
-		slot6 = 1
 	end
 
 	return extensions, num_extensions

@@ -81,8 +81,12 @@ ChatManager.init = function (self)
 	elseif not rawget(_G, "Steam") then
 		GameSettingsDevelopment.use_global_chat = false
 
-		Application.error("[ChatManager] DISABLING GLOBAL CHAT - STEAM NOT ENABLED")
+		Application.warning("[ChatManager] DISABLING GLOBAL CHAT - STEAM NOT ENABLED")
 	end
+end
+
+ChatManager.update_ignore_list = function (self)
+	self.peer_ignore_list = SaveData.chat_ignore_list or self.peer_ignore_list
 end
 
 ChatManager.cb_encrypted_app_ticket_recieved = function (self, info)
@@ -349,7 +353,7 @@ end
 ChatManager.ignore_peer_id = function (self, peer_id)
 	self.peer_ignore_list[peer_id] = true
 
-	if rawget(_G, "Steam") then
+	if rawget(_G, "Steam") or PLATFORM == "xb1" then
 		SaveData.chat_ignore_list = self.peer_ignore_list
 
 		Managers.save:auto_save(SaveFileName, SaveData, nil)
@@ -359,7 +363,7 @@ end
 ChatManager.remove_ignore_peer_id = function (self, peer_id)
 	self.peer_ignore_list[peer_id] = nil
 
-	if rawget(_G, "Steam") then
+	if rawget(_G, "Steam") or PLATFORM == "xb1" then
 		SaveData.chat_ignore_list = self.peer_ignore_list
 
 		Managers.save:auto_save(SaveFileName, SaveData, nil)
@@ -425,7 +429,7 @@ ChatManager.update = function (self, dt, t, menu_active, menu_input_service, no_
 	end
 end
 
-ChatManager.send_chat_message = function (self, channel_id, message, recent_message_index, optional_message_type, optional_message_target)
+ChatManager.send_chat_message = function (self, channel_id, local_player_id, message, recent_message_index, optional_message_type, optional_message_target)
 	local command, parameters, context_data = self:_handle_command(message, recent_message_index, optional_message_target)
 
 	if command then
@@ -437,8 +441,8 @@ ChatManager.send_chat_message = function (self, channel_id, message, recent_mess
 	local localization_param = ""
 	local is_system_message = false
 	local pop_chat = true
-	local my_peer_id = self.my_peer_id
-	local is_dev = SteamHelper.is_dev(my_peer_id)
+	local peer_id = self.my_peer_id
+	local is_dev = SteamHelper.is_dev(peer_id) and local_player_id == 1
 	local message_target_info = self.message_targets[self.current_message_target_index]
 	local message_type = optional_message_type or message_target_info.message_target_type
 	local message_target = optional_message_target or message_target_info.message_target
@@ -448,28 +452,28 @@ ChatManager.send_chat_message = function (self, channel_id, message, recent_mess
 			local members = self:channel_members(channel_id)
 
 			for _, member in pairs(members) do
-				if member ~= my_peer_id then
-					RPC.rpc_chat_message(member, channel_id, my_peer_id, message, localization_param, is_system_message, pop_chat, is_dev)
+				if member ~= self.my_peer_id then
+					RPC.rpc_chat_message(member, channel_id, peer_id, local_player_id, message, localization_param, is_system_message, pop_chat, is_dev)
 				end
 			end
 		else
 			local host_peer_id = self.host_peer_id
 
 			if host_peer_id then
-				RPC.rpc_chat_message(host_peer_id, channel_id, my_peer_id, message, localization_param, is_system_message, pop_chat, is_dev)
+				RPC.rpc_chat_message(host_peer_id, channel_id, peer_id, local_player_id, message, localization_param, is_system_message, pop_chat, is_dev)
 			end
 		end
 	elseif message_type == Irc.CHANNEL_MSG or message_type == Irc.PRIVATE_MSG then
 		Managers.irc:send_message(message, message_target)
 
 		if rawget(_G, "Steam") then
-			my_peer_id = Steam.user_name()
+			peer_id = Steam.user_name()
 		end
 
 		if message_type == Irc.CHANNEL_MSG then
-			my_peer_id = "[" .. message_target .. "] " .. my_peer_id
+			peer_id = "[" .. message_target .. "] " .. peer_id
 		elseif message_type == Irc.PRIVATE_MSG then
-			my_peer_id = "To [" .. message_target .. "]"
+			peer_id = "To [" .. message_target .. "]"
 		end
 	end
 
@@ -483,7 +487,7 @@ ChatManager.send_chat_message = function (self, channel_id, message, recent_mess
 		end
 	end
 
-	self:_add_message_to_list(channel_id, my_peer_id, message, is_system_message, pop_chat, is_dev, message_type)
+	self:_add_message_to_list(channel_id, peer_id, local_player_id, message, is_system_message, pop_chat, is_dev, message_type)
 end
 
 ChatManager.send_system_chat_message_to_all_except = function (self, channel_id, message_id, localization_param, excluded_peer_id, pop_chat)
@@ -499,21 +503,21 @@ ChatManager.send_system_chat_message_to_all_except = function (self, channel_id,
 
 		for _, member in pairs(members) do
 			if member ~= my_peer_id and member ~= excluded_peer_id then
-				RPC.rpc_chat_message(member, channel_id, excluded_peer_id, message_id, localization_param, is_system_message, pop_chat, is_dev)
+				RPC.rpc_chat_message(member, channel_id, excluded_peer_id, 0, message_id, localization_param, is_system_message, pop_chat, is_dev)
 			end
 		end
 	else
 		local host_peer_id = self.host_peer_id
 
 		if host_peer_id then
-			RPC.rpc_chat_message(host_peer_id, channel_id, excluded_peer_id, message_id, localization_param, is_system_message, pop_chat, is_dev)
+			RPC.rpc_chat_message(host_peer_id, channel_id, excluded_peer_id, 0, message_id, localization_param, is_system_message, pop_chat, is_dev)
 		end
 	end
 
 	local message_sender = "System"
 	local message = string.format(Localize(message_id), localization_param)
 
-	self:_add_message_to_list(channel_id, message_sender, message, is_system_message, pop_chat, is_dev)
+	self:_add_message_to_list(channel_id, message_sender, 0, message, is_system_message, pop_chat, is_dev)
 end
 
 ChatManager.send_system_chat_message = function (self, channel_id, message_id, localization_param, pop_chat)
@@ -529,21 +533,21 @@ ChatManager.send_system_chat_message = function (self, channel_id, message_id, l
 
 		for _, member in pairs(members) do
 			if member ~= my_peer_id then
-				RPC.rpc_chat_message(member, channel_id, my_peer_id, message_id, localization_param, is_system_message, pop_chat, is_dev)
+				RPC.rpc_chat_message(member, channel_id, my_peer_id, 0, message_id, localization_param, is_system_message, pop_chat, is_dev)
 			end
 		end
 	else
 		local host_peer_id = self.host_peer_id
 
 		if host_peer_id then
-			RPC.rpc_chat_message(host_peer_id, channel_id, my_peer_id, message_id, localization_param, is_system_message, pop_chat, is_dev)
+			RPC.rpc_chat_message(host_peer_id, channel_id, my_peer_id, 0, message_id, localization_param, is_system_message, pop_chat, is_dev)
 		end
 	end
 
 	local message_sender = "System"
 	local message = string.format(Localize(message_id), localization_param)
 
-	self:_add_message_to_list(channel_id, message_sender, message, is_system_message, pop_chat, is_dev)
+	self:_add_message_to_list(channel_id, message_sender, 0, message, is_system_message, pop_chat, is_dev)
 end
 
 ChatManager.add_local_system_message = function (self, channel_id, message, pop_chat)
@@ -551,7 +555,7 @@ ChatManager.add_local_system_message = function (self, channel_id, message, pop_
 	local is_system_message = true
 	local is_dev = false
 
-	self:_add_message_to_list(channel_id, message_sender, message, is_system_message, pop_chat, is_dev)
+	self:_add_message_to_list(channel_id, message_sender, 0, message, is_system_message, pop_chat, is_dev)
 end
 
 ChatManager.add_irc_message = function (self, message_type, username, message, parameter, context)
@@ -571,26 +575,26 @@ ChatManager.add_irc_message = function (self, message_type, username, message, p
 			self:add_message_target(username, message_type)
 		end
 
-		self:_add_message_to_list(channel_id, username, message, nil, true, false, message_type, link_data, data)
+		self:_add_message_to_list(channel_id, username, 0, message, nil, true, false, message_type, link_data, data)
 	elseif message_type == Irc.CHANNEL_MSG then
 		local link_data = context
 
-		self:_add_message_to_list(channel_id, username, message, nil, true, false, message_type, link_data, data)
+		self:_add_message_to_list(channel_id, username, 0, message, nil, true, false, message_type, link_data, data)
 	elseif message_type == Irc.SYSTEM_MSG then
-		self:_add_message_to_list(channel_id, "System", message, nil, true, false, message_type, nil, data)
+		self:_add_message_to_list(channel_id, "System", 0, message, nil, true, false, message_type, nil, data)
 	elseif message_type == Irc.JOIN_MSG then
 		if username == Managers.irc:user_name() then
-			self:_add_message_to_list(channel_id, "System", message, nil, true, false, Irc.SYSTEM_MSG, nil, data)
+			self:_add_message_to_list(channel_id, "System", 0, message, nil, true, false, Irc.SYSTEM_MSG, nil, data)
 			self:add_message_target(parameter, Irc.CHANNEL_MSG)
 		else
-			self:_add_message_to_list(channel_id, "System", message, nil, true, false, Irc.SYSTEM_MSG, nil, data)
+			self:_add_message_to_list(channel_id, "System", 0, message, nil, true, false, Irc.SYSTEM_MSG, nil, data)
 		end
 	elseif message_type == Irc.LEAVE_MSG then
 		if username == Managers.irc:user_name() then
-			self:_add_message_to_list(channel_id, "System", message, nil, true, false, Irc.SYSTEM_MSG, nil, data)
+			self:_add_message_to_list(channel_id, "System", 0, message, nil, true, false, Irc.SYSTEM_MSG, nil, data)
 			self:remove_message_target(parameter)
 		else
-			self:_add_message_to_list(channel_id, "System", message, nil, true, false, Irc.SYSTEM_MSG, nil, data)
+			self:_add_message_to_list(channel_id, "System", 0, message, nil, true, false, Irc.SYSTEM_MSG, nil, data)
 		end
 	end
 end
@@ -621,12 +625,8 @@ ChatManager.has_channel = function (self, channel_id)
 	return self.channels[channel_id] and true
 end
 
-ChatManager.rpc_chat_message = function (self, sender, channel_id, message_sender, message, localization_param, is_system_message, pop_chat, is_dev)
+ChatManager.rpc_chat_message = function (self, sender, channel_id, message_sender, local_player_id, message, localization_param, is_system_message, pop_chat, is_dev)
 	if not self:has_channel(channel_id) then
-		return
-	end
-
-	if self.peer_ignore_list[sender] then
 		return
 	end
 
@@ -636,26 +636,27 @@ ChatManager.rpc_chat_message = function (self, sender, channel_id, message_sende
 
 		for _, member in pairs(members) do
 			if member ~= my_peer_id and member ~= sender then
-				RPC.rpc_chat_message(member, channel_id, message_sender, message, localization_param, is_system_message, pop_chat, is_dev)
+				RPC.rpc_chat_message(member, channel_id, message_sender, local_player_id, message, localization_param, is_system_message, pop_chat, is_dev)
 			end
 		end
 	end
 
-	if self:is_channel_member(channel_id) then
+	if self:is_channel_member(channel_id) and not self.peer_ignore_list[sender] then
 		if is_system_message then
 			message_sender = "System"
 			message = string.format(Localize(message), localization_param)
 		end
 
-		self:_add_message_to_list(channel_id, message_sender, message, is_system_message, pop_chat, is_dev)
+		self:_add_message_to_list(channel_id, message_sender, local_player_id, message, is_system_message, pop_chat, is_dev)
 	end
 end
 
-ChatManager._add_message_to_list = function (self, channel_id, message_sender, message, is_system_message, pop_chat, is_dev, message_type, link, data)
+ChatManager._add_message_to_list = function (self, channel_id, message_sender, local_player_id, message, is_system_message, pop_chat, is_dev, message_type, link, data)
 	local global_messages = self.global_messages
 	global_messages[#global_messages + 1] = {
 		channel_id = channel_id,
 		message_sender = message_sender,
+		local_player_id = local_player_id,
 		message = message,
 		type = message_type or (is_system_message and Irc.SYSTEM_MSG) or Irc.PARTY_MSG,
 		pop_chat = pop_chat,
@@ -671,7 +672,11 @@ ChatManager._add_message_to_list = function (self, channel_id, message_sender, m
 	local chat_messages = self.chat_messages
 	chat_messages[#chat_messages + 1] = global_messages[#global_messages]
 
-	printf("[ChatManager][%s]%s: %s", channel_id, (is_system_message and "System") or (rawget(_G, "Steam") and Steam.user_name(message_sender)) or message_sender, message)
+	if is_system_message then
+		local sender = "System"
+
+		printf("[ChatManager][%s]%s: %s", channel_id, sender, message)
+	end
 end
 
 ChatManager.get_chat_messages = function (self, destination_table, filter_name)
@@ -803,7 +808,7 @@ ChatManager.game_invite = function (self, parameters, message, recent_message_in
 		end
 
 		if message_target_data.message_target_type == Irc.PARTY_MSG then
-			self:_add_message_to_list(1, "System", "You cannot invite people already in your party", false, true, false, Irc.SYSTEM_MSG)
+			self:_add_message_to_list(1, "System", 0, "You cannot invite people already in your party", false, true, false, Irc.SYSTEM_MSG)
 
 			return
 		end
@@ -825,7 +830,7 @@ ChatManager.game_invite = function (self, parameters, message, recent_message_in
 
 		print(networked_message, channel_or_username)
 		Managers.irc:send_message(networked_message, channel_or_username)
-		self:_add_message_to_list(1, "LINK", message, false, true, false, message_target_data.message_target_type, link_data)
+		self:_add_message_to_list(1, "LINK", message, 0, false, true, false, message_target_data.message_target_type, link_data)
 
 		return link_data
 	end
@@ -859,7 +864,7 @@ ChatManager.send_message = function (self, parameters, message, recent_message_i
 				end
 			end
 
-			self:_add_message_to_list(1, name, message, false, true, false, Irc.PRIVATE_MSG)
+			self:_add_message_to_list(1, name, 0, message, false, true, false, Irc.PRIVATE_MSG)
 		end
 	end
 end
@@ -897,7 +902,7 @@ ChatManager.reply = function (self, parameters, message)
 		local name = "To [" .. user_name .. "]"
 
 		self:add_recent_chat_message(new_message)
-		self:_add_message_to_list(1, name, new_message, false, true, false, Irc.PRIVATE_MSG)
+		self:_add_message_to_list(1, name, 0, new_message, false, true, false, Irc.PRIVATE_MSG)
 	end
 end
 

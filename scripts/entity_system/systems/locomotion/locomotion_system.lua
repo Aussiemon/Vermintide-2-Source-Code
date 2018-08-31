@@ -43,10 +43,6 @@ LocomotionSystem.init = function (self, entity_system_creation_context, system_n
 
 	self.world = entity_system_creation_context.world
 	self.animation_lod_units = {}
-	self.animation_lod_unit_current = nil
-	self.lod0 = 0
-	self.lod1 = 0
-	self.current_physics_test_unit = nil
 	self.player_units = {}
 	self.template_data = {}
 
@@ -128,32 +124,59 @@ LocomotionSystem.extensions_ready = function (self, world, unit, extension_name)
 		if bone_lod_level > 0 and not script_data.bone_lod_disable then
 			extension.bone_lod_extension_id = EngineOptimized.bone_lod_register_extension(unit)
 			self.animation_lod_units[unit] = extension
-			extension.bone_lod_level = bone_lod_level
 
 			Unit.set_bones_lod(unit, 1)
-
-			self.lod1 = self.lod1 + 1
 		end
-
-		extension.time_to_check = 0
 	else
 		self.player_units[unit] = extension
 	end
 end
 
 LocomotionSystem.on_remove_extension = function (self, unit, extension_name)
-	self:on_freeze_extension(unit, extension_name)
+	self:_cleanup_extension(unit, extension_name)
 	LocomotionSystem.super.on_remove_extension(self, unit, extension_name)
 end
 
 LocomotionSystem.on_freeze_extension = function (self, unit, extension_name)
+	return
+end
+
+LocomotionSystem._cleanup_extension = function (self, unit, extension_name)
 	if extension_name == "AILocomotionExtensionC" or extension_name == "AILocomotionExtension" or extension_name == "AiHuskLocomotionExtension" then
 		local extension = self.animation_lod_units[unit]
 
 		if extension then
 			EngineOptimized.bone_lod_unregister_extension(extension.bone_lod_extension_id)
 
+			extension.bone_lod_extension_id = nil
 			self.animation_lod_units[unit] = nil
+		end
+	end
+end
+
+LocomotionSystem.freeze = function (self, unit, extension_name, reason)
+	fassert(extension_name == "AILocomotionExtensionC" or extension_name == "AiHuskLocomotionExtension", "Unsupported freeze extension")
+	self:_cleanup_extension(unit, extension_name)
+
+	local extension = ScriptUnit.extension(unit, "locomotion_system")
+
+	extension:freeze(reason)
+end
+
+LocomotionSystem.unfreeze = function (self, unit, extension_name)
+	local extension = ScriptUnit.extension(unit, "locomotion_system")
+
+	extension:unfreeze(unit)
+
+	if extension_name == "AILocomotionExtensionC" or extension_name == "AILocomotionExtension" or extension_name == "AiHuskLocomotionExtension" then
+		local breed = ScriptUnit.extension(unit, "ai_system")._breed
+		local bone_lod_level = breed.bone_lod_level
+
+		if bone_lod_level > 0 and not script_data.bone_lod_disable then
+			extension.bone_lod_extension_id = EngineOptimized.bone_lod_register_extension(unit)
+			self.animation_lod_units[unit] = extension
+
+			Unit.set_bones_lod(unit, 1)
 		end
 	end
 end
@@ -241,56 +264,6 @@ LocomotionSystem.update_actor_proximity_shapes = function (self)
 			PhysicsWorld.commit_actor_proximity_shape(physics_world, position, direction, 36, angle, true)
 		end
 	end
-end
-
-LocomotionSystem.debug_draw = function (self)
-	if script_data.show_engine_locomotion_debug and GameSettingsDevelopment.use_engine_optimized_ai_locomotion then
-		local num_all, num_free, num_script_driven, num_get_to_navmesh, num_snap_to_navmesh, num_mover_constrained, num_animation_driven, num_affected_by_gravity, num_rotation_speed, num_animation_and_script = EngineOptimizedExtensions.ai_locomotion_get_debug_info()
-		local s = self.stats
-
-		if not s then
-			s = {
-				num_get_to_navmesh = 0,
-				num_free = 0,
-				num_affected_by_gravity = 0,
-				num_snap_to_navmesh = 0,
-				num_script_driven = 0,
-				num_mover_constrained = 0,
-				num_rotation_speed = 0,
-				num_animation_and_script = 0,
-				num_all = 0,
-				num_animation_driven = 0
-			}
-			self.stats = s
-		end
-
-		s.num_all = math.max(num_all, s.num_all)
-		s.num_free = math.max(num_free, s.num_free)
-		s.num_script_driven = math.max(num_script_driven, s.num_script_driven)
-		s.num_get_to_navmesh = math.max(num_get_to_navmesh, s.num_get_to_navmesh)
-		s.num_snap_to_navmesh = math.max(num_snap_to_navmesh, s.num_snap_to_navmesh)
-		s.num_mover_constrained = math.max(num_mover_constrained, s.num_mover_constrained)
-		s.num_animation_driven = math.max(num_animation_driven, s.num_animation_driven)
-		s.num_affected_by_gravity = math.max(num_affected_by_gravity, s.num_affected_by_gravity)
-		s.num_rotation_speed = math.max(num_rotation_speed, s.num_rotation_speed)
-		s.num_animation_and_script = math.max(num_animation_and_script, s.num_animation_and_script)
-
-		Debug.text("EngineLocomotion amount for each category: right now/peak in game")
-		Debug.text("Num all: %d/%d, free: %d/%d, script_driven: %d/%d, snap_to_navmesh: %d/%d, animation_driven: %d/%d, mover_constrained: %d/%d, get_to_navmesh %d/%d", num_all, s.num_all, num_free, s.num_free, num_script_driven, s.num_script_driven, num_snap_to_navmesh, s.num_snap_to_navmesh, num_animation_driven, s.num_animation_driven, num_mover_constrained, s.num_mover_constrained, num_get_to_navmesh, s.num_get_to_navmesh)
-		Debug.text("Num affected_by_gravity: %d/%d, rotation_speed: %d/%d, animation_and_script: %d/%d", num_affected_by_gravity, s.num_affected_by_gravity, num_rotation_speed, s.num_rotation_speed, num_animation_and_script, s.num_animation_and_script)
-	end
-
-	local unit = script_data.debug_unit
-	local locomotion_extension = ScriptUnit.has_extension(unit, "locomotion_system")
-
-	if not Unit.alive(unit) or script_data.debug_ai_movement ~= "text_and_graphics" or not locomotion_extension then
-		return
-	end
-
-	Debug.text("AI LOCOMOTION DEBUG")
-	Debug.text("  movement_type = %s", locomotion_extension.movement_type)
-	Debug.text("  is_falling = %s", tostring((locomotion_extension.is_falling == nil and "?") or locomotion_extension:is_falling()))
-	Debug.text("  current_velocity = %s", tostring(locomotion_extension:current_velocity()))
 end
 
 LocomotionSystem.rpc_set_affected_by_gravity = function (self, sender, game_object_id, affected)

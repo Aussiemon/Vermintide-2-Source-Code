@@ -12,10 +12,13 @@ require("scripts/unit_extensions/human/ai_player_unit/ai_breed_snippets")
 require("scripts/settings/dlc_settings")
 require("scripts/settings/player_bots_settings")
 
+DEFAULT_BREED_AOE_HEIGHT = 1.5
+DEFAULT_BREED_AOE_RADIUS = 0.3
 Breeds = Breeds or {}
 BreedActions = BreedActions or {}
 BreedHitZonesLookup = BreedHitZonesLookup or {}
 
+dofile("scripts/settings/breeds/breed_tweaks")
 dofile("scripts/settings/breeds/breed_skaven_clan_rat")
 dofile("scripts/settings/breeds/breed_skaven_clan_rat_with_shield")
 dofile("scripts/settings/breeds/breed_skaven_dummy_clan_rat")
@@ -197,16 +200,6 @@ function SET_BREED_DIFFICULTY()
 	end
 end
 
-for name, consideration in pairs(UtilityConsiderations) do
-	consideration.name = name
-
-	for name, data in pairs(consideration) do
-		if type(data) == "table" then
-			data.name = name
-		end
-	end
-end
-
 table.merge(available_nav_tag_layers, BotNavTransitionManager.TRANSITION_LAYERS)
 table.merge(available_nav_cost_map_layers, BotNavTransitionManager.NAV_COST_MAP_LAYERS)
 
@@ -264,6 +257,7 @@ local TargetSelectionTypes = {
 	pick_pack_master_target = true,
 	pick_no_targets = true,
 	pick_closest_target = true,
+	pick_mutator_sorcerer_target = true,
 	pick_corruptor_target = true
 }
 

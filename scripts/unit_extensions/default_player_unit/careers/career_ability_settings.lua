@@ -19,14 +19,14 @@ ActivatedAbilitySettings = {
 		ability_class = CareerAbilityDRIronbreaker
 	},
 	dr_2 = {
-		description = "career_active_desc_dr_2",
+		description = "career_active_desc_dr_2_2",
 		display_name = "career_active_name_dr_2",
 		cooldown = 40,
 		icon = "bardin_slayer_activated_ability",
 		ability_class = CareerAbilityDRSlayer
 	},
 	dr_3 = {
-		description = "career_active_desc_dr_3",
+		description = "career_active_desc_dr_3_2",
 		weapon_name = "bardin_ranger_career_skill_weapon",
 		display_name = "career_active_name_dr_3",
 		cooldown = 120,
@@ -34,7 +34,7 @@ ActivatedAbilitySettings = {
 		action_name = "action_career_dr_3"
 	},
 	es_1 = {
-		description = "career_active_desc_es_1",
+		description = "career_active_desc_es_1_2",
 		display_name = "career_active_name_es_1",
 		cooldown = 90,
 		icon = "markus_huntsman_activated_ability",
@@ -48,8 +48,8 @@ ActivatedAbilitySettings = {
 		ability_class = CareerAbilityESKnight
 	},
 	es_3 = {
-		description = "career_active_desc_markus_mercencary",
-		display_name = "career_active_name_markus_mercencary",
+		description = "career_active_desc_markus_mercenary_2",
+		display_name = "career_active_name_markus_mercenary",
 		cooldown = 180,
 		icon = "markus_mercenary_activated_ability",
 		ability_class = CareerAbilityESMercenary
@@ -92,7 +92,7 @@ ActivatedAbilitySettings = {
 		action_name = "action_career_wh_2"
 	},
 	wh_3 = {
-		description = "career_active_desc_victor_witchhunter",
+		description = "career_active_desc_victor_witchhunter_2",
 		display_name = "career_active_name_victor_witchhunter",
 		cooldown = 180,
 		icon = "victor_witchhunter_activated_ability",
@@ -107,7 +107,7 @@ ActivatedAbilitySettings = {
 		action_name = "action_career_bw_1"
 	},
 	bw_2 = {
-		description = "career_active_desc_bw_2",
+		description = "career_active_desc_bw_2_2",
 		display_name = "career_active_name_bw_2",
 		cooldown = 40,
 		icon = "sienna_adept_activated_ability",
@@ -139,20 +139,20 @@ PassiveAbilitySettings = {
 		perks = {
 			{
 				display_name = "career_passive_name_dr_1b",
-				description = "career_passive_desc_dr_1b"
+				description = "career_passive_desc_dr_1b_2"
 			},
 			{
 				display_name = "career_passive_name_dr_1c",
-				description = "career_passive_desc_dr_1c"
+				description = "career_passive_desc_dr_1c_2"
 			},
 			{
 				display_name = "career_passive_name_dr_1d",
-				description = "career_passive_desc_dr_1d"
+				description = "career_passive_desc_dr_1d_2"
 			}
 		}
 	},
 	dr_2 = {
-		description = "career_passive_desc_dr_2a",
+		description = "career_passive_desc_dr_2a_2",
 		display_name = "career_passive_name_dr_2",
 		icon = "bardin_slayer_passive",
 		buffs = {
@@ -164,12 +164,12 @@ PassiveAbilitySettings = {
 		perks = {
 			{
 				display_name = "career_passive_name_dr_2b",
-				description = "career_passive_desc_dr_2b"
+				description = "career_passive_desc_dr_2b_2"
 			}
 		}
 	},
 	dr_3 = {
-		description = "career_passive_desc_dr_3a",
+		description = "career_passive_desc_dr_3a_2",
 		display_name = "career_passive_name_dr_3",
 		icon = "bardin_ranger_passive",
 		buffs = {
@@ -182,11 +182,11 @@ PassiveAbilitySettings = {
 		perks = {
 			{
 				display_name = "career_passive_name_dr_3b",
-				description = "career_passive_desc_dr_3b"
+				description = "career_passive_desc_dr_3b_2"
 			},
 			{
 				display_name = "career_passive_name_dr_3c",
-				description = "career_passive_desc_dr_3c"
+				description = "career_passive_desc_dr_3c_2"
 			}
 		}
 	},
@@ -209,12 +209,12 @@ PassiveAbilitySettings = {
 			},
 			{
 				display_name = "career_passive_name_es_1c",
-				description = "career_passive_desc_es_1c"
+				description = "career_passive_desc_es_1c_2"
 			}
 		}
 	},
 	es_2 = {
-		description = "career_passive_desc_es_2a",
+		description = "career_passive_desc_es_2a_2",
 		display_name = "career_passive_name_es_2",
 		icon = "markus_knight_passive",
 		buffs = {
@@ -227,11 +227,11 @@ PassiveAbilitySettings = {
 		perks = {
 			{
 				display_name = "career_passive_name_es_2b",
-				description = "career_passive_desc_es_2b"
+				description = "career_passive_desc_es_2b_2"
 			},
 			{
 				display_name = "career_passive_name_es_2c",
-				description = "career_passive_desc_es_2c"
+				description = "career_passive_desc_es_2c_2"
 			}
 		}
 	},
@@ -253,7 +253,7 @@ PassiveAbilitySettings = {
 			},
 			{
 				display_name = "career_passive_name_es_3c",
-				description = "career_passive_desc_es_3c"
+				description = "career_passive_desc_es_3c_2"
 			}
 		}
 	},
@@ -276,7 +276,7 @@ PassiveAbilitySettings = {
 		}
 	},
 	we_2 = {
-		description = "career_passive_desc_we_2a",
+		description = "career_passive_desc_we_2a_2",
 		display_name = "career_passive_name_we_2",
 		icon = "kerillian_maidenguard_passive",
 		buffs = {
@@ -291,7 +291,7 @@ PassiveAbilitySettings = {
 		perks = {
 			{
 				display_name = "career_passive_name_we_2b",
-				description = "career_passive_desc_we_2b"
+				description = "career_passive_desc_we_2b_2"
 			},
 			{
 				display_name = "career_passive_name_we_2c",
@@ -300,7 +300,7 @@ PassiveAbilitySettings = {
 		}
 	},
 	we_3 = {
-		description = "career_passive_desc_we_3a",
+		description = "career_passive_desc_we_3a_2",
 		display_name = "career_passive_name_we_3",
 		icon = "kerillian_waywatcher_passive",
 		buffs = {
@@ -314,11 +314,15 @@ PassiveAbilitySettings = {
 		perks = {
 			{
 				display_name = "career_passive_name_we_3b",
-				description = "career_passive_desc_we_3b"
+				description = "career_passive_desc_we_3b_2"
 			},
 			{
 				display_name = "career_passive_name_we_3c",
 				description = "career_passive_desc_we_3c"
+			},
+			{
+				display_name = "career_passive_name_we_3d",
+				description = "career_passive_desc_we_3d_2"
 			}
 		}
 	},
@@ -360,16 +364,16 @@ PassiveAbilitySettings = {
 		perks = {
 			{
 				display_name = "career_passive_name_wh_2b",
-				description = "career_passive_desc_wh_2b"
+				description = "career_passive_desc_wh_2b_2"
 			},
 			{
 				display_name = "career_passive_name_wh_2c",
-				description = "career_passive_desc_wh_2c"
+				description = "career_passive_desc_wh_2c_2"
 			}
 		}
 	},
 	wh_3 = {
-		description = "career_passive_desc_wh_3a",
+		description = "career_passive_desc_wh_3a_2",
 		display_name = "career_passive_name_wh_3",
 		icon = "victor_witchhunter_passive",
 		buffs = {
@@ -392,7 +396,7 @@ PassiveAbilitySettings = {
 		}
 	},
 	bw_1 = {
-		description = "career_passive_desc_bw_1a",
+		description = "career_passive_desc_bw_1a_2",
 		display_name = "career_passive_name_bw_1",
 		icon = "sienna_scholar_passive",
 		buffs = {
@@ -404,7 +408,7 @@ PassiveAbilitySettings = {
 		perks = {
 			{
 				display_name = "career_passive_name_bw_1b",
-				description = "career_passive_desc_bw_1b"
+				description = "career_passive_desc_bw_1b_2"
 			}
 		}
 	},
@@ -424,11 +428,11 @@ PassiveAbilitySettings = {
 		perks = {
 			{
 				display_name = "career_passive_name_bw_2b",
-				description = "career_passive_desc_bw_2b"
+				description = "career_passive_desc_bw_2b_2"
 			},
 			{
 				display_name = "career_passive_name_bw_2c",
-				description = "career_passive_desc_bw_2c"
+				description = "career_passive_desc_bw_2c_2"
 			}
 		}
 	},
@@ -450,7 +454,7 @@ PassiveAbilitySettings = {
 			},
 			{
 				display_name = "career_passive_name_bw_3c",
-				description = "career_passive_desc_bw_3c"
+				description = "career_passive_desc_bw_3c_2"
 			},
 			{
 				display_name = "career_passive_name_bw_3d",

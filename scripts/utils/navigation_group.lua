@@ -9,6 +9,8 @@ NavigationGroup.init = function (self, nav_world, poly_hash, poly, poly_center, 
 	self._group_polygons = {}
 	self._group_size = 0
 	self._group_neighbours = {}
+	self._group_ledge_neighbours = {}
+	self._main_path_index = nil
 
 	self:add_polygon(poly, poly_center, poly_area, nav_world)
 end
@@ -43,12 +45,24 @@ NavigationGroup.add_polygon = function (self, poly, poly_center, poly_area, nav_
 	end
 end
 
-NavigationGroup.add_neighbour_group = function (self, group)
+NavigationGroup.add_neighbour_group = function (self, group, connected_by_ledge)
 	self._group_neighbours[group] = true
+
+	if connected_by_ledge then
+		self._group_ledge_neighbours[group] = true
+	end
 end
 
 NavigationGroup.remove_neighbour_group = function (self, group)
 	self._group_neighbours[group] = nil
+
+	if self._group_ledge_neighbours[group] then
+		self._group_ledge_neighbours[group] = nil
+	end
+end
+
+NavigationGroup.set_main_path_index = function (self, index)
+	self._main_path_index = index
 end
 
 NavigationGroup.set_distance_from_finish = function (self, distance_from_finish)
@@ -59,10 +73,12 @@ NavigationGroup.get_group_neighbours = function (self)
 	return self._group_neighbours
 end
 
-NavigationGroup.recalc_neighbour_distances = function (self)
-	for neighbour, data in pairs(self._group_neighbours) do
-		data = Vector3.distance(self._group_center:unbox(), neighbour:get_group_center():unbox())
-	end
+NavigationGroup.get_group_ledge_neighbours = function (self)
+	return self._group_ledge_neighbours
+end
+
+NavigationGroup.get_main_path_index = function (self)
+	return self._main_path_index
 end
 
 NavigationGroup.calculate_group_center = function (self, poly_center, poly_hash, nav_world)
@@ -222,7 +238,7 @@ NavigationGroup.print_group = function (self, world, nav_world, line_object, lin
 	print("Group", self._group_number, "has neighbours:")
 
 	for group_neighbour, _ in pairs(self._group_neighbours) do
-		print(group_neighbour._group_number)
+		print(group_neighbour._group_number, (self._group_ledge_neighbours[group_neighbour] and "connected_by_ledge") or "")
 	end
 
 	for _, poly in pairs(self._group_polygons) do
@@ -239,9 +255,10 @@ NavigationGroup.print_group = function (self, world, nav_world, line_object, lin
 	line_drawer:sphere(group_center, 0.07, Color(255, 255, 255))
 	Gui.text_3d(debug_world_gui, "C", font_material, font_size, font, m, text_pos, 3, Color(255, 255, 255))
 	Gui.text_3d(debug_world_gui, "C", font_material, font_size + 0.1, font, m, text_pos - Vector3(0.05, 0, 0), 2, Color(0, 0, 0))
-	Gui.text_3d(debug_world_gui, "id=" .. self._group_number, font_material, font_size - 0.8, font, m, text_pos + Vector3(0, 1.5, 0), 3, Color(255, 255, 255))
-	Gui.text_3d(debug_world_gui, "dist=" .. self._distance_from_finish, font_material, font_size - 0.8, font, m, text_pos + Vector3(0, 1, 0), 3, Color(255, 255, 255))
-	Gui.text_3d(debug_world_gui, "area=" .. self._area, font_material, font_size - 0.8, font, m, text_pos + Vector3(0, 0.5, 0), 3, Color(255, 255, 255))
+	Gui.text_3d(debug_world_gui, "id=" .. self._group_number, font_material, font_size - 0.8, font, m, text_pos + Vector3(0, 2, 0), 3, Color(255, 255, 255))
+	Gui.text_3d(debug_world_gui, "dist=" .. self._distance_from_finish, font_material, font_size - 0.8, font, m, text_pos + Vector3(0, 1.5, 0), 3, Color(255, 255, 255))
+	Gui.text_3d(debug_world_gui, "area=" .. self._area, font_material, font_size - 0.8, font, m, text_pos + Vector3(0, 1, 0), 3, Color(255, 255, 255))
+	Gui.text_3d(debug_world_gui, "main_path_index=" .. (self._main_path_index or "nil"), font_material, font_size - 0.8, font, m, text_pos + Vector3(0, 0.5, 0), 3, Color(255, 255, 255))
 end
 
 NavigationGroup.draw_poly_lines = function (self, poly, color, nav_world, line_object, debug_world_gui)

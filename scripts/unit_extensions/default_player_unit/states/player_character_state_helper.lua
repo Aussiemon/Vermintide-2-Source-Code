@@ -618,6 +618,17 @@ CharacterStateHelper.get_buffered_input = function (input_id, input_extension, n
 	return input
 end
 
+CharacterStateHelper._check_cooldown = function (self, weapon_extension, action, t)
+	local is_in_cooldown = false
+
+	if weapon_extension then
+		local action_cooldown = weapon_extension:get_action_cooldown(action)
+		is_in_cooldown = action_cooldown and t <= action_cooldown
+	end
+
+	return is_in_cooldown
+end
+
 CharacterStateHelper.wield_input = function (input_extension, inventory_extension, action_name, verify)
 	if action_name ~= "action_wield" then
 		return nil
@@ -806,20 +817,6 @@ CharacterStateHelper._check_chain_action = function (wield_input, action_data, i
 		if chain_action_available and is_selected then
 			local sub_action = action_data.sub_action
 
-			if not sub_action and action_data.first_possible_sub_action then
-				local sub_actions = item_template.actions[action_data.action]
-
-				for sub_action_name, data in pairs(sub_actions) do
-					local condition_func = data.chain_condition_func
-
-					if not condition_func or condition_func(unit) then
-						sub_action = sub_action_name
-
-						break
-					end
-				end
-			end
-
 			if action_data.blocker then
 				return true, nil, nil, wield_input, nil, nil
 			end
@@ -829,8 +826,9 @@ CharacterStateHelper._check_chain_action = function (wield_input, action_data, i
 				new_sub_action = sub_action
 				local action_settings = item_template.actions[new_action] and item_template.actions[new_action][new_sub_action]
 				local condition_func = action_settings and action_settings.chain_condition_func
+				local cooldown = CharacterStateHelper:_check_cooldown(current_action_extension, new_action, t)
 
-				if not action_settings or (condition_func and not condition_func(unit, input_extension)) then
+				if not action_settings or (condition_func and not condition_func(unit, input_extension)) or cooldown then
 					new_action, new_sub_action = nil
 				else
 					send_buffer = action_data.send_buffer
@@ -895,7 +893,7 @@ CharacterStateHelper._get_chain_action_data = function (item_template, current_a
 	return new_action, new_sub_action, wield_input
 end
 
-local function validate_action(unit, action_name, sub_action_name, action_settings, input_extension, inventory_extension, only_check_condition, ammo_extension)
+local function validate_action(unit, action_name, sub_action_name, action_settings, input_extension, inventory_extension, only_check_condition, ammo_extension, current_action_extension, t)
 	local input_id = action_settings.input_override or action_name
 	local skip_hold = action_settings.do_not_validate_with_hold
 	local hold_input = not skip_hold and action_settings.hold_input
@@ -916,12 +914,16 @@ local function validate_action(unit, action_name, sub_action_name, action_settin
 			condition_passed = true
 		end
 
-		if condition_passed then
+		local cooldown = CharacterStateHelper:_check_cooldown(current_action_extension, action_name, t)
+
+		if condition_passed and not cooldown then
 			if not wield_input and not action_settings.keep_buffer then
 				input_extension:reset_input_buffer()
 			end
 
 			return action_name, sub_action_name
+		else
+			input_extension:add_buffer(input_id)
 		end
 	end
 end
@@ -1034,50 +1036,42 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 				end
 			end
 		end
-	elseif item_template.next_action then
-		local action_data = item_template.next_action
-		next_action_init_data = action_data.action_init_data
-		local action_name = action_data.action
-		local only_check_condition = true
-		local sub_actions = item_template.actions[action_name]
-
-		for sub_action_name, action_settings in pairs(sub_actions) do
-			if sub_action_name ~= "default" and action_settings.condition_func then
-				new_action, new_sub_action = validate_action(unit, action_name, sub_action_name, action_settings, input_extension, inventory_extension, only_check_condition)
-
-				if new_action and new_sub_action then
-					break
-				end
-			end
-		end
-
-		if not new_action then
-			local action_settings = item_template.actions[action_name].default
-			new_action, new_sub_action = validate_action(unit, action_name, "default", action_settings, input_extension, inventory_extension, only_check_condition)
-		end
-
-		item_template.next_action = nil
 	else
 		local ammo_extension = (left_hand_weapon_extension and left_hand_weapon_extension.ammo_extension) or (right_hand_weapon_extension and right_hand_weapon_extension.ammo_extension)
+		local highest_priority_action = 0
 
 		for action_name, sub_actions in pairs(item_template.actions) do
 			for sub_action_name, action_settings in pairs(sub_actions) do
 				if sub_action_name ~= "default" and action_settings.condition_func then
-					new_action, new_sub_action = validate_action(unit, action_name, sub_action_name, action_settings, input_extension, inventory_extension, false, ammo_extension)
+					local weapon_action_hand = action_settings.weapon_action_hand or "right"
+					local action_priority = action_settings.action_priority or 1
 
-					if new_action and new_sub_action then
-						break
+					if highest_priority_action < action_priority then
+						local weapon_extension = (weapon_action_hand == "right" and right_hand_weapon_extension) or left_hand_weapon_extension
+						local potential_new_action, potential_new_sub_action = validate_action(unit, action_name, sub_action_name, action_settings, input_extension, inventory_extension, false, ammo_extension, weapon_extension, t)
+
+						if potential_new_action and potential_new_sub_action then
+							new_action = potential_new_action
+							new_sub_action = potential_new_sub_action
+							highest_priority_action = action_priority
+						end
 					end
 				end
 			end
 
-			if not new_action then
-				local action_settings = item_template.actions[action_name].default
-				new_action, new_sub_action = validate_action(unit, action_name, "default", action_settings, input_extension, inventory_extension, false, ammo_extension)
-			end
+			local action_settings = item_template.actions[action_name].default
+			local weapon_action_hand = action_settings.weapon_action_hand or "right"
+			local action_priority = action_settings.action_priority or 1
 
-			if new_action then
-				break
+			if highest_priority_action < action_priority then
+				local weapon_extension = (weapon_action_hand == "right" and right_hand_weapon_extension) or left_hand_weapon_extension
+				local potential_new_action, potential_new_sub_action = validate_action(unit, action_name, "default", action_settings, input_extension, inventory_extension, false, ammo_extension, weapon_extension, t)
+
+				if potential_new_action and potential_new_sub_action then
+					new_action = potential_new_action
+					new_sub_action = potential_new_sub_action
+					highest_priority_action = action_priority
+				end
 			end
 		end
 	end
@@ -1172,6 +1166,10 @@ CharacterStateHelper.stop_weapon_actions = function (inventory_extension, reason
 	end
 end
 
+CharacterStateHelper.stop_career_abilities = function (career_extension, reason)
+	career_extension:stop_ability(reason)
+end
+
 CharacterStateHelper.reload = function (input_extension, inventory_extension, status_extension)
 	if not input_extension:get("weapon_reload") then
 		return false
@@ -1212,6 +1210,11 @@ CharacterStateHelper.check_crouch = function (unit, input_extension, status_exte
 	local is_crouching = status_extension:is_crouching()
 	local crouch = is_crouching
 	local toggle_input = input_extension:get("crouch")
+
+	if PLATFORM ~= "win32" and Managers.matchmaking and Managers.matchmaking:is_matchmaking_in_inn() then
+		toggle_input = false
+	end
+
 	local hold_toggle_input = input_extension:get("crouching")
 
 	if toggle_crouch and toggle_input then
