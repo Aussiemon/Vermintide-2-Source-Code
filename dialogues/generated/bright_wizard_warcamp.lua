@@ -1499,7 +1499,7 @@ return function ()
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_warcamp",
-			category = "level_talk",
+			category = "cut_scene",
 			dialogue_animations_n = 4,
 			sound_events = {
 				"pbw_level_chaos_war_camp_battering_ram_01",

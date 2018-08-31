@@ -12,20 +12,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -58,17 +52,17 @@ return function ()
 				1
 			},
 			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"ussingen"
+				"faction_memory",
+				"level_ussingen_search_for_manor",
+				OP.NOT,
+				"level_ussingen_search_for_manor"
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -111,7 +105,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -148,7 +142,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -185,7 +179,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -222,7 +216,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -259,7 +253,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -289,20 +283,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -329,17 +317,17 @@ return function ()
 				1
 			},
 			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"ussingen"
+				"faction_memory",
+				"level_ussingen_search_for_manor",
+				OP.NOT,
+				"level_ussingen_search_for_manor"
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -382,7 +370,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -419,7 +407,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -456,7 +444,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -493,7 +481,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -523,20 +511,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -570,10 +552,16 @@ return function ()
 			},
 			{
 				"faction_memory",
+				"level_ussingen_search_for_manor",
+				OP.NOT,
+				"level_ussingen_search_for_manor"
+			},
+			{
+				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -616,7 +604,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -653,7 +641,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -690,7 +678,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -720,20 +708,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -773,10 +755,16 @@ return function ()
 			},
 			{
 				"faction_memory",
+				"level_ussingen_search_for_manor",
+				OP.NOT,
+				"level_ussingen_search_for_manor"
+			},
+			{
+				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -819,7 +807,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -856,7 +844,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -893,7 +881,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -930,7 +918,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -960,20 +948,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -1000,17 +982,17 @@ return function ()
 				1
 			},
 			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"ussingen"
+				"faction_memory",
+				"level_ussingen_search_for_manor",
+				OP.NOT,
+				"level_ussingen_search_for_manor"
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -1053,7 +1035,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1090,7 +1072,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1127,7 +1109,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1164,7 +1146,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1194,20 +1176,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -1234,17 +1210,17 @@ return function ()
 				1
 			},
 			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"ussingen"
+				"faction_memory",
+				"level_ussingen_search_for_manor",
+				OP.NOT,
+				"level_ussingen_search_for_manor"
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -1287,7 +1263,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1324,7 +1300,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1361,7 +1337,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1391,20 +1367,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -1431,17 +1401,17 @@ return function ()
 				1
 			},
 			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"ussingen"
+				"faction_memory",
+				"level_ussingen_search_for_manor",
+				OP.NOT,
+				"level_ussingen_search_for_manor"
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -1484,7 +1454,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1521,7 +1491,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1551,20 +1521,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -1591,17 +1555,17 @@ return function ()
 				1
 			},
 			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"ussingen"
+				"faction_memory",
+				"level_ussingen_search_for_manor",
+				OP.NOT,
+				"level_ussingen_search_for_manor"
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -1644,7 +1608,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1681,7 +1645,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1718,7 +1682,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1755,7 +1719,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1792,7 +1756,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1822,20 +1786,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -1868,17 +1826,17 @@ return function ()
 				1
 			},
 			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"ussingen"
+				"faction_memory",
+				"level_ussingen_search_for_manor",
+				OP.NOT,
+				"level_ussingen_search_for_manor"
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -1921,7 +1879,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1958,7 +1916,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1995,7 +1953,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -2032,7 +1990,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -2062,20 +2020,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -2097,22 +2049,22 @@ return function ()
 			},
 			{
 				"global_context",
-				"dwarf_ranger",
+				"empire_soldier",
 				OP.EQ,
 				1
 			},
 			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"ussingen"
+				"faction_memory",
+				"level_ussingen_search_for_manor",
+				OP.NOT,
+				"level_ussingen_search_for_manor"
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -2155,7 +2107,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -2192,7 +2144,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -2229,7 +2181,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -2266,7 +2218,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -2296,20 +2248,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -2342,17 +2288,17 @@ return function ()
 				1
 			},
 			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"ussingen"
+				"faction_memory",
+				"level_ussingen_search_for_manor",
+				OP.NOT,
+				"level_ussingen_search_for_manor"
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -2395,7 +2341,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -2432,7 +2378,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -2469,7 +2415,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -2499,20 +2445,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -2539,17 +2479,17 @@ return function ()
 				1
 			},
 			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"ussingen"
+				"faction_memory",
+				"level_ussingen_search_for_manor",
+				OP.NOT,
+				"level_ussingen_search_for_manor"
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -2592,7 +2532,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -2629,7 +2569,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -2666,7 +2606,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -2703,7 +2643,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -2740,7 +2680,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -2777,7 +2717,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -2807,20 +2747,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -2853,17 +2787,17 @@ return function ()
 				1
 			},
 			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"ussingen"
+				"faction_memory",
+				"level_ussingen_search_for_manor",
+				OP.NOT,
+				"level_ussingen_search_for_manor"
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -2906,7 +2840,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -2943,7 +2877,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -2980,7 +2914,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -3010,20 +2944,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -3056,17 +2984,17 @@ return function ()
 				1
 			},
 			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"ussingen"
+				"faction_memory",
+				"level_ussingen_search_for_manor",
+				OP.NOT,
+				"level_ussingen_search_for_manor"
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -3109,7 +3037,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -3146,7 +3074,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -3183,7 +3111,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -3220,7 +3148,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",

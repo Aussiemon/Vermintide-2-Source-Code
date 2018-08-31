@@ -653,7 +653,7 @@ return function ()
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_ground_zero",
-			category = "story_talk",
+			category = "cut_scene",
 			dialogue_animations_n = 4,
 			sound_events = {
 				"pbw_level_ground_zero_boss_near_01",
@@ -1033,7 +1033,7 @@ return function ()
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_ground_zero",
-			category = "story_talk",
+			category = "cut_scene",
 			dialogue_animations_n = 4,
 			sound_events = {
 				"pbw_level_ground_zero_landslide_01",

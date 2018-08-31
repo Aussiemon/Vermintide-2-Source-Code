@@ -1367,7 +1367,7 @@ return function ()
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_ussingen",
-			category = "level_talk",
+			category = "cut_scene",
 			dialogue_animations_n = 4,
 			sound_events = {
 				"pbw_level_ussingen_spotting_manor_01",
@@ -1627,7 +1627,7 @@ return function ()
 			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "bright_wizard_ussingen",
-			category = "level_talk",
+			category = "cut_scene",
 			dialogue_animations_n = 3,
 			sound_events = {
 				"pbw_level_ussingen_search_for_manor_01",

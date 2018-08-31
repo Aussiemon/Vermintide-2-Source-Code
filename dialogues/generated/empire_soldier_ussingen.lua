@@ -1268,7 +1268,7 @@ return function ()
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_ussingen",
-			category = "level_talk",
+			category = "cut_scene",
 			dialogue_animations_n = 4,
 			sound_events = {
 				"pes_level_ussingen_spotting_manor_01",
@@ -1648,7 +1648,7 @@ return function ()
 			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "empire_soldier_ussingen",
-			category = "level_talk",
+			category = "cut_scene",
 			dialogue_animations_n = 3,
 			sound_events = {
 				"pes_level_ussingen_search_for_manor_01",

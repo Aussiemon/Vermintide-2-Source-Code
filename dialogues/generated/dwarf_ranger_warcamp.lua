@@ -1058,8 +1058,8 @@ return function ()
 		}
 	})
 	define_rule({
-		response = "ecc_chaos_war_camp_taunt_payback",
 		name = "ecc_chaos_war_camp_taunt_payback",
+		response = "ecc_chaos_war_camp_taunt_payback",
 		criterias = {
 			{
 				"query_context",
@@ -1072,6 +1072,20 @@ return function ()
 				"source_name",
 				OP.EQ,
 				"chaos_exalted_champion_warcamp"
+			},
+			{
+				"faction_memory",
+				"chaos_war_camp_taunt_payback",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"chaos_war_camp_taunt_payback",
+				OP.ADD,
+				1
 			}
 		}
 	})
@@ -1917,7 +1931,7 @@ return function ()
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
-			category = "level_talk",
+			category = "cut_scene",
 			dialogue_animations_n = 4,
 			sound_events = {
 				"pdr_level_chaos_war_camp_battering_ram_use_01",
@@ -2543,7 +2557,7 @@ return function ()
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
-			category = "level_talk",
+			category = "cut_scene",
 			dialogue_animations_n = 4,
 			sound_events = {
 				"pdr_level_chaos_war_camp_battering_ram_01",

@@ -1046,7 +1046,7 @@ return function ()
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_ground_zero",
-			category = "story_talk",
+			category = "cut_scene",
 			dialogue_animations_n = 4,
 			sound_events = {
 				"pes_level_ground_zero_landslide_01",

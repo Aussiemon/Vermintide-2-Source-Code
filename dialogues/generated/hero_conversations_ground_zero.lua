@@ -12,20 +12,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -52,17 +46,17 @@ return function ()
 				1
 			},
 			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"ground_zero"
+				"faction_memory",
+				"level_ground_zero_landslide",
+				OP.NOT,
+				"level_ground_zero_landslide"
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -106,6 +100,12 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"wood_elf"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
 			}
 		},
 		on_done = {
@@ -134,60 +134,18 @@ return function ()
 			},
 			{
 				"user_context",
-				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
-				OP.EQ,
-				"pacing_relax"
-			},
-			{
-				"user_context",
-				"intensity",
-				OP.LT,
-				40
-			},
-			{
-				"user_context",
-				"friends_close",
-				OP.GT,
-				1
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
 				"player_profile",
 				OP.EQ,
 				"empire_soldier"
 			},
 			{
-				"global_context",
-				"wood_elf",
-				OP.EQ,
-				1
-			},
-			{
-				"faction_memory",
-				"once_level_ground_zero_story_seven",
-				OP.EQ,
-				0
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
 			}
 		},
 		on_done = {
-			{
-				"faction_memory",
-				"once_level_ground_zero_story_seven",
-				OP.ADD,
-				1
-			},
 			{
 				"faction_memory",
 				"time_since_conversation",
@@ -216,6 +174,12 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"wood_elf"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
 			}
 		},
 		on_done = {
@@ -239,20 +203,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -279,17 +237,17 @@ return function ()
 				1
 			},
 			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"ground_zero"
+				"faction_memory",
+				"level_ground_zero_landslide",
+				OP.NOT,
+				"level_ground_zero_landslide"
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -332,7 +290,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -369,37 +327,13 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"intensity",
-				OP.LT,
-				40
-			},
-			{
-				"user_context",
-				"friends_close",
-				OP.GT,
-				1
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
+				6
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
 				"empire_soldier"
-			},
-			{
-				"global_context",
-				"witch_hunter",
-				OP.EQ,
-				1
 			}
 		},
 		on_done = {
@@ -423,20 +357,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -463,17 +391,17 @@ return function ()
 				1
 			},
 			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"ground_zero"
+				"faction_memory",
+				"level_ground_zero_landslide",
+				OP.NOT,
+				"level_ground_zero_landslide"
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -516,7 +444,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -553,7 +481,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -590,7 +518,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -620,20 +548,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -660,17 +582,17 @@ return function ()
 				1
 			},
 			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"ground_zero"
+				"faction_memory",
+				"level_ground_zero_landslide",
+				OP.NOT,
+				"level_ground_zero_landslide"
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -713,7 +635,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -750,7 +672,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -787,7 +709,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -817,20 +739,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -857,17 +773,17 @@ return function ()
 				1
 			},
 			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"ground_zero"
+				"faction_memory",
+				"level_ground_zero_landslide",
+				OP.NOT,
+				"level_ground_zero_landslide"
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -910,7 +826,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -947,7 +863,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -984,7 +900,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1014,20 +930,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -1054,17 +964,17 @@ return function ()
 				1
 			},
 			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"ground_zero"
+				"faction_memory",
+				"level_ground_zero_landslide",
+				OP.NOT,
+				"level_ground_zero_landslide"
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -1107,7 +1017,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1144,7 +1054,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1181,7 +1091,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1211,20 +1121,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -1251,17 +1155,17 @@ return function ()
 				1
 			},
 			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"ground_zero"
+				"faction_memory",
+				"level_ground_zero_landslide",
+				OP.NOT,
+				"level_ground_zero_landslide"
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -1304,7 +1208,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1341,7 +1245,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1378,7 +1282,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1408,20 +1312,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -1448,17 +1346,17 @@ return function ()
 				1
 			},
 			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"ground_zero"
+				"faction_memory",
+				"level_ground_zero_landslide",
+				OP.NOT,
+				"level_ground_zero_landslide"
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -1501,7 +1399,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1538,7 +1436,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1575,7 +1473,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1605,20 +1503,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -1645,17 +1537,17 @@ return function ()
 				1
 			},
 			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"ground_zero"
+				"faction_memory",
+				"level_ground_zero_landslide",
+				OP.NOT,
+				"level_ground_zero_landslide"
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -1698,7 +1590,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1735,7 +1627,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1772,7 +1664,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1802,20 +1694,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -1842,17 +1728,17 @@ return function ()
 				1
 			},
 			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"ground_zero"
+				"faction_memory",
+				"level_ground_zero_landslide",
+				OP.NOT,
+				"level_ground_zero_landslide"
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -1895,7 +1781,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1932,7 +1818,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1969,7 +1855,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -1999,20 +1885,14 @@ return function ()
 			{
 				"user_context",
 				"enemies_close",
-				OP.LT,
-				2
-			},
-			{
-				"user_context",
-				"pacing_state",
 				OP.EQ,
-				"pacing_relax"
+				0
 			},
 			{
 				"user_context",
 				"intensity",
-				OP.LT,
-				40
+				OP.EQ,
+				0
 			},
 			{
 				"user_context",
@@ -2039,17 +1919,17 @@ return function ()
 				1
 			},
 			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"ground_zero"
+				"faction_memory",
+				"level_ground_zero_landslide",
+				OP.NOT,
+				"level_ground_zero_landslide"
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				300
+				120
 			},
 			{
 				"faction_memory",
@@ -2092,7 +1972,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -2129,7 +2009,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",
@@ -2166,7 +2046,7 @@ return function ()
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				2
+				6
 			},
 			{
 				"user_context",

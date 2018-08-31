@@ -896,7 +896,7 @@ return function ()
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
-			category = "story_talk",
+			category = "cut_scene",
 			dialogue_animations_n = 4,
 			sound_events = {
 				"pdr_level_ground_zero_boss_near_01",
@@ -1513,7 +1513,7 @@ return function ()
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
-			category = "story_talk",
+			category = "cut_scene",
 			dialogue_animations_n = 4,
 			sound_events = {
 				"pdr_level_ground_zero_landslide_01",

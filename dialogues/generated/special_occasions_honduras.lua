@@ -32914,7 +32914,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_elf_downed_3_times_09"
@@ -33430,7 +33430,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_hunter_downed_3_times_09"
@@ -33449,7 +33449,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_hunter_downed_3_times_09_reply_01"
@@ -33555,7 +33555,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_soldier_caught_by_slaver_3_times_two"
@@ -33593,7 +33593,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_hunter_downed_3_times_07_reply_01"
@@ -33612,7 +33612,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_hunter_downed_3_times_08_reply_01"
@@ -34613,7 +34613,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_elf_downed_3_times_03_azsd"
@@ -34824,7 +34824,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_ranger_downed_3_times_03_reply_01"
@@ -35097,7 +35097,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_elf_downed_3_times_02"
@@ -35230,7 +35230,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_wizard_caught_by_slaver_3_times_02"
@@ -35287,7 +35287,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_ranger_downed_3_times_04"
@@ -35306,7 +35306,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_soldier_downed_3_times_07_reply_01"
@@ -35325,7 +35325,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_wizard_caught_by_slaver_3_times_02"
@@ -35344,7 +35344,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_elf_downed_3_times_06_reply_01"
@@ -35363,7 +35363,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_wizard_downed_3_times_12"
@@ -35401,7 +35401,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_wizard_downed_3_times_11_reply_01"
@@ -35601,7 +35601,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_ranger_downed_3_times_04_reply_01"
@@ -35696,7 +35696,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_wizard_downed_3_times_02"
@@ -36198,7 +36198,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_wizard_caught_by_slaver_3_times_02"
@@ -36217,7 +36217,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_wizard_caught_by_slaver_3_times_02"
@@ -37255,7 +37255,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_wizard_downed_3_times_12_reply_01"
@@ -37312,7 +37312,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_wizard_downed_3_times_11_reply_01"
@@ -37596,7 +37596,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_elf_downed_3_times_12"
@@ -37792,7 +37792,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_soldier_downed_3_times_11"
@@ -37944,7 +37944,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_elf_downed_3_times_06_reply_01"
@@ -38021,7 +38021,7 @@ return function ()
 			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "special_occasions_honduras",
-			category = "default",
+			category = "player_alerts",
 			dialogue_animations_n = 6,
 			sound_events = {
 				"pwh_gameplay_hanging_help_01",
@@ -38671,7 +38671,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_hunter_downed_3_times_11"
@@ -38709,7 +38709,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_hunter_downed_3_times_08_reply_01"
@@ -38804,7 +38804,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_hunter_downed_3_times_06_reply_01"
@@ -38861,7 +38861,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_elf_downed_3_times_04_reply_01"
@@ -39455,7 +39455,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_soldier_downed_3_times_08_reply_01"
@@ -39550,7 +39550,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_hunter_downed_3_times_10"
@@ -39569,7 +39569,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_elf_caught_by_slaver_3_times_02"
@@ -39588,7 +39588,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_elf_downed_3_times_12_reply_01"
@@ -39626,7 +39626,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_elf_caught_by_slaver_3_times_02"
@@ -39645,7 +39645,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_soldier_caught_by_slaver_3_times_02"
@@ -39664,7 +39664,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_elf_caught_by_slaver_3_times_02"
@@ -39746,7 +39746,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_ranger_downed_3_times_02_reply_01"
@@ -39765,7 +39765,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_soldier_downed_3_times_07"
@@ -39863,7 +39863,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_hunter_downed_3_times_05"
@@ -40100,7 +40100,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_ranger_downed_3_times_12"
@@ -40271,7 +40271,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_ranger_downed_3_times_09"
@@ -40309,7 +40309,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_soldier_downed_3_times_08_reply_01"
@@ -40366,7 +40366,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_wizard_downed_3_times_04"
@@ -40404,7 +40404,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_soldier_downed_3_times_12"
@@ -40484,7 +40484,7 @@ return function ()
 			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "special_occasions_honduras",
-			category = "default",
+			category = "player_alerts",
 			dialogue_animations_n = 6,
 			sound_events = {
 				"pes_gameplay_hanging_help_01",
@@ -40625,7 +40625,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_wizard_downed_3_times_08_reply_01"
@@ -40663,7 +40663,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_wizard_downed_3_times_03_reply_01"
@@ -40789,7 +40789,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_wizard_downed_3_times_07"
@@ -40808,7 +40808,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_hunter_downed_3_times_02"
@@ -40865,7 +40865,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_soldier_caught_by_slaver_3_times_02"
@@ -41092,7 +41092,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_hunter_downed_3_times_12"
@@ -41242,7 +41242,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_wizard_downed_3_times_05"
@@ -41318,7 +41318,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_hunter_downed_3_times_10_reply_01"
@@ -41395,7 +41395,7 @@ return function ()
 			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "special_occasions_honduras",
-			category = "default",
+			category = "player_alerts",
 			dialogue_animations_n = 6,
 			sound_events = {
 				"pwe_gameplay_hanging_help_01",
@@ -41784,7 +41784,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_elf_downed_3_times_11_reply_01"
@@ -41803,7 +41803,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_hunter_downed_3_times_08"
@@ -42282,7 +42282,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_hunter_downed_3_times_11_reply_02"
@@ -42538,7 +42538,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_hunter_downed_3_times_07"
@@ -42633,7 +42633,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_hunter_caught_by_slaver_3_times_02"
@@ -42727,7 +42727,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_hunter_downed_3_times_03_reply_01"
@@ -42746,7 +42746,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_wizard_downed_3_times_07_reply_01"
@@ -42784,7 +42784,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_hunter_downed_3_times_03"
@@ -42804,7 +42804,7 @@ return function ()
 			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "special_occasions_honduras",
-			category = "default",
+			category = "player_alerts",
 			dialogue_animations_n = 6,
 			sound_events = {
 				"pdr_gameplay_hanging_help_01",
@@ -43105,7 +43105,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_elf_downed_3_times_13"
@@ -43200,7 +43200,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_hunter_downed_3_times_13"
@@ -43219,7 +43219,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_soldier_downed_3_times_08"
@@ -43257,7 +43257,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_wizard_downed_3_times_06"
@@ -43295,7 +43295,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_wizard_downed_3_times_10"
@@ -43428,7 +43428,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_ranger_downed_3_times_08_reply_01"
@@ -43447,7 +43447,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_ranger_downed_3_times_09_reply_01"
@@ -43466,7 +43466,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_ranger_downed_3_times_07_reply_01"
@@ -44223,7 +44223,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_soldier_downed_3_times_09"
@@ -44356,7 +44356,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_soldier_downed_3_times_13_reply_01"
@@ -44431,7 +44431,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_soldier_downed_3_times_02"
@@ -44564,7 +44564,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_soldier_caught_by_slaver_3_times_02"
@@ -44621,7 +44621,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_ranger_downed_3_times_03_reply_01"
@@ -44640,7 +44640,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_soldier_downed_3_times_11_reply_01"
@@ -44697,7 +44697,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_soldier_downed_3_times_06"
@@ -44735,7 +44735,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_hunter_downed_3_times_11_reply_02"
@@ -44887,7 +44887,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_wizard_downed_3_times_08"
@@ -44906,7 +44906,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_elf_downed_3_times_10"
@@ -45001,7 +45001,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_wizard_downed_3_times_09_reply_01"
@@ -45134,7 +45134,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_hunter_downed_3_times_04"
@@ -45879,7 +45879,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_ranger_downed_3_times_07"
@@ -46261,7 +46261,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_hunter_caught_by_slaver_3_times_02"
@@ -46280,7 +46280,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_wizard_downed_3_times_14_reply_01"
@@ -46337,7 +46337,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_wizard_downed_3_times_14"
@@ -46356,7 +46356,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_hunter_caught_by_slaver_3_times_02"
@@ -46502,7 +46502,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_elf_downed_3_times_05"
@@ -46740,7 +46740,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_ranger_downed_3_times_13_reply_01"
@@ -46759,7 +46759,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_ranger_downed_3_times_08"
@@ -46895,7 +46895,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_wizard_downed_3_times_09_reply_01"
@@ -46914,7 +46914,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_wizard_downed_3_times_07_reply_01"
@@ -47013,7 +47013,7 @@ return function ()
 			randomize_indexes_n = 0,
 			face_animations_n = 12,
 			database = "special_occasions_honduras",
-			category = "default",
+			category = "player_feedback",
 			dialogue_animations_n = 12,
 			sound_events = {
 				"pes_gameplay_i_will_tank_05",
@@ -47077,7 +47077,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_wizard_downed_3_times_05_reply_01"
@@ -47149,7 +47149,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_elf_downed_3_times_13_reply_01"
@@ -47242,7 +47242,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_elf_downed_3_times_10_reply_01"
@@ -47444,7 +47444,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_soldier_downed_3_times_13_reply_01"
@@ -47849,7 +47849,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_hunter_downed_3_times_05_reply_01"
@@ -47934,7 +47934,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_ranger_downed_3_times_10"
@@ -47994,7 +47994,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_ranger_caught_by_slaver_3_times_02"
@@ -48013,7 +48013,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_elf_caught_by_slaver_3_times_02"
@@ -48232,7 +48232,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_wizard_downed_3_times_09"
@@ -48251,7 +48251,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_elf_downed_3_times_10_reply_01"
@@ -48270,7 +48270,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_soldier_downed_3_times_05"
@@ -48308,7 +48308,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_wizard_downed_3_times_11"
@@ -48327,7 +48327,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_elf_downed_3_times_07"
@@ -48431,7 +48431,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_soldier_downed_3_times_reply_01"
@@ -48753,7 +48753,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_soldier_downed_3_times_reply_01"
@@ -48847,7 +48847,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_ranger_downed_3_times_08_reply_01"
@@ -48949,7 +48949,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_ranger_downed_3_times_11_reply_01"
@@ -48969,7 +48969,7 @@ return function ()
 			randomize_indexes_n = 0,
 			face_animations_n = 14,
 			database = "special_occasions_honduras",
-			category = "default",
+			category = "player_feedback",
 			dialogue_animations_n = 14,
 			sound_events = {
 				"pdr_gameplay_i_will_tank_05",
@@ -49041,7 +49041,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_ranger_downed_3_times_10_reply_01"
@@ -49559,7 +49559,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_elf_downed_3_times_08"
@@ -49673,7 +49673,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_soldier_downed_3_times_10"
@@ -49711,7 +49711,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_soldier_downed_3_times_09_reply_01"
@@ -49787,7 +49787,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_soldier_downed_3_times_11_reply_01"
@@ -49863,7 +49863,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_hunter_downed_3_times_05_reply_01"
@@ -49920,7 +49920,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_soldier_downed_3_times_10_reply_01"
@@ -49958,7 +49958,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_ranger_downed_3_times_04_reply_01"
@@ -50157,7 +50157,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_hunter_downed_3_times_10_reply_01"
@@ -50271,7 +50271,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_ranger_downed_3_times_10_reply_01"
@@ -50366,7 +50366,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_hunter_downed_3_times_11_reply_01"
@@ -50426,7 +50426,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_ranger_downed_3_times_11"
@@ -50445,7 +50445,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbr_gameplay_elf_downed_3_times_11"
@@ -50465,7 +50465,7 @@ return function ()
 			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "special_occasions_honduras",
-			category = "default",
+			category = "player_alerts",
 			dialogue_animations_n = 6,
 			sound_events = {
 				"pbw_gameplay_hanging_help_01",
@@ -50657,7 +50657,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_wizard_downed_3_times_07_reply_01"
@@ -50676,7 +50676,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_ranger_downed_3_times_13"
@@ -50771,7 +50771,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_hunter_downed_3_times_04_reply_01"
@@ -50809,7 +50809,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_elf_downed_3_times_09_reply_01"
@@ -50915,7 +50915,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_ranger_downed_3_times_03"
@@ -50963,7 +50963,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_ranger_caught_by_slaver_3_times_02"
@@ -51102,7 +51102,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_hunter_caught_by_slaver_3_times_02"
@@ -51121,7 +51121,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_elf_downed_3_times_03_reply_01"
@@ -51197,7 +51197,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_elf_downed_3_times_03_reply_01"
@@ -51292,7 +51292,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_hunter_downed_3_times_09_reply_01"
@@ -51387,7 +51387,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_hunter_downed_3_times_06"
@@ -51444,7 +51444,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_hunter_downed_3_times_02_reply_01"
@@ -51482,7 +51482,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_wizard_downed_3_times_04_reply_01"
@@ -51501,7 +51501,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_wizard_downed_3_times_03"
@@ -51640,7 +51640,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_wizard_downed_3_times_12_reply_01"
@@ -51659,7 +51659,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_elf_downed_3_times_11_reply_01"
@@ -51678,7 +51678,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_soldier_downed_3_times_07_reply_01"
@@ -51830,7 +51830,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_wizard_downed_3_times_04_reply_01"
@@ -51868,7 +51868,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_wizard_downed_3_times_05_reply_01"
@@ -52001,7 +52001,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_wizard_downed_3_times_02_reply_02"
@@ -52020,7 +52020,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_wizard_downed_3_times_03_reply_01"
@@ -52039,7 +52039,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_wizard_downed_3_times_02_reply_01"
@@ -52134,7 +52134,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_wizard_downed_3_times_06_reply_01"
@@ -52191,7 +52191,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_wizard_downed_3_times_10_reply_01"
@@ -52210,7 +52210,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_wizard_downed_3_times_10_reply_01"
@@ -52266,7 +52266,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_wizard_downed_3_times_06_reply_01"
@@ -52364,7 +52364,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_ranger_downed_3_times_11_reply_01"
@@ -52497,7 +52497,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_wizard_downed_3_times_14_reply_01"
@@ -52613,7 +52613,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_soldier_downed_3_times_02_reply_01"
@@ -52651,7 +52651,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_soldier_downed_3_times_02_reply_01"
@@ -52670,7 +52670,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_soldier_downed_3_times_12_reply_01"
@@ -52689,7 +52689,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_soldier_downed_3_times_12_reply_01"
@@ -52708,7 +52708,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_soldier_downed_3_times_03"
@@ -52765,7 +52765,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_elf_downed_3_times_04"
@@ -52841,7 +52841,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_soldier_downed_3_times_13"
@@ -52860,7 +52860,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_soldier_downed_3_times_10_reply_01"
@@ -52879,7 +52879,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_soldier_downed_3_times_06_reply_01"
@@ -52898,7 +52898,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_soldier_downed_3_times_06_reply_01"
@@ -53037,7 +53037,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_soldier_downed_3_times_09_reply_01"
@@ -53056,7 +53056,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_soldier_downed_3_times_04_reply_01"
@@ -53094,7 +53094,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_soldier_downed_3_times_04_reply_01"
@@ -53132,7 +53132,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_elf_downed_3_times_07_reply_01"
@@ -53170,7 +53170,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_soldier_downed_3_times_05_reply_01"
@@ -53189,7 +53189,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_elf_downed_3_times_06"
@@ -53208,7 +53208,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_soldier_downed_3_times_04"
@@ -53227,7 +53227,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_hunter_downed_3_times_11_reply_01"
@@ -53246,7 +53246,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_soldier_downed_3_times_05_reply_01"
@@ -53265,7 +53265,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_ranger_downed_3_times_02_reply_01"
@@ -53284,7 +53284,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_ranger_caught_by_slaver_3_times_02"
@@ -53322,7 +53322,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_ranger_downed_3_times_12_reply_01"
@@ -53341,7 +53341,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_ranger_downed_3_times_12_reply_01"
@@ -53379,7 +53379,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_ranger_caught_by_slaver_3_times_02"
@@ -53542,7 +53542,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_ranger_downed_3_times_13_reply_01"
@@ -53561,7 +53561,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_ranger_downed_3_times_07_reply_01"
@@ -53580,7 +53580,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_ranger_downed_3_times_09_reply_01"
@@ -53659,7 +53659,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_hunter_downed_3_times_02_reply_01"
@@ -53716,7 +53716,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_hunter_downed_3_times_03_reply_01"
@@ -53773,7 +53773,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_hunter_downed_3_times_13_reply_01"
@@ -53792,7 +53792,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_hunter_downed_3_times_13_reply_01"
@@ -53913,7 +53913,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_hunter_downed_3_times_06_reply_01"
@@ -53970,7 +53970,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_hunter_downed_3_times_07_reply_01"
@@ -54008,7 +54008,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_hunter_downed_3_times_04_reply_01"
@@ -54027,7 +54027,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pdr_gameplay_elf_downed_3_times_13_reply_01"
@@ -54084,7 +54084,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_ranger_downed_3_time_02"
@@ -54141,7 +54141,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_elf_downed_3_times_02_reply_01"
@@ -54179,7 +54179,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_elf_downed_3_times_02_reply_01"
@@ -54217,7 +54217,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_elf_downed_3_times_12_reply_01"
@@ -54255,7 +54255,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_elf_downed_3_times_08_reply_01"
@@ -54369,7 +54369,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_elf_downed_3_times_07_reply_01"
@@ -54407,7 +54407,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pes_gameplay_elf_downed_3_times_09_reply_01"
@@ -54426,7 +54426,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_elf_downed_3_times_04_reply_01"
@@ -54464,7 +54464,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwh_gameplay_elf_downed_3_times_08_reply_01"
@@ -54521,7 +54521,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pwe_gameplay_elf_downed_3_times_05_reply_01"
@@ -54813,7 +54813,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "pbw_gameplay_elf_downed_3_times_05_reply_01"
