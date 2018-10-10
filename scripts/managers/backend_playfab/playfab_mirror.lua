@@ -242,6 +242,7 @@ end
 
 PlayFabMirror._request_quests = function (self)
 	local request = {
+		SpecificRevision = 49,
 		FunctionName = "getQuests",
 		FunctionParameter = {}
 	}

@@ -560,8 +560,21 @@ InputManager.update_devices = function (self, dt, t)
 	end
 end
 
+local fake_input_service = {
+	get = function ()
+		return
+	end,
+	has = function ()
+		return
+	end
+}
+
 InputManager.get_service = function (self, input_service_name)
-	return self.input_services[input_service_name]
+	if self.input_services then
+		return self.input_services[input_service_name]
+	else
+		return fake_input_service
+	end
 end
 
 local disabled_gamepad_dummy = {

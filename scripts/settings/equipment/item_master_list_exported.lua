@@ -4631,6 +4631,35 @@ ItemMasterList.crafting_material_dust_3 = {
 		"es_mercenary"
 	}
 }
+ItemMasterList.crafting_material_dust_4 = {
+	description = "crafting_material_dust_4_description",
+	rarity = "plentiful",
+	display_name = "crafting_material_dust_4_title",
+	inventory_icon = "icons_placeholder",
+	slot_type = "crafting_material",
+	information_text = "information_text_dust_red",
+	temporary_template = "first_aid_kit_02",
+	can_stack = true,
+	hud_icon = "token_icon_04",
+	item_type = "crafting_material",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
 ItemMasterList.crafting_material_act_1 = {
 	description = "crafting_material_act_1_description",
 	rarity = "plentiful",

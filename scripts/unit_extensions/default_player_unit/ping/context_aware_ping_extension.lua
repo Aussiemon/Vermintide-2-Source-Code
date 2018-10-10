@@ -41,7 +41,7 @@ ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 			local unit_to_ping = ping_context.unit
 
 			if ping_released or not ping_held then
-				if t <= ping_context.max_t then
+				if Unit.alive(unit_to_ping) and t <= ping_context.max_t then
 					self:_ping_attempt(unit, unit_to_ping, t)
 				end
 

@@ -20,6 +20,7 @@ PlayFabRequestQueue.init = function (self)
 	self._queue = {}
 	self._active_entry = nil
 	self._id = 0
+	self._eac_id = 0
 end
 
 PlayFabRequestQueue.enqueue = function (self, request, success_callback, send_eac_challenge)
@@ -79,15 +80,18 @@ PlayFabRequestQueue.update = function (self, dt)
 	self._active_entry = entry
 
 	if entry.send_eac_challenge then
+		local eac_id = self._eac_id + 1
 		local success_cb = callback(self, "eac_challenge_success_cb")
 		local generate_challenge_request = {
 			FunctionName = "generateChallenge",
 			FunctionParameter = {
-				request_id = entry.id
+				eac_id = eac_id
 			}
 		}
+		entry.expected_eac_id = eac_id
+		self._eac_id = eac_id
 
-		print("[PlayFabRequestQueue] Sending EAC Challenge Request", request.FunctionName, entry.id)
+		print("[PlayFabRequestQueue] Sending EAC Challenge Request", request.FunctionName, entry.id, eac_id)
 		PlayFabClientApi.ExecuteCloudScript(generate_challenge_request, success_cb)
 	else
 		print("[PlayFabRequestQueue] Sending Request Without EAC Challenge", request.FunctionName, entry.id)
@@ -99,6 +103,14 @@ PlayFabRequestQueue.eac_challenge_success_cb = function (self, result)
 	local entry = self._active_entry
 	local function_result = result.FunctionResult
 	local challenge = function_result.challenge
+	local eac_id = function_result.eac_id
+
+	if not entry or (eac_id and eac_id ~= entry.expected_eac_id) then
+		print("[PlayFabRequestQueue] Received Timed Out EAC Response - Ignoring", eac_id)
+
+		return
+	end
+
 	local eac_response, response = nil
 
 	if challenge then
@@ -123,6 +135,7 @@ end
 PlayFabRequestQueue._challenge_response_received = function (self, response)
 	local entry = self._active_entry
 	entry.eac_challenge_success = true
+	entry.timeout = TIMEOUT_TIME
 	local request = entry.request
 	local function_params = request.FunctionParameter or {}
 	function_params.response = response

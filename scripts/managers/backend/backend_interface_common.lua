@@ -286,7 +286,7 @@ local filter_macros = {
 			local backend_items = Managers.backend:get_interface("items")
 			local rarity = backend_items:get_item_rarity(backend_id)
 
-			if rarity ~= "default" and rarity ~= "promo" then
+			if rarity ~= "default" and rarity ~= "promo" and rarity ~= "unique" then
 				local career_names = backend_items:equipped_by(backend_id)
 
 				if #career_names == 0 then
