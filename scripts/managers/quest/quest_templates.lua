@@ -481,13 +481,13 @@ quest_templates.quests.weekly_complete_quickplay_missions = {
 	icon = "quest_book_skull",
 	required_dlc = "bogenhafen",
 	desc = function ()
-		return string.format(Localize("quest_daily_complete_quickplay_missions_desc"), QuestSettings.weekly_complete_quickplay_missions)
+		return string.format(Localize("quest_daily_complete_quickplay_missions_desc"), 25)
 	end,
 	stat_mappings = weekly_complete_quickplay_missions_mappings,
 	completed = function (statistics_db, stats_id, quest_key)
 		local stat_name = QuestSettings.stat_mappings[quest_key][1]
 
-		return QuestSettings.weekly_complete_quickplay_missions <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+		return statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) >= 25
 	end,
 	progress = function (statistics_db, stats_id, quest_key)
 		local stat_name = QuestSettings.stat_mappings[quest_key][1]
@@ -495,7 +495,7 @@ quest_templates.quests.weekly_complete_quickplay_missions = {
 
 		return {
 			count,
-			QuestSettings.weekly_complete_quickplay_missions
+			25
 		}
 	end
 }

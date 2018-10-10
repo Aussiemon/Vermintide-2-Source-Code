@@ -176,7 +176,8 @@ ActionGeiser.fire = function (self, reason)
 					hit_zone_name = "torso",
 					hit_unit = hit_unit,
 					damage_profile_name = damage_profile_name,
-					target_index = target_index
+					target_index = target_index,
+					allow_critical_proc = target_index == 1
 				}
 				damage_buffer[#damage_buffer + 1] = damage_data
 			end
@@ -228,19 +229,16 @@ ActionGeiser._update_damage = function (self, current_action)
 			local damage_profile_name = damage_data.damage_profile_name
 			local target_index = damage_data.target_index
 			local hit_zone_name = damage_data.hit_zone_name
+			local allow_critical_proc = damage_data.allow_critical_proc
 
 			if not Unit.alive(hit_unit) then
 				break
 			end
 
-			if check_buffs then
-				local is_critical_strike = self._is_critical_strike
-				local send_to_server = true
+			local is_critical_strike = self._is_critical_strike
+			local send_to_server = true
 
-				DamageUtils.buff_on_attack(owner_unit, hit_unit, "aoe", is_critical_strike, hit_zone_name, #damage_buffer, send_to_server)
-
-				self._check_buffs = false
-			end
+			DamageUtils.buff_on_attack(owner_unit, hit_unit, "aoe", is_critical_strike and allow_critical_proc, hit_zone_name, #damage_buffer, send_to_server)
 
 			local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
 

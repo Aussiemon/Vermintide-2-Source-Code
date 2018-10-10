@@ -58,16 +58,18 @@ BackendInterfaceCraftingBase.salvage_validation_func = function (self, recipe, i
 	for i = 1, #item_backend_ids, 1 do
 		local backend_id = item_backend_ids[i]
 		local masterlist_data = backend_items:get_item_masterlist_data(backend_id)
-		local slot_type = masterlist_data.slot_type
+		local slot_type = masterlist_data and masterlist_data.slot_type
 
-		if not salvagable_slot_types[slot_type] then
+		if slot_type and not salvagable_slot_types[slot_type] then
 			return false
 		end
 
-		valid_item_ids[#valid_item_ids + 1] = {
-			amount = 1,
-			backend_id = backend_id
-		}
+		if masterlist_data then
+			valid_item_ids[#valid_item_ids + 1] = {
+				amount = 1,
+				backend_id = backend_id
+			}
+		end
 	end
 
 	if #valid_item_ids == 0 then

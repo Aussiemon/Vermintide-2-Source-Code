@@ -14,7 +14,7 @@ end
 
 PlayFabRequestQueue = class(PlayFabRequestQueue)
 local MAX_RETRIES = 2
-local TIMEOUT_TIME = 10
+local TIMEOUT_TIME = 20
 
 PlayFabRequestQueue.init = function (self)
 	self._queue = {}
@@ -60,7 +60,7 @@ PlayFabRequestQueue.update = function (self, dt)
 			print("[PlayFabRequestQueue] EAC Challenge Request Timed Out Resending", active_request.FunctionName, active_entry.id)
 			table.dump(active_entry, nil, 5)
 			Crashify.print_exception("PlayFabRequestQueue", "EAC Challenge Request Timed Out - Resending")
-			table.insert(self._queue, active_entry)
+			table.insert(self._queue, 1, active_entry)
 		else
 			print("[PlayFabRequestQueue] Request Timed Out", active_request.FunctionName, active_entry.id)
 			table.dump(active_entry, nil, 5)

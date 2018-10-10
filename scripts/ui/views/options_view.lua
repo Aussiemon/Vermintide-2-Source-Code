@@ -703,6 +703,12 @@ OptionsView.cleanup_popups = function (self)
 
 		self.exit_popup_id = nil
 	end
+
+	if self.reset_popup_id then
+		Managers.popup:cancel_popup(self.reset_popup_id)
+
+		self.reset_popup_id = nil
+	end
 end
 
 OptionsView.destroy = function (self)
@@ -2167,7 +2173,7 @@ OptionsView.apply_gamepad_changes = function (self, keymaps, using_left_handed_o
 end
 
 OptionsView.has_popup = function (self)
-	return self.exit_popup_id or self.title_popup_id or self.apply_popup_id or self.apply_bot_spawn_priority_popup_id
+	return self.exit_popup_id or self.title_popup_id or self.apply_popup_id or self.apply_bot_spawn_priority_popup_id or self.reset_popup_id
 end
 
 OPTIONS_VIEW_PRINT_ORIGINAL_VALUES = false
@@ -2277,6 +2283,18 @@ OptionsView.update = function (self, dt)
 			Managers.popup:cancel_popup(self.apply_popup_id)
 
 			self.apply_popup_id = nil
+
+			self:handle_apply_popup_results(result)
+		end
+	end
+
+	if self.reset_popup_id then
+		local result = Managers.popup:query_result(self.reset_popup_id)
+
+		if result then
+			Managers.popup:cancel_popup(self.reset_popup_id)
+
+			self.reset_popup_id = nil
 
 			self:handle_apply_popup_results(result)
 		end
@@ -2413,6 +2431,9 @@ OptionsView.handle_apply_popup_results = function (self, result)
 
 		self:set_original_settings()
 		self:reset_changed_settings()
+	elseif result == "reset_values" then
+		self:reset_current_settings_list_to_default()
+		self:handle_apply_changes()
 	elseif result == "revert_changes" then
 		if self.changed_keymaps then
 			self:apply_keymap_changes(self.original_keymaps, true)
@@ -2697,7 +2718,9 @@ OptionsView.handle_reset_to_default_button = function (self, input_service, allo
 
 	if reset_to_default_hotspot.on_release or (allow_gamepad_input and input_service:get("special_1")) then
 		WwiseWorld.trigger_event(self.wwise_world, "Play_hud_select")
-		self:reset_current_settings_list_to_default()
+
+		local text = Localize("reset_settings_popup_text")
+		self.reset_popup_id = Managers.popup:queue_popup(text, Localize("popup_discard_changes_topic"), "reset_values", Localize("button_ok"), "revert_changes", Localize("popup_choice_cancel"))
 	end
 end
 
@@ -2759,12 +2782,8 @@ OptionsView.draw_widgets = function (self, dt, disable_all_input)
 		self.ui_calibration_view:update(self.ui_top_renderer, input_service, dt)
 	end
 
-	if gamepad_active then
-		local popup_active = self.save_data_error_popup_id or self.exit_popup_id or self.title_popup_id or self.apply_popup_id or self.apply_bot_spawn_priority_popup_id
-
-		if not popup_active and not self.disable_all_input then
-			self.menu_input_description:draw(ui_top_renderer, dt)
-		end
+	if gamepad_active and not self:has_popup() and not self.disable_all_input then
+		self.menu_input_description:draw(ui_top_renderer, dt)
 	end
 end
 

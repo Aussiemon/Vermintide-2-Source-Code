@@ -990,7 +990,9 @@ DamageUtils.create_explosion = function (world, attacker_unit, impact_position, 
 				QuickDrawerStay:vector(impact_position, hit_direction, Colors.get("brown"))
 			end
 
-			area_damage_system:add_aoe_damage_target(hit_unit, attacker_unit, impact_position, shield_blocked, do_damage, hit_zone_name, damage_source, hit_distance, push_speed, radius, max_damage_radius, radius_min, radius_max, power_level, actual_power_level, hit_direction_normalized, explosion_template.name, is_critical_strike)
+			local allow_critical_proc = false
+
+			area_damage_system:add_aoe_damage_target(hit_unit, attacker_unit, impact_position, shield_blocked, do_damage, hit_zone_name, damage_source, hit_distance, push_speed, radius, max_damage_radius, radius_min, radius_max, power_level, actual_power_level, hit_direction_normalized, explosion_template.name, is_critical_strike, allow_critical_proc)
 
 			if explosion_data.catapult_players and DamageUtils.is_player_unit(hit_unit) then
 				local velocity = explosion_data.catapult_force * Vector3.normalize(hit_direction)
