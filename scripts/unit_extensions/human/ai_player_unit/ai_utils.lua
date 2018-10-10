@@ -271,8 +271,8 @@ AiUtils.warpfire_explode_unit = function (unit, blackboard)
 
 	Actor.set_collision_filter(actor, "filter_trigger")
 	Actor.set_scene_query_enabled(actor, false)
-	DamageUtils.create_explosion(world, unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, unit)
-	Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0)
+	DamageUtils.create_explosion(world, unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, unit, 0, false)
+	Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false)
 
 	local position = POSITION_LOOKUP[unit]
 	local nav_world = Managers.state.entity:system("ai_system"):nav_world()
@@ -305,13 +305,13 @@ AiUtils.chaos_zombie_explosion = function (unit, action, blackboard, delete_unit
 	local explosion_position = position + Vector3.up()
 	local explosion_template = ExplosionTemplates.chaos_zombie_explosion
 
-	DamageUtils.create_explosion(world, unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, unit)
+	DamageUtils.create_explosion(world, unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, unit, 0, false)
 
 	local attacker_unit_id = Managers.state.unit_storage:go_id(unit)
 	local explosion_template_id = NetworkLookup.explosion_templates.chaos_zombie_explosion
 	local damage_source_id = NetworkLookup.damage_sources[damage_source]
 
-	Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0)
+	Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false)
 
 	if delete_unit then
 		Managers.state.unit_spawner:mark_for_deletion(unit)
@@ -328,13 +328,13 @@ AiUtils.ai_explosion = function (exploding_unit, owner_unit, blackboard, damage_
 	local damage_source = blackboard.breed.name
 	local world = blackboard.world
 
-	DamageUtils.create_explosion(world, exploding_unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, owner_unit)
+	DamageUtils.create_explosion(world, exploding_unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, owner_unit, false)
 
 	local attacker_unit_id = Managers.state.unit_storage:go_id(owner_unit)
 	local explosion_template_id = NetworkLookup.explosion_templates[explosion_template.name]
 	local damage_source_id = NetworkLookup.damage_sources[damage_source]
 
-	Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0)
+	Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false)
 	Managers.state.unit_spawner:mark_for_deletion(exploding_unit)
 end
 
@@ -344,13 +344,13 @@ AiUtils.loot_rat_explosion = function (exploding_unit, owner_unit, blackboard, d
 	local damage_source = blackboard.breed.name
 	local world = blackboard.world
 
-	DamageUtils.create_explosion(world, exploding_unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, owner_unit)
+	DamageUtils.create_explosion(world, exploding_unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, owner_unit, false)
 
 	local attacker_unit_id = Managers.state.unit_storage:go_id(owner_unit)
 	local explosion_template_id = NetworkLookup.explosion_templates[explosion_template.name]
 	local damage_source_id = NetworkLookup.damage_sources[damage_source]
 
-	Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0)
+	Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false)
 
 	blackboard.delete_at_t = Managers.time:time("game") + 0.1
 end

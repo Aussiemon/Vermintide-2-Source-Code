@@ -5,7 +5,7 @@ local remove_list = {}
 Debug = Debug or {}
 
 Debug.setup = function (world, world_name)
-	Debug.active = true
+	Debug.active = BUILD ~= "release"
 	Debug.world = world
 	Debug.world_name = world_name
 	Debug.gui = World.create_screen_gui(world, "material", "materials/fonts/gw_fonts", "immediate")

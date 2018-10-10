@@ -164,16 +164,16 @@ CareerAbilityWHCaptain._run_ability = function (self, new_initial_speed)
 	local rotation = Quaternion.identity()
 	local career_power_level = career_extension:get_career_power_level()
 
-	DamageUtils.create_explosion(world, owner_unit, position, rotation, explosion_template, scale, damage_source, is_server, is_husk, owner_unit, career_power_level)
+	DamageUtils.create_explosion(world, owner_unit, position, rotation, explosion_template, scale, damage_source, is_server, is_husk, owner_unit, career_power_level, false)
 
 	local owner_unit_go_id = network_manager:unit_game_object_id(owner_unit)
 	local explosion_template_id = NetworkLookup.explosion_templates[explosion_template_name]
 	local damage_source_id = NetworkLookup.damage_sources[damage_source]
 
 	if is_server then
-		network_transmit:send_rpc_clients("rpc_create_explosion", owner_unit_go_id, false, position, rotation, explosion_template_id, scale, damage_source_id, career_power_level)
+		network_transmit:send_rpc_clients("rpc_create_explosion", owner_unit_go_id, false, position, rotation, explosion_template_id, scale, damage_source_id, career_power_level, false)
 	else
-		network_transmit:send_rpc_server("rpc_create_explosion", owner_unit_go_id, false, position, rotation, explosion_template_id, scale, damage_source_id, career_power_level)
+		network_transmit:send_rpc_server("rpc_create_explosion", owner_unit_go_id, false, position, rotation, explosion_template_id, scale, damage_source_id, career_power_level, false)
 	end
 
 	if local_player then

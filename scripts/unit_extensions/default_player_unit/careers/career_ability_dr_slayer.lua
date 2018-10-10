@@ -282,7 +282,7 @@ CareerAbilityDRSlayer._run_ability = function (self)
 			local career_power_level = career_extension:get_career_power_level()
 			local area_damage_system = Managers.state.entity:system("area_damage_system")
 
-			area_damage_system:create_explosion(owner_unit, position, rotation, explosion_template, scale, "career_ability", career_power_level)
+			area_damage_system:create_explosion(owner_unit, position, rotation, explosion_template, scale, "career_ability", career_power_level, false)
 			ScriptUnit.extension(owner_unit, "status_system"):set_noclip(false)
 		end
 	}

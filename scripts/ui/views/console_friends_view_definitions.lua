@@ -390,17 +390,12 @@ end
 local generic_input_actions = {
 	default = {
 		{
-			input_action = "confirm",
-			priority = 2,
-			description_text = "input_description_show_profile"
-		},
-		{
 			input_action = "back",
 			priority = 5,
 			description_text = "input_description_back"
 		}
 	},
-	refresh = {
+	only_refresh = {
 		actions = {
 			{
 				input_action = "special_1",
@@ -409,8 +404,27 @@ local generic_input_actions = {
 			}
 		}
 	},
+	refresh = {
+		actions = {
+			{
+				input_action = "special_1",
+				priority = 1,
+				description_text = "menu_description_refresh"
+			},
+			{
+				input_action = "confirm",
+				priority = 2,
+				description_text = "input_description_show_profile"
+			}
+		}
+	},
 	invite = {
 		actions = {
+			{
+				input_action = "confirm",
+				priority = 2,
+				description_text = "input_description_show_profile"
+			},
 			{
 				input_action = "refresh",
 				priority = 3,
@@ -424,6 +438,11 @@ local generic_input_actions = {
 				input_action = "special_1",
 				priority = 1,
 				description_text = "menu_description_refresh"
+			},
+			{
+				input_action = "confirm",
+				priority = 2,
+				description_text = "input_description_show_profile"
 			},
 			{
 				input_action = "refresh",

@@ -24,9 +24,13 @@ ActionAim.client_owner_start_action = function (self, new_action, t)
 	self.zoom_condition_function = new_action.zoom_condition_function
 	self.played_aim_sound = false
 	self.heavy_aim_flow_done = false
-	self.aim_sound_time = t + (new_action.aim_sound_delay or 0)
-	self.aim_zoom_time = t + (new_action.aim_zoom_delay or 0)
-	self.heavy_aim_flow_time = t + (new_action.heavy_aim_flow_delay or 0)
+	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+	local aim_sound_delay = buff_extension:apply_buffs_to_value(new_action.aim_sound_delay or 0, StatBuffIndex.REDUCED_RANGED_CHARGE_TIME)
+	local aim_sound_delay = buff_extension:apply_buffs_to_value(new_action.aim_sound_delay or 0, StatBuffIndex.REDUCED_RANGED_CHARGE_TIME)
+	local heavy_aim_flow_delay = buff_extension:apply_buffs_to_value(new_action.heavy_aim_flow_delay or 0, StatBuffIndex.REDUCED_RANGED_CHARGE_TIME)
+	self.aim_sound_time = t + aim_sound_delay
+	self.aim_zoom_time = t + aim_sound_delay
+	self.heavy_aim_flow_time = t + heavy_aim_flow_delay
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
 	first_person_extension:disable_rig_movement()

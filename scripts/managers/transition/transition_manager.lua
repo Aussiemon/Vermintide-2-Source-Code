@@ -17,10 +17,7 @@ TransitionManager.init = function (self)
 	self:_setup_world()
 
 	self._loading_icon_view = LoadingIconView:new(self._world)
-
-	if PLATFORM == "win32" then
-		self._disconnect_indicator_view = DisconnectIndicatorView:new(self._world)
-	end
+	self._disconnect_indicator_view = DisconnectIndicatorView:new(self._world)
 
 	if PLATFORM ~= "ps4" then
 		self._twitch_icon_view = TwitchIconView:new(self._world)

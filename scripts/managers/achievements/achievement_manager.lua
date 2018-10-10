@@ -164,6 +164,10 @@ AchievementManager.update = function (self, dt, t)
 		end
 
 		if token then
+			if PLATFORM == "xb1" then
+				self._console_achievement_check_delay = t + ACHIEVEMENT_CHECK_DELAY
+			end
+
 			unlock_tasks[template_id] = {
 				token = token,
 				achievement_completed = achievement_completed
@@ -180,10 +184,6 @@ AchievementManager.update = function (self, dt, t)
 	end
 
 	self._curr_template_idx = template_idx
-
-	if PLATFORM == "xb1" and should_process then
-		self._console_achievement_check_delay = t + ACHIEVEMENT_CHECK_DELAY
-	end
 
 	self:_update_reward_polling(dt, t)
 end

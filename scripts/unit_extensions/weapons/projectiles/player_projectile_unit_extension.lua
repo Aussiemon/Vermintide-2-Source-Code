@@ -51,7 +51,7 @@ PlayerProjectileUnitExtension.init = function (self, extension_init_context, uni
 	self.marked_for_deletion = false
 	self.did_damage = false
 	self.num_bounces = 0
-	self._is_critical_strike = extension_init_data.is_critical_strike
+	self._is_critical_strike = not not extension_init_data.is_critical_strike
 
 	self:initialize_projectile(projectile_info, impact_data)
 end
@@ -347,18 +347,16 @@ PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit,
 	local aoe_data = impact_data.aoe
 
 	if damage_profile then
-		if not aoe_data then
-			local node = Actor.node(hit_actor)
-			local hit_zone = breed.hit_zones_lookup[node]
-			local hit_zone_name = hit_zone.name
-			local send_to_server = true
-			local charge_value = damage_profile.charge_value or "projectile"
-			local is_critical_strike = self._is_critical_strike
-			local owner_unit = self.owner_unit
-			local num_targets_hit = self.num_targets_hit + 1
+		local node = Actor.node(hit_actor)
+		local hit_zone = breed.hit_zones_lookup[node]
+		local hit_zone_name = hit_zone.name
+		local send_to_server = true
+		local charge_value = damage_profile.charge_value or "projectile"
+		local is_critical_strike = self._is_critical_strike
+		local owner_unit = self.owner_unit
+		local num_targets_hit = self.num_targets_hit + 1
 
-			DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, num_targets_hit, send_to_server)
-		end
+		DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, num_targets_hit, send_to_server)
 
 		allow_link, shield_blocked = self:hit_enemy_damage(damage_profile, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, breed, has_ranged_boost, ranged_boost_curve_multiplier)
 	end
@@ -930,7 +928,7 @@ PlayerProjectileUnitExtension.do_aoe = function (self, aoe_data, position)
 		local power_level = self.power_level
 		local is_husk = false
 
-		DamageUtils.create_explosion(world, owner_unit, position, rotation, aoe_data, scale, item_name, is_server, is_husk, unit, power_level)
+		DamageUtils.create_explosion(world, owner_unit, position, rotation, aoe_data, scale, item_name, is_server, is_husk, unit, power_level, self._is_critical_strike)
 	end
 
 	if is_server then

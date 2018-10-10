@@ -47,6 +47,10 @@ local scenegraph_definition = {
 	}
 }
 
+if PLATFORM ~= "win32" then
+	scenegraph_definition.screen.scale = "hud_fit"
+end
+
 local function create_texture_with_text(texture, text, scenegraph_id, text_scenegraph_id, text_style)
 	return {
 		element = {

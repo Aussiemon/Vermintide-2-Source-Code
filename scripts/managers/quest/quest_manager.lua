@@ -7,7 +7,11 @@ local quest_keys = {
 		"daily_quest_3"
 	},
 	weekly = {
-		"weekly_quest_1"
+		"weekly_quest_1",
+		"weekly_quest_2",
+		"weekly_quest_3",
+		"weekly_quest_4",
+		"weekly_quest_5"
 	},
 	event = {
 		"event_quest_1",
@@ -144,68 +148,55 @@ end
 
 QuestManager.get_quest_outline = function (self)
 	local quests = self._backend_interface_quests:get_quests()
-	local daily_quests = quests.daily or {}
-	local weekly_quests = quests.weekly or {}
-	local event_quests = quests.event or {}
 	local outline = table.clone(outline)
 	local quest_categories = outline.categories
 
-	for i = 1, #quest_categories, 1 do
-		local category = quest_categories[i]
-		local quest_type = category.quest_type
+	for quest_list_name, quest_list in pairs(quests) do
+		local category_table = nil
 
-		if quest_type == "daily" then
-			local entries = category.entries
-			local keys = quest_keys.daily
+		for _, categories in ipairs(quest_categories) do
+			if categories.quest_type == quest_list_name then
+				category_table = categories
 
-			for j = 1, #keys, 1 do
-				local key = keys[j]
-				local quest_data = daily_quests[key]
-
-				if quest_data then
-					local quest_name = quest_data.name
-
-					if quest_templates.quests[quest_name] then
-						entries[#entries + 1] = quest_name
-					end
-				end
+				break
 			end
-		elseif quest_type == "weekly" then
-			local entries = category.entries
-			local keys = quest_keys.weekly
+		end
 
-			for j = 1, #keys, 1 do
-				local key = keys[j]
-				local quest_data = weekly_quests[key]
+		for backend_quest_key, quest_data in pairs(quest_list) do
+			local quest_key = quest_data.name
+			local quest_type = quest_data.type
+			local category_name = quest_data.category_name
 
-				if quest_data then
-					local quest_name = quest_data.name
+			if category_name then
+				if not category_table.categories then
+					category_table.categories = {}
+				end
 
-					if quest_templates.quests[quest_name] then
-						entries[#entries + 1] = quest_name
+				local categories = category_table.categories
+				local quest_type_category = nil
+
+				for index, category in ipairs(categories) do
+					if category.name == category_name then
+						quest_type_category = category
+
+						break
 					end
 				end
-			end
-		elseif quest_type == "event" then
-			local entries = category.entries
-			local keys = quest_keys.event
 
-			for j = 1, #keys, 1 do
-				local key = keys[j]
-				local quest_data = event_quests[key]
-
-				if quest_data then
-					local quest_name = quest_data.name
-
-					if quest_templates.quests[quest_name] then
-						if not entries then
-							category.entries = {}
-							entries = category.entries
-						end
-
-						entries[#entries + 1] = quest_name
-					end
+				if not quest_type_category then
+					quest_type_category = {
+						type = "quest",
+						entries = {},
+						name = category_name
+					}
+					categories[#categories + 1] = quest_type_category
 				end
+
+				local category_entries = quest_type_category.entries
+				category_entries[#category_entries + 1] = quest_key
+			else
+				local entries = category_table.entries
+				entries[#entries + 1] = quest_key
 			end
 		end
 	end
@@ -295,17 +286,34 @@ QuestManager.get_data_by_id = function (self, quest_id)
 		end
 	end
 
+	local icon = quest_data.icon
+	local reward = quest_data.reward
+	local required_dlc = nil
+	local backend_quest_data = backend_interface_quests:get_quest_by_key(quest_key)
+
+	if backend_quest_data then
+		if backend_quest_data.type and backend_quest_data.type == "bogenhafen" then
+			required_dlc = "bogenhafen"
+			icon = "quest_book_event_bogenhafen"
+		end
+
+		if backend_quest_data.reward then
+			reward = backend_quest_data.reward
+		end
+	end
+
 	local evaluated_quest = {
 		claimed = false,
 		id = quest_id,
 		name = name,
 		desc = desc,
-		icon = quest_data.icon,
+		icon = icon,
+		required_dlc = required_dlc,
 		summary_icon = quest_data.summary_icon,
 		completed = completed,
 		progress = progress,
 		requirements = requirements,
-		reward = quest_data.reward
+		reward = reward
 	}
 
 	return evaluated_quest

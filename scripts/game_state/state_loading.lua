@@ -1089,7 +1089,7 @@ StateLoading._try_next_state = function (self, dt)
 		self:_handle_afk_timer(dt)
 	end
 
-	if (Managers.popup:has_popup() or Managers.account:user_detached()) and not Managers.account:leaving_game() then
+	if (Managers.popup:has_popup() or Managers.account:user_detached() or Managers.account:has_popup()) and not Managers.account:leaving_game() then
 		return
 	end
 
@@ -1240,7 +1240,7 @@ StateLoading.on_exit = function (self, application_shutdown)
 	local skip_signin = self.parent.loading_context.skip_signin
 
 	if application_shutdown then
-		self:_destroy_network()
+		self:_destroy_network(application_shutdown)
 	elseif self._teardown_network then
 		self:_destroy_network()
 	else
@@ -1421,7 +1421,7 @@ StateLoading._packages_loaded = function (self)
 	end
 end
 
-StateLoading._destroy_network = function (self)
+StateLoading._destroy_network = function (self, application_shutdown)
 	PartyManager.reset()
 
 	if Managers.matchmaking then
@@ -1489,7 +1489,12 @@ StateLoading._destroy_network = function (self)
 		self.parent.loading_context.offline_invite = true
 	end
 
-	self._level_transition_handler:release_level_resources(self:get_current_level_keys())
+	local level_transition_handler = self._level_transition_handler
+	local enemy_package_loader = level_transition_handler.enemy_package_loader
+
+	enemy_package_loader:unload_enemy_packages(application_shutdown)
+	enemy_package_loader:network_context_destroyed()
+	level_transition_handler:release_level_resources(self:get_current_level_keys())
 
 	self._level_transition_handler = nil
 

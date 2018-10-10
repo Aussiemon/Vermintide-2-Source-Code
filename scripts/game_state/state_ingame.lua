@@ -1346,6 +1346,10 @@ StateIngame._check_exit = function (self, t)
 			printf("[StateIngame] Transition to StateLoadingRestartNetwork on %q", self.exit_type)
 			self.level_transition_handler:set_next_level(self.level_transition_handler:default_level_key())
 
+			if PLATFORM == "xb1" and Managers.voice_chat then
+				Managers.voice_chat:_remove_all_users()
+			end
+
 			if exit_type == "lobby_state_failed" then
 				if self.is_server then
 					self.parent.loading_context.previous_session_error = "broken_connection"

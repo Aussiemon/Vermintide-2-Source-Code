@@ -454,6 +454,17 @@ BackendManagerPlayFab.request_timeout = function (self)
 	self:_post_error(error_data, "backend_err_request_timeout")
 end
 
+BackendManagerPlayFab.commit_error = function (self)
+	local reason = BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_COMMIT_TIMEOUT
+	local details = nil
+	local error_data = {
+		reason = reason,
+		details = details
+	}
+
+	self:_post_error(error_data)
+end
+
 BackendManagerPlayFab.playfab_eac_error = function (self)
 	local reason = BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_EAC_ERROR
 	local details = nil
@@ -563,10 +574,12 @@ BackendManagerPlayFab._reason_localize_key = function (self, reason)
 			return "backend_err_playfab"
 		elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_EAC_ERROR then
 			return "backend_err_playfab_eac"
+		elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_COMMIT_TIMEOUT then
+			return "backend_err_request_timeout"
 		else
 			return "backend_err_connecting"
 		end
-	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_EAC_ERROR then
+	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_EAC_ERROR or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_COMMIT_TIMEOUT then
 		return ERROR_CODES[reason]
 	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ACHIEVEMENT_REWARD_CLAIMED or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_QUEST_REFRESH_UNAVAILABLE then
 		return ERROR_CODES[reason]
@@ -602,7 +615,7 @@ BackendManagerPlayFab._format_error_message_windows = function (self, reason)
 		end
 
 		print("backend error", reason, ERROR_CODES[reason])
-	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_EAC_ERROR then
+	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_EAC_ERROR or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_COMMIT_TIMEOUT then
 		button_1 = {
 			id = self._button_quit,
 			text = Localize("menu_quit")

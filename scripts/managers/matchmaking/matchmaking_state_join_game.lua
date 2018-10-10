@@ -110,6 +110,11 @@ MatchmakingStateJoinGame.update = function (self, dt, t)
 			matchmaking_manager:cancel_join_lobby("user_cancel")
 
 			return MatchmakingStateIdle, self.state_context
+		elseif Managers.account:user_detached() then
+			mm_printf_force("User detached - > Cancel Matchmaking")
+			matchmaking_manager:cancel_matchmaking()
+
+			return MatchmakingStateIdle, self.state_context
 		else
 			mm_printf_force("Abort for other reason")
 

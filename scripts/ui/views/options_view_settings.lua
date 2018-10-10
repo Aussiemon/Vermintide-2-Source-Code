@@ -1153,6 +1153,13 @@ local gamepad_settings_definition = {
 		widget_type = "stepper"
 	},
 	{
+		setup = "cb_gamepad_acceleration_enabled_setup",
+		saved_value = "cb_gamepad_acceleration_enabled_saved_value",
+		callback = "cb_gamepad_acceleration_enabled",
+		tooltip_text = "tooltip_gamepad_acceleration_enabled",
+		widget_type = "stepper"
+	},
+	{
 		setup = "cb_gamepad_use_ps4_style_input_icons_setup",
 		saved_value = "cb_gamepad_use_ps4_style_input_icons_saved_value",
 		callback = "cb_gamepad_use_ps4_style_input_icons",

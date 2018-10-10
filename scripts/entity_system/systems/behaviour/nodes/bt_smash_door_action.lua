@@ -254,9 +254,14 @@ BTSmashDoorAction.StateAttacking.update = function (self, dt, t)
 	local blackboard = self.blackboard
 	local target_unit = self.target_unit
 	local health_extension = ScriptUnit.extension(target_unit, "health_system")
+	local door_extension = ScriptUnit.extension(target_unit, "door_system")
 
-	if not health_extension:is_alive() then
-		return BTSmashDoorAction.StateMovingToSmartObjectExit
+	if not health_extension:is_alive() or (door_extension:is_open() and not door_extension:is_opening()) then
+		if door_extension.move_to_exit_when_opened then
+			return BTSmashDoorAction.StateMovingToSmartObjectExit
+		else
+			blackboard.smash_door.done = true
+		end
 	end
 
 	if blackboard.attack_finished then

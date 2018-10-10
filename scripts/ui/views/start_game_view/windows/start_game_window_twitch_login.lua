@@ -209,7 +209,11 @@ StartGameWindowTwitchLogin._update_game_options = function (self, dt, t)
 end
 
 StartGameWindowTwitchLogin.cb_connection_error_callback = function (self, message)
-	self._error_popup_id = Managers.popup:queue_popup(message, Localize("popup_header_error_twitch"), "ok", Localize("popup_choice_ok"))
+	if PLATFORM == "xb1" then
+		self._error_popup_id = Managers.popup:queue_popup(message, Localize("popup_error_topic"), "ok", Localize("popup_choice_ok"))
+	else
+		self._error_popup_id = Managers.popup:queue_popup(message, Localize("popup_header_error_twitch"), "ok", Localize("popup_choice_ok"))
+	end
 end
 
 StartGameWindowTwitchLogin.cb_connection_success_callback = function (self, user_data)

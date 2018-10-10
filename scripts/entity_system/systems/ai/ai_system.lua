@@ -1050,17 +1050,6 @@ local function update_blackboard(unit, blackboard, t, dt)
 	blackboard.is_falling = locomotion_extension and locomotion_extension:is_falling()
 	blackboard.move_speed = locomotion_extension and locomotion_extension.move_speed
 
-	if blackboard.next_smart_object_data then
-		local smart_object_type = blackboard.next_smart_object_data.smart_object_type
-
-		if smart_object_type == "doors" or smart_object_type == "planks" then
-			local door_system = blackboard.door_system or Managers.state.entity:system("door_system")
-			local door_unit = blackboard.next_smart_object_data.smart_object_data.unit
-			local door_is_open = door_system.unit_extension_data[door_unit].current_state ~= "closed"
-			blackboard.next_smart_object_data.disabled = door_is_open
-		end
-	end
-
 	if breed.run_on_update then
 		breed.run_on_update(unit, blackboard, t, dt)
 	end

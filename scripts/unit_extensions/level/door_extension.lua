@@ -10,6 +10,8 @@ DoorExtension.init = function (self, extension_init_context, unit, extension_ini
 	self.is_server = Managers.player.is_server
 	self.ignore_umbra = not World.umbra_available(world)
 	self.is_umbra_gate = Unit.get_data(unit, "umbra_gate")
+	local move_to_exit_when_opened = Unit.get_data(unit, "move_to_exit_when_opened")
+	self.move_to_exit_when_opened = move_to_exit_when_opened == nil or move_to_exit_when_opened
 	local door_state = Unit.get_data(unit, "door_state")
 	self.current_state = (door_state == 0 and "open_forward") or (door_state == 1 and "closed") or (door_state == 2 and "open_backward")
 	self.animation_flow_events = {
@@ -36,6 +38,17 @@ end
 
 DoorExtension.extensions_ready = function (self)
 	self.health_extension = ScriptUnit.extension(self.unit, "health_system")
+end
+
+DoorExtension.update_nav_graphs = function (self)
+	local unit = self.unit
+	local nav_graph_system = Managers.state.entity:system("nav_graph_system")
+
+	if self:is_open() or self.dead then
+		nav_graph_system:remove_nav_graph(unit)
+	else
+		nav_graph_system:add_nav_graph(unit)
+	end
 end
 
 DoorExtension.animation_played = function (self, frames, speed)
@@ -136,6 +149,7 @@ DoorExtension.update = function (self, unit, input, dt, context, t)
 		frames_since_obstacle_update = frames_since_obstacle_update + 1
 
 		if frames_since_obstacle_update == NAVMESH_UPDATE_DELAY then
+			self:update_nav_graphs()
 			self:handle_breeds_failed_leaving_smart_object()
 
 			self.frames_since_obstacle_update = nil

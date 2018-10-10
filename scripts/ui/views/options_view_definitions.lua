@@ -4621,6 +4621,34 @@ SettingsWidgetTypeTemplate = {
 		}
 	},
 	sorted_list = {
+		input_description = {
+			name = "sorted_list",
+			gamepad_support = true,
+			actions = {
+				{
+					input_action = "confirm",
+					priority = 2,
+					description_text = "input_description_select"
+				}
+			}
+		},
+		active_input_description = {
+			name = "sorted_list",
+			gamepad_support = true,
+			actions = {
+				{
+					input_action = "d_vertical",
+					priority = 2,
+					description_text = "input_description_select",
+					ignore_keybinding = true
+				},
+				{
+					input_action = "confirm",
+					priority = 3,
+					description_text = "input_description_move_to_top"
+				}
+			}
+		},
 		input_function = function (widget, input_service)
 			local content = widget.content
 			local list_content = content.list_content
@@ -4700,7 +4728,7 @@ SettingsWidgetTypeTemplate = {
 
 					Managers.music:trigger_event("Play_hud_select")
 
-					return true
+					return true, content.active
 				elseif input_service:get("confirm", true) then
 					local selected_index = nil
 					local num_profiles = #list_content
@@ -4722,11 +4750,17 @@ SettingsWidgetTypeTemplate = {
 						table.insert(list_content, 1, temp_content)
 						content:callback(style)
 						Managers.music:trigger_event("Play_hud_select")
+
+						for idx, content in ipairs(list_content) do
+							content.index_text = idx .. "."
+						end
 					end
 				end
 
-				return true
+				return true, content.active
 			end
+
+			return false, content.active
 		end
 	},
 	stepper = {

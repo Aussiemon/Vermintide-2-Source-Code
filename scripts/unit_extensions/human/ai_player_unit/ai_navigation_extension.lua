@@ -412,18 +412,16 @@ AINavigationExtension.use_smart_object = function (self, do_use)
 	local success = nil
 
 	if do_use then
-		assert(self._blackboard.next_smart_object_data.next_smart_object_id ~= nil, "Tried to use smart object with a nil smart object id")
+		fassert(self._blackboard.next_smart_object_data.next_smart_object_id ~= nil, "Tried to use smart object with a nil smart object id")
 
 		success = GwNavBot.enter_manual_control(self._nav_bot, self._next_smartobject_interval)
 
 		if not success then
-			print("FAIL CANNOT GET SMART OBJECT CONTROL")
 		end
 	else
 		success = GwNavBot.exit_manual_control(self._nav_bot)
 
 		if not success then
-			print("FAIL CANNOT RELEASE SMART OBJECT CONTROL. CLEARING FOLLOWED PATH...")
 			GwNavBot.clear_followed_path(self._nav_bot)
 		end
 	end

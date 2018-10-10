@@ -277,7 +277,7 @@ StartGameStateSettingsOverview._set_new_save_data_table = function (self, table_
 	if table_name then
 		local mission_selection_save_data = PlayerData.mission_selection
 
-		if not mission_selection_save_data[table_name] then
+		if not mission_selection_save_data[table_name] or not self:_validate_mission_save_data(mission_selection_save_data[table_name]) then
 			mission_selection_save_data[table_name] = {}
 		end
 
@@ -292,6 +292,19 @@ StartGameStateSettingsOverview._set_new_save_data_table = function (self, table_
 	else
 		self._layout_save_settings = nil
 	end
+end
+
+StartGameStateSettingsOverview._validate_mission_save_data = function (self, mission_save_data)
+	local level_id = mission_save_data and mission_save_data.level_id
+
+	if not level_id then
+		return true
+	end
+
+	local stats_id = self._stats_id
+	local statistics_db = self.statistics_db
+
+	return LevelUnlockUtils.level_unlocked(statistics_db, stats_id, level_id)
 end
 
 StartGameStateSettingsOverview.close_on_exit = function (self)

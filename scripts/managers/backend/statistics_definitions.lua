@@ -42,7 +42,7 @@ player.damage_dealt = {
 }
 local max_daily_quests = 3
 local max_event_quests = 3
-local max_weekly_quests = 1
+local max_weekly_quests = 5
 local num_quest_statistics_per_quest = 3
 player.quest_statistics = {}
 

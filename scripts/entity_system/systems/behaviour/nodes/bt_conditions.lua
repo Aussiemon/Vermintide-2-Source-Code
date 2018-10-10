@@ -150,12 +150,26 @@ BTConditions.in_gravity_well = function (blackboard)
 end
 
 BTConditions.at_smartobject = function (blackboard)
-	local smartobject_is_next = blackboard.next_smart_object_data.next_smart_object_id ~= nil
-	local is_in_smartobject_range = blackboard.is_in_smartobject_range
+	local next_smart_object_data = blackboard.next_smart_object_data
+	local smartobject_is_next = next_smart_object_data.next_smart_object_id ~= nil
+
+	if not smartobject_is_next then
+		return false
+	end
+
 	local is_smart_objecting = blackboard.is_smart_objecting
+	local nav_graph_system = Managers.state.entity:system("nav_graph_system")
+	local smart_object_unit = next_smart_object_data.smart_object_data and next_smart_object_data.smart_object_data.unit
+	local has_nav_graph_extension, nav_graph_enabled = nav_graph_system:has_nav_graph(smart_object_unit)
+
+	if has_nav_graph_extension and not nav_graph_enabled and not is_smart_objecting then
+		return false
+	end
+
+	local is_in_smartobject_range = blackboard.is_in_smartobject_range
 	local moving_state = blackboard.move_state == "moving"
 
-	return (smartobject_is_next and is_in_smartobject_range and moving_state) or is_smart_objecting
+	return (is_in_smartobject_range and moving_state) or is_smart_objecting
 end
 
 BTConditions.gutter_runner_at_smartobject = function (blackboard)
@@ -171,21 +185,13 @@ BTConditions.ratogre_at_smartobject = function (blackboard)
 		return false
 	end
 
-	local smartobject_is_next = blackboard.next_smart_object_data.next_smart_object_id ~= nil
-	local is_in_smartobject_range = blackboard.is_in_smartobject_range
-	local is_smart_objecting = blackboard.is_smart_objecting
-	local moving_state = blackboard.move_state == "moving"
-
-	return (smartobject_is_next and is_in_smartobject_range and moving_state) or is_smart_objecting
+	return BTConditions.at_smartobject(blackboard)
 end
 
 BTConditions.stormfiend_boss_intro_jump_down = function (blackboard)
-	local smartobject_is_next = blackboard.next_smart_object_data.next_smart_object_id ~= nil
-	local is_in_smartobject_range = blackboard.is_in_smartobject_range
-	local is_smart_objecting = blackboard.is_smart_objecting
 	local is_in_intro = blackboard.jump_down_intro
 
-	return ((smartobject_is_next and is_in_smartobject_range) or is_smart_objecting) and is_in_intro
+	return BTConditions.at_smartobject(blackboard) and is_in_intro
 end
 
 BTConditions.at_teleport_smartobject = function (blackboard)
@@ -223,11 +229,6 @@ BTConditions.at_door_smartobject = function (blackboard)
 	local is_smart_object_door = smart_object_type == "doors" or smart_object_type == "planks" or smart_object_type == "big_boy_destructible"
 	local is_smashing_door = blackboard.is_smashing_door
 	local is_scurrying_under_door = blackboard.is_scurrying_under_door
-	local door_is_open = blackboard.next_smart_object_data.disabled
-
-	if door_is_open then
-		return false
-	end
 
 	return is_smart_object_door or is_smashing_door or is_scurrying_under_door
 end

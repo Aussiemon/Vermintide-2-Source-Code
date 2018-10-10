@@ -586,6 +586,12 @@ StartGameWindowPanelConsole._heroic_deed_disable_function = function (self)
 	return is_connected or running_beta
 end
 
+StartGameWindowPanelConsole._lobby_browser_disable_function = function (self)
+	local is_connected = Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected())
+
+	return is_connected
+end
+
 StartGameWindowPanelConsole._streaming_disable_function = function (self)
 	local is_offline = Managers.account:offline_mode()
 

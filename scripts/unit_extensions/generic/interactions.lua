@@ -7,6 +7,15 @@ InteractionResult = {
 
 table.mirror_array_inplace(InteractionResult)
 
+InteractionCustomChecks = InteractionCustomChecks or {}
+
+InteractionCustomChecks.dialogue_not_playing = function (interactor_unit, interactable_unit)
+	local dialogue_system = Managers.state.entity:system("dialogue_system")
+	local is_dialogue_playing = dialogue_system:is_dialogue_playing()
+
+	return not is_dialogue_playing
+end
+
 InteractionDefinitions = InteractionDefinitions or {}
 InteractionDefinitions.player_generic = {
 	default_config = {
@@ -668,6 +677,12 @@ InteractionDefinitions.smartobject = {
 			return
 		end,
 		can_interact = function (interactor_unit, interactable_unit)
+			local custom_interaction_check_name = Unit.get_data(interactable_unit, "interaction_data", "custom_interaction_check_name")
+
+			if custom_interaction_check_name and InteractionCustomChecks[custom_interaction_check_name] and not InteractionCustomChecks[custom_interaction_check_name](interactor_unit, interactable_unit) then
+				return false
+			end
+
 			local used = Unit.get_data(interactable_unit, "interaction_data", "used")
 
 			return not used
@@ -726,6 +741,12 @@ InteractionDefinitions.smartobject = {
 			return (data.start_time == nil and 0) or math.min(1, (t - data.start_time) / data.duration)
 		end,
 		can_interact = function (interactor_unit, interactable_unit, data, config)
+			local custom_interaction_check_name = Unit.get_data(interactable_unit, "interaction_data", "custom_interaction_check_name")
+
+			if custom_interaction_check_name and InteractionCustomChecks[custom_interaction_check_name] and not InteractionCustomChecks[custom_interaction_check_name](interactor_unit, interactable_unit) then
+				return false
+			end
+
 			local used = Unit.get_data(interactable_unit, "interaction_data", "used")
 			local being_used = Unit.get_data(interactable_unit, "interaction_data", "being_used")
 

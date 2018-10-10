@@ -666,15 +666,16 @@ ConflictDirector.patch_settings_with_difficulty = function (self, source_setting
 
 	if overrides and overrides[difficulty] then
 		local override_settings = overrides[difficulty]
-		local patched_settings = {}
 
 		for key, value in pairs(source_settings) do
 			if key ~= "difficulty_overrides" then
-				patched_settings[key] = override_settings[key] or source_settings[key]
+				source_settings[key] = override_settings[key] or source_settings[key]
 			end
 		end
 
-		return patched_settings
+		source_settings.difficulty_overrides = nil
+
+		return source_settings
 	else
 		return source_settings
 	end
@@ -686,13 +687,13 @@ ConflictDirector.set_updated_settings = function (self, conflict_settings_name)
 	local director = ConflictDirectors[conflict_settings_name]
 	CurrentConflictSettings = director
 	self.current_conflict_settings = conflict_settings_name
-	CurrentIntensitySettings = self:patch_settings_with_difficulty(director.intensity)
-	CurrentPacing = self:patch_settings_with_difficulty(director.pacing)
-	CurrentBossSettings = self:patch_settings_with_difficulty(director.boss)
-	CurrentSpecialsSettings = self:patch_settings_with_difficulty(director.specials)
-	CurrentHordeSettings = self:patch_settings_with_difficulty(director.horde)
-	CurrentRoamingSettings = director.roaming
-	CurrentPackSpawningSettings = self:patch_settings_with_difficulty(director.pack_spawning)
+	CurrentIntensitySettings = self:patch_settings_with_difficulty(table.clone(director.intensity))
+	CurrentPacing = self:patch_settings_with_difficulty(table.clone(director.pacing))
+	CurrentBossSettings = self:patch_settings_with_difficulty(table.clone(director.boss))
+	CurrentSpecialsSettings = self:patch_settings_with_difficulty(table.clone(director.specials))
+	CurrentHordeSettings = self:patch_settings_with_difficulty(table.clone(director.horde))
+	CurrentRoamingSettings = table.clone(director.roaming)
+	CurrentPackSpawningSettings = self:patch_settings_with_difficulty(table.clone(director.pack_spawning))
 
 	if Managers.state.game_mode then
 		Managers.state.game_mode:conflict_director_updated_settings()

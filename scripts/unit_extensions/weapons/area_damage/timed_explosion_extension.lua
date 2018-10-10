@@ -45,7 +45,7 @@ TimedExplosionExtension._explode = function (self)
 	local damage_source = explosion_template.damage_source or "undefined"
 	local attacker_power_level = explosion_template.attacker_power_level or 0
 
-	self._area_damage_system:create_explosion(attacker_unit, position, rotation, explosion_template_name, scale, damage_source, attacker_power_level)
+	self._area_damage_system:create_explosion(attacker_unit, position, rotation, explosion_template_name, scale, damage_source, attacker_power_level, false)
 end
 
 return

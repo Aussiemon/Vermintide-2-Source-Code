@@ -217,7 +217,7 @@ end
 NavGraphSystem.queue_remove_nav_graph_from_flow = function (self, unit)
 	local extension = self.unit_extension_data[unit]
 
-	fassert(extension, "Tried to add nav graph from flow for a unit without nav graph extension. %s", unit)
+	fassert(extension, "Tried to remove nav graph from flow for a unit without nav graph extension. %s", unit)
 
 	self.nav_graphs_units_to_remove = self.nav_graphs_units_to_remove or {}
 	self.nav_graphs_units_to_remove[#self.nav_graphs_units_to_remove + 1] = unit
@@ -233,7 +233,7 @@ NavGraphSystem.add_nav_graph = function (self, unit)
 
 		for i, navgraph in ipairs(navgraphs) do
 			GwNavGraph.add_to_database(navgraph)
-			print("adding navgraph")
+			printf("[NavGraphSystem] Adding navgraph(s) for [%q]", tostring(unit))
 		end
 
 		extension.nav_graph_removed = false
@@ -250,7 +250,7 @@ NavGraphSystem.remove_nav_graph = function (self, unit)
 
 		for i, navgraph in ipairs(navgraphs) do
 			GwNavGraph.remove_from_database(navgraph)
-			print("removing navgraph")
+			printf("[NavGraphSystem] Removing navgraph(s) for [%q]", tostring(unit))
 		end
 
 		extension.nav_graph_removed = true
@@ -422,6 +422,16 @@ end
 
 NavGraphSystem.get_smart_object_id = function (self, unit)
 	return self.smart_object_ids[unit]
+end
+
+NavGraphSystem.has_nav_graph = function (self, unit)
+	local nav_graph_extension = self.unit_extension_data[unit]
+
+	if nav_graph_extension then
+		return true, not nav_graph_extension.nav_graph_removed
+	else
+		return false, false
+	end
 end
 
 return

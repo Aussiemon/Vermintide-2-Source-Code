@@ -26,7 +26,7 @@ local transitions = {
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup_hero_view", Localize("menu_ok"))
 		else
 			local text = Localize("leave_game_popup_text")
-			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_leave_game_topic"), "leave_game", Localize("popup_choice_yes"), "cancel_popup_hero_view", Localize("popup_choice_no"))
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_leave_game_topic"), "leave_game_hero_view", Localize("popup_choice_yes"), "cancel_popup_hero_view", Localize("popup_choice_no"))
 		end
 	end,
 	quit_game = function (self)
@@ -232,6 +232,24 @@ local transitions = {
 		if network_server and not network_server:are_all_peers_ingame() then
 			local text = Localize("player_join_block_exit_game")
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup", Localize("menu_ok"))
+		else
+			self.input_manager:block_device_except_service(nil, "keyboard", 1)
+			self.input_manager:block_device_except_service(nil, "mouse", 1)
+			self.input_manager:block_device_except_service(nil, "gamepad", 1)
+
+			self.leave_game = true
+		end
+	end,
+	leave_game_hero_view = function (self)
+		if self.popup_id then
+			Managers.popup:cancel_popup(self.popup_id)
+		end
+
+		local network_server = Managers.state.network.network_server
+
+		if network_server and not network_server:are_all_peers_ingame() then
+			local text = Localize("player_join_block_exit_game")
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup_hero_view", Localize("menu_ok"))
 		else
 			self.input_manager:block_device_except_service(nil, "keyboard", 1)
 			self.input_manager:block_device_except_service(nil, "mouse", 1)

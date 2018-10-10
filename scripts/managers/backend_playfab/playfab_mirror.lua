@@ -574,6 +574,24 @@ PlayFabMirror.ready = function (self)
 end
 
 PlayFabMirror.update = function (self, dt)
+	local error_code, request_id = nil
+
+	if self._request_queue_error then
+		return
+	else
+		error_code, request_id = self._request_queue:update(dt)
+	end
+
+	if error_code then
+		self._request_queue_error = error_code
+
+		if error_code == "request_timed_out" then
+			Managers.backend:request_timeout()
+		end
+
+		return
+	end
+
 	if self._commit_current_id then
 		self:_check_current_commit()
 	end
@@ -594,17 +612,16 @@ PlayFabMirror.update = function (self, dt)
 		self._commit_limit_timer = REDUCTION_INTERVAL
 		self._commit_limit_total = math.max(self._commit_limit_total - 1, 1)
 	end
-
-	self._request_queue:update(dt)
 end
 
 PlayFabMirror._check_current_commit = function (self)
-	local status = self:_commit_status(self._commit_current_id)
+	local status = self:_commit_status()
 
 	if status ~= "waiting" then
-		local commit_data = self._commits[self._commit_current_id]
+		local commit_current_id = self._commit_current_id
+		local commit_data = self._commits[commit_current_id]
 
-		print("commit result", status, self._commit_current_id)
+		print("commit result", status, commit_current_id)
 
 		self._commit_current_id = nil
 
@@ -622,22 +639,16 @@ PlayFabMirror._check_current_commit = function (self)
 	end
 end
 
-PlayFabMirror._commit_status = function (self, commit_id)
-	fassert(commit_id, "Querying status for commit_id %s", tostring(commit_id))
+PlayFabMirror._commit_status = function (self)
+	local commit_current_id = self._commit_current_id
 
-	local commit_data = self._commits[commit_id]
+	fassert(commit_current_id, "Querying status for commit_current_id %s", tostring(commit_current_id))
 
-	fassert(commit_data, "No commit with id %d", commit_id)
+	local commit_data = self._commits[commit_current_id]
 
-	if commit_data.timeout < os.time() then
-		print(commit_data.timeout, os.time())
+	fassert(commit_data, "No commit with id %d", commit_current_id)
 
-		local warning = string.format("Commit timed out %d", commit_id)
-
-		Application.warning(warning)
-
-		return "commit_error"
-	elseif commit_data.status == "commit_error" then
+	if commit_data.status == "commit_error" then
 		return "commit_error"
 	elseif commit_data.num_updates == commit_data.updates_to_make and not commit_data.wait_for_stats and not commit_data.wait_for_keep_decorations and not commit_data.wait_for_user_data and not commit_data.wait_for_hero_attributes then
 		if PLATFORM == "xb1" and not Managers.account:offline_mode() then
@@ -913,11 +924,16 @@ PlayFabMirror._commit_internal = function (self, queue_id, commit_complete_callb
 	local career_data = self._career_data
 	local career_data_mirror = self._career_data_mirror
 	local commit_id = queue_id or self:_new_id()
-	local status = "success"
-	local num_updates = 0
 
 	table.clear(self._queued_commit)
 
+	local commit = {
+		num_updates = 0,
+		status = "success",
+		updates_to_make = 0,
+		commit_complete_callback = commit_complete_callback,
+		request_queue_ids = {}
+	}
 	local update_character_data_request = {
 		FunctionName = "updateCharacterData",
 		FunctionParameter = {}
@@ -964,22 +980,14 @@ PlayFabMirror._commit_internal = function (self, queue_id, commit_complete_callb
 				function_params.commit_id = commit_id
 				function_params.commit_limit_total = self._commit_limit_total
 				local success_callback = callback(self, "update_character_data_request_cb")
-
-				self._request_queue:enqueue(update_character_data_request, success_callback, false)
-
-				status = "waiting"
-				num_updates = num_updates + 1
+				local id = self._request_queue:enqueue(update_character_data_request, success_callback, false)
+				commit.status = "waiting"
+				commit.updates_to_make = commit.updates_to_make + 1
+				commit.request_queue_ids[#commit.request_queue_ids + 1] = id
 			end
 		end
 	end
 
-	local commit = {
-		num_updates = 0,
-		timeout = os.time() + 15,
-		status = status,
-		updates_to_make = num_updates,
-		commit_complete_callback = commit_complete_callback
-	}
 	self._commit_current_id = commit_id
 	local stats_interface = Managers.backend:get_interface("statistics")
 	local game_mode_key = Managers.state and Managers.state.game_mode and Managers.state.game_mode:game_mode_key()
@@ -992,12 +1000,13 @@ PlayFabMirror._commit_internal = function (self, queue_id, commit_complete_callb
 
 	if request and not script_data["eac-untrusted"] then
 		local success_callback = callback(self, "save_statistics_cb", commit_id, stats_to_save)
+		local id = self._request_queue:enqueue(request, success_callback, true)
 
-		self._request_queue:enqueue(request, success_callback, true)
 		stats_interface:clear_saved_stats()
 
 		commit.status = "waiting"
 		commit.wait_for_stats = true
+		commit.request_queue_ids[#commit.request_queue_ids + 1] = id
 	end
 
 	table.clear(new_data)
@@ -1020,11 +1029,10 @@ PlayFabMirror._commit_internal = function (self, queue_id, commit_complete_callb
 			}
 		}
 		local success_callback = callback(self, "update_read_only_data_request_cb", commit_id)
-
-		self._request_queue:enqueue(update_read_only_data_request, success_callback, false)
-
+		local id = self._request_queue:enqueue(update_read_only_data_request, success_callback, false)
 		commit.status = "waiting"
 		commit.wait_for_hero_attributes = true
+		commit.request_queue_ids[#commit.request_queue_ids + 1] = id
 	end
 
 	self:_commit_user_data(new_data, commit, commit_id)

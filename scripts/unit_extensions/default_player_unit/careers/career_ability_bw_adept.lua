@@ -341,7 +341,7 @@ CareerAbilityBWAdept._run_ability = function (self)
 	local career_power_level = career_extension:get_career_power_level()
 	local area_damage_system = Managers.state.entity:system("area_damage_system")
 
-	area_damage_system:create_explosion(owner_unit, position, rotation, explosion_template, scale, "career_ability", career_power_level)
+	area_damage_system:create_explosion(owner_unit, position, rotation, explosion_template, scale, "career_ability", career_power_level, false)
 
 	if talent_extension:has_talent("sienna_adept_activated_ability_dump_overcharge", "bright_wizard", true) and (local_player or (is_server and bot_player)) then
 		local overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")

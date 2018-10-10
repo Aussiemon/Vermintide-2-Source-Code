@@ -161,7 +161,7 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 
 	local area_damage_system = Managers.state.entity:system("area_damage_system")
 
-	area_damage_system:create_explosion(owner_unit, position, rotation, explosion_template, scale, "career_ability", career_power_level)
+	area_damage_system:create_explosion(owner_unit, position, rotation, explosion_template, scale, "career_ability", career_power_level, false)
 	career_extension:start_activated_ability_cooldown()
 	CharacterStateHelper.play_animation_event(owner_unit, "unchained_ability_explosion")
 

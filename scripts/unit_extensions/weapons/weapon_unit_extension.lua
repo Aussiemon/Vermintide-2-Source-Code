@@ -105,11 +105,12 @@ local function is_within_damage_window(current_time_in_action, action, owner_uni
 		return false
 	end
 
-	local anim_time_scale = action.anim_time_scale or 1
-	anim_time_scale = ActionUtils.apply_attack_speed_buff(anim_time_scale, owner_unit)
-	damage_window_start = damage_window_start / anim_time_scale
+	local damage_time_scale = action.anim_time_scale or 1
+	damage_time_scale = ActionUtils.apply_attack_speed_buff(damage_time_scale, owner_unit)
+	damage_time_scale = ActionUtils.apply_charge_speed_buff_chain_window(damage_time_scale, owner_unit, action)
+	damage_window_start = damage_window_start / damage_time_scale
 	damage_window_end = damage_window_end or action.total_time or math.huge
-	damage_window_end = damage_window_end / anim_time_scale
+	damage_window_end = damage_window_end / damage_time_scale
 	local after_start = damage_window_start < current_time_in_action
 	local before_end = current_time_in_action < damage_window_end
 
@@ -117,8 +118,9 @@ local function is_within_damage_window(current_time_in_action, action, owner_uni
 end
 
 local function is_within_a_chain_window(current_time_in_action, action, owner_unit)
-	local attack_speed_modifier = action.anim_time_scale or 1
-	attack_speed_modifier = ActionUtils.apply_attack_speed_buff(attack_speed_modifier, owner_unit)
+	local chain_time_scale = action.anim_time_scale or 1
+	chain_time_scale = ActionUtils.apply_attack_speed_buff(chain_time_scale, owner_unit)
+	chain_time_scale = ActionUtils.apply_charge_speed_buff_chain_window(chain_time_scale, owner_unit, action)
 	local allowed_chain_actions = action.allowed_chain_actions
 	local num_chain_actions = #allowed_chain_actions
 
@@ -126,7 +128,7 @@ local function is_within_a_chain_window(current_time_in_action, action, owner_un
 		local chain_info = allowed_chain_actions[i]
 		local start_time = chain_info.start_time or 0
 		local end_time = chain_info.end_time or math.huge
-		local modified_start_time = start_time / attack_speed_modifier
+		local modified_start_time = start_time / chain_time_scale
 		local after_start = current_time_in_action > modified_start_time
 		local before_end = current_time_in_action < end_time
 
@@ -384,6 +386,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 		if event then
 			local anim_time_scale = current_action_settings.anim_time_scale or 1
 			anim_time_scale = ActionUtils.apply_attack_speed_buff(anim_time_scale, owner_unit)
+			anim_time_scale = ActionUtils.apply_charge_speed_buff_anim_scale(anim_time_scale, owner_unit, current_action_settings)
 			local go_id = Managers.state.unit_storage:go_id(owner_unit)
 			local event_id = NetworkLookup.anims[event_3p]
 			local variable_id = NetworkLookup.anims.attack_speed
@@ -576,15 +579,16 @@ WeaponUnitExtension.is_chain_action_available = function (self, next_chain_actio
 	local current_time_in_action = t - self.action_time_started
 	local max_time = current_action_settings.total_time + 2
 	time_offset = time_offset or 0
-	local anim_time_scale_multiplier = current_action_settings.anim_time_scale or 1
-	local attack_speed_modifier = ActionUtils.apply_attack_speed_buff(anim_time_scale_multiplier, self.owner_unit)
+	local chain_time_scale = current_action_settings.anim_time_scale or 1
+	chain_time_scale = ActionUtils.apply_attack_speed_buff(chain_time_scale, self.owner_unit)
+	chain_time_scale = ActionUtils.apply_charge_speed_buff_chain_window(chain_time_scale, self.owner_unit, current_action_settings)
 
 	if next_chain_action.auto_chain then
-		return current_time_in_action >= ((next_chain_action.start_time and next_chain_action.start_time / attack_speed_modifier) or max_time) + time_offset
+		return current_time_in_action >= ((next_chain_action.start_time and next_chain_action.start_time / chain_time_scale) or max_time) + time_offset
 	else
-		local end_time = (next_chain_action.end_time and next_chain_action.end_time / attack_speed_modifier) or max_time
+		local end_time = (next_chain_action.end_time and next_chain_action.end_time / chain_time_scale) or max_time
 
-		return current_time_in_action >= next_chain_action.start_time / attack_speed_modifier + time_offset and current_time_in_action <= end_time
+		return current_time_in_action >= next_chain_action.start_time / chain_time_scale + time_offset and current_time_in_action <= end_time
 	end
 end
 
@@ -593,9 +597,10 @@ WeaponUnitExtension.time_to_next_chain_action = function (self, next_chain_actio
 	local current_time_in_action = (self:has_current_action() and t - self.action_time_started) or 0
 	local max_time = action_settings.total_time + 2
 	time_offset = time_offset or 0
-	local anim_time_scale_multiplier = action_settings.anim_time_scale or 1
-	local attack_speed_modifier = ActionUtils.apply_attack_speed_buff(anim_time_scale_multiplier, self.owner_unit)
-	local start_time = ((next_chain_action.start_time and next_chain_action.start_time / attack_speed_modifier) or max_time) + time_offset
+	local chain_time_scale = action_settings.anim_time_scale or 1
+	chain_time_scale = ActionUtils.apply_attack_speed_buff(chain_time_scale, self.owner_unit)
+	chain_time_scale = ActionUtils.apply_charge_speed_buff_chain_window(chain_time_scale, self.owner_unit, action_settings)
+	local start_time = ((next_chain_action.start_time and next_chain_action.start_time / chain_time_scale) or max_time) + time_offset
 
 	return start_time - current_time_in_action
 end
@@ -648,9 +653,10 @@ WeaponUnitExtension._is_before_end_time = function (self, next_chain_action, t)
 	local current_action_settings = self.current_action_settings or self.temporary_action_settings
 	local current_time_in_action = t - self.action_time_started
 	local max_time = current_action_settings.total_time + 2
-	local anim_time_scale_multiplier = current_action_settings.anim_time_scale or 1
-	local attack_speed_modifier = ActionUtils.apply_attack_speed_buff(anim_time_scale_multiplier, self.owner_unit)
-	local end_time = (next_chain_action.end_time and next_chain_action.end_time / attack_speed_modifier) or max_time
+	local chain_time_scale = current_action_settings.anim_time_scale or 1
+	chain_time_scale = ActionUtils.apply_attack_speed_buff(chain_time_scale, self.owner_unit)
+	chain_time_scale = ActionUtils.apply_charge_speed_buff_chain_window(chain_time_scale, self.owner_unit, current_action_settings)
+	local end_time = (next_chain_action.end_time and next_chain_action.end_time / chain_time_scale) or max_time
 
 	return current_time_in_action < end_time
 end

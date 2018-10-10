@@ -1189,20 +1189,21 @@ local title_button_definitions = {
 	[#title_button_definitions + 1] = UIWidgets.create_console_panel_button("game_option_2", scenegraph_definition.game_option_2.size, "start_game_window_specific_title", 32, nil, "center"),
 	[#title_button_definitions + 1] = UIWidgets.create_console_panel_button("game_option_3", scenegraph_definition.game_option_3.size, "start_game_window_mutator_title", 32, nil, "center")
 }
-
-if PLATFORM == "win32" then
-	title_button_definitions[#title_button_definitions + 1] = UIWidgets.create_console_panel_button("game_option_4", scenegraph_definition.game_option_4.size, "start_game_window_twitch", 32, nil, "center")
-	title_button_definitions[#title_button_definitions + 1] = UIWidgets.create_console_panel_button("game_option_5", scenegraph_definition.game_option_5.size, "start_game_window_lobby_browser", 32, nil, "center")
-else
-	title_button_definitions[#title_button_definitions + 1] = UIWidgets.create_console_panel_button("game_option_4", scenegraph_definition.game_option_4.size, "start_game_window_mixer", 32, nil, "center")
-end
-
 local title_button_disable_functions = {
 	"_adventure_disable_function",
 	"_custom_game_disable_function",
 	"_heroic_deed_disable_function",
 	"_streaming_disable_function"
 }
+
+if PLATFORM == "win32" then
+	title_button_definitions[#title_button_definitions + 1] = UIWidgets.create_console_panel_button("game_option_4", scenegraph_definition.game_option_4.size, "start_game_window_twitch", 32, nil, "center")
+	title_button_definitions[#title_button_definitions + 1] = UIWidgets.create_console_panel_button("game_option_5", scenegraph_definition.game_option_5.size, "start_game_window_lobby_browser", 32, nil, "center")
+	title_button_disable_functions[5] = "_lobby_browser_disable_function"
+else
+	title_button_definitions[#title_button_definitions + 1] = UIWidgets.create_console_panel_button("game_option_4", scenegraph_definition.game_option_4.size, "start_game_window_mixer", 32, nil, "center")
+end
+
 local panel_color = UISettings.console_menu_rect_color
 local widgets = {
 	panel_edge = UIWidgets.create_tiled_texture("panel_edge", "menu_frame_04_divider", {

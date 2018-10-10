@@ -62,9 +62,9 @@ CharacterSelectionStateCharacter.on_enter = function (self, params)
 	local hero_name = self._hero_name
 	local profile_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
-	local career_index = hero_attributes:get(hero_name, "career") or 1
+	self._career_index = hero_attributes:get(hero_name, "career") or 1
 
-	self:_select_hero(profile_index, career_index, true)
+	self:_select_hero(profile_index, self._career_index, true)
 	self.parent:set_input_blocked(false)
 end
 
@@ -901,6 +901,15 @@ CharacterSelectionStateCharacter._update_profile_request = function (self)
 				self._requested_career_index = nil
 
 				self.parent:set_current_hero(self._selected_profile_index)
+				self.parent:close_menu()
+			elseif result == "failure" then
+				local hero_attributes = Managers.backend:get_interface("hero_attributes")
+				local hero_name = self._hero_name
+
+				hero_attributes:set(hero_name, "career", self._career_index)
+
+				self._respawn_player_unit = true
+
 				self.parent:close_menu()
 			end
 		end

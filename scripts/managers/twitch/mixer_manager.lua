@@ -133,7 +133,7 @@ end
 
 MixerManager.cb_connection_error_callback = function (self, message)
 	if not self._error_popup_id then
-		self._error_popup_id = Managers.popup:queue_popup(message, Localize("popup_header_error_twitch"), "ok", Localize("popup_choice_ok"))
+		self._error_popup_id = Managers.popup:queue_popup(message, Localize("popup_error_topic"), "ok", Localize("popup_choice_ok"))
 	end
 end
 

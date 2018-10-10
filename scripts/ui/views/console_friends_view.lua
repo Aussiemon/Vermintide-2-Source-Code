@@ -103,7 +103,6 @@ ConsoleFriendsView.cb_friends_collected = function (self, friend_data)
 	table.sort(playing_friends, sort)
 	table.sort(online_friends, sort)
 	table.sort(offline_friends, sort)
-	table.dump(friend_data, "FRIEND_DATA", 2)
 
 	local base_offset = entry_definitions.friend_entry_size[2]
 	local offset = -base_offset
@@ -276,7 +275,8 @@ ConsoleFriendsView._update_input_descriptions = function (self, dt, t)
 		local friend_widget_content = friends_widget.content
 		local friend = friend_widget_content.friend
 		local friend_id = friend.xbox_user_id
-		local invite = ((not self._invite_cooldown[friend_id] or self._invite_cooldown[friend_id] < t) and "invite") or nil
+		local friend_online = friend.status == "online"
+		local invite = ((not self._invite_cooldown[friend_id] or self._invite_cooldown[friend_id] < t) and friend_online and "invite") or nil
 		local refresh = not self._is_refreshing and "refresh"
 		local input = nil
 
@@ -295,8 +295,18 @@ ConsoleFriendsView._update_input_descriptions = function (self, dt, t)
 		else
 			self._menu_input_description:set_input_description(nil)
 		end
-	elseif self._current_input_desc ~= nil then
-		self._menu_input_description:set_input_description(nil)
+
+		self._current_input_desc = input
+	else
+		local input = not self._is_refreshing and "only_refresh"
+
+		if self._current_input_desc ~= input then
+			local input_actions = input and generic_input_actions[input]
+
+			self._menu_input_description:set_input_description(input_actions)
+
+			self._current_input_desc = input
+		end
 	end
 end
 
@@ -336,7 +346,7 @@ ConsoleFriendsView._handle_input = function (self, dt, t)
 		end
 	elseif input_service:get("special_1") and not self._is_refreshing then
 		self:_refresh_friends()
-	elseif input_service:get("confirm") then
+	elseif input_service:get("confirm_press") then
 		local friend_widget = self._friend_list_widgets[self._current_friend_index]
 
 		if friend_widget then

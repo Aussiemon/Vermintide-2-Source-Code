@@ -792,7 +792,24 @@ end
 
 NetworkServer.rpc_clear_peer_state = function (self, sender)
 	print(string.format("### CLEARING PEER STATE FOR %s", tostring(sender)))
-	self.peer_state_machines[sender].state_data:change_state(PeerStates.Connecting)
+
+	local state_machine = self.peer_state_machines[sender]
+
+	if state_machine == nil then
+		local reason = nil
+
+		if self.level_key == "prologue" then
+			reason = NetworkLookup.connection_fails.host_plays_prologue
+		else
+			reason = NetworkLookup.connection_fails.unknown_error
+		end
+
+		RPC.rpc_connection_failed(sender, reason)
+
+		return
+	end
+
+	state_machine.state_data:change_state(PeerStates.Connecting)
 
 	local players_by_peer = Managers.player:players_at_peer(sender)
 

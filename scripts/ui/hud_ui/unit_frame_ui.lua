@@ -96,6 +96,10 @@ UnitFrameUI.destroy = function (self)
 	rawset(_G, "unit_frame_ui", nil)
 end
 
+UnitFrameUI.is_visible = function (self)
+	return self._is_visible
+end
+
 UnitFrameUI.set_visible = function (self, visible)
 	self._is_visible = visible
 	local ui_renderer = self.ui_renderer

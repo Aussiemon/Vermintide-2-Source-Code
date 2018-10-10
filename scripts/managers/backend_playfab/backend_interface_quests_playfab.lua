@@ -19,8 +19,22 @@ BackendInterfaceQuestsPlayfab._refresh = function (self)
 	local backend_mirror = self._backend_mirror
 	local quest_data = backend_mirror:get_quest_data()
 	self._quests.daily = quest_data.current_daily_quests
-	self._quests.weekly = quest_data.current_weekly_quests
 	self._quests.event = quest_data.current_event_quests
+	local weekly_quests = {}
+
+	for quest_id, quest in pairs(quest_data.current_weekly_quests) do
+		local quest_copy = table.clone(quest)
+
+		if quest.difficulty then
+			quest_copy.name = quest.name .. "_" .. quest.difficulty
+		else
+			quest_copy.name = quest.name
+		end
+
+		weekly_quests[quest_id] = quest_copy
+	end
+
+	self._quests.weekly = weekly_quests
 	self._refresh_available = quest_data.daily_quest_refresh_available
 	self._daily_quest_update_time = quest_data.daily_quest_update_time / 1000
 	local weekly_quest_update_time = quest_data.weekly_quest_update_time
@@ -316,6 +330,33 @@ BackendInterfaceQuestsPlayfab.get_quest_key = function (self, quest_id)
 
 		if id == quest_id then
 			return quest_key
+		end
+	end
+
+	return nil
+end
+
+BackendInterfaceQuestsPlayfab.get_quest_by_key = function (self, key)
+	local quests = self:get_quests()
+	local daily_quests = quests.daily
+	local weekly_quests = quests.weekly
+	local event_quests = quests.event
+
+	for quest_key, quest_data in pairs(daily_quests) do
+		if key == quest_key then
+			return quest_data
+		end
+	end
+
+	for quest_key, quest_data in pairs(weekly_quests) do
+		if key == quest_key then
+			return quest_data
+		end
+	end
+
+	for quest_key, quest_data in pairs(event_quests) do
+		if key == quest_key then
+			return quest_data
 		end
 	end
 

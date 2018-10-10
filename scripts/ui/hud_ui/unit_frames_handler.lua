@@ -797,6 +797,8 @@ UnitFramesHandler.on_gamepad_activated = function (self)
 	local my_unit_frame = self._unit_frames[1]
 
 	if not my_unit_frame.gamepad_version then
+		local is_visible = my_unit_frame.widget:is_visible()
+
 		my_unit_frame.widget:destroy()
 
 		local new_unit_frame = self:_create_unit_frame_by_type("player")
@@ -804,7 +806,7 @@ UnitFramesHandler.on_gamepad_activated = function (self)
 		new_unit_frame.sync = true
 		self._unit_frames[1] = new_unit_frame
 
-		self:set_visible(self._is_visible)
+		new_unit_frame.widget:set_visible(is_visible)
 	end
 end
 
@@ -812,6 +814,8 @@ UnitFramesHandler.on_gamepad_deactivated = function (self)
 	local my_unit_frame = self._unit_frames[1]
 
 	if my_unit_frame.gamepad_version then
+		local is_visible = my_unit_frame.widget:is_visible()
+
 		my_unit_frame.widget:destroy()
 
 		local new_unit_frame = self:_create_unit_frame_by_type("player")
@@ -819,7 +823,7 @@ UnitFramesHandler.on_gamepad_deactivated = function (self)
 		new_unit_frame.sync = true
 		self._unit_frames[1] = new_unit_frame
 
-		self:set_visible(self._is_visible)
+		new_unit_frame.widget:set_visible(is_visible)
 	end
 end
 

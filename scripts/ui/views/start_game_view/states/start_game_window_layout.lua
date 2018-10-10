@@ -93,8 +93,9 @@ local window_layouts = {
 	},
 	{
 		sound_event_enter = "play_gui_lobby_button_00_custom",
-		close_on_exit = true,
+		name = "twitch",
 		save_data_table = "twitch",
+		close_on_exit = true,
 		windows = {
 			twitch_login = 2,
 			game_mode = 1,

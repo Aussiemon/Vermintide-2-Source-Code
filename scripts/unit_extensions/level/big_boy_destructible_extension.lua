@@ -7,6 +7,8 @@ BigBoyDestructibleExtension.init = function (self, extension_init_context, unit,
 	self.unit = unit
 	self.world = extension_init_context.world
 	self.is_server = Managers.player.is_server
+	local move_to_exit_when_opened = Unit.get_data(unit, "move_to_exit_when_opened")
+	self.move_to_exit_when_opened = move_to_exit_when_opened == nil or move_to_exit_when_opened
 	local door_state = Unit.get_data(unit, "door_state")
 	self.current_state = (door_state == 0 and "open_forward") or (door_state == 1 and "closed") or (door_state == 2 and "open_backward")
 	self.state_to_nav_obstacle_map = {}
@@ -19,8 +21,6 @@ end
 
 BigBoyDestructibleExtension.extensions_ready = function (self)
 	self.health_extension = ScriptUnit.extension(self.unit, "health_system")
-
-	assert(self.health_extension)
 end
 
 BigBoyDestructibleExtension.animation_played = function (self, frames, speed)
@@ -56,9 +56,20 @@ end
 BigBoyDestructibleExtension._get_animation_flow_event = function (self, current_state, new_state)
 	local event = self.animation_flow_events[current_state][new_state]
 
-	assert(event, "Door animation event from %s to %s unavailable", current_state, new_state)
+	fassert(event, "Door animation event from %s to %s unavailable", current_state, new_state)
 
 	return event
+end
+
+BigBoyDestructibleExtension.update_nav_graphs = function (self)
+	local unit = self.unit
+	local nav_graph_system = Managers.state.entity:system("nav_graph_system")
+
+	if self:is_open() or self.dead then
+		nav_graph_system:remove_nav_graph(unit)
+	else
+		nav_graph_system:add_nav_graph(unit)
+	end
 end
 
 BigBoyDestructibleExtension.update = function (self, unit, input, dt, context, t)
@@ -68,6 +79,7 @@ BigBoyDestructibleExtension.update = function (self, unit, input, dt, context, t
 		frames_since_obstacle_update = frames_since_obstacle_update + 1
 
 		if frames_since_obstacle_update == NAVMESH_UPDATE_DELAY then
+			self:update_nav_graphs()
 			self:handle_breeds_failed_leaving_smart_object()
 
 			self.frames_since_obstacle_update = nil
@@ -140,6 +152,14 @@ BigBoyDestructibleExtension.destroy_box_obstacles = function (self)
 	end
 
 	self.frames_since_obstacle_update = 0
+end
+
+BigBoyDestructibleExtension.is_open = function (self)
+	return self.dead
+end
+
+BigBoyDestructibleExtension.is_opening = function (self)
+	return false
 end
 
 return

@@ -26,7 +26,56 @@ QuestSettings = {
 	event_skulls_for_the_skull_throne = 10,
 	event_sonnstill_quickplay_levels = 10,
 	event_sonnstill_difficulty_levels = 10,
-	weekly_complete_quickplay_missions = 25,
+	weekly_complete_quickplay_missions = {
+		3,
+		6,
+		10
+	},
+	weekly_collect_tomes = {
+		9,
+		15,
+		24
+	},
+	weekly_collect_grimoires = {
+		6,
+		8,
+		10
+	},
+	weekly_kill_bosses = {
+		3,
+		6,
+		9
+	},
+	weekly_kill_elites = {
+		25,
+		40,
+		55
+	},
+	weekly_complete_levels_hero_wood_elf = {
+		3,
+		6,
+		10
+	},
+	weekly_complete_levels_hero_witch_hunter = {
+		3,
+		6,
+		10
+	},
+	weekly_complete_levels_hero_dwarf_ranger = {
+		3,
+		6,
+		10
+	},
+	weekly_complete_levels_hero_empire_soldier = {
+		3,
+		6,
+		10
+	},
+	weekly_complete_levels_hero_bright_wizard = {
+		3,
+		6,
+		10
+	},
 	allowed_difficulties = {
 		elven_ruins_speed_event = {
 			hardest = true
@@ -119,6 +168,26 @@ QuestSettings.stat_mappings = {
 		"weekly_quest_1_stat_1",
 		"weekly_quest_1_stat_2",
 		"weekly_quest_1_stat_3"
+	},
+	weekly_quest_2 = {
+		"weekly_quest_2_stat_1",
+		"weekly_quest_2_stat_2",
+		"weekly_quest_2_stat_3"
+	},
+	weekly_quest_3 = {
+		"weekly_quest_3_stat_1",
+		"weekly_quest_3_stat_2",
+		"weekly_quest_3_stat_3"
+	},
+	weekly_quest_4 = {
+		"weekly_quest_4_stat_1",
+		"weekly_quest_4_stat_2",
+		"weekly_quest_4_stat_3"
+	},
+	weekly_quest_5 = {
+		"weekly_quest_5_stat_1",
+		"weekly_quest_5_stat_2",
+		"weekly_quest_5_stat_3"
 	}
 }
 

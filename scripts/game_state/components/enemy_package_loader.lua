@@ -48,6 +48,8 @@ EnemyPackageLoader.set_unit_spawner = function (self, unit_spawner)
 end
 
 EnemyPackageLoader.network_context_created = function (self, lobby, server_peer_id, own_peer_id)
+	printf("[EnemyPackageLoader] network_context_created (server_peer_id=%s, own_peer_id=%s)", server_peer_id, own_peer_id)
+
 	self._lobby = lobby
 	self._server_peer_id = server_peer_id
 	self._peer_id = own_peer_id
@@ -69,6 +71,8 @@ EnemyPackageLoader.network_context_created = function (self, lobby, server_peer_
 end
 
 EnemyPackageLoader.network_context_destroyed = function (self)
+	print("[EnemyPackageLoader] network_context_destroyed")
+
 	self._lobby = nil
 	self._server_peer_id = nil
 	self._peer_id = nil
@@ -82,6 +86,8 @@ EnemyPackageLoader.network_context_destroyed = function (self)
 		self._unique_connection_key = nil
 		self._has_synced_all_loaded_to_server = nil
 	end
+
+	self._is_server = nil
 end
 
 EnemyPackageLoader._find_unused_breed_to_unload = function (self, loaded_breeds)
@@ -334,10 +340,11 @@ EnemyPackageLoader.load_sync_done_for_peer = function (self, peer_id)
 end
 
 EnemyPackageLoader.report_if_synced_to_server = function (self)
-	if not self._is_server and not self._has_synced_all_loaded_to_server then
+	if self._lobby and not self._is_server and not self._has_synced_all_loaded_to_server then
 		local all_packages_loaded = self:loading_completed()
 
 		if all_packages_loaded then
+			print("[EnemyPackageLoader] has_synced_all_loaded_to_server")
 			self:_send_rpc_to_server("rpc_from_client_sync_packages_load_done")
 
 			self._has_synced_all_loaded_to_server = true
@@ -411,12 +418,12 @@ EnemyPackageLoader.setup_startup_enemies = function (self, level_key)
 	breeds_to_load_at_startup.initial_check_done = true
 
 	if not breeds_to_load_at_startup.loaded then
-		print("EnemyPackageLoader:setup_startup_enemies")
+		print("[EnemyPackageLoader] setup_startup_enemies")
 
 		local level_settings = LevelSettings[level_key]
 
 		if level_settings.load_no_enemies then
-			print("Load no enemies on this level")
+			print("[EnemyPackageLoader] Load no enemies on this level")
 		else
 			local breed_categories = EnemyPackageLoaderSettings.categories
 			local num_breed_categories = #breed_categories
@@ -496,7 +503,7 @@ end
 EnemyPackageLoader.unload_enemy_packages = function (self, force_unload_startup_packages)
 	local unload_startup_packages = force_unload_startup_packages or UNLOAD_STARTUP_PACKAGES_BETWEEN_LEVELS
 
-	printf("EnemyPackageLoader:unload_enemy_packages (unload startup enemies=%s)", tostring(unload_startup_packages))
+	printf("[EnemyPackageLoader] unload_enemy_packages (unload startup enemies=%s)", tostring(unload_startup_packages))
 
 	local package_state = self._package_state
 	local breeds_to_load_at_startup = self._breeds_to_load_at_startup
@@ -602,6 +609,7 @@ EnemyPackageLoader.rpc_from_server_load_breed_package = function (self, sender, 
 
 	local breed_name = NetworkLookup.breeds[breed_id]
 
+	printf("[EnemyPackageLoader] rpc_from_server_load_breed_package (sender=%s, connection_key=%d, breed_name=%s)", sender, connection_key, breed_name)
 	self:_start_loading_package(breed_name)
 end
 
@@ -621,6 +629,7 @@ EnemyPackageLoader.rpc_from_server_unload_breed_package = function (self, sender
 
 	local breed_name = NetworkLookup.breeds[breed_id]
 
+	printf("[EnemyPackageLoader] rpc_from_server_unload_breed_package (sender=%s, connection_key=%d, breed_name=%s)", sender, connection_key, breed_name)
 	self:_unload_package(breed_name)
 end
 
@@ -634,6 +643,9 @@ EnemyPackageLoader.rpc_from_client_loading_breed_package_done = function (self, 
 	end
 
 	local breed_name = NetworkLookup.breeds[breed_id]
+
+	printf("[EnemyPackageLoader] rpc_from_client_loading_breed_package_done (sender=%s, connection_key=%d, breed_name=%s)", sender, connection_key, breed_name)
+
 	self._dynamic_loaded_packages[breed_name][sender] = true
 end
 
@@ -644,6 +656,8 @@ EnemyPackageLoader.rpc_from_client_sync_packages_load_done = function (self, sen
 		printf("[EnemyPackageLoader] rpc_from_client_sync_packages_load_done from old connection (%s) - (key=%s|%s)", sender, client_key or "nil", connection_key)
 
 		return
+	else
+		printf("[EnemyPackageLoader] rpc_from_client_sync_packages_load_done (sender=%s, connection_key=%d)", sender, connection_key)
 	end
 
 	self._load_sync_done_peers[sender] = true
@@ -719,6 +733,9 @@ end
 
 EnemyPackageLoader.client_connected = function (self, peer_id)
 	local connection_key = self._unique_connection_counter
+
+	printf("[EnemyPackageLoader] client_connected (peer_id=%s, connection_key=%d)", peer_id, connection_key)
+
 	self._unique_connections[peer_id] = connection_key
 
 	self:_sync_dynamic_to_client(peer_id, connection_key)
@@ -729,6 +746,8 @@ EnemyPackageLoader.client_connected = function (self, peer_id)
 end
 
 EnemyPackageLoader.client_disconnected = function (self, peer_id)
+	printf("[EnemyPackageLoader] client_disconnected (peer_id=%s)", peer_id)
+
 	local dynamic_loaded_packages = self._dynamic_loaded_packages
 
 	for breed_name, peers in pairs(dynamic_loaded_packages) do

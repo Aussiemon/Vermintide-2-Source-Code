@@ -424,6 +424,38 @@ ActionUtils.apply_attack_speed_buff = function (attack_speed_value, unit)
 	return new_value
 end
 
+ActionUtils.apply_charge_speed_buff_anim_scale = function (anim_time_scale, unit, action_settings)
+	local new_anim_time_scale = anim_time_scale
+
+	if not action_settings.scale_anim_by_charge_time_buff then
+		return new_anim_time_scale
+	end
+
+	if unit and Unit.alive(unit) and ScriptUnit.has_extension(unit, "buff_system") then
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local charge_speed = buff_extension:apply_buffs_to_value(1, StatBuffIndex.REDUCED_RANGED_CHARGE_TIME)
+		new_anim_time_scale = anim_time_scale * 1 / charge_speed
+	end
+
+	return new_anim_time_scale
+end
+
+ActionUtils.apply_charge_speed_buff_chain_window = function (anim_time_scale, unit, action_settings)
+	local new_anim_time_scale = anim_time_scale
+
+	if not action_settings.scale_chain_window_by_charge_time_buff then
+		return new_anim_time_scale
+	end
+
+	if unit and Unit.alive(unit) and ScriptUnit.has_extension(unit, "buff_system") then
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local charge_speed = buff_extension:apply_buffs_to_value(1, StatBuffIndex.REDUCED_RANGED_CHARGE_TIME)
+		new_anim_time_scale = anim_time_scale * 1 / charge_speed
+	end
+
+	return new_anim_time_scale
+end
+
 ActionUtils.init_action_buff_data = function (action_buff_data, buff_data, t)
 	local start_times = action_buff_data.buff_start_times
 	local end_times = action_buff_data.buff_end_times

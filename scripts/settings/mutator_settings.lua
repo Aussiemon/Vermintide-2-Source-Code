@@ -35,58 +35,6 @@ local function apply_buff_to_alive_player_units(context, data, buff_name)
 	end
 end
 
-function store_boss_settings(context, data)
-	if not context.original_boss_settings then
-		context.original_boss_settings = table.clone(CurrentBossSettings)
-	end
-end
-
-function restore_boss_settings(context, data)
-	if context.original_boss_settings then
-		CurrentBossSettings = context.original_boss_settings
-		context.original_boss_settings = nil
-	end
-end
-
-function store_horde_settings(context, data)
-	if not context.original_horde_settings then
-		context.original_horde_settings = table.clone(CurrentHordeSettings)
-	end
-end
-
-function restore_horde_settings(context, data)
-	if context.original_horde_settings then
-		CurrentHordeSettings = context.original_horde_settings
-		context.original_horde_settings = nil
-	end
-end
-
-function store_specials_settings(context, data)
-	if not context.original_specials_settings then
-		context.original_specials_settings = table.clone(CurrentSpecialsSettings)
-	end
-end
-
-function restore_specials_settings(context, data)
-	if context.original_specials_settings then
-		CurrentSpecialsSettings = context.original_specials_settings
-		context.original_specials_settings = nil
-	end
-end
-
-function store_pacing_settings(context, data)
-	if not context.original_pacing_settings then
-		context.original_pacing_settings = table.clone(CurrentPacing)
-	end
-end
-
-function restore_pacing_settings(context, data)
-	if context.original_pacing_settings then
-		CurrentPacing = context.original_pacing_settings
-		context.original_pacing_settings = nil
-	end
-end
-
 function store_breed_and_action_settings(context, data)
 	if not context.original_breed_settings and not context.original_breed_action_settings then
 		context.original_breed_settings = table.clone(Breeds)
@@ -100,19 +48,6 @@ function restore_breed_and_action_settings(context, data)
 		BreedActions = context.original_breed_action_settings
 		context.original_breed_settings = nil
 		context.original_breed_action_settings = nil
-	end
-end
-
-function store_intensity_settings(context, data)
-	if not context.original_intensity_settings then
-		context.original_intensity_settings = table.clone(CurrentIntensitySettings)
-	end
-end
-
-function restore_intensity_settings(context, data)
-	if context.original_intensity_settings then
-		CurrentIntensitySettings = context.original_intensity_settings
-		context.original_intensity_settings = nil
 	end
 end
 
@@ -228,10 +163,10 @@ local mutator_settings = {
 		spawn_time_reduction = 0.4,
 		max_specials = 2,
 		server_start_function = function (context, data)
-			store_specials_settings(context, data)
+			return
 		end,
 		server_stop_function = function (context, data)
-			restore_specials_settings(context, data)
+			return
 		end,
 		update_conflict_settings = function (context, data)
 			local settings = CurrentSpecialsSettings
@@ -285,10 +220,10 @@ local mutator_settings = {
 		display_name = "display_name_mutator_more_specials",
 		icon = "mutator_icon_specials_frequency",
 		server_start_function = function (context, data)
-			store_specials_settings(context, data)
+			return
 		end,
 		server_stop_function = function (context, data)
-			restore_specials_settings(context, data)
+			return
 		end,
 		update_conflict_settings = function (context, data)
 			CurrentSpecialsSettings.max_specials = CurrentSpecialsSettings.max_specials * 2
@@ -299,10 +234,10 @@ local mutator_settings = {
 		display_name = "display_name_mutator_same_specials",
 		icon = "mutator_icon_specials_frequency",
 		server_start_function = function (context, data)
-			store_specials_settings(context, data)
+			return
 		end,
 		server_stop_function = function (context, data)
-			restore_specials_settings(context, data)
+			return
 		end,
 		update_conflict_settings = function (context, data)
 			local method = CurrentSpecialsSettings.methods.specials_by_slots
@@ -327,10 +262,10 @@ local mutator_settings = {
 		display_name = "display_name_big_specials",
 		icon = "mutator_icon_powerful_elites",
 		server_start_function = function (context, data)
-			store_specials_settings(context, data)
+			return
 		end,
 		server_stop_function = function (context, data)
-			restore_specials_settings(context, data)
+			return
 		end,
 		update_conflict_settings = function (context, data)
 			local method = CurrentSpecialsSettings.methods.specials_by_slots
@@ -425,10 +360,10 @@ local mutator_settings = {
 		display_name = "display_name_mutator_same_specials",
 		icon = "mutator_icon_specials_frequency",
 		server_start_function = function (context, data)
-			store_specials_settings(context, data)
+			return
 		end,
 		server_stop_function = function (context, data)
-			restore_specials_settings(context, data)
+			return
 		end,
 		update_conflict_settings = function (context, data)
 			CurrentSpecialsSettings.breeds = {
@@ -449,12 +384,10 @@ local mutator_settings = {
 		display_name = "display_name_mutator_chaos_warriors_trickle",
 		icon = "mutator_icon_specials_frequency",
 		server_start_function = function (context, data)
-			store_pacing_settings(context, data)
-			store_horde_settings(context, data)
+			return
 		end,
 		server_stop_function = function (context, data)
-			restore_pacing_settings(context, data)
-			restore_horde_settings(context, data)
+			return
 		end,
 		update_conflict_settings = function (context, data)
 			CurrentHordeSettings.mini_patrol_composition = "mutator_chaos_warrior_mini_patrol"
@@ -474,10 +407,10 @@ local mutator_settings = {
 		display_name = "display_name_mutator_same_specials",
 		icon = "mutator_icon_specials_frequency",
 		server_start_function = function (context, data)
-			store_horde_settings(context, data)
+			return
 		end,
 		server_stop_function = function (context, data)
-			restore_horde_settings(context, data)
+			return
 		end,
 		update_conflict_settings = function (context, data)
 			CurrentHordeSettings.ambush_composition = "mutator_mixed_horde"
@@ -490,10 +423,10 @@ local mutator_settings = {
 		display_name = "display_name_mutator_multiple_bosses",
 		icon = "mutator_icon_specials_frequency",
 		server_start_function = function (context, data)
-			store_boss_settings(context, data)
+			return
 		end,
 		server_stop_function = function (context, data)
-			restore_boss_settings(context, data)
+			return
 		end,
 		update_conflict_settings = function (context, data)
 			CurrentBossSettings.boss_events.event_lookup.event_boss = {
@@ -510,10 +443,10 @@ local mutator_settings = {
 		max_delay_modifier = 0.7,
 		icon = "mutator_icon_hordes_galore",
 		server_start_function = function (context, data)
-			store_pacing_settings(context, data)
+			return
 		end,
 		server_stop_function = function (context, data)
-			restore_pacing_settings(context, data)
+			return
 		end,
 		update_conflict_settings = function (context, data)
 			local function modify_time_table(time_table, modifier, dprint_string)
@@ -540,30 +473,6 @@ local mutator_settings = {
 
 				if pacing_settings.max_delay_until_next_horde then
 					modify_time_table(pacing_settings.max_delay_until_next_horde, max_delay_modifier, "Changed max_delay_until_next_horde from ({%s, %s}) to ({%s, %s}), modifier: %s - original")
-				end
-
-				local difficulty_overrides = pacing_settings.difficulty_overrides
-
-				if difficulty_overrides then
-					mutator_dprint("DIFFICULTY OVERRIDES")
-
-					for difficulty, overrides in pairs(difficulty_overrides) do
-						if overrides.horde_frequency then
-							modify_time_table(overrides.horde_frequency, horde_frequency_modifier, "Changed horde frequency from ({%s, %s}) to ({%s, %s}), modifier: %s - " .. difficulty)
-						end
-
-						if overrides.horde_startup_time then
-							modify_time_table(overrides.horde_startup_time, horde_startup_time_modifier, "Changed horde startup time from ({%s, %s}) to ({%s, %s}), modifier: %s - " .. difficulty)
-						end
-
-						if overrides.relax_duration then
-							modify_time_table(overrides.relax_duration, relax_duration_modifier, "Changed relax duration from ({%s, %s}) to ({%s, %s}), modifier: %s - " .. difficulty)
-						end
-
-						if overrides.max_delay_until_next_horde then
-							modify_time_table(overrides.max_delay_until_next_horde, max_delay_modifier, "Changed max_delay_until_next_horde from ({%s, %s}) to ({%s, %s}), modifier: %s - original")
-						end
-					end
 				end
 			end
 		end
@@ -760,8 +669,7 @@ local mutator_settings = {
 		display_name = "display_name_mutator_powerful_elites",
 		icon = "mutator_icon_powerful_elites",
 		server_start_function = function (context, data)
-			store_intensity_settings(context, data)
-			store_pacing_settings(context, data)
+			return
 		end,
 		update_conflict_settings = function (context, data)
 			CurrentIntensitySettings.max_intensity = 200
@@ -773,8 +681,7 @@ local mutator_settings = {
 			CurrentPacing.delay_mini_patrol_threat_value = 200
 		end,
 		server_stop_function = function (context, data)
-			restore_intensity_settings(context, data)
-			restore_pacing_settings(context, data)
+			return
 		end
 	},
 	waves_of_plague_monks = {

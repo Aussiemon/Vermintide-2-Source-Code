@@ -69,4 +69,8 @@ InviteManager.invites_handled = function (self)
 	return true
 end
 
+InviteManager.get_invite_error = function (self)
+	return
+end
+
 return

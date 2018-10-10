@@ -1,6 +1,6 @@
 local PING_COOLDOWN = 2
 local PING_RANGE = 50
-local PING_MAX_HOLD_TIME = 0.25
+local PING_MAX_HOLD_TIME = 0.15
 local debug = false
 ContextAwarePingExtension = class(ContextAwarePingExtension)
 
@@ -156,21 +156,9 @@ ContextAwarePingExtension._check_raycast = function (self, unit)
 								half_height = (breed.aoe_height or DEFAULT_BREED_AOE_HEIGHT) * 0.5
 								half_width = breed.aoe_radius or DEFAULT_BREED_AOE_RADIUS
 							elseif status_ext then
-								local owner = Managers.player:owner(hit_unit)
-								local character = SPProfiles[owner:profile_index()]
-								local heights = character.first_person_heights
-								local height = nil
-
-								if status_ext:is_crouching() then
-									height = heights.crouch
-								elseif status_ext:is_knocked_down() then
-									height = heights.knocked_down
-								else
-									height = heights.stand
-								end
-
-								half_width = 0.4
-								half_height = height * 0.5
+								local _, half_extents = Unit.box(hit_unit, true)
+								half_width = half_extents.x * 0.75
+								half_height = half_extents.z
 							else
 								half_width = 0.25
 								half_height = 0.25

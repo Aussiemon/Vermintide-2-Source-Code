@@ -499,7 +499,9 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 	local is_booted_unstrusted = self._booted_eac_untrusted
 
 	local function callback(status)
-		if game_mode_key ~= "inn" and status ~= "commit_error" then
+		if status == "commit_error" then
+			Managers.backend:commit_error()
+		elseif game_mode_key ~= "inn" then
 			local profile_synchronizer = self.profile_synchronizer
 			local peer_id = Network.peer_id()
 			local local_player_id = self.local_player_id

@@ -119,6 +119,7 @@ StateTitleScreenMainMenu.on_enter = function (self, params)
 	self._viewport = params.viewport
 	self._title_start_ui = params.ui
 	self._auto_start = params.auto_start
+	params.auto_start = nil
 	self._state = "none"
 	self._new_state = nil
 	self._input_disabled = false
@@ -418,6 +419,11 @@ StateTitleScreenMainMenu._close_menu = function (self)
 
 	Managers.transition:hide_loading_icon()
 	Managers.account:close_storage()
+
+	if Managers.transition:fade_state() == "in" then
+		Managers.transition:hide_loading_icon()
+		Managers.transition:fade_out(1)
+	end
 
 	self._new_state = StateTitleScreenMain
 	self._state = "none"

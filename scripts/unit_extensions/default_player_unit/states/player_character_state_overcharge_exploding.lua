@@ -84,7 +84,7 @@ PlayerCharacterStateOverchargeExploding.explode = function (self)
 	local explosion_template = self.explosion_template
 	local scale = 1
 
-	Managers.state.entity:system("area_damage_system"):create_explosion(unit, position, rotation, explosion_template, scale, "overcharge")
+	Managers.state.entity:system("area_damage_system"):create_explosion(unit, position, rotation, explosion_template, scale, "overcharge", nil, false)
 end
 
 PlayerCharacterStateOverchargeExploding.update = function (self, unit, input, dt, context, t)

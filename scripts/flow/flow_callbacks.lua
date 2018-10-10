@@ -9,10 +9,6 @@ require("scripts/settings/attachment_node_linking")
 
 local flow_return_table = Boot.flow_return_table
 
-function flow_callback_define_spawn(params)
-	return
-end
-
 function flow_callback_show_gdc_intro(params)
 	local player = Managers.player:local_player(1)
 	local player_unit = player.player_unit
@@ -937,7 +933,7 @@ function flow_callback_trigger_dialogue_event(params)
 			event_table[params.argument3_name] = tonumber(params.argument3) or params.argument3
 		end
 
-		dialogue_input:trigger_dialogue_event(params.concept, event_table)
+		dialogue_input:trigger_dialogue_event(params.concept, event_table, params.identifier)
 	else
 		print(string.format("[flow_callback_trigger_dialogue_event] No extension found belonging to system \"dialogue_system\" for unit %s", tostring(unit)))
 	end
@@ -990,6 +986,8 @@ function flow_callback_set_door_state(params)
 	local door_extension = ScriptUnit.extension(unit, "door_system")
 
 	door_extension:set_door_state(new_door_state)
+
+	door_extension.frames_since_obstacle_update = 0
 end
 
 function flow_callback_door_animation_played(params)
@@ -1784,7 +1782,7 @@ function flow_callback_trigger_explosion(params)
 	local scale = 1
 	local item_name = "grenade_frag_01"
 
-	Managers.state.entity:system("area_damage_system"):create_explosion(unit, position, rotation, explosion_template_name, scale, item_name)
+	Managers.state.entity:system("area_damage_system"):create_explosion(unit, position, rotation, explosion_template_name, scale, item_name, nil, false)
 end
 
 function flow_callback_enable_climb_unit(params)

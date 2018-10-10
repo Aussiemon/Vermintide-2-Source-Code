@@ -1241,7 +1241,7 @@ DeathReactions.templates = {
 							local item_name = health_extension.item_name
 							local owner_unit = health_extension.owner_unit
 
-							Managers.state.entity:system("area_damage_system"):create_explosion(owner_unit, position, rotation, explosion_template, 1, item_name)
+							Managers.state.entity:system("area_damage_system"):create_explosion(owner_unit, position, rotation, explosion_template, 1, item_name, nil, false)
 
 							local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
 							local equipment = inventory_extension:equipment()
@@ -1256,7 +1256,7 @@ DeathReactions.templates = {
 						local explosion_template = "explosive_barrel"
 						local item_name = health_extension.item_name
 
-						Managers.state.entity:system("area_damage_system"):create_explosion(unit, position, rotation, explosion_template, 1, item_name)
+						Managers.state.entity:system("area_damage_system"):create_explosion(unit, position, rotation, explosion_template, 1, item_name, nil, false)
 					end
 
 					data.exploded = true
@@ -1298,7 +1298,7 @@ DeathReactions.templates = {
 						local item_name = health_extension.item_name
 						local owner_unit = health_extension.owner_unit
 
-						Managers.state.entity:system("area_damage_system"):create_explosion(owner_unit, position, rotation, explosion_template, 1, item_name)
+						Managers.state.entity:system("area_damage_system"):create_explosion(owner_unit, position, rotation, explosion_template, 1, item_name, nil, false)
 
 						local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
 						local equipment = inventory_extension:equipment()

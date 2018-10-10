@@ -124,6 +124,10 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 	network_event_delegate:register(self, "rpc_trigger_dialogue_event", "rpc_play_dialogue_event", "rpc_interrupt_dialogue_event")
 end
 
+DialogueSystem.is_dialogue_playing = function (self)
+	return table.size(self.playing_dialogues) > 0
+end
+
 DialogueSystem.destroy = function (self)
 	self.tagquery_loader:unload_files()
 	self.tagquery_database:destroy()

@@ -1991,6 +1991,15 @@ HeroViewStateAchievements._setup_quest_summary_progress = function (self)
 		local entries = category.entries
 		local quest_type = category.quest_type
 		local max_entry_amount = category.max_entry_amount or 1
+
+		if category.max_dlc_entries then
+			for dlc, extra in pairs(category.max_dlc_entries) do
+				if Managers.unlock:is_dlc_unlocked(dlc) then
+					max_entry_amount = max_entry_amount + extra
+				end
+			end
+		end
+
 		local has_entries = entries ~= nil
 		local timer_active = true
 
@@ -2054,7 +2063,7 @@ HeroViewStateAchievements._setup_quest_summary_progress = function (self)
 			local required_dlc = data and data.required_dlc
 
 			if required_dlc then
-				locked = Managers.unlock:is_dlc_unlocked(required_dlc)
+				locked = not Managers.unlock:is_dlc_unlocked(required_dlc)
 			end
 
 			local loot_color_fraction = 0
@@ -2064,11 +2073,15 @@ HeroViewStateAchievements._setup_quest_summary_progress = function (self)
 			local available_color_fraction = 0
 
 			if locked then
-				if not has_presented_cooldown and has_entries then
-					cooldown_color_fraction = 1
-					has_presented_cooldown = true
+				if quest_type == "daily" then
+					if not has_presented_cooldown and has_entries then
+						cooldown_color_fraction = 1
+						has_presented_cooldown = true
+					else
+						locked_color_fraction = 1
+					end
 				else
-					locked_color_fraction = 1
+					cooldown_color_fraction = 1
 				end
 			elseif completed then
 				loot_color_fraction = 1

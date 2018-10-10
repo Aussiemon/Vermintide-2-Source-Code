@@ -49,13 +49,8 @@ BTSelector_ogre.run = function (self, unit, blackboard, t, dt)
 		condition_result = false
 	end
 
-	local smartobject_is_next = blackboard.next_smart_object_data.next_smart_object_id ~= nil
-	local is_in_smartobject_range = blackboard.is_in_smartobject_range
-	local is_smart_objecting = blackboard.is_smart_objecting
-	local moving_state = blackboard.move_state == "moving"
-
 	if condition_result == nil then
-		condition_result = (smartobject_is_next and is_in_smartobject_range and moving_state) or is_smart_objecting
+		condition_result = BTConditions.at_smartobject(blackboard)
 	end
 
 	if condition_result then

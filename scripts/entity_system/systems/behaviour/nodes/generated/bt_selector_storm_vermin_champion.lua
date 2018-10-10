@@ -62,11 +62,29 @@ BTSelector_storm_vermin_champion.run = function (self, unit, blackboard, t, dt)
 	end
 
 	local node_smartobject = children[3]
-	local smartobject_is_next = blackboard.next_smart_object_data.next_smart_object_id ~= nil
-	local is_in_smartobject_range = blackboard.is_in_smartobject_range
+	local condition_result = nil
+	local next_smart_object_data = blackboard.next_smart_object_data
+	local smartobject_is_next = next_smart_object_data.next_smart_object_id ~= nil
+
+	if not smartobject_is_next then
+		condition_result = false
+	end
+
 	local is_smart_objecting = blackboard.is_smart_objecting
+	local nav_graph_system = Managers.state.entity:system("nav_graph_system")
+	local smart_object_unit = next_smart_object_data.smart_object_data and next_smart_object_data.smart_object_data.unit
+	local has_nav_graph_extension, nav_graph_enabled = nav_graph_system:has_nav_graph(smart_object_unit)
+
+	if has_nav_graph_extension and not nav_graph_enabled and not is_smart_objecting and condition_result == nil then
+		condition_result = false
+	end
+
+	local is_in_smartobject_range = blackboard.is_in_smartobject_range
 	local moving_state = blackboard.move_state == "moving"
-	local condition_result = (smartobject_is_next and is_in_smartobject_range and moving_state) or is_smart_objecting
+
+	if condition_result == nil then
+		condition_result = (is_in_smartobject_range and moving_state) or is_smart_objecting
+	end
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_smartobject, "aborted")

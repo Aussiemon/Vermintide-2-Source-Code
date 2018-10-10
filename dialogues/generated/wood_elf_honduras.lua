@@ -1392,7 +1392,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"enemy_spawn"
+				"heard_enemy"
 			},
 			{
 				"query_context",
@@ -12394,12 +12394,12 @@ return function ()
 			randomize_indexes = {}
 		},
 		pwe_activate_ability_waystalker = {
-			sound_events_n = 12,
+			sound_events_n = 10,
 			randomize_indexes_n = 0,
-			face_animations_n = 12,
+			face_animations_n = 10,
 			database = "wood_elf_honduras",
 			category = "activate_ability",
-			dialogue_animations_n = 12,
+			dialogue_animations_n = 10,
 			sound_events = {
 				"pwe_activate_ability_waystalker_01",
 				"pwe_activate_ability_waystalker_02",
@@ -12410,13 +12410,9 @@ return function ()
 				"pwe_activate_ability_waystalker_07",
 				"pwe_activate_ability_waystalker_08",
 				"pwe_activate_ability_waystalker_09",
-				"pwe_activate_ability_waystalker_10",
-				"pwe_activate_ability_waystalker_11",
 				"pwe_activate_ability_waystalker_12"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
@@ -12438,8 +12434,6 @@ return function ()
 				"face_happy",
 				"face_happy",
 				"face_happy",
-				"face_happy",
-				"face_happy",
 				"face_happy"
 			},
 			localization_strings = {
@@ -12452,8 +12446,6 @@ return function ()
 				"pwe_activate_ability_waystalker_07",
 				"pwe_activate_ability_waystalker_08",
 				"pwe_activate_ability_waystalker_09",
-				"pwe_activate_ability_waystalker_10",
-				"pwe_activate_ability_waystalker_11",
 				"pwe_activate_ability_waystalker_12"
 			},
 			randomize_indexes = {}

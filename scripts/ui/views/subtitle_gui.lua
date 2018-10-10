@@ -26,6 +26,11 @@ local scenegraph_definition = {
 		}
 	}
 }
+
+if PLATFORM ~= "win32" then
+	scenegraph_definition.screen.scale = "hud_fit"
+end
+
 local subtitle_widget_definition = {
 	scenegraph_id = "subtitle_background",
 	element = UIElements.StaticText,
