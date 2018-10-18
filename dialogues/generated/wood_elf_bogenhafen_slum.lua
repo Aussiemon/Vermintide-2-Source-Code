@@ -2381,35 +2381,27 @@ return function ()
 			}
 		},
 		pwe_level_bogenhafen_slum_gang = {
-			sound_events_n = 4,
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
-			face_animations_n = 4,
+			face_animations_n = 2,
 			database = "wood_elf_bogenhafen_slum",
 			category = "level_talk",
-			dialogue_animations_n = 4,
+			dialogue_animations_n = 2,
 			sound_events = {
-				"pwe_level_bogenhafen_slum_gang_01",
-				"pwe_level_bogenhafen_slum_gang_02",
-				"pwe_level_bogenhafen_slum_gang_03",
-				"pwe_level_bogenhafen_slum_gang_04"
+				[1.0] = "pwe_level_bogenhafen_slum_gang_02",
+				[2.0] = "pwe_level_bogenhafen_slum_gang_03"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
 			},
 			face_animations = {
-				"face_concerned",
-				"face_neutral",
-				"face_neutral",
-				"face_curious"
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pwe_level_bogenhafen_slum_gang_01",
-				"pwe_level_bogenhafen_slum_gang_02",
-				"pwe_level_bogenhafen_slum_gang_03",
-				"pwe_level_bogenhafen_slum_gang_04"
+				[1.0] = "pwe_level_bogenhafen_slum_gang_02",
+				[2.0] = "pwe_level_bogenhafen_slum_gang_03"
 			},
 			randomize_indexes = {}
 		},

@@ -2393,7 +2393,7 @@ return function ()
 				"query_context",
 				"target",
 				OP.EQ,
-				"dwarf_ranger"
+				"witch_hunter"
 			},
 			{
 				"query_context",
@@ -2405,7 +2405,7 @@ return function ()
 				"query_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"dwarf_ranger"
 			},
 			{
 				"user_context",
@@ -7469,12 +7469,6 @@ return function ()
 				"enemy_tag",
 				OP.EQ,
 				"chaos_berzerker"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.GT,
-				0
 			},
 			{
 				"query_context",

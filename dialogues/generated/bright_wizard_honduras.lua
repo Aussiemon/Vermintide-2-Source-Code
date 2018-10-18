@@ -6504,12 +6504,6 @@ return function ()
 				"chaos_berzerker"
 			},
 			{
-				"user_context",
-				"enemies_close",
-				OP.GT,
-				0
-			},
-			{
 				"query_context",
 				"source_name",
 				OP.EQ,

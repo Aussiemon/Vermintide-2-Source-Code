@@ -5058,7 +5058,7 @@ return function ()
 				"query_context",
 				"attack_tag",
 				OP.EQ,
-				"rat_ogre_charge"
+				"rat_ogre_change_target"
 			},
 			{
 				"query_context",
@@ -6077,7 +6077,7 @@ return function ()
 				"query_context",
 				"distance",
 				OP.GTEQ,
-				20
+				10
 			},
 			{
 				"query_context",
@@ -7279,12 +7279,6 @@ return function ()
 				"enemy_tag",
 				OP.EQ,
 				"chaos_berzerker"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.GT,
-				0
 			},
 			{
 				"query_context",
