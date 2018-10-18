@@ -4137,8 +4137,12 @@ TerrorEventBlueprints = {
 		{
 			"continue_when",
 			condition = function (t)
-				return count_event_breed("chaos_spawn_exalted_champion_norsca") == 1
+				return count_event_breed("chaos_exalted_champion_norsca") < 1
 			end
+		},
+		{
+			"delay",
+			duration = 10
 		},
 		{
 			"continue_when",

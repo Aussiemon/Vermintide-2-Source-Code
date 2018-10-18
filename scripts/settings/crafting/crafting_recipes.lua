@@ -605,7 +605,7 @@ local crafting_recipes = {
 		display_name = "crafting_recipe_apply_weapon_skin",
 		lore_text = "crafting_recipe_reroll_apply_weapon_skin",
 		validation_function = "weapon_skin_application_validation_func",
-		result_function_playfab = "craftingApplySkin",
+		result_function_playfab = "craftingApplySkin2",
 		hero_specific_filter = true,
 		item_filter = "can_apply_skin and not is_equipped",
 		description_text = "description_crafting_recipe_apply_weapon_skin",
@@ -619,12 +619,6 @@ local crafting_recipes = {
 				catergory = {
 					item_value = "slot_type",
 					category_table = "weapon_slot_types"
-				}
-			},
-			{
-				catergory = {
-					item_value = "slot_type",
-					category_table = "weapon_skin_slot_types"
 				}
 			}
 		},
@@ -818,6 +812,72 @@ local crafting_recipes = {
 			{
 				amount = 50,
 				name = "crafting_material_scrap"
+			},
+			{
+				catergory = {
+					item_value = "slot_type",
+					category_table = "equipment_slot_types"
+				}
+			}
+		},
+		item_sort_func = function (item_1, item_2)
+			local item_data_1 = item_1.data
+			local item_data_2 = item_2.data
+			local item_1_power_level = item_1.power_level or 0
+			local item_2_power_level = item_2.power_level or 0
+			local item_1_backend_id = item_1.backend_id
+			local item_2_backend_id = item_2.backend_id
+			local item_1_favorited = ItemHelper.is_favorite_backend_id(item_1_backend_id)
+			local item_2_favorited = ItemHelper.is_favorite_backend_id(item_2_backend_id)
+
+			if item_1_favorited == item_2_favorited then
+				if item_1_power_level == item_2_power_level then
+					local item_1_rarity = item_1.rarity or item_data_1.rarity
+					local item_2_rarity = item_2.rarity or item_data_2.rarity
+					local item_rarity_order = UISettings.item_rarity_order
+					local item_1_rarity_order = item_rarity_order[item_1_rarity]
+					local item_2_rarity_order = item_rarity_order[item_2_rarity]
+
+					if item_1_rarity_order == item_2_rarity_order then
+						local item_type_1 = Localize(item_data_1.item_type)
+						local item_type_2 = Localize(item_data_2.item_type)
+
+						if item_type_1 == item_type_2 then
+							local _, item_name_1 = UIUtils.get_ui_information_from_item(item_1)
+							local _, item_name_2 = UIUtils.get_ui_information_from_item(item_2)
+
+							return Localize(item_name_1) < Localize(item_name_2)
+						else
+							return item_type_1 < item_type_2
+						end
+					else
+						return item_1_rarity_order < item_2_rarity_order
+					end
+				else
+					return item_2_power_level < item_1_power_level
+				end
+			elseif item_1_favorited then
+				return true
+			else
+				return false
+			end
+		end
+	},
+	{
+		result_function = "upgrade_item_rarity_result_func",
+		name = "upgrade_item_rarity_unique",
+		display_name = "crafting_recipe_upgrade_item_rarity_common",
+		lore_text = "crafting_recipe_upgrade_item_rarity_unique_lore_text",
+		validation_function = "craft_validation_func",
+		result_function_playfab = "craftingUpgradeRarity",
+		hero_specific_filter = true,
+		item_filter = "can_upgrade and not is_equipped",
+		description_text = "description_crafting_upgrade_item_rarity_common",
+		display_icon_console = "console_crafting_recipe_icon_upgrade",
+		ingredients = {
+			{
+				amount = 5,
+				name = "crafting_material_dust_4"
 			},
 			{
 				catergory = {

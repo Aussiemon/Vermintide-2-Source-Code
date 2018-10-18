@@ -480,12 +480,25 @@ SpecialsPacing.enable = function (self, state)
 	self._disabled = not state
 end
 
+SpecialsPacing.is_disabled = function (self)
+	return self._disabled
+end
+
 local function cb_special_spawned(unit, breed, optional_data)
 	local slot = optional_data.slot
 	local alive_specials = optional_data.alive_specials
 	slot.unit = unit
 	slot.state = "alive"
 	alive_specials[#alive_specials + 1] = unit
+
+	if script_data.debug_player_intensity then
+		Managers.state.conflict.pacing:annotate_graph(breed, "purple")
+
+		local parent = optional_data.parent
+		local num_spawned_specials = parent._debug_num_spawned_specials or 1
+		num_spawned_specials = num_spawned_specials + 1
+		parent._debug_num_spawned_specials = num_spawned_specials
+	end
 end
 
 SpecialsPacing.update = function (self, t, alive_specials, specials_population, player_positions)
@@ -496,8 +509,22 @@ SpecialsPacing.update = function (self, t, alive_specials, specials_population, 
 	end
 
 	if self._disabled then
+		if script_data.debug_ai_pacing then
+			Debug.text("Specials disabled by terror event")
+		end
+
 		return
 	end
+
+	if script_data.debug_player_intensity then
+		Debug.text("Specials timer: %0.1f Time: %0.1f ", self._specials_timer, t)
+
+		if self._debug_num_spawned_specials then
+			Debug.text("Total Num Spawned Specials: %d ", self._debug_num_spawned_specials)
+		end
+	end
+
+	self:debug(t, alive_specials, specials_population, self._specials_slots)
 
 	if specials_population < 1 then
 		return
@@ -745,6 +772,8 @@ local function cb_rush_intervention_unit_spawned(unit, breed, optional_data)
 	slot.time = nil
 	slot.state = "alive"
 	slot.desc = "rush intervention"
+	local alive_specials = optional_data.alive_specials
+	alive_specials[#alive_specials + 1] = unit
 
 	print("rush intervention - spawning ", breed.name)
 end
@@ -793,9 +822,12 @@ SpecialsPacing.request_rushing_intervention = function (self, t, player_unit, ma
 			return false, description
 		end
 
+		local conflict_director = Managers.state.conflict
+		local alive_specials = conflict_director:alive_specials()
 		local optional_data = {
 			spawned_func = cb_rush_intervention_unit_spawned,
-			slot = slot
+			slot = slot,
+			alive_specials = alive_specials
 		}
 		slot.state = "wants_to_spawn"
 
@@ -809,6 +841,75 @@ SpecialsPacing.request_rushing_intervention = function (self, t, player_unit, ma
 	end
 end
 
+local function cb_speed_running_intervention_unit_spawned(unit, breed, optional_data)
+	local slot = optional_data.slot
+	slot.breed = breed.name
+	slot.unit = unit
+	slot.time = nil
+	slot.state = "alive"
+	slot.desc = "speed running intervention"
+	local alive_specials = optional_data.alive_specials
+	alive_specials[#alive_specials + 1] = unit
+
+	print("Speed run intervention - spawning ", breed.name)
+end
+
+SpecialsPacing.request_speed_running_intervention = function (self, t, player_unit, main_path_player_info)
+	if script_data.ai_specials_spawning_disabled then
+		return false, "specials spawning disabled"
+	end
+
+	local status_extension = ScriptUnit.extension(player_unit, "status_system")
+
+	if status_extension:is_disabled() then
+		return false, "no speed running intervention, since speed runner is disabled"
+	end
+
+	local specials_settings = CurrentSpecialsSettings
+	local speed_running_intervention_settings = CurrentSpecialsSettings.speed_running_intervention or SpecialsSettings.default.speed_running_intervention
+	local breeds = speed_running_intervention_settings.breeds
+	local slots = self._specials_slots
+	local best_slot = get_best_specials_slot(slots) or 1
+
+	if best_slot then
+		local slot = slots[best_slot]
+		local pick_index = Math.random(1, #breeds)
+		local breed_name = breeds[pick_index]
+		local breed = Breeds[breed_name]
+		local conflict_director = Managers.state.conflict
+		local main_paths = conflict_director.level_analysis:get_main_paths()
+		local world = conflict_director._world
+		local nav_world = self.nav_world
+		local avoid_dist_sqr = 25
+		local player_pos = POSITION_LOOKUP[player_unit]
+		local epicenter = self:get_relative_main_path_pos(main_paths, main_path_player_info[player_unit], 20)
+		local spawn_pos, description = find_suitable_intervention_spawn_position(world, nav_world, epicenter, avoid_dist_sqr)
+
+		if not spawn_pos then
+			return false, description
+		end
+
+		local conflict_director = Managers.state.conflict
+		local alive_specials = conflict_director:alive_specials()
+		local optional_data = {
+			spawned_func = cb_speed_running_intervention_unit_spawned,
+			slot = slot,
+			alive_specials = alive_specials
+		}
+		slot.state = "wants_to_spawn"
+
+		if breed.special_spawn_stinger then
+			self:_play_stinger(breed.special_spawn_stinger, slot)
+		end
+
+		Managers.state.conflict:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(Quaternion(Vector3.up(), 0)), "speed_run_intervention", nil, nil, optional_data)
+
+		return true, breed_name
+	end
+
+	return false, "no slots available"
+end
+
 local function cb_outside_navmesh_intervention_unit_spawned(special_unit, breed, optional_data)
 	local ai_extension = ScriptUnit.extension(special_unit, "ai_system")
 	local blackboard = ai_extension:blackboard()
@@ -819,6 +920,8 @@ local function cb_outside_navmesh_intervention_unit_spawned(special_unit, breed,
 	slot.time = nil
 	slot.state = "alive"
 	slot.desc = "outside navmesh intervention"
+	local alive_specials = optional_data.alive_specials
+	alive_specials[#alive_specials + 1] = unit
 end
 
 SpecialsPacing.request_outside_navmesh_intervention = function (self, player_unit)
@@ -857,10 +960,13 @@ SpecialsPacing.request_outside_navmesh_intervention = function (self, player_uni
 
 		print("Outside navmesh intervention - spawning ", breed_name)
 
+		local conflict_director = Managers.state.conflict
+		local alive_specials = conflict_director:alive_specials()
 		local optional_data = {
 			spawned_func = cb_outside_navmesh_intervention_unit_spawned,
 			player_unit = player_unit,
-			slot = slot
+			slot = slot,
+			alive_specials = alive_specials
 		}
 
 		if breed.special_spawn_stinger then

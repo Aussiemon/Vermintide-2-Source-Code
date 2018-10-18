@@ -1,5 +1,5 @@
 frames_atlas = {
-	tabs_glass_bottom = {
+	tabs_glass_top = {
 		size = {
 			1,
 			3
@@ -13,7 +13,7 @@ frames_atlas = {
 			0.781738
 		}
 	},
-	tabs_glass_top = {
+	tabs_glass_bottom = {
 		size = {
 			1,
 			3
@@ -41,7 +41,7 @@ frames_atlas = {
 			0.729004
 		}
 	},
-	menu_frame_09_divider = {
+	menu_frame_12_divider = {
 		size = {
 			1,
 			5
@@ -53,20 +53,6 @@ frames_atlas = {
 		uv11 = {
 			0.078125,
 			0.773438
-		}
-	},
-	menu_frame_12_divider = {
-		size = {
-			1,
-			5
-		},
-		uv00 = {
-			0.077881,
-			0.766602
-		},
-		uv11 = {
-			0.078125,
-			0.769043
 		}
 	},
 	menu_frame_09_divider_vertical = {
@@ -89,12 +75,12 @@ frames_atlas = {
 			5
 		},
 		uv00 = {
-			0.077148,
-			0.709473
+			0.077881,
+			0.766602
 		},
 		uv11 = {
-			0.077393,
-			0.711914
+			0.078125,
+			0.769043
 		}
 	},
 	menu_frame_12_divider_vertical = {
@@ -104,11 +90,11 @@ frames_atlas = {
 		},
 		uv00 = {
 			0.077148,
-			0.707031
+			0.711426
 		},
 		uv11 = {
 			0.078369,
-			0.70752
+			0.711914
 		}
 	},
 	menu_frame_09_divider_vertical = {
@@ -118,11 +104,25 @@ frames_atlas = {
 		},
 		uv00 = {
 			0.077148,
-			0.70459
+			0.708984
 		},
 		uv11 = {
 			0.078369,
-			0.705078
+			0.709473
+		}
+	},
+	menu_frame_09_divider = {
+		size = {
+			1,
+			5
+		},
+		uv00 = {
+			0.077148,
+			0.70459
+		},
+		uv11 = {
+			0.077393,
+			0.707031
 		}
 	},
 	edge_fade_small_old = {
@@ -139,6 +139,20 @@ frames_atlas = {
 			0.825195
 		}
 	},
+	menu_frame_12_divider_top = {
+		size = {
+			17,
+			9
+		},
+		uv00 = {
+			0.07251,
+			0.90332
+		},
+		uv11 = {
+			0.07666,
+			0.907715
+		}
+	},
 	menu_frame_12_divider_right = {
 		size = {
 			9,
@@ -153,7 +167,7 @@ frames_atlas = {
 			0.815918
 		}
 	},
-	title_detail_01_left = {
+	title_detail_01_right = {
 		size = {
 			7,
 			17
@@ -173,26 +187,26 @@ frames_atlas = {
 			9
 		},
 		uv00 = {
-			0.07251,
-			0.902344
+			0.067383,
+			0.90332
 		},
 		uv11 = {
-			0.07666,
-			0.906738
+			0.071533,
+			0.907715
 		}
 	},
-	menu_frame_09_divider_bottom = {
+	menu_frame_09_divider_top = {
 		size = {
 			17,
 			9
 		},
 		uv00 = {
-			0.067383,
-			0.902344
+			0.072998,
+			0.89209
 		},
 		uv11 = {
-			0.071533,
-			0.906738
+			0.077148,
+			0.896484
 		}
 	},
 	menu_frame_12_divider_left = {
@@ -209,35 +223,21 @@ frames_atlas = {
 			0.79541
 		}
 	},
-	title_detail_01_tile = {
+	title_detail_01_left = {
 		size = {
-			1,
+			7,
 			17
 		},
 		uv00 = {
-			0.077881,
-			0.756348
+			0.074707,
+			0.776855
 		},
 		uv11 = {
-			0.078125,
-			0.764648
+			0.076416,
+			0.785156
 		}
 	},
-	menu_frame_09_divider_top = {
-		size = {
-			17,
-			9
-		},
-		uv00 = {
-			0.073486,
-			0.867676
-		},
-		uv11 = {
-			0.077637,
-			0.87207
-		}
-	},
-	menu_frame_12_divider_top = {
+	menu_frame_09_divider_bottom = {
 		size = {
 			17,
 			9
@@ -251,18 +251,18 @@ frames_atlas = {
 			0.861328
 		}
 	},
-	title_detail_01_right = {
+	title_detail_01_tile = {
 		size = {
-			7,
+			1,
 			17
 		},
 		uv00 = {
-			0.074707,
-			0.776855
+			0.077881,
+			0.756348
 		},
 		uv11 = {
-			0.076416,
-			0.785156
+			0.078125,
+			0.764648
 		}
 	},
 	menu_frame_09_divider_right = {
@@ -299,12 +299,26 @@ frames_atlas = {
 			19
 		},
 		uv00 = {
-			0.07251,
-			0.890137
+			0.067383,
+			0.89209
 		},
 		uv11 = {
-			0.077148,
-			0.899414
+			0.072021,
+			0.901367
+		}
+	},
+	menu_frame_04_bottom = {
+		size = {
+			21,
+			17
+		},
+		uv00 = {
+			0.07251,
+			0.879883
+		},
+		uv11 = {
+			0.077637,
+			0.888184
 		}
 	},
 	menu_frame_04_left = {
@@ -314,11 +328,11 @@ frames_atlas = {
 		},
 		uv00 = {
 			0.067383,
-			0.890137
+			0.879883
 		},
 		uv11 = {
 			0.071533,
-			0.900391
+			0.890137
 		}
 	},
 	menu_frame_04_top = {
@@ -328,11 +342,11 @@ frames_atlas = {
 		},
 		uv00 = {
 			0.07251,
-			0.87793
+			0.867676
 		},
 		uv11 = {
 			0.077637,
-			0.88623
+			0.875977
 		}
 	},
 	menu_frame_04_right = {
@@ -342,39 +356,11 @@ frames_atlas = {
 		},
 		uv00 = {
 			0.067383,
-			0.87793
-		},
-		uv11 = {
-			0.071533,
-			0.888184
-		}
-	},
-	menu_frame_04_bottom = {
-		size = {
-			21,
-			17
-		},
-		uv00 = {
-			0.067383,
 			0.867676
 		},
 		uv11 = {
-			0.07251,
-			0.875977
-		}
-	},
-	tab_selection_01_stretch = {
-		size = {
-			1,
-			22
-		},
-		uv00 = {
-			0.078125,
-			0.714355
-		},
-		uv11 = {
-			0.078369,
-			0.725098
+			0.071533,
+			0.87793
 		}
 	},
 	input_frame_01 = {
@@ -391,7 +377,21 @@ frames_atlas = {
 			0.865723
 		}
 	},
-	tab_selection_01_left = {
+	tab_selection_01_stretch = {
+		size = {
+			1,
+			22
+		},
+		uv00 = {
+			0.078125,
+			0.714355
+		},
+		uv11 = {
+			0.078369,
+			0.725098
+		}
+	},
+	tab_selection_01_right = {
 		size = {
 			11,
 			22
@@ -405,7 +405,7 @@ frames_atlas = {
 			0.754395
 		}
 	},
-	tab_selection_01_right = {
+	tab_selection_01_left = {
 		size = {
 			11,
 			22
@@ -475,7 +475,7 @@ frames_atlas = {
 			0.842285
 		}
 	},
-	xp_bar_glass = {
+	xp_bar_bg = {
 		size = {
 			1,
 			50
@@ -489,7 +489,7 @@ frames_atlas = {
 			0.712402
 		}
 	},
-	xp_bar_bg = {
+	xp_bar_glass = {
 		size = {
 			1,
 			50
@@ -531,7 +531,49 @@ frames_atlas = {
 			0.835449
 		}
 	},
-	menu_frame_08 = {
+	button_frame_01_gold = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.530273,
+			0.945313
+		},
+		uv11 = {
+			0.545898,
+			0.976563
+		}
+	},
+	button_frame_01 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.513672,
+			0.945313
+		},
+		uv11 = {
+			0.529297,
+			0.976563
+		}
+	},
+	frame_corner_detail_01 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.49707,
+			0.945313
+		},
+		uv11 = {
+			0.512695,
+			0.976563
+		}
+	},
+	menu_frame_12 = {
 		size = {
 			64,
 			64
@@ -545,7 +587,7 @@ frames_atlas = {
 			0.976563
 		}
 	},
-	menu_frame_12 = {
+	menu_frame_08 = {
 		size = {
 			64,
 			64
@@ -559,17 +601,17 @@ frames_atlas = {
 			0.976563
 		}
 	},
-	frame_corner_detail_01 = {
+	menu_frame_12_gold = {
 		size = {
 			64,
 			64
 		},
 		uv00 = {
-			0.435303,
+			0.436279,
 			0.940918
 		},
 		uv11 = {
-			0.450928,
+			0.451904,
 			0.972168
 		}
 	},
@@ -579,29 +621,29 @@ frames_atlas = {
 			64
 		},
 		uv00 = {
-			0.418701,
+			0.419678,
 			0.940918
 		},
 		uv11 = {
-			0.434326,
+			0.435303,
 			0.972168
 		}
 	},
-	button_frame_01 = {
+	frame_outer_glow_01 = {
 		size = {
-			64,
-			64
+			68,
+			68
 		},
 		uv00 = {
 			0.4021,
 			0.940918
 		},
 		uv11 = {
-			0.417725,
-			0.972168
+			0.418701,
+			0.974121
 		}
 	},
-	frame_outer_glow_03 = {
+	frame_outer_glow_04 = {
 		size = {
 			68,
 			68
@@ -615,7 +657,7 @@ frames_atlas = {
 			0.974121
 		}
 	},
-	frame_outer_glow_02 = {
+	frame_outer_glow_03 = {
 		size = {
 			68,
 			68
@@ -629,7 +671,7 @@ frames_atlas = {
 			0.974121
 		}
 	},
-	frame_outer_glow_01 = {
+	frame_outer_glow_02 = {
 		size = {
 			68,
 			68
@@ -641,20 +683,6 @@ frames_atlas = {
 		uv11 = {
 			0.365967,
 			0.974121
-		}
-	},
-	icon_talent_frame = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.557861,
-			0.785156
-		},
-		uv11 = {
-			0.577393,
-			0.824219
 		}
 	},
 	frame_title_detail_06 = {
@@ -671,7 +699,21 @@ frames_atlas = {
 			0.685059
 		}
 	},
-	menu_frame_13 = {
+	icon_talent_frame = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.557861,
+			0.785156
+		},
+		uv11 = {
+			0.577393,
+			0.824219
+		}
+	},
+	menu_frame_14 = {
 		size = {
 			84,
 			84
@@ -685,7 +727,7 @@ frames_atlas = {
 			0.772949
 		}
 	},
-	menu_frame_14 = {
+	menu_frame_13 = {
 		size = {
 			84,
 			84
@@ -727,7 +769,7 @@ frames_atlas = {
 			0.828125
 		}
 	},
-	shadow_frame_01 = {
+	shadow_frame_02 = {
 		size = {
 			92,
 			92
@@ -741,7 +783,7 @@ frames_atlas = {
 			0.830078
 		}
 	},
-	shadow_frame_02 = {
+	shadow_frame_01 = {
 		size = {
 			92,
 			92
@@ -839,7 +881,7 @@ frames_atlas = {
 			0.397461
 		}
 	},
-	menu_frame_01 = {
+	menu_frame_04 = {
 		size = {
 			147,
 			147
@@ -867,7 +909,7 @@ frames_atlas = {
 			0.146484
 		}
 	},
-	menu_frame_04 = {
+	menu_frame_01 = {
 		size = {
 			147,
 			147
@@ -1217,7 +1259,7 @@ frames_atlas = {
 			0.853516
 		}
 	},
-	frame_detail_01 = {
+	frame_detail_02 = {
 		size = {
 			772,
 			86
@@ -1231,7 +1273,7 @@ frames_atlas = {
 			0.773926
 		}
 	},
-	frame_detail_02 = {
+	frame_detail_01 = {
 		size = {
 			772,
 			86

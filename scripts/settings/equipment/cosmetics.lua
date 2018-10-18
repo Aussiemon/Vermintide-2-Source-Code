@@ -1843,7 +1843,7 @@ local skin_bw_unchained_ash = {
 			mtr_body = "units/beings/player/bright_wizard_unchained/skins/ash/mtr_outfit_ash"
 		},
 		first_person = {
-			mtr_body = "units/beings/player/bright_wizard_unchained/skins/ash/mtr_outfit_ash_1p"
+			mtr_outfit = "units/beings/player/bright_wizard_unchained/skins/ash/mtr_outfit_ash_1p"
 		}
 	},
 	wwise_dep = table.clone(PlayerWwiseDependencies.sienna.unchained)
@@ -1866,7 +1866,7 @@ local skin_bw_unchained_black_and_gold = {
 			mtr_body = "units/beings/player/bright_wizard_unchained/skins/black_and_gold/mtr_outfit_black_and_gold"
 		},
 		first_person = {
-			mtr_body = "units/beings/player/bright_wizard_unchained/skins/black_and_gold/mtr_outfit_black_and_gold_1p"
+			mtr_outfit = "units/beings/player/bright_wizard_unchained/skins/black_and_gold/mtr_outfit_black_and_gold_1p"
 		}
 	},
 	wwise_dep = table.clone(PlayerWwiseDependencies.sienna.unchained)
@@ -1889,7 +1889,7 @@ local skin_bw_unchained_bronze = {
 			mtr_body = "units/beings/player/bright_wizard_unchained/skins/bronze/mtr_outfit_bronze"
 		},
 		first_person = {
-			mtr_body = "units/beings/player/bright_wizard_unchained/skins/bronze/mtr_outfit_bronze_1p"
+			mtr_outfit = "units/beings/player/bright_wizard_unchained/skins/bronze/mtr_outfit_bronze_1p"
 		}
 	},
 	wwise_dep = table.clone(PlayerWwiseDependencies.sienna.unchained)
@@ -1912,7 +1912,7 @@ local skin_bw_unchained_brown_and_white = {
 			mtr_body = "units/beings/player/bright_wizard_unchained/skins/brown_and_white/mtr_outfit_brown_and_white"
 		},
 		first_person = {
-			mtr_body = "units/beings/player/bright_wizard_unchained/skins/brown_and_white/mtr_outfit_brown_and_white_1p"
+			mtr_outfit = "units/beings/player/bright_wizard_unchained/skins/brown_and_white/mtr_outfit_brown_and_white_1p"
 		}
 	},
 	wwise_dep = table.clone(PlayerWwiseDependencies.sienna.unchained)
@@ -1935,7 +1935,7 @@ local skin_bw_unchained_ostermark = {
 			mtr_body = "units/beings/player/bright_wizard_unchained/skins/ostermark/mtr_outfit_ostermark"
 		},
 		first_person = {
-			mtr_body = "units/beings/player/bright_wizard_unchained/skins/ostermark/mtr_outfit_ostermark_1p"
+			mtr_outfit = "units/beings/player/bright_wizard_unchained/skins/ostermark/mtr_outfit_ostermark_1p"
 		}
 	},
 	wwise_dep = table.clone(PlayerWwiseDependencies.sienna.unchained)

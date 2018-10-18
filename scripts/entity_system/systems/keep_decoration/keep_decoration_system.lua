@@ -99,18 +99,44 @@ KeepDecorationSystem.on_game_object_destroyed = function (self, unit)
 	extension:on_game_object_destroyed()
 end
 
-KeepDecorationSystem.interacted_with = function (self, unit)
+KeepDecorationSystem.cycle_next = function (self, unit)
 	local extension = self._unit_extensions[unit]
 
 	if extension:can_interact() then
-		extension:interacted_with()
+		extension:cycle_next()
 	end
+end
+
+KeepDecorationSystem.cycle_previous = function (self, unit)
+	local extension = self._unit_extensions[unit]
+
+	if extension:can_interact() then
+		extension:cycle_previous()
+	end
+end
+
+KeepDecorationSystem.reset_selection = function (self, unit)
+	local extension = self._unit_extensions[unit]
+
+	return extension:reset_selection()
+end
+
+KeepDecorationSystem.confirm_selection = function (self, unit)
+	local extension = self._unit_extensions[unit]
+
+	return extension:confirm_selection()
 end
 
 KeepDecorationSystem.can_interact = function (self, unit)
 	local extension = self._unit_extensions[unit]
 
 	return extension:can_interact()
+end
+
+KeepDecorationSystem.get_extension = function (self, unit)
+	local extension = self._unit_extensions[unit]
+
+	return extension
 end
 
 KeepDecorationSystem.hot_join_sync = function (self)

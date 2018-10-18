@@ -70,6 +70,8 @@ CraftPageUpgradeItem.setup_recipe_requirements = function (self)
 			recipe_name = "upgrade_item_rarity_rare"
 		elseif rarity == "rare" then
 			recipe_name = "upgrade_item_rarity_exotic"
+		elseif rarity == "exotic" then
+			recipe_name = "upgrade_item_rarity_unique"
 		end
 	end
 
@@ -387,6 +389,10 @@ CraftPageUpgradeItem._update_craft_items = function (self)
 			self:_add_craft_item(pressed_backend_id)
 			self:setup_recipe_requirements()
 		end
+
+		if self._num_craft_items > 0 and self._has_all_requirements then
+			self:_set_craft_button_disabled(false)
+		end
 	end
 
 	local grid_item_pressed = item_grid:is_item_pressed()
@@ -458,10 +464,6 @@ CraftPageUpgradeItem._add_craft_item = function (self, backend_id, slot_index, i
 		self.super_parent:set_disabled_backend_id(backend_id, true)
 
 		self._num_craft_items = math.min((self._num_craft_items or 0) + 1, NUM_CRAFT_SLOTS)
-
-		if self._num_craft_items > 0 and self._has_all_requirements then
-			self:_set_craft_button_disabled(false)
-		end
 
 		if backend_id and not ignore_sound then
 			self:_play_sound("play_gui_craft_item_drop")

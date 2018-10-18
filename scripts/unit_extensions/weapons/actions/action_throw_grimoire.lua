@@ -41,8 +41,9 @@ ActionThrowGrimoire.finish = function (self, reason)
 	local player_manager = Managers.player
 	local player = player_manager:unit_owner(self.owner_unit)
 	local predicate = "discarded_grimoire"
+	local localize_parameters = false
 
-	Managers.chat:send_system_chat_message(1, "system_chat_player_discarded_grimoire", player:name())
+	Managers.chat:send_system_chat_message(1, "system_chat_player_discarded_grimoire", player:name(), localize_parameters)
 	Managers.state.event:trigger("add_coop_feedback", player:stats_id(), not player.bot_player, predicate, player)
 
 	if self.is_server then

@@ -318,6 +318,7 @@ function flow_callback_disable_torch(params)
 		local item_name = item_data and item_data.name
 
 		if item_name == "torch" then
+			print("Player is wielding torch, destroying slot")
 			CharacterStateHelper.stop_weapon_actions(inventory_extension, "wield")
 			inventory_extension:destroy_slot("slot_level_event", true)
 			inventory_extension:wield("slot_melee")
@@ -380,7 +381,7 @@ function flow_register_unit_extensions(params)
 	local unit = params.unit
 	local unit_template = Unit.get_data(unit, "unit_template")
 
-	assert(unit_template)
+	fassert(unit_template, "Missing unit_template!")
 
 	local world = Application.main_world()
 	local extension_init_data = {
@@ -418,9 +419,9 @@ function flow_callback_play_network_synched_particle_effect(params)
 	local game = network_manager:game()
 	local game_object_id = unit and linked and network_manager:unit_game_object_id(unit)
 
-	assert(game, "[flow_callback_play_network_synched_particle_effect] Trying to spawn effect with no network game running.")
-	assert(not unit or not linked or game_object_id, "[flow_callback_play_network_synched_particle_effect] Trying to spawn effect linked to unit not network_synched.")
-	assert(unit or not object_name, "[flow_callback_play_network_synched_particle_effect] Trying to spawn effect at object in unit without defining unit.")
+	fassert(game, "[flow_callback_play_network_synched_particle_effect] Trying to spawn effect with no network game running.")
+	fassert(not unit or not linked or game_object_id, "[flow_callback_play_network_synched_particle_effect] Trying to spawn effect linked to unit not network_synched.")
+	fassert(unit or not object_name, "[flow_callback_play_network_synched_particle_effect] Trying to spawn effect at object in unit without defining unit.")
 
 	local object = (unit and object_name and Unit.node(unit, object_name)) or 0
 
@@ -517,7 +518,7 @@ end
 function flow_callback_set_actor_enabled(params)
 	local unit = params.unit
 
-	assert(unit, "Set Actor Enabled flow node is missing unit")
+	fassert(unit, "Set Actor Enabled flow node is missing unit")
 
 	local actor = params.actor or Unit.actor(unit, params.actor_name)
 
@@ -529,7 +530,7 @@ end
 function flow_callback_set_actor_kinematic(params)
 	local unit = params.unit
 
-	assert(unit, "Set Actor Kinematic flow node is missing unit")
+	fassert(unit, "Set Actor Kinematic flow node is missing unit")
 
 	local actor = params.actor or Unit.actor(unit, params.actor_name)
 
@@ -540,7 +541,7 @@ end
 function flow_callback_spawn_actor(params)
 	local unit = params.unit
 
-	assert(unit, "Spawn Actor flow node is missing unit")
+	fassert(unit, "Spawn Actor flow node is missing unit")
 
 	local actor = params.actor_name
 
@@ -550,7 +551,7 @@ end
 function flow_callback_destroy_actor(params)
 	local unit = params.unit
 
-	assert(unit, "Destroy Actor flow node is missing unit")
+	fassert(unit, "Destroy Actor flow node is missing unit")
 
 	local actor = params.actor_name
 
@@ -560,7 +561,7 @@ end
 function flow_callback_set_actor_initial_velocity(params)
 	local unit = params.unit
 
-	assert(unit, "Set actor initial velocity has no unit")
+	fassert(unit, "Set actor initial velocity has no unit")
 	Unit.apply_initial_actor_velocities(unit, true)
 end
 
@@ -788,8 +789,8 @@ function flow_callback_start_network_timer(params)
 end
 
 function flow_callback_set_flow_object_set_enabled(params)
-	assert(params.set, "[Flow Callback : Set Flow Object Set Enabled] No set set.")
-	assert(params.enabled ~= nil, "[Flow Callback : Set Flow Object Set Enabled] No enabled set.")
+	fassert(params.set, "[Flow Callback : Set Flow Object Set Enabled] No set set.")
+	fassert(params.enabled ~= nil, "[Flow Callback : Set Flow Object Set Enabled] No enabled set.")
 	Managers.state.game_mode:flow_cb_set_flow_object_set_enabled(params.set, params.enabled)
 end
 
@@ -915,7 +916,7 @@ end
 function flow_callback_trigger_dialogue_event(params)
 	local unit = params.source
 
-	assert(unit, "Calling flow_callback_trigger_dialogue_event without passing unit")
+	fassert(unit, "Calling flow_callback_trigger_dialogue_event without passing unit")
 
 	if ScriptUnit.has_extension(unit, "dialogue_system") then
 		local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
@@ -946,7 +947,7 @@ function flow_callback_change_outline_params(params)
 
 	local unit = params.unit
 
-	assert(ScriptUnit.has_extension(unit, "outline_system"), "Trying to change outline params through flow without an outline extension on the unit")
+	fassert(ScriptUnit.has_extension(unit, "outline_system"), "Trying to change outline params through flow without an outline extension on the unit")
 
 	local outline_extension = ScriptUnit.extension(unit, "outline_system")
 	local method = params.method
@@ -1034,9 +1035,13 @@ function flow_callback_ussingen_barrel_challenge(params)
 		local is_event_spawned = ScriptUnit.has_extension(barrel_unit, "limited_item_track_system")
 
 		if not is_event_spawned then
+			print("Is not event spawned, num valid barrels: ", num_valid_barrels + 1)
+
 			flow_return_table.is_valid_barrel = 1
 
 			return flow_return_table
+		else
+			print("Is event spawned, num valid barrels: ", num_valid_barrels)
 		end
 	end
 
@@ -1061,7 +1066,10 @@ function flow_callback_ussingen_barrel_challenge_completed(params)
 				local statistics_db = Managers.player:statistics_db()
 
 				statistics_db:increment_stat_and_sync_to_clients(stat_name)
+				print("Completed challenge ", stat_name)
 				QuestSettings.send_completed_message(stat_name)
+			else
+				print("Failed barrel challenge, num valid barrels: ", num_valid_barrels)
 			end
 		end
 	end
@@ -1127,12 +1135,12 @@ function flow_callback_volume_system_unregister_volume(params)
 end
 
 function flow_callback_intro_cutscene_show_location(params)
-	assert(params.location, "No location set")
+	fassert(params.location, "No location set")
 
 	local local_player = Managers.player:local_player()
 	local player_unit = local_player.player_unit
 
-	assert(Unit.alive(player_unit), "Tried showing location with no player unit spawned")
+	fassert(Unit.alive(player_unit), "Tried showing location with no player unit spawned")
 
 	local hud_extension = ScriptUnit.extension(player_unit, "hud_system")
 
@@ -1220,7 +1228,7 @@ function flow_callback_wwise_trigger_event_with_environment(params)
 	elseif position then
 		source = existing_source_id or WwiseWorld.make_auto_source(wwise_world, position)
 	else
-		fassert(false, "Missing unit or position in wwise trigger even with environment flow node in unit %s", unit)
+		ferror("Missing unit or position in wwise trigger even with environment flow node in unit %s", unit)
 	end
 
 	if Vector3.is_valid(position) then
@@ -1255,7 +1263,7 @@ function flow_callback_wwise_create_environment_sampled_source(params)
 	elseif pos then
 		source = WwiseWorld.make_manual_source(wwise_world, pos)
 	else
-		fassert(false, "Missing unit or position in wwise environment sampled source creation flow node in unit %s", unit)
+		ferror("Missing unit or position in wwise environment sampled source creation flow node in unit %s", unit)
 	end
 
 	sound_environment_system:set_source_environment(source, pos)
@@ -1266,8 +1274,8 @@ function flow_callback_wwise_create_environment_sampled_source(params)
 end
 
 function flow_callback_wwise_register_source_environment_update(params)
-	assert(params.source_id, "Missing SourceId in \"Register source for environment sample update\"")
-	assert(params.unit, "Missing Unit in \"Register source for environment sample update\"")
+	fassert(params.source_id, "Missing SourceId in \"Register source for environment sample update\"")
+	fassert(params.unit, "Missing Unit in \"Register source for environment sample update\"")
 
 	local sound_environment_system = Managers.state.entity:system("sound_environment_system")
 
@@ -1275,7 +1283,7 @@ function flow_callback_wwise_register_source_environment_update(params)
 end
 
 function flow_callback_wwise_unregister_source_environment_update(params)
-	assert(params.source_id, "Missing SourceId in \"Unregister source for environment sample update\"")
+	fassert(params.source_id, "Missing SourceId in \"Unregister source for environment sample update\"")
 
 	local sound_environment_system = Managers.state.entity:system("sound_environment_system")
 
@@ -1757,9 +1765,13 @@ function flow_callback_fire_light_weight_projectile(params)
 			afro_hit_sound = light_weight_projectile_template.afro_hit_sound,
 			player_push_velocity = Vector3Box(direction * light_weight_projectile_template.impact_push_speed)
 		}
+
+		Profiler.start("create_light_weight_projectile")
+
 		local projectile_system = Managers.state.entity:system("projectile_system")
 
 		projectile_system:create_light_weight_projectile(item_name, unit, position, spread_direction, light_weight_projectile_template.projectile_speed, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_particle_effect)
+		Profiler.stop("create_light_weight_projectile")
 	end
 end
 
@@ -1771,11 +1783,11 @@ function flow_callback_trigger_explosion(params)
 	local unit = params.unit
 	local explosion_template_name = params.explosion_template_name
 
-	assert(explosion_template_name, "Trigger Explosion unit flow node is missing explosion_template_name")
+	fassert(explosion_template_name, "Trigger Explosion unit flow node is missing explosion_template_name")
 
 	local explosion_template = ExplosionTemplates[explosion_template_name]
 
-	assert(explosion_template.explosion.level_unit_damage, "The explosion_template must have level_unit_damage set to true when using this flow node")
+	fassert(explosion_template.explosion.level_unit_damage, "The explosion_template must have level_unit_damage set to true when using this flow node")
 
 	local position = Unit.world_position(unit, 0)
 	local rotation = Unit.world_rotation(unit, 0)
@@ -2037,9 +2049,9 @@ function flow_callback_damage_unit(params)
 end
 
 function flow_callback_start_fade(params)
-	assert(params.unit, "[flow_callback_start_fade] You need to specify the Unit")
-	assert(params.duration, "[flow_callback_start_fade] You need to specify duration")
-	assert(params.fade_switch, "[flow_callback_start_fade] You need to specify whether to fade in or out (0 or 1)")
+	fassert(params.unit, "[flow_callback_start_fade] You need to specify the Unit")
+	fassert(params.duration, "[flow_callback_start_fade] You need to specify duration")
+	fassert(params.fade_switch, "[flow_callback_start_fade] You need to specify whether to fade in or out (0 or 1)")
 
 	local start_time = World.time(Application.main_world())
 	local end_time = start_time + params.duration
@@ -2051,7 +2063,7 @@ function flow_callback_start_fade(params)
 	local mesh_name = params.mesh_name
 
 	if mesh_name then
-		assert(Unit.has_mesh(unit, mesh_name), string.format("[flow_callback_start_fade] The mesh %s doesn't exist in unit %s", mesh_name, tostring(unit)))
+		fassert(Unit.has_mesh(unit, mesh_name), string.format("[flow_callback_start_fade] The mesh %s doesn't exist in unit %s", mesh_name, tostring(unit)))
 
 		mesh = Unit.mesh(unit, mesh_name)
 	end
@@ -2060,7 +2072,7 @@ function flow_callback_start_fade(params)
 	local material_name = params.material_name
 
 	if mesh and material_name then
-		assert(Mesh.has_material(mesh, material_name), string.format("[flow_callback_start_fade] The material %s doesn't exist for mesh %s", mesh_name, material_name))
+		fassert(Mesh.has_material(mesh, material_name), string.format("[flow_callback_start_fade] The material %s doesn't exist for mesh %s", mesh_name, material_name))
 
 		material = Mesh.material(mesh, material_name)
 	end
@@ -2103,6 +2115,44 @@ function flow_callback_start_fade(params)
 				Material.set_scalar(material, fade_switch_name, fade_switch)
 				Material.set_vector2(material, start_end_time_name, Vector2(start_time, end_time))
 			end
+		end
+	end
+end
+
+function flow_callback_start_fade_chr_stumps(params)
+	fassert(params.unit, "[flow_callback_start_fade_chr_stumps] You need to specify the Unit")
+	fassert(params.duration, "[flow_callback_start_fade_chr_stumps] You need to specify duration")
+	fassert(params.fade_switch, "[flow_callback_start_fade_chr_stumps] You need to specify whether to fade in or out (0 or 1)")
+
+	local unit = params.unit
+	params.mesh_name = nil
+	local unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
+
+	if unit_inventory_extension ~= nil then
+		for i = 1, #unit_inventory_extension.stump_items, 1 do
+			params.unit = unit_inventory_extension.stump_items[i]
+
+			flow_callback_start_fade(params)
+		end
+	end
+end
+
+function flow_callback_start_fade_chr_helmet(params)
+	fassert(params.unit, "[flow_callback_start_fade_chr_helmet] You need to specify the Unit")
+	fassert(params.duration, "[flow_callback_start_fade_chr_helmet] You need to specify duration")
+	fassert(params.fade_switch, "[flow_callback_start_fade_chr_helmet] You need to specify whether to fade in or out (0 or 1)")
+
+	local unit = params.unit
+	params.mesh_name = nil
+	local unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
+
+	if unit_inventory_extension ~= nil then
+		local helmet_unit = unit_inventory_extension.inventory_item_helmet_unit
+
+		if helmet_unit ~= nil then
+			params.unit = helmet_unit
+
+			flow_callback_start_fade(params)
 		end
 	end
 end
@@ -2228,8 +2278,8 @@ function flow_query_settings_data(params)
 end
 
 function flow_callback_survival_handler(params)
-	assert(params.name, "[flow_callback_survival_handler] You need to specify the name of the waves preset found in survival settings")
-	assert(SurvivalSettings[params.name], "Could not find the waves preset you specified, you sure it's the same as in survival settings?")
+	fassert(params.name, "[flow_callback_survival_handler] You need to specify the name of the waves preset found in survival settings")
+	fassert(SurvivalSettings[params.name], "Could not find the waves preset you specified, you sure it's the same as in survival settings?")
 
 	local DEBUG = false
 	local current_wave = SurvivalSettings.wave + 1
@@ -2329,7 +2379,7 @@ function flow_callback_set_difficulty(params)
 end
 
 function flow_callback_show_difficulty(params)
-	assert(params.difficulty, "No difficulty set")
+	fassert(params.difficulty, "No difficulty set")
 
 	local local_player = Managers.player:local_player()
 	local player_unit = local_player.player_unit
@@ -2431,7 +2481,7 @@ end
 local RESULT_TABLE = {}
 
 function flow_callback_broadphase_deal_damage(params)
-	assert(Managers.state.network.is_server, "Only deal damage on server.")
+	fassert(Managers.state.network.is_server, "Only deal damage on server.")
 
 	local hit_zone_name = "torso"
 	local hit_ragdoll_actor = nil
@@ -2773,6 +2823,21 @@ function flow_callback_unattach_unit(params)
 	}
 end
 
+function flow_callback_is_character_alive(params)
+	local unit = params.unit
+	local health_extension = ScriptUnit.has_extension(unit, "health_system")
+
+	if health_extension and health_extension:is_alive() then
+		flow_return_table.out_value = true
+
+		return flow_return_table
+	end
+
+	flow_return_table.out_value = false
+
+	return flow_return_table
+end
+
 function flow_callback_is_leader(params)
 	local leader_peer_id = Managers.party:leader()
 	local peer_id = Network.peer_id()
@@ -2800,7 +2865,7 @@ function flow_callback_enforce_player_positions(params)
 	elseif force == "outside" then
 		inside = false
 	else
-		fassert(false, "Trying to enforce players position with unknown state %s", tostring(force))
+		ferror("Trying to enforce players position with unknown state %s", tostring(force))
 	end
 
 	local world = Application.flow_callback_context_world()
@@ -3188,7 +3253,7 @@ function flow_callback_set_player_fall_height(params)
 			if BUILD == "release" then
 				ScriptApplication.send_to_crashify("flow_callbacks", "Trying to set falling height on unit not owned")
 			else
-				assert(false, "Trying to set falling height on unit not owned")
+				ferror("Trying to set falling height on unit not owned")
 			end
 		else
 			status_ext:set_falling_height(true)

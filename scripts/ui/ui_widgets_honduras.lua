@@ -1299,7 +1299,7 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 					local item_skin = item and item.skin
 
 					if item_skin then
-						return item.data.item_type ~= "weapon_skin"
+						return item.data.item_type ~= "weapon_skin" and WeaponSkins.default_skins[item.ItemId] ~= item_skin
 					end
 				end
 			}
@@ -15409,7 +15409,7 @@ UIWidgets.create_craft_material_widget = function (scenegraph_id)
 				vertical_alignment = "bottom",
 				horizontal_alignment = "center",
 				texture_size = {
-					70,
+					60,
 					25
 				},
 				color = {

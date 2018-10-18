@@ -59,7 +59,10 @@ ActionCareerWHBountyhunter.finish = function (self, reason)
 	end
 
 	inventory_extension:wield_previous_slot()
-	career_extension:start_activated_ability_cooldown()
+
+	if self.upper_shot_done and self.lower_shot_done then
+		career_extension:start_activated_ability_cooldown()
+	end
 end
 
 ActionCareerWHBountyhunter._play_vo = function (self)

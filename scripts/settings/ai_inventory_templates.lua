@@ -245,8 +245,7 @@ local items = {
 		drop_unit_names = {
 			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_round_01",
 			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_round_02",
-			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_triangle_01",
-			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_triangle_02"
+			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_round_03"
 		}
 	},
 	wpn_skaven_shield_39 = {
@@ -254,10 +253,11 @@ local items = {
 		unit_name = "units/weapons/enemy/wpn_skaven_set/wpn_skaven_shield_39",
 		attachment_node_linking = AttachmentNodeLinking.ai_shield,
 		drop_unit_names = {
-			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_round_01",
+			"units/weapons/enemy/wpn_skaven_set/wpn_shield_metalring_round_01",
 			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_round_02",
-			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_triangle_01",
-			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_triangle_02"
+			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_round_03",
+			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_metal",
+			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_metal_02"
 		}
 	},
 	wpn_skaven_shield_40 = {
@@ -267,8 +267,9 @@ local items = {
 		drop_unit_names = {
 			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_round_01",
 			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_round_02",
-			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_triangle_01",
-			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_triangle_02"
+			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_round_03",
+			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_metal",
+			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_metal_02"
 		}
 	},
 	wpn_skaven_shield_42 = {
@@ -276,10 +277,9 @@ local items = {
 		unit_name = "units/weapons/enemy/wpn_skaven_set/wpn_skaven_shield_42",
 		attachment_node_linking = AttachmentNodeLinking.ai_shield,
 		drop_unit_names = {
-			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_round_01",
-			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_round_02",
-			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_triangle_01",
-			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_triangle_02"
+			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_triangle_02",
+			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_triangle_03",
+			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_triangle_04"
 		}
 	},
 	wpn_skaven_shield_44 = {
@@ -287,10 +287,11 @@ local items = {
 		unit_name = "units/weapons/enemy/wpn_skaven_set/wpn_skaven_shield_44",
 		attachment_node_linking = AttachmentNodeLinking.ai_shield,
 		drop_unit_names = {
-			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_round_01",
-			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_round_02",
-			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_triangle_01",
-			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_triangle_02"
+			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_triangle_02",
+			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_triangle_03",
+			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_triangle_04",
+			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_metal",
+			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_metal_02"
 		}
 	},
 	wpn_skaven_shield_45 = {
@@ -302,62 +303,121 @@ local items = {
 	wpn_marauder_shield_01 = {
 		unit_extension_template = "ai_shield_unit",
 		unit_name = "units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield_01",
-		attachment_node_linking = AttachmentNodeLinking.ai_marauder_shield
+		attachment_node_linking = AttachmentNodeLinking.ai_marauder_shield,
+		drop_unit_names = {
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield1_break_01",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield1_break_03"
+		}
 	},
 	wpn_marauder_shield_02 = {
 		unit_extension_template = "ai_shield_unit",
 		unit_name = "units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield_02",
-		attachment_node_linking = AttachmentNodeLinking.ai_marauder_shield
+		attachment_node_linking = AttachmentNodeLinking.ai_marauder_shield,
+		drop_unit_names = {
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shieldskull_break_01",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield7_break_01",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield7_break_02",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield7_break_03",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield7_break_04"
+		}
 	},
 	wpn_marauder_shield_03 = {
 		unit_extension_template = "ai_shield_unit",
 		unit_name = "units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield_03",
-		attachment_node_linking = AttachmentNodeLinking.ai_marauder_shield
+		attachment_node_linking = AttachmentNodeLinking.ai_marauder_shield,
+		drop_unit_names = {
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield7_break_02",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield7_break_03",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield7_break_04"
+		}
 	},
 	wpn_marauder_shield_04 = {
 		unit_extension_template = "ai_shield_unit",
 		unit_name = "units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield_04",
-		attachment_node_linking = AttachmentNodeLinking.ai_marauder_shield
+		attachment_node_linking = AttachmentNodeLinking.ai_marauder_shield,
+		drop_unit_names = {
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield9_break_01",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield9_break_02",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield7_break_02",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield7_break_03",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield7_break_04"
+		}
 	},
 	wpn_marauder_shield_05 = {
 		unit_extension_template = "ai_shield_unit",
 		unit_name = "units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield_05",
-		attachment_node_linking = AttachmentNodeLinking.ai_marauder_shield
+		attachment_node_linking = AttachmentNodeLinking.ai_marauder_shield,
+		drop_unit_names = {
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield5_break_01",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield7_break_02",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield7_break_03",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield7_break_04"
+		}
 	},
 	wpn_marauder_shield_06 = {
 		unit_extension_template = "ai_shield_unit",
 		unit_name = "units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield_06",
-		attachment_node_linking = AttachmentNodeLinking.ai_marauder_shield
+		attachment_node_linking = AttachmentNodeLinking.ai_marauder_shield,
+		drop_unit_names = {
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield1_break_01",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield1_break_03",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shieldskull_break_01"
+		}
 	},
 	wpn_marauder_shield_07 = {
 		unit_extension_template = "ai_shield_unit",
 		unit_name = "units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield_07",
-		attachment_node_linking = AttachmentNodeLinking.ai_marauder_shield
+		attachment_node_linking = AttachmentNodeLinking.ai_marauder_shield,
+		drop_unit_names = {
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield7_break_01",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield7_break_02",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield7_break_03",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield7_break_04"
+		}
 	},
 	wpn_marauder_shield_08 = {
 		unit_extension_template = "ai_shield_unit",
 		unit_name = "units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield_08",
-		attachment_node_linking = AttachmentNodeLinking.ai_marauder_shield
+		attachment_node_linking = AttachmentNodeLinking.ai_marauder_shield,
+		drop_unit_names = {
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shieldskull_break_02",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield7_break_02",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield7_break_03",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield7_break_04"
+		}
 	},
 	wpn_marauder_shield_09 = {
 		unit_extension_template = "ai_shield_unit",
 		unit_name = "units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield_09",
-		attachment_node_linking = AttachmentNodeLinking.ai_marauder_shield
+		attachment_node_linking = AttachmentNodeLinking.ai_marauder_shield,
+		drop_unit_names = {
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shieldskull_break_02",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield1_break_01",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield1_break_02",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield9_break_01",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield9_break_02"
+		}
 	},
 	wpn_marauder_shield_10 = {
 		unit_extension_template = "ai_shield_unit",
 		unit_name = "units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield_10",
-		attachment_node_linking = AttachmentNodeLinking.ai_marauder_shield
+		attachment_node_linking = AttachmentNodeLinking.ai_marauder_shield,
+		drop_unit_names = {
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield5_break_01",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shieldskull_break_01",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield7_break_02",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield7_break_03",
+			"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield7_break_04"
+		}
 	},
 	wpn_skaven_shield_46 = {
 		unit_extension_template = "ai_shield_unit",
 		unit_name = "units/weapons/enemy/wpn_skaven_set/wpn_skaven_shield_46",
 		attachment_node_linking = AttachmentNodeLinking.ai_shield,
 		drop_unit_names = {
-			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_round_01",
+			"units/weapons/enemy/wpn_skaven_set/wpn_shield_metalring_round_02",
 			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_round_02",
-			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_triangle_01",
-			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_triangle_02"
+			"units/weapons/enemy/wpn_skaven_set/wpn_shield_shard_round_03"
 		}
 	},
 	wpn_skaven_halberd_41 = {
@@ -446,6 +506,7 @@ local items = {
 		attachment_node_linking = AttachmentNodeLinking.ai_packmaster_claw
 	},
 	wpn_loot_rat_sack = {
+		unit_extension_template = "ai_inventory_unit",
 		unit_name = "units/weapons/enemy/wpn_skaven_looter_sack/wpn_skaven_looter_sack",
 		drop_unit_name = "units/weapons/enemy/wpn_skaven_looter_sack/wpn_skaven_looter_sack_static",
 		attachment_node_linking = AttachmentNodeLinking.ai_looter_sack

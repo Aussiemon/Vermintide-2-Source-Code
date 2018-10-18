@@ -5,12 +5,12 @@ menu_buttons_atlas = {
 			42
 		},
 		uv00 = {
-			0.958984,
-			0.180664
+			0.745117,
+			0.28418
 		},
 		uv11 = {
-			0.994141,
-			0.22168
+			0.780273,
+			0.325195
 		}
 	},
 	button_detail_04 = {
@@ -19,12 +19,12 @@ menu_buttons_atlas = {
 			42
 		},
 		uv00 = {
-			0.703125,
-			0.28418
+			0.916992,
+			0.224609
 		},
 		uv11 = {
-			0.761719,
-			0.325195
+			0.975586,
+			0.265625
 		}
 	},
 	button_detail_02 = {
@@ -33,12 +33,12 @@ menu_buttons_atlas = {
 			60
 		},
 		uv00 = {
-			0.916992,
-			0.180664
+			0.703125,
+			0.28418
 		},
 		uv11 = {
-			0.955078,
-			0.239258
+			0.741211,
+			0.342773
 		}
 	},
 	forge_button_03_glow_effect = {
@@ -47,15 +47,29 @@ menu_buttons_atlas = {
 			41
 		},
 		uv00 = {
+			0.916992,
+			0.180664
+		},
+		uv11 = {
+			0.980469,
+			0.220703
+		}
+	},
+	button_detail_01 = {
+		size = {
+			40,
+			70
+		},
+		uv00 = {
 			0.925781,
 			0.098633
 		},
 		uv11 = {
-			0.989258,
-			0.138672
+			0.964844,
+			0.166992
 		}
 	},
-	button_detail_01 = {
+	button_detail_01_gold = {
 		size = {
 			40,
 			70
@@ -139,20 +153,6 @@ menu_buttons_atlas = {
 			0.271484
 		}
 	},
-	button_state_normal_red = {
-		size = {
-			355,
-			60
-		},
-		uv00 = {
-			0.001953,
-			0.59668
-		},
-		uv11 = {
-			0.348633,
-			0.655273
-		}
-	},
 	button_glass_01 = {
 		size = {
 			355,
@@ -174,6 +174,20 @@ menu_buttons_atlas = {
 		},
 		uv00 = {
 			0.001953,
+			0.59668
+		},
+		uv11 = {
+			0.348633,
+			0.655273
+		}
+	},
+	button_state_normal_green = {
+		size = {
+			355,
+			60
+		},
+		uv00 = {
+			0.001953,
 			0.53418
 		},
 		uv11 = {
@@ -181,7 +195,7 @@ menu_buttons_atlas = {
 			0.592773
 		}
 	},
-	button_state_disabled = {
+	button_state_hover_red = {
 		size = {
 			355,
 			60
@@ -195,7 +209,7 @@ menu_buttons_atlas = {
 			0.530273
 		}
 	},
-	button_state_hover_red = {
+	button_state_hover = {
 		size = {
 			355,
 			60
@@ -209,7 +223,7 @@ menu_buttons_atlas = {
 			0.467773
 		}
 	},
-	button_state_hover = {
+	button_state_disabled = {
 		size = {
 			355,
 			60
@@ -237,7 +251,7 @@ menu_buttons_atlas = {
 			0.342773
 		}
 	},
-	button_state_normal_green = {
+	button_state_normal_red = {
 		size = {
 			355,
 			60

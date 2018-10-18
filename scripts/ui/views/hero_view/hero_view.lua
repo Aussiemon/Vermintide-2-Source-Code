@@ -5,6 +5,16 @@ require("scripts/ui/views/hero_view/states/hero_view_state_loot")
 require("scripts/ui/views/hero_view/states/hero_view_state_achievements")
 require("scripts/settings/news_feed_templates")
 
+for name, dlc in pairs(DLCSettings) do
+	local hero_view = dlc.hero_view
+
+	if hero_view then
+		for ui_name, data in pairs(hero_view) do
+			require(data.filename)
+		end
+	end
+end
+
 local definitions = local_require("scripts/ui/views/hero_view/hero_view_definitions")
 local widget_definitions = definitions.widgets_definitions
 local scenegraph_definition = definitions.scenegraph_definition
@@ -87,7 +97,7 @@ HeroView.initial_profile_view = function (self)
 	return self.ingame_ui.initial_profile_view
 end
 
-HeroView._setup_state_machine = function (self, state_machine_params, optional_start_state, optional_start_sub_state)
+HeroView._setup_state_machine = function (self, state_machine_params, optional_start_state, optional_start_sub_state, optional_params)
 	if self._machine then
 		self._machine:destroy()
 
@@ -97,8 +107,10 @@ HeroView._setup_state_machine = function (self, state_machine_params, optional_s
 	local start_state = optional_start_state or HeroViewStateOverview
 	local profiling_debugging_enabled = false
 	state_machine_params.start_state = optional_start_sub_state
+	state_machine_params.state_params = optional_params
 	self._machine = GameStateMachine:new(self, start_state, state_machine_params, profiling_debugging_enabled)
 	self._state_machine_params = state_machine_params
+	state_machine_params.state_params = nil
 end
 
 HeroView.wanted_state = function (self)
@@ -214,7 +226,7 @@ HeroView.update = function (self, dt, t)
 	self:draw(dt, input_service)
 end
 
-HeroView.on_enter = function (self, menu_state_name, menu_sub_state_name)
+HeroView.on_enter = function (self, params)
 	ShowCursorStack.push()
 
 	local input_manager = self.input_manager
@@ -223,8 +235,8 @@ HeroView.on_enter = function (self, menu_state_name, menu_sub_state_name)
 	input_manager:block_device_except_service("hero_view", "mouse", 1)
 	input_manager:block_device_except_service("hero_view", "gamepad", 1)
 
-	local params = self._state_machine_params
-	params.initial_state = true
+	local state_machine_params = self._state_machine_params
+	state_machine_params.initial_state = true
 
 	self:create_ui_elements()
 
@@ -233,10 +245,7 @@ HeroView.on_enter = function (self, menu_state_name, menu_sub_state_name)
 	self:set_current_hero(profile_index)
 
 	self.waiting_for_post_update_enter = true
-	self._on_enter_transition = {
-		menu_state_name = menu_state_name,
-		menu_sub_state_name = menu_sub_state_name
-	}
+	self._on_enter_transition_params = params
 
 	self:play_sound("hud_in_inventory_state_on")
 
@@ -248,8 +257,8 @@ HeroView.set_current_hero = function (self, profile_index)
 	local display_name = profile_settings.display_name
 	local character_name = profile_settings.character_name
 	self._hero_name = display_name
-	local params = self._state_machine_params
-	params.hero_name = display_name
+	local state_machine_params = self._state_machine_params
+	state_machine_params.hero_name = display_name
 end
 
 HeroView._get_sorted_players = function (self)
@@ -337,7 +346,7 @@ HeroView.requested_screen_change_by_name = function (self, screen_name, sub_scre
 	}
 end
 
-HeroView._change_screen_by_name = function (self, screen_name, sub_screen_name)
+HeroView._change_screen_by_name = function (self, screen_name, sub_screen_name, optional_params)
 	local settings, settings_index = nil
 
 	for index, screen_settings in ipairs(settings_by_screen) do
@@ -357,7 +366,7 @@ HeroView._change_screen_by_name = function (self, screen_name, sub_screen_name)
 	if self._machine and not sub_screen_name then
 		self._wanted_state = state
 	else
-		self:_setup_state_machine(self._state_machine_params, state, sub_screen_name)
+		self:_setup_state_machine(self._state_machine_params, state, sub_screen_name, optional_params)
 	end
 end
 
@@ -370,12 +379,15 @@ end
 
 HeroView.post_update_on_enter = function (self)
 	self.waiting_for_post_update_enter = nil
-	local on_enter_transition = self._on_enter_transition
+	local on_enter_transition_params = self._on_enter_transition_params
 
-	if on_enter_transition and on_enter_transition.menu_state_name then
-		self:_change_screen_by_name(on_enter_transition.menu_state_name, on_enter_transition.menu_sub_state_name)
+	if on_enter_transition_params and on_enter_transition_params.menu_state_name then
+		local menu_state_name = on_enter_transition_params.menu_state_name
+		local menu_sub_state_name = on_enter_transition_params.menu_sub_state_name
 
-		self._on_enter_transition = nil
+		self:_change_screen_by_name(menu_state_name, menu_sub_state_name, on_enter_transition_params)
+
+		self._on_enter_transition_params = nil
 	else
 		self:_change_screen_by_index(1)
 	end

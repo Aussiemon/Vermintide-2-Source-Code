@@ -40,7 +40,7 @@ weapon_template.actions = {
 					sub_action = "default",
 					start_time = 0.5,
 					action = "action_two",
-					input = "action_two",
+					input = "action_two_hold",
 					end_time = math.huge
 				},
 				{

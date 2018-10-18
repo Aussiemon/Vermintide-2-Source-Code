@@ -37,6 +37,10 @@ ProjectileBaseImpactUnitExtension.impact = function (self, hit_unit, hit_positio
 		print(Unit.find_actor(hit_unit, "c_afro"))
 		assert(false, "Need to know if this ever happens, contact Staffan if it does.")
 	end
+
+	if script_data.debug_projectiles then
+		QuickDrawerStay:sphere(hit_position, 0.1, Color(255, 255, 255, 0))
+	end
 end
 
 ProjectileBaseImpactUnitExtension.recent_impacts = function (self)

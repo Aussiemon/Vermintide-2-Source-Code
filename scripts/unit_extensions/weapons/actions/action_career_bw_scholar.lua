@@ -39,7 +39,10 @@ end
 ActionCareerBWScholar.finish = function (self, reason)
 	ActionCareerBWScholar.super.finish(self, reason)
 	self.inventory_extension:wield_previous_slot()
-	self.career_extension:start_activated_ability_cooldown()
+
+	if self.state == "shot" then
+		self.career_extension:start_activated_ability_cooldown()
+	end
 end
 
 ActionCareerBWScholar._play_vo = function (self)

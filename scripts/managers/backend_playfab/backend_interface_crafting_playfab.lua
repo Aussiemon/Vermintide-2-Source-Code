@@ -58,6 +58,7 @@ BackendInterfaceCraftingPlayfab.craft_request_cb = function (self, id, result)
 	local items = function_result.items
 	local consumed_items = function_result.consumed_items
 	local modified_items = function_result.modified_items
+	local unlocked_weapon_skins = function_result.unlocked_weapon_skins
 	local result = {}
 
 	if items then
@@ -98,6 +99,14 @@ BackendInterfaceCraftingPlayfab.craft_request_cb = function (self, id, result)
 		end
 	end
 
+	if unlocked_weapon_skins then
+		for i = 1, #unlocked_weapon_skins, 1 do
+			local weapon_skin = unlocked_weapon_skins[i]
+
+			backend_mirror:add_unlocked_weapon_skin(weapon_skin)
+		end
+	end
+
 	backend_manager:dirtify_interfaces()
 
 	self._craft_requests[id] = result
@@ -115,6 +124,12 @@ end
 
 BackendInterfaceCraftingPlayfab.get_craft_result = function (self, id)
 	return self._craft_requests[id]
+end
+
+BackendInterfaceCraftingPlayfab.get_unlocked_weapon_skins = function (self)
+	local mirror = self._backend_mirror
+
+	return mirror:get_unlocked_weapon_skins()
 end
 
 return

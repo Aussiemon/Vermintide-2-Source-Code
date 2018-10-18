@@ -40,7 +40,9 @@ GenericUnitInteractableExtension.hot_join_sync = function (self, sender)
 		local interactable_unit_id = network_manager:game_object_or_level_id(self.unit)
 		local used = Unit.get_data(interactable_unit, "interaction_data", "used") or false
 
-		RPC.rpc_sync_interactable_used_state(sender, interactable_unit_id, self._is_level_object, used)
+		if used then
+			RPC.rpc_sync_interactable_used_state(sender, interactable_unit_id, self._is_level_object, used)
+		end
 	end
 end
 

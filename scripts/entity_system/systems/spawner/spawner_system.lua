@@ -95,6 +95,12 @@ SpawnerSystem.test_all_spawners = function (self)
 	}
 end
 
+function TEST_SPAWNERS()
+	local spawner_system = Managers.state.entity:system("spawner_system")
+
+	spawner_system:test_all_spawners()
+end
+
 SpawnerSystem.running_spawners = function (self)
 	return self._active_spawners
 end
@@ -240,10 +246,15 @@ SpawnerSystem._try_spawn_breed = function (self, breed_name, spawn_list_per_bree
 	local amount = spawn_list_per_breed[breed_name]
 
 	if amount then
+		D("trying to spawn %i %s", amount, breed_name)
+
 		local limit = breed_limits[breed_name]
 
 		if limit then
 			local overflow = math.min((active_enemies + amount) - limit.max_active_enemies, amount)
+
+			D("overflow is %i (active:%i max:%i)", overflow, active_enemies, limit.max_active_enemies)
+
 			local ratio = limit.exchange_ratio
 
 			if ratio < overflow then
@@ -258,17 +269,23 @@ SpawnerSystem._try_spawn_breed = function (self, breed_name, spawn_list_per_bree
 						local breed_index = Math.random(1, num_breeds)
 						local exchange_breed_name = exchange_breed[breed_index]
 						spawn_list_per_breed[exchange_breed_name] = (spawn_list_per_breed[exchange_breed_name] or 0) + 1
+
+						D("replacing %i %s with %i %s", ratio, breed_name, 1, exchange_breed_name)
 					end
 
 					for i = 1, num_breeds, 1 do
 						active_enemies = active_enemies + self:_try_spawn_breed(exchange_breed[i], spawn_list_per_breed, spawn_list, breed_limits, active_enemies, group_template)
 					end
 				else
+					D("replacing %i %s with %i %s", exchanged_amount * ratio, breed_name, exchanged_amount, exchange_breed)
+
 					spawn_list_per_breed[exchange_breed] = (spawn_list_per_breed[exchange_breed] or 0) + exchanged_amount
 					active_enemies = active_enemies + self:_try_spawn_breed(exchange_breed, spawn_list_per_breed, spawn_list, breed_limits, active_enemies, group_template)
 				end
 			end
 		end
+
+		D("amount remaining %i", amount)
 
 		local start = #spawn_list + 1
 		active_enemies = active_enemies + amount
@@ -311,6 +328,9 @@ SpawnerSystem._fill_spawners = function (self, spawn_list, spawners, limit_spawn
 
 	for i = 1, num_spawners_to_use, 1 do
 		local to_spawn = math.floor(total_amount / (num_spawners_to_use - i + 1))
+
+		D("\t spawner %i gets %i rats.", i, to_spawn)
+
 		total_amount = total_amount - to_spawn
 		local spawner = spawners[i]
 		local extension = ScriptUnit.extension(spawner, "spawner_system")
@@ -390,6 +410,8 @@ SpawnerSystem.spawn_horde_from_terror_event_id = function (self, event_id, varia
 		end
 
 		if not next(spawners) then
+			D("No horde spawners found within range for terror event %s", tostring(event_id))
+
 			return
 		end
 	end
@@ -410,6 +432,7 @@ SpawnerSystem.spawn_horde_from_terror_event_id = function (self, event_id, varia
 	local spawn_list_hidden = spawn_list_hidden
 
 	table.clear_array(spawn_list_hidden, #spawn_list_hidden)
+	D("Spawning horde from terror event id: %q, composition_type: %s, limit_spawners: %s", event_id, tostring(optional_composition_type), tostring(limit_spawners))
 
 	for i = 1, #breed_list, 2 do
 		local breed_name = breed_list[i]
@@ -418,8 +441,12 @@ SpawnerSystem.spawn_horde_from_terror_event_id = function (self, event_id, varia
 
 		if type(amount) == "table" then
 			num_to_spawn = Math.random(amount[1], amount[2])
+
+			D("\t ...will spawn %i of %s (%i->%i)", num_to_spawn, breed_name, amount[1], amount[2])
 		else
 			num_to_spawn = amount
+
+			D("\t ...will spawn %i of %s (%i)", num_to_spawn, breed_name, amount)
 		end
 
 		temp_spawn_list_per_breed[breed_name] = num_to_spawn
@@ -586,6 +613,14 @@ local found_hidden_spawners = {}
 SpawnerSystem.update = function (self, context, t, dt)
 	for unit, extension in pairs(self._active_spawners) do
 		extension:update(unit, dummy_input, dt, context, t)
+	end
+
+	if script_data.show_hidden_spawners then
+		self:show_hidden_spawners(t)
+	end
+
+	if self._test_data then
+		self:update_test_all_spawners(t)
 	end
 end
 

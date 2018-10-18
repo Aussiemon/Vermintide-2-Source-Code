@@ -3055,7 +3055,7 @@ UITooltipPasses = {
 			local item_skin = item.skin
 			local item_type = item_data.item_type
 
-			if item_skin and item_type ~= "weapon_skin" then
+			if item_skin and item_type ~= "weapon_skin" and WeaponSkins.default_skins[item.ItemId] ~= item_skin then
 				content.text = content.prefix_text
 				local position_x = position[1]
 				local position_y = position[2]

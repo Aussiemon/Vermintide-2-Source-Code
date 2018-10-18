@@ -264,6 +264,8 @@ TerrorEventMixer.init_functions = {
 
 		if allowed_difficulty and not optional_data[time_challenge_name] then
 			optional_data[time_challenge_name] = duration
+
+			print("Set time challenge: ", time_challenge_name, duration)
 		end
 	end,
 	has_completed_time_challenge = function (event, element, t, dt)
@@ -276,6 +278,8 @@ TerrorEventMixer.init_functions = {
 			local time_left = math.abs(t - duration)
 
 			if completed then
+				printf("Completed time challenge: %s. Time left: %0.1f", time_challenge_name, time_left)
+
 				optional_data[time_challenge_name] = nil
 				local stat_name = time_challenge_name
 				local statistics_db = Managers.player:statistics_db()
@@ -283,6 +287,8 @@ TerrorEventMixer.init_functions = {
 				statistics_db:increment_stat_and_sync_to_clients(stat_name)
 				QuestSettings.send_completed_message(stat_name)
 			else
+				printf("Failed time challenge: %s Time left: %0.1f", time_challenge_name, time_left)
+
 				optional_data[time_challenge_name] = nil
 			end
 		end
@@ -301,8 +307,11 @@ TerrorEventMixer.init_functions = {
 		optional_data[volume_name] = {
 			time_inside = 0,
 			duration = challenge_duration,
+			player_units = {},
 			terminate = terminate
 		}
+
+		printf("Starting volume challenge for volume %s", volume_name)
 	end
 }
 TerrorEventMixer.run_functions = {
@@ -584,6 +593,7 @@ TerrorEventMixer.run_functions = {
 			return true
 		end
 
+		local player_units = optional_data.player_units
 		local all_inside = true
 		local human_players = Managers.player:human_players()
 
@@ -595,12 +605,16 @@ TerrorEventMixer.run_functions = {
 
 				break
 			end
+
+			player_units[#player_units + 1] = player_unit
 		end
 
 		if all_inside then
 			local volume_system = Managers.state.entity:system("volume_system")
-			all_inside = EngineOptimizedExtensions.volume_has_all_units_inside(volume_system._volume_system, volume_name, unpack(human_players))
+			all_inside = EngineOptimizedExtensions.volume_has_all_units_inside(volume_system._volume_system, volume_name, unpack(player_units))
 		end
+
+		table.clear(player_units)
 
 		if all_inside then
 			optional_data.time_inside = optional_data.time_inside + dt
@@ -613,6 +627,7 @@ TerrorEventMixer.run_functions = {
 			local statistics_db = Managers.player:statistics_db()
 
 			statistics_db:increment_stat_and_sync_to_clients(increment_stat_name)
+			printf("Completed volume challenge %s", volume_name)
 			QuestSettings.send_completed_message(increment_stat_name)
 
 			return true

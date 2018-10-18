@@ -185,13 +185,19 @@ LocomotionSystem.update = function (self, context, t)
 	self:update_extensions(context, t)
 	self:update_animation_lods()
 	self:update_actor_proximity_shapes()
+	self:debug_draw()
 end
 
 LocomotionSystem.update_extensions = function (self, context, t)
 	local dt = context.dt
 
+	Profiler.start("PlayerHuskLocomotionExtension")
 	self:update_extension("PlayerHuskLocomotionExtension", dt, context, t)
+	Profiler.stop("PlayerHuskLocomotionExtension")
+	Profiler.start("PlayerUnitLocomotionExtension")
 	self:update_extension("PlayerUnitLocomotionExtension", dt, context, t)
+	Profiler.stop("PlayerUnitLocomotionExtension")
+	Profiler.start("extension templates")
 
 	if GameSettingsDevelopment.use_engine_optimized_ai_locomotion then
 		if self.is_server then
@@ -207,11 +213,16 @@ LocomotionSystem.update_extensions = function (self, context, t)
 		LocomotionTemplates.PlayerUnitLocomotionExtension.update(data, t, dt)
 	else
 		for template_name, data in pairs(self.template_data) do
+			Profiler.start(template_name)
+
 			local template = LocomotionTemplates[template_name]
 
 			template.update(data, t, dt)
+			Profiler.stop(template_name)
 		end
 	end
+
+	Profiler.stop("extension templates")
 end
 
 LocomotionSystem.set_override_player = function (self, player)
@@ -232,6 +243,8 @@ LocomotionSystem.update_animation_lods = function (self)
 end
 
 LocomotionSystem.update_actor_proximity_shapes = function (self)
+	Profiler.start("update_actor_proximity_shapes")
+
 	local POSITION_LOOKUP = POSITION_LOOKUP
 	local player_manager = Managers.player
 	local physics_world = World.get_data(self.world, "physics_world")
@@ -261,7 +274,92 @@ LocomotionSystem.update_actor_proximity_shapes = function (self)
 				end
 			end
 
+			Profiler.start("commit_actor_proximity_shape")
 			PhysicsWorld.commit_actor_proximity_shape(physics_world, position, direction, 36, angle, true)
+			Profiler.stop("commit_actor_proximity_shape")
+		end
+	end
+
+	Profiler.stop("update_actor_proximity_shapes")
+end
+
+LocomotionSystem.debug_draw = function (self)
+	if script_data.show_engine_locomotion_debug and GameSettingsDevelopment.use_engine_optimized_ai_locomotion then
+		local num_all, num_free, num_script_driven, num_get_to_navmesh, num_snap_to_navmesh, num_mover_constrained, num_animation_driven, num_affected_by_gravity, num_rotation_speed, num_animation_and_script = EngineOptimizedExtensions.ai_locomotion_get_debug_info()
+		local s = self.stats
+
+		if not s then
+			s = {
+				num_get_to_navmesh = 0,
+				num_free = 0,
+				num_affected_by_gravity = 0,
+				num_snap_to_navmesh = 0,
+				num_script_driven = 0,
+				num_mover_constrained = 0,
+				num_rotation_speed = 0,
+				num_animation_and_script = 0,
+				num_all = 0,
+				num_animation_driven = 0
+			}
+			self.stats = s
+		end
+
+		s.num_all = math.max(num_all, s.num_all)
+		s.num_free = math.max(num_free, s.num_free)
+		s.num_script_driven = math.max(num_script_driven, s.num_script_driven)
+		s.num_get_to_navmesh = math.max(num_get_to_navmesh, s.num_get_to_navmesh)
+		s.num_snap_to_navmesh = math.max(num_snap_to_navmesh, s.num_snap_to_navmesh)
+		s.num_mover_constrained = math.max(num_mover_constrained, s.num_mover_constrained)
+		s.num_animation_driven = math.max(num_animation_driven, s.num_animation_driven)
+		s.num_affected_by_gravity = math.max(num_affected_by_gravity, s.num_affected_by_gravity)
+		s.num_rotation_speed = math.max(num_rotation_speed, s.num_rotation_speed)
+		s.num_animation_and_script = math.max(num_animation_and_script, s.num_animation_and_script)
+
+		Debug.text("EngineLocomotion amount for each category: right now/peak in game")
+		Debug.text("Num all: %d/%d, free: %d/%d, script_driven: %d/%d, snap_to_navmesh: %d/%d, animation_driven: %d/%d, mover_constrained: %d/%d, get_to_navmesh %d/%d", num_all, s.num_all, num_free, s.num_free, num_script_driven, s.num_script_driven, num_snap_to_navmesh, s.num_snap_to_navmesh, num_animation_driven, s.num_animation_driven, num_mover_constrained, s.num_mover_constrained, num_get_to_navmesh, s.num_get_to_navmesh)
+		Debug.text("Num affected_by_gravity: %d/%d, rotation_speed: %d/%d, animation_and_script: %d/%d", num_affected_by_gravity, s.num_affected_by_gravity, num_rotation_speed, s.num_rotation_speed, num_animation_and_script, s.num_animation_and_script)
+	end
+
+	local unit = script_data.debug_unit
+	local locomotion_extension = ScriptUnit.has_extension(unit, "locomotion_system")
+
+	if not Unit.alive(unit) or not locomotion_extension then
+		return
+	end
+
+	if script_data.debug_ai_movement == "text_and_graphics" then
+		Profiler.start("Debug Draw")
+		Debug.text("AI LOCOMOTION DEBUG")
+		Debug.text("  movement_type = %s", locomotion_extension.movement_type)
+		Debug.text("  is_falling = %s", tostring((locomotion_extension.is_falling == nil and "?") or locomotion_extension:is_falling()))
+		Debug.text("  current_velocity = %s", tostring(locomotion_extension:current_velocity()))
+		Profiler.stop("Debug Draw")
+	end
+
+	if script_data.debug_skeleton then
+		local bones = Unit.bones(unit)
+
+		for _, bone in ipairs(bones) do
+			local i = Unit.node(unit, bone)
+			local parent = Unit.scene_graph_parent(unit, i)
+
+			if parent then
+				local from = Unit.world_position(unit, parent)
+				local to = Unit.world_position(unit, i)
+				local r = Vector3.distance(from, to) / 10
+
+				if r > 0.1 then
+					r = 0.1
+				end
+
+				local color = Color(100, 100, 255)
+
+				if bone == self.draw_node then
+					color = Color(255, 255, 0)
+				end
+
+				QuickDrawer:cone(from, to, r, color, 20, 5)
+			end
 		end
 	end
 end

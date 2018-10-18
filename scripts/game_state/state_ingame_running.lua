@@ -605,6 +605,8 @@ if PLATFORM ~= "win32" and (BUILD == "dev" or BUILD == "debug") then
 end
 
 StateInGameRunning.update = function (self, dt, t)
+	Profiler.start("StateInGameRunning:update()")
+
 	if DebugKeyHandler.key_pressed("f5", "reload_ui", "ui") then
 		self:create_ingame_ui(self.ingame_ui_context)
 	end
@@ -674,13 +676,18 @@ StateInGameRunning.update = function (self, dt, t)
 		end
 	end
 
+	Profiler.start("AFK Kick")
+
 	local main_t = Managers.time:time("main")
 
 	self:update_player_afk_check(dt, main_t)
+	Profiler.stop("AFK Kick")
 
 	if self._benchmark_handler then
 		self._benchmark_handler:update(dt, t)
 	end
+
+	Profiler.stop("StateInGameRunning:update()")
 end
 
 StateInGameRunning.check_for_new_quests_or_contracts = function (self, dt)
@@ -998,13 +1005,19 @@ StateInGameRunning.game_actually_starts = function (self)
 
 		if show_profile_on_startup and level_key == "inn_level" and not LEVEL_EDITOR_TEST and not Development.parameter("skip-start-menu") then
 			if platform == "ps4" or platform == "xb1" then
-				self.ingame_ui:transition_with_fade("initial_character_selection_force", "character")
+				local transition_params = {
+					menu_state_name = "character"
+				}
+
+				self.ingame_ui:transition_with_fade("initial_character_selection_force", transition_params)
 			else
 				local show_hero_selection = not backend_waiting_for_input and not first_hero_selection_made
-				local menu_state = (show_hero_selection and "character") or "overview"
+				local transition_params = {
+					menu_state_name = (show_hero_selection and "character") or "overview"
+				}
 				local view = "initial_start_menu_view_force"
 
-				self.ingame_ui:transition_with_fade(view, menu_state)
+				self.ingame_ui:transition_with_fade(view, transition_params)
 			end
 
 			loading_context.show_profile_on_startup = nil
@@ -1105,8 +1118,9 @@ end
 StateInGameRunning._send_system_chat_message = function (self, message, localization_param)
 	local channel_id = 1
 	local pop_chat = true
+	local localize_parameters = false
 
-	Managers.chat:send_system_chat_message(channel_id, message, localization_param, pop_chat)
+	Managers.chat:send_system_chat_message(channel_id, message, localization_param, localize_parameters, pop_chat)
 end
 
 StateInGameRunning._cancel_afk_warning = function (self)

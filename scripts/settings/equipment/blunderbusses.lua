@@ -71,7 +71,7 @@ weapon_template.actions = {
 			anim_end_event = "attack_finished",
 			kind = "shield_slam",
 			reload_when_out_of_ammo = true,
-			anim_event = "attack_push",
+			damage_profile = "shield_slam_shotgun",
 			hit_time = 0.25,
 			push_dot = 0.75,
 			hit_effect = "melee_hit_slashing",
@@ -81,7 +81,7 @@ weapon_template.actions = {
 			no_damage_impact_sound_event = "blunt_hit_armour",
 			damage_profile_aoe = "shield_slam_shotgun_aoe",
 			dedicated_target_range = 2,
-			damage_profile = "shield_slam_shotgun",
+			anim_event = "attack_push",
 			total_time = 1,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
@@ -106,7 +106,10 @@ weapon_template.actions = {
 					action = "action_two",
 					input = "action_two"
 				}
-			}
+			},
+			enter_function = function (attacker_unit, input_extension)
+				input_extension:clear_input_buffer()
+			end
 		}
 	},
 	action_inspect = ActionTemplates.action_inspect,

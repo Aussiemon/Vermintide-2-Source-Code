@@ -27,6 +27,8 @@ local function aggregate(list)
 end
 
 function parse_item_master_list()
+	Profiler.start("Parse Item Master List")
+
 	for key, item in pairs(ItemMasterList) do
 		item.key = key
 		item.name = key
@@ -42,6 +44,8 @@ function parse_item_master_list()
 			all_item_types[item.item_type] = true
 		end
 	end
+
+	Profiler.stop("Parse Item Master List")
 end
 
 if Managers.localizer then

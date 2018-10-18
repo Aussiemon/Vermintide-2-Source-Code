@@ -72,14 +72,26 @@ ChaosTrollHealthExtension.update = function (self, dt, context, t)
 		self:update_regen_effect(t, dt, self.regen_pulse_interval, self.regen_pulse_intensity)
 
 		if self._regen_time < t and self._regen_paused_time < t then
-			self:add_heal(self.unit, self._blackboard.health_regen_per_sec * self.regen_pulse_interval, nil, "buff")
+			local blackboard = self._blackboard
+			local time_spent_in_regen = t - self._regen_paused_time
+			local max_health_regen_time = blackboard.max_health_regen_time
+			local percentage_to_max_regen = math.min(time_spent_in_regen / max_health_regen_time, 1)
+			local max_health_regen_per_sec = blackboard.max_health_regen_per_sec
+			local heal_amount = max_health_regen_per_sec * percentage_to_max_regen
+			heal_amount = DamageUtils.networkify_health(heal_amount)
+
+			if heal_amount > 0 and self.damage > 0 then
+				self:add_heal(self.unit, heal_amount * self.regen_pulse_interval, nil, "buff")
+				self:sync_health_to_clients()
+			end
 
 			self._regen_time = t + self.regen_pulse_interval
-
-			self:sync_health_to_clients()
-
 			self.pulse_time = 0
 		end
+	end
+
+	if script_data.show_ai_health then
+		Debug.text("TROLL HEALTH [%s] hp=%.1f dmg=%.1f hpmax=%.1f hpmin=%.1f go_down=%.1f", self.state, self:current_health(), self.damage, self.respawn_hp_max, self.respawn_hp_min, self.go_down_health)
 	end
 end
 

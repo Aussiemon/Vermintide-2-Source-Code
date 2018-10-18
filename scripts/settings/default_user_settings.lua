@@ -11,25 +11,24 @@ local default_user_settings = {
 	gamepad_look_invert_y = false,
 	tutorials_enabled = true,
 	gamepad_zoom_sensitivity_y = 0,
-	master_bus_volume = 100,
+	use_subtitles = true,
 	vsync = true,
 	enable_gamepad_acceleration = true,
 	gamepad_use_ps4_style_input_icons = false,
-	borderless_fullscreen = false,
 	enabled_crosshairs = "all",
 	mouse_look_invert_y = false,
-	sfx_bus_volume = 100,
-	use_subtitles = true,
-	max_fps = 0,
-	toggle_alternate_attack = false,
-	ui_scale = 100,
 	voip_push_to_talk = true,
+	sfx_bus_volume = 100,
+	root_scale_x = 1,
+	toggle_alternate_attack = false,
+	max_fps = 0,
+	ui_scale = 100,
 	overcharge_opacity = 100,
+	use_hud_screen_fit = true,
 	camera_shake = true,
 	twitch_vote_time = 45,
-	gamepad_auto_aim_enabled = true,
-	use_gamepad_hud_layout = false,
-	root_scale_y = 1,
+	dynamic_range_sound = "high",
+	use_gamepad_hud_layout = "auto",
 	use_high_quality_fur = true,
 	adapter_index = 0,
 	use_baked_enemy_meshes = false,
@@ -48,11 +47,13 @@ local default_user_settings = {
 	allow_occupied_hero_lobbies = false,
 	voice_bus_volume = 100,
 	mouse_look_sensitivity = 0,
-	use_hud_screen_fit = true,
+	gamepad_auto_aim_enabled = true,
+	social_wheel_gamepad_layout = "auto",
 	twitch_difficulty = 50,
-	gamepad_left_handed = false,
 	sound_panning_rule = "speakers",
 	tobii_clean_ui = true,
+	gamepad_left_handed = false,
+	social_wheel_delay = 0.12,
 	tobii_fire_at_gaze = true,
 	use_alien_fx = false,
 	process_priority = "unchanged",
@@ -65,18 +66,19 @@ local default_user_settings = {
 	max_stacking_frames = -1,
 	max_quick_play_search_range = "medium",
 	gamepad_layout = "default",
+	root_scale_y = 1,
 	chat_enabled = true,
 	small_network_packets = false,
 	twitch_time_between_votes = 30,
 	music_bus_volume = 100,
-	root_scale_x = 1,
+	master_bus_volume = 100,
 	deadlock_timeout = 15,
 	voip_bus_volume = 100,
 	blood_enabled = true,
 	gamepad_look_sensitivity = 0,
 	head_bob = true,
 	gamepad_zoom_sensitivity = 0,
-	dynamic_range_sound = "high",
+	borderless_fullscreen = false,
 	chat_font_size = 20,
 	char_texture_quality = TextureQuality.default_characters,
 	env_texture_quality = TextureQuality.default_environment,
@@ -225,6 +227,8 @@ DefaultUserSettings = {
 		return setting
 	end,
 	setup_resolution = function ()
+		Profiler.start("setup_resolution()")
+
 		local get_user_setting = Application.user_setting
 		local set_user_setting = Application.set_user_setting
 		local save_user_settings = Application.save_user_settings
@@ -320,6 +324,8 @@ DefaultUserSettings = {
 
 			return true
 		end
+
+		Profiler.stop("setup_resolution()")
 	end
 }
 

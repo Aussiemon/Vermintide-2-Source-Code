@@ -143,7 +143,7 @@ StartGameView.initial_profile_view = function (self)
 	return self.ingame_ui.initial_profile_view
 end
 
-StartGameView._setup_state_machine = function (self, state_machine_params, optional_start_state, optional_start_sub_state)
+StartGameView._setup_state_machine = function (self, state_machine_params, optional_start_state, optional_start_sub_state, optional_params)
 	if self._machine then
 		self._machine:destroy()
 
@@ -153,8 +153,10 @@ StartGameView._setup_state_machine = function (self, state_machine_params, optio
 	local start_state = optional_start_state or StartGameStateSettingsOverview
 	local profiling_debugging_enabled = false
 	state_machine_params.start_state = optional_start_sub_state
+	state_machine_params.state_params = optional_params
 	self._machine = GameStateMachine:new(self, start_state, state_machine_params, profiling_debugging_enabled)
 	self._state_machine_params = state_machine_params
+	state_machine_params.state_params = nil
 end
 
 StartGameView.wanted_state = function (self)
@@ -275,7 +277,9 @@ StartGameView.update = function (self, dt, t)
 		local active_view = self._active_view
 
 		if active_view then
+			Profiler.start(active_view)
 			self._views[active_view]:update(dt, t)
+			Profiler.stop(active_view)
 		else
 			self:_handle_input(dt, t)
 		end
@@ -285,7 +289,7 @@ StartGameView.update = function (self, dt, t)
 	self:draw(dt, input_service)
 end
 
-StartGameView.on_enter = function (self, menu_state_name, menu_sub_state_name)
+StartGameView.on_enter = function (self, params)
 	ShowCursorStack.push()
 
 	local input_manager = self.input_manager
@@ -294,8 +298,8 @@ StartGameView.on_enter = function (self, menu_state_name, menu_sub_state_name)
 	input_manager:block_device_except_service("start_game_view", "mouse", 1)
 	input_manager:block_device_except_service("start_game_view", "gamepad", 1)
 
-	local params = self._state_machine_params
-	params.initial_state = true
+	local state_machine_params = self._state_machine_params
+	state_machine_params.initial_state = true
 
 	self:create_ui_elements()
 
@@ -304,10 +308,7 @@ StartGameView.on_enter = function (self, menu_state_name, menu_sub_state_name)
 	self:set_current_hero(profile_index)
 
 	self.waiting_for_post_update_enter = true
-	self._on_enter_transition = {
-		menu_state_name = menu_state_name,
-		menu_sub_state_name = menu_sub_state_name
-	}
+	self._on_enter_transition_params = params
 
 	self:play_sound("hud_in_inventory_state_on")
 
@@ -321,8 +322,8 @@ StartGameView.set_current_hero = function (self, profile_index)
 	local display_name = profile_settings.display_name
 	local character_name = profile_settings.character_name
 	self._hero_name = display_name
-	local params = self._state_machine_params
-	params.hero_name = display_name
+	local state_machine_params = self._state_machine_params
+	state_machine_params.hero_name = display_name
 end
 
 StartGameView._get_sorted_players = function (self)
@@ -418,7 +419,7 @@ StartGameView.requested_screen_change_by_name = function (self, screen_name, sub
 	}
 end
 
-StartGameView._change_screen_by_name = function (self, screen_name, sub_screen_name)
+StartGameView._change_screen_by_name = function (self, screen_name, sub_screen_name, optional_params)
 	local settings, settings_index = nil
 
 	for index, screen_settings in ipairs(settings_by_screen) do
@@ -438,7 +439,7 @@ StartGameView._change_screen_by_name = function (self, screen_name, sub_screen_n
 	if self._machine and not sub_screen_name then
 		self._wanted_state = state
 	else
-		self:_setup_state_machine(self._state_machine_params, state, sub_screen_name)
+		self:_setup_state_machine(self._state_machine_params, state, sub_screen_name, optional_params)
 	end
 end
 
@@ -451,12 +452,15 @@ end
 
 StartGameView.post_update_on_enter = function (self)
 	self.waiting_for_post_update_enter = nil
-	local on_enter_transition = self._on_enter_transition
+	local on_enter_transition_params = self._on_enter_transition_params
 
-	if on_enter_transition and on_enter_transition.menu_state_name then
-		self:_change_screen_by_name(on_enter_transition.menu_state_name, on_enter_transition.menu_sub_state_name)
+	if on_enter_transition_params and on_enter_transition_params.menu_state_name then
+		local menu_state_name = on_enter_transition_params.menu_state_name
+		local menu_sub_state_name = on_enter_transition_params.menu_sub_state_name
 
-		self._on_enter_transition = nil
+		self:_change_screen_by_name(menu_state_name, menu_sub_state_name, on_enter_transition_params)
+
+		self._on_enter_transition_params = nil
 	else
 		self:_change_screen_by_index(1)
 	end

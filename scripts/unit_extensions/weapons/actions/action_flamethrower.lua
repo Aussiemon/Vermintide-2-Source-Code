@@ -24,7 +24,6 @@ ActionFlamethrower.init = function (self, world, item_name, is_server, owner_uni
 	self.owner_player = Managers.player:owner(owner_unit)
 	self.wwise_world = Managers.world:wwise_world(self.world)
 	self.stop_sound_event = "Stop_player_combat_weapon_drakegun_flamethrower_shoot"
-	self.flamepatch_timer = 2.5
 
 	if ScriptUnit.has_extension(weapon_unit, "ammo_system") then
 		self.ammo_extension = ScriptUnit.extension(weapon_unit, "ammo_system")
@@ -47,7 +46,6 @@ ActionFlamethrower.client_owner_start_action = function (self, new_action, t, ch
 	self.time_to_shoot = t + new_action.fire_time
 	self.overcharge_timer = 0
 	self.damage_timer = 1
-	self.flamepatch_timer = 2.5
 	self.stop_sound_event = new_action.stop_fire_event or self.stop_sound_event
 	self.muzzle_node_name = new_action.fx_node or "fx_muzzle"
 	self.vfx_stopped = false

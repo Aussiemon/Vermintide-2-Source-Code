@@ -146,6 +146,10 @@ end
 BTMoveToGoalAction.toggle_start_move_animation_lock = function (self, unit, should_lock_ani, blackboard)
 	local locomotion_extension = blackboard.locomotion_extension
 
+	if not locomotion_extension._engine_extension_id then
+		return
+	end
+
 	if should_lock_ani then
 		locomotion_extension:use_lerp_rotation(false)
 		LocomotionUtils.set_animation_driven_movement(unit, true, false, false)

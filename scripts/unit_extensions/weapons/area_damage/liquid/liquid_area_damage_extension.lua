@@ -190,6 +190,15 @@ LiquidAreaDamageExtension.stop_fx = function (self)
 	end
 end
 
+local LIQUID_DEBUG_COLORS = {
+	Vector3Box(255, 0, 0),
+	Vector3Box(0, 255, 0),
+	Vector3Box(0, 0, 255),
+	Vector3Box(255, 255, 255),
+	Vector3Box(255, 0, 255),
+	Vector3Box(0, 255, 255)
+}
+
 LiquidAreaDamageExtension._create_liquid = function (self, real_index, angle)
 	local grid = self._grid
 	local i, j, k = grid:ijk(real_index)
@@ -364,9 +373,11 @@ LiquidAreaDamageExtension.update = function (self, unit, input, dt, context, t)
 
 	table.clear(remove_list)
 	table.clear(add_list)
+	Profiler.start("LiquidAreaDamageExtension:update()")
 
 	if self._time_to_remove < t then
 		Managers.state.unit_spawner:mark_for_deletion(self._unit)
+		Profiler.stop("LiquidAreaDamageExtension:update()")
 
 		return
 	end
@@ -470,13 +481,45 @@ LiquidAreaDamageExtension.update = function (self, unit, input, dt, context, t)
 		end
 	end
 
+	if not self._fx_stopped and script_data.debug_liquid_system then
+		local show_volume = true
+		local show_angle = true
+
+		for real_index, liquid in pairs(flow) do
+			local amount = liquid.amount
+			local pos = liquid.position:unbox()
+
+			if show_volume then
+				QuickDrawer:sphere(pos, 0.05 + 0.5 * amount)
+
+				if liquid.full then
+					local color = (liquid.done and Color(0, 255, 0)) or Color(0, 0, 255)
+
+					QuickDrawer:sphere(pos, 0.05, color)
+				end
+			end
+
+			if show_angle then
+				local angle = liquid.angle
+				local dir = Vector3(math.cos(angle), math.sin(angle), 0)
+
+				QuickDrawer:vector(pos + Vector3.up() * 0.55, dir * 1.5, Color(255, 0, 0))
+			end
+		end
+	end
+
+	Profiler.start("collision_detection")
 	self:_update_collision_detection(dt, t)
+	Profiler.stop("collision_detection")
+	Profiler.start("deal damage")
 
 	while self._next_pulse < t do
 		self._next_pulse = self._next_pulse + 0.75
 
 		self:_pulse_damage()
 	end
+
+	Profiler.stop("deal damage")
 
 	local liquid_update_function = self._liquid_update_function
 
@@ -487,6 +530,8 @@ LiquidAreaDamageExtension.update = function (self, unit, input, dt, context, t)
 			self._liquid_update_function = nil
 		end
 	end
+
+	Profiler.stop("LiquidAreaDamageExtension:update()")
 end
 
 LiquidAreaDamageExtension._add_buff_helper_function = function (self, unit, liquid_unit, buff_name, buff_condition, buff_system)
@@ -632,6 +677,10 @@ LiquidAreaDamageExtension._is_unit_colliding = function (self, grid, unit)
 
 			if liquid then
 				if liquid.full then
+					if script_data.debug_liquid_system then
+						QuickDrawer:sphere(liquid.position:unbox(), 0.05 + math.random() * 0.05, Colors.get("red"))
+					end
+
 					return true
 				else
 					break

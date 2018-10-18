@@ -41,7 +41,6 @@ ActionTrueFlightBowAim.client_owner_start_action = function (self, new_action, t
 	end
 
 	self.charge_ready_sound_event = self.current_action.charge_ready_sound_event
-	local owner_unit = self.owner_unit
 	local owner_player = Managers.player:owner(owner_unit)
 	local is_bot = owner_player and owner_player.bot_player
 
@@ -74,16 +73,17 @@ ActionTrueFlightBowAim.client_owner_start_action = function (self, new_action, t
 	if spread_template_override then
 		self.spread_extension:override_spread_template(spread_template_override)
 	end
+
+	self._outline_system = Managers.state.entity:system("outline_system")
 end
 
 ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local current_action = self.current_action
 	local owner_unit = self.owner_unit
 	local time_to_shoot = self.time_to_shoot
-	local owner_unit = self.owner_unit
+	local current_target = self.target
 	local owner_player = Managers.player:owner(owner_unit)
 	local is_bot = owner_player and owner_player.bot_player
-	local overcharge_extension = self.overcharge_extension
 
 	if current_action.overcharge_interval then
 		self.overcharge_timer = self.overcharge_timer + dt
@@ -131,7 +131,6 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 
 	if required_aim_time <= self.aim_timer then
 		local physics_world = World.get_data(world, "physics_world")
-		local owner_unit = self.owner_unit
 		local first_person_extension = self.first_person_extension
 		local player_rotation = first_person_extension:current_rotation()
 		local player_position = first_person_extension:current_position()
@@ -170,28 +169,22 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 			end
 		end
 
-		local current_target = self.target
-
 		if hit_unit and self.aimed_target ~= hit_unit then
 			self.aimed_target = hit_unit
 			self.aim_timer = 0
 
 			if Unit.alive(hit_unit) and current_target ~= hit_unit then
-				if ScriptUnit.has_extension(hit_unit, "outline_system") and not is_bot then
-					local outline_extension = ScriptUnit.extension(hit_unit, "outline_system")
-
-					outline_extension.set_method("ai_alive")
-				end
-
-				if Unit.alive(current_target) and not is_bot and ScriptUnit.has_extension(current_target, "outline_system") then
-					local outline_extension = ScriptUnit.extension(current_target, "outline_system")
-
-					outline_extension.set_method("never")
-				end
-
 				self.target = hit_unit
 			end
 		end
+
+		if not is_bot and self._outline_system and self.target then
+			self._outline_system:set_priority_outline(self.target, "ai_alive", true)
+		end
+	end
+
+	if not is_bot and self._outline_system and ((current_target and current_target ~= self.target) or (current_target and not AiUtils.unit_alive(current_target))) and not is_bot then
+		self._outline_system:set_priority_outline(current_target, "never", false)
 	end
 
 	self.charge_value = math.min(math.max(t - time_to_shoot, 0) / self.charge_time, 1)
@@ -203,7 +196,7 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 			local wwise_world = self.wwise_world
 			local wwise_source_id = self.wwise_source_id
 
-			WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, charge_sound_parameter_name, charge_level)
+			WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, charge_sound_parameter_name, self.charge_value)
 		end
 
 		if self.charge_ready_sound_event and self.charge_value >= 1 then
@@ -306,12 +299,16 @@ ActionTrueFlightBowAim.finish = function (self, reason, data)
 		ActionUtils.play_husk_sound_event(charge_sound_husk_stop_event, owner_unit)
 	end
 
-	if data and data.new_action == "action_two" and (not data or (data.new_action ~= "action_career_release" and data.new_action ~= "action_career_hold") or data.new_sub_action ~= "default") then
-		local outline_extension = ScriptUnit.has_extension(self.target, "outline_system")
+	local action_two = data and data.new_action == "action_two"
+	local career_action = data and (data.new_action == "action_career_release" or data.new_action == "action_career_hold" or data.new_action == "action_career_not_hold") and data.new_sub_action == "default"
+	local not_interrupting_action = reason ~= "new_interupting_actions"
+	local has_outline_system = self._outline_system
+	local should_remove_outline = (action_two and not career_action) or not_interrupting_action
+	local owner_player = Managers.player:owner(owner_unit)
+	local is_bot = owner_player and owner_player.bot_player
 
-		if outline_extension then
-			outline_extension.set_method("never")
-		end
+	if not is_bot and has_outline_system and should_remove_outline then
+		self._outline_system:set_priority_outline(self.target, "never", false)
 	end
 
 	self.targets = nil

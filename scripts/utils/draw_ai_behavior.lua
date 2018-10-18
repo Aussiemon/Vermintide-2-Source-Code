@@ -304,10 +304,11 @@ local function present_perception(gui, x, y, blackboard)
 end
 
 local function update_node_history(blackboard, node_children, current_identifier)
-	if DrawAiBehaviour.last_blackboard ~= blackboard then
+	if DrawAiBehaviour.last_blackboard ~= blackboard or blackboard.reset_node_history then
 		DrawAiBehaviour.last_blackboard = blackboard
 		DrawAiBehaviour.last_running_node = nil
 		DrawAiBehaviour.running_node_switch = true
+		blackboard.reset_node_history = nil
 
 		reset_circle_array()
 	end

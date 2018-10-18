@@ -111,16 +111,21 @@ StateLoading.on_enter = function (self, param_block)
 end
 
 StateLoading._setup_input = function (self)
-	self._input_manager = InputManager:new()
-	Managers.input = self._input_manager
+	local input_manager = InputManager:new()
+	Managers.input = input_manager
+	self._input_manager = input_manager
 
-	self._input_manager:initialize_device("keyboard", 1)
-	self._input_manager:initialize_device("mouse", 1)
-	self._input_manager:initialize_device("gamepad", 1)
-	self._input_manager:create_input_service("Player", "PlayerControllerKeymaps", "PlayerControllerFilters")
-	self._input_manager:map_device_to_service("Player", "keyboard")
-	self._input_manager:map_device_to_service("Player", "mouse")
-	self._input_manager:map_device_to_service("Player", "gamepad")
+	input_manager:initialize_device("keyboard", 1)
+	input_manager:initialize_device("mouse", 1)
+	input_manager:initialize_device("gamepad", 1)
+	input_manager:create_input_service("Player", "PlayerControllerKeymaps", "PlayerControllerFilters")
+	input_manager:map_device_to_service("Player", "keyboard")
+	input_manager:map_device_to_service("Player", "mouse")
+	input_manager:map_device_to_service("Player", "gamepad")
+	input_manager:create_input_service("ingame_menu", "IngameMenuKeymaps", "IngameMenuFilters")
+	input_manager:map_device_to_service("ingame_menu", "keyboard")
+	input_manager:map_device_to_service("ingame_menu", "mouse")
+	input_manager:map_device_to_service("ingame_menu", "gamepad")
 end
 
 StateLoading._parse_loading_context = function (self)

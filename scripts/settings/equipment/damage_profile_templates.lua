@@ -170,6 +170,14 @@ DamageProfileTemplates.heavy_slashing_linesman = {
 	default_target = "default_target_linesman_H",
 	targets = "targets_linesman_H"
 }
+DamageProfileTemplates.heavy_slashing_linesman_bopp = {
+	armor_modifier = "armor_modifier_linesman_H",
+	critical_strike = "critical_strike_linesman_H",
+	charge_value = "light_attack",
+	cleave_distribution = "cleave_distribution_linesman_H",
+	default_target = "default_target_linesman_H",
+	targets = "targets_linesman_H"
+}
 DamageProfileTemplates.heavy_slashing_linesman_polearm = {
 	armor_modifier = "armor_modifier_linesman_H",
 	critical_strike = "critical_strike_linesman_H",
@@ -263,8 +271,10 @@ DamageProfileTemplates.light_slashing_smiter_diag_dual_L.default_target = "defau
 DamageProfileTemplates.light_slashing_smiter_diag_dual_L.armor_modifier = "armor_modifier_smiter_L_dual_light"
 
 new_template("light_slashing_smiter", "_dual", nil, "heavy_attack")
+new_template("light_slashing_smiter", "_dual_bopp", nil, "light_attack")
 
 DamageProfileTemplates.light_slashing_smiter_dual.default_target = "default_target_smiter_L_dual_heavy"
+DamageProfileTemplates.light_slashing_smiter_dual_bopp.default_target = "default_target_smiter_L_dual_heavy"
 
 new_template("light_slashing_smiter", nil, "light_blunt_smiter", nil, "light_blunt_smiter")
 new_template("light_slashing_smiter", nil, "light_blunt_smiter_upper", nil, "blunt_tank_uppercut")
@@ -294,7 +304,7 @@ new_template("medium_slashing_smiter", "_flat_1h", nil, "heavy_attack", "slashin
 new_template("medium_slashing_smiter", nil, "medium_blunt_smiter", nil, "blunt_smiter")
 new_template("medium_blunt_smiter", "_diag", nil, nil, "blunt_linesman")
 new_template("medium_blunt_smiter", "_flat", nil, nil, "blunt_tank")
-new_template("medium_blunt_smiter", "_flat_2h", nil, "heavy_attack", "blunt_tank")
+new_template("medium_blunt_smiter", "_flat_2h", nil, "light_attack", "blunt_tank")
 new_template("medium_blunt_smiter", "_upper", nil, nil, "blunt_tank_uppercut")
 new_template("medium_blunt_smiter_upper", "_1h", nil, "heavy_attack")
 new_template("medium_blunt_smiter", "_1h", nil, "heavy_attack")

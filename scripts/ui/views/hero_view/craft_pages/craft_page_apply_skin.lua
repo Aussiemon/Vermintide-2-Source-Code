@@ -150,7 +150,7 @@ CraftPageApplySkin._weapon_slot_updated = function (self)
 
 	if item_data then
 		local weapon_skin_name = item_data.key .. "_skin"
-		local item_filter = "item_key == " .. weapon_skin_name
+		local item_filter = "is_fake_item and item_key == " .. weapon_skin_name
 
 		self.parent.parent:set_craft_optional_item_filter(item_filter)
 	else

@@ -831,7 +831,17 @@ UnitVariationSettings.skaven_storm_vermin_with_shield.materials_enabled_from_sta
 	"tint_set_2"
 }
 UnitVariationSettings.skaven_storm_vermin_with_shield_baked = table.create_copy(UnitVariationSettings.skaven_storm_vermin_with_shield_baked, UnitVariationSettings.skaven_storm_vermin_with_shield)
-UnitVariationSettings.skaven_storm_vermin_champion = table.create_copy(UnitVariationSettings.skaven_storm_vermin_champion, UnitVariationSettings.skaven_storm_vermin_with_shield)
+UnitVariationSettings.skaven_storm_vermin_champion = table.create_copy(UnitVariationSettings.skaven_storm_vermin_champion, UnitVariationSettings.skaven_storm_vermin)
+UnitVariationSettings.skaven_storm_vermin_champion.material_variations.cloth_tint = {
+	min = 0,
+	max = 0,
+	materials = {
+		"mtr_outfit"
+	},
+	variables = {
+		"tint_color_variation"
+	}
+}
 UnitVariationSettings.skaven_storm_vermin_champion.material_variations.tint_set_1 = {
 	min = 4,
 	max = 4,
@@ -852,28 +862,12 @@ UnitVariationSettings.skaven_storm_vermin_champion.material_variations.tint_set_
 		"tint_color_set_2"
 	}
 }
+UnitVariationSettings.skaven_storm_vermin_champion.materials_enabled_from_start = {
+	"cloth_tint",
+	"tint_set_1",
+	"tint_set_2"
+}
 UnitVariationSettings.skaven_storm_vermin_warlord = table.create_copy(UnitVariationSettings.skaven_storm_vermin_warlord, UnitVariationSettings.skaven_storm_vermin_champion)
-UnitVariationSettings.skaven_storm_vermin_warlord.material_variations.skin_tint = {
-	min = 8,
-	max = 8,
-	materials = {
-		"mtr_skin",
-		"mtr_fur"
-	},
-	variables = {
-		"tint_color_variation"
-	}
-}
-UnitVariationSettings.skaven_storm_vermin_warlord.material_variations.cloth_tint = {
-	min = 0,
-	max = 0,
-	materials = {
-		"mtr_outfit"
-	},
-	variables = {
-		"tint_color_variation"
-	}
-}
 UnitVariationSettings.skaven_storm_vermin_warlord.material_variations.tint_set_1 = {
 	min = 7,
 	max = 7,
@@ -893,36 +887,6 @@ UnitVariationSettings.skaven_storm_vermin_warlord.material_variations.tint_set_2
 	variables = {
 		"tint_color_set_2"
 	}
-}
-UnitVariationSettings.skaven_storm_vermin_warlord.material_variations.tint_skin_set_1 = {
-	min = 14,
-	max = 14,
-	materials = {
-		"mtr_skin",
-		"mtr_fur"
-	},
-	variables = {
-		"tint_color_set_1"
-	}
-}
-UnitVariationSettings.skaven_storm_vermin_warlord.material_variations.tint_skinset_2 = {
-	min = 14,
-	max = 14,
-	materials = {
-		"mtr_skin",
-		"mtr_fur"
-	},
-	variables = {
-		"tint_color_set_2"
-	}
-}
-UnitVariationSettings.skaven_storm_vermin_warlord.materials_enabled_from_start = {
-	"skin_tint",
-	"cloth_tint",
-	"tint_set_1",
-	"tint_set_2",
-	"tint_skin_set_1",
-	"tint_skinset_2"
 }
 UnitVariationSettings.chaos_warrior = {
 	enabled_from_start = {

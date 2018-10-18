@@ -39,6 +39,7 @@ weapon_template.actions = {
 					sub_action = "default",
 					start_time = 0.75,
 					action = "action_one",
+					doubleclick_window = 0.2,
 					input = "action_one"
 				},
 				{
@@ -74,6 +75,7 @@ weapon_template.actions = {
 		default = {
 			damage_window_start = 0.2,
 			push_radius = 2,
+			anim_end_event = "attack_finished",
 			kind = "shield_slam",
 			damage_window_end = 0.3,
 			reload_when_out_of_ammo = true,
@@ -84,7 +86,6 @@ weapon_template.actions = {
 			additional_critical_strike_chance = 0,
 			impact_sound_event = "blunt_hit",
 			charge_value = "heavy_attack",
-			anim_end_event = "attack_finished",
 			damage_profile_aoe = "shield_slam_shotgun_aoe",
 			dedicated_target_range = 2,
 			anim_event = "attack_push",
@@ -113,6 +114,9 @@ weapon_template.actions = {
 					input = "action_two"
 				}
 			},
+			enter_function = function (attacker_unit, input_extension)
+				input_extension:clear_input_buffer()
+			end,
 			critical_strike = {}
 		}
 	},

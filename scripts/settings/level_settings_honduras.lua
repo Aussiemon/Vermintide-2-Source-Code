@@ -1317,5 +1317,45 @@ LevelSettings.pierre_nilsson = {
 	level_screen_effects = {},
 	locations = {}
 }
+LevelSettings.template_level = {
+	display_name = "Debug_Template_Level",
+	package_name = "resource_packages/levels/honduras/debug/template_level",
+	environment_state = "exterior",
+	player_aux_bus_name = "environment_reverb_outside",
+	ambient_sound_event = "silent_default_world_sound",
+	knocked_down_setting = "knocked_down",
+	level_name = "levels/honduras/debug/template_level/world",
+	level_image = "level_image_any",
+	loading_ui_package_name = "loading_screen_1",
+	source_aux_bus_name = "environment_reverb_outside_source",
+	level_particle_effects = {},
+	level_screen_effects = {},
+	locations = {},
+	map_settings = {
+		sorting = 1,
+		icon = "level_location_dlc_icon_01",
+		area = "world"
+	}
+}
+LevelSettings.sound_testing = {
+	display_name = "sound_testing",
+	package_name = "resource_packages/levels/honduras/debug/sound_testing",
+	environment_state = "exterior",
+	player_aux_bus_name = "environment_reverb_outside",
+	ambient_sound_event = "silent_default_world_sound",
+	knocked_down_setting = "knocked_down",
+	level_name = "levels/honduras/debug/sound_testing/world",
+	level_image = "level_image_any",
+	loading_ui_package_name = "loading_screen_1",
+	source_aux_bus_name = "environment_reverb_outside_source",
+	level_particle_effects = {},
+	level_screen_effects = {},
+	locations = {},
+	map_settings = {
+		sorting = 1,
+		icon = "level_location_dlc_icon_01",
+		area = "world"
+	}
+}
 
 return

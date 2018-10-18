@@ -592,7 +592,13 @@ ProjectileSystem.create_light_weight_projectile = function (self, damage_source,
 	if is_server then
 		local cb = callback(self, "physics_cb_light_weight_projectile_hit", projectile)
 		local physics_world = World.get_data(world, "physics_world")
+
+		Profiler.start("make_raycast")
+
 		projectile.raycast = PhysicsWorld.make_raycast(physics_world, cb, "all", "types", "both", "collision_filter", collision_filter)
+
+		Profiler.stop("make_raycast")
+
 		projectile.distance_moved = 0
 		projectile.range = range
 		projectile.impact_data = impact_data
@@ -713,11 +719,15 @@ ProjectileSystem.physics_cb_light_weight_projectile_hit = function (self, projec
 end
 
 ProjectileSystem._update_light_weight_projectiles = function (self, dt, t, data)
+	Profiler.start("update_light_weight_projectiles")
+
 	if self.is_server then
 		self:_server_update_light_weight_projectiles(dt, t, data)
 	else
 		self:_client_update_light_weight_projectiles(dt, t, data)
 	end
+
+	Profiler.stop("update_light_weight_projectiles")
 end
 
 local remove_list = {}

@@ -10,7 +10,7 @@ LobbyAux.create_network_hash = function (config_file_name, project_hash)
 	local use_trunk_revision = GameSettingsDevelopment.network_revision_check_enabled or (trunk_revision ~= nil and trunk_revision ~= "")
 
 	if use_trunk_revision then
-		assert(trunk_revision, "No trunk_revision even though it needs to exist!")
+		fassert(trunk_revision, "No trunk_revision even though it needs to exist!")
 
 		combined_hash = Application.make_hash(network_hash, trunk_revision, engine_revision, project_hash)
 

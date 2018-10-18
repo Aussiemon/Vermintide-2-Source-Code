@@ -459,10 +459,18 @@ EndViewStateScore._group_scores_by_player_and_topic = function (self, score_pane
 			end
 
 			local highscore = score_panel_scores[group_name][index].highscore or 0
-			score_panel_scores[group_name][index].stat_name = score_data.stat_name
+			local stat_name = score_data.stat_name
+			score_panel_scores[group_name][index].stat_name = stat_name
 			score_panel_scores[group_name][index].display_text = score_data.display_text
-			score_panel_scores[group_name][index].highscore = (highscore < score_data.score and score_data.score) or highscore
 			score_panel_scores[group_name][index].player_scores[player_index] = score_data.score
+
+			if stat_name == "damage_taken" then
+				local new_highscore = (score_data.score < highscore and score_data.score) or highscore
+				score_panel_scores[group_name][index].highscore = new_highscore
+			else
+				local new_highscore = (highscore < score_data.score and score_data.score) or highscore
+				score_panel_scores[group_name][index].highscore = new_highscore
+			end
 		end
 	end
 end
@@ -562,6 +570,7 @@ EndViewStateScore._setup_score_panel = function (self, score_panel_scores, playe
 		end
 
 		for group_row_index, score_data in ipairs(group_data) do
+			local stat_name = score_data.stat_name
 			local highscore = math.round(score_data.highscore)
 			local player_scores = score_data.player_scores
 
@@ -575,7 +584,14 @@ EndViewStateScore._setup_score_panel = function (self, score_panel_scores, playe
 				local high_score_marker = "high_score_marker_" .. tostring(player_index) .. "_" .. tostring(total_row_index)
 				local horizontal_divider = "horizontal_divider_" .. tostring(total_row_index)
 				local row_bg = "row_bg_" .. tostring(total_row_index)
-				local has_highscore = highscore <= player_score and highscore > 0
+				local has_highscore = false
+
+				if stat_name == "damage_taken" then
+					has_highscore = player_score <= highscore
+				else
+					has_highscore = highscore <= player_score and highscore > 0
+				end
+
 				local has_horizontal_divider = false
 				local line_suffix = "_" .. total_row_index
 				local score_text_name = "score_text" .. line_suffix

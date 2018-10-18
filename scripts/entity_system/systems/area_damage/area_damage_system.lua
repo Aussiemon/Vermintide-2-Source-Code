@@ -129,6 +129,8 @@ AreaDamageSystem.enable_area_damage = function (self, unit, enable)
 end
 
 AreaDamageSystem.is_position_in_liquid = function (self, position, nav_cost_map_table)
+	Profiler.start("AreaDamageSystem:is_position_in_liquid")
+
 	local liquid_extensions = self.liquid_extensions
 	local num_liquid_extensions = self.num_liquid_extensions
 	local result = false
@@ -141,6 +143,8 @@ AreaDamageSystem.is_position_in_liquid = function (self, position, nav_cost_map_
 			break
 		end
 	end
+
+	Profiler.stop("AreaDamageSystem:is_position_in_liquid")
 
 	return result
 end
@@ -177,6 +181,8 @@ AreaDamageSystem._create_aoe_damage_buffer = function (self)
 end
 
 AreaDamageSystem.add_aoe_damage_target = function (self, hit_unit, attacker_unit, impact_position, shield_blocked, do_damage, hit_zone_name, damage_source, hit_distance, push_speed, radius, max_damage_radius, radius_min, radius_max, full_power_level, actual_power_level, hit_direction, explosion_template_name, is_critical_strike, allow_critical_proc, dgjdflgj)
+	Profiler.start("AreaDamageSystem:add_aoe_damage_target")
+
 	local aoe_damage_ring_buffer = self._aoe_damage_ring_buffer
 	local buffer = aoe_damage_ring_buffer.buffer
 	local read_index = aoe_damage_ring_buffer.read_index
@@ -219,13 +225,19 @@ AreaDamageSystem.add_aoe_damage_target = function (self, hit_unit, attacker_unit
 	aoe_damage_data.allow_critical_proc = allow_critical_proc
 	aoe_damage_ring_buffer.size = size + 1
 	aoe_damage_ring_buffer.write_index = write_index % max_size + 1
+
+	Profiler.stop("AreaDamageSystem:add_aoe_damage_target")
 end
 
 AreaDamageSystem._update_aoe_damage_buffer = function (self)
+	Profiler.start("AreaDamageSystem:_update_aoe_damage_buffer")
+
 	local aoe_damage_ring_buffer = self._aoe_damage_ring_buffer
 	local size = aoe_damage_ring_buffer.size
 
 	if size == 0 then
+		Profiler.stop("AreaDamageSystem:_update_aoe_damage_buffer")
+
 		return
 	end
 
@@ -245,9 +257,13 @@ AreaDamageSystem._update_aoe_damage_buffer = function (self)
 
 	aoe_damage_ring_buffer.size = size
 	aoe_damage_ring_buffer.read_index = read_index
+
+	Profiler.stop("AreaDamageSystem:_update_aoe_damage_buffer")
 end
 
 AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
+	Profiler.start("AreaDamageSystem:_damage_unit")
+
 	local hit_unit = aoe_damage_data.hit_unit
 	local attacker_unit = aoe_damage_data.attacker_unit
 	local impact_position = aoe_damage_data.impact_position:unbox()
@@ -270,12 +286,16 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 	local hit_unit_alive = unit_alive(hit_unit)
 
 	if not hit_unit_alive then
+		Profiler.stop("AreaDamageSystem:_damage_unit")
+
 		return
 	end
 
 	local attacker_unit_alive = unit_alive(attacker_unit)
 
 	if not attacker_unit_alive then
+		Profiler.stop("AreaDamageSystem:_damage_unit")
+
 		return
 	end
 
@@ -293,6 +313,8 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 	local attacker_is_player = attacker_player ~= nil
 
 	if attacker_is_player then
+		Profiler.start("player_buffs")
+
 		local item_data = rawget(ItemMasterList, damage_source)
 
 		if breed and item_data and not IGNORED_ITEM_TYPES_FOR_BUFFS[item_data.item_type] then
@@ -322,9 +344,13 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 				AiUtils.aggro_unit_of_enemy(hit_unit, attacker_unit)
 			end
 		end
+
+		Profiler.stop("player_buffs")
 	end
 
 	if not is_immune then
+		Profiler.start("do_damage")
+
 		local blocking = false
 		local blackboard = BLACKBOARDS[hit_unit]
 
@@ -360,12 +386,16 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 		if target_alive then
 			DamageUtils.stagger_ai(t, damage_profile, target_index, actual_power_level, hit_unit, attacker_unit, hit_zone_name, hit_direction, boost_curve_multiplier, is_critical_strike, shield_blocked, damage_source)
 		elseif explosion_data.on_death_func then
+			Profiler.start("on_death_func")
 			explosion_data.on_death_func(hit_unit)
+			Profiler.stop("on_death_func")
 		end
 
 		DamageUtils.apply_dot(damage_profile, target_index, full_power_level, hit_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike)
 
 		if push_speed and DamageUtils.is_player_unit(hit_unit) then
+			Profiler.start("do_push")
+
 			local status_extension = ScriptUnit.extension(hit_unit, "status_system")
 
 			if not status_extension:is_disabled() then
@@ -373,8 +403,14 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 
 				locomotion_system:add_external_velocity(hit_direction * push_speed)
 			end
+
+			Profiler.stop("do_push")
 		end
+
+		Profiler.stop("do_damage")
 	end
+
+	Profiler.stop("AreaDamageSystem:_damage_unit")
 end
 
 AreaDamageSystem.rpc_area_damage = function (self, sender, go_id, position)

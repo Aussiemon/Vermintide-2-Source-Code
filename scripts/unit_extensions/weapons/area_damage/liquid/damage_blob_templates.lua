@@ -58,6 +58,8 @@ DamageBlobTemplates = {
 		end
 	end,
 	warpfire_thrower_fire_update = function (self, t, dt, target_unit)
+		Profiler.start("warpfire_thrower_flamethrower_update")
+
 		local warpfire_gun_unit = self._warpfire_gun_unit
 		local particle_id = self._warpfire_particle_id
 		local source_unit_is_alive = Unit.alive(warpfire_gun_unit)
@@ -88,6 +90,7 @@ DamageBlobTemplates = {
 			particle_life_time_vector.x = lifetime
 
 			World.set_particles_variable(world, particle_id, effect_variable_id, particle_life_time_vector)
+			Profiler.stop("warpfire_thrower_flamethrower_update")
 
 			return true
 		else
@@ -96,6 +99,8 @@ DamageBlobTemplates = {
 
 				self._warpfire_particle_id = nil
 			end
+
+			Profiler.stop("warpfire_thrower_flamethrower_update")
 
 			return false
 		end

@@ -328,6 +328,26 @@ DialogueSettings.dialogue_category_config = {
 			enemy_basic_prio = true
 		}
 	},
+	player_feedback_reply = {
+		mutually_exclusive = true,
+		interrupted_by = {
+			enemy_alerts = true,
+			enemy_alerts_high = true,
+			npc_talk_interrupt_special = true,
+			champion_opening = true,
+			level_talk_tutorial = true,
+			boss_talk = true,
+			player_alerts = true,
+			level_talk_tutorial_interrupt = true,
+			player_alerts_boss = true
+		},
+		playable_during_category = {
+			npc_talk_special = true,
+			player_feedback = true,
+			enemy_high_prio = true,
+			enemy_basic_prio = true
+		}
+	},
 	guidance = {
 		mutually_exclusive = true,
 		interrupted_by = {

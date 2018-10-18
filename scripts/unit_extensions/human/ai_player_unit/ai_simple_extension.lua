@@ -4,6 +4,7 @@ require("scripts/unit_extensions/human/ai_player_unit/ai_husk_locomotion_extensi
 require("scripts/unit_extensions/human/ai_player_unit/ai_navigation_extension")
 require("scripts/unit_extensions/human/ai_player_unit/ai_brain")
 require("scripts/unit_extensions/human/ai_player_unit/perception_utils")
+require("scripts/unit_extensions/human/ai_player_unit/target_selection_utils")
 require("scripts/utils/pool_tables/pool_blackboard")
 require("scripts/utils/pool_tables/pool_generic_extension")
 
@@ -62,6 +63,7 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 
 	self:_init_brain(breed, is_horde)
 	self:_set_size_variation(extension_init_data.size_variation, extension_init_data.size_variation_normalized)
+	GarbageLeakDetector.register_object(blackboard, "ai_blackboard")
 end
 
 AISimpleExtension.destroy = function (self)
@@ -240,23 +242,6 @@ AISimpleExtension._parse_properties = function (self)
 end
 
 AISimpleExtension.init_perception = function (self, breed, is_horde)
-	local unit = self._unit
-
-	if ScriptUnit.has_extension(unit, "ai_group_system") then
-		local ai_group_extension = ScriptUnit.extension(unit, "ai_group_system")
-		local use_patrol_perception = ai_group_extension.use_patrol_perception
-
-		if use_patrol_perception then
-			fassert(breed.patrol_passive_perception, "Missing patrol passive perception!")
-			fassert(breed.patrol_passive_target_selection, "Missing patrol passive target selection!")
-
-			self._perception_func_name = breed.patrol_passive_perception
-			self._target_selection_func_name = breed.patrol_passive_target_selection
-
-			return
-		end
-	end
-
 	if breed.perception then
 		self._perception_func_name = (is_horde and breed.horde_perception) or breed.perception
 	else
@@ -355,6 +340,10 @@ AISimpleExtension.die = function (self, killer_unit, killing_blow)
 end
 
 AISimpleExtension.attacked = function (self, attacker_unit, t, damage_hit)
+	if script_data.disable_ai_perception then
+		return
+	end
+
 	local unit = self._unit
 	local blackboard = self._blackboard
 	attacker_unit = AiUtils.get_actual_attacker_unit(attacker_unit)
@@ -377,6 +366,10 @@ AISimpleExtension.attacked = function (self, attacker_unit, t, damage_hit)
 end
 
 AISimpleExtension.enemy_aggro = function (self, alerting_unit, enemy_unit)
+	if script_data.disable_ai_perception then
+		return
+	end
+
 	local blackboard = self._blackboard
 
 	if blackboard.confirmed_player_sighting or blackboard.only_trust_your_own_eyes then
@@ -409,6 +402,10 @@ AISimpleExtension.enemy_aggro = function (self, alerting_unit, enemy_unit)
 end
 
 AISimpleExtension.enemy_alert = function (self, alerting_unit, enemy_unit)
+	if script_data.disable_ai_perception then
+		return
+	end
+
 	local blackboard = self._blackboard
 	local run_on_alerted = self._breed.run_on_alerted
 

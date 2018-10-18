@@ -50,23 +50,32 @@ ActionBlock.client_owner_post_update = function (self, dt, t, world, can_damage)
 	end
 end
 
-ActionBlock.finish = function (self, reason)
-	local owner_unit = self.owner_unit
-	local go_id = Managers.state.unit_storage:go_id(owner_unit)
+ActionBlock.finish = function (self, reason, data)
+	local stop_blocking = true
 
-	if not LEVEL_EDITOR_TEST then
-		if self.is_server then
-			Managers.state.network.network_transmit:send_rpc_clients("rpc_set_blocking", go_id, false)
-		else
-			Managers.state.network.network_transmit:send_rpc_server("rpc_set_blocking", go_id, false)
+	if data and data.action and data.action.keep_block then
+		stop_blocking = false
+	end
+
+	if stop_blocking then
+		if not LEVEL_EDITOR_TEST then
+			local owner_unit = self.owner_unit
+			local go_id = Managers.state.unit_storage:go_id(owner_unit)
+
+			if self.is_server then
+				Managers.state.network.network_transmit:send_rpc_clients("rpc_set_blocking", go_id, false)
+			else
+				Managers.state.network.network_transmit:send_rpc_server("rpc_set_blocking", go_id, false)
+			end
 		end
+
+		local status_extension = self._status_extension
+
+		status_extension:set_blocking(false)
+		status_extension:set_has_blocked(false)
 	end
 
 	self._blocked_flag = false
-	local status_extension = self._status_extension
-
-	status_extension:set_blocking(false)
-	status_extension:set_has_blocked(false)
 end
 
 ActionBlock.streak_available = function (self, t, streak_action)

@@ -119,8 +119,9 @@ CraftPageRollPropertiesConsole.reset_requirements = function (self, num_required
 	local widget_width = 60
 	local spacing = 10
 	local start_position_x = -((widget_width + spacing) * (num_required_ingredients - 1)) / 2
+	local num_crafting_materials = #UISettings.crafting_material_order
 
-	for i = 1, 6, 1 do
+	for i = 1, num_crafting_materials, 1 do
 		local widget = widgets_by_name["material_text_" .. i]
 		local visible = i <= num_required_ingredients
 		widget.content.visible = visible

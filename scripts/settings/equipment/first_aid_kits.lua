@@ -48,7 +48,7 @@ weapon_template.actions = {
 					start_time = 0.4,
 					action = "action_two",
 					end_time = 0.7,
-					input = "action_two"
+					input = "action_two_hold"
 				}
 			},
 			push_radius = push_radius,

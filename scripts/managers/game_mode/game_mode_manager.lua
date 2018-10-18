@@ -57,6 +57,7 @@ GameModeManager.init = function (self, world, lobby_host, lobby_client, level_tr
 		max_size = max_size
 	}
 	local debug_activated_mutators = nil
+	debug_activated_mutators = script_data.debug_activated_mutators
 	local mutators = debug_activated_mutators or Managers.deed:mutators()
 	local has_local_client = not DEDICATED_SERVER
 	self._mutator_handler = MutatorHandler:new(mutators, self.is_server, has_local_client)
@@ -284,6 +285,8 @@ GameModeManager.flow_cb_set_flow_object_set_enabled = function (self, set_name, 
 end
 
 GameModeManager.register_object_sets = function (self, object_sets)
+	Profiler.start("register_object_sets")
+
 	self._object_sets = {}
 	self._object_set_names = {}
 
@@ -295,6 +298,8 @@ GameModeManager.register_object_sets = function (self, object_sets)
 			self:_set_flow_object_set_enabled(set, false, set_name)
 		end
 	end
+
+	Profiler.stop("register_object_sets")
 end
 
 GameModeManager.event_reload_application_settings = function (self)

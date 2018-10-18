@@ -693,7 +693,7 @@ else
 				},
 				{
 					transition = "quit_game",
-					display_name = "quit_menu_button_name_xb1"
+					display_name = "quit_menu_button_name"
 				}
 			},
 			demo = {
@@ -766,13 +766,6 @@ local full_access_layout = {
 		disable_when_matchmaking = false
 	},
 	{
-		display_name = "achievements",
-		requires_player_unit = true,
-		fade = true,
-		transition_state = "achievements",
-		transition = "hero_view"
-	},
-	{
 		display_name = "inventory_menu_button_name",
 		requires_player_unit = true,
 		fade = true,
@@ -780,13 +773,7 @@ local full_access_layout = {
 		transition = "hero_view"
 	},
 	{
-		fade = false,
-		transition = "keep_decoration_view",
-		display_name = "keep_decoration_view",
-		requires_player_unit = true
-	},
-	{
-		fade = false,
+		fade = true,
 		transition = "start_menu_view",
 		display_name = "start_menu_view",
 		requires_player_unit = true

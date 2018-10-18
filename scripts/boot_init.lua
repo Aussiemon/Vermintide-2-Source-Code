@@ -61,6 +61,13 @@ end
 if not PROFILER_SCOPES_INITED then
 	local ProfilerScopes = {}
 	PROFILER_SCOPES_INITED = true
+	local profiler_start = Profiler.start
+
+	Profiler.start = function (scope_name)
+		ProfilerScopes[scope_name] = true
+
+		profiler_start(scope_name)
+	end
 end
 
 GLOBAL_FRAME_INDEX = GLOBAL_FRAME_INDEX or 0
@@ -146,7 +153,7 @@ else
 	}
 end
 
-if BUILD ~= "dev" then
+if BUILD ~= "dev" and PLATFORM == "win32" then
 	if LAUNCH_MODE ~= "attract_benchmark" then
 		local input = io.input
 		local read = io.read

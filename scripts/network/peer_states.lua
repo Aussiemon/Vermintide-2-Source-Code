@@ -146,12 +146,14 @@ PeerStates.Loading = {
 		end
 	end,
 	update = function (self, dt)
-		local server_level_key = self.server.level_key
+		local server = self.server
+		local server_level_key = server.level_key
 
 		if self.loaded_level == server_level_key then
 			local enemies_are_loaded = self.server.level_transition_handler.enemy_package_loader:load_sync_done_for_peer(self.peer_id)
+			local state_determined, can_play = server:eac_check_peer(self.peer_id)
 
-			if enemies_are_loaded then
+			if enemies_are_loaded and state_determined and can_play then
 				return PeerStates.LoadingProfilePackages
 			end
 		end
@@ -261,9 +263,8 @@ PeerStates.WaitingForEnterGame = {
 	end,
 	update = function (self, dt)
 		local server = self.server
-		local state_determined, can_play = server:eac_check_peer(self.peer_id)
 
-		if self.is_ingame and server.game_network_manager and state_determined and can_play then
+		if self.is_ingame and server.game_network_manager then
 			local peer_id = self.peer_id
 
 			if not server.peers_added_to_gamesession[peer_id] then

@@ -45,6 +45,7 @@ require("scripts/entity_system/systems/pickups/pickup_system")
 require("scripts/entity_system/systems/projectile_impact/projectile_impact_system")
 require("scripts/entity_system/systems/projectile_locomotion/projectile_locomotion_system")
 require("scripts/entity_system/systems/round_started/round_started_system")
+require("scripts/entity_system/systems/sound/sound_effect_system")
 require("scripts/entity_system/systems/sound/sound_sector_system")
 require("scripts/entity_system/systems/sound_environment/sound_environment_system")
 require("scripts/entity_system/systems/sound_environment/sound_environment_system_dummy")
@@ -267,9 +268,7 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("trail_system", ExtensionSystemBase, entity_system_creation_context, {
 		"GenericTrailExtension"
 	})
-	self:_add_system("sound_effect_system", ExtensionSystemBase, entity_system_creation_context, {
-		"PlayerSoundEffectExtension"
-	})
+	self:_add_system("sound_effect_system", SoundEffectSystem, entity_system_creation_context)
 	self:_add_system("visual_effects_system", ExtensionSystemBase, entity_system_creation_context, {
 		"PlayerUnitVisualEffectsExtension",
 		"PlayerHuskVisualEffectsExtension"
@@ -405,19 +404,27 @@ EntitySystem.finalize_setup = function (self)
 end
 
 EntitySystem.pre_update = function (self, dt)
+	Profiler.start("EntitySystem:pre_update")
 	self:system_update("pre_update", dt)
+	Profiler.stop("EntitySystem:pre_update")
 end
 
 EntitySystem.update = function (self, dt)
+	Profiler.start("EntitySystem:update")
 	self:system_update("update", dt)
+	Profiler.stop("EntitySystem:update")
 end
 
 EntitySystem.post_update = function (self, dt)
+	Profiler.start("EntitySystem:post_update")
 	self:system_update("post_update", dt)
+	Profiler.stop("EntitySystem:post_update")
 end
 
 EntitySystem.physics_async_update = function (self)
+	Profiler.start("EntitySystem:physics_async_update")
 	self:system_update("physics_async_update", self.system_update_context.dt)
+	Profiler.stop("EntitySystem:physics_async_update")
 end
 
 EntitySystem.system_update = function (self, update_func, dt)
@@ -451,6 +458,8 @@ EntitySystem.hot_join_sync = function (self, sender)
 end
 
 EntitySystem.destroy = function (self)
+	Profiler.start("EntitySystem:destroy")
+
 	local units = World.units(self.world)
 
 	self.entity_manager:unregister_units(units, #units)
@@ -459,6 +468,7 @@ EntitySystem.destroy = function (self)
 	self.system_update_context = nil
 
 	GarbageLeakDetector.register_object(self, "EntitySystem")
+	Profiler.stop("EntitySystem:destroy")
 end
 
 return

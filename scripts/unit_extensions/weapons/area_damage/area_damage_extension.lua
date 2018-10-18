@@ -134,6 +134,11 @@ AreaDamageExtension.start = function (self)
 	if self.is_server and self.aoe_init_damage then
 		local updated, damage_buffer = area_damage.server.update(self.damage_source, self.unit, self.initial_radius, self.aoe_init_damage, 0, 0, 0, 0, self.damage_players, self.explosion_template_name)
 
+		if script_data.debug_ai_attack then
+			QuickDrawerStay:sphere(Unit.world_position(self.unit, 0), self.initial_radius, Color(255, 0, 0))
+			QuickDrawerStay:sphere(Unit.world_position(self.unit, 0), self.radius, Color(0, 255, 0))
+		end
+
 		if updated then
 			self:_add_to_damage_buffer(damage_buffer)
 		end

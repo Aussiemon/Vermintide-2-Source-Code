@@ -1,7 +1,5 @@
 local push_radius = 2
 local time_mod = 0.8
-local heavy_fencer_stagger = 3
-local light_linesman_stagger = 3
 local weapon_template = weapon_template or {}
 weapon_template.actions = {
 	action_one = {
@@ -407,16 +405,15 @@ weapon_template.actions = {
 			kind = "sweep",
 			range_mod = 1.3,
 			additional_critical_strike_chance = 0,
-			use_precision_sweep = true,
-			width_mod = 30,
 			damage_profile = "light_slashing_linesman_fencer",
+			width_mod = 30,
 			aim_assist_max_ramp_multiplier = 0.4,
 			aim_assist_ramp_decay_delay = 0,
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.3,
 			impact_sound_event = "slashing_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
-			dedicated_target_range = 2.5,
+			dedicated_target_range = 3,
 			aim_assist_ramp_multiplier = 0.4,
 			anim_event = "attack_swing_right",
 			total_time = 1.5,
@@ -472,16 +469,15 @@ weapon_template.actions = {
 			kind = "sweep",
 			range_mod = 1.3,
 			additional_critical_strike_chance = 0,
-			use_precision_sweep = true,
-			width_mod = 30,
 			damage_profile = "light_slashing_linesman_fencer",
+			width_mod = 30,
 			aim_assist_max_ramp_multiplier = 0.4,
 			aim_assist_ramp_decay_delay = 0,
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.3,
 			impact_sound_event = "slashing_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
-			dedicated_target_range = 2.5,
+			dedicated_target_range = 3,
 			aim_assist_ramp_multiplier = 0.4,
 			anim_event = "attack_swing_left",
 			total_time = 1.5,
@@ -537,16 +533,15 @@ weapon_template.actions = {
 			kind = "sweep",
 			range_mod = 1.3,
 			additional_critical_strike_chance = 0,
-			use_precision_sweep = true,
-			width_mod = 30,
 			damage_profile = "light_slashing_linesman_fencer",
+			width_mod = 30,
 			aim_assist_max_ramp_multiplier = 0.4,
 			aim_assist_ramp_decay_delay = 0,
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.42,
 			impact_sound_event = "slashing_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
-			dedicated_target_range = 2.5,
+			dedicated_target_range = 3,
 			aim_assist_ramp_multiplier = 0.4,
 			anim_event = "attack_swing_right_diagonal",
 			total_time = 1.5,
@@ -603,15 +598,14 @@ weapon_template.actions = {
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			additional_critical_strike_chance = 0,
 			width_mod = 30,
-			use_precision_sweep = true,
 			damage_profile = "light_slashing_linesman_fencer",
 			aim_assist_max_ramp_multiplier = 0.4,
-			hit_effect = "melee_hit_sword_1h",
 			aim_assist_ramp_decay_delay = 0,
+			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.3,
 			impact_sound_event = "slashing_hit",
 			anim_end_event = "attack_finished",
-			dedicated_target_range = 2.5,
+			dedicated_target_range = 3,
 			aim_assist_ramp_multiplier = 0.4,
 			anim_event = "attack_swing_left",
 			total_time = 1.5,
@@ -680,7 +674,7 @@ weapon_template.actions = {
 			impact_sound_event = "slashing_hit",
 			charge_value = "action_push",
 			no_damage_impact_sound_event = "slashing_hit_armour",
-			dedicated_target_range = 2,
+			dedicated_target_range = 3,
 			anim_event = "attack_push",
 			damage_profile_inner = "light_push",
 			total_time = 0.8,
@@ -848,13 +842,82 @@ weapon_template.actions = {
 					sub_action = "default",
 					start_time = 0.8,
 					action = "action_two",
-					input = "action_two"
+					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
 					start_time = 0.8,
 					action = "action_wield",
 					input = "action_wield"
+				}
+			},
+			recoil_settings = {
+				horizontal_climb = 0,
+				restore_duration = 0.25,
+				vertical_climb = 0.25,
+				climb_duration = 0.1,
+				climb_function = math.easeInCubic,
+				restore_function = math.ease_out_quad
+			}
+		},
+		block_shot = {
+			anim_event = "attack_shoot",
+			charge_value = "bullet_hit",
+			ammo_usage = 0,
+			kind = "handgun",
+			cooldown = 1.25,
+			apply_recoil = true,
+			damage_profile = "shot_carbine_rapier",
+			headshot_multiplier = 2,
+			keep_block = true,
+			cooldown_from_start = true,
+			aim_assist_auto_hit_chance = 0.5,
+			hit_effect = "bullet_impact",
+			aim_assist_ramp_decay_delay = 0.2,
+			alert_sound_range_fire = 12,
+			fire_time = 0.12,
+			aim_assist_max_ramp_multiplier = 0.3,
+			aim_assist_ramp_multiplier = 0.1,
+			alert_sound_range_hit = 2,
+			total_time = 0.9,
+			anim_time_scale = time_mod * 2,
+			buff_data = {
+				{
+					start_time = 0,
+					external_multiplier = 0.85,
+					buff_name = "planted_fast_decrease_movement"
+				}
+			},
+			allowed_chain_actions = {
+				{
+					sub_action = "default",
+					start_time = 0.8,
+					action = "action_one",
+					input = "action_one"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.8,
+					action = "action_three",
+					input = "action_three"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.8,
+					action = "action_two",
+					input = "action_two_hold"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.8,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.8,
+					action = "action_two",
+					auto_chain = true
 				}
 			},
 			recoil_settings = {
@@ -906,8 +969,6 @@ weapon_template.actions = {
 		}
 	}
 }
-weapon_template.actions.action_three.block_shot = table.create_copy(weapon_template.actions.action_three.block_shot, weapon_template.actions.action_three.default)
-weapon_template.actions.action_three.block_shot.block = true
 weapon_template.ammo_data = {
 	ammo_hand = "left",
 	ammo_immediately_available = true,

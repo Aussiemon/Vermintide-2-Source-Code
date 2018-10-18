@@ -153,6 +153,8 @@ UnlockManager.dlc_status_changed = function (self)
 end
 
 UnlockManager._update_xbox_backend_unlocks = function (self)
+	Profiler.start("UnlockManager:_update_xbox_backend_unlocks()")
+
 	if self._state == "query_unlocked" then
 		local backend_manager = Managers.backend
 
@@ -160,10 +162,14 @@ UnlockManager._update_xbox_backend_unlocks = function (self)
 			if not backend_manager:available() then
 				self._state = "backend_not_available"
 
+				Profiler.stop("UnlockManager:_update_xbox_backend_unlocks()")
+
 				return
 			end
 
 			if backend_manager:is_tutorial_backend() then
+				Profiler.stop("UnlockManager:_update_xbox_backend_unlocks()")
+
 				return
 			end
 
@@ -183,6 +189,8 @@ UnlockManager._update_xbox_backend_unlocks = function (self)
 
 					print("[UnlockManager] All unlocks ready")
 				else
+					Profiler.stop("UnlockManager:_update_xbox_backend_unlocks()")
+
 					return
 				end
 			end
@@ -191,6 +199,8 @@ UnlockManager._update_xbox_backend_unlocks = function (self)
 
 			if index > #self._unlocks_indexed then
 				self._state = "done"
+
+				Profiler.stop("UnlockManager:_update_xbox_backend_unlocks()")
 
 				return
 			end
@@ -229,6 +239,8 @@ UnlockManager._update_xbox_backend_unlocks = function (self)
 			end
 		end
 	end
+
+	Profiler.stop("UnlockManager:_update_xbox_backend_unlocks()")
 end
 
 UnlockManager.cb_reward_claimed = function (self, unlock, success, rewarded_items, presentation_text)
@@ -290,6 +302,10 @@ UnlockManager.is_dlc_unlocked = function (self, name)
 	end
 
 	fassert(unlock, "No such unlock %q", name or "nil")
+
+	if script_data.unlock_all_levels then
+		return true
+	end
 
 	return unlock:unlocked()
 end

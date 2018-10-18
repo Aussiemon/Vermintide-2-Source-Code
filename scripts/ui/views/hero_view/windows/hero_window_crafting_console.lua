@@ -3,7 +3,6 @@ require("scripts/ui/views/hero_view/craft_pages/craft_page_roll_trait_console")
 require("scripts/ui/views/hero_view/craft_pages/craft_page_roll_properties_console")
 require("scripts/ui/views/hero_view/craft_pages/craft_page_craft_item_console")
 require("scripts/ui/views/hero_view/craft_pages/craft_page_apply_skin_console")
-require("scripts/ui/views/hero_view/craft_pages/craft_page_extract_skin_console")
 require("scripts/ui/views/hero_view/craft_pages/craft_page_upgrade_item_console")
 require("scripts/ui/views/hero_view/craft_pages/craft_page_convert_dust_console")
 
@@ -45,12 +44,6 @@ local page_settings = {
 		sound_event_enter = "play_gui_equipment_button",
 		name = "upgrade_item_rarity_common",
 		class_name = "CraftPageUpgradeItemConsole",
-		sound_event_exit = "play_gui_equipment_close"
-	},
-	{
-		sound_event_enter = "play_gui_equipment_button",
-		name = "extract_weapon_skin",
-		class_name = "CraftPageExtractSkinConsole",
 		sound_event_exit = "play_gui_equipment_close"
 	},
 	{

@@ -429,7 +429,25 @@ ChatManager.update = function (self, dt, t, menu_active, menu_input_service, no_
 	end
 end
 
-ChatManager.send_chat_message = function (self, channel_id, local_player_id, message, recent_message_index, optional_message_type, optional_message_target)
+ChatManager._get_localized_message = function (self, message, localize, localization_parameters, localize_parameters)
+	local localized_parameters = nil
+
+	if localize_parameters then
+		localized_parameters = LocalizeArray(localization_parameters, FrameTable.alloc_table())
+	else
+		localized_parameters = localization_parameters
+	end
+
+	if localize then
+		message = string.format(Localize(message), unpack(localized_parameters))
+	elseif #localized_parameters > 0 then
+		message = string.format(message, unpack(localized_parameters))
+	end
+
+	return message
+end
+
+ChatManager.send_chat_message = function (self, channel_id, local_player_id, message, localize, localization_parameters, localize_parameters, recent_message_index, optional_message_type, optional_message_target)
 	local command, parameters, context_data = self:_handle_command(message, recent_message_index, optional_message_target)
 
 	if command then
@@ -438,11 +456,17 @@ ChatManager.send_chat_message = function (self, channel_id, local_player_id, mes
 
 	fassert(self:has_channel(channel_id), "Haven't registered channel: %s", tostring(channel_id))
 
-	local localization_param = ""
 	local is_system_message = false
 	local pop_chat = true
 	local peer_id = self.my_peer_id
 	local is_dev = SteamHelper.is_dev(peer_id) and local_player_id == 1
+
+	if type(localization_parameters) ~= "table" then
+		local old_parameter = localization_parameters
+		localization_parameters = FrameTable.alloc_table()
+		localization_parameters[1] = old_parameter
+	end
+
 	local message_target_info = self.message_targets[self.current_message_target_index]
 	local message_type = optional_message_type or message_target_info.message_target_type
 	local message_target = optional_message_target or message_target_info.message_target
@@ -453,14 +477,14 @@ ChatManager.send_chat_message = function (self, channel_id, local_player_id, mes
 
 			for _, member in pairs(members) do
 				if member ~= self.my_peer_id then
-					RPC.rpc_chat_message(member, channel_id, peer_id, local_player_id, message, localization_param, is_system_message, pop_chat, is_dev)
+					RPC.rpc_chat_message(member, channel_id, peer_id, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev)
 				end
 			end
 		else
 			local host_peer_id = self.host_peer_id
 
 			if host_peer_id then
-				RPC.rpc_chat_message(host_peer_id, channel_id, peer_id, local_player_id, message, localization_param, is_system_message, pop_chat, is_dev)
+				RPC.rpc_chat_message(host_peer_id, channel_id, peer_id, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev)
 			end
 		end
 	elseif message_type == Irc.CHANNEL_MSG or message_type == Irc.PRIVATE_MSG then
@@ -487,11 +511,21 @@ ChatManager.send_chat_message = function (self, channel_id, local_player_id, mes
 		end
 	end
 
-	self:_add_message_to_list(channel_id, peer_id, local_player_id, message, is_system_message, pop_chat, is_dev, message_type)
+	local localized_message = self:_get_localized_message(message, localize, localization_parameters, localize_parameters)
+
+	self:_add_message_to_list(channel_id, peer_id, local_player_id, localized_message, is_system_message, pop_chat, is_dev, message_type)
 end
 
-ChatManager.send_system_chat_message_to_all_except = function (self, channel_id, message_id, localization_param, excluded_peer_id, pop_chat)
+ChatManager.send_system_chat_message_to_all_except = function (self, channel_id, message_id, localization_parameters, localize_parameters, excluded_peer_id, pop_chat)
 	fassert(self:has_channel(channel_id), "Haven't registered channel: %s", tostring(channel_id))
+
+	local localize = true
+
+	if type(localization_parameters) ~= "table" then
+		local old_parameter = localization_parameters
+		localization_parameters = FrameTable.alloc_table()
+		localization_parameters[1] = old_parameter
+	end
 
 	local is_system_message = true
 	pop_chat = pop_chat or false
@@ -503,25 +537,33 @@ ChatManager.send_system_chat_message_to_all_except = function (self, channel_id,
 
 		for _, member in pairs(members) do
 			if member ~= my_peer_id and member ~= excluded_peer_id then
-				RPC.rpc_chat_message(member, channel_id, excluded_peer_id, 0, message_id, localization_param, is_system_message, pop_chat, is_dev)
+				RPC.rpc_chat_message(member, channel_id, excluded_peer_id, 0, message_id, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev)
 			end
 		end
 	else
 		local host_peer_id = self.host_peer_id
 
 		if host_peer_id then
-			RPC.rpc_chat_message(host_peer_id, channel_id, excluded_peer_id, 0, message_id, localization_param, is_system_message, pop_chat, is_dev)
+			RPC.rpc_chat_message(host_peer_id, channel_id, excluded_peer_id, 0, message_id, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev)
 		end
 	end
 
 	local message_sender = "System"
-	local message = string.format(Localize(message_id), localization_param)
+	local localized_message = self:_get_localized_message(message_id, localize, localization_parameters, localize_parameters)
 
-	self:_add_message_to_list(channel_id, message_sender, 0, message, is_system_message, pop_chat, is_dev)
+	self:_add_message_to_list(channel_id, message_sender, 0, localized_message, is_system_message, pop_chat, is_dev)
 end
 
-ChatManager.send_system_chat_message = function (self, channel_id, message_id, localization_param, pop_chat)
+ChatManager.send_system_chat_message = function (self, channel_id, message_id, localization_parameters, localize_parameters, pop_chat)
 	fassert(self:has_channel(channel_id), "Haven't registered channel: %s", tostring(channel_id))
+
+	local localize = true
+
+	if type(localization_parameters) ~= "table" then
+		local old_parameter = localization_parameters
+		localization_parameters = FrameTable.alloc_table()
+		localization_parameters[1] = old_parameter
+	end
 
 	local is_system_message = true
 	pop_chat = pop_chat or false
@@ -533,21 +575,21 @@ ChatManager.send_system_chat_message = function (self, channel_id, message_id, l
 
 		for _, member in pairs(members) do
 			if member ~= my_peer_id then
-				RPC.rpc_chat_message(member, channel_id, my_peer_id, 0, message_id, localization_param, is_system_message, pop_chat, is_dev)
+				RPC.rpc_chat_message(member, channel_id, my_peer_id, 0, message_id, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev)
 			end
 		end
 	else
 		local host_peer_id = self.host_peer_id
 
 		if host_peer_id then
-			RPC.rpc_chat_message(host_peer_id, channel_id, my_peer_id, 0, message_id, localization_param, is_system_message, pop_chat, is_dev)
+			RPC.rpc_chat_message(host_peer_id, channel_id, my_peer_id, 0, message_id, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev)
 		end
 	end
 
 	local message_sender = "System"
-	local message = string.format(Localize(message_id), localization_param)
+	local localized_message = self:_get_localized_message(message_id, localize, localization_parameters, localize_parameters)
 
-	self:_add_message_to_list(channel_id, message_sender, 0, message, is_system_message, pop_chat, is_dev)
+	self:_add_message_to_list(channel_id, message_sender, 0, localized_message, is_system_message, pop_chat, is_dev)
 end
 
 ChatManager.add_local_system_message = function (self, channel_id, message, pop_chat)
@@ -602,7 +644,7 @@ end
 ChatManager.channel_members = function (self, channel_id)
 	local channel = self.channels[channel_id]
 
-	assert(channel, "[ChatManager] Trying to get members from unregistered channel %q", channel_id)
+	fassert(channel, "[ChatManager] Trying to get members from unregistered channel %q", channel_id)
 
 	local members = channel.members_func()
 
@@ -625,7 +667,7 @@ ChatManager.has_channel = function (self, channel_id)
 	return self.channels[channel_id] and true
 end
 
-ChatManager.rpc_chat_message = function (self, sender, channel_id, message_sender, local_player_id, message, localization_param, is_system_message, pop_chat, is_dev)
+ChatManager.rpc_chat_message = function (self, sender, channel_id, message_sender, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev)
 	if not self:has_channel(channel_id) then
 		return
 	end
@@ -636,22 +678,31 @@ ChatManager.rpc_chat_message = function (self, sender, channel_id, message_sende
 
 		for _, member in pairs(members) do
 			if member ~= my_peer_id and member ~= sender then
-				RPC.rpc_chat_message(member, channel_id, message_sender, local_player_id, message, localization_param, is_system_message, pop_chat, is_dev)
+				RPC.rpc_chat_message(member, channel_id, message_sender, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev)
 			end
 		end
 	end
 
-	if self:is_channel_member(channel_id) and not self.peer_ignore_list[sender] then
+	if self:is_channel_member(channel_id) and (is_system_message or not self.peer_ignore_list[message_sender]) then
 		if is_system_message then
 			message_sender = "System"
-			message = string.format(Localize(message), localization_param)
 		end
 
-		self:_add_message_to_list(channel_id, message_sender, local_player_id, message, is_system_message, pop_chat, is_dev)
+		local localized_message = self:_get_localized_message(message, localize, localization_parameters, localize_parameters)
+
+		self:_add_message_to_list(channel_id, message_sender, local_player_id, localized_message, is_system_message, pop_chat, is_dev)
 	end
 end
 
 ChatManager._add_message_to_list = function (self, channel_id, message_sender, local_player_id, message, is_system_message, pop_chat, is_dev, message_type, link, data)
+	local player_manager = Managers.player
+	local player = player_manager:player_from_peer_id(message_sender, local_player_id)
+	local is_bot = false
+
+	if player then
+		is_bot = not player:is_player_controlled()
+	end
+
 	local global_messages = self.global_messages
 	global_messages[#global_messages + 1] = {
 		channel_id = channel_id,
@@ -661,6 +712,7 @@ ChatManager._add_message_to_list = function (self, channel_id, message_sender, l
 		type = message_type or (is_system_message and Irc.SYSTEM_MSG) or Irc.PARTY_MSG,
 		pop_chat = pop_chat,
 		is_dev = is_dev,
+		is_bot = is_bot,
 		link = link,
 		data = data
 	}
@@ -783,10 +835,6 @@ ChatManager.join_channel = function (self, parameters)
 			self.current_message_target_index = self.message_targets_lut[channel_name] or self.current_message_target_index
 		end
 	end
-end
-
-ChatManager.away = function (self, parameters)
-	return
 end
 
 ChatManager.game_invite = function (self, parameters, message, recent_message_index, optional_message_target)

@@ -356,6 +356,12 @@ BTChaosSorcererPlagueSkulkAction.get_plague_wave_cast_position = function (self,
 					if teleport_pos_on_mesh then
 						local dir_norm = Vector3.normalize(target_start_pos - teleport_pos_on_mesh)
 						local rotation = Quaternion.look(dir_norm)
+
+						if debug_plague_wave then
+							QuickDrawerStay:line(target_start_pos, teleport_pos_on_mesh, Color(0, 255, 0))
+							QuickDrawerStay:sphere(teleport_pos_on_mesh, 2, Color(0, 255, 0))
+						end
+
 						plague_wave_cast_position = teleport_pos_on_mesh
 
 						plague_wave_data.plague_wave_rot:store(rotation)

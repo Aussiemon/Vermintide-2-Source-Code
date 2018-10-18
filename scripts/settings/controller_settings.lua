@@ -694,12 +694,12 @@ PlayerControllerKeymaps = {
 		action_one_mouse = {},
 		weapon_reload_input = {
 			"gamepad",
-			"l1",
+			"square",
 			"pressed"
 		},
 		weapon_reload_hold_input = {
 			"gamepad",
-			"l1",
+			"square",
 			"held"
 		},
 		character_inspecting = {
@@ -766,29 +766,30 @@ PlayerControllerKeymaps = {
 			"held"
 		},
 		dodge_2 = {},
+		dodge = {},
 		crouch = {
 			"gamepad",
-			"r1",
+			"circle",
 			"pressed"
 		},
 		crouching = {
 			"gamepad",
-			"r1",
+			"circle",
 			"held"
 		},
 		ability = {
 			"gamepad",
-			"circle",
+			"l1",
 			"pressed"
 		},
 		ability_hold = {
 			"gamepad",
-			"circle",
+			"l1",
 			"held"
 		},
 		ability_release = {
 			"gamepad",
-			"circle",
+			"l1",
 			"released"
 		},
 		look_raw = {},
@@ -4435,6 +4436,24 @@ IngameMenuKeymaps = {
 			"left",
 			"axis"
 		},
+		left_press = {
+			"gamepad",
+			"cross",
+			"pressed"
+		},
+		left_hold = {
+			"gamepad",
+			"cross",
+			"held"
+		},
+		left_release = {
+			"gamepad",
+			"cross",
+			"released"
+		},
+		right_press = {},
+		right_hold = {},
+		right_release = {},
 		gamepad_left_axis = {
 			"gamepad",
 			"left",
@@ -4448,6 +4467,21 @@ IngameMenuKeymaps = {
 		look_raw_controller = {
 			"gamepad",
 			"left",
+			"axis"
+		},
+		show_gamercard = {
+			"gamepad",
+			"l2",
+			"pressed"
+		},
+		hotkey_mark_favorite_item = {
+			"gamepad",
+			"touch",
+			"pressed"
+		},
+		scroll_axis = {
+			"gamepad",
+			"right",
 			"axis"
 		},
 		debug_pixeldistance_1 = {

@@ -103,11 +103,11 @@ local scenegraph_definition = {
 		parent = "material_icons_bg",
 		horizontal_alignment = "center",
 		size = {
-			window_size[1] / 6 - 5,
+			window_size[1] / 7 - 5,
 			100
 		},
 		position = {
-			-212,
+			-210,
 			0,
 			2
 		}
@@ -117,11 +117,11 @@ local scenegraph_definition = {
 		parent = "material_icons_bg",
 		horizontal_alignment = "center",
 		size = {
-			window_size[1] / 6 - 5,
+			window_size[1] / 7 - 5,
 			100
 		},
 		position = {
-			-126,
+			-140,
 			0,
 			2
 		}
@@ -131,11 +131,11 @@ local scenegraph_definition = {
 		parent = "material_icons_bg",
 		horizontal_alignment = "center",
 		size = {
-			window_size[1] / 6 - 5,
+			window_size[1] / 7 - 5,
 			100
 		},
 		position = {
-			-42,
+			-70,
 			0,
 			2
 		}
@@ -145,11 +145,11 @@ local scenegraph_definition = {
 		parent = "material_icons_bg",
 		horizontal_alignment = "center",
 		size = {
-			window_size[1] / 6 - 5,
+			window_size[1] / 7 - 5,
 			100
 		},
 		position = {
-			42,
+			0,
 			0,
 			2
 		}
@@ -159,11 +159,11 @@ local scenegraph_definition = {
 		parent = "material_icons_bg",
 		horizontal_alignment = "center",
 		size = {
-			window_size[1] / 6 - 5,
+			window_size[1] / 7 - 5,
 			100
 		},
 		position = {
-			126,
+			70,
 			0,
 			2
 		}
@@ -173,11 +173,25 @@ local scenegraph_definition = {
 		parent = "material_icons_bg",
 		horizontal_alignment = "center",
 		size = {
-			window_size[1] / 6 - 5,
+			window_size[1] / 7 - 5,
 			100
 		},
 		position = {
-			212,
+			140,
+			0,
+			2
+		}
+	},
+	material_text_7 = {
+		vertical_alignment = "bottom",
+		parent = "material_icons_bg",
+		horizontal_alignment = "center",
+		size = {
+			window_size[1] / 7 - 5,
+			100
+		},
+		position = {
+			210,
 			0,
 			2
 		}
@@ -719,6 +733,7 @@ local widgets = {
 	material_text_4 = create_craft_material_widget("material_text_4"),
 	material_text_5 = create_craft_material_widget("material_text_5"),
 	material_text_6 = create_craft_material_widget("material_text_6"),
+	material_text_7 = create_craft_material_widget("material_text_7"),
 	page_button_next = UIWidgets.create_simple_window_button("page_button_next", scenegraph_definition.page_button_next.size, Localize("menu_next"), 16),
 	page_button_previous = UIWidgets.create_simple_window_button("page_button_previous", scenegraph_definition.page_button_previous.size, Localize("menu_previous"), 16),
 	page_button_divider = create_window_divider("page_button_divider", scenegraph_definition.page_button_divider.size),

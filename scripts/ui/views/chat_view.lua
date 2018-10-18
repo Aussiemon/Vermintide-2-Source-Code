@@ -331,6 +331,24 @@ end
 
 ChatView._create_ui_elements = function (self)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
+	local chat_message_tables = {}
+	local members_message_tables = {}
+	self._widgets = self._widgets or {}
+	local chat_output_widget = self._widgets.chat_output_widget
+
+	if chat_output_widget then
+		local chat_output_content = chat_output_widget.content
+		chat_message_tables = chat_output_content.channel_messages_table
+	end
+
+	self._widgets = self._widgets or {}
+	local name_list_widget = self._widgets.name_list_widget
+
+	if name_list_widget then
+		local name_list_content = name_list_widget.content
+		members_message_tables = name_list_content.channel_messages_table
+	end
+
 	self._widgets = {}
 	self._channels_list_widgets = {}
 	self._popular_channel_list_widgets = {}
@@ -349,6 +367,15 @@ ChatView._create_ui_elements = function (self)
 		self._widgets[name] = UIWidget.init(widget)
 	end
 
+	local chat_output_widget = self._widgets.chat_output_widget
+	local chat_output_content = chat_output_widget.content
+	chat_output_content.channel_messages_table = chat_message_tables
+	chat_output_content.channel_name = self._current_channel_name
+	chat_output_content.text_start_offset = #chat_message_tables
+	local name_list_widget = self._widgets.name_list_widget
+	local name_list_content = name_list_widget.content
+	name_list_content.channel_messages_table = members_message_tables
+	name_list_content.channel_name = self._current_channel_name
 	local test_max_users = 60
 	local test_user_data = {}
 
@@ -381,28 +408,51 @@ end
 local DO_RELOAD = true
 
 ChatView.update = function (self, dt, t, is_sub_menu)
+	Profiler.start("chat_view")
+
 	if DO_RELOAD then
 		DO_RELOAD = false
 
 		self:_create_ui_elements()
 	end
 
+	Profiler.start("update_members")
+
 	if Keyboard.pressed(Keyboard.button_index("b")) then
 		print("UPDATE MEMBERS")
 		self:_update_members()
 	end
 
+	Profiler.stop("update_members")
+
 	if self._suspended or not self._active then
+		Profiler.stop("chat_view")
+
 		return
 	end
 
+	Profiler.start("draw")
 	self:_draw(dt, t)
+	Profiler.stop("draw")
+	Profiler.start("update_input")
 	self:_update_input(dt, t)
+	Profiler.stop("update_input")
+	Profiler.start("update_channels_list_input")
 	self:_update_channels_list_input(dt, t)
+	Profiler.stop("update_channels_list_input")
+	Profiler.start("update_create_channel_input")
 	self:_update_create_channel_input(dt, t)
+	Profiler.stop("update_create_channel_input")
+	Profiler.start("update_create_channel_input")
 	self:_update_recent_channels_input(dt, t)
+	Profiler.stop("update_create_channel_input")
+	Profiler.start("update_send_invite_input")
 	self:_update_send_invite_input(dt, t)
+	Profiler.start("update_send_invite_input")
+	Profiler.start("update_input")
 	self:_handle_command_list(dt, t)
+	Profiler.stop("update_input")
+	Profiler.stop("chat_view")
 end
 
 ChatView._update_filter = function (self, filter)
@@ -468,8 +518,11 @@ ChatView._update_recent_channels_input = function (self, dt, t)
 			self:_destroy_recent_channels_window()
 		elseif join_button_hotspot.on_pressed then
 			if recent_channels_window_content.selected_channel ~= nil then
+				local localize = false
+				local localize_parameters = false
+
 				self:_destroy_recent_channels_window(true)
-				Managers.chat:send_chat_message(1, nil, "/join " .. recent_channels_window_content.selected_channel, self._recent_message_index, Irc.CHANNEL_MSG, recent_channels_window_content.selected_channel)
+				Managers.chat:send_chat_message(1, nil, "/join " .. recent_channels_window_content.selected_channel, localize, nil, localize_parameters, self._recent_message_index, Irc.CHANNEL_MSG, recent_channels_window_content.selected_channel)
 			end
 		else
 			local base_name = "channel_entry_"
@@ -692,6 +745,8 @@ ChatView._update_create_channel_input = function (self, dt, t)
 		return
 	end
 
+	local localize = false
+	local localize_parameters = false
 	local input_service = Managers.input:get_service("channels_list")
 	local create_button_widget = self._create_channel_widgets.create_button
 	local create_channel_window_widget = self._create_channel_widgets.create_channel_window
@@ -711,7 +766,7 @@ ChatView._update_create_channel_input = function (self, dt, t)
 			create_channel_window_content.text_field_active = true
 		elseif create_button_hotspot.on_pressed then
 			self:_destroy_create_channel_window(true)
-			Managers.chat:send_chat_message(1, nil, "/join #" .. create_channel_window_content.chat_text_id, self._recent_message_index, Irc.CHANNEL_MSG, create_channel_window_content.chat_text_id)
+			Managers.chat:send_chat_message(1, nil, "/join #" .. create_channel_window_content.chat_text_id, localize, nil, localize_parameters, self._recent_message_index, Irc.CHANNEL_MSG, create_channel_window_content.chat_text_id)
 		elseif widget_hotspot.on_pressed then
 			create_channel_window_content.text_field_active = false
 		end
@@ -725,7 +780,7 @@ ChatView._update_create_channel_input = function (self, dt, t)
 		if input_service:get("execute_chat_input") then
 			if create_channel_window_content.chat_text_id ~= "" then
 				self:_destroy_create_channel_window(true)
-				Managers.chat:send_chat_message(1, nil, "/join #" .. create_channel_window_content.chat_text_id, self._recent_message_index, Irc.CHANNEL_MSG, create_channel_window_content.chat_text_id)
+				Managers.chat:send_chat_message(1, nil, "/join #" .. create_channel_window_content.chat_text_id, localize, nil, localize_parameters, self._recent_message_index, Irc.CHANNEL_MSG, create_channel_window_content.chat_text_id)
 			end
 
 			create_channel_window_content.text_field_active = false
@@ -960,7 +1015,10 @@ ChatView._update_channels_list_input = function (self, dt, t)
 			if self._channels[channel_to_join] then
 				self:_change_channel(channel_to_join)
 			else
-				Managers.chat:send_chat_message(1, nil, "/join " .. channel_to_join, self._recent_message_index, Irc.CHANNEL_MSG, channel_to_join)
+				local localize = false
+				local localize_parameters = false
+
+				Managers.chat:send_chat_message(1, nil, "/join " .. channel_to_join, localize, nil, localize_parameters, self._recent_message_index, Irc.CHANNEL_MSG, channel_to_join)
 			end
 		elseif create_button_hotspot.on_pressed then
 			self:_destroy_channels_list()
@@ -1568,7 +1626,10 @@ ChatView._handle_channel_list_input = function (self)
 
 			return
 		elseif widget_content.exit_button_hotspot and widget_content.exit_button_hotspot.on_pressed then
-			Managers.chat:send_chat_message(1, nil, "/leave " .. widget_content.channel_name, self._recent_message_index, Irc.CHANNEL_MSG, widget_content.channel_name)
+			local localize = false
+			local localize_parameters = false
+
+			Managers.chat:send_chat_message(1, nil, "/leave " .. widget_content.channel_name, localize, nil, localize_parameters, self._recent_message_index, Irc.CHANNEL_MSG, widget_content.channel_name)
 			self:_destroy_channel_list()
 
 			return
@@ -1720,7 +1781,9 @@ ChatView._show_welcome_message = function (self)
 end
 
 ChatView._send_channel_message = function (self, content, emojis)
-	local command, parameters, context_data = Managers.chat:send_chat_message(1, self._local_player_id, content.chat_text.text, self._recent_message_index, Irc.CHANNEL_MSG, self._current_channel_name)
+	local localize = false
+	local localize_parameters = false
+	local command, parameters, context_data = Managers.chat:send_chat_message(1, self._local_player_id, content.chat_text.text, localize, nil, localize_parameters, self._recent_message_index, Irc.CHANNEL_MSG, self._current_channel_name)
 
 	if not command then
 		if content.chat_text.text ~= "" then
@@ -1820,7 +1883,9 @@ end
 
 ChatView._send_private_message = function (self, content, emojis)
 	local user_name = content.private_user_name
-	local command, parameters, context_data = Managers.chat:send_chat_message(1, self._local_player_id, content.chat_text.text, self._recent_message_index, Irc.PRIVATE_MSG, user_name)
+	local localize = false
+	local localize_parameters = false
+	local command, parameters, context_data = Managers.chat:send_chat_message(1, self._local_player_id, content.chat_text.text, localize, nil, localize_parameters, self._recent_message_index, Irc.PRIVATE_MSG, user_name)
 
 	if not command then
 		if content.chat_text.text ~= "" then
@@ -1931,38 +1996,54 @@ ChatView._draw = function (self, dt, t)
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
 	for name, widget in pairs(self._widgets) do
+		Profiler.start(name)
 		UIRenderer.draw_widget(ui_renderer, widget)
+		Profiler.stop(name)
 	end
 
 	for name, widget in pairs(self._channel_list_widgets) do
+		Profiler.start(name)
 		UIRenderer.draw_widget(ui_renderer, widget)
+		Profiler.stop(name)
 	end
 
 	for name, widget in pairs(self._private_list_widgets) do
+		Profiler.start(name)
 		UIRenderer.draw_widget(ui_renderer, widget)
+		Profiler.stop(name)
 	end
 
 	for name, widget in pairs(self._recent_channels_list_widgets) do
+		Profiler.start(name)
 		UIRenderer.draw_widget(ui_renderer, widget)
+		Profiler.stop(name)
 	end
 
 	for name, widget in pairs(self._popular_channel_list_widgets) do
+		Profiler.start(name)
 		UIRenderer.draw_widget(ui_renderer, widget)
+		Profiler.stop(name)
 	end
 
 	for name, widget in pairs(self._commands_list_widgets) do
+		Profiler.start(name)
 		UIRenderer.draw_widget(ui_renderer, widget)
+		Profiler.stop(name)
 	end
 
 	for name, widget in pairs(self._filtered_user_names_list_widgets) do
+		Profiler.start(name)
 		UIRenderer.draw_widget(ui_renderer, widget)
+		Profiler.stop(name)
 	end
 
 	local user_entry_widgets = self._user_entry_widgets
 
 	if user_entry_widgets then
 		for name, widget in ipairs(user_entry_widgets) do
+			Profiler.start(name)
 			UIRenderer.draw_widget(ui_renderer, widget)
+			Profiler.stop(name)
 		end
 	end
 

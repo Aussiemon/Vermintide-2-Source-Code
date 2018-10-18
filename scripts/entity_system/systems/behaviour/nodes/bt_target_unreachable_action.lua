@@ -111,6 +111,8 @@ BTTargetUnreachableAction.move_closer = function (self, unit, blackboard, locomo
 
 		locomotion_extension:set_wanted_rotation(rot)
 	end
+
+	self:_debug_distance_text(unit, navigation_extension)
 end
 
 BTTargetUnreachableAction._debug_distance_text = function (self, unit, navigation_extension)

@@ -32,6 +32,8 @@ BackendInterfaceItemPlayfab._refresh_items = function (self)
 	local backend_mirror = self._backend_mirror
 	local items = backend_mirror:get_all_inventory_items()
 	self._items = items
+	local fake_items = backend_mirror:get_all_fake_inventory_items()
+	self._fake_items = fake_items
 	local new_backend_ids = ItemHelper.get_new_backend_ids()
 
 	if new_backend_ids then
@@ -190,6 +192,14 @@ BackendInterfaceItemPlayfab.get_all_backend_items = function (self)
 	end
 
 	return self._items
+end
+
+BackendInterfaceItemPlayfab.get_all_fake_backend_items = function (self)
+	if self._dirty then
+		self:_refresh()
+	end
+
+	return self._fake_items
 end
 
 BackendInterfaceItemPlayfab.get_loadout = function (self)

@@ -9,7 +9,7 @@ require("scripts/unit_extensions/camera/states/camera_state_follow_third_person_
 require("scripts/unit_extensions/camera/states/camera_state_follow_chaos_spawn_grabbed")
 require("scripts/unit_extensions/camera/states/camera_state_observer")
 require("scripts/unit_extensions/camera/states/camera_state_attract")
-require("scripts/unit_extensions/camera/states/camera_state_map")
+require("scripts/unit_extensions/camera/states/camera_state_interaction")
 
 CameraSystem = class(CameraSystem, ExtensionSystemBase)
 local extensions = {
@@ -47,13 +47,13 @@ CameraSystem.idle_camera_dummy_spawned = function (self, camera_dummy_unit)
 	end
 end
 
-CameraSystem.external_state_change = function (self, player, state)
+CameraSystem.external_state_change = function (self, player, state, params)
 	local camera_unit = self.camera_units[player]
 
 	if ScriptUnit.has_extension(camera_unit, "camera_system") then
 		local camera_ext = ScriptUnit.extension(camera_unit, "camera_system")
 
-		camera_ext:set_external_state_change(state)
+		camera_ext:set_external_state_change(state, params)
 	end
 end
 
@@ -121,7 +121,7 @@ CameraSystem._setup_camera_unit = function (self, player, viewport_name)
 		CameraStateFollowThirdPersonOverShoulder,
 		CameraStateFollowChaosSpawnGrabbed,
 		CameraStateObserver,
-		CameraStateMap
+		CameraStateInteraction
 	}
 	local extension_init_data = {
 		camera_state_machine_system = {

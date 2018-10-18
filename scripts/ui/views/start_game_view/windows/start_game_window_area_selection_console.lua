@@ -36,6 +36,8 @@ StartGameWindowAreaSelectionConsole.on_enter = function (self, params, offset)
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
 	self._animations = {}
+	self._ui_animations = {}
+	self._ui_animation_callbacks = {}
 
 	self:create_ui_elements(params, offset)
 
@@ -202,11 +204,12 @@ StartGameWindowAreaSelectionConsole._set_area_presentation_info = function (self
 	widgets_by_name.area_title.content.text = title_text
 	widgets_by_name.description_text.content.text = description_text
 	widgets_by_name.not_owned_text.content.visible = not unlocked
+	local parent = self.parent
+	local video_player = parent:get_video_player_by_name(area_name)
 	local video_settings = settings.video_settings
 	local material_name = video_settings.material_name
-	local resource = video_settings.resource
 
-	self:_setup_video_player(material_name, resource)
+	self:_assign_video_player(material_name, video_player)
 
 	local menu_sound_event = settings.menu_sound_event
 
@@ -222,7 +225,7 @@ StartGameWindowAreaSelectionConsole.on_exit = function (self, params)
 
 	self._has_exited = true
 
-	self:_destroy_video_player()
+	self:_destroy_video_widget()
 
 	params.return_layout_index = nil
 
@@ -264,6 +267,23 @@ StartGameWindowAreaSelectionConsole._update_animations = function (self, dt)
 	if active_area_widgets then
 		for _, widget in ipairs(active_area_widgets) do
 			self:_animate_area_widget(widget, dt)
+		end
+	end
+
+	local ui_animations = self._ui_animations
+	local ui_animation_callbacks = self._ui_animation_callbacks
+
+	for animation_name, animation in pairs(ui_animations) do
+		UIAnimation.update(animation, dt)
+
+		if UIAnimation.completed(animation) then
+			ui_animations[animation_name] = nil
+
+			if ui_animation_callbacks[animation_name] then
+				ui_animation_callbacks[animation_name]()
+
+				ui_animation_callbacks[animation_name] = nil
+			end
 		end
 	end
 end
@@ -441,40 +461,39 @@ StartGameWindowAreaSelectionConsole._play_sound = function (self, event)
 	self.parent:play_sound(event)
 end
 
-StartGameWindowAreaSelectionConsole._setup_video_player = function (self, material_name, resource)
-	self:_destroy_video_player()
-
-	local ui_top_renderer = self.ui_top_renderer
-
-	if not ui_top_renderer.video_player then
-		local set_loop = true
-		local world = ui_top_renderer.world
-
-		UIRenderer.create_video_player(ui_top_renderer, ui_top_renderer.world, resource, set_loop)
-	end
+StartGameWindowAreaSelectionConsole._assign_video_player = function (self, material_name, video_player)
+	self:_destroy_video_widget()
 
 	local scenegraph_id = "video"
 	local widget_definition = UIWidgets.create_video(scenegraph_id, material_name)
 	local widget = UIWidget.init(widget_definition)
+	widget.content.video_content.video_player = video_player
+	local ui_top_renderer = self.ui_top_renderer
+	local world = ui_top_renderer.world
+
+	World.add_video_player(world, video_player)
+
 	self._video_widget = widget
 	self._video_created = true
 	self._draw_video_next_frame = true
+	local widget = self._widgets_by_name.background
+	local widget_style = widget.style
+	local color = widget_style.rect.color
+	self._ui_animations.fade_in = UIAnimation.init(UIAnimation.function_by_time, color, 1, 255, 0, 1, math.easeOutCubic)
 end
 
-StartGameWindowAreaSelectionConsole._destroy_video_player = function (self)
+StartGameWindowAreaSelectionConsole._destroy_video_widget = function (self)
 	local ui_top_renderer = self.ui_top_renderer
 	local widget = self._video_widget
 
 	if widget then
+		local video_player = widget.content.video_content.video_player
+		local world = ui_top_renderer.world
+
+		World.remove_video_player(world, video_player)
 		UIWidget.destroy(ui_top_renderer, widget)
 
 		self._video_widget = nil
-	end
-
-	if ui_top_renderer and ui_top_renderer.video_player then
-		local world = ui_top_renderer.world
-
-		UIRenderer.destroy_video_player(ui_top_renderer, world)
 	end
 
 	self._video_created = nil

@@ -51,11 +51,17 @@ local Unit_alive = Unit.alive
 BTGreySeerGroundCombatAction.run = function (self, unit, blackboard, t, dt)
 	local ready_to_cast = self:update_spells(unit, blackboard, t)
 
+	Profiler.start("grey_seer_ground_combat")
+
 	if ready_to_cast then
 		blackboard.ready_to_summon = true
 
+		Profiler.stop("grey_seer_ground_combat")
+
 		return "done"
 	else
+		Profiler.stop("grey_seer_ground_combat")
+
 		return "running"
 	end
 end

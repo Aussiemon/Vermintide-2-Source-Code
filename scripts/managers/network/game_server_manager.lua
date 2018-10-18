@@ -147,7 +147,9 @@ GameServerManager._say = function (self, text)
 	local chat = Managers.chat
 
 	if chat ~= nil and chat:has_channel(1) then
-		chat:send_system_chat_message(1, "backend_error_on_server", text, true)
+		local localize_parameters = false
+
+		chat:send_system_chat_message(1, "backend_error_on_server", text, localize_parameters, true)
 	end
 end
 

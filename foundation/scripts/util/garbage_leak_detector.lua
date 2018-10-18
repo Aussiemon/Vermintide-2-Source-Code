@@ -6,7 +6,15 @@ GarbageLeakDetector = GarbageLeakDetector or {
 }
 
 GarbageLeakDetector.register_object = function (object, object_name)
-	return
+	if GarbageLeakDetector.enabled == false then
+		return
+	end
+
+	local callstack = Script.callstack()
+	GarbageLeakDetector.object_callstack_map[object] = {
+		count = 0,
+		callstack = string.format("OBJECT NAME: %s\n%s", object_name, callstack)
+	}
 end
 
 local debug_search = nil
@@ -170,7 +178,80 @@ end
 local has_run = nil
 
 GarbageLeakDetector.run_leak_detection = function (do_assert)
-	return
+	Script.configure_garbage_collection(Script.FORCE_FULL_COLLECT_GARBAGE_LEVEL, -1, Script.MAXIMUM_GARBAGE, 0, Script.MAXIMUM_COLLECT_TIME_MS, 10000)
+	collectgarbage()
+	Script.configure_garbage_collection(Script.FORCE_FULL_COLLECT_GARBAGE_LEVEL, 1, Script.MAXIMUM_GARBAGE, 0.5, Script.MAXIMUM_COLLECT_TIME_MS, 0.1)
+
+	local has_error = nil
+	local object_map = GarbageLeakDetector.object_callstack_map
+
+	for object, data in pairs(object_map) do
+		if data.count == 0 then
+			data.count = 1
+		else
+			local callstack = data.callstack
+
+			printf("Detected leak added to leak detector:\n%sStarting search in global:", callstack)
+
+			has_error = true
+			seen_tables = {
+				[GarbageLeakDetector] = true
+			}
+
+			debug_search(_G, object, {
+				"_G"
+			}, 2)
+
+			local registry = debug.getregistry()
+			seen_tables = {
+				[GarbageLeakDetector] = true,
+				[_G] = true
+			}
+
+			print("Starting search in registry:")
+			debug_search(registry, object, {
+				"registry"
+			}, 2)
+			print("Recursing the object itself:")
+
+			seen_tables = {
+				[GarbageLeakDetector] = true,
+				[_G] = true
+			}
+
+			debug_search(object, object, {
+				"self"
+			}, 2)
+			print("Checking all upvalues for stack...")
+
+			seen_tables[seen_tables] = true
+
+			debug_search_stack(object, {}, 1)
+			print("Done!")
+		end
+	end
+
+	if has_error then
+		for raycast_ob, callstack in pairs(GarbageLeakDetector.raycast_collect_table) do
+			print("Discovered lingering raycast object allocated at:")
+			print(callstack)
+		end
+	end
+
+	if has_error and do_assert then
+		if not has_run then
+			jit.flush()
+
+			has_run = true
+
+			print("--> Restarting Garbage Leak Detection with jit flushed. <--")
+			GarbageLeakDetector.run_leak_detection(true)
+			print("Second run done!")
+			assert(false, "Leak detection ended with errors!")
+		else
+			assert(false, "Leak detection ended with errors!")
+		end
+	end
 end
 
 return

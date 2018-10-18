@@ -223,6 +223,10 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 				end
 			end
 
+			if script_data.dialogue_debug_missing_vo_trigger_error_sound and not Wwise.has_event(sound_event) then
+				WwiseWorld.trigger_event(dialogue_system.wwise_world, "Play_VO_debug_sound")
+			end
+
 			return WwiseWorld.trigger_event(dialogue_system.wwise_world, sound_event, use_occlusion, wwise_source_id)
 		end,
 		play_voice_debug = function (self, sound_event)
@@ -237,6 +241,10 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 			if extension.faction == "player" then
 			end
 
+			if script_data.dialogue_debug_missing_vo_trigger_error_sound and not Wwise.has_event(sound_event) then
+				WwiseWorld.trigger_event(dialogue_system.wwise_world, "Play_VO_debug_sound")
+			end
+
 			return WwiseWorld.trigger_event(dialogue_system.wwise_world, sound_event, wwise_source_id)
 		end,
 		trigger_query = function (self, event_data)
@@ -245,6 +253,9 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 			dialogue_system.tagquery_database:debug_test_query(concept, source, test_query, test_user_context_list, test_global_context)
 		end
 	})
+
+	GarbageLeakDetector.register_object(input, "dialogue_input")
+
 	extension.input = input
 
 	self.tagquery_database:add_object_context(unit, "user_memory", extension.user_memory)
@@ -328,6 +339,10 @@ DialogueSystem.extensions_ready = function (self, world, unit)
 	extension.play_unit = play_unit
 	extension.voice_node = voice_node
 	extension.vo_center_percent = vo_center_percent
+
+	if script_data.sound_debug then
+		printf("Spawned unit %q with play_unit=%s, voice_node=%d, vo_center_percent=%d, local_player=%s", tostring(unit), tostring(play_unit), voice_node, vo_center_percent, tostring(extension.local_player))
+	end
 end
 
 DialogueSystem.on_remove_extension = function (self, unit, extension_name)
@@ -470,6 +485,8 @@ DialogueSystem.function_by_op = DialogueSystem.function_by_op or {
 }
 
 DialogueSystem.update_currently_playing_dialogues = function (self, dt)
+	Profiler.start("update_currently_playing_dialogues")
+
 	local function_command_queue = self.function_command_queue
 	local player_manager = Managers.player
 	local wwise_world = self.wwise_world
@@ -576,6 +593,8 @@ DialogueSystem.update_currently_playing_dialogues = function (self, dt)
 			end
 		until true
 	end
+
+	Profiler.stop("update_currently_playing_dialogues")
 end
 
 DialogueSystem.update = function (self, context, t)
@@ -683,6 +702,11 @@ DialogueSystem._trigger_marker = function (self, marker_data)
 			end
 
 			local go_id, is_level_unit = network_manager:game_object_or_level_id(source_player)
+
+			if script_data.dialogue_debug_missing_vo_trigger_error_sound and not Wwise.has_event(sound_event) then
+				WwiseWorld.trigger_event(wwise_world, "Play_VO_debug_sound")
+			end
+
 			local source_id = WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
 
 			if source_id ~= 0 then
@@ -725,6 +749,10 @@ DialogueSystem.rpc_play_marker_event = function (self, sender, go_id, marker_id)
 		WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, "vo_center_percent", extension.vo_center_percent)
 	end
 
+	if script_data.dialogue_debug_missing_vo_trigger_error_sound and not Wwise.has_event(marker_sound_event) then
+		WwiseWorld.trigger_event(wwise_world, "Play_VO_debug_sound")
+	end
+
 	WwiseWorld.trigger_event(wwise_world, marker_sound_event, wwise_source_id)
 end
 
@@ -747,15 +775,21 @@ DialogueSystem.physics_async_update = function (self, context, t)
 	LOCAL_GAMETIME = t + 900
 
 	self:update_incapacitation(t)
+	Profiler.start("Iterate Query")
 
 	local tagquery_database = self.tagquery_database
 	local unit_extension_data = self.unit_extension_data
 	local query = tagquery_database:iterate_queries(LOCAL_GAMETIME)
 	local playing_units = self.playing_units
 
+	Profiler.stop("Iterate Query")
+
 	if enabled and (DialogueSettings.dialogue_level_start_delay < self.global_context.level_time or DialogueSystem:LocalPlayerHasMovedFromStartPos()) then
 		if query then
 			local function_command_queue = self.function_command_queue
+
+			Profiler.start("Handle Query")
+
 			local dialogue_actor_unit = query.query_context.source
 			local extension = unit_extension_data[dialogue_actor_unit]
 			extension.last_query = query
@@ -850,6 +884,11 @@ DialogueSystem.physics_async_update = function (self, context, t)
 					local go_id, is_level_unit = network_manager:game_object_or_level_id(dialogue_actor_unit)
 					local dialogue_index = get_dialogue_event_index(dialogue)
 					local sound_event, subtitles_event, anim_face_event, anim_dialogue_event = get_dialogue_event(dialogue, dialogue_index)
+
+					if script_data.dialogue_debug_missing_vo_trigger_error_sound and not Wwise.has_event(sound_event) then
+						WwiseWorld.trigger_event(wwise_world, "Play_VO_debug_sound")
+					end
+
 					local source_id = WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
 
 					if source_id ~= 0 then
@@ -875,6 +914,11 @@ DialogueSystem.physics_async_update = function (self, context, t)
 						dialogue.randomize_indexes = nil
 						local dialogue_index = get_dialogue_event_index(dialogue)
 						sound_event, subtitles_event, anim_face_event, anim_dialogue_event = get_dialogue_event(dialogue, dialogue_index)
+
+						if script_data.dialogue_debug_missing_vo_trigger_error_sound and not Wwise.has_event(sound_event) then
+							WwiseWorld.trigger_event(wwise_world, "Play_VO_debug_sound")
+						end
+
 						source_id = WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
 
 						if source_id ~= 0 then
@@ -947,6 +991,8 @@ DialogueSystem.physics_async_update = function (self, context, t)
 					slot21 = query.validated_rule.tutorial.message
 				end
 			end
+
+			Profiler.stop("Handle Query")
 		end
 
 		update_story_lines(t)
@@ -981,6 +1027,8 @@ DialogueSystem.update_incapacitation = function (self, t)
 end
 
 DialogueSystem.update_new_events = function (self, t)
+	Profiler.start("update_new_events")
+
 	local unit_extension_data = self.unit_extension_data
 	local tagquery_database = self.tagquery_database
 	local unit_alive = Unit.alive
@@ -1043,7 +1091,10 @@ DialogueSystem.update_new_events = function (self, t)
 
 	self.input_event_queue_n = 0
 
+	Profiler.stop("update_new_events")
+	Profiler.start("Debug")
 	self:update_debug(t)
+	Profiler.stop("Debug")
 end
 
 DialogueSystem.hot_join_sync = function (self, sender)
@@ -1721,6 +1772,11 @@ DialogueSystem.rpc_play_dialogue_event = function (self, sender, go_id, is_level
 	end
 
 	local sound_event, subtitles_event, anim_face_event, anim_dialogue_event = get_dialogue_event(dialogue, dialogue_index)
+
+	if script_data.dialogue_debug_missing_vo_trigger_error_sound and not Wwise.has_event(sound_event) then
+		WwiseWorld.trigger_event(wwise_world, "Play_VO_debug_sound")
+	end
+
 	local playing_id, source_id = WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
 
 	fassert(playing_id, "Couldn't play sound event %s", sound_event)

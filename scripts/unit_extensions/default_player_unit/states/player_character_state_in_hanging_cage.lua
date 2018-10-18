@@ -61,7 +61,7 @@ PlayerCharacterStateInHangingCage.update = function (self, unit, input, dt, cont
 
 			locomotion_extension:teleport_to(current_position)
 			locomotion_extension:enable_script_driven_movement()
-			self.health_extension:die()
+			self.health_extension:knock_down(unit)
 			csm:change_state("knocked_down", {
 				already_in_ko_anim = true
 			})

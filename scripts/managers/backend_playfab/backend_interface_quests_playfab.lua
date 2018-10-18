@@ -31,9 +31,7 @@ BackendInterfaceQuestsPlayfab._refresh = function (self)
 			quest_copy.name = quest.name
 		end
 
-		if quest.type ~= "common" then
-			weekly_quests[quest_id] = quest_copy
-		end
+		weekly_quests[quest_id] = quest_copy
 	end
 
 	self._quests.weekly = weekly_quests
@@ -96,7 +94,6 @@ BackendInterfaceQuestsPlayfab.update = function (self, dt)
 
 	if request_quest_update then
 		local request = {
-			SpecificRevision = 49,
 			FunctionName = "getQuests"
 		}
 		local success_callback = callback(self, "get_quests_cb")

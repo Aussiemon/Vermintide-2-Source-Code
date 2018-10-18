@@ -266,6 +266,35 @@ NetworkClient.update = function (self, dt)
 	end
 
 	self.voip:update(dt)
+
+	local lobby_client = self.lobby_client
+	local lobby_members = lobby_client:members()
+
+	if lobby_members then
+		local members_joined = lobby_members:get_members_joined()
+
+		for i, peer_id in ipairs(members_joined) do
+			if peer_id ~= lobby_client:lobby_host() then
+				local sender = (rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id)
+				local message = string.format(Localize("system_chat_player_joined_the_game"), sender)
+				local pop_chat = true
+
+				Managers.chat:add_local_system_message(1, message, pop_chat)
+			end
+		end
+
+		local members_left = lobby_members:get_members_left()
+
+		for i, peer_id in ipairs(members_left) do
+			if peer_id ~= lobby_client:lobby_host() then
+				local sender = (rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id)
+				local message = string.format(Localize("system_chat_player_left_the_game"), sender)
+				local pop_chat = true
+
+				Managers.chat:add_local_system_message(1, message, pop_chat)
+			end
+		end
+	end
 end
 
 NetworkClient.eac_allowed_to_play = function (self)

@@ -1,21 +1,29 @@
 Crashify = {}
 
 local function clean(str)
-	local _, __, result = tostring(str):find("%W*([%w_-]*)%W*")
+	local _, __, result = tostring(str):find("%W*([%w _-]*)%W*")
 
-	return result
+	return result:lower()
 end
 
 Crashify.print_property = function (key, value)
-	local property = string.format("<<crashify-property>>%s = %s<</crashify-property>>", clean(key), clean(value))
+	key = clean(key)
+	value = clean(value)
+	local property = string.format("%s = %s", key, value)
+	local output = string.format("<<crashify-property>>%s<</crashify-property>>", property)
 
-	print(property)
+	if PLATFORM ~= "win32" then
+		Application.add_crash_property(key, value)
+	end
+
+	print(output)
 end
 
 Crashify.print_breadcrumb = function (crumb)
-	local crumb = string.format("<<crashify-breadcrumb>>%s<</crashify-breadcrumb>>", clean(crumb))
+	local crumb = clean(crumb)
+	local output = string.format("<<crashify-breadcrumb>>%s<</crashify-breadcrumb>>", crumb)
 
-	print(crumb)
+	print(output)
 end
 
 Crashify.print_exception = function (system, message)

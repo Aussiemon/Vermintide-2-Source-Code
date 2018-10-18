@@ -162,7 +162,9 @@ StateTitleScreenMainMenu.update = function (self, dt, t)
 	local active_view = self._active_view
 
 	if active_view then
+		Profiler.start(active_view)
 		self._views[active_view]:update(dt, t)
+		Profiler.stop(active_view)
 	else
 		local input_service = self.input_manager:get_service("main_menu")
 
@@ -188,6 +190,9 @@ StateTitleScreenMainMenu.update = function (self, dt, t)
 			if self._state == "check_restrictions" then
 				self:_check_restrictions()
 				title_start_ui:set_information_text(Localize("loading_checking_online_state"))
+			elseif self._state == "request_np_auth_data" then
+				self:_request_np_auth_data()
+				title_start_ui:set_information_text(Localize("loading_requesting_np_auth_data"))
 			elseif self._state == "signin_to_backend" then
 				self:_signin_to_backend()
 				title_start_ui:set_information_text(Localize("loading_signing_in"))
@@ -392,6 +397,32 @@ StateTitleScreenMainMenu._check_restrictions = function (self)
 	end
 
 	if self._has_evaluated_playstation_plus and self._has_evaluated_network_availability then
+		self._state = "request_np_auth_data"
+	end
+end
+
+StateTitleScreenMainMenu._request_np_auth_data = function (self)
+	local token = NpAuth.create_async_token()
+	local script_token = ScriptNpAuthToken:new(token)
+
+	Managers.token:register_token(script_token, callback(self, "cb_np_auth_data_received"))
+
+	self._state = "waiting_for_np_auth_data"
+end
+
+StateTitleScreenMainMenu.cb_np_auth_data_received = function (self, data)
+	print("[StateTitleScreenMainMenu] cb_np_auth_data_received")
+
+	if data.error then
+		self._popup_id = Managers.popup:queue_popup(Localize("popup_np_auth_failed"), Localize("popup_np_auth_failed_header"), "xsts_error", Localize("menu_ok"))
+		self._state = "check_popup"
+	else
+		print("[StateTitleScreenMainMenu] Successfully acquired NpAuth data")
+
+		self._np_auth_data = {
+			auth_code = data.auth_code,
+			issuer_id = data.issuer_id
+		}
 		self._state = "signin_to_backend"
 	end
 end
@@ -416,17 +447,14 @@ StateTitleScreenMainMenu._signin_to_backend = function (self)
 		Managers.backend:signin("")
 	else
 		print("Using Online Backend")
-
-		self._popup_id = Managers.popup:queue_popup("Online Mode not implemented yet for PS4", Localize("popup_error_topic"), "online_mode_not_implemented", Localize("menu_ok"))
-
-		return
-
 		Managers.account:set_offline_mode(false)
 
 		Managers.rest_transport = Managers.rest_transport_online
 		Managers.backend = BackendManagerPlayFab:new("ScriptBackendPlayFabPS4", "PlayFabMirror", "DataServerQueue")
 
-		Managers.backend:signin(self._xsts_result)
+		Managers.backend:signin(self._np_auth_data)
+
+		self._np_auth_data = nil
 	end
 
 	self._state = "waiting_for_backend_signin"
@@ -485,13 +513,7 @@ StateTitleScreenMainMenu.cb_fade_in_done = function (self)
 	local disable_trailer = self._disable_trailer or not Application.user_setting("play_intro_cinematic")
 	local profile_name = self._profile_name
 
-	if level_key == "prologue" then
-		self._popup_id = Managers.popup:queue_popup("Prologue is not working yet", Localize("popup_error_topic"), "prologue_not_working", Localize("popup_choice_ok"))
-
-		return
-	end
-
-	if PLATFORM ~= "win32" and not Managers.backend:get_user_data("prologue_started") and not script_data.settings.disable_tutorial_at_start and not script_data.disable_prologue then
+	if PLATFORM ~= "win32" and not Managers.backend:get_user_data("prologue_started") and not script_data.settings.disable_tutorial_at_start and not script_data.disable_prologue and not script_data.honduras_demo then
 		disable_trailer = false
 		level_key = "prologue"
 	end

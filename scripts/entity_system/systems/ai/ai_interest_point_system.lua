@@ -210,6 +210,8 @@ AIInterestPointSystem.on_add_extension = function (self, world, unit, extension_
 			extension.num_valid_to_spawn = num_valid_to_spawn
 
 			if num_valid_to_spawn == 0 then
+				print(string.format("Invalid placed interest-point '%s'. Is outside of nav-mesh. Found at pos: %s", tostring(unit), tostring(Unit.local_position(unit, 0))))
+
 				extension.points_n = 0
 			else
 				extension.points_n = point_i
@@ -366,13 +368,28 @@ AIInterestPointSystem.spawn_interest_points = function (self)
 						if data then
 							data.count = data.count + 1
 
+							if script_data.debug_zone_baker then
+								self:debug_draw_baker_data(hi_data, data, breed.name, point)
+							end
+
 							if data.max_amount < data.count then
+								optional_data = {
+									debug_info = "Roaming",
+									zone_data = zone_data,
+									replaced_breed = breed.name
+								}
 								breed = data.switch_breed
 								data.switch_count = data.switch_count + 1
 							end
 						end
 					end
 				end
+
+				optional_data = optional_data or {
+					zone_data = zone_data,
+					spawned_func = AIInterestPointSystem.breed_spawned_callback,
+					dead_breed_data = point
+				}
 
 				if breed_override_lookup and breed_override_lookup[breed.name] then
 					breed = Breeds[breed_override_lookup[breed.name]]
@@ -575,6 +592,8 @@ AIInterestPointSystem.resolve_requests = function (self)
 		return
 	end
 
+	Profiler.start("resolve_requests")
+
 	local request, request_index = _get_next_request(self.requests, self.current_request_index, self.last_request_index)
 
 	if request ~= nil then
@@ -623,6 +642,8 @@ AIInterestPointSystem.resolve_requests = function (self)
 			end
 		end
 	end
+
+	Profiler.stop("resolve_requests")
 end
 
 AIInterestPointSystem.debug_draw = function (self, t, dt)

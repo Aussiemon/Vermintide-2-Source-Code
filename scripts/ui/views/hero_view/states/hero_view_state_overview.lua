@@ -20,6 +20,7 @@ require("scripts/ui/views/hero_view/windows/hero_window_hero_power_console")
 require("scripts/ui/views/hero_view/windows/hero_window_cosmetics_loadout_console")
 require("scripts/ui/views/hero_view/windows/hero_window_cosmetics_loadout_inventory_console")
 require("scripts/ui/views/hero_view/windows/hero_window_ingame_view")
+require("scripts/ui/views/hero_view/windows/hero_window_character_preview")
 
 local definitions = local_require("scripts/ui/views/hero_view/states/definitions/hero_view_state_overview_definitions")
 local widget_definitions = definitions.widgets

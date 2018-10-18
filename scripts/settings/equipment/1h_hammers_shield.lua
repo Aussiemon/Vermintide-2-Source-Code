@@ -415,7 +415,7 @@ weapon_template.actions = {
 					sub_action = "default",
 					start_time = 0.4,
 					action = "action_two",
-					input = "action_two"
+					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
@@ -610,7 +610,7 @@ weapon_template.actions = {
 					sub_action = "default",
 					start_time = 0,
 					action = "action_two",
-					input = "action_two"
+					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
@@ -669,7 +669,7 @@ weapon_template.actions = {
 					sub_action = "default",
 					start_time = 0,
 					action = "action_two",
-					input = "action_two"
+					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
@@ -730,7 +730,7 @@ weapon_template.actions = {
 					sub_action = "default",
 					start_time = 0,
 					action = "action_two",
-					input = "action_two"
+					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",

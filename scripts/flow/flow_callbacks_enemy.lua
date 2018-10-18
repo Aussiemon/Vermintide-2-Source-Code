@@ -23,15 +23,23 @@ local function enemy_variation_tint_part(unit, variation, material_result)
 	local meshes = variation.meshes
 
 	if not meshes then
+		Profiler.start("enemy_variation_tint_part_no_meshlist")
+
 		for j = 1, #variation.variables, 1 do
 			Unit.set_scalar_for_material_table(unit, variation.materials, variation.variables[j], variable_value)
 		end
+
+		Profiler.stop("enemy_variation_tint_part_no_meshlist")
 	else
+		Profiler.start("enemy_variation_tint_part_meshlist")
+
 		for i = 1, #variation.materials, 1 do
 			for j = 1, #variation.variables, 1 do
 				enemy_variation_tint_meshes(unit, meshes, variation.materials[i], variation.variables[j], variable_value)
 			end
 		end
+
+		Profiler.stop("enemy_variation_tint_part_meshlist")
 	end
 
 	for i = 1, #variation.materials, 1 do
@@ -130,6 +138,8 @@ function flow_callback_enemy_variation(params)
 		return {}
 	end
 
+	Profiler.start("enemy_variation")
+
 	local variationsettings = UnitVariationSettings[breed_type]
 	local variation_result = {}
 	local material_result = {}
@@ -137,25 +147,33 @@ function flow_callback_enemy_variation(params)
 	local scaling_result = {}
 
 	if variationsettings.materials_enabled_from_start ~= nil then
+		Profiler.start("enemy_variation_materials")
 		enemy_variation_tint_materials(unit, variationsettings, variationsettings.materials_enabled_from_start, material_result)
+		Profiler.stop("enemy_variation_materials")
 	end
 
 	if variationsettings.enabled_from_start ~= nil then
+		Profiler.start("enemy_variation_parts")
+
 		if Unit.has_visibility_group(unit, "all") then
 			Unit.set_visibility(unit, "all", false)
 		end
 
 		enemy_variation_enable_parts(unit, variationsettings, variationsettings.enabled_from_start, group_result, material_result)
+		Profiler.stop("enemy_variation_parts")
 	end
 
 	if variationsettings.scale_variation ~= nil then
+		Profiler.start("enemy_variation_scale")
 		enemy_variation_scale_nodes(unit, variationsettings, scaling_result)
+		Profiler.stop("enemy_variation_scale")
 	end
 
 	variation_result.groups = group_result
 	variation_result.materials = material_result
 	variation_result.scaling = scaling_result
 
+	Profiler.stop("enemy_variation")
 	Unit.set_data(unit, "variation_data", variation_result)
 
 	return {}
@@ -173,7 +191,7 @@ local function enemy_dismember_can_spawn_gib(unit, gibsettings)
 	return true
 end
 
-local function enemy_dismember_spawn_gib(unit, world, gibsettings, unit_inventory_extension, unit_ai_system_extension)
+local function enemy_dismember_spawn_gib(unit_spawner, unit, world, gibsettings, unit_inventory_extension, unit_ai_system_extension)
 	local node_id = Unit.node(unit, gibsettings.gib_parent_align_node)
 	local spawn_pose = Matrix4x4.from_quaternion_position(Unit.world_rotation(unit, node_id), Unit.world_position(unit, node_id))
 
@@ -188,7 +206,17 @@ local function enemy_dismember_spawn_gib(unit, world, gibsettings, unit_inventor
 		Matrix4x4.set_scale(spawn_pose, unit_scale)
 	end
 
-	local gib_unit = World.spawn_unit(world, gibsettings.gib_unit, spawn_pose)
+	local gib_unit = nil
+
+	if unit_spawner ~= nil then
+		if gibsettings.gib_unit_template ~= nil then
+			gib_unit = unit_spawner:spawn_local_unit_with_extensions(gibsettings.gib_unit, gibsettings.gib_unit_template, nil, spawn_pose)
+		else
+			gib_unit = unit_spawner:spawn_local_unit(gibsettings.gib_unit, spawn_pose)
+		end
+	else
+		gib_unit = World.spawn_unit(world, gibsettings.gib_unit, spawn_pose)
+	end
 
 	if unit_inventory_extension ~= nil and gibsettings.gib_helmet_link_node ~= nil then
 		local helmet_unit = unit_inventory_extension.inventory_item_helmet_unit
@@ -217,7 +245,7 @@ local function enemy_dismember_spawn_gib(unit, world, gibsettings, unit_inventor
 	return gib_unit
 end
 
-local function enemy_dismember_spawn_stump(unit, world, gibsettings, pulp)
+local function enemy_dismember_spawn_stump(unit_spawner, unit, world, gibsettings, pulp)
 	local node_id = Unit.node(unit, gibsettings.stump_parent_align_node)
 	local stump_unit_name = nil
 
@@ -231,7 +259,14 @@ local function enemy_dismember_spawn_stump(unit, world, gibsettings, pulp)
 		stump_unit_name = gibsettings.stump_unit
 	end
 
-	local stump_unit = World.spawn_unit(world, stump_unit_name, Unit.world_position(unit, node_id), Unit.world_rotation(unit, node_id))
+	local stump_unit = nil
+
+	if unit_spawner ~= nil then
+		stump_unit = unit_spawner:spawn_local_unit(stump_unit_name, Unit.world_position(unit, node_id), Unit.world_rotation(unit, node_id))
+	else
+		stump_unit = World.spawn_unit(world, stump_unit_name, Unit.world_position(unit, node_id), Unit.world_rotation(unit, node_id))
+	end
+
 	local stump_link_nodes = gibsettings.stump_link_nodes
 	local parent_link_nodes = gibsettings.parent_link_nodes
 
@@ -367,41 +402,59 @@ local function enemy_dismember(params, spawn_gib)
 		return
 	end
 
+	Profiler.start("enemy_gib_" .. bodypart)
+
 	local gibsettings = UnitGibSettings[breed_type].parts[bodypart]
-	local world = Unit.world(unit)
-	local node_id, unit_inventory_extension, unit_ai_system_extension = nil
-
-	if ScriptUnit ~= nil then
-		unit_inventory_extension = ScriptUnit.extension(unit, "ai_inventory_system")
-		unit_ai_system_extension = ScriptUnit.extension(unit, "ai_system")
-	end
-
 	local can_spawn_gib = enemy_dismember_can_spawn_gib(unit, gibsettings)
 
 	if not can_spawn_gib then
 		return
 	end
 
+	local world = Unit.world(unit)
+	local node_id, unit_inventory_extension, unit_ai_system_extension, unit_spawner = nil
+
+	if ScriptUnit ~= nil then
+		unit_inventory_extension = ScriptUnit.extension(unit, "ai_inventory_system")
+		unit_ai_system_extension = ScriptUnit.extension(unit, "ai_system")
+		unit_spawner = Managers.state.unit_spawner
+	end
+
 	local gib_unit = nil
 
 	if spawn_gib then
-		gib_unit = enemy_dismember_spawn_gib(unit, world, gibsettings, unit_inventory_extension, unit_ai_system_extension)
+		gib_unit = enemy_dismember_spawn_gib(unit_spawner, unit, world, gibsettings, unit_inventory_extension, unit_ai_system_extension)
 	end
 
 	enemy_dismember_kill_actors(unit, gibsettings.parent_destroy_actors)
 	enemy_dismember_kill_actors(unit, gibsettings.ragdoll_destroy_actors)
 
-	local stump_unit = enemy_dismember_spawn_stump(unit, world, gibsettings, not spawn_gib)
+	local stump_unit = enemy_dismember_spawn_stump(unit_spawner, unit, world, gibsettings, not spawn_gib)
 
 	enemy_dismember_set_variations(unit, gib_unit, stump_unit)
 
-	local gibbed_nodes = unit_inventory_extension.gibbed_nodes
+	if Unit.get_data(unit, "was_burned") then
+		Unit.flow_event(stump_unit, "lua_already_burned")
+
+		if gib_unit ~= nil then
+			Unit.flow_event(gib_unit, "lua_already_burned")
+		end
+	end
+
+	local gibbed_nodes = nil
+
+	if unit_inventory_extension ~= nil then
+		gibbed_nodes = unit_inventory_extension.gibbed_nodes
+	end
 
 	for i = 1, #gibsettings.parent_scale_nodes, 1 do
 		node_id = Unit.node(unit, gibsettings.parent_scale_nodes[i])
-		gibbed_nodes[#gibbed_nodes + 1] = node_id
 
 		Unit.set_local_scale(unit, node_id, Vector3(gibsettings.parent_scale, gibsettings.parent_scale, gibsettings.parent_scale))
+
+		if gibbed_nodes ~= nil then
+			gibbed_nodes[#gibbed_nodes + 1] = node_id
+		end
 	end
 
 	if gibsettings.parent_hide_group ~= nil and Unit.has_visibility_group(unit, gibsettings.parent_hide_group) then
@@ -455,7 +508,21 @@ local function enemy_dismember(params, spawn_gib)
 		table.insert(stump_items, stump_unit)
 
 		unit_inventory_extension.stump_items = stump_items
+	else
+		if gib_unit ~= nil then
+			local gib_items = Unit.get_data(unit, "gib_items") or {}
+
+			table.insert(gib_items, gib_unit)
+			Unit.set_data(unit, "gib_items", gib_items)
+		end
+
+		local stump_items = Unit.get_data(unit, "stump_items") or {}
+
+		table.insert(stump_items, stump_unit)
+		Unit.set_data(unit, "stump_items", stump_items)
 	end
+
+	Profiler.stop("enemy_gib_" .. bodypart)
 end
 
 function enemy_explode(params)
@@ -497,11 +564,20 @@ function enemy_explode(params)
 		return
 	end
 
+	Profiler.start("enemy_explode_" .. breed_type)
+
 	local world = Unit.world(unit)
-	local unit_inventory_extension = nil
+	local unit_inventory_extension, unit_spawner = nil
 
 	if ScriptUnit ~= nil then
 		unit_inventory_extension = ScriptUnit.extension(unit, "ai_inventory_system")
+		unit_spawner = Managers.state.unit_spawner
+	end
+
+	local already_burned = nil
+
+	if Unit.get_data(unit, "was_burned") then
+		already_burned = true
 	end
 
 	local part_combo = explodesettings.part_combos[math.random(#explodesettings.part_combos)]
@@ -511,9 +587,14 @@ function enemy_explode(params)
 			print("[enemy_dismember] Skipped spawning gib part due to missing body part for breed in settings file -> " .. breed_type .. " -> " .. part_combo[i])
 		else
 			local gibsettings = UnitGibSettings[breed_type].parts[part_combo[i]]
-			local gib_unit = enemy_dismember_spawn_gib(unit, world, gibsettings, unit_inventory_extension)
+			local gib_unit = enemy_dismember_spawn_gib(unit_spawner, unit, world, gibsettings, unit_inventory_extension)
 
 			enemy_dismember_set_variations(unit, gib_unit, nil)
+
+			if already_burned then
+				Unit.flow_event(gib_unit, "lua_already_burned")
+			end
+
 			Unit.flow_event(gib_unit, "lua_start_despawn_timer")
 		end
 	end
@@ -530,6 +611,7 @@ function enemy_explode(params)
 
 	Unit.set_unit_visibility(unit, false)
 	Unit.disable_physics(unit)
+	Profiler.stop("enemy_explode_" .. breed_type)
 end
 
 function flow_callback_enemy_gib(params)

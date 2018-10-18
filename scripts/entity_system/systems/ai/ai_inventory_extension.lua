@@ -86,6 +86,10 @@ AIInventoryExtension._setup_configuration = function (self, unit, start_n, inven
 			self.inventory_item_helmet_unit = item_unit
 		end
 
+		if script_data.ai_debug_inventory then
+			printf("[AIInventorySystem] unit[%s] wielding item[%s] of category[%s] in slot[%d]", tostring(unit), item_unit_name, item_category_name, i)
+		end
+
 		if item.weak_spot and self.is_server then
 			self.inventory_weak_spot = item.weak_spot
 		end
@@ -155,24 +159,19 @@ end
 
 AIInventoryExtension.destroy = function (self)
 	local unit_spawner = Managers.state.unit_spawner
-	local world = self.world
 	local inventory_items_n = self.inventory_items_n
-	local inventory_item_units = self.inventory_item_units
-	local dropped_items = self.dropped_items
 
 	for i = 1, inventory_items_n, 1 do
-		local item_unit = inventory_item_units[i]
-
-		unit_spawner:mark_for_deletion(item_unit)
+		unit_spawner:mark_for_deletion(self.inventory_item_units[i])
 		self:destroy_dropped_items(i)
 	end
 
 	for i = 1, #self.gib_items, 1 do
-		World.destroy_unit(world, self.gib_items[i])
+		unit_spawner:mark_for_deletion(self.gib_items[i])
 	end
 
 	for i = 1, #self.stump_items, 1 do
-		World.destroy_unit(world, self.stump_items[i])
+		unit_spawner:mark_for_deletion(self.stump_items[i])
 	end
 end
 
@@ -224,13 +223,13 @@ AIInventoryExtension.freeze = function (self)
 	local stump_items = self.stump_items
 
 	for i = 1, #gib_items, 1 do
-		World.destroy_unit(world, gib_items[i])
+		unit_spawner:mark_for_deletion(self.gib_items[i])
 
 		gib_items[i] = nil
 	end
 
 	for i = 1, #stump_items, 1 do
-		World.destroy_unit(world, stump_items[i])
+		unit_spawner:mark_for_deletion(self.stump_items[i])
 
 		stump_items[i] = nil
 	end
@@ -408,6 +407,10 @@ AIInventoryExtension.unwield_set = function (self, item_set_index)
 			local item_unit = self.inventory_item_units[j]
 
 			link_unit(unwielded, self.world, item_unit, self.unit)
+
+			if script_data.ai_debug_inventory then
+				printf("[AIInventorySystem] unit[%s] unwielding %s", tostring(unit), tostring(item_unit))
+			end
 		end
 	end
 end

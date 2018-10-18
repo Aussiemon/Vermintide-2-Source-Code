@@ -468,12 +468,18 @@ InputManager.map_device_to_service = function (self, input_service_name, input_d
 end
 
 InputManager.update = function (self, dt, t)
+	Profiler.start("InputManager")
+
 	InputAux.default_values_for_types.Vector3 = Vector3.zero()
 	self._hovering = self._frame_hovering
 	self._frame_hovering = false
 	self._showing_tooltip = false
 
+	Profiler.start("device_updates")
 	self:update_devices(dt, t)
+	Profiler.stop("device_updates")
+	InputDebugger:finalize_update(self.input_services, dt, t)
+	Profiler.stop("InputManager")
 end
 
 InputManager.update_devices = function (self, dt, t)
@@ -483,6 +489,8 @@ InputManager.update_devices = function (self, dt, t)
 	self.any_device_input_axis_moved = nil
 
 	for input_device, device_data in pairs(input_devices) do
+		InputDebugger:pre_update_device(input_device, device_data, dt)
+
 		local pressed = device_data.pressed
 		local held = device_data.held
 		local soft_button = device_data.soft_button
@@ -530,6 +538,8 @@ InputManager.update_devices = function (self, dt, t)
 				any_device_input_axis_moved = true
 			end
 		end
+
+		InputDebugger:post_update_device(input_device, device_data, dt)
 
 		if any_pressed then
 			self.any_device_input_pressed = true

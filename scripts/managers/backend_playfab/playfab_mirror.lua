@@ -3,6 +3,19 @@ require("scripts/managers/backend_playfab/playfab_request_queue")
 REDUCTION_INTERVAL = 80
 DELAY_MULTIPLIER = 5
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
+
+local function guid()
+	if PLATFORM == "ps4" then
+		local pattern = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+
+		return string.gsub(pattern, "x", function (c)
+			return string.format("%x", math.random(0, 15))
+		end)
+	else
+		return Application.guid()
+	end
+end
+
 PlayFabMirror = class(PlayFabMirror)
 
 PlayFabMirror.init = function (self, signin_result)
@@ -14,6 +27,7 @@ PlayFabMirror.init = function (self, signin_result)
 	self._queued_commit = {}
 	self._request_queue = PlayFabRequestQueue:new()
 	self._quest_data = {}
+	self._fake_inventory_items = {}
 	self._best_power_levels = nil
 	self.sum_best_power_levels = nil
 	local info_result_payload = signin_result.InfoResultPayload
@@ -89,6 +103,22 @@ PlayFabMirror._parse_claimed_achievements = function (self, read_only_data_value
 	end
 
 	return claimed_achievements
+end
+
+PlayFabMirror._parse_unlocked_weapon_skins = function (self, unlocked_weapon_skins_string)
+	local unlocked_weapon_skins = {}
+
+	if unlocked_weapon_skins_string then
+		local decoded = cjson.decode(unlocked_weapon_skins_string)
+
+		if decoded then
+			for i = 1, #decoded, 1 do
+				unlocked_weapon_skins[decoded[i]] = true
+			end
+		end
+	end
+
+	return unlocked_weapon_skins
 end
 
 PlayFabMirror._parse_claimed_console_dlc_rewards = function (self, read_only_data_values)
@@ -242,7 +272,6 @@ end
 
 PlayFabMirror._request_quests = function (self)
 	local request = {
-		SpecificRevision = 49,
 		FunctionName = "getQuests",
 		FunctionParameter = {}
 	}
@@ -287,6 +316,51 @@ end
 PlayFabMirror.fix_inventory_data_1_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
 
+	self:_request_fix_inventory_data_2()
+end
+
+PlayFabMirror._request_fix_inventory_data_2 = function (self)
+	local request = {
+		FunctionName = "fixInventoryData2",
+		FunctionParameter = {}
+	}
+	local request_cb = callback(self, "fix_inventory_data_2_request_cb")
+
+	PlayFabClientApi.ExecuteCloudScript(request, request_cb)
+
+	self._num_items_to_load = self._num_items_to_load + 1
+end
+
+PlayFabMirror.fix_inventory_data_2_request_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+
+	self:_request_unlocked_weapon_skins()
+end
+
+PlayFabMirror._request_unlocked_weapon_skins = function (self)
+	local request = {}
+	local unlocked_weapon_skins_request_cb = callback(self, "unlocked_weapon_skins_request_cb")
+	local request = {
+		Keys = {
+			"unlocked_weapon_skins"
+		}
+	}
+
+	PlayFabClientApi.GetUserReadOnlyData(request, unlocked_weapon_skins_request_cb)
+
+	self._num_items_to_load = self._num_items_to_load + 1
+end
+
+PlayFabMirror.unlocked_weapon_skins_request_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+	local unlocked_weapon_skins = {}
+
+	if result.Data.unlocked_weapon_skins and result.Data.unlocked_weapon_skins.Value then
+		unlocked_weapon_skins = self:_parse_unlocked_weapon_skins(result.Data.unlocked_weapon_skins.Value)
+	end
+
+	self._unlocked_weapon_skins = unlocked_weapon_skins
+
 	self:_request_user_inventory()
 end
 
@@ -317,10 +391,15 @@ PlayFabMirror.inventory_request_cb = function (self, result)
 
 			self:_update_data(item, backend_id)
 
-			self._inventory_items[backend_id] = item
+			if item.data.item_type ~= "weapon_skin" then
+				self._inventory_items[backend_id] = item
+			end
 		end
 	end
 
+	local unlocked_weapon_skins = self:get_unlocked_weapon_skins()
+
+	self:_create_fake_inventory_items(unlocked_weapon_skins)
 	self:_request_all_users_characters()
 end
 
@@ -742,6 +821,10 @@ PlayFabMirror.get_all_inventory_items = function (self)
 	return self._inventory_items
 end
 
+PlayFabMirror.get_all_fake_inventory_items = function (self)
+	return self._fake_inventory_items
+end
+
 PlayFabMirror.get_stats = function (self)
 	return self._stats
 end
@@ -752,6 +835,47 @@ end
 
 PlayFabMirror.get_claimed_achievements = function (self)
 	return self._claimed_achievements
+end
+
+PlayFabMirror.get_unlocked_weapon_skins = function (self)
+	return self._unlocked_weapon_skins
+end
+
+local new_fake_inventory_items = {}
+
+PlayFabMirror._create_fake_inventory_items = function (self, unlocked_weapon_skins)
+	table.clear(new_fake_inventory_items)
+
+	for skin_name, unlocked in pairs(unlocked_weapon_skins) do
+		local item_key, rarity = WeaponSkins.matching_weapon_skin_item_key(skin_name)
+
+		if item_key and rarity then
+			if rarity == "bogenhafen" then
+				rarity = "unique"
+			end
+
+			local fake_item = {
+				ItemId = item_key,
+				ItemInstanceId = guid(),
+				CustomData = {
+					skin = skin_name,
+					rarity = rarity
+				}
+			}
+
+			table.insert(new_fake_inventory_items, fake_item)
+		end
+	end
+
+	for i = 1, #new_fake_inventory_items, 1 do
+		local fake_item = new_fake_inventory_items[i]
+		local backend_id = fake_item.ItemInstanceId
+
+		self:_update_data(fake_item, backend_id)
+
+		self._inventory_items[backend_id] = fake_item
+		self._fake_inventory_items[backend_id] = fake_item
+	end
 end
 
 PlayFabMirror.set_achievement_claimed = function (self, achievement_id)
@@ -853,6 +977,16 @@ PlayFabMirror.update_item = function (self, backend_id, new_item)
 	local item = inventory_items[backend_id]
 
 	self:_update_data(item, backend_id)
+end
+
+PlayFabMirror.add_unlocked_weapon_skin = function (self, weapon_skin)
+	if self._unlocked_weapon_skins then
+		self._unlocked_weapon_skins[weapon_skin] = true
+
+		self:_create_fake_inventory_items({
+			[weapon_skin] = true
+		})
+	end
 end
 
 PlayFabMirror.commit = function (self, skip_queue, commit_complete_callback)

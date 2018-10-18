@@ -78,9 +78,15 @@ PlayerCharacterStateCatapulted.update = function (self, unit, input, dt, context
 	if position_lookup[unit].z < -240 then
 		print("Player has fallen outside the world -- kill meeeee ", position_lookup[unit].z)
 
-		local go_id = self.unit_storage:go_id(unit)
+		if self.is_server then
+			local health_system = Managers.state.entity:system("health_system")
 
-		self.network_transmit:send_rpc_server("rpc_suicide", go_id)
+			health_system:suicide(unit)
+		else
+			local go_id = self.unit_storage:go_id(unit)
+
+			self.network_transmit:send_rpc_server("rpc_suicide", go_id)
+		end
 	end
 
 	if CharacterStateHelper.is_ledge_hanging(world, unit, self.temp_params) then

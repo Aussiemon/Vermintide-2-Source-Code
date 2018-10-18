@@ -531,11 +531,19 @@ local generic_input_actions = {
 		}
 	}
 }
+local video_resources = {}
+
+for area_name, settings in pairs(AreaSettings) do
+	local video_settings = settings.video_settings
+	video_resources[area_name] = video_settings
+end
+
 local MAX_ACTIVE_WINDOWS = 5
 
 return {
 	max_active_windows = MAX_ACTIVE_WINDOWS,
 	windows = windows,
 	window_layouts = window_layouts,
-	generic_input_actions = generic_input_actions
+	generic_input_actions = generic_input_actions,
+	video_resources = video_resources
 }

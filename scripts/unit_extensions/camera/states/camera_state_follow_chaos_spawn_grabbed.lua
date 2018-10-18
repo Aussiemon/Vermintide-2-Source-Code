@@ -39,9 +39,10 @@ CameraStateFollowChaosSpawnGrabbed.update = function (self, unit, input, dt, con
 	end
 
 	local external_state_change = camera_extension.external_state_change
+	local external_state_change_params = camera_extension.external_state_change_params
 
 	if external_state_change and external_state_change ~= self.name then
-		csm:change_state(external_state_change)
+		csm:change_state(external_state_change, external_state_change_params)
 		camera_extension:set_external_state_change(nil)
 
 		return

@@ -50,17 +50,21 @@ if PLATFORM == "ps4" then
 					disable_when_matchmaking = true
 				},
 				{
-					display_name = "interact_open_inventory_chest",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "overview",
-					transition = "hero_view_force"
-				},
-				{
 					fade = true,
 					transition = "options_menu",
 					display_name = "options_menu_button_name",
 					disable_when_matchmaking_ready = true
+				},
+				{
+					fade = true,
+					transition = "console_friends_menu",
+					display_name = "console_friends_menu_button_name",
+					disable_when_matchmaking_ready = true
+				},
+				{
+					fade = false,
+					transition = "leave_group_hero_view",
+					display_name = "leave_game_menu_button_name"
 				},
 				{
 					fade = false,
@@ -83,16 +87,15 @@ if PLATFORM == "ps4" then
 					disable_when_matchmaking = true
 				},
 				{
-					display_name = "interact_open_inventory_chest",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "overview",
-					transition = "hero_view_force"
-				},
-				{
 					fade = true,
 					transition = "options_menu",
 					display_name = "options_menu_button_name",
+					disable_when_matchmaking_ready = true
+				},
+				{
+					fade = true,
+					transition = "console_friends_menu",
+					display_name = "console_friends_menu_button_name",
 					disable_when_matchmaking_ready = true
 				},
 				{
@@ -121,16 +124,15 @@ if PLATFORM == "ps4" then
 					disable_when_matchmaking = true
 				},
 				{
-					display_name = "interact_open_inventory_chest",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "overview",
-					transition = "hero_view_force"
-				},
-				{
 					fade = true,
 					transition = "options_menu",
 					display_name = "options_menu_button_name",
+					disable_when_matchmaking_ready = true
+				},
+				{
+					fade = true,
+					transition = "console_friends_menu",
+					display_name = "console_friends_menu_button_name",
 					disable_when_matchmaking_ready = true
 				},
 				{
@@ -204,6 +206,12 @@ if PLATFORM == "ps4" then
 					disable_when_matchmaking_ready = true
 				},
 				{
+					fade = true,
+					transition = "console_friends_menu",
+					display_name = "console_friends_menu_button_name",
+					disable_when_matchmaking_ready = true
+				},
+				{
 					fade = false,
 					transition = "leave_group_hero_view",
 					display_name = "leave_game_menu_button_name"
@@ -227,6 +235,12 @@ if PLATFORM == "ps4" then
 					disable_when_matchmaking_ready = true
 				},
 				{
+					fade = true,
+					transition = "console_friends_menu",
+					display_name = "console_friends_menu_button_name",
+					disable_when_matchmaking_ready = true
+				},
+				{
 					fade = false,
 					transition = "leave_group_hero_view",
 					display_name = disband_party_button_text
@@ -247,6 +261,12 @@ if PLATFORM == "ps4" then
 					fade = true,
 					transition = "options_menu",
 					display_name = "options_menu_button_name",
+					disable_when_matchmaking_ready = true
+				},
+				{
+					fade = true,
+					transition = "console_friends_menu",
+					display_name = "console_friends_menu_button_name",
 					disable_when_matchmaking_ready = true
 				},
 				{
@@ -904,12 +924,6 @@ local full_access_layout = {
 		fade = true,
 		transition_state = "achievements",
 		transition = "hero_view"
-	},
-	{
-		fade = false,
-		transition = "keep_decoration_view",
-		display_name = "keep_decoration_view",
-		requires_player_unit = true
 	},
 	{
 		fade = false,

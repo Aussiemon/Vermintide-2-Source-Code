@@ -42,21 +42,6 @@ ActionCareerDRRanger._create_smoke_screen = function (self)
 		network_transmit:send_rpc_server("rpc_request_heal", unit_id, 20, heal_type_id)
 	end
 
-	local unit_spawner = Managers.state.unit_spawner
-	local unit_name = "units/hub_elements/empty"
-	local unit_template_name = "buff_aoe_unit"
-	local explosion_template_name = (has_extended_duration_talent and "bardin_ranger_activated_ability_upgraded_stagger") or "bardin_ranger_activated_ability_stagger"
-	local explosion_template = ExplosionTemplates[explosion_template_name]
-	local extension_init_data = {
-		buff_area_system = {
-			removal_proc_function_name = "end_ranger_activated_ability",
-			life_time = (has_extended_duration_talent and 14) or 10,
-			radius = explosion_template.explosion.radius,
-			owner_player = self.owner_player
-		}
-	}
-	local unit, unit_go_id = unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, POSITION_LOOKUP[owner_unit], Quaternion.identity(), nil)
-
 	buff_extension:add_buff(buff_name, {
 		attacker_unit = owner_unit
 	})

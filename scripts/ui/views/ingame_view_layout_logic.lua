@@ -132,11 +132,15 @@ IngameViewLayoutLogic.execute_layout_option = function (self, index)
 			local transition_state = data.transition_state
 			local transition_sub_state = data.transition_sub_state
 			local fade = data.fade
+			local transition_params = {
+				menu_state_name = transition_state,
+				menu_sub_state_name = transition_sub_state
+			}
 
 			if fade then
-				ingame_ui:transition_with_fade(transition, transition_state, transition_sub_state)
+				ingame_ui:transition_with_fade(transition, transition_params)
 			else
-				ingame_ui:handle_transition(transition, transition_state, transition_sub_state)
+				ingame_ui:handle_transition(transition, transition_params)
 			end
 		end
 	end

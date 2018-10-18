@@ -423,7 +423,9 @@ BTStormVerminAttackAction.catapult_enemies = function (unit, blackboard)
 		local action = blackboard.action
 
 		for target_unit, blocked in pairs(list) do
-			catapult_enemy_func(unit, blackboard, action, target_unit, blocked)
+			if Unit.alive(target_unit) then
+				catapult_enemy_func(unit, blackboard, action, target_unit, blocked)
+			end
 
 			list[target_unit] = nil
 		end

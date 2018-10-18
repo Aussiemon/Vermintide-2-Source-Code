@@ -179,6 +179,8 @@ local vector3_distance_squared = Vector3.distance_squared
 local unit_local_position = Unit.local_position
 
 ActionBulletSpray._select_targets = function (self, world, show_outline)
+	Profiler.start("bullet select targets")
+
 	local physics_world = World.get_data(world, "physics_world")
 	local owner_unit_1p = self.owner_unit_first_person
 	local player_position = POSITION_LOOKUP[owner_unit_1p]
@@ -202,6 +204,7 @@ ActionBulletSpray._select_targets = function (self, world, show_outline)
 
 	local result = PhysicsWorld.linear_sphere_sweep(physics_world, start_point, end_point, SPRAY_RADIUS, 100, "collision_filter", "filter_character_trigger", "report_initial_overlap")
 
+	Profiler.start("bullet spray sort")
 	table.sort(result, function (a, b)
 		local a_unit = actor_unit(a.actor)
 		local b_unit = actor_unit(b.actor)
@@ -212,6 +215,7 @@ ActionBulletSpray._select_targets = function (self, world, show_outline)
 
 		return a_distance < b_distance
 	end)
+	Profiler.stop("bullet spray sort")
 
 	if result then
 		local num_hits = #result
@@ -254,6 +258,8 @@ ActionBulletSpray._select_targets = function (self, world, show_outline)
 	end
 
 	self.shot = true
+
+	Profiler.stop("bullet select targets")
 end
 
 ActionBulletSpray._check_within_cone = function (self, player_position, player_direction, target, player)

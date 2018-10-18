@@ -58,6 +58,13 @@ AIGroupTemplates.spline_patrol = {
 		GwNavTagLayerCostTable.destroy(nav_data.navtag_layer_cost_table)
 		GwNavCostMap.destroy_tag_cost_table(nav_data.nav_cost_map_cost_table)
 		GwNavTraverseLogic.destroy(nav_data.traverse_logic)
+
+		if script_data.debug_patrols then
+			Managers.state.debug:drawer({
+				mode = "retained",
+				name = "storm_vermin_patrol_targeting_retained"
+			}):reset()
+		end
 	end,
 	update = function (world, nav_world, group, t, dt)
 		remove_dead_units(group)
@@ -81,12 +88,24 @@ AIGroupTemplates.spline_patrol = {
 				return
 			end
 
+			Profiler.start("update spline anchor points")
 			update_spline_anchor_points(nav_world, group, dt)
+			Profiler.stop("update spline anchor points")
+			Profiler.start("update anchor direction")
 			update_anchor_direction(nav_world, group, dt)
+			Profiler.stop("update anchor direction")
+			Profiler.start("update anchor positions")
 			update_anchor_positions(nav_world, group)
+			Profiler.stop("update anchor positions")
+			Profiler.start("update units")
 			update_units(nav_world, group, t, dt)
+			Profiler.stop("update units")
+			Profiler.start("update animation triggers")
 			update_animation_triggered_sounds(group, t)
+			Profiler.stop("update animation triggers")
+			Profiler.start("update prepare for combat")
 			check_prepare_for_combat(group, t)
+			Profiler.stop("update prepare for combat")
 		elseif state == "opening_door" then
 			update_state_opening_door(group)
 		elseif state == "controlled_advance" then
@@ -294,6 +313,20 @@ function find_position_on_navmesh(nav_world, position, origin_position, check1_u
 		end
 	end
 
+	if script_data.debug_patrols then
+		if success then
+			QuickDrawer:sphere(found_position, 0.1, Colors.get("green"))
+			QuickDrawer:line(found_position, origin_position, Colors.get("green"))
+		elseif found_position == origin_position then
+			QuickDrawer:sphere(found_position, 0.1, Colors.get("red"))
+		else
+			QuickDrawer:sphere(found_position, 0.1, Colors.get("yellow"))
+			QuickDrawer:line(found_position, origin_position, Colors.get("yellow"))
+		end
+
+		QuickDrawer:sphere(position, 0.05, Colors.get("orange"))
+	end
+
 	return found_position
 end
 
@@ -303,6 +336,7 @@ function change_path_direction(group)
 	local new_direction = (current_direction == "reversed" and "forward") or "reversed"
 
 	set_path_direction(group, new_direction, current_direction)
+	debug_print("[Patrol] Changed path direction at spline_index:", group.anchors[1].spline:movement():current_spline_index(), "New direction:", new_direction)
 end
 
 local function find_patrol_spline(world, group)
@@ -515,6 +549,19 @@ function init_group(nav_world, group, world, t)
 
 			navigation_extension:allow_layer("planks", false)
 			GwNavTagLayerCostTable.forbid_layer(group.nav_data.navtag_layer_cost_table, LAYER_ID_MAPPING.planks)
+
+			local use_patrol_perception = group_extension.use_patrol_perception
+
+			if use_patrol_perception then
+				local ai_extension = ScriptUnit.extension(unit, "ai_system")
+				local breed = blackboard.breed
+				local perception_func_name = breed.patrol_passive_perception
+				local target_selection_func_name = breed.patrol_passive_target_selection
+
+				fassert(perception_func_name, "Missing patrol passive perception!")
+				fassert(target_selection_func_name, "Missing patrol passive target selection!")
+				ai_extension:set_perception(perception_func_name, target_selection_func_name)
+			end
 		end
 	end
 
@@ -586,6 +633,16 @@ function set_path_direction(group, direction, current_direction)
 end
 
 function enter_state_forming(nav_world, group, set_forming_positions_function)
+	if script_data.debug_patrols then
+		local drawer = Managers.state.debug:drawer({
+			mode = "retained",
+			name = "patrol_retained"
+		})
+
+		drawer:reset()
+		Managers.state.debug_text:clear_world_text("patrol_world_text")
+	end
+
 	set_state(group, "forming")
 
 	local nav_data = group.nav_data
@@ -596,6 +653,19 @@ function enter_state_forming(nav_world, group, set_forming_positions_function)
 	local success, altitude = GwNavQueries_triangle_from_position(nav_world, goal_destination, above, below)
 
 	if not success then
+		debug_print("[Patrol] WARNING: Spawned patrol with invalid path marker in level")
+		Debug.sticky_text("WARNING: Spawned patrol with invalid path marker in level")
+
+		if script_data.debug_patrols then
+			local drawer = Managers.state.debug:drawer({
+				mode = "retained",
+				name = "patrol_retained"
+			})
+
+			drawer:sphere(goal_destination, 0.5, Colors.get("yellow"))
+			drawer:sphere(goal_destination, 0.4, Colors.get("red"))
+		end
+
 		return
 	end
 
@@ -613,6 +683,16 @@ function enter_state_forming(nav_world, group, set_forming_positions_function)
 
 		blackboard.goal_destination = nil
 		blackboard.stored_goal_destination = Vector3Box(goal_destination)
+
+		if script_data.debug_patrols then
+			local drawer = Managers.state.debug:drawer({
+				mode = "retained",
+				name = "patrol_retained"
+			})
+
+			drawer:sphere(goal_destination, 0.5, Colors.get("yellow"))
+			drawer:sphere(goal_destination, 0.4, Colors.get("green"))
+		end
 	end
 
 	if set_forming_positions_function then
@@ -627,6 +707,10 @@ function enter_state_forming(nav_world, group, set_forming_positions_function)
 
 	play_sound(group, "FORMATE")
 	play_sound(group, "FORMING")
+
+	if script_data.debug_patrols then
+		debug_draw_formation(group)
+	end
 end
 
 function debug_draw_formation(group)
@@ -723,6 +807,8 @@ function set_forming_positions(nav_world, group, target_node_index)
 	local invalid_path = num_anchors > num_points
 
 	if invalid_path then
+		debug_print("[Patrol] Failed finding forming positions around node index", target_node_index)
+
 		return false, false
 	else
 		table.reverse(points)
@@ -973,7 +1059,17 @@ function update_spline_anchor_points(nav_world, group, dt)
 					end
 				end
 			end
+
+			if script_data.debug_patrols then
+				QuickDrawer:sphere(position, 0.1, Colors.get("cadet_blue"))
+			end
 		until true
+	end
+
+	if script_data.debug_patrols then
+		local main_spline = anchors[1].spline
+
+		main_spline:draw(10, QuickDrawer, 1, Colors.get("blue"))
 	end
 
 	if ((current_direction == "forward" and main_spline_status == "end") or (current_direction == "reversed" and main_spline_status == "start")) and not despawn_at_end and not is_circular_spline then
@@ -1123,6 +1219,13 @@ function update_anchor_direction(nav_world, group, dt)
 		end
 
 		current_direction:store(face_dir)
+
+		if script_data.debug_patrols then
+			local anchor_position_on_path = anchor.point:unbox()
+
+			QuickDrawer:vector(anchor_position_on_path + Vector3.up() * 0.25, Vector3.normalize(wanted_face_dir) * 2, Colors.get("sea_green"))
+			QuickDrawer:vector(anchor_position_on_path + Vector3.up() * 0.3, Vector3.normalize(face_dir) * 2.5, Colors.get("purple"))
+		end
 
 		local anchor_units = anchor.units
 
@@ -1447,6 +1550,8 @@ function enter_state_combat(group, t)
 		local anchor = anchors[i]
 		local target_unit = anchor.target_unit
 
+		debug_print("enter_state_combat", i, target_unit, "alive:", AiUtils.unit_alive(target_unit))
+
 		if AiUtils.unit_alive(target_unit) then
 			local anchor_units = anchor.units
 
@@ -1457,6 +1562,7 @@ function enter_state_combat(group, t)
 				blackboard.target_unit_found_time = t
 
 				AiUtils.activate_unit(blackboard)
+				debug_print("\tactivated", j)
 
 				if blackboard.breed.use_navigation_path_splines then
 					GwNavBot.set_use_channel(blackboard.navigation_extension._nav_bot, true)

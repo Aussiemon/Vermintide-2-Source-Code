@@ -274,9 +274,13 @@ BTStormfiendDualShootAction._shoot_ratling_gun = function (self, unit, blackboar
 		afro_hit_sound = light_weight_projectile_template.afro_hit_sound,
 		player_push_velocity = Vector3Box(normalized_direction * light_weight_projectile_template.impact_push_speed)
 	}
+
+	Profiler.start("create_light_weight_projectile")
+
 	local projectile_system = Managers.state.entity:system("projectile_system")
 
 	projectile_system:create_light_weight_projectile(Unit.get_data(unit, "breed").name, unit, from_position, spread_direction, light_weight_projectile_template.projectile_speed, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_particle_effect)
+	Profiler.stop("create_light_weight_projectile")
 end
 
 BTStormfiendDualShootAction.anim_cb_attack_fire = function (self, unit, blackboard)

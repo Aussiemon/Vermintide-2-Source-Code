@@ -3958,29 +3958,35 @@ end
 OptionsView.cb_enabled_gamepad_hud_layout_setup = function (self)
 	local options = {
 		{
-			value = false,
-			text = Localize("menu_settings_off")
+			value = "auto",
+			text = Localize("map_host_option_1")
 		},
 		{
-			value = true,
-			text = Localize("menu_settings_on")
+			value = "always",
+			text = Localize("map_host_option_2")
+		},
+		{
+			value = "never",
+			text = Localize("map_host_option_3")
 		}
 	}
 
 	if not Application.user_setting("use_gamepad_hud_layout") then
-		local use_gamepad_hud_layout = false
+		local use_gamepad_hud_layout = "auto"
 	end
 
-	if use_gamepad_hud_layout then
-		slot3 = 2
-	else
-		local selection = 1
-	end
+	local selection = 1
+	local default_value = 1
+	local default_setting = DefaultUserSettings.get("user_settings", "use_gamepad_hud_layout")
 
-	if DefaultUserSettings.get("user_settings", "use_gamepad_hud_layout") then
-		slot4 = 2
-	else
-		local default_value = 1
+	for idx, option in ipairs(options) do
+		if use_gamepad_hud_layout == option.value and not idx then
+			selection = selection
+		end
+
+		if default_setting == option.value and not idx then
+			default_value = default_value
+		end
 	end
 
 	return selection, options, "settings_menu_enabled_gamepad_hud_layout", default_value
@@ -3988,15 +3994,15 @@ end
 
 OptionsView.cb_enabled_gamepad_hud_layout_saved_value = function (self, widget)
 	local use_gamepad_hud_layout = assigned(self.changed_user_settings.use_gamepad_hud_layout, Application.user_setting("use_gamepad_hud_layout"))
-	slot3 = widget.content
+	local options_values = widget.content.options_values
 
-	if use_gamepad_hud_layout then
-		slot4 = 2
-	else
-		slot4 = 1
+	for idx, option_value in ipairs(options_values) do
+		if use_gamepad_hud_layout == option_value then
+			widget.content.current_selection = idx
+
+			break
+		end
 	end
-
-	slot3.current_selection = slot4
 end
 
 OptionsView.cb_enabled_gamepad_hud_layout = function (self, content)

@@ -208,13 +208,23 @@ BackendInterfaceCraftingBase.weapon_skin_application_validation_func = function 
 		if table.find(CraftingData.weapon_skin_slot_types, item_slot_type) then
 			skin_name = item.skin
 			valid_item_ids[#valid_item_ids + 1] = {
-				amount = 1,
-				backend_id = backend_id
+				skin_name = skin_name
 			}
+		end
+
+		if item_slot_type == "crafting_material" then
+			for _, ingredient in ipairs(ingredients) do
+				if ingredient.name and ingredient.amount and ingredient.name == item.ItemId then
+					valid_item_ids[#valid_item_ids + 1] = {
+						backend_id = backend_id,
+						amount = ingredient.amount
+					}
+				end
+			end
 		end
 	end
 
-	if #valid_item_ids ~= 2 then
+	if #valid_item_ids ~= 3 then
 		return false
 	end
 

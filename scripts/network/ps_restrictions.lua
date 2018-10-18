@@ -59,12 +59,12 @@ PSRestrictions._fetch_next_restriction_access = function (self, user_id)
 	local user = self._current_users[user_id]
 	local restrictions = user.restrictions
 	local _, restriction = next(restrictions)
-	local np_id = PS4.np_id(user_id)
+	local signed_in = PS4.signed_in(user_id)
 	local start_func = start_funcs[restriction]
 	local callback_name = callbacks[restriction]
 
-	if np_id then
-		local token = self[start_func](self, user_id, np_id)
+	if signed_in then
+		local token = self[start_func](self, user_id)
 		local script_token = ScriptPSRestrictionToken:new(token)
 
 		Managers.token:register_token(script_token, callback(self, callback_name, user_id, restriction))
@@ -142,16 +142,16 @@ PSRestrictions._try_fetch_next_restriction_access = function (self, user_id)
 	end
 end
 
-PSRestrictions._playstation_plus_start = function (self, user_id, np_id)
+PSRestrictions._playstation_plus_start = function (self, user_id)
 	return NpCheck.check_plus(user_id, NpCheck.REALTIME_MULTIPLAY)
 end
 
-PSRestrictions._network_availability_start = function (self, user_id, np_id)
-	return NpCheck.check_availability(np_id)
+PSRestrictions._network_availability_start = function (self, user_id)
+	return NpCheck.check_availability(user_id)
 end
 
-PSRestrictions._parental_control_start = function (self, user_id, np_id)
-	return NpCheck.parental_control_info(np_id)
+PSRestrictions._parental_control_start = function (self, user_id)
+	return NpCheck.parental_control_info(user_id)
 end
 
 PSRestrictions.cb_network_availability = function (self, user_id, restriction, info)

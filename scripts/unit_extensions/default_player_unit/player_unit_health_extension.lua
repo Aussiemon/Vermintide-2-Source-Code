@@ -94,7 +94,7 @@ PlayerUnitHealthExtension.sync_health_state = function (self)
 		self.set_temporary_health_percentage = temporary_health_percentage
 
 		if health_state == "knocked_down" then
-			self:_knock_down(self.unit)
+			self:knock_down(self.unit)
 		end
 	end
 end
@@ -160,7 +160,7 @@ PlayerUnitHealthExtension.extensions_ready = function (self, world, unit)
 	end
 end
 
-PlayerUnitHealthExtension._knock_down = function (self, unit)
+PlayerUnitHealthExtension.knock_down = function (self, unit)
 	self.state = "knocked_down"
 
 	StatusUtils.set_knocked_down_network(unit, true)
@@ -176,6 +176,8 @@ PlayerUnitHealthExtension._revive = function (self, unit, t)
 end
 
 PlayerUnitHealthExtension.update = function (self, dt, context, t)
+	Profiler.start("PlayerUnitHealthExtension")
+
 	local status_extension = self.status_extension
 	local game_object_id = self.health_game_object_id
 	local unit = self.unit
@@ -189,7 +191,7 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 	if self.is_server then
 		if self.state == "alive" then
 			if not self:_is_alive() and not status_extension:is_knocked_down() then
-				self:_knock_down(unit)
+				self:knock_down(unit)
 			end
 		elseif self.state == "knocked_down" and self:_is_alive() and status_extension:is_revived() then
 			self:_revive(unit, t)
@@ -270,6 +272,12 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 		self.previous_state = state
 		self.previous_max_health = max_health
 	end
+
+	Profiler.stop("PlayerUnitHealthExtension")
+
+	if script_data.show_player_health then
+		self:debug_show_health()
+	end
 end
 
 local FORCED_PERMANENT_DAMAGE_TYPES = {}
@@ -298,7 +306,7 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 	fassert(damage_type, "No damage_type!")
 
 	local unit = self.unit
-	local damage_table = PlayerUnitHealthExtension.super._add_to_damage_history_buffer(self, unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
+	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
 
 	if damage_type ~= "temporary_health_degen" then
 		StatisticsUtil.register_damage(unit, damage_table, self.statistics_db)
@@ -438,34 +446,36 @@ PlayerUnitHealthExtension.die = function (self, damage_type)
 	damage_type = damage_type or "undefined"
 	local unit = self.unit
 
-	if damage_type == "volume_insta_kill" then
-		self:_knock_down(unit)
-	end
-
 	if self.is_bot and damage_type == "volume_insta_kill" then
 		local blackboard = BLACKBOARDS[unit]
+		local nav_world = blackboard.nav_world
+		local num_player_positions = #PLAYER_POSITIONS
 
-		for _, player_pos in ipairs(PLAYER_POSITIONS) do
-			local pos = LocomotionUtils.new_random_goal_uniformly_distributed(blackboard.nav_world, nil, player_pos, 2, 5, 5)
+		for i = 1, num_player_positions, 1 do
+			local player_position = PLAYER_POSITIONS[i]
+			local position = LocomotionUtils.new_random_goal_uniformly_distributed(nav_world, nil, player_position, 2, 5, 5)
 
-			if pos then
-				local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
-
-				locomotion_extension:teleport_to(pos)
-				ScriptUnit.extension(unit, "ai_navigation_system"):teleport(pos)
-				ScriptUnit.extension(unit, "ai_system"):clear_failed_paths()
+			if position then
+				blackboard.locomotion_extension:teleport_to(position)
+				blackboard.navigation_extension:teleport(position)
+				blackboard.ai_extension:clear_failed_paths()
 
 				return
 			end
 		end
 	end
 
-	local damage_amount = NetworkConstants.damage.max
-	local hit_zone_name = "full"
-	local hit_position = Unit.world_position(unit, 0)
-	local damage_direction = Vector3.up()
+	if self.state ~= "dead" then
+		local game = self.game
+		local game_object_id = self.health_game_object_id
 
-	self:add_damage(unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction)
+		GameSession.set_game_object_field(game, game_object_id, "current_health", 0)
+		GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", 0)
+
+		local death_system = Managers.state.entity:system("death_system")
+
+		death_system:forced_kill(unit, damage_type)
+	end
 end
 
 PlayerUnitHealthExtension.destroy = function (self)

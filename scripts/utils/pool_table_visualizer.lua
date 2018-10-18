@@ -27,6 +27,8 @@ PoolTableVisualizer.render = function (t)
 		return
 	end
 
+	Profiler.start("PoolTableVisualizer")
+
 	local table_height = 2
 	local key_color = Color(250, 255, 120, 0)
 	local error_color = Color(250, 0, 0, 0)
@@ -99,6 +101,8 @@ PoolTableVisualizer.render = function (t)
 		pos.x = pos.x + total_width + 10
 		pos.y = start_y
 	end
+
+	Profiler.stop("PoolTableVisualizer")
 end
 
 return

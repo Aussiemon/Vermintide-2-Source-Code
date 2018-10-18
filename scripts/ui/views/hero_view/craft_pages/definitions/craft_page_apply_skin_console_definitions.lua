@@ -166,6 +166,20 @@ local scenegraph_definition = {
 			-90,
 			2
 		}
+	},
+	material_text_7 = {
+		vertical_alignment = "top",
+		parent = "craft_bg_root",
+		horizontal_alignment = "center",
+		size = {
+			60,
+			100
+		},
+		position = {
+			0,
+			-90,
+			2
+		}
 	}
 }
 local disable_with_gamepad = true
@@ -186,7 +200,8 @@ local widgets = {
 	material_text_3 = UIWidgets.create_craft_material_widget("material_text_3"),
 	material_text_4 = UIWidgets.create_craft_material_widget("material_text_4"),
 	material_text_5 = UIWidgets.create_craft_material_widget("material_text_5"),
-	material_text_6 = UIWidgets.create_craft_material_widget("material_text_6")
+	material_text_6 = UIWidgets.create_craft_material_widget("material_text_6"),
+	material_text_7 = UIWidgets.create_craft_material_widget("material_text_7")
 }
 local animation_definitions = {
 	on_enter = {

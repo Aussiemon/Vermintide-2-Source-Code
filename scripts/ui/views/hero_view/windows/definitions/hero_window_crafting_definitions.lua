@@ -659,16 +659,6 @@ local input_actions = {
 			}
 		}
 	},
-	extract_weapon_skin = {
-		actions = {
-			{
-				input_action = "y",
-				priority = 3,
-				description_text = "hero_view_crafting_extract_skin",
-				ignore_keybinding = true
-			}
-		}
-	},
 	apply_weapon_skin = {
 		actions = {
 			{

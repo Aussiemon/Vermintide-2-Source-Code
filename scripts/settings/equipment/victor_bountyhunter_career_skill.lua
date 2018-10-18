@@ -3,7 +3,7 @@ weapon_template.actions = {
 	action_career_hold = {
 		default = {
 			anim_end_event = "ability_finished",
-			kind = "dummy",
+			kind = "career_dummy",
 			uninterruptible = true,
 			anim_event = "bounty_hunter_ability_draw",
 			weapon_action_hand = "left",
@@ -46,7 +46,7 @@ weapon_template.actions = {
 		},
 		hold = {
 			anim_end_event = "ability_finished",
-			kind = "dummy",
+			kind = "career_dummy",
 			uninterruptible = true,
 			anim_event = "bounty_hunter_ability_hold",
 			weapon_action_hand = "left",
@@ -133,7 +133,7 @@ weapon_template.actions = {
 	},
 	action_two = {
 		default = {
-			kind = "career_cancel",
+			kind = "career_dummy",
 			weapon_action_hand = "left",
 			anim_end_event = "ability_finished",
 			anim_event = "bounty_hunter_ability_cancel",

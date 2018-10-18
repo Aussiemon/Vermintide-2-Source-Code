@@ -228,6 +228,7 @@ WeaponSystem.update = function (self, context, t)
 	self:update_synced_beam_particle_effects()
 	self:update_synced_geiser_particle_effects(context, t)
 	self:update_synced_flamethrower_particle_effects()
+	self:_update_debug()
 end
 
 local INDEX_POSITION = 1

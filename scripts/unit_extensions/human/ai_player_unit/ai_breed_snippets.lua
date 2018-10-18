@@ -91,6 +91,8 @@ AiBreedSnippets.on_rat_ogre_death = function (unit, blackboard)
 	if blackboard.is_angry then
 		conflict_director:add_angry_boss(-1)
 	end
+
+	AiBreedSnippets.reward_boss_kill_loot_die(unit, blackboard)
 end
 
 AiBreedSnippets.on_rat_ogre_despawn = function (unit, blackboard)
@@ -102,6 +104,10 @@ AiBreedSnippets.on_rat_ogre_despawn = function (unit, blackboard)
 
 	if blackboard.is_angry then
 		conflict_director:add_angry_boss(-1)
+	end
+
+	if not blackboard.rewarded_boss_loot_die then
+		AiBreedSnippets.reward_boss_kill_loot_die(unit, blackboard)
 	end
 end
 
@@ -161,6 +167,8 @@ AiBreedSnippets.on_stormfiend_death = function (unit, blackboard)
 	if blackboard.is_angry then
 		conflict_director:add_angry_boss(-1)
 	end
+
+	AiBreedSnippets.reward_boss_kill_loot_die(unit, blackboard)
 end
 
 AiBreedSnippets.on_stormfiend_despawn = function (unit, blackboard)
@@ -178,6 +186,10 @@ AiBreedSnippets.on_stormfiend_despawn = function (unit, blackboard)
 
 	if blackboard.is_angry then
 		conflict_director:add_angry_boss(-1)
+	end
+
+	if not blackboard.rewarded_boss_loot_die then
+		AiBreedSnippets.reward_boss_kill_loot_die(unit, blackboard)
 	end
 end
 
@@ -313,7 +325,8 @@ AiBreedSnippets.on_chaos_troll_spawn = function (unit, blackboard)
 	blackboard.next_rage_time = 0
 	local breed = blackboard.breed
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-	blackboard.health_regen_per_sec = breed.health_regen_per_sec[difficulty_rank]
+	blackboard.max_health_regen_per_sec = breed.max_health_regen_per_sec[difficulty_rank]
+	blackboard.max_health_regen_time = breed.max_health_regen_time[difficulty_rank]
 	local can_start_angry = true
 
 	if ScriptUnit.has_extension(unit, "ai_group_system") then
@@ -340,6 +353,8 @@ AiBreedSnippets.on_chaos_troll_death = function (unit, blackboard)
 	if blackboard.is_angry then
 		conflict_director:add_angry_boss(-1)
 	end
+
+	AiBreedSnippets.reward_boss_kill_loot_die(unit, blackboard)
 end
 
 AiBreedSnippets.on_chaos_troll_despawn = function (unit, blackboard)
@@ -352,6 +367,10 @@ AiBreedSnippets.on_chaos_troll_despawn = function (unit, blackboard)
 	if blackboard.is_angry then
 		conflict_director:add_angry_boss(-1)
 	end
+
+	if not blackboard.rewarded_boss_loot_die then
+		AiBreedSnippets.reward_boss_kill_loot_die(unit, blackboard)
+	end
 end
 
 AiBreedSnippets.on_chaos_dummy_troll_spawn = function (unit, blackboard)
@@ -361,7 +380,8 @@ AiBreedSnippets.on_chaos_dummy_troll_spawn = function (unit, blackboard)
 	blackboard.displaced_units = {}
 	local breed = blackboard.breed
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-	blackboard.health_regen_per_sec = breed.health_regen_per_sec[difficulty_rank]
+	blackboard.max_health_regen_per_sec = breed.max_health_regen_per_sec[difficulty_rank]
+	blackboard.max_health_regen_time = breed.max_health_regen_time[difficulty_rank]
 	blackboard.idle_sound_timer = Managers.time:time("game") + 2
 	blackboard.play_alert = true
 end
@@ -567,7 +587,7 @@ AiBreedSnippets.on_storm_vermin_champion_death = function (unit, blackboard)
 		conflict_director:add_angry_boss(-1)
 	end
 
-	AiBreedSnippets.kill_lord_reward(2, Vector3(166.5, -46, 38))
+	AiBreedSnippets.drop_loot_dice(2, Vector3(166.5, -46, 38), true)
 end
 
 AiBreedSnippets.on_storm_vermin_champion_despawn = function (unit, blackboard)
@@ -644,6 +664,8 @@ AiBreedSnippets.on_chaos_spawn_death = function (unit, blackboard)
 	if blackboard.is_angry then
 		conflict_director:add_angry_boss(-1)
 	end
+
+	AiBreedSnippets.reward_boss_kill_loot_die(unit, blackboard)
 end
 
 AiBreedSnippets.on_chaos_spawn_despawn = function (unit, blackboard)
@@ -654,6 +676,10 @@ AiBreedSnippets.on_chaos_spawn_despawn = function (unit, blackboard)
 
 	if blackboard.is_angry then
 		conflict_director:add_angry_boss(-1)
+	end
+
+	if not blackboard.rewarded_boss_loot_die then
+		AiBreedSnippets.reward_boss_kill_loot_die(unit, blackboard)
 	end
 end
 
@@ -1034,15 +1060,40 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_update = function (unit, blackboard, t
 	end
 end
 
-AiBreedSnippets.kill_lord_reward = function (num_die, pos)
+AiBreedSnippets.reward_boss_kill_loot_die = function (unit, blackboard)
+	local nav_world = blackboard.nav_world
+	local position = POSITION_LOOKUP[unit]
+	local below = 1
+	local above = 1
+	local wanted_drop_position = nil
+	local is_on_navmesh, altitude = GwNavQueries.triangle_from_position(nav_world, position, above, below)
+
+	if is_on_navmesh then
+		wanted_drop_position = Vector3.copy(position)
+		wanted_drop_position.z = altitude
+	else
+		local horizontal_limit = 2
+		local distance_from_nav_border = 0.05
+		wanted_drop_position = GwNavQueries.inside_position_from_outside_position(nav_world, position, above, below, horizontal_limit, distance_from_nav_border)
+	end
+
+	wanted_drop_position = wanted_drop_position or position
+	local offset = Vector3(0, 0, 0.6)
+
+	AiBreedSnippets.drop_loot_dice(1, wanted_drop_position + offset, true)
+
+	blackboard.rewarded_boss_loot_die = true
+end
+
+AiBreedSnippets.drop_loot_dice = function (num_die, pos, has_physics)
 	local pickup_name = "loot_die"
 
 	for i = 1, num_die, 1 do
 		local extension_init_data = {
 			pickup_system = {
-				has_physics = true,
 				spawn_type = "loot",
-				pickup_name = pickup_name
+				pickup_name = pickup_name,
+				has_physics = has_physics
 			}
 		}
 		local pickup_settings = AllPickups[pickup_name]
@@ -1050,7 +1101,7 @@ AiBreedSnippets.kill_lord_reward = function (num_die, pos)
 		local unit_template_name = pickup_settings.unit_template_name or "pickup_unit"
 		local angle = i / num_die * 2 * math.pi
 		local position = pos + Vector3(math.cos(angle), math.sin(angle), 0)
-		local rotation = Quaternion(Vector3.right(), math.random() * 2 * math.pi)
+		local rotation = Quaternion.identity()
 
 		Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, position, rotation)
 	end
@@ -1069,7 +1120,7 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_death = function (unit, blackboard)
 		conflict_director:add_angry_boss(-1)
 	end
 
-	AiBreedSnippets.kill_lord_reward(2, Vector3(362.5, 51.6, -9.1))
+	AiBreedSnippets.drop_loot_dice(2, Vector3(362.5, 51.6, -9.1), true)
 end
 
 AiBreedSnippets.on_chaos_exalted_sorcerer_despawn = function (unit, blackboard)
@@ -1322,7 +1373,7 @@ AiBreedSnippets.on_chaos_exalted_champion_death = function (unit, blackboard)
 		conflict_director:add_angry_boss(-1)
 	end
 
-	AiBreedSnippets.kill_lord_reward(2, Vector3(231, -75, 45))
+	AiBreedSnippets.drop_loot_dice(2, Vector3(231, -75, 45), true)
 end
 
 AiBreedSnippets.on_chaos_exalted_champion_norsca_death = function (unit, blackboard)
@@ -1668,7 +1719,7 @@ AiBreedSnippets.on_grey_seer_death = function (unit, blackboard, t)
 		conflict_director:add_angry_boss(-1)
 	end
 
-	AiBreedSnippets.kill_lord_reward(3, Vector3(-308, -364, -126))
+	AiBreedSnippets.drop_loot_dice(3, Vector3(-308, -364, -126), true)
 end
 
 AiBreedSnippets.on_grey_seer_despawn = function (unit, blackboard, t)

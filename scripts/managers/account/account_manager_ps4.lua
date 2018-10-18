@@ -7,13 +7,12 @@ require("scripts/managers/matchmaking/matchmaking_regions")
 local PresenceSet = require("scripts/settings/presence_set")
 AccountManager = class(AccountManager)
 AccountManager.VERSION = "ps4"
+local FRIEND_LIST_REQUEST_DELAY = 10
+local FRIEND_LIST_REQUEST_LIMIT = 500
 
 local function dprint(...)
 	print("[AccountManager] ", ...)
 end
-
-local FETCH_FRIEND_TIME = 12
-local FETCH_FRIEND_NUM = 500
 
 AccountManager.init = function (self)
 	self:fetch_user_data()
@@ -29,21 +28,13 @@ AccountManager.init = function (self)
 	self._session = nil
 	self._has_presence_game_data = false
 	self._np_title_id = PS4.title_id()
-	self._requesting_np_title_id = false
 	self._ps_restrictions = PSRestrictions:new()
 	self._dialog_open = false
 	self._realtime_multiplay_states = {}
 	self._psn_client_error = nil
-	self._cached_friends = {
-		start = 0,
-		totalResults = 0,
-		size = 0,
-		friendList = {}
-	}
-	self._fetch_friends_data = {
-		offset = 0
-	}
-	self._fetch_friends_timer = FETCH_FRIEND_TIME
+	self._friend_data = {}
+	self._next_friend_list_request = 0
+	self._fetching_friend_list = false
 	self._fetching_matchmaking_data = false
 	self._next_matchmaking_data_fetch = 0
 end
@@ -55,6 +46,7 @@ end
 AccountManager.fetch_user_data = function (self)
 	self._online_id = PS4.online_id()
 	self._np_id = PS4.np_id()
+	self._account_id = PS4.account_id()
 end
 
 AccountManager.np_title_id = function (self)
@@ -83,6 +75,10 @@ end
 
 AccountManager.online_id = function (self)
 	return self._online_id
+end
+
+AccountManager.account_id = function (self)
+	return self._account_id
 end
 
 AccountManager.add_restriction_user = function (self, user_id)
@@ -144,10 +140,8 @@ end
 
 AccountManager.update = function (self, dt)
 	self:_update_psn_client(dt)
-	self:_aquire_np_title_id(dt)
 	self:_update_psn()
 	self:_notify_plus()
-	self:_update_friends(dt)
 	self:_update_matchmaking_data(dt)
 	self._web_api:update(dt)
 	self:_update_profile_dialog()
@@ -184,25 +178,6 @@ end
 
 AccountManager.psn_client_error = function (self)
 	return self._psn_client_error
-end
-
-AccountManager._aquire_np_title_id = function (self, dt)
-	if self._np_title_id then
-		return
-	end
-
-	if self._requesting_np_title_id then
-		return
-	else
-		self._request_np_title_timer = (self._request_np_title_timer and self._request_np_title_timer + dt) or 10
-
-		if self._request_np_title_timer >= 10 then
-			self:get_user_presence(self._np_id, callback(self, "_cb_presence_aquired"))
-
-			self._requesting_np_title_id = true
-			self._request_np_title_timer = 0
-		end
-	end
 end
 
 AccountManager._update_psn = function (self)
@@ -288,20 +263,6 @@ AccountManager._notify_plus = function (self)
 	NpCheck.notify_plus(self:user_id(), NpCheck.REALTIME_MULTIPLAY)
 end
 
-AccountManager._update_friends = function (self, dt)
-	self._fetch_friends_timer = self._fetch_friends_timer + dt
-
-	if self._fetching_friends then
-		return
-	end
-
-	if FETCH_FRIEND_TIME <= self._fetch_friends_timer then
-		self._fetch_friends_timer = 0
-
-		self:_fetch_friends()
-	end
-end
-
 AccountManager.friends_list_initiated = function (self)
 	return
 end
@@ -341,49 +302,6 @@ AccountManager.cb_matchmaking_data_fetched = function (self, info)
 		self._matchmaking_data = true
 	else
 		Application.warning(string.format("[AccountManager] Failed fetching matchmaking data"))
-	end
-end
-
-AccountManager._fetch_friends = function (self)
-	local fetch_friends_data = self._fetch_friends_data
-	local offset = fetch_friends_data.offset
-	local np_id = self._np_id
-	local api_group = "userProfile"
-	local path = string.format("/v1/users/%s/friendList?friendStatus=friend&presenceType=primary&presenceDetail=true&fields=onlineId,npId,personalDetail&limit=%s&offset=%s", tostring(np_id), tostring(FETCH_FRIEND_NUM), tostring(offset))
-	local method = WebApi.GET
-	local content = nil
-	local response_callback = callback(self, "cb_fetch_friends", offset, FETCH_FRIEND_NUM)
-
-	self._web_api:send_request(np_id, api_group, path, method, content, response_callback)
-
-	self._fetching_friends = true
-end
-
-AccountManager.cb_fetch_friends = function (self, offset, fetch_friend_num, data)
-	self._fetching_friends = false
-
-	if data == nil then
-		self._fetch_friends_data.offset = 0
-
-		return
-	end
-
-	local cached_friends = self._cached_friends
-	local cached_friend_list = cached_friends.friendList
-	local friend_list = data.friendList
-	local num_friends = #friend_list
-
-	for i = 1, num_friends, 1 do
-		cached_friend_list[offset + i] = friend_list[i]
-	end
-
-	cached_friends.totalResults = data.totalResults
-	cached_friends.size = #cached_friend_list
-
-	if num_friends == fetch_friend_num then
-		self._fetch_friends_data.offset = offset + num_friends
-	else
-		self._fetch_friends_data.offset = 0
 	end
 end
 
@@ -463,65 +381,154 @@ AccountManager.show_player_profile = function (self, user_id)
 end
 
 AccountManager.show_player_profile_with_np_id = function (self, np_id)
+	Application.error("This function is deprecated, use AccountManager:show_player_profile_with_account_id() instead")
+end
+
+AccountManager.show_player_profile_with_account_id = function (self, account_id)
 	if self._dialog_open then
 		return
 	end
 
 	local own_user_id = self:user_id()
-	np_id = np_id or self:np_id()
+	account_id = account_id or self:account_id()
 
 	NpProfileDialog.initialize()
-	NpProfileDialog.open_with_np_id(own_user_id, np_id)
+	NpProfileDialog.open_with_account_id(own_user_id, account_id)
 
 	self._dialog_open = true
 end
 
-AccountManager.get_friends = function (self, friends_listy_limit, response_callback)
-	response_callback(table.clone(self._cached_friends))
+AccountManager.get_friends = function (self, num_friends_to_fetch, response_callback)
+	local friend_data = self._friend_data
+	local t = Managers.time:time("main")
+
+	if self._fetching_friend_list or t < self._next_friend_list_request then
+		response_callback(friend_data)
+	else
+		table.clear(friend_data)
+		self:_fetch_friends(num_friends_to_fetch, 0, response_callback)
+
+		self._next_friend_list_request = t + FRIEND_LIST_REQUEST_DELAY
+	end
 end
 
-AccountManager.get_user_presence = function (self, np_id, response_callback)
-	local own_np_id = self._np_id
-	local api_group = "userProfile"
-	local path = string.format("/v1/users/%s/presence?type=platform&platform=PS4", tostring(np_id))
+AccountManager._fetch_friends = function (self, num_to_fetch, offset, external_callback)
+	local limit = FRIEND_LIST_REQUEST_LIMIT
+	local account_id = Application.hex64_to_dec(self._account_id)
+	local user_id = self:user_id()
+	local api_group = "sdk:userProfile"
+	local path = string.format("/v1/users/%s/friendList?friendStatus=friend&presenceType=primary&presenceDetail=true&limit=%s&offset=%s", account_id, tostring(limit), tostring(offset))
+	local method = WebApi.GET
+	local content = nil
+	local response_callback = callback(self, "cb_fetch_friends", num_to_fetch, offset, external_callback)
+
+	self._web_api:send_request(user_id, api_group, path, method, content, response_callback)
+
+	self._fetching_friend_list = true
+end
+
+AccountManager.cb_fetch_friends = function (self, num_to_fetch, offset, external_callback, result)
+	local friend_data = self._friend_data
+
+	if not result then
+		self._fetching_friend_list = false
+
+		external_callback(friend_data)
+
+		return
+	end
+
+	local result_list = result.friendList
+
+	for i = 1, #result_list, 1 do
+		local entry = result_list[i]
+		local user = entry.user
+		local account_id = Application.dec64_to_hex(user.accountId)
+		local online_id = user.onlineId
+		local presence = entry.presence
+		local primary_info = presence.primaryInfo
+		local online_status = primary_info.onlineStatus
+		local status, playing_this_game = nil
+
+		if online_status and online_status == "online" then
+			status = "online"
+			local game_title_info = primary_info.gameTitleInfo
+
+			if game_title_info and game_title_info.npTitleId == self._np_title_id then
+				playing_this_game = true
+			else
+				playing_this_game = false
+			end
+		else
+			status = "offline"
+			playing_this_game = false
+		end
+
+		friend_data[account_id] = {
+			name = online_id,
+			status = status,
+			playing_this_game = playing_this_game
+		}
+	end
+
+	local limit = FRIEND_LIST_REQUEST_LIMIT
+
+	if #result_list == limit and table.size(friend_data) < num_to_fetch then
+		offset = offset + limit
+
+		self:_fetch_friends(num_to_fetch, offset, external_callback)
+	else
+		self._fetching_friend_list = false
+
+		external_callback(friend_data)
+	end
+end
+
+AccountManager.get_user_presence = function (self, account_id, response_callback)
+	local user_id = self:user_id()
+	local api_group = "sdk:userProfile"
+	local path = string.format("/v1/users/%s/presence?type=platform&platform=PS4", Application.hex64_to_dec(account_id))
 	local method = WebApi.GET
 	local content = nil
 
-	self._web_api:send_request(own_np_id, api_group, path, method, content, response_callback)
+	self._web_api:send_request(user_id, api_group, path, method, content, response_callback)
 end
 
 AccountManager.set_presence = function (self, presence, append_string)
-	local np_id = self._np_id
-	local api_group = "userProfile"
-	local path = string.format("/v1/users/%s/presence/gameStatus", tostring(np_id))
+	local account_id = Application.hex64_to_dec(self._account_id)
+	local user_id = self:user_id()
+	local api_group = "sdk:userProfile"
+	local path = string.format("/v1/users/%s/presence/gameStatus", account_id)
 	local method = WebApi.PUT
 	local content = self:_set_presence_status_content(presence, append_string)
 
-	self._web_api:send_request(np_id, api_group, path, method, content)
+	self._web_api:send_request(user_id, api_group, path, method, content)
 end
 
 AccountManager.set_presence_game_data = function (self, room_id)
-	local np_id = self._np_id
-	local api_group = "userProfile"
-	local path = string.format("/v1/users/%s/presence/gameData", tostring(np_id))
+	local account_id = Application.hex64_to_dec(self._account_id)
+	local user_id = self:user_id()
+	local api_group = "sdk:userProfile"
+	local path = string.format("/v1/users/%s/presence/gameData", account_id)
 	local method = WebApi.PUT
 	local game_data = to_base64(room_id)
 	local content = {
 		gameData = game_data
 	}
 
-	self._web_api:send_request(np_id, api_group, path, method, content)
+	self._web_api:send_request(user_id, api_group, path, method, content)
 
 	self._has_presence_game_data = true
 end
 
 AccountManager.delete_presence_game_data = function (self)
-	local np_id = self._np_id
-	local api_group = "userProfile"
-	local path = string.format("/v1/users/%s/presence/gameData", tostring(np_id))
+	local account_id = Application.hex64_to_dec(self._account_id)
+	local user_id = self:user_id()
+	local api_group = "sdk:userProfile"
+	local path = string.format("/v1/users/%s/presence/gameData", account_id)
 	local method = WebApi.DELETE
 
-	self._web_api:send_request(np_id, api_group, path, method)
+	self._web_api:send_request(user_id, api_group, path, method)
 
 	self._has_presence_game_data = false
 end
@@ -536,7 +543,7 @@ AccountManager.create_session = function (self, room_id)
 		lock_flag = true
 	end
 
-	local np_id = self._np_id
+	local user_id = self:user_id()
 	local session_parameters_table = {
 		max_user = 4,
 		type = "owner-bind",
@@ -549,7 +556,7 @@ AccountManager.create_session = function (self, room_id)
 	local session_data = room_id
 	local changable_session_data = nil
 
-	self._web_api:send_request_create_session(np_id, session_parameters, session_image, session_data, changable_session_data, callback(self, "_cb_session_created"))
+	self._web_api:send_request_create_session(user_id, session_parameters, session_image, session_data, changable_session_data, callback(self, "_cb_session_created"))
 end
 
 AccountManager._cb_session_created = function (self, result)
@@ -575,41 +582,25 @@ AccountManager._cb_session_created = function (self, result)
 	end
 end
 
-AccountManager._cb_presence_aquired = function (self, result)
-	if result then
-		local presence = result.presence
-		local platform_info_list = presence.platformInfoList
-		local game_title_info = platform_info_list[1].gameTitleInfo
-
-		if not game_title_info then
-			table.dump(platform_info_list, "platform_info_list", 5)
-		end
-
-		self._np_title_id = game_title_info.npTitleId
-	else
-		self._requesting_np_title_id = false
-	end
-end
-
 AccountManager.delete_session = function (self)
-	local np_id = self._np_id
+	local user_id = self:user_id()
 	local session_id = self._session.id
 	local api_group = "sessionInvitation"
 	local path = string.format("/v1/sessions/%s", session_id)
 	local method = WebApi.DELETE
 
-	self._web_api:send_request(np_id, api_group, path, method)
+	self._web_api:send_request(user_id, api_group, path, method)
 
 	self._session = nil
 end
 
 AccountManager.join_session = function (self, session_id)
-	local np_id = self._np_id
+	local user_id = self:user_id()
 	local api_group = "sessionInvitation"
 	local path = string.format("/v1/sessions/%s/members", tostring(session_id))
 	local method = WebApi.POST
 
-	self._web_api:send_request(np_id, api_group, path, method)
+	self._web_api:send_request(user_id, api_group, path, method)
 
 	self._session = {
 		is_owner = false,
@@ -618,56 +609,56 @@ AccountManager.join_session = function (self, session_id)
 end
 
 AccountManager.leave_session = function (self)
+	local user_id = self:user_id()
 	local session_id = self._session.id
-	local np_id = self._np_id
 	local api_group = "sessionInvitation"
-	local path = string.format("/v1/sessions/%s/members/%s", tostring(session_id), tostring(np_id))
+	local path = string.format("/v1/sessions/%s/members/me", tostring(session_id))
 	local method = WebApi.DELETE
 
-	self._web_api:send_request(np_id, api_group, path, method)
+	self._web_api:send_request(user_id, api_group, path, method)
 
 	self._session = nil
 end
 
 AccountManager.get_session_data = function (self, session_id, response_callback)
-	local np_id = self._np_id
+	local user_id = self:user_id()
 	local api_group = "sessionInvitation"
 	local path = string.format("/v1/sessions/%s/sessionData", tostring(session_id))
 	local method = WebApi.GET
 	local content = nil
 	local response_format = WebApi.STRING
 
-	self._web_api:send_request(np_id, api_group, path, method, content, response_callback, response_format)
+	self._web_api:send_request(user_id, api_group, path, method, content, response_callback, response_format)
 end
 
-AccountManager.send_session_invitation = function (self, to_online_id)
-	local np_id = self._np_id
+AccountManager.send_session_invitation = function (self, to_account_id)
+	local user_id = self:user_id()
 	local session_id = self._session.id
 	local message = Localize("ps4_session_invitation")
 	local params = ""
 	params = params .. "{\r\n"
 	params = params .. "  \"to\":[\r\n"
-	params = params .. string.format("    \"%s\"\r\n", to_online_id)
+	params = params .. string.format("    \"%s\"\r\n", Application.hex64_to_dec(to_account_id))
 	params = params .. "  ],\r\n"
 	params = params .. string.format("  \"message\":\"%s\"\r\n", message)
 	params = params .. "}"
 
-	self._web_api:send_request_session_invitation(np_id, params, session_id)
+	self._web_api:send_request_session_invitation(user_id, params, session_id)
 end
 
-AccountManager.send_session_invitation_multiple = function (self, to_online_ids)
-	local np_id = self._np_id
+AccountManager.send_session_invitation_multiple = function (self, to_account_ids)
+	local user_id = self:user_id()
 	local session_id = self._session.id
 	local message = Localize("ps4_session_invitation")
 	local params = ""
 	params = params .. "{\r\n"
 	params = params .. "  \"to\":[\r\n"
 
-	for i = 1, #to_online_ids, 1 do
-		if to_online_ids[i + 1] then
-			params = params .. string.format("    \"%s\",\r\n", to_online_ids[i])
+	for i = 1, #to_account_ids, 1 do
+		if to_account_ids[i + 1] then
+			params = params .. string.format("    \"%s\",\r\n", Application.hex64_to_dec(to_account_ids[i]))
 		else
-			params = params .. string.format("    \"%s\"\r\n", to_online_ids[i])
+			params = params .. string.format("    \"%s\"\r\n", Application.hex64_to_dec(to_account_ids[i]))
 		end
 	end
 
@@ -675,7 +666,42 @@ AccountManager.send_session_invitation_multiple = function (self, to_online_ids)
 	params = params .. string.format("  \"message\":\"%s\"\r\n", message)
 	params = params .. "}"
 
-	self._web_api:send_request_session_invitation(np_id, params, session_id)
+	self._web_api:send_request_session_invitation(user_id, params, session_id)
+end
+
+AccountManager.activity_feed_post_mission_completed = function (self, level_display_name, difficulty_display_name)
+	local user_id = self:user_id()
+	local account_id = Application.hex64_to_dec(self._account_id)
+	local title_id = self._np_title_id
+	local api_group = "sdk:activityFeed"
+	local path = string.format("/v1/users/%s/feed", account_id)
+	local method = WebApi.POST
+	local languages = {}
+	local captions = {}
+	local condensed = {}
+	captions.default = string.format(Localize("activity_feed_finished_level_en"), Localize(level_display_name), Localize(difficulty_display_name))
+	condensed.default = string.format(Localize("activity_feed_finished_level_condensed_en"), Localize(level_display_name))
+
+	for _, language in ipairs(languages) do
+		captions[language] = string.format(Localize("activity_feed_finished_level_" .. language), Localize(level_display_name), Localize(difficulty_display_name))
+		condensed[language] = string.format(Localize("activity_feed_finished_level_condensed_" .. language), Localize(level_display_name))
+	end
+
+	local content = {
+		subType = 1,
+		storyType = "IN_GAME_POST",
+		captions = captions,
+		condensedCaptions = condensed,
+		targets = {
+			{
+				type = "TITLE_ID",
+				meta = title_id
+			}
+		}
+	}
+	local content_json = cjson.encode(content)
+
+	self._web_api:send_request(user_id, api_group, path, method, content_json)
 end
 
 AccountManager._format_session_parameters = function (self, params)

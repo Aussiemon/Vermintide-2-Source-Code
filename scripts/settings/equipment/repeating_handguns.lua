@@ -46,7 +46,7 @@ weapon_template.actions = {
 					sub_action = "default",
 					start_time = 0.4,
 					action = "action_two",
-					input = "action_two"
+					input = "action_two_hold"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)

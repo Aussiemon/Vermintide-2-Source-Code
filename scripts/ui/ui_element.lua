@@ -46,7 +46,7 @@ UIElement.destroy = function (ui_renderer, element)
 
 		local ui_pass = UIPasses[pass_type]
 
-		assert(ui_pass, "No such pass-type: %s", pass_type)
+		fassert(ui_pass, "No such pass-type: %s", pass_type)
 
 		local pass_data = element.pass_data[i]
 

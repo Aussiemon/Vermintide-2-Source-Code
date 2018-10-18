@@ -98,7 +98,7 @@ UnitFramesHandler._create_unit_frame_by_type = function (self, frame_type, frame
 	elseif frame_type == "player" then
 		local gamepad_active = self.input_manager:is_device_active("gamepad")
 
-		if self.platform ~= "win32" or gamepad_active or UISettings.use_gamepad_hud_layout then
+		if self.platform ~= "win32" or ((gamepad_active or UISettings.use_gamepad_hud_layout == "always") and UISettings.use_gamepad_hud_layout ~= "never") then
 			definitions = local_require("scripts/ui/hud_ui/player_console_unit_frame_ui_definitions")
 			unit_frame.gamepad_version = true
 		else
@@ -834,7 +834,7 @@ UnitFramesHandler.update = function (self, dt, t, ignore_own_player)
 
 	local gamepad_active = self.input_manager:is_device_active("gamepad")
 
-	if gamepad_active or UISettings.use_gamepad_hud_layout then
+	if (gamepad_active or UISettings.use_gamepad_hud_layout == "always") and UISettings.use_gamepad_hud_layout ~= "never" then
 		if not self.gamepad_active_last_frame then
 			self.gamepad_active_last_frame = true
 
@@ -846,19 +846,30 @@ UnitFramesHandler.update = function (self, dt, t, ignore_own_player)
 		self:on_gamepad_deactivated()
 	end
 
+	Profiler.start("handle_unit_frame_assigning")
 	self:_handle_unit_frame_assigning()
+	Profiler.stop("handle_unit_frame_assigning")
+	Profiler.start("sync")
 	self:_sync_player_stats(self._unit_frames[self._current_frame_index])
 
 	self._current_frame_index = 1 + self._current_frame_index % #self._unit_frames
 
+	Profiler.stop("sync")
+
 	for index, unit_frame in ipairs(self._unit_frames) do
 		if index ~= 1 or not ignore_own_player then
+			Profiler.start("unit_frame_update")
 			unit_frame.widget:update(dt, t)
+			Profiler.stop("unit_frame_update")
 		end
 	end
 
+	Profiler.start("handle_resolution_modified")
 	self:_handle_resolution_modified()
+	Profiler.stop("handle_resolution_modified")
+	Profiler.start("draw")
 	self:_draw(dt)
+	Profiler.stop("draw")
 
 	if DO_RELOAD then
 		DO_RELOAD = false

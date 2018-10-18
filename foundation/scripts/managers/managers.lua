@@ -65,7 +65,11 @@ local mt_global = {
 
 			if mt then
 				manager.update = function (...)
+					Profiler.start(scope_name)
+
 					local ret1, ret2, ret3 = mt.update(...)
+
+					Profiler.stop(scope_name)
 
 					return ret1, ret2, ret3
 				end
@@ -94,7 +98,11 @@ local mt_state = {
 			local mt = getmetatable(manager)
 
 			manager.update = function (...)
+				Profiler.start(scope_name)
+
 				local ret1, ret2, ret3 = mt.update(...)
+
+				Profiler.stop(scope_name)
 
 				return ret1, ret2, ret3
 			end

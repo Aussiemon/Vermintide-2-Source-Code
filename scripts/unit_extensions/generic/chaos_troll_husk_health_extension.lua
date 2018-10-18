@@ -45,6 +45,10 @@ ChaosTrollHuskHealthExtension.update = function (self, dt, context, t)
 			self.pulse_time = 0
 		end
 	end
+
+	if script_data.show_ai_health then
+		Debug.text("TROLL HEALTH [%s] hp=%.1f dmg=%.1f", self.state, self:current_health(), self.damage)
+	end
 end
 
 ChaosTrollHuskHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot)
@@ -65,7 +69,7 @@ end
 ChaosTrollHuskHealthExtension.add_heal = function (self, healer_unit, heal_amount, heal_source_name, heal_type)
 	local unit = self.unit
 
-	self:_add_to_damage_history_buffer(unit, healer_unit, -heal_amount, nil, "heal", nil, heal_source_name, nil, nil, nil, nil)
+	self:_add_to_damage_history_buffer(unit, healer_unit, -heal_amount, nil, "heal", nil, nil, heal_source_name, nil, nil, nil, nil)
 end
 
 ChaosTrollHuskHealthExtension.sync_damage_taken = function (self, damage, set_max_health, state)

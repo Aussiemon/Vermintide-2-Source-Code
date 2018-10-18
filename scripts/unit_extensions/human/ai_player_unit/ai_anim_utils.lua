@@ -60,6 +60,10 @@ AiAnimUtils.set_idle_animation_merge = function (unit, blackboard)
 
 	if idle_animation_merge_options then
 		Unit.set_animation_merge_options(unit, unpack(idle_animation_merge_options))
+
+		if script_data.animation_merge_debug then
+			AiAnimUtils._animation_merge_debug(unit, "idle")
+		end
 	end
 end
 
@@ -70,6 +74,10 @@ AiAnimUtils.set_move_animation_merge = function (unit, blackboard)
 
 	if move_animation_merge_options then
 		Unit.set_animation_merge_options(unit, unpack(move_animation_merge_options))
+
+		if script_data.animation_merge_debug then
+			AiAnimUtils._animation_merge_debug(unit, "move")
+		end
 	end
 end
 
@@ -80,6 +88,10 @@ AiAnimUtils.set_walk_animation_merge = function (unit, blackboard)
 
 	if walk_animation_merge_options then
 		Unit.set_animation_merge_options(unit, unpack(walk_animation_merge_options))
+
+		if script_data.animation_merge_debug then
+			AiAnimUtils._animation_merge_debug(unit, "walk")
+		end
 	end
 end
 
@@ -90,11 +102,19 @@ AiAnimUtils.set_interest_point_animation_merge = function (unit, blackboard)
 
 	if interest_point_animation_merge_options then
 		Unit.set_animation_merge_options(unit, unpack(interest_point_animation_merge_options))
+
+		if script_data.animation_merge_debug then
+			AiAnimUtils._animation_merge_debug(unit, "interest_point")
+		end
 	end
 end
 
 AiAnimUtils.reset_animation_merge = function (unit)
 	Unit.set_animation_merge_options(unit)
+
+	if script_data.animation_merge_debug then
+		AiAnimUtils._animation_merge_debug(unit, nil)
+	end
 end
 
 AiAnimUtils._animation_merge_debug = function (unit, text)

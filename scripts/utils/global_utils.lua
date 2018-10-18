@@ -6,24 +6,41 @@ PACKAGED_BUILD = (script_data.packaged_build and true) or false
 DEDICATED_SERVER = Application.is_dedicated_server()
 RESOLUTION_LOOKUP = RESOLUTION_LOOKUP or {}
 POSITION_LOOKUP = POSITION_LOOKUP or Script.new_map(256)
+POSITION_LOOKUP_BACKUP = POSITION_LOOKUP_BACKUP or Script.new_map(256)
 BLACKBOARDS = BLACKBOARDS or Script.new_map(256)
 ALIVE = POSITION_LOOKUP
 FROZEN = FROZEN or {}
 local position_lookup = POSITION_LOOKUP
+local position_lookup_backup = POSITION_LOOKUP_BACKUP
 local resolution_lookup = RESOLUTION_LOOKUP
 BREED_DIE_LOOKUP = BREED_DIE_LOOKUP or {}
 
 function CLEAR_POSITION_LOOKUP()
 	table.clear(position_lookup)
+	table.clear(position_lookup_backup)
 end
 
 local world_position = Unit.world_position
 
 function UPDATE_POSITION_LOOKUP()
+	Profiler.start("UPDATE_POSITION_LOOKUP")
 	EngineOptimized.update_position_lookup(position_lookup)
+	Profiler.stop("UPDATE_POSITION_LOOKUP")
+
+	if script_data.debug_enabled and not script_data.disable_debug_position_lookup then
+		Profiler.start("UPDATE_POSITION_LOOKUP_DEBUG")
+
+		for unit, _ in pairs(position_lookup) do
+			position_lookup_backup[unit] = world_position(unit, 0)
+		end
+
+		Profiler.stop("UPDATE_POSITION_LOOKUP_DEBUG")
+	end
 end
 
 function UPDATE_RESOLUTION_LOOKUP(force_update)
+	Profiler.start("UPDATE_RESOLUTION_LOOKUP")
+
 	local w, h = Application.resolution()
 	local resolution_modified = w ~= resolution_lookup.res_w or h ~= resolution_lookup.res_h
 
@@ -38,6 +55,45 @@ function UPDATE_RESOLUTION_LOOKUP(force_update)
 	end
 
 	resolution_lookup.modified = resolution_modified
+
+	Profiler.stop("UPDATE_RESOLUTION_LOOKUP")
+end
+
+local cleared = false
+
+function VALIDATE_POSITION_LOOKUP()
+	if not script_data.debug_enabled then
+		return
+	end
+
+	if script_data.disable_debug_position_lookup then
+		if not cleared then
+			table.clear(POSITION_LOOKUP_BACKUP)
+
+			cleared = true
+		end
+
+		return
+	end
+
+	Profiler.start("VALIDATE_POSITION_LOOKUP")
+
+	cleared = false
+
+	for unit, pos in pairs(position_lookup) do
+		local alive, info = unit_alive(unit)
+
+		fassert(alive, "Unit was destroyed but not removed from POSITION_LOOKUP ", tostring(info))
+
+		local other_pos = position_lookup_backup[unit]
+
+		if other_pos and Vector3.distance_squared(pos, other_pos) > 0.0001 then
+			ferror("Modified cached vector3, bad coder!! [%s ==> %s]", tostring(other_pos), tostring(pos))
+		end
+	end
+
+	table.clear(position_lookup_backup)
+	Profiler.stop("VALIDATE_POSITION_LOOKUP")
 end
 
 PLAYER_UNITS = PLAYER_UNITS or {}
@@ -73,6 +129,8 @@ local function is_valid_aggro_target(unit)
 end
 
 function UPDATE_PLAYER_LISTS()
+	Profiler.start("UPDATE_PLAYER_LISTS")
+
 	local human_units = PLAYER_UNITS
 	local human_unit_positions = PLAYER_POSITIONS
 	local human_and_bot_units = PLAYER_AND_BOT_UNITS
@@ -141,6 +199,8 @@ function UPDATE_PLAYER_LISTS()
 		ai_target_units[j] = nil
 		j = j + 1
 	end
+
+	Profiler.stop("UPDATE_PLAYER_LISTS")
 end
 
 function REMOVE_PLAYER_UNIT_FROM_LISTS(player_unit)
@@ -217,6 +277,28 @@ function CLEAR_ALL_PLAYER_LISTS()
 	CLEAR_POSITION_LOOKUP()
 	table.clear(FROZEN)
 	table.clear(BREED_DIE_LOOKUP)
+end
+
+function DEBUG_POS_LOOKUP(world)
+	local types = {}
+	local units = World.units(world)
+
+	for i = 1, World.num_units(world), 1 do
+		local unit = units[i]
+
+		if ScriptUnit.has_extension(unit, "position_lookup_system") then
+		end
+
+		if POSITION_LOOKUP[unit] then
+			types[tostring(unit)] = tostring(unit)
+		end
+	end
+
+	print("Unit types in position_lookup")
+
+	for k, v in pairs(types) do
+		print(v)
+	end
 end
 
 return

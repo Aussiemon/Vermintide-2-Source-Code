@@ -624,12 +624,12 @@ local scenegraph_definition = {
 		parent = "loot_option_1",
 		horizontal_alignment = "center",
 		size = {
-			364,
+			450,
 			0
 		},
 		position = {
 			0,
-			190,
+			380,
 			100
 		}
 	},
@@ -666,12 +666,12 @@ local scenegraph_definition = {
 		parent = "loot_option_2",
 		horizontal_alignment = "center",
 		size = {
-			364,
+			450,
 			0
 		},
 		position = {
 			0,
-			190,
+			380,
 			100
 		}
 	},
@@ -708,12 +708,12 @@ local scenegraph_definition = {
 		parent = "loot_option_3",
 		horizontal_alignment = "center",
 		size = {
-			364,
+			450,
 			0
 		},
 		position = {
 			0,
-			190,
+			380,
 			100
 		}
 	},
@@ -1193,7 +1193,7 @@ local function create_loot_widget(index, size)
 				local item_skin = item and item.skin
 
 				if item_skin then
-					return item.data.item_type ~= "weapon_skin"
+					return item.data.item_type ~= "weapon_skin" and WeaponSkins.default_skins[item.key] ~= item_skin
 				end
 			end
 		},
@@ -2149,10 +2149,37 @@ local input_description_widgets = {
 		}
 	}, "bottom_panel", nil, nil, panel_color)
 }
+local console_tooltip_pass_definition = {
+	"skin_applied",
+	"deed_mission",
+	"deed_difficulty",
+	"mutators",
+	"deed_rewards",
+	"ammunition",
+	"fatigue",
+	"item_power_level",
+	"properties",
+	"traits",
+	"weapon_skin_title",
+	"item_information_text",
+	"loot_chest_difficulty",
+	"loot_chest_power_range",
+	"unwieldable",
+	"console_keywords",
+	"console_item_description",
+	"light_attack_stats",
+	"heavy_attack_stats",
+	"detailed_stats_light",
+	"detailed_stats_heavy",
+	"detailed_stats_push",
+	"detailed_stats_ranged_light",
+	"detailed_stats_ranged_heavy",
+	"console_item_background"
+}
 local gamepad_tooltip_widgets = {
-	item_tooltip_1 = UIWidgets.create_simple_item_presentation("gamepad_tooltip_option_1", UISettings.console_tooltip_pass_definitions),
-	item_tooltip_2 = UIWidgets.create_simple_item_presentation("gamepad_tooltip_option_2", UISettings.console_tooltip_pass_definitions),
-	item_tooltip_3 = UIWidgets.create_simple_item_presentation("gamepad_tooltip_option_3", UISettings.console_tooltip_pass_definitions)
+	item_tooltip_1 = UIWidgets.create_simple_item_presentation("gamepad_tooltip_option_1", console_tooltip_pass_definition),
+	item_tooltip_2 = UIWidgets.create_simple_item_presentation("gamepad_tooltip_option_2", console_tooltip_pass_definition),
+	item_tooltip_3 = UIWidgets.create_simple_item_presentation("gamepad_tooltip_option_3", console_tooltip_pass_definition)
 }
 local option_background_widgets = {
 	loot_background_1 = UIWidgets.create_background("loot_option_1", scenegraph_definition.loot_option_1.size, "item_tooltip_background_old"),

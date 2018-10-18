@@ -202,6 +202,13 @@ go_type_table = {
 				outer_decal_unit_id = Managers.state.network:unit_game_object_id(outer_decal_unit)
 			end
 
+			local owner_unit = vortex_extension._owner_unit
+			local owner_unit_id = NetworkConstants.invalid_game_object_id
+
+			if Unit.alive(owner_unit) then
+				owner_unit_id = Managers.state.network:unit_game_object_id(owner_unit)
+			end
+
 			local data_table = {
 				has_teleported = 1,
 				height_percentage = 0,
@@ -217,7 +224,8 @@ go_type_table = {
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
 				vortex_template_id = NetworkLookup.vortex_templates[vortex_extension.vortex_template_name],
 				inner_decal_unit_id = inner_decal_unit_id,
-				outer_decal_unit_id = outer_decal_unit_id
+				outer_decal_unit_id = outer_decal_unit_id,
+				owner_unit_id = owner_unit_id
 			}
 
 			return data_table
@@ -1684,6 +1692,8 @@ go_type_table = {
 			local inner_decal_unit = Managers.state.unit_storage:unit(inner_decal_unit_id)
 			local outer_decal_unit_id = GameSession.game_object_field(game_session, game_object_id, "outer_decal_unit_id")
 			local outer_decal_unit = Managers.state.unit_storage:unit(outer_decal_unit_id)
+			local owner_unit_id = GameSession.game_object_field(game_session, game_object_id, "owner_unit_id")
+			local owner_unit = Managers.state.unit_storage:unit(owner_unit_id)
 			local extension_init_data = {
 				ai_system = {
 					go_id = game_object_id,
@@ -1697,7 +1707,8 @@ go_type_table = {
 				ai_supplementary_system = {
 					vortex_template_name = vortex_template_name,
 					inner_decal_unit = inner_decal_unit,
-					outer_decal_unit = outer_decal_unit
+					outer_decal_unit = outer_decal_unit,
+					owner_unit = owner_unit
 				}
 			}
 			local unit_template_name = breed.unit_template

@@ -593,9 +593,10 @@ StartGameWindowPanelConsole._lobby_browser_disable_function = function (self)
 end
 
 StartGameWindowPanelConsole._streaming_disable_function = function (self)
+	local twitch_enabled = GameSettingsDevelopment.twitch_enabled
 	local is_offline = Managers.account:offline_mode()
 
-	return is_offline
+	return not twitch_enabled or is_offline
 end
 
 StartGameWindowPanelConsole._animate_title_entry = function (self, widget, dt)

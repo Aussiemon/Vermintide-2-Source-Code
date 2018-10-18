@@ -43,6 +43,7 @@ end
 BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data, result)
 	local function_result = result.FunctionResult
 	local items = function_result.items
+	local unlocked_weapon_skins = function_result.unlocked_weapon_skins
 	local consume_data = function_result.consumed_chest
 	local chest_backend_id = consume_data.ItemInstanceId
 	local remaining_uses = consume_data.RemainingUses
@@ -53,6 +54,7 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 	for i = 1, num_items, 1 do
 		local item = items[i]
 		local backend_id = item.ItemInstanceId
+		local item_data = rawget(ItemMasterList, item.ItemId)
 
 		backend_mirror:add_item(backend_id, item)
 
@@ -63,6 +65,12 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 		backend_mirror:update_item_field(chest_backend_id, "RemainingUses", remaining_uses)
 	else
 		backend_mirror:remove_item(chest_backend_id)
+	end
+
+	if unlocked_weapon_skins then
+		for i = 1, #unlocked_weapon_skins, 1 do
+			backend_mirror:add_unlocked_weapon_skin(unlocked_weapon_skins[i])
+		end
 	end
 
 	local id = data.id

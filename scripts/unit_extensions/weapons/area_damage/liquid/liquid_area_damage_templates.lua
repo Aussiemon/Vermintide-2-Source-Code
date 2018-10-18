@@ -295,6 +295,7 @@ LiquidAreaDamageTemplates = {
 								local statistics_db = Managers.player:statistics_db()
 
 								statistics_db:increment_stat_and_sync_to_clients(stat_name)
+								print("Completed challenge ", stat_name)
 
 								completed_challenge = true
 
@@ -302,6 +303,8 @@ LiquidAreaDamageTemplates = {
 
 								break
 							end
+
+							print("Num times bathed in nurgle ", player_unit, num_times_bathed)
 						end
 					end
 

@@ -25,6 +25,32 @@ BTBotTeleportToAllyAction.enter = function (self, unit, blackboard, t)
 		position = Vector3Box(Vector3.invalid_vector()),
 		a_star = GwNavAStar.create()
 	}
+
+	if BTConditions.cant_reach_ally(blackboard) and PLATFORM ~= "xb1" then
+		local bot_position = POSITION_LOOKUP[unit]
+		local player_manager = Managers.player
+		local player = player_manager:owner(unit)
+		local profile_index = player:profile_index()
+		local offset = Vector3(0, 0, 1.5) * (profile_index - 1)
+		local follow_data = blackboard.follow
+		local target_position = follow_data.target_position:unbox()
+		local between_position = Vector3.lerp(bot_position, target_position, 0.5)
+
+		QuickDrawerStay:sphere(bot_position, 0.5, Colors.get("red"))
+		QuickDrawerStay:sphere(target_position, 0.5, Colors.get("red"))
+		QuickDrawerStay:line(bot_position, target_position, Colors.get("red"))
+		QuickDrawerStay:line(between_position, between_position + Vector3(0, 0, 3) + offset, Colors.get("red"))
+
+		local debug_text_1 = string.format("LD Warning! (%s)", player:profile_display_name())
+		local debug_text_2 = string.format("Bot Pathing Between Navmeshes Failed!")
+		local debug_text_3 = string.format("pos(%.2f, %.2f, %.2f)", bot_position.x, bot_position.y, bot_position.z)
+		local debug_text_4 = string.format("pos(%.2f, %.2f, %.2f)", target_position.x, target_position.y, target_position.z)
+
+		Debug.world_sticky_text(between_position + Vector3(0, 0, 3) + offset, debug_text_1, "red")
+		Debug.world_sticky_text(between_position + Vector3(0, 0, 2.5) + offset, debug_text_2, "red")
+		Debug.world_sticky_text(between_position + Vector3(0, 0, 2) + offset, debug_text_3, "red")
+		Debug.world_sticky_text(between_position + Vector3(0, 0, 1.5) + offset, debug_text_4, "red")
+	end
 end
 
 BTBotTeleportToAllyAction.run = function (self, unit, blackboard, t, dt)

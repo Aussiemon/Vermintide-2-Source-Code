@@ -372,14 +372,14 @@ PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit,
 
 	if current_action.use_max_targets then
 		if current_action.max_targets <= self.num_targets_hit then
-			if impact_data.link and self.did_damage > 0 and allow_link then
+			if impact_data.link and allow_link then
 				self:link_projectile(hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self.did_damage, shield_blocked)
 			end
 
 			self:stop()
 		end
 	elseif self.max_mass <= self.amount_of_mass_hit then
-		if impact_data.link and self.did_damage > 0 and allow_link then
+		if impact_data.link and allow_link then
 			self:link_projectile(hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self.did_damage, shield_blocked)
 		end
 

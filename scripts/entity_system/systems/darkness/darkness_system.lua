@@ -97,7 +97,22 @@ DarknessSystem.update = function (self, context, t)
 end
 
 DarknessSystem._update_light_sources = function (self, dt, t)
-	return
+	if script_data.debug_darkness then
+		for unit, data in pairs(self._light_source_data) do
+			local source_pos = POSITION_LOOKUP[unit]
+			local intensity = data.intensity
+
+			for i = 1, 10, 1 do
+				local dist = math.max(i * 0.5, 1)
+				local brightness = math.min(255, (255 * intensity) / (dist * dist))
+				local color = Color(brightness, brightness, brightness)
+
+				QuickDrawer:circle(source_pos + Vector3(0, 0, 0.05), dist, Vector3.up(), color, 16)
+			end
+
+			QuickDrawer:circle(source_pos + Vector3(0, 0, 0.05), math.sqrt(intensity / DarknessSystem.DARKNESS_THRESHOLD), Vector3.up(), Color(255, 0, 0), 16)
+		end
+	end
 end
 
 local IN = nil
@@ -133,6 +148,10 @@ DarknessSystem._update_player_unit_darkness = function (self, dt, t)
 		else
 			data.in_darkness = false
 			data.intensity = 0
+		end
+
+		if script_data.debug_darkness then
+			Debug.text("dark: %s intensity: %f light: %f", tostring(data.in_darkness), data.intensity, light_value or 0)
 		end
 	end
 end

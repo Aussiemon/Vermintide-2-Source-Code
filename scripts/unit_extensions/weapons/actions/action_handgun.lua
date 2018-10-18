@@ -64,12 +64,6 @@ ActionHandgun.client_owner_start_action = function (self, new_action, t, chain_a
 	end
 
 	self._is_critical_strike = is_critical_strike
-
-	if new_action.block then
-		local status_extension = ScriptUnit.extension(owner_unit, "status_system")
-
-		status_extension:set_blocking(true)
-	end
 end
 
 ActionHandgun.client_owner_post_update = function (self, dt, t, world, can_damage)
@@ -222,12 +216,6 @@ ActionHandgun.finish = function (self, reason)
 		if ammo_extension and current_action.reload_when_out_of_ammo and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
 			ammo_extension:start_reload(true)
 		end
-	end
-
-	if current_action.block then
-		local status_extension = ScriptUnit.extension(owner_unit, "status_system")
-
-		status_extension:set_blocking(false)
 	end
 
 	self.charge_multiplier = nil

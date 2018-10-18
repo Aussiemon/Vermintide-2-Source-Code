@@ -132,7 +132,7 @@ ItemMasterList.skin_dr_slayer = {
 	temporary_template = "skin_dr_slayer",
 	display_name = "skin_dr_slayer",
 	name = "skin_dr_slayer",
-	inventory_icon = "icon_skin_slayer_01",
+	inventory_icon = "icon_skin_slayer_original",
 	slot_type = "skin",
 	information_text = "information_text_character_skin",
 	hud_icon = "career_dwarf_slayer",
@@ -1076,7 +1076,7 @@ ItemMasterList.skin_wh_captain = {
 	temporary_template = "skin_wh_captain",
 	display_name = "skin_wh_captain",
 	name = "skin_wh_captain",
-	inventory_icon = "icon_skin_captain_original",
+	inventory_icon = "icon_skin_witchhunter_original",
 	slot_type = "skin",
 	information_text = "information_text_character_skin",
 	hud_icon = "unit_frame_portrait_witch_hunter",
@@ -1412,7 +1412,7 @@ ItemMasterList.skin_bw_scholar = {
 	temporary_template = "skin_bw_scholar",
 	display_name = "skin_bw_scholar",
 	name = "skin_bw_scholar",
-	inventory_icon = "icon_skin_pyromancer_01",
+	inventory_icon = "icon_skin_scholar_original",
 	slot_type = "skin",
 	information_text = "information_text_character_skin",
 	hud_icon = "unit_frame_portrait_bright_wizard",
@@ -4546,7 +4546,7 @@ ItemMasterList.crafting_material_scrap = {
 }
 ItemMasterList.crafting_material_dust_1 = {
 	description = "crafting_material_dust_1_description",
-	rarity = "plentiful",
+	rarity = "common",
 	display_name = "crafting_material_dust_1_title",
 	inventory_icon = "icon_crafting_dust_01",
 	slot_type = "crafting_material",
@@ -4575,7 +4575,7 @@ ItemMasterList.crafting_material_dust_1 = {
 }
 ItemMasterList.crafting_material_dust_2 = {
 	description = "crafting_material_dust_2_description",
-	rarity = "plentiful",
+	rarity = "rare",
 	display_name = "crafting_material_dust_2_title",
 	inventory_icon = "icon_crafting_dust_02",
 	slot_type = "crafting_material",
@@ -4604,7 +4604,7 @@ ItemMasterList.crafting_material_dust_2 = {
 }
 ItemMasterList.crafting_material_dust_3 = {
 	description = "crafting_material_dust_3_description",
-	rarity = "plentiful",
+	rarity = "exotic",
 	display_name = "crafting_material_dust_3_title",
 	inventory_icon = "icon_crafting_dust_03",
 	slot_type = "crafting_material",
@@ -4633,9 +4633,9 @@ ItemMasterList.crafting_material_dust_3 = {
 }
 ItemMasterList.crafting_material_dust_4 = {
 	description = "crafting_material_dust_4_description",
-	rarity = "plentiful",
+	rarity = "unique",
 	display_name = "crafting_material_dust_4_title",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_crafting_dust_04",
 	slot_type = "crafting_material",
 	information_text = "information_text_dust_red",
 	temporary_template = "first_aid_kit_02",
@@ -15964,20 +15964,89 @@ ItemMasterList.level_chest = {
 		"es_mercenary"
 	}
 }
-ItemMasterList.bogenhafen_chest = {
-	description = "bogenhafen_chest_description",
+ItemMasterList.level_chest_02 = {
+	description = "level_chest_description_02",
 	rarity = "plentiful",
-	display_name = "display_name_bogenhafen_chest",
+	display_name = "display_name_loot_level_chest_02",
 	rarity_key = "level_up",
-	inventory_icon = "icon_loot_chest_bgh",
+	inventory_icon = "icon_loot_chest_level_up_2",
 	slot_type = "loot_chest",
 	power_level_key = "category_24",
 	temporary_template = "",
-	content_key = "bogenhafen_chest",
+	content_key = "level_chest_02",
 	can_stack = true,
 	display_unit = "chest_1",
 	item_type = "loot_chest",
+	chest_category = "level_up",
+	chest_sort_order = 1,
+	chest_tier = 1,
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.bogenhafen_chest = {
+	item_type = "loot_chest",
+	content_key = "bogenhafen_chest",
+	display_name = "display_name_bogenhafen_chest",
+	rarity_key = "level_up",
+	power_level_key = "category_24",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
 	chest_category = "bogenhafen",
+	can_stack = true,
+	chest_tier = 1,
+	description = "bogenhafen_chest_description",
+	temporary_template = "",
+	chest_sort_order = 1,
+	inventory_icon = "icon_loot_chest_bgh",
+	display_unit = "chest_1",
+	info_text_box_text_id = "loot_opening_screen_non_specific_description",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.deed_chest = {
+	description = "deed_chest_description_02",
+	rarity = "plentiful",
+	display_name = "display_name_deed_chest_02",
+	rarity_key = "level_up",
+	inventory_icon = "icons_placeholder",
+	slot_type = "loot_chest",
+	power_level_key = "category_24",
+	temporary_template = "",
+	content_key = "deed_chest",
+	can_stack = true,
+	display_unit = "chest_1",
+	item_type = "loot_chest",
+	chest_category = "level_up",
 	chest_sort_order = 1,
 	chest_tier = 1,
 	can_wield = {

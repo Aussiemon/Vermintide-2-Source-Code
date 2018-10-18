@@ -410,8 +410,10 @@ HeroViewStateLoot._can_open_chests = function (self)
 	local items = backend_items:get_all_backend_items()
 	local item_count = 0
 
-	for _, _ in pairs(items) do
-		item_count = item_count + 1
+	for _, item in pairs(items) do
+		if item.data.item_type ~= "weapon_skin" then
+			item_count = item_count + 1
+		end
 	end
 
 	local can_open = item_count < UISettings.max_inventory_items
@@ -1093,6 +1095,8 @@ HeroViewStateLoot._select_grid_item = function (self, item, t)
 
 		local _, display_name, _ = UIUtils.get_ui_information_from_item(item)
 		local item_type = item_data.item_type
+		local info_text_box_text_id = item_data.info_text_box_text_id or "loot_opening_screen_desc"
+		widgets_by_name.info_text_box.content.text = info_text_box_text_id
 		widgets_by_name.chest_title.content.text = Localize(display_name)
 		widgets_by_name.chest_sub_title.content.text = Localize(item_type)
 
@@ -1348,7 +1352,15 @@ HeroViewStateLoot._handle_input = function (self, dt, t)
 				debug_pressed = true
 			end
 
-			if Pad1.pressed(Pad1.button_index("y")) then
+			local console_input = false
+
+			if PLATFORM == "ps4" then
+				console_input = Pad1.pressed(Pad1.button_index("triangle"))
+			else
+				console_input = Pad1.pressed(Pad1.button_index("y"))
+			end
+
+			if console_input then
 				local backend_loot = Managers.backend:get_interface("loot")
 				local hero_attributes = Managers.backend:get_interface("hero_attributes")
 				local start_experience = hero_attributes:get("wood_elf", "experience")
@@ -1587,25 +1599,19 @@ HeroViewStateLoot._setup_rewards = function (self, rewards)
 			elseif slot_type == "crafting_material" or slot_type == "deed" or slot_type == "trinket" or slot_type == "necklace" or slot_type == "ring" then
 				local texture_name = nil
 
-				if item_key == "crafting_material_scrap" then
-					texture_name = "loot_image_scrap"
-				elseif item_key == "crafting_material_weapon" then
-					texture_name = "loot_image_weapon_part"
-				elseif item_key == "crafting_material_jewellery" then
-					texture_name = "loot_image_jewellery_part"
-				elseif slot_type == "trinket" then
+				if slot_type == "trinket" then
 					texture_name = "loot_image_trinket"
 				elseif slot_type == "necklace" then
 					texture_name = "loot_image_jewellery"
 				elseif slot_type == "ring" then
 					texture_name = "loot_image_charm"
+				elseif slot_type == "deed" then
+					texture_name = "loot_image_deed"
 				end
 
 				if slot_type == "crafting_material" then
 					local amount = backend_items:get_item_amount(backend_id)
 					content.amount_text = "x" .. tostring(amount)
-				elseif slot_type == "deed" then
-					texture_name = "loot_image_deed"
 				end
 
 				local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture_name)

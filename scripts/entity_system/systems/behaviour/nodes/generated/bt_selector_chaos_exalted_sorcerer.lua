@@ -21,6 +21,8 @@ BTSelector_chaos_exalted_sorcerer.leave = function (self, unit, blackboard, t, r
 end
 
 BTSelector_chaos_exalted_sorcerer.run = function (self, unit, blackboard, t, dt)
+	local Profiler_start = Profiler.start
+	local Profiler_stop = Profiler.stop
 	local child_running = self:current_running_child(blackboard)
 	local children = self._children
 	local node_spawn = children[1]
@@ -28,8 +30,11 @@ BTSelector_chaos_exalted_sorcerer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_spawn, "aborted")
+		Profiler_start("spawn")
 
 		local result, evaluate = node_spawn:run(unit, blackboard, t, dt)
+
+		Profiler_stop("spawn")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -48,8 +53,11 @@ BTSelector_chaos_exalted_sorcerer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_intro_sequence, "aborted")
+		Profiler_start("intro_sequence")
 
 		local result, evaluate = node_intro_sequence:run(unit, blackboard, t, dt)
+
+		Profiler_stop("intro_sequence")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -67,8 +75,11 @@ BTSelector_chaos_exalted_sorcerer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_in_gravity_well, "aborted")
+		Profiler_start("in_gravity_well")
 
 		local result, evaluate = node_in_gravity_well:run(unit, blackboard, t, dt)
+
+		Profiler_stop("in_gravity_well")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -86,8 +97,11 @@ BTSelector_chaos_exalted_sorcerer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_falling, "aborted")
+		Profiler_start("falling")
 
 		local result, evaluate = node_falling:run(unit, blackboard, t, dt)
+
+		Profiler_stop("falling")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -109,8 +123,11 @@ BTSelector_chaos_exalted_sorcerer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_stagger, "aborted")
+		Profiler_start("stagger")
 
 		local result, evaluate = node_stagger:run(unit, blackboard, t, dt)
+
+		Profiler_stop("stagger")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -150,8 +167,11 @@ BTSelector_chaos_exalted_sorcerer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_smartobject, "aborted")
+		Profiler_start("smartobject")
 
 		local result, evaluate = node_smartobject:run(unit, blackboard, t, dt)
+
+		Profiler_stop("smartobject")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -169,8 +189,11 @@ BTSelector_chaos_exalted_sorcerer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_setup_mode, "aborted")
+		Profiler_start("setup_mode")
 
 		local result, evaluate = node_setup_mode:run(unit, blackboard, t, dt)
+
+		Profiler_stop("setup_mode")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -188,8 +211,11 @@ BTSelector_chaos_exalted_sorcerer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_defensive_mode, "aborted")
+		Profiler_start("defensive_mode")
 
 		local result, evaluate = node_defensive_mode:run(unit, blackboard, t, dt)
+
+		Profiler_stop("defensive_mode")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -207,8 +233,11 @@ BTSelector_chaos_exalted_sorcerer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_quick_teleport, "aborted")
+		Profiler_start("quick_teleport")
 
 		local result, evaluate = node_quick_teleport:run(unit, blackboard, t, dt)
+
+		Profiler_stop("quick_teleport")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -226,8 +255,11 @@ BTSelector_chaos_exalted_sorcerer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_has_target, "aborted")
+		Profiler_start("has_target")
 
 		local result, evaluate = node_has_target:run(unit, blackboard, t, dt)
+
+		Profiler_stop("has_target")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -243,8 +275,11 @@ BTSelector_chaos_exalted_sorcerer.run = function (self, unit, blackboard, t, dt)
 	local node_idle = children[11]
 
 	self:set_running_child(unit, blackboard, t, node_idle, "aborted")
+	Profiler_start("idle")
 
 	local result, evaluate = node_idle:run(unit, blackboard, t, dt)
+
+	Profiler_stop("idle")
 
 	if result ~= "running" then
 		self:set_running_child(unit, blackboard, t, nil, result)

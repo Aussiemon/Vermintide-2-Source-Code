@@ -63,7 +63,7 @@ weapon_template.actions = {
 					sub_action = "default",
 					start_time = 1.5,
 					action = "action_two",
-					input = "action_two"
+					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
@@ -125,7 +125,8 @@ weapon_template.actions = {
 					sub_action = "default",
 					start_time = 0.7,
 					action = "action_two",
-					input = "action_two"
+					release_required = "action_two_hold",
+					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
@@ -283,7 +284,6 @@ weapon_template.attack_meta_data = {
 	charge_when_outside_max_range = false,
 	obstruction_fuzzyness_range = 1
 }
-local action = weapon_template.actions.action_one.default
 weapon_template.default_spread_template = "drakegun"
 weapon_template.right_hand_unit = ""
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.drakegun

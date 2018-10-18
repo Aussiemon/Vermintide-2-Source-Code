@@ -196,7 +196,7 @@ end
 GamePadAbilityUI._handle_gamepad = function (self)
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 
-	if not gamepad_active and not UISettings.use_gamepad_hud_layout then
+	if (not gamepad_active or UISettings.use_gamepad_hud_layout == "never") and UISettings.use_gamepad_hud_layout ~= "always" then
 		if self._retained_elements_visible then
 			self:_set_elements_visible(false)
 		end

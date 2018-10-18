@@ -60,11 +60,13 @@ LobbyInternal.lobby_data_network_lookups = {
 }
 
 LobbyInternal.init_client = function (network_options)
-	Network.set_explicit_connections()
+	if not LobbyInternal.psn_client then
+		Network.set_explicit_connections()
 
-	LobbyInternal.psn_client = Network.init_psn_client(network_options.config_file_name)
-	LobbyInternal.psn_room_browser = PSNRoomBrowser:new(LobbyInternal.psn_client)
-	LobbyInternal.psn_room_data_external = PsnClient.room_data_external(LobbyInternal.psn_client)
+		LobbyInternal.psn_client = Network.init_psn_client(network_options.config_file_name)
+		LobbyInternal.psn_room_browser = PSNRoomBrowser:new(LobbyInternal.psn_client)
+		LobbyInternal.psn_room_data_external = PsnClient.room_data_external(LobbyInternal.psn_client)
+	end
 
 	GameSettingsDevelopment.set_ignored_rpc_logs()
 end
@@ -460,7 +462,7 @@ PSNRoom.user_name = function (self, peer_id)
 		local member = PsnRoom.member(room_id, i)
 
 		if member.peer_id == peer_id then
-			user_name = member.handle
+			user_name = member.online_id
 
 			break
 		end

@@ -67,7 +67,7 @@ if not rawget(_G, "G_IS_PROFILING") and PLATFORM == "win32" and BUILD ~= "releas
 						args = string.format("%s %s", args, arg_value_str)
 					end
 
-					assert(false, "Tried to access function '%s' for nil unit!", function_name)
+					ferror("Tried to access function '%s' for nil unit!", function_name)
 				end
 
 				local is_alive = Unit_alive(unit)
@@ -77,8 +77,8 @@ if not rawget(_G, "G_IS_PROFILING") and PLATFORM == "win32" and BUILD ~= "releas
 				end
 
 				local err_unit = unit_alive_info(unit)
-				local is_valid = (Unit.is_valid and Unit.is_valid(unit)) or "unknown"
-				local is_frozen = Unit.is_frozen(unit)
+				local is_valid = (Unit.is_valid == nil and "unknown") or Unit.is_valid(unit)
+				local is_frozen = is_valid and is_valid ~= "unknown" and Unit.is_frozen(unit)
 				local go_id = (Managers.state and Managers.state.storage and Managers.state.storage.map_goid_to_unit[unit]) or "unknown"
 				local args = ""
 				local num_args = select("#", ...)
@@ -90,7 +90,12 @@ if not rawget(_G, "G_IS_PROFILING") and PLATFORM == "win32" and BUILD ~= "releas
 				end
 
 				printf("ARGS: %s", args)
-				assert(false, sprintf("[unit_deleted] tried to access function '%s' for deleted unit(%s)!", function_name, err_unit))
+
+				if is_frozen then
+					ferror("[unit_frozen] tried to access function '%s' for frozen unit(%s)!", function_name, err_unit)
+				else
+					ferror("[unit_deleted] tried to access function '%s' for deleted unit(%s)!", function_name, err_unit)
+				end
 			end
 		until true
 	end

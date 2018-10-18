@@ -358,7 +358,8 @@ BTChaosSorcererSummoningAction._spawn_vortex = function (self, unit, blackboard,
 			extension_init_data.ai_supplementary_system = {
 				vortex_template_name = vortex_template_name or "standard",
 				inner_decal_unit = link_decal_units and inner_decal_unit,
-				outer_decal_unit = link_decal_units and outer_decal_unit
+				outer_decal_unit = link_decal_units and outer_decal_unit,
+				owner_unit = unit
 			}
 		end,
 		spawned_func = function (vortex_unit, breed, optional_data)

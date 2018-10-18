@@ -748,6 +748,28 @@ function flow_callback_start_fade(params)
 	end
 end
 
+function flow_callback_start_fade_chr_stumps(params)
+	assert(params.unit, "[flow_callback_start_fade_chr_stumps] You need to specify the Unit")
+	assert(params.duration, "[flow_callback_start_fade_chr_stumps] You need to specify duration")
+	assert(params.fade_switch, "[flow_callback_start_fade_chr_stumps] You need to specify whether to fade in or out (0 or 1)")
+
+	local unit = params.unit
+	params.mesh_name = nil
+	stump_items = Unit.get_data(unit, "stump_items") or {}
+
+	for i = 1, #stump_items, 1 do
+		params.unit = stump_items[i]
+
+		flow_callback_start_fade(params)
+	end
+end
+
+function flow_callback_start_fade_chr_helmet(params)
+	assert(params.unit, "[flow_callback_start_fade_chr_helmet] You need to specify the Unit")
+	assert(params.duration, "[flow_callback_start_fade_chr_helmet] You need to specify duration")
+	assert(params.fade_switch, "[flow_callback_start_fade_chr_helmet] You need to specify whether to fade in or out (0 or 1)")
+end
+
 function flow_callback_set_unit_light_state(params)
 	local unit = params.unit
 	local state = params.state

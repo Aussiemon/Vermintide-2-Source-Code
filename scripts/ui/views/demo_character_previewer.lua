@@ -152,7 +152,7 @@ DemoCharacterPreviewer.cb_spawn_hero_unit = function (self, profile, career, ski
 	if Unit.has_lod_object(character_unit, "lod") then
 		local lod_object = Unit.lod_object(character_unit, "lod")
 
-		LODObject.set_static_select(lod_object, 0)
+		LODObject.set_static_height(lod_object, 1)
 	end
 
 	local unit_box, box_dimension = Unit.box(character_unit)
@@ -573,7 +573,7 @@ DemoCharacterPreviewer.equip_item_unit = function (self, unit, item_slot_type, i
 	if Unit.has_lod_object(unit, "lod") then
 		local lod_object = Unit.lod_object(unit, "lod")
 
-		LODObject.set_static_select(lod_object, 0)
+		LODObject.set_static_height(lod_object, 1)
 	end
 
 	GearUtils.link(world, unit_attachment_node_linking, scene_graph_links, character_unit, unit)

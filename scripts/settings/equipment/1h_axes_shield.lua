@@ -355,7 +355,7 @@ weapon_template.actions = {
 					sub_action = "default",
 					start_time = 0.3,
 					action = "action_two",
-					input = "action_two"
+					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
@@ -384,7 +384,7 @@ weapon_template.actions = {
 			damage_window_end = 0.36,
 			impact_sound_event = "axe_1h_hit",
 			anim_end_event = "attack_finished",
-			dedicated_target_range = 2,
+			dedicated_target_range = 2.5,
 			uninterruptible = true,
 			anim_event = "attack_swing_heavy_down",
 			total_time = 1.25,
@@ -438,7 +438,7 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "attack_hit",
 			no_damage_impact_sound_event = "blunt_hit_armour",
-			headshot_multiplier = 2,
+			headshot_multiplier = 2.5,
 			use_precision_sweep = true,
 			damage_profile = "medium_slashing_smiter_flat_1h",
 			aim_assist_ramp_multiplier = 0.4,

@@ -1124,7 +1124,7 @@ local function create_menu_button(scenegraph_id, text, font_size, optional_defau
 end
 
 if PLATFORM == "ps4" then
-	scenegraph_definition.user_gamertag.position[1] = 61
+	scenegraph_definition.user_gamertag.position[1] = 0
 	scenegraph_definition.user_gamertag.position[2] = 45
 end
 
@@ -1246,19 +1246,28 @@ elseif script_data.settings.use_beta_overlay then
 		}
 	end
 elseif BUILD == "dev" or BUILD == "debug" then
-	menu_button_definitions = {
-		create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
-		create_menu_button("menu_option_2", "tutorial_menu_button_name", menu_button_font_size, "font_title"),
-		create_menu_button("menu_option_3", "options_menu_button_name", menu_button_font_size, "font_title"),
-		create_menu_button("menu_option_4", "title_screen_store_xb1", menu_button_font_size, "font_title", true),
-		create_menu_button("menu_option_5", "credits_menu_button_name", menu_button_font_size, "font_title")
-	}
+	if PLATFORM == "xb1" then
+		menu_button_definitions = {
+			create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
+			create_menu_button("menu_option_2", "tutorial_menu_button_name", menu_button_font_size, "font_title"),
+			create_menu_button("menu_option_3", "options_menu_button_name", menu_button_font_size, "font_title"),
+			create_menu_button("menu_option_4", "title_screen_store_xb1", menu_button_font_size, "font_title", true),
+			create_menu_button("menu_option_5", "credits_menu_button_name", menu_button_font_size, "font_title")
+		}
+	else
+		menu_button_definitions = {
+			create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
+			create_menu_button("menu_option_2", "tutorial_menu_button_name", menu_button_font_size, "font_title"),
+			create_menu_button("menu_option_3", "options_menu_button_name", menu_button_font_size, "font_title"),
+			create_menu_button("menu_option_4", "credits_menu_button_name", menu_button_font_size, "font_title")
+		}
+	end
 elseif PLATFORM == "xb1" then
 	menu_button_definitions = {
 		create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
 		create_menu_button("menu_option_2", "tutorial_menu_button_name", menu_button_font_size, "font_title"),
 		create_menu_button("menu_option_3", "options_menu_button_name", menu_button_font_size, "font_title"),
-		create_menu_button("menu_option_4", "title_screen_store_xb1", menu_button_font_size, "font_title"),
+		create_menu_button("menu_option_4", "title_screen_store_xb1", menu_button_font_size, "font_title", true),
 		create_menu_button("menu_option_5", "credits_menu_button_name", menu_button_font_size, "font_title")
 	}
 else

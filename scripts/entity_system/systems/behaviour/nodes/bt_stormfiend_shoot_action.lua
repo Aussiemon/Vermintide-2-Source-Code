@@ -26,6 +26,12 @@ BTStormfiendShootAction.enter = function (self, unit, blackboard, t)
 	blackboard.shoot_data = blackboard.shoot_data or {}
 	blackboard.physics_world = blackboard.physics_world or World.get_data(world, "physics_world")
 	blackboard.attacking_target = blackboard.target_unit
+	local drawer = Managers.state.debug:drawer({
+		mode = "retained",
+		name = "BTStormfiendShootAction"
+	})
+
+	drawer:reset()
 
 	if self:init_attack(unit, blackboard, action, t) then
 		local data = blackboard.shoot_data
@@ -187,6 +193,8 @@ BTStormfiendShootAction._calculate_aim = function (self, unit, unit_position, at
 		firewall_start_position = (attack_minimum_length_sq < end_position_distance_sq and projected_start_position) or nil
 		aim_start_position = projected_start_position
 		aim_end_position = aim_end_position or hit_position
+
+		self:_debug_firewall(attack_minimum_length, start_position, end_check_position, projected_start_position, hit_position)
 	end
 
 	local aim_start_offset = action.aim_start_offset

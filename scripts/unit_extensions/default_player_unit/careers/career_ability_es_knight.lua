@@ -101,7 +101,7 @@ CareerAbilityESKnight.update = function (self, unit, input, dt, context, t)
 end
 
 CareerAbilityESKnight.stop = function (self, reason)
-	if self._is_priming then
+	if reason ~= "pushed" and reason ~= "stunned" and self._is_priming then
 		self:_stop_priming()
 	end
 end

@@ -85,7 +85,7 @@ LevelSettings.inn_level = {
 		"location_keep_krubers_room",
 		"location_keep_saltzpyres_room",
 		"location_keep_siennas_room",
-		"location_keep_olesyas_room",
+		"location_keep_trophy_room",
 		"location_keep_lohners_room",
 		"location_keep_study",
 		"location_keep_mysterious_tower"

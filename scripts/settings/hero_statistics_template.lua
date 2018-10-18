@@ -9,6 +9,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_health"),
+		description_name = Localize("tooltip_hero_stats_health_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local health_extension = ScriptUnit.has_extension(player_unit, "health_system")
@@ -20,11 +21,29 @@ HeroStatisticsTemplate = {
 			local presentation_text = tostring(value) .. "(" .. tostring(modifier) .. "%" .. ")"
 
 			return presentation_text
+		end,
+		generate_value_new = function (params)
+			local player_unit = Managers.player:local_player().player_unit
+			local health_extension = ScriptUnit.has_extension(player_unit, "health_system")
+			local health = health_extension:get_max_health()
+
+			return health
+		end,
+		generate_description = function (params)
+			local player_unit = Managers.player:local_player().player_unit
+			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
+			local modified_health = buff_extension:apply_buffs_to_value(100, StatBuffIndex.MAX_HEALTH)
+			local modifier = (modified_health - 100) / 100 * 100
+			local desc_key = "tooltip_hero_stats_health_description"
+			local description_text = string.format(Localize(desc_key), modifier)
+
+			return description_text
 		end
 	},
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_movement_speed"),
+		description_name = Localize("tooltip_hero_stats_movement_speed_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local movement_settings = PlayerUnitMovementSettings.get_movement_settings_table(player_unit)
@@ -40,6 +59,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_respawn_speed"),
+		description_name = Localize("tooltip_hero_stats_respawn_speed_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -55,6 +75,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_ability_cooldown"),
+		description_name = Localize("tooltip_hero_stats_ability_cooldown_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -71,6 +92,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_revive_speed"),
+		description_name = Localize("tooltip_hero_stats_revive_speed_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -93,6 +115,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_attack_speed"),
+		description_name = Localize("tooltip_hero_stats_attack_speed_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -107,6 +130,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_critical_strike_chance"),
+		description_name = Localize("tooltip_hero_stats_critical_strike_chance_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -126,6 +150,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_critical_strike_boost"),
+		description_name = Localize("tooltip_hero_stats_critical_strike_boost_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -140,6 +165,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_headshot_damage"),
+		description_name = Localize("tooltip_hero_stats_headshot_damage_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -154,6 +180,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_power_increase"),
+		description_name = Localize("tooltip_hero_stats_power_increase_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -169,6 +196,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_power_vs_skaven"),
+		description_name = Localize("tooltip_hero_stats_power_vs_skaven_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -184,6 +212,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_power_vs_chaos"),
+		description_name = Localize("tooltip_hero_stats_power_vs_chaos_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -199,6 +228,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_power_vs_infantry"),
+		description_name = Localize("tooltip_hero_stats_power_vs_infantry_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -214,6 +244,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_power_vs_armored"),
+		description_name = Localize("tooltip_hero_stats_power_vs_armored_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -229,6 +260,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_power_vs_monsters"),
+		description_name = Localize("tooltip_hero_stats_power_vs_monsters_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -244,6 +276,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_power_vs_frenzied"),
+		description_name = Localize("tooltip_hero_stats_power_vs_frenzied_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -266,6 +299,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_shields_and_stamina"),
+		description_name = Localize("tooltip_hero_stats_shields_and_stamina_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -283,6 +317,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_stamina_regeneration_speed"),
+		description_name = Localize("tooltip_hero_stats_stamina_regeneration_speed_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -300,6 +335,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_dodge_distance"),
+		description_name = Localize("tooltip_hero_stats_dodge_distance_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local movement_settings = PlayerUnitMovementSettings.get_movement_settings_table(player_unit)
@@ -316,6 +352,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_block_push_arc"),
+		description_name = Localize("tooltip_hero_stats_block_push_arc_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -330,6 +367,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_block_cost_reduction"),
+		description_name = Localize("tooltip_hero_stats_block_cost_reduction_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -345,6 +383,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_stun_duration"),
+		description_name = Localize("tooltip_hero_stats_stun_duration_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -360,6 +399,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_damage_reduction"),
+		description_name = Localize("tooltip_hero_stats_damage_reduction_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -375,6 +415,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_damage_reduction_skaven"),
+		description_name = Localize("tooltip_hero_stats_damage_reduction_skaven_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -390,6 +431,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_damage_reduction_chaos"),
+		description_name = Localize("tooltip_hero_stats_damage_reduction_chaos_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -405,6 +447,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_damage_reduction_aoe"),
+		description_name = Localize("tooltip_hero_stats_damage_reduction_aoe_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -420,6 +463,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_curse_resistance"),
+		description_name = Localize("tooltip_hero_stats_curse_resistance_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -442,6 +486,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_max_ammo_increase"),
+		description_name = Localize("tooltip_hero_stats_max_ammo_increase_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -456,6 +501,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_reload_speed_increase"),
+		description_name = Localize("tooltip_hero_stats_reload_speed_increase_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
@@ -470,6 +516,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_max_overheat"),
+		description_name = Localize("tooltip_hero_stats_max_overheat_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local overcharge_extension = ScriptUnit.has_extension(player_unit, "overcharge_system")
@@ -482,6 +529,7 @@ HeroStatisticsTemplate = {
 	{
 		type = "entry",
 		display_name = Localize("tooltip_hero_stats_overheat_generated"),
+		description_name = Localize("tooltip_hero_stats_overheat_generated_description"),
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")

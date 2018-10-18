@@ -229,14 +229,40 @@ AIBotGroupSystem.update = function (self, context, t)
 	self._t = t
 	local dt = context.dt
 
+	Profiler.start("_update_proximity_bot_breakables")
 	self:_update_proximity_bot_breakables(t)
+	Profiler.stop("_update_proximity_bot_breakables")
+	Profiler.start("_update_urgent_targets")
 	self:_update_urgent_targets(dt, t)
+	Profiler.stop("_update_urgent_targets")
+	Profiler.start("_update_opportunity_targets")
 	self:_update_opportunity_targets(dt, t)
+	Profiler.stop("_update_opportunity_targets")
+	Profiler.start("_update_existence_checks")
 	self:_update_existence_checks(dt, t)
+	Profiler.stop("_update_existence_checks")
+	Profiler.start("_update_move_targets")
 	self:_update_move_targets(dt, t)
+	Profiler.stop("_update_move_targets")
+	Profiler.start("_update_priority_targets")
 	self:_update_priority_targets(dt, t)
+	Profiler.stop("_update_priority_targets")
+	Profiler.start("_update_pickups")
 	self:_update_pickups(dt, t)
+	Profiler.stop("_update_pickups")
+	self:_update_order_debug()
+	Profiler.start("_update_proximity_bot_breakables_debug")
+	self:_update_proximity_bot_breakables_debug()
+	Profiler.stop("_update_proximity_bot_breakables_debug")
+	Profiler.start("_update_first_person_debug")
+	self:_update_first_person_debug()
+	Profiler.stop("_update_first_person_debug")
+	Profiler.start("_update_weapon_debug")
+	self:_update_weapon_debug()
+	Profiler.stop("_update_weapon_debug")
+	Profiler.start("_update_ally_needs_aid_priority")
 	self:_update_ally_needs_aid_priority()
+	Profiler.stop("_update_ally_needs_aid_priority")
 end
 
 AIBotGroupSystem.bot_orders = {
@@ -260,14 +286,14 @@ AIBotGroupSystem.order = function (self, order_type, bot_unit, order_target, ord
 		func(self, bot_unit, order_target, ordering_player)
 	else
 		local rpc_type = order_data.rpc_type
-		local target_id, rpc_name = nil
+		local target_id = nil
 
 		if rpc_type == "rpc_bot_unit_order" then
 			target_id = self._unit_storage:go_id(order_target)
 		elseif rpc_type == "rpc_bot_lookup_order" then
 			target_id = NetworkLookup[order_data.lookup][order_target]
 		else
-			fassert(false, "Incorrect rpc_type %q.", rpc_type)
+			ferror("Incorrect rpc_type %q.", rpc_type)
 		end
 
 		if Managers.state.network:game() then
@@ -284,6 +310,26 @@ AIBotGroupSystem.get_pickup_order = function (self, bot_unit, slot_name)
 	local order = bot_data.pickup_orders[slot_name]
 
 	return order
+end
+
+AIBotGroupSystem.get_ammo_pickup_order_unit = function (self, bot_unit)
+	local bot_data = self._bot_ai_data[bot_unit]
+	local pickup_unit = bot_data.ammo_pickup_order_unit
+
+	return pickup_unit
+end
+
+AIBotGroupSystem.has_pending_pickup_order = function (self, bot_unit)
+	local bot_data = self._bot_ai_data[bot_unit]
+	local pickup_orders = bot_data.pickup_orders
+
+	for slot_name, order in pairs(pickup_orders) do
+		if order.unit then
+			return true
+		end
+	end
+
+	return false
 end
 
 AIBotGroupSystem.rpc_bot_unit_order = function (self, sender, order_type_id, bot_unit_id, order_target_id, ordering_player_peer, ordering_local_player_id)
@@ -308,52 +354,105 @@ AIBotGroupSystem.rpc_bot_lookup_order = function (self, sender, order_type_id, b
 	end
 end
 
+AIBotGroupSystem._order_ammo_pickup = function (self, bot_unit, pickup_unit, ordering_player)
+	local bot_data = self._bot_ai_data[bot_unit]
+
+	if bot_data then
+		local blackboard = bot_data.blackboard
+		local inventory_extension = blackboard.inventory_extension
+		local has_full_ammo = inventory_extension:has_full_ammo()
+
+		if has_full_ammo then
+			self:_chat_message(bot_unit, ordering_player, "has_full_ammo")
+		else
+			local time_manager = Managers.time
+			local t = time_manager:time("game")
+			blackboard.ammo_pickup = pickup_unit
+			blackboard.ammo_dist = Vector3.distance(POSITION_LOOKUP[bot_unit], POSITION_LOOKUP[pickup_unit])
+			blackboard.ammo_pickup_valid_until = t + 5
+			blackboard.needs_target_position_refresh = true
+			bot_data.ammo_pickup_order_unit = pickup_unit
+
+			self:_chat_message(bot_unit, ordering_player, "acknowledge_ammo")
+		end
+	else
+		for unit, data in pairs(self._bot_ai_data) do
+			local order_unit = data.ammo_pickup_order_unit
+
+			if order_unit == pickup_unit then
+				local blackboard = data.blackboard
+
+				self:_chat_message(unit, ordering_player, "abort_pickup_assigned_to_other")
+
+				data.ammo_pickup_order_unit = nil
+				blackboard.ammo_pickup = nil
+				blackboard.needs_target_position_refresh = true
+			end
+		end
+	end
+end
+
 AIBotGroupSystem._order_pickup = function (self, bot_unit, pickup_unit, ordering_player)
 	if self._is_server then
 		local pickup_ext = ScriptUnit.extension(pickup_unit, "pickup_system")
 		local settings = pickup_ext:get_pickup_settings()
 		local slot_name = settings.slot_name
 
-		if not slot_name then
-			return
-		end
+		if settings.type == "ammo" then
+			self:_order_ammo_pickup(bot_unit, pickup_unit, ordering_player)
+		elseif slot_name then
+			local bot_data = self._bot_ai_data[bot_unit]
 
-		local bot_data = self._bot_ai_data[bot_unit]
+			if bot_data then
+				local inventory_extension = ScriptUnit.extension(bot_unit, "inventory_system")
+				local slot_data = inventory_extension:get_slot_data(slot_name)
 
-		if bot_data then
-			for unit, data in pairs(self._bot_ai_data) do
-				local order = data.pickup_orders[slot_name]
+				if slot_data then
+					local current_item_template = inventory_extension:get_item_template(slot_data)
+					local has_similar_item_already = nil
+					has_similar_item_already = (pickup_ext.pickup_name ~= "grimoire" or current_item_template.is_grimoire) and current_item_template.pickup_data and current_item_template.pickup_data.pickup_name == pickup_ext.pickup_name
 
-				if order and order.unit == pickup_unit then
-					if unit == bot_unit then
-						self:_chat_message(bot_unit, ordering_player, "already_picking_up")
+					if has_similar_item_already then
+						self:_chat_message(bot_unit, ordering_player, "already_have_item", Unit.get_data(pickup_unit, "interaction_data", "hud_description"))
 
 						return
 					end
-
-					self:_chat_message(unit, ordering_player, "abort_pickup_assigned_to_other")
-
-					data.pickup_orders[slot_name] = nil
-					data.blackboard.needs_target_position_refresh = true
 				end
-			end
 
-			self:_chat_message(bot_unit, ordering_player, "acknowledge_pickup", Localize(Unit.get_data(pickup_unit, "interaction_data", "hud_description")))
+				for unit, data in pairs(self._bot_ai_data) do
+					local order = data.pickup_orders[slot_name]
 
-			bot_data.pickup_orders[slot_name] = {
-				unit = pickup_unit,
-				pickup_name = pickup_ext.pickup_name
-			}
-			bot_data.blackboard.needs_target_position_refresh = true
-		else
-			for unit, data in pairs(self._bot_ai_data) do
-				local order = data.pickup_orders[slot_name]
+					if order and order.unit == pickup_unit then
+						if unit == bot_unit then
+							self:_chat_message(bot_unit, ordering_player, "already_picking_up")
 
-				if order and order.unit == pickup_unit then
-					self:_chat_message(unit, ordering_player, "abort_pickup_assigned_to_other")
+							return
+						end
 
-					data.pickup_orders[slot_name] = nil
-					data.blackboard.needs_target_position_refresh = true
+						self:_chat_message(unit, ordering_player, "abort_pickup_assigned_to_other")
+
+						data.pickup_orders[slot_name] = nil
+						data.blackboard.needs_target_position_refresh = true
+					end
+				end
+
+				self:_chat_message(bot_unit, ordering_player, "acknowledge_pickup", Unit.get_data(pickup_unit, "interaction_data", "hud_description"))
+
+				bot_data.pickup_orders[slot_name] = {
+					unit = pickup_unit,
+					pickup_name = pickup_ext.pickup_name
+				}
+				bot_data.blackboard.needs_target_position_refresh = true
+			else
+				for unit, data in pairs(self._bot_ai_data) do
+					local order = data.pickup_orders[slot_name]
+
+					if order and order.unit == pickup_unit then
+						self:_chat_message(unit, ordering_player, "abort_pickup_assigned_to_other")
+
+						data.pickup_orders[slot_name] = nil
+						data.blackboard.needs_target_position_refresh = true
+					end
 				end
 			end
 		end
@@ -362,15 +461,18 @@ end
 
 AIBotGroupSystem._order_drop = function (self, bot_unit, pickup_name, ordering_player)
 	if self._is_server then
-		local pickup_settings = AllPickups[pickup_name]
 		local bot_data = self._bot_ai_data[bot_unit]
-		local slot_name = pickup_settings.slot_name
-		local order = bot_data.pickup_orders[slot_name]
 
-		if bot_data and order and order.pickup_name == pickup_name then
-			bot_data.pickup_orders[slot_name] = nil
+		if bot_data then
+			local pickup_settings = AllPickups[pickup_name]
+			local slot_name = pickup_settings.slot_name
+			local order = bot_data.pickup_orders[slot_name]
 
-			self:_chat_message(bot_unit, ordering_player, "acknowledge_drop")
+			if order and order.pickup_name == pickup_name then
+				bot_data.pickup_orders[slot_name] = nil
+
+				self:_chat_message(bot_unit, ordering_player, "acknowledge_drop")
+			end
 		end
 	end
 end
@@ -701,7 +803,7 @@ AIBotGroupSystem._find_cluster_position = function (self, nav_world, selected_un
 
 	local rotation = nil
 
-	if Vector3.length(velocity) > 0.1 then
+	if Vector3.length_squared(velocity) > 0.010000000000000002 then
 		rotation = Quaternion.look(velocity, Vector3.up())
 		self._last_move_target_rotations[selected_unit] = nil
 	elseif self._last_move_target_rotations[selected_unit] then
@@ -830,6 +932,13 @@ AIBotGroupSystem._find_destination_points_outside_volume = function (self, nav_w
 	local rotation = Quaternion.look(dir, Vector3.up())
 	local space_per_player = range - 1
 	local points = self:_find_points(nav_world, Vector3(center_point[1], center_point[2], selected_unit_pos[3]), rotation, self._left_vectors_outside_volume, self._right_vectors_outside_volume, space_per_player, range, needed_points)
+
+	if script_data.ai_bots_debug then
+		for k, v in ipairs(points) do
+			QuickDrawer:sphere(v, 0.3, Color(255, 0, 255))
+		end
+	end
+
 	local num_points = #points
 	local current_index = 1
 	local last_point = points[current_index]
@@ -849,6 +958,12 @@ AIBotGroupSystem._find_destination_points = function (self, nav_world, origin_po
 	local range = 3
 	local space_per_player = 1
 	local points = self:_find_points(nav_world, origin_point, rotation, self._left_vectors, self._right_vectors, space_per_player, range, needed_points)
+
+	if script_data.ai_bots_debug then
+		for k, v in ipairs(points) do
+			QuickDrawer:sphere(v, 0.3, Color(255, 0, 255))
+		end
+	end
 
 	if needed_points > #points then
 		for i = #points + 1, needed_points, 1 do
@@ -903,6 +1018,10 @@ AIBotGroupSystem._raycast = function (self, nav_world, point, vector, range)
 	local ray_range = range + SPACE_NEEDED
 	local to = point + vector * ray_range
 	local success, pos = GwNavQueries.raycast(nav_world, point, to)
+
+	if script_data.ai_bots_debug then
+		QuickDrawer:line(point, point + vector * ray_range + Vector3(0, 0, 0.1), Color(255, 0, 0))
+	end
 
 	if success then
 		return range, pos - vector * SPACE_NEEDED, true
@@ -1176,6 +1295,8 @@ end
 AIBotGroupSystem._update_pickups = function (self, dt, t)
 	local players = Managers.player:players()
 
+	Profiler.start("do overlaps")
+
 	if self._update_pickups_at < t then
 		self._update_pickups_at = t + 0.15 + Math.random() * 0.1
 		local last_key = self._last_key_in_available_pickups
@@ -1198,9 +1319,14 @@ AIBotGroupSystem._update_pickups = function (self, dt, t)
 		end
 	end
 
+	Profiler.stop("do overlaps")
 	self:_update_orders(dt, t)
+	Profiler.start("update who takes what health")
 	self:_update_health_pickups(dt, t)
+	Profiler.stop("update who takes what health")
+	Profiler.start("update who takes what mule pickup")
 	self:_update_mule_pickups(dt, t)
+	Profiler.stop("update who takes what mule pickup")
 end
 
 local PICKUP_CHECK_RANGE = 15
@@ -1242,20 +1368,27 @@ AIBotGroupSystem._update_pickups_near_player = function (self, unit, t)
 	local hp_pickups = self._available_health_pickups
 	local mule_pickups = self._available_mule_pickups
 	local bot_ai_data = self._bot_ai_data
-	local valid_until = t + 5
 
 	for unit, data in pairs(bot_ai_data) do
 		local blackboard = data.blackboard
 		local ammo_pickup = blackboard.ammo_pickup
 
 		if Unit.alive(ammo_pickup) then
-			data.ammo_dist = Vector3.distance(POSITION_LOOKUP[unit], POSITION_LOOKUP[ammo_pickup])
+			local ammo_distance = Vector3.distance(POSITION_LOOKUP[unit], POSITION_LOOKUP[ammo_pickup])
+			blackboard.ammo_dist = ammo_distance
+			data.ammo_dist = ammo_distance
 		elseif blackboard.ammo_pickup then
 			blackboard.ammo_pickup = nil
+			blackboard.ammo_dist = nil
 			data.ammo_dist = nil
+
+			if data.ammo_pickup_order_unit then
+				data.ammo_pickup_order_unit = nil
+			end
 		end
 	end
 
+	local valid_until = t + 5
 	local ammo_stickiness = 2.5
 	local allowed_distance_to_self = 5
 	local allowed_distance_to_follow_pos = 15
@@ -1290,27 +1423,35 @@ AIBotGroupSystem._update_pickups_near_player = function (self, unit, t)
 			elseif pickup_data.type == "ammo" and (not pickup_data.only_once or game_mode_key == "survival") then
 				for unit, data in pairs(bot_ai_data) do
 					local bb = data.blackboard
-					local current_pickup = bb.ammo_pickup
-					local pickup_pos = POSITION_LOOKUP[pickup_unit]
-					local dist = Vector3.distance(POSITION_LOOKUP[unit], pickup_pos)
-					local follow_pos = data.follow_position
-					local allowed_to_take_ammo = nil
+					local ammo_pickup_order_unit = data.ammo_pickup_order_unit
 
-					if pickup_data.only_once then
-						local inventory_ext = bb.inventory_extension
-						local current_ammo, _ = inventory_ext:current_ammo_status("slot_ranged")
-						allowed_to_take_ammo = current_ammo and current_ammo == 0
-					else
-						allowed_to_take_ammo = true
-					end
+					if not ammo_pickup_order_unit or bb.ammo_pickup_valid_until <= t then
+						local current_pickup = bb.ammo_pickup
+						local pickup_pos = POSITION_LOOKUP[pickup_unit]
+						local dist = Vector3.distance(POSITION_LOOKUP[unit], pickup_pos)
+						local follow_pos = data.follow_position
+						local allowed_to_take_ammo = nil
 
-					local ammo_condition = (dist < allowed_distance_to_self or (follow_pos and Vector3.distance(follow_pos, pickup_pos) < allowed_distance_to_follow_pos)) and (not current_pickup or dist - ((current_pickup == pickup_unit and ammo_stickiness) or 0) < data.ammo_dist)
+						if pickup_data.only_once then
+							local inventory_ext = bb.inventory_extension
+							local current_ammo, _ = inventory_ext:current_ammo_status("slot_ranged")
+							allowed_to_take_ammo = current_ammo and current_ammo == 0
+						else
+							allowed_to_take_ammo = true
+						end
 
-					if allowed_to_take_ammo and ammo_condition then
-						bb.ammo_pickup = pickup_unit
-						bb.ammo_pickup_valid_until = valid_until
-						bb.ammo_dist = dist
-						data.ammo_dist = dist
+						local ammo_condition = (dist < allowed_distance_to_self or (follow_pos and Vector3.distance(follow_pos, pickup_pos) < allowed_distance_to_follow_pos)) and (not current_pickup or dist - ((current_pickup == pickup_unit and ammo_stickiness) or 0) < data.ammo_dist)
+
+						if allowed_to_take_ammo and ammo_condition then
+							bb.ammo_pickup = pickup_unit
+							bb.ammo_pickup_valid_until = valid_until
+							bb.ammo_dist = dist
+							data.ammo_dist = dist
+
+							if ammo_pickup_order_unit then
+								data.ammo_pickup_order_unit = nil
+							end
+						end
 					end
 				end
 			end
@@ -1458,7 +1599,6 @@ AIBotGroupSystem._update_mule_pickups = function (self, dt, t)
 
 			if AiUtils.unit_alive(player_unit) then
 				local inventory_ext = ScriptUnit.extension(player_unit, "inventory_system")
-				local status_ext = ScriptUnit.extension(player_unit, "status_system")
 				local item = inventory_ext:get_slot_data(slot_name)
 
 				if not item then
@@ -1469,6 +1609,8 @@ AIBotGroupSystem._update_mule_pickups = function (self, dt, t)
 
 						if Vector3_distance_squared(pos, player_pos) < max_pickup_dist_sq then
 							num_players = num_players + 1
+
+							break
 						end
 					end
 				end
@@ -2160,6 +2302,10 @@ AIBotGroupSystem.in_cover = function (self, cover_unit)
 end
 
 local EPSILON = 0.01
+local debug_drawer_info = {
+	mode = "retained",
+	name = "AIBotGroupSystem:aoe_threat_created"
+}
 
 local function detect_cylinder(nav_world, traverse_logic, bot_position, bot_height, bot_radius, x, y, z, rotation, size)
 	local bot_x = bot_position.x
@@ -2170,6 +2316,14 @@ local function detect_cylinder(nav_world, traverse_logic, bot_position, bot_heig
 	local flat_dist_from_center = math.sqrt(offset_x * offset_x + offset_y * offset_y)
 	local radius = math.max(size.x, size.y)
 	local half_height = size.z
+
+	if script_data.ai_bots_aoe_threat_debug then
+		local cylinder_position = Vector3(x, y, z - half_height)
+		local drawer = Managers.state.debug:drawer(debug_drawer_info)
+
+		drawer:reset()
+		drawer:cylinder(cylinder_position, cylinder_position + Vector3.up() * 2 * half_height, radius, Colors.get("red"))
+	end
 
 	if flat_dist_from_center <= radius + bot_radius and bot_z > z - bot_height - half_height and bot_z < z + half_height then
 		local escape_dist = radius - flat_dist_from_center
@@ -2206,6 +2360,14 @@ local function detect_sphere(nav_world, traverse_logic, bot_position, bot_height
 	local offset_x = bot_x - sphere_x
 	local offset_y = bot_y - sphere_y
 	local flat_dist_from_center = math.sqrt(offset_x * offset_x + offset_y * offset_y)
+
+	if script_data.ai_bots_aoe_threat_debug then
+		local sphere_position = Vector3(sphere_x, sphere_y, sphere_z)
+		local drawer = Managers.state.debug:drawer(debug_drawer_info)
+
+		drawer:reset()
+		drawer:sphere(sphere_position, sphere_radius, Colors.get("red"))
+	end
 
 	if flat_dist_from_center > sphere_radius + bot_radius then
 		return
@@ -2247,6 +2409,14 @@ local function detect_oobb(nav_world, traverse_logic, bot_position, bot_height, 
 	local extents_x = extents.x + bot_radius
 	local extents_y = extents.y + bot_radius
 	local extents_z = extents.z + half_bot_height
+
+	if script_data.ai_bots_aoe_threat_debug then
+		local oobb_position = Vector3(x, y, z)
+		local drawer = Managers.state.debug:drawer(debug_drawer_info)
+
+		drawer:reset()
+		drawer:oobb_overlap(oobb_position, extents, rotation, Colors.get("red"))
+	end
 
 	if extents_x < x_offset or x_offset < -extents_x or extents_y < y_offset or y_offset < -extents_y or extents_z < z_offset or z_offset < -extents_z then
 		return
@@ -2325,113 +2495,37 @@ end
 local MESSAGES = {
 	abort_pickup_assigned_to_other = {
 		default = {
-			"Oh, sure, they can have it.",
-			"Oh, sure, they can have it.",
-			"Oh, sure, they can have it.",
-			"Oh, sure, they can have it.",
-			"Oh, you take it, go ahead.",
-			"Oh, you take it, go ahead.",
-			"Oh, you take it, go ahead.",
-			"Oh, you take it, go ahead.",
-			"No worries, they're better off with it.",
-			"Sure, they can have it.",
-			"I'll hold on to the next one.",
-			"I'll just eh... ok",
-			"No worries, they're better off with it.",
-			"Sure, they can have it.",
-			"I'll hold on to the next one.",
-			"I'll just eh... ok",
-			"I didn't want it anyway."
-		},
-		wood_elf = {
-			"Make up your mind, lumberfoot.",
-			"Make up your mind, lumberfoot.",
-			"Make up your mind, lumberfoot.",
-			"Make up your mind, lumberfoot.",
-			"Make up your mind, lumberfoot.",
-			"Make up your mind, lumberfoot.",
-			"Make up your mind, lumberfoot.",
-			"Make up your mind, lumberfoot.",
-			"Make up your mind, lumberfoot.",
-			"Lumberfoots and their attention span...",
-			"Lumberfoots and their attention span...",
-			"Lumberfoots and their attention span...",
-			"Lumberfoots and their attention span...",
-			"Lumberfoots and their attention span...",
-			"Lumberfoots and their attention span...",
-			"Lumberfoots and their attention span...",
-			"Lumberfoots and their attention span...",
-			"Lumberfoots and their attention span...",
-			"Even elder races get tired of waiting... for you to make up your mind!"
+			"bot_command_generic_abort_pickup_assigned_to_other_01"
 		}
 	},
 	acknowledge_pickup = {
 		default = {
-			"Alright, picking up the %s.",
-			"Alright, picking up the %s.",
-			"Alright, picking up the %s.",
-			"Alright, picking up the %s.",
-			"Yes, I'll hold onto the %s.",
-			"Yes, I'll hold onto the %s.",
-			"Yes, I'll hold onto the %s.",
-			"Yes, I'll hold onto the %s.",
-			"Sure thing, taking the %s.",
-			"Sure thing, taking the %s.",
-			"Sure thing, taking the %s.",
-			"Sure thing, taking the %s.",
-			"The %s? Yeah, I'll grab it.",
-			"The %s? Yeah, I'll grab it.",
-			"I'll take the %s! Hold on.",
-			"I'll take the %s! Hold on.",
-			"Heh %s, it's mine.. mine... MINE!"
+			"bot_command_generic_acknowledge_pickup_01"
+		}
+	},
+	acknowledge_ammo = {
+		default = {
+			"bot_command_generic_acknowledge_ammo_01"
+		}
+	},
+	has_full_ammo = {
+		default = {
+			"bot_command_generic_has_full_ammo_01"
 		}
 	},
 	already_picking_up = {
 		default = {
-			"Hold your horses, I'm on my way!",
-			"Yes, I heard you the first time.",
-			"Acknowledged.",
-			"Uh. Yes.",
-			"Sure, already on my way."
+			"bot_command_generic_already_picking_up_01"
+		}
+	},
+	already_have_item = {
+		default = {
+			"bot_command_generic_already_have_item_01"
 		}
 	},
 	acknowledge_drop = {
 		default = {
-			"Alright, I won't hold it as tightly."
-		}
-	}
-}
-local VO = {
-	acknowledge_pickup = {
-		dwarf_ranger = {
-			bright_wizard = {
-				"pdr_act3_dwarf_quest_story_two_02"
-			},
-			default = {
-				"pdr_gameplay_response_25"
-			}
-		},
-		empire_soldier = {
-			default = {
-				"pes_gameplay_special_enemy_kill_melee_08"
-			}
-		},
-		bright_wizard = {
-			default = {
-				"pbw_gameplay_special_enemy_kill_ranged_01"
-			}
-		},
-		wood_elf = {
-			default = {
-				"pwe_gameplay_special_enemy_kill_ranged_13"
-			}
-		}
-	},
-	acknowledge_drop = {
-		dwarf_ranger = {
-			default = {
-				"pdr_objective_dropping_grimoire_01"
-			}
+			"bot_command_generic_acknowledge_drop_01"
 		}
 	}
 }
@@ -2439,12 +2533,15 @@ local VO = {
 AIBotGroupSystem._chat_message = function (self, unit, ordering_player, message, ...)
 	local player = Managers.player:owner(unit)
 	local character = SPProfiles[player:profile_index()].display_name
-	local ordering_character = SPProfiles[ordering_player:profile_index()].display_name
 	local msg_table = MESSAGES[message]
 	local chr_table = msg_table[character] or msg_table.default
 	local message_string = chr_table[Math.random(1, #chr_table)]
+	local localize = true
+	local localize_parameters = true
+	local localization_parameters = FrameTable.alloc_table()
 
-	Managers.chat:send_chat_message(1, player:local_player_id(), string.format(message_string, ...))
+	table.append_varargs(localization_parameters, ...)
+	Managers.chat:send_chat_message(1, player:local_player_id(), message_string, localize, localization_parameters, localize_parameters)
 end
 
 return

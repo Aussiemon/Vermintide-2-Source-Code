@@ -1,6 +1,7 @@
 require("scripts/settings/horde_compositions")
 require("scripts/settings/horde_compositions_pacing")
 
+WAS_RELOADED = true
 HordeSettingsBasics = {
 	ambush = {
 		max_size,
@@ -483,8 +484,8 @@ local SpecialDifficultyOverrides_chaos = {
 SpecialsSettings = {
 	default = {
 		spawn_method = "specials_by_slots",
-		disabled = false,
 		max_specials = 2,
+		disabled = false,
 		breeds = {
 			"skaven_gutter_runner",
 			"skaven_pack_master",
@@ -531,6 +532,71 @@ SpecialsSettings = {
 				"skaven_pack_master",
 				"skaven_gutter_runner",
 				"skaven_ratling_gunner"
+			}
+		},
+		speed_running_intervention = {
+			travel_distance_check_frequency = 10,
+			travel_distance_threshold = 40,
+			time_required_in_pacing_peak_to_ignore_high_intensity = 40,
+			required_time_spent_in_high_threat = 30,
+			chance_of_vector_horde = 0.25,
+			breeds = {
+				"skaven_pack_master",
+				"skaven_gutter_runner",
+				"chaos_corruptor_sorcerer",
+				"skaven_ratling_gunner"
+			},
+			delay_between_speed_running_intervention_special_spawn = {
+				{
+					15,
+					30
+				},
+				{
+					12,
+					24
+				},
+				{
+					8,
+					18
+				},
+				{
+					5,
+					12
+				}
+			},
+			delay_between_speed_running_intervention_horde_spawn = {
+				8,
+				12
+			},
+			vector_horde_breeds = {
+				"skaven_plague_monk",
+				"chaos_berzerker",
+				"chaos_marauder",
+				"chaos_raider"
+			},
+			vector_horde_config = {
+				skaven_plague_monk = {
+					2,
+					3
+				},
+				chaos_berzerker = {
+					2,
+					3
+				},
+				chaos_marauder = {
+					5,
+					8
+				},
+				chaos_raider = {
+					2,
+					3
+				}
+			},
+			total_travel_distance_scaling_thresholds = {
+				80,
+				160,
+				240,
+				320
 			}
 		},
 		difficulty_overrides = SpecialDifficultyOverrides
@@ -2648,9 +2714,10 @@ DebugBreedSpawns[#DebugBreedSpawns + 1] = {
 			chaos_exalted_champion_norsca = true,
 			skaven_storm_vermin_champion = true,
 			chaos_tentacle = true,
+			chaos_mutator_sorcerer = true,
 			pet_pig = true,
-			chaos_plague_wave_spawner = true,
 			chaos_spawn_exalted_champion_norsca = true,
+			chaos_plague_wave_spawner = true,
 			skaven_stormfiend_demo = true,
 			chaos_dummy_troll = true,
 			skaven_grey_seer = true,

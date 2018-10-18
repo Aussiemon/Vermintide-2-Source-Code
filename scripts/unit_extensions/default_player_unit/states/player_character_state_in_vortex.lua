@@ -15,6 +15,7 @@ PlayerCharacterStateInVortex.on_enter = function (self, unit, input, dt, context
 	local vortex_template = vortex_extension.vortex_template
 	self.vortex_unit = vortex_unit
 	self.vortex_unit_go_id = vortex_go_id
+	self.vortex_owner_unit = vortex_extension._owner_unit
 	local player_actions_allowed = vortex_template.player_actions_allowed
 	self.vortex_full_inner_radius = vortex_template.full_inner_radius
 	self.ascend_speed = vortex_template.player_ascend_speed
@@ -79,9 +80,10 @@ PlayerCharacterStateInVortex.on_exit = function (self, unit, input, dt, context,
 		first_person_extension:play_hud_sound_event("sfx_player_in_vortex_false")
 
 		self.screenspace_effect_particle_id = nil
+		local attacker_unit = (Unit.alive(self.vortex_owner_unit) and self.vortex_owner_unit) or unit
 		local buff_system = Managers.state.entity:system("buff_system")
 
-		buff_system:add_buff(unit, "vortex_base", unit)
+		buff_system:add_buff(unit, "vortex_base", attacker_unit)
 
 		if not self.player_actions_allowed then
 			first_person_extension:unhide_weapons("in_vortex")
@@ -94,6 +96,8 @@ PlayerCharacterStateInVortex.on_exit = function (self, unit, input, dt, context,
 			end
 		end
 	end
+
+	self.vortex_owner_unit = nil
 end
 
 PlayerCharacterStateInVortex.update_spin_velocity = function (self, unit, vortex_unit, vortex_unit_go_id, dt)

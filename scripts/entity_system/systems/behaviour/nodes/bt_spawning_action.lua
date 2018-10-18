@@ -54,7 +54,7 @@ BTSpawningAction.leave = function (self, unit, blackboard, t, reason, destroy)
 
 	ai_navigation:init_position()
 
-	if (blackboard.spawn_type == "horde" or blackboard.spawn_type == "horde_hidden") and not destroy then
+	if (blackboard.spawn_type == "horde" or blackboard.spawn_type == "horde_hidden") and not destroy and not blackboard.about_to_be_destroyed then
 		local ai_extension = ScriptUnit.extension(unit, "ai_system")
 
 		ai_extension:force_enemy_detection(t)

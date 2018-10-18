@@ -122,6 +122,20 @@ DoorSystem.get_doors = function (self, position, radius, result)
 	return Broadphase.query(self._broadphase, position, radius, result)
 end
 
+DoorSystem.get_boss_door_units = function (self)
+	local boss_doors = self._boss_doors
+	local boss_door_units = {}
+
+	for map_section, map_section_door_units in pairs(boss_doors) do
+		for i = 1, #map_section_door_units, 1 do
+			local boss_door_unit = map_section_door_units[i]
+			boss_door_units[#boss_door_units + 1] = boss_door_unit
+		end
+	end
+
+	return boss_door_units
+end
+
 DoorSystem.on_remove_extension = function (self, unit, extension_name)
 	DoorSystem.super.on_remove_extension(self, unit, extension_name)
 

@@ -486,7 +486,11 @@ end
 FriendsUIComponent._open_player_profile = function (self, content)
 	local id = content.id
 
-	Managers.account:show_player_profile(id)
+	if PLATFORM == "ps4" then
+		Managers.account:show_player_profile_with_account_id(id)
+	else
+		Managers.account:show_player_profile(id)
+	end
 end
 
 FriendsUIComponent._join_player = function (self, content)

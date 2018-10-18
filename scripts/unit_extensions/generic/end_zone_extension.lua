@@ -73,9 +73,11 @@ EndZoneExtension.end_time_left = function (self)
 end
 
 EndZoneExtension.update = function (self, unit, input, dt, context, t)
+	Profiler.start("EndZoneExtension")
 	self:_reset_distances()
 	self:_check_proximity()
 	self:_update_state(dt, t)
+	Profiler.stop("EndZoneExtension")
 end
 
 EndZoneExtension.activate = function (self, activate, always_activated)

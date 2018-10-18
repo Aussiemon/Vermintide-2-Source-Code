@@ -6,7 +6,7 @@ local buff_tweak_data = {
 		bonus = 0.3
 	},
 	sienna_scholar_passive = {
-		chunk_size = 8
+		chunk_size = 6
 	},
 	sienna_scholar_passive_crit_chance = {
 		max_stacks = 5,
@@ -37,21 +37,21 @@ local buff_tweak_data = {
 		multiplier = -0.25
 	},
 	sienna_scholar_passive_reduced_block_cost_from_overcharge = {
-		chunk_size = 8
+		chunk_size = 6
 	},
 	sienna_scholar_passive_reduced_block_cost = {
 		max_stacks = 5,
 		multiplier = -0.1
 	},
 	sienna_scholar_passive_reduced_overcharge_from_overcharge = {
-		chunk_size = 8
+		chunk_size = 6
 	},
 	sienna_scholar_passive_reduced_overcharge = {
 		max_stacks = 5,
 		multiplier = -0.05
 	},
 	sienna_scholar_passive_increased_attack_speed_from_overcharge = {
-		chunk_size = 8
+		chunk_size = 6
 	},
 	sienna_scholar_passive_increased_attack_speed = {
 		max_stacks = 5,
@@ -76,7 +76,7 @@ local buff_tweak_data = {
 		multiplier = 0.1
 	},
 	sienna_adept_passive_overcharge_charge_speed_increased = {
-		chunk_size = 8
+		chunk_size = 6
 	},
 	sienna_adept_passive_overcharge_charge_speed_increased_buff = {
 		multiplier = -0.1
@@ -135,7 +135,7 @@ local buff_tweak_data = {
 		multiplier = -0.5
 	},
 	sienna_unchained_passive_increased_melee_power_on_overcharge = {
-		chunk_size = 8
+		chunk_size = 6
 	},
 	sienna_unchained_passive_melee_power_on_overcharge = {
 		max_stacks = 5,

@@ -1,5 +1,7 @@
 BackendInterfaceCommon = class(BackendInterfaceCommon)
 
+require("scripts/settings/equipment/weapon_skins")
+
 BackendInterfaceCommon.init = function (self)
 	return
 end
@@ -128,6 +130,8 @@ local filter_macros = {
 		end
 	end,
 	equipped_by_current_career = function (item, backend_id, params)
+		Profiler.start("equipped_by_current_career")
+
 		local item_data = item.data
 		local profile_synchronizer = Managers.state.network.profile_synchronizer
 		local player = nil
@@ -159,6 +163,8 @@ local filter_macros = {
 		local career_name = career_data.name
 		local backend_items = Managers.backend:get_interface("items")
 		local career_names = backend_items:equipped_by(backend_id)
+
+		Profiler.stop("equipped_by_current_career")
 
 		return table.contains(career_names, career_name)
 	end,
@@ -286,7 +292,7 @@ local filter_macros = {
 			local backend_items = Managers.backend:get_interface("items")
 			local rarity = backend_items:get_item_rarity(backend_id)
 
-			if rarity ~= "default" and rarity ~= "promo" and rarity ~= "unique" then
+			if rarity ~= "default" and rarity ~= "promo" then
 				local career_names = backend_items:equipped_by(backend_id)
 
 				if #career_names == 0 then
@@ -327,14 +333,31 @@ local filter_macros = {
 		local item_data = item.data
 		local slot_type = item_data.slot_type
 
-		if (slot_type == "ranged" or slot_type == "melee") and not item.skin then
+		if slot_type == "ranged" or slot_type == "melee" then
 			local backend_items = Managers.backend:get_interface("items")
+			local backend_crafting = Managers.backend:get_interface("crafting")
 			local career_names = backend_items:equipped_by(backend_id)
 
 			if #career_names == 0 then
-				local weapon_skin_name = item_data.key .. "_skin"
+				local skin_combination_table_key = item_data.skin_combination_table
 
-				return backend_items:has_item(weapon_skin_name)
+				if skin_combination_table_key then
+					local weapon_skin_combinations_tables = WeaponSkins.skin_combinations[skin_combination_table_key]
+					local unlocked_weapon_skins = backend_crafting:get_unlocked_weapon_skins()
+					local default_skin = WeaponSkins.default_skins[item.ItemId]
+
+					if unlocked_weapon_skins[default_skin] == true then
+						return true
+					end
+
+					for _, weapon_skins in pairs(weapon_skin_combinations_tables) do
+						for _, skin in ipairs(weapon_skins) do
+							if unlocked_weapon_skins[skin] == true then
+								return true
+							end
+						end
+					end
+				end
 			end
 		end
 
@@ -348,7 +371,7 @@ local filter_macros = {
 			local backend_items = Managers.backend:get_interface("items")
 			local rarity = backend_items:get_item_rarity(backend_id)
 
-			if rarity == "plentiful" or rarity == "common" or rarity == "rare" then
+			if rarity == "plentiful" or rarity == "common" or rarity == "rare" or rarity == "exotic" then
 				return true
 			end
 		end
@@ -364,6 +387,14 @@ local filter_macros = {
 			if rarity == "default" then
 				return true
 			end
+		end
+	end,
+	is_fake_item = function (item, backend_id)
+		local item_interface = Managers.backend:get_interface("items")
+		local fake_items = item_interface:get_all_fake_backend_items()
+
+		if fake_items[backend_id] then
+			return true
 		end
 	end
 }

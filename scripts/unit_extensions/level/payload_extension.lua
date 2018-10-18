@@ -2,11 +2,9 @@ require("scripts/settings/payload_speed_settings")
 require("foundation/scripts/util/spline_curve")
 
 local FRAMES = 100
-local WHEEL_DIAMETER = 0.095
-local WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * math.pi
-local ANIM_SPEED = 30 / FRAMES / WHEEL_CIRCUMFERENCE
 local ERROR_RECOUP_TIME = 0.5
 local MOVING_THRESHOLD = 0.1
+local EPSILON = 0.01
 PayloadExtension = class(PayloadExtension)
 
 PayloadExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -29,6 +27,9 @@ PayloadExtension.init = function (self, extension_init_context, unit, extension_
 	}
 	self._stop_command_given = false
 	self._activated = true
+	local wheel_diameter = Unit.get_data(unit, "wheel_diameter") / 10
+	local wheel_circumference = wheel_diameter * math.pi
+	self._anim_speed = 30 / FRAMES / wheel_circumference
 end
 
 PayloadExtension.activate = function (self)
@@ -249,7 +250,8 @@ PayloadExtension.update = function (self, unit, input, dt, context, t)
 			end
 		else
 			local error_compensation_speed = self:_error_speed_calculation(dt, t, game, id, movement)
-			new_speed = GameSession.game_object_field(game, id, "speed") + error_compensation_speed
+			local network_speed = GameSession.game_object_field(game, id, "speed")
+			new_speed = network_speed + error_compensation_speed
 		end
 	end
 
@@ -257,7 +259,7 @@ PayloadExtension.update = function (self, unit, input, dt, context, t)
 
 	local status = movement:update(dt, t)
 
-	if self._state ~= "stopped" and math.abs(new_speed) == 0 then
+	if self._state ~= "stopped" and math.abs(new_speed) < EPSILON then
 		self._state = "stopped"
 
 		Unit.flow_event(unit, "lua_stopped")
@@ -276,7 +278,7 @@ PayloadExtension.update = function (self, unit, input, dt, context, t)
 	self._previous_status = status
 	self._previous_spline_index = current_spline_index
 
-	Unit.set_simple_animation_speed(self._unit, new_speed / ANIM_SPEED, "wheels")
+	Unit.set_simple_animation_speed(self._unit, new_speed / self._anim_speed, "wheels")
 	Unit.set_local_position(unit, 0, movement:current_position())
 
 	local dir = movement:current_tangent_direction()

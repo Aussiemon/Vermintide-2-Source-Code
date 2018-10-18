@@ -73,9 +73,12 @@ PlayerBotInput.update = function (self, unit, input, dt, context, t)
 	table.clear(self._input)
 	self:_update_movement(dt, t)
 	self:_update_actions()
+	self:_update_debug_text(unit, self._input)
 end
 
 PlayerBotInput._update_actions = function (self)
+	Profiler.start("update_actions")
+
 	local input = self._input
 
 	if self._fire_hold then
@@ -207,6 +210,8 @@ PlayerBotInput._update_actions = function (self)
 		input.dodge_hold = true
 		self._dodge = false
 	end
+
+	Profiler.stop("update_actions")
 end
 
 PlayerBotInput._update_debug_text = function (self, unit, input)
@@ -369,7 +374,67 @@ PlayerBotInput.set_bot_in_attract_mode_focus = function (self, is_in_focus)
 	self._bot_in_attract_mode_focus = is_in_focus
 end
 
+local STUCK_JUMP_SPEED_THRESHOLD = 0.2
+local STUCK_CROUCH_SPEED_THRESHOLD = STUCK_JUMP_SPEED_THRESHOLD + 0.3
+local STUCK_JUMP_SPEED_THRESHOLD_SQ = STUCK_JUMP_SPEED_THRESHOLD^2
+local STUCK_CROUCH_SPEED_THRESHOLD_SQ = STUCK_CROUCH_SPEED_THRESHOLD^2
+
+PlayerBotInput._obstacle_check = function (self, position, current_speed_sq, goal_vector, goal_direction, up)
+	local physics_world = World.get_data(self._world, "physics_world")
+	local collision_filter = "filter_ai_line_of_sight_check"
+	local forward_offset = 0.25
+	local jump_range_check_epsilon = 0.05
+	local width = 0.4
+	local depth = math.min(0.5, Vector3.length(goal_vector) - jump_range_check_epsilon)
+	local height, half_extra_upper_depth, half_extra_upper_height = nil
+
+	if STUCK_JUMP_SPEED_THRESHOLD_SQ < current_speed_sq then
+		height = 0.4
+		half_extra_upper_depth = 0.55
+		half_extra_upper_height = (0.8 - height) * 0.5
+	else
+		height = 0.8
+		half_extra_upper_depth = 0.1
+		half_extra_upper_height = 0
+	end
+
+	local half_width = width * 0.5
+	local half_depth = depth * 0.5
+	local half_height = height * 0.5
+	local half_upper_height = 0.25 + half_extra_upper_height
+	local half_upper_depth = half_depth + half_extra_upper_depth
+	local lower_check_pos = position + goal_direction * (half_depth + forward_offset) + Vector3(0, 0, 0.4 + half_height)
+	local upper_check_pos = lower_check_pos + goal_direction * (half_upper_depth - half_depth) + Vector3(0, 0, half_upper_height + half_height)
+	local lower_extents = Vector3(half_width, half_depth, half_height)
+	local upper_extents = Vector3(half_width, half_upper_depth, half_upper_height)
+	local rotation = Quaternion_look(goal_direction, up)
+	local _, num_low_hit_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "oobb", "position", lower_check_pos, "rotation", rotation, "size", lower_extents, "types", "statics", "collision_filter", collision_filter, "use_global_table")
+	local lower_hit = num_low_hit_actors > 0
+	local _, num_high_hit_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "oobb", "position", upper_check_pos, "rotation", rotation, "size", upper_extents, "types", "statics", "collision_filter", collision_filter, "use_global_table")
+	local upper_hit = num_high_hit_actors > 0
+
+	if script_data.ai_bots_debug then
+		local drawer = Managers.state.debug:drawer({
+			mode = "immediate",
+			name = "playerbotinput"
+		})
+		local lower_pose = Matrix4x4.from_quaternion_position(rotation, lower_check_pos)
+		local lower_color = (lower_hit and Color(125, 255, 125)) or Color(0, 255, 0)
+
+		drawer:box(lower_pose, lower_extents, lower_color)
+
+		local upper_pose = Matrix4x4.from_quaternion_position(rotation, upper_check_pos)
+		local upper_color = (upper_hit and Color(255, 0, 0)) or Color(255, 125, 125)
+
+		drawer:box(upper_pose, upper_extents, upper_color)
+	end
+
+	return lower_hit, upper_hit
+end
+
 PlayerBotInput._update_movement = function (self, dt, t)
+	Profiler.start("update_movement")
+
 	local unit = self.unit
 	local player_bot_navigation = self._navigation_extension
 	local current_goal = player_bot_navigation:current_goal()
@@ -445,6 +510,16 @@ PlayerBotInput._update_movement = function (self, dt, t)
 	local look = self.look
 	look.x = math.half_pi - math.atan2(needed_delta_rotation_forward.y, needed_delta_rotation_forward.x)
 	look.y = math.asin(math.clamp(needed_delta_rotation_forward.z, -1, 1))
+
+	if script_data.ai_bots_debug then
+		local drawer = Managers.state.debug:drawer({
+			mode = "immediate",
+			name = "playerbotinput"
+		})
+
+		drawer:quaternion(camera_position, rotation)
+	end
+
 	local goal_vector, flat_goal_vector, goal_direction = nil
 
 	if current_goal then
@@ -453,55 +528,16 @@ PlayerBotInput._update_movement = function (self, dt, t)
 		goal_direction = Vector3.normalize(flat_goal_vector)
 
 		if Vector3.length_squared(goal_direction) > 0 and not on_ladder then
-			local physics_world = World.get_data(self._world, "physics_world")
-			local collision_filter = "filter_ai_line_of_sight_check"
 			local locomotion_extension = self._locomotion_extension
 			local current_velocity = locomotion_extension:current_velocity()
 			local current_speed_sq = Vector3.length_squared(current_velocity)
-			local forward_offset = 0.25
-			local jump_range_check_epsilon = 0.05
-			local width = 0.4
-			local depth = math.min(0.5, Vector3.length(goal_vector) - jump_range_check_epsilon)
-			local height, half_extra_upper_depth, half_extra_upper_height = nil
+			local is_crouching = status_extension:is_crouching()
+			local lower_hit, upper_hit = self:_obstacle_check(position, current_speed_sq, goal_vector, goal_direction, up)
 
-			if current_speed_sq > 0.04000000000000001 then
-				height = 0.4
-				half_extra_upper_depth = 0.55
-				half_extra_upper_height = (0.8 - height) * 0.5
-			else
-				height = 0.8
-				half_extra_upper_depth = 0.1
-				half_extra_upper_height = 0
-			end
-
-			local half_width = width * 0.5
-			local half_depth = depth * 0.5
-			local half_height = height * 0.5
-			local half_upper_height = 0.25 + half_extra_upper_height
-			local half_upper_depth = half_depth + half_extra_upper_depth
-			local lower_check_pos = position + goal_direction * (half_depth + forward_offset) + Vector3(0, 0, 0.4 + half_height)
-			local upper_check_pos = lower_check_pos + goal_direction * (half_upper_depth - half_depth) + Vector3(0, 0, half_upper_height + half_height)
-			local lower_extents = Vector3(half_width, half_depth, half_height)
-			local upper_extents = Vector3(half_width, half_upper_depth, half_upper_height)
-			local lower_hit = false
-			local upper_hit = nil
-			local rotation = Quaternion_look(goal_direction, up)
-			local _, num_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "oobb", "position", lower_check_pos, "rotation", rotation, "size", lower_extents, "types", "statics", "collision_filter", collision_filter, "use_global_table")
-
-			if num_actors > 0 then
-				lower_hit = true
-				local _, num_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "oobb", "position", upper_check_pos, "rotation", rotation, "size", upper_extents, "types", "statics", "collision_filter", collision_filter, "use_global_table")
-
-				if num_actors == 0 then
-					upper_hit = false
-					self._input.jump_only = true
-				else
-					upper_hit = true
-				end
-			end
-
-			if not self._input.jump_only and transition_jump then
+			if (lower_hit and not upper_hit) or transition_jump then
 				self._input.jump_only = true
+			elseif not lower_hit and upper_hit and (is_crouching or current_speed_sq <= STUCK_CROUCH_SPEED_THRESHOLD_SQ) then
+				self._input.crouching = true
 			end
 		end
 	end
@@ -555,6 +591,8 @@ PlayerBotInput._update_movement = function (self, dt, t)
 
 		self._avoiding_aoe_threat = false
 	end
+
+	Profiler.stop("update_movement")
 end
 
 PlayerBotInput.get = function (self, input_key)

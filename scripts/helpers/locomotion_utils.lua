@@ -671,6 +671,24 @@ LocomotionUtils.pick_visible_outside_goal = function (params)
 					end
 				end
 
+				if script_data.debug_ai_movement then
+					QuickDrawerStay:sphere(position, 0.15, Colors.get("orange"))
+					QuickDrawerStay:line(from_node_position, position, (from_unit_line_of_sight and Colors.get("orange")) or Colors.get("red"))
+					QuickDrawerStay:line(to_node_position, position, (to_unit_line_of_sight and Colors.get("orange")) or Colors.get("red"))
+
+					if hit_pos1 then
+						QuickDrawerStay:sphere(hit_pos1, 0.1, Colors.get("red"))
+					end
+
+					if hit_pos2 then
+						QuickDrawerStay:sphere(hit_pos2, 0.1, Colors.get("red"))
+					end
+
+					if to_unit_line_of_sight then
+						QuickDrawerStay:sphere(position, 0.05, Colors.get("green"))
+					end
+				end
+
 				if result then
 					local min_found_radius = min_found_radius_sq and math.sqrt(min_found_radius_sq)
 
@@ -913,6 +931,18 @@ LocomotionUtils.navmesh_movement_check = function (unit_position, unit_velocity,
 		if allowed_to_do_wall_check then
 			ray_source = unit_position + Vector3.up() * WALL_CHECK_RAYCAST_LOW_HEIGHT
 			hit_wall, hit_position = PhysicsWorld.immediate_raycast(physics_world, ray_source, direction, WALL_CHECK_RAYCAST_LENGTH, "closest", "collision_filter", "filter_ai_mover")
+		end
+
+		if script_data.debug_ai_movement then
+			QuickDrawerStay:sphere(projected_unit_pos or unit_position, 0.125, (projected_unit_pos and Colors.get("blue")) or Colors.get("pink"))
+			QuickDrawerStay:line(projected_unit_pos or unit_position, projected_target_pos or target_position, Colors.get("purple"))
+			QuickDrawerStay:sphere(projected_target_pos or target_position, 0.125, (projected_target_pos and Colors.get("light_blue")) or Colors.get("purple"))
+
+			if allowed_to_do_wall_check then
+				QuickDrawerStay:sphere(ray_source, 0.25, Colors.get("green"))
+				QuickDrawerStay:line(ray_source, ray_source + direction * WALL_CHECK_RAYCAST_LENGTH, Colors.get("yellow"))
+				QuickDrawerStay:sphere(hit_position or ray_source + direction * WALL_CHECK_RAYCAST_LENGTH, 0.25, (hit_wall and Colors.get("red")) or Colors.get("green"))
+			end
 		end
 
 		if hit_wall then
@@ -1188,6 +1218,10 @@ LocomotionUtils.check_start_turning = function (unit, t, dt, blackboard)
 	local is_following_path = navigation_extension:is_following_path()
 
 	if is_computing or not is_following_path then
+		if script_data.debug_big_boy_turning then
+			QuickDrawer:circle(position + Vector3.up() * 0.1, 1, Vector3.up(), Colors.get("red"))
+		end
+
 		return
 	end
 
@@ -1203,6 +1237,14 @@ LocomotionUtils.check_start_turning = function (unit, t, dt, blackboard)
 	local forward = Quaternion.forward(rotation)
 	local right = Quaternion.right(rotation)
 	local navigation_velocity = Vector3.normalize(navigation_extension:desired_velocity())
+
+	if script_data.debug_big_boy_turning then
+		QuickDrawer:line(position + Vector3.up() * 0.5, position + Vector3.up() * 0.5 + nav_path_direction * 2, Colors.get("yellow"))
+		QuickDrawer:vector(position + Vector3.up() * 0.5, forward, Colors.get("aqua_marine"))
+		QuickDrawer:vector(position + Vector3.up() * 0.5, right, Colors.get("sienna"))
+		QuickDrawer:vector(position + Vector3.up() * 0.55, navigation_velocity, Colors.get("green"))
+	end
+
 	local right_dot = Vector3.dot(right, nav_path_direction)
 	local fwd_dot = Vector3.dot(forward, nav_path_direction)
 	local abs_right_dot = math.abs(right_dot)
@@ -1222,11 +1264,17 @@ LocomotionUtils.check_start_turning = function (unit, t, dt, blackboard)
 	if abs_fwd_dot < abs_right_dot then
 		if right_dot > 0 then
 			start_anim = start_anims.right
+
+			debug_sticky_text("turn_right:" .. start_anim)
 		else
 			start_anim = start_anims.left
+
+			debug_sticky_text("turn_left, " .. start_anim)
 		end
 	else
 		start_anim = start_anims.bwd
+
+		debug_sticky_text("turn_backwards, " .. start_anim)
 	end
 
 	local network_manager = Managers.state.network
@@ -1265,6 +1313,8 @@ LocomotionUtils.update_turning = function (unit, t, dt, blackboard)
 	local position = POSITION_LOOKUP[unit]
 
 	if blackboard.anim_cb_rotation_start then
+		debug_sticky_text("anim_cb_rotation_start")
+
 		blackboard.anim_cb_rotation_start = nil
 
 		if blackboard.is_turning then
@@ -1276,10 +1326,16 @@ LocomotionUtils.update_turning = function (unit, t, dt, blackboard)
 			LocomotionUtils.set_animation_rotation_scale(unit, rot_scale)
 
 			blackboard.animation_rotation_lock = true
+
+			if script_data.debug_big_boy_turning then
+				QuickDrawerStay:sphere(rotate_towards_position, 0.22, Colors.get("red"))
+			end
 		end
 	end
 
 	if blackboard.anim_cb_move then
+		debug_sticky_text("anim_cb_move")
+
 		blackboard.anim_cb_move = nil
 
 		LocomotionUtils.reset_turning(unit, blackboard)
@@ -1287,6 +1343,8 @@ LocomotionUtils.update_turning = function (unit, t, dt, blackboard)
 end
 
 LocomotionUtils.reset_turning = function (unit, blackboard)
+	debug_sticky_text("reset_turning")
+
 	blackboard.is_turning = false
 
 	LocomotionUtils.set_animation_driven_movement(unit, false)

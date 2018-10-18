@@ -1,14 +1,3 @@
-require("scripts/ui/views/hero_view/windows/hero_window_prestige")
-require("scripts/ui/views/hero_view/windows/hero_window_talents")
-require("scripts/ui/views/hero_view/windows/hero_window_options")
-require("scripts/ui/views/hero_view/windows/hero_window_crafting")
-require("scripts/ui/views/hero_view/windows/hero_window_character_preview")
-require("scripts/ui/views/hero_view/windows/hero_window_inventory")
-require("scripts/ui/views/hero_view/windows/hero_window_cosmetics_inventory")
-require("scripts/ui/views/hero_view/windows/hero_window_loadout_inventory")
-require("scripts/ui/views/hero_view/windows/hero_window_cosmetics_loadout")
-require("scripts/ui/views/hero_view/windows/hero_window_loadout")
-
 local windows = {
 	options = {
 		class_name = "HeroWindowOptions",

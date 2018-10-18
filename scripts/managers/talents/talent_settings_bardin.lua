@@ -687,11 +687,16 @@ TalentBuffTemplates.dwarf_ranger = {
 		deactivation_effect = "fx/screenspace_ranger_skill_02",
 		buffs = {
 			{
-				icon = "bardin_ranger_activated_ability",
-				refresh_durations = true,
 				continuous_effect = "fx/screenspace_ranger_skill_01",
+				name = "bardin_ranger_activated_ability",
+				refresh_durations = true,
+				area_unit_name = "units/hub_elements/empty",
+				remove_buff_func = "end_ranger_activated_ability",
+				refresh_buff_area_position = true,
+				area_radius = 7,
+				buff_area = true,
 				max_stacks = 1,
-				remove_buff_func = "end_ranger_activated_ability"
+				icon = "bardin_ranger_activated_ability"
 			}
 		}
 	},
@@ -778,12 +783,16 @@ TalentBuffTemplates.dwarf_ranger = {
 		deactivation_effect = "fx/screenspace_ranger_skill_02",
 		buffs = {
 			{
-				icon = "bardin_ranger_activated_ability",
-				name = "bardin_ranger_activated_ability",
-				refresh_durations = true,
 				continuous_effect = "fx/screenspace_ranger_skill_01",
+				name = "bardin_ranger_activated_ability_duration",
+				refresh_durations = true,
+				area_unit_name = "units/hub_elements/empty",
+				remove_buff_func = "end_ranger_activated_ability",
+				refresh_buff_area_position = true,
+				area_radius = 7,
+				buff_area = true,
 				max_stacks = 1,
-				remove_buff_func = "end_ranger_activated_ability"
+				icon = "bardin_ranger_activated_ability"
 			}
 		}
 	},

@@ -623,7 +623,8 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				remove_buff_func = "end_knight_activated_ability",
-				icon = "markus_knight_activated_ability"
+				icon = "markus_knight_activated_ability",
+				perk = "uninterruptible"
 			}
 		}
 	},

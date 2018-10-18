@@ -3,7 +3,7 @@ LocalizationManager = class(LocalizationManager)
 LocalizationManager.init = function (self, path)
 	self.path = path
 
-	assert(not self._localizer, "LocalizationManager already initialized")
+	fassert(not self._localizer, "LocalizationManager already initialized")
 
 	self._localizer = Localizer(path)
 	self._macros = {}
@@ -30,7 +30,7 @@ LocalizationManager.lookup = function (self, text_id)
 		return localize_longest(text_id)
 	end
 
-	assert(self._localizer, "LocalizationManager not initialized")
+	fassert(self._localizer, "LocalizationManager not initialized")
 	fassert(not string.find(text_id, " "), "Found space character in localization id %q", text_id)
 
 	local str = Localizer.lookup(self._localizer, text_id) or "<" .. tostring(text_id) .. ">"
@@ -45,7 +45,7 @@ LocalizationManager.apply_macro = function (self, str)
 end
 
 LocalizationManager.simple_lookup = function (self, text_id)
-	assert(self._localizer, "LocalizationManager not initialized")
+	fassert(self._localizer, "LocalizationManager not initialized")
 
 	local str = Localizer.lookup(self._localizer, text_id) or "<" .. tostring(text_id) .. ">"
 
@@ -59,13 +59,25 @@ LocalizationManager._find_macro = function (self, macro_string)
 end
 
 LocalizationManager.exists = function (self, text_id)
-	assert(self._localizer, "LocalizationManager not initialized")
+	fassert(self._localizer, "LocalizationManager not initialized")
 
 	return Localizer.lookup(self._localizer, text_id) ~= nil
 end
 
 function Localize(text_id)
 	return Managers.localizer:lookup(text_id)
+end
+
+function LocalizeArray(text_ids, result)
+	result = result or {}
+	local num_ids = #text_ids
+
+	for i = 1, num_ids, 1 do
+		local text_id = text_ids[i]
+		result[i] = Localize(text_id)
+	end
+
+	return result
 end
 
 function TextToUpper(text)

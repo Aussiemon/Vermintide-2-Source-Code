@@ -682,23 +682,26 @@ UISettings = {
 		"crafting_material_jewellery",
 		"crafting_material_dust_1",
 		"crafting_material_dust_2",
-		"crafting_material_dust_3"
+		"crafting_material_dust_3",
+		"crafting_material_dust_4"
 	},
 	crafting_material_icons_small = {
 		crafting_material_dust_3 = "icon_crafting_dust_03_small",
 		crafting_material_dust_1 = "icon_crafting_dust_01_small",
 		crafting_material_weapon = "icon_crafting_weapon_part_small",
+		crafting_material_dust_4 = "icon_crafting_dust_04_small",
 		crafting_material_scrap = "icon_crafting_scrap_small",
 		crafting_material_jewellery = "icon_crafting_jewellery_part_small",
 		crafting_material_dust_2 = "icon_crafting_dust_02_small"
 	},
 	crafting_material_order_by_item_key = {
-		crafting_material_scrap = 5,
-		crafting_material_dust_1 = 6,
-		crafting_material_weapon = 4,
-		crafting_material_dust_3 = 2,
-		crafting_material_jewellery = 3,
-		crafting_material_dust_2 = 1
+		crafting_material_scrap = 6,
+		crafting_material_dust_1 = 1,
+		crafting_material_weapon = 7,
+		crafting_material_dust_4 = 4,
+		crafting_material_dust_3 = 3,
+		crafting_material_jewellery = 5,
+		crafting_material_dust_2 = 2
 	},
 	loot_containers = {
 		epic = "loot_container_icon_02",
@@ -722,6 +725,11 @@ UISettings = {
 		plentiful = 6,
 		rare = 4,
 		unique = 2
+	},
+	cosmetics_sorting_order = {
+		weapon_skin = 3,
+		skin = 2,
+		hat = 1
 	},
 	inventory_consumable_slot_colors = {
 		healthkit_first_aid_kit_01 = Colors.get_color_table_with_alpha("healthkit_first_aid_kit_01", 255),

@@ -143,6 +143,11 @@ PlayerManager.player_from_game_object_id = function (self, game_object_id)
 end
 
 PlayerManager.relinquish_unit_ownership = function (self, unit)
+	if script_data.network_debug_connections then
+		printf("PlayerManager:relinquish_unit_ownership")
+		print(Script.callstack())
+	end
+
 	fassert(self._unit_owners[unit], "[PlayerManager:relinquish_unit_ownership] Unit %s ownership cannot be relinquished, not owned.", unit)
 
 	local unit_owner = self._unit_owners[unit]
@@ -294,7 +299,7 @@ PlayerManager.remove_player = function (self, peer_id, local_player_id)
 end
 
 PlayerManager.player = function (self, peer_id, local_player_id)
-	assert(peer_id and local_player_id, "Required peer id and local player id.")
+	fassert(peer_id and local_player_id, "Required peer id and local player id.")
 
 	return self:player_from_peer_id(peer_id, local_player_id)
 end

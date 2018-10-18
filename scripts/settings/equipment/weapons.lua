@@ -88,6 +88,8 @@ DAMAGE_TYPES_AOE = {
 	vomit_face = true,
 	vomit_ground = true,
 	poison = true,
+	globadier_gas_dot = true,
+	plague_face = true,
 	warpfire_ground = true
 }
 Weapons = Weapons or {}

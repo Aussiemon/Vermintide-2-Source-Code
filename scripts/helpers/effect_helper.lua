@@ -67,7 +67,20 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 			if not Application.can_get("unit", decal_unit_name) then
 				decal_unit_name = "units/projection_decals/projection_test_01"
 
-				Application.warning("[DecalManager] There is no decal_unit_name specified for effect: %q with material: %q--> Using Default: %q", effect_name, material, decal_unit_name)
+				Application.warning("[EffectHelper] There is no decal_unit_name specified for effect: %q with material: %q--> Using Default: %q", effect_name, material, decal_unit_name)
+			end
+
+			if decal_settings.random_rotation then
+				local random_angle = math.degrees_to_radians(Math.random(360000) * 0.001)
+				rotation = Quaternion.axis_angle(normal, random_angle)
+			end
+
+			if decal_settings.random_size_multiplier then
+				local random_size_multiplier = decal_settings.random_size_multiplier
+				local random_value = Math.random(1000) * 0.001
+				local random_size_modifier = math.lerp(random_value, math.max(1 - random_size_multiplier, 0.01), 1 + random_size_multiplier)
+				extents[1] = extents[1] * random_size_modifier
+				extents[2] = extents[2] * random_size_modifier
 			end
 
 			decal_system:add_projection_decal(decal_unit_name, hit_unit, hit_actor, position, rotation, extents, normal)
@@ -105,7 +118,15 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 		end
 
 		if sound_character then
+			if script_data.debug_material_effects then
+				printf("   sound param: \"sound_character\", sound_value %q", sound_character)
+			end
+
 			WwiseWorld.set_switch(wwise_world, "character_foley", sound_character, wwise_source_id)
+		end
+
+		if script_data.debug_material_effects then
+			printf("   sound param: \"husk\", sound_value %q", (husk and "true") or "false")
 		end
 
 		WwiseWorld.set_switch(wwise_world, "husk", (husk and "true") or "false", wwise_source_id)
@@ -115,7 +136,6 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 	local particles = effect_settings.particles and effect_settings.particles[material]
 
 	if particles then
-		local forward = Quaternion.forward(rotation)
 		local normal_rotation = Quaternion.look(normal, Vector3.up())
 
 		World.create_particles(world, particles, position, normal_rotation)
@@ -376,18 +396,24 @@ EffectHelper.flow_cb_play_surface_material_effect = function (effect_name, unit,
 	local raycast_position = position + normal * raycast_offset
 	local raycast_range = range or 3
 	local debug = script_data.debug_material_effects
+
+	if debug then
+		QuickDrawerStay:sphere(raycast_position, 0.25, Colors.get("red"))
+		QuickDrawerStay:line(raycast_position, raycast_position + raycast_direction * raycast_range, Colors.get("red"))
+	end
+
 	local world = Managers.world:world("level_world")
 	local physics_world = World.get_data(world, "physics_world")
-	local hit, position, distance, hit_normal, actor = PhysicsWorld.immediate_raycast(physics_world, raycast_position, raycast_direction, raycast_range, "closest", "types", "both", "collision_filter", "filter_ground_material_check")
+	local hit, hit_position, _, hit_normal, actor = PhysicsWorld.immediate_raycast(physics_world, raycast_position, raycast_direction, raycast_range, "closest", "types", "both", "collision_filter", "filter_ground_material_check")
 
 	if hit then
 		local hit_unit = Actor.unit(actor)
-		local rotation = Unit.world_rotation(unit, 0)
-		local up = Quaternion.up(rotation)
-		local forward = Quaternion.forward(rotation)
-		rotation = Quaternion.look(forward, up)
+		local hit_rotation = Unit.world_rotation(unit, 0)
+		local up = Quaternion.up(hit_rotation)
+		local forward = Quaternion.forward(hit_rotation)
+		hit_rotation = Quaternion.look(forward, up)
 
-		EffectHelper.play_surface_material_effects(effect_name, world, hit_unit, position, rotation, hit_normal, sound_character, husk, unit)
+		EffectHelper.play_surface_material_effects(effect_name, world, hit_unit, hit_position, hit_rotation, hit_normal, sound_character, husk, unit)
 	end
 end
 
@@ -401,7 +427,7 @@ EffectHelper.flow_cb_play_footstep_surface_material_effects = function (effect_n
 	local world = Managers.world:world("level_world")
 	local physics_world = World.get_data(world, "physics_world")
 	local debug = script_data.debug_material_effects
-	local hit, position, distance, normal, actor = PhysicsWorld.immediate_raycast(physics_world, raycast_position, raycast_direction, raycast_range, "closest", "types", "both", "collision_filter", "filter_ground_material_check")
+	local hit, position, _, normal, actor = PhysicsWorld.immediate_raycast(physics_world, raycast_position, raycast_direction, raycast_range, "closest", "types", "both", "collision_filter", "filter_ground_material_check")
 	local player = Managers.player:owner(unit)
 	local husk = not player or player.remote or player.bot_player
 

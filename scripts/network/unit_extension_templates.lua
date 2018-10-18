@@ -1840,6 +1840,19 @@ local unit_templates = {
 			"ProjectileLinkerExtension"
 		}
 	},
+	ai_inventory_unit = {
+		go_type = "ai_inventory_item",
+		self_owned_extensions = {
+			"AIInventoryItemExtension",
+			"ProjectileLinkerExtension"
+		}
+	},
+	dynamic_gib_unit = {
+		go_type = "dynamic_gib_unit",
+		self_owned_extensions = {
+			"ProjectileLinkerExtension"
+		}
+	},
 	limited_item_track_spawner = {
 		self_owned_extensions = {},
 		self_owned_extensions_server = {

@@ -105,9 +105,15 @@ PlayerCharacterStateFalling.update = function (self, unit, input, dt, context, t
 	CharacterStateHelper.update_dodge_lock(unit, self.input_extension, self.status_extension)
 
 	if position_lookup[unit].z < -240 then
-		local go_id = self.unit_storage:go_id(unit)
+		if self.is_server then
+			local health_system = Managers.state.entity:system("health_system")
 
-		self.network_transmit:send_rpc_server("rpc_suicide", go_id)
+			health_system:suicide(unit)
+		else
+			local go_id = self.unit_storage:go_id(unit)
+
+			self.network_transmit:send_rpc_server("rpc_suicide", go_id)
+		end
 	end
 
 	local csm = self.csm

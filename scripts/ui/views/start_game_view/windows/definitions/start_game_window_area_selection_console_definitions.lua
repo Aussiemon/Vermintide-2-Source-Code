@@ -39,6 +39,18 @@ local scenegraph_definition = {
 			0
 		}
 	},
+	background = {
+		scale = "fit",
+		size = {
+			1920,
+			1080
+		},
+		position = {
+			0,
+			0,
+			2
+		}
+	},
 	video = {
 		scale = "fit",
 		size = {
@@ -355,6 +367,12 @@ end
 
 local disable_with_gamepad = true
 local widgets = {
+	background = UIWidgets.create_simple_rect("background", {
+		255,
+		0,
+		0,
+		0
+	}),
 	window_fade = UIWidgets.create_simple_texture("options_window_fade_01", "video", nil, nil, nil, 2),
 	area_title = UIWidgets.create_simple_text("area_title", "area_title", nil, nil, level_text_style),
 	title_divider = UIWidgets.create_simple_texture("divider_01_top", "title_divider"),

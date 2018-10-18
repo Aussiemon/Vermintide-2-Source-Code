@@ -124,6 +124,7 @@ ChatGui.update = function (self, dt, menu_active, menu_input_service, no_unblock
 		self:create_ui_elements()
 	end
 
+	Profiler.start("ChatGui")
 	self:update_transition(dt)
 
 	local show_new_messages = self:_update_chat_messages()
@@ -236,6 +237,7 @@ ChatGui.update = function (self, dt, menu_active, menu_input_service, no_unblock
 	end
 
 	self:_draw_widgets(dt, input_service, chat_enabled)
+	Profiler.stop("ChatGui")
 end
 
 ChatGui._update_chat_messages = function (self)
@@ -286,6 +288,7 @@ ChatGui._update_chat_messages = function (self)
 				end
 
 				new_message_table.is_dev = new_message.is_dev
+				new_message_table.is_bot = new_message.is_bot
 				new_message_table.message = message
 				new_message_table.type = new_message.type
 
@@ -309,6 +312,7 @@ ChatGui._update_chat_messages = function (self)
 
 				local message = new_message.message
 				new_message_table.is_dev = new_message.is_dev
+				new_message_table.is_bot = new_message.is_bot
 				new_message_table.is_system = false
 				new_message_table.sender = (ingame_display_name and string.format("%s (%s): ", name, Localize(ingame_display_name))) or string.format("%s: ", name)
 				new_message_table.message = message
@@ -583,7 +587,10 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 						slot17 = debug + chrash
 					else
 						if self.chat_manager:has_channel(1) then
-							self.chat_manager:send_chat_message(1, 1, self.chat_message, self.recent_message_index)
+							local localize = false
+							local localize_parameters = false
+
+							self.chat_manager:send_chat_message(1, 1, self.chat_message, localize, nil, localize_parameters, self.recent_message_index)
 						end
 
 						self.chat_message = ""

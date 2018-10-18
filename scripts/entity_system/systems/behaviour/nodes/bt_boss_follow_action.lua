@@ -30,6 +30,8 @@ BTBossFollowAction.enter = function (self, unit, blackboard, t)
 
 		network_manager.network_transmit:send_rpc_all("rpc_tutorial_message", template_id, message_id)
 	end
+
+	blackboard.boss_follow_next_line_of_sight_check_t = t
 end
 
 BTBossFollowAction.leave = function (self, unit, blackboard, t, reason, destroy)
@@ -52,6 +54,8 @@ BTBossFollowAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.anim_cb_rotation_start = nil
 	blackboard.anim_cb_move = nil
 	blackboard.animation_lean = nil
+	blackboard.has_los_to_any_player = nil
+	blackboard.boss_follow_next_line_of_sight_check_t = nil
 end
 
 BTBossFollowAction.run = function (self, unit, blackboard, t, dt)
@@ -104,6 +108,8 @@ BTBossFollowAction.follow = function (self, unit, t, dt, blackboard, locomotion_
 	local breed = blackboard.breed
 
 	if breed.use_big_boy_turning and blackboard.move_state == "moving" then
+		self:_debug_big_boy_turning(blackboard)
+
 		local is_turning = blackboard.is_turning
 
 		if is_turning then
@@ -127,16 +133,28 @@ BTBossFollowAction.follow = function (self, unit, t, dt, blackboard, locomotion_
 	end
 
 	local destination = navigation_extension:destination()
-	local to_vec = destination - POSITION_LOOKUP[unit]
+	local self_position = POSITION_LOOKUP[unit]
+	local to_vec = destination - self_position
 
 	Vector3.set_z(to_vec, 0)
 
 	local distance_sq = Vector3.length_squared(to_vec)
 
+	if blackboard.boss_follow_next_line_of_sight_check_t < t then
+		blackboard.has_los_to_any_player = PerceptionUtils.has_line_of_sight_to_any_player(unit)
+		blackboard.boss_follow_next_line_of_sight_check_t = t + 2.5
+	end
+
 	if action.override_move_speed then
-		navigation_extension:set_max_speed(action.override_move_speed)
+		if breed.catch_up_speed and distance_sq > 1600 and not blackboard.has_los_to_any_player then
+			navigation_extension:set_max_speed(breed.catch_up_speed)
+		else
+			navigation_extension:set_max_speed(action.override_move_speed)
+		end
 	elseif distance_sq < 1 then
 		navigation_extension:set_max_speed(breed.walk_speed)
+	elseif breed.catch_up_speed and distance_sq > 1600 and not blackboard.has_los_to_any_player then
+		navigation_extension:set_max_speed(breed.catch_up_speed)
 	elseif distance_sq > 4 then
 		navigation_extension:set_max_speed(breed.run_speed)
 	end

@@ -19,8 +19,8 @@ CareerAbilityBWAdept._ballistic_raycast = function (self, physics_world, max_ste
 		if result then
 			local num_hits = #result
 
-			for i = 1, num_hits, 1 do
-				local hit = result[i]
+			for j = 1, num_hits, 1 do
+				local hit = result[j]
 				local hit_actor = hit.actor
 				local hit_position = hit.position
 				local hit_normal = hit.normal
@@ -38,13 +38,6 @@ CareerAbilityBWAdept._ballistic_raycast = function (self, physics_world, max_ste
 	end
 
 	return false, position
-end
-
-local function travel_time(starting_position, target_position, speed)
-	local distance = Vector3.distance(target_position, starting_position)
-	local time = distance / speed
-
-	return time
 end
 
 CareerAbilityBWAdept.init = function (self, extension_init_context, unit, extension_init_data)
@@ -116,7 +109,7 @@ CareerAbilityBWAdept.update = function (self, unit, input, dt, context, t)
 end
 
 CareerAbilityBWAdept.stop = function (self, reason)
-	if self._is_priming then
+	if reason ~= "pushed" and reason ~= "stunned" and self._is_priming then
 		self:_stop_priming()
 	end
 end
@@ -140,6 +133,8 @@ CareerAbilityBWAdept._start_priming = function (self)
 end
 
 CareerAbilityBWAdept._landing_postion_valid = function (self, start_pos, end_pos, data, t)
+	Profiler.start("CareerAbilityBWAdept:_landing_postion_valid")
+
 	local valid_pos = false
 	local astar = data.astar
 
@@ -170,20 +165,24 @@ CareerAbilityBWAdept._landing_postion_valid = function (self, start_pos, end_pos
 		dprint("create astar")
 
 		local nav_world = Managers.state.entity:system("ai_system"):nav_world()
-		local astar = GwNavAStar.create(nav_world)
+		local new_astar = GwNavAStar.create(nav_world)
 		local box_half_width = data.box_half_width
 		local traverse_logic = Managers.state.bot_nav_transition:traverse_logic()
 
-		GwNavAStar.start_with_propagation_box(astar, nav_world, start_pos, end_pos, box_half_width, traverse_logic)
+		GwNavAStar.start_with_propagation_box(new_astar, nav_world, start_pos, end_pos, box_half_width, traverse_logic)
 
-		data.astar = astar
+		data.astar = new_astar
 		data.astar_timer = t + 0.01
 	end
+
+	Profiler.stop("CareerAbilityBWAdept:_landing_postion_valid")
 
 	return valid_pos
 end
 
 CareerAbilityBWAdept._update_priming = function (self, dt, t)
+	Profiler.start("CareerAbilityBWAdept:_update_priming")
+
 	local effect_id = self.effect_id
 	local owner_unit = self.owner_unit
 	local world = self.world
@@ -201,12 +200,12 @@ CareerAbilityBWAdept._update_priming = function (self, dt, t)
 	local velocity = Quaternion.forward(Quaternion.multiply(player_rotation, Quaternion(Vector3.right(), angle))) * speed
 	local gravity = Vector3(0, 0, -2)
 	local collision_filter = "filter_adept_teleport"
-	local result, hit_position, hit_distance, normal = self:_ballistic_raycast(physics_world, max_steps, max_time, player_position, velocity, gravity, collision_filter, false)
+	local result, hit_position, _, normal = self:_ballistic_raycast(physics_world, max_steps, max_time, player_position, velocity, gravity, collision_filter, false)
 
 	if result and Vector3.dot(normal, Vector3.up()) < 0.75 then
 		local step_back = Vector3.normalize(hit_position - player_position) * 1.5
 		local step_back_position = hit_position - step_back
-		local new_result, new_hit_position, new_hit_distance, new_normal = PhysicsWorld.immediate_raycast(physics_world, step_back_position, Vector3.down(), 100, "closest", "collision_filter", collision_filter)
+		local new_result, new_hit_position, _, _ = PhysicsWorld.immediate_raycast(physics_world, step_back_position, Vector3.down(), 100, "closest", "collision_filter", collision_filter)
 
 		if new_result then
 			hit_position = new_hit_position
@@ -243,6 +242,8 @@ CareerAbilityBWAdept._update_priming = function (self, dt, t)
 			self._last_valid_position = Vector3Box(hit_position)
 		end
 	end
+
+	Profiler.stop("CareerAbilityBWAdept:_update_priming")
 end
 
 CareerAbilityBWAdept._stop_priming = function (self)
@@ -287,20 +288,15 @@ CareerAbilityBWAdept._run_ability = function (self)
 		return
 	end
 
-	local world = self.world
 	local owner_unit = self.owner_unit
 	local is_server = self.is_server
 	local local_player = self.local_player
 	local bot_player = self.bot_player
 	local network_manager = self.network_manager
-	local network_transmit = network_manager.network_transmit
 	local career_extension = self.career_extension
-	local status_extension = self.status_extension
-	local buff_extension = self.buff_extension
 	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 
 	if local_player or (is_server and bot_player) then
-		local game = network_manager:game()
 		local start_pos = POSITION_LOOKUP[owner_unit]
 		local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 		local projected_start_pos = LocomotionUtils.pos_on_mesh(nav_world, start_pos, 2, 30)
@@ -313,7 +309,6 @@ CareerAbilityBWAdept._run_ability = function (self)
 			end
 
 			local damage_wave_template_id = NetworkLookup.damage_wave_templates[damage_wave_template_name]
-			local network_manager = Managers.state.network
 			local invalid_game_object_id = NetworkConstants.invalid_game_object_id
 
 			network_manager.network_transmit:send_rpc_server("rpc_create_damage_wave", invalid_game_object_id, projected_start_pos, end_position, damage_wave_template_id)

@@ -423,6 +423,50 @@ UIFrameSettings = {
 			}
 		}
 	},
+	frame_outer_glow_03 = {
+		texture = "frame_outer_glow_03",
+		outer_frame = true,
+		texture_size = {
+			68,
+			68
+		},
+		texture_sizes = {
+			corner = {
+				14,
+				14
+			},
+			vertical = {
+				13,
+				1
+			},
+			horizontal = {
+				1,
+				13
+			}
+		}
+	},
+	frame_outer_glow_04 = {
+		texture = "frame_outer_glow_04",
+		outer_frame = true,
+		texture_size = {
+			68,
+			68
+		},
+		texture_sizes = {
+			corner = {
+				14,
+				14
+			},
+			vertical = {
+				13,
+				1
+			},
+			horizontal = {
+				1,
+				13
+			}
+		}
+	},
 	frame_inner_glow_01 = {
 		texture = "frame_inner_glow_01",
 		texture_size = {
@@ -508,8 +552,30 @@ UIFrameSettings = {
 			}
 		}
 	},
+	button_frame_01_gold = {
+		texture = "button_frame_01_gold",
+		texture_size = {
+			64,
+			64
+		},
+		texture_sizes = {
+			corner = {
+				7,
+				7
+			},
+			vertical = {
+				7,
+				50
+			},
+			horizontal = {
+				50,
+				7
+			}
+		}
+	},
 	shadow_frame_01 = {
 		texture = "shadow_frame_01",
+		outer_frame = true,
 		texture_size = {
 			92,
 			92
@@ -531,22 +597,23 @@ UIFrameSettings = {
 	},
 	shadow_frame_02 = {
 		texture = "shadow_frame_02",
+		outer_frame = true,
 		texture_size = {
 			92,
 			92
 		},
 		texture_sizes = {
 			corner = {
-				18,
-				18
+				14,
+				14
 			},
 			vertical = {
-				18,
-				56
+				14,
+				1
 			},
 			horizontal = {
-				56,
-				18
+				1,
+				14
 			}
 		}
 	},

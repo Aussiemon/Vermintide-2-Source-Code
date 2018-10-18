@@ -829,25 +829,28 @@ InteractionDefinitions.pickup_object = {
 			if result == InteractionResult.SUCCESS then
 				local player = Managers.player:owner(interactor_unit)
 				local local_human = player.local_player
-				local local_bot_or_human = not player.remote
+				local is_player_controlled = player:is_player_controlled()
 				local network_manager = Managers.state.network
 				local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
 				local career_extension = ScriptUnit.extension(interactor_unit, "career_system")
 				local pickup_extension = ScriptUnit.extension(interactable_unit, "pickup_system")
 				local pickup_settings = pickup_extension:get_pickup_settings()
+				local peer_id = player.peer_id
+				local interactor_name = (is_player_controlled and ((rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id))) or player:name()
+				local pop_chat = true
 
 				if pickup_settings.type == "loot_die" then
 					Managers.state.event:trigger("add_coop_feedback", player:stats_id(), local_human, "picked_up_loot_dice", player)
 
-					if local_bot_or_human then
-						Managers.chat:send_system_chat_message(1, "system_chat_player_picked_up_loot_die", player:name())
-					end
+					local message = string.format(Localize("system_chat_player_picked_up_loot_die"), interactor_name)
+
+					Managers.chat:add_local_system_message(1, message, pop_chat)
 				elseif pickup_settings.type == "endurance_badge" then
 					Managers.state.event:trigger("add_coop_feedback", player:stats_id(), local_human, "picked_up_endurance_badge", player)
 
-					if local_bot_or_human then
-						Managers.chat:send_system_chat_message(1, "dlc1_2_system_chat_player_picked_up_endurance_badge", player:name())
-					end
+					local message = string.format(Localize("dlc1_2_system_chat_player_picked_up_endurance_badge"), interactor_name)
+
+					Managers.chat:add_local_system_message(1, message, pop_chat)
 				elseif pickup_settings.type == "inventory_item" then
 					local slot_name = pickup_settings.slot_name
 					local item_name = pickup_settings.item_name
@@ -858,15 +861,15 @@ InteractionDefinitions.pickup_object = {
 						if item_name == "wpn_side_objective_tome_01" then
 							Managers.state.event:trigger("add_coop_feedback", player:stats_id(), local_human, "picked_up_tome", player)
 
-							if local_bot_or_human then
-								Managers.chat:send_system_chat_message(1, "system_chat_player_picked_up_tome", player:name())
-							end
+							local message = string.format(Localize("system_chat_player_picked_up_tome"), interactor_name)
+
+							Managers.chat:add_local_system_message(1, message, pop_chat)
 						elseif item_name == "wpn_grimoire_01" then
 							Managers.state.event:trigger("add_coop_feedback", player:stats_id(), local_human, "picked_up_grimoire", player)
 
-							if local_bot_or_human then
-								Managers.chat:send_system_chat_message(1, "system_chat_player_picked_up_grimoire", player:name())
-							end
+							local message = string.format(Localize("system_chat_player_picked_up_grimoire"), interactor_name)
+
+							Managers.chat:add_local_system_message(1, message, pop_chat)
 						end
 					end
 
@@ -879,17 +882,17 @@ InteractionDefinitions.pickup_object = {
 
 							Managers.state.event:trigger("add_coop_feedback", player:stats_id(), local_human, "discarded_tome", player)
 
-							if local_bot_or_human then
-								Managers.chat:send_system_chat_message(1, "system_chat_player_discarded_tome", player:name())
-							end
+							local message = string.format(Localize("system_chat_player_discarded_tome"), interactor_name)
+
+							Managers.chat:add_local_system_message(1, message, pop_chat)
 						elseif item_name ~= "wpn_grimoire_01" and item_template.name == "wpn_grimoire_01" then
 							local local_human = not player.remote and not player.bot_player
 
 							Managers.state.event:trigger("add_coop_feedback", player:stats_id(), local_human, "discarded_grimoire", player)
 
-							if local_bot_or_human then
-								Managers.chat:send_system_chat_message(1, "system_chat_player_discarded_grimoire", player:name())
-							end
+							local message = string.format(Localize("system_chat_player_discarded_grimoire"), interactor_name)
+
+							Managers.chat:add_local_system_message(1, message, pop_chat)
 						end
 					end
 				end
@@ -902,6 +905,7 @@ InteractionDefinitions.pickup_object = {
 					on_pick_up_func(world, interactor_unit, is_server)
 				end
 
+				local local_bot_or_human = not player.remote
 				local local_pickup_sound = pickup_settings.local_pickup_sound
 				local play_sound = ((local_pickup_sound and local_bot_or_human) or not local_pickup_sound) and not player.bot_player
 
@@ -1458,9 +1462,13 @@ InteractionDefinitions.heal = {
 			end
 
 			local interactable_health_extension = ScriptUnit.extension(interactable_unit, "health_system")
-			local interactable_status_extension = ScriptUnit.extension(interactor_unit, "status_system")
+			local interactable_status_extension = ScriptUnit.extension(interactable_unit, "status_system")
 
 			if interactable_status_extension:is_knocked_down() or not interactable_health_extension:is_alive() then
+				return InteractionResult.FAILURE
+			end
+
+			if interactable_status_extension:is_disabled() then
 				return InteractionResult.FAILURE
 			end
 
@@ -1838,10 +1846,12 @@ InteractionDefinitions.inventory_access.client.stop = function (world, interacto
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		local menu_state = "overview"
-		local menu_sub_state = "equipment"
+		local transition_params = {
+			menu_sub_state_name = "equipment",
+			menu_state_name = "overview"
+		}
 
-		data.ingame_ui:transition_with_fade("hero_view_force", menu_state, menu_sub_state)
+		data.ingame_ui:transition_with_fade("hero_view_force", transition_params)
 	end
 end
 
@@ -1860,10 +1870,12 @@ InteractionDefinitions.prestige_access.client.stop = function (world, interactor
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		local menu_state = "overview"
-		local menu_sub_state = "prestige"
+		local transition_params = {
+			menu_sub_state_name = "prestige",
+			menu_state_name = "overview"
+		}
 
-		data.ingame_ui:transition_with_fade("hero_view_force", menu_state, menu_sub_state)
+		data.ingame_ui:transition_with_fade("hero_view_force", transition_params)
 	end
 end
 
@@ -1882,10 +1894,12 @@ InteractionDefinitions.forge_access.client.stop = function (world, interactor_un
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		local menu_state = "overview"
-		local menu_sub_state = "forge"
+		local transition_params = {
+			menu_sub_state_name = "forge",
+			menu_state_name = "overview"
+		}
 
-		data.ingame_ui:transition_with_fade("hero_view_force", menu_state, menu_sub_state)
+		data.ingame_ui:transition_with_fade("hero_view_force", transition_params)
 	end
 end
 
@@ -1904,10 +1918,12 @@ InteractionDefinitions.talents_access.client.stop = function (world, interactor_
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		local menu_state = "overview"
-		local menu_sub_state = "talents"
+		local transition_params = {
+			menu_sub_state_name = "talents",
+			menu_state_name = "overview"
+		}
 
-		data.ingame_ui:transition_with_fade("hero_view_force", menu_state, menu_sub_state)
+		data.ingame_ui:transition_with_fade("hero_view_force", transition_params)
 	end
 end
 
@@ -1926,10 +1942,12 @@ InteractionDefinitions.cosmetics_access.client.stop = function (world, interacto
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		local menu_state = "overview"
-		local menu_sub_state = "cosmetics"
+		local transition_params = {
+			menu_sub_state_name = "cosmetics",
+			menu_state_name = "overview"
+		}
 
-		data.ingame_ui:transition_with_fade("hero_view_force", menu_state, menu_sub_state)
+		data.ingame_ui:transition_with_fade("hero_view_force", transition_params)
 	end
 end
 
@@ -1948,9 +1966,11 @@ InteractionDefinitions.loot_access.client.stop = function (world, interactor_uni
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		local menu_state = "loot"
+		local transition_params = {
+			menu_state_name = "loot"
+		}
 
-		data.ingame_ui:transition_with_fade("hero_view_force", menu_state)
+		data.ingame_ui:transition_with_fade("hero_view_force", transition_params)
 	end
 end
 
@@ -1969,9 +1989,11 @@ InteractionDefinitions.characters_access.client.stop = function (world, interact
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		local menu_state = "character"
+		local transition_params = {
+			menu_state_name = "character"
+		}
 
-		data.ingame_ui:transition_with_fade("character_selection_force", menu_state)
+		data.ingame_ui:transition_with_fade("character_selection_force", transition_params)
 	end
 end
 
@@ -2050,9 +2072,11 @@ InteractionDefinitions.map_access.client.stop = function (world, interactor_unit
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		local menu_state = "play"
+		local transition_params = {
+			menu_state_name = "play"
+		}
 
-		data.ingame_ui:transition_with_fade("start_game_view_force", menu_state)
+		data.ingame_ui:transition_with_fade("start_game_view_force", transition_params)
 	end
 end
 
@@ -2101,10 +2125,13 @@ InteractionDefinitions.pictureframe.config.swap_to_3p = false
 InteractionDefinitions.pictureframe.client.stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
 	data.start_time = nil
 
-	if result == InteractionResult.SUCCESS and not data.is_husk then
-		local decoration_system = Managers.state.entity:system("keep_decoration_system")
+	if result == InteractionResult.SUCCESS and not data.is_husk and rawget(_G, "HeroViewStateKeepDecorations") then
+		local transition_params = {
+			menu_state_name = "keep_decorations",
+			interactable_unit = interactable_unit
+		}
 
-		decoration_system:interacted_with(interactable_unit)
+		data.ingame_ui:transition_with_fade("hero_view_force", transition_params)
 	end
 end
 
@@ -2139,10 +2166,11 @@ InteractionDefinitions.achievement_access.client.stop = function (world, interac
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		local menu_state = "achievements"
-		local menu_sub_state = nil
+		local transition_params = {
+			menu_state_name = "achievements"
+		}
 
-		data.ingame_ui:transition_with_fade("hero_view_force", menu_state, menu_sub_state)
+		data.ingame_ui:transition_with_fade("hero_view_force", transition_params)
 	end
 end
 

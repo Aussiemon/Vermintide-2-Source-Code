@@ -209,7 +209,9 @@ UIPasses.state_texture = {
 		if texture then
 			local draw_function = ui_style.draw_function or "draw_texture"
 
+			Profiler.start("state_texture: " .. draw_function)
 			UIRenderer[draw_function](ui_renderer, texture, position, size, ui_style.color, ui_style and ui_style.masked)
+			Profiler.stop("state_texture: " .. draw_function)
 		end
 	end
 }
@@ -284,6 +286,7 @@ UIPasses.list_pass = {
 		for i = start_index, stop_index, 1 do
 			index = index + 1
 			local element_content = ui_content[i]
+			element_content.parent = ui_content.parent
 			local element_style = (ui_style.item_styles and ui_style.item_styles[i]) or ui_style
 			local element_list_member_offset = element_style.list_member_offset
 			local column_index = nil
@@ -328,7 +331,15 @@ UIPasses.list_pass = {
 				pass_position[3] = element_position[3]
 				local sub_pass_definition = passes[j]
 				local sub_pass_content_id = sub_pass_definition.content_id
-				local pass_element_content = (sub_pass_content_id and element_content[sub_pass_content_id]) or element_content
+				local pass_element_content = nil
+
+				if sub_pass_content_id then
+					pass_element_content = element_content[sub_pass_content_id]
+					pass_element_content.parent = element_content
+				else
+					pass_element_content = element_content
+				end
+
 				local sub_pass_style_id = sub_pass_definition.style_id
 				local pass_element_style = (sub_pass_style_id and element_style[sub_pass_style_id]) or element_style
 				local pass_size = (pass_element_style and pass_element_style.size and Vector2(unpack(pass_element_style.size))) or size
@@ -355,7 +366,9 @@ UIPasses.list_pass = {
 				end
 
 				if draw then
+					Profiler.start("list_pass: " .. sub_pass_definition.pass_type)
 					UIPasses[sub_pass_definition.pass_type].draw(ui_renderer, sub_pass_data, ui_scenegraph, sub_pass_definition, pass_element_style, pass_element_content, Vector3(unpack(pass_position)), pass_size, input_service, dt)
+					Profiler.stop("list_pass: " .. sub_pass_definition.pass_type)
 				end
 			end
 
@@ -1389,6 +1402,7 @@ UIPasses.text_area_chat = {
 			return
 		end
 
+		Profiler.start("text area chat")
 		table.clear_array(message_array, #message_array)
 		table.clear(name_array)
 		table.clear(name_color_array)
@@ -1430,6 +1444,7 @@ UIPasses.text_area_chat = {
 		for i = 1, #ui_content.message_tables, 1 do
 			local message_table = ui_content.message_tables[i]
 			local is_dev = message_table.is_dev
+			local is_bot = message_table.is_bot
 			local is_system = message_table.is_system
 			local sender = message_table.sender
 			local message = message_table.message
@@ -1522,6 +1537,9 @@ UIPasses.text_area_chat = {
 				if j == 1 then
 					if is_dev then
 						dev_name_array[#message_array] = sender
+					elseif is_bot then
+						name_array[row] = sender
+						name_color_array[row] = Colors.get_color_table_with_alpha("dark_gray", channel_color_alpha)
 					else
 						name_array[row] = sender
 						name_color_array[row] = irc_channel_colors[message_type] or Colors.get_color_table_with_alpha("gray", channel_color_alpha)
@@ -1624,6 +1642,8 @@ UIPasses.text_area_chat = {
 
 			position.y = position.y - ui_style.font_size - spacing
 		end
+
+		Profiler.stop("text area chat")
 	end
 }
 local temp_line_color_override = {}
@@ -2059,6 +2079,8 @@ UIPasses.text_positive_reinforcement = {
 			return
 		end
 
+		Profiler.start("text positive reinforcement")
+
 		local font_material, font_size, font_name = nil
 
 		if ui_style.font_type then
@@ -2096,6 +2118,8 @@ UIPasses.text_positive_reinforcement = {
 
 			position.y = position.y + ui_style.font_size
 		end
+
+		Profiler.stop("text positive reinforcement")
 	end
 }
 UIPasses.editable_text = {
@@ -2195,9 +2219,6 @@ UIPasses.viewport = {
 		local world = Managers.world:create_world(style.world_name, shading_environment, nil, style.layer, unpack(world_flags))
 		local viewport_type = style.viewport_type or "default"
 		local viewport = ScriptWorld.create_viewport(world, style.viewport_name, viewport_type, style.layer)
-
-		Viewport.set_rect(viewport, 1, 1, 1, 1)
-
 		local level_name = style.level_name
 		local object_sets = style.object_sets
 		local level = nil
@@ -2212,6 +2233,10 @@ UIPasses.viewport = {
 		else
 			Viewport.set_data(viewport, "initialize", true)
 		end
+
+		local deactivated = true
+
+		ScriptWorld.deactivate_viewport(world, viewport)
 
 		local camera_pos = Vector3Aux.unbox(style.camera_position)
 		local camera_lookat = Vector3Aux.unbox(style.camera_lookat)
@@ -2232,6 +2257,7 @@ UIPasses.viewport = {
 		end
 
 		return {
+			deactivated = deactivated,
 			world = world,
 			world_name = style.world_name,
 			level = level,
@@ -2260,10 +2286,18 @@ UIPasses.viewport = {
 		local viewport_position = Vector3.zero()
 		viewport_position.x = math.clamp(scaled_position.x / resx, 0, 1)
 		viewport_position.y = math.clamp(1 - scaled_position.y / resy - viewport_size.y, 0, 1)
+		local viewport = pass_data.viewport
+		local world = pass_data.world
 
-		if Viewport.get_data(pass_data.viewport, "initialize") then
-			Viewport.set_data(pass_data.viewport, "initialize", false)
-			Viewport.set_rect(pass_data.viewport, 0, 0, 1, 1)
+		if pass_data.deactivated then
+			ScriptWorld.activate_viewport(world, viewport)
+
+			pass_data.deactivated = false
+		end
+
+		if Viewport.get_data(viewport, "initialize") then
+			Viewport.set_data(viewport, "initialize", false)
+			Viewport.set_rect(viewport, 0, 0, 1, 1)
 		else
 			local splitscreen = false
 
@@ -2273,7 +2307,7 @@ UIPasses.viewport = {
 
 			local multiplier = (splitscreen and 0.5) or 1
 
-			Viewport.set_rect(pass_data.viewport, viewport_position.x * multiplier, viewport_position.y * multiplier, viewport_size.x * multiplier, viewport_size.y * multiplier)
+			Viewport.set_rect(viewport, viewport_position.x * multiplier, viewport_position.y * multiplier, viewport_size.x * multiplier, viewport_size.y * multiplier)
 
 			pass_data.viewport_rect_pos_x = viewport_position.x
 			pass_data.viewport_rect_pos_y = viewport_position.y
@@ -3232,6 +3266,7 @@ UIPasses.item_tooltip = {
 					local equipped_items = pass_data.equipped_items
 
 					table.clear(equipped_items)
+					Profiler.start("get equipped items")
 
 					local backend_items = Managers.backend:get_interface("items")
 					local profile_index = player:profile_index()
@@ -3248,6 +3283,9 @@ UIPasses.item_tooltip = {
 					local backend_common = Managers.backend:get_interface("common")
 					local item_filter = "slot_type == " .. slot_type
 					equipped_items = backend_common:filter_items(equipped_items, item_filter)
+
+					Profiler.stop("get equipped items")
+
 					pass_data.equipped_items = equipped_items
 
 					for _, item in ipairs(equipped_items) do
@@ -4199,10 +4237,6 @@ UIPasses.item_presentation = {
 			draw = UITooltipPasses.item_background.draw
 		}
 		pass_data.passes = passes
-		pass_data.size = {
-			400,
-			0
-		}
 		pass_data.alpha_multiplier = 1
 		pass_data.player = nil
 

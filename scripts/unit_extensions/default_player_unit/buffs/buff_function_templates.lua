@@ -1,7 +1,7 @@
 BuffFunctionTemplates = BuffFunctionTemplates or {}
 
 local function get_variable(path_to_movement_setting_to_modify, unit)
-	assert(#path_to_movement_setting_to_modify > 0, "movement_setting_exists needs at least a movement_setting_to_modify")
+	fassert(#path_to_movement_setting_to_modify > 0, "movement_setting_exists needs at least a movement_setting_to_modify")
 
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local movement_value = movement_settings_table
@@ -17,14 +17,14 @@ local function get_variable(path_to_movement_setting_to_modify, unit)
 	if movement_value then
 		return movement_value
 	else
-		assert(orginal_variable_exists, "variable does not exist in PlayerUnitMovementSettings")
+		fassert(orginal_variable_exists, "variable does not exist in PlayerUnitMovementSettings")
 	end
 end
 
 local function set_variable(path_to_movement_setting_to_modify, unit, value)
 	local nr_of_settings = #path_to_movement_setting_to_modify
 
-	assert(nr_of_settings > 0, "movement_setting_exists needs at least a movement_setting_to_modify")
+	fassert(nr_of_settings > 0, "movement_setting_exists needs at least a movement_setting_to_modify")
 
 	local unit_movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local movement_value = unit_movement_settings_table
@@ -808,6 +808,13 @@ BuffFunctionTemplates.functions = {
 
 		if first_person_extension then
 			buff.vortex_particle_id = first_person_extension:create_screen_particles("fx/screenspace_poison_globe_impact")
+		end
+
+		local attacker_unit = params.attacker_unit
+
+		if Unit.alive(attacker_unit) then
+			local breed = ALIVE[attacker_unit] and Unit.get_data(attacker_unit, "breed")
+			buff.damage_source = (breed and breed.name) or "dot_debuff"
 		end
 
 		buff.vortex_next_t = params.t

@@ -112,7 +112,7 @@ MatchmakingHandshakerHost.rpc_pong = function (self, sender, client_cookie, host
 end
 
 MatchmakingHandshakerHost.send_rpc_to_client = function (self, rpc_name, peer_id, ...)
-	assert(self.clients[peer_id], "No client with peer_id", peer_id)
+	fassert(self.clients[peer_id], "No client with peer_id", peer_id)
 
 	local client_cookie = self.clients[peer_id]
 	local host_cookie = self.cookie

@@ -3,7 +3,6 @@ require("scripts/ui/views/hero_view/craft_pages/craft_page_roll_trait")
 require("scripts/ui/views/hero_view/craft_pages/craft_page_roll_properties")
 require("scripts/ui/views/hero_view/craft_pages/craft_page_craft_item")
 require("scripts/ui/views/hero_view/craft_pages/craft_page_apply_skin")
-require("scripts/ui/views/hero_view/craft_pages/craft_page_extract_skin")
 require("scripts/ui/views/hero_view/craft_pages/craft_page_upgrade_item")
 require("scripts/ui/views/hero_view/craft_pages/craft_page_convert_dust")
 
@@ -43,12 +42,6 @@ local page_settings = {
 		sound_event_enter = "play_gui_equipment_button",
 		name = "upgrade_item_rarity_common",
 		class_name = "CraftPageUpgradeItem",
-		sound_event_exit = "play_gui_equipment_close"
-	},
-	{
-		sound_event_enter = "play_gui_equipment_button",
-		name = "extract_weapon_skin",
-		class_name = "CraftPageExtractSkin",
 		sound_event_exit = "play_gui_equipment_close"
 	},
 	{

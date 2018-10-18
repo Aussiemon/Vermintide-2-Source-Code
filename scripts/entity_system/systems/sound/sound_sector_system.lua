@@ -182,6 +182,10 @@ SoundSectorSystem.update = function (self, context, t, dt)
 		local wwise_source_id = sector_sound_source_ids[sector_sound_id]
 		local is_playing_sound = wwise_source_id ~= nil
 
+		if script_data.sound_sector_system_debug and should_play then
+			self:debug_draw(units_center, sector_index, camera_position)
+		end
+
 		if should_play then
 			local sound_source_unit = sector_sound_source_units[sector_index]
 
@@ -197,6 +201,10 @@ SoundSectorSystem.update = function (self, context, t, dt)
 		elseif is_playing_sound then
 			self:stop_sector_sound_event(sector_index, sector_sound_id, sound_event_template.sound_event_stop)
 		end
+	end
+
+	if script_data.sound_sector_system_debug then
+		self:debug_draw_hud(camera_position)
 	end
 end
 

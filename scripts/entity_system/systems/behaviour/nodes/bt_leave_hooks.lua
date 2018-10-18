@@ -149,7 +149,9 @@ BTLeaveHooks.on_grey_seer_death_sequence_leave = function (unit, blackboard, t)
 end
 
 BTLeaveHooks.leave_attack_grabbed_smash = function (unit, blackboard, t)
-	if blackboard.stagger and Unit.alive(blackboard.victim_grabbed) then
+	local victim_is_alive = Unit.alive(blackboard.victim_grabbed)
+
+	if (blackboard.stagger and victim_is_alive) or (victim_is_alive and not AiUtils.unit_alive(unit)) then
 		StatusUtils.set_grabbed_by_chaos_spawn_network(blackboard.victim_grabbed, false, unit)
 
 		blackboard.has_grabbed_victim = nil

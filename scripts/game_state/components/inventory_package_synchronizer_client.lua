@@ -293,6 +293,40 @@ InventoryPackageSynchronizerClient.update = function (self, dt)
 			network_printf("[NETWORK] sent rpc_client_inventory_map_loaded, inventory_sync_id: %d ", self.inventory_sync_id)
 		end
 	end
+
+	if script_data.profile_package_loading_debug then
+		local gui = DebugScreen.gui
+
+		if gui then
+			local font = "gw_arial_16"
+			local material = "materials/fonts/" .. font
+			local font_size = 13
+			local start_x, start_y = Application.resolution()
+			start_x = start_x - 300
+			start_y = start_y - 100
+			local white = Color(250, 255, 255, 255)
+			local active_color = Color(255, 100, 255, 100)
+			local inactive_color = Color(255, 200, 255, 200)
+
+			Gui.text(gui, "Loaded packages:", material, font_size, font, Vector3(start_x, start_y + font_size, 890), white)
+
+			for package_name, _ in pairs(package_manager._packages) do
+				Gui.text(gui, package_name, material, font_size, font, Vector3(start_x + 40, start_y, 890), active_color)
+
+				start_y = start_y - font_size
+			end
+
+			Gui.text(gui, "Loading packages:", material, font_size, font, Vector3(start_x, start_y, 890), white)
+
+			start_y = start_y - font_size
+
+			for package_name, _ in pairs(package_manager._asynch_packages) do
+				Gui.text(gui, package_name, material, font_size, font, Vector3(start_x + 40, start_y, 890), inactive_color)
+
+				start_y = start_y - font_size
+			end
+		end
+	end
 end
 
 InventoryPackageSynchronizerClient.is_package_required = function (self, package_name)

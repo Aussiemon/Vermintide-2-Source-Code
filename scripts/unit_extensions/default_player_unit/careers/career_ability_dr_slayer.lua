@@ -9,13 +9,7 @@ local function get_leap_data(physics_world, own_position, target_position)
 	local in_los, velocity, time_of_flight, hit_pos = nil
 	local target_velocity = Vector3.zero()
 	local acceptable_accuracy = 0.1
-
-	if jump_speed then
-		jump_angle, hit_pos = WeaponHelper.angle_to_hit_moving_target(own_position, target_position, jump_speed, target_velocity, -gravity, acceptable_accuracy)
-	else
-		jump_speed, hit_pos = WeaponHelper.speed_to_hit_moving_target(own_position, target_position, jump_angle, target_velocity, -gravity, acceptable_accuracy)
-	end
-
+	jump_speed, hit_pos = WeaponHelper.speed_to_hit_moving_target(own_position, target_position, jump_angle, target_velocity, -gravity, acceptable_accuracy)
 	in_los, velocity, time_of_flight = WeaponHelper.test_angled_trajectory(physics_world, own_position, target_position, gravity, jump_speed, jump_angle, segment_list, sections, nil, true)
 
 	fassert(in_los, "no landing location for leap")
@@ -104,7 +98,7 @@ CareerAbilityDRSlayer.update = function (self, unit, input, dt, context, t)
 end
 
 CareerAbilityDRSlayer.stop = function (self, reason)
-	if self._is_priming then
+	if reason ~= "pushed" and reason ~= "stunned" and self._is_priming then
 		self:_stop_priming()
 	end
 end
@@ -129,13 +123,8 @@ end
 
 CareerAbilityDRSlayer._update_priming = function (self)
 	local effect_id = self._effect_id
-	local owner_unit = self._owner_unit
 	local world = self._world
-	local game = Managers.state.network:game()
-	local network_manager = Managers.state.network
-	local network_transmit = network_manager.network_transmit
 	local physics_world = World.get_data(world, "physics_world")
-	local unit_id = network_manager:unit_game_object_id(owner_unit)
 	local first_person_extension = self._first_person_extension
 	local player_position = first_person_extension:current_position()
 	local player_rotation = first_person_extension:current_rotation()
@@ -149,7 +138,7 @@ CareerAbilityDRSlayer._update_priming = function (self)
 
 	local landing_position = nil
 	local collision_filter = "filter_adept_teleport"
-	local result, hit_position, hit_distance, normal = PhysicsWorld.immediate_raycast(physics_world, player_position, player_direction, 10, "closest", "collision_filter", collision_filter)
+	local result, hit_position, _, normal = PhysicsWorld.immediate_raycast(physics_world, player_position, player_direction, 10, "closest", "collision_filter", collision_filter)
 
 	if result then
 		landing_position = hit_position
@@ -157,7 +146,7 @@ CareerAbilityDRSlayer._update_priming = function (self)
 		if Vector3.dot(normal, Vector3.up()) < 0.75 then
 			local step_back = Vector3.normalize(hit_position - player_position) * 1
 			local step_back_position = hit_position - step_back
-			local new_result, new_hit_position, new_hit_distance, new_normal = PhysicsWorld.immediate_raycast(physics_world, step_back_position, Vector3.down(), 100, "closest", "collision_filter", collision_filter)
+			local new_result, new_hit_position, _, _ = PhysicsWorld.immediate_raycast(physics_world, step_back_position, Vector3.down(), 100, "closest", "collision_filter", collision_filter)
 
 			if new_result then
 				landing_position = new_hit_position
@@ -165,7 +154,7 @@ CareerAbilityDRSlayer._update_priming = function (self)
 		end
 	else
 		landing_position = hit_position
-		local new_result, new_hit_position, new_hit_distance, new_normal = PhysicsWorld.immediate_raycast(physics_world, player_position + player_direction * 10, Vector3.down(), 100, "closest", "collision_filter", collision_filter)
+		local new_result, new_hit_position, _, _ = PhysicsWorld.immediate_raycast(physics_world, player_position + player_direction * 10, Vector3.down(), 100, "closest", "collision_filter", collision_filter)
 
 		if new_result then
 			landing_position = new_hit_position

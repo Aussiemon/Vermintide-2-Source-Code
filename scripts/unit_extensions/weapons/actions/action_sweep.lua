@@ -36,6 +36,51 @@ ActionSweep.init = function (self, world, item_name, is_server, owner_unit, dama
 	})
 end
 
+ActionSweep.check_precision_target = function (self, owner_unit, owner_player, dedicated_target_range, check_distance, weapon_furthest_point)
+	local current_target = self.precision_target_unit
+
+	if not AiUtils.unit_alive(current_target) then
+		return nil
+	end
+
+	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
+
+	first_person_extension:disable_rig_movement()
+
+	local pos = first_person_extension:current_position()
+	local rot = first_person_extension:current_rotation()
+	local direction = Quaternion.forward(rot)
+	local breed = Unit.get_data(current_target, "breed")
+	local node = "j_spine"
+	local target_position = Unit.world_position(current_target, Unit.node(current_target, node))
+	local good_target = false
+	local player_to_target_vector = target_position - pos
+	local player_to_target_distance = Vector3.length(player_to_target_vector)
+	local player_to_target_unit_dir = Vector3.normalize(player_to_target_vector)
+	local dot = Vector3.dot(player_to_target_unit_dir, direction)
+	local target_health_extension = ScriptUnit.extension(current_target, "health_system")
+
+	if dot < 0.9 or dedicated_target_range < player_to_target_distance then
+		good_target = false
+	elseif target_health_extension:is_alive() then
+		good_target = true
+	end
+
+	if script_data.debug_weapons then
+		local drawer = self._drawer
+		local ball_color = (good_target and Color(0, 255, 0)) or Color(255, 0, 0)
+		local debug_text_manager = Managers.state.debug_text
+
+		drawer:sphere(weapon_furthest_point, 0.25, ball_color)
+
+		local distance_to_furthest_point = Vector3.length(pos - weapon_furthest_point)
+
+		debug_text_manager:output_world_text(distance_to_furthest_point, 0.15, weapon_furthest_point, nil, "targeting", Vector3(255, 0, 100), "player_1")
+	end
+
+	return (good_target and current_target) or nil
+end
+
 ActionSweep.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
 	self.has_played_rumble_effect = false
 	self.current_action = new_action
@@ -45,10 +90,11 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 	self.precision_target_unit = nil
 	self.number_of_hit_enemies = 0
 	self.amount_of_mass_hit = 0
+	self.number_of_potential_hit_results = 0
+	self.hit_mass_of_potential_hit_results = 0
 	self.network_manager = Managers.state.network
-	self.last_potential_hit_result = {
-		has_result = false
-	}
+	self.last_potential_hit_result_has_result = false
+	self.last_potential_hit_result = {}
 	local owner_unit = self.owner_unit
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	local career_extension = ScriptUnit.extension(owner_unit, "career_system")
@@ -169,6 +215,17 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 				end
 			end
 		end
+
+		if not self.precision_target_unit and ScriptUnit.has_extension(owner_unit, "smart_targeting_system") then
+			local targeting_extension = ScriptUnit.extension(owner_unit, "smart_targeting_system")
+			local targeting_data = targeting_extension:get_targeting_data()
+			local smart_targeting_unit = targeting_data.unit
+
+			if smart_targeting_unit then
+				self.precision_target_unit = smart_targeting_unit
+				self.has_hit_precision_target = false
+			end
+		end
 	end
 
 	local weapon_unit = self.weapon_unit
@@ -191,6 +248,10 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 	end
 
 	self._drawer:reset()
+
+	local debug_text_manager = Managers.state.debug_text
+
+	debug_text_manager:clear_world_text("targeting")
 end
 
 local SWEEP_RESULTS = {}
@@ -398,8 +459,10 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 	weapon_half_extents.y = weapon_half_extents.y * height_mod
 
 	if script_data.debug_weapons then
+		local color = (self.within_precision_window and Color(0, 0, 255)) or Color(0, 255, 0)
+
 		drawer:capsule(position_previous, position_previous + weapon_up_dir_previous * weapon_half_length * 2, 0.02)
-		drawer:capsule(position_current, position_current + current_rot_up * weapon_half_length * 2, 0.01, Color(0, 0, 255))
+		drawer:capsule(position_current, position_current + current_rot_up * weapon_half_length * 2, 0.01, color)
 		Debug.text("Missed target count: %d", self.missed_targets or 0)
 	end
 
@@ -483,9 +546,48 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 	local damage_profile = self.damage_profile
 	local hit_units = self.hit_units
 	local environment_unit_hit = false
+	local weapon_furthest_point = position_current + current_rot_up * weapon_half_length * 2
+	local lost_precision_target = nil
 
-	for i = 1, num_results1 + num_results2 + num_results3, 1 do
-		local has_hit_precision_target_and_has_last_hit_result = self.last_potential_hit_result.has_result and self.has_hit_precision_target
+	if current_action.use_precision_sweep and self.precision_target_unit then
+		local this_frames_precision_target = self:check_precision_target(owner_unit, owner_player, current_action.dedicated_target_range, true, weapon_furthest_point)
+
+		if self.precision_target_unit ~= this_frames_precision_target then
+			lost_precision_target = true
+			self.precision_target_unit = nil
+		end
+	end
+
+	local number_of_results_this_frame = num_results1 + num_results2 + num_results3
+
+	if final_frame and self.last_potential_hit_result_has_result then
+		local num_added = 0
+		local index_to_add_potential = 1
+
+		for i = 1, #self.last_potential_hit_result, 1 do
+			if not self.last_potential_hit_result[i].already_hit then
+				local saved_result = {}
+
+				if self.last_potential_hit_result[i].actor:unbox() then
+					saved_result.actor = self.last_potential_hit_result[i].actor:unbox()
+					saved_result.position = self.last_potential_hit_result[i].hit_position:unbox()
+					saved_result.normal = self.last_potential_hit_result[i].hit_normal:unbox()
+
+					table.insert(SWEEP_RESULTS, index_to_add_potential, saved_result)
+
+					local potential_unit = self.last_potential_hit_result[i].hit_unit
+					hit_units[potential_unit] = nil
+					index_to_add_potential = index_to_add_potential + 1
+					num_added = num_added + 1
+				end
+			end
+		end
+
+		number_of_results_this_frame = number_of_results_this_frame + num_added
+	end
+
+	for i = 1, number_of_results_this_frame, 1 do
+		local has_hit_precision_target_and_has_last_hit_result = self.last_potential_hit_result_has_result and (self.has_hit_precision_target or lost_precision_target)
 		local result = SWEEP_RESULTS[i]
 		local hit_actor = result.actor
 		local hit_unit = Actor.unit(hit_actor)
@@ -493,14 +595,32 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 		local hit_normal = result.normal
 
 		if has_hit_precision_target_and_has_last_hit_result then
-			local last_potential_actor = self.last_potential_hit_result.actor:unbox()
+			local last_potential_result_index = #self.last_potential_hit_result
+			local use_saved_target_instead = false
 
-			if last_potential_actor then
-				hit_actor = last_potential_actor
-				hit_unit = Actor.unit(hit_actor)
-				hit_position = self.last_potential_hit_result.hit_position:unbox()
-				hit_normal = self.last_potential_hit_result.hit_normal:unbox()
+			if lost_precision_target then
+				use_saved_target_instead = true
+				lost_precision_target = false
+			elseif self.last_potential_hit_result[last_potential_result_index].hit_mass_budget then
+				use_saved_target_instead = true
 			end
+
+			if use_saved_target_instead then
+				local last_potential_actor = self.last_potential_hit_result[last_potential_result_index].actor:unbox()
+
+				if last_potential_actor then
+					hit_actor = last_potential_actor
+					hit_unit = Actor.unit(hit_actor)
+					hit_position = self.last_potential_hit_result[last_potential_result_index].hit_position:unbox()
+					hit_normal = self.last_potential_hit_result[last_potential_result_index].hit_normal:unbox()
+					local potential_unit = self.last_potential_hit_result[last_potential_result_index].hit_unit
+					hit_units[potential_unit] = nil
+					self.last_potential_hit_result[last_potential_result_index].already_hit = true
+					i = i - 1
+				end
+			end
+
+			self.last_potential_hit_result_has_result = false
 		end
 
 		local hit_armor = false
@@ -534,20 +654,23 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 				local actual_hit_target_index = 1
 				local target_settings = nil
 
-				if current_action.use_precision_sweep and self.precision_target_unit ~= nil and not self.has_hit_precision_target then
+				if current_action.use_precision_sweep and self.precision_target_unit ~= nil and not self.has_hit_precision_target and not final_frame then
 					if hit_unit == self.precision_target_unit then
 						self.has_hit_precision_target = true
 						actual_hit_target_index, shield_blocked, can_damage, can_stagger = self:_calculate_hit_mass(difficulty_rank, target_health_extension, actual_hit_target_index, shield_blocked, current_action, breed, hit_unit_id)
 						target_settings = damage_profile.default_target
 					elseif target_health_extension:is_alive() then
 						local potential_target_hit_mass = self:_get_target_hit_mass(difficulty_rank, shield_blocked, current_action, breed, hit_unit_id)
-
-						if self.max_targets - (self.amount_of_mass_hit + potential_target_hit_mass) > 0 then
-							self.last_potential_hit_result.actor = ActorBox(hit_actor)
-							self.last_potential_hit_result.hit_position = Vector3Box(hit_position)
-							self.last_potential_hit_result.hit_normal = Vector3Box(hit_normal)
-							self.last_potential_hit_result.has_result = true
-						end
+						local num_potential_hits = self.number_of_potential_hit_results + 1
+						local result_to_save = {}
+						self.last_potential_hit_result_has_result = true
+						result_to_save.hit_unit = hit_unit
+						result_to_save.actor = ActorBox(hit_actor)
+						result_to_save.hit_position = Vector3Box(hit_position)
+						result_to_save.hit_normal = Vector3Box(hit_normal)
+						result_to_save.hit_mass_budget = self.max_targets - (self.amount_of_mass_hit + potential_target_hit_mass) >= 0
+						self.last_potential_hit_result[num_potential_hits] = result_to_save
+						self.number_of_potential_hit_results = num_potential_hits
 					end
 				elseif self.amount_of_mass_hit < self.max_targets or has_hit_precision_target_and_has_last_hit_result then
 					if not is_player then
@@ -704,9 +827,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 						first_person_extension:play_hud_sound_event("Play_hud_matchmaking_countdown")
 					end
 
-					if has_hit_precision_target_and_has_last_hit_result then
-						i = i - 1
-					elseif abort_attack then
+					if abort_attack then
 						break
 					end
 				end
@@ -737,7 +858,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 						self:hit_level_object(hit_units, hit_unit, owner_unit, current_action, hit_position, attack_direction, level_index, true, hit_actor)
 
 						local is_armored = hit_unit_armor and hit_unit_armor == 2
-						local abort_attack = self.max_targets <= self.number_of_hit_enemies or ((is_armored or self.max_targets <= self.amount_of_mass_hit) and not self.ignore_mass_and_armour)
+						local abort_attack = self.max_targets <= self.number_of_hit_enemies or ((is_armored or self.max_targets <= self.amount_of_mass_hit) and not current_action.slide_armour_hit and not self.ignore_mass_and_armour)
 						local hit_position = result.position
 						local hit_normal = result.normal
 
@@ -1091,7 +1212,7 @@ ActionSweep.hit_level_object = function (self, hit_units, hit_unit, owner_unit, 
 
 			DamageUtils.damage_dummy_unit(hit_unit, owner_unit, hit_zone_name, power_level, melee_boost_curve_multiplier, is_critical_strike, damage_profile, target_index, hit_position, attack_direction, damage_source, hit_actor, damage_profile_id)
 		else
-			DamageUtils.damage_level_unit(hit_unit, owner_unit, hit_zone_name, power_level, melee_boost_curve_multiplier, is_critical_strike, damage_profile, target_index, attack_direction, damage_source, hit_actor)
+			DamageUtils.damage_level_unit(hit_unit, owner_unit, hit_zone_name, power_level, melee_boost_curve_multiplier, is_critical_strike, damage_profile, target_index, attack_direction, damage_source)
 		end
 	end
 
@@ -1112,6 +1233,14 @@ ActionSweep.finish = function (self, reason, data)
 
 	local owner_unit = self.owner_unit
 	local weapon_system = self.weapon_system
+	local current_action = self.current_action
+	local action_aborted_flow_event = current_action.action_aborted_flow_event
+
+	if action_aborted_flow_event and not self.action_aborted_flow_event_sent then
+		Unit.flow_event(self.weapon_unit, action_aborted_flow_event)
+	end
+
+	self.action_aborted_flow_event_sent = nil
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
 	if hud_extension then
@@ -1127,40 +1256,6 @@ ActionSweep.finish = function (self, reason, data)
 
 		first_person_extension:play_hud_sound_event(stop_crit_hud_sound_event, nil, false)
 	end
-
-	if not script_data.debug_weapons_always_hit_target then
-		return
-	end
-
-	local precision_target_unit = self.precision_target_unit
-
-	if precision_target_unit == nil or self.has_hit_precision_target then
-		return
-	end
-
-	weapon_printf("FINISHING OFF MISSED PRECISION TARGET")
-
-	local network_manager = Managers.state.network
-	local breed = unit_get_data(precision_target_unit, "breed")
-	local hit_zone_name, _ = next(breed.hit_zones)
-	local precision_target_position = POSITION_LOOKUP[precision_target_unit]
-	local attacker_position = POSITION_LOOKUP[owner_unit]
-	local attack_direction = Vector3.normalize(precision_target_position - attacker_position)
-	local hit_unit_id = network_manager:unit_game_object_id(precision_target_unit)
-	local attacker_unit_id = network_manager:unit_game_object_id(owner_unit)
-	local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
-	local has_melee_boost, melee_boost_curve_multiplier = self:_get_power_boost()
-	local is_critical_strike = self._is_critical_strike or has_melee_boost
-	local damage_profile_id = self.damage_profile_id
-	local power_level = self.power_level
-	local hit_target_index = nil
-	local shield_blocked = false
-	local shield_break_procc = false
-	local charge_value = self.damage_profile.charge_value
-	local send_to_server = true
-
-	DamageUtils.buff_on_attack(owner_unit, precision_target_unit, charge_value, is_critical_strike, hit_zone_name, self.number_of_hit_enemies + 1, send_to_server)
-	weapon_system:send_rpc_attack_hit(NetworkLookup.damage_sources[self.item_name], attacker_unit_id, hit_unit_id, hit_zone_id, precision_target_position, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", hit_target_index, "blocking", shield_blocked, "shield_break_procced", shield_break_procc, "boost_curve_multiplier", melee_boost_curve_multiplier, "is_critical_strike", is_critical_strike)
 end
 
 ActionSweep.destroy = function (self)
@@ -1178,6 +1273,14 @@ ActionSweep._play_hit_animations = function (self, owner_unit, current_action, a
 		local first_person_unit = first_person_extension:get_first_person_unit()
 
 		Unit.animation_event(first_person_unit, first_person_hit_anim)
+	end
+
+	local action_aborted_flow_event = current_action.action_aborted_flow_event
+
+	if action_aborted_flow_event and abort_attack then
+		self.action_aborted_flow_event_sent = true
+
+		Unit.flow_event(self.weapon_unit, action_aborted_flow_event)
 	end
 
 	if third_person_hit_anim then

@@ -259,15 +259,17 @@ ModManager._load_mod = function (self, index)
 	end
 
 	if mod then
-		ScriptApplication.set_crashify_tag("modded", true)
+		Crashify.print_property("modded", true)
 
 		local id = mod.id
 		local handle = mod.handle
 
 		self:print("info", "loading mod %s", id)
+		Profiler.start("load info")
 
 		local info = Mod.info(handle)
 
+		Profiler.stop("load info")
 		self:print("spew", "<mod info> \n%s\n<\\mod info>", info)
 
 		local data_file, info_error = loadstring(info)
@@ -296,7 +298,7 @@ ModManager._load_mod = function (self, index)
 		mod.name = mod_name(mod) or data_or_error.NAME or "Mod " .. id
 		mod.state = "loading"
 
-		ScriptApplication.set_crashify_tag(string.format("Mod:%s:%s", id, mod_name(mod)), true)
+		Crashify.print_property(string.format("Mod:%s:%s", id, mod_name(mod)), true)
 
 		self._mod_load_index = index
 
@@ -384,6 +386,8 @@ ModManager._build_mod_table = function (self, mod_handles)
 end
 
 ModManager._load_package = function (self, mod, index)
+	Profiler.start("_load_package")
+
 	mod.package_index = index
 	local package_name = mod.data.packages[index]
 
@@ -395,6 +399,8 @@ ModManager._load_package = function (self, mod, index)
 	ResourcePackage.load(resource_handle)
 
 	mod.loaded_packages[#mod.loaded_packages + 1] = resource_handle
+
+	Profiler.stop("_load_package")
 end
 
 ModManager.unload_all_mods = function (self)

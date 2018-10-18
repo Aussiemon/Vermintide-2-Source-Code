@@ -40,6 +40,9 @@ StateTitleScreenMain.on_enter = function (self, params)
 
 			Managers.xbox_stats = nil
 		end
+	elseif PLATFORM == "ps4" then
+		self:_update_ui_settings()
+		Managers.account:reset()
 	else
 		Managers.account:reset()
 	end
@@ -84,9 +87,15 @@ end
 StateTitleScreenMain._update_ui_settings = function (self)
 	local w, h = Gui.resolution()
 	local ui_scale = math.ceil(h / 1080 * 100)
-	local console_type = XboxOne.console_type()
 
-	if console_type ~= XboxOne.CONSOLE_TYPE_XBOX_ONE_X_DEVKIT and console_type ~= XboxOne.CONSOLE_TYPE_XBOX_ONE_X then
+	if PLATFORM == "xb1" then
+		local console_type = XboxOne.console_type()
+
+		if console_type ~= XboxOne.CONSOLE_TYPE_XBOX_ONE_X_DEVKIT and console_type ~= XboxOne.CONSOLE_TYPE_XBOX_ONE_X then
+			ui_scale = math.clamp(ui_scale, 0, 100)
+			UserSettings.ui_scale = ui_scale
+		end
+	elseif PLATFORM == "ps4" and not PS4.is_pro() then
 		ui_scale = math.clamp(ui_scale, 0, 100)
 		UserSettings.ui_scale = ui_scale
 	end

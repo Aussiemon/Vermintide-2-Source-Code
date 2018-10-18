@@ -496,6 +496,8 @@ HeroWindowCharacterPreview._populate_statistics = function (self, layout)
 		local title = ""
 		local name = ""
 		local value = ""
+		local tooltip_title = ""
+		local tooltip_description = ""
 		local entry_type = entry.type
 
 		if entry_type == "title" then
@@ -503,12 +505,16 @@ HeroWindowCharacterPreview._populate_statistics = function (self, layout)
 		elseif entry_type == "entry" then
 			name = entry.display_name
 			value = entry.value
+			tooltip_title = entry.display_name
+			tooltip_description = entry.description_name
 		end
 
 		local content = list_content[i]
 		content.name = UIRenderer.crop_text_width(self.ui_renderer, name, 300, item_styles[i].name)
 		content.title = UIRenderer.crop_text_width(self.ui_renderer, title, 300, item_styles[i].title)
 		content.value = value
+		content.tooltip.title = tooltip_title
+		content.tooltip.description = tooltip_description
 	end
 
 	style.num_draws = num_entries

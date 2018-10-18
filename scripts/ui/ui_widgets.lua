@@ -1467,7 +1467,17 @@ UIWidgets.create_menu_button_medium_with_timer = function (text_field_id, timer_
 	}
 end
 
-UIWidgets.create_chain_scrollbar = function (scenegraph_id, size)
+UIWidgets.create_chain_scrollbar = function (scenegraph_id, size, optional_style)
+	local optional_thumb_suffix, optional_chain_suffix = nil
+
+	if optional_style == "gold" then
+		optional_thumb_suffix = "_gold"
+		optional_chain_suffix = "_blue"
+	else
+		optional_thumb_suffix = ""
+		optional_chain_suffix = ""
+	end
+
 	return {
 		element = {
 			passes = {
@@ -1609,17 +1619,17 @@ UIWidgets.create_chain_scrollbar = function (scenegraph_id, size)
 			}
 		},
 		content = {
-			thumb_top = "achievement_scrollbutton_top",
-			background = "chain_link_01",
-			thumb_bottom = "achievement_scrollbutton_bottom",
-			thumb_middle = "achievement_scrollbutton_middle",
 			disable_frame = false,
 			scroll_bar_info = {
 				button_scroll_step = 0.1,
 				value = 0,
 				bar_height_percentage = 1,
 				scenegraph_id = scenegraph_id
-			}
+			},
+			background = "chain_link_01" .. (optional_chain_suffix or ""),
+			thumb_top = "achievement_scrollbutton_top" .. (optional_thumb_suffix or ""),
+			thumb_bottom = "achievement_scrollbutton_bottom" .. (optional_thumb_suffix or ""),
+			thumb_middle = "achievement_scrollbutton_middle" .. (optional_thumb_suffix or "")
 		},
 		style = {
 			background = {
@@ -1643,7 +1653,7 @@ UIWidgets.create_chain_scrollbar = function (scenegraph_id, size)
 				offset = {
 					size[1] / 2 - 16,
 					0,
-					1
+					2
 				},
 				size = {
 					32,
@@ -1654,7 +1664,7 @@ UIWidgets.create_chain_scrollbar = function (scenegraph_id, size)
 				offset = {
 					size[1] / 2 - 16,
 					0,
-					1
+					2
 				},
 				size = {
 					32,
@@ -1671,7 +1681,7 @@ UIWidgets.create_chain_scrollbar = function (scenegraph_id, size)
 				offset = {
 					size[1] / 2 - 16,
 					0,
-					1
+					2
 				},
 				size = {
 					32,
@@ -1688,12 +1698,12 @@ UIWidgets.create_chain_scrollbar = function (scenegraph_id, size)
 				offset = {
 					size[1] / 2 - 16,
 					0,
-					1
+					2
 				},
 				start_offset = {
 					size[1] / 2 - 16,
 					27,
-					1
+					2
 				},
 				size = {
 					32,
@@ -1712,7 +1722,7 @@ UIWidgets.create_chain_scrollbar = function (scenegraph_id, size)
 				offset = {
 					0,
 					0,
-					1
+					2
 				},
 				size = {
 					size[1],

@@ -312,6 +312,8 @@ BackendManagerPlayFab.stop_benchmark = function (self)
 end
 
 BackendManagerPlayFab._update_state = function (self)
+	Profiler.start("BackendManagerPlayFab update_state")
+
 	local settings = GameSettingsDevelopment.backend_settings
 	local signin = self._backend_signin
 
@@ -344,9 +346,13 @@ BackendManagerPlayFab._update_state = function (self)
 			self:_post_error(error_data)
 		end
 	end
+
+	Profiler.stop("BackendManagerPlayFab update_state")
 end
 
 BackendManagerPlayFab._update_error_handling = function (self, dt)
+	Profiler.start("BackendManagerPlayFab update_error_handling")
+
 	if #self._errors > 0 and not self._error_dialog and not self._is_disconnected and not DEDICATED_SERVER then
 		local error_data = table.remove(self._errors, 1)
 
@@ -374,6 +380,8 @@ BackendManagerPlayFab._update_error_handling = function (self, dt)
 			end
 		end
 	end
+
+	Profiler.stop("BackendManagerPlayFab update_error_handling")
 end
 
 BackendManagerPlayFab._update_interface = function (self, interface_name, dt)
@@ -399,7 +407,11 @@ BackendManagerPlayFab.update = function (self, dt)
 	local error_data = nil
 
 	if mirror then
+		Profiler.start("ScriptBackend update")
+
 		error_data = mirror:update(dt)
+
+		Profiler.stop("ScriptBackend update")
 	end
 
 	if queue then

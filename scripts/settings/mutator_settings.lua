@@ -776,6 +776,27 @@ local mutator_settings = {
 			Managers.state.conflict:set_threat_value("chaos_berzerker", data.old_threat_value)
 		end
 	},
+	night_mode = {
+		description = "description_night_mode_mutator",
+		display_name = "display_name_night_mode_mutator",
+		icon = "mutator_icon_powerful_elites",
+		server_start_game_mode_function = function (context, data)
+			local world = Managers.world:world("level_world")
+
+			LevelHelper:flow_event(world, "mutator_night")
+		end,
+		server_stop_function = function (context, data)
+			return
+		end,
+		client_start_game_mode_function = function (context, data)
+			local world = Managers.world:world("level_world")
+
+			LevelHelper:flow_event(world, "mutator_night")
+		end,
+		client_stop_function = function (context, data)
+			return
+		end
+	},
 	darkness = {
 		description = "description_darkness_mutator",
 		display_name = "display_name_darkness_mutator",

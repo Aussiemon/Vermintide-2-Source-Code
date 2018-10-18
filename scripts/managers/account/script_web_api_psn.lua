@@ -69,16 +69,12 @@ ScriptWebApiPsn._handle_request_response = function (self, request_index, succes
 	table.remove(self._requests, request_index)
 end
 
-ScriptWebApiPsn.send_request = function (self, np_id, api_group, path, method, content, response_callback, response_format)
-	if script_data.disable_web_api_calls then
+ScriptWebApiPsn.send_request = function (self, user_id, api_group, path, method, content, response_callback, response_format)
+	if user_id == nil then
 		return
 	end
 
-	if np_id == nil then
-		return
-	end
-
-	local id = web_api.send_request(np_id, api_group, path, method, content)
+	local id = web_api.send_request(user_id, api_group, path, method, content)
 	self._requests[#self._requests + 1] = {
 		id = id,
 		response_callback = response_callback,
@@ -87,12 +83,8 @@ ScriptWebApiPsn.send_request = function (self, np_id, api_group, path, method, c
 	}
 end
 
-ScriptWebApiPsn.send_request_create_session = function (self, np_id, session_parameters, session_image, session_data, changable_session_data, response_callback)
-	if script_data.disable_web_api_calls then
-		return
-	end
-
-	local id = web_api.send_request_create_session(np_id, session_parameters, session_image, session_data, changable_session_data)
+ScriptWebApiPsn.send_request_create_session = function (self, user_id, session_parameters, session_image, session_data, changable_session_data, response_callback)
+	local id = web_api.send_request_create_session(user_id, session_parameters, session_image, session_data, changable_session_data)
 	self._requests[#self._requests + 1] = {
 		debug_text = "POST /v1/sessions",
 		id = id,
@@ -100,12 +92,8 @@ ScriptWebApiPsn.send_request_create_session = function (self, np_id, session_par
 	}
 end
 
-ScriptWebApiPsn.send_request_session_invitation = function (self, np_id, params, session_id)
-	if script_data.disable_web_api_calls then
-		return
-	end
-
-	local id = web_api.send_request_session_invitation(np_id, params, session_id)
+ScriptWebApiPsn.send_request_session_invitation = function (self, user_id, params, session_id)
+	local id = web_api.send_request_session_invitation(user_id, params, session_id)
 	self._requests[#self._requests + 1] = {
 		id = id,
 		debug_text = string.format("POST /v1/sessions/%s/invitations", session_id)

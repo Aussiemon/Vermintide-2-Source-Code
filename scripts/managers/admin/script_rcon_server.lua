@@ -310,7 +310,9 @@ ScriptRconServer._command_say = function (self, ...)
 	local chat = Managers.chat
 
 	if chat:has_channel(1) then
-		chat:send_system_chat_message(1, "rcon_server_command_say_header", say_text, true)
+		local localize_parameters = false
+
+		chat:send_system_chat_message(1, "rcon_server_command_say_header", say_text, localize_parameters, true)
 	end
 
 	return string.format("%s\n", tr("rcon_server_command_response_ok"))

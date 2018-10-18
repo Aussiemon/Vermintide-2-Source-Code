@@ -1,5 +1,4 @@
 PlayerCharacterStateLeaveLedgeHangingFalling = class(PlayerCharacterStateLeaveLedgeHangingFalling, PlayerCharacterState)
-script_data.ledge_hanging_fall_and_die_turned_off = script_data.ledge_hanging_fall_and_die_turned_off or Development.parameter("ledge_hanging_fall_and_die_turned_off")
 
 PlayerCharacterStateLeaveLedgeHangingFalling.init = function (self, character_state_init_context)
 	PlayerCharacterState.init(self, character_state_init_context, "leave_ledge_hanging_falling")

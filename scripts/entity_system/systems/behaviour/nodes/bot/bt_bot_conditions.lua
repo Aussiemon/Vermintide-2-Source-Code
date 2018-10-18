@@ -576,6 +576,10 @@ BTConditions.can_activate.bw_unchained = function (blackboard)
 end
 
 BTConditions.can_activate_ability = function (blackboard, args)
+	if script_data.ai_bots_career_abilities_disabled then
+		return false
+	end
+
 	local career_extension = blackboard.career_extension
 	local is_using_ability = blackboard.activate_ability_data.is_using_ability
 	local career_name = career_extension:career_name()
@@ -812,8 +816,12 @@ BTConditions.can_loot = function (blackboard)
 	end
 
 	local max_dist = 3.2
+	local is_forced_pickup = blackboard.forced_pickup_unit == blackboard.interaction_unit
+	local loot_health = blackboard.health_pickup and blackboard.allowed_to_take_health_pickup and blackboard.health_pickup == blackboard.interaction_unit and (is_forced_pickup or blackboard.health_dist < max_dist)
+	local loot_ammo = blackboard.ammo_pickup and blackboard.needs_ammo and blackboard.ammo_pickup == blackboard.interaction_unit and (is_forced_pickup or blackboard.ammo_dist < max_dist)
+	local loot_mule = blackboard.mule_pickup and blackboard.mule_pickup == blackboard.interaction_unit and (is_forced_pickup or blackboard.mule_pickup_dist_squared < max_dist^2)
 
-	return (blackboard.health_pickup and blackboard.allowed_to_take_health_pickup and blackboard.health_dist < max_dist and blackboard.health_pickup == blackboard.interaction_unit) or (blackboard.ammo_pickup and blackboard.needs_ammo and blackboard.ammo_dist < max_dist and blackboard.ammo_pickup == blackboard.interaction_unit) or (blackboard.mule_pickup and blackboard.mule_pickup == blackboard.interaction_unit and blackboard.mule_pickup_dist_squared < max_dist * max_dist)
+	return loot_health or loot_ammo or loot_mule
 end
 
 BTConditions.bot_should_heal = function (blackboard)

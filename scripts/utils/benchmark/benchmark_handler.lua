@@ -241,6 +241,17 @@ BenchmarkHandler.update = function (self, dt, t)
 	end
 
 	self:_update_main_path(dt, t, sum)
+
+	if BenchmarkSettings.debug then
+		Debug.text("SEED %s, In OVERVIEW %s %s", tostring(Managers.state.conflict.level_analysis.starting_seed), tostring(self._overview), tostring(self._overview_timer - t))
+		Debug.text("PROXIMITY ENEMIES %d", sum)
+
+		if self._local_player_unit then
+			local player_pos = POSITION_LOOKUP[self._local_player_unit]
+
+			QuickDrawer:sphere(player_pos, 0.88, Color(255, 255, 0))
+		end
+	end
 end
 
 function get_local_player_unit()
@@ -447,6 +458,10 @@ BenchmarkHandler._update_main_path = function (self, dt, t, total_proximate_enem
 				closest_ally = bot_unit
 			end
 		end
+	end
+
+	if BenchmarkSettings.debug then
+		Debug.text("Min dist: %.1f", math.sqrt(min_dist_sqr))
 	end
 
 	local teleport_now = false

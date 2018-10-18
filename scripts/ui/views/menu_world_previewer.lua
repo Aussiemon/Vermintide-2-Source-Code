@@ -761,7 +761,7 @@ MenuWorldPreviewer._spawn_hero_unit = function (self, skin_data, optional_scale)
 	if Unit.has_lod_object(character_unit, "lod") then
 		local lod_object = Unit.lod_object(character_unit, "lod")
 
-		LODObject.set_static_select(lod_object, 0)
+		LODObject.set_static_height(lod_object, 1)
 	end
 
 	self.character_look_target = {
@@ -1078,7 +1078,7 @@ MenuWorldPreviewer._spawn_item_unit = function (self, unit, item_slot_type, item
 	if Unit.has_lod_object(unit, "lod") then
 		local lod_object = Unit.lod_object(unit, "lod")
 
-		LODObject.set_static_select(lod_object, 0)
+		LODObject.set_static_height(lod_object, 1)
 	end
 
 	GearUtils.link(world, unit_attachment_node_linking, scene_graph_links, character_unit, unit)

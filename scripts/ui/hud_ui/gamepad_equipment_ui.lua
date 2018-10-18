@@ -338,8 +338,9 @@ end
 
 GamePadEquipmentUI._sync_player_equipment = function (self)
 	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local use_gamepad_hud_layout = UISettings.use_gamepad_hud_layout
 
-	if not gamepad_active and not UISettings.use_gamepad_hud_layout then
+	if use_gamepad_hud_layout == "never" or (use_gamepad_hud_layout == "auto" and not gamepad_active) then
 		return
 	end
 
@@ -359,10 +360,15 @@ GamePadEquipmentUI._sync_player_equipment = function (self)
 		return
 	end
 
+	Profiler.start("-check equipment for changes")
+
 	if not self:_check_equipment_changed(equipment) then
+		Profiler.stop("-check equipment for changes")
+
 		return
 	end
 
+	Profiler.stop("-check equipment for changes")
 	table.clear(verified_widgets)
 
 	local inventory_modified = false
@@ -1024,22 +1030,37 @@ GamePadEquipmentUI.update = function (self, dt, t)
 
 	local dirty = false
 
+	Profiler.start("-update animations")
+
 	if self:_update_animations(dt) then
 		dirty = true
 	end
+
+	Profiler.stop("-update animations")
+	Profiler.start("-update ammo counter")
 
 	if self:_animate_ammo_counter(dt) then
 		dirty = true
 	end
 
+	Profiler.stop("-update ammo counter")
+	Profiler.start("-set dirty")
+
 	if dirty then
 		self:set_dirty()
 	end
 
+	Profiler.stop("-set dirty")
+	Profiler.start("-handle resolution changed")
 	self:_handle_resolution_modified()
+	Profiler.stop("-handle resolution changed")
+	Profiler.start("-sync player equipment")
 	self:_sync_player_equipment()
+	Profiler.stop("-sync player equipment")
 	self:_handle_gamepad_activity()
+	Profiler.start("-draw")
 	self:draw(dt)
+	Profiler.stop("-draw")
 end
 
 GamePadEquipmentUI._handle_resolution_modified = function (self)
@@ -1080,7 +1101,7 @@ end
 GamePadEquipmentUI._handle_gamepad = function (self)
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 
-	if not gamepad_active and not UISettings.use_gamepad_hud_layout then
+	if (not gamepad_active or UISettings.use_gamepad_hud_layout == "never") and UISettings.use_gamepad_hud_layout ~= "always" then
 		if self._retained_elements_visible then
 			self:_set_elements_visible(false)
 		end

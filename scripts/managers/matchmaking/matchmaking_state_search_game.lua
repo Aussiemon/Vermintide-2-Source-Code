@@ -93,7 +93,9 @@ MatchmakingStateSearchGame._start_searching_for_games = function (self)
 	end
 
 	if search_config.level_key then
-		self._matchmaking_manager:send_system_chat_message(search_config.level_key)
+		local level_display_name = LevelSettings[search_config.level_key].display_name
+
+		self._matchmaking_manager:send_system_chat_message(level_display_name)
 	end
 
 	local difficulty_display_name = DifficultySettings[search_config.difficulty].display_name

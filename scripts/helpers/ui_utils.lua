@@ -177,6 +177,7 @@ UIUtils.get_hero_statistics_by_template = function (template)
 	for index, entry in ipairs(template) do
 		local entry_type = entry.type
 		local display_name = entry.display_name
+		local description_name = entry.description_name
 		local value = nil
 
 		if entry_type == "title" then
@@ -184,11 +185,14 @@ UIUtils.get_hero_statistics_by_template = function (template)
 		elseif entry_type == "entry" then
 			display_name = entry.display_name
 			value = entry.generate_value(params)
+			description_name = entry.description_name or entry.generate_description(params)
 		end
 
 		layout[index] = {
 			display_name = display_name,
+			description_name = description_name,
 			value = value,
+			value_text = tostring(value),
 			type = entry_type
 		}
 	end

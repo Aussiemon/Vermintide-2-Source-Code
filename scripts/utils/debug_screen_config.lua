@@ -235,10 +235,11 @@ local settings = {
 			ai_roaming_spawning_disabled = true,
 			ai_boss_spawning_disabled = true,
 			ai_rush_intervention_disabled = true,
+			ai_outside_navmesh_intervention_disabled = true,
 			ai_bots_disabled = true,
 			ai_specials_spawning_disabled = true,
 			ai_pacing_disabled = true,
-			ai_outside_navmesh_intervention_disabled = true
+			ai_speed_run_intervention_disabled = true
 		}
 	},
 	{
@@ -252,10 +253,11 @@ local settings = {
 			ai_roaming_spawning_disabled = false,
 			ai_boss_spawning_disabled = false,
 			ai_rush_intervention_disabled = false,
+			ai_outside_navmesh_intervention_disabled = false,
 			ai_bots_disabled = false,
 			ai_specials_spawning_disabled = false,
 			ai_pacing_disabled = false,
-			ai_outside_navmesh_intervention_disabled = false
+			ai_speed_run_intervention_disabled = false
 		}
 	},
 	{
@@ -269,13 +271,14 @@ local settings = {
 			ai_roaming_spawning_disabled = true,
 			ai_boss_spawning_disabled = false,
 			debug_ai_recycler = true,
+			ai_outside_navmesh_intervention_disabled = true,
 			debug_ai_pacing = true,
 			debug_player_intensity = true,
-			ai_rush_intervention_disabled = true,
 			ai_bots_disabled = true,
 			ai_specials_spawning_disabled = true,
 			ai_pacing_disabled = false,
-			ai_outside_navmesh_intervention_disabled = true
+			ai_rush_intervention_disabled = true,
+			ai_speed_run_intervention_disabled = true
 		}
 	},
 	{
@@ -455,12 +458,6 @@ Features that make player mechanics nicer to work with.
 		category = "Player mechanics"
 	},
 	{
-		description = "The enemy that got target will always get hit",
-		is_boolean = true,
-		setting_name = "debug_weapons_always_hit_target",
-		category = "Player mechanics"
-	},
-	{
 		description = "Damage debugging.",
 		is_boolean = true,
 		setting_name = "damage_debug",
@@ -491,7 +488,7 @@ Features that make player mechanics nicer to work with.
 		category = "Player mechanics"
 	},
 	{
-		description = "Disables the nice movement by Markus, Peder and Platt.",
+		description = "Disables the nice movement by silly people who need to promote themselves.",
 		is_boolean = true,
 		setting_name = "disable_nice_movement",
 		category = "Player mechanics"
@@ -785,6 +782,12 @@ Features that make player mechanics nicer to work with.
 		category = "AI recommended"
 	},
 	{
+		description = "Disables AI speed run intervention(specials and small hordes)",
+		is_boolean = true,
+		setting_name = "ai_speed_run_intervention_disabled",
+		category = "AI recommended"
+	},
+	{
 		description = "Disables AI outside navmesh intervention (specials)",
 		is_boolean = true,
 		setting_name = "ai_outside_navmesh_intervention_disabled",
@@ -1025,6 +1028,12 @@ Features that make player mechanics nicer to work with.
 		category = "Conflict & Pacing"
 	},
 	{
+		description = "Handles speedrunners by spawning specials or small hordes ahead of players, activate this to see its states",
+		is_boolean = true,
+		setting_name = "debug_speed_running_intervention",
+		category = "Conflict & Pacing"
+	},
+	{
 		description = "Shows player that is outside navmesh...",
 		is_boolean = true,
 		setting_name = "debug_outside_navmesh_intervention",
@@ -1224,6 +1233,12 @@ Features that make player mechanics nicer to work with.
 			graphics_only = "graphics_only",
 			text_and_graphics = "text_and_graphics"
 		}
+	},
+	{
+		description = "Shows which of nav tag volume layer 20-29 that are enabled.",
+		is_boolean = true,
+		setting_name = "debug_nav_tag_volume_layers",
+		category = "AI"
 	},
 	{
 		description = "Visual debugging for skeleton for debug_unit.",
@@ -5168,6 +5183,12 @@ Features that make player mechanics nicer to work with.
 		category = "UI"
 	},
 	{
+		description = "Enables or disables detailed tooltips on weapns, accessable by pressing SHIFT or CTRL",
+		is_boolean = true,
+		setting_name = "enable_detailed_tooltips",
+		category = "UI"
+	},
+	{
 		description = "Disables position lookup validation. Can turn this on for extra performance.",
 		is_boolean = true,
 		setting_name = "disable_debug_position_lookup",
@@ -6211,6 +6232,41 @@ Features that make player mechanics nicer to work with.
 		is_boolean = true,
 		setting_name = "debug_server_controlled_buffs",
 		category = "Player mechanics"
+	},
+	{
+		setting_name = "Add legend end of level chest.",
+		description = "Works on non-local backend. Adds a legend vault",
+		category = "Progression",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			options[#options + 1] = "tier_1"
+			options[#options + 1] = "tier_2"
+			options[#options + 1] = "tier_3"
+			options[#options + 1] = "tier_4"
+			options[#options + 1] = "tier_5"
+
+			table.sort(options)
+		end,
+		func = function (options, index)
+			local item = options[index]
+			local loot_interface = Managers.backend:get_interface("loot")
+			local player = Managers.player:local_player()
+			local display_name = SPProfiles[player:profile_index()].display_name
+
+			if item == "tier_1" then
+				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 0, 0, 0, display_name, 0, 0, nil, nil)
+			elseif item == "tier_2" then
+				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 0, 0, display_name, 0, 0, nil, nil)
+			elseif item == "tier_3" then
+				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 1, 0, display_name, 0, 0, nil, nil)
+			elseif item == "tier_4" then
+				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 2, 1, display_name, 0, 0, nil, nil)
+			elseif item == "tier_5" then
+				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 3, 4, display_name, 0, 0, nil, nil)
+			end
+		end
 	},
 	{
 		description = "Adds all melee items for this hero.",

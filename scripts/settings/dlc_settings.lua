@@ -33,6 +33,28 @@ DLCSettings = {
 		weighted_random_terror_events = {},
 		horde_settings_compositions = {}
 	},
+	social_wheel = {
+		package_name = "resource_packages/dlcs/social_wheel",
+		breeds = {},
+		behaviour_trees_precompiled = {},
+		behaviour_tree_nodes = {},
+		behaviour_trees = {},
+		terror_event_blueprints = {},
+		weighted_random_terror_events = {},
+		network_lookups = {
+			social_wheel_events = "SocialWheelSettingsLookup"
+		},
+		ingame_uis = {
+			social_wheel_ui = {
+				hud_update = true,
+				class_name = "SocialWheelUI",
+				filename = "scripts/ui/social_wheel_ui"
+			}
+		},
+		script_data = {
+			enable_social_wheel = true
+		}
+	},
 	bogenhafen = {
 		level_settings = "levels/honduras_dlcs/bogenhafen/level_settings_bogenhafen",
 		package_name = "resource_packages/dlcs/bogenhafen",
@@ -52,6 +74,11 @@ DLCSettings = {
 			bogenhafen = {
 				class = "UnlockDlc",
 				id = "3E0F5C11-261E-4165-A610-176131574B84"
+			}
+		},
+		unlock_settings_ps4 = {
+			bogenhafen = {
+				class = "AlwaysUnlocked"
 			}
 		},
 		weighted_random_terror_events = {

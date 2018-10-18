@@ -103,8 +103,8 @@ local scenegraph_definition = {
 			100
 		},
 		position = {
-			0,
-			86,
+			-90,
+			30,
 			2
 		}
 	},
@@ -117,8 +117,8 @@ local scenegraph_definition = {
 			100
 		},
 		position = {
-			90,
-			36,
+			-38,
+			75,
 			2
 		}
 	},
@@ -131,8 +131,8 @@ local scenegraph_definition = {
 			100
 		},
 		position = {
-			90,
-			-60,
+			38,
+			75,
 			2
 		}
 	},
@@ -145,8 +145,8 @@ local scenegraph_definition = {
 			100
 		},
 		position = {
-			0,
-			-110,
+			90,
+			30,
 			2
 		}
 	},
@@ -159,8 +159,8 @@ local scenegraph_definition = {
 			100
 		},
 		position = {
-			-90,
-			-60,
+			70,
+			-80,
 			2
 		}
 	},
@@ -173,8 +173,22 @@ local scenegraph_definition = {
 			100
 		},
 		position = {
-			-90,
-			36,
+			0,
+			-105,
+			2
+		}
+	},
+	material_text_7 = {
+		vertical_alignment = "center",
+		parent = "material_holder",
+		horizontal_alignment = "center",
+		size = {
+			60,
+			100
+		},
+		position = {
+			-70,
+			-80,
 			2
 		}
 	}
@@ -371,7 +385,8 @@ local widgets = {
 	material_text_3 = create_craft_material_widget("material_text_3"),
 	material_text_4 = create_craft_material_widget("material_text_4"),
 	material_text_5 = create_craft_material_widget("material_text_5"),
-	material_text_6 = create_craft_material_widget("material_text_6")
+	material_text_6 = create_craft_material_widget("material_text_6"),
+	material_text_7 = create_craft_material_widget("material_text_7")
 }
 local animation_definitions = {
 	on_enter = {

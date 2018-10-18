@@ -7,6 +7,7 @@ GenericCameraExtension.init = function (self, extension_init_context, unit, exte
 	self.idle_position = Vector3Box(0, 0, 0)
 	self.idle_rotation = QuaternionBox(Quaternion.identity())
 	self.external_state_change = nil
+	self.external_state_change_params = nil
 	self.observed_player_id = nil
 end
 
@@ -26,8 +27,9 @@ GenericCameraExtension.set_observed_player_id = function (self, observed_player_
 	self.observed_player_id = observed_player_id
 end
 
-GenericCameraExtension.set_external_state_change = function (self, state)
+GenericCameraExtension.set_external_state_change = function (self, state, params)
 	self.external_state_change = state
+	self.external_state_change_params = params
 end
 
 GenericCameraExtension.set_idle_position = function (self, position)

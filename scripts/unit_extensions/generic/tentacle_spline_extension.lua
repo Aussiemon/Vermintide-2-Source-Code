@@ -695,11 +695,22 @@ end
 TentacleSplineExtension.funnel_tentacle_to_center = function (self, spline_points, from, to, wall_pos, root_pos, portal_forward, root_to_align_dist, horiz_influence_dist)
 	local influence_dist = 4
 
+	if debug_spline then
+		QuickDrawer:line(wall_pos - portal_forward * 2, wall_pos + portal_forward * influence_dist, Color(0, 100, 200))
+	end
+
 	Debug.text("influence dist: %.2f", influence_dist)
 
 	for i = from, to, 1 do
 		local point = spline_points[i]
 		local p = Geometry.closest_point_on_line(point, root_pos, wall_pos + portal_forward * influence_dist)
+
+		if debug_spline then
+			QuickDrawer:sphere(p, 0.05, Color(0, 100, 200))
+			QuickDrawer:sphere(point, 0.05, Color(0, 220, 0))
+			QuickDrawer:line(point, p, Color(0, 220, 0))
+		end
+
 		local dist_along_fwd = Vector3.length(p - root_pos)
 		local outside_dist = dist_along_fwd - root_to_align_dist
 		dist_along_fwd = math.clamp(outside_dist, 0, dist_along_fwd, influence_dist)
@@ -726,6 +737,11 @@ end
 TentacleSplineExtension.funnel_one_point = function (self, point, wall_pos, root_pos, portal_forward, root_to_align_dist, horiz_influence_dist)
 	local influence_dist = 4
 	local p = Geometry.closest_point_on_line(point, root_pos, wall_pos + portal_forward * influence_dist)
+
+	if debug_spline then
+		QuickDrawer:sphere(p, 0.05, Color(0, 100, 200))
+	end
+
 	local dist_along_fwd = Vector3.length(p - root_pos)
 	dist_along_fwd = math.clamp(dist_along_fwd - root_to_align_dist, 0, dist_along_fwd)
 	local d = 1 - math.clamp(dist_along_fwd / influence_dist, 0, 1)
@@ -901,6 +917,11 @@ TentacleSplineExtension.align_tentacle = function (self, template_name, tentacle
 		tentacle_data.look_dir = Vector3Box(Vector3.normalize(anchor_point_pos - pos))
 		local anchor_point2_pos = (use_extra_anchor_point and anchor_point_pos - tentacle_data.look_dir:unbox() * 0.2) or nil
 
+		if debug_spline then
+			QuickDrawer:line(pos, pos + tentacle_data.look_dir:unbox() * 5, Color(200, 200, 255))
+			QuickDrawer:sphere(ap, 0.33, Color(124, 0, 220))
+		end
+
 		if Vector3.dot(to_travel_node, travel_node_dir) < 0 and n > 1 then
 			tentacle_data.travel_node_dir:store(Vector3.normalize(nodes[n - 1]:unbox() - nodes[n]:unbox()))
 
@@ -935,10 +956,34 @@ TentacleSplineExtension.align_tentacle = function (self, template_name, tentacle
 		if use_extra_anchor_point then
 			num_nodes = num_nodes + 1
 			spline_points[num_nodes] = anchor_point2_pos
+
+			if debug_spline then
+				QuickDrawer:line(anchor_point2_pos, anchor_point2_pos + Vector3(0, 0, 2), Color(250, 255, 175))
+			end
+		end
+
+		if debug_spline then
+			QuickDrawer:line(anchor_point_pos, anchor_point_pos + Vector3(0, 0, 2), Color(50, 255, 175))
 		end
 
 		if template_name == "attack" then
 			lock_point_index = TentacleAlignFunctions.attack(self.target_unit, spline_points, num_nodes)
+		end
+	end
+
+	if debug_spline and lock_point_index then
+		for i = 1, lock_point_index, 1 do
+			local p = spline_points[i]
+
+			QuickDrawer:sphere(p, 0.25, Color(255, 100, 0))
+		end
+
+		QuickDrawer:sphere(spline_points[lock_point_index + 1], 0.16, Color(100, 255, 0))
+
+		for i = lock_point_index + 1, #spline_points, 1 do
+			local p = spline_points[i]
+
+			QuickDrawer:sphere(p, 0.25, Color(255, 255, 0))
 		end
 	end
 
@@ -985,6 +1030,13 @@ TentacleSplineExtension.align_tentacle = function (self, template_name, tentacle
 	for i = 1, num_spacings, 1 do
 		local node = nodes[i]
 		local pos, tangent, is_last = spline:get_point_at_distance(dists[i])
+
+		if debug_dists then
+			local pt = pos + Vector3(0, 0, 0.33) * i % 5
+
+			Debug.world_sticky_text(pt, string.format("%.1f", dists[i]), "blue")
+			QuickDrawer:line(pos, pt, Color(255, 128, 0))
+		end
 
 		if lock_point_index and dists[i] < lock_point_dist - 2 then
 			local a = math.sin(t * 6 + alpha * i) * 0.065

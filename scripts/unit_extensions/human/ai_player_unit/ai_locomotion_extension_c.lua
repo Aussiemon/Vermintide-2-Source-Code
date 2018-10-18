@@ -1,6 +1,5 @@
 require("scripts/helpers/mover_helper")
 
-local Unit_local_position = Unit.local_position
 local DEFAULT_ROTATION_SPEED = 10
 local LOCOMOTION_GRAVITY = 20
 local ALLOWED_MOVER_MOVE_DISTANCE = 0.5

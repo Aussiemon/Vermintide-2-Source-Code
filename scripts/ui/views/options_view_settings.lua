@@ -6,40 +6,64 @@ local function assigned(a, b)
 	end
 end
 
-local function set_function(self, user_setting_name, content, value_set_function)
-	local options_values = content.options_values
-	local current_selection = content.current_selection
-	local new_value = options_values[current_selection]
+local function get_slider_value(min, max, value)
+	local range = max - min
+	local norm_value = math.clamp(value, min, max) - min
+
+	return norm_value / range
+end
+
+local function set_function(self, user_setting_name, widget_type, content, value_set_function)
+	local new_value = nil
+
+	if widget_type == "slider" then
+		new_value = content.value
+	else
+		local options_values = content.options_values
+		local current_selection = content.current_selection
+		new_value = options_values[current_selection]
+	end
+
 	self.changed_user_settings[user_setting_name] = new_value
 
 	value_set_function(new_value)
 end
 
-local function setup_function(self, user_setting_name, options)
+local function setup_function(self, user_setting_name, widget_type, options)
 	local default_value = DefaultUserSettings.get("user_settings", user_setting_name)
 	local current_value = Application.user_setting(user_setting_name)
-	local selection, default_option = nil
 
-	for index, option in ipairs(options) do
-		local value = option.value
+	if widget_type == "slider" then
+		local min = options.min
+		local max = options.max
+		local decimals = options.decimals
+		local value = get_slider_value(min, max, current_value)
 
-		if value == current_value then
-			selection = index
+		return value, min, max, decimals, "menu_settings_" .. user_setting_name, default_value
+	else
+		local selection, default_option = nil
+
+		for index, option in ipairs(options) do
+			local value = option.value
+
+			if value == current_value then
+				selection = index
+			end
+
+			if value == default_value then
+				default_option = index
+			end
 		end
 
-		if value == default_value then
-			default_option = index
-		end
+		fassert(default_option, "Default value %q for %q does not exist in passed options table", tostring(default_value), user_setting_name)
+
+		selection = selection or default_option
+
+		return selection, options, "menu_settings_" .. user_setting_name, default_option
 	end
-
-	fassert(default_option, "Default value %q for %q does not exist in passed options table", tostring(default_value), user_setting_name)
-
-	selection = selection or default_option
-
-	return selection, options, "menu_settings_" .. user_setting_name, default_option
 end
 
-local function saved_value_function(self, user_setting_name, widget)
+local function saved_value_function(self, user_setting_name, widget_type, widget)
 	local saved_value = assigned(self.changed_user_settings[user_setting_name], Application.user_setting(user_setting_name))
 	local default_value = DefaultUserSettings.get("user_settings", user_setting_name)
 
@@ -47,20 +71,29 @@ local function saved_value_function(self, user_setting_name, widget)
 		saved_value = default_value
 	end
 
-	local saved_index, default_index = nil
-	local content = widget.content
+	if widget_type == "slider" then
+		local content = widget.content
+		local min = content.min
+		local max = content.max
+		saved_value = math.clamp(saved_value, min, max)
+		content.internal_value = get_slider_value(min, max, saved_value)
+		content.value = saved_value
+	else
+		local saved_index, default_index = nil
+		local content = widget.content
 
-	for index, value in pairs(content.options_values) do
-		if value == saved_value then
-			saved_index = index
+		for index, value in pairs(content.options_values) do
+			if value == saved_value then
+				saved_index = index
+			end
+
+			if value == default_value then
+				default_index = index
+			end
 		end
 
-		if value == default_value then
-			default_index = index
-		end
+		content.current_selection = saved_index or default_index
 	end
-
-	content.current_selection = saved_index or default_index
 end
 
 local video_settings_definition = {
@@ -501,6 +534,33 @@ local gameplay_settings_definition = {
 		}
 	},
 	{
+		setting_name = "social_wheel_delay",
+		widget_type = "slider",
+		options = {
+			decimals = 2,
+			min = 0.01,
+			max = 0.5
+		}
+	},
+	{
+		setting_name = "social_wheel_gamepad_layout",
+		widget_type = "stepper",
+		options = {
+			{
+				value = "auto",
+				text = Localize("menu_settings_auto")
+			},
+			{
+				value = "always",
+				text = Localize("menu_settings_always")
+			},
+			{
+				value = "never",
+				text = Localize("menu_settings_never")
+			}
+		}
+	},
+	{
 		size_y = 30,
 		widget_type = "empty"
 	},
@@ -658,9 +718,10 @@ function generate_settings(settings_definition)
 			local prefix = "cb_" .. setting_name
 			local callback_name = prefix
 			definition.callback = prefix
+			local widget_type = definition.widget_type
 
 			OptionsView[callback_name] = function (self, content)
-				return set_function(self, setting_name, content, definition.value_set_function or function ()
+				return set_function(self, setting_name, widget_type, content, definition.value_set_function or function ()
 					return
 				end)
 			end
@@ -669,14 +730,14 @@ function generate_settings(settings_definition)
 			definition.setup = setup_function_name
 
 			OptionsView[setup_function_name] = function (self)
-				return setup_function(self, setting_name, definition.options)
+				return setup_function(self, setting_name, widget_type, definition.options)
 			end
 
 			local saved_value_function_name = prefix .. "_saved_value"
 			definition.saved_value = saved_value_function_name
 
 			OptionsView[saved_value_function_name] = function (self, widget)
-				return saved_value_function(self, setting_name, widget)
+				return saved_value_function(self, setting_name, widget_type, widget)
 			end
 
 			definition.tooltip_text = "tooltip_" .. setting_name
@@ -869,6 +930,22 @@ local keybind_settings_definition = {
 			"ping",
 			"ping_hold",
 			"ping_release"
+		}
+	},
+	{
+		keybind_description = "ping_only",
+		widget_type = "keybind",
+		actions = {
+			"ping_only"
+		}
+	},
+	{
+		keybind_description = "social_wheel_only",
+		widget_type = "keybind",
+		actions = {
+			"social_wheel_only",
+			"social_wheel_only_hold",
+			"social_wheel_only_release"
 		}
 	},
 	{

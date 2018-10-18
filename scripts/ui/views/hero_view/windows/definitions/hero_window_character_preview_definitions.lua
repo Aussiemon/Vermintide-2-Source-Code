@@ -279,7 +279,7 @@ local function create_detailed_stat_widget(scenegraph_id, size, list_scenegraph_
 				end
 			},
 			{
-				style_id = "list_background",
+				style_id = "mask",
 				pass_type = "hotspot",
 				content_id = "list_hotspot"
 			},
@@ -342,6 +342,39 @@ local function create_detailed_stat_widget(scenegraph_id, size, list_scenegraph_
 					return content.active
 				end,
 				passes = {
+					{
+						style_id = "hotspot",
+						pass_type = "hotspot",
+						content_id = "hotspot"
+					},
+					{
+						style_id = "tooltip",
+						additional_option_id = "tooltip",
+						pass_type = "additional_option_tooltip",
+						content_check_function = function (content)
+							local list_hotspot = content.parent.list_hotspot
+
+							if list_hotspot.is_hover then
+								return content.name ~= "" and content.hotspot.is_hover
+							end
+
+							return false
+						end
+					},
+					{
+						pass_type = "texture",
+						style_id = "hover_texture",
+						texture_id = "hover_texture",
+						content_check_function = function (content)
+							local list_hotspot = content.parent.list_hotspot
+
+							if list_hotspot.is_hover then
+								return content.name ~= "" and content.hotspot.is_hover
+							end
+
+							return false
+						end
+					},
 					{
 						style_id = "title",
 						pass_type = "text",
@@ -419,11 +452,16 @@ local function create_detailed_stat_widget(scenegraph_id, size, list_scenegraph_
 
 	for i = 1, num_entries, 1 do
 		list_content[i] = {
-			title_divider = "game_option_divider",
 			name = "",
+			hover_texture = "playerlist_hover",
 			value = "",
 			title = "",
-			button_hotspot = {}
+			title_divider = "game_option_divider",
+			hotspot = {},
+			tooltip = {
+				description = "n/a",
+				title = "n/a"
+			}
 		}
 	end
 
@@ -644,7 +682,7 @@ local function create_detailed_stat_widget(scenegraph_id, size, list_scenegraph_
 				offset = {
 					10,
 					5,
-					1
+					2
 				}
 			},
 			title_shadow = {
@@ -660,7 +698,7 @@ local function create_detailed_stat_widget(scenegraph_id, size, list_scenegraph_
 				offset = {
 					12,
 					3,
-					0
+					1
 				}
 			},
 			name = {
@@ -675,7 +713,7 @@ local function create_detailed_stat_widget(scenegraph_id, size, list_scenegraph_
 				offset = {
 					10,
 					0,
-					1
+					2
 				}
 			},
 			name_shadow = {
@@ -690,7 +728,7 @@ local function create_detailed_stat_widget(scenegraph_id, size, list_scenegraph_
 				offset = {
 					12,
 					-2,
-					0
+					1
 				}
 			},
 			value = {
@@ -705,7 +743,7 @@ local function create_detailed_stat_widget(scenegraph_id, size, list_scenegraph_
 				offset = {
 					-40,
 					0,
-					1
+					2
 				}
 			},
 			value_shadow = {
@@ -720,6 +758,24 @@ local function create_detailed_stat_widget(scenegraph_id, size, list_scenegraph_
 				offset = {
 					-38,
 					-2,
+					1
+				}
+			},
+			hover_texture = {
+				masked = true,
+				size = {
+					entry_size[1],
+					entry_size[2]
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
 					0
 				}
 			},
@@ -738,7 +794,7 @@ local function create_detailed_stat_widget(scenegraph_id, size, list_scenegraph_
 				offset = {
 					10,
 					0,
-					1
+					2
 				}
 			},
 			rect = {
@@ -756,6 +812,15 @@ local function create_detailed_stat_widget(scenegraph_id, size, list_scenegraph_
 					0,
 					0,
 					100
+				}
+			},
+			tooltip = {
+				vertical_alignment = "top",
+				horizontal_alignment = "center",
+				offset = {
+					0,
+					0,
+					0
 				}
 			}
 		}

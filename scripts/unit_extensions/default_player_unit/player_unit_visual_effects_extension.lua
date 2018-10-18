@@ -45,86 +45,128 @@ PlayerUnitVisualEffectsExtension._update_overcharge_thresholds = function (self)
 end
 
 PlayerUnitVisualEffectsExtension._set_overcharge_flow_values = function (self)
-	local unit = self.unit
-	local first_person_unit = self.first_person_unit
-	local first_person_mesh_unit = self.first_person_mesh_unit
 	local overcharge_extension = self.overcharge_extension
 	local anim_blend_overcharge = overcharge_extension:get_anim_blend_overcharge()
 
+	self:_set_character_overcharge(anim_blend_overcharge)
+	self:_set_weapons_overcharge(anim_blend_overcharge)
+
+	if self.overcharge_threshold_changed then
+		self:_set_character_overcharge_threshold()
+		self:_set_weapons_overcharge_threshold()
+
+		self.overcharge_threshold_changed = false
+	end
+end
+
+PlayerUnitVisualEffectsExtension._set_character_overcharge = function (self, value)
+	local unit = self.unit
+	local first_person_unit = self.first_person_unit
+	local first_person_mesh_unit = self.first_person_mesh_unit
+
 	if unit and Unit.alive(unit) then
-		unit_set_flow_variable(unit, "current_overcharge", anim_blend_overcharge)
+		unit_set_flow_variable(unit, "current_overcharge", value)
 		unit_flow_event(unit, "lua_update_overcharge")
 	end
 
 	if first_person_unit and Unit.alive(first_person_unit) then
-		unit_set_flow_variable(first_person_unit, "current_overcharge", anim_blend_overcharge)
+		unit_set_flow_variable(first_person_unit, "current_overcharge", value)
 		unit_flow_event(first_person_unit, "lua_update_overcharge")
 	end
 
 	if first_person_mesh_unit and Unit.alive(first_person_mesh_unit) then
-		unit_set_flow_variable(first_person_mesh_unit, "current_overcharge", anim_blend_overcharge)
+		unit_set_flow_variable(first_person_mesh_unit, "current_overcharge", value)
 		unit_flow_event(first_person_mesh_unit, "lua_update_overcharge")
 	end
+end
 
-	self:_set_weapons_flow_variable("current_overcharge", anim_blend_overcharge)
-	self:_weapons_flow_event("lua_update_overcharge")
+PlayerUnitVisualEffectsExtension._set_character_overcharge_threshold = function (self)
+	local unit = self.unit
+	local first_person_unit = self.first_person_unit
+	local first_person_mesh_unit = self.first_person_mesh_unit
+	local event_name = "below_overcharge_threshold"
 
-	if self.overcharge_threshold_changed then
-		self.overcharge_threshold_changed = false
+	if self.above_overcharge_threshold then
+		event_name = "above_overcharge_threshold"
+	end
+
+	if unit and Unit.alive(unit) then
+		unit_flow_event(unit, event_name)
+	end
+
+	if first_person_unit and Unit.alive(first_person_unit) then
+		unit_flow_event(first_person_unit, event_name)
+	end
+
+	if first_person_mesh_unit and Unit.alive(first_person_mesh_unit) then
+		unit_flow_event(first_person_mesh_unit, event_name)
+	end
+end
+
+PlayerUnitVisualEffectsExtension._set_weapons_overcharge = function (self, value)
+	local inventory_extension = self.inventory_extension
+	local wielded_slot_data = inventory_extension:get_wielded_slot_data()
+
+	if wielded_slot_data then
+		local left_hand_unit = wielded_slot_data.left_unit_1p
+		local right_hand_unit = wielded_slot_data.right_unit_1p
+
+		if left_hand_unit and Unit.alive(left_hand_unit) then
+			unit_set_flow_variable(left_hand_unit, "current_overcharge", value)
+			unit_flow_event(left_hand_unit, "lua_update_overcharge")
+		end
+
+		if right_hand_unit and Unit.alive(right_hand_unit) then
+			unit_set_flow_variable(right_hand_unit, "current_overcharge", value)
+			unit_flow_event(right_hand_unit, "lua_update_overcharge")
+		end
+
+		local left_hand_unit_3p = wielded_slot_data.left_unit_3p
+		local right_hand_unit_3p = wielded_slot_data.right_unit_3p
+
+		if left_hand_unit_3p and Unit.alive(left_hand_unit_3p) then
+			unit_set_flow_variable(left_hand_unit_3p, "current_overcharge", value)
+			unit_flow_event(left_hand_unit_3p, "lua_update_overcharge")
+		end
+
+		if right_hand_unit_3p and Unit.alive(right_hand_unit_3p) then
+			unit_set_flow_variable(right_hand_unit_3p, "current_overcharge", value)
+			unit_flow_event(right_hand_unit_3p, "lua_update_overcharge")
+		end
+	end
+end
+
+PlayerUnitVisualEffectsExtension._set_weapons_overcharge_threshold = function (self)
+	local inventory_extension = self.inventory_extension
+	local wielded_slot_data = inventory_extension:get_wielded_slot_data()
+
+	if wielded_slot_data then
 		local event_name = "below_overcharge_threshold"
 
 		if self.above_overcharge_threshold then
 			event_name = "above_overcharge_threshold"
 		end
 
-		if unit and Unit.alive(unit) then
-			unit_flow_event(unit, event_name)
-		end
-
-		if first_person_unit and Unit.alive(first_person_unit) then
-			unit_flow_event(first_person_unit, event_name)
-		end
-
-		if first_person_mesh_unit and Unit.alive(first_person_mesh_unit) then
-			unit_flow_event(first_person_mesh_unit, event_name)
-		end
-
-		self:_weapons_flow_event(event_name)
-	end
-end
-
-PlayerUnitVisualEffectsExtension._set_weapons_flow_variable = function (self, variable_name, value)
-	local inventory_extension = self.inventory_extension
-	local wielded_slot_data = inventory_extension:get_wielded_slot_data()
-
-	if wielded_slot_data then
 		local left_hand_unit = wielded_slot_data.left_unit_1p
 		local right_hand_unit = wielded_slot_data.right_unit_1p
 
 		if left_hand_unit and Unit.alive(left_hand_unit) then
-			unit_set_flow_variable(left_hand_unit, variable_name, value)
+			unit_flow_event(left_hand_unit, event_name)
 		end
 
 		if right_hand_unit and Unit.alive(right_hand_unit) then
-			unit_set_flow_variable(right_hand_unit, variable_name, value)
-		end
-	end
-end
-
-PlayerUnitVisualEffectsExtension._weapons_flow_event = function (self, event)
-	local inventory_extension = self.inventory_extension
-	local wielded_slot_data = inventory_extension:get_wielded_slot_data()
-
-	if wielded_slot_data then
-		local left_hand_unit = wielded_slot_data.left_unit_1p
-		local right_hand_unit = wielded_slot_data.right_unit_1p
-
-		if left_hand_unit and Unit.alive(left_hand_unit) then
-			unit_flow_event(left_hand_unit, event)
+			unit_flow_event(right_hand_unit, event_name)
 		end
 
-		if right_hand_unit and Unit.alive(right_hand_unit) then
-			unit_flow_event(right_hand_unit, event)
+		local left_hand_unit_3p = wielded_slot_data.left_unit_3p
+		local right_hand_unit_3p = wielded_slot_data.right_unit_3p
+
+		if left_hand_unit_3p and Unit.alive(left_hand_unit_3p) then
+			unit_flow_event(left_hand_unit_3p, event_name)
+		end
+
+		if right_hand_unit_3p and Unit.alive(right_hand_unit_3p) then
+			unit_flow_event(right_hand_unit_3p, event_name)
 		end
 	end
 end

@@ -351,7 +351,7 @@ Boot.booting_update = function (self, dt)
 			Boot.startup_state = "ready"
 		end
 	elseif Boot.startup_state == "ready" then
-		Crashify.print_property("project", "Vermintide 2")
+		Crashify.print_property("project", "vermintide 2")
 		Crashify.print_property("build", BUILD)
 		Crashify.print_property("platform", PLATFORM)
 		Crashify.print_property("title_id", GameSettingsDevelopment.backend_settings.title_id)
@@ -364,6 +364,8 @@ Boot.booting_update = function (self, dt)
 				Crashify.print_property("user_id", Steam.user_id())
 			end
 
+			Crashify.print_property("machine_id", Application.machine_id())
+		elseif PLATFORM == "ps4" then
 			Crashify.print_property("machine_id", Application.machine_id())
 		elseif PLATFORM == "xb1" then
 			Crashify.print_property("console_type", XboxOne.console_type())
@@ -410,17 +412,23 @@ Boot.booting_render = function (self)
 end
 
 Boot._require_foundation_scripts = function (self)
+	Profiler.start("Boot:_require_scripts()")
 	base_require("util", "verify_plugins", "clipboard", "error", "patches", "class", "callback", "rectangle", "state_machine", "visual_state_machine", "misc_util", "stack", "circular_queue", "grow_queue", "table", "math", "vector3", "quaternion", "script_world", "script_viewport", "script_camera", "script_unit", "frame_table", "path")
 	base_require("debug", "table_trap")
 	base_require("managers", "world/world_manager", "player/player", "free_flight/free_flight_manager", "state/state_machine_manager", "time/time_manager", "token/token_manager")
 	base_require("managers", "localization/localization_manager", "event/event_manager")
+	Profiler.stop("Boot:_require_scripts()")
 end
 
 Boot._init_managers = function (self)
+	Profiler.start("Boot:_init_managers()")
+
 	Managers.time = TimeManager:new()
 	Managers.world = WorldManager:new()
 	Managers.token = TokenManager:new()
 	Managers.state_machine = StateMachineManager:new()
+
+	Profiler.stop("Boot:_init_managers()")
 end
 
 Boot.game_render = function (self)
@@ -429,7 +437,11 @@ Boot.game_render = function (self)
 end
 
 Boot._setup_statemachine = function (self, start_state, params)
+	Profiler.start("Boot:_setup_statemachine()")
+
 	self._machine = GameStateMachine:new(self, start_state, params, true)
+
+	Profiler.stop("Boot:_setup_statemachine()")
 end
 
 function init()
@@ -574,6 +586,8 @@ function force_render(dt)
 end
 
 Boot.game_update = function (self, real_world_dt)
+	Profiler.start("LUA update")
+
 	local dt = Managers.time:scaled_delta_time(real_world_dt)
 
 	if PlayerUnitLocomotionExtension then
@@ -594,12 +608,22 @@ Boot.game_update = function (self, real_world_dt)
 
 	local t = Managers.time:time("main")
 
+	Profiler.start("Lua machine pre-update")
 	self._machine:pre_update(dt, t)
+	Profiler.stop("Lua machine pre-update")
 	Managers.package:update(dt, t)
+	Profiler.start("Lua token update")
 	Managers.token:update(dt, t)
+	Profiler.stop("Lua token update")
+	Profiler.start("Lua machine update")
 	self._machine:update(dt, t)
+	Profiler.stop("Lua machine update")
+	Profiler.start("Visual state machine update")
 	Managers.state_machine:update(dt)
+	Profiler.stop("Visual state machine update")
+	Profiler.start("Lua world update")
 	Managers.world:update(dt, t)
+	Profiler.stop("Lua world update")
 
 	if self.quit_game then
 		Boot.is_controlled_exit = true
@@ -627,6 +651,7 @@ Boot.game_update = function (self, real_world_dt)
 		end
 	elseif PLATFORM == "ps4" then
 		Managers.rest_transport:update(true)
+		Managers.system_dialog:update(dt)
 	end
 
 	Managers.news_ticker:update(dt)
@@ -676,11 +701,18 @@ Boot.game_update = function (self, real_world_dt)
 		end
 	end
 
+	if (BUILD == "dev" or BUILD == "debug") and SynergyMouse.connected() then
+		print("[Boot] SynergyMouse enabled")
+	end
+
 	end_function_call_collection()
 	table.clear(Boot.flow_return_table)
+	Profiler.stop("LUA update")
+	Profiler.start("LUA post_update")
 	self._machine:post_update(dt)
 	FrameTable.swap_tables()
 	FrameTable.clear_tables()
+	Profiler.stop("LUA post_update")
 end
 
 Boot.shutdown = function (self, dt)
@@ -777,6 +809,23 @@ Game.setup = function (self)
 		profile(p, "physics_dump")
 		DebugHelper.enable_physics_dump()
 		profile(p, "physics_dump")
+	end
+
+	if BUILD == "dev" or BUILD == "debug" then
+		if Synergy and Development.parameter("synergy") then
+			local resx, resy = Application.resolution()
+			local synergy_setting_name = Development.parameter("synergy")
+			local synergy_settings = SynergySettings.user_settings[synergy_setting_name]
+
+			printf("Connecting to Synergy: %s @ %s", synergy_setting_name, synergy_settings.ip)
+			Synergy.connect(synergy_settings.ip, synergy_settings.client_name, resx, resy)
+		end
+
+		local debug_resource_package = "resource_packages/debug/ui_debug"
+
+		if script_data.load_ui_debug_package and not Managers.package:has_loaded(debug_resource_package, "global") and not table.contains(GlobalResources, debug_resource_package) then
+			GlobalResources[#GlobalResources + 1] = debug_resource_package
+		end
 	end
 
 	profile(p, "init random")
@@ -1173,7 +1222,7 @@ Game.require_game_scripts = function (self)
 	foundation_require("util", "local_require")
 	game_require("utils", "patches", "colors", "framerate", "random_table", "global_utils", "function_call_stats", "util", "loaded_dice", "script_application", "benchmark/benchmark_handler")
 	game_require("ui", "views/show_cursor_stack", "ui_fonts")
-	game_require("settings", "demo_settings", "game_settings_development", "controller_settings", "default_user_settings")
+	game_require("settings", "demo_settings", "game_settings_development", "synergy_settings", "controller_settings", "default_user_settings")
 	game_require("entity_system", "entity_system")
 	game_require("game_state", "game_state_machine", "state_context", "state_splash_screen", "state_loading", "state_ingame", "state_demo_end")
 	game_require("managers", "admin/admin_manager", "news_ticker/news_ticker_manager", "player/player_manager", "player/player_bot", "save/save_manager", "save/save_data", "perfhud/perfhud_manager", "music/music_manager", "network/party_manager", "transition/transition_manager", "smoketest/smoketest_manager", "debug/updator", "invite/invite_manager", "unlock/unlock_manager", "popup/popup_manager", "popup/simple_popup", "light_fx/light_fx_manager", "play_go/play_go_manager", "controller_features/controller_features_manager", "mutators/mutator_manager", "deed/deed_manager", "telemetry/telemetry_create")
@@ -1183,7 +1232,7 @@ Game.require_game_scripts = function (self)
 	elseif PLATFORM == "xb1" then
 		game_require("managers", "events/xbox_event_manager", "rest_transport/rest_transport_manager", "twitch/mixer_manager")
 	elseif PLATFORM == "ps4" then
-		game_require("managers", "rest_transport/rest_transport_manager")
+		game_require("managers", "rest_transport/rest_transport_manager", "system_dialog/system_dialog_manager")
 	end
 
 	game_require("helpers", "effect_helper", "weapon_helper", "item_helper", "lorebook_helper", "ui_atlas_helper", "scoreboard_helper")
@@ -1382,6 +1431,7 @@ Game._init_managers = function (self)
 	elseif PLATFORM == "ps4" then
 		Managers.rest_transport_online = RestTransportManager:new()
 		Managers.rest_transport = Managers.rest_transport_online
+		Managers.system_dialog = SystemDialogManager:new()
 	end
 
 	Managers.telemetry = CreateTelemetryManager()

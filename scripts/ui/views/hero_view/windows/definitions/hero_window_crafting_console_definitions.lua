@@ -607,20 +607,6 @@ local input_actions = {
 			}
 		}
 	},
-	extract_weapon_skin = {
-		actions = {
-			{
-				input_action = "special_1",
-				priority = 2,
-				description_text = "input_description_reset"
-			},
-			{
-				input_action = "refresh",
-				priority = 3,
-				description_text = "hero_view_crafting_extract_skin"
-			}
-		}
-	},
 	apply_weapon_skin = {
 		actions = {
 			{

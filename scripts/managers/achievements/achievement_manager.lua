@@ -278,7 +278,10 @@ end
 
 AchievementManager.has_any_unclaimed_achievement = function (self)
 	for achievement_id, data in pairs(self._achievement_data) do
-		if data.completed and not data.claimed then
+		local required_dlc = data.required_dlc
+		local unlocked = not required_dlc or Managers.unlock:is_dlc_unlocked(required_dlc)
+
+		if data.completed and unlocked and not data.claimed then
 			return true
 		end
 	end
@@ -289,23 +292,16 @@ end
 AchievementManager.evaluate_end_of_level_achievements = function (self, statistics_db, stats_id, level_key, difficulty_key)
 	local evaluations = AchievementTemplates.end_of_level_achievement_evaluations
 
-	print("yep")
-
 	for _, data in pairs(evaluations) do
 		local levels = data.levels
-
-		print("ok")
 
 		if not levels or table.contains(levels, level_key) then
 			local evaluation_func = data.evaluation_func
 			local allowed_difficulties = data.allowed_difficulties
 
-			print("cool")
-
 			if (not allowed_difficulties or allowed_difficulties[difficulty_key]) and evaluation_func(statistics_db, stats_id) then
 				local stat_to_increment = data.stat_to_increment
 
-				print("its working")
 				statistics_db:increment_stat(stats_id, stat_to_increment)
 			end
 		end
@@ -376,6 +372,8 @@ AchievementManager._check_initialized_achievements = function (self)
 end
 
 AchievementManager._setup_achievement_data = function (self, achievement_id)
+	Profiler.start(achievement_id)
+
 	local achievement_data = AchievementTemplates.achievements[achievement_id]
 
 	assert(achievement_data)
@@ -385,6 +383,8 @@ AchievementManager._setup_achievement_data = function (self, achievement_id)
 	local player = player_manager:local_player()
 
 	if not player then
+		Profiler.stop(achievement_id)
+
 		return nil, "Missing player"
 	end
 
@@ -469,6 +469,8 @@ AchievementManager._setup_achievement_data = function (self, achievement_id)
 		claimed = claimed
 	}
 	self._achievement_data[achievement_id] = achievement_data
+
+	Profiler.stop(achievement_id)
 end
 
 local font_size = 16

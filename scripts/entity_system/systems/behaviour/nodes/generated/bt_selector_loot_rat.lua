@@ -21,6 +21,8 @@ BTSelector_loot_rat.leave = function (self, unit, blackboard, t, reason)
 end
 
 BTSelector_loot_rat.run = function (self, unit, blackboard, t, dt)
+	local Profiler_start = Profiler.start
+	local Profiler_stop = Profiler.stop
 	local child_running = self:current_running_child(blackboard)
 	local children = self._children
 	local node_spawn = children[1]
@@ -28,8 +30,11 @@ BTSelector_loot_rat.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_spawn, "aborted")
+		Profiler_start("spawn")
 
 		local result, evaluate = node_spawn:run(unit, blackboard, t, dt)
+
+		Profiler_stop("spawn")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -47,8 +52,11 @@ BTSelector_loot_rat.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_in_vortex, "aborted")
+		Profiler_start("in_vortex")
 
 		local result, evaluate = node_in_vortex:run(unit, blackboard, t, dt)
+
+		Profiler_stop("in_vortex")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -66,8 +74,11 @@ BTSelector_loot_rat.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_in_gravity_well, "aborted")
+		Profiler_start("in_gravity_well")
 
 		local result, evaluate = node_in_gravity_well:run(unit, blackboard, t, dt)
+
+		Profiler_stop("in_gravity_well")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -85,8 +96,11 @@ BTSelector_loot_rat.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_falling, "aborted")
+		Profiler_start("falling")
 
 		local result, evaluate = node_falling:run(unit, blackboard, t, dt)
+
+		Profiler_stop("falling")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -104,8 +118,11 @@ BTSelector_loot_rat.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_stagger, "aborted")
+		Profiler_start("stagger")
 
 		local result, evaluate = node_stagger:run(unit, blackboard, t, dt)
+
+		Profiler_stop("stagger")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -145,8 +162,11 @@ BTSelector_loot_rat.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_smartobject, "aborted")
+		Profiler_start("smartobject")
 
 		local result, evaluate = node_smartobject:run(unit, blackboard, t, dt)
+
+		Profiler_stop("smartobject")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -164,8 +184,11 @@ BTSelector_loot_rat.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_in_combat, "aborted")
+		Profiler_start("in_combat")
 
 		local result, evaluate = node_in_combat:run(unit, blackboard, t, dt)
+
+		Profiler_stop("in_combat")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -183,8 +206,11 @@ BTSelector_loot_rat.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_dodge, "aborted")
+		Profiler_start("dodge")
 
 		local result, evaluate = node_dodge:run(unit, blackboard, t, dt)
+
+		Profiler_stop("dodge")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -202,8 +228,11 @@ BTSelector_loot_rat.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_flee, "aborted")
+		Profiler_start("flee")
 
 		local result, evaluate = node_flee:run(unit, blackboard, t, dt)
+
+		Profiler_stop("flee")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -221,8 +250,11 @@ BTSelector_loot_rat.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_alerted, "aborted")
+		Profiler_start("alerted")
 
 		local result, evaluate = node_alerted:run(unit, blackboard, t, dt)
+
+		Profiler_stop("alerted")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -238,8 +270,11 @@ BTSelector_loot_rat.run = function (self, unit, blackboard, t, dt)
 	local node_idle = children[11]
 
 	self:set_running_child(unit, blackboard, t, node_idle, "aborted")
+	Profiler_start("idle")
 
 	local result, evaluate = node_idle:run(unit, blackboard, t, dt)
+
+	Profiler_stop("idle")
 
 	if result ~= "running" then
 		self:set_running_child(unit, blackboard, t, nil, result)

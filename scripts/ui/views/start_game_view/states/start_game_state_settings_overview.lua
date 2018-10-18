@@ -55,6 +55,7 @@ local privacy_settings_display_names = {
 	private = "map_screen_private_button"
 }
 local layout_settings = layout_settings or nil
+local video_resources = video_resources or nil
 local windows_settings = windows_settings or nil
 local window_layouts = window_layouts or nil
 local MAX_ACTIVE_WINDOWS = MAX_ACTIVE_WINDOWS or nil
@@ -69,6 +70,7 @@ local function setup_menu_layout()
 		layout_settings = local_require("scripts/ui/views/start_game_view/states/start_game_window_layout")
 	end
 
+	video_resources = layout_settings.video_resources
 	windows_settings = layout_settings.windows
 	window_layouts = layout_settings.window_layouts
 	MAX_ACTIVE_WINDOWS = layout_settings.max_active_windows
@@ -169,6 +171,44 @@ StartGameStateSettingsOverview.create_ui_elements = function (self, params)
 
 		self._menu_input_description:set_input_description(nil)
 	end
+
+	self:_create_video_players()
+end
+
+StartGameStateSettingsOverview._create_video_players = function (self)
+	self:_destroy_video_players()
+
+	local video_players = {}
+
+	if video_resources then
+		local world = self.ui_top_renderer.world
+
+		for name, settings in pairs(video_resources) do
+			local resource = settings.resource
+			local video_player = World.create_video_player(world, resource, true, false)
+			video_players[name] = video_player
+		end
+	end
+
+	self._video_players = video_players
+end
+
+StartGameStateSettingsOverview._destroy_video_players = function (self)
+	local video_players = self._video_players
+
+	if video_players then
+		local world = self.ui_top_renderer.world
+
+		for name, video_player in pairs(video_players) do
+			World.destroy_video_player(world, video_player)
+		end
+	end
+
+	self._video_players = nil
+end
+
+StartGameStateSettingsOverview.get_video_player_by_name = function (self, name)
+	return self._video_players[name]
 end
 
 StartGameStateSettingsOverview.disable_player_world = function (self)
@@ -507,6 +547,7 @@ StartGameStateSettingsOverview.on_exit = function (self, params)
 
 	Managers.save:auto_save(SaveFileName, SaveData, nil)
 	self:_close_active_windows()
+	self:_destroy_video_players()
 
 	if self._gamepad_style_active then
 		self:enable_player_world()

@@ -874,7 +874,9 @@ EquipmentUI.update = function (self, dt, t)
 	end
 
 	self:_handle_resolution_modified()
+	Profiler.start("-sync player equipment")
 	self:_sync_player_equipment()
+	Profiler.stop("-sync player equipment")
 	self:draw(dt)
 end
 
@@ -900,7 +902,7 @@ EquipmentUI._handle_gamepad = function (self)
 	local should_render = true
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 
-	if gamepad_active or UISettings.use_gamepad_hud_layout then
+	if (gamepad_active or UISettings.use_gamepad_hud_layout == "always") and UISettings.use_gamepad_hud_layout ~= "never" then
 		if self._retained_elements_visible then
 			self:_set_elements_visible(false)
 		end

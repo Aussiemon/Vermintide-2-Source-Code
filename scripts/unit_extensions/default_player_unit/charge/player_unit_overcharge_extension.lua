@@ -298,9 +298,26 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 			end
 		end
 	end
+
+	if script_data.overcharge_debug then
+		if DebugKeyHandler.key_pressed("v", "fill overcharge", "player", "left shift") then
+			local amount = PlayerUnitStatusSettings.overcharge_values.overcharge_debug_value
+
+			self:add_charge(amount)
+
+			local profile_index = owner_player and owner_player:profile_index()
+			local profile_abbreviation = SPProfilesAbbreviation[profile_index] or ""
+
+			Debug.text("%s : Overcharge: %.2f/%.2f ( %.2f | %.2f)", profile_abbreviation, self.overcharge_value, self.max_value, self.overcharge_limit, self.overcharge_critical_limit)
+		end
+	end
 end
 
 PlayerUnitOverchargeExtension.add_charge = function (self, overcharge_amount, charge_level)
+	if script_data.disable_overcharge then
+		return
+	end
+
 	local buff_extension = self.buff_extension
 
 	if buff_extension:has_buff_type("twitch_no_overcharge_no_ammo_reloads") then

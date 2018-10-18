@@ -38,11 +38,11 @@ local scenegraph_definition = {
 		parent = "item_grid",
 		horizontal_alignment = "center",
 		size = {
-			60,
+			55,
 			100
 		},
 		position = {
-			-200,
+			-210,
 			50,
 			2
 		}
@@ -52,11 +52,11 @@ local scenegraph_definition = {
 		parent = "item_grid",
 		horizontal_alignment = "center",
 		size = {
-			60,
+			55,
 			100
 		},
 		position = {
-			-120,
+			-140,
 			50,
 			2
 		}
@@ -66,11 +66,11 @@ local scenegraph_definition = {
 		parent = "item_grid",
 		horizontal_alignment = "center",
 		size = {
-			60,
+			55,
 			100
 		},
 		position = {
-			-40,
+			-70,
 			50,
 			2
 		}
@@ -80,11 +80,11 @@ local scenegraph_definition = {
 		parent = "item_grid",
 		horizontal_alignment = "center",
 		size = {
-			60,
+			55,
 			100
 		},
 		position = {
-			40,
+			0,
 			50,
 			2
 		}
@@ -94,11 +94,11 @@ local scenegraph_definition = {
 		parent = "item_grid",
 		horizontal_alignment = "center",
 		size = {
-			60,
+			55,
 			100
 		},
 		position = {
-			120,
+			70,
 			50,
 			2
 		}
@@ -108,11 +108,25 @@ local scenegraph_definition = {
 		parent = "item_grid",
 		horizontal_alignment = "center",
 		size = {
-			60,
+			55,
 			100
 		},
 		position = {
-			200,
+			140,
+			50,
+			2
+		}
+	},
+	material_text_7 = {
+		vertical_alignment = "top",
+		parent = "item_grid",
+		horizontal_alignment = "center",
+		size = {
+			55,
+			100
+		},
+		position = {
+			210,
 			50,
 			2
 		}
@@ -269,6 +283,7 @@ local widgets = {
 	material_text_4 = UIWidgets.create_craft_material_widget("material_text_4"),
 	material_text_5 = UIWidgets.create_craft_material_widget("material_text_5"),
 	material_text_6 = UIWidgets.create_craft_material_widget("material_text_6"),
+	material_text_7 = UIWidgets.create_craft_material_widget("material_text_7"),
 	page_button_next = UIWidgets.create_arrow_button("page_button_next", math.pi),
 	page_button_previous = UIWidgets.create_arrow_button("page_button_previous"),
 	input_icon_next = UIWidgets.create_simple_texture("xbone_button_icon_a", "input_icon_next"),

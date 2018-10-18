@@ -15,7 +15,6 @@ require("scripts/settings/ui_settings")
 require("scripts/settings/ui_frame_settings")
 require("scripts/ui/hud_ui/level_countdown_ui")
 require("scripts/ui/help_screen/help_screen_ui")
-require("scripts/ui/views/keep_decoration_view")
 require("scripts/ui/views/credits_view")
 require("scripts/ui/views/options_view")
 require("scripts/ui/views/unlock_key_view")
@@ -366,13 +365,13 @@ IngameUI.handle_menu_hotkeys = function (self, dt, input_service, hotkeys_enable
 							break
 						end
 
-						if menu_active then
-							self:transition_with_fade(mapping_data.in_transition_menu, mapping_data.transition_state, mapping_data.transition_sub_state)
+						local transition = (menu_active and mapping_data.in_transition_menu) or mapping_data.in_transition
+						local transition_params = {
+							menu_state_name = mapping_data.transition_state,
+							menu_sub_state_name = mapping_data.transition_sub_state
+						}
 
-							break
-						end
-
-						self:transition_with_fade(mapping_data.in_transition, mapping_data.transition_state, mapping_data.transition_sub_state)
+						self:transition_with_fade(transition, transition_params)
 
 						break
 					end
@@ -391,6 +390,7 @@ IngameUI.event_dlc_status_changed = function (self)
 end
 
 IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
+	Profiler.start("IngameUI")
 	self:_update_fade_transition()
 
 	local views = self.views
@@ -415,6 +415,8 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 		self:update_respawning()
 	end
 
+	Profiler.start("popup_handler")
+
 	if self.popup_id then
 		local popup_result = Managers.popup:query_result(self.popup_id)
 
@@ -422,6 +424,8 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 			self:handle_transition(popup_result)
 		end
 	end
+
+	Profiler.stop("popup_handler")
 
 	if self.survey_active then
 		self:_survey_update(dt)
@@ -436,14 +440,18 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 	self:_update_hud_visibility(disable_ingame_ui, in_score_screen)
 
 	if is_in_inn then
+		Profiler.start("Mission Voting")
 		self.mission_voting_ui:update(self.menu_active, dt, t)
+		Profiler.stop("Mission Voting")
 	end
 
 	if not disable_ingame_ui then
 		if self.current_view then
 			local current_view = self.current_view
 
+			Profiler.start(current_view)
 			views[current_view]:update(dt, t)
+			Profiler.stop(current_view)
 		end
 
 		local gdc_build = Development.parameter("gdc")
@@ -455,16 +463,24 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 			local use_gamepad_layout = PLATFORM == "ps4" or PLATFORM == "xb1" or Managers.input:is_device_active("gamepad") or UISettings.use_gamepad_menu_layout
 
 			if use_gamepad_layout then
-				local menu_state = "overview"
+				local menu_state_name = "overview"
 
 				if is_in_inn then
-					local menu_sub_state = "equipment"
+					local menu_sub_state_name = "equipment"
+					local transition_params = {
+						menu_state_name = menu_state_name,
+						menu_sub_state_name = menu_sub_state_name
+					}
 
-					self:transition_with_fade("hero_view_force", menu_state, menu_sub_state)
+					self:transition_with_fade("hero_view_force", menu_state_name, menu_sub_state_name)
 				else
-					local menu_sub_state = "system"
+					local menu_sub_state_name = "system"
+					local transition_params = {
+						menu_state_name = menu_state_name,
+						menu_sub_state_name = menu_sub_state_name
+					}
 
-					self:handle_transition("hero_view_force", menu_state, menu_sub_state)
+					self:handle_transition("hero_view_force", transition_params)
 				end
 			else
 				self:handle_transition("ingame_menu")
@@ -472,6 +488,8 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 		end
 
 		if not self:pending_transition() then
+			Profiler.start("hotkeys")
+
 			local local_player = Managers.player:local_player()
 			local player_unit = local_player and local_player.player_unit
 
@@ -480,26 +498,40 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 
 				self:handle_menu_hotkeys(dt, input_service, enable_hotkeys, self.menu_active)
 			end
+
+			Profiler.stop("hotkeys")
 		end
 
+		Profiler.start("Countdown UI")
 		countdown_ui:update(dt)
+		Profiler.stop("Countdown UI")
+		Profiler.start("matchmaking")
 
 		local show_detailed_matchmaking_info = not self.menu_active and not player_list_active and self.current_view == nil
 
 		self.matchmaking_ui:update(dt, t, show_detailed_matchmaking_info)
+		Profiler.stop("matchmaking")
 
 		if self.popup_join_lobby_handler then
+			Profiler.start("popup_handler")
 			self.popup_join_lobby_handler:update(dt)
+			Profiler.stop("popup_handler")
 		end
 
+		Profiler.start("endscreen")
 		end_screen:update(dt)
+		Profiler.stop("endscreen")
 
 		if self.help_screen then
+			Profiler.start("help_screen")
 			self.help_screen:update(dt)
+			Profiler.stop("help_screen")
 		end
 
 		if not end_of_level_ui and not end_screen_active then
+			Profiler.start("cutscene_ui")
 			self.cutscene_ui:update(dt)
+			Profiler.stop("cutscene_ui")
 			self:_update_ingame_hud(self.hud_visible, dt, t)
 		end
 	end
@@ -508,6 +540,7 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 	self:_update_chat_ui(dt, t, input_service, end_of_level_ui)
 	self:_render_debug_ui(dt, t)
 	self:_update_fade_transition()
+	Profiler.stop("IngameUI")
 end
 
 IngameUI.post_update = function (self, dt, t)
@@ -591,11 +624,16 @@ IngameUI._update_ingame_hud = function (self, visible, dt, t)
 		self.ingame_hud:update(dt, t, active_cutscene, self.ingame_ui_context)
 
 		if not active_cutscene then
+			Profiler.start("Ingame Voting")
 			self.ingame_voting_ui:update(self.menu_active, dt, t)
+			Profiler.stop("Ingame Voting")
+			Profiler.start("dlc_uis")
 
 			for _, ui in ipairs(self.dlc_uis_hud_update_list) do
 				ui:update(dt, t)
 			end
+
+			Profiler.stop("dlc_uis")
 		end
 	end
 end
@@ -668,6 +706,8 @@ IngameUI._menu_blocking_information = function (self, input_service, end_of_leve
 end
 
 IngameUI._render_debug_ui = function (self, dt, t)
+	Profiler.start("debug_stuff")
+
 	if self.menu_active and GameSettingsDevelopment.show_version_info and not Development.parameter("hide_version_info") then
 		self:_render_version_info()
 	end
@@ -675,6 +715,8 @@ IngameUI._render_debug_ui = function (self, dt, t)
 	if GameSettingsDevelopment.show_fps and not Development.parameter("hide_fps") then
 		self:_render_fps(dt)
 	end
+
+	Profiler.stop("debug_stuff")
 end
 
 IngameUI.show_info = function (self)
@@ -756,14 +798,14 @@ IngameUI._post_handle_transition = function (self)
 
 	if old_view and old_view.post_update_on_exit then
 		printf("[IngameUI] menu view post_update_on_exit %s", old_view)
-		old_view:post_update_on_exit(unpack(transition_params))
+		old_view:post_update_on_exit(transition_params)
 	end
 
 	local new_view = self.views[self.current_view]
 
 	if new_view and new_view.post_update_on_enter then
 		printf("[IngameUI] menu view post_update_on_enter %s", new_view)
-		new_view:post_update_on_enter(unpack(transition_params))
+		new_view:post_update_on_enter(transition_params)
 	end
 
 	self.transition_params = nil
@@ -771,8 +813,8 @@ IngameUI._post_handle_transition = function (self)
 	self.new_transition = nil
 end
 
-IngameUI.handle_transition = function (self, new_transition, ...)
-	assert(transitions[new_transition])
+IngameUI.handle_transition = function (self, new_transition, params)
+	fassert(transitions[new_transition], "Missing transition to %s", new_transition)
 
 	local blocked_transitions = self.blocked_transitions
 
@@ -786,41 +828,37 @@ IngameUI.handle_transition = function (self, new_transition, ...)
 		return
 	end
 
-	local transition_params = {
-		...
-	}
-
 	if self.new_transition_old_view then
 		return
 	end
 
 	local old_view = self.current_view
 
-	transitions[new_transition](self, unpack(transition_params))
+	transitions[new_transition](self, params)
 
 	local new_view = self.current_view
 
 	if old_view ~= new_view then
 		if self.views[old_view] and self.views[old_view].on_exit then
 			printf("[IngameUI] menu view on_exit %s", old_view)
-			self.views[old_view]:on_exit(unpack(transition_params))
+			self.views[old_view]:on_exit(params)
 
 			self.views[old_view].exit_to_game = nil
 		end
 
 		if new_view and self.views[new_view] and self.views[new_view].on_enter then
 			printf("[IngameUI] menu view on_enter %s", new_view)
-			self.views[new_view]:on_enter(unpack(transition_params))
+			self.views[new_view]:on_enter(params)
 		end
 
 		self.new_transition = new_transition
 		self.new_transition_old_view = old_view
-		self.transition_params = transition_params
+		self.transition_params = params
 		self._previous_transition = new_transition
 	end
 end
 
-IngameUI.transition_with_fade = function (self, new_transition, ...)
+IngameUI.transition_with_fade = function (self, new_transition, params)
 	local blocked_transitions = self.blocked_transitions
 
 	if blocked_transitions and blocked_transitions[new_transition] then
@@ -835,9 +873,7 @@ IngameUI.transition_with_fade = function (self, new_transition, ...)
 
 	self._transition_fade_data = {
 		new_transition = new_transition,
-		transition_params = {
-			...
-		}
+		transition_params = params
 	}
 
 	Managers.transition:fade_in(10)
@@ -856,7 +892,7 @@ IngameUI._update_fade_transition = function (self)
 		local new_transition = transition_fade_data.new_transition
 		local transition_params = transition_fade_data.transition_params
 
-		self:handle_transition(new_transition, unpack(transition_params))
+		self:handle_transition(new_transition, transition_params)
 
 		self._transition_fade_data = nil
 
@@ -1002,21 +1038,27 @@ IngameUI._render_version_info = function (self)
 end
 
 IngameUI._render_fps = function (self, dt)
+	self._fpses = self._fpses or {}
 	local ui_top_renderer = self.ui_top_renderer
-	local fps = self.fps
+	self._fpses[#self._fpses + 1] = dt
 	self._fps_cooldown = self._fps_cooldown + dt
 
 	if self._fps_cooldown > 1 then
-		if dt < 1e-07 then
-			fps = 0
-		else
-			fps = 1 / dt
+		local num_dts = #self._fpses
+		local total_dt = 0
+
+		for idx, _dt in pairs(self._fpses) do
+			total_dt = total_dt + _dt
 		end
 
-		self.fps = fps
+		self.fps = 1 / (total_dt / num_dts)
+
+		table.clear(self._fpses)
+
 		self._fps_cooldown = 0
 	end
 
+	local fps = self.fps
 	local text = string.format("%i FPS", fps)
 	local color = nil
 	local red_cap = 30
@@ -1035,9 +1077,9 @@ IngameUI._render_fps = function (self, dt)
 	local res_width = RESOLUTION_LOOKUP.res_w
 	local res_height = RESOLUTION_LOOKUP.res_h
 	local text_size = 24
-	local width, height = UIRenderer.text_size(ui_top_renderer, text, debug_font_mtrl, text_size)
-	local x = res_width - width - 8
-	local y = height + 16
+	local width, height = UIRenderer.text_size(ui_top_renderer, text, debug_font_mtrl, text_size * RESOLUTION_LOOKUP.scale)
+	local x = (res_width - width - 8) * RESOLUTION_LOOKUP.inv_scale
+	local y = (height + 16) * RESOLUTION_LOOKUP.inv_scale
 	position[1] = x
 	position[2] = y
 	position[3] = 899
@@ -1107,7 +1149,7 @@ end
 IngameUI.unavailable_hero_popup_active = function (self)
 	local popup_join_lobby_handler = self.popup_join_lobby_handler
 
-	return popup_join_lobby_handler and popup_join_lobby_handler.visible
+	return popup_join_lobby_handler ~= nil
 end
 
 IngameUI.respawn = function (self)
@@ -1147,7 +1189,7 @@ IngameUI.update_respawning = function (self)
 
 	local result, result_local_player_id = self.profile_synchronizer:profile_request_result()
 
-	assert(not result or self.local_player_id == result_local_player_id, "Local player id mismatch between ui and request.")
+	fassert(not result or self.local_player_id == result_local_player_id, "Local player id mismatch between ui and request.")
 
 	if result then
 		self._respawning = nil

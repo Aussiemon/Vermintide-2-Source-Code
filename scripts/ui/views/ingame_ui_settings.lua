@@ -301,13 +301,6 @@ local transitions = {
 		self.current_view = "chat_view"
 		self.views[self.current_view].exit_to_game = true
 	end,
-	keep_decoration_view_force = function (self)
-		self.current_view = "keep_decoration_view"
-		self.views[self.current_view].exit_to_game = true
-	end,
-	keep_decoration_view = function (self)
-		self.current_view = "keep_decoration_view"
-	end,
 	hero_view_force = function (self)
 		self.current_view = "hero_view"
 		self.views[self.current_view].exit_to_game = true
@@ -519,7 +512,6 @@ view_settings = {
 			telemetry_survey = TelemetrySurveyView:new(ingame_ui_context),
 			options_view = OptionsView:new(ingame_ui_context),
 			hero_view = HeroView:new(ingame_ui_context),
-			keep_decoration_view = KeepDecorationView:new(ingame_ui_context),
 			character_selection = CharacterSelectionView:new(ingame_ui_context),
 			start_menu_view = StartMenuView:new(ingame_ui_context),
 			start_game_view = StartGameView:new(ingame_ui_context),

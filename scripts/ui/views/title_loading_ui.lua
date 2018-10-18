@@ -1757,7 +1757,6 @@ TitleLoadingUI._start_subtitles_by_template = function (self, subtitle_template_
 	self.cutscene_overlay_ui = CutsceneOverlayUI:new(self._ui_renderer, subtitle_template_settings)
 
 	self.cutscene_overlay_ui:start()
-	print("_start_subtitles_by_template----------------------")
 end
 
 TitleLoadingUI._stop_subtitles = function (self)

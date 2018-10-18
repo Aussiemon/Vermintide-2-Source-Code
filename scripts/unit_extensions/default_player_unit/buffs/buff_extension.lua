@@ -118,6 +118,14 @@ BuffExtension.add_buff = function (self, template_name, params)
 					local existing_buff = self._buffs[j]
 
 					if existing_buff.buff_type == sub_buff_template.name then
+						if existing_buff.area_buff_unit and sub_buff_template.refresh_buff_area_position then
+							local buff_area_extension = ScriptUnit.has_extension(existing_buff.area_buff_unit, "buff_area_system")
+
+							if buff_area_extension then
+								buff_area_extension:set_unit_position(POSITION_LOOKUP[self._unit])
+							end
+						end
+
 						if duration and sub_buff_template.refresh_durations then
 							existing_buff.start_time = start_time
 							existing_buff.duration = duration
@@ -191,9 +199,23 @@ BuffExtension.add_buff = function (self, template_name, params)
 				parent_id = params and params.parent_id,
 				start_time = start_time,
 				template = sub_buff_template,
-				buff_type = sub_buff_template.name,
-				attacker_unit = (params and params.attacker_unit) or nil
+				buff_type = sub_buff_template.name
 			}
+
+			if sub_buff_template.buff_area then
+				local unit_spawner = Managers.state.unit_spawner
+				local extension_init_data = {
+					buff_area_system = {
+						removal_proc_function_name = sub_buff_template.remove_buff_func,
+						radius = sub_buff_template.area_radius,
+						owner_player = Managers.player:owner(self._unit)
+					}
+				}
+				local buff_unit, buff_unit_go_id = unit_spawner:spawn_network_unit(sub_buff_template.area_unit_name, "buff_aoe_unit", extension_init_data, POSITION_LOOKUP[self._unit], Quaternion.identity(), nil)
+				buff.area_buff_unit = buff_unit
+			end
+
+			buff.attacker_unit = (params and params.attacker_unit) or nil
 			local bonus = sub_buff_template.bonus
 			local multiplier = sub_buff_template.multiplier
 			local proc_chance = sub_buff_template.proc_chance
@@ -273,6 +295,13 @@ BuffExtension.add_buff = function (self, template_name, params)
 			end
 
 			self._buffs[#self._buffs + 1] = buff
+
+			if script_data.buff_debug then
+				local buff_id = (id and tostring(id)) or "N/A"
+				local sub_buff_name = (sub_buff_template.name and tostring(sub_buff_template.name)) or "N/A"
+
+				printf("### BuffExtension:add_buff() added buff id: %s buff: %s sub buff: %s", buff_id, template_name, sub_buff_name)
+			end
 		until true
 	end
 
@@ -425,8 +454,10 @@ BuffExtension.remove_buff = function (self, id)
 	local end_time = Managers.time:time("game")
 	local num_buffs_removed = 0
 	local i = 1
+	local buff_name = ""
+	local buff_type_name = ""
 
-	while num_buffs >= i do
+	while i <= num_buffs do
 		local buff = buffs[i]
 		local template = buff.template
 		buff_extension_function_params.bonus = buff.bonus
@@ -440,8 +471,32 @@ BuffExtension.remove_buff = function (self, id)
 
 			num_buffs = num_buffs - 1
 			num_buffs_removed = num_buffs_removed + 1
+
+			if script_data.buff_debug then
+				if num_buffs_removed == 1 then
+					buff_name = buff.name or "N/A"
+					buff_type_name = buff.buff_type or "N/A"
+				else
+					buff_name = buff_name .. " | " .. (buff.name or "N/A")
+					buff_type_name = buff_type_name .. " | " .. (buff.buff_type or "N/A")
+
+					if false then
+						i = i + 1
+					end
+				end
+			end
+		end
+	end
+
+	if script_data.buff_debug then
+		local buff_id = (id and tostring(id)) or "N/A"
+
+		if num_buffs_removed > 0 then
+			printf("### BuffExtension:remove_buff() removed one or more buffs id: %s", buff_id)
+			printf("buff name: %s", buff_name)
+			printf("buff type: %s", buff_type_name)
 		else
-			i = i + 1
+			printf("### BuffExtension:remove_buff() couldnt find and remove buff id: %s", buff_id)
 		end
 	end
 

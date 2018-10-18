@@ -34,6 +34,7 @@ ConsoleFriendsView.init = function (self, ingame_ui_context)
 	self._menu_input_description:set_input_description(nil)
 
 	self._current_input_desc = nil
+	self._friend_list_widgets = {}
 end
 
 ConsoleFriendsView.on_enter = function (self)
@@ -69,7 +70,11 @@ end
 ConsoleFriendsView._refresh_friends = function (self)
 	self._is_refreshing = true
 
-	Managers.account:get_friends(1000, callback(self, "cb_friends_collected"))
+	if PLATFORM == "xb1" then
+		Managers.account:get_friends(1000, callback(self, "cb_friends_collected"))
+	elseif PLATFORM == "ps4" then
+		Managers.account:get_friends(2000, callback(self, "cb_friends_collected"))
+	end
 
 	local loading_icon = self._widgets_by_name.loading_icon
 	loading_icon.style.loading_icon.color[1] = 255
@@ -79,7 +84,10 @@ local empty_friend_list = {}
 
 ConsoleFriendsView.cb_friends_collected = function (self, friend_data)
 	friend_data = friend_data or empty_friend_list
-	self._friend_list_widgets = {}
+	local friend_list_widgets = self._friend_list_widgets
+
+	table.clear(friend_list_widgets)
+
 	local playing_friends = {}
 	local online_friends = {}
 	local offline_friends = {}
@@ -108,21 +116,21 @@ ConsoleFriendsView.cb_friends_collected = function (self, friend_data)
 	local offset = -base_offset
 
 	for idx, friend in pairs(playing_friends) do
-		self._friend_list_widgets[#self._friend_list_widgets + 1] = UIWidget.init(entry_definitions.create_friend_entry(friend.name, true, offset, friend))
+		friend_list_widgets[#friend_list_widgets + 1] = UIWidget.init(entry_definitions.create_friend_entry(friend.name, true, offset, friend))
 		offset = offset - base_offset
 	end
 
 	for idx, friend in pairs(online_friends) do
-		self._friend_list_widgets[#self._friend_list_widgets + 1] = UIWidget.init(entry_definitions.create_friend_entry(friend.name, true, offset, friend))
+		friend_list_widgets[#friend_list_widgets + 1] = UIWidget.init(entry_definitions.create_friend_entry(friend.name, true, offset, friend))
 		offset = offset - base_offset
 	end
 
 	for idx, friend in pairs(offline_friends) do
-		self._friend_list_widgets[#self._friend_list_widgets + 1] = UIWidget.init(entry_definitions.create_friend_entry(friend.name, false, offset, friend))
+		friend_list_widgets[#friend_list_widgets + 1] = UIWidget.init(entry_definitions.create_friend_entry(friend.name, false, offset, friend))
 		offset = offset - base_offset
 	end
 
-	print(string.format("Added %s friends", #self._friend_list_widgets))
+	print(string.format("Added %s friends", #friend_list_widgets))
 
 	local widget = self._widgets_by_name.loading_icon
 	self._ui_animations.loading_icon_fade = UIAnimation.init(UIAnimation.function_by_time, widget.style.loading_icon.color, 1, 255, 0, 0.5, math.easeOutCubic)
@@ -429,6 +437,8 @@ ConsoleFriendsView._draw = function (self, dt, t)
 		UIRenderer.draw_widget(ui_top_renderer, widget)
 	end
 
+	Profiler.start("- draw friends list")
+
 	if self._friend_list_widgets then
 		local scenegraph_position = table.clone(ui_scenegraph.friends_mask.world_position)
 		local friends_mask_scenegraph_start_pos = scenegraph_position[2]
@@ -444,6 +454,7 @@ ConsoleFriendsView._draw = function (self, dt, t)
 		end
 	end
 
+	Profiler.stop("- draw friends list")
 	UIRenderer.end_pass(ui_top_renderer)
 
 	if gamepad_active then
@@ -463,7 +474,11 @@ ConsoleFriendsView._open_profile = function (self, widget)
 	local content = widget.content
 	local id = content.friend.id
 
-	Managers.account:show_player_profile(id)
+	if PLATFORM == "xb1" then
+		Managers.account:show_player_profile(id)
+	elseif PLATFORM == "ps4" then
+		Managers.account:show_player_profile_with_account_id(id)
+	end
 end
 
 ConsoleFriendsView._send_invite = function (self, widget, t)

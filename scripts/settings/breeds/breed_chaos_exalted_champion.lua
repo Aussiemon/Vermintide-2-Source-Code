@@ -1168,6 +1168,7 @@ local action_data = {
 
 							blackboard.hit_warrior_challenge_completed = true
 
+							print("Completed challenge ", stat_name)
 							QuestSettings.send_completed_message(stat_name)
 						end
 					end

@@ -34,7 +34,8 @@ require("scripts/unit_extensions/weapons/actions/action_geiser_targeting")
 require("scripts/unit_extensions/weapons/actions/action_throw_grimoire")
 require("scripts/unit_extensions/weapons/actions/action_healing_draught")
 require("scripts/unit_extensions/weapons/actions/action_career_base")
-require("scripts/unit_extensions/weapons/actions/action_career_cancel")
+require("scripts/unit_extensions/weapons/actions/action_career_dummy")
+require("scripts/unit_extensions/weapons/actions/action_career_true_flight_aim")
 require("scripts/unit_extensions/weapons/actions/action_career_dr_ranger")
 require("scripts/unit_extensions/weapons/actions/action_career_bw_scholar")
 require("scripts/unit_extensions/weapons/actions/action_career_we_waywatcher")
@@ -51,7 +52,8 @@ if Development.parameter("debug_weapons") then
 end
 
 local action_classes = {
-	career_cancel = ActionCareerCancel,
+	career_dummy = ActionCareerDummy,
+	career_true_flight_aim = ActionCareerTrueFlightAim,
 	charge = ActionCharge,
 	dummy = ActionDummy,
 	melee_start = ActionMeleeStart,
@@ -268,6 +270,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 	if new_action and current_action_settings then
 		interupting_action_data.new_action = new_action
 		interupting_action_data.new_sub_action = new_sub_action
+		interupting_action_data.action = self:get_action(new_action, new_sub_action, actions)
 		chain_action_data = self:_finish_action("new_interupting_action", interupting_action_data)
 	end
 
@@ -519,6 +522,22 @@ WeaponUnitExtension.update = function (self, unit, input, dt, context, t)
 
 	if current_action_settings then
 		local owner_unit = self.owner_unit
+
+		if script_data.debug_weapons then
+			local player_manager = Managers.player
+			local player = player_manager:owner(owner_unit)
+			local profile_display_name = player:profile_display_name()
+			local lookup_data = current_action_settings.lookup_data
+			local current_time_in_action = t - self.action_time_started
+
+			Debug.text("Action time:    %.2f", current_time_in_action)
+			Debug.text("Current Action: %s/%s", lookup_data.action_name, lookup_data.sub_action_name)
+			Debug.text("Can chain:      %s", tostring(is_within_a_chain_window(current_time_in_action, self.current_action_settings, owner_unit)))
+			Debug.text("Can do damage:  %s", tostring(is_within_damage_window(current_time_in_action, self.current_action_settings, owner_unit)))
+			Debug.text("Weapon Template: %s", lookup_data.item_template_name)
+			Debug.text("Player:  %s", tostring(profile_display_name))
+		end
+
 		local wwise_world = Managers.world:wwise_world(self.world)
 		local allowed_chain_actions = current_action_settings.allowed_chain_actions
 		local num_chain_actions = #allowed_chain_actions
@@ -549,10 +568,14 @@ WeaponUnitExtension.update = function (self, unit, input, dt, context, t)
 			local buff_data = current_action_settings.buff_data
 
 			if buff_data then
+				Profiler.start("buff")
 				ActionUtils.update_action_buff_data(self.action_buff_data, buff_data, owner_unit, t)
+				Profiler.stop("buff")
 			end
 
+			Profiler.start(action_kind)
 			action:client_owner_post_update(dt, t, self.world, can_damage, current_time_in_action)
+			Profiler.stop(action_kind)
 
 			if current_action_settings.cooldown and not current_action_settings.cooldown_from_start then
 				local lookup_data = current_action_settings.lookup_data

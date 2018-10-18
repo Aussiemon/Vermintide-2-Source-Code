@@ -200,6 +200,23 @@ function SET_BREED_DIFFICULTY()
 	end
 end
 
+SET_BREED_DIFFICULTY()
+
+if false then
+	UtilityConsiderationNames = {}
+
+	for name, consideration in pairs(UtilityConsiderations) do
+		UtilityConsiderationNames[name] = consideration
+		UtilityConsiderationNames[consideration] = name
+
+		for name, data in pairs(consideration) do
+			if type(data) == "table" then
+				data.name = name
+			end
+		end
+	end
+end
+
 table.merge(available_nav_tag_layers, BotNavTransitionManager.TRANSITION_LAYERS)
 table.merge(available_nav_cost_map_layers, BotNavTransitionManager.NAV_COST_MAP_LAYERS)
 

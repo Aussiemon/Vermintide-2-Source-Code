@@ -51,7 +51,7 @@ weapon_template.actions = {
 					sub_action = "default",
 					start_time = 0.6,
 					action = "action_two",
-					input = "action_two"
+					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",

@@ -165,6 +165,26 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 	end
 
 	extension.set_pinged = function (pinged, flash)
+		if extension.priority_outline then
+			if pinged then
+				if not extension.pinged then
+					extension.previous_flag = extension.flag
+				end
+
+				extension.flag = "outline_unit"
+			else
+				extension.flag = extension.previous_flag
+			end
+
+			extension.pinged = pinged
+
+			return
+		end
+
+		if not extension.flag then
+			extension.flag = "outline_unit"
+		end
+
 		if extension.ping_pulse_id then
 			self:set_pulsing(unit, false, extension.ping_pulse_id)
 
@@ -418,6 +438,27 @@ OutlineSystem._update_pulsing = function (self, dt, t)
 			self._pulsing_units[unit] = nil
 		end
 	end
+end
+
+OutlineSystem.set_priority_outline = function (self, unit, apply_method, do_outline)
+	local outline_extension = self.unit_extension_data[unit]
+
+	if not outline_extension then
+		return
+	end
+
+	outline_extension.set_method(apply_method)
+
+	if outline_extension.flag then
+		local c = outline_extension.outline_color.channel
+		local channel = Color(c[1], c[2], c[3], c[4])
+
+		self:outline_unit(unit, outline_extension.flag, channel, do_outline, outline_extension.apply_method, false)
+
+		outline_extension[(do_outline and "outlined") or "reapply"] = true
+	end
+
+	outline_extension.priority_outline = do_outline
 end
 
 OutlineSystem.outline_unit = function (self, unit, flag, channel, do_outline, apply_method, is_reapply)

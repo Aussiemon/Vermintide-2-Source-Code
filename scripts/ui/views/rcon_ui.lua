@@ -27,12 +27,16 @@ RconUI.update = function (self, dt, menu_active, menu_input_service, no_unblock)
 		self:_create_ui_elements()
 	end
 
+	Profiler.start("RconUI")
+
 	if self._input_manager ~= nil then
 		local input_service = self._input_manager:get_service("rcon_input")
 
 		self:_update_input(dt, input_service, menu_active, menu_input_service, no_unblock)
 		self:_draw_widgets(dt, input_service)
 	end
+
+	Profiler.stop("RconUI")
 end
 
 RconUI.set_header = function (self, text)

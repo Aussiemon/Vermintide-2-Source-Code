@@ -186,8 +186,12 @@ StateTitleScreenLoadSave.cb_load_done = function (self, data)
 	else
 		populate_save_data(data)
 
-		self._new_state = StateTitleScreenMainMenu
-		self._state = "none"
+		if data.machine_id == nil then
+			self:_do_save()
+		else
+			self._new_state = StateTitleScreenMainMenu
+			self._state = "none"
+		end
 	end
 end
 
@@ -233,10 +237,16 @@ StateTitleScreenLoadSave._check_popup = function (self)
 end
 
 StateTitleScreenLoadSave._create_save = function (self)
-	self._state = "waiting_for_save"
 	SaveData = table.clone(DefaultSaveData)
 
+	self:_do_save()
+end
+
+StateTitleScreenLoadSave._do_save = function (self)
+	ensure_user_id_in_save_data(SaveData)
 	Managers.save:auto_save(SaveFileName, SaveData, callback(self, "cb_save_done"))
+
+	self._state = "waiting_for_save"
 end
 
 StateTitleScreenLoadSave.cb_save_done = function (self, data)

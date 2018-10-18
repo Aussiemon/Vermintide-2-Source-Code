@@ -49,7 +49,7 @@ SpawnZoneBaker.init = function (self, world, nav_world, level_analyzer)
 
 			self.path_markers = path_markers
 			local crossroads = spawn_data.crossroads
-			local mainpath_was_changed, altered_amount_num_main_zones = self.level_analyzer:remove_crossroads_extra_path_branches(main_paths, crossroads, self.total_main_path_length_unmodified, self.zones, self.num_main_zones)
+			local mainpath_was_changed, altered_amount_num_main_zones = self.level_analyzer:remove_crossroads_extra_path_branches(main_paths, crossroads, self.total_main_path_length_unmodified, self.zones, self.num_main_zones, path_markers)
 
 			if mainpath_was_changed then
 				self.num_main_zones = altered_amount_num_main_zones
@@ -103,6 +103,12 @@ SpawnZoneBaker.init = function (self, world, nav_world, level_analyzer)
 		else
 			ferror("Cant get %s, make sure this is added to the \\resource_packages\\level_scripts.package file. Or have you forgotten to run generate_resource_packages.bat?", spawn_zone_path)
 		end
+	end
+end
+
+local function debug_text(...)
+	if script_data.debug_zone_baker then
+		print(string.format(...))
 	end
 end
 
@@ -234,6 +240,8 @@ SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_densit
 			local director = nil
 
 			if director_set then
+				debug_text("Baker: director_set OVERRIDE at unique_zone_id: '%d' with a director_set: '%s'", zone_layer.unique_zone_id, override_conflict_setting)
+
 				local pick_random = director_set.pick_random
 
 				if pick_random then
@@ -241,6 +249,8 @@ SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_densit
 					override_conflict_setting = pick_random[row * 2 - 1]
 				end
 			end
+
+			debug_text("Baker: conflict_setting OVERRIDE at unique_zone_id: '%d' conflict_setting: '%s'", zone_layer.unique_zone_id, override_conflict_setting)
 
 			conflict_director = ConflictDirectors[override_conflict_setting]
 			local pack_spawning = conflict_director.pack_spawning
@@ -484,6 +494,11 @@ SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_densit
 			local pack_spawning_setting = parent_zone.pack_spawning_setting
 			local pack_type = parent_zone.pack_type
 			local area_density_coefficient = pack_spawning_setting.area_density_coefficient
+
+			if script_data.debug_zone_baker then
+				print("Island zone", i, "has parent zone:", parent_zone_index)
+			end
+
 			local ok_to_spawn = not zone.on_roof or BreedPacks[pack_type].roof_spawning_allowed
 
 			if ok_to_spawn then
@@ -528,10 +543,11 @@ SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_densit
 						self:spawn_amount_rats(spawns, pack_sizes, pack_rotations, pack_types, zone_data_list, nodes, num_wanted_rats, pack_type, area, island_zone)
 					end
 				end
-
-				if false then
-				end
+			elseif script_data.debug_zone_baker then
+				print("Zone " .. i .. " is tagged as roof, so no '" .. pack_type .. "' will spawn there.")
 			end
+		elseif script_data.debug_zone_baker then
+			print("Island zone", i, " is missing a parent zone")
 		end
 	end
 
@@ -558,6 +574,10 @@ SpawnZoneBaker.inject_special_packs = function (self, total_peaks, cycle_zones)
 
 	if picked_peaks <= 0 or total_peaks <= 0 then
 		return
+	end
+
+	if script_data.debug_zone_baker then
+		print("Overriding " .. picked_peaks .. " peaks, override chance: " .. tostring(percent_overridden))
 	end
 
 	local random_peaks = table.get_random_array_indices(total_peaks, picked_peaks)
@@ -618,6 +638,8 @@ SpawnZoneBaker.create_hi_data = function (self, zone, pack_type_name)
 		zone.hi_data = hi_data
 		local clamp_breeds = (zone.hi and zone_checks.clamp_breeds_hi) or zone_checks.clamp_breeds_low
 		local random_interval = ConflictUtils.random_interval
+
+		print("HIDATA: section_id=", hi_data.id, zone.hi, clamp_breeds, (zone.island and "ISLAND") or "")
 
 		if clamp_breeds then
 			local difficulty_overrides = clamp_breeds[self.difficulty]
@@ -955,7 +977,22 @@ function print_zone_list(cycle_zones)
 end
 
 SpawnZoneBaker.debug_print_zones = function (self)
-	return
+	local great_cycles = self.great_cycles
+
+	for i = 1, #great_cycles, 1 do
+		local great_cycle = great_cycles[i]
+
+		print("Great Cycle", i, "------------")
+
+		local cycle_zones = great_cycle.zones
+
+		print_zone_list(cycle_zones)
+	end
+
+	local island_zones = self.island_zones
+
+	print("\n\nIsland Zones:")
+	print_zone_list(island_zones)
 end
 
 function PRINT_HI_DATA()
@@ -1113,6 +1150,10 @@ SpawnZoneBaker.draw_pack_density_graph = function (self)
 		local path_dist = rare[3]
 		local event_name = rare[2]
 		local color = rare[4].debug_color
+
+		if script_data.debug_zone_baker then
+			print("PATH DIST:", event_name, path_dist)
+		end
 
 		self.graph:add_annotation({
 			live = true,

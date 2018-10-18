@@ -406,6 +406,8 @@ CharacterStateHelper.looking_down = function (first_person_extension, threshold)
 end
 
 CharacterStateHelper.look = function (input_extension, viewport_name, first_person_extension, status_extension, inventory_extension, override_sens, override_delta)
+	Profiler.start("look")
+
 	local camera_manager = Managers.state.camera
 	local look_sensitivity = override_sens or (camera_manager:has_viewport(viewport_name) and camera_manager:fov(viewport_name) / 0.785) or 1
 	local is_3p = false
@@ -417,6 +419,7 @@ CharacterStateHelper.look = function (input_extension, viewport_name, first_pers
 	end
 
 	first_person_extension:set_look_delta(look_delta)
+	Profiler.stop("look")
 end
 
 CharacterStateHelper.look_limited_rotation_freedom = function (input_extension, viewport_name, first_person_extension, ledge_unit, unit, max_radians_yaw, max_radians_pitch, status_extension, inventory_extension)
@@ -792,7 +795,7 @@ CharacterStateHelper._check_chain_action = function (wield_input, action_data, i
 	local softbutton_threshold = action_data.softbutton_threshold
 	local input = nil
 	local no_buffer = action_data.no_buffer
-	local doubleclick_window = action_data.doubleclick_window
+	local doubleclick_window = action_data.doubleclick_window or 0.2
 	local blocking_input = action_data.blocking_input
 	local blocked = false
 
@@ -935,11 +938,15 @@ local weapon_action_interrupt_damage_types = {
 local interupting_action_data = {}
 
 CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension, inventory_extension, health_extension)
+	Profiler.start("weapon_action")
+
 	local item_data, right_hand_weapon_extension, left_hand_weapon_extension = CharacterStateHelper.get_item_data_and_weapon_extensions(inventory_extension)
 
 	table.clear(interupting_action_data)
 
 	if not item_data then
+		Profiler.stop("weapon_action")
+
 		return
 	end
 
@@ -1011,6 +1018,8 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 					status_extension:set_pushed(true, t)
 				end
 			end
+
+			Profiler.stop("weapon_action")
 
 			return
 		end
@@ -1110,6 +1119,7 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 
 			left_hand_weapon_extension:start_action(new_action, new_sub_action, item_template.actions, t, power_level, left_action_init_data)
 			right_hand_weapon_extension:start_action(new_action, new_sub_action, item_template.actions, t, power_level, right_action_init_data)
+			Profiler.stop("weapon_action")
 
 			return
 		end
@@ -1133,6 +1143,7 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 			end
 
 			left_hand_weapon_extension:start_action(new_action, new_sub_action, item_template.actions, t, power_level, next_action_init_data)
+			Profiler.stop("weapon_action")
 
 			return
 		end
@@ -1148,6 +1159,8 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 
 		right_hand_weapon_extension:start_action(new_action, new_sub_action, item_template.actions, t, power_level, next_action_init_data)
 	end
+
+	Profiler.stop("weapon_action")
 end
 
 CharacterStateHelper.stop_weapon_actions = function (inventory_extension, reason)
@@ -1207,6 +1220,8 @@ CharacterStateHelper.reload = function (input_extension, inventory_extension, st
 end
 
 CharacterStateHelper.check_crouch = function (unit, input_extension, status_extension, toggle_crouch, first_person_extension, t)
+	Profiler.start("crouch")
+
 	local is_crouching = status_extension:is_crouching()
 	local crouch = is_crouching
 	local toggle_input = input_extension:get("crouch")
@@ -1231,6 +1246,8 @@ CharacterStateHelper.check_crouch = function (unit, input_extension, status_exte
 	elseif not crouch and is_crouching and CharacterStateHelper.can_uncrouch(unit) then
 		CharacterStateHelper.uncrouch(unit, t, first_person_extension, status_extension)
 	end
+
+	Profiler.stop("crouch")
 
 	return is_crouching
 end
@@ -1446,7 +1463,7 @@ CharacterStateHelper.recently_left_ladder = function (status_extension, t)
 	return status_extension:has_recently_left_ladder(t)
 end
 
-CharacterStateHelper.change_camera_state = function (player, state)
+CharacterStateHelper.change_camera_state = function (player, state, params)
 	if player.bot_player then
 		return
 	end
@@ -1458,7 +1475,7 @@ CharacterStateHelper.change_camera_state = function (player, state)
 	local entity_manager = Managers.state.entity
 	local camera_system = entity_manager:system("camera_system")
 
-	camera_system:external_state_change(player, state)
+	camera_system:external_state_change(player, state, params)
 end
 
 CharacterStateHelper.play_animation_event = function (unit, anim_event)

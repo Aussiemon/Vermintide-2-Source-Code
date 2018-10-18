@@ -159,6 +159,8 @@ LevelAnalysis._initialize_path_markers_from_editor = function (self, path_marker
 			local entry_success = self:_add_path_marker_data(pos, marker_type, order, 1, crossroads_string, roaming_set_string, nav_world, path_markers)
 
 			if not entry_success then
+				drawer:line(pos, pos + Vector3.up() * 15, Colors.get("red"))
+
 				success = false
 			end
 		end
@@ -267,7 +269,7 @@ LevelAnalysis.generate_main_path = function (self, level_name, path_markers, in_
 
 		path_marker.main_path_index = main_path_index
 
-		if path_marker.marker_type == "break" then
+		if path_marker.marker_type == "break" or path_marker.marker_type == "crossroad_break" then
 			main_path_index = main_path_index + 1
 			count = count + 1
 
@@ -333,7 +335,7 @@ LevelAnalysis.start_main_path_generation = function (self, num_main_paths)
 		local pos1 = path_markers[i].pos:unbox()
 		local pos2 = path_markers[i + 1].pos:unbox()
 
-		if path_markers[i].marker_type == "break" then
+		if path_markers[i].marker_type == "break" or path_markers[i].marker_type == "crossroad_break" then
 			sub_index = 1
 		else
 			self.astar_list[j] = {
@@ -428,6 +430,8 @@ LevelAnalysis.inject_travel_dists = function (main_paths, overrride)
 end
 
 LevelAnalysis.update_main_path_generation = function (self)
+	Profiler.start("update_main_path_generation")
+
 	local GwNavAStar_processing_finished = GwNavAStar.processing_finished
 	local GwNavAStar_path_found = GwNavAStar.path_found
 	local GwNavAStar_node_count = GwNavAStar.node_count
@@ -531,6 +535,8 @@ LevelAnalysis.update_main_path_generation = function (self)
 					self:generate_boss_paths()
 				end
 
+				Profiler.stop("update_main_path_generation")
+
 				return "done"
 
 				if "done" then
@@ -546,6 +552,8 @@ LevelAnalysis.update_main_path_generation = function (self)
 
 					self.stitching_path = false
 
+					Profiler.stop("update_main_path_generation")
+
 					return "fail", s
 
 					if "fail" then
@@ -555,6 +563,8 @@ LevelAnalysis.update_main_path_generation = function (self)
 			end
 		end
 	end
+
+	Profiler.stop("update_main_path_generation")
 end
 
 LevelAnalysis.calc_dists_to_start = function (self)
@@ -611,6 +621,11 @@ LevelAnalysis.boss_gizmo_spawned = function (self, unit)
 				map_section_index
 			}
 		end
+	end
+
+	if script_data.debug_ai_recycler then
+		QuickDrawerStay:sphere(Unit.local_position(unit, 0), 2, Color(map_section_index * 64, map_section_index % 4 * 64, map_section_index % 8 * 32))
+		QuickDrawerStay:sphere(Unit.local_position(unit, 0), 0.25, Color(200, 200, 200))
 	end
 end
 
@@ -1732,7 +1747,34 @@ LevelAnalysis.pick_crossroad_path = function (self, cross_road_id, path_id)
 	self.chosen_crossroads[cross_road_id] = path_id
 end
 
-LevelAnalysis.remove_crossroads_extra_path_branches = function (self, main_paths, crossroads, total_main_path_length_unmodified, zones, num_main_zones)
+local function _main_path_has_marker_type(path_markers, main_path_index, marker_type)
+	local main_path_path_markers = {}
+
+	for k = 1, #path_markers, 1 do
+		local path_marker = path_markers[k]
+		local path_marker_main_path_index = path_marker.main_path_index
+
+		if path_marker_main_path_index == main_path_index then
+			main_path_path_markers[#main_path_path_markers + 1] = path_marker
+		end
+	end
+
+	local has_marker_type = nil
+
+	for k = 1, #main_path_path_markers, 1 do
+		local path_marker = main_path_path_markers[k]
+
+		if path_marker.marker_type == marker_type then
+			has_marker_type = true
+
+			break
+		end
+	end
+
+	return has_marker_type
+end
+
+LevelAnalysis.remove_crossroads_extra_path_branches = function (self, main_paths, crossroads, total_main_path_length_unmodified, zones, num_main_zones, path_markers)
 	main_paths = main_paths or self.main_paths
 	crossroads = crossroads or self.crossroads
 
@@ -1742,7 +1784,9 @@ LevelAnalysis.remove_crossroads_extra_path_branches = function (self, main_paths
 		return
 	end
 
-	local to_remove = {}
+	local to_remove = FrameTable.alloc_table()
+	local crossroad_main_path_indices = FrameTable.alloc_table()
+	local chosen_crossroads = FrameTable.alloc_table()
 
 	for crossroads_id, crossroad in pairs(crossroads) do
 		local chosen_road_id = self.chosen_crossroads[crossroads_id]
@@ -1755,26 +1799,124 @@ LevelAnalysis.remove_crossroads_extra_path_branches = function (self, main_paths
 
 		print("Keeping path '" .. chosen_road_id .. "'' at crossroad '" .. crossroads_id .. "'. (1/" .. #crossroad.roads .. ") paths.")
 
+		for k = #main_paths, 1, -1 do
+			local main_path = main_paths[k]
+
+			if main_path.crossroads_id == crossroads_id and main_path.road_id == chosen_road_id then
+				chosen_crossroads[k] = true
+				crossroad_main_path_indices[#crossroad_main_path_indices + 1] = k
+
+				print("\t\t->preparing to stitch road: " .. main_path.road_id .. " that has main path index: " .. k)
+			end
+		end
+
 		for k = 1, #main_paths, 1 do
 			local main_path = main_paths[k]
 
 			if main_path.crossroads_id == crossroads_id and main_path.road_id ~= chosen_road_id then
-				print("\t\t->removing road: " .. main_path.road_id .. " from crossroads: " .. main_path.crossroads_id)
+				print("\t\t->removing road: " .. main_path.road_id .. " from crossroads: " .. main_path.crossroads_id .. " with main path index: " .. k)
 
 				to_remove[#to_remove + 1] = k
 			end
 		end
 	end
 
+	local to_stitch = FrameTable.alloc_table()
+
+	for i = #crossroad_main_path_indices, 1, -1 do
+		repeat
+			to_stitch[#to_stitch + 1] = {}
+			local crossroad_stitch = to_stitch[#to_stitch]
+			local index = crossroad_main_path_indices[i]
+			local previous_main_path_index = index - 1
+
+			for k = #to_remove, 1, -1 do
+				local removed_main_path_index = to_remove[k]
+
+				if previous_main_path_index == removed_main_path_index then
+					previous_main_path_index = previous_main_path_index - 1
+				end
+			end
+
+			local previous_has_break = _main_path_has_marker_type(path_markers, previous_main_path_index, "break")
+
+			if not previous_has_break then
+				crossroad_stitch[#crossroad_stitch + 1] = previous_main_path_index
+				crossroad_stitch[#crossroad_stitch + 1] = index
+			end
+
+			local crossroad_has_break = _main_path_has_marker_type(path_markers, index, "break")
+
+			if crossroad_has_break then
+				break
+			end
+
+			local next_main_path_index = index + 1
+
+			for k = 1, #to_remove, 1 do
+				local removed_main_path_index = to_remove[k]
+
+				if next_main_path_index == removed_main_path_index then
+					next_main_path_index = next_main_path_index + 1
+				end
+			end
+
+			if previous_has_break then
+				crossroad_stitch[#crossroad_stitch + 1] = index
+			end
+
+			if not chosen_crossroads[next_main_path_index] then
+				crossroad_stitch[#crossroad_stitch + 1] = next_main_path_index
+			end
+		until true
+	end
+
+	for i = 1, #to_stitch, 1 do
+		repeat
+			local stitched_indices = to_stitch[i]
+
+			if #stitched_indices <= 1 then
+				break
+			end
+
+			local wanted_main_path_index = stitched_indices[1]
+			local wanted_main_path = main_paths[wanted_main_path_index]
+			local wanted_main_path_nodes = wanted_main_path.nodes
+
+			for k = 2, #stitched_indices, 1 do
+				local stitch_index = stitched_indices[k]
+				local stitch_main_path = main_paths[stitch_index]
+				local stitch_main_path_nodes = stitch_main_path.nodes
+
+				for j = 1, #stitch_main_path_nodes, 1 do
+					local stiched_node = stitch_main_path_nodes[j]
+					wanted_main_path_nodes[#wanted_main_path_nodes + 1] = stiched_node
+				end
+
+				print("Stitched and removed main path index " .. stitch_index)
+
+				to_remove[#to_remove + 1] = stitch_index
+			end
+		until true
+	end
+
+	table.sort(to_remove, function (a, b)
+		return a < b
+	end)
+
 	local removed_path_distances = {}
 
 	for k = #to_remove, 1, -1 do
 		local index = to_remove[k]
 		local travel_dist = main_paths[index].travel_dist
-		removed_path_distances[#removed_path_distances + 1] = {
-			travel_dist[1],
-			travel_dist[#travel_dist]
-		}
+		local was_stitched_path = chosen_crossroads[index]
+
+		if not was_stitched_path then
+			removed_path_distances[#removed_path_distances + 1] = {
+				travel_dist[1],
+				travel_dist[#travel_dist]
+			}
+		end
 
 		table.remove(main_paths, index)
 	end
@@ -1812,6 +1954,12 @@ LevelAnalysis.remove_terror_spawners_due_to_crossroads = function (self, removed
 				if dist_pair[1] < travel_dist and travel_dist < dist_pair[2] then
 					to_remove[#to_remove + 1] = i
 
+					if script_data.debug_ai_recycler then
+						print("REMOVING boss spawner at distance:", travel_dist, checkbox_name)
+						QuickDrawerStay:sphere(Unit.local_position(spawner_data[1], 0), 0.5, Colors.get("pink"))
+						Managers.state.debug_text:output_world_text("Removed boss spawner", 0.5, Unit.local_position(spawner_data[1], 0) + Vector3(0, 0, 1), nil, "bosserino", Vector3(255, 0, 0))
+					end
+
 					break
 				end
 			end
@@ -1843,6 +1991,16 @@ LevelAnalysis.remove_terror_spawners_due_to_crossroads = function (self, removed
 				if dist_pair[1] < travel_dist and travel_dist < dist_pair[2] then
 					to_remove[#to_remove + 1] = waypoints_table.id
 
+					if script_data.debug_ai_recycler then
+						local waypoints_table = section_waypoints[j]
+						local wp = waypoints_table.waypoints[1]
+						local position = Vector3(wp[1], wp[2], wp[3])
+
+						print("REMOVING patrol spawner at distance:", travel_dist, waypoints_table.id, j, " map section ", i)
+						QuickDrawerStay:sphere(position, 0.5, Colors.get("lime"))
+						Managers.state.debug_text:output_world_text("Removed patrol boss spawner", 0.5, position + Vector3(0, 0, 1), nil, "bosserino", Vector3(255, 150, 0))
+					end
+
 					break
 				end
 			end
@@ -1856,6 +2014,10 @@ LevelAnalysis.remove_terror_spawners_due_to_crossroads = function (self, removed
 
 				if waypoints_table.id == id then
 					table.remove(section_waypoints, j)
+
+					if script_data.debug_ai_recycler then
+						print("Removing index ", j, " from waypoints_table. Size: ", #section_waypoints, " at map section ", i)
+					end
 
 					break
 				end
@@ -1968,6 +2130,8 @@ for i = 1, 16, 1 do
 end
 
 LevelAnalysis.debug = function (self, t)
+	Profiler.start("LevelAnalysis:debug")
+
 	local debug_text = Managers.state.debug_text
 
 	debug_text:clear_world_text("boss")
@@ -2009,7 +2173,7 @@ LevelAnalysis.debug = function (self, t)
 		for i = 1, #self.path_markers, 1 do
 			local pos = self.path_markers[i].pos:unbox()
 
-			if self.path_markers[i].marker_type == "break" then
+			if self.path_markers[i].marker_type == "break" or self.path_markers[i].marker_type == "crossroad_break" then
 				QuickDrawer:cylinder(pos, pos + Vector3(0, 0, 8), 0.6, Color(255, 194, 13, 17), 16)
 				QuickDrawer:sphere(pos + Vector3(0, 0, 8), 0.4, Color(255, 194, 13, 17))
 			else
@@ -2061,12 +2225,24 @@ LevelAnalysis.debug = function (self, t)
 			QuickDrawer:sphere(point + Vector3(0, 0, 1.5), 1.366, Color(255, 244, 183, 7))
 		end
 	end
+
+	Profiler.stop("LevelAnalysis:debug")
 end
 
 LevelAnalysis.update = function (self, t)
+	Profiler.start("level_analysis")
+
+	if script_data.debug_ai_recycler and self.main_paths then
+		Profiler.start("debug")
+		self:debug(t)
+		Profiler.stop("debug")
+	end
+
 	if self.stitching_path then
 		self:update_main_path_generation()
 	end
+
+	Profiler.stop("level_analysis")
 end
 
 LevelAnalysis.get_main_and_sub_zone_index_from_pos = function (nav_world, zones, lookup, pos, zone_index_lookup)
@@ -2320,7 +2496,7 @@ LevelAnalysis.process_unreachable = function (work_data)
 	end
 end
 
-LevelAnalysis.setup_main_path_breaks_check = function (nav_world, main_paths, traverse_logic, drawer)
+LevelAnalysis.setup_main_path_breaks_check = function (nav_world, main_paths, traverse_logic, path_markers, drawer)
 	local setup_data = {
 		max_running_astars = 50,
 		nav_world = nav_world,
@@ -2329,9 +2505,11 @@ LevelAnalysis.setup_main_path_breaks_check = function (nav_world, main_paths, tr
 		free_astar_list = {},
 		nodes_to_check = {},
 		drawer = drawer,
-		failed_main_path_breaks = {}
+		failed_main_path_breaks = {},
+		optional_failed_messages = {}
 	}
 	local nodes_to_check = setup_data.nodes_to_check
+	local optional_failed_messages = setup_data.optional_failed_messages
 	local num_main_paths = #main_paths
 
 	for i = num_main_paths, 1, -1 do
@@ -2343,14 +2521,86 @@ LevelAnalysis.setup_main_path_breaks_check = function (nav_world, main_paths, tr
 			local to_main_path = main_paths[j]
 			local to_nodes = to_main_path.nodes
 			local to_node = to_nodes[#to_nodes]
-			local is_crossroad = to_main_path.crossroads_id or from_main_path.crossroads_id
+			local is_crossroad = from_main_path.crossroads_id or to_main_path.crossroads_id
+			local has_crossroad_break = is_crossroad and _main_path_has_marker_type(path_markers, j, "crossroad_break")
+			local shares_crossroad_id = from_main_path.crossroads_id == to_main_path.crossroads_id
+			local shares_road_id = from_main_path.road_id == to_main_path.road_id
 			nodes_to_check[#nodes_to_check + 1] = {
 				from_node_box = from_node,
 				to_node_box = to_node,
 				from_main_path_index = i,
 				to_main_path_index = j,
-				is_crossroad = is_crossroad
+				is_crossroad = is_crossroad,
+				has_crossroad_break = has_crossroad_break,
+				shares_crossroad_id = shares_crossroad_id,
+				shares_road_id = shares_road_id
 			}
+		end
+
+		local has_crossroad_break = _main_path_has_marker_type(path_markers, i, "crossroad_break")
+
+		if has_crossroad_break then
+			local last_from_node = from_nodes[#from_nodes]
+			local crossroads_id = from_main_path.crossroads_id
+
+			if crossroads_id then
+				for j = i + 1, num_main_paths, 1 do
+					local to_main_path = main_paths[j]
+					local to_nodes = to_main_path.nodes
+					local to_node = to_nodes[1]
+					local to_main_path_crossroad_id = to_main_path.crossroads_id
+
+					if not to_main_path_crossroad_id or to_main_path_crossroad_id == crossroads_id then
+						nodes_to_check[#nodes_to_check + 1] = {
+							crossroad_break_check = true,
+							from_node_box = last_from_node,
+							to_node_box = to_node,
+							from_main_path_index = i,
+							to_main_path_index = j
+						}
+
+						print("Checking crossroad break on a crossroad between " .. i .. " to " .. j)
+
+						break
+					end
+				end
+			else
+				local chosen_crossroad_id = nil
+				local checked_road_ids = {}
+
+				for j = i + 1, num_main_paths, 1 do
+					local to_main_path = main_paths[j]
+					local to_nodes = to_main_path.nodes
+					local to_node = to_nodes[1]
+					local to_main_path_crossroad_id = to_main_path.crossroads_id
+					local to_main_path_road_id = to_main_path.road_id
+
+					if to_main_path_crossroad_id then
+						chosen_crossroad_id = chosen_crossroad_id or to_main_path_crossroad_id
+
+						if to_main_path_crossroad_id == chosen_crossroad_id and not checked_road_ids[to_main_path_road_id] then
+							nodes_to_check[#nodes_to_check + 1] = {
+								crossroad_break_check = true,
+								from_node_box = last_from_node,
+								to_node_box = to_node,
+								from_main_path_index = i,
+								to_main_path_index = j
+							}
+							checked_road_ids[to_main_path_road_id] = true
+
+							print("Checking crossroad break between " .. i .. " to " .. j)
+						end
+					else
+						if not chosen_crossroad_id then
+							print("There is no crossroad after crossroad break " .. i)
+
+							optional_failed_messages[#optional_failed_messages + 1] = string.format("Error! There is not a crossroad after crossroad break at main path %d at position %s ", i, tostring(to_node:unbox()))
+						end
+
+						break
+					end
+				end
+			end
 		end
 	end
 
@@ -2366,6 +2616,7 @@ LevelAnalysis.process_main_path_breaks_check = function (work_data)
 	local max_running_astars = work_data.max_running_astars
 	local drawer = work_data.drawer
 	local failed_main_path_breaks = work_data.failed_main_path_breaks
+	local optional_failed_messages = work_data.optional_failed_messages
 	local GwNavAStar_create = GwNavAStar.create
 	local GwNavAStar_start = GwNavAStar.start
 	local GwNavAStar_processing_finished = GwNavAStar.processing_finished
@@ -2397,6 +2648,10 @@ LevelAnalysis.process_main_path_breaks_check = function (work_data)
 		astar_data.from_node_box = next_check_data.from_node_box
 		astar_data.to_node_box = next_check_data.to_node_box
 		astar_data.is_crossroad = next_check_data.is_crossroad
+		astar_data.has_crossroad_break = next_check_data.has_crossroad_break
+		astar_data.shares_crossroad_id = next_check_data.shares_crossroad_id
+		astar_data.shares_road_id = next_check_data.shares_road_id
+		astar_data.crossroad_break_check = next_check_data.crossroad_break_check
 
 		GwNavAStar_start(astar, nav_world, start_position, end_position, traverse_logic)
 
@@ -2415,6 +2670,7 @@ LevelAnalysis.process_main_path_breaks_check = function (work_data)
 			local to_main_path_index = current_astar_data.to_main_path_index
 			local from_node_box = current_astar_data.from_node_box
 			local to_node_box = current_astar_data.to_node_box
+			local crossroad_break_check = current_astar_data.crossroad_break_check
 
 			if GwNavAStar_path_found(current_astar) then
 				local a, b, c = Script.temp_count()
@@ -2443,14 +2699,33 @@ LevelAnalysis.process_main_path_breaks_check = function (work_data)
 				Script.set_temp_count(a, b, c)
 
 				local is_crossroad = current_astar_data.is_crossroad
+				local has_crossroad_break = current_astar_data.has_crossroad_break
+				local shares_crossroad_id = current_astar_data.shares_crossroad_id
+				local shares_road_id = current_astar_data.shares_road_id
+
+				if crossroad_break_check then
+					printf("[LevelAnalysis] Found path from crossroad break between main_path_index %d and %d (start=%s end=%s). But that's ok since it will be stitched", from_main_path_index, to_main_path_index, tostring(from_node_box:unbox()), tostring(to_node_box:unbox()))
+				elseif not is_crossroad or (not has_crossroad_break and (not shares_crossroad_id or shares_road_id)) then
+					local failed_data = failed_main_path_breaks[from_main_path_index] or {}
+					failed_data[to_main_path_index] = {
+						node = to_node_box,
+						is_crossroad = is_crossroad
+					}
+					failed_main_path_breaks[from_main_path_index] = failed_data
+
+					printf("[LevelAnalysis] Error! Path exist between main_path_index %d and %d (start=%s end=%s)!", from_main_path_index, to_main_path_index, tostring(from_node_box:unbox()), tostring(to_node_box:unbox()))
+				elseif not shares_road_id and shares_crossroad_id then
+					printf("[LevelAnalysis] Path exist between main_path_index %d and %d (start=%s end=%s), but it is between two diffrent roads in the same crossroad that wont exist together.", from_main_path_index, to_main_path_index, tostring(from_node_box:unbox()), tostring(to_node_box:unbox()))
+				end
+			elseif crossroad_break_check then
 				local failed_data = failed_main_path_breaks[from_main_path_index] or {}
 				failed_data[to_main_path_index] = {
 					node = to_node_box,
-					is_crossroad = is_crossroad
+					optional_failed_messages = optional_failed_messages
 				}
 				failed_main_path_breaks[from_main_path_index] = failed_data
 
-				printf("[LevelAnalysis] Error! Path exist between main_path_index %d and %d (start=%s end=%s)!", from_main_path_index, to_main_path_index, tostring(from_node_box:unbox()), tostring(to_node_box:unbox()))
+				printf("[LevelAnalysis] Could not find path to mainpath after crossroad break %d and %d (start=%s end=%s), make sure crossroad breaks can be stitched to either a crossroad or another mainpath.", from_main_path_index, to_main_path_index, tostring(from_node_box:unbox()), tostring(to_node_box:unbox()))
 			else
 				printf("[LevelAnalysis] Break between main_path_index %d and %d seems good (start=%s end=%s).", from_main_path_index, to_main_path_index, tostring(from_node_box:unbox()), tostring(to_node_box:unbox()))
 			end
@@ -2488,10 +2763,17 @@ LevelAnalysis.process_main_path_breaks_check = function (work_data)
 				local crossroad_string = ""
 
 				if sub_data.is_crossroad then
-					crossroad_string = "\nNote: Break check for crossroad paths is currently not fully implemented."
+					crossroad_string = "\nNote: Breaks in this crossroad path needs to be changed to crossroad_break."
 				end
 
 				error_string = string.format("%s\n%d -> %d:\t%s %s", error_string, from_main_path_index, to_main_path_index, tostring(node:unbox()), crossroad_string)
+			end
+		end
+
+		if optional_failed_messages then
+			for i = 1, #optional_failed_messages, 1 do
+				local msg = optional_failed_messages[i]
+				error_string = "\n" .. error_string .. msg
 			end
 		end
 

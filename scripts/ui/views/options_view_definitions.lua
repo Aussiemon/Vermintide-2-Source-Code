@@ -4123,6 +4123,29 @@ local function create_sorted_list_widget(text, tooltip_text, item_contents, item
 							content_change_function = item_content_change_function
 						}
 					}
+				},
+				{
+					pass_type = "rect",
+					content_check_function = function (content)
+						return DEBUG_WIDGETS
+					end
+				},
+				{
+					pass_type = "border",
+					content_check_function = function (content, style)
+						if DEBUG_WIDGETS then
+							style.thickness = 1
+						end
+
+						return DEBUG_WIDGETS
+					end
+				},
+				{
+					style_id = "debug_middle_line",
+					pass_type = "rect",
+					content_check_function = function (content)
+						return DEBUG_WIDGETS
+					end
 				}
 			}
 		},
@@ -4390,6 +4413,23 @@ local function create_sorted_list_widget(text, tooltip_text, item_contents, item
 				size = {
 					SORTED_LIST_WIDGET_SIZE[1],
 					SORTED_LIST_WIDGET_SIZE[2]
+				}
+			},
+			debug_middle_line = {
+				offset = {
+					base_offset[1],
+					(base_offset[2] + SORTED_LIST_WIDGET_SIZE[2] / 2) - 1,
+					base_offset[3] + 10
+				},
+				size = {
+					SORTED_LIST_WIDGET_SIZE[1],
+					2
+				},
+				color = {
+					200,
+					0,
+					255,
+					0
 				}
 			}
 		},

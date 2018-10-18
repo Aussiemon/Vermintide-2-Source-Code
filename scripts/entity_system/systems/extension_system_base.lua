@@ -85,9 +85,13 @@ ExtensionSystemBase.pre_update = function (self, context, t)
 	for extension_name, _ in pairs(self.extensions) do
 		local profiler_name = self.profiler_names[extension_name]
 
+		Profiler.start(profiler_name)
+
 		for unit, extension in pairs(update_list[extension_name].pre_update) do
 			extension:pre_update(unit, dummy_input, dt, context, t)
 		end
+
+		Profiler.stop(profiler_name)
 	end
 end
 
@@ -107,9 +111,13 @@ ExtensionSystemBase.update = function (self, context, t)
 	for extension_name, _ in pairs(self.extensions) do
 		local profiler_name = self.profiler_names[extension_name]
 
+		Profiler.start(profiler_name)
+
 		for unit, extension in pairs(update_list[extension_name].update) do
 			extension:update(unit, dummy_input, dt, context, t)
 		end
+
+		Profiler.stop(profiler_name)
 	end
 end
 
@@ -121,9 +129,13 @@ ExtensionSystemBase.post_update = function (self, context, t)
 	for extension_name, _ in pairs(self.extensions) do
 		local profiler_name = self.profiler_names[extension_name]
 
+		Profiler.start(profiler_name)
+
 		for unit, extension in pairs(update_list[extension_name].post_update) do
 			extension:post_update(unit, dummy_input, dt, context, t)
 		end
+
+		Profiler.stop(profiler_name)
 	end
 end
 

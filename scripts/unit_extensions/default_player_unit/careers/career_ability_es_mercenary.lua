@@ -68,7 +68,7 @@ CareerAbilityESMercenary.update = function (self, unit, input, dt, context, t)
 end
 
 CareerAbilityESMercenary.stop = function (self, reason)
-	if self._is_priming then
+	if reason ~= "pushed" and reason ~= "stunned" and self._is_priming then
 		self:_stop_priming()
 	end
 end
@@ -125,7 +125,6 @@ CareerAbilityESMercenary._run_ability = function (self, new_initial_speed)
 	local local_player = self._local_player
 	local network_manager = self._network_manager
 	local network_transmit = network_manager.network_transmit
-	local status_extension = self._status_extension
 	local career_extension = self._career_extension
 	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 
@@ -140,11 +139,11 @@ CareerAbilityESMercenary._run_ability = function (self, new_initial_speed)
 
 	local revivable_units = FrameTable.alloc_table()
 
-	for _, player_unit in pairs(nearby_player_units) do
-		local status_extension = ScriptUnit.extension(player_unit, "status_system")
+	for _, friendly_unit in pairs(nearby_player_units) do
+		local friendly_unit_status_extension = ScriptUnit.extension(friendly_unit, "status_system")
 
-		if status_extension:is_available_for_career_revive() then
-			revivable_units[#revivable_units + 1] = player_unit
+		if friendly_unit_status_extension:is_available_for_career_revive() then
+			revivable_units[#revivable_units + 1] = friendly_unit
 		end
 	end
 

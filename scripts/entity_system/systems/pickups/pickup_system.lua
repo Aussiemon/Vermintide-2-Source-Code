@@ -45,6 +45,7 @@ PickupSystem.init = function (self, entity_system_creation_context, system_name)
 	self.secondary_pickup_spawners = {}
 	self._teleporting_pickups = {}
 	self._spawned_bonus_starting_gear_index = 0
+	self.debug_item_picker = DebugListPicker:new(DebugPickupsList, "debug_item_pickup")
 end
 
 PickupSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data, ...)
@@ -645,6 +646,40 @@ end
 
 PickupSystem.update = function (self, dt, t)
 	if self.is_server then
+		local switch_pickup = false
+
+		if PLATFORM == "xb1" or PLATFORM == "ps4" then
+			switch_pickup = DebugKeyHandler.key_pressed("n_switch", "switch pickup", "pickups")
+		else
+			switch_pickup = DebugKeyHandler.key_pressed("n", "switch pickup", "pickups", "left shift")
+		end
+
+		if switch_pickup then
+			self.debug_item_picker:activate()
+		end
+
+		self.debug_item_picker:update(t, dt)
+
+		if DebugKeyHandler.key_pressed("n", "spawn_pickup", "pickups") then
+			local world = Application.main_world()
+			local position, distance, normal, actor = Managers.state.conflict:player_aim_raycast(world, false, "filter_ray_horde_spawn")
+
+			if position then
+				local item = self.debug_item_picker:current_item()
+				local pickup_name = item[1]
+
+				self:debug_spawn_pickup(pickup_name, position)
+			end
+		end
+
+		if DebugKeyHandler.key_pressed("i", "despawn pickups", "pickups") then
+			self:debug_destroy_all_pickups()
+		end
+
+		if script_data.show_spawned_pickups then
+			self:debug_show_pickups(dt, t)
+		end
+
 		self:_update_teleporting_pickups(dt, t)
 		self:_check_bonus_starting_gear_boon()
 	end
@@ -655,6 +690,8 @@ PickupSystem.update = function (self, dt, t)
 	for extension_name, _ in pairs(self.extensions) do
 		local profiler_name = self.profiler_names[extension_name]
 
+		Profiler.start(profiler_name)
+
 		for unit, extension in pairs(update_list[extension_name].update) do
 			local hide_func = extension.hide_func
 
@@ -662,6 +699,8 @@ PickupSystem.update = function (self, dt, t)
 				extension:hide()
 			end
 		end
+
+		Profiler.stop(profiler_name)
 	end
 end
 

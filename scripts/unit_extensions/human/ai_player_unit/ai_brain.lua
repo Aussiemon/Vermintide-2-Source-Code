@@ -14,6 +14,7 @@ AIBrain.init = function (self, world, unit, blackboard, breed, behavior)
 	blackboard.attacks_done = 0
 	blackboard.breed = breed
 	blackboard.destination_dist = 0
+	blackboard.node_counter = 0
 	blackboard.nav_target_dist_sq = 0
 
 	self:load_brain(behavior)
@@ -32,6 +33,8 @@ AIBrain.unfreeze = function (self, blackboard)
 	blackboard.attacks_done = 0
 	blackboard.destination_dist = 0
 	blackboard.nav_target_dist_sq = 0
+	blackboard.node_counter = 0
+	blackboard.reset_node_history = true
 
 	self:init_utility_actions(blackboard, blackboard.breed)
 end
@@ -80,7 +83,28 @@ AIBrain.exit_last_action = function (self)
 end
 
 AIBrain.update = function (self, unit, t, dt)
+	Profiler.start("unknown_node")
+
 	local result = self._bt:root():evaluate(unit, self._blackboard, t, dt)
+
+	Profiler.stop("unknown_node")
+end
+
+AIBrain.update = function (self, unit, t, dt)
+	local blackboard = self._blackboard
+	local leaf_node = self._bt:root()
+
+	while leaf_node and leaf_node:current_running_child(blackboard) do
+		leaf_node = leaf_node:current_running_child(blackboard)
+	end
+
+	local scope_name = (leaf_node and leaf_node:id()) or "unknown_node"
+
+	Profiler.start(scope_name)
+
+	local result = self._bt:root():evaluate(unit, blackboard, t, dt)
+
+	Profiler.stop(scope_name)
 end
 
 AIBrain.debug_draw_behaviours = function (self)

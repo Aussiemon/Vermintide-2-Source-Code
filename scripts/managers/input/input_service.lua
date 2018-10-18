@@ -158,7 +158,7 @@ InputService.add_keymap = function (self, keymap_name)
 	local keymaps = self:get_active_keymaps()
 	local keymapping = not keymaps[keymap_name]
 
-	assert(keymapping, "Keymap already exists: name %s in service %s", keymap_name, input_service_name)
+	fassert(keymapping, "Keymap already exists: name %s in service %s", keymap_name, input_service_name)
 
 	keymaps[keymap_name] = {
 		input_mappings = {
@@ -171,7 +171,7 @@ InputService.remove_keymap = function (self, keymap_name)
 	local keymaps = self:get_active_keymaps()
 	local keymapping = keymaps[keymap_name]
 
-	assert(keymapping, "No such keymap name %s in service %s", keymap_name, self.name)
+	fassert(keymapping, "No such keymap name %s in service %s", keymap_name, self.name)
 
 	keymaps[keymap_name] = nil
 end

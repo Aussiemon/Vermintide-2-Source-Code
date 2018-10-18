@@ -155,6 +155,8 @@ BotNavTransitionManager._find_matching_layer = function (self, from, to, player_
 end
 
 BotNavTransitionManager._destroy_transition = function (self, transitions, index)
+	debug_print("destroying smart object %i", index)
+
 	local transition = transitions[index]
 	transitions[index] = nil
 	self._bot_nav_transition_lookup[transition.unit] = nil
@@ -181,6 +183,8 @@ BotNavTransitionManager.create_transition = function (self, from, via, wanted_to
 	local hit_existing_transition = hits and #hits > 0
 
 	if hit_existing_transition then
+		debug_print("found_existing_transition")
+
 		return false
 	end
 
@@ -194,9 +198,25 @@ BotNavTransitionManager.create_transition = function (self, from, via, wanted_to
 		local old_wanted_to = wanted_to
 		wanted_to = GwNavQueries.inside_position_from_outside_position(nav_world, wanted_to, above, beneath, lateral)
 
+		debug_print("fail no nav mesh")
+
 		if wanted_to then
 			z = wanted_to.z
+
+			debug_print("fallback success")
 		else
+			if script_data.ai_bots_debug or script_data.ai_bot_transition_debug then
+				local drawer = drawer or QuickDrawerStay
+				local color = Color(150, 50, 50)
+
+				drawer:line(from, old_wanted_to, color)
+				drawer:sphere(from, 0.3, color)
+				drawer:cone(old_wanted_to - Vector3.normalize(from - old_wanted_to) * 0.25, old_wanted_to, 0.3, color, 9, 9)
+				drawer:cylinder(old_wanted_to - Vector3(0, 0, beneath), old_wanted_to + Vector3(0, 0, above), lateral, Color(100, 255, 0, 0), 20)
+			end
+
+			debug_print("fallback failed")
+
 			return false
 		end
 	end
@@ -204,12 +224,26 @@ BotNavTransitionManager.create_transition = function (self, from, via, wanted_to
 	local to = Vector3(wanted_to.x, wanted_to.y, z)
 
 	if GwNavQueries.raycango(nav_world, from, to, self._traverse_logic) then
+		if script_data.ai_bots_debug or script_data.ai_bot_transition_debug then
+			local drawer = drawer or QuickDrawerStay
+			local color = Color(255, 50, 0, 255)
+
+			drawer:line(from, to, color)
+			drawer:sphere(from, 0.3, color)
+			drawer:sphere(to, 0.3, color)
+			drawer:cone(to - Vector3.normalize(from - to) * 0.25, to, 0.3, color, 9, 9)
+		end
+
+		debug_print("area was already traversable")
+
 		return false
 	end
 
 	local layer_name = self:_find_matching_layer(from, to, player_jumped)
 
 	if not layer_name then
+		debug_print("fail, no layer")
+
 		return false
 	end
 
@@ -267,6 +301,9 @@ BotNavTransitionManager.create_transition = function (self, from, via, wanted_to
 		permanent = make_permanent or false
 	}
 	self._bot_nav_transition_lookup[unit] = index
+
+	debug_print("created transition from %s to %s, smart object id: %i", tostring(from), tostring(to), index)
+
 	local next_index = index
 
 	repeat
@@ -302,6 +339,10 @@ BotNavTransitionManager.register_ladder = function (self, unit, index_offset, dr
 	local data = {}
 	local error_message = nil
 	local index_offset = index_offset or 0
+	local drawer = drawer or Managers.state.debug:drawer({
+		mode = "retained",
+		name = "BotNavTransitionManager_retained"
+	})
 	self._ladder_transitions[unit] = data
 	local nav_world = self._nav_world
 	local align_node = Unit.node(unit, "c_platform")
@@ -319,7 +360,20 @@ BotNavTransitionManager.register_ladder = function (self, unit, index_offset, dr
 	local ray_length = length + 10
 	local hit, hit_position = PhysicsWorld.immediate_raycast(ph_world, ray_from, down, ray_length, "closest", "collision_filter", "filter_bot_nav_transition_ladder_ray")
 
+	if script_data.ai_bots_debug or script_data.ai_bot_transition_debug then
+		local ray_to = ray_from + down * ray_length
+		local color = (hit and Color(0, 255, 0)) or Color(125, 0, 0)
+
+		drawer:line(ray_from, ray_to, color)
+		drawer:cone(ray_to - down * 0.25, ray_to, 0.3, color, 9, 9)
+	end
+
 	if not hit then
+		error_message = string.format("Ladder raycast %s (%s) failed to find ground, will not be traversible by bots.", tostring(unit), tostring(ray_from))
+
+		debug_print(error_message)
+		drawer:line(ray_from, ray_from + Vector3.up() * 15, Colors.get("red"))
+
 		data.failed = true
 		data.to = Vector3Box(ray_from)
 		data.from = Vector3Box(ray_from + down * ray_length)
@@ -333,17 +387,33 @@ BotNavTransitionManager.register_ladder = function (self, unit, index_offset, dr
 
 	if found_nav_mesh then
 		to = Vector3(transition_to.x, transition_to.y, z)
+
+		if script_data.ai_bots_debug or script_data.ai_bot_transition_debug then
+			local debug_color = Color(0, 255, 0)
+
+			drawer:sphere(to, 0.2, debug_color)
+		end
 	else
 		local step_size = 0.2
 		local max_steps = 5
+
+		debug_print("failed finding align_pos nav mesh at %s", tostring(align_pos))
 
 		for step_index = 1, max_steps, 1 do
 			local check_pos = transition_to - flat_back * step_size * step_index
 			found_nav_mesh, z = GwNavQueries.triangle_from_position(nav_world, check_pos, 0.3, 0.5, self._layerless_traverse_logic)
 
+			if script_data.ai_bots_debug or script_data.ai_bot_transition_debug then
+				local debug_color = (found_nav_mesh and Color(0, 255, 0)) or Color(255, 0, 0)
+
+				drawer:sphere(check_pos, 0.2, debug_color)
+			end
+
 			if found_nav_mesh then
 				to = check_pos
 				to.z = z
+
+				debug_print("Found align_pos nav mesh at step %i.", step_index)
 
 				break
 			end
@@ -352,6 +422,9 @@ BotNavTransitionManager.register_ladder = function (self, unit, index_offset, dr
 		if not found_nav_mesh then
 			data.failed = true
 			to = transition_to
+			error_message = string.format("Failed to find align_pos nav mesh (%s). Giving up after %i steps. Ladder will NOT be traversible", tostring(align_pos), max_steps)
+
+			debug_print(error_message)
 		end
 	end
 
@@ -363,13 +436,23 @@ BotNavTransitionManager.register_ladder = function (self, unit, index_offset, dr
 		local step_size = 0.2
 		local max_steps = 5
 
+		debug_print("failed finding hit_position nav mesh at %s", tostring(align_pos))
+
 		for step_index = 1, max_steps, 1 do
 			local check_pos = hit_position + flat_back * step_size * step_index
 			found_nav_mesh, z = GwNavQueries.triangle_from_position(nav_world, check_pos, 0.3, 0.5, self._layerless_traverse_logic)
 
+			if script_data.ai_bots_debug or script_data.ai_bot_transition_debug then
+				local debug_color = (found_nav_mesh and Color(0, 255, 0)) or Color(255, 0, 0)
+
+				drawer:sphere(check_pos, 0.2, debug_color)
+			end
+
 			if found_nav_mesh then
 				from = check_pos
 				from.z = z
+
+				debug_print("Found hit_position nav mesh at step %i.", step_index)
 
 				break
 			end
@@ -378,10 +461,14 @@ BotNavTransitionManager.register_ladder = function (self, unit, index_offset, dr
 		if not found_nav_mesh then
 			data.failed = true
 			from = hit_position
+			error_message = string.format("Failed to find hit_position nav mesh (%s). Giving up after %i steps. Ladder will NOT be traversible", tostring(from), max_steps)
+
+			debug_print(error_message)
 		end
 	end
 
 	if data.failed then
+		drawer:line(from, from + Vector3.up() * 15, Colors.get("red"))
 	else
 		local index = self._ladder_smart_object_index + 1
 		local climbable_height = 1.5

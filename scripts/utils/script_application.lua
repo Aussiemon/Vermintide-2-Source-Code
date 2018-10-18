@@ -26,9 +26,4 @@ ScriptApplication.send_to_crashify = function (system, message, ...)
 	ScriptApplication.num_crashify_prints[print_key] = print_count
 end
 
-ScriptApplication.set_crashify_tag = function (tag, data)
-	printf("[CrashifyCustomTag] %s, %s", tag, data)
-	Crashify.print_property(tag, data)
-end
-
 return

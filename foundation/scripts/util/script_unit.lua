@@ -52,12 +52,20 @@ end
 ScriptUnit.extension_input = function (unit, system_name)
 	local extension = local_extension(unit, system_name)
 
+	if not extension then
+		fassert(extension, "No extension found belonging to system %q for unit %q", tostring(system_name), tostring(unit))
+	end
+
 	return extension.input
 end
 
 ScriptUnit.extension = function (unit, system_name)
 	local unit_extensions = Entities[unit]
 	local extension = unit_extensions and unit_extensions[system_name]
+
+	if not extension then
+		fassert(extension, "No extension found belonging to system %q for unit %q", tostring(system_name), tostring(unit))
+	end
 
 	return extension
 end

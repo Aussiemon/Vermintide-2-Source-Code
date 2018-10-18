@@ -27,6 +27,7 @@ end
 NavigationGroupManager.form_groups = function (self, radius, finish_point, optional_level_name)
 	print("Forming navigation groups")
 	assert(finish_point ~= nil, "Got nil for finish_point")
+	Profiler.start("form_groups")
 
 	local time1 = os.clock()
 	self._groups_max_radius = radius or self._groups_max_radius
@@ -81,6 +82,7 @@ NavigationGroupManager.form_groups = function (self, radius, finish_point, optio
 	end
 
 	print("NavigationGroupManager -> calulation time C:", os.clock() - time3)
+	Profiler.stop("form_groups")
 end
 
 NavigationGroupManager.form_groups_start = function (self, radius, finish_point, optional_level_name)

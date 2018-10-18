@@ -1,6 +1,5 @@
 local PING_COOLDOWN = 2
 local PING_RANGE = 50
-local PING_MAX_HOLD_TIME = 0.15
 local debug = false
 ContextAwarePingExtension = class(ContextAwarePingExtension)
 
@@ -42,7 +41,7 @@ ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 
 			if ping_released or not ping_held then
 				if Unit.alive(unit_to_ping) and t <= ping_context.max_t then
-					self:_ping_attempt(unit, unit_to_ping, t)
+					self:ping_attempt(unit, unit_to_ping, t)
 				end
 
 				self._ping_context = nil
@@ -58,6 +57,7 @@ ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 		end
 	else
 		local ping = self.input_extension:get("ping")
+		local social_wheel_delay = Application.user_setting("social_wheel_delay") or DefaultUserSettings.get("user_settings", "social_wheel_delay")
 		local ping_only = (script_data.enable_social_wheel ~= true and ping) or self.input_extension:get("ping_only")
 		local social_wheel_only = self.input_extension:get("social_wheel_only")
 
@@ -65,7 +65,7 @@ ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 			local ping_unit, social_wheel_unit, ping_unit_distance, social_wheel_unit_distance = self:_check_raycast(unit)
 
 			if ping_only then
-				self:_ping_attempt(unit, ping_unit, t)
+				self:ping_attempt(unit, ping_unit, t)
 			elseif social_wheel_only then
 				self._social_wheel_context = {
 					min_t = 0,
@@ -75,12 +75,13 @@ ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 			elseif ping then
 				self._ping_context = {
 					unit = ping_unit,
-					max_t = t + PING_MAX_HOLD_TIME,
+					max_t = t + social_wheel_delay,
 					distance = ping_unit_distance
 				}
 				self._social_wheel_context = {
 					unit = social_wheel_unit,
-					min_t = t + PING_MAX_HOLD_TIME,
+					ping_context_unit = ping_unit,
+					min_t = t + social_wheel_delay,
 					distance = social_wheel_unit_distance
 				}
 			end
@@ -88,7 +89,7 @@ ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 	end
 end
 
-ContextAwarePingExtension._ping_attempt = function (self, unit, unit_to_ping, t)
+ContextAwarePingExtension.ping_attempt = function (self, unit, unit_to_ping, t)
 	if unit_to_ping and self.ping_timer <= t and not LEVEL_EDITOR_TEST then
 		local network_manager = Managers.state.network
 		local pinger_unit_id = network_manager:unit_game_object_id(unit)
@@ -106,7 +107,6 @@ end
 
 local INDEX_POSITION = 1
 local INDEX_DISTANCE = 2
-local INDEX_NORMAL = 3
 local INDEX_ACTOR = 4
 
 ContextAwarePingExtension._check_raycast = function (self, unit)
@@ -143,7 +143,6 @@ ContextAwarePingExtension._check_raycast = function (self, unit)
 						local is_alive = health_ext and health_ext:is_alive()
 						local breed = Unit.get_data(hit_unit, "breed")
 						local has_breed = breed ~= nil
-						local is_incapacitated_player = status_ext and status_ext:is_disabled()
 
 						if distance > 0.05 then
 							local half_width, half_height = nil
@@ -184,9 +183,7 @@ ContextAwarePingExtension._check_raycast = function (self, unit)
 								utility = 1 / (x_offset * y_offset)
 							end
 
-							if debug then
-								QuickDrawerStay:box(Matrix4x4.from_quaternion_position(camera_rotation, hit_unit_center_pos), Vector3(half_width, half_width, half_height))
-							end
+							local is_incapacitated_player = status_ext and status_ext:is_disabled()
 
 							if (is_pickup or (is_alive and (has_breed or is_incapacitated_player))) and not darkness_system:is_in_darkness(hit_position) and best_ping_utility < utility then
 								ping_unit = hit_unit
@@ -194,10 +191,21 @@ ContextAwarePingExtension._check_raycast = function (self, unit)
 								best_ping_utility = utility
 							end
 
-							if ((is_pickup and distance < 4) or (is_alive and status_ext)) and best_social_utility < utility then
+							local is_valid_social_wheel_pickup = false
+
+							if is_pickup then
+								local pickup_settings = is_pickup:get_pickup_settings()
+								is_valid_social_wheel_pickup = pickup_settings.slot_name or pickup_settings.type == "ammo"
+							end
+
+							if ((is_valid_social_wheel_pickup and distance <= INTERACT_RAY_DISTANCE) or (is_alive and status_ext)) and best_social_utility < utility then
 								social_wheel_unit = hit_unit
 								social_wheel_unit_distance = distance
 								best_social_utility = utility
+							end
+
+							if debug then
+								QuickDrawerStay:box(Matrix4x4.from_quaternion_position(camera_rotation, hit_unit_center_pos), Vector3(half_width, half_width, half_height))
 							end
 						end
 					elseif Unit.get_data(hit_unit, "breed") then

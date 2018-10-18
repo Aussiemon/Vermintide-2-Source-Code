@@ -299,6 +299,8 @@ ScriptWorld.update = function (world, dt, anim_callback, scene_callback)
 			dt = 0
 		end
 
+		Profiler.start(ScriptWorld.name(world))
+
 		if anim_callback then
 			World.update_animations_with_callback(world, dt, anim_callback)
 		else
@@ -310,6 +312,8 @@ ScriptWorld.update = function (world, dt, anim_callback, scene_callback)
 		else
 			World.update_scene(world, dt)
 		end
+
+		Profiler.stop(ScriptWorld.name(world))
 	else
 		World.update_timer(world, dt)
 	end
@@ -354,6 +358,9 @@ ScriptWorld.load_level = function (world, name, object_sets, position, rotation,
 
 	local level = World.load_level_with_object_sets(world, name, object_sets or {}, {}, position or Vector3.zero(), rotation or Quaternion.identity(), Vector3(1, 1, 1), name, "force_render")
 	levels[name] = level
+
+	Profiler.start("shading_env_name")
+
 	local shading_env_name = Level.get_data(level, "shading_environment")
 
 	if shading_env_name:len() > 0 then
@@ -376,6 +383,8 @@ ScriptWorld.load_level = function (world, name, object_sets, position, rotation,
 			shading_env = ScriptWorld.create_shading_environment(world, shading_env_name, shading_callback, mood_setting or "default")
 		end
 	end
+
+	Profiler.stop("shading_env_name")
 
 	return level
 end

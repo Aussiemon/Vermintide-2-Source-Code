@@ -38,12 +38,6 @@ local page_settings = {
 	},
 	{
 		sound_event_enter = "play_gui_equipment_button",
-		name = "extract_weapon_skin",
-		class_name = "CraftPageExtractSkin",
-		sound_event_exit = "play_gui_equipment_close"
-	},
-	{
-		sound_event_enter = "play_gui_equipment_button",
 		name = "apply_weapon_skin",
 		class_name = "CraftPageApplySkin",
 		sound_event_exit = "play_gui_equipment_close"

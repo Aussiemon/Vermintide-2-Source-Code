@@ -125,10 +125,31 @@ PlayerUnitFirstPerson.update = function (self, unit, input, dt, context, t)
 		self._head_bob = false
 	end
 
+	if player and Managers.state.debug.free_flight_manager:active(player:local_player_id()) and self.first_person_mode then
+		self:set_first_person_mode(false)
+
+		self.free_flight_changed_fp_mode = true
+	elseif player and not Managers.state.debug.free_flight_manager:active(player:local_player_id()) and self.free_flight_changed_fp_mode then
+		self:set_first_person_mode(true)
+
+		self.free_flight_changed_fp_mode = false
+	end
+
 	if self.toggle_visibility_timer and self.toggle_visibility_timer <= t then
 		self.toggle_visibility_timer = nil
 
 		self:set_first_person_mode(not self.first_person_mode)
+	end
+
+	local was_in_third_person = self._was_in_first_person
+	self._was_in_first_person = Development.parameter("third_person_mode")
+
+	if Development.parameter("third_person_mode") and not was_in_third_person then
+		CharacterStateHelper.change_camera_state(Managers.player:local_player(), "follow_third_person_over_shoulder")
+		self:set_first_person_mode(false, true)
+	elseif not Development.parameter("third_person_mode") and was_in_third_person then
+		CharacterStateHelper.change_camera_state(Managers.player:local_player(), "follow")
+		self:set_first_person_mode(true)
 	end
 
 	if script_data.attract_mode_spectate and self.first_person_mode then
@@ -214,6 +235,15 @@ PlayerUnitFirstPerson.update_player_height = function (self, t)
 		self.player_height_current = ease_out_quad(time_changing_height, self.player_height_previous, self.player_height_wanted - self.player_height_previous, self.player_height_time_to_change)
 	else
 		self.player_height_current = self.player_height_wanted
+	end
+
+	if script_data.camera_debug then
+		Debug.text("self.player_height_wanted = " .. tostring(self.player_height_wanted))
+		Debug.text("self.player_height_current = " .. tostring(self.player_height_current))
+		Debug.text("self.player_height_previous = " .. tostring(self.player_height_previous))
+		Debug.text("self.player_height_time_to_change = " .. tostring(self.player_height_time_to_change))
+		Debug.text("self.player_height_change_start_time = " .. tostring(self.player_height_change_start_time))
+		Debug.text("time_changing_height = " .. tostring(time_changing_height))
 	end
 end
 

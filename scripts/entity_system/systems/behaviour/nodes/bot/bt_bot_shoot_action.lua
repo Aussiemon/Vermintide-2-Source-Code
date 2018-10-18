@@ -27,6 +27,7 @@ BTBotShootAction.enter = function (self, unit, blackboard, t)
 
 	input_ext:set_aiming(true, soft_aiming, true)
 
+	local target_unit = blackboard.target_unit
 	local action_data = self._tree_node.action_data
 	local inventory_extension = blackboard.inventory_extension
 	local wielded_slot_name = action_data.slot_name or inventory_extension:get_wielded_slot_name()
@@ -37,14 +38,13 @@ BTBotShootAction.enter = function (self, unit, blackboard, t)
 	local base_attack_action = item_template.actions[attack_meta_data.base_action_name or "action_one"]
 	local attack_action = base_attack_action.default
 	local charged_attack_action = base_attack_action[attack_meta_data.charged_attack_action_name or "shoot_charged"] or attack_action
-	local ignore_enemies_for_obstruction = attack_meta_data.ignore_enemies_for_obstruction
-	local ignore_enemies_for_obstruction_charged = (attack_meta_data.ignore_enemies_for_obstruction_charged == nil and ignore_enemies_for_obstruction) or attack_meta_data.ignore_enemies_for_obstruction_charged
-	local ignore_hitting_allies = not Managers.state.difficulty:get_difficulty_settings().friendly_fire_ranged or attack_meta_data.ignore_allies_for_obstruction
-	local ignore_hitting_allies_charged = not Managers.state.difficulty:get_difficulty_settings().friendly_fire_ranged or attack_meta_data.ignore_allies_for_obstruction_charged
 	blackboard.shoot = {
-		charging_shot = false,
 		obstructed = true,
+		charging_shot = false,
 		num_aim_rolls = 0,
+		attack_meta_data = attack_meta_data,
+		attack_action = attack_action,
+		charged_attack_action = charged_attack_action,
 		aim_data = attack_meta_data.aim_data or DEFAULT_AIM_DATA,
 		aim_data_charged = attack_meta_data.aim_data_charged or attack_meta_data.aim_data or DEFAULT_AIM_DATA,
 		reevaluate_aim_time = t,
@@ -70,13 +70,42 @@ BTBotShootAction.enter = function (self, unit, blackboard, t)
 		projectile_speed = attack_action.min_speed or attack_action.speed,
 		projectile_speed_charged = charged_attack_action.max_speed or charged_attack_action.min_speed or charged_attack_action.speed,
 		obstruction_fuzzyness_range = attack_meta_data.obstruction_fuzzyness_range,
-		obstruction_fuzzyness_range_charged = attack_meta_data.obstruction_fuzzyness_range_charged or attack_meta_data.obstruction_fuzzyness_range,
-		collision_filter = (ignore_enemies_for_obstruction and ignore_hitting_allies and "filter_bot_ranged_line_of_sight_no_allies_no_enemies") or (ignore_hitting_allies and "filter_bot_ranged_line_of_sight_no_allies") or (ignore_enemies_for_obstruction and "filter_bot_ranged_line_of_sight_no_enemies") or "filter_bot_ranged_line_of_sight",
-		collision_filter_charged = (ignore_enemies_for_obstruction_charged and ignore_hitting_allies_charged and "filter_bot_ranged_line_of_sight_no_allies_no_enemies") or (ignore_hitting_allies_charged and "filter_bot_ranged_line_of_sight_no_allies") or (ignore_enemies_for_obstruction_charged and "filter_bot_ranged_line_of_sight_no_enemies") or "filter_bot_ranged_line_of_sight"
+		obstruction_fuzzyness_range_charged = attack_meta_data.obstruction_fuzzyness_range_charged or attack_meta_data.obstruction_fuzzyness_range
 	}
 	blackboard.ranged_obstruction_by_static = nil
+	local shoot_bb = blackboard.shoot
 
-	self:_set_new_aim_target(unit, t, blackboard.shoot, blackboard.target_unit, blackboard.first_person_extension)
+	self:_set_new_aim_target(unit, t, shoot_bb, target_unit, blackboard.first_person_extension)
+	self:_update_collision_filter(target_unit, shoot_bb, blackboard.priority_target_enemy, blackboard.target_ally_unit, blackboard.target_ally_needs_aid, blackboard.target_ally_need_type)
+end
+
+BTBotShootAction._update_collision_filter = function (self, target_unit, shoot_blackboard, priority_target_enemy, target_ally_unit, target_ally_needs_aid, need_type)
+	local attack_meta_data = shoot_blackboard.attack_meta_data
+	local target_bb = BLACKBOARDS[target_unit]
+	local has_important_target = target_unit == priority_target_enemy or (target_ally_needs_aid and (need_type == "hook" or need_type == "knocked_down" or need_type == "ledge") and target_bb and target_bb.target_unit == target_ally_unit)
+
+	if has_important_target then
+		shoot_blackboard.collision_filter = "filter_bot_ranged_line_of_sight_no_allies_no_enemies"
+		shoot_blackboard.collision_filter_charged = "filter_bot_ranged_line_of_sight_no_allies_no_enemies"
+
+		return
+	end
+
+	local ignore_enemies_for_obstruction = attack_meta_data.ignore_enemies_for_obstruction
+	local ignore_enemies_for_obstruction_charged = (attack_meta_data.ignore_enemies_for_obstruction_charged == nil and ignore_enemies_for_obstruction) or attack_meta_data.ignore_enemies_for_obstruction_charged
+	local ff_ranged = Managers.state.difficulty:get_difficulty_settings().friendly_fire_ranged
+	local ignore_hitting_allies, ignore_hitting_allies_charged = nil
+
+	if ff_ranged then
+		ignore_hitting_allies = attack_meta_data.ignore_allies_for_obstruction
+		ignore_hitting_allies_charged = attack_meta_data.ignore_allies_for_obstruction_charged
+	else
+		ignore_hitting_allies = true
+		ignore_hitting_allies_charged = true
+	end
+
+	shoot_blackboard.collision_filter = (ignore_enemies_for_obstruction and ignore_hitting_allies and "filter_bot_ranged_line_of_sight_no_allies_no_enemies") or (ignore_hitting_allies and "filter_bot_ranged_line_of_sight_no_allies") or (ignore_enemies_for_obstruction and "filter_bot_ranged_line_of_sight_no_enemies") or "filter_bot_ranged_line_of_sight"
+	shoot_blackboard.collision_filter_charged = (ignore_enemies_for_obstruction_charged and ignore_hitting_allies_charged and "filter_bot_ranged_line_of_sight_no_allies_no_enemies") or (ignore_hitting_allies_charged and "filter_bot_ranged_line_of_sight_no_allies") or (ignore_enemies_for_obstruction_charged and "filter_bot_ranged_line_of_sight_no_enemies") or "filter_bot_ranged_line_of_sight"
 end
 
 BTBotShootAction.leave = function (self, unit, blackboard, t, reason, destroy)
@@ -158,7 +187,12 @@ BTBotShootAction._wanted_aim_rotation = function (self, self_unit, target_unit, 
 	if prediction_function then
 		local gravity_setting = ProjectileGravitySettings[projectile_info.gravity_settings]
 		local angle = nil
+
+		Profiler.start("trajectory prediction")
+
 		angle, target_position = prediction_function(projectile_speed / 100, -gravity_setting, current_position, target_pos, target_current_velocity)
+
+		Profiler.stop("trajectory prediction")
 
 		if not angle then
 			if self_unit == script_data.debug_unit then
@@ -169,6 +203,13 @@ BTBotShootAction._wanted_aim_rotation = function (self, self_unit, target_unit, 
 		end
 
 		target_rotation = Quaternion.multiply(Quaternion.look(Vector3.normalize(Vector3.flat(target_position - current_position)), Vector3.up()), Quaternion(Vector3.right(), angle))
+
+		if self_unit == script_data.debug_unit then
+			QuickDrawer:sphere(target_position, 0.1, Color(0, 0, 255))
+			QuickDrawer:sphere(current_position, 0.1, Color(0, 0, 255))
+			QuickDrawer:vector(current_position, Quaternion.forward(target_rotation) * 3, Color(0, 0, 255))
+			draw_estimated_arc(100, 1, current_position, Quaternion.forward(target_rotation) * projectile_speed * 0.01, Vector3(0, 0, gravity_setting))
+		end
 	else
 		target_position = target_pos
 		target_rotation = Quaternion.look(Vector3.normalize(target_position - current_position), Vector3.up())
@@ -279,7 +320,7 @@ BTBotShootAction._aim = function (self, unit, blackboard, dt, t)
 	local yaw_offset, pitch_offset, wanted_aim_rotation, actual_aim_rotation, actual_aim_position = self:_aim_position(dt, t, unit, camera_position, camera_rotation, target_unit, shoot_bb)
 
 	if shoot_bb.reevaluate_obstruction_time <= t then
-		if self:_reevaluate_obstruction(unit, shoot_bb, action_data, t, World.get_data(blackboard.world, "physics_world"), camera_position, wanted_aim_rotation, unit, target_unit, actual_aim_position) then
+		if self:_reevaluate_obstruction(unit, shoot_bb, action_data, t, World.get_data(blackboard.world, "physics_world"), camera_position, wanted_aim_rotation, unit, target_unit, actual_aim_position, blackboard.priority_target_enemy, blackboard.target_ally_unit, blackboard.target_ally_needs_aid, blackboard.target_ally_need_type) then
 			if not blackboard.ranged_obstruction_by_static then
 				local obstructed_by_static = {
 					timer = t
@@ -415,7 +456,9 @@ BTBotShootAction._charge_shot = function (self, shoot_blackboard, action_data, i
 	input_extension[input](input_extension)
 end
 
-BTBotShootAction._reevaluate_obstruction = function (self, unit, shoot_blackboard, action_data, t, physics_world, ray_from, wanted_aim_rotation, self_unit, target_unit, actual_aim_position)
+BTBotShootAction._reevaluate_obstruction = function (self, unit, shoot_blackboard, action_data, t, physics_world, ray_from, wanted_aim_rotation, self_unit, target_unit, actual_aim_position, priority_target_enemy, target_ally_unit, target_ally_needs_aid, target_ally_need_type)
+	self:_update_collision_filter(target_unit, shoot_blackboard, priority_target_enemy, target_ally_unit, target_ally_needs_aid, target_ally_need_type)
+
 	local direction = Quaternion.forward(wanted_aim_rotation)
 	local min = action_data.minimum_obstruction_reevaluation_time
 	local max = action_data.maximum_obstruction_reevaluation_time
@@ -468,6 +511,11 @@ BTBotShootAction._is_shot_obstructed = function (self, physics_world, from, dire
 			return false
 		elseif hit_unit ~= self_unit then
 			local obstructed_by_static = Actor.is_static(hit_actor)
+
+			if script_data.debug_unit == self_unit and script_data.ai_bots_weapon_debug then
+				QuickDrawerStay:line(from, hit[INDEX_POSITION])
+				QuickDrawerStay:sphere(hit[INDEX_POSITION], 0.05, Color(255, 0, 0))
+			end
 
 			return true, max_distance - hit[INDEX_DISTANCE], obstructed_by_static
 		end

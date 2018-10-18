@@ -199,14 +199,16 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 			self.attack_allowed = true
 		end
 
-		local attack_intensity_decay = self.attack_intensity_threshold
+		local attack_intensity_decay = self.attack_intensity_decay
 		local buff_extension = self.buff_extension
 
 		if buff_extension:has_buff_type("bardin_ironbreaker_activated_ability") or buff_extension:has_buff_type("bardin_ironbreaker_activated_ability_duration") then
 			attack_intensity_decay = ATTACK_INTENSITY_DECAY_FAST
 		end
 
-		self.attack_intensity = self.attack_intensity - dt * attack_intensity_decay * self.attack_intensity_threshold
+		self.attack_intensity = math.max(self.attack_intensity - dt * attack_intensity_decay * self.attack_intensity_threshold, 0)
+	else
+		self.attack_allowed = true
 	end
 
 	if self.move_speed_multiplier_timer < 1 then
@@ -392,6 +394,14 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 
 	for id, func in pairs(self.update_funcs) do
 		func(self, t)
+	end
+
+	if script_data.debug_draw_block_arcs then
+		self:_debug_draw_block_arcs(unit)
+	end
+
+	if script_data.debug_draw_push_arcs then
+		self:_debug_draw_push_arcs(unit)
 	end
 
 	if self.player.local_player then
@@ -1140,6 +1150,10 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 
 	if knocked_down then
 		if is_server then
+			if script_data.debug_player_intensity then
+				Managers.state.conflict.pacing:annotate_graph("knockdown", "red")
+			end
+
 			self:add_intensity(CurrentIntensitySettings.intensity_add_knockdown)
 		end
 
@@ -2054,7 +2068,7 @@ GenericStatusExtension.set_is_dodging = function (self, is_dodging)
 end
 
 GenericStatusExtension.get_is_dodging = function (self)
-	return self.is_dodging
+	return self.is_dodging and self.dodge_cooldown <= self.dodge_count
 end
 
 GenericStatusExtension.get_dodge_position = function (self)

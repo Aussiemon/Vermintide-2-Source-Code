@@ -142,11 +142,19 @@ WeaponHelper.test_angled_trajectory = function (physics_world, p1, p2, gravity, 
 			segment_pos2 = p1 + vec_flat * x
 			segment_pos2.z = segment_pos2.z + z
 
+			if script_data.debug_ai_movement then
+				QuickDrawerStay:line(segment_pos1, segment_pos2, Colors.get_indexed(i))
+			end
+
 			if not always_complete then
 				local current_velocity = segment_pos2 - segment_pos1
 				local result, hit_position, _, _, actor = PhysicsWorld.immediate_raycast(physics_world, segment_pos1, current_velocity, Vector3.length(current_velocity), "closest", "collision_filter", collision_filter or "filter_ai_mover")
 
 				if result then
+					if hit_position and script_data.debug_ai_movement then
+						QuickDrawerStay:sphere(hit_position, 0.1, Color(255, 0, 0))
+					end
+
 					if i == sections then
 						local hit_unit = Actor.unit(actor)
 
