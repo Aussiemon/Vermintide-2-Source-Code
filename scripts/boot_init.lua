@@ -61,13 +61,6 @@ end
 if not PROFILER_SCOPES_INITED then
 	local ProfilerScopes = {}
 	PROFILER_SCOPES_INITED = true
-	local profiler_start = Profiler.start
-
-	Profiler.start = function (scope_name)
-		ProfilerScopes[scope_name] = true
-
-		profiler_start(scope_name)
-	end
 end
 
 GLOBAL_FRAME_INDEX = GLOBAL_FRAME_INDEX or 0

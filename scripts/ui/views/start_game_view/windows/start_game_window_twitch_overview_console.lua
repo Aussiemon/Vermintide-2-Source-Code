@@ -6,7 +6,6 @@ local client_widget_definitions = definitions.client_widgets
 local additional_settings_widgets_definitions = definitions.additional_settings_widgets
 local animation_definitions = definitions.animation_definitions
 local selector_input_definition = definitions.selector_input_definition
-local layout_mapping = definitions.layout_mapping
 local START_GAME_INPUT = "refresh_press"
 local SELECTION_INPUT = "confirm_press"
 local CONNECT_INPUT = "special_1"
@@ -53,7 +52,6 @@ StartGameWindowTwitchOverviewConsole.on_enter = function (self, params, offset)
 	self:_set_disconnect_button_text()
 	self:_setup_connected_status()
 	self:_start_transition_animation("on_enter")
-	rawset(_G, "game_settings", self)
 end
 
 StartGameWindowTwitchOverviewConsole._start_transition_animation = function (self, animation_name)
@@ -170,8 +168,6 @@ StartGameWindowTwitchOverviewConsole.on_exit = function (self, params)
 	else
 		params.input_index = self._input_index
 	end
-
-	rawset(_G, "game_settings", nil)
 end
 
 StartGameWindowTwitchOverviewConsole.set_focus = function (self, focused)
@@ -229,7 +225,6 @@ StartGameWindowTwitchOverviewConsole._handle_input = function (self, dt, t)
 			self:_option_selected(self._input_index, t)
 		end
 
-		local num_inputs = #selector_input_definition
 		local input_index = self._input_index
 
 		if input_service:get("move_down") then
@@ -276,9 +271,9 @@ end
 
 StartGameWindowTwitchOverviewConsole._handle_twitch_login_input = function (self, dt, t, input_service)
 	local is_connecting = Managers.twitch:is_connecting()
-	local is_connected = Managers.twitch:is_connected()
 
 	if not is_connecting then
+		local is_connected = Managers.twitch:is_connected()
 		local frame_widget = self._widgets_by_name.frame_widget
 
 		if PLATFORM == "win32" then
@@ -419,7 +414,6 @@ StartGameWindowTwitchOverviewConsole._get_selection_frame_by_difficulty_index = 
 
 	if difficulty_index > 0 then
 		local difficulty_key = DefaultDifficulties[difficulty_index]
-		local difficulty_manager = Managers.state.difficulty
 		local settings = DifficultySettings[difficulty_key]
 		completed_frame_texture = settings.completed_frame_texture
 	end
@@ -460,7 +454,6 @@ end
 StartGameWindowTwitchOverviewConsole._handle_new_selection = function (self, input_index)
 	local num_inputs = #selector_input_definition
 	input_index = math.clamp(input_index, 1, num_inputs)
-	local selected_widget_name = selector_input_definition[input_index]
 	local widgets_by_name = self._widgets_by_name
 
 	for i = 1, #selector_input_definition, 1 do
@@ -480,40 +473,11 @@ StartGameWindowTwitchOverviewConsole._handle_new_selection = function (self, inp
 	self._input_index = input_index
 end
 
-StartGameWindowTwitchOverviewConsole._update_selector = function (self, selected_widget_name)
-	if not self._is_server then
-		return
+StartGameWindowTwitchOverviewConsole._update_animations = function (self, dt)
+	if PLATFORM == "win32" then
+		self:_update_button_animations(dt)
 	end
 
-	local widgets_by_name = self._widgets_by_name
-	local selector_widget = widgets_by_name.selector
-	local selected_widget = widgets_by_name[selected_widget_name]
-
-	self:_move_selector(selector_widget, selected_widget)
-end
-
-StartGameWindowTwitchOverviewConsole._update_layout = function (self, selected_widget_name)
-	local layout_name = layout_mapping[selected_widget_name]
-
-	self._parent:set_layout_by_name(layout_name)
-end
-
-StartGameWindowTwitchOverviewConsole._move_selector = function (self, selector_widget, selected_widget)
-	local selector_scenegraph_id = selector_widget.scenegraph_id
-	local selected_scenegraph_id = selected_widget.scenegraph_id
-	local ui_scenegraph = self._ui_scenegraph
-	local selected_position = UISceneGraph.get_local_position(ui_scenegraph, selected_scenegraph_id)
-	local selected_size = UISceneGraph.get_size(ui_scenegraph, selected_scenegraph_id)
-	local selector_position = UISceneGraph.get_local_position(ui_scenegraph, selector_scenegraph_id)
-	local selector_size = UISceneGraph.get_size(ui_scenegraph, selector_scenegraph_id)
-	selector_position[1] = selected_position[1]
-	selector_position[2] = selected_position[2] + (selected_size[2] - selector_size[2]) / 2
-	selector_position[3] = selected_position[3]
-
-	UISceneGraph.set_local_position(ui_scenegraph, selector_scenegraph_id, selector_position)
-end
-
-StartGameWindowTwitchOverviewConsole._update_animations = function (self, dt)
 	local ui_animator = self._ui_animator
 
 	ui_animator:update(dt)
@@ -537,8 +501,72 @@ StartGameWindowTwitchOverviewConsole._update_animations = function (self, dt)
 	end
 end
 
+StartGameWindowTwitchOverviewConsole._update_button_animations = function (self, dt)
+	local widgets_by_name = self._widgets_by_name
+	local widget_prefix = "button_"
+
+	for i = 1, 2, 1 do
+		local widget_name = widget_prefix .. i
+		local widget = widgets_by_name[widget_name]
+
+		self:_animate_button(widget, dt)
+	end
+end
+
+StartGameWindowTwitchOverviewConsole._animate_button = function (self, widget, dt)
+	local content = widget.content
+	local hotspot_name = "button_hotspot"
+	local hotspot = content[hotspot_name]
+	local input_speed = 20
+	local input_progress = hotspot.input_progress or 0
+	local input_pressed = hotspot.is_clicked and hotspot.is_clicked == 0
+
+	if input_pressed then
+		input_progress = math.min(input_progress + dt * input_speed, 1)
+	else
+		input_progress = math.max(input_progress - dt * input_speed, 0)
+	end
+
+	local speed = 8
+	local hover_progress = hotspot.hover_progress or 0
+	local is_hover = not hotspot.disable_button and hotspot.is_hover
+
+	if is_hover then
+		hover_progress = math.min(hover_progress + dt * speed, 1)
+	else
+		hover_progress = math.max(hover_progress - dt * speed, 0)
+	end
+
+	local selection_progress = hotspot.selection_progress or 0
+	local is_selected = not hotspot.disable_button and hotspot.is_selected
+
+	if is_selected then
+		selection_progress = math.min(selection_progress + dt * speed, 1)
+	else
+		selection_progress = math.max(selection_progress - dt * speed, 0)
+	end
+
+	local combined_progress = math.max(hover_progress, selection_progress)
+	local style = widget.style
+	local clicked_rect_name = "clicked_rect"
+	style[clicked_rect_name].color[1] = 100 * input_progress
+	local hover_glow_name = "hover_glow"
+	local hover_alpha = 255 * combined_progress
+	style[hover_glow_name].color[1] = hover_alpha
+	local text_name = "text"
+	local text_style = style[text_name]
+	local text_color = text_style.text_color
+	local default_text_color = text_style.default_text_color
+	local select_text_color = text_style.select_text_color
+
+	Colors.lerp_color_tables(default_text_color, select_text_color, combined_progress, text_color)
+
+	hotspot.hover_progress = hover_progress
+	hotspot.input_progress = input_progress
+	hotspot.selection_progress = selection_progress
+end
+
 StartGameWindowTwitchOverviewConsole._draw = function (self, dt)
-	local ui_renderer = self._ui_renderer
 	local ui_top_renderer = self._ui_top_renderer
 	local ui_scenegraph = self._ui_scenegraph
 	local input_service = self._parent:window_input_service()
@@ -547,12 +575,20 @@ StartGameWindowTwitchOverviewConsole._draw = function (self, dt)
 
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, parent_scenegraph_id, render_settings)
 
-	for _, widget in ipairs(self._widgets) do
+	local widgets = self._widgets
+
+	for i = 1, #widgets, 1 do
+		local widget = widgets[i]
+
 		UIRenderer.draw_widget(ui_top_renderer, widget)
 	end
 
 	if self._show_additional_settings then
-		for _, widget in ipairs(self._additional_settings_widgets) do
+		local additional_settings_widgets = self._additional_settings_widgets
+
+		for i = 1, #additional_settings_widgets, 1 do
+			local widget = additional_settings_widgets[i]
+
 			UIRenderer.draw_widget(ui_top_renderer, widget)
 		end
 	end
@@ -565,8 +601,8 @@ StartGameWindowTwitchOverviewConsole._play_sound = function (self, event)
 end
 
 StartGameWindowTwitchOverviewConsole._handle_gamepad_activity = function (self)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local force_update = self.gamepad_active_last_frame == nil
+	local gamepad_active = Managers.input:is_device_active("gamepad")
 
 	if gamepad_active then
 		if not self.gamepad_active_last_frame or force_update then

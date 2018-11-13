@@ -1,10 +1,8 @@
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_heroic_deed_overview_console_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local widget_definitions = definitions.widgets
-local additional_settings_widgets_definitions = definitions.additional_settings_widgets
 local animation_definitions = definitions.animation_definitions
 local selector_input_definition = definitions.selector_input_definition
-local layout_mapping = definitions.layout_mapping
 local START_GAME_INPUT = "refresh_press"
 local SELECTION_INPUT = "confirm_press"
 StartGameWindowHeroicDeedOverviewConsole = class(StartGameWindowHeroicDeedOverviewConsole)
@@ -41,7 +39,6 @@ StartGameWindowHeroicDeedOverviewConsole.on_enter = function (self, params, offs
 
 	self._parent:change_generic_actions("default")
 	self:_start_transition_animation("on_enter")
-	rawset(_G, "game_settings", self)
 end
 
 StartGameWindowHeroicDeedOverviewConsole._start_transition_animation = function (self, animation_name)
@@ -106,8 +103,6 @@ StartGameWindowHeroicDeedOverviewConsole.on_exit = function (self, params)
 	else
 		params.input_index = self._input_index
 	end
-
-	rawset(_G, "game_settings", nil)
 end
 
 StartGameWindowHeroicDeedOverviewConsole.set_focus = function (self, focused)
@@ -128,9 +123,9 @@ StartGameWindowHeroicDeedOverviewConsole.post_update = function (self, dt, t)
 end
 
 StartGameWindowHeroicDeedOverviewConsole._present_heroic_deed = function (self, backend_id)
-	local heroic_deed_setting = self._widgets_by_name.heroic_deed_setting
 	local item_interface = Managers.backend:get_interface("items")
 	local data = backend_id and item_interface:get_item_masterlist_data(backend_id)
+	local heroic_deed_setting = self._widgets_by_name.heroic_deed_setting
 	heroic_deed_setting.content.input_text = Localize(data.display_name)
 	heroic_deed_setting.content.icon_texture = data.inventory_icon
 end
@@ -191,7 +186,6 @@ StartGameWindowHeroicDeedOverviewConsole._handle_input = function (self, dt, t)
 		self:_option_selected(self._input_index, t)
 	end
 
-	local num_inputs = #selector_input_definition
 	local input_index = self._input_index
 
 	if input_service:get("move_down") then
@@ -234,34 +228,9 @@ StartGameWindowHeroicDeedOverviewConsole._handle_input = function (self, dt, t)
 end
 
 StartGameWindowHeroicDeedOverviewConsole._can_play = function (self)
-	local parent = self._parent
 	local can_play = self._selected_backend_id ~= nil
 
 	return can_play
-end
-
-StartGameWindowHeroicDeedOverviewConsole._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
-	local completed_frame_texture = "map_frame_00"
-
-	if difficulty_index > 0 then
-		local difficulty_key = DefaultDifficulties[difficulty_index]
-		local difficulty_manager = Managers.state.difficulty
-		local settings = DifficultySettings[difficulty_key]
-		completed_frame_texture = settings.completed_frame_texture
-	end
-
-	return completed_frame_texture
-end
-
-StartGameWindowHeroicDeedOverviewConsole._update_difficulty_option = function (self)
-	local selected_difficulty_key = self._parent:get_difficulty_option()
-	local difficulty_settings = DifficultySettings[selected_difficulty_key]
-	local difficulty_widget = self._widgets_by_name.difficulty_setting
-	difficulty_widget.content.input_text = Localize(difficulty_settings.display_name)
-	local display_image = difficulty_settings.display_image
-	difficulty_widget.content.icon_texture = display_image
-	local completed_frame_texture = difficulty_settings.completed_frame_texture
-	difficulty_widget.content.icon_frame_texture = completed_frame_texture
 end
 
 StartGameWindowHeroicDeedOverviewConsole._option_selected = function (self, input_index, t)
@@ -277,7 +246,6 @@ end
 StartGameWindowHeroicDeedOverviewConsole._handle_new_selection = function (self, input_index)
 	local num_inputs = #selector_input_definition
 	input_index = math.clamp(input_index, 1, num_inputs)
-	local selected_widget_name = selector_input_definition[input_index]
 	local widgets_by_name = self._widgets_by_name
 
 	for i = 1, #selector_input_definition, 1 do
@@ -288,35 +256,6 @@ StartGameWindowHeroicDeedOverviewConsole._handle_new_selection = function (self,
 	end
 
 	self._input_index = input_index
-end
-
-StartGameWindowHeroicDeedOverviewConsole._update_selector = function (self, selected_widget_name)
-	local widgets_by_name = self._widgets_by_name
-	local selector_widget = widgets_by_name.selector
-	local selected_widget = widgets_by_name[selected_widget_name]
-
-	self:_move_selector(selector_widget, selected_widget)
-end
-
-StartGameWindowHeroicDeedOverviewConsole._update_layout = function (self, selected_widget_name)
-	local layout_name = layout_mapping[selected_widget_name]
-
-	self._parent:set_layout_by_name(layout_name)
-end
-
-StartGameWindowHeroicDeedOverviewConsole._move_selector = function (self, selector_widget, selected_widget)
-	local selector_scenegraph_id = selector_widget.scenegraph_id
-	local selected_scenegraph_id = selected_widget.scenegraph_id
-	local ui_scenegraph = self._ui_scenegraph
-	local selected_position = UISceneGraph.get_local_position(ui_scenegraph, selected_scenegraph_id)
-	local selected_size = UISceneGraph.get_size(ui_scenegraph, selected_scenegraph_id)
-	local selector_position = UISceneGraph.get_local_position(ui_scenegraph, selector_scenegraph_id)
-	local selector_size = UISceneGraph.get_size(ui_scenegraph, selector_scenegraph_id)
-	selector_position[1] = selected_position[1]
-	selector_position[2] = selected_position[2] + (selected_size[2] - selector_size[2]) / 2
-	selector_position[3] = selected_position[3]
-
-	UISceneGraph.set_local_position(ui_scenegraph, selector_scenegraph_id, selector_position)
 end
 
 StartGameWindowHeroicDeedOverviewConsole._update_animations = function (self, dt)
@@ -341,7 +280,6 @@ StartGameWindowHeroicDeedOverviewConsole._update_animations = function (self, dt
 end
 
 StartGameWindowHeroicDeedOverviewConsole._draw = function (self, dt)
-	local ui_renderer = self._ui_renderer
 	local ui_top_renderer = self._ui_top_renderer
 	local ui_scenegraph = self._ui_scenegraph
 	local input_service = self._parent:window_input_service()
@@ -350,7 +288,11 @@ StartGameWindowHeroicDeedOverviewConsole._draw = function (self, dt)
 
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, parent_scenegraph_id, render_settings)
 
-	for _, widget in ipairs(self._widgets) do
+	local widgets = self._widgets
+
+	for i = 1, #widgets, 1 do
+		local widget = widgets[i]
+
 		UIRenderer.draw_widget(ui_top_renderer, widget)
 	end
 
@@ -358,8 +300,8 @@ StartGameWindowHeroicDeedOverviewConsole._draw = function (self, dt)
 end
 
 StartGameWindowHeroicDeedOverviewConsole._handle_gamepad_activity = function (self)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local force_update = self.gamepad_active_last_frame == nil
+	local gamepad_active = Managers.input:is_device_active("gamepad")
 
 	if gamepad_active then
 		if not self.gamepad_active_last_frame or force_update then

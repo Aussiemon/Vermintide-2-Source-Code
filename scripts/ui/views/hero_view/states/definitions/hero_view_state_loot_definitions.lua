@@ -2234,13 +2234,23 @@ local generic_input_actions = {
 				ignore_keybinding = true
 			},
 			{
-				input_action = "confirm",
+				input_action = "back",
 				priority = 2,
-				description_text = "input_description_select"
+				description_text = "input_description_close"
+			}
+		}
+	},
+	chest_not_selected = {
+		actions = {
+			{
+				input_action = "d_pad",
+				priority = 1,
+				description_text = "input_description_navigate",
+				ignore_keybinding = true
 			},
 			{
 				input_action = "back",
-				priority = 3,
+				priority = 2,
 				description_text = "input_description_close"
 			}
 		}

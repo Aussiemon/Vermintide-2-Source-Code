@@ -53,10 +53,6 @@ Utility.get_action_utility = function (breed_action, action_name, blackboard, fr
 			end
 
 			total_utility = total_utility * utility
-
-			if not from_draw_ai_behavior then
-				AiUtils.print("ai_debug_utility_considerations", "------------> action:", action_name, " consideration:", name, " utility:", utilily)
-			end
 		until true
 	end
 

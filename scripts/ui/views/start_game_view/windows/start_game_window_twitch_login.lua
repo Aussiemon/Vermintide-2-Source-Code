@@ -1,8 +1,6 @@
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_twitch_login_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
-local animation_definitions = definitions.animation_definitions
-local DO_RELOAD = false
 StartGameWindowTwitchLogin = class(StartGameWindowTwitchLogin)
 StartGameWindowTwitchLogin.NAME = "StartGameWindowTwitchLogin"
 
@@ -22,8 +20,6 @@ StartGameWindowTwitchLogin.on_enter = function (self, params, offset)
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
-	self._animations = {}
-	self._ui_animations = {}
 
 	self:create_ui_elements(params, offset)
 	self:set_active(true)
@@ -46,8 +42,6 @@ StartGameWindowTwitchLogin.create_ui_elements = function (self, params, offset)
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
-	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
-
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
 		window_position[1] = window_position[1] + offset[1]
@@ -58,19 +52,10 @@ end
 
 StartGameWindowTwitchLogin.on_exit = function (self, params)
 	print("[StartGameWindow] Exit Substate StartGameWindowTwitchLogin")
-
-	self.ui_animator = nil
-
 	self:set_active(false)
 end
 
 StartGameWindowTwitchLogin.update = function (self, dt, t)
-	if DO_RELOAD then
-		DO_RELOAD = false
-
-		self:create_ui_elements()
-	end
-
 	self:_update_popup()
 	self:_update_animations(dt)
 	self:_handle_input(dt, t)
@@ -103,11 +88,10 @@ StartGameWindowTwitchLogin._update_popup = function (self)
 end
 
 StartGameWindowTwitchLogin._handle_input = function (self, dt, t)
-	local input_service = self.parent:window_input_service()
 	local is_connecting = Managers.twitch:is_connecting()
-	local is_connected = Managers.twitch:is_connected()
 
 	if not is_connecting then
+		local is_connected = Managers.twitch:is_connected()
 		local frame_widget = self._widgets_by_name.frame_widget
 
 		if PLATFORM == "win32" then
@@ -139,6 +123,7 @@ StartGameWindowTwitchLogin._handle_input = function (self, dt, t)
 			if frame_widget_content.text_field_active then
 				local keystrokes = Keyboard.keystrokes()
 				frame_widget_content.twitch_name, frame_widget_content.caret_index = KeystrokeHelper.parse_strokes(frame_widget_content.twitch_name, frame_widget_content.caret_index, "insert", keystrokes)
+				local input_service = self.parent:window_input_service()
 
 				if input_service:get("execute_login", true) then
 					frame_widget_content.text_field_active = false
@@ -209,11 +194,7 @@ StartGameWindowTwitchLogin._update_game_options = function (self, dt, t)
 end
 
 StartGameWindowTwitchLogin.cb_connection_error_callback = function (self, message)
-	if PLATFORM == "xb1" then
-		self._error_popup_id = Managers.popup:queue_popup(message, Localize("popup_error_topic"), "ok", Localize("popup_choice_ok"))
-	else
-		self._error_popup_id = Managers.popup:queue_popup(message, Localize("popup_header_error_twitch"), "ok", Localize("popup_choice_ok"))
-	end
+	self._error_popup_id = Managers.popup:queue_popup(message, Localize("popup_header_error_twitch"), "ok", Localize("popup_choice_ok"))
 end
 
 StartGameWindowTwitchLogin.cb_connection_success_callback = function (self, user_data)
@@ -269,30 +250,6 @@ end
 
 StartGameWindowTwitchLogin._update_animations = function (self, dt)
 	self:_update_button_animations(dt)
-
-	local ui_animations = self._ui_animations
-	local animations = self._animations
-	local ui_animator = self.ui_animator
-
-	for name, animation in pairs(ui_animations) do
-		UIAnimation.update(animation, dt)
-
-		if UIAnimation.completed(animation) then
-			ui_animations[name] = nil
-		end
-	end
-
-	ui_animator:update(dt)
-
-	for animation_name, animation_id in pairs(animations) do
-		if ui_animator:is_animation_completed(animation_id) then
-			ui_animator:stop_animation(animation_id)
-
-			animations[animation_name] = nil
-		end
-	end
-
-	local widgets_by_name = self._widgets_by_name
 end
 
 StartGameWindowTwitchLogin._update_button_animations = function (self, dt)
@@ -309,17 +266,11 @@ end
 
 StartGameWindowTwitchLogin._animate_button = function (self, widget, dt)
 	local content = widget.content
-	local style = widget.style
-	local speed = 8
-	local input_speed = 20
 	local hotspot_name = "button_hotspot"
 	local hotspot = content[hotspot_name]
-	local is_hover = not hotspot.disable_button and hotspot.is_hover
-	local is_selected = not hotspot.disable_button and hotspot.is_selected
-	local input_pressed = hotspot.is_clicked and hotspot.is_clicked == 0
+	local input_speed = 20
 	local input_progress = hotspot.input_progress or 0
-	local hover_progress = hotspot.hover_progress or 0
-	local selection_progress = hotspot.selection_progress or 0
+	local input_pressed = hotspot.is_clicked and hotspot.is_clicked == 0
 
 	if input_pressed then
 		input_progress = math.min(input_progress + dt * input_speed, 1)
@@ -327,8 +278,9 @@ StartGameWindowTwitchLogin._animate_button = function (self, widget, dt)
 		input_progress = math.max(input_progress - dt * input_speed, 0)
 	end
 
-	local input_easing_out_progress = math.easeOutCubic(input_progress)
-	local input_easing_in_progress = math.easeInCubic(input_progress)
+	local speed = 8
+	local hover_progress = hotspot.hover_progress or 0
+	local is_hover = not hotspot.disable_button and hotspot.is_hover
 
 	if is_hover then
 		hover_progress = math.min(hover_progress + dt * speed, 1)
@@ -336,8 +288,8 @@ StartGameWindowTwitchLogin._animate_button = function (self, widget, dt)
 		hover_progress = math.max(hover_progress - dt * speed, 0)
 	end
 
-	local hover_easing_out_progress = math.easeOutCubic(hover_progress)
-	local hover_easing_in_progress = math.easeInCubic(hover_progress)
+	local selection_progress = hotspot.selection_progress or 0
+	local is_selected = not hotspot.disable_button and hotspot.is_selected
 
 	if is_selected then
 		selection_progress = math.min(selection_progress + dt * speed, 1)
@@ -345,13 +297,9 @@ StartGameWindowTwitchLogin._animate_button = function (self, widget, dt)
 		selection_progress = math.max(selection_progress - dt * speed, 0)
 	end
 
-	local select_easing_out_progress = math.easeOutCubic(selection_progress)
-	local select_easing_in_progress = math.easeInCubic(selection_progress)
 	local combined_progress = math.max(hover_progress, selection_progress)
-	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
-	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
+	local style = widget.style
 	local clicked_rect_name = "clicked_rect"
-	local input_alpha = 255 * input_progress
 	style[clicked_rect_name].color[1] = 100 * input_progress
 	local hover_glow_name = "hover_glow"
 	local hover_alpha = 255 * combined_progress
@@ -369,41 +317,6 @@ StartGameWindowTwitchLogin._animate_button = function (self, widget, dt)
 	hotspot.selection_progress = selection_progress
 end
 
-StartGameWindowTwitchLogin._update_private_option = function (self)
-	local parent = self.parent
-	local private_enabled = parent:is_private_option_enabled()
-
-	if private_enabled ~= self._private_enabled then
-		local widgets_by_name = self._widgets_by_name
-		widgets_by_name.private_option.content.checked = private_enabled
-		self._private_enabled = private_enabled
-	end
-end
-
-StartGameWindowTwitchLogin._update_difficulty_option = function (self)
-	local parent = self.parent
-	local difficulty_key = parent:get_difficulty_option()
-
-	if difficulty_key ~= self._difficulty_key then
-		self:_set_difficulty_option(difficulty_key)
-
-		self._difficulty_key = difficulty_key
-	end
-end
-
-StartGameWindowTwitchLogin._set_difficulty_option = function (self, difficulty_key)
-	local widgets_by_name = self._widgets_by_name
-	local widget = widgets_by_name.difficulty_title
-	local difficulty_settings = DifficultySettings[difficulty_key]
-	local display_name = difficulty_settings.display_name
-	widget.content.text = Localize(display_name)
-end
-
-StartGameWindowTwitchLogin._exit = function (self, selected_level)
-	self.exit = true
-	self.exit_level_id = selected_level
-end
-
 StartGameWindowTwitchLogin.draw = function (self, dt)
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
@@ -411,7 +324,11 @@ StartGameWindowTwitchLogin.draw = function (self, dt)
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
 
-	for _, widget in ipairs(self._widgets) do
+	local widgets = self._widgets
+
+	for i = 1, #widgets, 1 do
+		local widget = widgets[i]
+
 		UIRenderer.draw_widget(ui_renderer, widget)
 	end
 

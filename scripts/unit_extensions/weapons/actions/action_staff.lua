@@ -22,11 +22,9 @@ end
 
 ActionStaff.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
 	self.current_action = new_action
-	local weapon_unit = self.weapon_unit
 	local owner_unit = self.owner_unit
 	local first_person_unit = self.first_person_unit
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
-	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	self.state = "waiting_to_shoot"
 	self.time_to_shoot = t + (new_action.fire_time or 0)
 	self.power_level = power_level
@@ -46,8 +44,6 @@ ActionStaff.client_owner_start_action = function (self, new_action, t, chain_act
 end
 
 ActionStaff.client_owner_post_update = function (self, dt, t, world, can_damage)
-	local current_action = self.current_action
-
 	if self.state == "waiting_to_shoot" and self.time_to_shoot <= t then
 		self.state = "shooting"
 	end
@@ -84,7 +80,6 @@ ActionStaff.fire = function (self, reason)
 	local speed = current_action.speed
 	local position = first_person_extension:current_position()
 	local target_vector = Vector3.normalize(Vector3.flat(Quaternion.forward(rotation)))
-	local projectile_info = current_action.projectile_info
 	local lookup_data = current_action.lookup_data
 
 	ActionUtils.spawn_player_projectile(owner_unit, position, rotation, 0, angle, target_vector, speed, self.item_name, lookup_data.item_template_name, lookup_data.action_name, lookup_data.sub_action_name, self._is_critical_strike, self.power_level)

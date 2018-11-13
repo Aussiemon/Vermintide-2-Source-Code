@@ -30,7 +30,12 @@ BTCorruptorGrabAction.enter = function (self, unit, blackboard, t)
 end
 
 BTCorruptorGrabAction.leave = function (self, unit, blackboard, t, reason, destroy)
-	local sound_event = blackboard.action.grabbed_sound_event_2d_stop
+	local action = blackboard.action
+
+	if not action.ignore_bot_threat then
+		Managers.state.entity:system("ai_bot_group_system"):ranged_attack_ended(unit, blackboard.corruptor_target, "corruptor_grabbed")
+	end
+
 	blackboard.move_state = nil
 
 	blackboard.navigation_extension:set_enabled(true)
@@ -65,8 +70,6 @@ BTCorruptorGrabAction.leave = function (self, unit, blackboard, t, reason, destr
 		self:set_beam_state(unit, blackboard, "stop_beam")
 	end
 
-	Managers.state.entity:system("ai_bot_group_system"):ranged_attack_ended(unit, blackboard.corruptor_target, "corruptor_grabbed")
-
 	blackboard.corruptor_target = nil
 	blackboard.grabbed_unit = nil
 	blackboard.vanish_countdown = t
@@ -96,7 +99,11 @@ BTCorruptorGrabAction.run = function (self, unit, blackboard, t, dt)
 		blackboard.disable_player_timer = t + action.disable_player_time
 
 		self:set_beam_state(unit, blackboard, "start_beam")
-		Managers.state.entity:system("ai_bot_group_system"):ranged_attack_started(unit, corruptor_target, "corruptor_grabbed")
+
+		if not action.ignore_bot_threat then
+			Managers.state.entity:system("ai_bot_group_system"):ranged_attack_started(unit, corruptor_target, "corruptor_grabbed")
+		end
+
 		Managers.state.network:anim_event(unit, action.drag_in_anim)
 	end
 

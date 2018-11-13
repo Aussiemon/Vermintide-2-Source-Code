@@ -1,6 +1,7 @@
 DLCSettings = {
 	full_game = {
 		package_name = "resource_packages/dlcs/full_game",
+		localization = "localization/game",
 		breeds = {
 			"scripts/settings/breeds/breed_chaos_exalted_sorcerer",
 			"scripts/settings/breeds/breed_skaven_grey_seer",
@@ -19,7 +20,6 @@ DLCSettings = {
 			"scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_chaos_tentacle_sorcerer",
 			"scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_chaos_zombie"
 		},
-		behaviour_tree_nodes = {},
 		behaviour_trees = {
 			"scripts/entity_system/systems/behaviour/trees/chaos/chaos_exalted_sorcerer_behavior",
 			"scripts/entity_system/systems/behaviour/trees/skaven/skaven_grey_seer_behavior",
@@ -28,19 +28,10 @@ DLCSettings = {
 			"scripts/entity_system/systems/behaviour/trees/chaos/chaos_tentacle_behavior",
 			"scripts/entity_system/systems/behaviour/trees/chaos/chaos_tentacle_sorcerer_behavior",
 			"scripts/entity_system/systems/behaviour/trees/chaos/chaos_zombie_behavior"
-		},
-		terror_event_blueprints = {},
-		weighted_random_terror_events = {},
-		horde_settings_compositions = {}
+		}
 	},
 	social_wheel = {
 		package_name = "resource_packages/dlcs/social_wheel",
-		breeds = {},
-		behaviour_trees_precompiled = {},
-		behaviour_tree_nodes = {},
-		behaviour_trees = {},
-		terror_event_blueprints = {},
-		weighted_random_terror_events = {},
 		network_lookups = {
 			social_wheel_events = "SocialWheelSettingsLookup"
 		},
@@ -60,10 +51,6 @@ DLCSettings = {
 		package_name = "resource_packages/dlcs/bogenhafen",
 		terror_event_blueprints_filename = "levels/honduras_dlcs/bogenhafen/terror_events_bogenhafen",
 		level_unlock_settings = "levels/honduras_dlcs/bogenhafen/level_unlock_settings_bogenhafen",
-		breeds = {},
-		behaviour_trees_precompiled = {},
-		behaviour_tree_nodes = {},
-		behaviour_trees = {},
 		unlock_settings = {
 			bogenhafen = {
 				class = "UnlockDlc",
@@ -256,8 +243,10 @@ DLCSettings = {
 				"dialogues/generated/wood_elf_bogenhafen_city",
 				"dialogues/generated/hero_conversations_dlc_bogenhafen_city"
 			}
-		},
-		horde_settings_compositions = {}
+		}
+	},
+	development = {
+		localization = "localization/development"
 	}
 }
 

@@ -164,8 +164,6 @@ PSRestrictions.cb_network_availability = function (self, user_id, restriction, i
 			access = false,
 			error = error
 		}
-
-		self:_set_restriction_fetched(user_id, restriction)
 	else
 		local result = NpCheck.result(info.token)
 
@@ -175,13 +173,10 @@ PSRestrictions.cb_network_availability = function (self, user_id, restriction, i
 			error = false,
 			access = result
 		}
-
-		self:_set_restriction_fetched(user_id, restriction)
-
-		if result == true then
-			self:_try_fetch_next_restriction_access(user_id)
-		end
 	end
+
+	self:_set_restriction_fetched(user_id, restriction)
+	self:_try_fetch_next_restriction_access(user_id)
 end
 
 PSRestrictions.cb_playstation_plus = function (self, user_id, restriction, info)
@@ -194,8 +189,6 @@ PSRestrictions.cb_playstation_plus = function (self, user_id, restriction, info)
 			access = false,
 			error = error
 		}
-
-		self:_set_restriction_fetched(user_id, restriction)
 	else
 		local result = NpCheck.result(info.token)
 
@@ -205,10 +198,10 @@ PSRestrictions.cb_playstation_plus = function (self, user_id, restriction, info)
 			error = false,
 			access = result
 		}
-
-		self:_set_restriction_fetched(user_id, restriction)
-		self:_try_fetch_next_restriction_access(user_id)
 	end
+
+	self:_set_restriction_fetched(user_id, restriction)
+	self:_try_fetch_next_restriction_access(user_id)
 end
 
 PSRestrictions.cb_parental_control = function (self, user_id, restriction, info)
@@ -225,8 +218,6 @@ PSRestrictions.cb_parental_control = function (self, user_id, restriction, info)
 			access = false,
 			error = error
 		}
-
-		self:_set_restriction_fetched(user_id, restriction)
 	else
 		local result = NpCheck.parental_control_info_result(info.token)
 		local chat = result.chat_restriction == false
@@ -242,9 +233,10 @@ PSRestrictions.cb_parental_control = function (self, user_id, restriction, info)
 
 		dprint("\"chat\" access for user (%d) result (%s)", user_id, tostring(chat))
 		dprint("\"ugc\" access for user (%d) result (%s)", user_id, tostring(ugc))
-		self:_set_restriction_fetched(user_id, restriction)
-		self:_try_fetch_next_restriction_access(user_id)
 	end
+
+	self:_set_restriction_fetched(user_id, restriction)
+	self:_try_fetch_next_restriction_access(user_id)
 end
 
 return

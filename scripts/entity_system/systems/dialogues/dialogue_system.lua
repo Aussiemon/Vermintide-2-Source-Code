@@ -5,13 +5,10 @@ require("scripts/entity_system/systems/dialogues/tag_query_loader")
 require("scripts/entity_system/systems/dialogues/dialogue_state_handler")
 require("scripts/settings/dialogue_settings")
 
-script_data.dialogue_debug_local_player_context = script_data.dialogue_debug_local_player_context or Development.parameter("dialogue_debug_local_player_context")
 script_data.dialogue_debug_all_contexts = script_data.dialogue_debug_all_contexts or Development.parameter("dialogue_debug_all_contexts")
 script_data.dialogue_debug_last_query = script_data.dialogue_debug_last_query or Development.parameter("dialogue_debug_last_query")
 script_data.dialogue_debug_last_played_query = script_data.dialogue_debug_last_played_query or Development.parameter("dialogue_debug_last_played_query")
 script_data.dialogue_debug_queries = script_data.dialogue_debug_queries or Development.parameter("dialogue_debug_queries")
-script_data.dialogue_debug_criterias = script_data.dialogue_debug_criterias or Development.parameter("dialogue_debug_criterias")
-script_data.dialogue_debug_rule_fails = script_data.dialogue_debug_rule_fails or Development.parameter("dialogue_debug_rule_fails")
 script_data.dialogue_debug_rules = script_data.dialogue_debug_rules or Development.parameter("dialogue_debug_rules")
 script_data.dialogue_debug_missing_vo_trigger_error_sound = script_data.dialogue_debug_missing_vo_trigger_error_sound or Development.parameter("dialogue_debug_missing_vo_trigger_error_sound")
 local extensions = {
@@ -19,6 +16,7 @@ local extensions = {
 }
 local dialogue_category_config = DialogueSettings.dialogue_category_config
 local enabled = true
+local debug_vo_by_file = nil
 DialogueSystem = class(DialogueSystem, ExtensionSystemBase)
 
 DialogueSystem.init = function (self, entity_system_creation_context, system_name)
@@ -42,7 +40,6 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 	local level_name = entity_system_creation_context.startup_data.level_key
 	local dialogue_filename = "dialogues/generated/" .. level_name
 	local auto_load_files = DialogueSettings.auto_load_files
-	local level_specific_load_files = DialogueSettings.level_specific_load_files[level_name]
 	local blocked_auto_load = DialogueSettings.blocked_auto_load_files[level_name]
 
 	if Application.can_get("lua", dialogue_filename) then
@@ -68,6 +65,8 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 			end
 		end
 	end
+
+	local level_specific_load_files = DialogueSettings.level_specific_load_files[level_name]
 
 	if level_specific_load_files then
 		for _, file_name in ipairs(level_specific_load_files) do
@@ -118,6 +117,7 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 	self.tagquery_database:set_global_context(self.global_context)
 
 	self.global_context.level_time = 0
+	self.next_story_line_update_t = DialogueSettings.story_start_delay
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
 	self.network_event_delegate = network_event_delegate
 
@@ -184,8 +184,8 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 				local value = event_data_array_temp[i]
 
 				if type(value) == "number" then
-					assert(value % 1 == 0, "Tried to pass non-integer value to dialogue event")
-					assert(value >= 0, "Tried to send a dialogue data number smaller than zero")
+					fassert(value % 1 == 0, "Tried to pass non-integer value to dialogue event")
+					fassert(value >= 0, "Tried to send a dialogue data number smaller than zero")
 
 					event_data_array_temp[i] = value + 1
 					event_data_array_temp_types[i] = true
@@ -223,10 +223,6 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 				end
 			end
 
-			if script_data.dialogue_debug_missing_vo_trigger_error_sound and not Wwise.has_event(sound_event) then
-				WwiseWorld.trigger_event(dialogue_system.wwise_world, "Play_VO_debug_sound")
-			end
-
 			return WwiseWorld.trigger_event(dialogue_system.wwise_world, sound_event, use_occlusion, wwise_source_id)
 		end,
 		play_voice_debug = function (self, sound_event)
@@ -241,10 +237,6 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 			if extension.faction == "player" then
 			end
 
-			if script_data.dialogue_debug_missing_vo_trigger_error_sound and not Wwise.has_event(sound_event) then
-				WwiseWorld.trigger_event(dialogue_system.wwise_world, "Play_VO_debug_sound")
-			end
-
 			return WwiseWorld.trigger_event(dialogue_system.wwise_world, sound_event, wwise_source_id)
 		end,
 		trigger_query = function (self, event_data)
@@ -253,9 +245,6 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 			dialogue_system.tagquery_database:debug_test_query(concept, source, test_query, test_user_context_list, test_global_context)
 		end
 	})
-
-	GarbageLeakDetector.register_object(input, "dialogue_input")
-
 	extension.input = input
 
 	self.tagquery_database:add_object_context(unit, "user_memory", extension.user_memory)
@@ -264,7 +253,7 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 	if extension_init_data.faction then
 		extension.faction = extension_init_data.faction
 
-		assert(self.faction_memories[extension_init_data.faction], "No such faction %q", tostring(extension_init_data.faction))
+		fassert(self.faction_memories[extension_init_data.faction], "No such faction %q", tostring(extension_init_data.faction))
 		self.tagquery_database:add_object_context(unit, "faction_memory", self.faction_memories[extension_init_data.faction])
 
 		extension.faction_memory = self.faction_memories[extension_init_data.faction]
@@ -339,10 +328,6 @@ DialogueSystem.extensions_ready = function (self, world, unit)
 	extension.play_unit = play_unit
 	extension.voice_node = voice_node
 	extension.vo_center_percent = vo_center_percent
-
-	if script_data.sound_debug then
-		printf("Spawned unit %q with play_unit=%s, voice_node=%d, vo_center_percent=%d, local_player=%s", tostring(unit), tostring(play_unit), voice_node, vo_center_percent, tostring(extension.local_player))
-	end
 end
 
 DialogueSystem.on_remove_extension = function (self, unit, extension_name)
@@ -419,6 +404,7 @@ DialogueSystem._cleanup_extension = function (self, unit, extension_name)
 		self.playing_dialogues[currently_playing_dialogue] = nil
 		currently_playing_dialogue.currently_playing_id = nil
 		currently_playing_dialogue.currently_playing_unit = nil
+		currently_playing_dialogue.used_query = nil
 	end
 
 	extension.currently_playing_dialogue = nil
@@ -427,45 +413,6 @@ DialogueSystem._cleanup_extension = function (self, unit, extension_name)
 
 	self.tagquery_database:remove_object(unit)
 	self.function_command_queue:cleanup_destroyed_unit(unit)
-end
-
-DialogueSystem.rpc_trigger_dialogue_event = function (self, sender, go_id, event_id, event_data_array, event_data_array_types, identifier)
-	local unit = Managers.state.unit_storage:unit(go_id)
-
-	if not unit then
-		return
-	end
-
-	if FROZEN[unit] then
-		return
-	end
-
-	local event_data_array_n = #event_data_array
-
-	for i = 1, event_data_array_n, 1 do
-		local value_id = event_data_array[i]
-		local is_bool = event_data_array_types[i]
-
-		if is_bool then
-			event_data_array[i] = value_id - 1
-		else
-			local value = NetworkLookup.dialogue_event_data_names[value_id]
-			event_data_array[i] = value
-		end
-	end
-
-	local event_data = FrameTable.alloc_table()
-
-	table.array_to_table(event_data_array, event_data_array_n, event_data)
-
-	local event_name = NetworkLookup.dialogue_events[event_id]
-	local input_event_queue = self.input_event_queue
-	local input_event_queue_n = self.input_event_queue_n
-	input_event_queue[input_event_queue_n + 1] = unit
-	input_event_queue[input_event_queue_n + 2] = event_name
-	input_event_queue[input_event_queue_n + 3] = event_data
-	input_event_queue[input_event_queue_n + 4] = identifier or ""
-	self.input_event_queue_n = input_event_queue_n + 4
 end
 
 local LOCAL_GAMETIME = 0
@@ -484,23 +431,22 @@ DialogueSystem.function_by_op = DialogueSystem.function_by_op or {
 	end
 }
 
-DialogueSystem.update_currently_playing_dialogues = function (self, dt)
-	Profiler.start("update_currently_playing_dialogues")
-
+DialogueSystem._update_currently_playing_dialogues = function (self, dt)
 	local function_command_queue = self.function_command_queue
 	local player_manager = Managers.player
 	local wwise_world = self.wwise_world
 	local unit_extension_data = self.unit_extension_data
 	local playing_units = self.playing_units
+	local unit_alive = Unit.alive
 
 	for unit, extension in pairs(playing_units) do
 		repeat
-			if not Unit.alive(unit) then
+			if not unit_alive(unit) then
 				playing_units[unit] = nil
 			else
 				local currently_playing_dialogue = extension.currently_playing_dialogue
 
-				assert(currently_playing_dialogue)
+				fassert(currently_playing_dialogue, "Dialogue for playing unit was nil!")
 
 				local dialogue_timer = extension.dialogue_timer
 				local is_currently_playing = nil
@@ -508,7 +454,7 @@ DialogueSystem.update_currently_playing_dialogues = function (self, dt)
 				if dialogue_timer then
 					is_currently_playing = dialogue_timer - dt > 0
 				else
-					assert(currently_playing_dialogue.currently_playing_id)
+					fassert(currently_playing_dialogue.currently_playing_id, "Missing event id for currently playing dialogue.")
 
 					is_currently_playing = WwiseWorld.is_playing(wwise_world, currently_playing_dialogue.currently_playing_id)
 				end
@@ -525,10 +471,12 @@ DialogueSystem.update_currently_playing_dialogues = function (self, dt)
 						function_command_queue:queue_function_command(Unit.animation_event, unit, "talk_body_end")
 					end
 
-					local sound_distance = extension.currently_playing_dialogue and extension.currently_playing_dialogue.sound_distance
+					local sound_distance = currently_playing_dialogue.sound_distance
+					local used_query = currently_playing_dialogue.used_query
 					extension.currently_playing_dialogue = nil
 					currently_playing_dialogue.currently_playing_id = nil
 					currently_playing_dialogue.currently_playing_unit = nil
+					currently_playing_dialogue.used_query = nil
 					self.playing_dialogues[currently_playing_dialogue] = nil
 					playing_units[unit] = nil
 
@@ -537,41 +485,42 @@ DialogueSystem.update_currently_playing_dialogues = function (self, dt)
 					end
 
 					extension.dialogue_timer = nil
-					local last_query = extension.last_query
-					local success_rule = last_query.validated_rule
-					local on_done = success_rule.on_done
+					local result = used_query.result
 
-					if on_done and last_query.result then
-						for i = 1, #on_done, 1 do
-							local on_done_command = on_done[i]
-							local table_name = on_done_command[1]
-							local argument_name = on_done_command[2]
-							local op = on_done_command[3]
-							local argument = on_done_command[4]
+					if result then
+						local source = used_query.query_context.source
+						local success_rule = used_query.validated_rule
+						local on_done = success_rule.on_done
 
-							if table_name ~= "user_memory" and table_name ~= "faction_memory" then
-								table_name = "user_memory"
-								argument_name = on_done_command[1]
-								op = on_done_command[2]
-								argument = on_done_command[3]
-							end
+						if on_done then
+							for i = 1, #on_done, 1 do
+								local on_done_command = on_done[i]
+								local table_name = on_done_command[1]
+								local argument_name = on_done_command[2]
+								local op = on_done_command[3]
+								local argument = on_done_command[4]
 
-							local user_contexts = unit_extension_data[last_query.query_context.source]
+								if table_name ~= "user_memory" and table_name ~= "faction_memory" then
+									table_name = "user_memory"
+									argument_name = on_done_command[1]
+									op = on_done_command[2]
+									argument = on_done_command[3]
+								end
 
-							if type(op) == "table" then
-								assert(DialogueSystem.function_by_op[op], "Unknown operator: %q", tostring(op))
+								local user_contexts = unit_extension_data[source]
 
-								user_contexts[table_name][argument_name] = DialogueSystem.function_by_op[op](user_contexts[table_name][argument_name], argument)
-							else
-								assert(op, "No such operator in on_done-command for rule %q", success_rule.name)
+								if type(op) == "table" then
+									fassert(DialogueSystem.function_by_op[op], "Unknown operator: %q", tostring(op))
 
-								user_contexts[table_name][argument_name] = op
+									user_contexts[table_name][argument_name] = DialogueSystem.function_by_op[op](user_contexts[table_name][argument_name], argument)
+								else
+									fassert(op, "No such operator in on_done-command for rule %q", success_rule.name)
+
+									user_contexts[table_name][argument_name] = op
+								end
 							end
 						end
-					end
 
-					if last_query.result then
-						local source = last_query.query_context.source
 						local speaker_name = "UNKNOWN"
 						local breed_data = Unit.get_data(source, "breed")
 
@@ -581,9 +530,7 @@ DialogueSystem.update_currently_playing_dialogues = function (self, dt)
 							speaker_name = ScriptUnit.extension(source, "dialogue_system").context.player_profile
 						end
 
-						local result = last_query.result
-
-						self.entity_manager:system("surrounding_aware_system"):add_system_event(source, "heard_speak", sound_distance, "speaker", source, "speaker_name", speaker_name, "sound_event", extension.last_query_sound_event or "unknown", "dialogue_name", last_query.result, "dialogue_name_nopre", string.sub(last_query.result, 5))
+						self.entity_manager:system("surrounding_aware_system"):add_system_event(source, "heard_speak", sound_distance, "speaker", source, "speaker_name", speaker_name, "sound_event", extension.last_query_sound_event or "unknown", "dialogue_name", result, "dialogue_name_nopre", string.sub(result, 5))
 
 						extension.last_query_sound_event = nil
 					end
@@ -593,8 +540,6 @@ DialogueSystem.update_currently_playing_dialogues = function (self, dt)
 			end
 		until true
 	end
-
-	Profiler.stop("update_currently_playing_dialogues")
 end
 
 DialogueSystem.update = function (self, context, t)
@@ -618,8 +563,6 @@ local function get_dialogue_event_index(dialogue)
 			for i = 1, sound_events_n, 1 do
 				temp_rand_table[i] = i
 			end
-
-			local sound_events = dialogue.sound_events
 
 			for i = 1, sound_events_n, 1 do
 				local rand = math.random(1, (sound_events_n + 1) - i)
@@ -646,7 +589,8 @@ DialogueSystem._handle_wwise_markers = function (self, dt, t)
 	local marker_events = WwiseWorld.pull_marker_events(self.wwise_world)
 
 	if marker_events then
-		for _, marker_event in ipairs(marker_events) do
+		for i = 1, #marker_events, 1 do
+			local marker_event = marker_events[i]
 			local marker_data = self._markers[marker_event.label]
 
 			if marker_data then
@@ -657,15 +601,12 @@ DialogueSystem._handle_wwise_markers = function (self, dt, t)
 end
 
 DialogueSystem._trigger_marker = function (self, marker_data)
-	local marker_name = marker_data.label
 	local sound_event = marker_data.sound_event
 	local source_name = marker_data.source_name
-	local parent = marker_data.parent
-	local localization = marker_data.localization
 	local source_player = nil
 	local players = Managers.player:players()
 
-	for id, player in pairs(players) do
+	for _, player in pairs(players) do
 		local unit = player.player_unit
 
 		if Unit.alive(unit) and ScriptUnit.has_extension(unit, "dialogue_system") then
@@ -681,16 +622,15 @@ DialogueSystem._trigger_marker = function (self, marker_data)
 	end
 
 	if not source_player then
-		Application.error(string.format("[DialogueSystem] No source_name called %s could be found", source_name))
+		Application.error("[DialogueSystem] No source_name called %s could be found", source_name)
 	elseif self.playing_units[source_player] then
-		Application.error(string.format("[DialogueSystem] Marker couldn't play since %s was already talking", source_name))
+		Application.error("[DialogueSystem] Marker couldn't play since %s was already talking", source_name)
 	else
 		local wwise_world = self.wwise_world
 		local extension = self.unit_extension_data[source_player]
-		local network_manager = Managers.state.network
 
 		if not extension then
-			Application.error(string.format("[DialogueSystem] Could not find any extension_data for profile %s", source_name))
+			Application.error("[DialogueSystem] Could not find any extension_data for profile %s", source_name)
 		else
 			local wwise_source_id = WwiseUtils.make_unit_auto_source(self.world, extension.play_unit, extension.voice_node)
 
@@ -701,67 +641,28 @@ DialogueSystem._trigger_marker = function (self, marker_data)
 				WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, "vo_center_percent", extension.vo_center_percent)
 			end
 
-			local go_id, is_level_unit = network_manager:game_object_or_level_id(source_player)
-
-			if script_data.dialogue_debug_missing_vo_trigger_error_sound and not Wwise.has_event(sound_event) then
-				WwiseWorld.trigger_event(wwise_world, "Play_VO_debug_sound")
-			end
-
 			local source_id = WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
 
 			if source_id ~= 0 then
 				local marker_id = NetworkLookup.markers[sound_event]
+				local network_manager = Managers.state.network
+				local go_id, _ = network_manager:game_object_or_level_id(source_player)
 
 				network_manager.network_transmit:send_rpc_clients("rpc_play_marker_event", go_id, marker_id)
 
 				if script_data.dialogue_debug_all_contexts or self.debug_state == 2 then
-					print(string.format("[DialogueSystem] Playing marker %s", sound_event))
+					printf("[DialogueSystem] Playing marker %s", sound_event)
 				end
 			end
 		end
 	end
 end
 
-DialogueSystem.rpc_play_marker_event = function (self, sender, go_id, marker_id)
-	local marker_unit = Managers.state.network:game_object_or_level_unit(go_id, false)
-
-	if not marker_unit then
-		return
-	end
-
-	if FROZEN[marker_unit] then
-		return
-	end
-
-	if self.playing_units[marker_unit] then
-		Application.error(string.format("[DialogueSystem] Marker couldn't play since %s was already talking", source_name))
-	end
-
-	local marker_sound_event = NetworkLookup.markers[marker_id]
-	local extension = self.unit_extension_data[marker_unit]
-	local wwise_world = self.wwise_world
-	local wwise_source_id = WwiseUtils.make_unit_auto_source(self.world, extension.play_unit, extension.voice_node)
-
-	if wwise_source_id ~= extension.wwise_source_id and extension.wwise_voice_switch_group then
-		extension.wwise_source_id = wwise_source_id
-
-		WwiseWorld.set_switch(wwise_world, extension.wwise_voice_switch_group, extension.wwise_voice_switch_value, wwise_source_id)
-		WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, "vo_center_percent", extension.vo_center_percent)
-	end
-
-	if script_data.dialogue_debug_missing_vo_trigger_error_sound and not Wwise.has_event(marker_sound_event) then
-		WwiseWorld.trigger_event(wwise_world, "Play_VO_debug_sound")
-	end
-
-	WwiseWorld.trigger_event(wwise_world, marker_sound_event, wwise_source_id)
-end
-
 DialogueSystem.physics_async_update = function (self, context, t)
-	self.debug_state = RuleDatabase.get_debug and RuleDatabase.get_debug()
 	local dt = context.dt
 
-	self:update_currently_playing_dialogues(dt)
-	self:update_cutscene_subtitles(t)
+	self:_update_currently_playing_dialogues(dt)
+	self:_update_cutscene_subtitles(t)
 
 	if not self.is_server then
 		return
@@ -770,27 +671,18 @@ DialogueSystem.physics_async_update = function (self, context, t)
 	self.dialogue_state_handler:update(t)
 	self:_handle_wwise_markers(dt, t)
 
-	local player_manager = Managers.player
 	self.global_context.level_time = t
 	LOCAL_GAMETIME = t + 900
 
-	self:update_incapacitation(t)
-	Profiler.start("Iterate Query")
+	self:_update_incapacitation(t)
 
 	local tagquery_database = self.tagquery_database
-	local unit_extension_data = self.unit_extension_data
 	local query = tagquery_database:iterate_queries(LOCAL_GAMETIME)
-	local playing_units = self.playing_units
 
-	Profiler.stop("Iterate Query")
-
-	if enabled and (DialogueSettings.dialogue_level_start_delay < self.global_context.level_time or DialogueSystem:LocalPlayerHasMovedFromStartPos()) then
+	if enabled and (DialogueSettings.dialogue_level_start_delay < self.global_context.level_time or DialogueSystem:has_local_player_moved_from_start_position()) then
 		if query then
-			local function_command_queue = self.function_command_queue
-
-			Profiler.start("Handle Query")
-
 			local dialogue_actor_unit = query.query_context.source
+			local unit_extension_data = self.unit_extension_data
 			local extension = unit_extension_data[dialogue_actor_unit]
 			extension.last_query = query
 			local result = query.result
@@ -801,7 +693,7 @@ DialogueSystem.physics_async_update = function (self, context, t)
 				local category_setting = dialogue_category_config[dialogue_category]
 				local playable_during_category = category_setting.playable_during_category
 
-				assert(category_setting, "No category setting for category %q used in dialogue %q", dialogue_category, result)
+				fassert(category_setting, "No category setting for category %q used in dialogue %q", dialogue_category, result)
 
 				local playing_dialogues = self.playing_dialogues
 				local will_play = true
@@ -835,8 +727,11 @@ DialogueSystem.physics_async_update = function (self, context, t)
 				end
 
 				if will_play then
+					local player_manager = Managers.player
 					local network_manager = Managers.state.network
 					local wwise_world = self.wwise_world
+					local function_command_queue = self.function_command_queue
+					local playing_units = self.playing_units
 
 					for interrupt_dialogue, _ in pairs(interrupt_dialogue_list) do
 						interrupt_dialogue_list[interrupt_dialogue] = nil
@@ -884,11 +779,6 @@ DialogueSystem.physics_async_update = function (self, context, t)
 					local go_id, is_level_unit = network_manager:game_object_or_level_id(dialogue_actor_unit)
 					local dialogue_index = get_dialogue_event_index(dialogue)
 					local sound_event, subtitles_event, anim_face_event, anim_dialogue_event = get_dialogue_event(dialogue, dialogue_index)
-
-					if script_data.dialogue_debug_missing_vo_trigger_error_sound and not Wwise.has_event(sound_event) then
-						WwiseWorld.trigger_event(wwise_world, "Play_VO_debug_sound")
-					end
-
 					local source_id = WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
 
 					if source_id ~= 0 then
@@ -902,23 +792,12 @@ DialogueSystem.physics_async_update = function (self, context, t)
 						local dialogue_id = NetworkLookup.dialogues[result]
 
 						network_manager.network_transmit:send_rpc_clients("rpc_play_dialogue_event", go_id, is_level_unit, dialogue_id, dialogue_index)
-
-						if script_data.dialogue_debug_all_contexts or self.debug_state == 2 then
-							print("########################################## PLAYING WWISE EVENT #################################################################################################\n")
-							print(string.format("Played wwise event for dialogues: %q with subtitle: %q. Defined in rule %q with index %d\n", sound_event, subtitles_event, result, dialogue_index))
-							print("################################################################################################################################################################")
-						end
 					else
-						print_warning(string.format("Unknown wwise event for dialogues: %q. Defined in rule %q.  Trying to fall back on first sound...", sound_event, result))
+						Application.warning("Unknown wwise event for dialogues: %q. Defined in rule %q.  Trying to fall back on first sound...", sound_event, result)
 
 						dialogue.randomize_indexes = nil
-						local dialogue_index = get_dialogue_event_index(dialogue)
+						dialogue_index = get_dialogue_event_index(dialogue)
 						sound_event, subtitles_event, anim_face_event, anim_dialogue_event = get_dialogue_event(dialogue, dialogue_index)
-
-						if script_data.dialogue_debug_missing_vo_trigger_error_sound and not Wwise.has_event(sound_event) then
-							WwiseWorld.trigger_event(wwise_world, "Play_VO_debug_sound")
-						end
-
 						source_id = WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
 
 						if source_id ~= 0 then
@@ -932,12 +811,6 @@ DialogueSystem.physics_async_update = function (self, context, t)
 							local dialogue_id = NetworkLookup.dialogues[result]
 
 							network_manager.network_transmit:send_rpc_clients("rpc_play_dialogue_event", go_id, is_level_unit, dialogue_id, dialogue_index)
-
-							if script_data.dialogue_debug_all_contexts or self.debug_state == 2 then
-								print("########################################## PLAYING WWISE EVENT #################################################################################################\n")
-								print(string.format("Played wwise event for dialogues: %q with subtitle: %q. Defined in rule %q with index %d\n", sound_event, subtitles_event, result, dialogue_index))
-								print("################################################################################################################################################################")
-							end
 						else
 							dialogue.currently_playing_id = nil
 
@@ -948,7 +821,8 @@ DialogueSystem.physics_async_update = function (self, context, t)
 					end
 
 					dialogue.currently_playing_unit = dialogue_actor_unit
-					local speaker_name = "UNKNOWN"
+					dialogue.used_query = query
+					local speaker_name = nil
 					local breed_data = Unit.get_data(dialogue_actor_unit, "breed")
 
 					if breed_data then
@@ -980,42 +854,27 @@ DialogueSystem.physics_async_update = function (self, context, t)
 					if Unit.has_data(dialogue_actor_unit, "enemy_dialogue_body_anim") and Unit.has_animation_state_machine(dialogue_actor_unit) then
 						function_command_queue:queue_function_command(Unit.flow_event, dialogue_actor_unit, "action_talk_body")
 					end
-
-					if script_data.dialogue_debug_last_played_query then
-						DebugPrintPlayedQuery(query, extension)
-					end
-				end
-
-				if query.validated_rule.tutorial ~= nil then
-					local tutorial_template = query.validated_rule.tutorial.template
-					slot21 = query.validated_rule.tutorial.message
 				end
 			end
-
-			Profiler.stop("Handle Query")
 		end
 
-		update_story_lines(t)
+		self:_update_story_lines(t)
+		self:_update_player_jumping(t)
 	end
 
-	self:update_new_events(t)
+	self:_update_new_events(t)
 end
 
 DialogueSystem.post_update = function (self, entity_system_update_context, t)
 	self.function_command_queue:run_commands()
 end
 
-DialogueSystem.update_incapacitation = function (self, t)
-	for unit, extension in pairs(self.unit_extension_data) do
+DialogueSystem._update_incapacitation = function (self, t)
+	for _, extension in pairs(self.unit_extension_data) do
 		local status_extension = extension.status_extension
 
 		if status_extension then
-			local is_knocked_down = status_extension:is_knocked_down()
-			local is_pounced_down = status_extension:is_pounced_down()
-			local is_ready_for_assisted_respawn = status_extension:is_ready_for_assisted_respawn()
-			local is_grabbed_by_pack_master = status_extension:is_grabbed_by_pack_master()
-			local is_ledge_hanging = status_extension:get_is_ledge_hanging()
-			local is_incapacitated = is_knocked_down or is_pounced_down or is_grabbed_by_pack_master or is_ledge_hanging or is_ready_for_assisted_respawn
+			local is_incapacitated = status_extension:is_disabled()
 
 			if not extension.is_incapacitated and is_incapacitated then
 				extension.incapacitate_time = t
@@ -1026,9 +885,7 @@ DialogueSystem.update_incapacitation = function (self, t)
 	end
 end
 
-DialogueSystem.update_new_events = function (self, t)
-	Profiler.start("update_new_events")
-
+DialogueSystem._update_new_events = function (self, t)
 	local unit_extension_data = self.unit_extension_data
 	local tagquery_database = self.tagquery_database
 	local unit_alive = Unit.alive
@@ -1091,293 +948,14 @@ DialogueSystem.update_new_events = function (self, t)
 
 	self.input_event_queue_n = 0
 
-	Profiler.stop("update_new_events")
-	Profiler.start("Debug")
-	self:update_debug(t)
-	Profiler.stop("Debug")
+	self:_update_debug(t)
 end
 
 DialogueSystem.hot_join_sync = function (self, sender)
 	return
 end
 
-local font_size = 16
-local font = "gw_arial_16"
-local font_mtrl = "materials/fonts/" .. font
-local debug_vo_by_file, debug_vo_by_file_gui = nil
-local debug_tick_time = 0
-local debug_text = {}
-local DebugVo = {}
-
-DialogueSystem.update_debug = function (self, t)
-	local res_x = RESOLUTION_LOOKUP.res_w
-	local res_y = RESOLUTION_LOOKUP.res_h
-	local unit_name_color = Color(250, 255, 120, 0)
-	local context_name_color = Color(250, 255, 255, 100)
-	local data_color = Color(250, 255, 120, 0)
-	local gui = self.gui
-
-	if script_data.dialogue_debug_all_contexts then
-		local contexts_by_object = self.tagquery_database.contexts_by_object
-		local start_x = 200
-
-		for unit, contexts in pairs(contexts_by_object) do
-			repeat
-				local player_data = Managers.player:owner(unit)
-				local unit_name = nil
-
-				if player_data then
-					unit_name = player_data.viewport_name or player_data.peer_id
-
-					if false then
-						break
-					end
-
-					local start_y = 20 + font_size
-
-					Gui.text(gui, unit_name, font_mtrl, font_size, font, Vector3(start_x, start_y, 250), unit_name_color)
-
-					start_y = start_y + font_size
-					local max_context_width = 0
-
-					for context_name, context_data in pairs(contexts) do
-						Gui.text(gui, context_name, font_mtrl, font_size, font, Vector3(start_x, start_y, 250), context_name_color)
-
-						local context_start_y = start_y
-						start_y = start_y + font_size
-						local kv_order = {}
-						local max_key_width = 0
-						local key_start_y = start_y
-
-						for key, value in pairs(context_data) do
-							Gui.text(gui, tostring(key), font_mtrl, font_size, font, Vector3(start_x, start_y, 250), data_color)
-
-							local min, max = Gui.text_extents(gui, tostring(key), font_mtrl, font_size)
-							local width = max.x - min.x
-							max_key_width = math.max(width, max_key_width)
-							start_y = start_y + font_size
-							kv_order[#kv_order + 1] = key
-						end
-
-						max_key_width = max_key_width + 10
-						start_y = key_start_y
-						local max_value_width = 0
-
-						for i, key in ipairs(kv_order) do
-							local value = context_data[key]
-
-							Gui.text(gui, tostring(value), font_mtrl, font_size, font, Vector3(start_x + max_key_width, start_y, 250), data_color)
-
-							start_y = start_y + font_size
-							local min, max = Gui.text_extents(gui, tostring(value), font_mtrl, font_size)
-							local width = max.x - min.x
-							max_value_width = math.max(width, max_key_width)
-						end
-
-						max_context_width = math.max(max_context_width, max_key_width + max_value_width)
-
-						Gui.rect(gui, Vector3(start_x - 2, context_start_y - 2, 249), Vector2(max_context_width, start_y - context_start_y), Color(200, 20, 20, 20))
-
-						start_y = start_y + font_size * 0.5
-					end
-
-					start_x = start_x + max_context_width
-				end
-			until true
-		end
-	elseif script_data.dialogue_debug_local_player_context then
-	end
-
-	if script_data.dialogue_debug_last_query then
-		local unit_extension_data = self.unit_extension_data
-
-		for unit, extension in pairs(unit_extension_data) do
-			repeat
-				local last_query = extension.last_query
-
-				if not last_query then
-					break
-				end
-
-				local start_x = 20
-				local start_y = res_y - 20 - font_size
-
-				Gui.text(gui, string.format("Query result %s", last_query.result or "FAILURE"), font_mtrl, font_size, font, Vector3(start_x, start_y, 250), (last_query.result and Color(250, 100, 255, 100)) or Color(250, 255, 100, 100))
-
-				local kv_order = {}
-				local max_key_width = 0
-
-				for key, value in pairs(last_query.query_context) do
-					start_y = start_y - font_size
-
-					Gui.text(gui, tostring(key), font_mtrl, font_size, font, Vector3(start_x, start_y, 250), data_color)
-
-					local min, max = Gui.text_extents(gui, tostring(key), font_mtrl, font_size)
-					local width = max.x - min.x
-					max_key_width = math.max(width, max_key_width)
-					kv_order[#kv_order + 1] = key
-				end
-
-				max_key_width = max_key_width + 10
-				start_y = res_y - 20 - font_size
-
-				for i, key in ipairs(kv_order) do
-					start_y = start_y - font_size
-
-					Gui.text(gui, tostring(last_query.query_context[key]), font_mtrl, font_size, font, Vector3(start_x + max_key_width, start_y, 250), data_color)
-				end
-			until true
-		end
-	end
-
-	if script_data.dialogue_debug_rules then
-		local rules_debug_data = self.tagquery_database.debug_rules_table
-		local start_x = res_x - 500
-		local start_y = res_y - 50
-		local string_lookups = self.tagquery_database.string_lookups
-
-		for i, rule_data in ipairs(rules_debug_data) do
-			local rule = rule_data.rule
-			local text = string.format("Rule %q [%s]", rule.name, rule_data.rule_result)
-
-			Gui.text(gui, text, font_mtrl, font_size, font, Vector3(start_x, start_y, 250), context_name_color)
-
-			start_y = start_y - font_size
-
-			if rule_data.criteria_results then
-				local comparator_values = rule_data.comparator_values
-				local criteria_values = rule_data.criteria_values
-
-				for j, criteria_result in ipairs(rule_data.criteria_results) do
-					local criteria_string = table.concat(rule.real_criterias[j], ",")
-					local value_1, value_2 = nil
-
-					if self.tagquery_database.criteria_type_is_string[rule.real_criterias[j][2]] then
-						value_1 = tostring(criteria_values and table.find(string_lookups, criteria_values[j]))
-						value_2 = tostring(comparator_values and table.find(string_lookups, comparator_values[j]))
-					else
-						if criteria_values then
-							value_1 = string.format("%.2d", criteria_values[j] or 0)
-						end
-
-						if comparator_values then
-							value_2 = string.format("%.2d", comparator_values[j] or 0)
-						end
-					end
-
-					local text = string.format("%q [%i] %s [%s %s]", criteria_string, j, criteria_result, value_1, value_2)
-
-					Gui.text(gui, text, font_mtrl, font_size, font, Vector3(start_x, start_y, 250), data_color)
-
-					start_y = start_y - font_size
-				end
-			end
-		end
-	end
-
-	if debug_vo_by_file then
-		local tick_add = 0.1
-
-		if debug_text.fast_play then
-			tick_add = 1
-		end
-
-		if t > debug_tick_time + tick_add then
-			debug_tick_time = t
-			debug_text.cl, debug_text.total, debug_text.current_face, debug_text.curret_event, debug_text.speaker, debug_text.missing_vo, debug_text.fast_play, debug_text.subtitle = DebugVo.play()
-		end
-	end
-
-	if debug_vo_by_file_gui then
-		local start_x = res_x - 800
-		local start_y = 120
-		local start_x2 = 100
-		local start_y2 = res_y - 100
-		local context_height = 0
-
-		Gui.text(gui, tostring("Line: " .. debug_text.cl .. "/" .. debug_text.total), font_mtrl, font_size, font, Vector3(start_x, start_y, 250), data_color)
-		Gui.text(gui, tostring("Sound Event: " .. debug_text.curret_event), font_mtrl, font_size, font, Vector3(start_x, start_y + 20, 250), data_color)
-
-		if debug_text.speaker then
-			Gui.text(gui, tostring("Speaker: " .. debug_text.speaker), font_mtrl, font_size, font, Vector3(start_x, start_y + 40, 250), data_color)
-		end
-
-		Gui.text(gui, tostring("Face Animation: " .. debug_text.current_face), font_mtrl, font_size, font, Vector3(start_x, start_y + 60, 250), data_color)
-
-		if Managers.localizer:exists(debug_text.subtitle) then
-			local dialogue_text = Localize(debug_text.subtitle)
-
-			Gui.text(gui, tostring("Subtitle: " .. dialogue_text), font_mtrl, tonumber(font_size - 1), font, Vector3(start_x, start_y + 80, 250), Color(250, 255, 250, 0))
-		end
-
-		for i, missing in ipairs(debug_text.missing_vo) do
-			context_height = i
-		end
-
-		if context_height ~= 0 then
-			Gui.rect(gui, Vector2(start_x2 - 15, start_y2 + 15), Vector2(300, -30 - 10 * context_height), Color(200, 20, 20, 20))
-		end
-
-		for i, missing in ipairs(debug_text.missing_vo) do
-			Gui.text(gui, tostring("Missing Sound for: " .. debug_text.missing_vo[i]), font_mtrl, font_size, font, Vector3(start_x2, start_y2 - 10 * i, 250), data_color)
-		end
-
-		local player_input = Managers.input.input_services.Player
-
-		if player_input:get("interact") then
-			if debug_vo_by_file then
-				DebugVo_pause()
-
-				debug_text.pause_state = true
-			else
-				DebugVo_play()
-
-				debug_text.pause_state = false
-			end
-		end
-
-		if debug_text.pause_state then
-			Gui.text(gui, tostring("Press 'E' to unpause"), font_mtrl, font_size, font, Vector3(start_x + 300, start_y + 60, 250), Color(255, 100, 100, 0))
-			Gui.text(gui, tostring("PAUSED"), font_mtrl, font_size, font, Vector3(start_x + 420, start_y + 60, 250), Color(255, 255, 255, 0))
-		else
-			Gui.text(gui, tostring("Press 'E' to pause"), font_mtrl, font_size, font, Vector3(start_x + 300, start_y + 60, 250), Color(255, 120, 120, 0))
-		end
-
-		if debug_text.fast_play then
-			Gui.text(gui, tostring("Fast play active"), font_mtrl, font_size, font, Vector3(start_x + 300, start_y + 40, 250), Color(120, 120, 255, 0))
-		end
-
-		Gui.rect(gui, Vector3(start_x - 15, start_y - 15, 249), Vector2(500, start_y), Color(200, 20, 20, 20))
-	end
-end
-
-function DebugPlayVoice(profile_name, event_name, is_npc)
-	local player_manager = Managers.player
-	local human_and_bot_players = player_manager:human_and_bot_players()
-	local human_and_bot_players_n = 0
-
-	for index, player in pairs(human_and_bot_players) do
-		local profile_index = player:profile_index()
-		local profile = SPProfiles[profile_index]
-
-		if profile.display_name == profile_name and Unit.alive(player.player_unit) then
-			local dialogue_input = ScriptUnit.extension_input(player.player_unit, "dialogue_system")
-			local source_id = dialogue_input:play_voice_debug(event_name)
-
-			return source_id
-		end
-	end
-
-	if is_npc then
-		local dummy_unit = DialogueSystem:GetRandomPlayer()
-		local dialogue_input = ScriptUnit.extension_input(dummy_unit, "dialogue_system")
-		local source_id = dialogue_input:play_voice_debug(event_name)
-
-		return source_id
-	end
-end
-
-DialogueSystem.LocalPlayerHasMovedFromStartPos = function (self)
+DialogueSystem.has_local_player_moved_from_start_position = function (self)
 	if DEDICATED_SERVER then
 		return false
 	end
@@ -1399,7 +977,7 @@ DialogueSystem.LocalPlayerHasMovedFromStartPos = function (self)
 	end
 end
 
-DialogueSystem.PlayerShieldCheck = function (self, unit, slot)
+DialogueSystem.player_shield_check = function (self, unit, slot)
 	local has_shield = 0
 
 	if Unit.alive(unit) and Managers.player:owner(unit) ~= nil then
@@ -1424,20 +1002,19 @@ DialogueSystem.PlayerShieldCheck = function (self, unit, slot)
 	return has_shield
 end
 
-DialogueSystem.TriggerGeneralUnitEvent = function (self, unit, event)
-	local network_manager = Managers.state.network
-	local player_manager = Managers.player
-	local unit_id = network_manager.unit_storage:go_id(unit)
+DialogueSystem.trigger_general_unit_event = function (self, unit, event)
 	local audio_system_extension = Managers.state.entity:system("audio_system")
 
 	audio_system_extension:_play_event(event, unit, 0)
 
 	local general_event_id = NetworkLookup.sound_events[event]
+	local network_manager = Managers.state.network
+	local unit_id = network_manager.unit_storage:go_id(unit)
 
 	network_manager.network_transmit:send_rpc_clients("rpc_server_audio_unit_event", general_event_id, unit_id, 0)
 end
 
-DialogueSystem.TriggerTargetedByRatling = function (self, player_unit)
+DialogueSystem.trigger_targeted_by_ratling = function (self, player_unit)
 	local player_manager = Managers.player
 	local owner = player_manager:unit_owner(player_unit)
 
@@ -1449,7 +1026,7 @@ DialogueSystem.TriggerTargetedByRatling = function (self, player_unit)
 	end
 end
 
-DialogueSystem.TriggerAttack = function (self, player_unit, enemy_unit, should_backstab, blackboard)
+DialogueSystem.trigger_attack = function (self, player_unit, enemy_unit, should_backstab, blackboard)
 	local player_manager = Managers.player
 	local owner = player_manager:unit_owner(player_unit)
 
@@ -1502,7 +1079,7 @@ DialogueSystem.TriggerAttack = function (self, player_unit, enemy_unit, should_b
 	end
 end
 
-DialogueSystem.TriggerBackstab = function (self, player_unit, enemy_unit, blackboard)
+DialogueSystem.trigger_backstab = function (self, player_unit, enemy_unit, blackboard)
 	local player_manager = Managers.player
 	local owner = player_manager:unit_owner(player_unit)
 
@@ -1519,11 +1096,9 @@ DialogueSystem.TriggerBackstab = function (self, player_unit, enemy_unit, blackb
 
 		if not owner.bot_player then
 			local breed = blackboard.breed
-			local network_manager = Managers.state.network
 			local sound_event = breed.backstab_player_sound_event
 			local player_data = Managers.player:owner(player_unit)
 			local unit_id = NetworkUnit.game_object_id(enemy_unit)
-			local general_event = breed.attack_general_sound_event
 
 			if player_data.local_player and sound_event then
 				local audio_system_extension = Managers.state.entity:system("audio_system")
@@ -1538,7 +1113,7 @@ DialogueSystem.TriggerBackstab = function (self, player_unit, enemy_unit, blackb
 	end
 end
 
-DialogueSystem.TriggerFlanking = function (self, player_unit, enemy_unit)
+DialogueSystem.trigger_flanking = function (self, player_unit, enemy_unit)
 	local player_manager = Managers.player
 	local owner = player_manager:unit_owner(player_unit)
 
@@ -1547,7 +1122,6 @@ DialogueSystem.TriggerFlanking = function (self, player_unit, enemy_unit)
 		local breed = ai_base_extension:breed()
 
 		if breed.flanking_sound_event then
-			local network_manager = Managers.state.network
 			local flanking_event = breed.flanking_sound_event
 			local unit_id = NetworkUnit.game_object_id(enemy_unit)
 
@@ -1568,16 +1142,12 @@ DialogueSystem.TriggerFlanking = function (self, player_unit, enemy_unit)
 	end
 end
 
-DialogueSystem.TriggerBackstabHit = function (self, player_unit, enemy_unit)
+DialogueSystem.trigger_backstab_hit = function (self, player_unit, enemy_unit)
 	local player_manager = Managers.player
 	local owner = player_manager:unit_owner(player_unit)
 	local game = Managers.state.network:game()
 
 	if Unit.alive(player_unit) and owner and ALIVE[enemy_unit] and game and not owner.bot_player then
-		local drawer = Managers.state.debug:drawer({
-			mode = "retained",
-			name = "Dialoge_debug"
-		})
 		local to_target_vec = Vector3.normalize(POSITION_LOOKUP[enemy_unit] - POSITION_LOOKUP[player_unit])
 		local unit_id = Managers.state.network.unit_storage:go_id(player_unit)
 		local player_rot = GameSession.game_object_field(game, unit_id, "aim_direction")
@@ -1592,8 +1162,6 @@ DialogueSystem.TriggerBackstabHit = function (self, player_unit, enemy_unit)
 
 				first_person_extension:play_hud_sound_event(backstabhit_event, nil, false)
 			else
-				local network_manager = Managers.state.network
-				local player_data = Managers.player:owner(player_unit)
 				local go_id = NetworkUnit.game_object_id(player_unit)
 				local event_id = NetworkLookup.sound_events[backstabhit_event]
 
@@ -1603,12 +1171,12 @@ DialogueSystem.TriggerBackstabHit = function (self, player_unit, enemy_unit)
 	end
 end
 
-DialogueSystem.GetRandomPlayer = function (self)
+DialogueSystem.get_random_player = function (self)
 	local players = Managers.player:human_and_bot_players()
 	local unit_list = {}
 	local unit_list_n = 0
 
-	for index, player in pairs(players) do
+	for _, player in pairs(players) do
 		local unit = player.player_unit
 
 		if Unit.alive(unit) and ScriptUnit.extension(unit, "health_system"):is_alive() then
@@ -1626,21 +1194,20 @@ DialogueSystem.GetRandomPlayer = function (self)
 	return nil
 end
 
-local story_tick_time = DialogueSettings.story_start_delay - 10
+DialogueSystem._update_story_lines = function (self, t)
+	local next_story_line_update_t = self.next_story_line_update_t
 
-function update_story_lines(t)
-	if t > story_tick_time + DialogueSettings.story_tick_time then
-		story_tick_time = t
+	if next_story_line_update_t < t then
+		self.next_story_line_update_t = t + DialogueSettings.story_tick_time
+		local random_player = DialogueSystem:get_random_player()
 
-		if DialogueSystem:GetRandomPlayer() ~= nil then
-			local dialogue_input = ScriptUnit.extension_input(DialogueSystem:GetRandomPlayer(), "dialogue_system")
+		if random_player ~= nil then
+			local dialogue_input = ScriptUnit.extension_input(random_player, "dialogue_system")
 			local event_data = FrameTable.alloc_table()
 
 			dialogue_input:trigger_dialogue_event("story_trigger", event_data)
 		end
 	end
-
-	update_PlayerJumping(t)
 end
 
 local current_cutscene_subs = {}
@@ -1648,7 +1215,7 @@ local cutscene_speaker = nil
 local end_time = 0
 local end_delay = 5
 
-DialogueSystem.TriggerCutsceneSubtitles = function (self, event_name, speaker, end_hangtime)
+DialogueSystem.trigger_cutscene_subtitles = function (self, event_name, speaker, end_hangtime)
 	enabled = false
 	cutscene_speaker = speaker
 	end_delay = end_hangtime
@@ -1658,7 +1225,7 @@ DialogueSystem.TriggerCutsceneSubtitles = function (self, event_name, speaker, e
 	end
 end
 
-DialogueSystem.update_cutscene_subtitles = function (self, t)
+DialogueSystem._update_cutscene_subtitles = function (self, t)
 	local hud_system = Managers.state.entity:system("hud_system")
 
 	for k, value in pairs(current_cutscene_subs) do
@@ -1678,15 +1245,15 @@ DialogueSystem.update_cutscene_subtitles = function (self, t)
 	end
 end
 
-DialogueSystem.Disable = function (self)
+DialogueSystem.disable = function (self)
 	enabled = false
 end
 
-DialogueSystem.Enable = function (self)
+DialogueSystem.enable = function (self)
 	enabled = true
 end
 
-DialogueSystem.ResetMemoryTime = function (self, memory, name, unit)
+DialogueSystem.reset_memory_time = function (self, memory, name, unit)
 	local newtime = LOCAL_GAMETIME - 2000
 
 	if Unit.alive(unit) then
@@ -1694,11 +1261,11 @@ DialogueSystem.ResetMemoryTime = function (self, memory, name, unit)
 	end
 
 	if name == "time_since_conversation" then
-		story_tick_time = 0
+		self.next_story_line_update_t = 0
 	end
 end
 
-DialogueSystem.TriggerStoryDialogue = function (self, unit)
+DialogueSystem.trigger_story_dialogue = function (self, unit)
 	if Unit.alive(unit) then
 		local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 		local event_data = FrameTable.alloc_table()
@@ -1711,7 +1278,7 @@ end
 local num_of_jumps = 0
 local jump_tick_time = 0
 
-function update_PlayerJumping(t)
+DialogueSystem._update_player_jumping = function (self, t)
 	if DEDICATED_SERVER then
 		return
 	end
@@ -1740,6 +1307,75 @@ function update_PlayerJumping(t)
 			num_of_jumps = 0
 		end
 	end
+end
+
+DialogueSystem.rpc_trigger_dialogue_event = function (self, sender, go_id, event_id, event_data_array, event_data_array_types, identifier)
+	local unit = Managers.state.unit_storage:unit(go_id)
+
+	if not unit then
+		return
+	end
+
+	if FROZEN[unit] then
+		return
+	end
+
+	local event_data_array_n = #event_data_array
+
+	for i = 1, event_data_array_n, 1 do
+		local value_id = event_data_array[i]
+		local is_bool = event_data_array_types[i]
+
+		if is_bool then
+			event_data_array[i] = value_id - 1
+		else
+			local value = NetworkLookup.dialogue_event_data_names[value_id]
+			event_data_array[i] = value
+		end
+	end
+
+	local event_data = FrameTable.alloc_table()
+
+	table.array_to_table(event_data_array, event_data_array_n, event_data)
+
+	local event_name = NetworkLookup.dialogue_events[event_id]
+	local input_event_queue = self.input_event_queue
+	local input_event_queue_n = self.input_event_queue_n
+	input_event_queue[input_event_queue_n + 1] = unit
+	input_event_queue[input_event_queue_n + 2] = event_name
+	input_event_queue[input_event_queue_n + 3] = event_data
+	input_event_queue[input_event_queue_n + 4] = identifier or ""
+	self.input_event_queue_n = input_event_queue_n + 4
+end
+
+DialogueSystem.rpc_play_marker_event = function (self, sender, go_id, marker_id)
+	local marker_unit = Managers.state.network:game_object_or_level_unit(go_id, false)
+
+	if not marker_unit then
+		return
+	end
+
+	if FROZEN[marker_unit] then
+		return
+	end
+
+	if self.playing_units[marker_unit] then
+		Application.error("[DialogueSystem] Marker couldn't play since %q was already talking", marker_unit)
+	end
+
+	local marker_sound_event = NetworkLookup.markers[marker_id]
+	local extension = self.unit_extension_data[marker_unit]
+	local wwise_world = self.wwise_world
+	local wwise_source_id = WwiseUtils.make_unit_auto_source(self.world, extension.play_unit, extension.voice_node)
+
+	if wwise_source_id ~= extension.wwise_source_id and extension.wwise_voice_switch_group then
+		extension.wwise_source_id = wwise_source_id
+
+		WwiseWorld.set_switch(wwise_world, extension.wwise_voice_switch_group, extension.wwise_voice_switch_value, wwise_source_id)
+		WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, "vo_center_percent", extension.vo_center_percent)
+	end
+
+	WwiseWorld.trigger_event(wwise_world, marker_sound_event, wwise_source_id)
 end
 
 DialogueSystem.rpc_play_dialogue_event = function (self, sender, go_id, is_level_unit, dialogue_id, dialogue_index)
@@ -1772,19 +1408,14 @@ DialogueSystem.rpc_play_dialogue_event = function (self, sender, go_id, is_level
 	end
 
 	local sound_event, subtitles_event, anim_face_event, anim_dialogue_event = get_dialogue_event(dialogue, dialogue_index)
-
-	if script_data.dialogue_debug_missing_vo_trigger_error_sound and not Wwise.has_event(sound_event) then
-		WwiseWorld.trigger_event(wwise_world, "Play_VO_debug_sound")
-	end
-
-	local playing_id, source_id = WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
+	local playing_id, _ = WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
 
 	fassert(playing_id, "Couldn't play sound event %s", sound_event)
 
 	dialogue.currently_playing_id = playing_id
 	self.playing_units[dialogue_actor_unit] = extension
 	dialogue.currently_playing_unit = dialogue_actor_unit
-	local speaker_name = "UNKNOWN"
+	local speaker_name = nil
 	local breed_data = Unit.get_data(dialogue_actor_unit, "breed")
 
 	if breed_data then
@@ -1814,12 +1445,6 @@ DialogueSystem.rpc_play_dialogue_event = function (self, sender, go_id, is_level
 
 	if Unit.has_data(dialogue_actor_unit, "enemy_dialogue_body_anim") and Unit.has_animation_state_machine(dialogue_actor_unit) then
 		Unit.flow_event(dialogue_actor_unit, "action_talk_body")
-	end
-
-	if script_data.dialogue_debug_all_contexts or self.debug_state == 2 then
-		print("########################################## PLAYING WWISE EVENT #################################################################################################\n")
-		print(string.format("Played wwise event for dialogues: %q with subtitle: %q. Defined in rule %q with index %d\n", sound_event, subtitles_event, subdialogue_name, dialogue_index))
-		print("################################################################################################################################################################")
 	end
 end
 
@@ -1863,7 +1488,327 @@ DialogueSystem.rpc_interrupt_dialogue_event = function (self, sender, go_id, is_
 	end
 end
 
-function DebugPrintPlayedQuery(query, extension)
+local debug_font_size = 16
+local debug_font = "gw_arial_16"
+local debug_font_mtrl = "materials/fonts/" .. debug_font
+local debug_vo_by_file_gui = nil
+local debug_tick_time = 0
+local debug_text = {}
+local DebugVo = {}
+
+DialogueSystem._update_dialogue_debug_all_contexts = function (self, gui, res_x, res_y, unit_name_color, context_name_color, data_color)
+	if script_data.dialogue_debug_all_contexts then
+		local contexts_by_object = self.tagquery_database.contexts_by_object
+		local start_x = 200
+
+		for unit, contexts in pairs(contexts_by_object) do
+			repeat
+				local player_data = Managers.player:owner(unit)
+				local unit_name = nil
+
+				if player_data then
+					unit_name = player_data.viewport_name or player_data.peer_id
+
+					if false then
+						break
+					end
+
+					local start_y = 20 + debug_font_size
+
+					Gui.text(gui, unit_name, debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x, start_y, 250), unit_name_color)
+
+					start_y = start_y + debug_font_size
+					local max_context_width = 0
+
+					for context_name, context_data in pairs(contexts) do
+						Gui.text(gui, context_name, debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x, start_y, 250), context_name_color)
+
+						local context_start_y = start_y
+						start_y = start_y + debug_font_size
+						local kv_order = {}
+						local max_key_width = 0
+						local key_start_y = start_y
+
+						for key, _ in pairs(context_data) do
+							Gui.text(gui, tostring(key), debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x, start_y, 250), data_color)
+
+							local min, max = Gui.text_extents(gui, tostring(key), debug_font_mtrl, debug_font_size)
+							local width = max.x - min.x
+							max_key_width = math.max(width, max_key_width)
+							start_y = start_y + debug_font_size
+							kv_order[#kv_order + 1] = key
+						end
+
+						max_key_width = max_key_width + 10
+						start_y = key_start_y
+						local max_value_width = 0
+
+						for i, key in ipairs(kv_order) do
+							local value = context_data[key]
+
+							Gui.text(gui, tostring(value), debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x + max_key_width, start_y, 250), data_color)
+
+							start_y = start_y + debug_font_size
+							local min, max = Gui.text_extents(gui, tostring(value), debug_font_mtrl, debug_font_size)
+							local width = max.x - min.x
+							max_value_width = math.max(width, max_key_width)
+						end
+
+						max_context_width = math.max(max_context_width, max_key_width + max_value_width)
+
+						Gui.rect(gui, Vector3(start_x - 2, context_start_y - 2, 249), Vector2(max_context_width, start_y - context_start_y), Color(200, 20, 20, 20))
+
+						start_y = start_y + debug_font_size * 0.5
+					end
+
+					start_x = start_x + max_context_width
+				end
+			until true
+		end
+	end
+end
+
+DialogueSystem._debug_draw_query = function (self, gui, start_x, start_y, data_color, query, header_color)
+	Gui.text(gui, string.format("Query result %s", query.result or "FAILURE"), debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x, start_y, 250), header_color)
+
+	local kv_order = {}
+	local max_key_width = 0
+	local max_value_width = 0
+
+	for key, value in pairs(query.query_context) do
+		local text_key_min, text_key_max = Gui.text_extents(gui, tostring(key), debug_font_mtrl, debug_font_size)
+		local key_width = text_key_max.x - text_key_min.x
+		max_key_width = math.max(key_width, max_key_width)
+		local text_value_min, text_value_max = Gui.text_extents(gui, tostring(value), debug_font_mtrl, debug_font_size)
+		local value_width = text_value_max.x - text_value_min.x
+		max_value_width = math.max(value_width, max_value_width)
+		kv_order[#kv_order + 1] = key
+	end
+
+	max_key_width = max_key_width + 10
+	max_value_width = max_value_width + 10
+
+	table.sort(kv_order)
+
+	for i, key in ipairs(kv_order) do
+		start_y = start_y - debug_font_size
+
+		Gui.text(gui, tostring(key), debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x, start_y, 250), data_color)
+		Gui.text(gui, tostring(query.query_context[key]), debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x + max_key_width, start_y, 250), data_color)
+	end
+
+	start_y = start_y - debug_font_size
+
+	return start_x, start_y, max_key_width + max_value_width
+end
+
+DialogueSystem._update_dialogue_debug_last_query = function (self, gui, res_x, res_y, data_color, t)
+	if script_data.dialogue_debug_last_query then
+		local start_x = 150
+		local start_y = res_y - 20
+		local next_story_update_t = self.next_story_line_update_t
+		local text = string.format("Time: %.2f (%.2f) - Next story line update at: %.2f", t, LOCAL_GAMETIME, next_story_update_t)
+
+		Gui.text(gui, text, debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x, start_y, 250), Colors.get("white"))
+
+		start_y = start_y - debug_font_size
+		local unused_query_offset = nil
+		local used_color = Color(250, 100, 255, 100)
+		local unused_color = Colors.get("gray")
+		local unit_extension_data = self.unit_extension_data
+
+		for _, extension in pairs(unit_extension_data) do
+			repeat
+				local last_query = extension.last_query
+
+				if not last_query then
+					break
+				end
+
+				local currently_playing_dialogue = extension.currently_playing_dialogue
+
+				if currently_playing_dialogue then
+					local used_query = currently_playing_dialogue.used_query
+					local original_start_y = start_y
+					start_x, start_y, unused_query_offset = self:_debug_draw_query(gui, start_x, start_y, data_color, used_query, used_color)
+
+					if last_query ~= used_query then
+						local _, unused_query_start_y = self:_debug_draw_query(gui, start_x + unused_query_offset, original_start_y, data_color, last_query, unused_color)
+						start_y = math.min(start_y, unused_query_start_y)
+					end
+				else
+					start_x, start_y = self:_debug_draw_query(gui, start_x, start_y, data_color, last_query, unused_color)
+				end
+			until true
+		end
+	end
+end
+
+DialogueSystem._update_dialogue_debug_rules = function (self, gui, res_x, res_y, context_name_color, data_color)
+	if script_data.dialogue_debug_rules then
+		local rules_debug_data = self.tagquery_database.debug_rules_table
+		local start_x = res_x - 500
+		local start_y = res_y - 50
+		local string_lookups = self.tagquery_database.string_lookups
+
+		for i, rule_data in ipairs(rules_debug_data) do
+			local rule = rule_data.rule
+			local text = string.format("Rule %q [%s]", rule.name, rule_data.rule_result)
+
+			Gui.text(gui, text, debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x, start_y, 250), context_name_color)
+
+			start_y = start_y - debug_font_size
+
+			if rule_data.criteria_results then
+				local comparator_values = rule_data.comparator_values
+				local criteria_values = rule_data.criteria_values
+
+				for j, criteria_result in ipairs(rule_data.criteria_results) do
+					local criteria_string = table.concat(rule.real_criterias[j], ",")
+					local value_1, value_2 = nil
+
+					if self.tagquery_database.criteria_type_is_string[rule.real_criterias[j][2]] then
+						value_1 = tostring(criteria_values and table.find(string_lookups, criteria_values[j]))
+						value_2 = tostring(comparator_values and table.find(string_lookups, comparator_values[j]))
+					else
+						if criteria_values then
+							value_1 = string.format("%.2d", criteria_values[j] or 0)
+						end
+
+						if comparator_values then
+							value_2 = string.format("%.2d", comparator_values[j] or 0)
+						end
+					end
+
+					text = string.format("%q [%i] %s [%s %s]", criteria_string, j, criteria_result, value_1, value_2)
+
+					Gui.text(gui, text, debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x, start_y, 250), data_color)
+
+					start_y = start_y - debug_font_size
+				end
+			end
+		end
+	end
+end
+
+DialogueSystem._update_debug_vo_by_file_gui = function (self, gui, res_x, res_y, data_color)
+	if debug_vo_by_file_gui then
+		local start_x = res_x - 800
+		local start_y = 120
+		local start_x2 = 100
+		local start_y2 = res_y - 100
+		local context_height = 0
+
+		Gui.text(gui, tostring("Line: " .. debug_text.cl .. "/" .. debug_text.total), debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x, start_y, 250), data_color)
+		Gui.text(gui, tostring("Sound Event: " .. debug_text.curret_event), debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x, start_y + 20, 250), data_color)
+
+		if debug_text.speaker then
+			Gui.text(gui, tostring("Speaker: " .. debug_text.speaker), debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x, start_y + 40, 250), data_color)
+		end
+
+		Gui.text(gui, tostring("Face Animation: " .. debug_text.current_face), debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x, start_y + 60, 250), data_color)
+
+		if Managers.localizer:exists(debug_text.subtitle) then
+			local dialogue_text = Localize(debug_text.subtitle)
+
+			Gui.text(gui, tostring("Subtitle: " .. dialogue_text), debug_font_mtrl, tonumber(debug_font_size - 1), debug_font, Vector3(start_x, start_y + 80, 250), Color(250, 255, 250, 0))
+		end
+
+		for i, _ in ipairs(debug_text.missing_vo) do
+			context_height = i
+		end
+
+		if context_height ~= 0 then
+			Gui.rect(gui, Vector2(start_x2 - 15, start_y2 + 15), Vector2(300, -30 - 10 * context_height), Color(200, 20, 20, 20))
+		end
+
+		for i, _ in ipairs(debug_text.missing_vo) do
+			Gui.text(gui, tostring("Missing Sound for: " .. debug_text.missing_vo[i]), debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x2, start_y2 - 10 * i, 250), data_color)
+		end
+
+		local player_input = Managers.input.input_services.Player
+
+		if player_input:get("interact") then
+			if debug_vo_by_file then
+				DebugVo_pause()
+
+				debug_text.pause_state = true
+			else
+				DebugVo_play()
+
+				debug_text.pause_state = false
+			end
+		end
+
+		if debug_text.pause_state then
+			Gui.text(gui, tostring("Press 'E' to unpause"), debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x + 300, start_y + 60, 250), Color(255, 100, 100, 0))
+			Gui.text(gui, tostring("PAUSED"), debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x + 420, start_y + 60, 250), Color(255, 255, 255, 0))
+		else
+			Gui.text(gui, tostring("Press 'E' to pause"), debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x + 300, start_y + 60, 250), Color(255, 120, 120, 0))
+		end
+
+		if debug_text.fast_play then
+			Gui.text(gui, tostring("Fast play active"), debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x + 300, start_y + 40, 250), Color(120, 120, 255, 0))
+		end
+
+		Gui.rect(gui, Vector3(start_x - 15, start_y - 15, 249), Vector2(500, start_y), Color(200, 20, 20, 20))
+	end
+end
+
+DialogueSystem._update_debug = function (self, t)
+	local gui = self.gui
+	local res_x = RESOLUTION_LOOKUP.res_w
+	local res_y = RESOLUTION_LOOKUP.res_h
+	local unit_name_color = Color(250, 255, 120, 0)
+	local context_name_color = Color(250, 255, 255, 100)
+	local data_color = Color(250, 255, 120, 0)
+
+	self:_update_dialogue_debug_all_contexts(gui, res_x, res_y, unit_name_color, context_name_color, data_color)
+	self:_update_dialogue_debug_last_query(gui, res_x, res_y, data_color, t)
+	self:_update_dialogue_debug_rules(gui, res_x, res_y, context_name_color, data_color)
+
+	if debug_vo_by_file then
+		local tick_add = 0.1
+
+		if debug_text.fast_play then
+			tick_add = 1
+		end
+
+		if t > debug_tick_time + tick_add then
+			debug_tick_time = t
+			debug_text.cl, debug_text.total, debug_text.current_face, debug_text.curret_event, debug_text.speaker, debug_text.missing_vo, debug_text.fast_play, debug_text.subtitle = DebugVo.play()
+		end
+	end
+
+	self:_update_debug_vo_by_file_gui(gui, res_x, res_y, data_color)
+end
+
+DialogueSystem.debug_play_voice = function (self, profile_name, event_name, is_npc)
+	local player_manager = Managers.player
+	local human_and_bot_players = player_manager:human_and_bot_players()
+
+	for _, player in pairs(human_and_bot_players) do
+		local profile_index = player:profile_index()
+		local profile = SPProfiles[profile_index]
+
+		if profile.display_name == profile_name and Unit.alive(player.player_unit) then
+			local dialogue_input = ScriptUnit.extension_input(player.player_unit, "dialogue_system")
+			local source_id = dialogue_input:play_voice_debug(event_name)
+
+			return source_id
+		end
+	end
+
+	if is_npc then
+		local dummy_unit = DialogueSystem:get_random_player()
+		local dialogue_input = ScriptUnit.extension_input(dummy_unit, "dialogue_system")
+		local source_id = dialogue_input:play_voice_debug(event_name)
+
+		return source_id
+	end
+end
+
+DialogueSystem.debug_print_played_query = function (self, query, extension)
 	print("--------------- PLAYED QUERY ---------------")
 	print(query.result)
 	print(extension.last_query_sound_event)
@@ -1876,10 +1821,10 @@ function DebugPrintPlayedQuery(query, extension)
 	print("--------------- END OF PLAYED QUERY ---------------")
 end
 
-DialogueSystem.DebugPlayDialogue = function (self)
+DialogueSystem.debug_play_dialogue = function (self)
 	local local_player_unit = Managers.player:local_player().player_unit
 
-	DialogueSystem:ResetMemoryTime("faction_memory", "time_since_conversation", local_player_unit)
+	DialogueSystem:reset_memory_time("faction_memory", "time_since_conversation", local_player_unit)
 
 	local dialogue_input = ScriptUnit.extension_input(local_player_unit, "dialogue_system")
 	local event_data = FrameTable.alloc_table()
@@ -1939,7 +1884,7 @@ function DebugVoByFile(file_name, quick)
 			end
 
 			if is_npc then
-				local dummy_unit = DialogueSystem:GetRandomPlayer()
+				local dummy_unit = DialogueSystem:get_random_player()
 				actor_unit = dummy_unit
 				local world = Managers.world:world("level_world")
 				wwise_world = Managers.world:wwise_world(world)
@@ -1948,7 +1893,7 @@ function DebugVoByFile(file_name, quick)
 			if currently_playing_id then
 				is_currently_playing = WwiseWorld.is_playing(wwise_world, currently_playing_id)
 			else
-				local source_id = DebugPlayVoice(current_file.profile_names[cl], current_file.sound_events[cl], is_npc)
+				local source_id = DialogueSystem:debug_play_voice(current_file.profile_names[cl], current_file.sound_events[cl], is_npc)
 
 				if source_id ~= nil then
 					currently_playing_id = source_id

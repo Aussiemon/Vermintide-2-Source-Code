@@ -326,18 +326,19 @@ CharacterStateHelper.do_common_state_transitions = function (status_extension, c
 	return false
 end
 
-CharacterStateHelper.is_colliding_with_gameplay_collision_box = function (world, unit, collision_filter)
+CharacterStateHelper.is_colliding_with_gameplay_collision_box = function (world, unit, collision_filter, params)
 	local physics_world = World.get_data(world, "physics_world")
-	local position = POSITION_LOOKUP[unit]
+	local position = (params and params.position) or POSITION_LOOKUP[unit]
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
-	local player_half_height = movement_settings_table.gameplay_collision_box.collision_check_player_half_height
-	local player_height_offset = movement_settings_table.gameplay_collision_box.collision_check_player_height_offset
+	local movement_settings_table_name = (params and params.movement_settings_table_name) or "gameplay_collision_box"
+	local player_half_height = movement_settings_table[movement_settings_table_name].collision_check_player_half_height
+	local player_height_offset = movement_settings_table[movement_settings_table_name].collision_check_player_height_offset
 	local offset = Vector3(0, 0, player_height_offset)
 	position = position + offset
 	local rotation = Unit.local_rotation(unit, 0)
-	local radius = movement_settings_table.gameplay_collision_box.collision_check_player_radius
+	local radius = movement_settings_table[(params and params.movement_settings_table_name) or "gameplay_collision_box"].collision_check_player_radius
 	local size = Vector3(radius, player_half_height, radius)
-	local actors, actor_count = PhysicsWorld.immediate_overlap(physics_world, "shape", "capsule", "position", position, "rotation", rotation, "size", size, "collision_filter", collision_filter, "use_global_table")
+	local actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "capsule", "position", position, "rotation", rotation, "size", size, "collision_filter", collision_filter, "use_global_table")
 	local collided_actor = actors and actors[1]
 	local colliding, collided_unit = nil
 
@@ -406,8 +407,6 @@ CharacterStateHelper.looking_down = function (first_person_extension, threshold)
 end
 
 CharacterStateHelper.look = function (input_extension, viewport_name, first_person_extension, status_extension, inventory_extension, override_sens, override_delta)
-	Profiler.start("look")
-
 	local camera_manager = Managers.state.camera
 	local look_sensitivity = override_sens or (camera_manager:has_viewport(viewport_name) and camera_manager:fov(viewport_name) / 0.785) or 1
 	local is_3p = false
@@ -419,7 +418,6 @@ CharacterStateHelper.look = function (input_extension, viewport_name, first_pers
 	end
 
 	first_person_extension:set_look_delta(look_delta)
-	Profiler.stop("look")
 end
 
 CharacterStateHelper.look_limited_rotation_freedom = function (input_extension, viewport_name, first_person_extension, ledge_unit, unit, max_radians_yaw, max_radians_pitch, status_extension, inventory_extension)
@@ -938,15 +936,11 @@ local weapon_action_interrupt_damage_types = {
 local interupting_action_data = {}
 
 CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension, inventory_extension, health_extension)
-	Profiler.start("weapon_action")
-
 	local item_data, right_hand_weapon_extension, left_hand_weapon_extension = CharacterStateHelper.get_item_data_and_weapon_extensions(inventory_extension)
 
 	table.clear(interupting_action_data)
 
 	if not item_data then
-		Profiler.stop("weapon_action")
-
 		return
 	end
 
@@ -1018,8 +1012,6 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 					status_extension:set_pushed(true, t)
 				end
 			end
-
-			Profiler.stop("weapon_action")
 
 			return
 		end
@@ -1119,7 +1111,6 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 
 			left_hand_weapon_extension:start_action(new_action, new_sub_action, item_template.actions, t, power_level, left_action_init_data)
 			right_hand_weapon_extension:start_action(new_action, new_sub_action, item_template.actions, t, power_level, right_action_init_data)
-			Profiler.stop("weapon_action")
 
 			return
 		end
@@ -1143,7 +1134,6 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 			end
 
 			left_hand_weapon_extension:start_action(new_action, new_sub_action, item_template.actions, t, power_level, next_action_init_data)
-			Profiler.stop("weapon_action")
 
 			return
 		end
@@ -1159,8 +1149,6 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 
 		right_hand_weapon_extension:start_action(new_action, new_sub_action, item_template.actions, t, power_level, next_action_init_data)
 	end
-
-	Profiler.stop("weapon_action")
 end
 
 CharacterStateHelper.stop_weapon_actions = function (inventory_extension, reason)
@@ -1220,8 +1208,6 @@ CharacterStateHelper.reload = function (input_extension, inventory_extension, st
 end
 
 CharacterStateHelper.check_crouch = function (unit, input_extension, status_extension, toggle_crouch, first_person_extension, t)
-	Profiler.start("crouch")
-
 	local is_crouching = status_extension:is_crouching()
 	local crouch = is_crouching
 	local toggle_input = input_extension:get("crouch")
@@ -1246,8 +1232,6 @@ CharacterStateHelper.check_crouch = function (unit, input_extension, status_exte
 	elseif not crouch and is_crouching and CharacterStateHelper.can_uncrouch(unit) then
 		CharacterStateHelper.uncrouch(unit, t, first_person_extension, status_extension)
 	end
-
-	Profiler.stop("crouch")
 
 	return is_crouching
 end
@@ -1438,12 +1422,91 @@ CharacterStateHelper.interact = function (input_extension, interactor_extension)
 	return true
 end
 
-CharacterStateHelper.is_ledge_hanging = function (world, unit, params)
+CharacterStateHelper.will_be_ledge_hanging = function (world, unit, params)
 	if not script_data.ledge_hanging_turned_off then
-		local colliding, ledge_unit = CharacterStateHelper.is_colliding_with_gameplay_collision_box(world, unit, "filter_ledge_collision")
+		local collision_filter = params.collision_filter or "filter_ledge_collision"
+		local colliding, ledge_unit = CharacterStateHelper.is_raycasting_to_gameplay_collision_box(world, unit, collision_filter, params)
 
 		if colliding then
-			local own_z = Vector3.z(Unit.world_position(unit, 0))
+			local own_z = Vector3.z((params and params.ray_position) or Unit.world_position(unit, 0)) + ((params and params.z_offset) or 0)
+			local trigger_box_node = Unit.node(ledge_unit, "g_gameplay_ledge_trigger_box")
+			local ledge_z = Vector3.z(Unit.world_position(ledge_unit, trigger_box_node))
+			local below_z = own_z <= ledge_z
+
+			if below_z then
+				params.ledge_unit = ledge_unit
+
+				return true
+			end
+		end
+	end
+
+	return false
+end
+
+local INDEX_ACTOR = 4
+
+CharacterStateHelper.is_raycasting_to_gameplay_collision_box = function (world, unit, collision_filter, params)
+	local physics_world = World.get_data(world, "physics_world")
+	local position = (params and params.ray_position) or POSITION_LOOKUP[unit]
+	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
+	local movement_settings_table_name = (params and params.movement_settings_table_name) or "gameplay_collision_box"
+	local player_half_height = movement_settings_table[movement_settings_table_name].collision_check_player_half_height
+	local player_height_offset = movement_settings_table[movement_settings_table_name].collision_check_player_height_offset
+	local offset = Vector3(0, 0, player_height_offset * 2)
+	position = position + offset
+	local colliding, collided_unit = nil
+	local hits, num_hits = PhysicsWorld.immediate_raycast(physics_world, position, Vector3.down(), player_half_height * 4, "all", "collision_filter", collision_filter, "use_global_table")
+
+	for i = 1, num_hits, 1 do
+		local hit = hits[i]
+		local hit_actor = hit[INDEX_ACTOR]
+		local hit_unit = Actor.unit(hit_actor)
+
+		if Unit.get_data(hit_unit, "is_ledge_unit") then
+			colliding = true
+			collided_unit = hit_unit
+		else
+			colliding = false
+			collided_unit = nil
+
+			break
+		end
+	end
+
+	if colliding and collided_unit then
+		local radius = (params and params.radius) or 0.15
+		local max_hits = 4
+		local result = PhysicsWorld.linear_sphere_sweep(physics_world, position, position + Vector3.down() * player_half_height * 4, radius, max_hits, "collision_filter", collision_filter, "report_initial_overlap")
+
+		if result then
+			for j = 1, #result, 1 do
+				local hit = result[j]
+				local hit_actor = hit.actor
+				local hit_unit = Actor.unit(hit_actor)
+
+				if Unit.get_data(hit_unit, "is_ledge_unit") then
+					colliding = true
+					collided_unit = hit_unit
+				else
+					colliding = false
+					collided_unit = nil
+
+					break
+				end
+			end
+		end
+	end
+
+	return colliding, collided_unit
+end
+
+CharacterStateHelper.is_ledge_hanging = function (world, unit, params)
+	if not script_data.ledge_hanging_turned_off then
+		local colliding, ledge_unit = CharacterStateHelper.is_colliding_with_gameplay_collision_box(world, unit, "filter_ledge_collision", params)
+
+		if colliding then
+			local own_z = Vector3.z((params and params.position) or Unit.world_position(unit, 0)) + ((params and params.z_offset) or 0)
 			local trigger_box_node = Unit.node(ledge_unit, "g_gameplay_ledge_trigger_box")
 			local ledge_z = Vector3.z(Unit.world_position(ledge_unit, trigger_box_node))
 			local below_z = own_z <= ledge_z

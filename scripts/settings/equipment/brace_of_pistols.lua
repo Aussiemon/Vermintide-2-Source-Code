@@ -145,16 +145,19 @@ weapon_template.actions = {
 	},
 	action_two = {
 		default = {
-			minimum_hold_time = 0.5,
-			ammo_requirement = 1,
+			anim_event = "lock_target",
 			can_abort_reload = true,
+			allow_hold_toggle = true,
 			anim_end_event = "attack_finished",
 			kind = "dummy",
+			minimum_hold_time = 0.5,
 			max_targets = 6,
 			spread_template_override = "pistol_special",
 			hold_input = "action_two_hold",
-			anim_event = "lock_target",
-			allow_hold_toggle = true,
+			ammo_requirement = 1,
+			anim_end_event_condition_func = function (unit, end_reason)
+				return end_reason ~= "new_interupting_action"
+			end,
 			total_time = math.huge,
 			buff_data = {
 				{

@@ -31,7 +31,7 @@ DialogueContextSystem.on_add_extension = function (self, world, unit, extension_
 		context = context
 	}
 
-	assert(extension_init_data.profile)
+	fassert(extension_init_data.profile, "Missing profile!")
 
 	context.player_profile = extension_init_data.profile.character_vo
 

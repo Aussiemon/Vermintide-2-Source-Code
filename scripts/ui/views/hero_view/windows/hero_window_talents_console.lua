@@ -249,9 +249,11 @@ end
 HeroWindowTalentsConsole._handle_input = function (self, dt, t)
 	local parent = self.parent
 	local widgets_by_name = self._widgets_by_name
+	local hover_row, hover_column = self:_is_talent_hovered()
 
-	if self:_is_talent_hovered() then
+	if hover_row and hover_column then
 		self:_play_sound("play_gui_talents_selection_hover")
+		self:_set_talent_focused(hover_row, hover_column)
 	end
 
 	if self:_is_disabled_talent_hovered() then

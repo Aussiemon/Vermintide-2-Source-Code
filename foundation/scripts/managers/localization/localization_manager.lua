@@ -1,16 +1,44 @@
 LocalizationManager = class(LocalizationManager)
 
-LocalizationManager.init = function (self, path)
-	self.path = path
+LocalizationManager.init = function (self)
+	self:_setup_localizers()
 
-	fassert(not self._localizer, "LocalizationManager already initialized")
-
-	self._localizer = Localizer(path)
 	self._macros = {}
 	self._find_macro_callback_to_self = callback(self._find_macro, self)
 	local has_steam = rawget(_G, "Steam")
 	local language_id = Application.user_setting("language_id") or (has_steam and Steam:language()) or "en"
 	self._language_id = language_id
+end
+
+LocalizationManager._setup_localizers = function (self)
+	fassert(not self._localizers, "LocalizationManager already initialized")
+
+	self._localizers = {}
+
+	for dlc, settings in pairs(DLCSettings) do
+		local localization = settings.localization
+
+		if localization and Application.can_get("strings", localization) then
+			self._localizers[#self._localizers + 1] = Localizer(localization)
+		end
+	end
+
+	if #self._localizers == 0 then
+		self._localizers[#self._localizers + 1] = Localizer("localization/game")
+	end
+end
+
+LocalizationManager._base_lookup = function (self, text_id)
+	local localizers = self._localizers
+
+	for ii = 1, #localizers, 1 do
+		local localizer = localizers[ii]
+		local text = Localizer.lookup(localizer, text_id)
+
+		if text then
+			return text
+		end
+	end
 end
 
 LocalizationManager.add_macro = function (self, macro, callback_function)
@@ -30,10 +58,9 @@ LocalizationManager.lookup = function (self, text_id)
 		return localize_longest(text_id)
 	end
 
-	fassert(self._localizer, "LocalizationManager not initialized")
-	fassert(not string.find(text_id, " "), "Found space character in localization id %q", text_id)
+	fassert(self._localizers, "LocalizationManager not initialized")
 
-	local str = Localizer.lookup(self._localizer, text_id) or "<" .. tostring(text_id) .. ">"
+	local str = self:_base_lookup(text_id) or "<" .. tostring(text_id) .. ">"
 
 	return self:apply_macro(str)
 end
@@ -45,9 +72,9 @@ LocalizationManager.apply_macro = function (self, str)
 end
 
 LocalizationManager.simple_lookup = function (self, text_id)
-	fassert(self._localizer, "LocalizationManager not initialized")
+	fassert(self._localizers, "LocalizationManager not initialized")
 
-	local str = Localizer.lookup(self._localizer, text_id) or "<" .. tostring(text_id) .. ">"
+	local str = self:_base_lookup(text_id) or "<" .. tostring(text_id) .. ">"
 
 	return str
 end
@@ -59,9 +86,9 @@ LocalizationManager._find_macro = function (self, macro_string)
 end
 
 LocalizationManager.exists = function (self, text_id)
-	fassert(self._localizer, "LocalizationManager not initialized")
+	fassert(self._localizers, "LocalizationManager not initialized")
 
-	return Localizer.lookup(self._localizer, text_id) ~= nil
+	return self:_base_lookup(text_id) ~= nil
 end
 
 function Localize(text_id)
@@ -138,7 +165,7 @@ local function localize_one(text_id, locale)
 	local path = Managers.localizer.path
 	local localizer = Localizer(path)
 
-	return Localizer.lookup(localizer, text_id) or "<>"
+	return self:_base_lookup(text_id) or "<>"
 end
 
 local function get_localizations(text_id)
@@ -192,7 +219,7 @@ end
 local INPUT_ACTIONS = {}
 
 LocalizationManager.get_input_action = function (self, text_id)
-	local str = Localizer.lookup(self._localizer, text_id) or "<" .. tostring(text_id) .. ">"
+	local str = self:_base_lookup(text_id) or "<" .. tostring(text_id) .. ">"
 	local macro = string.match(str, "%b$;[%a%d_]*:")
 
 	table.clear(INPUT_ACTIONS)
@@ -211,7 +238,7 @@ LocalizationManager.get_input_action = function (self, text_id)
 end
 
 LocalizationManager.replace_macro_in_string = function (self, text_id, replacement_str)
-	local str = Localizer.lookup(self._localizer, text_id) or "<" .. tostring(text_id) .. ">"
+	local str = self:_base_lookup(text_id) or "<" .. tostring(text_id) .. ">"
 	local result, num_replacements = string.gsub(str, "%b$;[%a%d_]*:", replacement_str)
 
 	return result, str, Localize(text_id), num_replacements

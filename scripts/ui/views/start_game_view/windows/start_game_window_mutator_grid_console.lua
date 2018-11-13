@@ -2,7 +2,6 @@ local definitions = local_require("scripts/ui/views/start_game_view/windows/defi
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
-local DO_RELOAD = false
 local SELECTION_INPUT = "confirm_press"
 local grid_settings = {
 	{
@@ -102,8 +101,6 @@ StartGameWindowMutatorGridConsole.on_enter = function (self, params, offset)
 	if not gamepad_active then
 		self.parent:set_selected_heroic_deed_backend_id(nil)
 	end
-
-	rawset(_G, "mutator_grid", self)
 end
 
 StartGameWindowMutatorGridConsole._start_transition_animation = function (self, animation_name)
@@ -157,17 +154,9 @@ StartGameWindowMutatorGridConsole.on_exit = function (self, params)
 	end
 
 	self._confirm_selection = nil
-
-	rawset(_G, "mutator_grid", nil)
 end
 
 StartGameWindowMutatorGridConsole.update = function (self, dt, t)
-	if DO_RELOAD then
-		DO_RELOAD = false
-
-		self:create_ui_elements()
-	end
-
 	self._item_grid:update(dt, t)
 	self:_update_animations(dt)
 	self:_update_page_info()
@@ -182,10 +171,11 @@ StartGameWindowMutatorGridConsole.post_update = function (self, dt, t)
 end
 
 StartGameWindowMutatorGridConsole._update_animations = function (self, dt)
-	self.ui_animator:update(dt)
+	local ui_animator = self.ui_animator
+
+	ui_animator:update(dt)
 
 	local animations = self._animations
-	local ui_animator = self.ui_animator
 
 	for animation_name, animation_id in pairs(animations) do
 		if ui_animator:is_animation_completed(animation_id) then
@@ -224,9 +214,8 @@ StartGameWindowMutatorGridConsole._is_button_hovered = function (self, widget)
 end
 
 StartGameWindowMutatorGridConsole._handle_input = function (self, dt, t)
-	local widgets_by_name = self._widgets_by_name
-	local item_grid = self._item_grid
 	local input_service = self.parent:window_input_service()
+	local item_grid = self._item_grid
 
 	if item_grid:handle_gamepad_selection(input_service) then
 		self:_play_sound("play_gui_inventory_item_hover")
@@ -238,12 +227,12 @@ StartGameWindowMutatorGridConsole._handle_input = function (self, dt, t)
 		self.parent:set_selected_heroic_deed_backend_id(selected_item.backend_id)
 	end
 
-	local allow_single_press = true
-	local item = item_grid:is_item_pressed(allow_single_press)
-
 	if item_grid:is_item_hovered() then
 		self:_play_sound("play_gui_inventory_item_hover")
 	end
+
+	local allow_single_press = true
+	local item = item_grid:is_item_pressed(allow_single_press)
 
 	if item then
 		self:_play_sound("play_gui_lobby_button_04_heroic_deed_inventory_click")
@@ -258,6 +247,7 @@ StartGameWindowMutatorGridConsole._handle_input = function (self, dt, t)
 		self.parent:set_layout_by_name("heroic_deeds")
 	end
 
+	local widgets_by_name = self._widgets_by_name
 	local page_button_next = widgets_by_name.page_button_next
 	local page_button_previous = widgets_by_name.page_button_previous
 
@@ -322,11 +312,6 @@ StartGameWindowMutatorGridConsole._update_selected_item_backend_id = function (s
 	end
 end
 
-StartGameWindowMutatorGridConsole._exit = function (self, selected_level)
-	self.exit = true
-	self.exit_level_id = selected_level
-end
-
 StartGameWindowMutatorGridConsole.draw = function (self, dt)
 	local ui_top_renderer = self._ui_top_renderer
 	local ui_scenegraph = self.ui_scenegraph
@@ -334,23 +319,15 @@ StartGameWindowMutatorGridConsole.draw = function (self, dt)
 
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
 
-	for _, widget in ipairs(self._widgets) do
+	local widgets = self._widgets
+
+	for i = 1, #widgets, 1 do
+		local widget = widgets[i]
+
 		UIRenderer.draw_widget(ui_top_renderer, widget)
 	end
 
-	local active_node_widgets = self._active_node_widgets
-
-	if active_node_widgets then
-		for _, widget in ipairs(active_node_widgets) do
-			UIRenderer.draw_widget(ui_top_renderer, widget)
-		end
-	end
-
 	UIRenderer.end_pass(ui_top_renderer)
-end
-
-StartGameWindowMutatorGridConsole._play_sound = function (self, event)
-	self.parent:play_sound(event)
 end
 
 StartGameWindowMutatorGridConsole._update_page_info = function (self)
@@ -371,11 +348,9 @@ end
 
 StartGameWindowMutatorGridConsole._setup_input_buttons = function (self)
 	local input_service = self.parent:window_input_service()
-	local input_1_texture_data = UISettings.get_gamepad_input_texture_data(input_service, INPUT_ACTION_NEXT, true)
-	local input_2_texture_data = UISettings.get_gamepad_input_texture_data(input_service, INPUT_ACTION_PREVIOUS, true)
 	local widgets_by_name = self._widgets_by_name
+	local input_1_texture_data = UISettings.get_gamepad_input_texture_data(input_service, INPUT_ACTION_NEXT, true)
 	local input_1_widget = widgets_by_name.input_icon_next
-	local input_2_widget = widgets_by_name.input_icon_previous
 	local icon_style_input_1 = input_1_widget.style.texture_id
 	icon_style_input_1.horizontal_alignment = "center"
 	icon_style_input_1.vertical_alignment = "center"
@@ -384,6 +359,8 @@ StartGameWindowMutatorGridConsole._setup_input_buttons = function (self)
 		input_1_texture_data.size[2]
 	}
 	input_1_widget.content.texture_id = input_1_texture_data.texture
+	local input_2_texture_data = UISettings.get_gamepad_input_texture_data(input_service, INPUT_ACTION_PREVIOUS, true)
+	local input_2_widget = widgets_by_name.input_icon_previous
 	local icon_style_input_2 = input_2_widget.style.texture_id
 	icon_style_input_2.horizontal_alignment = "center"
 	icon_style_input_2.vertical_alignment = "center"
@@ -407,8 +384,8 @@ StartGameWindowMutatorGridConsole._set_gamepad_input_buttons_visibility = functi
 end
 
 StartGameWindowMutatorGridConsole._handle_gamepad_activity = function (self)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local force_update = self.gamepad_active_last_frame == nil
+	local gamepad_active = Managers.input:is_device_active("gamepad")
 
 	if gamepad_active then
 		if not self.gamepad_active_last_frame or force_update then

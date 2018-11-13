@@ -767,7 +767,6 @@ local action_data = {
 
 					blackboard.kill_skaven_challenge_completed = true
 
-					print("Completed challenge ", stat_name)
 					QuestSettings.send_completed_message(stat_name)
 				end
 			end
@@ -926,7 +925,6 @@ local action_data = {
 
 					blackboard.kill_skaven_challenge_completed = true
 
-					print("Completed challenge ", stat_name)
 					QuestSettings.send_completed_message(stat_name)
 				end
 			end

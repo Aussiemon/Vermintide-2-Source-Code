@@ -1,16 +1,9 @@
 local window_default_settings = UISettings.game_start_windows
-local window_background = window_default_settings.background
 local window_frame = window_default_settings.frame
 local window_size = window_default_settings.size
 local window_spacing = window_default_settings.spacing
 local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
-local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
-local window_width_offset = window_size[1] * 2 + window_spacing * 2
 local window_text_width = window_size[1] - (window_frame_width * 2 + 60)
-local difficulty_option_size = {
-	1020,
-	200
-}
 local large_window_size = {
 	window_size[1] * 2 + window_spacing,
 	window_size[2]
@@ -20,6 +13,58 @@ local info_window_size = {
 	window_size[2]
 }
 local console_menu_scenegraphs = UISettings.console_menu_scenegraphs
+local animation_definitions = {
+	on_enter = {
+		{
+			name = "fade_in",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 0
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+				params.render_settings.alpha_multiplier = anim_progress
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		},
+		{
+			name = "animate_in_window",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+				ui_scenegraph.window.local_position[1] = scenegraph_definition.window.position[1] + math.floor(-100 * (1 - anim_progress))
+				ui_scenegraph.info_window.local_position[1] = scenegraph_definition.info_window.position[1] + math.floor(-80 * (1 - anim_progress))
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	},
+	on_exit = {
+		{
+			name = "fade_out",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 1
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+				params.render_settings.alpha_multiplier = 1 - anim_progress
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	}
+}
 local scenegraph_definition = {
 	screen = console_menu_scenegraphs.screen,
 	area = console_menu_scenegraphs.area,
@@ -311,22 +356,6 @@ local level_text_style = {
 	horizontal_alignment = "center",
 	vertical_alignment = "bottom",
 	dynamic_font_size = true,
-	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("font_title", 255),
-	offset = {
-		0,
-		0,
-		2
-	}
-}
-local mission_selection_title_text_style = {
-	font_size = 36,
-	upper_case = true,
-	localize = false,
-	use_shadow = true,
-	word_wrap = true,
-	horizontal_alignment = "center",
-	vertical_alignment = "center",
 	font_type = "hell_shark_header",
 	text_color = Colors.get_color_table_with_alpha("font_title", 255),
 	offset = {
@@ -1018,196 +1047,7 @@ local function create_end_act_widget(optional_texture_version)
 	return widget
 end
 
-local function create_window_divider(scenegraph_id, size)
-	local widget = {
-		element = {
-			passes = {
-				{
-					texture_id = "bottom_edge",
-					style_id = "bottom_edge",
-					pass_type = "tiled_texture"
-				},
-				{
-					texture_id = "edge_holder_left",
-					style_id = "edge_holder_left",
-					pass_type = "texture"
-				},
-				{
-					texture_id = "edge_holder_right",
-					style_id = "edge_holder_right",
-					pass_type = "texture"
-				}
-			}
-		},
-		content = {
-			edge_holder_right = "menu_frame_09_divider_right",
-			edge_holder_left = "menu_frame_09_divider_left",
-			bottom_edge = "menu_frame_09_divider"
-		},
-		style = {
-			bottom_edge = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					5,
-					0,
-					6
-				},
-				size = {
-					size[1] - 10,
-					5
-				},
-				texture_tiling_size = {
-					size[1] - 10,
-					5
-				}
-			},
-			edge_holder_left = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					3,
-					-6,
-					10
-				},
-				size = {
-					9,
-					17
-				}
-			},
-			edge_holder_right = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					size[1] - 12,
-					-6,
-					10
-				},
-				size = {
-					9,
-					17
-				}
-			}
-		},
-		scenegraph_id = scenegraph_id,
-		offset = {
-			0,
-			0,
-			0
-		}
-	}
-
-	return widget
-end
-
-local function create_vertical_window_divider(scenegraph_id, size)
-	local widget = {
-		element = {
-			passes = {
-				{
-					texture_id = "edge",
-					style_id = "edge",
-					pass_type = "tiled_texture"
-				},
-				{
-					texture_id = "edge_holder_top",
-					style_id = "edge_holder_top",
-					pass_type = "texture"
-				},
-				{
-					texture_id = "edge_holder_bottom",
-					style_id = "edge_holder_bottom",
-					pass_type = "texture"
-				}
-			}
-		},
-		content = {
-			edge = "menu_frame_09_divider_vertical",
-			edge_holder_top = "menu_frame_09_divider_top",
-			edge_holder_bottom = "menu_frame_09_divider_bottom"
-		},
-		style = {
-			edge = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					0,
-					6,
-					6
-				},
-				size = {
-					5,
-					size[2] - 9
-				},
-				texture_tiling_size = {
-					5,
-					size[2] - 9
-				}
-			},
-			edge_holder_top = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					-6,
-					size[2] - 7,
-					10
-				},
-				size = {
-					17,
-					9
-				}
-			},
-			edge_holder_bottom = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					-6,
-					3,
-					10
-				},
-				size = {
-					17,
-					9
-				}
-			}
-		},
-		scenegraph_id = scenegraph_id,
-		offset = {
-			0,
-			0,
-			0
-		}
-	}
-
-	return widget
-end
-
 local end_act_widget = create_end_act_widget()
-local disable_with_gamepad = true
 local widgets = {
 	level_title = UIWidgets.create_simple_text("level_title", "level_title", nil, nil, level_text_style),
 	selected_level = create_level_widget(nil, "level_texture_frame"),
@@ -1229,64 +1069,10 @@ for i = 1, 5, 1 do
 	act_widgets[i] = create_act_widget(i)
 end
 
-local animation_definitions = {
-	on_enter = {
-		{
-			name = "fade_in",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "animate_in_window",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				ui_scenegraph.window.local_position[1] = scenegraph_definition.window.position[1] + math.floor(-100 * (1 - anim_progress))
-				ui_scenegraph.info_window.local_position[1] = scenegraph_definition.info_window.position[1] + math.floor(-80 * (1 - anim_progress))
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	},
-	on_exit = {
-		{
-			name = "fade_out",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 1
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = 1 - anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	}
-}
-
 return {
 	widgets = widgets,
 	act_widgets = act_widgets,
 	node_widgets = node_widgets,
-	map_size = large_window_size,
 	end_act_widget = end_act_widget,
 	scenegraph_definition = scenegraph_definition,
 	animation_definitions = animation_definitions,

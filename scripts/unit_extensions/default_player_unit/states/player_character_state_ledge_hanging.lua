@@ -198,11 +198,6 @@ PlayerCharacterStateLedgeHanging.calculate_offset_rotation = function (self)
 			ray_goal_position = below_player_position + to_player * 0.5 * i
 			ray_succeded, hit_position = is_in_line_of_sight(unit, ray_origin_position, ray_goal_position, physics_world)
 
-			if script_data.debug_hang_ledges then
-				QuickDrawerStay:sphere((ray_succeded and ray_goal_position) or hit_position, 0.1, (ray_succeded and Color(0, 255, 0)) or Color(255, 0, 0))
-				QuickDrawerStay:line(ray_origin_position, (ray_succeded and ray_goal_position) or hit_position, (ray_succeded and Color(0, 255, 0)) or Color(255, 0, 0))
-			end
-
 			if ray_succeded then
 				break
 			end
@@ -215,12 +210,6 @@ PlayerCharacterStateLedgeHanging.calculate_offset_rotation = function (self)
 			local new_rotation = Quaternion.look(cross_dir)
 			rotation = new_rotation
 		elseif script_data.debug_hang_ledges then
-			local debug_text_manager = Managers.state.debug_text
-
-			QuickDrawerStay:sphere(ledge_position, 0.1, Colors.get("yellow"))
-			QuickDrawerStay:sphere((ray_succeded and ray_goal_position) or hit_position, 0.1, (ray_succeded and Color(0, 255, 0)) or Color(255, 0, 0))
-			QuickDrawerStay:line(ray_origin_position, (ray_succeded and ray_goal_position) or hit_position, (ray_succeded and Color(0, 255, 0)) or Color(255, 0, 0))
-			debug_text_manager:output_world_text("Could not find suitable rotation. LD may need to look at this ledge.", 0.1, ledge_position + Vector3(0, 0, 0.3), nil, "ledge_haning_text", Vector3(255, 255, 0))
 		end
 	end
 

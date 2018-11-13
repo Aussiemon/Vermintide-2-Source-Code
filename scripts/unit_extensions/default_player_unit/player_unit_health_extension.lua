@@ -59,7 +59,7 @@ PlayerUnitHealthExtension.create_health_game_object = function (self)
 	local unit = self.unit
 	local difficulty_manager = Managers.state.difficulty
 	local difficulty_settings = difficulty_manager:get_difficulty_settings()
-	local max_health_alive, max_health_kd = self:_get_base_max_health()
+	local max_health_alive, _ = self:_get_base_max_health()
 	local game_object_id = self.network_manager:unit_game_object_id(unit)
 	local game_object_data_table = {
 		current_temporary_health = 0,
@@ -176,8 +176,6 @@ PlayerUnitHealthExtension._revive = function (self, unit, t)
 end
 
 PlayerUnitHealthExtension.update = function (self, dt, context, t)
-	Profiler.start("PlayerUnitHealthExtension")
-
 	local status_extension = self.status_extension
 	local game_object_id = self.health_game_object_id
 	local unit = self.unit
@@ -272,12 +270,6 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 		self.previous_state = state
 		self.previous_max_health = max_health
 	end
-
-	Profiler.stop("PlayerUnitHealthExtension")
-
-	if script_data.show_player_health then
-		self:debug_show_health()
-	end
 end
 
 local FORCED_PERMANENT_DAMAGE_TYPES = {}
@@ -357,8 +349,7 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 			local force_permanent_damage = FORCED_PERMANENT_DAMAGE_TYPES[damage_type]
 			local current_health = GameSession.game_object_field(game, game_object_id, "current_health")
 			local current_temporary_health = GameSession.game_object_field(game, game_object_id, "current_temporary_health")
-			local permanent_damage_amount = 0
-			local temporary_damage_amount = 0
+			local permanent_damage_amount, temporary_damage_amount = nil
 
 			if force_permanent_damage then
 				permanent_damage_amount = (current_health < damage_amount and current_health) or damage_amount
@@ -636,6 +627,12 @@ PlayerUnitHealthExtension.get_max_health = function (self)
 	return max_health
 end
 
+PlayerUnitHealthExtension.get_base_max_health = function (self)
+	local base_health = self:_get_base_max_health()
+
+	return base_health
+end
+
 PlayerUnitHealthExtension.get_uncursed_max_health = function (self)
 	local game = self.game
 	local game_object_id = self.health_game_object_id
@@ -652,14 +649,14 @@ PlayerUnitHealthExtension.get_uncursed_max_health = function (self)
 	return max_health
 end
 
-PlayerUnitHealthExtension.get_damage_taken = function (self)
+PlayerUnitHealthExtension.get_damage_taken = function (self, max_health_go_field)
 	local game = self.game
 	local game_object_id = self.health_game_object_id
 
 	if game and game_object_id then
 		local health = GameSession.game_object_field(game, game_object_id, "current_health")
 		local temporary_health = GameSession.game_object_field(game, game_object_id, "current_temporary_health")
-		local max_health = GameSession.game_object_field(game, game_object_id, "max_health")
+		local max_health = GameSession.game_object_field(game, game_object_id, max_health_go_field or "max_health")
 
 		return max_health - (health - temporary_health)
 	end

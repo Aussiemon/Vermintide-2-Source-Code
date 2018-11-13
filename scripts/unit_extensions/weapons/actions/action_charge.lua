@@ -9,6 +9,7 @@ ActionCharge.init = function (self, world, item_name, is_server, owner_unit, dam
 	self.item_name = item_name
 	self.wwise_world = Managers.world:wwise_world(world)
 	self._rumble_effect_id = nil
+	self.owner_player = Managers.player:owner(owner_unit)
 
 	if ScriptUnit.has_extension(owner_unit, "inventory_system") then
 		local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
@@ -69,24 +70,7 @@ ActionCharge.client_owner_start_action = function (self, new_action, t)
 		end
 	end
 
-	local owner_player = Managers.player:owner(owner_unit)
-	local is_bot = owner_player and owner_player.bot_player
-
-	if not is_bot then
-		local charge_sound_name = new_action.charge_sound_name
-
-		if charge_sound_name then
-			local wwise_playing_id, wwise_source_id = ActionUtils.start_charge_sound(self.wwise_world, self.weapon_unit, owner_unit, new_action)
-			self.charging_sound_id = wwise_playing_id
-			self.wwise_source_id = wwise_source_id
-		end
-	end
-
-	local charge_sound_husk_name = self.current_action.charge_sound_husk_name
-
-	if charge_sound_husk_name then
-		ActionUtils.play_husk_sound_event(charge_sound_husk_name, owner_unit)
-	end
+	self:_start_charge_sound()
 
 	local spread_template_override = new_action.spread_template_override
 
@@ -109,6 +93,41 @@ ActionCharge.client_owner_start_action = function (self, new_action, t)
 
 		inventory_extension:set_loaded_projectile_override(loaded_projectile_settings)
 	end
+end
+
+ActionCharge._start_charge_sound = function (self)
+	local current_action = self.current_action
+	local owner_unit = self.owner_unit
+	local owner_player = self.owner_player
+	local is_bot = owner_player and owner_player.bot_player
+	local is_local = owner_player and not owner_player.remote
+	local wwise_world = self.wwise_world
+
+	if is_local and not is_bot then
+		local wwise_playing_id, wwise_source_id = ActionUtils.start_charge_sound(wwise_world, self.weapon_unit, owner_unit, current_action)
+		self.charging_sound_id = wwise_playing_id
+		self.wwise_source_id = wwise_source_id
+	end
+
+	ActionUtils.play_husk_sound_event(wwise_world, current_action.charge_sound_husk_name, owner_unit, is_bot)
+end
+
+ActionCharge._stop_charge_sound = function (self)
+	local current_action = self.current_action
+	local owner_unit = self.owner_unit
+	local owner_player = self.owner_player
+	local is_bot = owner_player and owner_player.bot_player
+	local is_local = owner_player and not owner_player.remote
+	local wwise_world = self.wwise_world
+
+	if is_local and not is_bot then
+		ActionUtils.stop_charge_sound(wwise_world, self.charging_sound_id, self.wwise_source_id, current_action)
+
+		self.charging_sound_id = nil
+		self.wwise_source_id = nil
+	end
+
+	ActionUtils.play_husk_sound_event(wwise_world, current_action.charge_sound_husk_stop_event, owner_unit, is_bot)
 end
 
 ActionCharge.client_owner_post_update = function (self, dt, t, world, can_damage)
@@ -172,24 +191,16 @@ ActionCharge.client_owner_post_update = function (self, dt, t, world, can_damage
 	local charge_effect_material_name = current_action.charge_effect_material_name
 	local charge_effect_material_variable_name = current_action.charge_effect_material_variable_name
 
-	if charge_effect_material_name and charge_effect_material_variable_name and particle_id then
-		local world = self.world
-
-		if World.has_particles_material(world, particle_id, charge_effect_material_name) then
-			World.set_particles_material_scalar(world, particle_id, charge_effect_material_name, charge_effect_material_variable_name, charge_level)
-		end
+	if charge_effect_material_name and charge_effect_material_variable_name and particle_id and World.has_particles_material(world, particle_id, charge_effect_material_name) then
+		World.set_particles_material_scalar(world, particle_id, charge_effect_material_name, charge_effect_material_variable_name, charge_level)
 	end
 
 	local left_particle_id = self.left_particle_id
 	local left_charge_effect_material_name = current_action.charge_effect_material_name
 	local left_charge_effect_material_variable_name = current_action.charge_effect_material_variable_name
 
-	if left_charge_effect_material_name and left_charge_effect_material_variable_name and left_particle_id then
-		local world = self.world
-
-		if World.has_particles_material(world, left_particle_id, left_charge_effect_material_name) then
-			World.set_particles_material_scalar(world, left_particle_id, left_charge_effect_material_name, left_charge_effect_material_variable_name, charge_level)
-		end
+	if left_charge_effect_material_name and left_charge_effect_material_variable_name and left_particle_id and World.has_particles_material(world, left_particle_id, left_charge_effect_material_name) then
+		World.set_particles_material_scalar(world, left_particle_id, left_charge_effect_material_name, left_charge_effect_material_variable_name, charge_level)
 	end
 
 	local owner_unit = self.owner_unit
@@ -222,12 +233,7 @@ ActionCharge.client_owner_post_update = function (self, dt, t, world, can_damage
 	self.charge_level = charge_level
 end
 
-ActionCharge.finish = function (self, reason)
-	local owner_unit = self.owner_unit
-	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-	local first_person_unit = self.first_person_unit
-	local current_action = self.current_action
-
+ActionCharge._clean_up = function (self)
 	if self.particle_id then
 		World.destroy_particles(self.world, self.particle_id)
 
@@ -239,6 +245,22 @@ ActionCharge.finish = function (self, reason)
 
 		self.left_particle_id = nil
 	end
+
+	if self._rumble_effect_id then
+		Managers.state.controller_features:stop_effect(self._rumble_effect_id)
+
+		self._rumble_effect_id = nil
+	end
+
+	self:_stop_charge_sound()
+end
+
+ActionCharge.finish = function (self, reason)
+	local owner_unit = self.owner_unit
+	local first_person_unit = self.first_person_unit
+	local current_action = self.current_action
+
+	self:_clean_up()
 
 	local overcharge_extension = self.overcharge_extension
 
@@ -260,21 +282,6 @@ ActionCharge.finish = function (self, reason)
 
 	Unit.flow_event(first_person_unit, "lua_charge_stop")
 
-	if self._rumble_effect_id then
-		Managers.state.controller_features:stop_effect(self._rumble_effect_id)
-
-		self._rumble_effect_id = nil
-	end
-
-	local charging_sound_id = self.charging_sound_id
-
-	if charging_sound_id then
-		ActionUtils.stop_charge_sound(self.wwise_world, charging_sound_id, self.wwise_source_id, self.current_action)
-
-		self.wwise_source_id = nil
-		self.charging_sound_id = nil
-	end
-
 	if self.spread_extension then
 		self.spread_extension:reset_spread_template()
 	end
@@ -289,44 +296,13 @@ ActionCharge.finish = function (self, reason)
 
 	inventory_extension:set_loaded_projectile_override(nil)
 
-	local charge_sound_husk_stop_event = current_action.charge_sound_husk_stop_event
-
-	if charge_sound_husk_stop_event then
-		ActionUtils.play_husk_sound_event(charge_sound_husk_stop_event, owner_unit)
-	end
-
 	return {
 		charge_level = self.charge_level
 	}
 end
 
 ActionCharge.destroy = function (self)
-	if self.particle_id then
-		World.destroy_particles(self.world, self.particle_id)
-
-		self.particle_id = nil
-	end
-
-	if self.left_particle_id then
-		World.destroy_particles(self.world, self.left_particle_id)
-
-		self.left_particle_id = nil
-	end
-
-	local charging_sound_id = self.charging_sound_id
-
-	if charging_sound_id then
-		ActionUtils.stop_charge_sound(self.wwise_world, charging_sound_id, self.wwise_source_id, self.current_action)
-
-		self.wwise_source_id = nil
-		self.charging_sound_id = nil
-	end
-
-	if self._rumble_effect_id then
-		Managers.state.controller_features:stop_effect(self._rumble_effect_id)
-
-		self._rumble_effect_id = nil
-	end
+	self:_clean_up()
 end
 
 return

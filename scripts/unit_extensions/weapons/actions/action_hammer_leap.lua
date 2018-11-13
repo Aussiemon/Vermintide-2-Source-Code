@@ -31,7 +31,7 @@ ActionHammerLeap.client_owner_post_update = function (self, dt, t, world, can_da
 	local player_position = POSITION_LOOKUP[owner_unit_1p]
 	local player_rotation = Unit.world_rotation(owner_unit_1p, 0)
 	local direction = Vector3.normalize(Quaternion.forward(player_rotation))
-	local result, hit_position, hit_distance, normal, actor = PhysicsWorld.immediate_raycast(physics_world, player_position, direction, "closest", "collision_filter", "filter_hammer_leap_check")
+	local _, hit_position, _, normal, _ = PhysicsWorld.immediate_raycast(physics_world, player_position, direction, "closest", "collision_filter", "filter_hammer_leap_check")
 	self.target_position = nil
 
 	if hit_position then

@@ -81,16 +81,31 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 		local search_config = self.search_config
 		level_key = search_config.level_key
 		difficulty = search_config.difficulty
+		local lobby_members_class = self._lobby:members()
+		local lobby_members = lobby_members_class:get_members()
+		local profiles = {}
+
+		for _, peer_id in ipairs(lobby_members) do
+			local player = Managers.player:player_from_peer_id(peer_id)
+
+			if player then
+				profiles[#profiles + 1] = player:profile_index()
+			end
+		end
+
 		local difficulty_id = table.find(DIFFICULTY_LUT, difficulty)
 		local powerlevel = self._matchmaking_manager:get_average_power_level()
 		local strict_matchmaking = 0
+		local network_hash = self._lobby:get_network_hash()
 		local ticket_params = {
 			level = {
 				level_key
 			},
 			difficulty = difficulty_id,
 			powerlevel = powerlevel,
-			strict_matchmaking = strict_matchmaking
+			strict_matchmaking = strict_matchmaking,
+			profiles = profiles,
+			network_hash = network_hash
 		}
 
 		self._lobby:enable_matchmaking(not search_config.private_game, ticket_params, 600)

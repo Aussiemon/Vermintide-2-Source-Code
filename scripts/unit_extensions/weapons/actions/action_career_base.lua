@@ -13,10 +13,7 @@ ActionCareerBase.init = function (self, world, item_name, is_server, owner_unit,
 end
 
 ActionCareerBase.finish = function (self, reason)
-	if reason == "action_complete" then
-		local owner_unit = self.owner_unit
-		slot3 = ScriptUnit.extension(owner_unit, "first_person_system")
-	end
+	return
 end
 
 return

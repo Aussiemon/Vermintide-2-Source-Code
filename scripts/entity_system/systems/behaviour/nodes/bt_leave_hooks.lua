@@ -178,6 +178,9 @@ BTLeaveHooks.on_lord_intro_leave = function (unit, blackboard, t)
 
 		network_manager:anim_event(unit, "to_combat")
 	end
+
+	blackboard.stagger = nil
+	blackboard.stagger_immune_time = t + 2
 end
 
 BTLeaveHooks.on_lord_warlord_intro_leave = function (unit, blackboard, t)

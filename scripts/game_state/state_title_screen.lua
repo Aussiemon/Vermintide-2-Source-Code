@@ -20,27 +20,19 @@ StateTitleScreen.on_enter = function (self, params)
 	if PLATFORM == "xb1" then
 		Application.set_kinect_enabled(true)
 
-		if Managers.voice_chat then
-			Managers.voice_chat:destroy()
-
-			Managers.voice_chat = nil
-		end
-
 		if Managers.backend then
 			Managers.backend:reset()
 		end
+	elseif PLATFORM == "ps4" and Managers.backend then
+		Managers.backend:reset()
 	end
 
 	if script_data.honduras_demo then
 		Wwise.set_state("menu_mute_ingame_sounds", "true")
 	end
 
-	if (PLATFORM == "ps4" or PLATFORM == "xb1") and rawget(_G, "LobbyInternal") and LobbyInternal.network_initialized() then
-		if PLATFORM == "xb1" and not Managers.account:offline_mode() then
-			LobbyInternal.shutdown_xboxlive_client()
-		else
-			LobbyInternal.shutdown_client()
-		end
+	if (PLATFORM == "ps4" or PLATFORM == "xb1") and rawget(_G, "LobbyInternal") and LobbyInternal.network_initialized() and (PLATFORM == "ps4" or Managers.account:offline_mode()) then
+		LobbyInternal.shutdown_client()
 	end
 
 	local loading_context = self.parent.loading_context
@@ -64,19 +56,11 @@ StateTitleScreen.on_enter = function (self, params)
 
 	self._params = params
 
-	Profiler.start("setup world")
 	self:_setup_world()
-	Profiler.stop("setup world")
 	self:_setup_leak_prevention()
-	Profiler.start("init input")
 	self:_init_input()
-	Profiler.stop("init input")
-	Profiler.start("init ui")
 	self:_init_ui()
-	Profiler.stop("init ui")
-	Profiler.start("init ui")
 	self:_setup_state_machine()
-	Profiler.stop("init ui")
 	self:_init_popup_manager()
 	self:_init_chat_manager()
 
@@ -92,8 +76,12 @@ StateTitleScreen.on_enter = function (self, params)
 
 	self._platform = PLATFORM
 
-	if self._platform == "ps4" and PS4.signed_in() then
-		Managers.account:set_presence("title_screen")
+	if self._platform == "ps4" then
+		local account_manager = Managers.account
+
+		if account_manager:is_online() then
+			account_manager:set_presence("title_screen")
+		end
 	end
 
 	self:_fade_out()
@@ -171,15 +159,11 @@ end
 
 StateTitleScreen._setup_world = function (self)
 	if not Managers.package:has_loaded("resource_packages/start_menu_splash", "StateSplashScreen") and not GameSettingsDevelopment.skip_start_screen then
-		Profiler.start("stall loading splash")
 		Managers.package:load("resource_packages/start_menu_splash", "StateSplashScreen")
-		Profiler.stop("stall loading splash")
 	end
 
 	if PLATFORM ~= "win32" and not Managers.package:has_loaded("resource_packages/news_splash/news_splash", "state_splash_screen") and not GameSettingsDevelopment.skip_start_screen then
-		Profiler.start("stall loading news splash")
 		Managers.package:load("resource_packages/news_splash/news_splash", "state_splash_screen")
-		Profiler.stop("stall loading news splash")
 	end
 
 	self._world_name = "title_screen_world"

@@ -874,9 +874,7 @@ EquipmentUI.update = function (self, dt, t)
 	end
 
 	self:_handle_resolution_modified()
-	Profiler.start("-sync player equipment")
 	self:_sync_player_equipment()
-	Profiler.stop("-sync player equipment")
 	self:draw(dt)
 end
 

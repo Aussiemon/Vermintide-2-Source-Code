@@ -127,14 +127,11 @@ GameNetworkManager.in_game_session = function (self)
 end
 
 GameNetworkManager.update_receive = function (self, dt)
-	Profiler.start("GameNetworkManager:update_receive()")
 	Network.update_receive(dt, self._event_delegate.event_table)
 
 	local game_session = self.game_session
 
 	if not game_session then
-		Profiler.stop("GameNetworkManager:update_receive()")
-
 		return
 	end
 
@@ -152,14 +149,10 @@ GameNetworkManager.update_receive = function (self, dt)
 		self.game_session = nil
 		self._left_game = true
 	end
-
-	Profiler.stop("GameNetworkManager:update_receive()")
 end
 
 GameNetworkManager.update_transmit = function (self, dt)
-	Profiler.start("GameNetworkManager:update_transmit()")
 	Network.update_transmit()
-	Profiler.stop("GameNetworkManager:update_transmit()")
 end
 
 GameNetworkManager.update = function (self, dt)
@@ -694,8 +687,6 @@ GameNetworkManager.set_peer_synchronizing = function (self, peer_id)
 end
 
 GameNetworkManager._hot_join_sync = function (self, peer_id)
-	Profiler.start("hot_join_sync")
-
 	if Managers.state.debug then
 		Managers.state.debug:hot_join_sync(peer_id)
 	end
@@ -726,7 +717,6 @@ GameNetworkManager._hot_join_sync = function (self, peer_id)
 	self._object_synchronizing_clients[peer_id] = nil
 
 	self.network_transmit:remove_peer_ignore(peer_id)
-	Profiler.stop("hot_join_sync")
 end
 
 GameNetworkManager.rpc_play_particle_effect = function (self, sender, effect_id, go_id, node_id, offset, rotation_offset, linked)
@@ -936,6 +926,14 @@ GameNetworkManager.rpc_coop_feedback = function (self, sender, player1_peer_id, 
 		statistics_db:increment_stat(player1:stats_id(), "aidings")
 	elseif predicate == "save" then
 		statistics_db:increment_stat(player1:stats_id(), "saves")
+	elseif predicate == "discarded_grimoire" then
+		local player_1_peer_id = player1.peer_id
+		local is_player_controlled = player1:is_player_controlled()
+		local player_1_name = (is_player_controlled and ((rawget(_G, "Steam") and Steam.user_name(player_1_peer_id)) or tostring(player_1_peer_id))) or player1:name()
+		local pop_chat = true
+		local message = string.format(Localize("system_chat_player_discarded_grimoire"), player_1_name)
+
+		Managers.chat:add_local_system_message(1, message, pop_chat)
 	end
 
 	Managers.state.event:trigger("add_coop_feedback", player1:stats_id() .. player2:stats_id(), local_human, predicate, player1, player2)

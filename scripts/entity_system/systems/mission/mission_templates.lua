@@ -12,18 +12,15 @@ MissionTemplates = {
 				current_amount = 0,
 				update_sound = true,
 				get_current_amount = function (self)
-					return Vault.withdraw_single_ex(self.mission_text, self.current_amount)
+					return self.current_amount
 				end,
 				set_current_amount = function (self, value)
-					Vault.deposit_single(self.mission_text, value)
-
 					self.current_amount = value
 				end,
 				increase_current_amount = function (self, amount)
-					local ret = Vault.single_add_ex(self.mission_text, amount, self.current_amount)
-					self.current_amount = ret
+					self.current_amount = self.current_amount + amount
 
-					return ret
+					return self.current_amount
 				end,
 				collect_amount = collect_amount,
 				mission_text = mission_text,
@@ -42,8 +39,6 @@ MissionTemplates = {
 				dice_type = mission_data.dice_type,
 				token_type = mission_data.token_type
 			}
-
-			Vault.deposit_single(data.mission_text, data.current_amount)
 
 			return data
 		end,

@@ -290,8 +290,6 @@ PlayerBotBase.blackboard = function (self)
 end
 
 PlayerBotBase.update = function (self, unit, input, dt, context, t)
-	Profiler.start("PlayerBotBase")
-
 	local health_extension = self._health_extension
 	local status_extension = self._status_extension
 	local locomotion_extension = self._locomotion_extension
@@ -302,30 +300,14 @@ PlayerBotBase.update = function (self, unit, input, dt, context, t)
 	if is_alive and not is_ready_for_assisted_respawn and not is_linked_movement then
 		SELF_UNIT = unit
 
-		Profiler.start("update blackboard")
 		self:_update_blackboard(dt, t)
-		Profiler.stop("update blackboard")
-		Profiler.start("update target enemy")
 		self:_update_target_enemy(dt, t)
-		Profiler.stop("update target enemy")
-		Profiler.start("update target ally")
 		self:_update_target_ally(dt, t)
-		Profiler.stop("update target ally")
-		Profiler.start("_update_liquid_escape")
 		self:_update_liquid_escape()
-		Profiler.stop("_update_liquid_escape")
-		Profiler.start("_update_vortex_escape")
 		self:_update_vortex_escape()
-		Profiler.stop("_update_vortex_escape")
-		Profiler.start("update pickups")
 		self:_update_pickups(dt, t)
-		Profiler.stop("update pickups")
-		Profiler.start("update interactables")
 		self:_update_interactables(dt, t)
-		Profiler.stop("update interactables")
-		Profiler.start("update brain")
 		self._brain:update(unit, t, dt)
-		Profiler.stop("update brain")
 
 		local moving_platform = locomotion_extension:get_moving_platform()
 		local is_disabled = status_extension:is_disabled()
@@ -333,23 +315,11 @@ PlayerBotBase.update = function (self, unit, input, dt, context, t)
 		if is_disabled or moving_platform then
 			self._navigation_extension:teleport(POSITION_LOOKUP[unit])
 		elseif locomotion_extension:is_on_ground() then
-			Profiler.start("update movement target")
 			self:_update_movement_target(dt, t)
-			Profiler.stop("update movement target")
 		end
 
-		Profiler.start("update_attack_request")
 		self:_update_attack_request(t)
-		Profiler.stop("update_attack_request")
 	end
-
-	if script_data.ai_bots_debug then
-		Profiler.start("update debug draw")
-		self:_debug_draw_update(dt)
-		Profiler.stop("update debug draw")
-	end
-
-	Profiler.stop("PlayerBotBase")
 end
 
 PlayerBotBase._update_blackboard = function (self, dt, t)
@@ -379,16 +349,10 @@ PlayerBotBase._update_blackboard = function (self, dt, t)
 end
 
 PlayerBotBase._update_target_enemy = function (self, dt, t)
-	Profiler.start("update target enemy")
-
 	local pos = POSITION_LOOKUP[self._unit]
 
-	Profiler.start("update_slot_target")
 	self:_update_slot_target(dt, t, pos)
-	Profiler.stop("update_slot_target")
-	Profiler.start("update_proximity_target")
 	self:_update_proximity_target(dt, t, pos)
-	Profiler.stop("update_proximity_target")
 
 	local bb = self._blackboard
 	local old_target = bb.target_unit
@@ -408,47 +372,25 @@ PlayerBotBase._update_target_enemy = function (self, dt, t)
 
 	if priority_enemy and prio_enemy_dist < 3 then
 		bb.target_unit = priority_enemy
-
-		dtext("Bot Enemy Target: priority_enemy")
 	elseif urgent_enemy and urgent_enemy_dist < 3 then
 		bb.target_unit = urgent_enemy
-
-		dtext("Bot Enemy Target: urgent_enemy")
 	elseif opportunity_enemy and opp_enemy_dist < 3 then
 		bb.target_unit = opportunity_enemy
-
-		dtext("Bot Enemy Target: opportunity_enemy")
 	elseif slot_enemy and slot_enemy_dist < 3 then
 		bb.target_unit = slot_enemy
-
-		dtext("Bot Enemy Target: slot_enemy")
 	elseif prox_enemy and prox_enemy_dist < 2 then
 		bb.target_unit = prox_enemy
-
-		dtext("Bot Enemy Target: prox_enemy")
 	elseif priority_enemy then
 		bb.target_unit = priority_enemy
-
-		dtext("Bot Enemy Target: priority_enemy")
 	elseif urgent_enemy then
 		bb.target_unit = urgent_enemy
-
-		dtext("Bot Enemy Target: urgent_enemy")
 	elseif opportunity_enemy then
 		bb.target_unit = opportunity_enemy
-
-		dtext("Bot Enemy Target: opportunity_enemy")
 	elseif slot_enemy then
 		bb.target_unit = slot_enemy
-
-		dtext("Bot Enemy Target: slot_enemy")
 	elseif bb.target_unit then
 		bb.target_unit = nil
-
-		dtext("Bot Enemy Target: no_target")
 	end
-
-	Profiler.stop("update target enemy")
 end
 
 local BROADPHASE_QUERY_TEMP = {}
@@ -715,8 +657,6 @@ PlayerBotBase._find_target_position_on_nav_mesh = function (self, nav_world, wan
 end
 
 PlayerBotBase._update_target_ally = function (self, dt, t)
-	Profiler.start("update target ally")
-
 	local unit = self._unit
 	local blackboard = self._blackboard
 	local breed = self._bot_profile
@@ -755,8 +695,6 @@ PlayerBotBase._update_target_ally = function (self, dt, t)
 
 		ai_bot_group_system:register_ally_needs_aid_priority(unit, blackboard.target_ally_unit)
 	end
-
-	Profiler.stop("update target ally")
 end
 
 local MIN_HEADING_TOWARDS_US_DOT = math.degrees_to_radians(30)
@@ -1361,7 +1299,6 @@ PlayerBotBase.cb_cover_point_path_result = function (self, hash, success, destin
 		cover_bb.failed_cover_points[hash] = true
 
 		table.clear(cover_bb.active_threats)
-		dprint("failed cover point", destination)
 	end
 end
 
@@ -1405,13 +1342,11 @@ PlayerBotBase._update_cover = function (self, unit, self_pos, blackboard, cover_
 			cover_bb.cover_unit = found_unit
 			cover_bb.fails = 0
 
-			dprint("found point", cover_position)
 			bot_group_system:set_in_cover(unit, found_unit)
 		else
 			cover_bb.fails = cover_bb.fails + 1
 
 			table.clear(cover_bb.active_threats)
-			dprint("failed to find point, forcing re-evaluation")
 		end
 	elseif not in_line_of_fire and changed then
 		cover_bb.cover_position:store(Vector3.invalid_vector())
@@ -1521,8 +1456,6 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 		if override_melee then
 			blackboard.melee.engage_position_set = false
 		end
-
-		dprint("stop to avoid vortex")
 	elseif override_vortex_escape or override_liquid_escape or cover_position or override_melee then
 		local override = transport_unit_override or override_vortex_escape or override_liquid_escape or cover_position or override_melee
 		local offset = override - previous_destination
@@ -1573,20 +1506,12 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 				blackboard.target_ally_aid_destination:store(target_position)
 
 				path_callback = callback(self, "cb_ally_path_result", target_ally_unit)
-
-				if not should_stop then
-					dprint("path to ally")
-				end
 			elseif priority_target_enemy and enemy_unit ~= priority_target_enemy and self:_enemy_path_allowed(priority_target_enemy) then
 				target_position = self:_find_target_position_on_nav_mesh(nav_world, POSITION_LOOKUP[priority_target_enemy])
 				path_callback = callback(self, "cb_enemy_path_result", priority_target_enemy)
-
-				dprint("path to priority enemy", priority_target_enemy, target_position)
 			elseif enemy_unit and (enemy_unit == priority_target_enemy or enemy_unit == blackboard.urgent_target_enemy) and self:_enemy_path_allowed(enemy_unit) then
 				target_position = self:_find_target_position_on_nav_mesh(nav_world, POSITION_LOOKUP[enemy_unit])
 				path_callback = callback(self, "cb_enemy_path_result", enemy_unit)
-
-				dprint("path to enemy", enemy_unit, target_position)
 			elseif blackboard.target_ally_needs_aid and target_ally_need_type ~= "in_need_of_attention_look" then
 				target_position, should_stop = self:_alter_target_position(nav_world, self_pos, target_ally_unit, POSITION_LOOKUP[target_ally_unit], target_ally_need_type)
 				blackboard.interaction_unit = target_ally_unit
@@ -1594,15 +1519,9 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 				blackboard.target_ally_aid_destination:store(target_position)
 
 				path_callback = callback(self, "cb_ally_path_result", target_ally_unit)
-
-				if not should_stop then
-					dprint("path to ally")
-				end
 			elseif goal_selection_func_name and ALIVE[target_ally_unit] then
 				local func = LocomotionUtils[goal_selection_func_name]
 				target_position = func(nav_world, unit, target_ally_unit)
-
-				dprint("path to goal")
 			elseif unit_alive(blackboard.health_pickup) and blackboard.allowed_to_take_health_pickup and t < blackboard.health_pickup_valid_until and (self._last_health_pickup_attempt.unit ~= blackboard.health_pickup or not self._last_health_pickup_attempt.blacklist or health_slot_pickup_order_unit == blackboard.health_pickup) then
 				local pickup_unit = blackboard.health_pickup
 				target_position = self:_find_pickup_position_on_navmesh(nav_world, self_pos, pickup_unit, self._last_health_pickup_attempt)
@@ -1615,8 +1534,6 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 					blackboard.interaction_unit = pickup_unit
 					blackboard.forced_pickup_unit = pickup_unit
 				end
-
-				dprint("path to health pickup")
 			elseif unit_alive(blackboard.mule_pickup) and (self._last_mule_pickup_attempt.unit ~= blackboard.mule_pickup or not self._last_mule_pickup_attempt.blacklist or potion_slot_pickup_order_unit == blackboard.mule_pickup) then
 				local pickup_unit = blackboard.mule_pickup
 				target_position = self:_find_pickup_position_on_navmesh(nav_world, self_pos, pickup_unit, self._last_mule_pickup_attempt)
@@ -1629,8 +1546,6 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 					blackboard.interaction_unit = pickup_unit
 					blackboard.forced_pickup_unit = pickup_unit
 				end
-
-				dprint("path to mule pickup")
 			end
 
 			if not target_position and unit_alive(blackboard.ammo_pickup) and blackboard.needs_ammo and t < blackboard.ammo_pickup_valid_until then
@@ -1645,8 +1560,6 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 				if target_position then
 					blackboard.interaction_unit = blackboard.ammo_pickup
 				end
-
-				dprint("path to ammo pickup")
 			end
 
 			local new_position_is_outside_hold_radius = hold_position and target_position and hold_position_max_distance_sq < Vector3.distance_squared(hold_position, target_position)
@@ -1670,7 +1583,6 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 				follow_bb.target_position:store(target_position)
 
 				if self:new_destination_distance_check(self_pos, previous_destination, target_position, navigation_extension) then
-					dprint("move to ", target_position)
 					navigation_extension:move_to(target_position, path_callback)
 				end
 
@@ -1688,7 +1600,6 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 		local area_damage_system = Managers.state.entity:system("area_damage_system")
 
 		if current_goal and area_damage_system:is_position_in_liquid(current_goal, BotNavTransitionManager.NAV_COST_MAP_LAYERS) then
-			dprint("stop, next goal is in liquid ", current_goal)
 			navigation_extension:stop()
 		end
 	end
@@ -1870,7 +1781,6 @@ PlayerBotBase.cb_enemy_path_result = function (self, enemy_unit, success, destin
 	path_status.failed = fail
 
 	path_status.last_path_destination:store(destination)
-	dprint("path to enemy result " .. ((success and "success") or "failed"))
 
 	for unit, path in pairs(paths) do
 		if not unit_alive(unit) then

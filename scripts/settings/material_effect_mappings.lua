@@ -3617,7 +3617,6 @@ MaterialEffectMappings.ratling_gunner = MaterialEffectMappings.ratling_gunner or
 			fruit = "units/projection_decals/hit_fruit_pierce_1",
 			dirt = "units/projection_decals/hit_dirt_pierce_1",
 			stone = "units/projection_decals/hit_stone_pierce_1",
-			water = "units/projection_decals/empty",
 			glass = "units/projection_decals/hit_glass_pierce_1",
 			sand = "units/projection_decals/hit_sand_pierce_1",
 			armored = "units/projection_decals/hit_metal_hollow_pierce_1",
@@ -3639,6 +3638,12 @@ MaterialEffectMappings.ratling_gunner = MaterialEffectMappings.ratling_gunner or
 			plaster = {
 				"units/projection_decals/hit_plaster_pierce_1",
 				"units/projection_decals/hit_plaster_pierce_2"
+			},
+			water = {
+				"units/projection_decals/empty"
+			},
+			water_deep = {
+				"units/projection_decals/empty"
 			},
 			wood_bridge = {
 				"units/projection_decals/hit_wood_pierce_1",
@@ -3881,29 +3886,78 @@ MaterialEffectMappings.ratling_gunner = MaterialEffectMappings.ratling_gunner or
 MaterialEffectMappings.autocannon = MaterialEffectMappings.autocannon or {
 	decal = {
 		material_drawer_mapping = {
-			fruit = "units/projection_decals/ratlinggun_1",
-			dirt = "units/projection_decals/ratlinggun_1",
-			plaster = "units/projection_decals/ratlinggun_1",
-			stone = "units/projection_decals/ratlinggun_1",
-			water = "units/projection_decals/empty",
-			wood_bridge = "units/projection_decals/ratlinggun_1",
-			glass = "units/projection_decals/ratlinggun_1",
-			sand = "units/projection_decals/ratlinggun_1",
-			armored = "units/projection_decals/ratlinggun_1",
-			flesh = "units/projection_decals/ratlinggun_1",
-			stone_dirt = "units/projection_decals/ratlinggun_1",
-			cloth = "units/projection_decals/ratlinggun_1",
-			snow = "units/projection_decals/ratlinggun_1",
-			ice = "units/projection_decals/ratlinggun_1",
-			forest_grass = "units/projection_decals/ratlinggun_1",
-			grass = "units/projection_decals/ratlinggun_1",
-			hay = "units/projection_decals/empty",
-			wood_hollow = "units/projection_decals/ratlinggun_1",
-			stone_wet = "units/projection_decals/ratlinggun_1",
-			mud = "units/projection_decals/ratlinggun_1",
-			wood_solid = "units/projection_decals/ratlinggun_1",
-			metal_solid = "units/projection_decals/ratlinggun_1",
-			metal_hollow = "units/projection_decals/ratlinggun_1"
+			cloth = {
+				"units/projection_decals/ratlinggun_1"
+			},
+			dirt = {
+				"units/projection_decals/ratlinggun_1"
+			},
+			flesh = {
+				"units/projection_decals/ratlinggun_1"
+			},
+			forest_grass = {
+				"units/projection_decals/ratlinggun_1"
+			},
+			fruit = {
+				"units/projection_decals/ratlinggun_1"
+			},
+			glass = {
+				"units/projection_decals/ratlinggun_1"
+			},
+			grass = {
+				"units/projection_decals/ratlinggun_1"
+			},
+			hay = {
+				"units/projection_decals/empty"
+			},
+			ice = {
+				"units/projection_decals/ratlinggun_1"
+			},
+			mud = {
+				"units/projection_decals/ratlinggun_1"
+			},
+			metal_solid = {
+				"units/projection_decals/ratlinggun_1"
+			},
+			metal_hollow = {
+				"units/projection_decals/ratlinggun_1"
+			},
+			armored = {
+				"units/projection_decals/ratlinggun_1"
+			},
+			sand = {
+				"units/projection_decals/ratlinggun_1"
+			},
+			stone = {
+				"units/projection_decals/ratlinggun_1"
+			},
+			stone_dirt = {
+				"units/projection_decals/ratlinggun_1"
+			},
+			stone_wet = {
+				"units/projection_decals/ratlinggun_1"
+			},
+			snow = {
+				"units/projection_decals/ratlinggun_1"
+			},
+			plaster = {
+				"units/projection_decals/ratlinggun_1"
+			},
+			water = {
+				"units/projection_decals/empty"
+			},
+			water_deep = {
+				"units/projection_decals/empty"
+			},
+			wood_bridge = {
+				"units/projection_decals/ratlinggun_1"
+			},
+			wood_solid = {
+				"units/projection_decals/ratlinggun_1"
+			},
+			wood_hollow = {
+				"units/projection_decals/ratlinggun_1"
+			}
 		},
 		settings = {
 			depth = 0.5,
@@ -4132,32 +4186,70 @@ MaterialEffectMappings.autocannon = MaterialEffectMappings.autocannon or {
 MaterialEffectMappings.enemy_bullet_impact = MaterialEffectMappings.enemy_bullet_impact or {
 	decal = {
 		material_drawer_mapping = {
-			fruit = "units/projection_decals/hit_fruit_pierce_1",
-			dirt = "units/projection_decals/hit_dirt_pierce_1",
-			stone = "units/projection_decals/hit_stone_pierce_1",
-			water = "units/projection_decals/empty",
-			water_deep = "units/projection_decals/empty",
-			glass = "units/projection_decals/hit_glass_pierce_1",
-			sand = "units/projection_decals/hit_sand_pierce_1",
-			armored = "units/projection_decals/hit_metal_hollow_pierce_1",
-			flesh = "units/projection_decals/hit_flesh_pierce_1",
-			stone_dirt = "units/projection_decals/hit_stone_pierce_1",
-			snow = "units/projection_decals/hit_snow_pierce_1",
-			ice = "units/projection_decals/hit_ice_pierce_1",
-			forest_grass = "units/projection_decals/hit_grass_pierce_1",
-			grass = "units/projection_decals/hit_grass_pierce_1",
-			hay = "units/projection_decals/empty",
-			stone_wet = "units/projection_decals/hit_stone_pierce_1",
-			mud = "units/projection_decals/hit_dirt_pierce_1",
-			metal_solid = "units/projection_decals/hit_metal_solid_pierce_1",
-			metal_hollow = "units/projection_decals/hit_metal_hollow_pierce_1",
 			cloth = {
 				"units/projection_decals/hit_cloth_pierce_1",
 				"units/projection_decals/hit_cloth_pierce_2"
 			},
+			dirt = {
+				"units/projection_decals/hit_dirt_pierce_1"
+			},
+			flesh = {
+				"units/projection_decals/hit_flesh_pierce_1"
+			},
+			forest_grass = {
+				"units/projection_decals/hit_grass_pierce_1"
+			},
+			fruit = {
+				"units/projection_decals/hit_fruit_pierce_1"
+			},
+			glass = {
+				"units/projection_decals/hit_glass_pierce_1"
+			},
+			grass = {
+				"units/projection_decals/hit_grass_pierce_1"
+			},
+			hay = {
+				"units/projection_decals/empty"
+			},
+			ice = {
+				"units/projection_decals/hit_ice_pierce_1"
+			},
+			mud = {
+				"units/projection_decals/hit_dirt_pierce_1"
+			},
+			metal_solid = {
+				"units/projection_decals/hit_metal_solid_pierce_1"
+			},
+			metal_hollow = {
+				"units/projection_decals/hit_metal_hollow_pierce_1"
+			},
+			armored = {
+				"units/projection_decals/hit_metal_hollow_pierce_1"
+			},
+			sand = {
+				"units/projection_decals/hit_sand_pierce_1"
+			},
+			stone = {
+				"units/projection_decals/hit_stone_pierce_1"
+			},
+			stone_dirt = {
+				"units/projection_decals/hit_stone_pierce_1"
+			},
+			stone_wet = {
+				"units/projection_decals/hit_stone_pierce_1"
+			},
+			snow = {
+				"units/projection_decals/hit_snow_pierce_1"
+			},
 			plaster = {
 				"units/projection_decals/hit_plaster_pierce_1",
 				"units/projection_decals/hit_plaster_pierce_2"
+			},
+			water = {
+				"units/projection_decals/empty"
+			},
+			water_deep = {
+				"units/projection_decals/empty"
 			},
 			wood_bridge = {
 				"units/projection_decals/hit_wood_pierce_1",
@@ -9643,7 +9735,7 @@ MaterialEffectMappings.enemy_light_weapon_drop = MaterialEffectMappings.enemy_li
 }
 
 if DEDICATED_SERVER then
-	for effect_namn, effect in pairs(MaterialEffectMappings) do
+	for _, effect in pairs(MaterialEffectMappings) do
 		effect.sound = nil
 	end
 end

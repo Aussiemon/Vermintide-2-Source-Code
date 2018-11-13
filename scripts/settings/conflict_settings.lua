@@ -1,7 +1,6 @@
 require("scripts/settings/horde_compositions")
 require("scripts/settings/horde_compositions_pacing")
 
-WAS_RELOADED = true
 HordeSettingsBasics = {
 	ambush = {
 		max_size,

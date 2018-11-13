@@ -71,6 +71,9 @@ StateLoading.on_enter = function (self, param_block)
 		Managers.backend:start_benchmark()
 	end
 
+	local live_events_interface = Managers.backend:get_interface("live_events")
+	self._live_event_request_id = live_events_interface:request_live_events()
+
 	if self._lobby_client ~= nil and not self._lobby_client:is_dedicated_server() then
 		Managers.party:set_leader(self._lobby_client:lobby_host())
 	end
@@ -449,7 +452,7 @@ StateLoading.update = function (self, dt, t)
 		end
 	end
 
-	if PLATFORM == "xb1" and self._has_invitation_error and not self._popup_id then
+	if PLATFORM ~= "win32" and self._has_invitation_error and not self._popup_id then
 		self:create_popup("invite_broken", "invite_error", "restart_as_server", "menu_accept")
 
 		self._wanted_state = StateTitleScreen
@@ -1018,12 +1021,53 @@ StateLoading._try_next_state = function (self, dt)
 			ui_done = self:_level_end_view_done()
 		end
 
-		if Managers.backend:is_disconnected() and not self._popup_id then
+		local backend_manager = Managers.backend
+
+		if backend_manager:is_disconnected() and not self._popup_id then
 			self:_backend_broken()
 		end
 
-		if Managers.backend:is_waiting_for_user_input() then
+		if backend_manager:is_waiting_for_user_input() then
 			return
+		end
+
+		if self._live_event_request_id and not backend_manager:is_disconnected() and not self._teardown_network then
+			local live_events_interface = backend_manager:get_interface("live_events")
+
+			if not live_events_interface:live_events_request_complete(self._live_event_request_id) or not self._level_key then
+				return
+			else
+				local live_events = live_events_interface:get_live_events()
+				local live_event_packages = {}
+
+				for i = 1, #live_events, 1 do
+					local live_event = live_events[i]
+					local level_settings = live_event.level_settings and live_event.level_settings[self._level_key]
+
+					if level_settings then
+						local package_name = level_settings.sub_level_package_name
+
+						if package_name then
+							Managers.package:load(package_name, "live_events", nil, true)
+
+							live_event_packages[package_name] = true
+						end
+					end
+				end
+
+				self._live_event_packages = live_event_packages
+				self._live_event_request_id = nil
+			end
+		end
+
+		local live_event_packages = self._live_event_packages
+
+		if live_event_packages then
+			for package_name, _ in pairs(live_event_packages) do
+				if not Managers.package:has_loaded(package_name) then
+					return
+				end
+			end
 		end
 
 		local eac_allowed_to_play = true
@@ -1037,7 +1081,7 @@ StateLoading._try_next_state = function (self, dt)
 
 		if can_go_to_next_state then
 			local ready_to_go_to_next_state = self._permission_to_go_to_next_state and packages_loaded
-			local backend_is_disconnected = Managers.backend:is_disconnected()
+			local backend_is_disconnected = backend_manager:is_disconnected()
 
 			if ready_to_go_to_next_state or backend_is_disconnected then
 				local allowed_to_continue = nil

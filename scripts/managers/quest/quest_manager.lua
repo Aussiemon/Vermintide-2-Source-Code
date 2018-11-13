@@ -205,8 +205,6 @@ QuestManager.get_quest_outline = function (self)
 end
 
 QuestManager.get_data_by_id = function (self, quest_id)
-	Profiler.start(quest_id)
-
 	local backend_interface_quests = self._backend_interface_quests
 	local quest_key = backend_interface_quests:get_quest_key(quest_id)
 	local quest_data = quest_templates.quests[quest_id]
@@ -219,8 +217,6 @@ QuestManager.get_data_by_id = function (self, quest_id)
 	local player = player_manager:local_player()
 
 	if not player then
-		Profiler.stop(quest_id)
-
 		return nil, "Missing player"
 	end
 
@@ -319,8 +315,6 @@ QuestManager.get_data_by_id = function (self, quest_id)
 		requirements = requirements,
 		reward = reward
 	}
-
-	Profiler.stop(quest_id)
 
 	return evaluated_quest
 end

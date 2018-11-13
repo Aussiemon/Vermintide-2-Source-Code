@@ -196,8 +196,7 @@ AIInventorySystem.update = function (self, context, t, dt)
 		local inventory_item_units = extension.inventory_item_units
 		local inventory_items_n = (extension.dropped and 0) or extension.inventory_items_n
 
-		if script_data.ai_debug_inventory and extension.dropped then
-			printf("[AIInventorySystem] unit[%s] wants to wield items, but have already been told to drop everything", tostring(unit))
+		if script_data.ai_debug_inventory then
 		end
 
 		for j = start_index, end_index, 1 do
@@ -209,10 +208,6 @@ AIInventorySystem.update = function (self, context, t, dt)
 				local item_unit = inventory_item_units[j]
 
 				link_unit(wielded, world, item_unit, unit)
-
-				if script_data.ai_debug_inventory then
-					printf("[AIInventorySystem] unit[%s] wielding %s", tostring(unit), tostring(item_unit))
-				end
 			end
 		end
 	end
@@ -233,10 +228,6 @@ AIInventorySystem.update = function (self, context, t, dt)
 
 		for j = 1, inventory_items_n, 1 do
 			extension:drop_single_item(j, "death")
-		end
-
-		if script_data.ai_debug_inventory then
-			printf("[AIInventorySystem] unit[%s] dropping all items", tostring(unit))
 		end
 	end
 

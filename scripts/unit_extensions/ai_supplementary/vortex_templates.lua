@@ -203,7 +203,6 @@ VortexTemplates = {
 
 						blackboard.completed_vortex_suck_in_challenge = true
 
-						print("Completed challenge ", stat_name)
 						QuestSettings.send_completed_message(stat_name)
 					end
 				end

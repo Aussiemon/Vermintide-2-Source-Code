@@ -183,8 +183,6 @@ UITooltipPasses = {
 	console_item_background = {
 		setup_data = function ()
 			local frame_name = "frame_outer_fade_02"
-			local frame_settings = UIFrameSettings[frame_name]
-			local frame_edge_height = frame_settings.texture_sizes.horizontal[2]
 			local data = {
 				background_texture = "item_tooltip_background",
 				frame_name = frame_name,
@@ -202,9 +200,6 @@ UITooltipPasses = {
 			local edge_height = frame_settings.texture_sizes.horizontal[2]
 
 			if draw then
-				local item_data = item.data
-				local rarity = item.rarity or item_data.rarity
-				local rarity_color = Colors.get_table(rarity)
 				position[3] = start_layer
 				local color = data.color
 				color[1] = alpha
@@ -3719,7 +3714,6 @@ UITooltipPasses = {
 			local content = data.content
 			local text_styles = style.text_styles
 			local text_content = content.text_content
-			local level_key = level_data.level_id
 			local display_name = level_data.display_name
 			local total_height = frame_margin * 0.5
 			local position_x = position[1]
@@ -3994,14 +3988,11 @@ UITooltipPasses = {
 				return 0
 			end
 
-			local rarity = item.rarity or item_data.rarity
-			local rarity_color = Colors.get_table(rarity)
 			local style = data.style
 			local content = data.content
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
-			local total_height = 0
 			local title_text = Localize("start_game_window_mission")
 			local level_key = item.level_key
 			local level_settings = LevelSettings[level_key]
@@ -4022,7 +4013,6 @@ UITooltipPasses = {
 
 			if draw then
 				local old_x_position = position[1] + frame_margin
-				local old_y_position = position[2]
 				position[1] = old_x_position + title_text_style.offset[1]
 				position[2] = position_y - frame_margin - title_text_height + title_text_style.offset[2]
 				position[3] = start_layer + 6 + title_text_style.offset[3]
@@ -4464,16 +4454,13 @@ UITooltipPasses = {
 				return 0
 			end
 
-			local rarity = item.rarity or item_data.rarity
-			local rarity_color = Colors.get_table(rarity)
 			local style = data.style
 			local content = data.content
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
 			local total_height = frame_margin * 4
-			local title_text = ""
-			title_text = Localize("deed_reward_title")
+			local title_text = Localize("deed_reward_title")
 			local title_text_style = style.title_text
 			local title_text_shadow_style = style.title_text_shadow
 			local text_pass_data = data.text_pass_data
@@ -4483,7 +4470,6 @@ UITooltipPasses = {
 			local title_text_height = get_text_height(ui_renderer, text_size, title_text_style, content, title_text, ui_style_global)
 			local text_height = title_text_height
 			text_size[2] = text_height
-			local edge_style = data.style.edge
 			local divider_size = data.divider_size
 			local item_size = data.item_size
 
@@ -4526,7 +4512,6 @@ UITooltipPasses = {
 					local item_key = rewards[index]
 					local reward_item_data = ItemMasterList[item_key]
 					local inventory_icon = reward_item_data.inventory_icon
-					local reward_item_rarity = reward_item_data.rarity
 					local item_texture = inventory_icon or data.default_item_texture
 					local item_style = style.item
 					local item_color = item_style.color

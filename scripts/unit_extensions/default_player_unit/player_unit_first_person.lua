@@ -36,6 +36,7 @@ PlayerUnitFirstPerson.init = function (self, extension_init_context, unit, exten
 	end
 
 	self.first_person_mode = true
+	self._show_first_person_units = true
 	self.look_position = Vector3Box(Unit.local_position(unit, 0))
 	self.look_rotation = QuaternionBox(Unit.local_rotation(unit, 0))
 	self.forced_look_rotation = nil
@@ -125,31 +126,14 @@ PlayerUnitFirstPerson.update = function (self, unit, input, dt, context, t)
 		self._head_bob = false
 	end
 
-	if player and Managers.state.debug.free_flight_manager:active(player:local_player_id()) and self.first_person_mode then
-		self:set_first_person_mode(false)
-
-		self.free_flight_changed_fp_mode = true
-	elseif player and not Managers.state.debug.free_flight_manager:active(player:local_player_id()) and self.free_flight_changed_fp_mode then
-		self:set_first_person_mode(true)
-
-		self.free_flight_changed_fp_mode = false
-	end
-
 	if self.toggle_visibility_timer and self.toggle_visibility_timer <= t then
 		self.toggle_visibility_timer = nil
 
 		self:set_first_person_mode(not self.first_person_mode)
 	end
 
-	local was_in_third_person = self._was_in_first_person
-	self._was_in_first_person = Development.parameter("third_person_mode")
-
-	if Development.parameter("third_person_mode") and not was_in_third_person then
-		CharacterStateHelper.change_camera_state(Managers.player:local_player(), "follow_third_person_over_shoulder")
-		self:set_first_person_mode(false, true)
-	elseif not Development.parameter("third_person_mode") and was_in_third_person then
-		CharacterStateHelper.change_camera_state(Managers.player:local_player(), "follow")
-		self:set_first_person_mode(true)
+	if self._first_person_units_visibility_timer and self._first_person_units_visibility_timer <= t then
+		self:toggle_first_person_units_visibility(self._first_person_units_visibility_reason)
 	end
 
 	if script_data.attract_mode_spectate and self.first_person_mode then
@@ -235,15 +219,6 @@ PlayerUnitFirstPerson.update_player_height = function (self, t)
 		self.player_height_current = ease_out_quad(time_changing_height, self.player_height_previous, self.player_height_wanted - self.player_height_previous, self.player_height_time_to_change)
 	else
 		self.player_height_current = self.player_height_wanted
-	end
-
-	if script_data.camera_debug then
-		Debug.text("self.player_height_wanted = " .. tostring(self.player_height_wanted))
-		Debug.text("self.player_height_current = " .. tostring(self.player_height_current))
-		Debug.text("self.player_height_previous = " .. tostring(self.player_height_previous))
-		Debug.text("self.player_height_time_to_change = " .. tostring(self.player_height_time_to_change))
-		Debug.text("self.player_height_change_start_time = " .. tostring(self.player_height_change_start_time))
-		Debug.text("time_changing_height = " .. tostring(time_changing_height))
 	end
 end
 
@@ -525,10 +500,6 @@ PlayerUnitFirstPerson.set_first_person_mode = function (self, active, override)
 			Unit.set_unit_visibility(self.first_person_attachment_unit, active)
 		end
 
-		if self.toggle_visibility_timer then
-			self.toggle_visibility_timer = nil
-		end
-
 		if active then
 			self:unhide_weapons("third_person_mode")
 
@@ -547,7 +518,11 @@ PlayerUnitFirstPerson.set_first_person_mode = function (self, active, override)
 		self.attachment_extension:show_attachments(not active)
 	end
 
+	self:abort_toggle_visibility_timer()
+	self:abort_first_person_units_visibility_timer()
+
 	self.first_person_mode = active
+	self._show_first_person_units = active
 end
 
 PlayerUnitFirstPerson.show_third_person_units = function (self, show)
@@ -557,6 +532,44 @@ PlayerUnitFirstPerson.show_third_person_units = function (self, show)
 
 	for k, v in pairs(self.flow_unit_attachments) do
 		Unit.set_unit_visibility(v, show)
+	end
+end
+
+PlayerUnitFirstPerson.first_person_mode_active = function (self)
+	return self.first_person_mode
+end
+
+PlayerUnitFirstPerson.abort_toggle_visibility_timer = function (self)
+	self.toggle_visibility_timer = nil
+end
+
+PlayerUnitFirstPerson.first_person_units_visible = function (self)
+	return self._show_first_person_units
+end
+
+PlayerUnitFirstPerson.abort_first_person_units_visibility_timer = function (self)
+	self._first_person_units_visibility_timer = nil
+	self._first_person_units_visibility_reason = nil
+end
+
+PlayerUnitFirstPerson.toggle_first_person_units_visibility = function (self, reason, delay)
+	if delay then
+		local t = Managers.time:time("game")
+		self._first_person_units_visibility_timer = t + delay
+		self._first_person_units_visibility_reason = reason
+	else
+		local show = not self._show_first_person_units
+		self._first_person_units_visibility_timer = nil
+		self._first_person_units_visibility_reason = nil
+		self._show_first_person_units = show
+
+		Unit.set_unit_visibility(self.first_person_attachment_unit, show)
+
+		if show then
+			self:unhide_weapons(reason)
+		else
+			self:hide_weapons(reason, show)
+		end
 	end
 end
 

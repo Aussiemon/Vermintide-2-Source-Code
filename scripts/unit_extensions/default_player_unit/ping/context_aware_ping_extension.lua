@@ -1,6 +1,5 @@
 local PING_COOLDOWN = 2
 local PING_RANGE = 50
-local debug = false
 ContextAwarePingExtension = class(ContextAwarePingExtension)
 
 ContextAwarePingExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -60,6 +59,14 @@ ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 		local social_wheel_delay = Application.user_setting("social_wheel_delay") or DefaultUserSettings.get("user_settings", "social_wheel_delay")
 		local ping_only = (script_data.enable_social_wheel ~= true and ping) or self.input_extension:get("ping_only")
 		local social_wheel_only = self.input_extension:get("social_wheel_only")
+
+		if not ping and self.status_extension:is_ready_for_assisted_respawn() then
+			local input_service = Managers.input:get_service("Player")
+
+			if input_service then
+				social_wheel_only = input_service:get("ping")
+			end
+		end
 
 		if ping or ping_only or social_wheel_only then
 			local ping_unit, social_wheel_unit, ping_unit_distance, social_wheel_unit_distance = self:_check_raycast(unit)
@@ -202,10 +209,6 @@ ContextAwarePingExtension._check_raycast = function (self, unit)
 								social_wheel_unit = hit_unit
 								social_wheel_unit_distance = distance
 								best_social_utility = utility
-							end
-
-							if debug then
-								QuickDrawerStay:box(Matrix4x4.from_quaternion_position(camera_rotation, hit_unit_center_pos), Vector3(half_width, half_width, half_height))
 							end
 						end
 					elseif Unit.get_data(hit_unit, "breed") then

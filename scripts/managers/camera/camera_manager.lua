@@ -535,8 +535,6 @@ CameraManager._setup_node = function (self, node_settings, parent_node, root_nod
 end
 
 CameraManager.update = function (self, dt, t, viewport_name)
-	Profiler.start("CameraManager")
-
 	if not GameSettingsDevelopment.disable_shadow_lights_system then
 		self:_update_shadow_lights(dt, viewport_name)
 	end
@@ -562,7 +560,6 @@ CameraManager.update = function (self, dt, t, viewport_name)
 	self:_update_level_particle_effects(viewport_name)
 	self.mood_handler:update(dt)
 	self._environment_blenders[viewport_name]:update(dt, t)
-	Profiler.stop("CameraManager")
 end
 
 CameraManager.set_fov_multiplier = function (self, multiplier)

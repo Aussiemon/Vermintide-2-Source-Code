@@ -832,7 +832,7 @@ weapon_template.aim_assist_settings = {
 	}
 }
 weapon_template.wwise_dep_right_hand = {
-	"wwise/two_handed_swords"
+	"wwise/two_handed_axes"
 }
 weapon_template.tooltip_keywords = {
 	"weapon_keyword_high_damage",

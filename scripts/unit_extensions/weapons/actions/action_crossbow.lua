@@ -17,7 +17,6 @@ ActionCrossbow.init = function (self, world, item_name, is_server, owner_unit, d
 end
 
 ActionCrossbow.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
-	local weapon_unit = self.weapon_unit
 	local owner_unit = self.owner_unit
 	local first_person_unit = self.first_person_unit
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
@@ -50,7 +49,7 @@ ActionCrossbow.client_owner_start_action = function (self, new_action, t, chain_
 	end
 
 	self._is_critical_strike = is_critical_strike
-	self._unhide_ammo_at_action_end = self.owner_buff_extension:get_non_stacking_buff("victor_bountyhunter_passive_infinite_ammo_buff")
+	self._unhide_ammo_at_action_end = new_action.unhide_ammo_on_infinite_ammo and buff_extension:get_non_stacking_buff("victor_bountyhunter_passive_infinite_ammo_buff")
 end
 
 ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_damage)
@@ -76,7 +75,6 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 		if self.num_projectiles then
 			for i = 1, self.num_projectiles, 1 do
 				local fire_rotation = rotation
-				local current_action = self.current_action
 				local speed = current_action.speed
 
 				if spread_extension then
@@ -99,7 +97,6 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 				local angle = ActionUtils.pitch_from_rotation(fire_rotation)
 				local position = first_person_extension:current_position()
 				local target_vector = Vector3.normalize(Vector3.flat(Quaternion.forward(fire_rotation)))
-				local projectile_info = current_action.projectile_info
 				local lookup_data = current_action.lookup_data
 
 				ActionUtils.spawn_player_projectile(owner_unit, position, fire_rotation, 0, angle, target_vector, speed, self.item_name, lookup_data.item_template_name, lookup_data.action_name, lookup_data.sub_action_name, self._is_critical_strike, self.power_level)
@@ -146,11 +143,9 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 			end
 
 			local angle = ActionUtils.pitch_from_rotation(rotation)
-			local current_action = self.current_action
 			local speed = current_action.speed
 			local position = first_person_extension:current_position()
 			local target_vector = Vector3.normalize(Vector3.flat(Quaternion.forward(rotation)))
-			local projectile_info = current_action.projectile_info
 			local lookup_data = current_action.lookup_data
 
 			ActionUtils.spawn_player_projectile(owner_unit, position, rotation, 0, angle, target_vector, speed, self.item_name, lookup_data.item_template_name, lookup_data.action_name, lookup_data.sub_action_name, self._is_critical_strike, self.power_level)
@@ -158,8 +153,6 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 			local fire_sound_event = self.current_action.fire_sound_event
 
 			if fire_sound_event then
-				local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-
 				first_person_extension:play_hud_sound_event(fire_sound_event)
 			end
 
@@ -174,8 +167,6 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 		local _, procced = buff_extension:apply_buffs_to_value(0, StatBuffIndex.EXTRA_SHOT)
 
 		if current_action.apply_burst_recoil then
-			local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-
 			if self.num_projectiles_shot == 2 then
 				first_person_extension:apply_recoil()
 				first_person_extension:play_camera_recoil(current_action.first_recoil_settings, t)
@@ -227,10 +218,6 @@ ActionCrossbow.finish = function (self, reason)
 	local owner_unit = self.owner_unit
 
 	if reason ~= "new_interupting_action" then
-		local status_extension = ScriptUnit.extension(owner_unit, "status_system")
-
-		status_extension:set_zooming(false)
-
 		if ammo_extension and current_action.reload_when_out_of_ammo and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
 			local play_reload_animation = true
 

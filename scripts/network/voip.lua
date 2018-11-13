@@ -22,23 +22,13 @@ if has_steam and not disable_voip then
 		local shading_callback, layer = nil
 		local world = Managers.world:create_world(world_name, GameSettingsDevelopment.default_environment, shading_callback, layer, Application.DISABLE_PHYSICS, Application.DISABLE_APEX_CLOTH, Application.DISABLE_RENDERING)
 		self.world = world
-		self.timpani_world = World.timpani_world(world)
-
-		Timpani.set_master("timpani/voip")
-		TimpaniWorld.set_listener_mode(self.timpani_world, 0, TimpaniWorld.LISTENER_2D)
-		Timpani.load_bank("timpani/sounds")
-
-		local voip_bus_volume = Application.user_setting("voip_bus_volume")
-
-		if voip_bus_volume ~= nil then
-			Timpani.set_bus_volume("voip", voip_bus_volume)
-		end
-
+		self.wwise_world = Wwise.wwise_world(world)
 		local member_list = {}
 		self.member_list = member_list
 		local added_members = {}
 		self.added_members = added_members
 		self.muted_peers = {}
+		self._peer_playing_id = {}
 		local my_peer_id = params.my_peer_id
 		self.peer_id = my_peer_id
 		self.push_to_talk = Application.user_setting("voip_push_to_talk")
@@ -73,6 +63,14 @@ if has_steam and not disable_voip then
 			else
 				voip_info_print("[VOIP] Trying to remove member from bad room: %q, current room id: %q", room_id, self.room_id)
 			end
+
+			local playing_id = self._peer_playing_id[peer_id]
+
+			if playing_id ~= nil then
+				WwiseWorld.stop_voip_output(self.wwise_world, playing_id)
+
+				self._peer_playing_id[peer_id] = nil
+			end
 		end
 
 		self.room_member_added = function (room_id, peer_id)
@@ -83,8 +81,10 @@ if has_steam and not disable_voip then
 			end
 
 			added_members[peer_id] = true
+			local playing_id = WwiseWorld.start_voip_output(self.wwise_world, "Play_voip")
+			self._peer_playing_id[peer_id] = playing_id
 
-			return self.timpani_world, "temp_voip_event"
+			return playing_id
 		end
 	end
 
@@ -336,6 +336,12 @@ if has_steam and not disable_voip then
 		voip_info_print("[VOIP] Leaving VOIP room.")
 		assert(self.room_id, "Trying to leave when we're not in any room.")
 		assert(self.voip_client, "Trying to leave a voip room when we've never joined or created one.")
+
+		for peer_id, playing_id in pairs(self._peer_playing_id) do
+			WwiseWorld.stop_voip_output(self.wwise_world, playing_id)
+		end
+
+		table.clear(self._peer_playing_id)
 		SteamVoip.leave_room(self.voip_client)
 
 		self.room_host = nil
@@ -348,11 +354,7 @@ if has_steam and not disable_voip then
 
 	Voip.set_volume = function (self, voip_bus_volume)
 		assert(voip_bus_volume >= 0 and voip_bus_volume <= 100)
-
-		voip_bus_volume = voip_bus_volume * 0.5 - 50
-
-		Timpani.set_bus_volume("voip", voip_bus_volume)
-		Timpani.set_bus_volume("Master Bus", voip_bus_volume)
+		WwiseWorld.set_global_parameter(self.wwise_world, "voip_bus_volume", voip_bus_volume)
 	end
 
 	Voip.set_enabled = function (self, enabled)

@@ -86,26 +86,11 @@ end
 
 BTErraticFollowAction.run = function (self, unit, blackboard, t, dt)
 	local locomotion_extension = blackboard.locomotion_extension
-
-	if debug_movement then
-		local pos = POSITION_LOOKUP[unit] + Vector3(0, 0, 0.25)
-		local fwd = Quaternion.forward(Unit.local_rotation(unit, 0))
-
-		QuickDrawerStay:line(pos, pos + fwd * 2, Color(255, 100, 0))
-	end
-
 	local move_state = blackboard.move_state
 
 	if move_state == "jumping" then
-		if debug_movement then
-			QuickDrawerStay:sphere(POSITION_LOOKUP[unit], 0.05, Color(unpack(blackboard.jump_color)))
-		end
 	else
 		self:follow(unit, t, dt, blackboard, locomotion_extension)
-
-		if debug_movement then
-			QuickDrawerStay:sphere(POSITION_LOOKUP[unit] + Vector3(0, 0, 0.5), 0.1, Color(200, 200, 200))
-		end
 	end
 
 	blackboard.chasing_timer = blackboard.chasing_timer + dt
@@ -261,17 +246,9 @@ BTErraticFollowAction.check_for_high_jump = function (self, unit, blackboard)
 end
 
 BTErraticFollowAction.check_dir = function (self, p0, travel_dir, nav_world, traverse_logic, data)
-	local QD = QuickDrawerStay
-	local color_success = Color(0, 255, 0)
-	local color_fail = Color(255, 0, 0)
 	local jump_dir = Quaternion.rotate(Quaternion(Vector3.up(), data.ray_angle), travel_dir)
 	local p1 = p0 + jump_dir * data.ray_dist
 	local success, hit_pos = GwNavQueries.raycast(nav_world, p0, p1, traverse_logic)
-
-	if debug_movement then
-		QD:line(p0, p1, (success and color_success) or color_fail)
-	end
-
 	local num_fields = #data
 
 	if success then
@@ -284,24 +261,12 @@ BTErraticFollowAction.check_dir = function (self, p0, travel_dir, nav_world, tra
 			local p2 = p1 + end_dir * d.ray_dist
 
 			if end_dot <= 0 then
-				if debug_movement then
-					QD:line(p1, p2, color_fail)
-				end
-
 				return false
 			end
 
 			local success, hit_pos = GwNavQueries.raycast(nav_world, p1, p2, traverse_logic)
 
-			if debug_movement then
-				QD:line(p1, p2, (success and color_success) or color_fail)
-			end
-
 			if success then
-				if debug_movement then
-					QD:sphere(hit_pos, 0.1, color_success)
-				end
-
 				return d
 			end
 
@@ -312,10 +277,6 @@ BTErraticFollowAction.check_dir = function (self, p0, travel_dir, nav_world, tra
 			end
 		end
 	elseif hit_pos then
-		if debug_movement then
-			QD:sphere(hit_pos, 0.1, color_fail)
-		end
-
 		return false
 	end
 end
@@ -363,14 +324,6 @@ BTErraticFollowAction.investigate_jump = function (self, unit, t, blackboard, un
 			end
 		end
 	else
-		if debug_movement then
-			local p = unit_position + Vector3(0, 0, 4)
-
-			QuickDrawerStay:line(unit_position, p, Color(200, 200, 10))
-			QuickDrawerStay:line(p, p + move_dir * 2, Color(0, 200, 0))
-			QuickDrawerStay:line(p, p + travel_dir * 2.5, Color(0, 200, 200))
-		end
-
 		local right_of_to_goal = Vector3.cross(move_dir, travel_dir)[3] > 0
 
 		if right_of_to_goal then

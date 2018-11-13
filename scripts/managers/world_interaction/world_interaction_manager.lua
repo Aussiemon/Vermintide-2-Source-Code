@@ -88,19 +88,13 @@ WorldInteractionManager._add_simple_water_effect = function (self, unit, positio
 end
 
 WorldInteractionManager.update = function (self, dt, t)
-	Profiler.start("World Interaction")
-
 	if Managers.state.network:game() then
 		self:_update_water(dt, t)
 		self:_update_foliage(dt, t)
 	end
-
-	Profiler.stop("World Interaction")
 end
 
 WorldInteractionManager._update_water = function (self, dt, t)
-	Profiler.start("Update water")
-
 	local available_units = self._units.water
 	local local_player = Managers.player:local_player()
 	local player_unit = local_player and local_player.player_unit
@@ -110,15 +104,11 @@ WorldInteractionManager._update_water = function (self, dt, t)
 		self:_update_water_data(dt, t)
 		self:_update_water_ripples(dt, t)
 	end
-
-	Profiler.stop("Update water")
 end
 
 local UNITS_TO_REMOVE = {}
 
 WorldInteractionManager._cleanup_removed_units = function (self)
-	Profiler.start(" -Cleanup Removed Units")
-
 	local spawn_manager = Managers.state.spawn
 	local unit_spawner = spawn_manager.unit_spawner
 	local death_watch_lookup = unit_spawner.unit_death_watch_lookup
@@ -138,15 +128,11 @@ WorldInteractionManager._cleanup_removed_units = function (self)
 			units[unit] = nil
 		end
 	end
-
-	Profiler.stop(" -Cleanup Removed Units")
 end
 
 local COLLECTED_UNITS = {}
 
 WorldInteractionManager._update_water_data = function (self, dt, t)
-	Profiler.start(" -Update Water Data")
-
 	local water_settings = WorldInteractionSettings.water
 	local window_size = math.clamp(water_settings.window_size, 1, 100)
 	local speed_limit = water_settings.water_speed_limit
@@ -206,21 +192,24 @@ WorldInteractionManager._update_water_data = function (self, dt, t)
 						if dir and speed_limit_squared < Vector3.distance_squared(Vector3.flat(dir), origo) then
 							local flat_dir = Vector3.normalize(Vector3(dir[1], dir[2], 0))
 							local dot_value = Vector3.dot(flat_dir, Vector3(0, 1, 0))
-							local angle = math.acos(dot_value) * ((flat_dir[1] < 0 and 1) or -1)
+							local safe_dot_value = math.clamp(dot_value, -1, 1)
+							local angle = math.acos(safe_dot_value) * ((flat_dir[1] < 0 and 1) or -1)
 							local pos = POSITION_LOOKUP[unit]
 
-							self:_add_water_ripple(pos, angle)
+							if angle == angle then
+								self:_add_water_ripple(pos, angle)
 
-							contributing_units = contributing_units + 1
+								contributing_units = contributing_units + 1
 
-							if max_contributing_units <= contributing_units then
-								break
-							elseif available_units[unit] < t then
-								local wwise_source_id, wwise_world = WwiseUtils.make_position_auto_source(self._world, pos)
+								if max_contributing_units <= contributing_units then
+									break
+								elseif available_units[unit] < t then
+									local wwise_source_id, wwise_world = WwiseUtils.make_position_auto_source(self._world, pos)
 
-								WwiseWorld.trigger_event(wwise_world, water_settings.ripple_sound_event, wwise_source_id)
+									WwiseWorld.trigger_event(wwise_world, water_settings.ripple_sound_event, wwise_source_id)
 
-								available_units[unit] = Managers.time:time("game") + water_settings.ripple_sound_event_delay
+									available_units[unit] = Managers.time:time("game") + water_settings.ripple_sound_event_delay
+								end
 							end
 						end
 					end
@@ -232,14 +221,11 @@ WorldInteractionManager._update_water_data = function (self, dt, t)
 	end
 
 	self._water_timer = self._water_timer + dt
-
-	Profiler.stop(" -Update Water Data")
 end
 
 local DATA_TO_REMOVE = {}
 
 WorldInteractionManager._update_water_ripples = function (self, dt, t)
-	Profiler.start(" -Update Water Ripples")
 	table.clear(DATA_TO_REMOVE)
 
 	local water_settings = WorldInteractionSettings.water
@@ -248,7 +234,6 @@ WorldInteractionManager._update_water_ripples = function (self, dt, t)
 	local default_ripple_multiplier = water_settings.default_ripple_multiplier
 	local default_ripple_timer = water_settings.default_ripple_timer
 	local duplicate_edge_cases = water_settings.duplicate_edge_cases
-	local debug_water = water_settings.debug_water
 	local ripple_stretch_multiplier = water_settings.ripple_stretch_multiplier
 	local w, h = Gui.resolution()
 	local window_size = math.clamp(water_settings.window_size, 1, 100)
@@ -282,10 +267,6 @@ WorldInteractionManager._update_water_ripples = function (self, dt, t)
 
 		counter = counter + 1
 
-		if debug_water then
-			Gui.bitmap_3d(self._gui, "default_water_ripple_screen", tm, realtive_start_pos, layer, relative_texture_size, Color(alpha, 255, 255, 255))
-		end
-
 		if duplicate_edge_cases then
 			if realtive_start_pos.x < 0 then
 				local offset = realtive_start_pos + Vector3(w, 0, 0)
@@ -294,10 +275,6 @@ WorldInteractionManager._update_water_ripples = function (self, dt, t)
 				Gui.bitmap_3d(self._gui, water_data.material, tm, offset, layer, relative_texture_size, Color(alpha, 255, 255, 255))
 
 				counter = counter + 1
-
-				if debug_water then
-					Gui.bitmap_3d(self._gui, "default_water_ripple_screen", tm, offset, layer, relative_texture_size, Color(alpha, 255, 255, 255))
-				end
 			elseif w < realtive_start_pos.x + relative_texture_size.x then
 				local offset = realtive_start_pos + Vector3(-w, 0, 0)
 				local tm = Rotation2D(Vector3(0, 0, 0), angle, offset + relative_texture_size * 0.5)
@@ -305,10 +282,6 @@ WorldInteractionManager._update_water_ripples = function (self, dt, t)
 				Gui.bitmap_3d(self._gui, water_data.material, tm, offset, layer, relative_texture_size, Color(alpha, 255, 255, 255))
 
 				counter = counter + 1
-
-				if debug_water then
-					Gui.bitmap_3d(self._gui, "default_water_ripple_screen", tm, offset, layer, relative_texture_size, Color(alpha, 255, 255, 255))
-				end
 			end
 
 			if realtive_start_pos.y < 0 then
@@ -318,10 +291,6 @@ WorldInteractionManager._update_water_ripples = function (self, dt, t)
 				Gui.bitmap_3d(self._gui, water_data.material, tm, offset, layer, relative_texture_size, Color(alpha, 255, 255, 255))
 
 				counter = counter + 1
-
-				if debug_water then
-					Gui.bitmap_3d(self._gui, "default_water_ripple_screen", tm, offset, layer, relative_texture_size, Color(alpha, 255, 255, 255))
-				end
 			elseif h < realtive_start_pos.y + relative_texture_size.x then
 				local offset = realtive_start_pos + Vector3(0, -h, 0)
 				local tm = Rotation2D(Vector3(0, 0, 0), angle, offset + relative_texture_size * 0.5)
@@ -329,10 +298,6 @@ WorldInteractionManager._update_water_ripples = function (self, dt, t)
 				Gui.bitmap_3d(self._gui, water_data.material, tm, offset, layer, relative_texture_size, Color(alpha, 255, 255, 255))
 
 				counter = counter + 1
-
-				if debug_water then
-					Gui.bitmap_3d(self._gui, "default_water_ripple_screen", tm, offset, layer, relative_texture_size, Color(alpha, 255, 255, 255))
-				end
 			end
 		end
 
@@ -348,13 +313,9 @@ WorldInteractionManager._update_water_ripples = function (self, dt, t)
 
 		table.remove(self._water_ripples, idx)
 	end
-
-	Profiler.stop(" -Update Water Ripples")
 end
 
 WorldInteractionManager._update_foliage = function (self, dt, t)
-	Profiler.start("Update Foliage")
-
 	local local_player = Managers.player:local_player()
 	local local_player_unit = local_player and local_player.player_unit
 
@@ -362,15 +323,11 @@ WorldInteractionManager._update_foliage = function (self, dt, t)
 		self:_update_foliage_players(dt, t)
 		self:_update_foliage_ai(local_player_unit, dt, t)
 	end
-
-	Profiler.stop("Update Foliage")
 end
 
 local TEXTURE_SIZE = {}
 
 WorldInteractionManager._update_foliage_players = function (self, dt, t)
-	Profiler.start("- Update Players Foliage")
-
 	local foliage_settings = WorldInteractionSettings.foliage
 	local material_name = foliage_settings.default_foliage_material
 	local window_size = math.clamp(foliage_settings.window_size, 1, 100)
@@ -430,13 +387,9 @@ WorldInteractionManager._update_foliage_players = function (self, dt, t)
 			end
 		end
 	end
-
-	Profiler.stop("- Update Players Foliage")
 end
 
 WorldInteractionManager._update_foliage_ai = function (self, local_player_unit, dt, t)
-	Profiler.start("- Update AI Foliage")
-
 	local foliage_settings = WorldInteractionSettings.foliage
 	local material_name = foliage_settings.default_foliage_material
 	local window_size = math.clamp(foliage_settings.window_size, 1, 100)
@@ -484,8 +437,6 @@ WorldInteractionManager._update_foliage_ai = function (self, local_player_unit, 
 			end
 		end
 	end
-
-	Profiler.stop("- Update AI Foliage")
 end
 
 WorldInteractionManager.destory = function (self)

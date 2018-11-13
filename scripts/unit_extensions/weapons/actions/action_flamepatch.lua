@@ -1,7 +1,6 @@
 ActionFlamepatch = class(ActionFlamepatch)
 local POSITION_TWEAK = -1
 local SPRAY_RANGE = math.abs(POSITION_TWEAK) + 5
-local SPRAY_RADIUS = 2
 
 ActionFlamepatch.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	self.owner_unit = owner_unit
@@ -21,7 +20,6 @@ ActionFlamepatch.init = function (self, world, item_name, is_server, owner_unit,
 	end
 
 	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
-	self.is_server = is_server
 	self.network_transmit = Managers.state.network.network_transmit
 	self.unit_id = Managers.state.network.unit_storage:go_id(owner_unit)
 	self._is_critical_strike = false
@@ -67,15 +65,11 @@ ActionFlamepatch.client_owner_start_action = function (self, new_action, t)
 end
 
 local INDEX_POSITION = 1
-local INDEX_DISTANCE = 2
-local INDEX_NORMAL = 3
 local INDEX_ACTOR = 4
 
 ActionFlamepatch.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local owner_unit = self.owner_unit
-	local first_person_unit = self.first_person_unit
 	local current_action = self.current_action
-	local is_server = self.is_server
 
 	if self.state == "waiting_to_shoot" and self.time_to_shoot <= t then
 		self.state = "shooting"
@@ -110,7 +104,6 @@ ActionFlamepatch.client_owner_post_update = function (self, dt, t, world, can_da
 				local current_position = first_person_extension:current_position()
 				local current_rotation = first_person_extension:current_rotation()
 				local direction = Quaternion.forward(current_rotation)
-				local end_point = current_position + direction * POSITION_TWEAK + direction * (SPRAY_RANGE - SPRAY_RADIUS)
 
 				self:spawn_liquid_area(current_action.liquid_area.liquid_template, current_position, direction)
 			end
@@ -123,7 +116,6 @@ ActionFlamepatch.client_owner_post_update = function (self, dt, t, world, can_da
 		local muzzle_rotation = Unit.world_rotation(weapon_unit, Unit.node(weapon_unit, self.muzzle_node_name))
 		local muzzle_direction = Quaternion.forward(muzzle_rotation)
 		local flamethrower_range = current_action.range or SPRAY_RANGE * SPRAY_RANGE
-		local world = self.world
 		local physics_world = World.get_data(world, "physics_world")
 		local result = PhysicsWorld.immediate_raycast_actors(physics_world, muzzle_position, muzzle_direction, flamethrower_range, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_ai_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only")
 		local hit_unit, hit_position = nil
@@ -133,7 +125,7 @@ ActionFlamepatch.client_owner_post_update = function (self, dt, t, world, can_da
 			local owner_player = self.owner_player
 			local friendly_fire = DamageUtils.allow_friendly_fire_ranged(difficulty_settings, owner_player)
 
-			for index, hit in pairs(result) do
+			for _, hit in pairs(result) do
 				local potential_hit_position = hit[INDEX_POSITION]
 				local hit_actor = hit[INDEX_ACTOR]
 				local potential_hit_unit = Actor.unit(hit_actor)
@@ -142,20 +134,18 @@ ActionFlamepatch.client_owner_post_update = function (self, dt, t, world, can_da
 				if potential_hit_unit ~= self.owner_unit then
 					local breed = Unit.get_data(potential_hit_unit, "breed")
 					local is_player = DamageUtils.is_player_unit(potential_hit_unit)
-					local hit = false
+					local hit_target = nil
 
 					if breed then
-						local node = Actor.node(hit_actor)
-						local hit_zone = breed.hit_zones_lookup[node]
 						local hit_zone_name = "torso"
-						hit = hit_zone_name ~= "afro"
+						hit_target = hit_zone_name ~= "afro"
 					elseif is_player then
-						hit = friendly_fire and hit_actor ~= Unit.actor(potential_hit_unit, "c_afro")
+						hit_target = friendly_fire and hit_actor ~= Unit.actor(potential_hit_unit, "c_afro")
 					else
-						hit = true
+						hit_target = true
 					end
 
-					if hit then
+					if hit_target then
 						hit_position = potential_hit_position - muzzle_direction * 0.15
 						hit_unit = potential_hit_unit
 

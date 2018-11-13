@@ -26,12 +26,6 @@ BTStormfiendShootAction.enter = function (self, unit, blackboard, t)
 	blackboard.shoot_data = blackboard.shoot_data or {}
 	blackboard.physics_world = blackboard.physics_world or World.get_data(world, "physics_world")
 	blackboard.attacking_target = blackboard.target_unit
-	local drawer = Managers.state.debug:drawer({
-		mode = "retained",
-		name = "BTStormfiendShootAction"
-	})
-
-	drawer:reset()
 
 	if self:init_attack(unit, blackboard, action, t) then
 		local data = blackboard.shoot_data
@@ -127,8 +121,6 @@ BTStormfiendShootAction._calculate_aim = function (self, unit, unit_position, at
 	local arm_collides = PhysicsWorld.immediate_raycast(physics_world, shoulder_pos, shoulder_to_muzzle_direction, shoulder_to_muzzle_length, "any", "collision_filter", "filter_ai_line_of_sight_check")
 
 	if arm_collides then
-		self:_debug_colliding_arm(shoulder_pos, muzzle_pos)
-
 		return nil, nil, nil
 	end
 
@@ -159,7 +151,6 @@ BTStormfiendShootAction._calculate_aim = function (self, unit, unit_position, at
 		local target_head_node = Unit.node(target_unit, "c_head")
 		local target_head_position = Unit.world_position(target_unit, target_head_node)
 		local result = PhysicsWorld.linear_sphere_sweep(physics_world, muzzle_pos, target_head_position, SPHERE_CAST_RADIUS, SPHERE_CAST_MAX_NUM_HITS, "collision_filter", "filter_enemy_player_ray_projectile", "report_initial_overlap")
-		local debug_hit_index = nil
 
 		if result then
 			local num_hits = #result
@@ -168,7 +159,6 @@ BTStormfiendShootAction._calculate_aim = function (self, unit, unit_position, at
 				local hit = result[i]
 				local actor = hit.actor
 				local hit_unit = Actor.unit(actor)
-				debug_hit_index = i
 				local is_character = DamageUtils.is_character(hit_unit)
 
 				if not is_character then
@@ -181,8 +171,6 @@ BTStormfiendShootAction._calculate_aim = function (self, unit, unit_position, at
 				end
 			end
 		end
-
-		self:_debug_fire_beam(muzzle_pos, target_head_position, can_hit_target, debug_hit_index, result, "retained")
 	end
 
 	local firewall_start_position = nil
@@ -193,8 +181,6 @@ BTStormfiendShootAction._calculate_aim = function (self, unit, unit_position, at
 		firewall_start_position = (attack_minimum_length_sq < end_position_distance_sq and projected_start_position) or nil
 		aim_start_position = projected_start_position
 		aim_end_position = aim_end_position or hit_position
-
-		self:_debug_firewall(attack_minimum_length, start_position, end_check_position, projected_start_position, hit_position)
 	end
 
 	local aim_start_offset = action.aim_start_offset
@@ -471,7 +457,6 @@ BTStormfiendShootAction.shoot_hit_check = function (self, unit, blackboard)
 	local radius = SPHERE_CAST_RADIUS
 	local max_hits = SPHERE_CAST_MAX_NUM_HITS
 	local result = PhysicsWorld.linear_sphere_sweep(physics_world, stormfiend_arm_pos, aim_position, radius, max_hits, "collision_filter", "filter_enemy_player_ray_projectile", "report_initial_overlap")
-	local debug_hit_index = nil
 
 	if result then
 		local immune_breeds = action.immune_breeds
@@ -485,8 +470,6 @@ BTStormfiendShootAction.shoot_hit_check = function (self, unit, blackboard)
 			local is_character = DamageUtils.is_character(hit_unit)
 
 			if not is_character then
-				debug_hit_index = i
-
 				break
 			end
 
@@ -522,8 +505,6 @@ BTStormfiendShootAction.shoot_hit_check = function (self, unit, blackboard)
 			end
 		end
 	end
-
-	self:_debug_fire_beam(stormfiend_arm_pos, aim_position, true, debug_hit_index, result, "immediate")
 end
 
 BTStormfiendShootAction._stop_beam_sfx = function (self, unit, blackboard, shoot_data)

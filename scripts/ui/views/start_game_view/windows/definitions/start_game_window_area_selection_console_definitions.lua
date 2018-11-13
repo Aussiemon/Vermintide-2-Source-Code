@@ -1,18 +1,45 @@
 local window_default_settings = UISettings.game_start_windows
-local window_frame = window_default_settings.frame
 local window_size = window_default_settings.size
 local window_spacing = window_default_settings.spacing
-local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
-local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
-local window_width_offset = window_size[1] * 2 + window_spacing * 2
-local window_text_width = window_size[1] - (window_frame_width * 2 + 60)
-local difficulty_option_size = {
-	1020,
-	200
-}
 local large_window_size = {
 	window_size[1] * 3 + window_spacing * 2,
 	window_size[2]
+}
+local animation_definitions = {
+	on_enter = {
+		{
+			name = "fade_in",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 0
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+				params.render_settings.alpha_multiplier = anim_progress
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	},
+	on_exit = {
+		{
+			name = "fade_out",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 1
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+				params.render_settings.alpha_multiplier = 1 - anim_progress
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	}
 }
 local scenegraph_definition = {
 	root = {
@@ -365,7 +392,6 @@ local function create_area_widget(i, specific_scenegraph_id)
 	return widget
 end
 
-local disable_with_gamepad = true
 local widgets = {
 	background = UIWidgets.create_simple_rect("background", {
 		255,
@@ -384,43 +410,6 @@ local area_widgets = {}
 for i = 1, 10, 1 do
 	area_widgets[i] = create_area_widget(i)
 end
-
-local animation_definitions = {
-	on_enter = {
-		{
-			name = "fade_in",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	},
-	on_exit = {
-		{
-			name = "fade_out",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 1
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = 1 - anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	}
-}
 
 return {
 	widgets = widgets,

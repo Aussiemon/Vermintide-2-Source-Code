@@ -61,9 +61,7 @@ GearUtils.create_equipment = function (world, slot_name, item_data, unit_1p, uni
 		left_unit_3p = left_hand_weapon_unit_3p,
 		left_ammo_unit_3p = left_hand_ammo_unit_3p,
 		left_unit_1p = left_hand_weapon_unit_1p,
-		left_ammo_unit_1p = left_hand_ammo_unit_1p,
-		right_hand_unit_name = item_units.right_hand_unit,
-		left_hand_unit_name = item_units.left_hand_unit
+		left_ammo_unit_1p = left_hand_ammo_unit_1p
 	}
 
 	return slot_data

@@ -187,12 +187,7 @@ BTBotShootAction._wanted_aim_rotation = function (self, self_unit, target_unit, 
 	if prediction_function then
 		local gravity_setting = ProjectileGravitySettings[projectile_info.gravity_settings]
 		local angle = nil
-
-		Profiler.start("trajectory prediction")
-
 		angle, target_position = prediction_function(projectile_speed / 100, -gravity_setting, current_position, target_pos, target_current_velocity)
-
-		Profiler.stop("trajectory prediction")
 
 		if not angle then
 			if self_unit == script_data.debug_unit then
@@ -203,13 +198,6 @@ BTBotShootAction._wanted_aim_rotation = function (self, self_unit, target_unit, 
 		end
 
 		target_rotation = Quaternion.multiply(Quaternion.look(Vector3.normalize(Vector3.flat(target_position - current_position)), Vector3.up()), Quaternion(Vector3.right(), angle))
-
-		if self_unit == script_data.debug_unit then
-			QuickDrawer:sphere(target_position, 0.1, Color(0, 0, 255))
-			QuickDrawer:sphere(current_position, 0.1, Color(0, 0, 255))
-			QuickDrawer:vector(current_position, Quaternion.forward(target_rotation) * 3, Color(0, 0, 255))
-			draw_estimated_arc(100, 1, current_position, Quaternion.forward(target_rotation) * projectile_speed * 0.01, Vector3(0, 0, gravity_setting))
-		end
 	else
 		target_position = target_pos
 		target_rotation = Quaternion.look(Vector3.normalize(target_position - current_position), Vector3.up())
@@ -511,11 +499,6 @@ BTBotShootAction._is_shot_obstructed = function (self, physics_world, from, dire
 			return false
 		elseif hit_unit ~= self_unit then
 			local obstructed_by_static = Actor.is_static(hit_actor)
-
-			if script_data.debug_unit == self_unit and script_data.ai_bots_weapon_debug then
-				QuickDrawerStay:line(from, hit[INDEX_POSITION])
-				QuickDrawerStay:sphere(hit[INDEX_POSITION], 0.05, Color(255, 0, 0))
-			end
 
 			return true, max_distance - hit[INDEX_DISTANCE], obstructed_by_static
 		end

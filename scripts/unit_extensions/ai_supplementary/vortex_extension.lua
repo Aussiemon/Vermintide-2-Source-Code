@@ -271,13 +271,6 @@ VortexExtension.update = function (self, unit, input, dt, context, t)
 	local scale_z = height_lerp * vortex_template.max_height
 
 	Unit.set_local_scale(unit, 0, Vector3(scale_xy, scale_xy, scale_z))
-
-	if script_data.debug_vortex then
-		local spin_speed = vortex_template.ai_rotation_speed
-
-		self:debug_render_vortex(t, dt, position, fx_radius, inner_radius, outer_radius, spin_speed, height)
-		Debug.text(string.format("VORTEX : FX_RADIUS: %.2f INNER_RADIUS: %.2f OUTER_RADIUS: %.2f HEIGHT: %.2f SPIN_SPEED: %.2f HEIGHT_LERP: %.4f", fx_radius, inner_radius, outer_radius, height, spin_speed, height_lerp))
-	end
 end
 
 local function position_aligned_on_navmesh_transform(nav_world, position, x_axis)
@@ -373,27 +366,6 @@ VortexExtension._update_height = function (self, unit, t, dt, vortex_template, v
 		local new_lerp_value = math.clamp(current_lerp_value + dt * INCREASE_HEIGHT_LERP_PROGRESS_PER_SECOND, 0, 1)
 		vortex_data.height = math.lerp(start_lerp_height, wanted_height, new_lerp_value)
 	end
-
-	if script_data.debug_vortex then
-		local ray_end = ray_source + Vector3.up() * new_height
-		local debug_color = (hit and Colors.get("red")) or Colors.get("green")
-
-		QuickDrawer:line(ray_source, ray_end, debug_color)
-		QuickDrawer:sphere(ray_source, 0.25, Colors.get("yellow"))
-		QuickDrawer:sphere(ray_end, 0.25, debug_color)
-
-		local current_height_top = unit_position + Vector3.up() * vortex_data.height
-		local projected_height_top = Vector3(ray_end.x, ray_end.y, current_height_top.z)
-		local wanted_height_top = unit_position + Vector3.up() * vortex_data.wanted_height
-		local projected_wanted_height_top = Vector3(ray_end.x, ray_end.y, wanted_height_top.z)
-
-		QuickDrawer:sphere(current_height_top, 0.125, Colors.get("pink"))
-		QuickDrawer:sphere(wanted_height_top, 0.125, Colors.get("purple"))
-		QuickDrawer:line(unit_position, current_height_top, Colors.get("pink"))
-		QuickDrawer:line(current_height_top, projected_height_top, Colors.get("pink"))
-		QuickDrawer:line(current_height_top, wanted_height_top, Colors.get("purple"))
-		QuickDrawer:line(wanted_height_top, projected_wanted_height_top, Colors.get("purple"))
-	end
 end
 
 local INCREASE_RADIUS_LERP_PROGRESS_PER_SECOND = 0.75
@@ -463,18 +435,6 @@ VortexExtension._update_radius = function (self, unit, t, dt, nav_world, travers
 
 	local inner_radius_p = vortex_data.inner_radius / vortex_template.full_inner_radius
 	vortex_data.outer_radius = math.max(vortex_template.min_outer_radius, vortex_template.full_outer_radius * inner_radius_p)
-
-	if script_data.debug_vortex then
-		local debug_ray_color = (success and Colors.get("white")) or Colors.get("red")
-		local debug_new_inner_radius = vortex_data.inner_radius
-
-		QuickDrawer:line(unit_position, hit_position, debug_ray_color)
-		QuickDrawer:circle(unit_position, debug_new_inner_radius, Vector3.up(), Colors.get("pink"))
-
-		if debug_new_inner_radius ~= wanted_inner_radius then
-			QuickDrawer:circle(unit_position, wanted_inner_radius, Vector3.up(), Colors.get("purple"))
-		end
-	end
 end
 
 VortexExtension.control_size = function (self, unit, t, dt, nav_world, traverse_logic, vortex_template, vortex_data)

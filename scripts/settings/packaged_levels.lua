@@ -7,6 +7,7 @@ PACKAGED_LEVEL_PACKAGE_NAMES = {
 	["resource_packages/levels/honduras/farmlands"] = true,
 	["resource_packages/levels/honduras/fort"] = true,
 	["resource_packages/levels/honduras/ground_zero"] = true,
+	["resource_packages/levels/honduras/halloween_inn"] = true,
 	["resource_packages/levels/honduras/military"] = true,
 	["resource_packages/levels/honduras/mines"] = true,
 	["resource_packages/levels/honduras/nurgle"] = true,

@@ -188,6 +188,10 @@ UIUtils.get_hero_statistics_by_template = function (template)
 			description_name = entry.description_name or entry.generate_description(params)
 		end
 
+		if entry.value_type == "percent" then
+			value = tostring(value) .. "%"
+		end
+
 		layout[index] = {
 			display_name = display_name,
 			description_name = description_name,

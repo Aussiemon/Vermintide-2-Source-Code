@@ -1,3 +1,5 @@
+require("scripts/settings/equipment/power_level_templates")
+
 DamageProfileTemplates = {}
 
 local function new_template(damage_profile_name, append, new_name, charge_value, default_attack_template, ...)
@@ -647,10 +649,6 @@ local shotgun_dropoff_ranges = {
 local machinegun_dropoff_ranges = {
 	dropoff_start = 10,
 	dropoff_end = 30
-}
-local bop_dropoff_ranges = {
-	dropoff_start = 10,
-	dropoff_end = 20
 }
 local carbine_dropoff_ranges = {
 	dropoff_start = 15,
@@ -2167,10 +2165,6 @@ DamageProfileTemplates.staff_fireball = {
 			attack = 0.15,
 			impact = 0.15
 		},
-		range_dropoff_settings = {
-			dropoff_start = 10,
-			dropoff_end = 30
-		},
 		range_dropoff_settings = carbine_dropoff_ranges
 	}
 }
@@ -2610,10 +2604,6 @@ DamageProfileTemplates.staff_fireball_charged = {
 			attack = 0.3,
 			impact = 0.25
 		},
-		range_dropoff_settings = {
-			dropoff_start = 10,
-			dropoff_end = 30
-		},
 		range_dropoff_settings = shotgun_dropoff_ranges
 	}
 }
@@ -2986,10 +2976,6 @@ DamageProfileTemplates.blast = {
 			attack = 0.05,
 			impact = 0.15
 		},
-		range_dropoff_settings = {
-			dropoff_start = 5,
-			dropoff_end = 15
-		},
 		range_dropoff_settings = carbine_dropoff_ranges
 	}
 }
@@ -3054,8 +3040,8 @@ DamageProfileTemplates.beam_shot = {
 		impact = 0.05
 	},
 	default_target = {
-		boost_curve_coefficient_headshot = 1,
 		dot_template_name = "burning_3W_dot",
+		boost_curve_coefficient_headshot = 1,
 		boost_curve_type = "ninja_curve",
 		boost_curve_coefficient = 0.75,
 		attack_template = "wizard_staff_beam_sniper",
@@ -3066,10 +3052,6 @@ DamageProfileTemplates.beam_shot = {
 		power_distribution_far = {
 			attack = 0.5,
 			impact = 0.2
-		},
-		range_dropoff_settings = {
-			dropoff_start = 10,
-			dropoff_end = 30
 		},
 		range_dropoff_settings = sniper_dropoff_ranges
 	}
@@ -4051,6 +4033,16 @@ DamageProfileTemplates.ratling_gunner_backdrop = {
 		}
 	}
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local file_names = dlc.damage_profile_template_files_names
+
+	if file_names then
+		for _, file_name in ipairs(file_names) do
+			dofile(file_name)
+		end
+	end
+end
 
 for name, damage_profile in pairs(DamageProfileTemplates) do
 	if not damage_profile.targets then

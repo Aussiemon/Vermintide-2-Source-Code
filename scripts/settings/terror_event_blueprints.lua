@@ -9295,8 +9295,10 @@ TerrorEventBlueprints = {
 }
 
 for _, dlc in pairs(DLCSettings) do
-	if dlc.terror_event_blueprints_filename then
-		events = dofile(dlc.terror_event_blueprints_filename)
+	local event_file_name = dlc.terror_event_blueprints_filename
+
+	if event_file_name then
+		events = dofile(event_file_name)
 
 		for blue_print_name, event in pairs(events) do
 			TerrorEventBlueprints[blue_print_name] = event
@@ -9304,15 +9306,19 @@ for _, dlc in pairs(DLCSettings) do
 	else
 		local events = dlc.terror_event_blueprints
 
-		for blue_print_name, event in pairs(events) do
-			TerrorEventBlueprints[blue_print_name] = event
+		if events then
+			for blue_print_name, event in pairs(events) do
+				TerrorEventBlueprints[blue_print_name] = event
+			end
 		end
 	end
 
 	local events = dlc.weighted_random_terror_events
 
-	for event_name, event in pairs(events) do
-		WeightedRandomTerrorEvents[event_name] = event
+	if events then
+		for event_name, event in pairs(events) do
+			WeightedRandomTerrorEvents[event_name] = event
+		end
 	end
 end
 

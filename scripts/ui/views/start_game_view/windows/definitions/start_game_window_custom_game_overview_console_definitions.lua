@@ -1,14 +1,47 @@
 local window_default_settings = UISettings.game_start_windows
-local window_background = window_default_settings.background
 local window_frame = window_default_settings.frame
 local window_size = window_default_settings.size
-local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
 local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
 local game_option_size = {
 	window_size[1],
 	194
 }
 local window_text_width = window_size[1]
+local animation_definitions = {
+	on_enter = {
+		{
+			name = "fade_in",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 0
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+				params.render_settings.alpha_multiplier = anim_progress
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	},
+	on_exit = {
+		{
+			name = "fade_out",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 1
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				params.render_settings.alpha_multiplier = 1
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	}
+}
 local scenegraph_definition = {
 	root = {
 		is_root = true,
@@ -257,144 +290,14 @@ local widgets = {
 	play_button_console = UIWidgets.create_start_game_console_play_button("play_button_console"),
 	play_button = UIWidgets.create_icon_and_name_button("play_button", "options_button_icon_quickplay", Localize("start_game_window_play"))
 }
-local animation_definitions = {
-	on_enter = {
-		{
-			name = "fade_in",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	},
-	on_exit = {
-		{
-			name = "fade_out",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 1
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = 1
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	}
-}
 local selector_input_definition = {
 	"mission_setting",
 	"difficulty_setting"
-}
-local layout_mapping = {
-	mission_setting = "mission_selection",
-	play_button = "custom_game_play",
-	difficulty_setting = "difficulty_selection"
-}
-local generic_input_actions = {
-	default = {
-		{
-			input_action = "d_vertical",
-			priority = 1,
-			description_text = "input_description_navigate",
-			ignore_keybinding = true
-		},
-		{
-			input_action = "l1_r1",
-			priority = 2,
-			description_text = "input_description_toggle_forge_tab",
-			ignore_keybinding = true
-		},
-		{
-			input_action = "confirm",
-			priority = 4,
-			description_text = "input_description_select"
-		},
-		{
-			input_action = "back",
-			priority = 5,
-			description_text = "input_description_close"
-		}
-	}
-}
-local input_actions = {
-	salvage = {
-		actions = {
-			{
-				input_action = "y",
-				priority = 3,
-				description_text = "hero_view_crafting_salvage",
-				ignore_keybinding = true
-			}
-		}
-	},
-	craft_random_item = {
-		actions = {
-			{
-				input_action = "y",
-				priority = 3,
-				description_text = "hero_view_crafting_craft",
-				ignore_keybinding = true
-			}
-		}
-	},
-	reroll_weapon_properties = {
-		actions = {
-			{
-				input_action = "y",
-				priority = 3,
-				description_text = "hero_view_crafting_properties",
-				ignore_keybinding = true
-			}
-		}
-	},
-	reroll_weapon_traits = {
-		actions = {
-			{
-				input_action = "y",
-				priority = 3,
-				description_text = "hero_view_crafting_trait",
-				ignore_keybinding = true
-			}
-		}
-	},
-	upgrade_item_rarity_common = {
-		actions = {
-			{
-				input_action = "y",
-				priority = 3,
-				description_text = "hero_view_crafting_upgrade",
-				ignore_keybinding = true
-			}
-		}
-	},
-	apply_weapon_skin = {
-		actions = {
-			{
-				input_action = "y",
-				priority = 3,
-				description_text = "hero_view_crafting_apply_skin",
-				ignore_keybinding = true
-			}
-		}
-	}
 }
 
 return {
 	scenegraph_definition = scenegraph_definition,
 	widgets = widgets,
 	animation_definitions = animation_definitions,
-	selector_input_definition = selector_input_definition,
-	layout_mapping = layout_mapping
+	selector_input_definition = selector_input_definition
 }

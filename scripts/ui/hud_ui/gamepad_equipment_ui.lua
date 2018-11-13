@@ -52,6 +52,8 @@ GamePadEquipmentUI._create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local widgets = {}
 	local widgets_by_name = {}
+	local frame_widgets = {}
+	local frame_widgets_by_name = {}
 	local ammo_widgets = {}
 	local ammo_widgets_by_name = {}
 	local unused_widgets = {}
@@ -80,10 +82,19 @@ GamePadEquipmentUI._create_ui_elements = function (self)
 		widgets_by_name[name] = widget
 	end
 
+	for name, definition in pairs(definitions.frame_definitions) do
+		local widget = UIWidget.init(definition)
+		frame_widgets[#frame_widgets + 1] = widget
+		frame_widgets_by_name[name] = widget
+		widgets_by_name[name] = widget
+	end
+
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
 	self._ammo_widgets = ammo_widgets
 	self._ammo_widgets_by_name = ammo_widgets_by_name
+	self._frame_widgets = frame_widgets
+	self._frame_widgets_by_name = frame_widgets_by_name
 	self._static_widgets = static_widgets
 	self._unused_widgets = unused_widgets
 	self._slot_widgets = slot_widgets
@@ -360,15 +371,10 @@ GamePadEquipmentUI._sync_player_equipment = function (self)
 		return
 	end
 
-	Profiler.start("-check equipment for changes")
-
 	if not self:_check_equipment_changed(equipment) then
-		Profiler.stop("-check equipment for changes")
-
 		return
 	end
 
-	Profiler.stop("-check equipment for changes")
 	table.clear(verified_widgets)
 
 	local inventory_modified = false
@@ -1012,6 +1018,10 @@ GamePadEquipmentUI._set_elements_visible = function (self, visible)
 		UIRenderer.set_element_visible(ui_renderer, widget.element, visible)
 	end
 
+	for _, widget in ipairs(self._frame_widgets) do
+		UIRenderer.set_element_visible(ui_renderer, widget.element, visible)
+	end
+
 	self._retained_elements_visible = visible
 
 	self:set_dirty()
@@ -1030,37 +1040,22 @@ GamePadEquipmentUI.update = function (self, dt, t)
 
 	local dirty = false
 
-	Profiler.start("-update animations")
-
 	if self:_update_animations(dt) then
 		dirty = true
 	end
-
-	Profiler.stop("-update animations")
-	Profiler.start("-update ammo counter")
 
 	if self:_animate_ammo_counter(dt) then
 		dirty = true
 	end
 
-	Profiler.stop("-update ammo counter")
-	Profiler.start("-set dirty")
-
 	if dirty then
 		self:set_dirty()
 	end
 
-	Profiler.stop("-set dirty")
-	Profiler.start("-handle resolution changed")
 	self:_handle_resolution_modified()
-	Profiler.stop("-handle resolution changed")
-	Profiler.start("-sync player equipment")
 	self:_sync_player_equipment()
-	Profiler.stop("-sync player equipment")
 	self:_handle_gamepad_activity()
-	Profiler.start("-draw")
 	self:draw(dt)
-	Profiler.stop("-draw")
 end
 
 GamePadEquipmentUI._handle_resolution_modified = function (self)
@@ -1149,10 +1144,16 @@ GamePadEquipmentUI.draw = function (self, dt)
 		UIRenderer.draw_widget(ui_renderer, widget)
 	end
 
-	render_settings.alpha_multiplier = self.ammo_alpha_multiplier or alpha_multiplier
 	render_settings.snap_pixel_positions = true
 
 	for _, widget in ipairs(self._ammo_widgets) do
+		UIRenderer.draw_widget(ui_renderer, widget)
+	end
+
+	render_settings.alpha_multiplier = self.frame_alpha_multiplier or alpha_multiplier
+	render_settings.snap_pixel_positions = true
+
+	for _, widget in ipairs(self._frame_widgets) do
 		UIRenderer.draw_widget(ui_renderer, widget)
 	end
 
@@ -1241,6 +1242,10 @@ GamePadEquipmentUI.set_alpha = function (self, alpha)
 		self:_set_widget_dirty(widget)
 	end
 
+	for widget_index, widget in pairs(self._frame_widgets) do
+		self:_set_widget_dirty(widget)
+	end
+
 	self:set_dirty()
 end
 
@@ -1248,6 +1253,16 @@ GamePadEquipmentUI.set_ammo_alpha = function (self, alpha)
 	self.ammo_alpha_multiplier = alpha
 
 	for widget_index, widget in pairs(self._ammo_widgets) do
+		self:_set_widget_dirty(widget)
+	end
+
+	self:set_dirty()
+end
+
+GamePadEquipmentUI.set_frame_alpha = function (self, alpha)
+	self.frame_alpha_multiplier = alpha
+
+	for widget_index, widget in pairs(self._frame_widgets) do
 		self:_set_widget_dirty(widget)
 	end
 
@@ -1266,6 +1281,10 @@ GamePadEquipmentUI.set_panel_alpha = function (self, alpha)
 	end
 
 	for widget_index, widget in pairs(self._static_widgets) do
+		self:_set_widget_dirty(widget)
+	end
+
+	for widget_index, widget in pairs(self._ammo_widgets) do
 		self:_set_widget_dirty(widget)
 	end
 

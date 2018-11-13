@@ -17,7 +17,7 @@ local function get_variable(path_to_movement_setting_to_modify, unit)
 	if movement_value then
 		return movement_value
 	else
-		fassert(orginal_variable_exists, "variable does not exist in PlayerUnitMovementSettings")
+		ferror("Variable does not exist in PlayerUnitMovementSettings")
 	end
 end
 
@@ -44,12 +44,6 @@ end
 local params = {}
 local clearable_params = {}
 local broadphase_results = {}
-
-local function dprintf(text, ...)
-	if script_data.buff_debug then
-		printf(text, ...)
-	end
-end
 
 local function is_local(unit)
 	local player = Managers.player:owner(unit)
@@ -1497,21 +1491,19 @@ BuffFunctionTemplates.functions = {
 	activate_buff_stacks_based_on_health_chunks = function (unit, buff, params)
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 		local buff_extension = ScriptUnit.extension(unit, "buff_system")
-		local damage_taken = health_extension:get_damage_taken()
 		local template = buff.template
 		local buff_to_add = template.buff_to_add
 		local chunk_size = template.chunk_size
-		local current_health = health_extension:current_health()
+		local damage_taken = health_extension:get_damage_taken("uncursed_max_health")
 		local uncursed_max_health = health_extension:get_uncursed_max_health()
 		local max_stacks = math.floor(uncursed_max_health / chunk_size) - 1
+		local health_chunks = math.floor(damage_taken / chunk_size)
+		local num_chunks = math.min(max_stacks, health_chunks)
+		local num_buff_stacks = buff_extension:num_buff_type(buff_to_add)
 
 		if not buff.stack_ids then
 			buff.stack_ids = {}
 		end
-
-		local health_chunks = math.floor(current_health / chunk_size)
-		local num_chunks = math.max(0, max_stacks - health_chunks)
-		local num_buff_stacks = buff_extension:num_buff_type(buff_to_add)
 
 		if num_buff_stacks < num_chunks then
 			local difference = num_chunks - num_buff_stacks

@@ -38,12 +38,14 @@ ActionThrowGrimoire.finish = function (self, reason)
 
 	Managers.telemetry.events:player_used_item(player, self.item_name, position)
 
-	local player_manager = Managers.player
-	local player = player_manager:unit_owner(self.owner_unit)
+	local is_player_controlled = player:is_player_controlled()
+	local peer_id = player.peer_id
 	local predicate = "discarded_grimoire"
-	local localize_parameters = false
+	local owner_name = (is_player_controlled and ((rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id))) or player:name()
+	local pop_chat = true
+	local message = string.format(Localize("system_chat_player_discarded_grimoire"), owner_name)
 
-	Managers.chat:send_system_chat_message(1, "system_chat_player_discarded_grimoire", player:name(), localize_parameters)
+	Managers.chat:add_local_system_message(1, message, pop_chat)
 	Managers.state.event:trigger("add_coop_feedback", player:stats_id(), not player.bot_player, predicate, player)
 
 	if self.is_server then

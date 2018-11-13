@@ -13,7 +13,7 @@ local menu_button_font_size = definitions.menu_button_font_size
 local menu_item_index_lookup = definitions.menu_item_index_lookup
 local menu_videos = definitions.menu_videos
 local info_texts = definitions.info_texts
-local DO_RELOAD = true
+local DO_RELOAD = false
 local legal_texts = {
 	"fatshark_legal_1",
 	"gw_legal_1",
@@ -111,7 +111,7 @@ TitleMainUI._create_ui_elements = function (self)
 	self._change_profile_input_icon_widget = UIWidget.init(single_widget_definitions.change_profile_input_icon)
 	self._change_profile_input_text_widget = UIWidget.init(single_widget_definitions.change_profile_input_text)
 
-	if PLATFORM == "xb1" then
+	if PLATFORM ~= "win32" then
 		self._update_offline_data_input_icon_widget = UIWidget.init(single_widget_definitions.update_offline_data_input_icon)
 		self._update_offline_data_input_text_widget = UIWidget.init(single_widget_definitions.update_offline_data_input_text)
 	end
@@ -382,9 +382,6 @@ end
 
 TitleMainUI._set_info_text = function (self, current_index)
 	local text = info_texts[current_index]
-
-	print(current_index)
-
 	local content = self._info_icon_text_widget.content
 	content.text = text
 end
@@ -706,8 +703,6 @@ TitleMainUI.anim_deselect_button = function (self, animation_data, index, dt, op
 			menu_item.style.text.font_size = menu_button_font_size * (1 - progress)
 		else
 			menu_item.style.text.font_size = math.lerp(menu_item.style.text.font_size, menu_button_font_size, math.easeInCubic(progress))
-
-			print(menu_item.style.text.font_size)
 		end
 	end
 end
@@ -750,6 +745,8 @@ end
 TitleMainUI.set_user_name = function (self, username)
 	self._draw_gamertag = true
 	self._user_gamertag_widget.content.text = username
+
+	print("Username:", username)
 
 	if PLATFORM == "ps4" then
 		self._switch_profile_blocked = true

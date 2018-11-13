@@ -15,6 +15,9 @@ require("scripts/ui/views/loading_view")
 require("scripts/entity_system/systems/mission/rewards")
 require("scripts/ui/views/level_end/level_end_view_wrapper")
 
+local RPCS = {
+	"rpc_trigger_local_afk_system_message"
+}
 StateInGameRunning = class(StateInGameRunning)
 StateInGameRunning.NAME = "StateInGameRunning"
 
@@ -38,6 +41,7 @@ StateInGameRunning.on_enter = function (self, params)
 	self.input_manager = input_manager
 	self.is_in_inn = params.is_in_inn
 	self.is_in_tutorial = params.is_in_tutorial
+	self.network_event_delegate = params.network_event_delegate
 	self.end_conditions_met = false
 	self._booted_eac_untrusted = script_data["eac-untrusted"]
 
@@ -103,6 +107,8 @@ StateInGameRunning.on_enter = function (self, params)
 		Managers.smoketest:report("enter_ingame")
 	end
 
+	self.network_event_delegate:register(self, unpack(RPCS))
+
 	local level_key = params.level_key
 	self.parent.parent.loading_context.last_level_id = params.level_key
 	self.free_flight_manager = params.free_flight_manager
@@ -130,7 +136,7 @@ StateInGameRunning.on_enter = function (self, params)
 		is_in_inn = params.is_in_inn,
 		is_in_tutorial = self.is_in_tutorial,
 		network_lobby = self._lobby_host or self._lobby_client,
-		network_event_delegate = params.network_event_delegate,
+		network_event_delegate = self.network_event_delegate,
 		peer_id = peer_id,
 		player = player,
 		local_player_id = local_player_id,
@@ -324,7 +330,7 @@ StateInGameRunning.check_invites = function (self)
 
 	local platform = PLATFORM
 
-	if platform == "xb1" and (Managers.account:offline_mode() or Managers.account:has_fatal_error()) then
+	if (platform == "xb1" or platform == "ps4") and (Managers.account:offline_mode() or Managers.account:has_fatal_error()) then
 		if Managers.invite:has_invitation() then
 			self._offline_invite = true
 		end
@@ -605,8 +611,6 @@ if PLATFORM ~= "win32" and (BUILD == "dev" or BUILD == "debug") then
 end
 
 StateInGameRunning.update = function (self, dt, t)
-	Profiler.start("StateInGameRunning:update()")
-
 	if DebugKeyHandler.key_pressed("f5", "reload_ui", "ui") then
 		self:create_ingame_ui(self.ingame_ui_context)
 	end
@@ -676,18 +680,15 @@ StateInGameRunning.update = function (self, dt, t)
 		end
 	end
 
-	Profiler.start("AFK Kick")
-
 	local main_t = Managers.time:time("main")
 
 	self:update_player_afk_check(dt, main_t)
-	Profiler.stop("AFK Kick")
 
 	if self._benchmark_handler then
 		self._benchmark_handler:update(dt, t)
 	end
 
-	Profiler.stop("StateInGameRunning:update()")
+	self:_update_catchup_framerate_before_starting()
 end
 
 StateInGameRunning.check_for_new_quests_or_contracts = function (self, dt)
@@ -984,17 +985,38 @@ end
 StateInGameRunning.event_conflict_director_setup_done = function (self)
 	self._conflict_directory_is_ready = true
 
-	self:game_actually_starts()
+	self:_catchup_framerate_before_starting()
 end
 
 StateInGameRunning.event_local_player_spawned = function (self, is_initial_spawn)
 	self._player_has_spawned = true
 	self._is_initial_spawn = is_initial_spawn
 
-	self:game_actually_starts()
+	self:_catchup_framerate_before_starting()
 end
 
-StateInGameRunning.game_actually_starts = function (self)
+StateInGameRunning._catchup_framerate_before_starting = function (self)
+	Framerate.set_catchup()
+
+	self._frame_catchup_counter = 20
+end
+
+StateInGameRunning._update_catchup_framerate_before_starting = function (self)
+	if self._frame_catchup_counter == nil then
+		return
+	end
+
+	self._frame_catchup_counter = self._frame_catchup_counter - 1
+
+	if self._frame_catchup_counter == 0 then
+		self._frame_catchup_counter = nil
+
+		Framerate.set_playing()
+		self:_game_actually_starts()
+	end
+end
+
+StateInGameRunning._game_actually_starts = function (self)
 	if not self._spawn_initialized and self._player_has_spawned and (not self.is_server or self._conflict_directory_is_ready) then
 		local platform = PLATFORM
 		local loading_context = self.parent.parent.loading_context
@@ -1111,16 +1133,33 @@ StateInGameRunning._show_afk_warning = function (self)
 	end
 
 	local player = Managers.player:local_player(1)
+	local rpc = "rpc_trigger_local_afk_system_message"
+	local message_id = "chat_afk_kick_warning"
+	local peer_id = player.peer_id
 
-	self:_send_system_chat_message("chat_afk_kick_warning", player:name())
+	if not self.is_server then
+		Managers.state.network.network_transmit:send_rpc_server(rpc, message_id, peer_id)
+	end
+
+	self:rpc_trigger_local_afk_system_message(peer_id, message_id, peer_id)
 end
 
-StateInGameRunning._send_system_chat_message = function (self, message, localization_param)
-	local channel_id = 1
-	local pop_chat = true
-	local localize_parameters = false
+StateInGameRunning.rpc_trigger_local_afk_system_message = function (self, sender, message_id, peer_id)
+	if self.is_server then
+		Managers.state.network.network_transmit:send_rpc_clients_except(rpc, peer_id, message_id, peer_id)
+	end
 
-	Managers.chat:send_system_chat_message(channel_id, message, localization_param, localize_parameters, pop_chat)
+	local player = Managers.player:player(peer_id, 1)
+
+	if player then
+		local is_player_controlled = player:is_player_controlled()
+		local player_name = (is_player_controlled and ((rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id))) or player:name()
+		local channel_id = 1
+		local pop_chat = true
+		local message = string.format(Localize(message_id), player_name)
+
+		Managers.chat:add_local_system_message(channel_id, message, pop_chat)
+	end
 end
 
 StateInGameRunning._cancel_afk_warning = function (self)
@@ -1145,8 +1184,15 @@ StateInGameRunning._kick_afk_player = function (self)
 	self:_cancel_afk_warning()
 
 	local player = Managers.player:local_player(1)
+	local rpc = "rpc_trigger_local_afk_system_message"
+	local message_id = "chat_afk_kick"
+	local peer_id = player.peer_id
 
-	self:_send_system_chat_message("chat_afk_kick", player:name())
+	if not self.is_server then
+		Managers.state.network.network_transmit:send_rpc_server(rpc, message_id, peer_id)
+	end
+
+	self:rpc_trigger_local_afk_system_message(peer_id, message_id, peer_id)
 
 	self.afk_kick = true
 end

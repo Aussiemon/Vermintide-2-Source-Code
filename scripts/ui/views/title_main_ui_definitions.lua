@@ -671,6 +671,11 @@ local scenegraph_definition = {
 	}
 }
 
+if PLATFORM == "ps4" then
+	scenegraph_definition.update_offline_data_input_icon.position[1] = 35
+	scenegraph_definition.update_offline_data_input_icon.position[2] = 50
+end
+
 local function create_engage_prompt(ui_renderer)
 	local font_type = "hell_shark"
 	local font_size = 52
@@ -1198,7 +1203,7 @@ local single_widget_definitions = {
 	change_profile_input_icon = UIWidgets.create_simple_texture("xbone_button_icon_x", "change_profile_input_icon"),
 	change_profile_input_text = UIWidgets.create_simple_rect_text("change_profile_input_text", Localize("xb1_switch_profile"), 20),
 	support_info = UIWidgets.create_simple_text("", "support_info", 20, Colors.get_color_table_with_alpha("white", 150)),
-	update_offline_data_input_icon = UIWidgets.create_simple_texture("xbone_button_icon_y", "update_offline_data_input_icon"),
+	update_offline_data_input_icon = UIWidgets.create_simple_texture((PLATFORM == "xb1" and "xbone_button_icon_y") or "ps4_button_icon_triangle", "update_offline_data_input_icon"),
 	update_offline_data_input_text = UIWidgets.create_simple_rect_text("update_offline_data_input_text", Localize("update_offline_data"), 20),
 	sidebar_mask = UIWidgets.create_simple_texture("mask_rect", "sidebar_mask", false, false, {
 		255,

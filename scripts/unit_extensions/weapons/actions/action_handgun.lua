@@ -90,7 +90,6 @@ ActionHandgun.client_owner_post_update = function (self, dt, t, world, can_damag
 	end
 
 	if self.state == "shooting" then
-		local world = self.world
 		local buff_extension = self.owner_buff_extension
 		local _, procced = buff_extension:apply_buffs_to_value(0, StatBuffIndex.EXTRA_SHOT)
 		local add_spread = not self.extra_buff_shot

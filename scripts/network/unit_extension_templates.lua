@@ -180,7 +180,8 @@ local unit_templates = {
 			"PlayerUnitSmartTargetingExtension",
 			"PlayerUnitOverchargeExtension",
 			"PlayerSoundEffectExtension",
-			"PlayerUnitVisualEffectsExtension"
+			"PlayerUnitVisualEffectsExtension",
+			eye_tracking_name
 		},
 		self_owned_extensions_server = {
 			"PlayerInputTutorialExtension",
@@ -221,7 +222,8 @@ local unit_templates = {
 			"PlayerUnitSmartTargetingExtension",
 			"PlayerUnitOverchargeExtension",
 			"PlayerSoundEffectExtension",
-			"PlayerUnitVisualEffectsExtension"
+			"PlayerUnitVisualEffectsExtension",
+			eye_tracking_name
 		},
 		husk_extensions = {
 			"SimpleHuskInventoryExtension",

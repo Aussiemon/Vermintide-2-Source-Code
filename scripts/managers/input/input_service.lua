@@ -16,6 +16,7 @@ InputService.init = function (self, input_service_name, keymaps_name, filters_na
 	self.keymaps_name = keymaps_name
 	self.filters_name = filters_name
 	self.input_manager = Managers.input
+	self.blocked_input = {}
 end
 
 InputService.map_device = function (self, input_device_type, input_device, input_device_data)
@@ -94,7 +95,7 @@ InputService.get = function (self, input_data_name, consume)
 			end
 		end
 
-		if action_value == nil then
+		if action_value == nil or self.blocked_input[input_data_name] then
 			action_value = InputAux.default_values_for_types[default_data_types[input_data_name]]
 		end
 
@@ -102,6 +103,16 @@ InputService.get = function (self, input_data_name, consume)
 	elseif filter_binding then
 		local function_data = filter_binding.function_data
 		local value = InputFilters[function_data.filter_type].update(function_data, self)
+
+		if self.blocked_input[input_data_name] then
+			if type(value) == "boolean" then
+				value = false
+			elseif type(value) == "userdata" then
+				value = Vector3.zero()
+			elseif type(value) == "number" then
+				value = 0
+			end
+		end
 
 		return value
 	end
@@ -243,6 +254,10 @@ end
 
 InputService.set_blocked = function (self, is_blocked)
 	self.service_is_blocked = is_blocked
+end
+
+InputService.set_input_blocked = function (self, input_data_name, blocked)
+	self.blocked_input[input_data_name] = blocked or nil
 end
 
 InputService.set_hover = function (self, hover)

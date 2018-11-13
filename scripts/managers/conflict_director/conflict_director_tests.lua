@@ -13,27 +13,18 @@ local function compare_utility()
 	local consideration = UtilityConsiderations.storm_vermin_push_attack.distance_to_target
 	local blackboard_value = 0.7
 	local f1 = EngineOptimized.utility_from_spline
-
-	Profiler.start("UTIL ENG")
-
 	local utility = nil
 
 	for ii = 1, 1000, 1 do
 		utility = f1(consideration.engine_spline_index, blackboard_value)
 	end
 
-	Profiler.stop("UTIL ENG")
-
 	local norm_value = math.clamp(blackboard_value / consideration.max_value, 0, 1)
 	local f2 = Utility.GetUtilityValueFromSpline
-
-	Profiler.start("UTIL LUA")
 
 	for ii = 1, 1000, 1 do
 		utility = f2(consideration.spline, norm_value)
 	end
-
-	Profiler.stop("UTIL LUA")
 end
 
 local function test_pointx(nodes, p)
@@ -105,24 +96,17 @@ ConflictDirectorTests.test_main_path_optimization = function (self, t, dt)
 
 	QuickDrawer:sphere(pos, 10 + math.sin(t * 5) * 5)
 	Debug.text("DISTANCE point: %d, distance %.1f", ti, main_path_data.collapsed_travel_dists[ti])
-	Profiler.start("main_path_a")
 
 	for i = 1, num_points, 1 do
 		closest_pos_at_main_path(main_path_data.collapsed_path, main_path_data.collapsed_travel_dists, main_path_data.breaks_lookup, pos, ti)
 	end
 
-	Profiler.stop("main_path_a")
-
 	local closest_pos_at_main_path_opt = EngineOptimized.closest_pos_at_main_path
 	local pr2 = EngineOptimized.point_on_mainpath
-
-	Profiler.start("main_path_b")
 
 	for i = 1, num_points, 1 do
 		closest_pos_at_main_path_opt(pos)
 	end
-
-	Profiler.stop("main_path_b")
 
 	local p = PLAYER_POSITIONS[1]
 	local p1 = Vector3(100, 20, 130)
@@ -130,23 +114,15 @@ ConflictDirectorTests.test_main_path_optimization = function (self, t, dt)
 	local res = nil
 	local EngineOptimized_closest_point_on_line = EngineOptimized.closest_point_on_line
 
-	Profiler.start("closest_point Opt")
-
 	for i = 1, 250, 1 do
 		res = EngineOptimized_closest_point_on_line(p, p1, p2)
 	end
 
-	Profiler.stop("closest_point Opt")
-
 	local Geometry_closest_point_on_line = Geometry.closest_point_on_line
-
-	Profiler.start("closest_point Script")
 
 	for i = 1, 250, 1 do
 		res = Geometry_closest_point_on_line(p, p1, p2)
 	end
-
-	Profiler.stop("closest_point Script")
 
 	local mpd = self.level_analysis.main_path_data
 	local nodes = mpd.collapsed_path

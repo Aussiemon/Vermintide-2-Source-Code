@@ -1,26 +1,3 @@
-local meta = {
-	__newindex = function (t, k, v)
-		if rawget(t, k) == nil then
-			local info = debug.getinfo(2, "S")
-
-			if k ~= "to_console_line" and info and info.what ~= "main" and info.what ~= "C" then
-				error(string.format("Cannot assign undeclared global %q", k), 2)
-			end
-		end
-
-		rawset(t, k, v)
-	end,
-	__index = function (t, k)
-		local info = debug.getinfo(2, "S")
-
-		if k ~= "to_console_line" and info and info.what ~= "main" and info.what ~= "C" then
-			error(string.format("Cannot access undeclared global %q", k), 2)
-		end
-	end
-}
-
-setmetatable(_G, meta)
-
 if PLATFORM == "ps4" or PLATFORM == "xb1" then
 	if rawget(_G, "FREEN_LOLS") then
 		return

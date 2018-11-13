@@ -1497,12 +1497,6 @@ MaterialEffectMappings.enemy_stormfiend_footstep = {
 				material = "hay"
 			}
 		},
-		ice = {
-			event = "stormfiend_footstep",
-			parameters = {
-				material = "glass"
-			}
-		},
 		metal_solid = {
 			event = "stormfiend_footstep",
 			parameters = {
@@ -1549,12 +1543,6 @@ MaterialEffectMappings.enemy_stormfiend_footstep = {
 			event = "stormfiend_footstep",
 			parameters = {
 				material = "stone_wet"
-			}
-		},
-		snow = {
-			event = "stormfiend_footstep",
-			parameters = {
-				material = "water"
 			}
 		},
 		water = {
@@ -1680,12 +1668,6 @@ MaterialEffectMappings.enemy_stormfiend_footstep_land = {
 				material = "hay"
 			}
 		},
-		ice = {
-			event = "stormfiend_footstep_land",
-			parameters = {
-				material = "glass"
-			}
-		},
 		metal_solid = {
 			event = "stormfiend_footstep_land",
 			parameters = {
@@ -1732,12 +1714,6 @@ MaterialEffectMappings.enemy_stormfiend_footstep_land = {
 			event = "stormfiend_footstep_land",
 			parameters = {
 				material = "stone_wet"
-			}
-		},
-		snow = {
-			event = "stormfiend_footstep_land",
-			parameters = {
-				material = "water"
 			}
 		},
 		water = {

@@ -29,7 +29,6 @@ require("scripts/helpers/graph_helper")
 require("scripts/network/network_event_delegate")
 require("scripts/managers/input/input_manager")
 require("scripts/utils/debug_keymap")
-require("scripts/utils/vault")
 require("scripts/settings/render_settings_templates")
 require("scripts/settings/game_settings")
 require("scripts/network/network_clock_server")
@@ -82,7 +81,6 @@ StateIngame.on_enter = function (self)
 	self.last_connected_to_network_at = Managers.time:time("game")
 
 	CLEAR_POSITION_LOOKUP()
-	Profiler.start("input")
 
 	local input_manager = InputManager:new()
 	self.input_manager = input_manager
@@ -103,7 +101,6 @@ StateIngame.on_enter = function (self)
 		input_manager:map_device_to_service("DebugMenu", "gamepad")
 	end
 
-	Profiler.stop("input")
 	Managers.popup:set_input_manager(input_manager)
 
 	self.level_transition_handler = loading_context.level_transition_handler
@@ -112,6 +109,7 @@ StateIngame.on_enter = function (self)
 	self.is_in_inn = level_key == "inn_level"
 	self.is_in_tutorial = level_key == "prologue"
 	DamageUtils.is_in_inn = self.is_in_inn
+	self._called_level_flow_events = false
 
 	Managers.light_fx:set_lightfx_color_scheme((self.is_in_inn and "inn_level") or "ingame")
 
@@ -148,9 +146,6 @@ StateIngame.on_enter = function (self)
 
 	local world = self.world
 	self.peer_id = Network.peer_id()
-
-	Profiler.start("network_stuff")
-
 	local network_event_delegate = NetworkEventDelegate:new()
 	self.network_event_delegate = network_event_delegate
 	self.network_server = loading_context.network_server
@@ -182,10 +177,6 @@ StateIngame.on_enter = function (self)
 	self.statistics_db:register_network_event_delegate(network_event_delegate)
 
 	loading_context.network_transmit = self.network_transmit
-
-	Profiler.stop("network_stuff")
-	Profiler.start("debug_stuff")
-
 	local top_gui_world_name = "top_ingame_view"
 	local top_gui_world = Managers.world:world(top_gui_world_name)
 
@@ -202,8 +193,6 @@ StateIngame.on_enter = function (self)
 	if not script_data.debug_enabled then
 		DebugKeyHandler.set_enabled(false)
 	end
-
-	Profiler.stop("debug_stuff")
 
 	Managers.state.crafting = CraftingManager:new()
 	local difficulty = nil
@@ -314,17 +303,13 @@ StateIngame.on_enter = function (self)
 		Managers.state.room:setup_level_anchor_points(self.level)
 	end
 
-	Profiler.start("Optimizing Level Units")
-
 	local level_units = Level.units(level)
 
 	for _, unit in ipairs(level_units) do
 		ScriptUnit.optimize(unit)
 	end
 
-	Profiler.stop("Optimizing Level Units")
 	InputDebugger:setup(world, self.input_manager)
-	Profiler.start("sub_states")
 
 	self.machines = {}
 	local level_end_view_wrappers = loading_context.level_end_view_wrappers
@@ -375,8 +360,6 @@ StateIngame.on_enter = function (self)
 		self.machines[i] = GameStateMachine:new(self, StateInGameRunning, params, true)
 	end
 
-	Profiler.stop("sub_states")
-
 	if checkpoint_data then
 		Managers.state.entity:system("mission_system"):load_checkpoint_data(checkpoint_data.mission)
 	end
@@ -395,7 +378,6 @@ StateIngame.on_enter = function (self)
 		Managers.matchmaking:setup_post_init_data(post_init_data)
 	end
 
-	Profiler.start("level_stuff")
 	Level.trigger_level_loaded(level)
 	World.set_data(self.world, "level_seed", nil)
 
@@ -416,8 +398,6 @@ StateIngame.on_enter = function (self)
 	for _, level in ipairs(nested_levels) do
 		Level.trigger_level_loaded(level)
 	end
-
-	Profiler.stop("level_stuff")
 
 	local platform = PLATFORM
 
@@ -441,18 +421,13 @@ StateIngame.on_enter = function (self)
 		Managers.state.conflict:client_ready()
 	end
 
-	Profiler.start("populate pickups")
-
 	if self.is_server and checkpoint_data then
 		Managers.state.entity:system("pickup_system"):populate_pickups(checkpoint_data.pickup)
 	elseif self.is_server then
 		Managers.state.entity:system("pickup_system"):populate_pickups()
 	end
 
-	Profiler.stop("populate pickups")
-	Profiler.start("init payloads")
 	Managers.state.entity:system("payload_system"):init_payloads()
-	Profiler.stop("init payloads")
 
 	local dynamic_range_sound = Application.user_setting("dynamic_range_sound")
 
@@ -604,9 +579,7 @@ StateIngame._setup_world = function (self)
 
 	Managers.world:set_anim_update_callback(self.world, update_ui)
 	Managers.world:set_scene_update_callback(self.world, function ()
-		Profiler.start("Scene update Callback")
 		self:physics_async_update(self.dt)
-		Profiler.stop("Scene update Callback")
 	end)
 
 	if Managers.splitscreen then
@@ -631,9 +604,7 @@ end
 StateIngame.physics_async_update = function (self, dt)
 	local t = Managers.time:time("game")
 
-	Profiler.start("Music manager")
 	Managers.music:update(self.dt, t)
-	Profiler.stop("Music manager")
 
 	if self:_safe_to_do_entity_update() then
 		self.entity_system:physics_async_update()
@@ -684,8 +655,6 @@ StateIngame.unspawn_unit = function (self, unit)
 end
 
 StateIngame._create_level = function (self)
-	Profiler.start("create_level")
-
 	local level_key = self.level_transition_handler:get_current_level_keys()
 	local level_name = LevelSettings[level_key].level_name
 	local game_mode_manager = Managers.state.game_mode
@@ -727,7 +696,46 @@ StateIngame._create_level = function (self)
 	Managers.state.entity:add_and_register_units(self.world, World.units(self.world))
 	game_mode_manager:register_object_sets(object_sets)
 	Level.spawn_background(level)
-	Profiler.stop("create_level")
+
+	local backend_manager = Managers.backend
+	local live_event_interface = Managers.backend:get_interface("live_events")
+	local live_events = live_event_interface:get_live_events()
+	local level_flow_events = {}
+	local environment_level_flow_event = "keep_event_default"
+
+	for i = 1, #live_events, 1 do
+		local live_event = live_events[i]
+		local level_settings = live_event.level_settings and live_event.level_settings[level_key]
+
+		if level_settings then
+			local sub_level_name = level_settings.sub_level_name
+
+			if sub_level_name then
+				ScriptWorld.load_level(self.world, sub_level_name)
+			end
+
+			local environment_flow_event = level_settings.environment_flow_event
+
+			if environment_flow_event then
+				environment_level_flow_event = environment_flow_event
+			end
+
+			local flow_events = level_settings.level_flow_events
+
+			if flow_events then
+				for j = 1, #flow_events, 1 do
+					local flow_event = flow_events[j]
+					level_flow_events[#level_flow_events + 1] = flow_event
+				end
+			end
+		end
+	end
+
+	if environment_level_flow_event then
+		level_flow_events[#level_flow_events + 1] = environment_level_flow_event
+	end
+
+	self._level_flow_events = level_flow_events
 
 	return level
 end
@@ -741,7 +749,6 @@ StateIngame.pre_update = function (self, dt)
 	UPDATE_POSITION_LOOKUP()
 	UPDATE_PLAYER_LISTS()
 	network_manager:update_receive(dt)
-	Profiler.start("Network Client/Server update")
 
 	if self.network_server then
 		self.network_server:update(dt)
@@ -751,10 +758,7 @@ StateIngame.pre_update = function (self, dt)
 		self.network_client:update(dt)
 	end
 
-	Profiler.stop("Network Client/Server update")
-	Profiler.start("spawn")
 	Managers.state.spawn:update(dt, t)
-	Profiler.stop("spawn")
 	Managers.state.conflict:pre_update()
 	self.entity_system:commit_and_remove_pending_units()
 
@@ -766,8 +770,6 @@ end
 local knoywloke = nil
 
 StateIngame.update = function (self, dt, main_t)
-	Vault.reseed()
-
 	self.dt = dt
 
 	if not self.network_client or self.network_client.state == "game_started" then
@@ -779,22 +781,11 @@ StateIngame.update = function (self, dt, main_t)
 	local Managers = Managers
 
 	Managers.state.network:update(dt)
-	Profiler.start("BackendManager update")
 	Managers.backend:update(dt)
-	Profiler.stop("BackendManager update")
-	Profiler.start("input_manager")
 	self.input_manager:update(dt, main_t)
-	Profiler.stop("input_manager")
-	Profiler.start("free flight")
-	self.free_flight_manager:update(dt)
-	Profiler.stop("free flight")
-	Profiler.start("level_transition_handler")
 	self.level_transition_handler:update()
-	Profiler.stop("level_transition_handler")
 
 	local t = Managers.time:time("game")
-
-	Profiler.start("Lobby Update")
 
 	if self._lobby_host then
 		self._lobby_host:update(dt)
@@ -804,40 +795,27 @@ StateIngame.update = function (self, dt, main_t)
 		self._lobby_client:update(dt)
 	end
 
-	Profiler.stop("Lobby Update")
-	Profiler.start("voting")
 	Managers.state.voting:update(dt, t)
-	Profiler.stop("voting")
 
 	if Managers.matchmaking then
-		Profiler.start("matchmaking")
 		Managers.matchmaking:update(dt, main_t)
-		Profiler.stop("matchmaking")
 	end
 
 	if Managers.game_server then
-		Profiler.start("game_server")
 		Managers.game_server:update(dt, t)
-		Profiler.stop("game_server")
 	end
 
 	self:_update_deed_manager(dt)
 	Managers.deed:update(dt)
 
 	if Managers.state.quest then
-		Profiler.start("quest")
 		Managers.state.quest:update(dt, t)
-		Profiler.stop("quest")
 	end
 
-	Profiler.start("achievement")
 	Managers.state.achievement:update(dt, t)
-	Profiler.stop("achievement")
 
 	if Managers.state.decal ~= nil then
-		Profiler.start("decal_manager")
 		Managers.state.decal:update(dt, t)
-		Profiler.stop("decal_manager")
 	end
 
 	if Managers.eac ~= nil then
@@ -854,23 +832,11 @@ StateIngame.update = function (self, dt, main_t)
 	if is_server then
 		Managers.state.conflict:reset_data()
 
-		if self._lobby_host:is_joined() then
-			Profiler.start("Conflict Update")
-
-			if Managers.state.network:game() then
-				Managers.state.conflict:update(dt, t)
-			end
-
-			Profiler.stop("Conflict Update")
+		if self._lobby_host:is_joined() and Managers.state.network:game() then
+			Managers.state.conflict:update(dt, t)
 		end
-	else
-		Profiler.start("Conflict Update")
-
-		if Managers.state.network:game() then
-			Managers.state.conflict:update_client(dt, t)
-		end
-
-		Profiler.stop("Conflict Update")
+	elseif Managers.state.network:game() then
+		Managers.state.conflict:update_client(dt, t)
 	end
 
 	for _, machine in pairs(self.machines) do
@@ -894,16 +860,7 @@ StateIngame.update = function (self, dt, main_t)
 	Managers.state.game_mode:update(dt, t)
 
 	if is_server then
-		if script_data.debug_enabled and not self.is_in_inn then
-			local ai_system = Managers.state.entity:system("ai_system")
-			local ai_debugger = ai_system.ai_debugger
-
-			ai_debugger:update(t, dt)
-		end
-
-		Profiler.start("Game Mode Server")
 		Managers.state.game_mode:server_update(dt, t)
-		Profiler.stop("Game Mode Server")
 	end
 
 	if not self._new_state then
@@ -928,25 +885,19 @@ StateIngame.update = function (self, dt, main_t)
 
 	Managers.state.bot_nav_transition:update(dt, t)
 	Managers.state.performance:update(dt, t)
-
-	if script_data.debug_enabled then
-		Profiler.start("DebugUpdate")
-		Managers.state.debug:update(dt, t)
-		Debug.update(t, dt)
-		VisualAssertLog.update(dt)
-
-		local debug_input_service = self.input_manager:get_service("DebugMenu")
-
-		DebugScreen.update(dt, t, debug_input_service, self.input_manager)
-		DebugKeyHandler.render()
-		DebugKeyHandler.frame_clear()
-		FunctionCallProfiler.render()
-		PoolTableVisualizer.render(t)
-		Profiler.stop("DebugUpdate")
-	end
-
 	self:_generate_ingame_clock()
-	VALIDATE_POSITION_LOOKUP()
+
+	if #self._level_flow_events > 0 and not self._called_level_flow_events then
+		local flow_events = self._level_flow_events
+
+		for i = 1, #flow_events, 1 do
+			local flow_event = flow_events[i]
+
+			LevelHelper:flow_event(self.world, flow_event)
+		end
+
+		self._called_level_flow_events = true
+	end
 end
 
 StateIngame._update_deed_manager = function (self, dt)
@@ -1718,7 +1669,6 @@ StateIngame.on_exit = function (self, application_shutdown)
 	self.level_transition_handler:unregister_rpcs()
 	self.level_transition_handler:unregister_events(Managers.state.event)
 	self.level_transition_handler:clear_transition_exit_type()
-	Profiler.start("destroy units")
 
 	local unit_spawner = Managers.state.unit_spawner
 	unit_spawner.locked = false
@@ -1736,7 +1686,6 @@ StateIngame.on_exit = function (self, application_shutdown)
 
 	self.entity_system:destroy()
 	self.entity_system_bag:destroy()
-	Profiler.stop("destroy units")
 	Managers.player:exit_ingame()
 	self:_teardown_level()
 	Managers.state:destroy()

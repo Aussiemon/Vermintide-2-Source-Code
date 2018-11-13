@@ -242,15 +242,6 @@ SimpleInventoryExtension.update = function (self, unit, input, dt, context, t)
 	self:_update_loaded_projectile_settings()
 	self:_update_resync_loadout()
 
-	if script_data.show_equipped_weapon_units then
-		local slot_data = self:get_wielded_slot_data()
-		local left_hand_unit_name = slot_data.left_hand_unit_name
-		local right_hand_unit_name = slot_data.right_hand_unit_name
-
-		Debug.text("Left hand unit: %s", left_hand_unit_name)
-		Debug.text("Right hand unit: %s", right_hand_unit_name)
-	end
-
 	local current_ammo, max_ammo = self:current_ammo_status("slot_ranged")
 	local ammo_percentage = 1
 

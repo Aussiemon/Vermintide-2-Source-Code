@@ -71,32 +71,32 @@ ActionPotion.finish = function (self, reason)
 
 	if not buff_extension:has_buff_type("trait_ring_all_potions") then
 		for i = 1, num_targets, 1 do
-			local unit = targets[i]
-			local unit_object_id = network_manager:unit_game_object_id(unit)
-			local buff_extension = ScriptUnit.extension(unit, "buff_system")
+			local target_unit = targets[i]
+			local unit_object_id = network_manager:unit_game_object_id(target_unit)
+			local target_unit_buff_extension = ScriptUnit.extension(target_unit, "buff_system")
 
 			if self.is_server then
-				buff_extension:add_buff(buff_template)
+				target_unit_buff_extension:add_buff(buff_template)
 				network_manager.network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, owner_unit_id, 0, false)
 			else
 				network_manager.network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, owner_unit_id, 0, true)
 			end
 		end
 	else
-		local potion_buffs = {
+		local additional_potion_buffs = {
 			"speed_boost_potion_reduced",
 			"damage_boost_potion_reduced",
 			"cooldown_reduction_potion_reduced"
 		}
 
-		for i = 1, #potion_buffs, 1 do
-			local buff_template_name_id = NetworkLookup.buff_templates[potion_buffs[i]]
+		for i = 1, #additional_potion_buffs, 1 do
+			local additional_buff_template_name_id = NetworkLookup.buff_templates[additional_potion_buffs[i]]
 
 			if self.is_server then
-				buff_extension:add_buff(potion_buffs[i])
-				network_manager.network_transmit:send_rpc_clients("rpc_add_buff", owner_unit_id, buff_template_name_id, owner_unit_id, 0, false)
+				buff_extension:add_buff(additional_potion_buffs[i])
+				network_manager.network_transmit:send_rpc_clients("rpc_add_buff", owner_unit_id, additional_buff_template_name_id, owner_unit_id, 0, false)
 			else
-				network_manager.network_transmit:send_rpc_server("rpc_add_buff", owner_unit_id, buff_template_name_id, owner_unit_id, 0, true)
+				network_manager.network_transmit:send_rpc_server("rpc_add_buff", owner_unit_id, additional_buff_template_name_id, owner_unit_id, 0, true)
 			end
 		end
 	end

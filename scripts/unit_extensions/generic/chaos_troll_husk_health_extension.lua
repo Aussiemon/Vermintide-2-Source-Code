@@ -45,10 +45,6 @@ ChaosTrollHuskHealthExtension.update = function (self, dt, context, t)
 			self.pulse_time = 0
 		end
 	end
-
-	if script_data.show_ai_health then
-		Debug.text("TROLL HEALTH [%s] hp=%.1f dmg=%.1f", self.state, self:current_health(), self.damage)
-	end
 end
 
 ChaosTrollHuskHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot)

@@ -1,5 +1,4 @@
 local USE_PRECOMPILED_ROOT_TABLES = true
-USE_PRECOMPILED_ROOT_TABLES = true
 BreedBehaviors = BreedBehaviors or {}
 
 dofile("scripts/entity_system/systems/behaviour/trees/skaven/skaven_gutter_runner_behavior")
@@ -42,8 +41,10 @@ dofile("scripts/entity_system/systems/behaviour/trees/pets/pet_pig_behavior")
 for _, dlc in pairs(DLCSettings) do
 	local behaviour_trees = dlc.behaviour_trees
 
-	for _, tree in ipairs(behaviour_trees) do
-		dofile(tree)
+	if behaviour_trees then
+		for _, tree in ipairs(behaviour_trees) do
+			dofile(tree)
+		end
 	end
 end
 

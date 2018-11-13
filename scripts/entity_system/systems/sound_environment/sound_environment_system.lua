@@ -100,13 +100,9 @@ SoundEnvironmentSystem.register_sound_environment = function (self, volume_name,
 end
 
 SoundEnvironmentSystem._highest_prio_environment_at_position = function (self, position)
-	Profiler.start("SoundEnvironmentSystem:_highest_prio_environment_at_position")
-
 	local highest_prio_env_name = nil
 	local level = LevelHelper:current_level(self.world)
 	highest_prio_env_name = EngineOptimized.highest_prio_environment_at_position(self._highest_prio_system, level, position)
-
-	Profiler.stop("SoundEnvironmentSystem:_highest_prio_environment_at_position")
 
 	return highest_prio_env_name
 end
@@ -119,8 +115,6 @@ SoundEnvironmentSystem.set_source_environment = function (self, source, position
 	if not Vector3.is_valid(position) then
 		return
 	end
-
-	Profiler.start("SoundEnvironmentSystem:set_source_environment")
 
 	local volume_name = self:_highest_prio_environment_at_position(position)
 	local environments = self._environments
@@ -149,8 +143,6 @@ SoundEnvironmentSystem.set_source_environment = function (self, source, position
 
 		WwiseWorld.set_environment(wwise_world, environment.player_aux_bus_name, LISTENER_WEIGHT)
 	end
-
-	Profiler.stop("SoundEnvironmentSystem:set_source_environment")
 
 	return bus_name
 end
@@ -233,21 +225,6 @@ SoundEnvironmentSystem.update = function (self, context, t)
 
 	if GameSettingsDevelopment.fade_environments then
 		self:_update_fade(t)
-
-		if script_data.debug_sound_environments then
-			local current_environment = self._current_environment
-
-			Debug.text("SoundEnvironmentSystem: Inside volume %q", current_environment)
-
-			local environments = self._environments
-
-			for volume_name, data in pairs(environments) do
-				local fade_info = data.fade_info
-
-				Debug.text("%q has aux_bus_value == %.2f", volume_name, fade_info.current_value)
-			end
-		end
-
 		self:_update_source_environments()
 	end
 end

@@ -2189,11 +2189,7 @@ HitEffectsRatlingGunner = {
 		armour_type = "metal_hollow",
 		extra_conditions = {
 			death = false,
-			damage = true,
 			damage_type = wounding_damage_types
-		},
-		animations = {
-			"hit_reaction"
 		}
 	},
 	wound_back = {

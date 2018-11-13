@@ -4,46 +4,6 @@ local definitions = local_require("scripts/ui/views/start_game_view/windows/defi
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
-local DO_RELOAD = false
-
-local function get_text_height(ui_renderer, size, ui_style, ui_content, text, ui_style_global)
-	local widget_scale = nil
-
-	if ui_style_global then
-		widget_scale = ui_style_global.scale
-	end
-
-	local font_material, font_size, font_name = nil
-
-	if ui_style.font_type then
-		local font, size_of_font = UIFontByResolution(ui_style, widget_scale)
-		font_name = font[3]
-		font_size = font[2]
-		font_material = font[1]
-		font_size = size_of_font
-	else
-		local font = ui_style.font
-		font_name = font[3]
-		font_size = font[2]
-		font_material = font[1]
-		font_size = ui_style.font_size or font_size
-	end
-
-	if ui_style.localize then
-		text = Localize(text)
-	end
-
-	local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_name, font_size)
-	local texts = UIRenderer.word_wrap(ui_renderer, text, font_material, font_size, size[1])
-	local text_start_index = ui_content.text_start_index or 1
-	local max_texts = ui_content.max_texts or #texts
-	local num_texts = math.min(#texts - (text_start_index - 1), max_texts)
-	local inv_scale = RESOLUTION_LOOKUP.inv_scale
-	local full_font_height = (font_max + math.abs(font_min)) * inv_scale * num_texts
-
-	return full_font_height
-end
-
 StartGameWindowMutatorList = class(StartGameWindowMutatorList)
 StartGameWindowMutatorList.NAME = "StartGameWindowMutatorList"
 
@@ -63,7 +23,6 @@ StartGameWindowMutatorList.on_enter = function (self, params, offset)
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
-	self._animations = {}
 	self._ui_animations = {}
 
 	self:create_ui_elements(params, offset)
@@ -126,12 +85,6 @@ StartGameWindowMutatorList.on_exit = function (self, params)
 end
 
 StartGameWindowMutatorList.update = function (self, dt, t)
-	if DO_RELOAD then
-		DO_RELOAD = false
-
-		self:create_ui_elements()
-	end
-
 	self:_update_animations(dt)
 	self:_handle_input(dt, t)
 	self:_update_selected_item_backend_id()
@@ -146,8 +99,6 @@ StartGameWindowMutatorList._update_animations = function (self, dt)
 	self:_update_game_options_hover_effect()
 
 	local ui_animations = self._ui_animations
-	local animations = self._animations
-	local ui_animator = self.ui_animator
 
 	for name, animation in pairs(ui_animations) do
 		UIAnimation.update(animation, dt)
@@ -157,15 +108,9 @@ StartGameWindowMutatorList._update_animations = function (self, dt)
 		end
 	end
 
+	local ui_animator = self.ui_animator
+
 	ui_animator:update(dt)
-
-	for animation_name, animation_id in pairs(animations) do
-		if ui_animator:is_animation_completed(animation_id) then
-			ui_animator:stop_animation(animation_id)
-
-			animations[animation_name] = nil
-		end
-	end
 end
 
 StartGameWindowMutatorList._is_button_pressed = function (self, widget)
@@ -193,27 +138,16 @@ StartGameWindowMutatorList._is_button_hover_exit = function (self, widget)
 	return hotspot.on_hover_exit
 end
 
-StartGameWindowMutatorList._is_button_selected = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	return hotspot.is_selected
-end
-
 StartGameWindowMutatorList._handle_input = function (self, dt, t)
 	local widgets_by_name = self._widgets_by_name
-	local gamepad_active = Managers.input:is_device_active("gamepad")
-	local input_service = self.parent:window_input_service()
 
 	if self:_is_button_hover_enter(widgets_by_name.overlay_button) or self:_is_button_hover_enter(widgets_by_name.play_button) then
 		self:_play_sound("play_gui_lobby_button_01_difficulty_confirm_hover")
 	end
 
-	local play_pressed = gamepad_active and input_service:get("refresh_press")
-
 	if self:_is_button_pressed(widgets_by_name.overlay_button) then
-		self.parent:set_layout(7)
-	elseif (self:_is_button_pressed(widgets_by_name.play_button) or play_pressed) and self._selected_backend_id then
+		self.parent:set_layout_by_name("heroic_deed_selection")
+	elseif self:_is_button_pressed(widgets_by_name.play_button) and self._selected_backend_id then
 		self.parent:play(t, "deed")
 	end
 end
@@ -247,11 +181,6 @@ StartGameWindowMutatorList._present_item_by_backend_id = function (self, backend
 	widgets_by_name.overlay_button.content.has_item = true
 end
 
-StartGameWindowMutatorList._exit = function (self, selected_level)
-	self.exit = true
-	self.exit_level_id = selected_level
-end
-
 StartGameWindowMutatorList.draw = function (self, dt)
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
@@ -259,7 +188,11 @@ StartGameWindowMutatorList.draw = function (self, dt)
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
 
-	for _, widget in ipairs(self._widgets) do
+	local widgets = self._widgets
+
+	for i = 1, #widgets, 1 do
+		local widget = widgets[i]
+
 		UIRenderer.draw_widget(ui_renderer, widget)
 	end
 
@@ -292,8 +225,6 @@ StartGameWindowMutatorList._on_option_button_hover_exit = function (self, widget
 end
 
 StartGameWindowMutatorList._create_style_animation_enter = function (self, widget, target_value, style_id, widget_index, instant)
-	local ui_animations = self._ui_animations
-	local animation_name = "game_option_" .. style_id
 	local widget_style = widget.style
 	local pass_style = widget_style[style_id]
 
@@ -307,6 +238,8 @@ StartGameWindowMutatorList._create_style_animation_enter = function (self, widge
 	local animation_duration = (1 - current_color_value / target_color_value) * total_time
 
 	if animation_duration > 0 and not instant then
+		local ui_animations = self._ui_animations
+		local animation_name = "game_option_" .. style_id
 		ui_animations[animation_name .. "_hover_" .. widget_index] = self:_animate_element_by_time(pass_style.color, 1, current_color_value, target_color_value, animation_duration)
 	else
 		pass_style.color[1] = target_color_value
@@ -314,8 +247,6 @@ StartGameWindowMutatorList._create_style_animation_enter = function (self, widge
 end
 
 StartGameWindowMutatorList._create_style_animation_exit = function (self, widget, target_value, style_id, widget_index, instant)
-	local ui_animations = self._ui_animations
-	local animation_name = "game_option_" .. style_id
 	local widget_style = widget.style
 	local pass_style = widget_style[style_id]
 
@@ -329,6 +260,8 @@ StartGameWindowMutatorList._create_style_animation_exit = function (self, widget
 	local animation_duration = current_color_value / 255 * total_time
 
 	if animation_duration > 0 and not instant then
+		local ui_animations = self._ui_animations
+		local animation_name = "game_option_" .. style_id
 		ui_animations[animation_name .. "_hover_" .. widget_index] = self:_animate_element_by_time(pass_style.color, 1, current_color_value, target_color_value, animation_duration)
 	else
 		pass_style.color[1] = target_color_value
@@ -343,12 +276,6 @@ end
 
 StartGameWindowMutatorList._animate_element_by_time = function (self, target, target_index, from, to, time)
 	local new_animation = UIAnimation.init(UIAnimation.function_by_time, target, target_index, from, to, time, math.ease_out_quad)
-
-	return new_animation
-end
-
-StartGameWindowMutatorList._animate_element_by_catmullrom = function (self, target, target_index, target_value, p0, p1, p2, p3, time)
-	local new_animation = UIAnimation.init(UIAnimation.catmullrom, target, target_index, target_value, p0, p1, p2, p3, time)
 
 	return new_animation
 end

@@ -636,11 +636,6 @@ BTMeleeOverlapAttackAction.anim_cb_frenzy_damage = function (self, unit, blackbo
 	self:anim_cb_damage(unit, blackboard)
 end
 
-local debug_drawer_info = {
-	mode = "retained",
-	name = "BTMeleeOverlapAttackAction"
-}
-
 BTMeleeOverlapAttackAction.anim_cb_damage = function (self, unit, blackboard)
 	local attack = blackboard.attack
 	local width = attack.width
@@ -672,16 +667,6 @@ BTMeleeOverlapAttackAction.anim_cb_damage = function (self, unit, blackboard)
 	if attack.push_close_units_during_attack and push_units_data then
 		self:push_close_units(unit, blackboard, t, push_units_data)
 	end
-
-	if script_data.debug_ai_attack then
-		local drawer = Managers.state.debug:drawer(debug_drawer_info)
-
-		drawer:reset()
-
-		local pose = Matrix4x4.from_quaternion_position(unit_rotation, oobb_pos)
-
-		drawer:box(pose, hit_size)
-	end
 end
 
 BTMeleeOverlapAttackAction.push_close_units = function (self, unit, blackboard, t, data)
@@ -694,20 +679,6 @@ BTMeleeOverlapAttackAction.push_close_units = function (self, unit, blackboard, 
 	local forward_pos = push_pos + self_forward * dist
 	local radius = math.max(data.push_width, dist) * 1.5
 	local radius_sq = radius * radius
-	local debug_drawer = Managers.state.debug:drawer(debug_drawer_info)
-
-	if script_data.debug_ai_attack then
-		debug_drawer:reset()
-		debug_drawer:line(self_pos, forward_pos)
-
-		local left = Vector3.cross(self_forward, Vector3.up())
-
-		debug_drawer:line(self_pos - left * data.push_width, forward_pos - left * data.push_width)
-		debug_drawer:line(self_pos + left * data.push_width, forward_pos + left * data.push_width)
-		debug_drawer:circle(push_pos, radius, Vector3.up())
-		debug_drawer:circle(push_pos, 0.1, Vector3.up(), Color(0, 255, 128))
-	end
-
 	local hit_units = FrameTable.alloc_table()
 	local num_results = AiUtils.broadphase_query(push_pos, radius, hit_units)
 	local push_width_sq = data.push_width^2
@@ -729,10 +700,6 @@ BTMeleeOverlapAttackAction.push_close_units = function (self, unit, blackboard, 
 					local hit_unit_blackboard = BLACKBOARDS[hit_unit]
 
 					AiUtils.stagger(hit_unit, hit_unit_blackboard, unit, direction, data.push_stagger_distance, stagger_type, stagger_duration, nil, t)
-
-					if script_data.debug_ai_attack then
-						debug_drawer:line(hit_unit_pos, pos_projected_on_forward_move_dir)
-					end
 				end
 			end
 		end
@@ -755,10 +722,6 @@ BTMeleeOverlapAttackAction.push_close_units = function (self, unit, blackboard, 
 					local locomotion_extension = ScriptUnit.extension(hit_unit, "locomotion_system")
 
 					locomotion_extension:add_external_velocity(pushed_velocity)
-
-					if script_data.debug_ai_attack then
-						debug_drawer:line(hit_unit_pos, pos_projected_on_forward_move_dir, Color(0, 262, 255))
-					end
 				end
 			end
 		end
@@ -816,18 +779,9 @@ BTMeleeOverlapAttackAction.weapon_sweep_overlap = function (self, unit, blackboa
 	if not attack.hit_multiple_targets and num_hit_units > 0 then
 		data.perform_overlap = false
 	end
-
-	if script_data.debug_ai_attack then
-		local pose = Matrix4x4.from_quaternion_position(box_rot, oobb_pos)
-		local ct = t - data.start_time
-
-		QuickDrawerStay:box(pose, box_size, Color((ct * 500) % 255, 255 - (ct * 500) % 255, 0))
-	end
 end
 
 BTMeleeOverlapAttackAction.overlap_checks = function (self, unit, blackboard, physics_world, t, action, attack, oobb_pos, box_rot, box_size, hit_units, overlap_update_radius)
-	Profiler.start("BTMeleeOverlapAttackAction:overlap_checks")
-
 	local filter_name = (attack.hit_only_players and "filter_player_hit_box_check") or "filter_player_and_enemy_hit_box_check"
 
 	PhysicsWorld.prepare_actors_for_overlap(physics_world, oobb_pos, overlap_update_radius)
@@ -875,8 +829,6 @@ BTMeleeOverlapAttackAction.overlap_checks = function (self, unit, blackboard, ph
 			end
 		end
 	end
-
-	Profiler.stop("BTMeleeOverlapAttackAction:overlap_checks")
 
 	return num_hit_units
 end

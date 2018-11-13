@@ -111,20 +111,6 @@ LiquidAreaDamageHuskExtension.update = function (self, unit, input, dt, context,
 			self._liquid_update_function = nil
 		end
 	end
-
-	if script_data.debug_liquid_system then
-		for blob_id, blob in pairs(self._blobs) do
-			local position = blob.position:unbox()
-
-			QuickDrawer:sphere(position, 0.55)
-
-			if blob.full then
-				local color = Color(0, 0, 255)
-
-				QuickDrawer:sphere(position, 0.05, color)
-			end
-		end
-	end
 end
 
 LiquidAreaDamageHuskExtension.destroy = function (self)

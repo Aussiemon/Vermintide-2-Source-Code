@@ -416,7 +416,6 @@ PeerStates.Disconnecting = {
 			local _, leader_id = next(leader_candidates)
 
 			if leader_id == nil then
-				Managers.game_server:set_leader_peer_id(nil)
 				Managers.game_server:restart()
 			else
 				Managers.game_server:set_leader_peer_id(leader_id)

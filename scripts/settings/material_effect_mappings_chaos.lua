@@ -707,12 +707,6 @@ MaterialEffectMappings.enemy_sorcerer_footstep_walk = {
 				material = "hay"
 			}
 		},
-		ice = {
-			event = "enemy_chaos_sorcerer_walk",
-			parameters = {
-				material = "glass"
-			}
-		},
 		metal_solid = {
 			event = "enemy_chaos_sorcerer_walk",
 			parameters = {
@@ -759,12 +753,6 @@ MaterialEffectMappings.enemy_sorcerer_footstep_walk = {
 			event = "enemy_chaos_sorcerer_walk",
 			parameters = {
 				material = "stone_wet"
-			}
-		},
-		snow = {
-			event = "enemy_chaos_sorcerer_walk",
-			parameters = {
-				material = "water"
 			}
 		},
 		water = {

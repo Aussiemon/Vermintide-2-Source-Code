@@ -399,7 +399,6 @@ PatrolAnalysis.inject_spline_path = function (self, spline, line_drawer)
 	local draw = self.using_editor or script_data.debug_patrols
 
 	if node_count > 0 then
-		local previous_node_position = nil
 		local current_node_index = GwNavBot.get_path_current_node_index(navbot)
 		local offset = Vector3.up() * 0.05
 
@@ -407,20 +406,6 @@ PatrolAnalysis.inject_spline_path = function (self, spline, line_drawer)
 			local position = GwNavBot.get_path_node_pos(navbot, i)
 			spline_points[spline_points_index] = Vector3Box(position)
 			spline_points_index = spline_points_index + 1
-
-			if draw and line_drawer then
-				local color_index = ((spline.index or 1) - 1) % num_debug_colors + 1
-				local ct = debug_colors_lookup[color_index]
-				local color = Color(ct[1], ct[2], ct[3], ct[4])
-
-				line_drawer:sphere(position + offset, 0.1, color)
-
-				if previous_node_position then
-					line_drawer:line(position + offset, previous_node_position + offset, color)
-				end
-
-				previous_node_position = position
-			end
 		end
 	end
 

@@ -1,3 +1,8 @@
+local TWITCH_DISPLAY_NAME = {
+	xb1 = "start_game_window_mixer",
+	win32 = "start_game_window_twitch",
+	ps4 = "start_game_window_twitch"
+}
 local windows = {
 	panel = {
 		ignore_alignment = true,
@@ -59,11 +64,6 @@ local windows = {
 		name = "twitch_overview",
 		class_name = "StartGameWindowTwitchOverviewConsole"
 	},
-	twitch_login = {
-		ignore_alignment = true,
-		name = "twitch_login",
-		class_name = "StartGameWindowTwitchLoginConsole"
-	},
 	lobby_browser = {
 		ignore_alignment = true,
 		name = "lobby_browser",
@@ -73,8 +73,11 @@ local windows = {
 local window_layouts = {
 	{
 		sound_event_enter = "play_gui_lobby_button_00_quickplay",
-		name = "adventure",
 		save_data_table = "adventure",
+		display_name = "start_game_window_adventure_title",
+		game_mode_option = true,
+		disable_function_name = "_adventure_disable_function",
+		name = "adventure",
 		input_focus_window = "adventure_overview",
 		close_on_exit = true,
 		windows = {
@@ -85,8 +88,11 @@ local window_layouts = {
 	},
 	{
 		sound_event_enter = "play_gui_lobby_button_00_custom",
-		name = "custom_game",
 		save_data_table = "custom",
+		display_name = "start_game_window_specific_title",
+		game_mode_option = true,
+		disable_function_name = "_custom_game_disable_function",
+		name = "custom_game",
 		input_focus_window = "custom_game_overview",
 		close_on_exit = true,
 		windows = {
@@ -98,8 +104,11 @@ local window_layouts = {
 	},
 	{
 		sound_event_enter = "play_gui_lobby_button_00_heroic_deed",
-		name = "heroic_deeds",
 		save_data_table = "deeds",
+		display_name = "start_game_window_mutator_title",
+		game_mode_option = true,
+		disable_function_name = "_heroic_deed_disable_function",
+		name = "heroic_deeds",
 		input_focus_window = "mutator_overview",
 		close_on_exit = true,
 		windows = {
@@ -111,10 +120,13 @@ local window_layouts = {
 	},
 	{
 		sound_event_enter = "play_gui_lobby_button_00_custom",
-		name = "twitch",
 		save_data_table = "custom",
+		game_mode_option = true,
+		disable_function_name = "_streaming_disable_function",
+		name = "twitch",
 		input_focus_window = "twitch_overview",
 		close_on_exit = true,
+		display_name = TWITCH_DISPLAY_NAME[PLATFORM],
 		windows = {
 			twitch_overview = 3,
 			panel = 1,
@@ -134,14 +146,14 @@ local window_layouts = {
 	},
 	{
 		sound_event_enter = "play_gui_lobby_button_00_custom",
-		name = "mission_selection",
-		save_data_table = "custom",
-		input_focus_window = "mission_selection",
+		name = "difficulty_selection_adventure",
+		save_data_table = "adventure",
+		input_focus_window = "difficulty",
 		close_on_exit = false,
 		windows = {
+			difficulty = 3,
 			panel = 1,
-			background = 2,
-			mission_selection = 3
+			background = 2
 		}
 	},
 	{
@@ -158,14 +170,26 @@ local window_layouts = {
 	},
 	{
 		sound_event_enter = "play_gui_lobby_button_00_custom",
-		name = "difficulty_selection_adventure",
-		save_data_table = "adventure",
-		input_focus_window = "difficulty",
+		name = "area_selection",
+		save_data_table = "custom",
+		input_focus_window = "area_selection",
 		close_on_exit = false,
 		windows = {
-			difficulty = 3,
+			area_selection = 3,
 			panel = 1,
 			background = 2
+		}
+	},
+	{
+		sound_event_enter = "play_gui_lobby_button_00_custom",
+		name = "mission_selection",
+		save_data_table = "custom",
+		input_focus_window = "mission_selection",
+		close_on_exit = false,
+		windows = {
+			panel = 1,
+			background = 2,
+			mission_selection = 3
 		}
 	},
 	{
@@ -179,18 +203,6 @@ local window_layouts = {
 			panel = 1,
 			background = 2,
 			mutator_summary = 4
-		}
-	},
-	{
-		sound_event_enter = "play_gui_lobby_button_00_custom",
-		name = "area_selection",
-		save_data_table = "custom",
-		input_focus_window = "area_selection",
-		close_on_exit = false,
-		windows = {
-			area_selection = 3,
-			panel = 1,
-			background = 2
 		}
 	}
 }

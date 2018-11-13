@@ -1185,9 +1185,11 @@ local ammo_text_center_style = {
 local widget_definitions = {
 	ability_base = UIWidgets.create_simple_atlas_texture("ability_base", "hud_base", nil, RETAINED_MODE_ENABLED, nil, 5, "right", "bottom"),
 	hud_brushstroke = UIWidgets.create_simple_atlas_texture("hud_brushstroke", "hud_brush", nil, RETAINED_MODE_ENABLED, nil, nil, "right", "bottom"),
-	health_bar_frame = UIWidgets.create_simple_texture("console_hp_bar_frame", "health_bar_frame", nil, RETAINED_MODE_ENABLED, nil, nil, "center", "bottom"),
-	background_panel_bg = UIWidgets.create_simple_texture("console_hp_bar_background", "health_bar_frame_bg", nil, RETAINED_MODE_ENABLED),
 	weapon_slot = create_weapon_slot_widget("weapon_slot")
+}
+local frame_definitions = {
+	health_bar_frame = UIWidgets.create_simple_texture("console_hp_bar_frame", "health_bar_frame", nil, RETAINED_MODE_ENABLED, nil, nil, "center", "bottom"),
+	background_panel_bg = UIWidgets.create_simple_texture("console_hp_bar_background", "health_bar_frame_bg", nil, RETAINED_MODE_ENABLED)
 }
 local ammo_widget_definitions = {
 	ammo_text_clip = UIWidgets.create_simple_text("-", "ammo_text_clip", nil, nil, ammo_text_clip_style, nil, RETAINED_MODE_ENABLED),
@@ -1222,6 +1224,7 @@ return {
 	NUM_SLOTS = #slot_widget_definitions,
 	scenegraph_definition = scenegraph_definition,
 	widget_definitions = widget_definitions,
+	frame_definitions = frame_definitions,
 	ammo_widget_definitions = ammo_widget_definitions,
 	slot_widget_definitions = slot_widget_definitions
 }

@@ -15,7 +15,9 @@ local function dprint(...)
 end
 
 AccountManager.init = function (self)
-	self:fetch_user_data()
+	if self:is_online() then
+		self:fetch_user_data()
+	end
 
 	self._web_api = ScriptWebApiPsn:new()
 	self._initial_user_id = PS4.initial_user_id()
@@ -127,7 +129,7 @@ AccountManager.destroy = function (self)
 end
 
 AccountManager.is_online = function (self)
-	return not self._offline_mode
+	return not self._offline_mode and PS4.signed_in()
 end
 
 AccountManager.offline_mode = function (self)
@@ -142,7 +144,6 @@ AccountManager.update = function (self, dt)
 	self:_update_psn_client(dt)
 	self:_update_psn()
 	self:_notify_plus()
-	self:_update_matchmaking_data(dt)
 	self._web_api:update(dt)
 	self:_update_profile_dialog()
 end
@@ -150,7 +151,7 @@ end
 local PSN_CLIENT_READY_TIMEOUT = 20
 
 AccountManager._update_psn_client = function (self, dt)
-	if not rawget(_G, "LobbyInternal") or not LobbyInternal.psn_client then
+	if not rawget(_G, "LobbyInternal") or not LobbyInternal.client or LobbyInternal.TYPE ~= "psn" then
 		self._psn_client_error = nil
 
 		return
@@ -381,7 +382,7 @@ AccountManager.show_player_profile = function (self, user_id)
 end
 
 AccountManager.show_player_profile_with_np_id = function (self, np_id)
-	Application.error("This function is deprecated, use AccountManager:show_player_profile_with_account_id() instead")
+	Application.error("[AccountManager:show_player_profile_with_np_id] This function is deprecated, use AccountManager:show_player_profile_with_account_id() instead")
 end
 
 AccountManager.show_player_profile_with_account_id = function (self, account_id)
@@ -448,6 +449,7 @@ AccountManager.cb_fetch_friends = function (self, num_to_fetch, offset, external
 		local presence = entry.presence
 		local primary_info = presence.primaryInfo
 		local online_status = primary_info.onlineStatus
+		local room_id = primary_info.gameData and from_base64(primary_info.gameData)
 		local status, playing_this_game = nil
 
 		if online_status and online_status == "online" then
@@ -467,7 +469,8 @@ AccountManager.cb_fetch_friends = function (self, num_to_fetch, offset, external
 		friend_data[account_id] = {
 			name = online_id,
 			status = status,
-			playing_this_game = playing_this_game
+			playing_this_game = playing_this_game,
+			room_id = room_id
 		}
 	end
 
@@ -495,6 +498,10 @@ AccountManager.get_user_presence = function (self, account_id, response_callback
 end
 
 AccountManager.set_presence = function (self, presence, append_string)
+	if not self:is_online() or not self._account_id then
+		return
+	end
+
 	local account_id = Application.hex64_to_dec(self._account_id)
 	local user_id = self:user_id()
 	local api_group = "sdk:userProfile"

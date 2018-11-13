@@ -39,7 +39,6 @@ PlayerUnitSmartTargetingExtension.update_opt2 = function (self, unit, input, dt,
 		return
 	end
 
-	Profiler.start("smart_targeting")
 	table.clear(self.targeting_data)
 
 	local get_data_func = Unit.get_data
@@ -81,8 +80,6 @@ PlayerUnitSmartTargetingExtension.update_opt2 = function (self, unit, input, dt,
 	local auto_aim_disabled = not Application.user_setting("gamepad_auto_aim_enabled")
 
 	if not aim_assist_settings or (gamepad_active and auto_aim_disabled) then
-		Profiler.stop("smart_targeting")
-
 		return
 	end
 
@@ -136,9 +133,6 @@ PlayerUnitSmartTargetingExtension.update_opt2 = function (self, unit, input, dt,
 
 			local target_pos = nearby_ai_positions[i]
 			local distance = nearby_ai_distances[i]
-
-			Profiler.start("inner_loop")
-
 			local smart_targeting_outer_width = breed.smart_targeting_outer_width or smart_targeting_width * 2
 			local smart_targeting_height_multiplier = breed.smart_targeting_height_multiplier or 1
 			local locomotion = extension_func(unit, "locomotion_system")
@@ -156,12 +150,9 @@ PlayerUnitSmartTargetingExtension.update_opt2 = function (self, unit, input, dt,
 			if score > 0 then
 				score_modifiers[unit] = math_min(score_modifier + dt * 2, 1)
 			end
-
-			Profiler.stop("inner_loop")
 		until true
 	end
 
-	Profiler.start("rest")
 	table.clear(previous_score_modifiers)
 
 	self.use_score_modifiers_1 = not self.use_score_modifiers_1
@@ -186,9 +177,6 @@ PlayerUnitSmartTargetingExtension.update_opt2 = function (self, unit, input, dt,
 	end
 
 	targeting_data.targets_within_range = targets_within_range
-
-	Profiler.stop("rest")
-	Profiler.stop("smart_targeting")
 end
 
 PlayerUnitSmartTargetingExtension.update = function (self, unit, input, dt, context, t)
@@ -202,7 +190,6 @@ PlayerUnitSmartTargetingExtension.update = function (self, unit, input, dt, cont
 		return
 	end
 
-	Profiler.start("smart_targeting")
 	table.clear(self.targeting_data)
 
 	local node_func = Unit.node
@@ -247,8 +234,6 @@ PlayerUnitSmartTargetingExtension.update = function (self, unit, input, dt, cont
 	local auto_aim_disabled = not Application.user_setting("gamepad_auto_aim_enabled")
 
 	if not aim_assist_settings or (gamepad_active and auto_aim_disabled) then
-		Profiler.stop("smart_targeting")
-
 		return
 	end
 
@@ -406,8 +391,6 @@ PlayerUnitSmartTargetingExtension.update = function (self, unit, input, dt, cont
 	targeting_data.aim_score = aim_score
 	targeting_data.target_position = target_position
 	targeting_data.targets_within_range = targets_within_range
-
-	Profiler.stop("smart_targeting")
 end
 
 PlayerUnitSmartTargetingExtension._get_player_camera = function (self)

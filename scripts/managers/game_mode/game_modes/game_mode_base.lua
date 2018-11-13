@@ -58,4 +58,8 @@ GameModeBase.hot_join_sync = function (self, sender)
 	return
 end
 
+GameModeBase.mutators = function (self)
+	return Managers.deed:mutators()
+end
+
 return

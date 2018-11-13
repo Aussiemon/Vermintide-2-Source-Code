@@ -151,8 +151,6 @@ BuffSystem.update = function (self, context, t)
 		Debug.text("Unoptimized buff update")
 		BuffSystem.super.update(self, context, t)
 	end
-
-	self:_update_debug(t)
 end
 
 BuffSystem.get_player_group_buffs = function (self)

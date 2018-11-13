@@ -1,8 +1,6 @@
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_adventure_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
-local animation_definitions = definitions.animation_definitions
-local DO_RELOAD = false
 StartGameWindowAdventure = class(StartGameWindowAdventure)
 StartGameWindowAdventure.NAME = "StartGameWindowAdventure"
 
@@ -22,14 +20,14 @@ StartGameWindowAdventure.on_enter = function (self, params, offset)
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
-	self._animations = {}
 
 	self:create_ui_elements(params, offset)
 	self.parent:set_play_button_enabled(true)
 end
 
 StartGameWindowAdventure.create_ui_elements = function (self, params, offset)
-	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+	local ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+	self.ui_scenegraph = ui_scenegraph
 	local widgets = {}
 	local widgets_by_name = {}
 
@@ -44,10 +42,8 @@ StartGameWindowAdventure.create_ui_elements = function (self, params, offset)
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
-	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
-
 	if offset then
-		local window_position = self.ui_scenegraph.window.local_position
+		local window_position = ui_scenegraph.window.local_position
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -61,72 +57,11 @@ StartGameWindowAdventure.on_exit = function (self, params)
 end
 
 StartGameWindowAdventure.update = function (self, dt, t)
-	if DO_RELOAD then
-		DO_RELOAD = false
-
-		self:create_ui_elements()
-	end
-
-	self:_update_animations(dt)
-	self:_handle_input(dt, t)
 	self:draw(dt)
 end
 
 StartGameWindowAdventure.post_update = function (self, dt, t)
 	return
-end
-
-StartGameWindowAdventure._update_animations = function (self, dt)
-	self.ui_animator:update(dt)
-
-	local animations = self._animations
-	local ui_animator = self.ui_animator
-
-	for animation_name, animation_id in pairs(animations) do
-		if ui_animator:is_animation_completed(animation_id) then
-			ui_animator:stop_animation(animation_id)
-
-			animations[animation_name] = nil
-		end
-	end
-
-	local widgets_by_name = self._widgets_by_name
-end
-
-StartGameWindowAdventure._is_button_pressed = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	if hotspot.on_release then
-		hotspot.on_release = false
-
-		return true
-	end
-end
-
-StartGameWindowAdventure._is_stepper_button_pressed = function (self, widget)
-	local content = widget.content
-	local hotspot_left = content.button_hotspot_left
-	local hotspot_right = content.button_hotspot_right
-
-	if hotspot_left.on_release then
-		hotspot_left.on_release = false
-
-		return true, -1
-	elseif hotspot_right.on_release then
-		hotspot_right.on_release = false
-
-		return true, 1
-	end
-end
-
-StartGameWindowAdventure._handle_input = function (self, dt, t)
-	return
-end
-
-StartGameWindowAdventure._exit = function (self, selected_level)
-	self.exit = true
-	self.exit_level_id = selected_level
 end
 
 StartGameWindowAdventure.draw = function (self, dt)
@@ -136,23 +71,15 @@ StartGameWindowAdventure.draw = function (self, dt)
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
 
-	for _, widget in ipairs(self._widgets) do
+	local widgets = self._widgets
+
+	for i = 1, #widgets, 1 do
+		local widget = widgets[i]
+
 		UIRenderer.draw_widget(ui_renderer, widget)
 	end
 
-	local active_node_widgets = self._active_node_widgets
-
-	if active_node_widgets then
-		for _, widget in ipairs(active_node_widgets) do
-			UIRenderer.draw_widget(ui_renderer, widget)
-		end
-	end
-
 	UIRenderer.end_pass(ui_renderer)
-end
-
-StartGameWindowAdventure._play_sound = function (self, event)
-	self.parent:play_sound(event)
 end
 
 return

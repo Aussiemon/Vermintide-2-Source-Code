@@ -171,10 +171,6 @@ AIMeleeLineOfSightSystem.update = function (self, context, t)
 					local target_offset = target_pos - self_pos
 					success = false
 
-					if debug then
-						QuickDrawer:vector(self_pos, target_offset, Color(0, 255, 0))
-					end
-
 					if math.abs(target_offset.x) < BENEATH_ABOVE_EPSILON and math.abs(target_offset.y) < BENEATH_ABOVE_EPSILON then
 						raycasts = raycasts + 1
 						local z_offset_target = offsets[1].z
@@ -186,26 +182,14 @@ AIMeleeLineOfSightSystem.update = function (self, context, t)
 						if RAY_DISTANCE_EPSILON < dist then
 							local hit, hit_pos, hit_dist, hit_normal, hit_actor = PhysicsWorld.raycast(physics_world, from, dir, dist, "closest", "collision_filter", "filter_ai_line_of_sight_check")
 
-							if debug then
-								QuickDrawer:line(from, from + dist * dir, Color(0, 255, 255))
-							end
-
 							if not hit or Actor.unit(hit_actor) == target then
 								success = true
 							end
 						else
-							if debug then
-								QuickDrawer:line(from, from + 0.1 * dir, Color(255, 255, 255))
-							end
-
 							success = true
 						end
 					else
 						local right_vector = Vector3.normalize(Vector3.cross(target_offset, up))
-
-						if debug then
-							QuickDrawer:vector(self_pos, right_vector, Color(255, 0, 0))
-						end
 
 						for i = 1, num_offsets, 1 do
 							raycasts = raycasts + 1
@@ -224,10 +208,6 @@ AIMeleeLineOfSightSystem.update = function (self, context, t)
 								end
 
 								break
-							end
-
-							if debug then
-								QuickDrawer:line(from, from + dist * dir, Color(255, 0, 255))
 							end
 						end
 					end

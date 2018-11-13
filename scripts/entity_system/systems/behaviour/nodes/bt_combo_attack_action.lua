@@ -86,7 +86,7 @@ BTComboAttackAction.enter = function (self, unit, blackboard, t)
 	end
 
 	if action.start_sound_event then
-		DialogueSystem:TriggerGeneralUnitEvent(unit, action.start_sound_event)
+		DialogueSystem:trigger_general_unit_event(unit, action.start_sound_event)
 	end
 
 	self:_start_attack(unit, blackboard, t, action, "attack_1")
@@ -535,7 +535,7 @@ BTComboAttackAction.anim_cb_attack_vce = function (self, unit, blackboard)
 	local game = network_manager:game()
 
 	if game then
-		DialogueSystem:TriggerAttack(blackboard.target_unit, unit, false, blackboard)
+		DialogueSystem:trigger_attack(blackboard.target_unit, unit, false, blackboard)
 	end
 end
 

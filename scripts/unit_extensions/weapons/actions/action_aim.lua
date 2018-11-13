@@ -8,6 +8,7 @@ ActionAim.init = function (self, world, item_name, is_server, owner_unit, damage
 	self.world = world
 	self.item_name = item_name
 	self.wwise_world = Managers.world:wwise_world(world)
+	self.owner_player = Managers.player:owner(owner_unit)
 
 	if ScriptUnit.has_extension(weapon_unit, "ammo_system") then
 		self.ammo_extension = ScriptUnit.extension(weapon_unit, "ammo_system")
@@ -18,6 +19,20 @@ ActionAim.init = function (self, world, item_name, is_server, owner_unit, damage
 	end
 end
 
+local function scale_delay_value(action_settings, value, owner_unit, buff_extension)
+	local new_value = value
+	local original_anim_time_scale = action_settings.anim_time_scale or 1
+	local new_anim_time_scale = ActionUtils.apply_attack_speed_buff(original_anim_time_scale, owner_unit)
+	new_anim_time_scale = ActionUtils.apply_charge_speed_buff_anim_scale(new_anim_time_scale, owner_unit, action_settings)
+	local time_scale_percentage = new_anim_time_scale / original_anim_time_scale
+
+	if time_scale_percentage ~= 0 then
+		new_value = 1 / time_scale_percentage * value
+	end
+
+	return new_value
+end
+
 ActionAim.client_owner_start_action = function (self, new_action, t)
 	local owner_unit = self.owner_unit
 	self.current_action = new_action
@@ -25,9 +40,9 @@ ActionAim.client_owner_start_action = function (self, new_action, t)
 	self.played_aim_sound = false
 	self.heavy_aim_flow_done = false
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
-	local aim_sound_delay = buff_extension:apply_buffs_to_value(new_action.aim_sound_delay or 0, StatBuffIndex.REDUCED_RANGED_CHARGE_TIME)
-	local aim_zoom_delay = buff_extension:apply_buffs_to_value(new_action.aim_zoom_delay or 0, StatBuffIndex.REDUCED_RANGED_CHARGE_TIME)
-	local heavy_aim_flow_delay = buff_extension:apply_buffs_to_value(new_action.heavy_aim_flow_delay or 0, StatBuffIndex.REDUCED_RANGED_CHARGE_TIME)
+	local aim_sound_delay = scale_delay_value(new_action, new_action.aim_sound_delay or 0, owner_unit, buff_extension)
+	local aim_zoom_delay = scale_delay_value(new_action, new_action.aim_zoom_delay or 0, owner_unit, buff_extension)
+	local heavy_aim_flow_delay = scale_delay_value(new_action, new_action.heavy_aim_flow_delay or 0, owner_unit, buff_extension)
 	self.aim_sound_time = t + aim_sound_delay
 	self.aim_zoom_time = t + aim_zoom_delay
 	self.heavy_aim_flow_time = t + heavy_aim_flow_delay
@@ -51,25 +66,43 @@ ActionAim.client_owner_start_action = function (self, new_action, t)
 	end
 
 	self.charge_ready_sound_event = self.current_action.charge_ready_sound_event
+
+	self:_start_charge_sound()
+end
+
+ActionAim._start_charge_sound = function (self)
+	local current_action = self.current_action
 	local owner_unit = self.owner_unit
-	local owner_player = Managers.player:owner(owner_unit)
+	local owner_player = self.owner_player
 	local is_bot = owner_player and owner_player.bot_player
+	local is_local = owner_player and not owner_player.remote
+	local wwise_world = self.wwise_world
 
-	if not is_bot then
-		local charge_sound_name = new_action.charge_sound_name
-
-		if charge_sound_name then
-			local wwise_playing_id, wwise_source_id = ActionUtils.start_charge_sound(self.wwise_world, self.weapon_unit, owner_unit, new_action)
-			self.charging_sound_id = wwise_playing_id
-			self.wwise_source_id = wwise_source_id
-		end
+	if is_local and not is_bot then
+		local wwise_playing_id, wwise_source_id = ActionUtils.start_charge_sound(wwise_world, self.weapon_unit, owner_unit, current_action)
+		self.charging_sound_id = wwise_playing_id
+		self.wwise_source_id = wwise_source_id
 	end
 
-	local charge_sound_husk_name = self.current_action.charge_sound_husk_name
+	ActionUtils.play_husk_sound_event(wwise_world, current_action.charge_sound_husk_name, owner_unit, is_bot)
+end
 
-	if charge_sound_husk_name then
-		ActionUtils.play_husk_sound_event(charge_sound_husk_name, owner_unit)
+ActionAim._stop_charge_sound = function (self)
+	local current_action = self.current_action
+	local owner_unit = self.owner_unit
+	local owner_player = self.owner_player
+	local is_bot = owner_player and owner_player.bot_player
+	local is_local = owner_player and not owner_player.remote
+	local wwise_world = self.wwise_world
+
+	if is_local and not is_bot then
+		ActionUtils.stop_charge_sound(wwise_world, self.charging_sound_id, self.wwise_source_id, current_action)
+
+		self.charging_sound_id = nil
+		self.wwise_source_id = nil
 	end
+
+	ActionUtils.play_husk_sound_event(wwise_world, current_action.charge_sound_husk_stop_event, owner_unit, is_bot)
 end
 
 ActionAim.client_owner_post_update = function (self, dt, t, world, can_damage)
@@ -162,6 +195,7 @@ ActionAim.finish = function (self, reason)
 
 	first_person_extension:enable_rig_movement()
 	first_person_extension:disable_rig_offset()
+	first_person_extension:stop_force_look_rotation()
 
 	if ammo_extension and ammo_extension:can_reload() and ammo_extension:ammo_count() == 0 and current_action.reload_when_out_of_ammo then
 		local play_reload_animation = true
@@ -181,41 +215,22 @@ ActionAim.finish = function (self, reason)
 		WwiseWorld.trigger_event(wwise_world, sound_event)
 	end
 
-	local owner = Managers.player:owner(self.owner_unit)
+	local owner = Managers.player:owner(owner_unit)
 
-	if owner:is_player_controlled() then
-	end
-
-	if not Managers.player:owner(self.owner_unit).bot_player then
+	if not owner.bot_player then
 		Managers.state.controller_features:add_effect("rumble", {
 			rumble_effect = "full_stop"
 		})
 	end
 
 	if current_action.reset_aim_assist_on_exit then
-		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-
 		first_person_extension:reset_aim_assist_multiplier()
 	end
 
-	local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
+	local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
 
 	inventory_extension:set_loaded_projectile_override(nil)
-
-	local charging_sound_id = self.charging_sound_id
-
-	if charging_sound_id then
-		ActionUtils.stop_charge_sound(self.wwise_world, charging_sound_id, self.wwise_source_id, self.current_action)
-
-		self.wwise_source_id = nil
-		self.charging_sound_id = nil
-	end
-
-	local charge_sound_husk_stop_event = current_action.charge_sound_husk_stop_event
-
-	if charge_sound_husk_stop_event then
-		ActionUtils.play_husk_sound_event(charge_sound_husk_stop_event, owner_unit)
-	end
+	self:_stop_charge_sound()
 end
 
 return

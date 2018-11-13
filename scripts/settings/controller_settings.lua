@@ -3056,6 +3056,11 @@ TitleScreenKeyMaps = {
 			"circle",
 			"pressed"
 		},
+		delete_save = {
+			"gamepad",
+			"touch",
+			"pressed"
+		},
 		show_support_info_1 = {
 			"gamepad",
 			"l1",

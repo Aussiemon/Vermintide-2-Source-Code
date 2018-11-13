@@ -690,6 +690,35 @@ local gameplay_settings_definition = {
 		widget_type = "drop_down"
 	},
 	{
+		setup = "cb_clan_tag_setup",
+		saved_value = "cb_clan_tag_saved_value",
+		callback = "cb_clan_tag",
+		tooltip_text = "tooltip_clan_tag",
+		widget_type = "stepper"
+	},
+	{
+		size_y = 30,
+		widget_type = "empty"
+	},
+	{
+		text = "settings_view_header_twitch",
+		widget_type = "title"
+	},
+	{
+		setup = "cb_twitch_vote_time_setup",
+		saved_value = "cb_twitch_vote_time_saved_value",
+		callback = "cb_twitch_vote_time",
+		tooltip_text = "tooltip_twitch_vote_time",
+		widget_type = "drop_down"
+	},
+	{
+		setup = "cb_twitch_time_between_votes_setup",
+		saved_value = "cb_twitch_time_between_votes_saved_value",
+		callback = "cb_twitch_time_between_votes",
+		tooltip_text = "tooltip_twitch_time_between_votes",
+		widget_type = "drop_down"
+	},
+	{
 		size_y = 30,
 		widget_type = "empty"
 	},
@@ -748,17 +777,15 @@ end
 generate_settings(gameplay_settings_definition)
 generate_settings(video_settings_definition)
 
-if rawget(_G, "Steam") then
-	gameplay_settings_definition[#gameplay_settings_definition + 1] = {
-		setup = "cb_clan_tag_setup",
-		saved_value = "cb_clan_tag_saved_value",
-		callback = "cb_clan_tag",
-		tooltip_text = "tooltip_clan_tag",
-		widget_type = "stepper"
-	}
-end
-
 if rawget(_G, "LightFX") then
+	gameplay_settings_definition[#gameplay_settings_definition + 1] = {
+		size_y = 30,
+		widget_type = "empty"
+	}
+	gameplay_settings_definition[#gameplay_settings_definition + 1] = {
+		text = "settings_view_header_misc",
+		widget_type = "title"
+	}
 	gameplay_settings_definition[#gameplay_settings_definition + 1] = {
 		setup = "cb_alien_fx_setup",
 		saved_value = "cb_alien_fx_saved_value",
@@ -768,20 +795,6 @@ if rawget(_G, "LightFX") then
 	}
 end
 
-gameplay_settings_definition[#gameplay_settings_definition + 1] = {
-	setup = "cb_twitch_vote_time_setup",
-	saved_value = "cb_twitch_vote_time_saved_value",
-	callback = "cb_twitch_vote_time",
-	tooltip_text = "tooltip_twitch_vote_time",
-	widget_type = "drop_down"
-}
-gameplay_settings_definition[#gameplay_settings_definition + 1] = {
-	setup = "cb_twitch_time_between_votes_setup",
-	saved_value = "cb_twitch_time_between_votes_saved_value",
-	callback = "cb_twitch_time_between_votes",
-	tooltip_text = "tooltip_twitch_time_between_votes",
-	widget_type = "drop_down"
-}
 gameplay_settings_definition[#gameplay_settings_definition + 1] = {
 	size_y = 110,
 	widget_type = "empty"

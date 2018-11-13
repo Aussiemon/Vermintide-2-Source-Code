@@ -50,8 +50,6 @@ ActionBountyHunterHandgun.client_owner_start_action = function (self, new_action
 	self.time_to_shoot_lower = t + new_action.fire_time_lower
 	self.time_to_aoe = t + new_action.aoe_time
 	self.hit_units = {}
-	self.target_hit_zones_names = {}
-	self.target_hit_unit_positions = {}
 	self.shield_users_blocking = {}
 
 	if is_critical_strike then
@@ -95,10 +93,8 @@ ActionBountyHunterHandgun.client_owner_post_update = function (self, dt, t, worl
 end
 
 ActionBountyHunterHandgun._railgun_shoot = function (self)
-	local weapon_unit = self.weapon_unit
 	local owner_unit = self.owner_unit
 	local current_action = self.current_action
-	local owner_unit = self.owner_unit
 	local add_spread = true
 
 	if not Managers.player:owner(self.owner_unit).bot_player then
@@ -169,7 +165,6 @@ ActionBountyHunterHandgun._shotgun_shoot = function (self)
 		end
 
 		local direction = Quaternion.forward(rotation)
-		local collision_filter = "filter_player_ray_projectile"
 		local result = PhysicsWorld.immediate_raycast_actors(physics_world, current_position, direction, current_action.range, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_ai_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only")
 
 		if result then
@@ -218,17 +213,6 @@ ActionBountyHunterHandgun._do_aoe = function (self)
 	local actors, actors_n = PhysicsWorld.immediate_overlap(physics_world, "shape", "sphere", "position", attack_pos, "size", radius, "types", "dynamics", "collision_filter", collision_filter, "use_global_table")
 	local hit_units = self.hit_units
 	local unit_get_data = Unit.get_data
-	local target_hit_actor = nil
-	local target_breed_unit = self.target_breed_unit
-	local target_breed_unit_health_extension = Unit.alive(target_breed_unit) and ScriptUnit.extension(target_breed_unit, "health_system")
-
-	if target_breed_unit_health_extension then
-		if not target_breed_unit_health_extension:is_alive() then
-			target_breed_unit = nil
-		end
-	else
-		target_breed_unit = nil
-	end
 
 	for i = 1, actors_n, 1 do
 		repeat
@@ -239,16 +223,12 @@ ActionBountyHunterHandgun._do_aoe = function (self)
 			if breed and not hit_units[hit_unit] then
 				hit_units[hit_unit] = true
 				local node = Actor.node(hit_actor)
-				local hit_zone = breed.hit_zones_lookup[node]
-				local target_hit_zone_name = hit_zone.name
 				local target_hit_position = Unit.world_position(hit_unit, node)
-				self.target_hit_zones_names[hit_unit] = target_hit_zone_name
-				self.target_hit_unit_positions[hit_unit] = target_hit_position
-				local attack_direction = Vector3.normalize(POSITION_LOOKUP[hit_unit] - attack_pos)
+				local attack_direction = Vector3.normalize(target_hit_position - attack_pos)
 				local hit_zone = breed.hit_zones_lookup[node]
 				local hit_zone_name = hit_zone.name
-				local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
 				local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
+				local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
 				local power_level = self.power_level
 				local damage_profile_id = self.damage_profile_aoe_id
 				local shield_blocked = AiUtils.attack_is_shield_blocked(hit_unit, owner_unit)

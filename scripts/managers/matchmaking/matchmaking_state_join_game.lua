@@ -133,6 +133,13 @@ MatchmakingStateJoinGame.update = function (self, dt, t)
 		end
 	end
 
+	if Managers.state.network.is_server and not Managers.state.network.network_server:are_all_peers_ingame() then
+		Managers.simple_popup:queue_popup(Localize("player_join_block_exit_game"), Localize("popup_error_topic"), "ok", Localize("popup_choice_ok"))
+		self._matchmaking_manager:cancel_matchmaking()
+
+		return nil
+	end
+
 	return nil
 end
 

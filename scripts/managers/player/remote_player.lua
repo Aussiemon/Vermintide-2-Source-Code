@@ -40,6 +40,12 @@ RemotePlayer.type = function (self)
 	return "RemotePlayer"
 end
 
+RemotePlayer.set_player_unit = function (self, unit)
+	self.player_unit = unit
+	local career_extension = ScriptUnit.extension(unit, "career_system")
+	self._career_index = career_extension:career_index()
+end
+
 RemotePlayer.profile_index = function (self)
 	local profile_synchronizer = self.network_manager.profile_synchronizer
 	local profile_index = profile_synchronizer:profile_by_peer(self.peer_id, self._local_player_id)
@@ -80,7 +86,7 @@ RemotePlayer.profile_display_name = function (self)
 end
 
 RemotePlayer.career_index = function (self)
-	return 1
+	return self._career_index or 1
 end
 
 RemotePlayer.stats_id = function (self)

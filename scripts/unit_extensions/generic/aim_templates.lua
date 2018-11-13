@@ -478,8 +478,6 @@ AimTemplates.chaos_marauder = {
 			data.previous_look_target = Vector3Box()
 		end,
 		update = function (unit, t, dt, data)
-			Profiler.start("marauder_look_at")
-
 			local blackboard = data.blackboard
 			local ai_extension = data.ai_extension
 			local current_action = ai_extension:current_action_name()
@@ -493,7 +491,6 @@ AimTemplates.chaos_marauder = {
 
 			if not target_unit or not Unit.alive(target_unit) then
 				AiUtils.set_default_anim_constraint(unit, head_constraint_target)
-				Profiler.stop("marauder_look_at")
 
 				return
 			end
@@ -533,8 +530,6 @@ AimTemplates.chaos_marauder = {
 
 				Unit.animation_event(unit, "look_at_off")
 			end
-
-			Profiler.stop("marauder_look_at")
 		end,
 		leave = function (unit, data)
 			if data.is_using_head_constraint then
@@ -571,8 +566,11 @@ AimTemplates.chaos_marauder = {
 						local target_distance = target_unit and Vector3.distance(POSITION_LOOKUP[unit], POSITION_LOOKUP[target_unit])
 						local head_constraint_target = data.head_constraint_target
 						data.lerp_aiming_disabled = true
+						local has_head_index = target_unit and Unit.has_node(target_unit, "j_head")
 
-						look_at_target_unit(unit, data, dt, target_unit, target_distance, head_constraint_target)
+						if has_head_index then
+							look_at_target_unit(unit, data, dt, target_unit, target_distance, head_constraint_target)
+						end
 					end
 				elseif data.is_using_head_constraint then
 					data.is_using_head_constraint = false

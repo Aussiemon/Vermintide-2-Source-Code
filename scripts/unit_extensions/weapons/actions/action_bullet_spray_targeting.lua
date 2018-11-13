@@ -33,7 +33,7 @@ ActionBulletSprayTargeting.client_owner_post_update = function (self, dt, t, wor
 		local start_point = player_position + player_direction * POSITION_TWEAK
 		local end_point = player_position + player_direction * POSITION_TWEAK + player_direction * SPRAY_RANGE
 
-		QuickDrawer:cone(player_position + player_direction * POSITION_TWEAK, end_point, SPRAY_RADIUS, Color(255, 255, 0, 255), 50, 50)
+		QuickDrawer:cone(start_point, end_point, SPRAY_RADIUS, Color(255, 255, 0, 255), 50, 50)
 	end
 end
 

@@ -27,7 +27,6 @@ end
 NavigationGroupManager.form_groups = function (self, radius, finish_point, optional_level_name)
 	print("Forming navigation groups")
 	assert(finish_point ~= nil, "Got nil for finish_point")
-	Profiler.start("form_groups")
 
 	local time1 = os.clock()
 	self._groups_max_radius = radius or self._groups_max_radius
@@ -82,7 +81,6 @@ NavigationGroupManager.form_groups = function (self, radius, finish_point, optio
 	end
 
 	print("NavigationGroupManager -> calulation time C:", os.clock() - time3)
-	Profiler.stop("form_groups")
 end
 
 NavigationGroupManager.form_groups_start = function (self, radius, finish_point, optional_level_name)
@@ -440,11 +438,6 @@ NavigationGroupManager.make_sure_group_centers_are_on_mesh = function (self)
 
 				if p then
 					group._group_center:store(p)
-				else
-					QuickDrawerStay:line(pos, pos + Vector3(0, 0, 20), Color(0, 255, 0))
-					QuickDrawerStay:line(pos, pos + Vector3(0.1, 0, 20), Color(0, 255, 0))
-					QuickDrawerStay:line(pos, pos + Vector3(0.1, 0.1, 20), Color(0, 255, 0))
-					QuickDrawerStay:line(pos, pos + Vector3(0, 0.1, 20), Color(0, 255, 0))
 				end
 			end
 		end

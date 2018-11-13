@@ -11,24 +11,25 @@ end
 MutatorHandler = class(MutatorHandler)
 
 MutatorHandler.init = function (self, mutators, is_server, has_local_client)
-	self._mutators_by_name = {}
-
-	for _, name in ipairs(mutators) do
-		self._mutators_by_name[name] = true
-	end
-
-	self._active_mutators = {}
-	self._mutator_context = {}
 	self._is_server = is_server
 	self._has_local_client = has_local_client
+	self._mutators_by_name = {}
+	self._active_mutators = {}
+	self._mutator_context = {}
 
-	self:_activate_mutators(mutators)
+	if mutators then
+		for _, name in ipairs(mutators) do
+			self._mutators_by_name[name] = true
+		end
+
+		self:_activate_mutators(mutators)
+	end
 end
 
 MutatorHandler.destroy = function (self)
 	local active_mutators = self._active_mutators
 
-	for name, mutator_data in pairs(active_mutators) do
+	for name, _ in pairs(active_mutators) do
 		self:_deactivate_mutator(name, active_mutators, self._mutator_context)
 	end
 
@@ -36,15 +37,11 @@ MutatorHandler.destroy = function (self)
 end
 
 MutatorHandler.update = function (self, dt, t)
-	Profiler.start("MutatorHandler")
-
 	local active_mutators = self._active_mutators
 	local mutator_context = self._mutator_context
 	local is_server = self._is_server
 
 	for name, mutator_data in pairs(active_mutators) do
-		Profiler.start(name)
-
 		local template = mutator_data.template
 
 		if is_server and template.server.update then
@@ -54,11 +51,7 @@ MutatorHandler.update = function (self, dt, t)
 		if self._has_local_client and template.client.update then
 			template.client.update(mutator_context, mutator_data, dt, t)
 		end
-
-		Profiler.stop(name)
 	end
-
-	Profiler.stop("MutatorHandler")
 end
 
 MutatorHandler.has_mutator = function (self, name)
@@ -71,7 +64,7 @@ MutatorHandler.setup_done = function (self)
 	local is_server = self._is_server
 	local has_local_client = self._has_local_client
 
-	for name, mutator_data in pairs(active_mutators) do
+	for _, mutator_data in pairs(active_mutators) do
 		local template = mutator_data.template
 
 		if is_server then
@@ -90,7 +83,7 @@ MutatorHandler.ai_killed = function (self, killed_unit, killer_unit)
 	local is_server = self._is_server
 	local has_local_client = self._has_local_client
 
-	for name, mutator_data in pairs(active_mutators) do
+	for _, mutator_data in pairs(active_mutators) do
 		local template = mutator_data.template
 
 		if is_server then

@@ -1109,8 +1109,13 @@ HeroViewStateLoot._select_grid_item = function (self, item, t)
 
 	self._selected_item = item
 	local can_open = self:_can_open_chests()
+	self._open_chests_enabled = can_open
 	widgets_by_name.item_cap_warning_text.content.visible = not can_open and item ~= nil
 	widgets_by_name.open_button.content.button_hotspot.disable_button = not can_open or item == nil
+
+	if not can_open then
+		self.menu_input_description:set_input_description(generic_input_actions.chest_not_selected)
+	end
 end
 
 HeroViewStateLoot._play_sound = function (self, sound_event)
@@ -1331,7 +1336,7 @@ HeroViewStateLoot._handle_input = function (self, dt, t)
 			self:_select_grid_item(item, t)
 		end
 
-		local open_button_pressed = gamepad_active and input_service:get("confirm_press")
+		local open_button_pressed = gamepad_active and self._open_chests_enabled and input_service:get("confirm_press")
 
 		if (self:_is_button_pressed(open_button) or open_button_pressed) and self._selected_item then
 			self:_open_chest(self._selected_item)

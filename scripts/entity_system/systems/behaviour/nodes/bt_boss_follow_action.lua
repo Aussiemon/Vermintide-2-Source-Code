@@ -108,8 +108,6 @@ BTBossFollowAction.follow = function (self, unit, t, dt, blackboard, locomotion_
 	local breed = blackboard.breed
 
 	if breed.use_big_boy_turning and blackboard.move_state == "moving" then
-		self:_debug_big_boy_turning(blackboard)
-
 		local is_turning = blackboard.is_turning
 
 		if is_turning then

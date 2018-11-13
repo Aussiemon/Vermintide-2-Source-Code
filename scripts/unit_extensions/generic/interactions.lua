@@ -2146,6 +2146,32 @@ InteractionDefinitions.pictureframe.client.hud_description = function (interacta
 	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), Unit.get_data(interactable_unit, "interaction_data", "hud_interaction_action")
 end
 
+InteractionDefinitions.decoration = InteractionDefinitions.decoration or table.clone(InteractionDefinitions.smartobject)
+InteractionDefinitions.decoration.config.swap_to_3p = false
+
+InteractionDefinitions.decoration.client.stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
+	data.start_time = nil
+
+	if result == InteractionResult.SUCCESS and not data.is_husk and rawget(_G, "HeroViewStateKeepDecorations") then
+		local transition_params = {
+			menu_state_name = "keep_decorations",
+			interactable_unit = interactable_unit
+		}
+
+		data.ingame_ui:transition_with_fade("hero_view_force", transition_params)
+	end
+end
+
+InteractionDefinitions.decoration.client.can_interact = function (interactor_unit, interactable_unit, data, config)
+	local camera_interaction_name = Unit.get_data(interactable_unit, "interaction_data", "camera_interaction_name")
+
+	return camera_interaction_name ~= ""
+end
+
+InteractionDefinitions.decoration.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
+	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), Unit.get_data(interactable_unit, "interaction_data", "hud_interaction_action")
+end
+
 InteractionDefinitions.no_interaction_hud_only = InteractionDefinitions.no_interaction_hud_only or table.clone(InteractionDefinitions.smartobject)
 
 InteractionDefinitions.no_interaction_hud_only.client.hud_description = function (interactable_unit, data, config, key_tail)

@@ -563,33 +563,17 @@ MixerManager.disconnect = function (self, optional_disconnect_success_callback, 
 end
 
 MixerManager.update = function (self, dt, t)
-	Profiler.start("mixer_manager")
-	Profiler.start("_handle_disconnect_popup")
 	self:_handle_disconnect_popup()
-	Profiler.stop("_handle_disconnect_popup")
 
 	if not self._connected and not self._connecting then
-		Profiler.stop("mixer_manager")
-
 		return
 	end
 
-	Profiler.start("_update_mixer")
 	self:_update_mixer()
-	Profiler.stop("_update_mixer")
-	Profiler.start("_handle_votes")
 	self:_handle_votes()
-	Profiler.stop("_handle_votes")
-	Profiler.start("_validate_data")
 	self:_validate_data(dt, t)
-	Profiler.stop("_validate_data")
-	Profiler.start("_update_vote_data")
 	self:_update_vote_data(dt, t)
-	Profiler.start("_update_vote_data")
-	Profiler.start("_update_twitch_game_mode")
 	self:_update_twitch_game_mode(dt, t)
-	Profiler.stop("_update_twitch_game_mode")
-	Profiler.stop("mixer_manager")
 end
 
 MixerManager._update_mixer = function (self)
@@ -948,10 +932,6 @@ MixerGameMode.init = function (self, parent)
 end
 
 MixerGameMode.update = function (self, dt, t)
-	if DEBUG_TWITCH then
-		Debug.text("Funds: %d Last won: %s", self._funds, self._last_winning_vote)
-	end
-
 	self._timer = self._timer - dt
 
 	if self._timer > 0 then
@@ -1258,8 +1238,6 @@ MixerGameMode.cb_on_vote_complete = function (self, current_vote)
 	self._vote_keys[current_vote.vote_key] = nil
 
 	Mixer.set_scene("default")
-
-	self._last_winning_vote = winning_template.name
 end
 
 MixerGameMode.destroy = function (self)

@@ -672,7 +672,7 @@ MusicManager.delay_trigger_horde_dialogue = function (self, t, delay, horde_name
 end
 
 MusicManager.trigger_horde_dialogue = function (self, horde_name)
-	local dummy_unit = DialogueSystem:GetRandomPlayer()
+	local dummy_unit = DialogueSystem:get_random_player()
 
 	if dummy_unit then
 		SurroundingAwareSystem.add_event(dummy_unit, "horde", DialogueSettings.discover_enemy_attack_distance, "horde_type", horde_name)

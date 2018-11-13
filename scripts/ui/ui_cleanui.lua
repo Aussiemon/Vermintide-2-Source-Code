@@ -102,6 +102,8 @@ UICleanUI.update = function (self, dt, context)
 		}
 	end
 
+	local ammo_world_position = equipment_background.ui_scenegraph.ammo_background.world_position
+	local ammo_background_size = equipment_background.ui_scenegraph.ammo_background.size
 	local equipment_world_position = equipment_background.ui_scenegraph.background_panel.world_position
 	local gamepad_equipment_world_position = gamepad_equipment_background.ui_scenegraph.background_panel.world_position
 	local equipment_size = equipment_background.ui_scenegraph.background_panel.size
@@ -109,13 +111,39 @@ UICleanUI.update = function (self, dt, context)
 	local bottom_bounding_boxes = {
 		{
 			{
-				(gamepad_equipment_world_position[1] < equipment_world_position[1] and equipment_world_position[1]) or gamepad_equipment_world_position[1],
-				(gamepad_equipment_world_position[2] < equipment_world_position[2] and equipment_world_position[2]) or gamepad_equipment_world_position[2],
-				(gamepad_equipment_world_position[3] < equipment_world_position[3] and equipment_world_position[3]) or gamepad_equipment_world_position[3]
+				equipment_world_position[1],
+				equipment_world_position[2],
+				equipment_world_position[3]
 			},
 			{
-				(gamepad_equipment_size[1] < equipment_size[1] and equipment_size[1]) or gamepad_equipment_size[1],
-				(gamepad_equipment_size[2] < equipment_size[2] and equipment_size[2]) or gamepad_equipment_size[2]
+				equipment_size[1],
+				equipment_size[2]
+			}
+		}
+	}
+	local bottom_right_bounding_boxes = {
+		{
+			{
+				ammo_world_position[1],
+				ammo_world_position[2],
+				ammo_world_position[3]
+			},
+			{
+				ammo_background_size[1],
+				ammo_background_size[2]
+			}
+		}
+	}
+	local gamepad_bottom_bounding_boxes = {
+		{
+			{
+				gamepad_equipment_world_position[1],
+				gamepad_equipment_world_position[2],
+				gamepad_equipment_world_position[3]
+			},
+			{
+				gamepad_equipment_size[1],
+				gamepad_equipment_size[2]
 			}
 		}
 	}
@@ -131,10 +159,142 @@ UICleanUI.update = function (self, dt, context)
 	if not self.clusters or RESOLUTION_LOOKUP.modified or self.dirty then
 		local hud = self.hud
 
+		if self.gamepadclusters then
+			self.gamepadclusters.bottom.bounding_box = pad_bounding_box(get_world_bounding_box(gamepad_bottom_bounding_boxes), margin)
+			self.gamepadclusters.left.bounding_box = pad_bounding_box(get_world_bounding_box(left_portrait_bounding_boxes), margin)
+			self.gamepadclusters.bottom_left.bounding_box = pad_bounding_box(get_world_bounding_box(bottom_left_bounding_boxes), margin)
+			self.gamepadclusters.bottom_right.bounding_box = pad_bounding_box(get_world_bounding_box(bottom_right_bounding_boxes), margin)
+		else
+			self.gamepadclusters = {
+				mission = {
+					bounding_box = {
+						0,
+						0,
+						10,
+						10
+					},
+					widgets = {}
+				},
+				bottom = {
+					bounding_box = pad_bounding_box(get_world_bounding_box(bottom_bounding_boxes), margin),
+					widgets = {
+						{
+							alpha = -1,
+							set_alpha_function = "set_health_alpha",
+							get_widget_function = function (self)
+								local hud = self.hud
+								local unit_frames_handler = hud.unit_frames_handler
+								local widget = unit_frames_handler:get_unit_widget(1)
+
+								return widget
+							end
+						},
+						{
+							set_alpha_function = "set_frame_alpha",
+							alpha = -1,
+							widget = hud.gamepad_equipment_ui
+						}
+					}
+				},
+				left = {
+					bounding_box = pad_bounding_box(get_world_bounding_box(left_portrait_bounding_boxes), margin),
+					widgets = {
+						{
+							alpha = 1,
+							get_widget_function = function (self)
+								local hud = self.hud
+								local unit_frames_handler = hud.unit_frames_handler
+								local widget = unit_frames_handler:get_unit_widget(2)
+
+								return widget
+							end
+						},
+						{
+							alpha = -1,
+							get_widget_function = function (self)
+								local hud = self.hud
+								local unit_frames_handler = hud.unit_frames_handler
+								local widget = unit_frames_handler:get_unit_widget(3)
+
+								return widget
+							end
+						},
+						{
+							alpha = -1,
+							get_widget_function = function (self)
+								local hud = self.hud
+								local unit_frames_handler = hud.unit_frames_handler
+								local widget = unit_frames_handler:get_unit_widget(4)
+
+								return widget
+							end
+						}
+					}
+				},
+				bottom_left = {
+					bounding_box = pad_bounding_box(get_world_bounding_box(left_portrait_bounding_boxes), margin),
+					widgets = {
+						{
+							alpha = -1,
+							set_alpha_function = "set_default_alpha",
+							get_widget_function = function (self)
+								local hud = self.hud
+								local unit_frames_handler = hud.unit_frames_handler
+								local widget = unit_frames_handler:get_unit_widget(1)
+
+								return widget
+							end
+						},
+						{
+							alpha = -1,
+							set_alpha_function = "set_portrait_alpha",
+							get_widget_function = function (self)
+								local hud = self.hud
+								local unit_frames_handler = hud.unit_frames_handler
+								local widget = unit_frames_handler:get_unit_widget(1)
+
+								return widget
+							end
+						},
+						{
+							alpha = -1,
+							widget = hud.buff_ui
+						}
+					}
+				},
+				bottom_right = {
+					bounding_box = pad_bounding_box(get_world_bounding_box(bottom_right_bounding_boxes), margin),
+					widgets = {
+						{
+							set_alpha_function = "set_panel_alpha",
+							alpha = -1,
+							widget = hud.gamepad_equipment_ui
+						},
+						{
+							alpha = -1,
+							set_alpha_function = "set_ability_alpha",
+							get_widget_function = function (self)
+								local hud = self.hud
+								local unit_frames_handler = hud.unit_frames_handler
+								local widget = unit_frames_handler:get_unit_widget(1)
+
+								return widget
+							end
+						},
+						{
+							alpha = -1,
+							widget = hud.gamepad_ability_ui
+						}
+					}
+				}
+			}
+		end
+
 		if self.clusters then
 			self.clusters.bottom.bounding_box = pad_bounding_box(get_world_bounding_box(bottom_bounding_boxes), margin)
 			self.clusters.left.bounding_box = pad_bounding_box(get_world_bounding_box(left_portrait_bounding_boxes), margin)
 			self.clusters.bottom_left.bounding_box = pad_bounding_box(get_world_bounding_box(bottom_left_bounding_boxes), margin)
+			self.clusters.bottom_right.bounding_box = pad_bounding_box(get_world_bounding_box(bottom_right_bounding_boxes), margin)
 		else
 			self.clusters = {
 				mission = {
@@ -150,27 +310,42 @@ UICleanUI.update = function (self, dt, context)
 					bounding_box = pad_bounding_box(get_world_bounding_box(bottom_bounding_boxes), margin),
 					widgets = {
 						{
+							set_alpha_function = "set_panel_alpha",
 							alpha = -1,
 							widget = hud.equipment_ui
 						},
 						{
 							alpha = -1,
-							widget = hud.gamepad_equipment_ui
-						},
-						{
 							set_alpha_function = "set_equipment_alpha",
-							alpha = -1,
-							widget = hud.unit_frames_handler:get_unit_widget(1)
+							get_widget_function = function (self)
+								local hud = self.hud
+								local unit_frames_handler = hud.unit_frames_handler
+								local widget = unit_frames_handler:get_unit_widget(1)
+
+								return widget
+							end
 						},
 						{
+							alpha = -1,
 							set_alpha_function = "set_health_alpha",
-							alpha = -1,
-							widget = hud.unit_frames_handler:get_unit_widget(1)
+							get_widget_function = function (self)
+								local hud = self.hud
+								local unit_frames_handler = hud.unit_frames_handler
+								local widget = unit_frames_handler:get_unit_widget(1)
+
+								return widget
+							end
 						},
 						{
-							set_alpha_function = "set_ability_alpha",
 							alpha = -1,
-							widget = hud.unit_frames_handler:get_unit_widget(1)
+							set_alpha_function = "set_ability_alpha",
+							get_widget_function = function (self)
+								local hud = self.hud
+								local unit_frames_handler = hud.unit_frames_handler
+								local widget = unit_frames_handler:get_unit_widget(1)
+
+								return widget
+							end
 						},
 						{
 							alpha = -1,
@@ -183,15 +358,33 @@ UICleanUI.update = function (self, dt, context)
 					widgets = {
 						{
 							alpha = 1,
-							widget = hud.unit_frames_handler:get_unit_widget(2)
+							get_widget_function = function (self)
+								local hud = self.hud
+								local unit_frames_handler = hud.unit_frames_handler
+								local widget = unit_frames_handler:get_unit_widget(2)
+
+								return widget
+							end
 						},
 						{
 							alpha = -1,
-							widget = hud.unit_frames_handler:get_unit_widget(3)
+							get_widget_function = function (self)
+								local hud = self.hud
+								local unit_frames_handler = hud.unit_frames_handler
+								local widget = unit_frames_handler:get_unit_widget(3)
+
+								return widget
+							end
 						},
 						{
 							alpha = -1,
-							widget = hud.unit_frames_handler:get_unit_widget(4)
+							get_widget_function = function (self)
+								local hud = self.hud
+								local unit_frames_handler = hud.unit_frames_handler
+								local widget = unit_frames_handler:get_unit_widget(4)
+
+								return widget
+							end
 						}
 					}
 				},
@@ -199,18 +392,40 @@ UICleanUI.update = function (self, dt, context)
 					bounding_box = pad_bounding_box(get_world_bounding_box(left_portrait_bounding_boxes), margin),
 					widgets = {
 						{
-							set_alpha_function = "set_default_alpha",
 							alpha = -1,
-							widget = hud.unit_frames_handler:get_unit_widget(1)
+							set_alpha_function = "set_default_alpha",
+							get_widget_function = function (self)
+								local hud = self.hud
+								local unit_frames_handler = hud.unit_frames_handler
+								local widget = unit_frames_handler:get_unit_widget(1)
+
+								return widget
+							end
 						},
 						{
-							set_alpha_function = "set_portrait_alpha",
 							alpha = -1,
-							widget = hud.unit_frames_handler:get_unit_widget(1)
+							set_alpha_function = "set_portrait_alpha",
+							get_widget_function = function (self)
+								local hud = self.hud
+								local unit_frames_handler = hud.unit_frames_handler
+								local widget = unit_frames_handler:get_unit_widget(1)
+
+								return widget
+							end
 						},
 						{
 							alpha = -1,
 							widget = hud.buff_ui
+						}
+					}
+				},
+				bottom_right = {
+					bounding_box = pad_bounding_box(get_world_bounding_box(bottom_right_bounding_boxes), margin),
+					widgets = {
+						{
+							set_alpha_function = "set_ammo_alpha",
+							alpha = -1,
+							widget = hud.equipment_ui
 						}
 					}
 				}
@@ -226,8 +441,14 @@ UICleanUI.update = function (self, dt, context)
 
 	local cutscene_system = Managers.state.entity:system("cutscene_system")
 	local in_cutscene = cutscene_system and cutscene_system.active_camera
-	local clocks = self.clocks
+	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local clusters = self.clusters
+
+	if gamepad_active then
+		clusters = self.gamepadclusters
+	end
+
+	local clocks = self.clocks
 
 	for name, cluster in pairs(clusters) do
 		local clock = clocks[name]
@@ -240,34 +461,36 @@ UICleanUI.update = function (self, dt, context)
 			clock = math.max(0, clock - dt)
 		end
 
-		local alpha = clock / fade_duration
-		alpha = alpha * (1 - fade_min) + fade_min
-		alpha = math.clamp(alpha, 0, 1)
+		local alpha = 1
+
+		if tobii_active then
+			local alpha = clock / fade_duration
+			alpha = alpha * (1 - fade_min) + fade_min
+			alpha = math.clamp(alpha, 0, 1)
+		end
+
 		local widgets = cluster.widgets
 
 		for _, box in pairs(widgets) do
-			if not tobii_active then
-				if box.alpha ~= 1 then
-					if box.widget.set_panel_alpha then
-						box.widget:set_panel_alpha(1)
-					end
+			local widget = box.widget
+			local get_widget_function = box.get_widget_function
 
-					if box.widget.set_alpha then
-						box.widget:set_alpha(1)
-					end
+			if get_widget_function then
+				widget = get_widget_function(self)
+			end
 
-					box.alpha = 1
-				end
-			elseif box.alpha ~= alpha then
-				if box.set_alpha_function then
-					box.widget[box.set_alpha_function](box.widget, alpha)
-				else
-					if box.widget.set_panel_alpha then
-						box.widget:set_panel_alpha(alpha)
-					end
+			if box.alpha ~= alpha then
+				if widget then
+					if box.set_alpha_function then
+						widget[box.set_alpha_function](widget, alpha)
+					else
+						if widget.set_panel_alpha then
+							widget:set_panel_alpha(alpha)
+						end
 
-					if box.widget.set_alpha then
-						box.widget:set_alpha(alpha)
+						if widget.set_alpha then
+							widget:set_alpha(alpha)
+						end
 					end
 				end
 
@@ -280,7 +503,6 @@ UICleanUI.update = function (self, dt, context)
 
 	if DEBUG_BOUNDING_BOXES then
 		local gui = self.hud.ui_renderer.gui
-		local clusters = self.clusters
 
 		for name, cluster in pairs(clusters) do
 			local color = Color(100, 0, 255, 255)

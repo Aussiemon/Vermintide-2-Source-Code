@@ -140,7 +140,6 @@ BTStormfiendDualShootAction.shoot_hit_check = function (self, unit, blackboard)
 	local radius = SPHERE_CAST_RADIUS
 	local max_hits = SPHERE_CAST_MAX_NUM_HITS
 	local result = PhysicsWorld.linear_sphere_sweep(physics_world, stormfiend_arm_pos, aim_position, radius, max_hits, "collision_filter", "filter_enemy_player_ray_projectile", "report_initial_overlap")
-	local debug_hit_index = nil
 
 	if result then
 		local immune_breeds = action.immune_breeds
@@ -154,8 +153,6 @@ BTStormfiendDualShootAction.shoot_hit_check = function (self, unit, blackboard)
 			local is_character = DamageUtils.is_character(hit_unit)
 
 			if not is_character then
-				debug_hit_index = i
-
 				break
 			end
 
@@ -189,8 +186,6 @@ BTStormfiendDualShootAction.shoot_hit_check = function (self, unit, blackboard)
 			end
 		end
 	end
-
-	self:_debug_fire_beam(stormfiend_arm_pos, aim_position, true, debug_hit_index, result, "immediate")
 end
 
 BTStormfiendDualShootAction._stop_beam_sfx = function (self, unit, blackboard, shoot_data)
@@ -274,13 +269,9 @@ BTStormfiendDualShootAction._shoot_ratling_gun = function (self, unit, blackboar
 		afro_hit_sound = light_weight_projectile_template.afro_hit_sound,
 		player_push_velocity = Vector3Box(normalized_direction * light_weight_projectile_template.impact_push_speed)
 	}
-
-	Profiler.start("create_light_weight_projectile")
-
 	local projectile_system = Managers.state.entity:system("projectile_system")
 
 	projectile_system:create_light_weight_projectile(Unit.get_data(unit, "breed").name, unit, from_position, spread_direction, light_weight_projectile_template.projectile_speed, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_particle_effect)
-	Profiler.stop("create_light_weight_projectile")
 end
 
 BTStormfiendDualShootAction.anim_cb_attack_fire = function (self, unit, blackboard)

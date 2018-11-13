@@ -18,8 +18,9 @@ local weekly_quests = {
 local event_quests = {
 	quest_type = "event",
 	name = "achv_menu_event_category_title",
+	type = "quest",
 	max_entry_amount = 1,
-	type = "quest"
+	entries = {}
 }
 local quests = {
 	name = "achv_menu_quests_category_title",

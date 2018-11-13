@@ -116,7 +116,6 @@ end
 CareerAbilityWEMaidenGuard._run_ability = function (self)
 	self:_stop_priming()
 
-	local world = self._world
 	local owner_unit = self._owner_unit
 	local is_server = self._is_server
 	local local_player = self._local_player

@@ -6,7 +6,6 @@ local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local console_cursor_definition = definitions.console_cursor_definition
-local DO_RELOAD = false
 local input_delay_before_start_new_search = 0
 local platform = PLATFORM
 
@@ -27,15 +26,7 @@ local network_options = {
 	project_hash = "bulldozer",
 	config_file_name = "global",
 	lobby_port = GameSettingsDevelopment.network_port,
-	max_members = MAX_NUMBER_OF_PLAYERS
-}
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
+	max_members = MatchmakingSettings.MAX_NUMBER_OF_PLAYERS
 }
 StartGameWindowLobbyBrowserConsole = class(StartGameWindowLobbyBrowserConsole)
 StartGameWindowLobbyBrowserConsole.NAME = "StartGameWindowLobbyBrowserConsole"
@@ -225,15 +216,6 @@ StartGameWindowLobbyBrowserConsole.on_exit = function (self, params)
 end
 
 StartGameWindowLobbyBrowserConsole.update = function (self, dt, t)
-	if DO_RELOAD then
-		DO_RELOAD = false
-
-		self:create_ui_elements()
-	end
-
-	local input_service = self.parent:window_input_service()
-	local input_manager = self.input_manager
-
 	self.lobby_finder:update(dt)
 	self.game_server_finder:update(dt)
 
@@ -295,12 +277,10 @@ StartGameWindowLobbyBrowserConsole.update = function (self, dt, t)
 		self:_play_sound("Play_hud_hover")
 	end
 
-	local join_lobby_data_id = self.join_lobby_data_id
+	if not join_button_hotspot.disable_button then
+		local join_lobby_data_id = self.join_lobby_data_id
 
-	if not join_button_hotspot.disable_button and join_button_hotspot.on_release and not self.join_lobby_data_id then
-		local lobby_data = lobby_list:selected_lobby()
-
-		if lobby_data then
+		if join_button_hotspot.on_release and not join_lobby_data_id and lobby_data then
 			self:_play_sound("Play_hud_select")
 			self:_join(lobby_data)
 		end
@@ -384,8 +364,9 @@ StartGameWindowLobbyBrowserConsole._setup_lobby_info_box = function (self, lobby
 
 	local content = info_box_widgets.hero_tabs.content
 
-	for index, profile_index in ipairs(ProfilePriority) do
-		local name_sufix = "_" .. tostring(index)
+	for i = 1, #ProfilePriority, 1 do
+		local profile_index = ProfilePriority[i]
+		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
 		local hotspot_content = content[hotspot_name]
 
@@ -417,13 +398,13 @@ StartGameWindowLobbyBrowserConsole._setup_lobby_info_box = function (self, lobby
 	local status_text = LobbyItemsList.lobby_status_text(lobby_data)
 	info_box_widgets_lobbies.info_frame_status_text.content.text = status_text
 	info_box_widgets_servers.info_frame_status_text.content.text = status_text
-	local is_dedicated_server = lobby_data.server_info ~= nil
+	local server_info = lobby_data.server_info
+	local is_dedicated_server = server_info ~= nil
 
 	if not is_dedicated_server then
 		local host = lobby_data.server_name or lobby_data.unique_server_name or lobby_data.name or lobby_data.host
 		info_box_widgets_lobbies.info_frame_host_text.content.text = host or Localize("lb_unknown")
 	else
-		local server_info = lobby_data.server_info
 		local server_name = server_info.server_name
 		info_box_widgets_servers.info_frame_name_text.content.text = server_name or Localize("lb_unknown")
 		local ip_adress = server_info.ip_address
@@ -440,10 +421,11 @@ StartGameWindowLobbyBrowserConsole._setup_lobby_info_box = function (self, lobby
 end
 
 StartGameWindowLobbyBrowserConsole._update_animations = function (self, dt)
-	self.ui_animator:update(dt)
+	local ui_animator = self.ui_animator
+
+	ui_animator:update(dt)
 
 	local animations = self._animations
-	local ui_animator = self.ui_animator
 
 	for animation_name, animation_id in pairs(animations) do
 		if ui_animator:is_animation_completed(animation_id) then
@@ -453,7 +435,9 @@ StartGameWindowLobbyBrowserConsole._update_animations = function (self, dt)
 		end
 	end
 
-	for name, animation in pairs(self._ui_animations) do
+	local ui_animations = self._ui_animations
+
+	for name, animation in pairs(ui_animations) do
 		UIAnimation.update(animation, dt)
 
 		if UIAnimation.completed(animation) then
@@ -471,44 +455,6 @@ StartGameWindowLobbyBrowserConsole._is_refreshing = function (self)
 		return self.game_server_finder:is_refreshing()
 	else
 		ferror("Unknown lobby types (%s)", current_lobby_type)
-	end
-end
-
-StartGameWindowLobbyBrowserConsole._is_button_pressed = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	if hotspot.on_pressed then
-		hotspot.on_pressed = false
-
-		return true
-	end
-end
-
-StartGameWindowLobbyBrowserConsole._is_button_released = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	if hotspot.on_release then
-		hotspot.on_release = false
-
-		return true
-	end
-end
-
-StartGameWindowLobbyBrowserConsole._is_stepper_button_pressed = function (self, widget)
-	local content = widget.content
-	local hotspot_left = content.button_hotspot_left
-	local hotspot_right = content.button_hotspot_right
-
-	if hotspot_left.on_release then
-		hotspot_left.on_release = false
-
-		return true, -1
-	elseif hotspot_right.on_release then
-		hotspot_right.on_release = false
-
-		return true, 1
 	end
 end
 
@@ -599,35 +545,58 @@ StartGameWindowLobbyBrowserConsole.draw = function (self, dt)
 	local loading = self.lobby_list_update_timer ~= nil
 	local join_lobby_data_id = self.join_lobby_data_id
 	self._base_widgets_by_name.search_button.content.button_hotspot.disable_button = join_lobby_data_id or loading
+	local base_widgets = self._base_widgets
 
-	for _, widget in ipairs(self._base_widgets) do
+	for i = 1, #base_widgets, 1 do
+		local widget = base_widgets[i]
+
 		UIRenderer.draw_widget(ui_top_renderer, widget)
 	end
 
 	local current_lobby_type = self._current_lobby_type
 
 	if self.lobby_list:selected_lobby() then
-		for _, widget in ipairs(self._lobby_info_box_base_widgets) do
+		local lobby_info_box_base_widgets = self._lobby_info_box_base_widgets
+
+		for i = 1, #lobby_info_box_base_widgets, 1 do
+			local widget = lobby_info_box_base_widgets[i]
+
 			UIRenderer.draw_widget(ui_top_renderer, widget)
 		end
 
 		if current_lobby_type == "lobbies" then
-			for _, widget in ipairs(self._lobby_info_box_lobbies_widgets) do
+			local lobby_info_box_lobbies_widgets = self._lobby_info_box_lobbies_widgets
+
+			for i = 1, #lobby_info_box_lobbies_widgets, 1 do
+				local widget = lobby_info_box_lobbies_widgets[i]
+
 				UIRenderer.draw_widget(ui_top_renderer, widget)
 			end
 		elseif current_lobby_type == "servers" then
-			for _, widget in ipairs(self._lobby_info_box_servers_widgets) do
+			local lobby_info_box_servers_widgets = self._lobby_info_box_servers_widgets
+
+			for i = 1, #lobby_info_box_servers_widgets, 1 do
+				local widget = lobby_info_box_servers_widgets[i]
+
 				UIRenderer.draw_widget(ui_top_renderer, widget)
 			end
 		end
 	end
 
 	if current_lobby_type == "lobbies" then
-		for _, widget in ipairs(self._lobbies_widgets) do
+		local lobbies_widgets = self._lobbies_widgets
+
+		for i = 1, #lobbies_widgets, 1 do
+			local widget = lobbies_widgets[i]
+
 			UIRenderer.draw_widget(ui_top_renderer, widget)
 		end
 	elseif current_lobby_type == "servers" then
-		for _, widget in ipairs(self._server_widgets) do
+		local server_widgets = self._server_widgets
+
+		for i = 1, #server_widgets, 1 do
+			local widget = server_widgets[i]
+
 			UIRenderer.draw_widget(ui_top_renderer, widget)
 		end
 	else
@@ -649,27 +618,6 @@ StartGameWindowLobbyBrowserConsole.cancel_join_lobby = function (self, status_me
 	self.join_lobby_data_id = nil
 end
 
-local dummy_lobby = {
-	difficulty = "normal",
-	player_slot_3 = "0:0",
-	player_slot_4 = "0:0",
-	network_hash = "dfbb8a5d4eb54ed1",
-	player_slot_5 = "0:0",
-	num_players = 1,
-	country_code = "CD",
-	address = "172.16.2.29:10003",
-	matchmaking = "true",
-	valid = true,
-	player_slot_2 = "0:0",
-	selected_level_key = "military",
-	player_slot_1 = "291f62d6dd09f4b1:1",
-	level_key = "inn_level",
-	is_private = "false",
-	host = "291f62d6dd09f4b1",
-	unique_server_name = "sebgra"
-}
-local dummy_server_info = {}
-
 StartGameWindowLobbyBrowserConsole._populate_lobby_list = function (self, auto_update)
 	local selected_lobby_data = self.lobby_list:selected_lobby()
 	local lobbies = self:_get_lobbies()
@@ -679,7 +627,7 @@ StartGameWindowLobbyBrowserConsole._populate_lobby_list = function (self, auto_u
 	local lobbies_to_present = {}
 	local lobby_count = 0
 
-	for lobby_id, lobby_data in pairs(lobbies) do
+	for _, lobby_data in pairs(lobbies) do
 		if show_all_lobbies or self:_valid_lobby(lobby_data) then
 			lobby_count = lobby_count + 1
 			lobbies_to_present[lobby_count] = lobby_data
@@ -768,10 +716,6 @@ StartGameWindowLobbyBrowserConsole._valid_lobby = function (self, lobby_data)
 	return true
 end
 
-StartGameWindowLobbyBrowserConsole.set_status_message = function (self, status_message)
-	return
-end
-
 StartGameWindowLobbyBrowserConsole._input_service = function (self)
 	return self.parent:input_service()
 end
@@ -791,8 +735,6 @@ StartGameWindowLobbyBrowserConsole._update_auto_refresh = function (self, dt)
 end
 
 StartGameWindowLobbyBrowserConsole._update_join_button = function (self, lobby_data)
-	local menu_input_description_ui = self.menu_input_description_ui
-	local active_menu_input_description = self.active_menu_input_description
 	local matchmaking_manager = Managers.matchmaking
 	local is_matchmaking = matchmaking_manager:is_game_matchmaking()
 	local widget = self._base_widgets_by_name.join_button
@@ -854,10 +796,6 @@ StartGameWindowLobbyBrowserConsole._create_filter_requirements = function (self)
 	local show_all_lobbies = (show_lobbies_index == 2 and true) or false
 	local matchmaking = not show_all_lobbies
 	local free_slots = 1
-	local player_manager = Managers.player
-	local player = player_manager:local_player()
-	local statistics_db = player_manager:statistics_db()
-	local player_stats_id = player:stats_id()
 	local requirements = {
 		filters = {},
 		near_filters = {}
@@ -980,27 +918,6 @@ StartGameWindowLobbyBrowserConsole._get_difficulties = function (self)
 	return difficulties
 end
 
-StartGameWindowLobbyBrowserConsole._on_game_mode_stepper_input = function (self, index_change, specific_index)
-	local stepper = self._base_widgets_by_name.game_mode_stepper
-	local game_mode_display_table = definitions.game_mode_data
-	local current_index = self.selected_game_mode_index or 1
-	local new_index = self:_on_stepper_input(stepper, game_mode_display_table, current_index, index_change, specific_index)
-	local data = game_mode_display_table[new_index]
-	local game_mode_text = data.game_mode_display_name
-	stepper.content.setting_text = Localize(game_mode_text)
-	self.selected_game_mode_index = new_index
-	self.search_timer = input_delay_before_start_new_search
-	local levels_table = self:_get_levels()
-	local any_level_index = #levels_table
-
-	self:_on_level_stepper_input(0, any_level_index)
-
-	local difficulties_table = self:_get_difficulties()
-	local any_difficulty_index = #difficulties_table
-
-	self:_on_difficulty_stepper_input(0, any_difficulty_index)
-end
-
 StartGameWindowLobbyBrowserConsole._on_level_stepper_input = function (self, index_change, specific_index)
 	local stepper = self._lobbies_widgets_by_name.level_stepper
 	local levels_table = self:_get_levels()
@@ -1078,7 +995,7 @@ StartGameWindowLobbyBrowserConsole._on_stepper_input = function (self, stepper, 
 	local num_data = #data_table
 
 	if specific_index then
-		assert(specific_index > 0 and specific_index <= num_data, "stepper_index out of range")
+		fassert(specific_index > 0 and specific_index <= num_data, "stepper_index out of range")
 
 		return specific_index
 	end
@@ -1097,7 +1014,6 @@ end
 StartGameWindowLobbyBrowserConsole._handle_stepper_input = function (self, stepper_name, stepper, step_function)
 	local stepper_widget = stepper
 	local stepper_content = stepper_widget.content
-	local stepper_hotspot = stepper_content.button_hotspot
 	local stepper_left_hotspot = stepper_content.button_hotspot_left
 	local stepper_right_hotspot = stepper_content.button_hotspot_right
 

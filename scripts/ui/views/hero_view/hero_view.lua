@@ -3,6 +3,7 @@ require("scripts/ui/views/hero_view/item_grid_ui")
 require("scripts/ui/views/hero_view/states/hero_view_state_overview")
 require("scripts/ui/views/hero_view/states/hero_view_state_loot")
 require("scripts/ui/views/hero_view/states/hero_view_state_achievements")
+require("scripts/ui/views/hero_view/states/hero_view_state_keep_decorations")
 require("scripts/settings/news_feed_templates")
 
 for name, dlc in pairs(DLCSettings) do

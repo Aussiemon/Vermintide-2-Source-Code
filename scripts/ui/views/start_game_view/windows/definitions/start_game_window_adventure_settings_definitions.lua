@@ -1,13 +1,47 @@
 local window_default_settings = UISettings.game_start_windows
-local window_background = window_default_settings.background
 local window_frame = window_default_settings.frame
 local window_size = window_default_settings.size
 local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
-local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
 local window_text_width = window_size[1] - window_frame_width * 2
 local game_option_size = {
 	window_size[1] - 20,
 	233
+}
+local animation_definitions = {
+	on_enter = {
+		{
+			name = "fade_in",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 0
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+				params.render_settings.alpha_multiplier = anim_progress
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	},
+	on_exit = {
+		{
+			name = "fade_out",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 1
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+				params.render_settings.alpha_multiplier = 1 - anim_progress
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	}
 }
 local scenegraph_definition = {
 	root = {
@@ -59,7 +93,7 @@ local scenegraph_definition = {
 			1
 		}
 	},
-	game_option_1 = {
+	game_option_difficulty = {
 		vertical_alignment = "top",
 		parent = "window",
 		horizontal_alignment = "center",
@@ -70,9 +104,9 @@ local scenegraph_definition = {
 			4
 		}
 	},
-	game_option_2 = {
+	game_option_reward = {
 		vertical_alignment = "bottom",
-		parent = "game_option_1",
+		parent = "game_option_difficulty",
 		horizontal_alignment = "center",
 		size = {
 			game_option_size[1],
@@ -86,7 +120,7 @@ local scenegraph_definition = {
 	},
 	multiplayer_title_bg = {
 		vertical_alignment = "bottom",
-		parent = "game_option_1",
+		parent = "game_option_difficulty",
 		horizontal_alignment = "left",
 		size = {
 			window_size[1],
@@ -169,64 +203,14 @@ local scenegraph_definition = {
 		}
 	}
 }
-local title_text_style = {
-	vertical_alignment = "bottom",
-	upper_case = true,
-	localize = false,
-	horizontal_alignment = "center",
-	font_size = 42,
-	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("font_title", 255),
-	offset = {
-		0,
-		0,
-		2
-	}
-}
-local multiplayer_title_text_style = {
-	font_size = 24,
-	upper_case = true,
-	localize = false,
-	word_wrap = true,
-	horizontal_alignment = "left",
-	vertical_alignment = "center",
-	font_type = "hell_shark",
-	text_color = Colors.get_color_table_with_alpha("font_default", 255),
-	default_text_color = Colors.get_color_table_with_alpha("font_default", 255),
-	offset = {
-		10,
-		0,
-		2
-	}
-}
-local difficulty_text_style = {
-	word_wrap = true,
-	upper_case = true,
-	localize = false,
-	font_size = 36,
-	horizontal_alignment = "center",
-	vertical_alignment = "bottom",
-	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("font_title", 255),
-	offset = {
-		0,
-		0,
-		2
-	}
-}
 
 local function create_settings_option(scenegraph_id, size, title_text, button_text, icon_texture, background_texture)
-	local button_size = {
-		size[1],
-		50
-	}
 	icon_texture = icon_texture or "level_icon_01"
 	local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(icon_texture)
 	local icon_texture_size = (icon_texture_settings and icon_texture_settings.size) or {
 		200,
 		200
 	}
-	local icon_scale = 1 - math.min(size[2] / icon_texture_size[2], 1)
 	local icon_size = {
 		icon_texture_size[1],
 		icon_texture_size[2]
@@ -1190,13 +1174,12 @@ local function create_reward_presentation(scenegraph_id, size)
 	return widget
 end
 
-local private_checkbox_offset = 0
 local widgets = {
 	background_fade = UIWidgets.create_simple_texture("options_window_fade_01", "window"),
 	window = UIWidgets.create_frame("window", window_size, window_frame, 20),
 	play_button = UIWidgets.create_play_button("play_button", scenegraph_definition.play_button.size, Localize("start_game_window_play"), 34),
-	game_option_1 = create_settings_option("game_option_1", scenegraph_definition.game_option_1.size, Localize("start_game_window_difficulty"), Localize("start_game_window_change_difficulty"), "difficulty_option_1", "game_options_bg_02"),
-	game_option_reward = create_reward_presentation("game_option_2", scenegraph_definition.game_option_2.size),
+	game_option_difficulty = create_settings_option("game_option_difficulty", scenegraph_definition.game_option_difficulty.size, Localize("start_game_window_difficulty"), Localize("start_game_window_change_difficulty"), "difficulty_option_1", "game_options_bg_02"),
+	game_option_reward = create_reward_presentation("game_option_reward", scenegraph_definition.game_option_reward.size),
 	game_options_left_chain = UIWidgets.create_tiled_texture("game_options_left_chain", "chain_link_01", {
 		16,
 		19
@@ -1206,46 +1189,9 @@ local widgets = {
 		19
 	})
 }
-local animation_definitions = {
-	on_enter = {
-		{
-			name = "fade_in",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	},
-	on_exit = {
-		{
-			name = "fade_out",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 1
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = 1 - anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	}
-}
 
 return {
 	widgets = widgets,
-	node_widgets = node_widgets,
 	scenegraph_definition = scenegraph_definition,
 	animation_definitions = animation_definitions
 }

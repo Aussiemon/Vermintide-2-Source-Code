@@ -76,7 +76,6 @@ end
 
 ActionTrueFlightBow.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local current_action = self.current_action
-	local owner_unit = self.owner_unit
 
 	if self.state == "waiting_to_shoot" and self.time_to_shoot <= t then
 		self.state = "shooting"
@@ -121,7 +120,6 @@ end
 
 ActionTrueFlightBow.finish = function (self, reason, data)
 	local owner_unit_status = ScriptUnit.extension(self.owner_unit, "status_system")
-	local current_action = self.current_action
 
 	if not data or data.new_action ~= "action_two" or data.new_sub_action ~= "default" then
 		owner_unit_status:set_zooming(false)

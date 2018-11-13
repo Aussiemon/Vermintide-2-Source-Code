@@ -100,6 +100,30 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_geheimnisnacht_01 = {
+		{
+			texture = "portrait_frame_geheimnisnacht_01",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_geheimnisnacht_02 = {
+		{
+			texture = "portrait_frame_geheimnisnacht_02",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
 	frame_bogenhafen_01 = {
 		{
 			texture = "portrait_frame_bogenhafen_1",

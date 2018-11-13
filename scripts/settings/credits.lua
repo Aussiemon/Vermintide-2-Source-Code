@@ -129,6 +129,19 @@ local Credits = {
 			type = "person"
 		},
 		{
+			text = "credits_additional_localization_manager",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Luigi Andrea Di Domenico",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
 			text = "credits_design_manager",
 			localized = true,
 			type = "title"

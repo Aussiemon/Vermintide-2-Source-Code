@@ -25,13 +25,12 @@ ActionShotgun.client_owner_start_action = function (self, new_action, t, chain_a
 	self.state = "waiting_to_shoot"
 	self.time_to_shoot = t + new_action.fire_time
 	self.active_reload_time = new_action.active_reload_time and t + new_action.active_reload_time
-	local weapon_unit = self.weapon_unit
 	local owner_unit = self.owner_unit
 	local first_person_unit = self.first_person_unit
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
-	local infinite_ammo = false
-	infinite_ammo = buff_extension:get_non_stacking_buff("victor_bountyhunter_passive_infinite_ammo_buff")
+	local infinite_ammo = buff_extension:get_non_stacking_buff("victor_bountyhunter_passive_infinite_ammo_buff")
+	self.infinite_ammo = infinite_ammo
 	self.power_level = power_level
 	self.owner_buff_extension = buff_extension
 
@@ -55,15 +54,12 @@ ActionShotgun.client_owner_start_action = function (self, new_action, t, chain_a
 
 	self.extra_buff_shot = false
 	self.shield_users_blocking = {}
-	self.infinite_ammo = infinite_ammo
 	local HAS_TOBII = rawget(_G, "Tobii") and Application.user_setting("tobii_eyetracking")
 
 	if HAS_TOBII and new_action.fire_at_gaze_setting and Application.user_setting("tobii_fire_at_gaze") then
-		local owner_unit = self.owner_unit
+		local eyetracking_extension = ScriptUnit.has_extension(owner_unit, "eyetracking_system")
 
-		if ScriptUnit.has_extension(owner_unit, "eyetracking_system") then
-			local eyetracking_extension = ScriptUnit.extension(owner_unit, "eyetracking_system")
-
+		if eyetracking_extension then
 			self.start_gaze_rotation:store(eyetracking_extension:gaze_rotation())
 		end
 	end
@@ -79,7 +75,6 @@ ActionShotgun.client_owner_post_update = function (self, dt, t, world, can_damag
 	end
 
 	if self.state == "shooting" then
-		local world = self.world
 		local spread_extension = self.spread_extension
 		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 		local current_position = first_person_extension:current_position()
@@ -122,7 +117,6 @@ ActionShotgun.client_owner_post_update = function (self, dt, t, world, can_damag
 			end
 
 			local direction = Quaternion.forward(rotation)
-			local collision_filter = "filter_player_ray_projectile"
 			local result = PhysicsWorld.immediate_raycast_actors(physics_world, current_position, direction, current_action.range, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_ai_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only")
 
 			if result then
@@ -181,8 +175,6 @@ ActionShotgun.client_owner_post_update = function (self, dt, t, world, can_damag
 		local fire_sound_event = self.current_action.fire_sound_event
 
 		if fire_sound_event then
-			local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-
 			first_person_extension:play_hud_sound_event(fire_sound_event)
 		end
 	end

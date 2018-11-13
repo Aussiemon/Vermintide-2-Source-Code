@@ -133,8 +133,6 @@ CareerAbilityBWAdept._start_priming = function (self)
 end
 
 CareerAbilityBWAdept._landing_postion_valid = function (self, start_pos, end_pos, data, t)
-	Profiler.start("CareerAbilityBWAdept:_landing_postion_valid")
-
 	local valid_pos = false
 	local astar = data.astar
 
@@ -175,14 +173,10 @@ CareerAbilityBWAdept._landing_postion_valid = function (self, start_pos, end_pos
 		data.astar_timer = t + 0.01
 	end
 
-	Profiler.stop("CareerAbilityBWAdept:_landing_postion_valid")
-
 	return valid_pos
 end
 
 CareerAbilityBWAdept._update_priming = function (self, dt, t)
-	Profiler.start("CareerAbilityBWAdept:_update_priming")
-
 	local effect_id = self.effect_id
 	local owner_unit = self.owner_unit
 	local world = self.world
@@ -242,8 +236,6 @@ CareerAbilityBWAdept._update_priming = function (self, dt, t)
 			self._last_valid_position = Vector3Box(hit_position)
 		end
 	end
-
-	Profiler.stop("CareerAbilityBWAdept:_update_priming")
 end
 
 CareerAbilityBWAdept._stop_priming = function (self)

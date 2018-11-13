@@ -67,7 +67,7 @@ FunctionCommandQueue.queue_function_command = function (self, function_call, ...
 	local select = select
 	local num_args = select("#", ...)
 
-	assert(num_args < self.command_stride, "Trying to make a call with too many function args. Please increase in constructor.")
+	fassert(num_args < self.command_stride, "Trying to make a call with too many function args. Please increase in constructor.")
 
 	for i = 1, num_args, 1 do
 		command_queue[base_index + i + 1] = select(i, ...)

@@ -1,4 +1,3 @@
-local push_radius = 2
 local ARROW_HIT_EFFECT = "arrow_impact"
 local ALERT_SOUND_RANGE_FIRE = 4
 local ALERT_SOUND_RANGE_HIT = 2

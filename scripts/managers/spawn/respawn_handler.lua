@@ -152,26 +152,12 @@ RespawnHandler.remove_respawn_units_due_to_crossroads = function (self, removed_
 end
 
 RespawnHandler.recalc_respawner_dist_due_to_crossroads = function (self)
-	local debug_respawners = script_data.debug_player_respawns
-	local up = Vector3(0, 0, 1)
 	local respawners = self._respawn_units
 	local unit_local_position = Unit.local_position
 
 	for i = 1, #respawners, 1 do
 		local respawner = respawners[i]
 		local best_point, best_travel_dist, move_percent, best_sub_index, best_main_path = MainPathUtils.closest_pos_at_main_path(nil, unit_local_position(respawner.unit, 0))
-
-		if debug_respawners then
-			local pos = unit_local_position(respawner.unit, 0) + up
-
-			QuickDrawerStay:sphere(pos, 0.53, Color(255, 200, 0))
-			QuickDrawerStay:line(best_point + up, pos, Color(255, 200, 0))
-
-			local s = string.format("respawer %d, dist: %.1f, newdist: %.1f", i, respawner.distance_through_level, best_travel_dist)
-
-			Debug.world_sticky_text(pos, s, "yellow")
-		end
-
 		respawner.distance_through_level = best_travel_dist
 	end
 end
@@ -202,6 +188,13 @@ RespawnHandler.update = function (self, dt, t, player_statuses)
 		end
 	end
 end
+
+local BOSS_TERROR_EVENT_LOOKUP = {
+	boss_event_chaos_spawn = true,
+	boss_event_storm_fiend = true,
+	boss_event_chaos_troll = true,
+	boss_event_rat_ogre = true
+}
 
 RespawnHandler.get_respawn_unit = function (self)
 	local respawn_units = self._respawn_units
@@ -245,6 +238,11 @@ RespawnHandler.get_respawn_unit = function (self)
 	local path_pos, wanted_respawn_travel_dist = MainPathUtils.closest_pos_at_main_path(main_paths, ahead_pos)
 	local door_system = Managers.state.entity:system("door_system")
 	local boss_door_units = door_system:get_boss_door_units()
+	local enemy_recycler = conflict.enemy_recycler
+	local current_terror_event = enemy_recycler.main_path_events[enemy_recycler.current_main_path_event_id]
+	local current_terror_event_type = current_terror_event and current_terror_event[3]
+	local has_upcoming_boss_terror_event = BOSS_TERROR_EVENT_LOOKUP[current_terror_event_type]
+	local current_terror_event_travel_dist = enemy_recycler.current_main_path_event_activation_dist
 	local boss_door_between_travel_dist = nil
 	local closest_boss_door_travel_dist = 0
 	local closest_door_dist = math.huge
@@ -253,10 +251,12 @@ RespawnHandler.get_respawn_unit = function (self)
 	for i = 1, #boss_door_units, 1 do
 		local door_unit = boss_door_units[i]
 		local door_position = Unit.world_position(door_unit, 0)
+		local door_extension = ScriptUnit.extension(door_unit, "door_system")
+		local door_state = door_extension.current_state
 		local _, door_travel_dist = MainPathUtils.closest_pos_at_main_path(main_paths, door_position)
 		local dist_to_door = door_travel_dist - ahead_unit_travel_dist
 
-		if closest_door_dist > dist_to_door and dist_to_door >= 0 then
+		if closest_door_dist > dist_to_door and dist_to_door >= 0 and ((door_state and door_state == "closed") or (has_upcoming_boss_terror_event and current_terror_event_travel_dist < door_travel_dist)) then
 			closest_door_dist = dist_to_door
 			closest_boss_door_travel_dist = door_travel_dist
 			has_close_boss_door = true

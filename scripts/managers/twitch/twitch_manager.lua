@@ -652,13 +652,11 @@ TwitchManager.disconnect = function (self)
 end
 
 TwitchManager.update = function (self, dt, t)
-	Profiler.start("twitch_manager")
 	self:_handle_disconnect_popup()
 	self:_handle_popup()
 	self:_validate_data(dt, t)
 	self:_update_vote_data(dt, t)
 	self:_update_twitch_game_mode(dt, t)
-	Profiler.stop("twitch_manager")
 end
 
 TwitchManager._handle_popup = function (self)
@@ -991,10 +989,6 @@ TwitchGameMode.init = function (self, parent)
 end
 
 TwitchGameMode.update = function (self, dt, t)
-	if DEBUG_TWITCH then
-		Debug.text("Funds: %d Last won: %s", self._funds, self._last_winning_vote)
-	end
-
 	self._timer = self._timer - dt
 
 	if self._timer > 0 then
@@ -1256,7 +1250,6 @@ TwitchGameMode.cb_on_vote_complete = function (self, current_vote)
 	self._funds = self._funds + winning_template.cost
 	self._used_vote_templates[winning_template.name] = NUM_ROUNDS_TO_DISABLE_USED_VOTES
 	self._vote_keys[current_vote.vote_key] = nil
-	self._last_winning_vote = winning_template.name
 end
 
 TwitchGameMode.destroy = function (self)

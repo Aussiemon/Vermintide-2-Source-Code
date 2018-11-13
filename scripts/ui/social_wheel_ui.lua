@@ -12,20 +12,39 @@ local START_LERP_TIME = 0.01
 local START_LERP_TIME_CONTROLLER = 0.125
 local MAX_FREE_EVENTS = 5
 local EVENT_REFRESH_RATE = 4
-local ANIMATION_TIMES = {
-	OPEN = {
-		MOVE_Y = 1.5,
-		SIZE = 1.5,
-		MOVE_X = 1.5,
-		ALPHA = 0.45
-	},
-	CLOSE = {
-		MOVE_Y = 0.2,
-		SIZE = 0.25,
-		MOVE_X = 0.2,
-		ALPHA = 0.1
+local ANIMATION_TIMES = nil
+
+if PLATFORM == "win32" then
+	ANIMATION_TIMES = {
+		OPEN = {
+			MOVE_Y = 1.5,
+			SIZE = 1.5,
+			MOVE_X = 1.5,
+			ALPHA = 0.45
+		},
+		CLOSE = {
+			MOVE_Y = 0.2,
+			SIZE = 0.25,
+			MOVE_X = 0.2,
+			ALPHA = 0.1
+		}
 	}
-}
+else
+	ANIMATION_TIMES = {
+		OPEN = {
+			MOVE_Y = 0.75,
+			SIZE = 0.75,
+			MOVE_X = 0.75,
+			ALPHA = 0.45
+		},
+		CLOSE = {
+			MOVE_Y = 0.2,
+			SIZE = 0.25,
+			MOVE_X = 0.2,
+			ALPHA = 0.1
+		}
+	}
+end
 
 SocialWheelUI.init = function (self, ingame_ui_context)
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
@@ -235,21 +254,13 @@ SocialWheelUI.rpc_social_wheel_event = function (self, sender, peer_id, social_w
 			local network_manager = Managers.state.network
 
 			if network_manager.is_server then
-				network_manager.network_transmit:send_rpc_clients_except("rpc_social_wheel_event", sender, peer_id, social_wheel_event_id)
+				network_manager.network_transmit:send_rpc_clients_except("rpc_social_wheel_event", sender, peer_id, social_wheel_event_id, target_unit_id)
 			end
 		end
 	end
 end
 
-local DO_RELOAD = true
-
 SocialWheelUI.update = function (self, dt, t)
-	if DO_RELOAD then
-		self:_create_ui_elements()
-
-		DO_RELOAD = false
-	end
-
 	if self._num_free_events < MAX_FREE_EVENTS then
 		local free_events_to_add = (t - self._last_update_t) / EVENT_REFRESH_RATE
 		self._num_free_events = math.min(self._num_free_events + free_events_to_add, MAX_FREE_EVENTS)
@@ -386,6 +397,15 @@ SocialWheelUI._set_player_input_scale = function (self, scale, lerp_time)
 		input_extension:set_input_key_scale("look_controller_3p", scale, lerp_time)
 		input_extension:set_input_key_scale("look_controller_ranged", scale, lerp_time)
 		input_extension:set_input_key_scale("look_controller_melee", scale, lerp_time)
+	end
+
+	local input_service = Managers.input:get_service("Player")
+
+	if input_service then
+		local block = scale == 0
+
+		input_service:set_input_blocked("look_controller_3p", block)
+		input_service:set_input_blocked("look", block)
 	end
 end
 

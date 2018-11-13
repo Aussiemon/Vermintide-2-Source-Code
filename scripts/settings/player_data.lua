@@ -1,5 +1,5 @@
 DefaultPlayerData = {
-	mission_selection_version = 2,
+	mission_selection_version = 3,
 	controls_version = 18,
 	bot_spawn_priority_version = 1,
 	new_item_data_version = 5,

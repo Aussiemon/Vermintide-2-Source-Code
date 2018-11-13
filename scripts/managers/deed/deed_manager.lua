@@ -65,7 +65,7 @@ DeedManager.mutators = function (self)
 	if self._selected_deed_data then
 		return self._selected_deed_data.mutators
 	else
-		return {}
+		return nil
 	end
 end
 

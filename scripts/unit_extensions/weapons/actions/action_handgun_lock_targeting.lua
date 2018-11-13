@@ -26,11 +26,6 @@ ActionHandgunLockTargeting.client_owner_start_action = function (self, new_actio
 end
 
 ActionHandgunLockTargeting.client_owner_post_update = function (self, dt, t, world, can_damage)
-	local physics_world = World.get_data(world, "physics_world")
-	local owner_unit_1p = self.owner_unit_first_person
-	local player_position = POSITION_LOOKUP[owner_unit_1p]
-	local player_rotation = Unit.world_rotation(owner_unit_1p, 0)
-	local direction = Vector3.normalize(Quaternion.forward(player_rotation))
 	local smart_tageting_extension = ScriptUnit.extension(self.owner_unit, "smart_targeting_system")
 	local data = smart_tageting_extension:get_targeting_data()
 	local target = data.unit
@@ -55,7 +50,6 @@ ActionHandgunLockTargeting.client_owner_post_update = function (self, dt, t, wor
 end
 
 ActionHandgunLockTargeting.finish = function (self, reason)
-	local current_action = self.current_action
 	local target = self.target
 	local outline_extension = ScriptUnit.has_extension(target, "outline_system")
 

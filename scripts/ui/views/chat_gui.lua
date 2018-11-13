@@ -124,7 +124,6 @@ ChatGui.update = function (self, dt, menu_active, menu_input_service, no_unblock
 		self:create_ui_elements()
 	end
 
-	Profiler.start("ChatGui")
 	self:update_transition(dt)
 
 	local show_new_messages = self:_update_chat_messages()
@@ -237,7 +236,6 @@ ChatGui.update = function (self, dt, menu_active, menu_input_service, no_unblock
 	end
 
 	self:_draw_widgets(dt, input_service, chat_enabled)
-	Profiler.stop("ChatGui")
 end
 
 ChatGui._update_chat_messages = function (self)

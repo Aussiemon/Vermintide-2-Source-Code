@@ -34,44 +34,6 @@ local function alloc_table()
 	frame_table_counter = frame_table_counter + 1
 	frame_table_counters[frame_table_current_buffer] = frame_table_counter
 
-	if frame_table_max_size <= frame_table_counter and DEBUG_FRAME_TABLES then
-		local current_allocation_stack = allocation_stacks[frame_table_current_buffer]
-		local temp_counter_map = {}
-
-		for i = 1, frame_table_max_size - 1, 1 do
-			local stack = current_allocation_stack[i]
-			temp_counter_map[stack] = (temp_counter_map[stack] or 0) + 1
-		end
-
-		local yet_another_table = {}
-		local index = 1
-
-		for stack, count in pairs(temp_counter_map) do
-			yet_another_table[index] = {
-				stack = stack,
-				count = count
-			}
-			index = index + 1
-		end
-
-		table.sort(yet_another_table, function (a, b)
-			return a.count < b.count
-		end)
-		print("[frame_table] allocationstack begin.")
-		print("")
-
-		for _, stack_data in ipairs(yet_another_table) do
-			local count = stack_data.count
-			local stack = stack_data.stack
-
-			print("---> " .. count .. " allocations at stack(below)")
-			print(stack)
-		end
-
-		print("[frame_table] allocationstack end.")
-		assert(false)
-	end
-
 	if frame_table_counter == frame_table_max_size then
 		printf("Increasing frame table size to %d", frame_table_max_size * 2)
 
@@ -81,18 +43,6 @@ local function alloc_table()
 			frame_table_collection_buffers[1][i] = {}
 			frame_table_collection_buffers[2][i] = {}
 		end
-	end
-
-	if DEBUG_FRAME_TABLES then
-		local cs = callstack()
-		local callstack_string_cutoff = "local_variables:"
-		local i = cs:find(callstack_string_cutoff)
-
-		if i then
-			cs = cs:sub(1, i - 1)
-		end
-
-		allocation_stacks[frame_table_current_buffer][frame_table_counter] = cs
 	end
 
 	local current_frame_table = frame_table_collection_buffers[frame_table_current_buffer]

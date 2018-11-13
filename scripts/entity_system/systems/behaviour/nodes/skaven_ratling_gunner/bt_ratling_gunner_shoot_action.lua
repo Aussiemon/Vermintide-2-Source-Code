@@ -213,15 +213,11 @@ BTRatlingGunnerShootAction._update_shooting = function (self, unit, blackboard, 
 	local current_time_between_shots = math.lerp(data.time_between_shots_at_start, data.time_between_shots_at_end, percentage_in_shoot_action)
 	local shots_to_fire = (math.floor(time_in_shoot_action / current_time_between_shots) + 1) - data.shots_fired
 
-	Profiler.start("shoot")
-
 	for i = 1, shots_to_fire, 1 do
 		data.shots_fired = data.shots_fired + 1
 
 		self:_shoot(unit, blackboard, t, dt)
 	end
-
-	Profiler.stop("shoot")
 
 	if self._use_obstacle then
 		local fire_extents = blackboard.action.line_of_fire_nav_obstacle_half_extents:unbox()
@@ -289,7 +285,7 @@ BTRatlingGunnerShootAction._start_shooting = function (self, blackboard, unit, d
 		GwNavBoxObstacle.set_transform(sight_obstacle, sight_pose)
 		GwNavBoxObstacle.set_does_trigger_tagvolume(fire_obstacle, true)
 		GwNavBoxObstacle.set_does_trigger_tagvolume(sight_obstacle, true)
-		DialogueSystem:TriggerTargetedByRatling(data.target_unit)
+		DialogueSystem:trigger_targeted_by_ratling(data.target_unit)
 	end
 
 	local self_pos = POSITION_LOOKUP[unit]
@@ -562,13 +558,9 @@ BTRatlingGunnerShootAction._shoot = function (self, unit, blackboard)
 		afro_hit_sound = light_weight_projectile_template.afro_hit_sound,
 		player_push_velocity = Vector3Box(normalized_direction * light_weight_projectile_template.impact_push_speed)
 	}
-
-	Profiler.start("create_light_weight_projectile")
-
 	local projectile_system = Managers.state.entity:system("projectile_system")
 
 	projectile_system:create_light_weight_projectile(Unit.get_data(unit, "breed").name, unit, from_position, spread_direction, light_weight_projectile_template.projectile_speed, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_particle_effect)
-	Profiler.stop("create_light_weight_projectile")
 end
 
 return

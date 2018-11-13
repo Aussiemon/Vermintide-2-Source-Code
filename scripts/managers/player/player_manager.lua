@@ -110,8 +110,7 @@ PlayerManager.assign_unit_ownership = function (self, unit, player, is_player_un
 	player.owned_units[unit] = unit
 
 	if is_player_unit then
-		player.player_unit = unit
-
+		player:set_player_unit(unit)
 		self:_reevaluate_camera_carrier()
 	end
 
@@ -143,11 +142,6 @@ PlayerManager.player_from_game_object_id = function (self, game_object_id)
 end
 
 PlayerManager.relinquish_unit_ownership = function (self, unit)
-	if script_data.network_debug_connections then
-		printf("PlayerManager:relinquish_unit_ownership")
-		print(Script.callstack())
-	end
-
 	fassert(self._unit_owners[unit], "[PlayerManager:relinquish_unit_ownership] Unit %s ownership cannot be relinquished, not owned.", unit)
 
 	local unit_owner = self._unit_owners[unit]

@@ -99,9 +99,6 @@ end
 
 MissionSystem.update = function (self, context, t)
 	local dt = context.dt
-
-	Profiler.start("MissionSystem:update()")
-
 	local active_missions = self.active_missions
 
 	for name, data in pairs(active_missions) do
@@ -111,7 +108,6 @@ MissionSystem.update = function (self, context, t)
 	end
 
 	self:_update_level_progress(dt)
-	Profiler.stop("MissionSystem:update()")
 
 	if script_data.debug_mission_system then
 		self:debug_draw(dt)

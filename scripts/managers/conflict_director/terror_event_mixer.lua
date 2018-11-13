@@ -264,8 +264,6 @@ TerrorEventMixer.init_functions = {
 
 		if allowed_difficulty and not optional_data[time_challenge_name] then
 			optional_data[time_challenge_name] = duration
-
-			print("Set time challenge: ", time_challenge_name, duration)
 		end
 	end,
 	has_completed_time_challenge = function (event, element, t, dt)
@@ -278,8 +276,6 @@ TerrorEventMixer.init_functions = {
 			local time_left = math.abs(t - duration)
 
 			if completed then
-				printf("Completed time challenge: %s. Time left: %0.1f", time_challenge_name, time_left)
-
 				optional_data[time_challenge_name] = nil
 				local stat_name = time_challenge_name
 				local statistics_db = Managers.player:statistics_db()
@@ -287,8 +283,6 @@ TerrorEventMixer.init_functions = {
 				statistics_db:increment_stat_and_sync_to_clients(stat_name)
 				QuestSettings.send_completed_message(stat_name)
 			else
-				printf("Failed time challenge: %s Time left: %0.1f", time_challenge_name, time_left)
-
 				optional_data[time_challenge_name] = nil
 			end
 		end
@@ -310,8 +304,6 @@ TerrorEventMixer.init_functions = {
 			player_units = {},
 			terminate = terminate
 		}
-
-		printf("Starting volume challenge for volume %s", volume_name)
 	end
 }
 TerrorEventMixer.run_functions = {
@@ -627,7 +619,6 @@ TerrorEventMixer.run_functions = {
 			local statistics_db = Managers.player:statistics_db()
 
 			statistics_db:increment_stat_and_sync_to_clients(increment_stat_name)
-			printf("Completed volume challenge %s", volume_name)
 			QuestSettings.send_completed_message(increment_stat_name)
 
 			return true

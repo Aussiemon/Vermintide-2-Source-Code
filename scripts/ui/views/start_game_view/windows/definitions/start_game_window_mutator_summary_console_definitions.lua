@@ -1,18 +1,45 @@
 local window_default_settings = UISettings.game_start_windows
-local window_background = window_default_settings.background
-local window_frame = window_default_settings.frame
 local window_size = window_default_settings.size
-local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
-local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
-local window_text_width = window_size[1] - (window_frame_width * 2 + 60)
 local game_option_size = {
 	window_size[1] - 20,
 	700
 }
-local deed_frame_name = "menu_frame_08"
-local deed_frame_settings = UIFrameSettings[deed_frame_name]
-local deed_frame_width = deed_frame_settings.texture_sizes.corner[1]
-local console_menu_scenegraphs = UISettings.console_menu_scenegraphs
+local animation_definitions = {
+	on_enter = {
+		{
+			name = "fade_in",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 0
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+				params.render_settings.alpha_multiplier = anim_progress
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	},
+	on_exit = {
+		{
+			name = "fade_out",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 1
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+				params.render_settings.alpha_multiplier = 1 - anim_progress
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	}
+}
 local scenegraph_definition = {
 	root = {
 		is_root = true,
@@ -137,7 +164,6 @@ local function create_placeholder_option(scenegraph_id, size)
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local frame_name = "menu_frame_08"
 	local frame_settings = UIFrameSettings[frame_name]
-	local frame_width = frame_settings.texture_sizes.corner[1]
 	local widget = {
 		element = {
 			passes = {
@@ -211,59 +237,9 @@ local function create_placeholder_option(scenegraph_id, size)
 	return widget
 end
 
-level_locked_text_style = {
-	vertical_alignment = "center",
-	font_size = 18,
-	horizontal_alignment = "center",
-	word_wrap = true,
-	font_type = "hell_shark",
-	use_shadow = true,
-	text_color = Colors.get_color_table_with_alpha("red", 255),
-	offset = {
-		0,
-		0,
-		0
-	}
-}
 local widgets = {
 	game_option_placeholder = create_placeholder_option("game_option_1", scenegraph_definition.game_option_1.size),
 	item_presentation = UIWidgets.create_simple_item_presentation("item_presentation", UISettings.console_tooltip_pass_definitions)
-}
-local animation_definitions = {
-	on_enter = {
-		{
-			name = "fade_in",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	},
-	on_exit = {
-		{
-			name = "fade_out",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 1
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = 1 - anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	}
 }
 
 return {

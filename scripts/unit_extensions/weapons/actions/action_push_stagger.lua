@@ -1,13 +1,6 @@
 ActionPushStagger = class(ActionPushStagger)
-local BLACKBOARDS = BLACKBOARDS
-local PUSH_UPGRADES = {
-	basic_sweep_push = "heavy_sweep_push",
-	dagger_sweep_push = "upgraded_sweep_push",
-	heavy_sweep_push = "super_heavy_sweep_push",
-	weak_sweep_push = "upgraded_sweep_push"
-}
 
-ActionPushStagger.init = function (self, world, item_name, is_server, owner_unit, weapon_unit, first_person_unit, weapon_unit, weapon_system)
+ActionPushStagger.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	self.owner_unit = owner_unit
 	self.owner_unit_first_person = first_person_unit
 	self.weapon_unit = weapon_unit
@@ -28,21 +21,21 @@ ActionPushStagger.init = function (self, world, item_name, is_server, owner_unit
 end
 
 ActionPushStagger.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
+	self.current_action = new_action
 	local owner_unit = self.owner_unit
 	local first_person_unit = self.owner_unit_first_person
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	local career_extension = ScriptUnit.extension(owner_unit, "career_system")
-	local has_melee_boost, boost_amount = career_extension:has_melee_boost()
-	self.melee_boost_curve_multiplier = boost_amount
-	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
-	self.power_level = power_level
 	self.owner_buff_extension = buff_extension
 	self.owner_career_extension = career_extension
-	self.current_action = new_action
+	local _, melee_boost_curve_multiplier = career_extension:has_melee_boost()
+	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
+	self.melee_boost_curve_multiplier = melee_boost_curve_multiplier
+	self.power_level = power_level
 	self.has_played_rumble_effect = false
 
-	for k, v in pairs(self.hit_units) do
-		self.hit_units[k] = nil
+	for hit_unit, _ in pairs(self.hit_units) do
+		self.hit_units[hit_unit] = nil
 	end
 
 	self.bot_player = Managers.player:owner(owner_unit).bot_player
@@ -273,9 +266,6 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 					end
 
 					Managers.state.entity:system("play_go_tutorial_system"):register_push(hit_unit)
-
-					local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
-
 					buff_extension:trigger_procs("on_push", hit_unit, damage_source)
 
 					hit_once = true

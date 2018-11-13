@@ -127,4 +127,8 @@ LobbyInternal.is_friend = function (peer_id)
 	return false
 end
 
+LobbyInternal.client_ready = function ()
+	return false
+end
+
 return

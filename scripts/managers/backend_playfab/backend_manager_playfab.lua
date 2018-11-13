@@ -10,6 +10,7 @@ require("scripts/managers/backend_playfab/backend_interface_quests_playfab")
 require("scripts/managers/backend_playfab/backend_interface_hero_attributes_playfab")
 require("scripts/managers/backend_playfab/backend_interface_statistics_playfab")
 require("scripts/managers/backend_playfab/backend_interface_keep_decorations_playfab")
+require("scripts/managers/backend_playfab/backend_interface_live_events_playfab")
 require("scripts/managers/backend_playfab/benchmark_backend/backend_interface_loot_benchmark")
 require("scripts/managers/backend_playfab/benchmark_backend/backend_interface_statistics_benchmark")
 require("scripts/managers/backend_playfab/benchmark_backend/backend_interface_quests_benchmark")
@@ -162,6 +163,7 @@ BackendManagerPlayFab._create_interfaces = function (self, force_local)
 	self:_create_hero_attributes_interface(settings, force_local)
 	self:_create_statistics_interface(settings, force_local)
 	self:_create_keep_decorations_interface(settings, force_local)
+	self:_create_live_events_interface(settings, force_local)
 
 	if PLATFORM == "xb1" then
 		self:_create_console_dlc_rewards_interface(settings, force_local)
@@ -312,8 +314,6 @@ BackendManagerPlayFab.stop_benchmark = function (self)
 end
 
 BackendManagerPlayFab._update_state = function (self)
-	Profiler.start("BackendManagerPlayFab update_state")
-
 	local settings = GameSettingsDevelopment.backend_settings
 	local signin = self._backend_signin
 
@@ -346,17 +346,18 @@ BackendManagerPlayFab._update_state = function (self)
 			self:_post_error(error_data)
 		end
 	end
-
-	Profiler.stop("BackendManagerPlayFab update_state")
 end
 
 BackendManagerPlayFab._update_error_handling = function (self, dt)
-	Profiler.start("BackendManagerPlayFab update_error_handling")
-
 	if #self._errors > 0 and not self._error_dialog and not self._is_disconnected and not DEDICATED_SERVER then
 		local error_data = table.remove(self._errors, 1)
 
 		self:_show_error_dialog(error_data.reason, error_data.details)
+	end
+
+	if self._error_dialog ~= nil and not Managers.popup:has_popup_with_id(self._error_dialog) then
+		self._is_disconnected = true
+		self._error_dialog = nil
 	end
 
 	if self._error_dialog then
@@ -380,8 +381,6 @@ BackendManagerPlayFab._update_error_handling = function (self, dt)
 			end
 		end
 	end
-
-	Profiler.stop("BackendManagerPlayFab update_error_handling")
 end
 
 BackendManagerPlayFab._update_interface = function (self, interface_name, dt)
@@ -407,11 +406,7 @@ BackendManagerPlayFab.update = function (self, dt)
 	local error_data = nil
 
 	if mirror then
-		Profiler.start("ScriptBackend update")
-
 		error_data = mirror:update(dt)
-
-		Profiler.stop("ScriptBackend update")
 	end
 
 	if queue then
@@ -661,7 +656,7 @@ BackendManagerPlayFab._show_error_dialog = function (self, reason, details_messa
 
 	local localized_error_text = Localize(error_text)
 
-	if details_message then
+	if details_message and PLATFORM == "win32" then
 		localized_error_text = localized_error_text .. " : " .. details_message
 	end
 
@@ -986,6 +981,14 @@ BackendManagerPlayFab._create_keep_decorations_interface = function (self, setti
 		self._interfaces.keep_decorations = BackendInterfaceKeepDecorationsLocal:new(self._save_data)
 	else
 		self._interfaces.keep_decorations = BackendInterfaceKeepDecorationsPlayFab:new(self._backend_mirror)
+	end
+end
+
+BackendManagerPlayFab._create_live_events_interface = function (self, settings, force_local)
+	if force_local then
+		self._interfaces.live_events = BackendInterfaceLiveEventsLocal:new(self._save_data)
+	else
+		self._interfaces.live_events = BackendInterfaceLiveEventsPlayfab:new(self._backend_mirror)
 	end
 end
 

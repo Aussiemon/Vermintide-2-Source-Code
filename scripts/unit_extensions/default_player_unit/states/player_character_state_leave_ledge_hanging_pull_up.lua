@@ -132,20 +132,8 @@ PlayerCharacterStateLeaveLedgeHangingPullUp.calculate_end_position = function (s
 	local distance = Vector3.distance(new_position, nav_mesh_pos)
 	local is_close = distance < 4
 
-	if script_data.debug_hang_ledges then
-		QuickDrawerStay:sphere(new_position, 0.1, Color(255, 0, 0))
-	end
-
 	if nav_mesh_pos and is_close then
 		new_position = nav_mesh_pos
-
-		if script_data.debug_hang_ledges then
-			QuickDrawerStay:sphere(new_position, 0.2, Color(0, 255, 255))
-		end
-	elseif script_data.debug_hang_ledges then
-		local debug_text_manager = Managers.state.debug_text
-
-		debug_text_manager:output_world_text("Could not find a nav-mesh position for pull up position.", 0.1, new_position, nil, "ledge_haning_text", Vector3(255, 255, 0))
 	end
 
 	self.end_position:store(new_position)

@@ -169,8 +169,6 @@ PlayerInventoryUI.update = function (self, dt, t, my_player)
 		self:on_gamepad_deactivated()
 	end
 
-	Profiler.start("animations")
-
 	if self.stance_bar_lit_animation then
 		UIAnimation.update(self.stance_bar_lit_animation, dt)
 
@@ -186,8 +184,6 @@ PlayerInventoryUI.update = function (self, dt, t, my_player)
 			self.ui_animations[name] = nil
 		end
 	end
-
-	Profiler.stop("animations")
 
 	if not self._visible then
 		return
@@ -212,9 +208,7 @@ PlayerInventoryUI.update = function (self, dt, t, my_player)
 			self.profile_index = profile_index
 		end
 
-		Profiler.start("update_inventory_slots")
 		self:update_inventory_slots(dt, ui_scenegraph, ui_renderer, my_player)
-		Profiler.stop("update_inventory_slots")
 	end
 
 	UIRenderer.end_pass(ui_renderer)
@@ -238,8 +232,6 @@ PlayerInventoryUI.update_inventory_slots = function (self, dt, ui_scenegraph, ui
 	local gdc_build = Development.parameter("gdc")
 	local hud_extension = nil
 
-	Profiler.start("Player data retrieve")
-
 	if player_unit then
 		local health_extension = ScriptUnit.extension(player_unit, "health_system")
 		local status_extension = ScriptUnit.extension(player_unit, "status_system")
@@ -247,11 +239,7 @@ PlayerInventoryUI.update_inventory_slots = function (self, dt, ui_scenegraph, ui
 		hud_extension = ScriptUnit.extension(player_unit, "hud_system")
 	end
 
-	Profiler.stop("Player data retrieve")
-
 	if inventory_extension then
-		Profiler.start("Inventory Widgets Update")
-
 		local inventory_widgets = self.inventory_widgets
 		local equipment = inventory_extension:equipment()
 		local slots = SLOTS_LIST
@@ -270,8 +258,6 @@ PlayerInventoryUI.update_inventory_slots = function (self, dt, ui_scenegraph, ui
 			local widget_style = widget.style
 
 			if not slot_data then
-				Profiler.start("reset slot data")
-
 				if widget_content.has_data then
 					widget_content.has_data = nil
 				end
@@ -288,8 +274,6 @@ PlayerInventoryUI.update_inventory_slots = function (self, dt, ui_scenegraph, ui
 				if widget_content.icon ~= "weapon_icon_empty" then
 					widget_content.icon = "weapon_icon_empty"
 				end
-
-				Profiler.stop("reset slot data")
 			else
 				local item_data = slot_data.item_data
 				local is_wielded = wielded == slot_data.item_data
@@ -311,8 +295,6 @@ PlayerInventoryUI.update_inventory_slots = function (self, dt, ui_scenegraph, ui
 				end
 
 				if is_wielded then
-					Profiler.start("selected slot change")
-
 					first_update = self:on_inventory_selected_slot_changed(i)
 
 					if first_update then
@@ -327,18 +309,11 @@ PlayerInventoryUI.update_inventory_slots = function (self, dt, ui_scenegraph, ui
 							widget_content.stance_bar_glow = bar_textures.charge_bar.glow
 						end
 					end
-
-					Profiler.stop("selected slot change")
 				end
-
-				Profiler.start("set slot icon")
 
 				if not widget_content.has_data then
 					widget_content.has_data = true
 				end
-
-				Profiler.stop("set slot icon")
-				Profiler.start("ammo and charge bar")
 
 				local item_template = BackendUtils.get_item_template(item_data)
 				local ammo_count, remaining_ammo = get_ammunition_count(slot_data.left_unit_1p, slot_data.right_unit_1p, item_template)
@@ -420,20 +395,14 @@ PlayerInventoryUI.update_inventory_slots = function (self, dt, ui_scenegraph, ui
 				elseif self.ui_scenegraph[inventory_entry_root_lookup_table[i]].local_position[1] ~= default_root_offset then
 					self.ui_scenegraph[inventory_entry_root_lookup_table[i]].local_position[1] = default_root_offset
 				end
-
-				Profiler.stop("ammo and charge bar")
 			end
 
 			UIRenderer.draw_widget(ui_renderer, widget)
 		end
-
-		Profiler.stop("Inventory Widgets Update")
 	end
 end
 
 PlayerInventoryUI.update_inventory_slots_positions = function (self, dt)
-	Profiler.start("update_inventory_slots_positions")
-
 	local scenegraph_definition = definitions.scenegraph_definition
 	local selected_index = self.selected_index or 0
 	local previous_selected_index = self.previous_selected_index
@@ -465,8 +434,6 @@ PlayerInventoryUI.update_inventory_slots_positions = function (self, dt)
 		ui_scenegraph[scenegraph_root_id].position[2] = height_offset + widget_height * 0.5
 		height_offset = height_offset + widget_height + slot_spacing
 	end
-
-	Profiler.stop("update_inventory_slots_positions")
 end
 
 PlayerInventoryUI.on_inventory_selected_slot_changed = function (self, new_index)
@@ -558,15 +525,11 @@ PlayerInventoryUI.add_animation_for_slot_index = function (self, index, selected
 end
 
 PlayerInventoryUI.update_slot_animations = function (self, dt)
-	Profiler.start("update_slot_animations")
-
 	local animations = self.slot_animations
 
 	for scenegraph_id, animation_data in pairs(animations) do
 		animations[scenegraph_id] = self:animate_slot_widget(animation_data, dt)
 	end
-
-	Profiler.stop("update_slot_animations")
 end
 
 PlayerInventoryUI.animate_slot_widget = function (self, animation_data, dt)

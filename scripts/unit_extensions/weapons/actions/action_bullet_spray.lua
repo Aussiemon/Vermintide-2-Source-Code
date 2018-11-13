@@ -28,11 +28,9 @@ ActionBulletSpray.init = function (self, world, item_name, is_server, owner_unit
 end
 
 ActionBulletSpray.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
-	local weapon_unit = self.weapon_unit
 	local owner_unit = self.owner_unit
 	local first_person_unit = self.owner_unit_first_person
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
-	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	self.power_level = power_level
 	self.current_action = new_action
 	self._target_index = 1
@@ -71,8 +69,6 @@ ActionBulletSpray.client_owner_post_update = function (self, dt, t, world, can_d
 	local current_action = self.current_action
 	local owner_unit_1p = self.owner_unit_first_person
 	local player_position = POSITION_LOOKUP[owner_unit_1p]
-	local player_rotation = Unit.world_rotation(owner_unit_1p, 0)
-	local player_direction = Vector3.normalize(Quaternion.forward(player_rotation))
 	local targets = self.targets
 	local target_index = self._target_index
 
@@ -104,7 +100,6 @@ ActionBulletSpray.client_owner_post_update = function (self, dt, t, world, can_d
 		end
 	end
 
-	local physics_world = World.get_data(world, "physics_world")
 	local current_target = targets[target_index]
 
 	if Unit.alive(current_target) then
@@ -179,8 +174,6 @@ local vector3_distance_squared = Vector3.distance_squared
 local unit_local_position = Unit.local_position
 
 ActionBulletSpray._select_targets = function (self, world, show_outline)
-	Profiler.start("bullet select targets")
-
 	local physics_world = World.get_data(world, "physics_world")
 	local owner_unit_1p = self.owner_unit_first_person
 	local player_position = POSITION_LOOKUP[owner_unit_1p]
@@ -204,7 +197,6 @@ ActionBulletSpray._select_targets = function (self, world, show_outline)
 
 	local result = PhysicsWorld.linear_sphere_sweep(physics_world, start_point, end_point, SPRAY_RADIUS, 100, "collision_filter", "filter_character_trigger", "report_initial_overlap")
 
-	Profiler.start("bullet spray sort")
 	table.sort(result, function (a, b)
 		local a_unit = actor_unit(a.actor)
 		local b_unit = actor_unit(b.actor)
@@ -215,7 +207,6 @@ ActionBulletSpray._select_targets = function (self, world, show_outline)
 
 		return a_distance < b_distance
 	end)
-	Profiler.stop("bullet spray sort")
 
 	if result then
 		local num_hits = #result
@@ -258,8 +249,6 @@ ActionBulletSpray._select_targets = function (self, world, show_outline)
 	end
 
 	self.shot = true
-
-	Profiler.stop("bullet select targets")
 end
 
 ActionBulletSpray._check_within_cone = function (self, player_position, player_direction, target, player)

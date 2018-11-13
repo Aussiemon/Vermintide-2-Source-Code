@@ -83,7 +83,7 @@ TagQueryLoader.unload_files = function (self)
 				end
 			end
 
-			assert(found_file)
+			fassert(found_file)
 			tprint("TagQueryLoader: Unloaded file: " .. tostring(filename))
 		else
 			tprint("TagQueryLoader: Could not unload file: " .. tostring(filename))

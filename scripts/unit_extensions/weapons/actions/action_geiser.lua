@@ -3,6 +3,7 @@ ActionGeiser = class(ActionGeiser)
 ActionGeiser.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	self.world = world
 	self.owner_unit = owner_unit
+	self.owner_player = Managers.player:owner(owner_unit)
 	self.weapon_unit = weapon_unit
 	self.is_server = is_server
 	self.item_name = item_name
@@ -75,11 +76,9 @@ end
 
 ActionGeiser.fire = function (self, reason)
 	local current_action = self.current_action
-	local world = self.world
-	local is_server = self.is_server
 	local owner_unit = self.owner_unit
+	local owner_player = self.owner_player
 	local first_person_unit = self.first_person_unit
-	local weapon_system = Managers.state.entity:system("weapon_system")
 	local radius = self.radius
 	local half_height = self.height * 0.5
 	local position = self.position:unbox()
@@ -92,7 +91,8 @@ ActionGeiser.fire = function (self, reason)
 	local effect_name = current_action.particle_effect
 	local size = "_large"
 	local overcharge = current_action.overcharge_type
-	local ignore_hitting_allies = not Managers.state.difficulty:get_difficulty_settings().friendly_fire_ranged
+	local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
+	local ignore_hitting_allies = not DamageUtils.allow_friendly_fire_ranged(difficulty_settings, owner_player)
 
 	if charge_value < 0.33 then
 		size = "_small"
@@ -133,7 +133,6 @@ ActionGeiser.fire = function (self, reason)
 
 	local damage_buffer = self._damage_buffer
 	local hit_units = {}
-	local num_hit = 0
 	local damage_profile_name = current_action.damage_profile or "default"
 	local damage_profile = DamageProfileTemplates[damage_profile_name]
 
@@ -146,12 +145,8 @@ ActionGeiser.fire = function (self, reason)
 			local dummy = not breed and Unit.get_data(hit_unit, "is_dummy")
 
 			if not hit_units[hit_unit] and (breed or dummy or (table.contains(PLAYER_AND_BOT_UNITS, hit_unit) and not ignore_hitting_allies)) then
-				local attacker_unit_id = network_manager:unit_game_object_id(owner_unit)
-				local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
-				local hit_zone_id = NetworkLookup.hit_zones.torso
 				local attack_vector = hit_position - source_pos
 				local attack_distance = Vector3.length(attack_vector)
-				local attack_direction = Vector3.normalize(attack_vector)
 				local target_index = nil
 
 				if damage_profile.target_radius and damage_profile.targets then
@@ -207,15 +202,11 @@ ActionGeiser._update_damage = function (self, current_action)
 	local damage_buffer_index = self._damage_buffer_index
 	local num_units = (damage_buffer_index + UNITS_PER_FRAME) - 1
 	local network_manager = Managers.state.network
-	local weapon_system = Managers.state.entity:system("weapon_system")
-	local is_server = self.is_server
 	local owner_unit = self.owner_unit
 	local damage_source = self.item_name
 	local damage_source_id = NetworkLookup.damage_sources[damage_source]
 	local attacker_unit_id = network_manager:unit_game_object_id(owner_unit)
 	local attacker_position = self.position:unbox()
-	local check_buffs = self._check_buffs
-	local buff_extension = self.owner_buff_extension
 
 	for i = damage_buffer_index, num_units, 1 do
 		repeat
@@ -235,7 +226,8 @@ ActionGeiser._update_damage = function (self, current_action)
 				break
 			end
 
-			local is_critical_strike = self._is_critical_strike
+			local has_ranged_boost, ranged_boost_curve_multiplier = ActionUtils.get_ranged_boost(owner_unit)
+			local is_critical_strike = self._is_critical_strike or has_ranged_boost
 			local send_to_server = true
 
 			DamageUtils.buff_on_attack(owner_unit, hit_unit, "aoe", is_critical_strike and allow_critical_proc, hit_zone_name, #damage_buffer, send_to_server)
@@ -253,8 +245,6 @@ ActionGeiser._update_damage = function (self, current_action)
 			local power_level = self.power_level
 			local shield_blocked = false
 			local shield_break_procc = false
-			local has_ranged_boost, ranged_boost_curve_multiplier = ActionUtils.get_ranged_boost(owner_unit)
-			local is_critical_strike = self._is_critical_strike or has_ranged_boost
 			local weapon_system = Managers.state.entity:system("weapon_system")
 
 			weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", target_index, "blocking", shield_blocked, "shield_break_procced", shield_break_procc, "boost_curve_multiplier", ranged_boost_curve_multiplier, "is_critical_strike", is_critical_strike)

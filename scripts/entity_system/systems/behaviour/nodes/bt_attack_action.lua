@@ -68,7 +68,7 @@ BTAttackAction.enter = function (self, unit, blackboard, t)
 		local should_backstab = breed.use_backstab_vo and is_flanking and target_unit_slot_extension and target_unit_slot_extension.num_occupied_slots <= 5
 
 		if should_backstab then
-			DialogueSystem:TriggerBackstab(target_unit, unit, blackboard)
+			DialogueSystem:trigger_backstab(target_unit, unit, blackboard)
 
 			blackboard.backstab_attack_trigger = true
 		end
@@ -102,7 +102,7 @@ end
 
 BTAttackAction.trigger_attack_sound = function (self, action, unit, target_unit, blackboard, target_unit_status_extension)
 	if blackboard.attack_token and target_unit_status_extension then
-		DialogueSystem:TriggerAttack(target_unit, unit, false, blackboard)
+		DialogueSystem:trigger_attack(target_unit, unit, false, blackboard)
 	end
 end
 
@@ -278,7 +278,7 @@ BTAttackAction.attack_success = function (self, unit, blackboard)
 	local breed = blackboard.breed
 
 	if breed.use_backstab_vo and blackboard.backstab_attack_trigger then
-		DialogueSystem:TriggerBackstabHit(blackboard.target_unit, unit)
+		DialogueSystem:trigger_backstab_hit(blackboard.target_unit, unit)
 
 		blackboard.backstab_attack_trigger = false
 	end

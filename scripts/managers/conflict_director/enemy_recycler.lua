@@ -1,113 +1,3 @@
--- Decompilation Error: _run_step(_unwarp_loops, node, repeat_until=False)
-
--- Decompilation Error: _run_step(_unwarp_loops, node, repeat_until=True)
-
--- Decompilation Error: _run_step(_unwarp_expressions, node)
-
--- Decompilation Error: _run_step(_unwarp_ifs, node)
-
--- Decompilation Error: _glue_flows(node)
-
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 EnemyRecycler = class(EnemyRecycler)
 local InterestPointUnits = InterestPointUnits
 local position_lookup = POSITION_LOOKUP
@@ -313,10 +203,8 @@ EnemyRecycler.inject_roaming_patrol = function (self, area_position, area_rot, p
 			zone,
 			"event",
 			event_data,
-			pack_type,
-			[11] = self.unique_area_id
+			pack_type
 		}
-		self.unique_area_id = self.unique_area_id + 1
 
 		return area
 	end
@@ -378,18 +266,13 @@ EnemyRecycler.setup = function (self, pos_list, pack_sizes, pack_rotations, pack
 					"pack",
 					area_rot,
 					pack_type,
-					zone_data,
-					k
+					zone_data
 				}
 				k = k + 1
 			end
 		end
 
 		self.unique_area_id = k
-
-		if script_data.debug_group_recycling then
-			self:draw_roaming_splines()
-		end
 	end
 
 	if not CurrentConflictSettings.roaming.disabled and not script_data.ai_critter_spawning_disabled then
@@ -422,10 +305,6 @@ end
 EnemyRecycler.update = function (self, t, dt, player_positions, threat_population, player_areas, use_player_areas)
 	self:_update_roaming_spawning(t, player_positions, threat_population, player_areas, use_player_areas)
 	self.ai_group_system:prepare_update_recycler(player_positions, player_areas, use_player_areas)
-
-	if script_data.debug_ai_recycler then
-		self:draw_debug(player_positions)
-	end
 end
 
 EnemyRecycler.update_main_path_events = function (self, t)
@@ -451,46 +330,6 @@ EnemyRecycler.update_main_path_events = function (self, t)
 
 			event_data.optional_pos = pos
 			event_data.map_section = map_section
-		end
-
-		if script_data.debug_ai_recycler then
-			local debug_text_manager = Managers.state.debug_text
-			local ahead_unit = self.main_path_info.ahead_unit
-			local ahead_unit_position = POSITION_LOOKUP[ahead_unit]
-			local position = pos:unbox()
-			local distance = Vector3.distance(position, ahead_unit_position)
-
-			if distance < 15 then
-				local debug_text = "Main path terror event spawning point is too close to players!!! Distance: " .. distance
-
-				Application.warning(debug_text)
-				debug_text_manager:output_world_text(debug_text, 0.5, position + Vector3(0, 0, 0.3), nil, "main_path_event_debug", Vector3(255, 0, 0))
-				QuickDrawerStay:sphere(position, 1.2, Color(255, 0, 0))
-			end
-
-			local ignore_umbra = not World.umbra_available(self.world)
-			local h = Vector3(0, 0, 1)
-			local hidden = true
-
-			for j = 1, #PLAYER_AND_BOT_POSITIONS, 1 do
-				local avoid_pos = PLAYER_AND_BOT_POSITIONS[j]
-				local to_vec = position - avoid_pos
-				local los = ignore_umbra or World.umbra_has_line_of_sight(self.world, position + h, avoid_pos + h)
-
-				if los then
-					hidden = false
-
-					break
-				end
-			end
-
-			if not hidden then
-				local debug_text = "Main path terror event spawning point badly placed. Patrols and bosses can spawn in line of sight of players!"
-
-				Application.warning(debug_text)
-				debug_text_manager:output_world_text(debug_text, 0.5, position + Vector3(0, 0, 1), nil, "main_path_event_debug", Vector3(255, 255, 0))
-				QuickDrawerStay:sphere(position, 1, Color(255, 255, 0))
-			end
 		end
 
 		print("main path terror event triggered:", event_name)
@@ -543,10 +382,8 @@ EnemyRecycler.add_breed = function (self, breed_name, boxed_pos, boxed_rot)
 		0,
 		false,
 		zone,
-		"breed",
-		[11] = self.unique_area_id
+		"breed"
 	}
-	self.unique_area_id = self.unique_area_id + 1
 end
 
 EnemyRecycler.breed_spawned_callback = function (ai_unit, breed, optional_data)
@@ -815,14 +652,10 @@ local area_checks_per_frame = 20
 local remove_zones = {}
 
 EnemyRecycler._update_roaming_spawning = function (self, t, player_positions, threat_population, player_zones, use_player_zones)
-	Profiler.start("recycler - pack spawning")
-
 	local INDEX_SEEN = 3
 	local INDEX_SEEN_LAST_FRAME = 4
 	local INDEX_ZONE = 6
 	local roaming = CurrentRoamingSettings
-	local astar_checks = 0
-	local astar_cached_checks = 0
 	local wakeup_distance = roaming.despawn_distance
 	local wakeup_distance_z = roaming.despawn_distance_z or 30
 	local sleep_distance = wakeup_distance + 5
@@ -868,8 +701,6 @@ EnemyRecycler._update_roaming_spawning = function (self, t, player_positions, th
 
 				if use_player_zones and zone and area[INDEX_ZONE] then
 					local _, path_dist, cached = self.group_manager:a_star_cached(zone, area[INDEX_ZONE])
-					astar_checks = astar_checks + ((cached and 0) or 1)
-					astar_cached_checks = astar_cached_checks + ((cached and 1) or 0)
 
 					if not path_dist or path_dist < path_distance_threshold then
 						area[INDEX_SEEN] = area[INDEX_SEEN] + 1
@@ -925,21 +756,6 @@ EnemyRecycler._update_roaming_spawning = function (self, t, player_positions, th
 
 	self.remembered_area_index = math.clamp(index - num_to_remove, 1, #areas)
 	self.visible = self.visible + add_visible
-
-	if script_data.debug_ai_recycler then
-		if t > (self._astar_debug_timer or 0) then
-			self._astar_chached_checks = 0
-			self._real_astar_checks = 0
-			self._astar_debug_timer = t + 1
-		end
-
-		self._astar_chached_checks = math.max(astar_cached_checks, self._astar_chached_checks or 0)
-		self._real_astar_checks = math.max(astar_checks, self._real_astar_checks or 0)
-
-		Debug.text("Recycler a-star checks/frame cached:" .. tostring(self._astar_chached_checks) .. " real:" .. tostring(self._real_astar_checks))
-	end
-
-	Profiler.stop("recycler - pack spawning")
 end
 
 EnemyRecycler.add_terror_event_in_area = function (self, boxed_pos, terror_event_name, event_data)
@@ -955,7 +771,6 @@ EnemyRecycler.add_terror_event_in_area = function (self, boxed_pos, terror_event
 		event_data or false,
 		[11] = self.unique_area_id
 	}
-	self.unique_area_id = self.unique_area_id + 1
 end
 
 EnemyRecycler.add_main_path_terror_event = function (self, boxed_pos, terror_event_name, activation_dist, event_data, optional_spawn_distance)
@@ -1027,8 +842,6 @@ EnemyRecycler.draw_main_path_events = function (self, drawer)
 end
 
 EnemyRecycler.draw_debug = function (self, player_positions)
-	Profiler.start("recycler - debug")
-
 	local shutdown = self.shutdown_areas
 	local drawer = Managers.state.debug:drawer({
 		mode = "immediate",
@@ -1113,576 +926,95 @@ EnemyRecycler.draw_debug = function (self, player_positions)
 			Debug.text("travel-dist: %.1fm, move_percent: %.1f%%, path-index: %d, sub-index: %d", info.travel_dist, info.move_percent * 100, info.path_index, info.sub_index)
 		end
 	end
-
-	Profiler.stop("recycler - debug")
-end
-
-function RECYCLER_DESPAWN_ALL_EXCEPT_SELECTED()
-	Managers.state.conflict.enemy_recycler:remove_all_areas_except_selected()
-end
-
-EnemyRecycler.remove_all_areas_except_selected = function (self)
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #0 1-6, warpins: 1 ---
-	local areas = self.areas
-	local save_area = nil
-	--- END OF BLOCK #0 ---
-
-	for i=1, #areas, 1
-	LOOP BLOCK #1
-	GO OUT TO BLOCK #6
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #1 7-12, warpins: 2 ---
-	local area = areas[i]
-	local units_in_area = area[2]
-	--- END OF BLOCK #1 ---
-
-	FLOW; TARGET BLOCK #2
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #2 13-18, warpins: 2 ---
-	local unit_data = units_in_area[j]
-	local queue_id = unit_data[1]
-	--- END OF BLOCK #2 ---
-
-	if queue_id == script_data.debug_unit then
-	JUMP TO BLOCK #3
-	else
-	JUMP TO BLOCK #4
-	end
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #3 19-25, warpins: 1 ---
-	save_area = area
-
-	print("found unit belongs to area", area[AREA_ID])
-
-	--- END OF BLOCK #3 ---
-
-	UNCONDITIONAL JUMP; TARGET BLOCK #6
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #4 26-26, warpins: 1 ---
-	--- END OF BLOCK #4 ---
-
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #5 27-27, warpins: 1 ---
-	--- END OF BLOCK #5 ---
-
-	UNCONDITIONAL JUMP; TARGET BLOCK #0
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #6 28-29, warpins: 2 ---
-	--- END OF BLOCK #6 ---
-
-	slot2 = if save_area then
-	JUMP TO BLOCK #7
-	else
-	JUMP TO BLOCK #15
-	end
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #7 30-33, warpins: 1 ---
-	--- END OF BLOCK #7 ---
-
-	FLOW; TARGET BLOCK #8
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #8 34-36, warpins: 2 ---
-	local area = areas[i]
-	--- END OF BLOCK #8 ---
-
-	if area ~= save_area then
-	JUMP TO BLOCK #9
-	else
-	JUMP TO BLOCK #13
-	end
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #9 37-41, warpins: 1 ---
-	local units_in_area = area[2]
-	--- END OF BLOCK #9 ---
-
-	FLOW; TARGET BLOCK #10
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #10 42-48, warpins: 2 ---
-	local unit_data = units_in_area[j]
-	local unit = unit_data[1]
-
-	--- END OF BLOCK #10 ---
-
-	if type(unit)
-
-	 ~= "number" then
-	JUMP TO BLOCK #11
-	else
-	JUMP TO BLOCK #12
-	end
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #11 49-57, warpins: 1 ---
-	local blackboard = BLACKBOARDS[unit]
-
-	self.conflict_director:destroy_unit(unit, blackboard, "far_away")
-	--- END OF BLOCK #11 ---
-
-	FLOW; TARGET BLOCK #12
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #12 58-58, warpins: 2 ---
-	--- END OF BLOCK #12 ---
-
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #13 59-59, warpins: 2 ---
-	--- END OF BLOCK #13 ---
-
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #14 60-69, warpins: 1 ---
-	table.clear(self.areas)
-
-	self.areas[1] = save_area
-
-	print("FOUND!")
-	--- END OF BLOCK #14 ---
-
-	UNCONDITIONAL JUMP; TARGET BLOCK #16
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #15 70-72, warpins: 1 ---
-	print("No unit found!?")
-
-	--- END OF BLOCK #15 ---
-
-	FLOW; TARGET BLOCK #16
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #16 73-73, warpins: 2 ---
-	return
-	--- END OF BLOCK #16 ---
-
-
-
 end
 
 local NUM_FAR_OFF_CHECKS = 6
 
 EnemyRecycler.far_off_despawn = function (self, t, dt, player_positions, spawned)
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #0 1-7, warpins: 1 ---
-	Profiler.start("recycler  far off despawn")
-
-	--- END OF BLOCK #0 ---
-
-	slot5 = if not self.far_off_index then
-	JUMP TO BLOCK #1
-	else
-	JUMP TO BLOCK #2
-	end
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #1 8-8, warpins: 1 ---
-	local index = 1
-	--- END OF BLOCK #1 ---
-
-	FLOW; TARGET BLOCK #2
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #2 9-12, warpins: 2 ---
+	local index = self.far_off_index or 1
 	local size = #spawned
 	local num = NUM_FAR_OFF_CHECKS
-	--- END OF BLOCK #2 ---
 
 	if size < num then
-	JUMP TO BLOCK #3
-	else
-	JUMP TO BLOCK #4
+		num = size
+		index = 1
 	end
 
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #3 13-14, warpins: 1 ---
-	num = size
-	index = 1
-
-	--- END OF BLOCK #3 ---
-
-	FLOW; TARGET BLOCK #4
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #4 15-21, warpins: 2 ---
-	--- END OF BLOCK #4 ---
-
-	slot8 = if not LevelHelper:current_level_settings()
-
-	.destroy_los_distance_squared then
-	JUMP TO BLOCK #5
-	else
-	JUMP TO BLOCK #6
-	end
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #5 22-23, warpins: 1 ---
-	local destroy_los_distance_squared = RecycleSettings.destroy_los_distance_squared
-	--- END OF BLOCK #5 ---
-
-	FLOW; TARGET BLOCK #6
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #6 24-27, warpins: 2 ---
+	local destroy_los_distance_squared = LevelHelper:current_level_settings().destroy_los_distance_squared or RecycleSettings.destroy_los_distance_squared
 	local nav_world = self.nav_world
 	local num_players = #player_positions
 
-	--- END OF BLOCK #6 ---
-
 	if num_players == 0 then
-	JUMP TO BLOCK #7
-	else
-	JUMP TO BLOCK #8
+		return
 	end
 
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #7 28-28, warpins: 1 ---
-	return
-
-	--- END OF BLOCK #7 ---
-
-	FLOW; TARGET BLOCK #8
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #8 29-31, warpins: 2 ---
 	local Vector3_distance_squared = Vector3.distance_squared
 	local i = 1
-	--- END OF BLOCK #8 ---
 
-	FLOW; TARGET BLOCK #9
+	while num >= i do
+		if size < index then
+			index = 1
+		end
 
+		local destroy_distance_squared = destroy_los_distance_squared
+		local ai_stuck = false
+		local unit = spawned[index]
+		local pos = position_lookup[unit]
+		local blackboard = BLACKBOARDS[unit]
 
+		if blackboard.stuck_check_time < t then
+			if not blackboard.far_off_despawn_immunity then
+				local navigation_extension = blackboard.navigation_extension
 
-	-- Decompilation error in this vicinity:
-	--- BLOCK #9 32-33, warpins: 2 ---
-	--- END OF BLOCK #9 ---
+				if navigation_extension._enabled then
+					local distance_squared = Vector3_distance_squared(navigation_extension:destination(), pos)
 
-	if num >= i then
-	JUMP TO BLOCK #10
-	else
-	JUMP TO BLOCK #32
+					if distance_squared > 5 then
+						local velocity = ScriptUnit.extension(unit, "locomotion_system"):current_velocity()
+
+						if Vector3_distance_squared(velocity, Vector3.zero()) == 0 then
+							ai_stuck = true
+							destroy_distance_squared = RecycleSettings.destroy_stuck_distance_squared
+						end
+					end
+				end
+			end
+
+			blackboard.stuck_check_time = t + 3 + i * dt
+		end
+
+		local num_players_far_away = 0
+
+		for j = 1, num_players, 1 do
+			local player_pos = player_positions[j]
+			local dist_squared = Vector3_distance_squared(pos, player_pos)
+
+			if destroy_distance_squared < dist_squared then
+				num_players_far_away = num_players_far_away + 1
+			end
+		end
+
+		if num_players_far_away == num_players then
+			if ai_stuck then
+				print("Destroying unit - ai got stuck", blackboard.breed.name, i, index, size)
+				self.conflict_director:destroy_unit(unit, blackboard, "stuck")
+			elseif not blackboard.far_off_despawn_immunity then
+				print("Destroying unit - ai too far away from all players. ", blackboard.breed.name, i, index, size)
+				self.conflict_director:destroy_unit(unit, blackboard, "far_away")
+			end
+
+			size = #spawned
+
+			if size == 0 then
+				break
+			end
+		end
+
+		index = index + 1
+		i = i + 1
 	end
 
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #10 34-34, warpins: 1 ---
-	--- END OF BLOCK #10 ---
-
-	FLOW; TARGET BLOCK #11
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #11 35-36, warpins: 1 ---
-	--- END OF BLOCK #11 ---
-
-	if size < index then
-	JUMP TO BLOCK #12
-	else
-	JUMP TO BLOCK #13
-	end
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #12 37-37, warpins: 1 ---
-	index = 1
-	--- END OF BLOCK #12 ---
-
-	FLOW; TARGET BLOCK #13
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #13 38-47, warpins: 2 ---
-	local destroy_distance_squared = destroy_los_distance_squared
-	local ai_stuck = false
-	local unit = spawned[index]
-	local pos = position_lookup[unit]
-	local blackboard = BLACKBOARDS[unit]
-	--- END OF BLOCK #13 ---
-
-	if blackboard.stuck_check_time < t then
-	JUMP TO BLOCK #14
-	else
-	JUMP TO BLOCK #20
-	end
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #14 48-50, warpins: 1 ---
-	--- END OF BLOCK #14 ---
-
-	slot18 = if not blackboard.far_off_despawn_immunity then
-	JUMP TO BLOCK #15
-	else
-	JUMP TO BLOCK #19
-	end
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #15 51-54, warpins: 1 ---
-	local navigation_extension = blackboard.navigation_extension
-	--- END OF BLOCK #15 ---
-
-	slot19 = if navigation_extension._enabled then
-	JUMP TO BLOCK #16
-	else
-	JUMP TO BLOCK #19
-	end
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #16 55-63, warpins: 1 ---
-	local distance_squared = Vector3_distance_squared(navigation_extension:destination(), pos)
-	--- END OF BLOCK #16 ---
-
-	if distance_squared > 5 then
-	JUMP TO BLOCK #17
-	else
-	JUMP TO BLOCK #19
-	end
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #17 64-79, warpins: 1 ---
-	local velocity = ScriptUnit.extension(unit, "locomotion_system"):current_velocity()
-
-	--- END OF BLOCK #17 ---
-
-	if Vector3_distance_squared(velocity, Vector3.zero())
-
-	 == 0 then
-	JUMP TO BLOCK #18
-	else
-	JUMP TO BLOCK #19
-	end
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #18 80-82, warpins: 1 ---
-	ai_stuck = true
-	destroy_distance_squared = RecycleSettings.destroy_stuck_distance_squared
-	--- END OF BLOCK #18 ---
-
-	FLOW; TARGET BLOCK #19
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #19 83-86, warpins: 5 ---
-	blackboard.stuck_check_time = t + 3 + i * dt
-	--- END OF BLOCK #19 ---
-
-	FLOW; TARGET BLOCK #20
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #20 87-91, warpins: 2 ---
-	local num_players_far_away = 0
-	--- END OF BLOCK #20 ---
-
-	for j=1, num_players, 1
-	LOOP BLOCK #21
-	GO OUT TO BLOCK #24
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #21 92-98, warpins: 2 ---
-	local player_pos = player_positions[j]
-	local dist_squared = Vector3_distance_squared(pos, player_pos)
-	--- END OF BLOCK #21 ---
-
-	if destroy_distance_squared < dist_squared then
-	JUMP TO BLOCK #22
-	else
-	JUMP TO BLOCK #23
-	end
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #22 99-99, warpins: 1 ---
-	num_players_far_away = num_players_far_away + 1
-
-	--- END OF BLOCK #22 ---
-
-	FLOW; TARGET BLOCK #23
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #23 100-100, warpins: 2 ---
-	--- END OF BLOCK #23 ---
-
-	UNCONDITIONAL JUMP; TARGET BLOCK #20
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #24 101-102, warpins: 1 ---
-	--- END OF BLOCK #24 ---
-
-	if num_players_far_away == num_players then
-	JUMP TO BLOCK #25
-	else
-	JUMP TO BLOCK #31
-	end
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #25 103-104, warpins: 1 ---
-	--- END OF BLOCK #25 ---
-
-	slot14 = if ai_stuck then
-	JUMP TO BLOCK #26
-	else
-	JUMP TO BLOCK #27
-	end
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #26 105-120, warpins: 1 ---
-	print("Destroying unit - ai got stuck", blackboard.breed.name, i, index, size)
-	self.conflict_director:destroy_unit(unit, blackboard, "stuck")
-	--- END OF BLOCK #26 ---
-
-	UNCONDITIONAL JUMP; TARGET BLOCK #29
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #27 121-123, warpins: 1 ---
-	--- END OF BLOCK #27 ---
-
-	slot19 = if not blackboard.far_off_despawn_immunity then
-	JUMP TO BLOCK #28
-	else
-	JUMP TO BLOCK #29
-	end
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #28 124-138, warpins: 1 ---
-	print("Destroying unit - ai too far away from all players. ", blackboard.breed.name, i, index, size)
-	self.conflict_director:destroy_unit(unit, blackboard, "far_away")
-
-	--- END OF BLOCK #28 ---
-
-	FLOW; TARGET BLOCK #29
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #29 139-141, warpins: 3 ---
-	size = #spawned
-	--- END OF BLOCK #29 ---
-
-	if size == 0 then
-	JUMP TO BLOCK #30
-	else
-	JUMP TO BLOCK #31
-	end
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #30 142-142, warpins: 1 ---
-	--- END OF BLOCK #30 ---
-
-	UNCONDITIONAL JUMP; TARGET BLOCK #32
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #31 143-145, warpins: 2 ---
-	index = index + 1
-	i = i + 1
-	--- END OF BLOCK #31 ---
-
-	UNCONDITIONAL JUMP; TARGET BLOCK #9
-
-
-
-	-- Decompilation error in this vicinity:
-	--- BLOCK #32 146-151, warpins: 2 ---
 	self.far_off_index = index
-
-	Profiler.stop("recycler  far off despawn")
-
-	return
-	--- END OF BLOCK #32 ---
-
-
-
 end
 
 return

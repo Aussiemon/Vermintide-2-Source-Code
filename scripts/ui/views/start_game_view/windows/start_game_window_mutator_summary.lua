@@ -1,8 +1,6 @@
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_mutator_summary_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
-local animation_definitions = definitions.animation_definitions
-local DO_RELOAD = false
 StartGameWindowMutatorSummary = class(StartGameWindowMutatorSummary)
 StartGameWindowMutatorSummary.NAME = "StartGameWindowMutatorSummary"
 
@@ -22,7 +20,6 @@ StartGameWindowMutatorSummary.on_enter = function (self, params, offset)
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
-	self._animations = {}
 
 	self:create_ui_elements(params, offset)
 
@@ -45,8 +42,6 @@ StartGameWindowMutatorSummary.create_ui_elements = function (self, params, offse
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
-	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
-
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
 		window_position[1] = window_position[1] + offset[1]
@@ -63,21 +58,12 @@ end
 StartGameWindowMutatorSummary.on_exit = function (self, params)
 	print("[StartGameWindow] Exit Substate StartGameWindowMutatorSummary")
 
-	self.ui_animator = nil
-
 	if not self.confirm_button_pressed then
 		self.parent:set_selected_heroic_deed_backend_id(self.previous_selected_backend_id)
 	end
 end
 
 StartGameWindowMutatorSummary.update = function (self, dt, t)
-	if DO_RELOAD then
-		DO_RELOAD = false
-
-		self:create_ui_elements()
-	end
-
-	self:_update_animations(dt)
 	self:_handle_input(dt, t)
 	self:_update_selected_item_backend_id()
 	self:draw(dt)
@@ -85,23 +71,6 @@ end
 
 StartGameWindowMutatorSummary.post_update = function (self, dt, t)
 	return
-end
-
-StartGameWindowMutatorSummary._update_animations = function (self, dt)
-	self.ui_animator:update(dt)
-
-	local animations = self._animations
-	local ui_animator = self.ui_animator
-
-	for animation_name, animation_id in pairs(animations) do
-		if ui_animator:is_animation_completed(animation_id) then
-			ui_animator:stop_animation(animation_id)
-
-			animations[animation_name] = nil
-		end
-	end
-
-	local widgets_by_name = self._widgets_by_name
 end
 
 StartGameWindowMutatorSummary._is_button_pressed = function (self, widget)
@@ -138,7 +107,7 @@ StartGameWindowMutatorSummary._handle_input = function (self, dt, t)
 	if self:_is_button_pressed(confirm_button) then
 		self.confirm_button_pressed = true
 
-		self.parent:set_layout(3)
+		self.parent:set_layout_by_name("heroic_deeds")
 	end
 end
 
@@ -167,11 +136,6 @@ StartGameWindowMutatorSummary._present_item_by_backend_id = function (self, back
 	widgets_by_name.confirm_button.content.button_hotspot.disable_button = false
 end
 
-StartGameWindowMutatorSummary._exit = function (self, selected_level)
-	self.exit = true
-	self.exit_level_id = selected_level
-end
-
 StartGameWindowMutatorSummary.draw = function (self, dt)
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
@@ -179,7 +143,11 @@ StartGameWindowMutatorSummary.draw = function (self, dt)
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
 
-	for _, widget in ipairs(self._widgets) do
+	local widgets = self._widgets
+
+	for i = 1, #widgets, 1 do
+		local widget = widgets[i]
+
 		UIRenderer.draw_widget(ui_renderer, widget)
 	end
 

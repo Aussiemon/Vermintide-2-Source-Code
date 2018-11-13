@@ -185,8 +185,6 @@ LevelTransitionHandler.all_packages_loaded = function (self)
 end
 
 LevelTransitionHandler.update = function (self)
-	Profiler.start("LevelTransitionHandler:update()")
-
 	local package_manager = Managers.package
 	local has_loading_packages = false
 
@@ -204,14 +202,6 @@ LevelTransitionHandler.update = function (self)
 
 		self.has_loaded_all_packages = not has_loading_packages
 	end
-
-	if script_data.debug_level_packages then
-		for level_name, is_loaded in pairs(self.loaded_levels) do
-			Debug.text("Level %q is_loaded: %s", level_name, tostring(is_loaded))
-		end
-	end
-
-	Profiler.stop("LevelTransitionHandler:update()")
 end
 
 LevelTransitionHandler.generate_level_seed = function (self)

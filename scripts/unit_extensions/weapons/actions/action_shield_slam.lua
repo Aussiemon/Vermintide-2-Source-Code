@@ -18,6 +18,7 @@ ActionShieldSlam.init = function (self, world, item_name, is_server, owner_unit,
 	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
 	self.status_extension = ScriptUnit.extension(owner_unit, "status_system")
 	self.hit_units = {}
+	self.inner_hit_units = {}
 	self.target_hit_zones_names = {}
 	self.target_hit_unit_positions = {}
 end
@@ -49,6 +50,9 @@ ActionShieldSlam.client_owner_start_action = function (self, new_action, t, chai
 	local damage_profile_name_aoe = (action_hand and new_action["damage_profile_aoe_" .. action_hand]) or new_action.damage_profile_aoe or "default"
 	self.damage_profile_aoe_id = NetworkLookup.damage_profiles[damage_profile_name_aoe]
 	self.damage_profile_aoe = DamageProfileTemplates[damage_profile_name_aoe]
+	local damage_profile_name = (action_hand and new_action["damage_profile_default_target" .. action_hand]) or new_action.damage_profile_default_target or "default"
+	self.damage_profile_default_target_id = NetworkLookup.damage_profiles[damage_profile_name]
+	self.damage_profile_default_target = DamageProfileTemplates[damage_profile_name]
 	local ammo_extension = self.ammo_extension
 
 	if ammo_extension and ammo_extension:is_reloading() then
@@ -99,6 +103,7 @@ ActionShieldSlam.client_owner_start_action = function (self, new_action, t, chai
 	self.time_to_hit = t + (new_action.hit_time or 0) / anim_time_scale
 
 	table.clear(self.hit_units)
+	table.clear(self.inner_hit_units)
 	table.clear(self.target_hit_zones_names)
 	table.clear(self.target_hit_unit_positions)
 
@@ -144,6 +149,12 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 	local radius = current_action.push_radius
 	local collision_filter = "filter_melee_sweep"
 	local actors, actors_n = PhysicsWorld.immediate_overlap(physics_world, "shape", "sphere", "position", attack_pos, "size", radius, "types", "dynamics", "collision_filter", collision_filter, "use_global_table")
+	local inner_actors, inner_actors_n = nil
+	local inner_forward_offset = 1
+	local inner_attack_pos = self_pos + unit_forward * inner_forward_offset + Vector3(0, 0, 1)
+	local inner_radius = current_action.inner_push_radius or radius * 0.75
+	local inner_radius_sq = inner_radius * inner_radius
+	local inner_hit_units = self.inner_hit_units
 	local hit_units = self.hit_units
 	local unit_get_data = Unit.get_data
 	local hit_once = false
@@ -165,8 +176,10 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 			local hit_unit = Actor.unit(hit_actor)
 			local breed = unit_get_data(hit_unit, "breed")
 			local dummy = not breed and unit_get_data(hit_unit, "is_dummy")
+			local hit_self = hit_unit == owner_unit
+			local target_is_player = table.contains(PLAYER_AND_BOT_UNITS, hit_unit)
 
-			if (breed or dummy) and not hit_units[hit_unit] then
+			if not target_is_player and (breed or dummy) and not hit_units[hit_unit] then
 				hit_units[hit_unit] = true
 
 				if hit_unit == target_breed_unit then
@@ -198,7 +211,7 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 						local weapon_system = self.weapon_system
 						local power_level = self.power_level
 						local is_server = self.is_server
-						local damage_profile = self.damage_profile
+						local damage_profile = self.damage_profile_aoe
 						local target_index = 1
 						local is_critical_strike = self._is_critical_strike
 
@@ -213,47 +226,103 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 						DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, target_hit_zone_name, num_hit_targets, send_to_server)
 						weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, target_hit_position, attack_direction, self.damage_profile_aoe_id, "power_level", power_level, "hit_target_index", nil, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", self._is_critical_strike, "can_damage", true, "can_stagger", true)
 					end
+
+					local distance_to_inner_position_sq = Vector3.distance_squared(target_hit_position, inner_attack_pos)
+
+					if distance_to_inner_position_sq <= inner_radius_sq then
+						inner_hit_units[hit_unit] = true
+					end
+				end
+			elseif not target_is_player and not hit_units[hit_unit] and not hit_self and ScriptUnit.has_extension(hit_unit, "health_system") then
+				local hit_unit_id, is_level_unit = Managers.state.network:game_object_or_level_id(hit_unit)
+
+				if is_level_unit then
+					hit_units[hit_unit] = true
+					local no_player_damage = unit_get_data(hit_unit, "no_damage_from_players")
+
+					if not no_player_damage then
+						local hit_zone_name = "full"
+						local target_index = 1
+						local damage_profile = self.damage_profile_aoe
+						local damage_source = self.item_name
+						local power_level = self.power_level
+						local is_critical_strike = self._is_critical_strike
+						local target_hit_position = Unit.world_position(hit_unit, 0)
+						local attack_direction = Vector3.normalize(target_hit_position - self_pos)
+
+						DamageUtils.damage_level_unit(hit_unit, owner_unit, hit_zone_name, power_level, self.melee_boost_curve_multiplier, is_critical_strike, damage_profile, target_index, attack_direction, damage_source)
+
+						local distance_to_inner_position_sq = Vector3.distance_squared(target_hit_position, inner_attack_pos)
+
+						if distance_to_inner_position_sq <= inner_radius_sq then
+							inner_hit_units[hit_unit] = true
+						end
+					end
+				else
+					hit_units[hit_unit] = true
+					local damage_source = self.item_name
+					local damage_source_id = NetworkLookup.damage_sources[damage_source]
+					local weapon_system = self.weapon_system
+					local power_level = self.power_level
+					local hit_zone_id = NetworkLookup.hit_zones.full
+					local target_hit_position = Unit.world_position(hit_unit, 0)
+					local attack_direction = Vector3.normalize(target_hit_position - self_pos)
+
+					weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, target_hit_position, attack_direction, self.damage_profile_aoe_id, "power_level", power_level, "hit_target_index", nil, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", self._is_critical_strike, "can_damage", true, "can_stagger", true)
+
+					local distance_to_inner_position_sq = Vector3.distance_squared(target_hit_position, inner_attack_pos)
+
+					if distance_to_inner_position_sq <= inner_radius_sq then
+						inner_hit_units[hit_unit] = true
+					end
 				end
 			end
 		until true
 	end
 
 	if Unit.alive(target_breed_unit) and not self.hit_target_breed_unit then
+		inner_hit_units[target_breed_unit] = true
+	end
+
+	for hit_unit, _ in pairs(inner_hit_units) do
 		local network_manager = Managers.state.network
-		local breed = unit_get_data(target_breed_unit, "breed")
-		local dummy = not breed and unit_get_data(target_breed_unit, "is_dummy")
-		local hit_zone_name = self.target_hit_zones_names[target_breed_unit] or "torso"
-		local target_position = POSITION_LOOKUP[target_breed_unit]
-		local target_hit_position = self.target_hit_unit_positions[target_breed_unit]
+		local breed = unit_get_data(hit_unit, "breed")
+		local dummy = not breed and unit_get_data(hit_unit, "is_dummy")
+		local hit_zone_name = self.target_hit_zones_names[hit_unit] or "torso"
+		local target_position = POSITION_LOOKUP[hit_unit] or Unit.world_position(hit_unit, 0)
+		local target_hit_position = self.target_hit_unit_positions[hit_unit]
 		local attack_direction = Vector3.normalize(target_position - POSITION_LOOKUP[owner_unit])
-		local hit_unit_id = network_manager:unit_game_object_id(target_breed_unit)
+		local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
 		local attacker_unit_id = network_manager:unit_game_object_id(owner_unit)
 		local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
 
-		if self:_is_infront_player(self_pos, unit_forward, target_position, current_action.push_dot) then
+		if (breed or dummy) and self:_is_infront_player(self_pos, unit_forward, target_position, current_action.push_dot) then
 			local is_server = self.is_server
 			local hit_position = target_hit_position or target_position
-			local damage_profile = self.damage_profile
+			local hit_default_target = hit_unit == target_breed_unit
+			local damage_profile = (hit_default_target and self.damage_profile_default_target) or self.damage_profile
+			local damage_profile_id = (hit_default_target and self.damage_profile_default_target_id) or self.damage_profile_id
 			local target_index = 1
 			local power_level = self.power_level
 			local is_critical_strike = self._is_critical_strike
-			local shield_blocked = AiUtils.attack_is_shield_blocked(target_breed_unit, owner_unit)
-			local actor_position_hit = Actor.center_of_mass(Unit.actor(target_breed_unit, "c_spine"))
+			local shield_blocked = AiUtils.attack_is_shield_blocked(hit_unit, owner_unit)
+			local actor = Unit.find_actor(hit_unit, "c_spine") and Unit.actor(hit_unit, "c_spine")
+			local actor_position_hit = actor and Actor.center_of_mass(actor)
 
-			if not dummy then
-				ActionSweep._play_character_impact(self, is_server, owner_unit, target_breed_unit, breed, actor_position_hit, hit_zone_name, current_action, damage_profile, target_index, power_level, attack_direction, shield_blocked, self.melee_boost_curve_multiplier, is_critical_strike)
+			if not dummy and actor_position_hit then
+				ActionSweep._play_character_impact(self, is_server, owner_unit, hit_unit, breed, actor_position_hit, hit_zone_name, current_action, damage_profile, target_index, power_level, attack_direction, shield_blocked, self.melee_boost_curve_multiplier, is_critical_strike)
 			end
 
 			local send_to_server = true
-			local charge_value = self.damage_profile.charge_value or "heavy_attack"
+			local charge_value = damage_profile.charge_value or "heavy_attack"
 			local num_hit_targets = 1
 
-			DamageUtils.buff_on_attack(owner_unit, target_breed_unit, charge_value, is_critical_strike, hit_zone_name, num_hit_targets, send_to_server)
+			DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, num_hit_targets, send_to_server)
 
 			local damage_source_id = NetworkLookup.damage_sources[self.item_name]
 			local weapon_system = self.weapon_system
 
-			weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, self.damage_profile_id, "power_level", power_level, "hit_target_index", target_index, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", true, "can_stagger", true)
+			weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", target_index, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", true, "can_stagger", true)
 
 			if self.is_critical_strike and self.critical_strike_particle_id then
 				World.destroy_particles(self.world, self.critical_strike_particle_id)
@@ -268,6 +337,35 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 			end
 
 			self.hit_target_breed_unit = true
+		elseif ScriptUnit.has_extension(hit_unit, "health_system") then
+			local hit_unit_id, is_level_unit = Managers.state.network:game_object_or_level_id(hit_unit)
+
+			if is_level_unit then
+				local no_player_damage = unit_get_data(hit_unit, "no_damage_from_players")
+
+				if not no_player_damage then
+					local hit_zone_name = "full"
+					local target_index = 1
+					local damage_profile = self.damage_profile
+					local damage_source = self.item_name
+					local power_level = self.power_level
+					local is_critical_strike = self._is_critical_strike
+					local target_hit_position = Unit.world_position(hit_unit, 0)
+					local attack_direction = Vector3.normalize(target_hit_position - self_pos)
+
+					DamageUtils.damage_level_unit(hit_unit, owner_unit, hit_zone_name, power_level, self.melee_boost_curve_multiplier, is_critical_strike, damage_profile, target_index, attack_direction, damage_source)
+				end
+			else
+				local damage_source = self.item_name
+				local damage_source_id = NetworkLookup.damage_sources[damage_source]
+				local weapon_system = self.weapon_system
+				local power_level = self.power_level
+				local hit_zone_id = NetworkLookup.hit_zones.full
+				local target_hit_position = Unit.world_position(hit_unit, 0)
+				local attack_direction = Vector3.normalize(target_hit_position - self_pos)
+
+				weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, target_hit_position, attack_direction, self.damage_profile_id, "power_level", power_level, "hit_target_index", nil, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", self._is_critical_strike, "can_damage", true, "can_stagger", true)
+			end
 		end
 	end
 

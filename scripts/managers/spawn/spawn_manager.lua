@@ -313,34 +313,24 @@ SpawnManager.update = function (self, dt, t)
 	self.hero_spawner_handler:update(dt, t)
 
 	if self._is_server and Managers.state.network:game() then
-		Profiler.start("playerstatus")
 		self:_update_player_status(dt, t)
-		Profiler.stop("playerstatus")
 
 		local allow_respawns = Managers.state.difficulty:get_difficulty_settings().allow_respawns
 
 		if self._respawns_enabled and allow_respawns then
-			Profiler.start("respawn_handler")
 			self.respawn_handler:update(dt, t, self._player_statuses)
-			Profiler.stop("respawn_handler")
 		end
 
 		local level_settings = LevelHelper:current_level_settings()
 
 		if not level_settings.no_bots_allowed and not LEVEL_EDITOR_TEST then
-			Profiler.start("bot spawns")
 			self:_update_bot_spawns(dt, t)
-			Profiler.stop("bot spawns")
 		end
 
-		Profiler.start("update spawning")
 		self:_update_spawning(dt, t)
-		Profiler.stop("update spawning")
 
 		if self._respawns_enabled and allow_respawns then
-			Profiler.start("update respawns")
 			self:_update_respawns(dt, t)
-			Profiler.stop("update respawns")
 		end
 	end
 
@@ -523,35 +513,6 @@ SpawnManager._update_player_status = function (self, dt, t)
 			else
 				self:_free_status_slot(i)
 			end
-		end
-
-		if script_data.debug_spawn_status then
-			Debug.text(i .. ":" .. tostring(peer_id) .. ":" .. tostring(local_player_id))
-
-			if status.position and status.rotation then
-				local position = tostring(status.position:unbox())
-				local rotation = tostring(status.rotation:unbox())
-
-				Debug.text("    position: " .. position .. " rotation: " .. rotation)
-			end
-
-			Debug.text("    health_state: " .. status.health_state .. " health_percentage: " .. status.health_percentage .. " temporary_health_percentage: " .. status.temporary_health_percentage)
-			Debug.text("    ammo, melee: " .. status.ammo.slot_melee * 100 .. "%% ranged:" .. status.ammo.slot_ranged * 100 .. "%%")
-
-			if status.profile_index then
-				Debug.text("    profile_index: " .. status.profile_index)
-			end
-
-			Debug.text("    last_update: " .. status.last_update)
-
-			local str = "  "
-
-			for i, slot_name in ipairs(CONSUMABLE_SLOTS) do
-				str = str .. " " .. slot_name .. ": " .. tostring(status.consumables[slot_name])
-			end
-
-			Debug.text(str)
-			Debug.text("")
 		end
 	end
 end
@@ -848,16 +809,6 @@ SpawnManager._update_available_profiles = function (self, profile_synchronizer, 
 		end)
 	end
 
-	if script_data.wanted_bot_profile then
-		local wanted_bot_profile_index = FindProfileIndex(script_data.wanted_bot_profile)
-		local allowed_bots = math.min(NUM_PLAYERS - humans, (script_data.ai_bots_disabled and 0) or script_data.cap_num_bots or NUM_PLAYERS)
-		local bot_delta = allowed_bots - bots
-
-		if bot_delta > 0 and available_profiles[wanted_bot_profile_index] and profile_synchronizer:owner_type(wanted_bot_profile_index) == "available" then
-			self:set_forced_bot_profile_index(wanted_bot_profile_index)
-		end
-	end
-
 	if self._forced_bot_profile_index then
 		local forced_bot_profile_index = self._forced_bot_profile_index
 		local index = table.find(available_profile_order, forced_bot_profile_index)
@@ -1009,19 +960,6 @@ SpawnManager._spawn_player = function (self, status)
 	local profile_index = status.profile_index
 	local position, rotation = self:_find_spawn_point(status)
 	local is_initial_spawn = status.spawn_state == "is_initial_spawn"
-	local teleport_on_spawn = Development.parameter("teleport_on_spawn")
-
-	if teleport_on_spawn then
-		local boxed_pos = ConflictUtils.get_teleporter_portals()[teleport_on_spawn][1]
-		local boxed_rot = ConflictUtils.get_teleporter_portals()[teleport_on_spawn][2]
-
-		if boxed_pos and boxed_rot then
-			print("teleport_on_spawn -> teleporting the player to:", teleport_on_spawn)
-
-			position = boxed_pos:unbox()
-			rotation = boxed_rot:unbox()
-		end
-	end
 
 	netpack_consumables(status.consumables, CONSUMABLES_TEMP)
 

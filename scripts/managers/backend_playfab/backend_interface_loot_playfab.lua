@@ -79,6 +79,7 @@ end
 
 BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_won, quick_play_bonus, difficulty, level_key, num_tomes, num_grims, num_loot_dice, hero_name, start_experience, end_experience, deed_item_name, deed_backend_id)
 	local id = self:_new_id()
+	local remote_player_ids_and_characters = self:_get_remote_player_network_ids_and_characters()
 	local data = {
 		won = game_won,
 		quick_play_bonus = quick_play_bonus,
@@ -92,7 +93,8 @@ BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_wo
 		hero_name = hero_name,
 		deed_item_name = deed_item_name,
 		deed_backend_id = deed_backend_id,
-		id = id
+		id = id,
+		remote_player_ids_and_characters = remote_player_ids_and_characters
 	}
 	local generate_end_of_level_loot_request = {
 		FunctionName = "generateEndOfLevelLoot",
@@ -154,6 +156,30 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 	Managers.backend:dirtify_interfaces()
 
 	self._loot_requests[id] = loot_request
+end
+
+BackendInterfaceLootPlayfab._get_remote_player_network_ids_and_characters = function (self)
+	local ids_and_characters = {}
+
+	if PLATFORM == "win32" then
+		local human_players = Managers.player:human_players()
+
+		for _, player in pairs(human_players) do
+			if player.remote then
+				local peer_id = player:network_id()
+				local profile_index = player:profile_index()
+				local career_index = player:career_index()
+				local career_settings = SPProfiles[profile_index].careers[career_index]
+				local career_playfab_name = career_settings.playfab_name
+				local decimal_id = Steam.id_hex_to_dec(peer_id)
+				ids_and_characters[decimal_id] = career_playfab_name
+			end
+		end
+	elseif PLATFORM == "xb1" then
+	elseif PLATFORM == "ps4" then
+	end
+
+	return ids_and_characters
 end
 
 BackendInterfaceLootPlayfab.achievement_rewards_claimed = function (self, achievement_id)

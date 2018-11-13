@@ -10,7 +10,6 @@ AINavigationExtension.init = function (self, extension_init_context, unit, exten
 	self._current_speed = 0
 	self._wanted_destination = Vector3Box(Unit.local_position(unit, 0))
 	self._destination = Vector3Box()
-	self._debug_position_when_starting_search = Vector3Box()
 	self._using_smartobject = false
 	self._next_smartobject_interval = GwNavSmartObjectInterval.create(self._nav_world)
 	self._backup_destination = Vector3Box()
@@ -418,13 +417,11 @@ AINavigationExtension.use_smart_object = function (self, do_use)
 		success = GwNavBot.enter_manual_control(self._nav_bot, self._next_smartobject_interval)
 
 		if not success then
-			print("FAIL CANNOT GET SMART OBJECT CONTROL")
 		end
 	else
 		success = GwNavBot.exit_manual_control(self._nav_bot)
 
 		if not success then
-			print("FAIL CANNOT RELEASE SMART OBJECT CONTROL. CLEARING FOLLOWED PATH...")
 			GwNavBot.clear_followed_path(self._nav_bot)
 		end
 	end

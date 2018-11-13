@@ -30,9 +30,6 @@ AIGroupTemplates.horde = {
 		local group_data = group and group.group_data
 
 		if group_data then
-			local wave = group_data.horde_wave
-
-			Debug.text(string.format("Horde size: %d/%d %s", group.members_n, group.size, wave))
 		end
 	end,
 	destroy = function (world, nav_world, group)

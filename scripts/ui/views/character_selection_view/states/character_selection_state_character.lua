@@ -730,7 +730,7 @@ CharacterSelectionStateCharacter._handle_input = function (self, dt, t)
 
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local confirm_available = not select_button.content.button_hotspot.disable_button
-	local confirm_pressed = gamepad_active and confirm_available and input_service:get("confirm", true)
+	local confirm_pressed = gamepad_active and confirm_available and input_service:get("confirm_press", true)
 	local back_pressed = gamepad_active and self.allow_back_button and input_service:get("back_menu", true)
 
 	if self:_is_button_pressed(select_button) or confirm_pressed then

@@ -159,8 +159,6 @@ LevelAnalysis._initialize_path_markers_from_editor = function (self, path_marker
 			local entry_success = self:_add_path_marker_data(pos, marker_type, order, 1, crossroads_string, roaming_set_string, nav_world, path_markers)
 
 			if not entry_success then
-				drawer:line(pos, pos + Vector3.up() * 15, Colors.get("red"))
-
 				success = false
 			end
 		end
@@ -430,8 +428,6 @@ LevelAnalysis.inject_travel_dists = function (main_paths, overrride)
 end
 
 LevelAnalysis.update_main_path_generation = function (self)
-	Profiler.start("update_main_path_generation")
-
 	local GwNavAStar_processing_finished = GwNavAStar.processing_finished
 	local GwNavAStar_path_found = GwNavAStar.path_found
 	local GwNavAStar_node_count = GwNavAStar.node_count
@@ -535,8 +531,6 @@ LevelAnalysis.update_main_path_generation = function (self)
 					self:generate_boss_paths()
 				end
 
-				Profiler.stop("update_main_path_generation")
-
 				return "done"
 
 				if "done" then
@@ -552,8 +546,6 @@ LevelAnalysis.update_main_path_generation = function (self)
 
 					self.stitching_path = false
 
-					Profiler.stop("update_main_path_generation")
-
 					return "fail", s
 
 					if "fail" then
@@ -563,8 +555,6 @@ LevelAnalysis.update_main_path_generation = function (self)
 			end
 		end
 	end
-
-	Profiler.stop("update_main_path_generation")
 end
 
 LevelAnalysis.calc_dists_to_start = function (self)
@@ -621,11 +611,6 @@ LevelAnalysis.boss_gizmo_spawned = function (self, unit)
 				map_section_index
 			}
 		end
-	end
-
-	if script_data.debug_ai_recycler then
-		QuickDrawerStay:sphere(Unit.local_position(unit, 0), 2, Color(map_section_index * 64, map_section_index % 4 * 64, map_section_index % 8 * 32))
-		QuickDrawerStay:sphere(Unit.local_position(unit, 0), 0.25, Color(200, 200, 200))
 	end
 end
 
@@ -1954,12 +1939,6 @@ LevelAnalysis.remove_terror_spawners_due_to_crossroads = function (self, removed
 				if dist_pair[1] < travel_dist and travel_dist < dist_pair[2] then
 					to_remove[#to_remove + 1] = i
 
-					if script_data.debug_ai_recycler then
-						print("REMOVING boss spawner at distance:", travel_dist, checkbox_name)
-						QuickDrawerStay:sphere(Unit.local_position(spawner_data[1], 0), 0.5, Colors.get("pink"))
-						Managers.state.debug_text:output_world_text("Removed boss spawner", 0.5, Unit.local_position(spawner_data[1], 0) + Vector3(0, 0, 1), nil, "bosserino", Vector3(255, 0, 0))
-					end
-
 					break
 				end
 			end
@@ -1991,16 +1970,6 @@ LevelAnalysis.remove_terror_spawners_due_to_crossroads = function (self, removed
 				if dist_pair[1] < travel_dist and travel_dist < dist_pair[2] then
 					to_remove[#to_remove + 1] = waypoints_table.id
 
-					if script_data.debug_ai_recycler then
-						local waypoints_table = section_waypoints[j]
-						local wp = waypoints_table.waypoints[1]
-						local position = Vector3(wp[1], wp[2], wp[3])
-
-						print("REMOVING patrol spawner at distance:", travel_dist, waypoints_table.id, j, " map section ", i)
-						QuickDrawerStay:sphere(position, 0.5, Colors.get("lime"))
-						Managers.state.debug_text:output_world_text("Removed patrol boss spawner", 0.5, position + Vector3(0, 0, 1), nil, "bosserino", Vector3(255, 150, 0))
-					end
-
 					break
 				end
 			end
@@ -2014,10 +1983,6 @@ LevelAnalysis.remove_terror_spawners_due_to_crossroads = function (self, removed
 
 				if waypoints_table.id == id then
 					table.remove(section_waypoints, j)
-
-					if script_data.debug_ai_recycler then
-						print("Removing index ", j, " from waypoints_table. Size: ", #section_waypoints, " at map section ", i)
-					end
 
 					break
 				end
@@ -2130,8 +2095,6 @@ for i = 1, 16, 1 do
 end
 
 LevelAnalysis.debug = function (self, t)
-	Profiler.start("LevelAnalysis:debug")
-
 	local debug_text = Managers.state.debug_text
 
 	debug_text:clear_world_text("boss")
@@ -2225,24 +2188,12 @@ LevelAnalysis.debug = function (self, t)
 			QuickDrawer:sphere(point + Vector3(0, 0, 1.5), 1.366, Color(255, 244, 183, 7))
 		end
 	end
-
-	Profiler.stop("LevelAnalysis:debug")
 end
 
 LevelAnalysis.update = function (self, t)
-	Profiler.start("level_analysis")
-
-	if script_data.debug_ai_recycler and self.main_paths then
-		Profiler.start("debug")
-		self:debug(t)
-		Profiler.stop("debug")
-	end
-
 	if self.stitching_path then
 		self:update_main_path_generation()
 	end
-
-	Profiler.stop("level_analysis")
 end
 
 LevelAnalysis.get_main_and_sub_zone_index_from_pos = function (nav_world, zones, lookup, pos, zone_index_lookup)

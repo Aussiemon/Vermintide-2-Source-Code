@@ -674,7 +674,6 @@ end
 local DO_RELOAD = true
 
 SplashView._create_ui_elements = function (self)
-	print("doing_stuff")
 	table.clear(self._splash_widgets)
 
 	for _, splash in pairs(splash_content) do

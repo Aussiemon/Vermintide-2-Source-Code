@@ -1,11 +1,17 @@
 dofile("scripts/settings/equipment/item_master_list_local")
-dofile("scripts/settings/equipment/item_master_list_debug")
 dofile("scripts/settings/equipment/item_master_list_exported")
-dofile("scripts/settings/equipment/weapons")
 dofile("scripts/unit_extensions/default_player_unit/buffs/buff_templates")
 dofile("scripts/settings/equipment/attachments")
 dofile("scripts/settings/equipment/cosmetics")
 dofile("scripts/settings/equipment/player_wwise_dependencies")
+
+for _, dlc in pairs(DLCSettings) do
+	if dlc.item_list_file_names then
+		for _, file_name in ipairs(dlc.item_list_file_names) do
+			dofile(file_name)
+		end
+	end
+end
 
 all_item_types = {}
 local all_loot = {}
@@ -27,8 +33,6 @@ local function aggregate(list)
 end
 
 function parse_item_master_list()
-	Profiler.start("Parse Item Master List")
-
 	for key, item in pairs(ItemMasterList) do
 		item.key = key
 		item.name = key
@@ -44,8 +48,6 @@ function parse_item_master_list()
 			all_item_types[item.item_type] = true
 		end
 	end
-
-	Profiler.stop("Parse Item Master List")
 end
 
 if Managers.localizer then

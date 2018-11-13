@@ -64,7 +64,7 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 			local material_surface_decals = EffectHelper.create_surface_material_drawer_mapping(effect_name)
 			local decal_unit_name = material_surface_decals[material]
 
-			if not Application.can_get("unit", decal_unit_name) then
+			if not decal_unit_name or (decal_unit_name and not Application.can_get("unit", decal_unit_name)) then
 				decal_unit_name = "units/projection_decals/projection_test_01"
 
 				Application.warning("[EffectHelper] There is no decal_unit_name specified for effect: %q with material: %q--> Using Default: %q", effect_name, material, decal_unit_name)
@@ -118,15 +118,7 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 		end
 
 		if sound_character then
-			if script_data.debug_material_effects then
-				printf("   sound param: \"sound_character\", sound_value %q", sound_character)
-			end
-
 			WwiseWorld.set_switch(wwise_world, "character_foley", sound_character, wwise_source_id)
-		end
-
-		if script_data.debug_material_effects then
-			printf("   sound param: \"husk\", sound_value %q", (husk and "true") or "false")
 		end
 
 		WwiseWorld.set_switch(wwise_world, "husk", (husk and "true") or "false", wwise_source_id)
@@ -396,12 +388,6 @@ EffectHelper.flow_cb_play_surface_material_effect = function (effect_name, unit,
 	local raycast_position = position + normal * raycast_offset
 	local raycast_range = range or 3
 	local debug = script_data.debug_material_effects
-
-	if debug then
-		QuickDrawerStay:sphere(raycast_position, 0.25, Colors.get("red"))
-		QuickDrawerStay:line(raycast_position, raycast_position + raycast_direction * raycast_range, Colors.get("red"))
-	end
-
 	local world = Managers.world:world("level_world")
 	local physics_world = World.get_data(world, "physics_world")
 	local hit, hit_position, _, hit_normal, actor = PhysicsWorld.immediate_raycast(physics_world, raycast_position, raycast_direction, raycast_range, "closest", "types", "both", "collision_filter", "filter_ground_material_check")

@@ -25,8 +25,6 @@ elseif PLATFORM == "xb1" then
 	require("scripts/settings/mixer_settings")
 end
 
-require("scripts/settings/equipment/power_level_templates")
-require("scripts/settings/equipment/damage_profile_templates")
 require("scripts/settings/paintings")
 require("scripts/unit_extensions/weapons/area_damage/liquid/damage_blob_templates")
 require("scripts/unit_extensions/weapons/area_damage/liquid/damage_wave_templates")
@@ -431,6 +429,7 @@ NetworkLookup.husks = {
 	"units/beings/enemies/skaven_pack_master/chr_skaven_pack_master",
 	"units/beings/enemies/skaven_plague_monk/chr_skaven_plague_monk",
 	"units/beings/enemies/chaos_sorcerer_fx/chr_chaos_sorcerer_fx",
+	"units/beings/enemies/chaos_mutator_sorcerer/chr_chaos_mutator_sorcerer",
 	"units/beings/enemies/skaven_ratlinggunner/chr_skaven_ratlinggunner",
 	"units/beings/enemies/skaven_stormvermin/chr_skaven_stormvermin",
 	"units/beings/enemies/skaven_stormvermin/chr_skaven_stormvermin_baked",
@@ -1009,6 +1008,15 @@ NetworkLookup.damage_types = {
 	"inside_forbidden_tag_volume",
 	"undefined"
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local damage_types = dlc.network_damage_types
+
+	if damage_types then
+		table.append(NetworkLookup.damage_types, damage_types)
+	end
+end
+
 NetworkLookup.hit_react_types = {
 	"light",
 	"medium",
@@ -2015,6 +2023,12 @@ NetworkLookup.inventory_packages = dofile("scripts/network_lookup/inventory_pack
 local career_packages = dofile("scripts/network_lookup/career_package_list")
 
 table.append(NetworkLookup.inventory_packages, career_packages)
+
+for _, dlc in pairs(DLCSettings) do
+	if dlc.inventory_package_list then
+		table.append(NetworkLookup.inventory_packages, dlc.inventory_package_list)
+	end
+end
 
 local paintings = {}
 

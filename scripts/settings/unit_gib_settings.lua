@@ -4,18 +4,17 @@ UnitGibSettings = {
 	skaven_clan_rat = {
 		parts = {
 			head = {
-				gib_push_actor = "c_gib_head",
+				stump_unit = "units/beings/enemies/skaven_clan_rat/gibs/skaven_clanrat_stump_head",
+				gib_unit = "units/beings/enemies/skaven_clan_rat/gibs/skaven_clanrat_gib_head",
 				parent_scale = 0.01,
 				gib_push_force = 1,
-				stump_unit = "units/beings/enemies/skaven_clan_rat/gibs/skaven_clanrat_stump_head",
 				stump_parent_align_node = "j_neck",
-				stop_death_sound = true,
 				gib_parent_align_node = "j_neck_1",
-				parent_hide_group = "head_hood",
-				pulp_vfx = "fx/impact_blood_head_crush_01",
+				gib_push_actor = "c_gib_head",
 				vfx = "fx/impact_blood_maim",
-				gib_unit = "units/beings/enemies/skaven_clan_rat/gibs/skaven_clanrat_gib_head",
+				parent_hide_group = "head_hood",
 				gib_unit_template = "dynamic_gib_unit",
+				stop_death_sound = true,
 				stump_link_nodes = {
 					"j_spine1",
 					"j_neck"
@@ -355,9 +354,8 @@ UnitGibSettings.skaven_slave = {
 			gib_parent_align_node = "j_neck_1",
 			gib_push_actor = "c_gib_head",
 			vfx = "fx/impact_blood_maim",
-			pulp_vfx = "fx/impact_blood_head_crush_01",
-			gib_unit_template = "dynamic_gib_unit",
 			stop_death_sound = true,
+			gib_unit_template = "dynamic_gib_unit",
 			stump_link_nodes = {
 				"j_spine1",
 				"j_neck"
@@ -800,9 +798,8 @@ UnitGibSettings.skaven_storm_vermin = {
 			gib_parent_align_node = "j_neck_1",
 			gib_push_actor = "c_gib_head",
 			vfx = "fx/impact_blood_maim",
-			pulp_vfx = "fx/impact_blood_head_crush_01",
-			gib_unit_template = "dynamic_gib_unit",
 			stop_death_sound = true,
+			gib_unit_template = "dynamic_gib_unit",
 			stump_link_nodes = {
 				"j_spine1",
 				"j_neck"
@@ -1107,19 +1104,18 @@ UnitGibSettings.skaven_storm_vermin_with_shield_baked = table.create_copy(UnitGi
 UnitGibSettings.chaos_marauder = {
 	parts = {
 		head = {
-			gib_push_force = 1,
+			gib_unit_template = "dynamic_gib_unit",
 			parent_scale = 0,
 			gib_helmet_link_node = "a_helmet",
 			stump_unit = "units/beings/enemies/chaos_marauder/gibs/chaos_marauder_stump_head",
 			stump_parent_align_node = "j_spine1",
+			stop_death_sound = true,
 			gib_parent_align_node = "j_neck",
 			pulp_stump_unit = "units/beings/enemies/chaos_marauder/gibs/chaos_marauder_stump_head",
 			gib_push_actor = "c_ragdoll",
-			stop_death_sound = true,
-			pulp_vfx = "fx/impact_blood_head_crush_01",
+			gib_push_force = 1,
 			vfx = "fx/impact_blood_maim_chaos",
 			gib_unit = "units/beings/enemies/chaos_marauder/gibs/chaos_marauder_gib_head",
-			gib_unit_template = "dynamic_gib_unit",
 			stump_link_nodes = {
 				"j_spine1",
 				"j_leftshoulder",
@@ -1679,18 +1675,17 @@ UnitGibSettings.chaos_raider_tutorial = table.create_copy(UnitGibSettings.chaos_
 UnitGibSettings.chaos_fanatic = {
 	parts = {
 		head = {
-			gib_unit_template = "dynamic_gib_unit",
-			gib_push_actor = "c_ragdoll",
+			stump_unit = "units/beings/enemies/chaos_fanatic/gibs/chaos_fanatic_stump_head",
+			gib_unit = "units/beings/enemies/chaos_fanatic/gibs/chaos_fanatic_gib_head",
 			parent_scale = 0,
 			gib_push_force = 1,
-			stump_unit = "units/beings/enemies/chaos_fanatic/gibs/chaos_fanatic_stump_head",
 			stump_parent_align_node = "j_spine1",
-			stop_death_sound = true,
 			gib_parent_align_node = "j_neck",
+			gib_push_actor = "c_ragdoll",
 			parent_hide_group = "vg_gib_head",
-			pulp_vfx = "fx/impact_blood_head_crush_01",
 			vfx = "fx/impact_blood_maim_chaos",
-			gib_unit = "units/beings/enemies/chaos_fanatic/gibs/chaos_fanatic_gib_head",
+			gib_unit_template = "dynamic_gib_unit",
+			stop_death_sound = true,
 			stump_link_nodes = {
 				"j_spine1",
 				"j_leftshoulder",

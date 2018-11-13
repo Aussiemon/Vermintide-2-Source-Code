@@ -57,7 +57,6 @@ ActionCareerWEWaywatcher._restore_ammo = function (self)
 	local right_hand_ammo_extension = ScriptUnit.has_extension(right_unit_1p, "ammo_system")
 	local left_hand_ammo_extension = ScriptUnit.has_extension(left_unit_1p, "ammo_system")
 	local ammo_extension = right_hand_ammo_extension or left_hand_ammo_extension
-	local ammo_percent = ammo_extension:total_ammo_fraction()
 	local ammo_bonus_fraction = 0.2
 	local ammo_amount = math.max(math.round(ammo_extension:get_max_ammo() * ammo_bonus_fraction), 1)
 

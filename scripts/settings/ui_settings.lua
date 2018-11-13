@@ -1154,6 +1154,20 @@ local button_mapping = {
 				33
 			}
 		},
+		left_axis = {
+			texture = "xbone_button_icon_left_stick",
+			size = {
+				32,
+				33
+			}
+		},
+		right_axis = {
+			texture = "xbone_button_icon_right_stick",
+			size = {
+				32,
+				33
+			}
+		},
 		left = {
 			texture = "xbone_button_icon_left_stick",
 			size = {
@@ -1331,6 +1345,20 @@ local button_mapping = {
 				33
 			}
 		},
+		left_axis = {
+			texture = "ps4_button_icon_left_stick",
+			size = {
+				32,
+				33
+			}
+		},
+		right_axis = {
+			texture = "ps4_button_icon_right_stick",
+			size = {
+				32,
+				33
+			}
+		},
 		options = {
 			texture = "ps4_button_icon_options",
 			size = {
@@ -1501,6 +1529,20 @@ local button_mapping = {
 				33
 			}
 		},
+		left_axis = {
+			texture = "ps4_button_icon_left_stick",
+			size = {
+				32,
+				33
+			}
+		},
+		right_axis = {
+			texture = "ps4_button_icon_right_stick",
+			size = {
+				32,
+				33
+			}
+		},
 		left = {
 			texture = "ps4_button_icon_left_stick",
 			size = {
@@ -1578,6 +1620,7 @@ UISettings.get_gamepad_input_texture_data = function (input_service, input_actio
 		elseif device_type == "gamepad" then
 			if key_action_type == "axis" then
 				button_name = Pad1.axis_name(key_index)
+				button_name = button_name .. "_axis"
 			else
 				button_name = Pad1.button_name(key_index)
 			end

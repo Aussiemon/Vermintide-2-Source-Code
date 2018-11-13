@@ -463,6 +463,90 @@ quest_templates.quests.event_sonnstill_played_legend_2018 = {
 		}
 	end
 }
+quest_templates.quests.event_geheimnisnacht_quickplay_2018 = {
+	reward = "frame_geheimnisnacht_01",
+	name = "quest_event_geheimnisnacht_2018_quickplay_name",
+	icon = "quest_book_geheimnisnacht",
+	desc = function ()
+		return string.format(Localize("quest_event_summer_2018_quickplay_desc"), QuestSettings.event_geheimnisnacht_quickplay_levels)
+	end,
+	stat_mappings = event_quickplay_mappings,
+	completed = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+		return QuestSettings.event_geheimnisnacht_quickplay_levels <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+	end,
+	progress = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+		local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+
+		return {
+			count,
+			QuestSettings.event_geheimnisnacht_quickplay_levels
+		}
+	end
+}
+local event_geheimnisnacht_played_champion_mappings_2018 = {
+	{
+		played_difficulty = {
+			harder = true,
+			hardest = true
+		}
+	}
+}
+quest_templates.quests.event_geheimnisnacht_played_champion_2018 = {
+	reward = "loot_chest_03_06",
+	name = "quest_event_geheimnisnacht_2018_champion_name",
+	icon = "quest_book_geheimnisnacht",
+	desc = function ()
+		return string.format(Localize("quest_event_summer_2018_champion_desc"), QuestSettings.event_geheimnisnacht_difficulty_levels)
+	end,
+	stat_mappings = event_geheimnisnacht_played_champion_mappings_2018,
+	completed = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+		return QuestSettings.event_geheimnisnacht_difficulty_levels <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+	end,
+	progress = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+		local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+
+		return {
+			count,
+			QuestSettings.event_geheimnisnacht_quickplay_levels
+		}
+	end
+}
+local event_geheimnisnacht_played_legend_mappings_2018 = {
+	{
+		played_difficulty = {
+			hardest = true
+		}
+	}
+}
+quest_templates.quests.event_geheimnisnacht_played_legend_2018 = {
+	reward = "loot_chest_04_06",
+	name = "quest_event_geheimnisnacht_2018_legend_name",
+	icon = "quest_book_geheimnisnacht",
+	desc = function ()
+		return string.format(Localize("quest_event_summer_2018_legend_desc"), QuestSettings.event_geheimnisnacht_difficulty_levels)
+	end,
+	stat_mappings = event_geheimnisnacht_played_legend_mappings_2018,
+	completed = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+		return QuestSettings.event_geheimnisnacht_difficulty_levels <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+	end,
+	progress = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+		local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+
+		return {
+			count,
+			QuestSettings.event_geheimnisnacht_quickplay_levels
+		}
+	end
+}
 local weekly_complete_quickplay_missions_mappings = {
 	{
 		played_levels_quickplay = {}

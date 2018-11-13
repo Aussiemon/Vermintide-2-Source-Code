@@ -398,6 +398,7 @@ PlayFabMirror.inventory_request_cb = function (self, result)
 	end
 
 	local unlocked_weapon_skins = self:get_unlocked_weapon_skins()
+	unlocked_weapon_skins = unlocked_weapon_skins or {}
 
 	self:_create_fake_inventory_items(unlocked_weapon_skins)
 	self:_request_all_users_characters()
@@ -731,7 +732,7 @@ PlayFabMirror._commit_status = function (self)
 	if commit_data.status == "commit_error" then
 		return "commit_error"
 	elseif commit_data.num_updates == commit_data.updates_to_make and not commit_data.wait_for_stats and not commit_data.wait_for_keep_decorations and not commit_data.wait_for_user_data and not commit_data.wait_for_hero_attributes then
-		if PLATFORM == "xb1" and not Managers.account:offline_mode() then
+		if PLATFORM ~= "win32" and not Managers.account:offline_mode() then
 			PlayfabBackendSaveDataUtils.store_online_data(self)
 		end
 

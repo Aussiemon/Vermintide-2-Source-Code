@@ -67,7 +67,7 @@ MatchmakingStateHostGame._start_hosting_game = function (self)
 	local game_mode = search_config.game_mode
 	local private_game = search_config.private_game
 
-	assert(private_game ~= nil)
+	fassert(private_game ~= nil, "Private status variable wasn't set.")
 
 	local quick_game = search_config.quick_game
 	local eac_authorized = false
@@ -79,7 +79,7 @@ MatchmakingStateHostGame._start_hosting_game = function (self)
 		else
 			local eac_state = EAC.state()
 
-			assert(eac_state ~= nil)
+			fassert(eac_state ~= nil, "EAC state wasn't set.")
 
 			eac_authorized = eac_state == "trusted"
 		end

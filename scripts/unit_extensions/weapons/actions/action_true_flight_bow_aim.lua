@@ -8,6 +8,7 @@ ActionTrueFlightBowAim.init = function (self, world, item_name, is_server, owner
 	self.is_server = is_server
 	self.world = world
 	self.wwise_world = Managers.world:wwise_world(world)
+	self.owner_player = Managers.player:owner(owner_unit)
 	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
 
 	if ScriptUnit.has_extension(self.weapon_unit, "spread_system") then
@@ -41,32 +42,8 @@ ActionTrueFlightBowAim.client_owner_start_action = function (self, new_action, t
 	end
 
 	self.charge_ready_sound_event = self.current_action.charge_ready_sound_event
-	local owner_player = Managers.player:owner(owner_unit)
-	local is_bot = owner_player and owner_player.bot_player
 
-	if not is_bot then
-		local charge_sound_name = new_action.charge_sound_name
-
-		if charge_sound_name then
-			local wwise_playing_id, wwise_source_id = ActionUtils.start_charge_sound(self.wwise_world, self.weapon_unit, owner_unit, new_action)
-			self.charging_sound_id = wwise_playing_id
-			self.wwise_source_id = wwise_source_id
-		end
-
-		local aim_sound_event = self.current_action.aim_sound_event
-
-		if aim_sound_event then
-			local position = POSITION_LOOKUP[owner_unit]
-
-			WwiseUtils.trigger_position_event(self.world, aim_sound_event, position)
-		end
-	end
-
-	local charge_sound_husk_name = self.current_action.charge_sound_husk_name
-
-	if charge_sound_husk_name then
-		ActionUtils.play_husk_sound_event(charge_sound_husk_name, owner_unit)
-	end
+	self:_start_charge_sound()
 
 	local spread_template_override = new_action.spread_template_override
 
@@ -75,6 +52,41 @@ ActionTrueFlightBowAim.client_owner_start_action = function (self, new_action, t
 	end
 
 	self._outline_system = Managers.state.entity:system("outline_system")
+end
+
+ActionTrueFlightBowAim._start_charge_sound = function (self)
+	local current_action = self.current_action
+	local owner_unit = self.owner_unit
+	local owner_player = self.owner_player
+	local is_bot = owner_player and owner_player.bot_player
+	local is_local = owner_player and not owner_player.remote
+	local wwise_world = self.wwise_world
+
+	if is_local and not is_bot then
+		local wwise_playing_id, wwise_source_id = ActionUtils.start_charge_sound(wwise_world, self.weapon_unit, owner_unit, current_action)
+		self.charging_sound_id = wwise_playing_id
+		self.wwise_source_id = wwise_source_id
+	end
+
+	ActionUtils.play_husk_sound_event(wwise_world, current_action.charge_sound_husk_name, owner_unit, is_bot)
+end
+
+ActionTrueFlightBowAim._stop_charge_sound = function (self)
+	local current_action = self.current_action
+	local owner_unit = self.owner_unit
+	local owner_player = self.owner_player
+	local is_bot = owner_player and owner_player.bot_player
+	local is_local = owner_player and not owner_player.remote
+	local wwise_world = self.wwise_world
+
+	if is_local and not is_bot then
+		ActionUtils.stop_charge_sound(wwise_world, self.charging_sound_id, self.wwise_source_id, current_action)
+
+		self.charging_sound_id = nil
+		self.wwise_source_id = nil
+	end
+
+	ActionUtils.play_husk_sound_event(wwise_world, current_action.charge_sound_husk_stop_event, owner_unit, is_bot)
 end
 
 ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, can_damage)
@@ -284,20 +296,7 @@ ActionTrueFlightBowAim.finish = function (self, reason, data)
 		chain_action_data.target = self.target
 	end
 
-	local charging_sound_id = self.charging_sound_id
-
-	if charging_sound_id then
-		ActionUtils.stop_charge_sound(self.wwise_world, charging_sound_id, self.wwise_source_id, self.current_action)
-
-		self.wwise_source_id = nil
-		self.charging_sound_id = nil
-	end
-
-	local charge_sound_husk_stop_event = current_action.charge_sound_husk_stop_event
-
-	if charge_sound_husk_stop_event then
-		ActionUtils.play_husk_sound_event(charge_sound_husk_stop_event, owner_unit)
-	end
+	self:_stop_charge_sound()
 
 	local action_two = data and data.new_action == "action_two"
 	local career_action = data and (data.new_action == "action_career_release" or data.new_action == "action_career_hold" or data.new_action == "action_career_not_hold") and data.new_sub_action == "default"

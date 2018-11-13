@@ -1755,6 +1755,62 @@ ItemMasterList.frame_skulls = {
 		"es_mercenary"
 	}
 }
+ItemMasterList.frame_geheimnisnacht_01 = {
+	description = "frame_geheimnisnacht_01_description",
+	temporary_template = "frame_geheimnisnacht_01",
+	display_name = "frame_geheimnisnacht_01_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_geheimnisnacht_01",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.frame_geheimnisnacht_02 = {
+	description = "frame_geheimnisnacht_02_description",
+	temporary_template = "frame_geheimnisnacht_02",
+	display_name = "frame_geheimnisnacht_02_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_geheimnisnacht_02",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
 ItemMasterList.frame_summer = {
 	description = "frame_summer_description",
 	temporary_template = "frame_summer",
@@ -4173,330 +4229,6 @@ ItemMasterList.frame_0081 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
-}
-ItemMasterList.painting_horizontal_0001 = {
-	description = "description_painting_kemri01",
-	rarity = "plentiful",
-	display_name = "painting_kemri01",
-	inventory_icon = "icons_placeholder",
-	slot_type = "keep_decoration_painting",
-	information_text = "information_text_painting",
-	item_type = "keep_decoration_painting",
-	material_name = "hor_kemri01",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
-}
-ItemMasterList.painting_horizontal_0002 = {
-	description = "description_painting_nurgle01",
-	rarity = "plentiful",
-	display_name = "painting_nurgle01",
-	inventory_icon = "icons_placeholder",
-	slot_type = "keep_decoration_painting",
-	information_text = "information_text_painting",
-	item_type = "keep_decoration_painting",
-	material_name = "hor_nurgle01",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
-}
-ItemMasterList.painting_horizontal_0003 = {
-	description = "description_painting_priest01",
-	rarity = "plentiful",
-	display_name = "painting_priest01",
-	inventory_icon = "icons_placeholder",
-	slot_type = "keep_decoration_painting",
-	information_text = "information_text_painting",
-	item_type = "keep_decoration_painting",
-	material_name = "hor_priest01",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
-}
-ItemMasterList.painting_horizontal_0004 = {
-	description = "description_painting_stormofchaos01",
-	rarity = "plentiful",
-	display_name = "painting_stormofchaos01",
-	inventory_icon = "icons_placeholder",
-	slot_type = "keep_decoration_painting",
-	information_text = "information_text_painting",
-	item_type = "keep_decoration_painting",
-	material_name = "hor_stormofchaos01",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
-}
-ItemMasterList.painting_horizontal_0005 = {
-	description = "description_painting_waronline01",
-	rarity = "plentiful",
-	display_name = "painting_waronline01",
-	inventory_icon = "icons_placeholder",
-	slot_type = "keep_decoration_painting",
-	information_text = "information_text_painting",
-	item_type = "keep_decoration_painting",
-	material_name = "hor_waronline01",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
-}
-ItemMasterList.painting_vertical_0001 = {
-	description = "description_painting_bw01",
-	rarity = "plentiful",
-	display_name = "painting_bw01",
-	inventory_icon = "icons_placeholder",
-	slot_type = "keep_decoration_painting",
-	information_text = "information_text_painting",
-	item_type = "keep_decoration_painting",
-	material_name = "ver_bw01",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
-}
-ItemMasterList.painting_vertical_0002 = {
-	description = "description_painting_city01",
-	rarity = "plentiful",
-	display_name = "painting_city01",
-	inventory_icon = "icons_placeholder",
-	slot_type = "keep_decoration_painting",
-	information_text = "information_text_painting",
-	item_type = "keep_decoration_painting",
-	material_name = "ver_city01",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
-}
-ItemMasterList.painting_vertical_0003 = {
-	description = "description_painting_mordheim01",
-	rarity = "plentiful",
-	display_name = "painting_mordheim01",
-	inventory_icon = "icons_placeholder",
-	slot_type = "keep_decoration_painting",
-	information_text = "information_text_painting",
-	item_type = "keep_decoration_painting",
-	material_name = "ver_mordheim01",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
-}
-ItemMasterList.painting_vertical_0004 = {
-	description = "description_painting_undead01",
-	rarity = "plentiful",
-	display_name = "painting_undead01",
-	inventory_icon = "icons_placeholder",
-	slot_type = "keep_decoration_painting",
-	information_text = "information_text_painting",
-	item_type = "keep_decoration_painting",
-	material_name = "ver_undead01",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
-}
-ItemMasterList.painting_vertical_0005 = {
-	description = "description_painting_victor01",
-	rarity = "plentiful",
-	display_name = "painting_victor01",
-	inventory_icon = "icons_placeholder",
-	slot_type = "keep_decoration_painting",
-	information_text = "information_text_painting",
-	item_type = "keep_decoration_painting",
-	material_name = "ver_victor01",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
-}
-ItemMasterList.painting_vertical_0006 = {
-	description = "description_painting_wearelegion",
-	rarity = "plentiful",
-	display_name = "painting_wearelegion",
-	inventory_icon = "icons_placeholder",
-	slot_type = "keep_decoration_painting",
-	information_text = "information_text_painting",
-	item_type = "keep_decoration_painting",
-	material_name = "ver_wearelegion",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
-}
-ItemMasterList.painting_vertical_0007 = {
-	description = "description_painting_zombiedragon",
-	rarity = "plentiful",
-	display_name = "painting_zombiedragon",
-	inventory_icon = "icons_placeholder",
-	slot_type = "keep_decoration_painting",
-	information_text = "information_text_painting",
-	item_type = "keep_decoration_painting",
-	material_name = "ver_zombiedragon",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -16069,7 +15801,7 @@ ItemMasterList.deed_chest = {
 }
 ItemMasterList.loot_chest_01_01 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_1",
 	display_name = "display_name_loot_chest_normal_01",
 	rarity_key = "tier_1",
 	power_level_key = "category_1",
@@ -16104,7 +15836,7 @@ ItemMasterList.loot_chest_01_01 = {
 }
 ItemMasterList.loot_chest_01_02 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_1",
 	display_name = "display_name_loot_chest_normal_02",
 	rarity_key = "tier_2",
 	power_level_key = "category_2",
@@ -16139,7 +15871,7 @@ ItemMasterList.loot_chest_01_02 = {
 }
 ItemMasterList.loot_chest_01_03 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_1",
 	display_name = "display_name_loot_chest_normal_03",
 	rarity_key = "tier_3",
 	power_level_key = "category_3",
@@ -16174,7 +15906,7 @@ ItemMasterList.loot_chest_01_03 = {
 }
 ItemMasterList.loot_chest_01_04 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_1",
 	display_name = "display_name_loot_chest_normal_04",
 	rarity_key = "tier_4",
 	power_level_key = "category_4",
@@ -16209,7 +15941,7 @@ ItemMasterList.loot_chest_01_04 = {
 }
 ItemMasterList.loot_chest_01_05 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_1",
 	display_name = "display_name_loot_chest_normal_05",
 	rarity_key = "tier_5",
 	power_level_key = "category_5",
@@ -16244,7 +15976,7 @@ ItemMasterList.loot_chest_01_05 = {
 }
 ItemMasterList.loot_chest_01_06 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_1",
 	display_name = "display_name_loot_chest_normal_06",
 	rarity_key = "tier_6",
 	power_level_key = "category_6",
@@ -16279,7 +16011,7 @@ ItemMasterList.loot_chest_01_06 = {
 }
 ItemMasterList.loot_chest_02_01 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_2",
 	display_name = "display_name_loot_chest_hard_01",
 	rarity_key = "tier_1",
 	power_level_key = "category_7",
@@ -16314,7 +16046,7 @@ ItemMasterList.loot_chest_02_01 = {
 }
 ItemMasterList.loot_chest_02_02 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_2",
 	display_name = "display_name_loot_chest_hard_02",
 	rarity_key = "tier_2",
 	power_level_key = "category_8",
@@ -16349,7 +16081,7 @@ ItemMasterList.loot_chest_02_02 = {
 }
 ItemMasterList.loot_chest_02_03 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_2",
 	display_name = "display_name_loot_chest_hard_03",
 	rarity_key = "tier_3",
 	power_level_key = "category_9",
@@ -16384,7 +16116,7 @@ ItemMasterList.loot_chest_02_03 = {
 }
 ItemMasterList.loot_chest_02_04 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_2",
 	display_name = "display_name_loot_chest_hard_04",
 	rarity_key = "tier_4",
 	power_level_key = "category_10",
@@ -16419,7 +16151,7 @@ ItemMasterList.loot_chest_02_04 = {
 }
 ItemMasterList.loot_chest_02_05 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_2",
 	display_name = "display_name_loot_chest_hard_05",
 	rarity_key = "tier_5",
 	power_level_key = "category_11",
@@ -16454,7 +16186,7 @@ ItemMasterList.loot_chest_02_05 = {
 }
 ItemMasterList.loot_chest_02_06 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_2",
 	display_name = "display_name_loot_chest_hard_06",
 	rarity_key = "tier_6",
 	power_level_key = "category_12",
@@ -16489,7 +16221,7 @@ ItemMasterList.loot_chest_02_06 = {
 }
 ItemMasterList.loot_chest_03_01 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_3",
 	display_name = "display_name_loot_chest_nightmare_01",
 	rarity_key = "tier_1",
 	power_level_key = "category_13",
@@ -16524,7 +16256,7 @@ ItemMasterList.loot_chest_03_01 = {
 }
 ItemMasterList.loot_chest_03_02 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_3",
 	display_name = "display_name_loot_chest_nightmare_02",
 	rarity_key = "tier_2",
 	power_level_key = "category_14",
@@ -16559,7 +16291,7 @@ ItemMasterList.loot_chest_03_02 = {
 }
 ItemMasterList.loot_chest_03_03 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_3",
 	display_name = "display_name_loot_chest_nightmare_03",
 	rarity_key = "tier_3",
 	power_level_key = "category_15",
@@ -16594,7 +16326,7 @@ ItemMasterList.loot_chest_03_03 = {
 }
 ItemMasterList.loot_chest_03_04 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_3",
 	display_name = "display_name_loot_chest_nightmare_04",
 	rarity_key = "tier_4",
 	power_level_key = "category_16",
@@ -16629,7 +16361,7 @@ ItemMasterList.loot_chest_03_04 = {
 }
 ItemMasterList.loot_chest_03_05 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_3",
 	display_name = "display_name_loot_chest_nightmare_05",
 	rarity_key = "tier_5_nightmare",
 	power_level_key = "category_17",
@@ -16664,7 +16396,7 @@ ItemMasterList.loot_chest_03_05 = {
 }
 ItemMasterList.loot_chest_03_06 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_3",
 	display_name = "display_name_loot_chest_nightmare_06",
 	rarity_key = "tier_6_nightmare",
 	power_level_key = "category_18",
@@ -16699,7 +16431,7 @@ ItemMasterList.loot_chest_03_06 = {
 }
 ItemMasterList.loot_chest_04_01 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_4",
 	display_name = "display_name_loot_chest_cataclysm_01",
 	rarity_key = "tier_1_cata",
 	power_level_key = "category_19",
@@ -16734,7 +16466,7 @@ ItemMasterList.loot_chest_04_01 = {
 }
 ItemMasterList.loot_chest_04_02 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_4",
 	display_name = "display_name_loot_chest_cataclysm_02",
 	rarity_key = "tier_2_cata",
 	power_level_key = "category_20",
@@ -16769,7 +16501,7 @@ ItemMasterList.loot_chest_04_02 = {
 }
 ItemMasterList.loot_chest_04_03 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_4",
 	display_name = "display_name_loot_chest_cataclysm_03",
 	rarity_key = "tier_3_cata",
 	power_level_key = "category_21",
@@ -16804,7 +16536,7 @@ ItemMasterList.loot_chest_04_03 = {
 }
 ItemMasterList.loot_chest_04_04 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_4",
 	display_name = "display_name_loot_chest_cataclysm_04",
 	rarity_key = "tier_4_cata",
 	power_level_key = "category_22",
@@ -16839,7 +16571,7 @@ ItemMasterList.loot_chest_04_04 = {
 }
 ItemMasterList.loot_chest_04_05 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_4",
 	display_name = "display_name_loot_chest_cataclysm_05",
 	rarity_key = "tier_5_cata",
 	power_level_key = "category_23",
@@ -16874,7 +16606,7 @@ ItemMasterList.loot_chest_04_05 = {
 }
 ItemMasterList.loot_chest_04_06 = {
 	item_type = "loot_chest",
-	content_key = "standard_loot_chest",
+	content_key = "standard_loot_chest_4",
 	display_name = "display_name_loot_chest_cataclysm_06",
 	rarity_key = "tier_6_cata",
 	power_level_key = "category_24",
@@ -17601,5 +17333,15 @@ ItemMasterList.we_spear_skin = {
 		"we_shade"
 	}
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local file_names = dlc.item_master_list_file_names
+
+	if file_names then
+		for i, file_name in ipairs(file_names) do
+			require(file_name)
+		end
+	end
+end
 
 return

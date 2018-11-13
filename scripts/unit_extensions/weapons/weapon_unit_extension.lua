@@ -41,12 +41,6 @@ require("scripts/unit_extensions/weapons/actions/action_career_bw_scholar")
 require("scripts/unit_extensions/weapons/actions/action_career_we_waywatcher")
 require("scripts/unit_extensions/weapons/actions/action_career_wh_bountyhunter")
 
-function weapon_printf(...)
-	if script_data.debug_weapons then
-		printf(...)
-	end
-end
-
 if Development.parameter("debug_weapons") then
 	script_data.debug_weapons = true
 end
@@ -163,7 +157,6 @@ WeaponUnitExtension.init = function (self, extension_init_context, unit, extensi
 		local attach_nodes = extension_init_data.attach_nodes
 		local attachment_nodes = attach_nodes[1]
 		local source_node = attachment_nodes.source
-		local target_node = "root_point"
 		local target_node = 0
 		local source_node_index = (type(source_node) == "string" and Unit.node(first_person_unit, source_node)) or source_node
 		local target_node_index = (type(target_node) == "string" and Unit.node(actual_damage_unit, target_node)) or target_node
@@ -219,9 +212,10 @@ end
 local interupting_action_data = {}
 
 WeaponUnitExtension.start_action = function (self, action_name, sub_action_name, actions, t, power_level, action_init_data)
-	local buff_extension = ScriptUnit.extension(self.owner_unit, "buff_system")
-	local first_person_extension = ScriptUnit.extension(self.owner_unit, "first_person_system")
-	local status_extension = ScriptUnit.extension(self.owner_unit, "status_system")
+	local owner_unit = self.owner_unit
+	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
+	local status_extension = ScriptUnit.extension(owner_unit, "status_system")
 	local current_action_settings = self.current_action_settings
 	local new_action = action_name
 	local new_sub_action = sub_action_name
@@ -231,7 +225,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 	if new_action then
 		local action_settings = self:get_action(new_action, new_sub_action, actions)
 		local action_kind = action_settings.kind
-		self.actions[action_kind] = self.actions[action_kind] or create_attack(self.item_name, action_kind, self.world, self.is_server, self.owner_unit, self.actual_damage_unit, self.first_person_unit, self.unit, self.weapon_system)
+		self.actions[action_kind] = self.actions[action_kind] or create_attack(self.item_name, action_kind, self.world, self.is_server, owner_unit, self.actual_damage_unit, self.first_person_unit, self.unit, self.weapon_system)
 	end
 
 	local ammo_extension = self.ammo_extension
@@ -250,7 +244,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 			end
 		elseif ammo_count < ammo_requirement then
 			if ammo_extension:total_remaining_ammo() == 0 and (not self.reload_failed_timer or self.reload_failed_timer < t) and (not action.interaction_type or action.interaction_type ~= "heal") then
-				local dialogue_input = ScriptUnit.extension_input(self.owner_unit, "dialogue_system")
+				local dialogue_input = ScriptUnit.extension_input(owner_unit, "dialogue_system")
 				local event_data = FrameTable.alloc_table()
 				event_data.fail_reason = "out_of_ammo"
 				event_data.item_name = "ranged_weapon"
@@ -275,7 +269,6 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 	end
 
 	if new_action then
-		local owner_unit = self.owner_unit
 		local locomotion_extension = ScriptUnit.extension(owner_unit, "locomotion_system")
 
 		if locomotion_extension:is_stood_still() then
@@ -294,7 +287,6 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 
 			if eyetracking_extension:get_is_feature_enabled("tobii_aim_at_gaze") then
 				local gaze_rotation = eyetracking_extension:gaze_rotation()
-				local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
 				first_person_extension:force_look_rotation(gaze_rotation, 1)
 			end
@@ -315,7 +307,6 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 		local num_chain_actions = #allowed_chain_actions
 
 		for i = 1, num_chain_actions, 1 do
-			local chain_info = allowed_chain_actions[i]
 			self.chain_action_sound_played[i] = false
 		end
 
@@ -390,6 +381,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 			local anim_time_scale = current_action_settings.anim_time_scale or 1
 			anim_time_scale = ActionUtils.apply_attack_speed_buff(anim_time_scale, owner_unit)
 			anim_time_scale = ActionUtils.apply_charge_speed_buff_anim_scale(anim_time_scale, owner_unit, current_action_settings)
+			anim_time_scale = math.clamp(anim_time_scale, NetworkConstants.animation_variable_float.min, NetworkConstants.animation_variable_float.max)
 			local go_id = Managers.state.unit_storage:go_id(owner_unit)
 			local event_id = NetworkLookup.anims[event_3p]
 			local variable_id = NetworkLookup.anims.attack_speed
@@ -418,21 +410,21 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 				end
 			end
 
-			local third_person_variable_id = Unit.animation_find_variable(owner_unit, "attack_speed")
+			if not script_data.disable_third_person_weapon_animation_events then
+				local third_person_variable_id = Unit.animation_find_variable(owner_unit, "attack_speed")
 
-			Unit.animation_set_variable(owner_unit, third_person_variable_id, anim_time_scale)
+				Unit.animation_set_variable(owner_unit, third_person_variable_id, anim_time_scale)
 
-			if not looping_event or (looping_event and not self._looping_anim_event_started) then
-				Unit.animation_event(owner_unit, event_3p)
+				if not looping_event or (looping_event and not self._looping_anim_event_started) then
+					Unit.animation_event(owner_unit, event_3p)
 
-				if looping_event then
-					self._looping_anim_event_started = true
+					if looping_event then
+						self._looping_anim_event_started = true
+					end
 				end
 			end
 
 			if current_action_settings.apply_recoil then
-				local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-
 				first_person_extension:apply_recoil()
 				first_person_extension:play_camera_recoil(current_action_settings.recoil_settings, t)
 			end
@@ -466,8 +458,8 @@ WeaponUnitExtension._finish_action = function (self, reason, data)
 		ActionUtils.remove_action_buff_data(self.action_buff_data, buff_data, self.owner_unit)
 	end
 
-	for _, data in pairs(self.action_buff_data) do
-		table.clear(data)
+	for _, action_buff_data in pairs(self.action_buff_data) do
+		table.clear(action_buff_data)
 	end
 
 	self:_handle_proc_events(current_action_settings, reason)
@@ -522,22 +514,6 @@ WeaponUnitExtension.update = function (self, unit, input, dt, context, t)
 
 	if current_action_settings then
 		local owner_unit = self.owner_unit
-
-		if script_data.debug_weapons then
-			local player_manager = Managers.player
-			local player = player_manager:owner(owner_unit)
-			local profile_display_name = player:profile_display_name()
-			local lookup_data = current_action_settings.lookup_data
-			local current_time_in_action = t - self.action_time_started
-
-			Debug.text("Action time:    %.2f", current_time_in_action)
-			Debug.text("Current Action: %s/%s", lookup_data.action_name, lookup_data.sub_action_name)
-			Debug.text("Can chain:      %s", tostring(is_within_a_chain_window(current_time_in_action, self.current_action_settings, owner_unit)))
-			Debug.text("Can do damage:  %s", tostring(is_within_damage_window(current_time_in_action, self.current_action_settings, owner_unit)))
-			Debug.text("Weapon Template: %s", lookup_data.item_template_name)
-			Debug.text("Player:  %s", tostring(profile_display_name))
-		end
-
 		local wwise_world = Managers.world:wwise_world(self.world)
 		local allowed_chain_actions = current_action_settings.allowed_chain_actions
 		local num_chain_actions = #allowed_chain_actions
@@ -568,14 +544,10 @@ WeaponUnitExtension.update = function (self, unit, input, dt, context, t)
 			local buff_data = current_action_settings.buff_data
 
 			if buff_data then
-				Profiler.start("buff")
 				ActionUtils.update_action_buff_data(self.action_buff_data, buff_data, owner_unit, t)
-				Profiler.stop("buff")
 			end
 
-			Profiler.start(action_kind)
 			action:client_owner_post_update(dt, t, self.world, can_damage, current_time_in_action)
-			Profiler.stop(action_kind)
 
 			if current_action_settings.cooldown and not current_action_settings.cooldown_from_start then
 				local lookup_data = current_action_settings.lookup_data
@@ -720,7 +692,7 @@ end
 WeaponUnitExtension._get_attack_chain_data = function (self, actions, attack_chain, t)
 	local found_chain_action, found_action_settings, action_settings = nil
 	local bot_wait_input = "hold_attack"
-	local bot_wanted_input, action_name, sub_action_name = nil
+	local bot_wanted_input = nil
 	local current_action_settings = self.current_action_settings
 
 	if current_action_settings then
@@ -859,19 +831,18 @@ end
 
 WeaponUnitExtension.time_to_next_attack = function (self, wanted_attack_type, current_actions, current_weapon_name, t, attack_chain)
 	local bot_attack_data = self.bot_attack_data
-	local chain_action, chain_action_settings, action_settings = nil
+	local chain_action, _, action_settings = nil
 
 	if bot_attack_data.chain_action then
 		chain_action = bot_attack_data.chain_action
-		chain_action_settings = bot_attack_data.chain_action_settings
 		action_settings = bot_attack_data.action_settings
 	else
 		local attack_request = bot_attack_data.request
 		local attack_type = attack_request.attack_type or wanted_attack_type
 		local actions = attack_request.actions or current_actions
 		local weapon_name = attack_request.weapon_name or current_weapon_name
-		local attack_chain = attack_request.attack_chain or attack_chain
-		chain_action, chain_action_settings, action_settings = self:_process_bot_attack_request(attack_type, actions, weapon_name, t, attack_chain)
+		attack_chain = attack_request.attack_chain or attack_chain
+		chain_action, _, action_settings = self:_process_bot_attack_request(attack_type, actions, weapon_name, t, attack_chain)
 	end
 
 	if chain_action then

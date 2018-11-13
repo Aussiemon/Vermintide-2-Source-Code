@@ -61,8 +61,10 @@ dofile("scripts/settings/breeds/breed_pets")
 for _, dlc in pairs(DLCSettings) do
 	local breeds = dlc.breeds
 
-	for _, breed in ipairs(breeds) do
-		dofile(breed)
+	if breeds then
+		for _, breed in ipairs(breeds) do
+			dofile(breed)
+		end
 	end
 end
 
@@ -196,23 +198,6 @@ function SET_BREED_DIFFICULTY()
 			end
 
 			find_and_set_bot_threat_tweak_data(action_data, current_difficulty)
-		end
-	end
-end
-
-SET_BREED_DIFFICULTY()
-
-if false then
-	UtilityConsiderationNames = {}
-
-	for name, consideration in pairs(UtilityConsiderations) do
-		UtilityConsiderationNames[name] = consideration
-		UtilityConsiderationNames[consideration] = name
-
-		for name, data in pairs(consideration) do
-			if type(data) == "table" then
-				data.name = name
-			end
 		end
 	end
 end

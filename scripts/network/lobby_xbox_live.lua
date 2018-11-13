@@ -10,8 +10,8 @@ require("scripts/network/voice_chat_xb1")
 
 LobbyInternal = LobbyInternal or {}
 LobbyInternal.TYPE = "xboxlive"
-LobbyInternal.HOPPER_NAME = "new_stage_hopper"
-LobbyInternal.SESSION_TEMPLATE_NAME = "default_game"
+LobbyInternal.HOPPER_NAME = "safe_profiles_hopper"
+LobbyInternal.SESSION_TEMPLATE_NAME = "new_default_game"
 LobbyInternal.SMARTMATCH_SESSION_TEMPLATE_NAME = "ticket_default"
 LobbyInternal.state_map = {
 	[MultiplayerSession.READY] = LobbyState.JOINED,
@@ -200,11 +200,21 @@ local HOPPER_PARAMS_LUT = {
 		"level",
 		"powerlevel",
 		"strict_matchmaking"
+	},
+	safe_profiles_hopper = {
+		"difficulty",
+		"level",
+		"powerlevel",
+		"strict_matchmaking",
+		"profiles",
+		"network_hash"
 	}
 }
 local HOPPER_PARAM_TYPE_LUT = {
 	powerlevel = "number",
+	network_hash = "string",
 	strict_matchmaking = "number",
+	profiles = "collection",
 	stage = "number",
 	difficulty = "number",
 	level = "collection"
@@ -221,6 +231,7 @@ XboxLiveLobby.init = function (self, session_id, unique_server_name, session_tem
 		session_template_name = session_template_name
 	}
 	self._hopper_name = LobbyInternal.HOPPER_NAME
+	self._session_name = unique_server_name or "missing session name"
 	self._smartmatch_ticket_params = {}
 	self._activity_set = false
 	self._data_needs_update = false
@@ -249,6 +260,7 @@ XboxLiveLobby.enable_smartmatch = function (self, enable, params, timeout)
 	self._smartmatch_enabled = enable
 	self._smartmatch_ticket_params = params
 	self._timeout = timeout
+	self._force_broadcast = true
 
 	self:_cancel_matchmaking()
 end
@@ -412,14 +424,11 @@ XboxLiveLobby.update_host_matchmaking = function (self, dt)
 end
 
 XboxLiveLobby._update_smartmatching = function (self, dt)
-	local session_id = self._session_id
-	local members = MultiplayerSession.members(session_id)
-	local num_members = table.size(members)
-
-	if num_members >= 4 and not self._smartmatch_in_progress then
+	if not self._smartmatch_in_progress then
 		return
 	end
 
+	local session_id = self._session_id
 	local smartmatch_state = MultiplayerSession.smartmatch_status(self._session_id)
 	local ticket_name = MultiplayerSession.start_smartmatch_result(self._session_id)
 
@@ -493,6 +502,12 @@ XboxLiveLobby._handle_smartmatching_tickets = function (self, dt)
 		return
 	end
 
+	local smartmatch_state = MultiplayerSession.smartmatch_status(self._session_id)
+
+	if (smartmatch_state == SmartMatchStatus.FOUND or smartmatch_state == SmartMatchStatus.EXPIRED) and not self._force_broadcast then
+		return
+	end
+
 	if self._smartmatch_state ~= self._prev_smartmatch_state then
 		dprintf("changed smartmatch status from %s -> %s", SMARTMATCH_STATUS_LUT[self._prev_smartmatch_state] or "None", SMARTMATCH_STATUS_LUT[self._smartmatch_state])
 
@@ -503,6 +518,7 @@ XboxLiveLobby._handle_smartmatching_tickets = function (self, dt)
 
 	self._smartmatch_in_progress = true
 	self._reissue_host_smartmatch_ticket = false
+	self._force_broadcast = false
 
 	dprintf("######### Created smartmatch session broadcast for lobby host #########")
 end
@@ -556,6 +572,31 @@ XboxLiveLobby._create_smartmatch_broadcast = function (self, timeout)
 
 	dprintf("PreserveSessionMode %s. is host %s", "ALWAYS", "TRUE")
 
+	local members = self:members()
+	local profiles = {}
+
+	for _, peer_id in ipairs(members) do
+		local player = Managers.player:player_from_peer_id(peer_id)
+
+		if player then
+			profiles[#profiles + 1] = player:profile_index()
+		end
+	end
+
+	if #profiles > 0 then
+		self._smartmatch_ticket_params.profiles = profiles
+	end
+
+	local powerlevel = nil
+
+	if Managers.matchmaking then
+		powerlevel = Managers.matchmaking:get_average_power_level()
+
+		if powerlevel then
+			self._smartmatch_ticket_params.powerlevel = powerlevel
+		end
+	end
+
 	local ticket_param_str = nil
 
 	if self._smartmatch_ticket_params then
@@ -564,8 +605,8 @@ XboxLiveLobby._create_smartmatch_broadcast = function (self, timeout)
 		dprintf("Ticket Params: %s Hopper Name: %s", ticket_param_str, self._hopper_name)
 	end
 
-	dprintf("Starting SmartMatch with session_id: %s Hopper name: %s PreserveSessionMode: %s Ticket params: %s Timeout: %s", tostring(self._session_id), self._hopper_name, "ALWAYS", ticket_param_str, tostring(timeout_in_seconds))
-	MultiplayerSession.start_smartmatch(self._session_id, self._hopper_name, timeout_in_seconds, preserve_session_mode, ticket_param_str)
+	dprintf("Starting SmartMatch with session_id: %s Hopper name: %s PreserveSessionMode: %s Ticket params: %s Timeout: %s", tostring(self._session_id), LobbyInternal.HOPPER_NAME, "ALWAYS", ticket_param_str, tostring(timeout_in_seconds))
+	MultiplayerSession.start_smartmatch(self._session_id, LobbyInternal.HOPPER_NAME, timeout_in_seconds, preserve_session_mode, ticket_param_str)
 
 	self._smartmatch_user_id = Managers.account:user_id()
 end

@@ -13,7 +13,6 @@ WorldManager.init = function (self)
 end
 
 WorldManager.create_world = function (self, name, shading_environment, shading_callback, layer, ...)
-	Profiler.start("create_world")
 	fassert(self._worlds[name] == nil, "World %q already exists", name)
 
 	local has_physics_world = true
@@ -51,7 +50,6 @@ WorldManager.create_world = function (self, name, shading_environment, shading_c
 	self._wwise_worlds[world] = Wwise.wwise_world(world)
 
 	self:_sort_update_queue()
-	Profiler.stop("create_world")
 
 	return world
 end

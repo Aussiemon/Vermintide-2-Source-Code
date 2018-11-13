@@ -51,10 +51,6 @@ FadeSystem.local_player_created = function (self, player)
 end
 
 FadeSystem.update = function (self, context, t)
-	if Development.parameter("fade_on_camera_ai_collision") == false then
-		return
-	end
-
 	if not self.player then
 		return
 	end
@@ -72,22 +68,6 @@ FadeSystem.update = function (self, context, t)
 	end
 
 	EngineOptimizedExtensions.fade_update(self.fade_system, camera_position)
-
-	if script_data.fade_debug_unit then
-		if self.debug_unit ~= script_data.debug_unit then
-			if Unit.alive(self.debug_unit) then
-				Unit.set_scalar_for_materials_in_unit_and_childs(self.debug_unit, "inv_jitter_alpha", 0)
-			end
-
-			self.debug_unit = script_data.debug_unit
-		end
-
-		if Unit.alive(self.debug_unit) then
-			local value = (math.cos(t * 4) + 1) * 0.25
-
-			Unit.set_scalar_for_materials_in_unit_and_childs(self.debug_unit, "inv_jitter_alpha", value)
-		end
-	end
 end
 
 return

@@ -746,6 +746,12 @@ Features that make player mechanics nicer to work with.
 		category = "Player mechanics"
 	},
 	{
+		description = "Disables triggering weapon animations for third person. Useful for testing new weapons. öddfg (to spite Seb)",
+		is_boolean = true,
+		setting_name = "disable_third_person_weapon_animation_events",
+		category = "Player mechanics"
+	},
+	{
 		description = "Will show debug lines for projectiles when true",
 		is_boolean = true,
 		setting_name = "debug_projectiles",
@@ -4639,6 +4645,12 @@ Features that make player mechanics nicer to work with.
 		category = "Network"
 	},
 	{
+		description = "Fakes mismatching network hash",
+		is_boolean = true,
+		setting_name = "fake_network_hash",
+		category = "Network"
+	},
+	{
 		description = "Set network logging to Network.MESSAGES on startup",
 		is_boolean = true,
 		setting_name = "network_log_messages",
@@ -4938,12 +4950,6 @@ Features that make player mechanics nicer to work with.
 		category = "Network"
 	},
 	{
-		description = "Debug Player Context",
-		is_boolean = true,
-		setting_name = "dialogue_debug_local_player_context",
-		category = "Dialogue"
-	},
-	{
 		description = "Debug All Contexts",
 		is_boolean = true,
 		setting_name = "dialogue_debug_all_contexts",
@@ -4965,18 +4971,6 @@ Features that make player mechanics nicer to work with.
 		description = "Debug Print Queries",
 		is_boolean = true,
 		setting_name = "dialogue_debug_queries",
-		category = "Dialogue"
-	},
-	{
-		description = "Debug Print Criteria fail/successes",
-		is_boolean = true,
-		setting_name = "dialogue_debug_criterias",
-		category = "Dialogue"
-	},
-	{
-		description = "Debug Print Rule failures",
-		is_boolean = true,
-		setting_name = "dialogue_debug_rule_fails",
 		category = "Dialogue"
 	},
 	{
@@ -6637,6 +6631,106 @@ Features that make player mechanics nicer to work with.
 		is_boolean = true,
 		setting_name = "debug_keep_decorations",
 		category = "Keep Decorations"
+	},
+	{
+		description = "Unlocks a Challenge by setting by incrementing the appropriate statistics.",
+		setting_name = "Unlock Challenges",
+		category = "Progress",
+		clear_when_selected = true,
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+			table.insert(options, "complete_act_one")
+			table.insert(options, "complete_act_one_veteran")
+			table.insert(options, "complete_act_one_champion")
+			table.insert(options, "complete_act_one_legend")
+			table.insert(options, "complete_act_two")
+			table.insert(options, "complete_act_two_veteran")
+			table.insert(options, "complete_act_two_champion")
+			table.insert(options, "complete_act_two_legend")
+			table.insert(options, "complete_act_three")
+			table.insert(options, "complete_act_three_veteran")
+			table.insert(options, "complete_act_three_champion")
+			table.insert(options, "complete_act_three_legend")
+			table.insert(options, "complete_all_helmgart_levels_recruit")
+			table.insert(options, "complete_all_helmgart_levels_veteran")
+			table.insert(options, "complete_all_helmgart_levels_champion")
+			table.insert(options, "complete_all_helmgart_levels_legend")
+			table.insert(options, "complete_bogenhafen_recruit")
+			table.insert(options, "complete_bogenhafen_veteran")
+			table.insert(options, "complete_bogenhafen_champion")
+			table.insert(options, "complete_bogenhafen_legend")
+			table.insert(options, "complete_tutorial")
+		end,
+		func = function (options, index)
+			if AchievementTemplates then
+				local template = AchievementTemplates.achievements[options[index]]
+
+				if template ~= nil and template.debug_unlock then
+					local stats_db = Managers.state.game_mode.statistics_db
+					local stats_id = Managers.player:local_player():stats_id()
+
+					if stats_db and stats_id then
+						template.debug_unlock(stats_db, stats_id)
+						print("Unlocked challenge ", options[index])
+
+						return
+					end
+				end
+			end
+
+			print("Could not unlock challenge ", options[index])
+		end
+	},
+	{
+		description = "Clears a Challenge by setting the appropriate statistics to 0.",
+		setting_name = "Clear Challenges",
+		category = "Progress",
+		clear_when_selected = true,
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+			table.insert(options, "complete_act_one")
+			table.insert(options, "complete_act_one_veteran")
+			table.insert(options, "complete_act_one_champion")
+			table.insert(options, "complete_act_one_legend")
+			table.insert(options, "complete_act_two")
+			table.insert(options, "complete_act_two_veteran")
+			table.insert(options, "complete_act_two_champion")
+			table.insert(options, "complete_act_two_legend")
+			table.insert(options, "complete_act_three")
+			table.insert(options, "complete_act_three_veteran")
+			table.insert(options, "complete_act_three_champion")
+			table.insert(options, "complete_act_three_legend")
+			table.insert(options, "complete_all_helmgart_levels_recruit")
+			table.insert(options, "complete_all_helmgart_levels_veteran")
+			table.insert(options, "complete_all_helmgart_levels_champion")
+			table.insert(options, "complete_all_helmgart_levels_legend")
+			table.insert(options, "complete_bogenhafen_recruit")
+			table.insert(options, "complete_bogenhafen_veteran")
+			table.insert(options, "complete_bogenhafen_champion")
+			table.insert(options, "complete_bogenhafen_legend")
+			table.insert(options, "complete_tutorial")
+		end,
+		func = function (options, index)
+			if AchievementTemplates then
+				local template = AchievementTemplates.achievements[options[index]]
+
+				if template ~= nil and template.debug_reset then
+					local stats_db = Managers.state.game_mode.statistics_db
+					local stats_id = Managers.player:local_player():stats_id()
+
+					if stats_db and stats_id then
+						template.debug_reset(stats_db, stats_id)
+						print("Reset challenge ", options[index])
+
+						return
+					end
+				end
+			end
+
+			print("Could not reset challenge ", options[index])
+		end
 	}
 }
 local platform = PLATFORM

@@ -244,7 +244,6 @@ CareerAbilityESKnight._run_ability = function (self)
 		speed_function = function (lunge_time, duration)
 			local end_duration = 0.25
 			local rush_time = lunge_time - hold_duration - windup_duration
-			local windup_time = lunge_time - windup_duration
 			local rush_duration = duration - hold_duration - windup_duration - end_duration
 			local start_speed = 0
 			local windup_speed = -3

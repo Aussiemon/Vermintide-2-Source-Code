@@ -248,9 +248,7 @@ EndViewStateScore.show_gamercard = function (self, peer_id)
 				end
 			end
 		elseif PLATFORM == "ps4" then
-			local np_id = self._context.lobby.lobby:np_id_from_peer_id(peer_id)
-
-			Managers.account:show_player_profile_with_np_id(np_id)
+			Managers.account:show_player_profile_with_account_id(peer_id)
 		end
 	end
 end

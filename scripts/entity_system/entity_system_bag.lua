@@ -61,24 +61,16 @@ EntitySystemBag.update = function (self, entity_system_update_context, update_fu
 	for i = 1, #update_list, 1 do
 		local system = update_list[i]
 
-		Profiler.start(system.NAME)
 		system[update_function](system, entity_system_update_context, t)
-		Profiler.stop(system.NAME)
 	end
 end
 
 EntitySystemBag.hot_join_sync = function (self, sender)
-	Profiler.start("EntitySystemBag")
-
 	for i, system in ipairs(self.systems) do
 		if system.hot_join_sync then
-			Profiler.start(system.NAME)
 			system:hot_join_sync(sender)
-			Profiler.stop(system.NAME)
 		end
 	end
-
-	Profiler.stop("EntitySystemBag")
 end
 
 return

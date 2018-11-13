@@ -33,9 +33,7 @@ end
 
 GenericStateMachine.update = function (self, unit, input, dt, context, t)
 	if self.state_current ~= nil then
-		Profiler.start(self.state_current.name)
 		self.state_current:update(unit, input, dt, context, t)
-		Profiler.stop(self.state_current.name)
 	end
 
 	if script_data.debug_state_machines then

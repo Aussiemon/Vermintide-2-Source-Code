@@ -37,10 +37,6 @@ GenericHealthExtension.init = function (self, extension_init_context, unit, exte
 	if health == -1 then
 		self.is_invincible = true
 		health = math.huge
-
-		if script_data.damage_debug then
-			printf("[GenericHealthExtension] No health information for unit %s", tostring(unit))
-		end
 	else
 		self.is_invincible = false
 	end
@@ -158,8 +154,6 @@ GenericHealthExtension.set_max_health = function (self, health)
 end
 
 GenericHealthExtension._add_to_damage_history_buffer = function (self, unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
-	Profiler.start("GenericHealthExtension:_add_to_damage_history_buffer")
-
 	local hit_position_table = (hit_position and {
 		hit_position.x,
 		hit_position.y,
@@ -174,14 +168,7 @@ GenericHealthExtension._add_to_damage_history_buffer = function (self, unit, att
 	local system_data = self.system_data
 	local active_damage_buffer_index = system_data.active_damage_buffer_index
 	local damage_queue = damage_buffers[active_damage_buffer_index]
-
-	Profiler.start("create_FrameTable")
-
 	local temp_table = FrameTable.alloc_table()
-
-	Profiler.stop("create_FrameTable")
-	Profiler.start("fill_FrameTable")
-
 	temp_table[DamageDataIndex.DAMAGE_AMOUNT] = damage_amount
 	temp_table[DamageDataIndex.DAMAGE_TYPE] = damage_type
 	temp_table[DamageDataIndex.ATTACKER] = attacker_unit
@@ -194,20 +181,7 @@ GenericHealthExtension._add_to_damage_history_buffer = function (self, unit, att
 	temp_table[DamageDataIndex.HIT_REACT_TYPE] = hit_react_type or "light"
 	temp_table[DamageDataIndex.CRITICAL_HIT] = is_critical_strike or false
 
-	Profiler.stop("fill_FrameTable")
-	Profiler.start("add_to_array")
 	pdArray.push_back11(damage_queue, unpack(temp_table))
-	Profiler.stop("add_to_array")
-
-	if script_data.damage_debug then
-		if damage_amount >= 0 then
-			printf("[GenericHealthExtension] damage %.2f on zone '%s' to %s by %s", damage_amount, hit_zone_name, tostring(unit), tostring(attacker_unit))
-		else
-			printf("[GenericHealthExtension] heal %.2f to %s by %s", -damage_amount, tostring(unit), tostring(attacker_unit))
-		end
-	end
-
-	Profiler.stop("GenericHealthExtension:_add_to_damage_history_buffer")
 
 	return temp_table
 end
@@ -217,8 +191,6 @@ GenericHealthExtension._should_die = function (self)
 end
 
 GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot)
-	Profiler.start("GenericHealthExtension:add_damage")
-
 	local unit = self.unit
 	local network_manager = Managers.state.network
 	local unit_id, is_level_unit = network_manager:game_object_or_level_id(unit)
@@ -245,33 +217,10 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 	end
 
 	self:_sync_out_damage(attacker_unit, unit_id, is_level_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, hit_react_type, is_critical_strike, added_dot)
-
-	if script_data.debug_show_damage_numbers then
-		local color_modifier_red = math.min(120 + damage_amount * 4, 255)
-		local color_modifier_green = math.max(200 - damage_amount * 4, 0)
-		local color1 = Vector3(color_modifier_red, color_modifier_green, 0)
-		local random_x = math.random(-30, 30) * 0.01
-		local text_size = 40 + damage_amount * 0.75
-		local duration = 2.2
-
-		if is_critical_strike then
-			color1[1] = 255
-			duration = 3.2
-			text_size = text_size + 0.05
-		end
-
-		Managers.state.event:trigger("add_damage_number", damage_amount, text_size, unit, duration, color1, is_critical_strike)
-	end
-
-	Profiler.stop("GenericHealthExtension:add_damage")
 end
 
 GenericHealthExtension._sync_out_damage = function (self, attacker_unit, unit_id, is_level_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, hit_react_type, is_critical_strike, added_dot)
-	Profiler.start("GenericHealthExtension:_sync_out_damage")
-
 	if self.is_server and unit_id then
-		Profiler.start("send_to_clients")
-
 		local network_manager = Managers.state.network
 		local attacker_unit_id, attacker_is_level_unit = network_manager:game_object_or_level_id(attacker_unit)
 		local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
@@ -285,10 +234,7 @@ GenericHealthExtension._sync_out_damage = function (self, attacker_unit, unit_id
 		added_dot = added_dot or false
 
 		network_transmit:send_rpc_clients("rpc_add_damage", unit_id, is_level_unit, attacker_unit_id, attacker_is_level_unit, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot)
-		Profiler.stop("send_to_clients")
 	end
-
-	Profiler.stop("GenericHealthExtension:_sync_out_damage")
 end
 
 GenericHealthExtension.add_heal = function (self, healer_unit, heal_amount, heal_source_name, heal_type)

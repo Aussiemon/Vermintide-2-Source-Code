@@ -24,7 +24,6 @@ require("scripts/ui/views/start_game_view/windows/start_game_window_area_selecti
 require("scripts/ui/views/start_game_view/windows/start_game_window_difficulty_console")
 require("scripts/ui/views/start_game_view/windows/start_game_window_mutator_grid_console")
 require("scripts/ui/views/start_game_view/windows/start_game_window_mutator_summary_console")
-require("scripts/ui/views/start_game_view/windows/start_game_window_twitch_login_console")
 require("scripts/ui/views/start_game_view/windows/start_game_window_additional_settings_console")
 require("scripts/ui/views/start_game_view/windows/start_game_window_lobby_browser_console")
 
@@ -32,7 +31,6 @@ local definitions = local_require("scripts/ui/views/start_game_view/states/defin
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
-local game_options_settings = definitions.game_options_settings
 local DO_RELOAD = false
 local fake_input_service = {
 	get = function ()
@@ -42,43 +40,6 @@ local fake_input_service = {
 		return
 	end
 }
-local privacy_settings = {
-	"online",
-	"private"
-}
-local privacy_settings_value = {
-	online = false,
-	private = true
-}
-local privacy_settings_display_names = {
-	online = "map_public_setting",
-	private = "map_screen_private_button"
-}
-local layout_settings = layout_settings or nil
-local video_resources = video_resources or nil
-local windows_settings = windows_settings or nil
-local window_layouts = window_layouts or nil
-local MAX_ACTIVE_WINDOWS = MAX_ACTIVE_WINDOWS or nil
-local generic_input_actions = generic_input_actions or nil
-
-local function setup_menu_layout()
-	local use_gamepad_layout = PLATFORM == "ps4" or PLATFORM == "xb1" or Managers.input:is_device_active("gamepad") or UISettings.use_gamepad_menu_layout
-
-	if use_gamepad_layout then
-		layout_settings = local_require("scripts/ui/views/start_game_view/states/start_game_window_layout_console")
-	else
-		layout_settings = local_require("scripts/ui/views/start_game_view/states/start_game_window_layout")
-	end
-
-	video_resources = layout_settings.video_resources
-	windows_settings = layout_settings.windows
-	window_layouts = layout_settings.window_layouts
-	MAX_ACTIVE_WINDOWS = layout_settings.max_active_windows
-	generic_input_actions = layout_settings.generic_input_actions
-
-	return use_gamepad_layout
-end
-
 StartGameStateSettingsOverview = class(StartGameStateSettingsOverview)
 StartGameStateSettingsOverview.NAME = "StartGameStateSettingsOverview"
 
@@ -86,7 +47,9 @@ StartGameStateSettingsOverview.on_enter = function (self, params)
 	print("[StartGameState] Enter Substate StartGameStateSettingsOverview")
 
 	self.parent = params.parent
-	self._gamepad_style_active = setup_menu_layout()
+
+	self:_setup_menu_layout()
+
 	self.hero_name = params.hero_name
 	local ingame_ui_context = params.ingame_ui_context
 	self.ingame_ui_context = ingame_ui_context
@@ -113,12 +76,6 @@ StartGameStateSettingsOverview.on_enter = function (self, params)
 	self._always_host = false
 	self._use_strict_matchmaking = true
 
-	if self._gamepad_style_active and PLATFORM == "win32" then
-		self._game_mode_option_amount = 5
-	else
-		self._game_mode_option_amount = 4
-	end
-
 	self:create_ui_elements(params)
 
 	if params.initial_state then
@@ -131,8 +88,9 @@ StartGameStateSettingsOverview.on_enter = function (self, params)
 		wwise_world = self.wwise_world,
 		ingame_ui_context = ingame_ui_context,
 		parent = self,
-		windows_settings = windows_settings,
-		input_service = fake_input_service
+		windows_settings = self._windows_settings,
+		input_service = fake_input_service,
+		layout_settings = self._layout_settings
 	}
 
 	self:set_confirm_button_visibility(false)
@@ -141,6 +99,25 @@ StartGameStateSettingsOverview.on_enter = function (self, params)
 	if self._gamepad_style_active then
 		self:disable_player_world()
 	end
+end
+
+StartGameStateSettingsOverview._setup_menu_layout = function (self)
+	local layout_settings = nil
+	local use_gamepad_layout = PLATFORM == "ps4" or PLATFORM == "xb1" or Managers.input:is_device_active("gamepad") or UISettings.use_gamepad_menu_layout
+
+	if use_gamepad_layout then
+		layout_settings = local_require("scripts/ui/views/start_game_view/states/start_game_window_layout_console")
+	else
+		layout_settings = local_require("scripts/ui/views/start_game_view/states/start_game_window_layout")
+	end
+
+	self._generic_input_actions = layout_settings.generic_input_actions
+	self._video_resources = layout_settings.video_resources
+	self._windows_settings = layout_settings.windows
+	self._max_active_windows = layout_settings.max_active_windows
+	self._gamepad_style_active = use_gamepad_layout
+	self._layout_settings = layout_settings
+	self._window_layouts = layout_settings.window_layouts
 end
 
 StartGameStateSettingsOverview.create_ui_elements = function (self, params)
@@ -166,8 +143,8 @@ StartGameStateSettingsOverview.create_ui_elements = function (self, params)
 	local input_service = self:input_service()
 	local use_fullscreen_layout = self._gamepad_style_active
 
-	if generic_input_actions then
-		self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 6, gui_layer, generic_input_actions.default, use_fullscreen_layout)
+	if self._generic_input_actions then
+		self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 6, gui_layer, self._generic_input_actions.default, use_fullscreen_layout)
 
 		self._menu_input_description:set_input_description(nil)
 	end
@@ -180,10 +157,10 @@ StartGameStateSettingsOverview._create_video_players = function (self)
 
 	local video_players = {}
 
-	if video_resources then
+	if self._video_resources then
 		local world = self.ui_top_renderer.world
 
-		for name, settings in pairs(video_resources) do
+		for name, settings in pairs(self._video_resources) do
 			local resource = settings.resource
 			local video_player = World.create_video_player(world, resource, true, false)
 			video_players[name] = video_player
@@ -233,10 +210,15 @@ StartGameStateSettingsOverview.enable_player_world = function (self)
 	end
 end
 
-StartGameStateSettingsOverview._start_index = function (self)
-	local start_index = PlayerData.mission_selection.start_layout or 1
+StartGameStateSettingsOverview._start_layout_name = function (self)
+	local start_layout_name = PlayerData.mission_selection.start_layout
+	local layout_setting = self:_get_layout_setting_by_name(start_layout_name)
 
-	return math.max((start_index - 1) % self._game_mode_option_amount + 1, 1)
+	if layout_setting and layout_setting.game_mode_option then
+		return start_layout_name
+	else
+		return self:_get_first_game_mode_option_layout()
+	end
 end
 
 StartGameStateSettingsOverview._initial_windows_setups = function (self, params)
@@ -247,9 +229,9 @@ StartGameStateSettingsOverview._initial_windows_setups = function (self, params)
 	if Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) then
 		self:set_layout_by_name("twitch")
 	else
-		local start_layout = self:_start_index()
+		local start_layout_name = self:_start_layout_name()
 
-		self:set_layout(start_layout)
+		self:set_layout_by_name(start_layout_name)
 	end
 end
 
@@ -271,7 +253,7 @@ end
 
 StartGameStateSettingsOverview._change_window = function (self, window_index, window_name)
 	local active_windows = self._active_windows
-	local new_window_settings = windows_settings[window_name]
+	local new_window_settings = self._windows_settings[window_name]
 	local window_class_name = new_window_settings.class_name
 	local current_window = active_windows[window_index]
 
@@ -293,8 +275,9 @@ StartGameStateSettingsOverview._change_window = function (self, window_index, wi
 		local window_size = window_default_settings.size
 		local window_spacing = window_default_settings.spacing or 10
 		local window_width = window_size[1]
-		local total_spacing = window_spacing * (MAX_ACTIVE_WINDOWS - 1)
-		local total_windows_width = MAX_ACTIVE_WINDOWS * window_width
+		local max_active_windows = self._max_active_windows
+		local total_spacing = window_spacing * (max_active_windows - 1)
+		local total_windows_width = max_active_windows * window_width
 		local start_width_offset = -(total_windows_width / 2 + window_width / 2) - (total_spacing / 2 + window_spacing)
 		local window_width_offset = start_width_offset + window_index * window_width + window_index * window_spacing
 		window_offset = {
@@ -351,20 +334,10 @@ StartGameStateSettingsOverview.close_on_exit = function (self)
 	return self._close_on_exit
 end
 
-StartGameStateSettingsOverview.get_layout_name = function (self)
-	local index = self._selected_game_mode_index
-
-	for i, layout_setting in ipairs(window_layouts) do
-		if i == index then
-			return layout_setting.name
-		end
-	end
-end
-
 StartGameStateSettingsOverview.set_layout_by_name = function (self, name)
 	printf("[StartGameStateSettingsOverview]:set_layout_by_name() - %s", name)
 
-	for index, layout_setting in ipairs(window_layouts) do
+	for index, layout_setting in ipairs(self._window_layouts) do
 		if layout_setting.name == name then
 			self:set_layout(index)
 
@@ -377,12 +350,7 @@ end
 
 StartGameStateSettingsOverview.set_layout = function (self, index)
 	local layout_setting = self:_get_layout_setting(index)
-	local windows = layout_setting.windows
-	local close_on_exit = layout_setting.close_on_exit
-	local reset_on_exit = layout_setting.reset_on_exit
 	local sound_event_enter = layout_setting.sound_event_enter
-	local close_on_exit = layout_setting.close_on_exit
-	local input_focus_window = layout_setting.input_focus_window
 
 	if sound_event_enter then
 		self:play_sound(sound_event_enter)
@@ -392,17 +360,21 @@ StartGameStateSettingsOverview.set_layout = function (self, index)
 
 	self:_set_new_save_data_table(save_data_table)
 
-	slot10 = self._widgets_by_name.exit_button.content
+	local close_on_exit = layout_setting.close_on_exit
+	local reset_on_exit = layout_setting.reset_on_exit
+	slot7 = self._widgets_by_name.exit_button.content
 
 	if reset_on_exit then
 	end
 
-	slot10.visible = close_on_exit
+	slot7.visible = close_on_exit
 	self._widgets_by_name.back_button.content.visible = reset_on_exit or not close_on_exit
 	self._close_on_exit = close_on_exit
 	self._reset_on_exit = reset_on_exit
+	local windows = layout_setting.windows
+	local max_active_windows = self._max_active_windows
 
-	for i = 1, MAX_ACTIVE_WINDOWS, 1 do
+	for i = 1, max_active_windows, 1 do
 		local window_changed = false
 
 		for window_name, window_position_index in pairs(windows) do
@@ -418,27 +390,29 @@ StartGameStateSettingsOverview.set_layout = function (self, index)
 		end
 	end
 
-	if self._selected_game_mode_index then
-		self._previous_selected_game_mode_index = self._selected_game_mode_index
+	local layout_name = layout_setting.name
+	local game_mode_option = layout_setting.game_mode_option
+
+	if game_mode_option then
+		if self._selected_game_mode_layout_name then
+			self._previous_selected_game_mode_layout_name = self._selected_game_mode_layout_name
+		end
+
+		self._selected_game_mode_layout_name = layout_name
 	end
 
-	if index <= self._game_mode_option_amount then
-		self._selected_game_mode_index = index
+	if self._selected_layout_name then
+		self._previous_selected_layout_name = self._selected_layout_name
 	end
 
-	if self._selected_layout_index then
-		self._previous_selected_layout_index = self._selected_layout_index
-	end
-
-	self._selected_layout_index = index
+	self._selected_layout_name = layout_name
+	local input_focus_window = layout_setting.input_focus_window
 
 	self:set_window_input_focus(input_focus_window)
 end
 
 StartGameStateSettingsOverview.set_window_input_focus = function (self, window_name)
-	local layout_index = self._selected_game_mode_index
-	local layout_setting = self:_get_layout_setting(layout_index)
-	local window_setting = windows_settings[window_name]
+	local window_setting = self._windows_settings[window_name]
 	local window_class_name = window_setting and window_setting.class_name
 	local window_found = false
 	local active_windows = self._active_windows
@@ -463,24 +437,49 @@ StartGameStateSettingsOverview.set_window_input_focus = function (self, window_n
 	self._window_focused = window_name
 end
 
-StartGameStateSettingsOverview.get_selected_game_mode_index = function (self)
-	return self._selected_game_mode_index
+StartGameStateSettingsOverview.get_selected_game_mode_layout_name = function (self)
+	return self._selected_game_mode_layout_name
 end
 
-StartGameStateSettingsOverview.get_previous_selected_game_mode_index = function (self)
-	return self._previous_selected_game_mode_index
+StartGameStateSettingsOverview.get_previous_selected_game_mode_layout_name = function (self)
+	return self._previous_selected_game_mode_layout_name
 end
 
-StartGameStateSettingsOverview.get_selected_layout_index = function (self)
-	return self._selected_layout_index
+StartGameStateSettingsOverview.get_selected_layout_name = function (self)
+	return self._selected_layout_name
 end
 
-StartGameStateSettingsOverview.get_previous_selected_layout_index = function (self)
-	return self._previous_selected_layout_index
+StartGameStateSettingsOverview.get_previous_selected_layout_name = function (self)
+	return self._previous_selected_layout_name
 end
 
 StartGameStateSettingsOverview._get_layout_setting = function (self, index)
-	return window_layouts[index]
+	return self._window_layouts[index]
+end
+
+StartGameStateSettingsOverview._get_layout_setting_by_name = function (self, name)
+	local window_layouts = self._window_layouts
+
+	for i = 1, #window_layouts, 1 do
+		local layout_setting = window_layouts[i]
+		local layout_name = layout_setting.name
+
+		if name == layout_name then
+			return layout_setting
+		end
+	end
+end
+
+StartGameStateSettingsOverview._get_first_game_mode_option_layout = function (self)
+	local window_layouts = self._window_layouts
+
+	for i = 1, #window_layouts, 1 do
+		local layout_setting = window_layouts[i]
+
+		if layout_setting.game_mode_option then
+			return layout_setting.name, layout_setting
+		end
+	end
 end
 
 StartGameStateSettingsOverview._windows_update = function (self, dt, t)
@@ -671,9 +670,9 @@ StartGameStateSettingsOverview._handle_input = function (self, dt, t)
 	if reset_on_exit and (input_pressed or back_pressed or self:_is_button_pressed(back_button)) then
 		self:play_sound("play_gui_lobby_back")
 
-		local start_layout = self:_start_index()
+		local start_layout_name = self:_start_layout_name()
 
-		self:set_layout(start_layout)
+		self:set_layout_by_name(start_layout_name)
 	elseif close_on_exit and (back_pressed or input_pressed or self:_is_button_pressed(exit_button)) then
 		self:close_menu()
 
@@ -681,18 +680,18 @@ StartGameStateSettingsOverview._handle_input = function (self, dt, t)
 	elseif input_pressed or back_pressed or self:_is_button_pressed(back_button) then
 		self:play_sound("Play_hud_select")
 
-		local return_layout_index = nil
+		local return_layout_name = nil
 		local window_params = self._window_params
 
 		if window_params then
-			return_layout_index = window_params.return_layout_index
-			window_params.return_layout_index = nil
+			return_layout_name = window_params.return_layout_name
+			window_params.return_layout_name = nil
 		end
 
-		return_layout_index = return_layout_index or self:get_previous_selected_layout_index()
+		return_layout_name = return_layout_name or self:get_previous_selected_layout_name()
 
-		if return_layout_index then
-			self:set_layout(return_layout_index)
+		if return_layout_name then
+			self:set_layout_by_name(return_layout_name)
 		end
 	end
 end
@@ -762,8 +761,8 @@ StartGameStateSettingsOverview.set_input_description = function (self, input_des
 		return
 	end
 
-	fassert(not input_description or generic_input_actions[input_description], "[StartGameStateSettingsOverview:set_input_description] There is no such input_description (%s)", input_description)
-	self._menu_input_description:set_input_description(generic_input_actions[input_description])
+	fassert(not input_description or self._generic_input_actions[input_description], "[StartGameStateSettingsOverview:set_input_description] There is no such input_description (%s)", input_description)
+	self._menu_input_description:set_input_description(self._generic_input_actions[input_description])
 end
 
 StartGameStateSettingsOverview.change_generic_actions = function (self, input_description)
@@ -771,8 +770,8 @@ StartGameStateSettingsOverview.change_generic_actions = function (self, input_de
 		return
 	end
 
-	fassert(generic_input_actions[input_description], "[StartGameStateSettingsOverview:set_input_description] There is no such input_description (%s)", input_description)
-	self._menu_input_description:change_generic_actions(generic_input_actions[input_description])
+	fassert(self._generic_input_actions[input_description], "[StartGameStateSettingsOverview:set_input_description] There is no such input_description (%s)", input_description)
+	self._menu_input_description:change_generic_actions(self._generic_input_actions[input_description])
 end
 
 StartGameStateSettingsOverview.draw = function (self, input_service, dt)

@@ -16,11 +16,6 @@ GenericDeathExtension.init = function (self, extension_init_context, unit, exten
 	self.second_hit_ragdoll = not extension_init_data.disable_second_hit_ragdoll
 
 	fassert(self.death_reaction_template, "Missing death reaction template in unit data or extension init data.")
-
-	profiler_names[self.death_reaction_template] = profiler_names[self.death_reaction_template] or {
-		"start_" .. self.death_reaction_template,
-		"update_" .. self.death_reaction_template
-	}
 end
 
 GenericDeathExtension.force_end = function (self)

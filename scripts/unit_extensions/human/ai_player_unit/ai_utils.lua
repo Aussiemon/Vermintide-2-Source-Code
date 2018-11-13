@@ -124,8 +124,6 @@ AiUtils.alert_nearby_friends_of_enemy = function (unit, broadphase, enemy_unit, 
 		return
 	end
 
-	Profiler.start("alert_nearby_friends_of_enemy")
-
 	local num_results = Broadphase.query(broadphase, Unit.local_position(unit, 0), range, broadphase_query_result)
 
 	for i = 1, num_results, 1 do
@@ -141,8 +139,6 @@ AiUtils.alert_nearby_friends_of_enemy = function (unit, broadphase, enemy_unit, 
 
 		broadphase_query_result[i] = nil
 	end
-
-	Profiler.stop("alert_nearby_friends_of_enemy")
 end
 
 AiUtils.print = function (debug_parameter, ...)
@@ -196,14 +192,6 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage_tri
 		end
 
 		DamageUtils.add_damage_network(target_unit, attacker_unit, damage, "torso", action.damage_type, nil, damage_direction, damage_source, nil, nil, nil, action.hit_react_type)
-
-		if script_data.debug_ai_attack_pattern then
-			local color1 = Vector3(178, 34, 34)
-			local text_size = 100 + damage * 0.75
-			local duration = 3
-
-			Managers.state.event:trigger("add_damage_number", damage * 0.01, text_size, attacker_unit, duration, color1, false)
-		end
 
 		local is_player_unit = DamageUtils.is_player_unit(target_unit)
 		local push_speed = action.player_push_speed
@@ -406,12 +394,7 @@ AiUtils.broadphase_query = function (position, radius, result_table)
 
 	local ai_system = Managers.state.entity:system("ai_system")
 	local broadphase = ai_system.group_blackboard.broadphase
-
-	Profiler.start("Ai broadphase query")
-
 	local num_hits = Broadphase.query(broadphase, position, radius, result_table)
-
-	Profiler.stop("Ai broadphase query")
 
 	return num_hits
 end
@@ -754,7 +737,6 @@ AiUtils.show_polearm = function (packmaster_unit, show)
 end
 
 AiUtils.stagger = function (unit, blackboard, attacker_unit, stagger_direction, stagger_length, stagger_type, stagger_duration, stagger_animation_scale, t, stagger_value, always_stagger, is_push)
-	Profiler.start("AiUtils.stagger")
 	fassert(stagger_type > 0, "Tried to use invalid stagger type %q", stagger_type)
 
 	local difficulty_modifier = Managers.state.difficulty:get_difficulty_settings().stagger_modifier
@@ -790,8 +772,6 @@ AiUtils.stagger = function (unit, blackboard, attacker_unit, stagger_direction, 
 			ai_extension:attacked(attacker_unit, t)
 		end
 	end
-
-	Profiler.stop("AiUtils.stagger")
 end
 
 AiUtils.override_stagger = function (unit, blackboard, attacker_unit, stagger_direction, stagger_length, stagger_type, stagger_duration, stagger_animation_scale, t, is_push)
@@ -922,12 +902,6 @@ AiUtils.ninja_vanish_when_taking_damage = function (unit, blackboard)
 	local recent_damages, nr_damages = health_extension:recent_damages()
 
 	if nr_damages > 0 then
-		if script_data.debug_ai_movement then
-			local pos = position_lookup[unit]
-
-			QuickDrawerStay:cylinder(pos, pos + Vector3(0, 0, 4), 0.3, Color(200, 0, 51), 20)
-		end
-
 		blackboard.ninja_vanish = true
 	end
 end
@@ -1074,7 +1048,6 @@ AiUtils.debug_bot_transitions = function (gui, t, x1, y1)
 end
 
 AiUtils.push_intersecting_players = function (unit, displaced_units, data, t, dt, hit_func, ...)
-	local draw_debug = script_data.debug_ai_movement
 	local self_forward = Quaternion.forward(Unit.local_rotation(unit, 0))
 	local self_pos = POSITION_LOOKUP[unit]
 	local self_forward_flat = Vector3.normalize(Vector3.flat(self_forward))
@@ -1083,17 +1056,6 @@ AiUtils.push_intersecting_players = function (unit, displaced_units, data, t, dt
 	local dodge_radius = data.dodged_width and data.dodged_width * 1.5
 	local forward_pos = self_pos + self_forward * 3
 
-	if draw_debug then
-		QuickDrawer:line(self_pos, forward_pos)
-
-		local left = Vector3.cross(self_forward, Vector3(0, 0, 1))
-
-		QuickDrawer:line(self_pos - left * data.push_width, forward_pos - left * data.push_width)
-		QuickDrawer:line(self_pos + left * data.push_width, forward_pos + left * data.push_width)
-		QuickDrawer:circle(push_pos, radius, Vector3(0, 0, 1))
-		QuickDrawer:circle(push_pos, 0.1, Vector3(0, 0, 1), Color(0, 255, 128))
-	end
-
 	for i = 1, #PLAYER_AND_BOT_UNITS, 1 do
 		local push_radius = radius
 		local hit_unit = PLAYER_AND_BOT_UNITS[i]
@@ -1101,12 +1063,6 @@ AiUtils.push_intersecting_players = function (unit, displaced_units, data, t, dt
 		if displaced_units[hit_unit] then
 			if displaced_units[hit_unit] < t then
 				displaced_units[hit_unit] = nil
-			end
-
-			if draw_debug then
-				local other_pos = POSITION_LOOKUP[hit_unit]
-
-				QuickDrawerStay:circle(other_pos, 0.1, Vector3(0, 0, 1), Color(200, 50, 0))
 			end
 		else
 			local other_pos = POSITION_LOOKUP[hit_unit]
@@ -1146,10 +1102,6 @@ AiUtils.push_intersecting_players = function (unit, displaced_units, data, t, dt
 							end
 
 							displaced_units[hit_unit] = t + 0.1
-
-							if draw_debug then
-								QuickDrawerStay:circle(other_pos, 0.1, Vector3(0, 0, 1), Color(0, 262, 255))
-							end
 						end
 					end
 				end

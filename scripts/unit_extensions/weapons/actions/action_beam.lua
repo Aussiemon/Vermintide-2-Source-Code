@@ -26,8 +26,10 @@ end
 ActionBeam.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
 	self.current_action = new_action
 	local owner_unit = self.owner_unit
-	local current_action = self.current_action
-	local buff_extension = ScriptUnit.extension(self.owner_unit, "buff_system")
+	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+	local status_extension = ScriptUnit.extension(owner_unit, "status_system")
+	self.owner_buff_extension = buff_extension
+	self.status_extension = status_extension
 	self.state = "waiting_to_shoot"
 	self.time_to_shoot = t + new_action.fire_time
 	self.current_target = nil
@@ -36,8 +38,8 @@ ActionBeam.client_owner_start_action = function (self, new_action, t, chain_acti
 	self.ramping_interval = 1
 	self.consecutive_hits = 0
 	self.power_level = power_level
-	self.owner_buff_extension = buff_extension
 	self._is_critical_strike = false
+	self._num_hits = 0
 	local beam_effect = new_action.particle_effect_trail
 	local beam_effect_3p = new_action.particle_effect_trail_3p
 	local beam_end_effect = new_action.particle_effect_target
@@ -62,35 +64,55 @@ ActionBeam.client_owner_start_action = function (self, new_action, t, chain_acti
 		self.network_transmit:send_rpc_server("rpc_start_beam", go_id, beam_effect_lookup_id, beam_end_effect_lookup_id, new_action.range)
 	end
 
-	local status_extension = ScriptUnit.extension(owner_unit, "status_system")
-	self.status_extension = status_extension
-	local overcharge_type = current_action.overcharge_type
+	local overcharge_type = new_action.overcharge_type
 
 	if overcharge_type then
-		local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[current_action.overcharge_type]
+		local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[overcharge_type]
 
 		self.overcharge_extension:add_charge(overcharge_amount)
 	end
 
 	self.overcharge_target_hit = false
-	local charge_sound_name = new_action.charge_sound_name
 
-	if charge_sound_name then
-		local wwise_playing_id, wwise_source_id = ActionUtils.start_charge_sound(self.wwise_world, self.weapon_unit, owner_unit, new_action)
+	self:_start_charge_sound()
+end
+
+ActionBeam._start_charge_sound = function (self)
+	local current_action = self.current_action
+	local owner_unit = self.owner_unit
+	local owner_player = self.owner_player
+	local is_bot = owner_player and owner_player.bot_player
+	local is_local = owner_player and not owner_player.remote
+	local wwise_world = self.wwise_world
+
+	if is_local and not is_bot then
+		local wwise_playing_id, wwise_source_id = ActionUtils.start_charge_sound(wwise_world, self.weapon_unit, owner_unit, current_action)
 		self.charging_sound_id = wwise_playing_id
 		self.wwise_source_id = wwise_source_id
 	end
 
-	local charge_sound_husk_name = current_action.charge_sound_husk_name
+	ActionUtils.play_husk_sound_event(wwise_world, current_action.charge_sound_husk_name, owner_unit, is_bot)
+end
 
-	if charge_sound_husk_name then
-		ActionUtils.play_husk_sound_event(charge_sound_husk_name, self.owner_unit)
+ActionBeam._stop_charge_sound = function (self)
+	local current_action = self.current_action
+	local owner_unit = self.owner_unit
+	local owner_player = self.owner_player
+	local is_bot = owner_player and owner_player.bot_player
+	local is_local = owner_player and not owner_player.remote
+	local wwise_world = self.wwise_world
+
+	if is_local and not is_bot then
+		ActionUtils.stop_charge_sound(wwise_world, self.charging_sound_id, self.wwise_source_id, current_action)
+
+		self.charging_sound_id = nil
+		self.wwise_source_id = nil
 	end
+
+	ActionUtils.play_husk_sound_event(wwise_world, current_action.charge_sound_husk_stop_event, owner_unit, is_bot)
 end
 
 local INDEX_POSITION = 1
-local INDEX_DISTANCE = 2
-local INDEX_NORMAL = 3
 local INDEX_ACTOR = 4
 
 ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
@@ -135,14 +157,12 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 			})
 		end
 
-		local world = self.world
 		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 		local current_position = first_person_extension:current_position()
 		local current_rotation = first_person_extension:current_rotation()
 		local direction = Quaternion.forward(current_rotation)
-		local physics_world = World.get_data(world, "physics_world")
+		local physics_world = World.get_data(self.world, "physics_world")
 		local range = current_action.range or 30
-		local collision_filter = "filter_player_ray_projectile"
 		local result = PhysicsWorld.immediate_raycast_actors(physics_world, current_position, direction, range, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_ai_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only")
 		local beam_end_position = current_position + direction * range
 		local hit_unit, hit_position = nil
@@ -152,29 +172,29 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 			local owner_player = self.owner_player
 			local friendly_fire = DamageUtils.allow_friendly_fire_ranged(difficulty_settings, owner_player)
 
-			for index, hit in pairs(result) do
-				local potential_hit_position = hit[INDEX_POSITION]
-				local hit_actor = hit[INDEX_ACTOR]
+			for _, hit_data in pairs(result) do
+				local potential_hit_position = hit_data[INDEX_POSITION]
+				local hit_actor = hit_data[INDEX_ACTOR]
 				local potential_hit_unit = Actor.unit(hit_actor)
 				potential_hit_unit, hit_actor = ActionUtils.redirect_shield_hit(potential_hit_unit, hit_actor)
 
 				if potential_hit_unit ~= owner_unit then
 					local breed = Unit.get_data(potential_hit_unit, "breed")
 					local is_player = DamageUtils.is_player_unit(potential_hit_unit)
-					local hit = false
+					local hit_enemy = nil
 
 					if breed then
 						local node = Actor.node(hit_actor)
 						local hit_zone = breed.hit_zones_lookup[node]
 						local hit_zone_name = hit_zone.name
-						hit = hit_zone_name ~= "afro"
+						hit_enemy = hit_zone_name ~= "afro"
 					elseif is_player then
-						hit = friendly_fire and hit_actor ~= Unit.actor(potential_hit_unit, "c_afro")
+						hit_enemy = friendly_fire and hit_actor ~= Unit.actor(potential_hit_unit, "c_afro")
 					else
-						hit = true
+						hit_enemy = true
 					end
 
-					if hit then
+					if hit_enemy then
 						hit_position = potential_hit_position - direction * 0.15
 						hit_unit = potential_hit_unit
 
@@ -191,6 +211,7 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 				if hit_unit ~= self.current_target then
 					self.ramping_interval = 0.4
 					self.damage_timer = 0
+					self._num_hits = 0
 				end
 
 				local health_extension = ScriptUnit.has_extension(hit_unit, "health_system")
@@ -237,7 +258,12 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 						end
 
 						first_person_extension:play_hud_sound_event("staff_beam_hit_enemy", nil, false)
-						DamageUtils.process_projectile_hit(world, self.item_name, owner_unit, is_server, result, current_action, direction, true, nil, nil, self._is_critical_strike, power_level, override_damage_profile)
+
+						local check_buffs = self._num_hits > 1
+
+						DamageUtils.process_projectile_hit(world, self.item_name, owner_unit, is_server, result, current_action, direction, check_buffs, nil, nil, self._is_critical_strike, power_level, override_damage_profile)
+
+						self._num_hits = self._num_hits + 1
 
 						if not Managers.player:owner(self.owner_unit).bot_player then
 							Managers.state.controller_features:add_effect("rumble", {
@@ -260,8 +286,8 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 		local weapon_unit = self.weapon_unit
 		local end_of_staff_position = Unit.world_position(weapon_unit, Unit.node(weapon_unit, "fx_muzzle"))
 		local distance = Vector3.distance(end_of_staff_position, beam_end_position)
-		local direction = Vector3.normalize(end_of_staff_position - beam_end_position)
-		local rotation = Quaternion.look(direction)
+		local beam_direction = Vector3.normalize(end_of_staff_position - beam_end_position)
+		local rotation = Quaternion.look(beam_direction)
 
 		World.move_particles(world, self.beam_effect_id, beam_end_position, rotation)
 		World.set_particles_variable(world, self.beam_effect_id, self.beam_effect_length_id, Vector3(0.3, distance, 0))
@@ -271,34 +297,19 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 	end
 end
 
-ActionBeam.finish = function (self, reason)
-	local owner_unit = self.owner_unit
-	local go_id = self.unit_id
-	local current_action = self.current_action
-	local status_extension = ScriptUnit.extension(owner_unit, "status_system")
-	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-
-	status_extension:set_zooming(false)
+ActionBeam._clean_up = function (self)
+	local world = self.world
 
 	if self.beam_end_effect_id then
-		World.destroy_particles(self.world, self.beam_end_effect_id)
+		World.destroy_particles(world, self.beam_end_effect_id)
 
 		self.beam_end_effect_id = nil
 	end
 
-	local charging_sound_id = self.charging_sound_id
+	if self.beam_effect_id then
+		World.destroy_particles(world, self.beam_effect_id)
 
-	if charging_sound_id then
-		ActionUtils.stop_charge_sound(self.wwise_world, charging_sound_id, self.wwise_source_id, current_action)
-
-		self.wwise_source_id = nil
-		self.charging_sound_id = nil
-	end
-
-	local charge_sound_husk_stop_event = current_action.charge_sound_husk_stop_event
-
-	if charge_sound_husk_stop_event then
-		ActionUtils.play_husk_sound_event(charge_sound_husk_stop_event, owner_unit)
+		self.beam_effect_id = nil
 	end
 
 	if self._rumble_effect_id then
@@ -307,11 +318,13 @@ ActionBeam.finish = function (self, reason)
 		self._rumble_effect_id = nil
 	end
 
-	if self.beam_effect_id then
-		World.destroy_particles(self.world, self.beam_effect_id)
+	self:_stop_charge_sound()
+end
 
-		self.beam_effect_id = nil
-	end
+ActionBeam.finish = function (self, reason)
+	self.status_extension:set_zooming(false)
+
+	local go_id = self.unit_id
 
 	if self.is_server or LEVEL_EDITOR_TEST then
 		self.network_transmit:send_rpc_clients("rpc_end_beam", go_id)
@@ -319,38 +332,15 @@ ActionBeam.finish = function (self, reason)
 		self.network_transmit:send_rpc_server("rpc_end_beam", go_id)
 	end
 
+	self:_clean_up()
+
 	return {
 		beam_consecutive_hits = math.max(self.consecutive_hits - 1, 0)
 	}
 end
 
 ActionBeam.destroy = function (self)
-	if self.beam_end_effect_id then
-		World.destroy_particles(self.world, self.beam_end_effect_id)
-
-		self.beam_end_effect_id = nil
-	end
-
-	if self.beam_effect_id then
-		World.destroy_particles(self.world, self.beam_effect_id)
-
-		self.beam_effect_id = nil
-	end
-
-	if self._rumble_effect_id then
-		Managers.state.controller_features:stop_effect(self._rumble_effect_id)
-
-		self._rumble_effect_id = nil
-	end
-
-	local charging_sound_id = self.charging_sound_id
-
-	if charging_sound_id then
-		ActionUtils.stop_charge_sound(self.wwise_world, charging_sound_id, self.wwise_source_id, self.current_action)
-
-		self.wwise_source_id = nil
-		self.charging_sound_id = nil
-	end
+	self:_clean_up()
 end
 
 return

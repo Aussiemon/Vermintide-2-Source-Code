@@ -31,34 +31,6 @@ PerceptionUtils.troll_crouch_check = function (unit, blackboard, t)
 	end
 
 	blackboard.needs_to_crouch = t < blackboard.crouch_sticky_timer
-
-	if script_data.debug_ai_movement then
-		local col = nil
-
-		if result and hit_position then
-			QuickDrawer:sphere(hit_position, 0.25, col)
-
-			col = Color(255, 0, 0)
-		else
-			col = Color(105, 255, 0)
-		end
-
-		QuickDrawer:sphere(infront_pos, 0.05, col)
-		QuickDrawer:line(infront_pos, infront_pos + Vector3(0, 0, ray_length), col)
-
-		col = nil
-
-		if result2 and hit_position2 then
-			QuickDrawer:sphere(hit_position2, 0.25, col)
-
-			col = Color(255, 0, 0)
-		else
-			col = Color(105, 255, 0)
-		end
-
-		QuickDrawer:sphere(above_pos, 0.05, col)
-		QuickDrawer:line(above_pos, above_pos + Vector3(0, 0, ray_length), col)
-	end
 end
 
 PerceptionUtils.perception_continuous_chaos_troll = function (unit, blackboard, breed, t, dt)
@@ -210,15 +182,12 @@ PerceptionUtils.perception_rat_ogre = function (unit, blackboard, breed, pick_ta
 			end
 
 			if breed.trigger_dialogue_on_target_switch then
-				Profiler.start("dialogue trigger")
-
 				local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 				local event_data = FrameTable.alloc_table()
 				event_data.attack_tag = breed.dialogue_target_switch_attack_tag or "rat_ogre_change_target"
 				event_data.target_name = ScriptUnit.extension(target_unit, "dialogue_system").context.player_profile
 
 				dialogue_input:trigger_networked_dialogue_event(breed.dialogue_target_switch_event or "enemy_attack", event_data)
-				Profiler.stop("dialogue trigger")
 			end
 
 			local sound_effect_system = Managers.state.entity:system("sound_effect_system")
@@ -325,15 +294,6 @@ PerceptionUtils.perception_regular = function (unit, blackboard, breed, pick_tar
 
 			dialogue_input:trigger_networked_dialogue_event("enemy_target_changed", event_data)
 		end
-	end
-
-	local debug_ai_perception = script_data.debug_ai_perception
-
-	if blackboard.target_unit and debug_ai_perception then
-		local head_node = Unit.node(unit, "c_head")
-		local head_position = Unit.world_position(unit, head_node)
-
-		QuickDrawer:line(head_position, Unit.local_position(blackboard.target_unit, 0), Colors.get("lime"))
 	end
 
 	return new_target_unit

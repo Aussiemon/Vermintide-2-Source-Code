@@ -1,18 +1,8 @@
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_area_selection_console_definitions")
 local widget_definitions = definitions.widgets
-local map_size = definitions.map_size
 local area_widget_definitions = definitions.area_widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
-
-local function sort_levels_by_order(a, b)
-	local a_presentation_order = a.act_presentation_order
-	local b_presentation_order = b.act_presentation_order
-
-	return a_presentation_order < b_presentation_order
-end
-
-local DO_RELOAD = false
 StartGameWindowAreaSelectionConsole = class(StartGameWindowAreaSelectionConsole)
 StartGameWindowAreaSelectionConsole.NAME = "StartGameWindowAreaSelectionConsole"
 
@@ -41,7 +31,7 @@ StartGameWindowAreaSelectionConsole.on_enter = function (self, params, offset)
 
 	self:create_ui_elements(params, offset)
 
-	params.return_layout_index = self.parent:get_selected_game_mode_index()
+	params.return_layout_name = self.parent:get_selected_game_mode_layout_name()
 	self._area_unavailable = true
 
 	self:_setup_area_widgets()
@@ -50,7 +40,8 @@ StartGameWindowAreaSelectionConsole.on_enter = function (self, params, offset)
 end
 
 StartGameWindowAreaSelectionConsole.create_ui_elements = function (self, params, offset)
-	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+	local ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+	self.ui_scenegraph = ui_scenegraph
 	local widgets = {}
 	local widgets_by_name = {}
 
@@ -76,10 +67,10 @@ StartGameWindowAreaSelectionConsole.create_ui_elements = function (self, params,
 
 	UIRenderer.clear_scenegraph_queue(self.ui_top_renderer)
 
-	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
+	self.ui_animator = UIAnimator:new(ui_scenegraph, animation_definitions)
 
 	if offset then
-		local window_position = self.ui_scenegraph.window.local_position
+		local window_position = ui_scenegraph.window.local_position
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -87,13 +78,9 @@ StartGameWindowAreaSelectionConsole.create_ui_elements = function (self, params,
 end
 
 StartGameWindowAreaSelectionConsole._setup_area_widgets = function (self)
-	local ui_scenegraph = self.ui_scenegraph
-	local statistics_db = self.statistics_db
-	local stats_id = self._stats_id
-	local assigned_widgets = {}
 	local sorted_area_settings = {}
 
-	for area_name, settings in pairs(AreaSettings) do
+	for _, settings in pairs(AreaSettings) do
 		local sort_order = settings.sort_order
 		sorted_area_settings[sort_order] = settings
 	end
@@ -104,29 +91,32 @@ StartGameWindowAreaSelectionConsole._setup_area_widgets = function (self)
 	local spacing = 100
 	local total_width = widget_width * num_areas + spacing * (num_areas - 1)
 	local width_offset = -(total_width / 2) + widget_width / 2
+	local statistics_db = self.statistics_db
+	local stats_id = self._stats_id
+	local assigned_widgets = {}
 
-	for index, settings in ipairs(sorted_area_settings) do
-		local widget = self._area_widgets[index]
-		assigned_widgets[index] = widget
-		local content = widget.content
-		local description_text = settings.description_text
-		local display_name = settings.display_name
+	for i = 1, num_areas, 1 do
+		local settings = sorted_area_settings[i]
+		local widget = self._area_widgets[i]
+		assigned_widgets[i] = widget
 		local level_image = settings.level_image
-		local dlc_name = settings.dlc_name
-		local name = settings.name
-		local acts = settings.acts
+		local content = widget.content
 		content.icon = level_image
 		local unlocked = true
+		local dlc_name = settings.dlc_name
 
 		if dlc_name then
 			unlocked = Managers.unlock:is_dlc_unlocked(dlc_name)
 		end
 
+		local name = settings.name
 		content.locked = not unlocked
 		content.area_name = name
 		local highest_completed_difficulty_index = math.huge
+		local acts = settings.acts
 
-		for _, act_name in ipairs(acts) do
+		for j = 1, #acts, 1 do
+			local act_name = acts[j]
 			local difficulty_index = LevelUnlockUtils.highest_completed_difficulty_index_by_act(statistics_db, stats_id, act_name)
 
 			if difficulty_index < highest_completed_difficulty_index then
@@ -137,7 +127,6 @@ StartGameWindowAreaSelectionConsole._setup_area_widgets = function (self)
 		local frame_texture = self:_get_selection_frame_by_difficulty_index(highest_completed_difficulty_index)
 		content.frame = frame_texture
 		local offset = widget.offset
-		local scenegraph_id = widget.scenegraph_id
 		offset[1] = width_offset
 		width_offset = width_offset + widget_width + spacing
 	end
@@ -150,7 +139,6 @@ StartGameWindowAreaSelectionConsole._get_selection_frame_by_difficulty_index = f
 
 	if difficulty_index > 0 then
 		local difficulty_key = DefaultDifficulties[difficulty_index]
-		local difficulty_manager = Managers.state.difficulty
 		local settings = DifficultySettings[difficulty_key]
 		completed_frame_texture = settings.completed_frame_texture
 	end
@@ -163,14 +151,15 @@ StartGameWindowAreaSelectionConsole._select_area_by_name = function (self, area_
 	local idx = 1
 
 	if active_area_widgets then
-		for index, widget in ipairs(active_area_widgets) do
+		for i = 1, #active_area_widgets, 1 do
+			local widget = active_area_widgets[i]
 			local content = widget.content
 			local is_selected = content.area_name == area_name
 			local button_hotspot = widget.content.button_hotspot
 			button_hotspot.is_selected = is_selected
 
 			if is_selected then
-				idx = index or idx
+				idx = i or idx
 			end
 		end
 	end
@@ -184,10 +173,10 @@ StartGameWindowAreaSelectionConsole._select_area_by_name = function (self, area_
 end
 
 StartGameWindowAreaSelectionConsole._set_area_presentation_info = function (self, area_name)
-	local settings = AreaSettings[area_name]
 	local title_text = ""
 	local description_text = ""
 	local unlocked = true
+	local settings = AreaSettings[area_name]
 
 	if settings then
 		local dlc_name = settings.dlc_name
@@ -227,18 +216,12 @@ StartGameWindowAreaSelectionConsole.on_exit = function (self, params)
 
 	self:_destroy_video_widget()
 
-	params.return_layout_index = nil
+	params.return_layout_name = nil
 
 	self:_play_sound("Stop_hud_menu_area_music")
 end
 
 StartGameWindowAreaSelectionConsole.update = function (self, dt, t)
-	if DO_RELOAD then
-		DO_RELOAD = false
-
-		self:create_ui_elements()
-	end
-
 	self:_update_animations(dt)
 	self:_handle_input(dt, t)
 end
@@ -248,10 +231,11 @@ StartGameWindowAreaSelectionConsole.post_update = function (self, dt, t)
 end
 
 StartGameWindowAreaSelectionConsole._update_animations = function (self, dt)
-	self.ui_animator:update(dt)
+	local ui_animator = self.ui_animator
+
+	ui_animator:update(dt)
 
 	local animations = self._animations
-	local ui_animator = self.ui_animator
 
 	for animation_name, animation_id in pairs(animations) do
 		if ui_animator:is_animation_completed(animation_id) then
@@ -261,11 +245,12 @@ StartGameWindowAreaSelectionConsole._update_animations = function (self, dt)
 		end
 	end
 
-	local widgets_by_name = self._widgets_by_name
 	local active_area_widgets = self._active_area_widgets
 
 	if active_area_widgets then
-		for _, widget in ipairs(active_area_widgets) do
+		for i = 1, #active_area_widgets, 1 do
+			local widget = active_area_widgets[i]
+
 			self:_animate_area_widget(widget, dt)
 		end
 	end
@@ -308,22 +293,6 @@ StartGameWindowAreaSelectionConsole._is_button_hovered = function (self, widget)
 	end
 end
 
-StartGameWindowAreaSelectionConsole._is_stepper_button_pressed = function (self, widget)
-	local content = widget.content
-	local hotspot_left = content.button_hotspot_left
-	local hotspot_right = content.button_hotspot_right
-
-	if hotspot_left.on_release then
-		hotspot_left.on_release = false
-
-		return true, -1
-	elseif hotspot_right.on_release then
-		hotspot_right.on_release = false
-
-		return true, 1
-	end
-end
-
 StartGameWindowAreaSelectionConsole._update_area_option = function (self)
 	local area_name = self.parent:get_selected_area_name()
 
@@ -334,10 +303,9 @@ end
 
 StartGameWindowAreaSelectionConsole._handle_input = function (self, dt, t)
 	local parent = self.parent
-	local gamepad_active = Managers.input:is_device_active("gamepad")
-	local input_service = self.parent:window_input_service()
-	local widgets_by_name = self._widgets_by_name
+	local input_service = parent:window_input_service()
 	local active_area_widgets = self._active_area_widgets
+	local gamepad_active = Managers.input:is_device_active("gamepad")
 
 	if gamepad_active then
 		local num_areas = #active_area_widgets
@@ -363,7 +331,9 @@ StartGameWindowAreaSelectionConsole._handle_input = function (self, dt, t)
 			end
 		end
 	elseif active_area_widgets then
-		for index, widget in ipairs(active_area_widgets) do
+		for i = 1, #active_area_widgets, 1 do
+			local widget = active_area_widgets[i]
+
 			if self:_is_button_hovered(widget) then
 				local content = widget.content
 				local area_name = content.area_name
@@ -400,7 +370,7 @@ StartGameWindowAreaSelectionConsole._on_select_button_pressed = function (self)
 
 	if unlocked then
 		local parent = self.parent
-		local selected_layout_name = parent:get_layout_name()
+		local selected_layout_name = parent:get_selected_layout_name()
 		local new_layout_name = "mission_selection"
 
 		if selected_layout_name == "area_selection" then
@@ -418,11 +388,6 @@ StartGameWindowAreaSelectionConsole._on_select_button_pressed = function (self)
 	self:_play_sound("Play_hud_menu_area_start")
 end
 
-StartGameWindowAreaSelectionConsole._exit = function (self, selected_level)
-	self.exit = true
-	self.exit_level_id = selected_level
-end
-
 StartGameWindowAreaSelectionConsole.draw = function (self, dt)
 	local ui_top_renderer = self.ui_top_renderer
 	local ui_scenegraph = self.ui_scenegraph
@@ -430,14 +395,20 @@ StartGameWindowAreaSelectionConsole.draw = function (self, dt)
 
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
 
-	for _, widget in ipairs(self._widgets) do
+	local widgets = self._widgets
+
+	for i = 1, #widgets, 1 do
+		local widget = widgets[i]
+
 		UIRenderer.draw_widget(ui_top_renderer, widget)
 	end
 
 	local active_area_widgets = self._active_area_widgets
 
 	if active_area_widgets then
-		for _, widget in ipairs(active_area_widgets) do
+		for i = 1, #active_area_widgets, 1 do
+			local widget = active_area_widgets[i]
+
 			UIRenderer.draw_widget(ui_top_renderer, widget)
 		end
 	end
@@ -465,28 +436,28 @@ StartGameWindowAreaSelectionConsole._assign_video_player = function (self, mater
 	self:_destroy_video_widget()
 
 	local scenegraph_id = "video"
-	local widget_definition = UIWidgets.create_video(scenegraph_id, material_name)
-	local widget = UIWidget.init(widget_definition)
-	widget.content.video_content.video_player = video_player
+	local video_widget_definition = UIWidgets.create_video(scenegraph_id, material_name)
+	local video_widget = UIWidget.init(video_widget_definition)
+	video_widget.content.video_content.video_player = video_player
 	local ui_top_renderer = self.ui_top_renderer
 	local world = ui_top_renderer.world
 
 	World.add_video_player(world, video_player)
 
-	self._video_widget = widget
+	self._video_widget = video_widget
 	self._video_created = true
 	self._draw_video_next_frame = true
-	local widget = self._widgets_by_name.background
-	local widget_style = widget.style
-	local color = widget_style.rect.color
+	local background_widget = self._widgets_by_name.background
+	local background_widget_style = background_widget.style
+	local color = background_widget_style.rect.color
 	self._ui_animations.fade_in = UIAnimation.init(UIAnimation.function_by_time, color, 1, 255, 0, 1, math.easeOutCubic)
 end
 
 StartGameWindowAreaSelectionConsole._destroy_video_widget = function (self)
-	local ui_top_renderer = self.ui_top_renderer
 	local widget = self._video_widget
 
 	if widget then
+		local ui_top_renderer = self.ui_top_renderer
 		local video_player = widget.content.video_content.video_player
 		local world = ui_top_renderer.world
 
@@ -503,14 +474,10 @@ StartGameWindowAreaSelectionConsole._animate_area_widget = function (self, widge
 	local content = widget.content
 	local style = widget.style
 	local hotspot = content.button_hotspot
-	local is_hover = hotspot.is_hover
-	local is_selected = hotspot.is_selected
-	local input_pressed = not is_selected and hotspot.is_clicked and hotspot.is_clicked == 0
-	local input_progress = hotspot.input_progress or 0
-	local hover_progress = hotspot.hover_progress or 0
-	local selection_progress = hotspot.selection_progress or 0
-	local speed = 8
 	local input_speed = 20
+	local is_selected = hotspot.is_selected
+	local input_progress = hotspot.input_progress or 0
+	local input_pressed = not is_selected and hotspot.is_clicked and hotspot.is_clicked == 0
 
 	if input_pressed then
 		input_progress = math.min(input_progress + dt * input_speed, 1)
@@ -518,8 +485,9 @@ StartGameWindowAreaSelectionConsole._animate_area_widget = function (self, widge
 		input_progress = math.max(input_progress - dt * input_speed, 0)
 	end
 
-	local input_easing_out_progress = math.easeOutCubic(input_progress)
-	local input_easing_in_progress = math.easeInCubic(input_progress)
+	local speed = 8
+	local hover_progress = hotspot.hover_progress or 0
+	local is_hover = hotspot.is_hover
 
 	if is_hover then
 		hover_progress = math.min(hover_progress + dt * speed, 1)
@@ -527,8 +495,7 @@ StartGameWindowAreaSelectionConsole._animate_area_widget = function (self, widge
 		hover_progress = math.max(hover_progress - dt * speed, 0)
 	end
 
-	local hover_easing_out_progress = math.easeOutCubic(hover_progress)
-	local hover_easing_in_progress = math.easeInCubic(hover_progress)
+	local selection_progress = hotspot.selection_progress or 0
 
 	if is_selected then
 		selection_progress = math.min(selection_progress + dt * speed, 1)
@@ -536,11 +503,7 @@ StartGameWindowAreaSelectionConsole._animate_area_widget = function (self, widge
 		selection_progress = math.max(selection_progress - dt * speed, 0)
 	end
 
-	local select_easing_out_progress = math.easeOutCubic(selection_progress)
-	local select_easing_in_progress = math.easeInCubic(selection_progress)
 	local combined_progress = math.max(hover_progress, selection_progress)
-	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
-	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
 	local hover_alpha = 255 * combined_progress
 	style.icon_glow.color[1] = hover_alpha
 	hotspot.hover_progress = hover_progress

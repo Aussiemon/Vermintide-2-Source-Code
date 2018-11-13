@@ -20,11 +20,21 @@ local HOPPER_PARAMS_LUT = {
 		"level",
 		"powerlevel",
 		"strict_matchmaking"
+	},
+	safe_profiles_hopper = {
+		"difficulty",
+		"level",
+		"powerlevel",
+		"strict_matchmaking",
+		"profiles",
+		"network_hash"
 	}
 }
 local HOPPER_PARAM_TYPE_LUT = {
 	powerlevel = "number",
+	network_hash = "string",
 	strict_matchmaking = "number",
+	profiles = "collection",
 	stage = "number",
 	difficulty = "number",
 	level = "collection"

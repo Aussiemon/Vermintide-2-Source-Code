@@ -1,9 +1,7 @@
 local window_default_settings = UISettings.game_start_windows
-local window_background = window_default_settings.background
 local window_frame = window_default_settings.frame
 local window_size = window_default_settings.size
 local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
-local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
 local window_text_width = window_size[1] - window_frame_width * 2
 local login_text_area_size = {
 	window_text_width - 20 - 160,
@@ -111,7 +109,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			10,
+			-20,
 			2
 		}
 	},
@@ -269,42 +267,10 @@ local scenegraph_definition = {
 	}
 }
 
-if PLATFORM == "xb1" then
-	scenegraph_definition.connect_button = {
-		vertical_alignment = "center",
-		parent = "login_text_area",
-		horizontal_alignment = "center",
-		size = {
-			160,
-			45
-		},
-		position = {
-			-10,
-			-2,
-			1
-		}
-	}
-	scenegraph_definition.connect_button_frame = {
-		vertical_alignment = "center",
-		parent = "connect_button",
-		horizontal_alignment = "center",
-		size = {
-			160,
-			50
-		},
-		position = {
-			0,
-			2,
-			10
-		}
-	}
-end
-
 local function create_window(scenegraph_id, size)
 	local background_texture = "menu_frame_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local frame_settings = UIFrameSettings.menu_frame_02
-	local inner_frame_settings = UIFrameSettings.menu_frame_06
 	local widget = {
 		element = {}
 	}
@@ -980,50 +946,7 @@ widgets.chat_feed_frame.element.passes[1].content_check_function = disconnected_
 widgets.description_text.element.passes[1].content_check_function = connecting_content_check_function
 widgets.description_text.element.passes[2].content_check_function = connecting_content_check_function
 
-if PLATFORM == "xb1" then
-	widgets.frame_widget = nil
-	widgets.login_text_frame = nil
-end
-
-local animation_definitions = {
-	on_enter = {
-		{
-			name = "fade_in",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	},
-	on_exit = {
-		{
-			name = "fade_out",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 1
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = 1 - anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	}
-}
-
 return {
 	widgets = widgets,
-	scenegraph_definition = scenegraph_definition,
-	animation_definitions = animation_definitions
+	scenegraph_definition = scenegraph_definition
 }

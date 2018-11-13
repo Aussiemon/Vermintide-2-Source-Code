@@ -138,6 +138,27 @@ table.find = function (t, element)
 	return false
 end
 
+table.index_of = function (t, element)
+	for i = 1, #t, 1 do
+		if t[i] == element then
+			return i
+		end
+	end
+
+	return -1
+end
+
+table.slice = function (t, start_index, length)
+	local end_index = math.min((start_index + length) - 1, #t)
+	local slice = {}
+
+	for i = start_index, end_index, 1 do
+		slice[#slice + 1] = t[i]
+	end
+
+	return slice
+end
+
 table.sorted = function (t, order_func)
 	local keys = {}
 

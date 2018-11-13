@@ -334,17 +334,10 @@ StateTitleScreenMain._update_input = function (self, dt, t)
 			end
 		elseif platform == "ps4" then
 			Managers.music:trigger_event("Play_console_menu_select")
+			Managers.input:set_exclusive_gamepad(controller)
+			self._title_start_ui:set_start_pressed(true)
 
-			if PS4.signed_in() then
-				Managers.input:set_exclusive_gamepad(controller)
-				self._title_start_ui:set_start_pressed(true)
-
-				self._state = StateTitleScreenLoadSave
-			else
-				self:_queue_popup(Localize("popup_ps4_not_signed_in"), Localize("popup_error_topic"), "ok", Localize("popup_choice_ok"))
-
-				self._start_pressed = false
-			end
+			self._state = StateTitleScreenLoadSave
 		end
 	else
 		self._title_start_ui:set_start_pressed(false)

@@ -167,10 +167,8 @@ MoodHandler.handle_particles = function (self, current_mood, next_mood)
 end
 
 MoodHandler.update = function (self, dt)
-	Profiler.start("MoodHandler: Update")
 	self:update_mood_blends(dt)
 	self:update_environment_variables()
-	Profiler.stop("MoodHandler: Update")
 end
 
 MoodHandler.update_mood_blends = function (self, dt)
@@ -255,8 +253,6 @@ MoodHandler.update_environment_variables = function (self)
 end
 
 MoodHandler.apply_environment_variables = function (self, shading_environment)
-	Profiler.start("MoodHandler: Apply Environment Variables")
-
 	local type_map = self.environment_variables_type_map
 	local weight_remainder = self.environment_weight_remainder
 
@@ -292,8 +288,6 @@ MoodHandler.apply_environment_variables = function (self, shading_environment)
 			ShadingEnvironment.set_vector3(shading_environment, var_name, set_value)
 		end
 	end
-
-	Profiler.stop("MoodHandler: Apply Environment Variables")
 end
 
 return

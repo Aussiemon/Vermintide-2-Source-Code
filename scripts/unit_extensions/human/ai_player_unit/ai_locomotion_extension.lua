@@ -261,8 +261,6 @@ AILocomotionExtension.set_movement_type = function (self, movement_type, overrid
 	self.movement_type = movement_type
 	local unit = self._unit
 
-	Profiler.start(movement_type)
-
 	if movement_type == "script_driven" then
 		self._snap_to_navmesh = false
 		self._constrained_by_mover = false
@@ -315,7 +313,6 @@ AILocomotionExtension.set_movement_type = function (self, movement_type, overrid
 				local damage_direction = Vector3(0, 0, -1)
 
 				AiUtils.kill_unit(unit, nil, nil, damage_type, damage_direction)
-				Profiler.stop(movement_type)
 
 				return
 			end
@@ -331,8 +328,6 @@ AILocomotionExtension.set_movement_type = function (self, movement_type, overrid
 		local hit_actors, num_hit_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "capsule", "position", mover_position, "rotation", rotation, "size", size, "collision_filter", "filter_environment_overlap", "use_global_table")
 		self._is_falling = num_hit_actors == 0
 	end
-
-	Profiler.stop(movement_type)
 end
 
 AILocomotionExtension.set_disabled = function (self)

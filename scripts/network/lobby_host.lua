@@ -112,10 +112,6 @@ LobbyHost.update = function (self, dt)
 			LobbyInternal.remove_ping_peer(peer_id)
 		end
 	end
-
-	if script_data.network_debug then
-		self:_update_debug()
-	end
 end
 
 LobbyHost.ping_by_peer = function (self, peer_id)

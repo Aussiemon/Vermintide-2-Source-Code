@@ -61,7 +61,6 @@ ActionHammerSlam.update_is_finished = function (self, dt, t, world, reason)
 
 	if self.slam_hit_time <= t then
 		local locomotion_extension = ScriptUnit.extension(owner_unit, "locomotion_system")
-		local current_velocity = locomotion_extension:current_velocity()
 
 		locomotion_extension:set_forced_velocity(Vector3.zero())
 		locomotion_extension:set_wanted_velocity(Vector3.zero())
@@ -119,7 +118,6 @@ ActionHammerSlam.slam_overlap_callback = function (self, actors)
 			local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
 			local player_rotation = Unit.world_rotation(self.owner_unit_first_person, 0)
 			local direction = Vector3.normalize(Vector3.flat(Quaternion.forward(player_rotation)))
-			local flat_rotation = Quaternion.look(direction)
 			local kill_circle_pos = player_position + direction * (MEDIUM_RADIUS + FORWARD_OFFSET)
 			local destroy_circle_pos = player_position + direction * (SHORT_RADIUS + FORWARD_OFFSET)
 			local distance_to_kill = Vector3.distance(Vector3.flat(POSITION_LOOKUP[hit_unit]), Vector3.flat(kill_circle_pos))
@@ -127,11 +125,10 @@ ActionHammerSlam.slam_overlap_callback = function (self, actors)
 			local in_medium_range = distance_to_kill <= MEDIUM_RADIUS
 			local in_short_range = distance_to_destroy <= SHORT_RADIUS
 			local attack_template_id = (in_short_range and AttackTemplates.hammer_slam_short.lookup_id) or (in_medium_range and AttackTemplates.hammer_slam_medium.lookup_id) or AttackTemplates.hammer_slam_long.lookup_id
-			local attack_template_damage_type_id = 0
 			local weapon_system = Managers.state.entity:system("weapon_system")
 			local damage_source_id = NetworkLookup.damage_sources[self.item_name]
 
-			Managers.state.entity:system("weapon_system"):send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, attack_template_id, hit_zone_id, attack_direction)
+			weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, attack_template_id, hit_zone_id, attack_direction)
 		end
 	end
 

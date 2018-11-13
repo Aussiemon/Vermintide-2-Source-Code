@@ -51,7 +51,7 @@ BTStormVerminAttackAction.enter = function (self, unit, blackboard, t)
 	local should_backstab = breed.use_backstab_vo and is_flanking
 
 	if should_backstab then
-		DialogueSystem:TriggerBackstab(target_unit, unit, blackboard)
+		DialogueSystem:trigger_backstab(target_unit, unit, blackboard)
 
 		blackboard.backstab_attack_trigger = true
 	end
@@ -238,7 +238,7 @@ BTStormVerminAttackAction.anim_cb_attack_vce = function (self, unit, blackboard)
 	local game = network_manager:game()
 
 	if game and blackboard.target_unit_status_extension then
-		DialogueSystem:TriggerAttack(blackboard.target_unit, unit, false, blackboard)
+		DialogueSystem:trigger_attack(blackboard.target_unit, unit, false, blackboard)
 	end
 end
 

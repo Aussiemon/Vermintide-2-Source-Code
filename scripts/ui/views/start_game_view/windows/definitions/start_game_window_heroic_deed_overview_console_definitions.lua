@@ -1,14 +1,47 @@
 local window_default_settings = UISettings.game_start_windows
-local window_background = window_default_settings.background
 local window_frame = window_default_settings.frame
 local window_size = window_default_settings.size
-local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
 local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
 local game_option_size = {
 	window_size[1],
 	194
 }
 local window_text_width = window_size[1]
+local animation_definitions = {
+	on_enter = {
+		{
+			name = "fade_in",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 0
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+				params.render_settings.alpha_multiplier = anim_progress
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	},
+	on_exit = {
+		{
+			name = "fade_out",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 1
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				params.render_settings.alpha_multiplier = 1
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	}
+}
 local scenegraph_definition = {
 	root = {
 		is_root = true,
@@ -394,7 +427,6 @@ local function create_setting_button(scenegraph_id, title_text, input_text, icon
 		icon_offset[2],
 		icon_offset[3] - 1
 	}
-	local icon_texture_frame_settings = UIFrameSettings.menu_frame_03
 	local icon_texture_name = "icon_texture"
 	local icon_texture_frame_name = "icon_texture_frame"
 	passes[#passes + 1] = {
@@ -540,200 +572,6 @@ local function create_setting_button(scenegraph_id, title_text, input_text, icon
 	return widget
 end
 
-local function create_play_option_button(scenegraph_id)
-	local play_button_size = {
-		game_option_size[1] - 100,
-		72
-	}
-	local widget = UIWidgets.create_play_button(scenegraph_id, play_button_size, Localize("start_game_window_play"), 34)
-	local scenegraph_size = scenegraph_definition[scenegraph_id].size
-	widget.offset[1] = scenegraph_size[1] / 2 - play_button_size[1] / 2
-	widget.offset[2] = scenegraph_size[2] / 2 - play_button_size[2] / 2
-
-	return widget
-end
-
-local function create_play_widget(scenegraph_id)
-	local passes = {}
-	local content = {}
-	local style = {}
-	local text_name = "text"
-	local text_name_shadow = text_name .. "_shadow"
-	passes[#passes + 1] = {
-		pass_type = "text",
-		text_id = text_name,
-		style_id = text_name,
-		content_change_function = function (content, style)
-			if content.locked then
-				style.text_color = style.disabled_color
-			else
-				style.text_color = style.normal_color
-			end
-		end
-	}
-	passes[#passes + 1] = {
-		pass_type = "text",
-		text_id = text_name,
-		style_id = text_name_shadow
-	}
-	content[text_name] = Localize("start_game_window_play")
-	local text_offset = {
-		0,
-		6,
-		1
-	}
-	local text_style = {
-		word_wrap = false,
-		upper_case = true,
-		localize = false,
-		font_size = 80,
-		horizontal_alignment = "center",
-		vertical_alignment = "center",
-		font_type = "hell_shark",
-		text_color = Colors.get_color_table_with_alpha("font_title", 255),
-		disabled_color = Colors.get_color_table_with_alpha("dark_gray", 255),
-		normal_color = Colors.get_color_table_with_alpha("font_title", 255),
-		offset = {
-			text_offset[1],
-			text_offset[2],
-			text_offset[3]
-		}
-	}
-	local text_shadow_style = table.clone(text_style)
-	text_shadow_style.text_color = {
-		255,
-		0,
-		0,
-		0
-	}
-	text_shadow_style.offset = {
-		text_offset[1] + 2,
-		text_offset[2] - 2,
-		text_offset[3] - 1
-	}
-	style[text_name] = text_style
-	style[text_name_shadow] = text_shadow_style
-	local divider_name = "divider"
-	passes[#passes + 1] = {
-		pass_type = "texture",
-		texture_id = divider_name,
-		style_id = divider_name
-	}
-	content[divider_name] = "divider_01_top"
-	local size_multiplier = 1.8
-	style[divider_name] = {
-		vertical_alignment = "center",
-		horizontal_alignment = "center",
-		texture_size = {
-			264 * size_multiplier,
-			32 * size_multiplier
-		},
-		color = {
-			255,
-			255,
-			255,
-			255
-		},
-		offset = {
-			0,
-			-50,
-			1
-		}
-	}
-	local input_texture_name = "input_texture"
-	passes[#passes + 1] = {
-		pass_type = "texture",
-		texture_id = input_texture_name,
-		style_id = input_texture_name,
-		content_change_function = function (content, style)
-			if content.locked then
-				style.saturated = true
-			else
-				style.saturated = false
-			end
-		end
-	}
-	content[input_texture_name] = ""
-	style[input_texture_name] = {
-		vertical_alignment = "center",
-		horizontal_alignment = "center",
-		texture_size = {
-			64,
-			64
-		},
-		color = {
-			255,
-			255,
-			255,
-			255
-		},
-		offset = {
-			0,
-			-50,
-			2
-		}
-	}
-	local widget = {
-		element = {
-			passes = passes
-		},
-		content = content,
-		style = style,
-		offset = {
-			0,
-			0,
-			0
-		},
-		scenegraph_id = scenegraph_id
-	}
-
-	return widget
-end
-
-local function create_selector_widget(scenegraph_id)
-	local frame_settings = UIFrameSettings.menu_frame_11
-	local passes = {}
-	local content = {}
-	local style = {}
-	local frame_name = "frame"
-	passes[#passes + 1] = {
-		pass_type = "texture_frame",
-		texture_id = frame_name,
-		style_id = frame_name
-	}
-	content[frame_name] = frame_settings.texture
-	style[frame_name] = {
-		texture_size = frame_settings.texture_size,
-		texture_sizes = frame_settings.texture_sizes,
-		color = {
-			255,
-			255,
-			255,
-			255
-		},
-		offset = {
-			0,
-			0,
-			5
-		}
-	}
-	local widget = {
-		element = {
-			passes = passes
-		},
-		content = content,
-		style = style,
-		offset = {
-			0,
-			0,
-			0
-		},
-		scenegraph_id = scenegraph_id
-	}
-
-	return widget
-end
-
 local heroic_deed_title_style = {
 	font_size = 50,
 	upper_case = true,
@@ -776,42 +614,6 @@ local widgets = {
 	play_button_console = UIWidgets.create_start_game_console_play_button("play_button_console"),
 	play_button = UIWidgets.create_icon_and_name_button("play_button", "options_button_icon_quickplay", Localize("start_game_window_play"))
 }
-local animation_definitions = {
-	on_enter = {
-		{
-			name = "fade_in",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	},
-	on_exit = {
-		{
-			name = "fade_out",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 1
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = 1
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	}
-}
 local selector_input_definition = {
 	"heroic_deed_setting"
 }
@@ -819,8 +621,6 @@ local selector_input_definition = {
 return {
 	scenegraph_definition = scenegraph_definition,
 	widgets = widgets,
-	additional_settings_widgets = additional_settings_widgets,
 	animation_definitions = animation_definitions,
-	selector_input_definition = selector_input_definition,
-	layout_mapping = layout_mapping
+	selector_input_definition = selector_input_definition
 }

@@ -20,6 +20,12 @@ StateTitleScreenInitNetwork.on_enter = function (self, params)
 
 	self:_load_save_data()
 	Managers.transition:show_loading_icon(false)
+
+	local backend_manager = Managers.backend
+
+	if backend_manager:is_disconnected() then
+		backend_manager:reset()
+	end
 end
 
 StateTitleScreenInitNetwork._load_save_data = function (self)

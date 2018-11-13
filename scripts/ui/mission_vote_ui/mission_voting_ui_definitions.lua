@@ -1,11 +1,7 @@
 local window_default_settings = (PLATFORM == "win32" and UISettings.game_start_windows) or UISettings.game_start_windows_console
-local small_window_background = window_default_settings.background
 local window_frame = window_default_settings.frame
 local small_window_size = window_default_settings.size
 local small_window_spacing = window_default_settings.spacing
-local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
-local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
-local window_text_width = small_window_size[1] - window_frame_width * 2
 local window_size = {
 	small_window_size[1] + small_window_spacing * 2,
 	small_window_size[2] + 60
@@ -101,17 +97,6 @@ local scenegraph_definition = {
 			0,
 			0,
 			2
-		}
-	},
-	timer_title = {
-		vertical_alignment = "bottom",
-		parent = "window",
-		horizontal_alignment = "center",
-		size = window_size,
-		position = {
-			0,
-			-30,
-			3
 		}
 	},
 	timer_bg = {
@@ -446,9 +431,6 @@ local function create_settings_option(scenegraph_id, size, title_text, icon_text
 	local frame_name = "menu_frame_08"
 	local frame_settings = UIFrameSettings[frame_name]
 	local frame_width = frame_settings.texture_sizes.corner[1]
-	local glow_frame_name = "frame_outer_glow_01"
-	local glow_frame_settings = UIFrameSettings[glow_frame_name]
-	local glow_frame_width = glow_frame_settings.texture_sizes.corner[1]
 	local widget = {
 		element = {
 			passes = {
@@ -1272,6 +1254,5 @@ return {
 	adventure_game_widgets = adventure_game_widgets,
 	custom_game_widgets = custom_game_widgets,
 	deed_game_widgets = deed_game_widgets,
-	widgets = widgets,
-	console_cursor_definition = UIWidgets.create_console_cursor("console_cursor")
+	widgets = widgets
 }

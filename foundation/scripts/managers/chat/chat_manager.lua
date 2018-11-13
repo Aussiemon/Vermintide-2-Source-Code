@@ -353,7 +353,7 @@ end
 ChatManager.ignore_peer_id = function (self, peer_id)
 	self.peer_ignore_list[peer_id] = true
 
-	if rawget(_G, "Steam") or PLATFORM == "xb1" then
+	if rawget(_G, "Steam") or PLATFORM ~= "win32" then
 		SaveData.chat_ignore_list = self.peer_ignore_list
 
 		Managers.save:auto_save(SaveFileName, SaveData, nil)
@@ -363,7 +363,7 @@ end
 ChatManager.remove_ignore_peer_id = function (self, peer_id)
 	self.peer_ignore_list[peer_id] = nil
 
-	if rawget(_G, "Steam") or PLATFORM == "xb1" then
+	if rawget(_G, "Steam") or PLATFORM ~= "win32" then
 		SaveData.chat_ignore_list = self.peer_ignore_list
 
 		Managers.save:auto_save(SaveFileName, SaveData, nil)
@@ -514,44 +514,6 @@ ChatManager.send_chat_message = function (self, channel_id, local_player_id, mes
 	local localized_message = self:_get_localized_message(message, localize, localization_parameters, localize_parameters)
 
 	self:_add_message_to_list(channel_id, peer_id, local_player_id, localized_message, is_system_message, pop_chat, is_dev, message_type)
-end
-
-ChatManager.send_system_chat_message_to_all_except = function (self, channel_id, message_id, localization_parameters, localize_parameters, excluded_peer_id, pop_chat)
-	fassert(self:has_channel(channel_id), "Haven't registered channel: %s", tostring(channel_id))
-
-	local localize = true
-
-	if type(localization_parameters) ~= "table" then
-		local old_parameter = localization_parameters
-		localization_parameters = FrameTable.alloc_table()
-		localization_parameters[1] = old_parameter
-	end
-
-	local is_system_message = true
-	pop_chat = pop_chat or false
-	local is_dev = false
-
-	if self.is_server then
-		local my_peer_id = self.my_peer_id
-		local members = self:channel_members(channel_id)
-
-		for _, member in pairs(members) do
-			if member ~= my_peer_id and member ~= excluded_peer_id then
-				RPC.rpc_chat_message(member, channel_id, excluded_peer_id, 0, message_id, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev)
-			end
-		end
-	else
-		local host_peer_id = self.host_peer_id
-
-		if host_peer_id then
-			RPC.rpc_chat_message(host_peer_id, channel_id, excluded_peer_id, 0, message_id, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev)
-		end
-	end
-
-	local message_sender = "System"
-	local localized_message = self:_get_localized_message(message_id, localize, localization_parameters, localize_parameters)
-
-	self:_add_message_to_list(channel_id, message_sender, 0, localized_message, is_system_message, pop_chat, is_dev)
 end
 
 ChatManager.send_system_chat_message = function (self, channel_id, message_id, localization_parameters, localize_parameters, pop_chat)

@@ -9000,7 +9000,7 @@ OptionsView.cb_player_outlines = function (self, content)
 	self.changed_user_settings.player_outlines = value
 end
 
-local function AddStepperSetting(setting_name, setter_cb)
+local function AddTobiiStepperSetting(setting_name, setter_cb)
 	local value_set_name = "cb_" .. setting_name
 	local value_setup_name = value_set_name .. "_setup"
 
@@ -9046,14 +9046,15 @@ local function AddStepperSetting(setting_name, setter_cb)
 
 		if setter_cb ~= nil then
 			slot4 = setter_cb
+			slot5 = self
 
 			if content.current_selection ~= 2 then
-				slot5 = false
+				slot6 = false
 			else
-				slot5 = true
+				slot6 = true
 			end
 
-			slot4(slot5)
+			slot4(slot5, slot6)
 		end
 	end
 
@@ -9078,23 +9079,7 @@ local function AddStepperSetting(setting_name, setter_cb)
 	end
 end
 
-tobii_custom_callbacks = {
-	responsiveness = function (value)
-		Tobii.set_extended_view_responsiveness(value)
-	end,
-	use_head_tracking = function (value)
-		Tobii.set_extended_view_use_head_tracking(value)
-	end
-}
-
-AddStepperSetting("tobii_eyetracking")
-AddStepperSetting("tobii_extended_view")
-AddStepperSetting("tobii_extended_view_use_head_tracking", tobii_custom_callbacks.use_head_tracking)
-AddStepperSetting("tobii_aim_at_gaze")
-AddStepperSetting("tobii_fire_at_gaze")
-AddStepperSetting("tobii_clean_ui")
-
-local function AddSliderSetting(setting_name, setting_min, setting_max, num_decimals, setter_cb)
+local function AddTobiiSliderSetting(setting_name, setting_min, setting_max, num_decimals, setter_cb)
 	local value_set_name = "cb_" .. setting_name
 	local value_setup_name = value_set_name .. "_setup"
 
@@ -9113,7 +9098,7 @@ local function AddSliderSetting(setting_name, setting_min, setting_max, num_deci
 		self.changed_user_settings[setting_name] = content.value
 
 		if setter_cb ~= nil then
-			setter_cb(content.internal_value)
+			setter_cb(self, content.internal_value)
 		end
 	end
 
@@ -9128,7 +9113,25 @@ local function AddSliderSetting(setting_name, setting_min, setting_max, num_deci
 	end
 end
 
-AddSliderSetting("tobii_extended_view_sensitivity", 1, 100, 0, tobii_custom_callbacks.responsiveness)
+local tobii_custom_callbacks = {
+	responsiveness = function (self, value)
+		Tobii.set_extended_view_responsiveness(value)
+	end,
+	use_head_tracking = function (self, value)
+		Tobii.set_extended_view_use_head_tracking(value)
+	end,
+	use_clean_ui = function (self, value)
+		self.ingame_ui.ingame_hud:enable_clean_ui(value)
+	end
+}
+
+AddTobiiStepperSetting("tobii_eyetracking")
+AddTobiiStepperSetting("tobii_extended_view")
+AddTobiiStepperSetting("tobii_extended_view_use_head_tracking", tobii_custom_callbacks.use_head_tracking)
+AddTobiiStepperSetting("tobii_aim_at_gaze")
+AddTobiiStepperSetting("tobii_fire_at_gaze")
+AddTobiiStepperSetting("tobii_clean_ui", tobii_custom_callbacks.use_clean_ui)
+AddTobiiSliderSetting("tobii_extended_view_sensitivity", 1, 100, 0, tobii_custom_callbacks.responsiveness)
 
 local function get_button_locale_name(controller_type, button_name)
 	local button_locale_name = nil

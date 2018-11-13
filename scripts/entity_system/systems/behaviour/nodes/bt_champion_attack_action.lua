@@ -821,7 +821,11 @@ BTChampionAttackAction._catapult_players = function (self, unit, blackboard, act
 	end
 
 	for _, data in ipairs(catapulted_players) do
-		self:_catapult_player(unit, shove_speed, shove_z_speed, data.target_unit, data.blocked, data.direction:unbox())
+		local target_unit = data.target_unit
+
+		if Unit.alive(target_unit) then
+			self:_catapult_player(unit, shove_speed, shove_z_speed, target_unit, data.blocked, data.direction:unbox())
+		end
 	end
 
 	table.clear(catapulted_players)

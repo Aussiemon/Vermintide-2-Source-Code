@@ -1,8 +1,6 @@
 require("scripts/unit_extensions/default_player_unit/charge/overcharge_data")
 
 PlayerUnitOverchargeExtension = class(PlayerUnitOverchargeExtension)
-script_data.overcharge_debug = script_data.overcharge_debug or Development.parameter("overcharge_debug")
-script_data.disable_overcharge = script_data.disable_overcharge or Development.parameter("disable_overcharge")
 
 PlayerUnitOverchargeExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.world = extension_init_context.world
@@ -95,11 +93,24 @@ PlayerUnitOverchargeExtension.reset = function (self)
 	self:set_animation_variable()
 end
 
-PlayerUnitOverchargeExtension.destroy = function (self)
-	if self.onscreen_particles_id then
-		World.destroy_particles(self.world, self.onscreen_particles_id)
-		World.destroy_particles(self.world, self.critical_onscreen_particles_id)
+PlayerUnitOverchargeExtension._destroy_all_screen_space_particles = function (self)
+	self:_destroy_screen_space_particles(self.onscreen_particles_id)
+
+	self.onscreen_particles_id = nil
+
+	self:_destroy_screen_space_particles(self.critical_onscreen_particles_id)
+
+	self.critical_onscreen_particles_id = nil
+end
+
+PlayerUnitOverchargeExtension._destroy_screen_space_particles = function (self, particle_id)
+	if particle_id then
+		World.destroy_particles(self.world, particle_id)
 	end
+end
+
+PlayerUnitOverchargeExtension.destroy = function (self)
+	self:_destroy_all_screen_space_particles()
 
 	local buff_extension = self.buff_extension
 	local overcharged_critical_buff_id = self.overcharged_critical_buff_id
@@ -155,8 +166,10 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 		local wielder = self.unit
 		local vent_speed = buff_extension:apply_buffs_to_value(dt, StatBuffIndex.VENT_SPEED)
 		local vent_amount = self.overcharge_value * self.original_max_value / 80 * vent_speed
+		local current_overcharge_value = self.overcharge_value
+		local new_overcharge_value = current_overcharge_value - vent_amount
+		self.overcharge_value = new_overcharge_value
 		self.vent_damage_pool = self.vent_damage_pool + vent_amount * 2
-		self.overcharge_value = self.overcharge_value - vent_amount
 
 		if self.vent_damage_pool >= 20 and not self.no_damage and self.overcharge_threshold < self.overcharge_value then
 			local damage_amount = 2 + self.overcharge_value / 12
@@ -205,7 +218,8 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 				self:add_charge(1)
 			end
 
-			self.overcharge_value = math.min(math.max(0, value), self.max_value)
+			local new_overcharge_value = math.min(math.max(0, value), self.max_value)
+			self.overcharge_value = new_overcharge_value
 			local overcharged_critical_buff_id = self.overcharged_critical_buff_id
 			local overcharged_buff_id = self.overcharged_buff_id
 
@@ -260,64 +274,57 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 			self._overcharge_rumble_effect_id = nil
 		end
 
+		self:_destroy_all_screen_space_particles()
+
 		self.has_overcharge = false
 	end
 
 	local owner_player = Managers.player:owner(self.unit)
 	local is_bot = owner_player and owner_player.bot_player
 
-	if not is_bot then
-		local world = self.world
-		local wwise_world = Managers.world:wwise_world(world)
+	if self.has_overcharge and not is_bot then
 		local overcharge_fraction = self:overcharge_fraction()
 
-		WwiseWorld.set_global_parameter(wwise_world, "overcharge_status", overcharge_fraction)
+		if overcharge_fraction > 0 then
+			local world = self.world
+			local wwise_world = Managers.world:wwise_world(world)
 
-		if not self.onscreen_particles_id and Development.parameter("screen_space_player_camera_reactions") ~= false then
-			local first_person_extension = self.first_person_extension
-			self.onscreen_particles_id = first_person_extension:create_screen_particles("fx/screenspace_overheat_indicator")
-			self.critical_onscreen_particles_id = first_person_extension:create_screen_particles("fx/screenspace_overheat_critical")
-		end
+			WwiseWorld.set_global_parameter(wwise_world, "overcharge_status", overcharge_fraction)
 
-		local onscreen_particles_id = self.onscreen_particles_id
+			local is_above_critical_limit = self:is_above_critical_limit()
 
-		if onscreen_particles_id then
-			local charge_effect_material_name = "overlay"
-			local charge_effect_material_variable_name = "intensity"
+			if Development.parameter("screen_space_player_camera_reactions") ~= false then
+				local first_person_extension = self.first_person_extension
 
-			World.set_particles_material_scalar(world, onscreen_particles_id, charge_effect_material_name, charge_effect_material_variable_name, overcharge_fraction * self._screen_particle_opacity_modifier)
+				if not self.onscreen_particles_id then
+					self.onscreen_particles_id = first_person_extension:create_screen_particles("fx/screenspace_overheat_indicator")
+				end
 
-			local critical_onscreen_particles_id = self.critical_onscreen_particles_id
+				if not self.critical_onscreen_particles_id and is_above_critical_limit then
+					self.critical_onscreen_particles_id = first_person_extension:create_screen_particles("fx/screenspace_overheat_critical")
+				end
 
-			if self:is_above_critical_limit() then
-				local critical_scalar = math.min(1, (self.overcharge_value - self.overcharge_critical_limit) / (self.max_value - self.overcharge_critical_limit) * 2)
+				local material_name = "overlay"
+				local material_variable_name = "intensity"
+				local modifier = self._screen_particle_opacity_modifier
 
-				World.set_particles_material_scalar(world, critical_onscreen_particles_id, charge_effect_material_name, charge_effect_material_variable_name, critical_scalar * self._screen_particle_opacity_modifier)
-			else
-				World.set_particles_material_scalar(world, critical_onscreen_particles_id, charge_effect_material_name, charge_effect_material_variable_name, 0)
+				World.set_particles_material_scalar(world, self.onscreen_particles_id, material_name, material_variable_name, overcharge_fraction * modifier)
+
+				if is_above_critical_limit then
+					local critical_fraction = math.min(1, (self.overcharge_value - self.overcharge_critical_limit) / (self.max_value - self.overcharge_critical_limit) * 2)
+
+					World.set_particles_material_scalar(world, self.critical_onscreen_particles_id, material_name, material_variable_name, critical_fraction * modifier)
+				else
+					self:_destroy_screen_space_particles(self.critical_onscreen_particles_id)
+
+					self.critical_onscreen_particles_id = nil
+				end
 			end
-		end
-	end
-
-	if script_data.overcharge_debug then
-		if DebugKeyHandler.key_pressed("v", "fill overcharge", "player", "left shift") then
-			local amount = PlayerUnitStatusSettings.overcharge_values.overcharge_debug_value
-
-			self:add_charge(amount)
-
-			local profile_index = owner_player and owner_player:profile_index()
-			local profile_abbreviation = SPProfilesAbbreviation[profile_index] or ""
-
-			Debug.text("%s : Overcharge: %.2f/%.2f ( %.2f | %.2f)", profile_abbreviation, self.overcharge_value, self.max_value, self.overcharge_limit, self.overcharge_critical_limit)
 		end
 	end
 end
 
 PlayerUnitOverchargeExtension.add_charge = function (self, overcharge_amount, charge_level)
-	if script_data.disable_overcharge then
-		return
-	end
-
 	local buff_extension = self.buff_extension
 
 	if buff_extension:has_buff_type("twitch_no_overcharge_no_ammo_reloads") then

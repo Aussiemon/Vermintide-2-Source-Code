@@ -229,40 +229,14 @@ AIBotGroupSystem.update = function (self, context, t)
 	self._t = t
 	local dt = context.dt
 
-	Profiler.start("_update_proximity_bot_breakables")
 	self:_update_proximity_bot_breakables(t)
-	Profiler.stop("_update_proximity_bot_breakables")
-	Profiler.start("_update_urgent_targets")
 	self:_update_urgent_targets(dt, t)
-	Profiler.stop("_update_urgent_targets")
-	Profiler.start("_update_opportunity_targets")
 	self:_update_opportunity_targets(dt, t)
-	Profiler.stop("_update_opportunity_targets")
-	Profiler.start("_update_existence_checks")
 	self:_update_existence_checks(dt, t)
-	Profiler.stop("_update_existence_checks")
-	Profiler.start("_update_move_targets")
 	self:_update_move_targets(dt, t)
-	Profiler.stop("_update_move_targets")
-	Profiler.start("_update_priority_targets")
 	self:_update_priority_targets(dt, t)
-	Profiler.stop("_update_priority_targets")
-	Profiler.start("_update_pickups")
 	self:_update_pickups(dt, t)
-	Profiler.stop("_update_pickups")
-	self:_update_order_debug()
-	Profiler.start("_update_proximity_bot_breakables_debug")
-	self:_update_proximity_bot_breakables_debug()
-	Profiler.stop("_update_proximity_bot_breakables_debug")
-	Profiler.start("_update_first_person_debug")
-	self:_update_first_person_debug()
-	Profiler.stop("_update_first_person_debug")
-	Profiler.start("_update_weapon_debug")
-	self:_update_weapon_debug()
-	Profiler.stop("_update_weapon_debug")
-	Profiler.start("_update_ally_needs_aid_priority")
 	self:_update_ally_needs_aid_priority()
-	Profiler.stop("_update_ally_needs_aid_priority")
 end
 
 AIBotGroupSystem.bot_orders = {
@@ -932,13 +906,6 @@ AIBotGroupSystem._find_destination_points_outside_volume = function (self, nav_w
 	local rotation = Quaternion.look(dir, Vector3.up())
 	local space_per_player = range - 1
 	local points = self:_find_points(nav_world, Vector3(center_point[1], center_point[2], selected_unit_pos[3]), rotation, self._left_vectors_outside_volume, self._right_vectors_outside_volume, space_per_player, range, needed_points)
-
-	if script_data.ai_bots_debug then
-		for k, v in ipairs(points) do
-			QuickDrawer:sphere(v, 0.3, Color(255, 0, 255))
-		end
-	end
-
 	local num_points = #points
 	local current_index = 1
 	local last_point = points[current_index]
@@ -958,12 +925,6 @@ AIBotGroupSystem._find_destination_points = function (self, nav_world, origin_po
 	local range = 3
 	local space_per_player = 1
 	local points = self:_find_points(nav_world, origin_point, rotation, self._left_vectors, self._right_vectors, space_per_player, range, needed_points)
-
-	if script_data.ai_bots_debug then
-		for k, v in ipairs(points) do
-			QuickDrawer:sphere(v, 0.3, Color(255, 0, 255))
-		end
-	end
 
 	if needed_points > #points then
 		for i = #points + 1, needed_points, 1 do
@@ -1018,10 +979,6 @@ AIBotGroupSystem._raycast = function (self, nav_world, point, vector, range)
 	local ray_range = range + SPACE_NEEDED
 	local to = point + vector * ray_range
 	local success, pos = GwNavQueries.raycast(nav_world, point, to)
-
-	if script_data.ai_bots_debug then
-		QuickDrawer:line(point, point + vector * ray_range + Vector3(0, 0, 0.1), Color(255, 0, 0))
-	end
 
 	if success then
 		return range, pos - vector * SPACE_NEEDED, true
@@ -1295,8 +1252,6 @@ end
 AIBotGroupSystem._update_pickups = function (self, dt, t)
 	local players = Managers.player:players()
 
-	Profiler.start("do overlaps")
-
 	if self._update_pickups_at < t then
 		self._update_pickups_at = t + 0.15 + Math.random() * 0.1
 		local last_key = self._last_key_in_available_pickups
@@ -1319,14 +1274,9 @@ AIBotGroupSystem._update_pickups = function (self, dt, t)
 		end
 	end
 
-	Profiler.stop("do overlaps")
 	self:_update_orders(dt, t)
-	Profiler.start("update who takes what health")
 	self:_update_health_pickups(dt, t)
-	Profiler.stop("update who takes what health")
-	Profiler.start("update who takes what mule pickup")
 	self:_update_mule_pickups(dt, t)
-	Profiler.stop("update who takes what mule pickup")
 end
 
 local PICKUP_CHECK_RANGE = 15
@@ -2302,10 +2252,6 @@ AIBotGroupSystem.in_cover = function (self, cover_unit)
 end
 
 local EPSILON = 0.01
-local debug_drawer_info = {
-	mode = "retained",
-	name = "AIBotGroupSystem:aoe_threat_created"
-}
 
 local function detect_cylinder(nav_world, traverse_logic, bot_position, bot_height, bot_radius, x, y, z, rotation, size)
 	local bot_x = bot_position.x
@@ -2316,14 +2262,6 @@ local function detect_cylinder(nav_world, traverse_logic, bot_position, bot_heig
 	local flat_dist_from_center = math.sqrt(offset_x * offset_x + offset_y * offset_y)
 	local radius = math.max(size.x, size.y)
 	local half_height = size.z
-
-	if script_data.ai_bots_aoe_threat_debug then
-		local cylinder_position = Vector3(x, y, z - half_height)
-		local drawer = Managers.state.debug:drawer(debug_drawer_info)
-
-		drawer:reset()
-		drawer:cylinder(cylinder_position, cylinder_position + Vector3.up() * 2 * half_height, radius, Colors.get("red"))
-	end
 
 	if flat_dist_from_center <= radius + bot_radius and bot_z > z - bot_height - half_height and bot_z < z + half_height then
 		local escape_dist = radius - flat_dist_from_center
@@ -2360,14 +2298,6 @@ local function detect_sphere(nav_world, traverse_logic, bot_position, bot_height
 	local offset_x = bot_x - sphere_x
 	local offset_y = bot_y - sphere_y
 	local flat_dist_from_center = math.sqrt(offset_x * offset_x + offset_y * offset_y)
-
-	if script_data.ai_bots_aoe_threat_debug then
-		local sphere_position = Vector3(sphere_x, sphere_y, sphere_z)
-		local drawer = Managers.state.debug:drawer(debug_drawer_info)
-
-		drawer:reset()
-		drawer:sphere(sphere_position, sphere_radius, Colors.get("red"))
-	end
 
 	if flat_dist_from_center > sphere_radius + bot_radius then
 		return
@@ -2409,14 +2339,6 @@ local function detect_oobb(nav_world, traverse_logic, bot_position, bot_height, 
 	local extents_x = extents.x + bot_radius
 	local extents_y = extents.y + bot_radius
 	local extents_z = extents.z + half_bot_height
-
-	if script_data.ai_bots_aoe_threat_debug then
-		local oobb_position = Vector3(x, y, z)
-		local drawer = Managers.state.debug:drawer(debug_drawer_info)
-
-		drawer:reset()
-		drawer:oobb_overlap(oobb_position, extents, rotation, Colors.get("red"))
-	end
 
 	if extents_x < x_offset or x_offset < -extents_x or extents_y < y_offset or y_offset < -extents_y or extents_z < z_offset or z_offset < -extents_z then
 		return

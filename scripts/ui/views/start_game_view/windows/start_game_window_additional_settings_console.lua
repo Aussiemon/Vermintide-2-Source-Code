@@ -3,17 +3,6 @@ local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local gamepad_widget_navigation = definitions.gamepad_widget_navigation
-local DO_RELOAD = false
-local private_settings = {
-	{
-		value = false,
-		display_name = Localize("start_game_window_other_options_public")
-	},
-	{
-		value = true,
-		display_name = Localize("start_game_window_other_options_private")
-	}
-}
 StartGameWindowAdditionalSettingsConsole = class(StartGameWindowAdditionalSettingsConsole)
 StartGameWindowAdditionalSettingsConsole.NAME = "StartGameWindowAdditionalSettingsConsole"
 
@@ -36,7 +25,6 @@ StartGameWindowAdditionalSettingsConsole.on_enter = function (self, params, offs
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
 	self._animations = {}
-	self._ui_animations = {}
 
 	self:create_ui_elements(params, offset)
 	self:_update_additional_options()
@@ -58,7 +46,8 @@ StartGameWindowAdditionalSettingsConsole._start_transition_animation = function 
 end
 
 StartGameWindowAdditionalSettingsConsole.create_ui_elements = function (self, params, offset)
-	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+	local ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+	self.ui_scenegraph = ui_scenegraph
 	local widgets = {}
 	local widgets_by_name = {}
 
@@ -73,10 +62,10 @@ StartGameWindowAdditionalSettingsConsole.create_ui_elements = function (self, pa
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
-	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
+	self.ui_animator = UIAnimator:new(ui_scenegraph, animation_definitions)
 
 	if offset then
-		local window_position = self.ui_scenegraph.window.local_position
+		local window_position = ui_scenegraph.window.local_position
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -113,12 +102,6 @@ StartGameWindowAdditionalSettingsConsole.set_focus = function (self, focused)
 end
 
 StartGameWindowAdditionalSettingsConsole.update = function (self, dt, t)
-	if DO_RELOAD then
-		DO_RELOAD = false
-
-		self:create_ui_elements()
-	end
-
 	if self._additional_option_enabled then
 		self:_update_additional_options()
 	end
@@ -138,19 +121,11 @@ StartGameWindowAdditionalSettingsConsole.post_update = function (self, dt, t)
 end
 
 StartGameWindowAdditionalSettingsConsole._update_animations = function (self, dt)
-	local ui_animations = self._ui_animations
-	local animations = self._animations
 	local ui_animator = self.ui_animator
 
-	for name, animation in pairs(ui_animations) do
-		UIAnimation.update(animation, dt)
-
-		if UIAnimation.completed(animation) then
-			ui_animations[name] = nil
-		end
-	end
-
 	ui_animator:update(dt)
+
+	local animations = self._animations
 
 	for animation_name, animation_id in pairs(animations) do
 		if ui_animator:is_animation_completed(animation_id) then
@@ -158,19 +133,6 @@ StartGameWindowAdditionalSettingsConsole._update_animations = function (self, dt
 
 			animations[animation_name] = nil
 		end
-	end
-
-	local widgets_by_name = self._widgets_by_name
-end
-
-StartGameWindowAdditionalSettingsConsole._is_button_pressed = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	if hotspot.on_release then
-		hotspot.on_release = false
-
-		return true
 	end
 end
 
@@ -182,49 +144,6 @@ StartGameWindowAdditionalSettingsConsole._is_button_released = function (self, w
 		hotspot.on_release = false
 
 		return true
-	end
-end
-
-StartGameWindowAdditionalSettingsConsole._is_stepper_button_pressed = function (self, widget)
-	local content = widget.content
-	local hotspot_left = content.button_hotspot_left
-	local hotspot_right = content.button_hotspot_right
-
-	if hotspot_left.on_release then
-		hotspot_left.on_release = false
-
-		return true, -1
-	elseif hotspot_right.on_release then
-		hotspot_right.on_release = false
-
-		return true, 1
-	end
-end
-
-StartGameWindowAdditionalSettingsConsole._is_tab_pressed = function (self, widget)
-	local widget_content = widget.content
-	local amount = widget_content.amount
-
-	for i = 1, amount, 1 do
-		local name_sufix = "_" .. tostring(i)
-		local hotspot_name = "hotspot" .. name_sufix
-		local hotspot_content = widget_content[hotspot_name]
-
-		if hotspot_content.on_release and not hotspot_content.is_selected then
-			return i
-		end
-	end
-end
-
-StartGameWindowAdditionalSettingsConsole._select_tab_by_index = function (self, widget, index)
-	local widget_content = widget.content
-	local amount = widget_content.amount
-
-	for i = 1, amount, 1 do
-		local name_sufix = "_" .. tostring(i)
-		local hotspot_name = "hotspot" .. name_sufix
-		local hotspot_content = widget_content[hotspot_name]
-		hotspot_content.is_selected = i == index
 	end
 end
 
@@ -247,13 +166,6 @@ StartGameWindowAdditionalSettingsConsole._is_button_hover_exit = function (self,
 	local hotspot = content.button_hotspot
 
 	return hotspot.on_hover_exit
-end
-
-StartGameWindowAdditionalSettingsConsole._is_button_selected = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	return hotspot.is_selected
 end
 
 StartGameWindowAdditionalSettingsConsole._is_other_option_button_selected = function (self, widget, current_option)
@@ -319,8 +231,8 @@ StartGameWindowAdditionalSettingsConsole._handle_gamepad_input = function (self,
 	for i = 1, num_inputs, 1 do
 		local widget_name = gamepad_widget_navigation[i]
 		local widget = widgets_by_name[widget_name]
-		local is_selected = i == input_index
 		local hotspot = widget.content.button_hotspot
+		local is_selected = i == input_index
 		hotspot.is_hover = is_selected
 
 		if is_selected then
@@ -334,7 +246,6 @@ StartGameWindowAdditionalSettingsConsole._handle_gamepad_input = function (self,
 end
 
 StartGameWindowAdditionalSettingsConsole._handle_mouse_input = function (self, dt, t, input_service)
-	local input_index = self._input_index
 	local widgets_by_name = self._widgets_by_name
 	local option_tooltip = widgets_by_name.option_tooltip
 	local is_hovered = false
@@ -343,8 +254,6 @@ StartGameWindowAdditionalSettingsConsole._handle_mouse_input = function (self, d
 	for i = 1, num_inputs, 1 do
 		local widget_name = gamepad_widget_navigation[i]
 		local widget = widgets_by_name[widget_name]
-		local is_selected = i == input_index
-		local hotspot = widget.content.button_hotspot
 
 		if self:_is_button_hover_enter(widget) then
 			option_tooltip.content.text = widget.content.tooltip_info.description
@@ -362,17 +271,18 @@ end
 
 StartGameWindowAdditionalSettingsConsole._handle_input = function (self, dt, t)
 	local parent = self.parent
-	local widgets_by_name = self._widgets_by_name
-	local gamepad_active = Managers.input:is_device_active("gamepad")
-	local input_service = self.parent:window_input_service()
+	local input_service = parent:window_input_service()
 
 	if self._additional_option_enabled then
+		local gamepad_active = Managers.input:is_device_active("gamepad")
+
 		if gamepad_active then
 			self:_handle_gamepad_input(dt, t, input_service)
 		else
 			self:_handle_mouse_input(dt, t, input_service)
 		end
 
+		local widgets_by_name = self._widgets_by_name
 		local host_button = widgets_by_name.host_button
 		local private_button = widgets_by_name.private_button
 		local strict_matchmaking_button = widgets_by_name.strict_matchmaking_button
@@ -417,42 +327,6 @@ StartGameWindowAdditionalSettingsConsole._play_sound = function (self, event)
 	self.parent:play_sound(event)
 end
 
-StartGameWindowAdditionalSettingsConsole._update_game_options_hover_effect = function (self)
-	local widgets_by_name = self._widgets_by_name
-	local widget_prefix = "game_option_"
-
-	for i = 1, 2, 1 do
-		local widget_name = widget_prefix .. i
-		local widget = widgets_by_name[widget_name]
-
-		if self:_is_button_hover_enter(widget) then
-			self:_on_option_button_hover_enter(i)
-		elseif self:_is_button_hover_exit(widget) then
-			self:_on_option_button_hover_exit(i)
-		end
-	end
-end
-
-StartGameWindowAdditionalSettingsConsole._on_option_button_hover_enter = function (self, index, instant)
-	local widgets_by_name = self._widgets_by_name
-	local widget_name = "game_option_" .. index
-	local widget = widgets_by_name[widget_name]
-
-	self:_create_style_animation_enter(widget, 255, "glow", index, instant)
-	self:_create_style_animation_enter(widget, 255, "icon_glow", index, instant)
-	self:_create_style_animation_exit(widget, 0, "button_hover_rect", index, instant)
-end
-
-StartGameWindowAdditionalSettingsConsole._on_option_button_hover_exit = function (self, index, instant)
-	local widgets_by_name = self._widgets_by_name
-	local widget_name = "game_option_" .. index
-	local widget = widgets_by_name[widget_name]
-
-	self:_create_style_animation_exit(widget, 0, "glow", index, instant)
-	self:_create_style_animation_exit(widget, 0, "icon_glow", index, instant)
-	self:_create_style_animation_enter(widget, 30, "button_hover_rect", index, instant)
-end
-
 StartGameWindowAdditionalSettingsConsole._update_additional_options = function (self)
 	local parent = self.parent
 	local private_enabled = parent:is_private_option_enabled()
@@ -467,16 +341,16 @@ StartGameWindowAdditionalSettingsConsole._update_additional_options = function (
 		local widgets_by_name = self._widgets_by_name
 		local private_is_selected = private_enabled
 		local private_is_disabled = twitch_active
-		local always_host_is_selected = private_enabled or not is_alone or always_host_enabled
-		local always_host_is_disabled = private_enabled or not is_alone or twitch_active
-		local strict_matchmaking_is_selected = not always_host_enabled and not private_enabled and is_alone and strict_matchmaking_enabled
-		local strict_matchmaking_is_disabled = private_enabled or always_host_enabled or not is_alone or twitch_active
 		local private_hotspot = widgets_by_name.private_button.content.button_hotspot
 		private_hotspot.disable_button = private_is_disabled
 		private_hotspot.is_selected = private_is_selected
+		local always_host_is_selected = private_enabled or not is_alone or always_host_enabled
+		local always_host_is_disabled = private_enabled or not is_alone or twitch_active
 		local host_hotspot = widgets_by_name.host_button.content.button_hotspot
 		host_hotspot.disable_button = always_host_is_disabled
 		host_hotspot.is_selected = always_host_is_selected
+		local strict_matchmaking_is_selected = not always_host_enabled and not private_enabled and is_alone and strict_matchmaking_enabled
+		local strict_matchmaking_is_disabled = private_enabled or always_host_enabled or not is_alone or twitch_active
 		local strict_matchmaking_hotspot = widgets_by_name.strict_matchmaking_button.content.button_hotspot
 		strict_matchmaking_hotspot.disable_button = strict_matchmaking_is_disabled
 		strict_matchmaking_hotspot.is_selected = strict_matchmaking_is_selected
@@ -488,11 +362,6 @@ StartGameWindowAdditionalSettingsConsole._update_additional_options = function (
 	end
 end
 
-StartGameWindowAdditionalSettingsConsole._exit = function (self, selected_level)
-	self.exit = true
-	self.exit_level_id = selected_level
-end
-
 StartGameWindowAdditionalSettingsConsole.draw = function (self, dt)
 	local ui_top_renderer = self._ui_top_renderer
 	local ui_scenegraph = self.ui_scenegraph
@@ -500,97 +369,29 @@ StartGameWindowAdditionalSettingsConsole.draw = function (self, dt)
 
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
 
-	for _, widget in ipairs(self._widgets) do
+	local widgets = self._widgets
+
+	for i = 1, #widgets, 1 do
+		local widget = widgets[i]
+
 		UIRenderer.draw_widget(ui_top_renderer, widget)
-	end
-
-	local active_node_widgets = self._active_node_widgets
-
-	if active_node_widgets then
-		for _, widget in ipairs(active_node_widgets) do
-			UIRenderer.draw_widget(ui_top_renderer, widget)
-		end
 	end
 
 	UIRenderer.end_pass(ui_top_renderer)
 end
 
-StartGameWindowAdditionalSettingsConsole._create_style_animation_enter = function (self, widget, target_value, style_id, widget_index, instant)
-	local ui_animations = self._ui_animations
-	local animation_name = "game_option_" .. style_id
-	local widget_style = widget.style
-	local pass_style = widget_style[style_id]
-
-	if not pass_style then
-		return
-	end
-
-	local current_color_value = pass_style.color[1]
-	local target_color_value = target_value
-	local total_time = 0.2
-	local animation_duration = (1 - current_color_value / target_color_value) * total_time
-
-	if animation_duration > 0 and not instant then
-		ui_animations[animation_name .. "_hover_" .. widget_index] = self:_animate_element_by_time(pass_style.color, 1, current_color_value, target_color_value, animation_duration)
-	else
-		pass_style.color[1] = target_color_value
-	end
-end
-
-StartGameWindowAdditionalSettingsConsole._create_style_animation_exit = function (self, widget, target_value, style_id, widget_index, instant)
-	local ui_animations = self._ui_animations
-	local animation_name = "game_option_" .. style_id
-	local widget_style = widget.style
-	local pass_style = widget_style[style_id]
-
-	if not pass_style then
-		return
-	end
-
-	local current_color_value = pass_style.color[1]
-	local target_color_value = target_value
-	local total_time = 0.2
-	local animation_duration = current_color_value / 255 * total_time
-
-	if animation_duration > 0 and not instant then
-		ui_animations[animation_name .. "_hover_" .. widget_index] = self:_animate_element_by_time(pass_style.color, 1, current_color_value, target_color_value, animation_duration)
-	else
-		pass_style.color[1] = target_color_value
-	end
-end
-
-StartGameWindowAdditionalSettingsConsole._animate_pulse = function (self, target, target_index, from, to, speed)
-	local new_animation = UIAnimation.init(UIAnimation.pulse_animation, target, target_index, from, to, speed)
-
-	return new_animation
-end
-
-StartGameWindowAdditionalSettingsConsole._animate_element_by_time = function (self, target, target_index, from, to, time)
-	local new_animation = UIAnimation.init(UIAnimation.function_by_time, target, target_index, from, to, time, math.ease_out_quad)
-
-	return new_animation
-end
-
-StartGameWindowAdditionalSettingsConsole._animate_element_by_catmullrom = function (self, target, target_index, target_value, p0, p1, p2, p3, time)
-	local new_animation = UIAnimation.init(UIAnimation.catmullrom, target, target_index, target_value, p0, p1, p2, p3, time)
-
-	return new_animation
-end
-
 StartGameWindowAdditionalSettingsConsole._handle_gamepad_activity = function (self)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local force_update = self.gamepad_active_last_frame == nil
+	local gamepad_active = Managers.input:is_device_active("gamepad")
 
 	if gamepad_active then
 		if not self.gamepad_active_last_frame or force_update then
 			self.gamepad_active_last_frame = true
-			local widgets_by_name = self._widgets_by_name
 			self.render_settings.alpha_multiplier = 0
 			self.ui_scenegraph.window.local_position[2] = 10
 		end
 	elseif self.gamepad_active_last_frame or force_update then
 		self.gamepad_active_last_frame = false
-		local widgets_by_name = self._widgets_by_name
 
 		if self._is_focused then
 			self.parent:set_window_input_focus("custom_game_overview")

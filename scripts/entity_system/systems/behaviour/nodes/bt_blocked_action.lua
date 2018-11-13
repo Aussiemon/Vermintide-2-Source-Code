@@ -68,8 +68,6 @@ BTBlockedAction.run = function (self, unit, blackboard, t, dt)
 	local locomotion_extension = blackboard.locomotion_extension
 
 	if locomotion_extension.movement_type ~= "constrained_by_mover" and not blackboard.stagger_hit_wall then
-		Profiler.start("checking navmesh")
-
 		local position = POSITION_LOOKUP[unit]
 		local velocity = locomotion_extension:current_velocity()
 		local nav_world = blackboard.nav_world
@@ -88,22 +86,11 @@ BTBlockedAction.run = function (self, unit, blackboard, t, dt)
 			local successful = locomotion_extension:set_movement_type("constrained_by_mover", override_mover_move_distance, ignore_forced_mover_kill)
 
 			if not successful then
-				local mover = Unit.mover(unit)
-				local radius = Mover.radius(mover)
-
-				QuickDrawerStay:sphere(position, radius, Colors.get("red"))
-				QuickDrawerStay:line(position, position + Vector3(0, 0, 5), Colors.get("red"))
-
-				local debug_text = string.format("LD should check the Navmesh here, Mover separation failed for %s!", breed.name)
-
-				Debug.world_sticky_text(position + Vector3(0, 0, 5), debug_text, "red")
 				locomotion_extension:set_movement_type("snap_to_navmesh")
 
 				blackboard.stagger_hit_wall = true
 			end
 		end
-
-		Profiler.stop("checking navmesh")
 	end
 
 	return "running"

@@ -18,9 +18,7 @@ end
 
 ActionBow.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
 	local owner_unit = self.owner_unit
-	local weapon_unit = self.weapon_unit
 	local first_person_unit = self.first_person_unit
-	local owner_career_extension = ScriptUnit.has_extension(owner_unit, "career_system")
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	self.owner_buff_extension = buff_extension
@@ -155,7 +153,6 @@ ActionBow.fire = function (self, current_action, add_spread)
 	local speed = current_action.speed
 	local rotation = first_person_extension:current_rotation()
 	local position = first_person_extension:current_position()
-	local auto_hit_chance = current_action.aim_assist_auto_hit_chance or 0
 	local spread_extension = self.spread_extension
 
 	if spread_extension then
@@ -167,9 +164,7 @@ ActionBow.fire = function (self, current_action, add_spread)
 	end
 
 	local angle = ActionUtils.pitch_from_rotation(rotation)
-	local position = first_person_extension:current_position()
 	local target_vector = Vector3.normalize(Vector3.flat(Quaternion.forward(rotation)))
-	local projectile_info = current_action.projectile_info
 	local lookup_data = current_action.lookup_data
 
 	ActionUtils.spawn_player_projectile(owner_unit, position, rotation, 0, angle, target_vector, speed, self.item_name, lookup_data.item_template_name, lookup_data.action_name, lookup_data.sub_action_name, self._is_critical_strike, self.power_level)

@@ -490,15 +490,6 @@ local function cb_special_spawned(unit, breed, optional_data)
 	slot.unit = unit
 	slot.state = "alive"
 	alive_specials[#alive_specials + 1] = unit
-
-	if script_data.debug_player_intensity then
-		Managers.state.conflict.pacing:annotate_graph(breed, "purple")
-
-		local parent = optional_data.parent
-		local num_spawned_specials = parent._debug_num_spawned_specials or 1
-		num_spawned_specials = num_spawned_specials + 1
-		parent._debug_num_spawned_specials = num_spawned_specials
-	end
 end
 
 SpecialsPacing.update = function (self, t, alive_specials, specials_population, player_positions)
@@ -509,22 +500,8 @@ SpecialsPacing.update = function (self, t, alive_specials, specials_population, 
 	end
 
 	if self._disabled then
-		if script_data.debug_ai_pacing then
-			Debug.text("Specials disabled by terror event")
-		end
-
 		return
 	end
-
-	if script_data.debug_player_intensity then
-		Debug.text("Specials timer: %0.1f Time: %0.1f ", self._specials_timer, t)
-
-		if self._debug_num_spawned_specials then
-			Debug.text("Total Num Spawned Specials: %d ", self._debug_num_spawned_specials)
-		end
-	end
-
-	self:debug(t, alive_specials, specials_population, self._specials_slots)
 
 	if specials_population < 1 then
 		return

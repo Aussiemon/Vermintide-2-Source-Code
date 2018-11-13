@@ -11,8 +11,8 @@ local buff_tweak_data = {
 		multiplier = 0.5
 	},
 	traits_melee_increase_damage_on_block_proc = {
-		duration = 3,
-		multiplier = 0.5
+		duration = 5,
+		multiplier = 0.2
 	},
 	traits_melee_shield_on_assist = {
 		bonus = 15
@@ -809,7 +809,7 @@ WeaponTraits.traits = {
 		display_name = "trait_trinket_grenade_damage_taken",
 		buffer = "server",
 		advanced_description = "description_trait_trinket_grenade_damage_taken",
-		icon = "trinket_reduce_radius_by_50_Increase_power_by_50",
+		icon = "trinket_reduce_radius_by_50_increase_power_by_50",
 		buff_name = "trait_trinket_grenade_damage_taken",
 		description_values = {
 			{

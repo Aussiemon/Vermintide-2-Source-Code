@@ -10,7 +10,6 @@ end
 
 ActionInteraction.client_owner_start_action = function (self, new_action, t)
 	self.current_action = new_action
-	local interactor_extension = self.interactor_extension
 	local interaction_type = new_action.interaction_type
 
 	self.interactor_extension:start_interaction(new_action.hold_input, nil, interaction_type)

@@ -754,6 +754,7 @@ weapon_template.right_hand_unit = "units/weapons/player/wpn_torch/wpn_torch"
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.right
 weapon_template.display_unit = "units/weapons/weapon_display/display_1h_weapon"
 weapon_template.wield_anim = "to_torch"
+weapon_template.buff_type = "MELEE_1H"
 weapon_template.block_wielding = false
 weapon_template.max_fatigue_points = 6
 weapon_template.third_person_extension_template = "torch_unit_3p"

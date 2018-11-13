@@ -86,10 +86,6 @@ AIInventoryExtension._setup_configuration = function (self, unit, start_n, inven
 			self.inventory_item_helmet_unit = item_unit
 		end
 
-		if script_data.ai_debug_inventory then
-			printf("[AIInventorySystem] unit[%s] wielding item[%s] of category[%s] in slot[%d]", tostring(unit), item_unit_name, item_category_name, i)
-		end
-
 		if item.weak_spot and self.is_server then
 			self.inventory_weak_spot = item.weak_spot
 		end
@@ -407,10 +403,6 @@ AIInventoryExtension.unwield_set = function (self, item_set_index)
 			local item_unit = self.inventory_item_units[j]
 
 			link_unit(unwielded, self.world, item_unit, self.unit)
-
-			if script_data.ai_debug_inventory then
-				printf("[AIInventorySystem] unit[%s] unwielding %s", tostring(unit), tostring(item_unit))
-			end
 		end
 	end
 end

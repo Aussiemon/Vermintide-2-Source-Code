@@ -676,13 +676,26 @@ function flow_callback_set_material_property_color(params)
 	end
 end
 
+function start_material_fade(material, fade_switch_name, fade_switch, start_end_time_name, fade_duration, start_fade_name, start_fade_value, end_fade_name, end_fade_value)
+	if start_fade_name and start_fade_value then
+		Material.set_scalar(material, start_fade_name, start_fade_value)
+	end
+
+	if end_fade_name and end_fade_value then
+		Material.set_scalar(material, end_fade_name, end_fade_value)
+	end
+
+	Material.set_scalar(material, fade_switch_name, fade_switch)
+	Material.set_vector2(material, start_end_time_name, fade_duration)
+end
+
 function flow_callback_start_fade(params)
 	assert(params.unit, "[flow_callback_start_fade] You need to specify the Unit")
 	assert(params.duration, "[flow_callback_start_fade] You need to specify duration")
 	assert(params.fade_switch, "[flow_callback_start_fade] You need to specify whether to fade in or out (0 or 1)")
 
 	local start_time = World.time(Application.main_world())
-	local end_time = start_time + params.duration
+	local fade_duration = Vector2(start_time, start_time + params.duration)
 	local fade_switch = math.floor(params.fade_switch + 0.5)
 	local fade_switch_name = params.fade_switch_name or "fade_switch"
 	local start_end_time_name = params.start_end_time_name or "start_end_time"
@@ -690,6 +703,10 @@ function flow_callback_start_fade(params)
 	local index_offset = Script.index_offset()
 	local mesh = nil
 	local mesh_name = params.mesh_name
+	local start_fade_name = params.start_fade_name or nil
+	local start_fade_value = params.start_fade_value or nil
+	local end_fade_name = params.end_fade_name or nil
+	local end_fade_value = params.end_fade_value or nil
 
 	if mesh_name then
 		assert(Unit.has_mesh(unit, mesh_name), string.format("[flow_callback_start_fade] The mesh %s doesn't exist in unit %s", mesh_name, tostring(unit)))
@@ -707,16 +724,14 @@ function flow_callback_start_fade(params)
 	end
 
 	if mesh and material then
-		Material.set_scalar(material, fade_switch_name, fade_switch)
-		Material.set_vector2(material, start_end_time_name, Vector2(start_time, end_time))
+		start_material_fade(material, fade_switch_name, fade_switch, start_end_time_name, fade_duration, start_fade_name, start_fade_value, end_fade_name, end_fade_value)
 	elseif mesh then
 		local num_materials = Mesh.num_materials(mesh)
 
 		for i = 0, num_materials - 1, 1 do
 			local material = Mesh.material(mesh, i + index_offset)
 
-			Material.set_scalar(material, fade_switch_name, fade_switch)
-			Material.set_vector2(material, start_end_time_name, Vector2(start_time, end_time))
+			start_material_fade(material, fade_switch_name, fade_switch, start_end_time_name, fade_duration, start_fade_name, start_fade_value, end_fade_name, end_fade_value)
 		end
 	elseif material_name then
 		local num_meshes = Unit.num_meshes(unit)
@@ -727,8 +742,7 @@ function flow_callback_start_fade(params)
 			if Mesh.has_material(mesh, material_name) then
 				local material = Mesh.material(mesh, material_name)
 
-				Material.set_scalar(material, fade_switch_name, fade_switch)
-				Material.set_vector2(material, start_end_time_name, Vector2(start_time, end_time))
+				start_material_fade(material, fade_switch_name, fade_switch, start_end_time_name, fade_duration, start_fade_name, start_fade_value, end_fade_name, end_fade_value)
 			end
 		end
 	else
@@ -741,8 +755,7 @@ function flow_callback_start_fade(params)
 			for j = 0, num_materials - 1, 1 do
 				local material = Mesh.material(mesh, j + index_offset)
 
-				Material.set_scalar(material, fade_switch_name, fade_switch)
-				Material.set_vector2(material, start_end_time_name, Vector2(start_time, end_time))
+				start_material_fade(material, fade_switch_name, fade_switch, start_end_time_name, fade_duration, start_fade_name, start_fade_value, end_fade_name, end_fade_value)
 			end
 		end
 	end

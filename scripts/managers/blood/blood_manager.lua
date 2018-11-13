@@ -27,8 +27,6 @@ end
 local debug_decals = false
 
 BloodManager.update = function (self, dt, t)
-	Profiler.start("Blood Manager Update")
-
 	local blood_enabled = Application.user_setting("blood_enabled")
 	BloodSettings.blood_decals.num_decals = Application.user_setting("num_blood_decals") or BloodSettings.blood_decals.num_decals
 
@@ -49,7 +47,6 @@ BloodManager.update = function (self, dt, t)
 
 	self:_update_blood_effects()
 	EngineOptimizedExtensions.blood_update(self._blood_system)
-	Profiler.stop("Blood Manager Update")
 end
 
 BloodManager._enable_blood = function (self, enable)
@@ -61,8 +58,6 @@ BloodManager._enable_blood = function (self, enable)
 end
 
 BloodManager._update_weapon_blood = function (self, dt, t)
-	Profiler.start("_update_weapon_blood")
-
 	for attacker_unit, blood_data in pairs(self._weapon_blood) do
 		for weapon, amount in pairs(blood_data) do
 			blood_data[weapon] = math.clamp(amount - BloodSettings.weapon_blood.dissolve_rate * dt, 0, BloodSettings.weapon_blood.max_value)
@@ -70,8 +65,6 @@ BloodManager._update_weapon_blood = function (self, dt, t)
 			self:_set_weapon_blood_intensity(attacker_unit, weapon, blood_data[weapon])
 		end
 	end
-
-	Profiler.stop("_update_weapon_blood")
 end
 
 BloodManager.clear_blood_decals = function (self)
@@ -133,14 +126,10 @@ BloodManager.clear_weapon_blood = function (self, attacker, weapon)
 end
 
 BloodManager._update_blood_ball_buffer = function (self)
-	Profiler.start("update_blood_ball_buffer")
-
 	local blood_ball_ring_buffer = self._blood_ball_ring_buffer
 	local size = blood_ball_ring_buffer.size
 
 	if size == 0 then
-		Profiler.stop("update_blood_ball_buffer")
-
 		return
 	end
 
@@ -160,8 +149,6 @@ BloodManager._update_blood_ball_buffer = function (self)
 
 	blood_ball_ring_buffer.size = size
 	blood_ball_ring_buffer.read_index = read_index
-
-	Profiler.stop("update_blood_ball_buffer")
 end
 
 BloodManager._create_blood_ball_buffer = function (self)
@@ -184,26 +171,19 @@ BloodManager._create_blood_ball_buffer = function (self)
 end
 
 BloodManager._spawn_blood_ball = function (self, blood_ball_data)
-	Profiler.start("spawn_blood_ball")
-
 	local position = blood_ball_data.position:unbox()
 	local direction = blood_ball_data.direction:unbox()
 	local rotation = Quaternion.look(direction, Vector3.up())
 	local velocity = blood_ball_data.velocity
 
 	EngineOptimizedExtensions.blood_spawn_blood_ball(self._blood_system, "units/decals/blood_ball", position, rotation, direction, velocity)
-	Profiler.stop("spawn_blood_ball")
 end
 
 BloodManager.despawn_blood_ball = function (self, unit)
-	Profiler.start("despawn_blood_ball")
 	EngineOptimizedExtensions.blood_despawn_blood_ball(self._blood_system, unit)
-	Profiler.stop("despawn_blood_ball")
 end
 
 BloodManager._add_blood_ball_data_to_buffer = function (self, position, direction, damage_type)
-	Profiler.start("add_blood_ball_data_to_buffer")
-
 	local blood_ball_ring_buffer = self._blood_ball_ring_buffer
 	local buffer = blood_ball_ring_buffer.buffer
 	local read_index = blood_ball_ring_buffer.read_index
@@ -230,13 +210,9 @@ BloodManager._add_blood_ball_data_to_buffer = function (self, position, directio
 	blood_ball_data.velocity = velocity or default_velocity
 	blood_ball_ring_buffer.size = size + 1
 	blood_ball_ring_buffer.write_index = write_index % max_size + 1
-
-	Profiler.stop("add_blood_ball_data_to_buffer")
 end
 
 BloodManager.add_blood_ball = function (self, position, direction, damage_type, hit_unit)
-	Profiler.start("BloodManager:add_blood_ball")
-
 	if BloodSettings.blood_decals.enabled then
 		if BloodSettings.blood_decals.num_decals > 0 and Vector3.is_valid(position) then
 			self:_add_blood_ball_data_to_buffer(position, direction, damage_type)
@@ -253,8 +229,6 @@ BloodManager.add_blood_ball = function (self, position, direction, damage_type, 
 			self:_update_blood_intensity(hit_unit, breed, health_ext)
 		end
 	end
-
-	Profiler.stop("BloodManager:add_blood_ball")
 end
 
 BloodManager._get_blood_effect_data = function (self, unit, effect_nodes)
@@ -266,8 +240,6 @@ BloodManager._get_blood_effect_data = function (self, unit, effect_nodes)
 end
 
 BloodManager._spawn_effects = function (self, hit_unit, breed, health_ext)
-	Profiler.start("spawn effects")
-
 	local effect_name = breed.blood_effect_name
 	local blood_nodes = breed.blood_effect_nodes
 	local blood_effect_data = self:_get_blood_effect_data(hit_unit, blood_nodes)
@@ -298,13 +270,9 @@ BloodManager._spawn_effects = function (self, hit_unit, breed, health_ext)
 
 		current_threshold = current_threshold + step
 	end
-
-	Profiler.stop("spawn effects")
 end
 
 BloodManager._update_blood_intensity = function (self, hit_unit, breed, health_ext)
-	Profiler.start("update blood intensity")
-
 	local blood_intensity_data = breed.blood_intensity
 	local num_meshes = Unit.num_meshes(hit_unit)
 	local inverse_health_percentage = 1 - health_ext:current_health_percent()
@@ -320,8 +288,6 @@ BloodManager._update_blood_intensity = function (self, hit_unit, breed, health_e
 			end
 		end
 	end
-
-	Profiler.stop("update blood intensity")
 end
 
 BloodManager.add_weapon_blood = function (self, attacker, damage_type)
@@ -389,29 +355,6 @@ end
 BloodManager.play_screen_space_blood = function (self, particle_name, position, optional_offset, option_rotation_offset, optional_scale)
 	if BloodSettings.screen_space.enabled then
 		World.create_particles(self._world, particle_name, position, optional_offset, option_rotation_offset, optional_scale)
-	end
-end
-
-BloodManager.test_enemy_blood = function (self, position)
-	return
-
-	local unit = World.units(Application.main_world())[716]
-
-	if Unit.alive(unit) then
-		local time = Application.time_since_launch() * 0.25
-
-		Unit.set_local_rotation(unit, 0, Quaternion.look(Vector3(0, 1, 0), Vector3.up()))
-
-		local normal = Vector3.normalize(Vector3(math.random(-100, 100), math.random(-100, 100), math.random(-100, 100)))
-		local pos = position or Vector3(math.sin(time) * 100, -math.cos(time) * 100, 75)
-		local enemy_dir = Quaternion.forward(Unit.local_rotation(unit, 0))
-		local actor = Unit.actor(unit, 0)
-
-		if not actor then
-			return
-		end
-
-		self:add_enemy_blood(pos, normal, actor)
 	end
 end
 

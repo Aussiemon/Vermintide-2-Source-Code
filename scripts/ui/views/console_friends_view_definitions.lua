@@ -400,16 +400,25 @@ local generic_input_actions = {
 			{
 				input_action = "special_1",
 				priority = 1,
-				description_text = "menu_description_refresh"
+				description_text = (PLATFORM == "ps4" and "matchmaking_join_game") or "menu_description_refresh"
 			}
 		}
 	},
-	refresh = {
+	friend = {
+		actions = {
+			{
+				input_action = "confirm",
+				priority = 2,
+				description_text = "input_description_show_profile"
+			}
+		}
+	},
+	friend_refresh = {
 		actions = {
 			{
 				input_action = "special_1",
 				priority = 1,
-				description_text = "menu_description_refresh"
+				description_text = (PLATFORM == "ps4" and "matchmaking_join_game") or "menu_description_refresh"
 			},
 			{
 				input_action = "confirm",
@@ -418,7 +427,7 @@ local generic_input_actions = {
 			}
 		}
 	},
-	invite = {
+	friend_invite = {
 		actions = {
 			{
 				input_action = "confirm",
@@ -432,12 +441,12 @@ local generic_input_actions = {
 			}
 		}
 	},
-	invite_refresh = {
+	friend_invite_refresh = {
 		actions = {
 			{
 				input_action = "special_1",
 				priority = 1,
-				description_text = "menu_description_refresh"
+				description_text = (PLATFORM == "ps4" and "matchmaking_join_game") or "menu_description_refresh"
 			},
 			{
 				input_action = "confirm",

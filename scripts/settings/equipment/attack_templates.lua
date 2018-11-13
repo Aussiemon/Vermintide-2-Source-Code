@@ -1147,4 +1147,14 @@ AttackTemplates = {
 	payload_wagon = {}
 }
 
+for _, dlc in pairs(DLCSettings) do
+	local file_names = dlc.attack_template_files_names
+
+	if file_names then
+		for _, file_name in ipairs(file_names) do
+			dofile(file_name)
+		end
+	end
+end
+
 return

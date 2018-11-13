@@ -56,15 +56,6 @@ end
 
 PlayerHuskOverchargeExtension.update = function (self, unit, input, dt, context, t)
 	self:_update_game_object()
-
-	if script_data.overcharge_debug then
-		local player_manager = Managers.player
-		local player = player_manager:owner(unit)
-		local profile_index = player and player:profile_index()
-		local profile_abbreviation = SPProfilesAbbreviation[profile_index] or ""
-
-		Debug.text("%s : Overcharge: %.2f/%.2f ( %.2f | %.2f)", profile_abbreviation, self.overcharge_value, self.max_value, self.overcharge_limit, self.overcharge_critical_limit)
-	end
 end
 
 PlayerHuskOverchargeExtension.add_charge = function (self)

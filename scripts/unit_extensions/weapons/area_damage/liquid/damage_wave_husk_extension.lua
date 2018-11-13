@@ -60,15 +60,6 @@ DamageWaveHuskExtension.update = function (self, unit, input, dt, context, t)
 	local rot = GameSession.game_object_field(self.game, self.go_id, "rotation")
 
 	Unit.set_local_rotation(unit, 0, rot)
-
-	if script_data.debug_damage_wave then
-		local travel_dir = Quaternion.forward(rot)
-		local height_percentage = GameSession.game_object_field(self.game, self.go_id, "height_percentage")
-		local height = height_percentage * self.max_height
-		local pos = Unit.local_position(unit, 0)
-
-		self:debug_render_wave(t, dt, pos, travel_dir, height)
-	end
 end
 
 DamageWaveHuskExtension.add_damage_wave_fx = function (self, position)

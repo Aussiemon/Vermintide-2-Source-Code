@@ -1,6 +1,3 @@
-require("scripts/settings/equipment/power_level_templates")
-require("scripts/settings/equipment/damage_profile_templates")
-
 ActionAssertFuncs = {
 	handgun = function (weapon_name, action_name, sub_action_name, action)
 		local damage_profile = action.damage_profile

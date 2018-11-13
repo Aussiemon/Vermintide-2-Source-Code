@@ -5,8 +5,6 @@ local detailed_profiler_start, detailed_profiler_stop = nil
 local DETAILED_PROFILING = true
 
 if DETAILED_PROFILING then
-	detailed_profiler_start = Profiler.start
-	detailed_profiler_start = Profiler.stop
 else
 	function detailed_profiler_start()
 		return
@@ -43,27 +41,14 @@ T.init = function (data, nav_world)
 end
 
 T.update = function (data, t, dt)
-	Profiler.start("player_locomotion_update")
 	T.update_movement(data, t, dt)
 	T.update_rotation(data, t, dt)
 	T.update_network(data, dt)
 	T.update_average_velocity(data, t, dt)
 	T.update_disabled_units(data, dt)
-
-	if UPDATE_STATISTICS then
-		T.update_statistics(data, t, dt)
-	end
-
-	if script_data.debug_first_person_player_animations ~= nil or script_data.debug_player_animations ~= nil then
-		T.update_debug_anims(data)
-	end
-
-	Profiler.stop("player_locomotion_update")
 end
 
 T.update_average_velocity = function (data, t, dt)
-	Profiler.start("update_average_velocity")
-
 	local all_update_units = data.all_update_units
 	local SAMPLE_UPDATE_RATE = 0.125
 	local unit, extension = next(all_update_units, data.last_average_velocity_unit)
@@ -117,29 +102,12 @@ T.update_average_velocity = function (data, t, dt)
 		end
 	end
 
-	Profiler.stop("update_average_velocity")
-
 	data.last_average_velocity_unit = unit
-
-	if script_data.debug_player_velocity then
-		for unit, extension in pairs(all_update_units) do
-			Debug.text("Player average speed: %s", Vector3.length(extension._average_velocity:unbox()))
-			Debug.text("Player current speed: %s", Vector3.length(extension.velocity_current:unbox()))
-		end
-	end
-
-	if script_data.debug_player_position then
-		for unit, extension in pairs(all_update_units) do
-			Debug.text("Player position: %s", tostring(Unit.local_position(unit, 0)))
-		end
-	end
 end
 
 local MAX_TIME_SINCE_LAST_DOWN_COLLIDE = 0.2
 
 T.update_movement = function (data, t, dt)
-	Profiler.start("update movement")
-
 	for unit, extension in pairs(data.all_update_units) do
 		extension.IS_NEW_FRAME = false
 		local collide = Mover.collides_down(Unit.mover(unit))
@@ -199,13 +167,9 @@ T.update_movement = function (data, t, dt)
 			end
 		end
 	end
-
-	Profiler.stop("update movement")
 end
 
 T.update_network = function (data, dt)
-	Profiler.start("network")
-
 	local game = Managers.state.network:game()
 
 	if not game or LEVEL_EDITOR_TEST then
@@ -247,24 +211,16 @@ T.update_network = function (data, dt)
 		GameSession_set_game_object_field(game, go_id, "average_velocity", Vector3.clamp(extension._average_velocity:unbox(), min_vel, max_vel))
 		GameSession_set_game_object_field(game, go_id, "small_sample_size_average_velocity", Vector3.clamp(extension._small_sample_size_average_velocity:unbox(), min_vel, max_vel))
 	end
-
-	Profiler.stop("network")
 end
 
 T.update_statistics = function (data, t, dt)
-	Profiler.start("statistics")
-
 	for unit, extension in pairs(data.all_update_units) do
 		GraphHelper.record_statistics("move_velocity", extension.velocity_current:unbox())
 		GraphHelper.record_statistics("move_speed", Vector3.length(extension.velocity_current:unbox()))
 	end
-
-	Profiler.stop("statistics")
 end
 
 T.update_rotation = function (data, t, dt)
-	Profiler.start("rotation")
-
 	local is_server = Managers.player.is_server
 	local Unit_set_local_rotation = Unit.set_local_rotation
 	local Quaternion_lerp = Quaternion.lerp
@@ -331,13 +287,9 @@ T.update_rotation = function (data, t, dt)
 
 		extension.disable_rotation_update = false
 	end
-
-	Profiler.stop("rotation")
 end
 
 T.update_disabled_units = function (data, dt)
-	Profiler.start("disabled")
-
 	for unit, extension in pairs(data.all_disabled_units) do
 		extension.run_func(unit, dt, extension)
 
@@ -350,17 +302,11 @@ T.update_disabled_units = function (data, dt)
 			extension:sync_network_velocity(game, go_id, dt)
 		end
 
-		Profiler.stop("disabled")
-
 		return
 	end
-
-	Profiler.stop("disabled")
 end
 
 T.update_debug_anims = function (data)
-	Profiler.start("debug anims")
-
 	for unit, extension in pairs(data.all_update_units) do
 		local unit_1p = extension.first_person_extension:get_first_person_unit()
 
@@ -384,8 +330,6 @@ T.update_debug_anims = function (data)
 			Unit.set_animation_logging(unit, false)
 		end
 	end
-
-	Profiler.stop("debug anims")
 end
 
 return

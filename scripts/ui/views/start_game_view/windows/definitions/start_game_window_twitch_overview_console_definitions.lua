@@ -1,8 +1,6 @@
 local window_default_settings = UISettings.game_start_windows
-local window_background = window_default_settings.background
 local window_frame = window_default_settings.frame
 local window_size = window_default_settings.size
-local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
 local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
 local game_option_size = {
 	window_size[1],
@@ -12,6 +10,41 @@ local window_text_width = window_size[1]
 local login_text_area_size = {
 	window_text_width - 20 - 160,
 	50
+}
+local animation_definitions = {
+	on_enter = {
+		{
+			name = "fade_in",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 0
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+				params.render_settings.alpha_multiplier = anim_progress
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	},
+	on_exit = {
+		{
+			name = "fade_out",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 1
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				params.render_settings.alpha_multiplier = 1
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	}
 }
 local scenegraph_definition = {
 	root = {
@@ -387,482 +420,6 @@ if PLATFORM == "xb1" then
 	}
 end
 
-local function create_setting_button(scenegraph_id, title_text, input_text, icon_texture, icon_frame_texture, icon_definition)
-	icon_texture = icon_texture or "level_icon_01"
-	local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(icon_texture)
-	local icon_texture_size = (icon_texture_settings and icon_texture_settings.size) or {
-		150,
-		150
-	}
-	local button_size = scenegraph_definition[scenegraph_id].size
-	local passes = {}
-	local content = {}
-	local style = {}
-	local hotspot_name = "button_hotspot"
-	passes[#passes + 1] = {
-		pass_type = "hotspot",
-		content_id = hotspot_name
-	}
-	content[hotspot_name] = {}
-	local background_name = "selection_background"
-	passes[#passes + 1] = {
-		pass_type = "texture",
-		texture_id = background_name,
-		style_id = background_name
-	}
-	content[background_name] = "hud_brushstroke"
-	style[background_name] = {
-		vertical_alignment = "center",
-		horizontal_alignment = "center",
-		texture_size = {
-			500,
-			160
-		},
-		color = {
-			255,
-			255,
-			255,
-			255
-		},
-		offset = {
-			40,
-			-8,
-			-2
-		}
-	}
-	local text_title_name = "text_title"
-	local text_title_shadow_name = text_title_name .. "_shadow"
-	passes[#passes + 1] = {
-		pass_type = "text",
-		text_id = text_title_name,
-		style_id = text_title_name,
-		content_change_function = function (content, style)
-			if content.is_selected then
-				style.text_color = style.selected_color
-			else
-				style.text_color = style.default_color
-			end
-		end
-	}
-	passes[#passes + 1] = {
-		pass_type = "text",
-		text_id = text_title_name,
-		style_id = text_title_shadow_name
-	}
-	content[text_title_name] = title_text
-	local title_text_offset = {
-		84,
-		34,
-		0
-	}
-	local title_text_style = {
-		word_wrap = false,
-		upper_case = true,
-		localize = false,
-		font_size = 40,
-		horizontal_alignment = "center",
-		vertical_alignment = "center",
-		font_type = "hell_shark",
-		text_color = Colors.get_color_table_with_alpha("font_title", 255),
-		selected_color = Colors.get_color_table_with_alpha("white", 255),
-		default_color = Colors.get_color_table_with_alpha("font_title", 255),
-		offset = {
-			title_text_offset[1],
-			title_text_offset[2],
-			title_text_offset[3]
-		}
-	}
-	local title_text_shadow_style = table.clone(title_text_style)
-	title_text_shadow_style.text_color = {
-		255,
-		0,
-		0,
-		0
-	}
-	title_text_shadow_style.offset = {
-		title_text_offset[1] + 2,
-		title_text_offset[2] - 2,
-		title_text_offset[3] - 1
-	}
-	style[text_title_name] = title_text_style
-	style[text_title_shadow_name] = title_text_shadow_style
-	local input_text_name = "input_text"
-	local input_text_shadow_name = input_text_name .. "shadow"
-	passes[#passes + 1] = {
-		pass_type = "text",
-		text_id = input_text_name,
-		style_id = input_text_name
-	}
-	passes[#passes + 1] = {
-		pass_type = "text",
-		text_id = input_text_name,
-		style_id = input_text_shadow_name
-	}
-	content[input_text_name] = "n/a"
-	local input_text_style = {
-		vertical_alignment = "center",
-		font_size = 28,
-		localize = false,
-		horizontal_alignment = "center",
-		word_wrap = false,
-		font_type = "hell_shark",
-		text_color = Colors.get_color_table_with_alpha("font_default", 255),
-		offset = {
-			title_text_offset[1],
-			-34,
-			title_text_offset[3]
-		}
-	}
-	local input_text_offset = input_text_style.offset
-	local input_text_shadow_style = table.clone(input_text_style)
-	input_text_shadow_style.text_color = {
-		255,
-		0,
-		0,
-		0
-	}
-	input_text_shadow_style.offset = {
-		input_text_offset[1] + 2,
-		input_text_offset[2] - 2,
-		input_text_offset[3] - 1
-	}
-	style[input_text_name] = input_text_style
-	style[input_text_shadow_name] = input_text_shadow_style
-	local divider_name = "divider"
-	passes[#passes + 1] = {
-		pass_type = "texture",
-		style_id = divider_name,
-		texture_id = divider_name
-	}
-	content[divider_name] = "divider_01_top"
-	style[divider_name] = {
-		vertical_alignment = "center",
-		horizontal_alignment = "center",
-		texture_size = {
-			264,
-			32
-		},
-		color = {
-			255,
-			255,
-			255,
-			255
-		},
-		offset = {
-			84,
-			0,
-			0
-		}
-	}
-	local icon_offset = {
-		-(button_size[1] / 2) + 108,
-		0,
-		5
-	}
-
-	if icon_definition then
-		for i, definition in ipairs(icon_definition) do
-			local pass = definition.pass
-			passes[#passes + 1] = pass
-			local icon_content = definition.content
-
-			for k, v in pairs(icon_content) do
-				content[k] = v
-			end
-
-			local icon_style = definition.style
-
-			for k, v in pairs(icon_style) do
-				style[k] = v
-			end
-		end
-	else
-		local icon_texture_name = "icon_texture"
-		passes[#passes + 1] = {
-			pass_type = "texture",
-			style_id = icon_texture_name,
-			texture_id = icon_texture_name,
-			content_check_function = function (content, style)
-				return content[icon_texture_name]
-			end,
-			content_change_function = function (content, style)
-				if content.button_hotspot.disable_button then
-					style.saturated = true
-				else
-					style.saturated = false
-				end
-			end
-		}
-		content[icon_texture_name] = icon_texture
-		style[icon_texture_name] = {
-			vertical_alignment = "center",
-			horizontal_alignment = "center",
-			texture_size = icon_texture_size,
-			color = {
-				255,
-				255,
-				255,
-				255
-			},
-			offset = icon_offset
-		}
-	end
-
-	local icon_background_name = "icon_background"
-	passes[#passes + 1] = {
-		pass_type = "texture",
-		texture_id = icon_background_name,
-		style_id = icon_background_name
-	}
-	content[icon_background_name] = "level_icon_09"
-	style[icon_background_name] = {
-		vertical_alignment = "center",
-		horizontal_alignment = "center",
-		texture_size = icon_texture_size,
-		color = {
-			255,
-			0,
-			0,
-			0
-		},
-		offset = {
-			icon_offset[1],
-			icon_offset[2],
-			icon_offset[3] - 1
-		}
-	}
-	local icon_frame_texture_name = "icon_frame_texture"
-	passes[#passes + 1] = {
-		pass_type = "texture",
-		style_id = icon_frame_texture_name,
-		texture_id = icon_frame_texture_name,
-		content_check_function = function (content, style)
-			return content[icon_texture_name]
-		end,
-		content_change_function = function (content, style)
-			if content.button_hotspot.disable_button then
-				style.saturated = true
-			else
-				style.saturated = false
-			end
-		end
-	}
-	content[icon_frame_texture_name] = icon_frame_texture or "map_frame_00"
-	style[icon_frame_texture_name] = {
-		vertical_alignment = "center",
-		horizontal_alignment = "center",
-		texture_size = {
-			180,
-			180
-		},
-		color = {
-			255,
-			255,
-			255,
-			255
-		},
-		offset = {
-			icon_offset[1],
-			icon_offset[2],
-			icon_offset[3] + 1
-		}
-	}
-	local icon_texture_glow_name = "icon_texture_glow"
-	passes[#passes + 1] = {
-		pass_type = "texture",
-		style_id = icon_texture_glow_name,
-		texture_id = icon_texture_glow_name,
-		content_check_function = function (content)
-			return content.is_selected
-		end
-	}
-	content[icon_texture_glow_name] = "map_frame_glow_02"
-	style[icon_texture_glow_name] = {
-		vertical_alignment = "center",
-		horizontal_alignment = "center",
-		texture_size = {
-			270,
-			270
-		},
-		color = {
-			255,
-			255,
-			255,
-			255
-		},
-		offset = {
-			icon_offset[1],
-			icon_offset[2],
-			icon_offset[3] - 2
-		}
-	}
-	local widget = {
-		element = {
-			passes = passes
-		},
-		content = content,
-		style = style,
-		offset = {
-			0,
-			0,
-			0
-		},
-		scenegraph_id = scenegraph_id
-	}
-
-	return widget
-end
-
-local function create_play_option_button(scenegraph_id)
-	local play_button_size = {
-		game_option_size[1] - 100,
-		72
-	}
-	local widget = UIWidgets.create_play_button(scenegraph_id, play_button_size, Localize("start_game_window_play"), 34)
-	local scenegraph_size = scenegraph_definition[scenegraph_id].size
-	widget.offset[1] = scenegraph_size[1] / 2 - play_button_size[1] / 2
-	widget.offset[2] = scenegraph_size[2] / 2 - play_button_size[2] / 2
-
-	return widget
-end
-
-local function create_play_widget(scenegraph_id)
-	local passes = {}
-	local content = {}
-	local style = {}
-	local text_name = "text"
-	local text_name_shadow = text_name .. "_shadow"
-	passes[#passes + 1] = {
-		pass_type = "text",
-		text_id = text_name,
-		style_id = text_name,
-		content_change_function = function (content, style)
-			if content.locked then
-				style.text_color = style.disabled_color
-			else
-				style.text_color = style.normal_color
-			end
-		end
-	}
-	passes[#passes + 1] = {
-		pass_type = "text",
-		text_id = text_name,
-		style_id = text_name_shadow
-	}
-	content[text_name] = Localize("start_game_window_play")
-	local text_offset = {
-		0,
-		6,
-		1
-	}
-	local text_style = {
-		word_wrap = false,
-		upper_case = true,
-		localize = false,
-		font_size = 80,
-		horizontal_alignment = "center",
-		vertical_alignment = "center",
-		font_type = "hell_shark",
-		text_color = Colors.get_color_table_with_alpha("font_title", 255),
-		disabled_color = Colors.get_color_table_with_alpha("dark_gray", 255),
-		normal_color = Colors.get_color_table_with_alpha("font_title", 255),
-		offset = {
-			text_offset[1],
-			text_offset[2],
-			text_offset[3]
-		}
-	}
-	local text_shadow_style = table.clone(text_style)
-	text_shadow_style.text_color = {
-		255,
-		0,
-		0,
-		0
-	}
-	text_shadow_style.offset = {
-		text_offset[1] + 2,
-		text_offset[2] - 2,
-		text_offset[3] - 1
-	}
-	style[text_name] = text_style
-	style[text_name_shadow] = text_shadow_style
-	local divider_name = "divider"
-	passes[#passes + 1] = {
-		pass_type = "texture",
-		texture_id = divider_name,
-		style_id = divider_name
-	}
-	content[divider_name] = "divider_01_top"
-	local size_multiplier = 1.8
-	style[divider_name] = {
-		vertical_alignment = "center",
-		horizontal_alignment = "center",
-		texture_size = {
-			264 * size_multiplier,
-			32 * size_multiplier
-		},
-		color = {
-			255,
-			255,
-			255,
-			255
-		},
-		offset = {
-			0,
-			-50,
-			1
-		}
-	}
-	local input_texture_name = "input_texture"
-	passes[#passes + 1] = {
-		pass_type = "texture",
-		texture_id = input_texture_name,
-		style_id = input_texture_name,
-		content_change_function = function (content, style)
-			if content.locked then
-				style.saturated = true
-			else
-				style.saturated = false
-			end
-		end
-	}
-	content[input_texture_name] = ""
-	style[input_texture_name] = {
-		vertical_alignment = "center",
-		horizontal_alignment = "center",
-		texture_size = {
-			64,
-			64
-		},
-		color = {
-			255,
-			255,
-			255,
-			255
-		},
-		offset = {
-			0,
-			-50,
-			2
-		}
-	}
-	local widget = {
-		element = {
-			passes = passes
-		},
-		content = content,
-		style = style,
-		offset = {
-			0,
-			0,
-			0
-		},
-		scenegraph_id = scenegraph_id
-	}
-
-	return widget
-end
-
 function create_button(scenegraph_id, size, text, font_size, content_check_function)
 	local background_texture = "button_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
@@ -1122,10 +679,6 @@ function create_button(scenegraph_id, size, text, font_size, content_check_funct
 end
 
 local function create_window(scenegraph_id, size)
-	local background_texture = "menu_frame_bg_01"
-	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
-	local frame_settings = UIFrameSettings.menu_frame_02
-	local inner_frame_settings = UIFrameSettings.menu_frame_06
 	local widget = {
 		element = {}
 	}
@@ -1548,50 +1101,9 @@ if PLATFORM == "xb1" then
 end
 
 local additional_settings_widgets = {}
-local animation_definitions = {
-	on_enter = {
-		{
-			name = "fade_in",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	},
-	on_exit = {
-		{
-			name = "fade_out",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 1
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = 1
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	}
-}
 local selector_input_definition = {
 	"mission_setting",
 	"difficulty_setting"
-}
-local layout_mapping = {
-	mission_setting = "mission_selection",
-	play_button = "custom_game_play",
-	difficulty_setting = "difficulty_selection"
 }
 
 return {
@@ -1601,6 +1113,5 @@ return {
 	client_widgets = client_widgets,
 	additional_settings_widgets = additional_settings_widgets,
 	animation_definitions = animation_definitions,
-	selector_input_definition = selector_input_definition,
-	layout_mapping = layout_mapping
+	selector_input_definition = selector_input_definition
 }

@@ -12,13 +12,31 @@ local survival_tip_list = {
 	"dlc1_2_survival_tip_06"
 }
 local tip_type_prefix_list = {
+	npcs = "loading_screen_npcs",
+	kerillian = "loading_screen_kerillian",
+	lore = "loading_screen_lore",
+	khazalid = "loading_screen_khazalid",
+	rotbloods = "loading_screen_rotbloods",
+	okri = "loading_screen_okri",
 	tip = "loading_screen_tip"
 }
 local tip_type_max_range = {
-	tip = 77
+	npcs = 3,
+	kerillian = 10,
+	lore = 55,
+	khazalid = 47,
+	rotbloods = 9,
+	okri = 1,
+	tip = 89
 }
 local tip_type_list = {
-	"tip"
+	"tip",
+	"lore",
+	"rotbloods",
+	"khazalid",
+	"npcs",
+	"kerillian",
+	"okri"
 }
 LoadingView = class(LoadingView)
 local fake_input_service = {

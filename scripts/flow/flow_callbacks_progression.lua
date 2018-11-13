@@ -278,10 +278,16 @@ function flow_query_leader_achievement_completed(params)
 		return flow_return_table
 	end
 
-	local achievement_id = params.achievement_name
-	local achievement_manager = Managers.state.achievement
-	local achievement_data = achievement_manager:get_data_by_id(achievement_id)
-	local completed = achievement_data.completed
+	local achievement_name = params.achievement_name
+	local achievement_data = AchievementTemplates.achievements[achievement_name]
+
+	fassert(achievement_data, "Achievement %s not found in AchievementTemplates", achievement_name)
+
+	local player_manager = Managers.player
+	local statistics_db = player_manager:statistics_db()
+	local player = player_manager:player(leader_peer_id, 1)
+	local stats_id = player:stats_id()
+	local completed = achievement_data.completed(statistics_db, stats_id)
 	flow_return_table.value = completed
 
 	return flow_return_table

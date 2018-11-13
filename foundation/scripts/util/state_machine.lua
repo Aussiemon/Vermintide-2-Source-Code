@@ -35,35 +35,23 @@ StateMachine.init = function (self, parent, start_state, params, profiling_debug
 	self._params = params
 	self._profiling_debugging_enabled = profiling_debugging_enabled
 
-	debug_print("Init %-30s", start_state.NAME)
 	self:_change_state(start_state, params)
 end
 
 StateMachine._change_state = function (self, new_state, params)
 	if self._state then
 		if self._state.on_exit and self._profiling_debugging_enabled then
-			debug_print("Exiting  %-30s with on_exit()", self._state.NAME)
-
 			local scope_name = profiler_scope(self._state.NAME, "exit")
 
-			Profiler.start(scope_name)
 			self._state:on_exit()
-			Profiler.stop(scope_name)
 		elseif self._state.on_exit then
 			self._state:on_exit()
-		else
-			debug_print("Exiting  %-30s", tostring(self._state.NAME))
 		end
 	end
 
 	if self._profiling_debugging_enabled then
 		local scope_name = profiler_scope(new_state.NAME, "create")
-
-		Profiler.start(scope_name)
-
 		self._state = new_state:new()
-
-		Profiler.stop(scope_name)
 	else
 		self._state = new_state:new()
 	end
@@ -71,17 +59,11 @@ StateMachine._change_state = function (self, new_state, params)
 	self._state.parent = self._parent
 
 	if self._state.on_enter and self._profiling_debugging_enabled then
-		debug_print("Entering %-30s with on_enter()", new_state.NAME)
-
 		local scope_name = profiler_scope(self._state.NAME, "enter")
 
-		Profiler.start(scope_name)
 		self._state:on_enter(params)
-		Profiler.stop(scope_name)
 	elseif self._state.on_enter then
 		self._state:on_enter(params)
-	else
-		debug_print("Entering %-30s", new_state.NAME)
 	end
 end
 
@@ -98,10 +80,7 @@ StateMachine.update = function (self, dt, t)
 end
 
 StateMachine.destroy = function (self, ...)
-	debug_print("destroying")
-
 	if self._state and self._state.on_exit then
-		debug_print("Exiting %-30s with on_exit()", self._state.NAME)
 		self._state:on_exit(...)
 	end
 end

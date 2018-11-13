@@ -199,9 +199,7 @@ AccountManager.update = function (self, dt)
 			self:_verify_user_in_cache()
 			self:_update_bandwidth_query(dt)
 			self:_update_social_manager(dt)
-			Profiler.start("Presence")
 			self._presence:update(dt)
-			Profiler.stop("Presence")
 		end
 	end
 
@@ -287,8 +285,6 @@ AccountManager.setup_friendslist = function (self)
 		table.dump(events, nil, 2)
 
 		if (table.contains(events, SocialEventType.RTA_DISCONNECT_ERR) or not self._added_local_user_to_graph) and not self._user_detached then
-			Profiler.start("FRIENDS")
-
 			local user_id = self._user_id
 
 			if Social.add_local_user_to_graph(user_id) then
@@ -297,8 +293,6 @@ AccountManager.setup_friendslist = function (self)
 				self.offline_friends_group_id = Social.create_filtered_social_group(user_id, SocialPresenceFilter.ALL_OFFLINE, SocialRelationshipFilter.FRIENDS)
 				self._added_local_user_to_graph = true
 			end
-
-			Profiler.stop("FRIENDS")
 
 			return true
 		end
@@ -343,8 +337,14 @@ AccountManager._update_sessions = function (self, dt)
 		self._smartmatch_cleaner:reset()
 	end
 
-	if #self._lobbies_to_free == 0 and self._teardown_xboxlive then
+	if self:all_lobbies_freed() and self._teardown_xboxlive then
 		Application.warning("SHUTTING DOWN XBOX LIVE CLIENT")
+
+		if Managers.voice_chat then
+			Managers.voice_chat:destroy()
+
+			Managers.voice_chat = nil
+		end
 
 		if Network.xboxlive_client_exists() then
 			LobbyInternal.shutdown_xboxlive_client()
@@ -723,6 +723,9 @@ AccountManager.cb_user_profiles = function (self, data)
 	if not data.error then
 		for xuid, gamertag in pairs(data.user_profiles) do
 			self._gamertags[xuid] = gamertag
+
+			Crashify.print_property("xuid", xuid)
+			Crashify.print_property("gamertag", gamertag)
 		end
 	end
 

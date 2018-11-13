@@ -39,7 +39,6 @@ MatchmakingUI.init = function (self, ingame_ui_context)
 	}
 	self.voting_manager = ingame_ui_context.voting_manager
 	self.is_in_inn = ingame_ui_context.is_in_inn
-	self.is_server = ingame_ui_context.is_server
 	self.matchmaking_manager = Managers.matchmaking
 	local input_manager = ingame_ui_context.input_manager
 	self.input_manager = input_manager
@@ -51,8 +50,9 @@ MatchmakingUI.init = function (self, ingame_ui_context)
 	self.max_number_of_players = MatchmakingSettings.MAX_NUMBER_OF_PLAYERS
 	self.portrait_index_table = {}
 	self._cached_matchmaking_info = {}
+	self._my_peer_id = Network.peer_id()
 
-	if self.is_server then
+	if Managers.party:is_leader(self._my_peer_id) then
 		self:_update_button_prompts()
 
 		self._allow_cancel_matchmaking = true
@@ -140,19 +140,6 @@ MatchmakingUI.update = function (self, dt, t, show_detailed_matchmaking_info)
 	local active_vote_name = voting_manager:vote_in_progress()
 	local has_mission_vote = active_vote_name == "game_settings_vote" or active_vote_name == "game_settings_deed_vote"
 
-	if script_data.debug_lobbies then
-		self:update_debug_lobbies()
-		self:draw_debug_lobbies(ui_top_renderer, input_service, dt)
-	end
-
-	if script_data.debug_lobby_data then
-		local lobby_data = self.lobby:get_stored_lobby_data()
-
-		for k, v in pairs(lobby_data) do
-			Debug.text("%-20s = %s", k, tostring(v))
-		end
-	end
-
 	if ui_suspended and not enter_game then
 		return
 	end
@@ -211,7 +198,7 @@ MatchmakingUI.update = function (self, dt, t, show_detailed_matchmaking_info)
 			self:_update_button_prompts()
 		end
 
-		if self.is_server then
+		if Managers.party:is_leader(self._my_peer_id) then
 			local allow_cancel_matchmaking = self.matchmaking_manager:allow_cancel_matchmaking()
 			self._allow_cancel_matchmaking = allow_cancel_matchmaking and not has_mission_vote
 		end
@@ -256,12 +243,6 @@ MatchmakingUI._draw = function (self, ui_renderer, input_service, is_matchmaking
 		end
 	end
 
-	UIRenderer.end_pass(ui_renderer)
-end
-
-MatchmakingUI.draw_debug_lobbies = function (self, ui_renderer, input_service, dt)
-	UIRenderer.begin_pass(ui_renderer, self.ui_scenegraph, input_service, dt)
-	UIRenderer.draw_widget(ui_renderer, self.debug_lobbies_widget)
 	UIRenderer.end_pass(ui_renderer)
 end
 
@@ -490,97 +471,6 @@ MatchmakingUI.update_debug = function (self)
 	self.debug_box_widget.content.debug_text = debug_text
 end
 
-MatchmakingUI.update_debug_lobbies = function (self)
-	local matchmaking_manager = Managers.matchmaking
-	local search_data = matchmaking_manager.state_context.game_search_data
-
-	if search_data and search_data.quick_game then
-		local search_data_level_key = search_data.level_key or nil
-		local search_data_difficulty = (search_data and search_data.difficulty) or nil
-		local player_peer_id = Network.peer_id()
-		local wanted_profile_id = nil
-		local no_debug_print = true
-		local lobbies = matchmaking_manager.debug.lobbies or {}
-		local debug_text = ""
-		local debug_server_text = "servers" .. "#" .. tostring(#lobbies) .. "\n"
-		local debug_match_text = "m\n"
-		local debug_broken_text = "broken\n"
-		local debug_valid_text = "valid\n"
-		local debug_level_key_text = "level\n"
-		local debug_selected_level_key_text = "sel_level\n"
-		local debug_matchmaking_text = "mm\n"
-		local debug_difficulty_text = "diff\n"
-		local debug_num_players_text = "#p\n"
-		local debug_wh_text = "wh\n"
-		local debug_we_text = "we\n"
-		local debug_dr_text = "dr\n"
-		local debug_bw_text = "bw\n"
-		local debug_es_text = "es\n"
-		local debug_rp_text = "rp\n"
-		local debug_host_text = "host\n"
-		local debug_lobby_id_text = "lobby_id\n"
-		local debug_hash_text = "hash\n"
-		local peer_id = Network.peer_id()
-
-		for _, lobby_data in ipairs(lobbies) do
-			local server_name = lobby_data.unique_server_name
-			local broken_lobby = (matchmaking_manager:lobby_listed_as_broken(lobby_data.id) and "y") or "-"
-			local valid = (lobby_data.valid and lobby_data.host ~= peer_id and "y") or "-"
-			local level_key = lobby_data.level_key or "-"
-			local selected_level_key = lobby_data.selected_level_key or "-"
-			local matchmaking = lobby_data.matchmaking or "-"
-			local difficulty = lobby_data.difficulty or "-"
-			local num_players = lobby_data.num_players or "-"
-			local wh = (lobby_data.player_slot_1 == nil and "-") or (lobby_data.player_slot_1 == "available" and "y") or "n"
-			local we = (lobby_data.player_slot_2 == nil and "-") or (lobby_data.player_slot_2 == "available" and "y") or "n"
-			local dr = (lobby_data.player_slot_3 == nil and "-") or (lobby_data.player_slot_3 == "available" and "y") or "n"
-			local bw = (lobby_data.player_slot_4 == nil and "-") or (lobby_data.player_slot_4 == "available" and "y") or "n"
-			local es = (lobby_data.player_slot_5 == nil and "-") or (lobby_data.player_slot_5 == "available" and "y") or "n"
-			local match = (search_data and matchmaking_manager:lobby_match(lobby_data, search_data_level_key, search_data_difficulty, player_peer_id, no_debug_print)) or nil
-			local host = lobby_data.host or "-"
-			local lobby_id = lobby_data.id or "-"
-			local network_hash = lobby_data.network_hash or "-"
-			debug_server_text = debug_server_text .. "\n" .. string.sub(server_name or "unknown", 1, 20)
-			debug_match_text = debug_match_text .. "\n" .. ((match and "y") or "-")
-			debug_broken_text = debug_broken_text .. "\n" .. broken_lobby
-			debug_valid_text = debug_valid_text .. "\n" .. valid
-			debug_level_key_text = debug_level_key_text .. "\n" .. string.sub(level_key, 1, 10)
-			debug_selected_level_key_text = debug_selected_level_key_text .. "\n" .. string.sub(selected_level_key, 1, 10)
-			debug_matchmaking_text = debug_matchmaking_text .. "\n" .. ((matchmaking == "true" and "y") or (matchmaking == "false" and "n") or matchmaking)
-			debug_difficulty_text = debug_difficulty_text .. "\n" .. string.sub(difficulty, 1, 4)
-			debug_num_players_text = debug_num_players_text .. "\n" .. num_players
-			debug_wh_text = debug_wh_text .. "\n" .. wh
-			debug_we_text = debug_we_text .. "\n" .. we
-			debug_dr_text = debug_dr_text .. "\n" .. dr
-			debug_bw_text = debug_bw_text .. "\n" .. bw
-			debug_es_text = debug_es_text .. "\n" .. es
-			debug_host_text = debug_host_text .. "\n" .. host
-			debug_lobby_id_text = debug_lobby_id_text .. "\n" .. lobby_id
-			debug_hash_text = debug_hash_text .. "\n" .. network_hash
-		end
-	end
-
-	self.debug_lobbies_widget.content.debug_text = string.lower(debug_text)
-	self.debug_lobbies_widget.content.debug_server_text = string.lower(debug_server_text)
-	self.debug_lobbies_widget.content.debug_match_text = string.lower(debug_match_text)
-	self.debug_lobbies_widget.content.debug_valid_text = string.lower(debug_valid_text)
-	self.debug_lobbies_widget.content.debug_broken_text = string.lower(debug_broken_text)
-	self.debug_lobbies_widget.content.debug_level_key_text = string.lower(debug_level_key_text)
-	self.debug_lobbies_widget.content.debug_selected_level_key_text = string.lower(debug_selected_level_key_text)
-	self.debug_lobbies_widget.content.debug_matchmaking_text = string.lower(debug_matchmaking_text)
-	self.debug_lobbies_widget.content.debug_difficulty_text = string.lower(debug_difficulty_text)
-	self.debug_lobbies_widget.content.debug_num_players_text = debug_num_players_text
-	self.debug_lobbies_widget.content.debug_wh_text = debug_wh_text
-	self.debug_lobbies_widget.content.debug_we_text = debug_we_text
-	self.debug_lobbies_widget.content.debug_dr_text = debug_dr_text
-	self.debug_lobbies_widget.content.debug_bw_text = debug_bw_text
-	self.debug_lobbies_widget.content.debug_es_text = debug_es_text
-	self.debug_lobbies_widget.content.debug_rp_text = debug_rp_text
-	self.debug_lobbies_widget.content.debug_host_text = debug_host_text
-	self.debug_lobbies_widget.content.debug_lobby_id_text = debug_lobby_id_text
-	self.debug_lobbies_widget.content.debug_hash_text = debug_hash_text
-end
-
 MatchmakingUI.destroy = function (self)
 	rawset(_G, "GLOBAL_MMUI", nil)
 end
@@ -690,8 +580,6 @@ MatchmakingUI._update_portraits = function (self, has_mission_vote)
 	local members = lobby_members and lobby_members:members_map()
 
 	if members then
-		Profiler.start("update_portraits")
-
 		local portrait_index_table = self.portrait_index_table
 
 		for i = 1, MatchmakingSettings.MAX_NUMBER_OF_PLAYERS, 1 do
@@ -737,8 +625,6 @@ MatchmakingUI._update_portraits = function (self, has_mission_vote)
 				self:large_window_set_player_ready_state(portrait_index, false)
 			end
 		end
-
-		Profiler.stop("update_portraits")
 	end
 end
 

@@ -55,6 +55,10 @@ PlayerBot.is_player_controlled = function (self)
 	return false
 end
 
+PlayerBot.set_player_unit = function (self, unit)
+	self.player_unit = unit
+end
+
 PlayerBot.profile_display_name = function (self)
 	local profile = SPProfiles[self._profile_index]
 	local display_name = profile and profile.display_name

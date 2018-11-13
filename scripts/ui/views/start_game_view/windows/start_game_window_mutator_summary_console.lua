@@ -2,7 +2,6 @@ local definitions = local_require("scripts/ui/views/start_game_view/windows/defi
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
-local DO_RELOAD = false
 StartGameWindowMutatorSummaryConsole = class(StartGameWindowMutatorSummaryConsole)
 StartGameWindowMutatorSummaryConsole.NAME = "StartGameWindowMutatorSummaryConsole"
 
@@ -78,14 +77,7 @@ StartGameWindowMutatorSummaryConsole.on_exit = function (self, params)
 end
 
 StartGameWindowMutatorSummaryConsole.update = function (self, dt, t)
-	if DO_RELOAD then
-		DO_RELOAD = false
-
-		self:create_ui_elements()
-	end
-
 	self:_update_animations(dt)
-	self:_handle_input(dt, t)
 	self:_update_selected_item_backend_id()
 	self:draw(dt)
 end
@@ -95,10 +87,11 @@ StartGameWindowMutatorSummaryConsole.post_update = function (self, dt, t)
 end
 
 StartGameWindowMutatorSummaryConsole._update_animations = function (self, dt)
-	self.ui_animator:update(dt)
+	local ui_animator = self.ui_animator
+
+	ui_animator:update(dt)
 
 	local animations = self._animations
-	local ui_animator = self.ui_animator
 
 	for animation_name, animation_id in pairs(animations) do
 		if ui_animator:is_animation_completed(animation_id) then
@@ -106,32 +99,6 @@ StartGameWindowMutatorSummaryConsole._update_animations = function (self, dt)
 
 			animations[animation_name] = nil
 		end
-	end
-
-	local widgets_by_name = self._widgets_by_name
-end
-
-StartGameWindowMutatorSummaryConsole._is_button_pressed = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	if hotspot.on_release then
-		hotspot.on_release = false
-
-		return true
-	end
-end
-
-StartGameWindowMutatorSummaryConsole._is_button_hover_enter = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	return hotspot.on_hover_enter
-end
-
-StartGameWindowMutatorSummaryConsole._handle_input = function (self, dt, t)
-	if not self._selected_backend_id then
-		return
 	end
 end
 
@@ -165,11 +132,6 @@ StartGameWindowMutatorSummaryConsole._present_item_by_backend_id = function (sel
 	end
 end
 
-StartGameWindowMutatorSummaryConsole._exit = function (self, selected_level)
-	self.exit = true
-	self.exit_level_id = selected_level
-end
-
 StartGameWindowMutatorSummaryConsole.draw = function (self, dt)
 	local ui_top_renderer = self._ui_top_renderer
 	local ui_scenegraph = self.ui_scenegraph
@@ -178,16 +140,16 @@ StartGameWindowMutatorSummaryConsole.draw = function (self, dt)
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
 
 	if self._presenting_item then
-		for _, widget in ipairs(self._widgets) do
+		local widgets = self._widgets
+
+		for i = 1, #widgets, 1 do
+			local widget = widgets[i]
+
 			UIRenderer.draw_widget(ui_top_renderer, widget)
 		end
 	end
 
 	UIRenderer.end_pass(ui_top_renderer)
-end
-
-StartGameWindowMutatorSummaryConsole._play_sound = function (self, event)
-	self.parent:play_sound(event)
 end
 
 return

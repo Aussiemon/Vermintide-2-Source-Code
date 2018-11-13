@@ -453,6 +453,11 @@ end
 
 local function lobby_level_display_name(lobby_data)
 	local level = lobby_data.selected_level_key or lobby_data.level_key
+
+	if level == "n/a" then
+		level = nil
+	end
+
 	local level_setting = level and LevelSettings[level]
 	local level_display_name = level and level_setting.display_name
 	local level_text = (level and Localize(level_display_name)) or "-"

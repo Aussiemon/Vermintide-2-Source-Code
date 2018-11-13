@@ -210,7 +210,7 @@ end
 WeaponSystem.destroy = function (self)
 	local world = self.world
 
-	for unit, data in pairs(self.beam_particle_effects) do
+	for _, data in pairs(self.beam_particle_effects) do
 		World.destroy_particles(world, data.beam_effect)
 		World.destroy_particles(world, data.beam_end_effect)
 	end
@@ -228,12 +228,9 @@ WeaponSystem.update = function (self, context, t)
 	self:update_synced_beam_particle_effects()
 	self:update_synced_geiser_particle_effects(context, t)
 	self:update_synced_flamethrower_particle_effects()
-	self:_update_debug()
 end
 
 local INDEX_POSITION = 1
-local INDEX_DISTANCE = 2
-local INDEX_NORMAL = 3
 local INDEX_ACTOR = 4
 
 WeaponSystem.update_synced_beam_particle_effects = function (self)
@@ -259,7 +256,7 @@ WeaponSystem.update_synced_beam_particle_effects = function (self)
 			local hit_position, hit_unit = nil
 
 			if result then
-				for index, hit in pairs(result) do
+				for _, hit in pairs(result) do
 					local potential_hit_position = hit[INDEX_POSITION]
 					local hit_actor = hit[INDEX_ACTOR]
 					local potential_hit_unit = Actor.unit(hit_actor)
@@ -337,7 +334,7 @@ WeaponSystem.update_synced_geiser_particle_effects = function (self, context, t)
 			local velocity = Quaternion.forward(Quaternion.multiply(player_rotation, Quaternion(Vector3.right(), angle))) * speed
 			local gravity = Vector3(0, 0, -9.82)
 			local collision_filter = "filter_geiser_check"
-			local result, hit_position, hit_distance, normal = ballistic_raycast(physics_world, max_steps, max_time, player_position, velocity, gravity, collision_filter, false)
+			local _, hit_position, _, _ = ballistic_raycast(physics_world, max_steps, max_time, player_position, velocity, gravity, collision_filter, false)
 			local position = hit_position
 
 			World.move_particles(world, data.geiser_effect, position)
@@ -347,9 +344,7 @@ WeaponSystem.update_synced_geiser_particle_effects = function (self, context, t)
 end
 
 WeaponSystem.update_synced_flamethrower_particle_effects = function (self)
-	local game = self.game
 	local network_manager = self.network_manager
-	local physics_world = World.get_data(self.world, "physics_world")
 
 	for unit, data in pairs(self.flamethrower_particle_effects) do
 		local unit_id = network_manager:unit_game_object_id(unit)
@@ -360,9 +355,9 @@ WeaponSystem.update_synced_flamethrower_particle_effects = function (self)
 
 			self.flamethrower_particle_effects[unit] = nil
 		else
+			local world = self.world
 			local muzzle_position = Unit.world_position(weapon_unit, Unit.node(weapon_unit, "fx_muzzle"))
 			local muzzle_rotation = Unit.world_rotation(weapon_unit, Unit.node(weapon_unit, "fx_muzzle"))
-			local world = self.world
 
 			World.move_particles(world, data.flamethrower_effect, muzzle_position, muzzle_rotation)
 		end
@@ -378,16 +373,15 @@ WeaponSystem._update_debug = function (self)
 		end
 
 		local unit = player.player_unit
-		local is_server = Managers.player.is_server
 
 		if Unit.alive(unit) then
 			if DebugKeyHandler.key_pressed("b", "take some damage", "player") then
-				DamageUtils.debug_deal_damage(unit, "basic_debug_damage_player")
+				DamageUtils.debug_deal_damage(unit)
 			elseif DebugKeyHandler.key_pressed("v", "kill player", "player", "left ctrl") then
 				local status_extension = ScriptUnit.extension(unit, "status_system")
 				status_extension.wounds = 0
 
-				DamageUtils.debug_deal_damage(unit, "basic_debug_damage_kill")
+				DamageUtils.debug_deal_damage(unit, true)
 			elseif DebugKeyHandler.key_pressed("b", "revive player", "player", "left shift") then
 				local network_manager = self.network_manager
 				local unit_id = network_manager:unit_game_object_id(unit)
@@ -420,12 +414,10 @@ WeaponSystem._update_debug = function (self)
 		})
 
 		drawer:reset()
-
-		local drawer = Managers.state.debug:drawer({
+		Managers.state.debug:drawer({
 			mode = "retained",
 			name = "DEBUG_DRAW_IMPACT_DECAL_HIT"
 		})
-
 		drawer:reset()
 	end
 end
@@ -604,7 +596,6 @@ WeaponSystem.rpc_end_flamethrower = function (self, sender, unit_id)
 end
 
 WeaponSystem.rpc_weapon_blood = function (self, sender, attacker_unit_id, attack_template_damage_type_id)
-	local world = self.world
 	local attacker_unit = self.unit_storage:unit(attacker_unit_id)
 
 	if not Unit.alive(attacker_unit) then

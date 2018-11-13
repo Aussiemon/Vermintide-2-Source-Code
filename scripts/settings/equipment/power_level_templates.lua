@@ -2132,4 +2132,14 @@ PowerLevelTemplates = {
 	}
 }
 
+for _, dlc in pairs(DLCSettings) do
+	local file_names = dlc.power_level_template_files_names
+
+	if file_names then
+		for _, file_name in ipairs(file_names) do
+			dofile(file_name)
+		end
+	end
+end
+
 return

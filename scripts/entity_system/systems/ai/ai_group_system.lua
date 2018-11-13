@@ -140,11 +140,6 @@ AIGroupSystem.init_extension = function (self, unit, extension, extension_init_d
 
 		self.groups[id] = group
 		self.groups_to_initialize[id] = group
-
-		if script_data.ai_group_debug then
-			Unit.set_animation_logging(unit, true)
-		end
-
 		local setup_group = AIGroupTemplates[template].setup_group
 
 		if setup_group then
@@ -465,14 +460,6 @@ AIGroupSystem.check_recycler_despawn = function (self, player_positions, player_
 	self._last_recycler_group_id = group_id
 
 	if not group_id or group.group_type ~= "roaming_patrol" or group.patrol_in_combat then
-		if script_data.debug_group_recycling and group and group.patrol_in_combat then
-			local indexed_members = group.indexed_members
-			local unit = indexed_members[1]
-			local pos = position_lookup[unit]
-
-			QuickDrawer:sphere(pos, 2, Color(175, 40, 200))
-		end
-
 		return
 	end
 
@@ -482,10 +469,6 @@ AIGroupSystem.check_recycler_despawn = function (self, player_positions, player_
 
 	if not pos then
 		return
-	end
-
-	if script_data.debug_group_recycling then
-		QuickDrawer:sphere(pos, 2, Color(75, 200, 200))
 	end
 
 	local conflict_director = Managers.state.conflict
@@ -513,12 +496,6 @@ AIGroupSystem.check_recycler_despawn = function (self, player_positions, player_
 
 			local dist = Vector3.length(to_dir)
 
-			if script_data.debug_group_recycling then
-				local pos = player_positions[j]
-
-				QuickDrawer:cylinder(pos + Vector3(0, 0, -wakeup_distance_z), pos + Vector3(0, 0, wakeup_distance_z), wakeup_distance, Color(0, 250, 225), 8)
-			end
-
 			if dist < wakeup_distance and math_abs(h) < wakeup_distance_z then
 				local zone = player_zones[j]
 
@@ -544,12 +521,6 @@ AIGroupSystem.check_recycler_despawn = function (self, player_positions, player_
 	if not seen_by_player then
 		local indexed_members = group.indexed_members
 		local num_indexed_members = group.num_indexed_members
-
-		if script_data.debug_group_recycling then
-			QuickDrawerStay:sphere(POSITION_LOOKUP[indexed_members[1]], 1.3, Color(225, 40, 0))
-			print("removed group since it was out of range and not seen by a player")
-		end
-
 		local enemy_recycler = conflict_director.enemy_recycler
 		local BLACKBOARDS = BLACKBOARDS
 
@@ -579,8 +550,6 @@ AIGroupSystem.update = function (self, context, t)
 	local nav_world = self.nav_world
 	local AIGroupTemplates = AIGroupTemplates
 
-	Profiler.start("initalizing groups")
-
 	for id, group in pairs(self.groups_to_initialize) do
 		if group.num_spawned_members == group.size then
 			if group.members_n > 0 then
@@ -597,17 +566,12 @@ AIGroupSystem.update = function (self, context, t)
 		end
 	end
 
-	Profiler.stop("initalizing groups")
-	Profiler.start("updating groups")
-
 	for id, group in pairs(self.groups_to_update) do
 		local template = group.template
 		local template_update = AIGroupTemplates[template].update
 
 		template_update(world, nav_world, group, t, context.dt)
 	end
-
-	Profiler.stop("updating groups")
 
 	if not script_data.ai_group_debug then
 		local drawer = Managers.state.debug:drawer(debug_drawer_info)
@@ -616,10 +580,7 @@ AIGroupSystem.update = function (self, context, t)
 	end
 
 	if self.patrol_analysis and self._computing_splines then
-		Profiler.start("patrol_analysis")
 		self.patrol_analysis:run()
-		Profiler.stop("patrol_analysis")
-		Profiler.start("computing splines")
 
 		for spline_name, spline_type in pairs(self._computing_splines) do
 			repeat
@@ -669,16 +630,12 @@ AIGroupSystem.update = function (self, context, t)
 				end
 			until true
 		end
-
-		Profiler.stop("computing splines")
 	end
 
 	local conflict_director = Managers.state.conflict
 
 	if self._update_recycler then
-		Profiler.start("check recycler")
 		self:check_recycler_despawn(self._player_positions, self._player_areas, self._use_player_areas)
-		Profiler.stop("check recycler")
 	end
 
 	self._update_recycler = false
@@ -897,20 +854,15 @@ AIGroupSystem.create_formation_data = function (self, position, formation, splin
 					}
 					group_size = group_size + 1
 					patrol_unit_spot_found = true
-				elseif script_data.debug_patrols then
-					QuickDrawerStay:sphere(wanted_spawn_position, 1, Colors.get("red"))
+
+					if true then
+					end
 				end
 			else
 				formation_data[current_row][column] = {
 					start_position = Vector3Box(wanted_spawn_position),
 					start_direction = Vector3Box(flat_start_direction)
 				}
-			end
-
-			if script_data.debug_patrols then
-				QuickDrawerStay:vector(wanted_spawn_position, flat_start_direction, Colors.get("dark_orchid"))
-				QuickDrawerStay:sphere(wanted_spawn_position, 0.2, Colors.get("dark_orchid"))
-				QuickDrawerStay:sphere(position_on_spline, 0.24, Colors.get("yellow"))
 			end
 		end
 

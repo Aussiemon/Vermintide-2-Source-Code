@@ -594,7 +594,12 @@ local mutator_settings = {
 		display_name = "display_name_skulking_sorcerer",
 		icon = "mutator_icon_powerful_elites",
 		server_start_function = function (context, data)
-			return
+			data.breed_name = "chaos_mutator_sorcerer"
+			data.wanted_spawn_distance_behind = 0
+
+			data.cb_mutator_sorcerer_spawned = function (unit, breed, optional_data)
+				optional_data.mutator_data.sorcerer_unit = unit
+			end
 		end,
 		server_update_function = function (context, data)
 			if #PLAYER_AND_BOT_UNITS == 0 then
@@ -602,21 +607,40 @@ local mutator_settings = {
 			end
 
 			local t = Managers.time:time("game")
+			local conflict_director = Managers.state.conflict
+			local breed_name = data.breed_name
 
 			if not data.has_spawned_mutator_sorcerer then
 				if not data.has_wanted_position then
-					local wanted_position = Unit.local_position(PLAYER_AND_BOT_UNITS[1], 0)
+					local wanted_position = MainPathUtils.point_on_mainpath(nil, data.wanted_spawn_distance_behind)
 					data.wanted_position = Vector3Box(wanted_position)
 					data.spawn_at_time = t + 30
 					data.has_wanted_position = true
 				elseif data.spawn_at_time < t then
-					local conflict_director = Managers.state.conflict
-					local breed = Breeds.chaos_mutator_sorcerer
+					local breed = Breeds[breed_name]
 					local spawn_category = "misc"
-
-					conflict_director:spawn_queued_unit(breed, data.wanted_position, QuaternionBox(Quaternion.identity()), spawn_category, nil, nil)
-
+					local optional_data = {
+						spawned_func = data.cb_mutator_sorcerer_spawned,
+						mutator_data = data
+					}
+					local spawn_queue_id = conflict_director:spawn_queued_unit(breed, data.wanted_position, QuaternionBox(Quaternion.identity()), spawn_category, nil, nil, optional_data)
 					data.has_spawned_mutator_sorcerer = true
+					data.spawn_queue_id = spawn_queue_id
+				end
+			elseif conflict_director:count_units_by_breed(breed_name) <= 0 then
+				data.has_spawned_mutator_sorcerer = false
+				data.has_wanted_position = false
+				data.wanted_spawn_distance_behind = math.max(conflict_director.main_path_info.ahead_travel_dist - 40, 0)
+			elseif Unit.alive(data.sorcerer_unit) then
+				local blackboard = BLACKBOARDS[data.sorcerer_unit]
+
+				if blackboard.closest_enemy_dist_sq and blackboard.closest_enemy_dist_sq >= 3600 then
+					conflict_director:destroy_unit(data.sorcerer_unit, blackboard, "debug")
+
+					data.sorcerer_unit = nil
+					data.has_spawned_mutator_sorcerer = false
+					data.has_wanted_position = false
+					data.wanted_spawn_distance_behind = math.max(conflict_director.main_path_info.ahead_travel_dist - 40, 0)
 				end
 			end
 		end

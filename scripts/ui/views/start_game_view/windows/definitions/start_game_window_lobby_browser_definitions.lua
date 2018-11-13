@@ -1,12 +1,8 @@
 local window_default_settings = UISettings.game_start_windows
-local window_background = window_default_settings.background
 local window_frame = window_default_settings.frame
 local window_size = window_default_settings.size
 local window_spacing = window_default_settings.spacing
-local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
-local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
 local window_width_offset = window_size[1] + window_spacing
-local window_text_width = window_size[1] - (window_frame_width * 2 + 60)
 local large_window_frame = window_default_settings.large_window_frame
 local large_window_frame_width = UIFrameSettings[large_window_frame].texture_sizes.vertical[1]
 local inner_window_size = {
@@ -40,6 +36,42 @@ local lobby_info_buttons_size = {
 local lobby_info_server_buttons_frame_size = {
 	lobby_info_buttons_size[1],
 	lobby_info_buttons_size[2] * 1 + 5
+}
+local animation_definitions = {
+	on_enter = {
+		{
+			name = "fade_in",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 0
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+				params.render_settings.alpha_multiplier = anim_progress
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	},
+	on_exit = {
+		{
+			name = "fade_out",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 1
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+				params.render_settings.alpha_multiplier = 1 - anim_progress
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	}
 }
 local scenegraph_definition = {
 	root = {
@@ -808,20 +840,6 @@ local scenegraph_definition = {
 		}
 	}
 }
-local title_text_style = {
-	vertical_alignment = "bottom",
-	upper_case = true,
-	localize = false,
-	horizontal_alignment = "center",
-	font_size = 42,
-	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("font_title", 255),
-	offset = {
-		0,
-		0,
-		2
-	}
-}
 
 local function sort_level_list(a, b)
 	local level_settings = LevelSettings
@@ -838,15 +856,15 @@ local function setup_game_mode_data(statistics_db, player_stats_id)
 	local game_modes = {}
 	local only_release = GameSettingsDevelopment.release_levels_only
 
-	for name, data in pairs(LevelSettings) do
-		if type(data) == "table" then
-			local debug_level = string.match(data.package_name, "resource_packages/levels/debug/")
+	for name, level_data in pairs(LevelSettings) do
+		if type(level_data) == "table" then
+			local debug_level = string.match(level_data.package_name, "resource_packages/levels/debug/")
 
 			if not only_release or not debug_level then
-				local game_mode = data.game_mode
+				local game_mode = level_data.game_mode
 
 				if game_mode and game_mode ~= "tutorial" and game_mode ~= "demo" then
-					local unlockable = data.unlockable
+					local unlockable = level_data.unlockable
 
 					if unlockable and LevelUnlockUtils.level_unlocked(statistics_db, player_stats_id, name) then
 						if not game_modes[game_mode] then
@@ -874,7 +892,8 @@ local function setup_game_mode_data(statistics_db, player_stats_id)
 		end
 	end
 
-	for index, data in ipairs(game_mode_data) do
+	for i = 1, #game_mode_data, 1 do
+		local data = game_mode_data[i]
 		local levels = data.levels
 
 		table.sort(levels, sort_level_list)
@@ -913,23 +932,6 @@ local search_type_text_array = {
 	"lb_search_type_favorites",
 	"lb_search_type_history"
 }
-LobbyBrowserGamepadWidgets = {
-	stepper = {
-		input_function = function (widget, input_service)
-			local content = widget.content
-
-			if input_service:get("move_left") then
-				content.left_button_hotspot.on_release = true
-
-				return true
-			elseif input_service:get("move_right") then
-				content.right_button_hotspot.on_release = true
-
-				return true
-			end
-		end
-	}
-}
 
 local function create_banner_text_config()
 	return {
@@ -940,211 +942,6 @@ local function create_banner_text_config()
 		font_type = "hell_shark",
 		text_color = Colors.get_color_table_with_alpha("cheeseburger", 255)
 	}
-end
-
-local function window_icon_tabs(scenegraph_id, size, amount, optional_color_name)
-	local button_color_name = nil
-
-	if optional_color_name then
-		button_color_name = "button_" .. optional_color_name
-	else
-		button_color_name = "button_normal"
-	end
-
-	local background_color = Colors.get_color_table_with_alpha(button_color_name, 255)
-	local background_texture = "button_bg_01"
-	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
-	local default_color = {
-		255,
-		255,
-		255,
-		255
-	}
-	local select_color = Colors.get_color_table_with_alpha("font_title", 255)
-	local widget = {
-		element = {}
-	}
-	local passes = {}
-	local content = {
-		amount = amount
-	}
-	local style = {}
-	local slot_width_spacing = 0
-	local offset_layer = 0
-	local total_length = -slot_width_spacing
-	local length_with_spacing = size[1] - slot_width_spacing * (amount - 1)
-	local tab_width = length_with_spacing / amount
-	local button_size = {
-		tab_width,
-		size[2]
-	}
-	local icon_size = {
-		34,
-		34
-	}
-	local start_width_offset = 0
-
-	for k = 1, amount, 1 do
-		local name_suffix = "_" .. tostring(k)
-		local row_start_index = k - 1
-		total_length = total_length + button_size[1] + slot_width_spacing
-		local offset = {
-			start_width_offset,
-			0,
-			offset_layer
-		}
-		local hotspot_name = "hotspot" .. name_suffix
-		passes[#passes + 1] = {
-			pass_type = "hotspot",
-			content_id = hotspot_name,
-			style_id = hotspot_name
-		}
-		style[hotspot_name] = {
-			size = button_size,
-			offset = offset
-		}
-		content[hotspot_name] = {}
-		local hotspot_content = content[hotspot_name]
-		local background_name = "background" .. name_suffix
-		passes[#passes + 1] = {
-			pass_type = "texture_uv",
-			content_id = background_name,
-			style_id = background_name
-		}
-		style[background_name] = {
-			size = button_size,
-			color = background_color,
-			offset = {
-				offset[1],
-				offset[2],
-				0
-			}
-		}
-		content[background_name] = {
-			uvs = {
-				{
-					0,
-					1 - math.min(button_size[2] / background_texture_settings.size[2], 1)
-				},
-				{
-					math.min(button_size[1] / background_texture_settings.size[1], 1),
-					1
-				}
-			},
-			texture_id = background_texture
-		}
-		local background_glow_name = "background_glow" .. name_suffix
-		passes[#passes + 1] = {
-			pass_type = "texture",
-			content_id = hotspot_name,
-			texture_id = background_glow_name,
-			style_id = background_glow_name,
-			content_check_function = function (content)
-				return content.is_selected or content.is_hover
-			end
-		}
-		style[background_glow_name] = {
-			size = {
-				button_size[1],
-				button_size[2]
-			},
-			color = {
-				255,
-				255,
-				255,
-				255
-			},
-			offset = {
-				offset[1],
-				offset[2] + 5,
-				2
-			}
-		}
-		hotspot_content[background_glow_name] = "button_state_normal"
-		local glass_top_name = "glass_top" .. name_suffix
-		passes[#passes + 1] = {
-			pass_type = "texture",
-			content_id = hotspot_name,
-			texture_id = glass_top_name,
-			style_id = glass_top_name
-		}
-		style[glass_top_name] = {
-			size = {
-				button_size[1],
-				3
-			},
-			color = {
-				255,
-				255,
-				255,
-				255
-			},
-			offset = {
-				offset[1],
-				(offset[2] + button_size[2]) - 3,
-				1
-			}
-		}
-		hotspot_content[glass_top_name] = "tabs_glass_top"
-		local icon_name = "icon" .. name_suffix
-		passes[#passes + 1] = {
-			pass_type = "texture",
-			content_id = hotspot_name,
-			texture_id = icon_name,
-			style_id = icon_name
-		}
-		style[icon_name] = {
-			size = icon_size,
-			color = Colors.get_color_table_with_alpha("font_button_normal", 255),
-			offset = {
-				(offset[1] + button_size[1] / 2) - icon_size[1] / 2,
-				(offset[2] + button_size[2] / 2) - icon_size[1] / 2 + 2,
-				2
-			}
-		}
-		hotspot_content[icon_name] = "tabs_inventory_icon_trinkets_selected"
-		local edge_fade_name = "edge_fade" .. name_suffix
-		passes[#passes + 1] = {
-			pass_type = "texture",
-			content_id = hotspot_name,
-			texture_id = edge_fade_name,
-			style_id = edge_fade_name,
-			content_check_function = function (content)
-				return not content.is_selected
-			end
-		}
-		style[edge_fade_name] = {
-			size = {
-				button_size[1],
-				15
-			},
-			color = {
-				200,
-				255,
-				255,
-				255
-			},
-			offset = {
-				offset[1],
-				offset[2],
-				5
-			}
-		}
-		hotspot_content[edge_fade_name] = "edge_fade_small"
-		start_width_offset = start_width_offset + tab_width + slot_width_spacing
-	end
-
-	widget.element.passes = passes
-	widget.content = content
-	widget.style = style
-	widget.offset = {
-		0,
-		0,
-		0
-	}
-	widget.scenegraph_id = scenegraph_id
-
-	return widget
 end
 
 local function create_window_divider(scenegraph_id, size)
@@ -1701,49 +1498,9 @@ local function create_window_button(scenegraph_id, size, button_text, font_size,
 	return widget
 end
 
-function create_hero_slot_widget(scenegraph_id, profile_index)
-	local element = {
-		passes = {
-			{
-				texture_id = "hero_texture",
-				style_id = "hero_texture",
-				pass_type = "texture",
-				retained_mode = false
-			}
-		}
-	}
-	local content = {
-		hero_texture = "unit_frame_portrait_default",
-		hero_icons = hero_icons[profile_index]
-	}
-	local style = {
-		hero_texture = {
-			color = {
-				255,
-				255,
-				255,
-				255
-			},
-			offset = {
-				0,
-				0,
-				0
-			}
-		}
-	}
-	local widget = {
-		element = element,
-		content = content,
-		style = style,
-		scenegraph_id = scenegraph_id
-	}
-
-	return widget
-end
-
 local hero_icons = {}
 
-for index, profile_index in ipairs(ProfilePriority) do
+for i = 1, #ProfilePriority, 1 do
 	hero_icons[#hero_icons + 1] = "unit_frame_portrait_default"
 end
 
@@ -1883,107 +1640,6 @@ local widgets = {
 		info_frame_status_text = UIWidgets.create_simple_text("Started", "lobby_info_box_status_servers", nil, nil, info_frame_text_style),
 		server_buttons_frame = UIWidgets.create_frame("lobby_info_dedicated_server_buttons_frame", scenegraph_definition.lobby_info_dedicated_server_buttons_frame.size, window_frame, 5),
 		add_to_favorites_button = create_window_button("lobby_info_add_to_favorites_button", scenegraph_definition.lobby_info_add_to_favorites_button.size, Localize("lb_add_to_favorites"), 20, false)
-	}
-}
-local animation_definitions = {
-	on_enter = {
-		{
-			name = "fade_in",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	},
-	on_exit = {
-		{
-			name = "fade_out",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 1
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = 1 - anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	}
-}
-local generic_input_actions = {
-	default = {
-		{
-			input_action = "d_horizontal",
-			priority = 2,
-			description_text = "input_description_switch_settings",
-			ignore_keybinding = true
-		},
-		{
-			input_action = "l1_r1",
-			priority = 3,
-			description_text = "input_description_navigate",
-			ignore_keybinding = true
-		},
-		{
-			input_action = "confirm",
-			priority = 49,
-			description_text = "lb_join"
-		},
-		{
-			input_action = "special_1",
-			priority = 50,
-			description_text = "lb_reset_filters"
-		},
-		{
-			input_action = "refresh",
-			priority = 51,
-			description_text = "lb_search"
-		},
-		{
-			input_action = "back",
-			priority = 52,
-			description_text = "input_description_close"
-		}
-	},
-	no_join = {
-		{
-			input_action = "d_horizontal",
-			priority = 2,
-			description_text = "input_description_switch_settings",
-			ignore_keybinding = true
-		},
-		{
-			input_action = "l1_r1",
-			priority = 3,
-			description_text = "input_description_navigate",
-			ignore_keybinding = true
-		},
-		{
-			input_action = "special_1",
-			priority = 50,
-			description_text = "lb_reset_filters"
-		},
-		{
-			input_action = "refresh",
-			priority = 51,
-			description_text = "lb_search"
-		},
-		{
-			input_action = "back",
-			priority = 52,
-			description_text = "input_description_close"
-		}
 	}
 }
 

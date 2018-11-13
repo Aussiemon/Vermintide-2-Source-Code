@@ -174,7 +174,14 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 			self._matchmaking_manager.debug.text = "Requesting to join"
 
 			mm_printf("Network hash check done, requesting to join game...")
-			self._handshaker_client:send_rpc_to_host("rpc_matchmaking_request_join_lobby", lobby_id, false)
+
+			local friend_join = false
+
+			if PLATFORM == "ps4" then
+				friend_join = not not self.state_context.friend_join
+			end
+
+			self._handshaker_client:send_rpc_to_host("rpc_matchmaking_request_join_lobby", lobby_id, friend_join)
 
 			self._join_timeout = t + MatchmakingSettings.REQUEST_JOIN_LOBBY_REPLY_TIME
 			self._state = "asking_to_join"

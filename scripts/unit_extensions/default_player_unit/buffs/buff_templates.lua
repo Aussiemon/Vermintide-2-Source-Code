@@ -5165,11 +5165,12 @@ BuffTemplates = {
 	stormfiend_warpfire_ground_base = {
 		buffs = {
 			{
-				refresh_durations = true,
+				slowdown_buff_name = "bile_troll_vomit_ground_slowdown",
 				name = "stormfiend_warpfire_ground",
+				refresh_durations = true,
 				remove_buff_func = "remove_moving_through_warpfire",
 				apply_buff_func = "apply_moving_through_warpfire",
-				time_between_dot_damages = 0.75,
+				time_between_dot_damages = 0.5,
 				damage_type = "warpfire_ground",
 				max_stacks = 1,
 				update_func = "update_moving_through_warpfire",
@@ -5182,53 +5183,53 @@ BuffTemplates = {
 						1
 					},
 					normal = {
-						1,
-						1,
+						2,
+						2,
 						0,
 						2.5,
-						1
+						3
 					},
 					hard = {
-						1,
-						1,
+						4,
+						3,
 						0,
 						2.5,
-						1
+						4
 					},
 					survival_hard = {
-						1,
-						1,
+						4,
+						3,
 						0,
 						2.5,
-						1
+						4
 					},
 					harder = {
-						1,
-						1,
+						6,
+						5,
 						0,
 						4.5,
-						1
+						5
 					},
 					survival_harder = {
-						1,
-						1,
+						6,
+						5,
 						0,
 						4.5,
-						1
+						5
 					},
 					hardest = {
-						1,
-						1,
+						8,
+						8,
 						0,
 						8.5,
-						1
+						6
 					},
 					survival_hardest = {
-						1,
-						1,
+						8,
+						8,
 						0,
 						8.5,
-						1
+						6
 					}
 				}
 			}
@@ -5245,7 +5246,7 @@ BuffTemplates = {
 				time_between_dot_damages = 0.65,
 				damage_type = "warpfire_face",
 				max_stacks = 1,
-				duration = 5,
+				duration = 3,
 				push_speed = 10,
 				difficulty_damage = {
 					easy = {
@@ -5259,49 +5260,49 @@ BuffTemplates = {
 						3,
 						2,
 						0,
-						3,
+						1.5,
 						2
 					},
 					hard = {
 						4,
 						2,
 						0,
-						3,
+						2,
 						2
 					},
 					survival_hard = {
 						4,
 						2,
 						0,
-						3,
+						2,
 						2
 					},
 					harder = {
 						5,
 						3,
 						0,
-						5,
+						3,
 						3
 					},
 					survival_harder = {
 						5,
 						3,
 						0,
-						5,
+						3,
 						3
 					},
 					hardest = {
 						6,
 						4,
 						0,
-						9,
+						5,
 						4
 					},
 					survival_hardest = {
 						6,
 						4,
 						0,
-						9,
+						5,
 						1
 					}
 				}

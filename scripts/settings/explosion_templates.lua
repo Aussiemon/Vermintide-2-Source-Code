@@ -599,15 +599,12 @@ ExplosionTemplates.cannon_ball_throw = {
 						local statistics_db = Managers.player:statistics_db()
 
 						statistics_db:increment_stat_and_sync_to_clients(stat_name)
-						print("Completed challenge ", stat_name)
 
 						status_extension.num_cannonball_kills = nil
 						status_extension.completed_cannonball_challenge = true
 
 						QuestSettings.send_completed_message(stat_name)
 					end
-
-					print("Num cannonball kills ", status_extension.num_cannonball_kills)
 				end
 			end
 		end

@@ -28,12 +28,7 @@ ActionUtils.get_max_targets = function (damage_profile, cleave_power_level)
 end
 
 ActionUtils.get_target_armor = function (hit_zone_name, breed, dummy_unit_armor)
-	Profiler.start("ActionUtils.get_target_armor")
-
-	local target_unit_armor_attack = 1
-	local target_unit_armor_impact = 1
-	local target_unit_armor = 1
-	local target_unit_primary_armor_attack, target_unit_primary_armor_impact = nil
+	local target_unit_armor_attack, target_unit_armor_impact, target_unit_armor, target_unit_primary_armor_attack, target_unit_primary_armor_impact = nil
 
 	if breed and hit_zone_name then
 		local hitzone_armor_categories = breed.hitzone_armor_categories
@@ -71,8 +66,6 @@ ActionUtils.get_target_armor = function (hit_zone_name, breed, dummy_unit_armor)
 		target_unit_armor_impact = player_armor
 	end
 
-	Profiler.stop("ActionUtils.get_target_armor")
-
 	return target_unit_armor_attack, target_unit_armor_impact, target_unit_primary_armor_attack, target_unit_primary_armor_impact
 end
 
@@ -82,8 +75,6 @@ ActionUtils.get_dropoff_scalar = function (damage_profile, target_settings, atta
 	if not range_dropoff_settings then
 		return 0
 	end
-
-	Profiler.start("ActionUtils.get_dropoff_scalar")
 
 	local attacker_position = POSITION_LOOKUP[attacker_unit] or Unit.world_position(attacker_unit, 0)
 	local target_position = POSITION_LOOKUP[target_unit] or Unit.world_position(target_unit, 0)
@@ -101,14 +92,10 @@ ActionUtils.get_dropoff_scalar = function (damage_profile, target_settings, atta
 	local dropoff_distance = math.clamp(distance - dropoff_start, 0, dropoff_scale)
 	local dropoff_scalar = dropoff_distance / dropoff_scale
 
-	Profiler.stop("ActionUtils.get_dropoff_scalar")
-
 	return dropoff_scalar
 end
 
 ActionUtils.get_armor_power_modifier = function (power_type, damage_profile, target_settings, target_unit_armor, target_unit_primary_armor, critical_strike_settings, dropoff_scalar)
-	Profiler.start("ActionUtils.get_armor_power_modifier")
-
 	local armor_modifier = target_settings.armor_modifier or damage_profile.armor_modifier or DefaultArmorPowerModifier
 	local armor_modifier_near = target_settings.armor_modifier_near or damage_profile.armor_modifier_near
 	local armor_modifier_far = target_settings.armor_modifier_far or damage_profile.armor_modifier_far
@@ -128,14 +115,10 @@ ActionUtils.get_armor_power_modifier = function (power_type, damage_profile, tar
 		armor_power_modifier = (target_unit_primary_armor and armor_modifier[power_type][target_unit_primary_armor]) or armor_modifier[power_type][target_unit_armor] or 1
 	end
 
-	Profiler.stop("ActionUtils.get_armor_power_modifier")
-
 	return armor_power_modifier
 end
 
 ActionUtils.scale_power_levels = function (power_level, power_type, attacker_unit, difficulty_level)
-	Profiler.start("ActionUtils.scale_power_levels")
-
 	local actual_power_level = power_level
 
 	if not global_is_inside_inn then
@@ -174,21 +157,16 @@ ActionUtils.scale_power_levels = function (power_level, power_type, attacker_uni
 		scaled_power_level = ActionUtils.apply_buffs_to_power_level(attacker_unit, scaled_power_level)
 	end
 
-	Profiler.stop("ActionUtils.scale_power_levels")
-
 	return scaled_power_level
 end
 
 ActionUtils.get_power_level = function (power_type, power_level, damage_profile, target_settings, critical_strike_settings, dropoff_scalar, attacker_unit, difficulty_level)
-	Profiler.start("ActionUtils.get_power_level")
-
 	local power_distribution = target_settings.power_distribution or damage_profile.power_distribution or DefaultPowerDistribution
 	local power_distribution_near = target_settings.power_distribution_near or damage_profile.power_distribution_near
 	local power_distribution_far = target_settings.power_distribution_far or damage_profile.power_distribution_far
 	local power_multiplier = nil
 
-	if critical_strike_settings and false then
-	elseif power_distribution_near and power_distribution_far and dropoff_scalar then
+	if power_distribution_near and power_distribution_far and dropoff_scalar then
 		local power_near = power_distribution_near[power_type]
 		local power_far = power_distribution_far[power_type]
 		power_multiplier = math.lerp(power_near, power_far, dropoff_scalar)
@@ -198,18 +176,13 @@ ActionUtils.get_power_level = function (power_type, power_level, damage_profile,
 
 	local scaled_power_level = ActionUtils.scale_power_levels(power_level, power_type, attacker_unit, difficulty_level)
 
-	Profiler.stop("ActionUtils.get_power_level")
-
 	return scaled_power_level * power_multiplier
 end
 
 ActionUtils.get_power_level_for_target = function (original_power_level, damage_profile, target_index, is_critical_strike, attacker_unit, hit_zone_name, armor_type_override, damage_source, breed, dummy_unit_armor, dropoff_scalar, difficulty_level, target_unit_armor, target_unit_primary_armor)
-	Profiler.start("ActionUtils.get_power_level_for_target")
-
 	local target_settings = (damage_profile.targets and damage_profile.targets[target_index]) or damage_profile.default_target
 	local critical_strike_settings = is_critical_strike and damage_profile.critical_strike
-	local attack_armor_power_modifer = 1
-	local impact_armor_power_modifer = 1
+	local attack_armor_power_modifer, impact_armor_power_modifer = nil
 	local power_level = original_power_level
 	local is_enemy_target = breed or dummy_unit_armor
 	local target_unit_armor_attack = target_unit_armor
@@ -244,8 +217,6 @@ ActionUtils.get_power_level_for_target = function (original_power_level, damage_
 	attack_power = attack_power * attack_armor_power_modifer
 	impact_power = impact_power * impact_armor_power_modifer
 
-	Profiler.stop("ActionUtils.get_power_level_for_target")
-
 	return attack_power, impact_power
 end
 
@@ -272,8 +243,6 @@ ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, bre
 		return power_level
 	end
 
-	Profiler.start("ActionUtils.apply_buffs_to_value")
-
 	if damage_source then
 		local item_data = rawget(ItemMasterList, damage_source)
 		local weapon_template_name = item_data and item_data.template
@@ -287,6 +256,7 @@ ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, bre
 			if is_melee then
 				power_level = buff_extension:apply_buffs_to_value(power_level, StatBuffIndex.POWER_LEVEL_MELEE)
 			elseif is_ranged then
+				power_level = buff_extension:apply_buffs_to_value(power_level, StatBuffIndex.POWER_LEVEL_RANGED)
 			end
 		end
 	end
@@ -310,8 +280,6 @@ ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, bre
 	elseif race == "skaven" then
 		power_level = buff_extension:apply_buffs_to_value(power_level, StatBuffIndex.POWER_LEVEL_SKAVEN)
 	end
-
-	Profiler.stop("ActionUtils.apply_buffs_to_value")
 
 	return power_level
 end
@@ -376,12 +344,10 @@ ActionUtils.spawn_player_projectile = function (owner_unit, position, rotation, 
 end
 
 ActionUtils.spawn_pickup_projectile = function (world, weapon_unit, projectile_unit_name, projectile_unit_template_name, current_action, owner_unit, position, rotation, velocity, angular_velocity, item_name, spawn_type)
-	local lookup_data = current_action.lookup_data
 	local projectile_info = current_action.projectile_info
 	local pickup_name = projectile_info.pickup_name
 	local projectile_unit_name_id = NetworkLookup.husks[projectile_unit_name]
 	local projectile_unit_template_name_id = NetworkLookup.go_types[projectile_unit_template_name]
-	local owner_unit_id = Managers.state.network:unit_game_object_id(owner_unit)
 	local network_position = AiAnimUtils.position_network_scale(position, true)
 	local network_rotation = AiAnimUtils.rotation_network_scale(rotation, true)
 	local network_velocity = AiAnimUtils.velocity_network_scale(velocity, true)
@@ -490,7 +456,7 @@ ActionUtils.init_action_buff_data = function (action_buff_data, buff_data, t)
 	local action_buffs_in_progress = action_buff_data.action_buffs_in_progress
 	local buff_identifiers = action_buff_data.buff_identifiers
 
-	for index, buff in ipairs(buff_data) do
+	for _, buff in ipairs(buff_data) do
 		local start_time = t + (buff.start_time or 0)
 		local end_time = buff.end_time or math.huge
 		local buff_index = #start_times + 1
@@ -549,11 +515,19 @@ ActionUtils.remove_action_buff_data = function (action_buff_data, buff_data, own
 end
 
 ActionUtils.start_charge_sound = function (wwise_world, weapon_unit, player_unit, action_settings)
-	local wwise_source_id = WwiseWorld.make_auto_source(wwise_world, weapon_unit)
-	local overcharge_extension = ScriptUnit.extension(player_unit, "overcharge_system")
 	local charge_sound_switch = action_settings.charge_sound_switch
+	local charge_sound_name = action_settings.charge_sound_name
+	local charge_sound_parameter_name = action_settings.charge_sound_parameter_name
+
+	if not action_settings.charge_sound_name then
+		return
+	end
+
+	local wwise_source_id = WwiseWorld.make_auto_source(wwise_world, weapon_unit)
 
 	if charge_sound_switch then
+		local overcharge_extension = ScriptUnit.extension(player_unit, "overcharge_system")
+
 		if overcharge_extension:above_overcharge_threshold() then
 			WwiseWorld.set_switch(wwise_world, charge_sound_switch, "above_overcharge_threshold", wwise_source_id)
 		else
@@ -561,9 +535,7 @@ ActionUtils.start_charge_sound = function (wwise_world, weapon_unit, player_unit
 		end
 	end
 
-	local charge_sound_name = action_settings.charge_sound_name
 	local wwise_playing_id = WwiseWorld.trigger_event(wwise_world, charge_sound_name, wwise_source_id)
-	local charge_sound_parameter_name = action_settings.charge_sound_parameter_name
 
 	if charge_sound_parameter_name then
 		WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, charge_sound_parameter_name, 1)
@@ -575,21 +547,45 @@ end
 ActionUtils.stop_charge_sound = function (wwise_world, wwise_playing_id, wwise_source_id, action_settings)
 	local charge_sound_stop_event = action_settings.charge_sound_stop_event
 
-	if charge_sound_stop_event then
-		WwiseWorld.trigger_event(wwise_world, charge_sound_stop_event, wwise_source_id)
+	if not charge_sound_stop_event or not wwise_source_id then
+		return
 	end
+
+	WwiseWorld.trigger_event(wwise_world, charge_sound_stop_event, wwise_source_id)
 end
 
-ActionUtils.play_husk_sound_event = function (sound_event, player_unit)
+ActionUtils.play_husk_sound_event = function (wwise_world, sound_event, player_unit, is_bot)
+	if not sound_event then
+		return
+	end
+
+	if not Unit.alive(player_unit) then
+		return
+	end
+
+	local is_server = Managers.player.is_server
 	local network_manager = Managers.state.network
 	local network_transmit = network_manager.network_transmit
 	local go_id = network_manager:unit_game_object_id(player_unit)
 	local event_id = NetworkLookup.sound_events[sound_event]
+	local game = Managers.state.network:game()
 
-	if Managers.player.is_server then
-		network_transmit:send_rpc_clients("rpc_play_husk_sound_event", go_id, event_id)
-	else
-		network_transmit:send_rpc_server("rpc_play_husk_sound_event", go_id, event_id)
+	if not go_id then
+		return
+	end
+
+	if is_server and is_bot then
+		local wwise_source_id = WwiseWorld.make_auto_source(wwise_world, player_unit)
+
+		WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
+	end
+
+	if game then
+		if is_server then
+			network_transmit:send_rpc_clients("rpc_play_husk_sound_event", go_id, event_id)
+		else
+			network_transmit:send_rpc_server("rpc_play_husk_sound_event", go_id, event_id)
+		end
 	end
 end
 
@@ -654,7 +650,6 @@ ActionUtils.pitch_from_rotation = function (rotation)
 	local forward_flat = Vector3.normalize(Vector3.flat(forward))
 	local dot = Vector3.dot(forward, forward_flat)
 	dot = math.clamp(dot, -1, 1)
-	local forward_flat_length = Vector3.length(forward_flat)
 	local angle = math.radians_to_degrees(math.acos(dot))
 	local up_vector = Vector3(0, 0, 1)
 	local up_dot = Vector3.dot(forward, up_vector)

@@ -99,7 +99,7 @@ HealthTriggerSystem.update = function (self, context, t)
 
 				extension.dialogue_input:trigger_dialogue_event("health_trigger", event_data)
 
-				local has_shield = DialogueSystem:PlayerShieldCheck(unit, "slot_melee")
+				local has_shield = DialogueSystem:player_shield_check(unit, "slot_melee")
 
 				SurroundingAwareSystem.add_event(unit, "health_trigger", DialogueSettings.default_view_distance, "trigger_type", "losing_rapidly", "has_shield", has_shield, "target_name", target_name)
 			end

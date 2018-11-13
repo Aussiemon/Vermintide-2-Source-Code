@@ -8,12 +8,13 @@ require("scripts/settings/difficulty_settings")
 require("scripts/settings/attachment_node_linking")
 
 local flow_return_table = Boot.flow_return_table
+local unit_alive = Unit.alive
 
 function flow_callback_show_gdc_intro(params)
 	local player = Managers.player:local_player(1)
 	local player_unit = player.player_unit
 
-	if player_unit and Unit.alive(player_unit) then
+	if player_unit and unit_alive(player_unit) then
 		local hud_extension = ScriptUnit.extension(player_unit, "hud_system")
 
 		hud_extension:gdc_intro_active(true)
@@ -309,7 +310,23 @@ end
 
 function flow_callback_disable_torch(params)
 	local player_unit = params.touching_unit
-	local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
+
+	if Managers.player.is_server then
+		local pickup_system = Managers.state.entity:system("pickup_system")
+
+		pickup_system:disable_teleporting_pickups()
+	end
+
+	if not unit_alive(player_unit) then
+		return
+	end
+
+	local inventory_extension = ScriptUnit.has_extension(player_unit, "inventory_system")
+
+	if not inventory_extension then
+		return
+	end
+
 	local weapon_slot = inventory_extension:get_wielded_slot_name()
 	local weapon_data = inventory_extension:get_slot_data(weapon_slot)
 
@@ -318,17 +335,10 @@ function flow_callback_disable_torch(params)
 		local item_name = item_data and item_data.name
 
 		if item_name == "torch" then
-			print("Player is wielding torch, destroying slot")
 			CharacterStateHelper.stop_weapon_actions(inventory_extension, "wield")
 			inventory_extension:destroy_slot("slot_level_event", true)
 			inventory_extension:wield("slot_melee")
 		end
-	end
-
-	if Managers.player.is_server then
-		local pickup_system = Managers.state.entity:system("pickup_system")
-
-		pickup_system:disable_teleporting_pickups()
 	end
 end
 
@@ -346,8 +356,22 @@ function flow_query_wielded_weapon(params)
 	local player_unit = params.player_unit
 	local equipment = nil
 
-	if ScriptUnit.has_extension(player_unit, "inventory_system") then
-		local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
+	if not unit_alive(player_unit) then
+		flow_return_table.righthandweapon3p = nil
+		flow_return_table.righthandammo3p = nil
+		flow_return_table.righthandweapon = nil
+		flow_return_table.righthandammo1p = nil
+		flow_return_table.lefthandweapon3p = nil
+		flow_return_table.lefthandammo3p = nil
+		flow_return_table.lefthandweapon = nil
+		flow_return_table.lefthandammo1p = nil
+
+		return flow_return_table
+	end
+
+	local inventory_extension = ScriptUnit.has_extension(player_unit, "inventory_system")
+
+	if inventory_extension then
 		equipment = inventory_extension:equipment()
 	else
 		equipment = Unit.get_data(player_unit, "equipment")
@@ -403,7 +427,6 @@ end
 
 function flow_callback_play_screen_space_blood(params)
 	local effect_name = params.effect
-	local position = params.position
 
 	Managers.state.blood:play_screen_space_blood(effect_name, Vector3.zero())
 end
@@ -496,7 +519,7 @@ function flow_callback_block_profile_menu_accept_button(params)
 	local player = Managers.player:players()[Network.peer_id()]
 	local player_unit = player.player_unit
 
-	if Unit.alive(player_unit) and player_unit == unit then
+	if unit_alive(player_unit) and player_unit == unit then
 		global_profile_view:block_accept_button(true)
 	end
 end
@@ -506,7 +529,7 @@ function flow_callback_unblock_profile_menu_accept_button(params)
 	local player = Managers.player:players()[Network.peer_id()]
 	local player_unit = player.player_unit
 
-	if Unit.alive(player_unit) and player_unit == unit then
+	if unit_alive(player_unit) and player_unit == unit then
 		global_profile_view:block_accept_button(false)
 	end
 end
@@ -627,8 +650,7 @@ end
 
 function flow_callback_play_surface_material_effect(params)
 	local hit_unit = params.hit_unit
-	local world = Managers.world:world("level_world")
-	local sound_character, player_unit = nil
+	local sound_character = nil
 	local range = params.range
 	local offset = params.offset
 	local normal = params.normal
@@ -641,7 +663,6 @@ function flow_callback_play_voice(params)
 	local playing_unit = params.playing_unit
 	local event_name = params.event_name
 	local use_occlusion = params.use_occlusion or false
-	local lol = math.random()
 	local dialogue_input = ScriptUnit.has_extension_input(playing_unit, "dialogue_system")
 
 	if dialogue_input then
@@ -658,7 +679,7 @@ function flow_callback_is_local_player(params)
 	local player = Managers.player:players()[1]
 	local player_unit = player.player_unit
 
-	if Unit.alive(player_unit) then
+	if unit_alive(player_unit) then
 		if unit == player_unit then
 			flow_return_table.is_player = true
 			flow_return_table.is_not_player = false
@@ -723,12 +744,12 @@ function flow_callback_trigger_sound(params)
 
 	if params.unit then
 		if params.actor then
-			WwiseWorld.trigger_event(wwise_world, params.event, param.use_occlusion, params.unit, Unit.actor(params.unit, params.actor))
+			WwiseWorld.trigger_event(wwise_world, params.event, params.use_occlusion, params.unit, Unit.actor(params.unit, params.actor))
 		else
-			WwiseWorld.trigger_event(wwise_world, params.event, param.use_occlusion, params.unit)
+			WwiseWorld.trigger_event(wwise_world, params.event, params.use_occlusion, params.unit)
 		end
 	elseif params.position then
-		WwiseWorld.trigger_event(wwise_world, params.event, param.use_occlusion, params.position)
+		WwiseWorld.trigger_event(wwise_world, params.event, params.use_occlusion, params.position)
 	else
 		WwiseWorld.trigger_event(wwise_world, params.event)
 	end
@@ -761,7 +782,7 @@ end
 function flow_callback_thrown_projectile_bounce(params)
 	local unit = params.unit
 
-	if Unit.alive(unit) and ScriptUnit.has_extension(unit, "projectile_system") then
+	if unit_alive(unit) and ScriptUnit.has_extension(unit, "projectile_system") then
 		local ext = ScriptUnit.extension(unit, "projectile_system")
 
 		ext:flow_cb_bounce(params.hit_unit, params.hit_actor, params.position, params.normal)
@@ -894,10 +915,10 @@ function flow_callback_get_random_player(params)
 	local unit_list = temp
 	local unit_list_n = 0
 
-	for index, player in pairs(players) do
+	for _, player in pairs(players) do
 		local unit = player.player_unit
 
-		if Unit.alive(unit) and ScriptUnit.extension(unit, "health_system"):is_alive() then
+		if unit_alive(unit) and ScriptUnit.extension(unit, "health_system"):is_alive() then
 			unit_list_n = unit_list_n + 1
 			unit_list[unit_list_n] = unit
 		end
@@ -1035,13 +1056,9 @@ function flow_callback_ussingen_barrel_challenge(params)
 		local is_event_spawned = ScriptUnit.has_extension(barrel_unit, "limited_item_track_system")
 
 		if not is_event_spawned then
-			print("Is not event spawned, num valid barrels: ", num_valid_barrels + 1)
-
 			flow_return_table.is_valid_barrel = 1
 
 			return flow_return_table
-		else
-			print("Is event spawned, num valid barrels: ", num_valid_barrels)
 		end
 	end
 
@@ -1066,10 +1083,7 @@ function flow_callback_ussingen_barrel_challenge_completed(params)
 				local statistics_db = Managers.player:statistics_db()
 
 				statistics_db:increment_stat_and_sync_to_clients(stat_name)
-				print("Completed challenge ", stat_name)
 				QuestSettings.send_completed_message(stat_name)
-			else
-				print("Failed barrel challenge, num valid barrels: ", num_valid_barrels)
 			end
 		end
 	end
@@ -1111,8 +1125,8 @@ end
 
 function flow_callback_volume_system_register_location_volume(params)
 	local volume_system = Managers.state.entity:system("volume_system")
-	local location_id = NetworkLookup.locations[params.location]
 
+	fassert(NetworkLookup.locations[params.location], "Volume location named [\"%s\"] needs to be added to NetworkLookup.locations", params.location)
 	volume_system:register_volume(params.volume_name, "location_volume", params)
 end
 
@@ -1140,7 +1154,7 @@ function flow_callback_intro_cutscene_show_location(params)
 	local local_player = Managers.player:local_player()
 	local player_unit = local_player.player_unit
 
-	fassert(Unit.alive(player_unit), "Tried showing location with no player unit spawned")
+	fassert(unit_alive(player_unit), "Tried showing location with no player unit spawned")
 
 	local hud_extension = ScriptUnit.extension(player_unit, "hud_system")
 
@@ -1458,10 +1472,10 @@ function flow_callback_get_players_and_bots(params)
 	local unit_list = temp
 	local unit_list_n = 0
 
-	for index, player in pairs(players) do
+	for _, player in pairs(players) do
 		local unit = player.player_unit
 
-		if Unit.alive(unit) and ScriptUnit.extension(unit, "health_system"):is_alive() then
+		if unit_alive(unit) and ScriptUnit.extension(unit, "health_system"):is_alive() then
 			unit_list_n = unit_list_n + 1
 			local profile_index = player:profile_index()
 			unit_list[profile_index] = unit
@@ -1497,10 +1511,17 @@ end
 
 function flow_is_carrying_explosive_barrel(params)
 	local player_unit = params.player_unit
-	local equipment = nil
 
-	if ScriptUnit.has_extension(player_unit, "inventory_system") then
-		local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
+	if not unit_alive(player_unit) then
+		flow_return_table.has_barrel = nil
+
+		return flow_return_table
+	end
+
+	local equipment = nil
+	local inventory_extension = ScriptUnit.has_extension(player_unit, "inventory_system")
+
+	if inventory_extension then
 		equipment = inventory_extension:equipment()
 	else
 		equipment = Unit.get_data(player_unit, "equipment")
@@ -1524,7 +1545,7 @@ function flow_callback_teleport_unit(params)
 	local position = params.position
 	local rotation = params.rotation
 
-	if not Unit.alive(unit) then
+	if not unit_alive(unit) then
 		return
 	end
 
@@ -1549,11 +1570,22 @@ end
 
 function flow_query_slots_status(params)
 	local player_unit = params.player_unit
-	local equipment = nil
 
-	if ScriptUnit.has_extension(player_unit, "inventory_system") then
-		local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
+	if not unit_alive(player_unit) then
+		flow_return_table.healthkit = nil
+		flow_return_table.grenade = nil
+		flow_return_table.potion = nil
+
+		return flow_return_table
+	end
+
+	local equipment = nil
+	local inventory_extension = ScriptUnit.has_extension(player_unit, "inventory_system")
+
+	if inventory_extension then
 		equipment = inventory_extension:equipment()
+	else
+		equipment = Unit.get_data(player_unit, "equipment")
 	end
 
 	local slot_healthkit = equipment.slots.slot_healthkit
@@ -1574,7 +1606,7 @@ function flow_callback_damage_player_bot_ai(params)
 	local unit = params.unit
 	local damage = params.damage
 
-	if Unit.alive(unit) then
+	if unit_alive(unit) then
 		fassert(ScriptUnit.has_extension(unit, "health_system"), "Tried to kill unit %s from flow but the unit has no health extension", unit)
 
 		local hit_zone_name = "full"
@@ -1595,7 +1627,7 @@ function flow_callback_get_health_player_bot_ai(params)
 	local unit = params.unit
 	local current_health = nil
 
-	if Unit.alive(unit) then
+	if unit_alive(unit) then
 		fassert(ScriptUnit.has_extension(unit, "health_system"), "Tried to get unit %s health from flow but the unit has no health extension", unit)
 
 		local health_extension = ScriptUnit.extension(unit, "health_system")
@@ -1617,11 +1649,17 @@ function flow_callback_clear_slot(params)
 	local player_unit = params.player_unit
 	local slot_name = params.slot_name
 
-	if ScriptUnit.has_extension(player_unit, "inventory_system") then
-		local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
-
-		inventory_extension:destroy_slot(slot_name)
+	if not unit_alive(player_unit) then
+		return
 	end
+
+	local inventory_extension = ScriptUnit.has_extension(player_unit, "inventory_system")
+
+	if not inventory_extension then
+		return
+	end
+
+	inventory_extension:destroy_slot(slot_name)
 end
 
 function flow_callback_set_wwise_elevation_alignment(params)
@@ -1640,7 +1678,7 @@ function flow_callback_kill_player_bot_ai(params)
 
 	local unit = params.unit
 
-	if Unit.alive(unit) then
+	if unit_alive(unit) then
 		fassert(ScriptUnit.has_extension(unit, "health_system"), "Tried to kill unit %s from flow but the unit has no health extension", unit)
 
 		local health_extension = ScriptUnit.extension(unit, "health_system")
@@ -1657,7 +1695,7 @@ function flow_callback_overcharge_heal_unit(params)
 	local unit = params.unit
 	local health_added = params.health
 
-	if Unit.alive(unit) then
+	if unit_alive(unit) then
 		fassert(ScriptUnit.has_extension(unit, "health_system"), "Tried to heal overcharge unit %s from flow but the unit has no health extension", unit)
 
 		local health_extension = ScriptUnit.extension(unit, "health_system")
@@ -1677,7 +1715,7 @@ function flow_callback_overcharge_init_unit(params)
 	local unit = params.unit
 	local init_damage = params.init_damage
 
-	if Unit.alive(unit) then
+	if unit_alive(unit) then
 		fassert(ScriptUnit.has_extension(unit, "health_system"), "Tried to damage overcharge unit %s from flow but the unit has no health extension", unit)
 
 		local health_extension = ScriptUnit.extension(unit, "health_system")
@@ -1708,7 +1746,7 @@ function flow_callback_overcharge_damage_unit(params)
 	local unit = params.unit
 	local damage = params.damage
 
-	if Unit.alive(unit) then
+	if unit_alive(unit) then
 		fassert(ScriptUnit.has_extension(unit, "health_system"), "Tried to damage overcharge unit %s from flow but the unit has no health extension", unit)
 
 		local hit_zone_name = "full"
@@ -1724,7 +1762,7 @@ function flow_callback_overcharge_reset_unit(params)
 	local unit = params.unit
 	local max_health = params.maxhealth
 
-	if Unit.alive(unit) then
+	if unit_alive(unit) then
 		fassert(ScriptUnit.has_extension(unit, "health_system"), "Tried to reset health and damage on overcharge unit %s from flow but the unit has no health extension", unit)
 
 		local health_extension = ScriptUnit.extension(unit, "health_system")
@@ -1765,13 +1803,9 @@ function flow_callback_fire_light_weight_projectile(params)
 			afro_hit_sound = light_weight_projectile_template.afro_hit_sound,
 			player_push_velocity = Vector3Box(direction * light_weight_projectile_template.impact_push_speed)
 		}
-
-		Profiler.start("create_light_weight_projectile")
-
 		local projectile_system = Managers.state.entity:system("projectile_system")
 
 		projectile_system:create_light_weight_projectile(item_name, unit, position, spread_direction, light_weight_projectile_template.projectile_speed, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_particle_effect)
-		Profiler.stop("create_light_weight_projectile")
 	end
 end
 
@@ -1800,7 +1834,7 @@ end
 function flow_callback_enable_climb_unit(params)
 	local unit = params.unit
 
-	if Unit.alive(unit) then
+	if unit_alive(unit) then
 		local nav_graph_system = Managers.state.entity:system("nav_graph_system")
 
 		nav_graph_system:init_nav_graph_from_flow(unit)
@@ -1810,7 +1844,7 @@ end
 function flow_callback_add_nav_graph_on_climb_unit(params)
 	local unit = params.unit
 
-	if Unit.alive(unit) then
+	if unit_alive(unit) then
 		local nav_graph_system = Managers.state.entity:system("nav_graph_system")
 
 		nav_graph_system:queue_add_nav_graph_from_flow(unit)
@@ -1820,7 +1854,7 @@ end
 function flow_callback_remove_nav_graph_on_climb_unit(params)
 	local unit = params.unit
 
-	if Unit.alive(unit) then
+	if unit_alive(unit) then
 		local nav_graph_system = Managers.state.entity:system("nav_graph_system")
 
 		nav_graph_system:queue_remove_nav_graph_from_flow(unit)
@@ -1834,7 +1868,6 @@ function flow_callback_limited_item_spawner_group_register(params)
 
 	local group_name = params.name
 	local pool_size = params.pool_size
-	local start_active = params.start_active
 
 	Managers.state.entity:system("limited_item_track_system"):register_group(group_name, pool_size)
 end
@@ -1873,7 +1906,6 @@ end
 
 function flow_callback_blood_collision(params)
 	if Managers.state.decal ~= nil then
-		local touched_unit = params.unit
 		local actor = params.actor
 		local my_unit = Actor.unit(actor)
 		local position = params.position
@@ -1996,7 +2028,7 @@ end
 function flow_callback_trigger_dialogue_story(params)
 	local unit = params.unit
 
-	DialogueSystem:TriggerStoryDialogue(unit)
+	DialogueSystem:trigger_story_dialogue(unit)
 end
 
 function flow_callback_trigger_cutscene_subtitles(params)
@@ -2004,7 +2036,7 @@ function flow_callback_trigger_cutscene_subtitles(params)
 	local speaker = params.speaker
 	local hangtime = params.end_delay
 
-	DialogueSystem:TriggerCutsceneSubtitles(event_name, speaker, hangtime)
+	DialogueSystem:trigger_cutscene_subtitles(event_name, speaker, hangtime)
 end
 
 function flow_callback_override_start_dialogue_system()
@@ -2022,9 +2054,6 @@ function flow_callback_override_stop_dialogue_system()
 end
 
 function flow_callback_override_start_delay()
-	local local_player = Managers.player:local_player()
-	local player_unit = local_player.player_unit
-	local dialogue_extension = ScriptUnit.extension(player_unit, "dialogue_system")
 	DialogueSettings.dialogue_level_start_delay = 10
 end
 
@@ -2036,7 +2065,7 @@ function flow_callback_damage_unit(params)
 	local unit = params.unit
 	local damage = params.damage
 
-	if Unit.alive(unit) then
+	if unit_alive(unit) then
 		fassert(ScriptUnit.has_extension(unit, "health_system"), "Tried to damage unit %s from flow but the unit has no health extension", unit)
 
 		local hit_zone_name = "full"
@@ -2048,19 +2077,36 @@ function flow_callback_damage_unit(params)
 	end
 end
 
+function start_material_fade(material, fade_switch_name, fade_switch, start_end_time_name, start_end_time, start_fade_name, start_fade_value, end_fade_name, end_fade_value)
+	if start_fade_name and start_fade_value then
+		Material.set_scalar(material, start_fade_name, start_fade_value)
+	end
+
+	if end_fade_name and end_fade_value then
+		Material.set_scalar(material, end_fade_name, end_fade_value)
+	end
+
+	Material.set_scalar(material, fade_switch_name, fade_switch)
+	Material.set_vector2(material, start_end_time_name, start_end_time)
+end
+
 function flow_callback_start_fade(params)
 	fassert(params.unit, "[flow_callback_start_fade] You need to specify the Unit")
 	fassert(params.duration, "[flow_callback_start_fade] You need to specify duration")
 	fassert(params.fade_switch, "[flow_callback_start_fade] You need to specify whether to fade in or out (0 or 1)")
 
 	local start_time = World.time(Application.main_world())
-	local end_time = start_time + params.duration
+	local fade_duration = Vector2(start_time, start_time + params.duration)
 	local fade_switch = math.floor(params.fade_switch + 0.5)
 	local fade_switch_name = params.fade_switch_name or "fade_switch"
 	local start_end_time_name = params.start_end_time_name or "start_end_time"
 	local unit = params.unit
 	local mesh = nil
 	local mesh_name = params.mesh_name
+	local start_fade_name = params.start_fade_value_name or nil
+	local start_fade_value = params.start_fade_value or nil
+	local end_fade_name = params.end_fade_value_name or nil
+	local end_fade_value = params.end_fade_value or nil
 
 	if mesh_name then
 		fassert(Unit.has_mesh(unit, mesh_name), string.format("[flow_callback_start_fade] The mesh %s doesn't exist in unit %s", mesh_name, tostring(unit)))
@@ -2078,42 +2124,38 @@ function flow_callback_start_fade(params)
 	end
 
 	if mesh and material then
-		Material.set_scalar(material, fade_switch_name, fade_switch)
-		Material.set_vector2(material, start_end_time_name, Vector2(start_time, end_time))
+		start_material_fade(material, fade_switch_name, fade_switch, start_end_time_name, fade_duration, start_fade_name, start_fade_value, end_fade_name, end_fade_value)
 	elseif mesh then
 		local num_materials = Mesh.num_materials(mesh)
 
 		for i = 0, num_materials - 1, 1 do
-			local material = Mesh.material(mesh, i)
+			local mesh_material = Mesh.material(mesh, i)
 
-			Material.set_scalar(material, fade_switch_name, fade_switch)
-			Material.set_vector2(material, start_end_time_name, Vector2(start_time, end_time))
+			start_material_fade(mesh_material, fade_switch_name, fade_switch, start_end_time_name, fade_duration, start_fade_name, start_fade_value, end_fade_name, end_fade_value)
 		end
 	elseif material_name then
 		local num_meshes = Unit.num_meshes(unit)
 
 		for i = 0, num_meshes - 1, 1 do
-			local mesh = Unit.mesh(unit, i)
+			local unit_mesh = Unit.mesh(unit, i)
 
-			if Mesh.has_material(mesh, material_name) then
-				local material = Mesh.material(mesh, material_name)
+			if Mesh.has_material(unit_mesh, material_name) then
+				local mesh_material = Mesh.material(unit_mesh, material_name)
 
-				Material.set_scalar(material, fade_switch_name, fade_switch)
-				Material.set_vector2(material, start_end_time_name, Vector2(start_time, end_time))
+				start_material_fade(mesh_material, fade_switch_name, fade_switch, start_end_time_name, fade_duration, start_fade_name, start_fade_value, end_fade_name, end_fade_value)
 			end
 		end
 	else
 		local num_meshes = Unit.num_meshes(unit)
 
 		for i = 0, num_meshes - 1, 1 do
-			local mesh = Unit.mesh(unit, i)
-			local num_materials = Mesh.num_materials(mesh)
+			local unit_mesh = Unit.mesh(unit, i)
+			local num_materials = Mesh.num_materials(unit_mesh)
 
 			for j = 0, num_materials - 1, 1 do
-				local material = Mesh.material(mesh, j)
+				local mesh_material = Mesh.material(unit_mesh, j)
 
-				Material.set_scalar(material, fade_switch_name, fade_switch)
-				Material.set_vector2(material, start_end_time_name, Vector2(start_time, end_time))
+				start_material_fade(mesh_material, fade_switch_name, fade_switch, start_end_time_name, fade_duration, start_fade_name, start_fade_value, end_fade_name, end_fade_value)
 			end
 		end
 	end
@@ -2174,7 +2216,7 @@ end
 function flow_callback_breakable_object_destroyed(params)
 	local unit = params.unit
 
-	if Unit.alive(unit) then
+	if unit_alive(unit) then
 		local is_destroyed = Unit.get_data(unit, "destroyed_dynamic")
 
 		if is_destroyed then
@@ -2281,7 +2323,6 @@ function flow_callback_survival_handler(params)
 	fassert(params.name, "[flow_callback_survival_handler] You need to specify the name of the waves preset found in survival settings")
 	fassert(SurvivalSettings[params.name], "Could not find the waves preset you specified, you sure it's the same as in survival settings?")
 
-	local DEBUG = false
 	local current_wave = SurvivalSettings.wave + 1
 	local memory_table = SurvivalSettings.memory
 	local templates = SurvivalSettings.templates
@@ -2314,27 +2355,10 @@ function flow_callback_survival_handler(params)
 
 		if wave.reset ~= nil then
 			for _, name in ipairs(wave.reset) do
-				if DEBUG then
-					print("Reset: " .. name)
-				end
-
 				for i = 1, #templates[name], 1 do
 					memory_table[templates[name][i]] = nil
 				end
 			end
-		end
-
-		if DEBUG then
-			print("Current Wave: " .. current_wave)
-			print("Running: " .. event_chunk)
-
-			if event_found == false then
-				print_warning("Could not find any available event, you don't have a high enough amount of events, or you don't reset the memory enough")
-			end
-
-			print("Current Memory start:")
-			print(table.dump(memory_table))
-			print("End")
 		end
 
 		if event_found and (Managers.player.is_server or LEVEL_EDITOR_TEST) then
@@ -2384,7 +2408,7 @@ function flow_callback_show_difficulty(params)
 	local local_player = Managers.player:local_player()
 	local player_unit = local_player.player_unit
 
-	if Unit.alive(player_unit) then
+	if unit_alive(player_unit) then
 		local hud_extension = ScriptUnit.extension(player_unit, "hud_system")
 
 		hud_extension:set_current_location(Localize("dlc1_2_survival_difficulty_increase") .. " " .. Localize("difficulty_" .. params.difficulty))
@@ -2408,7 +2432,7 @@ function flow_callback_get_difficulty(params)
 	end
 
 	if getdifficulty == "survival_hard" then
-		difficulty_hard = true
+		difficulty_survival_hard = true
 	end
 
 	if getdifficulty == "harder" then
@@ -2491,7 +2515,7 @@ function flow_callback_broadphase_deal_damage(params)
 	local hazard_type = params.hazard_type
 	local attack_direction = nil
 
-	if Unit.alive(attacker_unit) then
+	if unit_alive(attacker_unit) then
 		local rot = Unit.world_rotation(attacker_unit, 0)
 		local params_dir = params.direction
 		attack_direction = Quaternion.right(rot) * params_dir.x + Quaternion.forward(rot) * params_dir.y + Quaternion.up(rot) * params_dir.z
@@ -2535,9 +2559,7 @@ function flow_callback_broadphase_deal_damage(params)
 			local player_controlled = player:is_player_controlled()
 			local unit = player.player_unit
 
-			if (hits_bot_players and not player_controlled) or (hits_human_players and player_controlled and Unit.alive(unit) and Vector3.distance(pos, POSITION_LOOKUP[unit]) < radius) then
-				local unit_position = POSITION_LOOKUP[unit]
-
+			if (hits_bot_players and not player_controlled) or (hits_human_players and player_controlled and unit_alive(unit) and Vector3.distance(pos, POSITION_LOOKUP[unit]) < radius) then
 				AiUtils.damage_target(unit, attacker_unit, action_data, damage, hazard_type)
 			end
 		end
@@ -2545,7 +2567,6 @@ function flow_callback_broadphase_deal_damage(params)
 end
 
 function flow_callback_broadphase_deal_damage_debug(params)
-	local color = nil
 	local hits_enemies = params.hits_enemies
 	local hits_humans = params.hits_human_players
 	local hits_bots = params.hits_bot_players
@@ -2565,7 +2586,7 @@ end
 
 function flow_callback_set_particles_light_intensity_exponent(params)
 	local exp = params.exponent
-	local id = pararms.id
+	local id = params.id
 	local world = Application.flow_callback_context_world()
 
 	World.set_particles_light_intensity_exponent(world, id, exp)
@@ -2646,7 +2667,7 @@ function flow_callback_tutorial_restrict_camera_rotation(params)
 
 	local local_player_unit = local_player.player_unit
 
-	fassert(Unit.alive(local_player_unit), "[flow_callback_restrict_camera_rotation] The local player unit hasn't spawned yet or has been removed")
+	fassert(unit_alive(local_player_unit), "[flow_callback_restrict_camera_rotation] The local player unit hasn't spawned yet or has been removed")
 
 	local first_person_ext = ScriptUnit.extension(local_player_unit, "first_person_system")
 
@@ -2929,7 +2950,7 @@ function flow_callback_tutorial_enable_equipment(params)
 
 	local local_player_unit = local_player.player_unit
 
-	fassert(Unit.alive(local_player_unit), "[flow_callback_tutorial_enable_equipment ]gloThe local player unit hasn't spawned yet or has been removed")
+	fassert(unit_alive(local_player_unit), "[flow_callback_tutorial_enable_equipment ]gloThe local player unit hasn't spawned yet or has been removed")
 
 	local first_person_ext = ScriptUnit.extension(local_player_unit, "first_person_system")
 
@@ -2953,7 +2974,6 @@ function flow_callback_tutorial_enable_equipment(params)
 
 	if enable then
 		if wield_anim then
-			local first_person_ext = ScriptUnit.extension(local_player_unit, "first_person_system")
 			local first_person_unit = first_person_ext:get_first_person_unit()
 
 			Unit.animation_event(first_person_unit, wield_anim)
@@ -3053,7 +3073,7 @@ function flow_callbacks_tutorial_inputs_enabled(params)
 
 	local local_player_unit = local_player.player_unit
 
-	fassert(Unit.alive(local_player_unit), "[flow_callbacks_tutorial_inputs_enabled] The local player unit hasn't spawned yet or has been removed")
+	fassert(unit_alive(local_player_unit), "[flow_callbacks_tutorial_inputs_enabled] The local player unit hasn't spawned yet or has been removed")
 
 	local move_enabled = params.move
 	local jump_dodge_enabled = params.jump_dodge
@@ -3132,7 +3152,7 @@ function flow_callbacks_tutorial_enable_weapon_switching(params)
 
 	local local_player_unit = local_player.player_unit
 
-	fassert(Unit.alive(local_player_unit), "[flow_callbacks_tutorial_enable_weapon_switching] The local player unit hasn't spawned yet or has been removed")
+	fassert(unit_alive(local_player_unit), "[flow_callbacks_tutorial_enable_weapon_switching] The local player unit hasn't spawned yet or has been removed")
 
 	local switch_actions = {
 		wield_switch = true,
@@ -3207,7 +3227,7 @@ function flow_callback_set_player_invincibility(params)
 	local player_unit = params.player_unit
 	local is_invincible = params.invincible
 
-	if Unit.alive(player_unit) then
+	if unit_alive(player_unit) then
 		local health_extension = ScriptUnit.has_extension(player_unit, "health_system")
 
 		fassert(health_extension, "Tried to set invincibility on unit %s from flow but the unit has no health extension", player_unit)
@@ -3224,7 +3244,7 @@ function flow_callback_set_player_in_hanging_cage(params)
 	local cage_unit = params.cage_unit
 	local state = params.state
 
-	if Unit.alive(player_unit) then
+	if unit_alive(player_unit) then
 		local status_extension = ScriptUnit.has_extension(player_unit, "status_system")
 
 		fassert(status_extension, "Tried to set in_hanging_cage status on unit %s from flow but the unit has no status extension", player_unit)

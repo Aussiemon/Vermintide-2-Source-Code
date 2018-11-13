@@ -411,8 +411,6 @@ local raycast_points = {
 }
 
 local function _line_of_sight_from_random_point(raycast_pos, target_unit)
-	Profiler.start("line of sight checks")
-
 	local random_point = raycast_points[Math.random(1, #raycast_points)]
 	local has_node = Unit.has_node(target_unit, random_point)
 
@@ -427,14 +425,10 @@ local function _line_of_sight_from_random_point(raycast_pos, target_unit)
 			local result, pos = PhysicsWorld.immediate_raycast(physics_world, raycast_pos, direction, distance, "closest", "types", "statics", "collision_filter", "filter_ai_line_of_sight_check")
 
 			if result then
-				Profiler.stop("line of sight checks")
-
 				return false
 			end
 		end
 	end
-
-	Profiler.stop("line of sight checks")
 
 	return true
 end
@@ -520,25 +514,6 @@ local function _calculate_closest_target_with_spillover_score(ai_unit, target_un
 	local score_disabled_slots = disabled_slots_count * DISABLED_SLOT_SCORE
 	local score_all_slots_disabled = (all_slots_disabled and ALL_SLOTS_DISABLED_SCORE) or 0
 	local score = score_dogpile + score_disabled_slots + score_all_slots_disabled + score_distance + score_stickyness + previous_attacker_stickyness_value + knocked_down_modifer + aggro_modifier + target_of_combo_score
-	local debug_ai_perception = script_data.debug_ai_perception
-
-	if debug_ai_perception then
-		local player = Managers.player:unit_owner(target_unit)
-		local profile_index = player:profile_index()
-		local profile = SPProfiles[profile_index]
-		local display_name = profile.display_name
-		local head_node = Unit.node(ai_unit, "c_head")
-		local viewport_name = "player_1"
-		local color_table = (target_unit == target_current and Colors.get_table("lime")) or (all_slots_disabled and Colors.get_table("red")) or Colors.get_table("orange")
-		local color_vector = Vector3(color_table[2], color_table[3], color_table[4])
-		local offset_vector = Vector3(0, 0, -0.1 * profile_index)
-		local text_size = 0.1
-		local text = display_name .. " Score: " .. string.format("%0.1f", score) .. ": Dogpile: " .. dogpile_count
-		local category = "calculate_target_perception_" .. display_name
-
-		Managers.state.debug_text:clear_unit_text(ai_unit, category)
-		Managers.state.debug_text:output_unit_text(text, text_size, ai_unit, head_node, offset_vector, nil, category, color_vector, viewport_name)
-	end
 
 	return score, distance_sq
 end
@@ -706,38 +681,6 @@ PerceptionUtils.patrol_passive_target_selection = function (ai_unit, blackboard,
 					end
 				end
 			end
-
-			local num_group_members = group.num_indexed_members
-
-			if script_data.debug_patrols and num_group_members then
-				local drawer = Managers.state.debug:drawer({
-					mode = "retained",
-					name = "storm_vermin_patrol_targeting_retained"
-				})
-				storm_patrol_debug_draw_count = storm_patrol_debug_draw_count + 1
-
-				if num_group_members < storm_patrol_debug_draw_count then
-					drawer:reset()
-
-					storm_patrol_debug_draw_count = 1
-				end
-
-				local anchor_direction = blackboard.anchor_direction
-				local ai_unit_rotation = (anchor_direction and anchor_direction:unbox()) or Quaternion.forward(Unit.world_rotation(ai_unit, 0))
-				local ai_unit_direction = Vector3.normalize(ai_unit_rotation)
-				local angle = math.acos(view_cone_dot) * 180 / math.pi
-				local view_vector_center = ai_unit_direction * breed.patrol_detection_radius
-				local view_vector_left = Quaternion.rotate(Quaternion.from_euler_angles_xyz(0, 0, angle), view_vector_center)
-				local view_vector_right = Quaternion.rotate(Quaternion.from_euler_angles_xyz(0, 0, -angle), view_vector_center)
-
-				drawer:line(ai_unit_position, ai_unit_position + view_vector_center, Colors.get("red"))
-				drawer:line(ai_unit_position, ai_unit_position + view_vector_left, Colors.get("red"))
-				drawer:line(ai_unit_position, ai_unit_position + view_vector_right, Colors.get("red"))
-
-				local panic_close_detection_radius = math.sqrt(breed.panic_close_detection_radius_sq)
-
-				drawer:circle(ai_unit_position, panic_close_detection_radius, Vector3.up(), Colors.get("red"))
-			end
 		until true
 	end
 
@@ -746,13 +689,6 @@ end
 
 PerceptionUtils.storm_patrol_death_squad_target_selection = function (ai_unit, blackboard, breed)
 	fassert(ScriptUnit.has_extension(ai_unit, "ai_slot_system"), "Error! Trying to use slot_system perception for non-slot system unit!")
-
-	if script_data.debug_patrols then
-		Managers.state.debug:drawer({
-			mode = "retained",
-			name = "storm_vermin_patrol_targeting_retained"
-		}):reset()
-	end
 
 	local detection_radius = breed.detection_radius
 	local ai_unit_position = POSITION_LOOKUP[ai_unit]
@@ -969,24 +905,10 @@ PerceptionUtils.pick_rat_ogre_target_with_weights = function (unit, blackboard, 
 	local num_enemies = #PLAYER_AND_BOT_UNITS
 	local best_score = -1000
 	local group_blackboard = blackboard.group_blackboard
-	local debug_ai_perception = script_data.debug_ai_perception
 
 	for i = 1, num_enemies, 1 do
 		local enemy_unit = PLAYER_AND_BOT_UNITS[i]
 		local score = 0
-		local player_score = nil
-
-		if debug_ai_perception then
-			player_score = score_table[enemy_unit]
-
-			if player_score then
-				table.clear(player_score)
-			else
-				player_score = {}
-				score_table[enemy_unit] = player_score
-			end
-		end
-
 		local dist = math.huge
 		local status_extension = ScriptUnit.extension(enemy_unit, "status_system")
 
@@ -998,29 +920,12 @@ PerceptionUtils.pick_rat_ogre_target_with_weights = function (unit, blackboard, 
 
 				if sticky_time < weights.target_stickyness_duration_a then
 					score = score + weights.target_stickyness_bonus_a
-
-					if debug_ai_perception then
-						player_score.sticky_a = weights.target_stickyness_duration_a
-					end
-
-					if debug_ai_perception then
-						player_score.sticky_time = sticky_time
-					end
 				elseif sticky_time < weights.target_stickyness_duration_b then
 					score = score + (1 - sticky_time / weights.target_stickyness_duration_b) * weights.target_stickyness_bonus_b
-
-					if debug_ai_perception then
-						player_score.sticky_b = (1 - sticky_time / weights.target_stickyness_duration_b) * weights.target_stickyness_bonus_b
-						player_score.sticky_time = sticky_time
-					end
 				end
 			elseif group_blackboard.special_targets[enemy_unit] then
 				blackboard.secondary_target = enemy_unit
 				score = score + weights.targeted_by_other_special
-
-				if debug_ai_perception then
-					player_score.dogpile = weights.targeted_by_other_special
-				end
 			end
 
 			local enemy_pos = POSITION_LOOKUP[enemy_unit]
@@ -1031,10 +936,6 @@ PerceptionUtils.pick_rat_ogre_target_with_weights = function (unit, blackboard, 
 			if distance_valid_target then
 				local inv_radius = math.clamp(1 - dist / weights.max_distance, 0, 1)
 				score = score + inv_radius * inv_radius * weights.distance_weight
-
-				if debug_ai_perception then
-					player_score.dist = inv_radius * weights.distance_weight
-				end
 			end
 
 			if not breed.ignore_targets_outside_detection_radius or blackboard.target_unit or distance_valid_target then
@@ -1048,36 +949,16 @@ PerceptionUtils.pick_rat_ogre_target_with_weights = function (unit, blackboard, 
 
 				score = score + aggro
 
-				if debug_ai_perception then
-					player_score.aggro = aggro
-				end
-
 				if enemy_disabled then
 					score = score * weights.target_disabled_mul
-
-					if debug_ai_perception then
-						player_score["ko/ledge"] = weights.target_disabled_mul
-					end
 				end
 
 				if t - status_extension.last_catapulted_time < 5 then
 					score = score * weights.target_catapulted_mul
-
-					if debug_ai_perception then
-						player_score.catapult = weights.target_catapulted_mul
-					end
 				end
 
 				if blackboard.target_outside_navmesh then
 					score = score * weights.target_outside_navmesh_mul
-
-					if debug_ai_perception then
-						player_score.outside = weights.target_outside_navmesh_mul
-					end
-				end
-
-				if debug_ai_perception then
-					player_score.SUM = score
 				end
 
 				if best_score < score then
@@ -1086,9 +967,6 @@ PerceptionUtils.pick_rat_ogre_target_with_weights = function (unit, blackboard, 
 					best_score = score
 				end
 			end
-		elseif debug_ai_perception then
-			player_score["NOT VALID"] = 0
-			player_score.SUM = 0
 		end
 	end
 
@@ -1358,6 +1236,8 @@ PerceptionUtils.pick_mutator_sorcerer_target = function (unit, blackboard, breed
 		end
 	end
 
+	blackboard.closest_enemy_dist_sq = closest_dist_sq
+
 	return enemy_looking_at_you or closest_enemy, closest_dist_sq
 end
 
@@ -1567,7 +1447,7 @@ PerceptionUtils.is_position_in_line_of_sight = function (unit, from_position, ta
 	local direction = Vector3.normalize(to_target)
 	local distance = Vector3.length(to_target)
 
-	if distance == 0 then
+	if Vector3.length(direction) <= 0 then
 		return false
 	end
 

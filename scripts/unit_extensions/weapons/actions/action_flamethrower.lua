@@ -2,7 +2,6 @@ ActionFlamethrower = class(ActionFlamethrower)
 local POSITION_TWEAK = -1.5
 local SPRAY_RANGE = math.abs(POSITION_TWEAK) + 9
 local SPRAY_RADIUS = 2
-local PLAYER_SPRAY_RADIUS = 2
 local MAX_TARGETS = 50
 local NODES = {
 	"j_leftshoulder",
@@ -39,7 +38,6 @@ ActionFlamethrower.init = function (self, world, item_name, is_server, owner_uni
 end
 
 ActionFlamethrower.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
-	local buff_extension = ScriptUnit.extension(self.owner_unit, "buff_system")
 	self.current_action = new_action
 	self.power_level = power_level
 	self.state = "waiting_to_shoot"
@@ -54,36 +52,28 @@ ActionFlamethrower.client_owner_start_action = function (self, new_action, t, ch
 	self.charge_level = (chain_action_data and chain_action_data.charge_level) or 1
 
 	if not new_action.fire_stop_time or not (t + new_action.fire_stop_time) then
-		slot6 = t + self.charge_level * (new_action.charge_fuel_time_multiplier or 3)
+		slot5 = t + self.charge_level * (new_action.charge_fuel_time_multiplier or 3)
 	end
 
-	self.max_flame_time = slot6
+	self.max_flame_time = slot5
 
 	table.clear(self.old_targets)
 	table.clear(self.targets)
 end
 
-local INDEX_POSITION = 1
-local INDEX_DISTANCE = 2
-local INDEX_NORMAL = 3
 local INDEX_ACTOR = 4
 
 ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local owner_unit = self.owner_unit
 	local first_person_unit = self.first_person_unit
 	local current_action = self.current_action
-	local is_server = self.is_server
 
 	if self.state == "waiting_to_shoot" and self.time_to_shoot <= t then
 		self.state = "shooting"
-		local current_action = self.current_action
 		local weapon_unit = self.weapon_unit
 		local muzzle_node_name = self.muzzle_node_name
-		local world = self.world
 		local go_id = self.unit_id
 		local muzzle_node = Unit.node(weapon_unit, muzzle_node_name)
-		local cone_hypotenuse = math.sqrt(SPRAY_RANGE * SPRAY_RANGE + SPRAY_RADIUS * SPRAY_RADIUS)
-		self.cone_cos_alpha = SPRAY_RANGE / cone_hypotenuse
 		local muzzle_position = Unit.world_position(weapon_unit, muzzle_node)
 		local muzzle_rotation = Unit.world_rotation(weapon_unit, muzzle_node)
 		local flamethrower_effect = current_action.particle_effect_flames
@@ -161,11 +151,11 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 							local chance = 1 / #NODES
 							local cumalative_value = 0
 
-							for i = 1, #NODES, 1 do
+							for j = 1, #NODES, 1 do
 								cumalative_value = cumalative_value + chance
 
 								if rand <= cumalative_value then
-									node = NODES[i]
+									node = NODES[j]
 
 									break
 								end
@@ -198,12 +188,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 
 				self:_clear_targets()
 
-				local weapon_unit = self.weapon_unit
-				local muzzle_position = Unit.world_position(weapon_unit, Unit.node(weapon_unit, self.muzzle_node_name))
-				local muzzle_rotation = Unit.world_rotation(weapon_unit, Unit.node(weapon_unit, self.muzzle_node_name))
-				local muzzle_direction = Quaternion.forward(muzzle_rotation)
 				local flamethrower_range = current_action.spray_range or SPRAY_RANGE
-				local world = self.world
 				local physics_world = World.get_data(world, "physics_world")
 				local player_rotation = Unit.world_rotation(first_person_unit, 0)
 				local player_direction = Vector3.normalize(Quaternion.forward(player_rotation))
@@ -215,8 +200,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 					local owner_player = self.owner_player
 					local friendly_fire = DamageUtils.allow_friendly_fire_ranged(difficulty_settings, owner_player)
 
-					for index, hit in pairs(result) do
-						local potential_hit_position = hit[INDEX_POSITION]
+					for _, hit in pairs(result) do
 						local hit_actor = hit[INDEX_ACTOR]
 						local potential_hit_unit = Actor.unit(hit_actor)
 						local breed = hit_unit and Unit.get_data(hit_unit, "breed")
@@ -412,13 +396,6 @@ ActionFlamethrower._select_targets = function (self, world, show_outline)
 end
 
 ActionFlamethrower._check_within_cone = function (self, player_position, player_direction, target, player)
-	local cone_cos_alpha = self.cone_cos_alpha
-
-	if player then
-		local cone_hypotenuse = math.sqrt(SPRAY_RANGE * SPRAY_RANGE + PLAYER_SPRAY_RADIUS * PLAYER_SPRAY_RADIUS)
-		cone_cos_alpha = SPRAY_RANGE / cone_hypotenuse
-	end
-
 	local target_position = Unit.world_position(target, Unit.node(target, "j_neck"))
 	local target_direction = Vector3.normalize(target_position - player_position)
 	local target_cos_alpha = Vector3.dot(player_direction, target_direction)

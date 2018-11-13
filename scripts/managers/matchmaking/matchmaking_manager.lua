@@ -71,6 +71,7 @@ local RPCS = {
 	"rpc_matchmaking_request_join_lobby",
 	"rpc_matchmaking_request_profile",
 	"rpc_set_matchmaking",
+	"rpc_cancel_matchmaking",
 	"rpc_matchmaking_request_join_lobby_reply",
 	"rpc_notify_connected",
 	"rpc_matchmaking_join_game",
@@ -343,14 +344,8 @@ end
 
 MatchmakingManager.update = function (self, dt, t)
 	if self._state then
-		self.debug.statename = self._state.NAME
 		local state_name = self._state.NAME
-
-		Profiler.start(state_name)
-
 		local new_state, state_context = self._state:update(dt, t)
-
-		Profiler.stop(state_name)
 
 		if new_state then
 			self:_change_state(new_state, self.params, state_context)
@@ -397,13 +392,9 @@ MatchmakingManager.update = function (self, dt, t)
 		self:cancel_matchmaking()
 		self.network_transmit:queue_local_rpc("rpc_stop_enter_game_countdown")
 	end
-
-	self:_update_debug(dt, t)
 end
 
 MatchmakingManager._update_afk_logic = function (self, dt, t)
-	Profiler.start("afk logic")
-
 	local lobby = self.lobby
 
 	if self.is_server and lobby:is_joined() then
@@ -448,8 +439,6 @@ MatchmakingManager._update_afk_logic = function (self, dt, t)
 			end
 		end
 	end
-
-	Profiler.stop("afk logic")
 end
 
 local remove_peer_power_level_table = {}
@@ -460,9 +449,6 @@ MatchmakingManager._update_power_level = function (self, t)
 	end
 
 	self._power_level_timer = t + 5
-
-	Profiler.start("power level")
-
 	local own_peer_id = Network.peer_id()
 	local is_server = self.is_server
 	local local_player = Managers.player:local_player()
@@ -490,8 +476,6 @@ MatchmakingManager._update_power_level = function (self, t)
 	if is_server then
 		self:_set_power_level()
 	end
-
-	Profiler.stop("power level")
 end
 
 MatchmakingManager.get_average_power_level = function (self)
@@ -550,63 +534,6 @@ MatchmakingManager._set_power_level = function (self)
 		lobby_data.power_level = average_power_level
 
 		self.lobby:set_lobby_data(lobby_data)
-	end
-end
-
-MatchmakingManager._update_debug = function (self, dt, t)
-	if DebugKeyHandler.key_pressed("f6", "start quick search", "network", "left shift") then
-		self:find_game("whitebox_tutorial", "normal", false, false, t)
-	end
-
-	if script_data.debug_lobbies then
-		if self._state == MatchmakingStateSearchGame then
-			return
-		end
-
-		self.debug.lobby_timer = self.debug.lobby_timer - dt
-
-		if self.debug.lobby_timer < 0 then
-			self.debug.lobbies = self.lobby_finder:lobbies()
-			self.debug.lobby_timer = MatchmakingSettings.TIME_BETWEEN_EACH_SEARCH
-		end
-
-		if DebugKeyHandler.key_pressed("f7", "join your other client", "network", "left shift") then
-			local lobbies = self.lobby_finder:lobbies()
-
-			for i = 1, #lobbies, 1 do
-				local lobby_data = lobbies[i]
-
-				if lobby_data.host ~= self.peer_id and lobby_data.unique_server_name == Development.parameter("unique_server_name") then
-					mm_printf("Joining 'friend' lobby using F7")
-
-					self.lobby_to_join = lobby_data
-
-					break
-				end
-			end
-		end
-
-		if #self.lobby_finder:lobbies() > 1 and self._state.NAME == "MatchmakingStateIdle" then
-			local start_matchmaking_timer = Development.parameter("start_matchmaking_timer")
-
-			if start_matchmaking_timer and self.start_matchmaking_time == nil then
-				self.start_matchmaking_time = t + start_matchmaking_timer
-			end
-
-			if self.start_matchmaking_time and self.start_matchmaking_time < t then
-				self.start_matchmaking_time = t + 1000000
-
-				self:find_game("whitebox_tutorial", "normal", false, true, t)
-			end
-		end
-	end
-
-	if DebugKeyHandler.key_pressed("l", "show lobbies", "network", "left shift") then
-		if not script_data.debug_lobbies then
-			script_data.debug_lobbies = true
-		else
-			script_data.debug_lobbies = not script_data.debug_lobbies
-		end
 	end
 end
 
@@ -913,11 +840,21 @@ MatchmakingManager.cancel_matchmaking = function (self)
 	local is_matchmaking = self:is_game_matchmaking()
 
 	if not is_matchmaking then
-		if not self.is_server then
+		if not self.is_server and not self.lobby:is_dedicated_server() then
 			self.handshaker_client:reset()
 		end
 
 		mm_printf("Wasn't really matchmaking to begin with...")
+
+		return
+	end
+
+	local party = Managers.party
+
+	if not self.is_server and self.lobby:is_dedicated_server() then
+		if party.is_leader(self.peer_id) then
+			self.handshaker_client:send_rpc_to_host("rpc_cancel_matchmaking")
+		end
 
 		return
 	end
@@ -976,10 +913,10 @@ MatchmakingManager.cancel_matchmaking = function (self)
 		self:reset_lobby_filters()
 
 		if not DEDICATED_SERVER then
-			Managers.party:set_leader(self.network_server.lobby_host:lobby_host())
+			party:set_leader(self.network_server.lobby_host:lobby_host())
 		end
 	else
-		Managers.party:set_leader(nil)
+		party:set_leader(nil)
 	end
 
 	if self.handshaker_client ~= nil then
@@ -1037,6 +974,18 @@ MatchmakingManager.rpc_set_matchmaking = function (self, sender, client_cookie, 
 			self:_change_state(MatchmakingStateIdle, self.params, {})
 		end
 	end
+end
+
+MatchmakingManager.rpc_cancel_matchmaking = function (self, sender)
+	if not self.is_server then
+		return
+	end
+
+	if not Managers.party:is_leader(sender) then
+		return
+	end
+
+	self:cancel_matchmaking()
 end
 
 MatchmakingManager.rpc_matchmaking_request_profiles_data = function (self, sender, client_cookie, host_cookie)

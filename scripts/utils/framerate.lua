@@ -23,6 +23,11 @@ Framerate = {
 			Application.set_time_step_policy("no_smoothing")
 		end
 	end,
+	set_catchup = function ()
+		if PLATFORM == "win32" then
+			Application.set_time_step_policy("smoothing", 11, 2, 0.5)
+		end
+	end,
 	set_replay = function ()
 		Application.set_time_step_policy("throttle", 60, "no_smoothing", "debt_payback", 0)
 	end

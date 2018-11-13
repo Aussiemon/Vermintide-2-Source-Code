@@ -26,6 +26,8 @@ QuestSettings = {
 	event_skulls_for_the_skull_throne = 10,
 	event_sonnstill_quickplay_levels = 10,
 	event_sonnstill_difficulty_levels = 10,
+	event_geheimnisnacht_quickplay_levels = 10,
+	event_geheimnisnacht_difficulty_levels = 10,
 	weekly_complete_quickplay_missions = {
 		3,
 		6,
@@ -203,8 +205,6 @@ QuestSettings.send_completed_message = function (challenge_stat_id)
 			has_not_completed_challenge = true
 
 			break
-		else
-			print("Has completed challenge,  ", saved_stat)
 		end
 	end
 
@@ -217,8 +217,6 @@ QuestSettings.send_completed_message = function (challenge_stat_id)
 			local localize_parameters = false
 
 			Managers.chat:send_system_chat_message(1, message, 1, localize_parameters, true)
-		else
-			print("Failed to send completed challenge message, missing name lookup")
 		end
 	end
 end
@@ -229,9 +227,6 @@ local function increment_stat(unit, stat_name)
 	if player and not player.bot_player then
 		local peer_id = player:network_id()
 		local network_manager = Managers.state.network
-
-		print("Completed challenge ", stat_name, " on ", unit)
-
 		local stat_id = NetworkLookup.statistics[stat_name]
 
 		network_manager.network_transmit:send_rpc("rpc_increment_stat", peer_id, stat_id)
@@ -242,7 +237,6 @@ local function increment_stat_on_all(stat_name)
 	local statistics_db = Managers.player:statistics_db()
 
 	statistics_db:increment_stat_and_sync_to_clients(stat_name)
-	print("Completed challenge ", stat_name, " for all players")
 end
 
 QuestSettings.check_globadier_kill_before_throwing = function (blackboard, killer_unit)

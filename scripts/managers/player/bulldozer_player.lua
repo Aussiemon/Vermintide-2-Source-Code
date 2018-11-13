@@ -38,6 +38,10 @@ BulldozerPlayer.set_profile_index = function (self, index)
 	self._profile_index = index
 end
 
+BulldozerPlayer.set_player_unit = function (self, unit)
+	self.player_unit = unit
+end
+
 BulldozerPlayer.type = function (self)
 	return "BulldozerPlayer"
 end

@@ -1069,9 +1069,7 @@ IngamePlayerListUI.show_profile_by_peer_id = function (self, peer_id)
 			XboxLive.show_gamercard(Managers.account:user_id(), xuid)
 		end
 	elseif platform == "ps4" then
-		local np_id = self.network_lobby.lobby:np_id_from_peer_id(peer_id)
-
-		Managers.account:show_player_profile_with_np_id(np_id)
+		Managers.account:show_player_profile_with_account_id(peer_id)
 	end
 end
 

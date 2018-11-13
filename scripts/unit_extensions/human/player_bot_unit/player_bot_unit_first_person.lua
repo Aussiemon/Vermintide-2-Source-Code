@@ -111,18 +111,14 @@ PlayerBotUnitFirstPerson.update = function (self, unit, input, dt, context, t)
 end
 
 PlayerBotUnitFirstPerson.update_rotation = function (self, t, dt)
-	local first_person_unit = self.first_person_unit
-
 	if self.look_delta ~= nil then
 		local rotation = self.look_rotation:unbox()
 		local look_delta = self.look_delta
 		self.look_delta = nil
 		local yaw = Quaternion.yaw(rotation) - look_delta.x
 		local pitch = math.clamp(Quaternion.pitch(rotation) + look_delta.y, -self.MAX_MIN_PITCH, self.MAX_MIN_PITCH)
-		local roll = Quaternion.roll(rotation) + look_delta.x
 		local yaw_rotation = Quaternion(Vector3.up(), yaw)
 		local pitch_rotation = Quaternion(Vector3.right(), pitch)
-		local roll_rotation = Quaternion(Vector3.forward(), roll)
 		local look_rotation = Quaternion.multiply(yaw_rotation, pitch_rotation)
 
 		self.look_rotation:store(look_rotation)
@@ -179,7 +175,11 @@ PlayerBotUnitFirstPerson.set_rotation = function (self, new_rotation)
 	self.look_rotation:store(new_rotation)
 end
 
-PlayerBotUnitFirstPerson.force_look_rotation = function (self, rot)
+PlayerBotUnitFirstPerson.force_look_rotation = function (self)
+	return
+end
+
+PlayerBotUnitFirstPerson.stop_force_look_rotation = function (self)
 	return
 end
 
@@ -297,7 +297,6 @@ PlayerBotUnitFirstPerson.play_sound_event = function (self, event, position)
 end
 
 PlayerBotUnitFirstPerson.play_unit_sound_event = function (self, event, unit, node_id, play_on_husk)
-	local event_id = NetworkLookup.sound_events[event]
 	local wwise_source_id, wwise_world = WwiseUtils.make_unit_auto_source(self.world, unit, node_id)
 
 	WwiseWorld.set_switch(wwise_world, "husk", "true", wwise_source_id)

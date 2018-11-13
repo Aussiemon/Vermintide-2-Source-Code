@@ -1,10 +1,8 @@
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_adventure_overview_console_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local widget_definitions = definitions.widgets
-local additional_settings_widgets_definitions = definitions.additional_settings_widgets
 local animation_definitions = definitions.animation_definitions
 local selector_input_definition = definitions.selector_input_definition
-local layout_mapping = definitions.layout_mapping
 local START_GAME_INPUT = "refresh_press"
 local SELECTION_INPUT = "confirm_press"
 StartGameWindowAdventureOverviewConsole = class(StartGameWindowAdventureOverviewConsole)
@@ -42,7 +40,6 @@ StartGameWindowAdventureOverviewConsole.on_enter = function (self, params, offse
 
 	self._parent:change_generic_actions("default")
 	self:_start_transition_animation("on_enter")
-	rawset(_G, "game_settings", self)
 end
 
 StartGameWindowAdventureOverviewConsole._start_transition_animation = function (self, animation_name)
@@ -107,8 +104,6 @@ StartGameWindowAdventureOverviewConsole.on_exit = function (self, params)
 	else
 		params.input_index = self._input_index
 	end
-
-	rawset(_G, "game_settings", nil)
 end
 
 StartGameWindowAdventureOverviewConsole.set_focus = function (self, focused)
@@ -134,8 +129,8 @@ StartGameWindowAdventureOverviewConsole._update_can_play = function (self)
 		self._previous_can_play = can_play
 		local play_button = self._widgets_by_name.play_button
 		local play_button_console = self._widgets_by_name.play_button_console
-		play_button_console.content.locked = not can_play
 		play_button.content.button_hotspot.disable_button = not can_play
+		play_button_console.content.locked = not can_play
 
 		if can_play then
 			self._parent:set_input_description("play_available")
@@ -171,7 +166,6 @@ StartGameWindowAdventureOverviewConsole._handle_input = function (self, dt, t)
 		self:_option_selected(self._input_index, t)
 	end
 
-	local num_inputs = #selector_input_definition
 	local input_index = self._input_index
 
 	if input_service:get("move_down") then
@@ -225,19 +219,6 @@ StartGameWindowAdventureOverviewConsole._can_play = function (self)
 	return can_play
 end
 
-StartGameWindowAdventureOverviewConsole._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
-	local completed_frame_texture = "map_frame_00"
-
-	if difficulty_index > 0 then
-		local difficulty_key = DefaultDifficulties[difficulty_index]
-		local difficulty_manager = Managers.state.difficulty
-		local settings = DifficultySettings[difficulty_key]
-		completed_frame_texture = settings.completed_frame_texture
-	end
-
-	return completed_frame_texture
-end
-
 StartGameWindowAdventureOverviewConsole._update_difficulty_option = function (self)
 	local selected_difficulty_key = self._parent:get_difficulty_option()
 
@@ -269,7 +250,6 @@ end
 StartGameWindowAdventureOverviewConsole._handle_new_selection = function (self, input_index)
 	local num_inputs = #selector_input_definition
 	input_index = math.clamp(input_index, 1, num_inputs)
-	local selected_widget_name = selector_input_definition[input_index]
 	local widgets_by_name = self._widgets_by_name
 
 	for i = 1, #selector_input_definition, 1 do
@@ -280,35 +260,6 @@ StartGameWindowAdventureOverviewConsole._handle_new_selection = function (self, 
 	end
 
 	self._input_index = input_index
-end
-
-StartGameWindowAdventureOverviewConsole._update_selector = function (self, selected_widget_name)
-	local widgets_by_name = self._widgets_by_name
-	local selector_widget = widgets_by_name.selector
-	local selected_widget = widgets_by_name[selected_widget_name]
-
-	self:_move_selector(selector_widget, selected_widget)
-end
-
-StartGameWindowAdventureOverviewConsole._update_layout = function (self, selected_widget_name)
-	local layout_name = layout_mapping[selected_widget_name]
-
-	self._parent:set_layout_by_name(layout_name)
-end
-
-StartGameWindowAdventureOverviewConsole._move_selector = function (self, selector_widget, selected_widget)
-	local selector_scenegraph_id = selector_widget.scenegraph_id
-	local selected_scenegraph_id = selected_widget.scenegraph_id
-	local ui_scenegraph = self._ui_scenegraph
-	local selected_position = UISceneGraph.get_local_position(ui_scenegraph, selected_scenegraph_id)
-	local selected_size = UISceneGraph.get_size(ui_scenegraph, selected_scenegraph_id)
-	local selector_position = UISceneGraph.get_local_position(ui_scenegraph, selector_scenegraph_id)
-	local selector_size = UISceneGraph.get_size(ui_scenegraph, selector_scenegraph_id)
-	selector_position[1] = selected_position[1]
-	selector_position[2] = selected_position[2] + (selected_size[2] - selector_size[2]) / 2
-	selector_position[3] = selected_position[3]
-
-	UISceneGraph.set_local_position(ui_scenegraph, selector_scenegraph_id, selector_position)
 end
 
 StartGameWindowAdventureOverviewConsole._update_animations = function (self, dt)
@@ -333,7 +284,6 @@ StartGameWindowAdventureOverviewConsole._update_animations = function (self, dt)
 end
 
 StartGameWindowAdventureOverviewConsole._draw = function (self, dt)
-	local ui_renderer = self._ui_renderer
 	local ui_top_renderer = self._ui_top_renderer
 	local ui_scenegraph = self._ui_scenegraph
 	local input_service = self._parent:window_input_service()
@@ -342,7 +292,11 @@ StartGameWindowAdventureOverviewConsole._draw = function (self, dt)
 
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, parent_scenegraph_id, render_settings)
 
-	for _, widget in ipairs(self._widgets) do
+	local widgets = self._widgets
+
+	for i = 1, #widgets, 1 do
+		local widget = widgets[i]
+
 		UIRenderer.draw_widget(ui_top_renderer, widget)
 	end
 

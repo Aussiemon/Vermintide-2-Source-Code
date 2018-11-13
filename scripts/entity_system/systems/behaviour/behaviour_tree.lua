@@ -180,16 +180,20 @@ require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_cha
 for _, dlc in pairs(DLCSettings) do
 	local nodes = dlc.behaviour_tree_nodes
 
-	for _, node in ipairs(nodes) do
-		dofile(node)
+	if nodes then
+		for _, node in ipairs(nodes) do
+			dofile(node)
+		end
 	end
 end
 
 for _, dlc in pairs(DLCSettings) do
 	local behaviour_trees = dlc.behaviour_trees_precompiled
 
-	for _, tree in ipairs(behaviour_trees) do
-		require(tree)
+	if behaviour_trees then
+		for _, tree in ipairs(behaviour_trees) do
+			require(tree)
+		end
 	end
 end
 

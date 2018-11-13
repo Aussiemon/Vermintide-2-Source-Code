@@ -31,7 +31,7 @@ end
 VoteManager.request_vote = function (self, name, vote_data, voter_peer_id)
 	local vote_template = VoteTemplates[name]
 
-	assert(vote_template, "Could not find voting template by name: %q", name)
+	fassert(vote_template, "Could not find voting template by name: %q", name)
 
 	local vote_type_id = NetworkLookup.voting_types[name]
 
@@ -91,13 +91,7 @@ VoteManager.can_start_vote = function (self, name, vote_data)
 		return false
 	end
 
-	local human_players = Managers.player:human_players()
-	local num_players = 0
-
-	for peer_id, player in pairs(human_players) do
-		num_players = num_players + 1
-	end
-
+	local num_players = Managers.player:num_human_players()
 	local min_required_voters = vote_template.min_required_voters or 1
 	local enough_players = num_players >= min_required_voters
 
@@ -117,7 +111,7 @@ end
 VoteManager.vote = function (self, vote)
 	local valid_vote = vote ~= nil
 
-	assert(valid_vote, "Incorrect vote: %s. Casteted by: %s", vote, Network.peer_id())
+	fassert(valid_vote, "Incorrect vote: %s. Casteted by: %s", vote, Network.peer_id())
 
 	local is_server = self.is_server
 	local network_manager = Managers.state.network
@@ -133,16 +127,16 @@ VoteManager._number_of_votes = function (self)
 	local active_voting = self.active_voting
 
 	if active_voting then
-		local number_of_votes = 0
-		local number_of_confirm_votes = 0
 		local current_vote_results = {}
 		local vote_options = active_voting.template.vote_options
 
-		for index, option_data in ipairs(vote_options) do
+		for index, _ in ipairs(vote_options) do
 			current_vote_results[index] = 0
 		end
 
-		for peer_id, vote in pairs(active_voting.votes) do
+		local number_of_votes = 0
+
+		for _, vote in pairs(active_voting.votes) do
 			number_of_votes = number_of_votes + 1
 			current_vote_results[vote] = current_vote_results[vote] + 1
 		end
@@ -270,7 +264,6 @@ VoteManager._vote_result = function (self, vote_time_ended)
 	local template = active_voting.template
 	local num_of_votes, current_vote_results = self:_number_of_votes()
 	local number_of_voters = #active_voting.voters
-	local votes = active_voting.votes
 	local minimum_voter_percent = template.minimum_voter_percent
 	local success_percent = template.success_percent or 0.51
 	local min_required_voters = template.min_required_voters or 1
@@ -359,7 +352,6 @@ VoteManager._get_voter_start_list = function (self, ignore_list)
 
 	local voters = {}
 	local human_players = Managers.player:human_players()
-	local num_of_human_players = 0
 
 	for _, player in pairs(human_players) do
 		local peer_id = player.peer_id
@@ -378,7 +370,6 @@ VoteManager._update_voter_list_by_active_peers = function (self, active_peers, v
 	table.clear(removed_peers)
 
 	local human_players = Managers.player:human_players()
-	local num_of_human_players = 0
 
 	for _, player in pairs(human_players) do
 		local peer_id = player.peer_id
@@ -413,9 +404,6 @@ VoteManager.rpc_vote = function (self, peer_id, vote_cast)
 	local active_voting = self.active_voting
 
 	if active_voting then
-		local current_votes = active_voting.votes
-		local current_voters = active_voting.voters
-
 		if self:has_voted(peer_id) then
 			return
 		end
@@ -509,7 +497,7 @@ VoteManager._start_vote_base = function (self, peer_id, vote_type_id, sync_data,
 	local vote_type_name = NetworkLookup.voting_types[vote_type_id]
 	local vote_template = VoteTemplates[vote_type_name]
 
-	assert(vote_template, "Could not find voting template by name: %q", vote_type_name)
+	fassert(vote_template, "Could not find voting template by name: %q", vote_type_name)
 
 	local network_time = Managers.state.network:network_time()
 	local data = vote_template.extract_sync_data(sync_data)
@@ -638,7 +626,6 @@ VoteManager._active_peers = function (self)
 	table.clear(peers_local)
 
 	local human_players = Managers.player:human_players()
-	local num_of_human_players = 0
 
 	for _, player in pairs(human_players) do
 		local peer_id = player.peer_id

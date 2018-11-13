@@ -502,10 +502,6 @@ BTBotMeleeAction._update_melee = function (self, unit, blackboard, dt, t)
 		self:_update_engage_position(unit, target_unit, blackboard, t, melee_range)
 	end
 
-	if script_data.ai_bots_weapon_debug then
-		self:_debug_draw_melee_range(unit, target_unit, blackboard, current_position, aim_position, attack_input, attack_meta_data, attack_performed, t)
-	end
-
 	return false, self:_evaluation_timer(blackboard, t, eval_timer)
 end
 

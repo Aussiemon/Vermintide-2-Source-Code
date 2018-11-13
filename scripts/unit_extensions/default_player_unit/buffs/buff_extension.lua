@@ -295,13 +295,6 @@ BuffExtension.add_buff = function (self, template_name, params)
 			end
 
 			self._buffs[#self._buffs + 1] = buff
-
-			if script_data.buff_debug then
-				local buff_id = (id and tostring(id)) or "N/A"
-				local sub_buff_name = (sub_buff_template.name and tostring(sub_buff_template.name)) or "N/A"
-
-				printf("### BuffExtension:add_buff() added buff id: %s buff: %s sub buff: %s", buff_id, template_name, sub_buff_name)
-			end
 		until true
 	end
 
@@ -454,10 +447,8 @@ BuffExtension.remove_buff = function (self, id)
 	local end_time = Managers.time:time("game")
 	local num_buffs_removed = 0
 	local i = 1
-	local buff_name = ""
-	local buff_type_name = ""
 
-	while i <= num_buffs do
+	while num_buffs >= i do
 		local buff = buffs[i]
 		local template = buff.template
 		buff_extension_function_params.bonus = buff.bonus
@@ -471,32 +462,8 @@ BuffExtension.remove_buff = function (self, id)
 
 			num_buffs = num_buffs - 1
 			num_buffs_removed = num_buffs_removed + 1
-
-			if script_data.buff_debug then
-				if num_buffs_removed == 1 then
-					buff_name = buff.name or "N/A"
-					buff_type_name = buff.buff_type or "N/A"
-				else
-					buff_name = buff_name .. " | " .. (buff.name or "N/A")
-					buff_type_name = buff_type_name .. " | " .. (buff.buff_type or "N/A")
-
-					if false then
-						i = i + 1
-					end
-				end
-			end
-		end
-	end
-
-	if script_data.buff_debug then
-		local buff_id = (id and tostring(id)) or "N/A"
-
-		if num_buffs_removed > 0 then
-			printf("### BuffExtension:remove_buff() removed one or more buffs id: %s", buff_id)
-			printf("buff name: %s", buff_name)
-			printf("buff type: %s", buff_type_name)
 		else
-			printf("### BuffExtension:remove_buff() couldnt find and remove buff id: %s", buff_id)
+			i = i + 1
 		end
 	end
 

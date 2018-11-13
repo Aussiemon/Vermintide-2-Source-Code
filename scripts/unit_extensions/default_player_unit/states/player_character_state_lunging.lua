@@ -21,7 +21,8 @@ PlayerCharacterStateLunging._on_enter_animation = function (self, unit, anim_eve
 end
 
 PlayerCharacterStateLunging.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
-	local unit = self.unit
+	table.clear(self.temp_params)
+
 	local input_extension = self.input_extension
 	local first_person_extension = self.first_person_extension
 	local status_extension = self.status_extension
@@ -52,6 +53,7 @@ PlayerCharacterStateLunging.on_enter = function (self, unit, input, dt, context,
 	self._direction:store(forward_direction)
 
 	self._falling = false
+	self._stop = false
 	local lunge_events = lunge_data.lunge_events
 
 	if lunge_events then
@@ -67,8 +69,6 @@ PlayerCharacterStateLunging.on_enter = function (self, unit, input, dt, context,
 	local damage_settings = lunge_data.damage
 
 	if damage_settings then
-		local career_power_level = self.career_extension:get_career_power_level()
-		local power_level_multiplier = damage_settings.power_level_multiplier
 		local damage_profile_name = damage_settings.damage_profile or "default"
 		local damage_profile_id, power_level, hit_zone_id, ignore_shield, allow_backstab = self:_parse_attack_data(damage_settings)
 		self.damage_profile_id = NetworkLookup.damage_profiles[damage_profile_name]
@@ -94,7 +94,6 @@ end
 
 PlayerCharacterStateLunging.on_exit = function (self, unit, input, dt, context, t, next_state)
 	local data = self._lunge_data
-	local hit = self._hit
 	local fp_anim_end_event = data.first_person_animation_end_event
 
 	if fp_anim_end_event then
@@ -140,21 +139,19 @@ PlayerCharacterStateLunging.on_exit = function (self, unit, input, dt, context, 
 
 	self._lunge_data = nil
 	self._hit = nil
+	self._stop = true
 
 	self.first_person_extension:enable_rig_movement()
 end
 
 PlayerCharacterStateLunging.update = function (self, unit, input, dt, context, t)
 	local csm = self.csm
-	local unit = self.unit
-	local first_person_unit = self._first_person_unit
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local input_extension = self.input_extension
 	local status_extension = self.status_extension
 	local whereabouts_extension = ScriptUnit.extension(unit, "whereabouts_system")
 	local first_person_extension = self.first_person_extension
 	local damage_start_time = self.damage_start_time
-	local stop = false
 
 	if CharacterStateHelper.is_colliding_down(unit) then
 		if self._falling then
@@ -204,6 +201,8 @@ PlayerCharacterStateLunging.update = function (self, unit, input, dt, context, t
 	local world = self.world
 
 	if CharacterStateHelper.is_ledge_hanging(world, unit, self.temp_params) then
+		self._stop = true
+
 		csm:change_state("ledge_hanging", self.temp_params)
 
 		return
@@ -238,11 +237,11 @@ PlayerCharacterStateLunging.update = function (self, unit, input, dt, context, t
 		return
 	end
 
-	if not stop then
+	if not self._stop then
 		local damage_data = lunge_data.damage
 
 		if damage_data and damage_start_time <= t then
-			stop = self:_update_damage(unit, dt, t, damage_data)
+			self._stop = self:_update_damage(unit, dt, t, damage_data)
 		end
 
 		local input_service = Managers.input:get_service("Player")
@@ -253,20 +252,30 @@ PlayerCharacterStateLunging.update = function (self, unit, input, dt, context, t
 
 			self:_do_blast(position, forward_direction)
 
-			stop = true
+			self._stop = true
 		end
 
-		if not self:_update_movement(unit, dt, t, lunge_data) and not stop then
+		local move_state = self:_update_movement(unit, dt, t, lunge_data)
+
+		if move_state == "ledge_hang" then
+			self._stop = true
+
+			csm:change_state("ledge_hanging", self.temp_params)
+
+			return
+		end
+
+		if move_state == "stop" and not self._stop then
 			local position = POSITION_LOOKUP[unit]
 			local forward_direction = Quaternion.forward(first_person_extension:current_rotation())
 
 			self:_do_blast(position, forward_direction)
 
-			stop = true
+			self._stop = true
 		end
 	end
 
-	if stop then
+	if self._stop then
 		if not self.csm.state_next and self._falling then
 			csm:change_state("falling", self.temp_params)
 
@@ -289,14 +298,43 @@ PlayerCharacterStateLunging.update = function (self, unit, input, dt, context, t
 	CharacterStateHelper.look(input_extension, self.player.viewport_name, first_person_extension, status_extension, self.inventory_extension, 0.5)
 	CharacterStateHelper.update_weapon_actions(t, unit, input_extension, self.inventory_extension, self.health_extension)
 	CharacterStateHelper.reload(input_extension, self.inventory_extension, status_extension)
+	self._last_position:store(POSITION_LOOKUP[unit])
 end
 
 PlayerCharacterStateLunging._update_movement = function (self, unit, dt, t, lunge_data)
+	local move_state = nil
+
 	if self._falling then
-		return self:_move_in_air(unit, dt, t, lunge_data)
+		move_state = self:_move_in_air(unit, dt, t, lunge_data)
+	else
+		move_state = self:_move_on_ground(unit, dt, t, lunge_data)
 	end
 
-	return self:_move_on_ground(unit, dt, t, lunge_data)
+	return move_state
+end
+
+PlayerCharacterStateLunging._check_ledge_hang = function (self, unit, dt, t, move_direction, speed, z_offset)
+	local current_pos = POSITION_LOOKUP[unit]
+	local future_pos = current_pos + move_direction * speed * dt
+	local predicted_distance = Vector3.length(future_pos - current_pos)
+	local step_distance = 0.1
+	local steps = predicted_distance / step_distance
+	local world = self.world
+	self.temp_params.z_offset = z_offset
+	self.temp_params.collision_filter = "filter_lunge_ledge_collision"
+	self.temp_params.radius = step_distance * 1.5
+
+	for i = 1, steps, 1 do
+		local ray_position = current_pos + move_direction * step_distance * i
+		self.temp_params.ray_position = ray_position
+		local will_ledge_hang = CharacterStateHelper.will_be_ledge_hanging(world, unit, self.temp_params)
+
+		if will_ledge_hang then
+			return true
+		end
+	end
+
+	return false
 end
 
 PlayerCharacterStateLunging._move_on_ground = function (self, unit, dt, t, lunge_data)
@@ -319,20 +357,27 @@ PlayerCharacterStateLunging._move_on_ground = function (self, unit, dt, t, lunge
 	if speed_function then
 		speed = speed_function(lunge_time, duration)
 	else
-		local max_speed = lunge_data.initial_speed
 		speed = math.lerp(lunge_data.initial_speed, lunge_data.falloff_to_speed, math.min(lunge_time / duration, 1))
 	end
 
 	local base_speed = 1
+	local use_base_speed = speed > base_speed
+	local speed_to_use = (use_base_speed and base_speed) or speed
+	local will_ledge_hang = self:_check_ledge_hang(unit, dt, t, move_direction, speed, -1.6)
 
-	if speed > base_speed then
-		locomotion_extension:set_wanted_velocity(move_direction * base_speed)
-		locomotion_extension:set_script_movement_time_scale(speed / base_speed)
-	else
-		locomotion_extension:set_wanted_velocity(move_direction * speed)
+	if will_ledge_hang then
+		return "ledge_hang"
 	end
 
-	return lunge_time < duration
+	locomotion_extension:set_wanted_velocity(move_direction * speed_to_use)
+
+	if use_base_speed then
+		locomotion_extension:set_script_movement_time_scale(speed / base_speed)
+	end
+
+	local lunge_ended = lunge_time < duration
+
+	return (lunge_ended and "continue") or "stop"
 end
 
 PlayerCharacterStateLunging._move_in_air = function (self, unit, dt, t, lunge_data)
@@ -355,19 +400,24 @@ PlayerCharacterStateLunging._move_in_air = function (self, unit, dt, t, lunge_da
 	if speed_function then
 		speed = speed_function(lunge_time, duration)
 	else
-		local max_speed = lunge_data.initial_speed
 		speed = math.lerp(lunge_data.initial_speed, lunge_data.falloff_to_speed, math.min(lunge_time / duration, 1))
 	end
 
-	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
+	local will_ledge_hang = self:_check_ledge_hang(unit, dt, t, move_direction, speed, -1.6)
+
+	if will_ledge_hang then
+		return "ledge_hang"
+	end
+
 	local prev_move_velocity = Vector3.flat(locomotion_extension:current_velocity())
 	local new_move_velocity = prev_move_velocity + move_direction * speed
-	local new_move_speed = Vector3.length(new_move_velocity)
 	local new_move_direction = Vector3.normalize(new_move_velocity)
 
 	locomotion_extension:set_wanted_velocity(new_move_direction * speed)
 
-	return lunge_time < duration
+	local lunge_ended = lunge_time < duration
+
+	return (lunge_ended and "continue") or "stop"
 end
 
 PlayerCharacterStateLunging._parse_attack_data = function (self, damage_settings)
@@ -405,7 +455,6 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 	local padding = damage_data.depth_padding
 	local half_width = 0.5 * damage_data.width
 	local half_height = 0.5 * damage_data.height
-	local debug = false
 	local new_pos = POSITION_LOOKUP[unit]
 	local old_pos = self._last_position:unbox()
 	local delta_move = new_pos - old_pos
@@ -417,11 +466,6 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 	local size = Vector3(half_width, half_length, half_height)
 	local collision_filter = damage_data.collision_filter
 	local actors, num_actors = PhysicsWorld.immediate_overlap(self.physics_world, "shape", "oobb", "position", mid_pos, "rotation", rot, "size", size, "collision_filter", collision_filter, "use_global_table")
-
-	if debug then
-		QuickDrawerStay:oobb_overlap(mid_pos, size, rot, Color(255, 255, 255))
-	end
-
 	local hit_units = self._hit_units
 	local buff_extension = self.buff_extension
 	local network_manager = Managers.state.network
@@ -435,16 +479,11 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 
 		if not hit_units[hit_unit] then
 			hit_units[hit_unit] = true
-
-			if debug then
-				print("HIT", hit_unit)
-				QuickDrawerStay:sphere(Actor.position(hit_actor), 0.25, Color(255, 0, 0))
-			end
-
 			local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
 			local hit_unit_pos = POSITION_LOOKUP[hit_unit]
-			local shield_blocked = false
+			local shield_blocked = nil
 			local backstab_multiplier = 1
+			local procced = false
 			local breed = Unit.get_data(hit_unit, "breed")
 			local damage_profile_id, power_level, hit_zone_id, ignore_shield, allow_backstab = self:_parse_attack_data(damage_data)
 
@@ -458,7 +497,6 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 					local behind_target = hit_angle >= 0.55
 
 					if behind_target then
-						local procced = false
 						backstab_multiplier, procced = buff_extension:apply_buffs_to_value(backstab_multiplier, StatBuffIndex.BACKSTAB_MULTIPLIER)
 					end
 				end
@@ -519,8 +557,6 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 			end
 		end
 	end
-
-	self._last_position:store(new_pos)
 
 	return false
 end

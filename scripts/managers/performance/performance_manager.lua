@@ -69,35 +69,7 @@ PerformanceManager.init = function (self, gui, is_server, level_key)
 end
 
 PerformanceManager.update = function (self, dt, t)
-	if script_data.performance_debug then
-		local str = string.format(self._num_ai_string, self._num_ai_spawned, self._num_ai_active, self._num_event_ai_spawned, self._num_event_ai_active)
-		local setting = nil
-
-		if self._allowed_active < self._num_ai_active or self._allowed_spawned < self._num_ai_spawned then
-			setting = self._settings.critical
-		else
-			setting = self._settings.normal
-		end
-
-		local color = nil
-
-		if setting.color_to then
-			local t_val = math.sin((1 - t % 1) * math.pi * 0.5)
-			local from = setting.color:unbox()
-			local to = setting.color_to:unbox()
-			local from_a, from_r, from_g, from_b = Quaternion.to_elements(from)
-			local to_a, to_r, to_g, to_b = Quaternion.to_elements(to)
-			local a = math.lerp(from_a, to_a, t_val)
-			local r = math.lerp(from_r, to_r, t_val)
-			local g = math.lerp(from_g, to_g, t_val)
-			local b = math.lerp(from_b, to_b, t_val)
-			color = Color(a, r, g, b)
-		else
-			color = setting.color:unbox()
-		end
-
-		Gui.text(self._gui, str, setting.font, setting.size, setting.material, setting.position:unbox(), color)
-	end
+	return
 end
 
 PerformanceManager.event_ai_unit_spawned = function (self, breed_name, active, event_spawned)

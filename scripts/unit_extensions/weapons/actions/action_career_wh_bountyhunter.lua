@@ -9,7 +9,7 @@ ActionCareerWHBountyhunter.init = function (self, world, item_name, is_server, o
 end
 
 ActionCareerWHBountyhunter.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
-	local action_init_data = action_init_data or {}
+	action_init_data = action_init_data or {}
 	local talent_extension = self.talent_extension
 
 	if talent_extension:has_talent("victor_bountyhunter_activated_ability_railgun") then

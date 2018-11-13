@@ -161,7 +161,7 @@ CareerAbilityESMercenary._run_ability = function (self, new_initial_speed)
 	local heal_amount = 25
 
 	if talent_extension:has_talent("markus_mercenary_activated_ability_improved_healing") then
-		heal_amount = 40
+		heal_amount = 45
 	end
 
 	local heal_type_id = NetworkLookup.heal_types.career_skill

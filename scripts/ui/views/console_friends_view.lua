@@ -5,6 +5,7 @@ local generic_input_actions = definitions.generic_input_actions
 local entry_definitions = definitions.entry_definitions
 local DO_RELOAD = true
 local INVITE_COOLDOWN = 5
+local REFRESH_COOLDOWN = 12
 ConsoleFriendsView = class(ConsoleFriendsView)
 
 ConsoleFriendsView.init = function (self, ingame_ui_context)
@@ -18,6 +19,8 @@ ConsoleFriendsView.init = function (self, ingame_ui_context)
 	self._network_lobby = ingame_ui_context.network_lobby
 	self._invite_cooldown = {}
 	self._cursor_position = 1
+	self._is_in_inn = ingame_ui_context.is_in_inn
+	self._is_server = ingame_ui_context.is_server
 
 	if GLOBAL_MUSIC_WORLD then
 		self._wwise_world = MUSIC_WWISE_WORLD
@@ -65,6 +68,45 @@ ConsoleFriendsView.on_enter = function (self)
 	self:_create_ui_elements()
 	self:_setup_party_entries()
 	self:_refresh_friends()
+
+	self._refresh_friends_timer = nil
+end
+
+ConsoleFriendsView._join_game = function (self)
+	if self.network_server and not self.network_server:are_all_peers_ingame() then
+		self._popup_id = Managers.popup:queue_popup(Localize("popup_join_blocked_by_joining_player"), Localize("popup_invite_not_installed_header"), "ok", Localize("menu_ok"))
+	else
+		local current_friend_index = self._current_friend_index
+		local friend_widget = self._friend_list_widgets[self._current_friend_index]
+
+		if friend_widget then
+			local friend_widget_content = friend_widget.content
+			local friend_data = friend_widget_content.friend
+			local room_id = friend_data and friend_data.room_id
+
+			if room_id then
+				local lobby_data = {
+					id = room_id
+				}
+				local current_lobby = self._ingame_ui_context.network_lobby
+				local current_room_id = current_lobby:id()
+
+				if current_room_id == room_id then
+					self._popup_id = Managers.popup:queue_popup(Localize("popup_already_in_same_lobby"), Localize("popup_invite_not_installed_header"), "ok", Localize("menu_ok"))
+
+					return
+				end
+
+				if not self._is_server or not self._is_in_inn then
+					self._ingame_ui:handle_transition("join_lobby", lobby_data)
+				else
+					Managers.matchmaking:request_join_lobby(lobby_data, {
+						friend_join = true
+					})
+				end
+			end
+		end
+	end
 end
 
 ConsoleFriendsView._refresh_friends = function (self)
@@ -146,6 +188,12 @@ ConsoleFriendsView.on_exit = function (self)
 
 	if world then
 		World.set_data(world, "avoid_blend", false)
+	end
+
+	if self._popup_id then
+		Managers.popup:cancel_popup(self._popup_id)
+
+		self._popup_id = nil
 	end
 
 	self._exiting = nil
@@ -270,10 +318,15 @@ ConsoleFriendsView.update = function (self, dt, t)
 		self:_create_ui_elements()
 	end
 
-	self:_handle_input(dt, t)
-	self:_update_animations(dt, t)
-	self:_update_input_descriptions(dt, t)
-	self:_draw(dt, t)
+	if self._popup_id then
+		self:_handle_popup()
+	else
+		self:_handle_input(dt, t)
+		self:_update_animations(dt, t)
+		self:_update_input_descriptions(dt, t)
+		self:_handle_refresh(dt, t)
+		self:_draw(dt, t)
+	end
 end
 
 ConsoleFriendsView._update_input_descriptions = function (self, dt, t)
@@ -286,16 +339,21 @@ ConsoleFriendsView._update_input_descriptions = function (self, dt, t)
 		local friend_online = friend.status == "online"
 		local invite = ((not self._invite_cooldown[friend_id] or self._invite_cooldown[friend_id] < t) and friend_online and "invite") or nil
 		local refresh = not self._is_refreshing and "refresh"
-		local input = nil
+
+		if PLATFORM == "ps4" and refresh and not friend_online then
+			refresh = nil
+		end
+
+		local input = "friend"
 
 		if invite then
-			input = invite
+			input = input .. "_" .. invite
 
 			if refresh then
 				input = input .. "_" .. refresh
 			end
 		elseif refresh then
-			input = "refresh"
+			input = input .. "_" .. refresh
 		end
 
 		if input then
@@ -305,7 +363,7 @@ ConsoleFriendsView._update_input_descriptions = function (self, dt, t)
 		end
 
 		self._current_input_desc = input
-	else
+	elseif PLATFORM == "xb1" then
 		local input = not self._is_refreshing and "only_refresh"
 
 		if self._current_input_desc ~= input then
@@ -314,6 +372,22 @@ ConsoleFriendsView._update_input_descriptions = function (self, dt, t)
 			self._menu_input_description:set_input_description(input_actions)
 
 			self._current_input_desc = input
+		end
+	elseif self._current_input_desc then
+		self._menu_input_description:set_input_description(nil)
+
+		self._current_input_desc = nil
+	end
+end
+
+ConsoleFriendsView._handle_refresh = function (self, dt, t)
+	if PLATFORM == "ps4" then
+		self._refresh_friends_timer = self._refresh_friends_timer or t + REFRESH_COOLDOWN
+
+		if self._refresh_friends_timer < t then
+			self:_refresh_friends()
+
+			self._refresh_friends_timer = t + REFRESH_COOLDOWN
 		end
 	end
 end
@@ -353,7 +427,11 @@ ConsoleFriendsView._handle_input = function (self, dt, t)
 			self:_send_invite(friend_widget, t)
 		end
 	elseif input_service:get("special_1") and not self._is_refreshing then
-		self:_refresh_friends()
+		if PLATFORM == "xb1" then
+			self:_refresh_friends()
+		elseif PLATFORM == "ps4" then
+			self:_join_game()
+		end
 	elseif input_service:get("confirm_press") then
 		local friend_widget = self._friend_list_widgets[self._current_friend_index]
 
@@ -437,8 +515,6 @@ ConsoleFriendsView._draw = function (self, dt, t)
 		UIRenderer.draw_widget(ui_top_renderer, widget)
 	end
 
-	Profiler.start("- draw friends list")
-
 	if self._friend_list_widgets then
 		local scenegraph_position = table.clone(ui_scenegraph.friends_mask.world_position)
 		local friends_mask_scenegraph_start_pos = scenegraph_position[2]
@@ -454,11 +530,22 @@ ConsoleFriendsView._draw = function (self, dt, t)
 		end
 	end
 
-	Profiler.stop("- draw friends list")
 	UIRenderer.end_pass(ui_top_renderer)
 
 	if gamepad_active then
 		self._menu_input_description:draw(ui_top_renderer, dt)
+	end
+end
+
+ConsoleFriendsView._handle_popup = function (self)
+	local result, params = Managers.popup:query_result(self._popup_id)
+
+	if result then
+		if result == "ok" then
+			self._popup_id = nil
+		else
+			fassert(false, "[ConsoleFriendsView:_handle_popup] No implementation for the result %q", result)
+		end
 	end
 end
 
@@ -501,7 +588,11 @@ ConsoleFriendsView._send_invite = function (self, widget, t)
 end
 
 ConsoleFriendsView.cleanup_popups = function (self)
-	return
+	if self._popup_id then
+		Managers.popup:cancel_popup(self._popup_id)
+
+		self._popup_id = nil
+	end
 end
 
 return

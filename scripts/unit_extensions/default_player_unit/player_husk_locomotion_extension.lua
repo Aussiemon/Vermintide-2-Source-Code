@@ -94,7 +94,7 @@ PlayerHuskLocomotionExtension.set_disabled = function (self, disabled, run_func,
 
 	if not disabled then
 		local unit = self.unit
-		local pos = POSITION_LOOKUP[unit]
+		local pos = POSITION_LOOKUP[unit] or Unit.local_position(unit, 0)
 		self._pos_lerp_time = 0
 
 		Unit.set_data(unit, "last_lerp_position", pos)
@@ -109,11 +109,8 @@ PlayerHuskLocomotionExtension.set_disabled = function (self, disabled, run_func,
 end
 
 PlayerHuskLocomotionExtension.update = function (self, unit, input, dt, context, t)
-	Profiler.start("PlayerHuskLocomotionExtension:update")
-
 	if self._disabled then
 		self._run_func(unit, dt, self)
-		Profiler.stop("PlayerHuskLocomotionExtension:update")
 
 		return
 	end
@@ -136,7 +133,6 @@ PlayerHuskLocomotionExtension.update = function (self, unit, input, dt, context,
 	end
 
 	self:_update_last_position_on_navmesh()
-	Profiler.stop("PlayerHuskLocomotionExtension:update")
 end
 
 PlayerHuskLocomotionExtension.last_position_on_navmesh = function (self)

@@ -273,6 +273,17 @@ local breed_data = {
 		j_lefthand = 0.2,
 		j_rightforearm = 0.2
 	},
+	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed, direction)
+		local t = Managers.time:time("game")
+
+		if blackboard.stagger_immune_time and t < blackboard.stagger_immune_time then
+			stagger = 0
+			duration = 0
+			length = 0
+		end
+
+		return stagger, duration, length
+	end,
 	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone, t, damage_source)
 		local blackboard = BLACKBOARDS[unit]
 
@@ -1168,7 +1179,6 @@ local action_data = {
 
 							blackboard.hit_warrior_challenge_completed = true
 
-							print("Completed challenge ", stat_name)
 							QuestSettings.send_completed_message(stat_name)
 						end
 					end

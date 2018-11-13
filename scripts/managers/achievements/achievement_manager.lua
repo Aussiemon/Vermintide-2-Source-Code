@@ -372,8 +372,6 @@ AchievementManager._check_initialized_achievements = function (self)
 end
 
 AchievementManager._setup_achievement_data = function (self, achievement_id)
-	Profiler.start(achievement_id)
-
 	local achievement_data = AchievementTemplates.achievements[achievement_id]
 
 	assert(achievement_data)
@@ -383,8 +381,6 @@ AchievementManager._setup_achievement_data = function (self, achievement_id)
 	local player = player_manager:local_player()
 
 	if not player then
-		Profiler.stop(achievement_id)
-
 		return nil, "Missing player"
 	end
 
@@ -469,8 +465,6 @@ AchievementManager._setup_achievement_data = function (self, achievement_id)
 		claimed = claimed
 	}
 	self._achievement_data[achievement_id] = achievement_data
-
-	Profiler.stop(achievement_id)
 end
 
 local font_size = 16

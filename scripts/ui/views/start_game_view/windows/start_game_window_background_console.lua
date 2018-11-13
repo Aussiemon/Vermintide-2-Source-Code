@@ -1,12 +1,10 @@
 require("scripts/ui/views/menu_world_previewer")
 
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_background_console_definitions")
-local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local camera_position_by_character = definitions.camera_position_by_character
 local loading_overlay_widget_definitions = definitions.loading_overlay_widgets
-local DO_RELOAD = false
 local object_sets_per_layout = {
 	adventure = {
 		quick_play = true
@@ -94,17 +92,6 @@ StartGameWindowBackgroundConsole.create_ui_elements = function (self, params, of
 	end
 
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
-	local widgets = {}
-	local widgets_by_name = {}
-
-	for name, widget_definition in pairs(widget_definitions) do
-		local widget = UIWidget.init(widget_definition)
-		widgets[#widgets + 1] = widget
-		widgets_by_name[name] = widget
-	end
-
-	self._widgets = widgets
-	self._widgets_by_name = widgets_by_name
 	local loading_overlay_widgets = {}
 	local loading_overlay_widgets_by_name = {}
 
@@ -134,7 +121,8 @@ StartGameWindowBackgroundConsole._setup_object_sets = function (self)
 	local object_set_names = LevelResource.object_set_names(level_name)
 	self._object_sets = {}
 
-	for _, object_set_name in ipairs(object_set_names) do
+	for i = 1, #object_set_names, 1 do
+		local object_set_name = object_set_names[i]
 		self._object_sets[object_set_name] = LevelResource.unit_indices_in_object_set(level_name, object_set_name)
 	end
 end
@@ -158,12 +146,6 @@ StartGameWindowBackgroundConsole.on_exit = function (self, params)
 end
 
 StartGameWindowBackgroundConsole.update = function (self, dt, t)
-	if DO_RELOAD then
-		DO_RELOAD = false
-
-		self:create_ui_elements()
-	end
-
 	self:_update_animations(dt)
 	self:draw(dt)
 
@@ -172,7 +154,7 @@ StartGameWindowBackgroundConsole.update = function (self, dt, t)
 
 		self.world_previewer:update(dt, t, disable_hero_unit_input)
 
-		local layout_name = self.parent:get_layout_name()
+		local layout_name = self.parent:get_selected_game_mode_layout_name()
 
 		if layout_name ~= self._current_layout_name then
 			self._current_layout_name = layout_name
@@ -184,10 +166,13 @@ end
 
 StartGameWindowBackgroundConsole._update_object_sets = function (self, layout_name)
 	local object_set_to_enable = object_sets_per_layout[layout_name]
+	local enabled_object_sets_string = "[StartGameWindowBackgroundConsole] Enabling the following object sets:"
 
-	for _, object_set_name in pairs(object_set_to_enable) do
-		print(string.format("%q", object_set_name))
+	for object_set_name, _ in pairs(object_set_to_enable) do
+		enabled_object_sets_string = string.format("%s %s", enabled_object_sets_string, object_set_name)
 	end
+
+	print(enabled_object_sets_string)
 
 	for object_set_name, object_set_units in pairs(self._object_sets) do
 		local enable_visibility = object_set_to_enable[object_set_name] or false
@@ -220,10 +205,11 @@ StartGameWindowBackgroundConsole.post_update = function (self, dt, t)
 end
 
 StartGameWindowBackgroundConsole._update_animations = function (self, dt)
+	local ui_animator = self.ui_animator
+
 	self.ui_animator:update(dt)
 
 	local animations = self._animations
-	local ui_animator = self.ui_animator
 
 	for animation_name, animation_id in pairs(animations) do
 		if ui_animator:is_animation_completed(animation_id) then
@@ -234,36 +220,19 @@ StartGameWindowBackgroundConsole._update_animations = function (self, dt)
 	end
 end
 
-StartGameWindowBackgroundConsole._is_button_pressed = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	if hotspot.on_release then
-		hotspot.on_release = false
-
-		return true
-	end
-end
-
-StartGameWindowBackgroundConsole._exit = function (self, selected_level)
-	self.exit = true
-	self.exit_level_id = selected_level
-end
-
 StartGameWindowBackgroundConsole.draw = function (self, dt)
-	local ui_renderer = self.ui_renderer
 	local ui_top_renderer = self.ui_top_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.parent:window_input_service()
 
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
 
-	for _, widget in ipairs(self._widgets) do
-		UIRenderer.draw_widget(ui_top_renderer, widget)
-	end
-
 	if self._show_loading_overlay then
-		for _, widget in ipairs(self._loading_overlay_widgets) do
+		local loading_overlay_widgets = self._loading_overlay_widgets
+
+		for i = 1, #loading_overlay_widgets, 1 do
+			local widget = loading_overlay_widgets[i]
+
 			UIRenderer.draw_widget(ui_top_renderer, widget)
 		end
 	end
@@ -271,14 +240,12 @@ StartGameWindowBackgroundConsole.draw = function (self, dt)
 	UIRenderer.end_pass(ui_top_renderer)
 
 	if self._viewport_widget then
+		local ui_renderer = self.ui_renderer
+
 		UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
 		UIRenderer.draw_widget(ui_renderer, self._viewport_widget)
 		UIRenderer.end_pass(ui_renderer)
 	end
-end
-
-StartGameWindowBackgroundConsole._play_sound = function (self, event)
-	self.parent:play_sound(event)
 end
 
 StartGameWindowBackgroundConsole._update_loading_overlay_fadeout_animation = function (self, dt)
@@ -286,12 +253,12 @@ StartGameWindowBackgroundConsole._update_loading_overlay_fadeout_animation = fun
 		return
 	end
 
-	local loading_overlay_widgets_by_name = self._loading_overlay_widgets_by_name
 	local start = 255
 	local target = 0
 	local speed = 9
 	local progress = math.min(1, (self._fadeout_progress or 0) + speed * dt)
 	local alpha = math.lerp(start, target, math.easeInCubic(progress))
+	local loading_overlay_widgets_by_name = self._loading_overlay_widgets_by_name
 	local loading_overlay = loading_overlay_widgets_by_name.loading_overlay
 	local loading_overlay_loading_glow = loading_overlay_widgets_by_name.loading_overlay_loading_glow
 	local loading_overlay_loading_frame = loading_overlay_widgets_by_name.loading_overlay_loading_frame

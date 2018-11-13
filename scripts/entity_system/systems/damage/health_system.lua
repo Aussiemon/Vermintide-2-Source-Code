@@ -61,13 +61,6 @@ end
 HealthSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = ScriptUnit.add_extension(self.extension_init_context, unit, extension_name, self.NAME, extension_init_data)
 	self.unit_extensions[unit] = extension
-	local optional_data = extension_init_data.optional_data
-
-	if optional_data then
-		extension.zone_data = optional_data.zone_data
-		extension.replaced_breed = optional_data.replaced_breed
-		extension.debug_info = optional_data.debug_info
-	end
 
 	if extension_name == "PlayerUnitHealthExtension" then
 		self.player_unit_extensions[unit] = extension
@@ -131,9 +124,6 @@ end
 HealthSystem.update = function (self, context, t)
 	self.active_damage_buffer_index = 3 - self.active_damage_buffer_index
 	local active_damage_buffer_index = self.active_damage_buffer_index
-
-	Profiler.start("clear")
-
 	local pdArray_set_empty = pdArray.set_empty
 	local player_unit_extensions = self.player_unit_extensions
 
@@ -146,19 +136,11 @@ HealthSystem.update = function (self, context, t)
 		extension._recent_hit_react_type = nil
 	end
 
-	Profiler.stop("clear")
-	Profiler.start("extensions")
-
 	local dt = context.dt
 
 	for unit, extension in pairs(self.updateable_unit_extensions) do
 		extension:update(dt, context, t)
 	end
-
-	Profiler.stop("extensions")
-	Profiler.start("Debug Draw")
-	self:update_debug()
-	Profiler.stop("Debug Draw")
 end
 
 HealthSystem._assist_shield = function (self, target_unit, shield_amount)

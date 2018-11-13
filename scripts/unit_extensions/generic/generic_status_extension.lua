@@ -396,14 +396,6 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 		func(self, t)
 	end
 
-	if script_data.debug_draw_block_arcs then
-		self:_debug_draw_block_arcs(unit)
-	end
-
-	if script_data.debug_draw_push_arcs then
-		self:_debug_draw_push_arcs(unit)
-	end
-
 	if self.player.local_player then
 		local in_end_zone = self:is_in_end_zone()
 
@@ -1150,10 +1142,6 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 
 	if knocked_down then
 		if is_server then
-			if script_data.debug_player_intensity then
-				Managers.state.conflict.pacing:annotate_graph("knockdown", "red")
-			end
-
 			self:add_intensity(CurrentIntensitySettings.intensity_add_knockdown)
 		end
 

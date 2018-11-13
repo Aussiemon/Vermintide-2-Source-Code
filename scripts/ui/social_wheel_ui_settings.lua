@@ -130,7 +130,7 @@ local function is_valid_player_and_target_unit_exclude_local_player(player_profi
 
 	local status_extension = ScriptUnit.extension(player.player_unit, "status_system")
 
-	if status_extension:is_ready_for_assisted_respawn() then
+	if status_extension:is_ready_for_assisted_respawn() or status_extension:is_dead() then
 		return false
 	end
 

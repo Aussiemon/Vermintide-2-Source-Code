@@ -1,13 +1,14 @@
 require("scripts/settings/attachment_node_linking")
 require("scripts/unit_extensions/generic/interactions")
-require("scripts/utils/action_assert_funcs")
 require("scripts/settings/profiles/career_settings")
 require("scripts/helpers/weapon_utils")
 dofile("scripts/settings/explosion_templates")
-dofile("scripts/settings/equipment/attack_templates")
-dofile("scripts/settings/equipment/power_level_templates")
 dofile("scripts/settings/equipment/hit_mass_counts")
 dofile("scripts/settings/equipment/power_level_settings")
+dofile("scripts/settings/equipment/attack_templates")
+dofile("scripts/settings/equipment/power_level_settings")
+dofile("scripts/settings/equipment/damage_profile_templates")
+require("scripts/utils/action_assert_funcs")
 dofile("scripts/settings/equipment/projectiles")
 dofile("scripts/settings/equipment/light_weight_projectiles")
 require("scripts/settings/action_templates")
@@ -82,6 +83,14 @@ dofile("scripts/settings/equipment/torches")
 dofile("scripts/settings/equipment/grimoire")
 dofile("scripts/settings/equipment/door_sticks")
 dofile("scripts/settings/equipment/packmaster_claw")
+
+for _, dlc in pairs(DLCSettings) do
+	if dlc.weapon_template_files_names then
+		for _, file_name in ipairs(dlc.weapon_template_files_names) do
+			dofile(file_name)
+		end
+	end
+end
 
 DAMAGE_TYPES_AOE = {
 	warpfire_face = true,

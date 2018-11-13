@@ -57,8 +57,6 @@ local function copy_array(a, b)
 end
 
 HordeSpawner.horde = function (self, horde_type, extra_data, no_fallback)
-	Profiler.start("horde_spawner")
-
 	if not horde_type then
 		if CurrentHordeSettings.mix_paced_hordes then
 			if self.num_paced_hordes % 2 == 0 then
@@ -94,8 +92,6 @@ HordeSpawner.horde = function (self, horde_type, extra_data, no_fallback)
 	else
 		self:execute_ambush_horde(extra_data, no_fallback)
 	end
-
-	Profiler.stop("horde_spawner")
 end
 
 HordeSpawner.execute_fallback = function (self, horde_type, fallback, reason, extra_data)
@@ -207,11 +203,6 @@ HordeSpawner.compose_horde_spawn_list = function (self, variant)
 
 	table.shuffle(spawn_list_a)
 	table.shuffle(spawn_list_b)
-
-	if script_data.ai_horde_logging then
-		table.dump(spawn_list_a, "AAA")
-		table.dump(spawn_list_b, "BBB")
-	end
 
 	local sum_a = #spawn_list_a
 	local sum_b = #spawn_list_b
@@ -579,13 +570,6 @@ HordeSpawner.replace_hidden_spawners = function (self, hidden_spawners, spawner_
 			local index = (count - 1) % num_found + 1
 			spawner.cover_point_unit = found_cover_points[index]
 			count = count + 1
-
-			if script_data.debug_terror then
-				local p = Unit.local_position(spawner.cover_point_unit, 0)
-
-				QuickDrawerStay:sphere(p, 2, Color(0, 255, 9))
-				QuickDrawerStay:line(p, p + Vector3(0, 0, 10), Color(0, 255, 9))
-			end
 
 			print("->moving spawner")
 		end
@@ -1248,10 +1232,6 @@ HordeSpawner.spawner_in_view_of_players = function (self, spawner)
 			local direction = Vector3.normalize(to_player)
 			local hit, hit_pos, _, _, actor = PhysicsWorld.immediate_raycast(self.physics_world, spawner_pos, direction, distance, "collision_filter", "filter_ai_line_of_sight_check")
 
-			if script_data.debug_terror then
-				QuickDrawerStay:line(spawner_pos, player_pos, (hit and Color(255, 255, 255)) or Color(255, 0, 0))
-			end
-
 			if not hit then
 				return player_pos
 			end
@@ -1276,10 +1256,6 @@ HordeSpawner.update_horde = function (self, horde, t)
 
 			horde.started = true
 		else
-			if script_data.debug_terror then
-				Debug.text("Horde in: %.2f", horde.start_time - t)
-			end
-
 			return
 		end
 	end
@@ -1321,17 +1297,9 @@ HordeSpawner.update_horde = function (self, horde, t)
 		end
 	end
 
-	if script_data.debug_terror then
-		Debug.text("HORDE spawned: %d", horde.spawned)
-	end
-
 	local has_spawned_enough = horde.num_to_spawn <= horde.spawned
 	local group_has_spawned = horde.is_done_spawning
 	local should_wait_for_spawning_done = horde.horde_type == "vector" or horde.horde_type == "ambush"
-
-	if not should_wait_for_spawning_done and group_has_spawned and not has_spawned_enough then
-		print("ERROR IN HORDE SPAWNER group_has_spawned and not has_spawned_enough")
-	end
 
 	if has_spawned_enough or (not should_wait_for_spawning_done and not group_has_spawned) then
 		return true
@@ -1443,8 +1411,6 @@ HordeSpawner.hidden_cover_points = function (self, broadphase, epicenter_pos, pl
 	local num_found_points = 0
 	local num_cover_points = Broadphase.query(broadphase, epicenter_pos, max_rad, found_units)
 	local min_long_dist_squared = main_target_pos and distance_squared(player_pos_list[1], main_target_pos)
-	local green = Color(255, 0, 240, 0)
-	local red = Color(255, 240, 0, 0)
 	min_rad = min_rad * min_rad
 	max_rad = max_rad * max_rad
 
@@ -1475,14 +1441,6 @@ HordeSpawner.hidden_cover_points = function (self, broadphase, epicenter_pos, pl
 					if valid then
 						num_found_points = num_found_points + 1
 						found_cover_points[num_found_points] = cover_unit
-
-						if script_data.debug_hordes then
-							QuickDrawerStay:sphere(pos, 1, green)
-							QuickDrawerStay:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot) * 2 + Vector3(0, 0, 1), green)
-						end
-					elseif script_data.debug_hordes then
-						QuickDrawerStay:sphere(pos, 1, red)
-						QuickDrawerStay:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot) * 2 + Vector3(0, 0, 1), red)
 					end
 				end
 			end

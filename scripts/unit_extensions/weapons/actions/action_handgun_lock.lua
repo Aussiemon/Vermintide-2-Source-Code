@@ -20,7 +20,6 @@ ActionHandgunLock.init = function (self, world, item_name, is_server, owner_unit
 end
 
 ActionHandgunLock.client_owner_start_action = function (self, new_action, t, chain_action_data)
-	local weapon_unit = self.weapon_unit
 	local owner_unit = self.owner_unit
 	local first_person_unit = self.owner_unit_first_person
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
@@ -119,8 +118,8 @@ ActionHandgunLock.client_owner_post_update = function (self, dt, t, world, can_d
 
 			first_person_extension:force_look_rotation(rotation)
 
-			local direction = Quaternion.forward(rotation)
-			local result = self:raycast_to_target(world, owner_unit_position, direction, current_target)
+			local forward_direction = Quaternion.forward(rotation)
+			local result = self:raycast_to_target(world, owner_unit_position, forward_direction, current_target)
 			local owner_unit = self.owner_unit
 			local is_server = self.is_server
 
@@ -145,7 +144,6 @@ end
 
 ActionHandgunLock.raycast_to_target = function (self, world, from_position, direction, target)
 	local physics_world = World.get_data(world, "physics_world")
-	local return_result = nil
 	local collision_filter = "filter_player_ray_projectile"
 
 	PhysicsWorld.prepare_actors_for_raycast(physics_world, from_position, direction, 0.01, 9)

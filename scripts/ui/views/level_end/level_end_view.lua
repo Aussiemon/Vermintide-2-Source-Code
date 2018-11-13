@@ -60,6 +60,7 @@ LevelEndView.init = function (self, context)
 		self.level_up_rewards = self:_get_level_up_rewards()
 		self.deed_rewards = self:_get_deed_rewards()
 		self.keep_decoration_rewards = self:_get_keep_decoration_rewards()
+		self.event_rewards = self:_get_event_rewards()
 	end
 
 	local world = context.world
@@ -260,6 +261,19 @@ LevelEndView._get_deed_rewards = function (self)
 	end
 
 	return deed_rewards
+end
+
+LevelEndView._get_event_rewards = function (self)
+	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
+	local event_rewards = {}
+
+	for reward_name, item in pairs(end_of_level_rewards) do
+		if string.find(reward_name, "event_reward") == 1 then
+			event_rewards[#event_rewards + 1] = item
+		end
+	end
+
+	return event_rewards
 end
 
 LevelEndView._get_keep_decoration_rewards = function (self)
@@ -1263,6 +1277,41 @@ LevelEndView.present_additional_rewards = function (self)
 				description[1] = Localize(display_name)
 				description[2] = Localize("keep_decoration_painting_recieved")
 			end
+
+			if description then
+				entry[#entry + 1] = {
+					widget_type = "description",
+					value = description
+				}
+			end
+
+			entry[#entry + 1] = {
+				widget_type = "item",
+				value = item
+			}
+			presentation_data[#presentation_data + 1] = entry
+		end
+
+		self:_present_reward(presentation_data)
+	end
+
+	local event_rewards = self.event_rewards
+	local num_event_rewards = #event_rewards
+	local item_interface = Managers.backend:get_interface("items")
+
+	if num_event_rewards > 0 then
+		local presentation_data = {}
+
+		for _, item in ipairs(event_rewards) do
+			local entry = {}
+			local backend_id = item.backend_id
+			local reward_item = item_interface:get_item_from_id(backend_id)
+			local item_data = item_interface:get_item_masterlist_data(backend_id)
+			local item_type = item_data.item_type
+			local description = {}
+			local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
+			description[1] = Localize(display_name)
+			description[2] = Localize("end_screen_you_received")
 
 			if description then
 				entry[#entry + 1] = {

@@ -60,23 +60,23 @@ LobbyInternal.lobby_data_network_lookups = {
 }
 
 LobbyInternal.init_client = function (network_options)
-	if not LobbyInternal.psn_client then
+	if not LobbyInternal.client then
 		Network.set_explicit_connections()
 
-		LobbyInternal.psn_client = Network.init_psn_client(network_options.config_file_name)
-		LobbyInternal.psn_room_browser = PSNRoomBrowser:new(LobbyInternal.psn_client)
-		LobbyInternal.psn_room_data_external = PsnClient.room_data_external(LobbyInternal.psn_client)
+		LobbyInternal.client = Network.init_psn_client(network_options.config_file_name)
+		LobbyInternal.psn_room_browser = PSNRoomBrowser:new(LobbyInternal.client)
+		LobbyInternal.psn_room_data_external = PsnClient.room_data_external(LobbyInternal.client)
 	end
 
 	GameSettingsDevelopment.set_ignored_rpc_logs()
 end
 
 LobbyInternal.network_initialized = function ()
-	return not not LobbyInternal.psn_client
+	return not not LobbyInternal.client
 end
 
 LobbyInternal.client_ready = function ()
-	return PsnClient.ready(LobbyInternal.psn_client)
+	return PsnClient.ready(LobbyInternal.client)
 end
 
 LobbyInternal.ping = function (peer_id)
@@ -109,9 +109,9 @@ LobbyInternal.remove_ping_peer = function (peer_id)
 end
 
 LobbyInternal.shutdown_client = function ()
-	Network.shutdown_psn_client(LobbyInternal.psn_client)
+	Network.shutdown_psn_client(LobbyInternal.client)
 
-	LobbyInternal.psn_client = nil
+	LobbyInternal.client = nil
 	LobbyInternal.psn_room_browser = nil
 	LobbyInternal.psn_room_data_external = nil
 
@@ -168,7 +168,7 @@ LobbyInternal.lobby_browser = function ()
 end
 
 LobbyInternal.client_lost_context = function ()
-	return PsnClient.lost_context(LobbyInternal.psn_client)
+	return PsnClient.lost_context(LobbyInternal.client)
 end
 
 LobbyInternal.get_lobby_data_from_id = function (id)
@@ -430,7 +430,7 @@ PSNRoom.members_np_id = function (self, t)
 	end
 end
 
-PSNRoom.np_id_from_peer_id = function (self, peer_id)
+PSNRoom.online_id_from_peer_id = function (self, peer_id)
 	local room_id = self.room_id
 	local num_members = PsnRoom.num_members(room_id)
 
@@ -438,7 +438,7 @@ PSNRoom.np_id_from_peer_id = function (self, peer_id)
 		local member = PsnRoom.member(room_id, i)
 
 		if member.peer_id == peer_id then
-			return member.np_id
+			return member.online_id
 		end
 	end
 

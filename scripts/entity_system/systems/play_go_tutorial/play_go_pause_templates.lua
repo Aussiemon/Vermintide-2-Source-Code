@@ -89,7 +89,7 @@ DefaultAnimationFunctions = {
 					local result = nil
 					local keymap_data = not gamepad_active and input_service:get_keymapping(input)
 
-					if not keymap_data or keymap_data[2] == UNASSIGNED_KEY then
+					if not gamepad_active and (not keymap_data or keymap_data[2] == UNASSIGNED_KEY) then
 						result = alternate_input_service:get(input)
 					else
 						result = input_service:get(input)
@@ -125,7 +125,7 @@ DefaultAnimationFunctions = {
 						local result = nil
 						local keymap_data = not gamepad_active and input_service:get_keymapping(input)
 
-						if not keymap_data or keymap_data[2] == UNASSIGNED_KEY then
+						if not gamepad_active and (not keymap_data or keymap_data[2] == UNASSIGNED_KEY) then
 							result = alternate_input_service:get(input)
 						else
 							result = input_service:get(input)
@@ -332,7 +332,8 @@ PauseEvents = {
 				"move_right",
 				"move_controller",
 				"dodge",
-				"dodge_hold"
+				"dodge_hold",
+				"jump"
 			},
 			on_enter = DefaultAnimationFunctions.on_enter,
 			update = DefaultAnimationFunctions.update_input,

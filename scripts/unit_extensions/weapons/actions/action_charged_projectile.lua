@@ -24,7 +24,6 @@ ActionChargedProjectile.init = function (self, world, item_name, is_server, owne
 end
 
 ActionChargedProjectile.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
-	local weapon_unit = self.weapon_unit
 	local owner_unit = self.owner_unit
 	local first_person_unit = self.first_person_unit
 	local is_critical_strike = ActionUtils.is_critical_strike(self.owner_unit, new_action, t)
@@ -75,19 +74,16 @@ ActionChargedProjectile.client_owner_start_action = function (self, new_action, 
 end
 
 ActionChargedProjectile.client_owner_post_update = function (self, dt, t, world, can_damage)
-	local current_action = self.current_action
-	local owner_unit = self.owner_unit
-
 	if self.state == "waiting_to_shoot" and self.time_to_shoot <= t then
 		self.state = "shooting"
 	end
 
 	if self.state == "shooting" then
-		self:_shoot()
+		self:_shoot(t)
 	end
 end
 
-ActionChargedProjectile._shoot = function (self)
+ActionChargedProjectile._shoot = function (self, t)
 	local current_action = self.current_action
 	local owner_unit = self.owner_unit
 	local overcharge_type = current_action.overcharge_type
@@ -132,17 +128,15 @@ ActionChargedProjectile._shoot = function (self)
 		self.state = "shot"
 	end
 
-	local network_manager = self.network_manager
-	local owner_unit_id = network_manager:unit_game_object_id(owner_unit)
 	local first_person_unit = self.first_person_unit
 	local position = Unit.world_position(first_person_unit, 0)
 	local rotation = Unit.local_rotation(first_person_unit, 0)
 	local gaze_settings = nil
 
 	if current_action.fire_at_gaze_setting and ScriptUnit.has_extension(owner_unit, "eyetracking_system") then
-		local eyetracking_extension = ScriptUnit.extension(owner_unit, "eyetracking_system")
+		local eyetracking_extension = ScriptUnit.has_extension(owner_unit, "eyetracking_system")
 
-		if eyetracking_extension:get_is_feature_enabled("tobii_fire_at_gaze") then
+		if eyetracking_extension and eyetracking_extension:get_is_feature_enabled("tobii_fire_at_gaze") then
 			rotation = eyetracking_extension:gaze_rotation()
 			gaze_settings = true
 		end
@@ -219,8 +213,6 @@ ActionChargedProjectile._shoot = function (self)
 	local charge_level = self.charge_level
 	local scale = math.round(math.max(charge_level, 0) * 100)
 	local projectile_power_level = ActionUtils.scale_charged_projectile_power_level(self.power_level, current_action, self.charge_level)
-	local item_data = ItemMasterList[item_name]
-	local item_template = BackendUtils.get_item_template(item_data)
 
 	ActionUtils.spawn_player_projectile(owner_unit, position, rotation, scale, angle, target_vector, speed, item_name, item_template_name, action_name, sub_action_name, self._is_critical_strike, projectile_power_level, gaze_settings)
 
