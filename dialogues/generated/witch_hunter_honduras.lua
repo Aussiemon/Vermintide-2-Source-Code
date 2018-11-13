@@ -11259,25 +11259,19 @@ return function ()
 			randomize_indexes = {}
 		},
 		pwh_gameplay_helped_by_empire_soldier = {
-			sound_events_n = 7,
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
-			face_animations_n = 7,
+			face_animations_n = 4,
 			database = "witch_hunter_honduras",
 			category = "player_feedback",
-			dialogue_animations_n = 7,
+			dialogue_animations_n = 4,
 			sound_events = {
 				"pwh_gameplay_helped_by_empire_soldier_05",
 				"pwh_gameplay_helped_by_empire_soldier_06",
 				"pwh_gameplay_helped_by_empire_soldier_07",
-				"pwh_gameplay_helped_by_empire_soldier_08",
-				"pwh_gameplay_helped_by_empire_soldier_09",
-				"pwh_gameplay_helped_by_empire_soldier_10",
 				"pwh_gameplay_helped_by_empire_soldier_11"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
@@ -11287,18 +11281,12 @@ return function ()
 				"face_happy",
 				"face_happy",
 				"face_happy",
-				"face_happy",
-				"face_happy",
-				"face_happy",
 				"face_happy"
 			},
 			localization_strings = {
 				"pwh_gameplay_helped_by_empire_soldier_05",
 				"pwh_gameplay_helped_by_empire_soldier_06",
 				"pwh_gameplay_helped_by_empire_soldier_07",
-				"pwh_gameplay_helped_by_empire_soldier_08",
-				"pwh_gameplay_helped_by_empire_soldier_09",
-				"pwh_gameplay_helped_by_empire_soldier_10",
 				"pwh_gameplay_helped_by_empire_soldier_11"
 			},
 			randomize_indexes = {}
@@ -13121,19 +13109,29 @@ return function ()
 			randomize_indexes = {}
 		},
 		pwh_gameplay_helped_by_dwarf_ranger = {
-			sound_events_n = 4,
+			sound_events_n = 9,
 			randomize_indexes_n = 0,
-			face_animations_n = 4,
+			face_animations_n = 9,
 			database = "witch_hunter_honduras",
 			category = "player_feedback",
-			dialogue_animations_n = 4,
+			dialogue_animations_n = 9,
 			sound_events = {
 				"pwh_gameplay_helped_by_dwarf_ranger_01",
 				"pwh_gameplay_helped_by_dwarf_ranger_02",
 				"pwh_gameplay_helped_by_dwarf_ranger_03",
-				"pwh_gameplay_helped_by_dwarf_ranger_04"
+				"pwh_gameplay_helped_by_dwarf_ranger_04",
+				"pwh_gameplay_helped_by_dwarf_ranger_05",
+				"pwh_gameplay_helped_by_dwarf_ranger_06",
+				"pwh_gameplay_helped_by_dwarf_ranger_07",
+				"pwh_gameplay_helped_by_empire_soldier_09",
+				"pwh_gameplay_helped_by_empire_soldier_10"
 			},
 			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
@@ -13143,13 +13141,23 @@ return function ()
 				"face_happy",
 				"face_happy",
 				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy",
 				"face_happy"
 			},
 			localization_strings = {
 				"pwh_gameplay_helped_by_dwarf_ranger_01",
 				"pwh_gameplay_helped_by_dwarf_ranger_02",
 				"pwh_gameplay_helped_by_dwarf_ranger_03",
-				"pwh_gameplay_helped_by_dwarf_ranger_04"
+				"pwh_gameplay_helped_by_dwarf_ranger_04",
+				"pwh_gameplay_helped_by_dwarf_ranger_05",
+				"pwh_gameplay_helped_by_dwarf_ranger_06",
+				"pwh_gameplay_helped_by_dwarf_ranger_07",
+				"pwh_gameplay_helped_by_empire_soldier_09",
+				"pwh_gameplay_helped_by_empire_soldier_10"
 			},
 			randomize_indexes = {}
 		},

@@ -53,9 +53,9 @@ return function ()
 			},
 			{
 				"faction_memory",
-				"time_since_catacombs_hear_chanting",
+				"time_since_catacombs_apothercary_room",
 				OP.NOT,
-				"time_since_catacombs_hear_chanting"
+				"time_since_catacombs_apothercary_room"
 			},
 			{
 				"faction_memory",
@@ -207,9 +207,9 @@ return function ()
 			},
 			{
 				"faction_memory",
-				"time_since_catacombs_hear_chanting",
+				"time_since_catacombs_apothercary_room",
 				OP.NOT,
-				"time_since_catacombs_hear_chanting"
+				"time_since_catacombs_apothercary_room"
 			},
 			{
 				"faction_memory",
@@ -2209,9 +2209,9 @@ return function ()
 			},
 			{
 				"faction_memory",
-				"time_since_catacombs_hear_chanting",
+				"time_since_catacombs_healing_ward",
 				OP.NOT,
-				"time_since_catacombs_hear_chanting"
+				"time_since_catacombs_healing_ward"
 			},
 			{
 				"faction_memory",

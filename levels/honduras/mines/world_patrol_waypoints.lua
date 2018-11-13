@@ -6157,8 +6157,8 @@ local boss_waypoints = {
 			}
 		},
 		{
-			id = "boss4",
 			one_directional = true,
+			id = "boss4",
 			travel_dist = 349.08636920154095,
 			waypoints = {
 				{
@@ -7243,6 +7243,11 @@ local boss_waypoints = {
 					33.7292594909668,
 					0
 				}
+			},
+			main_path_connector = {
+				-74,
+				117,
+				20.440000534057617
 			}
 		}
 	},

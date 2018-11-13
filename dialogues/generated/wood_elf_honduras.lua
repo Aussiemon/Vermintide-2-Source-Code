@@ -10752,29 +10752,19 @@ return function ()
 			randomize_indexes = {}
 		},
 		pwe_gameplay_heard_dwarf_ranger_in_trouble = {
-			sound_events_n = 9,
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
-			face_animations_n = 9,
+			face_animations_n = 4,
 			database = "wood_elf_honduras",
 			category = "player_alerts",
-			dialogue_animations_n = 9,
+			dialogue_animations_n = 4,
 			sound_events = {
 				"pwe_gameplay_heard_dwarf_ranger_in_trouble_05",
 				"pwe_gameplay_heard_dwarf_ranger_in_trouble_06",
 				"pwe_gameplay_heard_dwarf_ranger_in_trouble_07",
-				"pwe_gameplay_heard_dwarf_ranger_in_trouble_08",
-				"pwe_gameplay_heard_dwarf_ranger_in_trouble_09",
-				"pwe_gameplay_heard_dwarf_ranger_in_trouble_10",
-				"pwe_gameplay_heard_dwarf_ranger_in_trouble_11",
-				"pwe_gameplay_heard_dwarf_ranger_in_trouble_12",
-				"pwe_gameplay_heard_dwarf_ranger_in_trouble_13"
+				"pwe_gameplay_heard_dwarf_ranger_in_trouble_08"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
@@ -10784,23 +10774,13 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
 				"face_concerned"
 			},
 			localization_strings = {
 				"pwe_gameplay_heard_dwarf_ranger_in_trouble_05",
 				"pwe_gameplay_heard_dwarf_ranger_in_trouble_06",
 				"pwe_gameplay_heard_dwarf_ranger_in_trouble_07",
-				"pwe_gameplay_heard_dwarf_ranger_in_trouble_08",
-				"pwe_gameplay_heard_dwarf_ranger_in_trouble_09",
-				"pwe_gameplay_heard_dwarf_ranger_in_trouble_10",
-				"pwe_gameplay_heard_dwarf_ranger_in_trouble_11",
-				"pwe_gameplay_heard_dwarf_ranger_in_trouble_12",
-				"pwe_gameplay_heard_dwarf_ranger_in_trouble_13"
+				"pwe_gameplay_heard_dwarf_ranger_in_trouble_08"
 			},
 			randomize_indexes = {}
 		},
@@ -13656,12 +13636,12 @@ return function ()
 			randomize_indexes = {}
 		},
 		pwe_activate_ability_handmaiden = {
-			sound_events_n = 12,
+			sound_events_n = 10,
 			randomize_indexes_n = 0,
-			face_animations_n = 12,
+			face_animations_n = 10,
 			database = "wood_elf_honduras",
 			category = "activate_ability",
-			dialogue_animations_n = 12,
+			dialogue_animations_n = 10,
 			sound_events = {
 				"pwe_activate_ability_handmaiden_01",
 				"pwe_activate_ability_handmaiden_02",
@@ -13672,13 +13652,9 @@ return function ()
 				"pwe_activate_ability_handmaiden_07",
 				"pwe_activate_ability_handmaiden_08",
 				"pwe_activate_ability_handmaiden_09",
-				"pwe_activate_ability_handmaiden_10",
-				"pwe_activate_ability_handmaiden_11",
 				"pwe_activate_ability_handmaiden_12"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
@@ -13700,8 +13676,6 @@ return function ()
 				"face_happy",
 				"face_happy",
 				"face_happy",
-				"face_happy",
-				"face_happy",
 				"face_happy"
 			},
 			localization_strings = {
@@ -13714,8 +13688,6 @@ return function ()
 				"pwe_activate_ability_handmaiden_07",
 				"pwe_activate_ability_handmaiden_08",
 				"pwe_activate_ability_handmaiden_09",
-				"pwe_activate_ability_handmaiden_10",
-				"pwe_activate_ability_handmaiden_11",
 				"pwe_activate_ability_handmaiden_12"
 			},
 			randomize_indexes = {}
@@ -15387,19 +15359,29 @@ return function ()
 			randomize_indexes = {}
 		},
 		pwe_gameplay_heard_bright_wizard_in_trouble = {
-			sound_events_n = 4,
+			sound_events_n = 9,
 			randomize_indexes_n = 0,
-			face_animations_n = 4,
+			face_animations_n = 9,
 			database = "wood_elf_honduras",
 			category = "player_alerts",
-			dialogue_animations_n = 4,
+			dialogue_animations_n = 9,
 			sound_events = {
 				"pwe_gameplay_heard_bright_wizard_in_trouble_01",
 				"pwe_gameplay_heard_bright_wizard_in_trouble_02",
 				"pwe_gameplay_heard_bright_wizard_in_trouble_03",
-				"pwe_gameplay_heard_bright_wizard_in_trouble_04"
+				"pwe_gameplay_heard_bright_wizard_in_trouble_04",
+				"pwe_gameplay_heard_dwarf_ranger_in_trouble_09",
+				"pwe_gameplay_heard_dwarf_ranger_in_trouble_10",
+				"pwe_gameplay_heard_dwarf_ranger_in_trouble_11",
+				"pwe_gameplay_heard_dwarf_ranger_in_trouble_12",
+				"pwe_gameplay_heard_dwarf_ranger_in_trouble_13"
 			},
 			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
@@ -15409,13 +15391,23 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
 				"face_neutral"
 			},
 			localization_strings = {
 				"pwe_gameplay_heard_bright_wizard_in_trouble_01",
 				"pwe_gameplay_heard_bright_wizard_in_trouble_02",
 				"pwe_gameplay_heard_bright_wizard_in_trouble_03",
-				"pwe_gameplay_heard_bright_wizard_in_trouble_04"
+				"pwe_gameplay_heard_bright_wizard_in_trouble_04",
+				"pwe_gameplay_heard_dwarf_ranger_in_trouble_09",
+				"pwe_gameplay_heard_dwarf_ranger_in_trouble_10",
+				"pwe_gameplay_heard_dwarf_ranger_in_trouble_11",
+				"pwe_gameplay_heard_dwarf_ranger_in_trouble_12",
+				"pwe_gameplay_heard_dwarf_ranger_in_trouble_13"
 			},
 			randomize_indexes = {}
 		},

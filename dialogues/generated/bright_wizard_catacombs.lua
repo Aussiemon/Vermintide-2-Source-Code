@@ -78,12 +78,6 @@ return function ()
 				"bright_wizard"
 			},
 			{
-				"user_context",
-				"enemies_close",
-				OP.EQ,
-				0
-			},
-			{
 				"faction_memory",
 				"time_since_catacombs_apothercary_room",
 				OP.EQ,
@@ -520,56 +514,6 @@ return function ()
 			{
 				"faction_memory",
 				"time_since_catacombs_sewers_nurglefication_heavy",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pbw_level_catacombs_nurgle_water",
-		response = "pbw_level_catacombs_nurgle_water",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"catacombs_nurgle_water"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"bright_wizard"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"bright_wizard"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.EQ,
-				0
-			},
-			{
-				"faction_memory",
-				"time_since_catacombs_nurgle_water",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_catacombs_nurgle_water",
 				OP.ADD,
 				1
 			}
@@ -1425,39 +1369,6 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_level_catacombs_nurgle_water = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "bright_wizard_catacombs",
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_level_catacombs_nurgle_water_01",
-				"pbw_level_catacombs_nurgle_water_02",
-				"pbw_level_catacombs_nurgle_water_03",
-				"pbw_level_catacombs_nurgle_water_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			localization_strings = {
-				"pbw_level_catacombs_nurgle_water_01",
-				"pbw_level_catacombs_nurgle_water_02",
-				"pbw_level_catacombs_nurgle_water_03",
-				"pbw_level_catacombs_nurgle_water_04"
-			},
-			randomize_indexes = {}
-		},
 		pbw_level_catacombs_way_is_clear = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -1739,39 +1650,6 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_level_catacombs_shield_of_flies = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "bright_wizard_catacombs",
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_level_catacombs_shield_of_flies_01",
-				"pbw_level_catacombs_shield_of_flies_02",
-				"pbw_level_catacombs_shield_of_flies_03",
-				"pbw_level_catacombs_shield_of_flies_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			localization_strings = {
-				"pbw_level_catacombs_shield_of_flies_01",
-				"pbw_level_catacombs_shield_of_flies_02",
-				"pbw_level_catacombs_shield_of_flies_03",
-				"pbw_level_catacombs_shield_of_flies_04"
-			},
-			randomize_indexes = {}
-		},
 		pbw_level_catacombs_sewers_nurglefication_light = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -1802,6 +1680,39 @@ return function ()
 				"pbw_level_catacombs_sewers_nurglefication_light_02",
 				"pbw_level_catacombs_sewers_nurglefication_light_03",
 				"pbw_level_catacombs_sewers_nurglefication_light_04"
+			},
+			randomize_indexes = {}
+		},
+		pbw_level_catacombs_shield_of_flies = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "bright_wizard_catacombs",
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pbw_level_catacombs_shield_of_flies_01",
+				"pbw_level_catacombs_shield_of_flies_02",
+				"pbw_level_catacombs_shield_of_flies_03",
+				"pbw_level_catacombs_shield_of_flies_04"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"pbw_level_catacombs_shield_of_flies_01",
+				"pbw_level_catacombs_shield_of_flies_02",
+				"pbw_level_catacombs_shield_of_flies_03",
+				"pbw_level_catacombs_shield_of_flies_04"
 			},
 			randomize_indexes = {}
 		},

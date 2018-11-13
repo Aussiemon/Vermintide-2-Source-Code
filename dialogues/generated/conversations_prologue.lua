@@ -1752,8 +1752,8 @@ return function ()
 		}
 	})
 	define_rule({
-		response = "pdr_level_ prologue_reached_surface_bardin",
-		name = "pdr_level_ prologue_reached_surface_bardin",
+		response = "pdr_level_prologue_reached_surface_bardin",
+		name = "pdr_level_prologue_reached_surface_bardin",
 		criterias = {
 			{
 				"query_context",
@@ -1776,8 +1776,8 @@ return function ()
 		}
 	})
 	define_rule({
-		response = "pwe_level_ prologue_reached_surface_kerillian",
-		name = "pwe_level_ prologue_reached_surface_kerillian",
+		response = "pwe_level_prologue_reached_surface_kerillian",
+		name = "pwe_level_prologue_reached_surface_kerillian",
 		criterias = {
 			{
 				"query_context",
@@ -1800,8 +1800,8 @@ return function ()
 		}
 	})
 	define_rule({
-		response = "pbw_level_ prologue_reached_surface_sienna",
-		name = "pbw_level_ prologue_reached_surface_sienna",
+		response = "pbw_level_prologue_reached_surface_sienna",
+		name = "pbw_level_prologue_reached_surface_sienna",
 		criterias = {
 			{
 				"query_context",
@@ -1824,8 +1824,8 @@ return function ()
 		}
 	})
 	define_rule({
-		response = "pdr_level_ prologue_reached_surface_02",
-		name = "pdr_level_ prologue_reached_surface_02",
+		response = "pdr_level_prologue_reached_surface_02",
+		name = "pdr_level_prologue_reached_surface_02",
 		criterias = {
 			{
 				"query_context",
@@ -1878,8 +1878,8 @@ return function ()
 		}
 	})
 	define_rule({
-		response = "pbw_level_ prologue_seeing_crater_sienna",
-		name = "pbw_level_ prologue_seeing_crater_sienna",
+		response = "pbw_level_prologue_seeing_crater_sienna",
+		name = "pbw_level_prologue_seeing_crater_sienna",
 		criterias = {
 			{
 				"query_context",
@@ -1902,8 +1902,8 @@ return function ()
 		}
 	})
 	define_rule({
-		response = "pwe_level_ prologue_seeing_crater_kerillian",
-		name = "pwe_level_ prologue_seeing_crater_kerillian",
+		response = "pwe_level_prologue_seeing_crater_kerillian",
+		name = "pwe_level_prologue_seeing_crater_kerillian",
 		criterias = {
 			{
 				"query_context",
@@ -1926,8 +1926,8 @@ return function ()
 		}
 	})
 	define_rule({
-		response = "pdr_level_ prologue_seeing_crater_01",
-		name = "pdr_level_ prologue_seeing_crater_01",
+		response = "pdr_level_prologue_seeing_crater_01",
+		name = "pdr_level_prologue_seeing_crater_01",
 		criterias = {
 			{
 				"query_context",
@@ -2076,8 +2076,8 @@ return function ()
 		}
 	})
 	define_rule({
-		response = "pwh_prologue_portal_03",
-		name = "pwh_prologue_portal_03",
+		response = "pwh_prologue_portal_salty_02",
+		name = "pwh_prologue_portal_salty_02",
 		criterias = {
 			{
 				"query_context",
@@ -2632,25 +2632,6 @@ return function ()
 				[1.0] = "pes_prologue_gate_opens_01"
 			}
 		},
-		["pbw_level_ prologue_seeing_crater_sienna"] = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "conversations_prologue",
-			category = "level_talk_tutorial",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_ prologue_seeing_crater_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_contempt"
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_ prologue_seeing_crater_01"
-			}
-		},
 		pbw_level_prologue_skittergate_afar_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -2942,14 +2923,14 @@ return function ()
 				[1.0] = "egs_prologue_ranting_at_skavens"
 			}
 		},
-		["pdr_level_ prologue_seeing_crater_01"] = {
+		pdr_level_prologue_reached_surface_bardin = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "conversations_prologue",
 			category = "level_talk_tutorial",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_level_ prologue_seeing_crater_01"
+				[1.0] = "pdr_level_prologue_reached_surface_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout"
@@ -2958,7 +2939,7 @@ return function ()
 				[1.0] = "face_contempt"
 			},
 			localization_strings = {
-				[1.0] = "pdr_level_ prologue_seeing_crater_01"
+				[1.0] = "pdr_level_prologue_reached_surface_01"
 			}
 		},
 		pwe_prologue_portal_kerillian = {
@@ -3111,6 +3092,25 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "nfl_prologue_portal_e_01"
+			}
+		},
+		pbw_level_prologue_seeing_crater_sienna = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "conversations_prologue",
+			category = "level_talk_tutorial",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_level_prologue_seeing_crater_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_contempt"
+			},
+			localization_strings = {
+				[1.0] = "pbw_level_prologue_seeing_crater_01"
 			}
 		},
 		pwh_prologue_portal_salty = {
@@ -3734,24 +3734,30 @@ return function ()
 				[1.0] = "pes_level_prologue_hello_kruber_03"
 			}
 		},
-		["pwe_level_ prologue_seeing_crater_kerillian"] = {
-			sound_events_n = 1,
-			face_animations_n = 1,
+		pes_level_prologue_travel = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
 			database = "conversations_prologue",
 			category = "level_talk_tutorial",
-			dialogue_animations_n = 1,
+			dialogue_animations_n = 2,
 			sound_events = {
-				[1.0] = "pwe_level_ prologue_seeing_crater_01"
+				[1.0] = "pes_level_prologue_travel_01",
+				[2.0] = "pes_level_prologue_travel_02"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_shout"
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
 			},
 			face_animations = {
-				[1.0] = "face_contempt"
+				[1.0] = "face_fear",
+				[2.0] = "face_fear"
 			},
 			localization_strings = {
-				[1.0] = "pwe_level_ prologue_seeing_crater_01"
-			}
+				[1.0] = "pes_level_prologue_travel_01",
+				[2.0] = "pes_level_prologue_travel_02"
+			},
+			randomize_indexes = {}
 		},
 		pes_level_prologue_elevator_ride_03 = {
 			sound_events_n = 1,
@@ -3811,31 +3817,6 @@ return function ()
 				[1.0] = "pdr_level_prologue_bardin_fallling_01"
 			}
 		},
-		pes_level_prologue_travel = {
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "conversations_prologue",
-			category = "level_talk_tutorial",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pes_level_prologue_travel_01",
-				[2.0] = "pes_level_prologue_travel_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
-			},
-			localization_strings = {
-				[1.0] = "pes_level_prologue_travel_01",
-				[2.0] = "pes_level_prologue_travel_02"
-			},
-			randomize_indexes = {}
-		},
 		pes_level_prologue_waking_up = {
 			sound_events_n = 2,
 			randomize_indexes_n = 0,
@@ -3861,14 +3842,14 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pwh_prologue_portal_03 = {
+		pwh_prologue_portal_salty_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "conversations_prologue",
 			category = "level_talk_tutorial",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_prologue_portal_03"
+				[1.0] = "pwh_prologue_portal_02b"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout"
@@ -3877,7 +3858,7 @@ return function ()
 				[1.0] = "face_contempt"
 			},
 			localization_strings = {
-				[1.0] = "pwh_prologue_portal_03"
+				[1.0] = "pwh_prologue_portal_02b"
 			}
 		},
 		pbw_level_prologue_sienna_up_01 = {
@@ -3899,6 +3880,44 @@ return function ()
 				[1.0] = "pbw_level_prologue_sienna_up_01"
 			}
 		},
+		pdr_level_prologue_seeing_crater_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "conversations_prologue",
+			category = "level_talk_tutorial",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_level_prologue_seeing_crater_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_contempt"
+			},
+			localization_strings = {
+				[1.0] = "pdr_level_prologue_seeing_crater_01"
+			}
+		},
+		pwe_level_prologue_seeing_crater_kerillian = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "conversations_prologue",
+			category = "level_talk_tutorial",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_level_prologue_seeing_crater_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_contempt"
+			},
+			localization_strings = {
+				[1.0] = "pwe_level_prologue_seeing_crater_01"
+			}
+		},
 		pwe_level_prologue_skittergate_afar_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -3918,42 +3937,23 @@ return function ()
 				[1.0] = "pwe_level_prologue_skittergate_afar_01"
 			}
 		},
-		["pdr_level_ prologue_reached_surface_02"] = {
+		pdr_level_prologue_bardin_passing_two_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "conversations_prologue",
-			category = "level_talk_tutorial",
+			category = "level_talk_tutorial_interrupt",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_level_ prologue_reached_surface_02"
+				[1.0] = "pdr_level_prologue_bardin_passing_two_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout"
 			},
 			face_animations = {
-				[1.0] = "face_contempt"
+				[1.0] = "face_fear"
 			},
 			localization_strings = {
-				[1.0] = "pdr_level_ prologue_reached_surface_02"
-			}
-		},
-		["pbw_level_ prologue_reached_surface_sienna"] = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "conversations_prologue",
-			category = "level_talk_tutorial",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_ prologue_reached_surface_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_contempt"
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_ prologue_reached_surface_01"
+				[1.0] = "pdr_level_prologue_bardin_passing_two_02"
 			}
 		},
 		pes_level_prologue_sienna_up = {
@@ -4014,14 +4014,14 @@ return function ()
 				[1.0] = "pdr_prologue_bardin_dazed_01"
 			}
 		},
-		pes_level_prologue_skittergate_afar = {
+		pbw_level_prologue_reached_surface_sienna = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "conversations_prologue",
 			category = "level_talk_tutorial",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_level_prologue_skittergate_afar_01"
+				[1.0] = "pbw_level_prologue_reached_surface_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout"
@@ -4030,7 +4030,7 @@ return function ()
 				[1.0] = "face_contempt"
 			},
 			localization_strings = {
-				[1.0] = "pes_level_prologue_skittergate_afar_01"
+				[1.0] = "pbw_level_prologue_reached_surface_01"
 			}
 		},
 		egs_level_prologue_skittergate_distance_01 = {
@@ -4071,14 +4071,14 @@ return function ()
 				[1.0] = "pdr_level_prologue_bardin_passing_one_01"
 			}
 		},
-		["pdr_level_ prologue_reached_surface_bardin"] = {
+		pwe_level_prologue_reached_surface_kerillian = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "conversations_prologue",
 			category = "level_talk_tutorial",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_level_ prologue_reached_surface_01"
+				[1.0] = "pwe_level_prologue_reached_surface_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout"
@@ -4087,7 +4087,7 @@ return function ()
 				[1.0] = "face_contempt"
 			},
 			localization_strings = {
-				[1.0] = "pdr_level_ prologue_reached_surface_01"
+				[1.0] = "pwe_level_prologue_reached_surface_01"
 			}
 		},
 		ecc_prologue_dialogue_answer_lack_of_patience = {
@@ -4243,14 +4243,14 @@ return function ()
 				[1.0] = "pes_level_prologue_seeing_crater_01"
 			}
 		},
-		["pwe_level_ prologue_reached_surface_kerillian"] = {
+		pes_level_prologue_skittergate_afar = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "conversations_prologue",
 			category = "level_talk_tutorial",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_level_ prologue_reached_surface_01"
+				[1.0] = "pes_level_prologue_skittergate_afar_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout"
@@ -4259,7 +4259,7 @@ return function ()
 				[1.0] = "face_contempt"
 			},
 			localization_strings = {
-				[1.0] = "pwe_level_ prologue_reached_surface_01"
+				[1.0] = "pes_level_prologue_skittergate_afar_01"
 			}
 		},
 		pes_prologue_intro_d = {
@@ -4445,23 +4445,23 @@ return function ()
 				[1.0] = "pes_prologue_kerillian_fight_01"
 			}
 		},
-		pdr_level_prologue_bardin_passing_two_02 = {
+		pdr_level_prologue_reached_surface_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "conversations_prologue",
-			category = "level_talk_tutorial_interrupt",
+			category = "level_talk_tutorial",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_level_prologue_bardin_passing_two_02"
+				[1.0] = "pdr_level_prologue_reached_surface_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout"
 			},
 			face_animations = {
-				[1.0] = "face_fear"
+				[1.0] = "face_contempt"
 			},
 			localization_strings = {
-				[1.0] = "pdr_level_prologue_bardin_passing_two_02"
+				[1.0] = "pdr_level_prologue_reached_surface_02"
 			}
 		}
 	})

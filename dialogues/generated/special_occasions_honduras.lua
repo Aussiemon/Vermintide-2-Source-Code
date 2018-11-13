@@ -2877,7 +2877,7 @@ return function ()
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
+				"empire_soldier"
 			},
 			{
 				"query_context",
@@ -2889,7 +2889,7 @@ return function ()
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
+				"empire_soldier"
 			},
 			{
 				"user_memory",
@@ -2958,7 +2958,7 @@ return function ()
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
+				"empire_soldier"
 			}
 		},
 		on_done = {

@@ -78,12 +78,6 @@ return function ()
 				"wood_elf"
 			},
 			{
-				"user_context",
-				"enemies_close",
-				OP.EQ,
-				0
-			},
-			{
 				"faction_memory",
 				"time_since_catacombs_apothercary_room",
 				OP.EQ,

@@ -1,7 +1,7 @@
 local smart_objects = {
 	["c2d8cb29-aa03-4e12-a4af-6a511de6c74d"] = {
 		{
-			smart_object_index = 3,
+			smart_object_index = 1,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -27,7 +27,7 @@ local smart_objects = {
 	},
 	["3846161d-4f5c-4359-81eb-c23e83ac8c0b"] = {
 		{
-			smart_object_index = 1,
+			smart_object_index = 2,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -60,7 +60,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 2,
+			smart_object_index = 3,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
