@@ -579,9 +579,7 @@ HitEffectsChaosRaider = {
 			}
 		},
 		animations = {
-			"ragdoll",
-			"death_decapitate",
-			"death_decapitate_2"
+			"ragdoll"
 		}
 	},
 	light_blunt_smiter_death = {

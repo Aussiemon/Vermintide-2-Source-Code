@@ -273,8 +273,13 @@ end
 BTStormVerminAttackAction.attack = function (self, unit, t, dt, blackboard)
 	local locomotion = ScriptUnit.extension(unit, "locomotion_system")
 	local target_status_ext = blackboard.target_unit_status_extension
+	local zoink = target_status_ext and (target_status_ext:get_is_dodging() or target_status_ext:is_invisible())
 
-	if t < blackboard.attack_rotation_update_timer and target_status_ext and not target_status_ext:get_is_dodging() and not target_status_ext:is_invisible() then
+	if zoink then
+		blackboard.attack_rotation_update_timer = t
+	end
+
+	if t < blackboard.attack_rotation_update_timer then
 		local rotation = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.attacking_target)
 		blackboard.attack_rotation = QuaternionBox(rotation)
 	end
@@ -324,8 +329,6 @@ BTStormVerminAttackAction.anim_cb_damage = function (self, unit, blackboard)
 		blackboard.navigation_extension:set_enabled(false)
 		blackboard.locomotion_extension:set_wanted_velocity(Vector3(0, 0, 0))
 	end
-
-	blackboard.attack_rotation_update_timer = math.huge
 
 	for _, actor in ipairs(hit_actors) do
 		local target_unit = Actor.unit(actor)

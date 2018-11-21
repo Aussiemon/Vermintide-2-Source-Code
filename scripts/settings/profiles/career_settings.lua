@@ -656,9 +656,9 @@ CareerSettings = {
 		activated_ability = ActivatedAbilitySettings.wh_3,
 		passive_ability = PassiveAbilitySettings.wh_3,
 		attributes = {
-			max_hp = 100,
+			max_hp = 125,
 			max_hp_kd = 300,
-			base_critical_strike_chance = 0.05
+			base_critical_strike_chance = 0.1
 		},
 		video = {
 			material_name = "wh_captain",

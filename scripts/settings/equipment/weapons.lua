@@ -4,10 +4,10 @@ require("scripts/settings/profiles/career_settings")
 require("scripts/helpers/weapon_utils")
 dofile("scripts/settings/explosion_templates")
 dofile("scripts/settings/equipment/hit_mass_counts")
-dofile("scripts/settings/equipment/power_level_settings")
-dofile("scripts/settings/equipment/attack_templates")
-dofile("scripts/settings/equipment/power_level_settings")
-dofile("scripts/settings/equipment/damage_profile_templates")
+require("scripts/settings/equipment/attack_templates")
+require("scripts/settings/equipment/power_level_settings")
+require("scripts/settings/equipment/power_level_templates")
+require("scripts/settings/equipment/damage_profile_templates")
 require("scripts/utils/action_assert_funcs")
 dofile("scripts/settings/equipment/projectiles")
 dofile("scripts/settings/equipment/light_weight_projectiles")
@@ -169,6 +169,17 @@ Dots = {
 
 		if not dot_template_name then
 			return false
+		end
+
+		local talent_extension = ScriptUnit.has_extension(attacker_unit, "talent_system")
+
+		if talent_extension then
+			local breed = AiUtils.unit_breed(target_unit)
+			local infinite_burn_talent = talent_extension:has_talent("sienna_adept_infinite_burn", "bright_wizard")
+
+			if infinite_burn_talent and breed then
+				dot_template_name = InfiniteBurnDotLookup[dot_template_name]
+			end
 		end
 
 		add_dot(dot_template_name, target_unit, attacker_unit, damage_source, power_level)

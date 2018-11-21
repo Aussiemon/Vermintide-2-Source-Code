@@ -255,6 +255,7 @@ local breed_data = {
 		10,
 		15
 	},
+	bloodlust_health = BreedTweaks.bloodlust_health.skaven_roamer,
 	diff_stagger_resist = {
 		2.1,
 		2.1,

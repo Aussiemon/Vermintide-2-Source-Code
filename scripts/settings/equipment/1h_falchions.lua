@@ -1,5 +1,5 @@
 local push_radius = 2
-local time_mod = 0.85
+local time_mod = 0.95
 local heavy_smiter_stagger = 3
 local light_linesman_stagger = 3
 local light_smiter_stagger = 3
@@ -248,7 +248,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1,
+			anim_time_scale = time_mod * 1.1,
 			buff_data = {
 				{
 					start_time = 0,
@@ -313,7 +313,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1,
+			anim_time_scale = time_mod * 1.1,
 			buff_data = {
 				{
 					start_time = 0,

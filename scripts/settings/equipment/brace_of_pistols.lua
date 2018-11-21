@@ -4,25 +4,23 @@ weapon_template.actions = {
 	action_one = {
 		default = {
 			total_time_secondary = 2,
-			damage_profile = "shot_carbine",
-			charge_value = "bullet_hit",
-			kind = "handgun",
-			damage_window_start = 0.1,
 			alert_sound_range_hit = 2,
-			apply_recoil = true,
+			damage_profile = "shot_carbine",
+			kind = "handgun",
 			ammo_usage = 1,
+			apply_recoil = true,
+			charge_value = "bullet_hit",
 			headshot_multiplier = 2,
 			aim_assist_max_ramp_multiplier = 0.3,
-			hit_effect = "bullet_impact",
 			aim_assist_auto_hit_chance = 0.5,
+			hit_effect = "bullet_impact",
 			aim_assist_ramp_decay_delay = 0.2,
-			damage_window_end = 0,
 			alert_sound_range_fire = 12,
 			fire_time = 0,
 			anim_event_secondary = "reload",
 			aim_assist_ramp_multiplier = 0.1,
 			anim_event = "attack_shoot",
-			reload_time = 1.25,
+			reload_time = 0.1,
 			total_time = 1,
 			allowed_chain_actions = {
 				{
@@ -68,34 +66,30 @@ weapon_template.actions = {
 			}
 		},
 		fast_shot = {
-			damage_window_start = 0.1,
 			anim_event = "attack_shoot_fast",
 			charge_value = "bullet_hit",
-			kind = "handgun",
-			alert_sound_range_fire = 12,
-			alert_sound_range_hit = 2,
-			spread_template_override = "pistol_special",
-			apply_recoil = true,
-			total_time_secondary = 2,
-			headshot_multiplier = 2,
-			hit_effect = "bullet_impact",
-			aim_assist_ramp_multiplier = 0.05,
-			aim_assist_max_ramp_multiplier = 0.3,
-			minimum_hold_time = 0.25,
-			damage_window_end = 0,
-			aim_assist_auto_hit_chance = 0.75,
 			ammo_usage = 1,
-			fire_time = 0,
-			aim_assist_ramp_decay_delay = 0.1,
-			anim_event_secondary = "reload",
-			hold_input = "action_two_hold",
+			kind = "handgun",
+			apply_recoil = true,
 			damage_profile = "shot_carbine",
-			reload_time = 1.25,
+			spread_template_override = "pistol_special",
+			headshot_multiplier = 2,
+			aim_assist_ramp_multiplier = 0.05,
+			aim_assist_auto_hit_chance = 0.75,
+			hit_effect = "bullet_impact",
+			aim_assist_ramp_decay_delay = 0.1,
+			minimum_hold_time = 0.25,
+			alert_sound_range_fire = 12,
+			fire_time = 0,
+			aim_assist_max_ramp_multiplier = 0.3,
+			hold_input = "action_two_hold",
+			alert_sound_range_hit = 2,
+			reload_time = 0.1,
 			total_time = 1,
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.35,
+					external_multiplier = 0.85,
 					buff_name = "planted_fast_decrease_movement"
 				}
 			},
@@ -120,12 +114,6 @@ weapon_template.actions = {
 					start_time = 0.25,
 					action = "action_one",
 					input = "action_one_hold"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.4,
-					action = "action_two",
-					input = "action_two_hold"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -150,8 +138,7 @@ weapon_template.actions = {
 			allow_hold_toggle = true,
 			anim_end_event = "attack_finished",
 			kind = "dummy",
-			minimum_hold_time = 0.5,
-			max_targets = 6,
+			minimum_hold_time = 0.25,
 			spread_template_override = "pistol_special",
 			hold_input = "action_two_hold",
 			ammo_requirement = 1,
@@ -162,7 +149,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.35,
+					external_multiplier = 0.85,
 					buff_name = "planted_fast_decrease_movement"
 				}
 			},
@@ -175,13 +162,13 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "fast_shot",
-					start_time = 0.3,
+					start_time = 0,
 					action = "action_one",
 					input = "action_one"
 				},
 				{
 					sub_action = "fast_shot",
-					start_time = 0.3,
+					start_time = 0.25,
 					action = "action_one",
 					input = "action_one_hold"
 				}
@@ -209,8 +196,8 @@ weapon_template.actions = {
 weapon_template.ammo_data = {
 	ammo_hand = "right",
 	ammo_immediately_available = true,
-	max_ammo = 25,
-	reload_time = 1.25,
+	max_ammo = 30,
+	reload_time = 0.1,
 	single_clip = true
 }
 weapon_template.attack_meta_data = {
@@ -225,6 +212,7 @@ weapon_template.left_hand_unit = ""
 weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.pistol.left
 weapon_template.display_unit = "units/weapons/weapon_display/display_pistols"
 weapon_template.wield_anim = "to_dual_pistol"
+weapon_template.reload_event = "reload"
 weapon_template.crosshair_style = "default"
 weapon_template.gui_texture = "hud_weapon_icon_repeating_handgun"
 weapon_template.buff_type = "RANGED"

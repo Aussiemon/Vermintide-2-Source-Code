@@ -125,7 +125,12 @@ WeaponSystem.send_rpc_attack_hit = function (self, damage_source_id, attacker_un
 
 	for i = 1, #ARGS, 1 do
 		local setting = ARGS[i]
-		local val = RPC_ATTACK_HIT_TEMP[i] or setting.default
+		local val = RPC_ATTACK_HIT_TEMP[i]
+
+		if val == nil then
+			val = setting.default
+		end
+
 		RPC_ATTACK_HIT_TEMP[i] = val
 	end
 

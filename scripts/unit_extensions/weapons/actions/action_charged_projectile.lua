@@ -90,6 +90,11 @@ ActionChargedProjectile._shoot = function (self, t)
 
 	if overcharge_type and not self.extra_buff_shot then
 		local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[overcharge_type]
+		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
+		if self._is_critical_strike and buff_extension:has_buff_perk("no_overcharge_crit") then
+			overcharge_amount = 0
+		end
 
 		if current_action.scale_overcharge then
 			self.overcharge_extension:add_charge(overcharge_amount, self.charge_level)

@@ -1,5 +1,5 @@
 local push_radius = 2
-local time_mod = 0.9
+local time_mod = 1
 local heavy_linesman_stagger = 3
 local heavy_smiter_stagger = 3
 local light_linesman_stagger = 3
@@ -21,7 +21,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.5,
+					external_multiplier = 0.65,
 					buff_name = "planted_charging_decrease_movement"
 				}
 			},
@@ -79,7 +79,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.5,
+					external_multiplier = 0.65,
 					buff_name = "planted_charging_decrease_movement"
 				}
 			},
@@ -137,7 +137,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.5,
+					external_multiplier = 0.65,
 					buff_name = "planted_charging_decrease_movement"
 				}
 			},
@@ -195,7 +195,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.5,
+					external_multiplier = 0.65,
 					buff_name = "planted_charging_decrease_movement"
 				}
 			},
@@ -253,7 +253,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.5,
+					external_multiplier = 0.65,
 					buff_name = "planted_charging_decrease_movement"
 				}
 			},
@@ -304,7 +304,7 @@ weapon_template.actions = {
 			range_mod = 1.15,
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			weapon_action_hand = "both",
-			additional_critical_strike_chance = 0,
+			additional_critical_strike_chance = 0.1,
 			use_precision_sweep = false,
 			hit_effect = "melee_hit_dagger",
 			damage_profile_left = "light_slashing_linesman_dual_medium",
@@ -379,7 +379,7 @@ weapon_template.actions = {
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			weapon_action_hand = "both",
-			additional_critical_strike_chance = 0,
+			additional_critical_strike_chance = 0.1,
 			use_precision_sweep = false,
 			damage_profile_left = "light_slashing_smiter_stab_dual",
 			hit_effect = "melee_hit_dagger",
@@ -456,7 +456,7 @@ weapon_template.actions = {
 		},
 		light_attack_right_second = {
 			damage_window_start = 0.32,
-			range_mod = 1.2,
+			range_mod = 1.15,
 			anim_end_event = "attack_finished",
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
@@ -464,13 +464,13 @@ weapon_template.actions = {
 			additional_critical_strike_chance = 0.1,
 			use_precision_sweep = false,
 			damage_profile = "light_slashing_linesman_fencer",
-			aim_assist_max_ramp_multiplier = 0.6,
 			hit_effect = "melee_hit_dagger",
-			aim_assist_ramp_decay_delay = 0.1,
+			aim_assist_max_ramp_multiplier = 0.6,
 			damage_window_end = 0.42,
 			impact_sound_event = "slashing_hit",
 			charge_value = "light_attack",
 			no_damage_impact_sound_event = "stab_hit_armour",
+			aim_assist_ramp_decay_delay = 0.1,
 			dedicated_target_range = 2.5,
 			aim_assist_ramp_multiplier = 0.2,
 			anim_event = "attack_swing_right_diagonal",
@@ -488,7 +488,7 @@ weapon_template.actions = {
 				},
 				{
 					start_time = 0.2,
-					external_multiplier = 0.6,
+					external_multiplier = 0.7,
 					end_time = 0.5,
 					buff_name = "planted_fast_decrease_movement"
 				}
@@ -520,7 +520,8 @@ weapon_template.actions = {
 					input = "action_wield"
 				}
 			},
-			impact_axis = Vector3Box(0, 0, 1)
+			impact_axis = Vector3Box(0, 0, 1),
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		light_attack_right_first = {
 			damage_window_start = 0.2,
@@ -532,13 +533,13 @@ weapon_template.actions = {
 			weapon_action_hand = "right",
 			additional_critical_strike_chance = 0.1,
 			use_precision_sweep = false,
-			damage_profile = "light_slashing_linesman_fencer",
 			hit_effect = "melee_hit_sword_1h",
-			aim_assist_max_ramp_multiplier = 0.6,
+			damage_profile = "light_slashing_linesman_fencer",
 			damage_window_end = 0.35,
 			impact_sound_event = "slashing_hit",
 			charge_value = "light_attack",
 			no_damage_impact_sound_event = "stab_hit_armour",
+			aim_assist_max_ramp_multiplier = 0.6,
 			aim_assist_ramp_decay_delay = 0.1,
 			dedicated_target_range = 2.5,
 			aim_assist_ramp_multiplier = 0.2,
@@ -557,7 +558,7 @@ weapon_template.actions = {
 				},
 				{
 					start_time = 0.2,
-					external_multiplier = 0.6,
+					external_multiplier = 0.7,
 					end_time = 0.5,
 					buff_name = "planted_fast_decrease_movement"
 				}
@@ -589,7 +590,8 @@ weapon_template.actions = {
 					input = "action_wield"
 				}
 			},
-			impact_axis = Vector3Box(0, 0, 1)
+			impact_axis = Vector3Box(0, 0, 1),
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		light_attack_stab_left = {
 			damage_window_start = 0.3,
@@ -629,7 +631,7 @@ weapon_template.actions = {
 				},
 				{
 					start_time = 0.2,
-					external_multiplier = 0.6,
+					external_multiplier = 0.7,
 					end_time = 0.5,
 					buff_name = "planted_fast_decrease_movement"
 				}
@@ -700,7 +702,7 @@ weapon_template.actions = {
 				},
 				{
 					start_time = 0.2,
-					external_multiplier = 0.5,
+					external_multiplier = 0.6,
 					end_time = 0.5,
 					buff_name = "planted_fast_decrease_movement"
 				}
@@ -764,17 +766,24 @@ weapon_template.actions = {
 				{
 					start_time = 0,
 					external_multiplier = 1.25,
-					end_time = 0.1,
+					end_time = 0.2,
 					buff_name = "planted_fast_decrease_movement"
 				}
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default",
+					sub_action = "default_right_2",
 					start_time = 0.65,
 					action = "action_one",
 					release_required = "action_two_hold",
 					input = "action_one"
+				},
+				{
+					sub_action = "default_right_2",
+					start_time = 0.65,
+					action = "action_one",
+					release_required = "action_two_hold",
+					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
@@ -799,6 +808,7 @@ weapon_template.actions = {
 			outer_push_angle = 180,
 			kind = "push_stagger",
 			hit_time = 0.1,
+			fatigue_cost = "action_stun_push",
 			damage_profile_outer = "light_push",
 			weapon_action_hand = "right",
 			push_angle = 100,

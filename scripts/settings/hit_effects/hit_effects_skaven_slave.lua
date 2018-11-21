@@ -607,6 +607,7 @@ HitEffectsSkavenSlave = {
 	},
 	heavy_slashing_smiter_death_torso = {
 		inherits = "heavy_slashing_smiter_death",
+		do_dismember = false,
 		extra_conditions = {
 			hit_zone = "torso"
 		},
@@ -623,13 +624,7 @@ HitEffectsSkavenSlave = {
 			}
 		},
 		animations = {
-			"ragdoll",
-			"death_decapitate",
-			"death_decapitate_2",
-			"death_decapitate_3",
-			"death_decapitate_4",
-			"death_decapitate_5",
-			"death_decapitate_6"
+			"ragdoll"
 		}
 	},
 	light_blunt_smiter_death = {

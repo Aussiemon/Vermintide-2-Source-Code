@@ -363,24 +363,25 @@ weapon_template.actions = {
 		},
 		heavy_attack = {
 			damage_window_start = 0.2,
-			push_radius = 3,
+			forward_offset = 0.75,
+			push_radius = 2.5,
 			kind = "shield_slam",
+			damage_profile_target = "shield_slam_target",
 			no_damage_impact_sound_event = "shield_hit_armour",
 			additional_critical_strike_chance = 0,
-			damage_profile = "shield_slam",
 			armor_impact_sound_event = "shield_hit_armour",
+			damage_profile = "shield_slam",
+			hit_effect = "melee_hit_hammers_2h",
 			hit_time = 0.2,
 			weapon_action_hand = "left",
-			hit_effect = "melee_hit_hammers_2h",
-			aim_assist_ramp_multiplier = 0.2,
-			aim_assist_max_ramp_multiplier = 0.4,
 			damage_window_end = 0.25,
 			impact_sound_event = "shield_hit",
-			aim_assist_ramp_decay_delay = 0.2,
+			aim_assist_ramp_multiplier = 0.2,
 			anim_end_event = "attack_finished",
 			damage_profile_aoe = "shield_slam_aoe",
-			damage_profile_default_target = "shield_slam_default_target",
-			dedicated_target_range = 3,
+			aim_assist_max_ramp_multiplier = 0.4,
+			aim_assist_ramp_decay_delay = 0.2,
+			dedicated_target_range = 3.5,
 			uninterruptible = true,
 			anim_event = "attack_swing_heavy",
 			total_time = 1,
@@ -437,8 +438,8 @@ weapon_template.actions = {
 			width_mod = 25,
 			headshot_multiplier = 2,
 			additional_critical_strike_chance = 0,
-			use_precision_sweep = false,
 			hit_effect = "melee_hit_hammers_1h",
+			use_precision_sweep = false,
 			damage_profile = "medium_blunt_tank_1h",
 			damage_window_end = 0.39,
 			impact_sound_event = "blunt_hit",
@@ -496,7 +497,8 @@ weapon_template.actions = {
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
-			end
+			end,
+			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		heavy_attack_right = {
 			damage_window_start = 0.17,
@@ -507,8 +509,8 @@ weapon_template.actions = {
 			width_mod = 25,
 			headshot_multiplier = 2,
 			additional_critical_strike_chance = 0,
-			use_precision_sweep = false,
 			hit_effect = "melee_hit_hammers_1h",
+			use_precision_sweep = false,
 			damage_profile = "medium_blunt_tank_1h",
 			damage_window_end = 0.26,
 			impact_sound_event = "blunt_hit",
@@ -560,11 +562,12 @@ weapon_template.actions = {
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
-			end
+			end,
+			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		light_attack_left = {
 			damage_window_start = 0.38,
-			range_mod = 1.2,
+			range_mod = 1.3,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "blunt_hit_armour",
@@ -623,7 +626,7 @@ weapon_template.actions = {
 		},
 		light_attack_right = {
 			damage_window_start = 0.38,
-			range_mod = 1.2,
+			range_mod = 1.3,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "blunt_hit_armour",
@@ -745,13 +748,13 @@ weapon_template.actions = {
 		},
 		light_attack_bopp = {
 			damage_window_start = 0.4,
-			range_mod = 1.1,
+			range_mod = 1.2,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "blunt_hit_armour",
 			additional_critical_strike_chance = 0,
-			use_precision_sweep = false,
-			damage_profile = "medium_blunt_smiter",
+			use_precision_sweep = true,
+			damage_profile = "light_blunt_smiter",
 			hit_effect = "melee_hit_hammers_2h",
 			damage_window_end = 0.48,
 			impact_sound_event = "blunt_hit",
@@ -763,7 +766,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.35,
+			anim_time_scale = time_mod * 1.45,
 			buff_data = {
 				{
 					start_time = 0,
@@ -781,10 +784,9 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default_left",
-					start_time = 0.9,
+					start_time = 0.55,
 					action = "action_one",
 					release_required = "action_two_hold",
-					end_time = 1.2,
 					input = "action_one"
 				},
 				{
@@ -821,12 +823,13 @@ weapon_template.actions = {
 			weapon_action_hand = "right",
 			push_angle = 100,
 			hit_effect = "melee_hit_sword_1h",
+			fatigue_regen_delay = 0.75,
 			damage_window_end = 0.2,
 			impact_sound_event = "slashing_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			dedicated_target_range = 2,
 			anim_event = "attack_push",
-			damage_profile_inner = "heavy_push",
+			damage_profile_inner = "shield_push",
 			total_time = 0.8,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
@@ -1017,7 +1020,7 @@ weapon_template.dodge_count = 1
 weapon_template.can_block_ranged_attacks = true
 weapon_template.block_angle = 180
 weapon_template.outer_block_angle = 360
-weapon_template.block_fatigue_point_multiplier = 0.25
+weapon_template.block_fatigue_point_multiplier = 0.2
 weapon_template.outer_block_fatigue_point_multiplier = 2
 weapon_template.buffs = {
 	change_dodge_distance = {

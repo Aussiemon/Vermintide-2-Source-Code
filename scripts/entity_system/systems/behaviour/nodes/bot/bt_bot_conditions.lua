@@ -822,14 +822,15 @@ end
 
 BTConditions.bot_should_heal = function (blackboard)
 	local self_unit = blackboard.unit
-	local inventory_ext = blackboard.inventory_extension
+	local force_use_health_pickup = blackboard.force_use_health_pickup
+	local inventory_extension = blackboard.inventory_extension
 	local buff_extension = ScriptUnit.extension(self_unit, "buff_system")
-	local health_slot_data = inventory_ext:get_slot_data("slot_healthkit")
-	local template = health_slot_data and inventory_ext:get_item_template(health_slot_data)
-	local has_heal_disable_buff = buff_extension:has_buff_type("trait_necklace_no_healing_health_regen")
-	local can_heal_self = template and template.can_heal_self and not has_heal_disable_buff
+	local health_slot_data = inventory_extension:get_slot_data("slot_healthkit")
+	local template = health_slot_data and inventory_extension:get_item_template(health_slot_data)
+	local has_no_permanent_health_from_item_buff = buff_extension:has_buff_type("trait_necklace_no_healing_health_regen")
+	local can_heal_self = template and template.can_heal_self
 
-	if not can_heal_self then
+	if not can_heal_self or (has_no_permanent_health_from_item_buff and not force_use_health_pickup) then
 		return false
 	end
 
@@ -839,7 +840,7 @@ BTConditions.bot_should_heal = function (blackboard)
 	local is_safe = not target_unit or ((template.fast_heal or blackboard.is_healing_self) and #blackboard.proximite_enemies == 0) or (target_unit ~= blackboard.priority_target_enemy and target_unit ~= blackboard.urgent_target_enemy and target_unit ~= blackboard.proximity_target_enemy and target_unit ~= blackboard.slot_target_enemy)
 	local wounded = blackboard.status_extension:is_wounded()
 
-	return is_safe and (hurt or blackboard.force_use_health_pickup or wounded)
+	return is_safe and (hurt or force_use_health_pickup or wounded)
 end
 
 BTConditions.is_slot_not_wielded = function (blackboard, args)

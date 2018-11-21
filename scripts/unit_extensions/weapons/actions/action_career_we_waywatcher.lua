@@ -20,7 +20,7 @@ ActionCareerWEWaywatcher.client_owner_start_action = function (self, new_action,
 		local unit_id = network_manager:unit_game_object_id(owner_unit)
 		local heal_type_id = NetworkLookup.heal_types.career_skill
 
-		network_transmit:send_rpc_server("rpc_request_heal", unit_id, 20, heal_type_id)
+		network_transmit:send_rpc_server("rpc_request_heal", unit_id, 50, heal_type_id)
 	end
 
 	if talent_extension:has_talent("kerillian_waywatcher_activated_ability_restore_ammo", "wood_elf", true) then

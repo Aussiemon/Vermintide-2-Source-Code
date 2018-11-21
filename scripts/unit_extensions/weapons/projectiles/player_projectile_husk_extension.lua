@@ -187,7 +187,7 @@ PlayerProjectileHuskExtension.hit_enemy = function (self, impact_data, hit_unit,
 		local owner_unit = self.owner_unit
 		local num_targets_hit = self.num_targets_hit + 1
 
-		DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, num_targets_hit, send_to_server)
+		DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, num_targets_hit, send_to_server, "n/a")
 
 		allow_link = self:hit_enemy_damage(damage_profile, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, breed, ranged_boost_curve_multiplier, hit_units)
 	end

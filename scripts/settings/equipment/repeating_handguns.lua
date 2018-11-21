@@ -196,10 +196,10 @@ weapon_template.actions = {
 weapon_template.ammo_data = {
 	ammo_hand = "right",
 	ammo_per_reload = 8,
-	max_ammo = 32,
+	max_ammo = 40,
 	ammo_per_clip = 8,
 	play_reload_anim_on_wield_reload = true,
-	reload_time = 1.3,
+	reload_time = 1.6,
 	reload_on_ammo_pickup = true
 }
 weapon_template.attack_meta_data = {

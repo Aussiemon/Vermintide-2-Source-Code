@@ -1,5 +1,5 @@
 local breed_data = {
-	stagger_resistance = 3,
+	base_unit = "units/beings/enemies/chaos_sorcerer_corruptor/chr_chaos_sorcerer_corruptor",
 	target_selection = "pick_corruptor_target",
 	unit_template = "ai_unit_chaos_corruptor_sorcerer",
 	no_stagger_duration = true,
@@ -7,13 +7,13 @@ local breed_data = {
 	death_sound_event = "chaos_sorcerer_corrupt_death",
 	animation_sync_rpc = "rpc_sync_anim_state_8",
 	perception = "perception_pack_master",
-	armor_category = 1,
 	stagger_threshold_light = 0.5,
 	weapon_reach = 15,
+	armor_category = 1,
 	is_of_interest_func = "is_of_interest_to_corruptor",
 	perception_continuous = "SET_TO_NIL",
 	behavior = "chaos_corruptor_sorcerer",
-	base_unit = "units/beings/enemies/chaos_sorcerer_corruptor/chr_chaos_sorcerer_corruptor",
+	stagger_resistance = 3,
 	dialogue_source_name = "chaos_corruptor_sorcerer",
 	max_health = {
 		20,
@@ -22,6 +22,7 @@ local breed_data = {
 		40,
 		60
 	},
+	bloodlust_health = BreedTweaks.bloodlust_health.chaos_special,
 	stagger_duration = {
 		0.5,
 		1,

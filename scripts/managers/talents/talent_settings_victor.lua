@@ -76,6 +76,9 @@ local buff_tweak_data = {
 		description_stacks = 6,
 		bonus = 1
 	},
+	victor_zealot_reaper = {},
+	victor_zealot_bloodlust = {},
+	victor_zealot_conqueror = {},
 	victor_zealot_activated_ability_duration = {
 		duration = 8,
 		multiplier = 0.25
@@ -114,7 +117,7 @@ local buff_tweak_data = {
 		multiplier = -0.2
 	},
 	victor_bountyhunter_revive_speed = {
-		multiplier = 0.3
+		multiplier = -0.3
 	},
 	victor_bountyhunter_melee_damage_on_no_ammo_buff = {
 		multiplier = 0.25
@@ -123,11 +126,11 @@ local buff_tweak_data = {
 		multiplier = 0.25
 	},
 	victor_bountyhunter_passive_reduced_cooldown = {
-		duration = 7
+		duration = 6
 	},
-	victor_bountyhunter_heal_on_critical_hit = {
-		bonus = 2
-	},
+	victor_bountyhunter_regrowth = {},
+	victor_bountyhunter_bloodlust = {},
+	victor_bountyhunter_conqueror = {},
 	victor_bountyhunter_activated_ability_cooldown = {
 		multiplier = -0.3
 	},
@@ -176,12 +179,12 @@ local buff_tweak_data = {
 		multiplier = -0.5
 	},
 	victor_witchhunter_ping_target_attack_speed = {
-		multiplier = 0.1,
-		duration = 4
+		multiplier = 0.05,
+		duration = 5
 	},
 	victor_witchhunter_ping_target_crit_chance = {
-		bonus = 0.08,
-		duration = 4
+		bonus = 0.05,
+		duration = 5
 	},
 	victor_witchhunter_dodge_range = {
 		multiplier = 1.2
@@ -190,8 +193,11 @@ local buff_tweak_data = {
 		multiplier = 1.2
 	},
 	victor_witchhunter_heal_party_on_ping_target_killed = {
-		bonus = 2
+		bonus = 3
 	},
+	victor_witchhunter_regrowth = {},
+	victor_witchhunter_reaper = {},
+	victor_witchhunter_conqueror = {},
 	victor_witchhunter_activated_ability_cooldown = {
 		multiplier = -0.3
 	},
@@ -418,6 +424,45 @@ TalentBuffTemplates.witch_hunter = {
 			}
 		}
 	},
+	victor_zealot_reaper = {
+		buffs = {
+			{
+				multiplier = -0.05,
+				name = "reaper",
+				event_buff = true,
+				event = "on_damage_dealt",
+				perk = "linesman_healing",
+				max_targets = 5,
+				bonus = 0.25,
+				buff_func = ProcFunctions.heal_damage_targets_on_melee
+			}
+		}
+	},
+	victor_zealot_bloodlust = {
+		buffs = {
+			{
+				multiplier = 0.45,
+				name = "bloodlust",
+				event_buff = true,
+				event = "on_damage_dealt",
+				perk = "smiter_healing",
+				heal_cap = 0.25,
+				buff_func = ProcFunctions.heal_percent_of_damage_dealt_on_melee
+			}
+		}
+	},
+	victor_zealot_conqueror = {
+		buffs = {
+			{
+				multiplier = 0.2,
+				name = "conqueror",
+				event_buff = true,
+				event = "on_healed_consumeable",
+				range = 10,
+				buff_func = ProcFunctions.heal_other_players_percent_at_range
+			}
+		}
+	},
 	victor_zealot_activated_ability_duration = {
 		buffs = {
 			{
@@ -483,15 +528,6 @@ TalentBuffTemplates.witch_hunter = {
 			}
 		}
 	},
-	victor_bountyhunter_activate_passive_on_melee_kill = {
-		buffs = {
-			{
-				event = "on_kill",
-				event_buff = true,
-				buff_func = ProcFunctions.victor_bountyhunter_activate_passive_on_melee_kill
-			}
-		}
-	},
 	victor_bountyhunter_passive_crit_buff_removal = {
 		buffs = {
 			{
@@ -552,7 +588,7 @@ TalentBuffTemplates.witch_hunter = {
 	victor_bountyhunter_revive_speed = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.REVIVE_SPEED
+				stat_buff = StatBuffIndex.FASTER_REVIVE
 			}
 		}
 	},
@@ -606,13 +642,12 @@ TalentBuffTemplates.witch_hunter = {
 			}
 		}
 	},
-	victor_bountyhunter_heal_on_critical_hit = {
+	victor_bountyhunter_activate_passive_on_melee_kill = {
 		buffs = {
 			{
-				event = "on_critical_hit",
-				max_stacks = 1,
+				event = "on_kill",
 				event_buff = true,
-				buff_func = ProcFunctions.heal
+				buff_func = ProcFunctions.victor_bountyhunter_activate_passive_on_melee_kill
 			}
 		}
 	},
@@ -630,6 +665,43 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				max_stacks = 1,
 				icon = "victor_bountyhunter_passive_infinite_ammo"
+			}
+		}
+	},
+	victor_bountyhunter_regrowth = {
+		buffs = {
+			{
+				name = "regrowth",
+				event_buff = true,
+				event = "on_hit",
+				perk = "ninja_healing",
+				bonus = 3,
+				buff_func = ProcFunctions.heal_finesse_damage_on_melee
+			}
+		}
+	},
+	victor_bountyhunter_conqueror = {
+		buffs = {
+			{
+				multiplier = 0.2,
+				name = "conqueror",
+				event_buff = true,
+				event = "on_healed_consumeable",
+				range = 10,
+				buff_func = ProcFunctions.heal_other_players_percent_at_range
+			}
+		}
+	},
+	victor_bountyhunter_bloodlust = {
+		buffs = {
+			{
+				multiplier = 0.45,
+				name = "bloodlust",
+				event_buff = true,
+				event = "on_damage_dealt",
+				perk = "smiter_healing",
+				heal_cap = 0.25,
+				buff_func = ProcFunctions.heal_percent_of_damage_dealt_on_melee
 			}
 		}
 	},
@@ -814,7 +886,7 @@ TalentBuffTemplates.witch_hunter = {
 				event = "on_ping_target_killed",
 				buff_to_add = "victor_witchhunter_ping_target_attack_speed",
 				event_buff = true,
-				buff_func = ProcFunctions.add_buff
+				buff_func = ProcFunctions.add_buff_to_all_players
 			}
 		}
 	},
@@ -834,7 +906,7 @@ TalentBuffTemplates.witch_hunter = {
 				event = "on_ping_target_killed",
 				buff_to_add = "victor_witchhunter_ping_target_crit_chance",
 				event_buff = true,
-				buff_func = ProcFunctions.add_buff
+				buff_func = ProcFunctions.add_buff_to_all_players
 			}
 		}
 	},
@@ -854,6 +926,44 @@ TalentBuffTemplates.witch_hunter = {
 				event = "on_ping_target_killed",
 				event_buff = true,
 				buff_func = ProcFunctions.heal_party
+			}
+		}
+	},
+	victor_witchhunter_regrowth = {
+		buffs = {
+			{
+				name = "regrowth",
+				event_buff = true,
+				event = "on_hit",
+				perk = "ninja_healing",
+				bonus = 3,
+				buff_func = ProcFunctions.heal_finesse_damage_on_melee
+			}
+		}
+	},
+	victor_witchhunter_reaper = {
+		buffs = {
+			{
+				multiplier = -0.05,
+				name = "reaper",
+				event_buff = true,
+				event = "on_damage_dealt",
+				perk = "linesman_healing",
+				max_targets = 5,
+				bonus = 0.25,
+				buff_func = ProcFunctions.heal_damage_targets_on_melee
+			}
+		}
+	},
+	victor_witchhunter_conqueror = {
+		buffs = {
+			{
+				multiplier = 0.2,
+				name = "conqueror",
+				event_buff = true,
+				event = "on_healed_consumeable",
+				range = 10,
+				buff_func = ProcFunctions.heal_other_players_percent_at_range
 			}
 		}
 	},
@@ -893,9 +1003,9 @@ TalentTrees.witch_hunter = {
 			"victor_zealot_increased_stamina_from_passive"
 		},
 		{
-			"victor_zealot_regrowth",
-			"victor_zealot_bloodlust",
-			"victor_zealot_conqueror"
+			"victor_zealot_reaper",
+			"victor_zealot_bloodlust_2",
+			"victor_zealot_heal_share"
 		},
 		{
 			"victor_zealot_activated_ability_cooldown",
@@ -915,14 +1025,14 @@ TalentTrees.witch_hunter = {
 			"victor_bountyhunter_critical_hit_damage"
 		},
 		{
-			"victor_bountyhunter_heal_on_critical_hit",
+			"victor_bountyhunter_activate_passive_on_melee_kill",
 			"victor_bountyhunter_passive_reduced_cooldown",
 			"victor_bountyhunter_passive_infinite_ammo"
 		},
 		{
-			"victor_bountyhunter_regrowth",
-			"victor_bountyhunter_bloodlust",
-			"victor_bountyhunter_conqueror"
+			"victor_bountyhunter_regrowth_2",
+			"victor_bountyhunter_bloodlust_2",
+			"victor_bountyhunter_heal_share"
 		},
 		{
 			"victor_bountyhunter_activated_ability_cooldown",
@@ -947,9 +1057,9 @@ TalentTrees.witch_hunter = {
 			"victor_witchhunter_critical_hit_chance_on_ping_target_killed"
 		},
 		{
-			"victor_witchhunter_regrowth",
-			"victor_witchhunter_bloodlust",
-			"victor_witchhunter_conqueror"
+			"victor_witchhunter_regrowth_2",
+			"victor_witchhunter_reaper",
+			"victor_witchhunter_heal_share"
 		},
 		{
 			"victor_witchhunter_activated_ability_cooldown",
@@ -1139,53 +1249,55 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc_2",
-		name = "victor_zealot_regrowth",
+		description = "reaper_desc",
+		name = "victor_zealot_reaper",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "victor_zealot_regrowth",
 		description_values = {
 			{
-				value = BuffTemplates.regrowth.buffs[1].bonus
+				value = BuffTemplates.reaper.buffs[1].max_targets
 			}
 		},
 		requirements = {},
 		buffs = {
-			"regrowth"
+			"victor_zealot_reaper"
 		},
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc_2",
-		name = "victor_zealot_bloodlust",
+		description = "bloodlust_desc_3",
+		name = "victor_zealot_bloodlust_2",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "victor_zealot_bloodlust",
 		description_values = {
 			{
-				value = BuffTemplates.bloodlust.buffs[1].bonus
+				value_type = "percent",
+				value = BuffTemplates.bloodlust.buffs[1].multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"bloodlust"
+			"victor_zealot_bloodlust"
 		},
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc_2",
-		name = "victor_zealot_conqueror",
+		description = "conqueror_desc_3",
+		name = "victor_zealot_heal_share",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "victor_zealot_conqueror",
 		description_values = {
 			{
-				value = BuffTemplates.conqueror.buffs[1].bonus
+				value_type = "percent",
+				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"conqueror"
+			"victor_zealot_conqueror"
 		},
 		buff_data = {}
 	},
@@ -1343,19 +1455,15 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "victor_bountyhunter_heal_on_critical_hit_desc",
-		name = "victor_bountyhunter_heal_on_critical_hit",
+		description = "victor_bountyhunter_activate_passive_on_melee_kill_desc",
+		name = "victor_bountyhunter_activate_passive_on_melee_kill",
 		num_ranks = 1,
-		buffer = "server",
+		buffer = "both",
 		icon = "victor_bountyhunter_heal_on_critical_hit",
-		description_values = {
-			{
-				value = buff_tweak_data.victor_bountyhunter_heal_on_critical_hit.bonus
-			}
-		},
+		description_values = {},
 		requirements = {},
 		buffs = {
-			"victor_bountyhunter_heal_on_critical_hit"
+			"victor_bountyhunter_activate_passive_on_melee_kill"
 		},
 		buff_data = {}
 	},
@@ -1385,10 +1493,10 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc_2",
-		name = "victor_bountyhunter_regrowth",
+		description = "regrowth_desc_3",
+		name = "victor_bountyhunter_regrowth_2",
 		num_ranks = 1,
-		buffer = "server",
+		buffer = "both",
 		icon = "victor_bountyhunter_regrowth",
 		description_values = {
 			{
@@ -1397,41 +1505,43 @@ Talents.witch_hunter = {
 		},
 		requirements = {},
 		buffs = {
-			"regrowth"
+			"victor_bountyhunter_regrowth"
 		},
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc_2",
-		name = "victor_bountyhunter_bloodlust",
+		description = "bloodlust_desc_3",
+		name = "victor_bountyhunter_bloodlust_2",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "victor_bountyhunter_bloodlust",
 		description_values = {
 			{
-				value = BuffTemplates.bloodlust.buffs[1].bonus
+				value_type = "percent",
+				value = BuffTemplates.bloodlust.buffs[1].multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"bloodlust"
+			"victor_bountyhunter_bloodlust"
 		},
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc_2",
-		name = "victor_bountyhunter_conqueror",
+		description = "conqueror_desc_3",
+		name = "victor_bountyhunter_heal_share",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "victor_bountyhunter_conqueror",
 		description_values = {
 			{
-				value = BuffTemplates.conqueror.buffs[1].bonus
+				value_type = "percent",
+				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"conqueror"
+			"victor_bountyhunter_conqueror"
 		},
 		buff_data = {}
 	},
@@ -1582,9 +1692,10 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "victor_witchhunter_attack_speed_on_ping_target_killed_desc",
+		description = "victor_witchhunter_attack_speed_on_ping_target_killed_desc_2",
 		name = "victor_witchhunter_attack_speed_on_ping_target_killed",
 		num_ranks = 1,
+		buffer = "both",
 		icon = "victor_witchhunter_attack_speed_on_ping_target_killed",
 		description_values = {
 			{
@@ -1619,7 +1730,7 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "victor_witchhunter_critical_hit_chance_on_ping_target_killed_desc",
+		description = "victor_witchhunter_critical_hit_chance_on_ping_target_killed_desc_2",
 		name = "victor_witchhunter_critical_hit_chance_on_ping_target_killed",
 		num_ranks = 1,
 		buffer = "both",
@@ -1640,10 +1751,10 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc_2",
-		name = "victor_witchhunter_regrowth",
+		description = "regrowth_desc_3",
+		name = "victor_witchhunter_regrowth_2",
 		num_ranks = 1,
-		buffer = "server",
+		buffer = "both",
 		icon = "victor_witchhunter_regrowth",
 		description_values = {
 			{
@@ -1652,41 +1763,42 @@ Talents.witch_hunter = {
 		},
 		requirements = {},
 		buffs = {
-			"regrowth"
+			"victor_witchhunter_regrowth"
 		},
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc_2",
-		name = "victor_witchhunter_bloodlust",
+		description = "reaper_desc",
+		name = "victor_witchhunter_reaper",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "victor_witchhunter_bloodlust",
 		description_values = {
 			{
-				value = BuffTemplates.bloodlust.buffs[1].bonus
+				value = BuffTemplates.reaper.buffs[1].max_targets
 			}
 		},
 		requirements = {},
 		buffs = {
-			"bloodlust"
+			"victor_witchhunter_reaper"
 		},
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc_2",
-		name = "victor_witchhunter_conqueror",
+		description = "conqueror_desc_3",
+		name = "victor_witchhunter_heal_share",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "victor_witchhunter_conqueror",
 		description_values = {
 			{
-				value = BuffTemplates.conqueror.buffs[1].bonus
+				value_type = "percent",
+				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"conqueror"
+			"victor_witchhunter_conqueror"
 		},
 		buff_data = {}
 	},

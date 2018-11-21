@@ -104,7 +104,8 @@ GenericAmmoUserExtension.update = function (self, unit, input, dt, context, t)
 		if self.next_reload_time < t then
 			if not self.start_reloading then
 				local buff_extension = self.owner_buff_extension
-				local reload_amount = self.ammo_per_clip - self.current_ammo
+				local missing_in_clip = self.ammo_per_clip - self.current_ammo
+				local reload_amount = (self.ammo_per_reload and self.ammo_per_reload <= missing_in_clip and self.ammo_per_reload) or missing_in_clip
 				reload_amount = math.min(reload_amount, self.available_ammo)
 				self.current_ammo = self.current_ammo + reload_amount
 

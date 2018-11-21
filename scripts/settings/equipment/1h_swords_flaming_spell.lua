@@ -1,5 +1,5 @@
 local push_radius = 2
-local time_mod = 0.9
+local time_mod = 1.9
 local heavy_tank_stagger = 3
 local light_linesman_stagger = 3
 local light_smiter_stagger = 3

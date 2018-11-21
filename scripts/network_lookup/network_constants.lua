@@ -78,6 +78,11 @@ NetworkConstants.item_template_name = Network.type_info("item_template_name")
 
 fassert(num_item_template_names <= NetworkConstants.item_template_name.max, "Too many item template names, raise global.network_config value for item_template_name by a factor 2")
 
+local num_buff_weapon_types = #NetworkLookup.buff_weapon_types
+NetworkConstants.buff_weapon_types = Network.type_info("buff_weapon_types")
+
+fassert(num_buff_weapon_types <= NetworkConstants.buff_weapon_types.max, "Too many buff weapon types, raise global.network_config value for buff_weapon_types by a factor 2")
+
 local num_terror_flow_events = #NetworkLookup.terror_flow_events
 NetworkConstants.terror_flow_event = Network.type_info("terror_flow_event")
 

@@ -1,6 +1,6 @@
 ActionFlamethrower = class(ActionFlamethrower)
 local POSITION_TWEAK = -1.5
-local SPRAY_RANGE = math.abs(POSITION_TWEAK) + 9
+local SPRAY_RANGE = math.abs(POSITION_TWEAK) + 10
 local SPRAY_RADIUS = 2
 local MAX_TARGETS = 50
 local NODES = {
@@ -34,6 +34,7 @@ ActionFlamethrower.init = function (self, world, item_name, is_server, owner_uni
 	self.is_server = is_server
 	self.network_transmit = Managers.state.network.network_transmit
 	self.unit_id = Managers.state.network.unit_storage:go_id(owner_unit)
+	self.buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	self._is_critical_strike = false
 end
 
@@ -110,6 +111,15 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 
 	if self.state == "shooting" and current_action.overcharge_interval <= self.overcharge_timer then
 		local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[current_action.overcharge_type]
+
+		if self.buff_extension then
+			local no_overcharge_crit = self.buff_extension:has_buff_perk("no_overcharge_crit")
+			local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, current_action, t)
+
+			if is_critical_strike and no_overcharge_crit then
+				overcharge_amount = 0
+			end
+		end
 
 		self.overcharge_extension:add_charge(overcharge_amount)
 

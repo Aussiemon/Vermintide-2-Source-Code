@@ -51,6 +51,7 @@ CareerAbilityBWAdept.init = function (self, extension_init_context, unit, extens
 	self.bot_player = player.bot_player
 	self.network_manager = Managers.state.network
 	self.input_manager = Managers.input
+	self._double_ability_buff_id = nil
 	self.effect_id = nil
 	self.effect_name = "fx/wpnfx_staff_geiser_charge"
 end
@@ -109,7 +110,7 @@ CareerAbilityBWAdept.update = function (self, unit, input, dt, context, t)
 end
 
 CareerAbilityBWAdept.stop = function (self, reason)
-	if reason ~= "pushed" and reason ~= "stunned" and self._is_priming then
+	if reason ~= "pushed" and reason ~= "stunned" and self.is_priming then
 		self:_stop_priming()
 	end
 end
@@ -330,13 +331,26 @@ CareerAbilityBWAdept._run_ability = function (self)
 
 	area_damage_system:create_explosion(owner_unit, position, rotation, explosion_template, scale, "career_ability", career_power_level, false)
 
-	if talent_extension:has_talent("sienna_adept_activated_ability_dump_overcharge", "bright_wizard", true) and (local_player or (is_server and bot_player)) then
-		local overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
+	if talent_extension:has_talent("sienna_adept_ability_trail_double", "bright_wizard", true) then
+		if local_player or (is_server and bot_player) then
+			local buff_extension = self.buff_extension
 
-		overcharge_extension:reset()
+			if buff_extension and buff_extension:has_buff_type("sienna_adept_ability_trail_double") then
+				career_extension:start_activated_ability_cooldown()
+
+				local buff_id = self._double_ability_buff_id
+
+				if buff_id then
+					buff_extension:remove_buff(buff_id)
+				end
+			elseif buff_extension then
+				self._double_ability_buff_id = buff_extension:add_buff("sienna_adept_ability_trail_double")
+			end
+		end
+	else
+		career_extension:start_activated_ability_cooldown()
 	end
 
-	career_extension:start_activated_ability_cooldown()
 	self:_play_vo()
 end
 

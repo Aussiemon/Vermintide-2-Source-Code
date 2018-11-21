@@ -324,10 +324,10 @@ LoadingView.setup_tip_text = function (self, act_progression_index, game_mode, t
 		local localized_tip = nil
 
 		if gamepad_active then
-			local input_action, input_actions = Managers.localizer:get_input_action(tip_localization_key)
+			local input_action, input_actions, input_service_name = Managers.localizer:get_input_action(tip_localization_key)
 
 			if input_action then
-				local button_texture_data = UISettings.get_gamepad_input_texture_data(input_manager:get_service("Player"), input_action, gamepad_active)
+				local button_texture_data = UISettings.get_gamepad_input_texture_data(input_manager:get_service(input_service_name), input_action, gamepad_active)
 
 				if button_texture_data then
 					local button_texture_size = button_texture_data.size

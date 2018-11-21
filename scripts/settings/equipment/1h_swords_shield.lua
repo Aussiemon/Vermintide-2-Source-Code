@@ -1,5 +1,5 @@
-local push_radius = 2.5
-local time_mod = 0.95
+local push_radius = 3
+local time_mod = 0.9
 local heavy_tank_stagger = 3
 local light_linesman_stagger = 3
 local weapon_template = weapon_template or {}
@@ -34,7 +34,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "heavy_attack",
-					start_time = 0.41,
+					start_time = 0.5,
 					action = "action_one",
 					input = "action_one_release"
 				},
@@ -71,7 +71,7 @@ weapon_template.actions = {
 			kind = "melee_start",
 			aim_assist_max_ramp_multiplier = 0.4,
 			uninterruptible = true,
-			anim_event = "attack_swing_charge",
+			anim_event = "attack_swing_charge_stab",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
@@ -92,8 +92,8 @@ weapon_template.actions = {
 					input = "action_one_release"
 				},
 				{
-					sub_action = "heavy_attack",
-					start_time = 0.41,
+					sub_action = "heavy_attack_stab",
+					start_time = 0.5,
 					action = "action_one",
 					input = "action_one_release"
 				},
@@ -116,7 +116,7 @@ weapon_template.actions = {
 					input = "action_one_hold"
 				},
 				{
-					sub_action = "heavy_attack",
+					sub_action = "heavy_attack_stab",
 					start_time = 0.7,
 					action = "action_one",
 					auto_chain = true
@@ -130,7 +130,7 @@ weapon_template.actions = {
 			kind = "melee_start",
 			aim_assist_max_ramp_multiplier = 0.4,
 			uninterruptible = true,
-			anim_event = "attack_swing_charge",
+			anim_event = "attack_swing_charge_right_pose",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
@@ -151,8 +151,8 @@ weapon_template.actions = {
 					input = "action_one_release"
 				},
 				{
-					sub_action = "heavy_attack",
-					start_time = 0.41,
+					sub_action = "heavy_attack_right",
+					start_time = 0.5,
 					action = "action_one",
 					input = "action_one_release"
 				},
@@ -175,7 +175,7 @@ weapon_template.actions = {
 					input = "action_one_hold"
 				},
 				{
-					sub_action = "heavy_attack",
+					sub_action = "heavy_attack_right",
 					start_time = 0.7,
 					action = "action_one",
 					auto_chain = true
@@ -211,7 +211,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "heavy_attack_left",
-					start_time = 0.41,
+					start_time = 0.5,
 					action = "action_one",
 					input = "action_one_release"
 				},
@@ -270,7 +270,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "heavy_attack_right",
-					start_time = 0.41,
+					start_time = 0.5,
 					action = "action_one",
 					input = "action_one_release"
 				},
@@ -329,7 +329,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "heavy_attack_stab",
-					start_time = 0.41,
+					start_time = 0.5,
 					action = "action_one",
 					input = "action_one_release"
 				},
@@ -361,25 +361,26 @@ weapon_template.actions = {
 		},
 		heavy_attack = {
 			damage_window_start = 0.2,
-			push_radius = 2,
+			forward_offset = 0.75,
+			push_radius = 2.5,
 			kind = "shield_slam",
-			damage_window_end = 0.25,
+			damage_profile_target = "shield_slam_target",
+			additional_critical_strike_chance = 0,
 			no_damage_impact_sound_event = "shield_hit_armour",
-			damage_profile = "shield_slam",
 			armor_impact_sound_event = "shield_hit_armour",
+			damage_profile = "shield_slam",
+			hit_effect = "melee_hit_hammers_2h",
 			hit_time = 0.2,
 			weapon_action_hand = "left",
-			hit_effect = "melee_hit_hammers_2h",
-			aim_assist_ramp_multiplier = 0.2,
-			aim_assist_max_ramp_multiplier = 0.4,
-			additional_critical_strike_chance = 0,
+			damage_window_end = 0.25,
 			impact_sound_event = "shield_hit",
 			charge_value = "heavy_attack",
 			anim_end_event = "attack_finished",
 			damage_profile_aoe = "shield_slam_aoe",
-			damage_profile_default_target = "shield_slam_default_target",
+			aim_assist_ramp_multiplier = 0.2,
+			aim_assist_max_ramp_multiplier = 0.4,
+			dedicated_target_range = 3.5,
 			aim_assist_ramp_decay_delay = 0.1,
-			dedicated_target_range = 2,
 			uninterruptible = true,
 			anim_event = "attack_swing_heavy",
 			total_time = 1,
@@ -430,7 +431,7 @@ weapon_template.actions = {
 		},
 		heavy_attack_left = {
 			damage_window_start = 0.3,
-			range_mod = 1.25,
+			range_mod = 1.35,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
@@ -497,11 +498,12 @@ weapon_template.actions = {
 				input_extension:reset_release_input()
 
 				return true
-			end
+			end,
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		heavy_attack_right = {
 			damage_window_start = 0.15,
-			range_mod = 1.25,
+			range_mod = 1.35,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
@@ -568,22 +570,23 @@ weapon_template.actions = {
 				input_extension:reset_release_input()
 
 				return true
-			end
+			end,
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		heavy_attack_stab = {
 			damage_window_start = 0.22,
 			anim_end_event = "attack_finished",
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
-			range_mod = 1.35,
+			range_mod = 1.4,
 			no_damage_impact_sound_event = "stab_hit_armour",
 			additional_critical_strike_chance = 0,
-			use_precision_sweep = false,
+			use_precision_sweep = true,
 			damage_profile = "medium_slashing_smiter_stab_1h",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.32,
 			impact_sound_event = "stab_hit",
-			dedicated_target_range = 2.5,
+			dedicated_target_range = 2.75,
 			uninterruptible = true,
 			anim_event = "attack_swing_heavy_stab",
 			hit_stop_anim = "attack_hit",
@@ -650,14 +653,14 @@ weapon_template.actions = {
 		},
 		light_attack_left = {
 			damage_window_start = 0.38,
-			range_mod = 1.15,
+			range_mod = 1.2,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			additional_critical_strike_chance = 0,
 			use_precision_sweep = false,
-			damage_profile = "light_slashing_linesman",
 			hit_shield_stop_anim = "attack_hit_shield",
+			damage_profile = "light_slashing_linesman",
 			hit_effect = "melee_hit_hammers_2h",
 			damage_window_end = 0.52,
 			impact_sound_event = "slashing_hit",
@@ -687,10 +690,23 @@ weapon_template.actions = {
 					input = "action_one"
 				},
 				{
+					sub_action = "default_left",
+					start_time = 0.55,
+					action = "action_one",
+					end_time = 1.2,
+					input = "action_one_hold"
+				},
+				{
 					sub_action = "default",
 					start_time = 1.2,
 					action = "action_one",
 					input = "action_one"
+				},
+				{
+					sub_action = "default",
+					start_time = 1.2,
+					action = "action_one",
+					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
@@ -704,18 +720,19 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			}
+			},
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		light_attack_right = {
 			damage_window_start = 0.38,
-			range_mod = 1.15,
+			range_mod = 1.2,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			additional_critical_strike_chance = 0,
 			use_precision_sweep = false,
-			damage_profile = "light_slashing_linesman",
 			hit_shield_stop_anim = "attack_hit_shield",
+			damage_profile = "light_slashing_linesman",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.52,
 			impact_sound_event = "slashing_hit",
@@ -745,10 +762,23 @@ weapon_template.actions = {
 					input = "action_one"
 				},
 				{
+					sub_action = "default_right",
+					start_time = 0.6,
+					action = "action_one",
+					end_time = 1.2,
+					input = "action_one_hold"
+				},
+				{
 					sub_action = "default",
 					start_time = 1.2,
 					action = "action_one",
 					input = "action_one"
+				},
+				{
+					sub_action = "default",
+					start_time = 1.2,
+					action = "action_one",
+					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
@@ -762,11 +792,12 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			}
+			},
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		light_attack_stab = {
 			damage_window_start = 0.18,
-			range_mod = 1.15,
+			range_mod = 1.2,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "stab_hit_armour",
@@ -825,16 +856,17 @@ weapon_template.actions = {
 		},
 		light_attack_stab_postpush = {
 			damage_window_start = 0.18,
-			range_mod = 1.15,
+			range_mod = 1.2,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			additional_critical_strike_chance = 0,
-			use_precision_sweep = false,
-			damage_profile = "medium_slashing_smiter_stab_1h",
+			use_precision_sweep = true,
+			damage_profile = "light_slashing_smiter_stab",
 			hit_shield_stop_anim = "attack_hit_shield",
-			attack_direction = "up",
+			ignore_armour_hit = true,
 			hit_effect = "melee_hit_hammers_2h",
+			attack_direction = "up",
 			damage_window_end = 0.28,
 			impact_sound_event = "slashing_hit",
 			anim_end_event = "attack_finished",
@@ -862,17 +894,18 @@ weapon_template.actions = {
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default",
-					start_time = 0.5,
+					sub_action = "default_stab_heavy",
+					start_time = 0.45,
 					action = "action_one",
+					release_required = "action_two_hold",
 					input = "action_one"
 				},
 				{
-					sub_action = "default",
-					start_time = 0.5,
-					action = "action_two",
+					sub_action = "default_stab_heavy",
+					start_time = 0.45,
+					action = "action_one",
 					release_required = "action_two_hold",
-					input = "action_two_hold"
+					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
@@ -882,7 +915,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.5,
+					start_time = 0.45,
 					action = "action_wield",
 					input = "action_wield"
 				}
@@ -890,7 +923,7 @@ weapon_template.actions = {
 		},
 		light_attack_last = {
 			damage_window_start = 0.38,
-			range_mod = 1.15,
+			range_mod = 1.2,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
@@ -957,13 +990,14 @@ weapon_template.actions = {
 			weapon_action_hand = "right",
 			push_angle = 100,
 			hit_effect = "melee_hit_sword_1h",
+			fatigue_regen_delay = 0.75,
 			damage_window_end = 0.2,
 			impact_sound_event = "slashing_hit",
 			charge_value = "action_push",
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			dedicated_target_range = 2,
 			anim_event = "attack_push",
-			damage_profile_inner = "heavy_push",
+			damage_profile_inner = "shield_push",
 			total_time = 0.8,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
@@ -979,14 +1013,14 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.3,
+					start_time = 0.2,
 					action = "action_one",
 					release_required = "action_two_hold",
 					input = "action_one"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.3,
+					start_time = 0.2,
 					action = "action_one",
 					release_required = "action_two_hold",
 					doubleclick_window = 0,
@@ -994,7 +1028,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "light_attack_stab_postpush",
-					start_time = 0.3,
+					start_time = 0.2,
 					action = "action_one",
 					doubleclick_window = 0,
 					end_time = 0.8,
@@ -1013,7 +1047,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.3,
+					start_time = 0.2,
 					action = "action_wield",
 					input = "action_wield"
 				}
@@ -1052,7 +1086,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "push",
-					start_time = 0.3,
+					start_time = 0.2,
 					action = "action_one",
 					doubleclick_window = 0,
 					input = "action_one",
@@ -1070,7 +1104,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.4,
+					start_time = 0.2,
 					action = "action_wield",
 					input = "action_wield"
 				}
@@ -1101,7 +1135,7 @@ weapon_template.dodge_count = 1
 weapon_template.can_block_ranged_attacks = true
 weapon_template.block_angle = 120
 weapon_template.outer_block_angle = 360
-weapon_template.block_fatigue_point_multiplier = 0.25
+weapon_template.block_fatigue_point_multiplier = 0.2
 weapon_template.outer_block_fatigue_point_multiplier = 2
 weapon_template.buffs = {
 	change_dodge_distance = {

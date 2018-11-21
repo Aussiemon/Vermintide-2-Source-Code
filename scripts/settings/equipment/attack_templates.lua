@@ -177,12 +177,11 @@ AttackTemplates = {
 		stagger_angle = "smiter"
 	},
 	heavy_slashing_smiter_hs = {
-		stagger_angle = "smiter",
+		stagger_value = 2,
 		shield_break = true,
 		sound_type = "heavy",
 		damage_type = "heavy_slashing_smiter",
-		stagger_value = 2,
-		headshot_sound = "executioner_sword_critical"
+		stagger_angle = "smiter"
 	},
 	light_slashing_fencer = {
 		sound_type = "light",
@@ -1152,7 +1151,7 @@ for _, dlc in pairs(DLCSettings) do
 
 	if file_names then
 		for _, file_name in ipairs(file_names) do
-			dofile(file_name)
+			require(file_name)
 		end
 	end
 end

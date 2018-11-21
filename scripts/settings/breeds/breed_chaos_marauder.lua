@@ -12,6 +12,7 @@ local breed_data = {
 	aim_template = "chaos_marauder",
 	target_selection = "pick_closest_target_with_spillover",
 	wwise_voice_switch_group = "marauder_vce_variations",
+	attack_player_sound_event = "Play_enemy_marauder_attack_player_vce",
 	dialogue_source_name = "chaos_marauder",
 	uses_attack_sfx_callback = true,
 	threat_value = 2,
@@ -36,7 +37,6 @@ local breed_data = {
 	behavior = "marauder",
 	use_regular_horde_spawning = true,
 	during_horde_detection_radius = 15,
-	attack_player_sound_event = "Play_enemy_marauder_attack_player_vce",
 	has_inventory = true,
 	scale_death_push = 0.65,
 	follow_reach = 1,
@@ -82,6 +82,7 @@ local breed_data = {
 		1.125
 	},
 	max_health = BreedTweaks.max_health.marauder,
+	bloodlust_health = BreedTweaks.bloodlust_health.chaos_roamer,
 	diff_stagger_resist = BreedTweaks.diff_stagger_resist.marauder,
 	stagger_duration = BreedTweaks.stagger_duration.marauder,
 	stagger_duration_difficulty_mod = BreedTweaks.stagger_duration_difficulty_mod.fast,

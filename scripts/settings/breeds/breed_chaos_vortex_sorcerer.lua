@@ -13,12 +13,12 @@ local breed_data = {
 	stagger_threshold_light = 0.5,
 	death_sound_event = "chaos_sorcerer_vortex_death",
 	base_unit = "units/beings/enemies/chaos_vortex_sorcerer/chr_chaos_vortex_sorcerer",
-	special_on_spawn_stinger = "Play_vortex_sorcerer_spawn",
 	wield_inventory_on_spawn = true,
 	max_vortex_units = 1,
 	default_inventory_template = "chaos_sorcerer_vortex",
 	stagger_resistance = 3,
 	dialogue_source_name = "chaos_vortex_sorcerer",
+	special_on_spawn_stinger = "Play_vortex_sorcerer_spawn",
 	max_health = {
 		20,
 		20,
@@ -26,6 +26,7 @@ local breed_data = {
 		40,
 		60
 	},
+	bloodlust_health = BreedTweaks.bloodlust_health.chaos_special,
 	stagger_duration = {
 		1,
 		1,

@@ -1,5 +1,5 @@
 local push_radius = 2.5
-local time_mod = 0.85
+local time_mod = 0.8
 local heavy_smiter_stagger = 5
 local heavy_linesman_stagger = 5
 local light_smiter_stagger = 5
@@ -188,7 +188,7 @@ weapon_template.actions = {
 			no_damage_impact_sound_event = "blunt_hit_armour",
 			hit_effect = "melee_hit_axes_2h",
 			use_precision_sweep = true,
-			damage_profile = "heavy_slashing_smiter_stab",
+			damage_profile = "heavy_slashing_smiter_stab_polearm",
 			additional_critical_strike_chance = 0,
 			impact_sound_event = "axe_1h_hit",
 			anim_end_event = "attack_finished",
@@ -201,7 +201,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.1,
+			anim_time_scale = time_mod * 1.3,
 			buff_data = {
 				{
 					start_time = 0,
@@ -297,7 +297,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 0.85,
+			anim_time_scale = time_mod * 1.1,
 			buff_data = {
 				{
 					start_time = 0,
@@ -447,7 +447,7 @@ weapon_template.actions = {
 			additional_critical_strike_chance = 0,
 			use_precision_sweep = true,
 			hit_effect = "melee_hit_axes_2h",
-			damage_profile = "medium_slashing_smiter",
+			damage_profile = "medium_slashing_smiter_2h",
 			aim_assist_ramp_multiplier = 0.5,
 			damage_window_end = 0.4,
 			impact_sound_event = "axe_1h_hit",
@@ -614,7 +614,7 @@ weapon_template.actions = {
 			sweep_z_offset = 0.15,
 			width_mod = 25,
 			use_precision_sweep = true,
-			damage_profile = "medium_slashing_smiter",
+			damage_profile = "medium_slashing_smiter_2h",
 			aim_assist_ramp_multiplier = 0.5,
 			hit_effect = "melee_hit_axes_2h",
 			aim_assist_max_ramp_multiplier = 0.8,

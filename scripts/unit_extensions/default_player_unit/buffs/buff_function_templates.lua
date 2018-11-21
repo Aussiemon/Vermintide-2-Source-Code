@@ -2450,6 +2450,14 @@ BuffFunctionTemplates.functions = {
 			career_extension:set_state("default")
 		end
 	end,
+	sienna_adept_double_trail_talent_start_ability_cooldown = function (unit, buff, params)
+		if is_local(unit) then
+			local career_extension = ScriptUnit.extension(unit, "career_system")
+
+			career_extension:stop_ability("cooldown_triggered")
+			career_extension:start_activated_ability_cooldown()
+		end
+	end,
 	end_sienna_unchained_activated_ability = function (unit, buff, params)
 		if is_local(unit) then
 			local career_extension = ScriptUnit.extension(unit, "career_system")

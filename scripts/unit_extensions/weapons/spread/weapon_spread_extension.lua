@@ -37,10 +37,11 @@ end
 
 local ignored_damage_types = {
 	temporary_health_degen = true,
-	globadier_gas_dot = true,
+	buff_shared_medpack_temp_health = true,
 	warpfire_ground = true,
 	buff = true,
 	buff_shared_medpack = true,
+	globadier_gas_dot = true,
 	health_degen = true,
 	vomit_ground = true,
 	wounded_dot = true,

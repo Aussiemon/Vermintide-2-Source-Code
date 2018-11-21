@@ -84,6 +84,11 @@ ActionHandgun.client_owner_post_update = function (self, dt, t, world, can_damag
 
 		if overcharge_type then
 			local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[overcharge_type] * (self.charge_multiplier or 1)
+			local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
+			if self._is_critical_strike and buff_extension:has_buff_perk("no_overcharge_crit") then
+				overcharge_amount = 0
+			end
 
 			self.overcharge_extension:add_charge(overcharge_amount)
 		end
@@ -215,6 +220,22 @@ ActionHandgun.finish = function (self, reason)
 		if ammo_extension and current_action.reload_when_out_of_ammo and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
 			ammo_extension:start_reload(true)
 		end
+	end
+
+	if current_action.keep_block then
+		if not LEVEL_EDITOR_TEST then
+			local go_id = Managers.state.unit_storage:go_id(owner_unit)
+
+			if self.is_server then
+				Managers.state.network.network_transmit:send_rpc_clients("rpc_set_blocking", go_id, false)
+			else
+				Managers.state.network.network_transmit:send_rpc_server("rpc_set_blocking", go_id, false)
+			end
+		end
+
+		local status_extension = ScriptUnit.extension(owner_unit, "status_system")
+
+		status_extension:set_blocking(false)
 	end
 
 	self.charge_multiplier = nil

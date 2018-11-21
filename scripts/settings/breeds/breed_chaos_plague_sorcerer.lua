@@ -1,17 +1,17 @@
 local breed_data = {
+	stagger_resistance = 3,
 	target_selection = "pick_closest_target_with_filter",
 	summon_sound_event = "chaos_sorcerer_plague_summoning",
 	no_stagger_duration = true,
-	stagger_threshold_explosion = 5,
 	stagger_reduction = 2,
 	armor_category = 1,
 	race = "chaos",
-	stagger_resistance = 3,
 	animation_sync_rpc = "rpc_sync_anim_state_8",
 	stagger_threshold_heavy = 3,
-	death_sound_event = "chaos_sorcerer_plague_death",
+	stagger_threshold_explosion = 5,
 	stagger_threshold_medium = 2,
 	stagger_threshold_light = 0.5,
+	death_sound_event = "chaos_sorcerer_plague_death",
 	is_of_interest_func = "is_of_interest_plague_wave_sorcerer",
 	behavior = "chaos_plague_sorcerer",
 	base_unit = "units/beings/enemies/chaos_sorcerer/chr_chaos_sorcerer",
@@ -24,6 +24,7 @@ local breed_data = {
 		50,
 		75
 	},
+	bloodlust_health = BreedTweaks.bloodlust_health.chaos_special,
 	stagger_duration = {
 		1,
 		1,

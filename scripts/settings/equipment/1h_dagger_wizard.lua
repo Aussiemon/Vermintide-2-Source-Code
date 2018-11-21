@@ -289,24 +289,26 @@ weapon_template.actions = {
 		},
 		heavy_attack_left = {
 			damage_window_start = 0.2,
-			push_radius = 2.25,
+			forward_offset = 0.75,
 			increment_stat_on_hit = "ceremonial_dagger_burn",
-			anim_time_scale = 1.2,
+			push_radius = 2.5,
 			kind = "shield_slam",
-			damage_profile = "dagger_burning_slam",
+			damage_profile_target = "dagger_burning_slam_target_fencer",
+			anim_time_scale = 1.2,
+			damage_profile = "dagger_burning_slam_fencer",
+			armor_impact_sound_event = "fire_hit",
 			no_damage_impact_sound_event = "fire_hit_armour",
 			hit_time = 0.2,
-			armor_impact_sound_event = "fire_hit",
+			hit_effect = "staff_spark",
 			aim_assist_ramp_multiplier = 0.2,
 			aim_assist_max_ramp_multiplier = 0.4,
-			hit_effect = "staff_spark",
-			aim_assist_ramp_decay_delay = 0.1,
 			damage_window_end = 0.25,
 			impact_sound_event = "fire_hit",
+			aim_assist_ramp_decay_delay = 0.1,
 			anim_end_event = "attack_finished",
-			damage_profile_aoe = "dagger_burning_slam_aoe",
+			damage_profile_aoe = "dagger_burning_slam_fencer_aoe",
 			impact_particle_effect = "fx/wpnfx_staff_spark_impact",
-			dedicated_target_range = 2,
+			dedicated_target_range = 3.5,
 			uninterruptible = true,
 			anim_event = "attack_swing_heavy",
 			total_time = 2.25,
@@ -330,11 +332,17 @@ weapon_template.actions = {
 					input = "action_one"
 				},
 				{
-					sub_action = "default",
+					sub_action = "default_right_heavy",
 					start_time = 0.5,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one_hold"
+				},
+				{
+					sub_action = "default",
+					start_time = 1.05,
+					action = "action_one",
+					input = "action_one"
 				},
 				{
 					sub_action = "default",
@@ -417,7 +425,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.4,
+					start_time = 0.25,
 					action = "action_two",
 					input = "action_two_hold"
 				},

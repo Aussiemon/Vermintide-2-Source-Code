@@ -1,5 +1,5 @@
 local push_radius = 2
-local time_mod = 0.8
+local time_mod = 0.9
 local heavy_smiter_stagger = 3
 local light_linesman_stagger = 3
 local light_smiter_stagger = 3
@@ -20,7 +20,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.65,
+					external_multiplier = 0.85,
 					buff_name = "planted_charging_decrease_movement"
 				}
 			},
@@ -78,7 +78,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.65,
+					external_multiplier = 0.85,
 					buff_name = "planted_charging_decrease_movement"
 				}
 			},
@@ -132,7 +132,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.65,
+					external_multiplier = 0.85,
 					buff_name = "planted_charging_decrease_movement"
 				}
 			},
@@ -178,12 +178,12 @@ weapon_template.actions = {
 		},
 		heavy_attack_left = {
 			damage_window_start = 0.15,
-			range_mod = 1.15,
+			range_mod = 1.25,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
-			additional_critical_strike_chance = 0,
-			use_precision_sweep = false,
+			additional_critical_strike_chance = 0.1,
+			use_precision_sweep = true,
 			damage_profile = "medium_slashing_smiter_1h",
 			aim_assist_max_ramp_multiplier = 0.6,
 			hit_effect = "melee_hit_sword_1h",
@@ -200,39 +200,39 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.1,
+			anim_time_scale = time_mod * 1.25,
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 1,
-					end_time = 0.2,
-					buff_name = "planted_charging_decrease_movement"
+					external_multiplier = 1.15,
+					end_time = 0.25,
+					buff_name = "planted_fast_decrease_movement"
 				}
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default_right",
-					start_time = 0.5,
+					sub_action = "default_left",
+					start_time = 0.35,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one"
 				},
 				{
-					sub_action = "default_right",
-					start_time = 0.5,
+					sub_action = "default_left",
+					start_time = 0.35,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.3,
+					start_time = 0.45,
 					action = "action_two",
 					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.5,
+					start_time = 0.45,
 					action = "action_wield",
 					input = "action_wield"
 				}
@@ -243,12 +243,12 @@ weapon_template.actions = {
 		},
 		heavy_attack_right = {
 			damage_window_start = 0.15,
-			range_mod = 1.15,
+			range_mod = 1.25,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
-			additional_critical_strike_chance = 0,
-			use_precision_sweep = false,
+			additional_critical_strike_chance = 0.1,
+			use_precision_sweep = true,
 			damage_profile = "medium_slashing_smiter_1h",
 			aim_assist_max_ramp_multiplier = 0.6,
 			hit_effect = "melee_hit_sword_1h",
@@ -265,39 +265,39 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.1,
+			anim_time_scale = time_mod * 1.25,
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 1,
-					end_time = 0.2,
-					buff_name = "planted_charging_decrease_movement"
+					external_multiplier = 1.15,
+					end_time = 0.25,
+					buff_name = "planted_fast_decrease_movement"
 				}
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default_left",
-					start_time = 0.5,
+					sub_action = "default",
+					start_time = 0.35,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one"
 				},
 				{
-					sub_action = "default_left",
-					start_time = 0.5,
+					sub_action = "default",
+					start_time = 0.35,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.3,
+					start_time = 0.45,
 					action = "action_two",
 					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.5,
+					start_time = 0.45,
 					action = "action_wield",
 					input = "action_wield"
 				}
@@ -308,11 +308,11 @@ weapon_template.actions = {
 		},
 		heavy_attack_up = {
 			damage_window_start = 0.37,
-			range_mod = 1.15,
+			range_mod = 1.25,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
-			additional_critical_strike_chance = 0,
+			additional_critical_strike_chance = 0.1,
 			use_precision_sweep = false,
 			damage_profile = "medium_slashing_axe_linesman_1h",
 			hit_effect = "melee_hit_sword_1h",
@@ -330,25 +330,25 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.25,
+			anim_time_scale = time_mod * 1.45,
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 1,
-					end_time = 0.2,
-					buff_name = "planted_charging_decrease_movement"
+					external_multiplier = 1.35,
+					end_time = 0.3,
+					buff_name = "planted_fast_decrease_movement"
 				}
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default",
+					sub_action = "default_right",
 					start_time = 0.5,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one"
 				},
 				{
-					sub_action = "default",
+					sub_action = "default_right",
 					start_time = 0.5,
 					action = "action_one",
 					release_required = "action_one_hold",
@@ -356,7 +356,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.3,
+					start_time = 0.5,
 					action = "action_two",
 					input = "action_two_hold"
 				},
@@ -380,7 +380,7 @@ weapon_template.actions = {
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			additional_critical_strike_chance = 0,
 			use_precision_sweep = false,
-			damage_profile = "light_slashing_linesman",
+			damage_profile = "light_slashing_linesman_elf",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.52,
 			impact_sound_event = "slashing_hit",
@@ -392,11 +392,11 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.25,
+			anim_time_scale = time_mod * 1.35,
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.7,
+					external_multiplier = 1.05,
 					end_time = 0.5,
 					buff_name = "planted_decrease_movement"
 				}
@@ -449,7 +449,7 @@ weapon_template.actions = {
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			additional_critical_strike_chance = 0,
 			use_precision_sweep = false,
-			damage_profile = "light_slashing_linesman",
+			damage_profile = "light_slashing_linesman_elf",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.52,
 			impact_sound_event = "slashing_hit",
@@ -465,7 +465,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.7,
+					external_multiplier = 1.05,
 					end_time = 0.5,
 					buff_name = "planted_decrease_movement"
 				}
@@ -539,7 +539,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.7,
+					external_multiplier = 0.8,
 					end_time = 0.1,
 					buff_name = "planted_decrease_movement"
 				},
@@ -597,7 +597,7 @@ weapon_template.actions = {
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			additional_critical_strike_chance = 0,
 			use_precision_sweep = false,
-			damage_profile = "light_slashing_linesman",
+			damage_profile = "light_slashing_linesman_elf",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.5,
 			impact_sound_event = "slashing_hit",
@@ -613,7 +613,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.7,
+					external_multiplier = 1.05,
 					end_time = 0.5,
 					buff_name = "planted_decrease_movement"
 				}

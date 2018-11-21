@@ -951,9 +951,8 @@ weapon_template.actions = {
 					sub_action = "light_attack_quick_left",
 					start_time = 0.5,
 					action = "action_one",
-					doubleclick_window = 0,
 					release_required = "action_two_hold",
-					end_time = 1.05,
+					doubleclick_window = 0,
 					input = "action_one"
 				},
 				{

@@ -7,9 +7,9 @@ local breed_data = {
 	target_selection = "pick_closest_target",
 	dodge_crosshair_delay = 0.1,
 	smart_targeting_width = 0.2,
-	armor_category = 1,
 	exchange_order = 1,
 	animation_sync_rpc = "rpc_sync_anim_state_4",
+	armor_category = 1,
 	poison_resistance = 70,
 	dodge_crosshair_max_distance = 30,
 	no_stagger_duration = true,
@@ -47,6 +47,7 @@ local breed_data = {
 		50,
 		75
 	},
+	bloodlust_health = BreedTweaks.bloodlust_health.skaven_special,
 	stagger_duration = {
 		1,
 		1,

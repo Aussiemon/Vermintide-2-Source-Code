@@ -31,17 +31,20 @@ local buff_tweak_data = {
 		bonus = 1
 	},
 	traits_ranged_replenish_ammo_on_crit = {
-		bonus = 2
+		ammo_bonus_fraction = 0.05
 	},
 	traits_ranged_remove_overcharge_on_crit = {
-		bonus = 4
+		bonus = 0
 	},
 	consecutive_shot_buff = {
 		duration = 5,
 		multiplier = 0.05
 	},
 	traits_reduce_cooldown_on_crit = {
-		bonus = 2
+		bonus = 0.05
+	},
+	traits_reduce_cooldown_on_crit_internal_cooldown = {
+		duration = 4
 	},
 	traits_heal_on_crit = {
 		bonus = 5
@@ -77,14 +80,18 @@ local buff_tweak_data = {
 		proc_chance = 0.25
 	},
 	trait_necklace_heal_self_on_heal_other = {
-		multiplier = 0.35
+		multiplier = 0.5
 	},
 	trait_necklace_increased_healing_received = {
 		multiplier = 0.3
 	},
 	trait_necklace_damage_taken_reduction_buff = {
-		duration = 10,
-		multiplier = -0.5
+		duration = 2,
+		multiplier = -0.4
+	},
+	trait_necklace_no_healing_health_regen = {
+		time_between_heals = 5,
+		heal_amount = 1
 	},
 	trait_trinket_not_consume_grenade = {
 		proc_chance = 0.25
@@ -217,16 +224,17 @@ WeaponTraits.buff_templates = {
 				event = "on_critical_hit",
 				dormant = true,
 				event_buff = true,
-				buff_func = ProcFunctions.ammo_gain
+				buff_func = ProcFunctions.ammo_fraction_gain_on_crit_trait
 			}
 		}
 	},
 	traits_ranged_remove_overcharge_on_crit = {
 		buffs = {
 			{
-				event = "on_critical_hit",
-				dormant = true,
 				event_buff = true,
+				event = "on_critical_hit",
+				perk = "no_overcharge_crit",
+				dormant = true,
 				buff_func = ProcFunctions.remove_overcharge
 			}
 		}
@@ -312,11 +320,20 @@ WeaponTraits.buff_templates = {
 	traits_reduce_cooldown_on_crit = {
 		buffs = {
 			{
+				buff_to_add = "traits_reduce_cooldown_on_crit_internal_cooldown",
 				event_buff = true,
 				event = "on_critical_hit",
 				dormant = true,
 				bonus = 1,
-				buff_func = ProcFunctions.reduce_activated_ability_cooldown
+				buff_func = ProcFunctions.reduce_activated_ability_cooldown_with_internal_cooldown_on_crit
+			}
+		}
+	},
+	traits_reduce_cooldown_on_crit_internal_cooldown = {
+		buffs = {
+			{
+				dormant = true,
+				perk = "cooldown_delay"
 			}
 		}
 	},
@@ -398,22 +415,20 @@ WeaponTraits.buff_templates = {
 	trait_necklace_no_healing_health_regen = {
 		buffs = {
 			{
-				icon = "necklace_no_healing_health_regen",
-				heal_amount = 2,
 				max_stacks = 1,
-				time_between_heals = 10,
 				update_func = "update_heal_ticks",
-				dormant = true
+				dormant = true,
+				perk = "no_permanent_health"
 			}
 		}
 	},
 	trait_necklace_damage_taken_reduction_on_heal = {
 		buffs = {
 			{
-				event = "on_healed",
+				event = "on_damage_taken",
 				dormant = true,
 				event_buff = true,
-				buff_func = ProcFunctions.buff_defence_on_heal
+				buff_func = ProcFunctions.buff_defence_on_damage_taken
 			}
 		}
 	},
@@ -422,7 +437,7 @@ WeaponTraits.buff_templates = {
 			{
 				max_stacks = 1,
 				icon = "necklace_damage_taken_reduction_on_heal",
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				stat_buff = StatBuffIndex.DAMAGE_TAKEN_SECONDARY
 			}
 		}
 	},
@@ -504,13 +519,17 @@ WeaponTraits.traits = {
 	},
 	melee_reduce_cooldown_on_crit = {
 		display_name = "traits_melee_reduce_cooldown_on_crit",
-		advanced_description = "description_traits_melee_reduce_cooldown_on_crit",
+		advanced_description = "description_traits_melee_reduce_cooldown_on_crit_2",
 		icon = "melee_reduce_cooldown_on_crit",
 		buff_name = "traits_reduce_cooldown_on_crit",
 		description_values = {
 			{
-				value_type = "bonus",
+				value_type = "percent",
 				value = buff_tweak_data.traits_reduce_cooldown_on_crit.bonus
+			},
+			{
+				value_type = "duration",
+				value = buff_tweak_data.traits_reduce_cooldown_on_crit_internal_cooldown.duration
 			}
 		}
 	},
@@ -590,39 +609,38 @@ WeaponTraits.traits = {
 	},
 	ranged_reduce_cooldown_on_crit = {
 		display_name = "traits_ranged_reduce_cooldown_on_crit",
-		advanced_description = "description_traits_ranged_reduce_cooldown_on_crit",
+		advanced_description = "description_traits_ranged_reduce_cooldown_on_crit_2",
 		icon = "ranged_reduce_cooldown_on_crit",
 		buff_name = "traits_reduce_cooldown_on_crit",
 		description_values = {
 			{
-				value_type = "bonus",
+				value_type = "percent",
 				value = buff_tweak_data.traits_reduce_cooldown_on_crit.bonus
+			},
+			{
+				value_type = "bonus",
+				value = buff_tweak_data.traits_reduce_cooldown_on_crit_internal_cooldown.duration
 			}
 		}
 	},
 	ranged_replenish_ammo_on_crit = {
 		display_name = "traits_ranged_replenish_ammo_on_crit",
-		advanced_description = "description_traits_ranged_replenish_ammo_on_crit",
+		advanced_description = "description_traits_ranged_replenish_ammo_on_crit_2",
 		icon = "ranged_replenish_ammo_on_crit",
 		buff_name = "traits_ranged_replenish_ammo_on_crit",
 		description_values = {
 			{
-				value_type = "bonus",
-				value = buff_tweak_data.traits_ranged_replenish_ammo_on_crit.bonus
+				value_type = "percent",
+				value = buff_tweak_data.traits_ranged_replenish_ammo_on_crit.ammo_bonus_fraction
 			}
 		}
 	},
 	ranged_remove_overcharge_on_crit = {
 		display_name = "traits_ranged_remove_overcharge_on_crit",
-		advanced_description = "description_traits_ranged_remove_overcharge_on_crit",
+		advanced_description = "description_traits_ranged_remove_overcharge_on_crit_2",
 		icon = "ranged_remove_overcharge_on_crit",
 		buff_name = "traits_ranged_remove_overcharge_on_crit",
-		description_values = {
-			{
-				value_type = "bonus",
-				value = buff_tweak_data.traits_ranged_remove_overcharge_on_crit.bonus
-			}
-		}
+		description_values = {}
 	},
 	ranged_increase_power_level_vs_armour_crit = {
 		display_name = "traits_ranged_increase_power_level_vs_armour_crit",
@@ -760,20 +778,32 @@ WeaponTraits.traits = {
 	necklace_no_healing_health_regen = {
 		display_name = "trait_necklace_no_healing_health_regen",
 		buffer = "both",
-		advanced_description = "description_trait_necklace_no_healing_health_regen",
+		advanced_description = "description_trait_necklace_no_healing_health_regen_2",
 		icon = "necklace_no_healing_health_regen",
-		buff_name = "trait_necklace_no_healing_health_regen"
+		buff_name = "trait_necklace_no_healing_health_regen",
+		description_values = {
+			{
+				value = buff_tweak_data.trait_necklace_no_healing_health_regen.heal_amount
+			},
+			{
+				value = buff_tweak_data.trait_necklace_no_healing_health_regen.time_between_heals
+			}
+		}
 	},
 	necklace_damage_taken_reduction_on_heal = {
 		display_name = "trait_necklace_damage_taken_reduction_on_heal",
 		buffer = "server",
-		advanced_description = "description_trait_necklace_damage_taken_reduction_on_heal",
+		advanced_description = "description_trait_necklace_damage_taken_reduction_on_heal_2",
 		icon = "necklace_damage_taken_reduction_on_heal",
 		buff_name = "trait_necklace_damage_taken_reduction_on_heal",
 		description_values = {
 			{
 				value_type = "percent",
 				value = buff_tweak_data.trait_necklace_damage_taken_reduction_buff.multiplier
+			},
+			{
+				value_type = "duration",
+				value = buff_tweak_data.trait_necklace_damage_taken_reduction_buff.duration
 			},
 			{
 				value_type = "duration",

@@ -228,27 +228,27 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default_right",
-					start_time = 0.85,
+					start_time = 0.6,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one"
 				},
 				{
 					sub_action = "default_right",
-					start_time = 0.85,
+					start_time = 0.6,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.5,
+					start_time = 0.6,
 					action = "action_two",
 					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.5,
+					start_time = 0.6,
 					action = "action_wield",
 					input = "action_wield"
 				}
@@ -304,27 +304,27 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default_left",
-					start_time = 0.75,
+					start_time = 0.65,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one"
 				},
 				{
 					sub_action = "default_left",
-					start_time = 0.75,
+					start_time = 0.65,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.5,
+					start_time = 0.65,
 					action = "action_two",
 					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.5,
+					start_time = 0.65,
 					action = "action_wield",
 					input = "action_wield"
 				}
@@ -359,7 +359,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.1,
+			anim_time_scale = time_mod * 1.25,
 			buff_data = {
 				{
 					start_time = 0,
@@ -383,27 +383,27 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.85,
+					start_time = 0.8,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.85,
+					start_time = 0.8,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.5,
+					start_time = 0.65,
 					action = "action_two",
 					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.5,
+					start_time = 0.65,
 					action = "action_wield",
 					input = "action_wield"
 				}
@@ -418,7 +418,7 @@ weapon_template.actions = {
 			range_mod = 1.2,
 			kind = "sweep",
 			first_person_hit_anim = "attack_hit_alt_effect",
-			no_damage_impact_sound_event = "blunt_hit_armour",
+			no_damage_impact_sound_event = "slashing_hit_armour",
 			sweep_z_offset = 0,
 			width_mod = 25,
 			hit_shield_stop_anim = "attack_hit_shield",
@@ -427,7 +427,7 @@ weapon_template.actions = {
 			use_precision_sweep = true,
 			damage_profile = "medium_slashing_smiter_upper",
 			damage_window_end = 0.45,
-			impact_sound_event = "axe_1h_hit",
+			impact_sound_event = "slashing_hit",
 			aim_assist_ramp_multiplier = 0.3,
 			anim_end_event = "attack_finished",
 			aim_assist_max_ramp_multiplier = 0.6,
@@ -440,7 +440,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 0.8,
+			anim_time_scale = time_mod * 0.95,
 			buff_data = {
 				{
 					start_time = 0,
@@ -502,7 +502,7 @@ weapon_template.actions = {
 			range_mod = 1.2,
 			kind = "sweep",
 			first_person_hit_anim = "attack_hit_alt_effect",
-			no_damage_impact_sound_event = "blunt_hit_armour",
+			no_damage_impact_sound_event = "slashing_hit_armour",
 			sweep_z_offset = 0,
 			width_mod = 25,
 			additional_critical_strike_chance = 0,
@@ -512,7 +512,7 @@ weapon_template.actions = {
 			damage_profile = "heavy_slashing_smiter_glaive",
 			aim_assist_ramp_multiplier = 0.3,
 			damage_window_end = 0.5,
-			impact_sound_event = "axe_1h_hit",
+			impact_sound_event = "slashing_hit",
 			aim_assist_max_ramp_multiplier = 0.8,
 			anim_end_event = "attack_finished",
 			aim_assist_ramp_decay_delay = 0.1,
@@ -576,12 +576,12 @@ weapon_template.actions = {
 			width_mod = 25,
 			no_damage_impact_sound_event = "blunt_hit_armour",
 			hit_shield_stop_anim = "attack_hit_shield",
-			hit_effect = "melee_hit_axes_2h",
 			additional_critical_strike_chance = 0,
+			hit_effect = "melee_hit_axes_2h",
 			use_precision_sweep = false,
+			damage_profile = "medium_slashing_axe_linesman",
 			damage_window_end = 0.45,
 			impact_sound_event = "axe_1h_hit",
-			damage_profile = "medium_slashing_axe_linesman",
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 3,
 			weapon_up_offset_mod = 0.15,
@@ -592,7 +592,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.25,
+			anim_time_scale = time_mod * 1.15,
 			buff_data = {
 				{
 					start_time = 0,
@@ -616,7 +616,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default_left",
-					start_time = 0.5,
+					start_time = 0.65,
 					action = "action_one",
 					release_required = "action_two_hold",
 					end_time = 1.2,
@@ -630,21 +630,20 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 1.65,
+					start_time = 0.65,
 					action = "action_two",
 					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.5,
+					start_time = 0.65,
 					action = "action_wield",
 					input = "action_wield"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
-			end,
-			hit_mass_count = LINESMAN_HIT_MASS_COUNT
+			end
 		},
 		push = {
 			damage_window_start = 0.05,

@@ -145,6 +145,16 @@ CareerExtension.start_activated_ability_cooldown = function (self, refund_percen
 	end
 end
 
+CareerExtension.reduce_activated_ability_cooldown_percent = function (self, amount)
+	if self._cooldown_paused then
+		return
+	end
+
+	local max_cooldown = self._max_cooldown
+	local reduction = max_cooldown * amount
+	self._cooldown = self._cooldown - reduction
+end
+
 CareerExtension.reduce_activated_ability_cooldown = function (self, amount)
 	if self._cooldown_paused then
 		return

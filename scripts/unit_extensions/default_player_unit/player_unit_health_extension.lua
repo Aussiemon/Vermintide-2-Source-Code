@@ -254,8 +254,16 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 		GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", temporary_health)
 
 		if self.wounded_degen_timer <= t then
+			local wounded = status_extension:is_wounded()
+			local degen_amount = PlayerUnitStatusSettings.WOUNDED_DEGEN_AMOUNT
+			local degen_delay = PlayerUnitStatusSettings.WOUNDED_DEGEN_DELAY
+
+			if not wounded then
+				degen_amount, degen_delay = self:health_degen_settings()
+			end
+
 			if temporary_health > 0 and state == "alive" then
-				local new_temporary_health = temporary_health - PlayerUnitStatusSettings.WOUNDED_DEGEN_AMOUNT
+				local new_temporary_health = temporary_health - degen_amount
 				local min_temporary_health_left = (health <= 0 and 1) or 0
 				local damage = temporary_health - math.max(new_temporary_health, min_temporary_health_left)
 
@@ -264,7 +272,7 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 				end
 			end
 
-			self.wounded_degen_timer = t + PlayerUnitStatusSettings.WOUNDED_DEGEN_DELAY
+			self.wounded_degen_timer = t + degen_delay
 		end
 
 		self.previous_state = state
@@ -414,6 +422,12 @@ PlayerUnitHealthExtension.add_heal = function (self, healer_unit, heal_amount, h
 			local new_temporary_health = (max_health < current_health + current_temporary_health + heal_amount and max_health - current_health) or current_temporary_health + heal_amount
 
 			GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", new_temporary_health)
+		end
+
+		if heal_type ~= "career_passive" and not self.status_extension:is_wounded() then
+			local t = Managers.time:time("game")
+			local _, _, degen_start = self:health_degen_settings()
+			self.wounded_degen_timer = t + degen_start
 		end
 
 		local unit_id = self.unit_storage:go_id(unit)
@@ -655,10 +669,9 @@ PlayerUnitHealthExtension.get_damage_taken = function (self, max_health_go_field
 
 	if game and game_object_id then
 		local health = GameSession.game_object_field(game, game_object_id, "current_health")
-		local temporary_health = GameSession.game_object_field(game, game_object_id, "current_temporary_health")
 		local max_health = GameSession.game_object_field(game, game_object_id, max_health_go_field or "max_health")
 
-		return max_health - (health - temporary_health)
+		return max_health - health
 	end
 
 	return 0
@@ -745,6 +758,35 @@ end
 
 PlayerUnitHealthExtension.set_current_damage = function (self, damage)
 	return
+end
+
+PlayerUnitHealthExtension.health_degen_settings = function (self)
+	local buff_extension = self.buff_extension
+	local degen_amount = PlayerUnitStatusSettings.NOT_WOUNDED_DEGEN_AMOUNT
+	local degen_delay = PlayerUnitStatusSettings.NOT_WOUNDED_DEGEN_DELAY
+	local degen_start = PlayerUnitStatusSettings.NOT_WOUNDED_DEGEN_START
+
+	if buff_extension then
+		if buff_extension:has_buff_perk("smiter_healing") then
+			degen_amount = PlayerUnitStatusSettings.SMITER_DEGEN_AMOUNT
+			degen_delay = PlayerUnitStatusSettings.SMITER_DEGEN_DELAY
+			degen_start = PlayerUnitStatusSettings.SMITER_DEGEN_START
+		elseif buff_extension:has_buff_perk("linesman_healing") then
+			degen_amount = PlayerUnitStatusSettings.LINESMAN_DEGEN_AMOUNT
+			degen_delay = PlayerUnitStatusSettings.LINESMAN_DEGEN_DELAY
+			degen_start = PlayerUnitStatusSettings.LINESMAN_DEGEN_START
+		elseif buff_extension:has_buff_perk("tank_healing") then
+			degen_amount = PlayerUnitStatusSettings.TANK_DEGEN_AMOUNT
+			degen_delay = PlayerUnitStatusSettings.TANK_DEGEN_DELAY
+			degen_start = PlayerUnitStatusSettings.TANK_DEGEN_START
+		elseif buff_extension:has_buff_perk("ninja_healing") then
+			degen_amount = PlayerUnitStatusSettings.NINJA_DEGEN_AMOUNT
+			degen_delay = PlayerUnitStatusSettings.NINJA_DEGEN_DELAY
+			degen_start = PlayerUnitStatusSettings.NINJA_DEGEN_START
+		end
+	end
+
+	return degen_amount, degen_delay, degen_start
 end
 
 PlayerUnitHealthExtension.debug_show_health = function (self)

@@ -176,7 +176,7 @@ weapon_template.actions = {
 		},
 		light_attack_right_upward = {
 			damage_window_start = 0.38,
-			range_mod = 1.35,
+			range_mod = 1.45,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
@@ -252,7 +252,7 @@ weapon_template.actions = {
 			damage_window_start = 0.4,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
-			range_mod = 1.35,
+			range_mod = 1.45,
 			sweep_z_offset = -0.05,
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			hit_shield_stop_anim = "attack_hit_shield",
@@ -327,7 +327,7 @@ weapon_template.actions = {
 		},
 		heavy_attack_down_first = {
 			damage_window_start = 0.35,
-			range_mod = 1.2,
+			range_mod = 1.3,
 			kind = "sweep",
 			sweep_z_offset = 0,
 			no_damage_impact_sound_event = "slashing_hit_armour",
@@ -368,7 +368,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default_right",
-					start_time = 0.9,
+					start_time = 1.15,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one_hold"
@@ -407,7 +407,7 @@ weapon_template.actions = {
 		},
 		heavy_attack_down_second = {
 			damage_window_start = 0.55,
-			range_mod = 1.35,
+			range_mod = 1.45,
 			kind = "sweep",
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			sweep_z_offset = -0.05,
@@ -474,13 +474,13 @@ weapon_template.actions = {
 			damage_window_start = 0.4,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
-			range_mod = 1.35,
+			range_mod = 1.45,
 			sweep_z_offset = -0.05,
 			no_damage_impact_sound_event = "slashing_hit_armour",
-			additional_critical_strike_chance = 0,
 			hit_shield_stop_anim = "attack_hit_shield",
-			use_precision_sweep = false,
+			additional_critical_strike_chance = 0.25,
 			hit_effect = "melee_hit_sword_2h",
+			use_precision_sweep = false,
 			damage_profile = "medium_slashing_linesman",
 			damage_window_end = 0.5,
 			impact_sound_event = "slashing_hit",
@@ -493,7 +493,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.2,
+			anim_time_scale = time_mod * 1.5,
 			buff_data = {
 				{
 					start_time = 0,
@@ -516,8 +516,8 @@ weapon_template.actions = {
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default_",
-					start_time = 0.65,
+					sub_action = "default",
+					start_time = 0.5,
 					action = "action_one",
 					release_required = "action_two_hold",
 					end_time = 1.15,
@@ -531,14 +531,14 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.75,
+					start_time = 0.6,
 					action = "action_two",
 					release_required = "action_two",
 					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.65,
+					start_time = 0.6,
 					action = "action_wield",
 					input = "action_wield"
 				}
@@ -548,7 +548,8 @@ weapon_template.actions = {
 			end,
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
-			end
+			end,
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		push = {
 			damage_window_start = 0.05,
@@ -582,7 +583,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.4,
+					start_time = 0.3,
 					action = "action_one",
 					release_required = "action_two_hold",
 					input = "action_one"
@@ -609,14 +610,14 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.4,
+					start_time = 0.35,
 					action = "action_two",
 					send_buffer = true,
 					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.4,
+					start_time = 0.35,
 					action = "action_wield",
 					input = "action_wield"
 				}

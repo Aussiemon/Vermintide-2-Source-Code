@@ -12,7 +12,7 @@ local breed_data = {
 	aoe_radius = 0.4,
 	has_running_attack = true,
 	opt_base_unit = "units/beings/enemies/skaven_stormvermin/chr_skaven_stormvermin_baked",
-	no_stagger_duration = false,
+	scale_death_push = 1,
 	detection_radius = 12,
 	headshot_coop_stamina_fatigue_type = "headshot_special",
 	threat_value = 5,
@@ -38,7 +38,7 @@ local breed_data = {
 	behavior = "storm_vermin",
 	bots_should_flank = true,
 	target_selection = "pick_closest_target_with_spillover",
-	scale_death_push = 1,
+	no_stagger_duration = false,
 	follow_reach = 1,
 	exchange_order = 3,
 	stagger_threshold_light = 0.5,
@@ -76,6 +76,7 @@ local breed_data = {
 		26,
 		39
 	},
+	bloodlust_health = BreedTweaks.bloodlust_health.skaven_elite,
 	diff_stagger_resist = {
 		2.25,
 		2.25,

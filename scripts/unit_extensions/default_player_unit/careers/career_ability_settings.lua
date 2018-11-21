@@ -14,7 +14,7 @@ ActivatedAbilitySettings = {
 	dr_1 = {
 		description = "career_active_desc_dr_1",
 		display_name = "career_active_name_dr_1",
-		cooldown = 180,
+		cooldown = 120,
 		icon = "bardin_ironbreaker_activated_ability",
 		ability_class = CareerAbilityDRIronbreaker
 	},
@@ -50,7 +50,7 @@ ActivatedAbilitySettings = {
 	es_3 = {
 		description = "career_active_desc_markus_mercenary_2",
 		display_name = "career_active_name_markus_mercenary",
-		cooldown = 180,
+		cooldown = 90,
 		icon = "markus_mercenary_activated_ability",
 		ability_class = CareerAbilityESMercenary
 	},
@@ -72,7 +72,7 @@ ActivatedAbilitySettings = {
 		description = "career_active_desc_we_3",
 		weapon_name = "kerillian_waywatcher_career_skill_weapon",
 		display_name = "career_active_name_we_3",
-		cooldown = 70,
+		cooldown = 80,
 		icon = "kerillian_waywatcher_activated_ability",
 		action_name = "action_career_we_3"
 	},
@@ -87,14 +87,14 @@ ActivatedAbilitySettings = {
 		description = "career_active_desc_wh_2",
 		weapon_name = "victor_bountyhunter_career_skill_weapon",
 		display_name = "career_active_name_wh_2",
-		cooldown = 90,
+		cooldown = 70,
 		icon = "victor_bountyhunter_activated_ability",
 		action_name = "action_career_wh_2"
 	},
 	wh_3 = {
 		description = "career_active_desc_victor_witchhunter_2",
 		display_name = "career_active_name_victor_witchhunter",
-		cooldown = 180,
+		cooldown = 90,
 		icon = "victor_witchhunter_activated_ability",
 		ability_class = CareerAbilityWHCaptain
 	},
@@ -102,7 +102,7 @@ ActivatedAbilitySettings = {
 		description = "career_active_desc_bw_1",
 		weapon_name = "sienna_scholar_career_skill_weapon",
 		display_name = "career_active_name_bw_1",
-		cooldown = 40,
+		cooldown = 60,
 		icon = "sienna_scholar_activated_ability",
 		action_name = "action_career_bw_1"
 	},
@@ -176,6 +176,9 @@ PassiveAbilitySettings = {
 			"bardin_ranger_passive",
 			"bardin_ranger_passive_increased_ammunition",
 			"bardin_ranger_passive_reload_speed",
+			"bardin_ranger_passive_consumeable_dupe_healing",
+			"bardin_ranger_passive_consumeable_dupe_potion",
+			"bardin_ranger_passive_consumeable_dupe_grenade",
 			"bardin_ranger_ability_cooldown_on_hit",
 			"bardin_ranger_ability_cooldown_on_damage_taken"
 		},
@@ -187,6 +190,10 @@ PassiveAbilitySettings = {
 			{
 				display_name = "career_passive_name_dr_3c",
 				description = "career_passive_desc_dr_3c_2"
+			},
+			{
+				display_name = "career_passive_name_dr_3d",
+				description = "career_passive_desc_dr_3d"
 			}
 		}
 	},
@@ -210,6 +217,10 @@ PassiveAbilitySettings = {
 			{
 				display_name = "career_passive_name_es_1c",
 				description = "career_passive_desc_es_1c_2"
+			},
+			{
+				display_name = "career_passive_name_es_1d",
+				description = "career_passive_desc_es_1d"
 			}
 		}
 	},
@@ -349,7 +360,7 @@ PassiveAbilitySettings = {
 		}
 	},
 	wh_2 = {
-		description = "career_passive_desc_wh_2a",
+		description = "career_passive_desc_wh_2a_2",
 		display_name = "career_passive_name_wh_2",
 		icon = "victor_bountyhunter_passive",
 		buffs = {
@@ -357,7 +368,6 @@ PassiveAbilitySettings = {
 			"victor_bountyhunter_passive_crit_buff_removal",
 			"victor_bountyhunter_passive_reload_speed",
 			"victor_bountyhunter_passive_increased_ammunition",
-			"victor_bountyhunter_activate_passive_on_melee_kill",
 			"victor_bountyhunter_ability_cooldown_on_hit",
 			"victor_bountyhunter_ability_cooldown_on_damage_taken"
 		},
@@ -413,12 +423,11 @@ PassiveAbilitySettings = {
 		}
 	},
 	bw_2 = {
-		description = "career_passive_desc_bw_2a",
+		description = "career_passive_desc_bw_2a_2",
 		display_name = "career_passive_name_bw_2",
 		icon = "sienna_adept_passive",
 		buffs = {
 			"sienna_adept_passive",
-			"sienna_adept_passive_reset_on_damage_taken",
 			"sienna_adept_passive_reset_on_spell_used",
 			"sienna_adept_passive_overcharge_charge_speed_increased",
 			"sienna_adept_passive_ranged_damage",
@@ -442,7 +451,6 @@ PassiveAbilitySettings = {
 		icon = "sienna_unchained_passive",
 		buffs = {
 			"sienna_unchained_passive",
-			"sienna_unchained_passive_overcharged_blocks",
 			"sienna_unchained_passive_increased_melee_power_on_overcharge",
 			"sienna_unchained_ability_cooldown_on_hit",
 			"sienna_unchained_ability_cooldown_on_damage_taken"
@@ -455,10 +463,6 @@ PassiveAbilitySettings = {
 			{
 				display_name = "career_passive_name_bw_3c",
 				description = "career_passive_desc_bw_3c_2"
-			},
-			{
-				display_name = "career_passive_name_bw_3d",
-				description = "career_passive_desc_bw_3d"
 			}
 		}
 	}

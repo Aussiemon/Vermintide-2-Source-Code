@@ -25,10 +25,7 @@ ActionHealingDraught.finish = function (self, reason)
 	local network_manager = Managers.state.network
 	local network_transmit = network_manager.network_transmit
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
-
-	if reason ~= "action_complete" or buff_extension:has_buff_type("trait_necklace_no_healing_health_regen") then
-		return
-	end
+	local heal_type = "healing_draught"
 
 	if current_action.dialogue_event then
 		local dialogue_input = ScriptUnit.extension_input(owner_unit, "dialogue_system")
@@ -43,11 +40,15 @@ ActionHealingDraught.finish = function (self, reason)
 		end
 	end
 
+	if buff_extension:has_buff_perk("no_permanent_health") then
+		heal_type = "healing_draught_temp_health"
+	end
+
 	if self.is_server or LEVEL_EDITOR_TEST then
-		DamageUtils.heal_network(owner_unit, owner_unit, 75, "healing_draught")
+		DamageUtils.heal_network(owner_unit, owner_unit, 75, heal_type)
 	else
 		local owner_unit_id = network_manager:unit_game_object_id(owner_unit)
-		local heal_type_id = NetworkLookup.heal_types.healing_draught
+		local heal_type_id = NetworkLookup.heal_types[heal_type]
 
 		network_transmit:send_rpc_server("rpc_request_heal", owner_unit_id, 75, heal_type_id)
 	end

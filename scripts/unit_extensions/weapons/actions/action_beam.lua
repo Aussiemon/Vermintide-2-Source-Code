@@ -274,6 +274,10 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 						if health_extension:is_alive() then
 							local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[current_action.overcharge_type]
 
+							if is_critical_strike and buff_extension:has_buff_perk("no_overcharge_crit") then
+								overcharge_amount = 0
+							end
+
 							self.overcharge_extension:add_charge(overcharge_amount * self.ramping_interval)
 						end
 					end

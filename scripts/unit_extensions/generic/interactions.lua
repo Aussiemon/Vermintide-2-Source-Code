@@ -1482,25 +1482,26 @@ InteractionDefinitions.heal = {
 			if result == InteractionResult.SUCCESS then
 				local attack_template = AttackTemplates[config.attack_template]
 				local health_extension = ScriptUnit.extension(interactable_unit, "health_system")
-				local buff_extension = ScriptUnit.extension(interactor_unit, "buff_system")
-
-				if interactor_unit == interactable_unit and buff_extension:has_buff_type("trait_necklace_no_healing_health_regen") then
-					return
-				end
+				local interactor_buff_extension = ScriptUnit.extension(interactor_unit, "buff_system")
+				local heal_type = attack_template.heal_type
 
 				if attack_template.heal_type == "bandage" then
 					local damage_taken = health_extension:get_damage_taken()
 					local heal_amount = damage_taken * attack_template.heal_percent
 
-					DamageUtils.heal_network(interactable_unit, interactor_unit, heal_amount, attack_template.heal_type)
+					if interactor_buff_extension:has_buff_perk("no_permanent_health") and interactor_unit == interactable_unit then
+						heal_type = "bandage_temp_health"
+					end
+
+					DamageUtils.heal_network(interactable_unit, interactor_unit, heal_amount, heal_type)
 				else
-					DamageUtils.heal_network(interactable_unit, interactor_unit, attack_template.heal_amount, attack_template.heal_type)
+					DamageUtils.heal_network(interactable_unit, interactor_unit, attack_template.heal_amount, heal_type)
 				end
 
 				if interactor_unit ~= interactable_unit then
 					local health_extension = ScriptUnit.extension(interactor_unit, "health_system")
 					local damage_taken = health_extension:get_damage_taken()
-					local heal_amount_self = buff_extension:apply_buffs_to_value(damage_taken, StatBuffIndex.HEAL_SELF_ON_HEAL_OTHER)
+					local heal_amount_self = interactor_buff_extension:apply_buffs_to_value(damage_taken, StatBuffIndex.HEAL_SELF_ON_HEAL_OTHER)
 					heal_amount_self = heal_amount_self - damage_taken
 
 					DamageUtils.heal_network(interactor_unit, interactor_unit, heal_amount_self, "bandage_trinket")
@@ -1553,10 +1554,6 @@ InteractionDefinitions.heal = {
 					local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
 					local buff_extension = ScriptUnit.extension(interactor_unit, "buff_system")
 					local _, procced = buff_extension:apply_buffs_to_value(0, StatBuffIndex.NOT_CONSUME_MEDPACK)
-
-					if interactor_unit == interactable_unit and buff_extension:has_buff_type("trait_necklace_no_healing_health_regen") then
-						return
-					end
 
 					if not procced then
 						local interactor_data = data.interactor_data

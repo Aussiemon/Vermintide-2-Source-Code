@@ -79,6 +79,7 @@ local breed_data = {
 		1
 	},
 	max_health = BreedTweaks.max_health.fanatic,
+	bloodlust_health = BreedTweaks.bloodlust_health.chaos_horde,
 	diff_stagger_resist = BreedTweaks.diff_stagger_resist.fanatic,
 	stagger_duration = BreedTweaks.stagger_duration.fanatic,
 	stagger_duration_difficulty_mod = BreedTweaks.stagger_duration_difficulty_mod.fast,

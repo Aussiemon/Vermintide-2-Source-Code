@@ -810,12 +810,13 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 	local self_health_utiliy = 0
 
 	if health_slot_data then
+		local self_wounded = self._status_extension:is_wounded()
 		local template = inventory_extension:get_item_template(health_slot_data)
+		local has_no_permanent_health_from_item_buff = buff_extension:has_buff_type("trait_necklace_no_healing_health_regen")
 		can_heal_other = template.can_heal_other
 		can_give_healing_to_other = template.can_give_other
 
-		if not buff_extension:has_buff_type("trait_necklace_no_healing_health_regen") then
-			local self_wounded = self._status_extension:is_wounded()
+		if not has_no_permanent_health_from_item_buff or self_wounded then
 			local self_permanent_health_percent = self._health_extension:current_permanent_health_percent()
 			self_health_utiliy = self:_calculate_healing_item_utility(self_permanent_health_percent, self_wounded, can_give_healing_to_other) + SELF_HEAL_STICKINESS
 		end
@@ -866,7 +867,7 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 					utility = 100
 				else
 					local health_percent = ScriptUnit.extension(player_unit, "health_system"):current_permanent_health_percent()
-					local has_heal_disable_buff = ScriptUnit.extension(player_unit, "buff_system"):has_buff_type("trait_necklace_no_healing_health_regen")
+					local has_no_permanent_health_from_item_buff = ScriptUnit.extension(player_unit, "buff_system"):has_buff_type("trait_necklace_no_healing_health_regen")
 					local player_inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
 					local player_locomotion_extension = ScriptUnit.extension(player_unit, "locomotion_system")
 					local is_wounded = status_ext:is_wounded()
@@ -877,7 +878,7 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 					if can_heal_other and (health_percent < WANTS_TO_HEAL_THRESHOLD or is_wounded) and heal_other_allowed then
 						in_need_type = "in_need_of_heal"
 						utility = 70 + health_utility * 15
-					elseif can_give_healing_to_other and not has_heal_disable_buff and (health_percent < WANTS_TO_GIVE_HEAL_TO_OTHER or is_wounded) and not player_inventory_extension:get_slot_data("slot_healthkit") and heal_other_allowed then
+					elseif can_give_healing_to_other and (not has_no_permanent_health_from_item_buff or is_wounded) and (health_percent < WANTS_TO_GIVE_HEAL_TO_OTHER or is_wounded) and not player_inventory_extension:get_slot_data("slot_healthkit") and heal_other_allowed then
 						in_need_type = "can_accept_heal_item"
 						utility = 70 + health_utility * 10
 					elseif can_give_grenade_to_other and not player_inventory_extension:get_slot_data("slot_grenade") and not is_bot then

@@ -52,15 +52,9 @@ local buff_tweak_data = {
 	markus_huntsman_passive_improved = {
 		bonus = 2
 	},
-	markus_huntsman_critical_hit_damage = {
-		multiplier = 0.2
-	},
-	markus_huntsman_movement_speed = {
-		multiplier = 1.1
-	},
-	markus_huntsman_heal_party_on_special_killed = {
-		bonus = 5
-	},
+	markus_huntsman_vanguard = {},
+	markus_huntsman_bloodlust = {},
+	markus_huntsman_conqueror = {},
 	markus_huntsman_activated_ability_cooldown = {
 		multiplier = -0.3
 	},
@@ -121,6 +115,9 @@ local buff_tweak_data = {
 	markus_knight_passive_movement_speed_aura_buff = {
 		multiplier = 1.05
 	},
+	markus_knight_vanguard = {},
+	markus_knight_reaper = {},
+	markus_knight_conqueror = {},
 	markus_knight_activated_ability_damage_buff = {
 		duration = 10,
 		multiplier = 0.25
@@ -180,6 +177,9 @@ local buff_tweak_data = {
 	markus_mercenary_passive_power_level = {
 		multiplier = 0.15
 	},
+	markus_mercenary_reaper = {},
+	markus_mercenary_bloodlust = {},
+	markus_mercenary_conqueror = {},
 	markus_mercenary_activated_ability_cooldown = {
 		multiplier = -0.3
 	},
@@ -507,30 +507,40 @@ TalentBuffTemplates.empire_soldier = {
 			}
 		}
 	},
-	markus_huntsman_critical_hit_damage = {
+	markus_huntsman_vanguard = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.CRITICAL_STRIKE_EFFECTIVENESS
-			}
-		}
-	},
-	markus_huntsman_movement_speed = {
-		buffs = {
-			{
-				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
-				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
-			}
-		}
-	},
-	markus_huntsman_heal_party_on_special_killed = {
-		buffs = {
-			{
-				event = "on_special_killed",
+				multiplier = 1,
+				name = "vanguard",
 				event_buff = true,
-				buff_func = ProcFunctions.heal_party
+				event = "on_stagger",
+				perk = "tank_healing",
+				buff_func = ProcFunctions.heal_stagger_targets_on_melee
+			}
+		}
+	},
+	markus_huntsman_bloodlust = {
+		buffs = {
+			{
+				multiplier = 0.45,
+				name = "bloodlust",
+				event_buff = true,
+				event = "on_damage_dealt",
+				perk = "smiter_healing",
+				heal_cap = 0.25,
+				buff_func = ProcFunctions.heal_percent_of_damage_dealt_on_melee
+			}
+		}
+	},
+	markus_huntsman_conqueror = {
+		buffs = {
+			{
+				multiplier = 0.2,
+				name = "conqueror",
+				event_buff = true,
+				event = "on_healed_consumeable",
+				range = 10,
+				buff_func = ProcFunctions.heal_other_players_percent_at_range
 			}
 		}
 	},
@@ -766,6 +776,44 @@ TalentBuffTemplates.empire_soldier = {
 			}
 		}
 	},
+	markus_knight_vanguard = {
+		buffs = {
+			{
+				multiplier = 1,
+				name = "vanguard",
+				event_buff = true,
+				event = "on_stagger",
+				perk = "tank_healing",
+				buff_func = ProcFunctions.heal_stagger_targets_on_melee
+			}
+		}
+	},
+	markus_knight_reaper = {
+		buffs = {
+			{
+				multiplier = -0.05,
+				name = "reaper",
+				event_buff = true,
+				event = "on_damage_dealt",
+				perk = "linesman_healing",
+				max_targets = 5,
+				bonus = 0.25,
+				buff_func = ProcFunctions.heal_damage_targets_on_melee
+			}
+		}
+	},
+	markus_knight_conqueror = {
+		buffs = {
+			{
+				multiplier = 0.2,
+				name = "conqueror",
+				event_buff = true,
+				event = "on_healed_consumeable",
+				range = 10,
+				buff_func = ProcFunctions.heal_other_players_percent_at_range
+			}
+		}
+	},
 	markus_knight_activated_ability_damage_buff = {
 		buffs = {
 			{
@@ -957,6 +1005,45 @@ TalentBuffTemplates.empire_soldier = {
 			}
 		}
 	},
+	markus_mercenary_reaper = {
+		buffs = {
+			{
+				multiplier = -0.05,
+				name = "reaper",
+				event_buff = true,
+				event = "on_damage_dealt",
+				perk = "linesman_healing",
+				max_targets = 5,
+				bonus = 0.25,
+				buff_func = ProcFunctions.heal_damage_targets_on_melee
+			}
+		}
+	},
+	markus_mercenary_bloodlust = {
+		buffs = {
+			{
+				multiplier = 0.45,
+				name = "bloodlust",
+				event_buff = true,
+				event = "on_damage_dealt",
+				perk = "smiter_healing",
+				heal_cap = 0.25,
+				buff_func = ProcFunctions.heal_percent_of_damage_dealt_on_melee
+			}
+		}
+	},
+	markus_mercenary_conqueror = {
+		buffs = {
+			{
+				multiplier = 0.2,
+				name = "conqueror",
+				event_buff = true,
+				event = "on_healed_consumeable",
+				range = 10,
+				buff_func = ProcFunctions.heal_other_players_percent_at_range
+			}
+		}
+	},
 	markus_mercenary_activated_ability_cooldown = {
 		buffs = {
 			{
@@ -985,9 +1072,9 @@ TalentTrees.empire_soldier = {
 			"markus_huntsman_headshots_increase_reload_speed"
 		},
 		{
-			"markus_huntsman_regrowth",
-			"markus_huntsman_bloodlust",
-			"markus_huntsman_conqueror"
+			"markus_huntsman_vanguard",
+			"markus_huntsman_bloodlust_2",
+			"markus_huntsman_heal_share"
 		},
 		{
 			"markus_huntsman_activated_ability_cooldown",
@@ -1012,9 +1099,9 @@ TalentTrees.empire_soldier = {
 			"markus_knight_passive_movement_speed_aura"
 		},
 		{
-			"markus_knight_regrowth",
-			"markus_knight_bloodlust",
-			"markus_knight_conqueror"
+			"markus_knight_vanguard",
+			"markus_knight_reaper",
+			"markus_knight_heal_share"
 		},
 		{
 			"markus_knight_activated_ability_cooldown",
@@ -1039,9 +1126,9 @@ TalentTrees.empire_soldier = {
 			"markus_mercenary_passive_group_proc"
 		},
 		{
-			"markus_mercenary_regrowth",
-			"markus_mercenary_bloodlust",
-			"markus_mercenary_conqueror"
+			"markus_mercenary_reaper",
+			"markus_mercenary_bloodlust_2",
+			"markus_mercenary_heal_share"
 		},
 		{
 			"markus_mercenary_activated_ability_cooldown",
@@ -1208,53 +1295,46 @@ Talents.empire_soldier = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc_2",
-		name = "markus_huntsman_regrowth",
+		description = "vanguard_desc",
+		name = "markus_huntsman_vanguard",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "markus_huntsman_regrowth",
-		description_values = {
-			{
-				value = BuffTemplates.regrowth.buffs[1].bonus
-			}
-		},
+		description_values = {},
 		requirements = {},
 		buffs = {
-			"regrowth"
+			"markus_huntsman_vanguard"
 		},
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc_2",
-		name = "markus_huntsman_bloodlust",
+		description = "bloodlust_desc_3",
+		name = "markus_huntsman_bloodlust_2",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "markus_huntsman_bloodlust",
-		description_values = {
-			{
-				value = BuffTemplates.bloodlust.buffs[1].bonus
-			}
-		},
+		description_values = {},
 		requirements = {},
 		buffs = {
-			"bloodlust"
+			"markus_huntsman_bloodlust"
 		},
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc_2",
-		name = "markus_huntsman_conqueror",
+		description = "conqueror_desc_3",
+		name = "markus_huntsman_heal_share",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "markus_huntsman_conqueror",
 		description_values = {
 			{
-				value = BuffTemplates.conqueror.buffs[1].bonus
+				value_type = "percent",
+				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"conqueror"
+			"markus_huntsman_conqueror"
 		},
 		buff_data = {}
 	},
@@ -1471,53 +1551,50 @@ Talents.empire_soldier = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc_2",
-		name = "markus_knight_regrowth",
+		description = "reaper_desc",
+		name = "markus_knight_reaper",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "markus_knight_regrowth",
 		description_values = {
 			{
-				value = BuffTemplates.regrowth.buffs[1].bonus
+				value = BuffTemplates.reaper.buffs[1].max_targets
 			}
 		},
 		requirements = {},
 		buffs = {
-			"regrowth"
+			"markus_knight_reaper"
 		},
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc_2",
-		name = "markus_knight_bloodlust",
+		description = "vanguard_desc",
+		name = "markus_knight_vanguard",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "markus_knight_bloodlust",
-		description_values = {
-			{
-				value = BuffTemplates.bloodlust.buffs[1].bonus
-			}
-		},
+		description_values = {},
 		requirements = {},
 		buffs = {
-			"bloodlust"
+			"markus_knight_vanguard"
 		},
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc_2",
-		name = "markus_knight_conqueror",
+		description = "conqueror_desc_3",
+		name = "markus_knight_heal_share",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "markus_knight_conqueror",
 		description_values = {
 			{
-				value = BuffTemplates.conqueror.buffs[1].bonus
+				value_type = "percent",
+				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"conqueror"
+			"markus_knight_conqueror"
 		},
 		buff_data = {}
 	},
@@ -1734,53 +1811,55 @@ Talents.empire_soldier = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc_2",
-		name = "markus_mercenary_regrowth",
+		description = "reaper_desc",
+		name = "markus_mercenary_reaper",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "markus_mercenary_regrowth",
 		description_values = {
 			{
-				value = BuffTemplates.regrowth.buffs[1].bonus
+				value = BuffTemplates.reaper.buffs[1].max_targets
 			}
 		},
 		requirements = {},
 		buffs = {
-			"regrowth"
+			"markus_mercenary_reaper"
 		},
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc_2",
-		name = "markus_mercenary_bloodlust",
+		description = "bloodlust_desc_3",
+		name = "markus_mercenary_bloodlust_2",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "markus_mercenary_bloodlust",
 		description_values = {
 			{
-				value = BuffTemplates.bloodlust.buffs[1].bonus
+				value_type = "percent",
+				value = BuffTemplates.bloodlust.buffs[1].multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"bloodlust"
+			"markus_mercenary_bloodlust"
 		},
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc_2",
-		name = "markus_mercenary_conqueror",
+		description = "conqueror_desc_3",
+		name = "markus_mercenary_heal_share",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "markus_mercenary_conqueror",
 		description_values = {
 			{
-				value = BuffTemplates.conqueror.buffs[1].bonus
+				value_type = "percent",
+				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"conqueror"
+			"markus_mercenary_conqueror"
 		},
 		buff_data = {}
 	},

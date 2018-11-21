@@ -1,7 +1,6 @@
 DLCSettings = {
 	full_game = {
 		package_name = "resource_packages/dlcs/full_game",
-		localization = "localization/game",
 		breeds = {
 			"scripts/settings/breeds/breed_chaos_exalted_sorcerer",
 			"scripts/settings/breeds/breed_skaven_grey_seer",
@@ -245,9 +244,7 @@ DLCSettings = {
 			}
 		}
 	},
-	development = {
-		localization = "localization/development"
-	}
+	development = {}
 }
 
 return

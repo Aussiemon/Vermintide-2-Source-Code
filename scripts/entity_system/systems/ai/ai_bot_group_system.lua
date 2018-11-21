@@ -1654,10 +1654,8 @@ AIBotGroupSystem._update_health_pickups = function (self, dt, t)
 				local closest_dist = math.huge
 				local closest_item = nil
 				local pos = POSITION_LOOKUP[player_unit]
-				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-				local has_heal_disable_buff = buff_extension:has_buff_type("trait_necklace_no_healing_health_regen")
 
-				if num_health_items > 0 and not has_heal_disable_buff then
+				if num_health_items > 0 then
 					for unit, item_pos in pairs(HEALTH_ITEMS_TEMP) do
 						local dist = Vector3.distance_squared(pos, item_pos)
 
@@ -1710,7 +1708,7 @@ AIBotGroupSystem._update_health_pickups = function (self, dt, t)
 		local health_slot_data = inventory_ext:get_slot_data("slot_healthkit")
 		local has_heal_item = health_slot_data and inventory_ext:get_item_template(health_slot_data).can_heal_self
 
-		if RESERVED_HEALTH_ITEMS_TEMP[unit] then
+		if RESERVED_HEALTH_ITEMS_TEMP[unit] and not has_heal_item then
 		elseif not has_heal_item and AiUtils.unit_alive(unit) and not status_ext:is_ready_for_assisted_respawn() then
 			num_valid_bots = num_valid_bots + 1
 			BOT_UNITS[num_valid_bots] = unit
@@ -1879,7 +1877,7 @@ AIBotGroupSystem._update_health_pickups = function (self, dt, t)
 	table.clear(HEALTH_ITEMS_TEMP)
 	table.clear(AUXILIARY_HEALTH_SLOT_ITEMS_TEMP)
 
-	if not self._in_carry_event and more_items_than_players and lowest_hp_bot_has_item and math.min(lowest_bot_health_procent * 1.2, 1) < lowest_human_hp_percent then
+	if not self._in_carry_event and more_items_than_players and lowest_hp_bot_has_item and lowest_bot_health_procent > 0 and math.min(lowest_bot_health_procent * 1.2, 1) < lowest_human_hp_percent then
 		lowest_hp_bot_blackboard.force_use_health_pickup = true
 	end
 end

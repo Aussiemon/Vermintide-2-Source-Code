@@ -279,6 +279,10 @@ local Credits = {
 			type = "person"
 		},
 		{
+			text = "Hans Sjunnesson",
+			type = "person"
+		},
+		{
 			text = " ",
 			type = "person"
 		},
@@ -395,10 +399,6 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Hans Sjunnesson",
-			type = "person"
-		},
-		{
 			text = "Anders Elfgren",
 			type = "person"
 		},
@@ -488,6 +488,10 @@ local Credits = {
 			type = "person"
 		},
 		{
+			text = "Aleksandar Jankovic",
+			type = "person"
+		},
+		{
 			text = " ",
 			type = "person"
 		},
@@ -495,10 +499,6 @@ local Credits = {
 			text = "credits_additional_tools_programmer",
 			localized = true,
 			type = "title"
-		},
-		{
-			text = "Aleksandar Jankovic",
-			type = "person"
 		},
 		{
 			text = "Alex Sundström",
@@ -556,6 +556,10 @@ local Credits = {
 			type = "person"
 		},
 		{
+			text = "Marco Francesconi",
+			type = "person"
+		},
+		{
 			text = " ",
 			type = "person"
 		},
@@ -606,10 +610,6 @@ local Credits = {
 			text = "credits_additional_3d_art",
 			localized = true,
 			type = "title"
-		},
-		{
-			text = "Marco Francesconi",
-			type = "person"
 		},
 		{
 			text = "Jessica Nyberg",
@@ -779,6 +779,10 @@ local Credits = {
 			type = "title"
 		},
 		{
+			text = "Ranga Illeperuma",
+			type = "person"
+		},
+		{
 			text = "Oskar Clase",
 			type = "person"
 		},
@@ -835,6 +839,10 @@ local Credits = {
 			type = "person"
 		},
 		{
+			text = "Emelie Isacsson",
+			type = "person"
+		},
+		{
 			text = " ",
 			type = "person"
 		},
@@ -861,11 +869,15 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Emelie Isacsson",
+			text = "Tomas Lundgren",
 			type = "person"
 		},
 		{
-			text = "Tomas Lundgren",
+			text = "Joakim Vestin",
+			type = "person"
+		},
+		{
+			text = "Jonas Åkerlund",
 			type = "person"
 		},
 		{
@@ -1604,10 +1616,6 @@ local Credits = {
 		},
 		{
 			text = "Chris Charla",
-			type = "person"
-		},
-		{
-			text = "Ranga Illeperuma",
 			type = "person"
 		},
 		{

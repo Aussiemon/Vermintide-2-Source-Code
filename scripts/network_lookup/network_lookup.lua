@@ -674,7 +674,10 @@ NetworkLookup.heal_types = {
 	"leech",
 	"career_skill",
 	"career_passive",
-	"health_regen"
+	"health_regen",
+	"healing_draught_temp_health",
+	"bandage_temp_health",
+	"buff_shared_medpack_temp_health"
 }
 NetworkLookup.difficulties = create_lookup({}, DifficultySettings)
 NetworkLookup.linked_particle_policies = {
@@ -1023,6 +1026,12 @@ NetworkLookup.hit_react_types = {
 	"heavy",
 	"slow_bomb"
 }
+NetworkLookup.buff_weapon_types = {
+	"n/a",
+	"MELEE_1H",
+	"MELEE_2H",
+	"RANGED"
+}
 NetworkLookup.buff_templates = {
 	"n/a",
 	"damage_boost_potion_increased",
@@ -1098,6 +1107,7 @@ NetworkLookup.buff_templates = {
 	"victor_witchhunter_headshot_damage_increase",
 	"victor_witchhunter_defence_buff_on_disabled",
 	"victor_witchhunter_ping_target_crit_chance",
+	"victor_witchhunter_ping_target_attack_speed",
 	"victor_bountyhunter_melee_damage_on_no_ammo_buff",
 	"markus_knight_defence_buff",
 	"markus_mercenary_activated_ability",
@@ -1179,6 +1189,7 @@ NetworkLookup.buff_templates = {
 	"traits_ranged_remove_overcharge_on_crit",
 	"traits_ranged_increase_power_level_vs_armour_crit",
 	"traits_ranged_consecutive_hits_increase_power",
+	"trait_necklace_damage_taken_reduction_buff",
 	"properties_curse_resistance",
 	"properties_protection_skaven",
 	"properties_protection_chaos",

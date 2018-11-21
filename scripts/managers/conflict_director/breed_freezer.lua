@@ -291,6 +291,7 @@ BreedFreezer.commit_freezes = function (self)
 			FROZEN[unit] = true
 			POSITION_LOOKUP[unit] = nil
 
+			Unit.flow_event(unit, "lua_freeze_unit")
 			Unit.reload_flow(unit)
 
 			self.count = self.count + 1

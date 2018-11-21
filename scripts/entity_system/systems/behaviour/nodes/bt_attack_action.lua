@@ -3,7 +3,7 @@ require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 BTAttackAction = class(BTAttackAction, BTNode)
 local DEFAULT_SPEED_MODIFIER_ON_TARGET_DODGE = 0.2
 local DEFAULT_SPEED_LERP_TIME_ON_TARGET_DODGE = 0.6
-local DEFAULT_DODGE_ROTATION_TIME = 1
+local DEFAULT_DODGE_ROTATION_TIME = 1.5
 local REEVAL_TIME = 0.5
 
 BTAttackAction.init = function (self, ...)
@@ -30,6 +30,7 @@ BTAttackAction.enter = function (self, unit, blackboard, t)
 	blackboard.locked_attack_rotation = false
 	blackboard.target_speed = 0
 	blackboard.moving_attack = action.moving_attack
+	blackboard.past_damage_in_attack = false
 	local target_unit = blackboard.target_unit
 	local target_unit_status_extension = ScriptUnit.has_extension(target_unit, "status_system")
 	local target_unit_slot_extension = ScriptUnit.has_extension(target_unit, "ai_slot_system")
@@ -175,6 +176,7 @@ BTAttackAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.anim_cb_stagger_immune = nil
 	blackboard.attack_anim = nil
 	blackboard.anim_cb_damage = nil
+	blackboard.past_damage_in_attack = nil
 
 	if blackboard.action.use_box_range then
 		blackboard.attack_range_up = nil
@@ -211,6 +213,7 @@ BTAttackAction.run = function (self, unit, blackboard, t, dt)
 
 	if blackboard.anim_cb_damage then
 		blackboard.anim_cb_damage = nil
+		blackboard.past_damage_in_attack = true
 
 		if blackboard.moving_attack then
 			blackboard.navigation_extension:set_enabled(false)
@@ -295,28 +298,30 @@ BTAttackAction.attack = function (self, unit, t, dt, blackboard)
 		Managers.state.network:anim_event(unit, bb.attack_anim)
 	end
 
-	local target_status_ext = bb.target_unit_status_extension
+	if not bb.past_damage_in_attack then
+		local target_status_ext = bb.target_unit_status_extension
 
-	if target_status_ext then
-		local target_is_dodging = target_status_ext:get_is_dodging() or target_status_ext:is_invisible()
-		local should_rotate = not target_is_dodging and bb.attack_rotation_lock_timer < t
-		local should_lock_rotation = target_is_dodging and not bb.locked_attack_rotation and bb.moving_attack and bb.target_dist < 3 and bb.attack_dodge_window_start < t
+		if target_status_ext then
+			local target_is_dodging = target_status_ext:get_is_dodging() or target_status_ext:is_invisible()
+			local should_rotate = not target_is_dodging and bb.attack_rotation_lock_timer < t
+			local should_lock_rotation = target_is_dodging and not bb.locked_attack_rotation
 
-		if should_rotate then
-			local rotation = LocomotionUtils.rotation_towards_unit_flat(unit, bb.attacking_target)
+			if should_rotate then
+				local rotation = LocomotionUtils.rotation_towards_unit_flat(unit, bb.attacking_target)
 
-			bb.attack_rotation:store(rotation)
+				bb.attack_rotation:store(rotation)
 
-			if bb.locked_attack_rotation then
-				bb.locked_attack_rotation = false
+				if bb.locked_attack_rotation then
+					bb.locked_attack_rotation = false
+				end
+			elseif should_lock_rotation then
+				bb.attack_rotation_lock_timer = t + DEFAULT_DODGE_ROTATION_TIME
+				bb.locked_attack_rotation = true
 			end
-		elseif should_lock_rotation then
-			bb.attack_rotation_lock_timer = t + (action.dodge_rotation_time or DEFAULT_DODGE_ROTATION_TIME)
-			bb.locked_attack_rotation = true
 		end
-	end
 
-	locomotion:set_wanted_rotation(blackboard.attack_rotation:unbox())
+		locomotion:set_wanted_rotation(blackboard.attack_rotation:unbox())
+	end
 end
 
 BTAttackAction.get_attack_cooldown_finished_at = function (self, unit, blackboard, t)

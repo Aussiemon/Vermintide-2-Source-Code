@@ -186,12 +186,13 @@ weapon_template.actions = {
 			damage_window_end = 0.5,
 			use_precision_sweep = false,
 			hit_effect = "melee_hit_hammers_2h",
-			damage_profile = "heavy_blunt_tank",
-			no_damage_impact_sound_event = "blunt_hit_armour",
+			slide_armour_hit = true,
 			additional_critical_strike_chance = 0,
 			impact_sound_event = "hammer_2h_hit",
 			charge_value = "heavy_attack",
 			anim_end_event = "attack_finished",
+			no_damage_impact_sound_event = "blunt_hit_armour",
+			damage_profile = "heavy_blunt_tank",
 			dedicated_target_range = 3,
 			weapon_up_offset_mod = 0.25,
 			uninterruptible = true,
@@ -246,7 +247,8 @@ weapon_template.actions = {
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
 			end,
-			critical_strike = {}
+			critical_strike = {},
+			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		heavy_attack_left = {
 			damage_window_start = 0.3,
@@ -261,11 +263,12 @@ weapon_template.actions = {
 			additional_critical_strike_chance = 0,
 			use_precision_sweep = false,
 			hit_effect = "melee_hit_hammers_2h",
-			damage_profile = "heavy_blunt_tank",
-			no_damage_impact_sound_event = "blunt_hit_armour",
+			slide_armour_hit = true,
 			damage_window_end = 0.5,
 			impact_sound_event = "hammer_2h_hit",
 			charge_value = "heavy_attack",
+			no_damage_impact_sound_event = "blunt_hit_armour",
+			damage_profile = "heavy_blunt_tank",
 			dedicated_target_range = 3,
 			weapon_up_offset_mod = 0.25,
 			uninterruptible = true,
@@ -319,7 +322,8 @@ weapon_template.actions = {
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
-			end
+			end,
+			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		light_attack_left = {
 			damage_window_start = 0.3,
@@ -795,7 +799,7 @@ weapon_template.wield_anim = "to_2h_hammer"
 weapon_template.buff_type = "MELEE_2H"
 weapon_template.weapon_type = "MACE_2H"
 weapon_template.max_fatigue_points = 6
-weapon_template.dodge_count = 1
+weapon_template.dodge_count = 2
 weapon_template.block_angle = 90
 weapon_template.outer_block_angle = 360
 weapon_template.block_fatigue_point_multiplier = 0.5

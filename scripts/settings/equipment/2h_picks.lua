@@ -17,14 +17,14 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.2,
-					end_time = 0.7,
+					external_multiplier = 0.35,
+					end_time = 0.5,
 					buff_name = "planted_charging_decrease_movement"
 				},
 				{
-					start_time = 0.7,
-					external_multiplier = 0.4,
-					end_time = 1,
+					start_time = 0.6,
+					external_multiplier = 0.6,
+					end_time = 0.7,
 					buff_name = "planted_fast_decrease_movement"
 				},
 				{
@@ -45,12 +45,12 @@ weapon_template.actions = {
 					sub_action = "heavy_attack_left",
 					start_time = 0.4,
 					action = "action_one",
-					end_time = 1.4,
+					end_time = 0.9,
 					input = "action_one_release"
 				},
 				{
 					sub_action = "heavy_attack_left_charged",
-					start_time = 1.4,
+					start_time = 0.9,
 					action = "action_one",
 					input = "action_one_release"
 				},
@@ -91,14 +91,14 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.2,
-					end_time = 0.7,
+					external_multiplier = 0.35,
+					end_time = 0.5,
 					buff_name = "planted_charging_decrease_movement"
 				},
 				{
-					start_time = 0.7,
-					external_multiplier = 0.4,
-					end_time = 1,
+					start_time = 0.5,
+					external_multiplier = 0.6,
+					end_time = 0.7,
 					buff_name = "planted_fast_decrease_movement"
 				},
 				{
@@ -119,12 +119,12 @@ weapon_template.actions = {
 					sub_action = "heavy_attack_right",
 					start_time = 0.4,
 					action = "action_one",
-					end_time = 1.4,
+					end_time = 0.9,
 					input = "action_one_release"
 				},
 				{
 					sub_action = "heavy_attack_right_charged",
-					start_time = 1.4,
+					start_time = 0.9,
 					action = "action_one",
 					input = "action_one_release"
 				},
@@ -165,14 +165,14 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.2,
-					end_time = 0.7,
+					external_multiplier = 0.35,
+					end_time = 0.5,
 					buff_name = "planted_charging_decrease_movement"
 				},
 				{
-					start_time = 0.7,
-					external_multiplier = 0.4,
-					end_time = 1,
+					start_time = 0.5,
+					external_multiplier = 0.6,
+					end_time = 0.7,
 					buff_name = "planted_fast_decrease_movement"
 				},
 				{
@@ -193,12 +193,12 @@ weapon_template.actions = {
 					sub_action = "heavy_attack_left",
 					start_time = 0.4,
 					action = "action_one",
-					end_time = 1.4,
+					end_time = 0.9,
 					input = "action_one_release"
 				},
 				{
 					sub_action = "heavy_attack_left_charged",
-					start_time = 1.4,
+					start_time = 0.9,
 					action = "action_one",
 					input = "action_one_release"
 				},
@@ -276,7 +276,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.7,
+					start_time = 0.6,
 					action = "action_two",
 					input = "action_two_hold"
 				},
@@ -344,7 +344,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.7,
+					start_time = 0.6,
 					action = "action_two",
 					input = "action_two_hold"
 				},
@@ -412,7 +412,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default_left",
-					start_time = 1,
+					start_time = 0.75,
 					action = "action_one",
 					end_time = 1.8,
 					input = "action_one"
@@ -452,7 +452,7 @@ weapon_template.actions = {
 			first_person_hit_anim = "attack_hit_alt_effect",
 			additional_critical_strike_chance = 0,
 			use_precision_sweep = true,
-			damage_profile = "heavy_blunt_smiter",
+			damage_profile = "heavy_blunt_smiter_pick",
 			hit_shield_stop_anim = "attack_hit_shield",
 			hit_effect = "melee_hit_axes_2h",
 			damage_window_end = 0.45,
@@ -488,7 +488,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default_left",
-					start_time = 1,
+					start_time = 0.75,
 					action = "action_one",
 					end_time = 1.8,
 					input = "action_one"
@@ -565,7 +565,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default_right",
-					start_time = 1,
+					start_time = 0.75,
 					action = "action_one",
 					end_time = 1.8,
 					input = "action_one"
@@ -598,7 +598,7 @@ weapon_template.actions = {
 			first_person_hit_anim = "attack_hit_alt_effect",
 			additional_critical_strike_chance = 0,
 			use_precision_sweep = true,
-			damage_profile = "heavy_blunt_smiter",
+			damage_profile = "heavy_blunt_smiter_pick",
 			hit_shield_stop_anim = "attack_hit_shield",
 			hit_effect = "melee_hit_axes_2h",
 			damage_window_end = 0.53,
@@ -634,7 +634,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default_right",
-					start_time = 1,
+					start_time = 0.75,
 					action = "action_one",
 					end_time = 1.8,
 					input = "action_one"
@@ -675,6 +675,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
+			anim_time_scale = time_mod * 1.4,
 			range_mod = extra_range_add * 1.3,
 			buff_data = {
 				{
@@ -706,14 +707,22 @@ weapon_template.actions = {
 					input = "action_one"
 				},
 				{
+					sub_action = "default_left",
+					start_time = 0.75,
+					action = "action_one",
+					release_required = "action_two_hold",
+					end_time = 1.8,
+					input = "action_one_hold"
+				},
+				{
 					sub_action = "default",
-					start_time = 0.8,
+					start_time = 0.65,
 					action = "action_two",
 					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.8,
+					start_time = 0.65,
 					action = "action_wield",
 					input = "action_wield"
 				}
@@ -754,14 +763,14 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.4,
+					start_time = 0.3,
 					action = "action_one",
 					release_required = "action_two_hold",
 					input = "action_one"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.4,
+					start_time = 0.3,
 					action = "action_one",
 					release_required = "action_two_hold",
 					doubleclick_window = 0,
@@ -769,7 +778,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "light_attack_bopp",
-					start_time = 0.4,
+					start_time = 0.3,
 					action = "action_one",
 					doubleclick_window = 0,
 					end_time = 0.8,
@@ -781,14 +790,14 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.4,
+					start_time = 0.3,
 					action = "action_two",
 					send_buffer = true,
 					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.4,
+					start_time = 0.3,
 					action = "action_wield",
 					input = "action_wield"
 				}
@@ -844,7 +853,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.4,
+					start_time = 0.3,
 					action = "action_wield",
 					input = "action_wield"
 				}

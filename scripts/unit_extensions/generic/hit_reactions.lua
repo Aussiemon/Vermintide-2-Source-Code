@@ -5,6 +5,7 @@ local ignored_damage_types = {
 	kinetic = true,
 	buff_shared_medpack = true,
 	buff = true,
+	buff_shared_medpack_temp_health = true,
 	health_degen = true,
 	wounded_dot = true,
 	heal = true,

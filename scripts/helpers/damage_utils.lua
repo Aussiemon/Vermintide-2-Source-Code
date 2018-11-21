@@ -95,7 +95,7 @@ local function do_damage_calculation(attacker_unit, damage_source, original_powe
 		end
 
 		if is_critical_strike then
-			power_boost_min_damage = preliminary_boost_damage * 0.5
+			head_shot_min_damage = preliminary_boost_damage * 0.5
 		end
 
 		if has_power_boost or (boost_damage_multiplier and boost_damage_multiplier > 0) then
@@ -1245,6 +1245,21 @@ DamageUtils.add_damage_network_player = function (damage_profile, target_index, 
 	local buffed_damage_amount = DamageUtils.apply_buffs_to_damage(original_damage_amount, hit_unit, attacker_unit, damage_source, victim_units, damage_type, charge_value)
 	local damage_amount = (heavy_armor_damage and 0.5) or buffed_damage_amount
 	hit_position = hit_position or Unit.world_position(hit_unit, 0)
+	local buff_extension = attacker_unit and ScriptUnit.has_extension(attacker_unit, "buff_system")
+	local hit_unit_health_extension = ScriptUnit.extension(hit_unit, "health_system")
+
+	if buff_extension and hit_unit_health_extension:is_alive() then
+		local item_data = rawget(ItemMasterList, damage_source)
+		local weapon_template_name = item_data and item_data.template
+
+		if weapon_template_name then
+			local weapon_template = Weapons[weapon_template_name]
+			local buff_type = weapon_template.buff_type
+			local no_crit_headshot_damage = DamageUtils.calculate_damage(DamageOutput, hit_unit, attacker_unit, "torso", power_level, boost_curve, boost_curve_multiplier, false, damage_profile, target_index, backstab_multiplier, damage_source)
+
+			buff_extension:trigger_procs("on_damage_dealt", hit_unit, damage_amount, hit_zone_name, no_crit_headshot_damage, is_critical_strike, buff_type, target_index)
+		end
+	end
 
 	if player_manager.is_server or LEVEL_EDITOR_TEST then
 		local num_victim_units = #victim_units
@@ -1321,7 +1336,7 @@ DamageUtils.handle_hit_indication = function (attacker_unit, victim_unit, damage
 	end
 end
 
-DamageUtils.buff_on_attack = function (unit, hit_unit, attack_type, is_critical, hit_zone_name, target_number, send_to_server)
+DamageUtils.buff_on_attack = function (unit, hit_unit, attack_type, is_critical, hit_zone_name, target_number, send_to_server, buff_type)
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
 
 	if not unit_alive(hit_unit) then
@@ -1334,7 +1349,7 @@ DamageUtils.buff_on_attack = function (unit, hit_unit, attack_type, is_critical,
 		return false
 	end
 
-	buff_extension:trigger_procs("on_hit", hit_unit, attack_type, hit_zone_name, target_number)
+	buff_extension:trigger_procs("on_hit", hit_unit, attack_type, hit_zone_name, target_number, buff_type, is_critical)
 
 	if is_critical then
 		buff_extension:trigger_procs("on_critical_hit", hit_unit, attack_type, hit_zone_name, target_number)
@@ -1346,11 +1361,12 @@ DamageUtils.buff_on_attack = function (unit, hit_unit, attack_type, is_critical,
 		local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
 		local attack_type_id = NetworkLookup.buff_attack_types[attack_type]
 		local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
+		local buff_type_id = NetworkLookup.buff_weapon_types[buff_type]
 		local is_dummy_unit = unit_get_data(hit_unit, "is_dummy")
 		local invalid_dummy_target = is_dummy_unit and not hit_unit_id
 
 		if not invalid_dummy_target then
-			network_manager.network_transmit:send_rpc_server("rpc_buff_on_attack", attacker_unit_id, hit_unit_id, attack_type_id, is_critical, hit_zone_id, target_number)
+			network_manager.network_transmit:send_rpc_server("rpc_buff_on_attack", attacker_unit_id, hit_unit_id, attack_type_id, is_critical, hit_zone_id, target_number, buff_type_id)
 		end
 	end
 
@@ -1404,6 +1420,7 @@ DamageUtils.apply_buffs_to_damage = function (current_damage, attacked_unit, att
 		end
 
 		damage = buff_extension:apply_buffs_to_value(damage, StatBuffIndex.DAMAGE_TAKEN)
+		damage = buff_extension:apply_buffs_to_value(damage, StatBuffIndex.DAMAGE_TAKEN_SECONDARY)
 
 		if ELITES[damage_source] then
 			damage = buff_extension:apply_buffs_to_value(damage, StatBuffIndex.DAMAGE_TAKEN_ELITES)
@@ -1595,7 +1612,7 @@ DamageUtils.heal_network = function (healed_unit, healer_unit, heal_amount, heal
 
 		for i = 1, num_healed_units, 1 do
 			local unit = healed_units[i]
-			heal_type = (shared_medpack and "buff_shared_medpack") or (unit == healed_unit and heal_type) or "buff"
+			heal_type = (shared_medpack and ("buff_shared_medpack" or "buff_shared_medpack_temp_health")) or (unit == healed_unit and heal_type) or "buff"
 			local health_extension = ScriptUnit.extension(unit, "health_system")
 
 			health_extension:add_heal(healer_unit, heal_amount, nil, heal_type)
@@ -1607,6 +1624,10 @@ DamageUtils.heal_network = function (healed_unit, healer_unit, heal_amount, heal
 			local buff_extension = ScriptUnit.extension(unit, "buff_system")
 
 			buff_extension:trigger_procs("on_healed", healer_unit, heal_amount, heal_type)
+
+			if heal_type == "healing_draught" or heal_type == "bandage" or heal_type == "healing_draught_temp_health" or heal_type == "bandage_temp_health" or heal_type == "bandage_trinket" then
+				buff_extension:trigger_procs("on_healed_consumeable", healer_unit, heal_amount, heal_type)
+			end
 
 			if not LEVEL_EDITOR_TEST and status_extension:heal_can_remove_wounded(heal_type) then
 				StatusUtils.set_wounded_network(unit, false, "healed")
@@ -1945,7 +1966,7 @@ DamageUtils.damage_dummy_unit = function (hit_unit, attacker_unit, hit_zone_name
 		if should_check_buffs then
 			local charge_value = damage_profile.charge_value
 
-			DamageUtils.buff_on_attack(attacker_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name or "torso", target_index, true)
+			DamageUtils.buff_on_attack(attacker_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name or "torso", target_index, true, "n/a")
 		end
 
 		local network_manager = Managers.state.network
@@ -2303,7 +2324,7 @@ DamageUtils.process_projectile_hit = function (world, damage_source, owner_unit,
 
 					if owner_is_player and breed and check_buffs and not shield_blocked then
 						local send_to_server = true
-						local buffs_checked = DamageUtils.buff_on_attack(owner_unit, hit_unit, "instant_projectile", is_critical_strike, hit_zone_name, num_penetrations + 1, send_to_server)
+						local buffs_checked = DamageUtils.buff_on_attack(owner_unit, hit_unit, "instant_projectile", is_critical_strike, hit_zone_name, num_penetrations + 1, send_to_server, "n/a")
 						hit_data.buffs_checked = hit_data.buffs_checked or buffs_checked
 					end
 
@@ -2565,6 +2586,20 @@ DamageUtils.stagger_ai = function (t, damage_profile, target_index, power_level,
 
 	if stagger_type > 0 then
 		AiUtils.stagger(target_unit, blackboard, attacker_unit, attack_direction, stagger_length, stagger_type, stagger_duration, attack_template.stagger_animation_scale, t, stagger_value, attack_template.always_stagger, is_push)
+
+		local attacker_buff_extension = attacker_unit and ScriptUnit.has_extension(attacker_unit, "buff_system")
+
+		if attacker_buff_extension then
+			local item_data = rawget(ItemMasterList, damage_source)
+			local weapon_template_name = item_data and item_data.template
+
+			if weapon_template_name then
+				local weapon_template = Weapons[weapon_template_name]
+				local buff_type = weapon_template.buff_type
+
+				attacker_buff_extension:trigger_procs("on_stagger", target_unit, damage_profile, attacker_unit, stagger_type, stagger_duration, stagger_value, buff_type)
+			end
+		end
 	end
 end
 

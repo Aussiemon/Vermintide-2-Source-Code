@@ -1,6 +1,6 @@
 local breed_data = {
 	detection_radius = 12,
-	aoe_height = 1.7,
+	unbreakable_shield = true,
 	walk_speed = 2,
 	death_reaction = "ai_default",
 	attack_start_slow_fraction = 1,
@@ -13,7 +13,7 @@ local breed_data = {
 	block_stagger_mod = 0.5,
 	opt_base_unit = "units/beings/enemies/skaven_stormvermin/chr_skaven_stormvermin_baked",
 	target_selection = "pick_closest_target_with_spillover",
-	unbreakable_shield = true,
+	aoe_height = 1.7,
 	leave_walk_distance = 3.5,
 	hit_mass_count_block = 10,
 	shield_blunt_block_sound = "blunt_hit_shield_metal",
@@ -35,16 +35,16 @@ local breed_data = {
 	perception_previous_attacker_stickyness_value = -4.5,
 	race = "skaven",
 	shield_burning_block_sound = "Play_weapon_fire_torch_metal_shield_hit",
-	headshot_coop_stamina_fatigue_type = "headshot_special",
 	poison_resistance = 100,
 	armor_category = 2,
+	headshot_coop_stamina_fatigue_type = "headshot_special",
 	threat_value = 8,
-	awards_positive_reinforcement_message = true,
 	backstab_player_sound_event = "Play_clan_rat_attack_player_back_vce",
 	death_sound_event = "Play_stormvermin_die_vce",
 	dodge_timer = 0.35,
-	smart_object_template = "special",
+	awards_positive_reinforcement_message = true,
 	bone_lod_level = 1,
+	smart_object_template = "special",
 	smart_targeting_width = 0.2,
 	block_stamina = 1,
 	is_bot_aid_threat = true,
@@ -96,6 +96,7 @@ local breed_data = {
 		26,
 		39
 	},
+	bloodlust_health = BreedTweaks.bloodlust_health.skaven_elite,
 	stagger_duration = {
 		0.5,
 		1,
@@ -121,11 +122,11 @@ local breed_data = {
 		10
 	},
 	hit_mass_counts_block = {
-		10,
-		10,
-		15,
-		20,
-		20
+		8,
+		8,
+		12,
+		16,
+		16
 	},
 	wwise_voices = {
 		"low",
@@ -714,6 +715,7 @@ local action_data = {
 			local ai_shield_extension = ScriptUnit.extension(unit, "ai_shield_system")
 			local shield_user = not ai_shield_extension.shield_broken
 			local is_blocking = ai_shield_extension.is_blocking
+			local blocked_previous_attack = ai_shield_extension.blocked_previous_attack
 			local block_count = 3
 
 			if current_health <= 0.5 then
@@ -724,14 +726,14 @@ local action_data = {
 			local stagger_anims, idle_event = nil
 
 			if shield_user and stagger then
-				if not blocked and stagger <= block_count and action.shield_block_anims then
+				if not blocked and stagger <= block_count and action.shield_block_anims and blocked_previous_attack then
 					blackboard.stagger_time = blackboard.stagger_time + math.max(0.5, stagger / block_count) * breed.block_stagger_mod
 					stagger_anims = action.shield_block_anims[stagger_type]
 
 					ai_shield_extension:set_is_blocking(true)
 
 					idle_event = "idle_shield_up"
-				elseif not blocked and is_blocking and block_count < stagger and action.shield_stagger_anims then
+				elseif not blocked and is_blocking and stagger == block_count and action.shield_stagger_anims then
 					blackboard.stagger_time = blackboard.stagger_time + stagger / block_count * breed.block_stagger_mod_2
 					local index = Math.random(1, 2)
 					local anim_table = {
@@ -743,14 +745,14 @@ local action_data = {
 					ai_shield_extension:set_is_blocking(false)
 
 					blackboard.wake_up_push = math.huge
-					stagger_anims = action.stagger_anims[stagger_type]
-				elseif stagger > block_count + 3 and action.shield_block_anims then
+					stagger_anims = action.shield_stagger_anims[stagger_type]
+				elseif stagger > block_count + 5 and action.shield_block_anims then
 					blackboard.stagger_time = 0
 					blackboard.stagger = 0
 
 					ai_shield_extension:set_is_blocking(true)
 
-					stagger_anims = action.stagger_anims[stagger_type]
+					stagger_anims = action.shield_block_anims[stagger_type]
 					blackboard.stagger_time = 0.2
 					idle_event = "idle_shield_up"
 				else
@@ -775,81 +777,90 @@ local action_data = {
 		custom_exit_function = function (unit, blackboard, t)
 			ai_shield_extension:set_is_blocking(true)
 		end,
-		stagger_anims = {
+		shield_stagger_anims = {
 			{
 				fwd = {
-					"stun_fwd_open"
+					"stun_fwd_sword"
 				},
 				bwd = {
-					"stun_bwd_open"
+					"stagger_bwd_shield_light"
 				},
 				left = {
-					"stun_left_open"
+					"stagger_left_shield_light"
 				},
 				right = {
-					"stun_right_open"
+					"stagger_right_shield_light"
 				},
 				dwn = {
-					"stun_bwd_open"
+					"stagger_bwd_shield_light"
 				}
 			},
 			{
 				fwd = {
-					"stagger_fwd_open"
+					"stagger_fwd"
 				},
 				bwd = {
-					"stagger_bwd_open"
+					"stagger_bwd_shield"
 				},
 				left = {
-					"stagger_left_open"
+					"stagger_left_shield"
 				},
 				right = {
-					"stagger_right_open"
+					"stagger_right_shield"
 				},
 				dwn = {
-					"stagger_bwd_open"
+					"stagger_bwd_shield"
 				}
 			},
 			{
 				fwd = {
-					"stagger_fwd_open"
+					"stagger_fwd"
 				},
 				bwd = {
-					"stagger_bwd_open"
+					"stagger_bwd_shield"
 				},
 				left = {
-					"stagger_left_open"
+					"stagger_left_shield"
 				},
 				right = {
-					"stagger_right_open"
+					"stagger_right_shield"
+				},
+				dwn = {
+					"stagger_bwd_shield"
 				}
 			},
 			{
 				fwd = {
-					"stun_fwd_open"
+					"stun_fwd_sword"
 				},
 				bwd = {
-					"stun_bwd_open"
+					"stagger_bwd_shield_light"
 				},
 				left = {
-					"stun_left_open"
+					"stagger_left_shield_light"
 				},
 				right = {
-					"stun_right_open"
+					"stagger_right_shield_light"
+				},
+				dwn = {
+					"stagger_bwd_shield_light"
 				}
 			},
 			{
 				fwd = {
-					"stagger_fwd_open"
+					"stagger_fwd"
 				},
 				bwd = {
-					"stagger_bwd_open"
+					"stagger_bwd_shield"
 				},
 				left = {
-					"stagger_left_open"
+					"stagger_left_shield"
 				},
 				right = {
-					"stagger_right_open"
+					"stagger_right_shield"
+				},
+				dwn = {
+					"stagger_bwd_shield"
 				}
 			},
 			{
@@ -857,27 +868,33 @@ local action_data = {
 					"stagger_fwd_exp"
 				},
 				bwd = {
-					"stagger_bwd_exp"
+					"stagger_bwd_shield"
 				},
 				left = {
-					"stagger_left_exp"
+					"stagger_left_shield"
 				},
 				right = {
-					"stagger_right_exp"
+					"stagger_right_shield"
+				},
+				dwn = {
+					"stagger_bwd_shield"
 				}
 			},
 			{
 				fwd = {
-					"stagger_fwd_open"
+					"stun_bwd_sword"
 				},
 				bwd = {
-					"stagger_bwd_open"
+					"stagger_bwd_shield_light"
 				},
 				left = {
-					"stagger_left_open"
+					"stagger_left_shield_light"
 				},
 				right = {
-					"stagger_right_open"
+					"stagger_right_shield_light"
+				},
+				dwn = {
+					"stagger_bwd_shield_light"
 				}
 			}
 		},
@@ -1013,90 +1030,81 @@ local action_data = {
 				}
 			}
 		},
-		shield_stagger_anims = {
+		stagger_anims = {
 			{
 				fwd = {
-					"stun_fwd_sword"
+					"stun_fwd_open"
 				},
 				bwd = {
-					"stagger_bwd_shield_light"
+					"stun_bwd_open"
 				},
 				left = {
-					"stagger_left_shield_light"
+					"stun_left_open"
 				},
 				right = {
-					"stagger_right_shield_light"
+					"stun_right_open"
 				},
 				dwn = {
-					"stagger_bwd_shield_light"
+					"stun_bwd_open"
 				}
 			},
 			{
 				fwd = {
-					"stagger_fwd"
+					"stagger_fwd_open"
 				},
 				bwd = {
-					"stagger_bwd_shield"
+					"stagger_bwd_open"
 				},
 				left = {
-					"stagger_left_shield"
+					"stagger_left_open"
 				},
 				right = {
-					"stagger_right_shield"
+					"stagger_right_open"
 				},
 				dwn = {
-					"stagger_bwd_shield"
+					"stagger_bwd_open"
 				}
 			},
 			{
 				fwd = {
-					"stagger_fwd"
+					"stagger_fwd_open"
 				},
 				bwd = {
-					"stagger_bwd_shield"
+					"stagger_bwd_open"
 				},
 				left = {
-					"stagger_left_shield"
+					"stagger_left_open"
 				},
 				right = {
-					"stagger_right_shield"
-				},
-				dwn = {
-					"stagger_bwd_shield"
+					"stagger_right_open"
 				}
 			},
 			{
 				fwd = {
-					"stun_fwd_sword"
+					"stun_fwd_open"
 				},
 				bwd = {
-					"stagger_bwd_shield_light"
+					"stun_bwd_open"
 				},
 				left = {
-					"stagger_left_shield_light"
+					"stun_left_open"
 				},
 				right = {
-					"stagger_right_shield_light"
-				},
-				dwn = {
-					"stagger_bwd_shield_light"
+					"stun_right_open"
 				}
 			},
 			{
 				fwd = {
-					"stagger_fwd"
+					"stagger_fwd_open"
 				},
 				bwd = {
-					"stagger_bwd_shield"
+					"stagger_bwd_open"
 				},
 				left = {
-					"stagger_left_shield"
+					"stagger_left_open"
 				},
 				right = {
-					"stagger_right_shield"
-				},
-				dwn = {
-					"stagger_bwd_shield"
+					"stagger_right_open"
 				}
 			},
 			{
@@ -1104,33 +1112,27 @@ local action_data = {
 					"stagger_fwd_exp"
 				},
 				bwd = {
-					"stagger_bwd_shield"
+					"stagger_bwd_exp"
 				},
 				left = {
-					"stagger_left_shield"
+					"stagger_left_exp"
 				},
 				right = {
-					"stagger_right_shield"
-				},
-				dwn = {
-					"stagger_bwd_shield"
+					"stagger_right_exp"
 				}
 			},
 			{
 				fwd = {
-					"stun_bwd_sword"
+					"stagger_fwd_open"
 				},
 				bwd = {
-					"stagger_bwd_shield_light"
+					"stagger_bwd_open"
 				},
 				left = {
-					"stagger_left_shield_light"
+					"stagger_left_open"
 				},
 				right = {
-					"stagger_right_shield_light"
-				},
-				dwn = {
-					"stagger_bwd_shield_light"
+					"stagger_right_open"
 				}
 			}
 		}

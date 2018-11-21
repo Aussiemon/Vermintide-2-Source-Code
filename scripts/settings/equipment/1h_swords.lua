@@ -326,7 +326,7 @@ weapon_template.actions = {
 		},
 		light_attack_left = {
 			damage_window_start = 0.38,
-			range_mod = 1.15,
+			range_mod = 1.2,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
@@ -344,7 +344,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.15,
+			anim_time_scale = time_mod * 1.25,
 			buff_data = {
 				{
 					start_time = 0,
@@ -356,7 +356,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default_right",
-					start_time = 0.55,
+					start_time = 0.48,
 					action = "action_one",
 					end_time = 1.2,
 					input = "action_one"
@@ -384,7 +384,7 @@ weapon_template.actions = {
 		},
 		light_attack_right = {
 			damage_window_start = 0.38,
-			range_mod = 1.15,
+			range_mod = 1.2,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
@@ -402,7 +402,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.15,
+			anim_time_scale = time_mod * 1.3,
 			buff_data = {
 				{
 					start_time = 0,
@@ -442,7 +442,7 @@ weapon_template.actions = {
 		},
 		light_attack_last = {
 			damage_window_start = 0.38,
-			range_mod = 1.15,
+			range_mod = 1.2,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
@@ -468,16 +468,34 @@ weapon_template.actions = {
 				{
 					start_time = 0,
 					external_multiplier = 0.7,
+					end_time = 0.2,
+					buff_name = "planted_fast_decrease_movement"
+				},
+				{
+					start_time = 0.2,
+					external_multiplier = 1.7,
+					end_time = 0.4,
+					buff_name = "planted_fast_decrease_movement"
+				},
+				{
+					start_time = 0.4,
+					external_multiplier = 0.7,
 					end_time = 0.5,
-					buff_name = "planted_decrease_movement"
+					buff_name = "planted_fast_decrease_movement"
 				}
 			},
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.65,
+					start_time = 0.6,
 					action = "action_one",
 					input = "action_one"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.6,
+					action = "action_one",
+					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
@@ -495,13 +513,13 @@ weapon_template.actions = {
 		},
 		light_attack_bopp = {
 			damage_window_start = 0.38,
-			range_mod = 1.15,
+			range_mod = 1.2,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			additional_critical_strike_chance = 0,
 			use_precision_sweep = false,
-			damage_profile = "light_slashing_linesman",
+			damage_profile = "medium_slashing_linesman",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.5,
 			impact_sound_event = "slashing_hit",
@@ -530,6 +548,14 @@ weapon_template.actions = {
 					release_required = "action_two_hold",
 					end_time = 1.2,
 					input = "action_one"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.55,
+					action = "action_one",
+					release_required = "action_two_hold",
+					end_time = 1.2,
+					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
@@ -701,7 +727,7 @@ weapon_template.display_unit = "units/weapons/weapon_display/display_1h_weapon"
 weapon_template.wield_anim = "to_1h_sword"
 weapon_template.buff_type = "MELEE_1H"
 weapon_template.weapon_type = "SWORD_1H"
-weapon_template.max_fatigue_points = 6
+weapon_template.max_fatigue_points = 8
 weapon_template.dodge_count = 3
 weapon_template.block_angle = 90
 weapon_template.outer_block_angle = 360

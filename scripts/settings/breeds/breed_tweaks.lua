@@ -131,6 +131,18 @@ BreedTweaks = {
 			6
 		}
 	},
+	bloodlust_health = {
+		chaos_elite = 15,
+		chaos_roamer = 3,
+		skaven_special = 8,
+		chaos_warrior = 30,
+		skaven_elite = 8,
+		skaven_horde = 0.5,
+		chaos_special = 10,
+		skaven_roamer = 1,
+		monster = 50,
+		chaos_horde = 1
+	},
 	stagger_duration_difficulty_mod = {
 		default = {
 			harder = 0.9,

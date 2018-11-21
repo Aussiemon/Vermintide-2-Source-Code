@@ -19,9 +19,8 @@ weapon_template.actions = {
 				local interactor_extension = ScriptUnit.extension(attacker_unit, "interactor_system")
 				local buff_extension = ScriptUnit.extension(attacker_unit, "buff_system")
 				local can_interact = interactor_extension:can_interact(attacker_unit, "heal")
-				local trinket_prevents_healing = buff_extension:has_buff_type("trait_necklace_no_healing_health_regen")
 
-				return can_interact and not trinket_prevents_healing
+				return can_interact
 			end
 		},
 		push = {

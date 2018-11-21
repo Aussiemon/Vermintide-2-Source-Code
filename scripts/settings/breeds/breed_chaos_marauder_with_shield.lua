@@ -32,9 +32,9 @@ local breed_data = {
 	perception_previous_attacker_stickyness_value = -7.75,
 	race = "chaos",
 	bone_lod_level = 1,
-	smart_object_template = "chaos_marauder",
 	poison_resistance = 70,
 	armor_category = 1,
+	smart_object_template = "chaos_marauder",
 	backstab_player_sound_event = "Play_enemy_marauder_attack_player_back_vce",
 	death_sound_event = "Play_enemy_marauder_death_vce",
 	smart_targeting_width = 0.2,
@@ -84,6 +84,7 @@ local breed_data = {
 		1.05
 	},
 	max_health = BreedTweaks.max_health.marauder,
+	bloodlust_health = BreedTweaks.bloodlust_health.chaos_roamer,
 	diff_stagger_resist = BreedTweaks.diff_stagger_resist.marauder,
 	stagger_duration = {
 		0.75,

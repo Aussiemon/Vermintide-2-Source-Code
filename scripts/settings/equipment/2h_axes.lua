@@ -320,7 +320,7 @@ weapon_template.actions = {
 			first_person_hit_anim = "attack_hit_alt_effect",
 			hit_effect = "melee_hit_axes_2h",
 			damage_profile = "medium_slashing_smiter_2h",
-			use_precision_sweep = true,
+			use_precision_sweep = false,
 			damage_window_end = 0.45,
 			impact_sound_event = "axe_2h_hit",
 			no_damage_impact_sound_event = "blunt_hit_armour",
@@ -386,7 +386,7 @@ weapon_template.actions = {
 			first_person_hit_anim = "attack_hit_alt_effect",
 			hit_effect = "melee_hit_axes_2h",
 			damage_profile = "medium_slashing_smiter_2h",
-			use_precision_sweep = true,
+			use_precision_sweep = false,
 			damage_window_end = 0.53,
 			impact_sound_event = "axe_2h_hit",
 			no_damage_impact_sound_event = "blunt_hit_armour",
@@ -450,8 +450,8 @@ weapon_template.actions = {
 			anim_end_event = "attack_finished",
 			kind = "sweep",
 			first_person_hit_anim = "attack_hit_alt_effect",
-			use_precision_sweep = true,
-			damage_profile = "medium_slashing_smiter_2h_upper",
+			use_precision_sweep = false,
+			damage_profile = "medium_slashing_axe_linesman",
 			hit_effect = "melee_hit_axes_2h",
 			damage_window_end = 0.53,
 			impact_sound_event = "axe_2h_hit",
@@ -500,13 +500,13 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.85,
+					start_time = 0.6,
 					action = "action_two",
 					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.85,
+					start_time = 0.6,
 					action = "action_wield",
 					input = "action_wield"
 				}
@@ -514,20 +514,23 @@ weapon_template.actions = {
 		},
 		light_attack_bopp = {
 			damage_window_start = 0.33,
-			anim_end_event = "attack_finished",
 			kind = "sweep",
-			first_person_hit_anim = "attack_hit_alt_effect",
+			first_person_hit_anim = "shake_hit",
+			no_damage_impact_sound_event = "blunt_hit_armour",
+			use_precision_sweep = false,
 			damage_profile = "medium_slashing_axe_linesman",
 			hit_effect = "melee_hit_axes_2h",
 			damage_window_end = 0.5,
 			impact_sound_event = "axe_2h_hit",
-			no_damage_impact_sound_event = "blunt_hit_armour",
+			anim_end_event = "attack_finished",
 			dedicated_target_range = 3,
 			anim_event = "attack_swing_left",
-			total_time = 2.5,
+			hit_stop_anim = "attack_hit_alt_effect",
+			total_time = 1.5,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
+			anim_time_scale = time_mod * 1.1,
 			range_mod = extra_range_add * 1.4,
 			buff_data = {
 				{
@@ -555,18 +558,24 @@ weapon_template.actions = {
 					start_time = 0.75,
 					action = "action_one",
 					release_required = "action_two_hold",
-					end_time = 1.8,
 					input = "action_one"
 				},
 				{
+					sub_action = "default_left",
+					start_time = 0.75,
+					action = "action_one",
+					release_required = "action_two_hold",
+					input = "action_one_hold"
+				},
+				{
 					sub_action = "default",
-					start_time = 0.8,
+					start_time = 0.65,
 					action = "action_two",
 					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.8,
+					start_time = 0.65,
 					action = "action_wield",
 					input = "action_wield"
 				}

@@ -648,7 +648,8 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 
 			if is_character and not hit_self and in_view and (has_hit_precision_target_and_has_last_hit_result or self.hit_units[hit_unit] == nil) then
 				hit_units[hit_unit] = true
-				shield_blocked = is_dodging or (AiUtils.attack_is_shield_blocked(hit_unit, owner_unit) and not current_action.ignore_armour_hit and not self.ignore_mass_and_armour)
+				local status_extension = self.status_extension
+				shield_blocked = is_dodging or (AiUtils.attack_is_shield_blocked(hit_unit, owner_unit) and not current_action.ignore_armour_hit and not self.ignore_mass_and_armour and not status_extension:is_invisible())
 				local network_manager = self.network_manager
 				local target_health_extension = ScriptUnit.extension(hit_unit, "health_system")
 				local can_damage = false
@@ -797,9 +798,18 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 							shield_break_procc = true
 						end
 					else
+						local item_data = rawget(ItemMasterList, damage_source)
+						local weapon_template_name = (item_data and item_data.template) or item_data.temporary_template
+						local weapon_template, buff_type = nil
+
+						if weapon_template_name then
+							weapon_template = Weapons[weapon_template_name]
+							buff_type = weapon_template.buff_type
+						end
+
 						local send_to_server = true
 						local number_of_hit_enemies = self.number_of_hit_enemies
-						buff_result = DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, number_of_hit_enemies, send_to_server)
+						buff_result = DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, number_of_hit_enemies, send_to_server, buff_type)
 						local attack_template_id = NetworkLookup.attack_templates[target_settings.attack_template]
 
 						weapon_system:rpc_weapon_blood(nil, attacker_unit_id, attack_template_id)

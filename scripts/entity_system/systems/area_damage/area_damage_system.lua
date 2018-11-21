@@ -311,11 +311,12 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 				local attacker_unit_id = network_manager:unit_game_object_id(attacker_unit)
 				local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
 				local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
+				local buff_weapon_type_id = NetworkLookup.buff_weapon_types["n/a"]
 
-				RPC.rpc_buff_on_attack(peer_id, attacker_unit_id, hit_unit_id, attack_type_id, is_critical_strike and allow_critical_proc, hit_zone_id, 1)
-				DamageUtils.buff_on_attack(attacker_unit, hit_unit, attack_type, is_critical_strike and allow_critical_proc, hit_zone_name, 1, send_to_server)
+				RPC.rpc_buff_on_attack(peer_id, attacker_unit_id, hit_unit_id, attack_type_id, is_critical_strike and allow_critical_proc, hit_zone_id, 1, buff_weapon_type_id)
+				DamageUtils.buff_on_attack(attacker_unit, hit_unit, attack_type, is_critical_strike and allow_critical_proc, hit_zone_name, 1, send_to_server, "n/a")
 			elseif attacker_player then
-				DamageUtils.buff_on_attack(attacker_unit, hit_unit, attack_type, is_critical_strike and allow_critical_proc, hit_zone_name, 1, send_to_server)
+				DamageUtils.buff_on_attack(attacker_unit, hit_unit, attack_type, is_critical_strike and allow_critical_proc, hit_zone_name, 1, send_to_server, "n/a")
 			end
 
 			if not explosion_template.no_aggro then

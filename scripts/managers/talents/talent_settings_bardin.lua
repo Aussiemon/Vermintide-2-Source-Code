@@ -55,6 +55,9 @@ local buff_tweak_data = {
 	bardin_ironbreaker_gromril_delay_short = {
 		duration = 13
 	},
+	bardin_ironbreaker_vanguard = {},
+	bardin_ironbreaker_bloodlust = {},
+	bardin_ironbreaker_conqueror = {},
 	bardin_ironbreaker_activated_ability_duration = {
 		duration = 15
 	},
@@ -106,6 +109,9 @@ local buff_tweak_data = {
 	bardin_slayer_passive_cooldown_reduction_on_max_stacks = {
 		multiplier = 2
 	},
+	bardin_slayer_reaper = {},
+	bardin_slayer_bloodlust = {},
+	bardin_slayer_conqueror = {},
 	bardin_slayer_activated_ability_movement = {
 		multiplier = 1.25
 	},
@@ -120,6 +126,15 @@ local buff_tweak_data = {
 	},
 	bardin_ranger_passive = {
 		drop_chance = 1
+	},
+	bardin_ranger_passive_consumeable_dupe_healing = {
+		proc_chance = 0.1
+	},
+	bardin_ranger_passive_consumeable_dupe_potion = {
+		proc_chance = 0.1
+	},
+	bardin_ranger_passive_consumeable_dupe_grenade = {
+		proc_chance = 0.1
 	},
 	bardin_ranger_passive_reload_speed = {
 		multiplier = -0.15
@@ -151,28 +166,17 @@ local buff_tweak_data = {
 	bardin_ranger_passive_improved_ammo = {
 		multiplier = 0.3
 	},
-	bardin_ranger_increased_ammunition = {
-		multiplier = 0.5
-	},
-	bardin_ranger_increased_damage_on_enemy_proximity = {
-		chunk_size = 1,
-		range = 3
-	},
-	bardin_ranger_damage_on_enemy_proximity = {
-		max_stacks = 5,
-		multiplier = 0.05
-	},
-	bardin_ranger_heal_on_ranged_headshot = {
-		bonus = 2
-	},
+	bardin_ranger_vanguard = {},
+	bardin_ranger_reaper = {},
+	bardin_ranger_conqueror = {},
 	bardin_ranger_activated_ability_duration = {
-		duration = 14
+		duration = 10
 	},
 	bardin_ranger_activated_ability_cooldown = {
 		multiplier = -0.3
 	},
 	bardin_ranger_activated_ability_heal = {
-		bonus = 20
+		bonus = 50
 	}
 }
 TalentBuffTemplates = TalentBuffTemplates or {}
@@ -362,6 +366,43 @@ TalentBuffTemplates.dwarf_ranger = {
 				icon = "bardin_ironbreaker_gromril_armour",
 				dormant = true,
 				delayed_buff_name = "bardin_ironbreaker_gromril_armour"
+			}
+		}
+	},
+	bardin_ironbreaker_vanguard = {
+		buffs = {
+			{
+				multiplier = 1,
+				name = "vanguard",
+				event_buff = true,
+				event = "on_stagger",
+				perk = "tank_healing",
+				buff_func = ProcFunctions.heal_stagger_targets_on_melee
+			}
+		}
+	},
+	bardin_ironbreaker_bloodlust = {
+		buffs = {
+			{
+				multiplier = 0.45,
+				name = "bloodlust",
+				event_buff = true,
+				event = "on_damage_dealt",
+				perk = "smiter_healing",
+				heal_cap = 0.25,
+				buff_func = ProcFunctions.heal_percent_of_damage_dealt_on_melee
+			}
+		}
+	},
+	bardin_ironbreaker_conqueror = {
+		buffs = {
+			{
+				multiplier = 0.2,
+				name = "conqueror",
+				event_buff = true,
+				event = "on_healed_consumeable",
+				range = 10,
+				buff_func = ProcFunctions.heal_other_players_percent_at_range
 			}
 		}
 	},
@@ -595,26 +636,42 @@ TalentBuffTemplates.dwarf_ranger = {
 			}
 		}
 	},
-	bardin_slayer_heal_on_kill = {
+	bardin_slayer_reaper = {
 		buffs = {
 			{
-				event = "on_kill",
+				multiplier = -0.05,
+				name = "reaper",
 				event_buff = true,
-				buff_func = ProcFunctions.heal
+				event = "on_damage_dealt",
+				perk = "linesman_healing",
+				max_targets = 5,
+				bonus = 0.25,
+				buff_func = ProcFunctions.heal_damage_targets_on_melee
 			}
 		}
 	},
-	bardin_slayer_slower_hits = {
+	bardin_slayer_bloodlust = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				multiplier = 0.45,
+				name = "bloodlust",
+				event_buff = true,
+				event = "on_damage_dealt",
+				perk = "smiter_healing",
+				heal_cap = 0.25,
+				buff_func = ProcFunctions.heal_percent_of_damage_dealt_on_melee
 			}
 		}
 	},
-	bardin_slayer_heavy_hits = {
+	bardin_slayer_conqueror = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.INCREASED_WEAPON_DAMAGE
+				multiplier = 0.2,
+				name = "conqueror",
+				event_buff = true,
+				event = "on_healed_consumeable",
+				range = 10,
+				buff_func = ProcFunctions.heal_other_players_percent_at_range
 			}
 		}
 	},
@@ -666,6 +723,30 @@ TalentBuffTemplates.dwarf_ranger = {
 				event = "on_special_killed",
 				event_buff = true,
 				buff_func = ProcFunctions.bardin_ranger_scavenge_proc
+			}
+		}
+	},
+	bardin_ranger_passive_consumeable_dupe_healing = {
+		buffs = {
+			{
+				dormant = true,
+				stat_buff = StatBuffIndex.NOT_CONSUME_MEDPACK
+			}
+		}
+	},
+	bardin_ranger_passive_consumeable_dupe_potion = {
+		buffs = {
+			{
+				dormant = true,
+				stat_buff = StatBuffIndex.NOT_CONSUME_POTION
+			}
+		}
+	},
+	bardin_ranger_passive_consumeable_dupe_grenade = {
+		buffs = {
+			{
+				dormant = true,
+				stat_buff = StatBuffIndex.NOT_CONSUME_GRENADE
 			}
 		}
 	},
@@ -779,19 +860,56 @@ TalentBuffTemplates.dwarf_ranger = {
 			}
 		}
 	},
+	bardin_ranger_reaper = {
+		buffs = {
+			{
+				multiplier = -0.05,
+				name = "reaper",
+				event_buff = true,
+				event = "on_damage_dealt",
+				perk = "linesman_healing",
+				max_targets = 5,
+				bonus = 0.25,
+				buff_func = ProcFunctions.heal_damage_targets_on_melee
+			}
+		}
+	},
+	bardin_ranger_vanguard = {
+		buffs = {
+			{
+				multiplier = 1,
+				name = "vanguard",
+				event_buff = true,
+				event = "on_stagger",
+				perk = "tank_healing",
+				buff_func = ProcFunctions.heal_stagger_targets_on_melee
+			}
+		}
+	},
+	bardin_ranger_conqueror = {
+		buffs = {
+			{
+				multiplier = 0.2,
+				name = "conqueror",
+				event_buff = true,
+				event = "on_healed_consumeable",
+				range = 10,
+				buff_func = ProcFunctions.heal_other_players_percent_at_range
+			}
+		}
+	},
 	bardin_ranger_activated_ability_duration = {
 		deactivation_effect = "fx/screenspace_ranger_skill_02",
 		buffs = {
 			{
-				continuous_effect = "fx/screenspace_ranger_skill_01",
+				max_stacks = 1,
 				name = "bardin_ranger_activated_ability_duration",
 				refresh_durations = true,
-				area_unit_name = "units/hub_elements/empty",
 				remove_buff_func = "end_ranger_activated_ability",
 				refresh_buff_area_position = true,
 				area_radius = 7,
-				buff_area = true,
-				max_stacks = 1,
+				continuous_effect = "fx/screenspace_ranger_skill_01",
+				area_unit_name = "units/hub_elements/empty",
 				icon = "bardin_ranger_activated_ability"
 			}
 		}
@@ -823,9 +941,9 @@ TalentTrees.dwarf_ranger = {
 			"bardin_ironbreaker_max_gromril_delay"
 		},
 		{
-			"bardin_ironbreaker_regrowth",
-			"bardin_ironbreaker_bloodlust",
-			"bardin_ironbreaker_conqueror"
+			"bardin_ironbreaker_vanguard",
+			"bardin_ironbreaker_bloodlust_2",
+			"bardin_ironbreaker_heal_share"
 		},
 		{
 			"bardin_ironbreaker_activated_ability_duration",
@@ -850,9 +968,9 @@ TalentTrees.dwarf_ranger = {
 			"bardin_slayer_passive_cooldown_reduction_on_max_stacks"
 		},
 		{
-			"bardin_slayer_regrowth",
-			"bardin_slayer_bloodlust",
-			"bardin_slayer_conqueror"
+			"bardin_slayer_reaper",
+			"bardin_slayer_bloodlust_2",
+			"bardin_slayer_heal_share"
 		},
 		{
 			"bardin_slayer_activated_ability_impact_damage",
@@ -877,9 +995,9 @@ TalentTrees.dwarf_ranger = {
 			"bardin_ranger_passive_spawn_potions"
 		},
 		{
-			"bardin_ranger_regrowth",
-			"bardin_ranger_bloodlust",
-			"bardin_ranger_conqueror"
+			"bardin_ranger_vanguard",
+			"bardin_ranger_reaper",
+			"bardin_ranger_heal_share"
 		},
 		{
 			"bardin_ranger_activated_ability_duration",
@@ -1048,53 +1166,51 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc_2",
-		name = "bardin_ironbreaker_regrowth",
+		description = "vanguard_desc",
+		name = "bardin_ironbreaker_vanguard",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "bardin_ironbreaker_regrowth",
-		description_values = {
-			{
-				value = BuffTemplates.regrowth.buffs[1].bonus
-			}
-		},
+		description_values = {},
 		requirements = {},
 		buffs = {
-			"regrowth"
+			"bardin_ironbreaker_vanguard"
 		},
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc_2",
-		name = "bardin_ironbreaker_bloodlust",
+		description = "bloodlust_desc_3",
+		name = "bardin_ironbreaker_bloodlust_2",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "bardin_ironbreaker_bloodlust",
 		description_values = {
 			{
-				value = BuffTemplates.bloodlust.buffs[1].bonus
+				value_type = "percent",
+				value = BuffTemplates.bloodlust.buffs[1].multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"bloodlust"
+			"bardin_ironbreaker_bloodlust"
 		},
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc_2",
-		name = "bardin_ironbreaker_conqueror",
+		description = "conqueror_desc_3",
+		name = "bardin_ironbreaker_heal_share",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "bardin_ironbreaker_conqueror",
 		description_values = {
 			{
-				value = BuffTemplates.conqueror.buffs[1].bonus
+				value_type = "percent",
+				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"conqueror"
+			"bardin_ironbreaker_conqueror"
 		},
 		buff_data = {}
 	},
@@ -1284,53 +1400,55 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc_2",
-		name = "bardin_slayer_regrowth",
+		description = "reaper_desc",
+		name = "bardin_slayer_reaper",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "bardin_slayer_regrowth",
 		description_values = {
 			{
-				value = BuffTemplates.regrowth.buffs[1].bonus
+				value = BuffTemplates.reaper.buffs[1].max_targets
 			}
 		},
 		requirements = {},
 		buffs = {
-			"regrowth"
+			"bardin_slayer_reaper"
 		},
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc_2",
-		name = "bardin_slayer_bloodlust",
+		description = "bloodlust_desc_3",
+		name = "bardin_slayer_bloodlust_2",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "bardin_slayer_bloodlust",
 		description_values = {
 			{
-				value = BuffTemplates.bloodlust.buffs[1].bonus
+				value_type = "percent",
+				value = BuffTemplates.bloodlust.buffs[1].multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"bloodlust"
+			"bardin_slayer_bloodlust"
 		},
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc_2",
-		name = "bardin_slayer_conqueror",
+		description = "conqueror_desc_3",
+		name = "bardin_slayer_heal_share",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "bardin_slayer_conqueror",
 		description_values = {
 			{
-				value = BuffTemplates.conqueror.buffs[1].bonus
+				value_type = "percent",
+				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"conqueror"
+			"bardin_slayer_conqueror"
 		},
 		buff_data = {}
 	},
@@ -1513,58 +1631,55 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc_2",
-		name = "bardin_ranger_regrowth",
+		description = "vanguard_desc",
+		name = "bardin_ranger_vanguard",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "bardin_ranger_regrowth",
-		description_values = {
-			{
-				value = BuffTemplates.regrowth.buffs[1].bonus
-			}
-		},
+		description_values = {},
 		requirements = {},
 		buffs = {
-			"regrowth"
+			"bardin_ranger_vanguard"
 		},
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc_2",
-		name = "bardin_ranger_bloodlust",
+		description = "reaper_desc",
+		name = "bardin_ranger_reaper",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "bardin_ranger_bloodlust",
 		description_values = {
 			{
-				value = BuffTemplates.bloodlust.buffs[1].bonus
+				value = BuffTemplates.reaper.buffs[1].max_targets
 			}
 		},
 		requirements = {},
 		buffs = {
-			"bloodlust"
+			"bardin_ranger_reaper"
 		},
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc_2",
-		name = "bardin_ranger_conqueror",
+		description = "conqueror_desc_3",
+		name = "bardin_ranger_heal_share",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "bardin_ranger_conqueror",
 		description_values = {
 			{
-				value = BuffTemplates.conqueror.buffs[1].bonus
+				value_type = "percent",
+				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"conqueror"
+			"bardin_ranger_conqueror"
 		},
 		buff_data = {}
 	},
 	{
-		description = "bardin_ranger_activated_ability_duration_desc",
+		description = "bardin_ranger_activated_ability_duration_desc_2",
 		name = "bardin_ranger_activated_ability_duration",
 		num_ranks = 1,
 		icon = "bardin_ranger_activated_ability_duration",

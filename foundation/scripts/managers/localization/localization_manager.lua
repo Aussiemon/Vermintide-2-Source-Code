@@ -221,6 +221,7 @@ local INPUT_ACTIONS = {}
 LocalizationManager.get_input_action = function (self, text_id)
 	local str = self:_base_lookup(text_id) or "<" .. tostring(text_id) .. ">"
 	local macro = string.match(str, "%b$;[%a%d_]*:")
+	local input_service_name = nil
 
 	table.clear(INPUT_ACTIONS)
 
@@ -230,11 +231,12 @@ LocalizationManager.get_input_action = function (self, text_id)
 		local arg_start = string.find(macro, ";")
 		local input_service_and_action = string.sub(macro, arg_start + 1, -2)
 		local split_start, split_end = string.find(input_service_and_action, "__")
+		input_service_name = string.sub(input_service_and_action, 1, split_start - 1)
 		INPUT_ACTIONS[#INPUT_ACTIONS + 1] = string.sub(input_service_and_action, split_end + 1)
 		macro = string.match(str, "%b$;[%a%d_]*:")
 	end
 
-	return INPUT_ACTIONS[1], INPUT_ACTIONS
+	return INPUT_ACTIONS[1], INPUT_ACTIONS, input_service_name
 end
 
 LocalizationManager.replace_macro_in_string = function (self, text_id, replacement_str)

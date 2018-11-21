@@ -24,6 +24,7 @@ ActionBulletSpray.init = function (self, world, item_name, is_server, owner_unit
 
 	self.targets = {}
 	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
+	self.buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	self._is_critical_strike = false
 end
 
@@ -47,6 +48,10 @@ ActionBulletSpray.client_owner_start_action = function (self, new_action, t, cha
 
 	if overcharge_type then
 		local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[overcharge_type]
+
+		if is_critical_strike and self.buff_extension:has_buff_perk("no_overcharge_crit") then
+			overcharge_amount = 0
+		end
 
 		self.overcharge_extension:add_charge(overcharge_amount)
 	end

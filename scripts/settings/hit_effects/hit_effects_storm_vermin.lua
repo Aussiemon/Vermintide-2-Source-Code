@@ -441,6 +441,7 @@ HitEffectsStormVermin = {
 	},
 	heavy_slashing_smiter_death_torso = {
 		inherits = "heavy_slashing_smiter_death",
+		do_dismember = false,
 		extra_conditions = {
 			hit_zone = "torso"
 		},
@@ -457,8 +458,7 @@ HitEffectsStormVermin = {
 			}
 		},
 		animations = {
-			"ragdoll",
-			"death_decapitate"
+			"ragdoll"
 		}
 	},
 	light_blunt_smiter_death = {

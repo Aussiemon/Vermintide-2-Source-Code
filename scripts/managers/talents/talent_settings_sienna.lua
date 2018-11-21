@@ -57,11 +57,14 @@ local buff_tweak_data = {
 		max_stacks = 5,
 		multiplier = 0.02
 	},
+	sienna_scholar_reaper = {},
+	sienna_scholar_bloodlust = {},
+	sienna_scholar_conqueror = {},
 	sienna_scholar_activated_ability_cooldown = {
 		multiplier = -0.3
 	},
 	sienna_scholar_activated_ability_heal = {
-		bonus = 20
+		bonus = 50
 	},
 	sienna_adept_ability_cooldown_on_hit = {
 		bonus = 0.25
@@ -70,7 +73,7 @@ local buff_tweak_data = {
 		bonus = 0.5
 	},
 	sienna_adept_passive = {
-		duration = 8
+		duration = 6
 	},
 	sienna_adept_passive_ranged_damage = {
 		multiplier = 0.1
@@ -82,7 +85,7 @@ local buff_tweak_data = {
 		multiplier = -0.1
 	},
 	tranquility = {
-		multiplier = 2
+		multiplier = 3
 	},
 	sienna_adept_activated_ability = {
 		duration = 0.4
@@ -119,11 +122,17 @@ local buff_tweak_data = {
 	sienna_adept_passive_charge_speed_increased_buff = {
 		multiplier = -0.4
 	},
+	sienna_adept_vanguard = {},
+	sienna_adept_bloodlust = {},
+	sienna_adept_conqueror = {},
 	sienna_adept_activated_ability_cooldown = {
 		multiplier = -0.3
 	},
 	sienna_adept_ability_trail_increased_duration = {
 		duration = 10
+	},
+	sienna_adept_ability_trail_double = {
+		duration = 5
 	},
 	sienna_unchained_ability_cooldown_on_hit = {
 		bonus = 0.25
@@ -164,15 +173,21 @@ local buff_tweak_data = {
 		duration = 10,
 		multiplier = -0.5
 	},
+	sienna_unchained_passive_overcharged_blocks = {
+		multiplier = 0.5
+	},
 	sienna_unchained_reduced_vent_damage = {
 		multiplier = -0.5
 	},
 	sienna_unchained_increased_vent_speed = {
-		multiplier = 0.5
+		multiplier = 0.3
 	},
 	sienna_unchained_reduced_overcharge = {
 		multiplier = -0.15
 	},
+	sienna_unchained_vanguard = {},
+	sienna_unchained_reaper = {},
+	sienna_unchained_conqueror = {},
 	sienna_unchained_activated_ability_cooldown = {
 		multiplier = -0.3
 	},
@@ -346,6 +361,45 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				icon = "sienna_scholar_passive_increased_attack_speed_from_overcharge",
 				stat_buff = StatBuffIndex.ATTACK_SPEED
+			}
+		}
+	},
+	sienna_scholar_reaper = {
+		buffs = {
+			{
+				multiplier = -0.05,
+				name = "reaper",
+				event_buff = true,
+				event = "on_damage_dealt",
+				perk = "linesman_healing",
+				max_targets = 5,
+				bonus = 0.25,
+				buff_func = ProcFunctions.heal_damage_targets_on_melee
+			}
+		}
+	},
+	sienna_scholar_bloodlust = {
+		buffs = {
+			{
+				multiplier = 0.45,
+				name = "bloodlust",
+				event_buff = true,
+				event = "on_damage_dealt",
+				perk = "smiter_healing",
+				heal_cap = 0.25,
+				buff_func = ProcFunctions.heal_percent_of_damage_dealt_on_melee
+			}
+		}
+	},
+	sienna_scholar_conqueror = {
+		buffs = {
+			{
+				multiplier = 0.2,
+				name = "conqueror",
+				event_buff = true,
+				event = "on_healed_consumeable",
+				range = 10,
+				buff_func = ProcFunctions.heal_other_players_percent_at_range
 			}
 		}
 	},
@@ -566,10 +620,57 @@ TalentBuffTemplates.bright_wizard = {
 			}
 		}
 	},
+	sienna_adept_vanguard = {
+		buffs = {
+			{
+				multiplier = 1,
+				name = "vanguard",
+				event_buff = true,
+				event = "on_stagger",
+				perk = "tank_healing",
+				buff_func = ProcFunctions.heal_stagger_targets_on_melee
+			}
+		}
+	},
+	sienna_adept_bloodlust = {
+		buffs = {
+			{
+				multiplier = 0.45,
+				name = "bloodlust",
+				event_buff = true,
+				event = "on_damage_dealt",
+				perk = "smiter_healing",
+				heal_cap = 0.25,
+				buff_func = ProcFunctions.heal_percent_of_damage_dealt_on_melee
+			}
+		}
+	},
+	sienna_adept_conqueror = {
+		buffs = {
+			{
+				multiplier = 0.2,
+				name = "conqueror",
+				event_buff = true,
+				event = "on_healed_consumeable",
+				range = 10,
+				buff_func = ProcFunctions.heal_other_players_percent_at_range
+			}
+		}
+	},
 	sienna_adept_activated_ability_cooldown = {
 		buffs = {
 			{
 				stat_buff = StatBuffIndex.ACTIVATED_COOLDOWN
+			}
+		}
+	},
+	sienna_adept_ability_trail_double = {
+		buffs = {
+			{
+				max_stacks = 1,
+				icon = "sienna_adept_activated_ability_dump_overcharge",
+				dormant = true,
+				remove_buff_func = "sienna_adept_double_trail_talent_start_ability_cooldown"
 			}
 		}
 	},
@@ -723,19 +824,41 @@ TalentBuffTemplates.bright_wizard = {
 			}
 		}
 	},
-	sienna_unchained_heal_on_boss_death = {
+	sienna_unchained_vanguard = {
 		buffs = {
 			{
-				event = "on_boss_killed",
+				multiplier = 1,
+				name = "vanguard",
 				event_buff = true,
-				buff_func = ProcFunctions.heal
+				event = "on_stagger",
+				perk = "tank_healing",
+				buff_func = ProcFunctions.heal_stagger_targets_on_melee
 			}
 		}
 	},
-	sienna_unchained_max_stamina = {
+	sienna_unchained_reaper = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.MAX_FATIGUE
+				multiplier = -0.05,
+				name = "reaper",
+				event_buff = true,
+				event = "on_damage_dealt",
+				perk = "linesman_healing",
+				max_targets = 5,
+				bonus = 0.25,
+				buff_func = ProcFunctions.heal_damage_targets_on_melee
+			}
+		}
+	},
+	sienna_unchained_conqueror = {
+		buffs = {
+			{
+				multiplier = 0.2,
+				name = "conqueror",
+				event_buff = true,
+				event = "on_healed_consumeable",
+				range = 10,
+				buff_func = ProcFunctions.heal_other_players_percent_at_range
 			}
 		}
 	},
@@ -766,9 +889,9 @@ TalentTrees.bright_wizard = {
 			"sienna_scholar_passive_increased_attack_speed_from_overcharge"
 		},
 		{
-			"sienna_scholar_regrowth",
-			"sienna_scholar_bloodlust",
-			"sienna_scholar_conqueror"
+			"sienna_scholar_reaper",
+			"sienna_scholar_bloodlust_2",
+			"sienna_scholar_heal_share"
 		},
 		{
 			"sienna_scholar_activated_ability_dump_overcharge",
@@ -785,7 +908,7 @@ TalentTrees.bright_wizard = {
 		{
 			"sienna_adept_increased_damage_on_enemy_proximity",
 			"sienna_adept_increased_defence_on_last_standing",
-			"sienna_adept_stun_resistance"
+			"sienna_adept_infinite_burn"
 		},
 		{
 			"sienna_adept_passive_decreased_block_cost",
@@ -793,14 +916,14 @@ TalentTrees.bright_wizard = {
 			"sienna_adept_passive_improved"
 		},
 		{
-			"sienna_adept_regrowth",
-			"sienna_adept_bloodlust",
-			"sienna_adept_conqueror"
+			"sienna_adept_vanguard",
+			"sienna_adept_bloodlust_2",
+			"sienna_adept_heal_share"
 		},
 		{
 			"sienna_adept_activated_ability_cooldown",
 			"sienna_adept_ability_trail_increased_duration",
-			"sienna_adept_activated_ability_dump_overcharge"
+			"sienna_adept_ability_trail_double"
 		}
 	},
 	{
@@ -815,14 +938,14 @@ TalentTrees.bright_wizard = {
 			"sienna_unchained_buff_defense_on_revived_target"
 		},
 		{
-			"sienna_unchained_reduced_vent_damage",
+			"sienna_unchained_overcharged_blocks",
 			"sienna_unchained_increased_vent_speed",
 			"sienna_unchained_reduced_overcharge"
 		},
 		{
-			"sienna_unchained_regrowth",
-			"sienna_unchained_bloodlust",
-			"sienna_unchained_conqueror"
+			"sienna_unchained_vanguard",
+			"sienna_unchained_reaper",
+			"sienna_unchained_heal_share"
 		},
 		{
 			"sienna_unchained_activated_ability_radius",
@@ -1010,53 +1133,55 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc_2",
-		name = "sienna_scholar_regrowth",
+		description = "reaper_desc",
+		name = "sienna_scholar_reaper",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "sienna_scholar_regrowth",
 		description_values = {
 			{
-				value = BuffTemplates.regrowth.buffs[1].bonus
+				value = BuffTemplates.reaper.buffs[1].max_targets
 			}
 		},
 		requirements = {},
 		buffs = {
-			"regrowth"
+			"sienna_scholar_reaper"
 		},
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc_2",
-		name = "sienna_scholar_bloodlust",
+		description = "bloodlust_desc_3",
+		name = "sienna_scholar_bloodlust_2",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "sienna_scholar_bloodlust",
 		description_values = {
 			{
-				value = BuffTemplates.bloodlust.buffs[1].bonus
+				value_type = "percent",
+				value = BuffTemplates.bloodlust.buffs[1].multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"bloodlust"
+			"sienna_scholar_bloodlust"
 		},
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc_2",
-		name = "sienna_scholar_conqueror",
+		description = "conqueror_desc_3",
+		name = "sienna_scholar_heal_share",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "sienna_scholar_conqueror",
 		description_values = {
 			{
-				value = BuffTemplates.conqueror.buffs[1].bonus
+				value_type = "percent",
+				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"conqueror"
+			"sienna_scholar_conqueror"
 		},
 		buff_data = {}
 	},
@@ -1173,20 +1298,13 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "sienna_adept_stun_resistance_desc",
-		name = "sienna_adept_stun_resistance",
+		description = "sienna_adept_infinite_burn_desc",
+		name = "sienna_adept_infinite_burn",
 		num_ranks = 1,
 		icon = "sienna_adept_stun_resistance",
 		requirements = {},
-		description_values = {
-			{
-				value_type = "percent",
-				value = buff_tweak_data.sienna_adept_stun_resistance.multiplier
-			}
-		},
-		buffs = {
-			"sienna_adept_stun_resistance"
-		},
+		description_values = {},
+		buffs = {},
 		buff_data = {}
 	},
 	{
@@ -1259,53 +1377,51 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc_2",
-		name = "sienna_adept_regrowth",
+		description = "vanguard_desc",
+		name = "sienna_adept_vanguard",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "sienna_adept_regrowth",
-		description_values = {
-			{
-				value = BuffTemplates.regrowth.buffs[1].bonus
-			}
-		},
+		description_values = {},
 		requirements = {},
 		buffs = {
-			"regrowth"
+			"sienna_adept_vanguard"
 		},
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc_2",
-		name = "sienna_adept_bloodlust",
+		description = "bloodlust_desc_3",
+		name = "sienna_adept_bloodlust_2",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "sienna_adept_bloodlust",
 		description_values = {
 			{
-				value = BuffTemplates.bloodlust.buffs[1].bonus
+				value_type = "percent",
+				value = BuffTemplates.bloodlust.buffs[1].multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"bloodlust"
+			"sienna_adept_bloodlust"
 		},
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc_2",
-		name = "sienna_adept_conqueror",
+		description = "conqueror_desc_3",
+		name = "sienna_adept_heal_share",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "sienna_adept_conqueror",
 		description_values = {
 			{
-				value = BuffTemplates.conqueror.buffs[1].bonus
+				value_type = "percent",
+				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"conqueror"
+			"sienna_adept_conqueror"
 		},
 		buff_data = {}
 	},
@@ -1341,10 +1457,15 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "sienna_adept_activated_ability_dump_overcharge_desc",
-		name = "sienna_adept_activated_ability_dump_overcharge",
+		description = "sienna_adept_ability_trail_double_desc",
+		name = "sienna_adept_ability_trail_double",
 		num_ranks = 1,
 		icon = "sienna_adept_activated_ability_dump_overcharge",
+		description_values = {
+			{
+				value = buff_tweak_data.sienna_adept_ability_trail_double.duration
+			}
+		},
 		requirements = {},
 		buffs = {},
 		buff_data = {}
@@ -1455,25 +1576,25 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "sienna_unchained_reduced_vent_damage_desc",
-		name = "sienna_unchained_reduced_vent_damage",
+		description = "sienna_unchained_overcharged_blocks_desc",
+		name = "sienna_unchained_overcharged_blocks",
 		num_ranks = 1,
 		buffer = "both",
 		icon = "sienna_unchained_reduced_vent_damage",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.sienna_unchained_reduced_vent_damage.multiplier
+				value = buff_tweak_data.sienna_unchained_passive_overcharged_blocks.multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"sienna_unchained_reduced_vent_damage"
+			"sienna_unchained_passive_overcharged_blocks"
 		},
 		buff_data = {}
 	},
 	{
-		description = "sienna_unchained_increased_vent_speed_desc",
+		description = "sienna_unchained_increased_vent_speed_desc_2",
 		name = "sienna_unchained_increased_vent_speed",
 		num_ranks = 1,
 		icon = "sienna_unchained_increased_vent_speed",
@@ -1481,11 +1602,16 @@ Talents.bright_wizard = {
 			{
 				value_type = "percent",
 				value = buff_tweak_data.sienna_unchained_increased_vent_speed.multiplier
+			},
+			{
+				value_type = "percent",
+				value = buff_tweak_data.sienna_unchained_reduced_vent_damage.multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"sienna_unchained_increased_vent_speed"
+			"sienna_unchained_increased_vent_speed",
+			"sienna_unchained_reduced_vent_damage"
 		},
 		buff_data = {}
 	},
@@ -1507,53 +1633,50 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "regrowth_desc_2",
-		name = "sienna_unchained_regrowth",
+		description = "vanguard_desc",
+		name = "sienna_unchained_vanguard",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "sienna_unchained_regrowth",
-		description_values = {
-			{
-				value = BuffTemplates.regrowth.buffs[1].bonus
-			}
-		},
+		description_values = {},
 		requirements = {},
 		buffs = {
-			"regrowth"
+			"sienna_unchained_vanguard"
 		},
 		buff_data = {}
 	},
 	{
-		description = "bloodlust_desc_2",
-		name = "sienna_unchained_bloodlust",
+		description = "reaper_desc",
+		name = "sienna_unchained_reaper",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "sienna_unchained_bloodlust",
 		description_values = {
 			{
-				value = BuffTemplates.bloodlust.buffs[1].bonus
+				value = BuffTemplates.reaper.buffs[1].max_targets
 			}
 		},
 		requirements = {},
 		buffs = {
-			"bloodlust"
+			"sienna_unchained_reaper"
 		},
 		buff_data = {}
 	},
 	{
-		description = "conqueror_desc_2",
-		name = "sienna_unchained_conqueror",
+		description = "conqueror_desc_3",
+		name = "sienna_unchained_heal_share",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "sienna_unchained_conqueror",
 		description_values = {
 			{
-				value = BuffTemplates.conqueror.buffs[1].bonus
+				value_type = "percent",
+				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"conqueror"
+			"sienna_unchained_conqueror"
 		},
 		buff_data = {}
 	},

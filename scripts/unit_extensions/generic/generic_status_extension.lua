@@ -217,6 +217,8 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 		self.move_speed_multiplier_timer = self.move_speed_multiplier_timer + move_speed_timer_added_bonus
 	end
 
+	local disable_regen_boost_on_low_fatigue = true
+
 	if num_damages > 0 then
 		local slow_movement = false
 
@@ -227,6 +229,10 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 				slow_movement = true
 
 				break
+			end
+
+			if not intensity_ignored_damage_types[damage_type] then
+				disable_regen_boost_on_low_fatigue = false
 			end
 		end
 
@@ -249,7 +255,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 			self.fatigue = (max_fatigue_points == 0 and 0) or previous_max_fatigue_points / max_fatigue_points * self.fatigue
 		end
 
-		if num_damages > 0 and self.fatigue >= 50 then
+		if not disable_regen_boost_on_low_fatigue and num_damages > 0 and self.fatigue >= 50 then
 			if self.action_stun_push then
 				self.action_stun_push = false
 			else
@@ -757,9 +763,12 @@ local no_sfx_heal_reasons = {
 	career_skill = true
 }
 local vfx_heal_reasons = {
+	bandage_temp_health = true,
+	buff_shared_medpack_temp_health = true,
+	healing_draught_temp_health = true,
+	buff_shared_medpack = true,
 	bandage = true,
 	bandage_trinket = true,
-	buff_shared_medpack = true,
 	healing_draught = true
 }
 
@@ -999,7 +1008,7 @@ GenericStatusExtension.set_has_pushed = function (self, degen_delay)
 	local buff_extension = self.buff_extension
 
 	if not buff_extension:has_buff_perk("slayer_stamina") then
-		self.push_degen_delay = 1.5
+		self.push_degen_delay = degen_delay or 1.5
 	end
 end
 
@@ -1856,7 +1865,7 @@ GenericStatusExtension.is_permanent_heal = function (self, heal_type)
 end
 
 GenericStatusExtension.heal_can_remove_wounded = function (self, heal_type)
-	return heal_type == "healing_draught" or heal_type == "bandage" or heal_type == "bandage_trinket" or heal_type == "buff_shared_medpack" or heal_type == "debug"
+	return heal_type == "healing_draught" or heal_type == "bandage" or heal_type == "bandage_trinket" or heal_type == "buff_shared_medpack" or heal_type == "debug" or heal_type == "healing_draught_temp_health" or heal_type == "bandage_temp_health" or heal_type == "buff_shared_medpack_temp_health"
 end
 
 GenericStatusExtension.is_revived = function (self)

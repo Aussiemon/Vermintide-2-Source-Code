@@ -16,19 +16,15 @@ weapon_template.actions = {
 			allowed_chain_actions = {},
 			condition_func = function (user_unit)
 				local health_extension = ScriptUnit.extension(user_unit, "health_system")
-				local buff_extension = ScriptUnit.extension(user_unit, "buff_system")
 				local full_health = health_extension:current_permanent_health_percent() >= 1
-				local trinket_prevents_healing = buff_extension:has_buff_type("trait_necklace_no_healing_health_regen")
 
-				return not full_health and not trinket_prevents_healing
+				return not full_health
 			end,
 			chain_condition_func = function (user_unit)
 				local health_extension = ScriptUnit.extension(user_unit, "health_system")
-				local buff_extension = ScriptUnit.extension(user_unit, "buff_system")
 				local full_health = health_extension:current_permanent_health_percent() >= 1
-				local trinket_prevents_healing = buff_extension:has_buff_type("trait_necklace_no_healing_health_regen")
 
-				return not full_health and not trinket_prevents_healing
+				return not full_health
 			end
 		}
 	},

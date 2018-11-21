@@ -784,7 +784,7 @@ end
 AccountManager.initiate_leave_game = function (self)
 	self._leave_game = true
 
-	if self:is_online() then
+	if self:is_online() and self._user_id then
 		Presence.set(self._user_id, "")
 	end
 end

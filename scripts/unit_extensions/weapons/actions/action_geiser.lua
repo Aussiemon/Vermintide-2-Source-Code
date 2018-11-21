@@ -118,6 +118,11 @@ ActionGeiser.fire = function (self, reason)
 
 	if overcharge then
 		local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[overcharge]
+		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
+		if self._is_critical_strike and buff_extension:has_buff_perk("no_overcharge_crit") then
+			overcharge_amount = 0
+		end
 
 		self.overcharge_extension:add_charge(overcharge_amount, charge_value)
 	end
@@ -230,7 +235,7 @@ ActionGeiser._update_damage = function (self, current_action)
 			local is_critical_strike = self._is_critical_strike or has_ranged_boost
 			local send_to_server = true
 
-			DamageUtils.buff_on_attack(owner_unit, hit_unit, "aoe", is_critical_strike and allow_critical_proc, hit_zone_name, #damage_buffer, send_to_server)
+			DamageUtils.buff_on_attack(owner_unit, hit_unit, "aoe", is_critical_strike and allow_critical_proc, hit_zone_name, #damage_buffer, send_to_server, "n/a")
 
 			local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
 

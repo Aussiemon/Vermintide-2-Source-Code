@@ -471,11 +471,12 @@ BuffSystem.rpc_remove_group_buff = function (self, sender, group_buff_template_i
 	end
 end
 
-BuffSystem.rpc_buff_on_attack = function (self, sender, attacking_unit_id, hit_unit_id, attack_type_id, is_critical, hit_zone_id, target_number)
+BuffSystem.rpc_buff_on_attack = function (self, sender, attacking_unit_id, hit_unit_id, attack_type_id, is_critical, hit_zone_id, target_number, buff_type_id)
 	local hit_unit = self.unit_storage:unit(hit_unit_id)
 	local attacking_unit = self.unit_storage:unit(attacking_unit_id)
 	local attack_type = NetworkLookup.buff_attack_types[attack_type_id]
 	local hit_zone_name = NetworkLookup.hit_zones[hit_zone_id]
+	local buff_weapon_type = NetworkLookup.buff_weapon_types[buff_type_id]
 
 	if not Unit.alive(attacking_unit) then
 		return
@@ -483,7 +484,7 @@ BuffSystem.rpc_buff_on_attack = function (self, sender, attacking_unit_id, hit_u
 
 	local send_to_server = false
 
-	DamageUtils.buff_on_attack(attacking_unit, hit_unit, attack_type, is_critical, hit_zone_name, target_number, send_to_server)
+	DamageUtils.buff_on_attack(attacking_unit, hit_unit, attack_type, is_critical, hit_zone_name, target_number, send_to_server, buff_weapon_type)
 end
 
 BuffSystem.rpc_proc_event = function (self, sender, peer_id, local_player_id, event_id)

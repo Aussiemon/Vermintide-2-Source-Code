@@ -68,7 +68,7 @@ ActionPushStagger.client_owner_start_action = function (self, new_action, t, cha
 		end
 
 		status_extension:add_fatigue_points(cost)
-		status_extension:set_has_pushed()
+		status_extension:set_has_pushed(new_action.fatigue_regen_delay)
 	end
 
 	self.block_end_time = t + 0.5

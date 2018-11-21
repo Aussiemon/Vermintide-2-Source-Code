@@ -1,4 +1,5 @@
 breed_data = {
+	detection_radius = 10,
 	wwise_voice_switch_group = "clan_rat_vce",
 	walk_speed = 2.5,
 	leave_walk_distance = 1,
@@ -6,7 +7,6 @@ breed_data = {
 	enter_walk_distance = 0.1,
 	patrol_detection_radius = 10,
 	animation_sync_rpc = "rpc_sync_anim_state_7",
-	detection_radius = 10,
 	scale_death_push = 1,
 	opt_base_unit = "units/beings/enemies/skaven_clan_rat/chr_skaven_slave_baked",
 	has_inventory = true,
@@ -241,6 +241,7 @@ breed_data = {
 		j_tail2 = 0.05
 	},
 	max_health = BreedTweaks.max_health.slave_rat,
+	bloodlust_health = BreedTweaks.bloodlust_health.skaven_horde,
 	diff_stagger_resist = BreedTweaks.diff_stagger_resist.slave_rat,
 	stagger_duration = BreedTweaks.stagger_duration.slave_rat,
 	hit_mass_counts = BreedTweaks.hit_mass_counts.slave_rat,

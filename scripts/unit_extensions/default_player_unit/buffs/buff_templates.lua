@@ -42,6 +42,7 @@ StatBuffs = {
 	"BACKSTAB_MULTIPLIER",
 	"MOVEMENT_SPEED",
 	"DAMAGE_TAKEN",
+	"DAMAGE_TAKEN_SECONDARY",
 	"DAMAGE_TAKEN_TO_OVERCHARGE",
 	"DAMAGE_TAKEN_ELITES",
 	"INCREASED_WEAPON_DAMAGE",
@@ -132,6 +133,7 @@ StatBuffApplicationMethods = {
 	[StatBuffIndex.BACKSTAB_MULTIPLIER] = "stacking_bonus",
 	[StatBuffIndex.MOVEMENT_SPEED] = "stacking_multiplier",
 	[StatBuffIndex.DAMAGE_TAKEN] = "stacking_multiplier",
+	[StatBuffIndex.DAMAGE_TAKEN_SECONDARY] = "stacking_multiplier",
 	[StatBuffIndex.DAMAGE_TAKEN_TO_OVERCHARGE] = "stacking_multiplier",
 	[StatBuffIndex.DAMAGE_TAKEN_ELITES] = "stacking_multiplier",
 	[StatBuffIndex.INCREASED_WEAPON_DAMAGE] = "stacking_multiplier",
@@ -220,6 +222,7 @@ ProcEvents = {
 	"on_revived_ally",
 	"on_healed",
 	"on_healed_ally",
+	"on_healed_consumeable",
 	"on_assisted",
 	"on_assisted_ally",
 	"on_push",
@@ -231,6 +234,8 @@ ProcEvents = {
 	"on_consumable_picked_up",
 	"on_last_ammo_used",
 	"on_gained_ammo_from_no_ammo",
+	"on_damage_dealt",
+	"on_stagger",
 	"on_push_used",
 	"on_backstab",
 	"on_sweep",
@@ -273,6 +278,7 @@ ProcFunctions = {
 
 		if Unit.alive(player_unit) and Managers.player.is_server then
 			local heal_amount = buff.bonus
+			local breed = AiUtils.unit_breed(target_unit)
 
 			DamageUtils.heal_network(player_unit, player_unit, heal_amount, "bandage")
 		end
@@ -286,6 +292,36 @@ ProcFunctions = {
 
 			for i = 1, #player_and_bot_units, 1 do
 				DamageUtils.heal_network(player_and_bot_units[i], player_unit, heal_amount, "heal_from_proc")
+			end
+		end
+	end,
+	heal_other_players_percent_at_range = function (player, buff, params)
+		local player_unit = player.player_unit
+		local healer_unit = params[1]
+		local healer_position = POSITION_LOOKUP[healer_unit]
+		local range = buff.range
+		local range_squared = range * range
+
+		if Unit.alive(player_unit) and Managers.player.is_server then
+			local player_and_bot_units = PLAYER_AND_BOT_UNITS
+
+			for i = 1, #player_and_bot_units, 1 do
+				local healed_unit = player_and_bot_units[i]
+
+				if healed_unit ~= healer_unit then
+					local unit_position = POSITION_LOOKUP[healed_unit]
+					local distance_squared = Vector3.distance_squared(healer_position, unit_position)
+
+					if distance_squared < range_squared then
+						local health_extension = ScriptUnit.extension(healed_unit, "health_system")
+						local max_health = health_extension:get_max_health()
+						local multiplier = buff.multiplier
+						local heal_amount = max_health * multiplier
+						local heal_type = "buff_shared_medpack"
+
+						DamageUtils.heal_network(healed_unit, player_unit, heal_amount, heal_type)
+					end
+				end
 			end
 		end
 	end,
@@ -311,6 +347,119 @@ ProcFunctions = {
 
 		if Unit.alive(player_unit) and Unit.alive(revived_unit) and Managers.player.is_server then
 			buff_system:add_buff(revived_unit, buff_to_add, player_unit, false)
+		end
+	end,
+	heal_percent_of_damage_dealt_on_melee = function (player, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local buff_type = params[6]
+
+			if buff_type == "MELEE_1H" or buff_type == "MELEE_2H" then
+				local hit_unit = params[1]
+				local damage_amount = params[2]
+				local hit_unit_health_extension = ScriptUnit.extension(hit_unit, "health_system")
+
+				if hit_unit_health_extension and hit_unit_health_extension:current_health() <= damage_amount then
+					local breed = AiUtils.unit_breed(hit_unit)
+
+					if breed then
+						local heal_amount = breed.bloodlust_health or 0
+
+						DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
+					end
+				end
+			end
+		end
+	end,
+	heal_finesse_damage_on_melee = function (player, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		local player_unit = player.player_unit
+		local heal_amount = buff.bonus
+		local has_procced = buff.has_procced
+		local hit_unit = params[1]
+		local attack_type = params[2]
+		local hit_zone_name = params[3]
+		local target_number = params[4]
+		local buff_type = params[5]
+		local critical_hit = params[6]
+		local breed = AiUtils.unit_breed(hit_unit)
+
+		if target_number == 1 then
+			buff.has_procced = false
+			has_procced = false
+		end
+
+		if Unit.alive(player_unit) and breed and (buff_type == "MELEE_1H" or buff_type == "MELEE_2H") and not has_procced then
+			if hit_zone_name == "head" or hit_zone_name == "neck" or hit_zone_name == "weakspot" then
+				buff.has_procced = true
+
+				DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
+			end
+
+			if critical_hit then
+				DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
+
+				buff.has_procced = true
+			end
+		end
+	end,
+	heal_stagger_targets_on_melee = function (player, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local hit_unit = params[1]
+			local damage_profile = params[2]
+			local attacker_unit = params[3]
+			local stagger_type = params[4]
+			local stagger_duration = params[5]
+			local stagger_value = params[6]
+			local buff_type = params[7]
+			local breed = AiUtils.unit_breed(hit_unit)
+			local multiplier = buff.multiplier
+			local is_push = damage_profile.is_push
+			local heal_amount = stagger_value * multiplier
+
+			if is_push then
+				heal_amount = 0.4
+			end
+
+			if breed and (buff_type == "MELEE_1H" or buff_type == "MELEE_2H") then
+				DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
+			end
+		end
+	end,
+	heal_damage_targets_on_melee = function (player, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		local player_unit = player.player_unit
+		local buff_template = buff.template
+		local max_targets = buff_template.max_targets
+		local heal_amount = buff.bonus or 0.25
+		local multiplier = buff.multiplier or -0.05
+		local hit_unit = params[1]
+		local damage_amount = params[2]
+		local buff_type = params[6]
+		local target_number = params[7]
+		local breed = AiUtils.unit_breed(hit_unit)
+
+		if Unit.alive(player_unit) and breed and (buff_type == "MELEE_1H" or buff_type == "MELEE_2H") and damage_amount > 0 and target_number and target_number <= max_targets then
+			heal_amount = heal_amount^(target_number * multiplier)
+
+			DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
 		end
 	end,
 	on_hit_debuff_enemy_defence = function (player, buff, params)
@@ -670,6 +819,22 @@ ProcFunctions = {
 			buff_extension:add_buff("trait_necklace_damage_taken_reduction_buff")
 		end
 	end,
+	buff_defence_on_damage_taken = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local attacker_unit = params[1]
+			local damage_amount = params[2]
+			local damage_type = params[3]
+			local buff_system = Managers.state.entity:system("buff_system")
+			local buff_to_add = "trait_necklace_damage_taken_reduction_buff"
+			local server_controlled = false
+
+			if attacker_unit ~= player_unit and damage_amount > 0 and damage_type ~= "overcharge" then
+				buff_system:add_buff(player_unit, buff_to_add, player_unit, server_controlled)
+			end
+		end
+	end,
 	bardin_ranger_scavenge_proc = function (player, buff, params)
 		if not Managers.state.network.is_server then
 			return
@@ -784,6 +949,25 @@ ProcFunctions = {
 
 					buff_extension:add_buff(buff_to_add)
 				end
+			end
+		end
+	end,
+	add_buff_to_all_players = function (player, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		local buff_system = Managers.state.entity:system("buff_system")
+		local template = buff.template
+		local buff_to_add = template.buff_to_add
+		local player_and_bot_units = PLAYER_AND_BOT_UNITS
+		local num_units = #player_and_bot_units
+
+		for i = 1, num_units, 1 do
+			local unit = player_and_bot_units[i]
+
+			if Unit.alive(unit) then
+				buff_system:add_buff(unit, buff_to_add, unit, false)
 			end
 		end
 	end,
@@ -1075,6 +1259,44 @@ ProcFunctions = {
 			end
 		end
 	end,
+	ammo_fraction_gain_on_crit_trait = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if player and player.remote then
+			return
+		end
+
+		if Unit.alive(player_unit) then
+			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			local buff_template = buff.template
+			local weapon_slot = "slot_ranged"
+			local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
+			local slot_data = inventory_extension:get_slot_data(weapon_slot)
+			local target_number = params[4]
+			local right_unit_1p = slot_data.right_unit_1p
+			local left_unit_1p = slot_data.left_unit_1p
+			local right_hand_ammo_extension = ScriptUnit.has_extension(right_unit_1p, "ammo_system")
+			local left_hand_ammo_extension = ScriptUnit.has_extension(left_unit_1p, "ammo_system")
+			local ammo_extension = right_hand_ammo_extension or left_hand_ammo_extension
+			local ammo_percent = ammo_extension:total_ammo_fraction()
+			local ammo_bonus_fraction = buff_template.ammo_bonus_fraction
+			local ammo_amount = math.max(math.round(ammo_extension:get_max_ammo() * ammo_bonus_fraction), 1)
+
+			if ammo_extension then
+				if target_number == 1 then
+					buff.has_procced = false
+				end
+
+				local has_procced = buff.has_procced
+
+				if not has_procced then
+					ammo_extension:add_ammo_to_reserve(ammo_amount)
+
+					buff.has_procced = true
+				end
+			end
+		end
+	end,
 	ammo_gain_when_low = function (player, buff, params)
 		local player_unit = player.player_unit
 
@@ -1227,6 +1449,22 @@ ProcFunctions = {
 			local career_extension = ScriptUnit.extension(player_unit, "career_system")
 
 			career_extension:reduce_activated_ability_cooldown(buff.bonus)
+		end
+	end,
+	reduce_activated_ability_cooldown_with_internal_cooldown_on_crit = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			local buff_template = buff.template
+			local buff_to_add = buff_template.buff_to_add
+
+			if not buff_extension:has_buff_type(buff_to_add) then
+				local career_extension = ScriptUnit.extension(player_unit, "career_system")
+
+				buff_extension:add_buff(buff_to_add)
+				career_extension:reduce_activated_ability_cooldown_percent(buff.bonus)
+			end
 		end
 	end,
 	reduce_activated_ability_cooldown_on_damage_taken = function (player, buff, params)
@@ -1441,6 +1679,14 @@ PotionSpreadTrinketTemplates = {
 	}
 }
 TrinketSpreadDistance = 10
+InfiniteBurnDotLookup = {
+	sienna_adept_ability_trail = "sienna_adept_ability_trail_infinite",
+	burning_dot = "burning_dot_infinite",
+	burning_1W_dot = "burning_1W_dot_infinite",
+	burning_flamethrower_dot = "burning_flamethrower_dot_infinite",
+	burning_3W_dot = "burning_3W_dot_infinite",
+	beam_burning_dot = "beam_burning_dot_infinite"
+}
 BuffTemplates = {
 	twitch_damage_boost = {
 		buffs = {
@@ -2308,6 +2554,23 @@ BuffTemplates = {
 			}
 		}
 	},
+	burning_dot_infinite = {
+		buffs = {
+			{
+				damage_profile = "burning_dot",
+				name = "burning dot",
+				end_flow_event = "smoke",
+				start_flow_event = "burn_infinity",
+				death_flow_event = "burn_death",
+				remove_buff_func = "remove_dot_damage",
+				apply_buff_func = "start_dot_damage",
+				time_between_dot_damages = 0.1,
+				damage_type = "burninating",
+				max_stacks = 1,
+				update_func = "apply_dot_damage"
+			}
+		}
+	},
 	beam_burning_dot = {
 		buffs = {
 			{
@@ -2321,6 +2584,23 @@ BuffTemplates = {
 				time_between_dot_damages = 1,
 				damage_type = "burninating",
 				damage_profile = "beam_burning_dot",
+				update_func = "apply_dot_damage"
+			}
+		}
+	},
+	beam_burning_dot_infinite = {
+		buffs = {
+			{
+				damage_profile = "beam_burning_dot",
+				name = "burning dot",
+				end_flow_event = "smoke",
+				start_flow_event = "burn_infinity",
+				death_flow_event = "burn_death",
+				remove_buff_func = "remove_dot_damage",
+				apply_buff_func = "start_dot_damage",
+				time_between_dot_damages = 1,
+				damage_type = "burninating",
+				max_stacks = 1,
 				update_func = "apply_dot_damage"
 			}
 		}
@@ -2344,6 +2624,24 @@ BuffTemplates = {
 			}
 		}
 	},
+	burning_flamethrower_dot_infinite = {
+		buffs = {
+			{
+				damage_profile = "flamethrower_burning_dot",
+				name = "burning dot",
+				end_flow_event = "smoke",
+				start_flow_event = "burn_infinity",
+				death_flow_event = "burn_death",
+				remove_buff_func = "remove_dot_damage",
+				apply_buff_func = "start_dot_damage",
+				refresh_durations = true,
+				time_between_dot_damages = 0.65,
+				damage_type = "burninating",
+				max_stacks = 1,
+				update_func = "apply_dot_damage"
+			}
+		}
+	},
 	sienna_adept_ability_trail = {
 		buffs = {
 			{
@@ -2356,6 +2654,23 @@ BuffTemplates = {
 				time_between_dot_damages = 0.25,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
+				update_func = "apply_dot_damage"
+			}
+		}
+	},
+	sienna_adept_ability_trail_infinite = {
+		buffs = {
+			{
+				damage_profile = "burning_dot",
+				name = "burning dot",
+				end_flow_event = "smoke",
+				start_flow_event = "burn_infinity",
+				death_flow_event = "burn_death",
+				remove_buff_func = "remove_dot_damage",
+				apply_buff_func = "start_dot_damage",
+				time_between_dot_damages = 0.25,
+				damage_type = "burninating",
+				max_stacks = 1,
 				update_func = "apply_dot_damage"
 			}
 		}
@@ -2377,6 +2692,23 @@ BuffTemplates = {
 			}
 		}
 	},
+	burning_1W_dot_infinite = {
+		buffs = {
+			{
+				damage_profile = "burning_dot",
+				name = "burning dot",
+				end_flow_event = "smoke",
+				start_flow_event = "burn_infinity",
+				death_flow_event = "burn_death",
+				remove_buff_func = "remove_dot_damage",
+				apply_buff_func = "start_dot_damage",
+				time_between_dot_damages = 1.5,
+				damage_type = "burninating",
+				max_stacks = 1,
+				update_func = "apply_dot_damage"
+			}
+		}
+	},
 	burning_3W_dot = {
 		buffs = {
 			{
@@ -2390,6 +2722,23 @@ BuffTemplates = {
 				time_between_dot_damages = 1.25,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
+				update_func = "apply_dot_damage"
+			}
+		}
+	},
+	burning_3W_dot_infinite = {
+		buffs = {
+			{
+				damage_profile = "burning_dot",
+				name = "burning dot",
+				end_flow_event = "smoke",
+				start_flow_event = "burn_infinity",
+				death_flow_event = "burn_death",
+				remove_buff_func = "remove_dot_damage",
+				apply_buff_func = "start_dot_damage",
+				time_between_dot_damages = 1.25,
+				damage_type = "burninating",
+				max_stacks = 1,
 				update_func = "apply_dot_damage"
 			}
 		}
@@ -2485,419 +2834,64 @@ BuffTemplates = {
 			}
 		}
 	},
-	ranged_weapon_clip_size_tier1 = {
-		description = "description_ranged_weapon_clip_size_tier1",
-		apply_on = "equip",
-		display_name = "ranged_weapon_clip_size_tier1",
-		icon = "trait_icons_extracapacity",
-		description_values = {
-			"multiplier"
-		},
-		buffs = {
-			{
-				multiplier = 0.5,
-				name = "clip_size",
-				stat_buff = StatBuffIndex.CLIP_SIZE
-			}
-		}
-	},
-	ranged_weapon_clip_size_small_clip_tier1 = {
-		description = "description_ranged_weapon_clip_size_tier1",
-		apply_on = "equip",
-		display_name = "ranged_weapon_clip_size_tier1",
-		icon = "trait_icons_extracapacity",
-		description_values = {
-			"multiplier"
-		},
-		buffs = {
-			{
-				multiplier = 1,
-				name = "clip_size",
-				stat_buff = StatBuffIndex.CLIP_SIZE
-			}
-		}
-	},
-	ranged_weapon_clip_size_repeating_crossbow_clip_tier1 = {
-		description = "description_ranged_weapon_clip_size_tier1",
-		apply_on = "equip",
-		display_name = "ranged_weapon_clip_size_tier1",
-		icon = "trait_icons_extracapacity",
-		description_values = {
-			"multiplier"
-		},
-		buffs = {
-			{
-				multiplier = 0.4,
-				name = "clip_size",
-				stat_buff = StatBuffIndex.CLIP_SIZE
-			}
-		}
-	},
-	ranged_weapon_total_ammo_tier1 = {
-		description = "description_ranged_weapon_total_ammo_tier1",
-		apply_on = "equip",
-		display_name = "ranged_weapon_total_ammo_tier1",
-		icon = "trait_icons_ammunitionholder",
-		description_values = {
-			"multiplier"
-		},
-		buffs = {
-			{
-				multiplier = 0.3,
-				name = "total_ammo",
-				stat_buff = StatBuffIndex.TOTAL_AMMO
-			}
-		}
-	},
-	ranged_weapon_reload_speed_tier1 = {
-		description = "description_ranged_weapon_reload_speed_tier1",
-		apply_on = "wield",
-		display_name = "ranged_weapon_reload_speed_tier1",
-		icon = "trait_icon_mastercrafted",
-		description_values = {
-			"multiplier"
-		},
-		buffs = {
-			{
-				multiplier = -0.25,
-				name = "reload_speed",
-				stat_buff = StatBuffIndex.RELOAD_SPEED
-			}
-		}
-	},
-	ranged_weapon_reload_speed_slow = {
-		description = "description_ranged_weapon_reload_speed_tier1",
-		apply_on = "wield",
-		display_name = "ranged_weapon_reload_speed_tier1",
-		icon = "trait_icon_mastercrafted",
-		description_values = {
-			"multiplier"
-		},
-		buffs = {
-			{
-				multiplier = -0.2,
-				name = "reload_speed",
-				stat_buff = StatBuffIndex.RELOAD_SPEED
-			}
-		}
-	},
-	ranged_weapon_increased_zoom = {
-		description = "description_ranged_weapon_increased_zoom",
-		apply_on = "wield",
-		display_name = "ranged_weapon_increased_zoom",
-		icon = "trait_icon_hawkeye",
-		buffs = {
-			{
-				name = "increased_zoom"
-			}
-		}
-	},
-	ranged_weapon_accuracy_tier1 = {
-		description = "description_ranged_weapon_accuracy_tier1",
-		apply_on = "wield",
-		display_name = "ranged_weapon_accuracy_tier1",
-		icon = "trait_icon_targeteer",
-		description_values = {
-			"multiplier"
-		},
-		buffs = {
-			{
-				multiplier = -0.4,
-				name = "accuracy",
-				stat_buff = StatBuffIndex.ACCURACY
-			}
-		}
-	},
-	ranged_weapon_reduced_overcharge_tier1 = {
-		description = "description_ranged_weapon_reduced_overcharge_tier1",
-		apply_on = "wield",
-		display_name = "ranged_weapon_reduced_overcharge_tier1",
-		icon = "trait_icons_stability",
-		description_values = {
-			"multiplier"
-		},
-		buffs = {
-			{
-				multiplier = -0.1,
-				name = "reduced_overcharge",
-				stat_buff = StatBuffIndex.REDUCED_OVERCHARGE
-			}
-		}
-	},
-	ranged_weapon_extra_shot_tier1 = {
-		description = "description_ranged_weapon_extra_shot_tier1",
-		apply_on = "wield",
-		display_name = "ranged_weapon_extra_shot_tier1",
-		icon = "trait_icon_hailofdoom",
-		description_values = {
-			"proc_chance"
-		},
-		buffs = {
-			{
-				name = "extra_shot",
-				stat_buff = StatBuffIndex.EXTRA_SHOT,
-				proc_chance = {
-					0.05,
-					0.15
-				}
-			}
-		}
-	},
-	ranged_weapon_reduced_discharge_tier1 = {
-		description = "description_ranged_weapon_reduced_discharge_tier1",
-		apply_on = "wield",
-		display_name = "ranged_weapon_reduced_discharge_tier1",
-		icon = "trait_icons_channelingrune",
-		description_values = {
-			"multiplier"
-		},
-		buffs = {
-			{
-				multiplier = -0.2,
-				name = "reduced_vent_damage",
-				stat_buff = StatBuffIndex.VENT_DAMAGE
-			}
-		}
-	},
-	ranged_weapon_increased_speed_while_aiming_tier1 = {
-		description = "description_ranged_weapon_increased_move_speed_while_aiming_tier1",
-		apply_on = "wield",
-		display_name = "ranged_weapon_increased_speed_while_aiming_tier1",
-		icon = "trait_icons_skirmisher",
-		description_values = {
-			"multiplier"
-		},
-		buffs = {
-			{
-				multiplier = -0.5,
-				name = "increased_move_speed_while_aiming",
-				stat_buff = StatBuffIndex.INCREASED_MOVE_SPEED_WHILE_AIMING
-			}
-		}
-	},
-	ranged_weapon_attack_speed_tier1 = {
-		description = "description_ranged_weapon_attack_speed_tier1",
-		apply_on = "wield",
-		display_name = "ranged_weapon_attack_speed_tier1",
-		icon = "trait_icon_mastercrafted",
-		description_values = {
-			"multiplier"
-		},
-		buffs = {
-			{
-				multiplier = 0.15,
-				name = "attack_speed",
-				stat_buff = StatBuffIndex.ATTACK_SPEED
-			}
-		}
-	},
-	ranged_weapon_coop_stamina = {
-		description = "dlc1_1_description_ranged_weapon_coop_stamina",
-		apply_on = "wield",
-		display_name = "dlc1_1_ranged_weapon_coop_stamina",
-		icon = "trait_icon_inspirational_shot",
-		description_values = {},
-		buffs = {
-			{
-				name = "coop_stamina",
-				stat_buff = StatBuffIndex.COOP_STAMINA
-			}
-		}
-	},
-	melee_weapon_no_push_fatigue_cost_tier1 = {
-		description = "description_melee_weapon_no_push_fatigue_cost_tier1",
-		apply_on = "wield",
-		display_name = "melee_weapon_no_push_fatigue_cost_tier1",
-		icon = "trait_icons_improvedpommel",
-		description_values = {
-			"proc_chance"
-		},
-		buffs = {
-			{
-				name = "no_push_fatigue_cost",
-				stat_buff = StatBuffIndex.NO_PUSH_FATIGUE_COST,
-				proc_chance = {
-					0.2,
-					0.4
-				}
-			}
-		}
-	},
-	melee_weapon_max_fatigue_tier1 = {
-		description = "description_melee_weapon_max_fatigue_tier1",
-		apply_on = "wield",
-		display_name = "melee_weapon_max_fatigue_tier1",
-		icon = "trait_icons_perfectbalance",
-		description_values = {
-			"bonus_description"
-		},
-		buffs = {
-			{
-				bonus_description = 1,
-				name = "max_fatigue",
-				bonus = 2,
-				stat_buff = StatBuffIndex.MAX_FATIGUE
-			}
-		}
-	},
-	melee_weapon_push_increase = {
-		description = "description_melee_weapon_push_increase",
-		apply_on = "wield",
-		display_name = "melee_weapon_push_increase",
-		icon = "trait_icons_devastatingblow",
-		buffs = {
-			{
-				name = "push_increase"
-			}
-		}
-	},
-	melee_weapon_backstab_tier1 = {
-		description = "dlc1_1_description_melee_weapon_backstab_tier1",
-		apply_on = "wield",
-		display_name = "dlc1_1_melee_weapon_backstab_tier1",
-		icon = "trait_icon_backstabbery",
-		description_values = {
-			"multiplier"
-		},
-		buffs = {
-			{
-				multiplier = 1,
-				name = "melee_backstab_tier1",
-				stat_buff = StatBuffIndex.BACKSTAB_MULTIPLIER
-			}
-		}
-	},
-	melee_weapon_shield_break_tier1 = {
-		description = "",
-		apply_on = "wield",
-		display_name = "",
-		icon = "trait_icons_scavenger",
-		description_values = {
-			"proc_chance"
-		},
-		buffs = {
-			{
-				name = "shield_break_proc",
-				stat_buff = StatBuffIndex.SHIELD_BREAK_PROC,
-				proc_chance = {
-					0.1,
-					0.3
-				}
-			}
-		}
-	},
-	melee_weapon_no_push_fatigue_cost_tier2 = {
-		description = "description_melee_weapon_no_push_fatigue_cost_tier1",
-		apply_on = "wield",
-		display_name = "melee_weapon_no_push_fatigue_cost_tier1",
-		icon = "trait_icons_improvedpommel",
-		description_values = {
-			"proc_chance"
-		},
-		buffs = {
-			{
-				name = "no_push_fatigue_cost",
-				stat_buff = StatBuffIndex.NO_PUSH_FATIGUE_COST,
-				proc_chance = {
-					0.2,
-					0.4
-				}
-			}
-		}
-	},
-	melee_weapon_max_fatigue_tier2 = {
-		description = "description_melee_weapon_max_fatigue_tier1",
-		apply_on = "wield",
-		display_name = "melee_weapon_max_fatigue_tier1",
-		icon = "trait_icons_perfectbalance",
-		description_values = {
-			"bonus_description"
-		},
-		buffs = {
-			{
-				bonus_description = 1,
-				name = "max_fatigue",
-				bonus = 2,
-				stat_buff = StatBuffIndex.MAX_FATIGUE
-			}
-		}
-	},
-	melee_weapon_push_increase = {
-		description = "description_melee_weapon_push_increase",
-		apply_on = "wield",
-		display_name = "melee_weapon_push_increase",
-		icon = "trait_icons_devastatingblow",
-		buffs = {
-			{
-				name = "push_increase"
-			}
-		}
-	},
-	melee_weapon_backstab_tier2 = {
-		description = "dlc1_1_description_melee_weapon_backstab_tier1",
-		apply_on = "wield",
-		display_name = "dlc1_1_melee_weapon_backstab_tier1",
-		icon = "trait_icon_backstabbery",
-		description_values = {
-			"multiplier"
-		},
-		buffs = {
-			{
-				multiplier = 1,
-				name = "melee_backstab_tier1",
-				stat_buff = StatBuffIndex.BACKSTAB_MULTIPLIER
-			}
-		}
-	},
-	melee_weapon_shield_break_tier2 = {
-		description = "",
-		apply_on = "wield",
-		display_name = "",
-		icon = "trait_icons_scavenger",
-		description_values = {
-			"proc_chance"
-		},
-		buffs = {
-			{
-				name = "shield_break_proc",
-				stat_buff = StatBuffIndex.SHIELD_BREAK_PROC,
-				proc_chance = {
-					0.1,
-					0.3
-				}
-			}
-		}
-	},
 	regrowth = {
 		buffs = {
 			{
 				name = "regrowth",
 				event_buff = true,
-				event = "on_critical_hit",
-				bonus = 3,
-				buff_func = ProcFunctions.heal
+				event = "on_hit",
+				perk = "ninja_healing",
+				bonus = 2,
+				buff_func = ProcFunctions.heal_finesse_damage_on_melee
 			}
 		}
 	},
 	bloodlust = {
 		buffs = {
 			{
+				multiplier = 0.2,
 				name = "bloodlust",
 				event_buff = true,
-				event = "on_kill",
-				bonus = 2,
-				buff_func = ProcFunctions.heal
+				event = "on_damage_dealt",
+				perk = "smiter_healing",
+				buff_func = ProcFunctions.heal_percent_of_damage_dealt_on_melee
+			}
+		}
+	},
+	vanguard = {
+		buffs = {
+			{
+				multiplier = 0.25,
+				name = "vanguard",
+				event_buff = true,
+				event = "on_stagger",
+				perk = "tank_healing",
+				buff_func = ProcFunctions.heal_stagger_targets_on_melee
+			}
+		}
+	},
+	reaper = {
+		buffs = {
+			{
+				max_targets = 5,
+				name = "reaper",
+				event_buff = true,
+				event = "on_damage_dealt",
+				perk = "linesman_healing",
+				bonus = 0.75,
+				buff_func = ProcFunctions.heal_damage_targets_on_melee
 			}
 		}
 	},
 	conqueror = {
 		buffs = {
 			{
+				multiplier = 0.2,
 				name = "conqueror",
 				event_buff = true,
-				event = "on_boss_killed",
-				bonus = 50,
-				buff_func = ProcFunctions.heal_permanent
+				event = "on_healed_consumeable",
+				range = 10,
+				buff_func = ProcFunctions.heal_other_players_percent_at_range
 			}
 		}
 	},
@@ -5165,12 +5159,11 @@ BuffTemplates = {
 	stormfiend_warpfire_ground_base = {
 		buffs = {
 			{
-				slowdown_buff_name = "bile_troll_vomit_ground_slowdown",
-				name = "stormfiend_warpfire_ground",
 				refresh_durations = true,
+				name = "stormfiend_warpfire_ground",
 				remove_buff_func = "remove_moving_through_warpfire",
 				apply_buff_func = "apply_moving_through_warpfire",
-				time_between_dot_damages = 0.5,
+				time_between_dot_damages = 0.75,
 				damage_type = "warpfire_ground",
 				max_stacks = 1,
 				update_func = "update_moving_through_warpfire",
@@ -5183,53 +5176,53 @@ BuffTemplates = {
 						1
 					},
 					normal = {
-						2,
-						2,
+						1,
+						1,
 						0,
 						2.5,
-						3
+						1
 					},
 					hard = {
-						4,
-						3,
+						1,
+						1,
 						0,
 						2.5,
-						4
+						1
 					},
 					survival_hard = {
-						4,
-						3,
+						1,
+						1,
 						0,
 						2.5,
-						4
+						1
 					},
 					harder = {
-						6,
-						5,
+						1,
+						1,
 						0,
 						4.5,
-						5
+						1
 					},
 					survival_harder = {
-						6,
-						5,
+						1,
+						1,
 						0,
 						4.5,
-						5
+						1
 					},
 					hardest = {
-						8,
-						8,
+						1,
+						1,
 						0,
 						8.5,
-						6
+						1
 					},
 					survival_hardest = {
-						8,
-						8,
+						1,
+						1,
 						0,
 						8.5,
-						6
+						1
 					}
 				}
 			}
@@ -5246,7 +5239,7 @@ BuffTemplates = {
 				time_between_dot_damages = 0.65,
 				damage_type = "warpfire_face",
 				max_stacks = 1,
-				duration = 3,
+				duration = 5,
 				push_speed = 10,
 				difficulty_damage = {
 					easy = {
@@ -5260,49 +5253,49 @@ BuffTemplates = {
 						3,
 						2,
 						0,
-						1.5,
+						3,
 						2
 					},
 					hard = {
 						4,
 						2,
 						0,
-						2,
+						3,
 						2
 					},
 					survival_hard = {
 						4,
 						2,
 						0,
-						2,
+						3,
 						2
 					},
 					harder = {
 						5,
 						3,
 						0,
-						3,
+						5,
 						3
 					},
 					survival_harder = {
 						5,
 						3,
 						0,
-						3,
+						5,
 						3
 					},
 					hardest = {
 						6,
 						4,
 						0,
-						5,
+						9,
 						4
 					},
 					survival_hardest = {
 						6,
 						4,
 						0,
-						5,
+						9,
 						1
 					}
 				}

@@ -39,7 +39,7 @@ ActionCareerDRRanger._create_smoke_screen = function (self)
 		local unit_id = network_manager:unit_game_object_id(owner_unit)
 		local heal_type_id = NetworkLookup.heal_types.career_skill
 
-		network_transmit:send_rpc_server("rpc_request_heal", unit_id, 20, heal_type_id)
+		network_transmit:send_rpc_server("rpc_request_heal", unit_id, 50, heal_type_id)
 	end
 
 	buff_extension:add_buff(buff_name, {
