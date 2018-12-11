@@ -304,7 +304,10 @@ SoundSectorSystem.rpc_enemy_has_target = function (self, sender, unit_id, has_ta
 	end
 
 	local sound_sector_extension = self._extensions[unit]
-	sound_sector_extension.has_target = has_target
+
+	if sound_sector_extension then
+		sound_sector_extension.has_target = has_target
+	end
 end
 
 return
