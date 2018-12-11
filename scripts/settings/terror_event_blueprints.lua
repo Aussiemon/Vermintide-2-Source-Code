@@ -14,11 +14,61 @@ local function current_difficulty()
 	return Managers.state.difficulty.difficulty
 end
 
+local NORMAL = 2
+local HARD = 3
+local HARDER = 4
+local HARDEST = 5
 WeightedRandomTerrorEvents = {
 	roger_and_friends = {
 		"roger_mayhem",
 		10,
 		"lonely_roger",
+		1
+	},
+	forest_end = {
+		"forest_end_event_a",
+		5,
+		"forest_end_event_b",
+		5,
+		"forest_end_event_c",
+		3
+	},
+	forest_skaven_camp = {
+		"forest_skaven_camp_a",
+		1,
+		"forest_skaven_camp_b",
+		1,
+		"forest_skaven_camp_c",
+		1
+	},
+	magnus_door = {
+		"magnus_door_a",
+		1,
+		"magnus_door_b",
+		1
+	},
+	cemetery_plague_brew_event_1 = {
+		"cemetery_plague_brew_event_1_a",
+		1,
+		"cemetery_plague_brew_event_1_b",
+		1
+	},
+	cemetery_plague_brew_event_2 = {
+		"cemetery_plague_brew_event_2_a",
+		1,
+		"cemetery_plague_brew_event_2_b",
+		1
+	},
+	cemetery_plague_brew_event_3 = {
+		"cemetery_plague_brew_event_3_a",
+		1,
+		"cemetery_plague_brew_event_3_b",
+		1
+	},
+	cemetery_plague_brew_event_4 = {
+		"cemetery_plague_brew_event_4_a",
+		1,
+		"cemetery_plague_brew_event_4_b",
 		1
 	},
 	generic_special_fun = {
@@ -1618,7 +1668,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "enemy_door",
-			composition_type = "chaos_berzerkers"
+			composition_type = "chaos_berzerkers_small"
 		},
 		{
 			"flow_event",
@@ -1638,7 +1688,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "puzzle_event_loop",
-			composition_type = "event_generic_long_level_extra_spice"
+			composition_type = "event_extra_spice_small"
 		},
 		{
 			"event_horde",
@@ -1806,7 +1856,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -1856,7 +1906,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event",
-			composition_type = "event_generic_long_level_stormvermin"
+			composition_type = "storm_vermin_small"
 		},
 		{
 			"delay",
@@ -1883,7 +1933,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -1928,11 +1978,8 @@ TerrorEventBlueprints = {
 			name = "catacombs_end_event_specials"
 		},
 		{
-			"spawn",
-			{
-				2,
-				3
-			},
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_poison_wind_globadier"
 		},
 		{
@@ -1961,13 +2008,13 @@ TerrorEventBlueprints = {
 			name = "catacombs_end_event_specials"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_warpfire_thrower"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_gutter_runner"
 		},
 		{
@@ -1996,13 +2043,13 @@ TerrorEventBlueprints = {
 			name = "catacombs_end_event_specials"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_ratling_gunner"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_pack_master"
 		},
 		{
@@ -2112,11 +2159,11 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 3,
 			spawner_id = "elven_ruins_toptier",
-			composition_type = "event_docks_warehouse_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
-			"spawn",
-			2,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_warpfire_thrower"
 		},
 		{
@@ -2149,7 +2196,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 3,
 			spawner_id = "elven_ruins_toptier",
-			composition_type = "event_mines_plague_monks"
+			composition_type = "plague_monks_medium"
 		},
 		{
 			"delay",
@@ -2172,8 +2219,8 @@ TerrorEventBlueprints = {
 			duration = 10
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_poison_wind_globadier"
 		},
 		{
@@ -2184,8 +2231,8 @@ TerrorEventBlueprints = {
 			end
 		},
 		{
-			"spawn",
-			2,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_warpfire_thrower"
 		},
 		{
@@ -2196,7 +2243,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 3,
 			spawner_id = "elven_ruins_toptier",
-			composition_type = "event_docks_warehouse_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -2216,7 +2263,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 3,
 			spawner_id = "elven_ruins_toptier",
-			composition_type = "event_magnus_horn_small"
+			composition_type = "event_extra_spice_large"
 		},
 		{
 			"delay",
@@ -2236,7 +2283,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 3,
 			spawner_id = "elven_ruins_bottomtier",
-			composition_type = "event_magnus_horn_small"
+			composition_type = "event_extra_spice_large"
 		},
 		{
 			"delay",
@@ -2260,7 +2307,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 3,
 			spawner_id = "elven_ruins_toptier",
-			composition_type = "event_mines_plague_monks"
+			composition_type = "plague_monks_medium"
 		},
 		{
 			"delay",
@@ -2277,8 +2324,8 @@ TerrorEventBlueprints = {
 			end
 		},
 		{
-			"spawn",
-			2,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_warpfire_thrower"
 		},
 		{
@@ -2292,7 +2339,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 3,
 			spawner_id = "elven_ruins_toptier",
-			composition_type = "event_magnus_horn_small"
+			composition_type = "event_extra_spice_large"
 		},
 		{
 			"delay",
@@ -2320,7 +2367,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 3,
 			spawner_id = "elven_ruins_bottomtier",
-			composition_type = "event_mines_plague_monks"
+			composition_type = "plague_monks_medium"
 		},
 		{
 			"delay",
@@ -2344,7 +2391,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 3,
 			spawner_id = "elven_ruins_bottomtier",
-			composition_type = "event_docks_warehouse_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -2368,7 +2415,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 3,
 			spawner_id = "elven_ruins_toptier",
-			composition_type = "event_magnus_horn_small"
+			composition_type = "event_extra_spice_large"
 		},
 		{
 			"delay",
@@ -2388,7 +2435,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 3,
 			spawner_id = "elven_ruins_toptier",
-			composition_type = "event_docks_warehouse_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -2405,20 +2452,20 @@ TerrorEventBlueprints = {
 			end
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "chaos_vortex_sorcerer"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_poison_wind_globadier"
 		},
 		{
 			"event_horde",
 			limit_spawners = 3,
 			spawner_id = "elven_ruins_bottomtier",
-			composition_type = "event_magnus_horn_small"
+			composition_type = "event_extra_spice_large"
 		},
 		{
 			"delay",
@@ -2442,7 +2489,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 3,
 			spawner_id = "elven_ruins_toptier",
-			composition_type = "event_mines_plague_monks"
+			composition_type = "plague_monks_medium"
 		},
 		{
 			"delay",
@@ -2462,7 +2509,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 3,
 			spawner_id = "elven_ruins_bottomtier",
-			composition_type = "event_docks_warehouse_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -2482,7 +2529,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 3,
 			spawner_id = "elven_ruins_toptier",
-			composition_type = "event_docks_warehouse_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -2506,7 +2553,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 3,
 			spawner_id = "elven_ruins_bottomtier",
-			composition_type = "event_docks_warehouse_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -2526,7 +2573,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 3,
 			spawner_id = "elven_ruins_toptier",
-			composition_type = "event_docks_warehouse_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -2546,7 +2593,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 3,
 			spawner_id = "elven_ruins_bottomtier",
-			composition_type = "event_docks_warehouse_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -2566,7 +2613,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 3,
 			spawner_id = "elven_ruins_toptier",
-			composition_type = "event_docks_warehouse_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -2586,7 +2633,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 3,
 			spawner_id = "elven_ruins_bottomtier",
-			composition_type = "event_docks_warehouse_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -2637,7 +2684,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 4,
 			spawner_id = "elven_ruins_toptier",
-			composition_type = "event_generic_short_level_stormvermin"
+			composition_type = "storm_vermin_medium"
 		},
 		{
 			"delay",
@@ -2654,7 +2701,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 4,
 			spawner_id = "elven_ruins_toptier",
-			composition_type = "event_generic_short_level_stormvermin"
+			composition_type = "storm_vermin_medium"
 		}
 	},
 	elven_ruins_end_event_device_fiddlers = {
@@ -2682,12 +2729,7 @@ TerrorEventBlueprints = {
 		{
 			"spawn_at_raw",
 			spawner_id = "farmlands_rat_ogre",
-			breed_name = {
-				"skaven_rat_ogre",
-				"skaven_stormfiend",
-				"chaos_troll",
-				"chaos_spawn"
-			}
+			breed_name = "skaven_rat_ogre"
 		},
 		{
 			"delay",
@@ -2696,7 +2738,7 @@ TerrorEventBlueprints = {
 		{
 			"continue_when",
 			condition = function (t)
-				return count_event_breed("skaven_rat_ogre") == 1 or count_event_breed("skaven_stormfiend") == 1 or count_event_breed("chaos_troll") == 1 or count_event_breed("chaos_spawn") == 1
+				return count_event_breed("skaven_rat_ogre") == 1
 			end
 		},
 		{
@@ -2710,7 +2752,124 @@ TerrorEventBlueprints = {
 		{
 			"continue_when",
 			condition = function (t)
-				return count_event_breed("skaven_rat_ogre") < 1 and count_event_breed("skaven_stormfiend") < 1 and count_event_breed("chaos_troll") < 1 and count_event_breed("chaos_spawn") < 1
+				return count_event_breed("skaven_rat_ogre") < 1
+			end
+		},
+		{
+			"flow_event",
+			flow_event_name = "farmlands_barn_boss_dead"
+		}
+	},
+	farmlands_storm_fiend = {
+		{
+			"set_master_event_running",
+			name = "farmlands_boss_barn"
+		},
+		{
+			"spawn_at_raw",
+			spawner_id = "farmlands_rat_ogre",
+			breed_name = "skaven_stormfiend"
+		},
+		{
+			"delay",
+			duration = 1
+		},
+		{
+			"continue_when",
+			condition = function (t)
+				return count_event_breed("skaven_stormfiend") == 1
+			end
+		},
+		{
+			"delay",
+			duration = 1
+		},
+		{
+			"flow_event",
+			flow_event_name = "farmlands_barn_boss_spawned"
+		},
+		{
+			"continue_when",
+			condition = function (t)
+				return count_event_breed("skaven_stormfiend") < 1
+			end
+		},
+		{
+			"flow_event",
+			flow_event_name = "farmlands_barn_boss_dead"
+		}
+	},
+	farmlands_chaos_troll = {
+		{
+			"set_master_event_running",
+			name = "farmlands_boss_barn"
+		},
+		{
+			"spawn_at_raw",
+			spawner_id = "farmlands_rat_ogre",
+			breed_name = "chaos_troll"
+		},
+		{
+			"delay",
+			duration = 1
+		},
+		{
+			"continue_when",
+			condition = function (t)
+				return count_event_breed("chaos_troll") == 1
+			end
+		},
+		{
+			"delay",
+			duration = 1
+		},
+		{
+			"flow_event",
+			flow_event_name = "farmlands_barn_boss_spawned"
+		},
+		{
+			"continue_when",
+			condition = function (t)
+				return count_event_breed("chaos_troll") < 1
+			end
+		},
+		{
+			"flow_event",
+			flow_event_name = "farmlands_barn_boss_dead"
+		}
+	},
+	farmlands_chaos_spawn = {
+		{
+			"set_master_event_running",
+			name = "farmlands_boss_barn"
+		},
+		{
+			"spawn_at_raw",
+			spawner_id = "farmlands_rat_ogre",
+			breed_name = "chaos_spawn"
+		},
+		{
+			"delay",
+			duration = 1
+		},
+		{
+			"continue_when",
+			condition = function (t)
+				return count_event_breed("chaos_spawn") == 1
+			end
+		},
+		{
+			"delay",
+			duration = 1
+		},
+		{
+			"flow_event",
+			flow_event_name = "farmlands_barn_boss_spawned"
+		},
+		{
+			"continue_when",
+			condition = function (t)
+				return count_event_breed("chaos_spawn") < 1
 			end
 		},
 		{
@@ -2912,11 +3071,8 @@ TerrorEventBlueprints = {
 			duration = 5
 		},
 		{
-			"spawn",
-			{
-				1,
-				2
-			},
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_poison_wind_globadier"
 		},
 		{
@@ -3389,11 +3545,8 @@ TerrorEventBlueprints = {
 			composition_type = "event_small_chaos"
 		},
 		{
-			"spawn",
-			{
-				1,
-				2
-			},
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_ratling_gunner"
 		},
 		{
@@ -4382,336 +4535,6 @@ TerrorEventBlueprints = {
 			time_challenge_name = "bell_speed_event"
 		}
 	},
-	gz_end_event = {
-		{
-			"set_master_event_running",
-			name = "gz_end_event"
-		},
-		{
-			"control_pacing",
-			enable = false
-		},
-		{
-			"play_stinger",
-			stinger_name = "enemy_horde_stinger"
-		},
-		{
-			"event_horde",
-			spawner_id = "gz_end_event",
-			composition_type = "event_medium"
-		},
-		{
-			"delay",
-			duration = {
-				3,
-				4
-			}
-		},
-		{
-			"event_horde",
-			limit_spawners = 3,
-			spawner_id = "gz_end_event",
-			composition_type = "event_docks_warehouse_extra_spice"
-		},
-		{
-			"delay",
-			duration = 14
-		},
-		{
-			"event_horde",
-			spawner_id = "gz_end_event",
-			composition_type = "event_small"
-		},
-		{
-			"delay",
-			duration = 14
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
-			end
-		},
-		{
-			"delay",
-			duration = {
-				3,
-				4
-			}
-		},
-		{
-			"event_horde",
-			limit_spawners = 3,
-			spawner_id = "gz_end_event",
-			composition_type = "event_docks_warehouse_extra_spice"
-		},
-		{
-			"delay",
-			duration = 14
-		},
-		{
-			"play_stinger",
-			stinger_name = "enemy_horde_stinger"
-		},
-		{
-			"event_horde",
-			spawner_id = "gz_end_event",
-			composition_type = "event_medium"
-		},
-		{
-			"delay",
-			duration = {
-				5,
-				6
-			}
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
-			end
-		},
-		{
-			"event_horde",
-			limit_spawners = 3,
-			spawner_id = "gz_end_event",
-			composition_type = "event_docks_warehouse_extra_spice"
-		},
-		{
-			"delay",
-			duration = 14
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
-			end
-		},
-		{
-			"event_horde",
-			limit_spawners = 3,
-			spawner_id = "gz_end_event",
-			composition_type = "event_magnus_horn_small"
-		},
-		{
-			"delay",
-			duration = 14
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
-			end
-		},
-		{
-			"event_horde",
-			limit_spawners = 3,
-			spawner_id = "gz_end_event",
-			composition_type = "event_magnus_horn_small"
-		},
-		{
-			"delay",
-			duration = 14
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
-			end
-		},
-		{
-			"event_horde",
-			limit_spawners = 3,
-			spawner_id = "gz_end_event",
-			composition_type = "event_docks_warehouse_extra_spice"
-		},
-		{
-			"delay",
-			duration = 14
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
-			end
-		},
-		{
-			"event_horde",
-			limit_spawners = 3,
-			spawner_id = "gz_end_event",
-			composition_type = "event_magnus_horn_small"
-		},
-		{
-			"delay",
-			duration = 14
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
-			end
-		},
-		{
-			"event_horde",
-			limit_spawners = 3,
-			spawner_id = "gz_end_event",
-			composition_type = "event_docks_warehouse_extra_spice"
-		},
-		{
-			"delay",
-			duration = 14
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
-			end
-		},
-		{
-			"event_horde",
-			limit_spawners = 3,
-			spawner_id = "gz_end_event",
-			composition_type = "event_docks_warehouse_extra_spice"
-		},
-		{
-			"delay",
-			duration = 14
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
-			end
-		},
-		{
-			"event_horde",
-			limit_spawners = 3,
-			spawner_id = "gz_end_event",
-			composition_type = "event_magnus_horn_small"
-		},
-		{
-			"delay",
-			duration = 14
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
-			end
-		},
-		{
-			"event_horde",
-			limit_spawners = 3,
-			spawner_id = "gz_end_event",
-			composition_type = "event_docks_warehouse_extra_spice"
-		},
-		{
-			"delay",
-			duration = 14
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
-			end
-		},
-		{
-			"event_horde",
-			limit_spawners = 3,
-			spawner_id = "gz_end_event",
-			composition_type = "event_magnus_horn_small"
-		},
-		{
-			"delay",
-			duration = 14
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
-			end
-		},
-		{
-			"event_horde",
-			limit_spawners = 3,
-			spawner_id = "gz_end_event",
-			composition_type = "event_docks_warehouse_extra_spice"
-		},
-		{
-			"delay",
-			duration = 14
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
-			end
-		},
-		{
-			"event_horde",
-			limit_spawners = 3,
-			spawner_id = "gz_end_event",
-			composition_type = "event_docks_warehouse_extra_spice"
-		},
-		{
-			"delay",
-			duration = 14
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
-			end
-		},
-		{
-			"event_horde",
-			limit_spawners = 3,
-			spawner_id = "gz_end_event",
-			composition_type = "event_docks_warehouse_extra_spice"
-		},
-		{
-			"delay",
-			duration = 14
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
-			end
-		},
-		{
-			"event_horde",
-			limit_spawners = 3,
-			spawner_id = "gz_end_event",
-			composition_type = "event_docks_warehouse_extra_spice"
-		},
-		{
-			"delay",
-			duration = 14
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
-			end
-		}
-	},
 	gz_chaos_boss = {
 		{
 			"set_master_event_running",
@@ -4773,13 +4596,15 @@ TerrorEventBlueprints = {
 		},
 		{
 			"spawn_at_raw",
+			breed_name = "skaven_storm_vermin_commander",
 			spawner_id = "ele_guard_a_5",
-			breed_name = "skaven_storm_vermin_commander"
+			difficulty_requirement = HARD
 		},
 		{
 			"spawn_at_raw",
+			breed_name = "skaven_storm_vermin_commander",
 			spawner_id = "ele_guard_a_6",
-			breed_name = "skaven_storm_vermin_commander"
+			difficulty_requirement = HARDER
 		},
 		{
 			"spawn_at_raw",
@@ -4904,7 +4729,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_chaos",
-			composition_type = "chaos_berzerkers"
+			composition_type = "chaos_berzerkers_small"
 		},
 		{
 			"delay",
@@ -4939,7 +4764,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -4977,7 +4802,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -4987,7 +4812,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_chaos",
-			composition_type = "event_mines_plague_monks"
+			composition_type = "plague_monks_medium"
 		},
 		{
 			"play_stinger",
@@ -5053,7 +4878,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -5111,11 +4936,8 @@ TerrorEventBlueprints = {
 			name = "end_event"
 		},
 		{
-			"spawn",
-			{
-				1,
-				2
-			},
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_poison_wind_globadier"
 		},
 		{
@@ -5140,8 +4962,8 @@ TerrorEventBlueprints = {
 			name = "end_event"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_warpfire_thrower"
 		},
 		{
@@ -5166,13 +4988,13 @@ TerrorEventBlueprints = {
 			name = "end_event"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_ratling_gunner"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_pack_master"
 		},
 		{
@@ -5347,7 +5169,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -5390,7 +5212,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "cannon_event_02",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"event_horde",
@@ -5413,7 +5235,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "cannon_event_02",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"event_horde",
@@ -5455,8 +5277,8 @@ TerrorEventBlueprints = {
 			duration = 15
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_poison_wind_globadier"
 		},
 		{
@@ -5464,8 +5286,8 @@ TerrorEventBlueprints = {
 			duration = 25
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_ratling_gunner"
 		},
 		{
@@ -5554,7 +5376,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "courtyard",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -5571,7 +5393,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "courtyard_hidden",
-			composition_type = "event_few_plague_monks"
+			composition_type = "event_military_courtyard_plague_monks"
 		},
 		{
 			"event_horde",
@@ -5617,7 +5439,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "courtyard",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -5662,8 +5484,8 @@ TerrorEventBlueprints = {
 			end
 		},
 		{
-			"spawn",
-			2,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_poison_wind_globadier"
 		},
 		{
@@ -5699,13 +5521,13 @@ TerrorEventBlueprints = {
 			end
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "chaos_vortex_sorcerer"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "chaos_corruptor_sorcerer"
 		},
 		{
@@ -5741,8 +5563,8 @@ TerrorEventBlueprints = {
 			end
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "chaos_vortex_sorcerer"
 		},
 		{
@@ -5770,13 +5592,13 @@ TerrorEventBlueprints = {
 			end
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_warpfire_thrower"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_pack_master"
 		},
 		{
@@ -5808,13 +5630,13 @@ TerrorEventBlueprints = {
 			end
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_ratling_gunner"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_poison_wind_globadier"
 		},
 		{
@@ -5898,7 +5720,7 @@ TerrorEventBlueprints = {
 		{
 			"event_horde",
 			spawner_id = "end_event_start",
-			composition_type = "event_generic_long_level_stormvermin"
+			composition_type = "storm_vermin_small"
 		},
 		{
 			"delay",
@@ -6205,7 +6027,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_left",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -6250,7 +6072,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_right",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -6295,7 +6117,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_middle",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -6340,7 +6162,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_back",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -6381,7 +6203,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_left",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -6422,7 +6244,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_right",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -6463,7 +6285,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_middle",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -6504,7 +6326,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_back",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -6549,7 +6371,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 1,
 			spawner_id = "end_event_left",
-			composition_type = "event_generic_long_level_extra_spice"
+			composition_type = "event_extra_spice_small"
 		},
 		{
 			"delay",
@@ -6559,7 +6381,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_left_hidden",
-			composition_type = "military_end_event_plague_monks"
+			composition_type = "plague_monks_small"
 		},
 		{
 			"delay",
@@ -6604,7 +6426,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 1,
 			spawner_id = "end_event_right",
-			composition_type = "event_generic_long_level_extra_spice"
+			composition_type = "event_extra_spice_small"
 		},
 		{
 			"delay",
@@ -6614,7 +6436,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_right_hidden",
-			composition_type = "military_end_event_plague_monks"
+			composition_type = "plague_monks_small"
 		},
 		{
 			"delay",
@@ -6659,7 +6481,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 1,
 			spawner_id = "end_event_middle",
-			composition_type = "event_generic_long_level_extra_spice"
+			composition_type = "event_extra_spice_small"
 		},
 		{
 			"delay",
@@ -6669,7 +6491,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_back_hidden",
-			composition_type = "military_end_event_plague_monks"
+			composition_type = "plague_monks_small"
 		},
 		{
 			"delay",
@@ -6714,7 +6536,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 1,
 			spawner_id = "end_event_back",
-			composition_type = "event_generic_long_level_extra_spice"
+			composition_type = "event_extra_spice_small"
 		},
 		{
 			"delay",
@@ -6724,7 +6546,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_back_hidden",
-			composition_type = "military_end_event_plague_monks"
+			composition_type = "plague_monks_small"
 		},
 		{
 			"delay",
@@ -6912,8 +6734,8 @@ TerrorEventBlueprints = {
 			name = "military_end_event_survival"
 		},
 		{
-			"spawn",
-			3,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_poison_wind_globadier"
 		},
 		{
@@ -6938,13 +6760,13 @@ TerrorEventBlueprints = {
 			name = "military_end_event_survival"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "chaos_corruptor_sorcerer"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_poison_wind_globadier"
 		},
 		{
@@ -6969,13 +6791,13 @@ TerrorEventBlueprints = {
 			name = "military_end_event_survival"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_warpfire_thrower"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_pack_master"
 		},
 		{
@@ -7000,13 +6822,13 @@ TerrorEventBlueprints = {
 			name = "military_end_event_survival"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_ratling_gunner"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_pack_master"
 		},
 		{
@@ -7031,13 +6853,13 @@ TerrorEventBlueprints = {
 			name = "military_end_event_survival"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_warpfire_thrower"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_poison_wind_globadier"
 		},
 		{
@@ -7062,13 +6884,13 @@ TerrorEventBlueprints = {
 			name = "military_end_event_survival"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_ratling_gunner"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_poison_wind_globadier"
 		},
 		{
@@ -7842,628 +7664,6 @@ TerrorEventBlueprints = {
 			flow_event_name = "prologue_helmgart_chase_done"
 		}
 	},
-	bell_event_dynspawn_middle01 = {
-		{
-			"set_master_event_running",
-			name = "bell_event_dynspawn_middle"
-		},
-		{
-			"set_freeze_condition",
-			max_active_enemies = 100
-		},
-		{
-			"flow_event",
-			flow_event_name = "middledyn01_wave_started"
-		},
-		{
-			"event_horde",
-			limit_spawners = 1,
-			spawner_id = "bell_middle_spawner_dyn01",
-			composition_type = "event_bell_slaves_small"
-		},
-		{
-			"delay",
-			duration = 10
-		},
-		{
-			"continue_when",
-			duration = 60,
-			condition = function (t)
-				return count_event_breed("skaven_slave") < 1
-			end
-		},
-		{
-			"flow_event",
-			flow_event_name = "middledyn01_wave_complete"
-		}
-	},
-	bell_event_dynspawn_middle02 = {
-		{
-			"set_master_event_running",
-			name = "bell_event_dynspawn_middle"
-		},
-		{
-			"set_freeze_condition",
-			max_active_enemies = 100
-		},
-		{
-			"flow_event",
-			flow_event_name = "middledyn02_wave_started"
-		},
-		{
-			"event_horde",
-			limit_spawners = 1,
-			spawner_id = "bell_middle_spawner_dyn02",
-			composition_type = "event_bell_slaves_small"
-		},
-		{
-			"delay",
-			duration = 10
-		},
-		{
-			"continue_when",
-			duration = 60,
-			condition = function (t)
-				return count_event_breed("skaven_slave") < 1
-			end
-		},
-		{
-			"flow_event",
-			flow_event_name = "middledyn02_wave_complete"
-		}
-	},
-	bell_event_dynspawn_middle03 = {
-		{
-			"set_master_event_running",
-			name = "bell_event_dynspawn_middle"
-		},
-		{
-			"set_freeze_condition",
-			max_active_enemies = 100
-		},
-		{
-			"flow_event",
-			flow_event_name = "middledyn03_wave_started"
-		},
-		{
-			"event_horde",
-			limit_spawners = 1,
-			spawner_id = "bell_middle_spawner_dyn03",
-			composition_type = "event_bell_slaves_small"
-		},
-		{
-			"delay",
-			duration = 10
-		},
-		{
-			"continue_when",
-			duration = 60,
-			condition = function (t)
-				return count_event_breed("skaven_slave") < 1
-			end
-		},
-		{
-			"flow_event",
-			flow_event_name = "middledyn03_wave_complete"
-		}
-	},
-	bell_event_dynspawn_middle04 = {
-		{
-			"set_master_event_running",
-			name = "bell_event_dynspawn_middle"
-		},
-		{
-			"set_freeze_condition",
-			max_active_enemies = 100
-		},
-		{
-			"flow_event",
-			flow_event_name = "middledyn04_wave_started"
-		},
-		{
-			"event_horde",
-			limit_spawners = 1,
-			spawner_id = "bell_middle_spawner_dyn04",
-			composition_type = "event_bell_slaves_small"
-		},
-		{
-			"delay",
-			duration = 10
-		},
-		{
-			"continue_when",
-			duration = 60,
-			condition = function (t)
-				return count_event_breed("skaven_slave") < 1
-			end
-		},
-		{
-			"flow_event",
-			flow_event_name = "middledyn04_wave_complete"
-		}
-	},
-	bell_event_dynspawn_last01 = {
-		{
-			"set_master_event_running",
-			name = "bell_event_dynspawn_last"
-		},
-		{
-			"set_freeze_condition",
-			max_active_enemies = 100
-		},
-		{
-			"flow_event",
-			flow_event_name = "last01_wave_started"
-		},
-		{
-			"event_horde",
-			limit_spawners = 1,
-			spawner_id = "bell_last_spawner_dyn",
-			composition_type = "event_bell_slaves_small"
-		},
-		{
-			"delay",
-			duration = 10
-		},
-		{
-			"continue_when",
-			duration = 60,
-			condition = function (t)
-				return count_event_breed("skaven_slave") < 1
-			end
-		},
-		{
-			"flow_event",
-			flow_event_name = "last01_wave_complete"
-		}
-	},
-	bell_event_dynspawn_last02 = {
-		{
-			"set_master_event_running",
-			name = "bell_event_dynspawn_last"
-		},
-		{
-			"set_freeze_condition",
-			max_active_enemies = 100
-		},
-		{
-			"flow_event",
-			flow_event_name = "last02_wave_started"
-		},
-		{
-			"event_horde",
-			limit_spawners = 1,
-			spawner_id = "bell_last_spawner_dyn",
-			composition_type = "event_bell_slaves_small"
-		},
-		{
-			"delay",
-			duration = 10
-		},
-		{
-			"continue_when",
-			duration = 60,
-			condition = function (t)
-				return count_event_breed("skaven_slave") < 1
-			end
-		},
-		{
-			"flow_event",
-			flow_event_name = "last02_wave_complete"
-		}
-	},
-	bell_spawn01 = {
-		{
-			"control_specials",
-			enable = true
-		},
-		{
-			"set_master_event_running",
-			name = "survival"
-		},
-		{
-			"set_freeze_condition",
-			max_active_enemies = 100
-		},
-		{
-			"play_stinger",
-			stinger_name = "enemy_horde_stinger",
-			optional_pos = {
-				-20,
-				-5,
-				20
-			}
-		},
-		{
-			"delay",
-			duration = 3
-		},
-		{
-			"event_horde",
-			spawner_id = "spawner_a",
-			composition_type = "event_survival_main"
-		},
-		{
-			"delay",
-			duration = 10
-		},
-		{
-			"event_horde",
-			spawner_id = "spawner_a",
-			composition_type = "event_survival_pack"
-		},
-		{
-			"delay",
-			duration = 15
-		},
-		{
-			"continue_when",
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 10 and count_event_breed("skaven_storm_vermin_commander") < 3
-			end
-		},
-		{
-			"delay",
-			duration = 35
-		},
-		{
-			"play_stinger",
-			stinger_name = "enemy_horde_stinger",
-			optional_pos = {
-				90,
-				0,
-				18
-			}
-		},
-		{
-			"delay",
-			duration = 3
-		},
-		{
-			"event_horde",
-			spawner_id = "spawner_b",
-			composition_type = "event_survival_main"
-		},
-		{
-			"delay",
-			duration = 15
-		},
-		{
-			"event_horde",
-			spawner_id = "spawner_b",
-			composition_type = "event_survival_pack"
-		},
-		{
-			"continue_when",
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_storm_vermin_commander") < 3
-			end
-		},
-		{
-			"delay",
-			duration = 35
-		},
-		{
-			"play_stinger",
-			stinger_name = "enemy_horde_stinger",
-			optional_pos = {
-				20,
-				50,
-				25
-			}
-		},
-		{
-			"delay",
-			duration = 3
-		},
-		{
-			"event_horde",
-			spawner_id = "spawner_c",
-			composition_type = "event_survival_slaves_large"
-		},
-		{
-			"delay",
-			duration = 15
-		},
-		{
-			"continue_when",
-			duration = 120,
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 3 and count_event_breed("skaven_storm_vermin_commander") < 1
-			end
-		},
-		{
-			"flow_event",
-			flow_event_name = "survival_wave_complete"
-		}
-	},
-	bell_spawn02 = {
-		{
-			"control_specials",
-			enable = true
-		},
-		{
-			"set_master_event_running",
-			name = "survival"
-		},
-		{
-			"set_freeze_condition",
-			max_active_enemies = 100
-		},
-		{
-			"play_stinger",
-			stinger_name = "enemy_horde_stinger",
-			optional_pos = {
-				-20,
-				-5,
-				20
-			}
-		},
-		{
-			"delay",
-			duration = 3
-		},
-		{
-			"event_horde",
-			spawner_id = "spawner_d2",
-			composition_type = "event_survival_main"
-		},
-		{
-			"delay",
-			duration = 10
-		},
-		{
-			"event_horde",
-			spawner_id = "spawner_d2",
-			composition_type = "event_survival_pack"
-		},
-		{
-			"delay",
-			duration = 15
-		},
-		{
-			"continue_when",
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 10 and count_event_breed("skaven_storm_vermin_commander") < 3
-			end
-		},
-		{
-			"delay",
-			duration = 25
-		},
-		{
-			"play_stinger",
-			stinger_name = "enemy_horde_stinger",
-			optional_pos = {
-				90,
-				0,
-				18
-			}
-		},
-		{
-			"delay",
-			duration = 3
-		},
-		{
-			"event_horde",
-			spawner_id = "spawner_d",
-			composition_type = "event_survival_main"
-		},
-		{
-			"delay",
-			duration = 25
-		},
-		{
-			"event_horde",
-			spawner_id = "spawner_d",
-			composition_type = "event_survival_pack"
-		},
-		{
-			"continue_when",
-			duration = 120,
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 3 and count_event_breed("skaven_storm_vermin_commander") < 1
-			end
-		},
-		{
-			"flow_event",
-			flow_event_name = "survival_wave_complete02"
-		}
-	},
-	bell_spawn02ending = {
-		{
-			"control_specials",
-			enable = true
-		},
-		{
-			"set_master_event_running",
-			name = "survival"
-		},
-		{
-			"set_freeze_condition",
-			max_active_enemies = 100
-		},
-		{
-			"play_stinger",
-			stinger_name = "enemy_horde_stinger",
-			optional_pos = {
-				90,
-				0,
-				18
-			}
-		},
-		{
-			"delay",
-			duration = 3
-		},
-		{
-			"event_horde",
-			spawner_id = "spawner_d3",
-			composition_type = "event_survival_main"
-		},
-		{
-			"delay",
-			duration = 15
-		},
-		{
-			"event_horde",
-			spawner_id = "spawner_d3",
-			composition_type = "event_survival_pack"
-		},
-		{
-			"continue_when",
-			duration = 120,
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 3 and count_event_breed("skaven_storm_vermin_commander") < 1
-			end
-		},
-		{
-			"flow_event",
-			flow_event_name = "survival_wave_complete02ending"
-		}
-	},
-	bell_spawn03 = {
-		{
-			"control_specials",
-			enable = true
-		},
-		{
-			"set_master_event_running",
-			name = "survival"
-		},
-		{
-			"set_freeze_condition",
-			max_active_enemies = 100
-		},
-		{
-			"play_stinger",
-			stinger_name = "enemy_horde_stinger",
-			optional_pos = {
-				-20,
-				-5,
-				20
-			}
-		},
-		{
-			"delay",
-			duration = 1
-		},
-		{
-			"event_horde",
-			spawner_id = "spawner_e",
-			composition_type = "event_survival_main"
-		},
-		{
-			"delay",
-			duration = 10
-		},
-		{
-			"event_horde",
-			spawner_id = "spawner_e",
-			composition_type = "event_survival_pack"
-		},
-		{
-			"delay",
-			duration = 15
-		},
-		{
-			"continue_when",
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 10 and count_event_breed("skaven_storm_vermin_commander") < 3
-			end
-		},
-		{
-			"delay",
-			duration = 35
-		},
-		{
-			"play_stinger",
-			stinger_name = "enemy_horde_stinger",
-			optional_pos = {
-				90,
-				0,
-				18
-			}
-		},
-		{
-			"delay",
-			duration = 3
-		},
-		{
-			"event_horde",
-			spawner_id = "spawner_e2",
-			composition_type = "event_survival_main"
-		},
-		{
-			"delay",
-			duration = 15
-		},
-		{
-			"event_horde",
-			spawner_id = "spawner_e2",
-			composition_type = "event_survival_pack"
-		},
-		{
-			"continue_when",
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_storm_vermin_commander") < 3
-			end
-		},
-		{
-			"delay",
-			duration = 35
-		},
-		{
-			"play_stinger",
-			stinger_name = "enemy_horde_stinger",
-			optional_pos = {
-				20,
-				50,
-				25
-			}
-		},
-		{
-			"delay",
-			duration = 3
-		},
-		{
-			"event_horde",
-			spawner_id = "spawner_c",
-			composition_type = "event_survival_slaves_large"
-		},
-		{
-			"delay",
-			duration = 15
-		},
-		{
-			"continue_when",
-			duration = 120,
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 3 and count_event_breed("skaven_storm_vermin_commander") < 1
-			end
-		},
-		{
-			"flow_event",
-			flow_event_name = "survival_wave_complete03"
-		}
-	},
-	bell_rat_ogre = {
-		{
-			"spawn_at_raw",
-			spawner_id = "bell_rat_ogre",
-			breed_name = "skaven_rat_ogre"
-		}
-	},
-	bell_pacing_off = {
-		{
-			"control_pacing",
-			enable = false
-		},
-		{
-			"control_specials",
-			enable = false
-		}
-	},
 	nurgle_spawn_zombies_test = {
 		{
 			"spawn_at_raw",
@@ -8599,7 +7799,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "nurgle_end_event",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -8620,13 +7820,13 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 4,
 			spawner_id = "nurgle_end_event_chaos",
-			composition_type = "chaos_berzerkers"
+			composition_type = "chaos_berzerkers_small"
 		},
 		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "nurgle_end_event",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -8647,7 +7847,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "nurgle_end_event",
-			composition_type = "event_generic_short_level_stormvermin"
+			composition_type = "storm_vermin_medium"
 		},
 		{
 			"event_horde",
@@ -8695,7 +7895,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -8705,7 +7905,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_monk",
-			composition_type = "event_mines_plague_monks"
+			composition_type = "plague_monks_medium"
 		},
 		{
 			"play_stinger",
@@ -8798,7 +7998,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "nurgle_end_event02",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -8838,11 +8038,8 @@ TerrorEventBlueprints = {
 			name = "nurgle_end_event"
 		},
 		{
-			"spawn",
-			{
-				2,
-				3
-			},
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_poison_wind_globadier"
 		},
 		{
@@ -8867,13 +8064,13 @@ TerrorEventBlueprints = {
 			name = "nurgle_end_event"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_warpfire_thrower"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_gutter_runner"
 		},
 		{
@@ -8898,13 +8095,13 @@ TerrorEventBlueprints = {
 			name = "nurgle_end_event"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_ratling_gunner"
 		},
 		{
-			"spawn",
-			1,
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_pack_master"
 		},
 		{
@@ -8977,7 +8174,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 1,
 			spawner_id = "payload_event_r",
-			composition_type = "chaos_berzerkers"
+			composition_type = "chaos_berzerkers_small"
 		},
 		{
 			"delay",
@@ -9019,11 +8216,8 @@ TerrorEventBlueprints = {
 			duration = 10
 		},
 		{
-			"spawn",
-			{
-				1,
-				2
-			},
+			"spawn_special",
+			amount = 1,
 			breed_name = "skaven_poison_wind_globadier"
 		},
 		{

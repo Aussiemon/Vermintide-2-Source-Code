@@ -56,9 +56,6 @@ BTAttackAction.enter = function (self, unit, blackboard, t)
 		blackboard.attack_token = true
 	end
 
-	local network_manager = Managers.state.network
-	local unit_id = network_manager:unit_game_object_id(unit)
-
 	if blackboard.attack_token and target_unit_status_extension then
 		local attack_intensity = (blackboard.moving_attack and action.moving_attack_intensity) or action.attack_intensity or 0.75
 
@@ -76,13 +73,6 @@ BTAttackAction.enter = function (self, unit, blackboard, t)
 	end
 
 	blackboard.target_unit_status_extension = target_unit_status_extension
-
-	network_manager:anim_event(unit, "to_combat")
-
-	local target_unit_id, is_level_unit = network_manager:game_object_or_level_id(target_unit)
-
-	network_manager.network_transmit:send_rpc_all("rpc_enemy_has_target", unit_id, target_unit_id, is_level_unit)
-
 	blackboard.attack_setup_delayed = true
 	blackboard.attacking_target = target_unit
 	blackboard.spawn_to_running = nil
@@ -165,11 +155,8 @@ BTAttackAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.locked_attack_rotation = nil
 	blackboard.attack_rotation_lock_timer = nil
 	blackboard.target_unit_status_extension = nil
-	blackboard.target_dodged_during_attack = nil
-	blackboard.current_time_for_dodge = nil
 	blackboard.attack_dodge_window_start = nil
 	blackboard.target_speed = 0
-	blackboard.update_timer = 0
 	blackboard.active_node = nil
 	blackboard.attack_aborted = nil
 	blackboard.attacking_target = nil

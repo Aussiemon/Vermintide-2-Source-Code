@@ -41,7 +41,7 @@ InputManager.initialize_device = function (self, input_device_type, input_device
 		return
 	end
 
-	if self.platform ~= "win32" and (input_device_type == "keyboard" or input_device_type == "mouse") then
+	if self.platform ~= "win32" and (input_device_type == "keyboard" or input_device_type == "mouse") and not GameSettingsDevelopment.allow_keyboard_mouse then
 		return
 	end
 
@@ -437,7 +437,7 @@ InputManager.map_device_to_service = function (self, input_service_name, input_d
 		return
 	end
 
-	if self.platform ~= "win32" and (input_device_type == "keyboard" or input_device_type == "mouse") then
+	if self.platform ~= "win32" and (input_device_type == "keyboard" or input_device_type == "mouse") and not GameSettingsDevelopment.allow_keyboard_mouse then
 		return
 	end
 
@@ -618,6 +618,10 @@ InputManager.get_most_recent_device_type = function (self)
 end
 
 InputManager.is_device_active = function (self, input_device_type)
+	if PLATFORM == "xb1" and Managers.account and Managers.account:is_controller_disconnected() and input_device_type == "gamepad" then
+		return true
+	end
+
 	if gamepad_disabled and input_device_type == "gamepad" then
 		return false
 	end
@@ -689,7 +693,7 @@ end
 InputManager.apply_saved_keymaps = function (self, specific_table_name)
 	local stored_keymaps_data = self.stored_keymaps_data
 
-	if self.platform == "win32" then
+	if self.platform == "win32" or self.platform == "xb1" then
 		local keymaps = PlayerData.controls or {}
 
 		for keybinding_table_name, keybinding_table in pairs(keymaps) do

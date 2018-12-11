@@ -146,29 +146,6 @@ VolumeExtensionSettings = VolumeExtensionSettings or {
 				}
 			}
 		},
-		cemetery_plague_floor = {
-			[PLAYER] = {
-				time_between_damage = 2,
-				damage = {
-					3,
-					3,
-					3,
-					3,
-					3
-				}
-			},
-			[BOT] = {
-				traversal_cost = "insane",
-				time_between_damage = 2,
-				damage = {
-					3,
-					3,
-					3,
-					3,
-					3
-				}
-			}
-		},
 		generic_fire = {
 			[PLAYER] = {
 				time_between_damage = 0.5,
@@ -194,6 +171,12 @@ VolumeExtensionSettings = VolumeExtensionSettings or {
 		},
 		catacombs_corpse_pit = {
 			[PLAYER] = {}
+		},
+		cemetery_plague_floor = {
+			[PLAYER] = {},
+			[BOT] = {
+				traversal_cost = "insane"
+			}
 		},
 		skaven_molten_steel = {
 			[PLAYER] = {

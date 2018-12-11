@@ -30,7 +30,7 @@ MatchmakingStateJoinGame.on_enter = function (self, state_context)
 	local matchmaking_manager = self._matchmaking_manager
 	local hero_index, hero_name = self:_current_hero()
 
-	assert(hero_index, "no hero index? this is wrong")
+	fassert(hero_index, "no hero index? this is wrong")
 
 	if matchmaking_manager:hero_available_in_lobby_data(hero_index, self._lobby_data) then
 		local hero = SPProfiles[hero_index]

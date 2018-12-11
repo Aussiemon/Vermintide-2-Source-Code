@@ -121,6 +121,16 @@ GamePadEquipmentUI.event_input_changed = function (self)
 
 	self:_set_switch_input(widget, input_action)
 	self:_set_widget_dirty(widget)
+
+	local prefix = "wield_"
+
+	for idx, widget in pairs(self._slot_widgets) do
+		local input_action = prefix .. idx + 2
+
+		self:_set_slot_input(widget, input_action)
+		self:_set_widget_dirty(widget)
+	end
+
 	self:set_dirty()
 end
 
@@ -150,6 +160,20 @@ GamePadEquipmentUI._set_switch_input = function (self, widget, input_action)
 	end
 end
 
+GamePadEquipmentUI._set_slot_input = function (self, widget, input_action)
+	local texture_data, input_text, prefix_text = self:_get_input_texture_data(input_action)
+	local text_length = (input_text and UTF8Utils.string_length(input_text)) or 0
+	local max_length = 40
+	local style = widget.style
+	local content = widget.content
+	local input_style = style.input_text
+	local ui_renderer = self.ui_renderer
+
+	if input_text then
+		content.input_text = UIRenderer.crop_text_width(ui_renderer, input_text, max_length, input_style)
+	end
+end
+
 GamePadEquipmentUI._get_input_texture_data = function (self, input_action)
 	local input_manager = self.input_manager
 	local input_service = input_manager:get_service("Player")
@@ -158,6 +182,8 @@ GamePadEquipmentUI._get_input_texture_data = function (self, input_action)
 
 	if platform == "win32" and gamepad_active then
 		platform = "xb1"
+	elseif platform == "xb1" and not gamepad_active then
+		platform = "win32"
 	end
 
 	local keymap_binding = input_service:get_keymapping(input_action, platform)
@@ -181,10 +207,10 @@ GamePadEquipmentUI._get_input_texture_data = function (self, input_action)
 	local button_name = ""
 
 	if device_type == "keyboard" then
-		if is_button_unassigned then
-			button_name = ""
-		else
-			button_name = Keyboard.button_locale_name(key_index)
+		button_name = (is_button_unassigned and "") or Keyboard.button_locale_name(key_index) or Keyboard.button_name(key_index)
+
+		if PLATFORM == "xb1" then
+			button_name = string.upper(button_name)
 		end
 
 		return nil, button_name, prefix_text
@@ -1080,7 +1106,7 @@ GamePadEquipmentUI._handle_gamepad_activity = function (self)
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local force_update = self.gamepad_active_last_frame == nil
 
-	if gamepad_active then
+	if gamepad_active or PLATFORM == "ps4" then
 		if not self.gamepad_active_last_frame or force_update then
 			self.gamepad_active_last_frame = true
 
@@ -1094,7 +1120,7 @@ GamePadEquipmentUI._handle_gamepad_activity = function (self)
 end
 
 GamePadEquipmentUI._handle_gamepad = function (self)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local gamepad_active = Managers.input:is_device_active("gamepad") or PLATFORM ~= "win32"
 
 	if (not gamepad_active or UISettings.use_gamepad_hud_layout == "never") and UISettings.use_gamepad_hud_layout ~= "always" then
 		if self._retained_elements_visible then

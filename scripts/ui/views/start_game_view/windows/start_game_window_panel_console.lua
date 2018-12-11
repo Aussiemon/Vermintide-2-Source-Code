@@ -48,9 +48,8 @@ StartGameWindowPanelConsole.create_ui_elements = function (self, params, offset)
 
 	for i = 1, #window_layouts, 1 do
 		local settings = window_layouts[i]
-		local game_mode_option = settings.game_mode_option
 
-		if game_mode_option then
+		if self.parent:is_valid_game_mode_option(settings) then
 			local scenegraph_id = "game_mode_option"
 			local size = scenegraph_definition[scenegraph_id].size
 			local display_name = settings.display_name or "n/a"
@@ -443,6 +442,12 @@ StartGameWindowPanelConsole._handle_gamepad_activity = function (self)
 		widgets_by_name.panel_input_area_2.content.visible = false
 		widgets_by_name.close_button.content.visible = true
 	end
+end
+
+StartGameWindowPanelConsole._event_disable_function = function (self)
+	local is_connected = Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected())
+
+	return is_connected
 end
 
 StartGameWindowPanelConsole._adventure_disable_function = function (self)

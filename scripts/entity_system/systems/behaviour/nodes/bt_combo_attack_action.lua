@@ -29,10 +29,6 @@ BTComboAttackAction.enter = function (self, unit, blackboard, t)
 		target_status_extension:add_combo_target_count(1)
 	end
 
-	local network_manager = Managers.state.network
-
-	network_manager:anim_event(unit, "to_combat")
-
 	blackboard.attacking_target = target_unit
 	blackboard.move_state = "attacking"
 	local current_rotation = Unit.local_rotation(unit, 0)
@@ -186,7 +182,7 @@ BTComboAttackAction.leave = function (self, unit, blackboard, t, reason, destroy
 
 	local combo = blackboard.combo_attack_data
 
-	if combo.is_animation_driven then
+	if combo.is_animation_driven and not destroy then
 		LocomotionUtils.set_animation_driven_movement(unit, false)
 
 		combo.is_animation_driven = false
@@ -198,10 +194,11 @@ BTComboAttackAction.leave = function (self, unit, blackboard, t, reason, destroy
 		target_status_extension:add_combo_target_count(-1)
 	end
 
-	blackboard.locomotion_extension:set_rotation_speed()
+	if not destroy then
+		blackboard.locomotion_extension:set_rotation_speed()
+	end
 
 	blackboard.attack_damage_triggered = false
-	blackboard.update_timer = 0
 	blackboard.active_node = nil
 	blackboard.attack_aborted = nil
 	blackboard.attacking_target = nil

@@ -1733,8 +1733,11 @@ AIBotGroupSystem._update_health_pickups = function (self, dt, t)
 		elseif has_heal_item and AiUtils.unit_alive(unit) and not status_ext:is_ready_for_assisted_respawn() then
 			local health_extension = ScriptUnit.extension(unit, "health_system")
 			local hp_percent = health_extension:current_health_percent()
+			local buff_extension = ScriptUnit.extension(unit, "buff_system")
+			local has_no_permanent_health_from_item_buff = buff_extension:has_buff_type("trait_necklace_no_healing_health_regen")
+			local is_wounded = status_ext:is_wounded()
 
-			if hp_percent < lowest_bot_health_procent then
+			if hp_percent < lowest_bot_health_procent and (not has_no_permanent_health_from_item_buff or is_wounded) then
 				lowest_bot_health_procent = hp_percent
 				lowest_hp_bot_has_item = true
 				lowest_hp_bot_blackboard = blackboard

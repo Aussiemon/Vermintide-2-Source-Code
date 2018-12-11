@@ -4,22 +4,23 @@ weapon_template.actions = {
 	action_one = {
 		default = {
 			total_time_secondary = 2,
-			alert_sound_range_hit = 2,
-			damage_profile = "shot_carbine",
+			charge_value = "bullet_hit",
+			reload_when_out_of_ammo = true,
 			kind = "handgun",
 			ammo_usage = 1,
+			anim_event = "attack_shoot",
 			apply_recoil = true,
-			charge_value = "bullet_hit",
+			damage_profile = "shot_carbine",
 			headshot_multiplier = 2,
 			aim_assist_max_ramp_multiplier = 0.3,
-			aim_assist_auto_hit_chance = 0.5,
 			hit_effect = "bullet_impact",
+			aim_assist_auto_hit_chance = 0.5,
 			aim_assist_ramp_decay_delay = 0.2,
 			alert_sound_range_fire = 12,
 			fire_time = 0,
 			anim_event_secondary = "reload",
 			aim_assist_ramp_multiplier = 0.1,
-			anim_event = "attack_shoot",
+			alert_sound_range_hit = 2,
 			reload_time = 0.1,
 			total_time = 1,
 			allowed_chain_actions = {
@@ -66,24 +67,25 @@ weapon_template.actions = {
 			}
 		},
 		fast_shot = {
-			anim_event = "attack_shoot_fast",
 			charge_value = "bullet_hit",
+			damage_profile = "shot_carbine",
 			ammo_usage = 1,
 			kind = "handgun",
+			alert_sound_range_hit = 2,
 			apply_recoil = true,
-			damage_profile = "shot_carbine",
 			spread_template_override = "pistol_special",
+			reload_when_out_of_ammo = true,
 			headshot_multiplier = 2,
 			aim_assist_ramp_multiplier = 0.05,
-			aim_assist_auto_hit_chance = 0.75,
 			hit_effect = "bullet_impact",
+			aim_assist_auto_hit_chance = 0.75,
 			aim_assist_ramp_decay_delay = 0.1,
 			minimum_hold_time = 0.25,
 			alert_sound_range_fire = 12,
 			fire_time = 0,
 			aim_assist_max_ramp_multiplier = 0.3,
 			hold_input = "action_two_hold",
-			alert_sound_range_hit = 2,
+			anim_event = "attack_shoot_fast",
 			reload_time = 0.1,
 			total_time = 1,
 			buff_data = {
@@ -174,7 +176,7 @@ weapon_template.actions = {
 				}
 			},
 			condition_func = function (unit, input_extension, ammo_extension)
-				if ammo_extension and (ammo_extension:total_remaining_ammo() <= 0 or ammo_extension:is_reloading()) then
+				if ammo_extension and ammo_extension:total_remaining_ammo() <= 0 then
 					return false
 				end
 
@@ -195,10 +197,12 @@ weapon_template.actions = {
 }
 weapon_template.ammo_data = {
 	ammo_hand = "right",
-	ammo_immediately_available = true,
+	ammo_per_reload = 2,
 	max_ammo = 30,
-	reload_time = 0.1,
-	single_clip = true
+	ammo_per_clip = 12,
+	reload_on_ammo_pickup = true,
+	reload_time = 1,
+	play_reload_anim_on_wield_reload = true
 }
 weapon_template.attack_meta_data = {
 	aim_at_node = "j_head",

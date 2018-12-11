@@ -71,7 +71,7 @@ elseif script_data.settings.use_beta_overlay then
 			end
 		}
 	end
-else
+elseif GameSettingsDevelopment.additional_content_view_enabled then
 	menu_functions = {
 		function (this)
 			local game_type = this._title_start_ui:game_type() or game_types.ONLINE
@@ -100,6 +100,36 @@ else
 
 			input_manager:block_device_except_service("additional_content_menu", "gamepad")
 			this:activate_view("additional_content_view")
+			this._title_start_ui:menu_option_activated(true)
+			Managers.music:trigger_event("Play_console_menu_select")
+		end,
+		function (this)
+			this:activate_view("credits_view")
+			this._title_start_ui:menu_option_activated(true)
+			Managers.music:trigger_event("Play_console_menu_select")
+		end
+	}
+else
+	menu_functions = {
+		function (this)
+			local game_type = this._title_start_ui:game_type() or game_types.ONLINE
+
+			this:_start_game(game_type)
+			this._title_start_ui:menu_option_activated(true)
+			Managers.music:trigger_event("Play_console_menu_start_game")
+		end,
+		function (this)
+			local game_type = this._title_start_ui:game_type() or game_types.ONLINE
+
+			this:_start_game(game_type, "prologue")
+			this._title_start_ui:menu_option_activated(true)
+			Managers.music:trigger_event("Play_console_menu_start_game")
+		end,
+		function (this)
+			local input_manager = Managers.input
+
+			input_manager:block_device_except_service("options_menu", "gamepad")
+			this:activate_view("options_view")
 			this._title_start_ui:menu_option_activated(true)
 			Managers.music:trigger_event("Play_console_menu_select")
 		end,
@@ -167,13 +197,15 @@ StateTitleScreenMainMenu.on_enter = function (self, params)
 
 	self:_try_activate_splash()
 
-	local additional_content_view = self._views.additional_content_view
-	local has_splashes = additional_content_view and additional_content_view:has_active_splashes()
+	if GameSettingsDevelopment.additional_content_view_enabled then
+		local additional_content_view = self._views.additional_content_view
+		local has_splashes = additional_content_view and additional_content_view:has_active_splashes()
 
-	if not has_splashes then
-		self._title_start_ui:set_menu_item_enable_state_by_index("store", false, true, "start_game_disabled_playgo")
-	else
-		self._title_start_ui:set_menu_item_enable_state_by_index("store", true, true)
+		if not has_splashes then
+			self._title_start_ui:set_menu_item_enable_state_by_index("store", false, true, "start_game_disabled_playgo")
+		else
+			self._title_start_ui:set_menu_item_enable_state_by_index("store", true, true)
+		end
 	end
 end
 
@@ -225,7 +257,7 @@ StateTitleScreenMainMenu._init_menu_views = function (self)
 		self._views = {
 			credits_view = CreditsView:new(view_context),
 			options_view = OptionsView:new(view_context),
-			additional_content_view = AdditionalContentView:new(view_context)
+			additional_content_view = (GameSettingsDevelopment.additional_content_view_enabled and AdditionalContentView:new(view_context)) or nil
 		}
 	end
 
@@ -484,6 +516,8 @@ StateTitleScreenMainMenu._update_input = function (self, dt, t)
 			self._popup_id = Managers.popup:queue_popup(Localize("popup_update_offline_data"), Localize("popup_update_offline_data_header"), "update_offline_data", Localize("popup_choice_yes"), "do_nothing", Localize("popup_choice_no"))
 			self._state = "check_popup"
 		end
+	elseif not active_menu_selection and input_service:get("back") then
+		self:_close_menu()
 	end
 end
 
@@ -600,12 +634,10 @@ StateTitleScreenMainMenu.cb_fade_in_done = function (self)
 		GameSettingsDevelopment.disable_intro_trailer = DemoSettings.disable_intro_trailer
 	elseif not level_key then
 		loading_context.gamma_correct = not SaveData.gamma_corrected
+		loading_context.show_profile_on_startup = true
 
 		if not disable_trailer then
 			loading_context.play_trailer = true
-			loading_context.show_profile_on_startup = true
-		else
-			loading_context.show_profile_on_startup = false
 		end
 	end
 end

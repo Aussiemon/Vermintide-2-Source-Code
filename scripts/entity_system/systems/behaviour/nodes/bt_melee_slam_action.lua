@@ -71,7 +71,7 @@ BTMeleeSlamAction.init_attack = function (self, unit, blackboard, action, t)
 end
 
 BTMeleeSlamAction.leave = function (self, unit, blackboard, t, reason, destroy)
-	if blackboard.attack_anim_driven then
+	if blackboard.attack_anim_driven and not destroy then
 		local locomotion_extension = blackboard.locomotion_extension
 
 		LocomotionUtils.set_animation_driven_movement(unit, false)

@@ -176,9 +176,9 @@ local projectile_locomotion_extensions = {
 EntitySystem = class(EntitySystem)
 
 EntitySystem.init = function (self, entity_system_creation_context)
-	assert(entity_system_creation_context.entity_manager)
-	assert(entity_system_creation_context.world)
-	assert(entity_system_creation_context.unit_spawner)
+	assert(entity_system_creation_context.entity_manager, "Entity Manager is missing!")
+	assert(entity_system_creation_context.world, "World is missing!")
+	assert(entity_system_creation_context.unit_spawner, "Unit Spawner is missing!")
 
 	self.entity_manager = entity_system_creation_context.entity_manager
 	self.world = entity_system_creation_context.world

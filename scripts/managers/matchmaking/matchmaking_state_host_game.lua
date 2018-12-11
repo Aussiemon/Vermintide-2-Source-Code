@@ -102,8 +102,14 @@ MatchmakingStateHostGame._start_hosting_game = function (self)
 	end
 
 	self._game_created = true
+	local waystone_type = 1
 
-	self._matchmaking_manager:activate_waystone_portal(true)
+	if not quick_game then
+		local level_settings = LevelSettings[level_key]
+		waystone_type = level_settings.waystone_type or waystone_type
+	end
+
+	self._matchmaking_manager:activate_waystone_portal(true, waystone_type)
 end
 
 return

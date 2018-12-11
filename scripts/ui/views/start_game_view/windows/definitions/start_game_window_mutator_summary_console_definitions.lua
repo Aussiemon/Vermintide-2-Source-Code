@@ -86,7 +86,7 @@ local scenegraph_definition = {
 		size = window_size,
 		position = {
 			850,
-			-90,
+			0,
 			1
 		}
 	},

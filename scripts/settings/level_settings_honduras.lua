@@ -762,9 +762,10 @@ LevelSettings.skaven_stronghold = {
 	unlockable = true,
 	level_image = "level_icon_08",
 	main_game_level = true,
+	act_presentation_order = 4,
 	description_text = "nik_loading_screen_skaven_stronghold_01",
 	boss_spawning_method = "hand_placed",
-	act_presentation_order = 4,
+	conflict_settings = "skaven",
 	default_surface_material = "stone",
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras/skaven_stronghold/world",
@@ -1316,46 +1317,6 @@ LevelSettings.pierre_nilsson = {
 	level_particle_effects = {},
 	level_screen_effects = {},
 	locations = {}
-}
-LevelSettings.template_level = {
-	display_name = "Debug_Template_Level",
-	package_name = "resource_packages/levels/honduras/debug/template_level",
-	environment_state = "exterior",
-	player_aux_bus_name = "environment_reverb_outside",
-	ambient_sound_event = "silent_default_world_sound",
-	knocked_down_setting = "knocked_down",
-	level_name = "levels/honduras/debug/template_level/world",
-	level_image = "level_image_any",
-	loading_ui_package_name = "loading_screen_1",
-	source_aux_bus_name = "environment_reverb_outside_source",
-	level_particle_effects = {},
-	level_screen_effects = {},
-	locations = {},
-	map_settings = {
-		sorting = 1,
-		icon = "level_location_dlc_icon_01",
-		area = "world"
-	}
-}
-LevelSettings.sound_testing = {
-	display_name = "sound_testing",
-	package_name = "resource_packages/levels/honduras/debug/sound_testing",
-	environment_state = "exterior",
-	player_aux_bus_name = "environment_reverb_outside",
-	ambient_sound_event = "silent_default_world_sound",
-	knocked_down_setting = "knocked_down",
-	level_name = "levels/honduras/debug/sound_testing/world",
-	level_image = "level_image_any",
-	loading_ui_package_name = "loading_screen_1",
-	source_aux_bus_name = "environment_reverb_outside_source",
-	level_particle_effects = {},
-	level_screen_effects = {},
-	locations = {},
-	map_settings = {
-		sorting = 1,
-		icon = "level_location_dlc_icon_01",
-		area = "world"
-	}
 }
 
 return

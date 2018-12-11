@@ -215,10 +215,11 @@ end
 StartGameWindowAreaSelection.update = function (self, dt, t)
 	self:_update_animations(dt)
 	self:_handle_input(dt, t)
+	self:draw(dt)
 end
 
 StartGameWindowAreaSelection.post_update = function (self, dt, t)
-	self:draw(dt)
+	self:draw_video(dt)
 end
 
 StartGameWindowAreaSelection._update_animations = function (self, dt)
@@ -372,6 +373,16 @@ StartGameWindowAreaSelection.draw = function (self, dt)
 		end
 	end
 
+	UIRenderer.end_pass(ui_renderer)
+end
+
+StartGameWindowAreaSelection.draw_video = function (self, dt)
+	local ui_renderer = self.ui_renderer
+	local ui_scenegraph = self.ui_scenegraph
+	local input_service = self.parent:window_input_service()
+
+	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
+
 	if not self._draw_video_next_frame then
 		if self._video_widget and not self._has_exited then
 			if not self._video_created then
@@ -402,7 +413,7 @@ StartGameWindowAreaSelection._setup_video_player = function (self, material_name
 		UIRenderer.create_video_player(ui_renderer, ui_renderer.world, resource, set_loop)
 	end
 
-	local scenegraph_id = "window"
+	local scenegraph_id = "video"
 	local widget_definition = UIWidgets.create_video(scenegraph_id, material_name)
 	local widget = UIWidget.init(widget_definition)
 	self._video_widget = widget

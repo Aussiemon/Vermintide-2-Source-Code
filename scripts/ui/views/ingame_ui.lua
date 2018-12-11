@@ -28,6 +28,8 @@ require("scripts/ui/mission_vote_ui/mission_voting_ui")
 require("scripts/ui/views/start_menu_view/start_menu_view")
 require("scripts/ui/views/console_friends_view")
 require("scripts/ui/views/friends_ui_component")
+require("scripts/ui/motd/motd_popup_ui")
+require("scripts/ui/text_popup/text_popup_ui")
 
 for name, dlc in pairs(DLCSettings) do
 	local uis = dlc.ingame_uis
@@ -96,6 +98,9 @@ IngameUI.init = function (self, ingame_ui_context)
 	self.voting_manager = ingame_ui_context.voting_manager
 	self.ingame_voting_ui = IngameVotingUI:new(ingame_ui_context)
 	self.mission_voting_ui = MissionVotingUI:new(ingame_ui_context)
+	self.motd_ui = MOTDPopupUI:new(ingame_ui_context)
+	self.motd_loading = false
+	self.text_popup_ui = TextPopupUI:new(ingame_ui_context)
 
 	if GameSettingsDevelopment.help_screen_enabled then
 		self.help_screen = HelpScreenUI:new(ingame_ui_context)
@@ -284,6 +289,15 @@ IngameUI.destroy = function (self)
 
 	self.mission_voting_ui = nil
 
+	self.motd_ui:destroy()
+
+	self.motd_ui = nil
+	self.motd_backend = nil
+
+	self.text_popup_ui:destroy()
+
+	self.text_popup_ui = nil
+
 	UIRenderer.destroy(self.ui_renderer, self.world)
 	UIRenderer.destroy(self.ui_top_renderer, self.top_world)
 
@@ -436,6 +450,30 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 
 	if is_in_inn then
 		self.mission_voting_ui:update(self.menu_active, dt, t)
+
+		local is_not_in_menu = self.has_left_menu and self.hud_visible
+		local has_holly_dlc = Managers.unlock:is_dlc_unlocked("holly")
+
+		self.text_popup_ui:update(dt)
+
+		if has_holly_dlc and is_not_in_menu and not self.text_popup_ui.is_visible and not PlayerData.viewed_dialogues.dlc_holly then
+			local on_close_callback = callback(self, "_holly_dlc_intro_closed")
+
+			self.text_popup_ui:show("area_selection_holly_name", "holly_lohner_spiel_short", on_close_callback)
+		else
+			self.motd_ui:update(dt)
+
+			if not self.motd_backend and Managers.backend and Managers.backend:interfaces_ready() then
+				self.motd_backend = Managers.backend:get_interface("motd")
+			elseif self.motd_backend and is_not_in_menu and not self.motd_ui.is_visible and not self.motd_loading and #self.motd_backend:get_new_image_urls() > 0 then
+				local url = self.motd_backend:get_new_image_urls()[1]
+				local cb = callback(self, "_url_loaded", url)
+
+				Managers.url_loader:load_resource(url, cb)
+
+				self.motd_loading = true
+			end
+		end
 	end
 
 	if not disable_ingame_ui then
@@ -517,6 +555,12 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 	self:_update_fade_transition()
 end
 
+IngameUI._holly_dlc_intro_closed = function (self)
+	PlayerData.viewed_dialogues.dlc_holly = true
+
+	Managers.save:auto_save(SaveFileName, SaveData)
+end
+
 IngameUI.post_update = function (self, dt, t)
 	self:_post_handle_transition()
 
@@ -534,6 +578,31 @@ IngameUI.post_update = function (self, dt, t)
 	local active_cutscene = (cutscene_system.active_camera or self:unavailable_hero_popup_active()) and not cutscene_system.ingame_hud_enabled
 
 	self.ingame_hud:post_update(dt, t, self.hud_visible, active_cutscene)
+	self.motd_ui:post_update(dt)
+
+	for _, ui in ipairs(self.dlc_uis) do
+		if ui.post_update then
+			ui:post_update(dt, t)
+		end
+	end
+end
+
+IngameUI._url_loaded = function (self, url, texture_resource)
+	self.motd_loading = false
+
+	if not self.hud_visible then
+		return
+	end
+
+	self.motd_ui:show(texture_resource)
+
+	if self.motd_ui.is_visible then
+		self.motd_backend:mark_url_as_viewed(url)
+	end
+end
+
+IngameUI.post_render = function (self)
+	self.motd_ui:post_render()
 end
 
 IngameUI.cutscene_active = function (self)
@@ -771,6 +840,11 @@ IngameUI._post_handle_transition = function (self)
 	if new_view and new_view.post_update_on_enter then
 		printf("[IngameUI] menu view post_update_on_enter %s", new_view)
 		new_view:post_update_on_enter(transition_params)
+	end
+
+	if script_data.debug_enabled then
+		self.last_transition_params = self.transition_params
+		self.last_transition_name = self.new_transition
 	end
 
 	self.transition_params = nil

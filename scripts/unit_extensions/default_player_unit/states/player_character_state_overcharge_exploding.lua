@@ -13,21 +13,16 @@ PlayerCharacterStateOverchargeExploding.on_enter = function (self, unit, input, 
 	CharacterStateHelper.stop_weapon_actions(self.inventory_extension, "exploding")
 	CharacterStateHelper.stop_career_abilities(self.career_extension, "exploding")
 
-	local unit = self.unit
 	local input_extension = self.input_extension
 	local first_person_extension = self.first_person_extension
 	local status_extension = self.status_extension
-	local buff_extension = ScriptUnit.extension(unit, "buff_system")
 	self.damage_timer = t + 0.5
 	self.movement_speed = 0.2
-	local move_anim_3p, move_anim_1p = CharacterStateHelper.get_move_animation(self.locomotion_extension, input_extension, status_extension)
+	local move_anim_3p, _ = CharacterStateHelper.get_move_animation(self.locomotion_extension, input_extension, status_extension)
+	self.move_anim_3p = move_anim_3p
 
 	CharacterStateHelper.play_animation_event(unit, "explode_start")
 	CharacterStateHelper.play_animation_event_first_person(first_person_extension, "explode_start")
-
-	self.move_anim_3p = move_anim_3p
-	self.move_anim_1p = move_anim_1p
-
 	self.last_input_direction:store(Vector3.zero())
 
 	self.explosion_time = t + 3
@@ -90,7 +85,6 @@ end
 PlayerCharacterStateOverchargeExploding.update = function (self, unit, input, dt, context, t)
 	local csm = self.csm
 	local world = self.world
-	local unit = self.unit
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local input_extension = self.input_extension
 	local status_extension = self.status_extension
@@ -169,9 +163,8 @@ PlayerCharacterStateOverchargeExploding.update = function (self, unit, input, dt
 		first_person_extension:animation_event("overheat_indicator")
 	end
 
-	local is_moving = CharacterStateHelper.has_move_input(input_extension)
-	local inventory_extension = self.inventory_extension
 	local player = Managers.player:owner(unit)
+	local is_moving = CharacterStateHelper.has_move_input(input_extension)
 
 	if is_moving then
 		self.movement_speed = math.min(1, self.movement_speed + movement_settings_table.move_acceleration_up * dt)
@@ -223,9 +216,9 @@ PlayerCharacterStateOverchargeExploding.update = function (self, unit, input, dt
 	CharacterStateHelper.move_on_ground(first_person_extension, input_extension, locomotion_extension, move_input_direction, move_speed, unit)
 	CharacterStateHelper.look(input_extension, self.player.viewport_name, first_person_extension, status_extension, self.inventory_extension)
 
-	local move_anim_3p, move_anim_1p = CharacterStateHelper.get_move_animation(locomotion_extension, input_extension, status_extension)
+	local move_anim_3p, _ = CharacterStateHelper.get_move_animation(locomotion_extension, input_extension, status_extension)
 
-	if move_anim_3p ~= self.move_anim_3p or move_anim_1p ~= self.move_anim_1p then
+	if move_anim_3p ~= self.move_anim_3p then
 		CharacterStateHelper.play_animation_event(unit, move_anim_3p)
 
 		self.move_anim_3p = move_anim_3p

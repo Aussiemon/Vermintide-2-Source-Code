@@ -47,9 +47,12 @@ BTNinjaHighGroundAction.leave = function (self, unit, blackboard, t, reason, des
 			local exit_pos = blackboard.climb_exit_pos:unbox()
 
 			navigation_extension:set_navbot_position(exit_pos)
-			locomotion_extension:set_wanted_velocity(Vector3.zero())
-			locomotion_extension:set_movement_type("script_driven")
-			locomotion_extension:teleport_to(blackboard.ledge_position:unbox(), Unit.local_rotation(unit, 0))
+
+			if not destroy then
+				locomotion_extension:set_wanted_velocity(Vector3.zero())
+				locomotion_extension:set_movement_type("script_driven")
+				locomotion_extension:teleport_to(blackboard.ledge_position:unbox(), Unit.local_rotation(unit, 0))
+			end
 
 			blackboard.climb_spline_ground = nil
 			blackboard.climb_spline_ledge = nil
@@ -68,8 +71,10 @@ BTNinjaHighGroundAction.leave = function (self, unit, blackboard, t, reason, des
 			blackboard.smart_object_data = nil
 			blackboard.ledge_position = nil
 
-			LocomotionUtils.set_animation_translation_scale(unit, Vector3(1, 1, 1))
-			LocomotionUtils.constrain_on_clients(unit, false, Vector3.zero(), Vector3.zero())
+			if not destroy then
+				LocomotionUtils.set_animation_translation_scale(unit, Vector3(1, 1, 1))
+				LocomotionUtils.constrain_on_clients(unit, false)
+			end
 
 			local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
 			hit_reaction_extension.force_ragdoll_on_death = nil
@@ -79,7 +84,7 @@ BTNinjaHighGroundAction.leave = function (self, unit, blackboard, t, reason, des
 			end
 		end
 	else
-		BTClimbAction.leave(self, unit, blackboard, t)
+		BTClimbAction.leave(self, unit, blackboard, t, reason, destroy)
 	end
 
 	if reason == "aborted" then

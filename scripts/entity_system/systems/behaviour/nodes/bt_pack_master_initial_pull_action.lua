@@ -87,11 +87,14 @@ BTPackMasterInitialPullAction.leave = function (self, unit, blackboard, t, reaso
 	local navigation_extension = blackboard.navigation_extension
 
 	AiUtils.allow_smart_object_layers(navigation_extension, true)
-	LocomotionUtils.set_animation_driven_movement(unit, false)
 
-	local locomotion_extension = blackboard.locomotion_extension
+	if not destroy then
+		LocomotionUtils.set_animation_driven_movement(unit, false)
 
-	locomotion_extension:set_movement_type("snap_to_navmesh")
+		local locomotion_extension = blackboard.locomotion_extension
+
+		locomotion_extension:set_movement_type("snap_to_navmesh")
+	end
 
 	blackboard.attack_cooldown = t + blackboard.action.cooldown
 end

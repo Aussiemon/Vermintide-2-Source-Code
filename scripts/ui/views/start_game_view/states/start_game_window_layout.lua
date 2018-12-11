@@ -212,6 +212,29 @@ local window_layouts = {
 		}
 	}
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local start_game_window_layout = dlc.start_game_window_layout
+
+	if start_game_window_layout then
+		local new_windows = start_game_window_layout.windows
+
+		if new_windows then
+			for name, window in pairs(new_windows) do
+				windows[name] = window
+			end
+		end
+
+		local new_window_layouts = start_game_window_layout.window_layouts
+
+		if new_window_layouts then
+			for i = 1, #new_window_layouts, 1 do
+				table.insert(window_layouts, 1, new_window_layouts[i])
+			end
+		end
+	end
+end
+
 local MAX_ACTIVE_WINDOWS = 3
 
 return {

@@ -182,6 +182,35 @@ Weapons.cannon_ball.actions.action_dropped.default.projectile_info = {
 	drop_on_player_destroyed = true,
 	projectile_unit_name = "units/weapons/player/pup_cannon_ball_01/pup_cannon_ball_01"
 }
+Weapons.gargoyle_head = Weapons.gargoyle_head or table.clone(weapon_template)
+Weapons.gargoyle_head.left_hand_unit = "units/weapons/player/wpn_gargoyle_head/wpn_gargoyle_head"
+Weapons.gargoyle_head.actions.action_one.default.speed = 8
+Weapons.gargoyle_head.actions.action_one.default.throw_time = 0.35000000000000003
+Weapons.gargoyle_head.actions.action_one.default.throw_offset = {
+	0.3,
+	0.5,
+	0
+}
+Weapons.gargoyle_head.actions.action_one.default.buff_data = {
+	{
+		start_time = 0,
+		external_multiplier = 1,
+		end_time = 0.28,
+		buff_name = "planted_fast_decrease_movement"
+	}
+}
+Weapons.gargoyle_head.actions.action_one.default.projectile_info = {
+	projectile_unit_template_name = "pickup_projectile_unit",
+	pickup_name = "gargoyle_head",
+	drop_on_player_destroyed = true,
+	projectile_unit_name = "units/weapons/player/pup_gargoyle_head/pup_gargoyle_head_01"
+}
+Weapons.gargoyle_head.actions.action_dropped.default.projectile_info = {
+	projectile_unit_template_name = "pickup_projectile_unit",
+	pickup_name = "gargoyle_head",
+	drop_on_player_destroyed = true,
+	projectile_unit_name = "units/weapons/player/pup_gargoyle_head/pup_gargoyle_head_01"
+}
 Weapons.training_dummy = Weapons.training_dummy or table.clone(weapon_template)
 Weapons.training_dummy.buffs = nil
 Weapons.training_dummy.left_hand_unit = "units/gameplay/training_dummy/wpn_training_dummy"

@@ -174,8 +174,8 @@ local scenegraph_definition = {
 		parent = "title_background",
 		horizontal_alignment = "center",
 		size = {
-			250,
-			50
+			310,
+			40
 		},
 		position = {
 			0,
@@ -240,7 +240,7 @@ local title_text_style = {
 	font_size = 32,
 	horizontal_alignment = "center",
 	vertical_alignment = "center",
-	dynamic_font_size = false,
+	dynamic_font_size = true,
 	font_type = "hell_shark_header",
 	text_color = {
 		255,

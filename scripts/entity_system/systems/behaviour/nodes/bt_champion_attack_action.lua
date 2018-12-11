@@ -27,9 +27,7 @@ BTChampionAttackAction.enter = function (self, unit, blackboard, t)
 	blackboard.target_dodged = false
 	local target_unit = blackboard.target_unit
 	blackboard.target_unit_status_extension = (ScriptUnit.has_extension(target_unit, "status_system") and ScriptUnit.extension(target_unit, "status_system")) or nil
-	local network_manager = Managers.state.network
 
-	network_manager:anim_event(unit, "to_combat")
 	blackboard.navigation_extension:set_enabled(false)
 	blackboard.locomotion_extension:set_wanted_velocity(Vector3.zero())
 
@@ -248,7 +246,6 @@ BTChampionAttackAction.leave = function (self, unit, blackboard, t, reason, dest
 
 	blackboard.move_state = nil
 	blackboard.target_unit_status_extension = nil
-	blackboard.update_timer = 0
 	blackboard.active_node = nil
 	blackboard.attack_aborted = nil
 	blackboard.attack_rotation = nil

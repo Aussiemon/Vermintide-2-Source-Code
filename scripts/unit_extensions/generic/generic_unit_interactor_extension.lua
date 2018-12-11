@@ -70,6 +70,7 @@ local IGNORED_DAMAGE_TYPES = {
 	damage_over_time = true,
 	globadier_gas_dot = true,
 	buff_shared_medpack = true,
+	plague_ground = true,
 	temporary_health_degen = true,
 	health_degen = true,
 	poison = true,
@@ -274,9 +275,6 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 		end
 
 		self.state = "doing_interaction"
-		local flow_event = "lua_interaction_started_" .. interaction_type
-
-		Unit.flow_event(interactable_unit, flow_event)
 	end
 
 	if self.state == "doing_interaction" then
@@ -369,16 +367,6 @@ GenericUnitInteractorExtension._stop_interaction = function (self, interactable_
 
 	if self.is_server then
 		interaction_template.server.stop(world, unit, interactable_unit, interaction_data, interaction_config, t, interaction_result)
-	end
-
-	if self.state == "doing_interaction" then
-		local flow_event = "lua_interaction_stopped_" .. interaction_type .. "_" .. InteractionResult[interaction_result]
-
-		Unit.flow_event(interactable_unit, flow_event)
-
-		local local_flow_event = "lua_interaction_stopped_local_interactor_" .. interaction_type .. "_" .. InteractionResult[interaction_result]
-
-		Unit.flow_event(interactable_unit, local_flow_event)
 	end
 
 	self.state = "waiting_to_interact"
@@ -538,8 +526,12 @@ GenericUnitInteractorExtension.start_interaction = function (self, hold_input, i
 end
 
 GenericUnitInteractorExtension.abort_interaction = function (self)
-	InteractionHelper.printf("[GenericUnitInteractorExtension] abort_interaction in state=%s", self.state)
-	InteractionHelper:abort(Managers.state.unit_storage:go_id(self.unit), self.is_server)
+	if self:is_interacting() and self.state ~= "waiting_for_abort" then
+		self.state = "waiting_for_abort"
+
+		InteractionHelper.printf("[GenericUnitInteractorExtension] abort_interaction in state=%s", self.state)
+		InteractionHelper:abort(Managers.state.unit_storage:go_id(self.unit), self.is_server)
+	end
 end
 
 GenericUnitInteractorExtension.interaction_approved = function (self, interaction_type, interactable_unit)
@@ -561,7 +553,7 @@ GenericUnitInteractorExtension.interaction_denied = function (self)
 
 	local state = self.state
 
-	fassert(state == "waiting_for_confirmation", "Was in wrong state when getting interaction denied.")
+	fassert(state == "waiting_for_confirmation" or state == "waiting_for_abort", "Was in wrong state when getting interaction denied.")
 
 	self.state = "waiting_to_interact"
 end
@@ -579,7 +571,7 @@ GenericUnitInteractorExtension.interaction_completed = function (self, interacti
 end
 
 GenericUnitInteractorExtension.hot_join_sync = function (self, sender)
-	if not self:is_interacting() and self.state ~= "waiting_for_confirmation" then
+	if not self:is_interacting() then
 		return
 	end
 

@@ -4,7 +4,7 @@ local NUM_SLOTS = 4
 local PLAYER_NAME_MAX_LENGTH = 16
 local scenegraph_definition = {
 	root = {
-		is_root = true,
+		scale = "fit",
 		size = {
 			1920,
 			1080
@@ -24,7 +24,7 @@ local scenegraph_definition = {
 			25
 		},
 		position = {
-			90,
+			140,
 			-54,
 			1
 		}
@@ -184,6 +184,12 @@ local scenegraph_definition = {
 		}
 	}
 }
+
+if PLATFORM ~= "win32" then
+	scenegraph_definition.root.scale = "hud_fit"
+	scenegraph_definition.root.is_root = false
+end
+
 local icon_widget_definitions = {
 	UIWidgets.create_simple_texture("voice_chat_icon_01", "icon_slot_1", false, RETAINED_MODE_ENABLED),
 	UIWidgets.create_simple_texture("voice_chat_icon_01", "icon_slot_2", false, RETAINED_MODE_ENABLED),
@@ -216,6 +222,7 @@ local name_widget_definitions = {
 	UIWidgets.create_simple_text("player_3", "name_slot_3", nil, nil, name_style, nil, RETAINED_MODE_ENABLED),
 	UIWidgets.create_simple_text("player_4", "name_slot_4", nil, nil, name_style, nil, RETAINED_MODE_ENABLED)
 }
+local DO_RELOAD = false
 
 VoiceChatUI.init = function (self, ingame_ui_context)
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
@@ -226,6 +233,7 @@ VoiceChatUI.init = function (self, ingame_ui_context)
 	self._talked_last_frame = {}
 	self._talking_this_frame = {}
 	self._dirty = false
+	self._safe_rect = Application.user_setting("safe_rect") or 0
 
 	self:create_ui_elements()
 end
@@ -262,6 +270,8 @@ VoiceChatUI.create_ui_elements = function (self)
 		widget.content.visible = false
 		self.name_widgets[#self.name_widgets + 1] = widget
 	end
+
+	DO_RELOAD = false
 end
 
 VoiceChatUI.destroy = function (self)
@@ -298,6 +308,12 @@ VoiceChatUI.update = function (self, dt)
 	local talked_last_frame = self._talked_last_frame
 	local talking_this_frame = self._talking_this_frame
 	local dirty = false
+	local safe_rect = Application.user_setting("safe_rect") or 0
+
+	if safe_rect ~= self._safe_rect then
+		self._safe_rect = safe_rect
+		dirty = true
+	end
 
 	table.clear(MEMBERS)
 

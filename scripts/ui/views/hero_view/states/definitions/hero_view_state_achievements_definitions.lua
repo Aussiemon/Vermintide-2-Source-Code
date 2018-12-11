@@ -2339,6 +2339,11 @@ local widgets = {
 					pass_type = "scroll",
 					scroll_function = function (ui_scenegraph, ui_style, ui_content, input_service, scroll_axis, dt)
 						local axis_input = scroll_axis.y * -1
+
+						if PLATFORM == "xb1" and GameSettingsDevelopment.allow_keyboard_mouse and not Managers.input:is_device_active("gamepad") then
+							axis_input = math.sign(scroll_axis.x) * -1
+						end
+
 						local hotspot = ui_content.hotspot
 
 						if axis_input ~= 0 and hotspot.is_hover then

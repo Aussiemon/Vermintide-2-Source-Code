@@ -279,7 +279,7 @@ Projectiles.burning_head = {
 	radius_max = 0.1,
 	trajectory_template_name = "throw_trajectory",
 	radius_min = 0.1,
-	projectile_unit_name = "units/weapons/projectile/burning_head/burning_head"
+	projectile_unit_name = "units/weapons/player/wpn_burning_head/wpn_burning_head_3ps"
 }
 Projectiles.burning_head = table.clone(Projectiles.burning_head) or table.clone(Projectiles.default)
 Projectiles.markus_huntsman_career_weapon = {
@@ -310,7 +310,6 @@ Projectiles.kerillian_waywatcher_career_arrows = {
 	trajectory_template_name = "throw_trajectory",
 	projectile_unit_name = "units/weapons/player/wpn_we_quiver_t1/wpn_we_tripple_arrow_t1_3p"
 }
-Projectiles.sniper_poison_arrow = table.clone(Projectiles.sniper_poison_arrow) or table.clone(Projectiles.default)
 Projectiles.grenade = {
 	impact_type = "sphere_sweep",
 	radius = 0.1,

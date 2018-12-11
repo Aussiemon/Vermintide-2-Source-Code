@@ -16,7 +16,6 @@ BTThrowWeaponAction.enter = function (self, unit, blackboard, t)
 	blackboard.move_state = "attacking"
 	local throw_animation = action.throw_animation
 
-	Managers.state.network:anim_event(unit, "to_combat")
 	Managers.state.network:anim_event(unit, throw_animation)
 	Unit.flow_event(unit, "throw_animation_started")
 
@@ -37,9 +36,12 @@ BTThrowWeaponAction.enter = function (self, unit, blackboard, t)
 end
 
 BTThrowWeaponAction.leave = function (self, unit, blackboard, t, reason, destroy)
-	local locomotion_extension = blackboard.locomotion_extension
+	if not destroy then
+		local locomotion_extension = blackboard.locomotion_extension
 
-	locomotion_extension:set_rotation_speed(nil)
+		locomotion_extension:set_rotation_speed(nil)
+	end
+
 	blackboard.navigation_extension:set_enabled(true)
 
 	if blackboard.thrown_unit and Unit.alive(blackboard.thrown_unit) then

@@ -14,7 +14,6 @@ BTGreySeerGroundCombatAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	blackboard.action = action
 
-	Managers.state.network:anim_event(unit, "to_combat")
 	Managers.state.network:anim_event(unit, "idle_eat_warpstone")
 
 	local current_phase = blackboard.current_phase

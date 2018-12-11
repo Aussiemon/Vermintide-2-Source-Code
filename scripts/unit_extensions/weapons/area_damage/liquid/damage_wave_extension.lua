@@ -88,13 +88,18 @@ DamageWaveExtension._calculate_oobb_collision = function (self, width, range, he
 end
 
 DamageWaveExtension.launch_wave = function (self, target_unit, optional_target_pos)
+	local unit = self.unit
+
+	if not Unit.alive(unit) then
+		return
+	end
+
 	local target_pos = optional_target_pos
 	target_pos = target_pos or position_lookup[target_unit]
 	local start_speed = self.start_speed
 	self.target_unit = target_unit
 	self.target_pos = Vector3Box(target_pos)
 	self.wave_speed = start_speed
-	local unit = self.unit
 	local position = position_lookup[unit]
 	local to_target = target_pos - position
 	local initial_dist = Vector3.length(to_target)

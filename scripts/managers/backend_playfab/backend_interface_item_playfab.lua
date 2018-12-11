@@ -186,6 +186,16 @@ BackendInterfaceItemPlayfab.get_item_from_id = function (self, backend_id)
 	return item
 end
 
+BackendInterfaceItemPlayfab.get_item_from_key = function (self, item_key)
+	local items = self:get_all_backend_items()
+
+	for _, item in pairs(items) do
+		if item.key == item_key then
+			return item
+		end
+	end
+end
+
 BackendInterfaceItemPlayfab.get_all_backend_items = function (self)
 	if self._dirty then
 		self:_refresh()

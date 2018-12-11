@@ -18,10 +18,6 @@ BTCorruptorGrabAction.enter = function (self, unit, blackboard, t)
 	blackboard.drain_life_at = t
 	blackboard.has_dealed_damage = false
 	blackboard.projectile_position = Vector3Box()
-	local network_manager = Managers.state.network
-
-	network_manager:anim_event(unit, "to_combat")
-
 	blackboard.corruptor_target = blackboard.target_unit
 	blackboard.target_unit_status_extension = ScriptUnit.has_extension(blackboard.corruptor_target, "status_system") or nil
 
@@ -56,8 +52,10 @@ BTCorruptorGrabAction.leave = function (self, unit, blackboard, t, reason, destr
 	blackboard.target_dodged = nil
 	blackboard.projectile_target_position = nil
 
-	blackboard.locomotion_extension:use_lerp_rotation(false)
-	LocomotionUtils.set_animation_driven_movement(unit, false)
+	if not destroy then
+		blackboard.locomotion_extension:use_lerp_rotation(false)
+		LocomotionUtils.set_animation_driven_movement(unit, false)
+	end
 
 	if reason == "aborted" and blackboard.stagger and blackboard.play_grabbed_loop then
 		blackboard.corruptor_grab_stagger = true

@@ -5,18 +5,9 @@ require("scripts/ui/reward_popup/reward_popup_ui")
 
 local definitions = local_require("scripts/ui/views/level_end/level_end_view_definitions")
 local widget_definitions = definitions.widgets_definitions
-local num_reward_entries = definitions.num_reward_entries
-local num_experience_entries = definitions.num_experience_entries
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animations
-local console_cursor_definition = definitions.console_cursor_definition
 local generic_input_actions = definitions.generic_input_actions
-
-local function dprint(...)
-	print("[LevelEndView]", ...)
-end
-
-local DO_RELOAD = false
 local debug_draw_scenegraph = false
 local debug_menu = false
 local fake_input_service = {
@@ -34,6 +25,7 @@ LevelEndView = class(LevelEndView)
 
 LevelEndView.init = function (self, context)
 	local game_won = context.game_won
+	local rewards = context.rewards
 	self.game_won = game_won
 	self.game_mode_key = context.game_mode_key
 	self._world = context.world
@@ -45,7 +37,7 @@ LevelEndView.init = function (self, context)
 	self.profile_synchronizer = context.profile_synchronizer
 	self.peer_id = context.peer_id
 	self.local_player_id = context.local_player_id
-	self.rewards = context.rewards
+	self.rewards = rewards
 	self.context = context
 	self.render_settings = {
 		alpha_multiplier = 0,
@@ -70,7 +62,7 @@ LevelEndView.init = function (self, context)
 	self.input_manager = input_manager
 	self._reward_presentation_queue = {}
 	self.reward_popup = RewardPopupUI:new(context)
-	local index_by_state_name, state_name_by_index = self:_setup_pages(game_won)
+	local index_by_state_name, state_name_by_index = self:_setup_pages(game_won, rewards)
 	self._index_by_state_name = index_by_state_name
 	self._state_name_by_index = state_name_by_index
 
@@ -349,7 +341,7 @@ LevelEndView._pop_mouse_cursor = function (self)
 	end
 end
 
-LevelEndView._setup_pages = function (self, game_won)
+LevelEndView._setup_pages = function (self, game_won, rewards)
 	local index_by_state_name = nil
 
 	if self._is_untrusted then
@@ -357,11 +349,21 @@ LevelEndView._setup_pages = function (self, game_won)
 			EndViewStateScore = 1
 		}
 	elseif game_won then
-		index_by_state_name = {
-			EndViewStateChest = 2,
-			EndViewStateScore = 3,
-			EndViewStateSummary = 1
-		}
+		local end_of_level_rewards = rewards.end_of_level_rewards
+		local chest = end_of_level_rewards.chest
+
+		if chest then
+			index_by_state_name = {
+				EndViewStateChest = 2,
+				EndViewStateScore = 3,
+				EndViewStateSummary = 1
+			}
+		else
+			index_by_state_name = {
+				EndViewStateSummary = 1,
+				EndViewStateScore = 2
+			}
+		end
 	else
 		index_by_state_name = {
 			EndViewStateSummary = 1,
@@ -379,7 +381,6 @@ LevelEndView._setup_pages = function (self, game_won)
 end
 
 LevelEndView.create_ui_elements = function (self)
-	DO_RELOAD = false
 	self.ui_animations = {}
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self._static_widgets = {}
@@ -673,23 +674,6 @@ LevelEndView.draw = function (self, dt, input_service)
 end
 
 LevelEndView.update = function (self, dt, t)
-	if DO_RELOAD then
-		DO_RELOAD = false
-		self.waiting_to_start = true
-		local index_by_state_name, state_name_by_index = self:_setup_pages(self.game_won)
-		self._index_by_state_name = index_by_state_name
-		self._state_name_by_index = state_name_by_index
-
-		self:create_ui_elements()
-
-		self._state_machine_params = {
-			parent = self,
-			context = self.context,
-			game_won = self.game_won,
-			game_mode_key = self.game_mode_key
-		}
-	end
-
 	if self.suspended or self.waiting_for_post_update_enter then
 		return
 	end
@@ -702,9 +686,7 @@ LevelEndView.update = function (self, dt, t)
 		end
 	end
 
-	local input_manager = self.input_manager
 	local input_service = self:input_service()
-	local transitioning = self:transitioning()
 
 	if self.active then
 		if self._started_force_shutdown then
@@ -1259,7 +1241,6 @@ LevelEndView.present_additional_rewards = function (self)
 
 	local keep_decoration_rewards = self.keep_decoration_rewards
 	local num_keep_decoration_rewards = #keep_decoration_rewards
-	local item_interface = Managers.backend:get_interface("items")
 
 	if num_keep_decoration_rewards > 0 then
 		local presentation_data = {}
@@ -1297,7 +1278,6 @@ LevelEndView.present_additional_rewards = function (self)
 
 	local event_rewards = self.event_rewards
 	local num_event_rewards = #event_rewards
-	local item_interface = Managers.backend:get_interface("items")
 
 	if num_event_rewards > 0 then
 		local presentation_data = {}
@@ -1306,8 +1286,6 @@ LevelEndView.present_additional_rewards = function (self)
 			local entry = {}
 			local backend_id = item.backend_id
 			local reward_item = item_interface:get_item_from_id(backend_id)
-			local item_data = item_interface:get_item_masterlist_data(backend_id)
-			local item_type = item_data.item_type
 			local description = {}
 			local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
 			description[1] = Localize(display_name)

@@ -1,3 +1,4 @@
+require("scripts/settings/keep_decoration_settings")
 require("scripts/unit_extensions/level/keep_decoration_painting_extension")
 
 KeepDecorationSystem = class(KeepDecorationSystem, ExtensionSystemBase)
@@ -13,28 +14,11 @@ KeepDecorationSystem.init = function (self, entity_system_creation_context, syst
 	self._used_settings_keys = {}
 	self._used_backend_keys = {}
 	self._update_index = 0
-
-	self:_get_owned_paintings()
-end
-
-KeepDecorationSystem._get_owned_paintings = function (self)
-	local item_interface = Managers.backend:get_interface("items")
-	local painting_items = item_interface:get_filtered_items("item_type == keep_decoration_painting")
-	local owned_paintings = {}
-
-	for _, item in pairs(painting_items) do
-		local item_data = item.data
-		local name = item_data.material_name
-		owned_paintings[name] = true
-	end
-
-	self._owned_paintings = owned_paintings
 end
 
 KeepDecorationSystem.destroy = function (self)
 	self._extensions = nil
 	self._unit_extensions = nil
-	self._owned_paintings = nil
 end
 
 KeepDecorationSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data, ...)
@@ -53,11 +37,6 @@ KeepDecorationSystem.on_add_extension = function (self, world, unit, extension_n
 	fassert(not used_backend_keys[backend_key], "Multiple decoration settings has the same backend_key \"" .. tostring(backend_key) .. "\". Fix it in keep_decoration_settings.lua!")
 
 	local extension = KeepDecorationSystem.super.on_add_extension(self, world, unit, extension_name, extension_init_data, ...)
-
-	if extension_name == "KeepDecorationPaintingExtension" then
-		extension:setup(settings, self._owned_paintings)
-	end
-
 	self._extensions[#self._extensions + 1] = extension
 	self._unit_extensions[unit] = extension
 	self._used_settings_keys[settings_key] = true
@@ -85,58 +64,6 @@ KeepDecorationSystem.update = function (self, context, t)
 	extension_to_update:distributed_update()
 
 	self._update_index = update_index
-end
-
-KeepDecorationSystem.on_game_object_created = function (self, unit, game_object_id)
-	local extension = self._unit_extensions[unit]
-
-	extension:on_game_object_created(game_object_id)
-end
-
-KeepDecorationSystem.on_game_object_destroyed = function (self, unit)
-	local extension = self._unit_extensions[unit]
-
-	extension:on_game_object_destroyed()
-end
-
-KeepDecorationSystem.cycle_next = function (self, unit)
-	local extension = self._unit_extensions[unit]
-
-	if extension:can_interact() then
-		extension:cycle_next()
-	end
-end
-
-KeepDecorationSystem.cycle_previous = function (self, unit)
-	local extension = self._unit_extensions[unit]
-
-	if extension:can_interact() then
-		extension:cycle_previous()
-	end
-end
-
-KeepDecorationSystem.reset_selection = function (self, unit)
-	local extension = self._unit_extensions[unit]
-
-	return extension:reset_selection()
-end
-
-KeepDecorationSystem.confirm_selection = function (self, unit)
-	local extension = self._unit_extensions[unit]
-
-	return extension:confirm_selection()
-end
-
-KeepDecorationSystem.can_interact = function (self, unit)
-	local extension = self._unit_extensions[unit]
-
-	return extension:can_interact()
-end
-
-KeepDecorationSystem.get_extension = function (self, unit)
-	local extension = self._unit_extensions[unit]
-
-	return extension
 end
 
 KeepDecorationSystem.hot_join_sync = function (self)

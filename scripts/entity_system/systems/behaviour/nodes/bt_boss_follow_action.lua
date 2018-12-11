@@ -14,9 +14,6 @@ BTBossFollowAction.enter = function (self, unit, blackboard, t)
 	blackboard.remembered_threat_pos = nil
 	blackboard.chasing_timer = blackboard.unreachable_timer or 0
 	blackboard.follow_data = blackboard.follow_data or {}
-	local network_manager = Managers.state.network
-
-	network_manager:anim_event(unit, "to_combat")
 
 	if blackboard.fling_skaven_timer and blackboard.fling_skaven_timer < t then
 		blackboard.fling_skaven_timer = t + 0.5
@@ -27,6 +24,7 @@ BTBossFollowAction.enter = function (self, unit, blackboard, t)
 	if tutorial_message_template then
 		local template_id = NetworkLookup.tutorials[tutorial_message_template]
 		local message_id = NetworkLookup.tutorials[blackboard.breed.name]
+		local network_manager = Managers.state.network
 
 		network_manager.network_transmit:send_rpc_all("rpc_tutorial_message", template_id, message_id)
 	end
@@ -40,7 +38,7 @@ BTBossFollowAction.leave = function (self, unit, blackboard, t, reason, destroy)
 
 	navigation_extension:set_max_speed(default_move_speed)
 
-	if blackboard.is_turning then
+	if blackboard.is_turning and not destroy then
 		LocomotionUtils.reset_turning(unit, blackboard)
 
 		blackboard.is_turning = nil

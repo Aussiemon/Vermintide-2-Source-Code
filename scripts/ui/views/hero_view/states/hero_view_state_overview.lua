@@ -580,8 +580,7 @@ end
 
 HeroViewStateOverview._has_active_level_vote = function (self)
 	local voting_manager = self.voting_manager
-	local active_vote_name = voting_manager:vote_in_progress()
-	local is_mission_vote = active_vote_name == "game_settings_vote" or active_vote_name == "game_settings_deed_vote"
+	local is_mission_vote = voting_manager:vote_in_progress() and voting_manager:is_mission_vote()
 
 	return is_mission_vote and not voting_manager:has_voted(Network.peer_id())
 end

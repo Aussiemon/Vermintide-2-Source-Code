@@ -1,6 +1,7 @@
 local json = require("PlayFab.json")
 local PlayFabSettings = require("PlayFab.PlayFabSettings")
-active_requests = active_requests or {}
+local request_id = request_id or 0
+local active_requests = active_requests or {}
 local MAX_RETRIES = 2
 local retry_codes = {
 	1199,
@@ -12,7 +13,7 @@ local retry_codes = {
 	1214
 }
 
-local function on_error(request_data, result, error_override)
+local function on_error(request_data, result, id, error_override)
 	local error_code = nil
 
 	if error_override then
@@ -43,7 +44,6 @@ local function on_error(request_data, result, error_override)
 		local body = request_data.body
 		local headers = request_data.headers
 		local request_cb = request_data.request_cb
-		local id = request_data.id
 		local options = request_data.options
 
 		Managers.curl:post(url, body, headers, request_cb, id, options)
@@ -54,11 +54,13 @@ local function on_error(request_data, result, error_override)
 		ScriptApplication.send_to_crashify("Backend_Error", "RESENDING REQUEST: %s", request_data)
 	else
 		Managers.backend:playfab_api_error(result, error_code)
+
+		active_requests[id] = nil
 	end
 end
 
-function curl_callback(success, code, headers, data, user_data)
-	local request_data = active_requests[user_data]
+function curl_callback(success, code, headers, data, id)
+	local request_data = active_requests[id]
 
 	if success then
 		local _, response = pcall(json.decode, data)
@@ -66,8 +68,10 @@ function curl_callback(success, code, headers, data, user_data)
 		if response and type(response) == "table" then
 			if response.code == 200 and response.data and not response.data.Error then
 				request_data.onSuccess(response.data)
+
+				active_requests[id] = nil
 			else
-				on_error(request_data, response)
+				on_error(request_data, response, id)
 			end
 		else
 			local error_data = {
@@ -83,7 +87,7 @@ function curl_callback(success, code, headers, data, user_data)
 				error_data.errorMessage = "Could not deserialize response from server: NO DATA"
 			end
 
-			on_error(request_data, error_data)
+			on_error(request_data, error_data, id)
 		end
 	else
 		local error_data = {
@@ -99,7 +103,7 @@ function curl_callback(success, code, headers, data, user_data)
 			error_data.errorMessage = "Could not deserialize response from server: NO DATA"
 		end
 
-		on_error(request_data, error_data, tostring(data))
+		on_error(request_data, error_data, id, tostring(data))
 	end
 end
 
@@ -117,7 +121,7 @@ local PlayFabHttpsCurl = {
 			headers[#headers + 1] = auth_key .. ": " .. auth_value
 		end
 
-		local id = #active_requests + 1
+		local id = request_id + 1
 		local curl_manager = Managers.curl
 		local full_url = "https://" .. PlayFabSettings.settings.titleId .. ".playfabapi.com/" .. url_path
 		local options = {
@@ -137,6 +141,8 @@ local PlayFabHttpsCurl = {
 		active_requests[id] = request_data
 
 		curl_manager:post(full_url, json_request, headers, curl_callback, id, options)
+
+		request_id = id
 	end
 }
 

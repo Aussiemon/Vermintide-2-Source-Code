@@ -61,12 +61,14 @@ BTFallAction.enter = function (self, unit, blackboard, t)
 end
 
 BTFallAction.leave = function (self, unit, blackboard, t, reason, destroy)
-	LocomotionUtils.set_animation_driven_movement(unit, false)
+	if not destroy then
+		LocomotionUtils.set_animation_driven_movement(unit, false)
 
-	local locomotion_extension = blackboard.locomotion_extension
+		local locomotion_extension = blackboard.locomotion_extension
 
-	locomotion_extension:set_affected_by_gravity(false)
-	locomotion_extension:set_movement_type("snap_to_navmesh")
+		locomotion_extension:set_affected_by_gravity(false)
+		locomotion_extension:set_movement_type("snap_to_navmesh")
+	end
 
 	local navigation_extension = blackboard.navigation_extension
 

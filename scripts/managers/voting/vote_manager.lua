@@ -32,11 +32,9 @@ VoteManager.request_vote = function (self, name, vote_data, voter_peer_id)
 	local vote_template = VoteTemplates[name]
 
 	fassert(vote_template, "Could not find voting template by name: %q", name)
-
-	local vote_type_id = NetworkLookup.voting_types[name]
-
 	fassert(voter_peer_id ~= nil, "No voter peer id sent")
 
+	local vote_type_id = NetworkLookup.voting_types[name]
 	vote_data = vote_data or {}
 	vote_data.voter_peer_id = voter_peer_id
 
@@ -177,6 +175,10 @@ end
 
 VoteManager.is_ingame_vote = function (self)
 	return self.active_voting.template.ingame_vote
+end
+
+VoteManager.is_mission_vote = function (self)
+	return self.active_voting.template.mission_vote
 end
 
 VoteManager.allow_vote_input = function (self, enable)

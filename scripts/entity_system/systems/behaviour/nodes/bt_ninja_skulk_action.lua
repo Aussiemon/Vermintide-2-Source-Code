@@ -23,7 +23,6 @@ BTNinjaSkulkAction.enter = function (self, unit, blackboard, t)
 
 	local network_manager = Managers.state.network
 
-	network_manager:anim_event(unit, "to_combat")
 	network_manager:anim_event(unit, "move_fwd")
 
 	local navigation_extension = blackboard.navigation_extension

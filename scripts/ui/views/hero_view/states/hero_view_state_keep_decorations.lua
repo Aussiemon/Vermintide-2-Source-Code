@@ -122,8 +122,9 @@ HeroViewStateKeepDecorations.on_exit = function (self, params)
 
 	if self._customizable_decoration then
 		local interactable_unit = self._interactable_unit
+		local keep_decoration_extension = ScriptUnit.extension(interactable_unit, "keep_decoration_system")
 
-		self._decoration_system:reset_selection(interactable_unit)
+		keep_decoration_extension:reset_selection()
 	end
 
 	if self._fullscreen_effect_enabled then
@@ -268,8 +269,7 @@ end
 
 HeroViewStateKeepDecorations._has_active_level_vote = function (self)
 	local voting_manager = self.voting_manager
-	local active_vote_name = voting_manager:vote_in_progress()
-	local is_mission_vote = active_vote_name == "game_settings_vote" or active_vote_name == "game_settings_deed_vote"
+	local is_mission_vote = voting_manager:vote_in_progress() and voting_manager:is_mission_vote()
 
 	return is_mission_vote and not voting_manager:has_voted(Network.peer_id())
 end
@@ -346,7 +346,9 @@ HeroViewStateKeepDecorations._handle_input = function (self, dt, t)
 		local interactable_unit = self._interactable_unit
 
 		if self:_is_button_pressed(confirm_button) then
-			decoration_system:confirm_selection(interactable_unit)
+			local keep_decoration_extension = ScriptUnit.extension(interactable_unit, "keep_decoration_system")
+
+			keep_decoration_extension:confirm_selection()
 		end
 
 		local list_index = self:_list_index_pressed()
@@ -510,10 +512,10 @@ HeroViewStateKeepDecorations._list_index_pressed = function (self)
 end
 
 HeroViewStateKeepDecorations._on_list_index_selected = function (self, index)
-	local decoration_system = self._decoration_system
 	local interactable_unit = self._interactable_unit
+	local keep_decoration_extension = ScriptUnit.extension(interactable_unit, "keep_decoration_system")
 
-	decoration_system:cycle_next(interactable_unit)
+	keep_decoration_extension:cycle_next()
 	self:_set_selected_title("placeholder_title_text_" .. index)
 	self:_set_selected_description("placeholder_description_text_" .. index)
 end

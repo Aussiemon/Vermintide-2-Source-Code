@@ -145,6 +145,10 @@ AccountManager.active_controller = function (self, user_id)
 	return self._active_controller
 end
 
+AccountManager.is_controller_disconnected = function (self)
+	return self._popup_id
+end
+
 AccountManager.user_detached = function (self)
 	return self._user_detached
 end
@@ -784,7 +788,7 @@ end
 AccountManager.initiate_leave_game = function (self)
 	self._leave_game = true
 
-	if self:is_online() and self._user_id then
+	if self:is_online() then
 		Presence.set(self._user_id, "")
 	end
 end

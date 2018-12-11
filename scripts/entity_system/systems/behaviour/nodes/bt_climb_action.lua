@@ -2,19 +2,6 @@ require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 local PLAYER_AND_BOT_UNITS = PLAYER_AND_BOT_UNITS
 
-local function debug_graph()
-	local graph = Managers.state.debug.graph_drawer:graph("BTClimbAction")
-
-	if graph == nil then
-		graph = Managers.state.debug.graph_drawer:create_graph("BTClimbAction", {
-			"time",
-			"unit altitude"
-		})
-	end
-
-	return graph
-end
-
 local function randomize(event)
 	if type(event) == "table" then
 		return event[Math.random(1, #event)]
@@ -91,14 +78,6 @@ BTClimbAction.enter = function (self, unit, blackboard, t)
 	locomotion_extension:set_rotation_speed(10)
 
 	blackboard.climb_state = "moving_to_within_smartobject_range"
-
-	if script_data.ai_debug_smartobject then
-		debug_graph():reset()
-		debug_graph():set_active(true)
-		print("BTClimbAction: Climb Jump Height", blackboard.climb_jump_height)
-	else
-		debug_graph():set_active(false)
-	end
 end
 
 BTClimbAction.leave = function (self, unit, blackboard, t, reason, destroy)
@@ -123,14 +102,16 @@ BTClimbAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.units_catapulted = nil
 	blackboard.jump_down_land_animation = nil
 
-	LocomotionUtils.set_animation_translation_scale(unit, Vector3(1, 1, 1))
-	LocomotionUtils.constrain_on_clients(unit, false, Vector3.zero(), Vector3.zero())
-	LocomotionUtils.set_animation_driven_movement(unit, false)
+	if not destroy then
+		LocomotionUtils.set_animation_translation_scale(unit, Vector3(1, 1, 1))
+		LocomotionUtils.constrain_on_clients(unit, false)
+		LocomotionUtils.set_animation_driven_movement(unit, false)
 
-	local locomotion_extension = blackboard.locomotion_extension
+		local locomotion_extension = blackboard.locomotion_extension
 
-	locomotion_extension:set_movement_type("snap_to_navmesh")
-	locomotion_extension:set_affected_by_gravity(true)
+		locomotion_extension:set_movement_type("snap_to_navmesh")
+		locomotion_extension:set_affected_by_gravity(true)
+	end
 
 	local navigation_extension = blackboard.navigation_extension
 
@@ -144,7 +125,7 @@ BTClimbAction.leave = function (self, unit, blackboard, t, reason, destroy)
 		shield_extension:set_is_blocking(true)
 	end
 
-	slot10 = navigation_extension:is_using_smart_object() and navigation_extension:use_smart_object(false)
+	slot9 = navigation_extension:is_using_smart_object() and navigation_extension:use_smart_object(false)
 end
 
 local CLIMB_HEIGHT_OFFSET_THRESHOLD = 2.1
@@ -155,20 +136,6 @@ BTClimbAction.run = function (self, unit, blackboard, t, dt)
 	local locomotion_extension = blackboard.locomotion_extension
 	local unit_position = POSITION_LOOKUP[unit]
 	local is_on_edge = blackboard.smart_object_data.is_on_edge
-
-	if script_data.ai_debug_smartobject then
-		Debug.text("BTClimbAction state=%s", blackboard.climb_state)
-		Debug.text("BTClimbAction entrance_pos=%s", tostring(blackboard.climb_entrance_pos:unbox()))
-		Debug.text("BTClimbAction exit_pos=        %s", tostring(blackboard.climb_exit_pos:unbox()))
-		Debug.text("BTClimbAction pos=            %s", tostring(unit_position))
-		QuickDrawer:sphere(blackboard.climb_entrance_pos:unbox(), 0.3, Colors.get("green"))
-		QuickDrawer:sphere(blackboard.climb_exit_pos:unbox(), 0.3, Colors.get("red"))
-		QuickDrawer:sphere(unit_position, 0.3 + math.sin(t * 5) * 0.01, Colors.get("purple"))
-
-		if Vector3.length(locomotion_extension:current_velocity()) > 0 then
-			debug_graph():add_point(t, unit_position.z)
-		end
-	end
 
 	if blackboard.smart_object_data ~= blackboard.next_smart_object_data.smart_object_data then
 		return "failed"
@@ -357,15 +324,6 @@ BTClimbAction.run = function (self, unit, blackboard, t, dt)
 
 				blackboard.climb_state = "waiting_to_reach_ground"
 			end
-
-			if script_data.ai_debug_smartobject then
-				debug_graph():add_annotation({
-					color = "green",
-					x = t,
-					y = unit_position.z,
-					text = "finished climb unit @ " .. tostring(unit_position) .. " to move_target @" .. tostring(move_target)
-				})
-			end
 		end
 	end
 
@@ -391,27 +349,6 @@ BTClimbAction.run = function (self, unit, blackboard, t, dt)
 			local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
 			hit_reaction_extension.force_ragdoll_on_death = nil
 			blackboard.climb_state = "waiting_for_finished_land_anim"
-
-			if script_data.ai_debug_smartobject then
-				debug_graph():add_annotation({
-					color = "orange",
-					x = t,
-					y = unit_position.z,
-					text = "realized reached_ground " .. tostring(unit_position) .. " to exit pos @" .. tostring(move_target)
-				})
-				debug_graph():add_annotation({
-					text = "would/will reach ground here next frame ",
-					color = "red",
-					x = t + dt * 2,
-					y = unit_position.z + velocity.z * dt * 2
-				})
-				debug_graph():add_annotation({
-					color = "orange",
-					x = t,
-					y = unit_position.z,
-					text = "teleported unit @ " .. tostring(unit_position) .. " to exit pos @" .. tostring(move_target)
-				})
-			end
 		end
 	elseif blackboard.climb_state == "waiting_for_finished_land_anim" then
 		local move_target = blackboard.climb_exit_pos:unbox()
@@ -426,16 +363,6 @@ BTClimbAction.run = function (self, unit, blackboard, t, dt)
 			Managers.state.network:anim_event(unit, "move_fwd")
 
 			blackboard.spawn_to_running = true
-
-			if script_data.ai_debug_smartobject then
-				debug_graph():add_annotation({
-					color = "orange",
-					x = t,
-					y = unit_position.z,
-					text = "teleported unit @ " .. tostring(unit_position) .. " to exit pos @" .. tostring(move_target)
-				})
-			end
-
 			local distance = Vector3.distance(unit_position, move_target)
 
 			if distance < 0.01 then
@@ -471,15 +398,6 @@ BTClimbAction.run = function (self, unit, blackboard, t, dt)
 		local move_target = blackboard.climb_exit_pos:unbox()
 
 		if blackboard.climb_align_end_time < t then
-			if script_data.ai_debug_smartobject then
-				debug_graph():add_annotation({
-					color = "orange",
-					x = t,
-					y = unit_position.z,
-					text = "aligned unit @ " .. tostring(unit_position) .. " to exit pos @" .. tostring(move_target)
-				})
-			end
-
 			local position_on_navmesh, altitude = GwNavQueries.triangle_from_position(blackboard.nav_world, move_target, 0.4, 0.4)
 
 			if not position_on_navmesh then
@@ -487,9 +405,6 @@ BTClimbAction.run = function (self, unit, blackboard, t, dt)
 
 				if position_on_navmesh then
 					printf("WTF navmesh pos @ move_target %s, actual altitude=%f", tostring(move_target), altitude)
-					QuickDrawerStay:sphere(move_target, 0.1, Color(255, 255, 255))
-					QuickDrawerStay:sphere(move_target + Vector3.up(), 0.9, Color(255, 0, 0))
-					QuickDrawerStay:sphere(move_target - Vector3.up(), 0.9, Color(255, 0, 0))
 				end
 			end
 

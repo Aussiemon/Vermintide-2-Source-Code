@@ -654,4 +654,8 @@ PlayerBotInput.reset_release_input = function (self)
 	return true
 end
 
+PlayerBotInput.reset_release_input_with_delay = function (self)
+	return true
+end
+
 return

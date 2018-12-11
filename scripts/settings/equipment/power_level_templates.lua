@@ -192,7 +192,7 @@ PowerLevelTemplates = {
 		},
 		impact_armor_power_modifer = {
 			1,
-			1,
+			0.6,
 			0.5,
 			1,
 			1
@@ -257,7 +257,7 @@ PowerLevelTemplates = {
 		},
 		impact = {
 			1,
-			1.5,
+			0.8,
 			1,
 			1,
 			2,
@@ -274,7 +274,7 @@ PowerLevelTemplates = {
 		},
 		impact = {
 			1,
-			1,
+			0.8,
 			1,
 			1,
 			1.5,
@@ -332,7 +332,7 @@ PowerLevelTemplates = {
 		},
 		impact = {
 			1,
-			2,
+			0.8,
 			1,
 			1,
 			1
@@ -348,7 +348,7 @@ PowerLevelTemplates = {
 		},
 		impact = {
 			1,
-			1.5,
+			0.8,
 			1,
 			1,
 			1
@@ -364,7 +364,7 @@ PowerLevelTemplates = {
 		},
 		impact = {
 			1,
-			1,
+			0.5,
 			1,
 			1,
 			1
@@ -1369,6 +1369,22 @@ PowerLevelTemplates = {
 			1
 		}
 	},
+	critical_strike_pointy_smiter_L = {
+		attack_armor_power_modifer = {
+			1,
+			1,
+			2,
+			1,
+			1
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1
+		}
+	},
 	critical_strike_smiter_L_dual_light = {
 		attack_armor_power_modifer = {
 			1,
@@ -1403,6 +1419,42 @@ PowerLevelTemplates = {
 			0.25
 		}
 	},
+	armor_modifier_pointy_smiter_L = {
+		attack = {
+			1,
+			1,
+			2,
+			1,
+			1,
+			0.5
+		},
+		impact = {
+			1,
+			0.5,
+			1,
+			1,
+			1,
+			0.5
+		}
+	},
+	armor_modifier_pointy_smiter_M = {
+		attack = {
+			1,
+			0.9,
+			2,
+			1,
+			1,
+			0.9
+		},
+		impact = {
+			1,
+			1,
+			1,
+			1,
+			1,
+			0.5
+		}
+	},
 	armor_modifier_smiter_L_dual_light = {
 		attack = {
 			1,
@@ -1425,6 +1477,15 @@ PowerLevelTemplates = {
 		power_distribution = {
 			attack = 0.25,
 			impact = 0.175
+		}
+	},
+	default_target_pointy_smiter_L = {
+		boost_curve_type = "ninja_curve",
+		boost_curve_coefficient_headshot = 1.5,
+		attack_template = "blunt_smiter",
+		power_distribution = {
+			attack = 0.2,
+			impact = 0.1
 		}
 	},
 	default_target_smiter_L_dual_heavy = {
@@ -1524,7 +1585,7 @@ PowerLevelTemplates = {
 		attack_template = "slashing_smiter",
 		power_distribution = {
 			attack = 0.35,
-			impact = 0.15
+			impact = 0.2
 		}
 	},
 	default_target_smiter_burn_M = {
@@ -1676,7 +1737,7 @@ PowerLevelTemplates = {
 		boost_curve_coefficient_headshot = 1.5,
 		boost_curve_type = "ninja_curve",
 		boost_curve_coefficient = 1,
-		attack_template = "heavy_slashing_smiter_hs",
+		attack_template = "heavy_slashing_smiter_hs_executioner",
 		power_distribution = {
 			attack = 0.65,
 			impact = 0.2
@@ -1760,19 +1821,24 @@ PowerLevelTemplates = {
 			0.75
 		}
 	},
-	default_target_stab_smiter_L = {
-		boost_curve_coefficient_headshot = 2,
-		boost_curve_type = "smiter_curve",
-		boost_curve_coefficient = 0.75,
-		attack_template = "stab_smiter",
-		power_distribution = {
-			attack = 0.2,
-			impact = 0.1
+	armor_modifier_burning_punch_smiter_L = {
+		attack = {
+			1,
+			0.5,
+			1.5,
+			1,
+			0.75
+		},
+		impact = {
+			1,
+			1.25,
+			1,
+			1,
+			0.75
 		}
 	},
-	default_target_burning_stab_smiter_L = {
+	default_target_stab_smiter_L = {
 		boost_curve_coefficient_headshot = 2,
-		dot_template_name = "burning_1W_dot",
 		boost_curve_type = "smiter_curve",
 		boost_curve_coefficient = 0.75,
 		attack_template = "stab_smiter",
@@ -1806,6 +1872,60 @@ PowerLevelTemplates = {
 			power_distribution = {
 				attack = 0.2,
 				impact = 0.1
+			}
+		}
+	},
+	targets_blunt_smiter_stab_L = {
+		{
+			boost_curve_coefficient_headshot = 2,
+			boost_curve_type = "smiter_curve",
+			boost_curve_coefficient = 0.75,
+			attack_template = "stab_smiter",
+			armor_modifier = {
+				attack = {
+					1,
+					0.75,
+					1.5,
+					1,
+					0.75
+				},
+				impact = {
+					1,
+					0.75,
+					1,
+					1,
+					1.5
+				}
+			},
+			power_distribution = {
+				attack = 0.2,
+				impact = 0.175
+			}
+		}
+	},
+	targets_burning_stab_smiter_L = {
+		{
+			boost_curve_coefficient_headshot = 2,
+			dot_template_name = "burning_1W_dot",
+			boost_curve_type = "smiter_curve",
+			boost_curve_coefficient = 0.75,
+			attack_template = "burning_stab_fencer",
+			power_distribution = {
+				attack = 0.2,
+				impact = 0.1
+			}
+		}
+	},
+	targets_burning_punch_smiter_L = {
+		{
+			boost_curve_coefficient_headshot = 1.5,
+			dot_template_name = "burning_3W_dot",
+			boost_curve_type = "ninja_curve",
+			boost_curve_coefficient = 0.75,
+			attack_template = "burning_stab_fencer",
+			power_distribution = {
+				attack = 0.2,
+				impact = 0.2
 			}
 		}
 	},

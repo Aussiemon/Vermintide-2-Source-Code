@@ -552,8 +552,7 @@ end
 
 StartGameView._has_active_level_vote = function (self)
 	local voting_manager = self.voting_manager
-	local active_vote_name = voting_manager:vote_in_progress()
-	local is_mission_vote = active_vote_name == "game_settings_vote" or active_vote_name == "game_settings_deed_vote"
+	local is_mission_vote = voting_manager:vote_in_progress() and voting_manager:is_mission_vote()
 
 	return is_mission_vote and not voting_manager:has_voted(Network.peer_id())
 end
@@ -575,10 +574,10 @@ StartGameView.number_of_players = function (self)
 	return player_manager:num_human_players()
 end
 
-StartGameView.start_game = function (self, level_key, difficulty_key, private_game, quick_game, always_host, strict_matchmaking, t, deed_backend_id)
+StartGameView.start_game = function (self, level_key, difficulty_key, private_game, quick_game, always_host, strict_matchmaking, t, game_mode, deed_backend_id, event_data)
 	print("............................................................................................................")
 	print("............................................................................................................")
-	printf("GAME START SETTINGS -> Level: %s | Difficulty: %s | Private: %s | Always Host: %s | Strict Matchmaking: %s | Quick Game: %s", (level_key and level_key) or "Not specified", difficulty_key, (private_game and "yes") or "no", (always_host and "yes") or "no", (strict_matchmaking and "yes") or "no", (quick_game and "yes") or "no")
+	printf("GAME START SETTINGS -> Level: %s | Difficulty: %s | Private: %s | Always Host: %s | Strict Matchmaking: %s | Quick Game: %s | Game Mode: %s", (level_key and level_key) or "Not specified", difficulty_key, (private_game and "yes") or "no", (always_host and "yes") or "no", (strict_matchmaking and "yes") or "no", (quick_game and "yes") or "no", game_mode or "Not specified")
 	print("............................................................................................................")
 	print("............................................................................................................")
 
@@ -593,15 +592,29 @@ StartGameView.start_game = function (self, level_key, difficulty_key, private_ga
 		local item_interface = Managers.backend:get_interface("items")
 		local item = item_interface:get_item_from_id(deed_backend_id)
 		local item_data = item.data
-		local level_key = item.level_key
 		local difficulty = item.difficulty
+		level_key = item.level_key
 		local vote_data = {
 			item_name = item_data.name,
 			level_key = level_key,
-			difficulty = difficulty
+			difficulty = difficulty,
+			game_mode = game_mode
 		}
 
 		Managers.state.voting:request_vote("game_settings_deed_vote", vote_data, Network.peer_id())
+	elseif event_data then
+		local vote_data = {
+			level_key = level_key,
+			difficulty = difficulty_key,
+			quick_game = quick_game,
+			private_game = private_game,
+			always_host = always_host,
+			strict_matchmaking = strict_matchmaking,
+			event_data = event_data,
+			game_mode = game_mode
+		}
+
+		Managers.state.voting:request_vote("game_settings_event_vote", vote_data, Network.peer_id())
 	else
 		local vote_data = {
 			level_key = level_key,
@@ -609,7 +622,8 @@ StartGameView.start_game = function (self, level_key, difficulty_key, private_ga
 			quick_game = quick_game,
 			private_game = private_game,
 			always_host = always_host,
-			strict_matchmaking = strict_matchmaking
+			strict_matchmaking = strict_matchmaking,
+			game_mode = game_mode
 		}
 
 		Managers.state.voting:request_vote("game_settings_vote", vote_data, Network.peer_id())

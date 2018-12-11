@@ -98,6 +98,10 @@ StateInGameRunning.on_enter = function (self, params)
 	event_manager:register(self, "conflict_director_setup_done", "event_conflict_director_setup_done")
 	event_manager:register(self, "close_ingame_menu", "event_close_ingame_menu")
 
+	if PLATFORM == "ps4" then
+		event_manager:register(self, "realtime_multiplay", "event_realtime_multiplay")
+	end
+
 	if PLATFORM == "xb1" then
 		event_manager:register(self, "trigger_xbox_round_end", "event_trigger_xbox_round_end")
 	end
@@ -198,10 +202,6 @@ StateInGameRunning.on_enter = function (self, params)
 	Managers.state.camera:apply_level_particle_effects(LevelSettings[level_key].level_particle_effects, viewport_name)
 	Managers.state.camera:apply_level_screen_effects(LevelSettings[level_key].level_screen_effects, viewport_name)
 
-	if PLATFORM == "ps4" then
-		Managers.account:set_realtime_multiplay_state("pre_game", true)
-	end
-
 	if Managers.chat:chat_is_focused() then
 		Managers.chat.chat_gui:block_input()
 	end
@@ -215,6 +215,7 @@ StateInGameRunning.on_enter = function (self, params)
 	end
 
 	self._waiting_for_peers_message_timer = Managers.time:time("game") + 10
+	self._game_started_current_frame = false
 end
 
 StateInGameRunning.create_ingame_ui = function (self, ingame_ui_context)
@@ -276,7 +277,6 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 
 		if PLATFORM == "ps4" then
 			Managers.account:set_presence("dice_game")
-			Managers.account:set_realtime_multiplay_state("end_screen", true)
 		end
 
 		if Managers.chat:chat_is_focused() then
@@ -494,6 +494,11 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 		end
 	elseif game_won then
 		print("Game won")
+
+		if self._is_in_event_game_mode then
+			StatisticsUtil.register_complete_event(statistics_db)
+		end
+
 		StatisticsUtil.register_complete_level(statistics_db)
 		stats_interface:save()
 	elseif game_lost then
@@ -516,7 +521,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 			local hero_name = profile.display_name
 
 			if not is_booted_unstrusted then
-				self.rewards:award_end_of_level_rewards(game_won, hero_name)
+				self.rewards:award_end_of_level_rewards(game_won, hero_name, self._is_in_event_game_mode)
 			end
 
 			ingame_ui:activate_end_screen_ui(game_won, checkpoint_available, level_key, previous_completed_difficulty_index)
@@ -541,6 +546,10 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 	end
 
 	self.game_lost = game_lost
+
+	if PLATFORM == "ps4" then
+		Managers.account:set_realtime_multiplay(false)
+	end
 
 	if self.is_in_inn or self.is_in_tutorial then
 		return
@@ -611,8 +620,17 @@ if PLATFORM ~= "win32" and (BUILD == "dev" or BUILD == "debug") then
 end
 
 StateInGameRunning.update = function (self, dt, t)
-	if DebugKeyHandler.key_pressed("f5", "reload_ui", "ui") then
+	if DebugKeyHandler.key_pressed("f5", "reload_ui", "ui") and self.ingame_ui then
+		local current_transition = self.ingame_ui.last_transition_name
+		local current_params = self.ingame_ui.last_transition_params
+
 		self:create_ingame_ui(self.ingame_ui_context)
+
+		local ingame_ui = self.ingame_ui
+
+		if current_transition then
+			ingame_ui:handle_transition(current_transition, current_params)
+		end
 	end
 
 	if self._waiting_for_peers_message_timer and self._waiting_for_peers_message_timer < t then
@@ -723,6 +741,14 @@ StateInGameRunning.event_close_ingame_menu = function (self)
 	end
 end
 
+StateInGameRunning.event_realtime_multiplay = function (self, active)
+	if active and (self.is_in_tutorial or self.is_in_inn) then
+		return
+	end
+
+	Managers.account:set_realtime_multiplay(active)
+end
+
 StateInGameRunning.update_ui = function (self)
 	if self._disable_ui then
 		return
@@ -817,6 +843,24 @@ StateInGameRunning.post_update = function (self, dt, t)
 			self._level_end_view_wrapper = nil
 		end
 	end
+
+	if self._game_started_current_frame then
+		if PLATFORM == "ps4" then
+			local entity_manager = Managers.state.entity
+			local cutscene_system = entity_manager:system("cutscene_system")
+			local active_camera = cutscene_system.active_camera
+
+			if not active_camera then
+				self:event_realtime_multiplay(true)
+			end
+		end
+
+		self._game_started_current_frame = false
+	end
+end
+
+StateInGameRunning.post_render = function (self)
+	self.ingame_ui:post_render()
 end
 
 StateInGameRunning.trigger_xbox_multiplayer_round_end_events = function (self)
@@ -844,10 +888,10 @@ StateInGameRunning.on_exit = function (self)
 		self._level_end_view_wrapper:destroy()
 
 		self._level_end_view_wrapper = nil
+	end
 
-		if PLATFORM == "ps4" then
-			Managers.account:set_realtime_multiplay_state("end_screen", false)
-		end
+	if PLATFORM == "ps4" then
+		Managers.account:set_realtime_multiplay(false)
 	end
 
 	self.ingame_ui:destroy()
@@ -883,6 +927,10 @@ StateInGameRunning.event_game_started = function (self)
 	end
 
 	self.end_conditions_met = false
+
+	if Managers.matchmaking:game_mode_event_data() then
+		self._is_in_event_game_mode = true
+	end
 
 	if self.is_in_inn or self.is_in_tutorial then
 		return
@@ -1045,6 +1093,8 @@ StateInGameRunning._game_actually_starts = function (self)
 			loading_context.show_profile_on_startup = nil
 		else
 			Managers.transition:fade_out(GameSettings.transition_fade_in_speed)
+
+			self._game_started_current_frame = true
 		end
 
 		LevelHelper:flow_event(self.world, "local_player_spawned")
@@ -1065,14 +1115,6 @@ StateInGameRunning._game_actually_starts = function (self)
 		Managers.transition:show_waiting_for_peers_message(false)
 
 		self._waiting_for_peers_message_timer = nil
-
-		if PLATFORM == "ps4" then
-			Managers.account:set_realtime_multiplay_state("pre_game", false)
-		end
-
-		if self.is_in_inn or self.is_in_tutorial then
-			return
-		end
 	end
 end
 

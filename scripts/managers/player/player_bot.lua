@@ -106,7 +106,7 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 	local player_health = difficulty_settings.max_hp
 	local player_wounds = difficulty_settings.wounds
 
-	if Managers.state.game_mode:has_mutator("instant_death") then
+	if Managers.state.game_mode:has_activated_mutator("instant_death") then
 		player_wounds = 1
 	end
 

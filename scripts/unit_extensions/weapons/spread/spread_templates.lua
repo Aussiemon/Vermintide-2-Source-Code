@@ -876,12 +876,12 @@ SpreadTemplates = {
 	pistol_special = {
 		continuous = {
 			still = {
-				max_yaw = 1.5,
-				max_pitch = 1.5
-			},
-			moving = {
 				max_yaw = 1,
 				max_pitch = 1
+			},
+			moving = {
+				max_yaw = 1.5,
+				max_pitch = 1.5
 			},
 			crouch_still = {
 				max_yaw = 0.5,

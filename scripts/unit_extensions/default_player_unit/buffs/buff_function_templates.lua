@@ -540,6 +540,83 @@ BuffFunctionTemplates.functions = {
 	remove_catacombs_corpse_pit = function (unit, buff, params, world)
 		return
 	end,
+	apply_moving_through_plague = function (unit, buff, params, world)
+		local difficulty_name = Managers.state.difficulty:get_difficulty()
+		local buff_template = buff.template
+		local damage = buff_template.difficulty_damage[difficulty_name]
+		buff.damage = damage
+		local breed = Unit.get_data(unit, "breed")
+		buff.armor_type = (breed and (breed.armor_category or 1)) or 4
+		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
+
+		if first_person_extension then
+			buff.plague_particle_id = first_person_extension:create_screen_particles("fx/screenspace_cemetery_plague_01")
+		end
+
+		local attacker_unit = params.attacker_unit
+
+		if Unit.alive(attacker_unit) then
+			local liquid_extension = ScriptUnit.has_extension(attacker_unit, "area_damage_system")
+
+			if liquid_extension then
+				local source_unit = liquid_extension._source_unit
+				local source_breed = ALIVE[source_unit] and Unit.get_data(source_unit, "breed")
+				buff.damage_source = (source_breed and source_breed.name) or "dot_debuff"
+			end
+		end
+
+		buff.plague_next_t = params.t + 0
+	end,
+	update_moving_through_plague = function (unit, buff, params, world)
+		local t = params.t
+		local plague_next_t = buff.plague_next_t
+		local buff_template = buff.template
+
+		if plague_next_t < t then
+			if Managers.state.network.is_server then
+				local health_extension = ScriptUnit.extension(unit, "health_system")
+
+				if health_extension:is_alive() then
+					local attacker_unit = (ALIVE[params.attacker_unit] and params.attacker_unit) or unit
+					local armor_type = buff.armor_type
+					local damage_type = buff_template.damage_type
+					local damage = buff.damage[armor_type]
+					local damage_source = buff.damage_source
+
+					DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
+				end
+			end
+
+			local fatigue_type = buff_template.fatigue_type
+			local status_extension = ScriptUnit.has_extension(unit, "status_system")
+
+			if status_extension then
+				status_extension:add_fatigue_points(fatigue_type)
+			end
+
+			local buff_extension = ScriptUnit.extension(unit, "buff_system")
+			local slowdown_buff_name = buff_template.slowdown_buff_name
+
+			if slowdown_buff_name then
+				buff_extension:add_buff(slowdown_buff_name, params)
+			end
+
+			local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
+
+			if first_person_extension then
+				first_person_extension:play_hud_sound_event("Play_player_damage_puke")
+			end
+
+			buff.plague_next_t = t + buff_template.time_between_dot_damages
+		end
+	end,
+	remove_moving_through_plague = function (unit, buff, params, world)
+		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
+
+		if first_person_extension then
+			first_person_extension:stop_spawning_screen_particles(buff.plague_particle_id)
+		end
+	end,
 	apply_ai_movement_debuff = function (unit, buff, params, world)
 		local ext = ScriptUnit.extension(unit, "ai_navigation_system")
 		local modifier = buff.template.multiplier
@@ -886,7 +963,7 @@ BuffFunctionTemplates.functions = {
 			buff.damage_source = (source_breed and source_breed.name) or "dot_debuff"
 		end
 
-		buff.warpfire_next_t = params.t + buff_template.time_between_dot_damages
+		buff.warpfire_next_t = params.t + 0.1
 	end,
 	update_moving_through_warpfire = function (unit, buff, params, world)
 		local t = params.t
@@ -916,6 +993,13 @@ BuffFunctionTemplates.functions = {
 				first_person_extension:play_hud_sound_event("Play_player_damage_puke")
 			end
 
+			local buff_extension = ScriptUnit.extension(unit, "buff_system")
+			local slowdown_buff_name = buff_template.slowdown_buff_name
+
+			if slowdown_buff_name then
+				buff_extension:add_buff(slowdown_buff_name, params)
+			end
+
 			buff.warpfire_next_t = t + buff_template.time_between_dot_damages
 		end
 	end,
@@ -925,7 +1009,7 @@ BuffFunctionTemplates.functions = {
 		local next_heal_tick = buff.next_heal_tick or 0
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 
-		if health_extension:current_health_percent() == 1 then
+		if health_extension:current_permanent_health_percent() >= 1 then
 			return
 		end
 
@@ -2410,12 +2494,11 @@ BuffFunctionTemplates.functions = {
 	end,
 	enter_sienna_unchained_activated_ability = function (unit, buff, params)
 		if Managers.state.network.is_server then
-			local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 			local go_id = Managers.state.unit_storage:go_id(unit)
 			local network_manager = Managers.state.network
 			local game = network_manager:game()
 
-			if not go_id then
+			if not go_id or not game then
 				return
 			end
 
@@ -2427,7 +2510,6 @@ BuffFunctionTemplates.functions = {
 			if projected_start_pos then
 				local liquid_template_name = "sienna_unchained_ability_patch"
 				local liquid_template_id = NetworkLookup.liquid_area_damage_templates[liquid_template_name]
-				local network_manager = Managers.state.network
 				local invalid_game_object_id = NetworkConstants.invalid_game_object_id
 
 				network_manager.network_transmit:send_rpc_server("rpc_create_liquid_damage_area", invalid_game_object_id, projected_start_pos, aim_direction, liquid_template_id)

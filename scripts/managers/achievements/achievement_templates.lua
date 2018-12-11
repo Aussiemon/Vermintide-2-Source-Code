@@ -7,291 +7,13 @@ local UnlockableLevels = rawget(_G, "UnlockableLevels")
 local DifficultySettings = rawget(_G, "DifficultySettings")
 
 require("scripts/settings/quest_settings")
+require("scripts/managers/achievements/achievement_template_helper")
 
-local function check_level_list(statistics_db, stats_id, levels_to_complete)
-	assert(type(levels_to_complete) == "table", "levels_to_complete needs to be a list of levels")
-
-	for i = 1, #levels_to_complete, 1 do
-		local level_id = levels_to_complete[i]
-		local level_stat = statistics_db:get_persistent_stat(stats_id, "completed_levels", level_id)
-
-		if not level_stat or level_stat == 0 then
-			return false
-		end
-	end
-
-	return true
-end
-
-local function check_level_list_difficulty(statistics_db, stats_id, levels_to_complete, difficulty_rank, career)
-	assert(type(levels_to_complete) == "table", "levels_to_complete needs to be a list of levels")
-
-	local difficulty_manager = Managers.state.difficulty
-
-	if not difficulty_manager then
-		return false
-	end
-
-	for i = 1, #levels_to_complete, 1 do
-		local level_id = levels_to_complete[i]
-		local difficulties = difficulty_manager:get_level_difficulties(level_id)
-		local difficulty_index = nil
-
-		if career then
-			for i, r in ipairs(difficulties) do
-				local wins = statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career, level_id, r)
-
-				if wins > 0 then
-					difficulty_index = i
-				end
-			end
-		else
-			difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, level_id)
-		end
-
-		if not difficulty_index then
-			return false
-		end
-
-		local difficulty_key = difficulties[difficulty_index]
-
-		if not difficulty_key then
-			return false
-		end
-
-		local completed_rank = DifficultySettings[difficulty_key].rank
-
-		if completed_rank < difficulty_rank then
-			return false
-		end
-	end
-
-	return true
-end
-
-local function hero_level(hero_name)
-	local experience = ExperienceSettings.get_experience(hero_name)
-
-	return ExperienceSettings.get_level(experience)
-end
-
-local rarity_index = {
-	common = 2,
-	plentiful = 1,
-	exotic = 4,
-	rare = 3,
-	unique = 5
-}
-local equipment_slots = {
-	"melee",
-	"ranged",
-	"necklace",
-	"ring",
-	"trinket"
-}
-
-local function equipped_items_of_rarity(statistics_db, stats_id, required_rarity)
-	local required_rarity_index = rarity_index[required_rarity]
-
-	assert(required_rarity_index, "Invalid rarity %s", required_rarity)
-
-	local count = 0
-
-	for _, slot in ipairs(equipment_slots) do
-		local slot_rarity = statistics_db:get_persistent_stat(stats_id, "highest_equipped_rarity", slot)
-
-		if required_rarity_index <= slot_rarity then
-			count = count + 1
-		end
-	end
-
-	return count
-end
-
-local rewards_lookup = {
-	bogenhafen_city_no_braziers_lit = "bogenhafen_chest",
-	complete_all_helmgart_levels_champion_wh_zealot = "skin_wh_zealot_crimson",
-	complete_deeds_4 = "frame_0009",
-	complete_all_helmgart_levels_veteran = "loot_chest_02_06",
-	complete_all_helmgart_levels_legend_dr_ranger = "skin_dr_ranger_black_and_gold",
-	complete_all_helmgart_levels_recruit_bw_adept = "frame_0075",
-	achievement_markus_level_3 = "knight_hat_0003",
-	fort_kill_enemies_cannonball = "loot_chest_04_06",
-	skaven_rat_ogre_1 = "level_chest",
-	skaven_poison_wind_globardier_3 = "level_chest",
-	complete_100_missions_champion_wh_captain = "witchhunter_hat_0002",
-	achievement_kerillian_level_3 = "shade_hat_0010",
-	kill_bodvarr_burblespew_recruit = "level_chest",
-	complete_all_helmgart_levels_champion_we_waywatcher = "skin_ww_waywatcher_anmyr",
-	helmgart_lord_1 = "level_chest",
-	complete_100_missions_champion_bw_adept = "adept_hat_0003",
-	complete_all_helmgart_levels_legend_es_huntsman = "skin_es_huntsman_black_and_gold",
-	ground_zero_burblespew_tornado_enemies = "loot_chest_04_06",
-	bell_destroy_bell_flee_timed = "loot_chest_04_06",
-	complete_100_missions_champion_wh_bountyhunter = "bountyhunter_hat_0003",
-	complete_all_helmgart_levels_recruit_wh_zealot = "frame_0071",
-	chaos_corruptor_sorcerer_3 = "level_chest",
-	complete_100_missions_champion_dr_ranger = "ranger_hat_0004",
-	complete_100_missions_champion_dr_slayer = "slayer_hat_0006",
-	complete_100_missions_champion_es_mercenary = "mercenary_hat_0007",
-	kill_skarrik_rasknitt_recruit = "level_chest",
-	complete_all_helmgart_levels_recruit_bw_scholar = "frame_0076",
-	chaos_corruptor_sorcerer_2 = "level_chest",
-	complete_all_helmgart_levels_champion_wh_captain = "skin_wh_captain_ostland",
-	complete_100_missions_champion_we_maidenguard = "maidenguard_hat_0010",
-	warcamp_bodvarr_charge_warriors = "loot_chest_04_06",
-	complete_all_helmgart_levels_recruit_dr_ironbreaker = "frame_0052",
-	complete_all_helmgart_levels_recruit_wh_bountyhunter = "frame_0070",
-	complete_all_helmgart_levels_champion_es_knight = "skin_es_knight_red",
-	complete_all_helmgart_levels_recruit_we_shade = "frame_0059",
-	complete_100_missions_champion_dr_ironbreaker = "ironbreaker_hat_0013",
-	complete_all_helmgart_levels_legend_bw_adept = "skin_bw_adept_black_and_gold",
-	complete_all_helmgart_levels_veteran_bw_unchained = "frame_0080",
-	complete_bogenhafen_slum_veteran = "bogenhafen_chest",
-	complete_all_helmgart_levels_veteran_dr_slayer = "frame_0056",
-	complete_all_helmgart_levels_veteran_dr_ranger = "frame_0054",
-	complete_all_helmgart_levels_all_careers_recruit = "frame_0035",
-	complete_all_helmgart_levels_veteran_es_knight = "frame_0068",
-	complete_all_helmgart_levels_veteran_es_huntsman = "frame_0067",
-	skaven_warpfire_thrower_1 = "level_chest",
-	skaven_poison_wind_globardier_1 = "level_chest",
-	bogenhafen_complete_veteran = "frame_bogenhafen_02",
-	complete_all_helmgart_levels_legend_dr_ironbreaker = "skin_dr_ironbreaker_black_and_gold",
-	complete_all_helmgart_levels_legend_wh_zealot = "skin_wh_zealot_black_and_gold",
-	complete_all_helmgart_levels_champion_wh_bountyhunter = "skin_wh_bountyhunter_yellow_and_red",
-	skaven_gutter_runner_1 = "level_chest",
-	complete_all_helmgart_levels_champion_es_mercenary = "skin_es_mercenary_ostermark",
-	complete_all_helmgart_levels_veteran_wh_captain = "frame_0072",
-	complete_all_helmgart_levels_recruit_bw_unchained = "frame_0077",
-	complete_all_helmgart_levels_recruit_we_maidenguard = "frame_0058",
-	complete_all_helmgart_levels_veteran_we_waywatcher = "frame_0060",
-	complete_all_helmgart_levels_recruit_dr_slayer = "frame_0053",
-	complete_all_helmgart_levels_legend_wh_captain = "skin_wh_captain_black_and_gold",
-	complete_all_helmgart_levels_recruit_wh_captain = "frame_0069",
-	complete_100_missions_champion_we_shade = "shade_hat_0003",
-	complete_deeds_3 = "frame_0008",
-	complete_all_helmgart_levels_veteran_we_shade = "frame_0062",
-	kill_bodvarr_burblespew_champion = "level_chest",
-	complete_all_helmgart_levels_veteran_bw_scholar = "frame_0079",
-	complete_all_helmgart_levels_recruit_we_waywatcher = "frame_0057",
-	complete_all_helmgart_levels_veteran_dr_ironbreaker = "frame_0055",
-	complete_all_helmgart_levels_veteran_wh_bountyhunter = "frame_0073",
-	complete_all_helmgart_levels_veteran_wh_zealot = "frame_0074",
-	complete_all_helmgart_levels_champion_dr_ranger = "skin_dr_ranger_karak_norn",
-	complete_all_helmgart_level_achievements = "frame_0081",
-	complete_all_helmgart_levels_champion_dr_ironbreaker = "skin_dr_ironbreaker_crimson",
-	kill_skarrik_rasknitt_veteran = "level_chest",
-	complete_all_helmgart_levels_legend_bw_scholar = "skin_bw_scholar_black_and_gold",
-	complete_all_helmgart_levels_recruit_es_huntsman = "frame_0064",
-	ussingen_no_event_barrels = "loot_chest_04_06",
-	bogenhafen_complete_champion = "frame_bogenhafen_03",
-	achievement_markus_level_2 = "huntsman_hat_0004",
-	complete_all_helmgart_levels_champion_bw_unchained = "skin_bw_unchained_ostermark",
-	chaos_vortex_sorcerer_3 = "level_chest",
-	chaos_spawn_1 = "level_chest",
-	chaos_troll_2 = "level_chest",
-	complete_all_helmgart_levels_legend_es_mercenary = "skin_es_mercenary_black_and_gold",
-	skaven_rat_ogre_2 = "level_chest",
-	skaven_stormfiend_2 = "level_chest",
-	complete_all_helmgart_levels_veteran_bw_adept = "frame_0078",
-	complete_all_helmgart_levels_veteran_es_mercenary = "frame_0066",
-	skaven_stronghold_skarrik_kill_skaven = "loot_chest_04_06",
-	complete_100_missions_champion_bw_unchained = "unchained_hat_0004",
-	kill_helmgart_lords_within_time = "level_chest",
-	complete_100_missions_champion_wh_zealot = "zealot_hat_0003",
-	chaos_corruptor_sorcerer_1 = "level_chest",
-	complete_bogenhafen_slum_recruit = "bogenhafen_chest",
-	complete_all_helmgart_levels_champion_dr_slayer = "skin_dr_slayer_runes",
-	complete_all_helmgart_levels_all_careers_veteran = "frame_0036",
-	complete_bogenhafen_slum_champion = "bogenhafen_chest",
-	achievement_kerillian_level_1 = "waywatcher_hat_0006",
-	complete_bogenhafen_city_recruit = "bogenhafen_chest",
-	complete_bogenhafen_city_veteran = "bogenhafen_chest",
-	military_kill_chaos_warriors_in_event = "loot_chest_04_06",
-	complete_all_helmgart_levels_veteran_we_maidenguard = "frame_0061",
-	complete_bogenhafen_city_champion = "bogenhafen_chest",
-	complete_bogenhafen_city_legend = "bogenhafen_chest",
-	complete_all_helmgart_levels_legend = "loot_chest_04_06",
-	bogenhafen_slum_no_windows_broken = "bogenhafen_chest",
-	bogenhafen_slum_find_hidden_stash = "bogenhafen_chest",
-	skaven_stormfiend_1 = "level_chest",
-	bogenhafen_city_fast_switches = "bogenhafen_chest",
-	complete_100_missions_champion_es_knight = "knight_hat_0005",
-	skaven_gutter_runner_3 = "level_chest",
-	bogenhafen_city_all_wine_collected = "bogenhafen_chest",
-	bogenhafen_city_torch_not_picked_up = "bogenhafen_chest",
-	achievement_bardin_level_1 = "ranger_hat_0003",
-	complete_all_helmgart_levels_legend_we_maidenguard = "skin_ww_maidenguard_black_and_gold",
-	achievement_bardin_level_3 = "slayer_hat_0007",
-	achievement_markus_level_1 = "mercenary_hat_0006",
-	mines_kill_final_troll_timed = "loot_chest_04_06",
-	complete_all_helmgart_levels_legend_wh_bountyhunter = "skin_wh_bountyhunter_black_and_gold",
-	bogenhafen_complete_recruit = "frame_bogenhafen_01",
-	complete_all_helmgart_levels_champion_we_maidenguard = "skin_ww_maidenguard_red_and_yellow",
-	complete_all_helmgart_levels_champion = "loot_chest_03_06",
-	complete_100_missions_champion_we_waywatcher = "waywatcher_hat_0002",
-	complete_all_helmgart_levels_recruit_es_mercenary = "frame_0063",
-	complete_all_helmgart_levels_legend_we_waywatcher = "skin_ww_waywatcher_black_and_gold",
-	complete_all_helmgart_levels_champion_es_huntsman = "skin_es_huntsman_ostermark",
-	complete_bogenhafen_slum_legend = "bogenhafen_chest",
-	equip_all_veteran_quality = "level_chest",
-	skaven_ratling_gunner_2 = "level_chest",
-	achievement_kerillian_level_2 = "maidenguard_hat_0005",
-	complete_deeds_7 = "frame_0012",
-	achievement_sienna_level_1 = "adept_hat_0002",
-	skaven_poison_wind_globardier_2 = "level_chest",
-	catacombs_stay_inside_ritual_pool = "loot_chest_04_06",
-	achievement_sienna_level_3 = "unchained_hat_0008",
-	achievement_victor_level_1 = "witchhunter_hat_0003",
-	achievement_victor_level_2 = "bountyhunter_hat_0002",
-	complete_100_missions_champion_bw_scholar = "scholar_hat_0005",
-	achievement_victor_level_3 = "zealot_hat_0009",
-	complete_all_helmgart_levels_champion_bw_scholar = "skin_bw_scholar_ostermark",
-	complete_deeds_8 = "frame_0013",
-	skittergate_deathrattler_rasknitt_timed = "loot_chest_04_06",
-	skaven_pack_master_2 = "level_chest",
-	complete_all_helmgart_levels_legend_es_knight = "skin_es_knight_black_and_gold",
-	skaven_pack_master_1 = "level_chest",
-	nurgle_player_showered_in_pus = "loot_chest_04_06",
-	chaos_spawn_2 = "level_chest",
-	bogenhafen_city_jumping_puzzle = "bogenhafen_chest",
-	kill_bodvarr_burblespew_legend = "level_chest",
-	complete_all_helmgart_levels_all_careers_champion = "frame_0037",
-	skaven_pack_master_3 = "level_chest",
-	achievement_sienna_level_2 = "scholar_hat_0004",
-	kill_skarrik_rasknitt_champion = "level_chest",
-	skaven_ratling_gunner_3 = "level_chest",
-	chaos_troll_1 = "level_chest",
-	complete_all_helmgart_levels_recruit = "loot_chest_01_06",
-	complete_all_helmgart_levels_recruit_es_knight = "frame_0065",
-	chaos_vortex_sorcerer_1 = "level_chest",
-	complete_all_helmgart_levels_legend_bw_unchained = "skin_bw_unchained_black_and_gold",
-	complete_all_helmgart_levels_all_careers_legend = "frame_0038",
-	farmlands_rescue_prisoners_timed = "loot_chest_04_06",
-	elven_ruins_align_leylines_timed = "loot_chest_04_06",
-	bogenhafen_slum_no_ratling_damage = "bogenhafen_chest",
-	complete_all_helmgart_levels_legend_we_shade = "skin_ww_shade_black_and_gold",
-	complete_deeds_6 = "frame_0011",
-	bogenhafen_complete_legend = "frame_bogenhafen_04",
-	complete_all_helmgart_levels_legend_dr_slayer = "skin_dr_slayer_dragon",
-	complete_all_helmgart_levels_champion_we_shade = "skin_ww_shade_crimson",
-	complete_deeds_5 = "frame_0010",
-	kill_skarrik_rasknitt_legend = "level_chest",
-	kill_bodvarr_burblespew_veteran = "level_chest",
-	chaos_vortex_sorcerer_2 = "level_chest",
-	skaven_ratling_gunner_1 = "level_chest",
-	skaven_warpfire_thrower_2 = "level_chest",
-	complete_100_missions_champion_es_huntsman = "huntsman_hat_0009",
-	complete_deeds_2 = "frame_0007",
-	achievement_bardin_level_2 = "ironbreaker_hat_0007",
-	bogenhafen_slum_jumping_puzzle = "bogenhafen_chest",
-	bogenhafen_slum_event_speedrun = "bogenhafen_chest",
-	complete_deeds_1 = "frame_0006",
-	skaven_gutter_runner_2 = "level_chest",
-	complete_all_helmgart_levels_recruit_dr_ranger = "frame_0051",
-	skaven_warpfire_thrower_3 = "level_chest",
-	complete_all_helmgart_levels_champion_bw_adept = "skin_bw_adept_ostermark"
-}
+local check_level_list = AchievementTemplateHelper.check_level_list
+local check_level_list_difficulty = AchievementTemplateHelper.check_level_list_difficulty
+local hero_level = AchievementTemplateHelper.hero_level
+local equipped_items_of_rarity = AchievementTemplateHelper.equipped_items_of_rarity
+local rarity_index = AchievementTemplateHelper.rarity_index
 AchievementTemplates.end_of_level_achievement_evaluations = {
 	no_ratling_damage = {
 		stat_to_increment = "bogenhafen_slum_no_ratling_damage",
@@ -313,7 +35,6 @@ AchievementTemplates.achievements = {
 		ID_PS4 = "001",
 		ID_STEAM = "complete_tutorial",
 		icon = "achievement_trophy_01",
-		reward = "level_chest",
 		desc = "achv_complete_tutorial_desc",
 		completed = function (statistics_db, stats_id)
 			return check_level_list(statistics_db, stats_id, {
@@ -324,7 +45,6 @@ AchievementTemplates.achievements = {
 	complete_act_one = {
 		ID_XB1 = 3,
 		name = "achv_complete_act_one_name",
-		reward = "level_chest",
 		desc = "achv_complete_act_one_desc",
 		ID_STEAM = "complete_act_one",
 		ID_PS4 = "002",
@@ -399,7 +119,6 @@ AchievementTemplates.achievements = {
 		end
 	},
 	complete_act_one_veteran = {
-		reward = "level_chest",
 		name = "achv_complete_act_one_veteran_name",
 		icon = "icons_placeholder",
 		desc = "achv_complete_act_one_veteran_desc",
@@ -502,9 +221,8 @@ AchievementTemplates.achievements = {
 		end
 	},
 	complete_bogenhafen_slum_recruit = {
-		reward = "bogenhafen_chest",
-		name = "achv_bogenhafen_slum_recruit_name",
 		required_dlc = "bogenhafen",
+		name = "achv_bogenhafen_slum_recruit_name",
 		icon = "achievement_trophy_bogenhafen_slum_recruit",
 		desc = "achv_bogenhafen_slum_recruit_desc",
 		completed = function (statistics_db, stats_id)
@@ -521,9 +239,8 @@ AchievementTemplates.achievements = {
 		end
 	},
 	complete_bogenhafen_slum_veteran = {
-		reward = "bogenhafen_chest",
-		name = "achv_bogenhafen_slum_veteran_name",
 		required_dlc = "bogenhafen",
+		name = "achv_bogenhafen_slum_veteran_name",
 		icon = "achievement_trophy_bogenhafen_slum_veteran",
 		desc = "achv_bogenhafen_slum_veteran_desc",
 		completed = function (statistics_db, stats_id)
@@ -540,9 +257,8 @@ AchievementTemplates.achievements = {
 		end
 	},
 	complete_bogenhafen_slum_champion = {
-		reward = "bogenhafen_chest",
-		name = "achv_bogenhafen_slum_champion_name",
 		required_dlc = "bogenhafen",
+		name = "achv_bogenhafen_slum_champion_name",
 		icon = "achievement_trophy_bogenhafen_slum_champion",
 		desc = "achv_bogenhafen_slum_champion_desc",
 		completed = function (statistics_db, stats_id)
@@ -559,9 +275,8 @@ AchievementTemplates.achievements = {
 		end
 	},
 	complete_bogenhafen_slum_legend = {
-		reward = "bogenhafen_chest",
-		name = "achv_bogenhafen_slum_legend_name",
 		required_dlc = "bogenhafen",
+		name = "achv_bogenhafen_slum_legend_name",
 		icon = "achievement_trophy_bogenhafen_slum_legend",
 		desc = "achv_bogenhafen_slum_legend_desc",
 		completed = function (statistics_db, stats_id)
@@ -578,9 +293,8 @@ AchievementTemplates.achievements = {
 		end
 	},
 	complete_bogenhafen_city_recruit = {
-		reward = "bogenhafen_chest",
-		name = "achv_bogenhafen_city_recruit_name",
 		required_dlc = "bogenhafen",
+		name = "achv_bogenhafen_city_recruit_name",
 		icon = "achievement_trophy_bogenhafen_city_recruit",
 		desc = "achv_bogenhafen_city_recruit_desc",
 		completed = function (statistics_db, stats_id)
@@ -597,9 +311,8 @@ AchievementTemplates.achievements = {
 		end
 	},
 	complete_bogenhafen_city_veteran = {
-		reward = "bogenhafen_chest",
-		name = "achv_bogenhafen_city_veteran_name",
 		required_dlc = "bogenhafen",
+		name = "achv_bogenhafen_city_veteran_name",
 		icon = "achievement_trophy_bogenhafen_city_veteran",
 		desc = "achv_bogenhafen_city_veteran_desc",
 		completed = function (statistics_db, stats_id)
@@ -616,9 +329,8 @@ AchievementTemplates.achievements = {
 		end
 	},
 	complete_bogenhafen_city_champion = {
-		reward = "bogenhafen_chest",
-		name = "achv_bogenhafen_city_champion_name",
 		required_dlc = "bogenhafen",
+		name = "achv_bogenhafen_city_champion_name",
 		icon = "achievement_trophy_bogenhafen_city_champion",
 		desc = "achv_bogenhafen_city_champion_desc",
 		completed = function (statistics_db, stats_id)
@@ -635,9 +347,8 @@ AchievementTemplates.achievements = {
 		end
 	},
 	complete_bogenhafen_city_legend = {
-		reward = "bogenhafen_chest",
-		name = "achv_bogenhafen_city_legend_name",
 		required_dlc = "bogenhafen",
+		name = "achv_bogenhafen_city_legend_name",
 		icon = "achievement_trophy_bogenhafen_city_legend",
 		desc = "achv_bogenhafen_city_legend_desc",
 		completed = function (statistics_db, stats_id)
@@ -656,8 +367,8 @@ AchievementTemplates.achievements = {
 	complete_bogenhafen_recruit = {
 		ID_XB1 = 52,
 		name = "achv_bogenhafen_complete_recruit_name",
-		reward = "frame_bogenhafen_01",
 		desc = "achv_bogenhafen_complete_recruit_desc",
+		ID_PS4 = "051",
 		icon = "achievement_trophy_bogenhafen_complete_recruit",
 		required_dlc = "bogenhafen",
 		completed = function (statistics_db, stats_id)
@@ -723,8 +434,8 @@ AchievementTemplates.achievements = {
 	complete_bogenhafen_veteran = {
 		ID_XB1 = 53,
 		name = "achv_bogenhafen_complete_veteran_name",
-		reward = "frame_bogenhafen_02",
 		desc = "achv_bogenhafen_complete_veteran_desc",
+		ID_PS4 = "052",
 		icon = "achievement_trophy_bogenhafen_complete_veteran",
 		required_dlc = "bogenhafen",
 		completed = function (statistics_db, stats_id)
@@ -790,8 +501,8 @@ AchievementTemplates.achievements = {
 	complete_bogenhafen_champion = {
 		ID_XB1 = 54,
 		name = "achv_bogenhafen_complete_champion_name",
-		reward = "frame_bogenhafen_03",
 		desc = "achv_bogenhafen_complete_champion_desc",
+		ID_PS4 = "053",
 		icon = "achievement_trophy_bogenhafen_complete_champion",
 		required_dlc = "bogenhafen",
 		completed = function (statistics_db, stats_id)
@@ -857,8 +568,8 @@ AchievementTemplates.achievements = {
 	complete_bogenhafen_legend = {
 		ID_XB1 = 55,
 		name = "achv_bogenhafen_complete_legend_name",
-		reward = "frame_bogenhafen_04",
 		desc = "achv_bogenhafen_complete_legend_desc",
+		ID_PS4 = "054",
 		icon = "achievement_trophy_bogenhafen_complete_legend",
 		required_dlc = "bogenhafen",
 		completed = function (statistics_db, stats_id)
@@ -922,7 +633,6 @@ AchievementTemplates.achievements = {
 		end
 	},
 	complete_act_one_champion = {
-		reward = "level_chest",
 		name = "achv_complete_act_one_champion_name",
 		icon = "icons_placeholder",
 		desc = "achv_complete_act_one_champion_desc",
@@ -1025,7 +735,6 @@ AchievementTemplates.achievements = {
 		end
 	},
 	complete_act_one_legend = {
-		reward = "level_chest",
 		name = "achv_complete_act_one_legend_name",
 		icon = "icons_placeholder",
 		desc = "achv_complete_act_one_legend_desc",
@@ -1130,7 +839,6 @@ AchievementTemplates.achievements = {
 	complete_act_two = {
 		ID_XB1 = 4,
 		name = "achv_complete_act_two_name",
-		reward = "level_chest",
 		desc = "achv_complete_act_two_desc",
 		ID_STEAM = "complete_act_two",
 		ID_PS4 = "003",
@@ -1205,7 +913,6 @@ AchievementTemplates.achievements = {
 		end
 	},
 	complete_act_two_veteran = {
-		reward = "level_chest",
 		name = "achv_complete_act_two_veteran_name",
 		icon = "icons_placeholder",
 		desc = "achv_complete_act_two_veteran_desc",
@@ -1308,7 +1015,6 @@ AchievementTemplates.achievements = {
 		end
 	},
 	complete_act_two_champion = {
-		reward = "level_chest",
 		name = "achv_complete_act_two_champion_name",
 		icon = "icons_placeholder",
 		desc = "achv_complete_act_two_champion_desc",
@@ -1411,7 +1117,6 @@ AchievementTemplates.achievements = {
 		end
 	},
 	complete_act_two_legend = {
-		reward = "level_chest",
 		name = "achv_complete_act_two_legend_name",
 		icon = "icons_placeholder",
 		desc = "achv_complete_act_two_legend_desc",
@@ -1516,7 +1221,6 @@ AchievementTemplates.achievements = {
 	complete_act_three = {
 		ID_XB1 = 5,
 		name = "achv_complete_act_three_name",
-		reward = "level_chest",
 		desc = "achv_complete_act_three_desc",
 		ID_STEAM = "complete_act_three",
 		ID_PS4 = "004",
@@ -1591,7 +1295,6 @@ AchievementTemplates.achievements = {
 		end
 	},
 	complete_act_three_veteran = {
-		reward = "level_chest",
 		name = "achv_complete_act_three_veteran_name",
 		icon = "icons_placeholder",
 		desc = "achv_complete_act_three_veteran_desc",
@@ -1694,7 +1397,6 @@ AchievementTemplates.achievements = {
 		end
 	},
 	complete_act_three_champion = {
-		reward = "level_chest",
 		name = "achv_complete_act_three_champion_name",
 		icon = "icons_placeholder",
 		desc = "achv_complete_act_three_champion_desc",
@@ -1797,7 +1499,6 @@ AchievementTemplates.achievements = {
 		end
 	},
 	complete_act_three_legend = {
-		reward = "level_chest",
 		name = "achv_complete_act_three_legend_name",
 		icon = "icons_placeholder",
 		desc = "achv_complete_act_three_legend_desc",
@@ -1905,7 +1606,6 @@ AchievementTemplates.achievements = {
 		ID_PS4 = "005",
 		ID_STEAM = "complete_skittergate_recruit",
 		icon = "achievement_trophy_05",
-		reward = "level_chest",
 		desc = "achv_complete_skittergate_normal_desc",
 		completed = function (statistics_db, stats_id)
 			local diff = DifficultySettings.normal.rank
@@ -1921,7 +1621,6 @@ AchievementTemplates.achievements = {
 		ID_PS4 = "006",
 		ID_STEAM = "complete_skittergate_veteran",
 		icon = "achievement_trophy_06",
-		reward = "level_chest",
 		desc = "achv_complete_skittergate_hard_desc",
 		completed = function (statistics_db, stats_id)
 			local diff = DifficultySettings.hard.rank
@@ -1937,7 +1636,6 @@ AchievementTemplates.achievements = {
 		ID_PS4 = "007",
 		ID_STEAM = "complete_skittergate_champion",
 		icon = "achievement_trophy_07",
-		reward = "level_chest",
 		desc = "achv_complete_skittergate_nightmare_desc",
 		completed = function (statistics_db, stats_id)
 			local diff = DifficultySettings.harder.rank
@@ -1953,7 +1651,6 @@ AchievementTemplates.achievements = {
 		ID_PS4 = "008",
 		ID_STEAM = "complete_skittergate_legend",
 		icon = "achievement_trophy_08",
-		reward = "level_chest",
 		desc = "achv_complete_skittergate_cataclysm_desc",
 		completed = function (statistics_db, stats_id)
 			local diff = DifficultySettings.hardest.rank
@@ -1964,10 +1661,9 @@ AchievementTemplates.achievements = {
 		end
 	},
 	bogenhafen_complete_recruit = {
-		reward = "frame_bogenhafen_01",
+		required_dlc = "bogenhafen",
 		name = "achv_bogenhafen_complete_recruit_name",
 		icon = "icons_placeholder",
-		required_dlc = "bogenhafen",
 		desc = "achv_bogenhafen_complete_recruit_desc",
 		completed = function (statistics_db, stats_id)
 			local count = 0
@@ -2030,10 +1726,9 @@ AchievementTemplates.achievements = {
 		end
 	},
 	bogenhafen_complete_veteran = {
-		reward = "frame_bogenhafen_02",
+		required_dlc = "bogenhafen",
 		name = "achv_bogenhafen_complete_veteran_name",
 		icon = "icons_placeholder",
-		required_dlc = "bogenhafen",
 		desc = "achv_bogenhafen_complete_veteran_desc",
 		completed = function (statistics_db, stats_id)
 			local count = 0
@@ -2096,10 +1791,9 @@ AchievementTemplates.achievements = {
 		end
 	},
 	bogenhafen_complete_champion = {
-		reward = "frame_bogenhafen_03",
+		required_dlc = "bogenhafen",
 		name = "achv_bogenhafen_complete_champion_name",
 		icon = "icons_placeholder",
-		required_dlc = "bogenhafen",
 		desc = "achv_bogenhafen_complete_champion_desc",
 		completed = function (statistics_db, stats_id)
 			local count = 0
@@ -2162,10 +1856,9 @@ AchievementTemplates.achievements = {
 		end
 	},
 	bogenhafen_complete_legend = {
-		reward = "frame_bogenhafen_04",
+		required_dlc = "bogenhafen",
 		name = "achv_bogenhafen_complete_legend_name",
 		icon = "icons_placeholder",
-		required_dlc = "bogenhafen",
 		desc = "achv_bogenhafen_complete_legend_desc",
 		completed = function (statistics_db, stats_id)
 			local count = 0
@@ -2231,7 +1924,7 @@ AchievementTemplates.achievements = {
 		ID_XB1 = 56,
 		name = "achv_bogenhafen_city_no_braziers_lit_name",
 		required_dlc = "bogenhafen",
-		reward = "bogenhafen_chest",
+		ID_PS4 = "055",
 		icon = "achievement_trophy_bogenhafen_city_no_braziers_lit",
 		desc = "achv_bogenhafen_city_no_braziers_lit_desc",
 		completed = function (statistics_db, stats_id)
@@ -2239,9 +1932,8 @@ AchievementTemplates.achievements = {
 		end
 	},
 	bogenhafen_city_torch_not_picked_up = {
-		reward = "bogenhafen_chest",
-		name = "achv_bogenhafen_city_torch_not_picked_up_name",
 		required_dlc = "bogenhafen",
+		name = "achv_bogenhafen_city_torch_not_picked_up_name",
 		icon = "achievement_trophy_bogenhafen_city_torch_not_picked_up",
 		desc = "achv_bogenhafen_city_torch_not_picked_up_desc",
 		completed = function (statistics_db, stats_id)
@@ -2252,7 +1944,7 @@ AchievementTemplates.achievements = {
 		ID_XB1 = 57,
 		name = "achv_bogenhafen_city_fast_switches_name",
 		required_dlc = "bogenhafen",
-		reward = "bogenhafen_chest",
+		ID_PS4 = "056",
 		icon = "achievement_trophy_bogenhafen_city_fast_switches",
 		desc = "achv_bogenhafen_city_fast_switches_desc",
 		completed = function (statistics_db, stats_id)
@@ -2263,7 +1955,7 @@ AchievementTemplates.achievements = {
 		ID_XB1 = 58,
 		name = "achv_bogenhafen_city_all_wine_collected_name",
 		required_dlc = "bogenhafen",
-		reward = "bogenhafen_chest",
+		ID_PS4 = "057",
 		icon = "achievement_trophy_bogenhafen_city_all_wine_collected",
 		desc = "achv_bogenhafen_city_all_wine_collected_desc",
 		completed = function (statistics_db, stats_id)
@@ -2271,9 +1963,8 @@ AchievementTemplates.achievements = {
 		end
 	},
 	bogenhafen_city_jumping_puzzle = {
-		reward = "bogenhafen_chest",
-		name = "achv_bogenhafen_city_jumping_puzzle_name",
 		required_dlc = "bogenhafen",
+		name = "achv_bogenhafen_city_jumping_puzzle_name",
 		icon = "achievement_trophy_bogenhafen_city_jumping_puzzle",
 		desc = "achv_bogenhafen_city_jumping_puzzle_desc",
 		completed = function (statistics_db, stats_id)
@@ -2284,7 +1975,7 @@ AchievementTemplates.achievements = {
 		ID_XB1 = 59,
 		name = "achv_bogenhafen_slum_no_ratling_damage_name",
 		required_dlc = "bogenhafen",
-		reward = "bogenhafen_chest",
+		ID_PS4 = "058",
 		icon = "achievement_trophy_bogenhafen_slum_no_ratling_damage",
 		desc = "achv_bogenhafen_slum_no_ratling_damage_desc",
 		completed = function (statistics_db, stats_id)
@@ -2292,9 +1983,8 @@ AchievementTemplates.achievements = {
 		end
 	},
 	bogenhafen_slum_no_windows_broken = {
-		reward = "bogenhafen_chest",
-		name = "achv_bogenhafen_slum_no_windows_broken_name",
 		required_dlc = "bogenhafen",
+		name = "achv_bogenhafen_slum_no_windows_broken_name",
 		icon = "achievement_trophy_bogenhafen_slum_no_windows_broken",
 		desc = "achv_bogenhafen_slum_no_windows_broken_desc",
 		completed = function (statistics_db, stats_id)
@@ -2305,7 +1995,7 @@ AchievementTemplates.achievements = {
 		ID_XB1 = 60,
 		name = "achv_bogenhafen_slum_find_hidden_stash_name",
 		required_dlc = "bogenhafen",
-		reward = "bogenhafen_chest",
+		ID_PS4 = "059",
 		icon = "achievement_trophy_bogenhafen_slum_find_hidden_stash",
 		desc = "achv_bogenhafen_slum_find_hidden_stash_desc",
 		completed = function (statistics_db, stats_id)
@@ -2313,9 +2003,8 @@ AchievementTemplates.achievements = {
 		end
 	},
 	bogenhafen_slum_jumping_puzzle = {
-		reward = "bogenhafen_chest",
-		name = "achv_bogenhafen_slum_jumping_puzzle_name",
 		required_dlc = "bogenhafen",
+		name = "achv_bogenhafen_slum_jumping_puzzle_name",
 		icon = "achievement_trophy_bogenhafen_slum_jumping_puzzle",
 		desc = "achv_bogenhafen_slum_jumping_puzzle_desc",
 		completed = function (statistics_db, stats_id)
@@ -2326,7 +2015,7 @@ AchievementTemplates.achievements = {
 		ID_XB1 = 61,
 		name = "achv_bogenhafen_slum_event_speedrun_name",
 		required_dlc = "bogenhafen",
-		reward = "bogenhafen_chest",
+		ID_PS4 = "060",
 		icon = "achievement_trophy_bogenhafen_slum_event_speedrun",
 		desc = "achv_bogenhafen_slum_event_speedrun_desc",
 		completed = function (statistics_db, stats_id)
@@ -2395,7 +2084,6 @@ AchievementTemplates.achievements.completed_all_levels = {
 	end
 }
 AchievementTemplates.achievements.achievement_bardin_level_1 = {
-	reward = "ranger_hat_0003",
 	name = "achv_achievement_bardin_level_1_name",
 	icon = "achievement_trophy_bardin_level_1",
 	desc = "achv_achievement_bardin_level_1_desc",
@@ -2416,7 +2104,6 @@ AchievementTemplates.achievements.achievement_bardin_level_1 = {
 	end
 }
 AchievementTemplates.achievements.achievement_bardin_level_2 = {
-	reward = "ironbreaker_hat_0007",
 	name = "achv_achievement_bardin_level_2_name",
 	icon = "achievement_trophy_bardin_level_2",
 	desc = "achv_achievement_bardin_level_2_desc",
@@ -2437,7 +2124,6 @@ AchievementTemplates.achievements.achievement_bardin_level_2 = {
 	end
 }
 AchievementTemplates.achievements.achievement_bardin_level_3 = {
-	reward = "slayer_hat_0007",
 	name = "achv_achievement_bardin_level_3_name",
 	icon = "achievement_trophy_bardin_level_3",
 	desc = "achv_achievement_bardin_level_3_desc",
@@ -2458,7 +2144,6 @@ AchievementTemplates.achievements.achievement_bardin_level_3 = {
 	end
 }
 AchievementTemplates.achievements.achievement_markus_level_1 = {
-	reward = "mercenary_hat_0006",
 	name = "achv_achievement_markus_level_1_name",
 	icon = "achievement_trophy_markus_level_1",
 	desc = "achv_achievement_markus_level_1_desc",
@@ -2479,7 +2164,6 @@ AchievementTemplates.achievements.achievement_markus_level_1 = {
 	end
 }
 AchievementTemplates.achievements.achievement_markus_level_2 = {
-	reward = "huntsman_hat_0004",
 	name = "achv_achievement_markus_level_2_name",
 	icon = "achievement_trophy_markus_level_2",
 	desc = "achv_achievement_markus_level_2_desc",
@@ -2500,7 +2184,6 @@ AchievementTemplates.achievements.achievement_markus_level_2 = {
 	end
 }
 AchievementTemplates.achievements.achievement_markus_level_3 = {
-	reward = "knight_hat_0003",
 	name = "achv_achievement_markus_level_3_name",
 	icon = "achievement_trophy_markus_level_3",
 	desc = "achv_achievement_markus_level_3_desc",
@@ -2521,7 +2204,6 @@ AchievementTemplates.achievements.achievement_markus_level_3 = {
 	end
 }
 AchievementTemplates.achievements.achievement_kerillian_level_1 = {
-	reward = "waywatcher_hat_0006",
 	name = "achv_achievement_kerillian_level_1_name",
 	icon = "achievement_trophy_kerillian_level_1",
 	desc = "achv_achievement_kerillian_level_1_desc",
@@ -2542,7 +2224,6 @@ AchievementTemplates.achievements.achievement_kerillian_level_1 = {
 	end
 }
 AchievementTemplates.achievements.achievement_kerillian_level_2 = {
-	reward = "maidenguard_hat_0005",
 	name = "achv_achievement_kerillian_level_2_name",
 	icon = "achievement_trophy_kerillian_level_2",
 	desc = "achv_achievement_kerillian_level_2_desc",
@@ -2563,7 +2244,6 @@ AchievementTemplates.achievements.achievement_kerillian_level_2 = {
 	end
 }
 AchievementTemplates.achievements.achievement_kerillian_level_3 = {
-	reward = "shade_hat_0010",
 	name = "achv_achievement_kerillian_level_3_name",
 	icon = "achievement_trophy_kerillian_level_3",
 	desc = "achv_achievement_kerillian_level_3_desc",
@@ -2584,7 +2264,6 @@ AchievementTemplates.achievements.achievement_kerillian_level_3 = {
 	end
 }
 AchievementTemplates.achievements.achievement_sienna_level_1 = {
-	reward = "adept_hat_0002",
 	name = "achv_achievement_sienna_level_1_name",
 	icon = "achievement_trophy_sienna_level_1",
 	desc = "achv_achievement_sienna_level_1_desc",
@@ -2605,7 +2284,6 @@ AchievementTemplates.achievements.achievement_sienna_level_1 = {
 	end
 }
 AchievementTemplates.achievements.achievement_sienna_level_2 = {
-	reward = "scholar_hat_0004",
 	name = "achv_achievement_sienna_level_2_name",
 	icon = "achievement_trophy_sienna_level_2",
 	desc = "achv_achievement_sienna_level_2_desc",
@@ -2626,7 +2304,6 @@ AchievementTemplates.achievements.achievement_sienna_level_2 = {
 	end
 }
 AchievementTemplates.achievements.achievement_sienna_level_3 = {
-	reward = "unchained_hat_0008",
 	name = "achv_achievement_sienna_level_3_name",
 	icon = "achievement_trophy_sienna_level_3",
 	desc = "achv_achievement_sienna_level_3_desc",
@@ -2647,7 +2324,6 @@ AchievementTemplates.achievements.achievement_sienna_level_3 = {
 	end
 }
 AchievementTemplates.achievements.achievement_victor_level_1 = {
-	reward = "witchhunter_hat_0003",
 	name = "achv_achievement_victor_level_1_name",
 	icon = "achievement_trophy_victor_level_1",
 	desc = "achv_achievement_victor_level_1_desc",
@@ -2668,7 +2344,6 @@ AchievementTemplates.achievements.achievement_victor_level_1 = {
 	end
 }
 AchievementTemplates.achievements.achievement_victor_level_2 = {
-	reward = "bountyhunter_hat_0002",
 	name = "achv_achievement_victor_level_2_name",
 	icon = "achievement_trophy_victor_level_2",
 	desc = "achv_achievement_victor_level_2_desc",
@@ -2689,7 +2364,6 @@ AchievementTemplates.achievements.achievement_victor_level_2 = {
 	end
 }
 AchievementTemplates.achievements.achievement_victor_level_3 = {
-	reward = "zealot_hat_0009",
 	name = "achv_achievement_victor_level_3_name",
 	icon = "achievement_trophy_victor_level_3",
 	desc = "achv_achievement_victor_level_3_desc",
@@ -2712,11 +2386,10 @@ AchievementTemplates.achievements.achievement_victor_level_3 = {
 AchievementTemplates.achievements.level_thirty_wood_elf = {
 	ID_XB1 = 10,
 	name = "achv_level_thirty_wood_elf_name",
-	reward = "level_chest",
-	desc = "achv_level_thirty_wood_elf_desc",
-	ID_STEAM = "level_thirty_wood_elf",
 	ID_PS4 = "009",
 	icon = "achievement_trophy_09",
+	ID_STEAM = "level_thirty_wood_elf",
+	desc = "achv_level_thirty_wood_elf_desc",
 	completed = function (statistics_db, stats_id)
 		return hero_level("wood_elf") >= 30
 	end,
@@ -2736,11 +2409,10 @@ AchievementTemplates.achievements.level_thirty_wood_elf = {
 AchievementTemplates.achievements.level_thirty_witch_hunter = {
 	ID_XB1 = 11,
 	name = "achv_level_thirty_witch_hunter_name",
-	reward = "level_chest",
-	desc = "achv_level_thirty_witch_hunter_desc",
-	ID_STEAM = "level_thirty_witch_hunter",
 	ID_PS4 = "010",
 	icon = "achievement_trophy_10",
+	ID_STEAM = "level_thirty_witch_hunter",
+	desc = "achv_level_thirty_witch_hunter_desc",
 	completed = function (statistics_db, stats_id)
 		return hero_level("witch_hunter") >= 30
 	end,
@@ -2760,11 +2432,10 @@ AchievementTemplates.achievements.level_thirty_witch_hunter = {
 AchievementTemplates.achievements.level_thirty_empire_soldier = {
 	ID_XB1 = 12,
 	name = "achv_level_thirty_empire_soldier_name",
-	reward = "level_chest",
-	desc = "achv_level_thirty_empire_soldier_desc",
-	ID_STEAM = "level_thirty_empire_soldier",
 	ID_PS4 = "011",
 	icon = "achievement_trophy_11",
+	ID_STEAM = "level_thirty_empire_soldier",
+	desc = "achv_level_thirty_empire_soldier_desc",
 	completed = function (statistics_db, stats_id)
 		return hero_level("empire_soldier") >= 30
 	end,
@@ -2784,11 +2455,10 @@ AchievementTemplates.achievements.level_thirty_empire_soldier = {
 AchievementTemplates.achievements.level_thirty_bright_wizard = {
 	ID_XB1 = 13,
 	name = "achv_level_thirty_bright_wizard_name",
-	reward = "level_chest",
-	desc = "achv_level_thirty_bright_wizard_desc",
-	ID_STEAM = "level_thirty_bright_wizard",
 	ID_PS4 = "012",
 	icon = "achievement_trophy_12",
+	ID_STEAM = "level_thirty_bright_wizard",
+	desc = "achv_level_thirty_bright_wizard_desc",
 	completed = function (statistics_db, stats_id)
 		return hero_level("bright_wizard") >= 30
 	end,
@@ -2808,11 +2478,10 @@ AchievementTemplates.achievements.level_thirty_bright_wizard = {
 AchievementTemplates.achievements.level_thirty_dwarf_ranger = {
 	ID_XB1 = 14,
 	name = "achv_level_thirty_dwarf_ranger_name",
-	reward = "level_chest",
-	desc = "achv_level_thirty_dwarf_ranger_desc",
-	ID_STEAM = "level_thirty_dwarf_ranger",
 	ID_PS4 = "013",
 	icon = "achievement_trophy_13",
+	ID_STEAM = "level_thirty_dwarf_ranger",
+	desc = "achv_level_thirty_dwarf_ranger_desc",
 	completed = function (statistics_db, stats_id)
 		return hero_level("dwarf_ranger") >= 30
 	end,
@@ -2832,7 +2501,6 @@ AchievementTemplates.achievements.level_thirty_dwarf_ranger = {
 AchievementTemplates.achievements.level_thirty_all = {
 	ID_XB1 = 15,
 	name = "achv_level_thirty_all_name",
-	reward = "level_chest",
 	desc = "achv_level_thirty_all_desc",
 	ID_STEAM = "level_thirty_all",
 	ID_PS4 = "014",
@@ -2905,7 +2573,6 @@ AchievementTemplates.achievements.unlock_first_talent_point = {
 	ID_PS4 = "015",
 	ID_STEAM = "unlock_first_talent_point",
 	icon = "achievement_trophy_15",
-	reward = "level_chest",
 	desc = "achv_unlock_first_talent_point_desc",
 	completed = function (statistics_db, stats_id)
 		local heroes = {
@@ -2931,7 +2598,6 @@ AchievementTemplates.achievements.unlock_all_talent_points = {
 	ID_PS4 = "016",
 	ID_STEAM = "unlock_all_talent_points",
 	icon = "achievement_trophy_16",
-	reward = "level_chest",
 	desc = "achv_unlock_all_talent_points_desc",
 	completed = function (statistics_db, stats_id)
 		local heroes = {
@@ -2957,7 +2623,6 @@ AchievementTemplates.achievements.craft_item = {
 	ID_PS4 = "017",
 	ID_STEAM = "craft_item",
 	icon = "achievement_trophy_17",
-	reward = "level_chest",
 	desc = "achv_craft_item_desc",
 	completed = function (statistics_db, stats_id)
 		local crafted_items = statistics_db:get_persistent_stat(stats_id, "crafted_items")
@@ -2968,11 +2633,10 @@ AchievementTemplates.achievements.craft_item = {
 AchievementTemplates.achievements.craft_fifty_items = {
 	ID_XB1 = 19,
 	name = "achv_craft_fifty_items_name",
-	reward = "level_chest",
-	desc = "achv_craft_fifty_items_desc",
-	ID_STEAM = "craft_fifty_items",
 	ID_PS4 = "018",
 	icon = "achievement_trophy_18",
+	ID_STEAM = "craft_fifty_items",
+	desc = "achv_craft_fifty_items_desc",
 	completed = function (statistics_db, stats_id)
 		local crafted_items = statistics_db:get_persistent_stat(stats_id, "crafted_items")
 
@@ -2997,7 +2661,6 @@ AchievementTemplates.achievements.salvage_item = {
 	ID_PS4 = "019",
 	ID_STEAM = "salvage_item",
 	icon = "achievement_trophy_19",
-	reward = "level_chest",
 	desc = "achv_salvage_item_desc",
 	completed = function (statistics_db, stats_id)
 		local crafted_items = statistics_db:get_persistent_stat(stats_id, "salvaged_items")
@@ -3008,11 +2671,10 @@ AchievementTemplates.achievements.salvage_item = {
 AchievementTemplates.achievements.salvage_hundred_items = {
 	ID_XB1 = 21,
 	name = "achv_salvage_hundred_items_name",
-	reward = "level_chest",
-	desc = "achv_salvage_hundred_items_desc",
-	ID_STEAM = "salvage_hundred_items",
 	ID_PS4 = "020",
 	icon = "achievement_trophy_20",
+	ID_STEAM = "salvage_hundred_items",
+	desc = "achv_salvage_hundred_items_desc",
 	completed = function (statistics_db, stats_id)
 		local crafted_items = statistics_db:get_persistent_stat(stats_id, "salvaged_items")
 
@@ -3037,7 +2699,6 @@ AchievementTemplates.achievements.equip_common_quality = {
 	ID_PS4 = "021",
 	ID_STEAM = "equip_common_quality",
 	icon = "achievement_trophy_21",
-	reward = "level_chest",
 	desc = "achv_equip_common_quality_desc",
 	completed = function (statistics_db, stats_id)
 		local items = equipped_items_of_rarity(statistics_db, stats_id, "common")
@@ -3051,7 +2712,6 @@ AchievementTemplates.achievements.equip_rare_quality = {
 	ID_PS4 = "022",
 	ID_STEAM = "equip_rare_quality",
 	icon = "achievement_trophy_22",
-	reward = "level_chest",
 	desc = "achv_equip_rare_quality_desc",
 	completed = function (statistics_db, stats_id)
 		local items = equipped_items_of_rarity(statistics_db, stats_id, "rare")
@@ -3065,7 +2725,6 @@ AchievementTemplates.achievements.equip_exotic_quality = {
 	ID_PS4 = "023",
 	ID_STEAM = "equip_exotic_quality",
 	icon = "achievement_trophy_23",
-	reward = "level_chest",
 	desc = "achv_equip_exotic_quality_desc",
 	completed = function (statistics_db, stats_id)
 		local items = equipped_items_of_rarity(statistics_db, stats_id, "exotic")
@@ -3076,7 +2735,6 @@ AchievementTemplates.achievements.equip_exotic_quality = {
 AchievementTemplates.achievements.equip_all_exotic_quality = {
 	ID_XB1 = 25,
 	name = "achv_equip_all_exotic_quality_name",
-	reward = "level_chest",
 	desc = "achv_equip_all_exotic_quality_desc",
 	ID_STEAM = "equip_all_exotic_quality",
 	ID_PS4 = "024",
@@ -3132,7 +2790,6 @@ AchievementTemplates.achievements.equip_veteran_quality = {
 	ID_PS4 = "025",
 	ID_STEAM = "equip_veteran_quality",
 	icon = "achievement_trophy_25",
-	reward = "level_chest",
 	desc = "achv_equip_veteran_quality_desc",
 	completed = function (statistics_db, stats_id)
 		local items = equipped_items_of_rarity(statistics_db, stats_id, "unique")
@@ -3141,7 +2798,6 @@ AchievementTemplates.achievements.equip_veteran_quality = {
 	end
 }
 AchievementTemplates.achievements.equip_all_veteran_quality = {
-	reward = "level_chest",
 	name = "achv_equip_all_veteran_quality_name",
 	icon = "achievement_trophy_equip_all_veteran_quality",
 	desc = "achv_equip_all_veteran_quality_desc",
@@ -3196,7 +2852,6 @@ AchievementTemplates.achievements.complete_level_all = {
 	ID_PS4 = "026",
 	ID_STEAM = "complete_level_all",
 	icon = "achievement_trophy_26",
-	reward = "level_chest",
 	desc = "achv_complete_level_all_desc",
 	completed = function (statistics_db, stats_id)
 		local heroes = {
@@ -3249,7 +2904,6 @@ for i, limit in ipairs(AchievementTemplates.completed_deed_limits) do
 			return string.format(Localize("achv_complete_deeds_desc"), limit)
 		end,
 		icon = "achievement_trophy_deeds_" .. i,
-		reward = rewards_lookup[id],
 		completed = function (statistics_db, stats_id)
 			return limit <= statistics_db:get_persistent_stat(stats_id, "completed_heroic_deeds")
 		end,
@@ -3278,7 +2932,6 @@ for diff_key, diff_id in pairs(AchievementTemplates.difficulties) do
 		name = "achv_complete_all_helmgart_levels_" .. diff_id .. "_name",
 		desc = "achv_complete_all_helmgart_levels_" .. diff_id .. "_desc",
 		icon = "achievement_trophy_complete_all_helmgart_levels_" .. diff_id,
-		reward = rewards_lookup[id],
 		completed = function (statistics_db, stats_id)
 			return check_level_list_difficulty(statistics_db, stats_id, main_game_levels, DifficultySettings[diff_key].rank)
 		end,
@@ -3325,7 +2978,6 @@ for career, _ in pairs(CareerSettings) do
 				name = "achv_complete_all_helmgart_levels_" .. diff_id .. "_" .. career .. "_name",
 				desc = "achv_complete_all_helmgart_levels_" .. diff_id .. "_" .. career .. "_desc",
 				icon = "achievement_trophy_" .. diff_id .. "_" .. career,
-				reward = rewards_lookup[id],
 				completed = function (statistics_db, stats_id)
 					return check_level_list_difficulty(statistics_db, stats_id, main_game_levels, DifficultySettings[diff_key].rank, career)
 				end,
@@ -3372,7 +3024,6 @@ for diff_key, diff_id in pairs(AchievementTemplates.difficulties) do
 		name = "achv_complete_all_helmgart_levels_all_careers_" .. diff_id .. "_name",
 		desc = "achv_complete_all_helmgart_levels_all_careers_" .. diff_id .. "_desc",
 		icon = "achievement_trophy_all_careers_" .. diff_id,
-		reward = rewards_lookup[id],
 		completed = function (statistics_db, stats_id)
 			for career, _ in pairs(CareerSettings) do
 				if career ~= "empire_soldier_tutorial" then
@@ -3432,7 +3083,6 @@ for career, _ in pairs(CareerSettings) do
 			name = "achv_complete_100_missions_champion_" .. career .. "_name",
 			desc = "achv_complete_100_missions_champion_" .. career .. "_desc",
 			icon = "achievement_trophy_100_missions_champion_" .. career,
-			reward = rewards_lookup[id],
 			completed = function (statistics_db, stats_id)
 				local wins = 0
 
@@ -3472,7 +3122,6 @@ AchievementTemplates.achievements.elven_ruins_align_leylines_timed = {
 	desc = function ()
 		return string.format(Localize("achv_elven_ruins_align_leylines_timed_desc"), QuestSettings.elven_ruins_speed_event)
 	end,
-	reward = rewards_lookup.elven_ruins_align_leylines_timed,
 	completed = function (statistics_db, stats_id)
 		return statistics_db:get_persistent_stat(stats_id, "elven_ruins_speed_event") > 0
 	end
@@ -3485,7 +3134,6 @@ AchievementTemplates.achievements.farmlands_rescue_prisoners_timed = {
 	desc = function ()
 		return string.format(Localize("achv_farmlands_rescue_prisoners_timed_desc"), QuestSettings.farmlands_speed_event)
 	end,
-	reward = rewards_lookup.farmlands_rescue_prisoners_timed,
 	completed = function (statistics_db, stats_id)
 		return statistics_db:get_persistent_stat(stats_id, "farmlands_speed_event") > 0
 	end
@@ -3498,7 +3146,6 @@ AchievementTemplates.achievements.military_kill_chaos_warriors_in_event = {
 	desc = function ()
 		return string.format(Localize("achv_military_kill_chaos_warriors_in_event_desc"), 3)
 	end,
-	reward = rewards_lookup.military_kill_chaos_warriors_in_event,
 	completed = function (statistics_db, stats_id)
 		return statistics_db:get_persistent_stat(stats_id, "military_statue_kill_chaos_warriors") > 0
 	end
@@ -3511,7 +3158,6 @@ AchievementTemplates.achievements.ground_zero_burblespew_tornado_enemies = {
 	desc = function ()
 		return string.format(Localize("achv_ground_zero_burblespew_tornado_enemies_desc"), QuestSettings.halescourge_tornado_enemies)
 	end,
-	reward = rewards_lookup.ground_zero_burblespew_tornado_enemies,
 	completed = function (statistics_db, stats_id)
 		return statistics_db:get_persistent_stat(stats_id, "halescourge_tornado_enemies") > 0
 	end
@@ -3524,7 +3170,6 @@ AchievementTemplates.achievements.fort_kill_enemies_cannonball = {
 	desc = function ()
 		return string.format(Localize("achv_fort_kill_enemies_cannonball_desc"), QuestSettings.forest_fort_kill_cannonball)
 	end,
-	reward = rewards_lookup.fort_kill_enemies_cannonball,
 	completed = function (statistics_db, stats_id)
 		return statistics_db:get_persistent_stat(stats_id, "forest_fort_kill_cannonball") > 0
 	end
@@ -3537,7 +3182,6 @@ AchievementTemplates.achievements.nurgle_player_showered_in_pus = {
 	desc = function ()
 		return string.format(Localize("achv_nurgle_player_showered_in_pus_desc"), QuestSettings.nurgle_bathed_all)
 	end,
-	reward = rewards_lookup.nurgle_player_showered_in_pus,
 	completed = function (statistics_db, stats_id)
 		return statistics_db:get_persistent_stat(stats_id, "nurgle_bathed_all") > 0
 	end
@@ -3550,7 +3194,6 @@ AchievementTemplates.achievements.bell_destroy_bell_flee_timed = {
 	desc = function ()
 		return string.format(Localize("achv_bell_destroy_bell_flee_timed_desc"), QuestSettings.bell_speed_event)
 	end,
-	reward = rewards_lookup.bell_destroy_bell_flee_timed,
 	completed = function (statistics_db, stats_id)
 		return statistics_db:get_persistent_stat(stats_id, "bell_speed_event") > 0
 	end
@@ -3563,7 +3206,6 @@ AchievementTemplates.achievements.catacombs_stay_inside_ritual_pool = {
 	desc = function ()
 		return string.format(Localize("achv_catacombs_stay_inside_ritual_pool_desc"), QuestSettings.volume_corpse_pit_damage)
 	end,
-	reward = rewards_lookup.catacombs_stay_inside_ritual_pool,
 	completed = function (statistics_db, stats_id)
 		return statistics_db:get_persistent_stat(stats_id, "catacombs_added_souls") > 0
 	end
@@ -3576,7 +3218,6 @@ AchievementTemplates.achievements.mines_kill_final_troll_timed = {
 	desc = function ()
 		return string.format(Localize("achv_mines_kill_final_troll_timed_desc"), QuestSettings.mines_speed_event)
 	end,
-	reward = rewards_lookup.mines_kill_final_troll_timed,
 	completed = function (statistics_db, stats_id)
 		return statistics_db:get_persistent_stat(stats_id, "mines_speed_event") > 0
 	end
@@ -3589,7 +3230,6 @@ AchievementTemplates.achievements.warcamp_bodvarr_charge_warriors = {
 	desc = function ()
 		return string.format(Localize("achv_warcamp_bodvarr_charge_warriors_desc"), QuestSettings.exalted_champion_charge_chaos_warrior)
 	end,
-	reward = rewards_lookup.warcamp_bodvarr_charge_warriors,
 	completed = function (statistics_db, stats_id)
 		return statistics_db:get_persistent_stat(stats_id, "exalted_champion_charge_chaos_warrior") > 0
 	end
@@ -3602,7 +3242,6 @@ AchievementTemplates.achievements.skaven_stronghold_skarrik_kill_skaven = {
 	desc = function ()
 		return string.format(Localize("achv_skaven_stronghold_skarrik_kill_skaven_desc"), QuestSettings.storm_vermin_warlord_kills_enemies)
 	end,
-	reward = rewards_lookup.skaven_stronghold_skarrik_kill_skaven,
 	completed = function (statistics_db, stats_id)
 		return statistics_db:get_persistent_stat(stats_id, "storm_vermin_warlord_kills_enemies") > 0
 	end
@@ -3613,7 +3252,6 @@ AchievementTemplates.achievements.ussingen_no_event_barrels = {
 	name = "achv_ussingen_no_event_barrels_name",
 	icon = "achievement_trophy_ussingen_no_event_barrels",
 	desc = "achv_ussingen_no_event_barrels_desc",
-	reward = rewards_lookup.ussingen_no_event_barrels,
 	completed = function (statistics_db, stats_id)
 		return statistics_db:get_persistent_stat(stats_id, "ussingen_used_no_barrels") > 0
 	end
@@ -3626,7 +3264,6 @@ AchievementTemplates.achievements.skittergate_deathrattler_rasknitt_timed = {
 	desc = function ()
 		return string.format(Localize("achv_skittergate_deathrattler_rasknitt_timed_desc"), QuestSettings.skittergate_speed_event)
 	end,
-	reward = rewards_lookup.skittergate_deathrattler_rasknitt_timed,
 	completed = function (statistics_db, stats_id)
 		return statistics_db:get_persistent_stat(stats_id, "skittergate_speed_event") > 0
 	end
@@ -3647,12 +3284,11 @@ local helmgart_level_name_stats = {
 	achv_bell_destroy_bell_flee_timed_name = "bell_speed_event"
 }
 AchievementTemplates.achievements.complete_all_helmgart_level_achievements = {
-	name = "achv_complete_all_helmgart_level_achievements_name",
 	ID_XB1 = 41,
-	desc = "achv_complete_all_helmgart_level_achievements_desc",
 	ID_PS4 = "040",
+	name = "achv_complete_all_helmgart_level_achievements_name",
 	icon = "achievement_trophy_complete_all_helmgart_level_achievements",
-	reward = rewards_lookup.complete_all_helmgart_level_achievements,
+	desc = "achv_complete_all_helmgart_level_achievements_desc",
 	completed = function (statistics_db, stats_id)
 		for _, stat_name in pairs(helmgart_level_name_stats) do
 			local completed = statistics_db:get_persistent_stat(stats_id, stat_name) > 0
@@ -3701,7 +3337,6 @@ AchievementTemplates.achievements.skaven_warpfire_thrower_1 = {
 	ID_XB1 = 42,
 	name = "achv_skaven_warpfire_thrower_1_name",
 	ID_PS4 = "041",
-	reward = "level_chest",
 	icon = "achievement_trophy_skaven_warpfire_thrower_1",
 	desc = "achv_skaven_warpfire_thrower_1_desc",
 	completed = function (statistics_db, stats_id)
@@ -3712,7 +3347,6 @@ AchievementTemplates.achievements.skaven_warpfire_thrower_2 = {
 	ID_XB1 = 43,
 	name = "achv_skaven_warpfire_thrower_2_name",
 	ID_PS4 = "042",
-	reward = "level_chest",
 	icon = "achievement_trophy_skaven_warpfire_thrower_2",
 	desc = "achv_skaven_warpfire_thrower_2_desc",
 	completed = function (statistics_db, stats_id)
@@ -3720,7 +3354,6 @@ AchievementTemplates.achievements.skaven_warpfire_thrower_2 = {
 	end
 }
 AchievementTemplates.achievements.skaven_warpfire_thrower_3 = {
-	reward = "level_chest",
 	name = "achv_skaven_warpfire_thrower_3_name",
 	icon = "achievement_trophy_skaven_warpfire_thrower_3",
 	desc = function ()
@@ -3734,7 +3367,6 @@ AchievementTemplates.achievements.skaven_pack_master_1 = {
 	ID_XB1 = 44,
 	name = "achv_skaven_pack_master_1_name",
 	ID_PS4 = "043",
-	reward = "level_chest",
 	icon = "achievement_trophy_skaven_pack_master_1",
 	desc = "achv_skaven_pack_master_1_desc",
 	completed = function (statistics_db, stats_id)
@@ -3745,7 +3377,6 @@ AchievementTemplates.achievements.skaven_pack_master_2 = {
 	ID_XB1 = 45,
 	name = "achv_skaven_pack_master_2_name",
 	ID_PS4 = "044",
-	reward = "level_chest",
 	icon = "achievement_trophy_skaven_pack_master_2",
 	desc = "achv_skaven_pack_master_2_desc",
 	completed = function (statistics_db, stats_id)
@@ -3753,7 +3384,6 @@ AchievementTemplates.achievements.skaven_pack_master_2 = {
 	end
 }
 AchievementTemplates.achievements.skaven_pack_master_3 = {
-	reward = "level_chest",
 	name = "achv_skaven_pack_master_3_name",
 	icon = "achievement_trophy_skaven_pack_master_3",
 	desc = "achv_skaven_pack_master_3_desc",
@@ -3765,7 +3395,6 @@ AchievementTemplates.achievements.skaven_gutter_runner_1 = {
 	ID_XB1 = 46,
 	name = "achv_skaven_gutter_runner_1_name",
 	ID_PS4 = "045",
-	reward = "level_chest",
 	icon = "achievement_trophy_skaven_gutter_runner_1",
 	desc = "achv_skaven_gutter_runner_1_desc",
 	completed = function (statistics_db, stats_id)
@@ -3773,7 +3402,6 @@ AchievementTemplates.achievements.skaven_gutter_runner_1 = {
 	end
 }
 AchievementTemplates.achievements.skaven_gutter_runner_2 = {
-	reward = "level_chest",
 	name = "achv_skaven_gutter_runner_2_name",
 	icon = "achievement_trophy_skaven_gutter_runner_2",
 	desc = "achv_skaven_gutter_runner_2_desc",
@@ -3782,7 +3410,6 @@ AchievementTemplates.achievements.skaven_gutter_runner_2 = {
 	end
 }
 AchievementTemplates.achievements.skaven_gutter_runner_3 = {
-	reward = "level_chest",
 	name = "achv_skaven_gutter_runner_3_name",
 	icon = "achievement_trophy_skaven_gutter_runner_3",
 	desc = "achv_skaven_gutter_runner_3_desc",
@@ -3794,7 +3421,6 @@ AchievementTemplates.achievements.skaven_poison_wind_globardier_1 = {
 	ID_XB1 = 47,
 	name = "achv_skaven_poison_wind_globardier_1_name",
 	ID_PS4 = "046",
-	reward = "level_chest",
 	icon = "achievement_trophy_skaven_poison_wind_globardier_1",
 	desc = "achv_skaven_poison_wind_globardier_1_desc",
 	completed = function (statistics_db, stats_id)
@@ -3802,7 +3428,6 @@ AchievementTemplates.achievements.skaven_poison_wind_globardier_1 = {
 	end
 }
 AchievementTemplates.achievements.skaven_poison_wind_globardier_2 = {
-	reward = "level_chest",
 	name = "achv_skaven_poison_wind_globardier_2_name",
 	icon = "achievement_trophy_skaven_poison_wind_globardier_2",
 	desc = "achv_skaven_poison_wind_globardier_2_desc",
@@ -3811,7 +3436,6 @@ AchievementTemplates.achievements.skaven_poison_wind_globardier_2 = {
 	end
 }
 AchievementTemplates.achievements.skaven_poison_wind_globardier_3 = {
-	reward = "level_chest",
 	name = "achv_skaven_poison_wind_globardier_3_name",
 	icon = "achievement_trophy_skaven_poison_wind_globardier_3",
 	desc = function ()
@@ -3825,7 +3449,6 @@ AchievementTemplates.achievements.skaven_ratling_gunner_1 = {
 	ID_XB1 = 48,
 	name = "achv_skaven_ratling_gunner_1_name",
 	ID_PS4 = "047",
-	reward = "level_chest",
 	icon = "achievement_trophy_skaven_ratling_gunner_1",
 	desc = "achv_skaven_ratling_gunner_1_desc",
 	completed = function (statistics_db, stats_id)
@@ -3833,7 +3456,6 @@ AchievementTemplates.achievements.skaven_ratling_gunner_1 = {
 	end
 }
 AchievementTemplates.achievements.skaven_ratling_gunner_2 = {
-	reward = "level_chest",
 	name = "achv_skaven_ratling_gunner_2_name",
 	icon = "achievement_trophy_skaven_ratling_gunner_2",
 	desc = "achv_skaven_ratling_gunner_2_desc",
@@ -3842,7 +3464,6 @@ AchievementTemplates.achievements.skaven_ratling_gunner_2 = {
 	end
 }
 AchievementTemplates.achievements.skaven_ratling_gunner_3 = {
-	reward = "level_chest",
 	name = "achv_skaven_ratling_gunner_3_name",
 	icon = "achievement_trophy_skaven_ratling_gunner_3",
 	desc = "achv_skaven_ratling_gunner_3_desc",
@@ -3854,7 +3475,6 @@ AchievementTemplates.achievements.chaos_corruptor_sorcerer_1 = {
 	ID_XB1 = 49,
 	name = "achv_chaos_corruptor_sorcerer_1_name",
 	ID_PS4 = "048",
-	reward = "level_chest",
 	icon = "achievement_trophy_chaos_corruptor_sorcerer_1",
 	desc = "achv_chaos_corruptor_sorcerer_1_desc",
 	completed = function (statistics_db, stats_id)
@@ -3862,7 +3482,6 @@ AchievementTemplates.achievements.chaos_corruptor_sorcerer_1 = {
 	end
 }
 AchievementTemplates.achievements.chaos_corruptor_sorcerer_2 = {
-	reward = "level_chest",
 	name = "achv_chaos_corruptor_sorcerer_2_name",
 	icon = "achievement_trophy_chaos_corruptor_sorcerer_2",
 	desc = function ()
@@ -3876,7 +3495,6 @@ AchievementTemplates.achievements.chaos_corruptor_sorcerer_3 = {
 	ID_XB1 = 50,
 	name = "achv_chaos_corruptor_sorcerer_3_name",
 	ID_PS4 = "049",
-	reward = "level_chest",
 	icon = "achievement_trophy_chaos_corruptor_sorcerer_3",
 	desc = "achv_chaos_corruptor_sorcerer_3_desc",
 	completed = function (statistics_db, stats_id)
@@ -3887,7 +3505,6 @@ AchievementTemplates.achievements.chaos_vortex_sorcerer_1 = {
 	ID_XB1 = 51,
 	name = "achv_chaos_vortex_sorcerer_1_name",
 	ID_PS4 = "050",
-	reward = "level_chest",
 	icon = "achievement_trophy_chaos_vortex_sorcerer_1",
 	desc = "achv_chaos_vortex_sorcerer_1_desc",
 	completed = function (statistics_db, stats_id)
@@ -3895,7 +3512,6 @@ AchievementTemplates.achievements.chaos_vortex_sorcerer_1 = {
 	end
 }
 AchievementTemplates.achievements.chaos_vortex_sorcerer_2 = {
-	reward = "level_chest",
 	name = "achv_chaos_vortex_sorcerer_2_name",
 	icon = "achievement_trophy_chaos_vortex_sorcerer_2",
 	desc = "achv_chaos_vortex_sorcerer_2_desc",
@@ -3904,7 +3520,6 @@ AchievementTemplates.achievements.chaos_vortex_sorcerer_2 = {
 	end
 }
 AchievementTemplates.achievements.chaos_vortex_sorcerer_3 = {
-	reward = "level_chest",
 	name = "achv_chaos_vortex_sorcerer_3_name",
 	icon = "achievement_trophy_chaos_vortex_sorcerer_3",
 	desc = "achv_chaos_vortex_sorcerer_3_desc",
@@ -3913,7 +3528,6 @@ AchievementTemplates.achievements.chaos_vortex_sorcerer_3 = {
 	end
 }
 AchievementTemplates.achievements.chaos_spawn_1 = {
-	reward = "level_chest",
 	name = "achv_chaos_spawn_1_name",
 	icon = "achievement_trophy_chaos_spawn_1",
 	desc = "achv_chaos_spawn_1_desc",
@@ -3922,7 +3536,6 @@ AchievementTemplates.achievements.chaos_spawn_1 = {
 	end
 }
 AchievementTemplates.achievements.chaos_spawn_2 = {
-	reward = "level_chest",
 	name = "achv_chaos_spawn_2_name",
 	icon = "achievement_trophy_chaos_spawn_2",
 	desc = "achv_chaos_spawn_2_desc",
@@ -3931,7 +3544,6 @@ AchievementTemplates.achievements.chaos_spawn_2 = {
 	end
 }
 AchievementTemplates.achievements.chaos_troll_1 = {
-	reward = "level_chest",
 	name = "achv_chaos_troll_1_name",
 	icon = "achievement_trophy_chaos_troll_1",
 	desc = "achv_chaos_troll_1_desc",
@@ -3940,7 +3552,6 @@ AchievementTemplates.achievements.chaos_troll_1 = {
 	end
 }
 AchievementTemplates.achievements.chaos_troll_2 = {
-	reward = "level_chest",
 	name = "achv_chaos_troll_2_name",
 	icon = "achievement_trophy_chaos_troll_2",
 	desc = "achv_chaos_troll_2_desc",
@@ -3949,7 +3560,6 @@ AchievementTemplates.achievements.chaos_troll_2 = {
 	end
 }
 AchievementTemplates.achievements.skaven_rat_ogre_1 = {
-	reward = "level_chest",
 	name = "achv_skaven_rat_ogre_1_name",
 	icon = "achievement_trophy_skaven_rat_ogre_1",
 	desc = "achv_skaven_rat_ogre_1_desc",
@@ -3958,7 +3568,6 @@ AchievementTemplates.achievements.skaven_rat_ogre_1 = {
 	end
 }
 AchievementTemplates.achievements.skaven_rat_ogre_2 = {
-	reward = "level_chest",
 	name = "achv_skaven_rat_ogre_2_name",
 	icon = "achievement_trophy_skaven_rat_ogre_2",
 	desc = "achv_skaven_rat_ogre_2_desc",
@@ -3967,7 +3576,6 @@ AchievementTemplates.achievements.skaven_rat_ogre_2 = {
 	end
 }
 AchievementTemplates.achievements.skaven_stormfiend_1 = {
-	reward = "level_chest",
 	name = "achv_skaven_stormfiend_1_name",
 	icon = "achievement_trophy_skaven_stormfiend_1",
 	desc = "achv_skaven_stormfiend_1_desc",
@@ -3976,7 +3584,6 @@ AchievementTemplates.achievements.skaven_stormfiend_1 = {
 	end
 }
 AchievementTemplates.achievements.skaven_stormfiend_2 = {
-	reward = "level_chest",
 	name = "achv_skaven_stormfiend_2_name",
 	icon = "achievement_trophy_skaven_stormfiend_2",
 	desc = "achv_skaven_stormfiend_2_desc",
@@ -3985,7 +3592,6 @@ AchievementTemplates.achievements.skaven_stormfiend_2 = {
 	end
 }
 AchievementTemplates.achievements.helmgart_lord_1 = {
-	reward = "level_chest",
 	name = "achv_helmgart_lord_1_name",
 	icon = "achievement_trophy_helmgart_lord_1",
 	desc = "achv_helmgart_lord_1_desc",
@@ -3994,6 +3600,16 @@ AchievementTemplates.achievements.helmgart_lord_1 = {
 	end
 }
 
+for _, dlc in pairs(DLCSettings) do
+	local file_names = dlc.achievement_template_file_names
+
+	if file_names then
+		for i, file_name in ipairs(file_names) do
+			require(file_name)
+		end
+	end
+end
+
 for difficulty_id, difficulty_name in pairs(AchievementTemplates.difficulties) do
 	local id = "kill_bodvarr_burblespew_" .. difficulty_name
 	local difficulty_rank = DifficultySettings[difficulty_id].rank
@@ -4001,7 +3617,6 @@ for difficulty_id, difficulty_name in pairs(AchievementTemplates.difficulties) d
 		name = "achv_kill_bodvarr_burblespew_" .. difficulty_name .. "_name",
 		desc = "achv_kill_bodvarr_burblespew_" .. difficulty_name .. "_desc",
 		icon = "achievement_trophy_kill_bodvarr_burblespew_" .. difficulty_name,
-		reward = rewards_lookup[id],
 		completed = function (statistics_db, stats_id)
 			local champion_completed = difficulty_rank <= statistics_db:get_persistent_stat(stats_id, "kill_chaos_exalted_champion_difficulty_rank")
 			local sorcerer_completed = difficulty_rank <= statistics_db:get_persistent_stat(stats_id, "kill_chaos_exalted_sorcerer_difficulty_rank")
@@ -4029,7 +3644,6 @@ for difficulty_id, difficulty_name in pairs(AchievementTemplates.difficulties) d
 		name = "achv_kill_skarrik_rasknitt_" .. difficulty_name .. "_name",
 		desc = "achv_kill_skarrik_rasknitt_" .. difficulty_name .. "_desc",
 		icon = "achievement_trophy_kill_skarrik_rasknitt_" .. difficulty_name,
-		reward = rewards_lookup[id],
 		completed = function (statistics_db, stats_id)
 			local gray_seer_completed = difficulty_rank <= statistics_db:get_persistent_stat(stats_id, "kill_skaven_grey_seer_difficulty_rank")
 			local storm_vermin_completed = difficulty_rank <= statistics_db:get_persistent_stat(stats_id, "kill_skaven_storm_vermin_warlord_difficulty_rank")

@@ -3,9 +3,9 @@ require("scripts/utils/colors")
 
 UISettings = {
 	tooltip_wait_duration = 0.1,
-	double_click_threshold = 0.1,
 	start_drag_threshold = 0.15,
 	tooltip_fade_in_speed = 4,
+	double_click_threshold = 0.1,
 	crafting_progress_time = 0.5,
 	bots_level_display_text = "BOT",
 	max_craft_material_presentation_amount = 999,
@@ -21,7 +21,7 @@ UISettings = {
 	crafting_animation_in_time = 0.3,
 	wait_for_mip_streaming_character = true,
 	crafting_animation_wait_time = 0.5,
-	console_menu_rect_color = Colors.get_color_table_with_alpha("console_menu_rect", 200),
+	console_menu_rect_color = Colors.get_color_table_with_alpha("console_menu_rect", 125),
 	console_start_game_menu_rect_color = Colors.get_color_table_with_alpha("console_menu_rect", 125),
 	game_start_windows = {
 		frame = "menu_frame_09",
@@ -640,347 +640,361 @@ UISettings = {
 			description = "description_default_trinket",
 			display_name = "display_name_default_trinket"
 		}
+	}
+}
+
+for _, dlc in pairs(DLCSettings) do
+	local default_items = dlc.default_items
+
+	if default_items then
+		for item_name, item_data in pairs(default_items) do
+			UISettings.default_items[item_name] = item_data
+		end
+	end
+end
+
+UISettings.hero_icons = {
+	small = {
+		witch_hunter = "tabs_class_icon_witch_hunter_normal",
+		empire_soldier = "tabs_class_icon_empire_soldier_normal",
+		dwarf_ranger = "tabs_class_icon_dwarf_ranger_normal",
+		wood_elf = "tabs_class_icon_way_watcher_normal",
+		bright_wizard = "tabs_class_icon_bright_wizard_normal"
 	},
-	hero_icons = {
-		small = {
-			witch_hunter = "tabs_class_icon_witch_hunter_normal",
-			empire_soldier = "tabs_class_icon_empire_soldier_normal",
-			dwarf_ranger = "tabs_class_icon_dwarf_ranger_normal",
-			wood_elf = "tabs_class_icon_way_watcher_normal",
-			bright_wizard = "tabs_class_icon_bright_wizard_normal"
+	medium = {
+		witch_hunter = "hero_icon_medium_witch_hunter_yellow",
+		empire_soldier = "hero_icon_medium_empire_soldier_yellow",
+		dwarf_ranger = "hero_icon_medium_dwarf_ranger_yellow",
+		wood_elf = "hero_icon_medium_way_watcher_yellow",
+		bright_wizard = "hero_icon_medium_bright_wizard_yellow"
+	}
+}
+UISettings.hero_tooltips = {
+	witch_hunter = "inventory_screen_witch_hunter_tooltip",
+	empire_soldier = "inventory_screen_empire_soldier_tooltip",
+	dwarf_ranger = "inventory_screen_dwarf_tooltip",
+	wood_elf = "inventory_screen_way_watcher_tooltip",
+	bright_wizard = "inventory_screen_bright_wizard_tooltip"
+}
+UISettings.slot_icons = {
+	crafting_material = "tabs_icon_crafting_material",
+	necklace = "tabs_icon_necklace",
+	forge = "tabs_icon_anvil",
+	trinket = "tabs_icon_trinkets",
+	melee = "tabs_icon_equipment",
+	portrait_frame = "tabs_icon_portrait_frame",
+	hat = "tabs_icon_cosmetics",
+	ring = "tabs_icon_charm",
+	ranged = "tabs_icon_ranged",
+	skins = "tabs_icon_character_skins"
+}
+UISettings.crafting_material_order = {
+	"crafting_material_scrap",
+	"crafting_material_weapon",
+	"crafting_material_jewellery",
+	"crafting_material_dust_1",
+	"crafting_material_dust_2",
+	"crafting_material_dust_3",
+	"crafting_material_dust_4"
+}
+UISettings.crafting_material_icons_small = {
+	crafting_material_dust_3 = "icon_crafting_dust_03_small",
+	crafting_material_dust_1 = "icon_crafting_dust_01_small",
+	crafting_material_weapon = "icon_crafting_weapon_part_small",
+	crafting_material_dust_4 = "icon_crafting_dust_04_small",
+	crafting_material_scrap = "icon_crafting_scrap_small",
+	crafting_material_jewellery = "icon_crafting_jewellery_part_small",
+	crafting_material_dust_2 = "icon_crafting_dust_02_small"
+}
+UISettings.crafting_material_order_by_item_key = {
+	crafting_material_scrap = 6,
+	crafting_material_dust_1 = 1,
+	crafting_material_weapon = 7,
+	crafting_material_dust_4 = 4,
+	crafting_material_dust_3 = 3,
+	crafting_material_jewellery = 5,
+	crafting_material_dust_2 = 2
+}
+UISettings.loot_containers = {
+	epic = "loot_container_icon_02",
+	default = "loot_container_icon_01",
+	elite = "loot_container_icon_03"
+}
+UISettings.item_rarity_textures = {
+	common = "icon_bg_common",
+	promo = "icon_bg_promo",
+	exotic = "icon_bg_exotic",
+	default = "icon_bg_default",
+	plentiful = "icon_bg_plentiful",
+	rare = "icon_bg_rare",
+	unique = "icon_bg_unique"
+}
+UISettings.item_rarity_order = {
+	common = 5,
+	promo = 1,
+	exotic = 3,
+	default = 7,
+	plentiful = 6,
+	rare = 4,
+	unique = 2
+}
+UISettings.cosmetics_sorting_order = {
+	weapon_skin = 3,
+	skin = 2,
+	hat = 1
+}
+UISettings.inventory_consumable_slot_colors = {
+	healthkit_first_aid_kit_01 = Colors.get_color_table_with_alpha("healthkit_first_aid_kit_01", 255),
+	wpn_side_objective_tome_01 = Colors.get_color_table_with_alpha("wpn_side_objective_tome_01", 255),
+	potion_healing_draught_01 = Colors.get_color_table_with_alpha("potion_healing_draught_01", 255),
+	potion_damage_boost_01 = Colors.get_color_table_with_alpha("potion_damage_boost_01", 255),
+	potion_speed_boost_01 = Colors.get_color_table_with_alpha("potion_speed_boost_01", 255),
+	potion_cooldown_reduction_01 = Colors.get_color_table_with_alpha("potion_cooldown_reduction_01", 255),
+	wpn_grimoire_01 = Colors.get_color_table_with_alpha("wpn_grimoire_01", 255),
+	grenade_frag_01 = Colors.get_color_table_with_alpha("grenade_frag_01", 255),
+	grenade_frag_02 = Colors.get_color_table_with_alpha("grenade_frag_02", 255),
+	grenade_smoke_01 = Colors.get_color_table_with_alpha("grenade_smoke_01", 255),
+	grenade_smoke_02 = Colors.get_color_table_with_alpha("grenade_smoke_02", 255),
+	grenade_fire_01 = Colors.get_color_table_with_alpha("grenade_fire_01", 255),
+	grenade_fire_02 = Colors.get_color_table_with_alpha("grenade_fire_02", 255),
+	default = {
+		255,
+		0,
+		0,
+		0
+	}
+}
+UISettings.console_menu_scenegraphs = {
+	screen = {
+		scale = "fit",
+		size = {
+			1920,
+			1080
 		},
-		medium = {
-			witch_hunter = "hero_icon_medium_witch_hunter_yellow",
-			empire_soldier = "hero_icon_medium_empire_soldier_yellow",
-			dwarf_ranger = "hero_icon_medium_dwarf_ranger_yellow",
-			wood_elf = "hero_icon_medium_way_watcher_yellow",
-			bright_wizard = "hero_icon_medium_bright_wizard_yellow"
+		position = {
+			0,
+			0,
+			UILayer.default + 1
 		}
 	},
-	hero_tooltips = {
-		witch_hunter = "inventory_screen_witch_hunter_tooltip",
-		empire_soldier = "inventory_screen_empire_soldier_tooltip",
-		dwarf_ranger = "inventory_screen_dwarf_tooltip",
-		wood_elf = "inventory_screen_way_watcher_tooltip",
-		bright_wizard = "inventory_screen_bright_wizard_tooltip"
+	area = {
+		vertical_alignment = "top",
+		parent = "screen",
+		horizontal_alignment = "left",
+		size = {
+			1820,
+			840
+		},
+		position = {
+			50,
+			-120,
+			1
+		}
 	},
-	slot_icons = {
-		crafting_material = "tabs_icon_crafting_material",
-		necklace = "tabs_icon_necklace",
-		forge = "tabs_icon_anvil",
-		trinket = "tabs_icon_trinkets",
-		melee = "tabs_icon_equipment",
-		portrait_frame = "tabs_icon_portrait_frame",
-		hat = "tabs_icon_cosmetics",
-		ring = "tabs_icon_charm",
-		ranged = "tabs_icon_ranged",
-		skins = "tabs_icon_character_skins"
-	},
-	crafting_material_order = {
-		"crafting_material_scrap",
-		"crafting_material_weapon",
-		"crafting_material_jewellery",
-		"crafting_material_dust_1",
-		"crafting_material_dust_2",
-		"crafting_material_dust_3",
-		"crafting_material_dust_4"
-	},
-	crafting_material_icons_small = {
-		crafting_material_dust_3 = "icon_crafting_dust_03_small",
-		crafting_material_dust_1 = "icon_crafting_dust_01_small",
-		crafting_material_weapon = "icon_crafting_weapon_part_small",
-		crafting_material_dust_4 = "icon_crafting_dust_04_small",
-		crafting_material_scrap = "icon_crafting_scrap_small",
-		crafting_material_jewellery = "icon_crafting_jewellery_part_small",
-		crafting_material_dust_2 = "icon_crafting_dust_02_small"
-	},
-	crafting_material_order_by_item_key = {
-		crafting_material_scrap = 6,
-		crafting_material_dust_1 = 1,
-		crafting_material_weapon = 7,
-		crafting_material_dust_4 = 4,
-		crafting_material_dust_3 = 3,
-		crafting_material_jewellery = 5,
-		crafting_material_dust_2 = 2
-	},
-	loot_containers = {
-		epic = "loot_container_icon_02",
-		default = "loot_container_icon_01",
-		elite = "loot_container_icon_03"
-	},
-	item_rarity_textures = {
-		common = "icon_bg_common",
-		promo = "icon_bg_promo",
-		exotic = "icon_bg_exotic",
-		default = "icon_bg_default",
-		plentiful = "icon_bg_plentiful",
-		rare = "icon_bg_rare",
-		unique = "icon_bg_unique"
-	},
-	item_rarity_order = {
-		common = 5,
-		promo = 1,
-		exotic = 3,
-		default = 7,
-		plentiful = 6,
-		rare = 4,
-		unique = 2
-	},
-	cosmetics_sorting_order = {
-		weapon_skin = 3,
-		skin = 2,
-		hat = 1
-	},
-	inventory_consumable_slot_colors = {
-		healthkit_first_aid_kit_01 = Colors.get_color_table_with_alpha("healthkit_first_aid_kit_01", 255),
-		wpn_side_objective_tome_01 = Colors.get_color_table_with_alpha("wpn_side_objective_tome_01", 255),
-		potion_healing_draught_01 = Colors.get_color_table_with_alpha("potion_healing_draught_01", 255),
-		potion_damage_boost_01 = Colors.get_color_table_with_alpha("potion_damage_boost_01", 255),
-		potion_speed_boost_01 = Colors.get_color_table_with_alpha("potion_speed_boost_01", 255),
-		potion_cooldown_reduction_01 = Colors.get_color_table_with_alpha("potion_cooldown_reduction_01", 255),
-		wpn_grimoire_01 = Colors.get_color_table_with_alpha("wpn_grimoire_01", 255),
-		grenade_frag_01 = Colors.get_color_table_with_alpha("grenade_frag_01", 255),
-		grenade_frag_02 = Colors.get_color_table_with_alpha("grenade_frag_02", 255),
-		grenade_smoke_01 = Colors.get_color_table_with_alpha("grenade_smoke_01", 255),
-		grenade_smoke_02 = Colors.get_color_table_with_alpha("grenade_smoke_02", 255),
-		grenade_fire_01 = Colors.get_color_table_with_alpha("grenade_fire_01", 255),
-		grenade_fire_02 = Colors.get_color_table_with_alpha("grenade_fire_02", 255),
-		default = {
-			255,
+	area_left = {
+		vertical_alignment = "top",
+		parent = "area",
+		horizontal_alignment = "left",
+		size = {
+			560,
+			840
+		},
+		position = {
 			0,
+			0,
+			1
+		}
+	},
+	area_right = {
+		vertical_alignment = "center",
+		parent = "area_divider",
+		horizontal_alignment = "left",
+		size = {
+			1190,
+			840
+		},
+		position = {
+			60,
+			0,
+			1
+		}
+	},
+	area_divider = {
+		vertical_alignment = "center",
+		parent = "area_left",
+		horizontal_alignment = "right",
+		size = {
+			50,
+			840
+		},
+		position = {
+			60,
+			0,
+			1
+		}
+	},
+	craft_bg_root = {
+		vertical_alignment = "top",
+		parent = "area_right",
+		horizontal_alignment = "left",
+		size = {
+			512,
+			512
+		},
+		position = {
+			40,
+			-220,
+			1
+		}
+	},
+	craft_button = {
+		vertical_alignment = "center",
+		parent = "craft_bg_root",
+		horizontal_alignment = "center",
+		size = {
 			0,
 			0
+		},
+		position = {
+			0,
+			-294,
+			1
 		}
-	},
-	console_menu_scenegraphs = {
-		screen = {
-			scale = "fit",
-			size = {
-				1920,
-				1080
-			},
-			position = {
-				0,
-				0,
-				UILayer.default + 1
-			}
-		},
-		area = {
-			vertical_alignment = "top",
-			parent = "screen",
-			horizontal_alignment = "left",
-			size = {
-				1820,
-				840
-			},
-			position = {
-				50,
-				-120,
-				1
-			}
-		},
-		area_left = {
-			vertical_alignment = "top",
-			parent = "area",
-			horizontal_alignment = "left",
-			size = {
-				560,
-				840
-			},
-			position = {
-				0,
-				0,
-				1
-			}
-		},
-		area_right = {
-			vertical_alignment = "center",
-			parent = "area_divider",
-			horizontal_alignment = "left",
-			size = {
-				1190,
-				840
-			},
-			position = {
-				60,
-				0,
-				1
-			}
-		},
-		area_divider = {
-			vertical_alignment = "center",
-			parent = "area_left",
-			horizontal_alignment = "right",
-			size = {
-				50,
-				840
-			},
-			position = {
-				60,
-				0,
-				1
-			}
-		},
-		craft_bg_root = {
-			vertical_alignment = "top",
-			parent = "area_right",
-			horizontal_alignment = "left",
-			size = {
-				512,
-				512
-			},
-			position = {
-				40,
-				-220,
-				1
-			}
-		},
-		craft_button = {
-			vertical_alignment = "center",
-			parent = "craft_bg_root",
-			horizontal_alignment = "center",
-			size = {
-				0,
-				0
-			},
-			position = {
-				0,
-				-294,
-				1
-			}
-		}
-	},
-	hero_selection_camera_position_by_character = {
-		witch_hunter = {
-			z = 0.9,
-			x = 0,
-			y = 0.8
-		},
-		bright_wizard = {
-			z = 0.7,
-			x = 0,
-			y = 0.4
-		},
-		dwarf_ranger = {
-			z = 0.4,
-			x = 0,
-			y = 0
-		},
-		wood_elf = {
-			z = 0.7,
-			x = 0,
-			y = 0.4
-		},
-		empire_soldier = {
-			z = 0.7,
-			x = 0,
-			y = 0.5
-		},
-		empire_soldier_tutorial = {
-			z = 0.7,
-			x = 0,
-			y = 0.5
-		}
-	},
-	hero_hat_camera_position_by_character = {
-		witch_hunter = {
-			z = 0.93,
-			x = 0,
-			y = -2.1
-		},
-		bright_wizard = {
-			z = 0.7,
-			x = 0,
-			y = -2.2
-		},
-		dwarf_ranger = {
-			z = 0.17,
-			x = 0,
-			y = -2
-		},
-		wood_elf = {
-			z = 0.7,
-			x = 0,
-			y = -2
-		},
-		empire_soldier = {
-			z = 0.88,
-			x = 0,
-			y = -2.1
-		},
-		empire_soldier_tutorial = {
-			z = 0.88,
-			x = 0,
-			y = -2.1
-		}
-	},
-	hero_skin_camera_position_by_character = {
-		witch_hunter = {
-			z = 0.4,
-			x = 0,
-			y = -1.2
-		},
-		bright_wizard = {
-			z = 0.2,
-			x = 0,
-			y = -1.4
-		},
-		dwarf_ranger = {
-			z = -0.2,
-			x = 0,
-			y = -1.5
-		},
-		wood_elf = {
-			z = 0.25,
-			x = 0,
-			y = -1.4
-		},
-		empire_soldier = {
-			z = 0.25,
-			x = 0,
-			y = -1.2
-		},
-		empire_soldier_tutorial = {
-			z = 0.25,
-			x = 0,
-			y = -1.2
-		}
-	},
-	console_tooltip_pass_definitions = {
-		"console_item_titles",
-		"skin_applied",
-		"deed_mission",
-		"deed_difficulty",
-		"mutators",
-		"deed_rewards",
-		"ammunition",
-		"fatigue",
-		"item_power_level",
-		"properties",
-		"traits",
-		"weapon_skin_title",
-		"item_information_text",
-		"loot_chest_difficulty",
-		"loot_chest_power_range",
-		"unwieldable",
-		"console_keywords",
-		"console_item_description",
-		"light_attack_stats",
-		"heavy_attack_stats",
-		"detailed_stats_light",
-		"detailed_stats_heavy",
-		"detailed_stats_push",
-		"detailed_stats_ranged_light",
-		"detailed_stats_ranged_heavy",
-		"console_item_background"
-	},
-	hero_fullscreen_menu_on_enter = function ()
-		print("hero_fullscreen_menu_on_enter")
-	end,
-	hero_fullscreen_menu_on_exit = function ()
-		print("hero_fullscreen_menu_on_exit")
-	end
+	}
 }
+UISettings.hero_selection_camera_position_by_character = {
+	witch_hunter = {
+		z = 0.9,
+		x = 0,
+		y = 0.8
+	},
+	bright_wizard = {
+		z = 0.7,
+		x = 0,
+		y = 0.4
+	},
+	dwarf_ranger = {
+		z = 0.4,
+		x = 0,
+		y = 0
+	},
+	wood_elf = {
+		z = 0.7,
+		x = 0,
+		y = 0.4
+	},
+	empire_soldier = {
+		z = 0.7,
+		x = 0,
+		y = 0.5
+	},
+	empire_soldier_tutorial = {
+		z = 0.7,
+		x = 0,
+		y = 0.5
+	}
+}
+UISettings.hero_hat_camera_position_by_character = {
+	witch_hunter = {
+		z = 0.93,
+		x = 0,
+		y = -2.1
+	},
+	bright_wizard = {
+		z = 0.7,
+		x = 0,
+		y = -2.2
+	},
+	dwarf_ranger = {
+		z = 0.17,
+		x = 0,
+		y = -2
+	},
+	wood_elf = {
+		z = 0.7,
+		x = 0,
+		y = -2
+	},
+	empire_soldier = {
+		z = 0.88,
+		x = 0,
+		y = -2.1
+	},
+	empire_soldier_tutorial = {
+		z = 0.88,
+		x = 0,
+		y = -2.1
+	}
+}
+UISettings.hero_skin_camera_position_by_character = {
+	witch_hunter = {
+		z = 0.4,
+		x = 0,
+		y = -1.2
+	},
+	bright_wizard = {
+		z = 0.2,
+		x = 0,
+		y = -1.4
+	},
+	dwarf_ranger = {
+		z = -0.2,
+		x = 0,
+		y = -1.5
+	},
+	wood_elf = {
+		z = 0.25,
+		x = 0,
+		y = -1.4
+	},
+	empire_soldier = {
+		z = 0.25,
+		x = 0,
+		y = -1.2
+	},
+	empire_soldier_tutorial = {
+		z = 0.25,
+		x = 0,
+		y = -1.2
+	}
+}
+UISettings.console_tooltip_pass_definitions = {
+	"console_item_titles",
+	"skin_applied",
+	"deed_mission",
+	"deed_difficulty",
+	"mutators",
+	"deed_rewards",
+	"ammunition",
+	"fatigue",
+	"item_power_level",
+	"properties",
+	"traits",
+	"weapon_skin_title",
+	"item_information_text",
+	"loot_chest_difficulty",
+	"loot_chest_power_range",
+	"unwieldable",
+	"console_keywords",
+	"console_item_description",
+	"light_attack_stats",
+	"heavy_attack_stats",
+	"detailed_stats_light",
+	"detailed_stats_heavy",
+	"detailed_stats_push",
+	"detailed_stats_ranged_light",
+	"detailed_stats_ranged_heavy",
+	"console_item_background"
+}
+
+UISettings.hero_fullscreen_menu_on_enter = function ()
+	print("hero_fullscreen_menu_on_enter")
+end
+
+UISettings.hero_fullscreen_menu_on_exit = function ()
+	print("hero_fullscreen_menu_on_exit")
+end
+
 local button_mapping = {
 	win32 = {
 		{
@@ -1587,7 +1601,9 @@ end
 UISettings.get_gamepad_input_texture_data = function (input_service, input_action, gamepad_active, optional_alternative_input_service)
 	local platform = PLATFORM
 
-	if platform == "win32" and gamepad_active then
+	if platform == "xb1" and GameSettingsDevelopment.allow_keyboard_mouse and not gamepad_active then
+		platform = "win32"
+	elseif platform == "win32" and gamepad_active then
 		platform = "xb1"
 	end
 

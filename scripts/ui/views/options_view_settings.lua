@@ -1336,8 +1336,25 @@ local network_settings_definition = {
 		callback = "cb_max_quick_play_search_range",
 		tooltip_text = "tooltip_max_quick_play_search_range",
 		widget_type = "drop_down"
+	},
+	{
+		setting_name = "show_numerical_latency",
+		widget_type = "stepper",
+		options = {
+			{
+				value = true,
+				text = Localize("menu_settings_on")
+			},
+			{
+				value = false,
+				text = Localize("menu_settings_off")
+			}
+		}
 	}
 }
+
+generate_settings(network_settings_definition)
+
 local needs_reload_settings = {
 	"screen_resolution",
 	"fullscreen",

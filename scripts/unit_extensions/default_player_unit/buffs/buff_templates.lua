@@ -308,7 +308,7 @@ ProcFunctions = {
 			for i = 1, #player_and_bot_units, 1 do
 				local healed_unit = player_and_bot_units[i]
 
-				if healed_unit ~= healer_unit then
+				if healed_unit ~= player_unit then
 					local unit_position = POSITION_LOOKUP[healed_unit]
 					local distance_squared = Vector3.distance_squared(healer_position, unit_position)
 
@@ -940,8 +940,9 @@ ProcFunctions = {
 
 		if is_disabled then
 			local disabler_unit = status_extension:get_disabler_unit()
+			local attacker_unit = params[1]
 
-			if Unit.alive(disabler_unit) then
+			if disabler_unit == attacker_unit and Unit.alive(disabler_unit) then
 				local disabler_breed = disabler_unit and Unit.get_data(disabler_unit, "breed")
 
 				if not disabler_breed or not disabler_breed.boss then
@@ -2825,6 +2826,83 @@ BuffTemplates = {
 			}
 		}
 	},
+	cemetery_plague_floor = {
+		buffs = {
+			{
+				slowdown_buff_name = "cemetery_floor_plague_slowdown",
+				name = "plague_floor",
+				update_func = "update_moving_through_plague",
+				dormant = true,
+				damage_type = "plague_ground",
+				remove_buff_func = "remove_moving_through_plague",
+				apply_buff_func = "apply_moving_through_plague",
+				fatigue_type = "plague_ground",
+				refresh_durations = true,
+				time_between_dot_damages = 0.75,
+				debuff = true,
+				max_stacks = 1,
+				icon = "troll_vomit_debuff",
+				difficulty_damage = {
+					easy = {
+						1,
+						1,
+						0,
+						0.5,
+						1
+					},
+					normal = {
+						1,
+						1,
+						0,
+						1,
+						1
+					},
+					hard = {
+						1,
+						1,
+						0,
+						1,
+						1
+					},
+					survival_hard = {
+						1,
+						1,
+						0,
+						1,
+						1
+					},
+					harder = {
+						1,
+						1,
+						0,
+						2,
+						1
+					},
+					survival_harder = {
+						1,
+						1,
+						0,
+						2,
+						1
+					},
+					hardest = {
+						1,
+						1,
+						0,
+						4,
+						1
+					},
+					survival_hardest = {
+						1,
+						1,
+						0,
+						4,
+						1
+					}
+				}
+			}
+		}
+	},
 	movement_volume_generic_slowdown = {
 		buffs = {
 			{
@@ -4478,6 +4556,94 @@ BuffTemplates = {
 			}
 		}
 	},
+	cemetery_floor_plague_slowdown = {
+		buffs = {
+			{
+				update_func = "update_action_lerp_movement_buff",
+				multiplier = 0.75,
+				name = "decrease_speed_cemetery_floor",
+				refresh_durations = true,
+				remove_buff_func = "remove_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_movement",
+				lerp_time = 0.1,
+				max_stacks = 1,
+				duration = 2,
+				path_to_movement_setting_to_modify = {
+					"move_speed"
+				}
+			},
+			{
+				update_func = "update_charging_action_lerp_movement_buff",
+				multiplier = 0.75,
+				name = "decrease_crouch_speed_cemetery_floor",
+				refresh_durations = true,
+				remove_buff_func = "remove_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_crouch_movement",
+				lerp_time = 0.1,
+				max_stacks = 1,
+				duration = 2,
+				path_to_movement_setting_to_modify = {
+					"crouch_move_speed"
+				}
+			},
+			{
+				update_func = "update_charging_action_lerp_movement_buff",
+				multiplier = 0.75,
+				name = "decrease_walk_speed_cemetery_floor",
+				refresh_durations = true,
+				remove_buff_func = "remove_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_walk_movement",
+				lerp_time = 0.1,
+				max_stacks = 1,
+				duration = 2,
+				path_to_movement_setting_to_modify = {
+					"walk_move_speed"
+				}
+			},
+			{
+				name = "decrease_jump_speed_cemetery_floor",
+				multiplier = 0.75,
+				duration = 2,
+				max_stacks = 1,
+				remove_buff_func = "remove_movement_buff",
+				apply_buff_func = "apply_movement_buff",
+				refresh_durations = true,
+				path_to_movement_setting_to_modify = {
+					"jump",
+					"initial_vertical_speed"
+				}
+			},
+			{
+				name = "decrease_dodge_speed_cemetery_floor",
+				multiplier = 0.8,
+				duration = 2,
+				max_stacks = 1,
+				remove_buff_func = "remove_movement_buff",
+				apply_buff_func = "apply_movement_buff",
+				refresh_durations = true,
+				path_to_movement_setting_to_modify = {
+					"dodging",
+					"speed_modifier"
+				}
+			},
+			{
+				name = "decrease_dodge_distance_cemetery_floor",
+				multiplier = 0.8,
+				duration = 2,
+				max_stacks = 1,
+				remove_buff_func = "remove_movement_buff",
+				apply_buff_func = "apply_movement_buff",
+				refresh_durations = true,
+				path_to_movement_setting_to_modify = {
+					"dodging",
+					"distance_modifier"
+				}
+			}
+		}
+	},
 	bile_troll_vomit_ground_slowdown = {
 		buffs = {
 			{
@@ -5159,11 +5325,12 @@ BuffTemplates = {
 	stormfiend_warpfire_ground_base = {
 		buffs = {
 			{
-				refresh_durations = true,
+				slowdown_buff_name = "bile_troll_vomit_ground_slowdown",
 				name = "stormfiend_warpfire_ground",
+				refresh_durations = true,
 				remove_buff_func = "remove_moving_through_warpfire",
 				apply_buff_func = "apply_moving_through_warpfire",
-				time_between_dot_damages = 0.75,
+				time_between_dot_damages = 0.5,
 				damage_type = "warpfire_ground",
 				max_stacks = 1,
 				update_func = "update_moving_through_warpfire",
@@ -5176,53 +5343,53 @@ BuffTemplates = {
 						1
 					},
 					normal = {
-						1,
-						1,
+						2,
+						2,
 						0,
 						2.5,
-						1
+						3
 					},
 					hard = {
-						1,
-						1,
+						4,
+						3,
 						0,
 						2.5,
-						1
+						4
 					},
 					survival_hard = {
-						1,
-						1,
+						4,
+						3,
 						0,
 						2.5,
-						1
+						4
 					},
 					harder = {
-						1,
-						1,
+						6,
+						5,
 						0,
 						4.5,
-						1
+						5
 					},
 					survival_harder = {
-						1,
-						1,
+						6,
+						5,
 						0,
 						4.5,
-						1
+						5
 					},
 					hardest = {
-						1,
-						1,
+						8,
+						8,
 						0,
 						8.5,
-						1
+						6
 					},
 					survival_hardest = {
-						1,
-						1,
+						8,
+						8,
 						0,
 						8.5,
-						1
+						6
 					}
 				}
 			}
@@ -5239,7 +5406,7 @@ BuffTemplates = {
 				time_between_dot_damages = 0.65,
 				damage_type = "warpfire_face",
 				max_stacks = 1,
-				duration = 5,
+				duration = 3,
 				push_speed = 10,
 				difficulty_damage = {
 					easy = {
@@ -5253,49 +5420,49 @@ BuffTemplates = {
 						3,
 						2,
 						0,
-						3,
+						1.5,
 						2
 					},
 					hard = {
 						4,
 						2,
 						0,
-						3,
+						2,
 						2
 					},
 					survival_hard = {
 						4,
 						2,
 						0,
-						3,
+						2,
 						2
 					},
 					harder = {
 						5,
 						3,
 						0,
-						5,
+						3,
 						3
 					},
 					survival_harder = {
 						5,
 						3,
 						0,
-						5,
+						3,
 						3
 					},
 					hardest = {
 						6,
 						4,
 						0,
-						9,
+						5,
 						4
 					},
 					survival_hardest = {
 						6,
 						4,
 						0,
-						9,
+						5,
 						1
 					}
 				}

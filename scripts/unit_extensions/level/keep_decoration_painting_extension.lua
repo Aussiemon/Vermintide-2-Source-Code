@@ -1,6 +1,3 @@
-require("scripts/settings/keep_decoration_settings")
-require("scripts/settings/paintings")
-
 KeepDecorationPaintingExtension = class(KeepDecorationPaintingExtension)
 
 KeepDecorationPaintingExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -11,39 +8,56 @@ KeepDecorationPaintingExtension.init = function (self, extension_init_context, u
 	self._world = world
 	self._level_unit_index = Level.unit_index(level, unit)
 	self._is_leader = Managers.party:is_leader(Network.peer_id())
-	self._paintings_lookup = NetworkLookup.keep_decoration_paintings
+	self._paintings_lookup = NetworkLookup.keep_decoration_paintings or {}
+	local settings_key = Unit.get_data(unit, "decoration_settings_key")
+	local settings = KeepDecorationSettings[settings_key]
+	self._settings = settings
+	self._backend_key = settings.backend_key
 end
 
-KeepDecorationPaintingExtension.setup = function (self, settings, owned_paintings)
+KeepDecorationPaintingExtension.interacted_with = function (self)
 	if self._is_leader then
-		self._backend_key = settings.backend_key
-		local orientation = settings.data.orientation
-		local level = settings.data.level
-		local paintings = table.clone(Paintings[orientation][level])
-
-		if not script_data.debug_keep_decorations then
-			for i = #paintings, 2, -1 do
-				local painting = paintings[i]
-
-				if not owned_paintings[painting] then
-					table.remove(paintings, i)
-				end
-			end
-		end
-
-		self._paintings = paintings
-		local selected_painting = self:_get_selected_painting()
-
-		local function on_material_loaded()
-			if Managers.state.network:in_game_session() then
-				self:_create_game_object(selected_painting)
-			else
-				self._waiting_for_game_session = true
-			end
-		end
-
-		self:_load_painting_material(selected_painting, on_material_loaded)
+		self:_populate_paintings()
 	end
+end
+
+KeepDecorationPaintingExtension._populate_paintings = function (self)
+	local settings = self._settings
+	local orientation = settings.orientation
+	local frame_type = settings.frame_type
+	local backend_interface = Managers.backend:get_interface("keep_decorations")
+	local owned_paintings = backend_interface:get_unlocked_keep_decorations()
+	local paintings = {}
+
+	for i = 1, #DefaultPaintings, 1 do
+		local painting = DefaultPaintings[i]
+
+		if self:_valid_painting(painting, orientation, frame_type) then
+			paintings[#paintings + 1] = painting
+		end
+	end
+
+	for i = 1, #PaintingOrder, 1 do
+		local painting = PaintingOrder[i]
+
+		if table.contains(owned_paintings, painting) and self:_valid_painting(painting, orientation, frame_type) then
+			paintings[#paintings + 1] = painting
+		end
+	end
+
+	self._paintings = paintings
+end
+
+KeepDecorationPaintingExtension._valid_painting = function (self, painting, orientation, frame_type)
+	local painting_data = Paintings[painting]
+	local correct_orientation = painting_data.orientation == orientation
+	local correct_frame = painting_data.frames[frame_type] and true
+
+	if correct_orientation and correct_frame then
+		return true
+	end
+
+	return false
 end
 
 KeepDecorationPaintingExtension._apply_default_material = function (self)
@@ -84,7 +98,23 @@ KeepDecorationPaintingExtension.destroy = function (self)
 end
 
 KeepDecorationPaintingExtension.extensions_ready = function (self)
-	return
+	if not DLCSettings.gecko then
+		return
+	end
+
+	self:_populate_paintings()
+
+	local selected_painting = self:_get_selected_painting()
+
+	local function on_material_loaded()
+		if Managers.state.network:in_game_session() then
+			self:_create_game_object(selected_painting)
+		else
+			self._waiting_for_game_session = true
+		end
+	end
+
+	self:_load_painting_material(selected_painting, on_material_loaded)
 end
 
 KeepDecorationPaintingExtension.get_settings = function (self)
@@ -92,7 +122,11 @@ KeepDecorationPaintingExtension.get_settings = function (self)
 end
 
 KeepDecorationPaintingExtension.can_interact = function (self)
-	return self._is_leader and self._go_id and #self._paintings > 1
+	if not DLCSettings.gecko then
+		return false
+	end
+
+	return self._go_id
 end
 
 KeepDecorationPaintingExtension.cycle_next = function (self)
@@ -185,7 +219,7 @@ end
 KeepDecorationPaintingExtension._get_selected_painting = function (self)
 	local backend_key = self._backend_key
 	local backend_interface = Managers.backend:get_interface("keep_decorations")
-	local selected_painting = backend_interface:get(backend_key)
+	local selected_painting = backend_interface:get_decoration(backend_key)
 	local paintings = self._paintings
 
 	if not selected_painting or not table.find(paintings, selected_painting) then
@@ -200,7 +234,7 @@ KeepDecorationPaintingExtension._set_selected_painting = function (self, paintin
 	local backend_manager = Managers.backend
 	local backend_interface = backend_manager:get_interface("keep_decorations")
 
-	backend_interface:set(backend_key, painting)
+	backend_interface:set_decoration(backend_key, painting)
 	backend_manager:commit()
 end
 

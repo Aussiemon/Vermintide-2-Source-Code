@@ -63,7 +63,12 @@ UIRenderer.script_draw_bitmap = function (gui, render_settings, material, gui_po
 	end
 
 	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
-	local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(material)
+	local texture_settings = nil
+
+	if UIAtlasHelper.has_atlas_settings_by_texture_name(material) then
+		texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(material)
+	end
+
 	color = color and Color(color[1] * alpha_multiplier, color[2], color[3], color[4])
 
 	if texture_settings then

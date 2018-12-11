@@ -109,8 +109,6 @@ NetworkLookup.anims = {
 	"parry_finished",
 	"parry_break",
 	"parry_break_spell",
-	"flourish",
-	"flourish_finished",
 	"inspect_start",
 	"inspect_end",
 	"inspect_start_2",

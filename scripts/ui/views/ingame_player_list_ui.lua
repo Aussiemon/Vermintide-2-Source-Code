@@ -12,7 +12,7 @@ local mission_settings = {
 		total_amount = 3,
 		widget_name = "tome_counter",
 		item_name = "wpn_side_objective_tome_01",
-		title_text = "Tomes",
+		title_text = "dlc1_3_1_tomes",
 		title_widget_name = "tome_counter_title"
 	},
 	grimoire = {
@@ -21,7 +21,7 @@ local mission_settings = {
 		total_amount = 2,
 		widget_name = "grimoire_counter",
 		item_name = "wpn_grimoire_01",
-		title_text = "Grimoires",
+		title_text = "dlc1_3_1_grimoires",
 		title_widget_name = "grimoire_counter_title"
 	}
 }
@@ -71,8 +71,6 @@ IngamePlayerListUI.init = function (self, ingame_ui_context)
 	self:set_level_name(Localize(level_settings.display_name))
 	self:_setup_mission_data(level_settings)
 
-	local input_service = input_manager:get_service("player_list_input")
-	local gui_layer = definitions.scenegraph_definition.root.position[3]
 	local gamemode_settings = Managers.state.game_mode:settings()
 	local private_only = gamemode_settings.private_only
 	self.private_only = private_only
@@ -81,8 +79,6 @@ IngamePlayerListUI.init = function (self, ingame_ui_context)
 	local network_transmit = network_manager.network_transmit
 	local server_peer_id = network_transmit.server_peer_id
 	self.host_peer_id = server_peer_id or network_transmit.peer_id
-
-	rawset(_G, "ingame_player_list", self)
 end
 
 IngamePlayerListUI.create_ui_elements = function (self)
@@ -112,6 +108,14 @@ IngamePlayerListUI.create_ui_elements = function (self)
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
+	local mutator_summary1_widget = widgets_by_name.mutator_summary1
+	mutator_summary1_widget.content.item = {
+		mutators = {}
+	}
+	local mutator_summary2_widget = widgets_by_name.mutator_summary2
+	mutator_summary2_widget.content.item = {
+		mutators = {}
+	}
 	local specific_widget_definitions = definitions.specific_widget_definitions
 	self.input_description_text_widget = UIWidget.init(specific_widget_definitions.input_description_text)
 	self.background = UIWidget.init(specific_widget_definitions.background)
@@ -130,6 +134,38 @@ IngamePlayerListUI.create_ui_elements = function (self)
 	self.player_list_widgets = player_list_widgets
 	self.popup_list = UIWidget.init(definitions.popup_widget_definition)
 	self._console_cursor = UIWidget.init(console_cursor_definition)
+end
+
+local MUTATORS_PER_COLUMN = 2
+local MAX_MUTATORS = MUTATORS_PER_COLUMN * 2
+
+IngamePlayerListUI._setup_mutator_data = function (self, mutators)
+	local widgets_by_name = self._widgets_by_name
+	local mutator_summary_widget1 = widgets_by_name.mutator_summary1
+	local mutator_storage1 = mutator_summary_widget1.content.item.mutators
+
+	table.clear(mutator_storage1)
+
+	local mutator_summary_widget2 = widgets_by_name.mutator_summary2
+	local mutator_storage2 = mutator_summary_widget2.content.item.mutators
+
+	table.clear(mutator_storage2)
+
+	if mutators then
+		local current_mutator_index = 1
+
+		for name, _ in pairs(mutators) do
+			if MAX_MUTATORS < current_mutator_index then
+				break
+			elseif current_mutator_index <= MUTATORS_PER_COLUMN then
+				mutator_storage1[#mutator_storage1 + 1] = name
+			else
+				mutator_storage2[#mutator_storage2 + 1] = name
+			end
+
+			current_mutator_index = current_mutator_index + 1
+		end
+	end
 end
 
 IngamePlayerListUI._setup_mission_data = function (self, level_settings)
@@ -154,9 +190,7 @@ IngamePlayerListUI._setup_mission_data = function (self, level_settings)
 			local texture = setting.texture
 			local widget_definition = create_loot_widget(widget_name, texture, total_amount)
 			local widget = UIWidget.init(widget_definition)
-			local content = widget.content
-			local style = widget.style
-			local title_text = setting.title_text
+			local title_text = Localize(setting.title_text)
 			local title_widget_name = setting.title_widget_name
 			local title_widget = widgets_by_name[title_widget_name]
 			title_widget.content.text = title_text
@@ -231,7 +265,6 @@ IngamePlayerListUI.destroy = function (self)
 		self.cursor_active = false
 	end
 
-	rawset(_G, "ingame_player_list", nil)
 	print("[IngamePlayerListUI] - Destroy")
 end
 
@@ -254,7 +287,6 @@ IngamePlayerListUI._set_simple_widget_texture = function (self, widget_name, tex
 end
 
 IngamePlayerListUI.add_player = function (self, player)
-	local ingame_ui_context = self.ingame_ui_context
 	local is_local_player = player.local_player
 	local is_bot_player = player.bot_player or not player:is_player_controlled()
 	local ui_id = player:ui_id()
@@ -307,7 +339,6 @@ IngamePlayerListUI.update_widgets = function (self)
 	local num_players = self.num_players
 	local vote_manager = Managers.state.voting
 	local vote_kick_enabled = vote_manager:vote_kick_enabled()
-	local private_game = Managers.matchmaking:is_game_private()
 	local is_not_ps4 = self.platform ~= "ps4"
 	local leader = Managers.party:leader()
 
@@ -322,7 +353,6 @@ IngamePlayerListUI.update_widgets = function (self)
 		local can_kick_player = not is_leader and not is_server and (can_vote_kick or self:can_host_solo_kick())
 		local widget = self.player_list_widgets[i]
 		local widget_content = widget.content
-		local widget_style = widget.style
 		widget_content.show_host = is_leader
 		widget_content.is_local_player = is_local_player
 		widget_content.is_bot_player = is_bot_player
@@ -384,7 +414,6 @@ IngamePlayerListUI._populate_hero_unit_equipment = function (self, player, hero_
 	local preview_wield_slot_type = career_data.preview_wield_slot
 	local preview_wield_slot = InventorySettings.slot_names_by_type[preview_wield_slot_type]
 	local preview_wield_slot_name = preview_wield_slot[1]
-	local career_name = career_data.name
 	local items_changed = false
 
 	for slot_index, slot in pairs(slots) do
@@ -512,9 +541,6 @@ IngamePlayerListUI.update_player_information = function (self)
 				self:_set_widget_text("player_passive_name", Localize(passive_display_name))
 				self:_set_widget_text("player_passive_description", Localize(passive_description))
 				self:_set_simple_widget_texture("player_passive_icon", passive_icon)
-
-				local career_display_name = career_settings.display_name
-
 				self:_set_widget_text("player_career_name", Localize(career_display_name))
 				self:_create_player_portrait(portrait_frame, portrait_image, player_level_text)
 				self:_set_widget_text("player_hero_name", Localize(ingame_display_name))
@@ -533,11 +559,11 @@ IngamePlayerListUI._create_portrait_frame_widget = function (self, frame_setting
 end
 
 IngamePlayerListUI.get_ping_texture_by_ping_value = function (self, ping_value)
-	if ping_value <= 100 then
+	if ping_value <= 125 then
 		return "ping_icon_01", "low_ping_color"
-	elseif ping_value > 100 and ping_value <= 150 then
+	elseif ping_value > 125 and ping_value <= 175 then
 		return "ping_icon_02", "medium_ping_color"
-	elseif ping_value > 150 then
+	elseif ping_value > 175 then
 		return "ping_icon_03", "high_ping_color"
 	end
 end
@@ -610,7 +636,6 @@ end
 
 IngamePlayerListUI.update = function (self, dt)
 	local input_manager = self.input_manager
-	local gamepad_active = input_manager:is_device_active("gamepad")
 	local in_fade_active = Managers.transition:in_fade_active()
 	local input_service = input_manager:get_service("player_list_input")
 
@@ -694,37 +719,6 @@ IngamePlayerListUI.set_privacy_enabled = function (self, enabled, animate)
 	end
 end
 
-IngamePlayerListUI._update_gamepad_private_text_animation_timer = function (self, dt)
-	local timer = self._private_timer
-
-	if timer then
-		local total_time = 0.15
-
-		if timer == total_time then
-			self._private_timer = nil
-
-			return
-		else
-			timer = math.min(timer + dt, total_time)
-			self._private_timer = timer
-
-			return timer / total_time
-		end
-	end
-end
-
-IngamePlayerListUI._update_gamepad_private_text_animation = function (self, dt, instant)
-	local progress = self:_update_gamepad_private_text_animation_timer(dt)
-
-	if not progress then
-		return
-	end
-
-	local anim_progress = math.ease_pulse(progress)
-	local text_style = self.private_text_gamepad_widget.style.text
-	text_style.font_size = 22 + 10 * anim_progress
-end
-
 IngamePlayerListUI.on_save_ended_callback = function (self)
 	print("[IngamePlayerWiew] - settings saved")
 end
@@ -752,6 +746,11 @@ IngamePlayerListUI.set_active = function (self, active)
 
 			self:set_privacy_enabled(is_private)
 		end
+
+		local game_mode_manager = Managers.state.game_mode
+		local activated_mutators = game_mode_manager:activated_mutators()
+
+		self:_setup_mutator_data(activated_mutators)
 
 		local world = self.ui_renderer.world
 		local shading_env = World.get_data(world, "shading_environment")
@@ -783,10 +782,11 @@ IngamePlayerListUI.set_active = function (self, active)
 		self._fade_in_duration = 0
 	end
 
-	local input_manager = self.input_manager
-
 	if self.cursor_active then
 		ShowCursorStack.pop()
+
+		local input_manager = self.input_manager
+
 		input_manager:device_unblock_all_services("keyboard")
 		input_manager:device_unblock_all_services("mouse")
 		input_manager:device_unblock_all_services("gamepad")
@@ -920,9 +920,9 @@ IngamePlayerListUI.update_player_list = function (self, dt)
 	end
 
 	self.num_players = num_players - removed_players
-	local players = Managers.player:human_and_bot_players()
+	local human_and_bot_players = Managers.player:human_and_bot_players()
 
-	for _, player in pairs(players) do
+	for _, player in pairs(human_and_bot_players) do
 		if not temp_players[player:ui_id()] then
 			self:add_player(player)
 
@@ -973,7 +973,9 @@ IngamePlayerListUI.draw = function (self, dt)
 	local static_widgets = self._static_widgets
 
 	if static_widgets then
-		for _, widget in ipairs(static_widgets) do
+		for i = 1, #static_widgets, 1 do
+			local widget = static_widgets[i]
+
 			UIRenderer.draw_widget(ui_top_renderer, widget)
 		end
 	end
@@ -981,7 +983,9 @@ IngamePlayerListUI.draw = function (self, dt)
 	local widgets = self._widgets
 
 	if widgets then
-		for _, widget in ipairs(widgets) do
+		for i = 1, #widgets, 1 do
+			local widget = widgets[i]
+
 			UIRenderer.draw_widget(ui_top_renderer, widget)
 		end
 	end
@@ -1000,9 +1004,10 @@ IngamePlayerListUI.draw = function (self, dt)
 	for i = 1, num_players, 1 do
 		local player = players[i]
 		local widget = player.widget
-		local portrait_widget = player.portrait_widget
 
 		UIRenderer.draw_widget(ui_top_renderer, widget)
+
+		local portrait_widget = player.portrait_widget
 
 		if portrait_widget then
 			UIRenderer.draw_widget(ui_top_renderer, portrait_widget)

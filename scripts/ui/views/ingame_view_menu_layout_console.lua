@@ -10,6 +10,7 @@ end
 local tobii_contest_url = "https://vermintide2beta.com/?utm_medium=referral&utm_campaign=vermintide2beta&utm_source=ingame#challenge"
 local leave_party_button_text = (PLATFORM == "xb1" and "leave_party_menu_button_name_xb1") or "leave_party_menu_button_name"
 local disband_party_button_text = (PLATFORM == "xb1" and "disband_party_menu_button_name_xb1") or "disband_party_menu_button_name"
+local quit_menu_button_text = (PLATFORM == "xb1" and "quit_menu_button_name_xb1") or "quit_menu_button_name_ps4"
 local menu_layouts = {}
 
 function demo_inverted_func()
@@ -69,7 +70,7 @@ if PLATFORM == "ps4" then
 				{
 					fade = false,
 					transition = "return_to_title_screen_hero_view",
-					display_name = "quit_menu_button_name_xb1"
+					display_name = quit_menu_button_text
 				}
 			},
 			host = {
@@ -106,7 +107,7 @@ if PLATFORM == "ps4" then
 				{
 					fade = false,
 					transition = "return_to_title_screen_hero_view",
-					display_name = "quit_menu_button_name_xb1"
+					display_name = quit_menu_button_text
 				}
 			},
 			client = {
@@ -143,7 +144,7 @@ if PLATFORM == "ps4" then
 				{
 					fade = false,
 					transition = "return_to_title_screen_hero_view",
-					display_name = "quit_menu_button_name_xb1"
+					display_name = quit_menu_button_text
 				}
 			},
 			demo = {
@@ -188,7 +189,7 @@ if PLATFORM == "ps4" then
 				{
 					fade = false,
 					transition = "return_to_title_screen_hero_view",
-					display_name = "quit_menu_button_name_xb1"
+					display_name = quit_menu_button_text
 				}
 			}
 		},
@@ -219,7 +220,7 @@ if PLATFORM == "ps4" then
 				{
 					fade = false,
 					transition = "return_to_title_screen_hero_view",
-					display_name = "quit_menu_button_name_xb1"
+					display_name = quit_menu_button_text
 				}
 			},
 			host = {
@@ -248,7 +249,7 @@ if PLATFORM == "ps4" then
 				{
 					fade = false,
 					transition = "return_to_title_screen_hero_view",
-					display_name = "quit_menu_button_name_xb1"
+					display_name = quit_menu_button_text
 				}
 			},
 			client = {
@@ -277,7 +278,7 @@ if PLATFORM == "ps4" then
 				{
 					fade = false,
 					transition = "return_to_title_screen_hero_view",
-					display_name = "quit_menu_button_name_xb1"
+					display_name = quit_menu_button_text
 				}
 			},
 			tutorial = {
@@ -291,7 +292,7 @@ if PLATFORM == "ps4" then
 				},
 				{
 					transition = "return_to_title_screen_hero_view",
-					display_name = "quit_menu_button_name_xb1"
+					display_name = quit_menu_button_text
 				}
 			},
 			demo = {
@@ -333,7 +334,7 @@ if PLATFORM == "ps4" then
 				{
 					fade = false,
 					transition = "return_to_title_screen_hero_view",
-					display_name = "quit_menu_button_name_xb1"
+					display_name = quit_menu_button_text
 				}
 			}
 		}
@@ -375,7 +376,7 @@ elseif PLATFORM == "xb1" then
 				{
 					fade = false,
 					transition = "return_to_title_screen_hero_view",
-					display_name = "quit_menu_button_name_xb1"
+					display_name = quit_menu_button_text
 				}
 			},
 			host = {
@@ -412,7 +413,7 @@ elseif PLATFORM == "xb1" then
 				{
 					fade = false,
 					transition = "return_to_title_screen_hero_view",
-					display_name = "quit_menu_button_name_xb1"
+					display_name = quit_menu_button_text
 				}
 			},
 			client = {
@@ -449,7 +450,7 @@ elseif PLATFORM == "xb1" then
 				{
 					fade = false,
 					transition = "return_to_title_screen_hero_view",
-					display_name = "quit_menu_button_name_xb1"
+					display_name = quit_menu_button_text
 				}
 			},
 			demo = {
@@ -494,7 +495,7 @@ elseif PLATFORM == "xb1" then
 				{
 					fade = false,
 					transition = "return_to_title_screen_hero_view",
-					display_name = "quit_menu_button_name_xb1"
+					display_name = quit_menu_button_text
 				}
 			}
 		},
@@ -525,7 +526,7 @@ elseif PLATFORM == "xb1" then
 				{
 					fade = false,
 					transition = "return_to_title_screen_hero_view",
-					display_name = "quit_menu_button_name_xb1"
+					display_name = quit_menu_button_text
 				}
 			},
 			host = {
@@ -554,7 +555,7 @@ elseif PLATFORM == "xb1" then
 				{
 					fade = false,
 					transition = "return_to_title_screen_hero_view",
-					display_name = "quit_menu_button_name_xb1"
+					display_name = quit_menu_button_text
 				}
 			},
 			client = {
@@ -583,7 +584,7 @@ elseif PLATFORM == "xb1" then
 				{
 					fade = false,
 					transition = "return_to_title_screen_hero_view",
-					display_name = "quit_menu_button_name_xb1"
+					display_name = quit_menu_button_text
 				}
 			},
 			tutorial = {
@@ -597,7 +598,7 @@ elseif PLATFORM == "xb1" then
 				},
 				{
 					transition = "return_to_title_screen_hero_view",
-					display_name = "quit_menu_button_name_xb1"
+					display_name = quit_menu_button_text
 				}
 			},
 			demo = {
@@ -639,7 +640,7 @@ elseif PLATFORM == "xb1" then
 				{
 					fade = false,
 					transition = "return_to_title_screen_hero_view",
-					display_name = "quit_menu_button_name_xb1"
+					display_name = quit_menu_button_text
 				}
 			}
 		}

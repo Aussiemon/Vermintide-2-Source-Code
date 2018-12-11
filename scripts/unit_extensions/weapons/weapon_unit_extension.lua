@@ -372,9 +372,18 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 		end
 
 		if current_action_settings.enter_function then
-			local input_extension = ScriptUnit.extension(owner_unit, "input_system")
+			local minimum_hold_time = current_action_settings.minimum_hold_time or 0
 
-			current_action_settings.enter_function(owner_unit, input_extension)
+			if minimum_hold_time > 0 then
+				local buffed_minimum_hold_time = ActionUtils.apply_attack_speed_buff(minimum_hold_time, self.owner_unit)
+				buffed_minimum_hold_time = ActionUtils.apply_charge_speed_buff_chain_window(buffed_minimum_hold_time, self.owner_unit, current_action_settings)
+				minimum_hold_time = minimum_hold_time * minimum_hold_time / buffed_minimum_hold_time
+			end
+
+			local input_extension = ScriptUnit.extension(owner_unit, "input_system")
+			local remaining_time = (self.action_time_started + minimum_hold_time) - t
+
+			current_action_settings.enter_function(owner_unit, input_extension, remaining_time)
 		end
 
 		if event then
@@ -613,9 +622,15 @@ WeaponUnitExtension.can_stop_hold_action = function (self, t)
 
 	if buff_extension then
 		minimum_hold_time = buff_extension:apply_buffs_to_value(minimum_hold_time, StatBuffIndex.RELOAD_SPEED)
+
+		if minimum_hold_time > 0 then
+			local buffed_minimum_hold_time = ActionUtils.apply_attack_speed_buff(minimum_hold_time, self.owner_unit)
+			buffed_minimum_hold_time = ActionUtils.apply_charge_speed_buff_chain_window(buffed_minimum_hold_time, self.owner_unit, current_action_settings)
+			minimum_hold_time = minimum_hold_time * minimum_hold_time / buffed_minimum_hold_time
+		end
 	end
 
-	return minimum_hold_time < current_time_in_action
+	return current_time_in_action > minimum_hold_time
 end
 
 WeaponUnitExtension.get_action_cooldown = function (self, action)

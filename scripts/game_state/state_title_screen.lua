@@ -45,6 +45,16 @@ StateTitleScreen.on_enter = function (self, params)
 			self._auto_start = true
 
 			break
+		elseif PLATFORM == "ps4" then
+			local play_together_list = SessionInvitation.play_together_list()
+
+			if play_together_list then
+				Managers.invite:set_play_together_list(play_together_list)
+
+				self._auto_start = true
+
+				break
+			end
 		end
 	end
 
@@ -96,6 +106,8 @@ StateTitleScreen.on_enter = function (self, params)
 	if Managers.backend and Managers.backend:item_script_type() == "tutorial" then
 		Managers.backend:stop_tutorial()
 	end
+
+	ShowCursorStack.push()
 end
 
 StateTitleScreen._demo_hack_state_managers = function (self)
@@ -292,7 +304,7 @@ StateTitleScreen._next_state = function (self)
 		else
 			return
 		end
-	elseif Managers.account:leaving_game() then
+	elseif Managers.account:leaving_game() and not self._wait_for_xboxlive_teardown then
 		print("Reloading StateTitleScreen due to leaving game")
 
 		self.state = StateTitleScreen
@@ -387,6 +399,7 @@ StateTitleScreen.on_exit = function (self, application_shutdown)
 	end
 
 	Managers.music:trigger_event("Stop_menu_screen_music")
+	ShowCursorStack.pop()
 end
 
 return

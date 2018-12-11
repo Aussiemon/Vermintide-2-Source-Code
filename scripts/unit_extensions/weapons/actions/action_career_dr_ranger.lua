@@ -123,10 +123,6 @@ ActionCareerDRRanger.finish = function (self, reason)
 		self:_throw()
 	end
 
-	if reason ~= "action_complete" then
-		return
-	end
-
 	self.inventory_extension:wield_previous_slot()
 	self.career_extension:start_activated_ability_cooldown()
 end

@@ -170,15 +170,16 @@ local breed_data = {
 		target_catapulted_mul = 2,
 		target_stickyness_bonus_b = 10,
 		targeted_by_other_special = -10,
-		target_stickyness_duration_a = 3,
+		target_staggered_you_bonus = 100,
 		target_stickyness_duration_b = 5,
 		aggro_decay_per_sec = 4,
 		target_outside_navmesh_mul = 0.5,
 		old_target_aggro_mul = 0.5,
 		target_is_in_vomit_multiplier = 10,
 		target_disabled_aggro_mul = 0,
+		target_stickyness_duration_a = 3,
 		max_distance = 10,
-		target_stickyness_bonus_a = 1500,
+		target_stickyness_bonus_a = 50,
 		distance_weight = 10,
 		target_disabled_mul = 0
 	},
@@ -570,12 +571,12 @@ local action_data = {
 		blocked_difficulty_damage = {
 			easy = {
 				2,
-				4,
+				3,
 				2.5
 			},
 			normal = {
 				3,
-				4,
+				3,
 				2.5
 			},
 			hard = {
@@ -1001,12 +1002,12 @@ local action_data = {
 		blocked_difficulty_damage = {
 			easy = {
 				1,
-				4,
+				2,
 				2.5
 			},
 			normal = {
 				2,
-				4,
+				2,
 				2.5
 			},
 			hard = {

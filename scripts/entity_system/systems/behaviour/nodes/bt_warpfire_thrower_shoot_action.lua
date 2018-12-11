@@ -30,10 +30,6 @@ BTWarpfireThrowerShootAction.enter = function (self, unit, blackboard, t)
 	navigation_extension:stop()
 	blackboard.locomotion_extension:set_wanted_velocity(Vector3.zero())
 
-	local network_manager = Managers.state.network
-
-	network_manager:anim_event(unit, "to_combat")
-
 	attack_data.constraint_target = attack_data.constraint_target or Unit.animation_find_constraint_target(unit, "aim_target")
 	local target_unit = blackboard.target_unit
 

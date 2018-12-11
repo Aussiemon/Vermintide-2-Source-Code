@@ -265,7 +265,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.3,
+			anim_time_scale = time_mod * 1.2,
 			buff_data = {
 				{
 					start_time = 0,
@@ -334,7 +334,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.3,
+			anim_time_scale = time_mod * 1.2,
 			buff_data = {
 				{
 					start_time = 0,
@@ -790,7 +790,7 @@ weapon_template.actions = {
 	action_two = {
 		default = {
 			cooldown = 0.15,
-			minimum_hold_time = 0.3,
+			minimum_hold_time = 0.2,
 			anim_end_event = "parry_finished",
 			kind = "block",
 			hold_input = "action_two_hold",
@@ -799,8 +799,8 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action"
 			end,
 			total_time = math.huge,
-			enter_function = function (attacker_unit, input_extension)
-				return input_extension:reset_release_input()
+			enter_function = function (attacker_unit, input_extension, remaining_time)
+				return input_extension:reset_release_input_with_delay(remaining_time)
 			end,
 			buff_data = {
 				{

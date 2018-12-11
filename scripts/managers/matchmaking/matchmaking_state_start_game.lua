@@ -34,6 +34,8 @@ end
 
 MatchmakingStateStartGame._setup_lobby_data = function (self)
 	local level_key, difficulty, act_key, quick_game, private_game = nil
+	local search_config = self.search_config
+	local game_mode = search_config.game_mode
 
 	if self.state_context.join_by_lobby_browser then
 		level_key = self._level_transition_handler:default_level_key()
@@ -42,7 +44,6 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 		quick_game = false
 		private_game = false
 	else
-		local search_config = self.search_config
 		level_key = search_config.level_key
 		difficulty = search_config.difficulty
 		act_key = search_config.act_key
@@ -50,8 +51,13 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 		private_game = search_config.private_game
 	end
 
-	if quick_game then
-		local ignore_dlc_check = true
+	if quick_game or level_key == nil then
+		local ignore_dlc_check = false
+
+		if Managers.account:offline_mode() then
+			ignore_dlc_check = false
+		end
+
 		level_key = self._matchmaking_manager:get_weighed_random_unlocked_level(ignore_dlc_check)
 	end
 
@@ -64,7 +70,7 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 		else
 			local eac_state = EAC.state()
 
-			assert(eac_state ~= nil)
+			fassert(eac_state ~= nil, "Couldn't fetch EAC state!")
 
 			eac_authorized = eac_state == "trusted"
 		end
@@ -78,9 +84,10 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 			"harder",
 			"hardest"
 		}
-		local search_config = self.search_config
-		level_key = search_config.level_key
-		difficulty = search_config.difficulty
+		local matchmaking_types = {
+			"quick_game",
+			"custom_game"
+		}
 		local lobby_members_class = self._lobby:members()
 		local lobby_members = lobby_members_class:get_members()
 		local profiles = {}
@@ -101,6 +108,7 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 			level = {
 				level_key
 			},
+			matchmaking_types = matchmaking_types,
 			difficulty = difficulty_id,
 			powerlevel = powerlevel,
 			strict_matchmaking = strict_matchmaking,
@@ -110,9 +118,6 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 
 		self._lobby:enable_matchmaking(not search_config.private_game, ticket_params, 600)
 	end
-
-	local level_settings = LevelSettings[level_key]
-	local game_mode = level_settings.game_mode
 
 	self._matchmaking_manager:set_matchmaking_data(level_key, difficulty, act_key, game_mode, private_game, quick_game, eac_authorized)
 	Managers.state.difficulty:set_difficulty(difficulty)

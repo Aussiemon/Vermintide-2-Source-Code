@@ -177,7 +177,7 @@ AbilityUI._set_elements_visible = function (self, visible)
 end
 
 AbilityUI._handle_gamepad = function (self)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local gamepad_active = Managers.input:is_device_active("gamepad") or PLATFORM ~= "win32"
 
 	if (gamepad_active or UISettings.use_gamepad_hud_layout == "always") and UISettings.use_gamepad_hud_layout ~= "never" then
 		if self._retained_elements_visible then

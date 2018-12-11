@@ -661,6 +661,15 @@ FreeFlightManager._update_free_flight = function (self, dt, player, data)
 		Camera.set_vertical_fov(cam, old_fov + math.pi / 72)
 	end
 
+	if input:get("ray") then
+		local physics_world = World.get_data(world, "physics_world")
+		local _, _, _, _, actor = PhysicsWorld.immediate_raycast(physics_world, Camera.local_position(cam), Quaternion.forward(Camera.local_rotation(cam)), 999, "closest")
+
+		if actor then
+			print(actor)
+		end
+	end
+
 	if input:get("decrease_fov") then
 		local old_fov = Camera.vertical_fov(cam)
 

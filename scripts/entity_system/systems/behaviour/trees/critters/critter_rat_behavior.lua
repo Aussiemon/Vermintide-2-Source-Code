@@ -11,11 +11,6 @@ BreedBehaviors.critter_rat = {
 		name = "in_vortex"
 	},
 	{
-		"BTInGravityWellAction",
-		condition = "in_gravity_well",
-		name = "in_gravity_well"
-	},
-	{
 		"BTCritterRatScurryUnderDoorAction",
 		name = "under_door",
 		condition = "at_smart_object_and_door",

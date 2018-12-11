@@ -268,6 +268,10 @@ TextureQuality = {
 			},
 			{
 				mip_level = 2,
+				texture_setting = "texture_categories/weapon_mae"
+			},
+			{
+				mip_level = 2,
 				texture_setting = "texture_categories/weapon_nm"
 			},
 			{
@@ -326,6 +330,10 @@ TextureQuality = {
 			},
 			{
 				mip_level = 1,
+				texture_setting = "texture_categories/weapon_mae"
+			},
+			{
+				mip_level = 1,
 				texture_setting = "texture_categories/weapon_nm"
 			},
 			{
@@ -381,6 +389,10 @@ TextureQuality = {
 			{
 				mip_level = 0,
 				texture_setting = "texture_categories/weapon_ma"
+			},
+			{
+				mip_level = 0,
+				texture_setting = "texture_categories/weapon_mae"
 			},
 			{
 				mip_level = 0,

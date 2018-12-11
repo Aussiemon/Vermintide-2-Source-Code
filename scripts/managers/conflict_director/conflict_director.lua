@@ -633,14 +633,13 @@ end
 
 ConflictDirector.event_horde = function (self, t, terror_event_id, composition_type, limit_spawners, silent, group_template)
 	if not script_data.ai_horde_spawning_disabled then
-		local horde = self.horde_spawner:execute_event_horde(t, terror_event_id, composition_type, limit_spawners, silent, group_template)
+		local horde = self.horde_spawner:execute_event_horde(t, terror_event_id, composition_type, limit_spawners, silent, group_template, nil)
 
 		return horde
 	end
 end
 
 ConflictDirector.check_updated_settings = function (self, new_conflict_setting)
-	local script_data = script_data
 	local current_conflict_settings = self.current_conflict_settings
 	local script_data = script_data
 
@@ -688,7 +687,7 @@ ConflictDirector.patch_settings_with_difficulty = function (self, source_setting
 end
 
 ConflictDirector.set_updated_settings = function (self, conflict_settings_name)
-	assert(not ConflictDirectorSets[conflict_settings_name], "Should not get a ConflictDirectorSet in ConflictDirector:set_updated_settings")
+	fassert(not ConflictDirectorSets[conflict_settings_name], "Should not get a ConflictDirectorSet in ConflictDirector:set_updated_settings")
 
 	local director = ConflictDirectors[conflict_settings_name]
 	CurrentConflictSettings = director
@@ -2983,7 +2982,7 @@ ConflictDirector.intensity_decay_frozen = function (self, freeze_time)
 end
 
 ConflictDirector.boss_event_running = function (self)
-	return self._num_spawned_by_breed.skaven_rat_ogre > 0
+	return self._num_spawned_by_breed.skaven_rat_ogre > 0 or self._num_spawned_by_breed.skaven_stormfiend > 0 or self._num_spawned_by_breed.chaos_troll > 0 or self._num_spawned_by_breed.chaos_spawn > 0
 end
 
 ConflictDirector.angry_boss = function (self)

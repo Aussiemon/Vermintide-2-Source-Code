@@ -43,10 +43,6 @@ BloodManagerDummy.play_screen_space_blood = function (self, particle_name, posit
 	return
 end
 
-BloodManagerDummy.test_enemy_blood = function (self, position)
-	return
-end
-
 BloodManagerDummy.destroy = function (self)
 	return
 end

@@ -389,7 +389,6 @@ local unit_templates = {
 			"GenericDeathExtension",
 			"AIProximityExtension",
 			"BuffExtension",
-			"SoundSectorExtension",
 			"ProjectileLinkerExtension",
 			"EnemyOutlineExtension",
 			"AIGroupMember",
@@ -405,7 +404,6 @@ local unit_templates = {
 			"GenericDeathExtension",
 			"AIProximityExtension",
 			"BuffExtension",
-			"SoundSectorExtension",
 			"ProjectileLinkerExtension",
 			"EnemyOutlineExtension",
 			"DialogueActorExtension",
@@ -417,7 +415,6 @@ local unit_templates = {
 				"AINavigationExtension",
 				"AIProximityExtension",
 				"BuffExtension",
-				"SoundSectorExtension",
 				"AIGroupMember",
 				"DialogueActorExtension",
 				"AIVolumeExtension"
@@ -427,16 +424,9 @@ local unit_templates = {
 				"AiHuskLocomotionExtension",
 				"AIProximityExtension",
 				"BuffExtension",
-				"SoundSectorExtension",
 				"DialogueActorExtension"
 			}
 		}
-	},
-	ai_unit = {
-		base_template = "ai_unit_base",
-		go_type = "ai_unit",
-		self_owned_extensions = {},
-		husk_extensions = {}
 	},
 	ai_unit_critter = {
 		go_type = "ai_unit",
@@ -561,17 +551,22 @@ local unit_templates = {
 		self_owned_extensions = {
 			"AIMeleeLineOfSightExtension",
 			"AIInventoryExtension",
-			"AIEnemySlotExtension"
+			"AIEnemySlotExtension",
+			"SoundSectorExtension"
 		},
 		husk_extensions = {
-			"AIInventoryExtension"
+			"AIInventoryExtension",
+			"SoundSectorExtension"
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
 				"AIMeleeLineOfSightExtension",
-				"AIEnemySlotExtension"
+				"AIEnemySlotExtension",
+				"SoundSectorExtension"
 			},
-			husk_extensions = {}
+			husk_extensions = {
+				"SoundSectorExtension"
+			}
 		}
 	},
 	ai_unit_shield_rat = {
@@ -672,20 +667,24 @@ local unit_templates = {
 			"AIMeleeLineOfSightExtension",
 			"AIInventoryExtension",
 			"AIEnemySlotExtension",
-			"GenericUnitAimExtension"
+			"GenericUnitAimExtension",
+			"SoundSectorExtension"
 		},
 		husk_extensions = {
 			"AIInventoryExtension",
-			"GenericUnitAimExtension"
+			"GenericUnitAimExtension",
+			"SoundSectorExtension"
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
 				"AIMeleeLineOfSightExtension",
 				"AIEnemySlotExtension",
-				"GenericUnitAimExtension"
+				"GenericUnitAimExtension",
+				"SoundSectorExtension"
 			},
 			husk_extensions = {
-				"GenericUnitAimExtension"
+				"GenericUnitAimExtension",
+				"SoundSectorExtension"
 			}
 		}
 	},
@@ -766,7 +765,6 @@ local unit_templates = {
 			"GenericDeathExtension",
 			"AIProximityExtension",
 			"BuffExtension",
-			"SoundSectorExtension",
 			"ProjectileLinkerExtension",
 			"AIGroupMember",
 			"DialogueActorExtension",
@@ -784,7 +782,6 @@ local unit_templates = {
 			"GenericDeathExtension",
 			"BuffExtension",
 			"AIProximityExtension",
-			"SoundSectorExtension",
 			"ProjectileLinkerExtension",
 			"DialogueActorExtension",
 			"AIInventoryExtension",
@@ -811,7 +808,6 @@ local unit_templates = {
 			"AIVolumeExtension",
 			"PingTargetExtension",
 			"EnemyOutlineExtension",
-			"SoundSectorExtension",
 			"AIUnitFadeExtension"
 		},
 		husk_extensions = {
@@ -827,7 +823,6 @@ local unit_templates = {
 			"DialogueActorExtension",
 			"PingTargetExtension",
 			"EnemyOutlineExtension",
-			"SoundSectorExtension",
 			"AIUnitFadeExtension"
 		},
 		remove_when_killed = {
@@ -867,7 +862,6 @@ local unit_templates = {
 			"PingTargetExtension",
 			"EnemyOutlineExtension",
 			"GenericUnitAimExtension",
-			"SoundSectorExtension",
 			"AIUnitFadeExtension",
 			"AIMeleeLineOfSightExtension"
 		},
@@ -885,7 +879,6 @@ local unit_templates = {
 			"PingTargetExtension",
 			"EnemyOutlineExtension",
 			"GenericUnitAimExtension",
-			"SoundSectorExtension",
 			"AIUnitFadeExtension"
 		},
 		remove_when_killed = {
@@ -926,7 +919,6 @@ local unit_templates = {
 			"PingTargetExtension",
 			"EnemyOutlineExtension",
 			"GenericUnitAimExtension",
-			"SoundSectorExtension",
 			"AIUnitFadeExtension",
 			"AIMeleeLineOfSightExtension",
 			"StormfiendBeamExtension"
@@ -945,7 +937,6 @@ local unit_templates = {
 			"PingTargetExtension",
 			"EnemyOutlineExtension",
 			"GenericUnitAimExtension",
-			"SoundSectorExtension",
 			"AIUnitFadeExtension",
 			"StormfiendBeamExtension"
 		},
@@ -1003,7 +994,6 @@ local unit_templates = {
 			"AIVolumeExtension",
 			"PingTargetExtension",
 			"EnemyOutlineExtension",
-			"SoundSectorExtension",
 			"AIUnitFadeExtension"
 		},
 		husk_extensions = {
@@ -1018,7 +1008,6 @@ local unit_templates = {
 			"DialogueActorExtension",
 			"PingTargetExtension",
 			"EnemyOutlineExtension",
-			"SoundSectorExtension",
 			"AIUnitFadeExtension"
 		},
 		remove_when_killed = {
@@ -1251,7 +1240,6 @@ local unit_templates = {
 			"GenericDeathExtension",
 			"AIProximityExtension",
 			"BuffExtension",
-			"SoundSectorExtension",
 			"ProjectileLinkerExtension",
 			"TentacleSplineExtension",
 			"DialogueActorExtension"
@@ -1440,6 +1428,7 @@ local unit_templates = {
 			"ProjectileLinkerExtension",
 			"ProjectilePhysicsUnitLocomotionExtension",
 			"PickupUnitExtension",
+			"EnemyOutlineExtension",
 			"GenericUnitInteractableExtension",
 			"LookatTargetExtension",
 			"PickupProjectileVolumeExtension",
@@ -1449,6 +1438,7 @@ local unit_templates = {
 		husk_extensions = {
 			"TrainingDummyHealthExtension",
 			"GenericDeathExtension",
+			"EnemyOutlineExtension",
 			"GenericHitReactionExtension",
 			"ProjectileLinkerExtension",
 			"ProjectilePhysicsHuskLocomotionExtension",

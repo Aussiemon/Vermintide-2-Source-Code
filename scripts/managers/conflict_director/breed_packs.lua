@@ -1140,7 +1140,7 @@ BreedPacks = {
 			clamp_breeds_hi = {
 				normal = {
 					{
-						6,
+						3,
 						"skaven_clan_rat_with_shield",
 						Breeds.skaven_clan_rat
 					},
@@ -1391,8 +1391,8 @@ BreedPacks = {
 				normal = {
 					{
 						{
-							4,
-							6
+							2,
+							3
 						},
 						"skaven_clan_rat_with_shield",
 						Breeds.skaven_clan_rat
@@ -1489,7 +1489,7 @@ BreedPacks = {
 					{
 						{
 							0,
-							2
+							1
 						},
 						"skaven_clan_rat_with_shield",
 						Breeds.skaven_clan_rat
@@ -1691,10 +1691,7 @@ BreedPacks = {
 			clamp_breeds_hi = {
 				normal = {
 					{
-						{
-							2,
-							3
-						},
+						2,
 						"skaven_plague_monk",
 						Breeds.skaven_clan_rat
 					},
@@ -2661,8 +2658,8 @@ BreedPacks = {
 				normal = {
 					{
 						{
-							2,
-							3
+							1,
+							2
 						},
 						"chaos_berzerker",
 						Breeds.chaos_marauder
@@ -2732,8 +2729,8 @@ BreedPacks = {
 				normal = {
 					{
 						{
-							2,
-							3
+							0,
+							1
 						},
 						"chaos_berzerker",
 						Breeds.chaos_marauder
@@ -2907,8 +2904,8 @@ BreedPacks = {
 				normal = {
 					{
 						{
-							2,
-							3
+							1,
+							2
 						},
 						"chaos_berzerker",
 						Breeds.chaos_fanatic
@@ -2923,8 +2920,8 @@ BreedPacks = {
 					},
 					{
 						{
-							2,
-							3
+							1,
+							2
 						},
 						"chaos_marauder_with_shield",
 						Breeds.chaos_fanatic
@@ -3013,8 +3010,8 @@ BreedPacks = {
 				normal = {
 					{
 						{
-							1,
-							2
+							0,
+							1
 						},
 						"chaos_berzerker",
 						Breeds.chaos_fanatic
@@ -3029,8 +3026,8 @@ BreedPacks = {
 					},
 					{
 						{
-							2,
-							3
+							0,
+							1
 						},
 						"chaos_marauder_with_shield",
 						Breeds.chaos_fanatic

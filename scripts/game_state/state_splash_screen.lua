@@ -49,14 +49,14 @@ StateSplashScreen.on_enter = function (self)
 	Managers.transition:show_loading_icon(false)
 	self:setup_world()
 
-	if PLATFORM == "win32" then
+	if PLATFORM == "win32" or PLATFORM == "xb1" then
 		self:setup_input()
 	end
 
 	if PLATFORM == "win32" then
 		Managers.package:load("resource_packages/start_menu_splash", "StateSplashScreen", callback(self, "cb_splashes_loaded"), true, true)
 	elseif PLATFORM == "ps4" then
-		if PS4.title_id() == "CUSA02133_00" then
+		if PS4.title_id() == "CUSA14407_00" or PS4.title_id() == "CUSA13595_00" then
 			self:setup_esrb_logo()
 		else
 			Managers.package:load("resource_packages/start_menu_splash", "StateSplashScreen", callback(self, "cb_splashes_loaded"), true, true)
@@ -167,7 +167,7 @@ StateSplashScreen.setup_world = function (self)
 	self.viewport = ScriptWorld.create_viewport(self.world, self._viewport_name, "overlay", 1)
 end
 
-if PLATFORM == "win32" then
+if PLATFORM == "win32" or PLATFORM == "xb1" then
 	StateSplashScreen.setup_input = function (self)
 		self.input_manager = InputManager:new()
 		Managers.input = self.input_manager

@@ -161,6 +161,11 @@ end
 
 LevelUnlockUtils.highest_completed_difficulty_index_by_act = function (statistics_db, player_stats_id, act_name)
 	local act_levels = GameActs[act_name]
+
+	if not act_levels then
+		return math.huge
+	end
+
 	local act_difficulty_completed_index = math.huge
 
 	for _, level_key in ipairs(act_levels) do

@@ -330,8 +330,6 @@ end
 local DO_RELOAD = false
 
 DemoTitleUI.update = function (self, dt, t)
-	script_data.demo_ui = self
-
 	if DO_RELOAD then
 		self:_create_ui_elements()
 		self:_recreate_characters()

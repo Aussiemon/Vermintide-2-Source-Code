@@ -540,18 +540,18 @@ GameNetworkManager.game_object_created_keep_decoration = function (self, game_ob
 	local unit_level_index = GameSession.game_object_field(self.game_session, game_object_id, "level_unit_index")
 	local level = LevelHelper:current_level(self._world)
 	local unit = Level.unit_by_index(level, unit_level_index)
-	local decoration_system = Managers.state.entity:system("keep_decoration_system")
+	local keep_decoration_extension = ScriptUnit.extension(unit, "keep_decoration_system")
 
-	decoration_system:on_game_object_created(unit, game_object_id)
+	keep_decoration_extension:on_game_object_created(game_object_id)
 end
 
 GameNetworkManager.game_object_destroyed_keep_decoration = function (self, game_object_id, owner_id, go_template)
 	local unit_level_index = GameSession.game_object_field(self.game_session, game_object_id, "level_unit_index")
 	local level = LevelHelper:current_level(self._world)
 	local unit = Level.unit_by_index(level, unit_level_index)
-	local decoration_system = Managers.state.entity:system("keep_decoration_system")
+	local keep_decoration_extension = ScriptUnit.extension(unit, "keep_decoration_system")
 
-	decoration_system:on_game_object_destroyed(unit)
+	keep_decoration_extension:on_game_object_destroyed()
 end
 
 GameNetworkManager.destroy_game_object = function (self, go_id)

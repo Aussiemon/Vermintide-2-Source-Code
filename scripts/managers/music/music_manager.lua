@@ -572,21 +572,25 @@ end
 MusicManager._update_career_state = function (self, dt, t)
 	local music_player = self._music_players.combat_music
 	local local_player_id = self._active_local_player_id
+	local player = Managers.player:local_player(local_player_id)
 
-	if music_player and local_player_id then
-		local player = Managers.player:local_player(local_player_id)
+	if player and player.bot_player then
+		return
+	end
+
+	local career_state = "default"
+
+	if player then
 		local player_unit = player.player_unit
 
 		if Unit.alive(player_unit) then
 			local career_extension = ScriptUnit.extension(player_unit, "career_system")
-			local career_state = career_extension:get_state()
-
-			music_player:set_group_state("career_state", career_state)
-		else
-			music_player:set_group_state("career_state", "default")
+			career_state = career_extension:get_state()
 		end
-	elseif music_player then
-		music_player:set_group_state("career_state", "default")
+	end
+
+	if music_player then
+		music_player:set_group_state("career_state", career_state)
 	end
 end
 

@@ -41,6 +41,7 @@ BTChaosSorcererSummoningAction.enter = function (self, unit, blackboard, t)
 			self[init_func_name](self, unit, blackboard, t)
 		end
 
+		blackboard.move_state = "attacking"
 		blackboard.summon_target_unit = target_unit
 		blackboard.summoning = true
 	end

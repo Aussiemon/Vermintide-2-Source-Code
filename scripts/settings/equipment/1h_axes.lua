@@ -1,8 +1,5 @@
 local push_radius = 2
 local time_mod = 0.9
-local light_smiter_stagger = 3
-local heavy_smiter_stagger = 3
-local crit_strike_mod = 0
 local weapon_template = weapon_template or {}
 weapon_template.actions = {
 	action_one = {
@@ -784,8 +781,8 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action"
 			end,
 			total_time = math.huge,
-			enter_function = function (attacker_unit, input_extension)
-				return input_extension:reset_release_input()
+			enter_function = function (attacker_unit, input_extension, remaining_time)
+				return input_extension:reset_release_input_with_delay(remaining_time)
 			end,
 			buff_data = {
 				{

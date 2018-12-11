@@ -26,11 +26,6 @@ BreedBehaviors.chaos_exalted_sorcerer = {
 		action_data = ACTIONS.intro_sequence
 	},
 	{
-		"BTInGravityWellAction",
-		condition = "in_gravity_well",
-		name = "in_gravity_well"
-	},
-	{
 		"BTFallAction",
 		condition = "is_falling",
 		name = "falling"

@@ -33,15 +33,16 @@ HordeSettingsBasics = {
 }
 HordeSettings = {
 	default = {
-		vector_composition = "medium",
 		chance_of_vector = 0.5,
 		ambush_composition = "medium",
+		vector_composition = "medium",
 		mini_patrol_composition = "mini_patrol",
-		chance_of_vector_blob = 0.5,
 		vector_blob_composition = "medium",
+		chance_of_vector_blob = 0.5,
 		disabled = false,
 		mix_paced_hordes = true,
 		compositions = HordeCompositions,
+		compositions_pacing = HordeCompositionsPacing,
 		ambush = HordeSettingsBasics.ambush,
 		vector = HordeSettingsBasics.vector,
 		vector_blob = HordeSettingsBasics.vector_blob,
@@ -64,15 +65,16 @@ HordeSettings = {
 		}
 	},
 	default_light = {
-		vector_composition = "medium",
 		chance_of_vector = 0.5,
 		ambush_composition = "medium",
+		vector_composition = "medium",
 		mini_patrol_composition = "mini_patrol",
-		chance_of_vector_blob = 0.5,
 		vector_blob_composition = "medium",
+		chance_of_vector_blob = 0.5,
 		disabled = false,
 		mix_paced_hordes = true,
 		compositions = HordeCompositions,
+		compositions_pacing = HordeCompositionsPacing,
 		ambush = HordeSettingsBasics.ambush,
 		vector = HordeSettingsBasics.vector,
 		vector_blob = HordeSettingsBasics.vector_blob,
@@ -95,15 +97,16 @@ HordeSettings = {
 		}
 	},
 	chaos = {
-		vector_composition = "chaos_medium",
 		chance_of_vector = 1,
 		ambush_composition = "chaos_medium",
+		vector_composition = "chaos_medium",
 		mini_patrol_composition = "chaos_mini_patrol",
-		chance_of_vector_blob = 1,
 		vector_blob_composition = "chaos_medium",
+		chance_of_vector_blob = 1,
 		disabled = false,
 		mix_paced_hordes = true,
 		compositions = HordeCompositions,
+		compositions_pacing = HordeCompositionsPacing,
 		ambush = HordeSettingsBasics.ambush,
 		vector = HordeSettingsBasics.vector,
 		vector_blob = HordeSettingsBasics.vector_blob,
@@ -126,15 +129,16 @@ HordeSettings = {
 		}
 	},
 	chaos_light = {
-		vector_composition = "chaos_medium",
 		chance_of_vector = 1,
 		ambush_composition = "chaos_medium",
+		vector_composition = "chaos_medium",
 		mini_patrol_composition = "chaos_mini_patrol",
-		chance_of_vector_blob = 1,
 		vector_blob_composition = "chaos_medium",
+		chance_of_vector_blob = 1,
 		disabled = false,
 		mix_paced_hordes = true,
 		compositions = HordeCompositions,
+		compositions_pacing = HordeCompositionsPacing,
 		ambush = HordeSettingsBasics.ambush,
 		vector = HordeSettingsBasics.vector,
 		vector_blob = HordeSettingsBasics.vector_blob,
@@ -155,6 +159,38 @@ HordeSettings = {
 				vector_composition = "chaos_large"
 			}
 		}
+	},
+	challenge_level = {
+		chance_of_vector = 0.5,
+		ambush_composition = "medium",
+		vector_composition = "medium",
+		mini_patrol_composition = "mini_patrol",
+		vector_blob_composition = "medium",
+		chance_of_vector_blob = 0.5,
+		disabled = true,
+		mix_paced_hordes = true,
+		compositions = HordeCompositions,
+		compositions_pacing = HordeCompositionsPacing,
+		ambush = HordeSettingsBasics.ambush,
+		vector = HordeSettingsBasics.vector,
+		vector_blob = HordeSettingsBasics.vector_blob,
+		difficulty_overrides = {
+			hard = {
+				vector_blob_composition = "medium",
+				ambush_composition = "medium",
+				vector_composition = "medium"
+			},
+			harder = {
+				vector_blob_composition = "large",
+				ambush_composition = "large",
+				vector_composition = "large"
+			},
+			hardest = {
+				vector_blob_composition = "large",
+				ambush_composition = "large",
+				vector_composition = "large"
+			}
+		}
 	}
 }
 HordeSettings.disabled = table.clone(HordeSettings.default)
@@ -166,7 +202,42 @@ for key, setting in pairs(HordeSettings) do
 	setting.name = key
 
 	if setting.compositions then
-		for size, composition in pairs(setting.compositions) do
+		for name, composition in pairs(setting.compositions) do
+			for i = 1, #composition, 1 do
+				table.clear_array(weights, #weights)
+
+				local compositions = composition[i]
+
+				for j, variant in ipairs(compositions) do
+					weights[j] = variant.weight
+					local breeds = variant.breeds
+
+					for k = 1, #breeds, 2 do
+						local breed_name = breeds[k]
+						local breed = Breeds[breed_name]
+
+						if not breed then
+							print(string.format("Bad or non-existing breed in HordeCompositions table %s : '%s' defined in HordeCompositions.", name, tostring(breed_name)))
+
+							crash = true
+						elseif not breed.can_use_horde_spawners then
+							variant.must_use_hidden_spawners = true
+						end
+					end
+				end
+
+				compositions.loaded_probs = {
+					LoadedDice.create(weights)
+				}
+
+				fassert(not crash, "Found errors in HordeComposition table %s - see above. ", name)
+				fassert(compositions.loaded_probs, "Could not create horde composition probablitity table, make sure the table '%s' in HordeCompositions is correctly structured and has an entry for each difficulty.", name)
+			end
+		end
+	end
+
+	if setting.compositions_pacing then
+		for name, composition in pairs(setting.compositions_pacing) do
 			table.clear_array(weights, #weights)
 
 			for i, variant in ipairs(composition) do
@@ -178,10 +249,11 @@ for key, setting in pairs(HordeSettings) do
 					local breed = Breeds[breed_name]
 
 					if not breed then
-						print(string.format("Bad or non-existing breed called: '%s' defined in ConflictSettings -> HordeSettings.", tostring(breed_name)))
+						print(string.format("Bad or non-existing breed in HordeCompositionsPacing table %s : '%s' defined in HordeCompositionsPacing.", name, tostring(breed_name)))
+
+						crash = true
 					elseif not breed.can_use_horde_spawners then
 						variant.must_use_hidden_spawners = true
-						crash = true
 					end
 				end
 			end
@@ -189,11 +261,11 @@ for key, setting in pairs(HordeSettings) do
 			composition.loaded_probs = {
 				LoadedDice.create(weights)
 			}
+
+			fassert(not crash, "Found errors in HordeCompositionsPacing table %s - see above. ", name)
+			fassert(composition.loaded_probs, "Could not create horde composition probablitity table, make sure the table '%s' in HordeCompositionsPacing is correctly structured.", name)
 		end
 	end
-end
-
-if crash then
 end
 
 PackDistributions = {
@@ -1472,6 +1544,50 @@ BossSettings = {
 	disabled = {
 		safe_distance = 100,
 		disabled = true
+	},
+	no_patrols = {
+		disabled = false,
+		boss_events = {
+			safe_dist = 150,
+			recurring_distance = 300,
+			name = "boss_events",
+			terror_events_using_packs = false,
+			padding_dist = 100,
+			debug_color = "deep_sky_blue",
+			hand_placed_padding_dist = 10,
+			chance_of_encampment = 0,
+			events = {
+				"event_boss",
+				"nothing"
+			},
+			event_lookup = {
+				event_boss = {
+					"boss_event_chaos_troll",
+					"boss_event_chaos_spawn",
+					"boss_event_storm_fiend",
+					"boss_event_rat_ogre"
+				}
+			},
+			max_events_of_this_kind = {
+				event_boss = 2
+			}
+		},
+		rare_events = {
+			safe_dist = 50,
+			recurring_distance = 1500,
+			name = "rare_events",
+			debug_color = "deep_pink",
+			padding_dist = 100,
+			events = {
+				"event_boss"
+			},
+			event_lookup = {
+				event_boss = {
+					"rare_event_loot_rat"
+				}
+			},
+			max_events_of_this_kind = {}
+		}
 	}
 }
 IntensitySettings = {
@@ -2568,6 +2684,28 @@ ConflictDirectors = {
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.code_test,
 		horde = HordeSettings.default
+	},
+	no_patrols = {
+		debug_color = "maroon",
+		disabled = false,
+		intensity = IntensitySettings.default,
+		pacing = PacingSettings.default,
+		boss = BossSettings.no_patrols,
+		specials = SpecialsSettings.default,
+		roaming = RoamingSettings.default,
+		pack_spawning = PackSpawningSettings.default,
+		horde = HordeSettings.default
+	},
+	challenge_level = {
+		debug_color = "maroon",
+		disabled = false,
+		intensity = IntensitySettings.disabled,
+		pacing = PacingSettings.disabled,
+		boss = BossSettings.disabled,
+		specials = SpecialsSettings.disabled,
+		roaming = RoamingSettings.disabled,
+		pack_spawning = PackSpawningSettings.disabled,
+		horde = HordeSettings.challenge_level
 	}
 }
 
@@ -2613,7 +2751,7 @@ for name, horde_setting in pairs(HordeSettings) do
 			local element_type = element[1]
 
 			if element_type == "event_horde" and not compositions[element.composition_type] then
-				print(string.format("Bad or misspelled composition_type '%s' in event '%s', element number %d", tostring(element.composition_type), event_name, i))
+				print(string.format("Bad or misspelled composition_type '%s' in event '%s', element number %d in horde setting %s", tostring(element.composition_type), event_name, i, name))
 
 				crash = true
 			end

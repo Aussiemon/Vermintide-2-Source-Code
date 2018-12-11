@@ -23,7 +23,7 @@ function to_boolean(a)
 		return true
 	end
 
-	assert(false, sprintf("unsupported type(%s)", type(a)))
+	ferror("unsupported type(%s)", type(a))
 
 	return false
 end

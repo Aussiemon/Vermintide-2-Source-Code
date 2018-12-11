@@ -40,10 +40,6 @@ end
 BTGiveCommandAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.navigation_extension:set_enabled(true)
 
-	local network_manager = Managers.state.network
-
-	network_manager:anim_event(unit, "to_combat")
-
 	blackboard.target_unit = blackboard.command_target
 
 	AiUtils.activate_unit(blackboard)

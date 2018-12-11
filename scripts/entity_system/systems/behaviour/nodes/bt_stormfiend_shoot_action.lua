@@ -233,7 +233,6 @@ BTStormfiendShootAction.init_attack = function (self, unit, blackboard, action, 
 
 		local network_manager = Managers.state.network
 
-		network_manager:anim_event(unit, "to_combat")
 		network_manager:anim_event(unit, attack_animation)
 
 		local aim_constraint_target_name = action.aim_constraint_target[attack_arm]
@@ -303,9 +302,12 @@ BTStormfiendShootAction.leave = function (self, unit, blackboard, t, reason, des
 	end
 
 	table.clear(data)
-	blackboard.locomotion_extension:use_lerp_rotation(true)
-	LocomotionUtils.set_animation_driven_movement(unit, false)
-	LocomotionUtils.set_animation_rotation_scale(unit, 1)
+
+	if not destroy then
+		blackboard.locomotion_extension:use_lerp_rotation(true)
+		LocomotionUtils.set_animation_driven_movement(unit, false)
+		LocomotionUtils.set_animation_rotation_scale(unit, 1)
+	end
 
 	blackboard.action = nil
 	blackboard.active_node = nil

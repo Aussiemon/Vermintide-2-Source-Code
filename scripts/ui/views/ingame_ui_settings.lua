@@ -331,6 +331,7 @@ local transitions = {
 		self.menu_active = false
 		self.current_view = nil
 		self.initial_profile_view = nil
+		self.has_left_menu = true
 	end,
 	character_selection_force = function (self)
 		self.current_view = "character_selection"
@@ -433,6 +434,8 @@ view_settings = {
 			materials[#materials + 1] = "materials/ui/ui_1080p_achievement_atlas_textures"
 			materials[#materials + 1] = "material"
 			materials[#materials + 1] = "materials/ui/ui_1080p_inn_single_textures"
+			materials[#materials + 1] = "material"
+			materials[#materials + 1] = "materials/ui/motd/motd_dynamic"
 
 			for _, settings in pairs(AreaSettings) do
 				local video_settings = settings.video_settings

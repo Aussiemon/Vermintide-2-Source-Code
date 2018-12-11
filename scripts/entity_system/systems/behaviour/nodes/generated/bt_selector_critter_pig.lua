@@ -61,26 +61,7 @@ BTSelector_critter_pig.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_in_gravity_well = children[3]
-	local condition_result = blackboard.gravity_well_position
-
-	if condition_result then
-		self:set_running_child(unit, blackboard, t, node_in_gravity_well, "aborted")
-
-		local result, evaluate = node_in_gravity_well:run(unit, blackboard, t, dt)
-
-		if result ~= "running" then
-			self:set_running_child(unit, blackboard, t, nil, result)
-		end
-
-		if result ~= "failed" then
-			return result, evaluate
-		end
-	elseif node_in_gravity_well == child_running then
-		self:set_running_child(unit, blackboard, t, nil, "failed")
-	end
-
-	local node_idle = children[4]
+	local node_idle = children[3]
 
 	self:set_running_child(unit, blackboard, t, node_idle, "aborted")
 

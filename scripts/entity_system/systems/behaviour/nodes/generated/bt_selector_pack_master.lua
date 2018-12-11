@@ -61,26 +61,7 @@ BTSelector_pack_master.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_in_gravity_well = children[3]
-	local condition_result = blackboard.gravity_well_position
-
-	if condition_result then
-		self:set_running_child(unit, blackboard, t, node_in_gravity_well, "aborted")
-
-		local result, evaluate = node_in_gravity_well:run(unit, blackboard, t, dt)
-
-		if result ~= "running" then
-			self:set_running_child(unit, blackboard, t, nil, result)
-		end
-
-		if result ~= "failed" then
-			return result, evaluate
-		end
-	elseif node_in_gravity_well == child_running then
-		self:set_running_child(unit, blackboard, t, nil, "failed")
-	end
-
-	local node_falling = children[4]
+	local node_falling = children[3]
 	local condition_result = blackboard.is_falling or blackboard.fall_state ~= nil
 
 	if condition_result then
@@ -99,7 +80,7 @@ BTSelector_pack_master.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_stagger = children[5]
+	local node_stagger = children[4]
 	local condition_result = nil
 
 	if blackboard.stagger then
@@ -122,7 +103,7 @@ BTSelector_pack_master.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_smartobject = children[6]
+	local node_smartobject = children[5]
 	local condition_result = nil
 	local next_smart_object_data = blackboard.next_smart_object_data
 	local smartobject_is_next = next_smart_object_data.next_smart_object_id ~= nil
@@ -163,7 +144,7 @@ BTSelector_pack_master.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_get_new_hook = children[7]
+	local node_get_new_hook = children[6]
 	local condition_result = blackboard.needs_hook
 
 	if condition_result then
@@ -182,7 +163,7 @@ BTSelector_pack_master.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_enemy_spotted = children[8]
+	local node_enemy_spotted = children[7]
 	local condition_result = unit_alive(blackboard.target_unit)
 
 	if condition_result then
@@ -201,7 +182,7 @@ BTSelector_pack_master.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_escorting_ogre = children[9]
+	local node_escorting_ogre = children[8]
 	local condition_result = blackboard.escorting_rat_ogre
 
 	if condition_result then
@@ -220,7 +201,7 @@ BTSelector_pack_master.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_trigger_move_to = children[10]
+	local node_trigger_move_to = children[9]
 	local t = Managers.time:time("game")
 	local trigger_time = blackboard.trigger_time or 0
 	local condition_result = t > trigger_time and unit_alive(blackboard.target_unit)
@@ -241,7 +222,7 @@ BTSelector_pack_master.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_idle = children[11]
+	local node_idle = children[10]
 
 	self:set_running_child(unit, blackboard, t, node_idle, "aborted")
 

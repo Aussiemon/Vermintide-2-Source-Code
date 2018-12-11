@@ -11,7 +11,6 @@ BTThrowRockAction.name = "BTThrowRockAction"
 BTThrowRockAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 
-	Managers.state.network:anim_event(unit, "to_combat")
 	Managers.state.network:anim_event(unit, action.attack_anim)
 
 	blackboard.attack_cooldown = t + action.cooldown

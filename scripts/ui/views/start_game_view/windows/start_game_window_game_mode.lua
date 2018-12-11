@@ -49,9 +49,8 @@ StartGameWindowGameMode.create_ui_elements = function (self, params, offset)
 
 	for i = 1, #window_layouts, 1 do
 		local settings = window_layouts[i]
-		local game_mode_option = settings.game_mode_option
 
-		if game_mode_option then
+		if self.parent:is_valid_game_mode_option(settings) then
 			local scenegraph_id = "game_mode_option"
 			local size = scenegraph_definition[scenegraph_id].size
 			local display_name = settings.display_name or "n/a"
@@ -66,15 +65,16 @@ StartGameWindowGameMode.create_ui_elements = function (self, params, offset)
 			local dynamic_font_size = settings.dynamic_font_size
 			local widget_definition = UIWidgets.create_window_category_button(scenegraph_id, size, display_name, icon_name, background_icon_name, dynamic_font_size)
 			local widget = UIWidget.init(widget_definition)
+			local current_game_mode_index = #game_mode_widgets + 1
 			local layout_name = settings.name
 			widget.content.layout_name = layout_name
-			widget.offset[2] = -game_mode_option_spacing * i - size[2] * (i - 1)
+			widget.offset[2] = -game_mode_option_spacing * current_game_mode_index - size[2] * (current_game_mode_index - 1)
 
 			if layout_name == "twitch" then
 				widget.content.disabled = not GameSettingsDevelopment.twitch_enabled or Managers.account:offline_mode()
 			end
 
-			game_mode_widgets[#game_mode_widgets + 1] = widget
+			game_mode_widgets[current_game_mode_index] = widget
 		end
 	end
 

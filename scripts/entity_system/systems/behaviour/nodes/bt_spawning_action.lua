@@ -68,25 +68,27 @@ BTSpawningAction.leave = function (self, unit, blackboard, t, reason, destroy)
 		end
 	end
 
-	local locomotion_extension = blackboard.locomotion_extension
+	if not destroy then
+		local locomotion_extension = blackboard.locomotion_extension
 
-	locomotion_extension:set_movement_type("snap_to_navmesh")
+		locomotion_extension:set_movement_type("snap_to_navmesh")
 
-	if blackboard.spawn_type == "horde" then
-		locomotion_extension:use_lerp_rotation(true)
-		LocomotionUtils.set_animation_driven_movement(unit, false)
+		if blackboard.spawn_type == "horde" then
+			locomotion_extension:use_lerp_rotation(true)
+			LocomotionUtils.set_animation_driven_movement(unit, false)
 
-		blackboard.spawn_landing_state = nil
-		blackboard.jump_climb_finished = nil
+			blackboard.spawn_landing_state = nil
+			blackboard.jump_climb_finished = nil
+		end
+
+		if blackboard.constrained_on_client then
+			blackboard.constrained_on_client = nil
+
+			LocomotionUtils.constrain_on_clients(unit, false)
+		end
+
+		LocomotionUtils.set_animation_translation_scale(unit, Vector3(1, 1, 1))
 	end
-
-	if blackboard.constrained_on_client then
-		blackboard.constrained_on_client = nil
-
-		LocomotionUtils.constrain_on_clients(unit, false, Vector3.zero(), Vector3.zero())
-	end
-
-	LocomotionUtils.set_animation_translation_scale(unit, Vector3(1, 1, 1))
 end
 
 BTSpawningAction.run = function (self, unit, blackboard, t, dt)

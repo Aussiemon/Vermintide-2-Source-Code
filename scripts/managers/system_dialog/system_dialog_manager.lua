@@ -170,4 +170,8 @@ SystemDialogManager.open_error_dialog = function (self, error_code, callback)
 	}
 end
 
+SystemDialogManager.has_open_dialogs = function (self)
+	return #self._dialogs > 0
+end
+
 return

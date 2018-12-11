@@ -246,7 +246,6 @@ end
 BTMoveToPlayersAction.start_idle_animation = function (self, unit, blackboard)
 	local network_manager = Managers.state.network
 
-	network_manager:anim_event(unit, "to_passive")
 	network_manager:anim_event(unit, "idle")
 
 	blackboard.move_state = "idle"
@@ -255,7 +254,6 @@ end
 BTMoveToPlayersAction.start_move_animation = function (self, unit, blackboard)
 	local network_manager = Managers.state.network
 
-	network_manager:anim_event(unit, "to_combat")
 	network_manager:anim_event(unit, "move_fwd")
 
 	blackboard.move_state = "moving"

@@ -4714,213 +4714,111 @@ MaterialEffectMappings.drakefire_pistol = MaterialEffectMappings.drakefire_pisto
 MaterialEffectMappings.sienna_scholar_career_ability = MaterialEffectMappings.sienna_scholar_career_ability or {
 	sound = {
 		armored = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "metal_hollow",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_attack_hit"
 		},
 		shield = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "metal_hollow",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_attack_hit"
 		},
 		shield_metal = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "metal_hollow",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_attack_hit"
 		},
 		cloth = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "cloth",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_bounce"
 		},
 		dirt = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "dirt",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_bounce"
 		},
 		flesh = {
-			no_damage_event = "bullet_hit_armour",
-			event = "magic_hit",
-			parameters = {}
+			event = "Play_weapon_ability_pyromancer_skull_attack_hit"
 		},
 		fruit = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "fruit",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_bounce"
 		},
 		forest_grass = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "forest_grass",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_bounce"
 		},
 		glass = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "glass",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_bounce"
 		},
 		grass = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "grass",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_bounce"
 		},
 		hay = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "hay",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_bounce"
 		},
 		ice = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "ice",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_bounce"
 		},
 		metal_hollow = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "metal_hollow",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_bounce"
 		},
 		metal_solid = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "metal_solid",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_bounce"
 		},
 		mud = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "mud",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_bounce"
 		},
 		plaster = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "plaster",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_bounce"
 		},
 		sand = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "grass",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_bounce"
 		},
 		stone = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "stone",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_bounce"
 		},
 		stone_dirt = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "stone_dirt",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_bounce"
 		},
 		stone_wet = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "stone_wet",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_bounce"
 		},
 		snow = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "snow",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_bounce"
 		},
 		water = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "water",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_bounce"
 		},
 		water_deep = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "water_deep",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_bounce"
 		},
 		wood_bridge = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "wood_bridge",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_bounce"
 		},
 		wood_hollow = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "wood_hollow",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_bounce"
 		},
 		wood_solid = {
-			event = "magic_hit_statics",
-			parameters = {
-				material = "wood_solid",
-				damage_type = "piercing"
-			}
+			event = "Play_weapon_ability_pyromancer_skull_bounce"
 		}
 	},
 	particles = {
 		shield = "fx/hit_enemy_shield",
-		dirt = "fx/wpnfx_sienna_scholar_career_ability",
-		glass = "fx/wpnfx_sienna_scholar_career_ability",
-		stone = "fx/wpnfx_sienna_scholar_career_ability",
-		cloth = "fx/wpnfx_sienna_scholar_career_ability",
+		dirt = "fx/wpnfx_burning_head_impact",
+		glass = "fx/wpnfx_burning_head_impact",
+		stone = "fx/wpnfx_burning_head_impact",
+		cloth = "fx/wpnfx_burning_head_impact",
 		shield_metal = "fx/hit_enemy_shield_metal",
 		ward = "fx/chr_stormvermin_champion_shield_dot",
 		water = "fx/hit_water_with_fire_projectile",
-		fruit = "fx/wpnfx_sienna_scholar_career_ability",
-		sand = "fx/wpnfx_sienna_scholar_career_ability",
+		fruit = "fx/wpnfx_burning_head_impact",
+		sand = "fx/wpnfx_burning_head_impact",
 		armored = "fx/hit_armored_with_fire",
-		flesh = "fx/wpnfx_sienna_scholar_career_ability",
-		stone_dirt = "fx/wpnfx_sienna_scholar_career_ability",
-		plaster = "fx/wpnfx_sienna_scholar_career_ability",
-		snow = "fx/wpnfx_sienna_scholar_career_ability",
-		ice = "fx/wpnfx_sienna_scholar_career_ability",
-		wood_bridge = "fx/wpnfx_sienna_scholar_career_ability",
-		forest_grass = "fx/wpnfx_sienna_scholar_career_ability",
-		grass = "fx/wpnfx_sienna_scholar_career_ability",
-		hay = "fx/wpnfx_sienna_scholar_career_ability",
-		wood_hollow = "fx/wpnfx_sienna_scholar_career_ability",
-		stone_wet = "fx/wpnfx_sienna_scholar_career_ability",
-		mud = "fx/wpnfx_sienna_scholar_career_ability",
-		wood_solid = "fx/wpnfx_sienna_scholar_career_ability",
-		metal_solid = "fx/wpnfx_sienna_scholar_career_ability",
-		metal_hollow = "fx/wpnfx_sienna_scholar_career_ability"
+		flesh = "fx/wpnfx_burning_head_impact",
+		stone_dirt = "fx/wpnfx_burning_head_impact",
+		plaster = "fx/wpnfx_burning_head_impact",
+		snow = "fx/wpnfx_burning_head_impact",
+		ice = "fx/wpnfx_burning_head_impact",
+		wood_bridge = "fx/wpnfx_burning_head_impact",
+		forest_grass = "fx/wpnfx_burning_head_impact",
+		grass = "fx/wpnfx_burning_head_impact",
+		hay = "fx/wpnfx_burning_head_impact",
+		wood_hollow = "fx/wpnfx_burning_head_impact",
+		stone_wet = "fx/wpnfx_burning_head_impact",
+		mud = "fx/wpnfx_burning_head_impact",
+		wood_solid = "fx/wpnfx_burning_head_impact",
+		metal_solid = "fx/wpnfx_burning_head_impact",
+		metal_hollow = "fx/wpnfx_burning_head_impact"
 	},
 	flow_event = {
 		ward = "ward_impact"

@@ -90,8 +90,10 @@ UnlockManager.update = function (self, dt)
 				end
 			end
 		elseif self._update_unlocks then
-			self:_update_xbox_backend_unlocks()
+			self:_update_console_backend_unlocks()
 		end
+	elseif PLATFORM == "ps4" and self._update_unlocks then
+		self:_update_console_backend_unlocks()
 	end
 end
 
@@ -152,7 +154,7 @@ UnlockManager.dlc_status_changed = function (self)
 	return self._dlc_status_changed
 end
 
-UnlockManager._update_xbox_backend_unlocks = function (self)
+UnlockManager._update_console_backend_unlocks = function (self)
 	if self._state == "query_unlocked" then
 		local backend_manager = Managers.backend
 
@@ -218,11 +220,8 @@ UnlockManager._update_xbox_backend_unlocks = function (self)
 
 						if is_unlocked and not reward_claimed then
 							unlock_interface:claim_reward(reward_id, callback(self, "cb_reward_claimed", unlock))
-
-							self._state = "claiming_reward"
-
-							return
-						elseif not is_unlocked and reward_claimed then
+						elseif not is_unlocked and reward_claimed and PLATFORM == "ps4" then
+							unlock_interface:remove_reward(reward_id, callback(self, "cb_reward_removed", unlock))
 						end
 					end
 				end
@@ -237,16 +236,12 @@ UnlockManager.cb_reward_claimed = function (self, unlock, success, rewarded_item
 	elseif rewarded_items and presentation_text then
 		self:_add_reward(rewarded_items, presentation_text)
 	end
-
-	self._state = "query_unlocked"
 end
 
 UnlockManager.cb_reward_removed = function (self, unlock, success)
 	if not success then
 		unlock:remove_backend_reward_id()
 	end
-
-	self._state = "query_unlocked"
 end
 
 UnlockManager._add_reward = function (self, items, presentation_text)
@@ -284,8 +279,6 @@ UnlockManager.is_dlc_unlocked = function (self, name)
 	local unlock = self._unlocks[name]
 
 	if PLATFORM ~= "win32" and not unlock then
-		Application.warning(string.format("[UnlockManager] The DLC %q isn't setup for %s", name, string.upper(PLATFORM)))
-
 		return false
 	end
 

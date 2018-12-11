@@ -1,8 +1,10 @@
 DefaultPlayerData = {
-	mission_selection_version = 3,
 	controls_version = 18,
-	bot_spawn_priority_version = 1,
 	new_item_data_version = 5,
+	mission_selection_version = 3,
+	viewed_motd_urls_version = 1,
+	viewed_dialogues_version = 1,
+	bot_spawn_priority_version = 1,
 	new_sign_in_rewards_data_version = 1,
 	favorite_item_data_version = 1,
 	mission_selection = {},
@@ -13,7 +15,9 @@ DefaultPlayerData = {
 	new_sign_in_rewards = {},
 	controls = {},
 	recent_irc_channels = {},
-	bot_spawn_priority = {}
+	bot_spawn_priority = {},
+	viewed_motd_urls = {},
+	viewed_dialogues = {}
 }
 PlayerData = PlayerData or table.clone(DefaultPlayerData)
 
@@ -91,6 +95,22 @@ function populate_player_data_from_save(save_data, id, version_match)
 			print("Wrong bot_spawn_priority_version for save file, saved: ", player_save_data.bot_spawn_priority_version, " current: ", DefaultPlayerData.bot_spawn_priority_version)
 
 			player_save_data.bot_spawn_priority_version = DefaultPlayerData.bot_spawn_priority_version
+		end
+
+		if DefaultPlayerData.viewed_motd_urls_version ~= player_save_data.viewed_motd_urls_version then
+			player_save_data.viewed_motd_urls = {}
+
+			print("Wrong viewed_motd_urls_version for save file, saved: ", player_save_data.viewed_motd_urls_version, " current: ", DefaultPlayerData.viewed_motd_urls_version)
+
+			player_save_data.viewed_motd_urls_version = DefaultPlayerData.viewed_motd_urls_version
+		end
+
+		if DefaultPlayerData.viewed_dialogues_version ~= player_save_data.viewed_dialogues_version then
+			player_save_data.viewed_dialogues = {}
+
+			print("Wrong viewed_dialogues_version for save file, saved: ", player_save_data.viewed_dialogues_version, " current: ", DefaultPlayerData.viewed_dialogues_version)
+
+			player_save_data.viewed_dialogues_version = DefaultPlayerData.viewed_dialogues_version
 		end
 	end
 

@@ -274,6 +274,67 @@ local enemies = {
 		"helmgart_lord_1"
 	}
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local achievement_outline = dlc.achievement_outline
+
+	if achievement_outline then
+		for category_name, data in pairs(achievement_outline) do
+			local category = nil
+
+			if category_name == "levels" then
+				category = levels
+			elseif category_name == "heroes" then
+				category = heroes
+			elseif category_name == "enemies" then
+				category = enemies
+			elseif category_name == "items" then
+				category = items
+			elseif category_name == "crafting" then
+				category = crafting
+			elseif category_name == "deeds" then
+				category = deeds
+			else
+				category = {}
+			end
+
+			if data.entries then
+				if category.entries then
+					table.append(category.entries, data.entries)
+				else
+					category.entries = table.clone(data.entries)
+				end
+			end
+
+			local categories = data.categories
+
+			if categories then
+				for i = 1, #categories, 1 do
+					local sub_category = categories[i]
+					local sub_category_name = sub_category.name
+					local current_categories = category.categories
+					local sub_category_found = false
+
+					for j = 1, #current_categories, 1 do
+						local current_sub_category = current_categories[j]
+						local current_sub_category_name = current_sub_category.name
+
+						if sub_category_name == current_sub_category_name and not sub_category_found then
+							table.append(current_sub_category.entries, sub_category.entries)
+
+							sub_category_found = true
+						end
+					end
+
+					if not sub_category_found then
+						current_categories[#current_categories + 1] = table.clone(sub_category)
+					end
+				end
+			end
+		end
+	end
+end
+
 local achievements = {
 	name = "achv_menu_achievements_category_title",
 	categories = {
@@ -297,5 +358,6 @@ local function assign_category_type(base_category, category_type)
 end
 
 assign_category_type(achievements, "achievements")
+table.dump(achievements, nil, 10)
 
 return achievements

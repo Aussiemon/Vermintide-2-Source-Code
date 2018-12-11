@@ -38,11 +38,13 @@ BTCritterRatScurryUnderDoorAction.leave = function (self, unit, blackboard, t, r
 	blackboard.anim_cb_scurry_under_finished = nil
 	blackboard.is_smart_objecting = nil
 
-	LocomotionUtils.set_animation_driven_movement(unit, false)
+	if not destroy then
+		LocomotionUtils.set_animation_driven_movement(unit, false)
 
-	local locomotion_extension = blackboard.locomotion_extension
+		local locomotion_extension = blackboard.locomotion_extension
 
-	locomotion_extension:set_movement_type("snap_to_navmesh")
+		locomotion_extension:set_movement_type("snap_to_navmesh")
+	end
 
 	local navigation_extension = blackboard.navigation_extension
 

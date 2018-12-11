@@ -51,7 +51,7 @@ BreedBehaviors.troll = {
 			"BTTargetRageAction",
 			enter_hook = "rage_on_enter",
 			name = "target_rage",
-			condition = "target_changed_and_distant",
+			condition = "target_changed",
 			action_data = ACTIONS.target_rage
 		},
 		{

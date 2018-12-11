@@ -25,7 +25,6 @@ elseif PLATFORM == "xb1" then
 	require("scripts/settings/mixer_settings")
 end
 
-require("scripts/settings/paintings")
 require("scripts/unit_extensions/weapons/area_damage/liquid/damage_blob_templates")
 require("scripts/unit_extensions/weapons/area_damage/liquid/damage_wave_templates")
 require("scripts/unit_extensions/weapons/area_damage/liquid/liquid_area_damage_templates")
@@ -44,83 +43,14 @@ table.clear(MarkerLookup)
 
 MarkerLookup_n = 0
 local dialogue_lookup_tables = {
-	"dialogues/generated/lookup_bright_wizard_bridge",
-	"dialogues/generated/lookup_bright_wizard_cemetery",
-	"dialogues/generated/lookup_bright_wizard_city_wall",
-	"dialogues/generated/lookup_bright_wizard_courtyard",
-	"dialogues/generated/lookup_bright_wizard_docks",
-	"dialogues/generated/lookup_bright_wizard_end_boss",
-	"dialogues/generated/lookup_bright_wizard_farm",
-	"dialogues/generated/lookup_bright_wizard_forest_ambush",
 	"dialogues/generated/lookup_bright_wizard_honduras",
-	"dialogues/generated/lookup_bright_wizard_magnus_tower",
-	"dialogues/generated/lookup_bright_wizard_merchant",
-	"dialogues/generated/lookup_bright_wizard_sewers",
-	"dialogues/generated/lookup_bright_wizard_skaven_tunnels",
-	"dialogues/generated/lookup_bright_wizard_wizard_tower",
-	"dialogues/generated/lookup_dwarf_ranger_bridge",
-	"dialogues/generated/lookup_dwarf_ranger_cemetery",
-	"dialogues/generated/lookup_dwarf_ranger_city_wall",
-	"dialogues/generated/lookup_dwarf_ranger_courtyard",
-	"dialogues/generated/lookup_dwarf_ranger_docks",
-	"dialogues/generated/lookup_dwarf_ranger_end_boss",
-	"dialogues/generated/lookup_dwarf_ranger_farm",
-	"dialogues/generated/lookup_dwarf_ranger_forest_ambush",
 	"dialogues/generated/lookup_dwarf_ranger_honduras",
-	"dialogues/generated/lookup_dwarf_ranger_magnus_tower",
-	"dialogues/generated/lookup_dwarf_ranger_merchant",
-	"dialogues/generated/lookup_dwarf_ranger_sewers",
-	"dialogues/generated/lookup_dwarf_ranger_skaven_tunnels",
-	"dialogues/generated/lookup_dwarf_ranger_wizard_tower",
-	"dialogues/generated/lookup_empire_soldier_cemetery",
-	"dialogues/generated/lookup_empire_soldier_city_wall",
-	"dialogues/generated/lookup_empire_soldier_courtyard",
-	"dialogues/generated/lookup_empire_soldier_docks",
-	"dialogues/generated/lookup_empire_soldier_end_boss",
-	"dialogues/generated/lookup_empire_soldier_farm",
-	"dialogues/generated/lookup_empire_soldier_forest_ambush",
 	"dialogues/generated/lookup_empire_soldier_honduras",
-	"dialogues/generated/lookup_empire_soldier_magnus_tower",
-	"dialogues/generated/lookup_empire_soldier_merchant",
-	"dialogues/generated/lookup_empire_soldier_sewers",
-	"dialogues/generated/lookup_empire_soldier_skaven_tunnels",
-	"dialogues/generated/lookup_empire_soldier_wizard_tower",
 	"dialogues/generated/lookup_enemies",
 	"dialogues/generated/lookup_player_conversations_honduras",
 	"dialogues/generated/lookup_special_occasions_honduras",
-	"dialogues/generated/lookup_witch_hunter_bridge",
-	"dialogues/generated/lookup_witch_hunter_cemetery",
-	"dialogues/generated/lookup_witch_hunter_city_wall",
-	"dialogues/generated/lookup_witch_hunter_courtyard",
-	"dialogues/generated/lookup_witch_hunter_docks",
-	"dialogues/generated/lookup_witch_hunter_end_boss",
-	"dialogues/generated/lookup_witch_hunter_farm",
-	"dialogues/generated/lookup_witch_hunter_forest_ambush",
 	"dialogues/generated/lookup_witch_hunter_honduras",
-	"dialogues/generated/lookup_witch_hunter_magnus_tower",
-	"dialogues/generated/lookup_witch_hunter_merchant",
-	"dialogues/generated/lookup_witch_hunter_sewers",
-	"dialogues/generated/lookup_witch_hunter_skaven_tunnels",
-	"dialogues/generated/lookup_witch_hunter_wizard_tower",
-	"dialogues/generated/lookup_wood_elf_bridge",
-	"dialogues/generated/lookup_wood_elf_cemetery",
-	"dialogues/generated/lookup_wood_elf_city_wall",
-	"dialogues/generated/lookup_wood_elf_courtyard",
-	"dialogues/generated/lookup_wood_elf_docks",
-	"dialogues/generated/lookup_wood_elf_end_boss",
-	"dialogues/generated/lookup_wood_elf_farm",
-	"dialogues/generated/lookup_wood_elf_forest_ambush",
 	"dialogues/generated/lookup_wood_elf_honduras",
-	"dialogues/generated/lookup_wood_elf_magnus_tower",
-	"dialogues/generated/lookup_wood_elf_merchant",
-	"dialogues/generated/lookup_wood_elf_sewers",
-	"dialogues/generated/lookup_wood_elf_skaven_tunnels",
-	"dialogues/generated/lookup_wood_elf_wizard_tower",
-	"dialogues/generated/lookup_wood_elf_chamber",
-	"dialogues/generated/lookup_witch_hunter_chamber",
-	"dialogues/generated/lookup_empire_soldier_chamber",
-	"dialogues/generated/lookup_dwarf_ranger_chamber",
-	"dialogues/generated/lookup_bright_wizard_chamber",
 	"dialogues/generated/lookup_bright_wizard_elven_ruins",
 	"dialogues/generated/lookup_witch_hunter_elven_ruins",
 	"dialogues/generated/lookup_empire_soldier_elven_ruins",
@@ -478,7 +408,8 @@ NetworkLookup.husks = {
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_poison_arrow_t1_3ps",
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_homing_arrow_t1_3ps",
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_tripple_arrow_t1_3ps",
-	"units/weapons/projectile/burning_head/burning_head",
+	"units/weapons/player/wpn_burning_head/wpn_burning_head_3p",
+	"units/weapons/player/wpn_burning_head/wpn_burning_head_3ps",
 	"units/weapons/player/wpn_emp_arrows/wpn_es_arrow_t1_3ps",
 	"units/weapons/player/wpn_emp_grenade_01_t1/wpn_emp_grenade_01_t1_3p",
 	"units/weapons/player/wpn_emp_grenade_01_t2/wpn_emp_grenade_01_t2_3p",
@@ -520,6 +451,9 @@ NetworkLookup.husks = {
 	"units/weapons/player/pup_cannon_ball_01/pup_cannon_ball_01",
 	"units/weapons/player/wpn_cannon_ball_01/wpn_cannon_ball_01",
 	"units/weapons/player/wpn_cannon_ball_01/wpn_cannon_ball_01_3p",
+	"units/weapons/player/pup_gargoyle_head/pup_gargoyle_head_01",
+	"units/weapons/player/wpn_gargoyle_head/wpn_gargoyle_head",
+	"units/weapons/player/wpn_gargoyle_head/wpn_gargoyle_head_3p",
 	"units/weapons/player/pup_potion_01/pup_potion_extra_01",
 	"units/weapons/player/pup_potion_01/pup_potion_healing_01",
 	"units/weapons/player/pup_potion_01/pup_potion_speed_01",
@@ -739,9 +673,13 @@ NetworkLookup.lobby_data_values = {
 }
 NetworkLookup.game_modes = {
 	"adventure",
+	"custom",
 	"survival",
 	"tutorial",
-	"demo"
+	"demo",
+	"event",
+	"twitch",
+	"deed"
 }
 NetworkLookup.buff_attack_types = {
 	"n/a",
@@ -899,6 +837,7 @@ NetworkLookup.damage_types = {
 	"cutting",
 	"vomit_ground",
 	"vomit_face",
+	"plague_ground",
 	"plague_face",
 	"warpfire_ground",
 	"warpfire_face",
@@ -1176,6 +1115,7 @@ NetworkLookup.buff_templates = {
 	"chaos_slow_bomb_missile",
 	"vermintide_face_base",
 	"catacombs_corpse_pit",
+	"cemetery_plague_floor",
 	"traits_heal_on_crit",
 	"traits_melee_shield_on_assist",
 	"trait_necklace_no_healing_health_regen",
@@ -1341,10 +1281,10 @@ NetworkLookup.effects = {
 	"fx/wpnfx_flamethrower_1p_01",
 	"fx/wpnfx_flamethrower_01",
 	"fx/wpnfx_flamethrower_hit_01",
+	"fx/chr_warp_fire_explosion_01",
 	"fx/wpnfx_range_crit_01",
 	"fx/chaos_sorcerer_plague_wave_hit_01",
 	"fx/chr_nurgle_explosion_01",
-	"fx/doomwheel_explosion",
 	"fx/warp_lightning_bolt_impact",
 	"fx/chr_iron_breaker_ability_taunt",
 	"fx/chr_grey_seer_lightning_hit_02",
@@ -1378,7 +1318,8 @@ NetworkLookup.interaction_states = {
 	"starting_interaction",
 	"doing_interaction",
 	"waiting_to_interact",
-	"stopping_interaction"
+	"stopping_interaction",
+	"waiting_for_abort"
 }
 NetworkLookup.statuses = {
 	"knocked_down",
@@ -1477,6 +1418,12 @@ NetworkLookup.sound_events = {
 	"Play_career_ability_victor_zealot_exit",
 	"Play_career_ability_unchained_fire",
 	"Play_career_ability_sienna_unchained",
+	"Play_weapon_ability_pyromancer_skull_spawn",
+	"Play_weapon_ability_pyromancer_skull_spawn_husk",
+	"Stop_weapon_ability_pyromancer_skull_spawn",
+	"Stop_weapon_ability_pyromancer_skull_spawn_husk",
+	"Play_weapon_ability_pyromancer_skull_shoot",
+	"Play_weapon_ability_pyromancer_skull_shoot_husk",
 	"player_combat_weapon_staff_geiser_fire",
 	"player_combat_weapon_bow_fire_light_poison",
 	"player_combat_weapon_bow_fire_heavy_poison",
@@ -1741,6 +1688,7 @@ NetworkLookup.dialogue_event_data_names = {
 	"torch",
 	"grain_sack",
 	"beer_barrel",
+	"gargoyle_head",
 	"explosive_barrel",
 	"lamp_oil",
 	"explosive_barrel_objective",
@@ -1995,19 +1943,33 @@ NetworkLookup.performance_titles = create_lookup({
 	"n/a"
 }, PerformanceTitles.titles)
 
+local function is_sync_statistics(stat)
+	if stat.value then
+		return stat.sync_on_hot_join or stat.sync_to_host
+	else
+		for _, stat_definition in pairs(stat) do
+			if is_sync_statistics(stat_definition) then
+				return true
+			end
+		end
+	end
+end
+
 local function statistics_path_names(path_names, stat)
 	if not stat.value then
 		for stat_name, stat_definition in pairs(stat) do
-			path_names[stat_name] = true
+			if is_sync_statistics(stat_definition) then
+				path_names[stat_name] = true
 
-			statistics_path_names(path_names, stat_definition)
+				statistics_path_names(path_names, stat_definition)
+			end
 		end
 	end
 end
 
 local path_names = {}
 
-for category, stat_definitions in pairs(StatisticsDefinitions) do
+for _, stat_definitions in pairs(StatisticsDefinitions) do
 	statistics_path_names(path_names, stat_definitions)
 end
 
@@ -2016,7 +1978,6 @@ NetworkLookup.mission_names = create_lookup({}, Missions)
 NetworkLookup.projectile_gravity_settings = create_lookup({}, ProjectileGravitySettings)
 NetworkLookup.voting_types = create_lookup({}, VoteTemplates)
 NetworkLookup.session_stats = create_lookup({}, StatisticsDefinitions.session)
-local lookup_table = {}
 local flow_events = {}
 
 for _, blueprint in pairs(TerrorEventBlueprints) do
@@ -2040,18 +2001,6 @@ for _, dlc in pairs(DLCSettings) do
 		table.append(NetworkLookup.inventory_packages, dlc.inventory_package_list)
 	end
 end
-
-local paintings = {}
-
-for _, orientations in pairs(Paintings) do
-	for _, levels in pairs(orientations) do
-		for _, name in pairs(levels) do
-			paintings[name] = true
-		end
-	end
-end
-
-NetworkLookup.keep_decoration_paintings = create_lookup({}, paintings)
 
 local function init(self, name)
 	for index, str in ipairs(self) do

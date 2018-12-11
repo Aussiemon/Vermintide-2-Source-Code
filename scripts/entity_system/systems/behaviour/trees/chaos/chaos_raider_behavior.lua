@@ -92,11 +92,6 @@ BreedBehaviors.raider = {
 		name = "in_vortex"
 	},
 	{
-		"BTInGravityWellAction",
-		condition = "in_gravity_well",
-		name = "in_gravity_well"
-	},
-	{
 		"BTFallAction",
 		condition = "is_falling",
 		name = "falling"

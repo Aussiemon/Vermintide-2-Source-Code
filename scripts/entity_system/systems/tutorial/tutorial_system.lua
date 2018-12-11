@@ -89,7 +89,7 @@ TutorialSystem.on_add_extension = function (self, world, unit, extension_name, e
 
 	if extension_name == "ObjectiveHealthTutorialExtension" then
 		if self.tutorial_ui ~= nil then
-			tutorial_ui:add_health_bar(unit)
+			self.tutorial_ui:add_health_bar(unit)
 		end
 
 		self.health_extensions[unit] = extension

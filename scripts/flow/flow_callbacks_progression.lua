@@ -267,6 +267,12 @@ function flow_query_leader_completed_storm_vermin_warlord_difficulty(params)
 end
 
 function flow_query_leader_achievement_completed(params)
+	if script_data.settings.use_beta_overlay then
+		flow_return_table.value = false
+
+		return flow_return_table
+	end
+
 	local leader_peer_id = Managers.party:leader()
 	local local_peer_id = Network.peer_id()
 
@@ -429,6 +435,27 @@ function flow_query_leader_early_owner(params)
 	local backend_manager = Managers.backend
 	local eary_owner = backend_manager:get_read_only_data("early_owner")
 	flow_return_table.value = eary_owner
+
+	return flow_return_table
+end
+
+function flow_query_leader_get_persistant_stat(params)
+	local leader_peer_id = Managers.party:leader()
+	local local_peer_id = Network.peer_id()
+
+	fassert(leader_peer_id == local_peer_id, "Flow node \"Leader Get Persistant Stat\" should only be called by the leader player")
+
+	local stat_name = params.stat_name
+	local stat_value = get_presistent_stat_from_peer_id(local_peer_id, stat_name)
+	flow_return_table.value = stat_value
+
+	return flow_return_table
+end
+
+function flow_query_local_player_get_persistant_stat(params)
+	local stat_name = params.stat_name
+	local stat_value = get_presistent_stat_from_peer_id(Network.peer_id(), stat_name)
+	flow_return_table.value = stat_value
 
 	return flow_return_table
 end

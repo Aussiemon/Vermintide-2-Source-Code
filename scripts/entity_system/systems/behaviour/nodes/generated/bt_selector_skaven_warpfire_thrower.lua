@@ -61,26 +61,7 @@ BTSelector_skaven_warpfire_thrower.run = function (self, unit, blackboard, t, dt
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_in_gravity_well = children[3]
-	local condition_result = blackboard.gravity_well_position
-
-	if condition_result then
-		self:set_running_child(unit, blackboard, t, node_in_gravity_well, "aborted")
-
-		local result, evaluate = node_in_gravity_well:run(unit, blackboard, t, dt)
-
-		if result ~= "running" then
-			self:set_running_child(unit, blackboard, t, nil, result)
-		end
-
-		if result ~= "failed" then
-			return result, evaluate
-		end
-	elseif node_in_gravity_well == child_running then
-		self:set_running_child(unit, blackboard, t, nil, "failed")
-	end
-
-	local node_falling = children[4]
+	local node_falling = children[3]
 	local condition_result = blackboard.is_falling or blackboard.fall_state ~= nil
 
 	if condition_result then
@@ -99,7 +80,7 @@ BTSelector_skaven_warpfire_thrower.run = function (self, unit, blackboard, t, dt
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_stagger = children[5]
+	local node_stagger = children[4]
 	local condition_result = nil
 
 	if blackboard.stagger then
@@ -122,7 +103,7 @@ BTSelector_skaven_warpfire_thrower.run = function (self, unit, blackboard, t, dt
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_smartobject = children[6]
+	local node_smartobject = children[5]
 	local condition_result = nil
 	local next_smart_object_data = blackboard.next_smart_object_data
 	local smartobject_is_next = next_smart_object_data.next_smart_object_id ~= nil
@@ -163,7 +144,7 @@ BTSelector_skaven_warpfire_thrower.run = function (self, unit, blackboard, t, dt
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_enemy_spotted = children[7]
+	local node_enemy_spotted = children[6]
 	local condition_result = unit_alive(blackboard.target_unit)
 
 	if condition_result then
@@ -182,7 +163,7 @@ BTSelector_skaven_warpfire_thrower.run = function (self, unit, blackboard, t, dt
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_trigger_move_to = children[8]
+	local node_trigger_move_to = children[7]
 	local t = Managers.time:time("game")
 	local trigger_time = blackboard.trigger_time or 0
 	local condition_result = t > trigger_time and unit_alive(blackboard.target_unit)
@@ -203,7 +184,7 @@ BTSelector_skaven_warpfire_thrower.run = function (self, unit, blackboard, t, dt
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_idle = children[9]
+	local node_idle = children[8]
 
 	self:set_running_child(unit, blackboard, t, node_idle, "aborted")
 

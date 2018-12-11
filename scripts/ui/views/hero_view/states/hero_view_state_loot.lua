@@ -1369,8 +1369,9 @@ HeroViewStateLoot._handle_input = function (self, dt, t)
 				local backend_loot = Managers.backend:get_interface("loot")
 				local hero_attributes = Managers.backend:get_interface("hero_attributes")
 				local start_experience = hero_attributes:get("wood_elf", "experience")
+				local loot_profile_name = "default"
 
-				backend_loot:generate_end_of_level_loot(true, true, "hardest", "ussingen", math.random(0, 3), math.random(0, 2), math.random(0, 2), "wood_elf", start_experience, start_experience + 100, nil, nil)
+				backend_loot:generate_end_of_level_loot(true, true, "hardest", "ussingen", math.random(0, 3), math.random(0, 2), math.random(0, 2), "wood_elf", start_experience, start_experience + 100, loot_profile_name, nil, nil)
 			end
 
 			if self:_is_button_pressed(debug_widgets_by_name.debug_add_chest_2) then

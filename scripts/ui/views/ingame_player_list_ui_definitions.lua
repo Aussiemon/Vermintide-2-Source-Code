@@ -6,6 +6,10 @@ local POPUP_ELEMENT_SIZE = {
 	500,
 	36
 }
+local MUTATOR_SUMMARY_SIZE = {
+	450,
+	0
+}
 local scenegraph_definition = {
 	root = {
 		is_root = true,
@@ -82,7 +86,7 @@ local scenegraph_definition = {
 		},
 		size = {
 			1920,
-			160
+			180
 		}
 	},
 	player_list_input_description = {
@@ -91,7 +95,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		position = {
 			0,
-			170,
+			190,
 			-1
 		},
 		size = {
@@ -365,13 +369,35 @@ local scenegraph_definition = {
 			30
 		}
 	},
+	mutator_summary1 = {
+		vertical_alignment = "top",
+		parent = "banner_bottom",
+		horizontal_alignment = "right",
+		position = {
+			-MUTATOR_SUMMARY_SIZE[1] + 30,
+			0,
+			1
+		},
+		size = MUTATOR_SUMMARY_SIZE
+	},
+	mutator_summary2 = {
+		vertical_alignment = "top",
+		parent = "mutator_summary1",
+		horizontal_alignment = "right",
+		position = {
+			-MUTATOR_SUMMARY_SIZE[1],
+			0,
+			1
+		},
+		size = MUTATOR_SUMMARY_SIZE
+	},
 	player_list = {
 		vertical_alignment = "center",
 		parent = "background",
 		horizontal_alignment = "center",
 		position = {
 			-PLAYER_LIST_SIZE[1] / 2,
-			-70,
+			-60,
 			1
 		},
 		size = {
@@ -420,22 +446,13 @@ local scenegraph_definition = {
 			-30,
 			1
 		}
-	},
-	private_text_gamepad = {
-		vertical_alignment = "top",
-		parent = "game_level",
-		horizontal_alignment = "center",
-		size = {
-			600,
-			34
-		},
-		position = {
-			0,
-			40,
-			10
-		}
 	}
 }
+
+if PLATFORM ~= "win32" then
+	scenegraph_definition.screen.scale = "hud_fit"
+	scenegraph_definition.screen.is_root = nil
+end
 
 local function create_edge_divider(scenegraph_id, size)
 	local widget = {
@@ -684,19 +701,6 @@ local function create_loot_widget(scenegraph_id, texture, amount)
 	}
 end
 
-local private_text_style = {
-	vertical_alignment = "center",
-	use_shadow = true,
-	horizontal_alignment = "center",
-	font_size = 22,
-	font_type = "hell_shark",
-	text_color = Colors.get_table("cheeseburger"),
-	offset = {
-		0,
-		0,
-		2
-	}
-}
 local level_title_style = {
 	font_size = 32,
 	upper_case = true,
@@ -875,7 +879,13 @@ local widget_definitions = {
 	game_level = UIWidgets.create_simple_text("n/a", "game_level", 22, nil, level_title_style),
 	game_difficulty = UIWidgets.create_simple_text("n/a", "game_difficulty", 22, nil, difficulty_text_style),
 	player_career_name = UIWidgets.create_simple_text("n/a", "player_career_name", 22, nil, player_career_name_style),
-	player_hero_name = UIWidgets.create_simple_text("n/a", "player_hero_name", 22, nil, player_hero_name_style)
+	player_hero_name = UIWidgets.create_simple_text("n/a", "player_hero_name", 22, nil, player_hero_name_style),
+	mutator_summary1 = UIWidgets.create_simple_item_presentation("mutator_summary1", {
+		"mutators"
+	}),
+	mutator_summary2 = UIWidgets.create_simple_item_presentation("mutator_summary2", {
+		"mutators"
+	})
 }
 local specific_widget_definitions = {
 	input_description_text = UIWidgets.create_simple_text("player_list_show_mouse_description", "player_list_input_description", nil, nil, input_description_style),
@@ -1002,7 +1012,6 @@ local function player_widget_definition(index)
 	local frame_settings = UIFrameSettings.menu_frame_09
 	local background_texture = "talent_tree_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
-	local i = index - 1
 	local definition = {
 		element = {
 			passes = {
@@ -1087,7 +1096,7 @@ local function player_widget_definition(index)
 					pass_type = "text",
 					text_id = "ping_text",
 					content_check_function = function (content, style)
-						return content.show_ping
+						return content.show_ping and Application.user_setting("show_numerical_latency")
 					end
 				},
 				{

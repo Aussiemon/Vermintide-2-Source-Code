@@ -159,8 +159,8 @@ table.slice = function (t, start_index, length)
 	return slice
 end
 
-table.sorted = function (t, order_func)
-	local keys = {}
+table.sorted = function (t, order_func, use_frame_table)
+	local keys = (use_frame_table and FrameTable.alloc_table()) or {}
 
 	for k, _ in pairs(t) do
 		keys[#keys + 1] = k
@@ -573,6 +573,12 @@ function ripairs(t)
 	end
 
 	return ripairs_it, t, #t + 1
+end
+
+table.swap_delete = function (t, index)
+	local table_length = #t
+	t[index] = t[table_length]
+	t[table_length] = nil
 end
 
 return

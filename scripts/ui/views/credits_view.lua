@@ -142,7 +142,13 @@ CreditsView.update = function (self, dt)
 	end
 
 	local input_axis = (gamepad_active and input_service:get("gamepad_left_axis")) or input_service:get("scroll_axis")
-	local current_offset = math.max(0, (self.current_offset + dt * 50) - input_axis.y * 30)
+	local scroll_value = input_axis.y
+
+	if not gamepad_active and PLATFORM == "xb1" then
+		scroll_value = math.sign(input_axis.x) * 5
+	end
+
+	local current_offset = math.max(0, (self.current_offset + dt * 50) - scroll_value * 30)
 	self.current_offset = current_offset
 	local ui_top_renderer = self.ui_top_renderer
 	local scenegraph_id = "text_position"

@@ -39,7 +39,11 @@ BTChaosSorcererPlagueSkulkAction.enter = function (self, unit, blackboard, t)
 	local skulk_time = 6
 
 	if action.skulk_time then
-		skulk_time = math.random(action.skulk_time[1], action.skulk_time[2])
+		if action.initial_skulk_time and not blackboard.initial_skulk_finished then
+			skulk_time = math.random(action.initial_skulk_time[1], action.initial_skulk_time[2])
+		else
+			skulk_time = math.random(action.skulk_time[1], action.skulk_time[2])
+		end
 	end
 
 	if not blackboard.plague_wave_data then
@@ -56,6 +60,7 @@ BTChaosSorcererPlagueSkulkAction.enter = function (self, unit, blackboard, t)
 	blackboard.travel_teleport_timer = t + ConflictUtils.random_interval(action.teleport_cooldown)
 	blackboard.face_target_while_summoning = true
 	blackboard.summon_vo_timer = blackboard.summon_vo_timer or t
+	blackboard.initial_skulk_finished = true
 
 	if not blackboard.played_foreshadow then
 		local audio_system = Managers.state.entity:system("audio_system")

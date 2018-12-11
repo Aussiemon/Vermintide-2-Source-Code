@@ -537,7 +537,7 @@ BTConditions.grey_seer_waiting_for_pickup = function (blackboard)
 end
 
 BTConditions.explosive_loot_rat_combat = function (blackboard)
-	return Managers.state.game_mode:has_mutator("explosive_loot_rats") and unit_alive(blackboard.target_unit)
+	return Managers.state.game_mode:has_activated_mutator("explosive_loot_rats") and unit_alive(blackboard.target_unit)
 end
 
 return

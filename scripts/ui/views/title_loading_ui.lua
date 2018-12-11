@@ -1442,7 +1442,7 @@ end
 TitleLoadingUI._get_input_texture_data = function (self, input_action)
 	local input_service = Managers.input:get_service("title_loading_ui")
 
-	if Managers.input:is_device_active("keyboard") or Managers.input:is_device_active("mouse") then
+	if (Managers.input:is_device_active("keyboard") or Managers.input:is_device_active("mouse")) and PLATFORM == "win32" then
 		local platform = PLATFORM
 		local keymap_binding = input_service:get_keymapping(input_action, platform)
 		local device_type = keymap_binding[1]
@@ -1451,7 +1451,7 @@ TitleLoadingUI._get_input_texture_data = function (self, input_action)
 		local is_button_unassigned = key_index == UNASSIGNED_KEY
 
 		return nil, (is_button_unassigned and "") or Keyboard.button_locale_name(key_index)
-	elseif Managers.input:is_device_active("gamepad") then
+	elseif Managers.input:is_device_active("gamepad") or PLATFORM ~= "win32" then
 		return UISettings.get_gamepad_input_texture_data(input_service, input_action, true)
 	end
 end
@@ -1483,7 +1483,7 @@ TitleLoadingUI._update_input_text = function (self, dt)
 
 	local icon_spacing = 10
 	local using_keyboard = (not texture_data and true) or false
-	widget_content.using_keyboard = using_keyboard
+	widget_content.using_keyboard = PLATFORM == "win32" and using_keyboard
 	local font, scaled_font_size = UIFontByResolution(widget_style.input_text_1)
 	local text_width, text_height, min = UIRenderer.text_size(self._ui_renderer, widget_content.input_text_1, font[1], scaled_font_size)
 	ui_scenegraph.skip_input_text_1.size[1] = text_width
@@ -1524,16 +1524,18 @@ TitleLoadingUI._update_any_held = function (self)
 
 	table.clear(INPUTS_TO_REMOVE)
 
-	local input = Keyboard.any_pressed()
+	if PLATFORM == "win32" or GameSettingsDevelopment.allow_keyboard_mouse then
+		local input = Keyboard.any_pressed()
 
-	if input then
-		self._current_inputs[input] = Keyboard
-	end
+		if input then
+			self._current_inputs[input] = Keyboard
+		end
 
-	local input = Mouse.any_pressed()
+		local input = Mouse.any_pressed()
 
-	if input then
-		self._current_inputs[input] = Mouse
+		if input then
+			self._current_inputs[input] = Mouse
+		end
 	end
 
 	local input = Pad1.any_pressed()

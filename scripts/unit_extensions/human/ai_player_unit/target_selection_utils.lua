@@ -803,9 +803,9 @@ PerceptionUtils.pick_player_controller_allied = function (unit, blackboard, bree
 	if player_controller and ALIVE[player_controller] then
 		local ai_unit_position = POSITION_LOOKUP[unit]
 		local target_unit_position = POSITION_LOOKUP[player_controller]
-		local distance_sq = Vector3.distance_squared(ai_unit_position, target_unit_position)
+		local distance = Vector3.distance(ai_unit_position, target_unit_position)
 
-		return player_controller, distance_sq
+		return player_controller, distance
 	end
 end
 
@@ -895,6 +895,12 @@ PerceptionUtils.pick_rat_ogre_target_idle = function (unit, blackboard, breed, t
 	end
 end
 
+local function reset_aggro(aggro_list)
+	for enemy_unit, aggro in pairs(aggro_list) do
+		aggro_list[enemy_unit] = 0
+	end
+end
+
 local score_table = {}
 
 PerceptionUtils.pick_rat_ogre_target_with_weights = function (unit, blackboard, breed, t)
@@ -905,6 +911,7 @@ PerceptionUtils.pick_rat_ogre_target_with_weights = function (unit, blackboard, 
 	local num_enemies = #PLAYER_AND_BOT_UNITS
 	local best_score = -1000
 	local group_blackboard = blackboard.group_blackboard
+	local is_horde = blackboard.spawn_type == "horde" or blackboard.spawn_type == "horde_hidden"
 
 	for i = 1, num_enemies, 1 do
 		local enemy_unit = PLAYER_AND_BOT_UNITS[i]
@@ -938,19 +945,26 @@ PerceptionUtils.pick_rat_ogre_target_with_weights = function (unit, blackboard, 
 				score = score + inv_radius * inv_radius * weights.distance_weight
 			end
 
-			if not breed.ignore_targets_outside_detection_radius or blackboard.target_unit or distance_valid_target then
-				local aggro = blackboard.aggro_list[enemy_unit] or 0
-				local enemy_disabled = status_extension:is_disabled()
+			if is_horde or not breed.ignore_targets_outside_detection_radius or blackboard.target_unit or distance_valid_target then
+				if weights.target_staggered_you_bonus and blackboard.pushing_unit and blackboard.pushing_unit == enemy_unit then
+					score = score + weights.target_staggered_you_bonus
+					blackboard.target_unit_found_time = t
 
-				if enemy_disabled then
-					aggro = aggro * weights.target_disabled_aggro_mul
-					blackboard.aggro_list[enemy_unit] = aggro
-				end
+					reset_aggro(blackboard.aggro_list)
 
-				score = score + aggro
+					local aggro = blackboard.aggro_list[enemy_unit] or 0
+					local enemy_disabled = status_extension:is_disabled()
 
-				if enemy_disabled then
-					score = score * weights.target_disabled_mul
+					if enemy_disabled then
+						aggro = aggro * weights.target_disabled_aggro_mul
+						blackboard.aggro_list[enemy_unit] = aggro
+					end
+
+					score = score + aggro
+
+					if enemy_disabled then
+						score = score * weights.target_disabled_mul
+					end
 				end
 
 				if t - status_extension.last_catapulted_time < 5 then
@@ -1020,12 +1034,19 @@ PerceptionUtils.pick_chaos_troll_target_with_weights = function (unit, blackboar
 			end
 
 			if not breed.ignore_targets_outside_detection_radius or blackboard.target_unit or distance_valid_target then
-				local aggro = blackboard.aggro_list[enemy_unit] or 0
-				local enemy_disabled = status_extension.is_ledge_hanging or status_extension.knocked_down
+				if weights.target_staggered_you_bonus and blackboard.pushing_unit and blackboard.pushing_unit == enemy_unit then
+					score = score + weights.target_staggered_you_bonus
+					blackboard.target_unit_found_time = t
 
-				if enemy_disabled then
-					aggro = aggro * weights.target_disabled_aggro_mul
-					blackboard.aggro_list[enemy_unit] = aggro
+					reset_aggro(blackboard.aggro_list)
+
+					local aggro = blackboard.aggro_list[enemy_unit] or 0
+					local enemy_disabled = status_extension.is_ledge_hanging or status_extension.knocked_down
+
+					if enemy_disabled then
+						aggro = aggro * weights.target_disabled_aggro_mul
+						blackboard.aggro_list[enemy_unit] = aggro
+					end
 				end
 
 				score = score + aggro
@@ -1165,24 +1186,29 @@ PerceptionUtils.pick_pack_master_target = function (unit, blackboard, breed)
 	local pos = POSITION_LOOKUP[unit]
 	local closest_enemy = nil
 	local closest_dist_sq = math.huge
+	local closest_distance_score = math.huge
 
 	for k, player_unit in ipairs(PLAYER_AND_BOT_UNITS) do
 		if is_of_interest_to_packmaster(unit, player_unit) then
 			local enemy_pos = PLAYER_AND_BOT_POSITIONS[k]
 			local dist_sq = Vector3.distance_squared(pos, enemy_pos)
+			local score = dist_sq
 
 			if player_unit == blackboard.target_unit then
-				dist_sq = dist_sq * 0.8
+				score = dist_sq * 0.8
 			end
 
-			if closest_dist_sq > dist_sq then
+			if closest_distance_score > score then
 				closest_dist_sq = dist_sq
 				closest_enemy = player_unit
+				closest_distance_score = score
 			end
 		end
 	end
 
-	return closest_enemy, closest_dist_sq
+	local closest_dist = math.sqrt(closest_dist_sq)
+
+	return closest_enemy, closest_dist
 end
 
 PerceptionUtils.pick_mutator_sorcerer_target = function (unit, blackboard, breed)
@@ -1190,6 +1216,7 @@ PerceptionUtils.pick_mutator_sorcerer_target = function (unit, blackboard, breed
 	local pos = POSITION_LOOKUP[unit]
 	local closest_enemy = nil
 	local closest_dist_sq = math.huge
+	local closest_distance_score = math.huge
 	local enemy_looking_at_you = nil
 	local highest_perception_bonus = 0
 
@@ -1197,13 +1224,16 @@ PerceptionUtils.pick_mutator_sorcerer_target = function (unit, blackboard, breed
 		if is_of_interest_to_corruptor(unit, player_unit) then
 			local enemy_pos = PLAYER_AND_BOT_POSITIONS[k]
 			local dist_sq = Vector3.distance_squared(pos, enemy_pos)
+			local score = dist_sq
 
 			if player_unit == blackboard.target_unit then
-				dist_sq = dist_sq * 0.8
+				score = dist_sq * 0.8
 			end
 
 			if blackboard.corruptor_target and blackboard.corruptor_target == player_unit then
-				return blackboard.corruptor_target, dist_sq
+				local dist = math.sqrt(dist_sq)
+
+				return blackboard.corruptor_target, dist
 			end
 
 			local first_person_extension = ScriptUnit.has_extension(player_unit, "first_person_system")
@@ -1227,18 +1257,21 @@ PerceptionUtils.pick_mutator_sorcerer_target = function (unit, blackboard, breed
 			if is_infront and highest_perception_bonus < perception_bonus then
 				highest_perception_bonus = perception_bonus
 				closest_dist_sq = dist_sq
+				closest_distance_score = score
 				closest_enemy = player_unit
 				enemy_looking_at_you = player_unit
-			elseif dist_sq < closest_dist_sq then
+			elseif score < closest_distance_score then
 				closest_dist_sq = dist_sq
+				closest_distance_score = score
 				closest_enemy = player_unit
 			end
 		end
 	end
 
 	blackboard.closest_enemy_dist_sq = closest_dist_sq
+	local closest_dist = math.sqrt(closest_dist_sq)
 
-	return enemy_looking_at_you or closest_enemy, closest_dist_sq
+	return enemy_looking_at_you or closest_enemy, closest_dist
 end
 
 PerceptionUtils.pick_corruptor_target = function (unit, blackboard, breed)
@@ -1246,28 +1279,35 @@ PerceptionUtils.pick_corruptor_target = function (unit, blackboard, breed)
 	local pos = POSITION_LOOKUP[unit]
 	local closest_enemy = nil
 	local closest_dist_sq = math.huge
+	local closest_distance_score = math.huge
 
 	for k, player_unit in ipairs(PLAYER_AND_BOT_UNITS) do
 		if is_of_interest_to_corruptor(unit, player_unit) then
 			local enemy_pos = PLAYER_AND_BOT_POSITIONS[k]
 			local dist_sq = Vector3.distance_squared(pos, enemy_pos)
+			local score = dist_sq
 
 			if player_unit == blackboard.target_unit then
-				dist_sq = dist_sq * 0.8
+				score = dist_sq * 0.8
 			end
 
 			if blackboard.corruptor_target and blackboard.corruptor_target == player_unit then
-				return blackboard.corruptor_target, dist_sq
+				local dist = math.sqrt(dist_sq)
+
+				return blackboard.corruptor_target, dist
 			end
 
-			if dist_sq < closest_dist_sq then
+			if score < closest_distance_score then
 				closest_dist_sq = dist_sq
 				closest_enemy = player_unit
+				closest_distance_score = score
 			end
 		end
 	end
 
-	return closest_enemy, closest_dist_sq
+	local closest_dist = math.sqrt(closest_dist_sq)
+
+	return closest_enemy, closest_dist
 end
 
 function double_raycast(blackboard, from, cast_template, enemy_unit, physics_world)

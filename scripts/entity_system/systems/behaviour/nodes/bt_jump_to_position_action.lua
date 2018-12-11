@@ -55,12 +55,14 @@ BTJumpToPositionAction.leave = function (self, unit, blackboard, t, reason, dest
 	blackboard.jump_from_pos = nil
 	blackboard.exit_pos = nil
 
-	LocomotionUtils.set_animation_driven_movement(unit, false, true)
-	LocomotionUtils.set_animation_translation_scale(unit, Vector3(1, 1, 1))
+	if not destroy then
+		LocomotionUtils.set_animation_driven_movement(unit, false, true)
+		LocomotionUtils.set_animation_translation_scale(unit, Vector3(1, 1, 1))
 
-	local locomotion_extension = blackboard.locomotion_extension
+		local locomotion_extension = blackboard.locomotion_extension
 
-	locomotion_extension:set_movement_type("snap_to_navmesh")
+		locomotion_extension:set_movement_type("snap_to_navmesh")
+	end
 
 	local navigation_extension = blackboard.navigation_extension
 

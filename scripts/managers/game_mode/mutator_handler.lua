@@ -9,31 +9,70 @@ function mutator_dprint(text, ...)
 end
 
 MutatorHandler = class(MutatorHandler)
+local RPCS = {
+	"rpc_activate_mutator_client",
+	"rpc_deactivate_mutator_client"
+}
 
-MutatorHandler.init = function (self, mutators, is_server, has_local_client)
+MutatorHandler.init = function (self, mutators, is_server, has_local_client, network_event_delegate, network_transmit)
 	self._is_server = is_server
 	self._has_local_client = has_local_client
-	self._mutators_by_name = {}
-	self._active_mutators = {}
-	self._mutator_context = {}
+	self._network_transmit = network_transmit
+	self.network_event_delegate = network_event_delegate
 
-	if mutators then
-		for _, name in ipairs(mutators) do
-			self._mutators_by_name[name] = true
+	network_event_delegate:register(self, unpack(RPCS))
+
+	local mutator_context = {}
+	self._mutator_context = mutator_context
+	local active_mutators = {}
+	self._active_mutators = active_mutators
+	self._mutators = {}
+
+	if is_server and mutators then
+		for i = 1, #mutators, 1 do
+			local name = mutators[i]
+
+			self:_server_initialize_mutator(name, active_mutators, mutator_context)
 		end
-
-		self:_activate_mutators(mutators)
 	end
 end
 
 MutatorHandler.destroy = function (self)
 	local active_mutators = self._active_mutators
+	local mutator_context = self._mutator_context
 
 	for name, _ in pairs(active_mutators) do
-		self:_deactivate_mutator(name, active_mutators, self._mutator_context)
+		self:_deactivate_mutator(name, active_mutators, mutator_context, true)
 	end
 
+	self.network_event_delegate:unregister(self)
+
+	self.network_event_delegate = nil
+	self._mutators = nil
 	self._active_mutators = nil
+end
+
+MutatorHandler.activate_mutators = function (self)
+	if self._is_server then
+		local mutator_context = self._mutator_context
+		local active_mutators = self._active_mutators
+		local mutators = self._mutators
+
+		for name, data in pairs(mutators) do
+			self:_activate_mutator(name, active_mutators, mutator_context, data)
+		end
+	end
+end
+
+MutatorHandler.hot_join_sync = function (self, peer_id)
+	local network_transmit = self._network_transmit
+	local active_mutators = self._active_mutators
+
+	for name, _ in pairs(active_mutators) do
+		local mutator_id = NetworkLookup.mutator_templates[name]
+
+		network_transmit:send_rpc("rpc_activate_mutator_client", peer_id, mutator_id)
+	end
 end
 
 MutatorHandler.update = function (self, dt, t)
@@ -54,27 +93,12 @@ MutatorHandler.update = function (self, dt, t)
 	end
 end
 
-MutatorHandler.has_mutator = function (self, name)
-	return self._mutators_by_name[name] ~= nil
+MutatorHandler.has_activated_mutator = function (self, name)
+	return self._active_mutators[name] ~= nil
 end
 
-MutatorHandler.setup_done = function (self)
-	local mutator_context = self._mutator_context
-	local active_mutators = self._active_mutators
-	local is_server = self._is_server
-	local has_local_client = self._has_local_client
-
-	for _, mutator_data in pairs(active_mutators) do
-		local template = mutator_data.template
-
-		if is_server then
-			template.server.start_game_mode_function(mutator_context, mutator_data)
-		end
-
-		if has_local_client then
-			template.client.start_game_mode_function(mutator_context, mutator_data)
-		end
-	end
+MutatorHandler.activated_mutators = function (self)
+	return self._active_mutators
 end
 
 MutatorHandler.ai_killed = function (self, killed_unit, killer_unit)
@@ -106,28 +130,39 @@ MutatorHandler.conflict_director_updated_settings = function (self)
 		local template = mutator_data.template
 
 		if template.update_conflict_settings then
-			mutator_dprint("Updating settings for mutator '%s'", name)
 			template.update_conflict_settings(mutator_context, mutator_data)
 		end
 	end
 end
 
-MutatorHandler._activate_mutators = function (self, mutators)
-	local mutator_context = self._mutator_context
-	local active_mutators = self._active_mutators
-
-	for i, name in ipairs(mutators) do
-		self:_activate_mutator(name, active_mutators, mutator_context)
-	end
-end
-
-MutatorHandler._activate_mutator = function (self, name, active_mutators, mutator_context)
-	fassert(active_mutators[name] == nil, "Can't have multiple of same mutator running at the same time (%s)", name)
+MutatorHandler._server_initialize_mutator = function (self, name, active_mutators, mutator_context)
+	fassert(self._is_server, "Only server is allowed to run mutator initialization function.")
 	fassert(MutatorTemplates[name], "No such template (%s)", name)
-	mutator_dprint("Activating mutator '%s'", name)
+
+	local mutators = self._mutators
+
+	fassert(mutators[name] == nil, "Can't initialize an already initialized mutator (%s)", name)
+	fassert(active_mutators[name] == nil, "Can't initialize an activated mutator (%s)", name)
 
 	local template = MutatorTemplates[name]
 	local mutator_data = {
+		template = template
+	}
+	local server_template = template.server
+
+	if server_template.initialize_function then
+		server_template.initialize_function(mutator_context, mutator_data)
+	end
+
+	self._mutators[name] = mutator_data
+end
+
+MutatorHandler._activate_mutator = function (self, name, active_mutators, mutator_context, mutator_data)
+	fassert(active_mutators[name] == nil, "Can't have multiple of same mutator running at the same time (%s)", name)
+	fassert(MutatorTemplates[name], "No such template (%s)", name)
+
+	local template = MutatorTemplates[name]
+	mutator_data = mutator_data or {
 		template = template
 	}
 
@@ -148,11 +183,16 @@ MutatorHandler._activate_mutator = function (self, name, active_mutators, mutato
 	end
 
 	active_mutators[name] = mutator_data
+
+	if self._is_server then
+		local mutator_id = NetworkLookup.mutator_templates[name]
+
+		self._network_transmit:send_rpc_clients("rpc_activate_mutator_client", mutator_id)
+	end
 end
 
-MutatorHandler._deactivate_mutator = function (self, name, active_mutators, mutator_context)
+MutatorHandler._deactivate_mutator = function (self, name, active_mutators, mutator_context, is_destroy)
 	fassert(active_mutators[name], "Trying to deactivate mutator (%s) but it isn't active", name)
-	mutator_dprint("Deactivating mutator '%s'", name)
 
 	local template = MutatorTemplates[name]
 	local mutator_data = active_mutators[name]
@@ -174,6 +214,32 @@ MutatorHandler._deactivate_mutator = function (self, name, active_mutators, muta
 	end
 
 	active_mutators[name] = nil
+
+	if self._is_server and not is_destroy then
+		local mutator_id = NetworkLookup.mutator_templates[name]
+
+		self._network_transmit:send_rpc_clients("rpc_deactivate_mutator_client", mutator_id)
+	end
+end
+
+MutatorHandler.rpc_activate_mutator_client = function (self, sender, mutator_id)
+	fassert(not self._is_server, "Only call rpc_activate_mutator_client on clients.")
+
+	local mutator_name = NetworkLookup.mutator_templates[mutator_id]
+	local active_mutators = self._active_mutators
+	local mutator_context = self._mutator_context
+
+	self:_activate_mutator(mutator_name, active_mutators, mutator_context)
+end
+
+MutatorHandler.rpc_deactivate_mutator_client = function (self, sender, mutator_id)
+	fassert(not self._is_server, "Only call rpc_deactivate_mutator_client on clients.")
+
+	local mutator_name = NetworkLookup.mutator_templates[mutator_id]
+	local active_mutators = self._active_mutators
+	local mutator_context = self._mutator_context
+
+	self:_deactivate_mutator(mutator_name, active_mutators, mutator_context)
 end
 
 return

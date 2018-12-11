@@ -120,6 +120,48 @@ local scenegraph_definition = {
 			40,
 			4
 		}
+	},
+	open_profile_button = {
+		vertical_alignment = "bottom",
+		parent = "screen",
+		horizontal_alignment = "center",
+		size = {
+			250,
+			70
+		},
+		position = {
+			-125,
+			120,
+			10
+		}
+	},
+	invite_button = {
+		vertical_alignment = "bottom",
+		parent = "screen",
+		horizontal_alignment = "center",
+		size = {
+			250,
+			70
+		},
+		position = {
+			125,
+			120,
+			10
+		}
+	},
+	selection_handler = {
+		vertical_alignment = "center",
+		parent = "background",
+		horizontal_alignment = "center",
+		size = {
+			500,
+			500
+		},
+		position = {
+			0,
+			0,
+			50
+		}
 	}
 }
 
@@ -199,6 +241,11 @@ local function create_friend_entry(name, online, offset_y, friend)
 		element = {
 			passes = {
 				{
+					style_id = "hover",
+					pass_type = "hotspot",
+					content_id = "entry_hotspot"
+				},
+				{
 					pass_type = "texture",
 					style_id = "indicator_texture",
 					texture_id = "indicator_texture_id"
@@ -217,6 +264,14 @@ local function create_friend_entry(name, online, offset_y, friend)
 					end
 				},
 				{
+					pass_type = "texture",
+					style_id = "hover",
+					texture_id = "texture_id",
+					content_check_function = function (content)
+						return content.entry_hotspot.is_hover and not content.selected
+					end
+				},
+				{
 					style_id = "text",
 					pass_type = "text",
 					text_id = "text_id"
@@ -228,6 +283,7 @@ local function create_friend_entry(name, online, offset_y, friend)
 			texture_id = "rect_masked",
 			selected = false,
 			invite_texture_id = "friends_icon_invite",
+			entry_hotspot = {},
 			text_id = name,
 			friend = friend
 		},
@@ -272,6 +328,19 @@ local function create_friend_entry(name, online, offset_y, friend)
 			selected_texture = {
 				color = {
 					200,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					1
+				}
+			},
+			hover = {
+				color = {
+					128,
 					255,
 					255,
 					255
@@ -332,6 +401,210 @@ local function create_friend_entry(name, online, offset_y, friend)
 			(offset_y and offset_y) or 0,
 			0
 		}
+	}
+end
+
+function create_selection_handler(scenegraph_id)
+	return {
+		element = {
+			passes = {
+				{
+					style_id = "down_arrow_background",
+					pass_type = "hotspot",
+					content_id = "down_hotspot"
+				},
+				{
+					style_id = "up_arrow_background",
+					pass_type = "hotspot",
+					content_id = "up_hotspot"
+				},
+				{
+					texture_id = "texture_id",
+					style_id = "down_arrow",
+					pass_type = "texture",
+					content_id = "arrow",
+					content_check_function = function (content, style)
+						if Managers.input:is_device_active("gamepad") then
+							return false
+						end
+
+						return true
+					end
+				},
+				{
+					texture_id = "texture_id",
+					style_id = "up_arrow",
+					pass_type = "texture_uv",
+					content_id = "arrow",
+					content_check_function = function (content, style)
+						if Managers.input:is_device_active("gamepad") then
+							return false
+						end
+
+						return true
+					end
+				},
+				{
+					texture_id = "texture_id",
+					style_id = "down_arrow_hover",
+					pass_type = "texture",
+					content_id = "arrow_hover_down",
+					content_check_function = function (content)
+						local parent_content = content.parent
+						local down_hotspot = parent_content.down_hotspot
+
+						return down_hotspot.is_hover
+					end
+				},
+				{
+					texture_id = "texture_id",
+					style_id = "up_arrow_hover",
+					pass_type = "texture_uv",
+					content_id = "arrow_hover",
+					content_check_function = function (content)
+						local parent_content = content.parent
+						local up_hotspot = parent_content.up_hotspot
+
+						return up_hotspot.is_hover
+					end
+				}
+			}
+		},
+		content = {
+			rect_masked = "rect_masked",
+			up_hotspot = {},
+			down_hotspot = {},
+			arrow = {
+				texture_id = "drop_down_menu_arrow",
+				uvs = {
+					{
+						0,
+						1
+					},
+					{
+						1,
+						0
+					}
+				}
+			},
+			arrow_hover = {
+				texture_id = "drop_down_menu_arrow_clicked",
+				uvs = {
+					{
+						0,
+						1
+					},
+					{
+						1,
+						0
+					}
+				}
+			},
+			arrow_hover_down = {
+				texture_id = "drop_down_menu_arrow_clicked",
+				uvs = {
+					{
+						0,
+						0
+					},
+					{
+						1,
+						1
+					}
+				}
+			}
+		},
+		style = {
+			up_arrow = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "right",
+				masked = false,
+				offset = {
+					-25,
+					150,
+					2
+				},
+				texture_size = {
+					31,
+					15
+				}
+			},
+			up_arrow_background = {
+				offset = {
+					430,
+					142,
+					2
+				},
+				size = {
+					60,
+					30
+				},
+				color = {
+					200,
+					20,
+					20,
+					20
+				}
+			},
+			down_arrow = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "right",
+				masked = false,
+				offset = {
+					-25,
+					-50,
+					3
+				},
+				texture_size = {
+					31,
+					15
+				}
+			},
+			up_arrow_hover = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "right",
+				offset = {
+					-25,
+					130,
+					0
+				},
+				texture_size = {
+					31,
+					28
+				}
+			},
+			down_arrow_hover = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "right",
+				offset = {
+					-25,
+					-43,
+					2
+				},
+				texture_size = {
+					31,
+					28
+				}
+			},
+			down_arrow_background = {
+				offset = {
+					430,
+					-55,
+					2
+				},
+				size = {
+					60,
+					30
+				},
+				color = {
+					200,
+					20,
+					20,
+					20
+				}
+			}
+		},
+		scenegraph_id = scenegraph_id
 	}
 end
 
@@ -489,6 +762,7 @@ local party_header_text_style = {
 		0
 	}
 }
+local disable_with_gamepad = true
 local widget_definitions = {
 	background = UIWidgets.create_background_with_frame("background", {
 		500,
@@ -505,7 +779,10 @@ local widget_definitions = {
 		friend_entry_size[2] * num_visible_friends + 20
 	}, "mission_select_screen_bg", "menu_frame_12"),
 	loading_icon = create_loading_icon(),
-	screen_fade = UIWidgets.create_simple_texture("gradient_dice_game_reward", "screen")
+	screen_fade = UIWidgets.create_simple_texture("gradient_dice_game_reward", "screen"),
+	open_profile_button = UIWidgets.create_default_button("open_profile_button", scenegraph_definition.open_profile_button.size, nil, nil, Localize("input_description_show_profile"), 22, nil, nil, nil, disable_with_gamepad),
+	invite_button = UIWidgets.create_default_button("invite_button", scenegraph_definition.invite_button.size, nil, nil, Localize("friend_list_invite"), 22, nil, nil, nil, disable_with_gamepad),
+	selection_handler = create_selection_handler("selection_handler")
 }
 local entry_definitions = {
 	create_party_entry = create_party_entry,

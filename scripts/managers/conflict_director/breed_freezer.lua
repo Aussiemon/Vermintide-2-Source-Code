@@ -79,7 +79,7 @@ BreedFreezer.init = function (self, world, entity_manager, network_event_delegat
 	if network_event_delegate then
 		self.network_event_delegate = network_event_delegate
 
-		network_event_delegate:register(self, "rpc_breed_freeze_unit", "rpc_breed_unfreeze_breed", "rpc_breed_freezer_hot_join", "rpc_breed_freezer_sync_breeds")
+		network_event_delegate:register(self, "rpc_breed_freeze_units", "rpc_breed_unfreeze_breed", "rpc_breed_freezer_hot_join", "rpc_breed_freezer_sync_breeds")
 	end
 
 	self.breed_spawn_queues = {}
@@ -96,7 +96,7 @@ BreedFreezer.init = function (self, world, entity_manager, network_event_delegat
 		self:_setup_freeze_box()
 	end
 
-	for breed_name, settings in pairs(BreedFreezerSettings.breeds) do
+	for _, settings in pairs(BreedFreezerSettings.breeds) do
 		fassert(settings.pool_size <= NetworkConstants.max_breed_freezer_units_per_rpc, "Pool size too large to sync!")
 	end
 end
@@ -220,22 +220,27 @@ BreedFreezer.try_mark_unit_for_freeze = function (self, breed, unit)
 	return true
 end
 
-BreedFreezer.rpc_breed_freeze_unit = function (self, peer_id, go_id)
+BreedFreezer.rpc_breed_freeze_units = function (self, peer_id, unit_go_ids)
 	fassert(self._freezer_initialized, "Received freeze before freezer was initialized!")
 
-	local unit = Managers.state.unit_storage:unit(go_id)
-	local ai_extension = ScriptUnit.has_extension(unit, "ai_system")
-	local breed = ai_extension:breed()
-	local breed_name = breed.name
+	local unit_storage = Managers.state.unit_storage
 
-	fassert(BreedFreezerSettings.breeds[breed_name], "Can't freeze unit of breed %s", breed_name)
+	for i = 1, #unit_go_ids, 1 do
+		local go_id = unit_go_ids[i]
+		local unit = unit_storage:unit(go_id)
+		local ai_extension = ScriptUnit.has_extension(unit, "ai_system")
+		local breed = ai_extension:breed()
+		local breed_name = breed.name
 
-	local units_to_freeze = self.units_to_freeze[breed_name]
+		fassert(BreedFreezerSettings.breeds[breed_name], "Can't freeze unit of breed %s", breed_name)
 
-	fassert(self.breed_spawn_queues[breed_name]:available() > #units_to_freeze, "Breed freeze queue for breed %s is full.", breed_name)
+		local units_to_freeze = self.units_to_freeze[breed_name]
 
-	self.num_to_freeze = self.num_to_freeze + 1
-	units_to_freeze[#units_to_freeze + 1] = unit
+		fassert(self.breed_spawn_queues[breed_name]:available() > #units_to_freeze, "Breed freeze queue for breed %s is full.", breed_name)
+
+		self.num_to_freeze = self.num_to_freeze + 1
+		units_to_freeze[#units_to_freeze + 1] = unit
+	end
 
 	self:commit_freezes()
 end
@@ -250,6 +255,12 @@ BreedFreezer.commit_freezes = function (self)
 	local freezer_offset = self.freezer_offset:unbox()
 	local freezer_pos = self.freezer_pos:unbox()
 	local freezer_size = Vector3Aux.unbox(BreedFreezerSettings.freezer_size)
+	local is_server = self.is_server
+	local network_manager = Managers.state.network
+	local in_game_session = network_manager:in_game_session()
+	local game = network_manager:game()
+	local breed_go_ids = FrameTable.alloc_table()
+	local max_breed_freezer_units_per_rpc = NetworkConstants.max_breed_freezer_units_per_rpc
 
 	for breed_name, units in pairs(self.units_to_freeze) do
 		local queue = self.breed_spawn_queues[breed_name]
@@ -263,10 +274,10 @@ BreedFreezer.commit_freezes = function (self)
 			local systems = self.systems_by_breed[breed_name]
 			local breed_extension_names = self.extension_names_by_breed[breed_name]
 
-			for i = 1, #systems, 1 do
-				local system = systems[i]
+			for j = 1, #systems, 1 do
+				local system = systems[j]
 
-				system:freeze(unit, breed_extension_names[i], "reason_unspawn")
+				system:freeze(unit, breed_extension_names[j], "reason_unspawn")
 			end
 
 			if Unit.has_animation_state_machine(unit) then
@@ -298,19 +309,25 @@ BreedFreezer.commit_freezes = function (self)
 
 			Unit.set_frozen(unit, true)
 
-			if Managers.player.is_server then
-				local network_manager = Managers.state.network
+			if is_server and in_game_session then
 				local unit_id = network_manager:unit_game_object_id(unit)
-
-				network_manager.network_transmit:send_rpc_clients("rpc_breed_freeze_unit", unit_id)
-
-				local game = Managers.state.network:game()
+				breed_go_ids[#breed_go_ids + 1] = unit_id
 
 				GameSession_set_game_object_field(game, unit_id, "position", freezer_pos + offset)
+
+				if max_breed_freezer_units_per_rpc <= #breed_go_ids then
+					fassert(#breed_go_ids == max_breed_freezer_units_per_rpc, "More than one unit id was added during loop!")
+					network_manager.network_transmit:send_rpc_clients("rpc_breed_freeze_units", breed_go_ids)
+					table.clear(breed_go_ids)
+				end
 			end
 
 			Managers.state.unit_storage:freeze(unit)
 		end
+	end
+
+	if is_server and in_game_session and #breed_go_ids > 0 then
+		network_manager.network_transmit:send_rpc_clients("rpc_breed_freeze_units", breed_go_ids)
 	end
 
 	self.num_to_freeze = 0

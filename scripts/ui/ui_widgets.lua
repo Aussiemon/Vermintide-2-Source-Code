@@ -1566,8 +1566,15 @@ UIWidgets.create_chain_scrollbar = function (scenegraph_id, size, optional_style
 						return content.bar_height_percentage < 1
 					end,
 					held_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-						local cursor = UIInverseScaleVectorToResolution(input_service:get("cursor"))
+						local gamepad_active = Managers.input:is_device_active("gamepad")
+						local base_cursor = input_service:get("cursor")
+						local cursor = UIInverseScaleVectorToResolution(base_cursor)
 						local cursor_y = cursor[2]
+
+						if PLATFORM == "xb1" and GameSettingsDevelopment.allow_keyboard_mouse and not gamepad_active then
+							cursor_y = 1080 - base_cursor.y
+						end
+
 						local world_pos = UISceneGraph.get_world_position(ui_scenegraph, ui_content.scenegraph_id)
 						local world_pos_y = world_pos[2]
 						local offset = ui_style.offset

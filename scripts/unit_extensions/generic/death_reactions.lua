@@ -185,7 +185,7 @@ local function ai_default_unit_start(unit, context, t, killing_blow, is_server)
 
 	Managers.state.game_mode:ai_killed(unit, owner_unit)
 
-	if Managers.state.game_mode:has_mutator("corpse_explosion") then
+	if Managers.state.game_mode:has_activated_mutator("corpse_explosion") then
 		local unit_name = "units/hub_elements/empty"
 		local unit_template_name = "timed_explosion_unit"
 		local position = POSITION_LOOKUP[unit]
@@ -1050,7 +1050,7 @@ DeathReactions.templates = {
 				trigger_unit_dialogue_death_event(unit, killing_blow[DamageDataIndex.ATTACKER], killing_blow[DamageDataIndex.HIT_ZONE], killing_blow[DamageDataIndex.DAMAGE_TYPE])
 				trigger_player_killing_blow_ai_buffs(unit, killing_blow, true)
 
-				if Managers.state.game_mode:has_mutator("explosive_loot_rats") then
+				if Managers.state.game_mode:has_activated_mutator("explosive_loot_rats") then
 					AiUtils.loot_rat_explosion(unit, unit, BLACKBOARDS[unit], nil, ExplosionTemplates.loot_rat_explosion)
 				else
 					local amount_of_loot_drops = math.random(2, 4)
@@ -1107,7 +1107,7 @@ DeathReactions.templates = {
 				return data, result
 			end,
 			update = function (unit, dt, context, t, data)
-				if Managers.state.game_mode:has_mutator("explosive_loot_rats") and BLACKBOARDS[unit].delete_at_t < t and not data.marked_for_deletion then
+				if Managers.state.game_mode:has_activated_mutator("explosive_loot_rats") and BLACKBOARDS[unit].delete_at_t < t and not data.marked_for_deletion then
 					Managers.state.unit_spawner:mark_for_deletion(unit)
 
 					data.marked_for_deletion = true

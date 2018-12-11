@@ -13,9 +13,6 @@ BTTransformAction.enter = function (self, unit, blackboard, t)
 	blackboard.active_node = BTTransformAction
 	local action = blackboard.action
 	local network_manager = Managers.state.network
-
-	network_manager:anim_event(unit, "to_combat")
-
 	local transform_animation = action.transform_animation
 
 	if transform_animation then

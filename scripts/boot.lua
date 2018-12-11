@@ -370,6 +370,7 @@ Boot.booting_update = function (self, dt)
 		Crashify.print_property("engine_revision", script_data.build_identifier)
 		Crashify.print_property("content_revision", script_data.settings.content_revision)
 		Crashify.print_property("rendering_backend", Renderer.render_device_string())
+		Crashify.print_property("teamcity_build_id", script_data.settings.teamcity_build_id)
 
 		if PLATFORM == "win32" then
 			if rawget(_G, "Steam") then
@@ -425,7 +426,7 @@ Boot.booting_render = function (self)
 end
 
 Boot._require_foundation_scripts = function (self)
-	base_require("util", "verify_plugins", "clipboard", "error", "patches", "class", "callback", "rectangle", "state_machine", "visual_state_machine", "misc_util", "stack", "circular_queue", "grow_queue", "table", "math", "vector3", "quaternion", "script_world", "script_viewport", "script_camera", "script_unit", "frame_table", "path")
+	base_require("util", "verify_plugins", "clipboard", "error", "patches", "class", "callback", "rectangle", "state_machine", "visual_state_machine", "misc_util", "stack", "circular_queue", "grow_queue", "table", "math", "vector3", "quaternion", "script_world", "script_viewport", "script_camera", "script_unit", "frame_table", "path", "string")
 	base_require("debug", "table_trap")
 	base_require("managers", "world/world_manager", "player/player", "free_flight/free_flight_manager", "state/state_machine_manager", "time/time_manager", "token/token_manager")
 	base_require("managers", "localization/localization_manager", "event/event_manager")
@@ -436,11 +437,22 @@ Boot._init_managers = function (self)
 	Managers.world = WorldManager:new()
 	Managers.token = TokenManager:new()
 	Managers.state_machine = StateMachineManager:new()
+	Managers.url_loader = UrlLoaderManager:new()
 end
 
 Boot.game_render = function (self)
+	if self._machine.pre_render then
+		self._machine:pre_render()
+	end
+
 	Managers.world:render()
 	self._machine:render()
+
+	if self._machine.post_render then
+		self._machine:post_render()
+	end
+
+	Managers.url_loader:post_render()
 end
 
 Boot._setup_statemachine = function (self, start_state, params)
@@ -615,6 +627,7 @@ Boot.game_update = function (self, real_world_dt)
 	self._machine:update(dt, t)
 	Managers.state_machine:update(dt)
 	Managers.world:update(dt, t)
+	Managers.url_loader:update(dt)
 
 	if self.quit_game then
 		Boot.is_controlled_exit = true
@@ -805,263 +818,177 @@ Game.setup = function (self)
 end
 
 Game._set_ps4_content_restrictions = function (self)
-	local t_us = {
+	local restrictions = {
 		{
 			country = "at",
-			age = 16
+			age = 18
+		},
+		{
+			country = "bh",
+			age = 18
 		},
 		{
 			country = "be",
-			age = 16
+			age = 18
 		},
 		{
 			country = "bg",
-			age = 16
+			age = 18
 		},
 		{
 			country = "hr",
-			age = 16
+			age = 18
 		},
 		{
 			country = "cy",
-			age = 16
+			age = 18
 		},
 		{
 			country = "cz",
-			age = 16
+			age = 18
 		},
 		{
 			country = "dk",
-			age = 16
+			age = 18
 		},
 		{
 			country = "fi",
-			age = 16
+			age = 18
 		},
 		{
 			country = "fr",
-			age = 16
+			age = 18
 		},
 		{
 			country = "gr",
-			age = 16
+			age = 18
 		},
 		{
 			country = "hu",
-			age = 16
+			age = 18
 		},
 		{
 			country = "is",
-			age = 16
+			age = 18
+		},
+		{
+			country = "in",
+			age = 18
 		},
 		{
 			country = "ie",
-			age = 16
+			age = 18
 		},
 		{
 			country = "il",
-			age = 16
+			age = 18
 		},
 		{
 			country = "it",
-			age = 16
+			age = 18
+		},
+		{
+			country = "kw",
+			age = 18
+		},
+		{
+			country = "lb",
+			age = 18
 		},
 		{
 			country = "lu",
-			age = 16
+			age = 18
 		},
 		{
 			country = "mt",
-			age = 16
+			age = 18
 		},
 		{
 			country = "nl",
-			age = 16
+			age = 18
 		},
 		{
 			country = "no",
-			age = 16
+			age = 18
+		},
+		{
+			country = "om",
+			age = 18
 		},
 		{
 			country = "pl",
-			age = 16
+			age = 18
 		},
 		{
 			country = "pt",
-			age = 16
+			age = 18
+		},
+		{
+			country = "qa",
+			age = 18
 		},
 		{
 			country = "ro",
-			age = 16
+			age = 18
+		},
+		{
+			country = "sa",
+			age = 18
 		},
 		{
 			country = "sk",
-			age = 16
+			age = 18
 		},
 		{
 			country = "si",
-			age = 16
+			age = 18
+		},
+		{
+			country = "za",
+			age = 18
 		},
 		{
 			country = "es",
-			age = 16
+			age = 18
 		},
 		{
 			country = "se",
-			age = 16
+			age = 18
 		},
 		{
 			country = "ch",
-			age = 16
+			age = 18
 		},
 		{
 			country = "tr",
-			age = 16
+			age = 18
+		},
+		{
+			country = "ua",
+			age = 18
+		},
+		{
+			country = "ae",
+			age = 18
 		},
 		{
 			country = "gb",
-			age = 16
+			age = 18
 		},
 		{
-			country = "au",
-			age = 15
+			country = "de",
+			age = 18
 		},
 		{
-			country = "tw",
-			age = 15
-		},
-		{
-			country = "br",
-			age = 16
-		},
-		{
-			country = "ru",
-			age = 16
-		}
-	}
-	local t_eu = {
-		{
-			country = "at",
-			age = 16
-		},
-		{
-			country = "be",
-			age = 16
-		},
-		{
-			country = "bg",
-			age = 16
-		},
-		{
-			country = "hr",
-			age = 16
-		},
-		{
-			country = "cy",
-			age = 16
-		},
-		{
-			country = "cz",
-			age = 16
-		},
-		{
-			country = "dk",
-			age = 16
-		},
-		{
-			country = "fi",
-			age = 16
-		},
-		{
-			country = "fr",
-			age = 16
-		},
-		{
-			country = "gr",
-			age = 16
-		},
-		{
-			country = "hu",
-			age = 16
-		},
-		{
-			country = "is",
-			age = 16
-		},
-		{
-			country = "ie",
-			age = 16
-		},
-		{
-			country = "il",
-			age = 16
-		},
-		{
-			country = "it",
-			age = 16
-		},
-		{
-			country = "lu",
-			age = 16
-		},
-		{
-			country = "mt",
-			age = 16
-		},
-		{
-			country = "nl",
-			age = 16
-		},
-		{
-			country = "no",
-			age = 16
-		},
-		{
-			country = "pl",
-			age = 16
-		},
-		{
-			country = "pt",
-			age = 16
-		},
-		{
-			country = "ro",
-			age = 16
-		},
-		{
-			country = "sk",
-			age = 16
-		},
-		{
-			country = "si",
-			age = 16
-		},
-		{
-			country = "es",
-			age = 16
-		},
-		{
-			country = "se",
-			age = 16
-		},
-		{
-			country = "ch",
-			age = 16
-		},
-		{
-			country = "tr",
-			age = 16
-		},
-		{
-			country = "gb",
-			age = 16
-		},
-		{
-			country = "us",
+			country = "ar",
 			age = 17
 		},
 		{
-			country = "mx",
+			country = "bo",
+			age = 17
+		},
+		{
+			country = "br",
 			age = 17
 		},
 		{
@@ -1069,28 +996,80 @@ Game._set_ps4_content_restrictions = function (self)
 			age = 17
 		},
 		{
+			country = "cl",
+			age = 17
+		},
+		{
+			country = "co",
+			age = 17
+		},
+		{
+			country = "cr",
+			age = 17
+		},
+		{
+			country = "ec",
+			age = 17
+		},
+		{
+			country = "sv",
+			age = 17
+		},
+		{
+			country = "gt",
+			age = 17
+		},
+		{
+			country = "hn",
+			age = 17
+		},
+		{
+			country = "mx",
+			age = 17
+		},
+		{
+			country = "ni",
+			age = 17
+		},
+		{
+			country = "pa",
+			age = 17
+		},
+		{
+			country = "py",
+			age = 17
+		},
+		{
+			country = "pe",
+			age = 17
+		},
+		{
+			country = "us",
+			age = 17
+		},
+		{
+			country = "uy",
+			age = 17
+		},
+		{
 			country = "au",
 			age = 15
+		},
+		{
+			country = "nz",
+			age = 16
 		},
 		{
 			country = "tw",
 			age = 15
 		},
 		{
-			country = "br",
-			age = 16
-		},
-		{
 			country = "ru",
-			age = 16
+			age = 18
 		}
 	}
 
-	if PS4.title_id() == "CUSA02133_00" then
-		NpCheck.set_content_restriction(17, t_us)
-	else
-		NpCheck.set_content_restriction(18, t_eu)
-	end
+	NpCheck.set_content_restriction(18, restrictions)
 end
 
 Game._handle_revision_info = function (self)
@@ -1192,7 +1171,7 @@ Game.require_game_scripts = function (self)
 	game_require("settings", "demo_settings", "game_settings_development", "controller_settings", "default_user_settings")
 	game_require("entity_system", "entity_system")
 	game_require("game_state", "game_state_machine", "state_context", "state_splash_screen", "state_loading", "state_ingame", "state_demo_end")
-	game_require("managers", "admin/admin_manager", "news_ticker/news_ticker_manager", "player/player_manager", "player/player_bot", "save/save_manager", "save/save_data", "perfhud/perfhud_manager", "music/music_manager", "network/party_manager", "transition/transition_manager", "smoketest/smoketest_manager", "debug/updator", "invite/invite_manager", "unlock/unlock_manager", "popup/popup_manager", "popup/simple_popup", "light_fx/light_fx_manager", "play_go/play_go_manager", "controller_features/controller_features_manager", "mutators/mutator_manager", "deed/deed_manager", "telemetry/telemetry_create")
+	game_require("managers", "admin/admin_manager", "news_ticker/news_ticker_manager", "player/player_manager", "player/player_bot", "save/save_manager", "save/save_data", "perfhud/perfhud_manager", "music/music_manager", "network/party_manager", "transition/transition_manager", "smoketest/smoketest_manager", "debug/updator", "invite/invite_manager", "unlock/unlock_manager", "popup/popup_manager", "popup/simple_popup", "light_fx/light_fx_manager", "play_go/play_go_manager", "controller_features/controller_features_manager", "deed/deed_manager", "telemetry/telemetry_create")
 
 	if PLATFORM == "win32" then
 		game_require("managers", "irc/irc_manager", "curl/curl_manager", "twitch/twitch_manager")
@@ -1409,7 +1388,6 @@ Game._init_managers = function (self)
 	Managers.news_ticker = NewsTickerManager:new()
 	Managers.light_fx = LightFXManager:new()
 	Managers.party = PartyManager:new()
-	Managers.mutators = MutatorManager:new()
 	Managers.deed = DeedManager:new()
 
 	if GameSettingsDevelopment.use_leaderboards or Development.parameter("use_leaderboards") then

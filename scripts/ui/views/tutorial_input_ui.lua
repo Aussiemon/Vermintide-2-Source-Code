@@ -114,8 +114,6 @@ TutorialInputUI.update = function (self, dt, t)
 		self:_create_ui_elements()
 	end
 
-	script_data.tutorial_input = self
-
 	self:_update_animations(dt, t)
 	self:_update_tooltip(dt, t)
 	self:_draw(dt, t)
@@ -154,7 +152,7 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 	local texture_size_y = 0
 	local texture_size_x = 0
 	local gamepad_active = self._input_manager:is_device_active("gamepad")
-	local inputs = (gamepad_active and active_template.tooltip_gamepad_inputs) or active_template.tooltip_inputs
+	local inputs = ((gamepad_active or PLATFORM == "ps4") and active_template.tooltip_gamepad_inputs) or active_template.tooltip_inputs
 
 	if not active_tooltip_name then
 		self:fade_in()

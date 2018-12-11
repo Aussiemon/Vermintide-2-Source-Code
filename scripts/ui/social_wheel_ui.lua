@@ -82,6 +82,7 @@ SocialWheelUI._create_ui_elements = function (self)
 	self._selection_widgets = {}
 	self._social_event_widgets = {}
 	self._queued_social_wheel_events = {}
+	self._icon_widgets = {}
 	self._event_index = 0
 	self._select_timer = 0
 	self._selected_widget = nil
@@ -184,6 +185,15 @@ SocialWheelUI._add_social_wheel_event = function (self, player, social_wheel_eve
 				local career_name = career_ext:career_name()
 				local career_settings = CareerSettings[career_name]
 				local widget = UIWidget.init(definitions.create_social_text_event(social_wheel_event_settings, career_settings.portrait_image, event_text, is_local_player))
+				local icon_widget = nil
+
+				if not is_local_player then
+					local world = Managers.world:world("level_world")
+					local viewport = ScriptWorld.viewport(world, "player_1")
+					local camera = ScriptViewport.camera(viewport)
+					icon_widget = UIWidget.init(definitions.create_social_icon(social_wheel_event_settings, player.peer_id, camera, world, Managers.time:time("game") + 5, 1))
+					self._icon_widgets[player.peer_id] = icon_widget
+				end
 
 				if #self._social_event_widgets < 6 then
 					self:_add_social_wheel_event_animation(widget)
@@ -258,6 +268,51 @@ SocialWheelUI.rpc_social_wheel_event = function (self, sender, peer_id, social_w
 			end
 		end
 	end
+end
+
+SocialWheelUI.post_update = function (self, dt)
+	self:_post_update_remove_icon(dt)
+	self:_post_update_render(dt)
+end
+
+local TO_REMOVE = {}
+
+SocialWheelUI._post_update_remove_icon = function (self, dt)
+	table.clear(TO_REMOVE)
+
+	local time = Managers.time:time("game")
+
+	for key, widget in pairs(self._icon_widgets) do
+		local widget_content = widget.content
+
+		if widget_content.end_time < time then
+			TO_REMOVE[#TO_REMOVE + 1] = key
+		end
+	end
+
+	for _, key in ipairs(TO_REMOVE) do
+		self._icon_widgets[key] = nil
+	end
+end
+
+local EMPTY_RENDER_SETTINGS = {}
+
+SocialWheelUI._post_update_render = function (self, dt)
+	if not self._is_visible then
+		return
+	end
+
+	local ui_renderer = self._ui_top_renderer
+	local ui_scenegraph = self._ui_scenegraph
+	local input_service = Managers.input:get_service("ingame_menu")
+
+	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, EMPTY_RENDER_SETTINGS)
+
+	for _, widget in pairs(self._icon_widgets) do
+		UIRenderer.draw_widget(ui_renderer, widget)
+	end
+
+	UIRenderer.end_pass(ui_renderer)
 end
 
 SocialWheelUI.update = function (self, dt, t)
@@ -809,10 +864,12 @@ SocialWheelUI._close_menu = function (self, dt, t, input_service)
 					local network_manager = Managers.state.network
 					local target_unit_id = network_manager:unit_game_object_id(target_unit) or NetworkConstants.invalid_game_object_id
 
-					if network_manager.is_server then
-						network_manager.network_transmit:send_rpc_clients("rpc_social_wheel_event", peer_id, social_wheel_event_id, target_unit_id)
-					else
-						network_manager.network_transmit:send_rpc_server("rpc_social_wheel_event", peer_id, social_wheel_event_id, target_unit_id)
+					if network_manager:game() ~= nil then
+						if network_manager.is_server then
+							network_manager.network_transmit:send_rpc_clients("rpc_social_wheel_event", peer_id, social_wheel_event_id, target_unit_id)
+						else
+							network_manager.network_transmit:send_rpc_server("rpc_social_wheel_event", peer_id, social_wheel_event_id, target_unit_id)
+						end
 					end
 				end
 			end

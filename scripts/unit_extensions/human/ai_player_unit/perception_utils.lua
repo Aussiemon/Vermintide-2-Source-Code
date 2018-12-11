@@ -94,8 +94,33 @@ PerceptionUtils.perception_all_seeing = function (unit, blackboard, breed, pick_
 			blackboard.group_blackboard.special_targets[target_unit] = nil
 		end
 
+		blackboard.previous_target_unit = blackboard.target_unit
 		blackboard.target_unit = nil
 		blackboard.target_dist = math.huge
+	end
+end
+
+PerceptionUtils.perception_all_seeing_boss = function (unit, blackboard, breed, pick_target_func, t)
+	PerceptionUtils.perception_all_seeing(unit, blackboard, breed, pick_target_func, t)
+
+	if blackboard.aggro_unit ~= blackboard.target_unit then
+		local old_aggro_unit = blackboard.aggro_unit
+		local new_aggro_unit = blackboard.target_unit
+		blackboard.aggro_unit = new_aggro_unit
+
+		if breed.trigger_dialogue_on_target_switch and new_aggro_unit then
+			local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+			local event_data = FrameTable.alloc_table()
+			event_data.attack_tag = breed.dialogue_target_switch_attack_tag or "enemy_target_changed"
+			event_data.target_name = ScriptUnit.extension(new_aggro_unit, "dialogue_system").context.player_profile
+
+			dialogue_input:trigger_networked_dialogue_event(breed.dialogue_target_switch_event or "enemy_target_changed", event_data)
+		end
+
+		local sound_effect_system = Managers.state.entity:system("sound_effect_system")
+
+		sound_effect_system:aggro_unit_changed(old_aggro_unit, unit, false)
+		sound_effect_system:aggro_unit_changed(new_aggro_unit, unit, true)
 	end
 end
 
@@ -127,14 +152,13 @@ PerceptionUtils.perception_pack_master = function (unit, blackboard, breed, pick
 			blackboard.group_blackboard.special_targets[target_unit] = nil
 		end
 
+		blackboard.previous_target_unit = blackboard.target_unit
 		blackboard.target_unit = nil
 		blackboard.target_dist = math.huge
 	end
 end
 
 PerceptionUtils.perception_rat_ogre = function (unit, blackboard, breed, pick_target_func, t, dt)
-	local target_unit_old = blackboard.target_unit
-
 	if blackboard.keep_target then
 		return
 	end
@@ -173,28 +197,31 @@ PerceptionUtils.perception_rat_ogre = function (unit, blackboard, breed, pick_ta
 		else
 			blackboard.ladder_distance = math.huge
 		end
+	end
 
-		if target_unit ~= target_unit_old then
-			local old_aggro = blackboard.aggro_list[target_unit_old]
+	if blackboard.aggro_unit ~= target_unit then
+		local old_aggro_unit = blackboard.aggro_unit
+		local new_aggro_unit = target_unit
+		blackboard.aggro_unit = new_aggro_unit
+		local old_aggro = blackboard.aggro_list[old_aggro_unit]
 
-			if old_aggro then
-				blackboard.aggro_list[target_unit_old] = old_aggro * breed.perception_weights.old_target_aggro_mul
-			end
-
-			if breed.trigger_dialogue_on_target_switch then
-				local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
-				local event_data = FrameTable.alloc_table()
-				event_data.attack_tag = breed.dialogue_target_switch_attack_tag or "rat_ogre_change_target"
-				event_data.target_name = ScriptUnit.extension(target_unit, "dialogue_system").context.player_profile
-
-				dialogue_input:trigger_networked_dialogue_event(breed.dialogue_target_switch_event or "enemy_attack", event_data)
-			end
-
-			local sound_effect_system = Managers.state.entity:system("sound_effect_system")
-
-			sound_effect_system:aggro_unit_changed(target_unit, unit, true)
-			sound_effect_system:aggro_unit_changed(target_unit_old, unit, false)
+		if old_aggro then
+			blackboard.aggro_list[old_aggro_unit] = old_aggro * breed.perception_weights.old_target_aggro_mul
 		end
+
+		if breed.trigger_dialogue_on_target_switch and new_aggro_unit then
+			local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+			local event_data = FrameTable.alloc_table()
+			event_data.attack_tag = breed.dialogue_target_switch_attack_tag or "rat_ogre_change_target"
+			event_data.target_name = ScriptUnit.extension(new_aggro_unit, "dialogue_system").context.player_profile
+
+			dialogue_input:trigger_networked_dialogue_event(breed.dialogue_target_switch_event or "enemy_attack", event_data)
+		end
+
+		local sound_effect_system = Managers.state.entity:system("sound_effect_system")
+
+		sound_effect_system:aggro_unit_changed(old_aggro_unit, unit, false)
+		sound_effect_system:aggro_unit_changed(new_aggro_unit, unit, true)
 	end
 end
 
@@ -244,7 +271,6 @@ PerceptionUtils.perception_regular = function (unit, blackboard, breed, pick_tar
 	local target_unit = blackboard.target_unit
 	local target_alive = AiUtils_unit_alive(target_unit)
 	local best_enemy = pick_target_func(unit, blackboard, breed, t)
-	local new_target_unit = false
 
 	if target_unit and target_alive and best_enemy == target_unit then
 		local status_extension = ScriptUnit.has_extension(target_unit, "status_system")
@@ -258,15 +284,14 @@ PerceptionUtils.perception_regular = function (unit, blackboard, breed, pick_tar
 			blackboard.slot_layer = nil
 			blackboard.is_passive = false
 			blackboard.target_changed = true
-			new_target_unit = true
 		elseif blackboard.delayed_target_unit and AiUtils_unit_alive(blackboard.delayed_target_unit) and blackboard.target_unit == nil then
 			blackboard.previous_target_unit = blackboard.target_unit
 			blackboard.target_unit = blackboard.delayed_target_unit
 			blackboard.target_unit_found_time = t
 			blackboard.is_passive = false
 			blackboard.target_changed = true
-			new_target_unit = true
 		else
+			blackboard.previous_target_unit = blackboard.target_unit
 			blackboard.target_unit = nil
 
 			if blackboard.confirmed_player_sighting then
@@ -280,49 +305,36 @@ PerceptionUtils.perception_regular = function (unit, blackboard, breed, pick_tar
 
 		blackboard.delayed_target_unit = nil
 	end
-
-	if new_target_unit then
-		local sound_effect_system = Managers.state.entity:system("sound_effect_system")
-
-		sound_effect_system:aggro_unit_changed(blackboard.target_unit, unit, true)
-
-		if breed.trigger_dialogue_on_target_switch then
-			local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
-			local event_data = FrameTable.alloc_table()
-			event_data.attack_tag = "enemy_target_changed"
-			event_data.target_name = ScriptUnit.extension(blackboard.target_unit, "dialogue_system").context.player_profile
-
-			dialogue_input:trigger_networked_dialogue_event("enemy_target_changed", event_data)
-		end
-	end
-
-	return new_target_unit
 end
 
 PerceptionUtils.perception_regular_update_aggro = function (unit, blackboard, breed, pick_target_func, t, dt)
 	AiUtils.update_aggro(unit, blackboard, breed, t, dt)
+	PerceptionUtils.perception_regular(unit, blackboard, breed, pick_target_func, t, dt)
 
-	local new_target_unit = PerceptionUtils.perception_regular(unit, blackboard, breed, pick_target_func, t, dt)
+	if blackboard.aggro_unit ~= blackboard.target_unit then
+		local old_aggro_unit = blackboard.aggro_unit
+		local new_aggro_unit = blackboard.target_unit
+		blackboard.aggro_unit = new_aggro_unit
+		local aggro_list = blackboard.aggro_list
+		local aggro = aggro_list[old_aggro_unit]
 
-	if not new_target_unit then
-		return
-	end
+		if aggro then
+			blackboard.aggro_list[old_aggro_unit] = aggro * breed.perception_weights.old_target_aggro_mul
+		end
 
-	local previous_target_unit = blackboard.previous_target_unit
+		if breed.trigger_dialogue_on_target_switch and new_aggro_unit then
+			local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+			local event_data = FrameTable.alloc_table()
+			event_data.attack_tag = "enemy_target_changed"
+			event_data.target_name = ScriptUnit.extension(new_aggro_unit, "dialogue_system").context.player_profile
 
-	if not previous_target_unit then
-		return
-	end
+			dialogue_input:trigger_networked_dialogue_event("enemy_target_changed", event_data)
+		end
 
-	local sound_effect_system = Managers.state.entity:system("sound_effect_system")
+		local sound_effect_system = Managers.state.entity:system("sound_effect_system")
 
-	sound_effect_system:aggro_unit_changed(previous_target_unit, unit, true)
-
-	local aggro_list = blackboard.aggro_list
-	local aggro = aggro_list[previous_target_unit]
-
-	if aggro then
-		blackboard.aggro_list[previous_target_unit] = aggro * breed.perception_weights.old_target_aggro_mul
+		sound_effect_system:aggro_unit_changed(old_aggro_unit, unit, false)
+		sound_effect_system:aggro_unit_changed(new_aggro_unit, unit, true)
 	end
 end
 

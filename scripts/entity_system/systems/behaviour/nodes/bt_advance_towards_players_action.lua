@@ -272,14 +272,12 @@ BTAdvanceTowardsPlayersAction.get_new_goal = function (self, unit, blackboard)
 end
 
 BTAdvanceTowardsPlayersAction.start_idle_animation = function (self, unit, blackboard)
-	Managers.state.network:anim_event(unit, "to_passive")
 	Managers.state.network:anim_event(unit, "idle")
 
 	blackboard.move_state = "idle"
 end
 
 BTAdvanceTowardsPlayersAction.start_move_animation = function (self, unit, blackboard)
-	Managers.state.network:anim_event(unit, "to_combat")
 	Managers.state.network:anim_event(unit, "move_fwd")
 
 	blackboard.move_state = "moving"

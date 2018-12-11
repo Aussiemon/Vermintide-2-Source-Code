@@ -16,6 +16,19 @@ BackendUtils.get_loadout_item = function (career_name, slot)
 	return item
 end
 
+BackendUtils.try_set_loadout_item = function (career_name, slot_name, item_key)
+	local backend_items = Managers.backend:get_interface("items")
+	local item = backend_items:get_item_from_key(item_key)
+
+	if item then
+		local backend_id = item.backend_id
+
+		backend_items:set_loadout_item(backend_id, career_name, slot_name)
+	end
+
+	return item
+end
+
 BackendUtils.get_item_from_masterlist = function (backend_id)
 	local backend_items = Managers.backend:get_interface("items")
 	local item_master_list_data = backend_items:get_item_masterlist_data(backend_id)
@@ -67,6 +80,10 @@ end
 BackendUtils.get_total_power_level = function (profile_name, career_name)
 	if script_data.power_level_override then
 		return script_data.power_level_override
+	end
+
+	if Managers.state.game_mode:has_activated_mutator("whiterun") then
+		return 200
 	end
 
 	local hero_power_level = BackendUtils.get_hero_power_level(profile_name)

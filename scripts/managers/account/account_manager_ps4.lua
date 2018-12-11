@@ -22,7 +22,9 @@ AccountManager.init = function (self)
 	self._web_api = ScriptWebApiPsn:new()
 	self._initial_user_id = PS4.initial_user_id()
 
-	Trophies.create_context(self._initial_user_id)
+	if not script_data.settings.use_beta_overlay then
+		Trophies.create_context(self._initial_user_id)
+	end
 
 	self._room_state = nil
 	self._current_room = nil
@@ -32,13 +34,19 @@ AccountManager.init = function (self)
 	self._np_title_id = PS4.title_id()
 	self._ps_restrictions = PSRestrictions:new()
 	self._dialog_open = false
-	self._realtime_multiplay_states = {}
+	self._realtime_multiplay = false
+	self._realtime_multiplay_host = nil
 	self._psn_client_error = nil
 	self._friend_data = {}
 	self._next_friend_list_request = 0
 	self._fetching_friend_list = false
 	self._fetching_matchmaking_data = false
 	self._next_matchmaking_data_fetch = 0
+	self._retrigger_popups_check = false
+end
+
+AccountManager.set_controller = function (self, controller)
+	self._active_controller = controller
 end
 
 AccountManager.set_level_transition_handler = function (self, level_transition_handler)
@@ -64,7 +72,7 @@ AccountManager.user_id = function (self)
 end
 
 AccountManager.user_detached = function (self)
-	return false
+	return self._user_detached
 end
 
 AccountManager.active_controller = function (self, user_id)
@@ -104,8 +112,16 @@ AccountManager.leaving_game = function (self)
 end
 
 AccountManager.reset = function (self)
+	if self._popup_id then
+		Managers.popup:cancel_popup(self._popup_id)
+
+		self._popup_info = nil
+		self._popup_id = nil
+	end
+
 	self._offline_mode = nil
 	self._leave_game = nil
+	self._user_detached = nil
 end
 
 AccountManager.destroy = function (self)
@@ -141,11 +157,106 @@ AccountManager.set_offline_mode = function (self, offline_mode)
 end
 
 AccountManager.update = function (self, dt)
+	self:_update_playtogether()
 	self:_update_psn_client(dt)
 	self:_update_psn()
 	self:_notify_plus()
+	self:_verify_profile()
 	self._web_api:update(dt)
 	self:_update_profile_dialog()
+	self:_check_trigger_popup()
+	self:_check_popup()
+end
+
+AccountManager._check_trigger_popup = function (self)
+	if not self._retrigger_popups_check then
+		return
+	end
+
+	local popup_manager = Managers.popup
+
+	if self._popup_id ~= nil and not popup_manager:has_popup_with_id(self._popup_id) then
+		self._popup_id = popup_manager:queue_popup(self._popup_info.header, self._popup_info.text, self._popup_info.action1, self._popup_info.buttontext1)
+	end
+
+	self._retrigger_popups_check = false
+end
+
+AccountManager._check_popup = function (self)
+	if self._popup_id then
+		local result = Managers.popup:query_result(self._popup_id)
+
+		if result then
+			self._popup_id = nil
+
+			if result == "retry_verify_profile" then
+				self._user_detached = false
+
+				self:_verify_profile()
+			else
+				fassert(false, "[AccountManager:_check_popup] No result trackedc called %q", result)
+			end
+		end
+	end
+end
+
+AccountManager._verify_profile = function (self)
+	if self._popup_id then
+		return
+	end
+
+	if self._initial_user_id then
+		local user_detached = false
+
+		if not self._user_detached then
+			user_detached = not PS4.signed_in(self._initial_user_id)
+
+			if user_detached then
+				self:_queue_popup(Localize("profile_signed_out_header"), Localize("popup_xboxlive_profile_acquire_error_header"), "retry_verify_profile", Localize("button_retry"))
+
+				self._user_detached = true
+			elseif self._active_controller then
+				local controller_changed = false
+				local user_id = self._active_controller and self._active_controller.user_id()
+
+				if not self._active_controller or not self._active_controller.user_id() or self._active_controller.disconnected() or controller_changed then
+					self:_queue_popup(Localize("controller_disconnected"), Localize("controller_disconnected_header"), "retry_verify_profile", Localize("button_retry"))
+
+					self._user_detached = true
+				end
+			end
+		end
+	end
+end
+
+AccountManager._queue_popup = function (self, header, text, action1, buttontext1)
+	self._popup_info = {
+		header = header,
+		text = text,
+		action1 = action1,
+		buttontext1 = buttontext1
+	}
+	self._popup_id = Managers.popup:queue_popup(header, text, action1, buttontext1)
+end
+
+AccountManager._update_playtogether = function (self)
+	if self._session ~= nil then
+		local invite_manager = Managers.invite
+		local new_list = SessionInvitation.play_together_list()
+
+		if new_list ~= nil then
+			invite_manager:set_play_together_list(new_list)
+		end
+
+		local play_together_list = invite_manager:play_together_list()
+		local can_invite = Managers.matchmaking ~= nil
+
+		if play_together_list ~= nil and can_invite then
+			print("[AccountManager] Play Together: sending invites")
+			invite_manager:clear_play_together_list()
+			self:send_session_invitation_multiple(play_together_list)
+		end
+	end
 end
 
 local PSN_CLIENT_READY_TIMEOUT = 20
@@ -244,20 +355,37 @@ AccountManager._update_psn_session = function (self, room_joined, room_left)
 end
 
 AccountManager._notify_plus = function (self)
-	local in_session = self._session
-	local realtime_multiplay_states = self._realtime_multiplay_states
-	local in_tutorial = realtime_multiplay_states.tutorial
-	local in_loading_screen = realtime_multiplay_states.loading
-	local in_end_screen = realtime_multiplay_states.end_screen
-	local in_cinematic = realtime_multiplay_states.cinematic
-	local in_pre_game = realtime_multiplay_states.pre_game
-	local in_inn = realtime_multiplay_states.inn
-
-	if not in_session then
+	if not self._realtime_multiplay then
 		return
 	end
 
-	if in_tutorial or in_loading_screen or in_end_screen or in_cinematic or in_pre_game or in_inn then
+	if not self._session then
+		return
+	end
+
+	local initial_host = self._realtime_multiplay_host
+
+	if not initial_host then
+		return
+	end
+
+	local current_room = self._current_room
+	local current_host = current_room and current_room:lobby_host()
+
+	if not current_host then
+		return
+	end
+
+	if initial_host ~= current_host then
+		self._realtime_multiplay = false
+		self._realtime_multiplay_host = nil
+
+		return
+	end
+
+	local time_since_receive = Network.time_since_receive(current_host)
+
+	if GameSettingsDevelopment.network_silence_warning_delay < time_since_receive then
 		return
 	end
 
@@ -306,14 +434,15 @@ AccountManager.cb_matchmaking_data_fetched = function (self, info)
 	end
 end
 
-AccountManager.set_realtime_multiplay_state = function (self, state, set)
-	self._realtime_multiplay_states[state] = set
+AccountManager.set_realtime_multiplay = function (self, active)
+	self._realtime_multiplay = active
 
-	if script_data.debug_psn then
-		local value = (set and "true") or "false"
-
-		printf("AccountManager:set_realtime_multiplay_state state:%s set:%s", state, value)
-		table.dump(self._realtime_multiplay_states, "realtime_multiplay_states")
+	if active then
+		local room = self._current_room
+		local host = room and room:lobby_host()
+		self._realtime_multiplay_host = host
+	else
+		self._realtime_multiplay_host = nil
 	end
 end
 
@@ -578,12 +707,6 @@ AccountManager._cb_session_created = function (self, result)
 		if room then
 			room:set_data("session_id", session_id)
 		end
-
-		local play_together_list = SessionInvitation.play_together_list()
-
-		if play_together_list then
-			self:send_session_invitation_multiple(play_together_list)
-		end
 	else
 		self._session = nil
 	end
@@ -764,7 +887,7 @@ AccountManager._set_presence_status_content = function (self, presence, append)
 end
 
 AccountManager.check_popup_retrigger = function (self)
-	return
+	self._retrigger_popups_check = true
 end
 
 AccountManager.set_should_teardown_xboxlive = function (self)

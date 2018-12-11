@@ -405,7 +405,7 @@ local action_data = {
 		considerations = UtilityConsiderations.chaos_raider_moving_attack
 	},
 	running_attack = {
-		height = 1.5,
+		height = 1.1,
 		offset_forward = 0,
 		hit_react_type = "heavy",
 		cooldown = 1,
@@ -415,7 +415,7 @@ local action_data = {
 		damage_type = "cutting",
 		offset_up = 0,
 		attack_anim = "attack_cleave",
-		range = 3,
+		range = 2.5,
 		bot_threat_duration = 0.7,
 		action_weight = 10,
 		move_anim = "move_fwd",
@@ -562,7 +562,7 @@ local action_data = {
 		}
 	},
 	special_attack_sweep = {
-		range = 2.8,
+		range = 2.5,
 		height = 1.1,
 		width = 2,
 		cooldown = 1,

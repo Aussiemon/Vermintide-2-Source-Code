@@ -110,10 +110,15 @@ BTTargetPouncedAction.leave = function (self, unit, blackboard, t, reason, destr
 			local target_status_extension = ScriptUnit.extension(target_unit, "status_system")
 
 			target_status_extension:set_pounced_down(false, unit)
-			LocomotionUtils.set_animation_driven_movement(unit, false)
+
+			if not destroy then
+				LocomotionUtils.set_animation_driven_movement(unit, false)
+			end
 		end
 
-		blackboard.locomotion_extension:set_wanted_rotation(nil)
+		if not destroy then
+			blackboard.locomotion_extension:set_wanted_rotation(nil)
+		end
 	else
 		blackboard.already_pounced = nil
 	end
@@ -123,7 +128,10 @@ BTTargetPouncedAction.leave = function (self, unit, blackboard, t, reason, destr
 	blackboard.action = nil
 	blackboard.pouncing_target = nil
 
-	blackboard.locomotion_extension:set_movement_type("snap_to_navmesh")
+	if not destroy then
+		blackboard.locomotion_extension:set_movement_type("snap_to_navmesh")
+	end
+
 	blackboard.navigation_extension:set_enabled(true)
 
 	if blackboard.stagger then
@@ -201,8 +209,11 @@ BTTargetPouncedAction.direct_damage = function (unit, blackboard)
 		return
 	end
 
+	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+	local ramp_damage_time = action.time_before_ramping_damage[difficulty_rank]
+	local time_to_reach_final_multiplier = action.time_to_reach_final_damage_multiplier[difficulty_rank]
 	local t = Managers.time:time("game")
-	local pounced_time = (t - blackboard.start_pouncing_time - action.time_before_ramping_damage) / action.time_to_reach_final_damage_multiplier
+	local pounced_time = (t - blackboard.start_pouncing_time - ramp_damage_time) / time_to_reach_final_multiplier
 	local normalized_time = math.clamp(pounced_time, 0, 1)
 	local base_damage = action.damage
 	local multiplier = 1 + normalized_time * action.final_damage_multiplier

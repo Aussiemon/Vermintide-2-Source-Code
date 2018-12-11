@@ -11,6 +11,8 @@ ActionCareerTrueFlightAim.finish = function (self, reason)
 
 	if reason ~= "new_interupting_action" then
 		self.inventory_extension:wield_previous_slot()
+		Unit.flow_event(self.owner_unit, "lua_force_stop")
+		Unit.flow_event(self.first_person_unit, "lua_force_stop")
 	end
 
 	return chain_action_data

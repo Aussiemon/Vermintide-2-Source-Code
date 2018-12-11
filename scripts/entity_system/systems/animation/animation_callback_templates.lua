@@ -108,12 +108,6 @@ AnimationCallbackTemplates.server.anim_cb_damage = function (unit, param)
 	end
 
 	if blackboard.has_line_of_sight == false or not DamageUtils.check_distance(action, blackboard, unit, target_unit) or not DamageUtils.check_infront(unit, target_unit) then
-		if blackboard.target_dodged_during_attack then
-			local locomotion = ScriptUnit.extension(unit, "locomotion_system")
-
-			locomotion:set_rotation_speed_modifier(blackboard.breed.speed_modifier_on_target_dodge_damage_done or DEFAULT_SPEED_MODIFIER_ON_TARGET_DODGE_DAMAGE_DONE, blackboard.breed.speed_lerp_time_on_target_dodge_damage_done or DEFAULT_SPEED_LERP_TIME_ON_TARGET_DODGE_DAMAGE_DONE, blackboard.current_time_for_dodge + (blackboard.breed.rotation_stun_time_on_dodge_damage_done or DEFAULT_ROTATION_STUN_TIME_ON_DODGE_DAMAGE_DONE))
-		end
-
 		return
 	end
 

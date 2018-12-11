@@ -4,7 +4,6 @@ local fade_duration = 1.5
 local fade_min = 0.1
 local margin = 50
 local lost_gaze_threshhold = 1
-local DEBUG_BOUNDING_BOXES = false
 
 UICleanUI.create = function ()
 	return {
@@ -464,7 +463,7 @@ UICleanUI.update = function (self, dt, context)
 		local alpha = 1
 
 		if tobii_active then
-			local alpha = clock / fade_duration
+			alpha = clock / fade_duration
 			alpha = alpha * (1 - fade_min) + fade_min
 			alpha = math.clamp(alpha, 0, 1)
 		end
@@ -499,20 +498,6 @@ UICleanUI.update = function (self, dt, context)
 		end
 
 		clocks[name] = clock
-	end
-
-	if DEBUG_BOUNDING_BOXES then
-		local gui = self.hud.ui_renderer.gui
-
-		for name, cluster in pairs(clusters) do
-			local color = Color(100, 0, 255, 255)
-
-			if cluster.visible then
-				color = Color(100, 255, 0, 255)
-			end
-
-			ScriptGUI.icrect(gui, res_x, res_y, cluster.bounding_box[1], res_y - cluster.bounding_box[2], cluster.bounding_box[3], res_y - cluster.bounding_box[4], 1, color)
-		end
 	end
 end
 

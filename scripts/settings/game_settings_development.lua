@@ -21,6 +21,7 @@ GameSettingsDevelopment.disabled_interactions = {}
 GameSettingsDevelopment.use_global_chat = (table.find(argv, "-use-global-chat") and true) or false
 local network_timeout = (Development.parameter("network_timeout_really_long") and 10000) or 60
 GameSettingsDevelopment.network_timeout = Development.parameter("network_timeout") or network_timeout
+GameSettingsDevelopment.network_silence_warning_delay = 3
 GameSettingsDevelopment.show_version_info = true
 GameSettingsDevelopment.default_environment = "environment/blank"
 GameSettingsDevelopment.debug_outlines = false
@@ -95,10 +96,14 @@ if settings.steam or Development.parameter("force_steam") then
 		GameSettingsDevelopment.show_version_info = true
 		GameSettingsDevelopment.show_fps = Development.parameter("show_fps") or false
 
-		if app_id == 737010 then
-			GameSettingsDevelopment.backend_settings = BackendSettings.stage_steam_playfab
-		elseif app_id == 795750 then
-			GameSettingsDevelopment.backend_settings = BackendSettings.dev_steam_playfab
+		if app_id == 795750 then
+			local test_backend = Development.parameter("test_backend")
+
+			if test_backend ~= nil then
+				GameSettingsDevelopment.backend_settings = BackendSettings[test_backend]
+			else
+				GameSettingsDevelopment.backend_settings = BackendSettings.dev_steam_playfab
+			end
 		elseif app_id == 552500 then
 			GameSettingsDevelopment.backend_settings = BackendSettings.prod_steam_playfab
 		end

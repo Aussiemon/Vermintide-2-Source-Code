@@ -2401,6 +2401,18 @@ Cosmetics = {
 	},
 	frame_bogenhafen_04 = {
 		icon = "unit_frame_02"
+	},
+	frame_holly_01 = {
+		icon = "unit_frame_02"
+	},
+	frame_holly_02 = {
+		icon = "unit_frame_02"
+	},
+	frame_holly_03 = {
+		icon = "unit_frame_02"
+	},
+	frame_holly_04 = {
+		icon = "unit_frame_02"
 	}
 }
 

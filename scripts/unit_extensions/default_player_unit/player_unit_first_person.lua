@@ -432,6 +432,11 @@ PlayerUnitFirstPerson.get_first_person_mesh_unit = function (self)
 end
 
 PlayerUnitFirstPerson.set_look_delta = function (self, look_delta)
+	if not Vector3.is_valid(look_delta) then
+		print("HON-18240; set_look_delta called after PlayerUnitFirstPerson update")
+		print(Script.callstack())
+	end
+
 	self.look_delta = look_delta
 end
 

@@ -3185,11 +3185,37 @@ UIWidgets.create_weapon_statistics = function (scenegraph_id, size)
 	return widget
 end
 
-UIWidgets.create_background_with_frame = function (scenegraph_id, size, background_texture, frame_style)
+UIWidgets.create_background_with_frame = function (scenegraph_id, size, background_texture, frame_style, bottom_aligned)
 	background_texture = background_texture or "menu_frame_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local background_size = (background_texture_settings and background_texture_settings.size) or size
 	local frame_settings = (frame_style and UIFrameSettings[frame_style]) or UIFrameSettings.menu_frame_02
+	local uvs = nil
+
+	if bottom_aligned then
+		uvs = {
+			{
+				1 - math.min(size[1] / background_size[1], 1),
+				1 - math.min(size[2] / background_size[2], 1)
+			},
+			{
+				1,
+				1
+			}
+		}
+	else
+		uvs = {
+			{
+				0,
+				0
+			},
+			{
+				math.min(size[1] / background_size[1], 1),
+				math.min(size[2] / background_size[2], 1)
+			}
+		}
+	end
+
 	local widget = {
 		element = {}
 	}
@@ -3208,16 +3234,7 @@ UIWidgets.create_background_with_frame = function (scenegraph_id, size, backgrou
 	local content = {
 		frame = frame_settings.texture,
 		background = {
-			uvs = {
-				{
-					0,
-					0
-				},
-				{
-					math.min(size[1] / background_size[1], 1),
-					math.min(size[2] / background_size[2], 1)
-				}
-			},
+			uvs = uvs,
 			texture_id = background_texture
 		}
 	}

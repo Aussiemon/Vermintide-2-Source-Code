@@ -671,6 +671,7 @@ MenuWorldPreviewer._load_hero_unit = function (self, profile_name, career_index,
 		num_loaded_packages = 0,
 		career_name = career_name,
 		skin_data = skin_data,
+		career_index = career_index,
 		optional_scale = optional_scale,
 		package_names = package_names,
 		num_packages = #package_names,
@@ -715,8 +716,9 @@ MenuWorldPreviewer._poll_hero_package_loading = function (self)
 	if all_packages_loaded then
 		local skin_data = data.skin_data
 		local optional_scale = data.optional_scale
+		local career_index = data.career_index
 
-		self:_spawn_hero_unit(skin_data, optional_scale)
+		self:_spawn_hero_unit(skin_data, optional_scale, career_index)
 
 		local callback = data.callback
 
@@ -728,7 +730,7 @@ MenuWorldPreviewer._poll_hero_package_loading = function (self)
 	end
 end
 
-MenuWorldPreviewer._spawn_hero_unit = function (self, skin_data, optional_scale)
+MenuWorldPreviewer._spawn_hero_unit = function (self, skin_data, optional_scale, career_index)
 	local world = self.world
 	local unit_name = skin_data.third_person
 	local tint_data = skin_data.color_tint
@@ -795,6 +797,12 @@ MenuWorldPreviewer._spawn_hero_unit = function (self, skin_data, optional_scale)
 
 	if self._use_highest_mip_levels or UISettings.wait_for_mip_streaming_character then
 		self:_request_mip_streaming_for_unit(character_unit)
+	end
+
+	if Unit.animation_has_variable(character_unit, "career_index") then
+		local variable_index = Unit.animation_find_variable(character_unit, "career_index")
+
+		Unit.animation_set_variable(character_unit, variable_index, career_index)
 	end
 end
 

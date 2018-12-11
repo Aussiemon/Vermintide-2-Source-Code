@@ -484,6 +484,33 @@ ItemMasterList.beer_barrel = {
 		"es_mercenary"
 	}
 }
+ItemMasterList.wpn_gargoyle_head = {
+	temporary_template = "gargoyle_head",
+	slot_type = "healthkit",
+	rarity = "plentiful",
+	inventory_icon = "icons_placeholder",
+	left_hand_unit = "units/weapons/player/wpn_gargoyle_head/wpn_gargoyle_head",
+	gamepad_hud_icon = "consumables_icon_defence",
+	hud_icon = "consumables_icon_defence",
+	item_type = "inventory_item",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
 ItemMasterList.torch = {
 	temporary_template = "torch",
 	right_hand_unit = "units/weapons/player/wpn_torch/wpn_torch",
@@ -635,9 +662,9 @@ ItemMasterList.kerillian_waywatcher_career_skill_weapon = {
 	can_wield = {}
 }
 ItemMasterList.sienna_scholar_career_skill_weapon = {
-	rarity = "plentiful",
-	right_hand_unit = "units/weapons/player/wpn_invisible_weapon",
 	template = "sienna_scholar_career_skill_weapon",
+	left_hand_unit = "units/weapons/player/wpn_invisible_weapon",
+	rarity = "plentiful",
 	can_wield = {}
 }
 ItemMasterList.victor_bountyhunter_career_skill_weapon = {

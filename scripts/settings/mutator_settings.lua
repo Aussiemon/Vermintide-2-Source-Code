@@ -12,11 +12,9 @@ local function apply_buff_to_alive_player_units(context, data, buff_name)
 
 	for i = 1, num_current_player_units, 1 do
 		local unit = current_player_units[i]
-		local unit_alive = unit_alive(unit)
+		local is_alive = unit_alive(unit)
 
-		if player_units[unit] == nil and unit_alive then
-			mutator_dprint("Added buff (%s) to player", buff_name)
-
+		if player_units[unit] == nil and is_alive then
 			local params = {
 				attacker_unit = unit
 			}
@@ -86,8 +84,8 @@ local mutator_settings = {
 	},
 	whiterun = {
 		description = "description_mutator_whiterun",
-		display_name = "display_name_mutator_whiterun",
 		icon = "mutator_icon_whiterun",
+		display_name = "display_name_mutator_whiterun",
 		check_dependencies = function ()
 			if not BackendUtils.get_total_power_level then
 				return false
@@ -98,41 +96,14 @@ local mutator_settings = {
 			end
 
 			return true
-		end,
-		client_start_function = function (context, data)
-			local vanilla_get_total_power_level = BackendUtils.get_total_power_level
-
-			local function get_total_power_level_whiterun(profile_name, career_name)
-				return 200
-			end
-
-			BackendUtils.get_total_power_level = get_total_power_level_whiterun
-			data.vanilla_get_total_power_level = vanilla_get_total_power_level
-			local vanilla_get_property_and_trait_buffs = GearUtils.get_property_and_trait_buffs
-
-			local function get_property_and_trait_buffs_whiterun(backend_items, backend_id, buffs_table)
-				return buffs_table
-			end
-
-			GearUtils.get_property_and_trait_buffs = get_property_and_trait_buffs_whiterun
-			data.vanilla_get_property_and_trait_buffs = vanilla_get_property_and_trait_buffs
-		end,
-		client_stop_function = function (context, data)
-			BackendUtils.get_total_power_level = data.vanilla_get_total_power_level
-			data.vanilla_get_total_power_level = nil
-			GearUtils.get_property_and_trait_buffs = data.vanilla_get_property_and_trait_buffs
-			data.vanilla_get_property_and_trait_buffs = nil
 		end
 	},
 	no_respawn = {
 		description = "description_mutator_no_respawn",
-		display_name = "display_name_mutator_no_respawn",
 		icon = "mutator_icon_no_respawn",
-		server_start_game_mode_function = function (context, data)
+		display_name = "display_name_mutator_no_respawn",
+		server_start_function = function (context, data)
 			Managers.state.spawn:set_respawning_enabled(false)
-		end,
-		server_stop_function = function (context, data)
-			return
 		end
 	},
 	elite_run = {
@@ -146,14 +117,11 @@ local mutator_settings = {
 			skaven_clan_rat = "skaven_storm_vermin",
 			chaos_marauder = "chaos_raider"
 		},
-		server_start_game_mode_function = function (context, data)
+		server_start_function = function (context, data)
 			local roamer_override_lookup = data.template.roamer_override_lookup
 
 			Managers.state.entity:system("ai_interest_point_system"):set_breed_override_lookup(roamer_override_lookup)
 			Managers.state.conflict:set_breed_override_lookup(roamer_override_lookup)
-		end,
-		server_stop_function = function (context, data)
-			return
 		end
 	},
 	specials_frequency = {
@@ -162,22 +130,14 @@ local mutator_settings = {
 		display_name = "display_name_mutator_specials_frequency",
 		spawn_time_reduction = 0.4,
 		max_specials = 2,
-		server_start_function = function (context, data)
-			return
-		end,
-		server_stop_function = function (context, data)
-			return
-		end,
 		update_conflict_settings = function (context, data)
 			local settings = CurrentSpecialsSettings
 
 			if not settings.disabled then
 				local template = data.template
-				local debug_string = sprintf("Modifying SpecialsSettings.%s", settings.name)
 
 				if settings.max_specials then
 					settings.max_specials = settings.max_specials + template.max_specials
-					debug_string = sprintf("%s max_specials=%s old(%s)", debug_string, tostring(settings.max_specials), tostring(settings.max_specials - template.max_specials))
 				end
 
 				local spawn_time_reduction = template.spawn_time_reduction
@@ -186,59 +146,44 @@ local mutator_settings = {
 					local modified = false
 
 					if method_name == "specials_by_time_window" then
-						method_settings.spawn_interval[1] = method_settings.spawn_interval[1] * spawn_time_reduction
-						method_settings.spawn_interval[2] = method_settings.spawn_interval[2] * spawn_time_reduction
+						local spawn_interval = method_settings.spawn_interval
+						spawn_interval[1] = spawn_interval[1] * spawn_time_reduction
+						spawn_interval[2] = spawn_interval[2] * spawn_time_reduction
 						modified = true
-						local new_1 = method_settings.spawn_interval[1]
-						local new_2 = method_settings.spawn_interval[2]
+						local new_1 = spawn_interval[1]
+						local new_2 = spawn_interval[2]
 						local old_1 = new_1 / spawn_time_reduction
-						local old_2 = new_2 / spawn_time_reduction
-						debug_string = sprintf("%s specials_by_time_window.spawn_interval(%s, %s) old(%s, %s)", debug_string, new_1, new_2, old_1, old_2)
+						slot15 = new_2 / spawn_time_reduction
 					end
 
 					if method_name == "specials_by_slots" then
 						local spawn_cooldown = method_settings.spawn_cooldown
-						method_settings.spawn_cooldown[1] = method_settings.spawn_cooldown[1] * spawn_time_reduction
-						method_settings.spawn_cooldown[2] = method_settings.spawn_cooldown[2] * spawn_time_reduction
+						spawn_cooldown[1] = spawn_cooldown[1] * spawn_time_reduction
+						spawn_cooldown[2] = spawn_cooldown[2] * spawn_time_reduction
 						modified = true
-						local new_1 = method_settings.spawn_cooldown[1]
-						local new_2 = method_settings.spawn_cooldown[2]
+						local new_1 = spawn_cooldown[1]
+						local new_2 = spawn_cooldown[2]
 						local old_1 = new_1 / spawn_time_reduction
-						local old_2 = new_2 / spawn_time_reduction
-						debug_string = sprintf("%s specials_by_slots.spawn_cooldown(%s, %s) old(%s, %s)", debug_string, new_1, new_2, old_1, old_2)
+						slot15 = new_2 / spawn_time_reduction
 					end
 
 					fassert(modified, "MutatorSettings.specials_frequency: Found new method_name (%s)", method_name)
 				end
-
-				mutator_dprint(debug_string)
 			end
 		end
 	},
 	more_specials = {
 		description = "description_mutator_more_specials",
-		display_name = "display_name_mutator_more_specials",
 		icon = "mutator_icon_specials_frequency",
-		server_start_function = function (context, data)
-			return
-		end,
-		server_stop_function = function (context, data)
-			return
-		end,
+		display_name = "display_name_mutator_more_specials",
 		update_conflict_settings = function (context, data)
 			CurrentSpecialsSettings.max_specials = CurrentSpecialsSettings.max_specials * 2
 		end
 	},
 	same_specials = {
 		description = "description_mutator_same_specials",
-		display_name = "display_name_mutator_same_specials",
 		icon = "mutator_icon_specials_frequency",
-		server_start_function = function (context, data)
-			return
-		end,
-		server_stop_function = function (context, data)
-			return
-		end,
+		display_name = "display_name_mutator_same_specials",
 		update_conflict_settings = function (context, data)
 			local method = CurrentSpecialsSettings.methods.specials_by_slots
 			method.select_next_breed = "get_random_breed"
@@ -258,28 +203,21 @@ local mutator_settings = {
 		end
 	},
 	big_specials = {
-		description = "description_big_specials",
-		display_name = "display_name_big_specials",
+		description = "description_mutator_big_specials",
 		icon = "mutator_icon_powerful_elites",
-		server_start_function = function (context, data)
-			return
-		end,
-		server_stop_function = function (context, data)
-			return
-		end,
+		display_name = "display_name_mutator_big_specials",
 		update_conflict_settings = function (context, data)
 			local method = CurrentSpecialsSettings.methods.specials_by_slots
 			method.select_next_breed = "get_chance_of_boss_breed"
 		end
 	},
 	elite_specials = {
-		description = "description_big_specials",
-		display_name = "display_name_big_specials",
+		description = "description_mutator_elite_specials",
 		icon = "mutator_icon_powerful_elites",
-		server_start_function = function (context, data)
+		display_name = "display_name_mutator_elite_specials",
+		server_initialize_function = function (context, data)
 			store_breed_and_action_settings(context, data)
 
-			local breeds = Breeds
 			Breeds.skaven_gutter_runner.run_speed = 14
 			Breeds.skaven_gutter_runner.jump_speed = 40
 			Breeds.skaven_gutter_runner.jump_range = 40
@@ -356,15 +294,9 @@ local mutator_settings = {
 		end
 	},
 	gutter_runner_mayhem = {
-		description = "description_mutator_same_specials",
-		display_name = "display_name_mutator_same_specials",
+		description = "description_mutator_gutter_runner_mayhem",
 		icon = "mutator_icon_specials_frequency",
-		server_start_function = function (context, data)
-			return
-		end,
-		server_stop_function = function (context, data)
-			return
-		end,
+		display_name = "display_name_mutator_gutter_runner_mayhem",
 		update_conflict_settings = function (context, data)
 			CurrentSpecialsSettings.breeds = {
 				"skaven_gutter_runner"
@@ -381,14 +313,8 @@ local mutator_settings = {
 	},
 	chaos_warriors_trickle = {
 		description = "description_mutator_chaos_warriors_trickle",
-		display_name = "display_name_mutator_chaos_warriors_trickle",
 		icon = "mutator_icon_specials_frequency",
-		server_start_function = function (context, data)
-			return
-		end,
-		server_stop_function = function (context, data)
-			return
-		end,
+		display_name = "display_name_mutator_chaos_warriors_trickle",
 		update_conflict_settings = function (context, data)
 			CurrentHordeSettings.mini_patrol_composition = "mutator_chaos_warrior_mini_patrol"
 			CurrentPacing.mini_patrol = {
@@ -403,15 +329,9 @@ local mutator_settings = {
 		end
 	},
 	mixed_horde = {
-		description = "description_mutator_same_specials",
-		display_name = "display_name_mutator_same_specials",
+		description = "description_mutator_mixed_horde",
 		icon = "mutator_icon_specials_frequency",
-		server_start_function = function (context, data)
-			return
-		end,
-		server_stop_function = function (context, data)
-			return
-		end,
+		display_name = "display_name_mutator_mixed_horde",
 		update_conflict_settings = function (context, data)
 			CurrentHordeSettings.ambush_composition = "mutator_mixed_horde"
 			CurrentHordeSettings.vector_composition = "mutator_mixed_horde"
@@ -420,13 +340,12 @@ local mutator_settings = {
 	},
 	multiple_bosses = {
 		description = "description_mutator_multiple_bosses",
-		display_name = "display_name_mutator_multiple_bosses",
 		icon = "mutator_icon_specials_frequency",
-		server_start_function = function (context, data)
-			return
-		end,
-		server_stop_function = function (context, data)
-			return
+		display_name = "display_name_mutator_multiple_bosses",
+		server_initialize_function = function (context, data)
+			CurrentBossSettings.boss_events.event_lookup.event_boss = {
+				"boss_event_dual_spawn"
+			}
 		end,
 		update_conflict_settings = function (context, data)
 			CurrentBossSettings.boss_events.event_lookup.event_boss = {
@@ -435,27 +354,19 @@ local mutator_settings = {
 		end
 	},
 	hordes_galore = {
-		relax_duration_modifier = 0.7,
-		horde_frequency_modifier = 0.9,
-		display_name = "display_name_mutator_hordes_galore",
 		description = "description_mutator_hordes_galore",
+		relax_duration_modifier = 0.7,
+		display_name = "display_name_mutator_hordes_galore",
+		horde_frequency_modifier = 0.9,
 		horde_startup_time_modifier = 0.9,
-		max_delay_modifier = 0.7,
 		icon = "mutator_icon_hordes_galore",
-		server_start_function = function (context, data)
-			return
-		end,
-		server_stop_function = function (context, data)
-			return
-		end,
+		max_delay_modifier = 0.7,
 		update_conflict_settings = function (context, data)
 			local function modify_time_table(time_table, modifier, dprint_string)
 				local tt_1 = time_table[1]
 				local tt_2 = time_table[2]
 				time_table[1] = tt_1 - tt_1 * modifier
 				time_table[2] = tt_2 - tt_2 * modifier
-
-				mutator_dprint(dprint_string, tt_1, tt_2, time_table[1], time_table[2], modifier)
 			end
 
 			local template = data.template
@@ -466,7 +377,6 @@ local mutator_settings = {
 			local pacing_settings = CurrentPacing
 
 			if not pacing_settings.disabled then
-				mutator_dprint("Modifying pacing settings - %s", pacing_settings.name)
 				modify_time_table(pacing_settings.horde_frequency, horde_frequency_modifier, "Changed horde frequency from ({%s, %s}) to ({%s, %s}), modifier: %s - original")
 				modify_time_table(pacing_settings.horde_startup_time, horde_startup_time_modifier, "Changed horde startup time from ({%s, %s}) to ({%s, %s}), modifier: %s - original")
 				modify_time_table(pacing_settings.relax_duration, relax_duration_modifier, "Changed relax duration from ({%s, %s}) to ({%s, %s}), modifier: %s - original")
@@ -522,7 +432,7 @@ local mutator_settings = {
 
 			buffs[num_buffs] = nil
 		end,
-		server_start_game_mode_function = function (context, data)
+		server_start_function = function (context, data)
 			data.player_units = {}
 			data.buff_system = Managers.state.entity:system("buff_system")
 			data.player_manager = Managers.player
@@ -592,13 +502,14 @@ local mutator_settings = {
 	skulking_sorcerer = {
 		description = "description_skulking_sorcerer",
 		display_name = "display_name_skulking_sorcerer",
-		icon = "mutator_icon_powerful_elites",
+		icon = "mutator_icon_skulking_sorcerer",
 		server_start_function = function (context, data)
 			data.breed_name = "chaos_mutator_sorcerer"
 			data.wanted_spawn_distance_behind = 0
 
 			data.cb_mutator_sorcerer_spawned = function (unit, breed, optional_data)
 				optional_data.mutator_data.sorcerer_unit = unit
+				optional_data.mutator_data.has_spawned_mutator_sorcerer = true
 			end
 		end,
 		server_update_function = function (context, data)
@@ -610,7 +521,7 @@ local mutator_settings = {
 			local conflict_director = Managers.state.conflict
 			local breed_name = data.breed_name
 
-			if not data.has_spawned_mutator_sorcerer then
+			if not data.spawn_queue_id then
 				if not data.has_wanted_position then
 					local wanted_position = MainPathUtils.point_on_mainpath(nil, data.wanted_spawn_distance_behind)
 					data.wanted_position = Vector3Box(wanted_position)
@@ -624,20 +535,24 @@ local mutator_settings = {
 						mutator_data = data
 					}
 					local spawn_queue_id = conflict_director:spawn_queued_unit(breed, data.wanted_position, QuaternionBox(Quaternion.identity()), spawn_category, nil, nil, optional_data)
-					data.has_spawned_mutator_sorcerer = true
 					data.spawn_queue_id = spawn_queue_id
 				end
-			elseif conflict_director:count_units_by_breed(breed_name) <= 0 then
-				data.has_spawned_mutator_sorcerer = false
-				data.has_wanted_position = false
-				data.wanted_spawn_distance_behind = math.max(conflict_director.main_path_info.ahead_travel_dist - 40, 0)
-			elseif Unit.alive(data.sorcerer_unit) then
-				local blackboard = BLACKBOARDS[data.sorcerer_unit]
+			elseif data.has_spawned_mutator_sorcerer then
+				if AiUtils.unit_alive(data.sorcerer_unit) then
+					local blackboard = BLACKBOARDS[data.sorcerer_unit]
 
-				if blackboard.closest_enemy_dist_sq and blackboard.closest_enemy_dist_sq >= 3600 then
-					conflict_director:destroy_unit(data.sorcerer_unit, blackboard, "debug")
+					if blackboard.closest_enemy_dist_sq and blackboard.closest_enemy_dist_sq >= 3600 then
+						conflict_director:destroy_unit(data.sorcerer_unit, blackboard, "debug")
 
+						data.sorcerer_unit = nil
+						data.spawn_queue_id = nil
+						data.has_spawned_mutator_sorcerer = false
+						data.has_wanted_position = false
+						data.wanted_spawn_distance_behind = math.max(conflict_director.main_path_info.ahead_travel_dist - 40, 0)
+					end
+				else
 					data.sorcerer_unit = nil
+					data.spawn_queue_id = nil
 					data.has_spawned_mutator_sorcerer = false
 					data.has_wanted_position = false
 					data.wanted_spawn_distance_behind = math.max(conflict_director.main_path_info.ahead_travel_dist - 40, 0)
@@ -647,9 +562,9 @@ local mutator_settings = {
 	},
 	explosive_loot_rats = {
 		description = "description_explosive_loot_rats",
-		display_name = "display_name_explosive_loot_rats",
 		icon = "mutator_icon_powerful_elites",
-		server_start_function = function (context, data)
+		display_name = "display_name_explosive_loot_rats",
+		server_initialize_function = function (context, data)
 			data.spawn_loot_rats_at = Managers.time:time("game") + 10 + math.random(5, 10)
 			local old_detection_radius = Breeds.skaven_loot_rat.detection_radius
 			data.old_detection_radius = old_detection_radius
@@ -689,12 +604,9 @@ local mutator_settings = {
 		end
 	},
 	high_intensity = {
-		description = "description_mutator_powerful_elites",
-		display_name = "display_name_mutator_powerful_elites",
+		description = "description_mutator_high_intensity",
 		icon = "mutator_icon_powerful_elites",
-		server_start_function = function (context, data)
-			return
-		end,
+		display_name = "display_name_mutator_high_intensity",
 		update_conflict_settings = function (context, data)
 			CurrentIntensitySettings.max_intensity = 200
 			CurrentIntensitySettings.decay_per_second = 10
@@ -703,16 +615,13 @@ local mutator_settings = {
 			CurrentPacing.delay_horde_threat_value = 200
 			CurrentPacing.delay_specials_threat_value = 200
 			CurrentPacing.delay_mini_patrol_threat_value = 200
-		end,
-		server_stop_function = function (context, data)
-			return
 		end
 	},
 	waves_of_plague_monks = {
-		description = "description_mutator_powerful_elites",
-		display_name = "display_name_mutator_powerful_elites",
+		description = "description_mutator_wave_of_plague_monks",
 		icon = "mutator_icon_powerful_elites",
-		server_start_function = function (context, data)
+		display_name = "display_name_mutator_wave_of_plague_monks",
+		server_initialize_function = function (context, data)
 			local current_difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
 			local base_amount = 5
 			local difficulty_amount_modifier = 2
@@ -756,10 +665,10 @@ local mutator_settings = {
 		end
 	},
 	waves_of_berzerkers = {
-		description = "description_mutator_powerful_elites",
-		display_name = "display_name_mutator_powerful_elites",
+		description = "description_mutator_wave_of_berzerkers",
 		icon = "mutator_icon_powerful_elites",
-		server_start_function = function (context, data)
+		display_name = "display_name_mutator_wave_of_berzerkers",
+		server_initialize_function = function (context, data)
 			local current_difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
 			local base_amount = 5
 			local difficulty_amount_modifier = 2
@@ -801,35 +710,19 @@ local mutator_settings = {
 		end
 	},
 	night_mode = {
-		description = "description_night_mode_mutator",
-		display_name = "display_name_night_mode_mutator",
+		description = "description_mutator_night_mode",
 		icon = "mutator_icon_powerful_elites",
-		server_start_game_mode_function = function (context, data)
+		display_name = "display_name_mutator_night_mode",
+		client_start_function = function (context, data)
 			local world = Managers.world:world("level_world")
 
 			LevelHelper:flow_event(world, "mutator_night")
-		end,
-		server_stop_function = function (context, data)
-			return
-		end,
-		client_start_game_mode_function = function (context, data)
-			local world = Managers.world:world("level_world")
-
-			LevelHelper:flow_event(world, "mutator_night")
-		end,
-		client_stop_function = function (context, data)
-			return
 		end
 	},
 	darkness = {
-		description = "description_darkness_mutator",
-		display_name = "display_name_darkness_mutator",
+		description = "description_mutator_darkness",
+		display_name = "display_name_mutator_darkness",
 		icon = "mutator_icon_powerful_elites",
-		server_start_game_mode_function = function (context, data)
-			local world = Managers.world:world("level_world")
-
-			LevelHelper:flow_event(world, "mutator_darkness")
-		end,
 		server_update_function = function (context, data)
 			if #PLAYER_AND_BOT_UNITS > 0 and not data.has_spawned_torches then
 				local num_torches = #PLAYER_AND_BOT_UNITS
@@ -855,26 +748,22 @@ local mutator_settings = {
 							network_angular_velocity = network_angular_velocity
 						}
 					}
+
+					print("Spawning torch at ", player_unit, " at position ", position)
+
 					local unit_name = "units/weapons/player/pup_torch/pup_torch"
 					local unit_template_name = "pickup_torch_unit"
 
-					print("Spawning torch at ", player_unit, " at position ", position)
 					Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, position, rotation)
 				end
 
 				data.has_spawned_torches = true
 			end
 		end,
-		server_stop_function = function (context, data)
-			return
-		end,
-		client_start_game_mode_function = function (context, data)
+		client_start_function = function (context, data)
 			local world = Managers.world:world("level_world")
 
 			LevelHelper:flow_event(world, "mutator_darkness")
-		end,
-		client_stop_function = function (context, data)
-			return
 		end
 	}
 }

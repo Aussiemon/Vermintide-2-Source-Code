@@ -734,6 +734,53 @@ Features that make player mechanics nicer to work with.
 		end
 	},
 	{
+		description = "Sets the power level of the damage dealt when triggering debug damage.",
+		category = "Player mechanics",
+		setting_name = "debug_damage_power_level",
+		item_source = {
+			100,
+			200,
+			225,
+			250,
+			275,
+			300,
+			325,
+			350,
+			375,
+			400,
+			425,
+			450,
+			475,
+			500,
+			525,
+			550,
+			575,
+			600,
+			625,
+			650,
+			675,
+			700,
+			725,
+			750,
+			775,
+			800,
+			825,
+			850,
+			875,
+			900,
+			925,
+			950,
+			975,
+			1000
+		},
+		custom_item_source_order = function (item_source, options)
+			for _, v in ipairs(item_source) do
+				local option = v
+				options[#options + 1] = option
+			end
+		end
+	},
+	{
 		description = "Show player health",
 		is_boolean = true,
 		setting_name = "show_player_health",
@@ -4651,6 +4698,12 @@ Features that make player mechanics nicer to work with.
 		category = "Network"
 	},
 	{
+		description = "Keeps track of the number of times an rpc send request has been triggered from a certain code row and prints the top 5 most occurring ones. Note: Disregards exclusive local rpc send calls.",
+		is_boolean = true,
+		setting_name = "rpc_send_count_debug",
+		category = "Network"
+	},
+	{
 		description = "Set network logging to Network.MESSAGES on startup",
 		is_boolean = true,
 		setting_name = "network_log_messages",
@@ -6228,6 +6281,12 @@ Features that make player mechanics nicer to work with.
 		category = "Player mechanics"
 	},
 	{
+		description = "Shows current career sound state",
+		is_boolean = true,
+		setting_name = "debug_career_sound_state",
+		category = "Player mechanics"
+	},
+	{
 		setting_name = "Add legend end of level chest.",
 		description = "Works on non-local backend. Adds a legend vault",
 		category = "Progression",
@@ -6248,17 +6307,18 @@ Features that make player mechanics nicer to work with.
 			local loot_interface = Managers.backend:get_interface("loot")
 			local player = Managers.player:local_player()
 			local display_name = SPProfiles[player:profile_index()].display_name
+			local loot_profile_name = "default"
 
 			if item == "tier_1" then
-				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 0, 0, 0, display_name, 0, 0, nil, nil)
+				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 0, 0, 0, display_name, 0, 0, loot_profile_name, nil, nil)
 			elseif item == "tier_2" then
-				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 0, 0, display_name, 0, 0, nil, nil)
+				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 0, 0, display_name, 0, 0, loot_profile_name, nil, nil)
 			elseif item == "tier_3" then
-				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 1, 0, display_name, 0, 0, nil, nil)
+				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 1, 0, display_name, 0, 0, loot_profile_name, nil, nil)
 			elseif item == "tier_4" then
-				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 2, 1, display_name, 0, 0, nil, nil)
+				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 2, 1, display_name, 0, 0, loot_profile_name, nil, nil)
 			elseif item == "tier_5" then
-				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 3, 4, display_name, 0, 0, nil, nil)
+				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 3, 4, display_name, 0, 0, loot_profile_name, nil, nil)
 			end
 		end
 	},
@@ -6557,6 +6617,33 @@ Features that make player mechanics nicer to work with.
 		end
 	},
 	{
+		description = "Lists all deeds with functionality to add them to inventory.",
+		setting_name = "Add Deed Items",
+		category = "Items",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			local item_master_list = ItemMasterList
+
+			for key, item in pairs(item_master_list) do
+				if item.slot_type == "deed" then
+					options[#options + 1] = key
+				end
+			end
+
+			table.sort(options)
+		end,
+		func = function (options, index)
+			local item_interface = Managers.backend:get_interface("items")
+			local item = options[index]
+
+			if item then
+				item_interface:award_item(item)
+			end
+		end
+	},
+	{
 		description = "Adds one weapon per skin with that skin applied. This only works on local backend!",
 		setting_name = "Add All Weapon Skins",
 		category = "Items",
@@ -6596,7 +6683,7 @@ Features that make player mechanics nicer to work with.
 		load_items_source_func = function (options)
 			table.clear(options)
 
-			for key, item in pairs(mutator_settings) do
+			for key, _ in pairs(mutator_settings) do
 				options[#options + 1] = key
 			end
 
@@ -6614,8 +6701,7 @@ Features that make player mechanics nicer to work with.
 			end
 
 			if mutator_deactivation_index then
-				activated_mutators[mutator_deactivation_index] = nil
-
+				table.remove(activated_mutators, mutator_deactivation_index)
 				print("Deactivated mutator ", key)
 			else
 				activated_mutators[#activated_mutators + 1] = key
@@ -6623,7 +6709,11 @@ Features that make player mechanics nicer to work with.
 				print("Activated mutator ", key)
 			end
 
-			script_data.debug_activated_mutators = activated_mutators
+			if #activated_mutators > 0 then
+				script_data.debug_activated_mutators = activated_mutators
+			else
+				script_data.debug_activated_mutators = nil
+			end
 		end
 	},
 	{
@@ -6640,27 +6730,14 @@ Features that make player mechanics nicer to work with.
 		item_source = {},
 		load_items_source_func = function (options)
 			table.clear(options)
-			table.insert(options, "complete_act_one")
-			table.insert(options, "complete_act_one_veteran")
-			table.insert(options, "complete_act_one_champion")
-			table.insert(options, "complete_act_one_legend")
-			table.insert(options, "complete_act_two")
-			table.insert(options, "complete_act_two_veteran")
-			table.insert(options, "complete_act_two_champion")
-			table.insert(options, "complete_act_two_legend")
-			table.insert(options, "complete_act_three")
-			table.insert(options, "complete_act_three_veteran")
-			table.insert(options, "complete_act_three_champion")
-			table.insert(options, "complete_act_three_legend")
-			table.insert(options, "complete_all_helmgart_levels_recruit")
-			table.insert(options, "complete_all_helmgart_levels_veteran")
-			table.insert(options, "complete_all_helmgart_levels_champion")
-			table.insert(options, "complete_all_helmgart_levels_legend")
-			table.insert(options, "complete_bogenhafen_recruit")
-			table.insert(options, "complete_bogenhafen_veteran")
-			table.insert(options, "complete_bogenhafen_champion")
-			table.insert(options, "complete_bogenhafen_legend")
-			table.insert(options, "complete_tutorial")
+
+			for id, achievement in pairs(AchievementTemplates.achievements) do
+				if achievement.debug_unlock then
+					table.insert(options, id)
+				end
+			end
+
+			table.sort(options)
 		end,
 		func = function (options, index)
 			if AchievementTemplates then
@@ -6690,27 +6767,14 @@ Features that make player mechanics nicer to work with.
 		item_source = {},
 		load_items_source_func = function (options)
 			table.clear(options)
-			table.insert(options, "complete_act_one")
-			table.insert(options, "complete_act_one_veteran")
-			table.insert(options, "complete_act_one_champion")
-			table.insert(options, "complete_act_one_legend")
-			table.insert(options, "complete_act_two")
-			table.insert(options, "complete_act_two_veteran")
-			table.insert(options, "complete_act_two_champion")
-			table.insert(options, "complete_act_two_legend")
-			table.insert(options, "complete_act_three")
-			table.insert(options, "complete_act_three_veteran")
-			table.insert(options, "complete_act_three_champion")
-			table.insert(options, "complete_act_three_legend")
-			table.insert(options, "complete_all_helmgart_levels_recruit")
-			table.insert(options, "complete_all_helmgart_levels_veteran")
-			table.insert(options, "complete_all_helmgart_levels_champion")
-			table.insert(options, "complete_all_helmgart_levels_legend")
-			table.insert(options, "complete_bogenhafen_recruit")
-			table.insert(options, "complete_bogenhafen_veteran")
-			table.insert(options, "complete_bogenhafen_champion")
-			table.insert(options, "complete_bogenhafen_legend")
-			table.insert(options, "complete_tutorial")
+
+			for id, achievement in pairs(AchievementTemplates.achievements) do
+				if achievement.debug_reset then
+					table.insert(options, id)
+				end
+			end
+
+			table.sort(options)
 		end,
 		func = function (options, index)
 			if AchievementTemplates then

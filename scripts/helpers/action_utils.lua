@@ -551,6 +551,10 @@ ActionUtils.stop_charge_sound = function (wwise_world, wwise_playing_id, wwise_s
 		return
 	end
 
+	if not WwiseWorld.is_playing(wwise_world, wwise_playing_id) then
+		return
+	end
+
 	WwiseWorld.trigger_event(wwise_world, charge_sound_stop_event, wwise_source_id)
 end
 

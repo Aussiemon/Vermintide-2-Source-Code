@@ -3637,6 +3637,9 @@ UIPasses.tooltip_text = {
 
 		if Managers.input:is_device_active("gamepad") then
 			cursor_position = temp_cursor_pos
+		elseif PLATFORM == "xb1" then
+			cursor_position = temp_cursor_pos
+			cursor_position[2] = 1080 - cursor_position[2] + 20
 		else
 			cursor_position = UIInverseScaleVectorToResolution(temp_cursor_pos)
 		end
@@ -3677,13 +3680,15 @@ UIPasses.tooltip_text = {
 
 			UIRenderer.draw_text(ui_renderer, text_line, font_material, font_size, font_name, position, color)
 
-			position = position + text_offset
+			if i < num_texts then
+				position = position + text_offset
+			end
 		end
 
 		local padding_x = 4
-		local padding_y = 2
+		local padding_y = 8
 		position[3] = position[3] - 1
-		position[2] = (position[2] + full_font_height + font_min) - padding_y
+		position[2] = position[2] - (full_font_height + font_min) - padding_y
 		position[1] = position[1] - 2 - padding_x
 		tooltip_size[1] = tooltip_size[1] + padding_x * 2
 		tooltip_size[2] = tooltip_size[2] + padding_y * 2
@@ -3826,7 +3831,14 @@ UIPasses.hotspot = {
 			cursor = NilCursor
 		end
 
-		local cursor_position = UIInverseScaleVectorToResolution(cursor)
+		local cursor_position = nil
+
+		if PLATFORM == "xb1" and not gamepad_active then
+			cursor_position = Vector3(cursor[1], 1080 - cursor[2], cursor[3])
+		else
+			cursor_position = UIInverseScaleVectorToResolution(cursor)
+		end
+
 		local hover_type = ui_content.hover_type
 		local pixel_pos = position
 		local pixel_size = size
@@ -3926,6 +3938,7 @@ UIPasses.hotspot = {
 		local left_pressed = input_service and input_service:get("left_press")
 		local left_hold = input_service and input_service:get("left_hold")
 		local double_click_accepted = ui_content.is_clicked and ui_content.is_clicked < double_click_threshold
+		ui_content.is_held = false
 
 		if is_hover then
 			if not ui_content.input_pressed then
@@ -3933,6 +3946,8 @@ UIPasses.hotspot = {
 
 				if ui_content.input_pressed then
 					ui_content.on_pressed = true
+				elseif left_hold then
+					ui_content.is_held = true
 				end
 			elseif not double_click_accepted then
 				ui_content.input_pressed = false
@@ -3958,6 +3973,7 @@ UIPasses.hotspot = {
 					ui_content.is_clicked = 0
 				elseif is_hover and left_hold then
 					ui_content.is_clicked = 0
+					ui_content.is_held = true
 				else
 					ui_content.is_clicked = (ui_content.is_clicked or 10) + dt
 				end

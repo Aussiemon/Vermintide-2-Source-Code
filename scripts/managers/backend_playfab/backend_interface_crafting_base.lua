@@ -128,53 +128,55 @@ BackendInterfaceCraftingBase._validate_ingredient = function (self, ingredient, 
 		repeat
 			local item_backend_id = item_backend_ids[i]
 			local masterlist_data = backend_items:get_item_masterlist_data(item_backend_id)
-			local item_name = masterlist_data.name
+			local item_name = masterlist_data and masterlist_data.name
 
-			if ingredient_name and ingredient_name ~= item_name then
-				break
-			end
-
-			if ingredient_category then
-				local category_table = CraftingData[ingredient_category.category_table]
-				local item_value = masterlist_data[ingredient_category.item_value]
-
-				if not table.contains(category_table, item_value) then
+			if item_name then
+				if ingredient_name and ingredient_name ~= item_name then
 					break
 				end
-			end
 
-			if has_variable and not item_data[has_variable] then
-				break
-			end
+				if ingredient_category then
+					local category_table = CraftingData[ingredient_category.category_table]
+					local item_value = masterlist_data[ingredient_category.item_value]
 
-			local can_stack = masterlist_data.can_stack
-			local amount_from_item = nil
-			local item_amount = backend_items:get_item_amount(item_backend_id)
-
-			if can_stack and item_amount < amount then
-				break
-			elseif not can_stack then
-				amount_from_item = 1
-			else
-				amount_from_item = amount
-			end
-
-			total_found_ingredients = total_found_ingredients + amount_from_item
-			ingredient_ids[#ingredient_ids + 1] = {
-				backend_id = item_backend_id,
-				amount = amount_from_item
-			}
-
-			if total_found_ingredients == amount then
-				for j = 1, #ingredient_ids, 1 do
-					local data = ingredient_ids[j]
-					local backend_id = data.backend_id
-					local index = table.find(item_backend_ids, backend_id)
-
-					table.remove(item_backend_ids, index)
+					if not table.contains(category_table, item_value) then
+						break
+					end
 				end
 
-				return true, ingredient_ids
+				if has_variable and not item_data[has_variable] then
+					break
+				end
+
+				local can_stack = masterlist_data.can_stack
+				local amount_from_item = nil
+				local item_amount = backend_items:get_item_amount(item_backend_id)
+
+				if can_stack and item_amount < amount then
+					break
+				elseif not can_stack then
+					amount_from_item = 1
+				else
+					amount_from_item = amount
+				end
+
+				total_found_ingredients = total_found_ingredients + amount_from_item
+				ingredient_ids[#ingredient_ids + 1] = {
+					backend_id = item_backend_id,
+					amount = amount_from_item
+				}
+
+				if total_found_ingredients == amount then
+					for j = 1, #ingredient_ids, 1 do
+						local data = ingredient_ids[j]
+						local backend_id = data.backend_id
+						local index = table.find(item_backend_ids, backend_id)
+
+						table.remove(item_backend_ids, index)
+					end
+
+					return true, ingredient_ids
+				end
 			end
 		until true
 	end

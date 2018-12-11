@@ -298,24 +298,30 @@ end
 BTMeleeOverlapAttackAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	local locomotion_extension = blackboard.locomotion_extension
 
-	if not blackboard.attack.enable_nav_extension then
-		locomotion_extension:set_rotation_speed(nil)
-		blackboard.navigation_extension:set_enabled(true)
-	else
-		blackboard.navigation_extension:reset_destination()
-	end
+	if not destroy then
+		if not blackboard.attack.enable_nav_extension then
+			locomotion_extension:set_rotation_speed(nil)
+			blackboard.navigation_extension:set_enabled(true)
+		else
+			blackboard.navigation_extension:reset_destination()
+		end
 
-	local wall_collision_data = blackboard.wall_collision_data
+		local wall_collision_data = blackboard.wall_collision_data
 
-	if blackboard.attack_anim_driven then
-		LocomotionUtils.set_animation_rotation_scale(unit, 1)
-		LocomotionUtils.set_animation_driven_movement(unit, false)
-		locomotion_extension:use_lerp_rotation(true)
+		if blackboard.attack_anim_driven then
+			LocomotionUtils.set_animation_rotation_scale(unit, 1)
+			LocomotionUtils.set_animation_driven_movement(unit, false)
+			locomotion_extension:use_lerp_rotation(true)
 
-		local is_stunned = wall_collision_data and wall_collision_data.is_stunned
+			local is_stunned = wall_collision_data and wall_collision_data.is_stunned
 
-		if blackboard.attack.animation_translation_scale or is_stunned then
-			LocomotionUtils.set_animation_translation_scale(unit, Vector3(1, 1, 1))
+			if blackboard.attack.animation_translation_scale or is_stunned then
+				LocomotionUtils.set_animation_translation_scale(unit, Vector3(1, 1, 1))
+			end
+		end
+
+		if wall_collision_data then
+			table.clear(wall_collision_data)
 		end
 	end
 
@@ -341,10 +347,6 @@ BTMeleeOverlapAttackAction.leave = function (self, unit, blackboard, t, reason, 
 
 	if blackboard.continous_overlap_data then
 		table.clear(blackboard.continous_overlap_data)
-	end
-
-	if wall_collision_data then
-		table.clear(wall_collision_data)
 	end
 end
 

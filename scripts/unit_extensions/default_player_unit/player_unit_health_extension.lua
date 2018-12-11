@@ -319,7 +319,7 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 	if controller_features_manager then
 		local player = self.player
 
-		if player.local_player and damage_amount > 0 then
+		if player.local_player and damage_amount > 0 and damage_type ~= "temporary_health_degen" then
 			controller_features_manager:add_effect("hit_rumble", {
 				damage_amount = damage_amount,
 				unit = unit

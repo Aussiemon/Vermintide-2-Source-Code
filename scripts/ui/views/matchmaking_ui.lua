@@ -12,12 +12,10 @@ local function dprint(...)
 end
 
 local function get_portrait_name_by_profile_index(profile_index, career_index)
-	local scale = RESOLUTION_LOOKUP.scale
 	local profile_data = SPProfiles[profile_index]
 	local careers = profile_data.careers
 	local career_settings = careers[career_index]
 	local portrait_image = career_settings.portrait_image
-	local display_name = profile_data.display_name
 
 	return "small_" .. portrait_image
 end
@@ -43,7 +41,6 @@ MatchmakingUI.init = function (self, ingame_ui_context)
 	local input_manager = ingame_ui_context.input_manager
 	self.input_manager = input_manager
 
-	rawset(_G, "GLOBAL_MMUI", self)
 	self:create_ui_elements()
 
 	self.num_players_text = Localize("number_of_players")
@@ -128,8 +125,6 @@ MatchmakingUI.is_in_inn = function (self)
 end
 
 MatchmakingUI.update = function (self, dt, t, show_detailed_matchmaking_info)
-	local countdown_ui = self.countdown_ui
-	local ui_renderer = self.ui_renderer
 	local ui_top_renderer = self.ui_top_renderer
 	local input_manager = self.input_manager
 	local input_service = input_manager:get_service("ingame_menu")
@@ -137,8 +132,7 @@ MatchmakingUI.update = function (self, dt, t, show_detailed_matchmaking_info)
 	local enter_game = self.countdown_ui:is_enter_game()
 	local ui_suspended = self.ingame_ui.menu_suspended
 	local voting_manager = self.voting_manager
-	local active_vote_name = voting_manager:vote_in_progress()
-	local has_mission_vote = active_vote_name == "game_settings_vote" or active_vote_name == "game_settings_deed_vote"
+	local has_mission_vote = voting_manager:vote_in_progress() and voting_manager:is_mission_vote()
 
 	if ui_suspended and not enter_game then
 		return
@@ -149,11 +143,11 @@ MatchmakingUI.update = function (self, dt, t, show_detailed_matchmaking_info)
 		self._detailed_info_visibility_progress = 0
 	end
 
-	for name, animation in pairs(self.ui_animations) do
+	for _, animation in pairs(self.ui_animations) do
 		UIAnimation.update(animation, dt)
 
 		if UIAnimation.completed(animation) then
-			animation = nil
+			self.ui_animations = nil
 		end
 	end
 
@@ -171,7 +165,13 @@ MatchmakingUI.update = function (self, dt, t, show_detailed_matchmaking_info)
 				local cancel_matchmaking = input_service:get("cancel_matchmaking")
 
 				if cancel_matchmaking then
-					self.matchmaking_manager:cancel_matchmaking()
+					local matchmaking_manager = self.matchmaking_manager
+
+					matchmaking_manager:cancel_matchmaking()
+
+					if matchmaking_manager:game_mode_event_data() then
+						matchmaking_manager:clear_game_mode_event_data()
+					end
 
 					if Managers.deed:has_deed() then
 						Managers.deed:reset()
@@ -227,18 +227,30 @@ MatchmakingUI._draw = function (self, ui_renderer, input_service, is_matchmaking
 
 	UIRenderer.begin_pass(ui_renderer, self.ui_scenegraph, input_service, dt, nil, self.render_settings)
 
-	for _, widget in ipairs(self._widgets) do
+	local widgets = self._widgets
+
+	for i = 1, #widgets, 1 do
+		local widget = widgets[i]
+
 		UIRenderer.draw_widget(ui_renderer, widget)
 	end
 
 	if self._show_detailed_matchmaking_info then
 		if self._allow_cancel_matchmaking then
-			for _, widget in ipairs(self._cancel_input_widgets) do
+			local cancel_input_widgets = self._cancel_input_widgets
+
+			for i = 1, #cancel_input_widgets, 1 do
+				local widget = cancel_input_widgets[i]
+
 				UIRenderer.draw_widget(ui_renderer, widget)
 			end
 		end
 
-		for _, widget in ipairs(self._detail_widgets) do
+		local detail_widgets = self._detail_widgets
+
+		for i = 1, #detail_widgets, 1 do
+			local widget = detail_widgets[i]
+
 			UIRenderer.draw_widget(ui_renderer, widget)
 		end
 	end
@@ -265,7 +277,8 @@ MatchmakingUI._update_background = function (self, is_matchmaking, has_mission_v
 end
 
 MatchmakingUI._update_matchmaking_info = function (self, t)
-	local matchmaking_info = self.matchmaking_manager:search_info()
+	local matchmaking_manager = self.matchmaking_manager
+	local matchmaking_info = matchmaking_manager:search_info()
 	local cached_matchmaking_info = self._cached_matchmaking_info
 
 	if PLATFORM == "xb1" and matchmaking_info.no_lobby_data then
@@ -278,9 +291,9 @@ MatchmakingUI._update_matchmaking_info = function (self, t)
 
 		local widget = self:_get_widget("status_text")
 		widget.content.text = Localize("loading_fetching_matchmaking_data")
-		local widget = self:_get_detail_widget("title_text")
+		widget = self:_get_detail_widget("title_text")
 		widget.content.text = dots
-		local widget = self:_get_detail_widget("difficulty_text")
+		widget = self:_get_detail_widget("difficulty_text")
 		widget.content.text = ""
 
 		return
@@ -297,18 +310,22 @@ MatchmakingUI._update_matchmaking_info = function (self, t)
 	end
 
 	local quick_game = matchmaking_info.quick_game
-	local quick_game_changed = quick_game ~= cached_matchmaking_info[quick_game]
+	local quick_game_changed = quick_game ~= cached_matchmaking_info.quick_game
 	local level_key = matchmaking_info.level_key
-	local level_key_changed = level_key ~= cached_matchmaking_info[level_key]
+	local level_key_changed = level_key ~= cached_matchmaking_info.level_key
 
 	if quick_game_changed or level_key_changed then
 		cached_matchmaking_info.quick_game = quick_game
 		cached_matchmaking_info.level_key = level_key
-		local widget = self:_get_detail_widget("title_text")
+		local is_event_game = matchmaking_manager:game_mode_event_data()
 		local text = nil
 
 		if quick_game then
 			text = "mission_vote_quick_play"
+		elseif is_event_game then
+			local level_settings = level_key and LevelSettings[level_key]
+			local level_display_name = (level_settings and level_settings.display_name) or "random_level"
+			text = level_display_name
 		else
 			local level_settings = level_key and level_key ~= "n/a" and LevelSettings[level_key]
 			local level_display_name = (level_settings and level_settings.display_name) or "level_display_name_unavailable"
@@ -354,16 +371,18 @@ MatchmakingUI._update_mission_vote_status = function (self)
 	local voting_manager = self.voting_manager
 	local active_vote_name = voting_manager:vote_in_progress()
 	local active_vote_data = voting_manager:active_vote_data()
-	local difficulty, level_key, quick_game = nil
-	difficulty = active_vote_data.difficulty
-	level_key = active_vote_data.level_key
-	quick_game = active_vote_data.quick_game
+	local difficulty = active_vote_data.difficulty
+	local level_key = active_vote_data.level_key
+	local quick_game = active_vote_data.quick_game
+	local event_data = active_vote_data.event_data
 	local difficulty_settings = DifficultySettings[difficulty]
 	local difficulty_display_name = difficulty_settings.display_name
 	local level_display_name = nil
 
 	if quick_game then
 		level_display_name = "mission_vote_quick_play"
+	elseif event_data and level_key == nil then
+		level_display_name = "random_level"
 	else
 		local level_settings = LevelSettings[level_key]
 		level_display_name = level_settings.display_name
@@ -378,7 +397,7 @@ end
 
 MatchmakingUI._update_mission_vote_player_status = function (self)
 	local voting_manager = self.voting_manager
-	local voters = self.voting_manager:get_current_voters()
+	local voters = voting_manager:get_current_voters()
 
 	for peer_id, vote in pairs(voters) do
 		local portrait_index = self:_get_portrait_index(peer_id)
@@ -472,7 +491,7 @@ MatchmakingUI.update_debug = function (self)
 end
 
 MatchmakingUI.destroy = function (self)
-	rawset(_G, "GLOBAL_MMUI", nil)
+	return
 end
 
 MatchmakingUI.get_input_texture_data = function (self, input_action)
@@ -481,7 +500,9 @@ MatchmakingUI.get_input_texture_data = function (self, input_action)
 	local gamepad_active = input_manager:is_device_active("gamepad")
 	local platform = PLATFORM
 
-	if platform == "win32" and gamepad_active then
+	if platform == "xb1" and GameSettingsDevelopment.allow_keyboard_mouse and not gamepad_active then
+		platform = "win32"
+	elseif platform == "win32" and gamepad_active then
 		platform = "xb1"
 	end
 
@@ -496,7 +517,7 @@ MatchmakingUI.get_input_texture_data = function (self, input_action)
 	end
 
 	if device_type == "keyboard" then
-		return nil, Keyboard.button_locale_name(key_index), prefix_text
+		return nil, Keyboard.button_locale_name(key_index) or Keyboard.button_name(key_index), prefix_text
 	elseif device_type == "mouse" then
 		return nil, Mouse.button_name(key_index), prefix_text
 	elseif device_type == "gamepad" then
@@ -517,7 +538,6 @@ MatchmakingUI._update_button_prompts = function (self)
 		local text_widget_prefix = widgets.text_widget_prefix
 		local text_widget_suffix = widgets.text_widget_suffix
 		local input_icon_widget = widgets.input_icon_widget
-		local input_icon_bar_width = 0
 		local texture_data, input_text, prefix_text = self:get_input_texture_data(input_action)
 		text_widget_prefix.content.text = (prefix_text and Localize(prefix_text)) or ""
 
@@ -574,7 +594,6 @@ end
 MatchmakingUI._update_portraits = function (self, has_mission_vote)
 	local profile_synchronizer = self.profile_synchronizer
 	local player_manager = Managers.player
-	local portrait_index = 0
 	local lobby = self.lobby
 	local lobby_members = lobby:members()
 	local members = lobby_members and lobby_members:members_map()
@@ -613,8 +632,6 @@ MatchmakingUI._update_portraits = function (self, has_mission_vote)
 			local profile = profile_synchronizer:profile_by_peer(peer_id, 1)
 
 			if profile then
-				local display_name = SPProfiles[profile].unit_name
-
 				self:large_window_set_player_portrait(portrait_index, peer_id)
 
 				if player_manager:player_from_peer_id(peer_id) then
@@ -658,7 +675,7 @@ MatchmakingUI.large_window_set_title = function (self, title)
 end
 
 MatchmakingUI.large_window_set_status_message = function (self, message)
-	assert(message ~= " ", "tried to pass empty status message to matchmaking ui")
+	fassert(message ~= " ", "tried to pass empty status message to matchmaking ui")
 
 	local widget = self:_get_widget("status_text")
 	widget.content.text = Localize(message)
@@ -675,7 +692,6 @@ MatchmakingUI.large_window_set_player_portrait = function (self, index, peer_id)
 	local widget = self:_get_detail_widget("party_slot_" .. index)
 	local status_widget = self:_get_widget("player_status_" .. index)
 	local content = widget.content
-	local style = widget.style
 	local portrait_texture = nil
 
 	if peer_id then
@@ -777,7 +793,6 @@ MatchmakingUI._set_vote_time_progress = function (self, progress)
 	local widget = self:_get_detail_widget("timer_fg")
 	local content = widget.content
 	local uvs = content.texture_id.uvs
-	local scenegraph_definition = self.scenegraph_definition
 	local scenegraph_id = widget.scenegraph_id
 	local default_size = self.scenegraph_definition[scenegraph_id].size
 	local current_size = self.ui_scenegraph[scenegraph_id].size

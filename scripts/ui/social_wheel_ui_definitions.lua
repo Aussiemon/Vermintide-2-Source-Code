@@ -25,6 +25,18 @@ local scenegraph_definition = {
 			SIZE_Y
 		}
 	},
+	root_screen = {
+		scale = "fit",
+		position = {
+			0,
+			0,
+			UILayer.hud
+		},
+		size = {
+			SIZE_X,
+			SIZE_Y
+		}
+	},
 	pivot_console = {
 		vertical_alignment = "center",
 		parent = "screen",
@@ -64,6 +76,20 @@ local scenegraph_definition = {
 		position = {
 			0,
 			100,
+			0
+		}
+	},
+	icon = {
+		vertical_alignment = "bottom",
+		parent = "root_screen",
+		horizontal_alignment = "left",
+		size = {
+			128,
+			128
+		},
+		position = {
+			0,
+			0,
 			0
 		}
 	}
@@ -903,10 +929,199 @@ local function create_social_text_event(social_event_setting, texture, text, is_
 	}
 end
 
+local function create_social_icon(social_event_setting, peer_id, camera, world, end_time, fade_time)
+	return {
+		scenegraph_id = "icon",
+		element = {
+			passes = {
+				{
+					style_id = "texture",
+					texture_id = "icon_id",
+					pass_type = "texture",
+					content_check_function = function (content, style)
+						local player = Managers.player:player_from_peer_id(content.peer_id)
+						local player_unit = player and player.player_unit
+
+						if not Unit.alive(player_unit) then
+							content.is_visible = false
+
+							return false
+						end
+
+						local camera_pose = Camera.world_pose(content.camera)
+						local camera_pos = Matrix4x4.translation(camera_pose)
+						local player_pos = Unit.world_position(player_unit, 0)
+						local dir = player_pos - camera_pos
+						local flat_dir = Vector3.normalize(Vector3.flat(dir))
+						local forward = Matrix4x4.forward(camera_pose)
+						local flat_forward = Vector3.normalize(Vector3.flat(forward))
+
+						if Vector3.dot(flat_forward, flat_dir) <= 0 then
+							content.is_visible = false
+
+							return false
+						end
+
+						content.is_visible = true
+
+						return true
+					end,
+					content_change_function = function (content, style)
+						local player = Managers.player:player_from_peer_id(content.peer_id)
+						local player_unit = player and player.player_unit
+
+						if Unit.alive(player_unit) and Unit.has_node(player_unit, "j_head") then
+							local camera_pos = Camera.world_position(content.camera)
+							local inv_scale = RESOLUTION_LOOKUP.inv_scale
+							local node = Unit.node(player_unit, "j_head")
+							local player_pos = Unit.world_position(player_unit, node)
+							local distance_sq = Vector3.distance_squared(camera_pos, player_pos)
+							local distance_scale = math.lerp(1, 0.5, math.clamp(distance_sq / 49, 0, 1))
+							local position = player_pos + Vector3(0, 0, 0.5) + Vector3(0, 0, 0.5) * (1 - distance_scale)
+							local pos = Camera.world_to_screen(content.camera, position)
+							local time = Managers.time:time("game")
+							local scale = math.sin(time * 15) * 0.1
+							style.texture_size[1] = style.base_texture_size[1] * distance_scale + style.base_texture_size[1] * distance_scale * scale
+							style.texture_size[2] = style.base_texture_size[2] * distance_scale + style.base_texture_size[2] * distance_scale * scale
+							style.offset[1] = pos[1] * inv_scale - style.texture_size[1] * 0.5
+							style.offset[2] = pos[2] * inv_scale - style.texture_size[1] * 0.5
+							content.offset = style.offset
+							content.distance_scale = distance_scale
+							content.scale = scale
+
+							if time > content.end_time - content.fade_time then
+								local value = content.end_time - time
+								content.alpha = math.lerp(0, 255, math.clamp(value / content.fade_time, 0, 1))
+								style.color[1] = content.alpha
+							end
+						end
+					end
+				},
+				{
+					style_id = "texture_glow",
+					texture_id = "icon_glow_id",
+					pass_type = "texture",
+					content_check_function = function (content, style)
+						return content.is_visible
+					end,
+					content_change_function = function (content, style)
+						local offset = content.offset
+						local distance_scale = content.distance_scale
+						local scale = content.scale
+						local alpha = content.alpha
+						style.offset[1] = offset[1]
+						style.offset[2] = offset[2]
+						style.texture_size[1] = style.base_texture_size[1] * distance_scale + style.base_texture_size[1] * distance_scale * scale
+						style.texture_size[2] = style.base_texture_size[2] * distance_scale + style.base_texture_size[2] * distance_scale * scale
+						style.color[1] = alpha
+					end
+				},
+				{
+					style_id = "texture_shadow",
+					texture_id = "icon_id",
+					pass_type = "texture",
+					content_check_function = function (content, style)
+						return content.is_visible
+					end,
+					content_change_function = function (content, style)
+						local offset = content.offset
+						local distance_scale = content.distance_scale
+						local scale = content.scale
+						local alpha = content.alpha
+						style.offset[1] = offset[1] + 2
+						style.offset[2] = offset[2] - 2
+						style.texture_size[1] = style.base_texture_size[1] * distance_scale + style.base_texture_size[1] * distance_scale * scale
+						style.texture_size[2] = style.base_texture_size[2] * distance_scale + style.base_texture_size[2] * distance_scale * scale
+						style.color[1] = alpha
+					end
+				}
+			}
+		},
+		content = {
+			alpha = 255,
+			icon_bg_id = "radial_chat_icon_bg",
+			icon_id = social_event_setting.icon or "radial_chat_icon_boss",
+			icon_glow_id = (social_event_setting.icon and social_event_setting.icon .. "_glow") or "radial_chat_icon_boss_glow",
+			peer_id = peer_id,
+			camera = camera,
+			world = world,
+			end_time = end_time or Managers.time:time("game") + 5,
+			fade_time = fade_time or 0.5
+		},
+		style = {
+			texture = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "left",
+				base_texture_size = {
+					128,
+					128
+				},
+				texture_size = {
+					128,
+					128
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					10
+				}
+			},
+			texture_glow = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "left",
+				texture_size = {
+					128,
+					128
+				},
+				base_texture_size = {
+					128,
+					128
+				},
+				color = Colors.get_color_table_with_alpha("font_title", 255),
+				offset = {
+					0,
+					0,
+					10
+				}
+			},
+			texture_shadow = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "left",
+				base_texture_size = {
+					128,
+					128
+				},
+				texture_size = {
+					128,
+					128
+				},
+				color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					2,
+					-2,
+					0
+				}
+			}
+		},
+		offset = {
+			0,
+			0,
+			0
+		}
+	}
+end
+
 return {
 	scenegraph_definition = scenegraph_definition,
 	create_social_widget = create_social_widget,
 	arrow_widget = create_arrow_widget(),
 	create_social_text_event = create_social_text_event,
+	create_social_icon = create_social_icon,
 	create_bg_widget = create_bg_widget
 }

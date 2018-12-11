@@ -46,6 +46,10 @@ LobbyInternal.matchmaking_lobby_data = {
 	secondary_region = {
 		data_type = "integer",
 		id = PsnRoom.SEARCHABLE_INTEGER_ID_6
+	},
+	network_hash_as_int = {
+		data_type = "integer",
+		id = PsnRoom.SEARCHABLE_INTEGER_ID_7
 	}
 }
 LobbyInternal.lobby_data_network_lookups = {

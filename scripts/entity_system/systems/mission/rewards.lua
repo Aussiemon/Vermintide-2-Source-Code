@@ -23,7 +23,7 @@ Rewards.init = function (self, level_key, game_mode_key, quickplay_bonus)
 	self._quickplay_bonus = quickplay_bonus
 end
 
-Rewards.award_end_of_level_rewards = function (self, game_won, hero_name)
+Rewards.award_end_of_level_rewards = function (self, game_won, hero_name, is_in_event_game_mode)
 	local deed_manager = Managers.deed
 
 	if game_won and deed_manager:has_deed() and not deed_manager:is_deed_owner() then
@@ -38,11 +38,13 @@ Rewards.award_end_of_level_rewards = function (self, game_won, hero_name)
 
 		Managers.deed:consume_deed(cb)
 	else
-		self:_award_end_of_level_rewards(game_won, hero_name)
+		local loot_profile_name = (is_in_event_game_mode and "event") or "default"
+
+		self:_award_end_of_level_rewards(game_won, hero_name, loot_profile_name)
 	end
 end
 
-Rewards._award_end_of_level_rewards = function (self, game_won, hero_name)
+Rewards._award_end_of_level_rewards = function (self, game_won, hero_name, loot_profile_name)
 	local backend_manager = Managers.backend
 	local hero_attributes = backend_manager:get_interface("hero_attributes")
 	local start_experience = hero_attributes:get(hero_name, "experience")
@@ -60,7 +62,7 @@ Rewards._award_end_of_level_rewards = function (self, game_won, hero_name)
 	self._start_experience = start_experience
 	local level_end, end_experience = self:get_level_end()
 
-	self:_generate_end_of_level_loot(game_won, hero_name, start_experience, end_experience, deed_item_name, deed_item_backend_id)
+	self:_generate_end_of_level_loot(game_won, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id)
 end
 
 Rewards._mission_results = function (self, game_won)
@@ -174,7 +176,7 @@ Rewards._add_missions_from_mission_system = function (self, mission_rewards, dif
 	end
 end
 
-Rewards._generate_end_of_level_loot = function (self, game_won, hero_name, start_experience, end_experience, deed_item_name, deed_item_backend_id)
+Rewards._generate_end_of_level_loot = function (self, game_won, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id)
 	local difficulty_manager = Managers.state.difficulty
 	local difficulty = difficulty_manager:get_difficulty()
 	local mission_system = Managers.state.entity:system("mission_system")
@@ -193,7 +195,7 @@ Rewards._generate_end_of_level_loot = function (self, game_won, hero_name, start
 		num_loot_dice = (loot_dice_mission_data and loot_dice_mission_data.current_amount) or 0
 	end
 
-	self._end_of_level_loot_id = loot_interface:generate_end_of_level_loot(game_won, quickplay, difficulty, self._level_key, num_tomes, num_grims, num_loot_dice, hero_name, start_experience, end_experience, deed_item_name, deed_item_backend_id)
+	self._end_of_level_loot_id = loot_interface:generate_end_of_level_loot(game_won, quickplay, difficulty, self._level_key, num_tomes, num_grims, num_loot_dice, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id)
 end
 
 Rewards.cb_deed_consumed = function (self)
@@ -204,8 +206,9 @@ Rewards.cb_deed_consumed = function (self)
 	self._end_of_level_info = nil
 	local game_won = end_of_level_info.game_won
 	local hero_name = end_of_level_info.hero_name
+	local loot_profile_name = "default"
 
-	self:_award_end_of_level_rewards(game_won, hero_name)
+	self:_award_end_of_level_rewards(game_won, hero_name, loot_profile_name)
 end
 
 Rewards.rewards_generated = function (self)

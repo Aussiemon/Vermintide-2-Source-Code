@@ -115,7 +115,7 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 	local difficulty_settings = difficulty_manager:get_difficulty_settings()
 	local player_wounds = difficulty_settings.wounds
 
-	if Managers.state.game_mode:has_mutator("instant_death") then
+	if Managers.state.game_mode:has_activated_mutator("instant_death") then
 		player_wounds = 1
 	end
 
@@ -168,9 +168,11 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 	local base_frame = "default"
 	local career_name = career.name
 	local skin_item = BackendUtils.get_loadout_item(career_name, "slot_skin")
+	skin_item = skin_item or BackendUtils.try_set_loadout_item(career_name, "slot_skin", base_skin)
 	local skin_name = (skin_item and skin_item.data.name) or base_skin
 	local skin_data = Cosmetics[skin_name]
 	local frame_item = BackendUtils.get_loadout_item(career_name, "slot_frame")
+	frame_item = frame_item or BackendUtils.try_set_loadout_item(career_name, "slot_frame", "frame_0000")
 	local frame_name = (frame_item and frame_item.data.name) or base_frame
 	local overcharge_data = OverchargeData[career_name] or {}
 	local extension_init_data = {

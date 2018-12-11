@@ -238,11 +238,12 @@ table.mirror_array_inplace(NAV_COST_MAP_LAYER_ID_MAPPING)
 local PerceptionTypes = {
 	perception_regular_update_aggro = true,
 	perception_regular = true,
+	perception_all_seeing_boss = true,
 	perception_no_seeing = true,
-	perception_pack_master = true,
 	perception_all_seeing = true,
-	perception_rat_ogre = true,
-	perception_all_seeing_re_evaluate = true
+	perception_pack_master = true,
+	perception_all_seeing_re_evaluate = true,
+	perception_rat_ogre = true
 }
 local TargetSelectionTypes = {
 	pick_rat_ogre_target_with_weights = true,

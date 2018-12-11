@@ -172,6 +172,54 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_holly_01 = {
+		{
+			texture = "portrait_ubersreik_01",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_holly_02 = {
+		{
+			texture = "portrait_ubersreik_02",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_holly_03 = {
+		{
+			texture = "portrait_ubersreik_03",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_holly_04 = {
+		{
+			texture = "portrait_ubersreik_04",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
 	default = {
 		{
 			texture = "portrait_frame_0000",

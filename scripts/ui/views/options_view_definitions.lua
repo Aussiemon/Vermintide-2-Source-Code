@@ -465,10 +465,20 @@ local scenegraph_definition = {
 }
 
 local function create_safe_rect_widget(scenegraph_id)
+	local extra_offset = {
+		0,
+		0
+	}
 	local border_size = {
 		5,
 		5
 	}
+
+	if PLATFORM == "ps4" and PS4.is_pro() then
+		extra_offset[1] = border_size[1] * 2
+		extra_offset[2] = border_size[2] * 1
+	end
+
 	local widget = {
 		scenegraph_id = "safe_rect",
 		element = {
@@ -516,7 +526,7 @@ local function create_safe_rect_widget(scenegraph_id)
 						local safe_rect = (Application.user_setting("safe_rect") or 0) * 0.01
 						style.offset[1] = 1920 * safe_rect * 0.5
 						style.offset[2] = border_size[1] + 1080 * safe_rect * 0.5
-						style.texture_size[2] = 1080 - 1080 * safe_rect - border_size[2] * 2
+						style.texture_size[2] = 1080 - 1080 * safe_rect - border_size[2] * 2 - extra_offset[2]
 					end
 				},
 				{
@@ -526,7 +536,7 @@ local function create_safe_rect_widget(scenegraph_id)
 						local safe_rect = (Application.user_setting("safe_rect") or 0) * 0.01
 						style.offset[1] = -1920 * safe_rect * 0.5
 						style.offset[2] = border_size[1] + 1080 * safe_rect * 0.5
-						style.texture_size[2] = 1080 - 1080 * safe_rect - border_size[2] * 2
+						style.texture_size[2] = 1080 - 1080 * safe_rect - border_size[2] * 2 - extra_offset[2]
 					end
 				},
 				{
@@ -536,7 +546,7 @@ local function create_safe_rect_widget(scenegraph_id)
 						local safe_rect = (Application.user_setting("safe_rect") or 0) * 0.01
 						style.offset[1] = 1920 * safe_rect * 0.5
 						style.offset[2] = -1080 * safe_rect * 0.5
-						style.texture_size[1] = 1920 - 1920 * safe_rect
+						style.texture_size[1] = 1920 - 1920 * safe_rect - extra_offset[1]
 					end
 				},
 				{
@@ -546,7 +556,7 @@ local function create_safe_rect_widget(scenegraph_id)
 						local safe_rect = (Application.user_setting("safe_rect") or 0) * 0.01
 						style.offset[1] = 1920 * safe_rect * 0.5
 						style.offset[2] = 1080 * safe_rect * 0.5
-						style.texture_size[1] = 1920 - 1920 * safe_rect
+						style.texture_size[1] = 1920 - 1920 * safe_rect - extra_offset[1]
 					end
 				}
 			}
@@ -968,9 +978,16 @@ local background_widget_definitions = {
 				{
 					pass_type = "scroll",
 					scroll_function = function (ui_scenegraph, ui_style, ui_content, input_service, scroll_axis)
+						local gamepad_active = Managers.input:is_device_active("gamepad")
 						local scroll_step = ui_content.scroll_step or 0.1
 						local current_scroll_value = ui_content.internal_scroll_value
-						current_scroll_value = current_scroll_value + scroll_step * -scroll_axis.y
+
+						if not gamepad_active and PLATFORM == "xb1" then
+							current_scroll_value = current_scroll_value + scroll_step * -scroll_axis.x * 0.01
+						else
+							current_scroll_value = current_scroll_value + scroll_step * -scroll_axis.y
+						end
+
 						ui_content.internal_scroll_value = math.clamp(current_scroll_value, 0, 1)
 					end
 				}
@@ -1518,6 +1535,8 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 						local gamepad_active = Managers.input:is_device_active("gamepad")
 
 						if gamepad_active then
+							cursor = input_service:get("cursor")
+						elseif PLATFORM == "xb1" and GameSettingsDevelopment.allow_keyboard_mouse and not gamepad_active then
 							cursor = input_service:get("cursor")
 						else
 							cursor = UIInverseScaleVectorToResolution(input_service:get("cursor"))
@@ -4653,6 +4672,21 @@ SettingsWidgetTypeTemplate = {
 			local content = widget.content
 			local list_content = content.list_content
 			local style = widget.style
+			local gamepad_active = Managers.input:is_device_active("gamepad")
+
+			if not gamepad_active and content.active then
+				content.controller_input_pressed = true
+				content.active = false
+				hotspot.is_selected = true
+				local num_profiles = #list_content
+
+				for i = 1, num_profiles, 1 do
+					local entry_hotspot = list_content[i].hotspot
+					entry_hotspot.is_selected = false
+				end
+
+				return true, content.active
+			end
 
 			if not content.active and input_service:get("confirm") then
 				content.active = true

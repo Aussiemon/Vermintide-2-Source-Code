@@ -47,6 +47,10 @@ local scenegraph_definition = {
 	}
 }
 
+if PLATFORM ~= "win32" then
+	scenegraph_definition.screen.scale = "hud_fit"
+end
+
 local function sort_input_actions(a, b)
 	return a.priority < b.priority
 end

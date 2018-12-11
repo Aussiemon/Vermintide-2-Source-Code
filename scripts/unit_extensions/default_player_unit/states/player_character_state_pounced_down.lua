@@ -48,6 +48,22 @@ PlayerCharacterStatePouncedDown.on_exit = function (self, unit, input, dt, conte
 		local include_local_player = false
 
 		CharacterStateHelper.show_inventory_3p(unit, true, include_local_player, self.is_server, self.inventory_extension)
+
+		local status_extension = self.status_extension
+
+		if status_extension:is_blocking() then
+			if not LEVEL_EDITOR_TEST and Managers.state.network:game() then
+				local game_object_id = Managers.state.unit_storage:go_id(unit)
+
+				if self.is_server then
+					Managers.state.network.network_transmit:send_rpc_clients("rpc_set_blocking", game_object_id, false)
+				else
+					Managers.state.network.network_transmit:send_rpc_server("rpc_set_blocking", game_object_id, false)
+				end
+			end
+
+			status_extension:set_blocking(false)
+		end
 	end
 end
 
@@ -56,6 +72,20 @@ PlayerCharacterStatePouncedDown.set_free = function (self, t, unit)
 	self.liberation_time = t + liberate_duration
 
 	CharacterStateHelper.play_animation_event(unit, "jump_attack_stand_up")
+
+	local status_extension = self.status_extension
+
+	if not LEVEL_EDITOR_TEST and Managers.state.network:game() then
+		local game_object_id = Managers.state.unit_storage:go_id(unit)
+
+		if self.is_server then
+			Managers.state.network.network_transmit:send_rpc_clients("rpc_set_blocking", game_object_id, true)
+		else
+			Managers.state.network.network_transmit:send_rpc_server("rpc_set_blocking", game_object_id, true)
+		end
+	end
+
+	status_extension:set_blocking(true)
 end
 
 PlayerCharacterStatePouncedDown.update = function (self, unit, input, dt, context, t)

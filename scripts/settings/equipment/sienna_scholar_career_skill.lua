@@ -3,12 +3,17 @@ local weapon_template = weapon_template or {}
 weapon_template.actions = {
 	action_career_hold = {
 		default = {
-			aim_time = 0,
+			charge_sound_stop_event = "Stop_weapon_ability_pyromancer_skull_spawn",
 			default_zoom = "zoom_in_trueflight",
 			anim_end_event = "ability_finished",
 			kind = "career_true_flight_aim",
+			charge_sound_name = "Play_weapon_ability_pyromancer_skull_spawn",
+			aim_time = 0,
+			weapon_action_hand = "left",
+			charge_sound_husk_name = "Play_weapon_ability_pyromancer_skull_spawn_husk",
 			uninterruptible = true,
 			anim_event = "scholar_burning_head_ability_charge",
+			charge_sound_husk_stop_event = "Stop_weapon_ability_pyromancer_skull_spawn_husk",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action"
 			end,
@@ -43,58 +48,6 @@ weapon_template.actions = {
 				{
 					sub_action = "default",
 					start_time = 0.1,
-					action = "action_career_release",
-					input = "action_career_not_hold"
-				},
-				{
-					sub_action = "hold",
-					start_time = 1.67,
-					action = "action_career_hold",
-					auto_chain = true
-				}
-			}
-		},
-		hold = {
-			aim_time = 0,
-			default_zoom = "zoom_in_trueflight",
-			anim_end_event = "ability_finished",
-			kind = "career_true_flight_aim",
-			uninterruptible = true,
-			anim_event = "scholar_burning_head_ability_hold",
-			anim_end_event_condition_func = function (unit, end_reason)
-				return end_reason ~= "new_interupting_action"
-			end,
-			total_time = math.huge,
-			num_projectiles = NUM_PROJECTILES,
-			zoom_thresholds = {
-				"zoom_in_trueflight",
-				"zoom_in"
-			},
-			zoom_condition_function = function ()
-				return true
-			end,
-			allowed_chain_actions = {
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_two",
-					input = "action_two"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_two",
-					input = "weapon_reload"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_release",
-					input = "action_career_release"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
 					action = "action_career_release",
 					input = "action_career_not_hold"
 				}
@@ -104,16 +57,16 @@ weapon_template.actions = {
 	action_career_release = {
 		default = {
 			damage_window_start = 0.1,
+			charge_value = "light_attack",
+			ammo_usage = 0,
 			alert_sound_range_hit = 20,
-			fire_sound_event = "weapon_staff_spark_spear_charged",
-			ammo_usage = 1,
 			kind = "career_bw_one",
-			fire_sound_event_parameter = "drakegun_charge_fire",
 			sphere_sweep_dot_threshold = 0.5,
 			true_flight_template = "active_ability_sienna_scholar",
-			alert_sound_range_fire = 12,
+			fire_sound_event = "Play_weapon_ability_pyromancer_skull_shoot",
 			sphere_sweep_length = 50,
 			is_spell = true,
+			weapon_action_hand = "left",
 			damage_window_end = 0,
 			anim_end_event = "ability_finished",
 			fire_time = 0.2,
@@ -127,7 +80,8 @@ weapon_template.actions = {
 			spread_template_override = "spear",
 			hit_effect = "sienna_scholar_career_ability",
 			sphere_sweep_radius = 2,
-			charge_value = "light_attack",
+			alert_sound_range_fire = 12,
+			no_headshot_sound = true,
 			fire_sound_on_husk = true,
 			uninterruptible = true,
 			ignore_shield_hit = true,
@@ -164,6 +118,7 @@ weapon_template.actions = {
 	action_two = {
 		default = {
 			kind = "career_dummy",
+			weapon_action_hand = "left",
 			anim_end_event = "ability_finished",
 			anim_event = "scholar_burning_head_ability_cancel",
 			total_time = 0.65,
@@ -187,12 +142,14 @@ weapon_template.actions = {
 }
 weapon_template.ammo_data = {
 	ammo_immediately_available = true,
+	ammo_unit = "units/weapons/player/wpn_burning_head/wpn_burning_head",
 	ammo_per_reload = 1,
 	ammo_per_clip = 1,
-	reload_on_ammo_pickup = true,
-	reload_time = 0,
 	ammo_hand = "left",
-	max_ammo = math.huge
+	ammo_unit_3p = "units/weapons/player/wpn_burning_head/wpn_burning_head_3p",
+	reload_time = 0,
+	max_ammo = math.huge,
+	ammo_unit_attachment_node_linking = AttachmentNodeLinking.burning_head
 }
 weapon_template.attack_meta_data = {
 	aim_at_node = "j_spine1",
@@ -211,9 +168,7 @@ weapon_template.attack_meta_data = {
 	ignore_enemies_for_obstruction = false
 }
 weapon_template.default_spread_template = "sparks"
-weapon_template.right_hand_unit = "units/weapons/player/wpn_brw_skullstaff/wpn_brw_skullstaff"
-weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.spear_staff
-weapon_template.left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball"
+weapon_template.left_hand_unit = "units/weapons/player/wpn_invisible_weapon"
 weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.left
 weapon_template.display_unit = "units/weapons/weapon_display/display_staff"
 weapon_template.wield_anim = "to_staff"

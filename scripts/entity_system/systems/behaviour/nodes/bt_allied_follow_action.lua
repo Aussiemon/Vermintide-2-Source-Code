@@ -124,7 +124,6 @@ BTAlliedFollowAction.follow = function (self, unit, t, dt, blackboard, locomotio
 end
 
 BTAlliedFollowAction._follow_target = function (self, unit, blackboard, t, dt)
-	local action = blackboard.action
 	local navigation_extension = blackboard.navigation_extension
 	local wanted_position = self:_get_wanted_pos(unit, blackboard)
 

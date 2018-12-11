@@ -61,26 +61,7 @@ BTSelector_loot_rat.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_in_gravity_well = children[3]
-	local condition_result = blackboard.gravity_well_position
-
-	if condition_result then
-		self:set_running_child(unit, blackboard, t, node_in_gravity_well, "aborted")
-
-		local result, evaluate = node_in_gravity_well:run(unit, blackboard, t, dt)
-
-		if result ~= "running" then
-			self:set_running_child(unit, blackboard, t, nil, result)
-		end
-
-		if result ~= "failed" then
-			return result, evaluate
-		end
-	elseif node_in_gravity_well == child_running then
-		self:set_running_child(unit, blackboard, t, nil, "failed")
-	end
-
-	local node_falling = children[4]
+	local node_falling = children[3]
 	local condition_result = blackboard.is_falling or blackboard.fall_state ~= nil
 
 	if condition_result then
@@ -99,7 +80,7 @@ BTSelector_loot_rat.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_stagger = children[5]
+	local node_stagger = children[4]
 	local condition_result = BTConditions.stagger(blackboard) and not blackboard.dodge_damage_success
 
 	if condition_result then
@@ -118,7 +99,7 @@ BTSelector_loot_rat.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_smartobject = children[6]
+	local node_smartobject = children[5]
 	local condition_result = nil
 	local next_smart_object_data = blackboard.next_smart_object_data
 	local smartobject_is_next = next_smart_object_data.next_smart_object_id ~= nil
@@ -159,8 +140,8 @@ BTSelector_loot_rat.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_in_combat = children[7]
-	local condition_result = Managers.state.game_mode:has_mutator("explosive_loot_rats") and unit_alive(blackboard.target_unit)
+	local node_in_combat = children[6]
+	local condition_result = Managers.state.game_mode:has_activated_mutator("explosive_loot_rats") and unit_alive(blackboard.target_unit)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_in_combat, "aborted")
@@ -178,7 +159,7 @@ BTSelector_loot_rat.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_dodge = children[8]
+	local node_dodge = children[7]
 	local condition_result = blackboard.dodge_vector or blackboard.is_dodging
 
 	if condition_result then
@@ -197,7 +178,7 @@ BTSelector_loot_rat.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_flee = children[9]
+	local node_flee = children[8]
 	local condition_result = BTConditions.confirmed_player_sighting(blackboard) or blackboard.is_fleeing
 
 	if condition_result then
@@ -216,7 +197,7 @@ BTSelector_loot_rat.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_alerted = children[10]
+	local node_alerted = children[9]
 	local condition_result = unit_alive(blackboard.target_unit)
 
 	if condition_result then
@@ -235,7 +216,7 @@ BTSelector_loot_rat.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_idle = children[11]
+	local node_idle = children[10]
 
 	self:set_running_child(unit, blackboard, t, node_idle, "aborted")
 

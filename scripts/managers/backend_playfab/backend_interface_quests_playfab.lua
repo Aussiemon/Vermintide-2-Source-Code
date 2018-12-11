@@ -285,8 +285,9 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 			backend_mirror:add_item(backend_id, item)
 
 			loot[i] = {
-				backend_id,
-				amount
+				type = "item",
+				backend_id = backend_id,
+				amount = amount
 			}
 		end
 	end

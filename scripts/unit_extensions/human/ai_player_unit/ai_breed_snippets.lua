@@ -642,6 +642,7 @@ AiBreedSnippets.on_chaos_spawn_spawn = function (unit, blackboard)
 	blackboard.aggro_list = {}
 	blackboard.fling_skaven_timer = 0
 	blackboard.next_move_check = 0
+	blackboard.cycle_rage_anim_index = 0
 	blackboard.attack_grabbed_attacks = 0
 	blackboard.chew_attacks_done = 0
 	blackboard.grabbed_time = 0
@@ -1274,7 +1275,7 @@ AiBreedSnippets.on_chaos_exalted_champion_update = function (unit, blackboard, t
 		if conflict_director:count_units_by_breed("chaos_marauder") < 3 then
 			local strictly_not_close_to_players = true
 			local silent = true
-			local composition_type = "warcamp_boss_event_trickle_" .. Managers.state.difficulty:get_difficulty()
+			local composition_type = "warcamp_boss_event_trickle"
 			local limit_spawners = nil
 			local terror_event_id = "warcamp_boss_minions"
 

@@ -16,10 +16,6 @@ BTPackMasterAttackAction.enter = function (self, unit, blackboard, t)
 	blackboard.attack_aborted = nil
 	blackboard.attack_success = nil
 	blackboard.drag_target_unit = blackboard.target_unit
-	local network_manager = Managers.state.network
-
-	network_manager:anim_event(unit, "to_combat")
-
 	blackboard.target_unit_status_extension = ScriptUnit.has_extension(blackboard.target_unit, "status_system") or nil
 
 	blackboard.navigation_extension:set_enabled(false)
@@ -42,7 +38,9 @@ BTPackMasterAttackAction.leave = function (self, unit, blackboard, t, reason, de
 		blackboard.target_unit = nil
 		blackboard.drag_target_unit = nil
 
-		LocomotionUtils.set_animation_driven_movement(unit, false)
+		if not destroy then
+			LocomotionUtils.set_animation_driven_movement(unit, false)
+		end
 	end
 
 	blackboard.target_unit_status_extension = nil

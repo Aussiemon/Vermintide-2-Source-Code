@@ -114,7 +114,7 @@ CutsceneSystem.flow_cb_activate_cutscene_camera = function (self, camera_unit, t
 	self._should_hide_loading_icon = true
 
 	if PLATFORM == "ps4" then
-		Managers.account:set_realtime_multiplay_state("cinematic", true)
+		Managers.state.event:trigger("realtime_multiplay", false)
 	end
 
 	if PLATFORM ~= "win32" then
@@ -137,7 +137,7 @@ CutsceneSystem.flow_cb_deactivate_cutscene_cameras = function (self)
 	end
 
 	if PLATFORM == "ps4" then
-		Managers.account:set_realtime_multiplay_state("cinematic", false)
+		Managers.state.event:trigger("realtime_multiplay", true)
 	end
 
 	if PLATFORM ~= "win32" then

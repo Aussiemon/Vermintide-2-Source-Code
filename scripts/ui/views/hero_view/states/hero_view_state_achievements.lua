@@ -638,13 +638,71 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 		content.icon = icon
 
 		if reward then
-			local item_key = reward
-			local item_template = ItemMasterList[item_key]
-			local fake_item = {
-				data = table.clone(item_template)
-			}
-			content.reward_item = fake_item
-			content.reward_icon = item_template.inventory_icon
+			if type(reward) == "string" then
+				local item_key = reward
+				local item_template = ItemMasterList[item_key]
+				local fake_item = {
+					data = table.clone(item_template)
+				}
+				content.reward_item = fake_item
+				content.reward_icon = item_template.inventory_icon
+			elseif type(reward) == "table" then
+				if reward.reward_type == "item" then
+					local item_key = reward.item_name
+					local item_template = ItemMasterList[item_key]
+					local custom_data = reward.custom_data
+					local fake_item = {
+						data = table.clone(item_template)
+					}
+
+					if custom_data then
+						if custom_data.power_level then
+							fake_item.power_level = tonumber(custom_data.power_level)
+						end
+
+						if custom_data.rarity then
+							fake_item.rarity = custom_data.rarity
+						end
+					end
+
+					content.reward_item = fake_item
+					content.reward_icon = item_template.inventory_icon
+				elseif reward.reward_type == "keep_decoration" then
+				elseif reward.reward_type == "weapon_skin" then
+					local weapon_skin_name = reward.weapon_skin_name
+					local weapon_skin_data = WeaponSkins.skins[weapon_skin_name]
+					local fake_item = {
+						data = {
+							item_type = "weapon_skin",
+							slot_type = "weapon_skin",
+							information_text = "information_weapon_skin",
+							matching_item_key = weapon_skin_data.item_type,
+							can_wield = {
+								"bw_scholar",
+								"bw_adept",
+								"bw_unchained",
+								"we_shade",
+								"we_maidenguard",
+								"we_waywatcher",
+								"dr_ironbreaker",
+								"dr_slayer",
+								"dr_ranger",
+								"wh_zealot",
+								"wh_bountyhunter",
+								"wh_captain",
+								"es_huntsman",
+								"es_knight",
+								"es_mercenary"
+							},
+							rarity = weapon_skin_data.rarity or "plentiful"
+						},
+						skin = weapon_skin_name
+					}
+					local icon = weapon_skin_data.inventory_icon
+					content.reward_item = fake_item
+					content.reward_icon = icon
+				end
+			end
 		end
 
 		local expand_height = 10
@@ -1167,25 +1225,67 @@ HeroViewStateAchievements._setup_reward_presentation = function (self, reward_po
 		local presentation_data = {}
 
 		for _, data in ipairs(rewards) do
-			local backend_id = data[1]
-			local amount = data[2]
-			local entry = {}
-			local reward_item = item_interface:get_item_from_id(backend_id)
-			local item_data = item_interface:get_item_masterlist_data(backend_id)
-			local item_type = item_data.item_type
-			local description = {}
-			local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
-			description[1] = Localize(display_name)
-			description[2] = Localize("achv_menu_reward_claimed_title")
-			entry[#entry + 1] = {
-				widget_type = "description",
-				value = description
-			}
-			entry[#entry + 1] = {
-				widget_type = "item",
-				value = reward_item
-			}
-			presentation_data[#presentation_data + 1] = entry
+			local reward_type = data.type
+
+			if reward_type == "item" then
+				local backend_id = data.backend_id
+				local amount = data.amount
+				local entry = {}
+				local reward_item = item_interface:get_item_from_id(backend_id)
+				local item_data = item_interface:get_item_masterlist_data(backend_id)
+				local item_type = item_data.item_type
+				local description = {}
+				local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
+				description[1] = Localize(display_name)
+				description[2] = Localize("achv_menu_reward_claimed_title")
+				entry[#entry + 1] = {
+					widget_type = "description",
+					value = description
+				}
+				entry[#entry + 1] = {
+					widget_type = "item",
+					value = reward_item
+				}
+				presentation_data[#presentation_data + 1] = entry
+			elseif reward_type == "keep_decoration" then
+				local keep_decoration_name = data.keep_decoration_name
+				local painting_data = Paintings[keep_decoration_name]
+				local display_name = painting_data.display_name
+				local description = painting_data.description
+				local icon = painting_data.icon
+				local description = {}
+				local entry = {}
+				description[1] = Localize(display_name)
+				description[2] = Localize("achv_menu_reward_claimed_title")
+				entry[#entry + 1] = {
+					widget_type = "description",
+					value = description
+				}
+				entry[#entry + 1] = {
+					widget_type = "icon",
+					value = icon
+				}
+				presentation_data[#presentation_data + 1] = entry
+			elseif reward_type == "weapon_skin" then
+				local weapon_skin_name = data.weapon_skin_name
+				local weapon_skin_data = WeaponSkins.skins[weapon_skin_name]
+				local display_name = weapon_skin_data.display_name
+				local description = weapon_skin_data.description
+				local icon = weapon_skin_data.inventory_icon
+				local description = {}
+				local entry = {}
+				description[1] = Localize(display_name)
+				description[2] = Localize("achv_menu_reward_claimed_title")
+				entry[#entry + 1] = {
+					widget_type = "description",
+					value = description
+				}
+				entry[#entry + 1] = {
+					widget_type = "icon",
+					value = icon
+				}
+				presentation_data[#presentation_data + 1] = entry
+			end
 		end
 
 		self:_present_reward(presentation_data)
@@ -1361,8 +1461,7 @@ end
 
 HeroViewStateAchievements._has_active_level_vote = function (self)
 	local voting_manager = self.voting_manager
-	local active_vote_name = voting_manager:vote_in_progress()
-	local is_mission_vote = active_vote_name == "game_settings_vote" or active_vote_name == "game_settings_deed_vote"
+	local is_mission_vote = voting_manager:vote_in_progress() and voting_manager:is_mission_vote()
 
 	return is_mission_vote and not voting_manager:has_voted(Network.peer_id())
 end

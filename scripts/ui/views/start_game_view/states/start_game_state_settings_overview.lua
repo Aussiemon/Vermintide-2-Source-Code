@@ -27,6 +27,18 @@ require("scripts/ui/views/start_game_view/windows/start_game_window_mutator_summ
 require("scripts/ui/views/start_game_view/windows/start_game_window_additional_settings_console")
 require("scripts/ui/views/start_game_view/windows/start_game_window_lobby_browser_console")
 
+for _, dlc in pairs(DLCSettings) do
+	local start_game_windows = dlc.start_game_windows
+
+	if start_game_windows then
+		for i = 1, #start_game_windows, 1 do
+			local start_game_window = start_game_windows[i]
+
+			require(start_game_window)
+		end
+	end
+end
+
 local definitions = local_require("scripts/ui/views/start_game_view/states/definitions/start_game_state_settings_overview_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
@@ -214,11 +226,19 @@ StartGameStateSettingsOverview._start_layout_name = function (self)
 	local start_layout_name = PlayerData.mission_selection.start_layout
 	local layout_setting = self:_get_layout_setting_by_name(start_layout_name)
 
-	if layout_setting and layout_setting.game_mode_option then
+	if layout_setting and self:is_valid_game_mode_option(layout_setting) then
 		return start_layout_name
 	else
 		return self:_get_first_game_mode_option_layout()
 	end
+end
+
+StartGameStateSettingsOverview.is_valid_game_mode_option = function (self, layout_setting)
+	local is_game_mode_option = layout_setting.game_mode_option
+	local can_add_function_name = layout_setting.can_add_function_name
+	local is_valid = can_add_function_name == nil or self[can_add_function_name](self)
+
+	return is_game_mode_option and is_valid
 end
 
 StartGameStateSettingsOverview._initial_windows_setups = function (self, params)
@@ -476,7 +496,7 @@ StartGameStateSettingsOverview._get_first_game_mode_option_layout = function (se
 	for i = 1, #window_layouts, 1 do
 		local layout_setting = window_layouts[i]
 
-		if layout_setting.game_mode_option then
+		if self:is_valid_game_mode_option(layout_setting) then
 			return layout_setting.name, layout_setting
 		end
 	end
@@ -714,7 +734,7 @@ StartGameStateSettingsOverview.play = function (self, t, game_mode_type)
 		local strict_matchmaking = false
 		local deed_backend_id = nil
 
-		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, deed_backend_id)
+		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id)
 	elseif game_mode_type == "custom" then
 		local network_lobby = self._network_lobby
 		local num_members = #network_lobby:members():get_members()
@@ -727,7 +747,7 @@ StartGameStateSettingsOverview.play = function (self, t, game_mode_type)
 		local strict_matchmaking = is_alone and not is_private and not always_host and self:is_strict_matchmaking_option_enabled()
 		local deed_backend_id = nil
 
-		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, deed_backend_id)
+		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id)
 	elseif game_mode_type == "deed" then
 		local level_key, difficulty = nil
 		local is_private = true
@@ -736,7 +756,7 @@ StartGameStateSettingsOverview.play = function (self, t, game_mode_type)
 		local strict_matchmaking = false
 		local deed_backend_id = self:get_selected_heroic_deed_backend_id()
 
-		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, deed_backend_id)
+		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id)
 	elseif game_mode_type == "twitch" then
 		local level_key = self:get_selected_level_id()
 		local difficulty = self._selected_difficulty_key
@@ -746,7 +766,22 @@ StartGameStateSettingsOverview.play = function (self, t, game_mode_type)
 		local strict_matchmaking = false
 		local deed_backend_id = nil
 
-		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, deed_backend_id)
+		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id)
+	elseif game_mode_type == "event" then
+		local live_event_interface = Managers.backend:get_interface("live_events")
+		local game_mode_data = live_event_interface:get_game_mode_data()
+		local level_key = game_mode_data.level_key
+		local difficulty = self._selected_difficulty_key
+		local is_private = false
+		local quick_game = false
+		local always_host = false
+		local strict_matchmaking = false
+		local deed_backend_id = nil
+		local event_data = {
+			mutators = game_mode_data.mutators
+		}
+
+		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id, event_data)
 	else
 		ferror("Unknown game_mode_type(%s)", game_mode_type)
 	end
@@ -995,6 +1030,24 @@ end
 
 StartGameStateSettingsOverview.get_mutator_option = function (self)
 	return self._selected_mutator_key
+end
+
+StartGameStateSettingsOverview._can_add_event_game_mode_option = function (self)
+	local live_event_interface = Managers.backend:get_interface("live_events")
+	local game_mode_data = live_event_interface:get_game_mode_data()
+
+	return game_mode_data ~= nil
+end
+
+StartGameStateSettingsOverview._can_add_streaming_function = function (self)
+	if PLATFORM == "ps4" then
+		local twitch_enabled = GameSettingsDevelopment.twitch_enabled
+		local is_offline = Managers.account:offline_mode()
+
+		return twitch_enabled and not is_offline
+	else
+		return true
+	end
 end
 
 return

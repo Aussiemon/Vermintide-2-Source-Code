@@ -115,7 +115,15 @@ HordeSpawner.execute_fallback = function (self, horde_type, fallback, reason, ex
 end
 
 HordeSpawner.execute_event_horde = function (self, t, terror_event_id, composition_type, limit_spawners, silent, group_template, strictly_not_close_to_players)
-	local composition = CurrentHordeSettings.compositions[composition_type]
+	local composition = nil
+
+	if HordeCompositions[composition_type] then
+		local current_difficulty_rank = Managers.state.difficulty:get_difficulty_rank() - 1
+		composition = CurrentHordeSettings.compositions[composition_type][current_difficulty_rank]
+	elseif HordeCompositionsPacing[composition_type] then
+		composition = CurrentHordeSettings.compositions_pacing[composition_type]
+	end
+
 	local index = LoadedDice.roll_easy(composition.loaded_probs)
 	local variant = composition[index]
 	local horde_type = "event"
@@ -212,7 +220,7 @@ HordeSpawner.compose_horde_spawn_list = function (self, variant)
 end
 
 HordeSpawner.compose_blob_horde_spawn_list = function (self, composition_type)
-	local composition = CurrentHordeSettings.compositions[composition_type]
+	local composition = CurrentHordeSettings.compositions_pacing[composition_type]
 	local index = LoadedDice.roll_easy(composition.loaded_probs)
 	local variant = composition[index]
 	local i = 1
@@ -285,7 +293,7 @@ HordeSpawner.execute_ambush_horde = function (self, extra_data, fallback, overri
 
 	assert(composition_type, "Ambush Horde missing composition_type")
 
-	local composition = CurrentHordeSettings.compositions[composition_type]
+	local composition = CurrentHordeSettings.compositions_pacing[composition_type]
 	local index = LoadedDice.roll_easy(composition.loaded_probs)
 	local variant = composition[index]
 
@@ -644,7 +652,7 @@ HordeSpawner.execute_vector_horde = function (self, extra_data, fallback)
 
 	assert(composition_type, "Vector Horde missing composition_type")
 
-	local composition = CurrentHordeSettings.compositions[composition_type]
+	local composition = CurrentHordeSettings.compositions_pacing[composition_type]
 	local index = LoadedDice.roll_easy(composition.loaded_probs)
 	local variant = composition[index]
 
@@ -1005,7 +1013,7 @@ HordeSpawner.execute_vector_blob_horde = function (self, extra_data, fallback)
 
 	assert(composition_type, "Vector Blob Horde missing composition_type")
 
-	local composition = CurrentHordeSettings.compositions[composition_type]
+	local composition = CurrentHordeSettings.compositions_pacing[composition_type]
 	local spawn_list, num_to_spawn = nil
 
 	if extra_data and extra_data.spawn_list then

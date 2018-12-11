@@ -333,7 +333,7 @@ ExplosionTemplates = {
 			sound_event_name = "Play_enemy_combat_warpfire_backpack_explode",
 			damage_profile = "warpfire_thrower_explosion",
 			power_level = 500,
-			effect_name = "fx/doomwheel_explosion"
+			effect_name = "fx/chr_warp_fire_explosion_01"
 		}
 	},
 	overcharge_explosion_dwarf = {
@@ -590,9 +590,9 @@ ExplosionTemplates.cannon_ball_throw = {
 
 			if allowed_difficulty and not death_extension:has_death_started() then
 				local local_player = Managers.player:local_player()
-				local status_extension = ScriptUnit.extension(local_player.player_unit, "status_system")
+				local status_extension = ScriptUnit.has_extension(local_player.player_unit, "status_system")
 
-				if not status_extension.completed_cannonball_challenge then
+				if status_extension and not status_extension.completed_cannonball_challenge then
 					status_extension.num_cannonball_kills = (status_extension.num_cannonball_kills and status_extension.num_cannonball_kills + 1) or 1
 
 					if QuestSettings.forest_fort_kill_cannonball <= status_extension.num_cannonball_kills then

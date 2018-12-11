@@ -4,6 +4,7 @@ ActionTrueFlightBowAim = class(ActionTrueFlightBowAim)
 
 ActionTrueFlightBowAim.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	self.owner_unit = owner_unit
+	self.first_person_unit = first_person_unit
 	self.weapon_unit = weapon_unit
 	self.is_server = is_server
 	self.world = world

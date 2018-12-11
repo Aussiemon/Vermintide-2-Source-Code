@@ -43,20 +43,22 @@ BTBlockedAction.leave = function (self, unit, blackboard, t, reason, destroy)
 		blackboard.stagger = 3
 	end
 
-	LocomotionUtils.set_animation_driven_movement(unit, false, false)
-
 	if ScriptUnit.has_extension(unit, "ai_shield_system") then
 		local shield_extension = ScriptUnit.extension(unit, "ai_shield_system")
 
 		shield_extension:set_is_blocking(true)
 	end
 
-	local locomotion_extension = blackboard.locomotion_extension
+	if not destroy then
+		LocomotionUtils.set_animation_driven_movement(unit, false, false)
 
-	locomotion_extension:set_rotation_speed(10)
-	locomotion_extension:set_wanted_rotation(nil)
-	locomotion_extension:set_movement_type("snap_to_navmesh")
-	locomotion_extension:set_wanted_velocity(Vector3.zero())
+		local locomotion_extension = blackboard.locomotion_extension
+
+		locomotion_extension:set_rotation_speed(10)
+		locomotion_extension:set_wanted_rotation(nil)
+		locomotion_extension:set_movement_type("snap_to_navmesh")
+		locomotion_extension:set_wanted_velocity(Vector3.zero())
+	end
 
 	blackboard.blocked_anim = nil
 	local navigation_extension = blackboard.navigation_extension

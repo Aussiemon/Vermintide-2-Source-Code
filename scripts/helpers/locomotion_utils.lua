@@ -279,11 +279,16 @@ LocomotionUtils.constrain_on_clients = function (unit, constrain, min, max)
 	local network_manager = Managers.state.network
 
 	if network_manager:game() then
-		local realmin = Vector3(math.min(min.x, max.x), math.min(min.y, max.y), math.min(min.z, max.z))
-		local realmax = Vector3(math.max(min.x, max.x), math.max(min.y, max.y), math.max(min.z, max.z))
+		local position_array = FrameTable.alloc_table()
+
+		if constrain then
+			position_array[1] = Vector3(math.min(min.x, max.x), math.min(min.y, max.y), math.min(min.z, max.z))
+			position_array[2] = Vector3(math.max(min.x, max.x), math.max(min.y, max.y), math.max(min.z, max.z))
+		end
+
 		local go_id = Managers.state.unit_storage:go_id(unit)
 
-		network_manager.network_transmit:send_rpc_clients("rpc_constrain_ai", go_id, constrain, realmin, realmax)
+		network_manager.network_transmit:send_rpc_clients("rpc_constrain_ai", go_id, constrain, position_array)
 	end
 end
 
@@ -295,29 +300,35 @@ end
 
 LocomotionUtils.set_animation_translation_scale = function (unit, animation_translation_scale)
 	local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
+	local current_scale = locomotion_extension:get_animation_translation_scale()
 
-	locomotion_extension:set_animation_translation_scale(animation_translation_scale)
+	if not Vector3.equal(current_scale, animation_translation_scale) then
+		locomotion_extension:set_animation_translation_scale(animation_translation_scale)
 
-	local network_manager = Managers.state.network
+		local network_manager = Managers.state.network
 
-	if network_manager:game() then
-		local go_id = Managers.state.unit_storage:go_id(unit)
+		if network_manager:game() then
+			local go_id = Managers.state.unit_storage:go_id(unit)
 
-		network_manager.network_transmit:send_rpc_clients("rpc_set_animation_translation_scale", go_id, animation_translation_scale)
+			network_manager.network_transmit:send_rpc_clients("rpc_set_animation_translation_scale", go_id, animation_translation_scale)
+		end
 	end
 end
 
 LocomotionUtils.set_animation_rotation_scale = function (unit, animation_rotation_scale)
 	local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
+	local current_scale = locomotion_extension:get_animation_rotation_scale()
 
-	locomotion_extension:set_animation_rotation_scale(animation_rotation_scale)
+	if current_scale ~= animation_rotation_scale then
+		locomotion_extension:set_animation_rotation_scale(animation_rotation_scale)
 
-	local network_manager = Managers.state.network
+		local network_manager = Managers.state.network
 
-	if network_manager:game() then
-		local go_id = Managers.state.unit_storage:go_id(unit)
+		if network_manager:game() then
+			local go_id = Managers.state.unit_storage:go_id(unit)
 
-		network_manager.network_transmit:send_rpc_clients("rpc_set_animation_rotation_scale", go_id, animation_rotation_scale)
+			network_manager.network_transmit:send_rpc_clients("rpc_set_animation_rotation_scale", go_id, animation_rotation_scale)
+		end
 	end
 end
 

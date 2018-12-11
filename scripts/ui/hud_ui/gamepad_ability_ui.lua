@@ -194,7 +194,7 @@ GamePadAbilityUI._handle_gamepad_activity = function (self)
 end
 
 GamePadAbilityUI._handle_gamepad = function (self)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local gamepad_active = Managers.input:is_device_active("gamepad") or PLATFORM == "xb1"
 
 	if (not gamepad_active or UISettings.use_gamepad_hud_layout == "never") and UISettings.use_gamepad_hud_layout ~= "always" then
 		if self._retained_elements_visible then
@@ -338,6 +338,8 @@ GamePadAbilityUI._get_input_texture_data = function (self, input_action)
 
 	if platform == "win32" and gamepad_active then
 		platform = "xb1"
+	elseif platform == "xb1" and not gamepad_active then
+		platform = "win32"
 	end
 
 	local keymap_binding = input_service:get_keymapping(input_action, platform)
@@ -361,10 +363,10 @@ GamePadAbilityUI._get_input_texture_data = function (self, input_action)
 	local button_name = ""
 
 	if device_type == "keyboard" then
-		if is_button_unassigned then
-			button_name = ""
-		else
-			button_name = Keyboard.button_locale_name(key_index)
+		button_name = (is_button_unassigned and "") or Keyboard.button_locale_name(key_index) or Keyboard.button_name(key_index)
+
+		if PLATFORM == "xb1" then
+			button_name = string.upper(button_name)
 		end
 
 		return nil, button_name, prefix_text

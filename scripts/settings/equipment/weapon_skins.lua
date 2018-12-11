@@ -1268,7 +1268,7 @@ WeaponSkins.skins = {
 			rarity = "exotic",
 			hud_icon = "weapon_generic_icon_staff_3",
 			display_unit = "units/weapons/weapon_display/display_1h_weapon",
-			inventory_icon = "icon_wpn_brw_mace_01",
+			inventory_icon = "icon_wpn_brw_mace_04",
 			display_name = "bw_1h_mace_skin_04_name",
 			right_hand_unit = "units/weapons/player/wpn_brw_mace_04/wpn_brw_mace_04",
 			template = "one_handed_hammer_wizard_template_1"
@@ -7412,6 +7412,16 @@ for _, skin in pairs(WeaponSkins.skins) do
 end
 
 WeaponSkins.skins = skins
+
+for _, dlc in pairs(DLCSettings) do
+	local file_names = dlc.weapon_skins_file_names
+
+	if file_names then
+		for _, file_name in ipairs(file_names) do
+			require(file_name)
+		end
+	end
+end
 
 WeaponSkins.item_has_skin_table = function (item_master_list_key)
 	return WeaponSkins.skins[item_master_list_key] ~= nil

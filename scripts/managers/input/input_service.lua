@@ -42,12 +42,12 @@ InputService.unmap_device = function (self, input_device_type, input_device)
 end
 
 InputService.get = function (self, input_data_name, consume)
-	local keymaps, default_data_types = self:get_active_keymaps()
+	local keymaps, default_data_types = self:get_active_keymaps(nil, input_data_name)
 	local keymap_binding = keymaps[input_data_name]
-	local input_filters = self:get_active_filters()
+	local input_filters = self:get_active_filters(nil, input_data_name)
 	local filter_binding = input_filters and input_filters[input_data_name]
 
-	if keymap_binding then
+	if keymap_binding and (keymap_binding.n > 0 or not filter_binding) then
 		local mapped_devices = self.mapped_devices
 		local input_devices_data = self.input_devices_data
 		local name = self.name
@@ -101,10 +101,12 @@ InputService.get = function (self, input_data_name, consume)
 
 		return action_value
 	elseif filter_binding then
+		local most_recent_device = Managers.input:get_most_recent_device()
+		local input_device_data = self.input_devices_data[most_recent_device]
 		local function_data = filter_binding.function_data
 		local value = InputFilters[function_data.filter_type].update(function_data, self)
 
-		if self.blocked_input[input_data_name] then
+		if self.blocked_input[input_data_name] or (input_device_data and input_device_data.consumed_input[input_data_name]) then
 			if type(value) == "boolean" then
 				value = false
 			elseif type(value) == "userdata" then
@@ -112,6 +114,8 @@ InputService.get = function (self, input_data_name, consume)
 			elseif type(value) == "number" then
 				value = 0
 			end
+		elseif consume then
+			input_device_data.consumed_input[input_data_name] = true
 		end
 
 		return value
@@ -126,11 +130,23 @@ InputService.set_controller_cursor_position = function (self, x, y, z)
 	self.controller_select:store(x, y, z)
 end
 
-InputService.get_active_keymaps = function (self, optional_platform)
+InputService.get_active_keymaps = function (self, optional_platform, optional_input_name)
 	local platform = optional_platform or self.platform
 
 	if not optional_platform and platform == "win32" and self.input_manager:is_device_active("gamepad") then
 		platform = "xb1"
+	end
+
+	if not optional_platform and platform == "xb1" and (self.input_manager:is_device_active("keyboard") or self.input_manager:is_device_active("mouse")) then
+		local keymaps_name = self.keymaps_name
+		local keymaps_data = self.input_manager:keymaps_data(keymaps_name)
+		local data = keymaps_data.win32
+
+		if not data.keymaps[optional_input_name] then
+			data = keymaps_data[platform]
+		end
+
+		return data.keymaps, data.default_data_types
 	end
 
 	local keymaps_name = self.keymaps_name
@@ -140,7 +156,7 @@ InputService.get_active_keymaps = function (self, optional_platform)
 	return data.keymaps, data.default_data_types
 end
 
-InputService.get_active_filters = function (self, optional_platform)
+InputService.get_active_filters = function (self, optional_platform, optional_input_name)
 	local filters_name = self.filters_name
 
 	if not filters_name then
@@ -153,6 +169,17 @@ InputService.get_active_filters = function (self, optional_platform)
 		platform = "xb1"
 	end
 
+	if not optional_platform and platform == "xb1" and (self.input_manager:is_device_active("keyboard") or self.input_manager:is_device_active("mouse")) then
+		local filters_data = self.input_manager:filters_data(filters_name)
+		local filters = filters_data.win32
+
+		if not filters[optional_input_name] then
+			return filters_data[platform]
+		else
+			return filters
+		end
+	end
+
 	local filters_data = self.input_manager:filters_data(filters_name)
 	local filters = filters_data[platform]
 
@@ -160,7 +187,7 @@ InputService.get_active_filters = function (self, optional_platform)
 end
 
 InputService.get_keymapping = function (self, keymap_name, optional_platform)
-	local keymaps = self:get_active_keymaps(optional_platform)
+	local keymaps = self:get_active_keymaps(optional_platform, keymap_name)
 
 	return keymaps[keymap_name]
 end
@@ -242,8 +269,8 @@ InputService.generate_filters_setting = function (self)
 end
 
 InputService.has = function (self, keymap_name)
-	local keymaps = self:get_active_keymaps()
-	local input_filters = self:get_active_filters()
+	local keymaps = self:get_active_keymaps(nil, keymap_name)
+	local input_filters = self:get_active_filters(nil, keymap_name)
 
 	return keymaps[keymap_name] or (input_filters and input_filters[keymap_name] and true) or false
 end

@@ -37,9 +37,21 @@ GameStateMachine.post_update = function (self, dt, t)
 	end
 end
 
+GameStateMachine.pre_render = function (self)
+	if self._state and self._state.pre_render then
+		self._state:pre_render()
+	end
+end
+
 GameStateMachine.render = function (self)
 	if self._state and self._state.render then
 		self._state:render()
+	end
+end
+
+GameStateMachine.post_render = function (self)
+	if self._state and self._state.post_render then
+		self._state:post_render()
 	end
 end
 

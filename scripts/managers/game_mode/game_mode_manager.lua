@@ -59,7 +59,8 @@ GameModeManager.init = function (self, world, lobby_host, lobby_client, level_tr
 	local debug_activated_mutators = nil
 	local mutators = debug_activated_mutators or self._game_mode:mutators()
 	local has_local_client = not DEDICATED_SERVER
-	self._mutator_handler = MutatorHandler:new(mutators, self.is_server, has_local_client)
+	self._mutator_handler = MutatorHandler:new(mutators, self.is_server, has_local_client, network_event_delegate, network_transmit)
+	self._looping_event_timers = {}
 end
 
 GameModeManager.destroy = function (self)
@@ -102,15 +103,19 @@ GameModeManager.is_game_mode_ended = function (self)
 end
 
 GameModeManager.setup_done = function (self)
-	self._mutator_handler:setup_done()
+	self._mutator_handler:activate_mutators()
 end
 
 GameModeManager.ai_killed = function (self, killed_unit, killer_unit)
 	self._mutator_handler:ai_killed(killed_unit, killer_unit)
 end
 
-GameModeManager.has_mutator = function (self, name)
-	return self._mutator_handler:has_mutator(name)
+GameModeManager.has_activated_mutator = function (self, name)
+	return self._mutator_handler:has_activated_mutator(name)
+end
+
+GameModeManager.activated_mutators = function (self)
+	return self._mutator_handler:activated_mutators()
 end
 
 GameModeManager._set_flow_object_set_enabled = function (self, set, enable, set_name)
@@ -402,8 +407,32 @@ GameModeManager.update_timebased_level_start = function (self, dt)
 	end
 end
 
+GameModeManager.register_looping_event_timer = function (self, timer_name, delay, event_name)
+	local t = os.clock()
+	self._looping_event_timers[timer_name] = {
+		delay = delay,
+		next_trigger_time = t + delay,
+		event_name = event_name
+	}
+end
+
+GameModeManager.unregister_looping_event_timer = function (self, timer_name)
+	self._looping_event_timers[timer_name] = nil
+end
+
 GameModeManager.update = function (self, dt, t)
 	self._mutator_handler:update(dt, t)
+
+	local t = os.clock()
+	local level = LevelHelper:current_level(self._world)
+
+	for name, timer in pairs(self._looping_event_timers) do
+		if timer.next_trigger_time < t then
+			Level.trigger_event(level, timer.event_name)
+
+			timer.next_trigger_time = timer.next_trigger_time + timer.delay
+		end
+	end
 end
 
 GameModeManager.server_update = function (self, dt, t)
@@ -535,6 +564,8 @@ GameModeManager.game_mode_key = function (self)
 end
 
 GameModeManager.hot_join_sync = function (self, sender)
+	self._mutator_handler:hot_join_sync(sender)
+
 	if self._round_started then
 		self._network_transmit:send_rpc("rpc_gm_event_round_started", sender)
 	end

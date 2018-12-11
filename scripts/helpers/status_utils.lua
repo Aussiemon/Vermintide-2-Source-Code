@@ -31,16 +31,22 @@ StatusUtils = {
 	set_revived_network = function (revived_unit, revived, reviver_unit)
 		fassert(Managers.player.is_server or LEVEL_EDITOR_TEST, "Only the server is allowed to decide who is revived and who isn't since it owns damage and interactions.")
 
-		local status_extension = ScriptUnit.extension(revived_unit, "status_system")
+		if not revived_unit then
+			return
+		end
 
-		status_extension:set_revived(revived, reviver_unit)
+		local status_extension = ScriptUnit.has_extension(revived_unit, "status_system")
 
-		if not LEVEL_EDITOR_TEST then
-			local network_manager = Managers.state.network
-			local go_id = network_manager:unit_game_object_id(revived_unit)
-			local reviver_go_id = (reviver_unit and network_manager:unit_game_object_id(reviver_unit)) or NetworkConstants.invalid_game_object_id
+		if status_extension then
+			status_extension:set_revived(revived, reviver_unit)
 
-			network_manager.network_transmit:send_rpc_clients("rpc_status_change_bool", NetworkLookup.statuses.revived, revived, go_id, reviver_go_id)
+			if not LEVEL_EDITOR_TEST then
+				local network_manager = Managers.state.network
+				local go_id = network_manager:unit_game_object_id(revived_unit)
+				local reviver_go_id = (reviver_unit and network_manager:unit_game_object_id(reviver_unit)) or NetworkConstants.invalid_game_object_id
+
+				network_manager.network_transmit:send_rpc_clients("rpc_status_change_bool", NetworkLookup.statuses.revived, revived, go_id, reviver_go_id)
+			end
 		end
 	end,
 	set_respawned_network = function (respawned_unit, respawned, helper_unit)

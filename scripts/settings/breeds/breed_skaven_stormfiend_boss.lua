@@ -81,7 +81,7 @@ local breed_data = {
 		target_disabled_mul = 0.15
 	},
 	max_health = {
-		700,
+		500,
 		500,
 		750,
 		1000,

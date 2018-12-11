@@ -54,6 +54,7 @@ local default_user_settings = {
 	tobii_clean_ui = true,
 	gamepad_left_handed = false,
 	social_wheel_delay = 0.12,
+	show_numerical_latency = false,
 	tobii_fire_at_gaze = true,
 	use_alien_fx = false,
 	process_priority = "unchanged",

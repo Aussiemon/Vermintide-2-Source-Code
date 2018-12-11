@@ -86,20 +86,24 @@ local action_data = {
 	skulk_approach = {
 		move_animation = "move_fwd",
 		close_distance = 10,
-		far_away_from_target_sq = 400,
+		part_hp_lost_to_teleport = 0.1,
 		skulk_foreshadowing_sound_stop = "chaos_corruptor_spawning_stop",
 		max_wave_distance = 8,
 		third_wave_max_distance = 8,
 		vanish_timer = 4,
 		vanish_countdown = 4,
-		min_wave_distance = 5,
+		far_away_from_target_sq = 400,
 		third_wave_min_distance = 3,
-		part_hp_lost_to_teleport = 0.1,
 		skulk_foreshadowing_sound = "chaos_corruptor_spawning",
+		min_wave_distance = 5,
 		preferred_distance = 20,
-		skulk_time = {
+		initial_skulk_time = {
 			10,
 			12
+		},
+		skulk_time = {
+			5,
+			8
 		},
 		teleport_cooldown = {
 			15,

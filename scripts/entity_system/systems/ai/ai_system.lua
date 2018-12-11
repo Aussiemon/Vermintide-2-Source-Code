@@ -737,6 +737,15 @@ AISystem.update_brains = function (self, t, dt)
 	for unit, extension in pairs(self.ai_units_alive) do
 		local bt = extension._brain._bt
 		local blackboard = extension._blackboard
+
+		if blackboard.activated ~= nil then
+			local event = (blackboard.activated and "to_combat") or "to_passive"
+
+			Managers.state.network:anim_event(unit, event)
+
+			blackboard.activated = nil
+		end
+
 		local result = bt:root():evaluate(unit, blackboard, t, dt)
 		local breed = blackboard.breed
 
@@ -1201,6 +1210,7 @@ AISystem.set_allowed_layer = function (self, layer_name, allowed)
 		local entity_manager = Managers.state.entity
 		local nav_world = self._nav_world
 		local layer_id = LAYER_ID_MAPPING[layer_name]
+		local conflict_director = Managers.state.conflict
 		NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] = (allowed and 1) or 0
 		NAV_TAG_VOLUME_LAYER_COST_BOTS[layer_name] = (allowed and 1) or 0
 		local ai_extensions = entity_manager:get_entities("AINavigationExtension")
@@ -1215,7 +1225,13 @@ AISystem.set_allowed_layer = function (self, layer_name, allowed)
 					local unit_position = POSITION_LOOKUP[unit]
 
 					if NavTagVolumeUtils.inside_nav_tag_layer(nav_world, unit_position, 0.5, 0.5, layer_name) then
-						AiUtils.kill_unit(unit, nil, nil, "inside_forbidden_tag_volume", Vector3(0, 0, 0))
+						if ScriptUnit.has_extension(unit, "health_system") then
+							AiUtils.kill_unit(unit, nil, nil, "inside_forbidden_tag_volume", Vector3(0, 0, 0))
+						else
+							local blackboard = BLACKBOARDS[unit]
+
+							conflict_director:destroy_unit(unit, blackboard, "inside_forbidden_tag_volume")
+						end
 					else
 						local destination_position = extension:destination()
 
@@ -1319,9 +1335,10 @@ AISystem.hot_join_sync = function (self, sender)
 
 	for i = NavTagVolumeStartLayer, size, 1 do
 		local layer_name = LAYER_ID_MAPPING[i]
-		local allowed = NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] > 0
 
-		self.network_transmit:send_rpc("rpc_set_allowed_nav_layer", sender, i, allowed)
+		if NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] <= 0 then
+			self.network_transmit:send_rpc("rpc_set_allowed_nav_layer", sender, i, false)
+		end
 	end
 
 	for unit, func in pairs(self._hot_join_sync_units) do

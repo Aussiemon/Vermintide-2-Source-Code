@@ -9,9 +9,9 @@ PlayerCharacterStateInteracting.on_enter = function (self, unit, input, dt, cont
 	self.swap_to_3p = params.swap_to_3p
 	local locomotion_extension = self.locomotion_extension
 
-	self.locomotion_extension:set_wanted_velocity(Vector3.zero())
+	locomotion_extension:set_wanted_velocity(Vector3.zero())
 
-	if not self.locomotion_extension:is_on_ground() then
+	if not locomotion_extension:is_on_ground() then
 		local status_extension = self.status_extension
 
 		status_extension:set_falling_height()

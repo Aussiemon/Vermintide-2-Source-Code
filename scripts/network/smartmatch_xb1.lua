@@ -27,11 +27,13 @@ local HOPPER_PARAMS_LUT = {
 		"powerlevel",
 		"strict_matchmaking",
 		"profiles",
-		"network_hash"
+		"network_hash",
+		"matchmaking_types"
 	}
 }
 local HOPPER_PARAM_TYPE_LUT = {
 	powerlevel = "number",
+	matchmaking_types = "collection",
 	network_hash = "string",
 	strict_matchmaking = "number",
 	profiles = "collection",

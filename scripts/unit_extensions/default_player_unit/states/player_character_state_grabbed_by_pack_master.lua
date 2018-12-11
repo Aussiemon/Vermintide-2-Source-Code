@@ -84,6 +84,20 @@ PlayerCharacterStateGrabbedByPackMaster.on_exit = function (self, unit, input, d
 		local wwise_world = Managers.world:wwise_world(self.world)
 		slot11, slot12 = WwiseWorld.trigger_event(wwise_world, "stop_strangled_state", first_person_extension:get_first_person_unit())
 	end
+
+	if status_extension:is_blocking() then
+		if not LEVEL_EDITOR_TEST and Managers.state.network:game() then
+			local game_object_id = Managers.state.unit_storage:go_id(unit)
+
+			if self.is_server then
+				Managers.state.network.network_transmit:send_rpc_clients("rpc_set_blocking", game_object_id, false)
+			else
+				Managers.state.network.network_transmit:send_rpc_server("rpc_set_blocking", game_object_id, false)
+			end
+		end
+
+		status_extension:set_blocking(false)
+	end
 end
 
 function fix_mover(parent, unit)
@@ -162,6 +176,17 @@ PlayerCharacterStateGrabbedByPackMaster.states = {
 
 				CharacterStateHelper.play_animation_event(unit, "packmaster_release_ko")
 			else
+				if not LEVEL_EDITOR_TEST and Managers.state.network:game() then
+					local game_object_id = Managers.state.unit_storage:go_id(unit)
+
+					if parent.is_server then
+						Managers.state.network.network_transmit:send_rpc_clients("rpc_set_blocking", game_object_id, true)
+					else
+						Managers.state.network.network_transmit:send_rpc_server("rpc_set_blocking", game_object_id, true)
+					end
+				end
+
+				status_extension:set_blocking(true)
 				CharacterStateHelper.play_animation_event(unit, "packmaster_release")
 			end
 
@@ -198,6 +223,17 @@ PlayerCharacterStateGrabbedByPackMaster.states = {
 
 				CharacterStateHelper.play_animation_event(unit, "packmaster_hang_release_ko")
 			else
+				if not LEVEL_EDITOR_TEST and Managers.state.network:game() then
+					local game_object_id = Managers.state.unit_storage:go_id(unit)
+
+					if parent.is_server then
+						Managers.state.network.network_transmit:send_rpc_clients("rpc_set_blocking", game_object_id, true)
+					else
+						Managers.state.network.network_transmit:send_rpc_server("rpc_set_blocking", game_object_id, true)
+					end
+				end
+
+				status_extension:set_blocking(true)
 				CharacterStateHelper.play_animation_event(unit, "packmaster_hang_release")
 			end
 

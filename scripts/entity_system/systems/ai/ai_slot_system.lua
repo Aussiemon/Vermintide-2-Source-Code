@@ -8,7 +8,6 @@ local extensions = {
 	"AIAggroableSlotExtension"
 }
 AISlotSystem = class(AISlotSystem, ExtensionSystemBase)
-local global_ai_target_units = AI_TARGET_UNITS
 
 AISlotSystem.init = function (self, context, system_name)
 	local entity_manager = context.entity_manager
@@ -566,6 +565,10 @@ end
 
 local function update_target(target_unit, ai_unit, ai_blackboard, unit_extension_data, t)
 	local ai_unit_extension = unit_extension_data[ai_unit]
+
+	if ai_unit_extension.slot and ai_unit_extension.slot.target_unit ~= target_unit then
+		detach_ai_unit_from_slot(ai_unit, unit_extension_data)
+	end
 
 	if not Unit.alive(target_unit) then
 		ai_unit_extension.target = nil
@@ -1702,11 +1705,6 @@ AISlotSystem.physics_async_update = function (self, context, t)
 
 		self:update_ai_unit_slot(ai_unit, target_units, unit_extension_data, nav_world, t)
 	end
-
-	if script_data.ai_debug_slots and self.is_server then
-		debug_draw_slots(unit_extension_data, nav_world, t)
-		debug_print_slots_count(target_units, unit_extension_data)
-	end
 end
 
 AISlotSystem.update_ai_unit_slot = function (self, ai_unit, target_units, unit_extension_data, nav_world, t)
@@ -2079,16 +2077,17 @@ AISlotSystem.unfreeze = function (self, unit)
 	self.update_slots_ai_units[#self.update_slots_ai_units + 1] = unit
 end
 
-function debug_draw_slots(unit_extension_data, nav_world, t)
+function debug_draw_slots(target_units, unit_extension_data, nav_world, t)
 	local drawer = Managers.state.debug:drawer({
 		mode = "immediate",
 		name = "AISlotSystem_immediate"
 	})
-	local targets = global_ai_target_units
 	local z = Vector3.up() * 0.1
 
-	for i_target, target_unit in pairs(targets) do
+	for i = 1, #target_units, 1 do
 		repeat
+			local target_unit = target_units[i]
+
 			if not unit_alive(target_unit) then
 				break
 			end
@@ -2116,9 +2115,9 @@ function debug_draw_slots(unit_extension_data, nav_world, t)
 					drawer:circle(target_position + z, 0.45 * percent, Vector3.up(), target_color)
 				end
 
-				for i = 1, target_slots_n, 1 do
+				for j = 1, target_slots_n, 1 do
 					repeat
-						local slot = target_slots[i]
+						local slot = target_slots[j]
 						local anchor_slot = get_anchor_slot(slot_type, target_unit, unit_extension_data)
 						local is_anchor_slot = slot == anchor_slot
 						local ai_unit = slot.ai_unit
@@ -2162,7 +2161,7 @@ function debug_draw_slots(unit_extension_data, nav_world, t)
 							local text_size = 0.4
 							local color_table = (slot.disabled and Colors.get_table("gray")) or Colors.get_table(slot.debug_color_name)
 							local color_vector = Vector3(color_table[2], color_table[3], color_table[4])
-							local category = "slot_index_" .. slot_type .. "_" .. slot.index .. "_" .. i_target
+							local category = "slot_index_" .. slot_type .. "_" .. slot.index .. "_" .. i
 
 							Managers.state.debug_text:clear_world_text(category)
 							Managers.state.debug_text:output_world_text(slot.index, text_size, slot_absolute_position + z, nil, category, color_vector)
@@ -2182,8 +2181,8 @@ function debug_draw_slots(unit_extension_data, nav_world, t)
 								local queue = slot.queue
 								local queue_n = #queue
 
-								for i = 1, queue_n, 1 do
-									local ai_unit_waiting = queue[i]
+								for k = 1, queue_n, 1 do
+									local ai_unit_waiting = queue[k]
 									local ai_unit_position = POSITION_LOOKUP[ai_unit_waiting]
 
 									drawer:circle(ai_unit_position + z, 0.35, Vector3.up(), color)

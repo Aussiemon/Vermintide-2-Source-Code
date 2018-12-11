@@ -14,7 +14,6 @@ BTPackMasterEscortRatOgreAction.enter = function (self, unit, blackboard, t)
 
 	local network_manager = Managers.state.network
 
-	network_manager:anim_event(unit, "to_combat")
 	network_manager:anim_event(unit, "combat_walk")
 
 	local navigation_extension = blackboard.navigation_extension
@@ -48,7 +47,6 @@ BTPackMasterEscortRatOgreAction.run = function (self, unit, blackboard, t, dt)
 			blackboard.escorting_wait_for_rat_ogre = false
 			local network_manager = Managers.state.network
 
-			network_manager:anim_event(unit, "to_combat")
 			network_manager:anim_event(unit, "combat_walk")
 		end
 	end
@@ -86,7 +84,6 @@ BTPackMasterEscortRatOgreAction.run = function (self, unit, blackboard, t, dt)
 		blackboard.escorting_wait_for_rat_ogre = true
 		local network_manager = Managers.state.network
 
-		network_manager:anim_event(unit, "to_passive")
 		network_manager:anim_event(unit, "idle")
 		blackboard.navigation_extension:stop()
 	end

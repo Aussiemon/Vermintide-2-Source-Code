@@ -42,16 +42,7 @@ BTClanRatFollowAction.enter = function (self, unit, blackboard, t)
 
 	ai_slot_system:do_slot_search(unit, true)
 
-	local network_manager = Managers.state.network
-
-	network_manager:anim_event(unit, "to_combat")
-
 	local target_unit = blackboard.target_unit
-	local unit_id = network_manager:unit_game_object_id(unit)
-	local target_unit_id, is_level_unit = network_manager:game_object_or_level_id(target_unit)
-
-	network_manager.network_transmit:send_rpc_all("rpc_enemy_has_target", unit_id, target_unit_id, is_level_unit)
-
 	local locomotion_extension = blackboard.locomotion_extension
 	local rotation = LocomotionUtils.rotation_towards_unit_flat(unit, target_unit)
 
@@ -76,6 +67,7 @@ BTClanRatFollowAction.enter = function (self, unit, blackboard, t)
 
 		local dir = navigation_extension:desired_velocity()
 		local walk_anim, walk_dir = self:_calculate_walk_animation(Quaternion.right(rotation), Quaternion.forward(rotation), dir, position)
+		local network_manager = Managers.state.network
 
 		network_manager:anim_event(unit, walk_anim)
 

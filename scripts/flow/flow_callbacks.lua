@@ -156,8 +156,6 @@ function flow_callback_switchcase_range(params)
 	local outStr = "out"
 
 	if params.case ~= "" then
-		print(params.case)
-
 		for k, v in pairs(params) do
 			if k ~= "case" then
 				local number = {}
@@ -220,6 +218,20 @@ function flow_callback_randomize_sequential_numbers(params)
 	end
 
 	return ret
+end
+
+function flow_callback_randomize_strings(params)
+	local strings = {}
+	local num_strings = #params
+
+	for _, string in pairs(params) do
+		strings[#strings + 1] = string
+	end
+
+	local random_string = strings[math.random(1, #strings)]
+	flow_return_table.out_string = random_string
+
+	return flow_return_table
 end
 
 function flow_callback_select_output_by_number(params)
@@ -292,6 +304,26 @@ end
 
 function flow_callback_respawn_unit_spawned(params)
 	Managers.state.spawn.respawn_handler:respawn_unit_spawned(params.unit)
+end
+
+function flow_callback_respawn_enabled(params)
+	if not Managers.player.is_server then
+		return
+	end
+
+	local enabled = params.enabled
+
+	Managers.state.spawn:set_respawning_enabled(enabled)
+end
+
+function flow_callback_force_respawn_dead_players(params)
+	if not Managers.player.is_server then
+		return
+	end
+
+	local enabled = params.enabled
+
+	Managers.state.spawn:force_respawn_dead_players()
 end
 
 function flow_callback_activate_triggered_pickup_spawners(params)
@@ -415,6 +447,21 @@ function flow_register_unit_extensions(params)
 	}
 
 	Managers.state.unit_spawner:create_unit_extensions(world, unit, unit_template, extension_init_data)
+end
+
+function flow_add_unit_extension(params)
+	local unit = params.unit
+	local extension = params.extension
+
+	fassert(extension, "Missing extension")
+
+	local i = 0
+
+	while Unit.has_data(unit, "extensions", i) do
+		i = i + 1
+	end
+
+	Unit.set_data(unit, "extensions", i, extension)
 end
 
 function flow_callback_debug_print_unit_actor(params)
@@ -1172,6 +1219,29 @@ function flow_callback_local_player_profile_switch(params)
 		dwarf_ranger = profile_name == "dwarf_ranger",
 		wood_elf = profile_name == "wood_elf",
 		empire_soldier = profile_name == "empire_soldier"
+	}
+
+	return returns
+end
+
+function flow_callback_local_player_profile_check(params)
+	local player = Managers.player:local_player()
+	local profile_index = player:profile_index()
+	local profile = SPProfiles[profile_index]
+	local profile_name = profile.display_name
+	local returns = {
+		player_profile = profile_name
+	}
+
+	return returns
+end
+
+function flow_callback_compare_string(params)
+	local a = params.a
+	local b = params.b
+	local returns = {
+		equals = a == b,
+		not_equals = a ~= b
 	}
 
 	return returns
@@ -2037,6 +2107,14 @@ function flow_callback_trigger_cutscene_subtitles(params)
 	local hangtime = params.end_delay
 
 	DialogueSystem:trigger_cutscene_subtitles(event_name, speaker, hangtime)
+end
+
+function flow_callback_trigger_event_with_subtitles(params)
+	local sound_event = params.sound_event
+	local subtitle_event = params.subtitle_event
+	local speaker = params.speaker
+
+	DialogueSystem:trigger_sound_event_with_subtitles(sound_event, subtitle_event, speaker)
 end
 
 function flow_callback_override_start_dialogue_system()
@@ -3281,6 +3359,37 @@ function flow_callback_set_player_fall_height(params)
 	end
 end
 
+function flow_callbacks_players_not_in_end_zone()
+	flow_return_table.witch_hunter = false
+	flow_return_table.bright_wizard = false
+	flow_return_table.dwarf_ranger = false
+	flow_return_table.wood_elf = false
+	flow_return_table.empire_soldier = false
+	flow_return_table.empire_soldier_tutorial = false
+	local num_players_outside = 0
+	local player_manager = Managers.player
+	local players = player_manager:human_and_bot_players()
+
+	for _, player in pairs(players) do
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local status_extension = ScriptUnit.extension(player_unit, "status_system")
+			local is_in_end_zone = status_extension:is_in_end_zone()
+			local display_name = player:profile_display_name()
+
+			if not is_in_end_zone and display_name then
+				num_players_outside = num_players_outside + 1
+				flow_return_table[display_name] = true
+			end
+		end
+	end
+
+	flow_return_table.outside_count = num_players_outside
+
+	return flow_return_table
+end
+
 function flow_callback_store_parent(params)
 	local parentunit = params.parent_unit
 	local childunit = params.child_unit
@@ -3302,10 +3411,23 @@ function flow_callback_set_unit_enabled(params)
 	if params.enabled then
 		Unit.set_unit_visibility(params.unit, true)
 		Unit.enable_physics(params.unit)
+		Unit.enable_animation_state_machine(params.unit)
 	else
 		Unit.set_unit_visibility(params.unit, false)
 		Unit.disable_physics(params.unit)
+
+		if Unit.has_animation_state_machine(params.unit) then
+			Unit.disable_animation_state_machine(params.unit)
+		end
 	end
+end
+
+function flow_callback_register_looping_event_timer(params)
+	Managers.state.game_mode:register_looping_event_timer(params.unique_id, params.time, params.level_event_name)
+end
+
+function flow_callback_unregister_looping_event_timer(params)
+	Managers.state.game_mode:unregister_looping_event_timer(params.unique_id)
 end
 
 function flow_callback_set_unit_physics(params)

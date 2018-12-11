@@ -1,4 +1,4 @@
-local window_default_settings = (PLATFORM == "win32" and UISettings.game_start_windows) or UISettings.game_start_windows_console
+local window_default_settings = (PLATFORM ~= "ps4" and UISettings.game_start_windows) or UISettings.game_start_windows_console
 local window_frame = window_default_settings.frame
 local small_window_size = window_default_settings.size
 local small_window_spacing = window_default_settings.spacing
@@ -13,6 +13,14 @@ local game_option_size = {
 local deed_frame_name = "menu_frame_08"
 local deed_frame_settings = UIFrameSettings[deed_frame_name]
 local deed_frame_width = deed_frame_settings.texture_sizes.corner[1]
+local event_summary_frame_size = {
+	game_option_size[1],
+	449
+}
+local event_summary_size = {
+	event_summary_frame_size[1] - 10,
+	0
+}
 local scenegraph_definition = {
 	root = {
 		is_root = true,
@@ -109,7 +117,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			(PLATFORM == "win32" and 25) or 15,
+			(PLATFORM ~= "ps4" and 25) or 15,
 			3
 		}
 	},
@@ -147,7 +155,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		size = {
 			game_option_size[1],
-			(PLATFORM == "win32" and 72) or 0
+			(PLATFORM ~= "ps4" and 72) or 0
 		},
 		position = {
 			0,
@@ -258,6 +266,28 @@ local scenegraph_definition = {
 		position = {
 			0,
 			-249,
+			0
+		}
+	},
+	event_summary_frame = {
+		vertical_alignment = "bottom",
+		parent = "game_option_1",
+		horizontal_alignment = "center",
+		size = event_summary_frame_size,
+		position = {
+			0,
+			-465,
+			0
+		}
+	},
+	event_summary = {
+		vertical_alignment = "top",
+		parent = "event_summary_frame",
+		horizontal_alignment = "center",
+		size = event_summary_size,
+		position = {
+			0,
+			-10,
 			0
 		}
 	},
@@ -419,13 +449,22 @@ local title_text_style = {
 	}
 }
 
-local function create_settings_option(scenegraph_id, size, title_text, icon_texture, background_texture)
+local function create_settings_option(scenegraph_id, size, title_text, icon_texture, background_texture, icon_visible)
 	icon_texture = icon_texture or "map_frame_fade"
 	local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(icon_texture)
 	local icon_texture_size = (icon_texture_settings and icon_texture_settings.size) or {
 		150,
 		150
 	}
+
+	if icon_visible ~= nil then
+		if false then
+			icon_visible = false
+		end
+	else
+		icon_visible = true
+	end
+
 	background_texture = background_texture or "game_options_bg_02"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local frame_name = "menu_frame_08"
@@ -447,12 +486,18 @@ local function create_settings_option(scenegraph_id, size, title_text, icon_text
 				{
 					texture_id = "icon_frame",
 					style_id = "icon_frame",
-					pass_type = "texture"
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.icon_visible
+					end
 				},
 				{
 					texture_id = "icon",
 					style_id = "icon",
-					pass_type = "texture"
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.icon_visible
+					end
 				},
 				{
 					style_id = "option_text",
@@ -488,12 +533,13 @@ local function create_settings_option(scenegraph_id, size, title_text, icon_text
 		},
 		content = {
 			title_bg = "playername_bg_02",
-			option_text = "",
 			icon_frame = "map_frame_00",
 			title_edge = "game_option_divider",
+			option_text = "",
 			frame = frame_settings.texture,
 			title_text = title_text or "n/a",
 			icon = icon_texture,
+			icon_visible = icon_visible,
 			background = {
 				uvs = {
 					{
@@ -1201,6 +1247,10 @@ local widgets = {
 	}, "timer_fg"),
 	timer_glow = UIWidgets.create_simple_texture("timer_detail", "timer_glow")
 }
+local event_summary_passes = {
+	"event_mission",
+	"mutators"
+}
 local adventure_game_widgets = {
 	game_option_1 = create_settings_option("game_option_1", scenegraph_definition.game_option_1.size, Localize("start_game_window_difficulty"), "difficulty_option_1", "game_options_bg_02"),
 	reward_presentation = create_reward_presentation("reward_presentation", scenegraph_definition.reward_presentation.size)
@@ -1230,6 +1280,11 @@ local deed_game_widgets = {
 	item_presentation_bg = UIWidgets.create_simple_texture("game_options_bg_04", "deed_option_bg"),
 	item_presentation = UIWidgets.create_simple_item_presentation("item_presentation")
 }
+local event_game_widgets = {
+	game_option_1 = create_settings_option("game_option_1", scenegraph_definition.game_option_1.size, Localize("start_game_window_difficulty"), "difficulty_option_1", "game_options_bg_02"),
+	event_summary_frame = UIWidgets.create_background_with_frame("event_summary_frame", scenegraph_definition.event_summary_frame.size, "game_options_bg_04", "menu_frame_08", true),
+	event_summary = UIWidgets.create_simple_item_presentation("event_summary", event_summary_passes)
+}
 local generic_input_actions = {
 	default = {},
 	default_voting = {
@@ -1254,5 +1309,6 @@ return {
 	adventure_game_widgets = adventure_game_widgets,
 	custom_game_widgets = custom_game_widgets,
 	deed_game_widgets = deed_game_widgets,
+	event_game_widgets = event_game_widgets,
 	widgets = widgets
 }

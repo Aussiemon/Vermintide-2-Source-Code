@@ -94,7 +94,9 @@ BTLootRatFleeAction.leave = function (self, unit, blackboard, t, reason, destroy
 	blackboard.action = nil
 	blackboard.check_escaped_players_time = nil
 
-	self:toggle_start_move_animation_lock(unit, false, blackboard)
+	if not destroy then
+		self:toggle_start_move_animation_lock(unit, false, blackboard)
+	end
 
 	blackboard.start_anim_locked = nil
 	blackboard.anim_cb_rotation_start = nil

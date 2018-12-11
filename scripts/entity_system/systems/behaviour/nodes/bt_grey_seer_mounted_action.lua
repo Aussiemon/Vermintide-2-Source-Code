@@ -13,7 +13,6 @@ BTGreySeerMountedAction.name = "BTGreySeerMountedAction"
 BTGreySeerMountedAction.enter = function (self, unit, blackboard, t)
 	blackboard.navigation_extension:set_enabled(false)
 	blackboard.locomotion_extension:set_wanted_velocity(Vector3.zero())
-	Managers.state.network:anim_event(unit, "to_combat")
 
 	local game = Managers.state.network:game()
 	local unit_storage = Managers.state.unit_storage

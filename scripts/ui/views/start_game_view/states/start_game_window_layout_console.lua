@@ -120,11 +120,12 @@ local window_layouts = {
 	},
 	{
 		sound_event_enter = "play_gui_lobby_button_00_custom",
-		save_data_table = "custom",
-		game_mode_option = true,
 		disable_function_name = "_streaming_disable_function",
-		name = "twitch",
+		game_mode_option = true,
 		input_focus_window = "twitch_overview",
+		save_data_table = "custom",
+		name = "twitch",
+		can_add_function_name = "_can_add_streaming_function",
 		close_on_exit = true,
 		display_name = TWITCH_DISPLAY_NAME[PLATFORM],
 		windows = {
@@ -543,6 +544,29 @@ local generic_input_actions = {
 		}
 	}
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local start_game_window_layout_console = dlc.start_game_window_layout_console
+
+	if start_game_window_layout_console then
+		local new_windows = start_game_window_layout_console.windows
+
+		if new_windows then
+			for name, window in pairs(new_windows) do
+				windows[name] = window
+			end
+		end
+
+		local new_window_layouts = start_game_window_layout_console.window_layouts
+
+		if new_window_layouts then
+			for i = 1, #new_window_layouts, 1 do
+				table.insert(window_layouts, 1, new_window_layouts[i])
+			end
+		end
+	end
+end
+
 local video_resources = {}
 
 for area_name, settings in pairs(AreaSettings) do

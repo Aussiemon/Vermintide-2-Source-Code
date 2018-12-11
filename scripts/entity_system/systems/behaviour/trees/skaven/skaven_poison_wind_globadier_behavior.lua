@@ -23,11 +23,6 @@ BreedBehaviors.skaven_poison_wind_globadier = {
 		name = "in_vortex"
 	},
 	{
-		"BTInGravityWellAction",
-		condition = "in_gravity_well",
-		name = "in_gravity_well"
-	},
-	{
 		"BTSelector",
 		{
 			"BTTeleportAction",

@@ -109,7 +109,6 @@ BTThrowPoisonGlobeAction.attack_throw = function (self, unit, t, dt, blackboard,
 	if blackboard.move_state ~= "throwing" then
 		local target_unit = blackboard.target_unit
 
-		Managers.state.network:anim_event(unit, "to_combat")
 		Managers.state.network:anim_event(unit, action.attack_anim)
 
 		blackboard.anim_locked = t + action.attack_time

@@ -183,6 +183,14 @@ AttackTemplates = {
 		damage_type = "heavy_slashing_smiter",
 		stagger_angle = "smiter"
 	},
+	heavy_slashing_smiter_hs_executioner = {
+		stagger_angle = "smiter",
+		shield_break = true,
+		sound_type = "heavy",
+		damage_type = "heavy_slashing_smiter",
+		stagger_value = 2,
+		headshot_sound = "executioner_sword_critical"
+	},
 	light_slashing_fencer = {
 		sound_type = "light",
 		damage_type = "light_slashing_fencer"
@@ -359,12 +367,10 @@ AttackTemplates = {
 		stagger_angle = "stab"
 	},
 	burning_stab_fencer = {
-		dot_type = "burning_dot",
-		sound_type = "medium",
-		damage_type = "burning_stab_fencer",
 		ranged_stagger = true,
 		stagger_angle = "stab",
-		dot_template_name = "burning_1W_dot"
+		sound_type = "medium",
+		damage_type = "burning_stab_fencer"
 	},
 	burning_stab_fencer_t2 = {
 		dot_type = "burning_dot",

@@ -33,8 +33,6 @@ BTIdleAction.enter = function (self, unit, blackboard, t)
 	blackboard.spawn_to_running = nil
 
 	if action and action.alerted_anims and blackboard.confirmed_player_sighting then
-		network_manager:anim_event(unit, "to_passive")
-
 		animation = action.alerted_anims[math.random(1, #action.alerted_anims)]
 	elseif action and action.idle_animation then
 		animation = randomize(action.idle_animation)
@@ -45,8 +43,6 @@ BTIdleAction.enter = function (self, unit, blackboard, t)
 			animation = anims[index]
 			action.anim_cycle_index = index
 		end
-
-		network_manager:anim_event(unit, "to_passive")
 	elseif action and action.combat_animations then
 		local anims = action.combat_animations
 		local index = action.anim_cycle_index % #anims + 1

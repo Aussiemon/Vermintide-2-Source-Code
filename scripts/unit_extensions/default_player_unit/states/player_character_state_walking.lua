@@ -3,14 +3,12 @@ PlayerCharacterStateWalking = class(PlayerCharacterStateWalking, PlayerCharacter
 PlayerCharacterStateWalking.init = function (self, character_state_init_context)
 	PlayerCharacterState.init(self, character_state_init_context, "walking")
 
-	local context = character_state_init_context
 	self.current_movement_speed_scale = 0
 	self.latest_valid_navmesh_position = Vector3Box(math.huge, math.huge, math.huge)
 	self.last_input_direction = Vector3Box(0, 0, 0)
 end
 
 PlayerCharacterStateWalking.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
-	local unit = self.unit
 	local input_extension = self.input_extension
 	local first_person_extension = self.first_person_extension
 	local status_extension = self.status_extension
@@ -55,7 +53,9 @@ PlayerCharacterStateWalking.on_enter = function (self, unit, input, dt, context,
 end
 
 PlayerCharacterStateWalking.on_exit = function (self, unit, input, dt, context, t, next_state)
-	return
+	local first_person_extension = self.first_person_extension
+
+	CharacterStateHelper.play_animation_event_first_person(first_person_extension, "idle")
 end
 
 PlayerCharacterStateWalking._handle_ladder_collision = function (self, t, movement_settings_table)
@@ -82,9 +82,6 @@ PlayerCharacterStateWalking._handle_ladder_collision = function (self, t, moveme
 		local top_node = Unit.node(ladder_unit, "c_platform")
 
 		if Vector3.z(Unit.world_position(ladder_unit, top_node)) < POSITION_LOOKUP[unit].z then
-			local player = Managers.player:owner(unit)
-			local is_bot = player and player.bot_player
-			local threshold = (is_bot and movement_settings_table.ladder.bot_looking_down_threshold) or movement_settings_table.ladder.looking_down_threshold
 			local looking_down = not looking_up
 
 			if looking_down and facing_ladder and movement_in_ladder_direction < 0 then
@@ -118,7 +115,6 @@ end
 PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t)
 	local csm = self.csm
 	local world = self.world
-	local unit = self.unit
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local input_extension = self.input_extension
 	local status_extension = self.status_extension
@@ -256,7 +252,6 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 
 	CharacterStateHelper.check_crouch(unit, input_extension, status_extension, toggle_crouch, first_person_extension, t)
 
-	local player = Managers.player:owner(unit)
 	local move_input = CharacterStateHelper.get_movement_input(input_extension)
 
 	if not self.is_bot then
@@ -279,7 +274,7 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 	end
 
 	local is_walking = input_extension:get("walk")
-	local is_crouching = status_extension:is_crouching()
+	is_crouching = status_extension:is_crouching()
 
 	if is_walking ~= self.walking then
 		status_extension:set_slowed(is_walking)

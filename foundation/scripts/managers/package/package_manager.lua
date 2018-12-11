@@ -242,14 +242,18 @@ PackageManager.destroy = function (self)
 	table.clear(self._queued_async_packages)
 
 	for package_name, _ in pairs(self._packages) do
-		for reference_name, _ in pairs(self._references[package_name]) do
-			self:unload(package_name, reference_name)
+		for reference_name, reference_count in pairs(self._references[package_name]) do
+			for i = 1, reference_count, 1 do
+				self:unload(package_name, reference_name)
+			end
 		end
 	end
 
 	for package_name, _ in pairs(self._asynch_packages) do
-		for reference_name, _ in pairs(self._references[package_name]) do
-			self:unload(package_name, reference_name)
+		for reference_name, reference_count in pairs(self._references[package_name]) do
+			for i = 1, reference_count, 1 do
+				self:unload(package_name, reference_name)
+			end
 		end
 	end
 end
@@ -305,75 +309,6 @@ PackageManager.dump_reference_counter = function (self, reference_name)
 	end
 
 	printf("[PackageManager] Done!")
-end
-
-local PM_UNIT_TEST = false
-
-if PM_UNIT_TEST then
-	local old_debug = script_data.package_debug
-	script_data.package_debug = true
-
-	local function printf(f, ...)
-		print(string.format(f, ...))
-	end
-
-	rawset(_G, "printf", printf)
-
-	table.is_empty = function (t)
-		return next(t) == nil
-	end
-
-	table.clear = function (t)
-		for key, _ in pairs(t) do
-			t[key] = nil
-		end
-	end
-
-	debug_print("Running package manager unit test")
-
-	local pm = PackageManager
-
-	pm:init()
-	pm:load("resource_packages/strings", "unit_test_1")
-	assert(pm:has_loaded("resource_packages/strings") == true)
-	assert(pm:has_loaded("resource_packages/strings", "unit_test_1") == true)
-	pm:unload("resource_packages/strings", "unit_test_1")
-	assert(pm:has_loaded("resource_packages/strings") == false)
-	assert(pm:has_loaded("resource_packages/strings", "unit_test_1") == false)
-	pm:load("resource_packages/strings", "unit_test_1")
-	pm:load("resource_packages/strings", "unit_test_2")
-	pm:unload("resource_packages/strings", "unit_test_1")
-	assert(pm:has_loaded("resource_packages/strings") == true)
-	pm:unload("resource_packages/strings", "unit_test_2")
-	assert(pm:has_loaded("resource_packages/strings") == false)
-	pm:load("resource_packages/strings", "unit_test_1")
-	pm:load("resource_packages/strings", "unit_test_1")
-	pm:load("resource_packages/strings", "unit_test_1")
-	pm:unload("resource_packages/strings", "unit_test_1")
-	assert(pm:has_loaded("resource_packages/strings") == true)
-	assert(pm:has_loaded("resource_packages/strings", "unit_test_1") == true)
-	assert(pm:reference_count("resource_packages/strings", "unit_test_1") == 2)
-	pm:unload("resource_packages/strings", "unit_test_1")
-	assert(pm:has_loaded("resource_packages/strings") == true)
-	assert(pm:has_loaded("resource_packages/strings", "unit_test_1") == true)
-	assert(pm:reference_count("resource_packages/strings", "unit_test_1") == 1)
-	pm:unload("resource_packages/strings", "unit_test_1")
-	assert(pm:has_loaded("resource_packages/strings") == false)
-	assert(pm:has_loaded("resource_packages/strings", "unit_test_1") == false)
-	assert(pm:reference_count("resource_packages/strings", "unit_test_1") == 0)
-	pm:load("resource_packages/strings", "unit_test_1")
-	pm:destroy()
-	assert(pm:is_loading("resource_packages/strings") == false)
-	pm:load("resource_packages/strings", "unit_test_1", nil, true)
-	pm:destroy()
-	assert(pm:is_loading("resource_packages/strings") == false)
-
-	table.is_empty = nil
-	table.clear = nil
-
-	rawset(_G, "printf", nil)
-
-	script_data.package_debug = old_debug
 end
 
 return

@@ -85,8 +85,8 @@ dofile("scripts/settings/equipment/door_sticks")
 dofile("scripts/settings/equipment/packmaster_claw")
 
 for _, dlc in pairs(DLCSettings) do
-	if dlc.weapon_template_files_names then
-		for _, file_name in ipairs(dlc.weapon_template_files_names) do
+	if dlc.weapon_template_file_names then
+		for _, file_name in ipairs(dlc.weapon_template_file_names) do
 			dofile(file_name)
 		end
 	end

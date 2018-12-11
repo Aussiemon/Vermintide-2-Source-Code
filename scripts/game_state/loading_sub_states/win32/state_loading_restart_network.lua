@@ -186,7 +186,7 @@ StateLoadingRestartNetwork._init_network = function (self)
 end
 
 StateLoadingRestartNetwork.update = function (self, dt, t)
-	if self._has_invitation_error then
+	if self._has_invitation_error or Managers.account:user_detached() then
 		return
 	end
 
@@ -217,7 +217,7 @@ StateLoadingRestartNetwork.update = function (self, dt, t)
 		end
 	elseif self._server_created and self._lobby_joined then
 		return StateLoadingRunning
-	elseif Managers.account:all_lobbies_freed() and not self._creating_lobby and not Managers.account:user_detached() then
+	elseif Managers.account:all_lobbies_freed() and not self._creating_lobby then
 		self.parent:setup_lobby_host(callback(self, "cb_server_created"))
 
 		self._creating_lobby = true

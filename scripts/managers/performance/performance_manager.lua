@@ -105,7 +105,7 @@ PerformanceManager.event_ai_units_all_destroyed = function (self)
 	end
 end
 
-PerformanceManager.event_ai_unit_activated = function (self, breed_name, event_spawned)
+PerformanceManager.event_ai_unit_activated = function (self, unit, breed_name, event_spawned)
 	self._activated_per_breed[breed_name] = self._activated_per_breed[breed_name] + 1
 
 	if not self._tracked_ai_breeds[breed_name] then
@@ -119,7 +119,7 @@ PerformanceManager.event_ai_unit_activated = function (self, breed_name, event_s
 	end
 end
 
-PerformanceManager.event_ai_unit_deactivated = function (self, breed_name)
+PerformanceManager.event_ai_unit_deactivated = function (self, unit, breed_name)
 	self._activated_per_breed[breed_name] = math.clamp(self._activated_per_breed[breed_name] - 1, 0, 999999)
 end
 

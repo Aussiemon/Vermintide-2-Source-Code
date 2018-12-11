@@ -1,7 +1,5 @@
 require("scripts/managers/blood/blood_settings")
 
-local blood_manager_reload = true
-local blood_manager_max_decals = 100
 BloodManager = class(BloodManager)
 local BLOOD_BALL_RING_BUFFER_SIZE = 64
 local NUM_BLOOD_BALLS_TO_SPAWN_PER_FRAME = 15
@@ -14,7 +12,6 @@ BloodManager.init = function (self, world)
 
 	self:_create_blood_ball_buffer()
 
-	blood_manager_reload = false
 	local max_bloodballs_per_frame = 5
 	self._blood_system = EngineOptimizedExtensions.blood_init_system(self._blood_system, self._world, "blood_ball", max_bloodballs_per_frame)
 end
@@ -23,8 +20,6 @@ BloodManager.destroy = function (self)
 	self:clear_weapon_blood()
 	EngineOptimizedExtensions.blood_destroy_system(self._blood_system)
 end
-
-local debug_decals = false
 
 BloodManager.update = function (self, dt, t)
 	local blood_enabled = Application.user_setting("blood_enabled")
@@ -35,9 +30,9 @@ BloodManager.update = function (self, dt, t)
 			self:_enable_blood(true)
 		end
 
-		local t = World.time(self._world)
+		local world_t = World.time(self._world)
 
-		self:_update_weapon_blood(dt, t)
+		self:_update_weapon_blood(dt, world_t)
 		self:_update_blood_ball_buffer()
 	elseif self._blood_active then
 		self:clear_weapon_blood()
@@ -78,7 +73,7 @@ end
 BloodManager._update_blood_effects = function (self)
 	for unit, data in pairs(self._blood_effect_data) do
 		if not AiUtils.unit_alive(unit) and not data.done then
-			for idx, effect_data in ipairs(data) do
+			for _, effect_data in ipairs(data) do
 				if effect_data.effect_id then
 					World.destroy_particles(self._world, effect_data.effect_id)
 				end
@@ -106,18 +101,18 @@ BloodManager.clear_weapon_blood = function (self, attacker, weapon)
 
 			self._weapon_blood[attacker][weapon] = nil
 		elseif not weapon then
-			for weapon, amount in pairs(blood_data) do
-				self:_set_weapon_blood_intensity(attacker, weapon, 0)
+			for weapon_unit, _ in pairs(blood_data) do
+				self:_set_weapon_blood_intensity(attacker, weapon_unit, 0)
 			end
 
 			self._weapon_blood[attacker] = nil
 		end
 	else
-		for attacker, blood_data in pairs(self._weapon_blood) do
-			for weapon, amount in pairs(blood_data) do
-				self._weapon_blood[attacker][weapon] = nil
+		for attacker_unit, blood_data in pairs(self._weapon_blood) do
+			for weapon_unit, _ in pairs(blood_data) do
+				self._weapon_blood[attacker_unit][weapon_unit] = nil
 
-				self:_set_weapon_blood_intensity(attacker, weapon, 0)
+				self:_set_weapon_blood_intensity(attacker_unit, weapon_unit, 0)
 			end
 		end
 
@@ -336,7 +331,7 @@ BloodManager.add_enemy_blood = function (self, position, normal, actor)
 			local real_position = enemy_pos + Vector3.normalize(position - enemy_pos) * distance
 			local pose = Unit.local_pose(unit, 0)
 			local inv_world = Matrix4x4.inverse(pose)
-			local normal = Vector3.normalize(position - enemy_pos)
+			normal = Vector3.normalize(position - enemy_pos)
 			local tangent = Vector3.cross(normal, Vector3.up())
 			local t_position = Matrix4x4.transform(inv_world, real_position)
 			local t_normal = Vector3.normalize(Matrix4x4.transform_without_translation(inv_world, normal))
@@ -358,7 +353,7 @@ BloodManager.play_screen_space_blood = function (self, particle_name, position, 
 	end
 end
 
-BloodManager._is_melee_weapon = function (self, attacker, weapon)
+BloodManager._is_melee_weapon = function (self, attacker)
 	local inventory_extension = ScriptUnit.has_extension(attacker, "inventory_system")
 
 	if not inventory_extension then
@@ -366,6 +361,11 @@ BloodManager._is_melee_weapon = function (self, attacker, weapon)
 	end
 
 	local equipment = inventory_extension:equipment()
+
+	if not equipment.wielded then
+		return false
+	end
+
 	local slot_type = equipment.wielded.slot_type
 
 	return slot_type == "melee"

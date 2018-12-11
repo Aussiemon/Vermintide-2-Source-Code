@@ -58,10 +58,12 @@ BTSmashDoorAction.enter = function (self, unit, blackboard, t)
 end
 
 BTSmashDoorAction.leave = function (self, unit, blackboard, t, reason, destroy)
-	local locomotion_extension = blackboard.locomotion_extension
+	if not destroy then
+		local locomotion_extension = blackboard.locomotion_extension
 
-	locomotion_extension:set_affected_by_gravity(true)
-	locomotion_extension:set_movement_type("snap_to_navmesh")
+		locomotion_extension:set_affected_by_gravity(true)
+		locomotion_extension:set_movement_type("snap_to_navmesh")
+	end
 
 	local navigation_extension = blackboard.navigation_extension
 
@@ -289,7 +291,6 @@ BTSmashDoorAction.StateAttacking.attack = function (self)
 		local anim = randomize(action.attack_anim)
 		local network_manager = Managers.state.network
 
-		network_manager:anim_event(unit, "to_combat")
 		network_manager:anim_event(unit, anim)
 
 		blackboard.attack_finished = false

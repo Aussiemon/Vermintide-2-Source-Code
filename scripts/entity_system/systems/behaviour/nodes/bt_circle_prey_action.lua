@@ -11,10 +11,6 @@ BTCirclePreyAction.name = "BTCirclePreyAction"
 BTCirclePreyAction.enter = function (self, unit, blackboard, t)
 	LocomotionUtils.set_animation_driven_movement(unit, false)
 
-	local network_manager = Managers.state.network
-
-	network_manager:anim_event(unit, "to_combat")
-
 	local is_on_navmesh = GwNavQueries.triangle_from_position(blackboard.nav_world, POSITION_LOOKUP[unit], 0.5, 0.5)
 
 	if is_on_navmesh then

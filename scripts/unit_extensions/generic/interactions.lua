@@ -2123,6 +2123,10 @@ InteractionDefinitions.pictureframe.client.stop = function (world, interactor_un
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk and rawget(_G, "HeroViewStateKeepDecorations") then
+		local keep_decoration_extension = ScriptUnit.extension(interactable_unit, "keep_decoration_system")
+
+		keep_decoration_extension:interacted_with()
+
 		local transition_params = {
 			menu_state_name = "keep_decorations",
 			interactable_unit = interactable_unit
@@ -2133,8 +2137,8 @@ InteractionDefinitions.pictureframe.client.stop = function (world, interactor_un
 end
 
 InteractionDefinitions.pictureframe.client.can_interact = function (interactor_unit, interactable_unit, data, config)
-	local decoration_system = Managers.state.entity:system("keep_decoration_system")
-	local can_interact = decoration_system:can_interact(interactable_unit)
+	local keep_decoration_extension = ScriptUnit.extension(interactable_unit, "keep_decoration_system")
+	local can_interact = keep_decoration_extension:can_interact()
 
 	return can_interact
 end
@@ -2205,6 +2209,98 @@ end
 
 InteractionDefinitions.achievement_access.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
 	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), "interaction_action_open"
+end
+
+InteractionDefinitions.luckstone_access = InteractionDefinitions.luckstone_access or table.clone(InteractionDefinitions.smartobject)
+InteractionDefinitions.luckstone_access.config.swap_to_3p = false
+
+InteractionDefinitions.luckstone_access.server.stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
+	if result == InteractionResult.SUCCESS then
+		local player_manager = Managers.player
+		local statistics_db = player_manager:statistics_db()
+		local player = player_manager:local_player(1)
+		local stats_id = player:stats_id()
+		local current_difficulty = statistics_db:get_persistent_stat(stats_id, "holly_difficulty_selection_plaza")
+
+		if current_difficulty == 0 then
+			current_difficulty = 1
+		end
+
+		local vote_data = {
+			private_game = true,
+			quick_game = false,
+			strict_matchmaking = false,
+			always_host = true,
+			game_mode = "event",
+			level_key = "plaza",
+			difficulty = DefaultDifficulties[current_difficulty]
+		}
+		local interaction_player = Managers.player:owner(interactor_unit)
+
+		Managers.state.voting:request_vote("game_settings_vote", vote_data, interaction_player.peer_id)
+	end
+end
+
+InteractionDefinitions.luckstone_access.client.stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
+	if result == InteractionResult.SUCCESS then
+		local unit_world = Managers.world:world("level_world")
+		local sound_event = "emitter_rune_activate"
+		local node_id = Unit.node(interactable_unit, "c_interaction")
+
+		WwiseUtils.trigger_unit_event(unit_world, sound_event, interactable_unit, node_id)
+	end
+end
+
+local unit_get_data = Unit.get_data
+
+InteractionDefinitions.luckstone_access.client.can_interact = function (interactor_unit, interactable_unit, data, config)
+	local cemetery = unit_get_data(interactable_unit, "cemetery")
+	local forest = unit_get_data(interactable_unit, "forest")
+	local magnus = unit_get_data(interactable_unit, "magnus")
+	local fulfills = cemetery and forest and magnus
+	local can_interact = not Managers.matchmaking:is_game_matchmaking() and fulfills
+
+	return can_interact
+end
+
+InteractionDefinitions.luckstone_access.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
+	return unit_get_data(interactable_unit, "interaction_data", "hud_description"), Unit.get_data(interactable_unit, "interaction_data", "hud_interaction_action")
+end
+
+InteractionDefinitions.difficulty_selection_access = InteractionDefinitions.difficulty_selection_access or table.clone(InteractionDefinitions.smartobject)
+InteractionDefinitions.difficulty_selection_access.config.swap_to_3p = false
+
+InteractionDefinitions.difficulty_selection_access.server.stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
+	if result == InteractionResult.SUCCESS then
+		local current_difficulty = unit_get_data(interactable_unit, "current_difficulty")
+
+		if current_difficulty > 3 then
+			current_difficulty = 1
+		else
+			current_difficulty = current_difficulty + 1
+		end
+
+		local player_manager = Managers.player
+		local statistics_db = player_manager:statistics_db()
+		local player = player_manager:local_player(1)
+		local stats_id = player:stats_id()
+
+		statistics_db:set_stat(stats_id, "holly_difficulty_selection_plaza", current_difficulty)
+		Unit.flow_event(interactable_unit, "lua_update_difficulty_on_success")
+	end
+end
+
+InteractionDefinitions.difficulty_selection_access.client.can_interact = function (interactor_unit, interactable_unit, data, config)
+	local interactable = unit_get_data(interactable_unit, "is_interactable")
+	local can_interact = not Managers.matchmaking:is_game_matchmaking() and interactable
+
+	return can_interact
+end
+
+InteractionDefinitions.difficulty_selection_access.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
+	local current_difficulty = unit_get_data(interactable_unit, "current_difficulty")
+
+	return unit_get_data(interactable_unit, "interaction_data", "hud_description"), DifficultySettings[DefaultDifficulties[current_difficulty]].display_name
 end
 
 return

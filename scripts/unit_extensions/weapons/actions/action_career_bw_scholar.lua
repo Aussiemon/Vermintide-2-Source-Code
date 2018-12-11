@@ -39,6 +39,8 @@ end
 ActionCareerBWScholar.finish = function (self, reason)
 	ActionCareerBWScholar.super.finish(self, reason)
 	self.inventory_extension:wield_previous_slot()
+	Unit.flow_event(self.owner_unit, "lua_force_stop")
+	Unit.flow_event(self.first_person_unit, "lua_force_stop")
 
 	if self.state == "shot" then
 		self.career_extension:start_activated_ability_cooldown()

@@ -63,16 +63,18 @@ BTLootRatAlertedAction.leave = function (self, unit, blackboard, t, reason, dest
 		network_manager.network_transmit:send_rpc_clients("rpc_enemy_is_alerted", unit_id, false)
 	end
 
-	local locomotion_extension = blackboard.locomotion_extension
+	if not destroy then
+		local locomotion_extension = blackboard.locomotion_extension
 
-	locomotion_extension:use_lerp_rotation(true)
-	LocomotionUtils.set_animation_driven_movement(unit, false)
-	LocomotionUtils.set_animation_rotation_scale(unit, 1)
+		locomotion_extension:use_lerp_rotation(true)
+		LocomotionUtils.set_animation_driven_movement(unit, false)
+		LocomotionUtils.set_animation_rotation_scale(unit, 1)
+	end
+
 	blackboard.navigation_extension:set_enabled(true)
 	AiUtils.activate_unit(blackboard)
 
 	blackboard.spawn_to_running = true
-	blackboard.update_timer = 0
 end
 
 BTLootRatAlertedAction.run = function (self, unit, blackboard, t, dt)

@@ -32,9 +32,6 @@ BTStormVerminPushAction.enter = function (self, unit, blackboard, t)
 	local target_unit = blackboard.target_unit
 	blackboard.attacking_target = target_unit
 	blackboard.move_state = "attacking"
-
-	network_manager:anim_event(unit, "to_combat")
-
 	local attack_anim = randomize(action.attack_anim)
 
 	network_manager:anim_event(unit, attack_anim)

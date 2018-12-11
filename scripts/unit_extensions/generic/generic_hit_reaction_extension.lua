@@ -7,17 +7,6 @@ local HitTemplates = HitTemplates
 local Dismemberments = Dismemberments
 local SoundEvents = SoundEvents
 local script_data = script_data
-
-local function print_debug()
-	return script_data.debug_hit_effects_templates
-end
-
-local function debug_printf(pattern, ...)
-	if script_data.debug_hit_effects_templates then
-		printf("[hit-effects] " .. pattern, ...)
-	end
-end
-
 GenericHitReactionExtension = class(GenericHitReactionExtension)
 
 local function get_damage_direction(unit, direction_vector)
@@ -299,19 +288,18 @@ GenericHitReactionExtension.update = function (self, unit, input, dt, context, t
 	end
 end
 
-GenericHitReactionExtension._resolve_effects = function (self, conditions, results)
+GenericHitReactionExtension._resolve_effects = function (self, effect_conditions, results)
 	local template_name = self.hit_effect_template
 	local templates = HitTemplates[template_name]
 
 	fassert(templates, "Hit effect template %q does not exist", template_name)
 
-	local num_conditions = 0
 	local num_results = 0
 
 	for i = 1, #templates, 1 do
 		local current_template = templates[i]
 
-		if check_conditions(conditions, current_template) then
+		if check_conditions(effect_conditions, current_template) then
 			num_results = num_results + 1
 			results[num_results] = current_template
 
@@ -376,6 +364,11 @@ GenericHitReactionExtension._check_for_diagonal_dismemberment = function (self, 
 	end
 
 	local impact_position = Actor.center_of_mass(Unit.actor(unit, actor_name))
+
+	if not Vector3.is_valid(impact_position) then
+		return nil, false
+	end
+
 	local line_pos = impact_position + hit_direction * 2
 	local dot_pos = impact_position + Vector3(0, 0, -2)
 	local dot = Vector3.dot(Vector3.normalize(impact_position - line_pos), Vector3.normalize(impact_position - dot_pos))
@@ -411,19 +404,19 @@ end
 local FLOW_EVENTS = {}
 local WWISE_PARAMETERS = {}
 
-GenericHitReactionExtension._execute_effect = function (self, unit, effect_template, biggest_hit, parameters, t, dt)
+GenericHitReactionExtension._execute_effect = function (self, unit, effect_template, effect_biggest_hit, parameters, t, dt)
 	local world = self.world
 	local breed_data = Unit.get_data(unit, "breed")
-	local attacker_unit = biggest_hit[DamageDataIndex.ATTACKER]
-	local hit_direction = Vector3Aux.unbox(biggest_hit[DamageDataIndex.DIRECTION])
-	local damage_type = biggest_hit[DamageDataIndex.DAMAGE_TYPE]
+	local attacker_unit = effect_biggest_hit[DamageDataIndex.ATTACKER]
+	local hit_direction = Vector3Aux.unbox(effect_biggest_hit[DamageDataIndex.DIRECTION])
+	local damage_type = effect_biggest_hit[DamageDataIndex.DAMAGE_TYPE]
 	local hit_zone = parameters.hit_zone
 
 	fassert(breed_data.hit_zones[hit_zone], "error no hitzone in breed that matches hitzone: %s", hit_zone)
 
 	local actors = breed_data.hit_zones and breed_data.hit_zones[hit_zone].actors
 	local death_ext = self.death_extension
-	local hit_ragdoll_actor_name = biggest_hit[DamageDataIndex.HIT_RAGDOLL_ACTOR_NAME]
+	local hit_ragdoll_actor_name = effect_biggest_hit[DamageDataIndex.HIT_RAGDOLL_ACTOR_NAME]
 	local can_wall_nail = self:_can_wall_nail(effect_template)
 	local death_has_started = death_ext and death_ext.death_has_started
 
@@ -561,14 +554,14 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 		hit_effect = hit_effect_name
 	end
 
-	local damage_amount = biggest_hit[DamageDataIndex.DAMAGE_AMOUNT]
+	local damage_amount = effect_biggest_hit[DamageDataIndex.DAMAGE_AMOUNT]
 	local should_spawn_blood = damage_amount > 0 and not breed_data.no_blood_splatter_on_damage and not effect_template.disable_blood
 	local sound_event = effect_template.sound_event
 	local impact_position = nil
 
 	if hit_effect or should_spawn_blood or sound_event then
 		if AiUtils.unit_alive(unit) then
-			local hit_position = Vector3Aux.unbox(biggest_hit[DamageDataIndex.POSITION])
+			local hit_position = Vector3Aux.unbox(effect_biggest_hit[DamageDataIndex.POSITION])
 			impact_position = hit_position
 		else
 			for _, actor_name in ipairs(actors) do

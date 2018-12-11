@@ -58,7 +58,6 @@ BTTargetRageAction.enter = function (self, unit, blackboard, t)
 	blackboard.move_state = "attacking"
 	local network_manager = Managers.state.network
 
-	network_manager:anim_event(unit, "to_combat")
 	network_manager:anim_event(unit, rage_anim)
 
 	if blackboard.target_dist > 7 then
@@ -74,12 +73,14 @@ BTTargetRageAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.target_changed = nil
 	blackboard.move_animation_name = nil
 
-	blackboard.locomotion_extension:use_lerp_rotation(true)
-	LocomotionUtils.set_animation_driven_movement(unit, false)
+	if not destroy then
+		blackboard.locomotion_extension:use_lerp_rotation(true)
+		LocomotionUtils.set_animation_driven_movement(unit, false)
+	end
 end
 
 BTTargetRageAction.run = function (self, unit, blackboard, t, dt)
-	if t < blackboard.anim_locked and not blackboard.anim_cb_move then
+	if t < blackboard.anim_locked then
 		if blackboard.attack_anim_driven then
 			if blackboard.anim_cb_rotation_start then
 				local target_pos = POSITION_LOOKUP[blackboard.target_unit]

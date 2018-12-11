@@ -25,11 +25,12 @@ local pig_data = {
 	death_reaction = "ai_default",
 	armor_category = 1,
 	weapon_reach = 2,
-	vortexable = true,
+	vortexable = false,
 	disable_local_hit_reactions = true,
 	behavior = "critter_pig",
 	base_unit = "units/beings/critters/chr_critter_pig/chr_critter_pig",
 	threat_value = 0,
+	ignore_activate_unit = true,
 	size_variation_range = {
 		0.9,
 		1.1
@@ -109,11 +110,12 @@ local rat_data = {
 	death_reaction = "ai_default",
 	armor_category = 1,
 	weapon_reach = 2,
-	vortexable = true,
+	vortexable = false,
 	disable_local_hit_reactions = true,
 	behavior = "critter_rat",
 	base_unit = "units/beings/critters/chr_critter_common_rat/chr_critter_common_rat",
 	threat_value = 0,
+	ignore_activate_unit = true,
 	size_variation_range = {
 		0.9,
 		1.1

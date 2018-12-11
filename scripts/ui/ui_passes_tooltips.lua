@@ -193,7 +193,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_data.alpha_multiplier
-			local alpha = 200 * alpha_multiplier
+			local alpha = 125 * alpha_multiplier
 			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_texture_name = data.frame_name
 			local frame_settings = UIFrameSettings[frame_texture_name]
@@ -2377,13 +2377,9 @@ UITooltipPasses = {
 			local position_z = position[3]
 			local total_height = 0
 			local item_type = item_data.item_type
-			local text = ""
-			local title_text = ""
-			local type_text = ""
 			local _, display_name, _ = UIUtils.get_ui_information_from_item(item)
-			title_text = Localize(display_name)
-			type_text = Localize(item_type)
-			text = title_text .. "\n" .. type_text
+			local title_text = Localize(display_name)
+			local type_text = Localize(item_type)
 			local text_style = style.text
 			local text_shadow_style = style.text_shadow
 			local player = pass_data.player
@@ -2423,7 +2419,6 @@ UITooltipPasses = {
 				position[2] = position[2] - background_size[2] + frame_margin / 2
 				position[1] = (position[1] + size[1] / 2) - background_size[1] / 2
 				local old_x_position = position[1]
-				local old_y_position = position[2]
 				local edge_size = data.edge_size
 				edge_size[1] = size[1]
 				local edge_color = edge_style.color
@@ -2461,7 +2456,6 @@ UITooltipPasses = {
 				UIRenderer.draw_rect(ui_renderer, position, background_size, background_color)
 
 				position[3] = start_layer + 3
-				local header_glow_size = data.header_glow_size
 				local header_glow_texture = content.header_glow_texture
 				rarity_color[1] = alpha
 
@@ -3977,24 +3971,22 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
+			local level_key = item.level_key
+
+			if level_key == nil then
+				return 0
+			end
+
 			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
-			local item_data = item.data
-			local item_type = item_data.item_type
-
-			if item_type ~= "deed" then
-				return 0
-			end
-
 			local style = data.style
 			local content = data.content
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
 			local title_text = Localize("start_game_window_mission")
-			local level_key = item.level_key
 			local level_settings = LevelSettings[level_key]
 			local level_display_name = level_settings.display_name
 			local type_text = Localize(level_display_name)
@@ -4133,14 +4125,11 @@ UITooltipPasses = {
 				return 0
 			end
 
-			local rarity = item.rarity or item_data.rarity
-			local rarity_color = Colors.get_table(rarity)
 			local style = data.style
 			local content = data.content
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
-			local total_height = 0
 			local title_text = Localize("start_game_window_difficulty")
 			local difficulty_key = item.difficulty
 			local difficulty_settings = DifficultySettings[difficulty_key]
@@ -4161,7 +4150,6 @@ UITooltipPasses = {
 
 			if draw then
 				local old_x_position = position[1] + frame_margin
-				local old_y_position = position[2]
 				position[1] = old_x_position + title_text_style.offset[1]
 				position[2] = position_y - frame_margin - title_text_height + title_text_style.offset[2]
 				position[3] = start_layer + 6 + title_text_style.offset[3]
@@ -4236,6 +4224,19 @@ UITooltipPasses = {
 							Colors.get_color_table_with_alpha("font_default", 255)
 						}
 					},
+					text_shadow = {
+						vertical_alignment = "center",
+						horizontal_alignment = "left",
+						word_wrap = true,
+						font_type = "hell_shark",
+						font_size = setup_font_size(16),
+						text_color = Colors.get_color_table_with_alpha("black", 255),
+						offset = {
+							1,
+							-1,
+							-1
+						}
+					},
 					icon = {
 						color = {
 							255,
@@ -4255,93 +4256,99 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_data.alpha_multiplier
-			local alpha = 255 * alpha_multiplier
 			local item_data = item.data
-			local item_type = item_data.item_type
+			local mutators = item.mutators or (item_data and item_data.mutators)
 
-			if item_type ~= "deed" then
+			if mutators == nil then
 				return 0
 			end
 
-			local mutators = item_data.mutators
+			local alpha_multiplier = pass_data.alpha_multiplier
+			local alpha = 255 * alpha_multiplier
 			local top_spacing = 20
 			local bottom_spacing = 20
 			local total_height = top_spacing
 			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
+			local style = data.style
+			local content = data.content
+			local position_x = position[1]
+			local position_y = position[2]
+			local position_z = position[3]
+			position[1] = position[1] + frame_margin
+			position[2] = position[2] - total_height
+			position[3] = start_layer + 2
+			local trait_spacing = 10
+			local loop_func = (draw_downwards and ipairs) or ripairs
 
-			if mutators then
-				local style = data.style
-				local content = data.content
-				local position_x = position[1]
-				local position_y = position[2]
-				local position_z = position[3]
-				position[1] = position[1] + frame_margin
-				position[2] = position[2] - total_height
-				position[3] = start_layer + 2
-				local trait_spacing = 10
-				local loop_func = (draw_downwards and ipairs) or ripairs
+			for index, name in loop_func(mutators) do
+				local mutator_template = MutatorTemplates[name]
+				local display_name = mutator_template.display_name
+				local description = mutator_template.description
+				local icon = mutator_template.icon
+				local text_id = "mutator_text_" .. index
+				local text_style = style.text
+				local text_shadow_style = style.text_shadow
+				local text_pass_data = data.text_pass_data
+				text_pass_data.text_id = text_id
+				local title_text = Localize(display_name)
+				local description_text = Localize(description)
+				local icon_pass_definition = data.icon_pass_definition
+				local icon_pass_data = data.icon_pass_data
+				local icon_style = data.style.icon
+				local icon_size = data.icon_size
+				content.icon = icon or data.default_icon
+				local text = title_text .. "\n" .. description_text
+				local text_size = data.text_size
+				text_size[1] = size[1] - frame_margin * 3 - icon_size[1]
+				text_size[2] = 0
+				local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+				text_size[2] = text_height
+				local old_x_position = position[1]
+				local old_y_position = position[2]
+				content[text_id] = text
 
-				for index, name in loop_func(mutators) do
-					local mutator_template = MutatorTemplates[name]
-					local display_name = mutator_template.display_name
-					local description = mutator_template.description
-					local icon = mutator_template.icon
-					local text_id = "mutator_text_" .. index
-					local text_style = style.text
-					local text_pass_data = data.text_pass_data
-					text_pass_data.text_id = text_id
-					local title_text = Localize(display_name)
-					local description_text = Localize(description)
-					local icon_pass_definition = data.icon_pass_definition
-					local icon_pass_data = data.icon_pass_data
-					local icon_style = data.style.icon
-					local icon_size = data.icon_size
-					content.icon = icon or data.default_icon
-					local text = title_text .. "\n" .. description_text
-					local text_size = data.text_size
-					text_size[1] = size[1] - frame_margin * 3 - icon_size[1]
-					text_size[2] = 0
-					local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
-					text_size[2] = text_height
-					local old_x_position = position[1]
-					local old_y_position = position[2]
-					content[text_id] = text
+				if draw then
+					local icon_color = icon_style.color
+					icon_color[1] = alpha
+					position[1] = old_x_position
+					position[2] = old_y_position - icon_size[2]
 
-					if draw then
-						local icon_color = icon_style.color
-						icon_color[1] = alpha
-						position[2] = old_y_position - icon_size[2]
-						position[1] = old_x_position
+					UIPasses.texture.draw(ui_renderer, icon_pass_data, ui_scenegraph, icon_pass_definition, icon_style, content, position, icon_size, input_service, dt)
 
-						UIPasses.texture.draw(ui_renderer, icon_pass_data, ui_scenegraph, icon_pass_definition, icon_style, content, position, icon_size, input_service, dt)
+					local text_color = text_shadow_style.text_color
+					text_color[1] = alpha
+					position[1] = old_x_position + icon_size[1] + frame_margin + text_shadow_style.offset[1]
+					position[2] = old_y_position - text_height + text_shadow_style.offset[2]
+					position[3] = start_layer + 2 + text_shadow_style.offset[3]
 
-						position[2] = old_y_position - text_height
-						position[1] = old_x_position + icon_size[1] + frame_margin
-						local text_color = text_style.text_color
-						local line_colors = text_style.line_colors
-						text_color[1] = alpha
-						line_colors[1][1] = alpha
-						line_colors[2][1] = alpha
+					UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_shadow_style, content, position, data.text_size, input_service, dt, ui_style_global)
 
-						UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, data.text_size, input_service, dt, ui_style_global)
-					end
+					text_color = text_style.text_color
+					text_color[1] = alpha
+					local line_colors = text_style.line_colors
+					line_colors[1][1] = alpha
+					line_colors[2][1] = alpha
+					position[1] = old_x_position + icon_size[1] + frame_margin
+					position[2] = old_y_position - text_height
+					position[3] = start_layer + 2
 
-					total_height = total_height + text_height
-
-					if index ~= #mutators then
-						total_height = total_height + trait_spacing
-						position[2] = old_y_position - (text_height + trait_spacing)
-						position[1] = old_x_position
-					end
+					UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, data.text_size, input_service, dt, ui_style_global)
 				end
 
-				position[1] = position_x
-				position[2] = position_y
-				position[3] = position_z
-				total_height = total_height + bottom_spacing
+				total_height = total_height + text_height
+
+				if index ~= #mutators then
+					total_height = total_height + trait_spacing
+					position[2] = old_y_position - (text_height + trait_spacing)
+					position[1] = old_x_position
+				end
 			end
+
+			position[1] = position_x
+			position[2] = position_y
+			position[3] = position_z
+			total_height = total_height + bottom_spacing
 
 			return total_height
 		end
@@ -4566,6 +4573,151 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
+		end
+	},
+	event_mission = {
+		setup_data = function ()
+			local data = {
+				text_pass_data = {
+					text_id = "text"
+				},
+				text_size = {},
+				content = {},
+				style = {
+					title_text = {
+						vertical_alignment = "center",
+						horizontal_alignment = "left",
+						word_wrap = true,
+						font_type = "hell_shark_header",
+						font_size = setup_font_size(28),
+						text_color = Colors.get_color_table_with_alpha("font_title", 255),
+						offset = {
+							0,
+							0,
+							0
+						}
+					},
+					title_text_shadow = {
+						vertical_alignment = "center",
+						horizontal_alignment = "left",
+						word_wrap = true,
+						font_type = "hell_shark_header",
+						font_size = setup_font_size(28),
+						text_color = Colors.get_color_table_with_alpha("black", 255),
+						offset = {
+							1,
+							-1,
+							-1
+						}
+					},
+					text = {
+						word_wrap = true,
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						font_type = "hell_shark",
+						font_size = setup_font_size(18),
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
+						default_text_color = Colors.get_color_table_with_alpha("font_default", 255),
+						disabled_text_color = Colors.get_color_table_with_alpha("red", 255),
+						offset = {
+							0,
+							0,
+							0
+						}
+					},
+					text_shadow = {
+						vertical_alignment = "center",
+						horizontal_alignment = "left",
+						word_wrap = true,
+						font_type = "hell_shark",
+						font_size = setup_font_size(18),
+						text_color = Colors.get_color_table_with_alpha("black", 255),
+						offset = {
+							1,
+							-1,
+							-1
+						}
+					}
+				}
+			}
+
+			return data
+		end,
+		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
+			local alpha_multiplier = pass_data.alpha_multiplier
+			local alpha = 255 * alpha_multiplier
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
+			local frame_margin = data.frame_margin or 0
+			local style = data.style
+			local content = data.content
+			local position_x = position[1]
+			local position_y = position[2]
+			local position_z = position[3]
+			local title_text = Localize("start_game_window_mission")
+			local type_text = nil
+			local level_key = item.level_key
+
+			if level_key then
+				local level_settings = LevelSettings[level_key]
+				local level_display_name = level_settings.display_name
+				type_text = Localize(level_display_name)
+			else
+				type_text = Localize("random_level")
+			end
+
+			local text_style = style.text
+			local text_shadow_style = style.text_shadow
+			local title_text_style = style.title_text
+			local title_text_shadow_style = style.title_text_shadow
+			local text_pass_data = data.text_pass_data
+			local text_size = data.text_size
+			text_size[1] = size[1] - frame_margin * 2
+			text_size[2] = 0
+			local title_text_height = get_text_height(ui_renderer, text_size, title_text_style, content, title_text, ui_style_global)
+			local type_text_height = get_text_height(ui_renderer, text_size, text_style, content, type_text, ui_style_global)
+			local text_height = title_text_height + type_text_height
+			text_size[2] = text_height
+
+			if draw then
+				local old_x_position = position[1] + frame_margin
+				position[1] = old_x_position + title_text_style.offset[1]
+				position[2] = position_y - frame_margin - title_text_height + title_text_style.offset[2]
+				position[3] = start_layer + 6 + title_text_style.offset[3]
+				text_size[1] = size[1]
+				content.text = title_text
+				title_text_style.text_color[1] = alpha
+				title_text_shadow_style.text_color[1] = alpha
+
+				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, title_text_style, content, position, text_size, input_service, dt, ui_style_global)
+
+				position[1] = old_x_position + title_text_shadow_style.offset[1]
+				position[2] = position_y - frame_margin - title_text_height + title_text_shadow_style.offset[2]
+				position[3] = start_layer + 6 + title_text_shadow_style.offset[3]
+
+				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, title_text_shadow_style, content, position, text_size, input_service, dt, ui_style_global)
+
+				position[1] = old_x_position + text_style.offset[1]
+				position[2] = position_y - frame_margin * 1.5 - (title_text_height + type_text_height) + text_style.offset[2]
+				position[3] = start_layer + 6 + text_style.offset[3]
+				text_size[1] = size[1]
+				content.text = type_text
+				text_style.text_color[1] = alpha
+				text_shadow_style.text_color[1] = alpha
+
+				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)
+
+				position[1] = old_x_position + text_shadow_style.offset[1]
+				position[2] = position_y - frame_margin * 1.5 - (title_text_height + type_text_height) + text_shadow_style.offset[2]
+				position[3] = start_layer + 6 + text_shadow_style.offset[3]
+
+				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_shadow_style, content, position, text_size, input_service, dt, ui_style_global)
+			end
+
+			position[1] = position_x
+			position[2] = position_y
+			position[3] = position_z
+
+			return text_height
 		end
 	},
 	loot_chest_description = {

@@ -14,13 +14,32 @@ TerrorEventMixer.init_functions = {
 		event.ends_at = t + ConflictUtils.random_interval(element.duration)
 	end,
 	delay = function (event, element, t)
+		if element.difficulty_requirement then
+			local current_difficulty = Managers.state.difficulty:get_difficulty_rank()
+
+			if current_difficulty < element.difficulty_requirement then
+				return
+			end
+		end
+
 		event.ends_at = t + ConflictUtils.random_interval(element.duration)
 	end,
 	spawn = function (event, element, t)
 		return
 	end,
+	spawn_special = function (event, element, t)
+		return
+	end,
 	spawn_at_raw = function (event, element, t)
 		if Managers.player.is_server then
+			if element.difficulty_requirement then
+				local current_difficulty = Managers.state.difficulty:get_difficulty_rank()
+
+				if current_difficulty < element.difficulty_requirement then
+					return
+				end
+			end
+
 			local conflict_director = Managers.state.conflict
 			local breed_name = nil
 			local check_name = element.breed_name
@@ -60,6 +79,14 @@ TerrorEventMixer.init_functions = {
 
 		if specials_pacing then
 			specials_pacing:enable(element.enable)
+
+			if element.enable then
+				local delay = math.random(20, 30)
+				local per_unit_delay = math.random(8, 16)
+				local t = Managers.time:time("game")
+
+				specials_pacing:delay_spawning(t, delay, per_unit_delay, true)
+			end
 		end
 	end,
 	horde = function (event, element, t)
@@ -74,7 +101,8 @@ TerrorEventMixer.init_functions = {
 	event_horde = function (event, element, t)
 		event.ends_at = t + ((element.duration and ConflictUtils.random_interval(element.duration)) or 0)
 		local conflict_director = Managers.state.conflict
-		local horde_data = conflict_director:event_horde(t, element.spawner_id, element.composition_type, element.limit_spawners, element.horde_silent)
+		local composition_type = element.composition_type
+		local horde_data = conflict_director:event_horde(t, element.spawner_id, element.composition_type, element.limit_spawners, element.horde_silent, nil, true)
 		element.horde_data = horde_data
 	end,
 	reset_event_horde = function (event, element, t)
@@ -129,6 +157,14 @@ TerrorEventMixer.init_functions = {
 		end
 	end,
 	play_stinger = function (event, element, t)
+		if element.difficulty_requirement then
+			local current_difficulty = Managers.state.difficulty:get_difficulty_rank()
+
+			if current_difficulty < element.difficulty_requirement then
+				return
+			end
+		end
+
 		local stinger_name = element.stinger_name or "enemy_terror_event_stinger"
 		local optional_pos = element.optional_pos
 		local wwise_world = Managers.world:wwise_world(Managers.state.conflict._world)
@@ -331,6 +367,40 @@ TerrorEventMixer.run_functions = {
 		end
 
 		conflict_director:spawn_one(Breeds[breed_name], position, group_data, optional_data)
+
+		return true
+	end,
+	spawn_special = function (event, element, t, dt)
+		local breed_name = nil
+		local check_name = element.breed_name
+		local num_to_spawn = element.amount or 1
+		local num_to_spawn_scaled = element.difficulty_amount
+		local conflict_director = Managers.state.conflict
+
+		if num_to_spawn_scaled then
+			local current_difficulty = Managers.state.difficulty:get_difficulty()
+			local chosen_amount = num_to_spawn_scaled[current_difficulty]
+
+			if type(chosen_amount) == "table" then
+				num_to_spawn = chosen_amount[Math.random(1, #chosen_amount)]
+			else
+				num_to_spawn = chosen_amount
+			end
+		elseif type(num_to_spawn) == "table" then
+			num_to_spawn = num_to_spawn[Math.random(1, #num_to_spawn)]
+		end
+
+		if type(check_name) == "table" then
+			breed_name = check_name[Math.random(1, #check_name)]
+		else
+			breed_name = check_name
+		end
+
+		for i = 1, num_to_spawn, 1 do
+			local hidden_pos = conflict_director.specials_pacing:get_special_spawn_pos()
+
+			conflict_director:spawn_one(Breeds[breed_name], hidden_pos)
+		end
 
 		return true
 	end,

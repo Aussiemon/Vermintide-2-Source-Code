@@ -15,10 +15,6 @@ BTErraticFollowAction.enter = function (self, unit, blackboard, t)
 	blackboard.remembered_threat_pos = nil
 	blackboard.chasing_timer = blackboard.unreachable_timer or 0
 	blackboard.active_node = self
-	local network_manager = Managers.state.network
-
-	network_manager:anim_event(unit, "to_combat")
-
 	local move_state = blackboard.move_state
 	local target_pos = POSITION_LOOKUP[blackboard.target_unit]
 	local animation_name = AiAnimUtils.get_start_move_animation(unit, target_pos, action.start_anims_name)
@@ -32,6 +28,7 @@ BTErraticFollowAction.enter = function (self, unit, blackboard, t)
 	if tutorial_message_template then
 		local template_id = NetworkLookup.tutorials[tutorial_message_template]
 		local message_id = NetworkLookup.tutorials[blackboard.breed.name]
+		local network_manager = Managers.state.network
 
 		network_manager.network_transmit:send_rpc_all("rpc_tutorial_message", template_id, message_id)
 	end
@@ -54,7 +51,7 @@ BTErraticFollowAction.leave = function (self, unit, blackboard, t, reason, destr
 
 	navigation_extension:set_max_speed(default_move_speed)
 
-	if blackboard.is_turning then
+	if blackboard.is_turning and not destroy then
 		LocomotionUtils.reset_turning(unit, blackboard)
 
 		blackboard.is_turning = nil
@@ -72,7 +69,7 @@ BTErraticFollowAction.leave = function (self, unit, blackboard, t, reason, destr
 	blackboard.boss_follow_next_line_of_sight_check_t = nil
 	blackboard.has_los_to_any_player = nil
 
-	if blackboard.move_state == "jumping" then
+	if blackboard.move_state == "jumping" and not destroy then
 		local locomotion_extension = blackboard.locomotion_extension
 
 		locomotion_extension:set_animation_driven(false, true, false)

@@ -992,7 +992,7 @@ local function create_info_text(text, scenegraph_id, font_size)
 	}
 end
 
-local function create_menu_button(scenegraph_id, text, font_size, optional_default_color_name, show_icon)
+local function create_menu_button(scenegraph_id, text, font_size, optional_default_color_name, show_icon, spacing)
 	return {
 		element = {
 			passes = {
@@ -1005,7 +1005,35 @@ local function create_menu_button(scenegraph_id, text, font_size, optional_defau
 					pass_type = "text",
 					text_id = "text_field",
 					content_check_function = function (content)
+						if not Managers.input:is_device_active("gamepad") then
+							return
+						end
+
 						return not content.button_text.disable_button and not content.button_text.is_hover and not content.button_text.is_selected
+					end
+				},
+				{
+					style_id = "text_no_hover",
+					pass_type = "text",
+					text_id = "text_field",
+					content_check_function = function (content)
+						if Managers.input:is_device_active("gamepad") then
+							return
+						end
+
+						return not content.button_text.disable_button and not content.button_text.is_hover
+					end
+				},
+				{
+					style_id = "text",
+					pass_type = "text",
+					text_id = "text_field",
+					content_check_function = function (content)
+						if Managers.input:is_device_active("gamepad") then
+							return
+						end
+
+						return not content.button_text.disable_button and content.button_text.is_hover
 					end
 				},
 				{
@@ -1043,6 +1071,7 @@ local function create_menu_button(scenegraph_id, text, font_size, optional_defau
 			button_text = {},
 			text_field = text,
 			default_font_size = font_size,
+			spacing = spacing,
 			show_icon = show_icon,
 			icon_content = {
 				icon_id = "info",
@@ -1060,6 +1089,21 @@ local function create_menu_button(scenegraph_id, text, font_size, optional_defau
 		},
 		style = {
 			text = {
+				word_wrap = false,
+				upper_case = true,
+				localize = true,
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				font_type = "hell_shark",
+				font_size = font_size,
+				text_color = Colors.get_color_table_with_alpha(optional_default_color_name or "font_button_normal", 255),
+				offset = {
+					0,
+					0,
+					4
+				}
+			},
+			text_no_hover = {
 				word_wrap = false,
 				upper_case = true,
 				localize = true,
@@ -1252,6 +1296,49 @@ elseif script_data.settings.use_beta_overlay then
 	end
 elseif BUILD == "dev" or BUILD == "debug" then
 	if PLATFORM == "xb1" then
+		if GameSettingsDevelopment.additional_content_view_enabled then
+			menu_button_definitions = {
+				create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
+				create_menu_button("menu_option_2", "tutorial_menu_button_name", menu_button_font_size, "font_title"),
+				create_menu_button("menu_option_3", "options_menu_button_name", menu_button_font_size, "font_title"),
+				create_menu_button("menu_option_4", "title_screen_store_xb1", menu_button_font_size, "font_title", true),
+				create_menu_button("menu_option_5", "credits_menu_button_name", menu_button_font_size, "font_title")
+			}
+		else
+			menu_button_definitions = {
+				create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
+				create_menu_button("menu_option_2", "tutorial_menu_button_name", menu_button_font_size, "font_title"),
+				create_menu_button("menu_option_3", "options_menu_button_name", menu_button_font_size, "font_title"),
+				create_menu_button("menu_option_4", "credits_menu_button_name", menu_button_font_size, "font_title")
+			}
+		end
+	elseif PLATFORM == "ps4" then
+		if GameSettingsDevelopment.additional_content_view_enabled then
+			menu_button_definitions = {
+				create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
+				create_menu_button("menu_option_2", "tutorial_menu_button_name", menu_button_font_size, "font_title"),
+				create_menu_button("menu_option_3", "options_menu_button_name", menu_button_font_size, "font_title"),
+				create_menu_button("menu_option_4", "dlc1_2_dlc_level_locked_tooltip", 18, "font_title", true, 60),
+				create_menu_button("menu_option_5", "credits_menu_button_name", menu_button_font_size, "font_title")
+			}
+		else
+			menu_button_definitions = {
+				create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
+				create_menu_button("menu_option_2", "tutorial_menu_button_name", menu_button_font_size, "font_title"),
+				create_menu_button("menu_option_3", "options_menu_button_name", menu_button_font_size, "font_title"),
+				create_menu_button("menu_option_4", "credits_menu_button_name", menu_button_font_size, "font_title")
+			}
+		end
+	else
+		menu_button_definitions = {
+			create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
+			create_menu_button("menu_option_2", "tutorial_menu_button_name", menu_button_font_size, "font_title"),
+			create_menu_button("menu_option_3", "options_menu_button_name", menu_button_font_size, "font_title"),
+			create_menu_button("menu_option_4", "credits_menu_button_name", menu_button_font_size, "font_title")
+		}
+	end
+elseif PLATFORM == "xb1" then
+	if GameSettingsDevelopment.additional_content_view_enabled then
 		menu_button_definitions = {
 			create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
 			create_menu_button("menu_option_2", "tutorial_menu_button_name", menu_button_font_size, "font_title"),
@@ -1267,14 +1354,23 @@ elseif BUILD == "dev" or BUILD == "debug" then
 			create_menu_button("menu_option_4", "credits_menu_button_name", menu_button_font_size, "font_title")
 		}
 	end
-elseif PLATFORM == "xb1" then
-	menu_button_definitions = {
-		create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
-		create_menu_button("menu_option_2", "tutorial_menu_button_name", menu_button_font_size, "font_title"),
-		create_menu_button("menu_option_3", "options_menu_button_name", menu_button_font_size, "font_title"),
-		create_menu_button("menu_option_4", "title_screen_store_xb1", menu_button_font_size, "font_title", true),
-		create_menu_button("menu_option_5", "credits_menu_button_name", menu_button_font_size, "font_title")
-	}
+elseif PLATFORM == "ps4" then
+	if GameSettingsDevelopment.additional_content_view_enabled then
+		menu_button_definitions = {
+			create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
+			create_menu_button("menu_option_2", "tutorial_menu_button_name", menu_button_font_size, "font_title"),
+			create_menu_button("menu_option_3", "options_menu_button_name", menu_button_font_size, "font_title"),
+			create_menu_button("menu_option_4", "dlc1_2_dlc_level_locked_tooltip", 18, "font_title", true, 60),
+			create_menu_button("menu_option_5", "credits_menu_button_name", menu_button_font_size, "font_title")
+		}
+	else
+		menu_button_definitions = {
+			create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
+			create_menu_button("menu_option_2", "tutorial_menu_button_name", menu_button_font_size, "font_title"),
+			create_menu_button("menu_option_3", "options_menu_button_name", menu_button_font_size, "font_title"),
+			create_menu_button("menu_option_4", "credits_menu_button_name", menu_button_font_size, "font_title")
+		}
+	end
 else
 	menu_button_definitions = {
 		create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),

@@ -8,9 +8,9 @@ LightWeightProjectiles = {
 		afro_hit_sound = "bullet_pass_by",
 		hit_effect = "ratling_gunner",
 		attack_power_level = {
-			50,
-			100,
-			150,
+			20,
+			40,
+			120,
 			200,
 			250
 		},

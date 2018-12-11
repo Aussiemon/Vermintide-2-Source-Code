@@ -39,22 +39,27 @@ AiUtils.aggro_unit_of_enemy = function (unit, enemy_unit)
 end
 
 AiUtils.activate_unit = function (blackboard)
-	if not blackboard.confirmed_player_sighting then
-		local breed = blackboard.breed
+	local breed = blackboard.breed
 
-		Managers.state.event:trigger("ai_unit_activated", breed.name, blackboard.event_spawned)
+	if not blackboard.confirmed_player_sighting and not breed.ignore_activate_unit then
+		local unit = blackboard.unit
+
+		Managers.state.event:trigger("ai_unit_activated", unit, breed.name, blackboard.event_spawned)
 
 		blackboard.confirmed_player_sighting = true
+		blackboard.activated = true
 	end
 end
 
 AiUtils.deactivate_unit = function (blackboard)
 	if blackboard.confirmed_player_sighting then
 		local breed = blackboard.breed
+		local unit = blackboard.unit
 
-		Managers.state.event:trigger("ai_unit_deactivated", breed.name)
+		Managers.state.event:trigger("ai_unit_deactivated", unit, breed.name)
 
 		blackboard.confirmed_player_sighting = false
+		blackboard.activated = false
 	end
 end
 
@@ -191,9 +196,35 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage_tri
 			end
 		end
 
+		local is_player_unit = DamageUtils.is_player_unit(target_unit)
+
+		if is_player_unit then
+			local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+
+			if difficulty_rank and difficulty_rank < 3 then
+				local player_status_extension = ScriptUnit.has_extension(target_unit, "status_system")
+
+				if player_status_extension and player_status_extension:is_knocked_down() then
+					local knocked_down_damage_multiplier = Managers.state.difficulty:get_difficulty_settings().knocked_down_damage_multiplier or 1
+					damage = damage * knocked_down_damage_multiplier
+				end
+
+				local target_unit_health_extension = ScriptUnit.has_extension(target_unit, "health_system")
+
+				if target_unit_health_extension then
+					local damage_percent_cap = Managers.state.difficulty:get_difficulty_settings().damage_percent_cap
+					local max_health = target_unit_health_extension:get_max_health()
+					local damage_cap = max_health * damage_percent_cap
+					damage = math.clamp(damage, 0, damage_cap)
+				end
+
+				local damage_multiplier = Managers.state.difficulty:get_difficulty_settings().damage_multiplier or 1
+				damage = damage * damage_multiplier
+			end
+		end
+
 		DamageUtils.add_damage_network(target_unit, attacker_unit, damage, "torso", action.damage_type, nil, damage_direction, damage_source, nil, nil, nil, action.hit_react_type)
 
-		local is_player_unit = DamageUtils.is_player_unit(target_unit)
 		local push_speed = action.player_push_speed
 
 		if is_player_unit and push_speed then

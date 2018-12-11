@@ -174,9 +174,6 @@ BTLeaveHooks.on_lord_intro_leave = function (unit, blackboard, t)
 
 		blackboard.is_angry = true
 		blackboard.intro_timer = nil
-		local network_manager = Managers.state.network
-
-		network_manager:anim_event(unit, "to_combat")
 	end
 
 	blackboard.stagger = nil

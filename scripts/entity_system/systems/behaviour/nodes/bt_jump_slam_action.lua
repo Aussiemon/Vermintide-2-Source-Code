@@ -49,7 +49,7 @@ BTJumpSlamAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	local data = blackboard.jump_slam_data
 
 	if data.constrained then
-		LocomotionUtils.constrain_on_clients(unit, false, Vector3.zero(), Vector3.zero())
+		LocomotionUtils.constrain_on_clients(unit, false)
 	end
 
 	if reason == "aborted" then

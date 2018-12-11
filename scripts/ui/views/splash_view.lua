@@ -456,40 +456,80 @@ local splash_content = {
 	}
 }
 
-if (Development.parameter("use_beta_overlay") or script_data.settings.use_beta_overlay) and PLATFORM == "xb1" then
-	local is_xbox_one_x = false
-	local console_type = XboxOne.console_type()
+if Development.parameter("use_beta_overlay") or script_data.settings.use_beta_overlay then
+	if PLATFORM == "xb1" then
+		local is_xbox_one_x = false
+		local console_type = XboxOne.console_type()
 
-	if console_type == XboxOne.CONSOLE_TYPE_XBOX_ONE_X_DEVKIT or console_type == XboxOne.CONSOLE_TYPE_XBOX_ONE_X then
-		is_xbox_one_x = true
+		if console_type == XboxOne.CONSOLE_TYPE_XBOX_ONE_X_DEVKIT or console_type == XboxOne.CONSOLE_TYPE_XBOX_ONE_X then
+			is_xbox_one_x = true
+		end
+
+		splash_content[#splash_content + 1] = {
+			input_scenegraph_id = "input_background",
+			product_id = "ADAA6515-8206-49E5-B34C-405244800B46",
+			type = "beta_end",
+			scenegraph_id = "background_fit",
+			texts_scenegraph_id = "texts",
+			input_material_name = "storepage_button",
+			forced = true,
+			music_name = "Play_menu_screen_music",
+			material_name = "beta_end_overlay",
+			input_texture_size = (is_xbox_one_x and {
+				1776,
+				346
+			}) or {
+				888,
+				173
+			},
+			input_texture_offset = (is_xbox_one_x and {
+				550,
+				-260
+			}) or {
+				275,
+				-130
+			},
+			time = math.huge
+		}
+	elseif PLATFORM == "ps4" then
+		local is_pro = PS4.is_pro()
+		splash_content[#splash_content + 1] = {
+			scenegraph_id = "background",
+			type = "texture",
+			axis = 2,
+			time = 10,
+			text_vertical_alignment = "center",
+			forced = true,
+			text_horizontal_alignment = "center",
+			spacing = 5,
+			dynamic_font = false,
+			direction = 1,
+			pixel_perfect = false,
+			texts_scenegraph_id = "texts",
+			font_type = "hell_shark",
+			localize = false,
+			texts = {
+				"PRE-RELEASE SOFTWARE",
+				"***",
+				"This game is in a pre-release stage of development. This means ",
+				"that some parts of the game, including online features",
+				"(like chat and multiplayer), might not function as expected (or might",
+				"not function at all). The game might even crash. Because this is",
+				"a pre-release game, Fatshark does not commit",
+				"to providing customer support for the game."
+			},
+			font_size = (is_pro and 52) or 36,
+			size = {
+				1920,
+				(is_pro and 70) or 50
+			},
+			offset = {
+				0,
+				750,
+				0
+			}
+		}
 	end
-
-	splash_content[#splash_content + 1] = {
-		input_scenegraph_id = "input_background",
-		product_id = "ADAA6515-8206-49E5-B34C-405244800B46",
-		type = "beta_end",
-		scenegraph_id = "background_fit",
-		texts_scenegraph_id = "texts",
-		input_material_name = "storepage_button",
-		forced = true,
-		music_name = "Play_menu_screen_music",
-		material_name = "beta_end_overlay",
-		input_texture_size = (is_xbox_one_x and {
-			1776,
-			346
-		}) or {
-			888,
-			173
-		},
-		input_texture_offset = (is_xbox_one_x and {
-			550,
-			-260
-		}) or {
-			275,
-			-130
-		},
-		time = math.huge
-	}
 end
 
 SplashView = class(SplashView)
@@ -765,6 +805,10 @@ if PLATFORM == "xb1" or PLATFORM == "ps4" then
 			if pad_controller and pad_controller.any_pressed() then
 				return true
 			end
+		end
+
+		if PLATFORM == "xb1" and GameSettingsDevelopment.allow_keyboard_mouse and (Keyboard.any_pressed() or Mouse.any_pressed()) then
+			return true
 		end
 	end
 end

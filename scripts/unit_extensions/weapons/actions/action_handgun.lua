@@ -43,6 +43,12 @@ ActionHandgun.client_owner_start_action = function (self, new_action, t, chain_a
 		self.spread_extension = ScriptUnit.extension(weapon_unit, "spread_system")
 	end
 
+	local spread_template_override = new_action.spread_template_override
+
+	if spread_template_override then
+		self.spread_extension:override_spread_template(spread_template_override)
+	end
+
 	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
 	self.state = "waiting_to_shoot"
 	self.time_to_shoot = t + new_action.fire_time

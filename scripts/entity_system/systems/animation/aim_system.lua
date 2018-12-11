@@ -35,6 +35,7 @@ AimSystem.on_freeze_extension = function (self, unit, extension_name)
 	local extension = self._extensions[unit]
 
 	fassert(extension, "Unit was already frozen.")
+	extension.template[extension.network_type].leave(extension.unit, extension.data)
 
 	self._frozen_extensions[unit] = extension
 	self._extensions[unit] = nil

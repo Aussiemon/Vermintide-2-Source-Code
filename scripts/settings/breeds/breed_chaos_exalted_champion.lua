@@ -113,8 +113,8 @@ local breed_data = {
 		1.2
 	},
 	max_health = {
-		400,
-		600,
+		500,
+		500,
 		900,
 		1200,
 		1800
@@ -466,14 +466,14 @@ local action_data = {
 			"idle_defence_2"
 		},
 		difficulty_spawn = {
-			harder = "warcamp_boss_event_defensive_harder",
-			normal = "warcamp_boss_event_defensive_normal",
-			hard = "warcamp_boss_event_defensive_hard",
-			survival_hard = "warcamp_boss_event_defensive_hard",
-			survival_harder = "warcamp_boss_event_defensive_hard",
-			hardest = "warcamp_boss_event_defensive_hardest",
-			survival_hardest = "warcamp_boss_event_defensive_hard",
-			easy = "warcamp_boss_event_defensive_easy"
+			harder = "warcamp_boss_event_defensive",
+			normal = "warcamp_boss_event_defensive",
+			hard = "warcamp_boss_event_defensive",
+			survival_hard = "warcamp_boss_event_defensive",
+			survival_harder = "warcamp_boss_event_defensive",
+			hardest = "warcamp_boss_event_defensive",
+			survival_hardest = "warcamp_boss_event_defensive",
+			easy = "warcamp_boss_event_defensive"
 		},
 		start_anims = {
 			bwd = "move_start_bwd",
@@ -1290,16 +1290,16 @@ local action_data = {
 			},
 			{
 				fwd = {
-					"stagger_medium_fwd"
+					"stagger_fwd"
 				},
 				bwd = {
-					"stagger_medium_bwd"
+					"stagger_bwd"
 				},
 				left = {
-					"stagger_medium_left"
+					"stagger_left"
 				},
 				right = {
-					"stagger_medium_right"
+					"stagger_right"
 				}
 			},
 			{
@@ -1335,7 +1335,7 @@ local action_data = {
 					"stagger_fwd_downed"
 				},
 				bwd = {
-					"stagger_bwd_exp"
+					"stagger_bwd_downed"
 				},
 				left = {
 					"stagger_left_downed"

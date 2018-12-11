@@ -32,10 +32,6 @@ BTStormVerminAttackAction.enter = function (self, unit, blackboard, t)
 
 	local target_unit = blackboard.target_unit
 	blackboard.target_unit_status_extension = (ScriptUnit.has_extension(target_unit, "status_system") and ScriptUnit.extension(target_unit, "status_system")) or nil
-	local network_manager = Managers.state.network
-
-	network_manager:anim_event(unit, "to_combat")
-
 	blackboard.attacking_target = blackboard.target_unit
 
 	self:_init_attack(unit, blackboard, t)
@@ -132,7 +128,6 @@ BTStormVerminAttackAction.leave = function (self, unit, blackboard, t, reason, d
 	blackboard.navigation_extension:set_enabled(true)
 
 	blackboard.target_unit_status_extension = nil
-	blackboard.update_timer = 0
 	blackboard.active_node = nil
 	blackboard.attack_aborted = nil
 	blackboard.attack_rotation = nil

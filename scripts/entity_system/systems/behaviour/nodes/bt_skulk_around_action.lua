@@ -26,7 +26,6 @@ BTSkulkAroundAction.enter = function (self, unit, blackboard, t)
 
 	local network_manager = Managers.state.network
 
-	network_manager:anim_event(unit, "to_combat")
 	network_manager:anim_event(unit, "move_fwd")
 	blackboard.navigation_extension:set_max_speed(blackboard.breed.run_speed)
 

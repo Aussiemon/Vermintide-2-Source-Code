@@ -61,26 +61,7 @@ BTSelector_storm_vermin_commander.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_in_gravity_well = children[3]
-	local condition_result = blackboard.gravity_well_position
-
-	if condition_result then
-		self:set_running_child(unit, blackboard, t, node_in_gravity_well, "aborted")
-
-		local result, evaluate = node_in_gravity_well:run(unit, blackboard, t, dt)
-
-		if result ~= "running" then
-			self:set_running_child(unit, blackboard, t, nil, result)
-		end
-
-		if result ~= "failed" then
-			return result, evaluate
-		end
-	elseif node_in_gravity_well == child_running then
-		self:set_running_child(unit, blackboard, t, nil, "failed")
-	end
-
-	local node_falling = children[4]
+	local node_falling = children[3]
 	local condition_result = blackboard.is_falling or blackboard.fall_state ~= nil
 
 	if condition_result then
@@ -99,7 +80,7 @@ BTSelector_storm_vermin_commander.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_stagger = children[5]
+	local node_stagger = children[4]
 	local condition_result = nil
 
 	if blackboard.stagger then
@@ -122,7 +103,7 @@ BTSelector_storm_vermin_commander.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_blocked = children[6]
+	local node_blocked = children[5]
 	local condition_result = blackboard.blocked
 
 	if condition_result then
@@ -141,7 +122,7 @@ BTSelector_storm_vermin_commander.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_smartobject = children[7]
+	local node_smartobject = children[6]
 	local condition_result = nil
 	local next_smart_object_data = blackboard.next_smart_object_data
 	local smartobject_is_next = next_smart_object_data.next_smart_object_id ~= nil
@@ -182,7 +163,7 @@ BTSelector_storm_vermin_commander.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_combat_destructible = children[8]
+	local node_combat_destructible = children[7]
 	local target = blackboard.target_unit
 	local is_destructible_static = not ScriptUnit.has_extension(target, "locomotion_system")
 	local condition_result = unit_alive(target) and blackboard.confirmed_player_sighting and is_destructible_static
@@ -203,7 +184,7 @@ BTSelector_storm_vermin_commander.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_in_combat = children[9]
+	local node_in_combat = children[8]
 	local condition_result = unit_alive(blackboard.target_unit) and blackboard.confirmed_player_sighting
 
 	if condition_result then
@@ -222,7 +203,7 @@ BTSelector_storm_vermin_commander.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_move_to_goal = children[10]
+	local node_move_to_goal = children[9]
 	local condition_result = blackboard.goal_destination ~= nil
 
 	if condition_result then
@@ -241,7 +222,7 @@ BTSelector_storm_vermin_commander.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_alerted = children[11]
+	local node_alerted = children[10]
 	local condition_result = unit_alive(blackboard.target_unit) and not blackboard.confirmed_player_sighting
 
 	if condition_result then
@@ -260,7 +241,7 @@ BTSelector_storm_vermin_commander.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_idle = children[12]
+	local node_idle = children[11]
 	local condition_result = not unit_alive(blackboard.target_unit)
 
 	if condition_result then
@@ -279,7 +260,7 @@ BTSelector_storm_vermin_commander.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_fallback_idle = children[13]
+	local node_fallback_idle = children[12]
 
 	self:set_running_child(unit, blackboard, t, node_fallback_idle, "aborted")
 

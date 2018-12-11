@@ -27,7 +27,10 @@ BTJumpSlamImpactAction.leave = function (self, unit, blackboard, t, reason, dest
 	blackboard.jump_slam_data = nil
 
 	blackboard.navigation_extension:set_enabled(true)
-	LocomotionUtils.set_animation_driven_movement(unit, false, true)
+
+	if not destroy then
+		LocomotionUtils.set_animation_driven_movement(unit, false, true)
+	end
 end
 
 BTJumpSlamImpactAction.run = function (self, unit, blackboard, t, dt)

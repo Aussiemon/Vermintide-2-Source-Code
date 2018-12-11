@@ -4,6 +4,7 @@ local generic_input_actions = definitions.generic_input_actions
 local deed_game_widget_definitions = definitions.deed_game_widgets
 local custom_game_widget_definitions = definitions.custom_game_widgets
 local adventure_game_widget_definitions = definitions.adventure_game_widgets
+local event_game_widget_definitions = definitions.event_game_widgets
 MissionVotingUI = class(MissionVotingUI)
 
 MissionVotingUI.init = function (self, ingame_ui_context)
@@ -78,6 +79,19 @@ MissionVotingUI.create_ui_elements = function (self)
 
 	self._custom_game_widgets = custom_game_widgets
 	self._custom_game_widgets_by_name = custom_game_widgets_by_name
+	local event_game_widgets = {}
+	local event_game_widgets_by_name = {}
+
+	for name, widget_definition in pairs(event_game_widget_definitions) do
+		if widget_definition then
+			local widget = UIWidget.init(widget_definition)
+			event_game_widgets[#event_game_widgets + 1] = widget
+			event_game_widgets_by_name[name] = widget
+		end
+	end
+
+	self._event_game_widgets = event_game_widgets
+	self._event_game_widgets_by_name = event_game_widgets_by_name
 	local adventure_game_widgets = {}
 	local adventure_game_widgets_by_name = {}
 
@@ -93,6 +107,8 @@ MissionVotingUI.create_ui_elements = function (self)
 	self._adventure_game_widgets_by_name = adventure_game_widgets_by_name
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	self.scenegraph_definition = definitions.scenegraph_definition
+
+	UIRenderer.clear_scenegraph_queue(self.ui_top_renderer)
 end
 
 MissionVotingUI.destroy = function (self)
@@ -140,12 +156,20 @@ MissionVotingUI.start_vote = function (self, active_voting)
 	local vote_data = active_voting.data
 	local item_name = vote_data.item_name
 	local is_deed = item_name ~= nil
+	local event_data = vote_data.event_data
+	local is_event = event_data ~= nil
 
 	if is_deed then
 		local level_key = vote_data.level_key
 		local difficulty = vote_data.difficulty
 
 		self:_set_deed_presentation(item_name, level_key, difficulty)
+	elseif is_event then
+		local level_key = vote_data.level_key
+		local difficulty = vote_data.difficulty
+		local mutators = event_data.mutators
+
+		self:_set_event_game_presentation(difficulty, level_key, mutators)
 	else
 		local quick_game = vote_data.quick_game
 
@@ -340,6 +364,24 @@ MissionVotingUI._set_deed_presentation = function (self, item_key, level_key, di
 	self._presentation_type = "deed"
 end
 
+MissionVotingUI._set_event_game_presentation = function (self, difficulty, level_key, mutators)
+	local difficulty_settings = DifficultySettings[difficulty]
+	local difficulty_display_name = difficulty_settings.display_name
+	local difficulty_display_image = difficulty_settings.display_image
+	local difficulty_frame_texture = difficulty_settings.completed_frame_texture or "map_frame_00"
+	local event_game_widgets_by_name = self._event_game_widgets_by_name
+	local game_option_1 = event_game_widgets_by_name.game_option_1
+	game_option_1.content.option_text = Localize(difficulty_display_name)
+	game_option_1.content.icon = difficulty_display_image
+	game_option_1.content.icon_frame = difficulty_frame_texture
+	local event_summary = event_game_widgets_by_name.event_summary
+	event_summary.content.item = {
+		level_key = level_key,
+		mutators = mutators
+	}
+	self._presentation_type = "event"
+end
+
 MissionVotingUI._update_vote_timer = function (self)
 	local voting_manager = self.voting_manager
 	local vote_template = voting_manager:active_vote_template()
@@ -384,10 +426,8 @@ MissionVotingUI.update = function (self, menu_active, dt, t)
 
 	self.menu_active = menu_active
 	local voting_manager = self.voting_manager
-	local active_vote_name = voting_manager:vote_in_progress()
-	local is_mission_vote = active_vote_name == "game_settings_vote" or active_vote_name == "game_settings_deed_vote"
 
-	if is_mission_vote then
+	if voting_manager:vote_in_progress() and voting_manager:is_mission_vote() then
 		if not menu_active then
 			if not self.vote_started then
 				self:start_vote(voting_manager.active_voting)
@@ -511,6 +551,20 @@ MissionVotingUI.draw = function (self, dt)
 
 			for i = 1, #deed_widgets, 1 do
 				local widget = deed_widgets[i]
+
+				if widget.snap_pixel_positions ~= nil then
+					render_settings.snap_pixel_positions = widget.snap_pixel_positions
+				end
+
+				UIRenderer.draw_widget(ui_top_renderer, widget)
+
+				render_settings.snap_pixel_positions = snap_pixel_positions
+			end
+		elseif presentation_type == "event" then
+			local event_game_widgets = self._event_game_widgets
+
+			for i = 1, #event_game_widgets, 1 do
+				local widget = event_game_widgets[i]
 
 				if widget.snap_pixel_positions ~= nil then
 					render_settings.snap_pixel_positions = widget.snap_pixel_positions

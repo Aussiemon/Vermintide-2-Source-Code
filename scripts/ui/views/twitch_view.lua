@@ -68,8 +68,6 @@ TwitchView.update = function (self, dt, t, is_sub_menu)
 		return
 	end
 
-	script_data.twitch_view = self
-
 	self:_draw(dt, t)
 	self:_update_input(dt, t)
 	self:_update_error(dt, t)

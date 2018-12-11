@@ -106,7 +106,11 @@ BTRatlingGunnerShootAction.leave = function (self, unit, blackboard, t, reason, 
 	end
 
 	self:_notify_no_longer_attacking(unit, data.target_unit)
-	blackboard.locomotion_extension:use_lerp_rotation(true)
+
+	if not destroy then
+		blackboard.locomotion_extension:use_lerp_rotation(true)
+	end
+
 	blackboard.navigation_extension:set_enabled(true)
 end
 

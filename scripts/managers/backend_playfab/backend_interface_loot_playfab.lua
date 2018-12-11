@@ -77,7 +77,7 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 	self._loot_requests[id] = loot
 end
 
-BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_won, quick_play_bonus, difficulty, level_key, num_tomes, num_grims, num_loot_dice, hero_name, start_experience, end_experience, deed_item_name, deed_backend_id)
+BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_won, quick_play_bonus, difficulty, level_key, num_tomes, num_grims, num_loot_dice, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_backend_id)
 	local id = self:_new_id()
 	local remote_player_ids_and_characters = self:_get_remote_player_network_ids_and_characters()
 	local data = {
@@ -85,6 +85,7 @@ BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_wo
 		quick_play_bonus = quick_play_bonus,
 		difficulty = difficulty,
 		level_name = level_key,
+		loot_profile_name = loot_profile_name,
 		num_tomes = num_tomes,
 		num_grims = num_grims,
 		num_dice = num_loot_dice,
@@ -116,6 +117,7 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 	local random_value = function_result.RandomValue
 	local consumed_deed_result = function_result.ConsumedDeedResult
 	local experience = function_result.Experience
+	local recent_quickplay_games = function_result.RecentQuickplayGames
 	local num_items = #items
 	local loot_request = {}
 
@@ -153,6 +155,11 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 	local key = hero_name .. "_experience"
 
 	self._backend_mirror:set_read_only_data(key, experience, true)
+
+	if recent_quickplay_games then
+		self._backend_mirror:set_read_only_data("recent_quickplay_games", recent_quickplay_games, true)
+	end
+
 	Managers.backend:dirtify_interfaces()
 
 	self._loot_requests[id] = loot_request
@@ -180,6 +187,13 @@ BackendInterfaceLootPlayfab._get_remote_player_network_ids_and_characters = func
 	end
 
 	return ids_and_characters
+end
+
+BackendInterfaceLootPlayfab.get_achievement_rewards = function (self, achievement_id)
+	local achievement_rewards = self._backend_mirror:get_achievement_rewards()
+	local rewards = achievement_rewards[achievement_id] and achievement_rewards[achievement_id][1]
+
+	return rewards
 end
 
 BackendInterfaceLootPlayfab.achievement_rewards_claimed = function (self, achievement_id)
@@ -247,9 +261,40 @@ BackendInterfaceLootPlayfab.achievement_rewards_request_cb = function (self, dat
 
 			backend_mirror:add_item(backend_id, item)
 
-			loot[i] = {
-				backend_id,
-				amount
+			loot[#loot + 1] = {
+				type = "item",
+				backend_id = backend_id,
+				amount = amount
+			}
+		end
+	end
+
+	local new_keep_decorations = function_result.new_keep_decorations
+
+	if new_keep_decorations then
+		for i = 1, #new_keep_decorations, 1 do
+			local keep_decoration_name = new_keep_decorations[i]
+
+			backend_mirror:add_keep_decoration(keep_decoration_name)
+
+			loot[#loot + 1] = {
+				type = "keep_decoration",
+				keep_decoration_name = keep_decoration_name
+			}
+		end
+	end
+
+	local new_weapon_skins = function_result.new_weapon_skins
+
+	if new_weapon_skins then
+		for i = 1, #new_weapon_skins, 1 do
+			local weapon_skin_name = new_weapon_skins[i]
+
+			backend_mirror:add_unlocked_weapon_skin(weapon_skin_name)
+
+			loot[#loot + 1] = {
+				type = "weapon_skin",
+				weapon_skin_name = weapon_skin_name
 			}
 		end
 	end
@@ -257,6 +302,8 @@ BackendInterfaceLootPlayfab.achievement_rewards_request_cb = function (self, dat
 	backend_mirror:set_achievement_claimed(achievement_id)
 
 	self._loot_requests[id] = loot
+
+	Managers.backend:dirtify_interfaces()
 end
 
 BackendInterfaceLootPlayfab.is_loot_generated = function (self, id)

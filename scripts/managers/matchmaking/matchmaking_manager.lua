@@ -58,6 +58,13 @@ MatchmakingSettings = {
 		true,
 		true,
 		true
+	},
+	quickplay_level_select_settings = {
+		loss_multiplier = 1,
+		win_multiplier = 1,
+		base_level_weight = 1,
+		amount_of_relevant_games = 20,
+		progression_multiplier = 10
 	}
 }
 local network_options = {
@@ -89,7 +96,11 @@ local RPCS = {
 	"rpc_game_server_set_group_leader",
 	"rpc_matchmaking_broadcast_game_server_ip_address",
 	"rpc_set_quick_game",
-	"rpc_start_game_countdown_finished"
+	"rpc_start_game_countdown_finished",
+	"rpc_set_game_mode_event_data",
+	"rpc_clear_game_mode_event_data",
+	"rpc_matchmaking_sync_quickplay_data",
+	"rpc_matchmaking_request_quickplay_data"
 }
 MatchmakingBrokenLobbies = MatchmakingBrokenLobbies or {}
 
@@ -107,6 +118,8 @@ MatchmakingManager.init = function (self, params)
 	self._network_hash = self.lobby.network_hash
 	self._host_matchmaking_data = {}
 	self._power_level_timer = 0
+	self.party_owned_dlcs = {}
+	self._level_weights = {}
 	self._quick_game = params.quick_game
 	self.handshaker_host = MatchmakingHandshakerHost:new(self.network_transmit)
 
@@ -203,6 +216,37 @@ MatchmakingManager.get_players_ping = function (self)
 	end
 end
 
+MatchmakingManager.game_mode_event_data = function (self)
+	return self._game_mode_event_data
+end
+
+MatchmakingManager.set_game_mode_event_data = function (self, event_data)
+	self._game_mode_event_data = event_data
+
+	if self.is_server then
+		local mutators = event_data.mutators
+
+		fassert(#mutators <= NetworkConstants.mutator_array.max_size, "Too many mutators defined for event! (%d|%d)", #mutators, NetworkConstants.mutator_array.max_size)
+
+		local mutator_lookup_array = {}
+
+		for i = 1, #mutators, 1 do
+			local mutator_name = mutators[i]
+			mutator_lookup_array[i] = NetworkLookup.mutator_templates[mutator_name]
+		end
+
+		self.network_transmit:send_rpc_clients("rpc_set_game_mode_event_data", mutator_lookup_array)
+	end
+end
+
+MatchmakingManager.clear_game_mode_event_data = function (self)
+	self._game_mode_event_data = nil
+
+	if self.is_server then
+		self.network_transmit:send_rpc_clients("rpc_clear_game_mode_event_data")
+	end
+end
+
 MatchmakingManager.set_statistics_db = function (self, statistics_db)
 	self.statistics_db = statistics_db
 	self.params.statistics_db = statistics_db
@@ -252,8 +296,13 @@ MatchmakingManager.set_ingame_ui = function (self, ingame_ui)
 	self.params.ingame_ui = ingame_ui
 end
 
-MatchmakingManager.activate_waystone_portal = function (self, enable)
-	LevelCountdownUI.set_waystone_activation(enable)
+MatchmakingManager.activate_waystone_portal = function (self, enable, waystone_type)
+	local ingame_ui = self._ingame_ui
+	local countdown_ui = ingame_ui.countdown_ui
+
+	if countdown_ui then
+		countdown_ui:set_waystone_activation(enable, waystone_type)
+	end
 end
 
 MatchmakingManager.destroy = function (self)
@@ -553,29 +602,46 @@ MatchmakingManager.is_join_popup_visible = function (self)
 	return self._ingame_ui and self._ingame_ui:unavailable_hero_popup_active()
 end
 
-MatchmakingManager.party_has_level_unlocked = function (self, level_key, ignore_dlc_check)
+MatchmakingManager.party_has_level_unlocked = function (self, level_key, ignore_dlc_check, ommit_dlc_levels)
+	local settings = LevelSettings[level_key]
 	local players = Managers.player:human_players()
 	local statistics_db = self.statistics_db
+	local level_weights = self._level_weights
+	local level_available = false
 
 	for _, player in pairs(players) do
 		local stats_id = player:stats_id()
 
-		if not LevelUnlockUtils.level_unlocked(statistics_db, stats_id, level_key, ignore_dlc_check) then
+		if ommit_dlc_levels and settings.dlc_name then
 			return false
 		end
+
+		if not LevelUnlockUtils.level_unlocked(statistics_db, stats_id, level_key, true) or settings.not_quickplayable then
+			return false
+		end
+
+		if not ignore_dlc_check then
+			local peer_id = player.peer_id
+
+			if level_weights[peer_id] and level_weights[peer_id][level_key] then
+				level_available = true
+			end
+		end
+	end
+
+	if not ignore_dlc_check then
+		return level_available
 	end
 
 	return true
 end
 
-MatchmakingManager._get_unlocked_levels_by_party = function (self, ignore_dlc_check)
+MatchmakingManager._get_unlocked_levels_by_party = function (self, ignore_dlc_check, ommit_dlc_levels)
 	local unlocked_levels = {}
-	local players = Managers.player:human_players()
-	local statistics_db = self.statistics_db
 	local level_keys = UnlockableLevelsByGameMode.adventure
 
 	for _, level_key in ipairs(level_keys) do
-		if self:party_has_level_unlocked(level_key, ignore_dlc_check) then
+		if self:party_has_level_unlocked(level_key, ignore_dlc_check, ommit_dlc_levels) then
 			unlocked_levels[#unlocked_levels + 1] = level_key
 		end
 	end
@@ -583,171 +649,209 @@ MatchmakingManager._get_unlocked_levels_by_party = function (self, ignore_dlc_ch
 	return unlocked_levels
 end
 
-MatchmakingManager._get_level_key_by_amount_played_by_party = function (self, level_keys, debug_completed_times, debug_last_played_level, ignore_prints)
+MatchmakingManager._get_unlocked_levels = function (self, ignore_dlc_check)
+	local unlocked_levels = {}
+	local statistics_db = self.statistics_db
+	local player = Managers.player:local_player()
+	local level_keys = UnlockableLevelsByGameMode.adventure
+
+	for _, level_key in ipairs(level_keys) do
+		local stats_id = player:stats_id()
+
+		if LevelUnlockUtils.level_unlocked(statistics_db, stats_id, level_key) then
+			unlocked_levels[#unlocked_levels + 1] = level_key
+		end
+	end
+
+	return unlocked_levels
+end
+
+MatchmakingManager._get_level_key_from_level_weights = function (self, level_keys)
 	fassert(#level_keys > 0, "Empty level_keys list")
 
-	local times_played_list = {}
+	local level_weights = self._level_weights
+	local level_weights_by_index = {}
+	local amount_players = 0
+
+	for _, _ in pairs(level_weights) do
+		amount_players = amount_players + 1
+	end
+
+	for i = 1, #level_keys, 1 do
+		level_weights_by_index[i] = 0
+		local level_key = level_keys[i]
+
+		for _, weights_table in pairs(level_weights) do
+			if weights_table[level_key] then
+				level_weights_by_index[i] = level_weights_by_index[i] + weights_table[level_key]
+			end
+		end
+
+		level_weights_by_index[i] = level_weights_by_index[i] / amount_players
+	end
+
+	local p, a = LoadedDice.create(level_weights_by_index, false)
+	local result = LoadedDice.roll(p, a)
+	local preferred_levels = {}
+
+	for j = 1, #level_weights_by_index, 1 do
+		local chosen_index = 1
+
+		for i = 1, #level_weights_by_index, 1 do
+			if level_weights_by_index[chosen_index] < level_weights_by_index[i] then
+				chosen_index = i
+			end
+		end
+
+		local level_key = level_keys[chosen_index]
+
+		if level_key and level_weights_by_index[chosen_index] > 0 then
+			preferred_levels[#preferred_levels + 1] = level_key
+		end
+
+		level_weights_by_index[chosen_index] = -1
+	end
+
+	return level_keys[result], preferred_levels
+end
+
+MatchmakingManager._calculate_level_weights = function (self, level_keys, recent_games_played)
+	fassert(#level_keys > 0, "Empty level_keys list")
+
+	local settings = MatchmakingSettings.quickplay_level_select_settings
+	local player = Managers.player:local_player()
+	local statistics_db = self.statistics_db
+	local lookup_level_keys = NetworkLookup.level_keys
+	local stats_id = player:stats_id()
+	local last_played_games = recent_games_played or {}
+	local level_weight_by_lookup = {}
+
+	for i = 1, 50, 1 do
+		level_weight_by_lookup[i] = -1
+	end
+
+	for i = 1, #level_keys, 1 do
+		local level_key = level_keys[i]
+		local level_index = lookup_level_keys[level_key]
+		local base_weight = settings.base_level_weight
+		local progression_multiplier = settings.progression_multiplier
+		level_weight_by_lookup[level_index] = base_weight
+		local level_completed = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, level_key)
+
+		if not level_completed or level_completed == 0 then
+			level_weight_by_lookup[level_index] = level_weight_by_lookup[level_index] * progression_multiplier
+		end
+	end
+
+	local function sort(a, b)
+		local picked_a = a.timestamp
+		local picked_b = b.timestamp
+
+		return picked_b < picked_a
+	end
+
+	table.sort(last_played_games, sort)
+
+	local amount_of_relevant_games = settings.amount_of_relevant_games
+
+	while amount_of_relevant_games < #last_played_games do
+		last_played_games[#last_played_games] = nil
+	end
+
+	local win_multiplier = settings.win_multiplier
+	local loss_multiplier = settings.loss_multiplier
+
+	for i = 1, #last_played_games, 1 do
+		local level_key = last_played_games[i].level_name
+
+		if level_key then
+			local level_index = lookup_level_keys[level_key]
+			local multiplier = (last_played_games[i].game_won and win_multiplier) or loss_multiplier
+			level_weight_by_lookup[level_index] = level_weight_by_lookup[level_index] - (multiplier * (#last_played_games - i + 1)) / #last_played_games
+
+			if level_weight_by_lookup[level_index] < 0 then
+				level_weight_by_lookup[level_index] = 0
+			end
+		end
+	end
+
+	return level_weight_by_lookup
+end
+
+MatchmakingManager._add_level_weight = function (self, peer_id, weight_array)
+	local level_weights = self._level_weights
+	local stripped_weights_array = {}
+	local lookup_level_keys = NetworkLookup.level_keys
+
+	for key, value in pairs(weight_array) do
+		if value ~= -1 then
+			local level_key = lookup_level_keys[key]
+			stripped_weights_array[level_key] = value
+		end
+	end
+
+	level_weights[peer_id] = stripped_weights_array
+end
+
+MatchmakingManager._remove_irrelevant_level_weights = function (self)
+	local level_weights = self._level_weights
+	local players = Managers.player:human_players()
+
+	for key_id, _ in pairs(level_weights) do
+		local exists = false
+
+		for _, player in pairs(players) do
+			if key_id == player.peer_id then
+				exists = true
+
+				break
+			end
+		end
+
+		if not exists then
+			level_weights[key_id] = nil
+		end
+	end
+
+	self._level_weights = level_weights
+end
+
+MatchmakingManager.get_weighed_random_unlocked_level = function (self, ignore_dlc_check)
+	local recent_games_played_json = Managers.backend:get_read_only_data("recent_quickplay_games")
+	local recent_games_played = (recent_games_played_json and cjson.decode(recent_games_played_json)) or {}
+	local unlocked_levels = self:_get_unlocked_levels()
+	local my_level_weights = self:_calculate_level_weights(unlocked_levels, recent_games_played)
+	local my_id = Managers.player:local_player().peer_id
+
+	self:_add_level_weight(my_id, my_level_weights)
+	self:_remove_irrelevant_level_weights()
+
+	local ommit_dlc_levels = true
+	local has_full_game = not script_data.settings.use_beta_overlay
+
+	if has_full_game then
+		ommit_dlc_levels = not self:_party_has_completed_act("act_4")
+	end
+
+	local level_keys = self:_get_unlocked_levels_by_party(ignore_dlc_check, ommit_dlc_levels)
+	local level_key, preferred_levels = self:_get_level_key_from_level_weights(level_keys)
+
+	return level_key, preferred_levels
+end
+
+MatchmakingManager._party_has_completed_act = function (self, act_name)
 	local players = Managers.player:human_players()
 	local statistics_db = self.statistics_db
 
 	for _, player in pairs(players) do
 		local stats_id = player:stats_id()
 
-		for i, level_key in ipairs(level_keys) do
-			local times_played = (debug_completed_times and debug_completed_times[level_key]) or statistics_db:get_persistent_stat(stats_id, "played_levels_quickplay", level_key) or 0
-			times_played_list[i] = (times_played_list[i] or 0) + times_played
+		if not LevelUnlockUtils.act_completed(statistics_db, stats_id, act_name) then
+			return false
 		end
 	end
 
-	if not ignore_prints then
-		table.dump(times_played_list, "times_played_list raw")
-	end
-
-	local modify_level_keys = {}
-
-	for _, player in pairs(players) do
-		local stats_id = player:stats_id()
-		local last_completed_level_id = statistics_db:get_persistent_stat(stats_id, "last_played_level_id")
-		local level_key = debug_last_played_level or UnlockableLevels[last_completed_level_id]
-
-		if level_key then
-			local i = table.find(level_keys, level_key)
-
-			if i then
-				modify_level_keys[level_key] = i
-			end
-		end
-	end
-
-	local increase_last_played_amount = 5
-
-	for level_key, i in pairs(modify_level_keys) do
-		if not ignore_prints then
-			printf("increasing level_key(%s) by (%s) because of last_played_level_id", level_key, tostring(increase_last_played_amount))
-		end
-
-		times_played_list[i] = times_played_list[i] + increase_last_played_amount
-	end
-
-	if not ignore_prints then
-		table.dump(times_played_list, "times_played_list after last played")
-	end
-
-	local highest_completed_count = 0
-
-	for i, amount in ipairs(times_played_list) do
-		local new_amount = amount
-		times_played_list[i] = new_amount
-
-		if highest_completed_count < new_amount then
-			highest_completed_count = new_amount
-		end
-	end
-
-	for i, amount in ipairs(times_played_list) do
-		times_played_list[i] = highest_completed_count - amount + 1
-	end
-
-	local p, a = LoadedDice.create(times_played_list, false)
-	local result = LoadedDice.roll(p, a)
-
-	if not ignore_prints then
-		table.dump(level_keys, "level_keys")
-		table.dump(times_played_list, "times_played_list after roll")
-		printf("Winning level (%s)", level_keys[result])
-	end
-
-	return level_keys[result]
-end
-
-MatchmakingManager.get_random_unlocked_level = function (self)
-	local ignore_dlc_check = true
-	local level_keys = self:_get_unlocked_levels_by_party(ignore_dlc_check)
-
-	return level_keys[math.random(1, #level_keys)]
-end
-
-MatchmakingManager.get_weighed_random_unlocked_level = function (self, ignore_dlc_check)
-	local level_keys = self:_get_unlocked_levels_by_party(ignore_dlc_check)
-	local level_key = self:_get_level_key_by_amount_played_by_party(level_keys)
-
-	return level_key
-end
-
-local function dump_array(t, name)
-	printf("[%s]", name)
-
-	for key, value in ipairs(t) do
-		printf("[%s] = (%s)", tostring(key), tostring(value))
-	end
-
-	printf("[/%s]", name)
-end
-
-MatchmakingManager.debug_get_weighed_level = function (self)
-	local level_keys = {
-		"farmlands",
-		"ussingen",
-		"nurgle",
-		"warcamp",
-		"catacombs",
-		"fort",
-		"military",
-		"skittergate",
-		"elven_ruins",
-		"skaven_stronghold",
-		"ground_zero",
-		"bell",
-		"mines"
-	}
-	local times_played = {
-		farmlands = 1,
-		ussingen = 3,
-		nurgle = 0,
-		warcamp = 2,
-		catacombs = 1,
-		fort = 0,
-		military = 1,
-		skittergate = 0,
-		elven_ruins = 1,
-		skaven_stronghold = 1,
-		ground_zero = 1,
-		bell = 1,
-		mines = 1
-	}
-	local last_played_level = "ussingen"
-	local results = {}
-
-	for _, level_key in ipairs(level_keys) do
-		results[level_key] = 0
-	end
-
-	local results_percentage = {}
-	local test_times = 10000
-
-	for i = 1, test_times, 1 do
-		local level_key = self:_get_level_key_by_amount_played_by_party(level_keys, times_played, last_played_level, true)
-		results[level_key] = results[level_key] + 1
-	end
-
-	for result, amount in pairs(results) do
-		results_percentage[result] = amount / test_times
-	end
-
-	local function sort(a, b)
-		local picked_a = results[a]
-		local picked_b = results[b]
-
-		return picked_b < picked_a
-	end
-
-	table.sort(level_keys, sort)
-
-	for _, level_key in ipairs(level_keys) do
-		local last_played = level_key == last_played_level
-
-		printf("(%s)\t\tplayed(%s)\t\tlast_played(%s)\t\tpicked: (%s) - (%.2f%%)", level_key, tostring(times_played[level_key]), tostring(last_played), tostring(results[level_key]), tostring(results_percentage[level_key]))
-	end
+	return true
 end
 
 MatchmakingManager.set_matchmaking_data = function (self, next_level_key, difficulty, act_key, game_mode, private_game, quick_game, eac_authorized)
@@ -789,11 +893,11 @@ MatchmakingManager.find_game = function (self, search_config)
 		}
 		local private_game = search_config.private_game
 
-		assert(private_game ~= nil)
+		fassert(private_game ~= nil, "Private game wasn't set!")
 
 		local quick_game = search_config.quick_game
 
-		assert(quick_game ~= nil)
+		fassert(quick_game ~= nil, "Quick game wasn't set!")
 		self:set_quick_game(quick_game)
 
 		local next_state = nil
@@ -807,7 +911,12 @@ MatchmakingManager.find_game = function (self, search_config)
 
 			if private_game or people_in_local_hosted_party or always_host or ALWAYS_HOST_GAME then
 				if quick_game and PLATFORM == "xb1" then
-					local ignore_dlc_check = true
+					local ignore_dlc_check = false
+
+					if Managers.account:offline_mode() then
+						ignore_dlc_check = false
+					end
+
 					self.state_context.search_config.level_key = self:get_weighed_random_unlocked_level(ignore_dlc_check)
 				end
 
@@ -942,7 +1051,7 @@ MatchmakingManager.is_game_matchmaking = function (self)
 	return is_matchmaking, private_game
 end
 
-MatchmakingManager.rpc_set_matchmaking = function (self, sender, client_cookie, host_cookie, is_matchmaking, private_game, level_key, difficulty, quick_game)
+MatchmakingManager.rpc_set_matchmaking = function (self, sender, client_cookie, host_cookie, is_matchmaking, private_game, level_key_id, difficulty_id, quick_game)
 	if not self.handshaker_client:validate_cookies(client_cookie, host_cookie) then
 		return
 	end
@@ -951,8 +1060,8 @@ MatchmakingManager.rpc_set_matchmaking = function (self, sender, client_cookie, 
 		mm_printf_force("Set matchmaking=%s, private_game=%s", tostring(is_matchmaking), tostring(private_game))
 
 		if is_matchmaking then
-			local level_key = NetworkLookup.level_keys[level_key]
-			local difficulty = NetworkLookup.difficulties[difficulty]
+			local level_key = NetworkLookup.level_keys[level_key_id]
+			local difficulty = NetworkLookup.difficulties[difficulty_id]
 			self._host_matchmaking_data.level_key = level_key
 			self._host_matchmaking_data.difficulty = difficulty
 			self._host_matchmaking_data.quick_game = quick_game
@@ -974,6 +1083,23 @@ MatchmakingManager.rpc_set_matchmaking = function (self, sender, client_cookie, 
 			self:_change_state(MatchmakingStateIdle, self.params, {})
 		end
 	end
+end
+
+MatchmakingManager.rpc_set_game_mode_event_data = function (self, sender, mutator_lookup_array)
+	local mutators = {}
+
+	for i = 1, #mutator_lookup_array, 1 do
+		local mutator_id = mutator_lookup_array[i]
+		mutators[i] = NetworkLookup.mutator_templates[mutator_id]
+	end
+
+	self._game_mode_event_data = {
+		mutators = mutators
+	}
+end
+
+MatchmakingManager.rpc_clear_game_mode_event_data = function (self, sender)
+	self:clear_game_mode_event_data()
 end
 
 MatchmakingManager.rpc_cancel_matchmaking = function (self, sender)
@@ -1053,7 +1179,6 @@ MatchmakingManager.rpc_matchmaking_request_profile = function (self, sender, cli
 		return
 	end
 
-	local lobby = self.lobby
 	local player_slot_available = self.slot_allocator:is_free(profile)
 	local reply = player_slot_available
 
@@ -1146,6 +1271,12 @@ MatchmakingManager.lobby_match = function (self, lobby_data, act_key, level_key,
 		return false, "lobby is not valid"
 	end
 
+	local lobby_level_key = lobby_data.level_key
+
+	if lobby_level_key == "prologue" then
+		return false, "in prologue"
+	end
+
 	if level_key then
 		local correct_level = lobby_data.level_key == level_key or (lobby_data.selected_level_key and lobby_data.selected_level_key == level_key)
 
@@ -1158,7 +1289,7 @@ MatchmakingManager.lobby_match = function (self, lobby_data, act_key, level_key,
 		return false, "wrong act"
 	end
 
-	if game_mode and game_mode ~= lobby_data.game_mode then
+	if game_mode == "event" and game_mode ~= lobby_data.game_mode then
 		return false, "wrong game mode"
 	end
 
@@ -1374,20 +1505,50 @@ MatchmakingManager.rpc_start_game_countdown_finished = function (self, sender)
 	self:countdown_completed()
 end
 
+MatchmakingManager.rpc_matchmaking_sync_quickplay_data = function (self, sender, weight_array)
+	self:_add_level_weight(sender, weight_array)
+end
+
+MatchmakingManager.rpc_matchmaking_request_quickplay_data = function (self, sender)
+	local unlocked_levels = self:_get_unlocked_levels()
+	local recent_games_played_json = Managers.backend:get_read_only_data("recent_quickplay_games")
+	local recent_games_played = (recent_games_played_json and cjson.decode(recent_games_played_json)) or {}
+	local ignore_dlc_check = false
+	local weight_array = self:_calculate_level_weights(unlocked_levels, recent_games_played, ignore_dlc_check)
+
+	self.network_transmit:send_rpc_server("rpc_matchmaking_sync_quickplay_data", weight_array)
+end
+
 MatchmakingManager.hot_join_sync = function (self, peer_id)
 	self.peers_to_sync[peer_id] = true
 	local player_slot_index = self.profile_synchronizer:profile_by_peer(peer_id, 1)
 
 	if player_slot_index then
 		local profile_owner = self.profile_synchronizer:owner(player_slot_index)
-		local lobby = self.lobby
 		local local_player_index = 1
 
 		self.slot_allocator:allocate_slot(player_slot_index, profile_owner.peer_id, local_player_index)
 		mm_printf("Assigned player %s to slot %d when hot join syncing", profile_owner.peer_id, player_slot_index)
 	end
 
+	local game_mode_event_data = self._game_mode_event_data
+
+	if game_mode_event_data then
+		local mutators = game_mode_event_data.mutators
+		local mutator_lookup_array = {}
+
+		for i = 1, #mutators, 1 do
+			local mutator_name = mutators[i]
+			mutator_lookup_array[i] = NetworkLookup.mutator_templates[mutator_name]
+		end
+
+		RPC.rpc_set_game_mode_event_data(peer_id, mutator_lookup_array)
+	else
+		RPC.rpc_clear_game_mode_event_data(peer_id)
+	end
+
 	RPC.rpc_set_client_game_privacy(peer_id, self:is_game_private())
+	RPC.rpc_matchmaking_request_quickplay_data(peer_id)
 end
 
 MatchmakingManager.countdown_completed = function (self)
@@ -1406,7 +1567,6 @@ end
 
 MatchmakingManager.everyone_has_profile = function (self)
 	local num_peers = self.handshaker_host.num_clients + 1
-	local lobby = self.lobby
 	local num_profiles_taken = 0
 
 	for i = 1, self.slot_allocator:num_slots(), 1 do

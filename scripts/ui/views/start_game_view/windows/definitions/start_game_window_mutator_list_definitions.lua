@@ -1,9 +1,13 @@
 local window_default_settings = UISettings.game_start_windows
 local window_frame = window_default_settings.frame
 local window_size = window_default_settings.size
+local play_button_size = {
+	window_size[1] - 20,
+	72
+}
 local game_option_size = {
 	window_size[1] - 20,
-	700
+	window_size[2] - (50 + play_button_size[2])
 }
 local deed_frame_name = "menu_frame_08"
 local deed_frame_settings = UIFrameSettings[deed_frame_name]
@@ -98,10 +102,7 @@ local scenegraph_definition = {
 		vertical_alignment = "bottom",
 		parent = "window",
 		horizontal_alignment = "center",
-		size = {
-			game_option_size[1],
-			72
-		},
+		size = play_button_size,
 		position = {
 			0,
 			18,

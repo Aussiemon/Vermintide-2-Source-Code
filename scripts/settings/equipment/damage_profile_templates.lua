@@ -280,10 +280,21 @@ DamageProfileTemplates.light_slashing_smiter = {
 	default_target = "default_target_smiter_L",
 	targets = "targets_smiter_L"
 }
+DamageProfileTemplates.light_pointy_smiter = {
+	armor_modifier = "armor_modifier_pointy_smiter_L",
+	critical_strike = "critical_strike_smiter_L",
+	charge_value = "light_attack",
+	cleave_distribution = "cleave_distribution_smiter_default",
+	default_target = "default_target_pointy_smiter_L",
+	targets = "targets_smiter_L"
+}
 
 new_template("light_slashing_smiter", "_diag", nil, nil, "slashing_linesman")
 new_template("light_slashing_smiter", "_flat", nil, nil, "slashing_tank")
 new_template("light_slashing_smiter", "_upper", nil, nil, "slashing_upper")
+new_template("light_pointy_smiter", "_diag", nil, nil, "blunt_linesman")
+new_template("light_pointy_smiter", "_flat", nil, nil, "blunt_tank")
+new_template("light_pointy_smiter", "_upper", nil, nil, "blunt_tank_uppercut")
 new_template("light_slashing_smiter_diag", "_dual_L", nil, nil)
 
 DamageProfileTemplates.light_slashing_smiter_diag_dual_L.default_target = "default_target_smiter_L_dual_light"
@@ -300,7 +311,9 @@ DamageProfileTemplates.light_slashing_smiter_dual_bopp.default_target = "default
 DamageProfileTemplates.light_slashing_smiter_dual_bopp.critical_strike = "critical_strike_smiter_L_dual_light"
 
 new_template("light_slashing_smiter", nil, "light_blunt_smiter", nil, "light_blunt_smiter")
-new_template("light_slashing_smiter", nil, "light_blunt_smiter_upper", nil, "blunt_tank_uppercut")
+new_template("light_slashing_smiter_dual", nil, "light_blunt_smiter_dual", nil, "blunt_smiter")
+new_template("light_slashing_smiter_dual", nil, "light_blunt_smiter_dual_diag", nil, "blunt_linesman")
+new_template("light_slashing_smiter_dual", nil, "light_blunt_smiter_dual_flat", nil, "blunt_tank")
 
 DamageProfileTemplates.medium_slashing_smiter = {
 	armor_modifier = "armor_modifier_smiter_M",
@@ -332,6 +345,14 @@ new_template("medium_blunt_smiter", "_flat_2h", nil, "light_attack", "blunt_tank
 new_template("medium_blunt_smiter", "_upper", nil, nil, "blunt_tank_uppercut")
 new_template("medium_blunt_smiter_upper", "_1h", nil, "heavy_attack")
 new_template("medium_blunt_smiter", "_1h", nil, "heavy_attack")
+new_template("medium_blunt_smiter_upper", nil, "medium_pointy_smiter_upper_1h", "heavy_attack")
+new_template("medium_blunt_smiter_flat", nil, "medium_pointy_smiter_flat_1h", "heavy_attack")
+new_template("medium_blunt_smiter_diag", nil, "medium_pointy_smiter_diag_1h", "heavy_attack")
+
+DamageProfileTemplates.medium_pointy_smiter_upper_1h.armor_modifier = "armor_modifier_pointy_smiter_M"
+DamageProfileTemplates.medium_pointy_smiter_flat_1h.armor_modifier = "armor_modifier_pointy_smiter_M"
+DamageProfileTemplates.medium_pointy_smiter_flat_1h.armor_modifier = "armor_modifier_pointy_smiter_M"
+
 new_template("medium_blunt_smiter_upper", nil, "medium_blunt_smiter_2h_hammer_upper", nil, nil)
 
 DamageProfileTemplates.medium_blunt_smiter_2h_hammer_upper.armor_modifier = "armor_modifier_blunt_smiter_2h_hammer_H"
@@ -364,9 +385,18 @@ DamageProfileTemplates.light_slashing_smiter_stab = {
 	targets = "targets_stab_smiter_L"
 }
 
+new_template("light_slashing_smiter_stab", nil, "light_blunt_smiter_stab", nil, "heavy_blunt_fencer")
+
+DamageProfileTemplates.light_blunt_smiter_stab.targets = "targets_blunt_smiter_stab_L"
+
 new_template("light_slashing_smiter_stab", "_burn", nil, nil)
 
-DamageProfileTemplates.light_slashing_smiter_stab_burn.default_target = "default_target_burning_stab_smiter_L"
+DamageProfileTemplates.light_slashing_smiter_stab_burn.targets = "targets_burning_stab_smiter_L"
+
+new_template("light_slashing_smiter_stab_burn", nil, "light_blunt_smiter_stab_burn", nil)
+
+DamageProfileTemplates.light_blunt_smiter_stab_burn.targets = "targets_burning_punch_smiter_L"
+DamageProfileTemplates.light_blunt_smiter_stab_burn.armor_modifier = "armor_modifier_burning_punch_smiter_L"
 DamageProfileTemplates.medium_slashing_smiter_stab = {
 	armor_modifier = "armor_modifier_stab_smiter_M",
 	critical_strike = "critical_strike_stab_smiter_M",

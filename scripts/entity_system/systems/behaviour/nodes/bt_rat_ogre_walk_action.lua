@@ -30,7 +30,6 @@ BTRatOgreWalkAction.enter = function (self, unit, blackboard, t)
 	if patrol_goal_pos then
 		local network_manager = Managers.state.network
 
-		network_manager:anim_event(unit, "to_combat")
 		network_manager:anim_event(unit, "walk_fwd")
 		blackboard.locomotion_extension:set_rotation_speed(10)
 		navigation_extension:move_to(patrol_goal_pos)

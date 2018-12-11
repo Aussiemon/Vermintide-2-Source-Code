@@ -42,18 +42,18 @@ BreedBehaviors.stormfiend = {
 	{
 		"BTSelector",
 		{
-			"BTMeleeOverlapAttackAction",
-			leave_hook = "reset_fling_skaven",
-			name = "fling_skaven",
-			condition = "fling_skaven",
-			action_data = ACTIONS.fling_skaven
-		},
-		{
 			"BTTargetRageAction",
 			enter_hook = "rage_on_enter",
 			name = "target_rage",
 			condition = "target_changed_and_distant",
 			action_data = ACTIONS.target_rage
+		},
+		{
+			"BTMeleeOverlapAttackAction",
+			leave_hook = "reset_fling_skaven",
+			name = "fling_skaven",
+			condition = "fling_skaven",
+			action_data = ACTIONS.fling_skaven
 		},
 		{
 			"BTUtilityNode",

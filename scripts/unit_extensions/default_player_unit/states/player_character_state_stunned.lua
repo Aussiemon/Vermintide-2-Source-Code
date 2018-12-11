@@ -3,7 +3,6 @@ PlayerCharacterStateStunned = class(PlayerCharacterStateStunned, PlayerCharacter
 PlayerCharacterStateStunned.init = function (self, character_state_init_context)
 	PlayerCharacterState.init(self, character_state_init_context, "stunned")
 
-	local context = character_state_init_context
 	self.inputs_to_buffer = {
 		wield_2 = true,
 		wield_5 = true,
@@ -27,22 +26,19 @@ PlayerCharacterStateStunned.on_enter = function (self, unit, input, dt, context,
 	CharacterStateHelper.play_animation_event_first_person(self.first_person_extension, params.first_person_anim_name)
 	CharacterStateHelper.play_animation_event(unit, params.third_person_anim_name)
 
-	local input_extension = self.input_extension
-	local status_extension = self.status_extension
-	local buff_extension = ScriptUnit.extension(unit, "buff_system")
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local hit_react_type = params.hit_react_type or "light"
-
-	assert(movement_settings_table.hit_react_settings[hit_react_type])
-
 	local hit_react_settings = movement_settings_table.hit_react_settings[hit_react_type]
-	local look_override_x, look_override_y = hit_react_settings.look_override_function()
+
+	fassert(hit_react_settings ~= nil, "Missing hit_react settings for hit_react_type %s", hit_react_type)
+
 	self.movement_speed = hit_react_settings.movement_speed_modifier
 	self.movement_speed_modifier = hit_react_settings.movement_speed_modifier
 	self.end_look_sense_override = hit_react_settings.end_look_sense_override
 	self.start_look_sense_override = hit_react_settings.start_look_sense_override
-	local duration = hit_react_settings.duration_function()
-	local duration = buff_extension:apply_buffs_to_value(duration, StatBuffIndex.STUN_DURATION)
+	local original_duration = hit_react_settings.duration_function()
+	local buff_extension = ScriptUnit.extension(unit, "buff_system")
+	local duration = buff_extension:apply_buffs_to_value(original_duration, StatBuffIndex.STUN_DURATION)
 	local onscreen_particle = hit_react_settings.onscreen_particle_function(duration)
 	local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 
@@ -50,11 +46,14 @@ PlayerCharacterStateStunned.on_enter = function (self, unit, input, dt, context,
 		self.onscreen_particle_id = first_person_extension:create_screen_particles(onscreen_particle)
 	end
 
-	local move_anim_3p, move_anim_1p = CharacterStateHelper.get_move_animation(self.locomotion_extension, input_extension, status_extension)
+	local input_extension = self.input_extension
+	local status_extension = self.status_extension
+	local move_anim_3p, _ = CharacterStateHelper.get_move_animation(self.locomotion_extension, input_extension, status_extension)
 	self.move_anim_3p = move_anim_3p
-	self.move_anim_1p = move_anim_1p
 
 	self.last_input_direction:store(Vector3(0, 0, 0))
+
+	local look_override_x, look_override_y = hit_react_settings.look_override_function()
 
 	if look_override_y and look_override_x then
 		self.look_override:store(Vector3(look_override_x, look_override_y, 0))
@@ -84,7 +83,6 @@ end
 
 PlayerCharacterStateStunned.update = function (self, unit, input, dt, context, t)
 	local csm = self.csm
-	local unit = self.unit
 	local input_extension = self.input_extension
 	local inventory_extension = self.inventory_extension
 	local status_extension = self.status_extension
@@ -112,9 +110,8 @@ PlayerCharacterStateStunned.update = function (self, unit, input, dt, context, t
 
 	self:queue_input(input, input_extension, inventory_extension)
 
-	local is_moving = CharacterStateHelper.has_move_input(input_extension)
-	local inventory_extension = self.inventory_extension
 	local player = Managers.player:owner(unit)
+	local is_moving = CharacterStateHelper.has_move_input(input_extension)
 
 	if is_moving then
 		self.movement_speed = math.min(0.75, self.movement_speed + movement_settings_table.move_acceleration_up * dt)
@@ -158,8 +155,6 @@ PlayerCharacterStateStunned.update = function (self, unit, input, dt, context, t
 
 	if self.next_pulse < t then
 		stagger = Vector3(2 * (math.random() - 0.5), 2 * (math.random() - 0.5), 0)
-		local stagger_direction = Vector3.normalize(stagger)
-		local stagger_speed = Vector3.length(stagger)
 		self.next_pulse = t + 0.2
 
 		self.last_stagger:store(stagger)
@@ -181,9 +176,9 @@ PlayerCharacterStateStunned.update = function (self, unit, input, dt, context, t
 
 	CharacterStateHelper.move_on_ground(first_person_extension, input_extension, locomotion_extension, move_input_direction, move_speed, unit)
 
-	local move_anim_3p, move_anim_1p = CharacterStateHelper.get_move_animation(locomotion_extension, input_extension, status_extension)
+	local move_anim_3p, _ = CharacterStateHelper.get_move_animation(locomotion_extension, input_extension, status_extension)
 
-	if move_anim_3p ~= self.move_anim_3p or move_anim_1p ~= self.move_anim_1p then
+	if move_anim_3p ~= self.move_anim_3p then
 		CharacterStateHelper.play_animation_event(unit, move_anim_3p)
 
 		self.move_anim_3p = move_anim_3p
@@ -217,9 +212,9 @@ PlayerCharacterStateStunned.queue_input = function (self, input, input_extension
 		input_extension:add_buffer(wield_input)
 	end
 
-	for input, buffer in pairs(self.inputs_to_buffer) do
-		if input_extension:get(input) then
-			input_extension:add_stun_buffer(input)
+	for input_to_buffer, _ in pairs(self.inputs_to_buffer) do
+		if input_extension:get(input_to_buffer) then
+			input_extension:add_stun_buffer(input_to_buffer)
 
 			break
 		end

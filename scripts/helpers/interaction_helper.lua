@@ -28,7 +28,9 @@ InteractionHelper.interactions = {
 	talents_access = {},
 	pictureframe = {},
 	decoration = {},
-	achievement_access = {}
+	achievement_access = {},
+	luckstone_access = {},
+	difficulty_selection_access = {}
 }
 
 for interaction, config_table in pairs(InteractionHelper.interactions) do
@@ -131,7 +133,7 @@ InteractionHelper.complete_interaction = function (self, interactor_unit, intera
 	if Unit.alive(interactable_unit) then
 		local interactable_extension = ScriptUnit.extension(interactable_unit, "interactable_system")
 
-		interactable_extension:set_is_being_interacted_with(nil)
+		interactable_extension:set_is_being_interacted_with(nil, result)
 	end
 
 	local interactor_go_id = Managers.state.unit_storage:go_id(interactor_unit)
@@ -149,7 +151,7 @@ InteractionHelper.interaction_completed = function (self, interactor_unit, inter
 	if Unit.alive(interactable_unit) then
 		local interactable_extension = ScriptUnit.extension(interactable_unit, "interactable_system")
 
-		interactable_extension:set_is_being_interacted_with(nil)
+		interactable_extension:set_is_being_interacted_with(nil, result)
 	end
 end
 

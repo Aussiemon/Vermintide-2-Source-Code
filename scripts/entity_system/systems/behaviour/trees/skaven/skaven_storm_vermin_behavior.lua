@@ -148,11 +148,6 @@ BreedBehaviors.storm_vermin = {
 		name = "in_vortex"
 	},
 	{
-		"BTInGravityWellAction",
-		condition = "in_gravity_well",
-		name = "in_gravity_well"
-	},
-	{
 		"BTFallAction",
 		condition = "is_falling",
 		name = "falling"
@@ -205,11 +200,6 @@ BreedBehaviors.storm_vermin_commander = {
 		"BTInVortexAction",
 		condition = "in_vortex",
 		name = "in_vortex"
-	},
-	{
-		"BTInGravityWellAction",
-		condition = "in_gravity_well",
-		name = "in_gravity_well"
 	},
 	{
 		"BTFallAction",
@@ -267,11 +257,6 @@ BreedBehaviors.horde_vermin = {
 		name = "in_vortex"
 	},
 	{
-		"BTInGravityWellAction",
-		condition = "in_gravity_well",
-		name = "in_gravity_well"
-	},
-	{
 		"BTFallAction",
 		condition = "is_falling",
 		name = "falling"
@@ -319,11 +304,6 @@ BreedBehaviors.shield_vermin = {
 		"BTInVortexAction",
 		condition = "in_vortex",
 		name = "in_vortex"
-	},
-	{
-		"BTInGravityWellAction",
-		condition = "in_gravity_well",
-		name = "in_gravity_well"
 	},
 	{
 		"BTFallAction",

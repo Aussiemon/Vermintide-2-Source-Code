@@ -23,11 +23,6 @@ BreedBehaviors.gutter_runner = {
 		name = "in_vortex"
 	},
 	{
-		"BTInGravityWellAction",
-		condition = "in_gravity_well",
-		name = "in_gravity_well"
-	},
-	{
 		"BTSelector",
 		{
 			"BTTeleportAction",

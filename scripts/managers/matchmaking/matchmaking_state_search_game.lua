@@ -54,6 +54,12 @@ MatchmakingStateSearchGame._start_searching_for_games = function (self)
 		end
 	end
 
+	local game_mode = search_config.game_mode
+	local comparison = (game_mode == "event" and LobbyComparison.EQUAL) or LobbyComparison.NOT_EQUAL
+	current_filters.game_mode = {
+		value = "event",
+		comparison = comparison
+	}
 	local eac_authorized = false
 
 	if PLATFORM == "win32" then
@@ -191,7 +197,9 @@ MatchmakingStateSearchGame._search_for_game = function (self, dt)
 	local profile_index = player:profile_index()
 	local wanted_profile = profile_index
 	local search_config = self.search_config
-	active_lobby = self:_find_suitable_lobby(lobbies, search_config, wanted_profile)
+	local matchmaking_manager = self._matchmaking_manager
+	local _, preferred_levels = matchmaking_manager:get_weighed_random_unlocked_level(false)
+	active_lobby = self:_find_suitable_lobby(lobbies, search_config, wanted_profile, preferred_levels)
 
 	return active_lobby
 end
@@ -275,85 +283,90 @@ MatchmakingStateSearchGame._compare_secondary_prio_lobbies = function (self, cur
 	return current_lobby
 end
 
-MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, search_config, wanted_profile_id)
-	local level_key = search_config.level_key
+MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, search_config, wanted_profile_id, preferred_levels)
 	local difficulty = search_config.difficulty
 	local game_mode = search_config.game_mode
 	local act_key = search_config.act_key
 	local using_strict_matchmaking = search_config.strict_matchmaking
 	local reached_max_distance = self._current_distance_filter == MatchmakingSettings.max_distance_filter
 	local allow_occupied_hero_lobbies = Application.user_setting("allow_occupied_hero_lobbies")
-	local current_first_prio_lobby, current_secondary_prio_lobby, secondary_option_lobby_data = nil
+	local current_first_prio_lobby, current_secondary_prio_lobby = nil
 	local matchmaking_manager = self._matchmaking_manager
 
-	for _, lobby_data in ipairs(lobbies) do
-		local host_name = lobby_data.unique_server_name or lobby_data.host
-		local lobby_match, reason = matchmaking_manager:lobby_match(lobby_data, act_key, level_key, difficulty, game_mode, self._peer_id)
+	for _, level_key in pairs(preferred_levels) do
+		if current_first_prio_lobby then
+			break
+		end
 
-		if lobby_match then
-			local discard = false
-			local discard_reason = nil
-			local secondary_option = false
-			local level_key = lobby_data.selected_level_key or lobby_data.level_key
-			local ignore_dlc_check = search_config.quick_game
+		for _, lobby_data in ipairs(lobbies) do
+			local host_name = lobby_data.unique_server_name or lobby_data.host
+			local lobby_match, reason = matchmaking_manager:lobby_match(lobby_data, act_key, level_key, difficulty, game_mode, self._peer_id)
 
-			if not discard and not matchmaking_manager:party_has_level_unlocked(level_key, ignore_dlc_check) then
-				discard = true
-				discard_reason = string.format("level(%s) is not unlocked by party", level_key)
-			end
+			if lobby_match then
+				local discard = false
+				local discard_reason = nil
+				local secondary_option = false
+				local level_key = lobby_data.selected_level_key or lobby_data.level_key
+				local ignore_dlc_check = search_config.quick_game
 
-			if not discard and not matchmaking_manager:hero_available_in_lobby_data(wanted_profile_id, lobby_data) then
-				local any_allowed_hero_available = false
+				if not discard and not matchmaking_manager:party_has_level_unlocked(level_key, ignore_dlc_check) then
+					discard = true
+					discard_reason = string.format("level(%s) is not unlocked by party", level_key)
+				end
 
-				for i = 1, 5, 1 do
-					if MatchmakingSettings.hero_search_filter[i] == true then
-						local hero_available = matchmaking_manager:hero_available_in_lobby_data(i, lobby_data)
+				if not discard and not matchmaking_manager:hero_available_in_lobby_data(wanted_profile_id, lobby_data) then
+					local any_allowed_hero_available = false
 
-						if hero_available then
-							any_allowed_hero_available = true
+					for i = 1, 5, 1 do
+						if MatchmakingSettings.hero_search_filter[i] == true then
+							local hero_available = matchmaking_manager:hero_available_in_lobby_data(i, lobby_data)
 
-							break
+							if hero_available then
+								any_allowed_hero_available = true
+
+								break
+							end
 						end
+					end
+
+					if any_allowed_hero_available and allow_occupied_hero_lobbies then
+						secondary_option = true
+					else
+						discard = true
+						discard_reason = "hero is unavailable"
 					end
 				end
 
-				if any_allowed_hero_available and allow_occupied_hero_lobbies then
-					secondary_option = true
-				else
-					discard = true
-					discard_reason = "hero is unavailable"
+				if not discard and lobby_data.level_key ~= "inn_level" then
+					if using_strict_matchmaking then
+						discard = true
+						discard_reason = "strict matchmaking"
+					else
+						secondary_option = true
+					end
 				end
-			end
 
-			if not discard and lobby_data.level_key ~= "inn_level" then
-				if using_strict_matchmaking then
-					discard = true
-					discard_reason = "strict matchmaking"
-				else
+				if not discard and lobby_data.host_afk == "true" then
 					secondary_option = true
 				end
-			end
 
-			if not discard and lobby_data.host_afk == "true" then
-				secondary_option = true
-			end
+				if not discard and secondary_option and not reached_max_distance then
+					discard = true
+					discard_reason = "secondary lobby before reaching max distance"
+				end
 
-			if not discard and secondary_option and not reached_max_distance then
-				discard = true
-				discard_reason = "secondary lobby before reaching max distance"
-			end
-
-			if not discard then
-				if not secondary_option then
-					current_first_prio_lobby = self:_compare_first_prio_lobbies(current_first_prio_lobby, lobby_data)
+				if not discard then
+					if not secondary_option then
+						current_first_prio_lobby = self:_compare_first_prio_lobbies(current_first_prio_lobby, lobby_data)
+					else
+						current_secondary_prio_lobby = self:_compare_secondary_prio_lobbies(current_secondary_prio_lobby, lobby_data)
+					end
 				else
-					current_secondary_prio_lobby = self:_compare_secondary_prio_lobbies(current_secondary_prio_lobby, lobby_data)
+					mm_printf("Lobby hosted by %s discarded due to '%s'", host_name, discard_reason or "unknown")
 				end
 			else
-				mm_printf("Lobby hosted by %s discarded due to '%s'", host_name, discard_reason or "unknown")
+				mm_printf("Lobby hosted by %s failed lobby match due to '%s'", host_name, reason or "unknown")
 			end
-		else
-			mm_printf("Lobby hosted by %s failed lobby match due to '%s'", host_name, reason or "unknown")
 		end
 	end
 

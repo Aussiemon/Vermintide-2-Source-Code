@@ -2191,6 +2191,7 @@ if platform == "win32" then
 				ability_hold = true,
 				weapon_reload_hold_input_input = true
 			},
+			replace_gamepad_action_names = {},
 			default_gamepad_actions_by_key = {
 				ls = "move_controller",
 				start = "toggle_menu",
@@ -2224,6 +2225,7 @@ if platform == "win32" then
 				action_inspect_release = true,
 				wield_switch = true
 			},
+			replace_gamepad_action_names = {},
 			default_gamepad_actions_by_key = {
 				ls = "look_raw_controller",
 				start = "toggle_menu",
@@ -2268,6 +2270,9 @@ elseif platform == "xb1" then
 				action_inspect_release = true,
 				previous_observer_target = true
 			},
+			replace_gamepad_action_names = {
+				ping = "lb_ping"
+			},
 			default_gamepad_actions_by_key = {
 				ls = "move_controller",
 				start = "toggle_menu",
@@ -2308,6 +2313,9 @@ elseif platform == "xb1" then
 				active_ability_left_release = true,
 				action_inspect_release = true,
 				wield_switch = true
+			},
+			replace_gamepad_action_names = {
+				ping = "lb_ping"
 			},
 			default_gamepad_actions_by_key = {
 				ls = "look_raw_controller",
@@ -2352,6 +2360,9 @@ elseif platform == "ps4" then
 				action_inspect_release = true,
 				previous_observer_target = true
 			},
+			replace_gamepad_action_names = {
+				ping = "lb_ping"
+			},
 			default_gamepad_actions_by_key = {
 				ls = "move_controller",
 				triangle = "wield_switch",
@@ -2392,6 +2403,9 @@ elseif platform == "ps4" then
 				active_ability_left_release = true,
 				action_inspect_release = true,
 				wield_switch = true
+			},
+			replace_gamepad_action_names = {
+				ping = "lb_ping"
 			},
 			default_gamepad_actions_by_key = {
 				ls = "look_raw_controller",

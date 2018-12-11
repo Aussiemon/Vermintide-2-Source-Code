@@ -176,14 +176,12 @@ BTSkulkApproachAction.move_to = function (self, position, unit, blackboard)
 end
 
 BTSkulkApproachAction.idle = function (self, unit, blackboard)
-	Managers.state.network:anim_event(unit, "to_passive")
 	self:anim_event(unit, blackboard, "idle")
 
 	blackboard.move_state = "idle"
 end
 
 BTSkulkApproachAction.start_move_animation = function (self, unit, blackboard)
-	Managers.state.network:anim_event(unit, "to_combat")
 	self:anim_event(unit, blackboard, "move_fwd_run")
 
 	blackboard.move_state = "moving"

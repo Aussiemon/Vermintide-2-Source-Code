@@ -14,7 +14,6 @@ BTCombatStepAction.enter = function (self, unit, blackboard, t)
 	blackboard.start_finished = nil
 	local navigation_extension = blackboard.navigation_extension
 	local target_unit = blackboard.target_unit
-	local locomotion_extension = blackboard.locomotion_extension
 	local rotation_to_target = LocomotionUtils.rotation_towards_unit_flat(unit, target_unit)
 	local direction = navigation_extension:desired_velocity()
 	local move_animation = self:_get_animation(rotation_to_target, direction)
@@ -26,7 +25,6 @@ BTCombatStepAction.enter = function (self, unit, blackboard, t)
 
 	local network_manager = Managers.state.network
 
-	network_manager:anim_event(unit, "to_combat")
 	network_manager:anim_event(unit, move_animation)
 
 	blackboard.move_state = "moving"

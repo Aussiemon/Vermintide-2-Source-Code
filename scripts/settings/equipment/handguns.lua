@@ -1,4 +1,3 @@
-local push_radius = 2
 local weapon_template = weapon_template or {}
 weapon_template.actions = {
 	action_wield = ActionTemplates.wield,
@@ -69,23 +68,23 @@ weapon_template.actions = {
 		zoomed_shot = {
 			damage_window_start = 0.1,
 			anim_end_event = "to_unzoom",
-			max_penetrations = 2,
+			headshot_multiplier = 3,
 			kind = "handgun",
 			anim_event_no_ammo_left = "attack_shoot_last",
+			max_penetrations = 2,
 			hit_effect = "bullet_impact",
 			charge_value = "light_attack",
 			reload_when_out_of_ammo = true,
 			apply_recoil = true,
 			damage_profile = "shot_sniper",
-			alert_sound_range_fire = 10,
 			ignore_armour_hit = true,
 			anim_event_last_ammo = "attack_shoot_last",
 			minimum_hold_time = 0.66,
 			damage_window_end = 0,
-			alert_sound_range_hit = 2,
+			alert_sound_range_fire = 10,
 			ammo_usage = 1,
 			fire_time = 0,
-			headshot_multiplier = 3,
+			alert_sound_range_hit = 2,
 			aim_assist_ramp_multiplier = 0.3,
 			aim_assist_auto_hit_chance = 0.5,
 			aim_assist_max_ramp_multiplier = 1,
@@ -119,14 +118,6 @@ weapon_template.actions = {
 					input = "action_two_hold",
 					end_time = math.huge
 				}
-			},
-			recoil_settings = {
-				horizontal_climb = 0,
-				restore_duration = 0.3,
-				vertical_climb = 3,
-				climb_duration = 0.2,
-				climb_function = math.easeInCubic,
-				restore_function = math.ease_out_quad
 			},
 			recoil_settings = {
 				horizontal_climb = 0,

@@ -527,7 +527,7 @@ GenericStatusExtension.update_falling = function (self, t)
 		if min_fall_damage_height < fall_distance then
 			fall_distance = math.abs(fall_distance)
 
-			if not global_is_inside_inn then
+			if not global_is_inside_inn and not self.inside_transport_unit then
 				local network_height = math.clamp(fall_distance * 4, 0, 255)
 				local network_manager = Managers.state.network
 				local unit_storage = Managers.state.unit_storage
@@ -1263,9 +1263,7 @@ GenericStatusExtension.set_wounded = function (self, wounded, reason, t)
 		self.wounds = self.max_wounds
 	end
 
-	local unit = self.unit
-
-	if self.player.local_player and not Managers.state.game_mode:has_mutator("instant_death") then
+	if self.player.local_player and not Managers.state.game_mode:has_activated_mutator("instant_death") then
 		MOOD_BLACKBOARD.wounded = self.wounds == 1
 
 		if not MOOD_BLACKBOARD.wounded then
@@ -2207,7 +2205,7 @@ GenericStatusExtension.hot_join_sync = function (self, sender)
 end
 
 GenericStatusExtension.set_in_end_zone = function (self, in_end_zone)
-	if self.is_server then
+	if self.is_server and self.in_end_zone ~= in_end_zone then
 		local go_id = Managers.state.unit_storage:go_id(self.unit)
 
 		Managers.state.network.network_transmit:send_rpc_clients("rpc_status_change_bool", NetworkLookup.statuses.in_end_zone, in_end_zone, go_id, 0)

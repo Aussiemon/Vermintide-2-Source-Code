@@ -452,6 +452,7 @@ AchievementManager._setup_achievement_data = function (self, achievement_id)
 
 	local backend_interface_loot = self._backend_interface_loot
 	claimed = backend_interface_loot:achievement_rewards_claimed(achievement_id)
+	local reward = backend_interface_loot:get_achievement_rewards(achievement_id)
 	local achievement_data = {
 		id = achievement_id,
 		name = name,
@@ -461,7 +462,7 @@ AchievementManager._setup_achievement_data = function (self, achievement_id)
 		completed = completed,
 		progress = progress,
 		requirements = requirements,
-		reward = achievement_data.reward,
+		reward = reward,
 		claimed = claimed
 	}
 	self._achievement_data[achievement_id] = achievement_data

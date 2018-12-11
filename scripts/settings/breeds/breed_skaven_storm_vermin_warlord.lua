@@ -120,8 +120,8 @@ local breed_data = {
 		1.4
 	},
 	max_health = {
-		400,
-		500,
+		450,
+		450,
 		750,
 		1000,
 		1500
@@ -2096,14 +2096,14 @@ local action_data = {
 			}
 		},
 		difficulty_spawn = {
-			harder = "stronghold_boss_event_defensive_harder",
-			normal = "stronghold_boss_event_defensive_normal",
-			hard = "stronghold_boss_event_defensive_hard",
-			survival_hard = "stronghold_boss_event_defensive_hard",
-			survival_harder = "stronghold_boss_event_defensive_hard",
-			hardest = "stronghold_boss_event_defensive_hardest",
-			survival_hardest = "stronghold_boss_event_defensive_hard",
-			easy = "stronghold_boss_event_defensive_easy"
+			harder = "stronghold_boss_event_defensive",
+			normal = "stronghold_boss_event_defensive",
+			hard = "stronghold_boss_event_defensive",
+			survival_hard = "stronghold_boss_event_defensive",
+			survival_harder = "stronghold_boss_event_defensive",
+			hardest = "stronghold_boss_event_defensive",
+			survival_hardest = "stronghold_boss_event_defensive",
+			easy = "stronghold_boss_event_defensive"
 		},
 		start_anims = {
 			bwd = "move_start_bwd",

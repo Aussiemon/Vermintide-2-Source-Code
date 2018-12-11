@@ -13,10 +13,6 @@ BTPackMasterSkulkAroundAction.name = "BTPackMasterSkulkAroundAction"
 BTPackMasterSkulkAroundAction.enter = function (self, unit, blackboard, t)
 	LocomotionUtils.set_animation_driven_movement(unit, false)
 
-	local network_manager = Managers.state.network
-
-	network_manager:anim_event(unit, "to_combat")
-
 	local navigation_extension = blackboard.navigation_extension
 
 	navigation_extension:set_max_speed(blackboard.breed.run_speed)

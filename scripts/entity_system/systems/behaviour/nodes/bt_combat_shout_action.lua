@@ -14,13 +14,7 @@ BTCombatShoutAction.enter = function (self, unit, blackboard, t)
 	blackboard.anim_cb_shout_finished = nil
 	local network_manager = Managers.state.network
 
-	network_manager:anim_event(unit, "to_combat")
 	network_manager:anim_event(unit, action.shout_anim)
-
-	local unit_id = network_manager:unit_game_object_id(unit)
-	local target_unit_id, is_level_unit = network_manager:game_object_or_level_id(blackboard.target_unit)
-
-	network_manager.network_transmit:send_rpc_all("rpc_enemy_has_target", unit_id, target_unit_id, is_level_unit)
 
 	local navigation_extension = blackboard.navigation_extension
 
@@ -42,7 +36,6 @@ BTCombatShoutAction.enter = function (self, unit, blackboard, t)
 end
 
 BTCombatShoutAction.leave = function (self, unit, blackboard, t, reason, destroy)
-	blackboard.update_timer = 0
 	local navigation_extension = blackboard.navigation_extension
 
 	navigation_extension:set_enabled(true)
@@ -56,9 +49,9 @@ BTCombatShoutAction.run = function (self, unit, blackboard, t, dt)
 
 	if blackboard.anim_cb_shout_finished then
 		return "done"
+	else
+		return "running"
 	end
-
-	return "running"
 end
 
 return

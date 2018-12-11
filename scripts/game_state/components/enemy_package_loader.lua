@@ -204,6 +204,7 @@ EnemyPackageLoader._set_breed_loaded_on_all_peers = function (self, breed_name, 
 end
 
 EnemyPackageLoader._set_breed_package_lock = function (self, breed_name, locked)
+	local modifier = (locked and 1) or -1
 	local locked_breeds = self._locked_breeds
 	local aliases = BREED_TO_ALIASES[breed_name]
 
@@ -212,11 +213,21 @@ EnemyPackageLoader._set_breed_package_lock = function (self, breed_name, locked)
 
 		for i = 1, num_aliases, 1 do
 			local alias = aliases[i]
-			locked_breeds[alias] = locked
+			locked_breeds[alias] = (locked_breeds[alias] or 0) + modifier
+
+			if locked_breeds[alias] == 0 then
+				locked_breeds[alias] = nil
+			end
 		end
 	end
 
-	locked_breeds[breed_name] = locked
+	locked_breeds[breed_name] = (locked_breeds[breed_name] or 0) + modifier
+
+	if locked_breeds[breed_name] == 0 then
+		locked_breeds[breed_name] = nil
+	end
+
+	fassert(not locked_breeds[breed_name] or locked_breeds[breed_name] > 0, "EnemyPackageLoader: Called unlock breed package more times than lock!")
 end
 
 EnemyPackageLoader.update_breeds_loading_status = function (self)
@@ -512,7 +523,7 @@ EnemyPackageLoader.unload_enemy_packages = function (self, force_unload_startup_
 
 	for breed_name, state in pairs(package_state) do
 		if state ~= "unloaded" and (unload_startup_packages or not breeds_to_load_at_startup[breed_name]) then
-			fassert(not locked_breeds[breed_name], "EnemyPackageLoader:unload_enemy_packages: Trying to unload a locked breed, remember to unlock breed on shutdown!")
+			fassert(not locked_breeds[breed_name], "EnemyPackageLoader:unload_enemy_packages: Trying to unload a locked breed, remember to unlock breed on shutdown! If you are locking packages via level flow, use unload_enemy_packages external in event to unload.")
 
 			local package_name = BREED_PATH .. ((use_optimized and OPT_LOOKUP_BREED_NAMES[breed_name]) or breed_name)
 

@@ -334,7 +334,7 @@ LiquidAreaDamageTemplates = {
 			end_pressure = 2,
 			fx_name_filled = "fx/wpnfx_warp_fire_remains",
 			apply_buff_to_ai = false,
-			time_of_life = 6,
+			time_of_life = 8,
 			max_liquid = 20,
 			use_nav_cost_map_volumes = true,
 			buff_template_type = "stormfiend_warpfire_ground",
@@ -358,18 +358,18 @@ LiquidAreaDamageTemplates = {
 					1
 				},
 				normal = {
-					1,
-					1,
+					2,
+					2,
 					0,
 					0,
 					1
 				},
 				hard = {
-					1,
-					1,
+					4,
+					4,
 					0,
 					0,
-					1
+					3
 				},
 				survival_hard = {
 					1,
@@ -379,11 +379,11 @@ LiquidAreaDamageTemplates = {
 					1
 				},
 				harder = {
-					1,
-					1,
+					6,
+					6,
 					0,
 					0,
-					1
+					6
 				},
 				survival_harder = {
 					1,
@@ -393,11 +393,11 @@ LiquidAreaDamageTemplates = {
 					1
 				},
 				hardest = {
-					1,
-					1,
+					8,
+					8,
 					0,
 					0,
-					1
+					8
 				},
 				survival_hardest = {
 					1,

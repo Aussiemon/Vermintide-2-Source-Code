@@ -142,7 +142,7 @@ TitleMainUI._reset_menu_buttons = function (self)
 		font_size = size_of_font
 		local widget_content = menu_item_widget.content
 		local width, height, min = UIRenderer.text_size(self._ui_renderer, Localize(widget_content.text_field), font_material, font_size)
-		widget_style.icon.offset[1] = -width * 0.5 - widget_style.icon.texture_size[1]
+		widget_style.icon.offset[1] = -width * 0.6 - widget_style.icon.texture_size[1]
 	end
 
 	self._base_menu_widgets = {}
@@ -160,7 +160,7 @@ TitleMainUI._reset_menu_buttons = function (self)
 		font_size = size_of_font
 		local widget_content = menu_item_widget.content
 		local width, height, min = UIRenderer.text_size(self._ui_renderer, Localize(widget_content.text_field), font_material, font_size)
-		widget_style.icon.offset[1] = -width * 0.5 - widget_style.icon.texture_size[1]
+		widget_style.icon.offset[1] = -width * 0.6 - widget_style.icon.texture_size[1]
 	end
 
 	if script_data.settings.use_beta_overlay and not GameSettingsDevelopment.allow_offline_mode_in_beta then
@@ -292,27 +292,38 @@ TitleMainUI._handle_menu_input = function (self, dt, t)
 	if navigation_allowed then
 		local menu_item = self._menu_widgets[current_index]
 		local menu_item_content = menu_item.content
+		local gamepad_active = Managers.input:is_device_active("gamepad")
 
-		if input_service:get("down") then
-			current_index = 1 + current_index % #self._menu_widgets
-			local content = self._menu_widgets[current_index].content
-
-			while content.disabled do
+		if gamepad_active then
+			if input_service:get("down") then
 				current_index = 1 + current_index % #self._menu_widgets
-				content = self._menu_widgets[current_index].content
-			end
+				local content = self._menu_widgets[current_index].content
 
-			self:_play_sound("Play_console_menu_hover")
-		elseif input_service:get("up") then
-			current_index = (current_index - 1 < 1 and #self._menu_widgets) or current_index - 1
-			local content = self._menu_widgets[current_index].content
+				while content.disabled do
+					current_index = 1 + current_index % #self._menu_widgets
+					content = self._menu_widgets[current_index].content
+				end
 
-			while content.disabled do
+				self:_play_sound("Play_console_menu_hover")
+			elseif input_service:get("up") then
 				current_index = (current_index - 1 < 1 and #self._menu_widgets) or current_index - 1
-				content = self._menu_widgets[current_index].content
-			end
+				local content = self._menu_widgets[current_index].content
 
-			self:_play_sound("Play_console_menu_hover")
+				while content.disabled do
+					current_index = (current_index - 1 < 1 and #self._menu_widgets) or current_index - 1
+					content = self._menu_widgets[current_index].content
+				end
+
+				self:_play_sound("Play_console_menu_hover")
+			end
+		else
+			for idx, menu_element in ipairs(self._menu_widgets) do
+				local menu_element_content = menu_element.content
+
+				if menu_element_content.button_text.is_hover then
+					current_index = idx
+				end
+			end
 		end
 
 		if self._is_in_sub_menu then
@@ -337,7 +348,7 @@ TitleMainUI._handle_menu_input = function (self, dt, t)
 
 				self:_play_sound("Play_console_menu_back")
 			end
-		elseif not menu_item_content.disabled and input_service:get("start", true) then
+		elseif not menu_item_content.disabled and input_service:get("start", true) and (Managers.input:is_device_active("gamepad") or menu_item_content.button_text.is_hover) then
 			self:_reset_menu_buttons()
 
 			self._menu_widgets = self._sub_menu_widgets
@@ -426,7 +437,13 @@ end
 
 TitleMainUI.active_menu_selection = function (self)
 	if self._show_menu then
-		return self._current_menu_index ~= nil
+		if Managers.input:is_device_active("gamepad") then
+			return self._current_menu_index ~= nil
+		elseif self._current_menu_index then
+			local menu_item_content = self._menu_widgets[self._current_menu_index].content
+
+			return menu_item_content.button_text.is_hover
+		end
 	end
 end
 
@@ -653,7 +670,7 @@ TitleMainUI.anim_select_button = function (self, animation_data, index, dt)
 		menu_item.style.text.text_color[2] = math.lerp(color[2], select_color[2], math.smoothstep(animation_data.progress, 0, 1))
 		menu_item.style.text.text_color[3] = math.lerp(color[3], select_color[3], math.smoothstep(animation_data.progress, 0, 1))
 		menu_item.style.text.text_color[4] = math.lerp(color[4], select_color[4], math.smoothstep(animation_data.progress, 0, 1))
-		menu_item.style.text.font_size = math.lerp(menu_item.style.text.font_size, menu_button_font_size + 10, math.easeInCubic(animation_data.progress))
+		menu_item.style.text.font_size = math.lerp(menu_item.style.text.font_size, menu_item.content.default_font_size + 10, math.easeInCubic(animation_data.progress))
 	end
 
 	local menu_item_scenegraph_id = menu_item.scenegraph_id
@@ -664,6 +681,7 @@ TitleMainUI.anim_select_button = function (self, animation_data, index, dt)
 
 	if text then
 		local spacing = 20
+		spacing = menu_item.content.spacing or spacing
 		local text_width, text_height = self:_get_word_wrap_size(Localize(text), widget_style.text, 1000)
 		ui_scenegraph.selection_anchor.size[1] = (text_width or 0) + spacing
 		self._menu_selection_left.offset[1] = math.lerp(-50, 0, math.smoothstep(animation_data.progress, 0, 1))
@@ -700,9 +718,9 @@ TitleMainUI.anim_deselect_button = function (self, animation_data, index, dt, op
 
 	if menu_item.style.text then
 		if optional_progress then
-			menu_item.style.text.font_size = menu_button_font_size * (1 - progress)
+			menu_item.style.text.font_size = menu_item.content.default_font_size * (1 - progress)
 		else
-			menu_item.style.text.font_size = math.lerp(menu_item.style.text.font_size, menu_button_font_size, math.easeInCubic(progress))
+			menu_item.style.text.font_size = math.lerp(menu_item.style.text.font_size, menu_item.content.default_font_size, math.easeInCubic(progress))
 		end
 	end
 end

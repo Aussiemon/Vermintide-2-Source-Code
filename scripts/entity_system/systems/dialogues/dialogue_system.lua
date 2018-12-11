@@ -383,17 +383,24 @@ DialogueSystem._cleanup_extension = function (self, unit, extension_name)
 		return
 	end
 
-	table.clear(extension.user_memory)
-	table.clear(extension.context)
-
-	extension.context.health = 1
-	extension.dialogue_timer = nil
-	local player_profile = extension.context.player_profile
+	local context = extension.context
+	local player_profile = context.player_profile
 
 	if player_profile then
-		self.global_context[player_profile] = false
+		local global_context = self.global_context
+		global_context[player_profile] = false
+		local career_name = context.player_career
+
+		if career_name then
+			global_context[career_name] = false
+		end
 	end
 
+	table.clear(extension.user_memory)
+	table.clear(context)
+
+	context.health = 1
+	extension.dialogue_timer = nil
 	local currently_playing_dialogue = extension.currently_playing_dialogue
 
 	if self.playing_dialogues[currently_playing_dialogue] then
@@ -663,6 +670,7 @@ DialogueSystem.physics_async_update = function (self, context, t)
 
 	self:_update_currently_playing_dialogues(dt)
 	self:_update_cutscene_subtitles(t)
+	self:_update_sound_event_subtitles()
 
 	if not self.is_server then
 		return
@@ -1245,6 +1253,38 @@ DialogueSystem._update_cutscene_subtitles = function (self, t)
 	end
 end
 
+local current_sound_event_subtitles = {}
+
+DialogueSystem.trigger_sound_event_with_subtitles = function (self, sound_event, subtitle_event, speaker_name)
+	local playing_event_with_subtitle = {
+		subtitle_event = subtitle_event,
+		speaker_name = speaker_name,
+		sound_event = sound_event
+	}
+	current_sound_event_subtitles[#current_sound_event_subtitles + 1] = playing_event_with_subtitle
+end
+
+DialogueSystem._update_sound_event_subtitles = function (self)
+	if #current_sound_event_subtitles > 0 then
+		local event = current_sound_event_subtitles[1]
+		local current_speaker = event.speaker_name
+		local subtitle_event = event.subtitle_event
+		local sound_event = event.sound_event
+		local hud_system = Managers.state.entity:system("hud_system")
+
+		if not event.has_started_playing then
+			hud_system:add_subtitle(current_speaker, subtitle_event)
+
+			local id = WwiseWorld.trigger_event(self.wwise_world, sound_event)
+			event.id = id
+			event.has_started_playing = true
+		elseif event.id and not WwiseWorld.is_playing(self.wwise_world, event.id) then
+			hud_system:remove_subtitle(current_speaker)
+			table.remove(current_sound_event_subtitles, 1)
+		end
+	end
+end
+
 DialogueSystem.disable = function (self)
 	enabled = false
 end
@@ -1496,10 +1536,72 @@ local debug_tick_time = 0
 local debug_text = {}
 local DebugVo = {}
 
+DialogueSystem._debug_draw_context = function (self, gui, start_x, start_y, max_context_width, context_name, context_data, context_name_color, data_color)
+	Gui.text(gui, context_name, debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x, start_y, 250), context_name_color)
+
+	local min, max = Gui.text_extents(gui, tostring(context_name), debug_font_mtrl, debug_font_size)
+	local width = max.x - min.x
+	max_context_width = math.max(width, max_context_width)
+	local context_start_y = start_y
+	start_y = start_y + debug_font_size
+	local kv_order = {}
+	local max_key_width = 0
+	local key_start_y = start_y
+
+	for key, _ in pairs(context_data) do
+		min, max = Gui.text_extents(gui, tostring(key), debug_font_mtrl, debug_font_size)
+		width = max.x - min.x
+		max_key_width = math.max(width, max_key_width)
+		start_y = start_y + debug_font_size
+		kv_order[#kv_order + 1] = key
+	end
+
+	table.sort(kv_order)
+
+	max_key_width = max_key_width + 10
+	start_y = key_start_y
+	local max_value_width = 0
+
+	for i = 1, #kv_order, 1 do
+		local key = kv_order[i]
+
+		Gui.text(gui, tostring(key), debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x, start_y, 250), data_color)
+
+		local value = context_data[key]
+		local value_string = nil
+
+		if type(value) == "number" then
+			value_string = string.format("%.2f", value)
+		else
+			value_string = tostring(value)
+		end
+
+		Gui.text(gui, value_string, debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x + max_key_width, start_y, 250), data_color)
+
+		start_y = start_y + debug_font_size
+		min, max = Gui.text_extents(gui, value_string, debug_font_mtrl, debug_font_size)
+		width = max.x - min.x
+		max_value_width = math.max(width, max_value_width)
+	end
+
+	max_context_width = math.max(max_context_width, max_key_width + max_value_width)
+
+	Gui.rect(gui, Vector3(start_x - 2, context_start_y - 2, 249), Vector2(max_context_width, start_y - context_start_y), Color(200, 20, 20, 20))
+
+	start_y = start_y + debug_font_size * 0.5
+
+	return start_y, max_context_width
+end
+
 DialogueSystem._update_dialogue_debug_all_contexts = function (self, gui, res_x, res_y, unit_name_color, context_name_color, data_color)
 	if script_data.dialogue_debug_all_contexts then
 		local contexts_by_object = self.tagquery_database.contexts_by_object
-		local start_x = 200
+		local start_x = 230
+		local start_y = 20 + debug_font_size
+		local context_spacing = 10
+		local global_context = self.global_context
+		local _, max_context_width = self:_debug_draw_context(gui, start_x, start_y, 0, "global_context", global_context, context_name_color, data_color)
+		start_x = start_x + max_context_width + context_spacing
 
 		for unit, contexts in pairs(contexts_by_object) do
 			repeat
@@ -1513,55 +1615,18 @@ DialogueSystem._update_dialogue_debug_all_contexts = function (self, gui, res_x,
 						break
 					end
 
-					local start_y = 20 + debug_font_size
+					start_y = 20 + debug_font_size
 
 					Gui.text(gui, unit_name, debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x, start_y, 250), unit_name_color)
 
 					start_y = start_y + debug_font_size
-					local max_context_width = 0
+					max_context_width = 0
 
 					for context_name, context_data in pairs(contexts) do
-						Gui.text(gui, context_name, debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x, start_y, 250), context_name_color)
-
-						local context_start_y = start_y
-						start_y = start_y + debug_font_size
-						local kv_order = {}
-						local max_key_width = 0
-						local key_start_y = start_y
-
-						for key, _ in pairs(context_data) do
-							Gui.text(gui, tostring(key), debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x, start_y, 250), data_color)
-
-							local min, max = Gui.text_extents(gui, tostring(key), debug_font_mtrl, debug_font_size)
-							local width = max.x - min.x
-							max_key_width = math.max(width, max_key_width)
-							start_y = start_y + debug_font_size
-							kv_order[#kv_order + 1] = key
-						end
-
-						max_key_width = max_key_width + 10
-						start_y = key_start_y
-						local max_value_width = 0
-
-						for i, key in ipairs(kv_order) do
-							local value = context_data[key]
-
-							Gui.text(gui, tostring(value), debug_font_mtrl, debug_font_size, debug_font, Vector3(start_x + max_key_width, start_y, 250), data_color)
-
-							start_y = start_y + debug_font_size
-							local min, max = Gui.text_extents(gui, tostring(value), debug_font_mtrl, debug_font_size)
-							local width = max.x - min.x
-							max_value_width = math.max(width, max_key_width)
-						end
-
-						max_context_width = math.max(max_context_width, max_key_width + max_value_width)
-
-						Gui.rect(gui, Vector3(start_x - 2, context_start_y - 2, 249), Vector2(max_context_width, start_y - context_start_y), Color(200, 20, 20, 20))
-
-						start_y = start_y + debug_font_size * 0.5
+						start_y, max_context_width = self:_debug_draw_context(gui, start_x, start_y, max_context_width, context_name, context_data, context_name_color, data_color)
 					end
 
-					start_x = start_x + max_context_width
+					start_x = start_x + max_context_width + context_spacing
 				end
 			until true
 		end

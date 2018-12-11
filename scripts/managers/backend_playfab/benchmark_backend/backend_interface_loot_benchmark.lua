@@ -20,7 +20,7 @@ BackendInterfaceLootBenchmark.loot_chest_rewards_request_cb = function (self, da
 	return
 end
 
-BackendInterfaceLootBenchmark.generate_end_of_level_loot = function (self, game_won, quick_play_bonus, difficulty, level_key, num_tomes, num_grims, num_loot_dice, hero_name, start_experience, end_experience, deed_item_name, deed_backend_id)
+BackendInterfaceLootBenchmark.generate_end_of_level_loot = function (self, game_won, quick_play_bonus, difficulty, level_key, num_tomes, num_grims, num_loot_dice, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_backend_id)
 	return 1
 end
 

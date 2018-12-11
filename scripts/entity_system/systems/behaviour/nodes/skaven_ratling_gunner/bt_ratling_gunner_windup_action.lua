@@ -42,10 +42,6 @@ BTRatlingGunnerWindUpAction.enter = function (self, unit, blackboard, t)
 	blackboard.navigation_extension:set_enabled(false)
 	blackboard.locomotion_extension:set_wanted_velocity(Vector3.zero())
 
-	local network_manager = Managers.state.network
-
-	network_manager:anim_event(unit, "to_combat")
-
 	blackboard.move_state = "attacking"
 
 	AiUtils.anim_event(unit, data, "wind_up_start")

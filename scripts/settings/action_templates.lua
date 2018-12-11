@@ -290,22 +290,6 @@ ActionTemplates.action_inspect = {
 			}
 		}
 	},
-	action_inspect_release = {
-		minimum_hold_time = 0.3,
-		uninterruptible = true,
-		kind = "dummy",
-		anim_end_event = "inspect_end",
-		cooldown = 0.15,
-		weapon_action_hand = "either",
-		can_abort_reload = false,
-		hold_input = "action_inspect_hold",
-		anim_event = "flourish",
-		total_time = 0,
-		anim_end_event_condition_func = function (unit, end_reason)
-			return end_reason ~= "new_interupting_action"
-		end,
-		allowed_chain_actions = {}
-	},
 	action_inspect_hold = {
 		cooldown = 0.15,
 		minimum_hold_time = 0.3,

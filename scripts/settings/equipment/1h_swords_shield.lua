@@ -1,7 +1,5 @@
 local push_radius = 3
 local time_mod = 0.9
-local heavy_tank_stagger = 3
-local light_linesman_stagger = 3
 local weapon_template = weapon_template or {}
 weapon_template.actions = {
 	action_one = {
@@ -365,10 +363,10 @@ weapon_template.actions = {
 			push_radius = 2.5,
 			kind = "shield_slam",
 			damage_profile_target = "shield_slam_target",
-			additional_critical_strike_chance = 0,
 			no_damage_impact_sound_event = "shield_hit_armour",
 			armor_impact_sound_event = "shield_hit_armour",
 			damage_profile = "shield_slam",
+			additional_critical_strike_chance = 0,
 			hit_effect = "melee_hit_hammers_2h",
 			hit_time = 0.2,
 			weapon_action_hand = "left",
@@ -426,8 +424,7 @@ weapon_template.actions = {
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
-			end,
-			critical_strike = {}
+			end
 		},
 		heavy_attack_left = {
 			damage_window_start = 0.3,
@@ -1073,8 +1070,8 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action"
 			end,
 			total_time = math.huge,
-			enter_function = function (attacker_unit, input_extension)
-				return input_extension:reset_release_input()
+			enter_function = function (attacker_unit, input_extension, remaining_time)
+				return input_extension:reset_release_input_with_delay(remaining_time)
 			end,
 			buff_data = {
 				{

@@ -2453,6 +2453,14 @@ AttachmentNodeLinking = {
 				{
 					target = 0,
 					source = "j_leftweaponattach"
+				},
+				{
+					target = "j_root",
+					source = "j_leftweaponcomponent1"
+				},
+				{
+					target = "j_jaw",
+					source = "j_leftweaponcomponent2"
 				}
 			},
 			unwielded = {
@@ -2473,6 +2481,14 @@ AttachmentNodeLinking = {
 				{
 					target = 0,
 					source = "j_leftweaponattach"
+				},
+				{
+					target = "j_root",
+					source = "j_leftweaponcomponent1"
+				},
+				{
+					target = "j_jaw",
+					source = "j_leftweaponcomponent2"
 				}
 			},
 			unwielded = {

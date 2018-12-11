@@ -34,12 +34,28 @@ GenericVolumeTemplates.functions = {
 		catacombs_corpse_pit = {
 			on_enter = function (unit, dt, t, data)
 				local buff_system = Managers.state.entity:system("buff_system")
-				local params = {
-					t = t,
-					attacker_unit = unit
-				}
 				local is_server_controlled = true
 				data[unit] = buff_system:add_buff(unit, "catacombs_corpse_pit", unit, is_server_controlled)
+			end,
+			on_exit = function (unit, data)
+				local buff_id = data[unit]
+
+				if buff_id == nil then
+					return
+				end
+
+				local buff_system = Managers.state.entity:system("buff_system")
+
+				buff_system:remove_server_controlled_buff(unit, buff_id)
+
+				data[unit] = nil
+			end
+		},
+		cemetery_plague_floor = {
+			on_enter = function (unit, dt, t, data)
+				local buff_system = Managers.state.entity:system("buff_system")
+				local is_server_controlled = true
+				data[unit] = buff_system:add_buff(unit, "cemetery_plague_floor", unit, is_server_controlled)
 			end,
 			on_exit = function (unit, data)
 				local buff_id = data[unit]
@@ -218,7 +234,6 @@ GenericVolumeTemplates.functions = {
 	}
 }
 GenericVolumeTemplates.functions.damage_volume.warpstone_meteor = GenericVolumeTemplates.functions.damage_volume.generic_dot
-GenericVolumeTemplates.functions.damage_volume.cemetery_plague_floor = GenericVolumeTemplates.functions.damage_volume.generic_dot
 GenericVolumeTemplates.functions.damage_volume.generic_fire = GenericVolumeTemplates.functions.damage_volume.generic_dot
 GenericVolumeTemplates.functions.damage_volume.ai_insta_kill = GenericVolumeTemplates.functions.damage_volume.generic_insta_kill
 GenericVolumeTemplates.functions.damage_volume.player_insta_kill = GenericVolumeTemplates.functions.damage_volume.generic_insta_kill

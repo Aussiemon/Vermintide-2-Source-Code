@@ -232,10 +232,10 @@ local function create_static_widget()
 				vertical_alignment = "bottom",
 				font_type = "arial",
 				font_size = 18,
-				horizontal_alignment = "center",
 				text_color = Colors.get_table("white"),
+				horizontal_alignment = (PLATFORM == "ps4" and "left") or "center",
 				offset = {
-					0,
+					(PLATFORM == "ps4" and -43 * portrait_scale) or 0,
 					110 * portrait_scale,
 					health_bar_offset[3] + 15
 				}
@@ -244,10 +244,10 @@ local function create_static_widget()
 				vertical_alignment = "bottom",
 				font_type = "arial",
 				font_size = 18,
-				horizontal_alignment = "center",
 				text_color = Colors.get_table("black"),
+				horizontal_alignment = (PLATFORM == "ps4" and "left") or "center",
 				offset = {
-					2,
+					((PLATFORM == "ps4" and -43 * portrait_scale) or 0) + 2,
 					110 * portrait_scale - 2,
 					health_bar_offset[3] + 14
 				}

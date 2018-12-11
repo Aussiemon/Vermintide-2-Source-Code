@@ -194,12 +194,13 @@ Missions = {
 		dice_per_amount = 1
 	},
 	bonus_dice_hidden_mission = {
-		dice_type = "metal",
+		is_side_mission = true,
 		evaluation_type = "amount",
 		mission_template_name = "collect_uncompletable",
-		is_side_mission = true,
+		experience_per_amount = 5,
 		evaluate_at_level_end = true,
 		collect_amount = 2,
+		dice_type = "metal",
 		hidden = true,
 		text = "bonus_dice_hidden_mission_text",
 		dice_per_amount = 1

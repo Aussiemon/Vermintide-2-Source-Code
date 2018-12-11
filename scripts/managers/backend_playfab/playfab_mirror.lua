@@ -75,13 +75,16 @@ PlayFabMirror.init = function (self, signin_result)
 		end
 	end
 
+	self._claimed_achievements = self:_parse_claimed_achievements(read_only_data_values)
+	self._unlocked_weapon_skins = self:_parse_unlocked_weapon_skins(read_only_data_values)
+	local unlocked_keep_decorations_json = read_only_data_values.unlocked_keep_decorations or "{}"
+	self._unlocked_keep_decorations = cjson.decode(unlocked_keep_decorations_json)
 	self._user_data = user_data_values
 	self._user_data_mirror = table.clone(self._user_data)
 	self._commit_limit_timer = REDUCTION_INTERVAL
 	self._commit_limit_total = 1
-	self._claimed_achievements = self:_parse_claimed_achievements(read_only_data_values)
 
-	if PLATFORM == "xb1" then
+	if PLATFORM == "xb1" or PLATFORM == "ps4" then
 		self._claimed_console_dlc_rewards = self:_parse_claimed_console_dlc_rewards(read_only_data_values)
 	end
 
@@ -105,8 +108,9 @@ PlayFabMirror._parse_claimed_achievements = function (self, read_only_data_value
 	return claimed_achievements
 end
 
-PlayFabMirror._parse_unlocked_weapon_skins = function (self, unlocked_weapon_skins_string)
+PlayFabMirror._parse_unlocked_weapon_skins = function (self, read_only_data_values)
 	local unlocked_weapon_skins = {}
+	local unlocked_weapon_skins_string = read_only_data_values.unlocked_weapon_skins
 
 	if unlocked_weapon_skins_string then
 		local decoded = cjson.decode(unlocked_weapon_skins_string)
@@ -334,32 +338,26 @@ end
 PlayFabMirror.fix_inventory_data_2_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
 
-	self:_request_unlocked_weapon_skins()
+	self:_request_read_only_data()
 end
 
-PlayFabMirror._request_unlocked_weapon_skins = function (self)
-	local request = {}
-	local unlocked_weapon_skins_request_cb = callback(self, "unlocked_weapon_skins_request_cb")
+PlayFabMirror._request_read_only_data = function (self)
 	local request = {
-		Keys = {
-			"unlocked_weapon_skins"
-		}
+		FunctionName = "getReadOnlyData",
+		FunctionParameter = {}
 	}
+	local request_cb = callback(self, "read_only_data_request_cb")
 
-	PlayFabClientApi.GetUserReadOnlyData(request, unlocked_weapon_skins_request_cb)
+	PlayFabClientApi.ExecuteCloudScript(request, request_cb)
 
 	self._num_items_to_load = self._num_items_to_load + 1
 end
 
-PlayFabMirror.unlocked_weapon_skins_request_cb = function (self, result)
+PlayFabMirror.read_only_data_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
-	local unlocked_weapon_skins = {}
-
-	if result.Data.unlocked_weapon_skins and result.Data.unlocked_weapon_skins.Value then
-		unlocked_weapon_skins = self:_parse_unlocked_weapon_skins(result.Data.unlocked_weapon_skins.Value)
-	end
-
-	self._unlocked_weapon_skins = unlocked_weapon_skins
+	local function_result = result.FunctionResult
+	local achievement_rewards = function_result.achievement_rewards
+	self._achievement_rewards = cjson.decode(achievement_rewards)
 
 	self:_request_user_inventory()
 end
@@ -717,6 +715,8 @@ PlayFabMirror._check_current_commit = function (self)
 		if commit_data.commit_complete_callback then
 			commit_data.commit_complete_callback(status)
 		end
+
+		self._commits[commit_current_id] = nil
 	end
 end
 
@@ -731,7 +731,7 @@ PlayFabMirror._commit_status = function (self)
 
 	if commit_data.status == "commit_error" then
 		return "commit_error"
-	elseif commit_data.num_updates == commit_data.updates_to_make and not commit_data.wait_for_stats and not commit_data.wait_for_keep_decorations and not commit_data.wait_for_user_data and not commit_data.wait_for_hero_attributes then
+	elseif commit_data.num_updates == commit_data.updates_to_make and not commit_data.wait_for_stats and not commit_data.wait_for_keep_decorations and not commit_data.wait_for_user_data and not commit_data.wait_for_read_only_data then
 		if PLATFORM ~= "win32" and not Managers.account:offline_mode() then
 			PlayfabBackendSaveDataUtils.store_online_data(self)
 		end
@@ -838,8 +838,20 @@ PlayFabMirror.get_claimed_achievements = function (self)
 	return self._claimed_achievements
 end
 
+PlayFabMirror.get_achievement_rewards = function (self)
+	return self._achievement_rewards
+end
+
 PlayFabMirror.get_unlocked_weapon_skins = function (self)
 	return self._unlocked_weapon_skins
+end
+
+PlayFabMirror.get_unlocked_keep_decorations = function (self)
+	return self._unlocked_keep_decorations
+end
+
+PlayFabMirror.add_keep_decoration = function (self, decoration_name)
+	self._unlocked_keep_decorations[#self._unlocked_keep_decorations + 1] = decoration_name
 end
 
 local new_fake_inventory_items = {}
@@ -1147,6 +1159,13 @@ PlayFabMirror._commit_internal = function (self, queue_id, commit_complete_callb
 
 	table.clear(new_data)
 
+	local keep_decorations_interface = Managers.backend:get_interface("keep_decorations")
+	local keep_decorations_json = keep_decorations_interface:get_keep_decorations_json()
+
+	if keep_decorations_json ~= self._read_only_data_mirror.keep_decorations then
+		new_data.keep_decorations = keep_decorations_json
+	end
+
 	for i = 1, #hero_attributes, 1 do
 		local key = hero_attributes[i]
 		local value = self._read_only_data[key]
@@ -1167,7 +1186,7 @@ PlayFabMirror._commit_internal = function (self, queue_id, commit_complete_callb
 		local success_callback = callback(self, "update_read_only_data_request_cb", commit_id)
 		local id = self._request_queue:enqueue(update_read_only_data_request, success_callback, false)
 		commit.status = "waiting"
-		commit.wait_for_hero_attributes = true
+		commit.wait_for_read_only_data = true
 		commit.request_queue_ids[#commit.request_queue_ids + 1] = id
 	end
 
@@ -1214,7 +1233,7 @@ PlayFabMirror.update_read_only_data_request_cb = function (self, commit_id, resu
 		read_only_data_mirror[key] = value
 	end
 
-	commit.wait_for_hero_attributes = false
+	commit.wait_for_read_only_data = false
 end
 
 PlayFabMirror.save_statistics_cb = function (self, commit_id, stats, result)
@@ -1229,12 +1248,6 @@ end
 PlayFabMirror.save_keep_decorations_cb = function (self, commit_id, on_complete, success)
 	local commit = self._commits[commit_id]
 	commit.wait_for_keep_decorations = false
-
-	if success == false then
-		commit.status = "commit_error"
-	end
-
-	on_complete()
 end
 
 PlayFabMirror.wait_for_shutdown = function (self, duration)

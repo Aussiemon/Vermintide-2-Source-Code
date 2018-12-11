@@ -36,6 +36,7 @@ BTStaggerAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.stagger_anim_done = false
 	blackboard.stagger_hit_wall = nil
+	blackboard.stagger_ignore_anim_cb = nil
 	blackboard.staggering_id = blackboard.stagger
 	blackboard.attack_aborted = true
 	blackboard.move_state = "stagger"
@@ -69,8 +70,6 @@ BTStaggerAction.enter = function (self, unit, blackboard, t)
 	Unit.set_local_rotation(unit, 0, impact_rot)
 
 	local network_manager = Managers.state.network
-
-	network_manager:anim_event(unit, "to_combat")
 
 	if action_data.scale_animation_speeds then
 		local anim_scale = action_data.stagger_animation_scale or blackboard.stagger_animation_scale or 1
@@ -187,7 +186,10 @@ end
 
 BTStaggerAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	self:clean_blackboard(blackboard)
-	LocomotionUtils.set_animation_driven_movement(unit, false, false)
+
+	if not destroy then
+		LocomotionUtils.set_animation_driven_movement(unit, false, false)
+	end
 
 	if ScriptUnit.has_extension(unit, "ai_shield_system") then
 		local shield_extension = ScriptUnit.extension(unit, "ai_shield_system")
@@ -195,14 +197,16 @@ BTStaggerAction.leave = function (self, unit, blackboard, t, reason, destroy)
 		shield_extension:set_is_blocking(true)
 	end
 
-	local locomotion_extension = blackboard.locomotion_extension
+	if not destroy then
+		local locomotion_extension = blackboard.locomotion_extension
 
-	locomotion_extension:set_rotation_speed(10)
-	locomotion_extension:set_wanted_rotation(nil)
-	locomotion_extension:set_movement_type("snap_to_navmesh")
-	locomotion_extension:use_lerp_rotation(true)
-	locomotion_extension:set_wanted_velocity(Vector3.zero())
-	LocomotionUtils.set_animation_translation_scale(unit, Vector3(1, 1, 1))
+		locomotion_extension:set_rotation_speed(10)
+		locomotion_extension:set_wanted_rotation(nil)
+		locomotion_extension:set_movement_type("snap_to_navmesh")
+		locomotion_extension:use_lerp_rotation(true)
+		locomotion_extension:set_wanted_velocity(Vector3.zero())
+		LocomotionUtils.set_animation_translation_scale(unit, Vector3(1, 1, 1))
+	end
 
 	local network_manager = Managers.state.network
 	local post_stagger_anim_event = nil

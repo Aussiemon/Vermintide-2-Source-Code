@@ -512,6 +512,10 @@ GearUtils.create_grenade_extension_init_data = function (owner_unit, item_name, 
 end
 
 GearUtils.get_property_and_trait_buffs = function (backend_items, backend_id, buffs_table)
+	if Managers.state.game_mode:has_activated_mutator("whiterun") then
+		return buffs_table
+	end
+
 	local properties = backend_items:get_properties(backend_id)
 
 	if properties then

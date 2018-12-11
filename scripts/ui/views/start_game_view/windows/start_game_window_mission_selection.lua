@@ -1,9 +1,7 @@
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_mission_selection_definitions")
 local widget_definitions = definitions.widgets
 local large_window_size = definitions.large_window_size
-local act_widget_definitions = definitions.act_widgets
-local node_widget_definitions = definitions.node_widgets
-local end_act_widget_definition = definitions.end_act_widget
+local create_level_widget_definition = definitions.create_level_widget
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 
@@ -62,29 +60,6 @@ StartGameWindowMissionSelection.create_ui_elements = function (self, params, off
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
-	local node_widgets = {}
-	local node_widgets_by_name = {}
-
-	for name, widget_definition in pairs(node_widget_definitions) do
-		local widget = UIWidget.init(widget_definition)
-		node_widgets[#node_widgets + 1] = widget
-		node_widgets_by_name[name] = widget
-	end
-
-	self._node_widgets = node_widgets
-	self._node_widgets_by_name = node_widgets_by_name
-	local act_widgets = {}
-	local act_widgets_by_name = {}
-
-	for name, widget_definition in pairs(act_widget_definitions) do
-		local widget = UIWidget.init(widget_definition)
-		act_widgets[#act_widgets + 1] = widget
-		act_widgets_by_name[name] = widget
-	end
-
-	self._act_widgets = act_widgets
-	self._act_widgets_by_name = act_widgets_by_name
-	self.end_act_widget = UIWidget.init(end_act_widget_definition)
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
@@ -107,7 +82,14 @@ StartGameWindowMissionSelection._setup_levels_by_area = function (self, area_nam
 	self:_setup_level_acts()
 	self:_present_acts(acts)
 
-	self._widgets_by_name.dlc_background.content.visible = self._is_dlc
+	local create_mission_background_widget = area_settings.create_mission_background_widget
+
+	if create_mission_background_widget then
+		local background_widget_definition = create_mission_background_widget()
+		self._dlc_background_widget = UIWidget.init(background_widget_definition)
+	else
+		self._dlc_background_widget = nil
+	end
 end
 
 StartGameWindowMissionSelection._setup_level_acts = function (self)
@@ -147,11 +129,9 @@ StartGameWindowMissionSelection._present_acts = function (self, acts)
 		level_root_node.local_position[1] = large_window_width / 2
 	end
 
-	local node_widgets = self._node_widgets
 	local statistics_db = self.statistics_db
 	local stats_id = self._stats_id
 	local assigned_widgets = {}
-	local act_widgets = {}
 	local level_width = 180
 	local level_width_spacing = (is_dlc and 80) or 34
 	local level_height_spacing = 250
@@ -167,26 +147,15 @@ StartGameWindowMissionSelection._present_acts = function (self, acts)
 			local level_position_x = 0
 			local level_position_y = 0
 			local act_position_y = 0
-			local act_widget = nil
 			local is_end_act = max_act_number < act_sorting
 
-			if is_end_act then
-				act_widget = self.end_act_widget
-			else
+			if not is_end_act then
 				if is_dlc then
 					level_position_x = -((level_width + level_width_spacing) * num_levels_in_act) / 2 + (level_width + level_width_spacing) / 2
 				else
 					act_position_y = -level_height_spacing + (max_act_number - act_index) * level_height_spacing
 				end
-
-				act_widget = self._act_widgets[act_index]
 			end
-
-			act_widgets[#act_widgets + 1] = act_widget
-			act_widget.offset[2] = act_position_y
-			local act_display_name = act_settings.display_name
-			act_widget.content.background = act_settings.banner_texture
-			act_widget.content.text = Localize(act_display_name)
 
 			for i = 1, #levels, 1 do
 				local level_data = levels[i]
@@ -200,7 +169,10 @@ StartGameWindowMissionSelection._present_acts = function (self, acts)
 				end
 
 				local index = #assigned_widgets + 1
-				local widget = node_widgets[index]
+				local scenegraph_id = "level_root_" .. index
+				local mission_selection_offset = level_data.mission_selection_offset
+				local widget_definition = create_level_widget_definition(scenegraph_id, mission_selection_offset)
+				local widget = UIWidget.init(widget_definition)
 				local content = widget.content
 				local style = widget.style
 				local level_key = level_data.level_id
@@ -224,9 +196,12 @@ StartGameWindowMissionSelection._present_acts = function (self, acts)
 				local boss_level = level_data.boss_level
 				content.level_data = level_data
 				content.boss_level = boss_level
-				local offset = widget.offset
-				offset[1] = level_position_x
-				offset[2] = act_position_y + level_position_y
+
+				if not mission_selection_offset then
+					local offset = widget.offset
+					offset[1] = level_position_x
+					offset[2] = act_position_y + level_position_y
+				end
 
 				if i < num_levels_in_act then
 					local next_level_key = levels[i + 1].level_id
@@ -244,7 +219,6 @@ StartGameWindowMissionSelection._present_acts = function (self, acts)
 	end
 
 	self._active_node_widgets = assigned_widgets
-	self._active_act_widgets = act_widgets
 
 	self:_setup_required_act_connections()
 end
@@ -430,12 +404,11 @@ end
 
 StartGameWindowMissionSelection.update = function (self, dt, t)
 	self:_update_animations(dt)
-	self:_handle_input(dt, t)
 	self:draw(dt)
 end
 
 StartGameWindowMissionSelection.post_update = function (self, dt, t)
-	return
+	self:_handle_input(dt, t)
 end
 
 StartGameWindowMissionSelection._update_animations = function (self, dt)
@@ -559,14 +532,10 @@ StartGameWindowMissionSelection.draw = function (self, dt)
 		end
 	end
 
-	local active_act_widgets = self._active_act_widgets
+	local dlc_background_widget = self._dlc_background_widget
 
-	if active_act_widgets then
-		for i = 1, #active_act_widgets, 1 do
-			local widget = active_act_widgets[i]
-
-			UIRenderer.draw_widget(ui_renderer, widget)
-		end
+	if dlc_background_widget then
+		UIRenderer.draw_widget(ui_renderer, dlc_background_widget)
 	end
 
 	UIRenderer.end_pass(ui_renderer)

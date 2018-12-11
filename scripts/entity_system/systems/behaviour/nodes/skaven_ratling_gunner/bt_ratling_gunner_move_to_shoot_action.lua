@@ -91,7 +91,6 @@ BTRatlingGunnerMoveToShootAction.run = function (self, unit, blackboard, t, dt)
 		local move_animation = action.move_anim
 		local network_manager = Managers.state.network
 
-		network_manager:anim_event(unit, "to_combat")
 		network_manager:anim_event(unit, move_animation)
 
 		blackboard.move_state = "moving"

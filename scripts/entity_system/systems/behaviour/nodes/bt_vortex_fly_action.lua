@@ -31,15 +31,18 @@ BTVortexFlyAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.fly_state = nil
 	blackboard.is_smart_objecting = nil
 	blackboard.is_flying = nil
-	local locomotion_extension = blackboard.locomotion_extension
 
-	locomotion_extension:set_movement_type("snap_to_navmesh")
+	if not destroy then
+		local locomotion_extension = blackboard.locomotion_extension
+
+		locomotion_extension:set_movement_type("snap_to_navmesh")
+	end
 
 	local navigation_extension = blackboard.navigation_extension
 
 	navigation_extension:set_enabled(true)
 
-	slot8 = navigation_extension:is_using_smart_object() and navigation_extension:use_smart_object(false)
+	slot7 = navigation_extension:is_using_smart_object() and navigation_extension:use_smart_object(false)
 end
 
 BTVortexFlyAction._move_to_destination = function (self, current_position, destination, locomotion_extension, dt, max_speed)

@@ -628,6 +628,24 @@ local function create_slot_widget(index, total_amount)
 		element = {
 			passes = {
 				{
+					style_id = "input_text",
+					pass_type = "text",
+					text_id = "input_text",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return not Managers.input:is_device_active("gamepad") and content.is_filled
+					end
+				},
+				{
+					style_id = "input_text_shadow",
+					pass_type = "text",
+					text_id = "input_text",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return not Managers.input:is_device_active("gamepad") and content.is_filled
+					end
+				},
+				{
 					pass_type = "texture",
 					style_id = "texture_icon",
 					texture_id = "texture_icon",

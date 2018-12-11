@@ -14,7 +14,7 @@ BackendSettings.stage_steam_playfab = {
 	enable_sessions = false,
 	allow_tutorial = true,
 	implementation = "playfab",
-	title_id = "6FA3",
+	title_id = "9928",
 	environment = rawget(_G, "Backend") and Backend.ENV_STAGE,
 	allow_local = local_backend_available
 }
@@ -43,6 +43,14 @@ BackendSettings.prod_xbone_playfab = {
 	allow_local = local_backend_available
 }
 BackendSettings.stage_ps4_playfab = {
+	enable_sessions = false,
+	allow_tutorial = true,
+	implementation = "playfab",
+	title_id = "9050",
+	environment = rawget(_G, "Backend") and Backend.ENV_STAGE,
+	allow_local = local_backend_available
+}
+BackendSettings.prod_ps4_playfab = {
 	enable_sessions = false,
 	allow_tutorial = true,
 	implementation = "playfab",

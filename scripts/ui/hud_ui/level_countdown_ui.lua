@@ -127,12 +127,14 @@ LevelCountdownUI.play_sound = function (self, event)
 end
 
 LevelCountdownUI.destroy = function (self)
-	return
+	if self._waystone_unit then
+		self:set_waystone_activation(false)
+	end
 end
 
 LevelCountdownUI._get_start_time = function (self)
 	if not self._waystone_unit then
-		self._waystone_unit = LevelCountdownUI._get_waystone_unit()
+		return
 	end
 
 	local unit = self._waystone_unit
@@ -153,19 +155,8 @@ LevelCountdownUI._get_start_time = function (self)
 	end
 end
 
-LevelCountdownUI.set_waystone_activation = function (enable)
-	local waystone_unit = LevelCountdownUI._get_waystone_unit()
-
-	if waystone_unit == nil then
-		return
-	end
-
-	local event = (enable and "activate") or "deactivate"
-
-	Unit.flow_event(waystone_unit, event)
-end
-
-LevelCountdownUI._get_waystone_unit = function ()
+LevelCountdownUI.set_waystone_activation = function (self, enable, optional_waystone_type)
+	self._waystone_unit = nil
 	local world_manager = Managers.world
 
 	if world_manager:has_world("level_world") then
@@ -178,8 +169,21 @@ LevelCountdownUI._get_waystone_unit = function ()
 			local units = Level.units(level)
 
 			for i, level_unit in ipairs(units) do
-				if Unit.has_data(level_unit, "game_start_waystone") then
-					return level_unit
+				if Unit.has_data(level_unit, "waystone_type") then
+					if enable then
+						local waystone_type = Unit.get_data(level_unit, "waystone_type")
+
+						if waystone_type == optional_waystone_type then
+							Unit.flow_event(level_unit, "activate")
+							fassert(self._waystone_unit == nil, "[LevelCountdownUI] - Found multiple waystone units with the same type: %s", tostring(waystone_type))
+
+							self._waystone_unit = level_unit
+						else
+							Unit.flow_event(level_unit, "deactivate")
+						end
+					else
+						Unit.flow_event(level_unit, "deactivate")
+					end
 				end
 			end
 		end

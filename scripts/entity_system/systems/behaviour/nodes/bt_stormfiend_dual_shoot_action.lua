@@ -29,7 +29,6 @@ BTStormfiendDualShootAction.enter = function (self, unit, blackboard, t)
 	blackboard.weapon_setup = action.weapon_setup
 	local network_manager = Managers.state.network
 
-	network_manager:anim_event(unit, "to_combat")
 	network_manager:anim_event(unit, action.attack_animation)
 
 	blackboard.rotation_time = t + action.rotation_time

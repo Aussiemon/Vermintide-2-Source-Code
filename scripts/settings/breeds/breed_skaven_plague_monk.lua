@@ -18,11 +18,10 @@ local breed_data = {
 	has_running_attack = true,
 	threat_value = 5,
 	awards_positive_reinforcement_message = true,
-	no_stagger_duration = true,
 	berzerking_stagger_time = 0.65,
 	is_bot_threat = true,
-	bone_lod_level = 1,
 	run_speed_interpolation_factor = 0.5,
+	bone_lod_level = 1,
 	attack_general_sound_event = "Play_plague_monk_frenzy_attack_vce",
 	default_inventory_template = "dual_sword",
 	stagger_resistance = 1.5,
@@ -1146,10 +1145,10 @@ local action_data = {
 			local combo = blackboard.combo_attack_data
 
 			if combo and combo.aborted then
-				blackboard.stagger_ignore_anim_cb = true
 				local berzerker_stagger_multiplier = (blackboard.stagger_type < 4 and math.clamp(blackboard.stagger_type - 1, 1, 1.5)) or 1
 
-				if blackboard.stagger_type ~= 6 then
+				if blackboard.stagger_type ~= 6 and blackboard.stagger_type ~= 3 then
+					blackboard.stagger_ignore_anim_cb = true
 					blackboard.stagger_time = t + blackboard.breed.berzerking_stagger_time * berzerker_stagger_multiplier
 				end
 			end
@@ -1532,8 +1531,8 @@ local frenzy_attack = {
 			2
 		},
 		normal = {
-			4,
-			4,
+			2,
+			2,
 			2
 		},
 		hard = {

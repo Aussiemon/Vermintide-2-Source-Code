@@ -225,6 +225,12 @@ PlayerInputTutorialExtension.reset_release_input = function (self)
 	return true
 end
 
+PlayerInputTutorialExtension.reset_release_input_with_delay = function (self, delay)
+	self.has_released_input = false
+
+	return true
+end
+
 PlayerInputTutorialExtension.get_wield_cooldown = function (self, override_cooldown_time)
 	if override_cooldown_time then
 		if override_cooldown_time < self.wield_cooldown_timer_clock then

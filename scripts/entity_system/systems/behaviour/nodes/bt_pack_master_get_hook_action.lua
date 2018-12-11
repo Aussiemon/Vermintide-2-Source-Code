@@ -20,6 +20,8 @@ BTPackMasterGetHookAction.enter = function (self, unit, blackboard, t)
 	end
 
 	Managers.state.network:anim_event(unit, "run_away")
+
+	blackboard.move_state = "moving"
 end
 
 BTPackMasterGetHookAction.leave = function (self, unit, blackboard, t, reason, destroy)

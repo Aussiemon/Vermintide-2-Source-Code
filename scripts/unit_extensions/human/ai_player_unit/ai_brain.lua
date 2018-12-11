@@ -28,11 +28,12 @@ AIBrain.destroy = function (self)
 	self:exit_last_action()
 end
 
-AIBrain.unfreeze = function (self, blackboard)
+AIBrain.unfreeze = function (self, blackboard, behavior)
 	blackboard.attacks_done = 0
 	blackboard.destination_dist = 0
 	blackboard.nav_target_dist_sq = 0
 
+	self:load_brain(behavior)
 	self:init_utility_actions(blackboard, blackboard.breed)
 end
 
@@ -59,7 +60,6 @@ AIBrain.init_utility_actions = function (self, blackboard, breed)
 end
 
 AIBrain.load_brain = function (self, tree_name)
-	self._current_action = nil
 	local ai_system = Managers.state.entity:system("ai_system")
 	self._bt = ai_system:behavior_tree(tree_name)
 

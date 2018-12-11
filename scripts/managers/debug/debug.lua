@@ -1,7 +1,6 @@
 local font_size = 26
 local font = "gw_arial_32"
 local font_mtrl = "materials/fonts/" .. font
-local remove_list = {}
 Debug = Debug or {}
 
 Debug.setup = function (world, world_name)
@@ -148,24 +147,26 @@ Debug.cond_text = function (c, ...)
 end
 
 Debug.text = function (...)
-	if not Debug.active then
+	if not Debug.active or (script_data and script_data.disable_debug_draw) then
 		return
 	end
 
-	table.insert(Debug.debug_texts, {
-		text = string.format(...)
-	})
+	local text_table = FrameTable.alloc_table()
+	text_table.text = string.format(...)
+
+	table.insert(Debug.debug_texts, text_table)
 end
 
 Debug.colored_text = function (color, ...)
-	if not Debug.active then
+	if not Debug.active or (script_data and script_data.disable_debug_draw) then
 		return
 	end
 
-	table.insert(Debug.debug_texts, {
-		text = string.format(...),
-		color = ColorBox(color)
-	})
+	local text_table = FrameTable.alloc_table()
+	text_table.text = string.format(...)
+	text_table.color = ColorBox(color)
+
+	table.insert(Debug.debug_texts, text_table)
 end
 
 local max_world_sticky = 512
@@ -249,7 +250,7 @@ Debug.update_world_sticky_texts = function ()
 end
 
 Debug.world_text = function (pos, text, color_name)
-	if not Debug.active then
+	if not Debug.active or (script_data and script_data.disable_debug_draw) then
 		return
 	end
 
@@ -279,7 +280,7 @@ Debug.world_text = function (pos, text, color_name)
 end
 
 Debug.world_sticky_text = function (pos, text, color_name)
-	if not Debug.active then
+	if not Debug.active or (script_data and script_data.disable_debug_draw) then
 		return
 	end
 
@@ -323,7 +324,7 @@ Debug.reset_sticky_world_texts = function ()
 end
 
 Debug.sticky_text = function (...)
-	if not Debug.active then
+	if not Debug.active or (script_data and script_data.disable_debug_draw) then
 		return
 	end
 

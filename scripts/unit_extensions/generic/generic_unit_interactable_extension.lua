@@ -17,11 +17,32 @@ GenericUnitInteractableExtension.interaction_type = function (self)
 	return self.interactable_type
 end
 
-GenericUnitInteractableExtension.set_is_being_interacted_with = function (self, interactor_unit)
+GenericUnitInteractableExtension.set_is_being_interacted_with = function (self, interactor_unit, interaction_result)
+	local unit = self.unit
+	local interaction_type = self.interactable_type
+
 	if self.interactor_unit then
 		fassert(interactor_unit == nil, "Interactor unit was already set.")
+
+		local current_interactor_unit = self.interactor_unit
+		local flow_event = "lua_interaction_stopped_" .. interaction_type .. "_" .. InteractionResult[interaction_result]
+
+		Unit.flow_event(unit, flow_event)
+
+		local is_interactor_network_unit = NetworkUnit.is_network_unit(current_interactor_unit)
+		local is_interactor_husk = is_interactor_network_unit and NetworkUnit.is_husk_unit(current_interactor_unit)
+
+		if not is_interactor_husk then
+			local local_flow_event = "lua_interaction_stopped_local_interactor_" .. interaction_type .. "_" .. InteractionResult[interaction_result]
+
+			Unit.flow_event(unit, local_flow_event)
+		end
 	else
 		fassert(interactor_unit ~= nil, "Interactor unit was already nil.")
+
+		local flow_event = "lua_interaction_started_" .. interaction_type
+
+		Unit.flow_event(unit, flow_event)
 	end
 
 	self.interactor_unit = interactor_unit

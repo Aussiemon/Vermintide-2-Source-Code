@@ -96,7 +96,7 @@ UnitFramesHandler._create_unit_frame_by_type = function (self, frame_type, frame
 	if frame_type == "team" then
 		definitions = local_require("scripts/ui/hud_ui/team_member_unit_frame_ui_definitions")
 	elseif frame_type == "player" then
-		local gamepad_active = self.input_manager:is_device_active("gamepad")
+		local gamepad_active = self.input_manager:is_device_active("gamepad") or PLATFORM ~= "win32"
 
 		if self.platform ~= "win32" or ((gamepad_active or UISettings.use_gamepad_hud_layout == "always") and UISettings.use_gamepad_hud_layout ~= "never") then
 			definitions = local_require("scripts/ui/hud_ui/player_console_unit_frame_ui_definitions")
@@ -787,6 +787,8 @@ UnitFramesHandler.set_visible = function (self, visible, ignore_own_player)
 			else
 				unit_frame.widget:set_visible(visible)
 			end
+		elseif player_data.connecting_peer_id then
+			unit_frame.sync = true
 		elseif not visible then
 			unit_frame.widget:set_visible(false)
 		end
@@ -832,7 +834,7 @@ UnitFramesHandler.update = function (self, dt, t, ignore_own_player)
 		return
 	end
 
-	local gamepad_active = self.input_manager:is_device_active("gamepad")
+	local gamepad_active = self.input_manager:is_device_active("gamepad") or PLATFORM ~= "win32"
 
 	if (gamepad_active or UISettings.use_gamepad_hud_layout == "always") and UISettings.use_gamepad_hud_layout ~= "never" then
 		if not self.gamepad_active_last_frame then

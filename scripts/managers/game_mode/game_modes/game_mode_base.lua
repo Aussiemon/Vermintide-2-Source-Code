@@ -59,7 +59,15 @@ GameModeBase.hot_join_sync = function (self, sender)
 end
 
 GameModeBase.mutators = function (self)
-	return Managers.deed:mutators()
+	local game_mode_event_data = Managers.matchmaking and Managers.matchmaking:game_mode_event_data()
+
+	if game_mode_event_data then
+		local mutators = game_mode_event_data.mutators
+
+		return mutators
+	else
+		return Managers.deed:mutators()
+	end
 end
 
 return

@@ -1404,6 +1404,7 @@ Talents.witch_hunter = {
 		description = "victor_bountyhunter_revive_speed_desc",
 		name = "victor_bountyhunter_revive_speed",
 		num_ranks = 1,
+		buffer = "both",
 		icon = "victor_bountyhunter_revive_speed",
 		description_values = {
 			{

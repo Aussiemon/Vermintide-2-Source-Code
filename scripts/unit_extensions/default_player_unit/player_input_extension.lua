@@ -104,6 +104,16 @@ PlayerInputExtension.update = function (self, unit, input, dt, context, t)
 			self.wield_cooldown_timer_clock = self.wield_cooldown_timer_clock + dt
 		end
 	end
+
+	if self._release_input_delay then
+		self._release_input_delay = self._release_input_delay - dt
+
+		if self._release_input_delay <= 0 then
+			self._release_input_delay = nil
+
+			self:reset_release_input()
+		end
+	end
 end
 
 PlayerInputExtension.start_double_tap = function (self, input_key, t)
@@ -210,6 +220,10 @@ PlayerInputExtension.reset_release_input = function (self)
 	end
 
 	return true
+end
+
+PlayerInputExtension.reset_release_input_with_delay = function (self, delay)
+	self._release_input_delay = (self._release_input_delay and self._release_input_delay + delay) or delay
 end
 
 PlayerInputExtension.get_wield_cooldown = function (self, override_cooldown_time)

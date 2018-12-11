@@ -63,6 +63,11 @@ IngameView.on_enter = function (self, menu_to_enter)
 	self.input_manager:block_device_except_service("ingame_menu", "keyboard", 1)
 	self.input_manager:block_device_except_service("ingame_menu", "mouse", 1)
 	self.input_manager:block_device_except_service("ingame_menu", "gamepad", 1)
+
+	if script_data.debug_enabled then
+		self.input_manager:device_unblock_service("keyboard", 1, "Debug")
+	end
+
 	ShowCursorStack.push()
 	self:play_sound("Play_hud_button_open")
 

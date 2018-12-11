@@ -100,7 +100,6 @@ BTSuicideRunAction.StateInit.on_enter = function (self, params)
 	local position = position_lookup[unit]
 
 	ai_navigation_extension:move_to(position)
-	Managers.state.network:anim_event(unit, "to_combat")
 
 	if not blackboard.explode_timer_started then
 		Managers.state.network:anim_event(unit, "suicide_run_start")

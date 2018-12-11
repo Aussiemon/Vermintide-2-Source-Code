@@ -192,45 +192,25 @@ BotConstants.default = {
 	FLAT_MOVE_TO_PREVIOUS_POS_EPSILON = 0.25,
 	FLAT_MOVE_TO_EPSILON = 0.05,
 	DEFAULT_BOT_THREAT_DIFFICULTY_DATA = {
-		easy = {
-			max_start_delay = 0.35
-		},
 		normal = {
 			max_start_delay = 0.35
 		},
 		hard = {
 			max_start_delay = 0
 		},
-		survival_hard = {
-			max_start_delay = 0
-		},
 		harder = {
 			max_start_delay = 0
 		},
-		survival_harder = {
-			max_start_delay = 0
-		},
 		hardest = {
-			max_start_delay = 0
-		},
-		survival_hardest = {
 			max_start_delay = 0
 		}
 	},
 	OPPORTUNITY_TARGET_REACTION_TIMES = {
-		easy = {
-			max = 0.75,
-			min = 0.5
-		},
 		normal = {
-			max = 0.75,
-			min = 0.5
+			max = 20,
+			min = 10
 		},
 		hard = {
-			max = 0.65,
-			min = 0.2
-		},
-		survival_hard = {
 			max = 0.65,
 			min = 0.2
 		},
@@ -238,15 +218,7 @@ BotConstants.default = {
 			max = 0.65,
 			min = 0.2
 		},
-		survival_harder = {
-			max = 0.65,
-			min = 0.2
-		},
 		hardest = {
-			max = 0.65,
-			min = 0.2
-		},
-		survival_hardest = {
 			max = 0.65,
 			min = 0.2
 		}

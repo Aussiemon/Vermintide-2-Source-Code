@@ -3,6 +3,7 @@ require("scripts/ui/views/additional_content/additional_content_view")
 StateTitleScreenMainMenu = class(StateTitleScreenMainMenu)
 StateTitleScreenMainMenu.NAME = "StateTitleScreenMainMenu"
 local game_types = {
+	HOST_PLAY_TOGETHER = "host_play_together",
 	INVITATION = "invitation",
 	OFFLINE = "offline",
 	ONLINE = "online"
@@ -71,7 +72,7 @@ elseif script_data.settings.use_beta_overlay then
 			end
 		}
 	end
-else
+elseif GameSettingsDevelopment.additional_content_view_enabled then
 	menu_functions = {
 		function (this)
 			local game_type = this._title_start_ui:game_type() or game_types.ONLINE
@@ -100,6 +101,36 @@ else
 
 			input_manager:block_device_except_service("additional_content_menu", "gamepad")
 			this:activate_view("additional_content_view")
+			this._title_start_ui:menu_option_activated(true)
+			Managers.music:trigger_event("Play_console_menu_select")
+		end,
+		function (this)
+			this:activate_view("credits_view")
+			this._title_start_ui:menu_option_activated(true)
+			Managers.music:trigger_event("Play_console_menu_select")
+		end
+	}
+else
+	menu_functions = {
+		function (this)
+			local game_type = this._title_start_ui:game_type() or game_types.ONLINE
+
+			this:_start_game(game_type)
+			this._title_start_ui:menu_option_activated(true)
+			Managers.music:trigger_event("Play_console_menu_start_game")
+		end,
+		function (this)
+			local game_type = this._title_start_ui:game_type() or game_types.ONLINE
+
+			this:_start_game(game_type, "prologue")
+			this._title_start_ui:menu_option_activated(true)
+			Managers.music:trigger_event("Play_console_menu_start_game")
+		end,
+		function (this)
+			local input_manager = Managers.input
+
+			input_manager:block_device_except_service("options_menu", "gamepad")
+			this:activate_view("options_view")
 			this._title_start_ui:menu_option_activated(true)
 			Managers.music:trigger_event("Play_console_menu_select")
 		end,
@@ -166,7 +197,7 @@ StateTitleScreenMainMenu.on_enter = function (self, params)
 
 	self:_try_activate_splash()
 
-	if not script_data.settings.use_beta_overlay then
+	if not script_data.settings.use_beta_overlay and GameSettingsDevelopment.additional_content_view_enabled then
 		local additional_content_view = self._views.additional_content_view
 		local has_splashes = additional_content_view and additional_content_view:has_active_splashes()
 
@@ -226,7 +257,7 @@ StateTitleScreenMainMenu._init_menu_views = function (self)
 		self._views = {
 			credits_view = CreditsView:new(view_context),
 			options_view = OptionsView:new(view_context),
-			additional_content_view = (not script_data.settings.use_beta_overlay and AdditionalContentView:new(view_context)) or nil
+			additional_content_view = (not script_data.settings.use_beta_overlay and GameSettingsDevelopment.additional_content_view_enabled and AdditionalContentView:new(view_context)) or nil
 		}
 	end
 
@@ -288,6 +319,7 @@ StateTitleScreenMainMenu.update = function (self, dt, t)
 	self:_update_network(dt, t)
 
 	local has_offline_invitation = false
+	local play_together_list = Managers.invite:play_together_list()
 
 	if self._auto_start then
 		local loading_context = self.parent.parent.loading_context
@@ -295,7 +327,7 @@ StateTitleScreenMainMenu.update = function (self, dt, t)
 		if loading_context.offline_invite then
 			has_offline_invitation = true
 			loading_context.offline_invite = nil
-		else
+		elseif not play_together_list then
 			self:_start_game(game_types.ONLINE)
 		end
 
@@ -305,12 +337,21 @@ StateTitleScreenMainMenu.update = function (self, dt, t)
 	local has_popup = Managers.popup:has_popup()
 	local user_detached = Managers.account:user_detached()
 
-	if (Managers.invite:has_invitation() or has_offline_invitation) and not self._input_disabled and not has_popup and not user_detached and not self._popup_id then
-		if self._is_installed then
-			self:_start_game(game_types.INVITATION, nil, true)
-		else
-			self._popup_id = Managers.popup:queue_popup(Localize("popup_invite_not_installed"), Localize("popup_invite_not_installed_header"), "not_installed", Localize("menu_ok"))
-			self._state = "check_popup"
+	if not self._input_disabled and not has_popup and not user_detached and not self._popup_id then
+		if Managers.invite:has_invitation() or has_offline_invitation then
+			if self._is_installed then
+				self:_start_game(game_types.INVITATION, nil, true)
+			else
+				self._popup_id = Managers.popup:queue_popup(Localize("popup_invite_not_installed"), Localize("popup_invite_not_installed_header"), "not_installed", Localize("menu_ok"))
+				self._state = "check_popup"
+			end
+		elseif play_together_list then
+			if self._is_installed then
+				self:_start_game(game_types.HOST_PLAY_TOGETHER, nil, true)
+			else
+				self._popup_id = Managers.popup:queue_popup(Localize("popup_invite_not_installed"), Localize("popup_invite_not_installed_header"), "not_installed", Localize("menu_ok"))
+				self._state = "check_popup"
+			end
 		end
 	end
 
@@ -522,7 +563,7 @@ StateTitleScreenMainMenu.cb_fade_in_done = function (self)
 	local disable_trailer = self._disable_trailer or not Application.user_setting("play_intro_cinematic")
 	local profile_name = self._profile_name
 
-	if PLATFORM ~= "win32" and not Managers.backend:get_user_data("prologue_started") and not script_data.settings.disable_tutorial_at_start and not script_data.disable_prologue and not script_data.honduras_demo then
+	if not Managers.backend:get_user_data("prologue_started") and not script_data.settings.disable_tutorial_at_start and not script_data.disable_prologue and not script_data.honduras_demo then
 		disable_trailer = false
 		level_key = "prologue"
 	end
@@ -532,7 +573,7 @@ StateTitleScreenMainMenu.cb_fade_in_done = function (self)
 	loading_context.restart_network = true
 	loading_context.level_key = level_key
 
-	if game_type == game_types.INVITATION then
+	if game_type == game_types.INVITATION or game_type == game_types.HOST_PLAY_TOGETHER then
 		loading_context.first_time = false
 	end
 
@@ -550,12 +591,10 @@ StateTitleScreenMainMenu.cb_fade_in_done = function (self)
 		GameSettingsDevelopment.disable_intro_trailer = DemoSettings.disable_intro_trailer
 	elseif not level_key then
 		loading_context.gamma_correct = not SaveData.gamma_corrected
+		loading_context.show_profile_on_startup = true
 
 		if not disable_trailer then
 			loading_context.play_trailer = true
-			loading_context.show_profile_on_startup = true
-		else
-			loading_context.show_profile_on_startup = false
 		end
 	end
 end
@@ -649,7 +688,7 @@ StateTitleScreenMainMenu._check_restrictions_chat = function (self)
 end
 
 StateTitleScreenMainMenu._setup_chat_restriction_dialog = function (self)
-	local user_id = account_manager:user_id()
+	local user_id = Managers.account:user_id()
 
 	Managers.system_dialog:open_system_dialog(MsgDialog.SYSTEM_MSG_TRC_PSN_CHAT_RESTRICTION, user_id)
 

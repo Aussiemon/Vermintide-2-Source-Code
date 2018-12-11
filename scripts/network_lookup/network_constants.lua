@@ -52,6 +52,15 @@ local num_items = #ItemMasterList
 
 fassert(num_items <= NetworkConstants.weapon_id.max, "Too many weapons in ItemMasterList, global.network_config value weapon_id needs to be raised.")
 
+NetworkConstants.LevelSettings = Network.type_info("weight_array")
+local num_levels = 0
+
+for _ in pairs(LevelSettings) do
+	num_levels = num_levels + 1
+end
+
+fassert(num_levels <= NetworkConstants.weapon_id.max, "Too many levels in LevelSettings, global.network_config max value weight_array needs to be raised.")
+
 local num_damage_sources = #NetworkLookup.damage_sources
 NetworkConstants.damage_source_id = Network.type_info("damage_source_id")
 
@@ -147,5 +156,17 @@ local num_breeds = #NetworkLookup.breeds
 fassert(num_breeds <= num_bitmasks_bits, "Need to update enemy_package_loader_bitmask_array so that it enough 32-bit elements to contain number of breeds (%i).", num_breeds)
 
 NetworkConstants.max_breed_freezer_units_per_rpc = Network.type_info("packed_breed_go_ids").max_size
+NetworkConstants.mutator_lookup = Network.type_info("mutator_lookup")
+local num_mutators = #NetworkLookup.mutator_templates
+local max_mutators = NetworkConstants.mutator_lookup.max
+
+fassert(num_mutators <= max_mutators, "Too many entries in mutator lookup (%d, max:%d), raise global.network_config value for mutator_lookup by a factor 2", num_mutators, max_mutators)
+
+local max_statistics_paths = Network.type_info("statistics_path_lookup").max
+local num_statistics_paths = #NetworkLookup.statistics_path_names
+
+fassert(num_statistics_paths <= max_statistics_paths, "Too many entries in statistics_path lookup (%d, max:%d), raise global.network_config value for statistics_path by a factor 2", num_statistics_paths, max_statistics_paths)
+
+NetworkConstants.mutator_array = Network.type_info("mutator_array")
 
 return

@@ -92,6 +92,17 @@ local scenegraph_definition = {
 			1
 		}
 	},
+	video = {
+		vertical_alignment = "center",
+		parent = "window",
+		horizontal_alignment = "center",
+		size = large_window_size,
+		position = {
+			0,
+			0,
+			1
+		}
+	},
 	window_background = {
 		vertical_alignment = "bottom",
 		parent = "window",
@@ -103,7 +114,7 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			0
+			1
 		}
 	},
 	area_root = {
@@ -117,7 +128,7 @@ local scenegraph_definition = {
 		position = {
 			0,
 			-60,
-			2
+			3
 		}
 	},
 	title_divider = {
@@ -398,6 +409,12 @@ local disable_with_gamepad = true
 local widgets = {
 	window = UIWidgets.create_frame("window", large_window_size, window_frame, 10),
 	window_fade = UIWidgets.create_simple_texture("options_window_fade_01", "window", nil, nil, nil, 2),
+	background = UIWidgets.create_simple_rect("window", {
+		255,
+		0,
+		0,
+		0
+	}),
 	area_title = UIWidgets.create_simple_text("area_title", "area_title", nil, nil, level_text_style),
 	title_divider = UIWidgets.create_simple_texture("divider_01_top", "title_divider"),
 	description_text = UIWidgets.create_simple_text("description_text", "description_text", nil, nil, description_text_style),

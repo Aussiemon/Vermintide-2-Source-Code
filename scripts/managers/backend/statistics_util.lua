@@ -54,6 +54,20 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 				elseif slot_type == "ranged" then
 					statistics_db:increment_stat(stats_id, "kills_ranged")
 				end
+
+				if Managers.unlock:is_dlc_unlocked("holly") then
+					if damage_source == "we_1h_axe" then
+						statistics_db:increment_stat(stats_id, "holly_kills_we_1h_axe")
+					elseif damage_source == "bw_1h_crowbill" then
+						statistics_db:increment_stat(stats_id, "holly_kills_bw_1h_crowbill")
+					elseif damage_source == "wh_dual_wield_axe_falchion" then
+						statistics_db:increment_stat(stats_id, "holly_kills_wh_dual_wield_axe_falchion")
+					elseif damage_source == "dr_dual_wield_hammers" then
+						statistics_db:increment_stat(stats_id, "holly_kills_dr_dual_wield_hammers")
+					elseif damage_source == "es_dual_wield_hammer_sword" then
+						statistics_db:increment_stat(stats_id, "holly_kills_es_dual_wield_hammer_sword")
+					end
+				end
 			end
 		end
 	end
@@ -323,6 +337,15 @@ StatisticsUtil.register_collected_tomes = function (collected_tomes, statistics_
 	end
 end
 
+StatisticsUtil.register_complete_event = function (statistics_db)
+	local local_player = Managers.player:local_player()
+	local stats_id = local_player:stats_id()
+	local difficulty_manager = Managers.state.difficulty
+	local difficulty_name = difficulty_manager:get_difficulty()
+
+	statistics_db:increment_stat(stats_id, "completed_event_difficulty", difficulty_name)
+end
+
 StatisticsUtil.register_complete_level = function (statistics_db)
 	local level_settings = LevelHelper:current_level_settings()
 	local level_id = level_settings.level_id
@@ -335,8 +358,9 @@ StatisticsUtil.register_complete_level = function (statistics_db)
 	local stats_id = local_player:stats_id()
 	local profile_index = local_player:profile_index()
 	local profile = SPProfiles[profile_index]
+	local display_name = profile.display_name
 
-	statistics_db:increment_stat(stats_id, "completed_levels_" .. profile.display_name, level_id)
+	statistics_db:increment_stat(stats_id, "completed_levels_" .. display_name, level_id)
 
 	local mission_system = Managers.state.entity:system("mission_system")
 	local grimoire_mission_data = mission_system:get_level_end_mission_data("grimoire_hidden_mission")
@@ -363,6 +387,39 @@ StatisticsUtil.register_complete_level = function (statistics_db)
 	local career_name = career_data.name
 
 	StatisticsUtil._register_completed_level_difficulty(statistics_db, level_id, career_name, difficulty_name)
+
+	if Managers.unlock:is_dlc_unlocked("holly") and difficulty_name == "hardest" and (level_id == "ground_zero" or level_id == "warcamp" or level_id == "skaven_stronghold" or level_id == "skittergate") then
+		local player_unit = local_player.player_unit
+		local weapon_names = {
+			"we_1h_axe",
+			"bw_1h_crowbill",
+			"wh_dual_wield_axe_falchion",
+			"dr_dual_wield_hammers",
+			"es_dual_wield_hammer_sword"
+		}
+
+		if Unit.alive(player_unit) then
+			local inventory_extension = ScriptUnit.has_extension(player_unit, "inventory_system")
+
+			if inventory_extension then
+				local melee_item_name = inventory_extension:get_item_name("slot_melee")
+				local ranged_item_name = inventory_extension:get_item_name("slot_melee")
+				local weapon_name = nil
+
+				if table.contains(weapon_names, melee_item_name) then
+					weapon_name = melee_item_name
+				elseif table.contains(weapon_names, ranged_item_name) then
+					weapon_name = ranged_item_name
+				end
+
+				if weapon_name then
+					local stat_name = "holly_completed_level_" .. level_id .. "_with_" .. weapon_name
+
+					statistics_db:increment_stat(stats_id, stat_name)
+				end
+			end
+		end
+	end
 end
 
 StatisticsUtil.register_complete_tutorial = function (statistics_db)

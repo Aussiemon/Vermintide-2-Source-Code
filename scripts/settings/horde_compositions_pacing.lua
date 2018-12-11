@@ -13,229 +13,231 @@ HordeCompositionsSoundSettings = {
 		}
 	}
 }
-HordeCompositions.small = {
-	{
-		name = "plain",
-		weight = 7,
-		breeds = {
-			"skaven_slave",
-			{
-				20,
-				22
+HordeCompositionsPacing = {
+	small = {
+		{
+			name = "plain",
+			weight = 7,
+			breeds = {
+				"skaven_slave",
+				{
+					20,
+					22
+				}
+			}
+		},
+		sound_settings = HordeCompositionsSoundSettings.skaven
+	},
+	medium = {
+		{
+			name = "plain",
+			weight = 7,
+			breeds = {
+				"skaven_slave",
+				{
+					35,
+					40
+				}
+			}
+		},
+		sound_settings = HordeCompositionsSoundSettings.skaven
+	},
+	large = {
+		{
+			name = "plain",
+			weight = 7,
+			breeds = {
+				"skaven_slave",
+				{
+					50,
+					55
+				}
+			}
+		},
+		sound_settings = HordeCompositionsSoundSettings.skaven
+	},
+	mini_patrol = {
+		{
+			name = "few_clanrats",
+			weight = 2,
+			breeds = {
+				"skaven_clan_rat_with_shield",
+				{
+					2,
+					3
+				}
+			}
+		},
+		{
+			name = "few_clanrats",
+			weight = 10,
+			breeds = {
+				"skaven_clan_rat",
+				{
+					3,
+					4
+				}
+			}
+		},
+		{
+			name = "storm_clanrats",
+			weight = 3,
+			breeds = {
+				"skaven_clan_rat",
+				{
+					2,
+					3
+				},
+				"skaven_storm_vermin_commander",
+				{
+					1,
+					1
+				}
 			}
 		}
 	},
-	sound_settings = HordeCompositionsSoundSettings.skaven
-}
-HordeCompositions.medium = {
-	{
-		name = "plain",
-		weight = 7,
-		breeds = {
-			"skaven_slave",
-			{
-				35,
-				40
+	chaos_medium = {
+		{
+			name = "plain",
+			weight = 7,
+			breeds = {
+				"chaos_fanatic",
+				{
+					20,
+					20
+				}
+			}
+		},
+		{
+			name = "plain",
+			weight = 7,
+			breeds = {
+				"chaos_marauder",
+				{
+					3,
+					4
+				},
+				"chaos_fanatic",
+				{
+					15,
+					20
+				}
+			}
+		},
+		sound_settings = HordeCompositionsSoundSettings.chaos
+	},
+	chaos_large = {
+		{
+			name = "plain",
+			weight = 7,
+			breeds = {
+				"chaos_marauder",
+				{
+					5,
+					6
+				},
+				"chaos_fanatic",
+				{
+					20,
+					25
+				}
+			}
+		},
+		{
+			name = "plain",
+			weight = 7,
+			breeds = {
+				"chaos_fanatic",
+				{
+					25,
+					30
+				}
+			}
+		},
+		sound_settings = HordeCompositionsSoundSettings.chaos
+	},
+	chaos_mini_patrol = {
+		{
+			name = "few_marauders",
+			weight = 10,
+			breeds = {
+				"chaos_marauder",
+				{
+					2,
+					3
+				}
 			}
 		}
 	},
-	sound_settings = HordeCompositionsSoundSettings.skaven
-}
-HordeCompositions.large = {
-	{
-		name = "plain",
-		weight = 7,
-		breeds = {
-			"skaven_slave",
-			{
-				50,
-				55
+	mutator_chaos_warrior_mini_patrol = {
+		{
+			name = "few_chaos_warriors",
+			weight = 10,
+			breeds = {
+				"chaos_warrior",
+				{
+					3,
+					4
+				}
 			}
 		}
 	},
-	sound_settings = HordeCompositionsSoundSettings.skaven
-}
-HordeCompositions.mini_patrol = {
-	{
-		name = "few_clanrats",
-		weight = 2,
-		breeds = {
-			"skaven_clan_rat_with_shield",
-			{
-				2,
-				3
-			}
-		}
-	},
-	{
-		name = "few_clanrats",
-		weight = 10,
-		breeds = {
-			"skaven_clan_rat",
-			{
-				3,
-				4
-			}
-		}
-	},
-	{
-		name = "storm_clanrats",
-		weight = 3,
-		breeds = {
-			"skaven_clan_rat",
-			{
-				2,
-				3
-			},
-			"skaven_storm_vermin_commander",
-			{
+	mutator_mixed_horde = {
+		{
+			name = "plain",
+			weight = 7,
+			breeds = {
+				"chaos_marauder",
+				{
+					5,
+					6
+				},
+				"chaos_fanatic",
+				{
+					5,
+					6
+				},
+				"chaos_marauder_with_shield",
+				{
+					2,
+					3
+				},
+				"chaos_warrior",
+				{
+					1,
+					2
+				},
+				"skaven_storm_vermin_with_shield",
 				1,
-				1
+				"chaos_berzerker",
+				{
+					2,
+					3
+				},
+				"skaven_storm_vermin_commander",
+				{
+					3,
+					3
+				},
+				"skaven_clan_rat",
+				{
+					5,
+					6
+				},
+				"skaven_slave",
+				{
+					5,
+					6
+				},
+				"skaven_plague_monk",
+				{
+					2,
+					3
+				}
 			}
-		}
+		},
+		sound_settings = HordeCompositionsSoundSettings.chaos
 	}
-}
-HordeCompositions.chaos_medium = {
-	{
-		name = "plain",
-		weight = 7,
-		breeds = {
-			"chaos_fanatic",
-			{
-				20,
-				20
-			}
-		}
-	},
-	{
-		name = "plain",
-		weight = 7,
-		breeds = {
-			"chaos_marauder",
-			{
-				3,
-				4
-			},
-			"chaos_fanatic",
-			{
-				15,
-				20
-			}
-		}
-	},
-	sound_settings = HordeCompositionsSoundSettings.chaos
-}
-HordeCompositions.chaos_large = {
-	{
-		name = "plain",
-		weight = 7,
-		breeds = {
-			"chaos_marauder",
-			{
-				5,
-				6
-			},
-			"chaos_fanatic",
-			{
-				20,
-				25
-			}
-		}
-	},
-	{
-		name = "plain",
-		weight = 7,
-		breeds = {
-			"chaos_fanatic",
-			{
-				25,
-				30
-			}
-		}
-	},
-	sound_settings = HordeCompositionsSoundSettings.chaos
-}
-HordeCompositions.chaos_mini_patrol = {
-	{
-		name = "few_marauders",
-		weight = 10,
-		breeds = {
-			"chaos_marauder",
-			{
-				2,
-				3
-			}
-		}
-	}
-}
-HordeCompositions.mutator_chaos_warrior_mini_patrol = {
-	{
-		name = "few_chaos_warriors",
-		weight = 10,
-		breeds = {
-			"chaos_warrior",
-			{
-				3,
-				4
-			}
-		}
-	}
-}
-HordeCompositions.mutator_mixed_horde = {
-	{
-		name = "plain",
-		weight = 7,
-		breeds = {
-			"chaos_marauder",
-			{
-				5,
-				6
-			},
-			"chaos_fanatic",
-			{
-				5,
-				6
-			},
-			"chaos_marauder_with_shield",
-			{
-				2,
-				3
-			},
-			"chaos_warrior",
-			{
-				1,
-				2
-			},
-			"skaven_storm_vermin_with_shield",
-			1,
-			"chaos_berzerker",
-			{
-				2,
-				3
-			},
-			"skaven_storm_vermin_commander",
-			{
-				3,
-				3
-			},
-			"skaven_clan_rat",
-			{
-				5,
-				6
-			},
-			"skaven_slave",
-			{
-				5,
-				6
-			},
-			"skaven_plague_monk",
-			{
-				2,
-				3
-			}
-		}
-	},
-	sound_settings = HordeCompositionsSoundSettings.chaos
 }
 
 return

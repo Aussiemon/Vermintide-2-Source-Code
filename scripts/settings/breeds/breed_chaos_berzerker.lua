@@ -50,12 +50,11 @@ local breed_data = {
 	threat_value = 5,
 	awards_positive_reinforcement_message = true,
 	smart_targeting_width = 0.2,
-	no_stagger_duration = true,
+	berzerking_stagger_time = 0.75,
 	is_bot_aid_threat = true,
 	behavior = "berzerker",
-	berzerking_stagger_time = 0.75,
-	during_horde_detection_radius = 24,
 	run_speed_interpolation_factor = 0.5,
+	during_horde_detection_radius = 24,
 	force_walk_while_tired = true,
 	target_selection = "pick_closest_target_with_spillover",
 	attack_start_slow_factor_time = 0.35,
@@ -1195,10 +1194,10 @@ local action_data = {
 			local combo = blackboard.combo_attack_data
 
 			if combo and combo.aborted then
-				blackboard.stagger_ignore_anim_cb = true
 				local berzerker_stagger_multiplier = (blackboard.stagger_type < 3 and math.clamp(blackboard.stagger_type - 1, 1, 1.5)) or 1
 
 				if blackboard.stagger_type ~= 6 and blackboard.stagger_type ~= 3 then
+					blackboard.stagger_ignore_anim_cb = true
 					blackboard.stagger_time = t + blackboard.breed.berzerking_stagger_time * berzerker_stagger_multiplier
 				end
 			end
@@ -1310,15 +1309,13 @@ local action_data = {
 					"stagger_left_heavy",
 					"stagger_left_heavy_2",
 					"stagger_left_heavy_3",
-					"stagger_left_heavy_4",
-					"stagger_left_heavy_5"
+					"stagger_left_heavy_4"
 				},
 				right = {
 					"stagger_right_heavy",
 					"stagger_right_heavy_2",
 					"stagger_right_heavy_3",
-					"stagger_right_heavy_4",
-					"stagger_right_heavy_5"
+					"stagger_right_heavy_4"
 				},
 				dwn = {
 					"stagger_bwd_heavy",
@@ -1705,13 +1702,13 @@ local frenzy_attack = {
 	},
 	difficulty_damage = {
 		easy = {
-			3,
-			4,
+			2,
+			2,
 			2
 		},
 		normal = {
-			3,
-			4,
+			2,
+			2,
 			2
 		},
 		hard = {

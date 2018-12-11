@@ -36,8 +36,10 @@ BTPackMasterHoistAction.leave = function (self, unit, blackboard, t, reason, des
 	blackboard.drag_target_unit = nil
 	blackboard.attack_cooldown = t + blackboard.action.cooldown
 
-	LocomotionUtils.set_animation_driven_movement(unit, false)
-	blackboard.locomotion_extension:set_movement_type("snap_to_navmesh")
+	if not destroy then
+		LocomotionUtils.set_animation_driven_movement(unit, false)
+		blackboard.locomotion_extension:set_movement_type("snap_to_navmesh")
+	end
 end
 
 BTPackMasterHoistAction.run = function (self, unit, blackboard, t, dt)

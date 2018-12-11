@@ -267,7 +267,7 @@ OptionsView.init = function (self, ingame_ui_context)
 	self.level_transition_handler = ingame_ui_context.level_transition_handler
 	self.voip = ingame_ui_context.voip
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = false
 	}
 	self.is_in_tutorial = ingame_ui_context.is_in_tutorial
 	self.platform = PLATFORM
@@ -829,6 +829,20 @@ OptionsView.create_ui_elements = function (self)
 		settings_lists.network_settings = self:build_settings_list(settings_definitions.network_settings_definition, "network_settings_list")
 		settings_lists.video_settings.hide_reset = true
 		settings_lists.video_settings.needs_apply_confirmation = true
+	elseif PLATFORM == "xb1" then
+		if Managers.voice_chat or self.voip then
+			settings_lists.audio_settings = self:build_settings_list(settings_definitions.audio_settings_definition, "audio_settings_list")
+		else
+			settings_lists.audio_settings = self:build_settings_list(settings_definitions.audio_settings_definition_without_voip, "audio_settings_list")
+		end
+
+		settings_lists.gameplay_settings = self:build_settings_list(settings_definitions.gameplay_settings_definition, "gameplay_settings_list")
+		settings_lists.display_settings = self:build_settings_list(settings_definitions.display_settings_definition, "display_settings_list")
+		settings_lists.gamepad_settings = self:build_settings_list(settings_definitions.gamepad_settings_definition, "gamepad_settings_list")
+
+		if GameSettingsDevelopment.allow_keyboard_mouse then
+			settings_lists.keybind_settings = self:build_settings_list(settings_definitions.keybind_settings_definition, "keybind_settings_list")
+		end
 	else
 		if Managers.voice_chat or self.voip then
 			settings_lists.audio_settings = self:build_settings_list(settings_definitions.audio_settings_definition, "audio_settings_list")
@@ -1225,6 +1239,7 @@ OptionsView.update_gamepad_layout_widget = function (self, keymaps, using_left_h
 	self:clear_gamepad_layout_widget()
 
 	local ignore_gamepad_action_names = (using_left_handed_option and AlternatateGamepadSettings.left_handed.ignore_gamepad_action_names) or AlternatateGamepadSettings.default.ignore_gamepad_action_names
+	local replace_gamepad_action_names = (using_left_handed_option and AlternatateGamepadSettings.left_handed.replace_gamepad_action_names) or AlternatateGamepadSettings.default.replace_gamepad_action_names
 
 	for keymaps_table_name, keymaps_table in pairs(keymaps) do
 		for keybindings_name, keybindings in pairs(keymaps_table) do
@@ -1244,6 +1259,11 @@ OptionsView.update_gamepad_layout_widget = function (self, keymaps, using_left_h
 						local button_name = keybind[2]
 						local actions = display_keybinds[button_name] or {}
 						display_keybinds[button_name] = actions
+
+						if replace_gamepad_action_names and replace_gamepad_action_names[action_name] then
+							action_name = replace_gamepad_action_names[action_name]
+						end
+
 						actions[#actions + 1] = action_name
 					end
 				until true
@@ -5028,9 +5048,10 @@ OptionsView.cb_motion_blur_setup = function (self)
 			text = Localize("menu_settings_on")
 		}
 	}
+	local motion_blur_enabled = Application.user_setting("render_settings", "motion_blur_enabled")
 
-	if not Application.user_setting("render_settings", "motion_blur_enabled") then
-		local motion_blur_enabled = true
+	if motion_blur_enabled == nil then
+		motion_blur_enabled = true
 	end
 
 	local default_motion_blur_enabled = DefaultUserSettings.get("render_settings", "motion_blur_enabled")
@@ -5045,6 +5066,10 @@ OptionsView.cb_motion_blur_setup = function (self)
 		slot5 = 2
 	else
 		local default_option = 1
+	end
+
+	if PLATFORM ~= "win32" then
+		Application.set_render_setting("motion_blur_enabled", tostring(motion_blur_enabled))
 	end
 
 	return selected_option, options, "menu_settings_motion_blur", default_option
@@ -5965,7 +5990,7 @@ OptionsView.cb_safe_rect_setup = function (self)
 	local max = 20
 
 	if not Application.user_setting("safe_rect") then
-		local ui_safe_rect = 0
+		local ui_safe_rect = min
 	end
 
 	local value = get_slider_value(min, max, ui_safe_rect)
@@ -5978,12 +6003,17 @@ OptionsView.cb_safe_rect_saved_value = function (self, widget)
 	local w, h = Gui.resolution()
 	local min = 0
 	local max = 20
+
+	if PLATFORM == "ps4" then
+		min = 5
+	end
+
 	local content = widget.content
 	local min = content.min
 	local max = content.max
 
 	if not assigned(self.changed_user_settings.safe_rect, Application.user_setting("safe_rect")) then
-		local safe_rect = 0
+		local safe_rect = min
 	end
 
 	safe_rect = math.clamp(safe_rect, min, max)
@@ -5992,10 +6022,17 @@ OptionsView.cb_safe_rect_saved_value = function (self, widget)
 end
 
 OptionsView.cb_safe_rect = function (self, content)
+	local min = 0
+	local max = 20
+
+	if PLATFORM == "ps4" then
+		min = 5
+	end
+
 	local value = content.value
 
 	if not Application.user_setting("safe_rect") then
-		local saved_value = 0
+		local saved_value = min
 	end
 
 	self.changed_user_settings.safe_rect = value

@@ -71,6 +71,12 @@ StateTitleScreenMain.on_enter = function (self, params)
 		end
 	}
 
+	if PLATFORM == "ps4" and self.parent.invite_handled then
+		Managers.invite:clear_invites()
+
+		self.parent.invite_handled = nil
+	end
+
 	if script_data.honduras_demo then
 		Wwise.set_state("menu_mute_ingame_sounds", "true")
 	end
@@ -218,12 +224,22 @@ StateTitleScreenMain._handle_continue_input = function (self, dt, t)
 
 	if start_allowed then
 		if input_service:get("start", true) then
-			self._start_pressed = true
+			local current_device = Managers.input:get_most_recent_device()
+
+			if PLATFORM == "xb1" and (current_device._name == "Keyboard" or current_device._name == "Mouse") then
+				self:_queue_popup(Localize("popup_signin_only_with_gamepad"), Localize("popup_notice_topic"), "ok", Localize("popup_choice_ok"))
+			else
+				self._start_pressed = true
+			end
 		elseif script_data.honduras_demo then
 			local current_device = Managers.input:get_most_recent_device()
 
 			if current_device:any_pressed() then
-				self._start_pressed = true
+				if PLATFORM == "xb1" and (current_device._name == "Keyboard" or current_device._name == "Mouse") then
+					self:_queue_popup(Localize("popup_signin_only_with_gamepad"), Localize("popup_notice_topic"), "ok", Localize("popup_choice_ok"))
+				else
+					self._start_pressed = true
+				end
 			end
 		end
 	end
@@ -259,14 +275,28 @@ StateTitleScreenMain._update_input = function (self, dt, t)
 	local platform = PLATFORM
 	local controller = Managers.input:get_most_recent_device()
 
-	if platform == "ps4" and Managers.invite:has_invitation() and not self._state then
+	if platform == "ps4" then
+		local play_together_list = SessionInvitation.play_together_list()
+
+		if play_together_list then
+			Managers.invite:set_play_together_list(play_together_list)
+		end
+	end
+
+	if platform == "ps4" and (Managers.invite:has_invitation() or Managers.invite:play_together_list()) and not self._state then
 		if Managers.play_go:installed() then
 			Managers.music:trigger_event("Play_console_menu_select")
 
 			if PS4.signed_in() then
+				Managers.account:set_controller(controller)
+				Managers.input:set_exclusive_gamepad(controller)
 				self._title_start_ui:set_start_pressed(true)
 
 				self._state = StateTitleScreenLoadSave
+
+				if Managers.invite:has_invitation() then
+					self.parent.invite_handled = true
+				end
 			else
 				self:_queue_popup(Localize("popup_ps4_not_signed_in"), Localize("popup_error_topic"), "ok", Localize("popup_choice_ok"))
 
@@ -289,10 +319,16 @@ StateTitleScreenMain._update_input = function (self, dt, t)
 
 			self._state = StateTitleScreenInitNetwork
 		elseif platform == "xb1" then
-			local user_id = controller and controller.user_id()
+			if not controller or controller.type() ~= "xbox_controller" then
+				self._start_pressed = false
 
-			if Application.is_constrained() then
-				self._has_engaged = false
+				return
+
+				local user_id = controller and controller.user_id()
+
+				if Application.is_constrained() then
+					self._has_engaged = false
+				end
 			end
 
 			local can_proceed = true
@@ -335,6 +371,7 @@ StateTitleScreenMain._update_input = function (self, dt, t)
 		elseif platform == "ps4" then
 			Managers.music:trigger_event("Play_console_menu_select")
 			Managers.input:set_exclusive_gamepad(controller)
+			Managers.account:set_controller(controller)
 			self._title_start_ui:set_start_pressed(true)
 
 			self._state = StateTitleScreenLoadSave

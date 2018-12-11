@@ -42,7 +42,6 @@ CameraManager.init = function (self, world)
 	self._node_trees = {}
 	self._current_trees = {}
 	self._camera_nodes = {}
-	self._terrain_decoration_observers = {}
 	self._scatter_system_observers = {}
 	self._variables = {}
 	self._listener_elevation_offset = 0
@@ -161,7 +160,6 @@ CameraManager._update_shadow_lights = function (self, dt, viewport)
 end
 
 CameraManager.add_viewport = function (self, viewport_name, position, rotation)
-	self._terrain_decoration_observers[viewport_name] = TerrainDecoration.create_observer(self._world, position)
 	self._scatter_system_observers[viewport_name] = ScatterSystem.make_observer(self._scatter_system, position, rotation)
 	self._node_trees[viewport_name] = {}
 	self._variables[viewport_name] = {}
@@ -177,10 +175,8 @@ CameraManager.create_viewport = function (self, viewport_name, position, rotatio
 end
 
 CameraManager.destroy_viewport = function (self, viewport_name)
-	TerrainDecoration.destroy_observer(self._world, self._terrain_decoration_observers[viewport_name])
 	ScatterSystem.destroy_observer(self._scatter_system, self._scatter_system_observers[viewport_name])
 
-	self._terrain_decoration_observers[viewport_name] = nil
 	self._scatter_system_observers[viewport_name] = nil
 	self._node_trees[viewport_name] = nil
 	self._variables[viewport_name] = nil
@@ -1223,7 +1219,6 @@ CameraManager._update_camera_properties = function (self, camera, shadow_cull_ca
 		end
 
 		ScriptCamera.set_local_position(camera, pos)
-		TerrainDecoration.move_observer(self._world, self._terrain_decoration_observers[viewport_name], pos)
 		ScatterSystem.move_observer(self._scatter_system, self._scatter_system_observers[viewport_name], pos, camera_data.rotation)
 
 		local physics_world = World.get_data(self._world, "physics_world")

@@ -965,7 +965,7 @@ DebugScreen.update_search = function (input_manager, input_service, gui, t, dt)
 
 		if type(stroke) == "string" then
 			DebugScreen.active_id = nil
-			DebugScreen.search_string = DebugScreen.search_string .. stroke
+			DebugScreen.search_string = DebugScreen.search_string .. string.lower(stroke)
 		elseif stroke == Keyboard.BACKSPACE and #DebugScreen.search_string > 0 then
 			local string_length = string.len(DebugScreen.search_string)
 			local character_index = Utf8.location(DebugScreen.search_string, string_length)

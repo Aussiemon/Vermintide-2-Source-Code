@@ -71,8 +71,10 @@ StateLoading.on_enter = function (self, param_block)
 		Managers.backend:start_benchmark()
 	end
 
-	local live_events_interface = Managers.backend:get_interface("live_events")
-	self._live_event_request_id = live_events_interface:request_live_events()
+	if not script_data.settings.use_beta_overlay then
+		local live_events_interface = Managers.backend:get_interface("live_events")
+		self._live_event_request_id = live_events_interface:request_live_events()
+	end
 
 	if self._lobby_client ~= nil and not self._lobby_client:is_dedicated_server() then
 		Managers.party:set_leader(self._lobby_client:lobby_host())
@@ -86,10 +88,6 @@ StateLoading.on_enter = function (self, param_block)
 
 	if PLATFORM == "xb1" and self._lobby_host then
 		Managers.account:set_round_id()
-	end
-
-	if PLATFORM == "ps4" then
-		Managers.account:set_realtime_multiplay_state("loading", true)
 	end
 
 	if self._network_client then
@@ -649,7 +647,7 @@ StateLoading._update_lobbies = function (self, dt, t)
 
 		lobby_host:update(dt)
 
-		if old_state ~= lobby_host.state and lobby_host:is_joined() and not lobby_host:network_initialized() then
+		if lobby_host:is_joined() and not lobby_host:network_initialized() and self._lobby_host:lobby_host() ~= "0" then
 			local lobby_host = self._lobby_host
 			local own_peer_id = Network.peer_id()
 			local host_peer_id = lobby_host:lobby_host()
@@ -1404,10 +1402,6 @@ StateLoading.on_exit = function (self, application_shutdown)
 	if not Managers.play_go:installed() then
 		Managers.play_go:set_install_speed("slow")
 	end
-
-	if PLATFORM == "ps4" then
-		Managers.account:set_realtime_multiplay_state("loading", false)
-	end
 end
 
 StateLoading._load_global_packages = function (self)
@@ -2000,9 +1994,6 @@ StateLoading.set_lobby_host_data = function (self, level_key)
 		if level_key == "inn_level" then
 			stored_lobby_host_data.matchmaking = "false"
 		end
-
-		local game_mode = LevelSettings[level_key].game_mode
-		stored_lobby_host_data.game_mode = game_mode
 
 		if PLATFORM == "ps4" then
 			local region = Managers.account:region()

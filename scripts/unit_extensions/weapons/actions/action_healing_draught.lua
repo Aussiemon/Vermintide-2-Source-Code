@@ -58,9 +58,12 @@ ActionHealingDraught.finish = function (self, reason)
 	if ammo_extension then
 		local ammo_usage = current_action.ammo_usage
 		local _, procced = buff_extension:apply_buffs_to_value(0, StatBuffIndex.NOT_CONSUME_MEDPACK)
+		local inventory_extension = ScriptUnit.has_extension(owner_unit, "inventory_system")
 
 		if not procced then
 			ammo_extension:use_ammo(ammo_usage)
+		else
+			inventory_extension:wield_previous_weapon()
 		end
 	end
 

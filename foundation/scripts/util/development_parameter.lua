@@ -16,6 +16,7 @@ Development._hardcoded_dev_params = {
 	force_debug_disabled = true,
 	packaged_build = true,
 	network_log_messages = true,
+	test_backend = "stage_steam_playfab",
 	disable_intro_trailer = false,
 	force_steam = true,
 	debug_interactions = false,

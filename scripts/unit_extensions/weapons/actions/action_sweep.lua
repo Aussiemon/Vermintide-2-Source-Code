@@ -223,9 +223,9 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 			local targeting_extension = ScriptUnit.extension(owner_unit, "smart_targeting_system")
 			local targeting_data = targeting_extension:get_targeting_data()
 			local smart_targeting_unit = targeting_data.unit
-			local target_health_extension = smart_targeting_unit and ScriptUnit.extension(smart_targeting_unit, "health_system")
+			local target_health_extension = smart_targeting_unit and ScriptUnit.has_extension(smart_targeting_unit, "health_system")
 
-			if smart_targeting_unit and target_health_extension:is_alive() then
+			if smart_targeting_unit and target_health_extension and target_health_extension:is_alive() then
 				self.precision_target_unit = smart_targeting_unit
 				self.has_hit_precision_target = false
 			end
@@ -995,6 +995,17 @@ ActionSweep._play_environmental_effect = function (self, weapon_rotation, curren
 	end
 end
 
+local sound_events = {
+	axe_2h_hit = "slashing_hit",
+	slashing_hit = "slashing_hit",
+	stab_hit = "stab_hit",
+	crowbill_stab_hit = "stab_hit",
+	Play_weapon_fire_torch_flesh_hit = "burning_hit",
+	axe_1h_hit = "slashing_hit",
+	hammer_2h_hit = "blunt_hit",
+	blunt_hit = "blunt_hit"
+}
+
 ActionSweep._play_character_impact = function (self, is_server, attacker_unit, hit_unit, breed, hit_position, hit_zone_name, current_action, damage_profile, target_index, power_level, attack_direction, blocking, boost_curve_multiplier, is_critical_strike, backstab_multiplier)
 	local attacker_player = Managers.player:owner(attacker_unit)
 	local husk = attacker_player.bot_player
@@ -1015,15 +1026,6 @@ ActionSweep._play_character_impact = function (self, is_server, attacker_unit, h
 	local hitzone_armor_categories = breed.hitzone_armor_categories
 	local target_unit_armor = (hitzone_armor_categories and hitzone_armor_categories[hit_zone_name]) or breed.armor_category
 	local sound_event = (no_damage and current_action.stagger_impact_sound_event) or current_action.impact_sound_event
-	local sound_events = {
-		axe_2h_hit = "slashing_hit",
-		slashing_hit = "slashing_hit",
-		stab_hit = "stab_hit",
-		Play_weapon_fire_torch_flesh_hit = "burning_hit",
-		axe_1h_hit = "slashing_hit",
-		hammer_2h_hit = "blunt_hit",
-		blunt_hit = "blunt_hit"
-	}
 
 	if blocking then
 		if sound_events[sound_event] == "blunt_hit" then

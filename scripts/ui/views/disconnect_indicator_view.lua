@@ -16,7 +16,7 @@ local fake_input_service = {
 	end
 }
 DisconnectIndicatorView.FLASH_CYCLE = 0.5
-DisconnectIndicatorView.SILENCE_THRESHOLD = (PLATFORM == "xb1" and 5) or 3
+DisconnectIndicatorView.SILENCE_THRESHOLD = GameSettingsDevelopment.network_silence_warning_delay or 3
 
 DisconnectIndicatorView.init = function (self, world)
 	self._world = world

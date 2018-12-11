@@ -443,7 +443,7 @@ LocomotionSystem.rpc_set_forced_velocity = function (self, sender, game_object_i
 	locomotion_extension:set_forced_velocity(velocity)
 end
 
-LocomotionSystem.rpc_constrain_ai = function (self, sender, game_object_id, constrain, min, max)
+LocomotionSystem.rpc_constrain_ai = function (self, sender, game_object_id, constrain, position_array)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit then
@@ -452,6 +452,8 @@ LocomotionSystem.rpc_constrain_ai = function (self, sender, game_object_id, cons
 		return
 	end
 
+	local min = position_array[1]
+	local max = position_array[2]
 	local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
 
 	locomotion_extension:set_constrained(constrain, min, max)

@@ -15,6 +15,7 @@ require("scripts/managers/room/room_manager_server")
 require("scripts/managers/room/room_manager_client")
 require("scripts/managers/difficulty/difficulty_manager")
 require("scripts/managers/matchmaking/matchmaking_manager")
+require("scripts/managers/url_loader/url_loader_manager")
 require("scripts/helpers/locomotion_utils")
 require("scripts/helpers/damage_utils")
 require("scripts/helpers/action_utils")
@@ -512,12 +513,7 @@ StateIngame.on_enter = function (self)
 	elseif platform == "ps4" then
 		if self.is_in_inn then
 			Managers.account:set_presence("inn")
-			Managers.account:set_realtime_multiplay_state("inn", true)
 		else
-			if self.is_in_tutorial then
-				Managers.account:set_realtime_multiplay_state("tutorial", true)
-			end
-
 			local level_display_name = LevelSettings[self.level_key].display_name
 
 			Managers.account:set_presence("playing", level_display_name)
@@ -1054,11 +1050,11 @@ StateIngame._check_exit = function (self, t)
 			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
 			Managers.transition:show_loading_icon()
 		elseif self.network_client and self.network_client.state == "denied_enter_game" then
-			if self.network_client.host_to_migrate_to == nil or platform == "xb1" then
+			if self.network_client.host_to_migrate_to == nil or platform ~= "win32" then
 				self.exit_type = "join_lobby_failed"
 
-				if self.network_client.host_to_migrate_to ~= nil and platform == "xb1" then
-					Application.error("[StateIngame] XBOXONE doesn't support host migration yet")
+				if self.network_client.host_to_migrate_to ~= nil and platform ~= "win32" then
+					Application.error("[StateIngame] Consoles doesn't support host migration yet")
 				end
 			else
 				self.exit_type = "perform_host_migration"
@@ -1084,11 +1080,11 @@ StateIngame._check_exit = function (self, t)
 			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
 			Managers.transition:show_loading_icon()
 		elseif (lobby and lobby.state == LobbyState.FAILED) or (self.network_client and self.network_client.state == "lost_connection_to_host") then
-			if self.network_client == nil or self.network_client.host_to_migrate_to == nil or platform == "xb1" then
+			if self.network_client == nil or self.network_client.host_to_migrate_to == nil or platform ~= "win32" then
 				self.exit_type = "lobby_state_failed"
 
-				if self.network_client ~= nil and self.network_client.host_to_migrate_to ~= nil and platform == "xb1" then
-					Application.error("[StateIngame] XBOXONE doesn't support host migration yet")
+				if self.network_client ~= nil and self.network_client.host_to_migrate_to ~= nil and platform ~= "win32" then
+					Application.error("[StateIngame] Consoles doesn't support host migration yet")
 				end
 			else
 				self.exit_type = "perform_host_migration"
@@ -1331,6 +1327,10 @@ StateIngame._check_exit = function (self, t)
 		end
 
 		if self.exit_type then
+			if self.is_server and not self.is_in_inn and self.exit_type ~= "reload_level" and Managers.matchmaking and Managers.matchmaking:game_mode_event_data() then
+				Managers.matchmaking:clear_game_mode_event_data()
+			end
+
 			self.exit_time = t + 2
 
 			printf("StateIngame: Got transition %s, set exit type to %s. Will exit at t=%.2f", tostring(transition), self.exit_type, self.exit_time)
@@ -1345,6 +1345,10 @@ StateIngame._check_exit = function (self, t)
 
 			if platform == "xb1" then
 				self.machines[1]:state():trigger_xbox_multiplayer_round_end_events()
+			end
+
+			if platform == "ps4" then
+				Managers.account:set_realtime_multiplay(false)
 			end
 
 			if self.is_in_tutorial then
@@ -1415,9 +1419,10 @@ StateIngame._check_exit = function (self, t)
 			end
 
 			self.parent.loading_context.restart_network = true
+			self.parent.loading_context.level_end_view_context = nil
 
 			if exit_type == "lobby_state_failed" then
-				if PLATFORM == "xb1" then
+				if PLATFORM ~= "win32" then
 					return StateLoading
 				else
 					return StateTitleScreen
@@ -1449,6 +1454,7 @@ StateIngame._check_exit = function (self, t)
 				printf("[StateIngame] Transition to StateLoadingRestartNetwork on %q", exit_type)
 			else
 				loading_context.restart_network = nil
+				loading_context.switch_to_tutorial_backend = true
 
 				printf("[StateIngame] Transition to StateLoadingRunning on %q", exit_type)
 			end
@@ -1600,6 +1606,42 @@ StateIngame.post_update = function (self, dt)
 	end
 end
 
+StateIngame.pre_render = function (self)
+	if not self.machines then
+		return
+	end
+
+	for _, machine in pairs(self.machines) do
+		if machine.pre_render then
+			machine:pre_render()
+		end
+	end
+end
+
+StateIngame.render = function (self)
+	if not self.machines then
+		return
+	end
+
+	for _, machine in pairs(self.machines) do
+		if machine.render then
+			machine:render()
+		end
+	end
+end
+
+StateIngame.post_render = function (self)
+	if not self.machines then
+		return
+	end
+
+	for _, machine in pairs(self.machines) do
+		if machine.post_render then
+			machine:post_render()
+		end
+	end
+end
+
 StateIngame.on_exit = function (self, application_shutdown)
 	UPDATE_POSITION_LOOKUP()
 	UPDATE_PLAYER_LISTS()
@@ -1647,7 +1689,12 @@ StateIngame.on_exit = function (self, application_shutdown)
 	self.network_clock = nil
 
 	if Managers.twitch then
-		Managers.twitch:deactivate_twitch_game_mode()
+		local level_key = self.level_transition_handler:get_current_level_keys()
+		local level_settings = LevelSettings[level_key]
+
+		if level_settings and not level_settings.disable_twitch_game_mode then
+			Managers.twitch:deactivate_twitch_game_mode()
+		end
 	end
 
 	for local_player_id, machine in pairs(self.machines) do
@@ -1686,6 +1733,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 
 	self.entity_system:destroy()
 	self.entity_system_bag:destroy()
+	Level.trigger_level_shutdown(self.level)
 	Managers.player:exit_ingame()
 	self:_teardown_level()
 	Managers.state:destroy()
@@ -1856,17 +1904,6 @@ StateIngame.on_exit = function (self, application_shutdown)
 	end
 
 	Managers.transition:show_loading_icon()
-
-	if PLATFORM == "ps4" then
-		if self.is_in_tutorial then
-			Managers.account:set_realtime_multiplay_state("tutorial", false)
-		end
-
-		if self.is_in_inn then
-			Managers.account:set_realtime_multiplay_state("inn", false)
-		end
-	end
-
 	self:_remove_ingame_clock()
 	Managers.unlock:enable_update_unlocks(false)
 end
@@ -1986,7 +2023,11 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 	Managers.state.world_interaction = WorldInteractionManager:new(self.world)
 
 	if Managers.twitch then
-		Managers.twitch:activate_twitch_game_mode(network_event_delegate, game_mode_key)
+		local level_settings = LevelSettings[level_key]
+
+		if level_settings and not level_settings.disable_twitch_game_mode then
+			Managers.twitch:activate_twitch_game_mode(network_event_delegate, game_mode_key)
+		end
 	end
 
 	local wwise_world = Managers.world:wwise_world(world)

@@ -313,6 +313,15 @@ LootChestData.chests_by_category = {
 			"units/gameplay/loot_chests/gameplay_loot_chest_level_up"
 		}
 	},
+	level_up_2 = {
+		package_name = "resource_packages/chests_level_up",
+		backend_keys = {
+			"level_chest"
+		},
+		chest_unit_names = {
+			"units/gameplay/loot_chests/gameplay_loot_chest_cc_t1"
+		}
+	},
 	bogenhafen = {
 		package_name = "resource_packages/chests_bogenhafen",
 		backend_keys = {

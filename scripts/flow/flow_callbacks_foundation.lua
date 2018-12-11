@@ -783,6 +783,12 @@ function flow_callback_start_fade_chr_helmet(params)
 	assert(params.fade_switch, "[flow_callback_start_fade_chr_helmet] You need to specify whether to fade in or out (0 or 1)")
 end
 
+function flow_callback_is_character_alive(params)
+	return {
+		out_value = true
+	}
+end
+
 function flow_callback_set_unit_light_state(params)
 	local unit = params.unit
 	local state = params.state
@@ -988,9 +994,14 @@ function flow_callback_set_unit_enabled(params)
 	if params.enabled then
 		Unit.set_unit_visibility(params.unit, true)
 		Unit.enable_physics(params.unit)
+		Unit.enable_animation_state_machine(params.unit)
 	else
 		Unit.set_unit_visibility(params.unit, false)
 		Unit.disable_physics(params.unit)
+
+		if Unit.has_animation_state_machine(params.unit) then
+			Unit.disable_animation_state_machine(params.unit)
+		end
 	end
 end
 

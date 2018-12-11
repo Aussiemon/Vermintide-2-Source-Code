@@ -37,7 +37,7 @@ local breed_data = {
 	disable_second_hit_ragdoll = true,
 	proximity_system_check = true,
 	death_reaction = "ai_default",
-	perception = "perception_all_seeing",
+	perception = "perception_all_seeing_boss",
 	player_locomotion_constrain_radius = 0.7,
 	smart_object_template = "special",
 	combat_music_state = "champion_chaos_exalted_sorcerer",
@@ -54,8 +54,8 @@ local breed_data = {
 		1.27
 	},
 	max_health = {
-		600,
-		720,
+		650,
+		650,
 		1080,
 		1440,
 		2160
@@ -749,14 +749,14 @@ local action_data = {
 		find_spawn_points = false,
 		animation = "idle_guard",
 		difficulty_spawn = {
-			harder = "sorcerer_boss_event_defensive_harder",
-			normal = "sorcerer_boss_event_defensive_normal",
-			hard = "sorcerer_boss_event_defensive_hard",
-			survival_hard = "sorcerer_boss_event_defensive_hard",
-			survival_harder = "sorcerer_boss_event_defensive_harder",
-			hardest = "sorcerer_boss_event_defensive_hardest",
-			survival_hardest = "sorcerer_boss_event_defensive_hardest",
-			easy = "sorcerer_boss_event_defensive_easy"
+			harder = "sorcerer_boss_event_defensive",
+			normal = "sorcerer_boss_event_defensive",
+			hard = "sorcerer_boss_event_defensive",
+			survival_hard = "sorcerer_boss_event_defensive",
+			survival_harder = "sorcerer_boss_event_defensive",
+			hardest = "sorcerer_boss_event_defensive",
+			survival_hardest = "sorcerer_boss_event_defensive",
+			easy = "sorcerer_boss_event_defensive"
 		}
 	},
 	spawn_allies_horde = {
@@ -766,14 +766,14 @@ local action_data = {
 		find_spawn_points = false,
 		animation = "idle_guard",
 		difficulty_spawn = {
-			harder = "sorcerer_extra_spawn_harder",
-			normal = "sorcerer_extra_spawn_normal",
-			hard = "sorcerer_extra_spawn_hard",
-			survival_hard = "sorcerer_extra_spawn_hard",
-			survival_harder = "sorcerer_extra_spawn_harder",
-			hardest = "sorcerer_extra_spawn_hardest",
-			survival_hardest = "sorcerer_extra_spawn_hardest",
-			easy = "sorcerer_extra_spawn_normal"
+			harder = "sorcerer_extra_spawn",
+			normal = "sorcerer_extra_spawn",
+			hard = "sorcerer_extra_spawn",
+			survival_hard = "sorcerer_extra_spawn",
+			survival_harder = "sorcerer_extra_spawn",
+			hardest = "sorcerer_extra_spawn",
+			survival_hardest = "sorcerer_extra_spawn",
+			easy = "sorcerer_extra_spawn"
 		}
 	},
 	stagger = {

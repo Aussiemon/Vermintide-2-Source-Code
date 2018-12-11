@@ -11,6 +11,7 @@ require("scripts/managers/backend_playfab/backend_interface_hero_attributes_play
 require("scripts/managers/backend_playfab/backend_interface_statistics_playfab")
 require("scripts/managers/backend_playfab/backend_interface_keep_decorations_playfab")
 require("scripts/managers/backend_playfab/backend_interface_live_events_playfab")
+require("scripts/managers/backend_playfab/backend_interfaces/backend_interface_motd_playfab")
 require("scripts/managers/backend_playfab/benchmark_backend/backend_interface_loot_benchmark")
 require("scripts/managers/backend_playfab/benchmark_backend/backend_interface_statistics_benchmark")
 require("scripts/managers/backend_playfab/benchmark_backend/backend_interface_quests_benchmark")
@@ -164,8 +165,9 @@ BackendManagerPlayFab._create_interfaces = function (self, force_local)
 	self:_create_statistics_interface(settings, force_local)
 	self:_create_keep_decorations_interface(settings, force_local)
 	self:_create_live_events_interface(settings, force_local)
+	self:_create_motd_interface(settings, force_local)
 
-	if PLATFORM == "xb1" then
+	if PLATFORM == "xb1" or PLATFORM == "ps4" then
 		self:_create_console_dlc_rewards_interface(settings, force_local)
 	end
 
@@ -747,8 +749,16 @@ BackendManagerPlayFab.profiles_loaded = function (self)
 	return ready
 end
 
+BackendManagerPlayFab.interfaces_ready = function (self)
+	return self:_interfaces_ready()
+end
+
 BackendManagerPlayFab._interfaces_ready = function (self)
 	if not self._interfaces_created then
+		return false
+	end
+
+	if not self._interfaces then
 		return false
 	end
 
@@ -989,6 +999,37 @@ BackendManagerPlayFab._create_live_events_interface = function (self, settings, 
 		self._interfaces.live_events = BackendInterfaceLiveEventsLocal:new(self._save_data)
 	else
 		self._interfaces.live_events = BackendInterfaceLiveEventsPlayfab:new(self._backend_mirror)
+	end
+end
+
+BackendManagerPlayFab._create_motd_interface = function (self, settings, force_local)
+	if force_local then
+		local motd_stub = {
+			mark_url_as_viewed = function ()
+				return
+			end,
+			ready = function ()
+				return true
+			end,
+			update = function ()
+				return
+			end,
+			type = function ()
+				return "backend"
+			end,
+			make_dirty = function ()
+				return
+			end,
+			get_new_image_urls = function ()
+				return {}
+			end,
+			clear_viewed_cache = function ()
+				return
+			end
+		}
+		self._interfaces.motd = motd_stub
+	else
+		self._interfaces.motd = BackendInterfaceMOTDPlayfab:new()
 	end
 end
 

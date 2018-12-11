@@ -216,15 +216,27 @@ Breeds.skaven_gutter_runner = table.create_copy(Breeds.skaven_gutter_runner, bre
 local action_data = {
 	target_pounced = {
 		final_damage_multiplier = 5,
-		time_before_ramping_damage = 5,
 		foff_after_pounce_kill = true,
-		time_to_reach_final_damage_multiplier = 10,
 		fatigue_type = "blocked_attack",
 		far_impact_radius = 6,
 		close_impact_radius = 2,
 		impact_speed_given = 10,
 		damage_type = "cutting",
 		stab_until_target_is_killed = true,
+		time_before_ramping_damage = {
+			10,
+			10,
+			5,
+			5,
+			5
+		},
+		time_to_reach_final_damage_multiplier = {
+			15,
+			15,
+			10,
+			10,
+			10
+		},
 		damage = {
 			1.5,
 			1.5,
@@ -238,9 +250,9 @@ local action_data = {
 				0.25
 			},
 			normal = {
-				1.5,
 				1,
-				0.5
+				0.5,
+				0.25
 			},
 			hard = {
 				2,

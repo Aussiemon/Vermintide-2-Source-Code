@@ -1,8 +1,5 @@
 local push_radius = 2
 local time_mod = 1
-local heavy_tank_stagger = 3
-local light_smiter_stagger = 3
-local light_tank_stagger = 3
 local weapon_template = weapon_template or {}
 weapon_template.actions = {
 	action_one = {
@@ -878,7 +875,7 @@ weapon_template.actions = {
 	action_two = {
 		default = {
 			cooldown = 0.15,
-			minimum_hold_time = 0.3,
+			minimum_hold_time = 0.2,
 			anim_end_event = "parry_finished",
 			kind = "block",
 			hold_input = "action_two_hold",
@@ -887,8 +884,8 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action"
 			end,
 			total_time = math.huge,
-			enter_function = function (attacker_unit, input_extension)
-				return input_extension:reset_release_input()
+			enter_function = function (attacker_unit, input_extension, remaining_time)
+				return input_extension:reset_release_input_with_delay(remaining_time)
 			end,
 			buff_data = {
 				{

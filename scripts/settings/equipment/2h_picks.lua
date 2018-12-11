@@ -495,7 +495,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default_left",
-					start_time = 1,
+					start_time = 0.75,
 					action = "action_one",
 					end_time = 1.8,
 					input = "action_one_hold"
@@ -571,6 +571,13 @@ weapon_template.actions = {
 					input = "action_one"
 				},
 				{
+					sub_action = "default_right",
+					start_time = 0.75,
+					action = "action_one",
+					end_time = 1.8,
+					input = "action_one_hold"
+				},
+				{
 					sub_action = "default",
 					start_time = 1.5,
 					action = "action_one",
@@ -638,6 +645,13 @@ weapon_template.actions = {
 					action = "action_one",
 					end_time = 1.8,
 					input = "action_one"
+				},
+				{
+					sub_action = "default_right",
+					start_time = 0.75,
+					action = "action_one",
+					end_time = 1.8,
+					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
@@ -713,6 +727,12 @@ weapon_template.actions = {
 					release_required = "action_two_hold",
 					end_time = 1.8,
 					input = "action_one_hold"
+				},
+				{
+					sub_action = "default",
+					start_time = 1.5,
+					action = "action_one",
+					input = "action_one"
 				},
 				{
 					sub_action = "default",
@@ -822,8 +842,8 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action"
 			end,
 			total_time = math.huge,
-			enter_function = function (attacker_unit, input_extension)
-				return input_extension:reset_release_input()
+			enter_function = function (attacker_unit, input_extension, remaining_time)
+				return input_extension:reset_release_input_with_delay(remaining_time)
 			end,
 			buff_data = {
 				{

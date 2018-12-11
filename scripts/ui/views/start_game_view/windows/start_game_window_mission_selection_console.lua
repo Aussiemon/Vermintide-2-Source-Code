@@ -349,7 +349,14 @@ end
 
 StartGameWindowMissionSelectionConsole._find_level_location_in_grid = function (self, level_id)
 	local navigation_grid = self._navigation_grid
-	local num_rows = #navigation_grid
+	local num_rows = 0
+
+	for row, data in pairs(navigation_grid) do
+		if num_rows < row then
+			num_rows = row
+		end
+	end
+
 	local row, column = nil
 
 	if level_id then

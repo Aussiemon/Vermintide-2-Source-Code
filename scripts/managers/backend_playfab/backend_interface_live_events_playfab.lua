@@ -62,4 +62,16 @@ BackendInterfaceLiveEventsPlayfab.get_live_events = function (self)
 	return self._live_events
 end
 
+BackendInterfaceLiveEventsPlayfab.get_game_mode_data = function (self)
+	local live_events = self._live_events
+
+	for i = 1, #live_events, 1 do
+		local event = live_events[i]
+
+		if event.game_mode_data then
+			return event.game_mode_data
+		end
+	end
+end
+
 return

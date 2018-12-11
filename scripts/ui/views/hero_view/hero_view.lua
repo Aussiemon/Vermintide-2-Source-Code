@@ -502,14 +502,6 @@ HeroView._is_button_pressed = function (self, widget)
 	end
 end
 
-HeroView._has_active_level_vote = function (self)
-	local voting_manager = self.voting_manager
-	local active_vote_name = voting_manager:vote_in_progress()
-	local is_mission_vote = active_vote_name == "game_settings_vote" or active_vote_name == "game_settings_deed_vote"
-
-	return is_mission_vote and not voting_manager:has_voted(Network.peer_id())
-end
-
 HeroView._set_loading_overlay_enabled = function (self, enabled, message)
 	local loading_widgets = self._loading_widgets
 	local loading_text_widget = loading_widgets.text

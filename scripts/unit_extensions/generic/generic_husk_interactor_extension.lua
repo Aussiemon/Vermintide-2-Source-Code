@@ -63,9 +63,6 @@ GenericHuskInteractorExtension.update = function (self, unit, input, dt, context
 		end
 
 		self.state = "doing_interaction"
-		local flow_event = "lua_interaction_started_" .. interaction_type
-
-		Unit.flow_event(interactable_unit, flow_event)
 	end
 
 	if self.state == "doing_interaction" then
@@ -112,12 +109,6 @@ GenericHuskInteractorExtension._stop_interaction = function (self, interactable_
 
 	if self.is_server then
 		interaction_template.server.stop(world, unit, interactable_unit, interaction_data, interaction_config, t, interaction_result)
-	end
-
-	if self.state == "doing_interaction" then
-		local flow_event = "lua_interaction_stopped_" .. interaction_type .. "_" .. InteractionResult[interaction_result]
-
-		Unit.flow_event(interactable_unit, flow_event)
 	end
 
 	self.state = "waiting_to_interact"

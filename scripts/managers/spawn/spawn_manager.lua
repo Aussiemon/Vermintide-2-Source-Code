@@ -1001,4 +1001,10 @@ SpawnManager.set_respawning_enabled = function (self, enabled)
 	self._respawns_enabled = enabled
 end
 
+SpawnManager.force_respawn_dead_players = function (self)
+	for _, status in ipairs(self._player_statuses) do
+		status.respawn_timer = 0
+	end
+end
+
 return

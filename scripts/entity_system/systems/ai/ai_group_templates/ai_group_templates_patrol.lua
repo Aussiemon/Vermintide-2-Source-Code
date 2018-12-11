@@ -1411,12 +1411,19 @@ end
 function cleanup_after_combat(group)
 	local indexed_members = group.indexed_members
 	local num_indexed_members = group.num_indexed_members
+	local network_manager = Managers.state.network
 
 	for i = 1, num_indexed_members, 1 do
 		local unit = indexed_members[i]
 		local blackboard = BLACKBOARDS[unit]
 
 		AiUtils.deactivate_unit(blackboard)
+
+		local breed = blackboard.breed
+
+		if not blackboard.confirmed_player_sighting and (breed.passive_in_patrol == nil or breed.passive_in_patrol) then
+			network_manager:anim_event(unit, "to_passive")
+		end
 
 		if ScriptUnit.has_extension(unit, "ai_slot_system") then
 			local ai_slot_system = Managers.state.entity:system("ai_slot_system")
@@ -1429,7 +1436,6 @@ function cleanup_after_combat(group)
 
 		if use_patrol_perception then
 			local ai_extension = ScriptUnit.extension(unit, "ai_system")
-			local breed = blackboard.breed
 			local perception_func_name = breed.patrol_passive_perception
 			local target_selection_func_name = breed.patrol_passive_target_selection
 

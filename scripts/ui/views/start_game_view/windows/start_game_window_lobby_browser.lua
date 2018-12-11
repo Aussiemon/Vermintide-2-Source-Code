@@ -816,6 +816,11 @@ StartGameWindowLobbyBrowser._create_filter_requirements = function (self)
 		}
 	end
 
+	requirements.filters.game_mode = {
+		value = "event",
+		comparison = LobbyComparison.NOT_EQUAL
+	}
+
 	if only_show_valid_lobbies then
 		requirements.filters.network_hash = {
 			value = lobby_finder:network_hash(),

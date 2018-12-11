@@ -22,34 +22,31 @@ SoundEffectSystem.destroy = function (self)
 end
 
 SoundEffectSystem.aggro_unit_changed = function (self, target_unit, enemy_unit, has_aggro)
-	local sound_effect_extension = ScriptUnit.has_extension(target_unit, "sound_effect_system")
+	local player_manager = Managers.player
+	local player = player_manager:unit_owner(target_unit)
 
-	if not sound_effect_extension then
-		return
-	end
+	if player then
+		local is_local_player = player.local_player
 
-	sound_effect_extension:aggro_unit_changed(enemy_unit, has_aggro)
+		if is_local_player then
+			local sound_effect_extension = ScriptUnit.has_extension(target_unit, "sound_effect_system")
 
-	local target_unit_id = self.unit_storage:go_id(target_unit)
-	local enemy_unit_id = self.unit_storage:go_id(enemy_unit)
+			sound_effect_extension:aggro_unit_changed(enemy_unit, has_aggro)
+		elseif self.is_server and player:is_player_controlled() then
+			local peer_id = player.peer_id
+			local target_unit_id = self.unit_storage:go_id(target_unit)
+			local enemy_unit_id = self.unit_storage:go_id(enemy_unit)
 
-	if self.is_server then
-		self.network_transmit:send_rpc_clients("rpc_aggro_unit_changed", target_unit_id, enemy_unit_id, has_aggro)
-	else
-		self.network_transmit:send_rpc_server("rpc_aggro_unit_changed", target_unit_id, enemy_unit_id, has_aggro)
+			self.network_transmit:send_rpc("rpc_aggro_unit_changed", peer_id, target_unit_id, enemy_unit_id, has_aggro)
+		end
 	end
 end
 
 SoundEffectSystem.rpc_aggro_unit_changed = function (self, sender, target_unit_id, enemy_unit_id, has_aggro)
 	local target_unit = self.unit_storage:unit(target_unit_id)
 	local enemy_unit = self.unit_storage:unit(enemy_unit_id)
-	local sound_effect_extension = ScriptUnit.has_extension(target_unit, "sound_effect_system")
 
-	if not sound_effect_extension then
-		return
-	end
-
-	sound_effect_extension:aggro_unit_changed(enemy_unit, has_aggro)
+	self:aggro_unit_changed(target_unit, enemy_unit, has_aggro)
 end
 
 SoundEffectSystem.hot_join_sync = function (self)

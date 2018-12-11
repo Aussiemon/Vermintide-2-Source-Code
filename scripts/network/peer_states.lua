@@ -189,6 +189,8 @@ PeerStates.LoadingProfilePackages = {
 			return
 		elseif wanted_profile_index == 0 then
 			self.my_profile_index = profile_synchronizer:get_first_free_profile()
+		elseif is_tutorial then
+			self.my_profile_index = wanted_profile_index
 		else
 			local owner_type = profile_synchronizer:owner_type(wanted_profile_index)
 

@@ -1180,6 +1180,7 @@ DamageUtils.add_damage_network = function (attacked_unit, attacker_unit, origina
 
 	local damage_amount = DamageUtils.networkify_damage(original_damage_amount)
 	hit_position = hit_position or Unit.world_position(attacked_unit, 0)
+	hit_position = NetworkUtils.network_clamp_position(hit_position)
 
 	if is_server or LEVEL_EDITOR_TEST then
 		local num_victim_units = #victim_units
@@ -1245,6 +1246,7 @@ DamageUtils.add_damage_network_player = function (damage_profile, target_index, 
 	local buffed_damage_amount = DamageUtils.apply_buffs_to_damage(original_damage_amount, hit_unit, attacker_unit, damage_source, victim_units, damage_type, charge_value)
 	local damage_amount = (heavy_armor_damage and 0.5) or buffed_damage_amount
 	hit_position = hit_position or Unit.world_position(hit_unit, 0)
+	hit_position = NetworkUtils.network_clamp_position(hit_position)
 	local buff_extension = attacker_unit and ScriptUnit.has_extension(attacker_unit, "buff_system")
 	local hit_unit_health_extension = ScriptUnit.extension(hit_unit, "health_system")
 
@@ -1705,18 +1707,17 @@ DamageUtils.debug_deal_damage = function (victim_unit, attack_template_name, hit
 	local damage_source_id = NetworkLookup.damage_sources[damage_source]
 	local damage_profile_name = "debug_damage"
 	local damage_profile_id = NetworkLookup.damage_profiles[damage_profile_name]
+	local power_level = script_data.debug_damage_power_level or 100
 	local weapon_system = Managers.state.entity:system("weapon_system")
 
-	weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, "power_level", 100, "hit_target_index", nil, "blocking", false, "shield_break_procced", false, "boost_curve_multiplier", 0, "is_critical_strike", false)
+	weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", nil, "blocking", false, "shield_break_procced", false, "boost_curve_multiplier", 0, "is_critical_strike", false)
 end
 
 DamageUtils.check_distance = function (action, blackboard, attacking_unit, target_unit)
-	local breed_attacker = AiUtils.unit_breed(attacking_unit)
-	local pos_attacker = unit_local_position(attacking_unit, 0)
-	local pos_target = unit_local_position(target_unit, 0)
-	local to_target = pos_target - pos_attacker
-	local blackboard = BLACKBOARDS[attacking_unit]
 	local breed = blackboard.breed
+	local pos_attacker = POSITION_LOOKUP[attacking_unit]
+	local pos_target = POSITION_LOOKUP[target_unit]
+	local to_target = pos_target - pos_attacker
 	local current_action = blackboard.action
 	local player_radius = 1
 
@@ -1736,7 +1737,7 @@ DamageUtils.check_distance = function (action, blackboard, attacking_unit, targe
 	else
 		local dist = Vector3.length(to_target)
 
-		if dist <= (current_action.weapon_reach or breed_attacker.weapon_reach or breed_attacker.radius) + player_radius then
+		if dist <= (current_action.weapon_reach or breed.weapon_reach or breed.radius) + player_radius then
 			return true
 		end
 	end
@@ -1745,8 +1746,8 @@ DamageUtils.check_distance = function (action, blackboard, attacking_unit, targe
 end
 
 DamageUtils.check_infront = function (attacking_unit, target_unit)
-	local pos_attacker = unit_local_position(attacking_unit, 0)
-	local pos_target = unit_local_position(target_unit, 0)
+	local pos_attacker = POSITION_LOOKUP[attacking_unit]
+	local pos_target = POSITION_LOOKUP[target_unit]
 	local to_target = Vector3.flat(pos_target - pos_attacker)
 	local rot_attacker = unit_local_rotation(attacking_unit, 0)
 	local fwd_attacker = Quaternion.forward(rot_attacker)

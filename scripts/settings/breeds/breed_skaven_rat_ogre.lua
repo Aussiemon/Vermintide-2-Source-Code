@@ -47,9 +47,9 @@ local damage_table_combo = {
 		7
 	},
 	normal = {
-		10,
-		10,
-		10
+		7,
+		7,
+		7
 	},
 	hard = {
 		15,
@@ -162,20 +162,21 @@ local breed_data = {
 		target_catapulted_mul = 0.5,
 		target_stickyness_bonus_b = 10,
 		targeted_by_other_special = -10,
-		target_stickyness_duration_a = 5,
+		target_staggered_you_bonus = 100,
 		target_stickyness_duration_b = 20,
 		aggro_decay_per_sec = 1,
 		target_outside_navmesh_mul = 0.5,
 		old_target_aggro_mul = 1,
 		target_disabled_aggro_mul = 0,
+		target_stickyness_duration_a = 5,
 		max_distance = 50,
 		target_stickyness_bonus_a = 50,
 		distance_weight = 100,
 		target_disabled_mul = 0.15
 	},
 	max_health = {
-		700,
-		700,
+		600,
+		600,
 		1050,
 		1400,
 		2100
@@ -545,14 +546,14 @@ local action_data = {
 		},
 		blocked_difficulty_damage = {
 			easy = {
-				4,
-				4,
-				2.5
+				2,
+				1,
+				0.5
 			},
 			normal = {
-				5,
-				4,
-				2.5
+				2,
+				1,
+				0.5
 			},
 			hard = {
 				7,

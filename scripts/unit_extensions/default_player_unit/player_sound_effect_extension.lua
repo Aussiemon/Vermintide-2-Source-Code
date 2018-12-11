@@ -3,19 +3,19 @@ local HIT_COOLDOWN = 1.8
 local KILL_COOLDOWN = 3.5
 local MAX_HITS = 100
 local MAX_KILLS = 10
-local aggro_breed_ranges = {
-	skaven_storm_vermin_champion = 10,
-	chaos_exalted_champion_warcamp = 10,
-	chaos_exalted_sorcerer = 10,
-	chaos_warrior = 10,
-	skaven_storm_vermin_warlord = 10,
-	skaven_rat_ogre = 10,
-	chaos_exalted_champion_norsca = 10,
-	chaos_troll = 10,
-	chaos_spawn = 10,
-	skaven_stormfiend_boss = 10,
-	chaos_spawn_exalted_champion_norsca = 10,
-	skaven_stormfiend = 10
+local aggro_breed_ranges_sq = {
+	skaven_storm_vermin_champion = 100,
+	chaos_exalted_champion_warcamp = 100,
+	chaos_exalted_sorcerer = 400,
+	chaos_warrior = 100,
+	skaven_storm_vermin_warlord = 100,
+	skaven_rat_ogre = 100,
+	chaos_exalted_champion_norsca = 100,
+	chaos_troll = 100,
+	chaos_spawn = 100,
+	skaven_stormfiend_boss = 100,
+	chaos_spawn_exalted_champion_norsca = 100,
+	skaven_stormfiend = 100
 }
 
 PlayerSoundEffectExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -50,6 +50,7 @@ PlayerSoundEffectExtension.update = function (self, unit, input, dt, context, t)
 	self:_update_recent_hits(dt)
 	self:_update_recent_kills(dt)
 	self:_update_aggro_ranges(dt)
+	self:_update_camera_look_angle()
 end
 
 PlayerSoundEffectExtension.destroy = function (self)
@@ -85,9 +86,7 @@ PlayerSoundEffectExtension._update_aggro_ranges = function (self, dt)
 		local wwise_world = self._wwise_world
 
 		WwiseWorld.set_global_parameter(wwise_world, "combat_combo_has_aggro", 0)
-	end
-
-	if self._aggro_unit and not AiUtils.unit_alive(self._aggro_unit) then
+	elseif not AiUtils.unit_alive(self._aggro_unit) then
 		self._aggro_unit = nil
 		local wwise_world = self._wwise_world
 
@@ -95,25 +94,26 @@ PlayerSoundEffectExtension._update_aggro_ranges = function (self, dt)
 		WwiseWorld.trigger_event(wwise_world, "Play_boss_aggro_exit")
 	end
 
-	if self._waiting_aggro_unit and not AiUtils.unit_alive(self._waiting_aggro_unit) then
-		self._waiting_aggro_unit = nil
-	end
-
 	if self._waiting_aggro_unit then
-		local breed = Unit.get_data(self._waiting_aggro_unit, "breed")
-		local breed_name = breed.name
-		local max_distance = aggro_breed_ranges[breed_name]
+		if not AiUtils.unit_alive(self._waiting_aggro_unit) then
+			self._waiting_aggro_unit = nil
 
-		if not max_distance then
 			return
 		end
 
-		local unit_pos = POSITION_LOOKUP[self._unit]
-		local enemy_pos = POSITION_LOOKUP[self._waiting_aggro_unit]
-		local distance = Vector3.length(unit_pos - enemy_pos)
-		local wwise_world = self._wwise_world
+		local breed = Unit.get_data(self._waiting_aggro_unit, "breed")
+		local breed_name = breed.name
+		local max_distance_sq = aggro_breed_ranges_sq[breed_name]
 
-		if distance <= max_distance then
+		if not max_distance_sq then
+			return
+		end
+
+		local unit_position = POSITION_LOOKUP[self._unit]
+		local enemy_position = POSITION_LOOKUP[self._waiting_aggro_unit]
+		local distance_sq = Vector3.distance_squared(unit_position, enemy_position)
+
+		if distance_sq <= max_distance_sq then
 			local wwise_world = self._wwise_world
 
 			WwiseWorld.set_global_parameter(wwise_world, "combat_combo_has_aggro", 1)
@@ -137,6 +137,21 @@ PlayerSoundEffectExtension._set_kill_count = function (self, num_kills)
 	local wwise_world = self._wwise_world
 
 	WwiseWorld.set_global_parameter(wwise_world, "combat_combo_kills", num_kills)
+end
+
+PlayerSoundEffectExtension._update_camera_look_angle = function (self)
+	local unit = self._unit
+	local network_manager = Managers.state.network
+	local game = network_manager:game()
+	local unit_id = network_manager:unit_game_object_id(unit)
+	local aim_direction = GameSession.game_object_field(game, unit_id, "aim_direction")
+	local forward_direction = Vector3.normalize(Vector3.flat(aim_direction))
+	local dot = Vector3.dot(forward_direction, aim_direction)
+	local angle = math.acos(math.clamp(dot, -1, 1))
+	local degrees = math.radians_to_degrees(angle) * math.sign(aim_direction.z)
+	local wwise_world = self._wwise_world
+
+	WwiseWorld.set_global_parameter(wwise_world, "player_camera_horizon_angle", degrees)
 end
 
 PlayerSoundEffectExtension.add_hit = function (self)
@@ -179,20 +194,19 @@ PlayerSoundEffectExtension.aggro_unit_changed = function (self, enemy_unit, has_
 	end
 
 	local breed_name = breed.name
-	local max_distance = aggro_breed_ranges[breed_name]
+	local max_distance_sq = aggro_breed_ranges_sq[breed_name]
 
-	if not max_distance then
+	if not max_distance_sq then
 		return
 	end
 
-	if has_aggro then
+	if has_aggro and self._aggro_unit ~= enemy_unit then
 		self._aggro_unit = enemy_unit
-		local unit_pos = POSITION_LOOKUP[self._unit]
-		local enemy_pos = POSITION_LOOKUP[enemy_unit]
-		local distance = Vector3.length(unit_pos - enemy_pos)
-		local wwise_world = self._wwise_world
+		local unit_position = POSITION_LOOKUP[self._unit]
+		local enemy_position = POSITION_LOOKUP[enemy_unit]
+		local distance_sq = Vector3.distance_squared(unit_position, enemy_position)
 
-		if distance <= max_distance then
+		if distance_sq <= max_distance_sq then
 			local wwise_world = self._wwise_world
 
 			WwiseWorld.set_global_parameter(wwise_world, "combat_combo_has_aggro", 1)
@@ -201,7 +215,7 @@ PlayerSoundEffectExtension.aggro_unit_changed = function (self, enemy_unit, has_
 			self._aggro_unit = nil
 			self._waiting_aggro_unit = enemy_unit
 		end
-	else
+	elseif not has_aggro and self._aggro_unit == enemy_unit then
 		self._aggro_unit = nil
 		self._waiting_aggro_unit = nil
 		local wwise_world = self._wwise_world

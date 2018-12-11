@@ -135,6 +135,7 @@ weapon_template.actions = {
 		default = {
 			charge_sound_stop_event = "player_combat_weapon_staff_charge_down",
 			scale_chain_window_by_charge_time_buff = true,
+			charge_ready_sound_event = "weapon_staff_charge_ready",
 			scale_anim_by_charge_time_buff = false,
 			kind = "charge",
 			charge_sound_name = "player_combat_weapon_staff_charge",

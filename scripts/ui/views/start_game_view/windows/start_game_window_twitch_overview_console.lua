@@ -474,7 +474,7 @@ StartGameWindowTwitchOverviewConsole._handle_new_selection = function (self, inp
 end
 
 StartGameWindowTwitchOverviewConsole._update_animations = function (self, dt)
-	if PLATFORM == "win32" then
+	if PLATFORM ~= "ps4" and not Managers.input:is_device_active("gamepad") then
 		self:_update_button_animations(dt)
 	end
 

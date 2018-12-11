@@ -321,16 +321,19 @@ ConsoleFriendsView.update = function (self, dt, t)
 	if self._popup_id then
 		self:_handle_popup()
 	else
+		self:_update_input_descriptions(dt, t)
 		self:_handle_input(dt, t)
 		self:_update_animations(dt, t)
-		self:_update_input_descriptions(dt, t)
 		self:_handle_refresh(dt, t)
+		self:_animate_default_buttons(dt, t)
 		self:_draw(dt, t)
 	end
 end
 
 ConsoleFriendsView._update_input_descriptions = function (self, dt, t)
 	local friends_widget = self._friend_list_widgets[self._current_friend_index]
+	local enable_profile_button = false
+	local enable_invite_button = false
 
 	if friends_widget then
 		local friend_widget_content = friends_widget.content
@@ -362,6 +365,8 @@ ConsoleFriendsView._update_input_descriptions = function (self, dt, t)
 			self._menu_input_description:set_input_description(nil)
 		end
 
+		enable_profile_button = true
+		enable_invite_button = invite ~= nil
 		self._current_input_desc = input
 	elseif PLATFORM == "xb1" then
 		local input = not self._is_refreshing and "only_refresh"
@@ -378,6 +383,22 @@ ConsoleFriendsView._update_input_descriptions = function (self, dt, t)
 
 		self._current_input_desc = nil
 	end
+
+	local open_profile_button = self._widgets_by_name.open_profile_button
+
+	if open_profile_button then
+		local open_profile_button_content = open_profile_button.content
+		local button_hotspot = open_profile_button_content.button_hotspot
+		button_hotspot.disable_button = not enable_profile_button
+	end
+
+	local invite_button = self._widgets_by_name.invite_button
+
+	if invite_button then
+		local invite_button_content = invite_button.content
+		local button_hotspot = invite_button_content.button_hotspot
+		button_hotspot.disable_button = not enable_invite_button
+	end
 end
 
 ConsoleFriendsView._handle_refresh = function (self, dt, t)
@@ -389,6 +410,16 @@ ConsoleFriendsView._handle_refresh = function (self, dt, t)
 
 			self._refresh_friends_timer = t + REFRESH_COOLDOWN
 		end
+	end
+end
+
+ConsoleFriendsView._animate_default_buttons = function (self, dt, t)
+	if not Managers.input:is_device_active("gamepad") then
+		local open_profile_button = self._widgets_by_name.open_profile_button
+		local invite_button = self._widgets_by_name.invite_button
+
+		UIWidgetUtils.animate_default_button(open_profile_button, dt)
+		UIWidgetUtils.animate_default_button(invite_button, dt)
 	end
 end
 
@@ -406,10 +437,21 @@ ConsoleFriendsView._handle_input = function (self, dt, t)
 	local old_index = self._current_friend_index
 	local hold_down_timer = 0
 	local hold_up_timer = 0
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local open_profile_button = self._widgets_by_name.open_profile_button
+	local open_profile_button_content = open_profile_button.content
+	local open_profile_pressed = open_profile_button_content.button_hotspot.on_pressed
+	local invite_button = self._widgets_by_name.invite_button
+	local invite_button_content = invite_button.content
+	local invite_pressed = invite_button_content.button_hotspot.on_pressed
+	local selection_handler = self._widgets_by_name.selection_handler
+	local selection_handler_content = selection_handler.content
+	local up_hotspot = selection_handler_content.up_hotspot
+	local down_hotspot = selection_handler_content.down_hotspot
 
-	if input_service:get("move_up_hold") then
+	if input_service:get("move_up_hold") or up_hotspot.is_held then
 		hold_up_timer = self._hold_up_timer + dt
-	elseif input_service:get("move_down_hold") then
+	elseif input_service:get("move_down_hold") or down_hotspot.is_held then
 		hold_down_timer = self._hold_down_timer + dt
 	end
 
@@ -417,10 +459,17 @@ ConsoleFriendsView._handle_input = function (self, dt, t)
 	self._hold_up_timer = hold_up_timer
 	local num_friends = #self._friend_list_widgets
 	local num_visible_friends = definitions.num_visible_friends
+	local scroll_value = input_service:get("scroll_axis")
 
-	if input_service:get("back", true) then
+	if PLATFORM == "xb1" then
+		scroll_value = scroll_value and math.sign(scroll_value.x)
+	else
+		scroll_value = scroll_value and math.sign(scroll_value.y)
+	end
+
+	if input_service:get("back", true) or input_service:get("toggle_menu", true) then
 		self:exit()
-	elseif input_service:get("refresh") then
+	elseif input_service:get("refresh") or invite_pressed then
 		local friend_widget = self._friend_list_widgets[self._current_friend_index]
 
 		if friend_widget then
@@ -432,13 +481,13 @@ ConsoleFriendsView._handle_input = function (self, dt, t)
 		elseif PLATFORM == "ps4" then
 			self:_join_game()
 		end
-	elseif input_service:get("confirm_press") then
+	elseif input_service:get("confirm_press") or open_profile_pressed then
 		local friend_widget = self._friend_list_widgets[self._current_friend_index]
 
 		if friend_widget then
 			self:_open_profile(friend_widget)
 		end
-	elseif input_service:get("move_down") or self._hold_down_timer > 0.5 then
+	elseif input_service:get("move_down") or self._hold_down_timer > 0.5 or down_hotspot.on_pressed or down_hotspot.on_double_click or scroll_value < 0 then
 		if self._hold_down_timer > 0.5 then
 			self._hold_down_timer = 0.4
 		end
@@ -455,7 +504,7 @@ ConsoleFriendsView._handle_input = function (self, dt, t)
 				self._cursor_position = math.clamp(self._cursor_position - 1, 1, num_visible_friends)
 			end
 		end
-	elseif input_service:get("move_up") or self._hold_up_timer > 0.5 then
+	elseif input_service:get("move_up") or self._hold_up_timer > 0.5 or up_hotspot.on_pressed or up_hotspot.on_double_click or scroll_value > 0 then
 		if self._hold_up_timer > 0.5 then
 			self._hold_up_timer = 0.4
 		end
@@ -470,6 +519,21 @@ ConsoleFriendsView._handle_input = function (self, dt, t)
 
 			if self._wanted_pos ~= old_wanted_pos then
 				self._cursor_position = math.clamp(self._cursor_position + 1, 1, num_visible_friends)
+			end
+		end
+	elseif not gamepad_active and PLATFORM ~= "ps4" then
+		local first_index = math.clamp(self._current_friend_index - (self._cursor_position - 1), 1, math.max(num_friends - (num_visible_friends - 1), 1))
+		local last_index = math.clamp((first_index + num_visible_friends) - 1, 1, num_friends)
+
+		for i = first_index, last_index, 1 do
+			local entry = self._friend_list_widgets[i]
+			local entry_content = entry.content
+
+			if entry_content.entry_hotspot.on_pressed then
+				self._current_friend_index = i
+				self._cursor_position = i - (first_index - 1)
+
+				break
 			end
 		end
 	end

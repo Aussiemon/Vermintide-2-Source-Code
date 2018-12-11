@@ -13,6 +13,7 @@ GenericAmmoUserExtension.init = function (self, extension_init_context, unit, ex
 	self.max_ammo = ammo_data.max_ammo
 	self.start_ammo = math.floor(ammo_percent * self.max_ammo)
 	self.ammo_per_clip = ammo_data.ammo_per_clip or self.max_ammo
+	self.ammo_per_reload = ammo_data.ammo_per_reload
 	self.original_max_ammo = self.max_ammo
 	self.original_start_ammo = self.start_ammo
 	self.original_ammo_per_clip = self.ammo_per_clip
@@ -65,6 +66,9 @@ GenericAmmoUserExtension.reset = function (self)
 end
 
 GenericAmmoUserExtension.update = function (self, unit, input, dt, context, t)
+	local player_manager = Managers.player
+	local owner_player = player_manager:owner(self.owner_unit)
+
 	if self.shots_fired > 0 then
 		self.current_ammo = self.current_ammo - self.shots_fired
 		self.shots_fired = 0
@@ -72,7 +76,9 @@ GenericAmmoUserExtension.update = function (self, unit, input, dt, context, t)
 		assert(self.current_ammo >= 0)
 
 		if self.current_ammo == 0 then
-			Unit.flow_event(unit, "used_last_ammo_clip")
+			if not owner_player or not owner_player.bot_player then
+				Unit.flow_event(unit, "used_last_ammo_clip")
+			end
 
 			if self.available_ammo == 0 then
 				if self.destroy_when_out_of_ammo then
@@ -97,71 +103,66 @@ GenericAmmoUserExtension.update = function (self, unit, input, dt, context, t)
 		end
 	end
 
-	if self.next_reload_time then
-		local player_manager = Managers.player
-		local owner_player = player_manager:owner(self.owner_unit)
+	if self.next_reload_time and self.next_reload_time < t then
+		if not self.start_reloading then
+			local buff_extension = self.owner_buff_extension
+			local missing_in_clip = self.ammo_per_clip - self.current_ammo
+			local reload_amount = (self.ammo_per_reload and self.ammo_per_reload <= missing_in_clip and self.ammo_per_reload) or missing_in_clip
+			reload_amount = math.min(reload_amount, self.available_ammo)
+			self.current_ammo = self.current_ammo + reload_amount
 
-		if self.next_reload_time < t then
-			if not self.start_reloading then
-				local buff_extension = self.owner_buff_extension
-				local missing_in_clip = self.ammo_per_clip - self.current_ammo
-				local reload_amount = (self.ammo_per_reload and self.ammo_per_reload <= missing_in_clip and self.ammo_per_reload) or missing_in_clip
-				reload_amount = math.min(reload_amount, self.available_ammo)
-				self.current_ammo = self.current_ammo + reload_amount
+			if buff_extension then
+				local no_ammo_consumed = buff_extension:has_buff_type("no_ammo_consumed")
+				local markus_huntsman_ability = buff_extension:has_buff_type("markus_huntsman_activated_ability")
+				local twitch_no_ammo_reloads = buff_extension:has_buff_type("twitch_no_overcharge_no_ammo_reloads")
 
-				if buff_extension then
-					local no_ammo_consumed = buff_extension:has_buff_type("no_ammo_consumed")
-					local markus_huntsman_ability = buff_extension:has_buff_type("markus_huntsman_activated_ability")
-					local twitch_no_ammo_reloads = buff_extension:has_buff_type("twitch_no_overcharge_no_ammo_reloads")
-
-					if not no_ammo_consumed and not markus_huntsman_ability and not twitch_no_ammo_reloads then
-						self.available_ammo = self.available_ammo - reload_amount
-					end
-
-					buff_extension:trigger_procs("on_reload")
+				if not no_ammo_consumed and not markus_huntsman_ability and not twitch_no_ammo_reloads then
+					self.available_ammo = self.available_ammo - reload_amount
 				end
 
-				if not LEVEL_EDITOR_TEST and not player_manager.is_server then
-					local peer_id = owner_player:network_id()
-					local local_player_id = owner_player:local_player_id()
-					local event_id = NetworkLookup.proc_events.on_reload
-
-					Managers.state.network.network_transmit:send_rpc_server("rpc_proc_event", peer_id, local_player_id, event_id)
-				end
+				buff_extension:trigger_procs("on_reload")
 			end
 
-			self.start_reloading = nil
-			local num_missing = self.ammo_per_clip - self.current_ammo
+			if not LEVEL_EDITOR_TEST and not player_manager.is_server then
+				local peer_id = owner_player:network_id()
+				local local_player_id = owner_player:local_player_id()
+				local event_id = NetworkLookup.proc_events.on_reload
 
-			if num_missing > 0 and self.available_ammo > 0 then
-				local reload_time = self.override_reload_time or self.reload_time
-				self.override_reload_time = nil
-				local unmodded_reload_time = reload_time
+				Managers.state.network.network_transmit:send_rpc_server("rpc_proc_event", peer_id, local_player_id, event_id)
+			end
+		end
 
-				if self.owner_buff_extension then
-					reload_time = self.owner_buff_extension:apply_buffs_to_value(reload_time, StatBuffIndex.RELOAD_SPEED)
-				end
+		self.start_reloading = nil
+		local num_missing = self.ammo_per_clip - self.current_ammo
 
-				self.next_reload_time = t + reload_time
+		if num_missing > 0 and self.available_ammo > 0 then
+			local reload_time = self.override_reload_time or self.reload_time
+			self.override_reload_time = nil
+			local unmodded_reload_time = reload_time
 
-				if self.play_reload_animation then
-					Unit.set_flow_variable(self.unit, "wwise_reload_speed", unmodded_reload_time / reload_time)
-					self:start_reload_animation(reload_time)
+			if self.owner_buff_extension then
+				reload_time = self.owner_buff_extension:apply_buffs_to_value(reload_time, StatBuffIndex.RELOAD_SPEED)
+			end
 
-					if not owner_player.bot_player then
-						Managers.state.controller_features:add_effect("rumble", {
-							rumble_effect = "reload_start"
-						})
-					end
-				end
-			else
-				self.next_reload_time = nil
+			self.next_reload_time = t + reload_time
+
+			if self.play_reload_animation then
+				Unit.set_flow_variable(self.unit, "wwise_reload_speed", unmodded_reload_time / reload_time)
+				self:start_reload_animation(reload_time)
 
 				if not owner_player.bot_player then
 					Managers.state.controller_features:add_effect("rumble", {
-						rumble_effect = "reload_over"
+						rumble_effect = "reload_start"
 					})
 				end
+			end
+		else
+			self.next_reload_time = nil
+
+			if not owner_player.bot_player then
+				Managers.state.controller_features:add_effect("rumble", {
+					rumble_effect = "reload_over"
+				})
 			end
 		end
 	end

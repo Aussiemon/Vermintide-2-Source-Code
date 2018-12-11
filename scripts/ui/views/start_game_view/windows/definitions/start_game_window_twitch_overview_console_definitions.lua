@@ -893,7 +893,7 @@ local function create_window_mixer(scenegraph_id, size)
 			pass_type = "text",
 			text_id = "disconnected",
 			content_check_function = function (content)
-				return Managers.twitch and not Managers.twitch:is_connected() and not Managers.twitch:is_connecting()
+				return Managers.twitch and not Managers.twitch:is_connected() and not Managers.twitch:is_connecting() and Managers.input:is_device_active("gamepad")
 			end
 		},
 		{
@@ -901,7 +901,7 @@ local function create_window_mixer(scenegraph_id, size)
 			pass_type = "text",
 			text_id = "disconnected",
 			content_check_function = function (content)
-				return Managers.twitch and not Managers.twitch:is_connected() and not Managers.twitch:is_connecting()
+				return Managers.twitch and not Managers.twitch:is_connected() and not Managers.twitch:is_connecting() and Managers.input:is_device_active("gamepad")
 			end
 		},
 		{
@@ -941,7 +941,7 @@ local function create_window_mixer(scenegraph_id, size)
 			pass_type = "text",
 			text_id = "connected",
 			content_check_function = function (content)
-				return Managers.twitch and Managers.twitch:is_connected()
+				return Managers.twitch and Managers.twitch:is_connected() and Managers.input:is_device_active("gamepad")
 			end
 		},
 		{
@@ -949,7 +949,7 @@ local function create_window_mixer(scenegraph_id, size)
 			pass_type = "text",
 			text_id = "connected",
 			content_check_function = function (content)
-				return Managers.twitch and Managers.twitch:is_connected()
+				return Managers.twitch and Managers.twitch:is_connected() and Managers.input:is_device_active("gamepad")
 			end
 		}
 	}
@@ -1053,11 +1053,11 @@ local client_disclaimer_description_style = {
 }
 
 local function connected_content_check_function(content)
-	return not Managers.twitch:is_connecting() and not Managers.twitch:is_connected()
+	return not Managers.twitch:is_connecting() and not Managers.twitch:is_connected() and not Managers.input:is_device_active("gamepad")
 end
 
 local function disconnected_content_check_function(content)
-	return not Managers.twitch:is_connecting() and Managers.twitch:is_connected()
+	return not Managers.twitch:is_connecting() and Managers.twitch:is_connected() and not Managers.input:is_device_active("gamepad")
 end
 
 local streaming_desc_str = (PLATFORM == "win32" and "start_game_window_twitch_connect_description") or "start_game_window_mixer_connect_description"
@@ -1094,8 +1094,6 @@ widgets.disconnect_button_frame.element.passes[1].content_check_function = disco
 if PLATFORM == "xb1" then
 	widgets.frame_widget = create_window_mixer("twitch_background", scenegraph_definition.twitch_background.size)
 	widgets.login_text_frame = nil
-	widgets.button_1 = nil
-	widgets.button_2 = nil
 	widgets.connect_button_frame = nil
 	widgets.disconnect_button_frame = nil
 end

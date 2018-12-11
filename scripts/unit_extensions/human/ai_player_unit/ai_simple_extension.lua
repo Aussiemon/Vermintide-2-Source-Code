@@ -131,14 +131,11 @@ AISimpleExtension.unfreeze = function (self, unit, data)
 	blackboard.stagger_count = 0
 	blackboard.stagger_count_reset_at = 0
 	blackboard.optional_spawn_data = optional_spawn_data
-	self._current_action = nil
-
-	self._brain:unfreeze(blackboard)
-
 	local breed = blackboard.breed
-	local spawn_type = blackboard.spawn_type
 	local is_horde = spawn_type == "horde_hidden" or spawn_type == "horde"
+	local behavior = (is_horde and breed.horde_behavior) or breed.behavior
 
+	self._brain:unfreeze(blackboard, behavior)
 	self:init_perception(breed, is_horde)
 
 	if breed.far_off_despawn_immunity or (optional_spawn_data and optional_spawn_data.far_off_despawn_immunity) then

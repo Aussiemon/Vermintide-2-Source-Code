@@ -61,9 +61,12 @@ BTHesitateAction.enter = function (self, unit, blackboard, t)
 end
 
 BTHesitateAction.leave = function (self, unit, blackboard, t, reason, destroy)
-	blackboard.locomotion_extension:use_lerp_rotation(true)
-	LocomotionUtils.set_animation_driven_movement(unit, false)
-	LocomotionUtils.set_animation_rotation_scale(unit, 1)
+	if not destroy then
+		blackboard.locomotion_extension:use_lerp_rotation(true)
+		LocomotionUtils.set_animation_driven_movement(unit, false)
+		LocomotionUtils.set_animation_rotation_scale(unit, 1)
+	end
+
 	AiUtils.activate_unit(blackboard)
 	blackboard.navigation_extension:set_enabled(true)
 

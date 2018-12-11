@@ -157,7 +157,7 @@ BTAlertedAction.leave = function (self, unit, blackboard, t, reason, destroy)
 
 		ai_slot_system:do_slot_search(unit, true)
 
-		if blackboard.move_animation_name then
+		if blackboard.move_animation_name and not destroy then
 			local locomotion_extension = blackboard.locomotion_extension
 
 			locomotion_extension:use_lerp_rotation(true)
@@ -179,7 +179,6 @@ BTAlertedAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.navigation_extension:set_enabled(true)
 
 	blackboard.action = nil
-	blackboard.update_timer = 0
 	blackboard.in_alerted_state = false
 	blackboard.move_animation_name = nil
 	blackboard.no_alert = nil
