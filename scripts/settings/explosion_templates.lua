@@ -418,54 +418,54 @@ ExplosionTemplates = {
 	fire_grenade = {
 		is_grenade = true,
 		explosion = {
-			radius = 3,
+			radius = 2,
 			damage_type = "fire_grenade",
-			max_damage_radius = 1.5,
+			max_damage_radius = 1,
 			alert_enemies_radius = 15,
 			damage_type_glance = "fire_grenade_glance",
 			dont_rotate_fx = true,
-			dot_template_name = "burning_3W_dot",
+			dot_template_name = "burning_1W_dot",
 			sound_event_name = "fireball_big_hit",
 			alert_enemies = true,
 			damage_profile = "explosive_barrel",
 			effect_name = "fx/wpnfx_fire_grenade_impact",
 			difficulty_power_level = {
 				easy = {
-					power_level_glance = 100,
-					power_level = 200
+					power_level_glance = 50,
+					power_level = 59
 				},
 				normal = {
-					power_level_glance = 100,
-					power_level = 200
+					power_level_glance = 50,
+					power_level = 50
 				},
 				hard = {
+					power_level_glance = 75,
+					power_level = 50
+				},
+				harder = {
+					power_level_glance = 100,
+					power_level = 100
+				},
+				hardest = {
+					power_level_glance = 150,
+					power_level = 200
+				},
+				survival_hard = {
 					power_level_glance = 150,
 					power_level = 300
 				},
-				harder = {
+				survival_harder = {
 					power_level_glance = 200,
 					power_level = 400
 				},
-				hardest = {
-					power_level_glance = 300,
-					power_level = 600
-				},
-				survival_hard = {
-					power_level_glance = 300,
-					power_level = 600
-				},
-				survival_harder = {
-					power_level_glance = 400,
-					power_level = 800
-				},
 				survival_hardest = {
-					power_level_glance = 500,
-					power_level = 1000
+					power_level_glance = 250,
+					power_level = 500
 				}
 			}
 		},
 		aoe = {
-			dot_template_name = "burning_3W_dot",
+			dot_template_name = "burning_dot_fire_grenade",
 			radius = 6,
 			nav_tag_volume_layer = "fire_grenade",
 			create_nav_tag_volume = true,

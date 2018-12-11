@@ -2676,6 +2676,23 @@ BuffTemplates = {
 			}
 		}
 	},
+	burning_dot_fire_grenade = {
+		buffs = {
+			{
+				duration = 6,
+				name = "burning dot",
+				end_flow_event = "smoke",
+				start_flow_event = "burn",
+				death_flow_event = "burn_death",
+				remove_buff_func = "remove_dot_damage",
+				apply_buff_func = "start_dot_damage",
+				time_between_dot_damages = 1,
+				damage_type = "burninating",
+				damage_profile = "burning_dot_firegrenade",
+				update_func = "apply_dot_damage"
+			}
+		}
+	},
 	burning_1W_dot = {
 		buffs = {
 			{

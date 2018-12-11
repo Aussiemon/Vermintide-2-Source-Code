@@ -228,7 +228,7 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			range_mod = 1.15,
-			no_damage_impact_sound_event = "blunt_hit_armour",
+			no_damage_impact_sound_event = "slashing_hit_armour",
 			weapon_action_hand = "both",
 			use_precision_sweep = false,
 			additional_critical_strike_chance = 0,
@@ -304,7 +304,7 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			range_mod = 1.15,
-			no_damage_impact_sound_event = "blunt_hit_armour",
+			no_damage_impact_sound_event = "slashing_hit_armour",
 			weapon_action_hand = "both",
 			use_precision_sweep = false,
 			additional_critical_strike_chance = 0,
@@ -382,13 +382,13 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			weapon_action_hand = "right",
-			use_precision_sweep = true,
+			use_precision_sweep = false,
 			additional_critical_strike_chance = 0,
 			damage_profile = "light_slashing_smiter_flat",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.47,
-			impact_sound_event = "blunt_hit",
-			no_damage_impact_sound_event = "blunt_hit_armour",
+			impact_sound_event = "axe_1h_hit",
+			no_damage_impact_sound_event = "slashing_hit_armour",
 			dedicated_target_range = 2.5,
 			anim_event = "attack_swing_right",
 			hit_stop_anim = "attack_hit",
@@ -396,7 +396,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.2,
+			anim_time_scale = time_mod * 1.3,
 			buff_data = {
 				{
 					start_time = 0,
@@ -445,14 +445,14 @@ weapon_template.actions = {
 			range_mod = 1.15,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
-			no_damage_impact_sound_event = "blunt_hit_armour",
+			no_damage_impact_sound_event = "slashing_hit_armour",
 			weapon_action_hand = "left",
 			width_mod = 30,
 			additional_critical_strike_chance = 0,
 			damage_profile = "light_slashing_axe_linesman",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.37,
-			impact_sound_event = "blunt_hit",
+			impact_sound_event = "slashing_hit",
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 2.5,
 			anim_event = "attack_swing_right_diagonal",
@@ -461,7 +461,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.2,
+			anim_time_scale = time_mod * 1.3,
 			buff_data = {
 				{
 					start_time = 0,
@@ -516,8 +516,8 @@ weapon_template.actions = {
 			damage_profile = "light_slashing_axe_linesman",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.38,
-			impact_sound_event = "axe_1h_hit",
-			no_damage_impact_sound_event = "blunt_hit_armour",
+			impact_sound_event = "slashing_hit",
+			no_damage_impact_sound_event = "slashing_hit_armour",
 			dedicated_target_range = 2.5,
 			anim_event = "attack_swing_left_diagonal",
 			hit_stop_anim = "attack_hit",
@@ -576,13 +576,13 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			weapon_action_hand = "right",
-			use_precision_sweep = true,
+			use_precision_sweep = false,
 			additional_critical_strike_chance = 0,
 			damage_profile = "light_slashing_smiter",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.45,
 			impact_sound_event = "axe_1h_hit",
-			no_damage_impact_sound_event = "blunt_hit_armour",
+			no_damage_impact_sound_event = "slashing_hit_armour",
 			dedicated_target_range = 2.5,
 			anim_event = "attack_swing_down_left",
 			hit_stop_anim = "attack_hit",
@@ -639,7 +639,7 @@ weapon_template.actions = {
 			range_mod = 1.15,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
-			no_damage_impact_sound_event = "blunt_hit_armour",
+			no_damage_impact_sound_event = "slashing_hit_armour",
 			weapon_action_hand = "left",
 			width_mod = 30,
 			slide_armour_hit = true,
@@ -647,7 +647,7 @@ weapon_template.actions = {
 			hit_effect = "melee_hit_sword_1h",
 			damage_profile = "light_slashing_axe_linesman",
 			damage_window_end = 0.35,
-			impact_sound_event = "axe_1h_hit",
+			impact_sound_event = "slashing_hit",
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 2.5,
 			anim_event = "attack_swing_down",
@@ -923,7 +923,7 @@ weapon_template.tooltip_detail = {
 	}
 }
 weapon_template.wwise_dep_left_hand = {
-	"wwise/one_handed_axes"
+	"wwise/one_handed_swords"
 }
 weapon_template.wwise_dep_right_hand = {
 	"wwise/one_handed_axes"

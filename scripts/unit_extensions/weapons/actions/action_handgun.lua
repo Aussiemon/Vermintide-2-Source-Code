@@ -250,6 +250,10 @@ ActionHandgun.finish = function (self, reason)
 	if hud_extension then
 		hud_extension.show_critical_indication = false
 	end
+
+	if self.spread_extension then
+		self.spread_extension:reset_spread_template()
+	end
 end
 
 return

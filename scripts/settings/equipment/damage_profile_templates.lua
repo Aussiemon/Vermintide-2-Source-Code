@@ -1250,25 +1250,25 @@ DamageProfileTemplates.shot_carbine = {
 		attack_armor_power_modifer = {
 			1.5,
 			0.75,
-			0.75,
+			2.5,
 			1,
 			1,
-			0.25
+			0.5
 		},
 		impact_armor_power_modifer = {
 			1,
 			0.75,
-			0.75,
+			2.5,
 			1,
 			1,
-			0.25
+			0.5
 		}
 	},
 	armor_modifier_near = {
 		attack = {
 			1.5,
 			0.75,
-			0.75,
+			2.5,
 			1,
 			1,
 			0
@@ -1276,7 +1276,7 @@ DamageProfileTemplates.shot_carbine = {
 		impact = {
 			1,
 			0.75,
-			0.75,
+			2.5,
 			1,
 			1,
 			0
@@ -1286,7 +1286,7 @@ DamageProfileTemplates.shot_carbine = {
 		attack = {
 			1,
 			0.5,
-			0.75,
+			1.5,
 			1,
 			1,
 			0
@@ -1294,7 +1294,7 @@ DamageProfileTemplates.shot_carbine = {
 		impact = {
 			1,
 			0.5,
-			0.75,
+			1.5,
 			1,
 			1,
 			0
@@ -1307,7 +1307,7 @@ DamageProfileTemplates.shot_carbine = {
 	default_target = {
 		boost_curve_coefficient_headshot = 1,
 		boost_curve_type = "linesman_curve",
-		boost_curve_coefficient = 0.75,
+		boost_curve_coefficient = 1,
 		attack_template = "shot_carbine",
 		power_distribution_near = {
 			attack = 0.41,
@@ -3280,7 +3280,7 @@ DamageProfileTemplates.frag_grenade = {
 		attack = {
 			1,
 			0.5,
-			1.5,
+			3,
 			1,
 			1
 		},
@@ -3313,7 +3313,7 @@ DamageProfileTemplates.explosive_barrel = {
 		attack = {
 			1,
 			0.5,
-			1.5,
+			2.5,
 			1,
 			1
 		},
@@ -3848,6 +3848,31 @@ DamageProfileTemplates.burning_dot.default_target.armor_modifier = {
 DamageProfileTemplates.burning_dot.default_target.power_distribution = {
 	attack = 0.05,
 	impact = 0.05
+}
+DamageProfileTemplates.burning_dot_firegrenade = table.clone(DamageProfileTemplates.default)
+DamageProfileTemplates.burning_dot_firegrenade.no_stagger = true
+DamageProfileTemplates.burning_dot_firegrenade.default_target.damage_type = "burninating"
+DamageProfileTemplates.burning_dot_firegrenade.default_target.armor_modifier = {
+	attack = {
+		1,
+		0.25,
+		2,
+		1,
+		1,
+		0
+	},
+	impact = {
+		1,
+		0,
+		0,
+		1,
+		1,
+		0
+	}
+}
+DamageProfileTemplates.burning_dot_firegrenade.default_target.power_distribution = {
+	attack = 0.3,
+	impact = 0.3
 }
 DamageProfileTemplates.beam_burning_dot = table.clone(DamageProfileTemplates.default)
 DamageProfileTemplates.beam_burning_dot.no_stagger = true

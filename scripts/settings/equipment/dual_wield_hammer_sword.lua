@@ -233,11 +233,11 @@ weapon_template.actions = {
 			use_precision_sweep = false,
 			additional_critical_strike_chance = 0,
 			hit_effect = "melee_hit_dagger",
-			damage_profile_left = "light_slashing_axe_linesman",
+			damage_profile_left = "medium_slashing_axe_linesman_1h",
 			damage_window_end = 0.44,
 			impact_sound_event = "axe_1h_hit",
 			anim_end_event = "attack_finished",
-			damage_profile_right = "light_blunt_tank_spiked",
+			damage_profile_right = "medium_blunt_tank_1h",
 			dedicated_target_range = 2.5,
 			uninterruptible = true,
 			anim_event = "attack_swing_heavy_left_diagonal",
@@ -295,8 +295,8 @@ weapon_template.actions = {
 				return input_extension:reset_release_input()
 			end,
 			dual_hit_stop_anims = {
-				left = "attack_hit",
-				right = "shake_hit"
+				left = "shake_hit",
+				right = "attack_hit"
 			}
 		},
 		heavy_attack_2 = {
@@ -309,11 +309,11 @@ weapon_template.actions = {
 			use_precision_sweep = false,
 			additional_critical_strike_chance = 0,
 			hit_effect = "melee_hit_sword_1h",
-			damage_profile_left = "light_slashing_axe_linesman",
+			damage_profile_left = "medium_slashing_axe_linesman_1h",
 			damage_window_end = 0.42,
 			impact_sound_event = "axe_1h_hit",
 			anim_end_event = "attack_finished",
-			damage_profile_right = "light_blunt_tank_spiked",
+			damage_profile_right = "medium_blunt_tank_1h",
 			dedicated_target_range = 2.5,
 			uninterruptible = true,
 			anim_event = "attack_swing_heavy_right_diagonal",
@@ -371,8 +371,8 @@ weapon_template.actions = {
 				return input_extension:reset_release_input()
 			end,
 			dual_hit_stop_anims = {
-				left = "shake_hit",
-				right = "attack_hit"
+				left = "attack_hit",
+				right = "shake_hit"
 			}
 		},
 		light_attack_left_diagonal = {
@@ -382,7 +382,6 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			weapon_action_hand = "right",
-			use_precision_sweep = true,
 			additional_critical_strike_chance = 0,
 			damage_profile = "light_blunt_tank_spiked",
 			hit_effect = "melee_hit_hammers_1h",
@@ -437,8 +436,7 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			},
-			impact_axis = Vector3Box(0, 0, 1)
+			}
 		},
 		light_attack_right = {
 			damage_window_start = 0.35,
@@ -448,7 +446,6 @@ weapon_template.actions = {
 			no_damage_impact_sound_event = "blunt_hit_armour",
 			weapon_action_hand = "right",
 			width_mod = 30,
-			use_precision_sweep = true,
 			additional_critical_strike_chance = 0,
 			damage_profile = "light_blunt_tank_spiked",
 			hit_effect = "melee_hit_hammers_1h",
@@ -503,8 +500,7 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			},
-			impact_axis = Vector3Box(0, 0, 1)
+			}
 		},
 		light_attack_right_diagonal = {
 			damage_window_start = 0.25,
@@ -517,8 +513,8 @@ weapon_template.actions = {
 			damage_profile = "light_slashing_axe_linesman",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.35,
-			impact_sound_event = "axe_1h_hit",
-			no_damage_impact_sound_event = "blunt_hit_armour",
+			impact_sound_event = "slashing_hit",
+			no_damage_impact_sound_event = "slashing_hit_armour",
 			dedicated_target_range = 2.5,
 			anim_event = "attack_swing_right_diagonal",
 			hit_stop_anim = "attack_hit",
@@ -567,8 +563,7 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			},
-			impact_axis = Vector3Box(0, 0, 1)
+			}
 		},
 		light_attack_left = {
 			damage_window_start = 0.3,
@@ -581,8 +576,8 @@ weapon_template.actions = {
 			damage_profile = "light_slashing_axe_linesman",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.4,
-			impact_sound_event = "axe_1h_hit",
-			no_damage_impact_sound_event = "blunt_hit_armour",
+			impact_sound_event = "slashing_hit",
+			no_damage_impact_sound_event = "slashing_hit_armour",
 			dedicated_target_range = 2.5,
 			anim_event = "attack_swing_left",
 			hit_stop_anim = "attack_hit",
@@ -631,23 +626,22 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			},
-			impact_axis = Vector3Box(0, 0, 1)
+			}
 		},
 		light_attack_bopp = {
 			damage_window_start = 0.15,
 			range_mod = 1.05,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
-			no_damage_impact_sound_event = "slashing_hit_armour",
-			weapon_action_hand = "both",
+			no_damage_impact_sound_event = "blunt_hit_armour",
 			width_mod = 30,
+			weapon_action_hand = "both",
 			additional_critical_strike_chance = 0,
-			use_precision_sweep = false,
 			hit_effect = "melee_hit_sword_1h",
+			use_precision_sweep = false,
 			damage_profile_left = "light_slashing_axe_linesman",
 			damage_window_end = 0.35,
-			impact_sound_event = "slashing_hit",
+			impact_sound_event = "axe_1h_hit",
 			anim_end_event = "attack_finished",
 			damage_profile_right = "light_blunt_tank_spiked",
 			dedicated_target_range = 2.5,
@@ -705,6 +699,10 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
+			},
+			dual_hit_stop_anims = {
+				left = "shake_hit",
+				right = "attack_hit"
 			},
 			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},

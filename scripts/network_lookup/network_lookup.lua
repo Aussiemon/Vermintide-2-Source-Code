@@ -1102,6 +1102,7 @@ NetworkLookup.buff_templates = {
 	"sienna_adept_ability_trail",
 	"burning_1W_dot",
 	"burning_3W_dot",
+	"burning_dot_fire_grenade",
 	"beam_burning_dot",
 	"burning_flamethrower_dot",
 	"burning_dot",

@@ -205,6 +205,7 @@ DotTypeLookup = {
 	burning_3W_dot = "burning_dot",
 	corpse_explosion_default = "poison_dot",
 	arrow_poison_dot = "poison_dot",
+	burning_dot_fire_grenade = "burning_dot",
 	beam_burning_dot = "burning_dot",
 	weapon_bleed_dot_test = "poison_dot",
 	burning_1W_dot = "burning_dot",

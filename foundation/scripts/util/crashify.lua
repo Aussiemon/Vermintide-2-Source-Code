@@ -22,7 +22,11 @@ Crashify = {
 			return Application.warning("[Crashify] Breadcrumb can't be nil")
 		end
 
-		local output = string.format("<<crashify-breadcrumb>>%s<</crashify-breadcrumb>>", crumb)
+		local output = string.format([[
+<<crashify-breadcrumb>>
+			<<timestamp>%f<</timestamp>>
+			<<value>>%s<</value>>
+		<</crashify-breadcrumb>>]], Application.time_since_launch(), crumb)
 
 		print(output)
 	end,
