@@ -7,19 +7,13 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"seen_item"
 			},
 			{
-				"user_context",
-				"enemies_close",
+				"query_context",
+				"item_tag",
 				OP.EQ,
-				0
-			},
-			{
-				"user_context",
-				"intensity",
-				OP.EQ,
-				0
+				"pdr_level_catacombs_story_three_01"
 			},
 			{
 				"user_context",
@@ -50,12 +44,6 @@ return function ()
 				"empire_soldier",
 				OP.EQ,
 				1
-			},
-			{
-				"faction_memory",
-				"time_since_catacombs_apothercary_room",
-				OP.NOT,
-				"time_since_catacombs_apothercary_room"
 			},
 			{
 				"faction_memory",
@@ -167,19 +155,13 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"seen_item"
 			},
 			{
 				"user_context",
-				"enemies_close",
+				"item_tag",
 				OP.EQ,
-				0
-			},
-			{
-				"user_context",
-				"intensity",
-				OP.EQ,
-				0
+				"pwe_level_catacombs_story_four_01"
 			},
 			{
 				"user_context",
@@ -204,12 +186,6 @@ return function ()
 				"empire_soldier",
 				OP.EQ,
 				1
-			},
-			{
-				"faction_memory",
-				"time_since_catacombs_apothercary_room",
-				OP.NOT,
-				"time_since_catacombs_apothercary_room"
 			},
 			{
 				"faction_memory",
@@ -1941,19 +1917,13 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"seen_item"
 			},
 			{
 				"user_context",
-				"enemies_close",
+				"item_tag",
 				OP.EQ,
-				0
-			},
-			{
-				"user_context",
-				"intensity",
-				OP.EQ,
-				0
+				"pwh_level_catacombs_story_two_01"
 			},
 			{
 				"user_context",
@@ -1978,12 +1948,6 @@ return function ()
 				"wood_elf",
 				OP.EQ,
 				1
-			},
-			{
-				"faction_memory",
-				"time_since_catacombs_hear_chanting",
-				OP.NOT,
-				"time_since_catacombs_hear_chanting"
 			},
 			{
 				"faction_memory",
@@ -2169,19 +2133,13 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"seen_item"
 			},
 			{
 				"user_context",
-				"enemies_close",
+				"item_tag",
 				OP.EQ,
-				0
-			},
-			{
-				"user_context",
-				"intensity",
-				OP.EQ,
-				0
+				"pes_level_catacombs_story_one_01"
 			},
 			{
 				"user_context",
@@ -2206,12 +2164,6 @@ return function ()
 				"bright_wizard",
 				OP.EQ,
 				1
-			},
-			{
-				"faction_memory",
-				"time_since_catacombs_healing_ward",
-				OP.NOT,
-				"time_since_catacombs_healing_ward"
 			},
 			{
 				"faction_memory",

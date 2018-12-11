@@ -6362,13 +6362,13 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_enemy"
+				"heard_speak"
 			},
 			{
 				"query_context",
-				"enemy_tag",
+				"sound_event",
 				OP.EQ,
-				"skaven_plague_monk"
+				"Play_plague_monk_alerted_vce"
 			},
 			{
 				"user_context",
@@ -6419,13 +6419,13 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_enemy"
+				"heard_speak"
 			},
 			{
 				"query_context",
-				"enemy_tag",
+				"sound_event",
 				OP.EQ,
-				"skaven_plague_monk"
+				"Play_plague_monk_alerted_vce"
 			},
 			{
 				"user_context",
@@ -7462,13 +7462,13 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_enemy"
+				"heard_speak"
 			},
 			{
 				"query_context",
-				"enemy_tag",
+				"sound_event",
 				OP.EQ,
-				"chaos_berzerker"
+				"ecb_gameplay_running_towards_players"
 			},
 			{
 				"query_context",

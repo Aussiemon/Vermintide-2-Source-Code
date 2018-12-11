@@ -128,7 +128,7 @@ local terror_event_blueprints = {
 			"continue_when",
 			duration = 80,
 			condition = function (t)
-				return count_event_breed("chaos_berzerkers") < 1
+				return count_event_breed("chaos_berzerkers_small") < 1
 			end
 		},
 		{
@@ -138,7 +138,7 @@ local terror_event_blueprints = {
 		{
 			"event_horde",
 			spawner_id = "bogenhafen_slum_event_front_mid_01",
-			composition_type = "chaos_berzerkers"
+			composition_type = "chaos_berzerkers_small"
 		}
 	},
 	dlc_bogenhafen_slum_event_spice_left = {
@@ -231,7 +231,7 @@ local terror_event_blueprints = {
 		{
 			"event_horde",
 			spawner_id = "bogenhafen_slum_gauntlet_wall_01",
-			composition_type = "chaos_berzerkers"
+			composition_type = "chaos_berzerkers_small"
 		},
 		{
 			"event_horde",
@@ -291,7 +291,7 @@ local terror_event_blueprints = {
 			"continue_when",
 			duration = 80,
 			condition = function (t)
-				return count_event_breed("chaos_berzerkers") < 1 and count_event_breed("chaos_shields") < 1 and count_event_breed("chaos_warriors") < 1 and count_event_breed("skaven_clan_rat") < 2 and count_event_breed("skaven_slave") < 2
+				return count_event_breed("chaos_berzerkers_small") < 1 and count_event_breed("chaos_shields") < 1 and count_event_breed("chaos_warriors") < 1 and count_event_breed("skaven_clan_rat") < 2 and count_event_breed("skaven_slave") < 2
 			end
 		},
 		{
@@ -359,7 +359,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "sewer_spice",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -421,7 +421,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "sewer_mid",
-			composition_type = "event_mines_plague_monks"
+			composition_type = "plague_monks_medium"
 		},
 		{
 			"play_stinger",
@@ -671,7 +671,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "temple_event_button2",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"delay",
@@ -737,7 +737,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "temple_event_button2",
-			composition_type = "event_generic_short_level_extra_spice"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"continue_when",
@@ -768,7 +768,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "temple_event_button3",
-			composition_type = "event_mines_plague_monks"
+			composition_type = "plague_monks_medium"
 		},
 		{
 			"event_horde",
@@ -830,7 +830,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "temple_event_button4",
-			composition_type = "chaos_berzerkers"
+			composition_type = "chaos_berzerkers_small"
 		},
 		{
 			"delay",

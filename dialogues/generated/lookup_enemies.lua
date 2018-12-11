@@ -73,6 +73,7 @@ assert(DialogueLookup[DialogueLookup_n + 72] == nil)
 assert(DialogueLookup[DialogueLookup_n + 73] == nil)
 assert(DialogueLookup[DialogueLookup_n + 74] == nil)
 assert(DialogueLookup[DialogueLookup_n + 75] == nil)
+assert(DialogueLookup[DialogueLookup_n + 76] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "ecr_gameplay_startled"
 DialogueLookup[DialogueLookup_n + 2] = "ecr_gameplay_running_towards_players"
@@ -134,21 +135,22 @@ DialogueLookup[DialogueLookup_n + 57] = "ecm_gameplay_comment_player_healing"
 DialogueLookup[DialogueLookup_n + 58] = "ecm_gameplay_running_towards_players"
 DialogueLookup[DialogueLookup_n + 59] = "ecm_gameplay_dogpile_shouts"
 DialogueLookup[DialogueLookup_n + 60] = "epm_gameplay_startled"
-DialogueLookup[DialogueLookup_n + 61] = "ecm_gameplay_flanking_players"
-DialogueLookup[DialogueLookup_n + 62] = "ecb_gameplay_running_towards_players"
-DialogueLookup[DialogueLookup_n + 63] = "ecr_shield_gameplay_startled"
-DialogueLookup[DialogueLookup_n + 64] = "ecr_shield_gameplay_running_towards_players"
-DialogueLookup[DialogueLookup_n + 65] = "ecr_shield_gameplay_running_towards_players_alone"
-DialogueLookup[DialogueLookup_n + 66] = "ecr_shield_gameplay_running_in_horde"
-DialogueLookup[DialogueLookup_n + 67] = "ecr_shield_gameplay_striking_a_player"
-DialogueLookup[DialogueLookup_n + 68] = "ecw_gameplay_targeting_wood_elf"
-DialogueLookup[DialogueLookup_n + 69] = "ecw_gameplay_targeting_empire_soldier"
-DialogueLookup[DialogueLookup_n + 70] = "ecw_gameplay_targeting_witch_hunter"
-DialogueLookup[DialogueLookup_n + 71] = "ecw_gameplay_targeting_bright_wizard"
-DialogueLookup[DialogueLookup_n + 72] = "ecw_gameplay_targeting_dwarf_ranger"
-DialogueLookup[DialogueLookup_n + 73] = "ecw_gameplay_no_damage"
-DialogueLookup[DialogueLookup_n + 74] = "ecw_gameplay_alert"
-DialogueLookup[DialogueLookup_n + 75] = "ecw_gameplay_downing_a_player"
-DialogueLookup_n = DialogueLookup_n + 75
+DialogueLookup[DialogueLookup_n + 61] = "epm_gameplay_running"
+DialogueLookup[DialogueLookup_n + 62] = "ecm_gameplay_flanking_players"
+DialogueLookup[DialogueLookup_n + 63] = "ecb_gameplay_running_towards_players"
+DialogueLookup[DialogueLookup_n + 64] = "ecr_shield_gameplay_startled"
+DialogueLookup[DialogueLookup_n + 65] = "ecr_shield_gameplay_running_towards_players"
+DialogueLookup[DialogueLookup_n + 66] = "ecr_shield_gameplay_running_towards_players_alone"
+DialogueLookup[DialogueLookup_n + 67] = "ecr_shield_gameplay_running_in_horde"
+DialogueLookup[DialogueLookup_n + 68] = "ecr_shield_gameplay_striking_a_player"
+DialogueLookup[DialogueLookup_n + 69] = "ecw_gameplay_targeting_wood_elf"
+DialogueLookup[DialogueLookup_n + 70] = "ecw_gameplay_targeting_empire_soldier"
+DialogueLookup[DialogueLookup_n + 71] = "ecw_gameplay_targeting_witch_hunter"
+DialogueLookup[DialogueLookup_n + 72] = "ecw_gameplay_targeting_bright_wizard"
+DialogueLookup[DialogueLookup_n + 73] = "ecw_gameplay_targeting_dwarf_ranger"
+DialogueLookup[DialogueLookup_n + 74] = "ecw_gameplay_no_damage"
+DialogueLookup[DialogueLookup_n + 75] = "ecw_gameplay_alert"
+DialogueLookup[DialogueLookup_n + 76] = "ecw_gameplay_downing_a_player"
+DialogueLookup_n = DialogueLookup_n + 76
 
 return

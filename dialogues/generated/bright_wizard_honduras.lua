@@ -6495,13 +6495,13 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_enemy"
+				"heard_speak"
 			},
 			{
 				"query_context",
-				"enemy_tag",
+				"sound_event",
 				OP.EQ,
-				"chaos_berzerker"
+				"ecb_gameplay_running_towards_players"
 			},
 			{
 				"query_context",

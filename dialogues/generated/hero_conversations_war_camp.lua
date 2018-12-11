@@ -7,23 +7,17 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"seen_item"
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"chaos_war_camp_tree"
+				"pwe_level_chaos_war_camp_story_eight_01"
 			},
 			{
 				"user_context",
 				"enemies_close",
-				OP.EQ,
-				0
-			},
-			{
-				"user_context",
-				"intensity",
 				OP.EQ,
 				0
 			},
@@ -50,12 +44,6 @@ return function ()
 				"empire_soldier",
 				OP.EQ,
 				1
-			},
-			{
-				"faction_memory",
-				"level_chaos_war_camp_battering_ram",
-				OP.NOT,
-				"level_chaos_war_camp_battering_ram"
 			},
 			{
 				"faction_memory",
@@ -288,15 +276,15 @@ return function ()
 			},
 			{
 				"user_context",
-				"intensity",
-				OP.EQ,
-				0
-			},
-			{
-				"user_context",
 				"friends_close",
 				OP.GT,
 				1
+			},
+			{
+				"user_context",
+				"intensity",
+				OP.EQ,
+				0
 			},
 			{
 				"query_context",
@@ -315,12 +303,6 @@ return function ()
 				"empire_soldier",
 				OP.EQ,
 				1
-			},
-			{
-				"faction_memory",
-				"level_chaos_war_camp_battering_ram",
-				OP.NOT,
-				"level_chaos_war_camp_battering_ram"
 			},
 			{
 				"faction_memory",
@@ -690,234 +672,6 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pwh_level_chaos_war_camp_story_one_01",
-		response = "pwh_level_chaos_war_camp_story_one_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"story_trigger"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.EQ,
-				0
-			},
-			{
-				"user_context",
-				"intensity",
-				OP.EQ,
-				0
-			},
-			{
-				"user_context",
-				"friends_close",
-				OP.GT,
-				1
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"global_context",
-				"bright_wizard",
-				OP.EQ,
-				1
-			},
-			{
-				"faction_memory",
-				"level_chaos_war_camp_battering_ram",
-				OP.NOT,
-				"level_chaos_war_camp_battering_ram"
-			},
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMEDIFF,
-				OP.GT,
-				120
-			},
-			{
-				"faction_memory",
-				"once_per_level_pwh_level_chaos_war_camp_story_one_01",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"once_per_level_pwh_level_chaos_war_camp_story_one_01",
-				OP.ADD,
-				1
-			},
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pbw_level_chaos_war_camp_story_one_01",
-		response = "pbw_level_chaos_war_camp_story_one_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pwh_level_chaos_war_camp_story_one_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"bright_wizard"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pwh_level_chaos_war_camp_story_one_02",
-		response = "pwh_level_chaos_war_camp_story_one_02",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pbw_level_chaos_war_camp_story_one_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pbw_level_chaos_war_camp_story_one_02",
-		response = "pbw_level_chaos_war_camp_story_one_02",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pwh_level_chaos_war_camp_story_one_02"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"bright_wizard"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pwh_level_chaos_war_camp_story_one_03",
-		response = "pwh_level_chaos_war_camp_story_one_03",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pbw_level_chaos_war_camp_story_one_02"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
 		name = "pbw_level_chaos_war_camp_story_four_01",
 		response = "pbw_level_chaos_war_camp_story_four_01",
 		criterias = {
@@ -1116,17 +870,17 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"seen_item"
+			},
+			{
+				"user_context",
+				"item_tag",
+				OP.EQ,
+				"pes_level_chaos_war_camp_story_seven_01"
 			},
 			{
 				"user_context",
 				"enemies_close",
-				OP.EQ,
-				0
-			},
-			{
-				"user_context",
-				"intensity",
 				OP.EQ,
 				0
 			},
@@ -1153,18 +907,6 @@ return function ()
 				"bright_wizard",
 				OP.EQ,
 				1
-			},
-			{
-				"global_context",
-				"level_time",
-				OP.GT,
-				600
-			},
-			{
-				"faction_memory",
-				"level_chaos_war_camp_battering_ram",
-				OP.NOT,
-				"level_chaos_war_camp_battering_ram"
 			},
 			{
 				"faction_memory",
@@ -2543,44 +2285,6 @@ return function ()
 				[1.0] = "pes_level_chaos_war_camp_story_eight_02"
 			}
 		},
-		pwh_level_chaos_war_camp_story_three_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_war_camp",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_chaos_war_camp_story_three_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_chaos_war_camp_story_three_03"
-			}
-		},
-		pwe_level_chaos_war_camp_story_ten_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_war_camp",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_chaos_war_camp_story_ten_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_chaos_war_camp_story_ten_01"
-			}
-		},
 		pbw_level_chaos_war_camp_story_seven_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -2598,63 +2302,6 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_chaos_war_camp_story_seven_02"
-			}
-		},
-		pbw_level_chaos_war_camp_story_one_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_war_camp",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_chaos_war_camp_story_one_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_chaos_war_camp_story_one_02"
-			}
-		},
-		pwh_level_chaos_war_camp_story_three_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_war_camp",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_chaos_war_camp_story_three_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_chaos_war_camp_story_three_02"
-			}
-		},
-		pes_level_chaos_war_camp_story_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_war_camp",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_chaos_war_camp_story_three_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pes_level_chaos_war_camp_story_three_01"
 			}
 		},
 		pes_level_chaos_war_camp_story_three_02 = {
@@ -2733,14 +2380,14 @@ return function ()
 				[1.0] = "pdr_level_chaos_war_camp_story_five_03"
 			}
 		},
-		pes_level_chaos_war_camp_story_ten_03 = {
+		pwh_level_chaos_war_camp_story_three_03 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_war_camp",
 			category = "story_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_level_chaos_war_camp_story_ten_03"
+				[1.0] = "pwh_level_chaos_war_camp_story_three_03"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -2749,17 +2396,17 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pes_level_chaos_war_camp_story_ten_03"
+				[1.0] = "pwh_level_chaos_war_camp_story_three_03"
 			}
 		},
-		pwe_level_chaos_war_camp_story_two_02 = {
+		pwh_level_chaos_war_camp_story_three_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_war_camp",
 			category = "story_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_level_chaos_war_camp_story_two_02"
+				[1.0] = "pwh_level_chaos_war_camp_story_three_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -2768,7 +2415,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwe_level_chaos_war_camp_story_two_02"
+				[1.0] = "pwh_level_chaos_war_camp_story_three_02"
 			}
 		},
 		pwe_level_chaos_war_camp_story_eight_02 = {
@@ -2790,14 +2437,14 @@ return function ()
 				[1.0] = "pwe_level_chaos_war_camp_story_eight_02"
 			}
 		},
-		pes_level_chaos_war_camp_story_ten_02 = {
+		pes_level_chaos_war_camp_story_three_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_war_camp",
 			category = "story_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_level_chaos_war_camp_story_ten_02"
+				[1.0] = "pes_level_chaos_war_camp_story_three_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -2806,7 +2453,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pes_level_chaos_war_camp_story_ten_02"
+				[1.0] = "pes_level_chaos_war_camp_story_three_01"
 			}
 		},
 		pwh_level_chaos_war_camp_story_three_01 = {
@@ -2828,14 +2475,14 @@ return function ()
 				[1.0] = "pwh_level_chaos_war_camp_story_three_01"
 			}
 		},
-		pes_level_chaos_war_camp_story_seven_02 = {
+		pes_level_chaos_war_camp_story_ten_03 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_war_camp",
 			category = "story_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_level_chaos_war_camp_story_seven_02"
+				[1.0] = "pes_level_chaos_war_camp_story_ten_03"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -2844,7 +2491,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pes_level_chaos_war_camp_story_seven_02"
+				[1.0] = "pes_level_chaos_war_camp_story_ten_03"
 			}
 		},
 		pdr_level_chaos_war_camp_story_eleven_02 = {
@@ -2866,14 +2513,14 @@ return function ()
 				[1.0] = "pdr_level_chaos_war_camp_story_eleven_02"
 			}
 		},
-		pwh_level_chaos_war_camp_story_eleven_02 = {
+		pwe_level_chaos_war_camp_story_ten_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_war_camp",
 			category = "story_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_level_chaos_war_camp_story_eleven_02"
+				[1.0] = "pwe_level_chaos_war_camp_story_ten_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -2882,17 +2529,17 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwh_level_chaos_war_camp_story_eleven_02"
+				[1.0] = "pwe_level_chaos_war_camp_story_ten_01"
 			}
 		},
-		pwh_level_chaos_war_camp_story_one_03 = {
+		pes_level_chaos_war_camp_story_eight_03 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_war_camp",
 			category = "story_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_level_chaos_war_camp_story_one_03"
+				[1.0] = "pes_level_chaos_war_camp_story_eight_03"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -2901,7 +2548,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwh_level_chaos_war_camp_story_one_03"
+				[1.0] = "pes_level_chaos_war_camp_story_eight_03"
 			}
 		},
 		pwh_level_chaos_war_camp_story_eleven_01 = {
@@ -2961,14 +2608,14 @@ return function ()
 				[1.0] = "pdr_level_chaos_war_camp_story_five_01"
 			}
 		},
-		pbw_level_chaos_war_camp_story_nine_02 = {
+		pes_level_chaos_war_camp_story_ten_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_war_camp",
 			category = "story_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pbw_level_chaos_war_camp_story_nine_02"
+				[1.0] = "pes_level_chaos_war_camp_story_ten_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -2977,7 +2624,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pbw_level_chaos_war_camp_story_nine_02"
+				[1.0] = "pes_level_chaos_war_camp_story_ten_02"
 			}
 		},
 		pwe_level_chaos_war_camp_story_four_01 = {
@@ -3094,14 +2741,14 @@ return function ()
 				[1.0] = "pes_level_chaos_war_camp_story_twelve_02"
 			}
 		},
-		pdr_level_chaos_war_camp_story_two_02 = {
+		pbw_level_chaos_war_camp_story_nine_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_war_camp",
 			category = "story_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_level_chaos_war_camp_story_two_02"
+				[1.0] = "pbw_level_chaos_war_camp_story_nine_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -3110,26 +2757,26 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pdr_level_chaos_war_camp_story_two_02"
+				[1.0] = "pbw_level_chaos_war_camp_story_nine_02"
 			}
 		},
-		pdr_level_chaos_war_camp_story_two_01 = {
+		pwe_level_chaos_war_camp_story_two_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_war_camp",
 			category = "story_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_level_chaos_war_camp_story_two_01"
+				[1.0] = "pwe_level_chaos_war_camp_story_two_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pdr_level_chaos_war_camp_story_two_01"
+				[1.0] = "pwe_level_chaos_war_camp_story_two_02"
 			}
 		},
 		pdr_level_chaos_war_camp_story_twelve_02 = {
@@ -3189,33 +2836,14 @@ return function ()
 				[1.0] = "pdr_level_chaos_war_camp_story_nine_02"
 			}
 		},
-		pwe_level_chaos_war_camp_story_eight_01 = {
+		pdr_level_chaos_war_camp_story_two_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_war_camp",
 			category = "story_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_level_chaos_war_camp_story_eight_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_chaos_war_camp_story_eight_01"
-			}
-		},
-		pwh_level_chaos_war_camp_story_one_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_war_camp",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_chaos_war_camp_story_one_02"
+				[1.0] = "pdr_level_chaos_war_camp_story_two_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -3224,7 +2852,26 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwh_level_chaos_war_camp_story_one_02"
+				[1.0] = "pdr_level_chaos_war_camp_story_two_02"
+			}
+		},
+		pwh_level_chaos_war_camp_story_eleven_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_war_camp",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_level_chaos_war_camp_story_eleven_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_level_chaos_war_camp_story_eleven_02"
 			}
 		},
 		pwe_level_chaos_war_camp_story_eight_03 = {
@@ -3246,23 +2893,23 @@ return function ()
 				[1.0] = "pwe_level_chaos_war_camp_story_eight_03"
 			}
 		},
-		pes_level_chaos_war_camp_story_eight_03 = {
+		pdr_level_chaos_war_camp_story_two_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_war_camp",
 			category = "story_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_level_chaos_war_camp_story_eight_03"
+				[1.0] = "pdr_level_chaos_war_camp_story_two_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pes_level_chaos_war_camp_story_eight_03"
+				[1.0] = "pdr_level_chaos_war_camp_story_two_01"
 			}
 		},
 		pdr_level_chaos_war_camp_story_eleven_01 = {
@@ -3284,6 +2931,25 @@ return function ()
 				[1.0] = "pdr_level_chaos_war_camp_story_eleven_01"
 			}
 		},
+		pwe_level_chaos_war_camp_story_eight_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_war_camp",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_level_chaos_war_camp_story_eight_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_level_chaos_war_camp_story_eight_01"
+			}
+		},
 		pwe_level_chaos_war_camp_story_four_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -3303,33 +2969,14 @@ return function ()
 				[1.0] = "pwe_level_chaos_war_camp_story_four_02"
 			}
 		},
-		pwh_level_chaos_war_camp_story_one_01 = {
+		pes_level_chaos_war_camp_story_seven_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_war_camp",
 			category = "story_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_level_chaos_war_camp_story_one_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_chaos_war_camp_story_one_01"
-			}
-		},
-		pbw_level_chaos_war_camp_story_one_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_war_camp",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_chaos_war_camp_story_one_01"
+				[1.0] = "pes_level_chaos_war_camp_story_seven_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -3338,7 +2985,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pbw_level_chaos_war_camp_story_one_01"
+				[1.0] = "pes_level_chaos_war_camp_story_seven_02"
 			}
 		}
 	})
