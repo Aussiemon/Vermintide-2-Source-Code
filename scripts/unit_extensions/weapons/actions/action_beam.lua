@@ -1,26 +1,16 @@
-ActionBeam = class(ActionBeam)
+ActionBeam = class(ActionBeam, ActionBase)
 
 ActionBeam.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
-	self.weapon_system = weapon_system
-	self.owner_unit = owner_unit
-	self.first_person_unit = first_person_unit
-	self.weapon_unit = weapon_unit
-	self.world = world
-	self.item_name = item_name
-	self.wwise_world = Managers.world:wwise_world(world)
-	self._rumble_effect_id = false
-	self.owner_player = Managers.player:owner(owner_unit)
-	self.inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
+	ActionBeam.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 
 	if ScriptUnit.has_extension(weapon_unit, "ammo_system") then
 		self.ammo_extension = ScriptUnit.extension(weapon_unit, "ammo_system")
 	end
 
+	self.inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
 	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
-	self.is_server = is_server
-	self.network_transmit = Managers.state.network.network_transmit
+	self._rumble_effect_id = false
 	self.unit_id = Managers.state.network.unit_storage:go_id(owner_unit)
-	self._is_critical_strike = false
 end
 
 ActionBeam.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
@@ -117,7 +107,6 @@ local INDEX_ACTOR = 4
 
 ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local owner_unit = self.owner_unit
-	local first_person_unit = self.first_person_unit
 	local current_action = self.current_action
 	local is_server = self.is_server
 	local input_extension = ScriptUnit.extension(self.owner_unit, "input_system")
@@ -228,17 +217,9 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 
 				if self.damage_timer == 0 then
 					local is_critical_strike = self._is_critical_strike
+					local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
-					if is_critical_strike then
-						Unit.flow_event(owner_unit, "vfx_critical_strike")
-						Unit.flow_event(first_person_unit, "vfx_critical_strike")
-
-						local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
-
-						if hud_extension then
-							hud_extension.show_critical_indication = true
-						end
-					end
+					self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, first_person_extension, nil, nil)
 
 					if health_extension then
 						local override_damage_profile = nil

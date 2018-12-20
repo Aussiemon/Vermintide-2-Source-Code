@@ -1,4 +1,4 @@
-ActionHammerSlam = class(ActionHammerSlam)
+ActionHammerSlam = class(ActionHammerSlam, ActionBase)
 local TOTAL_RADIUS = 4
 local MEDIUM_RADIUS = 2
 local SHORT_RADIUS = 1
@@ -8,12 +8,7 @@ local SLAM_HIT_TIME = 0.4
 local FORWARD_OFFSET = 0.5
 
 ActionHammerSlam.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
-	self.owner_unit = owner_unit
-	self.owner_unit_first_person = first_person_unit
-	self.weapon_unit = weapon_unit
-	self.is_server = is_server
-	self.world = world
-	self.item_name = item_name
+	ActionHammerSlam.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 end
 
 ActionHammerSlam.client_owner_start_action = function (self, new_action, t)
@@ -71,7 +66,7 @@ ActionHammerSlam.update_is_finished = function (self, dt, t, world, reason)
 			self.targeting_decal = nil
 			local physics_world = World.get_data(self.world, "physics_world")
 			local player_position = POSITION_LOOKUP[owner_unit]
-			local player_rotation = Unit.world_rotation(self.owner_unit_first_person, 0)
+			local player_rotation = Unit.world_rotation(self.first_person_unit, 0)
 			local direction = Vector3.normalize(Vector3.flat(Quaternion.forward(player_rotation)))
 			local hit_position = player_position + direction * (TOTAL_RADIUS + FORWARD_OFFSET)
 			local callback = callback(self, "slam_overlap_callback")
@@ -116,7 +111,7 @@ ActionHammerSlam.slam_overlap_callback = function (self, actors)
 			local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
 			local attacker_unit_id = network_manager:unit_game_object_id(self.owner_unit)
 			local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
-			local player_rotation = Unit.world_rotation(self.owner_unit_first_person, 0)
+			local player_rotation = Unit.world_rotation(self.first_person_unit, 0)
 			local direction = Vector3.normalize(Vector3.flat(Quaternion.forward(player_rotation)))
 			local kill_circle_pos = player_position + direction * (MEDIUM_RADIUS + FORWARD_OFFSET)
 			local destroy_circle_pos = player_position + direction * (SHORT_RADIUS + FORWARD_OFFSET)
@@ -137,7 +132,7 @@ end
 
 ActionHammerSlam._draw_targeting_decal = function (self, world)
 	local player_position = POSITION_LOOKUP[self.owner_unit]
-	local player_rotation = Unit.world_rotation(self.owner_unit_first_person, 0)
+	local player_rotation = Unit.world_rotation(self.first_person_unit, 0)
 	local direction = Vector3.normalize(Vector3.flat(Quaternion.forward(player_rotation)))
 	local flat_rotation = Quaternion.look(direction)
 	local push_circle_pos = player_position + direction * (TOTAL_RADIUS + FORWARD_OFFSET)
@@ -169,7 +164,7 @@ ActionHammerSlam._play_slamming_animation = function (self, current_action)
 		end
 	end
 
-	Unit.animation_event(self.owner_unit_first_person, event)
+	Unit.animation_event(self.first_person_unit, event)
 	Unit.animation_event(self.owner_unit, event)
 end
 

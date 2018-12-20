@@ -1,18 +1,11 @@
-ActionGeiserTargeting = class(ActionGeiserTargeting)
+ActionGeiserTargeting = class(ActionGeiserTargeting, ActionBase)
 
 ActionGeiserTargeting.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
-	self.world = world
-	self.owner_unit = owner_unit
-	self.weapon_unit = weapon_unit
-	self.is_server = is_server
-	self.item_name = item_name
-	self.first_person_unit = first_person_unit
-	self.wwise_world = Managers.world:wwise_world(world)
+	ActionGeiserTargeting.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
+
 	self.position = Vector3Box()
-	self.owner_player = Managers.player:owner(owner_unit)
 	self.first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
-	self.network_transmit = Managers.state.network.network_transmit
 	self.unit_id = Managers.state.network.unit_storage:go_id(owner_unit)
 end
 

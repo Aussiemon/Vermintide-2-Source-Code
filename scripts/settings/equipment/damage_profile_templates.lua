@@ -107,6 +107,10 @@ DamageProfileTemplates.medium_slashing_axe_linesman = {
 new_template("medium_slashing_axe_linesman", "_1h", nil, "heavy_attack")
 
 DamageProfileTemplates.medium_slashing_axe_linesman_1h.targets = "targets_axe_linesman_M_1h"
+
+new_template("medium_slashing_axe_linesman_1h", nil, "medium_slashing_axe_linesman_dual", nil)
+
+DamageProfileTemplates.medium_slashing_axe_linesman_dual.targets = "targets_axe_linesman_M_dual"
 DamageProfileTemplates.heavy_slashing_axe_linesman = {
 	armor_modifier = "armor_modifier_axe_linesman_H",
 	critical_strike = "critical_strike_axe_linesman_H",
@@ -252,7 +256,9 @@ DamageProfileTemplates.medium_blunt_tank_1h.targets = "targets_tank_M_1h"
 DamageProfileTemplates.medium_blunt_tank_1h.armor_modifier = "armor_modifier_tank_M_1h"
 
 new_template("medium_blunt_tank_1h", nil, "medium_slashing_tank_1h", "heavy_attack", "light_slashing_tank", "slashing_tank", "slashing_tank", "light_slashing_tank")
+new_template("medium_blunt_tank_1h", nil, "medium_blunt_tank_dual", nil, nil)
 
+DamageProfileTemplates.medium_blunt_tank_dual.targets = "targets_tank_M_dual"
 DamageProfileTemplates.medium_blunt_tank_spiked = {
 	armor_modifier = "armor_modifier_tank_spiked_M",
 	critical_strike = "critical_strike_tank_spiked_M",
@@ -282,7 +288,7 @@ DamageProfileTemplates.light_slashing_smiter = {
 }
 DamageProfileTemplates.light_pointy_smiter = {
 	armor_modifier = "armor_modifier_pointy_smiter_L",
-	critical_strike = "critical_strike_smiter_L",
+	critical_strike = "critical_strike_pointy_smiter_L",
 	charge_value = "light_attack",
 	cleave_distribution = "cleave_distribution_smiter_default",
 	default_target = "default_target_pointy_smiter_L",
@@ -351,7 +357,7 @@ new_template("medium_blunt_smiter_diag", nil, "medium_pointy_smiter_diag_1h", "h
 
 DamageProfileTemplates.medium_pointy_smiter_upper_1h.armor_modifier = "armor_modifier_pointy_smiter_M"
 DamageProfileTemplates.medium_pointy_smiter_flat_1h.armor_modifier = "armor_modifier_pointy_smiter_M"
-DamageProfileTemplates.medium_pointy_smiter_flat_1h.armor_modifier = "armor_modifier_pointy_smiter_M"
+DamageProfileTemplates.medium_pointy_smiter_flat_1h.critical_strike = "critical_strike_pointy_smiter_L"
 
 new_template("medium_blunt_smiter_upper", nil, "medium_blunt_smiter_2h_hammer_upper", nil, nil)
 

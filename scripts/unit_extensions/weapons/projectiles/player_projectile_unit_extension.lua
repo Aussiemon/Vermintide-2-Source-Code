@@ -102,12 +102,14 @@ PlayerProjectileUnitExtension.initialize_projectile = function (self, projectile
 	end
 
 	Unit.flow_event(unit, "lua_projectile_init")
+	self:_handle_critical_strike(unit, self._is_critical_strike)
+	Unit.flow_event(unit, "lua_trail")
+end
 
+PlayerProjectileUnitExtension._handle_critical_strike = function (self, unit, is_critical_strike)
 	if self._is_critical_strike then
 		Unit.flow_event(unit, "vfx_critical_strike")
 	end
-
-	Unit.flow_event(unit, "lua_trail")
 end
 
 PlayerProjectileUnitExtension.mark_for_deletion = function (self)

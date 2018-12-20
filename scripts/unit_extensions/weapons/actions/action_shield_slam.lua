@@ -1,4 +1,4 @@
-ActionShieldSlam = class(ActionShieldSlam)
+ActionShieldSlam = class(ActionShieldSlam, ActionBase)
 local POSITION_LOOKUP = POSITION_LOOKUP
 
 local function weapon_printf(...)
@@ -8,15 +8,7 @@ local function weapon_printf(...)
 end
 
 ActionShieldSlam.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
-	self.owner_unit = owner_unit
-	self.owner_unit_first_person = first_person_unit
-	self.weapon_unit = weapon_unit
-	self.is_server = is_server
-	self.weapon_system = weapon_system
-	self.item_name = item_name
-	self.wwise_world = Managers.world:wwise_world(world)
-	self.world = world
-	self._is_critical_strike = false
+	ActionShieldSlam.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 
 	if ScriptUnit.has_extension(weapon_unit, "ammo_system") then
 		self.ammo_extension = ScriptUnit.extension(weapon_unit, "ammo_system")
@@ -34,7 +26,7 @@ ActionShieldSlam.client_owner_start_action = function (self, new_action, t, chai
 	self.current_action = new_action
 	self.target_breed_unit = nil
 	local owner_unit = self.owner_unit
-	local first_person_unit = self.owner_unit_first_person
+	local first_person_unit = self.first_person_unit
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	local career_extension = ScriptUnit.extension(owner_unit, "career_system")
 	self.owner_career_extension = career_extension
@@ -66,30 +58,14 @@ ActionShieldSlam.client_owner_start_action = function (self, new_action, t, chai
 		ammo_extension:abort_reload()
 	end
 
-	if is_critical_strike then
-		Unit.flow_event(owner_unit, "vfx_critical_strike")
-		Unit.flow_event(first_person_unit, "vfx_critical_strike")
+	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
+	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
-		local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
-
-		if hud_extension then
-			hud_extension.show_critical_indication = true
-		end
-
-		buff_extension:trigger_procs("on_critical_sweep")
-
-		local crit_hud_sound_event = "Play_player_combat_crit_swing_2D"
-		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-
-		first_person_extension:play_hud_sound_event(crit_hud_sound_event, nil, false)
-	end
+	self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, first_person_extension, "on_critical_sweep", "Play_player_combat_crit_swing_2D")
 
 	self._is_critical_strike = is_critical_strike
 
 	Unit.flow_event(first_person_unit, "sfx_swing_started")
-
-	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-
 	first_person_extension:disable_rig_movement()
 
 	local physics_world = World.get_data(self.world, "physics_world")
@@ -187,7 +163,7 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 	local network_manager = Managers.state.network
 	local physics_world = World.get_data(world, "physics_world")
 	local attacker_unit_id = network_manager:unit_game_object_id(owner_unit)
-	local first_person_unit = self.owner_unit_first_person
+	local first_person_unit = self.first_person_unit
 	local unit_forward = Quaternion.forward(Unit.local_rotation(first_person_unit, 0))
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 	local self_pos = first_person_extension:current_position()

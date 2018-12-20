@@ -1215,6 +1215,84 @@ UIPlayerPortraitFrameSettings = {
 				255
 			}
 		}
+	},
+	frame_mondstille_01 = {
+		{
+			texture = "portrait_frame_mondstille_01_base",
+			layer = 11,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		{
+			texture = "portrait_frame_mondstille_01_effect",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				126,
+				136
+			}
+		}
+	},
+	frame_mondstille_02 = {
+		{
+			texture = "portrait_frame_mondstille_02_base",
+			layer = 11,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		{
+			texture = "portrait_frame_mondstille_02_effect",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				126,
+				136
+			}
+		}
+	},
+	frame_mondstille_03 = {
+		{
+			texture = "portrait_frame_mondstille_03_top",
+			layer = 11,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		{
+			texture = "portrait_frame_mondstille_03_effect",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				126,
+				136
+			}
+		}
 	}
 }
 

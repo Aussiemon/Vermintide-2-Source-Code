@@ -293,9 +293,12 @@ EffectHelper.play_melee_hit_effects = function (sound_event, world, hit_position
 		WwiseWorld.set_switch(wwise_world, "target_is_local_player", tostring(target_is_local_player or false), source_id)
 	else
 		local breed = Unit.get_data(hit_unit, "breed")
-		local enemy_type = breed.name
 
-		WwiseWorld.set_switch(wwise_world, "enemy_type", enemy_type, source_id)
+		if breed then
+			local enemy_type = breed.name
+
+			WwiseWorld.set_switch(wwise_world, "enemy_type", enemy_type, source_id)
+		end
 	end
 
 	WwiseWorld.set_switch(wwise_world, "damage_sound", sound_type, source_id)

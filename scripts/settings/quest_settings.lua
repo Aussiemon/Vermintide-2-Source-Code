@@ -28,6 +28,7 @@ QuestSettings = {
 	event_sonnstill_difficulty_levels = 10,
 	event_geheimnisnacht_quickplay_levels = 10,
 	event_geheimnisnacht_difficulty_levels = 10,
+	event_mondstille_quickplay_legend_levels = 5,
 	weekly_complete_quickplay_missions = {
 		3,
 		6,

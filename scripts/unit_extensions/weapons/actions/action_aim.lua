@@ -1,14 +1,7 @@
-ActionAim = class(ActionAim)
+ActionAim = class(ActionAim, ActionBase)
 
 ActionAim.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
-	self.owner_unit = owner_unit
-	self.weapon_unit = weapon_unit
-	self.first_person_unit = first_person_unit
-	self.is_server = is_server
-	self.world = world
-	self.item_name = item_name
-	self.wwise_world = Managers.world:wwise_world(world)
-	self.owner_player = Managers.player:owner(owner_unit)
+	ActionAim.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 
 	if ScriptUnit.has_extension(weapon_unit, "ammo_system") then
 		self.ammo_extension = ScriptUnit.extension(weapon_unit, "ammo_system")

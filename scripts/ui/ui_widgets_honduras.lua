@@ -13362,8 +13362,15 @@ UIWidgets.create_portrait_frame = function (scenegraph_id, frame_settings_name, 
 	for index, data in ipairs(frame_settings) do
 		local name = "texture_" .. index
 		local texture_name = data.texture or "icons_placeholder"
-		local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture_name)
-		local size = data.size or texture_settings.size
+		local size = data.size
+
+		if UIAtlasHelper.has_atlas_settings_by_texture_name(texture_name) then
+			local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture_name)
+			size = texture_settings.size
+		else
+			size = data.size
+		end
+
 		size = (size and table.clone(size)) or {
 			0,
 			0

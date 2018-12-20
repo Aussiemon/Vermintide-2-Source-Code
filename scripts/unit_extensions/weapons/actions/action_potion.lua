@@ -1,12 +1,8 @@
-ActionPotion = class(ActionPotion)
+ActionPotion = class(ActionPotion, ActionBase)
 local PLAYER_AND_BOT_UNITS = PLAYER_AND_BOT_UNITS
 
 ActionPotion.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
-	self.owner_unit = owner_unit
-	self.weapon_unit = weapon_unit
-	self.is_server = is_server
-	self.world = world
-	self.item_name = item_name
+	ActionPotion.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 
 	if ScriptUnit.has_extension(weapon_unit, "ammo_system") then
 		self.ammo_extension = ScriptUnit.extension(weapon_unit, "ammo_system")

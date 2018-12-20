@@ -259,9 +259,14 @@ function flow_query_number_of_active_players(params)
 		end
 	end
 
-	print("flow_query_number_of_active_players:", output_value)
-
 	flow_return_table.value = output_value
+
+	return flow_return_table
+end
+
+function flow_query_number_of_human_players(params)
+	local player_manager = Managers.player
+	flow_return_table.value = player_manager:num_human_players()
 
 	return flow_return_table
 end

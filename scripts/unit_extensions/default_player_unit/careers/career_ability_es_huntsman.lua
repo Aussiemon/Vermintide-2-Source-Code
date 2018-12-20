@@ -51,8 +51,13 @@ end
 CareerAbilityESHuntsman._ability_available = function (self)
 	local career_extension = self._career_extension
 	local status_extension = self._status_extension
+	local can_use = career_extension:can_use_activated_ability()
+	local disabled = status_extension:is_disabled()
+	local weapon_slot = "slot_ranged"
+	local slot_data = self._inventory_extension:get_slot_data(weapon_slot)
+	local has_weapon = slot_data ~= nil
 
-	return career_extension:can_use_activated_ability() and not status_extension:is_disabled()
+	return can_use and not disabled and has_weapon
 end
 
 CareerAbilityESHuntsman._run_ability = function (self)

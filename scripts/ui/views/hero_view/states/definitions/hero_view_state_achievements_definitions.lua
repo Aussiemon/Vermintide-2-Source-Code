@@ -96,6 +96,18 @@ local scenegraph_definition = {
 			UILayer.default
 		}
 	},
+	window_snow_overlay = {
+		scale = "fit",
+		size = {
+			1920,
+			1080
+		},
+		position = {
+			0,
+			0,
+			UILayer.default + 100
+		}
+	},
 	console_cursor = {
 		vertical_alignment = "center",
 		parent = "screen",
@@ -2291,6 +2303,8 @@ local widgets = {
 		100,
 		100
 	}),
+	window_snow_overlay = UIWidgets.create_simple_texture("snow_rect", "window_snow_overlay"),
+	window_snow_overlay_2 = UIWidgets.create_simple_texture("snow_rect_2", "window_snow_overlay", nil, nil, nil, 1),
 	window_top_fade = UIWidgets.create_simple_texture("options_window_fade_01", "window_top_fade"),
 	window_top = UIWidgets.create_tiled_texture("window_top", "achievement_plank", {
 		307,

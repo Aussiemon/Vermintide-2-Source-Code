@@ -1,4 +1,4 @@
-ActionSweep = class(ActionSweep)
+ActionSweep = class(ActionSweep, ActionBase)
 local unit_get_data = Unit.get_data
 local unit_world_position = Unit.world_position
 local unit_world_rotation = Unit.world_rotation
@@ -13,15 +13,8 @@ local function weapon_printf(...)
 end
 
 ActionSweep.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
-	self.world = world
-	self.owner_unit = owner_unit
-	self.first_person_unit = first_person_unit
-	self.weapon_unit = weapon_unit
-	self.item_name = item_name
-	self.weapon_system = weapon_system
-	self._is_critical_strike = false
-	self.has_played_rumble_effect = false
-	self.owner = Managers.player:unit_owner(self.owner_unit)
+	ActionSweep.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
+
 	self.stored_half_extents = Vector3Box()
 	self.stored_position = Vector3Box()
 	self.stored_rotation = QuaternionBox()
@@ -31,8 +24,8 @@ ActionSweep.init = function (self, world, item_name, is_server, owner_unit, dama
 
 	self.hit_units = {}
 	self.could_damage_last_update = false
+	self.has_played_rumble_effect = false
 	self.status_extension = ScriptUnit.extension(owner_unit, "status_system")
-	self.is_server = is_server
 	self.action_buff_data = {}
 	self._drawer = Managers.state.debug:drawer({
 		mode = "retained",
@@ -69,18 +62,6 @@ ActionSweep.check_precision_target = function (self, owner_unit, owner_player, d
 		good_target = true
 	end
 
-	if script_data.debug_weapons then
-		local drawer = self._drawer
-		local ball_color = (good_target and Color(0, 255, 0)) or Color(255, 0, 0)
-		local debug_text_manager = Managers.state.debug_text
-
-		drawer:sphere(weapon_furthest_point, 0.25, ball_color)
-
-		local distance_to_furthest_point = Vector3.length(pos - weapon_furthest_point)
-
-		debug_text_manager:output_world_text(distance_to_furthest_point, 0.15, weapon_furthest_point, nil, "targeting", Vector3(255, 0, 100), "player_1")
-	end
-
 	return (good_target and current_target) or nil
 end
 
@@ -101,8 +82,10 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 	local owner_unit = self.owner_unit
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	local career_extension = ScriptUnit.extension(owner_unit, "career_system")
+	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 	self.owner_buff_extension = buff_extension
 	self.owner_career_extension = career_extension
+	self.owner_hud_extension = hud_extension
 	local anim_time_scale = new_action.anim_time_scale or 1
 	self.anim_time_scale = ActionUtils.apply_attack_speed_buff(anim_time_scale, owner_unit)
 	local action_hand = action_init_data and action_init_data.action_hand
@@ -155,24 +138,9 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 	buff_extension:trigger_procs("on_sweep")
 
 	self.ignore_mass_and_armour = buff_extension:has_buff_type("ignore_mass_and_armour")
+	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
-	if is_critical_strike then
-		unit_flow_event(owner_unit, "vfx_critical_strike")
-		unit_flow_event(first_person_unit, "vfx_critical_strike")
-
-		local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
-
-		if hud_extension then
-			hud_extension.show_critical_indication = true
-		end
-
-		buff_extension:trigger_procs("on_critical_sweep")
-
-		local crit_hud_sound_event = "Play_player_combat_crit_swing_2D"
-		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-
-		first_person_extension:play_hud_sound_event(crit_hud_sound_event, nil, false)
-	end
+	self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, first_person_extension, "on_critical_sweep", "Play_player_combat_crit_swing_2D")
 
 	self._is_critical_strike = is_critical_strike
 	self._started_damage_window = false
@@ -180,8 +148,6 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 	unit_flow_event(first_person_unit, "sfx_swing_started")
 
 	if new_action.use_precision_sweep then
-		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-
 		first_person_extension:disable_rig_movement()
 
 		local physics_world = World.get_data(self.world, "physics_world")
@@ -299,7 +265,7 @@ ActionSweep.client_owner_post_update = function (self, dt, t, world, _, current_
 		aborted = self:_do_overlap(interpolated_dt, t, unit, owner_unit, current_action, physics_world, is_within_damage_window, current_position, current_rotation)
 	end
 
-	local hud_extension = ScriptUnit.has_extension(self.owner_unit, "hud_system")
+	local hud_extension = self.owner_hud_extension
 
 	if hud_extension and self._is_critical_strike then
 		if is_within_damage_window and not self._started_damage_window then
@@ -410,6 +376,49 @@ local function calculate_attack_direction(action, weapon_rotation)
 	return (action.invert_attack_direction and -attack_direction) or attack_direction
 end
 
+ActionSweep._check_backstab = function (self, breed, is_dummy_unit, hit_unit, owner_unit, buff_extension, first_person_extension)
+	local backstab_multiplier = 1
+
+	if (breed or is_dummy_unit) and AiUtils.unit_alive(hit_unit) then
+		local owner_unit_pos = POSITION_LOOKUP[owner_unit]
+		local hit_unit_pos = unit_world_position(hit_unit, 0)
+		local owner_to_hit_dir = Vector3.normalize(hit_unit_pos - owner_unit_pos)
+		local hit_unit_direction = Quaternion.forward(Unit.local_rotation(hit_unit, 0))
+		local hit_angle = Vector3.dot(hit_unit_direction, owner_to_hit_dir)
+		local behind_target = hit_angle >= 0.55 and hit_angle <= 1
+		local talent_extension = ScriptUnit.has_extension(owner_unit, "talent_system")
+
+		if talent_extension and talent_extension:has_talent("kerillian_shade_wider_backstab_angle", "wood_elf", true) then
+			behind_target = hit_angle >= 0.2 and hit_angle <= 1
+		end
+
+		if behind_target then
+			backstab_multiplier = buff_extension:apply_buffs_to_value(backstab_multiplier, StatBuffIndex.BACKSTAB_MULTIPLIER)
+
+			if script_data.debug_legendary_traits then
+				backstab_multiplier = 1.5
+			end
+
+			if backstab_multiplier > 1 then
+				first_person_extension:play_hud_sound_event("hud_player_buff_backstab")
+
+				local player_and_bot_units = PLAYER_AND_BOT_UNITS
+
+				for j = 1, #player_and_bot_units, 1 do
+					local friendly_unit = player_and_bot_units[j]
+					local friendly_buff_extension = ScriptUnit.has_extension(friendly_unit, "buff_system")
+
+					if friendly_buff_extension then
+						friendly_buff_extension:trigger_procs("on_backstab", hit_unit)
+					end
+				end
+			end
+		end
+	end
+
+	return backstab_multiplier
+end
+
 ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_action, physics_world, is_within_damage_window, current_position, current_rotation)
 	local drawer = self._drawer
 	local current_rot_up = Quaternion.up(current_rotation)
@@ -460,15 +469,6 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 	weapon_half_length = weapon_half_length * range_mod
 	weapon_half_extents.x = weapon_half_extents.x * width_mod
 	weapon_half_extents.y = weapon_half_extents.y * height_mod
-
-	if script_data.debug_weapons then
-		local color = (self.within_precision_window and Color(0, 0, 255)) or Color(0, 255, 0)
-
-		drawer:capsule(position_previous, position_previous + weapon_up_dir_previous * weapon_half_length * 2, 0.02)
-		drawer:capsule(position_current, position_current + current_rot_up * weapon_half_length * 2, 0.01, color)
-		Debug.text("Missed target count: %d", self.missed_targets or 0)
-	end
-
 	local weapon_rot = current_rotation
 	local position_start = position_previous + weapon_up_dir_previous * weapon_half_length
 	local position_end = (position_previous + current_rot_up * weapon_half_length * 2) - Quaternion.up(rotation_previous) * weapon_half_length
@@ -543,7 +543,6 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 	local sound_effect_extension = ScriptUnit.has_extension(owner_unit, "sound_effect_system")
-	local owner_unit_pos = unit_world_position(owner_unit, 0)
 	local damage_profile = self.damage_profile
 	local hit_units = self.hit_units
 	local environment_unit_hit = false
@@ -718,43 +717,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 					local attacker_unit_id = network_manager:unit_game_object_id(owner_unit)
 					local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
 					local is_server = self.is_server
-					local backstab_multiplier = 1
-
-					if breed and AiUtils.unit_alive(hit_unit) then
-						local hit_unit_pos = unit_world_position(hit_unit, 0)
-						local owner_to_hit_dir = Vector3.normalize(hit_unit_pos - owner_unit_pos)
-						local hit_unit_direction = Quaternion.forward(Unit.local_rotation(hit_unit, 0))
-						local hit_angle = Vector3.dot(hit_unit_direction, owner_to_hit_dir)
-						local behind_target = hit_angle >= 0.55 and hit_angle <= 1
-						local talent_extension = ScriptUnit.has_extension(owner_unit, "talent_system")
-
-						if talent_extension and talent_extension:has_talent("kerillian_shade_wider_backstab_angle", "wood_elf", true) then
-							behind_target = hit_angle >= 0.2 and hit_angle <= 1
-						end
-
-						if behind_target then
-							backstab_multiplier = buff_extension:apply_buffs_to_value(backstab_multiplier, StatBuffIndex.BACKSTAB_MULTIPLIER)
-
-							if script_data.debug_legendary_traits then
-								backstab_multiplier = 1.5
-							end
-
-							if backstab_multiplier > 1 then
-								first_person_extension:play_hud_sound_event("hud_player_buff_backstab")
-
-								local player_and_bot_units = PLAYER_AND_BOT_UNITS
-
-								for j = 1, #player_and_bot_units, 1 do
-									local friendly_unit = player_and_bot_units[j]
-									local friendly_buff_extension = ScriptUnit.has_extension(friendly_unit, "buff_system")
-
-									if friendly_buff_extension then
-										friendly_buff_extension:trigger_procs("on_backstab", hit_unit)
-									end
-								end
-							end
-						end
-					end
+					local backstab_multiplier = self:_check_backstab(breed, nil, hit_unit, owner_unit, buff_extension, first_person_extension)
 
 					if breed and not is_dodging then
 						local has_melee_boost, melee_boost_curve_multiplier = self:_get_power_boost()
@@ -800,10 +763,10 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 					else
 						local item_data = rawget(ItemMasterList, damage_source)
 						local weapon_template_name = (item_data and item_data.template) or item_data.temporary_template
-						local weapon_template, buff_type = nil
+						local buff_type = nil
 
 						if weapon_template_name then
-							weapon_template = Weapons[weapon_template_name]
+							local weapon_template = Weapons[weapon_template_name]
 							buff_type = weapon_template.buff_type
 						end
 
@@ -1068,7 +1031,9 @@ ActionSweep._play_character_impact = function (self, is_server, attacker_unit, h
 		damage_type = "no_damage"
 	end
 
-	if hit_effect then
+	local is_dummy = Unit.get_data(hit_unit, "is_dummy")
+
+	if hit_effect and not is_dummy then
 		EffectHelper.player_melee_hit_particles(world, hit_effect, hit_position, attack_direction, damage_type, hit_unit, predicted_damage)
 	end
 
@@ -1099,7 +1064,6 @@ ActionSweep._play_character_impact = function (self, is_server, attacker_unit, h
 		Application.warning("[ActionSweep] Missing sound event for sweep action in unit %q.", self.weapon_unit)
 	end
 
-	local is_dummy = Unit.get_data(hit_unit, "is_dummy")
 	local multiplier_type = DamageUtils.get_breed_damage_multiplier_type(breed, hit_zone_name, is_dummy)
 
 	if (multiplier_type == "headshot" or (multiplier_type == "weakspot" and not blocking)) and not current_action.no_headshot_sound and AiUtils.unit_alive(hit_unit) then
@@ -1121,7 +1085,7 @@ ActionSweep._play_character_impact = function (self, is_server, attacker_unit, h
 		return
 	end
 
-	if not husk and not target_presumed_dead and breed and not breed.disable_local_hit_reactions and Unit.has_animation_state_machine(hit_unit) then
+	if not is_dummy and not husk and not target_presumed_dead and breed and not breed.disable_local_hit_reactions and Unit.has_animation_state_machine(hit_unit) then
 		local hit_anim = nil
 
 		if Unit.has_animation_event(hit_unit, "hit_reaction_climb") then
@@ -1152,6 +1116,8 @@ ActionSweep._play_character_impact = function (self, is_server, attacker_unit, h
 		Unit.animation_event(hit_unit, hit_anim)
 	end
 end
+
+local DUMMY_BREED = {}
 
 ActionSweep.hit_level_object = function (self, hit_units, hit_unit, owner_unit, current_action, hit_position, attack_direction, level_index, is_dummy_unit, hit_actor)
 	hit_units[hit_unit] = true
@@ -1185,6 +1151,15 @@ ActionSweep.hit_level_object = function (self, hit_units, hit_unit, owner_unit, 
 			end
 
 			DamageUtils.damage_dummy_unit(hit_unit, owner_unit, hit_zone_name, power_level, melee_boost_curve_multiplier, is_critical_strike, damage_profile, target_index, hit_position, attack_direction, damage_source, hit_actor, damage_profile_id)
+
+			local actual_hit_target_index = 1
+			local buff_extension = self.owner_buff_extension
+			local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
+			local backstab_multiplier = self:_check_backstab(nil, is_dummy_unit, hit_unit, owner_unit, buff_extension, first_person_extension)
+			local shield_blocked = false
+			DUMMY_BREED.armor_category = unit_get_data(hit_unit, "armor")
+
+			self:_play_character_impact(self.is_server, owner_unit, hit_unit, DUMMY_BREED, hit_position, hit_zone_name, current_action, damage_profile, actual_hit_target_index, power_level, attack_direction, shield_blocked, melee_boost_curve_multiplier, is_critical_strike, backstab_multiplier)
 		else
 			DamageUtils.damage_level_unit(hit_unit, owner_unit, hit_zone_name, power_level, melee_boost_curve_multiplier, is_critical_strike, damage_profile, target_index, attack_direction, damage_source)
 		end
@@ -1214,7 +1189,7 @@ ActionSweep.finish = function (self, reason, data)
 	end
 
 	self.action_aborted_flow_event_sent = nil
-	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
+	local hud_extension = self.owner_hud_extension
 
 	if hud_extension then
 		hud_extension.show_critical_indication = false

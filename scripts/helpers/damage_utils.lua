@@ -20,7 +20,7 @@ local actor_node = Actor.node
 DamageUtils.get_breed_damage_multiplier_type = function (breed, hit_zone_name, is_dummy)
 	local multiplier_type = nil
 
-	if breed then
+	if breed and not is_dummy then
 		multiplier_type = breed.hitzone_multiplier_types[hit_zone_name]
 	elseif not breed and is_dummy and hit_zone_name == "head" then
 		multiplier_type = "headshot"

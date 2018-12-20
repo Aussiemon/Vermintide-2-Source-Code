@@ -1,16 +1,11 @@
-ActionBulletSprayTargeting = class(ActionBulletSprayTargeting)
+ActionBulletSprayTargeting = class(ActionBulletSprayTargeting, ActionBase)
 local POSITION_TWEAK = -1
 local SPRAY_RANGE = math.abs(POSITION_TWEAK) + 10
 local SPRAY_RADIUS = 4
 local CIRCLE_POSITION = math.abs(POSITION_TWEAK) + 0.5
 
 ActionBulletSprayTargeting.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
-	self.owner_unit = owner_unit
-	self.owner_unit_first_person = first_person_unit
-	self.weapon_unit = weapon_unit
-	self.is_server = is_server
-	self.item_name = item_name
-	self.world = world
+	ActionBulletSprayTargeting.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 end
 
 ActionBulletSprayTargeting.client_owner_start_action = function (self, new_action, t)
@@ -22,7 +17,7 @@ ActionBulletSprayTargeting.client_owner_start_action = function (self, new_actio
 end
 
 ActionBulletSprayTargeting.client_owner_post_update = function (self, dt, t, world, can_damage)
-	local owner_unit_1p = self.owner_unit_first_person
+	local owner_unit_1p = self.first_person_unit
 	local player_position = POSITION_LOOKUP[owner_unit_1p]
 	local player_rotation = Unit.world_rotation(owner_unit_1p, 0)
 	local player_direction = Vector3.normalize(Quaternion.forward(player_rotation))

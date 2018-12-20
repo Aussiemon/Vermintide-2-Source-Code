@@ -1,13 +1,8 @@
-ActionHandgunLock = class(ActionHandgunLock)
+ActionHandgunLock = class(ActionHandgunLock, ActionBase)
 
 ActionHandgunLock.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
-	self.owner_unit = owner_unit
-	self.owner_unit_first_person = first_person_unit
-	self.weapon_unit = weapon_unit
-	self.is_server = is_server
-	self.world = world
-	self.item_name = item_name
-	self.targets = {}
+	ActionHandgunLock.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
+
 	self.fire_timer = 0
 	self.shots_fired = 0
 
@@ -16,12 +11,10 @@ ActionHandgunLock.init = function (self, world, item_name, is_server, owner_unit
 	end
 
 	self.spread_extension = ScriptUnit.extension(weapon_unit, "spread_system")
-	self._is_critical_strike = false
 end
 
 ActionHandgunLock.client_owner_start_action = function (self, new_action, t, chain_action_data)
 	local owner_unit = self.owner_unit
-	local first_person_unit = self.owner_unit_first_person
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
 	self.current_action = new_action
 	self.targets = table.clone(chain_action_data.targets)
@@ -33,17 +26,9 @@ ActionHandgunLock.client_owner_start_action = function (self, new_action, t, cha
 	self.time_between_targets = 0.4
 	self.time_between_shots = 0.16
 	self.shots_on_target = 0
+	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
-	if is_critical_strike then
-		Unit.flow_event(owner_unit, "vfx_critical_strike")
-		Unit.flow_event(first_person_unit, "vfx_critical_strike")
-
-		local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
-
-		if hud_extension then
-			hud_extension.show_critical_indication = true
-		end
-	end
+	self:_handle_critical_strike(is_critical_strike, nil, hud_extension, nil, nil, nil)
 
 	self._is_critical_strike = is_critical_strike
 end
@@ -97,7 +82,7 @@ ActionHandgunLock.client_owner_post_update = function (self, dt, t, world, can_d
 			end
 		end
 
-		local owner_unit_1p = self.owner_unit_first_person
+		local owner_unit_1p = self.first_person_unit
 
 		Unit.animation_event(owner_unit_1p, event)
 		Unit.animation_event(self.owner_unit, event)

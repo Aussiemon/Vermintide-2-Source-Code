@@ -1,4 +1,4 @@
-ActionBulletSpray = class(ActionBulletSpray)
+ActionBulletSpray = class(ActionBulletSpray, ActionBase)
 local POSITION_TWEAK = -1
 local SPRAY_RANGE = math.abs(POSITION_TWEAK) + 5
 local SPRAY_RADIUS = 3.5
@@ -11,26 +11,19 @@ local NODES = {
 }
 
 ActionBulletSpray.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
-	self.owner_unit = owner_unit
-	self.owner_unit_first_person = first_person_unit
-	self.weapon_unit = weapon_unit
-	self.item_name = item_name
-	self.is_server = is_server
-	self.world = world
+	ActionBulletSpray.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 
 	if ScriptUnit.has_extension(weapon_unit, "ammo_system") then
 		self.ammo_extension = ScriptUnit.extension(weapon_unit, "ammo_system")
 	end
 
-	self.targets = {}
 	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
 	self.buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
-	self._is_critical_strike = false
+	self.targets = {}
 end
 
 ActionBulletSpray.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
 	local owner_unit = self.owner_unit
-	local first_person_unit = self.owner_unit_first_person
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
 	self.power_level = power_level
 	self.current_action = new_action
@@ -56,23 +49,16 @@ ActionBulletSpray.client_owner_start_action = function (self, new_action, t, cha
 		self.overcharge_extension:add_charge(overcharge_amount)
 	end
 
-	if is_critical_strike then
-		Unit.flow_event(owner_unit, "vfx_critical_strike")
-		Unit.flow_event(first_person_unit, "vfx_critical_strike")
+	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
-		local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
-
-		if hud_extension then
-			hud_extension.show_critical_indication = true
-		end
-	end
+	self:_handle_critical_strike(is_critical_strike, self.buff_extension, hud_extension, nil, nil, nil)
 
 	self._is_critical_strike = is_critical_strike
 end
 
 ActionBulletSpray.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local current_action = self.current_action
-	local owner_unit_1p = self.owner_unit_first_person
+	local owner_unit_1p = self.first_person_unit
 	local player_position = POSITION_LOOKUP[owner_unit_1p]
 	local targets = self.targets
 	local target_index = self._target_index
@@ -180,7 +166,7 @@ local unit_local_position = Unit.local_position
 
 ActionBulletSpray._select_targets = function (self, world, show_outline)
 	local physics_world = World.get_data(world, "physics_world")
-	local owner_unit_1p = self.owner_unit_first_person
+	local owner_unit_1p = self.first_person_unit
 	local player_position = POSITION_LOOKUP[owner_unit_1p]
 	local player_rotation = Unit.world_rotation(owner_unit_1p, 0)
 	local player_direction = Vector3.normalize(Quaternion.forward(player_rotation))

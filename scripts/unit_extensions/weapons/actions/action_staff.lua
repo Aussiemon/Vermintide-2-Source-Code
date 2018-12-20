@@ -1,12 +1,7 @@
-ActionStaff = class(ActionStaff)
+ActionStaff = class(ActionStaff, ActionBase)
 
 ActionStaff.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
-	self.owner_unit = owner_unit
-	self.weapon_unit = weapon_unit
-	self.is_server = is_server
-	self.item_name = item_name
-	self.wwise_world = Managers.world:wwise_world(world)
-	self.world = world
+	ActionStaff.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 
 	if ScriptUnit.has_extension(weapon_unit, "ammo_system") then
 		self.ammo_extension = ScriptUnit.extension(weapon_unit, "ammo_system")
@@ -17,28 +12,18 @@ ActionStaff.init = function (self, world, item_name, is_server, owner_unit, dama
 	end
 
 	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
-	self._is_critical_strike = false
 end
 
 ActionStaff.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
 	self.current_action = new_action
 	local owner_unit = self.owner_unit
-	local first_person_unit = self.first_person_unit
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
 	self.state = "waiting_to_shoot"
 	self.time_to_shoot = t + (new_action.fire_time or 0)
 	self.power_level = power_level
+	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
-	if is_critical_strike then
-		Unit.flow_event(owner_unit, "vfx_critical_strike")
-		Unit.flow_event(first_person_unit, "vfx_critical_strike")
-
-		local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
-
-		if hud_extension then
-			hud_extension.show_critical_indication = true
-		end
-	end
+	self:_handle_critical_strike(is_critical_strike, nil, hud_extension, nil, nil, nil)
 
 	self._is_critical_strike = is_critical_strike
 end

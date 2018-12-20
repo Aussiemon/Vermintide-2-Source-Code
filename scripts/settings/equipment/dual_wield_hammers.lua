@@ -282,7 +282,7 @@ weapon_template.actions = {
 			damage_window_start = 0.2,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
-			range_mod = 1,
+			range_mod = 1.2,
 			no_damage_impact_sound_event = "blunt_hit_armour",
 			weapon_action_hand = "both",
 			use_precision_sweep = false,
@@ -350,25 +350,25 @@ weapon_template.actions = {
 				return input_extension:reset_release_input()
 			end,
 			dual_hit_stop_anims = {
-				left = "attack_hit",
-				right = "shake_hit"
+				left = "shake_hit",
+				right = "attack_hit"
 			}
 		},
 		heavy_attack_2 = {
 			damage_window_start = 0.3,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
-			range_mod = 1,
+			range_mod = 1.3,
 			no_damage_impact_sound_event = "blunt_hit_armour",
 			weapon_action_hand = "both",
 			use_precision_sweep = false,
-			additional_critical_strike_chance = 0,
 			hit_effect = "melee_hit_hammers_1h",
-			damage_profile_left = "light_blunt_smiter_dual_diag",
+			additional_critical_strike_chance = 0,
+			damage_profile_left = "medium_blunt_tank_dual",
 			damage_window_end = 0.42,
 			impact_sound_event = "hammer_2h_hit",
 			anim_end_event = "attack_finished",
-			damage_profile_right = "light_blunt_smiter_dual_diag",
+			damage_profile_right = "medium_blunt_tank_dual",
 			dedicated_target_range = 2.5,
 			uninterruptible = true,
 			anim_event = "attack_swing_heavy_right_diagonal",
@@ -426,25 +426,26 @@ weapon_template.actions = {
 				return input_extension:reset_release_input()
 			end,
 			dual_hit_stop_anims = {
-				left = "shake_hit",
-				right = "attack_hit"
-			}
+				left = "attack_hit",
+				right = "shake_hit"
+			},
+			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		heavy_attack_3 = {
 			damage_window_start = 0.3,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
-			range_mod = 1,
+			range_mod = 1.3,
 			no_damage_impact_sound_event = "blunt_hit_armour",
 			weapon_action_hand = "both",
 			use_precision_sweep = false,
 			additional_critical_strike_chance = 0,
 			hit_effect = "melee_hit_hammers_1h",
-			damage_profile_left = "light_blunt_smiter_dual_diag",
+			damage_profile_left = "medium_blunt_tank_dual",
 			damage_window_end = 0.42,
 			impact_sound_event = "hammer_2h_hit",
 			anim_end_event = "attack_finished",
-			damage_profile_right = "light_blunt_smiter_dual_diag",
+			damage_profile_right = "medium_blunt_tank_dual",
 			dedicated_target_range = 2.5,
 			uninterruptible = true,
 			anim_event = "attack_swing_heavy_left_diagonal",
@@ -504,11 +505,12 @@ weapon_template.actions = {
 			dual_hit_stop_anims = {
 				left = "shake_hit",
 				right = "attack_hit"
-			}
+			},
+			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		light_attack_left = {
 			damage_window_start = 0.37,
-			range_mod = 1.05,
+			range_mod = 1.2,
 			anim_end_event = "attack_finished",
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
@@ -526,7 +528,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1,
+			anim_time_scale = time_mod * 1.15,
 			buff_data = {
 				{
 					start_time = 0,
@@ -568,12 +570,11 @@ weapon_template.actions = {
 					input = "action_wield"
 				}
 			},
-			impact_axis = Vector3Box(0, 0, 1),
 			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		light_attack_down = {
 			damage_window_start = 0.35,
-			range_mod = 1.05,
+			range_mod = 1.2,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "blunt_hit_armour",
@@ -593,7 +594,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1,
+			anim_time_scale = time_mod * 1.15,
 			buff_data = {
 				{
 					start_time = 0,
@@ -634,12 +635,11 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			},
-			impact_axis = Vector3Box(0, 0, 1)
+			}
 		},
 		light_attack_right_diagonal = {
 			damage_window_start = 0.25,
-			range_mod = 1,
+			range_mod = 1.2,
 			anim_end_event = "attack_finished",
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
@@ -657,7 +657,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 0.95,
+			anim_time_scale = time_mod * 1.05,
 			buff_data = {
 				{
 					start_time = 0,
@@ -699,12 +699,11 @@ weapon_template.actions = {
 					input = "action_wield"
 				}
 			},
-			impact_axis = Vector3Box(0, 0, 1),
 			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		light_attack_left_diagonal = {
 			damage_window_start = 0.3,
-			range_mod = 1,
+			range_mod = 1.2,
 			anim_end_event = "attack_finished",
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
@@ -722,7 +721,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1,
+			anim_time_scale = time_mod * 1.1,
 			buff_data = {
 				{
 					start_time = 0,
@@ -764,12 +763,11 @@ weapon_template.actions = {
 					input = "action_wield"
 				}
 			},
-			impact_axis = Vector3Box(0, 0, 1),
 			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		light_attack_right_uppercut = {
 			damage_window_start = 0.3,
-			range_mod = 1,
+			range_mod = 1.2,
 			anim_end_event = "attack_finished",
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
@@ -787,7 +785,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1,
+			anim_time_scale = time_mod * 1.1,
 			buff_data = {
 				{
 					start_time = 0,
@@ -829,7 +827,6 @@ weapon_template.actions = {
 					input = "action_wield"
 				}
 			},
-			impact_axis = Vector3Box(0, 0, 1),
 			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		light_attack_bopp = {
@@ -906,9 +903,10 @@ weapon_template.actions = {
 		},
 		push = {
 			damage_window_start = 0.05,
-			anim_end_event = "attack_finished",
 			outer_push_angle = 180,
 			kind = "push_stagger",
+			anim_end_event = "attack_finished",
+			no_damage_impact_sound_event = "blunt_hit_armour",
 			hit_time = 0.1,
 			damage_profile_outer = "light_push",
 			weapon_action_hand = "left",
@@ -917,7 +915,6 @@ weapon_template.actions = {
 			damage_window_end = 0.2,
 			impact_sound_event = "hammer_2h_hit",
 			charge_value = "action_push",
-			no_damage_impact_sound_event = "blunt_hit_armour",
 			dedicated_target_range = 2,
 			anim_event = "attack_push",
 			damage_profile_inner = "medium_push",
@@ -925,6 +922,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
+			anim_time_scale = time_mod * 1.2,
 			buff_data = {
 				{
 					start_time = 0,

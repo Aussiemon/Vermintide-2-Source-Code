@@ -1,18 +1,11 @@
-ActionGeiser = class(ActionGeiser)
+ActionGeiser = class(ActionGeiser, ActionBase)
 
 ActionGeiser.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
-	self.world = world
-	self.owner_unit = owner_unit
-	self.owner_player = Managers.player:owner(owner_unit)
-	self.weapon_unit = weapon_unit
-	self.is_server = is_server
-	self.item_name = item_name
-	self.first_person_unit = first_person_unit
-	self.wwise_world = Managers.world:wwise_world(world)
+	ActionGeiser.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
+
 	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
 	self._damage_buffer = {}
 	self._damage_buffer_index = 1
-	self.network_transmit = Managers.state.network.network_transmit
 	self._check_buffs = false
 end
 
@@ -78,7 +71,6 @@ ActionGeiser.fire = function (self, reason)
 	local current_action = self.current_action
 	local owner_unit = self.owner_unit
 	local owner_player = self.owner_player
-	local first_person_unit = self.first_person_unit
 	local radius = self.radius
 	local half_height = self.height * 0.5
 	local position = self.position:unbox()
@@ -188,16 +180,9 @@ ActionGeiser.fire = function (self, reason)
 		Managers.state.entity:system("ai_system"):alert_enemies_within_range(owner_unit, source_pos, current_action.alert_sound_range_fire)
 	end
 
-	if self._is_critical_strike then
-		Unit.flow_event(owner_unit, "vfx_critical_strike")
-		Unit.flow_event(first_person_unit, "vfx_critical_strike")
+	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
-		local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
-
-		if hud_extension then
-			hud_extension.show_critical_indication = true
-		end
-	end
+	self:_handle_critical_strike(self._is_critical_strike, self.owner_buff_extension, hud_extension, nil, nil, nil)
 end
 
 local UNITS_PER_FRAME = 1

@@ -109,6 +109,11 @@ AttackTemplates = {
 		sound_type = "light",
 		damage_type = "light_slashing_linesman"
 	},
+	light_slashing_linesman_executioner = {
+		headshot_sound = "executioner_sword_critical",
+		sound_type = "light",
+		damage_type = "light_slashing_linesman"
+	},
 	light_slashing_linesman_hs = {
 		stagger_value = 1,
 		sound_type = "light",
@@ -119,6 +124,11 @@ AttackTemplates = {
 		damage_type = "slashing_linesman"
 	},
 	slashing_linesman = {
+		sound_type = "medium",
+		damage_type = "slashing_linesman"
+	},
+	slashing_linesman_executioner = {
+		headshot_sound = "executioner_sword_critical",
 		sound_type = "medium",
 		damage_type = "slashing_linesman"
 	},

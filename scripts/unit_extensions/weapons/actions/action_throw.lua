@@ -1,11 +1,7 @@
-ActionThrow = class(ActionThrow)
+ActionThrow = class(ActionThrow, ActionBase)
 
 ActionThrow.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
-	self.world = world
-	self.owner_unit = owner_unit
-	self.weapon_unit = weapon_unit
-	self.item_name = item_name
-	self.is_server = is_server
+	ActionThrow.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 
 	if ScriptUnit.has_extension(weapon_unit, "ammo_system") then
 		self.ammo_extension = ScriptUnit.extension(weapon_unit, "ammo_system")

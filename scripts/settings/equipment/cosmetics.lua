@@ -2413,6 +2413,15 @@ Cosmetics = {
 	},
 	frame_holly_04 = {
 		icon = "unit_frame_02"
+	},
+	frame_mondstille_01 = {
+		icon = "unit_frame_02"
+	},
+	frame_mondstille_02 = {
+		icon = "unit_frame_02"
+	},
+	frame_mondstille_03 = {
+		icon = "unit_frame_02"
 	}
 }
 

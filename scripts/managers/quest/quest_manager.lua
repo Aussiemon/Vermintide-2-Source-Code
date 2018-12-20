@@ -61,27 +61,29 @@ QuestManager._increment_quest_stats = function (self, quests, stats_id, ...)
 		if template then
 			local stat_mappings = template.stat_mappings
 
-			for i = 1, #stat_mappings, 1 do
-				local map = stat_mappings[i]
-				local success = true
+			if stat_mappings then
+				for i = 1, #stat_mappings, 1 do
+					local map = stat_mappings[i]
+					local success = true
 
-				for j = 1, arg_n, 1 do
-					local arg_value = select(j, ...)
-					map = map[arg_value]
+					for j = 1, arg_n, 1 do
+						local arg_value = select(j, ...)
+						map = map[arg_value]
 
-					if not map then
-						success = false
+						if not map then
+							success = false
+
+							break
+						end
+					end
+
+					if success then
+						local stat_name = QuestSettings.stat_mappings[quest_key][i]
+
+						statistics_db:increment_stat(stats_id, "quest_statistics", stat_name)
 
 						break
 					end
-				end
-
-				if success then
-					local stat_name = QuestSettings.stat_mappings[quest_key][i]
-
-					statistics_db:increment_stat(stats_id, "quest_statistics", stat_name)
-
-					break
 				end
 			end
 		end
@@ -146,6 +148,8 @@ QuestManager.update = function (self, dt, t)
 	end
 end
 
+local quest_exist_warning = {}
+
 QuestManager.get_quest_outline = function (self)
 	local quests = self._backend_interface_quests:get_quests()
 	local outline = table.clone(outline)
@@ -166,37 +170,45 @@ QuestManager.get_quest_outline = function (self)
 			local quest_key = quest_data.name
 			local quest_type = quest_data.type
 			local category_name = quest_data.category_name
+			local quest_exists = quest_templates.quests[quest_key] ~= nil
 
-			if category_name then
-				if not category_table.categories then
-					category_table.categories = {}
-				end
+			if not quest_exists and not table.contains(quest_exist_warning, quest_key) then
+				Application.warning("[QuestManager] Quest does not exist for id %s", quest_key)
+				table.insert(quest_exist_warning, quest_key)
+			end
 
-				local categories = category_table.categories
-				local quest_type_category = nil
-
-				for index, category in ipairs(categories) do
-					if category.name == category_name then
-						quest_type_category = category
-
-						break
+			if quest_exists then
+				if category_name then
+					if not category_table.categories then
+						category_table.categories = {}
 					end
-				end
 
-				if not quest_type_category then
-					quest_type_category = {
-						type = "quest",
-						entries = {},
-						name = category_name
-					}
-					categories[#categories + 1] = quest_type_category
-				end
+					local categories = category_table.categories
+					local quest_type_category = nil
 
-				local category_entries = quest_type_category.entries
-				category_entries[#category_entries + 1] = quest_key
-			else
-				local entries = category_table.entries
-				entries[#entries + 1] = quest_key
+					for index, category in ipairs(categories) do
+						if category.name == category_name then
+							quest_type_category = category
+
+							break
+						end
+					end
+
+					if not quest_type_category then
+						quest_type_category = {
+							type = "quest",
+							entries = {},
+							name = category_name
+						}
+						categories[#categories + 1] = quest_type_category
+					end
+
+					local category_entries = quest_type_category.entries
+					category_entries[#category_entries + 1] = quest_key
+				else
+					local entries = category_table.entries
+					entries[#entries + 1] = quest_key
+				end
 			end
 		end
 	end

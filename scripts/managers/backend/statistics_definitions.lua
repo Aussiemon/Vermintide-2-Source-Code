@@ -435,6 +435,26 @@ for i = 1, #holly_lord_levels, 1 do
 	end
 end
 
+player.bonfire_lit_mines = {
+	value = 0,
+	database_name = "bonfire_lit_mines",
+	source = "player_data"
+}
+player.bonfire_lit_warcamp = {
+	value = 0,
+	database_name = "bonfire_lit_warcamp",
+	source = "player_data"
+}
+player.bonfire_lit_fort = {
+	value = 0,
+	database_name = "bonfire_lit_fort",
+	source = "player_data"
+}
+player.bonfire_lit_skittergate = {
+	value = 0,
+	database_name = "bonfire_lit_skittergate",
+	source = "player_data"
+}
 player.globadier_kill_before_throwing = {
 	value = 0,
 	database_name = "globadier_kill_before_throwing",

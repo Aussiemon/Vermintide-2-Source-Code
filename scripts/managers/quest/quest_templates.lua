@@ -547,6 +547,96 @@ quest_templates.quests.event_geheimnisnacht_played_legend_2018 = {
 		}
 	end
 }
+quest_templates.quests.event_mondstille_bonfires_2018 = {
+	reward = "frame_mondstille_01",
+	name = "quest_mondstille_01_name",
+	icon = "quest_book_mondstille",
+	desc = "quest_mondstille_01_desc",
+	completed = function (statistics_db, stats_id)
+		if statistics_db:get_persistent_stat(stats_id, "bonfire_lit_mines") > 0 and statistics_db:get_persistent_stat(stats_id, "bonfire_lit_fort") > 0 and statistics_db:get_persistent_stat(stats_id, "bonfire_lit_warcamp") > 0 and statistics_db:get_persistent_stat(stats_id, "bonfire_lit_skittergate") > 0 then
+			return true
+		end
+
+		return false
+	end,
+	progress = function (statistics_db, stats_id)
+		local count = 0
+
+		if statistics_db:get_persistent_stat(stats_id, "bonfire_lit_mines") > 0 then
+			count = count + 1
+		end
+
+		if statistics_db:get_persistent_stat(stats_id, "bonfire_lit_fort") > 0 then
+			count = count + 1
+		end
+
+		if statistics_db:get_persistent_stat(stats_id, "bonfire_lit_warcamp") > 0 then
+			count = count + 1
+		end
+
+		if statistics_db:get_persistent_stat(stats_id, "bonfire_lit_skittergate") > 0 then
+			count = count + 1
+		end
+
+		return {
+			count,
+			4
+		}
+	end,
+	requirements = function (statistics_db, stats_id)
+		local mines = statistics_db:get_persistent_stat(stats_id, "bonfire_lit_mines") > 0
+		local fort = statistics_db:get_persistent_stat(stats_id, "bonfire_lit_fort") > 0
+		local warcamp = statistics_db:get_persistent_stat(stats_id, "bonfire_lit_warcamp") > 0
+		local skittergate = statistics_db:get_persistent_stat(stats_id, "bonfire_lit_skittergate") > 0
+
+		return {
+			{
+				name = "level_name_mines",
+				completed = mines
+			},
+			{
+				name = "level_name_forest_fort",
+				completed = fort
+			},
+			{
+				name = "level_name_warcamp",
+				completed = warcamp
+			},
+			{
+				name = "level_name_skittergate",
+				completed = skittergate
+			}
+		}
+	end
+}
+local event_mondstille_played_legend_mappings_2018 = {
+	{
+		played_difficulty = {
+			hardest = true
+		}
+	}
+}
+quest_templates.quests.event_mondstille_played_legend_2018 = {
+	reward = "frame_mondstille_02",
+	name = "quest_mondstille_03_name",
+	icon = "quest_book_mondstille",
+	desc = "quest_mondstille_03_desc",
+	stat_mappings = event_mondstille_played_legend_mappings_2018,
+	completed = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+		return QuestSettings.event_mondstille_quickplay_legend_levels <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+	end,
+	progress = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+		local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+
+		return {
+			count,
+			QuestSettings.event_mondstille_quickplay_legend_levels
+		}
+	end
+}
 local weekly_complete_quickplay_missions_mappings = {
 	{
 		played_levels_quickplay = {}

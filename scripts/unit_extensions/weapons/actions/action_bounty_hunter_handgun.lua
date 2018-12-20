@@ -1,21 +1,12 @@
-ActionBountyHunterHandgun = class(ActionBountyHunterHandgun)
+ActionBountyHunterHandgun = class(ActionBountyHunterHandgun, ActionBase)
 
 ActionBountyHunterHandgun.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
-	self.weapon_system = weapon_system
-	self.owner_unit = owner_unit
-	self.first_person_unit = first_person_unit
-	self.weapon_unit = weapon_unit
-	self.world = world
-	self.item_name = item_name
-	self.wwise_world = Managers.world:wwise_world(world)
-	self.is_server = is_server
-	self.is_critical_strike = false
+	ActionBountyHunterHandgun.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 end
 
 ActionBountyHunterHandgun.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
 	local weapon_unit = self.weapon_unit
 	local owner_unit = self.owner_unit
-	local first_person_unit = self.first_person_unit
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	self.current_action = new_action
@@ -51,17 +42,9 @@ ActionBountyHunterHandgun.client_owner_start_action = function (self, new_action
 	self.time_to_aoe = t + new_action.aoe_time
 	self.hit_units = {}
 	self.shield_users_blocking = {}
+	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
-	if is_critical_strike then
-		Unit.flow_event(owner_unit, "vfx_critical_strike")
-		Unit.flow_event(first_person_unit, "vfx_critical_strike")
-
-		local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
-
-		if hud_extension then
-			hud_extension.show_critical_indication = true
-		end
-	end
+	self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, nil, nil, nil)
 
 	self.is_critical_strike = is_critical_strike
 

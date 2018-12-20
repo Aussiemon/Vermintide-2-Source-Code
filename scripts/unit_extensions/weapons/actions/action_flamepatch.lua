@@ -1,28 +1,18 @@
-ActionFlamepatch = class(ActionFlamepatch)
+ActionFlamepatch = class(ActionFlamepatch, ActionBase)
 local POSITION_TWEAK = -1
 local SPRAY_RANGE = math.abs(POSITION_TWEAK) + 5
 
 ActionFlamepatch.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
-	self.owner_unit = owner_unit
-	self.first_person_unit = first_person_unit
-	self.weapon_unit = weapon_unit
-	self.item_name = item_name
-	self.is_server = is_server
-	self.world = world
-	self.nav_world = Managers.state.entity:system("ai_system"):nav_world()
-	self.owner_player = Managers.player:owner(owner_unit)
-	self.wwise_world = Managers.world:wwise_world(self.world)
-	self.stop_sound_event = "Stop_player_combat_weapon_drakegun_flamethrower_shoot"
-	self.flamepatch_timer = 2.5
+	ActionFlamepatch.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 
 	if ScriptUnit.has_extension(weapon_unit, "ammo_system") then
 		self.ammo_extension = ScriptUnit.extension(weapon_unit, "ammo_system")
 	end
 
 	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
-	self.network_transmit = Managers.state.network.network_transmit
+	self.stop_sound_event = "Stop_player_combat_weapon_drakegun_flamethrower_shoot"
+	self.flamepatch_timer = 2.5
 	self.unit_id = Managers.state.network.unit_storage:go_id(owner_unit)
-	self._is_critical_strike = false
 end
 
 ActionFlamepatch.client_owner_start_action = function (self, new_action, t)

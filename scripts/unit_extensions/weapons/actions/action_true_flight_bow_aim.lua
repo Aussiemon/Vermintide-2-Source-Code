@@ -1,21 +1,15 @@
 require("scripts/unit_extensions/weapons/projectiles/true_flight_templates")
 
-ActionTrueFlightBowAim = class(ActionTrueFlightBowAim)
+ActionTrueFlightBowAim = class(ActionTrueFlightBowAim, ActionBase)
 
 ActionTrueFlightBowAim.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
-	self.owner_unit = owner_unit
-	self.first_person_unit = first_person_unit
-	self.weapon_unit = weapon_unit
-	self.is_server = is_server
-	self.world = world
-	self.wwise_world = Managers.world:wwise_world(world)
-	self.owner_player = Managers.player:owner(owner_unit)
-	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
+	ActionTrueFlightBowAim.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 
 	if ScriptUnit.has_extension(self.weapon_unit, "spread_system") then
 		self.spread_extension = ScriptUnit.extension(self.weapon_unit, "spread_system")
 	end
 
+	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
 	self.first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 end
 

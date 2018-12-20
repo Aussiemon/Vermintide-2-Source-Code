@@ -1,12 +1,8 @@
-ActionHammerLeap = class(ActionHammerLeap)
+ActionHammerLeap = class(ActionHammerLeap, ActionBase)
 
 ActionHammerLeap.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
-	self.owner_unit = owner_unit
-	self.owner_unit_first_person = first_person_unit
-	self.weapon_unit = weapon_unit
-	self.is_server = is_server
-	self.world = world
-	self.item_name = item_name
+	ActionHammerLeap.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
+
 	self.target_position = nil
 	self.attack_range = 14
 	self.leap_z_offset = Vector3Box(0, 0, 3)
@@ -27,7 +23,7 @@ end
 
 ActionHammerLeap.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local physics_world = World.get_data(world, "physics_world")
-	local owner_unit_1p = self.owner_unit_first_person
+	local owner_unit_1p = self.first_person_unit
 	local player_position = POSITION_LOOKUP[owner_unit_1p]
 	local player_rotation = Unit.world_rotation(owner_unit_1p, 0)
 	local direction = Vector3.normalize(Quaternion.forward(player_rotation))

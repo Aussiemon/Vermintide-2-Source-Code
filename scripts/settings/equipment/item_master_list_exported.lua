@@ -1839,6 +1839,62 @@ ItemMasterList.frame_summer = {
 		"es_mercenary"
 	}
 }
+ItemMasterList.frame_mondstille_01 = {
+	description = "frame_mondstille_01_description",
+	temporary_template = "frame_mondstille_01",
+	display_name = "frame_mondstille_01_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_mondstille_01",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.frame_mondstille_02 = {
+	description = "frame_mondstille_02_description",
+	temporary_template = "frame_mondstille_02",
+	display_name = "frame_mondstille_02_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_mondstille_02",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
 ItemMasterList.frame_bogenhafen_01 = {
 	description = "frame_bogenhafen_01_description",
 	temporary_template = "frame_bogenhafen_01",

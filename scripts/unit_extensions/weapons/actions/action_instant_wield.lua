@@ -1,17 +1,11 @@
-ActionInstantWield = class(ActionInstantWield)
+ActionInstantWield = class(ActionInstantWield, ActionBase)
 
-ActionInstantWield.init = function (self, world, item_name, is_server, owner_unit, weapon_unit)
-	self.world = world
-	self.owner_unit = owner_unit
-	self.weapon_unit = weapon_unit
-	self.is_server = is_server
+ActionInstantWield.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
+	ActionInstantWield.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
+
 	self.input_extension = ScriptUnit.extension(owner_unit, "input_system")
 	self.inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
 	self.status_extension = ScriptUnit.extension(owner_unit, "status_system")
-	self.item_name = item_name
-	local network_manager = Managers.state.network
-	self.network_manager = network_manager
-	self.network_transmit = network_manager.network_transmit
 end
 
 ActionInstantWield.client_owner_start_action = function (self, new_action, t, chain_attack_data)

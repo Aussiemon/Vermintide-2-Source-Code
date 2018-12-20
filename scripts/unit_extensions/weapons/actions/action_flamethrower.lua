@@ -1,4 +1,4 @@
-ActionFlamethrower = class(ActionFlamethrower)
+ActionFlamethrower = class(ActionFlamethrower, ActionBase)
 local POSITION_TWEAK = -1.5
 local SPRAY_RANGE = math.abs(POSITION_TWEAK) + 10
 local SPRAY_RADIUS = 2
@@ -10,32 +10,18 @@ local NODES = {
 }
 
 ActionFlamethrower.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
-	self.owner_unit = owner_unit
-	self.first_person_unit = first_person_unit
-	self.weapon_unit = weapon_unit
-	self.item_name = item_name
-	self.is_server = is_server
-	self.world = world
-	self.nav_world = Managers.state.entity:system("ai_system"):nav_world()
-	self.fire_unit = nil
-	self.flamepatch_spawn_pos = nil
-	self.flamepatch_spawn_dir = nil
-	self.owner_player = Managers.player:owner(owner_unit)
-	self.wwise_world = Managers.world:wwise_world(self.world)
-	self.stop_sound_event = "Stop_player_combat_weapon_drakegun_flamethrower_shoot"
+	ActionFlamethrower.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 
 	if ScriptUnit.has_extension(weapon_unit, "ammo_system") then
 		self.ammo_extension = ScriptUnit.extension(weapon_unit, "ammo_system")
 	end
 
+	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
+	self.buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	self.targets = {}
 	self.old_targets = {}
-	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
-	self.is_server = is_server
-	self.network_transmit = Managers.state.network.network_transmit
+	self.stop_sound_event = "Stop_player_combat_weapon_drakegun_flamethrower_shoot"
 	self.unit_id = Managers.state.network.unit_storage:go_id(owner_unit)
-	self.buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
-	self._is_critical_strike = false
 end
 
 ActionFlamethrower.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
@@ -443,20 +429,11 @@ end
 
 ActionFlamethrower._check_critical_strike = function (self, t)
 	local owner_unit = self.owner_unit
-	local first_person_unit = self.first_person_unit
 	local current_action = self.current_action
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, current_action, t)
-
-	if is_critical_strike then
-		Unit.flow_event(owner_unit, "vfx_critical_strike")
-		Unit.flow_event(first_person_unit, "vfx_critical_strike")
-	end
-
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
-	if hud_extension then
-		hud_extension.show_critical_indication = is_critical_strike
-	end
+	self:_handle_critical_strike(is_critical_strike, self.buff_extension, hud_extension, nil, nil, nil)
 
 	self._is_critical_strike = is_critical_strike
 end

@@ -1,15 +1,7 @@
-ActionCharge = class(ActionCharge)
+ActionCharge = class(ActionCharge, ActionBase)
 
 ActionCharge.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
-	self.world = world
-	self.owner_unit = owner_unit
-	self.weapon_unit = weapon_unit
-	self.first_person_unit = first_person_unit
-	self.weapon_system = weapon_system
-	self.item_name = item_name
-	self.wwise_world = Managers.world:wwise_world(world)
-	self._rumble_effect_id = nil
-	self.owner_player = Managers.player:owner(owner_unit)
+	ActionCharge.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 
 	if ScriptUnit.has_extension(owner_unit, "inventory_system") then
 		local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
@@ -18,10 +10,6 @@ ActionCharge.init = function (self, world, item_name, is_server, owner_unit, dam
 		self.left_unit = slot_data.left_unit_1p
 	end
 
-	self.first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-	self.is_server = is_server
-	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
-
 	if ScriptUnit.has_extension(owner_unit, "status_system") then
 		self.status_extension = ScriptUnit.extension(owner_unit, "status_system")
 	end
@@ -29,6 +17,10 @@ ActionCharge.init = function (self, world, item_name, is_server, owner_unit, dam
 	if ScriptUnit.has_extension(weapon_unit, "spread_system") then
 		self.spread_extension = ScriptUnit.extension(weapon_unit, "spread_system")
 	end
+
+	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
+	self.first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
+	self._rumble_effect_id = nil
 end
 
 ActionCharge.client_owner_start_action = function (self, new_action, t)
