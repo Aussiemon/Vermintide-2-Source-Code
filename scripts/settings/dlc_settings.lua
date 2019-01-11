@@ -604,8 +604,7 @@ DLCSettings = {
 				}
 			}
 		}
-	},
-	development = {}
+	}
 }
 
 return
