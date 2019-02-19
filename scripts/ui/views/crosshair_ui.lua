@@ -20,7 +20,8 @@ local RANGED_CROSSHAIR_STYLES = {
 	projectile = true
 }
 
-CrosshairUI.init = function (self, ingame_ui_context)
+CrosshairUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.input_manager = ingame_ui_context.input_manager
@@ -70,7 +71,10 @@ CrosshairUI.update = function (self, dt)
 	local player_unit = self.local_player.player_unit
 	local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
 	local equipment = inventory_extension:equipment()
+	local parent = self._parent
+	local crosshair_position_x, crosshair_position_y = parent:get_crosshair_position()
 
+	self:_apply_crosshair_position(crosshair_position_x, crosshair_position_y)
 	self:update_enabled_crosshair_styles()
 	self:update_crosshair_style(equipment)
 	self:update_hit_markers(dt)
@@ -149,7 +153,7 @@ CrosshairUI.update_crosshair_style = function (self, equipment)
 	self.crosshair_style = crosshair_style
 end
 
-CrosshairUI.apply_crosshair_position = function (self, x, y)
+CrosshairUI._apply_crosshair_position = function (self, x, y)
 	local scenegraph_id = "pivot"
 	local position = self.ui_scenegraph[scenegraph_id].local_position
 	position[1] = x

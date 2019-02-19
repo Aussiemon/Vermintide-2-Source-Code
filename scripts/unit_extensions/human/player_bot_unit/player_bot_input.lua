@@ -217,23 +217,6 @@ PlayerBotInput._update_debug_text = function (self, unit, input)
 	table.dump(input, nil, nil, Debug.text)
 end
 
-PlayerBotInput._debug_aim_target_sine_curve = function (self, dt, t)
-	local pos = Vector3(-70.1625, -90.9497, -7.42347)
-	local z = 6 - 3 * math.sin(t)
-	local x = 10 - 5 * math.sin(t * 0.3)
-	local y = 10 - 5 * math.sin(t * 2)
-	pos = pos + Vector3(x, y, z)
-
-	self._aim_target:store(pos)
-
-	local drawer = Managers.state.debug:drawer({
-		mode = "immediate",
-		name = "playerbotinput"
-	})
-
-	drawer:sphere(pos, 0.5, Color(255, 0, 0))
-end
-
 PlayerBotInput.set_aim_position = function (self, position)
 	self._aim_target:store(position)
 end
@@ -424,7 +407,7 @@ PlayerBotInput._update_movement = function (self, dt, t)
 	local status_extension = self._status_extension
 	local on_ladder, ladder_unit = status_extension:get_is_on_ladder()
 	local transition_jump = nil
-	local look_at_player_unit = self._look_at_player
+	local look_at_player_unit = (ALIVE[self._look_at_player] and self._look_at_player) or nil
 	local look_at_player_has_moved = look_at_player_unit and ScriptUnit.extension(look_at_player_unit, "locomotion_system").has_moved_from_start_position
 	local cutscene_system = Managers.state.entity:system("cutscene_system")
 	local has_intro_cutscene_finished = cutscene_system:has_intro_cutscene_finished_playing()
@@ -459,13 +442,13 @@ PlayerBotInput._update_movement = function (self, dt, t)
 
 		if not self._look_at_player_rotation_allowed then
 			local unit_rotation = Unit.local_rotation(unit, 0)
-			local delta_rotation = Quaternion.multiply(Quaternion.inverse(unit_rotation), look_rotation)
+			local delta_rotation = Quaternion_multiply(Quaternion.inverse(unit_rotation), look_rotation)
 			local max_yaw = math.half_pi - 0.001
 			local yaw = math.clamp(Quaternion.yaw(delta_rotation), -max_yaw, max_yaw)
 			local pitch = Quaternion.pitch(delta_rotation)
 			local yaw_rotation = Quaternion(Vector3.up(), yaw)
 			local pitch_rotation = Quaternion(Vector3.right(), pitch)
-			look_rotation = Quaternion.multiply(unit_rotation, Quaternion.multiply(yaw_rotation, pitch_rotation))
+			look_rotation = Quaternion_multiply(unit_rotation, Quaternion_multiply(yaw_rotation, pitch_rotation))
 		end
 
 		wanted_rotation = Quaternion.lerp(rotation, look_rotation, math.min(dt * 5, 1))
@@ -482,7 +465,7 @@ PlayerBotInput._update_movement = function (self, dt, t)
 		wanted_rotation = Quaternion.lerp(rotation, Unit.local_rotation(unit, 0), math.min(dt * 2, 1))
 	end
 
-	local needed_delta_rotation = Quaternion.multiply(Quaternion.inverse(rotation), wanted_rotation)
+	local needed_delta_rotation = Quaternion_multiply(Quaternion.inverse(rotation), wanted_rotation)
 	local needed_delta_rotation_forward = Quaternion.forward(needed_delta_rotation)
 	local look = self.look
 	look.x = math.half_pi - math.atan2(needed_delta_rotation_forward.y, needed_delta_rotation_forward.x)

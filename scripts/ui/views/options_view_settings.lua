@@ -619,19 +619,20 @@ local gameplay_settings_definition = {
 		widget_type = "title"
 	},
 	{
-		setup = "cb_ui_scale_setup",
-		callback_on_release = true,
-		saved_value = "cb_ui_scale_saved_value",
-		callback = "cb_ui_scale",
-		tooltip_text = "tooltio_ui_scale",
-		widget_type = "slider"
+		setup = "cb_hud_custom_scale_setup",
+		saved_value = "cb_hud_custom_scale_saved_value",
+		callback = "cb_hud_custom_scale",
+		tooltip_text = "tooltip_hud_custom_scale",
+		widget_type = "stepper"
 	},
 	{
-		setup = "cb_hud_screen_fit_setup",
-		saved_value = "cb_hud_screen_fit_saved_value",
-		callback = "cb_hud_screen_fit",
-		tooltip_text = "tooltip_hud_screen_fit",
-		widget_type = "stepper"
+		setup = "cb_hud_scale_setup",
+		callback_on_release = true,
+		saved_value = "cb_hud_scale_saved_value",
+		callback = "cb_hud_scale",
+		name = "hud_scale",
+		tooltip_text = "tooltip_hud_scale",
+		widget_type = "slider"
 	},
 	{
 		setup = "cb_enabled_crosshairs_setup",

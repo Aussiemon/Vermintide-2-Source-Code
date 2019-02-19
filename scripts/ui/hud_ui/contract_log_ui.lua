@@ -15,7 +15,8 @@ local progress_color = Colors.get_color_table_with_alpha("sky_blue", 220)
 local complete_color = Colors.get_color_table_with_alpha("pale_green", 220)
 ContractLogUI = class(ContractLogUI)
 
-ContractLogUI.init = function (self, ingame_ui_context)
+ContractLogUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.input_manager = ingame_ui_context.input_manager

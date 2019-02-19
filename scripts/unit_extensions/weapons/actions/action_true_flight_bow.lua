@@ -68,7 +68,7 @@ ActionTrueFlightBow.client_owner_post_update = function (self, dt, t, world, can
 
 	if self.state == "shooting" then
 		local buff_extension = self.owner_buff_extension
-		local _, procced = buff_extension:apply_buffs_to_value(0, StatBuffIndex.EXTRA_SHOT)
+		local _, procced = buff_extension:apply_buffs_to_value(0, "extra_shot")
 		local add_spread = not self.extra_buff_shot
 
 		self:fire(current_action, add_spread)

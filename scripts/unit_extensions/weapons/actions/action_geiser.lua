@@ -219,8 +219,9 @@ ActionGeiser._update_damage = function (self, current_action)
 			local has_ranged_boost, ranged_boost_curve_multiplier = ActionUtils.get_ranged_boost(owner_unit)
 			local is_critical_strike = self._is_critical_strike or has_ranged_boost
 			local send_to_server = true
+			local buff_type = DamageUtils.get_item_buff_type(self.item_name)
 
-			DamageUtils.buff_on_attack(owner_unit, hit_unit, "aoe", is_critical_strike and allow_critical_proc, hit_zone_name, #damage_buffer, send_to_server, "n/a")
+			DamageUtils.buff_on_attack(owner_unit, hit_unit, "aoe", is_critical_strike and allow_critical_proc, hit_zone_name, #damage_buffer, send_to_server, buff_type)
 
 			local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
 

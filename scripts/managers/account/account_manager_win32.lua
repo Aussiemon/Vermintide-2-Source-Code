@@ -139,4 +139,12 @@ AccountManager.active_controller = function (self)
 	return
 end
 
+AccountManager.has_session = function (self)
+	return true
+end
+
+AccountManager.region = function (self)
+	return
+end
+
 return

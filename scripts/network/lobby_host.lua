@@ -131,9 +131,16 @@ LobbyHost._update_debug = function (self)
 			local peer_id = members[i]
 
 			if peer_id ~= my_peer_id then
+				self._min_remaining_buffer = self._min_remaining_buffer or {}
 				local remaining_buffer_size = Network.reliable_send_buffer_left(peer_id)
+				local min_buffer = self._min_remaining_buffer[peer_id]
 
-				Debug.text("    %s : %d", peer_id, remaining_buffer_size)
+				if (min_buffer and remaining_buffer_size < min_buffer) or (min_buffer == nil and remaining_buffer_size > 0) then
+					min_buffer = remaining_buffer_size
+					self._min_remaining_buffer[peer_id] = min_buffer
+				end
+
+				Debug.text("    %s : %d %s", peer_id, remaining_buffer_size, (min_buffer and string.format("(min: %d)", min_buffer)) or "")
 			end
 		end
 	end
@@ -223,6 +230,10 @@ LobbyHost.set_lobby = function (self, lobby)
 	self:set_lobby_data(lobby_data_table)
 
 	self.lobby_members = LobbyMembers:new(lobby)
+end
+
+LobbyHost.failed = function (self)
+	return self.state == LobbyState.FAILED
 end
 
 return

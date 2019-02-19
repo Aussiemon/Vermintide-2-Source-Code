@@ -11,7 +11,8 @@ local fake_input_service = {
 }
 GiftPopupUI = class(GiftPopupUI)
 
-GiftPopupUI.init = function (self, ingame_ui_context)
+GiftPopupUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	local ingame_ui_context = ingame_ui_context
 	local ui_renderer = ingame_ui_context.ui_renderer
 	local ui_top_renderer = ingame_ui_context.ui_top_renderer

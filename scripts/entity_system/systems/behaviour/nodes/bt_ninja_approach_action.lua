@@ -242,14 +242,6 @@ BTNinjaApproachAction.run = function (self, unit, blackboard, t, dt)
 	end
 
 	if blackboard.navigation_extension:number_failed_move_attempts() > 1 then
-		local in_los = BTNinjaHighGroundAction:try_jump(unit, blackboard, t, POSITION_LOOKUP[unit], true)
-
-		if in_los then
-			blackboard.high_ground_opportunity = true
-
-			return "failed"
-		end
-
 		blackboard.ninja_vanish = true
 
 		return "running"

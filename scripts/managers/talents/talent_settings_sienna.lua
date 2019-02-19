@@ -231,35 +231,35 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				max_stacks = 10,
 				icon = "sienna_scholar_passive",
-				stat_buff = StatBuffIndex.CRITICAL_STRIKE_CHANCE
+				stat_buff = "critical_strike_chance"
 			}
 		}
 	},
 	sienna_scholar_passive_ranged_damage = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.INCREASED_WEAPON_DAMAGE_RANGED
+				stat_buff = "increased_weapon_damage_ranged"
 			}
 		}
 	},
 	sienna_scholar_reduced_overcharge = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.REDUCED_OVERCHARGE
+				stat_buff = "reduced_overcharge"
 			}
 		}
 	},
 	sienna_scholar_increased_attack_speed = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				stat_buff = "attack_speed"
 			}
 		}
 	},
 	sienna_scholar_reduced_spread = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.REDUCED_SPREAD
+				stat_buff = "reduced_spread"
 			}
 		}
 	},
@@ -276,7 +276,7 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				max_stacks = 1,
 				icon = "sienna_scholar_increased_defence_on_disabled",
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				stat_buff = "damage_taken"
 			}
 		}
 	},
@@ -293,7 +293,7 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				max_stacks = 1,
 				icon = "sienna_scholar_overcharge_regen_on_grimoire_pickup",
-				stat_buff = StatBuffIndex.OVERCHARGE_REGEN
+				stat_buff = "overcharge_regen"
 			}
 		}
 	},
@@ -312,7 +312,7 @@ TalentBuffTemplates.bright_wizard = {
 				max_stacks = 1,
 				icon = "sienna_scholar_increased_ranged_charge_speed_on_low_health",
 				priority_buff = true,
-				stat_buff = StatBuffIndex.REDUCED_RANGED_CHARGE_TIME
+				stat_buff = "reduced_ranged_charge_time"
 			}
 		}
 	},
@@ -327,8 +327,8 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_scholar_passive_reduced_block_cost = {
 		buffs = {
 			{
-				icon = "sienna_scholar_passive_reduced_block_cost_from_overcharge",
-				stat_buff = StatBuffIndex.BLOCK_COST
+				stat_buff = "block_cost",
+				icon = "sienna_scholar_passive_reduced_block_cost_from_overcharge"
 			}
 		}
 	},
@@ -343,8 +343,8 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_scholar_passive_reduced_overcharge = {
 		buffs = {
 			{
-				icon = "sienna_scholar_passive_reduced_overcharge_from_overcharge",
-				stat_buff = StatBuffIndex.REDUCED_OVERCHARGE
+				stat_buff = "reduced_overcharge",
+				icon = "sienna_scholar_passive_reduced_overcharge_from_overcharge"
 			}
 		}
 	},
@@ -359,8 +359,8 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_scholar_passive_increased_attack_speed = {
 		buffs = {
 			{
-				icon = "sienna_scholar_passive_increased_attack_speed_from_overcharge",
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				stat_buff = "attack_speed",
+				icon = "sienna_scholar_passive_increased_attack_speed_from_overcharge"
 			}
 		}
 	},
@@ -406,7 +406,7 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_scholar_activated_ability_cooldown = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.ACTIVATED_COOLDOWN
+				stat_buff = "activated_cooldown"
 			}
 		}
 	},
@@ -444,7 +444,7 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_adept_passive_ranged_damage = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.INCREASED_WEAPON_DAMAGE_RANGED
+				stat_buff = "increased_weapon_damage_ranged"
 			}
 		}
 	},
@@ -461,7 +461,7 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				max_stacks = 3,
 				icon = "sienna_scholar_activated_ability_dump_overcharge",
-				stat_buff = StatBuffIndex.REDUCED_RANGED_CHARGE_TIME
+				stat_buff = "reduced_ranged_charge_time"
 			}
 		}
 	},
@@ -487,10 +487,10 @@ TalentBuffTemplates.bright_wizard = {
 		buffs = {
 			{
 				dormant = true,
+				stat_buff = "overcharge_regen",
 				max_stacks = 1,
 				icon = "sienna_adept_passive",
-				priority_buff = true,
-				stat_buff = StatBuffIndex.OVERCHARGE_REGEN
+				priority_buff = true
 			}
 		}
 	},
@@ -505,21 +505,21 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_adept_charge_speed_increase = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.REDUCED_RANGED_CHARGE_TIME
+				stat_buff = "reduced_ranged_charge_time"
 			}
 		}
 	},
 	sienna_adept_healing_received = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.HEALING_RECEIVED
+				stat_buff = "healing_received"
 			}
 		}
 	},
 	sienna_adept_max_stamina = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.MAX_FATIGUE
+				stat_buff = "max_fatigue"
 			}
 		}
 	},
@@ -534,15 +534,15 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_adept_damage_on_enemy_proximity = {
 		buffs = {
 			{
-				icon = "sienna_adept_increased_damage_on_enemy_proximity",
-				stat_buff = StatBuffIndex.POWER_LEVEL
+				stat_buff = "power_level",
+				icon = "sienna_adept_increased_damage_on_enemy_proximity"
 			}
 		}
 	},
 	sienna_adept_stun_resistance = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.STUN_DURATION
+				stat_buff = "stun_duration"
 			}
 		}
 	},
@@ -560,7 +560,7 @@ TalentBuffTemplates.bright_wizard = {
 				max_stacks = 1,
 				icon = "sienna_adept_increased_defence_on_last_standing",
 				priority_buff = true,
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				stat_buff = "damage_taken"
 			}
 		}
 	},
@@ -579,7 +579,7 @@ TalentBuffTemplates.bright_wizard = {
 				max_stacks = 1,
 				icon = "sienna_adept_passive_decreased_block_cost",
 				dormant = true,
-				stat_buff = StatBuffIndex.BLOCK_COST
+				stat_buff = "block_cost"
 			}
 		}
 	},
@@ -597,7 +597,7 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				max_stacks = 1,
 				dormant = true,
-				stat_buff = StatBuffIndex.OVERCHARGE_REGEN
+				stat_buff = "overcharge_regen"
 			}
 		}
 	},
@@ -616,7 +616,7 @@ TalentBuffTemplates.bright_wizard = {
 				max_stacks = 1,
 				icon = "sienna_adept_passive_charge_speed_increased",
 				dormant = true,
-				stat_buff = StatBuffIndex.REDUCED_RANGED_CHARGE_TIME
+				stat_buff = "reduced_ranged_charge_time"
 			}
 		}
 	},
@@ -660,7 +660,7 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_adept_activated_ability_cooldown = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.ACTIVATED_COOLDOWN
+				stat_buff = "activated_cooldown"
 			}
 		}
 	},
@@ -695,7 +695,7 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_unchained_passive = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN_TO_OVERCHARGE
+				stat_buff = "damage_taken_to_overcharge"
 			}
 		}
 	},
@@ -717,8 +717,8 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_unchained_passive_melee_power_on_overcharge = {
 		buffs = {
 			{
-				icon = "sienna_unchained_passive",
-				stat_buff = StatBuffIndex.POWER_LEVEL_MELEE
+				stat_buff = "power_level_melee",
+				icon = "sienna_unchained_passive"
 			}
 		}
 	},
@@ -733,21 +733,21 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_unchained_push_arc = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.BLOCK_ANGLE
+				stat_buff = "block_angle"
 			}
 		}
 	},
 	sienna_unchained_max_health = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.MAX_HEALTH_ALIVE
+				stat_buff = "max_health_alive"
 			}
 		}
 	},
 	sienna_unchained_max_overcharge = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.MAX_OVERCHARGE
+				stat_buff = "max_overcharge"
 			}
 		}
 	},
@@ -765,10 +765,10 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				max_stacks = 1,
 				refresh_durations = true,
+				stat_buff = "fatigue_regen",
 				is_cooldown = true,
 				icon = "sienna_unchained_regen_stamina_on_charged_attacks",
-				dormant = true,
-				stat_buff = StatBuffIndex.FATIGUE_REGEN
+				dormant = true
 			}
 		}
 	},
@@ -796,31 +796,31 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				priority_buff = true,
 				refresh_durations = true,
+				stat_buff = "damage_taken",
 				max_stacks = 1,
 				icon = "sienna_unchained_buff_defense_on_revived_target",
-				dormant = true,
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				dormant = true
 			}
 		}
 	},
 	sienna_unchained_reduced_vent_damage = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.VENT_DAMAGE
+				stat_buff = "vent_damage"
 			}
 		}
 	},
 	sienna_unchained_increased_vent_speed = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.VENT_SPEED
+				stat_buff = "vent_speed"
 			}
 		}
 	},
 	sienna_unchained_reduced_overcharge = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.REDUCED_OVERCHARGE
+				stat_buff = "reduced_overcharge"
 			}
 		}
 	},
@@ -865,7 +865,7 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_unchained_activated_ability_cooldown = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.ACTIVATED_COOLDOWN
+				stat_buff = "activated_cooldown"
 			}
 		}
 	}

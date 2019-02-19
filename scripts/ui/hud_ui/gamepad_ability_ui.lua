@@ -2,7 +2,8 @@ local definitions = local_require("scripts/ui/hud_ui/gamepad_ability_ui_definiti
 local scenegraph_definition = definitions.scenegraph_definition
 GamePadAbilityUI = class(GamePadAbilityUI)
 
-GamePadAbilityUI.init = function (self, ingame_ui_context)
+GamePadAbilityUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.input_manager = ingame_ui_context.input_manager

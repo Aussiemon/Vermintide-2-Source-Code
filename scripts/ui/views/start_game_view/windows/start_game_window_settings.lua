@@ -111,11 +111,10 @@ StartGameWindowSettings.update = function (self, dt, t)
 	self:_update_difficulty_option()
 	self:_update_animations(dt)
 	self:_handle_input(dt, t)
-	self:draw(dt)
 end
 
 StartGameWindowSettings.post_update = function (self, dt, t)
-	return
+	self:draw(dt)
 end
 
 StartGameWindowSettings._update_animations = function (self, dt)

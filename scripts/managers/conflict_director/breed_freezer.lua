@@ -274,7 +274,7 @@ BreedFreezer.commit_freezes = function (self)
 			local systems = self.systems_by_breed[breed_name]
 			local breed_extension_names = self.extension_names_by_breed[breed_name]
 
-			for j = 1, #systems, 1 do
+			for j = #systems, 1, -1 do
 				local system = systems[j]
 
 				system:freeze(unit, breed_extension_names[j], "reason_unspawn")
@@ -284,6 +284,7 @@ BreedFreezer.commit_freezes = function (self)
 				Unit.disable_animation_state_machine(unit)
 			end
 
+			Unit.flow_event(unit, "lua_freeze_unit")
 			Unit.disable_physics(unit)
 
 			local unit_name = Unit.get_data(unit, "unit_name")
@@ -302,7 +303,6 @@ BreedFreezer.commit_freezes = function (self)
 			FROZEN[unit] = true
 			POSITION_LOOKUP[unit] = nil
 
-			Unit.flow_event(unit, "lua_freeze_unit")
 			Unit.reload_flow(unit)
 
 			self.count = self.count + 1
@@ -397,6 +397,7 @@ BreedFreezer.unfreeze_unit = function (self, unit, breed_name, data)
 
 	Unit.enable_animation_state_machine(unit)
 	Unit.enable_physics(unit)
+	Unit.flow_event(unit, "lua_unfreeze_unit")
 	Unit.set_unit_visibility(unit, true)
 	Managers.state.blood:clear_unit_decals(unit)
 	Unit.trigger_flow_unit_spawned(unit)

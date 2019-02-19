@@ -1693,7 +1693,21 @@ UIPasses.text = {
 
 		local default_font_size = ui_style.font_size
 
-		if ui_style.dynamic_font_size then
+		if ui_style.word_wrap and ui_style.dynamic_font_size_word_wrap then
+			local recalculate = ui_style._dynamic_wraped_text ~= text or ui_style._dynamic_wraped_scale ~= RESOLUTION_LOOKUP.scale
+			local dynamic_wrap_font_size = nil
+
+			if recalculate then
+				dynamic_wrap_font_size = UIRenderer.scaled_font_size_by_area(ui_renderer, text, size, ui_style)
+			else
+				dynamic_wrap_font_size = ui_style._dynamic_wrap_font_size
+			end
+
+			ui_style.font_size = dynamic_wrap_font_size
+			ui_style._dynamic_wrap_font_size = dynamic_wrap_font_size
+			ui_style._dynamic_wraped_text = text
+			ui_style._dynamic_wraped_scale = RESOLUTION_LOOKUP.scale
+		elseif ui_style.dynamic_font_size then
 			ui_style.font_size = UIRenderer.scaled_font_size_by_width(ui_renderer, text, size[1], ui_style)
 		end
 
@@ -2750,8 +2764,8 @@ UIPasses.additional_option_tooltip = {
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
-		local scale = UIResolutionScale()
-		local scale_inversed = UIInverseResolutionScale()
+		local scale = RESOLUTION_LOOKUP.scale
+		local scale_inversed = RESOLUTION_LOOKUP.inv_scale
 		local actual_screen_y_position = position[2] * scale
 
 		if ui_style.vertical_alignment == "top" then
@@ -2869,8 +2883,8 @@ UIPasses.level_tooltip = {
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
-		local scale = UIResolutionScale()
-		local scale_inversed = UIInverseResolutionScale()
+		local scale = RESOLUTION_LOOKUP.scale
+		local scale_inversed = RESOLUTION_LOOKUP.inv_scale
 		local actual_screen_y_position = position[2] * scale
 		position[2] = position[2] + parent_size[2] + tooltip_total_height
 		local position_x = position[1]
@@ -2994,8 +3008,8 @@ UIPasses.hero_power_tooltip = {
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
-		local scale = UIResolutionScale()
-		local scale_inversed = UIInverseResolutionScale()
+		local scale = RESOLUTION_LOOKUP.scale
+		local scale_inversed = RESOLUTION_LOOKUP.inv_scale
 		local actual_screen_y_position = position[2] * scale
 		position[2] = position[2] + tooltip_total_height
 		local position_x = position[1]
@@ -3110,8 +3124,8 @@ UIPasses.option_tooltip = {
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
-		local scale = UIResolutionScale()
-		local scale_inversed = UIInverseResolutionScale()
+		local scale = RESOLUTION_LOOKUP.scale
+		local scale_inversed = RESOLUTION_LOOKUP.inv_scale
 		local actual_screen_y_position = position[2] * scale
 		position[2] = position[2] + parent_size[2] + tooltip_total_height
 		local position_x = position[1]
@@ -3283,7 +3297,7 @@ UIPasses.item_tooltip = {
 		end
 
 		local scale = RESOLUTION_LOOKUP.scale
-		local scale_inversed = UIInverseResolutionScale()
+		local scale_inversed = RESOLUTION_LOOKUP.inv_scale
 		local wanted_max_height = nil
 		local size = pass_data.size
 		local res_w = RESOLUTION_LOOKUP.res_w
@@ -3328,8 +3342,8 @@ UIPasses.item_tooltip = {
 			tooltip_sizes[index] = tooltip_total_height
 		end
 
-		local top_spacing = 40
-		local equipped_panel_height = 30
+		local top_spacing = 40 * scale
+		local equipped_panel_height = 30 * scale
 		local num_items = #items
 		local alpha_wait_times = pass_data.alpha_wait_times
 		local items_alpha_progress = pass_data.items_alpha_progress
@@ -3537,8 +3551,8 @@ UIPasses.talent_tooltip = {
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
-		local scale = UIResolutionScale()
-		local scale_inversed = UIInverseResolutionScale()
+		local scale = RESOLUTION_LOOKUP.scale
+		local scale_inversed = RESOLUTION_LOOKUP.inv_scale
 		local actual_screen_y_position = position[2] * scale
 		position[2] = position[2] + parent_size[2] + tooltip_total_height
 		local position_x = position[1]
@@ -3938,7 +3952,6 @@ UIPasses.hotspot = {
 		local left_pressed = input_service and input_service:get("left_press")
 		local left_hold = input_service and input_service:get("left_hold")
 		local double_click_accepted = ui_content.is_clicked and ui_content.is_clicked < double_click_threshold
-		ui_content.is_held = false
 
 		if is_hover then
 			if not ui_content.input_pressed then
@@ -3959,6 +3972,10 @@ UIPasses.hotspot = {
 		ui_content.on_right_click = false
 		ui_content.on_double_click = false
 
+		if not left_hold then
+			ui_content.is_held = false
+		end
+
 		if ui_content.input_pressed then
 			local left_release = input_service:get("left_release")
 
@@ -3973,7 +3990,6 @@ UIPasses.hotspot = {
 					ui_content.is_clicked = 0
 				elseif is_hover and left_hold then
 					ui_content.is_clicked = 0
-					ui_content.is_held = true
 				else
 					ui_content.is_clicked = (ui_content.is_clicked or 10) + dt
 				end

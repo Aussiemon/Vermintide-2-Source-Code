@@ -1,16 +1,3 @@
-wounding_damage_types = {
-	"light_stab_fencer",
-	"light_stab_smiter",
-	"stab_fencer",
-	"stab_smiter",
-	"heavy_stab_smiter",
-	"light_slashing_fencer",
-	"light_slashing_smiter",
-	"slashing_fencer",
-	"slashing_smiter",
-	"heavy_slashing_fencer",
-	"heavy_slashing_smiter"
-}
 HitEffectsGutterRunner = {
 	default = {
 		husk_hit_effect_name = "fx/impact_blood_02",
@@ -1787,29 +1774,6 @@ HitEffectsGutterRunner = {
 		flow_event = "burn",
 		extra_conditions = {
 			hit_zone = {
-				"head",
-				"neck",
-				"left_arm",
-				"right_arm",
-				"left_leg",
-				"right_leg",
-				"tail"
-			}
-		},
-		animations = {
-			"ragdoll"
-		},
-		push = {
-			distal_force = 80,
-			vertical_force = 20,
-			lateral_force = 0
-		}
-	},
-	burn_sniper_death_dismember = {
-		inherits = "burn_sniper_death",
-		flow_event = "burn",
-		extra_conditions = {
-			hit_zone = {
 				"torso"
 			}
 		},
@@ -2168,6 +2132,6 @@ HitEffectsGutterRunner = {
 		}
 	}
 }
-HitEffectsSkavenClanRat = table.create_copy(HitEffectsSkavenClanRat, HitEffectsSkavenClanRat)
+HitEffectsGutterRunner = table.create_copy(HitEffectsGutterRunner, HitEffectsGutterRunner)
 
 return

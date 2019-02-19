@@ -1,10 +1,7 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTAttackAction = class(BTAttackAction, BTNode)
-local DEFAULT_SPEED_MODIFIER_ON_TARGET_DODGE = 0.2
-local DEFAULT_SPEED_LERP_TIME_ON_TARGET_DODGE = 0.6
 local DEFAULT_DODGE_ROTATION_TIME = 1.5
-local REEVAL_TIME = 0.5
 
 BTAttackAction.init = function (self, ...)
 	BTAttackAction.super.init(self, ...)
@@ -26,14 +23,12 @@ BTAttackAction.enter = function (self, unit, blackboard, t)
 	blackboard.active_node = BTAttackAction
 	blackboard.attack_finished = false
 	blackboard.attack_aborted = false
-	blackboard.has_engaged = true
 	blackboard.locked_attack_rotation = false
 	blackboard.target_speed = 0
 	blackboard.moving_attack = action.moving_attack
 	blackboard.past_damage_in_attack = false
 	local target_unit = blackboard.target_unit
 	local target_unit_status_extension = ScriptUnit.has_extension(target_unit, "status_system")
-	local target_unit_slot_extension = ScriptUnit.has_extension(target_unit, "ai_slot_system")
 	local attack = self:_select_attack(action, unit, target_unit, blackboard, target_unit_status_extension)
 	local attack_anim = randomize(attack.anims)
 	blackboard.attack_anim = attack_anim
@@ -63,6 +58,7 @@ BTAttackAction.enter = function (self, unit, blackboard, t)
 
 		local is_flanking = AiUtils.unit_is_flanking_player(unit, target_unit)
 		local breed = blackboard.breed
+		local target_unit_slot_extension = ScriptUnit.has_extension(target_unit, "ai_slot_system")
 		local should_backstab = breed.use_backstab_vo and is_flanking and target_unit_slot_extension and target_unit_slot_extension.num_occupied_slots <= 5
 
 		if should_backstab then
@@ -214,11 +210,8 @@ BTAttackAction.run = function (self, unit, blackboard, t, dt)
 		end
 	end
 
-	local action = self._tree_node.action_data
-
 	if blackboard.moving_attack then
 		local breed = blackboard.breed
-		local navigation_extension = blackboard.navigation_extension
 		local distance = blackboard.target_dist
 		local target_speed = blackboard.target_speed_away_small_sample
 
@@ -238,6 +231,7 @@ BTAttackAction.run = function (self, unit, blackboard, t, dt)
 
 		if math.abs(target_speed - blackboard.target_speed) > 0.25 then
 			blackboard.target_speed = target_speed
+			local navigation_extension = blackboard.navigation_extension
 
 			navigation_extension:set_max_speed(math.clamp(target_speed, 0, breed.run_speed))
 		end
@@ -259,7 +253,7 @@ end
 
 BTAttackAction.attack_cooldown = function (self, unit, blackboard)
 	local t = Managers.time:time("game")
-	local cooldown, cooldown_at = self:get_attack_cooldown_finished_at(unit, blackboard, t)
+	local cooldown, cooldown_at = self:_get_attack_cooldown_finished_at(unit, blackboard, t)
 	blackboard.attack_cooldown_at = cooldown_at
 	blackboard.is_in_attack_cooldown = cooldown
 end
@@ -276,8 +270,6 @@ end
 
 BTAttackAction.attack = function (self, unit, t, dt, blackboard)
 	local bb = blackboard
-	local action = bb.action
-	local locomotion = ScriptUnit.extension(unit, "locomotion_system")
 
 	if bb.move_state ~= "attacking" then
 		bb.move_state = "attacking"
@@ -307,11 +299,13 @@ BTAttackAction.attack = function (self, unit, t, dt, blackboard)
 			end
 		end
 
-		locomotion:set_wanted_rotation(blackboard.attack_rotation:unbox())
+		local locomotion_extension = bb.locomotion_extension
+
+		locomotion_extension:set_wanted_rotation(blackboard.attack_rotation:unbox())
 	end
 end
 
-BTAttackAction.get_attack_cooldown_finished_at = function (self, unit, blackboard, t)
+BTAttackAction._get_attack_cooldown_finished_at = function (self, unit, blackboard, t)
 	local attacking_target = blackboard.attacking_target
 
 	if not Unit.alive(attacking_target) then

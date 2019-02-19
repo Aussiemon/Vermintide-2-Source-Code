@@ -202,16 +202,9 @@ UISceneGraph.update_scenegraph = function (scenegraph, parent_scenegraph, sceneg
 	local hierarchical_scenegraph = scenegraph.hierarchical_scenegraph
 	local scale = RESOLUTION_LOOKUP.scale
 	local inverse_scale = RESOLUTION_LOOKUP.inv_scale
-	local root_scale_x = UISettings.root_scale[1] * UISettings.ui_scale / 100
-	local root_scale_y = UISettings.root_scale[2] * UISettings.ui_scale / 100
-	local use_hud_screen_fit = UISettings.use_hud_screen_fit
-
-	if use_hud_screen_fit then
-		root_scale_x = w / (UIResolutionWidthFragments() * scale)
-	else
-		root_scale_x = UISettings.root_scale[1]
-	end
-
+	local root_scale_x = UISettings.root_scale[1]
+	local root_scale_y = UISettings.root_scale[2]
+	root_scale_x = w / (UIResolutionWidthFragments() * scale)
 	local w_inverse_scale = w * inverse_scale
 	local h_inverse_scale = h * inverse_scale
 
@@ -336,15 +329,9 @@ UISceneGraph.get_size_scaled = function (scenegraph, scenegraph_object_name, opt
 			scale = scale * optional_scale
 		end
 
-		local root_scale_x = UISettings.root_scale[1] * UISettings.ui_scale / 100
-		local root_scale_y = UISettings.root_scale[2] * UISettings.ui_scale / 100
-
-		if UISettings.use_hud_screen_fit then
-			root_scale_x = w / (UIResolutionWidthFragments() * scale)
-		else
-			root_scale_x = UISettings.root_scale[1]
-		end
-
+		local root_scale_x = UISettings.root_scale[1]
+		local root_scale_y = UISettings.root_scale[2]
+		root_scale_x = w / (UIResolutionWidthFragments() * scale)
 		local size_x = size[1]
 		local size_y = size[2]
 		size_y = size_y * h / (size_y * scale)
@@ -452,8 +439,8 @@ local function debug_render_scenegraph(ui_renderer, scenegraph, n_scenegraph)
 		end
 
 		if scenegraph_object.is_root then
-			local root_scale_x = UISettings.root_scale[1] * UISettings.ui_scale / 100
-			local root_scale_y = UISettings.root_scale[2] * UISettings.ui_scale / 100
+			local root_scale_x = UISettings.root_scale[1]
+			local root_scale_y = UISettings.root_scale[2]
 			local scale = RESOLUTION_LOOKUP.scale
 			local w = RESOLUTION_LOOKUP.res_w
 			local h = RESOLUTION_LOOKUP.res_h

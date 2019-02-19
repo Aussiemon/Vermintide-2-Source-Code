@@ -1044,7 +1044,7 @@ HitEffectsStormVermin = {
 			lateral_force = 30
 		}
 	},
-	blunt_tank_death_head = {
+	blunt_tank_uppercut_death_head = {
 		inherits = "blunt_tank_uppercut_death",
 		extra_conditions = {
 			hit_zone = {
@@ -2248,126 +2248,6 @@ HitEffectsStormVermin = {
 		}
 	}
 }
-HitEffectsRatlingGunner = table.clone(HitEffectsStormVermin)
-local SHOOTING_HIT_EFFECT_ANIMS = {
-	angles = {
-		{
-			to = math.pi / 18,
-			animations = {
-				"hit_reaction_shoot_fwd"
-			}
-		},
-		{
-			to = (3 * math.pi) / 4,
-			animations = {
-				"hit_reaction_shoot_left"
-			}
-		},
-		{
-			to = (5 * math.pi) / 4,
-			animations = {
-				"hit_reaction_shoot_bwd"
-			}
-		},
-		{
-			to = (35 * math.pi) / 18,
-			animations = {
-				"hit_reaction_shoot_right"
-			}
-		}
-	}
-}
-HitEffectsRatlingGunner.arrow_default_shooting_front = {
-	husk_hit_effect_name = "fx/impact_blood_02",
-	armour_type = "metal_hollow",
-	extra_conditions = {
-		damage = true,
-		death = false,
-		damage_direction = "front",
-		action = {
-			"shoot_ratling_gun"
-		},
-		damage_type = {
-			"arrow_sniper",
-			"arrow_carbine",
-			"arrow_machinegun",
-			"arrow_shotgun",
-			"bolt_sniper",
-			"bolt_carbine",
-			"bolt_machinegun",
-			"bolt_shotgun",
-			"shot_repeating_handgun"
-		}
-	},
-	animations = SHOOTING_HIT_EFFECT_ANIMS
-}
-HitEffectsRatlingGunner.arrow_default_shooting_back = {
-	husk_hit_effect_name = "fx/impact_blood_02",
-	armour_type = "metal_hollow",
-	extra_conditions = {
-		damage_direction = "back",
-		damage = true,
-		action = {
-			"shoot_ratling_gun"
-		},
-		damage_type = {
-			"arrow_sniper",
-			"arrow_carbine",
-			"arrow_machinegun",
-			"arrow_shotgun",
-			"bolt_sniper",
-			"bolt_carbine",
-			"bolt_machinegun",
-			"bolt_shotgun",
-			"shot_repeating_handgun"
-		}
-	},
-	animations = SHOOTING_HIT_EFFECT_ANIMS
-}
-HitEffectsRatlingGunner.arrow_default_shooting_front_no_damage = {
-	husk_hit_effect_name = "fx/impact_blood_02",
-	armour_type = "metal_hollow",
-	extra_conditions = {
-		damage = false,
-		hit_direction = "front",
-		action = {
-			"shoot_ratling_gun"
-		},
-		damage_type = {
-			"arrow_sniper",
-			"arrow_carbine",
-			"arrow_machinegun",
-			"arrow_shotgun",
-			"bolt_sniper",
-			"bolt_carbine",
-			"bolt_machinegun",
-			"bolt_shotgun",
-			"shot_repeating_handgun"
-		}
-	},
-	animations = SHOOTING_HIT_EFFECT_ANIMS
-}
-HitEffectsRatlingGunner.arrow_default_shooting_back_no_damage = {
-	armour_type = "metal_hollow",
-	extra_conditions = {
-		damage = false,
-		hit_direction = "back",
-		action = {
-			"shoot_ratling_gun"
-		},
-		damage_type = {
-			"arrow_sniper",
-			"arrow_carbine",
-			"arrow_machinegun",
-			"arrow_shotgun",
-			"bolt_sniper",
-			"bolt_carbine",
-			"bolt_machinegun",
-			"bolt_shotgun",
-			"shot_repeating_handgun"
-		}
-	},
-	animations = SHOOTING_HIT_EFFECT_ANIMS
-}
+HitEffectsStormVermin = table.create_copy(HitEffectsStormVermin, HitEffectsStormVermin)
 
 return

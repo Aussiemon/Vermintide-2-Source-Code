@@ -60,7 +60,7 @@ CareerExtension.update = function (self, unit, input, dt, context, t)
 	end
 
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
-	local cooldown_speed_multiplier = buff_extension:apply_buffs_to_value(1, StatBuffIndex.COOLDOWN_REGEN)
+	local cooldown_speed_multiplier = buff_extension:apply_buffs_to_value(1, "cooldown_regen")
 	self._cooldown = math.max(self._cooldown - dt * cooldown_speed_multiplier, 0)
 
 	if self._is_ready then
@@ -135,7 +135,7 @@ CareerExtension.start_activated_ability_cooldown = function (self, refund_percen
 	end
 
 	local buff_extension = ScriptUnit.extension(self._unit, "buff_system")
-	local cooldown = buff_extension:apply_buffs_to_value(cooldown, StatBuffIndex.ACTIVATED_COOLDOWN)
+	local cooldown = buff_extension:apply_buffs_to_value(cooldown, "activated_cooldown")
 	self._cooldown = cooldown
 	self._max_cooldown = activated_ability_data.cooldown
 	self._cooldown_paused = false

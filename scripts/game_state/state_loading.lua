@@ -26,6 +26,7 @@ end
 
 StateLoading.on_enter = function (self, param_block)
 	print("[Gamestate] Enter state StateLoading")
+	Managers.load_time:start_timer()
 
 	if not Managers.play_go:installed() then
 		Managers.play_go:set_install_speed("suspended")
@@ -59,9 +60,6 @@ StateLoading.on_enter = function (self, param_block)
 	self:_setup_level_transition()
 	self:_setup_state_machine()
 	self:_unmute_all_world_sounds()
-
-	local level_transition_handler = self._level_transition_handler
-	local next_level_key = level_transition_handler:get_next_level_key()
 
 	if self._switch_to_tutorial_backend then
 		Managers.backend:start_tutorial()
@@ -1307,6 +1305,8 @@ StateLoading.on_exit = function (self, application_shutdown)
 
 			if DEDICATED_SERVER then
 				country_code = SteamGameServer.server_country_code()
+			elseif PLATFORM == "ps4" then
+				country_code = Managers.account:region()
 			elseif rawget(_G, "Steam") then
 				country_code = Steam.user_country_code()
 			end
@@ -1754,7 +1754,7 @@ StateLoading.setup_lobby_finder = function (self, lobby_joined_callback, lobby_t
 		self._host_to_join_name = host_to_join and host_to_join.name
 
 		self._lobby_finder:refresh()
-		printf("[StateLoading] StateLoading will try to find a lobby with id=%s or host=%s or unique_server_name=%s", tostring(lobby_to_join), tostring(host_to_join), tostring(script_data.unique_server_name))
+		printf("[StateLoading] StateLoading will try to find a lobby with id=%s or host=%s or unique_server_name=%s", tostring(lobby_to_join), tostring(self._host_to_join), tostring(script_data.unique_server_name))
 	end
 
 	local main_time = Managers.time:time("main")
@@ -1993,6 +1993,12 @@ StateLoading.set_lobby_host_data = function (self, level_key)
 
 		if level_key == "inn_level" then
 			stored_lobby_host_data.matchmaking = "false"
+			stored_lobby_host_data.game_mode = "n/a"
+		end
+
+		if level_key == "prologue" then
+			stored_lobby_host_data.matchmaking = "false"
+			stored_lobby_host_data.game_mode = "tutorial"
 		end
 
 		if PLATFORM == "ps4" then
@@ -2020,6 +2026,12 @@ StateLoading.get_lobby = function (self)
 	local lobby = self._lobby_host or self._lobby_client
 
 	return lobby
+end
+
+StateLoading.has_joined = function (self)
+	local lobby = self._lobby_host or self._lobby_client
+
+	return lobby and lobby:is_joined()
 end
 
 return

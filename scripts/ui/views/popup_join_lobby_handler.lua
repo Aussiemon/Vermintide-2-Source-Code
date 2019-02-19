@@ -135,12 +135,12 @@ local scenegraph_definition = {
 		parent = "hero_info_panel",
 		horizontal_alignment = "left",
 		size = {
-			450,
+			480,
 			25
 		},
 		position = {
 			76,
-			-16,
+			-40,
 			1
 		}
 	},
@@ -149,12 +149,12 @@ local scenegraph_definition = {
 		parent = "info_career_name",
 		horizontal_alignment = "left",
 		size = {
-			450,
+			480,
 			25
 		},
 		position = {
 			0,
-			-40,
+			-16,
 			1
 		}
 	},
@@ -332,13 +332,14 @@ local window_sub_title_text_style = {
 	}
 }
 local hero_career_style = {
-	word_wrap = true,
+	font_size = 40,
 	upper_case = true,
 	localize = false,
 	use_shadow = true,
-	font_size = 40,
+	word_wrap = true,
 	horizontal_alignment = "left",
-	vertical_alignment = "top",
+	vertical_alignment = "bottom",
+	dynamic_font_size = true,
 	font_type = "hell_shark_header",
 	text_color = Colors.get_color_table_with_alpha("font_title", 255),
 	offset = {

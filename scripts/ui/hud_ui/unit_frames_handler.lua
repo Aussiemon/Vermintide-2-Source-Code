@@ -10,13 +10,11 @@ local allowed_weapon_slots = {
 	slot_ranged = true,
 	slot_melee = true
 }
-local MIN_HEALTH_DIVIDERS = 0
-local MAX_HEALTH_DIVIDERS = 10
 local NUM_TEAM_MEMBERS = 3
 UnitFramesHandler = class(UnitFramesHandler)
-local DO_RELOAD = true
 
-UnitFramesHandler.init = function (self, ingame_ui_context)
+UnitFramesHandler.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.ingame_ui_context = ingame_ui_context
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.input_manager = ingame_ui_context.input_manager
@@ -32,13 +30,16 @@ UnitFramesHandler.init = function (self, ingame_ui_context)
 	self.host_peer_id = server_peer_id or network_transmit.peer_id
 	self.platform = PLATFORM
 	self._unit_frames = {}
-	self.unit_frame_index_by_ui_id = {}
+	self._unit_frame_index_by_ui_id = {}
 
 	self:_create_player_unit_frame()
 	self:_create_team_members_unit_frames()
-	rawset(_G, "unit_frames_handler", self)
 
 	self._current_frame_index = 1
+end
+
+UnitFramesHandler.unit_frame_amount = function (self)
+	return #self._unit_frames
 end
 
 UnitFramesHandler.get_unit_widget = function (self, index)
@@ -46,18 +47,15 @@ UnitFramesHandler.get_unit_widget = function (self, index)
 end
 
 local function get_portrait_name_by_profile_index(profile_index, career_index)
-	local scale = RESOLUTION_LOOKUP.scale
 	local profile_data = SPProfiles[profile_index]
 	local careers = profile_data.careers
 	local career_settings = careers[career_index]
 	local portrait_image = career_settings.portrait_image
-	local display_name = profile_data.display_name
 
 	return portrait_image
 end
 
 UnitFramesHandler._create_player_unit_frame = function (self)
-	local unit_frame = self:_create_unit_frame_by_type("player")
 	local player = self.my_player
 	local player_ui_id = player:ui_id()
 	local player_data = {
@@ -67,15 +65,14 @@ UnitFramesHandler._create_player_unit_frame = function (self)
 		peer_id = player:network_id(),
 		local_player_id = player:local_player_id()
 	}
+	local unit_frame = self:_create_unit_frame_by_type("player")
 	unit_frame.player_data = player_data
 	unit_frame.sync = true
 	self._unit_frames[1] = unit_frame
-	self.unit_frame_index_by_ui_id[player_ui_id] = 1
+	self._unit_frame_index_by_ui_id[player_ui_id] = 1
 end
 
 UnitFramesHandler._create_team_members_unit_frames = function (self)
-	local player_manager = self.player_manager
-	local players = self.player_manager:human_and_bot_players()
 	local unit_frames = self._unit_frames
 
 	for i = 1, NUM_TEAM_MEMBERS, 1 do
@@ -119,19 +116,26 @@ UnitFramesHandler._create_unit_frame_by_type = function (self, frame_type, frame
 end
 
 UnitFramesHandler._get_unused_unit_frame = function (self)
-	for index, unit_frame in ipairs(self._unit_frames) do
+	local unit_frames = self._unit_frames
+
+	for i = 1, #unit_frames, 1 do
+		local unit_frame = unit_frames[i]
 		local player_data = unit_frame.player_data
 
 		if not player_data.peer_id and not player_data.connecting_peer_id then
-			return unit_frame, index
+			return unit_frame, i
 		end
 	end
 end
 
 UnitFramesHandler._get_unit_frame_by_connecting_peer_id = function (self, peer_id)
-	for index, unit_frame in ipairs(self._unit_frames) do
+	local unit_frames = self._unit_frames
+
+	for i = 1, #unit_frames, 1 do
+		local unit_frame = unit_frames[i]
+
 		if unit_frame.player_data.connecting_peer_id == peer_id then
-			return unit_frame, index
+			return unit_frame, i
 		end
 	end
 end
@@ -152,9 +156,8 @@ local temp_connecting_peer_ids = {}
 
 UnitFramesHandler._handle_unit_frame_assigning = function (self)
 	local player_manager = self.player_manager
-	local players = self.player_manager:human_and_bot_players()
-	local unit_frames = self._unit_frames
-	local unit_frame_index_by_ui_id = self.unit_frame_index_by_ui_id
+	local players = player_manager:human_and_bot_players()
+	local unit_frame_index_by_ui_id = self._unit_frame_index_by_ui_id
 	local unit_frames_used_by_players = 0
 	local my_player = self.my_player
 
@@ -163,7 +166,7 @@ UnitFramesHandler._handle_unit_frame_assigning = function (self)
 
 	local frames_changed = false
 
-	for index, player in pairs(players) do
+	for _, player in pairs(players) do
 		local player_ui_id = player:ui_id()
 		local player_peer_id = player:network_id()
 		temp_active_ui_ids[player_ui_id] = true
@@ -238,12 +241,14 @@ UnitFramesHandler._handle_connecting_peers = function (self, active_peer_ids, nu
 		if members then
 			local lobby_members = members:get_members()
 
-			for idx, peer_id in ipairs(lobby_members) do
+			for i = 1, #lobby_members, 1 do
+				local peer_id = lobby_members[i]
+
 				if not active_peer_ids[peer_id] then
 					local unit_frame = self:_get_unit_frame_by_connecting_peer_id(peer_id)
 
 					if not unit_frame then
-						local avaiable_unit_frame, unit_frame_index = self:_get_unused_unit_frame()
+						local avaiable_unit_frame, _ = self:_get_unused_unit_frame()
 
 						if avaiable_unit_frame then
 							self:_reset_unit_frame(avaiable_unit_frame)
@@ -271,11 +276,12 @@ end
 
 UnitFramesHandler._cleanup_unused_unit_frames = function (self, active_ui_ids, connecting_peer_ids)
 	local frames_cleared = false
+	local unit_frames = self._unit_frames
 
-	for index, unit_frame in ipairs(self._unit_frames) do
+	for i = 1, #unit_frames, 1 do
+		local unit_frame = unit_frames[i]
 		local player_data = unit_frame.player_data
 		local player_ui_id = player_data.player_ui_id
-		local player_peer_id = player_data.peer_id
 		local connecting_peer_id = player_data.connecting_peer_id
 		local clear_unit_frame = (connecting_peer_id and not connecting_peer_ids[connecting_peer_id]) or (player_ui_id and not active_ui_ids[player_ui_id])
 
@@ -285,7 +291,7 @@ UnitFramesHandler._cleanup_unused_unit_frames = function (self, active_ui_ids, c
 			frames_cleared = true
 
 			if player_ui_id then
-				self.unit_frame_index_by_ui_id[player_ui_id] = nil
+				self._unit_frame_index_by_ui_id[player_ui_id] = nil
 			end
 		end
 	end
@@ -299,26 +305,26 @@ UnitFramesHandler._align_team_member_frames = function (self)
 	local spacing = 220
 	local is_visible = self._is_visible
 	local count = 0
+	local unit_frames = self._unit_frames
 
-	for index, unit_frame in ipairs(self._unit_frames) do
-		if index > 1 then
-			local widget = unit_frame.widget
-			local player_data = unit_frame.player_data
-			local peer_id = player_data.peer_id
-			local connecting_peer_id = player_data.connecting_peer_id
+	for i = 2, #unit_frames, 1 do
+		local unit_frame = unit_frames[i]
+		local widget = unit_frame.widget
+		local player_data = unit_frame.player_data
+		local peer_id = player_data.peer_id
+		local connecting_peer_id = player_data.connecting_peer_id
 
-			if (peer_id or connecting_peer_id) and is_visible then
-				local position_x = start_offset_x
-				local position_y = start_offset_y - count * spacing
+		if (peer_id or connecting_peer_id) and is_visible then
+			local position_x = start_offset_x
+			local position_y = start_offset_y - count * spacing
 
-				widget:set_position(position_x, position_y)
+			widget:set_position(position_x, position_y)
 
-				count = count + 1
+			count = count + 1
 
-				widget:set_visible(true)
-			else
-				widget:set_visible(false)
-			end
+			widget:set_visible(true)
+		else
+			widget:set_visible(false)
 		end
 	end
 end
@@ -377,9 +383,6 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 		return
 	end
 
-	local features_list = unit_frame.features_list or empty_features_list
-	local gamepad_active = Managers.input:is_device_active("gamepad")
-	local gamepad_was_active = self.gamepad_was_active
 	local player_data = unit_frame.player_data
 	local player = player_data.player
 
@@ -387,6 +390,7 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 		return
 	end
 
+	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local peer_id = player_data.peer_id
 	local local_player_id = player_data.local_player_id
 	local data = unit_frame.data
@@ -407,7 +411,7 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 		return
 	end
 
-	local health_percent, shield_percent, total_health_percent, active_percentage, is_dead, is_knocked_down, needs_help, is_wounded, is_ready_for_assisted_respawn = nil
+	local health_percent, total_health_percent, active_percentage, is_knocked_down, needs_help, is_wounded, is_ready_for_assisted_respawn = nil
 	local is_talking = false
 	local player_unit = player_data.player_unit
 
@@ -428,7 +432,6 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 		local status_extension = extensions.status
 		local health_extension = extensions.health
 		local inventory_extension = extensions.inventory
-		local dialogue_extension = extensions.dialogue
 
 		if status_extension:is_dead() then
 			total_health_percent = 0
@@ -442,22 +445,16 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 			health_percent = health_extension:current_permanent_health_percent()
 		end
 
-		if status_extension:is_dead() then
-			shield_percent = 0
-		else
-			shield_percent = health_extension:current_temporary_health_percent()
-		end
-
 		is_wounded = status_extension:is_wounded()
 		is_knocked_down = (status_extension:is_knocked_down() or status_extension:get_is_ledge_hanging()) and total_health_percent > 0
 		is_ready_for_assisted_respawn = status_extension:is_ready_for_assisted_respawn()
 		needs_help = status_extension:is_grabbed_by_pack_master() or status_extension:is_hanging_from_hook() or status_extension:is_pounced_down() or status_extension:is_grabbed_by_corruptor() or status_extension:is_in_vortex() or status_extension:is_grabbed_by_chaos_spawn()
 		local num_grimoires = buff_extension:num_buff_perk("skaven_grimoire")
-		local multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
+		local multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, "curse_protection")
 		local num_twitch_grimoires = buff_extension:num_buff_perk("twitch_grimoire")
 		local twitch_multiplier = PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF
 		local num_slayer_curses = buff_extension:num_buff_perk("slayer_curse")
-		local slayer_curse_multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.SLAYER_CURSE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
+		local slayer_curse_multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.SLAYER_CURSE_HEALTH_DEBUFF, "curse_protection")
 		active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier + num_slayer_curses * slayer_curse_multiplier
 		equipment = inventory_extension:equipment()
 		career_index = career_extension:career_index()
@@ -466,7 +463,6 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 			ability_cooldown_percentage = GameSession.game_object_field(game, go_id, "ability_percentage") or 0
 		end
 	else
-		shield_percent = 0
 		health_percent = 0
 		total_health_percent = 0
 		active_percentage = 1
@@ -591,7 +587,6 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 
 	if data.total_health_percent ~= total_health_percent or data.active_percentage ~= active_percentage then
 		data.total_health_percent = total_health_percent
-		local low_health = (not is_dead and total_health_percent < UISettings.unit_frames.low_health_threshold) or nil
 
 		widget:set_total_health_percentage(total_health_percent, active_percentage)
 
@@ -600,7 +595,6 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 
 	if data.health_percent ~= health_percent or data.active_percentage ~= active_percentage then
 		data.health_percent = health_percent
-		local low_health = (not is_dead and not is_knocked_down and health_percent < UISettings.unit_frames.low_health_threshold) or nil
 
 		widget:set_health_percentage(health_percent, active_percentage)
 
@@ -615,6 +609,7 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 		dirty = true
 	end
 
+	local features_list = unit_frame.features_list or empty_features_list
 	local update_ability = features_list.ability
 
 	if update_ability and data.ability_cooldown_percentage ~= ability_cooldown_percentage then
@@ -639,7 +634,8 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 		local inventory_slots = InventorySettings.slots
 		local inventory_slots_data = data.inventory_slots
 
-		for _, slot in ipairs(inventory_slots) do
+		for i = 1, #inventory_slots, 1 do
+			local slot = inventory_slots[i]
 			local slot_name = slot.name
 			local slot_data = equipment.slots[slot_name]
 			local item_data = slot_data and slot_data.item_data
@@ -671,8 +667,6 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 			if update_equipment and allowed_consumable_slots[slot_name] then
 				local slot_visible = (slot_data and true) or false
 				local item_name = item_data and item_data.name
-				local is_wielded = (item_name and wielded == item_data) or false
-				local slot_dirty = false
 
 				if stored_slot_data.visible ~= slot_visible or stored_slot_data.item_name ~= item_name then
 					stored_slot_data.visible = slot_visible
@@ -681,7 +675,6 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 					widget:set_inventory_slot_data(slot_name, slot_visible, item_data)
 
 					dirty = true
-					slot_dirty = true
 				end
 			end
 
@@ -736,7 +729,7 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 					end
 
 					if slot_name == "slot_ranged" then
-						local has_overcharge, overcharge_fraction, threshold_fraction = get_overcharge_amount(player_unit)
+						local has_overcharge, overcharge_fraction, _ = get_overcharge_amount(player_unit)
 
 						if stored_slot_data.overcharge_fraction ~= overcharge_fraction then
 							widget:set_overcharge_percentage(has_overcharge, overcharge_fraction)
@@ -772,23 +765,26 @@ UnitFramesHandler.destroy = function (self)
 	self.ui_animator = nil
 
 	self:set_visible(false)
-	rawset(_G, "unit_frames_handler", nil)
 end
 
-UnitFramesHandler.set_visible = function (self, visible, ignore_own_player)
+UnitFramesHandler.set_visible = function (self, visible)
 	self._is_visible = visible
+	local parent = self._parent
+	local ignore_own_player = parent:is_own_player_dead()
+	local unit_frames = self._unit_frames
 
-	for index, unit_frame in ipairs(self._unit_frames) do
+	for i = 1, #unit_frames, 1 do
+		local unit_frame = unit_frames[i]
 		local player_data = unit_frame.player_data
 
 		if player_data.peer_id then
-			if ignore_own_player and index == 1 then
+			if ignore_own_player and i == 1 then
 				unit_frame.widget:set_visible(false)
 			else
 				unit_frame.widget:set_visible(visible)
 			end
 		elseif player_data.connecting_peer_id then
-			unit_frame.sync = true
+			unit_frame.widget:set_visible(visible)
 		elseif not visible then
 			unit_frame.widget:set_visible(false)
 		end
@@ -829,11 +825,13 @@ UnitFramesHandler.on_gamepad_deactivated = function (self)
 	end
 end
 
-UnitFramesHandler.update = function (self, dt, t, ignore_own_player)
+UnitFramesHandler.update = function (self, dt, t)
 	if not self._is_visible then
 		return
 	end
 
+	local parent = self._parent
+	local ignore_own_player = parent:is_own_player_dead()
 	local gamepad_active = self.input_manager:is_device_active("gamepad") or PLATFORM ~= "win32"
 
 	if (gamepad_active or UISettings.use_gamepad_hud_layout == "always") and UISettings.use_gamepad_hud_layout ~= "never" then
@@ -852,23 +850,18 @@ UnitFramesHandler.update = function (self, dt, t, ignore_own_player)
 	self:_sync_player_stats(self._unit_frames[self._current_frame_index])
 
 	self._current_frame_index = 1 + self._current_frame_index % #self._unit_frames
+	local unit_frames = self._unit_frames
 
-	for index, unit_frame in ipairs(self._unit_frames) do
-		if index ~= 1 or not ignore_own_player then
+	for i = 1, #unit_frames, 1 do
+		if i ~= 1 or not ignore_own_player then
+			local unit_frame = unit_frames[i]
+
 			unit_frame.widget:update(dt, t)
 		end
 	end
 
 	self:_handle_resolution_modified()
 	self:_draw(dt)
-
-	if DO_RELOAD then
-		DO_RELOAD = false
-
-		for index, unit_frame in ipairs(self._unit_frames) do
-			table.clear(unit_frame.data)
-		end
-	end
 end
 
 UnitFramesHandler._handle_resolution_modified = function (self)
@@ -877,7 +870,11 @@ UnitFramesHandler._handle_resolution_modified = function (self)
 	end
 
 	if RESOLUTION_LOOKUP.modified then
-		for index, unit_frame in ipairs(self._unit_frames) do
+		local unit_frames = self._unit_frames
+
+		for i = 1, #unit_frames, 1 do
+			local unit_frame = unit_frames[i]
+
 			unit_frame.widget:on_resolution_modified()
 		end
 	end
@@ -888,7 +885,11 @@ UnitFramesHandler._draw = function (self, dt)
 		return
 	end
 
-	for index, unit_frame in ipairs(self._unit_frames) do
+	local unit_frames = self._unit_frames
+
+	for i = 1, #unit_frames, 1 do
+		local unit_frame = unit_frames[i]
+
 		unit_frame.widget:draw(dt)
 	end
 end

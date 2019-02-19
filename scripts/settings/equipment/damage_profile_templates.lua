@@ -2,27 +2,27 @@ require("scripts/settings/equipment/power_level_templates")
 
 DamageProfileTemplates = {}
 
-local function new_template(damage_profile_name, append, new_name, charge_value, default_attack_template, ...)
-	local damage_profile = DamageProfileTemplates[damage_profile_name]
-	local new_profile = table.clone(damage_profile)
+local function new_template(damage_profile_name, damage_profile_name_appendix, override_damage_profile_name, charge_value, default_attack_template, ...)
+	local original_damage_profile = DamageProfileTemplates[damage_profile_name]
+	local damage_profile = table.clone(original_damage_profile)
 	local num_args = select("#", ...)
 
 	if default_attack_template then
-		local default_target_type = type(new_profile.default_target)
+		local default_target_type = type(damage_profile.default_target)
 
 		if default_target_type == "string" then
-			new_profile.default_target = PowerLevelTemplates[new_profile.default_target]
+			damage_profile.default_target = PowerLevelTemplates[damage_profile.default_target]
 		end
 
-		new_profile.default_target = table.clone(new_profile.default_target)
-		new_profile.default_target.attack_template = default_attack_template
+		damage_profile.default_target = table.clone(damage_profile.default_target)
+		damage_profile.default_target.attack_template = default_attack_template
 
-		if type(new_profile.targets) == "string" then
-			new_profile.targets = PowerLevelTemplates[new_profile.targets]
+		if type(damage_profile.targets) == "string" then
+			damage_profile.targets = PowerLevelTemplates[damage_profile.targets]
 		end
 
-		new_profile.targets = table.clone(new_profile.targets)
-		local targets = new_profile.targets
+		damage_profile.targets = table.clone(damage_profile.targets)
+		local targets = damage_profile.targets
 
 		if targets then
 			for index, target in ipairs(targets) do
@@ -36,14 +36,14 @@ local function new_template(damage_profile_name, append, new_name, charge_value,
 	end
 
 	if charge_value then
-		new_profile.charge_value = charge_value
+		damage_profile.charge_value = charge_value
 	end
 
-	if new_name then
-		DamageProfileTemplates[new_name] = new_profile
-	elseif append then
-		local new_damage_profile_name = damage_profile_name .. append
-		DamageProfileTemplates[new_damage_profile_name] = new_profile
+	if override_damage_profile_name then
+		DamageProfileTemplates[override_damage_profile_name] = damage_profile
+	elseif damage_profile_name_appendix then
+		local new_damage_profile_name = damage_profile_name .. damage_profile_name_appendix
+		DamageProfileTemplates[new_damage_profile_name] = damage_profile
 	end
 end
 
@@ -713,6 +713,7 @@ DamageProfileTemplates.heavy_push = {
 	charge_value = "action_push",
 	cleave_distribution = "cleave_distribution_push_default",
 	default_target = "target_push_H",
+	damage_type = "push",
 	no_damage = true
 }
 DamageProfileTemplates.slayer_leap_landing = {
@@ -721,6 +722,7 @@ DamageProfileTemplates.slayer_leap_landing = {
 	charge_value = "action_push",
 	cleave_distribution = "cleave_distribution_push_default",
 	default_target = "target_push_slayer_leap",
+	damage_type = "push",
 	no_damage = true
 }
 DamageProfileTemplates.slayer_leap_landing_impact = {
@@ -729,6 +731,7 @@ DamageProfileTemplates.slayer_leap_landing_impact = {
 	charge_value = "action_push",
 	cleave_distribution = "cleave_distribution_push_default",
 	default_target = "target_push_slayer_leap_impact",
+	damage_type = "push",
 	no_damage = true
 }
 DamageProfileTemplates.ability_push = {
@@ -747,16 +750,18 @@ DamageProfileTemplates.medium_push = {
 	cleave_distribution = "cleave_distribution_push_default",
 	default_target = "target_push_M",
 	is_push = true,
+	damage_type = "push",
 	no_damage = true
 }
 DamageProfileTemplates.shield_push = {
-	stagger_duration_modifier = 2,
+	cleave_distribution = "cleave_distribution_push_default",
 	armor_modifier = "armor_modifier_shield_push_M",
 	charge_value = "action_push",
-	cleave_distribution = "cleave_distribution_push_default",
+	stagger_duration_modifier = 2,
 	default_target = "target_push_M",
-	ignore_stagger_reduction = true,
 	is_push = true,
+	damage_type = "push",
+	ignore_stagger_reduction = true,
 	no_damage = true
 }
 DamageProfileTemplates.light_push = {
@@ -765,6 +770,7 @@ DamageProfileTemplates.light_push = {
 	charge_value = "action_push",
 	cleave_distribution = "cleave_distribution_push_default",
 	default_target = "target_push_L",
+	damage_type = "push",
 	no_damage = true
 }
 local shotgun_dropoff_ranges = {
@@ -3592,59 +3598,31 @@ DamageProfileTemplates.cannonball_impact = {
 		}
 	}
 }
-DamageProfileTemplates.loot_rat_explosion = {
-	charge_value = "grenade",
-	is_explosion = true,
-	armor_modifier = {
-		attack = {
-			1,
-			0.5,
-			1,
-			1,
-			1
-		},
-		impact = {
-			1,
-			0.5,
-			100,
-			1,
-			1
-		}
-	},
-	default_target = {
-		damage_type = "grenade",
-		attack_template = "drakegun",
-		power_distribution = {
-			attack = 0.75,
-			impact = 1
-		}
-	}
-}
 DamageProfileTemplates.warpfire_thrower_explosion = {
 	charge_value = "grenade",
 	is_explosion = true,
 	armor_modifier = {
 		attack = {
+			1.5,
 			1,
-			0.5,
-			2.5,
-			1,
-			0.75
+			1.5,
+			0.75,
+			1.2
 		},
 		impact = {
+			1.5,
 			1,
-			0.5,
-			2.5,
-			1,
-			0.75
+			1.5,
+			0.75,
+			1.2
 		}
 	},
 	default_target = {
 		damage_type = "warpfire_ground",
 		attack_template = "fire_grenade_explosion",
 		power_distribution = {
-			attack = 0.5,
-			impact = 0.5
+			attack = 0.75,
+			impact = 0.75
 		}
 	}
 }
@@ -4193,7 +4171,11 @@ for _, dlc in pairs(DLCSettings) do
 
 	if file_names then
 		for _, file_name in ipairs(file_names) do
-			require(file_name)
+			local dlc_damage_templates = require(file_name)
+
+			for template_name, template in pairs(dlc_damage_templates) do
+				DamageProfileTemplates[template_name] = template
+			end
 		end
 	end
 end

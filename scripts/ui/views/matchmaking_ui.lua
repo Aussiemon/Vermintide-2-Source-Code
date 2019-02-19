@@ -31,7 +31,6 @@ MatchmakingUI.init = function (self, ingame_ui_context)
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.lobby = ingame_ui_context.network_lobby
-	self.countdown_ui = self.ingame_ui.countdown_ui
 	self.render_settings = {
 		snap_pixel_positions = true
 	}
@@ -116,10 +115,6 @@ MatchmakingUI._get_detail_widget = function (self, name)
 	return self._detail_widgets_by_name[name]
 end
 
-MatchmakingUI.is_enter_game = function (self)
-	return self.countdown_ui:is_enter_game()
-end
-
 MatchmakingUI.is_in_inn = function (self)
 	return self.is_in_inn
 end
@@ -129,12 +124,15 @@ MatchmakingUI.update = function (self, dt, t, show_detailed_matchmaking_info)
 	local input_manager = self.input_manager
 	local input_service = input_manager:get_service("ingame_menu")
 	local is_matchmaking = self.matchmaking_manager:is_game_matchmaking() and self.is_in_inn
-	local enter_game = self.countdown_ui:is_enter_game()
-	local ui_suspended = self.ingame_ui.menu_suspended
+	local ingame_ui = self.ingame_ui
+	local ingame_hud = ingame_ui.ingame_hud
+	local countdown_ui = ingame_hud:component("LevelCountdownUI")
+	local is_enter_game = countdown_ui and countdown_ui:is_enter_game()
+	local ui_suspended = ingame_ui.menu_suspended
 	local voting_manager = self.voting_manager
 	local has_mission_vote = voting_manager:vote_in_progress() and voting_manager:is_mission_vote()
 
-	if ui_suspended and not enter_game then
+	if ui_suspended and not is_enter_game then
 		return
 	end
 
@@ -151,7 +149,7 @@ MatchmakingUI.update = function (self, dt, t, show_detailed_matchmaking_info)
 		end
 	end
 
-	if not enter_game and (is_matchmaking or has_mission_vote) then
+	if not is_enter_game and (is_matchmaking or has_mission_vote) then
 		self:_update_background(is_matchmaking, has_mission_vote)
 		self:_update_portraits(has_mission_vote)
 		self:_update_status(dt)

@@ -1,4 +1,4 @@
-wounding_damage_types = {
+local wounding_damage_types = {
 	"light_stab_fencer",
 	"light_stab_smiter",
 	"stab_fencer",
@@ -17,7 +17,7 @@ wounding_damage_types = {
 	"slashing_tank",
 	"heavy_slashing_tank"
 }
-dismembering_damage_types = {
+local dismembering_damage_types = {
 	"heavy_stab_smiter",
 	"light_slashing_smiter",
 	"slashing_smiter",
@@ -2718,6 +2718,6 @@ for hit_effect_name, hit_effect_data in pairs(HitEffectsChaosMarauder) do
 	end
 end
 
-HitEffectsChaosMarauder = HitEffectsChaosMarauder or {}
+HitEffectsChaosMarauder = table.create_copy(HitEffectsChaosMarauder, HitEffectsChaosMarauder)
 
 return

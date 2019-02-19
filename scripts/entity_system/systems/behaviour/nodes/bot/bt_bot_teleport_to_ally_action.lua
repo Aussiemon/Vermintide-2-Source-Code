@@ -1,72 +1,93 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTBotTeleportToAllyAction = class(BTBotTeleportToAllyAction, BTNode)
-BTBotTeleportToAllyAction.name = "BTBotTeleportToAllyAction"
-local MAX_ALLOWED_TELEPORT_DISTANCE = 10
 
 BTBotTeleportToAllyAction.init = function (self, ...)
 	BTBotTeleportToAllyAction.super.init(self, ...)
 end
 
+BTBotTeleportToAllyAction.name = "BTBotTeleportToAllyAction"
+
 BTBotTeleportToAllyAction.leave = function (self, unit, blackboard, t, reason, destroy)
-	local a_star = blackboard.teleport.a_star
-	blackboard.teleport = nil
-
-	if not GwNavAStar.processing_finished(a_star) then
-		GwNavAStar.cancel(a_star)
-	end
-
-	GwNavAStar.destroy(a_star)
+	return
 end
 
 BTBotTeleportToAllyAction.enter = function (self, unit, blackboard, t)
-	blackboard.teleport = {
-		state = "init",
-		position = Vector3Box(Vector3.invalid_vector()),
-		a_star = GwNavAStar.create()
-	}
+	return
 end
 
+local CHECKS_PER_DIRECTION = 5
+local ANGLE_INCREMENT = math.pi / (2 * CHECKS_PER_DIRECTION)
+local CHECK_DISTANCE = 5
+
 BTBotTeleportToAllyAction.run = function (self, unit, blackboard, t, dt)
-	local target_ally_unit = blackboard.target_ally_unit
-	local tp_bb = blackboard.teleport
-	local a_star = tp_bb.a_star
-	local state = tp_bb.state
+	local follow_unit = blackboard.ai_bot_group_extension.data.follow_unit
+	local nav_world = blackboard.nav_world
+	local navigation_extension = blackboard.navigation_extension
+	local traverse_logic = navigation_extension:traverse_logic()
+	local check_direction = nil
+	local game = Managers.state.network:game()
 
-	if Unit.alive(target_ally_unit) and state == "init" then
-		local target_pos = POSITION_LOOKUP[target_ally_unit]
-		local pos = LocomotionUtils.new_random_goal_uniformly_distributed(blackboard.nav_world, nil, target_pos, 2, 5, 5)
+	if game then
+		local game_object_id = Managers.state.unit_storage:go_id(follow_unit)
+		check_direction = -GameSession.game_object_field(game, game_object_id, "aim_direction")
+	else
+		local rotation = Unit.local_rotation(follow_unit, 0)
+		check_direction = -Quaternion.forward(rotation)
+	end
 
-		if pos then
-			tp_bb.position:store(pos)
+	local follow_unit_locomotion_extension = ScriptUnit.extension(follow_unit, "locomotion_system")
+	local from_position = follow_unit_locomotion_extension:last_position_on_navmesh()
+	local best_position = nil
+	local best_distance_sq = -math.huge
+	local angle_sign = 1
 
-			tp_bb.state = "a_star_search"
+	for i = 0, CHECKS_PER_DIRECTION, 1 do
+		local directions_to_check = (i > 0 and 2) or 1
+		local done = false
 
-			GwNavAStar.start(a_star, blackboard.nav_world, target_pos, pos, Managers.state.bot_nav_transition:traverse_logic())
+		for j = 1, directions_to_check, 1 do
+			local angle = angle_sign * ANGLE_INCREMENT * i
+			local rotation = Quaternion.axis_angle(Vector3.up(), angle)
+			local new_direction = Quaternion.rotate(rotation, check_direction)
+			local to_position = from_position + new_direction * CHECK_DISTANCE
+			local success, hit_position = GwNavQueries.raycast(nav_world, from_position, to_position, traverse_logic)
+
+			if success then
+				best_position = hit_position
+				best_distance_sq = CHECK_DISTANCE
+				done = true
+
+				break
+			end
+
+			local distance_sq = Vector3.distance_squared(from_position, hit_position)
+
+			if best_distance_sq < distance_sq then
+				best_position = hit_position
+				best_distance_sq = distance_sq
+			end
+
+			angle_sign = -angle_sign
 		end
-	elseif state == "a_star_search" and GwNavAStar.processing_finished(a_star) then
-		if GwNavAStar.path_found(a_star) and GwNavAStar.path_distance(a_star) < MAX_ALLOWED_TELEPORT_DISTANCE and GwNavAStar.node_count(a_star) > 0 then
-			local node_count = GwNavAStar.node_count(a_star)
-			local destination = GwNavAStar.node_at_index(a_star, node_count)
-			local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
 
-			locomotion_extension:teleport_to(destination)
-
-			tp_bb.state = "done"
-			blackboard.has_teleported = true
-
-			blackboard.navigation_extension:teleport(destination)
-			blackboard.ai_extension:clear_failed_paths()
-
-			blackboard.follow.needs_target_position_refresh = true
-
-			return "done"
-		else
-			tp_bb.state = "init"
+		if done then
+			break
 		end
 	end
 
-	return "running"
+	local locomotion_extension = blackboard.locomotion_extension
+
+	locomotion_extension:teleport_to(best_position)
+
+	blackboard.has_teleported = true
+
+	navigation_extension:teleport(best_position)
+	blackboard.ai_extension:clear_failed_paths()
+
+	blackboard.follow.needs_target_position_refresh = true
+
+	return "done"
 end
 
 return

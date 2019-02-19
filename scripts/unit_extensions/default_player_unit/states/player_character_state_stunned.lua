@@ -38,7 +38,7 @@ PlayerCharacterStateStunned.on_enter = function (self, unit, input, dt, context,
 	self.start_look_sense_override = hit_react_settings.start_look_sense_override
 	local original_duration = hit_react_settings.duration_function()
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
-	local duration = buff_extension:apply_buffs_to_value(original_duration, StatBuffIndex.STUN_DURATION)
+	local duration = buff_extension:apply_buffs_to_value(original_duration, "stun_duration")
 	local onscreen_particle = hit_react_settings.onscreen_particle_function(duration)
 	local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 

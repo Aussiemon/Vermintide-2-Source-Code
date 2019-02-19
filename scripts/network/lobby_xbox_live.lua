@@ -50,24 +50,7 @@ LobbyInternal.network_initialized = function ()
 end
 
 LobbyInternal.ping = function (peer_id)
-	local matchmaking_manager = Managers.matchmaking
-	local pings_by_peer_id = matchmaking_manager:get_players_ping()
-	local ping_data = pings_by_peer_id[peer_id]
-
-	if ping_data then
-		local number_of_ping_values = #ping_data
-		local total_value = 0
-
-		for i = 1, number_of_ping_values, 1 do
-			total_value = total_value + ping_data[i]
-		end
-
-		local average_value = (total_value > 0 and total_value / number_of_ping_values) or 0
-
-		return average_value
-	else
-		return 255
-	end
+	return Network.ping(peer_id)
 end
 
 LobbyInternal.add_ping_peer = function (peer_id)

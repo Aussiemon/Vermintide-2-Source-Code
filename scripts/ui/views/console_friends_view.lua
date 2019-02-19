@@ -19,6 +19,8 @@ ConsoleFriendsView.init = function (self, ingame_ui_context)
 	self._network_lobby = ingame_ui_context.network_lobby
 	self._invite_cooldown = {}
 	self._cursor_position = 1
+	self._hold_down_timer = 0
+	self._hold_up_timer = 0
 	self._is_in_inn = ingame_ui_context.is_in_inn
 	self._is_server = ingame_ui_context.is_server
 
@@ -340,7 +342,7 @@ ConsoleFriendsView._update_input_descriptions = function (self, dt, t)
 		local friend = friend_widget_content.friend
 		local friend_id = friend.xbox_user_id
 		local friend_online = friend.status == "online"
-		local invite = ((not self._invite_cooldown[friend_id] or self._invite_cooldown[friend_id] < t) and friend_online and "invite") or nil
+		local invite = ((not self._invite_cooldown[friend_id] or self._invite_cooldown[friend_id] < t) and friend_online and Managers.account:has_session() and "invite") or nil
 		local refresh = not self._is_refreshing and "refresh"
 
 		if PLATFORM == "ps4" and refresh and not friend_online then
@@ -637,7 +639,7 @@ ConsoleFriendsView._send_invite = function (self, widget, t)
 	local friend_id = content.friend.id
 	local cooldown = self._invite_cooldown[friend_id]
 
-	if self._invite_cooldown[friend_id] and t < self._invite_cooldown[friend_id] then
+	if (self._invite_cooldown[friend_id] and t < self._invite_cooldown[friend_id]) or not Managers.account:has_session() then
 		return
 	end
 

@@ -1,5 +1,4 @@
 ObjectiveSocketUnitExtension = class(ObjectiveSocketUnitExtension)
-script_data.debug_objective_socket = false
 local ObjectiveSocketUnitExtensionSettings = {
 	optional_color = {
 		0.02,
@@ -126,7 +125,7 @@ ObjectiveSocketUnitExtension.pick_socket = function (self, unit)
 	elseif pick_config == "closest" then
 		socket, i = self:pick_socket_closest(self.sockets, unit)
 	else
-		fassert(false, "[ObjectiveSocketSystem] Unknown pick_config %q in unit %q", pick_config, self.unit)
+		ferror("[ObjectiveSocketSystem] Unknown pick_config %q in unit %q", pick_config, self.unit)
 	end
 
 	return socket, i
@@ -137,24 +136,7 @@ ObjectiveSocketUnitExtension.socket_from_id = function (self, socket_id)
 end
 
 ObjectiveSocketUnitExtension.update = function (self, unit, input, dt, context, t)
-	if script_data.debug_objective_socket then
-		local sockets = self.sockets
-		local num_sockets = self.num_sockets
-
-		for i = 1, num_sockets, 1 do
-			local socket = sockets[i]
-
-			if socket.open then
-				local position = Unit.world_position(unit, socket.node_index)
-
-				QuickDrawer:sphere(position, 0.05, Color(255, 0, 255, 0))
-			else
-				local position = Unit.world_position(unit, socket.node_index)
-
-				QuickDrawer:sphere(position, 0.05, Color(255, 255, 0, 0))
-			end
-		end
-	end
+	return
 end
 
 return

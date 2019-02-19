@@ -138,6 +138,11 @@ VortexExtension.extensions_ready = function (self, world, unit)
 	local navigation_extension = blackboard.navigation_extension
 
 	navigation_extension:init_position()
+
+	if vortex_template.override_movement_speed then
+		navigation_extension:set_max_speed(vortex_template.override_movement_speed)
+	end
+
 	WwiseUtils.trigger_unit_event(world, "Play_enemy_sorcerer_vortex_loop", unit)
 end
 

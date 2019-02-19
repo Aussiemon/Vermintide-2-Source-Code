@@ -52,7 +52,8 @@ local subtitle_widget_definition = {
 }
 SubtitleGui = class(SubtitleGui)
 
-SubtitleGui.init = function (self, ingame_ui_context)
+SubtitleGui.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.dialogue_system = ingame_ui_context.dialogue_system
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.input_manager = ingame_ui_context.input_manager
@@ -77,6 +78,13 @@ SubtitleGui.init = function (self, ingame_ui_context)
 	if LAUNCH_MODE == "attract_benchmark" then
 		UISettings.use_subtitles = false
 	end
+
+	local event_manager = Managers.state.event
+
+	if event_manager then
+		event_manager:register(self, "ui_event_start_subtitle", "start_subtitle")
+		event_manager:register(self, "ui_event_stop_subtitle", "stop_subtitle")
+	end
 end
 
 SubtitleGui.create_ui_elements = function (self)
@@ -85,6 +93,13 @@ SubtitleGui.create_ui_elements = function (self)
 end
 
 SubtitleGui.destroy = function (self)
+	local event_manager = Managers.state.event
+
+	if event_manager then
+		event_manager:unregister("ui_event_start_subtitle", self)
+		event_manager:unregister("ui_event_stop_subtitle", self)
+	end
+
 	self.playing_dialogues = nil
 
 	GarbageLeakDetector.register_object(self, "subtitle_gui")

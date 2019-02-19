@@ -6,28 +6,32 @@ local PLAYER_LIST_SIZE = definitions.PLAYER_LIST_SIZE
 local PLAYER_NAME_MAX_LENGTH = 16
 local temp_vote_data = {}
 local mission_settings = {
-	tome = {
+	{
 		texture = "loot_objective_icon_02",
 		mission_name = "tome_bonus_mission",
-		total_amount = 3,
+		key = "tome",
 		widget_name = "tome_counter",
-		item_name = "wpn_side_objective_tome_01",
-		title_text = "dlc1_3_1_tomes",
-		title_widget_name = "tome_counter_title"
+		title_text = "dlc1_3_1_tomes"
 	},
-	grimoire = {
+	{
 		texture = "loot_objective_icon_01",
 		mission_name = "grimoire_hidden_mission",
-		total_amount = 2,
+		key = "grimoire",
 		widget_name = "grimoire_counter",
-		item_name = "wpn_grimoire_01",
-		title_text = "dlc1_3_1_grimoires",
-		title_widget_name = "grimoire_counter_title"
+		title_text = "dlc1_3_1_grimoires"
+	},
+	{
+		texture = "loot_mutator_icon_05",
+		mission_name = "bonus_dice_hidden_mission",
+		key = "loot_die",
+		widget_name = "loot_dice",
+		title_text = "interaction_loot_dice"
 	}
 }
 IngamePlayerListUI = class(IngamePlayerListUI)
 
-IngamePlayerListUI.init = function (self, ingame_ui_context)
+IngamePlayerListUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
@@ -175,31 +179,58 @@ IngamePlayerListUI._setup_mission_data = function (self, level_settings)
 		return
 	end
 
+	local ui_renderer = self.ui_renderer
 	local create_loot_widget = definitions.create_loot_widget
 	local widgets = self._widgets
 	local widgets_by_name = self._widgets_by_name
 	local settings_data = {}
+	local entries_per_row = 2
+	local longest_row_text = 0
+	local offset_x = 0
+	local row = 0
+	local column = 0
 	local mission_count = 0
 
-	for key, setting in pairs(mission_settings) do
+	for _, setting in ipairs(mission_settings) do
+		local key = setting.key
 		local total_amount = loot_objectives[key]
 
-		if total_amount and total_amount > 0 then
+		if total_amount then
 			local mission_name = setting.mission_name
 			local widget_name = setting.widget_name
 			local texture = setting.texture
-			local widget_definition = create_loot_widget(widget_name, texture, total_amount)
-			local widget = UIWidget.init(widget_definition)
 			local title_text = Localize(setting.title_text)
-			local title_widget_name = setting.title_widget_name
-			local title_widget = widgets_by_name[title_widget_name]
-			title_widget.content.text = title_text
+			local widget_definition = create_loot_widget(texture, title_text)
+			local widget = UIWidget.init(widget_definition)
 			local data = {
 				name = key,
-				total_amount = total_amount,
+				total_amount = total_amount > 0 and total_amount,
 				mission_name = mission_name,
 				widget = widget
 			}
+			local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture)
+			local texture_size = texture_settings.size
+			local text_style = widget.style.text
+			local text_width = UIUtils.get_text_width(ui_renderer, text_style, title_text) + 20
+
+			if longest_row_text < text_width then
+				longest_row_text = text_width
+			end
+
+			local new_column = (mission_count + 1) % (entries_per_row + 1) == 0
+
+			if new_column then
+				column = column + 1
+				row = 1
+				offset_x = offset_x + texture_size[1] + longest_row_text
+				longest_row_text = 0
+			else
+				row = row + 1
+			end
+
+			local offset = widget.offset
+			offset[1] = offset_x
+			offset[2] = -(row - 1) * texture_size[2]
 			settings_data[key] = data
 			widgets_by_name[widget_name] = widget
 			widgets[#widgets + 1] = widget
@@ -225,15 +256,20 @@ IngamePlayerListUI._sync_missions = function (self)
 		local mission_name = data.mission_name
 		local amount = self:_get_item_amount_by_mission_name(mission_name) or 0
 		local current_amount = data.amount
+		local total_amount = data.total_amount
+		local widget = data.widget
 
 		if current_amount ~= amount then
 			data.previous_amount = current_amount or 0
 			data.amount = amount
-			local widget = data.widget
 			local content = widget.content
-			local style = widget.style
-			content.draw_count = amount
-			style.icon_textures.draw_count = amount
+			content.amount = amount
+
+			if total_amount then
+				content.counter_text = tostring(amount) .. "/" .. tostring(total_amount)
+			else
+				content.counter_text = "x" .. tostring(amount)
+			end
 		end
 	end
 end
@@ -735,6 +771,12 @@ IngamePlayerListUI.input_service = function (self)
 	local input_manager = self.input_manager
 
 	return input_manager:get_service("player_list_input")
+end
+
+IngamePlayerListUI.set_visible = function (self, visible)
+	if self.active and not visible then
+		self:set_active(false)
+	end
 end
 
 IngamePlayerListUI.set_active = function (self, active)

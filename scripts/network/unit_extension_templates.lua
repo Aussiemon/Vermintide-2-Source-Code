@@ -357,31 +357,30 @@ local unit_templates = {
 	ai_pet_unit = {
 		go_type = "ai_unit",
 		self_owned_extensions = {
-			"AISimpleExtension",
 			ai_locomotion_name,
 			"AINavigationExtension",
-			"InvincibleHealthExtension"
+			"InvincibleHealthExtension",
+			"AISimpleExtension"
 		},
 		husk_extensions = {
-			"AiHuskBaseExtension",
 			"AiHuskLocomotionExtension",
-			"InvincibleHealthExtension"
+			"InvincibleHealthExtension",
+			"AiHuskBaseExtension"
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
-				"AISimpleExtension",
-				"AINavigationExtension"
+				"AINavigationExtension",
+				"AISimpleExtension"
 			},
 			husk_extensions = {
-				"AiHuskBaseExtension",
-				"AiHuskLocomotionExtension"
+				"AiHuskLocomotionExtension",
+				"AiHuskBaseExtension"
 			}
 		}
 	},
 	ai_unit_base = {
 		go_type = "ai_unit",
 		self_owned_extensions = {
-			"AISimpleExtension",
 			ai_locomotion_name,
 			"AINavigationExtension",
 			"GenericHitReactionExtension",
@@ -394,10 +393,10 @@ local unit_templates = {
 			"AIGroupMember",
 			"DialogueActorExtension",
 			"AIVolumeExtension",
-			"AIUnitFadeExtension"
+			"AIUnitFadeExtension",
+			"AISimpleExtension"
 		},
 		husk_extensions = {
-			"AiHuskBaseExtension",
 			"AiHuskLocomotionExtension",
 			"GenericHitReactionExtension",
 			"GenericHealthExtension",
@@ -407,31 +406,31 @@ local unit_templates = {
 			"ProjectileLinkerExtension",
 			"EnemyOutlineExtension",
 			"DialogueActorExtension",
-			"AIUnitFadeExtension"
+			"AIUnitFadeExtension",
+			"AiHuskBaseExtension"
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
-				"AISimpleExtension",
 				"AINavigationExtension",
 				"AIProximityExtension",
 				"BuffExtension",
 				"AIGroupMember",
 				"DialogueActorExtension",
-				"AIVolumeExtension"
+				"AIVolumeExtension",
+				"AISimpleExtension"
 			},
 			husk_extensions = {
-				"AiHuskBaseExtension",
 				"AiHuskLocomotionExtension",
 				"AIProximityExtension",
 				"BuffExtension",
-				"DialogueActorExtension"
+				"DialogueActorExtension",
+				"AiHuskBaseExtension"
 			}
 		}
 	},
 	ai_unit_critter = {
 		go_type = "ai_unit",
 		self_owned_extensions = {
-			"AISimpleExtension",
 			ai_locomotion_name,
 			"AINavigationExtension",
 			"GenericHitReactionExtension",
@@ -441,10 +440,10 @@ local unit_templates = {
 			"BuffExtension",
 			"ProjectileLinkerExtension",
 			"DialogueActorExtension",
-			"AIVolumeExtension"
+			"AIVolumeExtension",
+			"AISimpleExtension"
 		},
 		husk_extensions = {
-			"AiHuskBaseExtension",
 			"AiHuskLocomotionExtension",
 			"GenericHitReactionExtension",
 			"GenericHealthExtension",
@@ -452,23 +451,24 @@ local unit_templates = {
 			"AIProximityExtension",
 			"BuffExtension",
 			"ProjectileLinkerExtension",
-			"DialogueActorExtension"
+			"DialogueActorExtension",
+			"AiHuskBaseExtension"
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
-				"AISimpleExtension",
 				"AINavigationExtension",
 				"AIProximityExtension",
 				"BuffExtension",
 				"DialogueActorExtension",
-				"AIVolumeExtension"
+				"AIVolumeExtension",
+				"AISimpleExtension"
 			},
 			husk_extensions = {
-				"AiHuskBaseExtension",
 				"AiHuskLocomotionExtension",
 				"AIProximityExtension",
 				"BuffExtension",
-				"DialogueActorExtension"
+				"DialogueActorExtension",
+				"AiHuskBaseExtension"
 			}
 		}
 	},
@@ -757,7 +757,6 @@ local unit_templates = {
 	ai_unit_loot_rat = {
 		go_type = "ai_unit_with_inventory",
 		self_owned_extensions = {
-			"AISimpleExtension",
 			ai_locomotion_name,
 			"AINavigationExtension",
 			"GenericHitReactionExtension",
@@ -772,10 +771,10 @@ local unit_templates = {
 			"AIInventoryExtension",
 			"PingTargetExtension",
 			"EnemyOutlineExtension",
-			"AIUnitFadeExtension"
+			"AIUnitFadeExtension",
+			"AISimpleExtension"
 		},
 		husk_extensions = {
-			"AiHuskBaseExtension",
 			"AiHuskLocomotionExtension",
 			"GenericHitReactionExtension",
 			"GenericHealthExtension",
@@ -787,13 +786,13 @@ local unit_templates = {
 			"AIInventoryExtension",
 			"PingTargetExtension",
 			"EnemyOutlineExtension",
-			"AIUnitFadeExtension"
+			"AIUnitFadeExtension",
+			"AiHuskBaseExtension"
 		}
 	},
 	ai_unit_rat_ogre = {
 		go_type = "ai_unit_with_inventory",
 		self_owned_extensions = {
-			"AISimpleExtension",
 			ai_locomotion_name,
 			"AINavigationExtension",
 			"GenericHitReactionExtension",
@@ -808,10 +807,10 @@ local unit_templates = {
 			"AIVolumeExtension",
 			"PingTargetExtension",
 			"EnemyOutlineExtension",
-			"AIUnitFadeExtension"
+			"AIUnitFadeExtension",
+			"AISimpleExtension"
 		},
 		husk_extensions = {
-			"AiHuskBaseExtension",
 			"AiHuskLocomotionExtension",
 			"GenericHitReactionExtension",
 			"AIInventoryExtension",
@@ -823,30 +822,30 @@ local unit_templates = {
 			"DialogueActorExtension",
 			"PingTargetExtension",
 			"EnemyOutlineExtension",
-			"AIUnitFadeExtension"
+			"AIUnitFadeExtension",
+			"AiHuskBaseExtension"
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
-				"AISimpleExtension",
 				"AINavigationExtension",
 				"AIProximityExtension",
 				"BuffExtension",
 				"DialogueActorExtension",
-				"AIVolumeExtension"
+				"AIVolumeExtension",
+				"AISimpleExtension"
 			},
 			husk_extensions = {
-				"AiHuskBaseExtension",
 				"AiHuskLocomotionExtension",
 				"AIProximityExtension",
 				"BuffExtension",
-				"DialogueActorExtension"
+				"DialogueActorExtension",
+				"AiHuskBaseExtension"
 			}
 		}
 	},
 	ai_unit_chaos_troll = {
 		go_type = "ai_unit_with_inventory_and_target",
 		self_owned_extensions = {
-			"AISimpleExtension",
 			ai_locomotion_name,
 			"AINavigationExtension",
 			"GenericHitReactionExtension",
@@ -863,10 +862,10 @@ local unit_templates = {
 			"EnemyOutlineExtension",
 			"GenericUnitAimExtension",
 			"AIUnitFadeExtension",
-			"AIMeleeLineOfSightExtension"
+			"AIMeleeLineOfSightExtension",
+			"AISimpleExtension"
 		},
 		husk_extensions = {
-			"AiHuskBaseExtension",
 			"AiHuskLocomotionExtension",
 			"GenericHitReactionExtension",
 			"AIInventoryExtension",
@@ -879,31 +878,31 @@ local unit_templates = {
 			"PingTargetExtension",
 			"EnemyOutlineExtension",
 			"GenericUnitAimExtension",
-			"AIUnitFadeExtension"
+			"AIUnitFadeExtension",
+			"AiHuskBaseExtension"
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
-				"AISimpleExtension",
 				"AINavigationExtension",
 				"AIProximityExtension",
 				"BuffExtension",
 				"DialogueActorExtension",
 				"AIVolumeExtension",
-				"AIMeleeLineOfSightExtension"
+				"AIMeleeLineOfSightExtension",
+				"AISimpleExtension"
 			},
 			husk_extensions = {
-				"AiHuskBaseExtension",
 				"AiHuskLocomotionExtension",
 				"AIProximityExtension",
 				"BuffExtension",
-				"DialogueActorExtension"
+				"DialogueActorExtension",
+				"AiHuskBaseExtension"
 			}
 		}
 	},
 	ai_unit_stormfiend = {
 		go_type = "ai_unit_stormfiend",
 		self_owned_extensions = {
-			"AISimpleExtension",
 			ai_locomotion_name,
 			"AINavigationExtension",
 			"GenericHitReactionExtension",
@@ -921,10 +920,10 @@ local unit_templates = {
 			"GenericUnitAimExtension",
 			"AIUnitFadeExtension",
 			"AIMeleeLineOfSightExtension",
-			"StormfiendBeamExtension"
+			"StormfiendBeamExtension",
+			"AISimpleExtension"
 		},
 		husk_extensions = {
-			"AiHuskBaseExtension",
 			"AiHuskLocomotionExtension",
 			"GenericHitReactionExtension",
 			"AIInventoryExtension",
@@ -938,26 +937,27 @@ local unit_templates = {
 			"EnemyOutlineExtension",
 			"GenericUnitAimExtension",
 			"AIUnitFadeExtension",
-			"StormfiendBeamExtension"
+			"StormfiendBeamExtension",
+			"AiHuskBaseExtension"
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
-				"AISimpleExtension",
 				"AINavigationExtension",
 				"AIProximityExtension",
 				"BuffExtension",
 				"DialogueActorExtension",
 				"AIVolumeExtension",
 				"AIMeleeLineOfSightExtension",
-				"StormfiendBeamExtension"
+				"StormfiendBeamExtension",
+				"AISimpleExtension"
 			},
 			husk_extensions = {
-				"AiHuskBaseExtension",
 				"AiHuskLocomotionExtension",
 				"AIProximityExtension",
 				"BuffExtension",
 				"DialogueActorExtension",
-				"StormfiendBeamExtension"
+				"StormfiendBeamExtension",
+				"AiHuskBaseExtension"
 			}
 		}
 	},
@@ -980,7 +980,6 @@ local unit_templates = {
 	ai_unit_chaos_spawn = {
 		go_type = "ai_unit",
 		self_owned_extensions = {
-			"AISimpleExtension",
 			ai_locomotion_name,
 			"AINavigationExtension",
 			"GenericHitReactionExtension",
@@ -994,10 +993,10 @@ local unit_templates = {
 			"AIVolumeExtension",
 			"PingTargetExtension",
 			"EnemyOutlineExtension",
-			"AIUnitFadeExtension"
+			"AIUnitFadeExtension",
+			"AISimpleExtension"
 		},
 		husk_extensions = {
-			"AiHuskBaseExtension",
 			"AiHuskLocomotionExtension",
 			"GenericHitReactionExtension",
 			"GenericHealthExtension",
@@ -1008,23 +1007,24 @@ local unit_templates = {
 			"DialogueActorExtension",
 			"PingTargetExtension",
 			"EnemyOutlineExtension",
-			"AIUnitFadeExtension"
+			"AIUnitFadeExtension",
+			"AiHuskBaseExtension"
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
-				"AISimpleExtension",
 				"AINavigationExtension",
 				"AIProximityExtension",
 				"BuffExtension",
 				"DialogueActorExtension",
-				"AIVolumeExtension"
+				"AIVolumeExtension",
+				"AISimpleExtension"
 			},
 			husk_extensions = {
-				"AiHuskBaseExtension",
 				"AiHuskLocomotionExtension",
 				"AIProximityExtension",
 				"BuffExtension",
-				"DialogueActorExtension"
+				"DialogueActorExtension",
+				"AiHuskBaseExtension"
 			}
 		}
 	},
@@ -1157,22 +1157,22 @@ local unit_templates = {
 	ai_unit_chaos_dummy_sorcerer = {
 		go_type = "ai_unit_with_inventory",
 		self_owned_extensions = {
-			"AISimpleExtension",
 			"GenericHealthExtension",
 			"AIInventoryExtension",
 			"GenericHitReactionExtension",
 			"GenericDeathExtension",
 			"ProjectileLinkerExtension",
-			"BuffExtension"
+			"BuffExtension",
+			"AISimpleExtension"
 		},
 		husk_extensions = {
-			"AiHuskBaseExtension",
 			"GenericHealthExtension",
 			"AIInventoryExtension",
 			"GenericHitReactionExtension",
 			"GenericDeathExtension",
 			"ProjectileLinkerExtension",
-			"BuffExtension"
+			"BuffExtension",
+			"AiHuskBaseExtension"
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
@@ -1225,37 +1225,37 @@ local unit_templates = {
 	ai_unit_tentacle = {
 		go_type = "ai_unit_tentacle",
 		self_owned_extensions = {
-			"AISimpleExtension",
 			"GenericHealthExtension",
 			"GenericDeathExtension",
 			"AIProximityExtension",
 			"BuffExtension",
 			"ProjectileLinkerExtension",
 			"TentacleSplineExtension",
-			"DialogueActorExtension"
+			"DialogueActorExtension",
+			"AISimpleExtension"
 		},
 		husk_extensions = {
-			"AiHuskBaseExtension",
 			"GenericHealthExtension",
 			"GenericDeathExtension",
 			"AIProximityExtension",
 			"BuffExtension",
 			"ProjectileLinkerExtension",
 			"TentacleSplineExtension",
-			"DialogueActorExtension"
+			"DialogueActorExtension",
+			"AiHuskBaseExtension"
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
-				"AISimpleExtension",
 				"AIProximityExtension",
 				"BuffExtension",
-				"DialogueActorExtension"
+				"DialogueActorExtension",
+				"AISimpleExtension"
 			},
 			husk_extensions = {
-				"AiHuskBaseExtension",
 				"AIProximityExtension",
 				"BuffExtension",
-				"DialogueActorExtension"
+				"DialogueActorExtension",
+				"AiHuskBaseExtension"
 			}
 		}
 	},
@@ -1291,20 +1291,20 @@ local unit_templates = {
 	ai_unit_vortex = {
 		go_type = "ai_unit_vortex",
 		self_owned_extensions = {
-			"AISimpleExtension",
 			ai_locomotion_name,
 			"AINavigationExtension",
-			"VortexExtension"
+			"VortexExtension",
+			"AISimpleExtension"
 		},
 		husk_extensions = {
-			"AiHuskBaseExtension",
 			"AiHuskLocomotionExtension",
-			"VortexHuskExtension"
+			"VortexHuskExtension",
+			"AiHuskBaseExtension"
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
-				"AISimpleExtension",
-				"AINavigationExtension"
+				"AINavigationExtension",
+				"AISimpleExtension"
 			},
 			husk_extensions = {
 				"AiHuskBaseExtension"
@@ -1314,12 +1314,12 @@ local unit_templates = {
 	ai_unit_plague_wave_spawner = {
 		go_type = "ai_unit_plague_wave_spawner",
 		self_owned_extensions = {
-			"AISimpleExtension",
-			"InvincibleHealthExtension"
+			"InvincibleHealthExtension",
+			"AISimpleExtension"
 		},
 		husk_extensions = {
-			"AiHuskBaseExtension",
-			"InvincibleHealthExtension"
+			"InvincibleHealthExtension",
+			"AiHuskBaseExtension"
 		},
 		remove_when_killed = {
 			self_owned_extensions = {

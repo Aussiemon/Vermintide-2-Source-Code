@@ -181,7 +181,6 @@ PlayerCharacterStateInVortex.update = function (self, unit, input, dt, context, 
 		local health_extension = self.health_extension
 
 		CharacterStateHelper.update_weapon_actions(t, unit, input_extension, inventory_extension, health_extension)
-		CharacterStateHelper.reload(input_extension, inventory_extension, status_extension)
 	end
 
 	if self.force_player_look_dir_to_spinn_dir and rot then

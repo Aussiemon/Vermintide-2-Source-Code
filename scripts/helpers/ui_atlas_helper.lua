@@ -16,6 +16,7 @@ require("scripts/ui/atlas_settings/gui_level_images_atlas")
 require("scripts/ui/atlas_settings/gui_map_locations_atlas")
 require("scripts/ui/atlas_settings/gui_frames_atlas")
 require("scripts/ui/atlas_settings/gui_menus_atlas")
+require("scripts/ui/atlas_settings/gui_country_flags_atlas")
 
 local platform = PLATFORM
 
@@ -24,124 +25,127 @@ end
 
 UIAtlasHelper = UIAtlasHelper or {}
 local none_atlas_textures = {
+	unit_frame_portrait_bardin_slayer_twitch_icon = true,
 	hero_power_glow_console = true,
-	ability_outer_effect_1 = true,
 	crafting_button_fill = true,
-	game_mode_selection_glow_02_masked = true,
-	unit_frame_portrait_sienna_scholar_masked = true,
 	journal_gradient_05 = true,
 	tabs_glow_animated = true,
-	loot_presentation_circle_glow_promo_large = true,
-	console_hp_bar_background = true,
+	down_arrow = true,
+	vermintide_2_logo_demo = true,
+	loot_presentation_circle_glow_exotic_large = true,
+	loot_presentation_circle_glow_common_large = true,
 	ubersreik_area_icon_banner = true,
 	chest_reward_bar = true,
-	loot_presentation_circle_glow_rare = true,
-	news_splash_pagecounter_fill = true,
 	overcharge_threshold_mask = true,
+	news_splash_pagecounter_fill = true,
+	demo_bg_02 = true,
 	level_list_selection_frame = true,
 	console_menu_highlight = true,
 	charge_bar_flames_mask = true,
-	demo_bg_02 = true,
-	start_game_detail_glow_masked = true,
-	twitch_rat_ogre = true,
-	gamepad_difficulty_banner_2_masked = true,
+	twitch_buff_1 = true,
+	unit_frame_portrait_kruber_mercenary_masked = true,
+	unit_frame_portrait_victor_bountyhunter_twitch = true,
+	gamma_settings_image_01 = true,
 	achievement_small_book_glow = true,
-	gradient_item_rarity = true,
-	gamepad_difficulty_banner_5_masked = true,
+	unit_frame_portrait_sienna_adept_twitch = true,
+	gamepad_difficulty_banner_2_masked = true,
 	end_screen_effect_victory_1 = true,
 	unit_frame_portrait_victor_zealot_twitch_icon = true,
 	news_splash_new_dlc_tag = true,
-	teammate_hp_bar_2 = true,
-	unit_frame_portrait_sienna_adept = true,
-	twitch_frame_glass = true,
+	twitch_speed_boost = true,
+	twitch_rat_ogre = true,
+	unit_frame_portrait_sienna_adept_twitch_icon = true,
 	vote_a = true,
-	mask_rect_side_edge_fade = true,
+	twitch_ammo = true,
 	unit_frame_portrait_bardin_slayer_twitch = true,
 	achievement_book_glow_03 = true,
-	unit_frame_portrait_sienna_unchained_masked = true,
+	teammate_hp_bar_mask = true,
 	loot_presentation_circle_glow_unique = true,
 	end_screen_banner_victory = true,
 	play_button_frame_glow = true,
 	twitch_buff_3 = true,
-	down_arrow = true,
-	gamepad_ability_outline_fill = true,
-	mask_rect_edge_fade = true,
-	offscreen_clear = true,
-	drachenfels_area_icon_glass = true,
+	ability_effect = true,
 	gradient_credits_menu = true,
+	mask_rect_edge_fade = true,
+	drachenfels_area_icon_glass = true,
+	teammate_hp_bar_1 = true,
+	start_game_detail_glow_masked = true,
 	unit_frame_portrait_sienna_unchained = true,
 	unit_frame_portrait_victor_zealot = true,
 	gamepad_difficulty_banner_5 = true,
 	journal_gradient_01 = true,
-	gradient_main_menu = true,
+	game_mode_selection_glow_01_masked = true,
+	gamepad_difficulty_banner_5_masked = true,
 	console_player_hp_bar = true,
-	gamepad_difficulty_banner_4_masked = true,
 	gamepad_crafting_bar_mask = true,
-	teammate_hp_bar_color_tint_3 = true,
-	start_game_detail_glow = true,
-	unit_frame_portrait_kruber_knight_twitch = true,
+	gamepad_difficulty_banner_4_masked = true,
+	gradient_map_screen = true,
+	gamepad_difficulty_banner_1_masked = true,
 	twitch_damage_boost = true,
-	unit_frame_portrait_kerillian_shade_masked = true,
-	ability_effect = true,
+	unit_frame_portrait_kruber_knight_twitch = true,
+	offscreen_clear = true,
 	unit_frame_portrait_kerillian_waywatcher_twitch_icon = true,
 	unit_frame_portrait_kruber_huntsman_masked = true,
-	unit_frame_portrait_kerillian_maidenguard_masked = true,
+	unit_frame_portrait_kerillian_waywatcher_twitch = true,
 	unit_frame_portrait_sienna_scholar = true,
 	end_screen_experience_bar_bubbles = true,
 	buff_gradient_mask = true,
-	teammate_hp_bar_1 = true,
+	gamepad_ability_outline_fill = true,
 	unit_frame_portrait_kerillian_waywatcher_masked = true,
 	vermintide_logo_title = true,
 	unit_frame_portrait_victor_captain_twitch = true,
 	end_screen_effect_defeat_2 = true,
-	twitch_ammo = true,
-	unit_frame_portrait_bardin_ranger_masked = true,
-	unit_frame_portrait_sienna_adept_twitch_icon = true,
+	unit_frame_portrait_sienna_unchained_masked = true,
+	unit_frame_portrait_kerillian_shade_masked = true,
+	mask_rect_side_edge_fade = true,
 	unit_frame_portrait_bardin_ranger_twitch = true,
-	unit_frame_portrait_sienna_adept_twitch = true,
+	game_mode_selection_glow_02_masked = true,
 	glass_indicator = true,
 	unit_frame_portrait_kruber_mercenary_twitch_icon = true,
-	gamma_settings_image_01 = true,
-	unit_frame_portrait_victor_bountyhunter_masked = true,
-	unit_frame_portrait_victor_bountyhunter_twitch = true,
+	unit_frame_portrait_sienna_unchained_twitch_icon = true,
+	unit_frame_portrait_sienna_scholar_masked = true,
+	mask_circular = true,
 	unit_frame_portrait_victor_captain = true,
 	game_mode_selection_glow_01 = true,
-	loot_presentation_circle_glow_common_large = true,
-	unit_frame_portrait_bardin_ranger_twitch_icon = true,
+	gamepad_ability_outline_mask = true,
+	unit_frame_portrait_victor_bountyhunter_masked = true,
+	teammate_hp_bar_2 = true,
 	unit_frame_portrait_sienna_scholar_twitch = true,
-	loot_presentation_circle_glow_exotic_large = true,
-	hud_difficulty_unlocked_glow = true,
+	console_hp_bar_background = true,
 	console_cursor = true,
-	unit_frame_portrait_kerillian_shade_twitch_icon = true,
+	hud_difficulty_unlocked_glow = true,
 	background_seaweed_anim_03 = true,
+	unit_frame_portrait_kerillian_shade_twitch_icon = true,
+	loading_screen_default = true,
 	drachenfels_area_icon_banner = true,
-	gamepad_difficulty_banner_2 = true,
-	gamepad_difficulty_banner_1_masked = true,
 	console_charge_bar_fill = true,
 	twitch_special_group_3 = true,
-	gamepad_difficulty_banner_3_masked = true,
-	loot_presentation_circle_glow_plentiful = true,
+	unit_frame_portrait_bardin_slayer_masked = true,
+	news_splash_pagecounter_bar = true,
 	unit_frame_portrait_kerillian_maidenguard_twitch_icon = true,
+	news_splash_pagecounter_dot_on = true,
+	twitch_frame_glass = true,
 	news_splash_scroll_end = true,
 	news_splash_scroll_middle = true,
-	unit_frame_portrait_kerillian_maidenguard_twitch = true,
+	twitch_icon_ammo = true,
 	news_splash_bogenhafan_title = true,
+	unit_frame_portrait_sienna_unchained_twitch = true,
+	unit_frame_portrait_bardin_ranger_masked = true,
+	hero_panel_selection_glow = true,
 	news_splash_back_to_ubersreik_title = true,
 	news_splash_arrow_off = true,
-	unit_frame_portrait_sienna_unchained_twitch = true,
-	unit_frame_portrait_bardin_slayer_masked = true,
-	hero_panel_selection_glow = true,
+	store_bg_marble_highlights = true,
 	console_player_hp_bar_color_tint = true,
 	teammate_hp_bar_3 = true,
 	unit_frame_portrait_sienna_adept_masked = true,
 	controller_hold_bar = true,
 	console_hp_bar_frame = true,
 	gradient_dice_game_reward = true,
-	twitch_speed_boost = true,
-	gamepad_ability_outline_mask = true,
+	clear_mask = true,
+	unit_frame_portrait_kerillian_maidenguard_masked = true,
 	controller_image_xb1 = true,
 	gamma_settings_image_02 = true,
-	news_splash_pagecounter_bar = true,
+	loot_presentation_circle_glow_rare = true,
 	achievement_book_ribbon_01 = true,
 	twitch_logo = true,
 	teammate_hp_bar_color_tint_2 = true,
@@ -152,7 +156,7 @@ local none_atlas_textures = {
 	unit_frame_portrait_kruber_huntsman_twitch_icon = true,
 	game_mode_selection_glow_02 = true,
 	options_menu_divider_glow_02 = true,
-	mask_circular = true,
+	loot_presentation_circle_glow_plentiful = true,
 	unit_frame_portrait_victor_bountyhunter = true,
 	journal_gradient_03 = true,
 	background_net_anim_02 = true,
@@ -178,7 +182,7 @@ local none_atlas_textures = {
 	unit_frame_portrait_bardin_ironbreaker_twitch = true,
 	block_arch_symbol = true,
 	twitch_heal = true,
-	unit_frame_portrait_kruber_mercenary_masked = true,
+	gamepad_difficulty_banner_2 = true,
 	mask_rect = true,
 	loot_presentation_circle_glow_plentiful_large = true,
 	loot_presentation_circle_glow_promo = true,
@@ -187,10 +191,11 @@ local none_atlas_textures = {
 	unit_frame_portrait_default = true,
 	interaction_bar = true,
 	level_location_selected = true,
-	unit_frame_portrait_bardin_slayer_twitch_icon = true,
+	unit_frame_portrait_bardin_ranger_twitch_icon = true,
 	beta_text = true,
 	end_screen_experience_bar = true,
 	game_option_smoke = true,
+	store_bg_marble_highlights_mask = true,
 	play_button_passive_glow = true,
 	simple_rect_texture = true,
 	vote_b = true,
@@ -205,7 +210,7 @@ local none_atlas_textures = {
 	gamepad_ability_effect = true,
 	ability_outer_effect_mask = true,
 	overchargecircle_sidefade = true,
-	news_splash_pagecounter_dot_on = true,
+	start_game_detail_glow = true,
 	twitch_buff_2 = true,
 	unit_frame_portrait_kerillian_shade = true,
 	background_seaweed_anim_02 = true,
@@ -214,11 +219,12 @@ local none_atlas_textures = {
 	prestige_banner = true,
 	unit_frame_portrait_victor_captain_masked = true,
 	unit_frame_portrait_kruber_knight_twitch_icon = true,
-	loading_screen_default = true,
+	circular_gradient_write_mask = true,
 	demo_water_mark = true,
 	gamepad_difficulty_banner_4 = true,
-	gradient_map_screen = true,
+	teammate_hp_bar_color_tint_3 = true,
 	unit_frame_portrait_bardin_ironbreaker = true,
+	gradient_store_menu = true,
 	twitch_icon_damage = true,
 	loading_title_divider = true,
 	fuzzy_circle = true,
@@ -237,22 +243,22 @@ local none_atlas_textures = {
 	buff_cooldown_gradient = true,
 	unit_frame_portrait_bardin_ranger = true,
 	twitch_pow = true,
-	twitch_icon_ammo = true,
+	gradient_main_menu = true,
 	rect_masked = true,
 	mission_objective_top = true,
 	mission_objective_bottom = true,
 	unit_frame_portrait_kruber_huntsman_twitch = true,
 	default = true,
 	buff_duration_gradient = true,
-	twitch_buff_1 = true,
+	gamepad_difficulty_banner_3_masked = true,
 	twitch_special_group_4 = true,
-	unit_frame_portrait_sienna_unchained_twitch_icon = true,
+	gradient_item_rarity = true,
 	twitch_bg = true,
 	end_screen_effect_victory_2 = true,
 	background_net_anim_01 = true,
 	journal_gradient_02 = true,
 	fatigue_icon_glow = true,
-	vermintide_2_logo_demo = true,
+	unit_frame_portrait_sienna_adept = true,
 	unit_frame_portrait_kerillian_shade_twitch = true,
 	teammate_hp_bar_color_tint_1 = true,
 	twitch_disconnected = true,
@@ -269,16 +275,16 @@ local none_atlas_textures = {
 	loot_presentation_circle_glow_exotic = true,
 	news_splash_pagecounter_dot_off = true,
 	gamepad_difficulty_banner_1 = true,
-	game_mode_selection_glow_01_masked = true,
+	loot_presentation_circle_glow_promo_large = true,
 	news_splash_bg_back_to_ubersreik = true,
 	karak_azgaraz_location_icon_banner = true,
 	unit_frame_portrait_kerillian_waywatcher = true,
 	gamepad_difficulty_banner_3 = true,
 	news_splash_arrow_on = true,
 	loot_presentation_circle_glow_rare_large = true,
-	teammate_hp_bar_mask = true,
+	ability_outer_effect_1 = true,
 	item_slot_side_effect = true,
-	unit_frame_portrait_kerillian_waywatcher_twitch = true,
+	unit_frame_portrait_kerillian_maidenguard_twitch = true,
 	overcharge_bar_1 = true,
 	news_splash_bg_bogenhafen = true,
 	overcharge_bar_3 = true,
@@ -308,7 +314,9 @@ local ui_atlas_setting_tables = {
 	gui_map_locations_atlas = map_locations_atlas,
 	gui_menus_atlas = menus_atlas,
 	gui_frames_atlas = frames_atlas,
-	gui_level_images_atlas = level_images_atlas
+	gui_level_images_atlas = level_images_atlas,
+	gui_level_images_atlas = level_images_atlas,
+	gui_country_flags_atlas = country_flags_atlas
 }
 local masked_materials = {
 	gui_menu_buttons_atlas = "gui_menu_buttons_atlas_masked",
@@ -316,9 +324,11 @@ local masked_materials = {
 	gui_achievement_icons_atlas = "gui_achievement_icons_atlas_masked",
 	gui_hud_atlas = "gui_hud_atlas_masked",
 	gui_start_screen_atlas = "gui_start_screen_atlas_masked",
+	gui_level_images_atlas = "gui_level_images_atlas_masked",
 	gui_frames_atlas = "gui_frames_atlas_masked",
 	gui_map_locations_atlas = "gui_map_locations_atlas_masked",
 	gui_menus_atlas = "gui_menus_atlas_masked",
+	gui_country_flags_atlas = "gui_country_flags_atlas_masked",
 	gui_icons_atlas = "gui_icons_atlas_masked",
 	gui_items_atlas = "gui_items_atlas_masked"
 }
@@ -440,6 +450,59 @@ for material, material_settings in pairs(ui_atlas_setting_tables) do
 		fassert(ui_atlas_settings[texture_name] == nil, "[UIAtlasHelper] - Texture (%s) in material (%s) already exist in material (%s). Make sure to use unique texture names.", texture_name, material, existing_material_name)
 
 		ui_atlas_settings[texture_name] = settings
+	end
+end
+
+for name, dlc in pairs(DLCSettings) do
+	local dlc_ui_texture_settings = dlc.ui_texture_settings
+
+	if dlc_ui_texture_settings then
+		local filenames = dlc_ui_texture_settings.filenames
+
+		if filenames then
+			for _, filename in ipairs(filenames) do
+				require(filename)
+			end
+		end
+
+		local single_textures = dlc_ui_texture_settings.single_textures
+
+		if single_textures then
+			for _, texture_name in ipairs(single_textures) do
+				fassert(none_atlas_textures[texture_name] == nil, "[UIAtlasHelper] - Single Texture (%s) does already exist. Make sure to use unique texture names.", texture_name)
+
+				none_atlas_textures[texture_name] = true
+			end
+		end
+
+		local atlas_settings = dlc_ui_texture_settings.atlas_settings
+
+		if atlas_settings then
+			for material, material_settings in pairs(atlas_settings) do
+				local atlas_table = rawget(_G, material)
+
+				for texture_name, texture_settings in pairs(atlas_table) do
+					local settings = table.clone(texture_settings)
+					settings.material_name = material_settings.material_name
+					settings.masked_material_name = material_settings.masked_material_name
+					settings.point_sample_material_name = material_settings.point_sample_material_name
+					settings.masked_point_sample_material_name = material_settings.masked_point_sample_material_name
+					settings.saturated_material_name = material_settings.saturated_material_name
+					settings.masked_saturated_material_name = material_settings.masked_saturated_material_name
+					settings.masked_saturated_point_sample_material_name = material_settings.masked_saturated_point_sample_material_name
+					settings.offscreen_material_name = material_settings.offscreen_material_name
+					settings.masked_offscreen_material_name = material_settings.masked_offscreen_material_name
+					settings.masked_point_sample_offscreen_material_name = material_settings.masked_point_sample_offscreen_material_name
+					settings.point_sample_offscreen_material_name = material_settings.point_sample_offscreen_material_name
+					settings.saturated_offscreen_material_name = material_settings.saturated_offscreen_material_name
+					local existing_material_name = ui_atlas_settings[texture_name] and ui_atlas_settings[texture_name].material_name
+
+					fassert(ui_atlas_settings[texture_name] == nil, "[UIAtlasHelper] - Texture (%s) in material (%s) already exist in material (%s). Make sure to use unique texture names.", texture_name, material, existing_material_name)
+
+					ui_atlas_settings[texture_name] = settings
+				end
+			end
+		end
 	end
 end
 

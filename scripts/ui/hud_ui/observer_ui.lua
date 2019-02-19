@@ -4,7 +4,8 @@ local MIN_HEALTH_DIVIDERS = 0
 local MAX_HEALTH_DIVIDERS = 10
 ObserverUI = class(ObserverUI)
 
-ObserverUI.init = function (self, ingame_ui_context)
+ObserverUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.input_manager = ingame_ui_context.input_manager
@@ -225,11 +226,11 @@ ObserverUI.update_follow_player_health_bar = function (self, peer_id)
 		is_ready_for_assisted_respawn = status_extension:is_ready_for_assisted_respawn()
 		local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 		local num_grimoires = buff_extension:num_buff_perk("skaven_grimoire")
-		local multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
+		local multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, "curse_protection")
 		local num_twitch_grimoires = buff_extension:num_buff_perk("twitch_grimoire")
 		local twitch_multiplier = PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF
 		local num_slayer_curses = buff_extension:num_buff_perk("slayer_curse")
-		local slayer_curse_multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.SLAYER_CURSE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
+		local slayer_curse_multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.SLAYER_CURSE_HEALTH_DEBUFF, "curse_protection")
 		active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier + num_slayer_curses * slayer_curse_multiplier
 	else
 		health_percent = 0

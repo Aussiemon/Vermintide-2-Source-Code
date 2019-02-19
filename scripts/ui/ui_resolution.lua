@@ -145,26 +145,6 @@ function SetResolution(width, height)
 	Application.save_user_settings()
 end
 
-function UIResolutionScale()
-	local w, h = UIResolution()
-	local width_scale = math.min(w / UIResolutionWidthFragments(), 1)
-	local height_scale = math.min(h / UIResolutionHeightFragments(), 1)
-
-	return math.min(width_scale, height_scale)
-end
-
-function UIResolutionScaleHeight()
-	return 1
-end
-
-function UIResolutionScaleWidth()
-	return 1
-end
-
-function UIInverseResolutionScale()
-	return 1 / UIResolutionScale()
-end
-
 function UIResolutionScale_pow2()
 	local w, _ = UIResolution()
 	local scale = w / UIResolutionWidthFragments()

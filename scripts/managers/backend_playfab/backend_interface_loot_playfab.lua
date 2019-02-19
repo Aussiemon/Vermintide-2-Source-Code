@@ -44,6 +44,7 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 	local function_result = result.FunctionResult
 	local items = function_result.items
 	local unlocked_weapon_skins = function_result.unlocked_weapon_skins
+	local updated_statistics = function_result.updated_statistics
 	local consume_data = function_result.consumed_chest
 	local chest_backend_id = consume_data.ItemInstanceId
 	local remaining_uses = consume_data.RemainingUses
@@ -73,11 +74,30 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 		end
 	end
 
+	if updated_statistics then
+		local player = Managers.player and Managers.player:local_player()
+		local statistics_db = Managers.player:statistics_db()
+
+		if not player or not statistics_db then
+			print("[BackendInterfaceLootPlayfab] Could not get statistics_db, skipping updating statistics...")
+		else
+			local player_stats_id = player:stats_id()
+
+			for key, value in pairs(updated_statistics) do
+				if not statistics_db.statistics[player_stats_id][key] then
+					Application.warning("[BackendInterfaceLootPlayfab] updated_statistics " .. key .. " doesn't exist.")
+				else
+					statistics_db:set_stat(player_stats_id, key, value)
+				end
+			end
+		end
+	end
+
 	local id = data.id
 	self._loot_requests[id] = loot
 end
 
-BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_won, quick_play_bonus, difficulty, level_key, num_tomes, num_grims, num_loot_dice, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_backend_id)
+BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_won, quick_play_bonus, difficulty, level_key, num_tomes, num_grims, num_loot_dice, num_painting_scraps, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_backend_id)
 	local id = self:_new_id()
 	local remote_player_ids_and_characters = self:_get_remote_player_network_ids_and_characters()
 	local data = {
@@ -278,7 +298,7 @@ BackendInterfaceLootPlayfab.achievement_rewards_request_cb = function (self, dat
 			backend_mirror:add_keep_decoration(keep_decoration_name)
 
 			loot[#loot + 1] = {
-				type = "keep_decoration",
+				type = "keep_decoration_painting",
 				keep_decoration_name = keep_decoration_name
 			}
 		end

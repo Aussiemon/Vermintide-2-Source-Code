@@ -853,6 +853,7 @@ OptionsView.create_ui_elements = function (self)
 		settings_lists.gameplay_settings = self:build_settings_list(settings_definitions.gameplay_settings_definition, "gameplay_settings_list")
 		settings_lists.display_settings = self:build_settings_list(settings_definitions.display_settings_definition, "display_settings_list")
 		settings_lists.gamepad_settings = self:build_settings_list(settings_definitions.gamepad_settings_definition, "gamepad_settings_list")
+		settings_lists.motion_control_settings = self:build_settings_list(settings_definitions.motion_control_settings_definition, "motion_control_settings_list")
 	end
 
 	self.settings_lists = settings_lists
@@ -1658,10 +1659,10 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 		Application.set_max_frame_stacking(max_stacking_frames)
 	end
 
-	local use_hud_screen_fit = user_settings.use_hud_screen_fit
+	local use_custom_hud_scale = user_settings.use_custom_hud_scale
 
-	if use_hud_screen_fit ~= nil then
-		UISettings.use_hud_screen_fit = use_hud_screen_fit
+	if use_custom_hud_scale ~= nil then
+		UISettings.use_custom_hud_scale = use_custom_hud_scale
 	end
 
 	local use_gamepad_menu_layout = user_settings.use_gamepad_menu_layout
@@ -1857,6 +1858,32 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 		function_data.multiplier_y = base_look_multiplier * 0.85^(-gamepad_zoom_sensitivity_y)
 	end
 
+	local gamepad_left_dead_zone = user_settings.gamepad_left_dead_zone
+
+	if gamepad_left_dead_zone then
+		local active_controller = Managers.account:active_controller()
+		local default_dead_zone_settings = active_controller.default_dead_zone()
+		local mode = active_controller.CIRCULAR
+		local axis = active_controller.axis_index("left")
+		local min_value = default_dead_zone_settings[axis].dead_zone
+		local value = min_value + gamepad_left_dead_zone * (0.9 - min_value)
+
+		active_controller.set_dead_zone(axis, mode, value)
+	end
+
+	local gamepad_right_dead_zone = user_settings.gamepad_right_dead_zone
+
+	if gamepad_right_dead_zone then
+		local active_controller = Managers.account:active_controller()
+		local default_dead_zone_settings = active_controller.default_dead_zone()
+		local mode = active_controller.CIRCULAR
+		local axis = active_controller.axis_index("right")
+		local min_value = default_dead_zone_settings[axis].dead_zone
+		local value = min_value + gamepad_right_dead_zone * (0.9 - min_value)
+
+		active_controller.set_dead_zone(axis, mode, value)
+	end
+
 	local gamepad_look_invert_y = user_settings.gamepad_look_invert_y
 
 	if gamepad_look_invert_y ~= nil then
@@ -1903,6 +1930,54 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 
 			self:apply_gamepad_changes(gamepad_keymaps, using_left_handed_option)
 		end
+	end
+
+	local use_motion_controls = user_settings.use_motion_controls
+
+	if use_motion_controls ~= nil then
+		MotionControlSettings.use_motion_controls = use_motion_controls
+	end
+
+	local motion_sensitivity_yaw = user_settings.motion_sensitivity_yaw
+
+	if motion_sensitivity_yaw ~= nil then
+		MotionControlSettings.motion_sensitivity_yaw = motion_sensitivity_yaw
+	end
+
+	local motion_sensitivity_pitch = user_settings.motion_sensitivity_pitch
+
+	if motion_sensitivity_pitch ~= nil then
+		MotionControlSettings.motion_sensitivity_pitch = motion_sensitivity_pitch
+	end
+
+	local motion_disable_right_stick_vertical = user_settings.motion_disable_right_stick_vertical
+
+	if motion_disable_right_stick_vertical ~= nil then
+		MotionControlSettings.motion_disable_right_stick_vertical = motion_disable_right_stick_vertical
+	end
+
+	local motion_enable_yaw_motion = user_settings.motion_enable_yaw_motion
+
+	if motion_enable_yaw_motion ~= nil then
+		MotionControlSettings.motion_enable_yaw_motion = motion_enable_yaw_motion
+	end
+
+	local motion_enable_pitch_motion = user_settings.motion_enable_pitch_motion
+
+	if motion_enable_pitch_motion ~= nil then
+		MotionControlSettings.motion_enable_pitch_motion = motion_enable_pitch_motion
+	end
+
+	local motion_invert_yaw = user_settings.motion_invert_yaw
+
+	if motion_invert_yaw ~= nil then
+		MotionControlSettings.motion_invert_yaw = motion_invert_yaw
+	end
+
+	local motion_invert_pitch = user_settings.motion_invert_pitch
+
+	if motion_invert_pitch ~= nil then
+		MotionControlSettings.motion_invert_pitch = motion_invert_pitch
 	end
 
 	local animation_lod_distance_multiplier = user_settings.animation_lod_distance_multiplier
@@ -2003,10 +2078,10 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 		self:reload_language(language_id)
 	end
 
-	local ui_scale = user_settings.ui_scale
+	local hud_scale = user_settings.hud_scale
 
-	if ui_scale ~= nil then
-		UISettings.ui_scale = ui_scale
+	if hud_scale ~= nil then
+		UISettings.hud_scale = hud_scale
 		local force_update = true
 
 		UPDATE_RESOLUTION_LOOKUP(force_update)
@@ -3875,7 +3950,7 @@ OptionsView.cb_vsync = function (self, content)
 	self.changed_user_settings.vsync = options_values[current_selection]
 end
 
-OptionsView.cb_hud_screen_fit_setup = function (self)
+OptionsView.cb_hud_custom_scale_setup = function (self)
 	local options = {
 		{
 			value = false,
@@ -3887,30 +3962,30 @@ OptionsView.cb_hud_screen_fit_setup = function (self)
 		}
 	}
 
-	if not Application.user_setting("use_hud_screen_fit") then
-		local use_hud_screen_fit = false
+	if not Application.user_setting("use_custom_hud_scale") then
+		local use_custom_hud_scale = false
 	end
 
-	if use_hud_screen_fit then
+	if use_custom_hud_scale then
 		slot3 = 2
 	else
 		local selection = 1
 	end
 
-	if DefaultUserSettings.get("user_settings", "use_hud_screen_fit") then
+	if DefaultUserSettings.get("user_settings", "use_custom_hud_scale") then
 		slot4 = 2
 	else
 		local default_value = 1
 	end
 
-	return selection, options, "settings_menu_hud_screen_fit", default_value
+	return selection, options, "settings_menu_hud_custom_scale", default_value
 end
 
-OptionsView.cb_hud_screen_fit_saved_value = function (self, widget)
-	local use_hud_screen_fit = assigned(self.changed_user_settings.use_hud_screen_fit, Application.user_setting("use_hud_screen_fit"))
+OptionsView.cb_hud_custom_scale_saved_value = function (self, widget)
+	local use_custom_hud_scale = assigned(self.changed_user_settings.use_custom_hud_scale, Application.user_setting("use_custom_hud_scale"))
 	slot3 = widget.content
 
-	if use_hud_screen_fit then
+	if use_custom_hud_scale then
 		slot4 = 2
 	else
 		slot4 = 1
@@ -3919,10 +3994,21 @@ OptionsView.cb_hud_screen_fit_saved_value = function (self, widget)
 	slot3.current_selection = slot4
 end
 
-OptionsView.cb_hud_screen_fit = function (self, content)
+OptionsView.cb_hud_custom_scale = function (self, content)
 	local options_values = content.options_values
 	local current_selection = content.current_selection
-	self.changed_user_settings.use_hud_screen_fit = options_values[current_selection]
+	local value = options_values[current_selection]
+	self.changed_user_settings.use_custom_hud_scale = value
+
+	if value == true then
+		self:set_widget_disabled("hud_scale", false)
+	else
+		self:set_widget_disabled("hud_scale", true)
+	end
+
+	local force_update = true
+
+	UPDATE_RESOLUTION_LOOKUP(force_update)
 end
 
 OptionsView.cb_enabled_gamepad_menu_layout_setup = function (self)
@@ -5946,38 +6032,44 @@ OptionsView.cb_mouse_look_sensitivity = function (self, content)
 	self.changed_user_settings.mouse_look_sensitivity = content.value
 end
 
-OptionsView.cb_ui_scale_setup = function (self)
+OptionsView.cb_hud_scale_setup = function (self)
 	local min = 70
 	local max = 100
 
-	if not Application.user_setting("ui_scale") then
-		local ui_scale = 100
+	if not Application.user_setting("hud_scale") then
+		local hud_scale = 100
 	end
 
-	local value = get_slider_value(min, max, ui_scale)
-	local default_value = math.clamp(DefaultUserSettings.get("user_settings", "ui_scale"), min, max)
+	local value = get_slider_value(min, max, hud_scale)
+	local default_value = math.clamp(DefaultUserSettings.get("user_settings", "hud_scale"), min, max)
 
-	return value, min, max, 0, "settings_menu_ui_scale", default_value
+	return value, min, max, 0, "settings_menu_hud_scale", default_value
 end
 
-OptionsView.cb_ui_scale_saved_value = function (self, widget)
+OptionsView.cb_hud_scale_saved_value = function (self, widget)
 	local content = widget.content
 	local min = content.min
 	local max = content.max
 
-	if not assigned(self.changed_user_settings.ui_scale, Application.user_setting("ui_scale")) then
-		local ui_scale = 100
+	if not assigned(self.changed_user_settings.hud_scale, Application.user_setting("hud_scale")) then
+		local hud_scale = 100
 	end
 
-	ui_scale = math.clamp(ui_scale, min, max)
-	content.internal_value = get_slider_value(min, max, ui_scale)
-	content.value = ui_scale
+	hud_scale = math.clamp(hud_scale, min, max)
+	content.internal_value = get_slider_value(min, max, hud_scale)
+	content.value = hud_scale
+
+	if not Application.user_setting("use_custom_hud_scale") then
+		local use_custom_hud_scale = DefaultUserSettings.get("user_settings", "use_custom_hud_scale")
+	end
+
+	content.disabled = not use_custom_hud_scale
 end
 
-OptionsView.cb_ui_scale = function (self, content)
+OptionsView.cb_hud_scale = function (self, content)
 	local value = content.value
-	self.changed_user_settings.ui_scale = value
-	UISettings.ui_scale = value
+	self.changed_user_settings.hud_scale = value
+	UISettings.hud_scale = value
 	local force_update = true
 
 	UPDATE_RESOLUTION_LOOKUP(force_update)
@@ -6668,6 +6760,98 @@ OptionsView.cb_gamepad_look_invert_y = function (self, content)
 	self.changed_user_settings.gamepad_look_invert_y = options_values[current_selection]
 end
 
+OptionsView.cb_gamepad_left_dead_zone_setup = function (self)
+	local min = 0
+	local max = 1
+	local active_controller = Managers.account:active_controller()
+	local default_dead_zone_settings = active_controller.default_dead_zone()
+	local axis = active_controller.axis_index("left")
+
+	if not DefaultUserSettings.get("user_settings", "gamepad_left_dead_zone") then
+		local default_value = 0
+	end
+
+	if not Application.user_setting("gamepad_left_dead_zone") then
+		local gamepad_left_dead_zone = default_value
+	end
+
+	local value = get_slider_value(min, max, gamepad_left_dead_zone)
+	local default_dead_zone_value = default_dead_zone_settings[axis].dead_zone
+	local dead_zone_value = default_dead_zone_value + value * (0.9 - default_dead_zone_value)
+
+	if gamepad_left_dead_zone > 0 then
+		local mode = active_controller.CIRCULAR
+
+		active_controller.set_dead_zone(axis, mode, dead_zone_value)
+	end
+
+	return value, min, max, 1, "menu_settings_gamepad_left_dead_zone", default_value
+end
+
+OptionsView.cb_gamepad_left_dead_zone_saved_value = function (self, widget)
+	local content = widget.content
+	local min = content.min
+	local max = content.max
+
+	if not assigned(self.changed_user_settings.gamepad_left_dead_zone, Application.user_setting("gamepad_left_dead_zone")) then
+		local gamepad_left_dead_zone = 0
+	end
+
+	gamepad_left_dead_zone = math.clamp(gamepad_left_dead_zone, min, max)
+	content.internal_value = get_slider_value(min, max, gamepad_left_dead_zone)
+	content.value = gamepad_left_dead_zone
+end
+
+OptionsView.cb_gamepad_left_dead_zone = function (self, content)
+	self.changed_user_settings.gamepad_left_dead_zone = content.value
+end
+
+OptionsView.cb_gamepad_right_dead_zone_setup = function (self)
+	local min = 0
+	local max = 1
+	local active_controller = Managers.account:active_controller()
+	local default_dead_zone_settings = active_controller.default_dead_zone()
+	local axis = active_controller.axis_index("right")
+
+	if not DefaultUserSettings.get("user_settings", "gamepad_right_dead_zone") then
+		local default_value = 0
+	end
+
+	if not Application.user_setting("gamepad_right_dead_zone") then
+		local gamepad_right_dead_zone = default_value
+	end
+
+	local value = get_slider_value(min, max, gamepad_right_dead_zone)
+	local default_dead_zone_value = default_dead_zone_settings[axis].dead_zone
+	local dead_zone_value = default_dead_zone_value + value * (0.9 - default_dead_zone_value)
+
+	if gamepad_right_dead_zone > 0 then
+		local mode = active_controller.CIRCULAR
+
+		active_controller.set_dead_zone(axis, mode, dead_zone_value)
+	end
+
+	return value, min, max, 1, "menu_settings_gamepad_right_dead_zone", default_value
+end
+
+OptionsView.cb_gamepad_right_dead_zone_saved_value = function (self, widget)
+	local content = widget.content
+	local min = content.min
+	local max = content.max
+
+	if not assigned(self.changed_user_settings.gamepad_right_dead_zone, Application.user_setting("gamepad_right_dead_zone")) then
+		local gamepad_right_dead_zone = 0
+	end
+
+	gamepad_right_dead_zone = math.clamp(gamepad_right_dead_zone, min, max)
+	content.internal_value = get_slider_value(min, max, gamepad_right_dead_zone)
+	content.value = gamepad_right_dead_zone
+end
+
+OptionsView.cb_gamepad_right_dead_zone = function (self, content)
+	self.changed_user_settings.gamepad_right_dead_zone = content.value
+end
+
 OptionsView.cb_gamepad_auto_aim_enabled_setup = function (self)
 	local options = {
 		{
@@ -6822,6 +7006,412 @@ OptionsView.cb_gamepad_rumble_enabled = function (self, content)
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.gamepad_rumble_enabled = options_values[current_selection]
+end
+
+OptionsView.cb_motion_controls_enabled_setup = function (self)
+	local options = {
+		{
+			value = true,
+			text = Localize("menu_settings_on")
+		},
+		{
+			value = false,
+			text = Localize("menu_settings_off")
+		}
+	}
+
+	if not DefaultUserSettings.get("user_settings", "use_motion_controls") then
+		local default_value = false
+	end
+
+	local motion_controls_enabled = Application.user_setting("use_motion_controls")
+
+	if motion_controls_enabled then
+		slot4 = 1
+	else
+		local selection = 2
+	end
+
+	if default_value then
+		slot5 = 1
+	else
+		local default_option = 2
+	end
+
+	if motion_controls_enabled == nil then
+		motion_controls_enabled = MotionControlSettings.motion_controls_enabled
+	end
+
+	MotionControlSettings.use_motion_controls = motion_controls_enabled
+
+	return selection, options, "menu_settings_motion_controls_enabled", default_option
+end
+
+OptionsView.cb_motion_controls_enabled_saved_value = function (self, widget)
+	local motion_controls_enabled = assigned(self.changed_user_settings.use_motion_controls, Application.user_setting("use_motion_controls"))
+	slot3 = widget.content
+
+	if motion_controls_enabled then
+		slot4 = 1
+	else
+		slot4 = 2
+	end
+
+	slot3.current_selection = slot4
+end
+
+OptionsView.cb_motion_controls_enabled = function (self, content)
+	local options_values = content.options_values
+	local current_selection = content.current_selection
+	self.changed_user_settings.use_motion_controls = options_values[current_selection]
+end
+
+OptionsView.cb_motion_yaw_sensitivity_setup = function (self)
+	local min = MotionControlSettings.sensitivity_yaw_min
+	local max = MotionControlSettings.sensitivity_yaw_max
+
+	if not Application.user_setting("motion_sensitivity_yaw") then
+		local sensitivity = MotionControlSettings.default_sensitivity_yaw
+	end
+
+	local default_value = DefaultUserSettings.get("user_settings", "motion_sensitivity_yaw")
+	local value = get_slider_value(min, max, sensitivity)
+	sensitivity = math.clamp(sensitivity, min, max)
+
+	if sensitivity == nil then
+		motion_controls_enabled = MotionControlSettings.default_sensitivity_yaw
+	end
+
+	MotionControlSettings.motion_sensitivity_yaw = sensitivity
+
+	return value, min, max, 0, "menu_settings_sensitivity_yaw", default_value
+end
+
+OptionsView.cb_motion_yaw_sensitivity_saved_value = function (self, widget)
+	local content = widget.content
+	local min = content.min
+	local max = content.max
+
+	if not assigned(self.changed_user_settings.motion_sensitivity_yaw, Application.user_setting("motion_sensitivity_yaw")) then
+		local sensitivity = MotionControlSettings.default_sensitivity_yaw
+	end
+
+	sensitivity = math.clamp(sensitivity, min, max)
+	content.internal_value = get_slider_value(min, max, sensitivity)
+	content.value = sensitivity
+end
+
+OptionsView.cb_motion_yaw_sensitivity = function (self, content)
+	self.changed_user_settings.motion_sensitivity_yaw = content.value
+end
+
+OptionsView.cb_motion_pitch_sensitivity_setup = function (self)
+	local min = MotionControlSettings.sensitivity_pitch_min
+	local max = MotionControlSettings.sensitivity_pitch_max
+
+	if not Application.user_setting("motion_sensitivity_pitch") then
+		local sensitivity = MotionControlSettings.default_sensitivity_pitch
+	end
+
+	local default_value = DefaultUserSettings.get("user_settings", "motion_sensitivity_pitch")
+	local value = get_slider_value(min, max, sensitivity)
+	sensitivity = math.clamp(sensitivity, min, max)
+
+	if sensitivity == nil then
+		MotionControlSettings.motion_sensitivity_pitch = MotionControlSettings.default_sensitivity_pitch
+	end
+
+	MotionControlSettings.motion_sensitivity_pitch = sensitivity
+
+	return value, min, max, 0, "menu_settings_sensitivity_pitch", default_value
+end
+
+OptionsView.cb_motion_pitch_sensitivity_saved_value = function (self, widget)
+	local content = widget.content
+	local min = content.min
+	local max = content.max
+
+	if not assigned(self.changed_user_settings.motion_sensitivity_pitch, Application.user_setting("motion_sensitivity_pitch")) then
+		local sensitivity = MotionControlSettings.default_sensitivity_pitch
+	end
+
+	sensitivity = math.clamp(sensitivity, min, max)
+	content.internal_value = get_slider_value(min, max, sensitivity)
+	content.value = sensitivity
+end
+
+OptionsView.cb_motion_pitch_sensitivity = function (self, content)
+	self.changed_user_settings.motion_sensitivity_pitch = content.value
+end
+
+OptionsView.cb_disable_right_stick_look_setup = function (self)
+	local options = {
+		{
+			value = true,
+			text = Localize("menu_settings_on")
+		},
+		{
+			value = false,
+			text = Localize("menu_settings_off")
+		}
+	}
+	local default_value = DefaultUserSettings.get("user_settings", "motion_disable_right_stick_vertical")
+	local motion_disable_right_stick_vertical = Application.user_setting("motion_disable_right_stick_vertical")
+
+	if motion_disable_right_stick_vertical then
+		slot4 = 1
+	else
+		local selection = 2
+	end
+
+	if default_value then
+		slot5 = 1
+	else
+		local default_option = 2
+	end
+
+	if motion_disable_right_stick_vertical == nil then
+		MotionControlSettings.motion_disable_right_stick_vertical = MotionControlSettings.motion_disable_right_stick_vertical
+	end
+
+	MotionControlSettings.motion_disable_right_stick_vertical = motion_disable_right_stick_vertical
+
+	return selection, options, "menu_settings_disable_right_stick_vertical", default_option
+end
+
+OptionsView.cb_disable_right_stick_look_saved_value = function (self, widget)
+	local motion_disable_right_stick_vertical = assigned(self.changed_user_settings.motion_disable_right_stick_vertical, Application.user_setting("motion_disable_right_stick_vertical"))
+	slot3 = widget.content
+
+	if motion_disable_right_stick_vertical then
+		slot4 = 1
+	else
+		slot4 = 2
+	end
+
+	slot3.current_selection = slot4
+end
+
+OptionsView.cb_disable_right_stick_look = function (self, content)
+	local options_values = content.options_values
+	local current_selection = content.current_selection
+	self.changed_user_settings.motion_disable_right_stick_vertical = options_values[current_selection]
+end
+
+OptionsView.cb_yaw_motion_enabled_setup = function (self)
+	local options = {
+		{
+			value = true,
+			text = Localize("menu_settings_on")
+		},
+		{
+			value = false,
+			text = Localize("menu_settings_off")
+		}
+	}
+	local default_value = DefaultUserSettings.get("user_settings", "motion_enable_yaw_motion")
+	local motion_enable_yaw_motion = Application.user_setting("motion_enable_yaw_motion")
+
+	if motion_enable_yaw_motion then
+		slot4 = 1
+	else
+		local selection = 2
+	end
+
+	if default_value then
+		slot5 = 1
+	else
+		local default_option = 2
+	end
+
+	if motion_enable_yaw_motion == nil then
+		MotionControlSettings.motion_enable_yaw_motion = MotionControlSettings.motion_enable_yaw_motion
+	end
+
+	MotionControlSettings.motion_enable_yaw_motion = motion_enable_yaw_motion
+
+	return selection, options, "menu_settings_motion_yaw_enabled", default_option
+end
+
+OptionsView.cb_yaw_motion_enabled_saved_value = function (self, widget)
+	local motion_enable_yaw_motion = assigned(self.changed_user_settings.motion_enable_yaw_motion, Application.user_setting("motion_enable_yaw_motion"))
+	slot3 = widget.content
+
+	if motion_enable_yaw_motion then
+		slot4 = 1
+	else
+		slot4 = 2
+	end
+
+	slot3.current_selection = slot4
+end
+
+OptionsView.cb_yaw_motion_enabled = function (self, content)
+	local options_values = content.options_values
+	local current_selection = content.current_selection
+	self.changed_user_settings.motion_enable_yaw_motion = options_values[current_selection]
+end
+
+OptionsView.cb_pitch_motion_enabled_setup = function (self)
+	local options = {
+		{
+			value = true,
+			text = Localize("menu_settings_on")
+		},
+		{
+			value = false,
+			text = Localize("menu_settings_off")
+		}
+	}
+	local default_value = DefaultUserSettings.get("user_settings", "motion_enable_pitch_motion")
+	local motion_enable_pitch_motion = Application.user_setting("motion_enable_pitch_motion")
+
+	if motion_enable_pitch_motion then
+		slot4 = 1
+	else
+		local selection = 2
+	end
+
+	if default_value then
+		slot5 = 1
+	else
+		local default_option = 2
+	end
+
+	if motion_enable_pitch_motion == nil then
+		MotionControlSettings.motion_enable_pitch_motion = MotionControlSettings.motion_enable_pitch_motion
+	end
+
+	MotionControlSettings.motion_enable_pitch_motion = motion_enable_pitch_motion
+
+	return selection, options, "menu_settings_motion_pitch_enabled", default_option
+end
+
+OptionsView.cb_pitch_motion_enabled_saved_value = function (self, widget)
+	local motion_enable_pitch_motion = assigned(self.changed_user_settings.motion_enable_pitch_motion, Application.user_setting("motion_enable_pitch_motion"))
+	slot3 = widget.content
+
+	if motion_enable_pitch_motion then
+		slot4 = 1
+	else
+		slot4 = 2
+	end
+
+	slot3.current_selection = slot4
+end
+
+OptionsView.cb_pitch_motion_enabled = function (self, content)
+	local options_values = content.options_values
+	local current_selection = content.current_selection
+	self.changed_user_settings.motion_enable_pitch_motion = options_values[current_selection]
+end
+
+OptionsView.cb_invert_yaw_enabled_setup = function (self)
+	local options = {
+		{
+			value = true,
+			text = Localize("menu_settings_on")
+		},
+		{
+			value = false,
+			text = Localize("menu_settings_off")
+		}
+	}
+	local default_value = DefaultUserSettings.get("user_settings", "motion_invert_yaw")
+	local motion_invert_yaw = Application.user_setting("motion_invert_yaw")
+
+	if motion_invert_yaw then
+		slot4 = 1
+	else
+		local selection = 2
+	end
+
+	if default_value then
+		slot5 = 1
+	else
+		local default_option = 2
+	end
+
+	if motion_invert_yaw == nil then
+		MotionControlSettings.motion_invert_yaw = MotionControlSettings.motion_invert_yaw
+	end
+
+	MotionControlSettings.motion_invert_yaw = motion_invert_yaw
+
+	return selection, options, "menu_settings_invert_yaw", default_option
+end
+
+OptionsView.cb_invert_yaw_enabled_saved_value = function (self, widget)
+	local motion_invert_yaw = assigned(self.changed_user_settings.motion_invert_yaw, Application.user_setting("motion_invert_yaw"))
+	slot3 = widget.content
+
+	if motion_invert_yaw then
+		slot4 = 1
+	else
+		slot4 = 2
+	end
+
+	slot3.current_selection = slot4
+end
+
+OptionsView.cb_invert_yaw_enabled = function (self, content)
+	local options_values = content.options_values
+	local current_selection = content.current_selection
+	self.changed_user_settings.motion_invert_yaw = options_values[current_selection]
+end
+
+OptionsView.cb_invert_pitch_enabled_setup = function (self)
+	local options = {
+		{
+			value = true,
+			text = Localize("menu_settings_on")
+		},
+		{
+			value = false,
+			text = Localize("menu_settings_off")
+		}
+	}
+	local default_value = DefaultUserSettings.get("user_settings", "motion_invert_pitch")
+	local motion_invert_pitch = Application.user_setting("motion_invert_pitch")
+
+	if motion_invert_pitch then
+		slot4 = 1
+	else
+		local selection = 2
+	end
+
+	if default_value then
+		slot5 = 1
+	else
+		local default_option = 2
+	end
+
+	if motion_invert_pitch == nil then
+		MotionControlSettings.motion_invert_pitch = MotionControlSettings.motion_invert_pitch
+	end
+
+	MotionControlSettings.motion_invert_pitch = motion_invert_pitch
+
+	return selection, options, "menu_settings_invert_pitch", default_option
+end
+
+OptionsView.cb_invert_pitch_enabled_saved_value = function (self, widget)
+	local motion_invert_pitch = assigned(self.changed_user_settings.motion_invert_pitch, Application.user_setting("motion_invert_pitch"))
+	slot3 = widget.content
+
+	if motion_invert_pitch then
+		slot4 = 1
+	else
+		slot4 = 2
+	end
+
+	slot3.current_selection = slot4
+end
+
+OptionsView.cb_invert_pitch_enabled = function (self, content)
+	local options_values = content.options_values
+	local current_selection = content.current_selection
+	self.changed_user_settings.motion_invert_pitch = options_values[current_selection]
 end
 
 OptionsView.cb_gamepad_use_ps4_style_input_icons_setup = function (self)
@@ -9356,7 +9946,7 @@ OptionsView.cb_twitch_vote_time_setup = function (self)
 
 	fassert(default_option, "default option %i does not exist in cb_chat_font_size_setup options table", default_value)
 
-	if PLATFORM == "win32" then
+	if PLATFORM ~= "xb1" then
 		if not selected_option then
 			slot6 = default_option
 		end
@@ -9436,7 +10026,7 @@ OptionsView.cb_twitch_time_between_votes_setup = function (self)
 
 	fassert(default_option, "default option %i does not exist in cb_chat_font_size_setup options table", default_value)
 
-	if PLATFORM == "win32" then
+	if PLATFORM ~= "xb1" then
 		if not selected_option then
 			slot6 = default_option
 		end

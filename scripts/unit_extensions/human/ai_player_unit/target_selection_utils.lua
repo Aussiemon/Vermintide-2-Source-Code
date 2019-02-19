@@ -1217,8 +1217,13 @@ PerceptionUtils.pick_mutator_sorcerer_target = function (unit, blackboard, breed
 	local closest_enemy = nil
 	local closest_dist_sq = math.huge
 	local closest_distance_score = math.huge
-	local enemy_looking_at_you = nil
-	local highest_perception_bonus = 0
+	local t = Managers.time:time("game")
+
+	if is_of_interest_to_corruptor(unit, blackboard.target_unit) and blackboard.target_stickyness_duration and t < blackboard.target_stickyness_duration then
+		local closest_distance = Vector3.distance(POSITION_LOOKUP[blackboard.target_unit], pos)
+
+		return blackboard.target_unit, closest_distance
+	end
 
 	for k, player_unit in ipairs(PLAYER_AND_BOT_UNITS) do
 		if is_of_interest_to_corruptor(unit, player_unit) then
@@ -1226,41 +1231,13 @@ PerceptionUtils.pick_mutator_sorcerer_target = function (unit, blackboard, breed
 			local dist_sq = Vector3.distance_squared(pos, enemy_pos)
 			local score = dist_sq
 
-			if player_unit == blackboard.target_unit then
-				score = dist_sq * 0.8
-			end
-
 			if blackboard.corruptor_target and blackboard.corruptor_target == player_unit then
 				local dist = math.sqrt(dist_sq)
 
 				return blackboard.corruptor_target, dist
 			end
 
-			local first_person_extension = ScriptUnit.has_extension(player_unit, "first_person_system")
-			local unit_direction = nil
-
-			if first_person_extension then
-				unit_direction = Quaternion.forward(first_person_extension:current_rotation())
-			else
-				local network_manager = Managers.state.network
-				local unit_id = network_manager:unit_game_object_id(player_unit)
-				unit_direction = GameSession.game_object_field(network_manager:game(), unit_id, "aim_direction")
-			end
-
-			local target_unit_pos = Unit.world_position(player_unit, 0)
-			local unit_pos = Unit.world_position(unit, 0)
-			local target_unit_to_unit_dir = Vector3.normalize(unit_pos - target_unit_pos)
-			local angle = Vector3.dot(unit_direction, target_unit_to_unit_dir)
-			local is_infront = angle >= 0.6 and angle <= 1
-			local perception_bonus = math.abs((1 - angle) / 0.4 - 1)
-
-			if is_infront and highest_perception_bonus < perception_bonus then
-				highest_perception_bonus = perception_bonus
-				closest_dist_sq = dist_sq
-				closest_distance_score = score
-				closest_enemy = player_unit
-				enemy_looking_at_you = player_unit
-			elseif score < closest_distance_score then
+			if score < closest_distance_score then
 				closest_dist_sq = dist_sq
 				closest_distance_score = score
 				closest_enemy = player_unit
@@ -1269,9 +1246,14 @@ PerceptionUtils.pick_mutator_sorcerer_target = function (unit, blackboard, breed
 	end
 
 	blackboard.closest_enemy_dist_sq = closest_dist_sq
+
+	if closest_enemy ~= blackboard.target_unit then
+		blackboard.target_stickyness_duration = t + 2
+	end
+
 	local closest_dist = math.sqrt(closest_dist_sq)
 
-	return enemy_looking_at_you or closest_enemy, closest_dist
+	return closest_enemy, closest_dist
 end
 
 PerceptionUtils.pick_corruptor_target = function (unit, blackboard, breed)

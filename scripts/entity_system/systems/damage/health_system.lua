@@ -488,6 +488,8 @@ HealthSystem.rpc_suicide = function (self, sender, go_id)
 end
 
 HealthSystem.rpc_sync_damage_taken = function (self, sender, go_id, is_level_unit, set_max_health, amount, state_id)
+	fassert(not self.is_server, "rpc_sync_damage_taken was sent to server, only clients should receive this!")
+
 	local unit = nil
 	local unit_storage = self.unit_storage
 
@@ -506,6 +508,10 @@ HealthSystem.rpc_sync_damage_taken = function (self, sender, go_id, is_level_uni
 
 	if health_extension.sync_damage_taken then
 		health_extension:sync_damage_taken(amount, set_max_health, state)
+	elseif set_max_health then
+		health_extension:set_max_health(amount)
+
+		health_extension.state = state
 	else
 		health_extension.damage = amount
 		health_extension.state = state

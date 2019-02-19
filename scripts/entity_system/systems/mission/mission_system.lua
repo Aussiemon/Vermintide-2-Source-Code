@@ -166,13 +166,8 @@ MissionSystem.start_mission = function (self, mission_name, unit, sync_data)
 
 	template.update_text(data)
 
-	if not mission_data.hidden and self.tutorial_ui then
-		local info_slate_type = (data.mission_data.is_side_mission and "side_mission") or data.info_slate_type
-		data.entry_id = self.tutorial_ui:queue_info_slate_entry(info_slate_type, data.text, "hud_tutorial_icon_mission", true, data.update_sound)
-
-		if not data.mission_data.is_side_mission and self.mission_objective_ui then
-			self.mission_objective_ui:add_mission_objective(mission_name, data.center_text or data.text)
-		end
+	if not mission_data.hidden and not data.mission_data.is_side_mission then
+		Managers.state.event:trigger("ui_event_add_mission_objective", mission_name, data.center_text or data.text)
 	end
 
 	self.active_missions[mission_name] = data
@@ -195,23 +190,7 @@ MissionSystem.end_mission = function (self, mission_name, sync)
 	local info_slate_type = (data.mission_data.is_side_mission and "side_mission") or data.info_slate_type
 
 	if not data.mission_data.hidden then
-		if completed then
-			if self.tutorial_ui then
-				self.tutorial_ui:complete_mission_info_slate(info_slate_type, data.entry_id)
-			end
-
-			if self.mission_objective_ui then
-				self.mission_objective_ui:complete_mission(mission_name, data.mission_data.dont_show_mission_end_tooltip)
-			end
-		else
-			if self.tutorial_ui then
-				self.tutorial_ui:complete_mission_info_slate(info_slate_type, data.entry_id)
-			end
-
-			if self.mission_objective_ui then
-				self.mission_objective_ui:complete_mission(mission_name, data.mission_data.dont_show_mission_end_tooltip)
-			end
-		end
+		Managers.state.event:trigger("ui_event_complete_mission", mission_name, data.mission_data.dont_show_mission_end_tooltip)
 	end
 
 	if sync and self.is_server then
@@ -243,11 +222,8 @@ MissionSystem.update_mission = function (self, mission_name, positive, dt, sync)
 
 	template.update_text(data)
 
-	if not data.mission_data.hidden and self.tutorial_ui and self.mission_objective_ui then
-		local info_slate_type = (data.mission_data.is_side_mission and "side_mission") or data.info_slate_type
-
-		self.tutorial_ui:update_info_slate_entry_text(info_slate_type, data.entry_id, data.text)
-		self.mission_objective_ui:update_mission(mission_name, data.center_text or data.text)
+	if not data.mission_data.hidden then
+		Managers.state.event:trigger("ui_event_update_mission", mission_name, data.center_text or data.text)
 	end
 
 	if sync and self.is_server then
@@ -389,11 +365,8 @@ MissionSystem.rpc_update_mission = function (self, peer_id, mission_name_id, syn
 	template.sync(data, sync_data)
 	template.update_text(data)
 
-	if not data.mission_data.hidden and self.tutorial_ui and self.mission_objective_ui then
-		local info_slate_type = (data.mission_data.is_side_mission and "side_mission") or data.info_slate_type
-
-		self.tutorial_ui:update_info_slate_entry_text(info_slate_type, data.entry_id, data.text)
-		self.mission_objective_ui:update_mission(mission_name, data.center_text or data.text)
+	if not data.mission_data.hidden then
+		Managers.state.event:trigger("ui_event_update_mission", mission_name, data.center_text or data.text)
 	end
 end
 
@@ -428,6 +401,11 @@ end
 MissionSystem.percentage_completed = function (self)
 	local percentage_completed = self._percentage_completed_override or self._percentage_completed
 	local clamped_percentage = math.clamp(percentage_completed, 0, 1)
+	local current_level_settings = LevelHelper:current_level_settings()
+
+	if current_level_settings and current_level_settings.disable_percentage_completed then
+		clamped_percentage = 0
+	end
 
 	return clamped_percentage
 end

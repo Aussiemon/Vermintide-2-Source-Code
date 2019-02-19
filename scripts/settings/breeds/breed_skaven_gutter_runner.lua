@@ -306,11 +306,11 @@ local action_data = {
 	},
 	prepare_crazy_jump = {
 		difficulty_prepare_jump_time = {
-			0.4,
-			0.4,
-			0.4,
-			0.4,
-			0.4
+			0.5,
+			0.5,
+			0.5,
+			0.5,
+			0.5
 		}
 	},
 	ninja_vanish = {

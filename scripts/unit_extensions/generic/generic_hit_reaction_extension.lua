@@ -401,6 +401,14 @@ GenericHitReactionExtension._check_for_diagonal_dismemberment = function (self, 
 	return new_dismember_event, should_replace_old
 end
 
+GenericHitReactionExtension._is_dismembering_allowed = function (self, parameters)
+	if PLATFORM ~= "win32" and not parameters.is_critical_strike then
+		return false
+	end
+
+	return true
+end
+
 local FLOW_EVENTS = {}
 local WWISE_PARAMETERS = {}
 
@@ -445,7 +453,8 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 		has_flow_event = true
 	end
 
-	local dismember = effect_template.do_dismember or (parameters.force_dismember and parameters.death)
+	local is_dismember_allowed = self:_is_dismembering_allowed(parameters)
+	local dismember = is_dismember_allowed and (effect_template.do_dismember or (parameters.force_dismember and parameters.death))
 
 	if dismember and (not death_ext or not death_ext:is_wall_nailed()) then
 		local event_table = Dismemberments[breed_data.name]
@@ -564,7 +573,11 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 			local hit_position = Vector3Aux.unbox(effect_biggest_hit[DamageDataIndex.POSITION])
 			impact_position = hit_position
 		else
-			for _, actor_name in ipairs(actors) do
+			local num_actors = #actors
+
+			for i = 1, num_actors, 1 do
+				local actor_name = actors[i]
+
 				if Unit.has_node(unit, actor_name) then
 					impact_position = Unit.world_position(unit, Unit.node(unit, actor_name))
 

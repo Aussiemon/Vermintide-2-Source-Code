@@ -12,7 +12,7 @@ AiHuskLocomotionExtension.init = function (self, extension_init_context, unit, e
 	Unit.set_animation_merge_options(unit)
 
 	self._velocity = Vector3Box(0, 0, 0)
-	self._breed = extension_init_data.breed
+	self.breed = extension_init_data.breed
 	local ai_system = Managers.state.entity:system("ai_system")
 	local client_traverse_logic = ai_system:client_traverse_logic()
 	self._nav_world = ai_system:nav_world()
@@ -60,7 +60,7 @@ AiHuskLocomotionExtension.init = function (self, extension_init_context, unit, e
 
 	self._system_data.all_update_units[unit] = self
 	self._system_data.pure_network_update_units[unit] = self
-	local unit_template = Managers.state.unit_spawner.unit_template_lut[self._breed.unit_template]
+	local unit_template = Managers.state.unit_spawner.unit_template_lut[self.breed.unit_template]
 	local go_type = unit_template and unit_template.go_type
 	local game_object_template = Managers.state.network:game_object_template(go_type)
 	local should_sync_rotation = game_object_template and not game_object_template.syncs_rotation and false
@@ -139,7 +139,7 @@ AiHuskLocomotionExtension.unfreeze = function (self)
 
 	self._system_data.all_update_units[unit] = self
 	self._system_data.pure_network_update_units[unit] = self
-	local unit_template = Managers.state.unit_spawner.unit_template_lut[self._breed.unit_template]
+	local unit_template = Managers.state.unit_spawner.unit_template_lut[self.breed.unit_template]
 	local go_type = unit_template and unit_template.go_type
 	local game_object_template = Managers.state.network:game_object_template(go_type)
 	local should_sync_rotation = game_object_template and not game_object_template.syncs_rotation and false
@@ -233,7 +233,7 @@ AiHuskLocomotionExtension.teleport_to = function (self, position, rotation, velo
 	local mover = Unit.mover(unit)
 
 	if mover and not dontseparate then
-		local breed = self._breed
+		local breed = self.breed
 		local mover_move_distance = breed.override_mover_move_distance or ALLOWED_MOVER_MOVE_DISTANCE
 
 		Mover.set_position(mover, position)

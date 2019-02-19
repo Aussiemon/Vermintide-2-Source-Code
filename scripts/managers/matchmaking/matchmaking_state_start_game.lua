@@ -84,10 +84,19 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 			"harder",
 			"hardest"
 		}
-		local matchmaking_types = {
-			"quick_game",
-			"custom_game"
-		}
+		local matchmaking_types = nil
+
+		if game_mode == "event" then
+			matchmaking_types = {
+				"event"
+			}
+		else
+			matchmaking_types = {
+				"quick_game",
+				"custom_game"
+			}
+		end
+
 		local lobby_members_class = self._lobby:members()
 		local lobby_members = lobby_members_class:get_members()
 		local profiles = {}

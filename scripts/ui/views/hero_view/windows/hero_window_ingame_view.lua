@@ -474,7 +474,7 @@ HeroWindowIngameView._update_presentation = function (self)
 
 	if num_entries ~= self._num_entries then
 		local title_button_widgets = self._title_button_widgets
-		local spacing = 70
+		local spacing = 60
 		local total_height = 0
 
 		for index = 1, num_entries, 1 do

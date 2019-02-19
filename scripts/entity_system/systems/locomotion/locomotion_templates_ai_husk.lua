@@ -174,7 +174,7 @@ LocomotionTemplates.AiHuskLocomotionExtension.update_other_update_units_navmesh_
 				local mover = Unit.mover(unit)
 
 				if mover then
-					local breed = extension._breed
+					local breed = extension.breed
 					local mover_move_distance = breed.override_mover_move_distance or ALLOWED_MOVER_MOVE_DISTANCE
 
 					Mover.set_position(mover, current_position)

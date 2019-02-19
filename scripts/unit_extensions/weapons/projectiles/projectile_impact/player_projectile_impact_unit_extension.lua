@@ -126,24 +126,27 @@ PlayerProjectileImpactUnitExtension._do_raycast = function (self, unit, from, to
 		local hit_normal = hit[INDEX_NORMAL]
 		local hit_actor = hit[INDEX_ACTOR]
 		local hit_unit = Actor.unit(hit_actor)
-		local hit_self = hit_unit == unit
 
-		if not hit_self then
-			local num_actors = Unit.num_actors(hit_unit)
-			local actor_index = nil
+		if not Unit.is_frozen(hit_unit) then
+			local hit_self = hit_unit == unit
 
-			for j = 0, num_actors - 1, 1 do
-				local actor = Unit.actor(hit_unit, j)
+			if not hit_self then
+				local num_actors = Unit.num_actors(hit_unit)
+				local actor_index = nil
 
-				if hit_actor == actor then
-					actor_index = j
+				for j = 0, num_actors - 1, 1 do
+					local actor = Unit.actor(hit_unit, j)
 
-					break
+					if hit_actor == actor then
+						actor_index = j
+
+						break
+					end
 				end
-			end
 
-			assert(actor_index, "No actor index")
-			self:impact(hit_unit, hit_position, direction, hit_normal, actor_index)
+				assert(actor_index, "No actor index")
+				self:impact(hit_unit, hit_position, direction, hit_normal, actor_index)
+			end
 		end
 	end
 end
@@ -177,24 +180,27 @@ PlayerProjectileImpactUnitExtension.update_sphere_sweep = function (self, unit, 
 			local hit_normal = hit.normal
 			local hit_distance = hit.distance
 			local hit_unit = Actor.unit(hit_actor)
-			local hit_self = hit_unit == unit
 
-			if not hit_self then
-				local num_actors = Unit.num_actors(hit_unit)
-				local actor_index = nil
+			if not Unit.is_frozen(hit_unit) then
+				local hit_self = hit_unit == unit
 
-				for j = 0, num_actors - 1, 1 do
-					local actor = Unit.actor(hit_unit, j)
+				if not hit_self then
+					local num_actors = Unit.num_actors(hit_unit)
+					local actor_index = nil
 
-					if hit_actor == actor then
-						actor_index = j
+					for j = 0, num_actors - 1, 1 do
+						local actor = Unit.actor(hit_unit, j)
 
-						break
+						if hit_actor == actor then
+							actor_index = j
+
+							break
+						end
 					end
-				end
 
-				assert(actor_index, "No actor index")
-				self:impact(hit_unit, hit_position, direction, hit_normal, actor_index)
+					assert(actor_index, "No actor index")
+					self:impact(hit_unit, hit_position, direction, hit_normal, actor_index)
+				end
 			end
 		end
 	end

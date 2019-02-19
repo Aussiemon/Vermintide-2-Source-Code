@@ -122,7 +122,26 @@ BTSelector_chaos_exalted_champion_warcamp.run = function (self, unit, blackboard
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_stagger = children[5]
+	local node_retaliation_aoe = children[5]
+	local condition_result = blackboard.num_chain_stagger and blackboard.num_chain_stagger > 2
+
+	if condition_result then
+		self:set_running_child(unit, blackboard, t, node_retaliation_aoe, "aborted")
+
+		local result, evaluate = node_retaliation_aoe:run(unit, blackboard, t, dt)
+
+		if result ~= "running" then
+			self:set_running_child(unit, blackboard, t, nil, result)
+		end
+
+		if result ~= "failed" then
+			return result, evaluate
+		end
+	elseif node_retaliation_aoe == child_running then
+		self:set_running_child(unit, blackboard, t, nil, "failed")
+	end
+
+	local node_stagger = children[6]
 	local condition_result = nil
 
 	if blackboard.stagger then
@@ -145,7 +164,7 @@ BTSelector_chaos_exalted_champion_warcamp.run = function (self, unit, blackboard
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_in_defensive = children[6]
+	local node_in_defensive = children[7]
 	local condition_result = blackboard.defensive_mode_duration and unit_alive(blackboard.target_unit)
 
 	if condition_result then
@@ -164,7 +183,7 @@ BTSelector_chaos_exalted_champion_warcamp.run = function (self, unit, blackboard
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_in_combat = children[7]
+	local node_in_combat = children[8]
 	local condition_result = unit_alive(blackboard.target_unit)
 
 	if condition_result then
@@ -183,7 +202,7 @@ BTSelector_chaos_exalted_champion_warcamp.run = function (self, unit, blackboard
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_defensive_idle = children[8]
+	local node_defensive_idle = children[9]
 
 	self:set_running_child(unit, blackboard, t, node_defensive_idle, "aborted")
 
@@ -197,7 +216,7 @@ BTSelector_chaos_exalted_champion_warcamp.run = function (self, unit, blackboard
 		return result, evaluate
 	end
 
-	local node_idle = children[9]
+	local node_idle = children[10]
 	local condition_result = not unit_alive(blackboard.target_unit)
 
 	if condition_result then
@@ -216,7 +235,7 @@ BTSelector_chaos_exalted_champion_warcamp.run = function (self, unit, blackboard
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_fallback_idle = children[10]
+	local node_fallback_idle = children[11]
 
 	self:set_running_child(unit, blackboard, t, node_fallback_idle, "aborted")
 

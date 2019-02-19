@@ -533,14 +533,61 @@ local generic_input_actions = {
 			ignore_keybinding = true
 		},
 		{
-			input_action = "confirm",
-			priority = 2,
-			description_text = "input_description_select"
-		},
-		{
 			input_action = "back",
-			priority = 3,
+			priority = 10,
 			description_text = "input_description_close"
+		}
+	},
+	filter = {
+		actions = {
+			{
+				input_action = "special_1",
+				priority = 2,
+				description_text = "menu_description_refresh"
+			},
+			{
+				input_action = "left_stick_press",
+				priority = 3,
+				description_text = "lb_reset_filters"
+			},
+			{
+				input_action = "right_stick_press",
+				priority = 4,
+				description_text = "input_description_filter"
+			}
+		}
+	},
+	join_filter = {
+		actions = {
+			{
+				input_action = "special_1",
+				priority = 2,
+				description_text = "menu_description_refresh"
+			},
+			{
+				input_action = "left_stick_press",
+				priority = 3,
+				description_text = "lb_reset_filters"
+			},
+			{
+				input_action = "right_stick_press",
+				priority = 4,
+				description_text = "input_description_filter"
+			},
+			{
+				input_action = "refresh",
+				priority = 5,
+				description_text = "join_menu_button_name"
+			}
+		}
+	},
+	set_filter = {
+		actions = {
+			{
+				input_action = "confirm",
+				priority = 2,
+				description_text = "input_description_select"
+			}
 		}
 	}
 }

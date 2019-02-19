@@ -37,6 +37,7 @@ PowerLevelTemplates = {
 	},
 	target_push_L = {
 		boost_curve_type = "default",
+		damage_type = "push",
 		attack_template = "basic_sweep_push",
 		power_distribution = {
 			attack = 0,
@@ -77,6 +78,7 @@ PowerLevelTemplates = {
 	},
 	target_push_M = {
 		boost_curve_type = "default",
+		damage_type = "push",
 		attack_template = "basic_sweep_push",
 		power_distribution = {
 			attack = 0,
@@ -101,6 +103,7 @@ PowerLevelTemplates = {
 	},
 	target_push_H = {
 		boost_curve_type = "default",
+		damage_type = "push",
 		attack_template = "basic_sweep_push",
 		power_distribution = {
 			attack = 0,
@@ -125,6 +128,7 @@ PowerLevelTemplates = {
 	},
 	target_push_slayer_leap = {
 		boost_curve_type = "default",
+		damage_type = "push",
 		attack_template = "basic_sweep_push",
 		power_distribution = {
 			attack = 0,
@@ -149,6 +153,7 @@ PowerLevelTemplates = {
 	},
 	target_push_slayer_leap_impact = {
 		boost_curve_type = "default",
+		damage_type = "push",
 		attack_template = "basic_sweep_push",
 		power_distribution = {
 			attack = 0,
@@ -174,8 +179,9 @@ PowerLevelTemplates = {
 		}
 	},
 	target_push_Ability = {
-		boost_curve_type = "default",
 		stagger_duration_modifier = 1,
+		damage_type = "push",
+		boost_curve_type = "default",
 		attack_template = "ability_push",
 		power_distribution = {
 			attack = 0,

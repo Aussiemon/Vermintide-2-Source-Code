@@ -110,7 +110,8 @@ local widget_definitions = {
 	news_ticker_mask_widget = UIWidgets.create_simple_texture("mask_rect", "news_ticker_mask")
 }
 
-IngameNewsTickerUI.init = function (self, ingame_ui_context)
+IngameNewsTickerUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.platform = PLATFORM

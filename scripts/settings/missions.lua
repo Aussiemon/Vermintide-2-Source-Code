@@ -205,6 +205,16 @@ Missions = {
 		text = "bonus_dice_hidden_mission_text",
 		dice_per_amount = 1
 	},
+	painting_scrap_hidden_mission = {
+		text = "bonus_painting_scrap_hidden_mission_text",
+		collect_amount = 1,
+		mission_template_name = "collect_uncompletable",
+		experience_per_amount = 5,
+		evaluation_type = "amount",
+		evaluate_at_level_end = true,
+		is_side_mission = true,
+		hidden = true
+	},
 	players_alive_mission = {
 		text = "players_alive_mission_text",
 		is_side_mission = true,

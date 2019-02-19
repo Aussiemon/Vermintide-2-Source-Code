@@ -28,6 +28,7 @@ TwitchManager.init = function (self)
 	self._game_object_ids = {}
 	self._vote_key_to_go_id = {}
 	self.locked_breed_packages = {}
+	self._rest_interface = (PLATFORM == "ps4" and Managers.rest_transport) or Managers.curl
 	local settings = Application.settings()
 	self._twitch_settings = settings.twitch
 
@@ -73,15 +74,13 @@ TwitchManager.connect = function (self, twitch_user_name, optional_connection_fa
 	fassert(twitch_user_name, "[TwitchManager] You need to provide a user name to connect")
 
 	local url = "https://api.twitch.tv/kraken/users?login=" .. twitch_user_name
-	local options = {
-		[Managers.curl._curl.OPT_SSL_VERIFYPEER] = false
-	}
+	local options = {}
 	self._connecting = true
 	self._connection_failure_callback = optional_connection_failure_callback
 	self._connection_success_callback = optional_connection_success_callback
 	self._twitch_user_name = twitch_user_name
 
-	Managers.curl:get(url, self._headers, callback(self, "cb_on_user_info_received"), {
+	self._rest_interface:get(url, self._headers, callback(self, "cb_on_user_info_received"), {
 		"User Data",
 		twitch_user_name
 	}, options)
@@ -112,11 +111,9 @@ TwitchManager.cb_on_user_info_received = function (self, success, code, headers,
 				end
 
 				local url = "https://api.twitch.tv/kraken/streams/" .. user_id
-				local options = {
-					[Managers.curl._curl.OPT_SSL_VERIFYPEER] = false
-				}
+				local options = {}
 
-				Managers.curl:get(url, self._headers, callback(self, "cb_on_user_streams_received"), {
+				self._rest_interface:get(url, self._headers, callback(self, "cb_on_user_streams_received"), {
 					"User Data",
 					twitch_user_name
 				}, options)
@@ -778,7 +775,7 @@ TwitchManager._handle_results = function (self, vote_results)
 		local vote_template = TwitchVoteTemplates[vote_template_name]
 		local breed_name = vote_template.breed_name
 
-		if breed_name then
+		if breed_name and self.locked_breed_packages[breed_name] then
 			package_loader:unlock_breed_package(breed_name)
 
 			self.locked_breed_packages[breed_name] = nil
@@ -1239,10 +1236,12 @@ end
 
 TwitchGameMode._trigger_new_vote = function (self)
 	local vote_type, vote_templates, validation_func = self:_get_next_vote()
-	local time = TwitchSettings.default_vote_time
+	local vote_time = Application.user_setting("twitch_vote_time") or TwitchSettings.default_vote_time
+	local time = vote_time
 	local vote_key = self._parent:register_vote(time, vote_type, validation_func, vote_templates, true, callback(self, "cb_on_vote_complete"))
 	self._vote_keys[vote_key] = true
-	self._timer = TwitchSettings.default_downtime + time
+	local downtime = Application.user_setting("twitch_time_between_votes") or TwitchSettings.default_downtime
+	self._timer = downtime + time
 end
 
 TwitchGameMode.cb_on_vote_complete = function (self, current_vote)
@@ -1271,6 +1270,8 @@ TwitchGameMode.destroy = function (self)
 
 		for breed_name, _ in pairs(self._parent.locked_breed_packages) do
 			enemy_package_loader:unlock_breed_package(breed_name)
+
+			self._parent.locked_breed_packages[breed_name] = nil
 		end
 	end
 

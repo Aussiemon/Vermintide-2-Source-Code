@@ -1,4 +1,4 @@
-wounding_damage_types = {
+local wounding_damage_types = {
 	"light_stab_fencer",
 	"light_stab_smiter",
 	"stab_fencer",
@@ -1023,7 +1023,7 @@ HitEffectsChaosWarrior = {
 			lateral_force = 30
 		}
 	},
-	blunt_tank_death_head = {
+	blunt_tank_upercut_death_head = {
 		inherits = "blunt_tank_uppercut_death",
 		extra_conditions = {
 			hit_zone = {
@@ -2206,5 +2206,6 @@ HitEffectsChaosWarrior = {
 		}
 	}
 }
+HitEffectsChaosWarrior = table.create_copy(HitEffectsChaosWarrior, HitEffectsChaosWarrior)
 
 return

@@ -67,7 +67,7 @@ PlayerCharacterStateOverchargeExploding.explode = function (self)
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 		local self_damage = health_extension:get_max_health()
 		local buff_extension = ScriptUnit.extension(unit, "buff_system")
-		local _, procced = buff_extension:apply_buffs_to_value(0, StatBuffIndex.OVERCHARGE_DAMAGE_IMMUNITY)
+		local _, procced = buff_extension:apply_buffs_to_value(0, "overcharge_damage_immunity")
 
 		if not procced then
 			DamageUtils.add_damage_network(unit, unit, self_damage, "torso", "overcharge", nil, Vector3(0, 1, 0), "overcharge")

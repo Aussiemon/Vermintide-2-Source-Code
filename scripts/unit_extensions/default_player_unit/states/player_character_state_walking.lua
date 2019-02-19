@@ -311,7 +311,6 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 	CharacterStateHelper.move_on_ground(first_person_extension, input_extension, locomotion_extension, move_input_direction, final_move_speed, unit)
 	CharacterStateHelper.look(input_extension, self.player.viewport_name, first_person_extension, status_extension, inventory_extension)
 	CharacterStateHelper.update_weapon_actions(t, unit, input_extension, inventory_extension, health_extension)
-	CharacterStateHelper.reload(input_extension, inventory_extension, status_extension)
 
 	if CharacterStateHelper.is_interacting(interactor_extension) then
 		local config = interactor_extension:interaction_config()

@@ -242,7 +242,6 @@ local font_vertical_base = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
 local font_height_base = "A"
 FontHeights = FontHeights or {}
 local math_floor = math.floor
-local RESOLUTION_LOOKUP = RESOLUTION_LOOKUP
 
 function UIFontByResolution(font_style, optional_scale)
 	local font_type = font_style.font_type

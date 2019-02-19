@@ -71,6 +71,7 @@ LinkerTransportationExtension.init = function (self, extension_init_context, uni
 	end
 
 	self._transporting = false
+	self._disable_spawning = false
 	self._movement_delta = Vector3Box(0, 0, 0)
 	self._old_position = Vector3Box(Unit.local_position(unit, 0))
 	self._unlink_after_update = false
@@ -163,13 +164,10 @@ LinkerTransportationExtension.rpc_hot_join_sync_linker_transport_state = functio
 end
 
 LinkerTransportationExtension._link_all_transported_units = function (self, interactor_unit)
-	local story_teller = self.story_teller
-	local story_id = self.story_id
-	local story_length = story_teller:length(story_id)
-
 	assert(not self._transporting, "Trying to link units before unlinking.")
 
 	self._transporting = true
+	self._disable_spawning = true
 
 	if self.is_server then
 		Managers.state.spawn:disable_spawning(true, self.unit)
@@ -189,7 +187,6 @@ LinkerTransportationExtension._link_all_transported_units = function (self, inte
 			local unit = player.player_unit
 
 			if unit_alive(unit) and unit ~= interactor_unit then
-				local is_bot = self:_is_bot(player)
 				local status_ext = ScriptUnit.extension(unit, "status_system")
 				local is_dead = status_ext:is_dead()
 				local is_inside_transportation_unit = self:_is_inside_transportation_unit(unit)
@@ -394,6 +391,19 @@ LinkerTransportationExtension.update = function (self, unit, input, dt, context,
 
 		local update_interval = (units_inside_oobb.human.count > 0 and UPDATE_INTERVAL_OOBB_HUMANS_INSIDE) or UPDATE_INTERVAL_OOBB_NO_HUMANS_INSIDE
 		self.oobb_next_update = t + update_interval
+
+		if self._disable_spawning and units_inside_oobb.human.count == 0 and not self._transporting then
+			self._disable_spawning = false
+
+			if self.is_server then
+				local safe_node = "elevator_slot_01"
+				local node = Unit.node(unit, safe_node)
+				local position = Unit.world_position(self.unit, node)
+				local rotation = Unit.world_rotation(self.unit, node)
+
+				Managers.state.spawn:disable_spawning(false, self.unit, position + Vector3(0, 0, 1), rotation)
+			end
+		end
 	end
 end
 
@@ -511,23 +521,11 @@ LinkerTransportationExtension.destroy = function (self)
 end
 
 LinkerTransportationExtension._unlink_all_transported_units = function (self)
-	local story_teller = self.story_teller
-	local story_id = self.story_id
-	local story_length = story_teller:length(story_id)
-
 	assert(self._transporting, "Trying to unlink units before linking.")
 
 	self._transporting = false
-	local unit = self.unit
 
 	if self.is_server then
-		local unit = self.unit
-		local safe_node = "elevator_slot_01"
-		local node = Unit.node(unit, safe_node)
-		local position = Unit.world_position(unit, node)
-		local rotation = Unit.world_rotation(unit, node)
-
-		Managers.state.spawn:disable_spawning(false, unit, position + Vector3(0, 0, 1), rotation)
 		Managers.state.event:trigger("event_delay_pacing", false)
 	end
 
@@ -535,11 +533,11 @@ LinkerTransportationExtension._unlink_all_transported_units = function (self)
 	local num_transported_units = #transported_units
 
 	for i = 1, num_transported_units, 1 do
-		local unit = transported_units[i]
+		local transported_unit = transported_units[i]
 		transported_units[i] = nil
 
-		if unit_alive(unit) then
-			self:_unlink_transported_unit(unit)
+		if unit_alive(transported_unit) then
+			self:_unlink_transported_unit(transported_unit)
 		end
 	end
 
@@ -559,7 +557,7 @@ LinkerTransportationExtension._unlink_transported_unit = function (self, unit_to
 	end
 
 	if LINK_UNITS_ON_TRANSPORT then
-		if player.local_player or player.bot_player then
+		if player and (player.local_player or player.bot_player) then
 			local end_position = nil
 
 			if self.teleport_on_exit then
@@ -584,7 +582,7 @@ LinkerTransportationExtension._unlink_transported_unit = function (self, unit_to
 
 		status_extension:set_using_transport(false)
 		LocomotionUtils.disable_linked_movement(unit_to_unlink)
-	elseif player.local_player or player.bot_player then
+	elseif player and (player.local_player or player.bot_player) then
 		locomotion_extension:set_on_moving_platform(nil)
 
 		if self.teleport_on_exit then

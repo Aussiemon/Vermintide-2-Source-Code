@@ -152,7 +152,6 @@ PlayerCharacterStateLeaping.update = function (self, unit, input, dt, context, t
 
 	CharacterStateHelper.look(input_extension, self.player.viewport_name, first_person_extension, status_extension, inventory_extension, look_sense_override, look_override)
 	CharacterStateHelper.update_weapon_actions(t, unit, input_extension, inventory_extension, health_extension)
-	CharacterStateHelper.reload(input_extension, inventory_extension, status_extension)
 end
 
 PlayerCharacterStateLeaping._update_movement = function (self, unit, dt, t)

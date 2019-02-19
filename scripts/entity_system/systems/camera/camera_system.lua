@@ -210,8 +210,6 @@ CameraSystem.post_update = function (self, context)
 
 		camera_manager:post_update(dt, t, viewport_name)
 	end
-
-	Managers.state.entity:system("tutorial_system"):pre_render_update(dt, t)
 end
 
 CameraSystem.rpc_set_observer_camera = function (self, sender, local_player_id)

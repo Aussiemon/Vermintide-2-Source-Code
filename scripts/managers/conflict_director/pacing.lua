@@ -29,6 +29,10 @@ Pacing.enable = function (self)
 	self.pacing_state = "pacing_build_up"
 end
 
+Pacing.enable_hordes = function (self, enable)
+	self._horde_population = (enable and 1) or 0
+end
+
 Pacing.pacing_frozen = function (self, t)
 	return
 end

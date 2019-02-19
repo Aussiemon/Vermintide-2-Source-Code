@@ -26,10 +26,6 @@ HUDSystem.destroy = function (self)
 	self.network_transmit = nil
 end
 
-HUDSystem.set_ingame_ui = function (self, ingame_ui)
-	self.ingame_ui = ingame_ui
-end
-
 HUDSystem.rpc_set_current_location = function (self, sender, unit_id, location_id)
 	local unit = self.unit_storage:unit(unit_id)
 
@@ -44,15 +40,11 @@ HUDSystem.rpc_set_current_location = function (self, sender, unit_id, location_i
 end
 
 HUDSystem.add_subtitle = function (self, speaker, subtitle)
-	if self.ingame_ui.ingame_hud.subtitle_gui then
-		self.ingame_ui.ingame_hud.subtitle_gui:start_subtitle(speaker, subtitle)
-	end
+	Managers.state.event:trigger("ui_event_start_subtitle", speaker, subtitle)
 end
 
 HUDSystem.remove_subtitle = function (self, speaker)
-	if self.ingame_ui.ingame_hud.subtitle_gui then
-		self.ingame_ui.ingame_hud.subtitle_gui:stop_subtitle(speaker)
-	end
+	Managers.state.event:trigger("ui_event_stop_subtitle", speaker)
 end
 
 return

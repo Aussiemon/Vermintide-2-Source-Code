@@ -29,7 +29,7 @@ BTCorruptorGrabAction.leave = function (self, unit, blackboard, t, reason, destr
 	local action = blackboard.action
 
 	if not action.ignore_bot_threat then
-		Managers.state.entity:system("ai_bot_group_system"):ranged_attack_ended(unit, blackboard.corruptor_target, "corruptor_grabbed")
+		Managers.state.entity:system("ai_bot_group_system"):ranged_attack_ended(unit, blackboard.corruptor_target, "corruptor_grabbed", 2)
 	end
 
 	blackboard.move_state = nil
@@ -175,13 +175,15 @@ BTCorruptorGrabAction.drain_life = function (self, unit, blackboard)
 
 	AiUtils.damage_target(corruptor_target, unit, action, action.damage)
 
-	local heal_type = "leech"
-	local difficulty_level = Managers.state.difficulty:get_difficulty()
-	local heal_amount = action.health_leech[difficulty_level]
-	heal_amount = DamageUtils.networkify_damage(heal_amount)
-	local health_extension = ScriptUnit.extension(unit, "health_system")
+	if action.health_leech then
+		local heal_type = "leech"
+		local difficulty_level = Managers.state.difficulty:get_difficulty()
+		local heal_amount = action.health_leech[difficulty_level]
+		heal_amount = DamageUtils.networkify_damage(heal_amount)
+		local health_extension = ScriptUnit.extension(unit, "health_system")
 
-	health_extension:add_heal(unit, heal_amount, nil, heal_type)
+		health_extension:add_heal(unit, heal_amount, nil, heal_type)
+	end
 
 	blackboard.has_dealed_damage = true
 end
@@ -221,8 +223,9 @@ BTCorruptorGrabAction.grab_player = function (self, unit, blackboard)
 	local world = blackboard.world
 	local physics_world = World.physics_world(world)
 	local target_distance_squared = Vector3.distance_squared(projectile_target_position, target_unit_pos)
+	local action = blackboard.action
 
-	if blackboard.target_dodged or target_status_ext:is_invisible() then
+	if (not action.ignore_dodge and blackboard.target_dodged) or target_status_ext:is_invisible() then
 		local dodge_pos = target_unit_pos
 		local dir = Vector3.normalize(Vector3.flat(dodge_pos - self_pos))
 		local forward = Quaternion.forward(Unit.local_rotation(unit, 0))
@@ -237,7 +240,7 @@ BTCorruptorGrabAction.grab_player = function (self, unit, blackboard)
 
 			blackboard.attack_success = false
 		end
-	elseif blackboard.action.max_distance_squared < Vector3.distance_squared(self_pos, target_unit_pos) or target_distance_squared > 25 then
+	elseif (not not action.ignore_dodge and blackboard.action.max_distance_squared < Vector3.distance_squared(self_pos, target_unit_pos)) or target_distance_squared > 25 then
 		blackboard.attack_success = false
 	else
 		blackboard.attack_success = PerceptionUtils.is_position_in_line_of_sight(unit, self_pos + Vector3.up(), target_unit_pos + Vector3.up(), physics_world)
@@ -251,7 +254,7 @@ BTCorruptorGrabAction.grab_player = function (self, unit, blackboard)
 		end
 
 		blackboard.grabbed_unit = blackboard.corruptor_target
-		slot13 = blackboard.action.grabbed_sound_event_2d
+		slot14 = blackboard.action.grabbed_sound_event_2d
 	else
 		blackboard.attack_aborted = true
 	end

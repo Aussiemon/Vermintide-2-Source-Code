@@ -273,7 +273,7 @@ LevelEndView._get_keep_decoration_rewards = function (self)
 	local keep_decoration_rewards = {}
 
 	for reward_name, item in pairs(end_of_level_rewards) do
-		if string.find(reward_name, "keep_decoration") == 1 then
+		if string.find(reward_name, "keep_decoration_painting") == 1 then
 			keep_decoration_rewards[#keep_decoration_rewards + 1] = item
 		end
 	end
@@ -758,7 +758,7 @@ LevelEndView.update = function (self, dt, t)
 		button_pressed = true
 	end
 
-	if not button_pressed then
+	if not button_pressed and self._cursor_visible then
 		self:_update_gamepad_input(dt, t)
 	end
 end

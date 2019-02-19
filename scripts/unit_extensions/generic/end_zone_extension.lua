@@ -7,14 +7,16 @@ EndZoneExtension.init = function (self, extension_init_context, unit)
 	self._world = extension_init_context.world
 	self._extension_init_context = extension_init_context
 	self._activated = false
+	self._activation_allowed = false
 	self._closest_player = math.huge
 	self._state = "_idle"
-	self._is_server = Managers.state.network.is_server
+	self._is_server = extension_init_context.is_server
 	self._state_data = {}
 	self._player_distances = {}
 	self._current_volume_id = nil
 	self._current_id_index = 0
 	self._waystone_type = Unit.get_data(unit, "waystone_type")
+	self._always_activated = Unit.get_data(unit, "always_activated")
 
 	if Unit.get_data(self._unit, "game_start_waystone") then
 		self._game_start_time = Unit.get_data(self._unit, "game_start_time")
@@ -82,7 +84,11 @@ EndZoneExtension.update = function (self, unit, input, dt, context, t)
 	self:_update_state(dt, t)
 end
 
-EndZoneExtension.activate = function (self, activate, always_activated)
+EndZoneExtension.activation_allowed = function (self, allowed)
+	self._activation_allowed = allowed
+end
+
+EndZoneExtension._activate = function (self, activate)
 	if not self._is_server then
 		return
 	end
@@ -106,7 +112,6 @@ EndZoneExtension.activate = function (self, activate, always_activated)
 	end
 
 	self._activated = activate
-	self._always_activated = always_activated
 end
 
 EndZoneExtension._activate_volume = function (self)
@@ -175,6 +180,21 @@ EndZoneExtension._check_proximity = function (self)
 end
 
 EndZoneExtension._update_state = function (self, dt, t)
+	if self._is_server then
+		if self._activation_allowed then
+			local game_mode_manager = Managers.state.game_mode
+			local conditions_fulfilled = game_mode_manager:evaluate_end_zone_activation_conditions()
+
+			if conditions_fulfilled and not self._activated then
+				self:_activate(true)
+			elseif not conditions_fulfilled and self._activated then
+				self:_activate(false)
+			end
+		elseif self._activated then
+			self:_activate(false)
+		end
+	end
+
 	self[self._state](self, dt, t, self._state_data)
 end
 

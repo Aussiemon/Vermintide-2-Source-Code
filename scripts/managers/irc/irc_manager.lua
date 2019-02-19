@@ -245,8 +245,6 @@ IRCManager._handle_meta = function (self, message_type, username, message, param
 end
 
 IRCManager._create_metadata_table = function (self, username, icon_id, level, info)
-	print("doing it")
-
 	local message = "$META;"
 	message = message .. username .. ";" .. icon_id .. ";" .. level .. ";" .. info
 
@@ -327,6 +325,14 @@ IRCStates.none = function (irc, dt)
 end
 
 IRCStates.initialize = function (irc_manager, dt)
+	if PLATFORM == "ps4" then
+		irc_manager._initialized = true
+
+		irc_manager:_change_state("connect")
+
+		return
+	end
+
 	if Irc.is_initialized() then
 		Application.error("[IRCManager] Failed initializing IRC")
 		irc_manager:_change_state("disconnect")

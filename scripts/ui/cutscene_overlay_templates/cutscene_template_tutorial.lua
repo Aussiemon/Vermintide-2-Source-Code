@@ -197,6 +197,5 @@ for template_name, template in pairs(template_settings) do
 end
 
 return {
-	start_event = "event_start_tutorial_intro_text",
 	templates = template_settings
 }

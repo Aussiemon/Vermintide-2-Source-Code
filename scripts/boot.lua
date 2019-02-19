@@ -46,16 +46,6 @@ end
 
 require("scripts/settings/dlc_settings")
 
-for dlc_name, dlc in pairs(DLCSettings) do
-	local data = dlc.script_data
-
-	if data then
-		for key, value in pairs(data) do
-			script_data[key] = value
-		end
-	end
-end
-
 Boot = Boot or {}
 Boot.flow_return_table = Script.new_map(32)
 Boot.is_controlled_exit = false
@@ -341,6 +331,26 @@ Boot.booting_update = function (self, dt)
 		local done = Managers.package:update()
 
 		if done then
+			for dlc_name, dlc in pairs(DLCSettings) do
+				local additional_settings = dlc.additional_settings
+
+				if additional_settings then
+					for _, settings_path in pairs(additional_settings) do
+						require(settings_path)
+					end
+				end
+			end
+
+			for dlc_name, dlc in pairs(DLCSettings) do
+				local data = dlc.script_data
+
+				if data then
+					for key, value in pairs(data) do
+						script_data[key] = value
+					end
+				end
+			end
+
 			Game:require_game_scripts()
 
 			local require_end = os.clock()
@@ -367,8 +377,9 @@ Boot.booting_update = function (self, dt)
 		Crashify.print_property("build", BUILD)
 		Crashify.print_property("platform", PLATFORM)
 		Crashify.print_property("title_id", GameSettingsDevelopment.backend_settings.title_id)
-		Crashify.print_property("engine_revision", script_data.build_identifier)
 		Crashify.print_property("content_revision", script_data.settings.content_revision)
+		Crashify.print_property("engine_revision", script_data.build_identifier)
+		Crashify.print_property("release_version", VersionSettings.version)
 		Crashify.print_property("rendering_backend", Renderer.render_device_string())
 		Crashify.print_property("teamcity_build_id", script_data.settings.teamcity_build_id)
 
@@ -477,6 +488,10 @@ end
 
 function render()
 	Boot:render()
+end
+
+function on_close()
+	return true
 end
 
 function shutdown()
@@ -655,11 +670,14 @@ Boot.game_update = function (self, real_world_dt)
 		end
 	elseif PLATFORM == "ps4" then
 		Managers.rest_transport:update(true)
+		Managers.irc:update(dt)
+		Managers.twitch:update(dt)
 		Managers.system_dialog:update(dt)
 	end
 
 	Managers.news_ticker:update(dt)
 	Managers.transition:update(dt)
+	Managers.load_time:update(dt)
 
 	if Managers.splitscreen then
 		Managers.splitscreen:update(dt)
@@ -1156,8 +1174,9 @@ Game._handle_revision_info = function (self)
 	end
 
 	print("[Boot] Application build:", BUILD)
-	print("[Boot] Engine revision:", script_data.build_identifier)
 	print("[Boot] Content revision:", script_data.settings.content_revision)
+	print("[Boot] Engine revision:", script_data.build_identifier)
+	print("[Boot] Release version:", VersionSettings.version)
 
 	if Development.parameter("paste_revision_to_clipboard") then
 		Clipboard.put(string.format("%s | %s", tostring(script_data.settings.content_revision), tostring(script_data.build_identifier)))
@@ -1167,18 +1186,19 @@ end
 Game.require_game_scripts = function (self)
 	foundation_require("util", "local_require")
 	game_require("utils", "patches", "colors", "framerate", "random_table", "global_utils", "function_call_stats", "util", "loaded_dice", "script_application", "benchmark/benchmark_handler")
+	game_require("settings", "version_settings")
 	game_require("ui", "views/show_cursor_stack", "ui_fonts")
-	game_require("settings", "demo_settings", "game_settings_development", "controller_settings", "default_user_settings")
+	game_require("settings", "demo_settings", "motion_control_settings", "game_settings_development", "controller_settings", "default_user_settings")
 	game_require("entity_system", "entity_system")
 	game_require("game_state", "game_state_machine", "state_context", "state_splash_screen", "state_loading", "state_ingame", "state_demo_end")
-	game_require("managers", "admin/admin_manager", "news_ticker/news_ticker_manager", "player/player_manager", "player/player_bot", "save/save_manager", "save/save_data", "perfhud/perfhud_manager", "music/music_manager", "network/party_manager", "transition/transition_manager", "smoketest/smoketest_manager", "debug/updator", "invite/invite_manager", "unlock/unlock_manager", "popup/popup_manager", "popup/simple_popup", "light_fx/light_fx_manager", "play_go/play_go_manager", "controller_features/controller_features_manager", "deed/deed_manager", "telemetry/telemetry_create")
+	game_require("managers", "admin/admin_manager", "news_ticker/news_ticker_manager", "player/player_manager", "player/player_bot", "save/save_manager", "save/save_data", "perfhud/perfhud_manager", "music/music_manager", "network/party_manager", "transition/transition_manager", "smoketest/smoketest_manager", "debug/updator", "invite/invite_manager", "unlock/unlock_manager", "popup/popup_manager", "popup/simple_popup", "light_fx/light_fx_manager", "play_go/play_go_manager", "controller_features/controller_features_manager", "deed/deed_manager", "telemetry/telemetry_create", "load_time/load_time_manager")
 
 	if PLATFORM == "win32" then
 		game_require("managers", "irc/irc_manager", "curl/curl_manager", "twitch/twitch_manager")
 	elseif PLATFORM == "xb1" then
 		game_require("managers", "events/xbox_event_manager", "rest_transport/rest_transport_manager", "twitch/mixer_manager")
 	elseif PLATFORM == "ps4" then
-		game_require("managers", "rest_transport/rest_transport_manager", "system_dialog/system_dialog_manager")
+		game_require("managers", "irc/irc_manager", "twitch/twitch_manager", "rest_transport/rest_transport_manager", "system_dialog/system_dialog_manager")
 	end
 
 	game_require("helpers", "effect_helper", "weapon_helper", "item_helper", "lorebook_helper", "ui_atlas_helper", "scoreboard_helper")
@@ -1378,6 +1398,8 @@ Game._init_managers = function (self)
 		Managers.rest_transport_online = RestTransportManager:new()
 		Managers.rest_transport = Managers.rest_transport_online
 		Managers.system_dialog = SystemDialogManager:new()
+		Managers.irc = IRCManager:new()
+		Managers.twitch = TwitchManager:new()
 	end
 
 	Managers.telemetry = CreateTelemetryManager()
@@ -1389,6 +1411,7 @@ Game._init_managers = function (self)
 	Managers.light_fx = LightFXManager:new()
 	Managers.party = PartyManager:new()
 	Managers.deed = DeedManager:new()
+	Managers.load_time = LoadTimeManager:new()
 
 	if GameSettingsDevelopment.use_leaderboards or Development.parameter("use_leaderboards") then
 		Managers.leaderboards = LeaderboardManager:new()

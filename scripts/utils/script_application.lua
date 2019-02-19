@@ -18,7 +18,7 @@ ScriptApplication.send_to_crashify = function (system, message, ...)
 
 	if print_count == 1 then
 		Application.warning("%s\n%s<</CrashifyData>>\n", body, Script.callstack())
-		Application.set_exit_code(57005)
+		Application.set_exit_code(0, false, true)
 	else
 		Application.warning("%s\n<</CrashifyData>>\n", body)
 	end

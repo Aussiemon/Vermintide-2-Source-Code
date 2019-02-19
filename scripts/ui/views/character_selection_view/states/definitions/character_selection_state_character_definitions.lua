@@ -2,7 +2,7 @@ local video_window_width = 426
 local video_window_height = 240
 local career_info_size = {
 	450,
-	140
+	170
 }
 local scenegraph_definition = {
 	screen = {
@@ -203,8 +203,8 @@ local scenegraph_definition = {
 		parent = "right_side_root",
 		horizontal_alignment = "right",
 		size = {
-			career_info_size[1],
-			800
+			career_info_size[1] + 20,
+			860
 		},
 		position = {
 			-50,

@@ -395,4 +395,9 @@ BTEnterHooks.keep_target = function (unit, blackboard, t)
 	blackboard.keep_target = true
 end
 
+BTEnterHooks.remove_invincibility = function (unit, blackboard, t)
+	local health_extension = ScriptUnit.extension(unit, "health_system")
+	health_extension.is_invincible = false
+end
+
 return

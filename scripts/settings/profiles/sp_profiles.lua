@@ -57,7 +57,7 @@ SPProfiles = {
 		unit_name = "witch_hunter",
 		default_wielded_slot = "slot_melee",
 		ingame_display_name = "inventory_name_witch_hunter",
-		ui_portrait = "unit_frame_portrait_victor_zealot",
+		ui_portrait = "unit_frame_portrait_victor_captain",
 		career_voice_parameter_values = {
 			0,
 			100,
@@ -95,7 +95,7 @@ SPProfiles = {
 		unit_name = "bright_wizard",
 		default_wielded_slot = "slot_melee",
 		ingame_display_name = "inventory_name_bright_wizard",
-		ui_portrait = "unit_frame_portrait_sienna_adept",
+		ui_portrait = "unit_frame_portrait_sienna_scholar",
 		career_voice_parameter_values = {
 			0,
 			100,
@@ -133,7 +133,7 @@ SPProfiles = {
 		unit_name = "dwarf_ranger",
 		default_wielded_slot = "slot_melee",
 		ingame_display_name = "inventory_name_dwarf_ranger",
-		ui_portrait = "unit_frame_portrait_bardin_slayer",
+		ui_portrait = "unit_frame_portrait_bardin_ranger",
 		career_voice_parameter_values = {
 			0,
 			100,
@@ -171,7 +171,7 @@ SPProfiles = {
 		unit_name = "way_watcher",
 		default_wielded_slot = "slot_melee",
 		ingame_display_name = "inventory_name_wood_elf",
-		ui_portrait = "unit_frame_portrait_kerillian_shade",
+		ui_portrait = "unit_frame_portrait_kerillian_waywatcher",
 		career_voice_parameter_values = {
 			0,
 			100,
@@ -209,7 +209,7 @@ SPProfiles = {
 		unit_name = "empire_soldier",
 		default_wielded_slot = "slot_melee",
 		ingame_display_name = "inventory_name_empire_soldier",
-		ui_portrait = "unit_frame_portrait_kruber_knight",
+		ui_portrait = "unit_frame_portrait_kruber_huntsman",
 		career_voice_parameter_values = {
 			0,
 			100,

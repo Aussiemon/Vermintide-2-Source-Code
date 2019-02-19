@@ -297,7 +297,6 @@ PlayerCharacterStateLunging.update = function (self, unit, input, dt, context, t
 
 	CharacterStateHelper.look(input_extension, self.player.viewport_name, first_person_extension, status_extension, self.inventory_extension, 0.5)
 	CharacterStateHelper.update_weapon_actions(t, unit, input_extension, self.inventory_extension, self.health_extension)
-	CharacterStateHelper.reload(input_extension, self.inventory_extension, status_extension)
 	self._last_position:store(POSITION_LOOKUP[unit])
 end
 
@@ -497,7 +496,7 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 					local behind_target = hit_angle >= 0.55
 
 					if behind_target then
-						backstab_multiplier, procced = buff_extension:apply_buffs_to_value(backstab_multiplier, StatBuffIndex.BACKSTAB_MULTIPLIER)
+						backstab_multiplier, procced = buff_extension:apply_buffs_to_value(backstab_multiplier, "backstab_multiplier")
 					end
 				end
 

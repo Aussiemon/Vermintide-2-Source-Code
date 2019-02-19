@@ -5,7 +5,8 @@ local accepted_slots = {
 	slot_melee = true
 }
 
-OverchargeBarUI.init = function (self, ingame_ui_context)
+OverchargeBarUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.platform = PLATFORM
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.input_manager = ingame_ui_context.input_manager
@@ -101,6 +102,11 @@ OverchargeBarUI.update = function (self, dt, t, player)
 	local gamepad_active = input_manager:is_device_active("gamepad")
 
 	if self:_update_overcharge(player, dt) then
+		local parent = self._parent
+		local crosshair_position_x, crosshair_position_y = parent:get_crosshair_position()
+
+		self:_apply_crosshair_position(crosshair_position_x, crosshair_position_y)
+
 		local ui_renderer = self.ui_renderer
 
 		UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
@@ -183,7 +189,7 @@ OverchargeBarUI.set_alpha = function (self, alpha)
 	self.render_settings.alpha_multiplier = alpha
 end
 
-OverchargeBarUI.apply_crosshair_position = function (self, x, y)
+OverchargeBarUI._apply_crosshair_position = function (self, x, y)
 	local scenegraph_id = "screen_bottom_pivot"
 	local position = self.ui_scenegraph[scenegraph_id].local_position
 	position[1] = x

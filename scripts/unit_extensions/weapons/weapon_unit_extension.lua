@@ -16,13 +16,11 @@ require("scripts/unit_extensions/weapons/actions/action_staff")
 require("scripts/unit_extensions/weapons/actions/action_bow")
 require("scripts/unit_extensions/weapons/actions/action_true_flight_bow")
 require("scripts/unit_extensions/weapons/actions/action_true_flight_bow_aim")
-require("scripts/unit_extensions/weapons/actions/action_handgun_lock")
-require("scripts/unit_extensions/weapons/actions/action_handgun_lock_targeting")
 require("scripts/unit_extensions/weapons/actions/action_bullet_spray")
-require("scripts/unit_extensions/weapons/actions/action_bullet_spray_targeting")
 require("scripts/unit_extensions/weapons/actions/action_flamethrower")
 require("scripts/unit_extensions/weapons/actions/action_flamepatch")
 require("scripts/unit_extensions/weapons/actions/action_aim")
+require("scripts/unit_extensions/weapons/actions/action_reload")
 require("scripts/unit_extensions/weapons/actions/action_shotgun")
 require("scripts/unit_extensions/weapons/actions/action_crossbow")
 require("scripts/unit_extensions/weapons/actions/action_cancel")
@@ -67,11 +65,9 @@ local action_classes = {
 	crossbow = ActionCrossbow,
 	cancel = ActionCancel,
 	buff = ActionPotion,
-	handgun_lock_targeting = ActionHandgunLockTargeting,
-	handgun_lock = ActionHandgunLock,
-	bullet_spray_targeting = ActionBulletSprayTargeting,
 	bullet_spray = ActionBulletSpray,
 	aim = ActionAim,
+	reload = ActionReload,
 	shotgun = ActionShotgun,
 	shield_slam = ActionShieldSlam,
 	charged_projectile = ActionChargedProjectile,
@@ -315,7 +311,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 		local time_to_complete = current_action_settings.total_time
 
 		if current_action_settings.scale_total_time_on_mastercrafted and buff_extension then
-			time_to_complete = buff_extension:apply_buffs_to_value(time_to_complete, StatBuffIndex.RELOAD_SPEED)
+			time_to_complete = buff_extension:apply_buffs_to_value(time_to_complete, "reload_speed")
 		end
 
 		local event = current_action_settings.anim_event
@@ -489,7 +485,7 @@ end
 WeaponUnitExtension._handle_proc_events = function (self, current_action_settings, reason)
 	local buff_extension = ScriptUnit.extension(self.owner_unit, "buff_system")
 
-	if current_action_settings.is_spell then
+	if current_action_settings.is_spell and not current_action_settings.no_spell_proc_on_attack_end then
 		buff_extension:trigger_procs("on_spell_used", current_action_settings)
 	end
 end
@@ -621,7 +617,7 @@ WeaponUnitExtension.can_stop_hold_action = function (self, t)
 	local buff_extension = ScriptUnit.extension(self.owner_unit, "buff_system")
 
 	if buff_extension then
-		minimum_hold_time = buff_extension:apply_buffs_to_value(minimum_hold_time, StatBuffIndex.RELOAD_SPEED)
+		minimum_hold_time = buff_extension:apply_buffs_to_value(minimum_hold_time, "reload_speed")
 
 		if minimum_hold_time > 0 then
 			local buffed_minimum_hold_time = ActionUtils.apply_attack_speed_buff(minimum_hold_time, self.owner_unit)

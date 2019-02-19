@@ -191,8 +191,6 @@ local breed_data = {
 		fire_grenade = 10
 	},
 	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone, t, damage_source)
-		local blackboard = BLACKBOARDS[unit]
-
 		if not Unit.alive(killer_unit) then
 			return
 		end
@@ -336,7 +334,7 @@ local action_data = {
 			return spawn_rot
 		end,
 		goal_pos_func = function (unit, blackboard, spawner_unit, index, spawn_pos, goal_pos, spawn_dir)
-			local success, hit_pos = GwNavQueries.raycast(blackboard.nav_world, spawn_pos, goal_pos)
+			local _, hit_pos = GwNavQueries.raycast(blackboard.nav_world, spawn_pos, goal_pos)
 
 			if hit_pos then
 				return hit_pos
@@ -618,7 +616,15 @@ local action_data = {
 			local target_dir = Vector3.normalize(target_position - throw_pos)
 
 			return throw_pos, target_dir
-		end
+		end,
+		ignore_staggers = {
+			true,
+			true,
+			true,
+			true,
+			true,
+			true
+		}
 	},
 	defensive_seeking_bomb = {
 		create_nav_tag_volume = true,
@@ -695,17 +701,33 @@ local action_data = {
 		},
 		init_spell_func = function (blackboard)
 			blackboard.current_spell = blackboard.seeking_bomb_missile_data
-		end
+		end,
+		ignore_staggers = {
+			true,
+			true,
+			true,
+			true,
+			true,
+			true
+		}
 	},
 	intro_idle = {
 		duration = 21,
 		animation = "intro_lord"
 	},
 	defensive_idle = {
-		duration = 3,
 		animation = "idle_guard",
+		duration = 3,
 		action_weight = 1,
-		considerations = UtilityConsiderations.defensive_sorcerer_idle
+		considerations = UtilityConsiderations.defensive_sorcerer_idle,
+		ignore_staggers = {
+			true,
+			true,
+			true,
+			true,
+			true,
+			true
+		}
 	},
 	defensive_escape_teleport = {
 		teleport_effect = "fx/chr_chaos_sorcerer_teleport",
@@ -757,6 +779,14 @@ local action_data = {
 			hardest = "sorcerer_boss_event_defensive",
 			survival_hardest = "sorcerer_boss_event_defensive",
 			easy = "sorcerer_boss_event_defensive"
+		},
+		ignore_staggers = {
+			true,
+			true,
+			true,
+			true,
+			true,
+			true
 		}
 	},
 	spawn_allies_horde = {
@@ -774,6 +804,14 @@ local action_data = {
 			hardest = "sorcerer_extra_spawn",
 			survival_hardest = "sorcerer_extra_spawn",
 			easy = "sorcerer_extra_spawn"
+		},
+		ignore_staggers = {
+			true,
+			true,
+			true,
+			true,
+			true,
+			true
 		}
 	},
 	stagger = {

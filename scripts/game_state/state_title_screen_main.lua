@@ -33,15 +33,12 @@ StateTitleScreenMain.on_enter = function (self, params)
 			Managers.account:reset()
 		end
 
-		self:_update_ui_settings()
-
 		if Managers.xbox_stats then
 			Managers.xbox_stats:destroy()
 
 			Managers.xbox_stats = nil
 		end
 	elseif PLATFORM == "ps4" then
-		self:_update_ui_settings()
 		Managers.account:reset()
 	else
 		Managers.account:reset()
@@ -88,33 +85,6 @@ StateTitleScreenMain.on_enter = function (self, params)
 	elseif self._params.menu_screen_music_playing then
 		Managers.music:trigger_event("Play_console_menu_music_reset_switch")
 	end
-end
-
-StateTitleScreenMain._update_ui_settings = function (self)
-	local w, h = Gui.resolution()
-	local ui_scale = math.ceil(h / 1080 * 100)
-
-	if PLATFORM == "xb1" then
-		local console_type = XboxOne.console_type()
-
-		if console_type ~= XboxOne.CONSOLE_TYPE_XBOX_ONE_X_DEVKIT and console_type ~= XboxOne.CONSOLE_TYPE_XBOX_ONE_X then
-			ui_scale = math.clamp(ui_scale, 0, 100)
-			UserSettings.ui_scale = ui_scale
-		end
-	elseif PLATFORM == "ps4" and not PS4.is_pro() then
-		ui_scale = math.clamp(ui_scale, 0, 100)
-		UserSettings.ui_scale = ui_scale
-	end
-
-	UISettings.ui_scale = ui_scale
-	UISettings.use_hud_screen_fit = Application.user_setting("use_hud_screen_fit") or false
-	UISettings.root_scale = {
-		Application.user_setting("root_scale_x") or 1,
-		Application.user_setting("root_scale_y") or 1
-	}
-	local force_update = true
-
-	UPDATE_RESOLUTION_LOOKUP(force_update)
 end
 
 StateTitleScreenMain._queue_popup = function (self, ...)

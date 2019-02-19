@@ -59,7 +59,7 @@ GameModeManager.init = function (self, world, lobby_host, lobby_client, level_tr
 	local debug_activated_mutators = nil
 	local mutators = debug_activated_mutators or self._game_mode:mutators()
 	local has_local_client = not DEDICATED_SERVER
-	self._mutator_handler = MutatorHandler:new(mutators, self.is_server, has_local_client, network_event_delegate, network_transmit)
+	self._mutator_handler = MutatorHandler:new(mutators, self.is_server, has_local_client, world, network_event_delegate, network_transmit)
 	self._looping_event_timers = {}
 end
 
@@ -106,8 +106,12 @@ GameModeManager.setup_done = function (self)
 	self._mutator_handler:activate_mutators()
 end
 
-GameModeManager.ai_killed = function (self, killed_unit, killer_unit)
-	self._mutator_handler:ai_killed(killed_unit, killer_unit)
+GameModeManager.ai_killed = function (self, killed_unit, killer_unit, death_data)
+	self._mutator_handler:ai_killed(killed_unit, killer_unit, death_data)
+end
+
+GameModeManager.players_left_safe_zone = function (self)
+	self._mutator_handler:players_left_safe_zone()
 end
 
 GameModeManager.has_activated_mutator = function (self, name)
@@ -116,6 +120,10 @@ end
 
 GameModeManager.activated_mutators = function (self)
 	return self._mutator_handler:activated_mutators()
+end
+
+GameModeManager.evaluate_end_zone_activation_conditions = function (self)
+	return self._mutator_handler:evaluate_end_zone_activation_conditions()
 end
 
 GameModeManager._set_flow_object_set_enabled = function (self, set, enable, set_name)
@@ -445,8 +453,9 @@ GameModeManager.server_update = function (self, dt, t)
 			end
 		end
 
+		local mutator_handler = self._mutator_handler
 		local round_started = self._round_started
-		local ended, reason = self._game_mode:evaluate_end_conditions(round_started, dt, t)
+		local ended, reason = self._game_mode:evaluate_end_conditions(round_started, dt, t, mutator_handler)
 
 		if ended then
 			local all_peers_ingame = self.network_server:are_all_peers_ingame()

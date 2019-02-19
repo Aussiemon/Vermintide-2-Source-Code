@@ -18,6 +18,7 @@ local breed_data = {
 	default_inventory_template = "chaos_sorcerer_vortex",
 	stagger_resistance = 3,
 	dialogue_source_name = "chaos_vortex_sorcerer",
+	threat_value = 10,
 	special_on_spawn_stinger = "Play_vortex_sorcerer_spawn",
 	max_health = {
 		20,

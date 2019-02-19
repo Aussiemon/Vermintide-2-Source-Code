@@ -135,7 +135,7 @@ InteractionDefinitions.revive = {
 		start = function (world, interactor_unit, interactable_unit, data, config, t)
 			local duration = config.duration
 			local buff_extension = ScriptUnit.extension(interactor_unit, "buff_system")
-			duration = buff_extension:apply_buffs_to_value(duration, StatBuffIndex.FASTER_REVIVE)
+			duration = buff_extension:apply_buffs_to_value(duration, "faster_revive")
 			local revivee_status_extension = ScriptUnit.extension(interactable_unit, "status_system")
 
 			revivee_status_extension:set_knocked_down_bleed_buff_paused(true)
@@ -211,7 +211,7 @@ InteractionDefinitions.revive = {
 
 			if interactor_alive then
 				local buff_extension = ScriptUnit.extension(interactor_unit, "buff_system")
-				duration = buff_extension:apply_buffs_to_value(duration, StatBuffIndex.FASTER_REVIVE)
+				duration = buff_extension:apply_buffs_to_value(duration, "faster_revive")
 				local interaction_duration_variable = Unit.animation_find_variable(interactor_unit, "interaction_duration")
 
 				Unit.animation_set_variable(interactor_unit, interaction_duration_variable, duration)
@@ -851,6 +851,12 @@ InteractionDefinitions.pickup_object = {
 					local message = string.format(Localize("dlc1_2_system_chat_player_picked_up_endurance_badge"), interactor_name)
 
 					Managers.chat:add_local_system_message(1, message, pop_chat)
+				elseif pickup_settings.type == "painting_scrap" then
+					Managers.state.event:trigger("add_coop_feedback", player:stats_id(), local_human, "picked_up_painting_scrap", player)
+
+					local message = string.format(Localize("system_chat_player_picked_up_painting_chat"), interactor_name)
+
+					Managers.chat:add_local_system_message(1, message, pop_chat)
 				elseif pickup_settings.type == "inventory_item" then
 					local slot_name = pickup_settings.slot_name
 					local item_name = pickup_settings.item_name
@@ -951,6 +957,15 @@ InteractionDefinitions.pickup_object = {
 						pickup_extension:hide()
 					end
 
+					if pickup_settings.mission_name then
+						local mission_name = pickup_settings.mission_name
+						local mission_name_id = NetworkLookup.mission_names[mission_name]
+						local network_transmit = network_manager.network_transmit
+
+						network_transmit:send_rpc_server("rpc_request_mission", mission_name_id)
+						network_transmit:send_rpc_server("rpc_request_mission_update", mission_name_id, true)
+					end
+
 					if pickup_settings.type == "inventory_item" then
 						local slot_name = pickup_settings.slot_name
 						local item_name = pickup_settings.item_name
@@ -1030,7 +1045,7 @@ InteractionDefinitions.pickup_object = {
 							end
 
 							if pickup_settings.dupable and pickup_extension.spawn_type ~= "dropped" then
-								local _, procced = buff_extension:apply_buffs_to_value(0, StatBuffIndex.NOT_CONSUME_PICKUP)
+								local _, procced = buff_extension:apply_buffs_to_value(0, "not_consume_pickup")
 
 								if procced then
 									local pickup_name = pickup_extension.pickup_name
@@ -1143,13 +1158,6 @@ InteractionDefinitions.pickup_object = {
 						end
 
 						inventory_extension:add_ammo_from_pickup(pickup_settings)
-					elseif pickup_settings.mission_name then
-						local mission_name = pickup_settings.mission_name
-						local mission_name_id = NetworkLookup.mission_names[mission_name]
-						local network_transmit = network_manager.network_transmit
-
-						network_transmit:send_rpc_server("rpc_request_mission", mission_name_id)
-						network_transmit:send_rpc_server("rpc_request_mission_update", mission_name_id, true)
 					elseif pickup_settings.type == "lorebook_page" then
 						local level_key = Managers.state.game_mode:level_key()
 						local pages = table.clone(LorebookCollectablePages[level_key])
@@ -1170,6 +1178,26 @@ InteractionDefinitions.pickup_object = {
 								Managers.state.event:trigger("add_personal_feedback", player:stats_id() .. id, local_human, "picked_up_lorebook_page", category_name)
 
 								break
+							end
+						end
+					elseif pickup_settings.type == "painting_scrap" then
+						local level_key = Managers.state.game_mode:level_key()
+						local local_player = Managers.player:local_player()
+						local stats_id = local_player:stats_id()
+
+						if table.contains(UnlockableLevels, level_key) then
+							local statistics_id = "collected_painting_scraps"
+							local collected_painting_scraps = statistics_db:get_persistent_stat(stats_id, statistics_id, level_key)
+							local scrap_count_cap = QuestSettings.scrap_count_level[#QuestSettings.scrap_count_level]
+							local collected_painting_scraps_generic = statistics_db:get_persistent_stat(stats_id, statistics_id .. "_generic")
+							local scrap_count_generic_cap = QuestSettings.scrap_count_generic[#QuestSettings.scrap_count_generic]
+
+							if collected_painting_scraps < scrap_count_cap then
+								statistics_db:increment_stat(stats_id, statistics_id, level_key)
+							end
+
+							if collected_painting_scraps_generic < scrap_count_generic_cap then
+								statistics_db:increment_stat(stats_id, statistics_id .. "_generic")
 							end
 						end
 					end
@@ -1501,7 +1529,7 @@ InteractionDefinitions.heal = {
 				if interactor_unit ~= interactable_unit then
 					local health_extension = ScriptUnit.extension(interactor_unit, "health_system")
 					local damage_taken = health_extension:get_damage_taken()
-					local heal_amount_self = interactor_buff_extension:apply_buffs_to_value(damage_taken, StatBuffIndex.HEAL_SELF_ON_HEAL_OTHER)
+					local heal_amount_self = interactor_buff_extension:apply_buffs_to_value(damage_taken, "heal_self_on_heal_other")
 					heal_amount_self = heal_amount_self - damage_taken
 
 					DamageUtils.heal_network(interactor_unit, interactor_unit, heal_amount_self, "bandage_trinket")
@@ -1553,7 +1581,7 @@ InteractionDefinitions.heal = {
 				if not owner_player.remote then
 					local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
 					local buff_extension = ScriptUnit.extension(interactor_unit, "buff_system")
-					local _, procced = buff_extension:apply_buffs_to_value(0, StatBuffIndex.NOT_CONSUME_MEDPACK)
+					local _, procced = buff_extension:apply_buffs_to_value(0, "not_consume_medpack")
 
 					if not procced then
 						local interactor_data = data.interactor_data
@@ -1809,7 +1837,7 @@ InteractionDefinitions.chest.server.stop = function (world, interactor_unit, int
 		local buff_extension = ScriptUnit.extension(interactor_unit, "buff_system")
 		local rand = math.random()
 		local chance = dice_keeper:chest_loot_dice_chance()
-		chance = buff_extension:apply_buffs_to_value(chance, StatBuffIndex.INCREASE_LUCK)
+		chance = buff_extension:apply_buffs_to_value(chance, "increase_luck")
 
 		if rand < chance then
 			local extension_init_data = {
@@ -1848,7 +1876,7 @@ InteractionDefinitions.inventory_access.client.stop = function (world, interacto
 			menu_state_name = "overview"
 		}
 
-		data.ingame_ui:transition_with_fade("hero_view_force", transition_params)
+		Managers.state.event:trigger("ui_event_transition_with_fade", "hero_view_force", transition_params)
 	end
 end
 
@@ -1872,7 +1900,7 @@ InteractionDefinitions.prestige_access.client.stop = function (world, interactor
 			menu_state_name = "overview"
 		}
 
-		data.ingame_ui:transition_with_fade("hero_view_force", transition_params)
+		Managers.state.event:trigger("ui_event_transition_with_fade", "hero_view_force", transition_params)
 	end
 end
 
@@ -1896,7 +1924,7 @@ InteractionDefinitions.forge_access.client.stop = function (world, interactor_un
 			menu_state_name = "overview"
 		}
 
-		data.ingame_ui:transition_with_fade("hero_view_force", transition_params)
+		Managers.state.event:trigger("ui_event_transition_with_fade", "hero_view_force", transition_params)
 	end
 end
 
@@ -1920,7 +1948,7 @@ InteractionDefinitions.talents_access.client.stop = function (world, interactor_
 			menu_state_name = "overview"
 		}
 
-		data.ingame_ui:transition_with_fade("hero_view_force", transition_params)
+		Managers.state.event:trigger("ui_event_transition_with_fade", "hero_view_force", transition_params)
 	end
 end
 
@@ -1944,7 +1972,7 @@ InteractionDefinitions.cosmetics_access.client.stop = function (world, interacto
 			menu_state_name = "overview"
 		}
 
-		data.ingame_ui:transition_with_fade("hero_view_force", transition_params)
+		Managers.state.event:trigger("ui_event_transition_with_fade", "hero_view_force", transition_params)
 	end
 end
 
@@ -1967,7 +1995,7 @@ InteractionDefinitions.loot_access.client.stop = function (world, interactor_uni
 			menu_state_name = "loot"
 		}
 
-		data.ingame_ui:transition_with_fade("hero_view_force", transition_params)
+		Managers.state.event:trigger("ui_event_transition_with_fade", "hero_view_force", transition_params)
 	end
 end
 
@@ -1990,7 +2018,7 @@ InteractionDefinitions.characters_access.client.stop = function (world, interact
 			menu_state_name = "character"
 		}
 
-		data.ingame_ui:transition_with_fade("character_selection_force", transition_params)
+		Managers.state.event:trigger("ui_event_transition_with_fade", "character_selection_force", transition_params)
 	end
 end
 
@@ -2011,7 +2039,7 @@ InteractionDefinitions.altar_access.client.stop = function (world, interactor_un
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		data.ingame_ui:transition_with_fade("altar_view_force")
+		Managers.state.event:trigger("ui_event_transition_with_fade", "altar_view_force")
 	end
 end
 
@@ -2026,7 +2054,7 @@ InteractionDefinitions.quest_access.client.stop = function (world, interactor_un
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		data.ingame_ui:transition_with_fade("quest_view_force")
+		Managers.state.event:trigger("ui_event_transition_with_fade", "quest_view_force")
 	end
 end
 
@@ -2054,7 +2082,7 @@ InteractionDefinitions.journal_access.client.stop = function (world, interactor_
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		data.ingame_ui:transition_with_fade("lorebook_view_force")
+		Managers.state.event:trigger("ui_event_transition_with_fade", "lorebook_view_force")
 	end
 end
 
@@ -2073,7 +2101,7 @@ InteractionDefinitions.map_access.client.stop = function (world, interactor_unit
 			menu_state_name = "play"
 		}
 
-		data.ingame_ui:transition_with_fade("start_game_view_force", transition_params)
+		Managers.state.event:trigger("ui_event_transition_with_fade", "start_game_view_force", transition_params)
 	end
 end
 
@@ -2094,7 +2122,7 @@ InteractionDefinitions.unlock_key_access.client.stop = function (world, interact
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		data.ingame_ui:transition_with_fade("unlock_key_force")
+		Managers.state.event:trigger("ui_event_transition_with_fade", "unlock_key_force")
 	end
 end
 
@@ -2132,19 +2160,23 @@ InteractionDefinitions.pictureframe.client.stop = function (world, interactor_un
 			interactable_unit = interactable_unit
 		}
 
-		data.ingame_ui:transition_with_fade("hero_view_force", transition_params)
+		Managers.state.event:trigger("ui_event_transition_with_fade", "hero_view_force", transition_params)
 	end
 end
 
 InteractionDefinitions.pictureframe.client.can_interact = function (interactor_unit, interactable_unit, data, config)
 	local keep_decoration_extension = ScriptUnit.extension(interactable_unit, "keep_decoration_system")
 	local can_interact = keep_decoration_extension:can_interact()
+	local unit_not_interactable = Unit.get_data(interactable_unit, "painting_data", "not_interactable")
 
-	return can_interact
+	return can_interact and not unit_not_interactable
 end
 
 InteractionDefinitions.pictureframe.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
-	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), Unit.get_data(interactable_unit, "interaction_data", "hud_interaction_action")
+	local view_only = not data.is_server or Unit.get_data(interactable_unit, "interaction_data", "view_only")
+	local interaction_action_text = (view_only and "interaction_action_view") or Unit.get_data(interactable_unit, "interaction_data", "hud_interaction_action")
+
+	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), interaction_action_text
 end
 
 InteractionDefinitions.decoration = InteractionDefinitions.decoration or table.clone(InteractionDefinitions.smartobject)
@@ -2159,7 +2191,7 @@ InteractionDefinitions.decoration.client.stop = function (world, interactor_unit
 			interactable_unit = interactable_unit
 		}
 
-		data.ingame_ui:transition_with_fade("hero_view_force", transition_params)
+		Managers.state.event:trigger("ui_event_transition_with_fade", "hero_view_force", transition_params)
 	end
 end
 
@@ -2197,7 +2229,7 @@ InteractionDefinitions.achievement_access.client.stop = function (world, interac
 			menu_state_name = "achievements"
 		}
 
-		data.ingame_ui:transition_with_fade("hero_view_force", transition_params)
+		Managers.state.event:trigger("ui_event_transition_with_fade", "hero_view_force", transition_params)
 	end
 end
 
@@ -2301,6 +2333,16 @@ InteractionDefinitions.difficulty_selection_access.client.hud_description = func
 	local current_difficulty = unit_get_data(interactable_unit, "current_difficulty")
 
 	return unit_get_data(interactable_unit, "interaction_data", "hud_description"), DifficultySettings[DefaultDifficulties[current_difficulty]].display_name
+end
+
+for name, dlc in pairs(DLCSettings) do
+	local interactions_filenames = dlc.interactions_filenames
+
+	if interactions_filenames then
+		for _, file_path in pairs(interactions_filenames) do
+			require(file_path)
+		end
+	end
 end
 
 return

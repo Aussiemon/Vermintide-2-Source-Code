@@ -1467,7 +1467,7 @@ UIWidgets.create_menu_button_medium_with_timer = function (text_field_id, timer_
 	}
 end
 
-UIWidgets.create_chain_scrollbar = function (scenegraph_id, size, optional_style)
+UIWidgets.create_chain_scrollbar = function (scenegraph_id, scroll_area_scenegraph_id, size, optional_style, disable_background)
 	local optional_thumb_suffix, optional_chain_suffix = nil
 
 	if optional_style == "gold" then
@@ -1478,452 +1478,804 @@ UIWidgets.create_chain_scrollbar = function (scenegraph_id, size, optional_style
 		optional_chain_suffix = ""
 	end
 
-	return {
+	local passes = {
+		{
+			pass_type = "local_offset",
+			content_check_function = function (content)
+				return content.scroll_bar_info.bar_height_percentage < 1
+			end,
+			offset_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+				local scroll_bar_info = ui_content.scroll_bar_info
+				local axis = scroll_bar_info.axis
+				local thumb_middle = ui_style.thumb_middle
+				local thumb_bottom = ui_style.thumb_bottom
+				local thumb_top = ui_style.thumb_top
+				local thumb_top_length = thumb_top.size[axis]
+				local thumb_middle_length = thumb_middle.size[axis]
+				local thumb_bottom_length = thumb_bottom.size[axis]
+				local hotspot = ui_style.hotspot
+				local scroll_length = scroll_bar_info.scroll_length
+				local min_height = thumb_top_length + thumb_bottom_length
+				local min_percentage = min_height / scroll_length
+				local bar_height_percentage = scroll_bar_info.bar_height_percentage
+				local percentage = math.max(bar_height_percentage, min_percentage)
+				hotspot.size[axis] = scroll_length * percentage
+				thumb_middle.size[axis] = math.max(math.floor(scroll_length * percentage) - min_height, 0)
+			end
+		},
+		{
+			style_id = "hotspot",
+			pass_type = "held",
+			content_id = "scroll_bar_info",
+			content_check_function = function (content)
+				return content.bar_height_percentage < 1
+			end,
+			held_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+				local axis = ui_content.axis
+				local gamepad_active = Managers.input:is_device_active("gamepad")
+				local base_cursor = input_service:get("cursor")
+				local cursor = UIInverseScaleVectorToResolution(base_cursor)
+				local cursor_y = cursor[axis]
+
+				if PLATFORM == "xb1" and not gamepad_active then
+					cursor_y = 1080 - base_cursor.y
+				end
+
+				local world_pos = UISceneGraph.get_world_position(ui_scenegraph, ui_content.scenegraph_id)
+				local world_pos_y = world_pos[axis]
+				local scroll_length = ui_content.scroll_length
+				local input_coordinate = math.clamp(cursor_y - world_pos_y, 0, scroll_length)
+				local size = ui_style.size
+				local thumb_length = size[axis]
+
+				if not ui_content.input_offset then
+					local input_offset = input_coordinate - ui_style.offset[axis]
+					ui_content.input_offset = input_offset
+				end
+
+				local input_offset = ui_content.input_offset
+				local start_position = 0
+				local end_position = scroll_length - thumb_length
+				local current_position = input_coordinate - input_offset
+				current_position = math.clamp(current_position, start_position, end_position)
+				local percentage = current_position / end_position
+				ui_content.value = 1 - percentage
+			end,
+			release_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+				ui_content.input_offset = nil
+			end
+		},
+		{
+			style_id = "hotspot",
+			pass_type = "hotspot",
+			content_id = "scroll_bar_info"
+		},
+		{
+			pass_type = "local_offset",
+			content_id = "scroll_bar_info",
+			content_check_function = function (content)
+				return content.bar_height_percentage < 1
+			end,
+			offset_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+				local axis = ui_content.axis
+				local hotspot = ui_style.hotspot
+				local value = 1 - ui_content.value
+				local scroll_length = ui_content.scroll_length
+				local thumb_length = hotspot.size[axis]
+				local start_position = 0
+				local end_position = scroll_length - thumb_length
+				local current_position = end_position * value
+				current_position = math.clamp(current_position, start_position, end_position)
+				hotspot.offset[axis] = current_position
+				local thumb_middle = ui_style.thumb_middle
+				local thumb_bottom = ui_style.thumb_bottom
+				local thumb_top = ui_style.thumb_top
+				local thumb_top_length = thumb_top.size[axis]
+				local thumb_middle_length = thumb_middle.size[axis]
+				local thumb_bottom_length = thumb_bottom.size[axis]
+				thumb_bottom.offset[axis] = current_position
+				thumb_middle.offset[axis] = current_position + thumb_bottom_length
+				thumb_top.offset[axis] = current_position + thumb_bottom_length + thumb_middle_length
+			end
+		},
+		{
+			style_id = "thumb_middle",
+			pass_type = "texture",
+			texture_id = "thumb_middle",
+			content_change_function = function (content, style)
+				local is_hover = content.scroll_bar_info.is_hover
+				local color = style.color
+				local color_value = (is_hover and 255) or 200
+				color[2] = color_value
+				color[3] = color_value
+				color[4] = color_value
+			end,
+			content_check_function = function (content)
+				return content.scroll_bar_info.bar_height_percentage < 1
+			end
+		},
+		{
+			style_id = "thumb_top",
+			pass_type = "texture",
+			texture_id = "thumb_top",
+			content_change_function = function (content, style)
+				local is_hover = content.scroll_bar_info.is_hover
+				local color = style.color
+				local color_value = (is_hover and 255) or 200
+				color[2] = color_value
+				color[3] = color_value
+				color[4] = color_value
+			end,
+			content_check_function = function (content)
+				return content.scroll_bar_info.bar_height_percentage < 1
+			end
+		},
+		{
+			style_id = "thumb_bottom",
+			pass_type = "texture",
+			texture_id = "thumb_bottom",
+			content_change_function = function (content, style)
+				local is_hover = content.scroll_bar_info.is_hover
+				local color = style.color
+				local color_value = (is_hover and 255) or 200
+				color[2] = color_value
+				color[3] = color_value
+				color[4] = color_value
+			end,
+			content_check_function = function (content)
+				return content.scroll_bar_info.bar_height_percentage < 1
+			end
+		},
+		{
+			pass_type = "tiled_texture",
+			style_id = "background",
+			texture_id = "background",
+			content_check_function = function (content)
+				return not content.disable_background
+			end
+		}
+	}
+	local content = {
+		disable_frame = false,
+		scroll = {},
+		disable_background = disable_background,
+		scroll_bar_info = {
+			button_scroll_step = 0.1,
+			axis = 2,
+			value = 0,
+			bar_height_percentage = 1,
+			scenegraph_id = scenegraph_id,
+			scroll_length = size[2]
+		},
+		background = "chain_link_01" .. (optional_chain_suffix or ""),
+		thumb_top = "chain_scrollbutton_top" .. (optional_thumb_suffix or ""),
+		thumb_bottom = "chain_scrollbutton_bottom" .. (optional_thumb_suffix or ""),
+		thumb_middle = "chain_scrollbutton_middle" .. (optional_thumb_suffix or "")
+	}
+	local style = {
+		background = {
+			offset = {
+				0,
+				0,
+				0
+			},
+			texture_tiling_size = {
+				16,
+				19
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		hotspot = {
+			offset = {
+				size[1] / 2 - 16,
+				0,
+				2
+			},
+			size = {
+				32,
+				size[2]
+			}
+		},
+		thumb_top = {
+			offset = {
+				size[1] / 2 - 16,
+				0,
+				2
+			},
+			size = {
+				32,
+				28
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		thumb_bottom = {
+			offset = {
+				size[1] / 2 - 16,
+				0,
+				2
+			},
+			size = {
+				32,
+				27
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		thumb_middle = {
+			offset = {
+				size[1] / 2 - 16,
+				0,
+				2
+			},
+			start_offset = {
+				size[1] / 2 - 16,
+				0,
+				2
+			},
+			size = {
+				32,
+				size[2]
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	}
+
+	if scroll_area_scenegraph_id then
+		passes[#passes + 1] = {
+			style_id = "scroll_area_hotspot",
+			pass_type = "scroll",
+			content_id = "scroll_area_hotspot",
+			scroll_function = function (ui_scenegraph, ui_style, ui_content, input_service, scroll_axis, dt)
+				local axis_input = scroll_axis.y * -1
+				local parent_content = ui_content.parent
+				local scroll_bar_info = parent_content.scroll_bar_info
+				local total_scroll_height = scroll_bar_info.total_scroll_height
+
+				if axis_input ~= 0 and ui_content.is_hover then
+					scroll_bar_info.axis_input = axis_input
+					scroll_bar_info.scroll_add = axis_input * scroll_bar_info.scroll_amount
+				else
+					axis_input = scroll_bar_info.axis_input
+				end
+
+				local scroll_add = scroll_bar_info.scroll_add
+
+				if scroll_add then
+					local step = scroll_add * dt * 5
+					scroll_add = scroll_add - step
+
+					if math.abs(scroll_add) > 0 then
+						scroll_bar_info.scroll_add = scroll_add
+					else
+						scroll_bar_info.scroll_add = nil
+					end
+
+					local current_scroll_value = scroll_bar_info.scroll_value
+					scroll_bar_info.scroll_value = math.clamp(current_scroll_value + step, 0, 1)
+				end
+			end
+		}
+		style.scroll_area_hotspot = {
+			offset = {
+				0,
+				0,
+				0
+			},
+			scenegraph_id = scroll_area_scenegraph_id
+		}
+		content.scroll_area_hotspot = {}
+	end
+
+	local definition = {
 		element = {
-			passes = {
-				{
-					style_id = "thumb_middle",
-					pass_type = "texture",
-					texture_id = "thumb_middle",
-					content_change_function = function (content, style)
-						local is_hover = content.scroll_bar_info.is_hover
-						local color = style.color
-						local color_value = (is_hover and 255) or 200
-						color[2] = color_value
-						color[3] = color_value
-						color[4] = color_value
-					end,
-					content_check_function = function (content)
-						return content.scroll_bar_info.bar_height_percentage < 1
-					end
-				},
-				{
-					style_id = "thumb_top",
-					pass_type = "texture",
-					texture_id = "thumb_top",
-					content_change_function = function (content, style)
-						local is_hover = content.scroll_bar_info.is_hover
-						local color = style.color
-						local color_value = (is_hover and 255) or 200
-						color[2] = color_value
-						color[3] = color_value
-						color[4] = color_value
-					end,
-					content_check_function = function (content)
-						return content.scroll_bar_info.bar_height_percentage < 1
-					end
-				},
-				{
-					style_id = "thumb_bottom",
-					pass_type = "texture",
-					texture_id = "thumb_bottom",
-					content_change_function = function (content, style)
-						local is_hover = content.scroll_bar_info.is_hover
-						local color = style.color
-						local color_value = (is_hover and 255) or 200
-						color[2] = color_value
-						color[3] = color_value
-						color[4] = color_value
-					end,
-					content_check_function = function (content)
-						return content.scroll_bar_info.bar_height_percentage < 1
-					end
-				},
-				{
-					pass_type = "tiled_texture",
-					style_id = "background",
-					texture_id = "background"
-				},
-				{
-					pass_type = "local_offset",
-					content_check_function = function (content)
-						return content.scroll_bar_info.bar_height_percentage < 1
-					end,
-					offset_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-						local scroll_bar_info = ui_content.scroll_bar_info
-						local thumb_middle = ui_style.thumb_middle
-						local thumb_bottom = ui_style.thumb_bottom
-						local thumb_top = ui_style.thumb_top
-						local hotspot = ui_style.hotspot
-						local scroll_size_y = thumb_middle.scroll_size_y
-						local min_height = thumb_top.size[2] + thumb_bottom.size[2]
-						local min_percentage = min_height / scroll_size_y
-						local percentage = math.max(scroll_bar_info.bar_height_percentage, min_percentage)
-						thumb_middle.size[2] = math.max(math.floor(scroll_size_y * percentage) - min_height, 0)
-						hotspot.size[2] = min_height + thumb_middle.size[2]
-					end
-				},
-				{
-					style_id = "hotspot",
-					pass_type = "hotspot",
-					content_id = "scroll_bar_info"
-				},
-				{
-					style_id = "thumb_middle",
-					pass_type = "held",
-					content_id = "scroll_bar_info",
-					content_check_function = function (content)
-						return content.bar_height_percentage < 1
-					end,
-					held_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-						local gamepad_active = Managers.input:is_device_active("gamepad")
-						local base_cursor = input_service:get("cursor")
-						local cursor = UIInverseScaleVectorToResolution(base_cursor)
-						local cursor_y = cursor[2]
-
-						if PLATFORM == "xb1" and GameSettingsDevelopment.allow_keyboard_mouse and not gamepad_active then
-							cursor_y = 1080 - base_cursor.y
-						end
-
-						local world_pos = UISceneGraph.get_world_position(ui_scenegraph, ui_content.scenegraph_id)
-						local world_pos_y = world_pos[2]
-						local offset = ui_style.offset
-						local scroll_box_start = world_pos_y + offset[2]
-						local cursor_y_norm = cursor_y - scroll_box_start
-
-						if not ui_content.click_pos_y then
-							ui_content.click_pos_y = cursor_y_norm
-						end
-
-						local click_pos_y = ui_content.click_pos_y
-						local delta = cursor_y_norm - click_pos_y
-						local start_y = ui_style.start_offset[2]
-						local end_y = (start_y + ui_style.scroll_size_y) - ui_style.size[2]
-						local offset_y = math.clamp(offset[2] + delta, start_y, end_y)
-						local scroll_size = end_y - start_y
-						local scroll = end_y - offset_y
-						ui_content.value = (scroll ~= 0 and scroll / scroll_size) or 0
-					end,
-					release_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-						ui_content.click_pos_y = nil
-					end
-				},
-				{
-					pass_type = "local_offset",
-					content_id = "scroll_bar_info",
-					content_check_function = function (content)
-						return content.bar_height_percentage < 1
-					end,
-					offset_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-						local thumb_middle = ui_style.thumb_middle
-						local thumb_bottom = ui_style.thumb_bottom
-						local thumb_top = ui_style.thumb_top
-						local hotspot = ui_style.hotspot
-						local thumb_top_height = thumb_top.size[2]
-						local thumb_middle_height = thumb_middle.size[2]
-						local thumb_bottom_height = thumb_bottom.size[2]
-						local start_y = thumb_middle.start_offset[2]
-						local end_y = (start_y + thumb_middle.scroll_size_y) - thumb_middle_height
-						local scroll_size = end_y - start_y
-						local value = ui_content.value
-						local offset_y = start_y + scroll_size * (1 - value)
-						thumb_middle.offset[2] = offset_y
-						thumb_bottom.offset[2] = offset_y - thumb_bottom_height
-						thumb_top.offset[2] = offset_y + thumb_middle_height
-						hotspot.offset[2] = thumb_bottom.offset[2]
-					end
-				}
-			}
+			passes = passes
 		},
-		content = {
-			disable_frame = false,
-			scroll_bar_info = {
-				button_scroll_step = 0.1,
-				value = 0,
-				bar_height_percentage = 1,
-				scenegraph_id = scenegraph_id
-			},
-			background = "chain_link_01" .. (optional_chain_suffix or ""),
-			thumb_top = "achievement_scrollbutton_top" .. (optional_thumb_suffix or ""),
-			thumb_bottom = "achievement_scrollbutton_bottom" .. (optional_thumb_suffix or ""),
-			thumb_middle = "achievement_scrollbutton_middle" .. (optional_thumb_suffix or "")
-		},
-		style = {
-			background = {
-				offset = {
-					0,
-					0,
-					0
-				},
-				texture_tiling_size = {
-					16,
-					19
-				},
-				color = {
-					255,
-					255,
-					255,
-					255
-				}
-			},
-			hotspot = {
-				offset = {
-					size[1] / 2 - 16,
-					0,
-					2
-				},
-				size = {
-					32,
-					size[2]
-				}
-			},
-			thumb_top = {
-				offset = {
-					size[1] / 2 - 16,
-					0,
-					2
-				},
-				size = {
-					32,
-					28
-				},
-				color = {
-					255,
-					255,
-					255,
-					255
-				}
-			},
-			thumb_bottom = {
-				offset = {
-					size[1] / 2 - 16,
-					0,
-					2
-				},
-				size = {
-					32,
-					27
-				},
-				color = {
-					255,
-					255,
-					255,
-					255
-				}
-			},
-			thumb_middle = {
-				offset = {
-					size[1] / 2 - 16,
-					0,
-					2
-				},
-				start_offset = {
-					size[1] / 2 - 16,
-					27,
-					2
-				},
-				size = {
-					32,
-					size[2]
-				},
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				scroll_size_y = size[2] - 55
-			},
-			scroll_bar_box = {
-				corner_radius = 2,
-				offset = {
-					0,
-					0,
-					2
-				},
-				size = {
-					size[1],
-					size[2]
-				},
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				start_offset = {
-					0,
-					0,
-					0
-				},
-				scroll_size_y = size[2]
-			}
-		},
+		content = content,
+		style = style,
 		scenegraph_id = scenegraph_id
 	}
+
+	return definition
+end
+
+UIWidgets.create_horizontal_chain_scrollbar = function (scenegraph_id, scroll_area_scenegraph_id, size, optional_style, disable_background)
+	local optional_thumb_suffix, optional_chain_suffix = nil
+
+	if optional_style == "gold" then
+		optional_thumb_suffix = "_gold"
+		optional_chain_suffix = "_blue"
+	else
+		optional_thumb_suffix = ""
+		optional_chain_suffix = ""
+	end
+
+	local passes = {
+		{
+			pass_type = "local_offset",
+			content_check_function = function (content)
+				return content.scroll_bar_info.bar_length_percentage < 1
+			end,
+			offset_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+				local scroll_bar_info = ui_content.scroll_bar_info
+				local axis = scroll_bar_info.axis
+				local thumb_left = ui_style.thumb_left
+				local thumb_right = ui_style.thumb_right
+				local thumb_middle = ui_style.thumb_middle
+				local thumb_left_length = thumb_left.size[axis]
+				local thumb_right_length = thumb_right.size[axis]
+				local thumb_middle_length = thumb_middle.size[axis]
+				local hotspot = ui_style.hotspot
+				local scroll_length = scroll_bar_info.scroll_length
+				local min_height = thumb_right_length + thumb_left_length
+				local min_percentage = min_height / scroll_length
+				local bar_length_percentage = scroll_bar_info.bar_length_percentage
+				local percentage = math.max(bar_length_percentage, min_percentage)
+				hotspot.size[axis] = scroll_length * percentage
+				thumb_middle.size[axis] = math.max(math.floor(scroll_length * percentage) - min_height, 0)
+			end
+		},
+		{
+			style_id = "hotspot",
+			pass_type = "held",
+			content_id = "scroll_bar_info",
+			content_check_function = function (content)
+				return content.bar_length_percentage < 1
+			end,
+			held_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+				local axis = ui_content.axis
+				local gamepad_active = Managers.input:is_device_active("gamepad")
+				local base_cursor = input_service:get("cursor")
+				local cursor = UIInverseScaleVectorToResolution(base_cursor)
+				local cursor_y = cursor[axis]
+
+				if PLATFORM == "xb1" and not gamepad_active then
+					cursor_y = 1080 - base_cursor.y
+				end
+
+				local world_pos = UISceneGraph.get_world_position(ui_scenegraph, ui_content.scenegraph_id)
+				local world_pos_y = world_pos[axis]
+				local scroll_length = ui_content.scroll_length
+				local input_coordinate = math.clamp(cursor_y - world_pos_y, 0, scroll_length)
+				local size = ui_style.size
+				local thumb_length = size[axis]
+
+				if not ui_content.input_offset then
+					local input_offset = input_coordinate - ui_style.offset[axis]
+					ui_content.input_offset = input_offset
+				end
+
+				local input_offset = ui_content.input_offset
+				local start_position = 0
+				local end_position = scroll_length - thumb_length
+				local current_position = input_coordinate - input_offset
+				current_position = math.clamp(current_position, start_position, end_position)
+				local percentage = current_position / end_position
+				ui_content.value = percentage
+			end,
+			release_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+				ui_content.input_offset = nil
+			end
+		},
+		{
+			style_id = "hotspot",
+			pass_type = "hotspot",
+			content_id = "scroll_bar_info"
+		},
+		{
+			pass_type = "local_offset",
+			content_id = "scroll_bar_info",
+			content_check_function = function (content)
+				return content.bar_length_percentage < 1
+			end,
+			offset_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+				local axis = ui_content.axis
+				local hotspot = ui_style.hotspot
+				local value = ui_content.value
+				local scroll_length = ui_content.scroll_length
+				local thumb_length = hotspot.size[axis]
+				local start_position = 0
+				local end_position = scroll_length - thumb_length
+				local current_position = end_position * value
+				current_position = math.clamp(current_position, start_position, end_position)
+				hotspot.offset[axis] = current_position
+				local thumb_left = ui_style.thumb_left
+				local thumb_right = ui_style.thumb_right
+				local thumb_middle = ui_style.thumb_middle
+				local thumb_left_length = thumb_left.size[axis]
+				local thumb_right_length = thumb_right.size[axis]
+				local thumb_middle_length = thumb_middle.size[axis]
+				thumb_left.offset[axis] = current_position
+				thumb_middle.offset[axis] = current_position + thumb_left_length
+				thumb_right.offset[axis] = current_position + thumb_left_length + thumb_middle_length
+			end
+		},
+		{
+			style_id = "thumb_middle",
+			pass_type = "texture",
+			texture_id = "thumb_middle",
+			content_change_function = function (content, style)
+				local is_hover = content.scroll_bar_info.is_hover
+				local color = style.color
+				local color_value = (is_hover and 255) or 200
+				color[2] = color_value
+				color[3] = color_value
+				color[4] = color_value
+			end,
+			content_check_function = function (content)
+				return content.scroll_bar_info.bar_length_percentage < 1
+			end
+		},
+		{
+			style_id = "thumb_left",
+			pass_type = "texture",
+			texture_id = "thumb_left",
+			content_change_function = function (content, style)
+				local is_hover = content.scroll_bar_info.is_hover
+				local color = style.color
+				local color_value = (is_hover and 255) or 200
+				color[2] = color_value
+				color[3] = color_value
+				color[4] = color_value
+			end,
+			content_check_function = function (content)
+				return content.scroll_bar_info.bar_length_percentage < 1
+			end
+		},
+		{
+			style_id = "thumb_right",
+			pass_type = "texture",
+			texture_id = "thumb_right",
+			content_change_function = function (content, style)
+				local is_hover = content.scroll_bar_info.is_hover
+				local color = style.color
+				local color_value = (is_hover and 255) or 200
+				color[2] = color_value
+				color[3] = color_value
+				color[4] = color_value
+			end,
+			content_check_function = function (content)
+				return content.scroll_bar_info.bar_length_percentage < 1
+			end
+		},
+		{
+			pass_type = "tiled_texture",
+			style_id = "background",
+			texture_id = "background",
+			content_check_function = function (content)
+				return not content.disable_background
+			end
+		}
+	}
+	local content = {
+		disable_frame = false,
+		scroll = {},
+		disable_background = disable_background,
+		scroll_bar_info = {
+			button_scroll_step = 0.1,
+			axis = 1,
+			value = 0,
+			bar_length_percentage = 1,
+			scenegraph_id = scenegraph_id,
+			scroll_length = size[1]
+		},
+		background = "chain_link_horizontal_01" .. (optional_chain_suffix or ""),
+		thumb_left = "chain_scrollbutton_left" .. (optional_thumb_suffix or ""),
+		thumb_right = "chain_scrollbutton_right" .. (optional_thumb_suffix or ""),
+		thumb_middle = "chain_scrollbutton_horizontal_middle" .. (optional_thumb_suffix or "")
+	}
+	local style = {
+		background = {
+			offset = {
+				0,
+				0,
+				0
+			},
+			texture_tiling_size = {
+				19,
+				16
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		hotspot = {
+			offset = {
+				0,
+				size[2] / 2 - 16,
+				2
+			},
+			size = {
+				size[1],
+				32
+			}
+		},
+		thumb_left = {
+			offset = {
+				0,
+				size[2] / 2 - 16,
+				2
+			},
+			size = {
+				27,
+				32
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		thumb_right = {
+			offset = {
+				0,
+				size[2] / 2 - 16,
+				20
+			},
+			size = {
+				28,
+				32
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		thumb_middle = {
+			offset = {
+				0,
+				size[2] / 2 - 16,
+				2
+			},
+			size = {
+				size[1],
+				32
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	}
+
+	if scroll_area_scenegraph_id then
+		passes[#passes + 1] = {
+			style_id = "scroll_area_hotspot",
+			pass_type = "scroll",
+			content_id = "scroll_area_hotspot",
+			scroll_function = function (ui_scenegraph, ui_style, ui_content, input_service, scroll_axis, dt)
+				local axis_input = scroll_axis.x * -1
+				local parent_content = ui_content.parent
+				local scroll_bar_info = parent_content.scroll_bar_info
+				local total_scroll_height = scroll_bar_info.total_scroll_height
+
+				if axis_input ~= 0 and ui_content.is_hover then
+					scroll_bar_info.axis_input = axis_input
+					scroll_bar_info.scroll_add = axis_input * scroll_bar_info.scroll_amount
+				else
+					axis_input = scroll_bar_info.axis_input
+				end
+
+				local scroll_add = scroll_bar_info.scroll_add
+
+				if scroll_add then
+					local step = scroll_add * dt * 5
+					scroll_add = scroll_add - step
+
+					if math.abs(scroll_add) > 0 then
+						scroll_bar_info.scroll_add = scroll_add
+					else
+						scroll_bar_info.scroll_add = nil
+					end
+
+					local current_scroll_value = scroll_bar_info.scroll_value
+					scroll_bar_info.scroll_value = math.clamp(current_scroll_value + step, 0, 1)
+				end
+			end
+		}
+		style.scroll_area_hotspot = {
+			offset = {
+				0,
+				0,
+				0
+			},
+			scenegraph_id = scroll_area_scenegraph_id
+		}
+		content.scroll_area_hotspot = {}
+	end
+
+	local definition = {
+		element = {
+			passes = passes
+		},
+		content = content,
+		style = style,
+		scenegraph_id = scenegraph_id
+	}
+
+	return definition
 end
 
 UIWidgets.create_scrollbar = function (scenegraph_id, size)
-	return {
+	local passes = {
+		{
+			pass_type = "local_offset",
+			content_check_function = function (content)
+				return content.scroll_bar_info.bar_height_percentage < 1
+			end,
+			offset_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+				local scroll_bar_info = ui_content.scroll_bar_info
+				local axis = scroll_bar_info.axis
+				local hotspot = ui_style.hotspot
+				local scroll_bar_box = ui_style.scroll_bar_box
+				local scroll_length = scroll_bar_info.scroll_length
+				local bar_height_percentage = scroll_bar_info.bar_height_percentage
+				hotspot.size[axis] = scroll_length * bar_height_percentage
+				scroll_bar_box.size[axis] = scroll_length * bar_height_percentage
+			end
+		},
+		{
+			style_id = "hotspot",
+			pass_type = "held",
+			content_id = "scroll_bar_info",
+			content_check_function = function (content)
+				return content.bar_height_percentage < 1
+			end,
+			held_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+				local axis = ui_content.axis
+				local gamepad_active = Managers.input:is_device_active("gamepad")
+				local base_cursor = input_service:get("cursor")
+				local cursor = UIInverseScaleVectorToResolution(base_cursor)
+				local cursor_y = cursor[axis]
+
+				if PLATFORM == "xb1" and not gamepad_active then
+					cursor_y = 1080 - base_cursor.y
+				end
+
+				local world_pos = UISceneGraph.get_world_position(ui_scenegraph, ui_content.scenegraph_id)
+				local world_pos_y = world_pos[axis]
+				local scroll_length = ui_content.scroll_length
+				local input_coordinate = math.clamp(cursor_y - world_pos_y, 0, scroll_length)
+				local size = ui_style.size
+				local thumb_length = size[axis]
+
+				if not ui_content.input_offset then
+					local input_offset = input_coordinate - ui_style.offset[axis]
+					ui_content.input_offset = input_offset
+				end
+
+				local input_offset = ui_content.input_offset
+				local start_position = 0
+				local end_position = scroll_length - thumb_length
+				local current_position = input_coordinate - input_offset
+				current_position = math.clamp(current_position, start_position, end_position)
+				local percentage = current_position / end_position
+				ui_content.value = 1 - percentage
+			end,
+			release_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+				ui_content.input_offset = nil
+			end
+		},
+		{
+			style_id = "hotspot",
+			pass_type = "hotspot",
+			content_id = "scroll_bar_info"
+		},
+		{
+			pass_type = "local_offset",
+			content_id = "scroll_bar_info",
+			content_check_function = function (content)
+				return content.bar_height_percentage < 1
+			end,
+			offset_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+				local axis = ui_content.axis
+				local hotspot = ui_style.hotspot
+				local value = 1 - ui_content.value
+				local scroll_length = ui_content.scroll_length
+				local thumb_length = hotspot.size[axis]
+				local start_position = 0
+				local end_position = scroll_length - thumb_length
+				local current_position = end_position * value
+				current_position = math.clamp(current_position, start_position, end_position)
+				hotspot.offset[axis] = current_position
+				local scroll_bar_box = ui_style.scroll_bar_box
+				scroll_bar_box.offset[axis] = current_position
+			end
+		},
+		{
+			pass_type = "rounded_background",
+			style_id = "background"
+		},
+		{
+			pass_type = "rounded_background",
+			style_id = "scroll_bar_box"
+		}
+	}
+	local content = {
+		disable_frame = false,
+		scroll = {},
+		scroll_bar_info = {
+			button_scroll_step = 0.1,
+			axis = 2,
+			value = 0,
+			bar_height_percentage = 1,
+			scenegraph_id = scenegraph_id,
+			scroll_length = size[2]
+		},
+		button_up_hotspot = {},
+		button_down_hotspot = {}
+	}
+	local style = {
+		background = {
+			corner_radius = 2,
+			color = {
+				255,
+				5,
+				5,
+				5
+			}
+		},
+		scroll_bar_box = {
+			corner_radius = 2,
+			offset = {
+				0,
+				0,
+				1
+			},
+			size = {
+				size[1],
+				size[2]
+			},
+			color = Colors.get_color_table_with_alpha("font_button_normal", 255)
+		},
+		hotspot = {
+			offset = {
+				0,
+				0,
+				2
+			},
+			size = {
+				size[1],
+				size[2]
+			}
+		}
+	}
+	local definition = {
 		element = {
-			passes = {
-				{
-					pass_type = "rounded_background",
-					style_id = "background"
-				},
-				{
-					pass_type = "rounded_background",
-					style_id = "scroll_bar_box"
-				},
-				{
-					pass_type = "local_offset",
-					offset_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-						local scroll_bar_info = ui_content.scroll_bar_info
-						local scroll_bar_box = ui_style.scroll_bar_box
-						local scroll_size_y = scroll_bar_box.scroll_size_y
-						local percentage = math.max(scroll_bar_info.bar_height_percentage, 0.05)
-						scroll_bar_box.size[2] = scroll_size_y * percentage
-						local button_up_hotspot = ui_content.button_up_hotspot
-
-						if button_up_hotspot.is_hover and button_up_hotspot.is_clicked == 0 then
-							ui_content.button_up = "scroll_bar_button_up_clicked"
-						else
-							ui_content.button_up = "scroll_bar_button_up"
-						end
-
-						local button_down_hotspot = ui_content.button_down_hotspot
-
-						if button_down_hotspot.is_hover and button_down_hotspot.is_clicked == 0 then
-							ui_content.button_down = "scroll_bar_button_down_clicked"
-						else
-							ui_content.button_down = "scroll_bar_button_down"
-						end
-
-						local button_scroll_step = ui_content.button_scroll_step or 0.1
-
-						if button_up_hotspot.on_release then
-							local size_y = scroll_bar_box.size[2]
-							local scroll_size_y = scroll_bar_box.scroll_size_y
-							local start_y = scroll_bar_box.start_offset[2]
-							local end_y = (start_y + scroll_size_y) - size_y
-							local step = size_y / (start_y + end_y)
-							scroll_bar_info.value = math.max(scroll_bar_info.value - button_scroll_step, 0)
-						elseif button_down_hotspot.on_release then
-							local size_y = scroll_bar_box.size[2]
-							local scroll_size_y = scroll_bar_box.scroll_size_y
-							local start_y = scroll_bar_box.start_offset[2]
-							local end_y = (start_y + scroll_size_y) - size_y
-							local step = size_y / (start_y + end_y)
-							scroll_bar_info.value = math.min(scroll_bar_info.value + button_scroll_step, 1)
-						end
-					end
-				},
-				{
-					style_id = "scroll_bar_box",
-					pass_type = "hotspot",
-					content_id = "scroll_bar_info"
-				},
-				{
-					style_id = "scroll_bar_box",
-					pass_type = "held",
-					content_id = "scroll_bar_info",
-					held_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-						local cursor = UIInverseScaleVectorToResolution(input_service:get("cursor"))
-						local cursor_y = cursor[2]
-						local world_pos = UISceneGraph.get_world_position(ui_scenegraph, ui_content.scenegraph_id)
-						local world_pos_y = world_pos[2]
-						local offset = ui_style.offset
-						local scroll_box_start = world_pos_y + offset[2]
-						local cursor_y_norm = cursor_y - scroll_box_start
-
-						if not ui_content.click_pos_y then
-							ui_content.click_pos_y = cursor_y_norm
-						end
-
-						local click_pos_y = ui_content.click_pos_y
-						local delta = cursor_y_norm - click_pos_y
-						local start_y = ui_style.start_offset[2]
-						local end_y = (start_y + ui_style.scroll_size_y) - ui_style.size[2]
-						local offset_y = math.clamp(offset[2] + delta, start_y, end_y)
-						local scroll_size = end_y - start_y
-						local scroll = end_y - offset_y
-						ui_content.value = (scroll ~= 0 and scroll / scroll_size) or 0
-					end,
-					release_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-						ui_content.click_pos_y = nil
-					end
-				},
-				{
-					pass_type = "local_offset",
-					content_id = "scroll_bar_info",
-					offset_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-						local box_style = ui_style.scroll_bar_box
-						local box_size_y = box_style.size[2]
-						local start_y = box_style.start_offset[2]
-						local end_y = (start_y + box_style.scroll_size_y) - box_size_y
-						local scroll_size = end_y - start_y
-						local value = ui_content.value
-						local offset_y = start_y + scroll_size * (1 - value)
-						box_style.offset[2] = offset_y
-					end
-				}
-			}
+			passes = passes
 		},
-		content = {
-			disable_frame = false,
-			scroll_bar_info = {
-				button_scroll_step = 0.1,
-				value = 0,
-				bar_height_percentage = 1,
-				scenegraph_id = scenegraph_id
-			},
-			button_up_hotspot = {},
-			button_down_hotspot = {}
-		},
-		style = {
-			background = {
-				corner_radius = 2,
-				color = {
-					255,
-					5,
-					5,
-					5
-				}
-			},
-			button_down = {
-				offset = {
-					5,
-					4,
-					0
-				},
-				size = {
-					16,
-					18
-				}
-			},
-			button_up = {
-				offset = {
-					5,
-					size[2] - 22,
-					0
-				},
-				size = {
-					16,
-					18
-				}
-			},
-			scroll_bar_box = {
-				corner_radius = 2,
-				offset = {
-					0,
-					0,
-					1
-				},
-				size = {
-					size[1],
-					size[2]
-				},
-				color = Colors.get_color_table_with_alpha("font_button_normal", 255),
-				start_offset = {
-					0,
-					0,
-					0
-				},
-				scroll_size_y = size[2]
-			}
-		},
+		content = content,
+		style = style,
 		scenegraph_id = scenegraph_id
 	}
+
+	return definition
 end
 
 UIWidgets.create_lock_icon = function (scenegraph_id, level)
@@ -4940,7 +5292,7 @@ UIWidgets.create_texture_with_style = function (texture, scenegraph_id, style)
 	}
 end
 
-UIWidgets.create_simple_gradient_mask_texture = function (texture, scenegraph_id)
+UIWidgets.create_simple_gradient_mask_texture = function (texture, scenegraph_id, color)
 	return {
 		element = {
 			passes = {
@@ -4962,7 +5314,7 @@ UIWidgets.create_simple_gradient_mask_texture = function (texture, scenegraph_id
 					0,
 					0
 				},
-				color = {
+				color = color or {
 					255,
 					255,
 					255,
@@ -7983,393 +8335,6 @@ UIWidgets.create_default_stepper = function (scenegraph_id, size)
 	}
 end
 
-UIWidgets.create_map_hero_list_widget = function (scenegraph_id, gamepad_selection_scenegraph_id)
-	local icons = UISettings.hero_icons.small
-
-	return {
-		element = {
-			passes = {
-				{
-					pass_type = "hotspot",
-					content_id = "button_hotspot"
-				},
-				{
-					pass_type = "texture",
-					style_id = "hover_texture",
-					texture_id = "hover_texture",
-					content_check_function = function (content)
-						local button_hotspot = content.button_hotspot
-
-						return (not button_hotspot.gamepad_active and button_hotspot.is_selected) or button_hotspot.is_hover
-					end
-				},
-				{
-					style_id = "icon_1",
-					pass_type = "hotspot",
-					content_id = "hotspot_1"
-				},
-				{
-					style_id = "tooltip_text",
-					pass_type = "tooltip_text",
-					text_id = "tooltip_text_icon_1",
-					content_check_function = function (ui_content)
-						return ui_content.hotspot_1.is_hover
-					end
-				},
-				{
-					pass_type = "texture",
-					style_id = "icon_1",
-					texture_id = "icon_1",
-					content_check_function = function (content)
-						local is_selected = content.button_hotspot.is_selected
-						local internal_index = content.internal_index
-
-						return not content.hotspot_1.is_hover and (not is_selected or internal_index ~= 1)
-					end
-				},
-				{
-					pass_type = "texture",
-					style_id = "icon_1",
-					texture_id = "icon_1_hover",
-					content_check_function = function (content)
-						local is_selected = content.button_hotspot.is_selected
-						local internal_index = content.internal_index
-
-						return content.hotspot_1.is_hover or (is_selected and internal_index == 1)
-					end
-				},
-				{
-					pass_type = "texture",
-					style_id = "icon_1",
-					texture_id = "selected_texture",
-					content_check_function = function (content)
-						return content.hotspot_1.selected
-					end
-				},
-				{
-					style_id = "icon_2",
-					pass_type = "hotspot",
-					content_id = "hotspot_2"
-				},
-				{
-					style_id = "tooltip_text",
-					pass_type = "tooltip_text",
-					text_id = "tooltip_text_icon_2",
-					content_check_function = function (ui_content)
-						return ui_content.hotspot_2.is_hover
-					end
-				},
-				{
-					pass_type = "texture",
-					style_id = "icon_2",
-					texture_id = "icon_2",
-					content_check_function = function (content)
-						local is_selected = content.button_hotspot.is_selected
-						local internal_index = content.internal_index
-
-						return not content.hotspot_2.is_hover and (not is_selected or internal_index ~= 2)
-					end
-				},
-				{
-					pass_type = "texture",
-					style_id = "icon_2",
-					texture_id = "icon_2_hover",
-					content_check_function = function (content)
-						local is_selected = content.button_hotspot.is_selected
-						local internal_index = content.internal_index
-
-						return content.hotspot_2.is_hover or (is_selected and internal_index == 2)
-					end
-				},
-				{
-					pass_type = "texture",
-					style_id = "icon_2",
-					texture_id = "selected_texture",
-					content_check_function = function (content)
-						return content.hotspot_2.selected
-					end
-				},
-				{
-					style_id = "icon_3",
-					pass_type = "hotspot",
-					content_id = "hotspot_3"
-				},
-				{
-					style_id = "tooltip_text",
-					pass_type = "tooltip_text",
-					text_id = "tooltip_text_icon_3",
-					content_check_function = function (ui_content)
-						return ui_content.hotspot_3.is_hover
-					end
-				},
-				{
-					pass_type = "texture",
-					style_id = "icon_3",
-					texture_id = "icon_3",
-					content_check_function = function (content)
-						local is_selected = content.button_hotspot.is_selected
-						local internal_index = content.internal_index
-
-						return not content.hotspot_3.is_hover and (not is_selected or internal_index ~= 3)
-					end
-				},
-				{
-					pass_type = "texture",
-					style_id = "icon_3",
-					texture_id = "icon_3_hover",
-					content_check_function = function (content)
-						local is_selected = content.button_hotspot.is_selected
-						local internal_index = content.internal_index
-
-						return content.hotspot_3.is_hover or (is_selected and internal_index == 3)
-					end
-				},
-				{
-					pass_type = "texture",
-					style_id = "icon_3",
-					texture_id = "selected_texture",
-					content_check_function = function (content)
-						return content.hotspot_3.selected
-					end
-				},
-				{
-					style_id = "icon_4",
-					pass_type = "hotspot",
-					content_id = "hotspot_4"
-				},
-				{
-					style_id = "tooltip_text",
-					pass_type = "tooltip_text",
-					text_id = "tooltip_text_icon_4",
-					content_check_function = function (ui_content)
-						return ui_content.hotspot_4.is_hover
-					end
-				},
-				{
-					pass_type = "texture",
-					style_id = "icon_4",
-					texture_id = "icon_4",
-					content_check_function = function (content)
-						local is_selected = content.button_hotspot.is_selected
-						local internal_index = content.internal_index
-
-						return not content.hotspot_4.is_hover and (not is_selected or internal_index ~= 4)
-					end
-				},
-				{
-					pass_type = "texture",
-					style_id = "icon_4",
-					texture_id = "icon_4_hover",
-					content_check_function = function (content)
-						local is_selected = content.button_hotspot.is_selected
-						local internal_index = content.internal_index
-
-						return content.hotspot_4.is_hover or (is_selected and internal_index == 4)
-					end
-				},
-				{
-					pass_type = "texture",
-					style_id = "icon_4",
-					texture_id = "selected_texture",
-					content_check_function = function (content)
-						return content.hotspot_4.selected
-					end
-				},
-				{
-					style_id = "icon_5",
-					pass_type = "hotspot",
-					content_id = "hotspot_5"
-				},
-				{
-					style_id = "tooltip_text",
-					pass_type = "tooltip_text",
-					text_id = "tooltip_text_icon_5",
-					content_check_function = function (ui_content)
-						return ui_content.hotspot_5.is_hover
-					end
-				},
-				{
-					pass_type = "texture",
-					style_id = "icon_5",
-					texture_id = "icon_5",
-					content_check_function = function (content)
-						local is_selected = content.button_hotspot.is_selected
-						local internal_index = content.internal_index
-
-						return not content.hotspot_5.is_hover and (not is_selected or internal_index ~= 5)
-					end
-				},
-				{
-					pass_type = "texture",
-					style_id = "icon_5",
-					texture_id = "icon_5_hover",
-					content_check_function = function (content)
-						local is_selected = content.button_hotspot.is_selected
-						local internal_index = content.internal_index
-
-						return content.hotspot_5.is_hover or (is_selected and internal_index == 5)
-					end
-				},
-				{
-					pass_type = "texture",
-					style_id = "icon_5",
-					texture_id = "selected_texture",
-					content_check_function = function (content)
-						return content.hotspot_5.selected
-					end
-				}
-			}
-		},
-		content = {
-			internal_index = 1,
-			icon_5 = "tabs_class_icon_empire_soldier_normal",
-			icon_3 = "tabs_class_icon_dwarf_ranger_normal",
-			hover_texture = "map_setting_bg_fade",
-			icon_2_hover = "tabs_class_icon_way_watcher_selected",
-			icon_4 = "tabs_class_icon_bright_wizard_normal",
-			icon_3_hover = "tabs_class_icon_dwarf_ranger_selected",
-			icon_1 = "tabs_class_icon_witch_hunter_normal",
-			icon_4_hover = "tabs_class_icon_bright_wizard_selected",
-			selected_texture = "tab_menu_icon_03",
-			icon_1_hover = "tabs_class_icon_witch_hunter_selected",
-			icon_5_hover = "tabs_class_icon_empire_soldier_selected",
-			icon_2 = "tabs_class_icon_way_watcher_normal",
-			button_hotspot = {},
-			hotspot_1 = {},
-			hotspot_2 = {},
-			hotspot_3 = {},
-			hotspot_4 = {},
-			hotspot_5 = {},
-			tooltip_text_icon_1 = UISettings.hero_tooltips.witch_hunter,
-			tooltip_text_icon_2 = UISettings.hero_tooltips.wood_elf,
-			tooltip_text_icon_3 = UISettings.hero_tooltips.dwarf_ranger,
-			tooltip_text_icon_4 = UISettings.hero_tooltips.bright_wizard,
-			tooltip_text_icon_5 = UISettings.hero_tooltips.empire_soldier
-		},
-		style = {
-			gamepad_selection = (gamepad_selection_scenegraph_id and {
-				texture_size = {
-					40,
-					40
-				},
-				scenegraph_id = gamepad_selection_scenegraph_id
-			}) or nil,
-			hover_texture = {
-				size = {
-					410,
-					50
-				},
-				offset = {
-					-55,
-					-8,
-					0
-				}
-			},
-			icon_1 = {
-				size = {
-					34,
-					34
-				},
-				offset = {
-					25,
-					0,
-					1
-				},
-				color = {
-					255,
-					255,
-					255,
-					255
-				}
-			},
-			icon_2 = {
-				size = {
-					34,
-					34
-				},
-				offset = {
-					79,
-					0,
-					1
-				},
-				color = {
-					255,
-					255,
-					255,
-					255
-				}
-			},
-			icon_3 = {
-				size = {
-					34,
-					34
-				},
-				offset = {
-					133,
-					0,
-					1
-				},
-				color = {
-					255,
-					255,
-					255,
-					255
-				}
-			},
-			icon_4 = {
-				size = {
-					34,
-					34
-				},
-				offset = {
-					187,
-					0,
-					1
-				},
-				color = {
-					255,
-					255,
-					255,
-					255
-				}
-			},
-			icon_5 = {
-				size = {
-					34,
-					34
-				},
-				offset = {
-					241,
-					0,
-					1
-				},
-				color = {
-					255,
-					255,
-					255,
-					255
-				}
-			},
-			tooltip_text = {
-				font_size = 24,
-				max_width = 500,
-				localize = true,
-				horizontal_alignment = "left",
-				vertical_alignment = "top",
-				font_type = "hell_shark",
-				text_color = Colors.get_color_table_with_alpha("white", 255),
-				line_colors = {},
-				offset = {
-					0,
-					0,
-					50
-				}
-			}
-		},
-		scenegraph_id = scenegraph_id
-	}
-end
-
 UIWidgets.create_checkbox_widget = function (text, tooltip_text, scenegraph_id, checkbox_offset, optional_text_offset, optional_tooltip_text_disabled)
 	local frame_settings = UIFrameSettings.menu_frame_06
 
@@ -8469,7 +8434,9 @@ UIWidgets.create_checkbox_widget = function (text, tooltip_text, scenegraph_id, 
 		},
 		style = {
 			checkbox_style = {
-				size = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "right",
+				texture_size = {
 					40,
 					40
 				},
@@ -8486,7 +8453,9 @@ UIWidgets.create_checkbox_widget = function (text, tooltip_text, scenegraph_id, 
 				}
 			},
 			checkbox_style_disabled = {
-				size = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "right",
+				texture_size = {
 					40,
 					40
 				},
@@ -8503,7 +8472,9 @@ UIWidgets.create_checkbox_widget = function (text, tooltip_text, scenegraph_id, 
 				}
 			},
 			checkbox_background = {
-				size = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "right",
+				texture_size = {
 					40,
 					40
 				},
@@ -8520,7 +8491,9 @@ UIWidgets.create_checkbox_widget = function (text, tooltip_text, scenegraph_id, 
 				}
 			},
 			checkbox_frame = {
-				size = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "right",
+				area_size = {
 					40,
 					40
 				},
@@ -8539,7 +8512,9 @@ UIWidgets.create_checkbox_widget = function (text, tooltip_text, scenegraph_id, 
 				}
 			},
 			checkbox_frame_disabled = {
-				size = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "right",
+				area_size = {
 					40,
 					40
 				},
@@ -8558,7 +8533,9 @@ UIWidgets.create_checkbox_widget = function (text, tooltip_text, scenegraph_id, 
 				}
 			},
 			checkbox_marker = {
-				size = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "right",
+				texture_size = {
 					37,
 					31
 				},
@@ -8570,7 +8547,9 @@ UIWidgets.create_checkbox_widget = function (text, tooltip_text, scenegraph_id, 
 				color = Colors.get_color_table_with_alpha("font_title", 255)
 			},
 			checkbox_marker_disabled = {
-				size = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "right",
+				texture_size = {
 					37,
 					31
 				},
@@ -8585,12 +8564,12 @@ UIWidgets.create_checkbox_widget = function (text, tooltip_text, scenegraph_id, 
 				vertical_alignment = "center",
 				upper_case = true,
 				localize = true,
-				horizontal_alignment = "left",
+				horizontal_alignment = "right",
 				font_size = 24,
 				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_title", 255),
 				offset = optional_text_offset or {
-					50,
+					-50,
 					0,
 					4
 				}
@@ -8599,12 +8578,12 @@ UIWidgets.create_checkbox_widget = function (text, tooltip_text, scenegraph_id, 
 				vertical_alignment = "center",
 				upper_case = true,
 				localize = true,
-				horizontal_alignment = "left",
+				horizontal_alignment = "right",
 				font_size = 24,
 				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("white", 96),
 				offset = optional_text_offset or {
-					50,
+					-50,
 					0,
 					4
 				}
@@ -8613,12 +8592,12 @@ UIWidgets.create_checkbox_widget = function (text, tooltip_text, scenegraph_id, 
 				vertical_alignment = "center",
 				upper_case = true,
 				localize = true,
-				horizontal_alignment = "left",
+				horizontal_alignment = "right",
 				font_size = 24,
 				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = optional_text_offset or {
-					50,
+					-50,
 					0,
 					4
 				}

@@ -1,4 +1,4 @@
-sideways_damage_types = {
+local sideways_damage_types = {
 	"light_slashing_linesman",
 	"slashing_linesman",
 	"heavy_slashing_linesman",
@@ -12,7 +12,7 @@ sideways_damage_types = {
 	"blunt_tank",
 	"heavy_blunt_tank"
 }
-smiter_damage_types = {
+local smiter_damage_types = {
 	"light_slashing_smiter",
 	"slashing_smiter",
 	"heavy_slashing_smiter",
@@ -23,7 +23,7 @@ smiter_damage_types = {
 	"stab_smiter",
 	"heavy_stab_smiter"
 }
-fencer_damage_types = {
+local fencer_damage_types = {
 	"light_slashing_fencer",
 	"slashing_fencer",
 	"heavy_slashing_fencer",
@@ -34,7 +34,7 @@ fencer_damage_types = {
 	"blunt_fencer",
 	"heavy_blunt_fencer"
 }
-ranged_damage_types = {
+local ranged_damage_types = {
 	"arrow_carbine",
 	"arrow_sniper",
 	"arrow_machinegun",
@@ -141,5 +141,6 @@ HitEffectsCritterRat = {
 		}
 	}
 }
+HitEffectsCritterRat = table.create_copy(HitEffectsCritterRat, HitEffectsCritterRat)
 
 return

@@ -230,7 +230,9 @@ StartGameView.draw = function (self, dt, input_service)
 end
 
 StartGameView.post_update = function (self, dt, t)
-	self._machine:post_update(dt, t)
+	if self._machine then
+		self._machine:post_update(dt, t)
+	end
 end
 
 StartGameView.update = function (self, dt, t)
@@ -283,7 +285,10 @@ StartGameView.update = function (self, dt, t)
 		end
 	end
 
-	self._machine:update(dt, t)
+	if self._machine then
+		self._machine:update(dt, t)
+	end
+
 	self:draw(dt, input_service)
 end
 

@@ -767,8 +767,6 @@ local action_data = {
 					statistics_db:increment_stat_and_sync_to_clients(stat_name)
 
 					blackboard.kill_skaven_challenge_completed = true
-
-					QuestSettings.send_completed_message(stat_name)
 				end
 			end
 		end
@@ -925,8 +923,6 @@ local action_data = {
 					statistics_db:increment_stat_and_sync_to_clients(stat_name)
 
 					blackboard.kill_skaven_challenge_completed = true
-
-					QuestSettings.send_completed_message(stat_name)
 				end
 			end
 		end

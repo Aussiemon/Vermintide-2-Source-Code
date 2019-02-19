@@ -1165,15 +1165,26 @@ LevelAnalysis.automatic_terror_creation = function (self, main_paths, total_main
 	}
 	local level_path_dist = total_main_path_dist
 	local adjusted_path_distance = level_path_dist - safe_distance
-	local num_event_places_f = adjusted_path_distance / event_every_x_meter
-	local num_event_places = math.floor(num_event_places_f)
-	local trailing_event_fraction = num_event_places_f % 1
-	local trailing_event = (self:_random() <= trailing_event_fraction and 1) or 0
-	local num_events = num_event_places + trailing_event
+	local override_num_events = event_settings.override_num_events
+	local num_events = nil
+
+	if override_num_events then
+		num_events = override_num_events
+
+		print("[LevelAnalysis] Overriding num events: ", num_events)
+	else
+		local num_event_places_f = adjusted_path_distance / event_every_x_meter
+		local num_event_places = math.floor(num_event_places_f)
+		local trailing_event_fraction = num_event_places_f % 1
+		local trailing_event = (self:_random() <= trailing_event_fraction and 1) or 0
+		num_events = num_event_places + trailing_event
+
+		print("[LevelAnalysis] num_event_places_f:", num_event_places_f, ", num_event_places:", num_event_places, ", trailing_event_fraction:", trailing_event_fraction, ", num_events:", num_events)
+	end
+
 	local padding = (level_overrides and level_overrides.padding_dist) or event_settings.padding_dist
 
 	print("[LevelAnalysis] Level path distance:", level_path_dist)
-	print("[LevelAnalysis] num_event_places_f:", num_event_places_f, ", num_event_places:", num_event_places, ", trailing_event_fraction:", trailing_event_fraction, ", num_events:", num_events)
 
 	if num_events <= 0 then
 		return

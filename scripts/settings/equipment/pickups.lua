@@ -151,7 +151,7 @@ Pickups.level_events.torch = {
 	item_description = "interaction_torch",
 	spawn_weighting = 1e-06,
 	debug_pickup_category = "level_event",
-	teleport_time = 40,
+	teleport_time = 3.5,
 	slot_name = "slot_level_event",
 	item_name = "torch",
 	unit_name = "units/weapons/player/pup_torch/pup_torch",
@@ -546,6 +546,31 @@ Pickups.lorebook_pages = {
 		end
 	}
 }
+Pickups.painting_scrap = {
+	painting_scrap = {
+		only_once = false,
+		spawn_weighting = 1,
+		hide_on_pickup = true,
+		type = "painting_scrap",
+		pickup_sound_event = "hud_pickup_painting_piece",
+		debug_pickup_category = "special",
+		unit_name = "units/weapons/player/pup_painting/pup_painting_scraps",
+		local_pickup_sound = true,
+		hud_description = "ravaged_art",
+		can_spawn_func = function (params, is_debug_spawn)
+			return true
+		end
+	}
+}
+
+for _, dlc in pairs(DLCSettings) do
+	local pickups = dlc.pickups
+
+	if pickups then
+		table.merge_recursive(Pickups, pickups)
+	end
+end
+
 LootRatPickups = {
 	first_aid_kit = 3,
 	healing_draught = 2,
@@ -559,7 +584,7 @@ LootRatPickups = {
 }
 local total_loot_rat_spawn_weighting = 0
 
-for pickup_name, spawn_weighting in pairs(LootRatPickups) do
+for _, spawn_weighting in pairs(LootRatPickups) do
 	total_loot_rat_spawn_weighting = total_loot_rat_spawn_weighting + spawn_weighting
 end
 
@@ -577,7 +602,7 @@ AllPickups = {}
 for group, pickups in pairs(Pickups) do
 	local total_spawn_weighting = 0
 
-	for pickup_name, settings in pairs(pickups) do
+	for _, settings in pairs(pickups) do
 		total_spawn_weighting = total_spawn_weighting + settings.spawn_weighting
 	end
 

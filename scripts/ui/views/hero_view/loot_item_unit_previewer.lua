@@ -12,6 +12,10 @@ LootItemUnitPreviewer.init = function (self, reward, spawn_position, background_
 	self.units_to_spawn = self:load_reward_units(reward)
 end
 
+LootItemUnitPreviewer.register_spawn_callback = function (self, callback)
+	self._spawn_callback = callback
+end
+
 LootItemUnitPreviewer.destroy = function (self)
 	self:_destroy_units()
 	self:_unload_packages()
@@ -50,9 +54,15 @@ end
 
 LootItemUnitPreviewer.post_update = function (self, dt, t)
 	if not self._items_spawned and self:_packages_loaded() then
-		self:_present_items()
+		self:_spawn_items()
 
 		self._items_spawned = true
+
+		if self._spawn_callback then
+			self._spawn_callback()
+
+			self._spawn_callback = nil
+		end
 	end
 end
 
@@ -221,10 +231,10 @@ end
 LootItemUnitPreviewer.spawn_link_units = function (self, reward)
 	local link_units = {}
 	local reward_data = reward.data
-	local backend_id = reward.backend_id
-	local item_skin = reward.skin
-	local spawn_position = self.spawn_position
 	local item_key = reward_data.key
+	local backend_id = reward.backend_id
+	local item_skin = reward.skin or item_key
+	local spawn_position = self.spawn_position
 	local item_data = ItemMasterList[item_key]
 	local item_type = item_data.item_type
 
@@ -292,7 +302,7 @@ LootItemUnitPreviewer.spawn_link_units = function (self, reward)
 	return link_units
 end
 
-LootItemUnitPreviewer._present_items = function (self)
+LootItemUnitPreviewer._spawn_items = function (self)
 	local reward = self.reward
 	local units_to_spawn = self.units_to_spawn
 	local spawned_units = {}

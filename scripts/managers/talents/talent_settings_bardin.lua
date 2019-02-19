@@ -202,21 +202,21 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ironbreaker_passive_increased_defence = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				stat_buff = "damage_taken"
 			}
 		}
 	},
 	bardin_ironbreaker_passive_increased_stamina = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.MAX_FATIGUE
+				stat_buff = "max_fatigue"
 			}
 		}
 	},
 	bardin_ironbreaker_passive_reduced_stun_duration = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.STUN_DURATION
+				stat_buff = "stun_duration"
 			}
 		}
 	},
@@ -256,28 +256,28 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				max_stacks = 1,
-				stat_buff = StatBuffIndex.STUN_DURATION
+				stat_buff = "stun_duration"
 			}
 		}
 	},
 	bardin_ironbreaker_push_arc = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.BLOCK_ANGLE
+				stat_buff = "block_angle"
 			}
 		}
 	},
 	bardin_ironbreaker_max_health = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.MAX_HEALTH_ALIVE
+				stat_buff = "max_health_alive"
 			}
 		}
 	},
 	bardin_ironbreaker_max_stamina = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.MAX_FATIGUE
+				stat_buff = "max_fatigue"
 			}
 		}
 	},
@@ -295,17 +295,17 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				refresh_durations = true,
+				stat_buff = "damage_taken",
 				max_stacks = 1,
 				icon = "bardin_ironbreaker_buff_defense_on_revived_target",
-				priority_buff = true,
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				priority_buff = true
 			}
 		}
 	},
 	bardin_ironbreaker_reduced_overcharge = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.REDUCED_OVERCHARGE
+				stat_buff = "reduced_overcharge"
 			}
 		}
 	},
@@ -323,8 +323,8 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				max_stacks = 1,
 				icon = "bardin_ironbreaker_regen_stamina_on_charged_attacks",
-				refresh_durations = true,
-				stat_buff = StatBuffIndex.FATIGUE_REGEN
+				stat_buff = "fatigue_regen",
+				refresh_durations = true
 			}
 		}
 	},
@@ -342,7 +342,7 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				max_stacks = 1,
 				icon = "bardin_ironbreaker_stamina_regen_during_gromril",
-				stat_buff = StatBuffIndex.FATIGUE_REGEN
+				stat_buff = "fatigue_regen"
 			}
 		}
 	},
@@ -411,13 +411,13 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				update_func = "update_bardin_ironbreaker_activated_ability",
+				stat_buff = "damage_taken",
 				perk = "reduced_hit_react",
 				name = "bardin_ironbreaker_activated_ability",
 				remove_buff_func = "end_bardin_ironbreaker_activated_ability",
 				refresh_durations = true,
 				max_stacks = 1,
 				icon = "bardin_ironbreaker_activated_ability",
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN,
 				multiplier = buff_tweak_data.bardin_ironbreaker_activated_ability.multiplier_damage_taken
 			}
 		}
@@ -426,9 +426,9 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				name = "bardin_ironbreaker_ability_stamina",
+				stat_buff = "block_cost",
 				refresh_durations = true,
 				max_stacks = 1,
-				stat_buff = StatBuffIndex.BLOCK_COST,
 				multiplier = buff_tweak_data.bardin_ironbreaker_activated_ability.multiplier_block_cost,
 				duration = buff_tweak_data.bardin_ironbreaker_activated_ability.duration
 			}
@@ -441,13 +441,13 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				update_func = "update_bardin_ironbreaker_activated_ability",
+				stat_buff = "damage_taken",
 				perk = "reduced_hit_react",
 				name = "bardin_ironbreaker_activated_ability_duration",
 				remove_buff_func = "end_bardin_ironbreaker_activated_ability",
 				refresh_durations = true,
 				max_stacks = 1,
 				icon = "bardin_ironbreaker_activated_ability",
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN,
 				multiplier = buff_tweak_data.bardin_ironbreaker_activated_ability.multiplier_damage_taken
 			}
 		}
@@ -456,8 +456,8 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				refresh_durations = true,
+				stat_buff = "block_cost",
 				max_stacks = 1,
-				stat_buff = StatBuffIndex.BLOCK_COST,
 				multiplier = buff_tweak_data.bardin_ironbreaker_activated_ability.multiplier_block_cost,
 				duration = buff_tweak_data.bardin_ironbreaker_activated_ability_duration.duration
 			}
@@ -484,7 +484,7 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_slayer_passive_attack_speed = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				stat_buff = "attack_speed"
 			}
 		}
 	},
@@ -510,7 +510,7 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				refresh_durations = true,
 				icon = "bardin_slayer_passive",
-				stat_buff = StatBuffIndex.INCREASED_WEAPON_DAMAGE_MELEE
+				stat_buff = "increased_weapon_damage_melee"
 			}
 		}
 	},
@@ -519,26 +519,26 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				icon = "bardin_slayer_activated_ability",
 				name = "bardin_slayer_frenzy",
+				stat_buff = "attack_speed",
 				remove_buff_func = "end_slayer_activated_ability",
 				max_stacks = 1,
 				perk = "no_ranged_knockback",
 				dormant = true,
-				refresh_durations = true,
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				refresh_durations = true
 			}
 		}
 	},
 	bardin_slayer_crit_chance = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.CRITICAL_STRIKE_CHANCE
+				stat_buff = "critical_strike_chance"
 			}
 		}
 	},
 	bardin_slayer_max_health = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.MAX_HEALTH_ALIVE
+				stat_buff = "max_health_alive"
 			}
 		}
 	},
@@ -591,7 +591,7 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_slayer_damage_taken_capped = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.MAX_DAMAGE_TAKEN
+				stat_buff = "max_damage_taken"
 			}
 		}
 	},
@@ -610,8 +610,8 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				max_stacks = 3,
 				icon = "bardin_slayer_passive",
-				refresh_durations = true,
-				stat_buff = StatBuffIndex.INCREASED_WEAPON_DAMAGE_MELEE
+				stat_buff = "increased_weapon_damage_melee",
+				refresh_durations = true
 			}
 		}
 	},
@@ -620,8 +620,8 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				max_stacks = 3,
 				icon = "bardin_slayer_passive_stacking_damage_buff_grants_defence",
-				refresh_durations = true,
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				stat_buff = "damage_taken",
+				refresh_durations = true
 			}
 		}
 	},
@@ -629,9 +629,9 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				icon = "bardin_slayer_passive_cooldown_reduction_on_max_stacks",
+				stat_buff = "cooldown_regen",
 				max_stacks = 1,
 				refresh_durations = true,
-				stat_buff = StatBuffIndex.COOLDOWN_REGEN,
 				duration = buff_tweak_data.bardin_slayer_passive_stacking_damage_buff.duration
 			}
 		}
@@ -730,7 +730,7 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				dormant = true,
-				stat_buff = StatBuffIndex.NOT_CONSUME_MEDPACK
+				stat_buff = "not_consume_medpack"
 			}
 		}
 	},
@@ -738,7 +738,7 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				dormant = true,
-				stat_buff = StatBuffIndex.NOT_CONSUME_POTION
+				stat_buff = "not_consume_potion"
 			}
 		}
 	},
@@ -746,21 +746,21 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				dormant = true,
-				stat_buff = StatBuffIndex.NOT_CONSUME_GRENADE
+				stat_buff = "not_consume_grenade"
 			}
 		}
 	},
 	bardin_ranger_passive_reload_speed = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.RELOAD_SPEED
+				stat_buff = "reload_speed"
 			}
 		}
 	},
 	bardin_ranger_passive_increased_ammunition = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.TOTAL_AMMO
+				stat_buff = "total_ammo"
 			}
 		}
 	},
@@ -784,21 +784,21 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ranger_attack_speed = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				stat_buff = "attack_speed"
 			}
 		}
 	},
 	bardin_ranger_reduced_spread = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.REDUCED_SPREAD
+				stat_buff = "reduced_spread"
 			}
 		}
 	},
 	bardin_ranger_healing_received = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.HEALING_RECEIVED
+				stat_buff = "healing_received"
 			}
 		}
 	},
@@ -828,7 +828,7 @@ TalentBuffTemplates.dwarf_ranger = {
 				max_stacks = 1,
 				icon = "bardin_ranger_increased_melee_damage_on_no_ammo",
 				priority_buff = true,
-				stat_buff = StatBuffIndex.POWER_LEVEL
+				stat_buff = "power_level"
 			}
 		}
 	},
@@ -856,7 +856,7 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				max_stacks = 1,
 				icon = "bardin_ranger_increased_defence_on_disabled",
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				stat_buff = "damage_taken"
 			}
 		}
 	},
@@ -917,7 +917,7 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ranger_activated_ability_cooldown = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.ACTIVATED_COOLDOWN
+				stat_buff = "activated_cooldown"
 			}
 		}
 	}

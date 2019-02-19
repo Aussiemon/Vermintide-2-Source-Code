@@ -2,7 +2,8 @@ local definitions = local_require("scripts/ui/views/tutorial_input_ui_definition
 local DO_RELOAD = true
 TutorialInputUI = class(TutorialInputUI)
 
-TutorialInputUI.init = function (self, ingame_ui_context)
+TutorialInputUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._input_manager = ingame_ui_context.input_manager
 	self._platform = PLATFORM

@@ -25,6 +25,8 @@ SpawnerSystem.init = function (self, context, system_name)
 	self._raw_id_lookup = {}
 	self._waiting_to_spawn = 0
 	self._hidden_spawners = {}
+	self._disabled_hidden_spawners = {}
+	self._spawner_broadphase_id = {}
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "spawn_horde", "spawn_horde")
@@ -122,12 +124,7 @@ SpawnerSystem.register_enabled_spawner = function (self, spawner, terror_event_i
 	end
 
 	if hidden then
-		local pos = Unit.local_position(spawner, 0)
-
-		Broadphase.add(self.hidden_spawners_broadphase, spawner, pos, 1)
-
-		self._num_hidden_spawners = self._num_hidden_spawners + 1
-		self._hidden_spawners[spawner] = true
+		self:_add_broadphase(spawner)
 	end
 end
 
@@ -136,27 +133,76 @@ SpawnerSystem.hibernate_spawner = function (self, spawner, hibernate)
 	local num_enabled_spawners = #enabled_spawners
 	local disabled_spawners = self._disabled_spawners
 	local spawner_was_hibernating = disabled_spawners[spawner]
-
-	print("hibernate_spawner:", hibernate)
+	local hidden_spawners = self._hidden_spawners
+	local is_hidden_spawner = hidden_spawners[spawner]
+	local disabled_hidden_spawners = self._disabled_hidden_spawners
+	local hidden_spawner_was_hibernating = disabled_hidden_spawners[spawner]
 
 	if hibernate then
 		if not spawner_was_hibernating then
-			for i = 1, num_enabled_spawners, 1 do
-				if enabled_spawners[i] == spawner then
-					enabled_spawners[i] = enabled_spawners[num_enabled_spawners]
-					enabled_spawners[num_enabled_spawners] = nil
-					disabled_spawners[spawner] = true
-				end
-			end
-		else
-			print("Can't hibernate spawner, it was already hibernating!")
+			self:_hibernate_spawner(num_enabled_spawners, enabled_spawners, disabled_spawners, spawner)
 		end
-	elseif spawner_was_hibernating then
-		disabled_spawners[spawner] = nil
-		enabled_spawners[#enabled_spawners + 1] = spawner
+
+		if is_hidden_spawner and not hidden_spawner_was_hibernating then
+			self:_hibernate_hidden_spawner(hidden_spawners, disabled_hidden_spawners, spawner)
+			self:_remove_broadphase(spawner)
+		end
 	else
-		print("Can't wake up spawner, it wasn't hibernating")
+		if spawner_was_hibernating then
+			self:_awaken_spawner(enabled_spawners, disabled_spawners, spawner)
+		end
+
+		if hidden_spawner_was_hibernating then
+			self:_awaken_hidden_spawner(hidden_spawners, disabled_hidden_spawners, spawner)
+			self:_add_broadphase(spawner)
+		end
 	end
+end
+
+SpawnerSystem._hibernate_spawner = function (self, num_enabled_spawners, enabled_spawners, disabled_spawners, spawner)
+	for i = 1, num_enabled_spawners, 1 do
+		local spawn = enabled_spawners[i]
+
+		if spawn == spawner then
+			table.swap_delete(enabled_spawners, i)
+
+			disabled_spawners[spawner] = true
+
+			break
+		end
+	end
+end
+
+SpawnerSystem._hibernate_hidden_spawner = function (self, hidden_spawners, disabled_hidden_spawners, spawner)
+	hidden_spawners[spawner] = nil
+	disabled_hidden_spawners[spawner] = true
+end
+
+SpawnerSystem._awaken_spawner = function (self, enabled_spawners, disabled_spawners, spawner)
+	disabled_spawners[spawner] = nil
+	enabled_spawners[#enabled_spawners + 1] = spawner
+end
+
+SpawnerSystem._awaken_hidden_spawner = function (self, hidden_spawners, disabled_hidden_spawners, spawner)
+	disabled_hidden_spawners[spawner] = nil
+	hidden_spawners[spawner] = true
+end
+
+SpawnerSystem._add_broadphase = function (self, spawner)
+	local pos = Unit.local_position(spawner, 0)
+	local broadphase_id = Broadphase.add(self.hidden_spawners_broadphase, spawner, pos, 1)
+	self._hidden_spawners[spawner] = true
+	self._spawner_broadphase_id[spawner] = broadphase_id
+	self._num_hidden_spawners = self._num_hidden_spawners + 1
+end
+
+SpawnerSystem._remove_broadphase = function (self, spawner)
+	local broadphase_spawner_id = self._spawner_broadphase_id[spawner]
+
+	Broadphase.remove(self.hidden_spawners_broadphase, broadphase_spawner_id)
+
+	self._spawner_broadphase_id[spawner] = nil
+	self._num_hidden_spawners = self._num_hidden_spawners - 1
 end
 
 SpawnerSystem.register_raw_spawner = function (self, spawner, terror_event_id)
@@ -350,16 +396,25 @@ SpawnerSystem.spawn_horde_from_terror_event_id = function (self, event_id, varia
 
 	if event_id and event_id ~= "" then
 		local source_spawners = self._id_lookup[event_id]
+		spawners = {}
 
-		if not source_spawners then
-			assert("No horde spawners found with terror_id ", event_id)
+		if source_spawners then
+			for i = 1, #source_spawners, 1 do
+				local source_spawner = source_spawners[i]
+
+				if not self._disabled_spawners[source_spawner] then
+					spawners[#spawners + 1] = source_spawner
+				end
+			end
+		else
+			fassert("No horde spawners found with terror_id %d ", event_id)
 
 			return
 		end
 
-		spawners = {}
-
-		copy_array(source_spawners, 1, #source_spawners, spawners)
+		if #spawners == 0 then
+			return
+		end
 
 		event_spawn = true
 	else

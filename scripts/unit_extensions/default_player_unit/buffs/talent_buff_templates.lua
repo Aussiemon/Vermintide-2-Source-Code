@@ -2,16 +2,16 @@ OldTalentBuffTemplates = {
 	increased_max_alive_health = {
 		buffs = {
 			{
-				name = "increased_max_alive_health",
-				stat_buff = StatBuffIndex.MAX_HEALTH_ALIVE
+				stat_buff = "max_health_alive",
+				name = "increased_max_alive_health"
 			}
 		}
 	},
 	increased_healing_received = {
 		buffs = {
 			{
-				name = "increased_healing_received",
-				stat_buff = StatBuffIndex.HEALING_RECEIVED
+				stat_buff = "healing_received",
+				name = "increased_healing_received"
 			}
 		}
 	},
@@ -20,8 +20,8 @@ OldTalentBuffTemplates = {
 			{
 				max_stacks = 1,
 				refresh_durations = true,
-				name = "increased_attack_speed",
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				stat_buff = "attack_speed",
+				name = "increased_attack_speed"
 			}
 		}
 	},
@@ -30,40 +30,40 @@ OldTalentBuffTemplates = {
 			{
 				max_stacks = 1,
 				refresh_durations = true,
-				name = "increased_critical_hit_chance",
-				stat_buff = StatBuffIndex.CRITICAL_STRIKE_CHANCE
+				stat_buff = "critical_strike_chance",
+				name = "increased_critical_hit_chance"
 			}
 		}
 	},
 	reduced_damage_taken = {
 		buffs = {
 			{
-				name = "reduced_damage_taken",
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				stat_buff = "damage_taken",
+				name = "reduced_damage_taken"
 			}
 		}
 	},
 	increased_damage = {
 		buffs = {
 			{
-				name = "increased_damage",
-				stat_buff = StatBuffIndex.INCREASED_WEAPON_DAMAGE
+				stat_buff = "increased_weapon_damage",
+				name = "increased_damage"
 			}
 		}
 	},
 	increased_max_fatigue = {
 		buffs = {
 			{
-				name = "increased_max_fatigue",
-				stat_buff = StatBuffIndex.MAX_FATIGUE
+				stat_buff = "max_fatigue",
+				name = "increased_max_fatigue"
 			}
 		}
 	},
 	increased_damage_melee = {
 		buffs = {
 			{
-				name = "increased_damage_melee",
-				stat_buff = StatBuffIndex.INCREASED_WEAPON_DAMAGE_MELEE
+				stat_buff = "increased_weapon_damage_melee",
+				name = "increased_damage_melee"
 			}
 		}
 	},
@@ -87,9 +87,9 @@ OldTalentBuffTemplates = {
 			{
 				refresh_durations = true,
 				multiplier = 0.4,
+				stat_buff = "fatigue_regen",
 				max_stacks = 1,
-				duration = 2,
-				stat_buff = StatBuffIndex.FATIGUE_REGEN
+				duration = 2
 			}
 		}
 	}

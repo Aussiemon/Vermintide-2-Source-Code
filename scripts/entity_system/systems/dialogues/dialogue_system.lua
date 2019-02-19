@@ -41,6 +41,16 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 	local dialogue_filename = "dialogues/generated/" .. level_name
 	local auto_load_files = DialogueSettings.auto_load_files
 	local blocked_auto_load = DialogueSettings.blocked_auto_load_files[level_name]
+	self._dialogue_level_start_delay = DialogueSettings.dialogue_level_start_delay
+	self._story_start_delay = DialogueSettings.story_start_delay
+	self._story_tick_time = DialogueSettings.story_tick_time
+	local dialogue_override = LevelSettings[level_name].override_dialogue_start_delay
+
+	if dialogue_override then
+		self._dialogue_level_start_delay = dialogue_override.dialogue_level_start_delay
+		self._story_start_delay = dialogue_override.story_start_delay
+		self._story_tick_time = dialogue_override.story_tick_time
+	end
 
 	if Application.can_get("lua", dialogue_filename) then
 		self.tagquery_loader:load_file(dialogue_filename)
@@ -117,7 +127,7 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 	self.tagquery_database:set_global_context(self.global_context)
 
 	self.global_context.level_time = 0
-	self.next_story_line_update_t = DialogueSettings.story_start_delay
+	self.next_story_line_update_t = self._story_start_delay
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
 	self.network_event_delegate = network_event_delegate
 
@@ -687,7 +697,7 @@ DialogueSystem.physics_async_update = function (self, context, t)
 	local tagquery_database = self.tagquery_database
 	local query = tagquery_database:iterate_queries(LOCAL_GAMETIME)
 
-	if enabled and (DialogueSettings.dialogue_level_start_delay < self.global_context.level_time or DialogueSystem:has_local_player_moved_from_start_position()) then
+	if enabled and (self._dialogue_level_start_delay < self.global_context.level_time or DialogueSystem:has_local_player_moved_from_start_position()) then
 		if query then
 			local dialogue_actor_unit = query.query_context.source
 			local unit_extension_data = self.unit_extension_data
@@ -1206,7 +1216,7 @@ DialogueSystem._update_story_lines = function (self, t)
 	local next_story_line_update_t = self.next_story_line_update_t
 
 	if next_story_line_update_t < t then
-		self.next_story_line_update_t = t + DialogueSettings.story_tick_time
+		self.next_story_line_update_t = t + self._story_tick_time
 		local random_player = DialogueSystem:get_random_player()
 
 		if random_player ~= nil then
@@ -1922,6 +1932,15 @@ function DebugVoByFile(file_name, quick)
 		localization_strings = {}
 	}
 	local cl = 1
+	local level_key = Managers.state.game_mode:level_key()
+	local _dialogue_level_start_delay = DialogueSettings.dialogue_level_start_delay
+	local _story_tick_time = DialogueSettings.story_tick_time
+	local dialogue_override = LevelSettings[level_key].override_dialogue_start_delay
+
+	if dialogue_override then
+		_dialogue_level_start_delay = dialogue_override.dialogue_level_start_delay
+		_story_tick_time = dialogue_override.story_tick_time
+	end
 
 	DebugVo.play = function ()
 		if cl < #current_file.sound_events then
@@ -1985,8 +2004,8 @@ function DebugVoByFile(file_name, quick)
 
 			debug_vo_by_file = true
 			debug_vo_by_file_gui = true
-			DialogueSettings.dialogue_level_start_delay = DialogueSettings.dialogue_level_start_delay + 999
-			DialogueSettings.story_tick_time = DialogueSettings.story_tick_time + 999
+			_dialogue_level_start_delay = _dialogue_level_start_delay + 999
+			_story_tick_time = _story_tick_time + 999
 		else
 			debug_vo_by_file = false
 			debug_vo_by_file_gui = false
@@ -2006,8 +2025,8 @@ function DebugVoByFile(file_name, quick)
 
 	DebugVo.pause = function ()
 		debug_vo_by_file = false
-		DialogueSettings.dialogue_level_start_delay = DialogueSettings.dialogue_level_start_delay
-		DialogueSettings.story_tick_time = DialogueSettings.story_tick_time
+		_dialogue_level_start_delay = _dialogue_level_start_delay
+		_story_tick_time = _story_tick_time
 	end
 
 	DebugVo.jump_to = function (line_number)

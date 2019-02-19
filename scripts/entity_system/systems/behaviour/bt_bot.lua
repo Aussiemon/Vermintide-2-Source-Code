@@ -280,6 +280,11 @@ BotBehaviors.default = {
 		name = "attack_priority_target"
 	},
 	{
+		"BTBotTeleportToAllyAction",
+		condition = "should_teleport",
+		name = "teleport_out_of_range"
+	},
+	{
 		"BTUtilityNode",
 		{
 			"BTSelector",
@@ -392,13 +397,7 @@ BotBehaviors.default = {
 			name = "follow",
 			action_data = ACTIONS_DEFAULT.follow
 		},
-		condition = "ally_within_range_or_solo",
 		name = "in_combat"
-	},
-	{
-		"BTBotTeleportToAllyAction",
-		condition = "can_teleport",
-		name = "teleport_out_of_range"
 	},
 	{
 		"BTNilAction",

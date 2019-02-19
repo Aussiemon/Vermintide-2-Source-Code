@@ -1,4 +1,4 @@
-local mutator_settings = require("scripts/settings/mutator_settings")
+local mutator_settings = local_require("scripts/settings/mutator_settings")
 
 local function modify_breed_health_start(context, data)
 	local template = data.template
@@ -42,12 +42,14 @@ local function default_start_function_server(context, data)
 			pickup_types[pickup_type] = true
 		end
 
+		local excluded_pickup_item_names = template.excluded_pickup_item_names
 		local pickup_units = Managers.state.entity:get_entities("PickupUnitExtension")
 
 		for unit, extension in pairs(pickup_units) do
 			local pickup_settings = extension:get_pickup_settings()
+			local is_excluded = excluded_pickup_item_names and excluded_pickup_item_names[pickup_settings.item_name]
 
-			if pickup_types.all or pickup_types[pickup_settings.type] then
+			if (not is_excluded and pickup_types.all) or pickup_types[pickup_settings.type] then
 				Managers.state.unit_spawner:mark_for_deletion(unit)
 			end
 		end
@@ -58,7 +60,7 @@ local function default_stop_function_server(context, data)
 	modify_breed_health_stop(context, data)
 end
 
-local function default_ai_killed_function_server(context, data, killed_unit, killer_unit)
+local function default_ai_killed_function_server(context, data, killed_unit, killer_unit, death_data)
 	return
 end
 
@@ -74,11 +76,15 @@ local function default_ai_killed_function_client(context, data, killed_unit, kil
 	return
 end
 
+local function default_server_players_left_safe_zone(context, data)
+	return
+end
+
 local function default_initialize_function_server(context, data)
 	modify_breed_health_start(context, data)
 end
 
-MutatorTemplates = {}
+MutatorTemplates = MutatorTemplates or {}
 
 for name, template in pairs(mutator_settings) do
 	template.name = name
@@ -125,14 +131,25 @@ for name, template in pairs(mutator_settings) do
 	end
 
 	if template.server_ai_killed_function then
-		local function ai_killed_function(context, data, killed_unit, killer_unit)
-			default_ai_killed_function_server(context, data, killed_unit, killer_unit)
-			template.server_ai_killed_function(context, data, killed_unit, killer_unit)
+		local function ai_killed_function(context, data, killed_unit, killer_unit, death_data)
+			default_ai_killed_function_server(context, data, killed_unit, killer_unit, death_data)
+			template.server_ai_killed_function(context, data, killed_unit, killer_unit, death_data)
 		end
 
 		template.server.ai_killed_function = ai_killed_function
 	else
 		template.server.ai_killed_function = default_ai_killed_function_server
+	end
+
+	if template.server_players_left_safe_zone then
+		local function server_players_left_safe_zone(context, data)
+			default_server_players_left_safe_zone(context, data)
+			template.server_players_left_safe_zone(context, data)
+		end
+
+		template.server.server_players_left_safe_zone = server_players_left_safe_zone
+	else
+		template.server.server_players_left_safe_zone = default_server_players_left_safe_zone
 	end
 
 	if template.client_start_function then
@@ -176,7 +193,11 @@ for name, template in pairs(mutator_settings) do
 		template.client.update = template.client_update_function
 	end
 
-	MutatorTemplates[name] = template
+	if MutatorTemplates[name] then
+		MutatorTemplates[name] = table.create_copy(MutatorTemplates[name], template)
+	else
+		MutatorTemplates[name] = template
+	end
 end
 
 return

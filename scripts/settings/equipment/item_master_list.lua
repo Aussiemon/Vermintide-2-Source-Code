@@ -1,6 +1,5 @@
 dofile("scripts/settings/equipment/item_master_list_local")
 dofile("scripts/settings/equipment/item_master_list_exported")
-dofile("scripts/unit_extensions/default_player_unit/buffs/buff_templates")
 dofile("scripts/settings/equipment/attachments")
 dofile("scripts/settings/equipment/cosmetics")
 dofile("scripts/settings/equipment/player_wwise_dependencies")
@@ -14,7 +13,6 @@ for _, dlc in pairs(DLCSettings) do
 end
 
 all_item_types = {}
-local all_loot = {}
 
 local function aggregate(list)
 	for _, item in pairs(list) do

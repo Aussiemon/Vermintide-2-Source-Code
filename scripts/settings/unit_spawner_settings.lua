@@ -1,6 +1,6 @@
 RagdollSettings = {
-	min_num_ragdolls = 7,
-	max_num_ragdolls = 12
+	min_num_ragdolls = 10,
+	max_num_ragdolls = 24
 }
 
 if PLATFORM == "xb1" then

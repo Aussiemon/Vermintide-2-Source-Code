@@ -10,6 +10,16 @@ QuestSettings = {
 	nurgle_bathed_all = 27,
 	forest_fort_kill_cannonball = 25,
 	volume_corpse_pit_damage = 120,
+	scrap_count_level = {
+		3,
+		30
+	},
+	scrap_count_generic = {
+		150,
+		260,
+		370,
+		540
+	},
 	num_enemies_killed_by_warpfire = 10,
 	num_enemies_killed_by_poison = 10,
 	corruptor_killed_at_teleport_time = 2,
@@ -214,7 +224,6 @@ QuestSettings.send_completed_message = function (challenge_stat_id)
 
 		if challenge_name then
 			local message = challenge_name
-			local sender = Network.peer_id()
 			local localize_parameters = false
 
 			Managers.chat:send_system_chat_message(1, message, 1, localize_parameters, true)

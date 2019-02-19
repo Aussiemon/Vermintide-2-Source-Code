@@ -7,7 +7,7 @@ local E = 0.001
 BuffExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self._unit = unit
 	self.world = extension_init_context.world
-	self._breed = Unit.get_data(unit, "breed")
+	self._breed = extension_init_data.breed
 	self._buffs = {}
 	self._stat_buffs = {}
 	self._event_buffs = {}
@@ -15,10 +15,9 @@ BuffExtension.init = function (self, extension_init_context, unit, extension_ini
 	self._deactivation_sounds = {}
 	self._continuous_screen_effects = {}
 	self._deactivation_screen_effects = {}
-	local num_stat_buffs = table.size(StatBuffIndex)
 
-	for i = 1, num_stat_buffs, 1 do
-		self._stat_buffs[i] = {}
+	for stat_buff_name, _ in pairs(StatBuffApplicationMethods) do
+		self._stat_buffs[stat_buff_name] = {}
 	end
 
 	for i = 1, #ProcEvents, 1 do
@@ -336,9 +335,9 @@ BuffExtension._add_stat_buff = function (self, sub_buff_template, buff)
 	local multiplier = buff.multiplier or 0
 	local proc_chance = buff.proc_chance or 1
 	local stat_buffs = self._stat_buffs
-	local stat_buff_index = sub_buff_template.stat_buff
-	local stat_buff = stat_buffs[stat_buff_index]
-	local application_method = StatBuffApplicationMethods[stat_buff_index]
+	local stat_buff_type = sub_buff_template.stat_buff
+	local stat_buff = stat_buffs[stat_buff_type]
+	local application_method = StatBuffApplicationMethods[stat_buff_type]
 	local index = nil
 
 	if application_method == "proc" then
@@ -424,10 +423,10 @@ BuffExtension.update = function (self, unit, input, dt, context, t)
 	end
 end
 
-BuffExtension.update_stat_buff = function (self, stat_buff_index, difference)
+BuffExtension.update_stat_buff = function (self, stat_buff_type, difference)
 	local stat_buffs = self._stat_buffs
-	local stat_buff = stat_buffs[stat_buff_index]
-	local application_method = StatBuffApplicationMethods[stat_buff_index]
+	local stat_buff = stat_buffs[stat_buff_type]
+	local application_method = StatBuffApplicationMethods[stat_buff_type]
 	local index = 1
 
 	if application_method == "stacking_bonus" then

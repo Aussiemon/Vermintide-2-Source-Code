@@ -591,7 +591,7 @@ HeroWindowTalentsConsole._populate_career_info = function (self, initialize)
 	widgets_by_name.active_icon.content.texture_id = activated_icon
 	local passive_perks = passive_ability_data.perks
 	local total_perks_height = 0
-	local perks_height_spacing = 10
+	local perks_height_spacing = 0
 
 	for i = 1, 3, 1 do
 		local widget = widgets_by_name["career_perk_" .. i]

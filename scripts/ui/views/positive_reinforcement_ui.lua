@@ -12,7 +12,8 @@ local event_colors = {
 local breed_textures = UISettings.breed_textures
 PositiveReinforcementUI = class(PositiveReinforcementUI)
 
-PositiveReinforcementUI.init = function (self, ingame_ui_context)
+PositiveReinforcementUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.player_manager = ingame_ui_context.player_manager
@@ -67,7 +68,7 @@ end
 local function trigger_assist_buffs(savior_unit, saved_unit)
 	local buff_ext = ScriptUnit.extension(savior_unit, "buff_system")
 	local saved_unit_health_extension = ScriptUnit.extension(saved_unit, "health_system")
-	local shield_amount, procced = buff_ext:apply_buffs_to_value(0, StatBuffIndex.SHIELDING_PLAYER_BY_ASSIST)
+	local shield_amount, procced = buff_ext:apply_buffs_to_value(0, "shielding_player_by_assist")
 
 	if procced then
 		if Managers.player.is_server then

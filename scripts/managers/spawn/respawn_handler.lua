@@ -177,7 +177,7 @@ RespawnHandler.update = function (self, dt, t, player_statuses)
 
 				if Unit.alive(player_unit) then
 					local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-					respawn_time = buff_extension:apply_buffs_to_value(respawn_time, StatBuffIndex.FASTER_RESPAWN)
+					respawn_time = buff_extension:apply_buffs_to_value(respawn_time, "faster_respawn")
 				end
 			end
 

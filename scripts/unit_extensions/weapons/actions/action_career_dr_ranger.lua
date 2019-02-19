@@ -51,13 +51,14 @@ ActionCareerDRRanger._create_smoke_screen = function (self)
 	if owner_player.local_player then
 		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
-		first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ranger_enter", nil, true)
+		first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ranger_enter")
+		first_person_extension:play_remote_unit_sound_event("Play_career_ability_bardin_ranger_enter", owner_unit, 0)
 		first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ranger_loop")
+		career_extension:set_state("bardin_activate_ranger")
 
 		MOOD_BLACKBOARD.skill_ranger = true
 	end
 
-	career_extension:set_state("bardin_activate_ranger")
 	status_extension:set_invisible(true)
 end
 

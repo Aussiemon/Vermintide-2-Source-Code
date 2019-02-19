@@ -54,7 +54,8 @@ local text_definition = {
 local RELOAD_UI = true
 WaitForRescueUI = class(WaitForRescueUI)
 
-WaitForRescueUI.init = function (self, ingame_ui_context)
+WaitForRescueUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.input_manager = ingame_ui_context.input_manager

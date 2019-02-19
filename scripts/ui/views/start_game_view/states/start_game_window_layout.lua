@@ -68,6 +68,7 @@ local window_layouts = {
 		background_icon_name = "menu_options_button_image_02",
 		name = "adventure",
 		game_mode_option = true,
+		sorting = 10,
 		close_on_exit = true,
 		icon_name = "options_button_icon_quickplay",
 		windows = {
@@ -83,6 +84,7 @@ local window_layouts = {
 		background_icon_name = "menu_options_button_image_04",
 		name = "custom_game",
 		game_mode_option = true,
+		sorting = 20,
 		close_on_exit = true,
 		icon_name = "options_button_icon_custom",
 		windows = {
@@ -98,6 +100,7 @@ local window_layouts = {
 		background_icon_name = "menu_options_button_image_05",
 		name = "heroic_deeds",
 		game_mode_option = true,
+		sorting = 30,
 		close_on_exit = true,
 		icon_name = "options_button_icon_deed",
 		windows = {
@@ -113,6 +116,7 @@ local window_layouts = {
 		background_icon_name = "menu_options_button_image_03",
 		name = "twitch",
 		game_mode_option = true,
+		sorting = 40,
 		close_on_exit = true,
 		icon_name = "options_button_icon_twitch",
 		windows = {
@@ -234,6 +238,12 @@ for _, dlc in pairs(DLCSettings) do
 		end
 	end
 end
+
+table.sort(window_layouts, function (a, b)
+	if a.sorting and b.sorting then
+		return a.sorting < b.sorting
+	end
+end)
 
 local MAX_ACTIVE_WINDOWS = 3
 

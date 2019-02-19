@@ -6,7 +6,7 @@ local SIZE_X = 1920
 local SIZE_Y = 1080
 local window_size = {
 	871,
-	790
+	730
 }
 local window_inside_size = {
 	window_size[2] - frame_thickness * 2,
@@ -177,7 +177,7 @@ local scenegraph_definition = {
 }
 local text_style = {
 	word_wrap = true,
-	upper_case = true,
+	upper_case = false,
 	localize = false,
 	use_shadow = true,
 	font_size = 22,
@@ -229,7 +229,7 @@ local widget_definitions = {
 	title_bg = UIWidgets.create_background("title_bg", scenegraph_definition.title_bg.size, "menu_frame_bg_02"),
 	title_text = UIWidgets.create_simple_text("", "title_text", nil, nil, header_style),
 	ok_button = UIWidgets.create_default_button("ok_button", scenegraph_definition.ok_button.size, nil, nil, Localize("button_ok"), 24, nil, "button_detail_04", 34, true),
-	scrollbar = UIWidgets.create_chain_scrollbar("scrollbar", scenegraph_definition.scrollbar.size),
+	scrollbar = UIWidgets.create_chain_scrollbar("scrollbar", nil, scenegraph_definition.scrollbar.size),
 	scroll_content = {
 		scenegraph_id = "window",
 		element = {

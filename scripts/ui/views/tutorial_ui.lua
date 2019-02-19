@@ -1,7 +1,5 @@
 -- WARNING: Error occurred during decompilation.
 --   Code may be incomplete or incorrect.
-require("foundation/scripts/util/local_require")
-require("scripts/ui/ui_animator")
 require("scripts/ui/views/tutorial_tooltip_ui")
 
 local definitions = local_require("scripts/ui/views/tutorial_ui_definitions")
@@ -29,7 +27,8 @@ local function convert_current_screen_resolution_position_to_target_resolution(p
 	return width, height
 end
 
-TutorialUI.init = function (self, ingame_ui_context)
+TutorialUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.player_manager = ingame_ui_context.player_manager
@@ -67,6 +66,15 @@ TutorialUI.init = function (self, ingame_ui_context)
 	self:create_ui_elements()
 
 	self.tutorial_tooltip_ui = TutorialTooltipUI:new(ingame_ui_context)
+	local event_manager = Managers.state.event
+
+	if event_manager then
+		event_manager:register(self, "tutorial_event_queue_info_slate_entry", "queue_info_slate_entry")
+		event_manager:register(self, "tutorial_event_add_health_bar", "add_health_bar")
+		event_manager:register(self, "tutorial_event_remove_health_bar", "remove_health_bar")
+		event_manager:register(self, "tutorial_event_show_health_bar", "show_health_bar")
+		event_manager:register(self, "tutorial_event_clear_tutorials", "clear_tutorials")
+	end
 end
 
 TutorialUI.create_ui_elements = function (self)
@@ -125,6 +133,16 @@ TutorialUI.create_ui_elements = function (self)
 end
 
 TutorialUI.destroy = function (self)
+	local event_manager = Managers.state.event
+
+	if event_manager then
+		event_manager:unregister("tutorial_event_queue_info_slate_entry", self)
+		event_manager:unregister("tutorial_event_add_health_bar", self)
+		event_manager:unregister("tutorial_event_remove_health_bar", self)
+		event_manager:unregister("tutorial_event_show_health_bar", self)
+		event_manager:unregister("tutorial_event_clear_tutorials", self)
+	end
+
 	GarbageLeakDetector.register_object(self, "interaction_gui")
 end
 
@@ -229,7 +247,7 @@ TutorialUI.update = function (self, dt, t)
 	end
 end
 
-TutorialUI.pre_render_update = function (self, dt, t)
+TutorialUI.post_update = function (self, dt, t)
 	local ui_scenegraph = self.floating_icons_ui_scene_graph
 	local ui_renderer = self.ui_renderer
 	local peer_id = self.peer_id
@@ -261,7 +279,7 @@ TutorialUI.pre_render_update = function (self, dt, t)
 		self:update_mission_tooltip(tooltip_tutorial, player_unit, dt)
 	end
 
-	if not script_data.disable_tutorial_ui then
+	if self._visible and not script_data.disable_tutorial_ui then
 		local first_person_extension = self:get_player_first_person_extension()
 
 		UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
@@ -1385,14 +1403,28 @@ TutorialUI.remove_health_bar = function (self, unit)
 	end
 end
 
-TutorialUI.show_health_bar = function (self, unit, visible)
+TutorialUI._get_health_bar_by_unit = function (self, unit)
 	for i = 1, definitions.NUMBER_OF_HEALTH_BARS, 1 do
 		local health_bar = self.health_bars[i]
 
 		if health_bar and health_bar.unit == unit then
-			health_bar.visible = visible
+			return health_bar
+		end
+	end
+end
 
-			break
+TutorialUI.show_health_bar = function (self, unit, visible)
+	local health_bar = self:_get_health_bar_by_unit(unit)
+
+	if health_bar then
+		health_bar.visible = visible
+	else
+		self:add_health_bar(unit)
+
+		local health_bar = self:_get_health_bar_by_unit(unit)
+
+		if health_bar then
+			health_bar.visible = visible
 		end
 	end
 end
@@ -1475,6 +1507,8 @@ TutorialUI.update_health_bars = function (self, dt, player_unit)
 end
 
 TutorialUI.set_visible = function (self, visible)
+	self._visible = visible
+
 	self.tutorial_tooltip_ui:set_visible(visible)
 end
 

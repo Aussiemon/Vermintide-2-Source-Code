@@ -35,7 +35,6 @@ AudioSystem.update = function (self, context, t)
 	self:_update_global_parameters(dt)
 end
 
-local LERP_PROGRESS_PER_SECOND = 0.125
 local LERP_PROGRESS_PER_SECOND = {
 	default = 0.125,
 	demo_slowmo = 2
@@ -214,7 +213,7 @@ end
 
 AudioSystem.rpc_play_2d_audio_event = function (self, sender, event_id)
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_play_2d_audio_event", sender, sound_event_id)
+		self.network_transmit:send_rpc_clients_except("rpc_play_2d_audio_event", sender, event_id)
 	end
 
 	local event = NetworkLookup.sound_events[event_id]
@@ -256,7 +255,6 @@ AudioSystem.rpc_server_audio_unit_event = function (self, sender, sound_id, unit
 		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_server_audio_unit_event", sender, sound_id, unit_id, object_id)
 	end
 
-	local wwise_world = Managers.world:wwise_world(self.world)
 	local event = NetworkLookup.sound_events[sound_id]
 	local unit = self.unit_storage:unit(unit_id)
 
@@ -278,7 +276,6 @@ AudioSystem.rpc_server_audio_unit_dialogue_event = function (self, sender, sound
 		Managers.state.network.network_transmit:send_rpc_clients("rpc_server_audio_unit_dialogue_event", sound_id, unit_id)
 	end
 
-	local wwise_world = Managers.world:wwise_world(self.world)
 	local event = NetworkLookup.sound_events[sound_id]
 	local unit = self.unit_storage:unit(unit_id)
 	local dialogue_extension = ScriptUnit.has_extension(unit, "dialogue_system")
@@ -315,7 +312,6 @@ AudioSystem.rpc_server_audio_unit_param_int_event = function (self, sender, soun
 		Managers.state.network.network_transmit:send_rpc_clients("rpc_server_audio_unit_param_int_event", sound_event_id, unit_id, object_id, name_id, value)
 	end
 
-	local wwise_world = Managers.world:wwise_world(self.world)
 	local event = NetworkLookup.sound_events[sound_event_id]
 	local unit = self.unit_storage:unit(unit_id)
 	local param = NetworkLookup.sound_event_param_names[name_id]
@@ -328,7 +324,6 @@ AudioSystem.rpc_server_audio_unit_param_float_event = function (self, sender, so
 		Managers.state.network.network_transmit:send_rpc_clients("rpc_server_audio_unit_param_float_event", sound_event_id, unit_id, object_id, name_id, value)
 	end
 
-	local wwise_world = Managers.world:wwise_world(self.world)
 	local event = NetworkLookup.sound_events[sound_event_id]
 	local unit = self.unit_storage:unit(unit_id)
 	local param = NetworkLookup.sound_event_param_names[name_id]

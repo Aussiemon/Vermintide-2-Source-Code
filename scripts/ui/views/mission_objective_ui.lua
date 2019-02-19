@@ -3,7 +3,8 @@ local animation_definitions = definitions.animation_definitions
 local scenegraph_definition = definitions.scenegraph_definition
 MissionObjectiveUI = class(MissionObjectiveUI)
 
-MissionObjectiveUI.init = function (self, ingame_ui_context)
+MissionObjectiveUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.input_manager = ingame_ui_context.input_manager
@@ -19,7 +20,14 @@ MissionObjectiveUI.init = function (self, ingame_ui_context)
 	}
 
 	self:create_ui_elements()
-	rawset(_G, "mission_objective_ui", self)
+
+	local event_manager = Managers.state.event
+
+	if event_manager then
+		event_manager:register(self, "ui_event_add_mission_objective", "add_mission_objective")
+		event_manager:register(self, "ui_event_complete_mission", "complete_mission")
+		event_manager:register(self, "ui_event_update_mission", "update_mission")
+	end
 end
 
 local DO_RELOAD = true
@@ -36,9 +44,15 @@ MissionObjectiveUI.create_ui_elements = function (self)
 end
 
 MissionObjectiveUI.destroy = function (self)
-	self.ui_animator = nil
+	local event_manager = Managers.state.event
 
-	rawset(_G, "mission_objective_ui", nil)
+	if event_manager then
+		event_manager:unregister("ui_event_add_mission_objective", self)
+		event_manager:unregister("ui_event_complete_mission", self)
+		event_manager:unregister("ui_event_update_mission", self)
+	end
+
+	self.ui_animator = nil
 end
 
 MissionObjectiveUI.update = function (self, dt)

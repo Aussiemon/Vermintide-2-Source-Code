@@ -164,7 +164,9 @@ end
 local function enemy_dismember_can_spawn_gib(unit, gibsettings)
 	if gibsettings.parent_destroy_actors then
 		for _, actor_name in ipairs(gibsettings.parent_destroy_actors) do
-			if not Unit.actor(unit, actor_name) then
+			local unit_actor = Unit.actor(unit, actor_name)
+
+			if not unit_actor or not Actor.is_scene_query_enabled(unit_actor) then
 				return false
 			end
 		end
@@ -341,12 +343,37 @@ local function enemy_dismember_set_variations(unit, gib_unit, stump_unit)
 	end
 end
 
-local function enemy_dismember_kill_actors(unit, actors)
-	for i = 1, #actors, 1 do
-		local current_actor = Unit.actor(unit, actors[i])
+local function enemy_dismember_kill_actors(unit, actors, unit_inventory_extension, destroy)
+	if destroy then
+		for i = 1, #actors, 1 do
+			local current_actor = Unit.actor(unit, actors[i])
 
-		if current_actor ~= nil then
-			Unit.destroy_actor(unit, actors[i])
+			if current_actor ~= nil then
+				Unit.destroy_actor(unit, actors[i])
+			end
+		end
+	else
+		local disabled_actors = nil
+
+		if unit_inventory_extension ~= nil then
+			disabled_actors = unit_inventory_extension.disabled_actors
+		end
+
+		for i = 1, #actors, 1 do
+			local unit_actor = Unit.actor(unit, actors[i])
+
+			if unit_actor then
+				Actor.set_scene_query_enabled(unit_actor, false)
+				Actor.set_collision_filter(unit_actor, "filter_ragdoll_secondary")
+
+				if disabled_actors ~= nil then
+					table.insert(disabled_actors, actors[i])
+				end
+			end
+		end
+
+		if unit_inventory_extension ~= nil then
+			unit_inventory_extension.disabled_actors = disabled_actors
 		end
 	end
 end
@@ -395,8 +422,8 @@ local function enemy_dismember(params, spawn_gib)
 	local node_id, unit_inventory_extension, unit_ai_system_extension, unit_spawner = nil
 
 	if ScriptUnit ~= nil then
-		unit_inventory_extension = ScriptUnit.extension(unit, "ai_inventory_system")
-		unit_ai_system_extension = ScriptUnit.extension(unit, "ai_system")
+		unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
+		unit_ai_system_extension = ScriptUnit.has_extension(unit, "ai_system")
 		unit_spawner = Managers.state.unit_spawner
 	end
 
@@ -406,8 +433,8 @@ local function enemy_dismember(params, spawn_gib)
 		gib_unit = enemy_dismember_spawn_gib(unit_spawner, unit, world, gibsettings, unit_inventory_extension, unit_ai_system_extension)
 	end
 
-	enemy_dismember_kill_actors(unit, gibsettings.parent_destroy_actors)
-	enemy_dismember_kill_actors(unit, gibsettings.ragdoll_destroy_actors)
+	enemy_dismember_kill_actors(unit, gibsettings.parent_destroy_actors, unit_inventory_extension, false)
+	enemy_dismember_kill_actors(unit, gibsettings.ragdoll_destroy_actors, nil, true)
 
 	local stump_unit = enemy_dismember_spawn_stump(unit_spawner, unit, world, gibsettings, not spawn_gib)
 
@@ -424,7 +451,7 @@ local function enemy_dismember(params, spawn_gib)
 	local gibbed_nodes = nil
 
 	if unit_inventory_extension ~= nil then
-		gibbed_nodes = unit_inventory_extension.gibbed_nodes
+		gibbed_nodes = unit_inventory_extension.gibbed_nodes or {}
 	end
 
 	for i = 1, #gibsettings.parent_scale_nodes, 1 do
@@ -435,6 +462,10 @@ local function enemy_dismember(params, spawn_gib)
 		if gibbed_nodes ~= nil then
 			gibbed_nodes[#gibbed_nodes + 1] = node_id
 		end
+	end
+
+	if unit_inventory_extension ~= nil then
+		unit_inventory_extension.gibbed_nodes = gibbed_nodes
 	end
 
 	if gibsettings.parent_hide_group ~= nil and Unit.has_visibility_group(unit, gibsettings.parent_hide_group) then
@@ -546,7 +577,7 @@ function enemy_explode(params)
 	local unit_inventory_extension, unit_spawner = nil
 
 	if ScriptUnit ~= nil then
-		unit_inventory_extension = ScriptUnit.extension(unit, "ai_inventory_system")
+		unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
 		unit_spawner = Managers.state.unit_spawner
 	end
 

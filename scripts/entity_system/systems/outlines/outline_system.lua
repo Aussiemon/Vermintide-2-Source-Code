@@ -165,6 +165,10 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 	end
 
 	extension.set_pinged = function (pinged, flash)
+		if self._disabled then
+			return
+		end
+
 		if extension.priority_outline then
 			if pinged then
 				if not extension.pinged then
@@ -319,6 +323,29 @@ OutlineSystem._is_cutscene_active = function (self)
 	return cutscene_system.active_camera and not cutscene_system.ingame_hud_enabled
 end
 
+OutlineSystem.set_disabled = function (self, disabled)
+	if disabled and not self._disabled then
+		local units = self.units
+		local unit_extension_data = self.unit_extension_data
+
+		for i = 1, #units, 1 do
+			local unit = units[i]
+			local extension = unit_extension_data[unit]
+
+			if extension and extension.outlined then
+				local c = extension.outline_color.channel
+				local channel = Color(c[1], c[2], c[3], c[4])
+
+				self:outline_unit(unit, extension.flag, channel, false, extension.apply_method, extension.reapply)
+
+				extension.outlined = false
+			end
+		end
+	end
+
+	self._disabled = disabled
+end
+
 OutlineSystem.update = function (self, context, t)
 	local dt = context.dt
 
@@ -326,7 +353,7 @@ OutlineSystem.update = function (self, context, t)
 		return
 	end
 
-	if script_data.disable_outlines then
+	if self._disabled or script_data.disable_outlines then
 		return
 	end
 
@@ -443,7 +470,7 @@ end
 OutlineSystem.set_priority_outline = function (self, unit, apply_method, do_outline)
 	local outline_extension = self.unit_extension_data[unit]
 
-	if not outline_extension then
+	if not outline_extension or self._disabled then
 		return
 	end
 

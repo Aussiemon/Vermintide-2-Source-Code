@@ -1,4 +1,4 @@
-wounding_damage_types = {
+local wounding_damage_types = {
 	"light_stab_fencer",
 	"light_stab_smiter",
 	"stab_fencer",
@@ -2588,6 +2588,6 @@ HitEffectsChaosRaider = {
 		}
 	}
 }
-HitEffectsChaosRaider = HitEffectsChaosRaider or {}
+HitEffectsChaosRaider = table.create_copy(HitEffectsChaosRaider, HitEffectsChaosRaider)
 
 return

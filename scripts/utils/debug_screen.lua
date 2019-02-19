@@ -1,8 +1,6 @@
-local font_size = 20 * (RESOLUTION_LOOKUP.scale or 1)
 local font = "gw_arial_32"
 local font_mtrl = "materials/fonts/" .. font
 local fade_speed = 10
-local console_width = 800 * (RESOLUTION_LOOKUP.scale or 1)
 local base_layer = UILayer.debug_screen
 
 local function ease_out_quad(t, b, c, d)
@@ -77,7 +75,20 @@ end
 
 DebugScreen = DebugScreen or {}
 local DebugScreen = DebugScreen
-local script_data_printed = false
+
+if not DebugScreen.console_width then
+	slot9 = RESOLUTION_LOOKUP.scale or 1
+	slot9 = 800 * slot9
+end
+
+DebugScreen.console_width = slot9
+
+if not DebugScreen.font_size then
+	slot9 = RESOLUTION_LOOKUP.scale or 1
+	slot9 = 20 * slot9
+end
+
+DebugScreen.font_size = slot9
 
 DebugScreen.setup = function (world, settings, callbacks)
 	local DebugScreen = DebugScreen
@@ -254,19 +265,21 @@ DebugScreen.set_blocked = function (is_blocked)
 	DebugScreen.is_blocked = is_blocked
 end
 
-local accelerate_factor = 1
+DebugScreen.accelerate_factor = DebugScreen.accelerate_factor or 1
 
 DebugScreen.update = function (dt, t, input_service, input_manager)
+	local DebugScreen = DebugScreen
+
 	if DebugScreen.is_blocked or not script_data.debug_enabled or not input_service then
 		return
 	end
 
 	local gui = DebugScreen.gui
-	local time_scale = GLOBAL_TIME_SCALE
 	dt = dt / GLOBAL_TIME_SCALE
-	local DebugScreen = DebugScreen
 	local script_data = script_data
 	local opened_this_frame = false
+	local font_size = DebugScreen.font_size
+	local console_width = DebugScreen.console_width
 	local mod_key_down = input_service:get("console_mod_key")
 
 	if input_service:get("console_open_key") then
@@ -360,12 +373,13 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 
 	if input_service:get("up_key") and DebugScreen.hold_to_move_timer < t then
 		if DebugScreen.is_holding then
+			local accelerate_factor = DebugScreen.accelerate_factor
 			DebugScreen.hold_to_move_timer = t + 0.1 * GLOBAL_TIME_SCALE * accelerate_factor
-			accelerate_factor = accelerate_factor * 0.95
+			DebugScreen.accelerate_factor = accelerate_factor * 0.95
 		else
 			DebugScreen.hold_to_move_timer = t + 0.1 * GLOBAL_TIME_SCALE
 			DebugScreen.is_holding = true
-			accelerate_factor = 1
+			DebugScreen.accelerate_factor = 1
 		end
 
 		if DebugScreen.active_id == nil then
@@ -410,12 +424,13 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 
 	if input_service:get("down_key") and DebugScreen.hold_to_move_timer < t then
 		if DebugScreen.is_holding then
+			local accelerate_factor = DebugScreen.accelerate_factor
 			DebugScreen.hold_to_move_timer = t + 0.1 * GLOBAL_TIME_SCALE * accelerate_factor
-			accelerate_factor = accelerate_factor * 0.95
+			DebugScreen.accelerate_factor = accelerate_factor * 0.95
 		else
 			DebugScreen.hold_to_move_timer = t + 0.1 * GLOBAL_TIME_SCALE
 			DebugScreen.is_holding = true
-			accelerate_factor = 1
+			DebugScreen.accelerate_factor = 1
 		end
 
 		if DebugScreen.active_id == nil then
@@ -942,6 +957,7 @@ DebugScreen.update_search = function (input_manager, input_service, gui, t, dt)
 	local search_text_box_pos = Vector3(250, res_y - 60, search_text_box_layer)
 	local search_title_pos = Vector3(60, res_y - 50, search_text_layer)
 	local search_text_pos = Vector3(260, res_y - 50, search_text_layer)
+	local font_size = DebugScreen.font_size
 	DebugScreen.search_text_box_width = DebugScreen.search_text_box_width or 0
 
 	if not DebugScreen.search_active then

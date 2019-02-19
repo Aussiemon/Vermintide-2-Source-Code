@@ -249,14 +249,14 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				max_stacks = 1,
 				icon = "markus_huntsman_crit_aura",
-				stat_buff = StatBuffIndex.CRITICAL_STRIKE_CHANCE
+				stat_buff = "critical_strike_chance"
 			}
 		}
 	},
 	markus_huntsman_passive_increased_ammunition = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.TOTAL_AMMO
+				stat_buff = "total_ammo"
 			}
 		}
 	},
@@ -297,9 +297,9 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				name = "markus_huntsman_activated_ability_headshot_multiplier",
+				stat_buff = "headshot_multiplier",
 				refresh_durations = true,
 				max_stacks = 1,
-				stat_buff = StatBuffIndex.HEADSHOT_MULTIPLIER,
 				multiplier = buff_tweak_data.markus_huntsman_activated_ability.headshot_multiplier,
 				duration = buff_tweak_data.markus_huntsman_activated_ability.duration
 			}
@@ -309,9 +309,9 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				name = "markus_huntsman_activated_ability_increased_reload_speed",
+				stat_buff = "reload_speed",
 				refresh_durations = true,
 				max_stacks = 1,
-				stat_buff = StatBuffIndex.RELOAD_SPEED,
 				multiplier = buff_tweak_data.markus_huntsman_activated_ability.reload_speed_multiplier,
 				duration = buff_tweak_data.markus_huntsman_activated_ability.duration
 			}
@@ -408,21 +408,21 @@ TalentBuffTemplates.empire_soldier = {
 	markus_huntsman_reduced_spread = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.REDUCED_SPREAD
+				stat_buff = "reduced_spread"
 			}
 		}
 	},
 	markus_huntsman_max_stamina = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.MAX_FATIGUE
+				stat_buff = "max_fatigue"
 			}
 		}
 	},
 	markus_huntsman_reload_speed = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.RELOAD_SPEED
+				stat_buff = "reload_speed"
 			}
 		}
 	},
@@ -460,7 +460,7 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				max_stacks = 1,
 				refresh_durations = true,
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				stat_buff = "damage_taken"
 			}
 		}
 	},
@@ -468,10 +468,10 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				max_stacks = 1,
+				stat_buff = "critical_strike_chance",
 				is_cooldown = true,
 				icon = "markus_huntsman_passive_crit_buff_on_headshot",
-				dormant = true,
-				stat_buff = StatBuffIndex.CRITICAL_STRIKE_CHANCE
+				dormant = true
 			}
 		}
 	},
@@ -502,8 +502,8 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				max_stacks = 1,
 				icon = "markus_huntsman_headshots_increase_reload_speed",
-				refresh_durations = true,
-				stat_buff = StatBuffIndex.RELOAD_SPEED
+				stat_buff = "reload_speed",
+				refresh_durations = true
 			}
 		}
 	},
@@ -547,7 +547,7 @@ TalentBuffTemplates.empire_soldier = {
 	markus_huntsman_activated_ability_cooldown = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.ACTIVATED_COOLDOWN
+				stat_buff = "activated_cooldown"
 			}
 		}
 	},
@@ -572,10 +572,10 @@ TalentBuffTemplates.empire_soldier = {
 	markus_huntsman_activated_ability_damage = {
 		buffs = {
 			{
+				stat_buff = "power_level",
 				max_stacks = 1,
 				icon = "markus_huntsman_activated_ability_damage",
 				dormant = true,
-				stat_buff = StatBuffIndex.POWER_LEVEL,
 				duration = buff_tweak_data.markus_huntsman_activated_ability.duration
 			}
 		}
@@ -609,14 +609,14 @@ TalentBuffTemplates.empire_soldier = {
 	markus_knight_passive_damage_reduction = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				stat_buff = "damage_taken"
 			}
 		}
 	},
 	markus_knight_passive_increased_stamina = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.MAX_FATIGUE
+				stat_buff = "max_fatigue"
 			}
 		}
 	},
@@ -625,7 +625,7 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				max_stacks = 1,
 				icon = "markus_knight_passive",
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				stat_buff = "damage_taken"
 			}
 		}
 	},
@@ -641,21 +641,21 @@ TalentBuffTemplates.empire_soldier = {
 	markus_knight_push_arc = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.BLOCK_ANGLE
+				stat_buff = "block_angle"
 			}
 		}
 	},
 	markus_knight_max_health = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.MAX_HEALTH_ALIVE
+				stat_buff = "max_health_alive"
 			}
 		}
 	},
 	markus_knight_attack_speed = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				stat_buff = "attack_speed"
 			}
 		}
 	},
@@ -674,10 +674,10 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				priority_buff = true,
 				refresh_durations = true,
+				stat_buff = "damage_taken",
 				max_stacks = 1,
 				icon = "markus_knight_buff_defense_on_revived_target",
-				dormant = true,
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				dormant = true
 			}
 		}
 	},
@@ -716,8 +716,8 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				max_stacks = 1,
 				icon = "markus_knight_regen_stamina_on_charged_attacks",
-				refresh_durations = true,
-				stat_buff = StatBuffIndex.FATIGUE_REGEN
+				stat_buff = "fatigue_regen",
+				refresh_durations = true
 			}
 		}
 	},
@@ -733,8 +733,8 @@ TalentBuffTemplates.empire_soldier = {
 	markus_knight_improved_passive_defence_aura_buff = {
 		buffs = {
 			{
-				max_stacks = 1,
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				stat_buff = "damage_taken",
+				max_stacks = 1
 			}
 		}
 	},
@@ -750,8 +750,8 @@ TalentBuffTemplates.empire_soldier = {
 	markus_knight_passive_stamina_aura_buff = {
 		buffs = {
 			{
-				max_stacks = 1,
-				stat_buff = StatBuffIndex.MAX_FATIGUE
+				stat_buff = "max_fatigue",
+				max_stacks = 1
 			}
 		}
 	},
@@ -818,10 +818,10 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				icon = "markus_knight_activated_ability_damage_buff",
+				stat_buff = "power_level",
 				max_stacks = 1,
 				refresh_durations = true,
-				dormant = true,
-				stat_buff = StatBuffIndex.POWER_LEVEL
+				dormant = true
 			}
 		}
 	},
@@ -829,17 +829,17 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				icon = "markus_knight_activated_ability_infinite_block",
+				stat_buff = "block_cost",
 				max_stacks = 1,
 				refresh_durations = true,
-				dormant = true,
-				stat_buff = StatBuffIndex.BLOCK_COST
+				dormant = true
 			}
 		}
 	},
 	markus_knight_activated_ability_cooldown = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.ACTIVATED_COOLDOWN
+				stat_buff = "activated_cooldown"
 			}
 		}
 	},
@@ -874,7 +874,7 @@ TalentBuffTemplates.empire_soldier = {
 	markus_mercenary_passive_crit_chance = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.CRITICAL_STRIKE_CHANCE
+				stat_buff = "critical_strike_chance"
 			}
 		}
 	},
@@ -897,31 +897,31 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				dormant = true,
 				refresh_durations = true,
+				stat_buff = "attack_speed",
 				max_stacks = 1,
 				icon = "markus_mercenary_passive",
-				priority_buff = true,
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				priority_buff = true
 			}
 		}
 	},
 	markus_mercenary_crit_chance = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.CRITICAL_STRIKE_CHANCE
+				stat_buff = "critical_strike_chance"
 			}
 		}
 	},
 	markus_mercenary_stamina_regen = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.FATIGUE_REGEN
+				stat_buff = "fatigue_regen"
 			}
 		}
 	},
 	markus_mercenary_healing_received = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.HEALING_RECEIVED
+				stat_buff = "healing_received"
 			}
 		}
 	},
@@ -936,15 +936,15 @@ TalentBuffTemplates.empire_soldier = {
 	markus_mercenary_damage_on_enemy_proximity = {
 		buffs = {
 			{
-				icon = "markus_mercenary_increased_damage_on_enemy_proximity",
-				stat_buff = StatBuffIndex.POWER_LEVEL
+				stat_buff = "power_level",
+				icon = "markus_mercenary_increased_damage_on_enemy_proximity"
 			}
 		}
 	},
 	markus_mercenary_reduced_stun_duration = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.STUN_DURATION
+				stat_buff = "stun_duration"
 			}
 		}
 	},
@@ -963,7 +963,7 @@ TalentBuffTemplates.empire_soldier = {
 				max_stacks = 1,
 				icon = "markus_mercenary_increased_defence_on_low_health",
 				priority_buff = true,
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				stat_buff = "damage_taken"
 			}
 		}
 	},
@@ -982,7 +982,7 @@ TalentBuffTemplates.empire_soldier = {
 				max_stacks = 1,
 				icon = "markus_mercenary_passive_defence_on_proc",
 				dormant = true,
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				stat_buff = "damage_taken"
 			}
 		}
 	},
@@ -1001,7 +1001,7 @@ TalentBuffTemplates.empire_soldier = {
 				max_stacks = 1,
 				icon = "markus_mercenary_passive_power_level_on_proc",
 				dormant = true,
-				stat_buff = StatBuffIndex.POWER_LEVEL
+				stat_buff = "power_level"
 			}
 		}
 	},
@@ -1047,8 +1047,8 @@ TalentBuffTemplates.empire_soldier = {
 	markus_mercenary_activated_ability_cooldown = {
 		buffs = {
 			{
-				name = "markus_mercenary_activated_ability_cooldown",
-				stat_buff = StatBuffIndex.ACTIVATED_COOLDOWN
+				stat_buff = "activated_cooldown",
+				name = "markus_mercenary_activated_ability_cooldown"
 			}
 		}
 	}

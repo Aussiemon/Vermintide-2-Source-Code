@@ -494,6 +494,10 @@ BTConditions.switching_weapons = function (blackboard)
 	return blackboard.switching_weapons and not blackboard.defensive_mode_duration
 end
 
+BTConditions.warcamp_retaliation_aoe = function (blackboard)
+	return blackboard.num_chain_stagger and blackboard.num_chain_stagger > 2
+end
+
 BTConditions.is_mounted = function (blackboard)
 	local mount_unit = blackboard.mounted_data.mount_unit
 
@@ -534,10 +538,6 @@ end
 
 BTConditions.grey_seer_waiting_for_pickup = function (blackboard)
 	return blackboard.waiting_for_pickup
-end
-
-BTConditions.explosive_loot_rat_combat = function (blackboard)
-	return Managers.state.game_mode:has_activated_mutator("explosive_loot_rats") and unit_alive(blackboard.target_unit)
 end
 
 return

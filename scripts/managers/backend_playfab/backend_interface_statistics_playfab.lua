@@ -94,8 +94,6 @@ BackendInterfaceStatisticsPlayFab.save = function (self)
 	player_manager:set_stats_backend(player)
 
 	self._stats_to_save = stats_to_save
-
-	table.dump(stats_to_save, nil, 10)
 end
 
 BackendInterfaceStatisticsPlayFab.clear_saved_stats = function (self)

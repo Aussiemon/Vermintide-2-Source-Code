@@ -726,7 +726,12 @@ local function create_bg_widget()
 					205,
 					205
 				},
-				color = Colors.get_color_table_with_alpha("black", 255)
+				color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					0,
+					0,
+					2
+				}
 			},
 			text = {
 				word_wrap = false,
@@ -739,8 +744,8 @@ local function create_bg_widget()
 				font_type = "hell_shark_header",
 				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
-					100,
-					-285,
+					0,
+					-385,
 					2
 				}
 			},
@@ -755,8 +760,8 @@ local function create_bg_widget()
 				font_type = "hell_shark_header",
 				text_color = Colors.get_color_table_with_alpha("black", 128),
 				offset = {
-					102,
-					-287,
+					2,
+					-387,
 					1
 				}
 			}

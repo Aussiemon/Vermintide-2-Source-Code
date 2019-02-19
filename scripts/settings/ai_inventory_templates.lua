@@ -1104,6 +1104,9 @@ InventoryConfigurations = {
 			item_categories.chaos_sorcerer_stick
 		}
 	},
+	chaos_mutator_sorcerer = {
+		items = {}
+	},
 	mace = {
 		enemy_hit_sound = "sword",
 		anim_state_event = "to_sword",

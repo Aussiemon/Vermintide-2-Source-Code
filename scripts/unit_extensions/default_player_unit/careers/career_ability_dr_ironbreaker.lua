@@ -122,11 +122,11 @@ CareerAbilityDRIronbreaker._run_ability = function (self)
 	local owner_unit = self._owner_unit
 	local is_server = self._is_server
 	local local_player = self._local_player
+	local bot_player = self._bot_player
 	local network_manager = self._network_manager
 	local network_transmit = network_manager.network_transmit
 	local owner_unit_id = network_manager:unit_game_object_id(owner_unit)
 	local career_extension = self._career_extension
-	local buff_extension = self._buff_extension
 	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 
 	CharacterStateHelper.play_animation_event(owner_unit, "iron_breaker_active_ability")
@@ -165,32 +165,34 @@ CareerAbilityDRIronbreaker._run_ability = function (self)
 
 	local buff_template_name_id_1 = NetworkLookup.buff_templates[buff_name_1]
 	local buff_template_name_id_2 = NetworkLookup.buff_templates[buff_name_2]
+	local num_targets = #targets
 
-	for i = 1, #targets, 1 do
-		local unit = targets[i]
-		local unit_object_id = network_manager:unit_game_object_id(unit)
-		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+	for i = 1, num_targets, 1 do
+		local target_unit = targets[i]
+		local target_unit_object_id = network_manager:unit_game_object_id(target_unit)
+		local target_buff_extension = ScriptUnit.extension(target_unit, "buff_system")
 
 		if is_server then
-			buff_extension:add_buff(buff_name_1, {
+			target_buff_extension:add_buff(buff_name_1, {
 				attacker_unit = owner_unit
 			})
-			buff_extension:add_buff(buff_name_2, {
+			target_buff_extension:add_buff(buff_name_2, {
 				attacker_unit = owner_unit
 			})
-			network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id_1, owner_unit_id, 0, false)
-			network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id_2, owner_unit_id, 0, false)
+			network_transmit:send_rpc_clients("rpc_add_buff", target_unit_object_id, buff_template_name_id_1, owner_unit_id, 0, false)
+			network_transmit:send_rpc_clients("rpc_add_buff", target_unit_object_id, buff_template_name_id_2, owner_unit_id, 0, false)
 		else
-			network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id_1, owner_unit_id, 0, true)
-			network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id_2, owner_unit_id, 0, true)
+			network_transmit:send_rpc_server("rpc_add_buff", target_unit_object_id, buff_template_name_id_1, owner_unit_id, 0, true)
+			network_transmit:send_rpc_server("rpc_add_buff", target_unit_object_id, buff_template_name_id_2, owner_unit_id, 0, true)
 		end
 	end
 
-	if local_player then
+	if (is_server and bot_player) or local_player then
 		local first_person_extension = self._first_person_extension
 
 		first_person_extension:animation_event("ability_shout")
-		first_person_extension:play_unit_sound_event("Play_career_ability_bardin_ironbreaker_enter", owner_unit, 0, true)
+		first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ironbreaker_enter")
+		first_person_extension:play_remote_unit_sound_event("Play_career_ability_bardin_ironbreaker_enter", owner_unit, 0)
 	end
 
 	self:_play_vfx()

@@ -44,7 +44,7 @@ end
 BTLeaveHooks.sorcerer_setup_done = function (unit, blackboard, t)
 	blackboard.mode = "offensive"
 	blackboard.setup_done = true
-	blackboard.phase_timer = t + 30
+	blackboard.phase_timer = t + 20
 end
 
 BTLeaveHooks.sorcerer_evade = function (unit, blackboard, t)
@@ -211,6 +211,20 @@ end
 
 BTLeaveHooks.reset_keep_target = function (unit, blackboard, t)
 	blackboard.keep_target = nil
+end
+
+BTLeaveHooks.reset_chain_stagger = function (unit, blackboard, t)
+	blackboard.num_chain_stagger = nil
+end
+
+BTLeaveHooks.mutator_sorcerer_activate_teleport = function (unit, blackboard, t)
+	if blackboard.stagger then
+		blackboard.quick_teleport = true
+	end
+end
+
+BTLeaveHooks.destroy_unit_leave_hook = function (unit, blackboard, t)
+	Managers.state.conflict:destroy_unit(unit, blackboard, "debug")
 end
 
 return

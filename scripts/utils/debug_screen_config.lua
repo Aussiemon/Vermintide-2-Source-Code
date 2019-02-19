@@ -1,6 +1,5 @@
 require("scripts/utils/debug_hero_templates")
 
-local mutator_settings = require("scripts/settings/mutator_settings")
 local settings = {
 	{
 		description = [[
@@ -5134,10 +5133,11 @@ Features that make player mechanics nicer to work with.
 		category = "UI"
 	},
 	{
-		description = "Disable Outlines (will not disable ones that are already active).",
-		is_boolean = true,
+		description = "Disable Outlines.",
+		category = "UI",
 		setting_name = "disable_outlines",
-		category = "UI"
+		callback = "disable_outlines",
+		is_boolean = true
 	},
 	{
 		description = "Disables the screens at the end of the level, getting you directly back to the inn.",
@@ -6310,15 +6310,15 @@ Features that make player mechanics nicer to work with.
 			local loot_profile_name = "default"
 
 			if item == "tier_1" then
-				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 0, 0, 0, display_name, 0, 0, loot_profile_name, nil, nil)
+				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 0, 0, 0, 0, display_name, 0, 0, loot_profile_name, nil, nil)
 			elseif item == "tier_2" then
-				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 0, 0, display_name, 0, 0, loot_profile_name, nil, nil)
+				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 0, 0, 0, display_name, 0, 0, loot_profile_name, nil, nil)
 			elseif item == "tier_3" then
-				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 1, 0, display_name, 0, 0, loot_profile_name, nil, nil)
+				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 1, 0, 0, display_name, 0, 0, loot_profile_name, nil, nil)
 			elseif item == "tier_4" then
-				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 2, 1, display_name, 0, 0, loot_profile_name, nil, nil)
+				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 2, 1, 0, display_name, 0, 0, loot_profile_name, nil, nil)
 			elseif item == "tier_5" then
-				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 3, 4, display_name, 0, 0, loot_profile_name, nil, nil)
+				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 3, 4, 0, display_name, 0, 0, loot_profile_name, nil, nil)
 			end
 		end
 	},
@@ -6683,7 +6683,7 @@ Features that make player mechanics nicer to work with.
 		load_items_source_func = function (options)
 			table.clear(options)
 
-			for key, _ in pairs(mutator_settings) do
+			for key, _ in pairs(MutatorTemplates) do
 				options[#options + 1] = key
 			end
 
@@ -6702,11 +6702,11 @@ Features that make player mechanics nicer to work with.
 
 			if mutator_deactivation_index then
 				table.remove(activated_mutators, mutator_deactivation_index)
-				print("Deactivated mutator ", key)
+				Debug.sticky_text("Deactivated mutator %s", key)
 			else
 				activated_mutators[#activated_mutators + 1] = key
 
-				print("Activated mutator ", key)
+				Debug.sticky_text("Activated mutator %s", key)
 			end
 
 			if #activated_mutators > 0 then
@@ -6923,6 +6923,11 @@ local callbacks = {
 			local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 
 			GwNavWorld.init_visual_debug_server(nav_world, 4888)
+		end
+	end,
+	disable_outlines = function (option)
+		if Managers.state and Managers.state.entity then
+			Managers.state.entity:system("outline_system"):set_disabled(option)
 		end
 	end
 }

@@ -10,28 +10,38 @@ local fake_input_service = {
 local DO_RELOAD = false
 CutsceneOverlayUI = class(CutsceneOverlayUI)
 
-CutsceneOverlayUI.init = function (self, ui_renderer, template_settings)
-	self.ui_renderer = ui_renderer
-	local start_event = template_settings.start_event
+CutsceneOverlayUI.init = function (self, parent, context)
+	self._parent = parent
+	self._ui_renderer = context.ui_renderer
 	local world_manager = Managers.world
 	local has_world = world_manager and world_manager:has_world("level_world")
 
 	if has_world then
 		local world = world_manager:world("level_world")
-		self.wwise_world = world_manager:wwise_world(world)
+		self._wwise_world = world_manager:wwise_world(world)
 	end
 
-	self.start_event = start_event
+	local event_manager = Managers.state.event
 
-	if Managers.state.event and start_event then
-		Managers.state.event:register(self, start_event, "event_start_function")
+	if event_manager then
+		self._registered_event = true
+
+		event_manager:register(self, "event_start_cutscene_overlay", "event_start_function")
 	end
-
-	self._template_settings = template_settings
 end
 
-CutsceneOverlayUI.create_ui_elements = function (self)
-	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
+CutsceneOverlayUI.force_unregister_event_listener = function (self)
+	local event_manager = Managers.state.event
+
+	if event_manager and self._registered_event then
+		event_manager:unregister("event_start_cutscene_overlay", self)
+	end
+
+	self._registered_event = nil
+end
+
+CutsceneOverlayUI._create_ui_elements = function (self)
+	self._ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	local active_template_lists = {}
 	local widgets_by_template = {}
 
@@ -44,32 +54,33 @@ CutsceneOverlayUI.create_ui_elements = function (self)
 		active_template_lists[template_list_name] = {}
 	end
 
-	self.active_template_lists = active_template_lists
-	self.widgets_by_template = widgets_by_template
+	self._active_template_lists = active_template_lists
+	self._widgets_by_template = widgets_by_template
 
-	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
+	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
 
 	DO_RELOAD = false
 end
 
 CutsceneOverlayUI.destroy = function (self)
-	if Managers.state.event and self.start_event then
-		Managers.state.event:unregister(self.start_event, self)
+	local event_manager = Managers.state.event
+
+	if event_manager and self._registered_event then
+		event_manager:unregister("event_start_cutscene_overlay", self)
 	end
 end
 
-CutsceneOverlayUI.event_start_function = function (self)
-	self:start()
+CutsceneOverlayUI.event_start_function = function (self, template_settings)
+	self:start(template_settings)
 end
 
-CutsceneOverlayUI.start = function (self)
-	local template_settings = self._template_settings
+CutsceneOverlayUI.start = function (self, template_settings)
 	local templates = template_settings.templates
 	self._templates = table.clone(templates)
 	self._start_time = Application.time_since_launch()
 	self._complete = false
 
-	self:create_ui_elements()
+	self:_create_ui_elements()
 end
 
 CutsceneOverlayUI._present_template_entry = function (self, template_list_name, entry)
@@ -81,7 +92,7 @@ CutsceneOverlayUI._present_template_entry = function (self, template_list_name, 
 	local end_time = entry.end_time
 	local fade_in_duration = entry.fade_in_duration
 	local fade_out_duration = entry.fade_out_duration
-	local widgets = self.widgets_by_template[template_list_name]
+	local widgets = self._widgets_by_template[template_list_name]
 	local widget = nil
 
 	if text then
@@ -187,10 +198,6 @@ CutsceneOverlayUI._get_entry_by_time = function (self, template_list_name, time)
 end
 
 CutsceneOverlayUI.update = function (self, dt)
-	if DO_RELOAD then
-		self:start()
-	end
-
 	if not self._start_time or self._complete then
 		return
 	end
@@ -199,7 +206,7 @@ CutsceneOverlayUI.update = function (self, dt)
 	local current_time = current_frame_time - self._start_time
 	local complete = true
 
-	for name, template_list_data in pairs(self.active_template_lists) do
+	for name, template_list_data in pairs(self._active_template_lists) do
 		local list_completed = false
 		local active_entry_data = template_list_data.active_entry_data
 
@@ -223,11 +230,11 @@ CutsceneOverlayUI.update = function (self, dt)
 					alpha_progress = 1 - math.min((current_time - (end_time - fade_out_duration)) / fade_out_duration, 1)
 				end
 
-				self:fade(widget, max_alpha, alpha_progress)
-				self:draw(widget, dt)
+				self:_fade(widget, max_alpha, alpha_progress)
+				self:_draw(widget, dt)
 			end
 		elseif not self:_has_list_entries(name) then
-			self.active_template_lists[name] = nil
+			self._active_template_lists[name] = nil
 			list_completed = true
 		else
 			local current_entry = self:_get_entry_by_time(name, current_time)
@@ -238,8 +245,8 @@ CutsceneOverlayUI.update = function (self, dt)
 				entry_data.initialized = true
 				local sound_event = entry_data.sound_event
 
-				if sound_event and self.wwise_world then
-					WwiseWorld.trigger_event(self.wwise_world, sound_event)
+				if sound_event and self._wwise_world then
+					WwiseWorld.trigger_event(self._wwise_world, sound_event)
 				end
 			end
 		end
@@ -252,7 +259,7 @@ CutsceneOverlayUI.update = function (self, dt)
 	self._complete = complete
 end
 
-CutsceneOverlayUI.fade = function (self, widget, max_alpha, progress)
+CutsceneOverlayUI._fade = function (self, widget, max_alpha, progress)
 	local alpha = progress * max_alpha
 	local style = widget.style
 
@@ -267,9 +274,9 @@ CutsceneOverlayUI.fade = function (self, widget, max_alpha, progress)
 	end
 end
 
-CutsceneOverlayUI.draw = function (self, widget, dt)
-	local ui_renderer = self.ui_renderer
-	local ui_scenegraph = self.ui_scenegraph
+CutsceneOverlayUI._draw = function (self, widget, dt)
+	local ui_renderer = self._ui_renderer
+	local ui_scenegraph = self._ui_scenegraph
 	local input_service = fake_input_service
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)

@@ -28,6 +28,7 @@ PlayFabRequestQueue.enqueue = function (self, request, success_callback, send_ea
 	local entry = {
 		eac_challenge_success = false,
 		resends = 0,
+		api_function_name = "ExecuteCloudScript",
 		request = table.clone(request),
 		success_callback = success_callback,
 		send_eac_challenge = send_eac_challenge,
@@ -35,7 +36,27 @@ PlayFabRequestQueue.enqueue = function (self, request, success_callback, send_ea
 		id = id
 	}
 
-	print("[PlayFabRequestQueue] Enqueuing request", request.FunctionName, id)
+	print("[PlayFabRequestQueue] Enqueuing ExecuteCloudScript request", request.FunctionName, id)
+	table.insert(self._queue, entry)
+
+	self._id = id
+
+	return id
+end
+
+PlayFabRequestQueue.enqueue_api_request = function (self, api_function_name, request, success_callback)
+	local id = self._id + 1
+	local entry = {
+		resends = 0,
+		send_eac_challenge = false,
+		api_function_name = api_function_name,
+		request = table.clone(request),
+		success_callback = success_callback,
+		timeout = TIMEOUT_TIME,
+		id = id
+	}
+
+	print("[PlayFabRequestQueue] Enqueuing Client API request", api_function_name, id)
 	table.insert(self._queue, entry)
 
 	self._id = id
@@ -63,7 +84,7 @@ PlayFabRequestQueue.update = function (self, dt)
 			Crashify.print_exception("PlayFabRequestQueue", "EAC Challenge Request Timed Out - Resending")
 			table.insert(self._queue, 1, active_entry)
 		else
-			print("[PlayFabRequestQueue] Request Timed Out", active_request.FunctionName, active_entry.id)
+			print("[PlayFabRequestQueue] Request Timed Out", active_request.api_function_name, active_request.FunctionName, active_entry.id)
 			table.dump(active_entry, nil, 5)
 			Crashify.print_exception("PlayFabRequestQueue", "Request Timed Out")
 
@@ -94,7 +115,7 @@ PlayFabRequestQueue.update = function (self, dt)
 		print("[PlayFabRequestQueue] Sending EAC Challenge Request", request.FunctionName, entry.id, eac_id)
 		PlayFabClientApi.ExecuteCloudScript(generate_challenge_request, success_cb)
 	else
-		print("[PlayFabRequestQueue] Sending Request Without EAC Challenge", request.FunctionName, entry.id)
+		print("[PlayFabRequestQueue] Sending Request Without EAC Challenge", entry.api_function_name, request.FunctionName, entry.id)
 		self:_send_request(entry)
 	end
 end
@@ -146,11 +167,12 @@ PlayFabRequestQueue._challenge_response_received = function (self, response)
 end
 
 PlayFabRequestQueue._send_request = function (self, entry)
+	local api_function_name = entry.api_function_name
 	local request = entry.request
 	local success_callback = entry.success_callback
 	local success_cb = callback(self, "playfab_request_success_cb", success_callback)
 
-	PlayFabClientApi.ExecuteCloudScript(request, success_cb)
+	PlayFabClientApi[api_function_name](request, success_cb)
 end
 
 PlayFabRequestQueue.playfab_request_success_cb = function (self, success_callback, result)
@@ -165,7 +187,7 @@ PlayFabRequestQueue.playfab_request_success_cb = function (self, success_callbac
 		return
 	end
 
-	print("[PlayFabRequestQueue] Request Success", request.FunctionName, entry.id)
+	print("[PlayFabRequestQueue] Request Success", entry.api_function_name, request.FunctionName, entry.id)
 
 	self._active_entry = nil
 

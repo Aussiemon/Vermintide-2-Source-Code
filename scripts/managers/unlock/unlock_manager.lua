@@ -211,17 +211,15 @@ UnlockManager._update_console_backend_unlocks = function (self)
 					if reward_id then
 						if unlock:has_error() then
 							unlock:remove_backend_reward_id()
+						else
+							local reward_claimed = unlock_interface:reward_claimed(reward_id)
+							local is_unlocked = unlock:unlocked()
 
-							break
-						end
-
-						local reward_claimed = unlock_interface:reward_claimed(reward_id)
-						local is_unlocked = unlock:unlocked()
-
-						if is_unlocked and not reward_claimed then
-							unlock_interface:claim_reward(reward_id, callback(self, "cb_reward_claimed", unlock))
-						elseif not is_unlocked and reward_claimed and PLATFORM == "ps4" then
-							unlock_interface:remove_reward(reward_id, callback(self, "cb_reward_removed", unlock))
+							if is_unlocked and not reward_claimed then
+								unlock_interface:claim_reward(reward_id, callback(self, "cb_reward_claimed", unlock))
+							elseif not is_unlocked and reward_claimed and PLATFORM == "ps4" then
+								unlock_interface:remove_reward(reward_id, callback(self, "cb_reward_removed", unlock))
+							end
 						end
 					end
 				end

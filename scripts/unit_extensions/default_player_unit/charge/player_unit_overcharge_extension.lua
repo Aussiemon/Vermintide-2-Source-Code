@@ -51,7 +51,7 @@ end
 
 PlayerUnitOverchargeExtension._calculate_and_set_buffed_max_overcharge_values = function (self)
 	local overcharge_fraction = self:overcharge_fraction()
-	local max_value = self.buff_extension:apply_buffs_to_value(self.original_max_value, StatBuffIndex.MAX_OVERCHARGE)
+	local max_value = self.buff_extension:apply_buffs_to_value(self.original_max_value, "max_overcharge")
 
 	fassert(NetworkConstants.max_overcharge.min <= max_value and max_value <= NetworkConstants.max_overcharge.max, "Max overcharge outside value bounds allowed by network variable!")
 
@@ -90,6 +90,11 @@ PlayerUnitOverchargeExtension.reset = function (self)
 	self.is_exploding = false
 
 	StatusUtils.set_overcharge_exploding(self.unit, false)
+
+	local world = self.world
+	local wwise_world = Managers.world:wwise_world(world)
+
+	WwiseWorld.set_global_parameter(wwise_world, "overcharge_status", 0)
 	self:set_animation_variable()
 end
 
@@ -164,7 +169,7 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 	if not self.is_exploding and self.venting_overcharge and self.overcharge_value >= 0 then
 		local buff_extension = self.buff_extension
 		local wielder = self.unit
-		local vent_speed = buff_extension:apply_buffs_to_value(dt, StatBuffIndex.VENT_SPEED)
+		local vent_speed = buff_extension:apply_buffs_to_value(dt, "vent_speed")
 		local vent_amount = self.overcharge_value * self.original_max_value / 80 * vent_speed
 		local current_overcharge_value = self.overcharge_value
 		local new_overcharge_value = current_overcharge_value - vent_amount
@@ -173,7 +178,7 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 
 		if self.vent_damage_pool >= 20 and not self.no_damage and self.overcharge_threshold < self.overcharge_value then
 			local damage_amount = 2 + self.overcharge_value / 12
-			damage_amount = buff_extension:apply_buffs_to_value(damage_amount, StatBuffIndex.VENT_DAMAGE)
+			damage_amount = buff_extension:apply_buffs_to_value(damage_amount, "vent_damage")
 
 			DamageUtils.add_damage_network(wielder, wielder, damage_amount, "torso", "overcharge", nil, Vector3(0, 1, 0), "overcharge")
 
@@ -212,7 +217,7 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 			end
 
 			local value = decay * self.overcharge_value_decrease_rate * dt
-			value = self.overcharge_value - buff_extension:apply_buffs_to_value(value, StatBuffIndex.OVERCHARGE_REGEN)
+			value = self.overcharge_value - buff_extension:apply_buffs_to_value(value, "overcharge_regen")
 
 			if buff_extension:has_buff_type("sienna_unchained_activated_ability") and self.max_value <= value then
 				self:add_charge(1)
@@ -339,7 +344,7 @@ PlayerUnitOverchargeExtension.add_charge = function (self, overcharge_amount, ch
 		overcharge_amount = 0.4 * overcharge_amount + 0.6 * overcharge_amount * charge_level
 	end
 
-	overcharge_amount = self.buff_extension:apply_buffs_to_value(overcharge_amount, StatBuffIndex.REDUCED_OVERCHARGE)
+	overcharge_amount = self.buff_extension:apply_buffs_to_value(overcharge_amount, "reduced_overcharge")
 
 	if current_overcharge_value <= max_value * 0.97 and max_value < current_overcharge_value + overcharge_amount then
 		self:hud_sound(self.overcharge_warning_critical_sound_event or "staff_overcharge_warning_critical", self.first_person_extension)

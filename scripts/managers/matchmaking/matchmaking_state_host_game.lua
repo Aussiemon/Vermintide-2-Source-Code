@@ -104,7 +104,7 @@ MatchmakingStateHostGame._start_hosting_game = function (self)
 	self._game_created = true
 	local waystone_type = 1
 
-	if not quick_game then
+	if not quick_game and game_mode ~= "event" then
 		local level_settings = LevelSettings[level_key]
 		waystone_type = level_settings.waystone_type or waystone_type
 	end

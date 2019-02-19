@@ -35,7 +35,6 @@ local player_and_bot_units = PLAYER_AND_BOT_UNITS
 local player_and_bot_positions = PLAYER_AND_BOT_POSITIONS
 local BLACKBOARDS = BLACKBOARDS
 local distance_squared = Vector3.distance_squared
-local GameSettingsDevelopment = GameSettingsDevelopment
 local RecycleSettings = RecycleSettings
 local FORM_GROUPS_IN_ONE_FRAME = true
 local script_data = script_data
@@ -221,46 +220,6 @@ ConflictDirector.destroy = function (self)
 
 	if self.breed_freezer then
 		self.breed_freezer:destroy()
-	end
-end
-
-local max_crumbs = 25
-
-ConflictDirector.update_player_crumbs = function (self, t, dt)
-	if self._drop_crumb_time < t then
-		self._num_crumbs = (self._num_crumbs or 0) + 1
-
-		for player_id = 1, #player_positions, 1 do
-			local pos = player_positions[player_id]
-
-			if not self._crumbs[player_id] then
-				self._crumbs[player_id] = {
-					Vector3Box(pos),
-					current_index = 1
-				}
-			end
-
-			local player_crumbs = self._crumbs[player_id]
-			local last_pos = player_crumbs[player_crumbs.current_index]:unbox()
-
-			if distance_squared(last_pos, pos) > 1 then
-				player_crumbs.current_index = player_crumbs.current_index + 1
-
-				if max_crumbs < player_crumbs.current_index then
-					player_crumbs.current_index = 1
-				end
-
-				player_crumbs[player_crumbs.current_index] = Vector3Box(pos)
-				local oldest_index = (player_crumbs.current_index - 2) % #player_crumbs + 1
-				local oldest_pos = player_crumbs[oldest_index]
-
-				if oldest_pos then
-					self._player_directions[player_id] = Vector3Box(pos - oldest_pos:unbox())
-				end
-			end
-		end
-
-		self._drop_crumb_time = t + 0.5
 	end
 end
 
@@ -574,12 +533,6 @@ ConflictDirector.update_player_areas = function (self)
 	end
 end
 
-local function terror_print(...)
-	if script_data.debug_terror then
-		Debug.text(...)
-	end
-end
-
 ConflictDirector.add_horde = function (self, amount, event_breed_name)
 	self._living_horde = self._living_horde + amount
 
@@ -733,9 +686,8 @@ ConflictDirector.update_horde_pacing = function (self, t, dt)
 	end
 
 	if self._next_horde_time < t and not self.delay_horde then
-		local horde_failed = true
 		local num_spawned = #self._spawned
-		horde_failed = RecycleSettings.push_horde_if_num_alive_grunts_above < num_spawned
+		local horde_failed = RecycleSettings.push_horde_if_num_alive_grunts_above < num_spawned
 
 		if horde_failed then
 			local pacing_setting = CurrentPacing
@@ -1246,7 +1198,9 @@ ConflictDirector.update = function (self, dt, t)
 			self:handle_alone_player(t)
 		end
 
-		if not script_data.ai_speed_running_intervention_disabled and self._next_speed_running_intervention_time < t then
+		local settings = CurrentSpecialsSettings.speed_running_intervention or SpecialsSettings.default.speed_running_intervention
+
+		if not settings.disabled and not script_data.ai_speed_running_intervention_disabled and self._next_speed_running_intervention_time < t then
 			self._next_speed_running_intervention_time = t + 2.5
 
 			self:handle_speed_runners(t)
@@ -1261,6 +1215,8 @@ ConflictDirector.update = function (self, dt, t)
 			print("Players are leaving the safe zone")
 
 			self.in_safe_zone = false
+
+			Managers.state.game_mode:players_left_safe_zone()
 
 			if self.specials_pacing then
 				self.specials_pacing:start(t)
@@ -1318,7 +1274,7 @@ ConflictDirector.update = function (self, dt, t)
 		end
 	end
 
-	local recycler_positions = player_positions
+	local recycler_positions = player_and_bot_positions
 
 	if self.enemy_recycler and not script_data.ai_roaming_spawning_disabled and not conflict_settings.roaming.disabled then
 		local threat_population = pacing:threat_population()
@@ -1629,7 +1585,8 @@ ConflictDirector._spawn_unit = function (self, breed, spawn_pos, spawn_rot, spaw
 			optional_spawn_data = optional_data
 		},
 		locomotion_system = {
-			nav_world = nav_world
+			nav_world = nav_world,
+			breed = breed
 		},
 		ai_navigation_system = {
 			nav_world = nav_world
@@ -1647,7 +1604,13 @@ ConflictDirector._spawn_unit = function (self, breed, spawn_pos, spawn_rot, spaw
 		ai_inventory_system = inventory_init_data,
 		ai_group_system = group_data,
 		dialogue_system = dialogue_system_init_data,
-		aim_system = aim_init_data
+		aim_system = aim_init_data,
+		proximity_system = {
+			breed = breed
+		},
+		buff_system = {
+			breed = breed
+		}
 	}
 
 	if optional_data.prepare_func then
@@ -1823,7 +1786,7 @@ for breed_name, data in pairs(Breeds) do
 	threat_values[breed_name] = override_threat_value or data.threat_value or 0
 
 	if not data.threat_value then
-		fassert(false, "missing threat in breed %s", breed_name)
+		ferror("missing threat in breed %s", breed_name)
 	end
 end
 
@@ -1883,7 +1846,7 @@ ConflictDirector.register_unit_destroyed = function (self, unit, reason)
 		breed.run_on_despawn(unit, blackboard)
 	end
 
-	if script_data.disable_breed_freeze_opt or not self.breed_freezer:try_mark_unit_for_freeze(breed, unit, reason) then
+	if script_data.disable_breed_freeze_opt or not self.breed_freezer:try_mark_unit_for_freeze(breed, unit) then
 		Managers.state.unit_spawner:mark_for_deletion(unit)
 	end
 
@@ -2042,7 +2005,7 @@ ConflictDirector.destroy_specials = function (self)
 		end
 	end
 
-	assert(#self._alive_specials == 0, "Something bad happend when debug despawned all specials")
+	fassert(#self._alive_specials == 0, "Something bad happend when debug despawned all specials")
 
 	for _, player_unit in ipairs(player_and_bot_units) do
 		local status_extension = ScriptUnit.extension(player_unit, "status_system")
@@ -2672,8 +2635,7 @@ ConflictDirector.spawn_spline_group = function (self, patrol_template_name, posi
 		self._spline_groups_to_spawn = self._spline_groups_to_spawn or {}
 		self._spline_groups_to_spawn[spline_name] = base_group_data
 	else
-		print("Missing spline:", spline_name)
-		assert(false)
+		ferror("Missing spline: %s", spline_name)
 	end
 end
 
@@ -2811,11 +2773,11 @@ ConflictDirector.generate_spawns = function (self)
 	local pos_list, pack_sizes, pack_rotations, pack_types, zone_data_list = nil
 	local _, finish_point = self.level_analysis:get_start_and_finish()
 
-	assert(finish_point, "Missing path marker at the end of the level")
+	fassert(finish_point, "Missing path marker at the end of the level")
 
 	local triangle = GwNavTraversal.get_seed_triangle(self.nav_world, finish_point:unbox())
 
-	assert(triangle, "The path marker at the end of the level is outside the navmesh")
+	fassert(triangle, "The path marker at the end of the level is outside the navmesh")
 	self.navigation_group_manager:setup(self._world, self.nav_world)
 
 	if FORM_GROUPS_IN_ONE_FRAME then
@@ -2915,7 +2877,7 @@ ConflictDirector.ai_ready = function (self)
 		self.level_analysis:get_start_and_finish()
 	}
 
-	assert(start, "The path marker at the start of level is outside nav mesh")
+	fassert(start, "The path marker at the start of level is outside nav mesh")
 
 	local pack_types = nil
 	self._spawn_pos_list, self._pack_sizes, self._pack_rotations, self.pack_types, self._zone_data_list = self:generate_spawns()

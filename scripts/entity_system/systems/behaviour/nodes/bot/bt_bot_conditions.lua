@@ -868,10 +868,6 @@ BTConditions.has_priority_or_opportunity_target = function (blackboard)
 	return result
 end
 
-BTConditions.ally_within_range_or_solo = function (blackboard)
-	return not ALIVE[blackboard.target_ally_unit] or blackboard.ally_distance < 40
-end
-
 BTConditions.bot_in_melee_range = function (blackboard)
 	local target_unit = blackboard.target_unit
 
@@ -992,7 +988,7 @@ end
 BTConditions.cant_reach_ally = function (blackboard)
 	local follow_unit = blackboard.ai_bot_group_extension.data.follow_unit
 
-	if not follow_unit then
+	if not ALIVE[follow_unit] or blackboard.has_teleported then
 		return false
 	end
 
@@ -1023,13 +1019,15 @@ BTConditions.cant_reach_ally = function (blackboard)
 	local navigation_extension = blackboard.navigation_extension
 	local fails, last_success = navigation_extension:successive_failed_paths()
 
-	return blackboard.moving_toward_follow_position and fails > (((disable_bot_main_path_teleport_check or is_forwards) and 1) or 5) and t - last_success > 5 and not blackboard.has_teleported
+	return blackboard.moving_toward_follow_position and fails > (((disable_bot_main_path_teleport_check or is_forwards) and 1) or 5) and t - last_success > 5
 end
 
-BTConditions.can_teleport = function (blackboard)
+local FOLLOW_TELEPORT_DISTANCE_SQ = 1600
+
+BTConditions.should_teleport = function (blackboard)
 	local follow_unit = blackboard.ai_bot_group_extension.data.follow_unit
 
-	if not follow_unit then
+	if not ALIVE[follow_unit] or blackboard.has_teleported then
 		return false
 	end
 
@@ -1047,7 +1045,19 @@ BTConditions.can_teleport = function (blackboard)
 		end
 	end
 
-	return true
+	local has_priority_target = blackboard.target_unit and blackboard.target_unit == blackboard.priority_target_enemy
+
+	if blackboard.target_ally_need_type or has_priority_target then
+		return false
+	end
+
+	local bot_locomotion_extension = blackboard.locomotion_extension
+	local follow_unit_locomotion_extension = ScriptUnit.extension(follow_unit, "locomotion_system")
+	local self_position = bot_locomotion_extension:last_position_on_navmesh()
+	local follow_unit_position = follow_unit_locomotion_extension:last_position_on_navmesh()
+	local distance_squared = Vector3.distance_squared(self_position, follow_unit_position)
+
+	return FOLLOW_TELEPORT_DISTANCE_SQ <= distance_squared
 end
 
 BTConditions.should_drop_grimoire = function (blackboard)

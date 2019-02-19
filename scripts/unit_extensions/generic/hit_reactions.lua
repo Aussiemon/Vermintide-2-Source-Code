@@ -60,9 +60,8 @@ HitReactions.templates = {
 
 			if damage_type ~= "push" and damaged_by_other then
 				ScriptUnit.extension(unit, "ai_system"):attacked(attacker_unit, t, hit)
+				trigger_enemy_armor_hit_dialogue(unit, attacker_unit, damage_taken, hit)
 			end
-
-			trigger_enemy_armor_hit_dialogue(unit, attacker_unit, damage_taken, hit)
 		end,
 		husk = function (unit, dt, context, t, hit)
 			return
@@ -144,7 +143,6 @@ HitReactions.templates = {
 
 HitReactions.get_reaction = function (hit_reaction_template, is_husk)
 	local templates = HitReactions.templates
-	local husk_key = (is_husk and "husk") or "unit"
 	local reaction_table = templates[hit_reaction_template]
 
 	if is_husk and reaction_table.husk ~= nil then

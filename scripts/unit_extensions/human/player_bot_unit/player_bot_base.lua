@@ -265,14 +265,6 @@ PlayerBotBase.extensions_ready = function (self, world, unit)
 	blackboard.career_extension = career_extension
 end
 
-function bot_printf(unit, num, str, ...)
-	local player = Managers.player:owner(unit)
-
-	if player:name() == "player_bot_" .. num then
-		printf(str, ...)
-	end
-end
-
 PlayerBotBase._init_brain = function (self)
 	self._brain = AIBrain:new(self._world, self._unit, self._blackboard, self._bot_profile, self._bot_profile.behavior)
 end
@@ -731,13 +723,13 @@ PlayerBotBase._player_needs_attention = function (self, self_unit, player_unit, 
 	local velocity = locomotion_extension:current_velocity()
 	local velocity_normalized = Vector3.normalize(velocity)
 	local speed_sq = Vector3.length_squared(velocity)
-	local direction_dot = Vector3.dot(player_to_self_direction, player_velocity_normalized)
-	local is_heading_towards_us = MIN_HEADING_TOWARDS_US_DOT < direction_dot
+	local player_direction_dot = Vector3.dot(player_to_self_direction, player_velocity_normalized)
+	local is_heading_towards_us = MIN_HEADING_TOWARDS_US_DOT < player_direction_dot
 	local is_heading_towards_player = nil
 
 	if speed_sq > 0.01 then
-		local direction_dot = Vector3.dot(player_to_self_direction, velocity_normalized)
-		is_heading_towards_player = direction_dot <= MIN_HEADING_TOWARDS_US_DOT
+		local bot_direction_dot = Vector3.dot(player_to_self_direction, velocity_normalized)
+		is_heading_towards_player = bot_direction_dot <= MIN_HEADING_TOWARDS_US_DOT
 	else
 		is_heading_towards_player = false
 	end
@@ -1018,7 +1010,7 @@ end
 
 PlayerBotBase._should_re_evaluate_vortex_escape = function (self, current_position, previous_check_position, navigation_extension, vortex_unit)
 	local re_evaluate_destination = false
-	local escape_completed = false
+	local escape_completed = nil
 
 	if ALIVE[vortex_unit] then
 		local vortex_extension = ScriptUnit.extension(vortex_unit, "ai_supplementary_system")
@@ -1108,7 +1100,7 @@ PlayerBotBase._update_vortex_escape = function (self)
 			local to_bot = self_position - vortex_position
 			local to_bot_rotation = Quaternion.look(to_bot, Vector3.up())
 			local traverse_logic = navigation_extension:traverse_logic()
-			local best_destination, best_weight, best_weighted_distance_sq = self:_find_vortex_escape_destination(self_position, to_bot_rotation, nav_world, traverse_logic, best_weighted_distance_sq, largest_weighted_distance_sq)
+			local best_destination, best_weight, _ = self:_find_vortex_escape_destination(self_position, to_bot_rotation, nav_world, traverse_logic, best_weighted_distance_sq, largest_weighted_distance_sq)
 
 			if best_destination then
 				blackboard.use_vortex_escape_destination = true
@@ -1554,9 +1546,9 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 				local dir = Vector3.normalize(self_pos - ammo_position)
 				local above = 0.5
 				local below = 1.5
-				local lateral = 1
+				local lateral = INTERACT_RAY_DISTANCE - 0.3
 				local distance = 0
-				target_position = self:_find_position_on_navmesh(nav_world, ammo_position, ammo_position + dir, above, below, INTERACT_RAY_DISTANCE - 0.3, distance)
+				target_position = self:_find_position_on_navmesh(nav_world, ammo_position, ammo_position + dir, above, below, lateral, distance)
 
 				if target_position then
 					blackboard.interaction_unit = blackboard.ammo_pickup
@@ -1699,7 +1691,7 @@ PlayerBotBase._find_position_on_navmesh = function (self, nav_world, original_po
 	if success then
 		return Vector3(offset_position.x, offset_position.y, z)
 	else
-		local success, z = GwNavQueries.triangle_from_position(nav_world, original_position, above, below)
+		success, z = GwNavQueries.triangle_from_position(nav_world, original_position, above, below)
 
 		if success then
 			return Vector3(offset_position.x, offset_position.y, z)

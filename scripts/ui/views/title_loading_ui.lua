@@ -1,5 +1,6 @@
 require("scripts/settings/controller_settings")
 require("scripts/ui/ui_widgets")
+require("scripts/ui/views/cutscene_overlay_ui")
 
 local first_time_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_trailer")
 local scenegraph_definition = {
@@ -1756,9 +1757,13 @@ TitleLoadingUI._start_subtitles_by_template = function (self, subtitle_template_
 		self.cutscene_overlay_ui:destroy()
 	end
 
-	self.cutscene_overlay_ui = CutsceneOverlayUI:new(self._ui_renderer, subtitle_template_settings)
+	local context = {
+		ui_renderer = self._ui_renderer
+	}
+	self.cutscene_overlay_ui = CutsceneOverlayUI:new(self, context)
 
-	self.cutscene_overlay_ui:start()
+	self.cutscene_overlay_ui:force_unregister_event_listener()
+	self.cutscene_overlay_ui:start(subtitle_template_settings)
 end
 
 TitleLoadingUI._stop_subtitles = function (self)

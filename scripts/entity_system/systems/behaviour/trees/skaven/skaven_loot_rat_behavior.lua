@@ -1,19 +1,4 @@
 local ACTIONS = BreedActions.skaven_loot_rat
-local EXPLOSIVE_LOOT_RAT_BEHAVIOR = {
-	"BTSequence",
-	{
-		"BTPackMasterFollowAction",
-		name = "follow",
-		action_data = ACTIONS.follow
-	},
-	{
-		"BTZombieExplodeAction",
-		name = "explosion_attack",
-		action_data = ACTIONS.explosion_attack
-	},
-	condition = "explosive_loot_rat_combat",
-	name = "in_combat"
-}
 BreedBehaviors.loot_rat = {
 	"BTSelector",
 	{
@@ -63,7 +48,6 @@ BreedBehaviors.loot_rat = {
 		condition = "at_smartobject",
 		name = "smartobject"
 	},
-	EXPLOSIVE_LOOT_RAT_BEHAVIOR,
 	{
 		"BTLootRatDodgeAction",
 		name = "dodge",

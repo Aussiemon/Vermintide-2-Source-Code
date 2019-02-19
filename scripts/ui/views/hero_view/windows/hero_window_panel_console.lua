@@ -497,30 +497,6 @@ HeroWindowPanelConsole._set_text_button_size = function (self, widget, width)
 	style.text_disabled.offset[1] = style.text_disabled.default_offset[1] + text_width_offset
 end
 
-HeroWindowPanelConsole._setup_text_button_size = function (self, widget)
-	local scenegraph_id = widget.scenegraph_id
-	local content = widget.content
-	local style = widget.style
-	local text_style = style.text
-	local text = content.text_field or content.text
-
-	if text_style.localize then
-		text = Localize(text)
-	end
-
-	if text_style.upper_case then
-		text = TextToUpper(text)
-	end
-
-	local ui_scenegraph = self.ui_scenegraph
-	local ui_renderer = self.ui_renderer
-	local font, scaled_font_size = UIFontByResolution(text_style)
-	local text_width, text_height, min = UIRenderer.text_size(ui_renderer, text, font[1], scaled_font_size)
-	ui_scenegraph[scenegraph_id].size[1] = text_width
-
-	return text_width
-end
-
 local default_font_color = Colors.get_color_table_with_alpha("white", 255)
 
 HeroWindowPanelConsole._animate_purchase_add = function (self, dt)

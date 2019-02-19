@@ -83,8 +83,6 @@ for level_key, level_data in pairs(LevelSettings) do
 	local valid_level = validate_level_data(level_key, level_data)
 
 	if valid_level then
-		print("valid level " .. level_key)
-
 		local game_mode = level_data.game_mode
 
 		if not LevelGameModeTypes[game_mode] then

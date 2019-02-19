@@ -2,13 +2,13 @@ require("scripts/ui/ui_layer")
 require("scripts/utils/colors")
 
 UISettings = {
-	tooltip_wait_duration = 0.1,
-	start_drag_threshold = 0.15,
 	tooltip_fade_in_speed = 4,
+	start_drag_threshold = 0.15,
 	double_click_threshold = 0.1,
 	crafting_progress_time = 0.5,
 	bots_level_display_text = "BOT",
 	max_craft_material_presentation_amount = 999,
+	tooltip_wait_duration = 0.1,
 	console_menu_camera_move_duration = 0.5,
 	max_inventory_items = 1000,
 	hero_panel_height = 120,
@@ -65,8 +65,8 @@ UISettings = {
 		Application.user_setting("root_scale_x") or 1,
 		Application.user_setting("root_scale_y") or 1
 	},
-	ui_scale = Application.user_setting("ui_scale") or 100,
-	use_hud_screen_fit = Application.user_setting("use_hud_screen_fit") or false,
+	hud_scale = Application.user_setting("hud_scale") or 100,
+	use_custom_hud_scale = Application.user_setting("use_custom_hud_scale") or false,
 	use_gamepad_menu_layout = Application.user_setting("use_gamepad_menu_layout") or false,
 	use_gamepad_hud_layout = Application.user_setting("use_gamepad_hud_layout") or false,
 	interaction = {
@@ -687,6 +687,17 @@ UISettings.slot_icons = {
 	ring = "tabs_icon_charm",
 	ranged = "tabs_icon_ranged",
 	skins = "tabs_icon_character_skins"
+}
+UISettings.item_type_store_icons = {
+	default = "store_tag_icon_dlc",
+	weapon_skin = "store_tag_icon_weapon",
+	hat = "store_tag_icon_hat",
+	bundle = "store_tag_icon_bundle",
+	frame = "store_tag_icon_frame",
+	skin = "store_tag_icon_skin",
+	currency = "store_tag_icon_currency",
+	dlc = "store_tag_icon_dlc",
+	pet = "store_tag_icon_pet"
 }
 UISettings.crafting_material_order = {
 	"crafting_material_scrap",

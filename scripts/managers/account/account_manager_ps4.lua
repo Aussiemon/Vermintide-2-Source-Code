@@ -776,6 +776,10 @@ AccountManager.send_session_invitation = function (self, to_account_id)
 	self._web_api:send_request_session_invitation(user_id, params, session_id)
 end
 
+AccountManager.has_session = function (self)
+	return self._session ~= nil and self._session.id ~= nil
+end
+
 AccountManager.send_session_invitation_multiple = function (self, to_account_ids)
 	local user_id = self:user_id()
 	local session_id = self._session.id
@@ -832,6 +836,17 @@ AccountManager.activity_feed_post_mission_completed = function (self, level_disp
 	local content_json = cjson.encode(content)
 
 	self._web_api:send_request(user_id, api_group, path, method, content_json)
+end
+
+AccountManager.get_entitlement = function (self, entitlement_label, optional_service_label, response_callback)
+	local user_id = self:user_id()
+	local api_group = "sdk:entitlement"
+	local service_label = optional_service_label or 0
+	local path = string.format("/v1/users/me/entitlements/%s?service_label=%s&fields=active_flag", entitlement_label, service_label)
+	local method = WebApi.GET
+	local content = nil
+
+	self._web_api:send_request(user_id, api_group, path, method, content, response_callback)
 end
 
 AccountManager._format_session_parameters = function (self, params)

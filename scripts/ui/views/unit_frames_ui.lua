@@ -402,11 +402,11 @@ UnitFramesUI.update_teammates_unit_frames = function (self, dt, t, ui_scenegraph
 			if player_unit then
 				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 				local num_grimoires = buff_extension:num_buff_perk("skaven_grimoire")
-				local multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
+				local multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, "curse_protection")
 				local num_twitch_grimoires = buff_extension:num_buff_perk("twitch_grimoire")
 				local twitch_multiplier = PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF
 				local num_slayer_curses = buff_extension:num_buff_perk("slayer_curse")
-				local slayer_curse_multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.SLAYER_CURSE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
+				local slayer_curse_multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.SLAYER_CURSE_HEALTH_DEBUFF, "curse_protection")
 				active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier + num_slayer_curses * slayer_curse_multiplier
 			end
 
@@ -619,11 +619,11 @@ UnitFramesUI.update_player_unit_frame = function (self, dt, t, ui_scenegraph, ui
 		level = ExperienceSettings.get_player_level(my_player) or ""
 		local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 		local num_grimoires = buff_extension:num_buff_perk("skaven_grimoire")
-		local multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
+		local multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, "curse_protection")
 		local num_twitch_grimoires = buff_extension:num_buff_perk("twitch_grimoire")
 		local twitch_multiplier = PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF
 		local num_slayer_curses = buff_extension:num_buff_perk("slayer_curse")
-		local slayer_curse_multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.SLAYER_CURSE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
+		local slayer_curse_multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.SLAYER_CURSE_HEALTH_DEBUFF, "curse_protection")
 		active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier + num_slayer_curses * slayer_curse_multiplier
 	else
 		health_percent = 0

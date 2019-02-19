@@ -165,11 +165,12 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 	career_extension:start_activated_ability_cooldown()
 	CharacterStateHelper.play_animation_event(owner_unit, "unchained_ability_explosion")
 
-	if local_player then
+	if (is_server and bot_player) or local_player then
 		local first_person_extension = self._first_person_extension
 
 		first_person_extension:animation_event("unchained_ability_explosion")
-		first_person_extension:play_unit_sound_event("Play_career_ability_unchained_fire", owner_unit, 0, true)
+		first_person_extension:play_hud_sound_event("Play_career_ability_unchained_fire")
+		first_person_extension:play_remote_unit_sound_event("Play_career_ability_unchained_fire", owner_unit, 0)
 	end
 
 	self:_play_vo()

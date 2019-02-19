@@ -71,7 +71,6 @@ SplitscreenTester.init = function (self)
 	self:_setup_input()
 
 	self._splitscreen_active = false
-	UISettings.use_hud_screen_fit = true
 end
 
 SplitscreenTester._setup_names = function (self)

@@ -1191,9 +1191,11 @@ AIBotGroupSystem._update_opportunity_targets = function (self, dt, t)
 
 		for i = 1, num_alive_specials, 1 do
 			local target_unit = alive_specials[i]
+			local opportunity_target_blackboard = BLACKBOARDS[target_unit]
+			local ignore_bot_opportunity = opportunity_target_blackboard.breed.ignore_bot_opportunity
 			local target_pos = POSITION_LOOKUP[target_unit]
 
-			if AiUtils.unit_alive(target_unit) and Vector3.distance_squared(target_pos, self_pos) < FALLBACK_OPPORTUNITY_DISTANCE_SQ then
+			if not ignore_bot_opportunity and AiUtils.unit_alive(target_unit) and Vector3.distance_squared(target_pos, self_pos) < FALLBACK_OPPORTUNITY_DISTANCE_SQ then
 				local utility, distance = self:_calculate_opportunity_utility(bot_unit, self_pos, old_target, target_unit, t, false, true)
 
 				if best_utility < utility then
@@ -2131,14 +2133,14 @@ end
 
 local OPPORTUNITY_TARGET_COOLDOWN = 30
 
-AIBotGroupSystem.ranged_attack_ended = function (self, attacker_unit, victim_unit, attack_type)
+AIBotGroupSystem.ranged_attack_ended = function (self, attacker_unit, victim_unit, attack_type, optional_cooldown)
 	for unit, data in pairs(self._bot_ai_data) do
 		local ai_ext = ScriptUnit.extension(unit, "ai_system")
 
 		ai_ext:ranged_attack_ended(attacker_unit, victim_unit, attack_type)
 	end
 
-	self._urgent_targets[attacker_unit] = self._t + OPPORTUNITY_TARGET_COOLDOWN
+	self._urgent_targets[attacker_unit] = self._t + (optional_cooldown or OPPORTUNITY_TARGET_COOLDOWN)
 end
 
 local OPPORTUNITY_TARGET_TELEPORT_DETECTION_DISTANCE = 7

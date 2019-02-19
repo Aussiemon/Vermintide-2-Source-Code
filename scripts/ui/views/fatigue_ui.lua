@@ -1,7 +1,8 @@
 local definitions = local_require("scripts/ui/views/fatigue_ui_definitions")
 FatigueUI = class(FatigueUI)
 
-FatigueUI.init = function (self, ingame_ui_context)
+FatigueUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.input_manager = ingame_ui_context.input_manager
@@ -102,6 +103,11 @@ end
 FatigueUI.update = function (self, dt)
 	local player = self.local_player
 	local player_unit = player.player_unit
+
+	if not Unit.alive(player_unit) then
+		return
+	end
+
 	local status_extension = ScriptUnit.extension(player_unit, "status_system")
 	local should_be_active = self:check_active(status_extension)
 

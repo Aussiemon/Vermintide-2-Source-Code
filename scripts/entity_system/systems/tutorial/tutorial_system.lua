@@ -88,9 +88,7 @@ TutorialSystem.on_add_extension = function (self, world, unit, extension_name, e
 	end
 
 	if extension_name == "ObjectiveHealthTutorialExtension" then
-		if self.tutorial_ui ~= nil then
-			self.tutorial_ui:add_health_bar(unit)
-		end
+		Managers.state.event:trigger("tutorial_event_add_health_bar", unit)
 
 		self.health_extensions[unit] = extension
 	end
@@ -147,9 +145,7 @@ TutorialSystem.on_remove_extension = function (self, unit, extension_name)
 	if self.health_extensions[unit] then
 		self.health_extensions[unit] = nil
 
-		if self.tutorial_ui then
-			self.tutorial_ui:remove_health_bar(unit)
-		end
+		Managers.state.event:trigger("tutorial_event_remove_health_bar", unit)
 	end
 
 	self.player_units[unit] = nil
@@ -201,7 +197,7 @@ TutorialSystem.physics_async_update = function (self, context, t)
 			if DebugKeyHandler.key_pressed("f10", "add debug info slate", "tutorials") then
 				local duration = math.random() * 5
 
-				self.tutorial_ui:queue_info_slate_entry("tutorial", "DEBUG INFO SLATE, LOOK AT IT GOOOO", duration + 5)
+				Managers.state.event:trigger("tutorial_event_queue_info_slate_entry", "tutorial", "DEBUG INFO SLATE, LOOK AT IT GOOOO", duration + 5)
 			end
 
 			local res_x = RESOLUTION_LOOKUP.res_w
@@ -244,43 +240,7 @@ TutorialSystem.physics_async_update = function (self, context, t)
 		end
 	end
 
-	local ingame_ui = self.ingame_ui
-
-	if ingame_ui then
-		local tutorial_ui_enabled = ingame_ui.hud_visible
-
-		if tutorial_ui_enabled then
-			local ingame_hud = ingame_ui.ingame_hud
-			local is_own_player_dead = ingame_hud:is_own_player_dead()
-			local active_cutscene = ingame_hud:is_cutscene_active()
-
-			if not is_own_player_dead and not active_cutscene then
-				local dt = context.dt or 0
-
-				self.tutorial_ui:update(dt, t)
-			end
-		end
-	end
-
 	DO_TUT_RELOAD = false
-end
-
-TutorialSystem.pre_render_update = function (self, dt, t)
-	local ingame_ui = self.ingame_ui
-
-	if ingame_ui then
-		local tutorial_ui_enabled = ingame_ui.hud_visible
-
-		if tutorial_ui_enabled then
-			local ingame_hud = ingame_ui.ingame_hud
-			local is_own_player_dead = ingame_hud:is_own_player_dead()
-			local active_cutscene = ingame_hud:is_cutscene_active()
-
-			if not is_own_player_dead and not active_cutscene then
-				self.tutorial_ui:pre_render_update(dt, t)
-			end
-		end
-	end
 end
 
 TutorialSystem.iterate_tooltips = function (self, t, unit, extension, raycast_unit, world)
@@ -483,12 +443,12 @@ TutorialSystem.iterate_info_slates = function (self, t, unit, extension, raycast
 					local text = (template.get_text and template.get_text(extension.data, template)) or template.text
 					text = Localize(text)
 
-					self.tutorial_ui:queue_info_slate_entry("tutorial", text, nil, nil, template, unit, raycast_unit)
+					Managers.state.event:trigger("tutorial_event_queue_info_slate_entry", text, nil, nil, template, unit, raycast_unit)
 				end
 			until true
 		end
 	else
-		self.tutorial_ui:clear_tutorials()
+		Managers.state.event:trigger("tutorial_event_clear_tutorials")
 	end
 end
 
@@ -529,27 +489,10 @@ TutorialSystem.rpc_prioritize_objective_tooltip = function (self, sender, priori
 	self:prioritize_objective_tooltip(prioritized_objective_tooltip)
 end
 
-TutorialSystem.set_ingame_ui = function (self, ingame_ui)
-	self.ingame_ui = ingame_ui
-	local tutorial_ui = ingame_ui.ingame_hud.tutorial_ui
-
-	self:_set_tutorial_ui(tutorial_ui)
-end
-
-TutorialSystem._set_tutorial_ui = function (self, tutorial_ui)
-	self.tutorial_ui = tutorial_ui
-
-	for unit, extension in pairs(self.health_extensions) do
-		tutorial_ui:add_health_bar(unit)
-	end
-end
-
 TutorialSystem.flow_callback_show_health_bar = function (self, unit, show)
-	local tutorial_ui = self.tutorial_ui
+	local event_manager = Managers.state.event
 
-	if tutorial_ui then
-		tutorial_ui:show_health_bar(unit, show)
-	end
+	event_manager:trigger("tutorial_event_show_health_bar", unit, show)
 end
 
 TutorialSystem.flow_callback_tutorial_message = function (self, template_name, message)

@@ -91,7 +91,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		size = {
 			800,
-			30
+			50
 		},
 		position = {
 			0,
@@ -266,7 +266,11 @@ local title_button_definitions = {}
 local num_buttons = 10
 
 for i = 1, num_buttons, 1 do
-	title_button_definitions[i] = create_title_button("title_entry", "n/a", 52, nil, "center")
+	title_button_definitions[i] = create_title_button("title_entry", "n/a", 52, {
+		0,
+		-6,
+		4
+	}, "center")
 end
 
 local widgets = {

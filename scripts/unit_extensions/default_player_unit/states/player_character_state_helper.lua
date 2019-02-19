@@ -69,8 +69,35 @@ CharacterStateHelper.get_look_input = function (input_extension, status_extensio
 		look_delta = look_delta + look_input_gamepad
 	end
 
+	look_delta = CharacterStateHelper.apply_motion_controls(look_delta, input_extension)
+
 	if script_data.attract_mode_spectate then
 		look_delta = Vector3(0.005, 0, 0)
+	end
+
+	return look_delta
+end
+
+CharacterStateHelper.apply_motion_controls = function (look_delta, input_extension)
+	if MotionControlSettings.use_motion_controls then
+		if MotionControlSettings.motion_disable_right_stick_vertical then
+			look_delta.y = 0
+		end
+
+		local min = MotionControlSettings.sensitivity_min_value
+		local base_multiplier = MotionControlSettings.sensitivity_base_value
+		local yaw_steps = MotionControlSettings.sensitivity_yaw_max - MotionControlSettings.sensitivity_yaw_min
+		local yaw_step = (base_multiplier - min) / (yaw_steps * 0.5)
+		local motion_sensitivity_yaw = base_multiplier + MotionControlSettings.motion_sensitivity_yaw * yaw_step
+		local pitch_steps = MotionControlSettings.sensitivity_pitch_max - MotionControlSettings.sensitivity_pitch_min
+		local pitch_step = (base_multiplier - min) / (pitch_steps * 0.5)
+		local motion_sensitivity_pitch = base_multiplier + MotionControlSettings.motion_sensitivity_pitch * pitch_step
+		local scale_yaw = motion_sensitivity_yaw * ((MotionControlSettings.motion_invert_yaw and -1) or 1) * ((MotionControlSettings.motion_enable_yaw_motion and 1) or 0)
+		local scale_pitch = motion_sensitivity_pitch * ((MotionControlSettings.motion_invert_pitch and -1) or 1) * ((MotionControlSettings.motion_enable_pitch_motion and 1) or 0)
+		local angular_velocity = input_extension:get("angular_velocity")
+		local magnitude_x = (angular_velocity and angular_velocity.x) or 0
+		local magnitude_y = (angular_velocity and -angular_velocity.y) or 0
+		look_delta = look_delta + Vector3(scale_yaw * magnitude_y, scale_pitch * magnitude_x, 0)
 	end
 
 	return look_delta
@@ -1169,42 +1196,6 @@ end
 
 CharacterStateHelper.stop_career_abilities = function (career_extension, reason)
 	career_extension:stop_ability(reason)
-end
-
-CharacterStateHelper.reload = function (input_extension, inventory_extension, status_extension)
-	if not input_extension:get("weapon_reload") then
-		return false
-	end
-
-	local equipment = inventory_extension:equipment()
-	local zooming = status_extension:is_zooming()
-
-	if zooming then
-		return false
-	end
-
-	local item_data, right_hand_weapon_extension, left_hand_weapon_extension = CharacterStateHelper.get_item_data_and_weapon_extensions(inventory_extension)
-	local current_action_settings, current_action_extension, current_action_hand = CharacterStateHelper.get_current_action_data(left_hand_weapon_extension, right_hand_weapon_extension)
-
-	if current_action_settings and current_action_settings.active_reload_time then
-		return false
-	end
-
-	local ammo_extension = nil
-
-	if equipment.right_hand_wielded_unit ~= nil and ScriptUnit.has_extension(equipment.right_hand_wielded_unit, "ammo_system") then
-		ammo_extension = ScriptUnit.extension(equipment.right_hand_wielded_unit, "ammo_system")
-	elseif equipment.left_hand_wielded_unit ~= nil and ScriptUnit.has_extension(equipment.left_hand_wielded_unit, "ammo_system") then
-		ammo_extension = ScriptUnit.extension(equipment.left_hand_wielded_unit, "ammo_system")
-	end
-
-	if not ammo_extension or not ammo_extension:can_reload() then
-		return false
-	end
-
-	local play_reload_animation = true
-
-	ammo_extension:start_reload(play_reload_animation)
 end
 
 CharacterStateHelper.check_crouch = function (unit, input_extension, status_extension, toggle_crouch, first_person_extension, t)

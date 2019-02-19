@@ -99,7 +99,8 @@ UnitGibSettings = {
 				parent_destroy_actors = {
 					"c_leftupleg",
 					"c_leftleg",
-					"c_leftfoot"
+					"c_leftfoot",
+					"c_lefttoebase"
 				},
 				parent_scale_nodes = {
 					"j_leftupleg_scale"
@@ -107,7 +108,8 @@ UnitGibSettings = {
 				ragdoll_destroy_actors = {
 					"j_leftupleg",
 					"j_leftleg",
-					"j_leftfoot"
+					"j_leftfoot",
+					"j_lefttoebase"
 				}
 			},
 			right_arm = {
@@ -173,7 +175,8 @@ UnitGibSettings = {
 				parent_destroy_actors = {
 					"c_rightupleg",
 					"c_rightleg",
-					"c_rightfoot"
+					"c_rightfoot",
+					"c_righttoebase"
 				},
 				parent_scale_nodes = {
 					"j_rightupleg_scale"
@@ -181,7 +184,8 @@ UnitGibSettings = {
 				ragdoll_destroy_actors = {
 					"j_rightupleg",
 					"j_rightleg",
-					"j_rightfoot"
+					"j_rightfoot",
+					"j_righttoebase"
 				}
 			},
 			tail = {
@@ -440,7 +444,8 @@ UnitGibSettings.skaven_slave = {
 			parent_destroy_actors = {
 				"c_leftupleg",
 				"c_leftleg",
-				"c_leftfoot"
+				"c_leftfoot",
+				"c_lefttoebase"
 			},
 			parent_scale_nodes = {
 				"j_leftupleg_scale"
@@ -448,7 +453,8 @@ UnitGibSettings.skaven_slave = {
 			ragdoll_destroy_actors = {
 				"j_leftupleg",
 				"j_leftleg",
-				"j_leftfoot"
+				"j_leftfoot",
+				"j_lefttoebase"
 			}
 		},
 		right_arm = {
@@ -514,7 +520,8 @@ UnitGibSettings.skaven_slave = {
 			parent_destroy_actors = {
 				"c_rightupleg",
 				"c_rightleg",
-				"c_rightfoot"
+				"c_rightfoot",
+				"c_righttoebase"
 			},
 			parent_scale_nodes = {
 				"j_rightupleg_scale"
@@ -522,7 +529,8 @@ UnitGibSettings.skaven_slave = {
 			ragdoll_destroy_actors = {
 				"j_rightupleg",
 				"j_rightleg",
-				"j_rightfoot"
+				"j_rightfoot",
+				"j_righttoebase"
 			}
 		},
 		tail = {
@@ -873,14 +881,16 @@ UnitGibSettings.skaven_storm_vermin = {
 			},
 			parent_destroy_actors = {
 				"c_leftleg",
-				"c_leftfoot"
+				"c_leftfoot",
+				"c_lefttoebase"
 			},
 			parent_scale_nodes = {
 				"j_leftleg"
 			},
 			ragdoll_destroy_actors = {
 				"j_leftleg",
-				"j_leftfoot"
+				"j_leftfoot",
+				"j_lefttoebase"
 			}
 		},
 		right_arm = {
@@ -935,14 +945,16 @@ UnitGibSettings.skaven_storm_vermin = {
 			},
 			parent_destroy_actors = {
 				"c_rightleg",
-				"c_rightfoot"
+				"c_rightfoot",
+				"c_righttoebase"
 			},
 			parent_scale_nodes = {
 				"j_rightleg"
 			},
 			ragdoll_destroy_actors = {
 				"j_rightleg",
-				"j_rightfoot"
+				"j_rightfoot",
+				"j_righttoebase"
 			}
 		},
 		tail = {

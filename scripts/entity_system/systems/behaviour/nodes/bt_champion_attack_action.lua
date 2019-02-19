@@ -244,7 +244,6 @@ BTChampionAttackAction.leave = function (self, unit, blackboard, t, reason, dest
 	blackboard.navigation_extension:set_enabled(true)
 	table.clear(blackboard.hit_players)
 
-	blackboard.move_state = nil
 	blackboard.target_unit_status_extension = nil
 	blackboard.active_node = nil
 	blackboard.attack_aborted = nil

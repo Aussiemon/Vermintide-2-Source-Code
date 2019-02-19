@@ -174,6 +174,15 @@ local window_layouts = {
 			background = 2,
 			ingame_view = 4
 		}
+	},
+	{
+		sound_event_enter = "Play_hud_button_open",
+		name = "store",
+		sound_event_exit = "Play_hud_button_close",
+		close_on_exit = true,
+		windows = {
+			background = 1
+		}
 	}
 }
 local MAX_ACTIVE_WINDOWS = 5

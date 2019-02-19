@@ -27,10 +27,6 @@ ActionSweep.init = function (self, world, item_name, is_server, owner_unit, dama
 	self.has_played_rumble_effect = false
 	self.status_extension = ScriptUnit.extension(owner_unit, "status_system")
 	self.action_buff_data = {}
-	self._drawer = Managers.state.debug:drawer({
-		mode = "retained",
-		name = "weapon_system"
-	})
 end
 
 ActionSweep.check_precision_target = function (self, owner_unit, owner_player, dedicated_target_range, check_distance, weapon_furthest_point)
@@ -100,11 +96,11 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t) or has_melee_boost
 	local difficulty_level = Managers.state.difficulty:get_difficulty()
 	local cleave_power_level = ActionUtils.scale_power_levels(power_level, "cleave", owner_unit, difficulty_level)
-	cleave_power_level = buff_extension:apply_buffs_to_value(cleave_power_level, StatBuffIndex.POWER_LEVEL_MELEE)
+	cleave_power_level = buff_extension:apply_buffs_to_value(cleave_power_level, "power_level_melee")
 	self.power_level = power_level
 	local max_targets_attack, max_targets_impact = ActionUtils.get_max_targets(damage_profile, cleave_power_level)
-	max_targets_attack = buff_extension:apply_buffs_to_value(max_targets_attack or 1, StatBuffIndex.INCREASED_MAX_TARGETS)
-	max_targets_impact = buff_extension:apply_buffs_to_value(max_targets_impact or 1, StatBuffIndex.INCREASED_MAX_TARGETS)
+	max_targets_attack = buff_extension:apply_buffs_to_value(max_targets_attack or 1, "increased_max_targets")
+	max_targets_impact = buff_extension:apply_buffs_to_value(max_targets_impact or 1, "increased_max_targets")
 
 	if buff_extension:has_buff_type("armor penetration") then
 		max_targets_impact = max_targets_impact * 2
@@ -217,8 +213,6 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 		buff_extension:remove_buff(buff.id)
 	end
 
-	self._drawer:reset()
-
 	local debug_text_manager = Managers.state.debug_text
 
 	debug_text_manager:clear_world_text("targeting")
@@ -231,18 +225,11 @@ if PhysicsWorld.stop_reusing_sweep_tables then
 end
 
 ActionSweep.client_owner_post_update = function (self, dt, t, world, _, current_time_in_action)
-	local unit = self.weapon_unit
 	local owner_unit = self.owner_unit
 	local current_action = self.current_action
-	local physics_world = World.get_data(world, "physics_world")
-	local max_dt = current_action.forced_interpolation or 0.016666666666666666
-	local current_dt = 0
+	self.current_time_in_action = current_time_in_action
+	self._dt = dt
 	local aborted = false
-	local start_position = self.stored_position:unbox()
-	local start_rotation = self.stored_rotation:unbox()
-	local end_position = POSITION_LOOKUP[unit]
-	local end_rotation = unit_world_rotation(unit, 0)
-	local i = 0
 
 	if (aborted or self.attack_aborted) and current_action.reset_aim_on_attack and not self.auto_aim_reset then
 		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
@@ -252,19 +239,7 @@ ActionSweep.client_owner_post_update = function (self, dt, t, world, _, current_
 		self.auto_aim_reset = true
 	end
 
-	local is_within_damage_window = nil
-
-	while not aborted and not self.attack_aborted and current_dt < dt do
-		i = i + 1
-		local interpolated_dt = math.min(max_dt, dt - current_dt)
-		current_dt = math.min(current_dt + max_dt, dt)
-		local lerp_t = current_dt / dt
-		local current_position = Vector3.lerp(start_position, end_position, lerp_t)
-		local current_rotation = Quaternion.lerp(start_rotation, end_rotation, lerp_t)
-		is_within_damage_window = self:_is_within_damage_window(current_time_in_action - 2 * dt + current_dt, current_action, owner_unit)
-		aborted = self:_do_overlap(interpolated_dt, t, unit, owner_unit, current_action, physics_world, is_within_damage_window, current_position, current_rotation)
-	end
-
+	local is_within_damage_window = self:_update_sweep(dt, t, current_action, current_time_in_action)
 	local hud_extension = self.owner_hud_extension
 
 	if hud_extension and self._is_critical_strike then
@@ -274,6 +249,32 @@ ActionSweep.client_owner_post_update = function (self, dt, t, world, _, current_
 			hud_extension.show_critical_indication = false
 		end
 	end
+end
+
+ActionSweep._update_sweep = function (self, dt, t, current_action, current_time_in_action)
+	local owner_unit = self.owner_unit
+	local weapon_unit = self.weapon_unit
+	local physics_world = self.physics_world
+	local max_dt = current_action.forced_interpolation or 0.016666666666666666
+	local current_dt = 0
+	local start_position = self.stored_position:unbox()
+	local start_rotation = self.stored_rotation:unbox()
+	local end_position = POSITION_LOOKUP[weapon_unit]
+	local end_rotation = unit_world_rotation(weapon_unit, 0)
+	local aborted = false
+	local is_within_damage_window = nil
+
+	while not aborted and not self.attack_aborted and current_dt < dt do
+		local interpolated_dt = math.min(max_dt, dt - current_dt)
+		current_dt = math.min(current_dt + max_dt, dt)
+		local lerp_t = current_dt / dt
+		local current_position = Vector3.lerp(start_position, end_position, lerp_t)
+		local current_rotation = Quaternion.lerp(start_rotation, end_rotation, lerp_t)
+		is_within_damage_window = self:_is_within_damage_window(current_time_in_action - 2 * dt + current_dt, current_action, owner_unit)
+		aborted = self:_do_overlap(interpolated_dt, t, weapon_unit, owner_unit, current_action, physics_world, is_within_damage_window, current_position, current_rotation)
+	end
+
+	return is_within_damage_window
 end
 
 ActionSweep._get_power_boost = function (self)
@@ -393,7 +394,7 @@ ActionSweep._check_backstab = function (self, breed, is_dummy_unit, hit_unit, ow
 		end
 
 		if behind_target then
-			backstab_multiplier = buff_extension:apply_buffs_to_value(backstab_multiplier, StatBuffIndex.BACKSTAB_MULTIPLIER)
+			backstab_multiplier = buff_extension:apply_buffs_to_value(backstab_multiplier, "backstab_multiplier")
 
 			if script_data.debug_legendary_traits then
 				backstab_multiplier = 1.5
@@ -420,7 +421,6 @@ ActionSweep._check_backstab = function (self, breed, is_dummy_unit, hit_unit, ow
 end
 
 ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_action, physics_world, is_within_damage_window, current_position, current_rotation)
-	local drawer = self._drawer
 	local current_rot_up = Quaternion.up(current_rotation)
 	local hit_environment_rumble = false
 	local weapon_system = self.weapon_system
@@ -630,7 +630,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 
 		if Unit.alive(hit_unit) and Vector3.is_valid(hit_position) then
 			fassert(Vector3.is_valid(hit_position), "The hit position is not valid! Actor: %s, Unit: %s", hit_actor, hit_unit)
-			assert(hit_unit, "hit_unit is nil.")
+			fassert(hit_unit, "hit_unit is nil.")
 
 			hit_unit, hit_actor = ActionUtils.redirect_shield_hit(hit_unit, hit_actor)
 			local breed = AiUtils.unit_breed(hit_unit)
@@ -761,17 +761,9 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 							shield_break_procc = true
 						end
 					else
-						local item_data = rawget(ItemMasterList, damage_source)
-						local weapon_template_name = (item_data and item_data.template) or item_data.temporary_template
-						local buff_type = nil
-
-						if weapon_template_name then
-							local weapon_template = Weapons[weapon_template_name]
-							buff_type = weapon_template.buff_type
-						end
-
 						local send_to_server = true
 						local number_of_hit_enemies = self.number_of_hit_enemies
+						local buff_type = DamageUtils.get_item_buff_type(self.item_name)
 						buff_result = DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, number_of_hit_enemies, send_to_server, buff_type)
 						local attack_template_id = NetworkLookup.attack_templates[target_settings.attack_template]
 
@@ -888,7 +880,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 		local hit_actor = result.actor
 		local hit_unit = Actor.unit(hit_actor)
 
-		assert(hit_unit, "hit unit is nil")
+		fassert(hit_unit, "hit unit is nil")
 
 		if unit ~= hit_unit then
 			local hit_position = result.position
@@ -948,13 +940,6 @@ ActionSweep._play_environmental_effect = function (self, weapon_rotation, curren
 
 	if Managers.state.network:game() then
 		EffectHelper.remote_play_surface_material_effects(hit_effect, world, hit_unit, hit_position, impact_rotation, hit_normal, self.is_server, hit_actor)
-	end
-
-	if script_data.debug_material_effects then
-		local drawer = self._drawer
-
-		drawer:vector(hit_position - impact_direction * 0.1, impact_direction * 0.1)
-		drawer:vector(hit_position - impact_direction * 0.1, weapon_fwd * 0.1)
 	end
 end
 
@@ -1176,12 +1161,21 @@ ActionSweep.hit_level_object = function (self, hit_units, hit_unit, owner_unit, 
 end
 
 ActionSweep.finish = function (self, reason, data)
+	local current_action = self.current_action
+
+	if reason == "new_interupting_action" then
+		local current_time_in_action = self.current_time_in_action
+		local dt = self._dt
+		local t = Managers.time:time("game")
+
+		self:_update_sweep(dt, t, current_action, current_time_in_action)
+	end
+
 	if reason == "interacting" then
 		unit_flow_event(self.weapon_unit, "lua_finish_interacting")
 	end
 
 	local owner_unit = self.owner_unit
-	local current_action = self.current_action
 	local action_aborted_flow_event = current_action.action_aborted_flow_event
 
 	if action_aborted_flow_event and not self.action_aborted_flow_event_sent then

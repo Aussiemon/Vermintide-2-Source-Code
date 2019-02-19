@@ -1,6 +1,5 @@
 HitEffectsDummySorcerer = {
 	default = {
-		flow_event = "lua_on_damage_taken_shielded",
 		armour_type = "cloth",
 		animations = {
 			"hit_reaction"
@@ -25,22 +24,6 @@ HitEffectsDummySorcerer = {
 		},
 		animations = {
 			"death_dissolve"
-		}
-	},
-	heavy_slashing_buffed = {
-		inherits = "default",
-		do_dismember = true,
-		flow_event = "lua_on_damage_taken_shielded",
-		extra_conditions = {
-			damage_type = "heavy_slashing_buffed"
-		},
-		animations = {
-			"ragdoll"
-		},
-		push = {
-			distal_force = 30,
-			vertical_force = 35,
-			lateral_force = 40
 		}
 	},
 	shot_default = {

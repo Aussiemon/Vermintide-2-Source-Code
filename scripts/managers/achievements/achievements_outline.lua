@@ -12,6 +12,7 @@ local heroes = {
 	},
 	categories = {
 		{
+			sorting = 1,
 			name = "inventory_name_empire_soldier",
 			entries = {
 				"achievement_markus_level_1",
@@ -36,6 +37,7 @@ local heroes = {
 			}
 		},
 		{
+			sorting = 2,
 			name = "inventory_name_dwarf_ranger",
 			entries = {
 				"achievement_bardin_level_1",
@@ -60,6 +62,7 @@ local heroes = {
 			}
 		},
 		{
+			sorting = 3,
 			name = "inventory_name_wood_elf",
 			entries = {
 				"achievement_kerillian_level_1",
@@ -84,6 +87,7 @@ local heroes = {
 			}
 		},
 		{
+			sorting = 4,
 			name = "inventory_name_witch_hunter",
 			entries = {
 				"achievement_victor_level_1",
@@ -108,6 +112,7 @@ local heroes = {
 			}
 		},
 		{
+			sorting = 5,
 			name = "inventory_name_bright_wizard",
 			entries = {
 				"achievement_sienna_level_1",
@@ -147,6 +152,7 @@ local levels = {
 	},
 	categories = {
 		{
+			sorting = 1,
 			name = "achv_menu_levels_helmgart_category_title",
 			entries = {
 				"complete_tutorial",
@@ -182,6 +188,7 @@ local levels = {
 			}
 		},
 		{
+			sorting = 2,
 			name = "achv_menu_levels_bogenhafen_category_title",
 			entries = {
 				"complete_bogenhafen_slum_recruit",
@@ -201,7 +208,8 @@ local levels = {
 				"bogenhafen_city_fast_switches",
 				"bogenhafen_slum_no_ratling_damage",
 				"bogenhafen_slum_no_windows_broken",
-				"bogenhafen_slum_event_speedrun"
+				"bogenhafen_slum_event_speedrun",
+				"bogenhafen_collect_all_cosmetics"
 			}
 		}
 	}
@@ -347,6 +355,16 @@ local achievements = {
 	}
 }
 
+for _, category in ipairs(achievements.categories) do
+	local sub_categories = category.categories
+
+	if sub_categories then
+		table.sort(sub_categories, function (a, b)
+			return a.sorting < b.sorting
+		end)
+	end
+end
+
 local function assign_category_type(base_category, category_type)
 	base_category.type = category_type
 
@@ -358,6 +376,5 @@ local function assign_category_type(base_category, category_type)
 end
 
 assign_category_type(achievements, "achievements")
-table.dump(achievements, nil, 10)
 
 return achievements

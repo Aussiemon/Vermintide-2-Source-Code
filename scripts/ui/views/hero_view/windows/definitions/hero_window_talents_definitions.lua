@@ -1229,7 +1229,7 @@ local function talent_row(scenegraph_id, size, amount)
 		}
 		style[title_text_name] = {
 			word_wrap = true,
-			font_size = 28,
+			font_size = 24,
 			localize = false,
 			horizontal_alignment = "left",
 			vertical_alignment = "center",
@@ -1259,7 +1259,7 @@ local function talent_row(scenegraph_id, size, amount)
 		}
 		style[title_text_selected_name] = {
 			word_wrap = true,
-			font_size = 28,
+			font_size = 24,
 			localize = false,
 			horizontal_alignment = "left",
 			vertical_alignment = "center",
@@ -1288,7 +1288,7 @@ local function talent_row(scenegraph_id, size, amount)
 		}
 		style[title_text_disabled_name] = {
 			word_wrap = true,
-			font_size = 28,
+			font_size = 24,
 			localize = false,
 			horizontal_alignment = "left",
 			vertical_alignment = "center",
@@ -1317,7 +1317,7 @@ local function talent_row(scenegraph_id, size, amount)
 		}
 		style[title_text_shadow_name] = {
 			word_wrap = true,
-			font_size = 28,
+			font_size = 24,
 			localize = false,
 			horizontal_alignment = "left",
 			vertical_alignment = "center",

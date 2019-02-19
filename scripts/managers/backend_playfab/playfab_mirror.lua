@@ -260,13 +260,25 @@ PlayFabMirror.sign_in_reward_request_cb = function (self, result)
 	for reward_id, reward_data in pairs(rewards) do
 		local grants = reward_data.ItemGrantResults
 
-		for _, grant in ipairs(grants) do
-			local grant_result = grant.Result
+		if grants then
+			for _, grant in ipairs(grants) do
+				local grant_result = grant.Result
 
-			if grant_result == true then
-				local item_id = grant.ItemInstanceId
+				if grant_result == true then
+					local item_id = grant.ItemInstanceId
 
-				ItemHelper.mark_sign_in_reward_as_new(reward_id, item_id)
+					if reward_id and item_id then
+						ItemHelper.mark_sign_in_reward_as_new(reward_id, item_id)
+					end
+				end
+			end
+		end
+
+		local unlocked_keep_decorations = reward_data.unlocked_keep_decorations
+
+		if unlocked_keep_decorations then
+			for _, keep_decoration in ipairs(unlocked_keep_decorations) do
+				self:add_keep_decoration(keep_decoration)
 			end
 		end
 	end
@@ -852,6 +864,8 @@ end
 
 PlayFabMirror.add_keep_decoration = function (self, decoration_name)
 	self._unlocked_keep_decorations[#self._unlocked_keep_decorations + 1] = decoration_name
+
+	ItemHelper.mark_keep_decoration_as_new(decoration_name)
 end
 
 local new_fake_inventory_items = {}

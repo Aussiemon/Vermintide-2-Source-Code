@@ -326,4 +326,29 @@ ItemHelper.is_favorite_backend_id = function (backend_id)
 	return favorite_item_ids and favorite_item_ids[backend_id]
 end
 
+ItemHelper.mark_keep_decoration_as_new = function (keep_decoration_id)
+	local new_keep_decoration_ids = PlayerData.new_keep_decoration_ids or {}
+	new_keep_decoration_ids[keep_decoration_id] = true
+	PlayerData.new_keep_decoration_ids = new_keep_decoration_ids
+
+	Managers.save:auto_save(SaveFileName, SaveData, nil)
+end
+
+ItemHelper.unmark_keep_decoration_as_new = function (keep_decoration_id)
+	local new_keep_decoration_ids = PlayerData.new_keep_decoration_ids
+	new_keep_decoration_ids[keep_decoration_id] = nil
+
+	Managers.save:auto_save(SaveFileName, SaveData, nil)
+end
+
+ItemHelper.get_new_keep_decoration_ids = function ()
+	return PlayerData.new_keep_decoration_ids
+end
+
+ItemHelper.is_new_keep_decoration_id = function (keep_decoration_id)
+	local new_keep_decoration_ids = PlayerData.new_keep_decoration_ids
+
+	return new_keep_decoration_ids and new_keep_decoration_ids[keep_decoration_id]
+end
+
 return

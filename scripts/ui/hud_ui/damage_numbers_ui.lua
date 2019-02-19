@@ -62,7 +62,8 @@ local widget_definitions = {
 }
 DamageNumbersUI = class(DamageNumbersUI)
 
-DamageNumbersUI.init = function (self, ingame_ui_context)
+DamageNumbersUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.camera = Managers.camera
 	self.input_manager = ingame_ui_context.input_manager

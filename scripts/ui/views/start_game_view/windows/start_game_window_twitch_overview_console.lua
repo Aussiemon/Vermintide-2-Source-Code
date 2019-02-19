@@ -8,7 +8,7 @@ local animation_definitions = definitions.animation_definitions
 local selector_input_definition = definitions.selector_input_definition
 local START_GAME_INPUT = "refresh_press"
 local SELECTION_INPUT = "confirm_press"
-local CONNECT_INPUT = "special_1"
+local CONNECT_INPUT = "special_1_press"
 StartGameWindowTwitchOverviewConsole = class(StartGameWindowTwitchOverviewConsole)
 StartGameWindowTwitchOverviewConsole.NAME = "StartGameWindowTwitchOverviewConsole"
 
@@ -114,6 +114,12 @@ StartGameWindowTwitchOverviewConsole._create_ui_elements = function (self, param
 	end
 
 	self:_setup_input_buttons()
+
+	if PLATFORM == "ps4" then
+		local frame_widget = self._widgets_by_name.frame_widget
+		local frame_widget_content = frame_widget.content
+		frame_widget_content.twitch_name = PlayerData.twitch_user_name or ""
+	end
 end
 
 StartGameWindowTwitchOverviewConsole._set_input_description = function (self, connected)
@@ -178,6 +184,7 @@ StartGameWindowTwitchOverviewConsole.update = function (self, dt, t)
 	self:_update_input_description()
 	self:_update_can_play()
 	self:_update_animations(dt)
+	self:_handle_virtual_keyboard(dt, t)
 	self:_handle_input(dt, t)
 	self:_handle_gamepad_activity()
 	self:_draw(dt)
@@ -216,7 +223,38 @@ StartGameWindowTwitchOverviewConsole._update_can_play = function (self)
 	end
 end
 
+StartGameWindowTwitchOverviewConsole._handle_virtual_keyboard = function (self, dt, t)
+	if not self._virtual_keyboard_id then
+		return
+	end
+
+	local done, success, twitch_user_name = Managers.system_dialog:poll_virtual_keyboard(self._virtual_keyboard_id)
+
+	if done then
+		self._virtual_keyboard_id = nil
+
+		if success then
+			local twitch_user_name = string.gsub(twitch_user_name, " ", "")
+
+			if twitch_user_name then
+				PlayerData.twitch_user_name = twitch_user_name
+			end
+
+			local frame_widget = self._widgets_by_name.frame_widget
+			local frame_widget_content = frame_widget.content
+			frame_widget_content.twitch_name = twitch_user_name
+
+			Managers.twitch:connect(twitch_user_name, callback(Managers.twitch, "cb_connection_error_callback"), callback(self, "cb_connection_success_callback"))
+			self:_play_sound("Play_hud_select")
+		end
+	end
+end
+
 StartGameWindowTwitchOverviewConsole._handle_input = function (self, dt, t)
+	if self._virtual_keyboard_id then
+		return
+	end
+
 	local parent = self._parent
 	local input_service = parent:window_input_service()
 
@@ -325,15 +363,24 @@ StartGameWindowTwitchOverviewConsole._handle_twitch_login_input = function (self
 			local button_pressed = connect_button_widget and self:_is_button_pressed(connect_button_widget)
 
 			if button_pressed or input_service:get(CONNECT_INPUT) then
-				local user_name = ""
+				if PLATFORM == "ps4" then
+					local user_id = Managers.account:user_id()
+					local twitch_user_name = PlayerData.twitch_user_name
+					local title = Localize("start_game_window_twitch_login_hint")
+					local position = definitions.twitch_keyboard_anchor_point
+					local inv_scale = RESOLUTION_LOOKUP.inv_scale
+					self._virtual_keyboard_id = Managers.system_dialog:open_virtual_keyboard(user_id, title, twitch_user_name, position)
+				else
+					local user_name = ""
 
-				if frame_widget then
-					local frame_widget_content = frame_widget.content
-					user_name = string.gsub(frame_widget_content.twitch_name, " ", "")
+					if frame_widget then
+						local frame_widget_content = frame_widget.content
+						user_name = string.gsub(frame_widget_content.twitch_name, " ", "")
+					end
+
+					Managers.twitch:connect(user_name, callback(Managers.twitch, "cb_connection_error_callback"), callback(self, "cb_connection_success_callback"))
+					self:_play_sound("Play_hud_select")
 				end
-
-				Managers.twitch:connect(user_name, callback(Managers.twitch, "cb_connection_error_callback"), callback(self, "cb_connection_success_callback"))
-				self:_play_sound("Play_hud_select")
 			end
 		else
 			local disconnect_button_widget = self._widgets_by_name.button_2

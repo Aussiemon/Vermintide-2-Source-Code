@@ -64,7 +64,7 @@ StartGameWindowPanelConsole.create_ui_elements = function (self, params, offset)
 		end
 	end
 
-	if PLATFORM == "win32" then
+	if PLATFORM ~= "xb1" then
 		local widget_definition = UIWidgets.create_console_panel_button("game_mode_option", scenegraph_definition.game_mode_option.size, "start_game_window_lobby_browser", 32, nil, "center")
 		local widget = UIWidget.init(widget_definition)
 		widget.content.layout_name = "lobby_browser"

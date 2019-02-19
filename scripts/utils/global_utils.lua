@@ -23,21 +23,33 @@ function UPDATE_POSITION_LOOKUP()
 	EngineOptimized.update_position_lookup(position_lookup)
 end
 
-function UPDATE_RESOLUTION_LOOKUP(force_update)
+function UPDATE_RESOLUTION_LOOKUP(force_update, optional_scale_multiplier)
 	local w, h = Application.resolution()
 	local resolution_modified = w ~= resolution_lookup.res_w or h ~= resolution_lookup.res_h
+	local width_scale = w / UIResolutionWidthFragments()
+	local height_scale = h / UIResolutionHeightFragments()
+	local scale = math.min(width_scale, height_scale)
+	local scale_modified = false
 
-	if resolution_modified or force_update then
+	if optional_scale_multiplier then
+		scale = scale * optional_scale_multiplier
+	end
+
+	if resolution_lookup.scale ~= scale then
+		scale_modified = true
+	end
+
+	if resolution_modified or scale_modified or force_update then
 		resolution_lookup.res_w = w
 		resolution_lookup.res_h = h
 
 		AccomodateViewport()
 
-		resolution_lookup.scale = UIResolutionScale() * UISettings.ui_scale / 100
-		resolution_lookup.inv_scale = 1 / resolution_lookup.scale
+		resolution_lookup.scale = scale
+		resolution_lookup.inv_scale = 1 / scale
 	end
 
-	resolution_lookup.modified = resolution_modified
+	resolution_lookup.modified = resolution_modified or force_update
 end
 
 PLAYER_UNITS = PLAYER_UNITS or {}

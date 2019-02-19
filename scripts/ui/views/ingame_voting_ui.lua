@@ -1,7 +1,8 @@
 local definitions = local_require("scripts/ui/views/ingame_voting_ui_definitions")
 IngameVotingUI = class(IngameVotingUI)
 
-IngameVotingUI.init = function (self, ingame_ui_context)
+IngameVotingUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
@@ -253,7 +254,11 @@ IngameVotingUI.update_finish = function (self, dt, t)
 	end
 end
 
-IngameVotingUI.update = function (self, menu_active, dt, t)
+IngameVotingUI.update = function (self, dt, t)
+	local parent = self._parent
+	local ingame_ui = parent:parent()
+	local menu_active = ingame_ui.menu_active
+
 	if RELOAD_UI then
 		self:create_ui_elements()
 

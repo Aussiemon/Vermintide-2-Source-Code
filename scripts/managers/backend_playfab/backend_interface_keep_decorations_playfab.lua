@@ -23,6 +23,15 @@ BackendInterfaceKeepDecorationsPlayFab._refresh = function (self)
 	local mirror = self._backend_mirror
 	local unlocked_keep_decorations = mirror:get_unlocked_keep_decorations()
 	self._unlocked_keep_decorations = unlocked_keep_decorations
+	local new_keep_decoration_ids = ItemHelper.get_new_keep_decoration_ids()
+
+	if new_keep_decoration_ids then
+		for keep_decoration_id, _ in pairs(new_keep_decoration_ids) do
+			if not unlocked_keep_decorations[keep_decoration_id] then
+				ItemHelper.unmark_keep_decoration_as_new(keep_decoration_id)
+			end
+		end
+	end
 end
 
 BackendInterfaceKeepDecorationsPlayFab.update = function (self, dt)

@@ -1,4 +1,5 @@
 PlayerSoundEffectExtension = class(PlayerSoundEffectExtension)
+local unit_get_data = Unit.get_data
 local HIT_COOLDOWN = 1.8
 local KILL_COOLDOWN = 3.5
 local MAX_HITS = 100
@@ -17,6 +18,9 @@ local aggro_breed_ranges_sq = {
 	chaos_spawn_exalted_champion_norsca = 100,
 	skaven_stormfiend = 100
 }
+local BROADPHASE_NEAR_RANGE = 7
+local BROADPHASE_MEDIUM_RANGE = 14
+local BROADPHASE_UPDATE_TIMER = 0.5
 
 PlayerSoundEffectExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self._unit = unit
@@ -32,6 +36,11 @@ PlayerSoundEffectExtension.init = function (self, extension_init_context, unit, 
 	self._aggro_unit = nil
 	self._aggro_breed = nil
 	self._current_aggro_value = 0
+	local ai_system = Managers.state.entity:system("ai_system")
+	self._ai_broadphase = ai_system.broadphase
+	self._broadphase_update_timer = 0
+	self._nearby_ai_units = {}
+	self._music_manager = Managers.music
 end
 
 PlayerSoundEffectExtension.extensions_ready = function (self, world, unit)
@@ -51,6 +60,7 @@ PlayerSoundEffectExtension.update = function (self, unit, input, dt, context, t)
 	self:_update_recent_kills(dt)
 	self:_update_aggro_ranges(dt)
 	self:_update_camera_look_angle()
+	self:_update_specials_proximity(dt)
 end
 
 PlayerSoundEffectExtension.destroy = function (self)
@@ -101,7 +111,7 @@ PlayerSoundEffectExtension._update_aggro_ranges = function (self, dt)
 			return
 		end
 
-		local breed = Unit.get_data(self._waiting_aggro_unit, "breed")
+		local breed = unit_get_data(self._waiting_aggro_unit, "breed")
 		local breed_name = breed.name
 		local max_distance_sq = aggro_breed_ranges_sq[breed_name]
 
@@ -152,6 +162,45 @@ PlayerSoundEffectExtension._update_camera_look_angle = function (self)
 	local wwise_world = self._wwise_world
 
 	WwiseWorld.set_global_parameter(wwise_world, "player_camera_horizon_angle", degrees)
+end
+
+local NEARBY_AI_UNITS = {}
+
+PlayerSoundEffectExtension._update_specials_proximity = function (self, dt)
+	self._broadphase_update_timer = self._broadphase_update_timer - dt
+
+	if self._broadphase_update_timer <= 0 then
+		self._broadphase_update_timer = BROADPHASE_UPDATE_TIMER
+		local own_position = POSITION_LOOKUP[self._unit]
+
+		table.clear(NEARBY_AI_UNITS)
+
+		local num_nearby_ai_units = Broadphase.query(self._ai_broadphase, own_position, BROADPHASE_MEDIUM_RANGE, NEARBY_AI_UNITS)
+		local state = nil
+
+		for i = 1, num_nearby_ai_units, 1 do
+			repeat
+				local ai_unit = NEARBY_AI_UNITS[i]
+
+				if not AiUtils.unit_alive(ai_unit) then
+					break
+				end
+
+				local breed = unit_get_data(ai_unit, "breed")
+
+				if not breed.special then
+					break
+				end
+
+				local ai_position = POSITION_LOOKUP[ai_unit]
+				state = (Vector3.distance_squared(own_position, ai_position) <= BROADPHASE_NEAR_RANGE^2 and "near") or state or "medium"
+			until true
+		end
+
+		state = state or "far"
+
+		self._music_manager:set_wwise_state("specials_proximity", state)
+	end
 end
 
 PlayerSoundEffectExtension.add_hit = function (self)

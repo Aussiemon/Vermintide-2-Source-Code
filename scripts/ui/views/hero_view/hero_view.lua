@@ -317,15 +317,9 @@ HeroView.hotkey_allowed = function (self, input, mapping_data)
 		if name == transition_state then
 			local active_sub_settings_name = current_state.active_settings_name and current_state:active_settings_name()
 
-			if not transition_sub_state or transition_sub_state == active_sub_settings_name then
+			if transition_sub_state == active_sub_settings_name then
 				return true
-			elseif transition_sub_state then
-				current_state:requested_screen_change_by_name(transition_sub_state)
 			end
-		elseif transition_state then
-			self:requested_screen_change_by_name(transition_state, transition_sub_state)
-		else
-			return true
 		end
 	end
 

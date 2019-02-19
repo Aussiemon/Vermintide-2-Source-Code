@@ -176,9 +176,6 @@ CareerAbilityESHuntsman._run_ability = function (self)
 			"Play_career_ability_markus_huntsman_enter",
 			"Play_career_ability_markus_huntsman_loop_husk"
 		}
-		local network_manager = Managers.state.network
-		local network_transmit = network_manager.network_transmit
-		local is_server = Managers.player.is_server
 		local unit_id = network_manager:unit_game_object_id(owner_unit)
 		local node_id = 0
 

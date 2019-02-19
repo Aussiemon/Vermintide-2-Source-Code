@@ -1272,7 +1272,7 @@ go_type_table = {
 			local removal_proc_function_id = NetworkConstants.invalid_game_object_id
 
 			if removal_proc_function_name then
-				removal_proc_function_id = NetworkLookup.buff_templates[removal_proc_function_name]
+				removal_proc_function_id = NetworkLookup.proc_functions[removal_proc_function_name]
 			end
 
 			local owner_player_id = NetworkConstants.invalid_game_object_id
@@ -1611,6 +1611,12 @@ go_type_table = {
 				dialogue_system = {
 					faction = "enemy",
 					breed_name = breed_name
+				},
+				proximity_system = {
+					breed = breed
+				},
+				buff_system = {
+					breed = breed
 				}
 			}
 			local unit_template_name = breed.unit_template
@@ -1646,6 +1652,12 @@ go_type_table = {
 				dialogue_system = {
 					faction = "enemy",
 					breed_name = breed_name
+				},
+				proximity_system = {
+					breed = breed
+				},
+				buff_system = {
+					breed = breed
 				}
 			}
 			local unit_template_name = breed.unit_template
@@ -1678,6 +1690,12 @@ go_type_table = {
 				},
 				health_system = {
 					health = health
+				},
+				proximity_system = {
+					breed = breed
+				},
+				buff_system = {
+					breed = breed
 				}
 			}
 			local unit_template_name = breed.unit_template
@@ -1775,6 +1793,12 @@ go_type_table = {
 				dialogue_system = {
 					faction = "enemy",
 					breed_name = breed_name
+				},
+				proximity_system = {
+					breed = breed
+				},
+				buff_system = {
+					breed = breed
 				}
 			}
 			local unit_template_name = breed.unit_template
@@ -1818,6 +1842,12 @@ go_type_table = {
 				},
 				ai_shield_system = {
 					is_blocking = is_blocking
+				},
+				proximity_system = {
+					breed = breed
+				},
+				buff_system = {
+					breed = breed
 				}
 			}
 			local unit_template_name = breed.unit_template
@@ -1865,6 +1895,12 @@ go_type_table = {
 				aim_system = {
 					is_husk = true,
 					template = breed.aim_template
+				},
+				proximity_system = {
+					breed = breed
+				},
+				buff_system = {
+					breed = breed
 				}
 			}
 			local unit_template_name = breed.unit_template
@@ -1909,6 +1945,12 @@ go_type_table = {
 				},
 				ai_shield_system = {
 					is_blocking = is_blocking
+				},
+				proximity_system = {
+					breed = breed
+				},
+				buff_system = {
+					breed = breed
 				}
 			}
 			local unit_template_name = breed.unit_template
@@ -1952,6 +1994,12 @@ go_type_table = {
 				aim_system = {
 					is_husk = true,
 					template = breed.aim_template
+				},
+				proximity_system = {
+					breed = breed
+				},
+				buff_system = {
+					breed = breed
 				}
 			}
 			local unit_template_name = breed.unit_template
@@ -2000,6 +2048,12 @@ go_type_table = {
 				aim_system = {
 					is_husk = true,
 					template = breed.aim_template
+				},
+				proximity_system = {
+					breed = breed
+				},
+				buff_system = {
+					breed = breed
 				}
 			}
 			local unit_template_name = breed.unit_template
@@ -2039,6 +2093,12 @@ go_type_table = {
 				dialogue_system = {
 					faction = "enemy",
 					breed_name = breed_name
+				},
+				proximity_system = {
+					breed = breed
+				},
+				buff_system = {
+					breed = breed
 				}
 			}
 			local unit_template_name = breed.unit_template
@@ -2082,6 +2142,12 @@ go_type_table = {
 				aim_system = {
 					template = "ratling_gunner",
 					is_husk = true
+				},
+				proximity_system = {
+					breed = breed
+				},
+				buff_system = {
+					breed = breed
 				}
 			}
 			local unit_template_name = breed.unit_template
@@ -2124,6 +2190,12 @@ go_type_table = {
 				aim_system = {
 					template = "ratling_gunner",
 					is_husk = true
+				},
+				proximity_system = {
+					breed = breed
+				},
+				buff_system = {
+					breed = breed
 				}
 			}
 			local unit_template_name = breed.unit_template
@@ -2167,6 +2239,12 @@ go_type_table = {
 				aim_system = {
 					is_husk = true,
 					template = breed.aim_template
+				},
+				proximity_system = {
+					breed = breed
+				},
+				buff_system = {
+					breed = breed
 				}
 			}
 			local unit_template_name = breed.unit_template
@@ -2210,6 +2288,12 @@ go_type_table = {
 				aim_system = {
 					is_husk = true,
 					template = breed.aim_template
+				},
+				proximity_system = {
+					breed = breed
+				},
+				buff_system = {
+					breed = breed
 				}
 			}
 			local unit_template_name = breed.unit_template
@@ -3006,7 +3090,7 @@ go_type_table = {
 			local removal_proc_function_name = nil
 
 			if removal_proc_function_id ~= NetworkConstants.invalid_game_object_id then
-				removal_proc_function_name = NetworkLookup.buff_templates[removal_proc_function_id]
+				removal_proc_function_name = NetworkLookup.proc_functions[removal_proc_function_id]
 			end
 
 			local owner_player = nil

@@ -44,7 +44,8 @@ inventory_entry_stance_bar_fill_lookup_table = {}
 inventory_entry_stance_bar_lit_lookup_table = {}
 inventory_entry_stance_bar_glow_lookup_table = {}
 
-PlayerInventoryUI.init = function (self, ingame_ui_context)
+PlayerInventoryUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.platform = PLATFORM
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.input_manager = ingame_ui_context.input_manager

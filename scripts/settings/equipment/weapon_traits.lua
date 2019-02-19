@@ -110,8 +110,8 @@ WeaponTraits.buff_templates = {
 			{
 				max_stacks = 1,
 				icon = "melee_attack_speed_on_crit",
-				refresh_durations = true,
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				stat_buff = "attack_speed",
+				refresh_durations = true
 			}
 		}
 	},
@@ -130,7 +130,7 @@ WeaponTraits.buff_templates = {
 		buffs = {
 			{
 				dormant = true,
-				stat_buff = StatBuffIndex.TIMED_BLOCK_COST
+				stat_buff = "timed_block_cost"
 			}
 		}
 	},
@@ -138,7 +138,7 @@ WeaponTraits.buff_templates = {
 		buffs = {
 			{
 				dormant = true,
-				stat_buff = StatBuffIndex.COUNTER_PUSH_POWER
+				stat_buff = "counter_push_power"
 			}
 		}
 	},
@@ -155,8 +155,8 @@ WeaponTraits.buff_templates = {
 	traits_melee_increase_damage_on_block_proc = {
 		buffs = {
 			{
-				refresh_durations = true,
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				stat_buff = "damage_taken",
+				refresh_durations = true
 			}
 		}
 	},
@@ -185,7 +185,7 @@ WeaponTraits.buff_templates = {
 			{
 				max_stacks = 1,
 				dormant = true,
-				stat_buff = StatBuffIndex.COOP_STAMINA
+				stat_buff = "coop_stamina"
 			}
 		}
 	},
@@ -204,7 +204,7 @@ WeaponTraits.buff_templates = {
 			{
 				max_stacks = 1,
 				dormant = true,
-				stat_buff = StatBuffIndex.REDUCED_OVERCHARGE
+				stat_buff = "reduced_overcharge"
 			}
 		}
 	},
@@ -252,8 +252,9 @@ WeaponTraits.buff_templates = {
 	consecutive_shot_debuff = {
 		buffs = {
 			{
-				refresh_durations = true,
-				duration = 10
+				max_stacks = 1,
+				duration = 10,
+				refresh_durations = true
 			}
 		}
 	},
@@ -262,8 +263,8 @@ WeaponTraits.buff_templates = {
 			{
 				max_stacks = 5,
 				icon = "ranged_consecutive_hits_increase_power",
-				refresh_durations = true,
-				stat_buff = StatBuffIndex.POWER_LEVEL
+				stat_buff = "power_level",
+				refresh_durations = true
 			}
 		}
 	},
@@ -282,8 +283,8 @@ WeaponTraits.buff_templates = {
 			{
 				max_stacks = 1,
 				icon = "ranged_increase_power_level_vs_armour_crit",
-				duration = 10,
-				stat_buff = StatBuffIndex.POWER_LEVEL_UNARMOURED
+				stat_buff = "power_level_unarmoured",
+				duration = 10
 			}
 		}
 	},
@@ -292,8 +293,8 @@ WeaponTraits.buff_templates = {
 			{
 				max_stacks = 1,
 				icon = "ranged_increase_power_level_vs_armour_crit",
-				duration = 10,
-				stat_buff = StatBuffIndex.POWER_LEVEL_ARMOURED
+				stat_buff = "power_level_armoured",
+				duration = 10
 			}
 		}
 	},
@@ -302,8 +303,8 @@ WeaponTraits.buff_templates = {
 			{
 				max_stacks = 1,
 				icon = "ranged_increase_power_level_vs_armour_crit",
-				duration = 10,
-				stat_buff = StatBuffIndex.POWER_LEVEL_LARGE
+				stat_buff = "power_level_large",
+				duration = 10
 			}
 		}
 	},
@@ -312,8 +313,8 @@ WeaponTraits.buff_templates = {
 			{
 				max_stacks = 1,
 				icon = "ranged_increase_power_level_vs_armour_crit",
-				duration = 10,
-				stat_buff = StatBuffIndex.POWER_LEVEL_FRENZY
+				stat_buff = "power_level_frenzy",
+				duration = 10
 			}
 		}
 	},
@@ -352,7 +353,7 @@ WeaponTraits.buff_templates = {
 		buffs = {
 			{
 				dormant = true,
-				stat_buff = StatBuffIndex.NOT_CONSUME_POTION
+				stat_buff = "not_consume_potion"
 			}
 		}
 	},
@@ -367,7 +368,7 @@ WeaponTraits.buff_templates = {
 		buffs = {
 			{
 				dormant = true,
-				stat_buff = StatBuffIndex.NOT_CONSUME_POTION
+				stat_buff = "not_consume_potion"
 			}
 		}
 	},
@@ -375,7 +376,7 @@ WeaponTraits.buff_templates = {
 		buffs = {
 			{
 				dormant = true,
-				stat_buff = StatBuffIndex.POTION_DURATION
+				stat_buff = "potion_duration"
 			}
 		}
 	},
@@ -391,7 +392,7 @@ WeaponTraits.buff_templates = {
 		buffs = {
 			{
 				dormant = true,
-				stat_buff = StatBuffIndex.NOT_CONSUME_MEDPACK
+				stat_buff = "not_consume_medpack"
 			}
 		}
 	},
@@ -399,7 +400,7 @@ WeaponTraits.buff_templates = {
 		buffs = {
 			{
 				dormant = true,
-				stat_buff = StatBuffIndex.HEAL_SELF_ON_HEAL_OTHER
+				stat_buff = "heal_self_on_heal_other"
 			}
 		}
 	},
@@ -408,7 +409,7 @@ WeaponTraits.buff_templates = {
 			{
 				max_stacks = 1,
 				dormant = true,
-				stat_buff = StatBuffIndex.HEALING_RECEIVED
+				stat_buff = "healing_received"
 			}
 		}
 	},
@@ -437,7 +438,7 @@ WeaponTraits.buff_templates = {
 			{
 				max_stacks = 1,
 				icon = "necklace_damage_taken_reduction_on_heal",
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN_SECONDARY
+				stat_buff = "damage_taken_secondary"
 			}
 		}
 	},
@@ -445,7 +446,7 @@ WeaponTraits.buff_templates = {
 		buffs = {
 			{
 				dormant = true,
-				stat_buff = StatBuffIndex.NOT_CONSUME_GRENADE
+				stat_buff = "not_consume_grenade"
 			}
 		}
 	},
@@ -453,7 +454,7 @@ WeaponTraits.buff_templates = {
 		buffs = {
 			{
 				dormant = true,
-				stat_buff = StatBuffIndex.GRENADE_RADIUS
+				stat_buff = "grenade_radius"
 			}
 		}
 	},
@@ -470,8 +471,8 @@ WeaponTraits.buff_templates = {
 	trait_trinket_grenade_damage_taken_buff = {
 		buffs = {
 			{
-				max_stacks = 1,
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				stat_buff = "damage_taken",
+				max_stacks = 1
 			}
 		}
 	}

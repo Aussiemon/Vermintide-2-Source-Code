@@ -197,14 +197,14 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_shade_passive = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.BACKSTAB_MULTIPLIER
+				stat_buff = "backstab_multiplier"
 			}
 		}
 	},
 	kerillian_shade_passive_crit = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.CRITICAL_STRIKE_CHANCE
+				stat_buff = "critical_strike_chance"
 			}
 		}
 	},
@@ -242,14 +242,14 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_shade_attack_speed = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				stat_buff = "attack_speed"
 			}
 		}
 	},
 	kerillian_shade_stamina_regen = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.FATIGUE_REGEN
+				stat_buff = "fatigue_regen"
 			}
 		}
 	},
@@ -303,7 +303,7 @@ TalentBuffTemplates.wood_elf = {
 			{
 				max_stacks = 1,
 				refresh_durations = true,
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				stat_buff = "damage_taken"
 			}
 		}
 	},
@@ -320,14 +320,14 @@ TalentBuffTemplates.wood_elf = {
 			{
 				max_stacks = 1,
 				icon = "kerillian_shade_increased_damage_on_grimoire_picked_up",
-				stat_buff = StatBuffIndex.POWER_LEVEL
+				stat_buff = "power_level"
 			}
 		}
 	},
 	kerillian_shade_passive_improved = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.BACKSTAB_MULTIPLIER
+				stat_buff = "backstab_multiplier"
 			}
 		}
 	},
@@ -395,7 +395,7 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_shade_activated_ability_cooldown = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.ACTIVATED_COOLDOWN
+				stat_buff = "activated_cooldown"
 			}
 		}
 	},
@@ -420,14 +420,14 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_maidenguard_passive_increased_stamina = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.MAX_FATIGUE
+				stat_buff = "max_fatigue"
 			}
 		}
 	},
 	kerillian_maidenguard_passive_damage_reduction = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				stat_buff = "damage_taken"
 			}
 		}
 	},
@@ -475,7 +475,7 @@ TalentBuffTemplates.wood_elf = {
 			{
 				max_stacks = 1,
 				icon = "kerillian_maidenguard_passive",
-				stat_buff = StatBuffIndex.FATIGUE_REGEN
+				stat_buff = "fatigue_regen"
 			}
 		}
 	},
@@ -490,21 +490,21 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_maidenguard_max_stamina = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.MAX_FATIGUE
+				stat_buff = "max_fatigue"
 			}
 		}
 	},
 	kerillian_maidenguard_push_arc = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.BLOCK_ANGLE
+				stat_buff = "block_angle"
 			}
 		}
 	},
 	kerillian_maidenguard_max_ammo = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.TOTAL_AMMO
+				stat_buff = "total_ammo"
 			}
 		}
 	},
@@ -520,14 +520,14 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_maidenguard_slower_hits = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				stat_buff = "attack_speed"
 			}
 		}
 	},
 	kerillian_maidenguard_heavy_hits = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.POWER_LEVEL
+				stat_buff = "power_level"
 			}
 		}
 	},
@@ -544,7 +544,7 @@ TalentBuffTemplates.wood_elf = {
 			{
 				max_stacks = 1,
 				icon = "kerillian_maidenguard_damage_reduction_on_last_standing",
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				stat_buff = "damage_taken"
 			}
 		}
 	},
@@ -562,8 +562,8 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_maidenguard_improved_stamina_regen = {
 		buffs = {
 			{
-				multiplier = 0.3,
-				stat_buff = StatBuffIndex.FATIGUE_REGEN
+				stat_buff = "fatigue_regen",
+				multiplier = 0.3
 			}
 		}
 	},
@@ -633,8 +633,8 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_maidenguard_activated_ability_cooldown = {
 		buffs = {
 			{
-				name = "kerillian_maidenguard_activated_ability_cooldown",
-				stat_buff = StatBuffIndex.ACTIVATED_COOLDOWN
+				stat_buff = "activated_cooldown",
+				name = "kerillian_maidenguard_activated_ability_cooldown"
 			}
 		}
 	},
@@ -670,7 +670,7 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_waywatcher_passive_increased_ammunition = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.TOTAL_AMMO
+				stat_buff = "total_ammo"
 			}
 		}
 	},
@@ -700,21 +700,21 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_waywatcher_crit_chance = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.CRITICAL_STRIKE_CHANCE
+				stat_buff = "critical_strike_chance"
 			}
 		}
 	},
 	kerillian_waywatcher_stamina_regen = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.FATIGUE_REGEN
+				stat_buff = "fatigue_regen"
 			}
 		}
 	},
 	kerillian_waywatcher_attack_speed = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				stat_buff = "attack_speed"
 			}
 		}
 	},
@@ -741,14 +741,14 @@ TalentBuffTemplates.wood_elf = {
 				max_stacks = 1,
 				icon = "kerillian_waywatcher_increased_crit_hit_damage_on_high_health",
 				priority_buff = true,
-				stat_buff = StatBuffIndex.CRITICAL_STRIKE_EFFECTIVENESS
+				stat_buff = "critical_strike_effectiveness"
 			}
 		}
 	},
 	kerillian_waywatcher_headshot_multiplier = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.HEADSHOT_MULTIPLIER
+				stat_buff = "headshot_multiplier"
 			}
 		}
 	},
@@ -793,7 +793,7 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_waywatcher_activated_ability_cooldown = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.ACTIVATED_COOLDOWN
+				stat_buff = "activated_cooldown"
 			}
 		}
 	}

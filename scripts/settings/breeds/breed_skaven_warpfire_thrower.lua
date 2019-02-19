@@ -11,16 +11,16 @@ local breed_data = {
 	animation_sync_rpc = "rpc_sync_anim_state_4",
 	smart_targeting_width = 0.3,
 	special = true,
-	poison_resistance = 100,
 	armor_category = 2,
-	no_stagger_duration = true,
+	stagger_threshold_light = 0.5,
+	poison_resistance = 100,
 	hit_reaction = "ai_default",
-	scale_death_push = 1,
+	no_stagger_duration = true,
 	bots_flank_while_targeted = true,
 	wield_inventory_on_spawn = true,
 	dialogue_source_name = "skaven_warpfire_thrower",
 	default_inventory_template = "warpfiregun",
-	stagger_resistance = 2,
+	stagger_resistance = 2.25,
 	smart_targeting_outer_width = 0.7,
 	headshot_coop_stamina_fatigue_type = "headshot_special",
 	hit_effect_template = "HitEffectsRatlingGunner",
@@ -29,12 +29,13 @@ local breed_data = {
 	radius = 1,
 	switch_target_radius = 20,
 	bone_lod_level = 1,
+	stagger_reduction = 1,
+	smart_object_template = "special",
 	race = "skaven",
 	proximity_system_check = true,
 	death_reaction = "warpfire_thrower",
 	perception = "perception_all_seeing",
 	player_locomotion_constrain_radius = 0.7,
-	smart_object_template = "special",
 	death_sound_event = "Play_enemy_vo_warpfire_die",
 	spawning_rule = "always_ahead",
 	vortexable = true,
@@ -57,15 +58,15 @@ local breed_data = {
 	},
 	bloodlust_health = BreedTweaks.bloodlust_health.skaven_special,
 	diff_stagger_resist = {
+		2,
+		2,
+		2.5,
 		3,
-		3,
-		4,
-		5,
-		5
+		3
 	},
 	stagger_duration = {
-		0.25,
-		0.5,
+		1,
+		1,
 		1,
 		1,
 		1,
@@ -293,6 +294,14 @@ local action_data = {
 				0,
 				4
 			}
+		},
+		ignore_staggers = {
+			true,
+			false,
+			false,
+			true,
+			true,
+			false
 		}
 	},
 	stagger = {

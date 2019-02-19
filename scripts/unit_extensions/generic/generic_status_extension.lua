@@ -249,7 +249,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 		local previous_max_fatigue_points = self.max_fatigue_points
 		local max_fatigue_points = self:_get_current_max_fatigue_points() or previous_max_fatigue_points
 		local degen_delay = self.block_broken_degen_delay or self.push_degen_delay or PlayerUnitStatusSettings.FATIGUE_DEGEN_DELAY
-		degen_delay = degen_delay / self.buff_extension:apply_buffs_to_value(1, StatBuffIndex.FATIGUE_REGEN)
+		degen_delay = degen_delay / self.buff_extension:apply_buffs_to_value(1, "fatigue_regen")
 
 		if previous_max_fatigue_points ~= max_fatigue_points then
 			self.fatigue = (max_fatigue_points == 0 and 0) or previous_max_fatigue_points / max_fatigue_points * self.fatigue
@@ -267,7 +267,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 			self.action_stun_push = false
 			self.show_fatigue_gui = false
 			local degen_amount = (max_fatigue_points == 0 and 0) or PlayerUnitStatusSettings.FATIGUE_POINTS_DEGEN_AMOUNT / max_fatigue_points * PlayerUnitStatusSettings.MAX_FATIGUE
-			local new_degen_amount = self.buff_extension:apply_buffs_to_value(degen_amount, StatBuffIndex.FATIGUE_REGEN)
+			local new_degen_amount = self.buff_extension:apply_buffs_to_value(degen_amount, "fatigue_regen")
 
 			if degen_amount < new_degen_amount then
 				self.has_bonus_fatigue_active = true
@@ -383,8 +383,6 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 	end
 
 	if poison_level > 0 then
-		local wwise_world = Managers.world:wwise_world(self.world)
-
 		if self.poison_time_to_cough < t then
 			local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 			local event_data = FrameTable.alloc_table()
@@ -398,7 +396,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 		self.poison_time_to_cough = nil
 	end
 
-	for id, func in pairs(self.update_funcs) do
+	for _, func in pairs(self.update_funcs) do
 		func(self, t)
 	end
 
@@ -423,7 +421,6 @@ GenericStatusExtension._debug_draw_block_arcs = function (self, unit)
 		local player = self.player
 
 		if player then
-			local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 			local player_position = POSITION_LOOKUP[unit]
 			local network_manager = Managers.state.network
 			local game = network_manager:game()
@@ -431,8 +428,8 @@ GenericStatusExtension._debug_draw_block_arcs = function (self, unit)
 			local aim_direction = GameSession.game_object_field(game, unit_id, "aim_direction")
 			local player_direction_flat = Vector3.flat(aim_direction)
 			local buff_extension = self.buff_extension
-			local block_angle = buff_extension:apply_buffs_to_value(weapon_template.block_angle or 90, StatBuffIndex.BLOCK_ANGLE)
-			local outer_block_angle = buff_extension:apply_buffs_to_value(weapon_template.outer_block_angle or 360, StatBuffIndex.BLOCK_ANGLE)
+			local block_angle = buff_extension:apply_buffs_to_value(weapon_template.block_angle or 90, "block_angle")
+			local outer_block_angle = buff_extension:apply_buffs_to_value(weapon_template.outer_block_angle or 360, "block_angle")
 			block_angle = math.clamp(block_angle, 0, 360)
 			outer_block_angle = math.clamp(outer_block_angle, 0, 360)
 			local block_half_angle = math.rad(block_angle * 0.5)
@@ -473,8 +470,8 @@ GenericStatusExtension._debug_draw_push_arcs = function (self, unit)
 		local player_direction = Vector3.normalize(Quaternion.forward(player_rotation))
 		local player_direction_flat = Vector3.flat(player_direction)
 		local buff_extension = self.buff_extension
-		local push_half_angle = math.rad(buff_extension:apply_buffs_to_value(current_action.push_angle or 90, StatBuffIndex.BLOCK_ANGLE) * 0.5)
-		local outer_push_half_angle = math.rad(buff_extension:apply_buffs_to_value(current_action.outer_push_angle or 360, StatBuffIndex.BLOCK_ANGLE) * 0.5)
+		local push_half_angle = math.rad(buff_extension:apply_buffs_to_value(current_action.push_angle or 90, "block_angle") * 0.5)
+		local outer_push_half_angle = math.rad(buff_extension:apply_buffs_to_value(current_action.outer_push_angle or 360, "block_angle") * 0.5)
 		local color = Color(255, 255, 255)
 		local inner_left_direction = Quaternion.rotate(Quaternion(Vector3.up(), push_half_angle), player_direction_flat)
 		local inner_right_direction = Quaternion.rotate(Quaternion(Vector3.up(), -push_half_angle), player_direction_flat)
@@ -563,7 +560,7 @@ GenericStatusExtension._get_current_max_fatigue_points = function (self)
 		local max_fatigue_points = item_template.max_fatigue_points
 
 		if max_fatigue_points then
-			max_fatigue_points = self.buff_extension:apply_buffs_to_value(max_fatigue_points, StatBuffIndex.MAX_FATIGUE)
+			max_fatigue_points = self.buff_extension:apply_buffs_to_value(max_fatigue_points, "max_fatigue")
 			local player = self.player
 			local boon_handler = player.boon_handler
 
@@ -603,7 +600,6 @@ GenericStatusExtension.can_block = function (self, attacking_unit, attack_direct
 	end
 
 	if player then
-		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 		local aim_direction = GameSession.game_object_field(game, unit_id, "aim_direction")
 		local player_direction_flat = Vector3.flat(aim_direction)
 		local player_position = POSITION_LOOKUP[unit]
@@ -611,8 +607,8 @@ GenericStatusExtension.can_block = function (self, attacking_unit, attack_direct
 		local block_direction = Vector3.normalize(attacker_position - player_position)
 		local block_direction_flat = Vector3.flat(block_direction)
 		local buff_extension = self.buff_extension
-		local block_angle = buff_extension:apply_buffs_to_value(weapon_template.block_angle or 90, StatBuffIndex.BLOCK_ANGLE)
-		local outer_block_angle = buff_extension:apply_buffs_to_value(weapon_template.outer_block_angle or 360, StatBuffIndex.BLOCK_ANGLE)
+		local block_angle = buff_extension:apply_buffs_to_value(weapon_template.block_angle or 90, "block_angle")
+		local outer_block_angle = buff_extension:apply_buffs_to_value(weapon_template.outer_block_angle or 360, "block_angle")
 		block_angle = math.clamp(block_angle, 0, 360)
 		outer_block_angle = math.clamp(outer_block_angle, 0, 360)
 		local block_half_angle = math.rad(block_angle * 0.5)
@@ -659,7 +655,6 @@ GenericStatusExtension.blocked_attack = function (self, fatigue_type, attacking_
 	local unit = self.unit
 	local inventory_extension = self.inventory_extension
 	local equipment = inventory_extension:equipment()
-	local network_manager = Managers.state.network
 	local blocking_unit = nil
 
 	self:set_has_blocked(true)
@@ -670,43 +665,40 @@ GenericStatusExtension.blocked_attack = function (self, fatigue_type, attacking_
 		if not player.remote then
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 			local first_person_unit = first_person_extension:get_first_person_unit()
-			local t = Managers.time:time("game")
-			local time_blocking = t - self.raise_block_time
-			local timed_block = time_blocking <= 0.3
 
 			if Managers.state.controller_features and player.local_player then
 				Managers.state.controller_features:add_effect("rumble", {
 					rumble_effect = "block"
 				})
+			end
 
-				blocking_unit = equipment.right_hand_wielded_unit or equipment.left_hand_wielded_unit
-				local weapon_template_name = equipment.wielded.template or equipment.wielded.temporary_template
-				local weapon_template = Weapons[weapon_template_name]
+			blocking_unit = equipment.right_hand_wielded_unit or equipment.left_hand_wielded_unit
+			local weapon_template_name = equipment.wielded.template or equipment.wielded.temporary_template
+			local weapon_template = Weapons[weapon_template_name]
 
-				self:add_fatigue_points(fatigue_type, attacking_unit, blocking_unit, fatigue_point_costs_multiplier)
+			self:add_fatigue_points(fatigue_type, attacking_unit, blocking_unit, fatigue_point_costs_multiplier)
 
-				local parry_reaction = "parry_hit_reaction"
+			local parry_reaction = "parry_hit_reaction"
 
-				if improved_block then
-					local amount = PlayerUnitStatusSettings.fatigue_point_costs[fatigue_type]
+			if improved_block then
+				local amount = PlayerUnitStatusSettings.fatigue_point_costs[fatigue_type]
 
-					if amount <= 2 and (attack_direction == "left" or attack_direction == "right") then
-						parry_reaction = "parry_deflect_" .. attack_direction
-					end
+				if amount <= 2 and (attack_direction == "left" or attack_direction == "right") then
+					parry_reaction = "parry_deflect_" .. attack_direction
+				end
 
-					local block_arc_event = (weapon_template and weapon_template.sound_event_block_within_arc) or "Play_player_block_ark_success"
+				local block_arc_event = (weapon_template and weapon_template.sound_event_block_within_arc) or "Play_player_block_ark_success"
 
-					first_person_extension:play_hud_sound_event(block_arc_event, nil, false)
-				else
-					local wwise_world = Managers.world:wwise_world(self.world)
-					local enemy_pos = POSITION_LOOKUP[attacking_unit]
+				first_person_extension:play_hud_sound_event(block_arc_event, nil, false)
+			else
+				local wwise_world = Managers.world:wwise_world(self.world)
+				local enemy_pos = POSITION_LOOKUP[attacking_unit]
 
-					if enemy_pos then
-						local player_pos = first_person_extension:current_position()
-						local dir_to_enemy = Vector3.normalize(enemy_pos - player_pos)
+				if enemy_pos then
+					local player_pos = first_person_extension:current_position()
+					local dir_to_enemy = Vector3.normalize(enemy_pos - player_pos)
 
-						WwiseWorld.trigger_event(wwise_world, "Play_player_combat_out_of_arc_block", player_pos + dir_to_enemy)
-					end
+					WwiseWorld.trigger_event(wwise_world, "Play_player_combat_out_of_arc_block", player_pos + dir_to_enemy)
 				end
 			end
 
@@ -733,7 +725,6 @@ end
 GenericStatusExtension.set_shielded = function (self, shielded)
 	local unit = self.unit
 	local player = self.player
-	local t = Managers.time:time("game")
 
 	if player.local_player then
 		local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
@@ -775,7 +766,6 @@ local vfx_heal_reasons = {
 GenericStatusExtension.healed = function (self, reason)
 	local unit = self.unit
 	local player = self.player
-	local t = Managers.time:time("game")
 
 	if player.local_player then
 		if not no_sfx_heal_reasons[reason] then
@@ -816,7 +806,7 @@ GenericStatusExtension.add_fatigue_points = function (self, fatigue_type, attack
 	local fatigue_cost = amount * max_fatigue / max_fatigue_points * (fatigue_point_costs_multiplier or 1)
 
 	if blocking_weapon_unit and self.timed_block and t < self.timed_block then
-		fatigue_cost = buff_extension:apply_buffs_to_value(fatigue_cost, StatBuffIndex.TIMED_BLOCK_COST)
+		fatigue_cost = buff_extension:apply_buffs_to_value(fatigue_cost, "timed_block_cost")
 	end
 
 	if amount and fatigue_point_costs_multiplier and amount < 2 and fatigue_point_costs_multiplier < 1 and buff_extension:has_buff_perk("in_arc_block_cost_reduction") then
@@ -824,7 +814,7 @@ GenericStatusExtension.add_fatigue_points = function (self, fatigue_type, attack
 	end
 
 	if blocking_weapon_unit then
-		fatigue_cost = buff_extension:apply_buffs_to_value(fatigue_cost, StatBuffIndex.BLOCK_COST)
+		fatigue_cost = buff_extension:apply_buffs_to_value(fatigue_cost, "block_cost")
 
 		if buff_extension:has_buff_perk("overcharged_block") then
 			local overcharge_extension = ScriptUnit.has_extension(self.unit, "overcharge_system")
@@ -838,7 +828,6 @@ GenericStatusExtension.add_fatigue_points = function (self, fatigue_type, attack
 	end
 
 	self.fatigue = math.clamp(self.fatigue + fatigue_cost, 0, max_fatigue)
-	local current_fatigue = self.fatigue
 
 	if blocking_weapon_unit then
 		buff_extension:trigger_procs("on_block", attacking_unit, fatigue_type, blocking_weapon_unit)
@@ -1154,7 +1143,7 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 			self:add_intensity(CurrentIntensitySettings.intensity_add_knockdown)
 		end
 
-		local kill_damages, num_kill_damages = health_extension:recent_damages()
+		local kill_damages, _ = health_extension:recent_damages()
 
 		pack_index[DamageDataIndex.STRIDE](biggest_hit, 1, unpack_index[DamageDataIndex.STRIDE](kill_damages, 1))
 
@@ -1175,7 +1164,6 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 end
 
 GenericStatusExtension.set_ready_for_assisted_respawn = function (self, ready, flavour_unit)
-	local previously_ready = self.ready_for_assisted_respawn
 	self.ready_for_assisted_respawn = ready
 	self.assisted_respawn_flavour_unit = flavour_unit
 	local unit = self.unit
@@ -1186,7 +1174,6 @@ GenericStatusExtension.set_ready_for_assisted_respawn = function (self, ready, f
 
 	local player = self.player
 	local outline_extension = ScriptUnit.extension(unit, "outline_system")
-	local method_name, color_name = nil
 
 	if player and player.local_player then
 		outline_extension.set_method("never")
@@ -1211,8 +1198,6 @@ GenericStatusExtension.get_assisted_respawn_helper_unit = function (self)
 end
 
 GenericStatusExtension.set_respawned = function (self, respawned)
-	local unit = self.unit
-
 	if respawned then
 		self:set_ready_for_assisted_respawn(false)
 		Managers.music:check_last_man_standing_music_state()
@@ -1318,10 +1303,8 @@ GenericStatusExtension.set_zooming = function (self, zooming, camera_name)
 
 	self:set_slowed(zooming)
 
-	local unit = self.unit
 	local player = self.player
 	local camera_follow_unit = player.camera_follow_unit
-	local buff_extension = ScriptUnit.extension(unit, "buff_system")
 
 	if zooming then
 		if Unit.alive(camera_follow_unit) then
@@ -1561,7 +1544,6 @@ GenericStatusExtension.set_outline_incapacitated = function (self, incapacitated
 end
 
 GenericStatusExtension._set_packmaster_unhooked = function (self, locomotion, grabbed_status)
-	local unit = self.unit
 	local t = Managers.time:time("game")
 
 	if self.release_unhook_time then
@@ -1613,7 +1595,6 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 			locomotion:set_wanted_velocity(Vector3.zero())
 		end
 
-		local target_player = self.player
 		local unit_name = SPProfiles[self.profile_id].unit_name
 		local pulled_anim_name = "attack_grab_" .. unit_name
 
@@ -1691,13 +1672,17 @@ GenericStatusExtension.set_grabbed_by_corruptor = function (self, grabbed_status
 	self.corruptor_grabbed = (is_grabbed and grabber_unit) or nil
 	self.grabbed_by_corruptor = is_grabbed
 	self.corruptor_unit = grabber_unit
-	local previous_status = self.corruptor_status
 	self.corruptor_status = grabbed_status
 	local locomotion = ScriptUnit.extension(unit, "locomotion_system")
 
 	self:set_outline_incapacitated(is_grabbed or self:is_disabled(), grabber_unit, is_grabbed)
 
 	if grabbed_status == "chaos_corruptor_grabbed" then
+		local inventory_extension = ScriptUnit.has_extension(unit, "inventory_system")
+		local career_extension = ScriptUnit.has_extension(unit, "career_system")
+
+		CharacterStateHelper.stop_weapon_actions(inventory_extension, "grabbed")
+		CharacterStateHelper.stop_career_abilities(career_extension, "grabbed")
 		Unit.animation_event(unit, "to_corruptor")
 
 		if not self.is_husk then

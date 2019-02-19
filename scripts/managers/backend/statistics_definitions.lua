@@ -107,6 +107,7 @@ player.completed_levels_witch_hunter = {}
 player.completed_levels_dwarf_ranger = {}
 player.collected_grimoires = {}
 player.collected_tomes = {}
+player.collected_painting_scraps = {}
 player.completed_heroic_deeds = {
 	value = 0,
 	database_name = "completed_heroic_deeds",
@@ -605,6 +606,15 @@ player.killed_lord_as_last_player_standing = {
 	database_name = "killed_lord_as_last_player_standing",
 	source = "player_data"
 }
+player.collected_painting_scraps_generic = {
+	value = 0,
+	database_name = "collected_painting_scraps_generic",
+	source = "player_data"
+}
+player.collected_bogenhafen_cosmetics = {
+	value = 0,
+	database_name = "collected_bogenhafen_cosmetics"
+}
 player.played_levels_quickplay = {}
 player.last_played_level_id = {
 	value = 0,
@@ -785,6 +795,12 @@ for level_key, level in pairs(LevelSettings) do
 		end
 
 		player.collected_tomes[level_key] = tome_name_definition
+		local painting_name = "collected_painting_scraps_" .. level_key
+		player.collected_painting_scraps[level_key] = {
+			value = 0,
+			source = "player_data",
+			database_name = painting_name
+		}
 	end
 end
 

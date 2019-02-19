@@ -8,7 +8,8 @@ local RESULT_TIMER = 3
 local INIT_AUDIO_COUNTDOWN_AT = 5
 TwitchVoteUI = class(TwitchVoteUI)
 
-TwitchVoteUI.init = function (self, ingame_ui_context)
+TwitchVoteUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ingame_ui = ingame_ui_context.ingame_ui
 	self._input_manager = ingame_ui_context.input_manager

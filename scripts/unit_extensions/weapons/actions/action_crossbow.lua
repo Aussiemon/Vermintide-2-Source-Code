@@ -149,7 +149,7 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 		end
 
 		local buff_extension = self.owner_buff_extension
-		local _, procced = buff_extension:apply_buffs_to_value(0, StatBuffIndex.EXTRA_SHOT)
+		local _, procced = buff_extension:apply_buffs_to_value(0, "extra_shot")
 
 		if current_action.apply_burst_recoil then
 			if self.num_projectiles_shot == 2 then

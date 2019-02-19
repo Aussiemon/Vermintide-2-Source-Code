@@ -43,7 +43,7 @@ ObjectiveSocketSystem.init = function (self, entity_system_creation_context, sys
 	self.objective_entered_zone_client = function (extension, socket_id)
 		local socket = extension:socket_from_id(socket_id)
 
-		assert(socket.open == true, "Sanity check, should never happen")
+		fassert(socket.open == true, "Socket was already occupied.")
 
 		socket.open = false
 		local num_open_sockets = extension.num_open_sockets - 1
@@ -77,7 +77,7 @@ ObjectiveSocketSystem.on_add_extension = function (self, world, unit, extension_
 
 	extension.objective_entered_zone_client = self.objective_entered_zone_client
 
-	fassert(self.socket_extensions[unit] == nil, "This unit already has a socket extension, dafuuq?")
+	fassert(self.socket_extensions[unit] == nil, "This unit already has a socket extension.")
 
 	self.socket_extensions[unit] = extension
 

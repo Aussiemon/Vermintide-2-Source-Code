@@ -313,7 +313,7 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 				local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
 				local buff_weapon_type_id = NetworkLookup.buff_weapon_types["n/a"]
 
-				RPC.rpc_buff_on_attack(peer_id, attacker_unit_id, hit_unit_id, attack_type_id, is_critical_strike and allow_critical_proc, hit_zone_id, 1, buff_weapon_type_id)
+				RPC.rpc_buff_on_attack(peer_id, attacker_unit_id, hit_unit_id, attack_type_id, (is_critical_strike and allow_critical_proc) or false, hit_zone_id, 1, buff_weapon_type_id)
 				DamageUtils.buff_on_attack(attacker_unit, hit_unit, attack_type, is_critical_strike and allow_critical_proc, hit_zone_name, 1, send_to_server, "n/a")
 			elseif attacker_player then
 				DamageUtils.buff_on_attack(attacker_unit, hit_unit, attack_type, is_critical_strike and allow_critical_proc, hit_zone_name, 1, send_to_server, "n/a")
@@ -328,6 +328,8 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 	if not is_immune then
 		local blocking = false
 		local blackboard = BLACKBOARDS[hit_unit]
+		local player = Managers.player:owner(hit_unit)
+		local is_bot = player and not player:is_player_controlled()
 
 		if blackboard and radius < hit_distance and blackboard.shield_user then
 			local stagger = blackboard.stagger
@@ -340,7 +342,8 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 			hit_ragdoll_actor = breed.hitbox_ragdoll_translation.j_spine or breed.hitbox_ragdoll_translation.j_spine1
 		end
 
-		local damage_profile_name = (glancing_hit and explosion_data.damage_profile_glance) or explosion_data.damage_profile or "default"
+		local bot_damage_profile_name = is_bot and explosion_data.bot_damage_profile
+		local damage_profile_name = bot_damage_profile_name or (glancing_hit and explosion_data.damage_profile_glance) or explosion_data.damage_profile or "default"
 
 		if not do_damage or is_immune then
 			damage_profile_name = damage_profile_name .. "_no_damage"
@@ -350,9 +353,8 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 		local damage_profile = DamageProfileTemplates[damage_profile_name]
 		local target_index = nil
 		local boost_curve_multiplier = 0
-		local shield_break_procc = false
-		local is_critical_strike = false
 		local backstab_multiplier = 1
+		local is_critical_strike = false
 
 		DamageUtils.add_damage_network_player(damage_profile, target_index, actual_power_level, hit_unit, attacker_unit, hit_zone_name, impact_position, hit_direction, damage_source, hit_ragdoll_actor, boost_curve_multiplier, is_critical_strike, backstab_multiplier)
 

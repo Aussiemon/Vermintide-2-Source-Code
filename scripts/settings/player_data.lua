@@ -1,11 +1,12 @@
 DefaultPlayerData = {
 	controls_version = 18,
-	new_item_data_version = 5,
+	new_item_data_version = 6,
 	mission_selection_version = 3,
 	viewed_motd_urls_version = 1,
 	viewed_dialogues_version = 1,
+	new_keep_decoration_version = 1,
 	bot_spawn_priority_version = 1,
-	new_sign_in_rewards_data_version = 1,
+	new_sign_in_rewards_data_version = 2,
 	favorite_item_data_version = 1,
 	mission_selection = {},
 	favorite_item_ids = {},
@@ -17,7 +18,8 @@ DefaultPlayerData = {
 	recent_irc_channels = {},
 	bot_spawn_priority = {},
 	viewed_motd_urls = {},
-	viewed_dialogues = {}
+	viewed_dialogues = {},
+	new_keep_decoration_ids = {}
 }
 PlayerData = PlayerData or table.clone(DefaultPlayerData)
 
@@ -64,6 +66,13 @@ function populate_player_data_from_save(save_data, id, version_match)
 			print("Wrong controls_version for save file, saved: ", player_save_data.controls_version, " current: ", DefaultPlayerData.controls_version)
 
 			player_save_data.controls_version = DefaultPlayerData.controls_version
+		end
+
+		if DefaultPlayerData.new_keep_decoration_version ~= player_save_data.new_keep_decoration_version then
+			print("Wrong new_keep_decoration_version for save file, saved: ", player_save_data.new_keep_decoration_version, " current: ", DefaultPlayerData.new_keep_decoration_version)
+
+			player_save_data.new_keep_decoration_ids = {}
+			player_save_data.new_keep_decoration_version = DefaultPlayerData.new_keep_decoration_version
 		end
 
 		if DefaultPlayerData.favorite_item_data_version ~= player_save_data.favorite_item_data_version then

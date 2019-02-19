@@ -489,7 +489,10 @@ local function cb_special_spawned(unit, breed, optional_data)
 	local alive_specials = optional_data.alive_specials
 	slot.unit = unit
 	slot.state = "alive"
-	alive_specials[#alive_specials + 1] = unit
+
+	if breed.special then
+		alive_specials[#alive_specials + 1] = unit
+	end
 end
 
 SpecialsPacing.update = function (self, t, alive_specials, specials_population, player_positions)

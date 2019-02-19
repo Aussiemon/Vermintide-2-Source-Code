@@ -123,14 +123,6 @@ BTChaosSorcererPlagueSkulkAction.run = function (self, unit, blackboard, t, dt)
 
 	if current_health_percent < blackboard.teleport_health_percent then
 		local unit_pos = POSITION_LOOKUP[unit]
-		local target_pos = POSITION_LOOKUP[target_unit]
-		local center_pos = unit_pos
-		local target_dist_sq = Vector3.distance_squared(unit_pos, target_pos)
-
-		if action.far_away_from_target_sq < target_dist_sq then
-			center_pos = target_pos
-		end
-
 		local spread = math.random() * 5 + math.random() * 5 + math.random() * 5
 		local dist = spread * 0.5 + 10
 		local tries = 5

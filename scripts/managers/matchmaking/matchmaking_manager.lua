@@ -298,7 +298,8 @@ end
 
 MatchmakingManager.activate_waystone_portal = function (self, enable, waystone_type)
 	local ingame_ui = self._ingame_ui
-	local countdown_ui = ingame_ui.countdown_ui
+	local ingame_hud = ingame_ui and ingame_ui.ingame_hud
+	local countdown_ui = ingame_hud and ingame_hud:component("LevelCountdownUI")
 
 	if countdown_ui then
 		countdown_ui:set_waystone_activation(enable, waystone_type)
@@ -602,7 +603,7 @@ MatchmakingManager.is_join_popup_visible = function (self)
 	return self._ingame_ui and self._ingame_ui:unavailable_hero_popup_active()
 end
 
-MatchmakingManager.party_has_level_unlocked = function (self, level_key, ignore_dlc_check, ommit_dlc_levels)
+MatchmakingManager.party_has_level_unlocked = function (self, level_key, ignore_dlc_check, ommit_dlc_levels, event_mode)
 	local settings = LevelSettings[level_key]
 	local players = Managers.player:human_players()
 	local statistics_db = self.statistics_db
@@ -616,14 +617,22 @@ MatchmakingManager.party_has_level_unlocked = function (self, level_key, ignore_
 			return false
 		end
 
-		if not LevelUnlockUtils.level_unlocked(statistics_db, stats_id, level_key, true) or settings.not_quickplayable then
+		if not settings.dlc_name then
+			if (not LevelUnlockUtils.level_unlocked(statistics_db, stats_id, level_key, true) and not event_mode) or settings.not_quickplayable then
+				return false
+			end
+		elseif not LevelUnlockUtils.level_unlocked(statistics_db, stats_id, level_key, true) or settings.not_quickplayable then
 			return false
 		end
 
 		if not ignore_dlc_check then
-			local peer_id = player.peer_id
+			if settings.dlc_name then
+				local peer_id = player.peer_id
 
-			if level_weights[peer_id] and level_weights[peer_id][level_key] then
+				if level_weights[peer_id] and level_weights[peer_id][level_key] then
+					level_available = true
+				end
+			else
 				level_available = true
 			end
 		end
@@ -636,12 +645,12 @@ MatchmakingManager.party_has_level_unlocked = function (self, level_key, ignore_
 	return true
 end
 
-MatchmakingManager._get_unlocked_levels_by_party = function (self, ignore_dlc_check, ommit_dlc_levels)
+MatchmakingManager._get_unlocked_levels_by_party = function (self, ignore_dlc_check, ommit_dlc_levels, event_mode)
 	local unlocked_levels = {}
 	local level_keys = UnlockableLevelsByGameMode.adventure
 
 	for _, level_key in ipairs(level_keys) do
-		if self:party_has_level_unlocked(level_key, ignore_dlc_check, ommit_dlc_levels) then
+		if self:party_has_level_unlocked(level_key, ignore_dlc_check, ommit_dlc_levels, event_mode) then
 			unlocked_levels[#unlocked_levels + 1] = level_key
 		end
 	end
@@ -666,7 +675,7 @@ MatchmakingManager._get_unlocked_levels = function (self, ignore_dlc_check)
 	return unlocked_levels
 end
 
-MatchmakingManager._get_level_key_from_level_weights = function (self, level_keys)
+MatchmakingManager._get_level_key_from_level_weights = function (self, level_keys, event_mode)
 	fassert(#level_keys > 0, "Empty level_keys list")
 
 	local level_weights = self._level_weights
@@ -705,12 +714,14 @@ MatchmakingManager._get_level_key_from_level_weights = function (self, level_key
 
 		local level_key = level_keys[chosen_index]
 
-		if level_key and level_weights_by_index[chosen_index] > 0 then
+		if (level_key and level_weights_by_index[chosen_index] > 0) or event_mode then
 			preferred_levels[#preferred_levels + 1] = level_key
 		end
 
 		level_weights_by_index[chosen_index] = -1
 	end
+
+	preferred_levels[#preferred_levels + 1] = "inn_level"
 
 	return level_keys[result], preferred_levels
 end
@@ -726,7 +737,7 @@ MatchmakingManager._calculate_level_weights = function (self, level_keys, recent
 	local last_played_games = recent_games_played or {}
 	local level_weight_by_lookup = {}
 
-	for i = 1, 50, 1 do
+	for i = 1, #NetworkLookup.level_keys, 1 do
 		level_weight_by_lookup[i] = -1
 	end
 
@@ -764,13 +775,16 @@ MatchmakingManager._calculate_level_weights = function (self, level_keys, recent
 	for i = 1, #last_played_games, 1 do
 		local level_key = last_played_games[i].level_name
 
-		if level_key then
+		if level_key and table.contains(lookup_level_keys, level_key) then
 			local level_index = lookup_level_keys[level_key]
-			local multiplier = (last_played_games[i].game_won and win_multiplier) or loss_multiplier
-			level_weight_by_lookup[level_index] = level_weight_by_lookup[level_index] - (multiplier * (#last_played_games - i + 1)) / #last_played_games
 
-			if level_weight_by_lookup[level_index] < 0 then
-				level_weight_by_lookup[level_index] = 0
+			if level_index then
+				local multiplier = (last_played_games[i].game_won and win_multiplier) or loss_multiplier
+				level_weight_by_lookup[level_index] = level_weight_by_lookup[level_index] - (multiplier * (#last_played_games - i + 1)) / #last_played_games
+
+				if level_weight_by_lookup[level_index] < 0 then
+					level_weight_by_lookup[level_index] = 0
+				end
 			end
 		end
 	end
@@ -816,9 +830,11 @@ MatchmakingManager._remove_irrelevant_level_weights = function (self)
 	self._level_weights = level_weights
 end
 
-MatchmakingManager.get_weighed_random_unlocked_level = function (self, ignore_dlc_check)
+MatchmakingManager.get_weighed_random_unlocked_level = function (self, ignore_dlc_check, custom_game)
 	local recent_games_played_json = Managers.backend:get_read_only_data("recent_quickplay_games")
 	local recent_games_played = (recent_games_played_json and cjson.decode(recent_games_played_json)) or {}
+	local search_config = self.state_context.search_config
+	local is_event_mode = search_config.game_mode == "event"
 	local unlocked_levels = self:_get_unlocked_levels()
 	local my_level_weights = self:_calculate_level_weights(unlocked_levels, recent_games_played)
 	local my_id = Managers.player:local_player().peer_id
@@ -831,10 +847,14 @@ MatchmakingManager.get_weighed_random_unlocked_level = function (self, ignore_dl
 
 	if has_full_game then
 		ommit_dlc_levels = not self:_party_has_completed_act("act_4")
+
+		if custom_game then
+			ommit_dlc_levels = false
+		end
 	end
 
-	local level_keys = self:_get_unlocked_levels_by_party(ignore_dlc_check, ommit_dlc_levels)
-	local level_key, preferred_levels = self:_get_level_key_from_level_weights(level_keys)
+	local level_keys = self:_get_unlocked_levels_by_party(ignore_dlc_check, ommit_dlc_levels, is_event_mode)
+	local level_key, preferred_levels = self:_get_level_key_from_level_weights(level_keys, is_event_mode)
 
 	return level_key, preferred_levels
 end
@@ -866,13 +886,13 @@ MatchmakingManager.set_matchmaking_data = function (self, next_level_key, diffic
 	lobby_data.game_mode = game_mode
 	lobby_data.act_key = act_key
 	lobby_data.matchmaking = (is_matchmaking and "true") or "false"
-	lobby_data.selected_level_key = next_level_key
+	lobby_data.selected_level_key = next_level_key or LevelHelper:current_level_settings().level_id
 	lobby_data.unique_server_name = LobbyAux.get_unique_server_name()
 	lobby_data.host = Network.peer_id()
 	lobby_data.num_players = num_players
 	lobby_data.difficulty = difficulty
 	lobby_data.quick_game = (quick_game and "true") or "false"
-	lobby_data.country_code = rawget(_G, "Steam") and Steam.user_country_code()
+	lobby_data.country_code = (rawget(_G, "Steam") and Steam.user_country_code()) or Managers.account:region()
 	lobby_data.twitch_enabled = (GameSettingsDevelopment.twitch_enabled and Managers.twitch:is_connected() and "true") or "false"
 	lobby_data.eac_authorized = (eac_authorized and "true") or "false"
 
@@ -928,9 +948,6 @@ MatchmakingManager.find_game = function (self, search_config)
 
 		local search_info = self:search_info()
 		local level_key = search_info.level_key
-
-		print("LEVEL KEY:", level_key)
-
 		local difficulty = search_info.difficulty
 		local quick_game = search_info.quick_game
 		local level_key_lookup = (level_key and NetworkLookup.level_keys[level_key]) or NetworkLookup.level_keys["n/a"]
@@ -1007,6 +1024,8 @@ MatchmakingManager.cancel_matchmaking = function (self)
 	if self.is_server then
 		local stored_lobby_data = self.lobby:get_stored_lobby_data()
 		stored_lobby_data.matchmaking = "false"
+		stored_lobby_data.selected_level_key = LevelHelper:current_level_settings().level_id
+		stored_lobby_data.game_mode = "n/a"
 
 		self.lobby:set_lobby_data(stored_lobby_data)
 

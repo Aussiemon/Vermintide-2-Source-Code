@@ -144,147 +144,147 @@ WeaponProperties.buff_templates = {
 	properties_crit_chance = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.CRITICAL_STRIKE_CHANCE
+				stat_buff = "critical_strike_chance"
 			}
 		}
 	},
 	properties_crit_boost = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.CRITICAL_STRIKE_EFFECTIVENESS
+				stat_buff = "critical_strike_effectiveness"
 			}
 		}
 	},
 	properties_stamina = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.MAX_FATIGUE
+				stat_buff = "max_fatigue"
 			}
 		}
 	},
 	properties_attack_speed = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				stat_buff = "attack_speed"
 			}
 		}
 	},
 	properties_health = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.MAX_HEALTH
+				stat_buff = "max_health"
 			}
 		}
 	},
 	properties_ability_cooldown_reduction = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.ACTIVATED_COOLDOWN
+				stat_buff = "activated_cooldown"
 			}
 		}
 	},
 	properties_curse_resistance = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.CURSE_PROTECTION
+				stat_buff = "curse_protection"
 			}
 		}
 	},
 	properties_respawn_speed = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.FASTER_RESPAWN
+				stat_buff = "faster_respawn"
 			}
 		}
 	},
 	properties_revive_speed = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.FASTER_REVIVE
+				stat_buff = "faster_revive"
 			}
 		}
 	},
 	properties_push_block_arc = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.BLOCK_ANGLE
+				stat_buff = "block_angle"
 			}
 		}
 	},
 	properties_power_vs_skaven = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.POWER_LEVEL_SKAVEN
+				stat_buff = "power_level_skaven"
 			}
 		}
 	},
 	properties_power_vs_chaos = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.POWER_LEVEL_CHAOS
+				stat_buff = "power_level_chaos"
 			}
 		}
 	},
 	properties_power_vs_unarmoured = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.POWER_LEVEL_UNARMOURED
+				stat_buff = "power_level_unarmoured"
 			}
 		}
 	},
 	properties_power_vs_armoured = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.POWER_LEVEL_ARMOURED
+				stat_buff = "power_level_armoured"
 			}
 		}
 	},
 	properties_power_vs_large = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.POWER_LEVEL_LARGE
+				stat_buff = "power_level_large"
 			}
 		}
 	},
 	properties_power_vs_frenzy = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.POWER_LEVEL_FRENZY
+				stat_buff = "power_level_frenzy"
 			}
 		}
 	},
 	properties_block_cost = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.BLOCK_COST
+				stat_buff = "block_cost"
 			}
 		}
 	},
 	properties_fatigue_regen = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.FATIGUE_REGEN
+				stat_buff = "fatigue_regen"
 			}
 		}
 	},
 	properties_protection_skaven = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.PROTECTION_SKAVEN
+				stat_buff = "protection_skaven"
 			}
 		}
 	},
 	properties_protection_chaos = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.PROTECTION_CHAOS
+				stat_buff = "protection_chaos"
 			}
 		}
 	},
 	properties_protection_aoe = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.PROTECTION_AOE
+				stat_buff = "protection_aoe"
 			}
 		}
 	},

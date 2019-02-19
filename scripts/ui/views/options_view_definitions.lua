@@ -1480,7 +1480,18 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 				{
 					pass_type = "texture",
 					style_id = "slider_box",
-					texture_id = "rect_masked"
+					texture_id = "rect_masked",
+					content_check_function = function (content)
+						return not content.disabled
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "disabled_slider_box",
+					texture_id = "rect_masked",
+					content_check_function = function (content)
+						return content.disabled
+					end
 				},
 				{
 					style_id = "text",
@@ -1522,11 +1533,6 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 					end
 				},
 				{
-					style_id = "slider_box_hotspot",
-					pass_type = "hotspot",
-					content_id = "hotspot"
-				},
-				{
 					content_check_hover = "hotspot",
 					pass_type = "held",
 					style_id = "slider_box",
@@ -1561,6 +1567,14 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 					end
 				},
 				{
+					style_id = "slider_box_hotspot",
+					pass_type = "hotspot",
+					content_id = "hotspot",
+					content_check_function = function (content)
+						return not content.parent.disabled
+					end
+				},
+				{
 					pass_type = "local_offset",
 					offset_function = function (ui_scenegraph, ui_style, ui_content)
 						local internal_value = ui_content.internal_value
@@ -1591,18 +1605,36 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 				{
 					style_id = "value_text",
 					pass_type = "text",
-					text_id = "value_text"
+					text_id = "value_text",
+					content_check_function = function (content)
+						return not content.disabled
+					end
+				},
+				{
+					style_id = "disabled_value_text",
+					pass_type = "text",
+					text_id = "value_text",
+					content_check_function = function (content)
+						return content.disabled
+					end
 				},
 				{
 					pass_type = "texture",
 					style_id = "slider",
-					texture_id = "slider"
+					texture_id = "slider",
+					content_check_function = function (content)
+						return not content.disabled
+					end
 				},
 				{
 					pass_type = "texture",
 					style_id = "slider_hover",
 					texture_id = "slider_hover",
 					content_check_function = function (content)
+						if content.disabled then
+							return false
+						end
+
 						return content.hotspot.is_hover
 					end
 				},
@@ -1647,36 +1679,54 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 				{
 					style_id = "left_arrow",
 					pass_type = "hotspot",
-					content_id = "left_hotspot"
+					content_id = "left_hotspot",
+					content_check_function = function (content)
+						return not content.parent.disabled
+					end
 				},
 				{
 					style_id = "right_arrow",
 					pass_type = "hotspot",
-					content_id = "right_hotspot"
+					content_id = "right_hotspot",
+					content_check_function = function (content)
+						return not content.parent.disabled
+					end
 				},
 				{
 					texture_id = "texture_id",
 					style_id = "left_arrow",
 					pass_type = "texture",
-					content_id = "arrow"
+					content_id = "arrow",
+					content_check_function = function (content)
+						return not content.parent.disabled
+					end
 				},
 				{
 					texture_id = "texture_id",
 					style_id = "right_arrow",
 					pass_type = "texture_uv",
-					content_id = "arrow"
+					content_id = "arrow",
+					content_check_function = function (content)
+						return not content.parent.disabled
+					end
 				},
 				{
 					texture_id = "texture_id",
 					style_id = "left_arrow_hover",
 					pass_type = "texture",
-					content_id = "arrow_hover"
+					content_id = "arrow_hover",
+					content_check_function = function (content)
+						return not content.parent.disabled
+					end
 				},
 				{
 					texture_id = "texture_id",
 					style_id = "right_arrow_hover",
 					pass_type = "texture_uv",
-					content_id = "arrow_hover"
+					content_id = "arrow_hover",
+					content_check_function = function (content)
+						return not content.parent.disabled
+					end
 				},
 				{
 					pass_type = "local_offset",
@@ -1860,6 +1910,23 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 					5
 				}
 			},
+			disabled_slider_box = {
+				offset = {
+					(base_offset[1] + SLIDER_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH + 30,
+					(base_offset[2] + SLIDER_WIDGET_SIZE[2] / 2) - 4,
+					base_offset[3] + 10
+				},
+				size = {
+					INPUT_FIELD_WIDTH - 112,
+					10
+				},
+				color = {
+					255,
+					20,
+					20,
+					20
+				}
+			},
 			slider_box_hotspot = {
 				offset = {
 					(base_offset[1] + SLIDER_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH + 19,
@@ -1939,6 +2006,22 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 					base_offset[3] + 2
 				},
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				default_color = Colors.get_color_table_with_alpha("font_default", 255),
+				hover_color = Colors.get_color_table_with_alpha("font_default", 255)
+			},
+			disabled_value_text = {
+				font_size = 16,
+				upper_case = true,
+				localize = false,
+				horizontal_alignment = "center",
+				dynamic_font = true,
+				font_type = "hell_shark_masked",
+				offset = {
+					(base_offset[1] + SLIDER_WIDGET_SIZE[1]) - 25,
+					(base_offset[2] + SLIDER_WIDGET_SIZE[2] / 2) - (SLIDER_WIDGET_SIZE[2] - 10) / 2 - 2,
+					base_offset[3] + 2
+				},
+				text_color = Colors.get_color_table_with_alpha("font_default", 50),
 				default_color = Colors.get_color_table_with_alpha("font_default", 255),
 				hover_color = Colors.get_color_table_with_alpha("font_default", 255)
 			},

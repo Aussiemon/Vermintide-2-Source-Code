@@ -500,7 +500,9 @@ AiBreedSnippets.on_storm_vermin_champion_update = function (unit, blackboard, t,
 	local num = 0
 
 	for i, position in ipairs(PLAYER_AND_BOT_POSITIONS) do
-		if Vector3.distance(self_pos, position) < range and not ScriptUnit.extension(PLAYER_AND_BOT_UNITS[i], "status_system"):is_disabled() then
+		local player_unit = PLAYER_AND_BOT_UNITS[i]
+
+		if Vector3.distance(self_pos, position) < range and not ScriptUnit.extension(player_unit, "status_system"):is_disabled() and not ScriptUnit.extension(player_unit, "status_system"):is_invisible() then
 			num = num + 1
 		end
 	end
@@ -1031,7 +1033,7 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_update = function (unit, blackboard, t
 	if mode == "defensive" then
 		if phase == "defensive_completed" then
 			blackboard.mode = "offensive"
-			blackboard.phase_timer = t + 30
+			blackboard.phase_timer = t + 20
 		elseif blackboard.phase_timer < t then
 			blackboard.phase = "defensive_ends"
 		end
@@ -1044,7 +1046,7 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_update = function (unit, blackboard, t
 	elseif blackboard.phase_timer < t then
 		blackboard.mode = "defensive"
 		blackboard.phase = "defensive_starts"
-		blackboard.phase_timer = t + 30
+		blackboard.phase_timer = t + 20
 	end
 
 	if blackboard.missle_bot_threat_unit then
@@ -1215,7 +1217,7 @@ AiBreedSnippets.on_chaos_exalted_champion_update = function (unit, blackboard, t
 	for i, position in ipairs(PLAYER_AND_BOT_POSITIONS) do
 		local player_unit = PLAYER_AND_BOT_UNITS[i]
 
-		if Vector3.distance(self_pos, position) < range and not ScriptUnit.extension(player_unit, "status_system"):is_disabled() then
+		if Vector3.distance(self_pos, position) < range and not ScriptUnit.extension(player_unit, "status_system"):is_disabled() and not ScriptUnit.extension(player_unit, "status_system"):is_invisible() then
 			num = num + 1
 		end
 
@@ -1259,9 +1261,9 @@ AiBreedSnippets.on_chaos_exalted_champion_update = function (unit, blackboard, t
 	if blackboard.defensive_mode_duration then
 		local remaining = blackboard.defensive_mode_duration - dt
 
-		if remaining <= 0 or (remaining <= 10 and conflict_director:spawned_during_event() <= 2) then
+		if remaining <= 0 or (remaining <= 20 and conflict_director:spawned_during_event() <= 4) then
 			blackboard.defensive_mode_duration = nil
-		elseif remaining <= 10 and conflict_director:count_units_by_breed("chaos_marauder") < 2 then
+		elseif remaining <= 20 and conflict_director:count_units_by_breed("chaos_marauder") < 4 then
 			blackboard.defensive_mode_duration = nil
 		else
 			blackboard.defensive_mode_duration = remaining

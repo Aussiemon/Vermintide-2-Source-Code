@@ -1085,18 +1085,6 @@ AttackTemplates = {
 			1
 		}
 	},
-	loot_rat_explosion = {
-		sound_type = "heavy",
-		stagger_value = 6,
-		damage_type = "burn",
-		damage = {
-			1,
-			1,
-			1,
-			1,
-			1
-		}
-	},
 	chaos_magic_missile = {
 		sound_type = "heavy",
 		stagger_value = 6,

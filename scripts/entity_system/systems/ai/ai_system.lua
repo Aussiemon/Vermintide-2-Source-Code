@@ -832,10 +832,18 @@ end
 
 AISystem.update_debug_draw = function (self, t)
 	if script_data.debug_behaviour_trees then
-		for unit, extension in pairs(self.ai_units_alive) do
+		for _, extension in pairs(self.ai_units_alive) do
 			local brain = extension._brain
 
 			brain:debug_draw_behaviours()
+		end
+
+		if not self._debug_behaviour_trees then
+			self._debug_behaviour_trees = true
+		end
+	elseif self._debug_behaviour_trees then
+		for unit, _ in pairs(self.ai_units_alive) do
+			Managers.state.debug_text:clear_unit_text(unit, "behavior_tree")
 		end
 	end
 

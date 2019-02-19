@@ -176,7 +176,7 @@ NetworkLookup.item_drop_reasons = {
 }
 local attachments_table = {}
 
-for attachment_name, attachment_data in pairs(Attachments) do
+for attachment_name, _ in pairs(Attachments) do
 	attachments_table[#attachments_table + 1] = attachment_name
 end
 
@@ -194,7 +194,7 @@ for item_template_name, item_template in pairs(Weapons) do
 			NetworkLookup.actions[#NetworkLookup.actions + 1] = action_name
 		end
 
-		for sub_action_name, sub_action_data in pairs(sub_actions) do
+		for sub_action_name, _ in pairs(sub_actions) do
 			if not table.contains(NetworkLookup.sub_actions, sub_action_name) then
 				NetworkLookup.sub_actions[#NetworkLookup.sub_actions + 1] = sub_action_name
 			end
@@ -202,14 +202,9 @@ for item_template_name, item_template in pairs(Weapons) do
 	end
 end
 
-NetworkLookup.item_names = {
+NetworkLookup.item_names = create_lookup({
 	"n/a"
-}
-
-for item_name, item_data in pairs(ItemMasterList) do
-	NetworkLookup.item_names[#NetworkLookup.item_names + 1] = item_name
-end
-
+}, ItemMasterList)
 NetworkLookup.item_template_names = {
 	"n/a"
 }
@@ -219,72 +214,19 @@ table.append(NetworkLookup.item_template_names, attachments_table)
 
 NetworkLookup.equipment_slots = {}
 
-for index, slot_settings in ipairs(InventorySettings.slots) do
+for _, slot_settings in ipairs(InventorySettings.slots) do
 	NetworkLookup.equipment_slots[#NetworkLookup.equipment_slots + 1] = slot_settings.name
 end
 
 NetworkLookup.mutator_templates = create_lookup({}, MutatorTemplates)
-NetworkLookup.breeds = {
-	"skaven_clan_rat",
-	"skaven_clan_rat_with_shield",
-	"skaven_dummy_clan_rat",
-	"skaven_slave",
-	"skaven_dummy_slave",
-	"skaven_loot_rat",
-	"skaven_storm_vermin",
-	"skaven_storm_vermin_champion",
-	"skaven_storm_vermin_commander",
-	"skaven_storm_vermin_warlord",
-	"skaven_storm_vermin_with_shield",
-	"skaven_poison_wind_globadier",
-	"skaven_gutter_runner",
-	"skaven_pack_master",
-	"skaven_plague_monk",
-	"skaven_ratling_gunner",
-	"skaven_rat_ogre",
-	"skaven_stormfiend",
-	"skaven_stormfiend_boss",
-	"skaven_grey_seer",
-	"skaven_stormfiend_demo",
-	"skaven_warpfire_thrower",
-	"skaven_clan_rat_tutorial",
-	"chaos_warrior",
-	"chaos_exalted_champion_warcamp",
-	"chaos_exalted_champion_norsca",
-	"chaos_exalted_sorcerer",
-	"chaos_tentacle_sorcerer",
-	"chaos_tentacle",
-	"critter_pig",
-	"critter_rat",
-	"pet_pig",
-	"pet_rat",
-	"chaos_marauder",
-	"chaos_marauder_tutorial",
-	"chaos_raider_tutorial",
-	"chaos_fanatic",
-	"chaos_marauder_with_shield",
-	"chaos_berzerker",
-	"chaos_raider",
-	"chaos_troll",
-	"chaos_dummy_troll",
-	"chaos_dummy_sorcerer",
-	"chaos_vortex_sorcerer",
-	"chaos_vortex",
-	"chaos_plague_sorcerer",
-	"chaos_corruptor_sorcerer",
-	"chaos_mutator_sorcerer",
-	"chaos_plague_wave_spawner",
-	"chaos_spawn",
-	"chaos_spawn_exalted_champion_norsca",
-	"chaos_zombie"
-}
+NetworkLookup.breeds = create_lookup({}, Breeds)
 local temp = {}
 
-for breed_name, breed in pairs(Breeds) do
+for _, breed in pairs(Breeds) do
 	local translation = breed.hitbox_ragdoll_translation
 
 	if translation then
-		for hitbox_actor, ragdoll_actor in pairs(translation) do
+		for _, ragdoll_actor in pairs(translation) do
 			temp[ragdoll_actor] = true
 		end
 	end
@@ -359,7 +301,6 @@ NetworkLookup.husks = {
 	"units/beings/enemies/skaven_pack_master/chr_skaven_pack_master",
 	"units/beings/enemies/skaven_plague_monk/chr_skaven_plague_monk",
 	"units/beings/enemies/chaos_sorcerer_fx/chr_chaos_sorcerer_fx",
-	"units/beings/enemies/chaos_mutator_sorcerer/chr_chaos_mutator_sorcerer",
 	"units/beings/enemies/skaven_ratlinggunner/chr_skaven_ratlinggunner",
 	"units/beings/enemies/skaven_stormvermin/chr_skaven_stormvermin",
 	"units/beings/enemies/skaven_stormvermin/chr_skaven_stormvermin_baked",
@@ -458,6 +399,7 @@ NetworkLookup.husks = {
 	"units/weapons/player/pup_potion_01/pup_potion_healing_01",
 	"units/weapons/player/pup_potion_01/pup_potion_speed_01",
 	"units/weapons/player/pup_potion_01/pup_potion_strenght_01",
+	"units/weapons/player/pup_painting/pup_painting_scraps",
 	"units/gameplay/training_dummy/training_dummy",
 	"units/gameplay/training_dummy/wpn_training_dummy",
 	"units/gameplay/training_dummy/wpn_training_dummy_3p",
@@ -497,6 +439,21 @@ NetworkLookup.husks = {
 	"units/gameplay/line_of_sight_blocker/hemisphere_los_blocker",
 	"units/gameplay/portal_blob/portalblob"
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local husk_lookup = dlc.husk_lookup
+
+	if husk_lookup then
+		for i = 1, #husk_lookup, 1 do
+			local husk_name = husk_lookup[i]
+
+			if not table.contains(NetworkLookup.husks, husk_name) then
+				NetworkLookup.husks[#NetworkLookup.husks + 1] = husk_name
+			end
+		end
+	end
+end
+
 NetworkLookup.go_types = {
 	"player",
 	"ai_player",
@@ -674,7 +631,7 @@ NetworkLookup.lobby_data_values = {
 NetworkLookup.game_modes = {
 	"adventure",
 	"custom",
-	"survival",
+	"n/a",
 	"tutorial",
 	"demo",
 	"event",
@@ -971,193 +928,9 @@ NetworkLookup.buff_weapon_types = {
 	"MELEE_2H",
 	"RANGED"
 }
-NetworkLookup.buff_templates = {
-	"n/a",
-	"damage_boost_potion_increased",
-	"speed_boost_potion_increased",
-	"cooldown_reduction_potion_increased",
-	"invulnerability_potion_increased",
-	"damage_boost_potion_reduced",
-	"speed_boost_potion_reduced",
-	"cooldown_reduction_potion_reduced",
-	"invulnerability_potion_reduced",
-	"damage_boost_potion",
-	"speed_boost_potion",
-	"cooldown_reduction_potion",
-	"invulnerability_potion",
-	"damage_reduction_boost",
-	"super_jump",
-	"increase_all_healing",
-	"tank_stance",
-	"ninja_fencer_stance",
-	"smiter_stance",
-	"lines_man_stance",
-	"imba_super_test_buff",
-	"movement_volume_generic_slowdown",
-	"globadier_gas_dot",
-	"grimoire_health_debuff",
-	"bile_troll_vomit_ground_base",
-	"plague_wave_ground_base",
-	"bile_troll_vomit_face_base",
-	"plague_wave_face_base",
-	"vortex_base",
-	"stormfiend_warpfire_ground_base",
-	"stormfiend_warpfire_face_base",
-	"bardin_ironbreaker_activated_ability",
-	"bardin_ironbreaker_block_cost_on_last_standing",
-	"bardin_ironbreaker_defence_on_low_health",
-	"bardin_ironbreaker_defence_buff",
-	"bardin_ironbreaker_activated_ability_block_cost",
-	"bardin_ironbreaker_activated_ability_duration",
-	"bardin_ironbreaker_activated_ability_duration_block_cost",
-	"bardin_ironbreaker_activated_ability_heal",
-	"bardin_ironbreaker_max_health",
-	"bardin_slayer_activated_ability",
-	"bardin_slayer_activated_ability_uninterruptible",
-	"bardin_slayer_activated_ability_attackspeed",
-	"bardin_slayer_activated_ability_movement",
-	"bardin_slayer_attack_speed_on_last_standing_buff",
-	"bardin_slayer_debuff_defence_on_crit",
-	"bardin_slayer_passive_stacking_damage_buff",
-	"bardin_slayer_passive_stacking_defence_buff",
-	"bardin_slayer_passive_stacking_damage_buff_increased_duration",
-	"bardin_slayer_passive_cooldown_reduction_on_max_stacks",
-	"bardin_ranger_activated_ability",
-	"end_ranger_activated_ability",
-	"bardin_ranger_crit_hit_damage_on_high_health",
-	"bardin_ranger_defence_on_disabled",
-	"bardin_ranger_melee_damage_on_no_ammo",
-	"defence_debuff_enemies",
-	"we_no_ammo_consumed",
-	"we_heal_on_kill_uninterruptible",
-	"victor_zealot_activated_ability",
-	"victor_zealot_activated_ability_heal_buff",
-	"victor_zealot_activated_ability_duration",
-	"victor_zealot_defence_on_low_health",
-	"victor_zealot_gain_invulnerability_on_lethal_damage_taken",
-	"victor_zealot_invulnerability_cooldown",
-	"victor_zealot_invulnerability_on_lethal_damage_taken",
-	"victor_zealot_passive_attack_speed_aura_buff",
-	"victor_witchhunter_activated_ability",
-	"victor_witchhunter_activated_ability_crit_buff",
-	"victor_witchhunter_activated_ability_duration",
-	"victor_witchhunter_damage_on_grimoire_picked_up",
-	"victor_witchhunter_passive_debuff",
-	"victor_witchhunter_headshot_damage_increase",
-	"victor_witchhunter_defence_buff_on_disabled",
-	"victor_witchhunter_ping_target_crit_chance",
-	"victor_witchhunter_ping_target_attack_speed",
-	"victor_bountyhunter_melee_damage_on_no_ammo_buff",
-	"markus_knight_defence_buff",
-	"markus_mercenary_activated_ability",
-	"markus_mercenary_attack_speed_on_last_standing",
-	"markus_mercenary_defence_on_disabled",
-	"markus_mercenary_passive_proc",
-	"markus_mercenary_passive_defence",
-	"markus_mercenary_passive_power_level",
-	"markus_mercenary_defence_on_low_health",
-	"es_swing_through_targets",
-	"markus_knight_activated_ability",
-	"markus_knight_block_cost_on_last_standing",
-	"markus_knight_defence_on_low_health",
-	"markus_knight_passive_defence_aura",
-	"markus_knight_passive_stamina_aura_buff",
-	"markus_knight_passive_movement_speed_aura_buff",
-	"markus_knight_improved_passive_defence_aura_buff",
-	"markus_knight_max_health",
-	"markus_knight_activated_ability_damage_buff",
-	"markus_huntsman_activated_ability",
-	"markus_huntsman_activated_ability_damage_on_exit",
-	"markus_huntsman_activated_ability_regen_buff",
-	"markus_huntsman_activated_ability_regen",
-	"markus_huntsman_passive_crit_aura_buff",
-	"markus_huntsman_crit_chance_on_last_standing",
-	"markus_huntsman_debuff_defence_on_crit",
-	"markus_huntsman_defence_debuff",
-	"markus_huntsman_activated_ability_headshot_multiplier",
-	"markus_huntsman_activated_ability_damage",
-	"sienna_unchained_activated_ability_duration",
-	"sienna_unchained_increased_defence_on_low_health",
-	"sienna_unchained_defence_buff",
-	"sienna_unchained_activated_ability",
-	"sienna_unchained_passive_melee_power_on_overcharge",
-	"sienna_scholar_defence_on_disabled",
-	"sienna_scholar_vent_damage_on_last_standing",
-	"sienna_adept_activated_ability",
-	"sienna_adept_defence_on_last_standing",
-	"kerillian_shade_activated_ability",
-	"kerillian_shade_activated_ability_duration",
-	"kerillian_shade_crit_hit_damage_on_low_health",
-	"kerillian_shade_revive_speed_on_last_standing",
-	"kerillian_shade_damage_on_grimoire_picked_up",
-	"kerillian_maidenguard_activated_ability",
-	"kerillian_maidenguard_activated_ability_invis_duration",
-	"kerillian_maidenguard_defence_on_last_standing",
-	"kerillian_maidenguard_passive_stamina_regen_buff",
-	"kerillian_waywatcher_crit_hit_damage_on_high_health",
-	"passive_career_bw_1_1",
-	"passive_career_bw_1_2",
-	"warpfire_thrower_ground_base",
-	"warpfire_thrower_face_base",
-	"sienna_adept_ability_trail",
-	"burning_1W_dot",
-	"burning_3W_dot",
-	"burning_dot_fire_grenade",
-	"beam_burning_dot",
-	"burning_flamethrower_dot",
-	"burning_dot",
-	"arrow_poison_dot",
-	"aoe_poison_dot",
-	"weapon_bleed_dot_test",
-	"weapon_bleed_dot_maidenguard",
-	"slow_grenade_slow",
-	"chaos_zombie_explosion",
-	"chaos_magic_missile",
-	"chaos_slow_bomb_missile",
-	"vermintide_face_base",
-	"catacombs_corpse_pit",
-	"cemetery_plague_floor",
-	"traits_heal_on_crit",
-	"traits_melee_shield_on_assist",
-	"trait_necklace_no_healing_health_regen",
-	"trait_necklace_heal_self_on_heal_other",
-	"trait_necklace_increased_healing_received",
-	"trait_necklace_damage_taken_reduction_on_heal",
-	"trait_trinket_grenade_damage_taken",
-	"traits_melee_increase_damage_on_block",
-	"traits_melee_counter_push_power",
-	"traits_ranged_restore_stamina_headshot",
-	"traits_ranged_remove_overcharge_on_crit",
-	"traits_ranged_increase_power_level_vs_armour_crit",
-	"traits_ranged_consecutive_hits_increase_power",
-	"trait_necklace_damage_taken_reduction_buff",
-	"properties_curse_resistance",
-	"properties_protection_skaven",
-	"properties_protection_chaos",
-	"properties_protection_aoe",
-	"properties_crit_boost",
-	"properties_power_vs_skaven",
-	"properties_power_vs_chaos",
-	"properties_power_vs_unarmoured",
-	"properties_power_vs_armoured",
-	"properties_power_vs_large",
-	"properties_power_vs_frenzy",
-	"properties_health",
-	"properties_revive_speed",
-	"twitch_speed_boost",
-	"twitch_damage_boost",
-	"twitch_cooldown_reduction_boost",
-	"twitch_no_overcharge_no_ammo_reloads",
-	"twitch_health_regen",
-	"twitch_health_degen",
-	"twitch_grimoire_health_debuff",
-	"twitch_power_boost_dismember",
-	"trait_ring_potion_spread",
-	"blightreaper_curse",
-	"corpse_explosion_default",
-	"slayer_curse_debuff",
-	"warpfire_thrower_face_base_mutator"
-}
+NetworkLookup.buff_templates = create_lookup({
+	"n/a"
+}, BuffTemplates)
 NetworkLookup.buff_data_types = {
 	"n/a",
 	"variable_value",
@@ -1174,6 +947,7 @@ NetworkLookup.proc_events = {
 	"on_last_ammo_used",
 	"on_gained_ammo_from_no_ammo"
 }
+NetworkLookup.proc_functions = create_lookup({}, ProcFunctions)
 NetworkLookup.coop_feedback = {
 	"give_item",
 	"aid",
@@ -1416,6 +1190,7 @@ NetworkLookup.sound_events = {
 	"Play_career_ability_bardin_slayer_impact",
 	"Play_career_ability_captain_shout_out",
 	"Play_career_ability_victor_zealot_enter",
+	"Play_career_ability_zealot_charge",
 	"Play_career_ability_victor_zealot_exit",
 	"Play_career_ability_unchained_fire",
 	"Play_career_ability_sienna_unchained",
@@ -1528,7 +1303,13 @@ NetworkLookup.sound_events = {
 	"Play_enemy_corruptor_sorcerer_sucking_magic",
 	"Stop_enemy_corruptor_sorcerer_sucking_magic",
 	"Play_enemy_corruptor_sorcerer_throw_magic",
-	"Stop_enemy_corruptor_sorcerer_throw_magic"
+	"Stop_enemy_corruptor_sorcerer_throw_magic",
+	"Play_enemy_mutator_chaos_sorcerer_hunting_loop",
+	"Stop_enemy_mutator_chaos_sorcerer_hunting_loop",
+	"Play_enemy_mutator_chaos_sorcerer_skulking_loop",
+	"Stop_enemy_mutator_chaos_sorcerer_skulking_loop",
+	"Play_enemy_mutator_chaos_sorcerer_wind_loop",
+	"Stop_enemy_mutator_chaos_sorcerer_wind_loop"
 }
 NetworkLookup.global_parameter_names = {
 	"occupied_slots_percentage",
@@ -1601,6 +1382,7 @@ NetworkLookup.ai_inventory = {
 	"chaos_troll",
 	"chaos_sorcerer",
 	"chaos_sorcerer_vortex",
+	"chaos_mutator_sorcerer",
 	"chaos_exalted_sorcerer",
 	"mace",
 	"axe",
@@ -1713,6 +1495,21 @@ NetworkLookup.dialogue_event_data_names = {
 	"fail_reason",
 	"out_of_ammo"
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local dialogue_event_data_lookup = dlc.dialogue_event_data_lookup
+
+	if dialogue_event_data_lookup then
+		for i = 1, #dialogue_event_data_lookup, 1 do
+			local event_name = dialogue_event_data_lookup[i]
+
+			if not table.contains(NetworkLookup.dialogue_event_data_names, event_name) then
+				NetworkLookup.dialogue_event_data_names[#NetworkLookup.dialogue_event_data_names + 1] = event_name
+			end
+		end
+	end
+end
+
 NetworkLookup.hero_names = {
 	"dwarf_ranger",
 	"wood_elf",
@@ -1918,14 +1715,10 @@ NetworkLookup.twitch_vote_types = {
 	"multiple_choice"
 }
 NetworkLookup.bot_orders = create_lookup({}, AIBotGroupSystem.bot_orders)
-
-if PLATFORM ~= "ps4" then
-	NetworkLookup.twitch_vote_templates = create_lookup({
-		"draw",
-		"none"
-	}, TwitchVoteTemplates)
-end
-
+NetworkLookup.twitch_vote_templates = create_lookup({
+	"draw",
+	"none"
+}, TwitchVoteTemplates)
 NetworkLookup.attack_templates = create_lookup({
 	"n/a"
 }, AttackTemplates)

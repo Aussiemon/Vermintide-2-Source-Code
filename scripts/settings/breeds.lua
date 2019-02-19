@@ -37,6 +37,9 @@ dofile("scripts/settings/breeds/breed_skaven_warpfire_thrower")
 dofile("scripts/settings/breeds/breed_skaven_rat_ogre")
 dofile("scripts/settings/breeds/breed_skaven_stormfiend")
 dofile("scripts/settings/breeds/breed_skaven_stormfiend_demo")
+dofile("scripts/settings/breeds/breed_skaven_grey_seer")
+dofile("scripts/settings/breeds/breed_skaven_stormfiend_boss")
+dofile("scripts/settings/breeds/breed_skaven_storm_vermin_warlord")
 dofile("scripts/settings/breeds/breed_chaos_marauder")
 dofile("scripts/settings/breeds/breed_chaos_fanatic")
 dofile("scripts/settings/breeds/breed_chaos_marauder_with_shield")
@@ -55,6 +58,8 @@ dofile("scripts/settings/breeds/breed_chaos_plague_wave_spawner")
 dofile("scripts/settings/breeds/breed_chaos_spawn")
 dofile("scripts/settings/breeds/breed_chaos_dummy_sorcerer")
 dofile("scripts/settings/breeds/breed_chaos_exalted_champion")
+dofile("scripts/settings/breeds/breed_chaos_exalted_sorcerer")
+dofile("scripts/settings/breeds/breed_chaos_zombie")
 dofile("scripts/settings/breeds/breed_critters")
 dofile("scripts/settings/breeds/breed_pets")
 
@@ -248,20 +253,21 @@ local PerceptionTypes = {
 local TargetSelectionTypes = {
 	pick_rat_ogre_target_with_weights = true,
 	pick_ninja_approach_target = true,
-	pick_closest_target_with_filter = true,
+	pick_chaos_warrior_target_with_weights = true,
 	pick_flee_target = true,
-	pick_closest_vortex_target = true,
-	pick_player_controller_allied = true,
 	pick_rat_ogre_target_idle = true,
-	pick_boss_sorcerer_target = true,
-	pick_closest_target_with_spillover = true,
+	pick_player_controller_allied = true,
 	pick_solitary_target = true,
+	pick_mutator_sorcerer_target = true,
+	pick_closest_target = true,
+	pick_corruptor_target = true,
+	pick_closest_target_with_filter = true,
+	pick_closest_vortex_target = true,
+	pick_closest_target_with_spillover = true,
 	horde_pick_closest_target_with_spillover = true,
 	pick_pack_master_target = true,
 	pick_no_targets = true,
-	pick_closest_target = true,
-	pick_mutator_sorcerer_target = true,
-	pick_corruptor_target = true
+	pick_boss_sorcerer_target = true
 }
 
 for name, breed in pairs(Breeds) do

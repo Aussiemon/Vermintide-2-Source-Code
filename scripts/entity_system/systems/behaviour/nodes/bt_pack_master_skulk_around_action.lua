@@ -37,9 +37,7 @@ BTPackMasterSkulkAroundAction.leave = function (self, unit, blackboard, t, reaso
 	blackboard.skulk_debug_state = nil
 	blackboard.skulk_goal_get_fails = nil
 
-	if reason == "aborted" then
-		blackboard.move_state = nil
-	elseif reason == "failed" then
+	if reason == "failed" then
 		blackboard.target_unit = nil
 		blackboard.skulk_time = nil
 		blackboard.skulk_time_left = nil

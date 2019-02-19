@@ -637,6 +637,29 @@ quest_templates.quests.event_mondstille_played_legend_2018 = {
 		}
 	end
 }
+quest_templates.quests.event_mondstille_quickplay_console = {
+	reward = "frame_mondstille_01",
+	name = "quest_mondstille_01_name",
+	icon = "quest_book_mondstille",
+	desc = function ()
+		return string.format(Localize("quest_event_summer_2018_quickplay_desc"), QuestSettings.event_sonnstill_quickplay_levels)
+	end,
+	stat_mappings = event_quickplay_mappings,
+	completed = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+		return QuestSettings.event_sonnstill_quickplay_levels <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+	end,
+	progress = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+		local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+
+		return {
+			count,
+			QuestSettings.event_sonnstill_quickplay_levels
+		}
+	end
+}
 local weekly_complete_quickplay_missions_mappings = {
 	{
 		played_levels_quickplay = {}

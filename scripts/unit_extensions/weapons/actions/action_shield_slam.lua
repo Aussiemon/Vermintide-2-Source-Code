@@ -242,8 +242,9 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 						local charge_value = self.damage_profile.charge_value or "heavy_attack"
 						local num_hit_targets = 1
 						local send_to_server = true
+						local buff_type = DamageUtils.get_item_buff_type(self.item_name)
 
-						DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, target_hit_zone_name, num_hit_targets, send_to_server, "n/a")
+						DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, target_hit_zone_name, num_hit_targets, send_to_server, buff_type)
 						weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, self.damage_profile_aoe_id, "power_level", power_level, "hit_target_index", nil, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", self._is_critical_strike, "can_damage", true, "can_stagger", true)
 					end
 				end
@@ -328,8 +329,9 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 			local send_to_server = true
 			local charge_value = damage_profile.charge_value or "heavy_attack"
 			local num_hit_targets = 1
+			local buff_type = DamageUtils.get_item_buff_type(self.item_name)
 
-			DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, num_hit_targets, send_to_server, "n/a")
+			DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, num_hit_targets, send_to_server, buff_type)
 
 			local damage_source_id = NetworkLookup.damage_sources[self.item_name]
 			local weapon_system = self.weapon_system

@@ -23,10 +23,16 @@ BTZombieExplodeAction.enter = function (self, unit, blackboard, t)
 	else
 		blackboard.explosion_timer = t
 	end
+
+	local navigation_extension = blackboard.navigation_extension
+
+	navigation_extension:set_enabled(false)
 end
 
 BTZombieExplodeAction.leave = function (self, unit, blackboard, t, reason, destroy)
-	return
+	local navigation_extension = blackboard.navigation_extension
+
+	navigation_extension:set_enabled(true)
 end
 
 BTZombieExplodeAction.run = function (self, unit, blackboard, t, dt)

@@ -1,4 +1,4 @@
-wounding_damage_types = {
+local wounding_damage_types = {
 	"light_stab_fencer",
 	"light_stab_smiter",
 	"stab_fencer",
@@ -1050,7 +1050,7 @@ HitEffectsRatlingGunner = {
 			lateral_force = 30
 		}
 	},
-	blunt_tank_death_head = {
+	blunt_tank_uppercut_death_head = {
 		inherits = "blunt_tank_uppercut_death",
 		extra_conditions = {
 			hit_zone = {
@@ -2323,5 +2323,6 @@ HitEffectsRatlingGunner = {
 		animations = SHOOTING_HIT_EFFECT_ANIMS
 	}
 }
+HitEffectsRatlingGunner = table.create_copy(HitEffectsRatlingGunner, HitEffectsRatlingGunner)
 
 return

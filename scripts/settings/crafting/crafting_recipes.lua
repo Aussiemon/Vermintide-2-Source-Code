@@ -37,21 +37,30 @@ local crafting_recipes = {
 					local item_rarity_order = UISettings.item_rarity_order
 					local item_1_rarity_order = item_rarity_order[item_1_rarity]
 					local item_2_rarity_order = item_rarity_order[item_2_rarity]
+					local cosmetics_sorting_order = UISettings.cosmetics_sorting_order
+					local item_1_cosmetic_order = cosmetics_sorting_order[item_1_item_type] or 0
+					local item_2_cosmetic_order = cosmetics_sorting_order[item_2_item_type] or 0
+					local item_1_is_cosmetic = item_1_item_type == "skin" or item_1_item_type == "hat"
+					local item_2_is_cosmetic = item_2_item_type == "skin" or item_2_item_type == "hat"
 
-					if item_1_rarity_order == item_2_rarity_order then
-						local item_type_1 = Localize(item_1_item_type)
-						local item_type_2 = Localize(item_1_item_type)
+					if item_1_cosmetic_order == item_2_cosmetic_order then
+						if item_1_rarity_order == item_2_rarity_order then
+							local item_type_1 = Localize(item_1_item_type)
+							local item_type_2 = Localize(item_1_item_type)
 
-						if item_type_1 == item_type_2 then
-							local _, item_name_1 = UIUtils.get_ui_information_from_item(item_1)
-							local _, item_name_2 = UIUtils.get_ui_information_from_item(item_2)
+							if item_type_1 == item_type_2 then
+								local _, item_name_1 = UIUtils.get_ui_information_from_item(item_1)
+								local _, item_name_2 = UIUtils.get_ui_information_from_item(item_2)
 
-							return Localize(item_name_1) < Localize(item_name_2)
+								return Localize(item_name_1) < Localize(item_name_2)
+							else
+								return item_type_1 < item_type_2
+							end
 						else
-							return item_type_1 < item_type_2
+							return item_2_rarity_order < item_1_rarity_order
 						end
 					else
-						return item_2_rarity_order < item_1_rarity_order
+						return item_1_cosmetic_order < item_2_cosmetic_order
 					end
 				else
 					return item_1_power_level < item_2_power_level

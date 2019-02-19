@@ -130,7 +130,9 @@ PSRestrictions._set_restriction_fetched = function (self, user_id, restriction)
 	local restrictions = user.restrictions
 	local index = table.find(restrictions, restriction)
 
-	table.remove(restrictions, index)
+	if index then
+		table.remove(restrictions, index)
+	end
 end
 
 PSRestrictions._try_fetch_next_restriction_access = function (self, user_id)

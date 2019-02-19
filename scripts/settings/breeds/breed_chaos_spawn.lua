@@ -853,17 +853,16 @@ local action_data = {
 		considerations = UtilityConsiderations.chaos_spawn_tentacle_grab,
 		attacks = {
 			{
-				b,
-				offset_forward = 0,
-				catapult_player = false,
+				freeze_intensity_decay_time = 15,
+				height = 2,
+				ignores_dodging = false,
 				range = 2,
-				hit_only_players = true,
+				catapult_player = false,
 				rotation_time = 0.3,
 				anim_driven = false,
 				use_extra_space = false,
-				ignores_dodging = false,
-				height = 2,
-				freeze_intensity_decay_time = 15,
+				hit_only_players = true,
+				offset_forward = 0,
 				offset_up = 0,
 				ignore_targets_behind = true,
 				extra_space_up = true,
@@ -901,6 +900,19 @@ local action_data = {
 						base_node_name = "j_leftforearm",
 						tip_node_name = "j_lefthand",
 						start_time = 0.6666666666666666
+					}
+				},
+				bot_threat_difficulty_data = default_bot_threat_difficulty_data,
+				bot_threats = {
+					{
+						collision_type = "cylinder",
+						offset_forward = 0,
+						radius = 4.5,
+						height = 4,
+						offset_right = 0,
+						offset_up = 0,
+						duration = 0.8333333333333334,
+						start_time = 0.16666666666666666
 					}
 				}
 			}

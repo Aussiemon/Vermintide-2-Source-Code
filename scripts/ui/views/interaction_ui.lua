@@ -399,7 +399,8 @@ local widget_definitions = {
 	}
 }
 
-InteractionUI.init = function (self, ingame_ui_context)
+InteractionUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.player_manager = ingame_ui_context.player_manager

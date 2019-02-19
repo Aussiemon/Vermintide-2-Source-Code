@@ -22,7 +22,6 @@ BTStormVerminPushAction.enter = function (self, unit, blackboard, t)
 	blackboard.active_node = BTStormVerminPushAction
 	blackboard.attack_finished = false
 	blackboard.attack_aborted = false
-	blackboard.has_engaged = true
 	local network_manager = Managers.state.network
 	local navigation_extension = blackboard.navigation_extension
 
@@ -41,8 +40,6 @@ BTStormVerminPushAction.enter = function (self, unit, blackboard, t)
 end
 
 BTStormVerminPushAction.leave = function (self, unit, blackboard, t, reason, destroy)
-	blackboard.move_state = nil
-
 	blackboard.navigation_extension:set_enabled(true)
 
 	blackboard.active_node = nil

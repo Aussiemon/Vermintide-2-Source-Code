@@ -5,11 +5,6 @@ local RPCS = {
 local extensions = {
 	"GenericDeathExtension"
 }
-DeathReactions_profiler_names = DeathReactions_profiler_names or {
-	unit = {},
-	husk = {}
-}
-local profiler_names = DeathReactions_profiler_names
 local BLACKBOARDS = BLACKBOARDS
 
 DeathSystem.init = function (self, entity_system_creation_context, system_name)
@@ -40,10 +35,6 @@ DeathSystem.on_add_extension = function (self, world, unit, extension_name, exte
 	local network_type = extension.network_type
 	local active_reactions = self.active_reactions[network_type]
 	active_reactions[template] = active_reactions[template] or {}
-	profiler_names[network_type][template] = profiler_names[network_type][template] or {
-		"start_" .. template,
-		"update_" .. template
-	}
 
 	if not extension.is_alive and not extension.death_is_done then
 		self.active_reactions[extension.network_type][extension.death_reaction_template][unit] = extension
@@ -137,7 +128,6 @@ DeathSystem.update = function (self, context, t)
 	local dt = context.dt
 	local DeathReactions = DeathReactions
 	local IS_DONE = DeathReactions.IS_DONE
-	local profiler_names = profiler_names
 	local active_reactions = self.active_reactions
 	local death_reactions_to_start = self.death_reactions_to_start
 
@@ -193,6 +183,14 @@ DeathSystem.kill_unit = function (self, unit, killing_blow)
 	if is_hot_join_sync(killing_blow) then
 		extension.death_has_started = true
 	end
+
+	local t = Managers.time:time("game")
+	local context = self.extension_init_context
+	local network_type = extension.network_type
+	local death_reaction_template = extension.death_reaction_template
+	local death_reaction = DeathReactions.templates[death_reaction_template][network_type]
+
+	death_reaction.pre_start(unit, context, t, killing_blow)
 
 	local death_reactions_to_start = self.death_reactions_to_start
 	death_reactions_to_start[unit] = killing_blow

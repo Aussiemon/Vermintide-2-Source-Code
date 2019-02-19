@@ -58,10 +58,17 @@ DoorExtension.animation_played = function (self, frames, speed)
 end
 
 DoorExtension.update_nav_obstacles = function (self)
+	local unit = self.unit
 	local current_state = self.current_state
 	local obstacles = self.state_to_nav_obstacle_map
+	local clip_nav = Unit.get_data(unit, "navtag_volume", "clip_navmesh")
+	local clip_nav_check = Unit.has_data(unit, "navtag_volume", "clip_navmesh")
 
-	if not obstacles[current_state] then
+	if clip_nav_check == false then
+		clip_nav = true
+	end
+
+	if not obstacles[current_state] and clip_nav ~= false then
 		local unit = self.unit
 		local nav_world = GLOBAL_AI_NAVWORLD
 		local obstacle, transform = NavigationUtils.create_exclusive_box_obstacle_from_unit_data(nav_world, unit)

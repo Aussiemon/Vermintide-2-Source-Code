@@ -266,11 +266,17 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 
 			self._rumble_effect_id = nil
 		end
+
+		self.buff_extension:trigger_procs("on_spell_used", current_action)
 	end
 end
 
 ActionFlamethrower.finish = function (self, reason)
 	self:_clear_targets()
+
+	if self.state ~= "shot" then
+		self.buff_extension:trigger_procs("on_spell_used", self.current_action)
+	end
 
 	if not self.vfx_stopped then
 		if self.flamethrower_effect then

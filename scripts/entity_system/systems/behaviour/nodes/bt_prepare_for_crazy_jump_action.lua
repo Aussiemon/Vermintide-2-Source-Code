@@ -147,6 +147,7 @@ BTPrepareForCrazyJumpAction.run = function (self, unit, blackboard, t, dt)
 
 				blackboard.move_closer_to_target_timer = t + 1
 				blackboard.remembered_threat_pos = nil
+				data.ready_crouch_time = nil
 
 				return "running"
 			end

@@ -116,12 +116,12 @@ PlayerUnitHealthExtension._calculate_buffed_max_health = function (self)
 	local max_health = nil
 
 	if health_state == "alive" then
-		max_health = buff_extension:apply_buffs_to_value(max_health_alive, StatBuffIndex.MAX_HEALTH_ALIVE)
+		max_health = buff_extension:apply_buffs_to_value(max_health_alive, "max_health_alive")
 	else
-		max_health = buff_extension:apply_buffs_to_value(max_health_kd, StatBuffIndex.MAX_HEALTH_KD)
+		max_health = buff_extension:apply_buffs_to_value(max_health_kd, "max_health_kd")
 	end
 
-	max_health = buff_extension:apply_buffs_to_value(max_health, StatBuffIndex.MAX_HEALTH)
+	max_health = buff_extension:apply_buffs_to_value(max_health, "max_health")
 
 	return max_health
 end
@@ -131,11 +131,11 @@ PlayerUnitHealthExtension._calculate_max_health = function (self)
 	local health_state = self.state
 	local modifier = 1
 	local num_grimoires = buff_extension:num_buff_perk("skaven_grimoire")
-	local grimoire_multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
+	local grimoire_multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, "curse_protection")
 	local num_twitch_grimoires = buff_extension:num_buff_perk("twitch_grimoire")
 	local twitch_grimoire_multiplier = PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF
 	local num_slayer_curses = buff_extension:num_buff_perk("slayer_curse")
-	local slayer_curse_multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.SLAYER_CURSE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
+	local slayer_curse_multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.SLAYER_CURSE_HEALTH_DEBUFF, "curse_protection")
 
 	if health_state == "knocked_down" then
 		num_slayer_curses = 0

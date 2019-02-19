@@ -3920,6 +3920,20 @@ UtilityConsiderations = {
 			invert = false,
 			blackboard_input = "in_boss_arena"
 		}
+	},
+	rat_explosion_attack = {
+		distance_to_target = {
+			max_value = 10,
+			blackboard_input = "target_dist",
+			spline = {
+				0,
+				1,
+				0.25,
+				1,
+				0.3,
+				0
+			}
+		}
 	}
 }
 

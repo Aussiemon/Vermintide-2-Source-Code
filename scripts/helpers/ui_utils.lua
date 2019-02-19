@@ -113,18 +113,20 @@ UIUtils.get_ui_information_from_item = function (item)
 	local item_data = item.data
 	local item_type = item_data.item_type
 	local rarity = item.rarity
-	local inventory_icon, display_name, description = nil
+	local inventory_icon, display_name, description, store_icon = nil
 
 	if item_type == "weapon_skin" then
-		local skin = item.skin
+		local skin = item.skin or item_data.key
 		local skin_template = WeaponSkins.skins[skin]
 		inventory_icon = skin_template.inventory_icon
+		store_icon = skin_template.store_icon
 		display_name = skin_template.display_name
 		description = skin_template.description
 	elseif item.skin then
 		local skin = item.skin
 		local skin_template = WeaponSkins.skins[skin]
 		inventory_icon = skin_template.inventory_icon
+		store_icon = skin_template.store_icon
 		display_name = skin_template.display_name
 		description = skin_template.description
 	elseif rarity == "default" then
@@ -133,20 +135,23 @@ UIUtils.get_ui_information_from_item = function (item)
 
 		if default_item_data then
 			inventory_icon = default_item_data.inventory_icon or item_data.inventory_icon
+			store_icon = default_item_data.store_icon or item_data.store_icon
 			display_name = default_item_data.display_name or item_data.display_name
 			description = default_item_data.description or item_data.description
 		else
 			inventory_icon = item_data.inventory_icon
+			store_icon = item_data.store_icon
 			display_name = item_data.display_name
 			description = item_data.description
 		end
 	else
 		inventory_icon = item_data.inventory_icon
+		store_icon = item_data.store_icon
 		display_name = item_data.display_name
 		description = item_data.description
 	end
 
-	return inventory_icon, display_name, description
+	return inventory_icon, display_name, description, store_icon
 end
 
 UIUtils.presentable_hero_power_level = function (power_level)
@@ -204,7 +209,7 @@ UIUtils.get_hero_statistics_by_template = function (template)
 	return layout
 end
 
-UIUtils.get_text_height = function (ui_renderer, size, ui_style, text, ui_style_global)
+UIUtils.get_text_height = function (ui_renderer, size, text_style, text, ui_style_global)
 	local widget_scale = nil
 
 	if ui_style_global then
@@ -213,25 +218,25 @@ UIUtils.get_text_height = function (ui_renderer, size, ui_style, text, ui_style_
 
 	local font_material, font_size, font_name = nil
 
-	if ui_style.font_type then
-		local font, size_of_font = UIFontByResolution(ui_style, widget_scale)
+	if text_style.font_type then
+		local font, size_of_font = UIFontByResolution(text_style, widget_scale)
 		font_name = font[3]
 		font_size = font[2]
 		font_material = font[1]
 		font_size = size_of_font
 	else
-		local font = ui_style.font
+		local font = text_style.font
 		font_name = font[3]
 		font_size = font[2]
 		font_material = font[1]
-		font_size = ui_style.font_size or font_size
+		font_size = text_style.font_size or font_size
 	end
 
-	if ui_style.localize then
+	if text_style.localize then
 		text = Localize(text)
 	end
 
-	if ui_style.upper_case then
+	if text_style.upper_case then
 		text = TextToUpper(text)
 	end
 
@@ -244,6 +249,27 @@ UIUtils.get_text_height = function (ui_renderer, size, ui_style, text, ui_style_
 	local full_font_height = (font_max + math.abs(font_min)) * inv_scale * num_texts
 
 	return full_font_height
+end
+
+UIUtils.get_text_width = function (ui_renderer, text_style, text, ui_style_global)
+	local widget_scale = nil
+
+	if ui_style_global then
+		widget_scale = ui_style_global.scale
+	end
+
+	if text_style.localize then
+		text = Localize(text)
+	end
+
+	if text_style.upper_case then
+		text = TextToUpper(text)
+	end
+
+	local font, scaled_font_size = UIFontByResolution(text_style, widget_scale)
+	local text_width, text_height, min = UIRenderer.text_size(ui_renderer, text, font[1], scaled_font_size)
+
+	return text_width
 end
 
 return

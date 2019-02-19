@@ -15,6 +15,7 @@ local breed_data = {
 	behavior = "chaos_corruptor_sorcerer",
 	stagger_resistance = 3,
 	dialogue_source_name = "chaos_corruptor_sorcerer",
+	threat_value = 8,
 	max_health = {
 		20,
 		20,

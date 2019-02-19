@@ -19,8 +19,10 @@ CareerAbilityESKnight.init = function (self, extension_init_context, unit, exten
 			local first_person_extension = this.first_person_extension
 			local unit_3p = this.unit
 
-			first_person_extension:play_unit_sound_event("Play_career_ability_kruber_charge_enter", unit_3p, 0, true)
-			first_person_extension:play_unit_sound_event("Play_career_ability_kruber_charge_forward", unit_3p, 0, true)
+			first_person_extension:play_hud_sound_event("Play_career_ability_kruber_charge_enter")
+			first_person_extension:play_hud_sound_event("Play_career_ability_kruber_charge_forward")
+			first_person_extension:play_remote_unit_sound_event("Play_career_ability_kruber_charge_enter", unit_3p, 0)
+			first_person_extension:play_remote_unit_sound_event("Play_career_ability_kruber_charge_forward", unit_3p, 0)
 		end,
 		impact = function (this)
 			local first_person_extension = this.first_person_extension
@@ -31,13 +33,15 @@ CareerAbilityESKnight.init = function (self, extension_init_context, unit, exten
 
 			Unit.flow_event(unit_1p, "lua_es_knight_activated_impact")
 			WwiseWorld.set_global_parameter(wwise_world, "knight_charge_num_impacts", num_impacts)
-			first_person_extension:play_unit_sound_event("Play_career_ability_kruber_charge_hit_player", unit_3p, 0, true)
+			first_person_extension:play_hud_sound_event("Play_career_ability_kruber_charge_hit_player")
+			first_person_extension:play_remote_unit_sound_event("Play_career_ability_kruber_charge_hit_player", unit_3p, 0)
 		end,
 		finished = function (this)
 			local first_person_extension = this.first_person_extension
 			local unit_3p = this.unit
 
-			first_person_extension:play_unit_sound_event("Stop_career_ability_kruber_charge_forward", unit_3p, 0, true)
+			first_person_extension:play_hud_sound_event("Stop_career_ability_kruber_charge_forward")
+			first_person_extension:play_remote_unit_sound_event("Stop_career_ability_kruber_charge_forward", unit_3p, 0)
 		end
 	}
 end

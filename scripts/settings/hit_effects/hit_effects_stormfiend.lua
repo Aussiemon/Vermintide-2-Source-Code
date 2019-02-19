@@ -172,5 +172,6 @@ HitEffectsStormfiend = {
 		}
 	}
 }
+HitEffectsStormfiend = table.create_copy(HitEffectsStormfiend, HitEffectsStormfiend)
 
 return

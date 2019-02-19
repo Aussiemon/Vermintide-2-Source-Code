@@ -11,6 +11,9 @@ TentacleSplineExtension.init = function (self, extension_init_context, unit, ext
 	self._unit = unit
 	self.is_server = is_server
 	self.world = extension_init_context.world
+end
+
+TentacleSplineExtension.extensions_ready = function (self, world, unit)
 	local blackboard = BLACKBOARDS[unit] or {}
 	self.blackboard = blackboard
 	local nav_world = Managers.state.entity:system("ai_system"):nav_world()

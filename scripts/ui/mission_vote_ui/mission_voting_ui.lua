@@ -7,7 +7,8 @@ local adventure_game_widget_definitions = definitions.adventure_game_widgets
 local event_game_widget_definitions = definitions.event_game_widgets
 MissionVotingUI = class(MissionVotingUI)
 
-MissionVotingUI.init = function (self, ingame_ui_context)
+MissionVotingUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
@@ -415,10 +416,13 @@ MissionVotingUI._is_button_pressed = function (self, widget)
 	end
 end
 
-MissionVotingUI.update = function (self, menu_active, dt, t)
-	local ingame_ui = self.ingame_ui
+MissionVotingUI.update = function (self, dt, t)
+	local parent = self._parent
+	local ingame_ui = parent:parent()
+	local menu_active = ingame_ui.menu_active
+	local current_view = ingame_ui.current_view
 
-	if menu_active or ingame_ui.current_view then
+	if menu_active or current_view then
 		menu_active = true
 	else
 		menu_active = false

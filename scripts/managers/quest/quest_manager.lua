@@ -30,7 +30,6 @@ QuestManager.init = function (self, statistics_db)
 end
 
 QuestManager.event_stat_incremented = function (self, stats_id, ...)
-	local statistics_db = self._statistics_db
 	local quests = self._backend_interface_quests:get_quests()
 	local daily_quests = quests.daily
 	local weekly_quests = quests.weekly

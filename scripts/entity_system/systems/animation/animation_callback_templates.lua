@@ -612,7 +612,7 @@ AnimationCallbackTemplates.client.anim_cb_hide_weapons = function (unit, param)
 		return
 	end
 
-	local is_local_player = player.is_local_player
+	local is_local_player = player.local_player
 	local allowed_to_set = true
 
 	if is_local_player then
@@ -635,7 +635,7 @@ AnimationCallbackTemplates.client.anim_cb_unhide_weapons = function (unit, param
 		return
 	end
 
-	local is_local_player = player.is_local_player
+	local is_local_player = player.local_player
 	local allowed_to_set = true
 
 	if is_local_player then

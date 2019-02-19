@@ -42,9 +42,9 @@ GenericAmmoUserExtension.apply_buffs = function (self)
 	if self.slot_name == "slot_ranged" or self.slot_name == "slot_career_skill_weapon" then
 		local buff_extension = ScriptUnit.extension(self.owner_unit, "buff_system")
 		self.owner_buff_extension = buff_extension
-		self.ammo_per_clip = math.ceil(buff_extension:apply_buffs_to_value(self.original_ammo_per_clip, StatBuffIndex.CLIP_SIZE))
-		self.max_ammo = math.ceil(buff_extension:apply_buffs_to_value(self.original_max_ammo, StatBuffIndex.TOTAL_AMMO))
-		self.start_ammo = math.ceil(buff_extension:apply_buffs_to_value(self.original_start_ammo, StatBuffIndex.TOTAL_AMMO))
+		self.ammo_per_clip = math.ceil(buff_extension:apply_buffs_to_value(self.original_ammo_per_clip, "clip_size"))
+		self.max_ammo = math.ceil(buff_extension:apply_buffs_to_value(self.original_max_ammo, "total_ammo"))
+		self.start_ammo = math.ceil(buff_extension:apply_buffs_to_value(self.original_start_ammo, "total_ammo"))
 	end
 
 	self:reset()
@@ -141,7 +141,7 @@ GenericAmmoUserExtension.update = function (self, unit, input, dt, context, t)
 			local unmodded_reload_time = reload_time
 
 			if self.owner_buff_extension then
-				reload_time = self.owner_buff_extension:apply_buffs_to_value(reload_time, StatBuffIndex.RELOAD_SPEED)
+				reload_time = self.owner_buff_extension:apply_buffs_to_value(reload_time, "reload_speed")
 			end
 
 			self.next_reload_time = t + reload_time

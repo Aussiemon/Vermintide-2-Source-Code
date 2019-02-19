@@ -1276,7 +1276,7 @@ HitEffectsSkavenPlagueMonk = {
 			lateral_force = 30
 		}
 	},
-	blunt_tank_death_head = {
+	blunt_tank_uppercut_death_head = {
 		inherits = "blunt_tank_uppercut_death",
 		extra_conditions = {
 			hit_zone = {

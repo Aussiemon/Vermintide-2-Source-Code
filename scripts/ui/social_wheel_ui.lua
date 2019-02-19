@@ -46,7 +46,8 @@ else
 	}
 end
 
-SocialWheelUI.init = function (self, ingame_ui_context)
+SocialWheelUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._render_settings = {
 		alpha_multiplier = 0

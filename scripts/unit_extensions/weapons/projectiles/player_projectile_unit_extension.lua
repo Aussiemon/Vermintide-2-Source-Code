@@ -198,7 +198,6 @@ PlayerProjectileUnitExtension.handle_impacts = function (self, impacts, num_impa
 	local hit_units = self.hit_units
 	local hit_affro_units = self.hit_affro_units
 	local impact_data = self.impact_data
-	local link = impact_data.link
 	local network_manager = Managers.state.network
 	local network_transmit = network_manager.network_transmit
 	local unit_id = network_manager:unit_game_object_id(unit)
@@ -242,8 +241,6 @@ PlayerProjectileUnitExtension.handle_impacts = function (self, impacts, num_impa
 						if self.is_server then
 							AiUtils.alert_unit_of_enemy(hit_unit, owner_unit)
 						elseif Unit.alive(owner_unit) then
-							local network_manager = Managers.state.network
-
 							network_manager.network_transmit:send_rpc_server("rpc_alert_enemy", network_manager:unit_game_object_id(hit_unit), network_manager:unit_game_object_id(owner_unit))
 						end
 					end
@@ -268,7 +265,7 @@ PlayerProjectileUnitExtension.handle_impacts = function (self, impacts, num_impa
 			if not hit_affro then
 				if breed then
 					local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
-					local _, procced = buff_extension:apply_buffs_to_value(0, StatBuffIndex.AUTOMATIC_HEAD_SHOT)
+					local _, procced = buff_extension:apply_buffs_to_value(0, "automatic_head_shot")
 					local node = Actor.node(hit_actor)
 					local hit_zone = breed.hit_zones_lookup[node]
 
@@ -277,16 +274,16 @@ PlayerProjectileUnitExtension.handle_impacts = function (self, impacts, num_impa
 						local actors = head_hit_zone.actors
 						local num_actors = #actors
 
-						for i = 1, num_actors, 1 do
-							local actor_name = actors[i]
+						for k = 1, num_actors, 1 do
+							local actor_name = actors[k]
 							local head_actor_index = Unit.find_actor(hit_unit, actor_name)
 
 							if head_actor_index then
 								local head_actor = Unit.actor(hit_unit, head_actor_index)
 								local actor_position = Actor.center_of_mass(head_actor)
-								local validate_position = self:validate_position(actor_position, pos_min, pos_max)
+								local head_validate_position = self:validate_position(actor_position, pos_min, pos_max)
 
-								if validate_position then
+								if head_validate_position then
 									hit_actor = head_actor
 									actor_index = head_actor_index
 									hit_position = actor_position
@@ -341,12 +338,16 @@ PlayerProjectileUnitExtension.hit_afro = function (self, breed, hit_actor)
 end
 
 PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, breed, has_ranged_boost, ranged_boost_curve_multiplier)
-	local owner_unit = self.owner_unit
 	local shield_blocked = false
 	local damage_profile_name = impact_data.damage_profile or "default"
 	local damage_profile = DamageProfileTemplates[damage_profile_name]
 	local allow_link = true
 	local aoe_data = impact_data.aoe
+	breed = AiUtils.unit_breed(hit_unit)
+
+	if not breed then
+		return
+	end
 
 	if damage_profile then
 		local node = Actor.node(hit_actor)
@@ -357,8 +358,9 @@ PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit,
 		local is_critical_strike = self._is_critical_strike
 		local owner_unit = self.owner_unit
 		local num_targets_hit = self.num_targets_hit + 1
+		local buff_type = DamageUtils.get_item_buff_type(self.item_name)
 
-		DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, num_targets_hit, send_to_server, "n/a")
+		DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, num_targets_hit, send_to_server, buff_type)
 
 		allow_link, shield_blocked = self:hit_enemy_damage(damage_profile, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, breed, has_ranged_boost, ranged_boost_curve_multiplier)
 	end
@@ -425,8 +427,7 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 		shield_blocked = AiUtils.attack_is_shield_blocked(hit_unit, owner_unit, trueflight_blocking, hit_direction)
 	end
 
-	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
-	local breed = AiUtils.unit_breed(hit_unit)
+	breed = AiUtils.unit_breed(hit_unit)
 	local is_dummy = Unit.get_data(hit_unit, "is_dummy")
 	local multiplier_type = DamageUtils.get_breed_damage_multiplier_type(breed, hit_zone_name, is_dummy)
 
@@ -452,21 +453,6 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 	end
 
 	local actual_target_index = math.ceil(self.amount_of_mass_hit)
-	local wall_nail = action.impact_data.wall_nail
-	local hit_ragdoll_actor = nil
-
-	if wall_nail then
-		local actor_name = hit_zone.actor_name
-
-		if breed.hitbox_ragdoll_translation then
-			hit_ragdoll_actor = breed.hitbox_ragdoll_translation[actor_name]
-		end
-	end
-
-	if hit_ragdoll_actor == nil then
-		hit_ragdoll_actor = "n/a"
-	end
-
 	local hit_effect = action.hit_effect
 	local is_husk = not owner.local_player
 	local damage_sound = attack_template.sound_type
@@ -509,7 +495,7 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 	if hit_zone_name == "head" and not shield_blocked then
 		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-		local _, procced = buff_extension:apply_buffs_to_value(0, StatBuffIndex.COOP_STAMINA)
+		local _, procced = buff_extension:apply_buffs_to_value(0, "coop_stamina")
 
 		if (procced or script_data.debug_legendary_traits) and AiUtils.unit_alive(hit_unit) then
 			local headshot_coop_stamina_fatigue_type = breed.headshot_coop_stamina_fatigue_type or "headshot_clan_rat"
@@ -583,7 +569,6 @@ ProjectileSpawners = {
 	end,
 	split_bounce = function (self, projectile_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor)
 		local owner_unit = self.owner_unit
-		local scale = projectile_data.scale
 		local item_name = self.item_name
 		local action_lookup_data = self.action_lookup_data
 		local item_template_name = action_lookup_data.item_template_name
@@ -591,7 +576,6 @@ ProjectileSpawners = {
 		local sub_action_name = projectile_data.sub_action_name
 		local bounce_dir = hit_direction - 2 * Vector3.dot(hit_direction, hit_normal) * hit_normal
 		local spread = Math.random() * math.pi * 2
-		local angle = math.pi / 16
 
 		for i = 1, 2, 1 do
 			local spread_angle = (2 * i - 3) * spread
@@ -631,12 +615,10 @@ PlayerProjectileUnitExtension.hit_player_damage = function (self, damage_profile
 	self.amount_of_mass_hit = self.amount_of_mass_hit + 1
 	local actual_target_index = math.ceil(self.amount_of_mass_hit)
 	local target_settings = damage_profile.default_target
-	local attack_template = AttackTemplates[target_settings.attack_template]
 	local action = self.current_action
 	local hit_effect = action.hit_effect
 	local owner = self.owner_player
 	local is_husk = not owner.local_player
-	local damage_sound = attack_template.sound_type
 	local hit_rotation = Quaternion.look(hit_direction, Vector3.up())
 	local damage_source = self.item_name
 	local damage_profile_id = self.impact_damage_profile_id
@@ -694,7 +676,6 @@ PlayerProjectileUnitExtension.hit_level_unit = function (self, impact_data, hit_
 	if hit_effect then
 		local world = self.world
 		local hit_rotation = Quaternion.look(hit_direction)
-		local owner_unit = self.owner_unit
 		local owner = self.owner_player
 		local is_husk = not owner.local_player
 
@@ -811,7 +792,6 @@ end
 
 PlayerProjectileUnitExtension.hit_non_level_damagable_unit = function (self, damage_profile, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, has_ranged_boost, ranged_boost_curve_multiplier)
 	local network_manager = Managers.state.network
-	local target_settings = damage_profile.default_target
 	local hit_zone_name = "full"
 	local owner_unit = self.owner_unit
 	local attacker_unit_id = network_manager:unit_game_object_id(owner_unit)
@@ -842,7 +822,6 @@ end
 PlayerProjectileUnitExtension.link_projectile = function (self, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, damage, shield_blocked)
 	local unit_spawner = Managers.state.unit_spawner
 	local projectile_linker_system = self.projectile_linker_system
-	local owner_unit = self.owner_unit
 	local projectile_info = self.projectile_info
 	local dummy_linker_unit_name = projectile_info.dummy_linker_unit_name
 	local broken_chance = math.random()
@@ -877,7 +856,6 @@ PlayerProjectileUnitExtension.link_projectile = function (self, hit_unit, hit_po
 
 	local normalized_direction = Vector3.normalize(hit_direction)
 	depth = depth + depth_offset
-	local random_bank = math.random() * 2.14 - 0.5
 	local link_position = hit_position + normalized_direction * depth
 	local link_rotation = Quaternion.look(normalized_direction)
 	local new_link_rotation = link_rotation
@@ -946,11 +924,11 @@ end
 
 PlayerProjectileUnitExtension.spawn_liquid_area = function (self, unit, pos, dir, data)
 	local start_pos = pos
-	local dir = dir
+	local flow_dir = dir
 	local liquid = math.floor(self.scale * 30)
 	local extension_init_data = {
 		area_damage_system = {
-			flow_dir = dir,
+			flow_dir = flow_dir,
 			damage_table = data.liquid_area.damage,
 			liquid_template = data.liquid_area.liquid_template,
 			source_unit = unit,

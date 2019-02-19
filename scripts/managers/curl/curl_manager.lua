@@ -1,4 +1,17 @@
 CurlManager = class(CurlManager)
+local curl_info_types = {
+	[0] = "info_text",
+	"info_header_in",
+	"info_header_out",
+	"info_data_in",
+	"info_data_out",
+	"info_ssl_data_in",
+	"info_ssl_data_out"
+}
+
+local function debug_output(type, data)
+	printf("[CURL] %s: %s", curl_info_types[type], data)
+end
 
 CurlManager.init = function (self)
 	self._curl = lcurl.stingray_init()

@@ -707,7 +707,7 @@ MixerManager._handle_results = function (self, vote_results)
 		local vote_template = TwitchVoteTemplates[vote_template_name]
 		local breed_name = vote_template.breed_name
 
-		if breed_name then
+		if breed_name and self.locked_breed_packages[breed_name] then
 			package_loader:unlock_breed_package(breed_name)
 
 			self.locked_breed_packages[breed_name] = nil
@@ -1225,10 +1225,12 @@ MixerGameMode._trigger_new_vote = function (self)
 		Mixer.set_scene(scene_name)
 	end
 
-	local time = MixerSettings.default_vote_time
+	local vote_time = Application.user_setting("twitch_vote_time") or MixerSettings.default_vote_time
+	local time = vote_time
 	local vote_key = self._parent:register_vote(time, vote_type, validation_func, vote_templates, true, callback(self, "cb_on_vote_complete"))
 	self._vote_keys[vote_key] = true
-	self._timer = MixerSettings.default_downtime + time
+	local downtime = Application.user_setting("twitch_time_between_votes") or MixerSettings.default_downtime
+	self._timer = downtime + time
 end
 
 MixerGameMode.cb_on_vote_complete = function (self, current_vote)
@@ -1259,6 +1261,8 @@ MixerGameMode.destroy = function (self)
 
 		for breed_name, _ in pairs(self._parent.locked_breed_packages) do
 			enemy_package_loader:unlock_breed_package(breed_name)
+
+			self._parent.locked_breed_packages[breed_name] = nil
 		end
 	end
 

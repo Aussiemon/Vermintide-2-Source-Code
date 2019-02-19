@@ -41,7 +41,7 @@ ActionCharge.client_owner_start_action = function (self, new_action, t)
 	self.remove_overcharge_on_interrupt = new_action.remove_overcharge_on_interrupt
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	self.charge_level = 0
-	self.charge_time = buff_extension:apply_buffs_to_value(new_action.charge_time, StatBuffIndex.REDUCED_RANGED_CHARGE_TIME)
+	self.charge_time = buff_extension:apply_buffs_to_value(new_action.charge_time, "reduced_ranged_charge_time")
 	self.charge_complete_time = self.charge_time + t
 	self.overcharge_timer = 0
 

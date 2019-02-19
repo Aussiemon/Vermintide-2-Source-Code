@@ -1,7 +1,6 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTClanRatFollowAction = class(BTClanRatFollowAction, BTNode)
-BTClanRatFollowAction.name = "BTClanRatFollowAction"
 local LEAVE_WALK_DISTANCE_SQ = 36
 local ENTER_WALK_DISTANCE_SQ = 16
 local LATERAL_DISTANCE_FACTOR = 0.01
@@ -12,7 +11,6 @@ local CHASE_MAX_SPEED_INCREASE = 2
 local CHASE_DEACCELERATION_DISTANCE = 1
 local RUN_SPEED_INTERPOLATION_FACTOR = 0.05
 local POSITION_LOOKUP = POSITION_LOOKUP
-local Vector3_length = Vector3.length
 local DEFAULT_MIN_ALERT_FRIENDS_DIST = 7
 local DEFAULT_MAX_ALERT_FRIENDS_DIST = 30
 local DEFAULT_FRIENDS_ALERT_RANGE = 3
@@ -278,7 +276,6 @@ BTClanRatFollowAction._calculate_walk_dir = function (self, right_vector, forwar
 	local fwd_dot = Vector3.dot(forward_vector, dir)
 	local abs_right = math.abs(right_dot)
 	local abs_fwd = math.abs(fwd_dot)
-	local anim = nil
 
 	if abs_fwd < abs_right and right_dot > 0 then
 		dir = "right"
@@ -298,7 +295,6 @@ BTClanRatFollowAction.follow = function (self, unit, blackboard, t, dt)
 	local target_unit = blackboard.target_unit
 	local target_distance = blackboard.target_dist
 	local weapon_reach = breed.follow_reach or breed.weapon_reach or 2
-	local new_speed = 0
 	local target_locomotion = ScriptUnit.has_extension(target_unit, "locomotion_system")
 	local locomotion_extension = blackboard.locomotion_extension
 	local current_speed = Vector3.length(locomotion_extension:current_velocity())
@@ -312,6 +308,8 @@ BTClanRatFollowAction.follow = function (self, unit, blackboard, t, dt)
 			LocomotionUtils.check_start_turning(unit, t, dt, blackboard)
 		end
 	end
+
+	local new_speed = nil
 
 	if blackboard.walking then
 		blackboard.deacceleration_factor = nil
@@ -350,7 +348,6 @@ BTClanRatFollowAction.follow = function (self, unit, blackboard, t, dt)
 	end
 
 	if not blackboard.walking then
-		local breed = blackboard.breed
 		local enter_walk_dist_sq = (breed.enter_walk_distance and breed.enter_walk_distance^2) or ENTER_WALK_DISTANCE_SQ
 		local destination = blackboard.navigation_extension:destination()
 		local rotation = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.target_unit)

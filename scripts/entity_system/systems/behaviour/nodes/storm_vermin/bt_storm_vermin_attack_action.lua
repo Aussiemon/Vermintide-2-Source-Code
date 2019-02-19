@@ -23,7 +23,6 @@ BTStormVerminAttackAction.enter = function (self, unit, blackboard, t)
 	blackboard.attack_range = action.range
 	blackboard.attack_finished = false
 	blackboard.attack_aborted = false
-	blackboard.has_engaged = true
 	blackboard.target_speed = 0
 
 	if action.blocked_anim then
@@ -123,8 +122,6 @@ BTStormVerminAttackAction._init_attack = function (self, unit, blackboard, t)
 end
 
 BTStormVerminAttackAction.leave = function (self, unit, blackboard, t, reason, destroy)
-	blackboard.move_state = nil
-
 	blackboard.navigation_extension:set_enabled(true)
 
 	blackboard.target_unit_status_extension = nil

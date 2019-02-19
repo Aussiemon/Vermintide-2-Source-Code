@@ -193,6 +193,7 @@ CareerAbilityDRSlayer._run_ability = function (self)
 	local owner_unit = self._owner_unit
 	local is_server = self._is_server
 	local local_player = self._local_player
+	local bot_player = self._bot_player
 	local network_manager = self._network_manager
 	local network_transmit = network_manager.network_transmit
 	local status_extension = self._status_extension
@@ -240,15 +241,18 @@ CareerAbilityDRSlayer._run_ability = function (self)
 		end
 	end
 
-	if local_player then
+	if (is_server and bot_player) or local_player then
 		local first_person_extension = self._first_person_extension
 
-		first_person_extension:play_hud_sound_event("Play_career_ability_bardin_slayer_enter", nil, true)
+		first_person_extension:play_hud_sound_event("Play_career_ability_bardin_slayer_enter")
+		first_person_extension:play_remote_unit_sound_event("Play_career_ability_bardin_slayer_enter", owner_unit, 0)
 		first_person_extension:play_hud_sound_event("Play_career_ability_bardin_slayer_loop")
 
-		MOOD_BLACKBOARD.skill_slayer = true
+		if local_player then
+			MOOD_BLACKBOARD.skill_slayer = true
 
-		career_extension:set_state("bardin_activate_slayer")
+			career_extension:set_state("bardin_activate_slayer")
+		end
 	end
 
 	status_extension:set_noclip(true)

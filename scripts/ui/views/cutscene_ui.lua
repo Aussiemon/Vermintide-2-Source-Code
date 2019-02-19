@@ -4,9 +4,11 @@ local math_ease_cubic = math.easeCubic
 local array = pdArray
 CutsceneUI = class(CutsceneUI)
 
-CutsceneUI.init = function (self, ingame_ui_context, cutscene_system)
+CutsceneUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
+	local cutscene_system = Managers.state.entity:system("cutscene_system")
 	self.cutscene_system = cutscene_system
 	local input_manager = ingame_ui_context.input_manager
 	self.input_manager = input_manager

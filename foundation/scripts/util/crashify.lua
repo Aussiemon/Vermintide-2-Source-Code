@@ -31,7 +31,7 @@ Crashify = {
 		print(output)
 	end,
 	print_exception = function (system, message)
-		Application.set_exit_code(57005)
+		Application.set_exit_code(0, false, true)
 
 		if system == nil then
 			return Application.warning("[Crashify] System can't be nil")

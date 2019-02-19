@@ -14,14 +14,6 @@ TerrorEventMixer.init_functions = {
 		event.ends_at = t + ConflictUtils.random_interval(element.duration)
 	end,
 	delay = function (event, element, t)
-		if element.difficulty_requirement then
-			local current_difficulty = Managers.state.difficulty:get_difficulty_rank()
-
-			if current_difficulty < element.difficulty_requirement then
-				return
-			end
-		end
-
 		event.ends_at = t + ConflictUtils.random_interval(element.duration)
 	end,
 	spawn = function (event, element, t)
@@ -32,14 +24,6 @@ TerrorEventMixer.init_functions = {
 	end,
 	spawn_at_raw = function (event, element, t)
 		if Managers.player.is_server then
-			if element.difficulty_requirement then
-				local current_difficulty = Managers.state.difficulty:get_difficulty_rank()
-
-				if current_difficulty < element.difficulty_requirement then
-					return
-				end
-			end
-
 			local conflict_director = Managers.state.conflict
 			local breed_name = nil
 			local check_name = element.breed_name
@@ -64,14 +48,10 @@ TerrorEventMixer.init_functions = {
 			event.ends_at = t + ConflictUtils.random_interval(element.duration)
 		end
 	end,
-	control_pacing = function (event, element, t)
+	control_hordes = function (event, element, t)
 		local conflict_director = Managers.state.conflict
 
-		if element.enable then
-			conflict_director.pacing:enable()
-		else
-			conflict_director.pacing:disable()
-		end
+		conflict_director.pacing:enable_hordes(element.enable)
 	end,
 	control_specials = function (event, element, t)
 		local conflict_director = Managers.state.conflict
@@ -87,6 +67,15 @@ TerrorEventMixer.init_functions = {
 
 				specials_pacing:delay_spawning(t, delay, per_unit_delay, true)
 			end
+		end
+	end,
+	control_pacing = function (event, element, t)
+		local conflict_director = Managers.state.conflict
+
+		if element.enable then
+			conflict_director.pacing:enable()
+		else
+			conflict_director.pacing:disable()
 		end
 	end,
 	horde = function (event, element, t)
@@ -157,14 +146,6 @@ TerrorEventMixer.init_functions = {
 		end
 	end,
 	play_stinger = function (event, element, t)
-		if element.difficulty_requirement then
-			local current_difficulty = Managers.state.difficulty:get_difficulty_rank()
-
-			if current_difficulty < element.difficulty_requirement then
-				return
-			end
-		end
-
 		local stinger_name = element.stinger_name or "enemy_terror_event_stinger"
 		local optional_pos = element.optional_pos
 		local wwise_world = Managers.world:wwise_world(Managers.state.conflict._world)
@@ -317,7 +298,6 @@ TerrorEventMixer.init_functions = {
 				local statistics_db = Managers.player:statistics_db()
 
 				statistics_db:increment_stat_and_sync_to_clients(stat_name)
-				QuestSettings.send_completed_message(stat_name)
 			else
 				optional_data[time_challenge_name] = nil
 			end
@@ -508,6 +488,9 @@ TerrorEventMixer.run_functions = {
 	control_specials = function (event, element, t, dt)
 		return true
 	end,
+	control_hordes = function (event, element, t, dt)
+		return true
+	end,
 	event_horde = function (event, element, t, dt)
 		if event.ends_at < t then
 			return true
@@ -689,7 +672,6 @@ TerrorEventMixer.run_functions = {
 			local statistics_db = Managers.player:statistics_db()
 
 			statistics_db:increment_stat_and_sync_to_clients(increment_stat_name)
-			QuestSettings.send_completed_message(increment_stat_name)
 
 			return true
 		else
@@ -835,16 +817,30 @@ TerrorEventMixer.start_random_event = function (event_chunk_name)
 	print("TerrorEventMixer.start_random_event:", event_chunk_name, "->", event_name)
 end
 
+local function disable_elements_with_lower_difficulty(elements)
+	local current_difficulty = Managers.state.difficulty:get_difficulty_rank()
+	local num_elements = #elements
+
+	for i = 1, num_elements, 1 do
+		local element = elements[i]
+
+		if element.difficulty_requirement then
+			if current_difficulty < element.difficulty_requirement then
+				element.disabled = true
+			elseif element.disabled then
+				element.disabled = nil
+			end
+		end
+	end
+end
+
 TerrorEventMixer.start_event = function (event_name, data)
 	local active_events = TerrorEventMixer.active_events
 	local elements = TerrorEventBlueprints[event_name]
 
 	fassert(elements, "No terror event called '%s', exists", event_name)
 	print("TerrorEventMixer.start_event:", event_name)
-
-	if script_data.debug_terror then
-		elements = table.clone(elements)
-	end
+	disable_elements_with_lower_difficulty(elements)
 
 	local new_event = {
 		index = 1,
@@ -944,7 +940,7 @@ TerrorEventMixer.run_event = function (event, t, dt)
 		element.ends_at = (element.ends_at or 0) + dt
 	else
 		local func_name = element[1]
-		local continue = TerrorEventMixer.run_functions[func_name](event, element, t, dt)
+		local continue = element.disabled or TerrorEventMixer.run_functions[func_name](event, element, t, dt)
 
 		if continue then
 			if event.destroy then
@@ -959,9 +955,12 @@ TerrorEventMixer.run_event = function (event, t, dt)
 
 			event.index = index
 			local element = elements[index]
-			local func_name = element[1]
 
-			TerrorEventMixer.init_functions[func_name](event, element, t)
+			if not element.disabled then
+				local func_name = element[1]
+
+				TerrorEventMixer.init_functions[func_name](event, element, t)
+			end
 		end
 	end
 end

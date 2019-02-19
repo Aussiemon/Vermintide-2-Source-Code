@@ -2,7 +2,8 @@ local definitions = local_require("scripts/ui/hud_ui/level_countdown_ui_definiti
 local DO_RELOAD = true
 LevelCountdownUI = class(LevelCountdownUI)
 
-LevelCountdownUI.init = function (self, ingame_ui_context)
+LevelCountdownUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.level_transition_handler = ingame_ui_context.level_transition_handler
 	self.network_event_delegate = ingame_ui_context.network_event_delegate
 	self.camera_manager = ingame_ui_context.camera_manager
@@ -52,19 +53,24 @@ LevelCountdownUI.update = function (self, dt)
 		return
 	end
 
+	local countdown_active = false
 	local start_time, max_start_time = self:_get_start_time()
 
 	if start_time and max_start_time then
 		if self:update_enter_game_counter(start_time, max_start_time, dt) then
+			countdown_active = true
+
 			self:draw(dt)
 		else
 			self.last_timer_value = max_start_time
 		end
 	end
+
+	self._countdown_active = countdown_active
 end
 
 LevelCountdownUI.is_enter_game = function (self)
-	return false
+	return self._countdown_active
 end
 
 LevelCountdownUI.draw = function (self, dt)
@@ -133,23 +139,39 @@ LevelCountdownUI.destroy = function (self)
 end
 
 LevelCountdownUI._get_start_time = function (self)
-	if not self._waystone_unit then
-		return
+	local status_extension = self:_get_active_waystone_extension()
+
+	if status_extension then
+		local max_start_time = status_extension:end_time()
+		local current_start_time = status_extension:end_time_left()
+
+		return current_start_time, max_start_time
 	end
+end
 
-	local unit = self._waystone_unit
+LevelCountdownUI._get_active_waystone_extension = function (self)
+	local world_manager = Managers.world
 
-	if Unit.alive(unit) then
-		local status_extension = ScriptUnit.extension(unit, "props_system")
+	if world_manager:has_world("level_world") then
+		local world = world_manager:world("level_world")
+		local level_name = "levels/inn/world"
+		local level = ScriptWorld.level(world, level_name)
 
-		if status_extension then
-			local activated = status_extension:activated()
+		if level then
+			local units = Level.units(level)
 
-			if activated then
-				local max_start_time = status_extension:end_time()
-				local current_start_time = status_extension:end_time_left()
+			for i, unit in ipairs(units) do
+				if Unit.alive(unit) and Unit.has_data(unit, "waystone_type") then
+					local status_extension = ScriptUnit.extension(unit, "props_system")
 
-				return current_start_time, max_start_time
+					if status_extension then
+						local activated = status_extension:activated()
+
+						if activated then
+							return status_extension
+						end
+					end
+				end
 			end
 		end
 	end
@@ -160,7 +182,6 @@ LevelCountdownUI.set_waystone_activation = function (self, enable, optional_ways
 	local world_manager = Managers.world
 
 	if world_manager:has_world("level_world") then
-		local map_unit = nil
 		local world = world_manager:world("level_world")
 		local level_name = "levels/inn/world"
 		local level = ScriptWorld.level(world, level_name)

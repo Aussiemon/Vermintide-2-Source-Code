@@ -1,19 +1,14 @@
-local window_default_settings = UISettings.game_start_windows
-local window_background = window_default_settings.background
-local window_frame = window_default_settings.frame
-local window_size = window_default_settings.size
-local window_spacing = window_default_settings.spacing
-local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
-local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
-local window_width_offset = window_size[1] * 2 + window_spacing * 2
-local window_text_width = window_size[1] - (window_frame_width * 2 + 60)
 local career_window_size = {
-	window_size[1] * 2 + window_spacing,
-	window_size[2]
+	1215,
+	820
 }
 local career_info_size = {
 	450,
-	140
+	170
+}
+local talent_button_size = {
+	364,
+	100
 }
 local console_menu_scenegraphs = UISettings.console_menu_scenegraphs
 local scenegraph_definition = {
@@ -27,11 +22,11 @@ local scenegraph_definition = {
 		parent = "area_right",
 		horizontal_alignment = "right",
 		size = {
-			career_info_size[1],
-			600
+			career_info_size[1] + 20,
+			620
 		},
 		position = {
-			-50,
+			0,
 			-90,
 			1
 		}
@@ -517,7 +512,7 @@ local sub_title_text_style = {
 	}
 }
 
-local function talent_row(scenegraph_id, size, amount)
+local function talent_row(scenegraph_id, size, button_size, amount)
 	local frame_settings = UIFrameSettings.menu_frame_09
 	local glow_frame_name = "frame_outer_glow_01"
 	local glow_frame_settings = UIFrameSettings[glow_frame_name]
@@ -700,10 +695,6 @@ local function talent_row(scenegraph_id, size, amount)
 	}
 	local slot_width_spacing = 0
 	local offset_layer = 0
-	local button_size = {
-		314,
-		100
-	}
 	local icon_size = {
 		80,
 		80
@@ -787,8 +778,8 @@ local function talent_row(scenegraph_id, size, amount)
 			vertical_alignment = "center",
 			horizontal_alignment = "center",
 			texture_size = {
-				318,
-				104
+				button_size[1] + 4,
+				button_size[2] + 4
 			},
 			size = button_size,
 			color = {
@@ -1209,16 +1200,32 @@ local function create_career_perk_text(scenegraph_id)
 	}
 end
 
+local test_box_text_style = {
+	font_size = 32,
+	use_shadow = true,
+	localize = false,
+	dynamic_font_size_word_wrap = true,
+	word_wrap = true,
+	horizontal_alignment = "left",
+	vertical_alignment = "top",
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
 local widgets = {
 	tooltip_area = UIWidgets.create_rect_with_outer_frame("tooltip_area", scenegraph_definition.tooltip_area.size, "frame_outer_fade_02", 0, UISettings.console_menu_rect_color),
 	tooltip_title = UIWidgets.create_simple_text("n/a", "tooltip_title", nil, nil, sub_title_text_style),
 	tooltip_description = UIWidgets.create_simple_text("n/a", "tooltip_description", nil, nil, tooltip_text_style),
 	tooltip_info = UIWidgets.create_simple_text("n/a", "tooltip_info", nil, nil, tooltip_info_text_style),
-	talent_row_1 = talent_row("talent_row_1", scenegraph_definition.talent_row_1.size, 3),
-	talent_row_2 = talent_row("talent_row_2", scenegraph_definition.talent_row_2.size, 3),
-	talent_row_3 = talent_row("talent_row_3", scenegraph_definition.talent_row_3.size, 3),
-	talent_row_4 = talent_row("talent_row_4", scenegraph_definition.talent_row_4.size, 3),
-	talent_row_5 = talent_row("talent_row_5", scenegraph_definition.talent_row_5.size, 3),
+	talent_row_1 = talent_row("talent_row_1", scenegraph_definition.talent_row_1.size, talent_button_size, 3),
+	talent_row_2 = talent_row("talent_row_2", scenegraph_definition.talent_row_2.size, talent_button_size, 3),
+	talent_row_3 = talent_row("talent_row_3", scenegraph_definition.talent_row_3.size, talent_button_size, 3),
+	talent_row_4 = talent_row("talent_row_4", scenegraph_definition.talent_row_4.size, talent_button_size, 3),
+	talent_row_5 = talent_row("talent_row_5", scenegraph_definition.talent_row_5.size, talent_button_size, 3),
 	info_window_background = UIWidgets.create_rect_with_outer_frame("info_window", scenegraph_definition.info_window.size, "frame_outer_fade_02", 0, UISettings.console_menu_rect_color),
 	perk_title_text = UIWidgets.create_simple_text(Localize("hero_view_perk_title"), "perk_title_text", nil, nil, sub_title_text_style),
 	perk_title_divider = UIWidgets.create_simple_texture("infoslate_frame_02_horizontal", "perk_title_divider"),
@@ -1299,7 +1306,6 @@ local animation_definitions = {
 
 return {
 	widgets = widgets,
-	node_widgets = node_widgets,
 	scenegraph_definition = scenegraph_definition,
 	animation_definitions = animation_definitions,
 	generic_input_actions = generic_input_actions

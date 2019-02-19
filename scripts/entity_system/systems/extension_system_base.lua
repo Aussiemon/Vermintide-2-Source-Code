@@ -20,7 +20,8 @@ ExtensionSystemBase.init = function (self, entity_system_creation_context, syste
 		network_transmit = self.network_transmit,
 		system_api = self.system_api,
 		statistics_db = self.statistics_db,
-		ingame_ui = entity_system_creation_context.ingame_ui
+		ingame_ui = entity_system_creation_context.ingame_ui,
+		is_server = entity_system_creation_context.is_server
 	}
 	self.update_list = {}
 	self.extensions = {}

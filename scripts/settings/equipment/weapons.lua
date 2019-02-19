@@ -12,85 +12,26 @@ require("scripts/utils/action_assert_funcs")
 dofile("scripts/settings/equipment/projectiles")
 dofile("scripts/settings/equipment/light_weight_projectiles")
 require("scripts/settings/action_templates")
-dofile("scripts/settings/equipment/1h_swords")
-dofile("scripts/settings/equipment/1h_swords_wood_elf")
-dofile("scripts/settings/equipment/1h_swords_wizard")
-dofile("scripts/settings/equipment/1h_swords_flaming_spell")
-dofile("scripts/settings/equipment/1h_dagger_wizard")
-dofile("scripts/settings/equipment/1h_swords_shield")
-dofile("scripts/settings/equipment/1h_axes_shield")
-dofile("scripts/settings/equipment/1h_hammers_shield")
-dofile("scripts/settings/equipment/fencing_swords")
-dofile("scripts/settings/equipment/dual_wield_swords")
-dofile("scripts/settings/equipment/dual_wield_sword_dagger")
-dofile("scripts/settings/equipment/dual_wield_daggers")
-dofile("scripts/settings/equipment/dual_wield_axes")
-dofile("scripts/settings/equipment/1h_falchions")
-dofile("scripts/settings/equipment/1h_axes")
-dofile("scripts/settings/equipment/1h_hammers")
-dofile("scripts/settings/equipment/1h_hammers_wizard")
-dofile("scripts/settings/equipment/2h_swords")
-dofile("scripts/settings/equipment/2h_swords_wood_elf")
-dofile("scripts/settings/equipment/2h_swords_executioner")
-dofile("scripts/settings/equipment/2h_axes")
-dofile("scripts/settings/equipment/2h_axes_wood_elf")
-dofile("scripts/settings/equipment/2h_hammers")
-dofile("scripts/settings/equipment/2h_picks")
-dofile("scripts/settings/equipment/1h_flails")
-dofile("scripts/settings/equipment/halberds")
-dofile("scripts/settings/equipment/spears_wood_elf")
-dofile("scripts/settings/equipment/shortbows")
-dofile("scripts/settings/equipment/shortbows_bodkin")
-dofile("scripts/settings/equipment/shortbows_trueflight")
-dofile("scripts/settings/equipment/shortbows_hagbane")
-dofile("scripts/settings/equipment/longbows")
-dofile("scripts/settings/equipment/longbows_bodkin")
-dofile("scripts/settings/equipment/longbows_hagbane")
-dofile("scripts/settings/equipment/longbows_trueflight")
-dofile("scripts/settings/equipment/longbows_empire")
-dofile("scripts/settings/equipment/crossbows")
-dofile("scripts/settings/equipment/repeating_crossbows")
-dofile("scripts/settings/equipment/repeating_crossbows_elf")
-dofile("scripts/settings/equipment/bardin_ranger_career_skill")
-dofile("scripts/settings/equipment/kerillian_waywatcher_career_skill")
-dofile("scripts/settings/equipment/sienna_scholar_career_skill")
-dofile("scripts/settings/equipment/victor_bountyhunter_career_skill")
-dofile("scripts/settings/equipment/brace_of_pistols")
-dofile("scripts/settings/equipment/brace_of_drake_pistols")
-dofile("scripts/settings/equipment/repeating_pistols")
-dofile("scripts/settings/equipment/brace_of_repeating_pistols")
-dofile("scripts/settings/equipment/blunderbusses")
-dofile("scripts/settings/equipment/grudge_raker")
-dofile("scripts/settings/equipment/handguns")
-dofile("scripts/settings/equipment/repeating_handguns")
-dofile("scripts/settings/equipment/drakegun")
-dofile("scripts/settings/equipment/staff_flamethrower")
-dofile("scripts/settings/equipment/staff_spark_spear")
-dofile("scripts/settings/equipment/staff_fireball_fireball")
-dofile("scripts/settings/equipment/staff_fireball_geiser")
-dofile("scripts/settings/equipment/staff_slam_geiser")
-dofile("scripts/settings/equipment/staff_blast_beam")
-dofile("scripts/settings/equipment/staff_firefly_flamewave")
-dofile("scripts/settings/equipment/potions")
-dofile("scripts/settings/equipment/scrolls")
-dofile("scripts/settings/equipment/first_aid_kits")
-dofile("scripts/settings/equipment/healing_draught")
-dofile("scripts/settings/equipment/sacks")
-dofile("scripts/settings/equipment/statues")
-dofile("scripts/settings/equipment/barrels")
-dofile("scripts/settings/equipment/grenades")
-dofile("scripts/settings/equipment/torches")
-dofile("scripts/settings/equipment/grimoire")
-dofile("scripts/settings/equipment/door_sticks")
-dofile("scripts/settings/equipment/packmaster_claw")
+
+Weapons = Weapons or {}
+local weapon_template_files_names = dofile("scripts/settings/equipment/honduras_weapon_templates")
 
 for _, dlc in pairs(DLCSettings) do
 	if dlc.weapon_template_file_names then
-		for _, file_name in ipairs(dlc.weapon_template_file_names) do
-			dofile(file_name)
-		end
+		table.append(weapon_template_files_names, dlc.weapon_template_file_names)
 	end
 end
+
+for i = 1, #weapon_template_files_names, 1 do
+	local file_name = weapon_template_files_names[i]
+	local weapon_templates = dofile(file_name)
+
+	for template_name, template in pairs(weapon_templates) do
+		Weapons[template_name] = template
+	end
+end
+
+table.clear(weapon_template_files_names)
 
 DAMAGE_TYPES_AOE = {
 	warpfire_face = true,
@@ -101,7 +42,6 @@ DAMAGE_TYPES_AOE = {
 	plague_face = true,
 	warpfire_ground = true
 }
-Weapons = Weapons or {}
 local buff_params = {}
 
 local function add_dot(dot_template_name, hit_unit, attacker_unit, damage_source, power_level)
@@ -222,7 +162,7 @@ local checked_templates = {
 	wood_elf = {}
 }
 
-for item_name, item in pairs(ItemMasterList) do
+for _, item in pairs(ItemMasterList) do
 	local slot_type = item.slot_type
 
 	if slot_type == "melee" or slot_type == "ranged" or slot_type == "grenade" or slot_type == "healthkit" or slot_type == "potion" then

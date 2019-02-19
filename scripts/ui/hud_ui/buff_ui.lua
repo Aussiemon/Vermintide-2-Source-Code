@@ -6,7 +6,8 @@ local BUFF_SIZE = definitions.BUFF_SIZE
 local BUFF_SPACING = definitions.BUFF_SPACING
 BuffUI = class(BuffUI)
 
-BuffUI.init = function (self, ingame_ui_context)
+BuffUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.input_manager = ingame_ui_context.input_manager
@@ -19,15 +20,16 @@ BuffUI.init = function (self, ingame_ui_context)
 	}
 
 	self:_create_ui_elements()
-	rawset(_G, "buff_ui", self)
 end
 
 BuffUI._create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local buff_widgets = {}
 	local unused_buff_widgets = {}
+	local buff_widget_definitions = definitions.buff_widget_definitions
 
-	for i, definition in ipairs(definitions.buff_widget_definitions) do
+	for i = 1, #buff_widget_definitions, 1 do
+		local definition = buff_widget_definitions[i]
 		buff_widgets[i] = UIWidget.init(definition)
 		unused_buff_widgets[i] = buff_widgets[i]
 	end
@@ -50,7 +52,6 @@ BuffUI._create_ui_elements = function (self)
 	end
 end
 
-local sorted_buffs = {}
 local widgets_to_remove = {}
 local buffs_to_add = {}
 
@@ -71,6 +72,8 @@ BuffUI._sync_buffs = function (self)
 
 		for i = 1, #active_buffs, 1 do
 			local data = active_buffs[i]
+			local last_stack_count = data.widget.content.stack_count
+			data.widget.content.last_stack_count = last_stack_count or 1
 			data.widget.content.stack_count = 1
 			data.verified = false
 		end
@@ -84,7 +87,6 @@ BuffUI._sync_buffs = function (self)
 				local handle_buff = debug_buffs or buff_template.icon ~= nil
 
 				if handle_buff then
-					local buff_name = buff_template.name
 					local buff_id = buff.id
 					local infinite = not duration
 					local end_time = duration and start_time + duration
@@ -127,14 +129,17 @@ BuffUI._sync_buffs = function (self)
 			align_widgets = true
 		end
 
-		for i, buff in ipairs(buffs) do
+		for i = 1, #buffs, 1 do
+			local buff = buffs[i]
 			local duration = buff.duration
 			local start_time = buff.start_time
 			local buff_template = buff.template
 			local handle_buff = debug_buffs or buff_template.icon ~= nil
 
 			if handle_buff then
-				for _, id in ipairs(buffs_to_add) do
+				for j = 1, #buffs_to_add, 1 do
+					local id = buffs_to_add[j]
+
 					if id == buff.id then
 						local infinite = not duration
 						local end_time = duration and start_time + duration
@@ -156,7 +161,6 @@ end
 
 BuffUI._add_buff = function (self, buff, infinite, end_time)
 	local buff_template = buff.template
-	local dormant = buff_template.dormant
 	local buff_id = buff.id
 	local buff_name = buff_template.name
 	local is_cooldown = buff_template.is_cooldown
@@ -165,8 +169,8 @@ BuffUI._add_buff = function (self, buff, infinite, end_time)
 	local already_exists = false
 	local active_buffs = self._active_buffs
 
-	for j = 1, #active_buffs, 1 do
-		local data = active_buffs[j]
+	for i = 1, #active_buffs, 1 do
+		local data = active_buffs[i]
 
 		if data.id == buff_id then
 			data.end_time = end_time
@@ -218,7 +222,6 @@ BuffUI._add_buff = function (self, buff, infinite, end_time)
 		end_time = end_time,
 		duration = duration
 	}
-	local active_buffs = self._active_buffs
 	active_buffs[#active_buffs + 1] = data
 
 	self:_set_widget_time_progress(widget, 1, duration, is_cooldown)
@@ -230,11 +233,8 @@ BuffUI._add_buff = function (self, buff, infinite, end_time)
 	local widget_offset = widget.offset
 
 	if num_buffs > 1 then
-		local closest_buff_data = active_buffs[num_buffs - 1]
 		local closest_buff_widget = data.widget
 		local closest_buff_offset = closest_buff_widget.offset
-		local target_position = data.target_position
-		local target_distance = data.target_distance
 		widget_offset[1] = closest_buff_offset[1] + horizontal_spacing
 		data.target_position = start_position_x
 		data.target_distance = math.abs(widget_offset[1] - start_position_x)
@@ -250,6 +250,9 @@ BuffUI._remove_buff = function (self, index)
 	local data = table.remove(active_buffs, index)
 	local widget = data.widget
 	local unused_buff_widgets = self._unused_buff_widgets
+	local content = widget.content
+	content.stack_count = 1
+	content.last_stack_count = 1
 
 	table.insert(unused_buff_widgets, #unused_buff_widgets + 1, widget)
 	UIRenderer.set_element_visible(self.ui_renderer, widget.element, false)
@@ -272,7 +275,10 @@ BuffUI._update_pivot_alignment = function (self, dt)
 		self._alignment_duration = alignment_duration
 	end
 
-	for _, data in ipairs(self._active_buffs) do
+	local active_buffs = self._active_buffs
+
+	for i = 1, #active_buffs, 1 do
+		local data = active_buffs[i]
 		local widget = data.widget
 		local widget_offset = widget.offset
 		local widget_target_position = data.target_position
@@ -289,15 +295,14 @@ BuffUI._update_pivot_alignment = function (self, dt)
 end
 
 BuffUI._align_widgets = function (self)
-	local gamepad_active = self.input_manager:is_device_active("gamepad")
 	local horizontal_spacing = BUFF_SIZE[1] + BUFF_SPACING
-	local num_buffs = #self._active_buffs
-	local total_length = num_buffs * horizontal_spacing - BUFF_SPACING
+	local active_buffs = self._active_buffs
 
-	for index, data in ipairs(self._active_buffs) do
+	for i = 1, #active_buffs, 1 do
+		local data = active_buffs[i]
 		local widget = data.widget
 		local widget_offset = widget.offset
-		local target_position = (index - 1) * horizontal_spacing
+		local target_position = (i - 1) * horizontal_spacing
 		data.target_position = target_position
 		data.target_distance = math.abs(widget_offset[1] - target_position)
 
@@ -313,8 +318,11 @@ BuffUI.set_position = function (self, x, y)
 	local position = self.ui_scenegraph.pivot.local_position
 	position[1] = x
 	position[2] = y
+	local active_buffs = self._active_buffs
 
-	for _, widget in ipairs(self._active_buffs) do
+	for i = 1, #active_buffs, 1 do
+		local widget = active_buffs[i]
+
 		self:_set_widget_dirty(widget)
 	end
 
@@ -323,14 +331,16 @@ end
 
 BuffUI.destroy = function (self)
 	self:set_visible(false)
-	rawset(_G, "buff_ui", nil)
 end
 
 BuffUI.set_visible = function (self, visible)
 	self._is_visible = visible
 	local ui_renderer = self.ui_renderer
+	local buff_widgets = self._buff_widgets
 
-	for _, widget in ipairs(self._buff_widgets) do
+	for i = 1, #buff_widgets, 1 do
+		local widget = buff_widgets[i]
+
 		UIRenderer.set_element_visible(ui_renderer, widget.element, visible)
 	end
 
@@ -376,7 +386,11 @@ BuffUI._handle_resolution_modified = function (self)
 end
 
 BuffUI._on_resolution_modified = function (self)
-	for _, widget in ipairs(self._buff_widgets) do
+	local buff_widgets = self._buff_widgets
+
+	for i = 1, #buff_widgets, 1 do
+		local widget = buff_widgets[i]
+
 		self:_set_widget_dirty(widget)
 	end
 
@@ -398,7 +412,10 @@ BuffUI.draw = function (self, dt)
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
 
-	for _, data in ipairs(self._active_buffs) do
+	local active_buffs = self._active_buffs
+
+	for i = 1, #active_buffs, 1 do
+		local data = active_buffs[i]
 		local widget = data.widget
 
 		UIRenderer.draw_widget(ui_renderer, widget)
@@ -412,11 +429,12 @@ end
 BuffUI._update_buffs = function (self, dt)
 	local dirty = false
 	local t = Managers.time:time("game")
+	local active_buffs = self._active_buffs
 
-	for index, data in ipairs(self._active_buffs) do
+	for i = 1, #active_buffs, 1 do
+		local data = active_buffs[i]
 		local widget = data.widget
 		local end_time = data.end_time
-		local stack_count = data.stack_count
 
 		if end_time then
 			local duration = data.duration
@@ -435,7 +453,7 @@ BuffUI._update_buffs = function (self, dt)
 			end
 		end
 
-		if widget.content.stack_count > 1 and not widget.element.dirty then
+		if not widget.element.dirty and widget.content.stack_count ~= widget.content.last_stack_count then
 			self:_set_widget_dirty(widget)
 
 			dirty = true
@@ -466,9 +484,6 @@ BuffUI._handle_career_change = function (self)
 		end
 	end
 end
-
-local floor = math.floor
-local ceil = math.ceil
 
 BuffUI._set_widget_time_progress = function (self, widget, progress, time_left, is_cooldown)
 	local style = widget.style
@@ -523,7 +538,10 @@ BuffUI.set_panel_alpha = function (self, alpha)
 
 		self:set_dirty()
 
-		for index, data in ipairs(self._active_buffs) do
+		local active_buffs = self._active_buffs
+
+		for i = 1, #active_buffs, 1 do
+			local data = active_buffs[i]
 			local widget = data.widget
 
 			self:_set_widget_dirty(widget)

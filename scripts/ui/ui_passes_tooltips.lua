@@ -1860,21 +1860,25 @@ UITooltipPasses = {
 
 			position[2] = position_y - title_text_height
 			local block_angle = item_template.block_angle
-			local block_fraction = block_angle / 360 / 2
+			local block_fraction = block_angle / 360
+			local block_fraction_steps = 10
+			local block_step_fraction = 1 / block_fraction_steps
+			local step_amount = math.ceil(block_fraction / block_step_fraction)
+			local step_fraction = step_amount * block_step_fraction * 0.5
 			local block_arc_pass_definition = data.block_arc_pass_definition
 			local block_arc_pass_data = data.block_arc_pass_data
 			local block_arc_size = data.block_arc_size
 			local block_arc_style = style.block_arc
 			local block_arc_color = style.block_arc.color
 			local background_color = block_arc_style.background_color
-			block_arc_color[1] = 255 * block_fraction * alpha_multiplier
-			position[1] = (position_x + size[1] - block_arc_size[1]) - frame_margin * 2 - text_width
-			position[2] = position[2] - block_arc_size[2]
+			block_arc_color[1] = 255 * step_fraction * alpha_multiplier
+			position[1] = math.ceil((position_x + size[1] - block_arc_size[1]) - frame_margin * 2 - text_width)
+			position[2] = math.ceil(position[2] - block_arc_size[2])
 
 			if draw then
 				background_color[1] = alpha
 
-				UIRenderer.draw_rounded_rect(ui_renderer, position, block_arc_size, block_arc_size[1] / 2, background_color)
+				UIRenderer.draw_rounded_rect(ui_renderer, position, block_arc_size, block_arc_size[1] * 0.5, background_color)
 			end
 
 			position[3] = position[3] + 1
@@ -3298,15 +3302,16 @@ UITooltipPasses = {
 			text_size[2] = 0
 			local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
 			text_size[2] = text_height
-			local total_height = text_height + frame_margin * 0.5
+			local scale_inversed = RESOLUTION_LOOKUP.inv_scale
+			local total_height = text_height + frame_margin
 
 			if draw then
 				local background_size = data.background_size
 				local background_style = style.background
 				local background_color = background_style.color
 				background_color[1] = alpha
-				background_size[2] = text_height + frame_margin
 				background_size[1] = size[1]
+				background_size[2] = total_height
 				position[2] = position_y - background_size[2]
 				position[3] = start_layer + 3
 
@@ -3322,7 +3327,7 @@ UITooltipPasses = {
 				edge_texture_size[1] = size[1]
 				local edge_texture = content.edge_texture
 				edge_color[1] = alpha
-				local start_position_y = position[2] - frame_margin * 0.5
+				local start_position_y = position[2] - frame_margin * 0.5 * scale_inversed
 				position[2] = start_position_y
 				position[3] = start_layer + 4
 
@@ -3345,7 +3350,7 @@ UITooltipPasses = {
 				UIRenderer.draw_texture(ui_renderer, edge_holder_right_texture, position, edge_holder_size, edge_holder_color)
 
 				position[1] = position_x + frame_margin
-				position[2] = start_position_y - total_height + frame_margin * 0.5
+				position[2] = start_position_y - text_height
 				text_style.text_color[1] = alpha
 
 				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)

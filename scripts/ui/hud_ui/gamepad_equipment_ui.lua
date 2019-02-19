@@ -26,7 +26,8 @@ local function sort_by_console_hud_index(a, b)
 	return a_console_hud_index < b_console_hud_index
 end
 
-GamePadEquipmentUI.init = function (self, ingame_ui_context)
+GamePadEquipmentUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.input_manager = ingame_ui_context.input_manager
@@ -1065,6 +1066,12 @@ GamePadEquipmentUI.update = function (self, dt, t)
 	end
 
 	local dirty = false
+	local parent = self._parent
+	local crosshair_position_x, crosshair_position_y = parent:get_crosshair_position()
+
+	if self:_apply_crosshair_position(crosshair_position_x, crosshair_position_y) then
+		dirty = true
+	end
 
 	if self:_update_animations(dt) then
 		dirty = true
@@ -1317,20 +1324,30 @@ GamePadEquipmentUI.set_panel_alpha = function (self, alpha)
 	self:set_dirty()
 end
 
-GamePadEquipmentUI.apply_crosshair_position = function (self, x, y)
+GamePadEquipmentUI._apply_crosshair_position = function (self, x, y)
 	local scenegraph_id = "screen_bottom_pivot"
 	local position = self.ui_scenegraph[scenegraph_id].local_position
+	local dirty = false
+
+	if position[1] ~= x or position[2] ~= y then
+		dirty = true
+	end
+
 	position[1] = x
 	position[2] = y
-	local widgets_by_name = self._widgets_by_name
-	local ammo_widgets_by_name = self._ammo_widgets_by_name
 
-	self:_set_widget_dirty(ammo_widgets_by_name.ammo_text_clip)
-	self:_set_widget_dirty(ammo_widgets_by_name.ammo_text_remaining)
-	self:_set_widget_dirty(ammo_widgets_by_name.ammo_text_center)
-	self:_set_widget_dirty(widgets_by_name.overcharge)
-	self:_set_widget_dirty(widgets_by_name.overcharge_background)
-	self:set_dirty()
+	if dirty then
+		local widgets_by_name = self._widgets_by_name
+		local ammo_widgets_by_name = self._ammo_widgets_by_name
+
+		self:_set_widget_dirty(ammo_widgets_by_name.ammo_text_clip)
+		self:_set_widget_dirty(ammo_widgets_by_name.ammo_text_remaining)
+		self:_set_widget_dirty(ammo_widgets_by_name.ammo_text_center)
+		self:_set_widget_dirty(widgets_by_name.overcharge)
+		self:_set_widget_dirty(widgets_by_name.overcharge_background)
+	end
+
+	return dirty
 end
 
 return

@@ -86,7 +86,7 @@ ActionHandgun.client_owner_post_update = function (self, dt, t, world, can_damag
 
 	if self.state == "shooting" then
 		local buff_extension = self.owner_buff_extension
-		local _, procced = buff_extension:apply_buffs_to_value(0, StatBuffIndex.EXTRA_SHOT)
+		local _, procced = buff_extension:apply_buffs_to_value(0, "extra_shot")
 		local add_spread = not self.extra_buff_shot
 
 		if not self.extra_buff_shot and procced then
@@ -142,7 +142,14 @@ ActionHandgun.client_owner_post_update = function (self, dt, t, world, can_damag
 		direction = direction or Quaternion.forward(rotation)
 		local result = nil
 
-		if current_action.ray_against_large_hitbox then
+		if current_action.projectile_info then
+			local angle = ActionUtils.pitch_from_rotation(rotation)
+			local speed = current_action.speed
+			local target_vector = Vector3.normalize(Vector3.flat(Quaternion.forward(rotation)))
+			local lookup_data = current_action.lookup_data
+
+			ActionUtils.spawn_player_projectile(owner_unit, position, rotation, 0, angle, target_vector, speed, self.item_name, lookup_data.item_template_name, lookup_data.action_name, lookup_data.sub_action_name, self.is_critical_strike, self.power_level)
+		elseif current_action.ray_against_large_hitbox then
 			result = PhysicsWorld.immediate_raycast_actors(physics_world, position, direction, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_ai_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only", "dynamic_collision_filter", "filter_enemy_trigger")
 		else
 			result = PhysicsWorld.immediate_raycast_actors(physics_world, position, direction, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_ai_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only")

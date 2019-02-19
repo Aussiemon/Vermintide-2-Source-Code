@@ -241,8 +241,8 @@ TalentBuffTemplates.witch_hunter = {
 	victor_zealot_passive_damage = {
 		buffs = {
 			{
-				icon = "victor_zealot_passive",
-				stat_buff = StatBuffIndex.POWER_LEVEL
+				stat_buff = "power_level",
+				icon = "victor_zealot_passive"
 			}
 		}
 	},
@@ -284,10 +284,10 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				remove_buff_func = "add_victor_zealot_invulnerability_cooldown",
+				stat_buff = "damage_taken",
 				max_stacks = 1,
 				icon = "victor_zealot_passive_invulnerability",
-				priority_buff = true,
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				priority_buff = true
 			}
 		}
 	},
@@ -295,31 +295,31 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				remove_buff_func = "end_zealot_activated_ability",
+				stat_buff = "attack_speed",
 				max_stacks = 1,
 				icon = "victor_zealot_activated_ability",
-				priority_buff = true,
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				priority_buff = true
 			}
 		}
 	},
 	victor_zealot_crit_chance = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.CRITICAL_STRIKE_CHANCE
+				stat_buff = "critical_strike_chance"
 			}
 		}
 	},
 	victor_zealot_stamina_regen = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.FATIGUE_REGEN
+				stat_buff = "fatigue_regen"
 			}
 		}
 	},
 	victor_zealot_stun_reduction = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.STUN_DURATION
+				stat_buff = "stun_duration"
 			}
 		}
 	},
@@ -346,15 +346,15 @@ TalentBuffTemplates.witch_hunter = {
 	victor_zealot_damage_on_enemy_proximity = {
 		buffs = {
 			{
-				icon = "victor_zealot_increased_damage_on_enemy_proximity",
-				stat_buff = StatBuffIndex.POWER_LEVEL
+				stat_buff = "power_level",
+				icon = "victor_zealot_increased_damage_on_enemy_proximity"
 			}
 		}
 	},
 	victor_zealot_damage_taken_capped = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.MAX_DAMAGE_TAKEN
+				stat_buff = "max_damage_taken"
 			}
 		}
 	},
@@ -372,7 +372,7 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				max_stacks = 1,
 				icon = "victor_zealot_increased_defence_low_health",
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				stat_buff = "damage_taken"
 			}
 		}
 	},
@@ -387,8 +387,8 @@ TalentBuffTemplates.witch_hunter = {
 	victor_zealot_block_arc_from_passive = {
 		buffs = {
 			{
-				icon = "victor_zealot_increased_block_arc_from_passive",
-				stat_buff = StatBuffIndex.BLOCK_ANGLE
+				stat_buff = "block_angle",
+				icon = "victor_zealot_increased_block_arc_from_passive"
 			}
 		}
 	},
@@ -403,8 +403,8 @@ TalentBuffTemplates.witch_hunter = {
 	victor_zealot_critical_hit_damage_from_passive = {
 		buffs = {
 			{
-				icon = "victor_zealot_increased_critical_hit_damage_from_passive",
-				stat_buff = StatBuffIndex.CRITICAL_STRIKE_EFFECTIVENESS
+				stat_buff = "critical_strike_effectiveness",
+				icon = "victor_zealot_increased_critical_hit_damage_from_passive"
 			}
 		}
 	},
@@ -419,8 +419,8 @@ TalentBuffTemplates.witch_hunter = {
 	victor_zealot_stamina_from_passive = {
 		buffs = {
 			{
-				icon = "victor_zealot_increased_stamina_from_passive",
-				stat_buff = StatBuffIndex.MAX_FATIGUE
+				stat_buff = "max_fatigue",
+				icon = "victor_zealot_increased_stamina_from_passive"
 			}
 		}
 	},
@@ -469,7 +469,7 @@ TalentBuffTemplates.witch_hunter = {
 				remove_buff_func = "end_zealot_activated_ability",
 				icon = "victor_zealot_activated_ability",
 				priority_buff = true,
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				stat_buff = "attack_speed"
 			}
 		}
 	},
@@ -496,7 +496,7 @@ TalentBuffTemplates.witch_hunter = {
 	victor_zealot_activated_ability_cooldown = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.ACTIVATED_COOLDOWN
+				stat_buff = "activated_cooldown"
 			}
 		}
 	},
@@ -524,7 +524,7 @@ TalentBuffTemplates.witch_hunter = {
 				max_stacks = 1,
 				icon = "victor_bountyhunter_passive",
 				dormant = true,
-				stat_buff = StatBuffIndex.CRITICAL_STRIKE_CHANCE_RANGED
+				stat_buff = "critical_strike_chance_ranged"
 			}
 		}
 	},
@@ -553,42 +553,42 @@ TalentBuffTemplates.witch_hunter = {
 	victor_bountyhunter_passive_reload_speed = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.RELOAD_SPEED
+				stat_buff = "reload_speed"
 			}
 		}
 	},
 	victor_bountyhunter_passive_increased_ammunition = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.TOTAL_AMMO
+				stat_buff = "total_ammo"
 			}
 		}
 	},
 	victor_bountyhunter_reduced_spread = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.REDUCED_SPREAD
+				stat_buff = "reduced_spread"
 			}
 		}
 	},
 	victor_bountyhunter_increased_attack_speed = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				stat_buff = "attack_speed"
 			}
 		}
 	},
 	victor_bountyhunter_reload_speed = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.RELOAD_SPEED
+				stat_buff = "reload_speed"
 			}
 		}
 	},
 	victor_bountyhunter_revive_speed = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.FASTER_REVIVE
+				stat_buff = "faster_revive"
 			}
 		}
 	},
@@ -618,14 +618,14 @@ TalentBuffTemplates.witch_hunter = {
 				max_stacks = 1,
 				icon = "victor_bountyhunter_melee_damage_on_no_ammo",
 				priority_buff = true,
-				stat_buff = StatBuffIndex.POWER_LEVEL
+				stat_buff = "power_level"
 			}
 		}
 	},
 	victor_bountyhunter_critical_hit_damage = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.CRITICAL_STRIKE_EFFECTIVENESS
+				stat_buff = "critical_strike_effectiveness"
 			}
 		}
 	},
@@ -708,7 +708,7 @@ TalentBuffTemplates.witch_hunter = {
 	victor_bountyhunter_activated_ability_cooldown = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.ACTIVATED_COOLDOWN
+				stat_buff = "activated_cooldown"
 			}
 		}
 	},
@@ -740,8 +740,8 @@ TalentBuffTemplates.witch_hunter = {
 	victor_witchhunter_passive_debuff = {
 		buffs = {
 			{
-				max_stacks = 1,
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				stat_buff = "damage_taken",
+				max_stacks = 1
 			}
 		}
 	},
@@ -779,7 +779,7 @@ TalentBuffTemplates.witch_hunter = {
 	victor_witchhunter_headshot_multiplier_increase = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.HEADSHOT_MULTIPLIER
+				stat_buff = "headshot_multiplier"
 			}
 		}
 	},
@@ -793,23 +793,24 @@ TalentBuffTemplates.witch_hunter = {
 	victor_witchhunter_activated_ability_crit_buff = {
 		buffs = {
 			{
+				stat_buff = "critical_strike_chance",
 				icon = "victor_witchhunter_activated_ability",
 				priority_buff = true,
-				stat_buff = StatBuffIndex.CRITICAL_STRIKE_CHANCE
+				refresh_durations = true
 			}
 		}
 	},
 	victor_witchhunter_max_ammo = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.TOTAL_AMMO
+				stat_buff = "total_ammo"
 			}
 		}
 	},
 	victor_witchhunter_max_stamina = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.MAX_FATIGUE
+				stat_buff = "max_fatigue"
 			}
 		}
 	},
@@ -851,14 +852,14 @@ TalentBuffTemplates.witch_hunter = {
 				max_stacks = 1,
 				icon = "victor_witchhunter_increased_damage_on_grimoire_picked_up",
 				priority_buff = true,
-				stat_buff = StatBuffIndex.POWER_LEVEL
+				stat_buff = "power_level"
 			}
 		}
 	},
 	victor_witchhunter_headshot_damage_increase = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.HEADSHOT_MULTIPLIER
+				stat_buff = "headshot_multiplier"
 			}
 		}
 	},
@@ -876,7 +877,7 @@ TalentBuffTemplates.witch_hunter = {
 				max_stacks = 1,
 				icon = "victor_witchhunter_damage_reduction_on_disabled",
 				priority_buff = true,
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				stat_buff = "damage_taken"
 			}
 		}
 	},
@@ -895,8 +896,8 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				max_stacks = 1,
 				icon = "victor_witchhunter_attack_speed_on_ping_target_killed",
-				refresh_durations = true,
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				stat_buff = "attack_speed",
+				refresh_durations = true
 			}
 		}
 	},
@@ -915,8 +916,8 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				max_stacks = 1,
 				icon = "victor_witchhunter_critical_hit_chance_on_ping_target_killed",
-				refresh_durations = true,
-				stat_buff = StatBuffIndex.CRITICAL_STRIKE_CHANCE
+				stat_buff = "critical_strike_chance",
+				refresh_durations = true
 			}
 		}
 	},
@@ -970,16 +971,16 @@ TalentBuffTemplates.witch_hunter = {
 	victor_witchhunter_activated_ability_cooldown = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.ACTIVATED_COOLDOWN
+				stat_buff = "activated_cooldown"
 			}
 		}
 	},
 	victor_witchhunter_activated_ability_duration = {
 		buffs = {
 			{
+				stat_buff = "critical_strike_chance",
 				icon = "victor_witchhunter_activated_ability",
-				priority_buff = true,
-				stat_buff = StatBuffIndex.CRITICAL_STRIKE_CHANCE
+				priority_buff = true
 			}
 		}
 	}

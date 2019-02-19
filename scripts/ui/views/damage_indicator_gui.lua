@@ -78,7 +78,8 @@ local damage_indicator_widget_definition = {
 }
 DamageIndicatorGui = class(DamageIndicatorGui)
 
-DamageIndicatorGui.init = function (self, ingame_ui_context)
+DamageIndicatorGui.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.input_manager = ingame_ui_context.input_manager
 
@@ -86,8 +87,6 @@ DamageIndicatorGui.init = function (self, ingame_ui_context)
 
 	self.player_manager = ingame_ui_context.player_manager
 	self.peer_id = ingame_ui_context.peer_id
-
-	rawset(_G, "global_damage_indicator", self)
 end
 
 DamageIndicatorGui.create_ui_elements = function (self)
@@ -104,7 +103,7 @@ DamageIndicatorGui.create_ui_elements = function (self)
 end
 
 DamageIndicatorGui.destroy = function (self)
-	rawset(_G, "global_damage_indicator", nil)
+	return
 end
 
 DamageIndicatorGui.update = function (self, dt)
@@ -125,7 +124,7 @@ DamageIndicatorGui.update = function (self, dt)
 		return
 	end
 
-	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, "damage_indicator_center")
+	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
 
 	local health_extension = ScriptUnit.extension(player_unit, "health_system")
 	local strided_array, array_length = health_extension:recent_damages()
@@ -194,10 +193,6 @@ DamageIndicatorGui.update = function (self, dt)
 	self.num_active_indicators = num_active_indicators
 
 	UIRenderer.end_pass(ui_renderer)
-end
-
-if rawget(_G, "global_damage_indicator") then
-	global_damage_indicator:create_ui_elements()
 end
 
 return

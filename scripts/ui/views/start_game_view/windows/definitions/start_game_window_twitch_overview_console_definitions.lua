@@ -1060,8 +1060,8 @@ local function disconnected_content_check_function(content)
 	return not Managers.twitch:is_connecting() and Managers.twitch:is_connected() and not Managers.input:is_device_active("gamepad")
 end
 
-local streaming_desc_str = (PLATFORM == "win32" and "start_game_window_twitch_connect_description") or "start_game_window_mixer_connect_description"
-local client_disclaimer_desc_str = (PLATFORM == "win32" and "start_game_window_twitch_client_disclaimer_description") or "start_game_window_mixer_client_disclaimer_description"
+local streaming_desc_str = (PLATFORM ~= "xb1" and "start_game_window_twitch_connect_description") or "start_game_window_mixer_connect_description"
+local client_disclaimer_desc_str = (PLATFORM ~= "xb1" and "start_game_window_twitch_client_disclaimer_description") or "start_game_window_mixer_client_disclaimer_description"
 local play_widgets = {
 	mission_setting = UIWidgets.create_start_game_console_setting_button("game_option_1", Localize("start_game_window_mission"), nil, nil, nil, scenegraph_definition.game_option_1.size),
 	difficulty_setting = UIWidgets.create_start_game_console_setting_button("game_option_2", Localize("start_game_window_difficulty"), nil, "difficulty_option_1", nil, scenegraph_definition.game_option_2.size, true),
@@ -1111,5 +1111,9 @@ return {
 	client_widgets = client_widgets,
 	additional_settings_widgets = additional_settings_widgets,
 	animation_definitions = animation_definitions,
-	selector_input_definition = selector_input_definition
+	selector_input_definition = selector_input_definition,
+	twitch_keyboard_anchor_point = {
+		230,
+		350
+	}
 }

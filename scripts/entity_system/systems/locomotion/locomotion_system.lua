@@ -118,7 +118,7 @@ LocomotionSystem.extensions_ready = function (self, world, unit, extension_name)
 	local extension = ScriptUnit.extension(unit, "locomotion_system")
 
 	if extension_name == "AILocomotionExtensionC" or extension_name == "AILocomotionExtension" or extension_name == "AiHuskLocomotionExtension" then
-		local breed = ScriptUnit.extension(unit, "ai_system")._breed
+		local breed = extension.breed
 		local bone_lod_level = breed.bone_lod_level
 
 		if bone_lod_level > 0 and not script_data.bone_lod_disable then
@@ -169,7 +169,7 @@ LocomotionSystem.unfreeze = function (self, unit, extension_name)
 	extension:unfreeze(unit)
 
 	if extension_name == "AILocomotionExtensionC" or extension_name == "AILocomotionExtension" or extension_name == "AiHuskLocomotionExtension" then
-		local breed = ScriptUnit.extension(unit, "ai_system")._breed
+		local breed = extension.breed
 		local bone_lod_level = breed.bone_lod_level
 
 		if bone_lod_level > 0 and not script_data.bone_lod_disable then

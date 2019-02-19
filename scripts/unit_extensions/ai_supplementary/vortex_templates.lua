@@ -20,6 +20,7 @@ VortexTemplates = {
 		medium_cost_nav_cost_map_cost_type = "vortex_near",
 		player_in_vortex_max_duration = 5,
 		player_attract_speed = 15,
+		breed_name = "chaos_vortex",
 		start_radius = 0.1,
 		min_fx_radius = 2,
 		force_player_look_dir_to_spinn_dir = false,
@@ -35,7 +36,6 @@ VortexTemplates = {
 		max_allowed_inner_radius_dist = 1.5,
 		player_radius_change_speed = 1,
 		full_fx_radius = 8,
-		breed = Breeds.chaos_vortex,
 		ai_eject_height = {
 			3,
 			5
@@ -113,6 +113,7 @@ VortexTemplates = {
 		min_outer_radius = 7,
 		player_in_vortex_max_duration = 5,
 		player_attract_speed = 15,
+		breed_name = "chaos_vortex",
 		start_radius = 0.1,
 		min_fx_radius = 7,
 		force_player_look_dir_to_spinn_dir = false,
@@ -128,7 +129,6 @@ VortexTemplates = {
 		max_allowed_inner_radius_dist = 1.5,
 		player_radius_change_speed = 1,
 		full_fx_radius = 9,
-		breed = Breeds.chaos_vortex,
 		ai_eject_height = {
 			3,
 			4
@@ -202,8 +202,6 @@ VortexTemplates = {
 						statistics_db:increment_stat_and_sync_to_clients(stat_name)
 
 						blackboard.completed_vortex_suck_in_challenge = true
-
-						QuestSettings.send_completed_message(stat_name)
 					end
 				end
 			end
@@ -230,6 +228,7 @@ VortexTemplates = {
 		medium_cost_nav_cost_map_cost_type = "vortex_near",
 		player_in_vortex_max_duration = 5,
 		player_attract_speed = 15,
+		breed_name = "chaos_vortex",
 		start_radius = 0.1,
 		min_fx_radius = 2,
 		force_player_look_dir_to_spinn_dir = false,
@@ -245,7 +244,6 @@ VortexTemplates = {
 		max_allowed_inner_radius_dist = 1.5,
 		player_radius_change_speed = 1,
 		full_fx_radius = 8,
-		breed = Breeds.chaos_vortex,
 		ai_eject_height = {
 			3,
 			5
@@ -303,5 +301,15 @@ VortexTemplates = {
 		}
 	}
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local vortex_templates = dlc.vortex_templates
+
+	if vortex_templates then
+		for name, template in pairs(vortex_templates) do
+			VortexTemplates[name] = template
+		end
+	end
+end
 
 return

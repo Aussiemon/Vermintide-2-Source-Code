@@ -403,7 +403,7 @@ StatisticsUtil.register_complete_level = function (statistics_db)
 
 			if inventory_extension then
 				local melee_item_name = inventory_extension:get_item_name("slot_melee")
-				local ranged_item_name = inventory_extension:get_item_name("slot_melee")
+				local ranged_item_name = inventory_extension:get_item_name("slot_ranged")
 				local weapon_name = nil
 
 				if table.contains(weapon_names, melee_item_name) then

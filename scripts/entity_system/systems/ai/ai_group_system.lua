@@ -169,11 +169,14 @@ AIGroupSystem.init_extension = function (self, unit, extension, extension_init_d
 	extension.use_patrol_perception = extension_init_data.group_type == "spline_patrol"
 
 	fassert(group.num_spawned_members <= group.size, "An AI group was initialized with size=%d but %d AIs was assigned to it.", group.size, group.num_spawned_members)
+end
 
-	local pre_unit_init = AIGroupTemplates[template].pre_unit_init
+AIGroupSystem.extensions_ready = function (self, world, unit, extension_name)
+	local extension = self.unit_extension_data[unit]
+	local pre_unit_init = AIGroupTemplates[extension.template] and AIGroupTemplates[extension.template].pre_unit_init
 
 	if pre_unit_init then
-		pre_unit_init(unit, group.template)
+		pre_unit_init(unit, extension.group.template)
 	end
 end
 

@@ -5,14 +5,15 @@ local fade_min = 0.1
 local margin = 50
 local lost_gaze_threshhold = 1
 
-UICleanUI.create = function ()
+UICleanUI.create = function (peer_id)
 	return {
 		dirty = true,
 		off_window_clock = 0,
 		was_enabled = false,
 		areas = {},
 		widget_area_map = {},
-		clocks = {}
+		clocks = {},
+		peer_id = peer_id
 	}
 end
 
@@ -53,11 +54,15 @@ local function point_in_bounding_box(x, y, bounding_box)
 	return bounding_box[1] < x and x < bounding_box[3] and bounding_box[2] < y and y < bounding_box[4]
 end
 
-UICleanUI.update = function (self, dt, context)
+UICleanUI.update = function (self, dt)
 	local tobii_active = false
+	local peer_id = self.peer_id
+	local player_manager = Managers.player
+	local player = player_manager:player_from_peer_id(peer_id)
+	local player_unit = player and player.player_unit
 
-	if ScriptUnit.has_extension(context.player.player_unit, "eyetracking_system") then
-		local eyetracking_extension = ScriptUnit.extension(context.player.player_unit, "eyetracking_system")
+	if Unit.alive(player_unit) and ScriptUnit.has_extension(player_unit, "eyetracking_system") then
+		local eyetracking_extension = ScriptUnit.extension(player_unit, "eyetracking_system")
 		tobii_active = eyetracking_extension:get_is_feature_enabled("tobii_clean_ui")
 	end
 
@@ -67,13 +72,6 @@ UICleanUI.update = function (self, dt, context)
 	local res_x, res_y = Application.resolution()
 	local gaze_gx = gaze_x * res_x
 	local gaze_gy = gaze_y * res_y
-	local ability_ui = self.hud.ability_ui
-	local equipment_background = self.hud.equipment_ui
-	local gamepad_equipment_background = self.hud.gamepad_equipment_ui
-	local portrait_size = {
-		86,
-		108
-	}
 	local on_window = gaze_x >= 0 and gaze_x <= 1 and gaze_y >= 0 and gaze_y <= 1
 	local off_window_override = false
 
@@ -88,11 +86,19 @@ UICleanUI.update = function (self, dt, context)
 		end
 	end
 
+	local hud = self.hud
+	local portrait_size = {
+		86,
+		108
+	}
 	local portrait_bounding_boxes = {}
+	local unit_frames_handler = hud:component("UnitFramesHandler")
+	local unit_frame_amount = unit_frames_handler:unit_frame_amount()
 
-	for unit_index, unit_frame in ipairs(self.hud.unit_frames_handler._unit_frames) do
-		local centre_pos = unit_frame.widget.ui_scenegraph.portrait_pivot.world_position
-		portrait_bounding_boxes[unit_index] = {
+	for i = 1, unit_frame_amount, 1 do
+		local widget = unit_frames_handler:get_unit_widget(i)
+		local centre_pos = widget.ui_scenegraph.portrait_pivot.world_position
+		portrait_bounding_boxes[i] = {
 			{
 				centre_pos[1] - portrait_size[1] * 0.5,
 				centre_pos[2] - portrait_size[2]
@@ -101,6 +107,8 @@ UICleanUI.update = function (self, dt, context)
 		}
 	end
 
+	local equipment_background = hud:component("EquipmentUI")
+	local gamepad_equipment_background = hud:component("GamePadEquipmentUI")
 	local ammo_world_position = equipment_background.ui_scenegraph.ammo_background.world_position
 	local ammo_background_size = equipment_background.ui_scenegraph.ammo_background.size
 	local equipment_world_position = equipment_background.ui_scenegraph.background_panel.world_position
@@ -182,7 +190,7 @@ UICleanUI.update = function (self, dt, context)
 							set_alpha_function = "set_health_alpha",
 							get_widget_function = function (self)
 								local hud = self.hud
-								local unit_frames_handler = hud.unit_frames_handler
+								local unit_frames_handler = hud:component("UnitFramesHandler")
 								local widget = unit_frames_handler:get_unit_widget(1)
 
 								return widget
@@ -191,7 +199,7 @@ UICleanUI.update = function (self, dt, context)
 						{
 							set_alpha_function = "set_frame_alpha",
 							alpha = -1,
-							widget = hud.gamepad_equipment_ui
+							widget = hud:component("GamepadEquipmentUI")
 						}
 					}
 				},
@@ -202,7 +210,7 @@ UICleanUI.update = function (self, dt, context)
 							alpha = 1,
 							get_widget_function = function (self)
 								local hud = self.hud
-								local unit_frames_handler = hud.unit_frames_handler
+								local unit_frames_handler = hud:component("UnitFramesHandler")
 								local widget = unit_frames_handler:get_unit_widget(2)
 
 								return widget
@@ -212,7 +220,7 @@ UICleanUI.update = function (self, dt, context)
 							alpha = -1,
 							get_widget_function = function (self)
 								local hud = self.hud
-								local unit_frames_handler = hud.unit_frames_handler
+								local unit_frames_handler = hud:component("UnitFramesHandler")
 								local widget = unit_frames_handler:get_unit_widget(3)
 
 								return widget
@@ -222,7 +230,7 @@ UICleanUI.update = function (self, dt, context)
 							alpha = -1,
 							get_widget_function = function (self)
 								local hud = self.hud
-								local unit_frames_handler = hud.unit_frames_handler
+								local unit_frames_handler = hud:component("UnitFramesHandler")
 								local widget = unit_frames_handler:get_unit_widget(4)
 
 								return widget
@@ -238,7 +246,7 @@ UICleanUI.update = function (self, dt, context)
 							set_alpha_function = "set_default_alpha",
 							get_widget_function = function (self)
 								local hud = self.hud
-								local unit_frames_handler = hud.unit_frames_handler
+								local unit_frames_handler = hud:component("UnitFramesHandler")
 								local widget = unit_frames_handler:get_unit_widget(1)
 
 								return widget
@@ -249,7 +257,7 @@ UICleanUI.update = function (self, dt, context)
 							set_alpha_function = "set_portrait_alpha",
 							get_widget_function = function (self)
 								local hud = self.hud
-								local unit_frames_handler = hud.unit_frames_handler
+								local unit_frames_handler = hud:component("UnitFramesHandler")
 								local widget = unit_frames_handler:get_unit_widget(1)
 
 								return widget
@@ -257,7 +265,7 @@ UICleanUI.update = function (self, dt, context)
 						},
 						{
 							alpha = -1,
-							widget = hud.buff_ui
+							widget = hud:component("BuffUI")
 						}
 					}
 				},
@@ -267,14 +275,14 @@ UICleanUI.update = function (self, dt, context)
 						{
 							set_alpha_function = "set_panel_alpha",
 							alpha = -1,
-							widget = hud.gamepad_equipment_ui
+							widget = hud:component("GamePadEquipmentUI")
 						},
 						{
 							alpha = -1,
 							set_alpha_function = "set_ability_alpha",
 							get_widget_function = function (self)
 								local hud = self.hud
-								local unit_frames_handler = hud.unit_frames_handler
+								local unit_frames_handler = hud:component("UnitFramesHandler")
 								local widget = unit_frames_handler:get_unit_widget(1)
 
 								return widget
@@ -282,7 +290,7 @@ UICleanUI.update = function (self, dt, context)
 						},
 						{
 							alpha = -1,
-							widget = hud.gamepad_ability_ui
+							widget = hud:component("GamePadAbilityUI")
 						}
 					}
 				}
@@ -311,14 +319,14 @@ UICleanUI.update = function (self, dt, context)
 						{
 							set_alpha_function = "set_panel_alpha",
 							alpha = -1,
-							widget = hud.equipment_ui
+							widget = hud:component("EquipmentUI")
 						},
 						{
 							alpha = -1,
 							set_alpha_function = "set_equipment_alpha",
 							get_widget_function = function (self)
 								local hud = self.hud
-								local unit_frames_handler = hud.unit_frames_handler
+								local unit_frames_handler = hud:component("UnitFramesHandler")
 								local widget = unit_frames_handler:get_unit_widget(1)
 
 								return widget
@@ -329,7 +337,7 @@ UICleanUI.update = function (self, dt, context)
 							set_alpha_function = "set_health_alpha",
 							get_widget_function = function (self)
 								local hud = self.hud
-								local unit_frames_handler = hud.unit_frames_handler
+								local unit_frames_handler = hud:component("UnitFramesHandler")
 								local widget = unit_frames_handler:get_unit_widget(1)
 
 								return widget
@@ -340,7 +348,7 @@ UICleanUI.update = function (self, dt, context)
 							set_alpha_function = "set_ability_alpha",
 							get_widget_function = function (self)
 								local hud = self.hud
-								local unit_frames_handler = hud.unit_frames_handler
+								local unit_frames_handler = hud:component("UnitFramesHandler")
 								local widget = unit_frames_handler:get_unit_widget(1)
 
 								return widget
@@ -348,7 +356,7 @@ UICleanUI.update = function (self, dt, context)
 						},
 						{
 							alpha = -1,
-							widget = hud.ability_ui
+							widget = hud:component("AbilityUI")
 						}
 					}
 				},
@@ -359,7 +367,7 @@ UICleanUI.update = function (self, dt, context)
 							alpha = 1,
 							get_widget_function = function (self)
 								local hud = self.hud
-								local unit_frames_handler = hud.unit_frames_handler
+								local unit_frames_handler = hud:component("UnitFramesHandler")
 								local widget = unit_frames_handler:get_unit_widget(2)
 
 								return widget
@@ -369,7 +377,7 @@ UICleanUI.update = function (self, dt, context)
 							alpha = -1,
 							get_widget_function = function (self)
 								local hud = self.hud
-								local unit_frames_handler = hud.unit_frames_handler
+								local unit_frames_handler = hud:component("UnitFramesHandler")
 								local widget = unit_frames_handler:get_unit_widget(3)
 
 								return widget
@@ -379,7 +387,7 @@ UICleanUI.update = function (self, dt, context)
 							alpha = -1,
 							get_widget_function = function (self)
 								local hud = self.hud
-								local unit_frames_handler = hud.unit_frames_handler
+								local unit_frames_handler = hud:component("UnitFramesHandler")
 								local widget = unit_frames_handler:get_unit_widget(4)
 
 								return widget
@@ -395,7 +403,7 @@ UICleanUI.update = function (self, dt, context)
 							set_alpha_function = "set_default_alpha",
 							get_widget_function = function (self)
 								local hud = self.hud
-								local unit_frames_handler = hud.unit_frames_handler
+								local unit_frames_handler = hud:component("UnitFramesHandler")
 								local widget = unit_frames_handler:get_unit_widget(1)
 
 								return widget
@@ -406,7 +414,7 @@ UICleanUI.update = function (self, dt, context)
 							set_alpha_function = "set_portrait_alpha",
 							get_widget_function = function (self)
 								local hud = self.hud
-								local unit_frames_handler = hud.unit_frames_handler
+								local unit_frames_handler = hud:component("UnitFramesHandler")
 								local widget = unit_frames_handler:get_unit_widget(1)
 
 								return widget
@@ -414,7 +422,7 @@ UICleanUI.update = function (self, dt, context)
 						},
 						{
 							alpha = -1,
-							widget = hud.buff_ui
+							widget = hud:component("BuffUI")
 						}
 					}
 				},
@@ -424,7 +432,7 @@ UICleanUI.update = function (self, dt, context)
 						{
 							set_alpha_function = "set_ammo_alpha",
 							alpha = -1,
-							widget = hud.equipment_ui
+							widget = hud:component("EquipmentUI")
 						}
 					}
 				}
@@ -480,8 +488,12 @@ UICleanUI.update = function (self, dt, context)
 
 			if box.alpha ~= alpha then
 				if widget then
-					if box.set_alpha_function then
-						widget[box.set_alpha_function](widget, alpha)
+					local set_alpha_function = box.set_alpha_function
+
+					if set_alpha_function then
+						if widget[set_alpha_function] then
+							widget[set_alpha_function](widget, alpha)
+						end
 					else
 						if widget.set_panel_alpha then
 							widget:set_panel_alpha(alpha)

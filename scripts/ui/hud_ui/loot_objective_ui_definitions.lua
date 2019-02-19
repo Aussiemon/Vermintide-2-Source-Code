@@ -171,8 +171,8 @@ local function create_loot_widget(texture, amount)
 				scenegraph_id = "pivot",
 				axis = 1,
 				direction = 1,
-				spacing = spacing or {
-					0,
+				spacing = {
+					spacing[1],
 					0
 				},
 				texture_sizes = icon_texture_sizes,
@@ -200,8 +200,8 @@ local function create_loot_widget(texture, amount)
 				scenegraph_id = "pivot",
 				axis = 1,
 				direction = 1,
-				spacing = spacing or {
-					0,
+				spacing = {
+					spacing[1],
 					0
 				},
 				texture_sizes = icon_texture_sizes,
@@ -228,8 +228,8 @@ local function create_loot_widget(texture, amount)
 				scenegraph_id = "pivot",
 				axis = 1,
 				direction = 1,
-				spacing = spacing or {
-					0,
+				spacing = {
+					spacing[1],
 					0
 				},
 				texture_sizes = icon_texture_sizes,

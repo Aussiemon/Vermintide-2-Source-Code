@@ -1,8 +1,6 @@
 require("scripts/unit_extensions/generic/death_reactions")
 
 GenericDeathExtension = class(GenericDeathExtension)
-DeathReactions_profiler_names = DeathReactions_profiler_names or {}
-local profiler_names = DeathReactions_profiler_names
 
 GenericDeathExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.network_type = extension_init_data.is_husk

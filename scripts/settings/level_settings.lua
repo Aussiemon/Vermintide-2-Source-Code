@@ -16,7 +16,7 @@ COLD_CAMERA_BACKLIGHT = {
 }
 
 dofile("scripts/settings/level_settings_honduras")
-dofile("scripts/settings/dlc_settings")
+require("scripts/settings/dlc_settings")
 
 for _, dlc in pairs(DLCSettings) do
 	local level_settings = dlc.level_settings
@@ -90,10 +90,7 @@ LevelSettings.inn_level = {
 		"location_keep_study",
 		"location_keep_mysterious_tower"
 	},
-	loot_objectives = {
-		grimoire = 0,
-		tome = 0
-	},
+	loot_objectives = {},
 	pickup_settings = {
 		{
 			primary = {
@@ -192,6 +189,29 @@ LevelSettings.whitebox_ta = {
 	level_image = "level_image_any",
 	loading_ui_package_name = "loading_screen_1",
 	display_name = "level_whitebox_ta",
+	source_aux_bus_name = "environment_reverb_outside_source",
+	level_particle_effects = {},
+	level_screen_effects = {},
+	locations = {},
+	pickup_settings = {
+		{
+			ammo = 10,
+			grenades = 10,
+			healing = 10,
+			potions = 10
+		}
+	}
+}
+LevelSettings.whitebox_ta_leaf = {
+	package_name = "resource_packages/levels/debug/whitebox_ta_leaf",
+	environment_state = "exterior",
+	player_aux_bus_name = "environment_reverb_outside",
+	ambient_sound_event = "silent_default_world_sound",
+	knocked_down_setting = "knocked_down",
+	level_name = "levels/debug/whitebox_ta_leaf/world",
+	level_image = "level_image_any",
+	loading_ui_package_name = "loading_screen_1",
+	display_name = "level_whitebox_ta_leaf",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
@@ -600,8 +620,10 @@ for level_key, level_data in pairs(LevelSettings) do
 
 		if level_data.game_mode == "adventure" then
 			level_data.loot_objectives = level_data.loot_objectives or {
+				loot_die = 0,
+				tome = 3,
 				grimoire = 2,
-				tome = 3
+				painting_scrap = 0
 			}
 		end
 	end

@@ -48,7 +48,7 @@ ActionPushStagger.client_owner_start_action = function (self, new_action, t, cha
 	self.damage_profile_outer_id = NetworkLookup.damage_profiles[damage_profile_name_outer]
 	self.damage_profile_outer = DamageProfileTemplates[damage_profile_name_outer]
 	local status_extension = self._status_extension
-	local _, procced = buff_extension:apply_buffs_to_value(0, StatBuffIndex.NO_PUSH_FATIGUE_COST)
+	local _, procced = buff_extension:apply_buffs_to_value(0, "no_push_fatigue_cost")
 
 	if not procced then
 		local cost = "action_push"
@@ -157,8 +157,8 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 		local player_direction = self._player_direction:unbox()
 		local player_direction_flat = Vector3.flat(player_direction)
 		local buff_extension = self.owner_buff_extension
-		local push_half_angle = math.rad(buff_extension:apply_buffs_to_value(current_action.push_angle or 90, StatBuffIndex.BLOCK_ANGLE) * 0.5)
-		local outer_push_half_angle = math.rad(buff_extension:apply_buffs_to_value(current_action.outer_push_angle or 0, StatBuffIndex.BLOCK_ANGLE) * 0.5)
+		local push_half_angle = math.rad(buff_extension:apply_buffs_to_value(current_action.push_angle or 90, "block_angle") * 0.5)
+		local outer_push_half_angle = math.rad(buff_extension:apply_buffs_to_value(current_action.outer_push_angle or 0, "block_angle") * 0.5)
 
 		for i = 1, num_hits, 1 do
 			repeat
@@ -171,7 +171,7 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 				local hit_unit = Actor.unit(hit_actor)
 				local is_enemy = DamageUtils.is_enemy(hit_unit)
 
-				if is_enemy and hit_units[hit_unit] == nil then
+				if is_enemy and hit_units[hit_unit] == nil and AiUtils.unit_alive(hit_unit) then
 					hit_units[hit_unit] = true
 					local breed = Unit.get_data(hit_unit, "breed")
 					local node = Actor.node(hit_actor)

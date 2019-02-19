@@ -566,6 +566,7 @@ return {
 	"units/weapons/player/pup_potion_01/pup_potion_healing_01",
 	"units/weapons/player/pup_potion_01/pup_potion_speed_01",
 	"units/weapons/player/pup_potion_01/pup_potion_strenght_01",
+	"units/weapons/player/pup_painting/pup_painting_scraps",
 	"units/weapons/player/pup_sacks/pup_sacks_01",
 	"units/weapons/player/pup_sacks/pup_sacks_01_test",
 	"units/weapons/player/pup_sacks/pup_sacks_02",

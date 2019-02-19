@@ -14,6 +14,7 @@ local check_level_list_difficulty = AchievementTemplateHelper.check_level_list_d
 local hero_level = AchievementTemplateHelper.hero_level
 local equipped_items_of_rarity = AchievementTemplateHelper.equipped_items_of_rarity
 local rarity_index = AchievementTemplateHelper.rarity_index
+local AVAILABLE_BOGENHAFEN_COSMETICS = 84
 AchievementTemplates.end_of_level_achievement_evaluations = {
 	no_ratling_damage = {
 		stat_to_increment = "bogenhafen_slum_no_ratling_damage",
@@ -1926,6 +1927,7 @@ AchievementTemplates.achievements = {
 		required_dlc = "bogenhafen",
 		ID_PS4 = "055",
 		icon = "achievement_trophy_bogenhafen_city_no_braziers_lit",
+		display_completion_ui = true,
 		desc = "achv_bogenhafen_city_no_braziers_lit_desc",
 		completed = function (statistics_db, stats_id)
 			return statistics_db:get_persistent_stat(stats_id, "bogenhafen_city_no_braziers_lit") > 0
@@ -1934,6 +1936,7 @@ AchievementTemplates.achievements = {
 	bogenhafen_city_torch_not_picked_up = {
 		required_dlc = "bogenhafen",
 		name = "achv_bogenhafen_city_torch_not_picked_up_name",
+		display_completion_ui = true,
 		icon = "achievement_trophy_bogenhafen_city_torch_not_picked_up",
 		desc = "achv_bogenhafen_city_torch_not_picked_up_desc",
 		completed = function (statistics_db, stats_id)
@@ -1946,6 +1949,7 @@ AchievementTemplates.achievements = {
 		required_dlc = "bogenhafen",
 		ID_PS4 = "056",
 		icon = "achievement_trophy_bogenhafen_city_fast_switches",
+		display_completion_ui = true,
 		desc = "achv_bogenhafen_city_fast_switches_desc",
 		completed = function (statistics_db, stats_id)
 			return statistics_db:get_persistent_stat(stats_id, "bogenhafen_city_fast_switches") > 0
@@ -1957,6 +1961,7 @@ AchievementTemplates.achievements = {
 		required_dlc = "bogenhafen",
 		ID_PS4 = "057",
 		icon = "achievement_trophy_bogenhafen_city_all_wine_collected",
+		display_completion_ui = true,
 		desc = "achv_bogenhafen_city_all_wine_collected_desc",
 		completed = function (statistics_db, stats_id)
 			return statistics_db:get_persistent_stat(stats_id, "bogenhafen_city_all_wine_collected") > 0
@@ -1965,6 +1970,7 @@ AchievementTemplates.achievements = {
 	bogenhafen_city_jumping_puzzle = {
 		required_dlc = "bogenhafen",
 		name = "achv_bogenhafen_city_jumping_puzzle_name",
+		display_completion_ui = true,
 		icon = "achievement_trophy_bogenhafen_city_jumping_puzzle",
 		desc = "achv_bogenhafen_city_jumping_puzzle_desc",
 		completed = function (statistics_db, stats_id)
@@ -1977,6 +1983,7 @@ AchievementTemplates.achievements = {
 		required_dlc = "bogenhafen",
 		ID_PS4 = "058",
 		icon = "achievement_trophy_bogenhafen_slum_no_ratling_damage",
+		display_completion_ui = true,
 		desc = "achv_bogenhafen_slum_no_ratling_damage_desc",
 		completed = function (statistics_db, stats_id)
 			return statistics_db:get_persistent_stat(stats_id, "bogenhafen_slum_no_ratling_damage") > 0
@@ -1985,6 +1992,7 @@ AchievementTemplates.achievements = {
 	bogenhafen_slum_no_windows_broken = {
 		required_dlc = "bogenhafen",
 		name = "achv_bogenhafen_slum_no_windows_broken_name",
+		display_completion_ui = true,
 		icon = "achievement_trophy_bogenhafen_slum_no_windows_broken",
 		desc = "achv_bogenhafen_slum_no_windows_broken_desc",
 		completed = function (statistics_db, stats_id)
@@ -1997,6 +2005,7 @@ AchievementTemplates.achievements = {
 		required_dlc = "bogenhafen",
 		ID_PS4 = "059",
 		icon = "achievement_trophy_bogenhafen_slum_find_hidden_stash",
+		display_completion_ui = true,
 		desc = "achv_bogenhafen_slum_find_hidden_stash_desc",
 		completed = function (statistics_db, stats_id)
 			return statistics_db:get_persistent_stat(stats_id, "bogenhafen_slum_find_hidden_stash") > 0
@@ -2005,6 +2014,7 @@ AchievementTemplates.achievements = {
 	bogenhafen_slum_jumping_puzzle = {
 		required_dlc = "bogenhafen",
 		name = "achv_bogenhafen_slum_jumping_puzzle_name",
+		display_completion_ui = true,
 		icon = "achievement_trophy_bogenhafen_slum_jumping_puzzle",
 		desc = "achv_bogenhafen_slum_jumping_puzzle_desc",
 		completed = function (statistics_db, stats_id)
@@ -2017,9 +2027,27 @@ AchievementTemplates.achievements = {
 		required_dlc = "bogenhafen",
 		ID_PS4 = "060",
 		icon = "achievement_trophy_bogenhafen_slum_event_speedrun",
+		display_completion_ui = true,
 		desc = "achv_bogenhafen_slum_event_speedrun_desc",
 		completed = function (statistics_db, stats_id)
 			return statistics_db:get_persistent_stat(stats_id, "bogenhafen_slum_event_speedrun") > 0
+		end
+	},
+	bogenhafen_collect_all_cosmetics = {
+		required_dlc = "bogenhafen",
+		name = "achv_bogenhafen_collect_all_cosmetics_name",
+		icon = "achievement_trophy_bogenhafen_collect_all_cosmetics",
+		desc = "achv_bogenhafen_collect_all_cosmetics_desc",
+		completed = function (statistics_db, stats_id)
+			return AVAILABLE_BOGENHAFEN_COSMETICS <= statistics_db:get_persistent_stat(stats_id, "collected_bogenhafen_cosmetics")
+		end,
+		progress = function (statistics_db, stats_id)
+			local count = statistics_db:get_persistent_stat(stats_id, "collected_bogenhafen_cosmetics")
+
+			return {
+				count,
+				AVAILABLE_BOGENHAFEN_COSMETICS
+			}
 		end
 	}
 }
@@ -3118,6 +3146,7 @@ AchievementTemplates.achievements.elven_ruins_align_leylines_timed = {
 	ID_XB1 = 28,
 	ID_PS4 = "027",
 	name = "achv_elven_ruins_align_leylines_timed_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_elven_ruins_align_leylines_timed",
 	desc = function ()
 		return string.format(Localize("achv_elven_ruins_align_leylines_timed_desc"), QuestSettings.elven_ruins_speed_event)
@@ -3130,6 +3159,7 @@ AchievementTemplates.achievements.farmlands_rescue_prisoners_timed = {
 	ID_XB1 = 29,
 	ID_PS4 = "028",
 	name = "achv_farmlands_rescue_prisoners_timed_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_farmlands_rescue_prisoners_timed",
 	desc = function ()
 		return string.format(Localize("achv_farmlands_rescue_prisoners_timed_desc"), QuestSettings.farmlands_speed_event)
@@ -3142,6 +3172,7 @@ AchievementTemplates.achievements.military_kill_chaos_warriors_in_event = {
 	ID_XB1 = 30,
 	ID_PS4 = "029",
 	name = "achv_military_kill_chaos_warriors_in_event_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_military_kill_chaos_warriors_in_event",
 	desc = function ()
 		return string.format(Localize("achv_military_kill_chaos_warriors_in_event_desc"), 3)
@@ -3154,6 +3185,7 @@ AchievementTemplates.achievements.ground_zero_burblespew_tornado_enemies = {
 	ID_XB1 = 31,
 	ID_PS4 = "030",
 	name = "achv_ground_zero_burblespew_tornado_enemies_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_ground_zero_burblespew_tornado_enemies",
 	desc = function ()
 		return string.format(Localize("achv_ground_zero_burblespew_tornado_enemies_desc"), QuestSettings.halescourge_tornado_enemies)
@@ -3166,6 +3198,7 @@ AchievementTemplates.achievements.fort_kill_enemies_cannonball = {
 	ID_XB1 = 32,
 	ID_PS4 = "031",
 	name = "achv_fort_kill_enemies_cannonball_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_fort_kill_enemies_cannonball",
 	desc = function ()
 		return string.format(Localize("achv_fort_kill_enemies_cannonball_desc"), QuestSettings.forest_fort_kill_cannonball)
@@ -3178,6 +3211,7 @@ AchievementTemplates.achievements.nurgle_player_showered_in_pus = {
 	ID_XB1 = 33,
 	ID_PS4 = "032",
 	name = "achv_nurgle_player_showered_in_pus_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_nurgle_player_showered_in_pus",
 	desc = function ()
 		return string.format(Localize("achv_nurgle_player_showered_in_pus_desc"), QuestSettings.nurgle_bathed_all)
@@ -3190,6 +3224,7 @@ AchievementTemplates.achievements.bell_destroy_bell_flee_timed = {
 	ID_XB1 = 34,
 	ID_PS4 = "033",
 	name = "achv_bell_destroy_bell_flee_timed_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_bell_destroy_bell_flee_timed",
 	desc = function ()
 		return string.format(Localize("achv_bell_destroy_bell_flee_timed_desc"), QuestSettings.bell_speed_event)
@@ -3202,6 +3237,7 @@ AchievementTemplates.achievements.catacombs_stay_inside_ritual_pool = {
 	ID_XB1 = 35,
 	ID_PS4 = "034",
 	name = "achv_catacombs_stay_inside_ritual_pool_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_catacombs_stay_inside_ritual_pool",
 	desc = function ()
 		return string.format(Localize("achv_catacombs_stay_inside_ritual_pool_desc"), QuestSettings.volume_corpse_pit_damage)
@@ -3214,6 +3250,7 @@ AchievementTemplates.achievements.mines_kill_final_troll_timed = {
 	ID_XB1 = 36,
 	ID_PS4 = "035",
 	name = "achv_mines_kill_final_troll_timed_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_mines_kill_final_troll_timed",
 	desc = function ()
 		return string.format(Localize("achv_mines_kill_final_troll_timed_desc"), QuestSettings.mines_speed_event)
@@ -3226,6 +3263,7 @@ AchievementTemplates.achievements.warcamp_bodvarr_charge_warriors = {
 	ID_XB1 = 37,
 	ID_PS4 = "036",
 	name = "achv_warcamp_bodvarr_charge_warriors_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_warcamp_bodvarr_charge_warriors",
 	desc = function ()
 		return string.format(Localize("achv_warcamp_bodvarr_charge_warriors_desc"), QuestSettings.exalted_champion_charge_chaos_warrior)
@@ -3238,6 +3276,7 @@ AchievementTemplates.achievements.skaven_stronghold_skarrik_kill_skaven = {
 	ID_XB1 = 38,
 	ID_PS4 = "037",
 	name = "achv_skaven_stronghold_skarrik_kill_skaven_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_skaven_stronghold_skarrik_kill_skaven",
 	desc = function ()
 		return string.format(Localize("achv_skaven_stronghold_skarrik_kill_skaven_desc"), QuestSettings.storm_vermin_warlord_kills_enemies)
@@ -3250,6 +3289,7 @@ AchievementTemplates.achievements.ussingen_no_event_barrels = {
 	ID_XB1 = 39,
 	ID_PS4 = "038",
 	name = "achv_ussingen_no_event_barrels_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_ussingen_no_event_barrels",
 	desc = "achv_ussingen_no_event_barrels_desc",
 	completed = function (statistics_db, stats_id)
@@ -3260,6 +3300,7 @@ AchievementTemplates.achievements.skittergate_deathrattler_rasknitt_timed = {
 	ID_XB1 = 40,
 	ID_PS4 = "039",
 	name = "achv_skittergate_deathrattler_rasknitt_timed_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_skittergate_deathrattler_rasknitt_timed",
 	desc = function ()
 		return string.format(Localize("achv_skittergate_deathrattler_rasknitt_timed_desc"), QuestSettings.skittergate_speed_event)
@@ -3337,6 +3378,7 @@ AchievementTemplates.achievements.skaven_warpfire_thrower_1 = {
 	ID_XB1 = 42,
 	name = "achv_skaven_warpfire_thrower_1_name",
 	ID_PS4 = "041",
+	display_completion_ui = true,
 	icon = "achievement_trophy_skaven_warpfire_thrower_1",
 	desc = "achv_skaven_warpfire_thrower_1_desc",
 	completed = function (statistics_db, stats_id)
@@ -3347,6 +3389,7 @@ AchievementTemplates.achievements.skaven_warpfire_thrower_2 = {
 	ID_XB1 = 43,
 	name = "achv_skaven_warpfire_thrower_2_name",
 	ID_PS4 = "042",
+	display_completion_ui = true,
 	icon = "achievement_trophy_skaven_warpfire_thrower_2",
 	desc = "achv_skaven_warpfire_thrower_2_desc",
 	completed = function (statistics_db, stats_id)
@@ -3355,6 +3398,7 @@ AchievementTemplates.achievements.skaven_warpfire_thrower_2 = {
 }
 AchievementTemplates.achievements.skaven_warpfire_thrower_3 = {
 	name = "achv_skaven_warpfire_thrower_3_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_skaven_warpfire_thrower_3",
 	desc = function ()
 		return string.format(Localize("achv_skaven_warpfire_thrower_3_desc"), QuestSettings.num_enemies_killed_by_warpfire)
@@ -3367,6 +3411,7 @@ AchievementTemplates.achievements.skaven_pack_master_1 = {
 	ID_XB1 = 44,
 	name = "achv_skaven_pack_master_1_name",
 	ID_PS4 = "043",
+	display_completion_ui = true,
 	icon = "achievement_trophy_skaven_pack_master_1",
 	desc = "achv_skaven_pack_master_1_desc",
 	completed = function (statistics_db, stats_id)
@@ -3377,6 +3422,7 @@ AchievementTemplates.achievements.skaven_pack_master_2 = {
 	ID_XB1 = 45,
 	name = "achv_skaven_pack_master_2_name",
 	ID_PS4 = "044",
+	display_completion_ui = true,
 	icon = "achievement_trophy_skaven_pack_master_2",
 	desc = "achv_skaven_pack_master_2_desc",
 	completed = function (statistics_db, stats_id)
@@ -3385,6 +3431,7 @@ AchievementTemplates.achievements.skaven_pack_master_2 = {
 }
 AchievementTemplates.achievements.skaven_pack_master_3 = {
 	name = "achv_skaven_pack_master_3_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_skaven_pack_master_3",
 	desc = "achv_skaven_pack_master_3_desc",
 	completed = function (statistics_db, stats_id)
@@ -3395,6 +3442,7 @@ AchievementTemplates.achievements.skaven_gutter_runner_1 = {
 	ID_XB1 = 46,
 	name = "achv_skaven_gutter_runner_1_name",
 	ID_PS4 = "045",
+	display_completion_ui = true,
 	icon = "achievement_trophy_skaven_gutter_runner_1",
 	desc = "achv_skaven_gutter_runner_1_desc",
 	completed = function (statistics_db, stats_id)
@@ -3403,6 +3451,7 @@ AchievementTemplates.achievements.skaven_gutter_runner_1 = {
 }
 AchievementTemplates.achievements.skaven_gutter_runner_2 = {
 	name = "achv_skaven_gutter_runner_2_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_skaven_gutter_runner_2",
 	desc = "achv_skaven_gutter_runner_2_desc",
 	completed = function (statistics_db, stats_id)
@@ -3411,6 +3460,7 @@ AchievementTemplates.achievements.skaven_gutter_runner_2 = {
 }
 AchievementTemplates.achievements.skaven_gutter_runner_3 = {
 	name = "achv_skaven_gutter_runner_3_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_skaven_gutter_runner_3",
 	desc = "achv_skaven_gutter_runner_3_desc",
 	completed = function (statistics_db, stats_id)
@@ -3421,6 +3471,7 @@ AchievementTemplates.achievements.skaven_poison_wind_globardier_1 = {
 	ID_XB1 = 47,
 	name = "achv_skaven_poison_wind_globardier_1_name",
 	ID_PS4 = "046",
+	display_completion_ui = true,
 	icon = "achievement_trophy_skaven_poison_wind_globardier_1",
 	desc = "achv_skaven_poison_wind_globardier_1_desc",
 	completed = function (statistics_db, stats_id)
@@ -3429,6 +3480,7 @@ AchievementTemplates.achievements.skaven_poison_wind_globardier_1 = {
 }
 AchievementTemplates.achievements.skaven_poison_wind_globardier_2 = {
 	name = "achv_skaven_poison_wind_globardier_2_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_skaven_poison_wind_globardier_2",
 	desc = "achv_skaven_poison_wind_globardier_2_desc",
 	completed = function (statistics_db, stats_id)
@@ -3437,6 +3489,7 @@ AchievementTemplates.achievements.skaven_poison_wind_globardier_2 = {
 }
 AchievementTemplates.achievements.skaven_poison_wind_globardier_3 = {
 	name = "achv_skaven_poison_wind_globardier_3_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_skaven_poison_wind_globardier_3",
 	desc = function ()
 		return string.format(Localize("achv_skaven_poison_wind_globardier_3_desc"), QuestSettings.num_enemies_killed_by_poison)
@@ -3449,6 +3502,7 @@ AchievementTemplates.achievements.skaven_ratling_gunner_1 = {
 	ID_XB1 = 48,
 	name = "achv_skaven_ratling_gunner_1_name",
 	ID_PS4 = "047",
+	display_completion_ui = true,
 	icon = "achievement_trophy_skaven_ratling_gunner_1",
 	desc = "achv_skaven_ratling_gunner_1_desc",
 	completed = function (statistics_db, stats_id)
@@ -3457,6 +3511,7 @@ AchievementTemplates.achievements.skaven_ratling_gunner_1 = {
 }
 AchievementTemplates.achievements.skaven_ratling_gunner_2 = {
 	name = "achv_skaven_ratling_gunner_2_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_skaven_ratling_gunner_2",
 	desc = "achv_skaven_ratling_gunner_2_desc",
 	completed = function (statistics_db, stats_id)
@@ -3465,6 +3520,7 @@ AchievementTemplates.achievements.skaven_ratling_gunner_2 = {
 }
 AchievementTemplates.achievements.skaven_ratling_gunner_3 = {
 	name = "achv_skaven_ratling_gunner_3_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_skaven_ratling_gunner_3",
 	desc = "achv_skaven_ratling_gunner_3_desc",
 	completed = function (statistics_db, stats_id)
@@ -3475,6 +3531,7 @@ AchievementTemplates.achievements.chaos_corruptor_sorcerer_1 = {
 	ID_XB1 = 49,
 	name = "achv_chaos_corruptor_sorcerer_1_name",
 	ID_PS4 = "048",
+	display_completion_ui = true,
 	icon = "achievement_trophy_chaos_corruptor_sorcerer_1",
 	desc = "achv_chaos_corruptor_sorcerer_1_desc",
 	completed = function (statistics_db, stats_id)
@@ -3483,6 +3540,7 @@ AchievementTemplates.achievements.chaos_corruptor_sorcerer_1 = {
 }
 AchievementTemplates.achievements.chaos_corruptor_sorcerer_2 = {
 	name = "achv_chaos_corruptor_sorcerer_2_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_chaos_corruptor_sorcerer_2",
 	desc = function ()
 		return string.format(Localize("achv_chaos_corruptor_sorcerer_2_desc"), QuestSettings.corruptor_killed_at_teleport_time)
@@ -3495,6 +3553,7 @@ AchievementTemplates.achievements.chaos_corruptor_sorcerer_3 = {
 	ID_XB1 = 50,
 	name = "achv_chaos_corruptor_sorcerer_3_name",
 	ID_PS4 = "049",
+	display_completion_ui = true,
 	icon = "achievement_trophy_chaos_corruptor_sorcerer_3",
 	desc = "achv_chaos_corruptor_sorcerer_3_desc",
 	completed = function (statistics_db, stats_id)
@@ -3505,6 +3564,7 @@ AchievementTemplates.achievements.chaos_vortex_sorcerer_1 = {
 	ID_XB1 = 51,
 	name = "achv_chaos_vortex_sorcerer_1_name",
 	ID_PS4 = "050",
+	display_completion_ui = true,
 	icon = "achievement_trophy_chaos_vortex_sorcerer_1",
 	desc = "achv_chaos_vortex_sorcerer_1_desc",
 	completed = function (statistics_db, stats_id)
@@ -3513,6 +3573,7 @@ AchievementTemplates.achievements.chaos_vortex_sorcerer_1 = {
 }
 AchievementTemplates.achievements.chaos_vortex_sorcerer_2 = {
 	name = "achv_chaos_vortex_sorcerer_2_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_chaos_vortex_sorcerer_2",
 	desc = "achv_chaos_vortex_sorcerer_2_desc",
 	completed = function (statistics_db, stats_id)
@@ -3521,6 +3582,7 @@ AchievementTemplates.achievements.chaos_vortex_sorcerer_2 = {
 }
 AchievementTemplates.achievements.chaos_vortex_sorcerer_3 = {
 	name = "achv_chaos_vortex_sorcerer_3_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_chaos_vortex_sorcerer_3",
 	desc = "achv_chaos_vortex_sorcerer_3_desc",
 	completed = function (statistics_db, stats_id)
@@ -3529,6 +3591,7 @@ AchievementTemplates.achievements.chaos_vortex_sorcerer_3 = {
 }
 AchievementTemplates.achievements.chaos_spawn_1 = {
 	name = "achv_chaos_spawn_1_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_chaos_spawn_1",
 	desc = "achv_chaos_spawn_1_desc",
 	completed = function (statistics_db, stats_id)
@@ -3537,6 +3600,7 @@ AchievementTemplates.achievements.chaos_spawn_1 = {
 }
 AchievementTemplates.achievements.chaos_spawn_2 = {
 	name = "achv_chaos_spawn_2_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_chaos_spawn_2",
 	desc = "achv_chaos_spawn_2_desc",
 	completed = function (statistics_db, stats_id)
@@ -3545,6 +3609,7 @@ AchievementTemplates.achievements.chaos_spawn_2 = {
 }
 AchievementTemplates.achievements.chaos_troll_1 = {
 	name = "achv_chaos_troll_1_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_chaos_troll_1",
 	desc = "achv_chaos_troll_1_desc",
 	completed = function (statistics_db, stats_id)
@@ -3553,6 +3618,7 @@ AchievementTemplates.achievements.chaos_troll_1 = {
 }
 AchievementTemplates.achievements.chaos_troll_2 = {
 	name = "achv_chaos_troll_2_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_chaos_troll_2",
 	desc = "achv_chaos_troll_2_desc",
 	completed = function (statistics_db, stats_id)
@@ -3561,6 +3627,7 @@ AchievementTemplates.achievements.chaos_troll_2 = {
 }
 AchievementTemplates.achievements.skaven_rat_ogre_1 = {
 	name = "achv_skaven_rat_ogre_1_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_skaven_rat_ogre_1",
 	desc = "achv_skaven_rat_ogre_1_desc",
 	completed = function (statistics_db, stats_id)
@@ -3569,6 +3636,7 @@ AchievementTemplates.achievements.skaven_rat_ogre_1 = {
 }
 AchievementTemplates.achievements.skaven_rat_ogre_2 = {
 	name = "achv_skaven_rat_ogre_2_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_skaven_rat_ogre_2",
 	desc = "achv_skaven_rat_ogre_2_desc",
 	completed = function (statistics_db, stats_id)
@@ -3577,6 +3645,7 @@ AchievementTemplates.achievements.skaven_rat_ogre_2 = {
 }
 AchievementTemplates.achievements.skaven_stormfiend_1 = {
 	name = "achv_skaven_stormfiend_1_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_skaven_stormfiend_1",
 	desc = "achv_skaven_stormfiend_1_desc",
 	completed = function (statistics_db, stats_id)
@@ -3585,6 +3654,7 @@ AchievementTemplates.achievements.skaven_stormfiend_1 = {
 }
 AchievementTemplates.achievements.skaven_stormfiend_2 = {
 	name = "achv_skaven_stormfiend_2_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_skaven_stormfiend_2",
 	desc = "achv_skaven_stormfiend_2_desc",
 	completed = function (statistics_db, stats_id)
@@ -3593,6 +3663,7 @@ AchievementTemplates.achievements.skaven_stormfiend_2 = {
 }
 AchievementTemplates.achievements.helmgart_lord_1 = {
 	name = "achv_helmgart_lord_1_name",
+	display_completion_ui = true,
 	icon = "achievement_trophy_helmgart_lord_1",
 	desc = "achv_helmgart_lord_1_desc",
 	completed = function (statistics_db, stats_id)
@@ -3605,7 +3676,7 @@ for _, dlc in pairs(DLCSettings) do
 
 	if file_names then
 		for i, file_name in ipairs(file_names) do
-			require(file_name)
+			local_require(file_name)
 		end
 	end
 end
@@ -3666,6 +3737,10 @@ for difficulty_id, difficulty_name in pairs(AchievementTemplates.difficulties) d
 			}
 		end
 	}
+end
+
+for name, template in pairs(AchievementTemplates.achievements) do
+	template.id = name
 end
 
 return AchievementTemplates

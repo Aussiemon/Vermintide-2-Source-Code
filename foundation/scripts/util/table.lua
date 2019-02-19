@@ -60,7 +60,7 @@ table.create_copy = function (copy, original)
 			end
 		end
 
-		for key, value in pairs(copy) do
+		for key, _ in pairs(copy) do
 			if original[key] == nil then
 				copy[key] = nil
 			end
@@ -112,7 +112,7 @@ end
 table.append_non_indexed = function (dest, source)
 	local dest_size = #dest
 
-	for key, value in pairs(source) do
+	for _, value in pairs(source) do
 		dest_size = dest_size + 1
 		dest[dest_size] = value
 	end

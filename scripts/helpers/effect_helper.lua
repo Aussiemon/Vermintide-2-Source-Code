@@ -406,7 +406,7 @@ EffectHelper.flow_cb_play_surface_material_effect = function (effect_name, unit,
 	end
 end
 
-EffectHelper.flow_cb_play_footstep_surface_material_effects = function (effect_name, unit, object, foot_direction)
+EffectHelper.flow_cb_play_footstep_surface_material_effects = function (effect_name, unit, object, foot_direction, use_occlusion)
 	local foot_node_index = Unit.node(unit, object)
 	local raycast_offset = MaterialEffectSettings.footstep_raycast_offset
 	local raycast_position = Unit.world_position(unit, foot_node_index) + Vector3(0, 0, raycast_offset)
@@ -472,7 +472,7 @@ EffectHelper.flow_cb_play_footstep_surface_material_effects = function (effect_n
 				WwiseWorld.set_switch(wwise_world, "character_foley", sound_character, wwise_source_id)
 			end
 
-			WwiseWorld.trigger_event(wwise_world, sound.event, wwise_source_id)
+			WwiseWorld.trigger_event(wwise_world, sound.event, use_occlusion, wwise_source_id)
 		end
 	end
 end

@@ -65,8 +65,13 @@ BTVortexWanderAction._wander_around = function (self, unit, t, dt, blackboard, v
 		local target_unit = blackboard.target_unit
 		local position = position_lookup[unit]
 		local random_wander = vortex_template.random_wander or not target_unit
+		local directed_wander_position = blackboard.directed_wander_position_boxed and blackboard.directed_wander_position_boxed:unbox()
 
-		if random_wander then
+		if directed_wander_position then
+			navigation_extension:move_to(directed_wander_position)
+
+			vortex_data.wander_state = "calculating_path"
+		elseif random_wander then
 			local random_pos = ConflictUtils.get_spawn_pos_on_circle(nav_world, position, 5, 10, 7)
 
 			if random_pos then

@@ -697,7 +697,7 @@ function flow_callback_setup_profiling_level_step_3()
 end
 
 function flow_callback_play_footstep_surface_material_effects(params)
-	EffectHelper.flow_cb_play_footstep_surface_material_effects(params.effect_name, params.unit, params.object, params.foot_direction)
+	EffectHelper.flow_cb_play_footstep_surface_material_effects(params.effect_name, params.unit, params.object, params.foot_direction, params.use_occlusion or false)
 end
 
 function flow_callback_play_surface_material_effect(params)
@@ -1135,7 +1135,6 @@ function flow_callback_ussingen_barrel_challenge_completed(params)
 				local statistics_db = Managers.player:statistics_db()
 
 				statistics_db:increment_stat_and_sync_to_clients(stat_name)
-				QuestSettings.send_completed_message(stat_name)
 			end
 		end
 	end
@@ -1443,7 +1442,9 @@ function flow_callback_cutscene_fx_text_popup(params)
 end
 
 function flow_callback_start_tutorial_intro_text(params)
-	Managers.state.event:trigger("event_start_tutorial_intro_text")
+	local tutorial_template_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_tutorial")
+
+	Managers.state.event:trigger("event_start_cutscene_overlay", tutorial_template_settings)
 end
 
 function flow_callback_start_mission(params)
@@ -2735,9 +2736,8 @@ function flow_callback_activate_end_zone(params)
 	local unit = params.unit
 	local activate = params.activate
 	local props_ext = ScriptUnit.extension(unit, "props_system")
-	local always_activated = Unit.get_data(unit, "always_activated")
 
-	props_ext:activate(activate, always_activated)
+	props_ext:activation_allowed(activate)
 end
 
 function flow_callback_tutorial_restrict_camera_rotation(params)

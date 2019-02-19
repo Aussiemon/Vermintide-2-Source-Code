@@ -1,7 +1,8 @@
 local json = require("PlayFab.json")
 local PlayFabSettings = require("PlayFab.PlayFabSettings")
-local request_id = request_id or 0
-local active_requests = active_requests or {}
+PlayFabHttpsCurlData = PlayFabHttpsCurlData or {}
+PlayFabHttpsCurlData.request_id = PlayFabHttpsCurlData.request_id or 0
+PlayFabHttpsCurlData.active_requests = PlayFabHttpsCurlData.active_requests or {}
 local MAX_RETRIES = 2
 local retry_codes = {
 	1199,
@@ -55,12 +56,12 @@ local function on_error(request_data, result, id, error_override)
 	else
 		Managers.backend:playfab_api_error(result, error_code)
 
-		active_requests[id] = nil
+		PlayFabHttpsCurlData.active_requests[id] = nil
 	end
 end
 
 function curl_callback(success, code, headers, data, id)
-	local request_data = active_requests[id]
+	local request_data = PlayFabHttpsCurlData.active_requests[id]
 
 	if success then
 		local _, response = pcall(json.decode, data)
@@ -69,7 +70,7 @@ function curl_callback(success, code, headers, data, id)
 			if response.code == 200 and response.data and not response.data.Error then
 				request_data.onSuccess(response.data)
 
-				active_requests[id] = nil
+				PlayFabHttpsCurlData.active_requests[id] = nil
 			else
 				on_error(request_data, response, id)
 			end
@@ -121,12 +122,10 @@ local PlayFabHttpsCurl = {
 			headers[#headers + 1] = auth_key .. ": " .. auth_value
 		end
 
-		local id = request_id + 1
+		local id = PlayFabHttpsCurlData.request_id + 1
 		local curl_manager = Managers.curl
 		local full_url = "https://" .. PlayFabSettings.settings.titleId .. ".playfabapi.com/" .. url_path
-		local options = {
-			[curl_manager._curl.OPT_SSL_VERIFYPEER] = false
-		}
+		local options = {}
 		local request_data = {
 			retries = 0,
 			onSuccess = on_success_callback,
@@ -138,11 +137,11 @@ local PlayFabHttpsCurl = {
 			id = id,
 			options = options
 		}
-		active_requests[id] = request_data
+		PlayFabHttpsCurlData.active_requests[id] = request_data
 
 		curl_manager:post(full_url, json_request, headers, curl_callback, id, options)
 
-		request_id = id
+		PlayFabHttpsCurlData.request_id = id
 	end
 }
 

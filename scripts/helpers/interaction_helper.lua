@@ -33,6 +33,16 @@ InteractionHelper.interactions = {
 	difficulty_selection_access = {}
 }
 
+for name, dlc in pairs(DLCSettings) do
+	local interactions = dlc.interactions
+
+	if interactions then
+		for _, interaction in pairs(interactions) do
+			InteractionHelper.interactions[interaction] = {}
+		end
+	end
+end
+
 for interaction, config_table in pairs(InteractionHelper.interactions) do
 	config_table.request_rpc = config_table.request_rpc or "rpc_generic_interaction_request"
 end

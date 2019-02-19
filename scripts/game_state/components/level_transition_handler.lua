@@ -93,6 +93,8 @@ LevelTransitionHandler.load_level = function (self, level_key)
 		Managers.package:load(level_package_name, "LevelTransitionHandler", nil, true)
 
 		self.has_loaded_all_packages = false
+
+		self:_load_dlc_level_packages(level_key)
 	else
 		self.last_level_key = self.level_key
 	end
@@ -115,6 +117,8 @@ LevelTransitionHandler.release_level_resources = function (self, level_key)
 		if level_key == self.level_key then
 			self.level_key = nil
 		end
+
+		self:_unload_dlc_level_packages(level_key)
 	end
 end
 
@@ -192,8 +196,11 @@ LevelTransitionHandler.update = function (self)
 		has_loading_packages = true
 
 		if package_manager:has_loaded(level_package_name) then
-			self.loading_packages[level_name] = nil
 			self.loaded_levels[level_name] = true
+
+			if self:_dlc_level_packages_loaded(level_name) then
+				self.loading_packages[level_name] = nil
+			end
 		end
 	end
 
@@ -249,6 +256,70 @@ end
 
 LevelTransitionHandler.transition_in_progress = function (self)
 	return self.transition_exit_type ~= nil
+end
+
+LevelTransitionHandler._load_dlc_level_packages = function (self, level_key)
+	local async = true
+	local reference_name = "dlc_level_package_" .. level_key
+	local package_manager = Managers.package
+
+	for _, settings in pairs(DLCSettings) do
+		local level_packages = settings.level_packages
+
+		if level_packages then
+			local level_specific_packages = level_packages[level_key]
+
+			if level_specific_packages then
+				for _, package_path in ipairs(level_specific_packages) do
+					package_manager:load(package_path, reference_name, nil, async)
+				end
+			end
+		end
+	end
+end
+
+LevelTransitionHandler._unload_dlc_level_packages = function (self, level_key)
+	local reference_name = "dlc_level_package_" .. level_key
+	local package_manager = Managers.package
+
+	for _, settings in pairs(DLCSettings) do
+		local level_packages = settings.level_packages
+
+		if level_packages then
+			local level_specific_packages = level_packages[level_key]
+
+			if level_specific_packages then
+				for _, package_path in ipairs(level_specific_packages) do
+					if package_manager:has_loaded(package_path, reference_name) or package_manager:is_loading(package_path) then
+						package_manager:unload(package_path, reference_name)
+					end
+				end
+			end
+		end
+	end
+end
+
+LevelTransitionHandler._dlc_level_packages_loaded = function (self, level_key)
+	local reference_name = "dlc_level_package_" .. level_key
+	local package_manager = Managers.package
+
+	for _, settings in pairs(DLCSettings) do
+		local level_packages = settings.level_packages
+
+		if level_packages then
+			local level_specific_packages = level_packages[level_key]
+
+			if level_specific_packages then
+				for _, package_path in ipairs(level_specific_packages) do
+					if not package_manager:has_loaded(package_path, reference_name) then
+						return false
+					end
+				end
+			end
+		end
+	end
+
+	return true
 end
 
 return

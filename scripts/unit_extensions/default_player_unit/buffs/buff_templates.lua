@@ -8,202 +8,107 @@ MeleeBuffTypes = {
 RangedBuffTypes = {
 	RANGED = true
 }
-StatBuffs = {
-	"ATTACK_SPEED",
-	"NO_PUSH_FATIGUE_COST",
-	"MAX_FATIGUE",
-	"FATIGUE_REGEN",
-	"RELOAD_SPEED",
-	"CLIP_SIZE",
-	"TOTAL_AMMO",
-	"REDUCED_OVERCHARGE",
-	"AUTOMATIC_HEAD_SHOT",
-	"EXTRA_SHOT",
-	"VENT_DAMAGE",
-	"VENT_SPEED",
-	"PENETRATING_SHOT_PROC",
-	"OVERCHARGE_DAMAGE_IMMUNITY",
-	"INCREASED_MOVE_SPEED_WHILE_AIMING",
-	"NOT_CONSUME_MEDPACK",
-	"NOT_CONSUME_POTION",
-	"NOT_CONSUME_GRENADE",
-	"PROTECTION_POISON_WIND",
-	"PROTECTION_RATLING_GUNNER",
-	"PROTECTION_GUTTER_RUNNER",
-	"PROTECTION_PACK_MASTER",
-	"FASTER_REVIVE",
-	"INCREASE_LUCK",
-	"DAMAGE_TAKEN_KD",
-	"CURSE_PROTECTION",
-	"GRENADE_RADIUS",
-	"FASTER_RESPAWN",
-	"NOT_CONSUME_PICKUP",
-	"COOP_STAMINA",
-	"BACKSTAB_MULTIPLIER",
-	"MOVEMENT_SPEED",
-	"DAMAGE_TAKEN",
-	"DAMAGE_TAKEN_SECONDARY",
-	"DAMAGE_TAKEN_TO_OVERCHARGE",
-	"DAMAGE_TAKEN_ELITES",
-	"INCREASED_WEAPON_DAMAGE",
-	"INCREASED_WEAPON_DAMAGE_MELEE",
-	"INCREASED_WEAPON_DAMAGE_MELEE_2H",
-	"INCREASED_WEAPON_DAMAGE_MELEE_1H",
-	"INCREASED_WEAPON_DAMAGE_RANGED",
-	"INCREASED_WEAPON_DAMAGE_RANGED_TO_WOUNDED",
-	"INCREASED_WEAPON_DAMAGE_HEAVY_ATTACK",
-	"POWER_LEVEL",
-	"POWER_LEVEL_RANGED",
-	"POWER_LEVEL_MELEE",
-	"POWER_LEVEL_ARMOURED",
-	"POWER_LEVEL_UNARMOURED",
-	"POWER_LEVEL_LARGE",
-	"POWER_LEVEL_FRENZY",
-	"POWER_LEVEL_SKAVEN",
-	"POWER_LEVEL_CHAOS",
-	"REDUCED_SPREAD",
-	"REDUCED_SPREAD_MOVING",
-	"REDUCED_SPREAD_HIT",
-	"REDUCED_SPREAD_SHOT",
-	"MAX_HEALTH",
-	"GRIMOIRE_MAX_HEALTH",
-	"MAX_HEALTH_ALIVE",
-	"MAX_HEALTH_KD",
-	"SHIELD_BREAK_PROC",
-	"HEALING_RECEIVED",
-	"MAX_OVERCHARGE",
-	"OVERCHARGE_REGEN",
-	"REDUCED_RANGED_CHARGE_TIME",
-	"MAX_DAMAGE_TAKEN",
-	"ACTIVATED_COOLDOWN",
-	"COOLDOWN_REGEN",
-	"CRITICAL_STRIKE_CHANCE",
-	"CRITICAL_STRIKE_CHANCE_RANGED",
-	"CRITICAL_STRIKE_CHANCE_MELEE",
-	"CRITICAL_STRIKE_EFFECTIVENESS",
-	"BLOCK_ANGLE",
-	"OUTER_BLOCK_ANGLE",
-	"INCREASED_MAX_TARGETS",
-	"TIMED_BLOCK_COST",
-	"COUNTER_PUSH_POWER",
-	"BLOCK_COST",
-	"PROTECTION_SKAVEN",
-	"PROTECTION_CHAOS",
-	"PROTECTION_AOE",
-	"STUN_DURATION",
-	"SHIELDING_PLAYER_BY_ASSIST",
-	"HEAL_SELF_ON_HEAL_OTHER",
-	"POTION_DURATION",
-	"HEADSHOT_MULTIPLIER"
-}
-StatBuffIndex = {}
-
-for i = 1, #StatBuffs, 1 do
-	StatBuffIndex[StatBuffs[i]] = i
-end
-
 StatBuffApplicationMethods = {
-	[StatBuffIndex.ATTACK_SPEED] = "stacking_multiplier",
-	[StatBuffIndex.NO_PUSH_FATIGUE_COST] = "proc",
-	[StatBuffIndex.MAX_FATIGUE] = "stacking_bonus",
-	[StatBuffIndex.FATIGUE_REGEN] = "stacking_multiplier",
-	[StatBuffIndex.RELOAD_SPEED] = "stacking_multiplier",
-	[StatBuffIndex.CLIP_SIZE] = "stacking_multiplier",
-	[StatBuffIndex.TOTAL_AMMO] = "stacking_multiplier",
-	[StatBuffIndex.REDUCED_OVERCHARGE] = "stacking_multiplier",
-	[StatBuffIndex.EXTRA_SHOT] = "proc",
-	[StatBuffIndex.VENT_DAMAGE] = "stacking_multiplier",
-	[StatBuffIndex.VENT_SPEED] = "stacking_multiplier",
-	[StatBuffIndex.INCREASED_MOVE_SPEED_WHILE_AIMING] = "stacking_multiplier",
-	[StatBuffIndex.NOT_CONSUME_MEDPACK] = "proc",
-	[StatBuffIndex.NOT_CONSUME_POTION] = "proc",
-	[StatBuffIndex.NOT_CONSUME_GRENADE] = "proc",
-	[StatBuffIndex.PROTECTION_POISON_WIND] = "stacking_multiplier",
-	[StatBuffIndex.PROTECTION_RATLING_GUNNER] = "stacking_multiplier",
-	[StatBuffIndex.PROTECTION_GUTTER_RUNNER] = "stacking_multiplier",
-	[StatBuffIndex.PROTECTION_PACK_MASTER] = "stacking_multiplier",
-	[StatBuffIndex.FASTER_REVIVE] = "stacking_multiplier",
-	[StatBuffIndex.INCREASE_LUCK] = "stacking_multiplier",
-	[StatBuffIndex.DAMAGE_TAKEN_KD] = "stacking_multiplier",
-	[StatBuffIndex.CURSE_PROTECTION] = "stacking_multiplier",
-	[StatBuffIndex.GRENADE_RADIUS] = "stacking_multiplier",
-	[StatBuffIndex.FASTER_RESPAWN] = "stacking_multiplier",
-	[StatBuffIndex.NOT_CONSUME_PICKUP] = "proc",
-	[StatBuffIndex.COOP_STAMINA] = "proc",
-	[StatBuffIndex.BACKSTAB_MULTIPLIER] = "stacking_bonus",
-	[StatBuffIndex.MOVEMENT_SPEED] = "stacking_multiplier",
-	[StatBuffIndex.DAMAGE_TAKEN] = "stacking_multiplier",
-	[StatBuffIndex.DAMAGE_TAKEN_SECONDARY] = "stacking_multiplier",
-	[StatBuffIndex.DAMAGE_TAKEN_TO_OVERCHARGE] = "stacking_multiplier",
-	[StatBuffIndex.DAMAGE_TAKEN_ELITES] = "stacking_multiplier",
-	[StatBuffIndex.INCREASED_WEAPON_DAMAGE] = "stacking_multiplier",
-	[StatBuffIndex.INCREASED_WEAPON_DAMAGE_MELEE] = "stacking_multiplier",
-	[StatBuffIndex.INCREASED_WEAPON_DAMAGE_MELEE_2H] = "stacking_multiplier",
-	[StatBuffIndex.INCREASED_WEAPON_DAMAGE_MELEE_1H] = "stacking_multiplier",
-	[StatBuffIndex.INCREASED_WEAPON_DAMAGE_RANGED] = "stacking_multiplier",
-	[StatBuffIndex.INCREASED_WEAPON_DAMAGE_RANGED_TO_WOUNDED] = "stacking_multiplier",
-	[StatBuffIndex.INCREASED_WEAPON_DAMAGE_HEAVY_ATTACK] = "stacking_multiplier",
-	[StatBuffIndex.POWER_LEVEL] = "stacking_multiplier",
-	[StatBuffIndex.POWER_LEVEL_RANGED] = "stacking_multiplier",
-	[StatBuffIndex.POWER_LEVEL_MELEE] = "stacking_multiplier",
-	[StatBuffIndex.POWER_LEVEL_ARMOURED] = "stacking_multiplier",
-	[StatBuffIndex.POWER_LEVEL_UNARMOURED] = "stacking_multiplier",
-	[StatBuffIndex.POWER_LEVEL_LARGE] = "stacking_multiplier",
-	[StatBuffIndex.POWER_LEVEL_FRENZY] = "stacking_multiplier",
-	[StatBuffIndex.POWER_LEVEL_SKAVEN] = "stacking_multiplier",
-	[StatBuffIndex.POWER_LEVEL_CHAOS] = "stacking_multiplier",
-	[StatBuffIndex.REDUCED_SPREAD] = "stacking_multiplier",
-	[StatBuffIndex.REDUCED_SPREAD_MOVING] = "stacking_multiplier",
-	[StatBuffIndex.REDUCED_SPREAD_HIT] = "stacking_multiplier",
-	[StatBuffIndex.REDUCED_SPREAD_SHOT] = "stacking_multiplier",
-	[StatBuffIndex.MAX_HEALTH] = "stacking_multiplier",
-	[StatBuffIndex.GRIMOIRE_MAX_HEALTH] = "stacking_multiplier",
-	[StatBuffIndex.MAX_HEALTH_ALIVE] = "stacking_multiplier",
-	[StatBuffIndex.MAX_HEALTH_KD] = "stacking_multiplier",
-	[StatBuffIndex.SHIELD_BREAK_PROC] = "proc",
-	[StatBuffIndex.HEALING_RECEIVED] = "stacking_multiplier",
-	[StatBuffIndex.MAX_OVERCHARGE] = "stacking_multiplier",
-	[StatBuffIndex.OVERCHARGE_REGEN] = "stacking_multiplier",
-	[StatBuffIndex.REDUCED_RANGED_CHARGE_TIME] = "stacking_multiplier",
-	[StatBuffIndex.MAX_DAMAGE_TAKEN] = "stacking_bonus",
-	[StatBuffIndex.ACTIVATED_COOLDOWN] = "stacking_multiplier",
-	[StatBuffIndex.COOLDOWN_REGEN] = "stacking_multiplier",
-	[StatBuffIndex.CRITICAL_STRIKE_CHANCE] = "stacking_bonus",
-	[StatBuffIndex.CRITICAL_STRIKE_CHANCE_RANGED] = "stacking_bonus",
-	[StatBuffIndex.CRITICAL_STRIKE_CHANCE_MELEE] = "stacking_bonus",
-	[StatBuffIndex.CRITICAL_STRIKE_EFFECTIVENESS] = "stacking_multiplier",
-	[StatBuffIndex.OVERCHARGE_DAMAGE_IMMUNITY] = "proc",
-	[StatBuffIndex.BLOCK_ANGLE] = "stacking_multiplier",
-	[StatBuffIndex.OUTER_BLOCK_ANGLE] = "stacking_multiplier",
-	[StatBuffIndex.INCREASED_MAX_TARGETS] = "stacking_bonus",
-	[StatBuffIndex.TIMED_BLOCK_COST] = "stacking_multiplier",
-	[StatBuffIndex.COUNTER_PUSH_POWER] = "stacking_multiplier",
-	[StatBuffIndex.BLOCK_COST] = "stacking_multiplier",
-	[StatBuffIndex.PROTECTION_SKAVEN] = "stacking_multiplier",
-	[StatBuffIndex.PROTECTION_CHAOS] = "stacking_multiplier",
-	[StatBuffIndex.PROTECTION_AOE] = "stacking_multiplier",
-	[StatBuffIndex.STUN_DURATION] = "stacking_multiplier",
-	[StatBuffIndex.SHIELDING_PLAYER_BY_ASSIST] = "proc",
-	[StatBuffIndex.HEAL_SELF_ON_HEAL_OTHER] = "proc",
-	[StatBuffIndex.POTION_DURATION] = "stacking_multiplier",
-	[StatBuffIndex.HEADSHOT_MULTIPLIER] = "stacking_multiplier"
+	protection_poison_wind = "stacking_multiplier",
+	shield_break_proc = "proc",
+	increased_weapon_damage_melee_1h = "stacking_multiplier",
+	max_health_alive = "stacking_multiplier",
+	reduced_spread = "stacking_multiplier",
+	damage_taken = "stacking_multiplier",
+	max_fatigue = "stacking_bonus",
+	vent_damage = "stacking_multiplier",
+	increased_max_targets = "stacking_bonus",
+	damage_taken_elites = "stacking_multiplier",
+	damage_taken_to_overcharge = "stacking_multiplier",
+	not_consume_grenade = "proc",
+	damage_taken_secondary = "stacking_multiplier",
+	reduced_overcharge = "stacking_multiplier",
+	protection_gutter_runner = "stacking_multiplier",
+	clip_size = "stacking_multiplier",
+	fatigue_regen = "stacking_multiplier",
+	damage_taken_kd = "stacking_multiplier",
+	reduced_spread_shot = "stacking_multiplier",
+	automatic_head_shot = "proc",
+	power_level_ranged = "stacking_multiplier",
+	increase_luck = "stacking_multiplier",
+	not_consume_potion = "proc",
+	max_health = "stacking_multiplier",
+	curse_protection = "stacking_multiplier",
+	extra_shot = "proc",
+	heal_self_on_heal_other = "proc",
+	faster_revive = "stacking_multiplier",
+	critical_strike_chance_ranged = "stacking_bonus",
+	block_angle = "stacking_multiplier",
+	block_cost = "stacking_multiplier",
+	counter_push_power = "stacking_multiplier",
+	timed_block_cost = "stacking_multiplier",
+	vent_speed = "stacking_multiplier",
+	increased_weapon_damage_ranged_to_wounded = "stacking_multiplier",
+	power_level_armoured = "stacking_multiplier",
+	protection_chaos = "stacking_multiplier",
+	critical_strike_chance = "stacking_bonus",
+	max_damage_taken = "stacking_bonus",
+	max_overcharge = "stacking_multiplier",
+	critical_strike_effectiveness = "stacking_multiplier",
+	reload_speed = "stacking_multiplier",
+	stun_duration = "stacking_multiplier",
+	cooldown_regen = "stacking_multiplier",
+	activated_cooldown = "stacking_multiplier",
+	increased_weapon_damage_heavy_attack = "stacking_multiplier",
+	not_consume_pickup = "proc",
+	no_push_fatigue_cost = "proc",
+	power_level_chaos = "stacking_multiplier",
+	power_level_large = "stacking_multiplier",
+	reduced_spread_moving = "stacking_multiplier",
+	critical_strike_chance_melee = "stacking_bonus",
+	increased_weapon_damage_melee = "stacking_multiplier",
+	power_level = "stacking_multiplier",
+	coop_stamina = "proc",
+	healing_received = "stacking_multiplier",
+	headshot_multiplier = "stacking_multiplier",
+	protection_skaven = "stacking_multiplier",
+	power_level_melee = "stacking_multiplier",
+	increased_weapon_damage_ranged = "stacking_multiplier",
+	protection_aoe = "stacking_multiplier",
+	potion_duration = "stacking_multiplier",
+	max_health_kd = "stacking_multiplier",
+	total_ammo = "stacking_multiplier",
+	reduced_ranged_charge_time = "stacking_multiplier",
+	grenade_radius = "stacking_multiplier",
+	overcharge_regen = "stacking_multiplier",
+	grimoire_max_health = "stacking_multiplier",
+	overcharge_damage_immunity = "proc",
+	penetrating_shot_proc = "proc",
+	power_level_unarmoured = "stacking_multiplier",
+	attack_speed = "stacking_multiplier",
+	increased_move_speed_while_aiming = "stacking_multiplier",
+	protection_pack_master = "stacking_multiplier",
+	increased_weapon_damage = "stacking_multiplier",
+	not_consume_medpack = "proc",
+	outer_block_angle = "stacking_multiplier",
+	increased_weapon_damage_melee_2h = "stacking_multiplier",
+	reduced_spread_hit = "stacking_multiplier",
+	protection_ratling_gunner = "stacking_multiplier",
+	backstab_multiplier = "stacking_bonus",
+	faster_respawn = "stacking_multiplier",
+	movement_speed = "stacking_multiplier",
+	power_level_skaven = "stacking_multiplier",
+	shielding_player_by_assist = "proc",
+	power_level_frenzy = "stacking_multiplier"
 }
 WeaponSpecificStatBuffs = {}
 
-local function add_stat_buff(weapon_type, name, application_method, buff_type)
-	local index = #StatBuffs + 1
-	StatBuffs[index] = name
-	StatBuffIndex[name] = index
-	StatBuffApplicationMethods[index] = application_method
+local function add_stat_buff(weapon_type, stat_buff_name, application_method, buff_type)
+	StatBuffApplicationMethods[stat_buff_name] = application_method
 	WeaponSpecificStatBuffs[weapon_type] = WeaponSpecificStatBuffs[weapon_type] or {}
-	WeaponSpecificStatBuffs[weapon_type][buff_type] = name
+	WeaponSpecificStatBuffs[weapon_type][buff_type] = stat_buff_name
 end
 
 for _, template in pairs(Weapons) do
 	local weapon_type = template.weapon_type
 
 	if weapon_type and not WeaponSpecificStatBuffs[weapon_type] then
-		local name = "INCREASED_WEAPON_DAMAGE_" .. weapon_type
+		local name = "increased_weapon_damage_" .. weapon_type
 
 		add_stat_buff(weapon_type, name, "stacking_multiplier", "damage")
 	end
@@ -978,11 +883,11 @@ ProcFunctions = {
 		local hit_unit_buff_extension = ScriptUnit.has_extension(hit_unit, "buff_system")
 		local player_unit_buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 
-		if not hit_unit_buff_extension:has_buff_type("consecutive_shot_debuff") then
-			hit_unit_buff_extension:add_buff("consecutive_shot_debuff")
-		else
+		if hit_unit_buff_extension:has_buff_type("consecutive_shot_debuff") then
 			player_unit_buff_extension:add_buff("consecutive_shot_buff")
 		end
+
+		hit_unit_buff_extension:add_buff("consecutive_shot_debuff")
 	end,
 	block_increase_enemy_damage_taken = function (player, buff, params)
 		local buff_template = buff.template
@@ -1718,10 +1623,10 @@ BuffTemplates = {
 			{
 				multiplier = 0.25,
 				name = "attack speed buff",
+				stat_buff = "attack_speed",
 				refresh_durations = true,
 				max_stacks = 1,
-				duration = 60,
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				duration = 60
 			}
 		}
 	},
@@ -1730,11 +1635,11 @@ BuffTemplates = {
 			{
 				name = "cooldown reduction buff",
 				multiplier = 2.5,
+				stat_buff = "cooldown_regen",
 				duration = 60,
 				max_stacks = 1,
 				icon = "potion_buff_03",
-				refresh_durations = true,
-				stat_buff = StatBuffIndex.COOLDOWN_REGEN
+				refresh_durations = true
 			}
 		}
 	},
@@ -1783,11 +1688,11 @@ BuffTemplates = {
 			{
 				duration = 60,
 				name = "twitch_grimoire_health_debuff",
+				stat_buff = "max_health",
 				debuff = true,
 				max_stacks = 1,
 				icon = "buff_icon_grimoire_health_debuff",
 				perk = "twitch_grimoire",
-				stat_buff = StatBuffIndex.MAX_HEALTH,
 				multiplier = PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF
 			}
 		}
@@ -1797,10 +1702,10 @@ BuffTemplates = {
 			{
 				duration = 60,
 				multiplier = 0.25,
+				stat_buff = "power_level",
 				perk = "bloody_mess",
 				max_stacks = 1,
-				icon = "markus_huntsman_activated_ability",
-				stat_buff = StatBuffIndex.POWER_LEVEL
+				icon = "markus_huntsman_activated_ability"
 			}
 		}
 	},
@@ -1882,10 +1787,10 @@ BuffTemplates = {
 			{
 				multiplier = 0.5,
 				name = "attack speed buff",
+				stat_buff = "attack_speed",
 				refresh_durations = true,
 				max_stacks = 1,
-				duration = 10,
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				duration = 10
 			}
 		}
 	},
@@ -1897,11 +1802,11 @@ BuffTemplates = {
 			{
 				name = "cooldown reduction buff",
 				multiplier = 10,
+				stat_buff = "cooldown_regen",
 				duration = 10,
 				max_stacks = 1,
 				icon = "potion_buff_03",
-				refresh_durations = true,
-				stat_buff = StatBuffIndex.COOLDOWN_REGEN
+				refresh_durations = true
 			}
 		}
 	},
@@ -1953,10 +1858,10 @@ BuffTemplates = {
 			{
 				multiplier = 0.5,
 				name = "attack speed buff",
+				stat_buff = "attack_speed",
 				refresh_durations = true,
 				max_stacks = 1,
-				duration = 15,
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				duration = 15
 			}
 		}
 	},
@@ -1968,11 +1873,11 @@ BuffTemplates = {
 			{
 				name = "cooldown reduction buff",
 				multiplier = 15,
+				stat_buff = "cooldown_regen",
 				duration = 15,
 				max_stacks = 1,
 				icon = "potion_buff_03",
-				refresh_durations = true,
-				stat_buff = StatBuffIndex.COOLDOWN_REGEN
+				refresh_durations = true
 			}
 		}
 	},
@@ -2024,10 +1929,10 @@ BuffTemplates = {
 			{
 				multiplier = 0.5,
 				name = "attack speed buff",
+				stat_buff = "attack_speed",
 				refresh_durations = true,
 				max_stacks = 1,
-				duration = 5,
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				duration = 5
 			}
 		}
 	},
@@ -2039,11 +1944,11 @@ BuffTemplates = {
 			{
 				name = "cooldown reduction buff",
 				multiplier = 15,
+				stat_buff = "cooldown_regen",
 				duration = 5,
 				max_stacks = 1,
 				icon = "potion_buff_03",
-				refresh_durations = true,
-				stat_buff = StatBuffIndex.COOLDOWN_REGEN
+				refresh_durations = true
 			}
 		}
 	},
@@ -2072,24 +1977,12 @@ BuffTemplates = {
 			}
 		}
 	},
-	slayer_curse_debuff = {
-		activation_sound = "hud_info_state_grimoire_pickup",
-		buffs = {
-			{
-				perk = "slayer_curse",
-				name = "grimoire_health_debuff",
-				debuff = true,
-				icon = "buff_icon_grimoire_health_debuff",
-				dormant = true
-			}
-		}
-	},
 	overcharged = {
 		buffs = {
 			{
 				multiplier = -0.15,
 				name = "attack speed buff",
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				stat_buff = "attack_speed"
 			}
 		}
 	},
@@ -2123,7 +2016,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.25,
 				name = "attack speed buff",
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				stat_buff = "attack_speed"
 			}
 		}
 	},
@@ -2171,7 +2064,7 @@ BuffTemplates = {
 				remove_buff_name = "planted_return_to_normal_movement",
 				name = "decrease_speed",
 				lerp_time = 0.2,
-				multiplier = 0.7,
+				multiplier = 0.75,
 				update_func = "update_action_lerp_movement_buff",
 				remove_buff_func = "remove_action_lerp_movement_buff",
 				apply_buff_func = "apply_action_lerp_movement_buff",
@@ -2183,7 +2076,7 @@ BuffTemplates = {
 				remove_buff_name = "planted_return_to_normal_crouch_movement",
 				name = "decrease_crouch_speed",
 				lerp_time = 0.2,
-				multiplier = 0.7,
+				multiplier = 0.75,
 				update_func = "update_charging_action_lerp_movement_buff",
 				remove_buff_func = "remove_action_lerp_movement_buff",
 				apply_buff_func = "apply_action_lerp_movement_buff",
@@ -2195,7 +2088,7 @@ BuffTemplates = {
 				remove_buff_name = "planted_return_to_normal_walk_movement",
 				name = "decrease_walk_speed",
 				lerp_time = 0.2,
-				multiplier = 0.7,
+				multiplier = 0.75,
 				update_func = "update_charging_action_lerp_movement_buff",
 				remove_buff_func = "remove_action_lerp_movement_buff",
 				apply_buff_func = "apply_action_lerp_movement_buff",
@@ -2531,10 +2424,10 @@ BuffTemplates = {
 			{
 				multiplier = 0.5,
 				name = "kerillian_shade_ability_debuff",
+				stat_buff = "damage_taken",
 				refresh_durations = true,
 				max_stacks = 1,
-				duration = 10,
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				duration = 10
 			}
 		}
 	},
@@ -2995,10 +2888,10 @@ BuffTemplates = {
 			{
 				multiplier = 0.2,
 				name = "defence_debuff_enemies",
+				stat_buff = "damage_taken",
 				refresh_durations = true,
 				max_stacks = 1,
-				duration = 5,
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				duration = 5
 			}
 		}
 	},
@@ -3007,8 +2900,8 @@ BuffTemplates = {
 			{
 				max_stacks = 1,
 				name = "attack_speed_from_proc",
-				refresh_durations = true,
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				stat_buff = "attack_speed",
+				refresh_durations = true
 			}
 		}
 	},
@@ -3017,8 +2910,8 @@ BuffTemplates = {
 			{
 				max_stacks = 1,
 				name = "fatigue_regen_from_proc",
-				refresh_durations = true,
-				stat_buff = StatBuffIndex.FATIGUE_REGEN
+				stat_buff = "fatigue_regen",
+				refresh_durations = true
 			}
 		}
 	},
@@ -3027,8 +2920,8 @@ BuffTemplates = {
 			{
 				max_stacks = 1,
 				name = "increased_melee_damage_from_proc",
-				refresh_durations = true,
-				stat_buff = StatBuffIndex.INCREASED_WEAPON_DAMAGE_MELEE
+				stat_buff = "increased_weapon_damage_melee",
+				refresh_durations = true
 			}
 		}
 	},
@@ -3037,8 +2930,8 @@ BuffTemplates = {
 			{
 				max_stacks = 1,
 				name = "damage_taken_from_proc",
-				refresh_durations = true,
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				stat_buff = "damage_taken",
+				refresh_durations = true
 			}
 		}
 	},
@@ -3059,7 +2952,7 @@ BuffTemplates = {
 			{
 				multiplier = 1,
 				name = "damage_taken_from_powerful_elites",
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN_ELITES
+				stat_buff = "damage_taken_elites"
 			}
 		}
 	},
@@ -3075,7 +2968,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.5,
 				name = "trinket_reduce_activated_ability_cooldown",
-				stat_buff = StatBuffIndex.ACTIVATED_COOLDOWN
+				stat_buff = "activated_cooldown"
 			}
 		}
 	},
@@ -3091,7 +2984,7 @@ BuffTemplates = {
 			{
 				proc_chance = 0.1,
 				name = "not_consume_medpack",
-				stat_buff = StatBuffIndex.NOT_CONSUME_MEDPACK
+				stat_buff = "not_consume_medpack"
 			}
 		}
 	},
@@ -3107,7 +3000,7 @@ BuffTemplates = {
 			{
 				proc_chance = 0.15,
 				name = "not_consume_medpack",
-				stat_buff = StatBuffIndex.NOT_CONSUME_MEDPACK
+				stat_buff = "not_consume_medpack"
 			}
 		}
 	},
@@ -3123,7 +3016,7 @@ BuffTemplates = {
 			{
 				proc_chance = 0.2,
 				name = "not_consume_medpack",
-				stat_buff = StatBuffIndex.NOT_CONSUME_MEDPACK
+				stat_buff = "not_consume_medpack"
 			}
 		}
 	},
@@ -3139,7 +3032,7 @@ BuffTemplates = {
 			{
 				proc_chance = 0.15,
 				name = "not_consume_potion",
-				stat_buff = StatBuffIndex.NOT_CONSUME_POTION
+				stat_buff = "not_consume_potion"
 			}
 		}
 	},
@@ -3155,7 +3048,7 @@ BuffTemplates = {
 			{
 				proc_chance = 0.2,
 				name = "not_consume_potion",
-				stat_buff = StatBuffIndex.NOT_CONSUME_POTION
+				stat_buff = "not_consume_potion"
 			}
 		}
 	},
@@ -3171,7 +3064,7 @@ BuffTemplates = {
 			{
 				proc_chance = 0.25,
 				name = "not_consume_potion",
-				stat_buff = StatBuffIndex.NOT_CONSUME_POTION
+				stat_buff = "not_consume_potion"
 			}
 		}
 	},
@@ -3187,7 +3080,7 @@ BuffTemplates = {
 			{
 				proc_chance = 0.15,
 				name = "not_consume_grenade",
-				stat_buff = StatBuffIndex.NOT_CONSUME_GRENADE
+				stat_buff = "not_consume_grenade"
 			}
 		}
 	},
@@ -3203,7 +3096,7 @@ BuffTemplates = {
 			{
 				proc_chance = 0.2,
 				name = "not_consume_grenade",
-				stat_buff = StatBuffIndex.NOT_CONSUME_GRENADE
+				stat_buff = "not_consume_grenade"
 			}
 		}
 	},
@@ -3219,7 +3112,7 @@ BuffTemplates = {
 			{
 				proc_chance = 0.25,
 				name = "not_consume_grenade",
-				stat_buff = StatBuffIndex.NOT_CONSUME_GRENADE
+				stat_buff = "not_consume_grenade"
 			}
 		}
 	},
@@ -3257,7 +3150,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.2,
 				name = "protection_poison_wind",
-				stat_buff = StatBuffIndex.PROTECTION_POISON_WIND
+				stat_buff = "protection_poison_wind"
 			}
 		}
 	},
@@ -3273,7 +3166,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.4,
 				name = "protection_poison_wind",
-				stat_buff = StatBuffIndex.PROTECTION_POISON_WIND
+				stat_buff = "protection_poison_wind"
 			}
 		}
 	},
@@ -3289,7 +3182,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.6,
 				name = "protection_poison_wind",
-				stat_buff = StatBuffIndex.PROTECTION_POISON_WIND
+				stat_buff = "protection_poison_wind"
 			}
 		}
 	},
@@ -3305,7 +3198,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.2,
 				name = "protection_gutter_runner",
-				stat_buff = StatBuffIndex.PROTECTION_GUTTER_RUNNER
+				stat_buff = "protection_gutter_runner"
 			}
 		}
 	},
@@ -3321,7 +3214,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.4,
 				name = "protection_gutter_runner",
-				stat_buff = StatBuffIndex.PROTECTION_GUTTER_RUNNER
+				stat_buff = "protection_gutter_runner"
 			}
 		}
 	},
@@ -3337,7 +3230,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.6,
 				name = "protection_gutter_runner",
-				stat_buff = StatBuffIndex.PROTECTION_GUTTER_RUNNER
+				stat_buff = "protection_gutter_runner"
 			}
 		}
 	},
@@ -3353,7 +3246,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.2,
 				name = "protection_ratling_gunner",
-				stat_buff = StatBuffIndex.PROTECTION_RATLING_GUNNER
+				stat_buff = "protection_ratling_gunner"
 			}
 		}
 	},
@@ -3369,7 +3262,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.4,
 				name = "protection_ratling_gunner",
-				stat_buff = StatBuffIndex.PROTECTION_RATLING_GUNNER
+				stat_buff = "protection_ratling_gunner"
 			}
 		}
 	},
@@ -3385,7 +3278,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.6,
 				name = "protection_ratling_gunner",
-				stat_buff = StatBuffIndex.PROTECTION_RATLING_GUNNER
+				stat_buff = "protection_ratling_gunner"
 			}
 		}
 	},
@@ -3401,7 +3294,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.2,
 				name = "protection_pack_master",
-				stat_buff = StatBuffIndex.PROTECTION_PACK_MASTER
+				stat_buff = "protection_pack_master"
 			}
 		}
 	},
@@ -3417,7 +3310,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.4,
 				name = "protection_pack_master",
-				stat_buff = StatBuffIndex.PROTECTION_PACK_MASTER
+				stat_buff = "protection_pack_master"
 			}
 		}
 	},
@@ -3433,7 +3326,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.6,
 				name = "protection_pack_master",
-				stat_buff = StatBuffIndex.PROTECTION_PACK_MASTER
+				stat_buff = "protection_pack_master"
 			}
 		}
 	},
@@ -3494,7 +3387,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.15,
 				name = "faster_revive",
-				stat_buff = StatBuffIndex.FASTER_REVIVE
+				stat_buff = "faster_revive"
 			}
 		}
 	},
@@ -3510,7 +3403,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.3,
 				name = "faster_revive",
-				stat_buff = StatBuffIndex.FASTER_REVIVE
+				stat_buff = "faster_revive"
 			}
 		}
 	},
@@ -3526,7 +3419,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.4,
 				name = "faster_revive",
-				stat_buff = StatBuffIndex.FASTER_REVIVE
+				stat_buff = "faster_revive"
 			}
 		}
 	},
@@ -3542,7 +3435,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.5,
 				name = "faster_revive",
-				stat_buff = StatBuffIndex.FASTER_REVIVE
+				stat_buff = "faster_revive"
 			}
 		}
 	},
@@ -3558,7 +3451,7 @@ BuffTemplates = {
 			{
 				multiplier = 0.1,
 				name = "increase_luck",
-				stat_buff = StatBuffIndex.INCREASE_LUCK
+				stat_buff = "increase_luck"
 			}
 		}
 	},
@@ -3574,7 +3467,7 @@ BuffTemplates = {
 			{
 				multiplier = 0.25,
 				name = "increase_luck",
-				stat_buff = StatBuffIndex.INCREASE_LUCK
+				stat_buff = "increase_luck"
 			}
 		}
 	},
@@ -3590,7 +3483,7 @@ BuffTemplates = {
 			{
 				multiplier = 0.5,
 				name = "increase_luck",
-				stat_buff = StatBuffIndex.INCREASE_LUCK
+				stat_buff = "increase_luck"
 			}
 		}
 	},
@@ -3606,7 +3499,7 @@ BuffTemplates = {
 			{
 				multiplier = 1,
 				name = "increase_luck",
-				stat_buff = StatBuffIndex.INCREASE_LUCK
+				stat_buff = "increase_luck"
 			}
 		}
 	},
@@ -3622,7 +3515,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.2,
 				name = "hp_increase_kd",
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN_KD
+				stat_buff = "damage_taken_kd"
 			}
 		}
 	},
@@ -3638,7 +3531,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.3,
 				name = "hp_increase_kd",
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN_KD
+				stat_buff = "damage_taken_kd"
 			}
 		}
 	},
@@ -3654,7 +3547,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.4,
 				name = "hp_increase_kd",
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN_KD
+				stat_buff = "damage_taken_kd"
 			}
 		}
 	},
@@ -3730,7 +3623,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.33,
 				name = "curse_protection",
-				stat_buff = StatBuffIndex.CURSE_PROTECTION
+				stat_buff = "curse_protection"
 			}
 		}
 	},
@@ -3746,7 +3639,7 @@ BuffTemplates = {
 			{
 				multiplier = 0.4,
 				name = "grenade_radius",
-				stat_buff = StatBuffIndex.GRENADE_RADIUS
+				stat_buff = "grenade_radius"
 			}
 		}
 	},
@@ -3762,7 +3655,7 @@ BuffTemplates = {
 			{
 				multiplier = 0.5,
 				name = "grenade_radius",
-				stat_buff = StatBuffIndex.GRENADE_RADIUS
+				stat_buff = "grenade_radius"
 			}
 		}
 	},
@@ -3778,7 +3671,7 @@ BuffTemplates = {
 			{
 				multiplier = 0.6,
 				name = "grenade_radius",
-				stat_buff = StatBuffIndex.GRENADE_RADIUS
+				stat_buff = "grenade_radius"
 			}
 		}
 	},
@@ -3794,7 +3687,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.25,
 				name = "faster_respawn",
-				stat_buff = StatBuffIndex.FASTER_RESPAWN
+				stat_buff = "faster_respawn"
 			}
 		}
 	},
@@ -3810,7 +3703,7 @@ BuffTemplates = {
 			{
 				multiplier = -0.5,
 				name = "faster_respawn",
-				stat_buff = StatBuffIndex.FASTER_RESPAWN
+				stat_buff = "faster_respawn"
 			}
 		}
 	},
@@ -3826,7 +3719,7 @@ BuffTemplates = {
 			{
 				proc_chance = 0.04,
 				name = "not_consume_pickup",
-				stat_buff = StatBuffIndex.NOT_CONSUME_PICKUP
+				stat_buff = "not_consume_pickup"
 			}
 		}
 	},
@@ -3842,7 +3735,7 @@ BuffTemplates = {
 			{
 				proc_chance = 0.08,
 				name = "not_consume_pickup",
-				stat_buff = StatBuffIndex.NOT_CONSUME_PICKUP
+				stat_buff = "not_consume_pickup"
 			}
 		}
 	},
@@ -3858,7 +3751,7 @@ BuffTemplates = {
 			{
 				proc_chance = 0.12,
 				name = "not_consume_pickup",
-				stat_buff = StatBuffIndex.NOT_CONSUME_PICKUP
+				stat_buff = "not_consume_pickup"
 			}
 		}
 	},
@@ -3925,7 +3818,7 @@ BuffTemplates = {
 			{
 				multiplier = 0.91,
 				name = "increase_luck",
-				stat_buff = StatBuffIndex.INCREASE_LUCK
+				stat_buff = "increase_luck"
 			}
 		}
 	},
@@ -4019,57 +3912,57 @@ BuffTemplates = {
 				max_stacks = 1,
 				icon = "troll_vomit_debuff",
 				difficulty_damage = {
-					easy = {
-						2,
-						1,
-						0,
-						5.5,
-						1
-					},
 					normal = {
-						2,
+						3,
 						1,
 						0,
 						6.5,
 						1
 					},
-					hard = {
+					normal = {
 						3,
+						1,
+						0,
+						6.5,
+						2
+					},
+					hard = {
+						4,
 						2,
 						0,
 						7.5,
 						2
 					},
 					survival_hard = {
-						3,
+						4,
 						2,
 						0,
 						7,
-						2
+						3
 					},
 					harder = {
-						4,
+						5,
 						3,
 						0,
 						8.5,
-						3
+						4
 					},
 					survival_harder = {
-						4,
+						5,
 						3,
 						0,
 						8,
 						3
 					},
 					hardest = {
-						5,
+						7.5,
 						4,
 						0,
 						9.5,
-						4
+						5
 					},
 					survival_hardest = {
-						5,
+						7.5,
 						4,
 						0,
 						9,
@@ -5491,9 +5384,9 @@ BuffTemplates = {
 			{
 				multiplier = 0.5,
 				name = "increase_damage_recieved_while_burning",
+				stat_buff = "damage_taken",
 				max_stacks = 1,
-				refresh_durations = true,
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				refresh_durations = true
 			}
 		}
 	},
@@ -5502,6 +5395,7 @@ BuffTemplates = {
 			{
 				refresh_durations = false,
 				name = "chaos_zombie_explosion",
+				stat_buff = "damage_taken",
 				update_func = "update_chaos_zombie_explosion_in_face",
 				multiplier = 0.1,
 				remove_buff_func = "remove_chaos_zombie_explosion_in_face",
@@ -5509,8 +5403,7 @@ BuffTemplates = {
 				fatigue_type = "vomit_face",
 				damage_type = "vomit_face",
 				max_stacks = 5,
-				duration = 5,
-				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+				duration = 5
 			}
 		}
 	},
@@ -5631,9 +5524,9 @@ BuffTemplates = {
 			{
 				description = "Attack Speed",
 				multiplier = 0.03,
+				stat_buff = "attack_speed",
 				apply_on = "equip",
-				name = "ring_attackspeed_0001_buff",
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				name = "ring_attackspeed_0001_buff"
 			}
 		}
 	},
@@ -5642,9 +5535,9 @@ BuffTemplates = {
 			{
 				description = "Attack Speed",
 				multiplier = 0.05,
+				stat_buff = "attack_speed",
 				apply_on = "equip",
-				name = "ring_attackspeed_0002_buff",
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				name = "ring_attackspeed_0002_buff"
 			}
 		}
 	},
@@ -5653,9 +5546,9 @@ BuffTemplates = {
 			{
 				description = "Attack Speed",
 				multiplier = 0.07,
+				stat_buff = "attack_speed",
 				apply_on = "equip",
-				name = "ring_attackspeed_0003_buff",
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				name = "ring_attackspeed_0003_buff"
 			}
 		}
 	},
@@ -5664,9 +5557,9 @@ BuffTemplates = {
 			{
 				description = "Stamina",
 				name = "necklace_stamina_0001_buff",
+				stat_buff = "max_fatigue",
 				apply_on = "equip",
-				bonus = 1,
-				stat_buff = StatBuffIndex.MAX_FATIGUE
+				bonus = 1
 			}
 		}
 	},
@@ -5675,9 +5568,9 @@ BuffTemplates = {
 			{
 				description = "Stamina",
 				name = "necklace_stamina_0002_buff",
+				stat_buff = "max_fatigue",
 				apply_on = "equip",
-				bonus = 2,
-				stat_buff = StatBuffIndex.MAX_FATIGUE
+				bonus = 2
 			}
 		}
 	},
@@ -5686,9 +5579,9 @@ BuffTemplates = {
 			{
 				description = "Stamina",
 				name = "necklace_stamina_0003_buff",
+				stat_buff = "max_fatigue",
 				apply_on = "equip",
-				bonus = 4,
-				stat_buff = StatBuffIndex.MAX_FATIGUE
+				bonus = 4
 			}
 		}
 	},
@@ -5697,9 +5590,9 @@ BuffTemplates = {
 			{
 				description = "Health",
 				multiplier = 0.1,
+				stat_buff = "max_health",
 				apply_on = "equip",
-				name = "necklace_health_0001_buff",
-				stat_buff = StatBuffIndex.MAX_HEALTH
+				name = "necklace_health_0001_buff"
 			}
 		}
 	},
@@ -5708,9 +5601,9 @@ BuffTemplates = {
 			{
 				description = "Health",
 				multiplier = 0.15,
+				stat_buff = "max_health",
 				apply_on = "equip",
-				name = "necklace_health_0002_buff",
-				stat_buff = StatBuffIndex.MAX_HEALTH
+				name = "necklace_health_0002_buff"
 			}
 		}
 	},
@@ -5719,9 +5612,9 @@ BuffTemplates = {
 			{
 				description = "Health",
 				multiplier = 0.25,
+				stat_buff = "max_health",
 				apply_on = "equip",
-				name = "necklace_health_0003_buff",
-				stat_buff = StatBuffIndex.MAX_HEALTH
+				name = "necklace_health_0003_buff"
 			}
 		}
 	},
@@ -5742,8 +5635,8 @@ BuffTemplates = {
 	weapon_trait_backstab = {
 		buffs = {
 			{
-				multiplier = 0.5,
-				stat_buff = StatBuffIndex.BACKSTAB_MULTIPLIER
+				stat_buff = "backstab_multiplier",
+				multiplier = 0.5
 			}
 		}
 	},
@@ -5774,8 +5667,8 @@ BuffTemplates = {
 				buff_func = ProcFunctions.replenish_ammo_on_headshot_ranged
 			},
 			{
-				multiplier = -0.5,
-				stat_buff = StatBuffIndex.TOTAL_AMMO
+				stat_buff = "total_ammo",
+				multiplier = -0.5
 			}
 		}
 	}
@@ -5788,12 +5681,20 @@ require("scripts/settings/equipment/weapon_properties")
 require("scripts/settings/equipment/weapon_traits")
 table.merge_recursive(BuffTemplates, OldTalentBuffTemplates)
 
-for hero_name, buffs in pairs(TalentBuffTemplates) do
+for _, buffs in pairs(TalentBuffTemplates) do
 	table.merge_recursive(BuffTemplates, buffs)
 end
 
 table.merge_recursive(BuffTemplates, WeaponProperties.buff_templates)
 table.merge_recursive(BuffTemplates, WeaponTraits.buff_templates)
+
+for _, dlc in pairs(DLCSettings) do
+	local buff_templates = dlc.buff_templates
+
+	if buff_templates then
+		table.merge_recursive(BuffTemplates, buff_templates)
+	end
+end
 
 local override_descriptions = {
 	proc_chance = true
@@ -5828,11 +5729,11 @@ for buff_name, buff_template in pairs(BuffTemplates) do
 				else
 					local proc_key = buff.proc
 
-					assert(proc_key, "There is no buff value by name: %s on buff: %s", key, buff_name)
+					fassert(proc_key, "There is no buff value by name: %s on buff: %s", key, buff_name)
 
 					local proc_value = BuffTemplates[proc_key].buffs[1][key]
 
-					assert(proc_value, "There is no buff value by name: %s on buff %s for proc buff: %s.", key, buff_name, proc_key)
+					fassert(proc_value, "There is no buff value by name: %s on buff %s for proc buff: %s.", key, buff_name, proc_key)
 
 					description_values[i] = proc_value
 				end

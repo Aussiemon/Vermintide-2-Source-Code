@@ -103,32 +103,18 @@ local scenegraph_definition = {
 			30
 		}
 	},
-	grimoire_counter = {
-		vertical_alignment = "center",
+	loot_objective = {
+		vertical_alignment = "top",
 		parent = "banner_bottom",
 		horizontal_alignment = "left",
 		position = {
-			500,
-			-10,
+			30,
+			0,
 			1
 		},
 		size = {
-			0,
-			0
-		}
-	},
-	tome_counter = {
-		vertical_alignment = "center",
-		parent = "banner_bottom",
-		horizontal_alignment = "left",
-		position = {
 			200,
-			-10,
-			1
-		},
-		size = {
-			0,
-			0
+			90
 		}
 	},
 	party_title = {
@@ -343,7 +329,7 @@ local scenegraph_definition = {
 	},
 	game_level = {
 		vertical_alignment = "top",
-		parent = "banner_bottom",
+		parent = "banner_top",
 		horizontal_alignment = "right",
 		position = {
 			-25,
@@ -351,7 +337,7 @@ local scenegraph_definition = {
 			5
 		},
 		size = {
-			1920,
+			500,
 			30
 		}
 	},
@@ -365,7 +351,7 @@ local scenegraph_definition = {
 			5
 		},
 		size = {
-			1920,
+			500,
 			30
 		}
 	},
@@ -374,7 +360,7 @@ local scenegraph_definition = {
 		parent = "banner_bottom",
 		horizontal_alignment = "right",
 		position = {
-			-MUTATOR_SUMMARY_SIZE[1] + 30,
+			-30,
 			0,
 			1
 		},
@@ -443,16 +429,11 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			-30,
+			-35,
 			1
 		}
 	}
 }
-
-if PLATFORM ~= "win32" then
-	scenegraph_definition.screen.scale = "hud_fit"
-	scenegraph_definition.screen.is_root = nil
-end
 
 local function create_edge_divider(scenegraph_id, size)
 	local widget = {
@@ -549,150 +530,187 @@ local function create_edge_divider(scenegraph_id, size)
 	return widget
 end
 
-local function create_loot_widget(scenegraph_id, texture, amount)
-	local spacing = {
-		20,
-		20
-	}
+local function create_loot_widget(texture, text)
 	local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture)
 	local texture_size = texture_settings.size
-	local texture_total_width = texture_size[1] * amount
-	local total_spacing = spacing[1] * (amount - 1)
-	local size = {
-		texture_total_width + total_spacing,
-		texture_size[2] + spacing[2]
-	}
-	local icon_textures = {}
-	local glow_icon_textures = {}
-	local background_icon_textures = {}
-	local icon_texture_sizes = {}
-	local icon_texture_colors = {}
-
-	for i = 1, amount, 1 do
-		icon_textures[i] = texture
-		glow_icon_textures[i] = texture .. "_glow"
-		background_icon_textures[i] = texture .. "_bg"
-		icon_texture_sizes[i] = texture_size
-		icon_texture_colors[i] = {
-			255,
-			255,
-			255,
-			255
-		}
-	end
 
 	return {
+		scenegraph_id = "loot_objective",
 		element = {
 			passes = {
 				{
-					pass_type = "multi_texture",
-					style_id = "icon_textures",
-					texture_id = "icon_textures"
+					style_id = "text",
+					pass_type = "text",
+					text_id = "text"
 				},
 				{
-					pass_type = "multi_texture",
-					style_id = "background_icon_textures",
-					texture_id = "background_icon_textures"
+					style_id = "text_shadow",
+					pass_type = "text",
+					text_id = "text"
 				},
 				{
-					pass_type = "multi_texture",
-					style_id = "glow_icon_textures",
-					texture_id = "glow_icon_textures"
+					style_id = "counter_text",
+					pass_type = "text",
+					text_id = "counter_text",
+					content_check_function = function (content)
+						return content.amount > 0
+					end
+				},
+				{
+					style_id = "counter_text_disabled",
+					pass_type = "text",
+					text_id = "counter_text",
+					content_check_function = function (content)
+						return content.amount == 0
+					end
+				},
+				{
+					style_id = "counter_text_shadow",
+					pass_type = "text",
+					text_id = "counter_text"
+				},
+				{
+					pass_type = "texture",
+					style_id = "icon",
+					texture_id = "icon",
+					content_check_function = function (content)
+						return content.amount > 0
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "background_icon",
+					texture_id = "icon"
+				},
+				{
+					pass_type = "texture",
+					style_id = "glow_icon",
+					texture_id = "glow_icon"
 				}
 			}
 		},
 		content = {
-			draw_count = 0,
-			amount = amount,
-			icon_textures = icon_textures,
-			glow_icon_textures = glow_icon_textures,
-			background_icon_textures = background_icon_textures
+			counter_text = "x9",
+			amount = 0,
+			text = text or "n/a",
+			icon = texture,
+			glow_icon = texture .. "_glow"
 		},
 		style = {
-			icon_textures = {
-				direction = 1,
-				axis = 1,
-				draw_count = 0,
-				spacing = spacing or {
-					0,
-					0
-				},
-				texture_sizes = icon_texture_sizes,
-				texture_colors = icon_texture_colors,
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				default_color = {
-					255,
-					255,
-					255,
-					255
-				},
+			text = {
+				vertical_alignment = "bottom",
+				font_type = "hell_shark_header",
+				font_size = 32,
+				horizontal_alignment = "left",
+				text_color = Colors.get_table("font_title"),
 				offset = {
-					-size[1] / 2,
-					-texture_size[2] / 2,
-					2
+					texture_size[1],
+					texture_size[2] - 50,
+					1
 				}
 			},
-			background_icon_textures = {
-				direction = 1,
-				axis = 1,
-				spacing = spacing or {
-					0,
+			text_shadow = {
+				vertical_alignment = "bottom",
+				font_type = "hell_shark_header",
+				font_size = 32,
+				horizontal_alignment = "left",
+				text_color = Colors.get_table("black"),
+				offset = {
+					texture_size[1] + 1,
+					texture_size[2] - 50 - 1,
 					0
+				}
+			},
+			counter_text = {
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				font_size = 32,
+				horizontal_alignment = "left",
+				text_color = Colors.get_table("font_default"),
+				offset = {
+					texture_size[1],
+					-40,
+					1
+				}
+			},
+			counter_text_disabled = {
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				font_size = 32,
+				horizontal_alignment = "left",
+				text_color = {
+					255,
+					130,
+					130,
+					130
 				},
-				texture_sizes = icon_texture_sizes,
+				offset = {
+					texture_size[1],
+					-40,
+					1
+				}
+			},
+			counter_text_shadow = {
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				font_size = 32,
+				horizontal_alignment = "left",
+				text_color = Colors.get_table("black"),
+				offset = {
+					texture_size[1] + 1,
+					-41,
+					0
+				}
+			},
+			icon = {
+				vertical_alignment = "top",
+				horizontal_alignment = "left",
 				color = {
 					255,
 					255,
 					255,
 					255
 				},
-				default_color = {
-					255,
-					255,
-					255,
-					255
-				},
 				offset = {
-					-size[1] / 2,
-					-texture_size[2] / 2,
+					0,
+					0,
 					1
 				},
-				draw_count = amount
+				texture_size = texture_size
 			},
-			glow_icon_textures = {
-				direction = 1,
-				axis = 1,
-				spacing = spacing or {
+			background_icon = {
+				vertical_alignment = "top",
+				horizontal_alignment = "left",
+				color = {
+					255,
+					0,
 					0,
 					0
 				},
-				texture_sizes = icon_texture_sizes,
+				offset = {
+					0,
+					0,
+					0
+				},
+				texture_size = texture_size
+			},
+			glow_icon = {
+				vertical_alignment = "top",
+				horizontal_alignment = "left",
 				color = {
 					255,
 					255,
 					255,
 					255
 				},
-				default_color = {
-					255,
-					255,
-					255,
-					255
-				},
 				offset = {
-					-size[1] / 2,
-					-texture_size[2] / 2,
-					3
+					0,
+					0,
+					2
 				},
-				draw_count = amount
+				texture_size = texture_size
 			}
 		},
-		scenegraph_id = scenegraph_id,
 		offset = {
 			0,
 			0,
@@ -702,12 +720,13 @@ local function create_loot_widget(scenegraph_id, texture, amount)
 end
 
 local level_title_style = {
-	font_size = 32,
+	use_shadow = true,
 	upper_case = true,
 	localize = false,
-	use_shadow = true,
+	font_size = 32,
 	horizontal_alignment = "right",
 	vertical_alignment = "top",
+	dynamic_font_size = true,
 	font_type = "hell_shark_header",
 	text_color = Colors.get_table("font_title"),
 	offset = {
@@ -717,9 +736,10 @@ local level_title_style = {
 	}
 }
 local difficulty_text_style = {
-	vertical_alignment = "top",
 	use_shadow = true,
+	vertical_alignment = "top",
 	horizontal_alignment = "right",
+	dynamic_font_size = true,
 	font_size = 28,
 	font_type = "hell_shark",
 	text_color = Colors.get_table("font_default"),
@@ -868,8 +888,6 @@ local static_widget_definitions = {
 }
 local private_checkbox_offset = 0
 local widget_definitions = {
-	tome_counter_title = UIWidgets.create_simple_text("", "tome_counter", 22, nil, loot_objective_title_style),
-	grimoire_counter_title = UIWidgets.create_simple_text("", "grimoire_counter", 22, nil, loot_objective_title_style),
 	player_ability_name = UIWidgets.create_simple_text("n/a", "player_ability_name", 22, nil, career_perks_name_style),
 	player_ability_description = UIWidgets.create_simple_text("n/a", "player_ability_description", 22, nil, career_perks_description_style),
 	player_ability_icon = UIWidgets.create_simple_texture("icons_placeholder", "player_ability_icon"),
@@ -1641,8 +1659,8 @@ local function player_widget_definition(index)
 				color = {
 					255,
 					255,
-					255,
-					255
+					0,
+					0
 				},
 				offset = {
 					size[1] / 2 - 20 + size[1] / 4 * 0.5,

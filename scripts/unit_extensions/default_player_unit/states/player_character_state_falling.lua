@@ -219,7 +219,6 @@ PlayerCharacterStateFalling.update = function (self, unit, input, dt, context, t
 	CharacterStateHelper.move_in_air(self.first_person_extension, input_extension, self.locomotion_extension, move_speed, unit)
 	CharacterStateHelper.look(input_extension, self.player.viewport_name, self.first_person_extension, status_extension, self.inventory_extension)
 	CharacterStateHelper.update_weapon_actions(t, unit, input_extension, inventory_extension, self.health_extension)
-	CharacterStateHelper.reload(input_extension, inventory_extension, status_extension)
 
 	local interactor_extension = self.interactor_extension
 

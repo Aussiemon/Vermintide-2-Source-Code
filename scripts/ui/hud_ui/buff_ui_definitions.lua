@@ -57,17 +57,6 @@ local BUFF_SIZE = {
 local BUFF_SPACING = 8
 
 local function create_buff_widget(index)
-	local frame_offset = {
-		0,
-		0,
-		0
-	}
-	local bg_color = {
-		255,
-		36,
-		215,
-		231
-	}
 	local size = BUFF_SIZE
 
 	return {
@@ -138,6 +127,7 @@ local function create_buff_widget(index)
 			texture_frame = "buff_frame",
 			is_expired = false,
 			texture_icon = "teammate_consumable_icon_medpack",
+			last_stack_count = 1,
 			texture_duration = "buff_duration_gradient",
 			gris = "rect_masked",
 			is_cooldown = false

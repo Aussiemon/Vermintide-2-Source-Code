@@ -47,15 +47,10 @@ ProximitySystem.init = function (self, context, system_name)
 end
 
 ProximitySystem.destroy = function (self)
-	for unit, ext in pairs(self.unit_extension_data) do
-		Broadphase.remove(self.broadphase, ext.broadphase_id)
-	end
-
-	self.broadphase = nil
 	self.unit_extension_data = nil
 end
 
-ProximitySystem.on_add_extension = function (self, world, unit, extension_name)
+ProximitySystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = {
 		last_num_enemies_nearby = 0,
 		last_num_friends_nearby = 0
@@ -101,7 +96,7 @@ ProximitySystem.on_add_extension = function (self, world, unit, extension_name)
 		extension.bot_reaction_times = {}
 		extension.has_been_seen = false
 		self.ai_unit_extensions_map[unit] = extension
-		local breed = Unit.get_data(unit, "breed")
+		local breed = extension_init_data.breed
 
 		if breed.proximity_system_check then
 			extension.special_broadphase_id = Broadphase.add(self.special_units_broadphase, unit, Unit.world_position(unit, 0), 0.5)

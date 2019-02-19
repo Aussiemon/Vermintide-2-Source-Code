@@ -53,7 +53,6 @@ EnemyPackageLoaderSettings.categories = {
 			"chaos_zombie",
 			"chaos_tentacle",
 			"chaos_tentacle_sorcerer",
-			"chaos_mutator_sorcerer",
 			"pet_rat",
 			"pet_pig",
 			"skaven_stormfiend_demo"
@@ -82,6 +81,54 @@ EnemyPackageLoaderSettings.categories = {
 		}
 	}
 }
+local categories = EnemyPackageLoaderSettings.categories
+
+for dlc_name, dlc in pairs(DLCSettings) do
+	local breed_categories = dlc.enemy_package_loader_breed_categories
+
+	if breed_categories then
+		for category_id, breeds_to_add in pairs(breed_categories) do
+			local target_category = nil
+
+			for i = 1, #categories, 1 do
+				local category = categories[i]
+
+				if category.id == category_id then
+					target_category = category
+
+					break
+				end
+			end
+
+			fassert(target_category ~= nil, "Couldn't find EnemeyPackageLoader category %s specified in DLC %s.", category_id, dlc_name)
+
+			for i = 1, #categories, 1 do
+				local category = categories[i]
+				local breeds = category.breeds
+
+				for j = 1, #breeds_to_add, 1 do
+					local breed_to_add = breeds_to_add[j]
+
+					for k = 1, #breeds, 1 do
+						local breed = breeds[k]
+
+						fassert(breed ~= breed_to_add, "Breed %s (DLC: %s) is already defined in category %s!", breed_to_add, dlc_name, category.id)
+					end
+				end
+			end
+
+			local target_breeds = target_category.breeds
+
+			for i = 1, #breeds_to_add, 1 do
+				local breed_to_add = breeds_to_add[i]
+				target_breeds[#target_breeds + 1] = breed_to_add
+
+				printf("[EnemyPackageLoaderSettings] Added DLC breed %s (DLC %s) to category %s.", breed_to_add, dlc_name, category_id)
+			end
+		end
+	end
+end
+
 local category_changes = nil
 
 if PLATFORM == "xb1" or PLATFORM == "ps4" or script_data.enemy_package_loader_policy == "console" then

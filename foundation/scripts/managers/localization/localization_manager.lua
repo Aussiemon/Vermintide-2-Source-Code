@@ -13,7 +13,9 @@ end
 LocalizationManager._setup_localizers = function (self)
 	fassert(not self._localizers, "LocalizationManager already initialized")
 
-	self._localizers = {}
+	self._localizers = {
+		Localizer("localization/game")
+	}
 
 	for dlc, settings in pairs(DLCSettings) do
 		local localization = settings.localization
@@ -21,10 +23,6 @@ LocalizationManager._setup_localizers = function (self)
 		if localization and Application.can_get("strings", localization) then
 			self._localizers[#self._localizers + 1] = Localizer(localization)
 		end
-	end
-
-	if #self._localizers == 0 then
-		self._localizers[#self._localizers + 1] = Localizer("localization/game")
 	end
 end
 

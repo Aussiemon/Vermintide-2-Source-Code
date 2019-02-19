@@ -5,9 +5,8 @@ AILocomotionExtensionC = class(AILocomotionExtensionC)
 
 AILocomotionExtensionC.init = function (self, extension_init_context, unit, extension_init_data)
 	self._unit = unit
-	local blackboard = BLACKBOARDS[unit]
-	local breed = blackboard.breed
-	self._breed = breed
+	local breed = extension_init_data.breed
+	self.breed = breed
 	local unit_template = Managers.state.unit_spawner.unit_template_lut[breed.unit_template]
 	local go_type = unit_template.go_type
 	local game_object_template = Managers.state.network:game_object_template(go_type)

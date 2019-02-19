@@ -56,8 +56,8 @@ WeaponSpreadExtension.update = function (self, unit, input, dt, context, t)
 	local continuous_spread_settings = self.spread_settings.continuous
 	local state_settings = continuous_spread_settings[current_state]
 	local owner_buff_extension = self.owner_buff_extension
-	local new_pitch = owner_buff_extension:apply_buffs_to_value(state_settings.max_pitch, StatBuffIndex.REDUCED_SPREAD)
-	local new_yaw = owner_buff_extension:apply_buffs_to_value(state_settings.max_yaw, StatBuffIndex.REDUCED_SPREAD)
+	local new_pitch = owner_buff_extension:apply_buffs_to_value(state_settings.max_pitch, "reduced_spread")
+	local new_yaw = owner_buff_extension:apply_buffs_to_value(state_settings.max_yaw, "reduced_spread")
 	local status_extension = self.owner_status_extension
 	local locomotion_extension = self.owner_locomotion_extension
 	local moving = CharacterStateHelper.is_moving(locomotion_extension)
@@ -103,8 +103,8 @@ WeaponSpreadExtension.update = function (self, unit, input, dt, context, t)
 	end
 
 	if moving then
-		new_pitch = owner_buff_extension:apply_buffs_to_value(new_pitch, StatBuffIndex.REDUCED_SPREAD_MOVING)
-		new_yaw = owner_buff_extension:apply_buffs_to_value(new_yaw, StatBuffIndex.REDUCED_SPREAD_MOVING)
+		new_pitch = owner_buff_extension:apply_buffs_to_value(new_pitch, "reduced_spread_moving")
+		new_yaw = owner_buff_extension:apply_buffs_to_value(new_yaw, "reduced_spread_moving")
 	end
 
 	current_pitch = math.lerp(current_pitch, new_pitch, dt * lerp_speed_pitch)
@@ -123,16 +123,16 @@ WeaponSpreadExtension.update = function (self, unit, input, dt, context, t)
 
 	if hit then
 		local spread_settings = immediate_spread_settings.being_hit
-		immediate_pitch = owner_buff_extension:apply_buffs_to_value(spread_settings.immediate_pitch, StatBuffIndex.REDUCED_SPREAD_HIT)
-		immediate_yaw = owner_buff_extension:apply_buffs_to_value(spread_settings.immediate_yaw, StatBuffIndex.REDUCED_SPREAD_HIT)
+		immediate_pitch = owner_buff_extension:apply_buffs_to_value(spread_settings.immediate_pitch, "reduced_spread_hit")
+		immediate_yaw = owner_buff_extension:apply_buffs_to_value(spread_settings.immediate_yaw, "reduced_spread_hit")
 		self.hit_aftermath = true
 		self.hit_timer = 1.5
 	end
 
 	if self.shooting then
 		local spread_settings = immediate_spread_settings.shooting
-		immediate_pitch = owner_buff_extension:apply_buffs_to_value(spread_settings.immediate_pitch, StatBuffIndex.REDUCED_SPREAD_SHOT)
-		immediate_yaw = owner_buff_extension:apply_buffs_to_value(spread_settings.immediate_yaw, StatBuffIndex.REDUCED_SPREAD_SHOT)
+		immediate_pitch = owner_buff_extension:apply_buffs_to_value(spread_settings.immediate_pitch, "reduced_spread_shot")
+		immediate_yaw = owner_buff_extension:apply_buffs_to_value(spread_settings.immediate_yaw, "reduced_spread_shot")
 		self.shooting = false
 	end
 

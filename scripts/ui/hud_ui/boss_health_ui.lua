@@ -6,7 +6,8 @@ local HEALING_EFFECT_LIFE_TIME = 2
 local breed_textures = UISettings.breed_textures
 BossHealthUI = class(BossHealthUI)
 
-BossHealthUI.init = function (self, ingame_ui_context)
+BossHealthUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.player_manager = ingame_ui_context.player_manager

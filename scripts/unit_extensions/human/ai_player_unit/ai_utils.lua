@@ -353,6 +353,27 @@ AiUtils.chaos_zombie_explosion = function (unit, action, blackboard, delete_unit
 	Managers.state.blood:add_blood_ball(position, blood_dir, "default", unit)
 end
 
+AiUtils.generic_mutator_explosion = function (unit, blackboard, explosion_template_name, do_damage)
+	local position = Unit.local_position(unit, 0)
+	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+	local damage_source = blackboard.breed.name
+	local world = blackboard.world
+	local explosion_position = position + Vector3.up()
+	local explosion_template = ExplosionTemplates[explosion_template_name]
+
+	DamageUtils.create_explosion(world, do_damage and unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, unit, 0, false)
+
+	local attacker_unit_id = Managers.state.unit_storage:go_id(unit)
+	local explosion_template_id = NetworkLookup.explosion_templates[explosion_template_name]
+	local damage_source_id = NetworkLookup.damage_sources[damage_source]
+
+	Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false)
+
+	local blood_dir = Quaternion.up(Unit.local_rotation(unit, 0))
+
+	Managers.state.blood:add_blood_ball(position, blood_dir, "default", unit)
+end
+
 AiUtils.ai_explosion = function (exploding_unit, owner_unit, blackboard, damage_source, explosion_template)
 	local explosion_position = Unit.local_position(exploding_unit, 0)
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()

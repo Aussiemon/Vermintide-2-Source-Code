@@ -23,8 +23,6 @@ BTPackMasterAttackAction.enter = function (self, unit, blackboard, t)
 end
 
 BTPackMasterAttackAction.leave = function (self, unit, blackboard, t, reason, destroy)
-	blackboard.move_state = nil
-
 	blackboard.navigation_extension:set_enabled(true)
 
 	if reason ~= "done" then

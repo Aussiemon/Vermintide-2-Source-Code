@@ -44,6 +44,7 @@ local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
+local STREAMING_PLACEHOLDER_TEXTURE_PATH = "gui/1080p/single_textures/generic/transparent_placeholder_texture"
 local fake_input_service = {
 	get = function ()
 		return
@@ -62,33 +63,32 @@ StartGameStateSettingsOverview.on_enter = function (self, params)
 
 	self:_setup_menu_layout()
 
-	self.hero_name = params.hero_name
+	self._wwise_world = params.wwise_world
+	self._hero_name = params.hero_name
 	local ingame_ui_context = params.ingame_ui_context
-	self.ingame_ui_context = ingame_ui_context
-	self.ui_renderer = ingame_ui_context.ui_renderer
-	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
-	self.input_manager = ingame_ui_context.input_manager
-	self.statistics_db = ingame_ui_context.statistics_db
-	self.render_settings = {
+	self._ingame_ui_context = ingame_ui_context
+	self._ui_renderer = ingame_ui_context.ui_renderer
+	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
+	self._input_manager = ingame_ui_context.input_manager
+	self._statistics_db = ingame_ui_context.statistics_db
+	self._render_settings = {
 		snap_pixel_positions = true
 	}
 	self._network_lobby = ingame_ui_context.network_lobby
-	self.world_previewer = params.world_previewer
-	self.platform = PLATFORM
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
 	self._stats_id = local_player:stats_id()
-	self.player_manager = player_manager
-	self.peer_id = ingame_ui_context.peer_id
-	self.player = local_player
-	self.wwise_world = params.wwise_world
 	self._animations = {}
 	self._ui_animations = {}
+	self._cloned_materials_by_reference = {}
+	self._gui_by_cloned_material_reference = {}
+	self._material_references_to_unload = {}
 	self._is_game_private = false
 	self._always_host = false
 	self._use_strict_matchmaking = true
+	self._is_open = true
 
-	self:create_ui_elements(params)
+	self:_create_ui_elements(params)
 
 	if params.initial_state then
 		params.initial_state = nil
@@ -97,7 +97,7 @@ StartGameStateSettingsOverview.on_enter = function (self, params)
 	end
 
 	local window_params = {
-		wwise_world = self.wwise_world,
+		wwise_world = self._wwise_world,
 		ingame_ui_context = ingame_ui_context,
 		parent = self,
 		windows_settings = self._windows_settings,
@@ -132,8 +132,8 @@ StartGameStateSettingsOverview._setup_menu_layout = function (self)
 	self._window_layouts = layout_settings.window_layouts
 end
 
-StartGameStateSettingsOverview.create_ui_elements = function (self, params)
-	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+StartGameStateSettingsOverview._create_ui_elements = function (self, params)
+	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local widgets = {}
 	local widgets_by_name = {}
 
@@ -148,15 +148,15 @@ StartGameStateSettingsOverview.create_ui_elements = function (self, params)
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
 
-	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
+	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
 
-	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
+	self.ui_animator = UIAnimator:new(self._ui_scenegraph, animation_definitions)
 	local gui_layer = UILayer.default + 30
 	local input_service = self:input_service()
 	local use_fullscreen_layout = self._gamepad_style_active
 
 	if self._generic_input_actions then
-		self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 6, gui_layer, self._generic_input_actions.default, use_fullscreen_layout)
+		self._menu_input_description = MenuInputDescriptionUI:new(nil, self._ui_top_renderer, input_service, 6, gui_layer, self._generic_input_actions.default, use_fullscreen_layout)
 
 		self._menu_input_description:set_input_description(nil)
 	end
@@ -170,7 +170,7 @@ StartGameStateSettingsOverview._create_video_players = function (self)
 	local video_players = {}
 
 	if self._video_resources then
-		local world = self.ui_top_renderer.world
+		local world = self._ui_top_renderer.world
 
 		for name, settings in pairs(self._video_resources) do
 			local resource = settings.resource
@@ -186,7 +186,7 @@ StartGameStateSettingsOverview._destroy_video_players = function (self)
 	local video_players = self._video_players
 
 	if video_players then
-		local world = self.ui_top_renderer.world
+		local world = self._ui_top_renderer.world
 
 		for name, video_player in pairs(video_players) do
 			World.destroy_video_player(world, video_player)
@@ -345,7 +345,7 @@ StartGameStateSettingsOverview._validate_mission_save_data = function (self, mis
 	end
 
 	local stats_id = self._stats_id
-	local statistics_db = self.statistics_db
+	local statistics_db = self._statistics_db
 
 	return LevelUnlockUtils.level_unlocked(statistics_db, stats_id, level_id)
 end
@@ -559,6 +559,7 @@ StartGameStateSettingsOverview.on_exit = function (self, params)
 	print("[StartGameState] Exit Substate StartGameStateSettingsOverview")
 
 	self.ui_animator = nil
+	self._is_open = false
 
 	if self._fullscreen_effect_enabled then
 		self:set_fullscreen_effect_enable_state(false)
@@ -571,6 +572,8 @@ StartGameStateSettingsOverview.on_exit = function (self, params)
 	if self._gamepad_style_active then
 		self:enable_player_world()
 	end
+
+	self:_reset_cloned_materials()
 end
 
 StartGameStateSettingsOverview._close_active_windows = function (self)
@@ -606,10 +609,10 @@ StartGameStateSettingsOverview.update = function (self, dt, t)
 	if DO_RELOAD then
 		DO_RELOAD = false
 
-		self:create_ui_elements()
+		self:_create_ui_elements()
 	end
 
-	local input_manager = self.input_manager
+	local input_manager = self._input_manager
 	local input_service = self.parent:input_service()
 
 	self:draw(input_service, dt)
@@ -810,11 +813,11 @@ StartGameStateSettingsOverview.change_generic_actions = function (self, input_de
 end
 
 StartGameStateSettingsOverview.draw = function (self, input_service, dt)
-	local ui_renderer = self.ui_renderer
-	local ui_top_renderer = self.ui_top_renderer
-	local ui_scenegraph = self.ui_scenegraph
-	local input_manager = self.input_manager
-	local render_settings = self.render_settings
+	local ui_renderer = self._ui_renderer
+	local ui_top_renderer = self._ui_top_renderer
+	local ui_scenegraph = self._ui_scenegraph
+	local input_manager = self._input_manager
+	local render_settings = self._render_settings
 
 	if not self._gamepad_style_active then
 		UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
@@ -858,8 +861,8 @@ end
 
 StartGameStateSettingsOverview._start_transition_animation = function (self, key, animation_name)
 	local params = {
-		wwise_world = self.wwise_world,
-		render_settings = self.render_settings
+		wwise_world = self._wwise_world,
+		render_settings = self._render_settings
 	}
 	local widgets = {}
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
@@ -1012,7 +1015,7 @@ StartGameStateSettingsOverview.set_confirm_button_visibility = function (self, v
 end
 
 StartGameStateSettingsOverview.set_fullscreen_effect_enable_state = function (self, enabled)
-	local world = self.ui_renderer.world
+	local world = self._ui_renderer.world
 	local shading_env = World.get_data(world, "shading_environment")
 
 	if shading_env then
@@ -1047,6 +1050,129 @@ StartGameStateSettingsOverview._can_add_streaming_function = function (self)
 		return twitch_enabled and not is_offline
 	else
 		return true
+	end
+end
+
+StartGameStateSettingsOverview.setup_backend_image_material = function (self, gui, reference_name, texture_name, masked)
+	local material_name = "StartGameStateSettingsOverview_" .. reference_name
+	local cloned_materials_by_reference = self._cloned_materials_by_reference
+
+	if cloned_materials_by_reference[reference_name] then
+		return material_name
+	end
+
+	local template_material_name = (masked and "template_menu_diffuse_masked") or "template_menu_diffuse"
+
+	self:_create_material_instance(gui, material_name, template_material_name, reference_name)
+
+	local cdn = Managers.backend:get_interface("cdn")
+	local cb = callback(self, "_cb_on_backend_url_loaded", gui, reference_name, texture_name, material_name)
+
+	cdn:get_resource_urls({
+		texture_name
+	}, cb)
+
+	return material_name
+end
+
+StartGameStateSettingsOverview._cb_on_backend_url_loaded = function (self, gui, reference_name, texture_name, material_name, result)
+	local texture_url = result[texture_name]
+
+	if not texture_url then
+		return
+	end
+
+	if self._is_open == false then
+		return
+	end
+
+	self._material_references_to_unload[reference_name] = true
+	local cb = callback(self, "_cb_on_backend_image_loaded", gui, reference_name, material_name)
+
+	Managers.url_loader:load_resource(reference_name, texture_url, cb, texture_name)
+end
+
+StartGameStateSettingsOverview._cb_on_backend_image_loaded = function (self, gui, reference_name, material_name, texture_resource)
+	if not self._cloned_materials_by_reference[reference_name] then
+		return
+	end
+
+	if texture_resource then
+		self:_set_material_diffuse_by_resource(gui, material_name, texture_resource)
+	else
+		self._material_references_to_unload[reference_name] = nil
+
+		Application.warning(string.format("[StartGameStateSettingsOverview] - Failed loading image for reference name: (%s)", reference_name))
+	end
+end
+
+StartGameStateSettingsOverview._create_material_instance = function (self, gui, new_material_name, template_material_name, reference_name)
+	local cloned_materials_by_reference = self._cloned_materials_by_reference
+	cloned_materials_by_reference[reference_name] = new_material_name
+	local gui_by_cloned_material_reference = self._gui_by_cloned_material_reference
+	gui_by_cloned_material_reference[reference_name] = gui
+
+	return Gui.clone_material_from_template(gui, new_material_name, template_material_name)
+end
+
+StartGameStateSettingsOverview._set_material_diffuse_by_resource = function (self, gui, material_name, texture_resource)
+	local material = Gui.material(gui, material_name)
+
+	if material then
+		Material.set_resource(material, "diffuse_map", texture_resource)
+	end
+end
+
+StartGameStateSettingsOverview._set_material_diffuse_by_path = function (self, gui, material_name, texture_path)
+	local material = Gui.material(gui, material_name)
+
+	if material then
+		Material.set_texture(material, "diffuse_map", texture_path)
+	end
+end
+
+StartGameStateSettingsOverview._is_unique_reference_to_material = function (self, reference_name)
+	local cloned_materials_by_reference = self._cloned_materials_by_reference
+	local material_name = cloned_materials_by_reference[reference_name]
+
+	fassert(material_name, "[StartGameStateSettingsOverview] - Could not find a used material for reference name: (%s)", reference_name)
+
+	for key, value in pairs(cloned_materials_by_reference) do
+		if material_name == value and reference_name ~= key then
+			return false
+		end
+	end
+
+	return true
+end
+
+StartGameStateSettingsOverview.reset_cloned_material = function (self, reference_name)
+	local gui_by_cloned_material_reference = self._gui_by_cloned_material_reference
+	local cloned_materials_by_reference = self._cloned_materials_by_reference
+	local material_references_to_unload = self._material_references_to_unload
+
+	if material_references_to_unload[reference_name] then
+		material_references_to_unload[reference_name] = nil
+
+		Managers.url_loader:unload_resource(reference_name)
+	end
+
+	if self:_is_unique_reference_to_material(reference_name) then
+		local gui = gui_by_cloned_material_reference[reference_name]
+		local material_name = cloned_materials_by_reference[reference_name]
+
+		self:_set_material_diffuse_by_path(gui, material_name, STREAMING_PLACEHOLDER_TEXTURE_PATH)
+	end
+
+	cloned_materials_by_reference[reference_name] = nil
+	gui_by_cloned_material_reference[reference_name] = nil
+end
+
+StartGameStateSettingsOverview._reset_cloned_materials = function (self)
+	local cloned_materials_by_reference = self._cloned_materials_by_reference
+
+	for reference_name, material_name in pairs(cloned_materials_by_reference) do
+		self:reset_cloned_material(reference_name)
 	end
 end
 

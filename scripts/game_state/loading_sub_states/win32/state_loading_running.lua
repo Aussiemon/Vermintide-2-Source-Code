@@ -99,6 +99,10 @@ StateLoadingRunning.update = function (self, dt)
 
 		self.parent:setup_loading_view(level_key)
 	end
+
+	if self.parent:has_joined() and not Managers.load_time:has_lobby() then
+		Managers.load_time:set_lobby(self.parent:get_lobby())
+	end
 end
 
 StateLoadingRunning.on_exit = function (self, application_shutdown)

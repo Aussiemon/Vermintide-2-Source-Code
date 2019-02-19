@@ -1,4 +1,5 @@
 require("scripts/managers/backend_playfab/playfab_mirror")
+require("scripts/settings/version_settings")
 
 local IPlayFabHttps = require("PlayFab.IPlayFabHttps")
 local playfab_https = require("scripts/managers/backend/playfab_https_curl")
@@ -87,10 +88,36 @@ ScriptBackendPlayFab.login_request_cb = function (self, result)
 		self:_set_up_initial_account()
 	elseif not read_only_data.account_data_set_up then
 		self:_set_up_initial_account_data()
-	end
+	else
+		self._signed_in = true
+		self._signin_result = result
 
-	self._signed_in = true
-	self._signin_result = result
+		self:_validate_version()
+	end
+end
+
+ScriptBackendPlayFab._validate_version = function (self)
+	local request = {
+		FunctionName = "validateVersion",
+		FunctionParameter = {
+			Version = VersionSettings.version
+		}
+	}
+	local callback = callback(self, "_validate_version_cb")
+
+	PlayFabClientApi.ExecuteCloudScript(request, callback)
+end
+
+ScriptBackendPlayFab._validate_version_cb = function (self, result)
+	local valid = result.FunctionResult and result.FunctionResult.valid_version
+
+	if valid ~= true then
+		self._signed_in = false
+		self._signin_result_error = {
+			errorCode = BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_UNSUPPORTED_VERSION_ERROR,
+			errorMessage = ERROR_CODES[BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_UNSUPPORTED_VERSION_ERROR]
+		}
+	end
 end
 
 ScriptBackendPlayFab._set_up_initial_account = function (self)

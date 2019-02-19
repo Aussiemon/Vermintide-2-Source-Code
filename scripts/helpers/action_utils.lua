@@ -227,7 +227,7 @@ ActionUtils.apply_buffs_to_power_level = function (unit, power_level)
 		return power_level
 	end
 
-	power_level = buff_extension:apply_buffs_to_value(power_level, StatBuffIndex.POWER_LEVEL)
+	power_level = buff_extension:apply_buffs_to_value(power_level, "power_level")
 
 	return power_level
 end
@@ -254,9 +254,9 @@ ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, bre
 			local is_ranged = RangedBuffTypes[buff_type]
 
 			if is_melee then
-				power_level = buff_extension:apply_buffs_to_value(power_level, StatBuffIndex.POWER_LEVEL_MELEE)
+				power_level = buff_extension:apply_buffs_to_value(power_level, "power_level_melee")
 			elseif is_ranged then
-				power_level = buff_extension:apply_buffs_to_value(power_level, StatBuffIndex.POWER_LEVEL_RANGED)
+				power_level = buff_extension:apply_buffs_to_value(power_level, "power_level_ranged")
 			end
 		end
 	end
@@ -264,21 +264,21 @@ ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, bre
 	local armor_category = (breed and breed.armor_category) or dummy_unit_armor or 1
 
 	if armor_category == 2 then
-		power_level = buff_extension:apply_buffs_to_value(power_level, StatBuffIndex.POWER_LEVEL_ARMOURED)
+		power_level = buff_extension:apply_buffs_to_value(power_level, "power_level_armoured")
 	elseif armor_category == 3 then
-		power_level = buff_extension:apply_buffs_to_value(power_level, StatBuffIndex.POWER_LEVEL_LARGE)
+		power_level = buff_extension:apply_buffs_to_value(power_level, "power_level_large")
 	elseif armor_category == 5 then
-		power_level = buff_extension:apply_buffs_to_value(power_level, StatBuffIndex.POWER_LEVEL_FRENZY)
+		power_level = buff_extension:apply_buffs_to_value(power_level, "power_level_frenzy")
 	elseif armor_category == 1 then
-		power_level = buff_extension:apply_buffs_to_value(power_level, StatBuffIndex.POWER_LEVEL_UNARMOURED)
+		power_level = buff_extension:apply_buffs_to_value(power_level, "power_level_unarmoured")
 	end
 
 	local race = (breed and breed.race) or unit_get_data(unit, "race")
 
 	if race == "chaos" then
-		power_level = buff_extension:apply_buffs_to_value(power_level, StatBuffIndex.POWER_LEVEL_CHAOS)
+		power_level = buff_extension:apply_buffs_to_value(power_level, "power_level_chaos")
 	elseif race == "skaven" then
-		power_level = buff_extension:apply_buffs_to_value(power_level, StatBuffIndex.POWER_LEVEL_SKAVEN)
+		power_level = buff_extension:apply_buffs_to_value(power_level, "power_level_skaven")
 	end
 
 	return power_level
@@ -412,7 +412,7 @@ ActionUtils.apply_attack_speed_buff = function (attack_speed_value, unit)
 
 	if unit and Unit.alive(unit) and ScriptUnit.has_extension(unit, "buff_system") then
 		local buff_extension = ScriptUnit.extension(unit, "buff_system")
-		new_value = buff_extension:apply_buffs_to_value(attack_speed_value, StatBuffIndex.ATTACK_SPEED)
+		new_value = buff_extension:apply_buffs_to_value(attack_speed_value, "attack_speed")
 	end
 
 	return new_value
@@ -427,7 +427,7 @@ ActionUtils.apply_charge_speed_buff_anim_scale = function (anim_time_scale, unit
 
 	if unit and Unit.alive(unit) and ScriptUnit.has_extension(unit, "buff_system") then
 		local buff_extension = ScriptUnit.extension(unit, "buff_system")
-		local charge_speed = buff_extension:apply_buffs_to_value(1, StatBuffIndex.REDUCED_RANGED_CHARGE_TIME)
+		local charge_speed = buff_extension:apply_buffs_to_value(1, "reduced_ranged_charge_time")
 		new_anim_time_scale = anim_time_scale * 1 / charge_speed
 	end
 
@@ -443,7 +443,7 @@ ActionUtils.apply_charge_speed_buff_chain_window = function (anim_time_scale, un
 
 	if unit and Unit.alive(unit) and ScriptUnit.has_extension(unit, "buff_system") then
 		local buff_extension = ScriptUnit.extension(unit, "buff_system")
-		local charge_speed = buff_extension:apply_buffs_to_value(1, StatBuffIndex.REDUCED_RANGED_CHARGE_TIME)
+		local charge_speed = buff_extension:apply_buffs_to_value(1, "reduced_ranged_charge_time")
 		new_anim_time_scale = anim_time_scale * 1 / charge_speed
 	end
 
@@ -603,12 +603,12 @@ ActionUtils.get_critical_strike_chance = function (unit, action)
 	local is_melee_action = action_type == "sweep" or action_type == "push_stagger"
 
 	if is_melee_action then
-		crit_chance = buff_extension:apply_buffs_to_value(crit_chance, StatBuffIndex.CRITICAL_STRIKE_CHANCE_MELEE)
+		crit_chance = buff_extension:apply_buffs_to_value(crit_chance, "critical_strike_chance_melee")
 	else
-		crit_chance = buff_extension:apply_buffs_to_value(crit_chance, StatBuffIndex.CRITICAL_STRIKE_CHANCE_RANGED)
+		crit_chance = buff_extension:apply_buffs_to_value(crit_chance, "critical_strike_chance_ranged")
 	end
 
-	crit_chance = buff_extension:apply_buffs_to_value(crit_chance, StatBuffIndex.CRITICAL_STRIKE_CHANCE)
+	crit_chance = buff_extension:apply_buffs_to_value(crit_chance, "critical_strike_chance")
 
 	return crit_chance
 end

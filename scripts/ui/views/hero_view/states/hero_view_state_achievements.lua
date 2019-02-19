@@ -667,7 +667,41 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 
 					content.reward_item = fake_item
 					content.reward_icon = item_template.inventory_icon
-				elseif reward.reward_type == "keep_decoration" then
+				elseif reward.reward_type == "keep_decoration_painting" then
+					local decoration_name = reward.decoration_name
+					local painting_data = Paintings[decoration_name]
+					local fake_item = {
+						data = {
+							item_type = "keep_decoration_painting",
+							slot_type = "keep_decoration_painting",
+							information_text = "information_text_painting",
+							matching_item_key = "keep_decoration_painting",
+							can_wield = {
+								"bw_scholar",
+								"bw_adept",
+								"bw_unchained",
+								"we_shade",
+								"we_maidenguard",
+								"we_waywatcher",
+								"dr_ironbreaker",
+								"dr_slayer",
+								"dr_ranger",
+								"wh_zealot",
+								"wh_bountyhunter",
+								"wh_captain",
+								"es_huntsman",
+								"es_knight",
+								"es_mercenary"
+							},
+							rarity = reward.rarity or painting_data.rarity or "plentiful",
+							display_name = painting_data.display_name,
+							description = painting_data.description
+						},
+						painting = decoration_name
+					}
+					local icon = painting_data.icon
+					content.reward_item = fake_item
+					content.reward_icon = icon
 				elseif reward.reward_type == "weapon_skin" then
 					local weapon_skin_name = reward.weapon_skin_name
 					local weapon_skin_data = WeaponSkins.skins[weapon_skin_name]
@@ -1247,7 +1281,7 @@ HeroViewStateAchievements._setup_reward_presentation = function (self, reward_po
 					value = reward_item
 				}
 				presentation_data[#presentation_data + 1] = entry
-			elseif reward_type == "keep_decoration" then
+			elseif reward_type == "keep_decoration_painting" then
 				local keep_decoration_name = data.keep_decoration_name
 				local painting_data = Paintings[keep_decoration_name]
 				local display_name = painting_data.display_name

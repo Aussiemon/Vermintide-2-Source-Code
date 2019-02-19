@@ -86,8 +86,10 @@ Rewards._mission_results = function (self, game_won)
 	else
 		local mission_system = Managers.state.entity:system("mission_system")
 		local completed_distance = mission_system:percentage_completed() or 0
+		local current_level_settings = LevelHelper:current_level_settings()
+		local disable_percentage_completed = current_level_settings and current_level_settings.disable_percentage_completed
 
-		if difficulty_rank <= 2 then
+		if difficulty_rank <= 2 and not disable_percentage_completed then
 			completed_distance = math.clamp(completed_distance, 0.25, 1)
 		end
 
@@ -183,6 +185,7 @@ Rewards._generate_end_of_level_loot = function (self, game_won, hero_name, start
 	local num_tomes = 0
 	local num_grims = 0
 	local num_loot_dice = 0
+	local num_painting_scraps = 0
 	local loot_interface = Managers.backend:get_interface("loot")
 	local quickplay = self._quickplay_bonus
 
@@ -190,12 +193,14 @@ Rewards._generate_end_of_level_loot = function (self, game_won, hero_name, start
 		local tome_mission_data = mission_system:get_level_end_mission_data("tome_bonus_mission")
 		local grimoire_mission_data = mission_system:get_level_end_mission_data("grimoire_hidden_mission")
 		local loot_dice_mission_data = mission_system:get_level_end_mission_data("bonus_dice_hidden_mission")
+		local painting_scraps_mission_data = mission_system:get_level_end_mission_data("painting_scrap_hidden_mission")
 		num_tomes = (tome_mission_data and tome_mission_data.current_amount) or 0
 		num_grims = (grimoire_mission_data and grimoire_mission_data.current_amount) or 0
 		num_loot_dice = (loot_dice_mission_data and loot_dice_mission_data.current_amount) or 0
+		num_painting_scraps = (painting_scraps_mission_data and painting_scraps_mission_data.current_amount) or 0
 	end
 
-	self._end_of_level_loot_id = loot_interface:generate_end_of_level_loot(game_won, quickplay, difficulty, self._level_key, num_tomes, num_grims, num_loot_dice, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id)
+	self._end_of_level_loot_id = loot_interface:generate_end_of_level_loot(game_won, quickplay, difficulty, self._level_key, num_tomes, num_grims, num_loot_dice, num_painting_scraps, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id)
 end
 
 Rewards.cb_deed_consumed = function (self)

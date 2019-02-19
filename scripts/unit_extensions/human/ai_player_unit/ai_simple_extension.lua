@@ -45,6 +45,14 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 	blackboard.stagger_count_reset_at = 0
 	blackboard.override_targets = {}
 	blackboard.optional_spawn_data = extension_init_data.optional_spawn_data
+	local health_extension = ScriptUnit.has_extension(unit, "health_system")
+	self._health_extension = health_extension
+	local locomotion_extension = ScriptUnit.has_extension(unit, "locomotion_system")
+	self._locomotion = locomotion_extension
+	blackboard.locomotion_extension = locomotion_extension
+	local ai_navigation_extension = ScriptUnit.has_extension(unit, "ai_navigation_system")
+	self._navigation = ai_navigation_extension
+	blackboard.navigation_extension = ai_navigation_extension
 	local blackboard_init_data = breed.blackboard_init_data
 
 	if blackboard_init_data then
@@ -149,21 +157,13 @@ end
 
 AISimpleExtension.extensions_ready = function (self, world, unit)
 	local blackboard = self._blackboard
-	local health_extension = ScriptUnit.has_extension(unit, "health_system")
-	self._health_extension = health_extension
-	local locomotion_extension = ScriptUnit.has_extension(unit, "locomotion_system")
-	self._locomotion = locomotion_extension
-	blackboard.locomotion_extension = locomotion_extension
-	local ai_navigation_extension = ScriptUnit.has_extension(unit, "ai_navigation_system")
-	self._navigation = ai_navigation_extension
-	blackboard.navigation_extension = ai_navigation_extension
 	local breed = self._breed
 	local spawn_type = blackboard.spawn_type
 	local is_horde = spawn_type == "horde_hidden" or spawn_type == "horde"
 
 	self:init_perception(breed, is_horde)
 
-	if health_extension then
+	if self._health_extension then
 		self.broadphase_id = Broadphase.add(blackboard.group_blackboard.broadphase, unit, Unit.local_position(unit, 0), 1)
 	end
 

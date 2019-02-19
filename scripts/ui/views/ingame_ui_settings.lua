@@ -360,7 +360,11 @@ local transitions = {
 		self.current_view = nil
 	end,
 	exit_menu = function (self)
-		if not self.countdown_ui:is_enter_game() and not Managers.chat:chat_is_focused() and not Managers.matchmaking:is_join_popup_visible() then
+		local ingame_hud = self.ingame_hud
+		local countdown_ui = ingame_hud:component("LevelCountdownUI")
+		local is_enter_game = countdown_ui and countdown_ui:is_enter_game()
+
+		if not is_enter_game and not Managers.chat:chat_is_focused() and not Managers.matchmaking:is_join_popup_visible() then
 			self.input_manager:device_unblock_all_services("keyboard", 1)
 			self.input_manager:device_unblock_all_services("mouse", 1)
 			self.input_manager:device_unblock_all_services("gamepad", 1)
@@ -442,6 +446,17 @@ view_settings = {
 				materials[#materials + 1] = "material"
 				materials[#materials + 1] = video_settings.resource
 			end
+
+			for name, dlc in pairs(DLCSettings) do
+				local ui_materials_in_inn = dlc.ui_materials_in_inn
+
+				if ui_materials_in_inn then
+					for _, path in ipairs(ui_materials_in_inn) do
+						materials[#materials + 1] = "material"
+						materials[#materials + 1] = path
+					end
+				end
+			end
 		end
 
 		if is_tutorial then
@@ -489,6 +504,17 @@ view_settings = {
 				local video_settings = settings.video_settings
 				materials[#materials + 1] = "material"
 				materials[#materials + 1] = video_settings.resource
+			end
+
+			for name, dlc in pairs(DLCSettings) do
+				local ui_materials_in_inn = dlc.ui_materials_in_inn
+
+				if ui_materials_in_inn then
+					for _, path in ipairs(ui_materials_in_inn) do
+						materials[#materials + 1] = "material"
+						materials[#materials + 1] = path
+					end
+				end
 			end
 		end
 
@@ -561,6 +587,16 @@ view_settings = {
 	},
 	blocked_transitions = {}
 }
+
+for name, dlc in pairs(DLCSettings) do
+	local hotkey_mapping = dlc.hotkey_mapping
+
+	if hotkey_mapping then
+		for hotkey_name, settings in pairs(hotkey_mapping) do
+			view_settings.hotkey_mapping[hotkey_name] = settings
+		end
+	end
+end
 
 return {
 	transitions = transitions,

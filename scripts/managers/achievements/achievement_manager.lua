@@ -3,7 +3,6 @@ require("scripts/managers/achievements/achievement_templates")
 local outline = require("scripts/managers/achievements/achievements_outline")
 local World = rawget(_G, "World")
 local script_data = rawget(_G, "script_data")
-local RESOLUTION_LOOKUP = rawget(_G, "RESOLUTION_LOOKUP")
 local Color = rawget(_G, "Color")
 local Gui = rawget(_G, "Gui")
 AchievementManager = class(AchievementManager)
@@ -17,6 +16,7 @@ AchievementManager.init = function (self, world, statistics_db)
 	self._unlocked_achievements = {}
 	self._unlock_tasks = {}
 	self._achievement_data = {}
+	self._incompleted_achievements = {}
 	local backend_interface_loot = Managers.backend:get_interface("loot")
 	self._backend_interface_loot = backend_interface_loot
 
@@ -36,12 +36,11 @@ AchievementManager.init = function (self, world, statistics_db)
 
 	local template_count = 0
 
-	for id, template in pairs(AchievementTemplates.achievements) do
+	for _, template in pairs(AchievementTemplates.achievements) do
 		if (self.platform == "steam" and template.ID_STEAM) or (self.platform == "ps4" and template.ID_PS4) or (self.platform == "xb1" and template.ID_XB1) or self.platform == "debug" then
 			local idx = template_count + 1
 			self._templates[idx] = template
 			template_count = idx
-			self._templates[idx].id = id
 		end
 	end
 
@@ -186,6 +185,7 @@ AchievementManager.update = function (self, dt, t)
 	self._curr_template_idx = template_idx
 
 	self:_update_reward_polling(dt, t)
+	self:_check_for_completed_achievements()
 end
 
 AchievementManager.reset = function (self)
@@ -369,6 +369,71 @@ AchievementManager._check_initialized_achievements = function (self)
 	end
 
 	return self._initialized_achievements
+end
+
+AchievementManager._display_completion_ui = function (self, achievement_id)
+	local parameter = Localize(AchievementTemplates.achievements[achievement_id].name)
+	local message = string.format(Localize("finish_level_to_complete_challenge"), parameter)
+	local pop_chat = true
+
+	Managers.chat:add_local_system_message(1, message, pop_chat)
+end
+
+local function swap_erase_element(list, index, list_length)
+	list[index] = list[list_length]
+	list[list_length] = nil
+end
+
+AchievementManager._check_for_completed_achievements = function (self)
+	if self._incompleted_template_count > 0 then
+		local incompleted_template_idx = self._incompleted_template_curr_idx
+		local incompleted_template = self._incompleted_achievements[incompleted_template_idx]
+		local incompleted_template_id = incompleted_template.id
+
+		fassert(incompleted_template_id, "incompleted_template_id is nil on %s ", incompleted_template.name)
+
+		if self:_achievement_completed(incompleted_template_id) then
+			self:_display_completion_ui(incompleted_template_id)
+			swap_erase_element(self._incompleted_achievements, incompleted_template_idx, self._incompleted_template_count)
+
+			self._incompleted_template_count = self._incompleted_template_count - 1
+		end
+
+		incompleted_template_idx = incompleted_template_idx + 1
+
+		if self._incompleted_template_count < incompleted_template_idx then
+			incompleted_template_idx = 1
+		end
+
+		self._incompleted_template_curr_idx = incompleted_template_idx
+	end
+end
+
+AchievementManager._achievement_completed = function (self, achievement_id)
+	local achievement_data = AchievementTemplates.achievements[achievement_id]
+
+	if type(achievement_data.completed) == "boolean" then
+		return achievement_data.completed
+	elseif type(achievement_data.completed) == "function" then
+		local player = Managers.player:local_player()
+
+		return achievement_data.completed(self._statistics_db, player:stats_id())
+	end
+end
+
+AchievementManager.setup_incompleted_achievements = function (self)
+	local template_count = 0
+
+	for id, template in pairs(AchievementTemplates.achievements) do
+		if not self:_achievement_completed(id) and template.display_completion_ui then
+			local idx = template_count + 1
+			self._incompleted_achievements[idx] = template
+			template_count = idx
+		end
+	end
+
+	self._incompleted_template_count = template_count
+	self._incompleted_template_curr_idx = 1
 end
 
 AchievementManager._setup_achievement_data = function (self, achievement_id)

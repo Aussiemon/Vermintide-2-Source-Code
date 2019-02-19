@@ -916,7 +916,7 @@ local function connecting_content_check_function(content)
 	return Managers.twitch:is_connecting() or not Managers.twitch:is_connected()
 end
 
-local streaming_desc_str = (PLATFORM == "win32" and "start_game_window_twitch_connect_description") or "start_game_window_mixer_connect_description"
+local streaming_desc_str = (PLATFORM ~= "xb1" and "start_game_window_twitch_connect_description") or "start_game_window_mixer_connect_description"
 local widgets = {
 	background_fade = UIWidgets.create_simple_texture("options_window_fade_01", "window"),
 	background_mask = UIWidgets.create_simple_texture("mask_rect", "window"),

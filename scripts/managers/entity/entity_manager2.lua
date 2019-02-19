@@ -289,7 +289,9 @@ EntityManager2.remove_extensions_from_unit = function (self, unit, extensions_to
 end
 
 EntityManager2.freeze_extensions = function (self, unit, extensions_to_freeze, freeze_reason)
-	for i = 1, #extensions_to_freeze, 1 do
+	local num_extensions_to_freeze = #extensions_to_freeze
+
+	for i = num_extensions_to_freeze, 1, -1 do
 		local extension_name = extensions_to_freeze[i]
 		local system = self:system_by_extension(extension_name)
 
@@ -305,6 +307,7 @@ EntityManager2.unregister_units = function (self, units, num_units)
 	local extension_extractor_function = self.extension_extractor_function
 	local unit_extensions_list = self._unit_extensions_list
 	local ScriptUnit_destroy_extension = ScriptUnit.destroy_extension
+	local ScriptUnit_has_extension = ScriptUnit.has_extension
 	local ignore_extensions_list = self._ignore_extensions_list
 
 	for i = 1, num_units, 1 do
@@ -322,10 +325,16 @@ EntityManager2.unregister_units = function (self, units, num_units)
 				break
 			end
 
-			for system_name, _ in pairs(unit_extensions) do
-				local system = self._systems[system_name]
+			local extensions_list_n = #extensions_list
 
-				ScriptUnit_destroy_extension(unit, system_name)
+			for i = extensions_list_n, 1, -1 do
+				local extension_name = extensions_list[i]
+				local system = self:system_by_extension(extension_name)
+				local system_name = system.NAME
+
+				if ScriptUnit_has_extension(unit, system_name) then
+					ScriptUnit_destroy_extension(unit, system_name)
+				end
 			end
 
 			local system_to_extension_map = self.system_to_extension_per_unit_type_map[extensions_list]

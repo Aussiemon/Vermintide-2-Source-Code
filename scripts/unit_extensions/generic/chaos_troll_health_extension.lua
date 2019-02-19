@@ -4,13 +4,15 @@ local set_material_property = AiUtils.set_material_property
 ChaosTrollHealthExtension.init = function (self, extension_init_context, unit, ...)
 	ChaosTrollHealthExtension.super.init(self, extension_init_context, unit, ...)
 
-	local blackboard = BLACKBOARDS[unit]
-	self._blackboard = blackboard
 	local t = Managers.time:time("game")
 	self._regen_time = t + 1
 	self._regen_paused_time = t
 	self.pulse_time = 0
 	self.state = "unhurt"
+end
+
+ChaosTrollHealthExtension.extensions_ready = function (self, world, unit, extension_name)
+	local blackboard = BLACKBOARDS[unit]
 	local breed = Breeds[blackboard.breed.name]
 	local action = BreedActions[blackboard.breed.name].downed
 	self.go_down_health = self.health * action.become_downed_hp_percent
@@ -72,7 +74,7 @@ ChaosTrollHealthExtension.update = function (self, dt, context, t)
 		self:update_regen_effect(t, dt, self.regen_pulse_interval, self.regen_pulse_intensity)
 
 		if self._regen_time < t and self._regen_paused_time < t then
-			local blackboard = self._blackboard
+			local blackboard = BLACKBOARDS[self.unit]
 			local time_spent_in_regen = t - self._regen_paused_time
 			local max_health_regen_time = blackboard.max_health_regen_time
 			local percentage_to_max_regen = math.min(time_spent_in_regen / max_health_regen_time, 1)
@@ -108,9 +110,10 @@ ChaosTrollHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 		local percent_damage = 1
 
 		if self.health - self.damage < self.go_down_health then
+			local blackboard = BLACKBOARDS[self.unit]
 			self.damage = 0
 			self.state = "down"
-			self._blackboard.downed_state = "downed"
+			blackboard.downed_state = "downed"
 			self.start_reset_time = t + (self.action.downed_duration + self.action.standup_anim_duration) - self.action.reset_duration
 			self.down_reset_timer = 0
 		else

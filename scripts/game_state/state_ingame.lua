@@ -106,6 +106,9 @@ StateIngame.on_enter = function (self)
 
 	self.level_transition_handler = loading_context.level_transition_handler
 	local level_key = self.level_transition_handler:get_current_level_keys()
+
+	Crashify.print_property("level", level_key)
+
 	self.level_key = level_key
 	self.is_in_inn = level_key == "inn_level"
 	self.is_in_tutorial = level_key == "prologue"
@@ -735,8 +738,6 @@ StateIngame._create_level = function (self)
 
 	return level
 end
-
-script_data.disable_ui = script_data.disable_ui or Development.parameter("disable_ui")
 
 StateIngame.pre_update = function (self, dt)
 	local t = Managers.time:time("game")
@@ -2021,15 +2022,6 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 	Managers.state.debug_text = DebugTextManager:new(world, self._debug_gui, is_server, network_event_delegate)
 	Managers.state.performance = PerformanceManager:new(self._debug_gui_immediate, is_server, level_key)
 	Managers.state.world_interaction = WorldInteractionManager:new(self.world)
-
-	if Managers.twitch then
-		local level_settings = LevelSettings[level_key]
-
-		if level_settings and not level_settings.disable_twitch_game_mode then
-			Managers.twitch:activate_twitch_game_mode(network_event_delegate, game_mode_key)
-		end
-	end
-
 	local wwise_world = Managers.world:wwise_world(world)
 	local voting_params = {
 		level_transition_handler = self.level_transition_handler,

@@ -144,7 +144,6 @@ PlayerProjectileHuskExtension.impact_dynamic = function (self, hit_unit, hit_pos
 	local impact_data = self.impact_data
 	local breed = Unit.get_data(hit_unit, "breed")
 	local is_player = table.contains(PLAYER_AND_BOT_UNITS, hit_unit)
-	local has_ranged_boost = false
 	local ranged_boost_curve_multiplier = 0
 
 	if breed then
@@ -173,7 +172,6 @@ PlayerProjectileHuskExtension.hit_enemy = function (self, impact_data, hit_unit,
 		return
 	end
 
-	local owner_unit = self.owner_unit
 	local damage_profile_name = impact_data.damage_profile or "default"
 	local damage_profile = DamageProfileTemplates[damage_profile_name]
 	local allow_link = true
@@ -188,8 +186,9 @@ PlayerProjectileHuskExtension.hit_enemy = function (self, impact_data, hit_unit,
 		local is_critical_strike = self._is_critical_strike
 		local owner_unit = self.owner_unit
 		local num_targets_hit = self.num_targets_hit + 1
+		local buff_type = DamageUtils.get_item_buff_type(self.item_name)
 
-		DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, num_targets_hit, send_to_server, "n/a")
+		DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, num_targets_hit, send_to_server, buff_type)
 
 		allow_link = self:hit_enemy_damage(damage_profile, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, breed, ranged_boost_curve_multiplier, hit_units)
 	end
@@ -221,14 +220,12 @@ PlayerProjectileHuskExtension.hit_enemy = function (self, impact_data, hit_unit,
 end
 
 PlayerProjectileHuskExtension.hit_enemy_damage = function (self, damage_profile, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, breed, ranged_boost_curve_multiplier, hit_units)
-	local network_manager = Managers.state.network
 	local owner = self.owner_player
 	local owner_unit = self.owner_unit
 	local action = self.current_action
 	local node = Actor.node(hit_actor)
 	local hit_zone = breed.hit_zones_lookup[node]
 	local hit_zone_name = action.projectile_info.forced_hitzone or hit_zone.name
-	local attack_direction = hit_direction
 	local was_alive = AiUtils.unit_alive(hit_unit)
 
 	if was_alive then
@@ -338,12 +335,10 @@ PlayerProjectileHuskExtension.hit_player_damage = function (self, damage_profile
 	self.amount_of_mass_hit = self.amount_of_mass_hit + 1
 	local actual_target_index = math.ceil(self.amount_of_mass_hit)
 	local target_settings = damage_profile.default_target
-	local attack_template = AttackTemplates[target_settings.attack_template]
 	local action = self.current_action
 	local hit_effect = action.hit_effect
 	local owner = self.owner_player
 	local is_husk = not owner.local_player
-	local damage_sound = attack_template.sound_type
 	local hit_rotation = Quaternion.look(hit_direction, Vector3.up())
 	local power_level = self.power_level
 	local hit_zone_name = "torso"
@@ -465,7 +460,6 @@ PlayerProjectileHuskExtension.hit_non_level_unit = function (self, impact_data, 
 end
 
 PlayerProjectileHuskExtension.hit_non_level_damagable_unit = function (self, damage_profile, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, hit_units, ranged_boost_curve_multiplier)
-	local network_manager = Managers.state.network
 	hit_units[hit_unit] = true
 	local action = self.current_action
 	local hit_effect = action.hit_effect

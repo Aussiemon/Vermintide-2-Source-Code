@@ -11,14 +11,12 @@ GenericUnitInteractorExtension.init = function (self, extension_init_context, un
 	local statistics_db = extension_init_context.statistics_db
 	self.world = world
 	self.unit = unit
-	self.ingame_ui = extension_init_context.ingame_ui
 	self.state = "waiting_to_interact"
 	self.interaction_context = {
 		data = {
 			world = world,
 			dice_keeper = dice_keeper,
 			statistics_db = statistics_db,
-			ingame_ui = extension_init_context.ingame_ui,
 			interactor_data = {}
 		}
 	}

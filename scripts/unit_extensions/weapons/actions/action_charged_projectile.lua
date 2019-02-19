@@ -88,7 +88,7 @@ ActionChargedProjectile._shoot = function (self, t)
 
 	if self.ammo_extension then
 		local ammo_usage = self.current_action.ammo_usage
-		local _, procced = self.owner_buff_extension:apply_buffs_to_value(0, StatBuffIndex.NOT_CONSUME_GRENADE)
+		local _, procced = self.owner_buff_extension:apply_buffs_to_value(0, "not_consume_grenade")
 
 		if not procced then
 			self.ammo_extension:use_ammo(ammo_usage)
@@ -105,7 +105,7 @@ ActionChargedProjectile._shoot = function (self, t)
 		})
 	end
 
-	local _, procced = self.owner_buff_extension:apply_buffs_to_value(0, StatBuffIndex.EXTRA_SHOT)
+	local _, procced = self.owner_buff_extension:apply_buffs_to_value(0, "extra_shot")
 	local add_spread = not self.extra_buff_shot
 
 	if procced and not self.extra_buff_shot then

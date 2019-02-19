@@ -1,9 +1,6 @@
 require("scripts/ui/views/disconnect_indicator_view")
 require("scripts/ui/views/loading_icon_view")
-
-if PLATFORM ~= "ps4" then
-	require("scripts/ui/views/twitch_icon_view")
-end
+require("scripts/ui/views/twitch_icon_view")
 
 if script_data.honduras_demo then
 	require("scripts/ui/views/water_mark_view")
@@ -18,10 +15,7 @@ TransitionManager.init = function (self)
 
 	self._loading_icon_view = LoadingIconView:new(self._world)
 	self._disconnect_indicator_view = DisconnectIndicatorView:new(self._world)
-
-	if PLATFORM ~= "ps4" then
-		self._twitch_icon_view = TwitchIconView:new(self._world)
-	end
+	self._twitch_icon_view = TwitchIconView:new(self._world)
 
 	if script_data.honduras_demo then
 		self._watermark = WaterMarkView:new(self._world)

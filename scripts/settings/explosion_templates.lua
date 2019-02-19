@@ -194,69 +194,6 @@ ExplosionTemplates = {
 			}
 		}
 	},
-	loot_rat_explosion = {
-		explosion = {
-			radius = 5,
-			attack_template = "loot_rat_explosion",
-			alert_enemies = true,
-			damage_type_glance = "grenade_glance",
-			damage_type = "grenade",
-			alert_enemies_radius = 10,
-			sound_event_name = "player_combat_weapon_grenade_explosion",
-			catapult_force = 10,
-			effect_name = "fx/wpnfx_barrel_explosion",
-			always_hurt_players = true,
-			max_damage_radius = 1.75,
-			catapult_players = true,
-			dot_template_name = "burning_1W_dot",
-			catapult_force_z = 5,
-			damage_profile = "loot_rat_explosion",
-			difficulty_power_level = {
-				easy = {
-					power_level_glance = 100,
-					power_level = 200
-				},
-				normal = {
-					power_level_glance = 200,
-					power_level = 400
-				},
-				hard = {
-					power_level_glance = 300,
-					power_level = 600
-				},
-				harder = {
-					power_level_glance = 400,
-					power_level = 800
-				},
-				hardest = {
-					power_level_glance = 500,
-					power_level = 1000
-				},
-				survival_hard = {
-					power_level_glance = 300,
-					power_level = 600
-				},
-				survival_harder = {
-					power_level_glance = 400,
-					power_level = 800
-				},
-				survival_hardest = {
-					power_level_glance = 500,
-					power_level = 1000
-				}
-			},
-			immune_breeds = {
-				skaven_loot_rat = true
-			},
-			camera_effect = {
-				near_distance = 5,
-				near_scale = 1,
-				shake_name = "frag_grenade_explosion",
-				far_scale = 0.15,
-				far_distance = 20
-			}
-		}
-	},
 	lamp_oil = {
 		explosion = {
 			radius = 3,
@@ -325,15 +262,48 @@ ExplosionTemplates = {
 	},
 	warpfire_explosion = {
 		explosion = {
-			always_hurt_players = true,
 			radius = 5,
 			alert_enemies = true,
 			max_damage_radius = 2.5,
+			always_hurt_players = true,
 			alert_enemies_radius = 15,
 			sound_event_name = "Play_enemy_combat_warpfire_backpack_explode",
 			damage_profile = "warpfire_thrower_explosion",
-			power_level = 500,
-			effect_name = "fx/chr_warp_fire_explosion_01"
+			effect_name = "fx/chr_warp_fire_explosion_01",
+			difficulty_power_level = {
+				easy = {
+					power_level_glance = 100,
+					power_level = 200
+				},
+				normal = {
+					power_level_glance = 100,
+					power_level = 100
+				},
+				hard = {
+					power_level_glance = 200,
+					power_level = 200
+				},
+				harder = {
+					power_level_glance = 300,
+					power_level = 300
+				},
+				hardest = {
+					power_level_glance = 400,
+					power_level = 400
+				},
+				survival_hard = {
+					power_level_glance = 300,
+					power_level = 600
+				},
+				survival_harder = {
+					power_level_glance = 400,
+					power_level = 800
+				},
+				survival_hardest = {
+					power_level_glance = 500,
+					power_level = 1000
+				}
+			}
 		}
 	},
 	overcharge_explosion_dwarf = {
@@ -602,8 +572,6 @@ ExplosionTemplates.cannon_ball_throw = {
 
 						status_extension.num_cannonball_kills = nil
 						status_extension.completed_cannonball_challenge = true
-
-						QuestSettings.send_completed_message(stat_name)
 					end
 				end
 			end
@@ -707,6 +675,72 @@ ExplosionTemplates.chaos_zombie_explosion = {
 		damage_interval = 0,
 		power_level = 500,
 		effect_name = "fx/chr_nurgle_explosion_01",
+		immune_breeds = {
+			chaos_zombie = true,
+			chaos_exalted_sorcerer = true
+		}
+	}
+}
+ExplosionTemplates.generic_mutator_explosion = {
+	explosion = {
+		always_hurt_players = false,
+		radius = 3.2,
+		alert_enemies = false,
+		alert_enemies_radius = 20,
+		sound_event_name = "Play_mutator_enemy_split_small",
+		damage_type_glance = "fire_grenade_glance",
+		max_damage_radius_min = 0.5,
+		attack_template = "chaos_zombie_explosion",
+		dot_template_name = "chaos_zombie_explosion",
+		max_damage_radius_max = 2,
+		damage_type = "grenade",
+		damage_interval = 0,
+		power_level = 0,
+		effect_name = "fx/mutator_death_01",
+		immune_breeds = {
+			chaos_zombie = true,
+			chaos_exalted_sorcerer = true
+		}
+	}
+}
+ExplosionTemplates.generic_mutator_explosion_medium = {
+	explosion = {
+		always_hurt_players = false,
+		radius = 3.2,
+		alert_enemies = false,
+		alert_enemies_radius = 20,
+		sound_event_name = "Play_mutator_enemy_split_medium",
+		damage_type_glance = "fire_grenade_glance",
+		max_damage_radius_min = 0.5,
+		attack_template = "chaos_zombie_explosion",
+		dot_template_name = "chaos_zombie_explosion",
+		max_damage_radius_max = 2,
+		damage_type = "grenade",
+		damage_interval = 0,
+		power_level = 0,
+		effect_name = "fx/mutator_death_02",
+		immune_breeds = {
+			chaos_zombie = true,
+			chaos_exalted_sorcerer = true
+		}
+	}
+}
+ExplosionTemplates.generic_mutator_explosion_large = {
+	explosion = {
+		always_hurt_players = false,
+		radius = 3.2,
+		alert_enemies = false,
+		alert_enemies_radius = 20,
+		sound_event_name = "Play_mutator_enemy_split_large",
+		damage_type_glance = "fire_grenade_glance",
+		max_damage_radius_min = 0.5,
+		attack_template = "chaos_zombie_explosion",
+		dot_template_name = "chaos_zombie_explosion",
+		max_damage_radius_max = 2,
+		damage_type = "grenade",
+		damage_interval = 0,
+		power_level = 0,
+		effect_name = "fx/mutator_death_03",
 		immune_breeds = {
 			chaos_zombie = true,
 			chaos_exalted_sorcerer = true
@@ -888,6 +922,14 @@ ExplosionTemplates.fireball_charged_t3.explosion.attack_template = "drakegun_t3"
 ExplosionTemplates.fireball_charged_t3.explosion.attack_template_glance = "drakegun_glance_t3"
 ExplosionTemplates.fireball_charged_t3.explosion.dot_template_name = "burning_1W_dot"
 ExplosionTemplates.fireball_charged_t3.explosion.dot_template_name_glance = "burning_1W_dot"
+
+for _, dlc in pairs(DLCSettings) do
+	local explosion_templates = dlc.explosion_templates
+
+	if explosion_templates then
+		table.merge_recursive(ExplosionTemplates, explosion_templates)
+	end
+end
 
 for name, templates in pairs(ExplosionTemplates) do
 	templates.name = name

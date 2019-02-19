@@ -195,6 +195,13 @@ BreedBehaviors.chaos_exalted_champion_warcamp = {
 	},
 	CHAOS_EXALTED_CHAMPION_SMART_OBJECT,
 	{
+		"BTChampionAttackAction",
+		leave_hook = "reset_chain_stagger",
+		name = "retaliation_aoe",
+		condition = "warcamp_retaliation_aoe",
+		action_data = ACTIONS.special_attack_retaliation_aoe
+	},
+	{
 		"BTStaggerAction",
 		name = "stagger",
 		condition = "stagger",

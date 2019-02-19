@@ -1,4 +1,18 @@
 NetworkConstants = NetworkConstants or {}
+
+local function check_bounderies(network_variable_name, network_lookup_name, store_variable_info)
+	local network_variable_info = Network.type_info(network_variable_name)
+
+	if store_variable_info == nil or store_variable_info then
+		NetworkConstants[network_variable_name] = network_variable_info
+	end
+
+	local num_lookup_entries = #NetworkLookup[network_lookup_name]
+	local max_network_entries = network_variable_info.max
+
+	fassert(num_lookup_entries <= max_network_entries, "Too many entries in NetworkLookup.%s (%d, max:%d), raise global.network_config value for %s by a factor 2.", network_lookup_name, num_lookup_entries, max_network_entries, network_variable_name)
+end
+
 NetworkConstants.damage = Network.type_info("damage")
 NetworkConstants.damage_hotjoin_sync = Network.type_info("damage_hotjoin_sync")
 NetworkConstants.health = Network.type_info("health")
@@ -15,35 +29,15 @@ NetworkConstants.animation_variable_float = Network.type_info("animation_variabl
 NetworkConstants.number = Network.type_info("number")
 NetworkConstants.game_object_id_max = Network.type_info("game_object_id").max
 NetworkConstants.invalid_game_object_id = NetworkConstants.game_object_id_max
-NetworkConstants.damage_profile = Network.type_info("damage_profile")
-
-fassert(#NetworkLookup.damage_profiles <= NetworkConstants.damage_profile.max, "Too many damage profiles, global config max value needs to be upped")
-
 NetworkConstants.max_overcharge = Network.type_info("max_overcharge")
 NetworkConstants.statistics_path_max_size = Network.type_info("statistics_path").max_size
-NetworkConstants.anim_event = Network.type_info("anim_event")
 
-fassert(#NetworkLookup.anims <= NetworkConstants.anim_event.max, "Too many anim events in network lookup, time to up the network config max value, max: " .. NetworkConstants.anim_event.max .. "|anims " .. #NetworkLookup.anims)
-
-NetworkConstants.bt_action_name = Network.type_info("bt_action_name")
-
-fassert(#NetworkLookup.bt_action_names <= NetworkConstants.bt_action_name.max, "Too many bt_action_name events in network lookup, time to up the network config max value")
-
-NetworkConstants.surface_material_effect = Network.type_info("surface_material_effect")
-
-fassert(#NetworkLookup.surface_material_effects <= NetworkConstants.surface_material_effect.max, "Too many surface material effects in network lookup, time to up the network config max value")
-
-NetworkConstants.vfx = Network.type_info("vfx")
-local effetcs_max = NetworkConstants.vfx.max
-local effects_amount = #NetworkLookup.effects
-
-fassert(effects_amount <= effetcs_max, "Too many effects in network lookup, amount: %i, max: %i, update global.network_config", effects_amount, effetcs_max)
-
-NetworkConstants.light_weight_projectile_particle_lookup = Network.type_info("light_weight_projectile_particle_lookup")
-local light_weight_particle_max = NetworkConstants.light_weight_projectile_particle_lookup.max
-local light_weight_particle_amount = #NetworkLookup.light_weight_projectile_particle_effects
-
-fassert(light_weight_particle_amount <= light_weight_particle_max, "Too many light weight projectile particle effects in network lookup, amount: %i, max: %i, update global.network_config", light_weight_particle_amount, light_weight_particle_max)
+check_bounderies("damage_profile", "damage_profiles")
+check_bounderies("anim_event", "anims")
+check_bounderies("bt_action_name", "bt_action_names")
+check_bounderies("surface_material_effect", "surface_material_effects")
+check_bounderies("vfx", "effects")
+check_bounderies("light_weight_projectile_particle_lookup", "light_weight_projectile_particle_effects")
 
 NetworkConstants.light_weight_projectile_speed = Network.type_info("light_weight_projectile_speed")
 NetworkConstants.light_weight_projectile_index = Network.type_info("light_weight_projectile_index")
@@ -52,56 +46,25 @@ local num_items = #ItemMasterList
 
 fassert(num_items <= NetworkConstants.weapon_id.max, "Too many weapons in ItemMasterList, global.network_config value weapon_id needs to be raised.")
 
-NetworkConstants.LevelSettings = Network.type_info("weight_array")
-local num_levels = 0
+NetworkConstants.weight_array = Network.type_info("weight_array")
 
-for _ in pairs(LevelSettings) do
-	num_levels = num_levels + 1
-end
-
-fassert(num_levels <= NetworkConstants.weapon_id.max, "Too many levels in LevelSettings, global.network_config max value weight_array needs to be raised.")
+fassert(#NetworkLookup.level_keys <= NetworkConstants.weight_array.max_size, "Too many levels in LevelSettings, global.network_config value weight_array needs to be raised.")
 
 local num_damage_sources = #NetworkLookup.damage_sources
 NetworkConstants.damage_source_id = Network.type_info("damage_source_id")
 
 fassert(num_damage_sources <= NetworkConstants.damage_source_id.max, "Too many damage sources, global.network_config value damage_source_id needs to be raised.")
 fassert(num_items <= num_damage_sources, "weapon_id lookup is set higher than damage_source_id lookup despite all weapons being damage sources.")
-
-local num_weapon_skins = #NetworkLookup.weapon_skins
-NetworkConstants.lookup = Network.type_info("lookup")
-
-fassert(num_weapon_skins <= NetworkConstants.lookup.max, "Too many weapon skins for network typ lookup, make a new type specific for weapon skins and change this check to use that.")
-
-local num_actions = #NetworkLookup.actions
-NetworkConstants.action = Network.type_info("action")
-
-fassert(num_actions <= NetworkConstants.action.max, "Too many actions, raise global.network_config value for action by a factor 2")
-
-local num_sub_actions = #NetworkLookup.sub_actions
-NetworkConstants.sub_action = Network.type_info("sub_action")
-
-fassert(num_sub_actions <= NetworkConstants.sub_action.max, "Too many sub actions, raise global.network_config value for sub_action by a factor 2")
-
-local num_item_template_names = #NetworkLookup.item_template_names
-NetworkConstants.item_template_name = Network.type_info("item_template_name")
-
-fassert(num_item_template_names <= NetworkConstants.item_template_name.max, "Too many item template names, raise global.network_config value for item_template_name by a factor 2")
-
-local num_buff_weapon_types = #NetworkLookup.buff_weapon_types
-NetworkConstants.buff_weapon_types = Network.type_info("buff_weapon_types")
-
-fassert(num_buff_weapon_types <= NetworkConstants.buff_weapon_types.max, "Too many buff weapon types, raise global.network_config value for buff_weapon_types by a factor 2")
-
-local num_terror_flow_events = #NetworkLookup.terror_flow_events
-NetworkConstants.terror_flow_event = Network.type_info("terror_flow_event")
-
-fassert(num_terror_flow_events <= NetworkConstants.terror_flow_event.max, "Too many terror flow events, raise global.network_config value for terror_flow_event by a factor 2")
+check_bounderies("lookup", "weapon_skins")
+check_bounderies("action", "actions")
+check_bounderies("sub_action", "sub_actions")
+check_bounderies("item_template_name", "item_template_names")
+check_bounderies("buff_weapon_types", "buff_weapon_types")
+check_bounderies("terror_flow_event", "terror_flow_events")
 
 NetworkConstants.story_time = Network.type_info("story_time")
-local fatigue_points_max = Network.type_info("fatigue_points").max
-local num_fatigue_types = #NetworkLookup.fatigue_types
 
-fassert(num_fatigue_types <= fatigue_points_max, "Too many fatigue_types, raise global.network_config value for fatigue_points by a factor of 2")
+check_bounderies("fatigue_points", "fatigue_types")
 
 local damage_hotjoin_sync_max = NetworkConstants.damage_hotjoin_sync.max
 
@@ -116,20 +79,10 @@ for name, breed in pairs(Breeds) do
 end
 
 NetworkConstants.teleports = Network.type_info("teleports")
-NetworkConstants.marker_lookup = Network.type_info("marker_lookup")
-local num_markers = #NetworkLookup.markers
 
-fassert(num_markers <= NetworkConstants.marker_lookup.max, "Too many dialogue system markers, raise global.network_config value for marker_lookup by a factor 2")
-
-NetworkConstants.dialogue_lookup = Network.type_info("dialogue_lookup")
-local num_dialogues = #NetworkLookup.dialogues
-local max_dialogues = NetworkConstants.dialogue_lookup.max
-
-fassert(num_dialogues <= max_dialogues, "Too many entries in dialogue lookup (%i, max:%i), raise global.network_config vlaue for dialogue_lookup by a factor 2", num_dialogues, max_dialogues)
-
-NetworkConstants.statuses = Network.type_info("player_status")
-
-fassert(#NetworkLookup.statuses <= NetworkConstants.statuses.max, "Too many statuses, raise global.network_config value for player_status by a factor 2")
+check_bounderies("marker_lookup", "markers")
+check_bounderies("dialogue_lookup", "dialogues")
+check_bounderies("player_status", "statuses")
 
 NetworkConstants.uint_16 = Network.type_info("uint_16")
 NetworkConstants.server_controlled_buff_id = Network.type_info("server_controlled_buff_id")
@@ -153,20 +106,18 @@ local enemy_package_loader_bitmask_array = Network.type_info("enemy_package_load
 local num_bitmasks_bits = enemy_package_loader_bitmask_array.max_size * uint_32.bits
 local num_breeds = #NetworkLookup.breeds
 
-fassert(num_breeds <= num_bitmasks_bits, "Need to update enemy_package_loader_bitmask_array so that it enough 32-bit elements to contain number of breeds (%i).", num_breeds)
+fassert(num_breeds <= num_bitmasks_bits, "Need to update enemy_package_loader_bitmask_array so that it has enough 32-bit elements to contain number of breeds (%i).", num_breeds)
 
 NetworkConstants.max_breed_freezer_units_per_rpc = Network.type_info("packed_breed_go_ids").max_size
-NetworkConstants.mutator_lookup = Network.type_info("mutator_lookup")
-local num_mutators = #NetworkLookup.mutator_templates
-local max_mutators = NetworkConstants.mutator_lookup.max
 
-fassert(num_mutators <= max_mutators, "Too many entries in mutator lookup (%d, max:%d), raise global.network_config value for mutator_lookup by a factor 2", num_mutators, max_mutators)
-
-local max_statistics_paths = Network.type_info("statistics_path_lookup").max
-local num_statistics_paths = #NetworkLookup.statistics_path_names
-
-fassert(num_statistics_paths <= max_statistics_paths, "Too many entries in statistics_path lookup (%d, max:%d), raise global.network_config value for statistics_path by a factor 2", num_statistics_paths, max_statistics_paths)
+check_bounderies("mutator_lookup", "mutator_templates")
+check_bounderies("statistics_path_lookup", "statistics_path_names")
 
 NetworkConstants.mutator_array = Network.type_info("mutator_array")
+
+check_bounderies("health_status_lookup", "health_statuses")
+check_bounderies("interaction_lookup", "interactions")
+check_bounderies("interaction_state_lookup", "interaction_states")
+check_bounderies("proc_function_lookup", "proc_functions")
 
 return

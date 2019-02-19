@@ -41,7 +41,6 @@ local function set_variable(path_to_movement_setting_to_modify, unit, value)
 	end
 end
 
-local params = {}
 local clearable_params = {}
 local broadphase_results = {}
 
@@ -2665,7 +2664,8 @@ BuffFunctionTemplates.functions = {
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
 			status_extension:set_noclip(false)
-			first_person_extension:play_hud_sound_event("Play_career_ability_bardin_slayer_exit", nil, true)
+			first_person_extension:play_hud_sound_event("Play_career_ability_bardin_slayer_exit")
+			first_person_extension:play_remote_unit_sound_event("Play_career_ability_bardin_slayer_exit", unit, 0)
 			first_person_extension:play_hud_sound_event("Stop_career_ability_bardin_slayer_loop")
 			career_extension:set_state("default")
 
@@ -2687,7 +2687,8 @@ BuffFunctionTemplates.functions = {
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
 			status_extension:set_noclip(false)
-			first_person_extension:play_hud_sound_event("Play_career_ability_victor_zealot_exit", nil, true)
+			first_person_extension:play_hud_sound_event("Play_career_ability_victor_zealot_exit")
+			first_person_extension:play_remote_unit_sound_event("Play_career_ability_victor_zealot_exit", unit, 0)
 			first_person_extension:play_hud_sound_event("Stop_career_ability_victor_zealot_loop")
 			career_extension:set_state("default")
 
@@ -2714,7 +2715,8 @@ BuffFunctionTemplates.functions = {
 			params.next_vo_time = nil
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
-			first_person_extension:play_unit_sound_event("Play_career_ability_bardin_ironbreaker_exit", unit, 0, true)
+			first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ironbreaker_exit")
+			first_person_extension:play_remote_unit_sound_event("Play_career_ability_bardin_ironbreaker_exit", unit, 0)
 		end
 	end,
 	end_ranger_activated_ability = function (unit, buff, params)
@@ -2724,7 +2726,8 @@ BuffFunctionTemplates.functions = {
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
 			status_extension:set_invisible(false)
-			first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ranger_exit", nil, true)
+			first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ranger_exit")
+			first_person_extension:play_remote_unit_sound_event("Play_career_ability_bardin_ranger_exit", unit, 0)
 			first_person_extension:play_hud_sound_event("Stop_career_ability_bardin_ranger_loop")
 			career_extension:set_state("default")
 
@@ -2958,7 +2961,7 @@ BuffFunctionTemplates.functions.update_charging_action_lerp_movement_buff = func
 	local time_into_buff = params.time_into_buff
 	local old_value_to_update_movement_setting, old_multiplier_to_update_movement_setting, multiplier_to_update_movement_setting = nil
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
-	multiplier = multiplier and 1 - buff_extension:apply_buffs_to_value(1 - multiplier, StatBuffIndex.INCREASED_MOVE_SPEED_WHILE_AIMING)
+	multiplier = multiplier and 1 - buff_extension:apply_buffs_to_value(1 - multiplier, "increased_move_speed_while_aiming")
 	local percentage_in_lerp = math.min(1, time_into_buff / buff.template.lerp_time)
 
 	if multiplier then
@@ -2996,6 +2999,16 @@ BuffFunctionTemplates.functions.update_charging_action_lerp_movement_buff = func
 		buff_extension_function_params.multiplier = multiplier_to_update_movement_setting
 
 		BuffFunctionTemplates.functions.apply_movement_buff(unit, buff, buff_extension_function_params)
+	end
+end
+
+for _, dlc in pairs(DLCSettings) do
+	local buff_function_templates = dlc.buff_function_templates
+
+	if buff_function_templates then
+		for name, buff_function in pairs(buff_function_templates) do
+			BuffFunctionTemplates.functions[name] = buff_function
+		end
 	end
 end
 

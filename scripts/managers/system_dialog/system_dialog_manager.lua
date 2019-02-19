@@ -6,6 +6,9 @@ end
 
 SystemDialogManager.init = function (self)
 	self._dialogs = {}
+	self._virtual_keyboards = {}
+	self._virtual_keyboard_results = {}
+	self._virtual_keyboard_index = 0
 end
 
 SystemDialogManager.destroy = function (self)
@@ -73,6 +76,8 @@ SystemDialogManager._handle_dialogs = function (self)
 		local dialog_instance = data.dialog_instance
 		local status = self:_get_status(dialog_instance)
 
+		self:_abort_virtual_keyboard()
+
 		if status == dialog_instance.NONE then
 			self:_initialize(dialog_instance)
 		elseif status == dialog_instance.INITIALIZED then
@@ -95,6 +100,56 @@ SystemDialogManager._handle_dialogs = function (self)
 				table.remove(self._dialogs, 1)
 			end
 		end
+	end
+
+	self:_handle_virtual_keyboards()
+end
+
+SystemDialogManager._handle_virtual_keyboards = function (self)
+	local current_virtual_keyboard = self._virtual_keyboards[1]
+
+	if current_virtual_keyboard then
+		local activated = current_virtual_keyboard.activated
+
+		if activated then
+			if PS4ImeDialog.is_finished() then
+				local result, text = PS4ImeDialog.close()
+				local aborted = current_virtual_keyboard.aborted
+
+				if aborted then
+					current_virtual_keyboard.aborted = nil
+					current_virtual_keyboard.activated = false
+				else
+					local index = current_virtual_keyboard.index
+					local data = self._virtual_keyboard_results[index]
+
+					if data then
+						data.text = (result == PS4ImeDialog.END_STATUS_OK and text) or current_virtual_keyboard.text
+						data.done = true
+						data.success = result == PS4ImeDialog.END_STATUS_OK
+					end
+
+					table.remove(self._virtual_keyboards, 1)
+				end
+			end
+		elseif not Managers.account:user_detached() and not self:has_open_dialogs() then
+			table.dump(current_virtual_keyboard, "Virtual Keyboard", 3)
+			PS4ImeDialog.show(current_virtual_keyboard)
+
+			current_virtual_keyboard.activated = true
+		end
+	end
+end
+
+SystemDialogManager._abort_virtual_keyboard = function (self)
+	local current_virtual_keyboard = self._virtual_keyboards[1]
+
+	if current_virtual_keyboard and current_virtual_keyboard.activated then
+		if PS4ImeDialog.is_showing() then
+			PS4ImeDialog.abort()
+		end
+
+		current_virtual_keyboard.aborted = true
 	end
 end
 
@@ -168,6 +223,41 @@ SystemDialogManager.open_error_dialog = function (self, error_code, callback)
 		open = open,
 		callback = callback
 	}
+end
+
+SystemDialogManager.open_virtual_keyboard = function (self, user_id, optional_title, optional_prefilled_text, optional_position, optional_max_length)
+	fassert(user_id, "[SystemDialogManager] You need to provide a user_id")
+
+	self._virtual_keyboard_index = self._virtual_keyboard_index + 1
+	self._virtual_keyboards[#self._virtual_keyboards + 1] = {
+		activated = false,
+		user_id = user_id,
+		title = optional_title,
+		text = optional_prefilled_text,
+		x = optional_position and optional_position[1],
+		y = optional_position and optional_position[2],
+		max_length = optional_max_length,
+		index = self._virtual_keyboard_index
+	}
+	self._virtual_keyboard_results[self._virtual_keyboard_index] = {
+		success = false,
+		done = false,
+		text = optional_prefilled_text or ""
+	}
+
+	return self._virtual_keyboard_index
+end
+
+SystemDialogManager.poll_virtual_keyboard = function (self, index)
+	local data = self._virtual_keyboard_results[index]
+
+	if data and data.done then
+		self._virtual_keyboard_results[index] = nil
+
+		return data.done, data.success, data.text
+	end
+
+	return false
 end
 
 SystemDialogManager.has_open_dialogs = function (self)

@@ -171,4 +171,10 @@ BackendUtils.has_loot_chest = function ()
 	return has_chest
 end
 
+BackendUtils.commit_load_time_data = function (load_time_data)
+	local common = Managers.backend:get_interface("common")
+
+	common:commit_load_time_data(load_time_data)
+end
+
 return

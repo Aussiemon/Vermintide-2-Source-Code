@@ -267,6 +267,7 @@ if InputUtils.keymaps_key_approved("win32") then
 			"t",
 			"released"
 		},
+		angular_velocity = {},
 		social_wheel_only = {
 			"keyboard",
 			UNASSIGNED_KEY,
@@ -580,6 +581,7 @@ PlayerControllerKeymaps.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 		"right_shoulder",
 		"released"
 	},
+	angular_velocity = {},
 	social_wheel_only = {},
 	social_wheel_only_hold = {},
 	social_wheel_only_release = {},
@@ -669,6 +671,11 @@ PlayerControllerKeymaps.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 		"gamepad",
 		"l3",
 		"released"
+	},
+	reset_view = {
+		"gamepad",
+		"l3",
+		"pressed"
 	},
 	active_ability_left_pressed = {
 		"gamepad",
@@ -836,6 +843,11 @@ PlayerControllerKeymaps.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 		"gamepad",
 		"r1",
 		"released"
+	},
+	angular_velocity = {
+		"gamepad",
+		"angular_velocity",
+		"axis"
 	},
 	social_wheel_only = {},
 	social_wheel_only_hold = {},
@@ -2232,8 +2244,8 @@ FreeFlightKeymaps = {
 			"pressed"
 		},
 		frustum_freeze_toggle = {
-			"keyboard",
-			"left shift",
+			"gamepad",
+			"square",
 			"pressed"
 		},
 		set_drop_position = {
@@ -2321,6 +2333,11 @@ FreeFlightKeymaps = {
 			"left",
 			"pressed"
 		},
+		left_shoulder = {
+			"gamepad",
+			"l1",
+			"pressed"
+		},
 		left_shoulder_held = {
 			"gamepad",
 			"l1",
@@ -2331,15 +2348,100 @@ FreeFlightKeymaps = {
 			"r1",
 			"pressed"
 		},
+		right_shoulder_held = {
+			"gamepad",
+			"r1",
+			"held"
+		},
+		left_trigger = {
+			"gamepad",
+			"l2",
+			"pressed"
+		},
+		left_trigger_held = {
+			"gamepad",
+			"l2",
+			"held"
+		},
+		right_trigger = {
+			"gamepad",
+			"r2",
+			"pressed"
+		},
+		right_trigger_held = {
+			"gamepad",
+			"r2",
+			"held"
+		},
+		right_thumb = {
+			"gamepad",
+			"r3",
+			"pressed"
+		},
 		right_thumb_held = {
 			"gamepad",
 			"r3",
 			"held"
 		},
+		left_thumb = {
+			"gamepad",
+			"l3",
+			"pressed"
+		},
 		left_thumb_held = {
 			"gamepad",
 			"l3",
 			"held"
+		},
+		gamepad_cross_pressed = {
+			"gamepad",
+			"cross",
+			"pressed"
+		},
+		gamepad_cross_held = {
+			"gamepad",
+			"cross",
+			"held"
+		},
+		gamepad_square_pressed = {
+			"gamepad",
+			"square",
+			"pressed"
+		},
+		gamepad_square_held = {
+			"gamepad",
+			"square",
+			"held"
+		},
+		gamepad_triangle_pressed = {
+			"gamepad",
+			"triangle",
+			"pressed"
+		},
+		gamepad_triangle_held = {
+			"gamepad",
+			"triangle",
+			"held"
+		},
+		gamepad_circle_pressed = {
+			"gamepad",
+			"circle",
+			"pressed"
+		},
+		gamepad_circle_held = {
+			"gamepad",
+			"circle",
+			"held"
+		},
+		gamepad_left_stick = {
+			"gamepad",
+			"left",
+			"axis"
+		},
+		gamepad_right_stick = {
+			"gamepad",
+			"right",
+			"axis"
 		},
 		look_raw_controller = {
 			"gamepad",
@@ -2382,28 +2484,18 @@ FreeFlightKeymaps = {
 			"held"
 		},
 		toggle_dof = {
-			"keyboard",
-			"f",
+			"gamepad",
+			"right_shoulder",
 			"pressed"
 		},
 		inc_dof_distance = {
-			"keyboard",
-			"g",
+			"gamepad",
+			"right_trigger",
 			"held"
 		},
 		dec_dof_distance = {
-			"keyboard",
-			"b",
-			"held"
-		},
-		inc_dof_region = {
-			"keyboard",
-			"h",
-			"held"
-		},
-		dec_dof_region = {
-			"keyboard",
-			"n",
+			"gamepad",
+			"left_trigger",
 			"held"
 		},
 		k = {
@@ -2600,14 +2692,62 @@ FreeFlightFilters = {
 				button_2 = "toggle_dof"
 			}
 		},
+		inc_dof_region = {
+			filter_type = "and",
+			input_mappings = {
+				button_1 = "right_trigger_held",
+				button_2 = "gamepad_triangle_held"
+			}
+		},
+		dec_dof_region = {
+			filter_type = "and",
+			input_mappings = {
+				button_1 = "left_trigger_held",
+				button_2 = "gamepad_triangle_held"
+			}
+		},
+		inc_dof_padding = {
+			filter_type = "and",
+			input_mappings = {
+				button_1 = "right_trigger_held",
+				button_2 = "gamepad_circle_held"
+			}
+		},
+		dec_dof_padding = {
+			filter_type = "and",
+			input_mappings = {
+				button_1 = "left_trigger_held",
+				button_2 = "gamepad_circle_held"
+			}
+		},
+		inc_dof_scale = {
+			filter_type = "and",
+			input_mappings = {
+				button_1 = "right_trigger_held",
+				button_2 = "gamepad_square_held"
+			}
+		},
+		dec_dof_scale = {
+			filter_type = "and",
+			input_mappings = {
+				button_1 = "left_trigger_held",
+				button_2 = "gamepad_square_held"
+			}
+		},
 		free_flight_toggle = {
 			filter_type = "and",
-			name = "free_flight_toggle",
 			input_mappings = {
 				button_2 = "left_thumb_held",
 				button_3 = "left_shoulder_held",
 				button_1 = "right_thumb_held",
 				button_4 = "right_shoulder"
+			}
+		},
+		global_free_flight_toggle = {
+			filter_type = "and",
+			input_mappings = {
+				button_1 = "left_thumb_held",
+				button_2 = "gamepad_cross_pressed"
 			}
 		}
 	}
@@ -3556,6 +3696,11 @@ IngamePlayerListKeymaps = {
 			"keyboard",
 			"enter",
 			"pressed"
+		},
+		menu_scroll = {
+			"mouse",
+			"wheel",
+			"axis"
 		},
 		move_up = {},
 		move_down = {},
@@ -5395,6 +5540,26 @@ GamepadSettings = {
 	menu_min_speed_multiplier = 0.5,
 	quest_menu_navigation_cooldown = 0.15
 }
+
+for name, dlc in pairs(DLCSettings) do
+	local controller_settings = dlc.controller_settings
+
+	if controller_settings then
+		for input_table_name, input_tables in pairs(controller_settings) do
+			local input_table = rawget(_G, input_table_name)
+
+			fassert(input_table, "controller_settings.lua - Could not find input table for: (%s)", input_table_name)
+
+			for table_key, inputs in pairs(input_tables) do
+				if InputUtils.keymaps_key_approved(table_key) then
+					for action_name, input_settings in pairs(inputs) do
+						input_table[table_key][action_name] = input_settings
+					end
+				end
+			end
+		end
+	end
+end
 
 require("scripts/helpers/gamepad_alternate_layout_helper")
 

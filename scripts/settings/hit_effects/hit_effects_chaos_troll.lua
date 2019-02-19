@@ -166,6 +166,6 @@ HitEffectsChaosTroll = {
 		}
 	}
 }
-HitEffectsRatOgre = table.create_copy(HitEffectsRatOgre, HitEffectsRatOgre)
+HitEffectsChaosTroll = table.create_copy(HitEffectsChaosTroll, HitEffectsChaosTroll)
 
 return

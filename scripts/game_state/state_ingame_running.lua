@@ -214,6 +214,8 @@ StateInGameRunning.on_enter = function (self, params)
 		Managers.state.achievement:setup_achievement_data()
 	end
 
+	Managers.state.achievement:setup_incompleted_achievements()
+
 	self._waiting_for_peers_message_timer = Managers.time:time("game") + 10
 	self._game_started_current_frame = false
 end
@@ -224,16 +226,9 @@ StateInGameRunning.create_ingame_ui = function (self, ingame_ui_context)
 	end
 
 	self.ingame_ui = IngameUI:new(ingame_ui_context)
-
-	Managers.state.entity:system("tutorial_system"):set_ingame_ui(self.ingame_ui)
-
-	Managers.state.entity:system("mission_system").tutorial_ui = self.ingame_ui.ingame_hud.tutorial_ui
-	Managers.state.entity:system("mission_system").mission_objective_ui = self.ingame_ui.ingame_hud.mission_objective
-	Managers.state.entity:system("interactor_system").extension_init_context.ingame_ui = self.ingame_ui
-
-	Managers.state.entity:system("hud_system"):set_ingame_ui(self.ingame_ui)
-
 	local matchmaking = Managers.matchmaking
+
+	matchmaking:set_ingame_ui(self.ingame_ui)
 
 	if not matchmaking.popup_handler then
 		matchmaking:set_popup_join_lobby_handler(self.ingame_ui.popup_join_lobby_handler)
@@ -271,7 +266,8 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 		level_end_view_context.mission_system_data = {
 			tome_mission_data = mission_system:get_level_end_mission_data("tome_bonus_mission"),
 			grimoire_mission_data = mission_system:get_level_end_mission_data("grimoire_hidden_mission"),
-			loot_dice_mission_data = mission_system:get_level_end_mission_data("bonus_dice_hidden_mission")
+			loot_dice_mission_data = mission_system:get_level_end_mission_data("bonus_dice_hidden_mission"),
+			painting_scraps_mission_data = mission_system:get_level_end_mission_data("painting_scrap_hidden_mission")
 		}
 		self.parent.parent.loading_context.level_end_view_context = level_end_view_context
 
@@ -763,7 +759,7 @@ StateInGameRunning.update_ui = function (self)
 	local time_manager = Managers.time
 	local t = Application.time_since_launch()
 	local dt = Application.time_since_launch() - (self._t or t)
-	local disable_ingame_ui = script_data.disable_ui or (self.waiting_for_transition and Managers.state.network:game_session_host() ~= nil)
+	local disable_ingame_ui = script_data.disable_ui or DebugScreen.active or (self.waiting_for_transition and Managers.state.network:game_session_host() ~= nil)
 	local ingame_ui = self.ingame_ui
 	local level_end_view_wrapper = self._level_end_view_wrapper
 	local level_end_view = level_end_view_wrapper and level_end_view_wrapper:level_end_view()
@@ -1115,6 +1111,17 @@ StateInGameRunning._game_actually_starts = function (self)
 		Managers.transition:show_waiting_for_peers_message(false)
 
 		self._waiting_for_peers_message_timer = nil
+
+		Managers.load_time:end_timer()
+
+		if Managers.twitch then
+			local level_key = self.level_transition_handler:get_current_level_keys()
+			local level_settings = LevelSettings[level_key]
+
+			if level_settings and not level_settings.disable_twitch_game_mode then
+				Managers.twitch:activate_twitch_game_mode(self.network_event_delegate, Managers.state.game_mode:game_mode_key())
+			end
+		end
 	end
 end
 

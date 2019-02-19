@@ -842,6 +842,82 @@ local action_data = {
 			true
 		}
 	},
+	special_attack_retaliation_aoe = {
+		offset_forward = -4,
+		height = 4,
+		radius = 4.5,
+		collision_type = "cylinder",
+		rotation_time = 0,
+		fatigue_type = "blocked_slam",
+		shove_z_speed = 7,
+		bot_threat_duration = 0.75,
+		damage_type = "cutting",
+		offset_up = -0.5,
+		attack_anim = "attack_pushback_swing",
+		offset_right = 0,
+		player_push_speed = 20,
+		action_weight = 4,
+		shove_speed = 10,
+		player_push_speed_blocked = 15,
+		ignore_abort_on_blocked_attack = true,
+		damage = {
+			20,
+			10,
+			5
+		},
+		difficulty_damage = {
+			easy = {
+				15,
+				10,
+				5
+			},
+			normal = {
+				10,
+				5,
+				2
+			},
+			hard = {
+				15,
+				10,
+				5
+			},
+			survival_hard = {
+				25,
+				15,
+				10
+			},
+			harder = {
+				25,
+				20,
+				10
+			},
+			survival_harder = {
+				30,
+				20,
+				10
+			},
+			hardest = {
+				30,
+				25,
+				20
+			},
+			survival_hardest = {
+				75,
+				45,
+				30
+			}
+		},
+		ignore_staggers = {
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true
+		}
+	},
 	special_attack_launch = {
 		offset_up = 0,
 		offset_forward = 0,
@@ -1179,8 +1255,6 @@ local action_data = {
 							statistics_db:increment_stat_and_sync_to_clients(stat_name)
 
 							blackboard.hit_warrior_challenge_completed = true
-
-							QuestSettings.send_completed_message(stat_name)
 						end
 					end
 				end
@@ -1256,6 +1330,30 @@ local action_data = {
 		}
 	},
 	stagger = {
+		custom_enter_function = function (unit, blackboard, t, action)
+			local stagger_anims = blackboard.action.stagger_anims[blackboard.stagger_type]
+
+			if blackboard.stagger_type == 6 then
+				if blackboard.chain_stagger_resistant_t and blackboard.chain_stagger_resistant_t < t then
+					blackboard.chain_stagger_resistant_t = nil
+					blackboard.num_chain_stagger = nil
+				end
+
+				local num_chain_stagger = blackboard.num_chain_stagger or 0
+				blackboard.num_chain_stagger = num_chain_stagger + 1
+
+				if not blackboard.chain_stagger_resistant_t and blackboard.num_chain_stagger > 1 and blackboard.stagger_type == 6 then
+					blackboard.chain_stagger_resistant_t = t + 8
+				end
+
+				if blackboard.chain_stagger_resistant_t and t < blackboard.chain_stagger_resistant_t then
+					stagger_anims = blackboard.action.stagger_anims[3]
+					blackboard.stagger_time = t + 2
+				end
+			end
+
+			return stagger_anims, "idle"
+		end,
 		stagger_anims = {
 			{
 				fwd = {

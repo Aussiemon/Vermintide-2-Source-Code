@@ -79,10 +79,7 @@ BuffSystem.hot_join_sync = function (self, sender)
 	end
 end
 
-BuffSystem.on_remove_extension = function (self, unit, extension_name)
-	self.frozen_unit_extension_data[unit] = nil
-	self.unit_extension_data[unit] = nil
-	self.active_buff_units[unit] = nil
+BuffSystem._clean_up_server_controller_buffs = function (self, unit)
 	local unit_data = self.server_controlled_buffs[unit]
 
 	if unit_data then
@@ -96,7 +93,14 @@ BuffSystem.on_remove_extension = function (self, unit, extension_name)
 
 		self.server_controlled_buffs[unit] = nil
 	end
+end
 
+BuffSystem.on_remove_extension = function (self, unit, extension_name)
+	self.frozen_unit_extension_data[unit] = nil
+	self.unit_extension_data[unit] = nil
+	self.active_buff_units[unit] = nil
+
+	self:_clean_up_server_controller_buffs(unit)
 	BuffSystem.super.on_remove_extension(self, unit, extension_name)
 end
 
@@ -119,6 +123,7 @@ BuffSystem.freeze = function (self, unit, extension_name, reason)
 	frozen_extensions[unit] = extension
 
 	extension:freeze()
+	self:_clean_up_server_controller_buffs(unit)
 	fassert(self.active_buff_units[unit] == nil, "Unit had active buffs after freeze!")
 end
 
@@ -139,7 +144,7 @@ BuffSystem.update = function (self, context, t)
 		local active_buff_units = self.active_buff_units
 		self.in_update = true
 
-		for unit, extension in pairs(active_buff_units) do
+		for unit, _ in pairs(active_buff_units) do
 			local extension = active_buff_units[unit]
 
 			assert(#extension._buffs > 0, "Unit was active but didn't have buffs")
@@ -148,7 +153,6 @@ BuffSystem.update = function (self, context, t)
 
 		self.in_update = false
 	else
-		Debug.text("Unoptimized buff update")
 		BuffSystem.super.update(self, context, t)
 	end
 end
@@ -166,9 +170,9 @@ BuffSystem.destroy = function (self)
 end
 
 BuffSystem._next_free_server_buff_id = function (self)
-	local free_buff_id = nil
 	local free_buff_ids = self.free_server_buff_ids
 	local free_buff_ids_size = #free_buff_ids
+	local free_buff_id = nil
 
 	if free_buff_ids_size > 0 then
 		free_buff_id = free_buff_ids[free_buff_ids_size]
@@ -323,40 +327,6 @@ BuffSystem.remove_volume_buff = function (self, unit, buff_template_name)
 	self.volume_buffs[unit][buff_template_name] = nil
 end
 
-BuffSystem._update_debug = function (self, t)
-	if self.is_server and script_data.debug_server_controlled_buffs then
-		local num_free_buffs = #self.free_server_buff_ids
-		local next_server_buff_id = self.next_server_buff_id
-
-		Debug.text("NUM SERVER CONTROLLED BUFFS: %d", next_server_buff_id - num_free_buffs - 1)
-	end
-
-	if script_data.debug_legendary_traits then
-		local human_players = Managers.player:human_players()
-		local offset_vector = Vector3(0, 0, 0.5)
-		local color = Vector3(0, 0, 255)
-		local viewport_name = "player_1"
-
-		if Managers.state.camera:has_viewport("player_1") then
-			for _, player in pairs(human_players) do
-				local unit = player.player_unit
-				local health_extension = ScriptUnit.has_extension(unit, "health_system")
-				local has_shield = health_extension and health_extension:has_assist_shield()
-
-				if has_shield then
-					local head_node = Unit.node(unit, "c_head")
-					local text = string.format("has shield")
-
-					Managers.state.debug_text:clear_unit_text(unit, "has_shield")
-					Managers.state.debug_text:output_unit_text(text, 0.3, unit, head_node, offset_vector, nil, "has_shield", color, viewport_name)
-				else
-					Managers.state.debug_text:clear_unit_text(unit, "has_shield")
-				end
-			end
-		end
-	end
-end
-
 BuffSystem.rpc_add_buff = function (self, sender, unit_id, buff_template_name_id, attacker_unit_id, server_buff_id, send_to_sender)
 	if self.is_server then
 		if send_to_sender then
@@ -442,11 +412,11 @@ BuffSystem.rpc_remove_group_buff = function (self, sender, group_buff_template_i
 		local num_group_buffs = #group_buffs
 		local group_buff_data, index_to_remove = nil
 
-		for i = 1, num_group_buffs, 1 do
-			group_buff_data = group_buffs[i]
+		for j = 1, num_group_buffs, 1 do
+			group_buff_data = group_buffs[j]
 
 			if group_buff_data.group_buff_template_name == group_buff_template_name then
-				index_to_remove = i
+				index_to_remove = j
 
 				break
 			end

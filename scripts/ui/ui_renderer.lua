@@ -103,7 +103,6 @@ UIRenderer.script_draw_bitmap = function (gui, render_settings, material, gui_po
 end
 
 UIRenderer.script_draw_bitmap_uv = function (gui, render_settings, material, uvs, gui_position, gui_size, color, masked, saturated, retained_id)
-	local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(material)
 	local snap_pixel_positions = render_settings and render_settings.snap_pixel_positions
 
 	if snap_pixel_positions == nil then
@@ -116,6 +115,11 @@ UIRenderer.script_draw_bitmap_uv = function (gui, render_settings, material, uvs
 
 	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
 	color = color and Color(color[1] * alpha_multiplier, color[2], color[3], color[4])
+	local texture_settings = nil
+
+	if UIAtlasHelper.has_atlas_settings_by_texture_name(material) then
+		texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(material)
+	end
 
 	if texture_settings then
 		local new_uvs = get_relative_uvs(texture_settings.uv00, texture_settings.uv11, uvs)
@@ -961,9 +965,11 @@ UIRenderer.draw_multi_texture = function (self, materials, lower_left_corner, te
 
 		if spacing then
 			if direction == 2 then
-				position[axis] = position[axis] - spacing[axis]
+				position[1] = position[1] - spacing[1]
+				position[2] = position[2] - spacing[2]
 			else
-				position[axis] = position[axis] + spacing[axis]
+				position[1] = position[1] + spacing[1]
+				position[2] = position[2] + spacing[2]
 			end
 		end
 	end
@@ -1326,9 +1332,11 @@ UIRenderer.draw_circle = function (self, position, radius, size, color)
 end
 
 UIRenderer.draw_rounded_rect = function (self, position, size, radius, color)
+	local scale = RESOLUTION_LOOKUP.scale
 	local Gui_triangle = Gui.triangle
 	position = UIScaleVectorToResolution(position)
 	size = UIScaleVectorToResolution(size)
+	radius = radius * scale
 	local n = CIRCLE_VERTS / 4
 	local x = position[1]
 	local y = position[2]
@@ -1465,10 +1473,53 @@ UIRenderer.crop_text_width = function (self, text, max_width, style)
 	return text
 end
 
+UIRenderer.scaled_font_size_by_area = function (self, text, area_size, style)
+	local area_width = area_size[1]
+	local area_height = area_size[2]
+	local min_font_size = 1
+	local current_font_size = style.font_size
+	local new_font_size = current_font_size
+
+	local function get_text_height(ui_renderer, style, width, text)
+		local font, scaled_font_size = UIFontByResolution(style, RESOLUTION_LOOKUP.inv_scale)
+		local font_material = font[1]
+		local _ = font[2]
+		local font_name = font[3]
+		local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_name, scaled_font_size)
+		local whitespace = " \u3002\uff0c"
+		local soft_dividers = "-+&/*"
+		local return_dividers = "\n"
+		local reuse_global_table = true
+		local texts = Gui.word_wrap(ui_renderer.gui, text, font_material, scaled_font_size, width, whitespace, soft_dividers, return_dividers, reuse_global_table)
+		local num_texts = #texts
+		local full_font_height = font_max + math.abs(font_min)
+		local total_height = full_font_height * num_texts
+
+		return total_height
+	end
+
+	local text_height = math.floor(get_text_height(self, style, area_width, text))
+
+	if area_height < text_height then
+		repeat
+			if style.font_size <= min_font_size then
+				break
+			end
+
+			style.font_size = math.max(style.font_size - 0.5, min_font_size)
+			text_height = math.floor(get_text_height(self, style, area_width, text))
+		until text_height <= area_height
+	end
+
+	new_font_size = style.font_size
+	style.font_size = current_font_size
+
+	return new_font_size
+end
+
 UIRenderer.scaled_font_size_by_width = function (self, text, max_width, style)
 	local font, scaled_font_size = UIFontByResolution(style)
 	local text_width = UIRenderer.text_size(self, text, font[1], scaled_font_size)
-	local crop_suffix_width = UIRenderer.text_size(self, crop_suffix, font[1], scaled_font_size)
 	local min_font_size = 1
 	local current_font_size = style.font_size
 	local new_font_size = current_font_size
@@ -1538,7 +1589,7 @@ UIRenderer.draw_texture_frame = function (self, position, size, texture_id, text
 	local corner_size = corner
 	local corner_size_x = corner_size[1]
 	local corner_size_y = corner_size[2]
-	local corner_size_vec = Vector2(unpack(corner_size))
+	local corner_size_vec = Vector2(corner_size_x, corner_size_y)
 	local x_pos = position.x
 	local y_pos = position.y
 	local texture_size_x = texture_size[1]

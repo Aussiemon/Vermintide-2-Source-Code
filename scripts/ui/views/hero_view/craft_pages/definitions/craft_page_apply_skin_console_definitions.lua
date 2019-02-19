@@ -38,7 +38,7 @@ local scenegraph_definition = {
 		position = {
 			-63,
 			0,
-			-1
+			0
 		}
 	},
 	item_grid_2 = {
@@ -52,7 +52,7 @@ local scenegraph_definition = {
 		position = {
 			61,
 			0,
-			-1
+			0
 		}
 	},
 	item_grid_icon = {

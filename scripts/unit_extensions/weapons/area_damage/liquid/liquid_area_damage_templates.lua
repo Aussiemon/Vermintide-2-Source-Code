@@ -298,8 +298,6 @@ LiquidAreaDamageTemplates = {
 
 								completed_challenge = true
 
-								QuestSettings.send_completed_message(stat_name)
-
 								break
 							end
 						end

@@ -34,9 +34,7 @@ BTPackMasterFollowAction.leave = function (self, unit, blackboard, t, reason, de
 	blackboard.anim_cb_move = nil
 	blackboard.start_anim_done = nil
 
-	if reason == "aborted" then
-		blackboard.move_state = nil
-	elseif reason == "failed" then
+	if reason == "failed" then
 		blackboard.target_unit = nil
 	end
 end

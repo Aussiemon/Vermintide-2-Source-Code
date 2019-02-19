@@ -1,27 +1,3 @@
-left_right_damage_types = {
-	"light_stab_linesman",
-	"light_stab_tank",
-	"stab_linesman",
-	"stab_tank",
-	"heavy_stab_linesman",
-	"heavy_stab_tank",
-	"light_slashing_linesman",
-	"slashing_linesman",
-	"heavy_slashing_linesman"
-}
-wounding_damage_types = {
-	"light_stab_fencer",
-	"light_stab_smiter",
-	"stab_fencer",
-	"stab_smiter",
-	"heavy_stab_smiter",
-	"light_slashing_fencer",
-	"light_slashing_smiter",
-	"slashing_fencer",
-	"slashing_smiter",
-	"heavy_slashing_fencer",
-	"heavy_slashing_smiter"
-}
 HitEffectsPoisonWind = {
 	default = {
 		husk_hit_effect_name = "fx/impact_blood",
@@ -507,23 +483,6 @@ HitEffectsPoisonWind = {
 			lateral_force = 0
 		}
 	},
-	heavy_slashing_tank_death = {
-		inherits = "default_death",
-		extra_conditions = {
-			death = true,
-			damage_type = {
-				"heavy_slashing_tank"
-			}
-		},
-		animations = {
-			"ragdoll"
-		},
-		push = {
-			distal_force = 50,
-			vertical_force = 10,
-			lateral_force = 0
-		}
-	},
 	light_blunt_tank_death = {
 		inherits = "default_death",
 		do_dismember = false,
@@ -796,12 +755,6 @@ HitEffectsPoisonWind = {
 		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burn_sniper"
-		}
-	},
-	burn_shotgun = {
-		flow_event = "burn",
-		extra_conditions = {
-			damage_type = "burn_shotgun"
 		}
 	},
 	burn_shotgun = {
@@ -1080,5 +1033,6 @@ HitEffectsPoisonWind = {
 		}
 	}
 }
+HitEffectsPoisonWind = table.create_copy(HitEffectsPoisonWind, HitEffectsPoisonWind)
 
 return

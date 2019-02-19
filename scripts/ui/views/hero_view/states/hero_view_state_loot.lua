@@ -369,9 +369,9 @@ HeroViewStateLoot.populate_items = function (self)
 	local placeholder_items = {}
 
 	item_grid:disable_locked_items(true)
-	item_grid:disable_item_drag()
 	item_grid:apply_item_sorting_function(sort_func)
 	item_grid:change_category("loot")
+	item_grid:disable_item_drag()
 
 	if self._current_page then
 		local current_page, total_pages = item_grid:get_page_info()
@@ -934,12 +934,6 @@ HeroViewStateLoot.draw = function (self, dt)
 			local preview_widget = data.preview_widget
 
 			if present_reward_options then
-				if gamepad_active and input_service:get("special_1_hold") then
-					for _, tooltip_widget in pairs(self._gamepad_tooltip_widgets) do
-						UIRenderer.draw_widget(ui_top_renderer, tooltip_widget)
-					end
-				end
-
 				local widget = data.widget
 
 				UIRenderer.draw_widget(ui_top_renderer, widget)
@@ -961,10 +955,18 @@ HeroViewStateLoot.draw = function (self, dt)
 			end
 		end
 
-		if present_reward_options and self._rewards_presented then
-			render_settings.alpha_multiplier = self._continue_button_alpha_multiplier or 1
+		if present_reward_options then
+			if gamepad_active and input_service:get("special_1_hold") then
+				for _, tooltip_widget in pairs(self._gamepad_tooltip_widgets) do
+					UIRenderer.draw_widget(ui_top_renderer, tooltip_widget)
+				end
+			end
 
-			UIRenderer.draw_widget(ui_top_renderer, self._continue_button_widget)
+			if self._rewards_presented then
+				render_settings.alpha_multiplier = self._continue_button_alpha_multiplier or 1
+
+				UIRenderer.draw_widget(ui_top_renderer, self._continue_button_widget)
+			end
 		end
 
 		UIRenderer.end_pass(ui_top_renderer)
@@ -1339,7 +1341,9 @@ HeroViewStateLoot._handle_input = function (self, dt, t)
 		local open_button_pressed = gamepad_active and self._open_chests_enabled and input_service:get("confirm_press")
 
 		if (self:_is_button_pressed(open_button) or open_button_pressed) and self._selected_item then
-			self:_open_chest(self._selected_item)
+			if self:_can_open_chests() then
+				self:_open_chest(self._selected_item)
+			end
 		elseif self:_is_button_pressed(close_button) or input_service:get("toggle_menu") or back_button_pressed then
 			parent:close_menu()
 			self:play_sound("Play_hud_select")
@@ -1371,7 +1375,7 @@ HeroViewStateLoot._handle_input = function (self, dt, t)
 				local start_experience = hero_attributes:get("wood_elf", "experience")
 				local loot_profile_name = "default"
 
-				backend_loot:generate_end_of_level_loot(true, true, "hardest", "ussingen", math.random(0, 3), math.random(0, 2), math.random(0, 2), "wood_elf", start_experience, start_experience + 100, loot_profile_name, nil, nil)
+				backend_loot:generate_end_of_level_loot(true, true, "hardest", "ussingen", math.random(0, 3), math.random(0, 2), math.random(0, 2), math.random(0, 2), "wood_elf", start_experience, start_experience + 100, loot_profile_name, nil, nil)
 			end
 
 			if self:_is_button_pressed(debug_widgets_by_name.debug_add_chest_2) then

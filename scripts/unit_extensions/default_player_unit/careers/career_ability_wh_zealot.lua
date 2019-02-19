@@ -175,16 +175,17 @@ CareerAbilityWHZealot._run_ability = function (self)
 	if local_player or (is_server and self._bot_player) then
 		local first_person_extension = self._first_person_extension
 
-		first_person_extension:play_hud_sound_event("Play_career_ability_victor_zealot_enter", nil, true)
+		first_person_extension:play_hud_sound_event("Play_career_ability_victor_zealot_enter")
+		first_person_extension:play_remote_unit_sound_event("Play_career_ability_victor_zealot_enter", owner_unit, 0)
 		first_person_extension:play_hud_sound_event("Play_career_ability_victor_zealot_loop")
 
 		if local_player then
 			first_person_extension:animation_event("shade_stealth_ability")
+			first_person_extension:play_hud_sound_event("Play_career_ability_zealot_charge")
+			first_person_extension:play_remote_unit_sound_event("Play_career_ability_zealot_charge", owner_unit, 0)
+			career_extension:set_state("victor_activate_zealot")
 
 			MOOD_BLACKBOARD.skill_zealot = true
-
-			career_extension:set_state("victor_activate_zealot")
-			WwiseUtils.trigger_unit_event(self._world, "Play_career_ability_zealot_charge", owner_unit, 0)
 		end
 	end
 

@@ -113,7 +113,7 @@ end
 PlayerBotUnitFirstPerson.update_rotation = function (self, t, dt)
 	if self.look_delta ~= nil then
 		local rotation = self.look_rotation:unbox()
-		local look_delta = self.look_delta
+		local look_delta = self.look_delta:unbox()
 		self.look_delta = nil
 		local yaw = Quaternion.yaw(rotation) - look_delta.x
 		local pitch = math.clamp(Quaternion.pitch(rotation) + look_delta.y, -self.MAX_MIN_PITCH, self.MAX_MIN_PITCH)
@@ -150,7 +150,7 @@ PlayerBotUnitFirstPerson.get_first_person_mesh_unit = function (self)
 end
 
 PlayerBotUnitFirstPerson.set_look_delta = function (self, look_delta)
-	self.look_delta = look_delta
+	self.look_delta = Vector3Box(look_delta)
 end
 
 PlayerBotUnitFirstPerson.play_animation_event = function (self, anim_event)
@@ -276,6 +276,10 @@ PlayerBotUnitFirstPerson.destroy_screen_particles = function (self, ...)
 end
 
 PlayerBotUnitFirstPerson.play_hud_sound_event = function (self, event, wwise_source_id, play_on_husk)
+	self:play_remote_hud_sound_event(event, wwise_source_id, play_on_husk)
+end
+
+PlayerBotUnitFirstPerson.play_remote_hud_sound_event = function (self, event, wwise_source_id, play_on_husk)
 	if play_on_husk and not LEVEL_EDITOR_TEST then
 		self:play_sound_event(event)
 
@@ -297,10 +301,32 @@ PlayerBotUnitFirstPerson.play_sound_event = function (self, event, position)
 end
 
 PlayerBotUnitFirstPerson.play_unit_sound_event = function (self, event, unit, node_id, play_on_husk)
+	if play_on_husk then
+		local event_id = NetworkLookup.sound_events[event]
+		local network_manager = Managers.state.network
+		local game = network_manager:game()
+
+		if game and not LEVEL_EDITOR_TEST then
+			local network_transmit = network_manager.network_transmit
+			local is_server = Managers.player.is_server
+			local unit_id = network_manager:unit_game_object_id(unit)
+
+			if is_server then
+				network_transmit:send_rpc_clients("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
+			else
+				network_transmit:send_rpc_server("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
+			end
+		end
+	end
+
 	local wwise_source_id, wwise_world = WwiseUtils.make_unit_auto_source(self.world, unit, node_id)
 
 	WwiseWorld.set_switch(wwise_world, "husk", "true", wwise_source_id)
 	WwiseWorld.trigger_event(wwise_world, event, wwise_source_id)
+end
+
+PlayerBotUnitFirstPerson.play_remote_unit_sound_event = function (self, event, unit, node_id)
+	self:play_unit_sound_event(event, unit, node_id, true)
 end
 
 PlayerBotUnitFirstPerson.play_camera_effect_sequence = function (self, event, t)

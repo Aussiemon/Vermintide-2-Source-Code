@@ -106,6 +106,7 @@ AIInventoryExtension.init = function (self, unit, extension_init_data)
 	self.gib_items = {}
 	self.stump_items = {}
 	self.gibbed_nodes = {}
+	self.disabled_actors = {}
 	local inventory_configuration_name = extension_init_data.inventory_configuration_name
 
 	if extension_init_data.is_server and not inventory_configuration_name then
@@ -166,9 +167,13 @@ AIInventoryExtension.destroy = function (self)
 		unit_spawner:mark_for_deletion(self.gib_items[i])
 	end
 
+	self.gib_items = {}
+
 	for i = 1, #self.stump_items, 1 do
 		unit_spawner:mark_for_deletion(self.stump_items[i])
 	end
+
+	self.stump_items = {}
 end
 
 AIInventoryExtension.destroy_dropped_items = function (self, inventory_item_index)
@@ -195,17 +200,7 @@ AIInventoryExtension.freeze = function (self)
 	local world = self.world
 	local inventory_items_n = self.inventory_items_n
 	local inventory_item_units = self.inventory_item_units
-	local gibbed_nodes = self.gibbed_nodes
 	local unit = self.unit
-	local one_scale = Vector3(1, 1, 1)
-
-	for i = 1, #gibbed_nodes, 1 do
-		local node_index = gibbed_nodes[i]
-
-		Unit.set_local_scale(unit, node_index, one_scale)
-
-		gibbed_nodes[i] = nil
-	end
 
 	for i = 1, inventory_items_n, 1 do
 		local item_unit = inventory_item_units[i]
@@ -215,20 +210,35 @@ AIInventoryExtension.freeze = function (self)
 	end
 
 	self.inventory_items_n = 0
-	local gib_items = self.gib_items
-	local stump_items = self.stump_items
+	local one_scale = Vector3(1, 1, 1)
 
-	for i = 1, #gib_items, 1 do
+	for i = 1, #self.gibbed_nodes, 1 do
+		Unit.set_local_scale(unit, self.gibbed_nodes[i], one_scale)
+	end
+
+	self.gibbed_nodes = {}
+
+	for i = 1, #self.disabled_actors, 1 do
+		local unit_actor = Unit.actor(unit, self.disabled_actors[i])
+
+		if unit_actor then
+			Actor.set_collision_filter(unit_actor, "filter_enemy_hit_box")
+		end
+	end
+
+	self.disabled_actors = {}
+
+	for i = 1, #self.gib_items, 1 do
 		unit_spawner:mark_for_deletion(self.gib_items[i])
-
-		gib_items[i] = nil
 	end
 
-	for i = 1, #stump_items, 1 do
+	self.gib_items = {}
+
+	for i = 1, #self.stump_items, 1 do
 		unit_spawner:mark_for_deletion(self.stump_items[i])
-
-		stump_items[i] = nil
 	end
+
+	self.stump_items = {}
 end
 
 AIInventoryExtension.unfreeze = function (self)

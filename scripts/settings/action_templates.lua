@@ -23,6 +23,54 @@ ActionTemplates.wield = {
 		allowed_chain_actions = {}
 	}
 }
+ActionTemplates.reload = {
+	default = {
+		weapon_action_hand = "either",
+		kind = "reload",
+		total_time = 0,
+		condition_func = function (action_user, input_extension)
+			local inventory_extension = ScriptUnit.extension(action_user, "inventory_system")
+			local status_extension = ScriptUnit.extension(action_user, "status_system")
+			local ammo_extension = nil
+			local zooming = status_extension:is_zooming()
+
+			if zooming then
+				return false
+			end
+
+			local equipment = inventory_extension:equipment()
+
+			if equipment.right_hand_wielded_unit ~= nil and ScriptUnit.has_extension(equipment.right_hand_wielded_unit, "ammo_system") then
+				ammo_extension = ScriptUnit.extension(equipment.right_hand_wielded_unit, "ammo_system")
+			elseif equipment.left_hand_wielded_unit ~= nil and ScriptUnit.has_extension(equipment.left_hand_wielded_unit, "ammo_system") then
+				ammo_extension = ScriptUnit.extension(equipment.left_hand_wielded_unit, "ammo_system")
+			end
+
+			return ammo_extension and ammo_extension:can_reload()
+		end,
+		chain_condition_func = function (action_user, input_extension)
+			local inventory_extension = ScriptUnit.extension(action_user, "inventory_system")
+			local status_extension = ScriptUnit.extension(action_user, "status_system")
+			local ammo_extension = nil
+			local zooming = status_extension:is_zooming()
+
+			if zooming then
+				return false
+			end
+
+			local equipment = inventory_extension:equipment()
+
+			if equipment.right_hand_wielded_unit ~= nil and ScriptUnit.has_extension(equipment.right_hand_wielded_unit, "ammo_system") then
+				ammo_extension = ScriptUnit.extension(equipment.right_hand_wielded_unit, "ammo_system")
+			elseif equipment.left_hand_wielded_unit ~= nil and ScriptUnit.has_extension(equipment.left_hand_wielded_unit, "ammo_system") then
+				ammo_extension = ScriptUnit.extension(equipment.left_hand_wielded_unit, "ammo_system")
+			end
+
+			return ammo_extension and ammo_extension:can_reload()
+		end,
+		allowed_chain_actions = {}
+	}
+}
 ActionTemplates.instant_equip_and_heal_self = {
 	default = {
 		slot_to_wield = "slot_healthkit",
@@ -267,7 +315,7 @@ ActionTemplates.action_inspect = {
 		total_time = 1,
 		condition_func = function (action_user, input_extension)
 			if Managers.input:is_device_active("gamepad") then
-				if Managers.state.game_mode:level_key() == "inn_level" then
+				if Managers.state.game_mode:level_key() == "inn_level" and not MotionControlSettings.use_motion_controls then
 					return true
 				else
 					return false
@@ -466,7 +514,7 @@ ActionTemplates.action_use_consumable = {
 	}
 }
 
-for sub_action_name, data in pairs(ActionTemplates.action_use_consumable) do
+for _, data in pairs(ActionTemplates.action_use_consumable) do
 	data.chain_condition_func = data.condition_func
 end
 
@@ -624,7 +672,7 @@ ActionTemplates.action_career_we_3 = {
 	}
 }
 
-for hero_name, action_names in pairs(CareerActionNames) do
+for _, action_names in pairs(CareerActionNames) do
 	for i = 1, #action_names, 1 do
 		local action_name = action_names[i]
 		local template = ActionTemplates[action_name]

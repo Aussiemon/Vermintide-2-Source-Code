@@ -14,7 +14,7 @@ local RPCS = {
 	"rpc_deactivate_mutator_client"
 }
 
-MutatorHandler.init = function (self, mutators, is_server, has_local_client, network_event_delegate, network_transmit)
+MutatorHandler.init = function (self, mutators, is_server, has_local_client, world, network_event_delegate, network_transmit)
 	self._is_server = is_server
 	self._has_local_client = has_local_client
 	self._network_transmit = network_transmit
@@ -22,7 +22,9 @@ MutatorHandler.init = function (self, mutators, is_server, has_local_client, net
 
 	network_event_delegate:register(self, unpack(RPCS))
 
-	local mutator_context = {}
+	local mutator_context = {
+		world = world
+	}
 	self._mutator_context = mutator_context
 	local active_mutators = {}
 	self._active_mutators = active_mutators
@@ -40,6 +42,7 @@ end
 MutatorHandler.destroy = function (self)
 	local active_mutators = self._active_mutators
 	local mutator_context = self._mutator_context
+	mutator_context.is_destroy = true
 
 	for name, _ in pairs(active_mutators) do
 		self:_deactivate_mutator(name, active_mutators, mutator_context, true)
@@ -101,7 +104,7 @@ MutatorHandler.activated_mutators = function (self)
 	return self._active_mutators
 end
 
-MutatorHandler.ai_killed = function (self, killed_unit, killer_unit)
+MutatorHandler.ai_killed = function (self, killed_unit, killer_unit, death_data)
 	local mutator_context = self._mutator_context
 	local active_mutators = self._active_mutators
 	local is_server = self._is_server
@@ -111,13 +114,75 @@ MutatorHandler.ai_killed = function (self, killed_unit, killer_unit)
 		local template = mutator_data.template
 
 		if is_server then
-			template.server.ai_killed_function(mutator_context, mutator_data, killed_unit, killer_unit)
+			template.server.ai_killed_function(mutator_context, mutator_data, killed_unit, killer_unit, death_data)
 		end
 
 		if has_local_client then
-			template.client.ai_killed_function(mutator_context, mutator_data, killed_unit, killer_unit)
+			template.client.ai_killed_function(mutator_context, mutator_data, killed_unit, killer_unit, death_data)
 		end
 	end
+end
+
+MutatorHandler.players_left_safe_zone = function (self)
+	local mutator_context = self._mutator_context
+	local active_mutators = self._active_mutators
+	local is_server = self._is_server
+
+	for _, mutator_data in pairs(active_mutators) do
+		local template = mutator_data.template
+
+		if is_server then
+			template.server.server_players_left_safe_zone(mutator_context, mutator_data)
+		end
+	end
+end
+
+MutatorHandler.evaluate_lose_conditions = function (self)
+	fassert(self._is_server, "evaluate_lose_conditions only runs on server")
+
+	local mutator_context = self._mutator_context
+	local active_mutators = self._active_mutators
+	local lost = false
+	local lost_delay = nil
+
+	for _, mutator_data in pairs(active_mutators) do
+		local template = mutator_data.template
+
+		if template.lose_condition_function then
+			local result, delay = template.lose_condition_function(mutator_context, mutator_data)
+
+			if result then
+				if delay and (lost_delay == nil or lost_delay < delay) then
+					lost_delay = delay
+				end
+
+				lost = result
+			end
+		end
+	end
+
+	return lost, lost_delay
+end
+
+MutatorHandler.evaluate_end_zone_activation_conditions = function (self)
+	fassert(self._is_server, "evaluate_end_zone_activation_conditions only runs on server")
+
+	local mutator_context = self._mutator_context
+	local active_mutators = self._active_mutators
+
+	for _, mutator_data in pairs(active_mutators) do
+		local template = mutator_data.template
+
+		if template.end_zone_activation_condition_function then
+			local result = template.end_zone_activation_condition_function(mutator_context, mutator_data)
+
+			if not result then
+				return false
+			end
+		end
+	end
+
+	return true
 end
 
 MutatorHandler.conflict_director_updated_settings = function (self)

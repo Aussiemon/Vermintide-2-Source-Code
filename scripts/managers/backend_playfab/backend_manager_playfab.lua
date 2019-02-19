@@ -11,6 +11,7 @@ require("scripts/managers/backend_playfab/backend_interface_hero_attributes_play
 require("scripts/managers/backend_playfab/backend_interface_statistics_playfab")
 require("scripts/managers/backend_playfab/backend_interface_keep_decorations_playfab")
 require("scripts/managers/backend_playfab/backend_interface_live_events_playfab")
+require("scripts/managers/backend_playfab/backend_interface_cdn_resources_playfab")
 require("scripts/managers/backend_playfab/backend_interfaces/backend_interface_motd_playfab")
 require("scripts/managers/backend_playfab/benchmark_backend/backend_interface_loot_benchmark")
 require("scripts/managers/backend_playfab/benchmark_backend/backend_interface_statistics_benchmark")
@@ -165,11 +166,14 @@ BackendManagerPlayFab._create_interfaces = function (self, force_local)
 	self:_create_statistics_interface(settings, force_local)
 	self:_create_keep_decorations_interface(settings, force_local)
 	self:_create_live_events_interface(settings, force_local)
+	self:_create_cdn_resources_interface(settings, force_local)
 	self:_create_motd_interface(settings, force_local)
 
 	if PLATFORM == "xb1" or PLATFORM == "ps4" then
 		self:_create_console_dlc_rewards_interface(settings, force_local)
 	end
+
+	self:_create_dlc_interfaces(settings, force_local)
 
 	self._interfaces_created = true
 end
@@ -955,7 +959,7 @@ BackendManagerPlayFab._create_profile_hash_interface = function (self, settings,
 end
 
 BackendManagerPlayFab._create_common_interface = function (self, settings, force_local)
-	self._interfaces.common = BackendInterfaceCommon:new()
+	self._interfaces.common = BackendInterfaceCommon:new(self._backend_mirror)
 end
 
 BackendManagerPlayFab._create_title_properties_interface = function (self, settings, force_local)
@@ -1038,6 +1042,46 @@ BackendManagerPlayFab._create_console_dlc_rewards_interface = function (self, se
 		self._interfaces.console_dlc_rewards = BackendInterfaceConsoleDlcRewardsLocal:new(self._save_data)
 	else
 		self._interfaces.console_dlc_rewards = BackendInterfaceConsoleDlcRewardsPlayfab:new(self._backend_mirror)
+	end
+end
+
+BackendManagerPlayFab._create_dlc_interfaces = function (self, settings, force_local)
+	local interfaces = self._interfaces
+	local save_data = self._save_data
+	local backend_mirror = self._backend_mirror
+
+	for dlc_name, dlc_settings in pairs(DLCSettings) do
+		local dlc_interfaces = dlc_settings.backend_interfaces
+
+		if dlc_interfaces then
+			for interface_name, interface_settings in pairs(dlc_interfaces) do
+				local interface = nil
+
+				if force_local then
+					local class_name = interface_settings.local_class
+					local class = rawget(_G, class_name)
+					interface = class:new(save_data)
+				else
+					local file_name = interface_settings.playfab_file
+
+					require(file_name)
+
+					local class_name = interface_settings.playfab_class
+					local class = rawget(_G, class_name)
+					interface = class:new(backend_mirror)
+				end
+
+				interfaces[interface_name] = interface
+			end
+		end
+	end
+end
+
+BackendManagerPlayFab._create_cdn_resources_interface = function (self, settings, force_local)
+	if force_local then
+		self._interfaces.cdn = BackendInterfaceCdnResourcesLocal:new(self._save_data)
+	else
+		self._interfaces.cdn = BackendInterfaceCdnResourcesPlayFab:new(self._backend_mirror)
 	end
 end
 

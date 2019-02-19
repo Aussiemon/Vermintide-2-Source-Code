@@ -1,7 +1,8 @@
 local definitions = local_require("scripts/ui/views/area_indicator_ui_definitions")
 AreaIndicatorUI = class(AreaIndicatorUI)
 
-AreaIndicatorUI.init = function (self, ingame_ui_context)
+AreaIndicatorUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.input_manager = ingame_ui_context.input_manager
