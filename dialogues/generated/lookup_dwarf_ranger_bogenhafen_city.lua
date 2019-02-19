@@ -32,7 +32,6 @@ assert(DialogueLookup[DialogueLookup_n + 31] == nil)
 assert(DialogueLookup[DialogueLookup_n + 32] == nil)
 assert(DialogueLookup[DialogueLookup_n + 33] == nil)
 assert(DialogueLookup[DialogueLookup_n + 34] == nil)
-assert(DialogueLookup[DialogueLookup_n + 35] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pdr_level_bogenhafen_city_sewers"
 DialogueLookup[DialogueLookup_n + 2] = "pdr_ib_level_bogenhafen_city_sewers"
@@ -68,7 +67,6 @@ DialogueLookup[DialogueLookup_n + 31] = "pdr_level_bogenhafen_city_keep_moving"
 DialogueLookup[DialogueLookup_n + 32] = "pdr_level_bogenhafen_city_intro_a"
 DialogueLookup[DialogueLookup_n + 33] = "pdr_level_bogenhafen_city_intro_b"
 DialogueLookup[DialogueLookup_n + 34] = "pdr_level_bogenhafen_city_intro_c"
-DialogueLookup[DialogueLookup_n + 35] = "pdr_level_bogenhafen_city_objective_next"
-DialogueLookup_n = DialogueLookup_n + 35
+DialogueLookup_n = DialogueLookup_n + 34
 
 return
