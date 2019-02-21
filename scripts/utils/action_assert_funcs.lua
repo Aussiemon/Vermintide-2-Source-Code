@@ -1,9 +1,18 @@
 ActionAssertFuncs = {
 	handgun = function (weapon_name, action_name, sub_action_name, action)
-		local damage_profile = action.damage_profile
+		local impact_data = action.impact_data
 
-		fassert(damage_profile, "No damage profile set for [\"%s.%s\"] in weapon [\"%s\"]", action_name, sub_action_name, weapon_name)
-		fassert(DamageProfileTemplates[damage_profile], "Damage profile [\"%s\"] does not exist", damage_profile)
+		if impact_data then
+			local damage_profile = impact_data.damage_profile
+
+			fassert(damage_profile, "No damage profile set in impact_data for [\"%s.%s\"] in weapon [\"%s\"]", action_name, sub_action_name, weapon_name)
+			fassert(DamageProfileTemplates[damage_profile], "Damage profile [\"%s\"] does not exist", damage_profile)
+		else
+			local damage_profile = action.damage_profile
+
+			fassert(damage_profile, "No damage profile set for [\"%s.%s\"] in weapon [\"%s\"]", action_name, sub_action_name, weapon_name)
+			fassert(DamageProfileTemplates[damage_profile], "Damage profile [\"%s\"] does not exist", damage_profile)
+		end
 	end,
 	sweep = function (weapon_name, action_name, sub_action_name, action)
 		if action.weapon_action_hand == "both" then

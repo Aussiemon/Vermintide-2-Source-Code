@@ -148,7 +148,7 @@ ActionHandgun.client_owner_post_update = function (self, dt, t, world, can_damag
 			local target_vector = Vector3.normalize(Vector3.flat(Quaternion.forward(rotation)))
 			local lookup_data = current_action.lookup_data
 
-			ActionUtils.spawn_player_projectile(owner_unit, position, rotation, 0, angle, target_vector, speed, self.item_name, lookup_data.item_template_name, lookup_data.action_name, lookup_data.sub_action_name, self.is_critical_strike, self.power_level)
+			ActionUtils.spawn_player_projectile(owner_unit, position, rotation, 0, angle, target_vector, speed, self.item_name, lookup_data.item_template_name, lookup_data.action_name, lookup_data.sub_action_name, self._is_critical_strike, self.power_level)
 		elseif current_action.ray_against_large_hitbox then
 			result = PhysicsWorld.immediate_raycast_actors(physics_world, position, direction, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_ai_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only", "dynamic_collision_filter", "filter_enemy_trigger")
 		else

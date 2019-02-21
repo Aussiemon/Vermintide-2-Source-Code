@@ -668,19 +668,13 @@ end
 ActionUtils.redirect_shield_hit = function (hit_unit, hit_actor)
 	local potential_hit_unit_owner = unit_get_data(hit_unit, "shield_owner_unit")
 
-	if potential_hit_unit_owner then
-		local health_extension = ScriptUnit.extension(potential_hit_unit_owner, "health_system")
-
-		if not health_extension:is_alive() then
-			return hit_unit, hit_actor
-		end
-
-		local new_hit_actor = unit_actor(potential_hit_unit_owner, unit_find_actor(potential_hit_unit_owner, "c_leftforearm"))
-
-		return potential_hit_unit_owner, new_hit_actor
-	else
+	if not AiUtils.unit_alive(potential_hit_unit_owner) then
 		return hit_unit, hit_actor
 	end
+
+	local new_hit_actor = unit_actor(potential_hit_unit_owner, unit_find_actor(potential_hit_unit_owner, "c_leftforearm"))
+
+	return potential_hit_unit_owner, new_hit_actor
 end
 
 return
