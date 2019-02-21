@@ -72,6 +72,87 @@ ActionShotgun._use_ammo = function (self)
 	self._num_shots_total = num_shots_total
 end
 
+ActionShotgun._add_overcharge = function (self)
+	local current_action = self.current_action
+	local overcharge_type = current_action.overcharge_type
+
+	if overcharge_type then
+		local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[overcharge_type]
+
+		self.overcharge_extension:add_charge(overcharge_amount)
+	end
+end
+
+ActionShotgun._start_shooting = function (self)
+	local owner_unit = self.owner_unit
+	local current_action = self.current_action
+	local spread_extension = self.spread_extension
+	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
+	local current_position = first_person_extension:current_position()
+	local current_rotation = first_person_extension:current_rotation()
+
+	if current_action.fire_at_gaze_setting and ScriptUnit.has_extension(owner_unit, "eyetracking_system") then
+		local eyetracking_extension = ScriptUnit.extension(owner_unit, "eyetracking_system")
+
+		if eyetracking_extension:get_is_feature_enabled("tobii_fire_at_gaze") then
+			current_rotation = self.start_gaze_rotation:unbox()
+		end
+	end
+
+	self._fire_position:store(current_position)
+	self._fire_rotation:store(current_rotation)
+
+	if not Managers.player:owner(self.owner_unit).bot_player then
+		Managers.state.controller_features:add_effect("rumble", {
+			rumble_effect = "handgun_fire"
+		})
+	end
+
+	self:_use_ammo()
+	self:_add_overcharge()
+
+	local add_spread = not self.extra_buff_shot
+
+	if spread_extension and add_spread then
+		spread_extension:set_shooting()
+	end
+
+	if current_action.alert_sound_range_fire then
+		Managers.state.entity:system("ai_system"):alert_enemies_within_range(owner_unit, POSITION_LOOKUP[owner_unit], current_action.alert_sound_range_fire)
+	end
+
+	local fire_sound_event = self.current_action.fire_sound_event
+
+	if fire_sound_event then
+		first_person_extension:play_hud_sound_event(fire_sound_event)
+	end
+
+	self.state = "shooting"
+end
+
+ActionShotgun._shooting = function (self, t, final_frame)
+	local num_shots_total = self._num_shots_total
+	local shots_fired = self._shots_fired
+	local num_shots_this_frame = num_shots_total - shots_fired
+
+	if not final_frame then
+		num_shots_this_frame = math.min(num_shots_this_frame, MAX_SHOTS_PER_FRAME)
+	end
+
+	self:_shoot(num_shots_total, num_shots_this_frame)
+
+	local buff_extension = self.owner_buff_extension
+	local _, procced = buff_extension:apply_buffs_to_value(0, "extra_shot")
+
+	if procced and not self.extra_buff_shot then
+		self.state = "waiting_to_shoot"
+		self.time_to_shoot = t + 0.2
+		self.extra_buff_shot = true
+	elseif self._num_shots_total - self._shots_fired <= 0 then
+		self.state = "shot"
+	end
+end
+
 ActionShotgun._shoot = function (self, num_shots_total, num_shots_this_frame)
 	local spread_extension = self.spread_extension
 	local current_action = self.current_action
@@ -122,81 +203,17 @@ end
 
 ActionShotgun.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local owner_unit = self.owner_unit
-	local current_action = self.current_action
 
 	if self.state == "waiting_to_shoot" and self.time_to_shoot <= t then
 		self.state = "start_shooting"
 	end
 
 	if self.state == "start_shooting" then
-		local spread_extension = self.spread_extension
-		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-		local current_position = first_person_extension:current_position()
-		local current_rotation = first_person_extension:current_rotation()
-
-		if current_action.fire_at_gaze_setting and ScriptUnit.has_extension(owner_unit, "eyetracking_system") then
-			local eyetracking_extension = ScriptUnit.extension(owner_unit, "eyetracking_system")
-
-			if eyetracking_extension:get_is_feature_enabled("tobii_fire_at_gaze") then
-				current_rotation = self.start_gaze_rotation:unbox()
-			end
-		end
-
-		self._fire_position:store(current_position)
-		self._fire_rotation:store(current_rotation)
-
-		if not Managers.player:owner(self.owner_unit).bot_player then
-			Managers.state.controller_features:add_effect("rumble", {
-				rumble_effect = "handgun_fire"
-			})
-		end
-
-		self:_use_ammo()
-
-		local add_spread = not self.extra_buff_shot
-
-		if spread_extension and add_spread then
-			spread_extension:set_shooting()
-		end
-
-		if current_action.alert_sound_range_fire then
-			Managers.state.entity:system("ai_system"):alert_enemies_within_range(owner_unit, POSITION_LOOKUP[owner_unit], current_action.alert_sound_range_fire)
-		end
-
-		local overcharge_type = current_action.overcharge_type
-
-		if overcharge_type then
-			local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[overcharge_type]
-
-			self.overcharge_extension:add_charge(overcharge_amount)
-		end
-
-		local fire_sound_event = self.current_action.fire_sound_event
-
-		if fire_sound_event then
-			first_person_extension:play_hud_sound_event(fire_sound_event)
-		end
-
-		self.state = "shooting"
+		self:_start_shooting()
 	end
 
 	if self.state == "shooting" then
-		local num_shots_total = self._num_shots_total
-		local shots_fired = self._shots_fired
-		local num_shots_this_frame = math.min(num_shots_total - shots_fired, MAX_SHOTS_PER_FRAME)
-
-		self:_shoot(num_shots_total, num_shots_this_frame)
-
-		local buff_extension = self.owner_buff_extension
-		local _, procced = buff_extension:apply_buffs_to_value(0, "extra_shot")
-
-		if procced and not self.extra_buff_shot then
-			self.state = "waiting_to_shoot"
-			self.time_to_shoot = t + 0.2
-			self.extra_buff_shot = true
-		elseif self._num_shots_total - self._shots_fired <= 0 then
-			self.state = "shot"
-		end
+		self:_shooting(t, false)
 	end
 
 	if self.state == "shot" and self.active_reload_time then
@@ -219,11 +236,16 @@ end
 ActionShotgun.finish = function (self, reason)
 	local ammo_extension = self.ammo_extension
 	local current_action = self.current_action
-	local num_shots_total = self._num_shots_total
-	local shots_fired = self._shots_fired
-	local num_shots_this_frame = num_shots_total - shots_fired
 
-	self:_shoot(num_shots_total, num_shots_this_frame)
+	if self.state == "start_shooting" then
+		self:_start_shooting()
+	end
+
+	if self.state == "shooting" then
+		local t = Managers.time:time("game")
+
+		self:_shooting(t, true)
+	end
 
 	if self.spread_extension then
 		self.spread_extension:reset_spread_template()

@@ -31,12 +31,6 @@ weapon_template.actions = {
 				{
 					sub_action = "default",
 					start_time = 0.4,
-					action = "weapon_reload",
-					input = "weapon_reload"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
 				},
@@ -52,6 +46,12 @@ weapon_template.actions = {
 					start_time = 0.4,
 					action = "action_two",
 					input = "action_two_hold"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.4,
+					action = "weapon_reload",
+					input = "weapon_reload"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -111,12 +111,6 @@ weapon_template.actions = {
 				{
 					sub_action = "default",
 					start_time = 0.2,
-					action = "weapon_reload",
-					input = "weapon_reload"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.2,
 					action = "action_wield",
 					input = "action_wield"
 				},
@@ -131,6 +125,12 @@ weapon_template.actions = {
 					start_time = 0.2,
 					action = "action_one",
 					input = "action_one_hold"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.2,
+					action = "weapon_reload",
+					input = "weapon_reload"
 				}
 			},
 			recoil_settings = {
@@ -171,12 +171,6 @@ weapon_template.actions = {
 				{
 					sub_action = "default",
 					start_time = 0,
-					action = "weapon_reload",
-					input = "weapon_reload"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
 					action = "action_wield",
 					input = "action_wield"
 				},
@@ -185,6 +179,12 @@ weapon_template.actions = {
 					start_time = 0.6,
 					action = "action_one",
 					input = "action_one"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.6,
+					action = "weapon_reload",
+					input = "weapon_reload"
 				}
 			},
 			zoom_condition_function = function ()

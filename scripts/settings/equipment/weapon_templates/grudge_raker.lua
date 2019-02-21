@@ -30,12 +30,6 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.5,
-					action = "weapon_reload",
-					input = "weapon_reload"
-				},
-				{
-					sub_action = "default",
 					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
@@ -58,6 +52,12 @@ weapon_template.actions = {
 					start_time = 0.4,
 					action = "action_two",
 					input = "action_two"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.75,
+					action = "weapon_reload",
+					input = "weapon_reload"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -104,12 +104,6 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0,
-					action = "weapon_reload",
-					input = "weapon_reload"
-				},
-				{
-					sub_action = "default",
 					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
@@ -125,6 +119,12 @@ weapon_template.actions = {
 					start_time = 0.75,
 					action = "action_two",
 					input = "action_two"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.3,
+					action = "weapon_reload",
+					input = "weapon_reload"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)

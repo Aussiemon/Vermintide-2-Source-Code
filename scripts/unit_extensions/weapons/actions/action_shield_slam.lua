@@ -74,7 +74,8 @@ ActionShieldSlam.client_owner_start_action = function (self, new_action, t, chai
 	local direction = Quaternion.forward(rot)
 	local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
 	local owner_player = Managers.player:owner(owner_unit)
-	local collision_filter = (DamageUtils.allow_friendly_fire_melee(difficulty_settings, owner_player) and "filter_melee_sweep") or "filter_melee_sweep_no_player"
+	local melee_friendly_fire = DamageUtils.allow_friendly_fire_melee(difficulty_settings, owner_player)
+	local collision_filter = (melee_friendly_fire and "filter_melee_sweep") or "filter_melee_sweep_no_player"
 	local results = PhysicsWorld.immediate_raycast(physics_world, pos, direction, new_action.dedicated_target_range, "all", "collision_filter", collision_filter)
 
 	if results then
@@ -108,7 +109,7 @@ ActionShieldSlam.client_owner_start_action = function (self, new_action, t, chai
 		local targeting_data = targeting_extension:get_targeting_data()
 		local smart_targeting_unit = targeting_data.unit
 
-		if smart_targeting_unit then
+		if AiUtils.unit_alive(smart_targeting_unit) then
 			local smart_targeting_position = Unit.has_node(smart_targeting_unit, "j_spine") and Unit.world_position(smart_targeting_unit, Unit.node(smart_targeting_unit, "j_spine"))
 			local target_world_position = POSITION_LOOKUP[smart_targeting_unit] or Unit.world_position(smart_targeting_unit, 0)
 			local target_position = smart_targeting_position or target_world_position

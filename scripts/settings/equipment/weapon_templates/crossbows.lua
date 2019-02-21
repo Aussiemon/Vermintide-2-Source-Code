@@ -26,15 +26,15 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0,
-					action = "weapon_reload",
-					input = "weapon_reload"
-				},
-				{
-					sub_action = "default",
 					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
+				},
+				{
+					sub_action = "default",
+					start_time = 0,
+					action = "weapon_reload",
+					input = "weapon_reload"
 				}
 			},
 			projectile_info = Projectiles.crossbow_bolt,
@@ -86,12 +86,6 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0,
-					action = "weapon_reload",
-					input = "weapon_reload"
-				},
-				{
-					sub_action = "default",
 					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
@@ -109,6 +103,12 @@ weapon_template.actions = {
 					action = "action_two",
 					input = "action_two_hold",
 					end_time = math.huge
+				},
+				{
+					sub_action = "default",
+					start_time = 0.55,
+					action = "weapon_reload",
+					input = "weapon_reload"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -173,12 +173,6 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0,
-					action = "weapon_reload",
-					input = "weapon_reload"
-				},
-				{
-					sub_action = "default",
 					start_time = 0.3,
 					action = "action_wield",
 					input = "action_wield"
@@ -188,6 +182,12 @@ weapon_template.actions = {
 					start_time = 0.3,
 					action = "action_one",
 					input = "action_one"
+				},
+				{
+					sub_action = "default",
+					start_time = 0,
+					action = "weapon_reload",
+					input = "weapon_reload"
 				}
 			},
 			zoom_condition_function = function ()

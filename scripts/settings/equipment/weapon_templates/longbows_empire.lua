@@ -30,12 +30,6 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0,
-					action = "weapon_reload",
-					input = "weapon_reload"
-				},
-				{
-					sub_action = "default",
 					start_time = 0.25,
 					action = "action_wield",
 					input = "action_wield"
@@ -54,6 +48,12 @@ weapon_template.actions = {
 					release_required = "action_one_hold",
 					input = "action_one",
 					end_time = math.huge
+				},
+				{
+					sub_action = "default",
+					start_time = 0.6,
+					action = "weapon_reload",
+					input = "weapon_reload"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -114,12 +114,6 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0,
-					action = "weapon_reload",
-					input = "weapon_reload"
-				},
-				{
-					sub_action = "default",
 					start_time = 0.25,
 					action = "action_wield",
 					input = "action_wield"
@@ -138,6 +132,12 @@ weapon_template.actions = {
 					send_buffer = true,
 					input = "action_two_hold",
 					end_time = math.huge
+				},
+				{
+					sub_action = "default",
+					start_time = 0.75,
+					action = "weapon_reload",
+					input = "weapon_reload"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -191,12 +191,6 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0,
-					action = "weapon_reload",
-					input = "weapon_reload"
-				},
-				{
-					sub_action = "default",
 					start_time = 0.25,
 					action = "action_wield",
 					input = "action_wield"
@@ -214,6 +208,12 @@ weapon_template.actions = {
 					action = "action_two",
 					input = "action_two_hold",
 					end_time = math.huge
+				},
+				{
+					sub_action = "default",
+					start_time = 0.85,
+					action = "weapon_reload",
+					input = "weapon_reload"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -284,12 +284,6 @@ weapon_template.actions = {
 				{
 					sub_action = "default",
 					start_time = 0,
-					action = "weapon_reload",
-					input = "weapon_reload"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
 					action = "action_wield",
 					input = "action_wield",
 					end_time = math.huge
@@ -307,6 +301,12 @@ weapon_template.actions = {
 					action = "action_one",
 					end_time = 0.8,
 					input = "action_one"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.5,
+					action = "weapon_reload",
+					input = "weapon_reload"
 				}
 			},
 			zoom_condition_function = function ()

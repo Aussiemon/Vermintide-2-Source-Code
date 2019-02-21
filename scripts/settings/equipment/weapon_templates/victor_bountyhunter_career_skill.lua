@@ -85,29 +85,29 @@ weapon_template.actions = {
 	action_career_release = {
 		default = {
 			damage_window_start = 0.1,
-			charge_value = "projectile",
 			ray_against_large_hitbox = true,
+			charge_value = "projectile",
 			shot_count = 10,
-			kind = "career_wh_two",
-			hit_mass_multiplier = 0.1,
-			damage_profile = "shot_shotgun_ability",
-			weapon_action_hand = "left",
-			anim_time_scale = 1,
-			anim_event = "bounty_hunter_ability_shoot",
 			headshot_multiplier = 2,
+			damage_profile = "shot_shotgun_ability",
+			hit_mass_multiplier = 0.1,
+			kind = "career_wh_two",
+			weapon_action_hand = "left",
+			alert_sound_range_hit = 2,
+			aim_assist_max_ramp_multiplier = 0.3,
+			aim_assist_auto_hit_chance = 0.5,
 			aoe_radius = 2.5,
 			fire_time_upper = 0.05,
-			aim_assist_max_ramp_multiplier = 0.3,
+			anim_time_scale = 1,
+			aim_assist_ramp_decay_delay = 0.2,
 			damage_window_end = 0,
 			range = 100,
-			aim_assist_auto_hit_chance = 0.5,
 			anim_end_event = "ability_finished",
-			aim_assist_ramp_decay_delay = 0.2,
 			fire_time_lower = 0.15,
 			speed = 16000,
 			shotgun_spread_template = "bounty_hunter_shotgun",
 			aim_assist_ramp_multiplier = 0.1,
-			alert_sound_range_hit = 2,
+			anim_event = "bounty_hunter_ability_shoot",
 			railgun_spread_template = "bounty_hunter_handgun",
 			aoe_time = 0.175,
 			hit_effect = "shotgun_bullet_impact",
@@ -119,12 +119,6 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action"
 			end,
 			allowed_chain_actions = {},
-			enter_function = function (attacker_unit, input_extension)
-				return
-			end,
-			condition_func = function (user_unit)
-				return true
-			end,
 			projectile_info = Projectiles.victor_bounty_hunter,
 			impact_data = {
 				damage_profile = "shot_sniper_ability"
