@@ -22,7 +22,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0,
+					start_time = 0.5,
 					action = "weapon_reload",
 					input = "weapon_reload"
 				},
@@ -103,7 +103,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0,
+					start_time = 0.45,
 					action = "weapon_reload",
 					input = "weapon_reload"
 				},

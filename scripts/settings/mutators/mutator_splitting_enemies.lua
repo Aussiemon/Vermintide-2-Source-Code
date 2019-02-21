@@ -117,6 +117,7 @@ return {
 		local position = POSITION_LOOKUP[killed_unit]
 		local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 		local spawn_queue = data.spawn_queue
+		local conflict_director = Managers.state.conflict
 
 		if position and lower_tier_breed_name then
 			local rotation = Unit.local_rotation(killed_unit, 0)
@@ -175,12 +176,18 @@ return {
 			local unit_spawner = Managers.state.unit_spawner
 
 			if not unit_spawner:is_marked_for_deletion(killed_unit) then
-				unit_spawner:mark_for_deletion(killed_unit)
+				local froze_unit_successfully = conflict_director.breed_freezer:try_mark_unit_for_freeze(breed, killed_unit)
+
+				if not froze_unit_successfully then
+					unit_spawner:mark_for_deletion(killed_unit)
+
+					if death_data then
+						death_data.remove = true
+					end
+				end
 			end
 
-			if death_data then
-				death_data.remove = true
-			end
+			blackboard.about_to_be_destroyed = true
 		end
 	end
 }
