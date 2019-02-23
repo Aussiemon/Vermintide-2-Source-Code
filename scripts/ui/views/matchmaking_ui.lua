@@ -22,7 +22,8 @@ end
 
 MatchmakingUI = class(MatchmakingUI)
 
-MatchmakingUI.init = function (self, ingame_ui_context)
+MatchmakingUI.init = function (self, parent, ingame_ui_context)
+	self._parent = parent
 	self.level_transition_handler = ingame_ui_context.level_transition_handler
 	self.network_event_delegate = ingame_ui_context.network_event_delegate
 	self.profile_synchronizer = ingame_ui_context.profile_synchronizer
@@ -119,7 +120,14 @@ MatchmakingUI.is_in_inn = function (self)
 	return self.is_in_inn
 end
 
-MatchmakingUI.update = function (self, dt, t, show_detailed_matchmaking_info)
+MatchmakingUI.update = function (self, dt, t)
+	local parent = self._parent
+	local ingame_ui = parent:parent()
+	local menu_active = ingame_ui.menu_active
+	local in_menu_current_view = ingame_ui.current_view ~= nil
+	local ingame_player_list_ui = parent:component("IngamePlayerListUI")
+	local player_list_active = ingame_player_list_ui and ingame_player_list_ui:is_active()
+	local show_detailed_matchmaking_info = not menu_active and not player_list_active and not in_menu_current_view
 	local ui_top_renderer = self.ui_top_renderer
 	local input_manager = self.input_manager
 	local input_service = input_manager:get_service("ingame_menu")

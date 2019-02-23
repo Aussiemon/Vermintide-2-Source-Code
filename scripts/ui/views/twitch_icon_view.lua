@@ -42,7 +42,14 @@ TwitchIconView.update = function (self, dt)
 		self:_create_ui_elements()
 	end
 
-	if Managers.twitch and (Managers.twitch:is_connected() or Managers.twitch:is_activated()) then
+	local lobby_has_twitch = false
+
+	if Managers.state.network then
+		local lobby = Managers.state.network:lobby()
+		lobby_has_twitch = lobby:lobby_data("twitch_enabled") == "true"
+	end
+
+	if (Managers.twitch and (Managers.twitch:is_connected() or Managers.twitch:is_activated())) or lobby_has_twitch then
 		self:_draw(dt)
 	end
 end

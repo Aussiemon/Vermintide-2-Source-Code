@@ -1,5 +1,6 @@
 local components = {
 	{
+		use_hud_scale = true,
 		class_name = "LootObjectiveUI",
 		filename = "scripts/ui/hud_ui/loot_objective_ui",
 		visibility_groups = {
@@ -8,6 +9,7 @@ local components = {
 		}
 	},
 	{
+		use_hud_scale = true,
 		class_name = "WaitForRescueUI",
 		filename = "scripts/ui/hud_ui/wait_for_rescue_ui",
 		visibility_groups = {
@@ -15,6 +17,7 @@ local components = {
 		}
 	},
 	{
+		use_hud_scale = true,
 		class_name = "ItemReceivedFeedbackUI",
 		filename = "scripts/ui/hud_ui/item_received_feedback_ui",
 		visibility_groups = {
@@ -22,6 +25,7 @@ local components = {
 		}
 	},
 	{
+		use_hud_scale = true,
 		class_name = "OverchargeBarUI",
 		filename = "scripts/ui/hud_ui/overcharge_bar_ui",
 		visibility_groups = {
@@ -73,6 +77,7 @@ local components = {
 		end
 	},
 	{
+		use_hud_scale = true,
 		class_name = "LevelCountdownUI",
 		filename = "scripts/ui/hud_ui/level_countdown_ui",
 		visibility_groups = {
@@ -154,6 +159,7 @@ local components = {
 		end
 	},
 	{
+		use_hud_scale = true,
 		class_name = "DamageNumbersUI",
 		filename = "scripts/ui/hud_ui/damage_numbers_ui",
 		visibility_groups = {
@@ -168,6 +174,7 @@ local components = {
 		end
 	},
 	{
+		use_hud_scale = true,
 		class_name = "NewsFeedUI",
 		filename = "scripts/ui/hud_ui/news_feed_ui",
 		visibility_groups = {
@@ -178,13 +185,14 @@ local components = {
 		end
 	},
 	{
+		use_hud_scale = true,
 		class_name = "TwitchVoteUI",
 		filename = "scripts/ui/hud_ui/twitch_vote_ui",
 		visibility_groups = {
 			"alive"
 		},
 		validation_function = function (context, is_in_inn)
-			local use_twitch_ui = Managers.twitch and (Managers.twitch:is_connected() or Managers.twitch:is_activated())
+			local use_twitch_ui = Managers.twitch and not is_in_inn and context.network_lobby:lobby_data("twitch_enabled") == "true"
 
 			return use_twitch_ui
 		end
@@ -205,6 +213,7 @@ local components = {
 		end
 	},
 	{
+		use_hud_scale = true,
 		class_name = "DifficultyUnlockUI",
 		filename = "scripts/ui/hud_ui/difficulty_unlock_ui",
 		visibility_groups = {
@@ -217,6 +226,7 @@ local components = {
 		end
 	},
 	{
+		use_hud_scale = true,
 		class_name = "InteractionUI",
 		filename = "scripts/ui/views/interaction_ui",
 		visibility_groups = {
@@ -226,6 +236,7 @@ local components = {
 		}
 	},
 	{
+		use_hud_scale = true,
 		class_name = "DamageIndicatorGui",
 		filename = "scripts/ui/views/damage_indicator_gui",
 		visibility_groups = {
@@ -233,6 +244,7 @@ local components = {
 		}
 	},
 	{
+		use_hud_scale = true,
 		class_name = "TutorialUI",
 		filename = "scripts/ui/views/tutorial_ui",
 		visibility_groups = {
@@ -240,6 +252,7 @@ local components = {
 		}
 	},
 	{
+		use_hud_scale = true,
 		class_name = "AreaIndicatorUI",
 		filename = "scripts/ui/views/area_indicator_ui",
 		visibility_groups = {
@@ -249,6 +262,7 @@ local components = {
 		}
 	},
 	{
+		use_hud_scale = true,
 		class_name = "MissionObjectiveUI",
 		filename = "scripts/ui/views/mission_objective_ui",
 		visibility_groups = {
@@ -258,6 +272,7 @@ local components = {
 		}
 	},
 	{
+		use_hud_scale = true,
 		class_name = "CrosshairUI",
 		filename = "scripts/ui/views/crosshair_ui",
 		visibility_groups = {
@@ -265,6 +280,7 @@ local components = {
 		}
 	},
 	{
+		use_hud_scale = true,
 		class_name = "FatigueUI",
 		filename = "scripts/ui/views/fatigue_ui",
 		visibility_groups = {
@@ -272,6 +288,7 @@ local components = {
 		}
 	},
 	{
+		use_hud_scale = true,
 		class_name = "BonusDiceUI",
 		filename = "scripts/ui/views/bonus_dice_ui",
 		visibility_groups = {
@@ -299,6 +316,7 @@ local components = {
 		}
 	},
 	{
+		use_hud_scale = true,
 		class_name = "TutorialInputUI",
 		filename = "scripts/ui/views/tutorial_input_ui",
 		visibility_groups = {
@@ -355,6 +373,7 @@ local components = {
 		end
 	},
 	{
+		use_hud_scale = true,
 		class_name = "SubtitleGui",
 		filename = "scripts/ui/views/subtitle_gui",
 		visibility_groups = {
@@ -375,6 +394,7 @@ local components = {
 		end
 	},
 	{
+		use_hud_scale = true,
 		class_name = "GiftPopupUI",
 		filename = "scripts/ui/gift_popup/gift_popup_ui",
 		visibility_groups = {
@@ -385,11 +405,29 @@ local components = {
 		end
 	},
 	{
+		use_hud_scale = true,
 		class_name = "IngameVotingUI",
 		filename = "scripts/ui/views/ingame_voting_ui",
 		visibility_groups = {
 			"realism",
 			"game_mode_disable_hud",
+			"dead",
+			"alive"
+		}
+	},
+	{
+		use_hud_scale = true,
+		class_name = "MatchmakingUI",
+		filename = "scripts/ui/views/matchmaking_ui",
+		visibility_groups = {
+			"mission_vote",
+			"hero_selection_popup",
+			"in_endscreen",
+			"in_menu",
+			"tab_menu",
+			"game_mode_disable_hud",
+			"cutscene",
+			"realism",
 			"dead",
 			"alive"
 		}

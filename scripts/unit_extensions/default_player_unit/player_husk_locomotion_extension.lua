@@ -169,7 +169,12 @@ PlayerHuskLocomotionExtension.update_movement = function (self, dt, unit, moveme
 		local link_node = GameSession.game_object_field(self.game, self.id, "link_node")
 		local link_offset = GameSession.game_object_field(self.game, self.id, "link_offset")
 		local link_parent_unit = Managers.state.network:game_object_or_level_unit(link_parent_id, link_parent_is_level_unit)
-		new_pos = Unit.world_position(link_parent_unit, link_node) + link_offset
+
+		if Unit.alive(link_parent_unit) then
+			new_pos = Unit.world_position(link_parent_unit, link_node) + link_offset
+		else
+			new_pos = GameSession.game_object_field(self.game, self.id, "position")
+		end
 	elseif moving_platform ~= 0 then
 		local moving_platform_unit = Managers.state.network:game_object_or_level_unit(moving_platform, true)
 		local moving_platform_pos = Unit.local_position(moving_platform_unit, 0)

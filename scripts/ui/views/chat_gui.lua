@@ -235,6 +235,7 @@ ChatGui.update = function (self, dt, menu_active, menu_input_service, no_unblock
 		input_service = input_manager:get_service("chat_input")
 	end
 
+	self:_update_hud_scale()
 	self:_draw_widgets(dt, input_service, chat_enabled)
 end
 
@@ -815,6 +816,12 @@ ChatGui._draw_widgets = function (self, dt, input_service, chat_enabled)
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
 
+	if not gamepad_active and menu_active and chat_enabled then
+		UIRenderer.draw_widget(ui_renderer, tab_widget)
+	end
+
+	self:_apply_hud_scale()
+
 	if self.chat_focused then
 		UIAnimation.update(ui_animations.caret_pulse, dt)
 	end
@@ -862,11 +869,39 @@ ChatGui._draw_widgets = function (self, dt, input_service, chat_enabled)
 		end
 	end
 
-	if not gamepad_active and menu_active and chat_enabled then
-		UIRenderer.draw_widget(ui_renderer, tab_widget)
+	self:_abort_hud_scale()
+	UIRenderer.end_pass(ui_renderer)
+end
+
+ChatGui._update_hud_scale = function (self)
+	if not self._resolution_modified then
+		self._resolution_modified = RESOLUTION_LOOKUP.modified
 	end
 
-	UIRenderer.end_pass(ui_renderer)
+	if not self._scale_modified then
+		local hud_scale_multiplier = UISettings.hud_scale * 0.01
+		self._scale_modified = self._hud_scale_multiplier ~= hud_scale_multiplier
+		self._hud_scale_multiplier = hud_scale_multiplier
+	end
+end
+
+ChatGui._apply_hud_scale = function (self)
+	self:_update_hud_scale()
+
+	local scale_modified = self._scale_modified
+	local resolution_modified = self._resolution_modified
+	local force_update = scale_modified or resolution_modified
+	local hud_scale_multiplier = self._hud_scale_multiplier
+
+	UPDATE_RESOLUTION_LOOKUP(force_update, hud_scale_multiplier)
+end
+
+ChatGui._abort_hud_scale = function (self)
+	local scale_modified = self._scale_modified
+	local resolution_modified = self._resolution_modified
+	local force_update = scale_modified or resolution_modified
+
+	UPDATE_RESOLUTION_LOOKUP(force_update)
 end
 
 ChatGui._set_chat_window_alpha = function (self, progress)

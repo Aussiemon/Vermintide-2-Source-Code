@@ -6033,7 +6033,7 @@ OptionsView.cb_mouse_look_sensitivity = function (self, content)
 end
 
 OptionsView.cb_hud_scale_setup = function (self)
-	local min = 70
+	local min = 50
 	local max = 100
 
 	if not Application.user_setting("hud_scale") then

@@ -9,7 +9,6 @@ require("scripts/ui/views/ingame_hud")
 require("scripts/ui/views/popup_handler")
 require("scripts/ui/views/popup_join_lobby_handler")
 require("scripts/ui/views/end_screen_ui")
-require("scripts/ui/views/matchmaking_ui")
 require("scripts/settings/ui_settings")
 require("scripts/settings/ui_frame_settings")
 require("scripts/ui/help_screen/help_screen_ui")
@@ -93,8 +92,6 @@ IngameUI.init = function (self, ingame_ui_context)
 
 	self:register_rpcs(ingame_ui_context.network_event_delegate)
 	GarbageLeakDetector.register_object(self, "IngameUI")
-
-	self.matchmaking_ui = MatchmakingUI:new(ingame_ui_context)
 
 	if not self.is_server and self.is_in_inn and self.views.map_view then
 		self.views.map_view:set_map_interaction_state(false)
@@ -209,10 +206,6 @@ IngameUI.destroy = function (self)
 			view:destroy()
 		end
 	end
-
-	self.matchmaking_ui:destroy()
-
-	self.matchmaking_ui = nil
 
 	self.end_screen:destroy()
 
@@ -460,10 +453,6 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 				self:handle_menu_hotkeys(dt, input_service, enable_hotkeys, self.menu_active)
 			end
 		end
-
-		local show_detailed_matchmaking_info = not self.menu_active and not player_list_active and self.current_view == nil
-
-		self.matchmaking_ui:update(dt, t, show_detailed_matchmaking_info)
 
 		if self.popup_join_lobby_handler then
 			self.popup_join_lobby_handler:update(dt)

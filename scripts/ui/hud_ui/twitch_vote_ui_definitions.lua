@@ -987,7 +987,7 @@ else
 	}
 end
 
-local streaming_icon = (PLATFORM == "win32" and "twitch_icon_small") or "mixer_icon_small"
+local streaming_icon = (PLATFORM ~= "xb1" and "twitch_icon_small") or "mixer_icon_small"
 
 return {
 	vote_texts = VOTE_TEXTS,
