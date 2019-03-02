@@ -247,7 +247,22 @@ GameModeManager._set_flow_object_set_unit_enabled = function (self, level, index
 
 	if new_state ~= nil then
 		Unit.set_data(unit, "flow_object_set_enabled", new_state)
-		Unit.set_unit_visibility(unit, new_state)
+
+		if Unit.has_data(unit, "LevelEditor", "is_gizmo_unit") then
+			local is_gizmo = Unit.get_data(unit, "LevelEditor", "is_gizmo_unit")
+
+			if is_gizmo then
+				Unit.set_unit_visibility(unit, false)
+			else
+				Unit.set_unit_visibility(unit, new_state)
+			end
+		else
+			Unit.set_unit_visibility(unit, new_state)
+		end
+
+		if Unit.has_visibility_group(unit, "gizmo") then
+			Unit.set_visibility(unit, "gizmo", false)
+		end
 
 		local ignore_physics = Unit_get_data(unit, "physics_ignores_object_set")
 

@@ -33,7 +33,7 @@ MatchmakingStateStartGame.update = function (self, dt, t)
 end
 
 MatchmakingStateStartGame._setup_lobby_data = function (self)
-	local level_key, difficulty, act_key, quick_game, private_game = nil
+	local level_key, difficulty, act_key, quick_game, private_game, excluded_level_keys = nil
 	local search_config = self.search_config
 	local game_mode = search_config.game_mode
 
@@ -43,12 +43,14 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 		act_key = nil
 		quick_game = false
 		private_game = false
+		excluded_level_keys = {}
 	else
 		level_key = search_config.level_key
 		difficulty = search_config.difficulty
 		act_key = search_config.act_key
 		quick_game = search_config.quick_game
 		private_game = search_config.private_game
+		excluded_level_keys = search_config.excluded_level_keys
 	end
 
 	if quick_game or level_key == nil then
@@ -58,7 +60,7 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 			ignore_dlc_check = false
 		end
 
-		level_key = self._matchmaking_manager:get_weighed_random_unlocked_level(ignore_dlc_check)
+		level_key = self._matchmaking_manager:get_weighed_random_unlocked_level(ignore_dlc_check, false, excluded_level_keys)
 	end
 
 	local eac_authorized = false

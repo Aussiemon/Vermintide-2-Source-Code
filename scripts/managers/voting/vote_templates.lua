@@ -339,6 +339,7 @@ VoteTemplates = {
 				local always_host = data.always_host
 				local strict_matchmaking = data.strict_matchmaking
 				local game_mode = data.game_mode
+				local excluded_level_keys = data.excluded_level_keys
 				local search_config = {
 					level_key = level_key,
 					difficulty = difficulty,
@@ -346,8 +347,14 @@ VoteTemplates = {
 					private_game = private_game,
 					always_host = always_host,
 					strict_matchmaking = strict_matchmaking,
-					game_mode = game_mode
+					game_mode = game_mode,
+					excluded_level_keys = excluded_level_keys
 				}
+
+				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(game_mode) then
+					Managers.twitch:disconnect()
+				end
+
 				local matchmaking_manager = Managers.matchmaking
 
 				matchmaking_manager:find_game(search_config)
@@ -362,6 +369,7 @@ VoteTemplates = {
 			local always_host = data.always_host
 			local strict_matchmaking = data.strict_matchmaking
 			local game_mode = data.game_mode
+			local twitch_enabled = Managers.twitch and Managers.twitch:is_connected()
 			local sync_data = {
 				NetworkLookup.level_keys[level_key],
 				NetworkLookup.act_keys[act_key],
@@ -370,7 +378,8 @@ VoteTemplates = {
 				(private_game and 1) or 2,
 				(always_host and 1) or 2,
 				(strict_matchmaking and 1) or 2,
-				NetworkLookup.game_modes[game_mode]
+				NetworkLookup.game_modes[game_mode],
+				(twitch_enabled and 1) or 2
 			}
 
 			return sync_data
@@ -384,6 +393,7 @@ VoteTemplates = {
 			local always_host_id = sync_data[6]
 			local strict_matchmaking_id = sync_data[7]
 			local game_mode_id = sync_data[8]
+			local twitch_enabled_id = sync_data[9]
 			local level_key = NetworkLookup.level_keys[level_key_id]
 
 			if level_key == "n/a" then
@@ -406,7 +416,8 @@ VoteTemplates = {
 				private_game = (private_game_id == 1 and true) or false,
 				always_host = (always_host_id == 1 and true) or false,
 				strict_matchmaking = (strict_matchmaking_id == 1 and true) or false,
-				game_mode = game_mode
+				game_mode = game_mode,
+				twitch_enabled = (twitch_enabled_id == 1 and true) or false
 			}
 
 			return data
@@ -465,6 +476,10 @@ VoteTemplates = {
 					game_mode = game_mode
 				}
 
+				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(game_mode) then
+					Managers.twitch:disconnect()
+				end
+
 				Managers.matchmaking:find_game(search_config)
 			else
 				Managers.deed:reset()
@@ -474,10 +489,12 @@ VoteTemplates = {
 			local item_name = data.item_name
 			local level_key = data.level_key
 			local difficulty = data.difficulty
+			local twitch_enabled = Managers.twitch and Managers.twitch:is_connected()
 			local sync_data = {
 				NetworkLookup.item_names[item_name],
 				NetworkLookup.level_keys[level_key],
-				NetworkLookup.difficulties[difficulty]
+				NetworkLookup.difficulties[difficulty],
+				(twitch_enabled and 1) or 2
 			}
 
 			return sync_data
@@ -486,6 +503,7 @@ VoteTemplates = {
 			local item_name_id = sync_data[1]
 			local level_key_id = sync_data[2]
 			local difficulty_id = sync_data[3]
+			local twitch_enabled_id = sync_data[4]
 			local item_name = NetworkLookup.item_names[item_name_id]
 			local level_key = NetworkLookup.level_keys[level_key_id]
 
@@ -498,7 +516,8 @@ VoteTemplates = {
 				game_mode = "deed",
 				item_name = item_name,
 				level_key = level_key,
-				difficulty = difficulty
+				difficulty = difficulty,
+				twitch_enabled = (twitch_enabled_id == 1 and true) or false
 			}
 
 			return data
@@ -556,6 +575,11 @@ VoteTemplates = {
 					private_game = private_game,
 					game_mode = game_mode
 				}
+
+				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(game_mode) then
+					Managers.twitch:disconnect()
+				end
+
 				local event_data = data.event_data
 				local matchmaking_manager = Managers.matchmaking
 
@@ -568,9 +592,11 @@ VoteTemplates = {
 			local difficulty = data.difficulty
 			local event_data = data.event_data
 			local mutators = event_data.mutators
+			local twitch_enabled = Managers.twitch and Managers.twitch:is_connected()
 			local sync_data = {
 				NetworkLookup.level_keys[level_key],
-				NetworkLookup.difficulties[difficulty]
+				NetworkLookup.difficulties[difficulty],
+				(twitch_enabled and 1) or 2
 			}
 
 			for i = 1, #mutators, 1 do
@@ -584,8 +610,9 @@ VoteTemplates = {
 		extract_sync_data = function (sync_data)
 			local level_key_id = sync_data[1]
 			local difficulty_id = sync_data[2]
+			local twitch_enabled_id = sync_data[3]
 			local mutators = {}
-			local mutator_start_index = 3
+			local mutator_start_index = 4
 
 			for i = mutator_start_index, #sync_data, 1 do
 				local mutator_id = sync_data[i]
@@ -605,7 +632,8 @@ VoteTemplates = {
 				difficulty = difficulty,
 				event_data = {
 					mutators = mutators
-				}
+				},
+				twitch_enabled = (twitch_enabled_id == 1 and true) or false
 			}
 
 			return data

@@ -644,6 +644,12 @@ InteractionDefinitions.smartobject = {
 
 			data.done_time = t + duration
 			data.duration = duration
+			local buff_template_name = Unit.get_data(interactable_unit, "interaction_data", "apply_buff")
+
+			if buff_template_name then
+				data.apply_buff = buff_template_name
+			end
+
 			local interactor_position = Unit.world_position(interactor_unit, 0)
 			local interactable_position = Unit.world_position(interactable_unit, 0)
 			local start_offset = interactor_position - interactable_position
@@ -668,6 +674,12 @@ InteractionDefinitions.smartobject = {
 			end
 
 			if data.done_time < t then
+				if data.apply_buff then
+					local buff_system = Managers.state.entity:system("buff_system")
+
+					buff_system:add_buff(interactor_unit, data.apply_buff, interactable_unit, false)
+				end
+
 				return InteractionResult.SUCCESS
 			end
 
@@ -837,6 +849,12 @@ InteractionDefinitions.pickup_object = {
 				local pickup_settings = pickup_extension:get_pickup_settings()
 				local peer_id = player.peer_id
 				local interactor_name = (is_player_controlled and ((rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id))) or player:name()
+
+				if PLATFORM ~= "win32" and not Managers.account:offline_mode() then
+					local lobby = Managers.state.network:lobby()
+					interactor_name = (is_player_controlled and (lobby:user_name(peer_id) or tostring(peer_id))) or player:name()
+				end
+
 				local pop_chat = true
 
 				if pickup_settings.type == "loot_die" then
@@ -1056,18 +1074,18 @@ InteractionDefinitions.pickup_object = {
 						end
 
 						if pickup_settings.wield_on_pickup or wielded_slot_name == slot_name then
+							local action_on_wield = pickup_settings.action_on_wield
+
+							if action_on_wield then
+								local item_template = BackendUtils.get_item_template(item_data)
+								item_template.next_action = action_on_wield
+							end
+
 							inventory_extension:wield(slot_name)
 						end
 					elseif pickup_settings.type == "explosive_inventory_item" then
 						local slot_name = pickup_settings.slot_name
 						local item_name = pickup_settings.item_name
-						local time_of_explosion = nil
-
-						if ScriptUnit.has_extension(interactable_unit, "projectile_system") then
-							local projectile_extension = ScriptUnit.extension(interactable_unit, "projectile_system")
-							time_of_explosion = projectile_extension.stop_time
-						end
-
 						local health_extension = ScriptUnit.extension(interactable_unit, "health_system")
 						local death_extension = ScriptUnit.extension(interactable_unit, "death_system")
 						local unit_template = "explosive_weapon_unit_ammo"
@@ -1279,7 +1297,8 @@ InteractionDefinitions.pickup_object = {
 			return return_value, fail_reason
 		end,
 		hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
-			local interaction_action_description = "interaction_action_pick_up"
+			local custom_description = Unit.get_data(interactable_unit, "interaction_action_description")
+			local interaction_action_description = custom_description or "interaction_action_pick_up"
 
 			if not Managers.state.unit_spawner:is_marked_for_deletion(interactable_unit) then
 				if fail_reason then

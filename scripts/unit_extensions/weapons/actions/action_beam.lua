@@ -37,10 +37,7 @@ ActionBeam.client_owner_start_action = function (self, new_action, t, chain_acti
 	local beam_end_effect_lookup_id = NetworkLookup.effects[beam_end_effect]
 	local world = self.world
 
-	if self.owner_player.bot_player then
-		self.beam_effect_id = World.create_particles(world, beam_effect_3p, Vector3.zero())
-		self.beam_effect_length_id = World.find_particles_variable(world, beam_effect_3p, "trail_length")
-	else
+	if not self.owner_player.bot_player then
 		self.beam_effect_id = World.create_particles(world, beam_effect, Vector3.zero())
 		self.beam_effect_length_id = World.find_particles_variable(world, beam_effect, "trail_length")
 	end
@@ -50,6 +47,10 @@ ActionBeam.client_owner_start_action = function (self, new_action, t, chain_acti
 
 	if self.is_server or LEVEL_EDITOR_TEST then
 		self.network_transmit:send_rpc_clients("rpc_start_beam", go_id, beam_effect_lookup_id, beam_end_effect_lookup_id, new_action.range)
+
+		if self.owner_player.bot_player then
+			self.network_transmit:queue_local_rpc("rpc_start_beam", go_id, beam_effect_lookup_id, beam_end_effect_lookup_id, new_action.range)
+		end
 	else
 		self.network_transmit:send_rpc_server("rpc_start_beam", go_id, beam_effect_lookup_id, beam_end_effect_lookup_id, new_action.range)
 	end
@@ -268,15 +269,17 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 			end
 		end
 
-		local weapon_unit = self.weapon_unit
-		local end_of_staff_position = Unit.world_position(weapon_unit, Unit.node(weapon_unit, "fx_muzzle"))
-		local distance = Vector3.distance(end_of_staff_position, beam_end_position)
-		local beam_direction = Vector3.normalize(end_of_staff_position - beam_end_position)
-		local rotation = Quaternion.look(beam_direction)
+		if self.beam_effect_id then
+			local weapon_unit = self.weapon_unit
+			local end_of_staff_position = Unit.world_position(weapon_unit, Unit.node(weapon_unit, "fx_muzzle"))
+			local distance = Vector3.distance(end_of_staff_position, beam_end_position)
+			local beam_direction = Vector3.normalize(end_of_staff_position - beam_end_position)
+			local rotation = Quaternion.look(beam_direction)
 
-		World.move_particles(world, self.beam_effect_id, beam_end_position, rotation)
-		World.set_particles_variable(world, self.beam_effect_id, self.beam_effect_length_id, Vector3(0.3, distance, 0))
-		World.move_particles(world, self.beam_end_effect_id, beam_end_position, rotation)
+			World.move_particles(world, self.beam_effect_id, beam_end_position, rotation)
+			World.set_particles_variable(world, self.beam_effect_id, self.beam_effect_length_id, Vector3(0.3, distance, 0))
+			World.move_particles(world, self.beam_end_effect_id, beam_end_position, rotation)
+		end
 
 		self.current_target = hit_unit
 	end
@@ -313,6 +316,10 @@ ActionBeam.finish = function (self, reason)
 
 	if self.is_server or LEVEL_EDITOR_TEST then
 		self.network_transmit:send_rpc_clients("rpc_end_beam", go_id)
+
+		if self.owner_player.bot_player then
+			self.network_transmit:queue_local_rpc("rpc_end_beam", go_id)
+		end
 	else
 		self.network_transmit:send_rpc_server("rpc_end_beam", go_id)
 	end

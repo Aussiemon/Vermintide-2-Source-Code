@@ -127,11 +127,13 @@ AISystem.init = function (self, context, name)
 	self._hot_join_sync_units = {}
 
 	for layer_name, _ in pairs(NAV_TAG_VOLUME_LAYER_COST_AI) do
-		NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] = 1
+		local default_cost_ai = DEFAULT_NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] or 1
+		NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] = default_cost_ai
 	end
 
 	for layer_name, _ in pairs(NAV_TAG_VOLUME_LAYER_COST_BOTS) do
-		NAV_TAG_VOLUME_LAYER_COST_BOTS[layer_name] = 1
+		local default_cost_bots = DEFAULT_NAV_TAG_VOLUME_LAYER_COST_BOTS[layer_name] or 1
+		NAV_TAG_VOLUME_LAYER_COST_BOTS[layer_name] = default_cost_bots
 	end
 end
 

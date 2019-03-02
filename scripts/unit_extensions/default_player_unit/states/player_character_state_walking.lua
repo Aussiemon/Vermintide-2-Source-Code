@@ -123,6 +123,7 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 	local health_extension = self.health_extension
 	local inventory_extension = self.inventory_extension
 	local interactor_extension = self.interactor_extension
+	local buff_extension = self.buff_extension
 	local current_movement_speed_scale = self.current_movement_speed_scale
 	local CharacterStateHelper = CharacterStateHelper
 
@@ -283,6 +284,53 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 	local current_max_move_speed = (is_crouching and movement_settings_table.crouch_move_speed) or (is_walking and movement_settings_table.walk_move_speed) or movement_settings_table.move_speed
 	local move_speed_multiplier = status_extension:current_move_speed_multiplier()
 	local final_move_speed = current_max_move_speed * move_speed_multiplier * current_movement_speed_scale * movement_settings_table.player_speed_scale
+	local has_intoxication_stagger = buff_extension:has_buff_perk("intoxication_stagger")
+	local has_drunk_stagger = buff_extension:has_buff_perk("drunk_stagger")
+	local has_hungover_stagger = buff_extension:has_buff_perk("hungover_stagger")
+
+	if has_intoxication_stagger or has_drunk_stagger or has_hungover_stagger then
+		local intoxication_level = math.abs(status_extension:intoxication_level())
+		local do_intoxication_stagger = has_intoxication_stagger and math.random() > 0.6 / intoxication_level
+		local do_drunk_stagger = has_drunk_stagger and math.random() > 0.9 / intoxication_level
+		local do_hungover_stagger = has_hungover_stagger
+		local do_stagger = do_intoxication_stagger or do_drunk_stagger or do_hungover_stagger
+
+		if not self._is_in_intoxication_stagger_cooldown and not self._is_intoxication_stagger and do_stagger then
+			self._is_intoxication_stagger = true
+			self._intoxication_stagger_start = t
+			self._intoxication_stagger_duration = math.random() * 1.5 + math.random() * 0.5
+			self._intoxication_stagger_time = self._intoxication_stagger_start + self._intoxication_stagger_duration
+			local current_velocity = locomotion_extension:current_velocity()
+			local current_dir = Vector3.normalize(current_velocity)
+			local perpendicular_dir = Vector3.cross(current_dir, Vector3.up())
+			local stagger_dir = math.sin(t * math.pi * 0.5) * math.sign(math.random() * 2 - 1) * perpendicular_dir
+			self._intoxication_stagger_dir = Vector3Box(stagger_dir)
+		end
+
+		if self._is_intoxication_stagger and t <= self._intoxication_stagger_time then
+			local time_left_in_intoxication_stagger = self._intoxication_stagger_time - t
+			local time_in_intoxication_stagger = self._intoxication_stagger_duration - time_left_in_intoxication_stagger
+			local percentage = time_in_intoxication_stagger / self._intoxication_stagger_duration
+			local modified_dir = Vector3.lerp(move_input, self._intoxication_stagger_dir:unbox(), percentage)
+			move_input = move_input + modified_dir
+
+			if percentage < 0.5 then
+				final_move_speed = math.lerp(final_move_speed, final_move_speed * 0.75, math.sin(percentage * 2 * math.pi * 0.5))
+			else
+				final_move_speed = math.lerp(final_move_speed * 0.75, final_move_speed, math.sin(percentage * 2 * math.pi * 0.5))
+			end
+		elseif self._is_intoxication_stagger and self._intoxication_stagger_time < t then
+			self._is_intoxication_stagger = nil
+			self._is_in_intoxication_stagger_cooldown = true
+			self._intoxication_stagger_cooldown_time = t + math.random() * 1 / math.abs(intoxication_level)
+		end
+
+		if self._is_in_intoxication_stagger_cooldown and self._intoxication_stagger_cooldown_time < t then
+			self._is_in_intoxication_stagger_cooldown = nil
+			self._intoxication_stagger_cooldown_time = nil
+		end
+	end
+
 	local move_input_direction = Vector3.normalize(move_input)
 
 	if Vector3.length_squared(move_input) == 0 then

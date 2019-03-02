@@ -635,6 +635,13 @@ local gameplay_settings_definition = {
 		widget_type = "slider"
 	},
 	{
+		setup = "cb_hud_clamp_ui_scaling_setup",
+		saved_value = "cb_hud_clamp_ui_scaling_saved_value",
+		callback = "cb_hud_clamp_ui_scaling",
+		tooltip_text = "tooltip_hud_clamp_ui_scaling",
+		widget_type = "stepper"
+	},
+	{
 		setup = "cb_enabled_crosshairs_setup",
 		saved_value = "cb_enabled_crosshairs_saved_value",
 		callback = "cb_enabled_crosshairs",

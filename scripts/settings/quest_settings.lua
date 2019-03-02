@@ -24,6 +24,7 @@ QuestSettings = {
 	num_enemies_killed_by_poison = 10,
 	corruptor_killed_at_teleport_time = 2,
 	daily_complete_quickplay_missions = 3,
+	daily_complete_weekly_event_missions = 3,
 	daily_collect_tomes = 4,
 	daily_collect_grimoires = 3,
 	daily_kill_bosses = 3,
@@ -39,7 +40,13 @@ QuestSettings = {
 	event_geheimnisnacht_quickplay_levels = 10,
 	event_geheimnisnacht_difficulty_levels = 10,
 	event_mondstille_quickplay_legend_levels = 5,
+	event_crawl_drink_all_ale_amount = 99,
 	weekly_complete_quickplay_missions = {
+		3,
+		6,
+		10
+	},
+	weekly_complete_weekly_event_missions = {
 		3,
 		6,
 		10
@@ -201,6 +208,11 @@ QuestSettings.stat_mappings = {
 		"weekly_quest_5_stat_1",
 		"weekly_quest_5_stat_2",
 		"weekly_quest_5_stat_3"
+	},
+	weekly_quest_6 = {
+		"weekly_quest_6_stat_1",
+		"weekly_quest_6_stat_2",
+		"weekly_quest_6_stat_3"
 	}
 }
 

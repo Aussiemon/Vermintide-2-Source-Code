@@ -346,6 +346,10 @@ function flow_callback_activate_triggered_pickup_spawners(params)
 end
 
 function flow_callback_disable_torch(params)
+	if Managers.state.game_mode:has_activated_mutator("darkness") then
+		return
+	end
+
 	local player_unit = params.touching_unit
 
 	if Managers.player.is_server then
@@ -432,6 +436,15 @@ function flow_query_wielded_weapon(params)
 	flow_return_table.lefthandammo1p = left_hand_ammo_unit_1p
 
 	return flow_return_table
+end
+
+function flow_force_use_pickup_for_all_players(params)
+	local pickup_name = params.pickup_name
+	local pickup_name_id = NetworkLookup.pickup_names[pickup_name]
+	local network_manager = Managers.state.network
+	local network_transmit = network_manager.network_transmit
+
+	network_transmit:send_rpc_server("rpc_force_use_pickup", pickup_name_id)
 end
 
 function flow_camera_shake(params)
@@ -1585,6 +1598,19 @@ function flow_callback_add_group_buff(params)
 	return nil
 end
 
+function flow_callback_set_career_voice_parameter_value(params)
+	local player = Managers.player:local_player()
+	local profile_index = player:profile_index()
+	local profile = SPProfiles[profile_index]
+	local career_voice_parameter = profile.career_voice_parameter
+	local spawn_manager = Managers.state.spawn
+	local world = spawn_manager.world
+	local wwise_world = Wwise.wwise_world(world)
+	local career_voice_parameter_value = params.career_voice_parameter_value
+
+	WwiseWorld.set_global_parameter(wwise_world, career_voice_parameter, career_voice_parameter_value)
+end
+
 function flow_is_carrying_explosive_barrel(params)
 	local player_unit = params.player_unit
 
@@ -2098,6 +2124,22 @@ function flow_callback_synced_animation(params)
 
 	if target_unit and animation_event and Unit.has_animation_event(target_unit, animation_event) then
 		Unit.animation_event(target_unit, animation_event)
+	end
+end
+
+function flow_callback_player_animation(params)
+	local character_type = params.character_type
+	local animation_event = params.animation_event
+	local players = Managers.player:human_and_bot_players()
+
+	for _, player in pairs(players) do
+		local profile_settings = SPProfiles[player:profile_index()]
+		local display_name = profile_settings.display_name
+		local unit = player.player_unit
+
+		if unit and display_name == character_type and Unit.has_animation_event(unit, animation_event) then
+			Unit.animation_event(unit, animation_event)
+		end
 	end
 end
 

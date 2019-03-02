@@ -1064,6 +1064,29 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 				end
 			end
 		end
+	elseif item_template.next_action then
+		local action_data = item_template.next_action
+		next_action_init_data = action_data.action_init_data
+		local action_name = action_data.action
+		local only_check_condition = true
+		local sub_actions = item_template.actions[action_name]
+
+		for sub_action_name, action_settings in pairs(sub_actions) do
+			if sub_action_name ~= "default" and action_settings.condition_func then
+				new_action, new_sub_action = validate_action(unit, action_name, sub_action_name, action_settings, input_extension, inventory_extension, only_check_condition, nil, current_action_extension, t)
+
+				if new_action and new_sub_action then
+					break
+				end
+			end
+		end
+
+		if not new_action then
+			local action_settings = item_template.actions[action_name].default
+			new_action, new_sub_action = validate_action(unit, action_name, "default", action_settings, input_extension, inventory_extension, only_check_condition, nil, current_action_extension, t)
+		end
+
+		item_template.next_action = nil
 	else
 		local ammo_extension = (left_hand_weapon_extension and left_hand_weapon_extension.ammo_extension) or (right_hand_weapon_extension and right_hand_weapon_extension.ammo_extension)
 		local highest_priority_action = 0

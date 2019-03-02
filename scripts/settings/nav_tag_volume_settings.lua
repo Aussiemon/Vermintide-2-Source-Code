@@ -17,6 +17,8 @@ NavTagVolumeLayers = {
 	"LOW_SPAWN",
 	"HIGH_SPAWN",
 	"NO_BOSS",
+	"NO_BOTS",
+	"NO_BOTS_NO_SPAWN",
 	"nav_tag_volume_dummy_layer1",
 	"nav_tag_volume_dummy_layer2",
 	"nav_tag_volume_dummy_layer3",
@@ -24,16 +26,16 @@ NavTagVolumeLayers = {
 	"nav_tag_volume_dummy_layer5",
 	"nav_tag_volume_dummy_layer6",
 	"nav_tag_volume_dummy_layer7",
-	"nav_tag_volume_dummy_layer8",
-	"nav_tag_volume_dummy_layer9",
-	"nav_tag_volume_dummy_layer10"
+	"nav_tag_volume_dummy_layer8"
 }
 LevelVolumesOnly = {
 	HIGH_SPAWN = true,
 	ROOF = true,
+	NO_BOTS = true,
 	NO_SPAWN = true,
 	LOW_SPAWN = true,
-	NO_BOSS = true
+	NO_BOSS = true,
+	NO_BOTS_NO_SPAWN = true
 }
 local added_layers = {}
 

@@ -282,29 +282,6 @@ Projectiles.burning_head = {
 	projectile_unit_name = "units/weapons/player/wpn_burning_head/wpn_burning_head_3ps"
 }
 Projectiles.burning_head = table.clone(Projectiles.burning_head) or table.clone(Projectiles.default)
-Projectiles.markus_huntsman_career_weapon = {
-	projectile_unit_template_name = "player_projectile_unit",
-	life_time = 3,
-	gravity_settings = "drakegun",
-	impact_type = "sphere_sweep",
-	trajectory_template_name = "throw_trajectory",
-	radius = 0.1,
-	projectile_unit_name = "units/weapons/player/wpn_emp_grenade_01_t1/wpn_emp_grenade_01_t1_3p"
-}
-Projectiles.bardin_ranger_career_weapon = {
-	projectile_unit_template_name = "player_projectile_unit",
-	radius = 0.1,
-	gravity_settings = "drakegun",
-	impact_type = "sphere_sweep",
-	trajectory_template_name = "throw_trajectory",
-	projectile_unit_name = "units/weapons/player/wpn_emp_grenade_02_t2/wpn_emp_grenade_02_t2_3p"
-}
-Projectiles.victor_bounty_hunter = table.clone(Projectiles.crossbow_bolt) or table.clone(Projectiles.default)
-Projectiles.victor_bounty_hunter.radius = 0.15
-Projectiles.victor_bounty_hunter.gravity_settings = "bounty_hunter_shot"
-Projectiles.pistol_shot = table.clone(Projectiles.crossbow_bolt) or table.clone(Projectiles.default)
-Projectiles.pistol_shot.radius = 0.05
-Projectiles.pistol_shot.gravity_settings = "bounty_hunter_shot"
 Projectiles.kerillian_waywatcher_career_arrows = {
 	projectile_unit_template_name = "player_projectile_unit",
 	dummy_linker_unit_name = "units/weapons/player/wpn_we_quiver_t1/wpn_we_tripple_arrow_t1_3ps",
@@ -313,6 +290,19 @@ Projectiles.kerillian_waywatcher_career_arrows = {
 	trajectory_template_name = "throw_trajectory",
 	projectile_unit_name = "units/weapons/player/wpn_we_quiver_t1/wpn_we_tripple_arrow_t1_3p"
 }
+Projectiles.kerillian_waywatcher_career_arrows = table.clone(Projectiles.kerillian_waywatcher_career_arrows) or table.clone(Projectiles.default)
+Projectiles.victor_bounty_hunter = {
+	projectile_unit_template_name = "player_projectile_unit",
+	static_impact_type = "raycast",
+	gravity_settings = "bounty_hunter_shot",
+	impact_type = "sphere_sweep",
+	trajectory_template_name = "throw_trajectory",
+	radius = 0.15,
+	projectile_unit_name = "units/weapons/player/wpn_bullet_temp/wpn_bullet_temp_3ps"
+}
+Projectiles.victor_bounty_hunter = table.clone(Projectiles.victor_bounty_hunter) or table.clone(Projectiles.default)
+Projectiles.pistol_shot = table.clone(Projectiles.victor_bounty_hunter) or table.clone(Projectiles.default)
+Projectiles.pistol_shot.radius = 0.05
 Projectiles.grenade = {
 	impact_type = "sphere_sweep",
 	radius = 0.1,

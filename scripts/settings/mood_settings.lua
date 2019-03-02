@@ -11,7 +11,9 @@ MoodPriority = {
 	"skill_ranger",
 	"skill_huntsman_stealth",
 	"skill_huntsman_surge",
-	"wounded"
+	"wounded",
+	"drunk_01",
+	"hangover_01"
 }
 HealingMoods = {
 	bandage = "heal_medikit",
@@ -130,6 +132,20 @@ MoodSettings = {
 	},
 	skill_huntsman_surge = {
 		environment_setting = "skill_huntsman_surge",
+		blend_in_time = 0.5,
+		blend_out_time = 0.25,
+		particle_effects_on_enter = {},
+		particle_effects_on_exit = {}
+	},
+	drunk_01 = {
+		environment_setting = "drunk_01",
+		blend_in_time = 0.5,
+		blend_out_time = 0.25,
+		particle_effects_on_enter = {},
+		particle_effects_on_exit = {}
+	},
+	hangover_01 = {
+		environment_setting = "hangover_01",
 		blend_in_time = 0.5,
 		blend_out_time = 0.25,
 		particle_effects_on_enter = {},

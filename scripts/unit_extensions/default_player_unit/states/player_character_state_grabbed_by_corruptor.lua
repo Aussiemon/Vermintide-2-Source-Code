@@ -13,7 +13,8 @@ PlayerCharacterStateGrabbedByCorruptor.on_enter = function (self, unit, input, d
 
 	CharacterStateHelper.stop_weapon_actions(inventory_extension, "grabbed")
 	CharacterStateHelper.stop_career_abilities(career_extension, "grabbed")
-	inventory_extension:check_and_drop_pickups("grabbed_by_pack_master")
+	inventory_extension:check_and_drop_pickups("grabbed_by_corruptor")
+	CharacterStateHelper.play_animation_event(unit, "to_corruptor")
 	CharacterStateHelper.change_camera_state(self.player, "follow_third_person")
 
 	local first_person_extension = self.first_person_extension

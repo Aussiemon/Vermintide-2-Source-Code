@@ -32,8 +32,18 @@ GameSettingsDevelopment.use_engine_optimized_ai_locomotion = true
 local script_data = script_data
 script_data.debug_behaviour_trees = (script_data.debug_behaviour_trees ~= nil and script_data.debug_behaviour_trees) or false
 GameSettingsDevelopment.use_backend = not Development.parameter("use_local_backend")
-GameSettingsDevelopment.backend_settings = BackendSettings.dev_steam_playfab
+local test_backend = Development.parameter("test_backend")
+
+if test_backend ~= nil then
+	print("Using test backend:", test_backend)
+
+	GameSettingsDevelopment.backend_settings = BackendSettings[test_backend]
+else
+	GameSettingsDevelopment.backend_settings = BackendSettings.dev_steam_playfab
+end
+
 GameSettingsDevelopment.twitch_enabled = true
+GameSettingsDevelopment.allow_chat_input = true
 GameSettingsDevelopment.disable_intro_trailer = false
 GameSettingsDevelopment.use_new_pickup_spawning = true
 GameSettingsDevelopment.fade_environments = true
@@ -96,14 +106,8 @@ if settings.steam or Development.parameter("force_steam") then
 		GameSettingsDevelopment.show_version_info = true
 		GameSettingsDevelopment.show_fps = Development.parameter("show_fps") or false
 
-		if app_id == 795750 then
-			local test_backend = Development.parameter("test_backend")
-
-			if test_backend ~= nil then
-				GameSettingsDevelopment.backend_settings = BackendSettings[test_backend]
-			else
-				GameSettingsDevelopment.backend_settings = BackendSettings.dev_steam_playfab
-			end
+		if app_id == 795750 and test_backend == nil then
+			GameSettingsDevelopment.backend_settings = BackendSettings.dev_steam_playfab
 		elseif app_id == 552500 then
 			GameSettingsDevelopment.backend_settings = BackendSettings.prod_steam_playfab
 		end

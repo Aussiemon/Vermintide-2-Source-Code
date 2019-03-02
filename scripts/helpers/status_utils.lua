@@ -15,7 +15,7 @@ StatusUtils = {
 		end
 	end,
 	set_knocked_down_network = function (knocked_down_unit, knocked_down)
-		fassert(Managers.player.is_server or LEVEL_EDITOR_TEST)
+		fassert(Managers.player.is_server or LEVEL_EDITOR_TEST, "can only knock down on server")
 
 		local status_extension = ScriptUnit.extension(knocked_down_unit, "status_system")
 

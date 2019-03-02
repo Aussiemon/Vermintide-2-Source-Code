@@ -326,6 +326,7 @@ PSNRoom.init = function (self, room_id)
 	self.room_id = room_id
 	self._room_data = {}
 	self._serialized_room_data = ""
+	self._user_names = {}
 	self._refresh_room_data = false
 	self._refresh_cooldown = 0
 end
@@ -430,6 +431,12 @@ PSNRoom.online_id_from_peer_id = function (self, peer_id)
 		end
 	end
 
+	local user_name = self._user_names[peer_id]
+
+	if user_name then
+		return user_name
+	end
+
 	fassert(false, "[PSNRoom]:np_id_froom_peer_id() No member with peer id(%s) in room(%d)", peer_id, room_id)
 end
 
@@ -439,6 +446,16 @@ end
 
 PSNRoom.sce_np_room_id = function (self)
 	return PsnRoom.sce_np_room_id(self.room_id)
+end
+
+PSNRoom.update_user_names = function (self)
+	local room_id = self.room_id
+	local num_members = PsnRoom.num_members(room_id)
+
+	for i = 0, num_members - 1, 1 do
+		local member = PsnRoom.member(room_id, i)
+		self._user_names[member.peer_id] = member.online_id
+	end
 end
 
 PSNRoom.user_name = function (self, peer_id)
@@ -455,6 +472,8 @@ PSNRoom.user_name = function (self, peer_id)
 			break
 		end
 	end
+
+	user_name = user_name or self._user_names[peer_id]
 
 	fassert(user_name ~= nil, "[PSNRoom]:user_name() No member with peer id(%s) in room(%d)", peer_id, room_id)
 

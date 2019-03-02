@@ -1,29 +1,4 @@
 ExplosionTemplates = {
-	slow_grenade = {
-		aoe = {
-			dot_template_name = "slow_grenade_slow",
-			radius = 2,
-			damage_interval = 0.5,
-			duration = 10,
-			area_damage_template = "explosion_template_aoe",
-			attack_template = "arrow_poison_aoe",
-			nav_mesh_effect = {
-				particle_radius = 0.6666666666666666,
-				particle_name = "fx/wpnfx_fire_grenade_impact_remains",
-				particle_spacing = 0.3
-			}
-		}
-	},
-	sniper_poison_arrow = {
-		explosion = {
-			use_attacker_power_level = true,
-			radius = 3,
-			no_prop_damage = true,
-			sound_event_name = "arrow_hit_poison_cloud",
-			damage_profile = "poison_aoe",
-			effect_name = "fx/wpnfx_poison_arrow_impact_sniper"
-		}
-	},
 	machinegun_poison_arrow = {
 		explosion = {
 			use_attacker_power_level = true,
@@ -370,19 +345,6 @@ ExplosionTemplates = {
 			damage_profile = "overcharge_explosion_ability",
 			ignore_attacker_unit = true,
 			effect_name = "fx/chr_unchained_living_bomb_3p"
-		}
-	},
-	smoke_grenade = {
-		is_grenade = true,
-		aoe = {
-			extra_effect_name = "fx/chr_gutter_foff",
-			radius = 5,
-			create_nav_tag_volume = true,
-			sound_event_name = "player_combat_weapon_smoke_grenade_explosion",
-			damage_interval = 1,
-			duration = 10,
-			area_damage_template = "explosion_template_aoe",
-			effect_name = "fx/wpnfx_smoke_grenade_impact"
 		}
 	},
 	fire_grenade = {
@@ -854,9 +816,9 @@ ExplosionTemplates.chaos_slow_bomb_missile = {
 			Managers.state.unit_spawner:mark_for_deletion(projectile_unit)
 		else
 			local blackboard = BLACKBOARDS[owner_unit]
-			local explosion_template = ExplosionTemplates.chaos_slow_bomb_missile_missed
+			local missed_explosion_template = ExplosionTemplates.chaos_slow_bomb_missile_missed
 
-			AiUtils.ai_explosion(projectile_unit, owner_unit, blackboard, damage_source, explosion_template)
+			AiUtils.ai_explosion(projectile_unit, owner_unit, blackboard, damage_source, missed_explosion_template)
 		end
 	end
 }
@@ -894,34 +856,6 @@ ExplosionTemplates.corpse_explosion_default = {
 		}
 	}
 }
-ExplosionTemplates.sniper_poison_arrow_t2 = table.clone(ExplosionTemplates.sniper_poison_arrow)
-ExplosionTemplates.sniper_poison_arrow_t2.explosion.attack_template = "arrow_poison_aoe_t2"
-ExplosionTemplates.sniper_poison_arrow_t2.explosion.dot_template_name = "aoe_poison_dot"
-ExplosionTemplates.sniper_poison_arrow_t3 = table.clone(ExplosionTemplates.sniper_poison_arrow)
-ExplosionTemplates.sniper_poison_arrow_t3.explosion.attack_template = "arrow_poison_aoe_t3"
-ExplosionTemplates.sniper_poison_arrow_t3.explosion.dot_template_name = "aoe_poison_dot"
-ExplosionTemplates.machinegun_poison_arrow_t2 = table.clone(ExplosionTemplates.machinegun_poison_arrow)
-ExplosionTemplates.machinegun_poison_arrow_t2.explosion.attack_template = "arrow_poison_aoe_t2"
-ExplosionTemplates.machinegun_poison_arrow_t2.explosion.dot_template_name = "aoe_poison_dot"
-ExplosionTemplates.machinegun_poison_arrow_t3 = table.clone(ExplosionTemplates.machinegun_poison_arrow)
-ExplosionTemplates.machinegun_poison_arrow_t3.explosion.attack_template = "arrow_poison_aoe_t3"
-ExplosionTemplates.machinegun_poison_arrow_t3.explosion.dot_template_name = "aoe_poison_dot"
-ExplosionTemplates.carbine_poison_arrow_t2 = table.clone(ExplosionTemplates.carbine_poison_arrow)
-ExplosionTemplates.carbine_poison_arrow_t2.explosion.attack_template = "arrow_poison_aoe_t2"
-ExplosionTemplates.carbine_poison_arrow_t2.explosion.dot_template_name = "aoe_poison_dot"
-ExplosionTemplates.carbine_poison_arrow_t3 = table.clone(ExplosionTemplates.carbine_poison_arrow)
-ExplosionTemplates.carbine_poison_arrow_t3.explosion.attack_template = "arrow_poison_aoe_t3"
-ExplosionTemplates.carbine_poison_arrow_t3.explosion.dot_template_name = "aoe_poison_dot"
-ExplosionTemplates.fireball_charged_t2 = table.clone(ExplosionTemplates.fireball_charged)
-ExplosionTemplates.fireball_charged_t2.explosion.attack_template = "drakegun_t2"
-ExplosionTemplates.fireball_charged_t2.explosion.attack_template_glance = "drakegun_glance_t2"
-ExplosionTemplates.fireball_charged_t2.explosion.dot_template_name = "burning_1W_dot"
-ExplosionTemplates.fireball_charged_t2.explosion.dot_template_name_glance = "burning_1W_dot"
-ExplosionTemplates.fireball_charged_t3 = table.clone(ExplosionTemplates.fireball_charged)
-ExplosionTemplates.fireball_charged_t3.explosion.attack_template = "drakegun_t3"
-ExplosionTemplates.fireball_charged_t3.explosion.attack_template_glance = "drakegun_glance_t3"
-ExplosionTemplates.fireball_charged_t3.explosion.dot_template_name = "burning_1W_dot"
-ExplosionTemplates.fireball_charged_t3.explosion.dot_template_name_glance = "burning_1W_dot"
 
 for _, dlc in pairs(DLCSettings) do
 	local explosion_templates = dlc.explosion_templates

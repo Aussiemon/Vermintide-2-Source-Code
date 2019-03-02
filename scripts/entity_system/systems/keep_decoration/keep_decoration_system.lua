@@ -103,7 +103,7 @@ KeepDecorationSystem.update = function (self, context, t)
 			self._num_players = num_players
 
 			self:_sync_client_paintings()
-			self:_toggle_client_paintings()
+			self:_refresh_client_paintings()
 		end
 	end
 
@@ -139,23 +139,21 @@ KeepDecorationSystem._sync_client_paintings = function (self)
 	self._client_paintings = client_paintings
 end
 
-KeepDecorationSystem._toggle_client_paintings = function (self)
+KeepDecorationSystem._refresh_client_paintings = function (self)
 	local client_paintings = self._client_paintings
-
-	for i = 1, 3, 1 do
-		local extension = self._client_painting_extensions[i]
-
-		extension:set_client_painting("hidden")
-	end
-
+	local paintings = {}
 	local count = 1
 
 	for _, val in pairs(client_paintings) do
-		local extension = self._client_painting_extensions[count]
-
-		extension:set_client_painting(val)
-
+		paintings[count] = val
 		count = count + 1
+	end
+
+	for i = 1, 3, 1 do
+		local painting = paintings[i] or "hidden"
+		local extension = self._client_painting_extensions[i]
+
+		extension:set_client_painting(painting)
 	end
 end
 
@@ -179,7 +177,7 @@ end
 
 KeepDecorationSystem.rpc_send_painting = function (self, sender, painting)
 	self:_add_client_painting(sender, painting)
-	self:_toggle_client_paintings()
+	self:_refresh_client_paintings()
 end
 
 KeepDecorationSystem.rpc_request_painting = function (self, sender)

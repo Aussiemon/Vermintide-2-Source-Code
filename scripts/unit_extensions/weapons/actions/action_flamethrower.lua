@@ -65,15 +65,22 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 		local muzzle_rotation = Unit.world_rotation(weapon_unit, muzzle_node)
 		local flamethrower_effect = current_action.particle_effect_flames
 		local flamethrower_effect_3p = current_action.particle_effect_flames_3p
-		local flamethrower_effect_id = NetworkLookup.effects[flamethrower_effect_3p]
-		self.flamethrower_effect = World.create_particles(world, flamethrower_effect, muzzle_position, muzzle_rotation)
+		local flamethrower_effect_3p_id = NetworkLookup.effects[flamethrower_effect_3p]
 
-		World.link_particles(world, self.flamethrower_effect, weapon_unit, muzzle_node, Matrix4x4.identity(), "destroy")
+		if not self.owner_player.bot_player then
+			self.flamethrower_effect = World.create_particles(world, flamethrower_effect, muzzle_position, muzzle_rotation)
+
+			World.link_particles(world, self.flamethrower_effect, weapon_unit, muzzle_node, Matrix4x4.identity(), "destroy")
+		end
 
 		if self.is_server or LEVEL_EDITOR_TEST then
-			self.network_transmit:send_rpc_clients("rpc_start_flamethrower", go_id, flamethrower_effect_id)
+			self.network_transmit:send_rpc_clients("rpc_start_flamethrower", go_id, flamethrower_effect_3p_id)
+
+			if self.owner_player.bot_player then
+				self.network_transmit:queue_local_rpc("rpc_start_flamethrower", go_id, flamethrower_effect_3p_id)
+			end
 		else
-			self.network_transmit:send_rpc_server("rpc_start_flamethrower", go_id, flamethrower_effect_id)
+			self.network_transmit:send_rpc_server("rpc_start_flamethrower", go_id, flamethrower_effect_3p_id)
 		end
 
 		if self.source_id then
@@ -237,6 +244,10 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 
 		if self.is_server or LEVEL_EDITOR_TEST then
 			self.network_transmit:send_rpc_clients("rpc_end_flamethrower", go_id)
+
+			if self.owner_player.bot_player then
+				self.network_transmit:queue_local_rpc("rpc_end_flamethrower", go_id)
+			end
 		else
 			self.network_transmit:send_rpc_server("rpc_end_flamethrower", go_id)
 		end
@@ -289,6 +300,10 @@ ActionFlamethrower.finish = function (self, reason)
 
 		if self.is_server or LEVEL_EDITOR_TEST then
 			self.network_transmit:send_rpc_clients("rpc_end_flamethrower", go_id)
+
+			if self.owner_player.bot_player then
+				self.network_transmit:queue_local_rpc("rpc_end_flamethrower", go_id)
+			end
 		else
 			self.network_transmit:send_rpc_server("rpc_end_flamethrower", go_id)
 		end

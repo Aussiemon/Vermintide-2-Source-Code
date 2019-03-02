@@ -89,6 +89,7 @@ NetworkLookup.anims = {
 	"cooldown_loop",
 	"cooldown_end",
 	"dodge_time",
+	"drink",
 	"foff_self",
 	"front_idle_left",
 	"front_idle_right",
@@ -237,6 +238,7 @@ NetworkLookup.anims = {
 	"push_stab",
 	"respawn_floor_loop",
 	"respawn_revive",
+	"respawn_gauntlet_03",
 	"revive_complete",
 	"reset_speed",
 	"stagger_scale",
@@ -788,5 +790,19 @@ NetworkLookup.interest_point_anims = {
 	"idle_passive_bang_door_2",
 	"idle_passive_guard"
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local anim_lookup = dlc.anim_lookup
+
+	if anim_lookup then
+		for i = 1, #anim_lookup, 1 do
+			local anim_event = anim_lookup[i]
+
+			assert(not NetworkLookup.anims[anim_event], "The animation event [\"%s\"] from DLC [\"%s\"] already exists in NetworkLookup.anims!")
+
+			NetworkLookup.anims[#NetworkLookup.anims + 1] = anim_event
+		end
+	end
+end
 
 return

@@ -75,8 +75,6 @@ local control_points = {}
 
 NavGraphSystem.init_nav_graphs = function (self, unit, smart_object_id, extension)
 	local nav_world = self.nav_world
-	local level = LevelHelper:current_level(self.world)
-	local unit_level_id = Level.unit_index(level, unit)
 	local smart_objects = self.smart_objects
 	local debug_color = Colors.get("orange")
 	local smart_object_unit_data = smart_objects[smart_object_id]
@@ -105,49 +103,6 @@ NavGraphSystem.init_nav_graphs = function (self, unit, smart_object_id, extensio
 		end
 
 		extension.navgraphs[#extension.navgraphs + 1] = navgraph
-
-		if Development.parameter("visualize_ledges") then
-			local drawer = Managers.state.debug:drawer({
-				mode = "retained",
-				name = "NavGraphConnectorExtension"
-			})
-			local debug_color_fail = Colors.get("red")
-
-			if smart_object_type == "ledges" or smart_object_type == "ledges_with_fence" then
-				if smart_object_data.data.ledge_position1 then
-					drawer:line(control_points[1], Vector3Aux.unbox(smart_object_data.data.ledge_position1), debug_color)
-					drawer:line(Vector3Aux.unbox(smart_object_data.data.ledge_position1), Vector3Aux.unbox(smart_object_data.data.ledge_position2), debug_color)
-					drawer:line(control_points[2], Vector3Aux.unbox(smart_object_data.data.ledge_position2), debug_color)
-				else
-					drawer:line(control_points[1], Vector3Aux.unbox(smart_object_data.data.ledge_position), debug_color)
-					drawer:line(control_points[2], Vector3Aux.unbox(smart_object_data.data.ledge_position), debug_color)
-				end
-
-				if not smart_object_data.data.is_bidirectional then
-					drawer:vector(control_points[1], Vector3.up(), debug_color)
-				end
-			elseif smart_object_type == "jumps" then
-				drawer:line(control_points[1], control_points[2], Colors.get("aqua_marine"))
-			else
-				drawer:line(control_points[1], control_points[2], debug_color)
-			end
-
-			local is_position_on_navmesh = GwNavQueries.triangle_from_position(nav_world, control_points[1])
-
-			if is_position_on_navmesh then
-				drawer:sphere(control_points[1], 0.05, debug_color)
-			else
-				drawer:sphere(control_points[1], 0.05, debug_color_fail)
-			end
-
-			is_position_on_navmesh = GwNavQueries.triangle_from_position(nav_world, control_points[2])
-
-			if is_position_on_navmesh then
-				drawer:sphere(control_points[2], 0.05, debug_color)
-			else
-				drawer:sphere(control_points[2], 0.05, debug_color_fail)
-			end
-		end
 	end
 
 	self.initialized_unit_nav_graphs[unit] = true
@@ -166,18 +121,8 @@ NavGraphSystem.on_add_extension = function (self, world, unit, extension_name)
 	if extension_name == "NavGraphConnectorExtension" then
 		local smart_object_id = Unit.get_data(unit, "smart_object_id") or Unit.get_data(unit, "ledge_id")
 
-		if smart_object_id and self.smart_objects[smart_object_id] then
-			if not self.no_nav_mesh and (not Unit.has_data(unit, "enabled_on_spawn") or Unit.get_data(unit, "enabled_on_spawn") == true) then
-				self:init_nav_graphs(unit, smart_object_id, extension)
-			end
-		elseif Development.parameter("visualize_ledges") then
-			local drawer = Managers.state.debug:drawer({
-				mode = "retained",
-				name = "NavGraphConnectorExtension"
-			})
-			local pose, half_extents = Unit.box(unit)
-
-			drawer:box(pose, half_extents + Vector3(0.01, 0.01, 0.01), Colors.get("red"))
+		if smart_object_id and self.smart_objects[smart_object_id] and not self.no_nav_mesh and (not Unit.has_data(unit, "enabled_on_spawn") or Unit.get_data(unit, "enabled_on_spawn") == true) then
+			self:init_nav_graphs(unit, smart_object_id, extension)
 		end
 	end
 
@@ -231,7 +176,9 @@ NavGraphSystem.add_nav_graph = function (self, unit)
 	if extension.nav_graph_removed then
 		local navgraphs = extension.navgraphs
 
-		for i, navgraph in ipairs(navgraphs) do
+		for i = 1, #navgraphs, 1 do
+			local navgraph = navgraphs[i]
+
 			GwNavGraph.add_to_database(navgraph)
 			printf("[NavGraphSystem] Adding navgraph(s) for [%q]", tostring(unit))
 		end
@@ -248,7 +195,9 @@ NavGraphSystem.remove_nav_graph = function (self, unit)
 	if not extension.nav_graph_removed then
 		local navgraphs = extension.navgraphs
 
-		for i, navgraph in ipairs(navgraphs) do
+		for i = 1, #navgraphs, 1 do
+			local navgraph = navgraphs[i]
+
 			GwNavGraph.remove_from_database(navgraph)
 			printf("[NavGraphSystem] Removing navgraph(s) for [%q]", tostring(unit))
 		end
@@ -298,7 +247,7 @@ NavGraphSystem.smart_object_from_unit_data = function (self, unit, smart_object_
 			if success then
 				entrance_position.z = z
 			else
-				local entrance_position = GwNavQueries.inside_position_from_outside_position(nav_world, entrance_position, above, below, horizontal, distance_from_border)
+				entrance_position = GwNavQueries.inside_position_from_outside_position(nav_world, entrance_position, above, below, horizontal, distance_from_border)
 
 				fassert(entrance_position, "[NavGraphSystem] While creating smart object of type %q could not find nav mesh for entrance position at %s.", smart_object_type, entrance_position)
 			end
@@ -310,7 +259,7 @@ NavGraphSystem.smart_object_from_unit_data = function (self, unit, smart_object_
 			if success then
 				exit_position.z = z
 			else
-				local exit_position = GwNavQueries.inside_position_from_outside_position(nav_world, exit_position, above, below, horizontal, distance_from_border)
+				exit_position = GwNavQueries.inside_position_from_outside_position(nav_world, exit_position, above, below, horizontal, distance_from_border)
 
 				fassert(exit_position, "[NavGraphSystem] While creating smart object of type %q could not find nav mesh for exit position at %s.", smart_object_type, entrance_position)
 			end
@@ -363,19 +312,6 @@ NavGraphSystem.on_remove_extension = function (self, unit, extension_name)
 end
 
 NavGraphSystem.update = function (self, context, t, dt)
-	if self._nav_mesh_debug or script_data.nav_mesh_debug then
-		self._nav_mesh_debug = script_data.nav_mesh_debug
-		local ai_system = Managers.state.entity:system("ai_system")
-		local nav_cost_maps_data, nav_cost_maps_count = ai_system:get_nav_cost_maps_data()
-
-		NavigationUtils.debug_draw_nav_mesh(self.nav_world, nav_cost_maps_data, nav_cost_maps_count, self.world, self.line_object)
-
-		if not script_data.nav_mesh_debug then
-			LineObject.reset(self.line_object)
-			LineObject.dispatch(self.world, self.line_object)
-		end
-	end
-
 	if self.nav_graphs_units_to_add then
 		for i = 1, #self.nav_graphs_units_to_add, 1 do
 			local nav_graphs_unit_to_add = self.nav_graphs_units_to_add[i]
@@ -393,11 +329,6 @@ NavGraphSystem.update = function (self, context, t, dt)
 
 		self.nav_graphs_units_to_remove = nil
 	end
-
-	if not LEVEL_EDITOR_TEST and self.ledgelator_version ~= WANTED_LEDGELATOR_VERSION and math.floor(t) % 10 > 3 then
-		Debug.text("WARNING: Using old smart objects. Found version=%s Wanted version=%s", tostring(self.ledgelator_version), WANTED_LEDGELATOR_VERSION)
-		Debug.text("Re-generate and save from level editor, then run generate_resource_packages.bat")
-	end
 end
 
 NavGraphSystem.hot_join_sync = function (self, sender)
@@ -405,10 +336,6 @@ NavGraphSystem.hot_join_sync = function (self, sender)
 end
 
 NavGraphSystem.get_smart_object_type = function (self, smart_object_id)
-	if self.smart_object_types[smart_object_id] == nil then
-		slot2 = 1
-	end
-
 	return self.smart_object_types[smart_object_id]
 end
 

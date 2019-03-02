@@ -120,13 +120,14 @@ local function ai_default_unit_start(unit, context, t, killing_blow, is_server)
 	local death_hit_zone = killing_blow[DamageDataIndex.HIT_ZONE]
 	local damage_type = killing_blow[DamageDataIndex.DAMAGE_TYPE]
 	local damaged_by_other = unit ~= killer_unit
+	local blackboard = BLACKBOARDS[unit]
 	local ai_extension = ScriptUnit.extension(unit, "ai_system")
 
 	if damaged_by_other then
-		AiUtils.alert_nearby_friends_of_enemy(unit, ai_extension:blackboard().group_blackboard.broadphase, killer_unit)
+		AiUtils.alert_nearby_friends_of_enemy(unit, blackboard.group_blackboard.broadphase, killer_unit)
 	end
 
-	local breed = Unit.get_data(unit, "breed")
+	local breed = blackboard.breed
 
 	if is_server and breed.custom_death_enter_function then
 		local damage_source = killing_blow[DamageDataIndex.DAMAGE_SOURCE_NAME]
@@ -192,20 +193,6 @@ local function ai_default_unit_start(unit, context, t, killing_blow, is_server)
 	end
 
 	Managers.state.game_mode:ai_killed(unit, owner_unit, data)
-
-	if Managers.state.game_mode:has_activated_mutator("corpse_explosion") then
-		local unit_name = "units/hub_elements/empty"
-		local unit_template_name = "timed_explosion_unit"
-		local position = POSITION_LOOKUP[unit]
-		local rotation = Quaternion.identity()
-		local extension_init_data = {
-			area_damage_system = {
-				explosion_template_name = breed.corpse_explosion_template_name or "corpse_explosion_default"
-			}
-		}
-
-		Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, position, rotation)
-	end
 
 	return data, DeathReactions.IS_NOT_DONE
 end
@@ -481,17 +468,20 @@ local function trigger_unit_dialogue_death_event(killed_unit, killer_unit, hit_z
 		return
 	end
 
-	if Unit.has_data(killed_unit, "enemy_dialogue_face_anim") and Unit.has_animation_state_machine(killed_unit) then
-		Unit.animation_event(killed_unit, "talk_end")
+	if Unit.has_animation_state_machine(killed_unit) then
+		if Unit.has_data(killed_unit, "enemy_dialogue_face_anim") then
+			Unit.animation_event(killed_unit, "talk_end")
+		end
+
+		if Unit.has_data(killed_unit, "enemy_dialogue_body_anim") then
+			Unit.animation_event(killed_unit, "talk_body_end")
+		end
 	end
 
-	if Unit.has_data(killed_unit, "enemy_dialogue_body_anim") and Unit.has_animation_state_machine(killed_unit) then
-		Unit.animation_event(killed_unit, "talk_body_end")
-	end
+	local killer_dialogue_extension = ScriptUnit.has_extension(killer_unit, "dialogue_system")
+	local player = Managers.player:owner(killer_unit)
 
-	if ScriptUnit.has_extension(killer_unit, "dialogue_system") then
-		local dialogue_input = ScriptUnit.extension_input(killer_unit, "dialogue_system")
-		local event_data = FrameTable.alloc_table()
+	if killer_dialogue_extension and player ~= nil then
 		local killed_unit_name = "UNKNOWN"
 		local breed_data = Unit.get_data(killed_unit, "breed")
 
@@ -501,51 +491,44 @@ local function trigger_unit_dialogue_death_event(killed_unit, killer_unit, hit_z
 			killed_unit_name = ScriptUnit.extension(killed_unit, "dialogue_system").context.player_profile
 		end
 
-		local player = Managers.player:owner(killer_unit)
+		if killed_unit_name == "skaven_rat_ogre" then
+			local user_memory = killer_dialogue_extension.user_memory
+			user_memory.times_killed_rat_ogre = (user_memory.times_killed_rat_ogre or 0) + 1
+		end
 
-		if player ~= nil then
-			local inventory_extension = ScriptUnit.extension(killer_unit, "inventory_system")
-			local weapon_slot = inventory_extension:get_wielded_slot_name()
+		local inventory_extension = ScriptUnit.extension(killer_unit, "inventory_system")
+		local weapon_slot = inventory_extension:get_wielded_slot_name()
+
+		if weapon_slot == "slot_melee" or weapon_slot == "slot_ranged" then
+			local dot_type = false
+			local event_data = FrameTable.alloc_table()
+			event_data.killed_type = killed_unit_name
+			event_data.hit_zone = hit_zone
+			event_data.weapon_slot = weapon_slot
 			local weapon_data = inventory_extension:get_slot_data(weapon_slot)
-			local attack_template = AttackTemplates[damage_type]
 
-			if weapon_slot == "slot_melee" or weapon_slot == "slot_ranged" then
-				local dot_type = false
-				event_data.killed_type = killed_unit_name
-				event_data.hit_zone = hit_zone
-				event_data.weapon_slot = weapon_slot
+			if weapon_data then
+				event_data.weapon_type = weapon_data.item_data.item_type
+				local attack_template = AttackTemplates[damage_type]
 
-				if weapon_data then
-					event_data.weapon_type = weapon_data.item_data.item_type
-
-					if attack_template and attack_template.dot_type then
-						dot_type = attack_template.dot_type
-					end
+				if attack_template and attack_template.dot_type then
+					dot_type = attack_template.dot_type
 				end
-
-				if killed_unit_name == "skaven_rat_ogre" then
-					local times_killed_rat_ogre = ScriptUnit.extension(killer_unit, "dialogue_system").user_memory.times_killed_rat_ogre
-
-					if times_killed_rat_ogre then
-						ScriptUnit.extension(killer_unit, "dialogue_system").user_memory.times_killed_rat_ogre = times_killed_rat_ogre + 1
-					else
-						ScriptUnit.extension(killer_unit, "dialogue_system").user_memory.times_killed_rat_ogre = 1
-					end
-				end
-
-				local killer_name = ScriptUnit.extension(killer_unit, "dialogue_system").context.player_profile
-
-				SurroundingAwareSystem.add_event(killer_unit, "killed_enemy", DialogueSettings.default_view_distance, "killer_name", killer_name, "hit_zone", hit_zone, "enemy_tag", killed_unit_name, "weapon_slot", weapon_slot, "dot_type", dot_type)
-
-				local event_name = "enemy_kill"
-
-				dialogue_input:trigger_dialogue_event(event_name, event_data)
 			end
+
+			local killer_name = killer_dialogue_extension.context.player_profile
+
+			SurroundingAwareSystem.add_event(killer_unit, "killed_enemy", DialogueSettings.default_view_distance, "killer_name", killer_name, "hit_zone", hit_zone, "enemy_tag", killed_unit_name, "weapon_slot", weapon_slot, "dot_type", dot_type)
+
+			local event_name = "enemy_kill"
+			local dialogue_input = ScriptUnit.extension_input(killer_unit, "dialogue_system")
+
+			dialogue_input:trigger_dialogue_event(event_name, event_data)
 		end
 	end
 end
 
-local function trigger_player_killing_blow_ai_buffs(ai_unit, killing_blow, is_server)
+local function trigger_player_killing_blow_ai_buffs(ai_unit, killing_blow)
 	local attacker_unit = killing_blow[DamageDataIndex.ATTACKER]
 
 	if Unit.alive(attacker_unit) and ScriptUnit.has_extension(attacker_unit, "buff_system") then
@@ -555,10 +538,9 @@ local function trigger_player_killing_blow_ai_buffs(ai_unit, killing_blow, is_se
 	end
 
 	local breed_data = Unit.get_data(ai_unit, "breed")
+	local player_and_bot_units = PLAYER_AND_BOT_UNITS
 
 	if breed_data.boss then
-		local player_and_bot_units = PLAYER_AND_BOT_UNITS
-
 		for i = 1, #player_and_bot_units, 1 do
 			local unit = player_and_bot_units[i]
 			local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
@@ -567,11 +549,7 @@ local function trigger_player_killing_blow_ai_buffs(ai_unit, killing_blow, is_se
 				buff_extension:trigger_procs("on_boss_killed", killing_blow, breed_data)
 			end
 		end
-	end
-
-	if breed_data.special then
-		local player_and_bot_units = PLAYER_AND_BOT_UNITS
-
+	elseif breed_data.special then
 		for i = 1, #player_and_bot_units, 1 do
 			local unit = player_and_bot_units[i]
 			local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
@@ -585,8 +563,6 @@ local function trigger_player_killing_blow_ai_buffs(ai_unit, killing_blow, is_se
 	local ping_extension = ScriptUnit.has_extension(ai_unit, "ping_system")
 
 	if ping_extension then
-		local player_and_bot_units = PLAYER_AND_BOT_UNITS
-
 		for i = 1, #player_and_bot_units, 1 do
 			local unit = player_and_bot_units[i]
 			local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
@@ -609,7 +585,7 @@ DeathReactions.templates = {
 				local data, result = ai_default_unit_start(unit, context, t, killing_blow, is_server)
 
 				trigger_unit_dialogue_death_event(unit, killing_blow[DamageDataIndex.ATTACKER], killing_blow[DamageDataIndex.HIT_ZONE], killing_blow[DamageDataIndex.DAMAGE_TYPE])
-				trigger_player_killing_blow_ai_buffs(unit, killing_blow, true)
+				trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 				Managers.state.entity:system("play_go_tutorial_system"):register_killing_blow(killing_blow[DamageDataIndex.DAMAGE_TYPE], killing_blow[DamageDataIndex.ATTACKER])
 
 				if unit ~= killing_blow[DamageDataIndex.ATTACKER] and ScriptUnit.has_extension(unit, "ai_system") then
@@ -632,7 +608,7 @@ DeathReactions.templates = {
 				local data, result = ai_default_husk_start(unit, context, t, killing_blow, is_server)
 
 				if not is_hot_join_sync(killing_blow) then
-					trigger_player_killing_blow_ai_buffs(unit, killing_blow, false)
+					trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 				end
 
 				return data, result
@@ -653,7 +629,7 @@ DeathReactions.templates = {
 				local data, result = ai_chaos_tentacle_start(unit, context, t, killing_blow, is_server)
 
 				trigger_unit_dialogue_death_event(unit, killing_blow[DamageDataIndex.ATTACKER], killing_blow[DamageDataIndex.HIT_ZONE], killing_blow[DamageDataIndex.DAMAGE_TYPE])
-				trigger_player_killing_blow_ai_buffs(unit, killing_blow, true)
+				trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 
 				return data, result
 			end,
@@ -671,7 +647,7 @@ DeathReactions.templates = {
 				local data, result = ai_chaos_tentacle_husk_start(unit, context, t, killing_blow, is_server)
 
 				if not is_hot_join_sync(killing_blow) then
-					trigger_player_killing_blow_ai_buffs(unit, killing_blow, false)
+					trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 				end
 
 				return data, result
@@ -738,7 +714,7 @@ DeathReactions.templates = {
 				local data, result = ai_default_unit_start(unit, context, t, killing_blow, is_server)
 
 				trigger_unit_dialogue_death_event(unit, killing_blow[DamageDataIndex.ATTACKER], killing_blow[DamageDataIndex.HIT_ZONE], killing_blow[DamageDataIndex.DAMAGE_TYPE])
-				trigger_player_killing_blow_ai_buffs(unit, killing_blow, true)
+				trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 
 				if unit ~= killing_blow[DamageDataIndex.ATTACKER] and ScriptUnit.has_extension(unit, "ai_system") then
 					ScriptUnit.extension(unit, "ai_system"):attacked(killing_blow[DamageDataIndex.ATTACKER], t, killing_blow)
@@ -768,7 +744,7 @@ DeathReactions.templates = {
 				local data, result = ai_default_husk_start(unit, context, t, killing_blow, is_server)
 
 				if not is_hot_join_sync(killing_blow) then
-					trigger_player_killing_blow_ai_buffs(unit, killing_blow, false)
+					trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 				end
 
 				return data, result
@@ -790,7 +766,7 @@ DeathReactions.templates = {
 				data.despawn_after_time = t + 2
 
 				trigger_unit_dialogue_death_event(unit, killing_blow[DamageDataIndex.ATTACKER], killing_blow[DamageDataIndex.HIT_ZONE], killing_blow[DamageDataIndex.DAMAGE_TYPE])
-				trigger_player_killing_blow_ai_buffs(unit, killing_blow, true)
+				trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 
 				return data, result
 			end,
@@ -812,7 +788,7 @@ DeathReactions.templates = {
 				ai_default_husk_start(unit, context, t, killing_blow, is_server)
 
 				if not is_hot_join_sync(killing_blow) then
-					trigger_player_killing_blow_ai_buffs(unit, killing_blow, false)
+					trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 				end
 
 				return nil, DeathReactions.IS_DONE
@@ -839,7 +815,6 @@ DeathReactions.templates = {
 				if blackboard.suicide_run ~= nil and blackboard.suicide_run.explosion_started then
 					local action = blackboard.suicide_run.action
 
-					assert(action)
 					AiUtils.poison_explode_unit(unit, action, blackboard)
 					ai_default_unit_start(unit, context, t, killing_blow, is_server)
 
@@ -847,7 +822,7 @@ DeathReactions.templates = {
 
 					play_unit_audio(unit, blackboard, sound_name)
 					trigger_unit_dialogue_death_event(unit, killing_blow[DamageDataIndex.ATTACKER], killing_blow[DamageDataIndex.HIT_ZONE], killing_blow[DamageDataIndex.DAMAGE_TYPE])
-					trigger_player_killing_blow_ai_buffs(unit, killing_blow, true)
+					trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 
 					return nil, DeathReactions.IS_DONE
 				else
@@ -855,7 +830,7 @@ DeathReactions.templates = {
 					data.blackboard = blackboard
 
 					trigger_unit_dialogue_death_event(unit, killing_blow[DamageDataIndex.ATTACKER], killing_blow[DamageDataIndex.HIT_ZONE], killing_blow[DamageDataIndex.DAMAGE_TYPE])
-					trigger_player_killing_blow_ai_buffs(unit, killing_blow, true)
+					trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 
 					return data, result
 				end
@@ -882,7 +857,7 @@ DeathReactions.templates = {
 
 				if not is_hot_join_sync(killing_blow) then
 					trigger_unit_dialogue_death_event(unit, killing_blow[DamageDataIndex.ATTACKER], killing_blow[DamageDataIndex.HIT_ZONE], killing_blow[DamageDataIndex.DAMAGE_TYPE])
-					trigger_player_killing_blow_ai_buffs(unit, killing_blow, false)
+					trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 				end
 
 				return data, result
@@ -978,7 +953,7 @@ DeathReactions.templates = {
 				local data, result = ai_default_unit_start(unit, context, t, killing_blow, is_server)
 
 				trigger_unit_dialogue_death_event(unit, killing_blow[DamageDataIndex.ATTACKER], killing_blow[DamageDataIndex.HIT_ZONE], killing_blow[DamageDataIndex.DAMAGE_TYPE])
-				trigger_player_killing_blow_ai_buffs(unit, killing_blow, true)
+				trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 				WwiseUtils.trigger_unit_event(Managers.world:world("level_world"), "Stop_enemy_vo_warpfire", unit, Unit.node(unit, "a_voice"))
 
 				if killing_blow[DamageDataIndex.HIT_ZONE] == "aux" then
@@ -1034,7 +1009,7 @@ DeathReactions.templates = {
 
 				if not is_hot_join_sync(killing_blow) then
 					trigger_unit_dialogue_death_event(unit, killing_blow[DamageDataIndex.ATTACKER], killing_blow[DamageDataIndex.HIT_ZONE], killing_blow[DamageDataIndex.DAMAGE_TYPE])
-					trigger_player_killing_blow_ai_buffs(unit, killing_blow, false)
+					trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 				end
 
 				WwiseUtils.trigger_unit_event(Managers.world:world("level_world"), "Stop_enemy_vo_warpfire", unit, Unit.node(unit, "a_voice"))
@@ -1075,7 +1050,7 @@ DeathReactions.templates = {
 				local data, result = ai_default_unit_start(unit, context, t, killing_blow, is_server)
 
 				trigger_unit_dialogue_death_event(unit, killing_blow[DamageDataIndex.ATTACKER], killing_blow[DamageDataIndex.HIT_ZONE], killing_blow[DamageDataIndex.DAMAGE_TYPE])
-				trigger_player_killing_blow_ai_buffs(unit, killing_blow, true)
+				trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 
 				local amount_of_loot_drops = math.random(2, 4)
 
@@ -1144,7 +1119,7 @@ DeathReactions.templates = {
 
 				if not is_hot_join_sync(killing_blow) then
 					trigger_unit_dialogue_death_event(unit, killing_blow[DamageDataIndex.ATTACKER], killing_blow[DamageDataIndex.HIT_ZONE], killing_blow[DamageDataIndex.DAMAGE_TYPE])
-					trigger_player_killing_blow_ai_buffs(unit, killing_blow, false)
+					trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 				end
 
 				return data, result
@@ -1165,7 +1140,7 @@ DeathReactions.templates = {
 				local data, result = ai_default_unit_start(unit, context, t, killing_blow, is_server)
 
 				trigger_unit_dialogue_death_event(unit, killing_blow[DamageDataIndex.ATTACKER], killing_blow[DamageDataIndex.HIT_ZONE], killing_blow[DamageDataIndex.DAMAGE_TYPE])
-				trigger_player_killing_blow_ai_buffs(unit, killing_blow, true)
+				trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 				AiUtils.loot_rat_explosion(unit, unit, BLACKBOARDS[unit], nil, ExplosionTemplates.loot_rat_explosion)
 
 				if unit ~= killing_blow[DamageDataIndex.ATTACKER] and ScriptUnit.has_extension(unit, "ai_system") then
@@ -1215,7 +1190,7 @@ DeathReactions.templates = {
 
 				if not is_hot_join_sync(killing_blow) then
 					trigger_unit_dialogue_death_event(unit, killing_blow[DamageDataIndex.ATTACKER], killing_blow[DamageDataIndex.HIT_ZONE], killing_blow[DamageDataIndex.DAMAGE_TYPE])
-					trigger_player_killing_blow_ai_buffs(unit, killing_blow, false)
+					trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 				end
 
 				return data, result
@@ -1322,11 +1297,9 @@ DeathReactions.templates = {
 			start = function (unit, context, t, killing_blow, is_server)
 				local network_time = Managers.state.network:network_time()
 				local explode_time = network_time
-				local enemies_ignore_fuse = Unit.get_data(unit, "enemies_ignore_fuse")
 				local data = {
 					explode_time = explode_time,
-					killer_unit = killing_blow[DamageDataIndex.ATTACKER],
-					enemies_ignore_fuse = enemies_ignore_fuse
+					killer_unit = killing_blow[DamageDataIndex.ATTACKER]
 				}
 				local death_extension = ScriptUnit.extension(unit, "death_system")
 				death_extension.death_has_started = true
@@ -1383,11 +1356,9 @@ DeathReactions.templates = {
 			start = function (unit, context, t, killing_blow, is_server)
 				local network_time = Managers.state.network:network_time()
 				local explode_time = network_time
-				local enemies_ignore_fuse = Unit.get_data(unit, "enemies_ignore_fuse")
 				local data = {
 					explode_time = explode_time,
-					killer_unit = killing_blow[DamageDataIndex.ATTACKER],
-					enemies_ignore_fuse = enemies_ignore_fuse
+					killer_unit = killing_blow[DamageDataIndex.ATTACKER]
 				}
 				local death_extension = ScriptUnit.extension(unit, "death_system")
 				death_extension.death_has_started = true

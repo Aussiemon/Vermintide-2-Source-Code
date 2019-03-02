@@ -552,7 +552,7 @@ BackendManagerPlayFab._post_error = function (self, error_data, crashify_overrid
 end
 
 BackendManagerPlayFab._is_fatal = function (self, reason)
-	local harmless = reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ACHIEVEMENT_REWARD_CLAIMED or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_QUEST_REFRESH_UNAVAILABLE
+	local harmless = reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ACHIEVEMENT_REWARD_CLAIMED or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_QUEST_REFRESH_UNAVAILABLE or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_NON_FATAL_ERROR
 
 	return not harmless
 end
@@ -594,7 +594,7 @@ BackendManagerPlayFab._reason_localize_key = function (self, reason)
 		end
 	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_EAC_ERROR or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_COMMIT_TIMEOUT then
 		return ERROR_CODES[reason]
-	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ACHIEVEMENT_REWARD_CLAIMED or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_QUEST_REFRESH_UNAVAILABLE then
+	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ACHIEVEMENT_REWARD_CLAIMED or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_QUEST_REFRESH_UNAVAILABLE or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_NON_FATAL_ERROR then
 		return ERROR_CODES[reason]
 	else
 		return "backend_err_network"
@@ -633,7 +633,7 @@ BackendManagerPlayFab._format_error_message_windows = function (self, reason)
 			id = self._button_quit,
 			text = Localize("menu_quit")
 		}
-	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ACHIEVEMENT_REWARD_CLAIMED or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_QUEST_REFRESH_UNAVAILABLE then
+	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ACHIEVEMENT_REWARD_CLAIMED or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_QUEST_REFRESH_UNAVAILABLE or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_NON_FATAL_ERROR then
 		button_1 = {
 			id = self._button_ok,
 			text = Localize("button_ok")
@@ -1082,6 +1082,18 @@ BackendManagerPlayFab._create_cdn_resources_interface = function (self, settings
 		self._interfaces.cdn = BackendInterfaceCdnResourcesLocal:new(self._save_data)
 	else
 		self._interfaces.cdn = BackendInterfaceCdnResourcesPlayFab:new(self._backend_mirror)
+		local localizer = Managers.localizer
+		local language_id = localizer:language_id()
+
+		self._interfaces.cdn:load_backend_localizations(language_id, callback(self, "_cb_backend_localizations_loaded"))
+	end
+end
+
+BackendManagerPlayFab._cb_backend_localizations_loaded = function (self, localizations)
+	if localizations then
+		local localizer = Managers.localizer
+
+		localizer:append_backend_localizations(localizations)
 	end
 end
 

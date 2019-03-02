@@ -1144,9 +1144,14 @@ local function create_filter_frame(scenegraph_id)
 				},
 				{
 					style_id = "background_1",
+					pass_type = "hotspot",
+					content_id = "filter_hotspot_1"
+				},
+				{
+					style_id = "background_1",
 					pass_type = "rect",
 					content_change_function = function (content, style)
-						if content.filter_selection and content.filter_index == 1 then
+						if (content.filter_selection and content.filter_index == 1) or content.filter_hotspot_1.is_hover then
 							style.color = style.selection_color
 						else
 							style.color = style.base_color
@@ -1155,9 +1160,14 @@ local function create_filter_frame(scenegraph_id)
 				},
 				{
 					style_id = "background_2",
+					pass_type = "hotspot",
+					content_id = "filter_hotspot_2"
+				},
+				{
+					style_id = "background_2",
 					pass_type = "rect",
 					content_change_function = function (content, style)
-						if content.filter_selection and content.filter_index == 2 then
+						if (content.filter_selection and content.filter_index == 2) or content.filter_hotspot_2.is_hover then
 							style.color = style.selection_color
 						else
 							style.color = style.base_color
@@ -1166,9 +1176,14 @@ local function create_filter_frame(scenegraph_id)
 				},
 				{
 					style_id = "background_3",
+					pass_type = "hotspot",
+					content_id = "filter_hotspot_3"
+				},
+				{
+					style_id = "background_3",
 					pass_type = "rect",
 					content_change_function = function (content, style)
-						if content.filter_selection and content.filter_index == 3 then
+						if (content.filter_selection and content.filter_index == 3) or content.filter_hotspot_3.is_hover then
 							style.color = style.selection_color
 						else
 							style.color = style.base_color
@@ -1177,9 +1192,14 @@ local function create_filter_frame(scenegraph_id)
 				},
 				{
 					style_id = "background_4",
+					pass_type = "hotspot",
+					content_id = "filter_hotspot_4"
+				},
+				{
+					style_id = "background_4",
 					pass_type = "rect",
 					content_change_function = function (content, style)
-						if content.filter_selection and content.filter_index == 4 then
+						if (content.filter_selection and content.filter_index == 4) or content.filter_hotspot_4.is_hover then
 							style.color = style.selection_color
 						else
 							style.color = style.base_color
@@ -1263,6 +1283,10 @@ local function create_filter_frame(scenegraph_id)
 			distance_name = "-",
 			mask_id = "mask_rect",
 			show_lobbies_name = "-",
+			filter_hotspot_1 = {},
+			filter_hotspot_2 = {},
+			filter_hotspot_3 = {},
+			filter_hotspot_4 = {},
 			mission_id = string.upper(Localize("lb_mission")),
 			difficulty_id = string.upper(Localize("lb_difficulty")),
 			show_lobbies_id = string.upper(Localize("lb_show_lobbies")),
@@ -1703,9 +1727,13 @@ local function create_filter_frame(scenegraph_id)
 					label_distance,
 					40
 				},
+				size = {
+					label_distance,
+					40
+				},
 				offset = {
 					0,
-					-40 - element_settings.spacing,
+					filter_height * 3 - element_settings.spacing,
 					0
 				}
 			},
@@ -1733,9 +1761,13 @@ local function create_filter_frame(scenegraph_id)
 					label_distance - element_settings.spacing * 0.5,
 					40
 				},
+				size = {
+					label_distance,
+					40
+				},
 				offset = {
 					label_distance * 1 + element_settings.spacing,
-					-40 - element_settings.spacing,
+					filter_height * 3 - element_settings.spacing,
 					0
 				}
 			},
@@ -1763,9 +1795,13 @@ local function create_filter_frame(scenegraph_id)
 					label_distance - element_settings.spacing * 0.5,
 					40
 				},
+				size = {
+					label_distance,
+					40
+				},
 				offset = {
 					label_distance * 2 + element_settings.spacing,
-					-40 - element_settings.spacing,
+					filter_height * 3 - element_settings.spacing,
 					0
 				}
 			},
@@ -1793,9 +1829,13 @@ local function create_filter_frame(scenegraph_id)
 					label_distance - element_settings.spacing * 0.5,
 					40
 				},
+				size = {
+					label_distance,
+					40
+				},
 				offset = {
 					label_distance * 3 + element_settings.spacing,
-					-40 - element_settings.spacing,
+					filter_height * 3 - element_settings.spacing,
 					0
 				}
 			},
@@ -2038,7 +2078,7 @@ local function create_level_filter_entry_func(level, unlocked)
 		local level_settings = LevelSettings[level]
 		level_name = Localize(level_settings.display_name)
 	else
-		level_name = "Any"
+		level_name = Localize("lobby_browser_mission")
 	end
 
 	return {
@@ -2191,7 +2231,7 @@ local function create_difficulty_filter_entry_func(difficulty, offset_y)
 		difficulty_name = Localize(difficulty_settings.display_name)
 		unlocked = #players_below_difficulty == 0
 	else
-		difficulty_name = "Any"
+		difficulty_name = Localize("lobby_browser_mission")
 	end
 
 	return {
@@ -2391,6 +2431,10 @@ local function create_lobby_filter_entry_func(lobby_filter, offset_y)
 					96
 				},
 				texture_size = {
+					label_distance - element_settings.spacing,
+					element_settings.filter_height
+				},
+				size = {
 					label_distance - element_settings.spacing,
 					element_settings.filter_height
 				},
@@ -2620,6 +2664,11 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 		element = {
 			passes = {
 				{
+					style_id = "background",
+					pass_type = "hotspot",
+					content_id = "lobby_hotspot"
+				},
+				{
 					pass_type = "texture",
 					style_id = "background",
 					texture_id = "background_id",
@@ -2635,7 +2684,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 						return not content.joinable
 					end,
 					content_change_function = function (content, style)
-						if content.selected then
+						if content.selected or content.lobby_hotspot.is_hover then
 							style.color = style.selected_color
 						else
 							style.color = style.base_color
@@ -2647,7 +2696,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 					style_id = "lock_icon_shadow",
 					texture_id = "lock_icon_id",
 					content_check_function = function (content, style)
-						return not content.selected and not content.joinable
+						return not content.selected and not content.lobby_hotspot.is_hover and not content.joinable
 					end
 				},
 				{
@@ -2655,7 +2704,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 					style_id = "selected_background",
 					texture_id = "background_id",
 					content_check_function = function (content, style)
-						return content.selected and not Managers.matchmaking:is_game_matchmaking()
+						return (content.selected or content.lobby_hotspot.is_hover) and not Managers.matchmaking:is_game_matchmaking()
 					end
 				},
 				{
@@ -2678,7 +2727,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 					content_change_function = function (content, style)
 						if content.joinable then
 							style.text_color = style.joinable_color
-						elseif content.selected then
+						elseif content.selected or content.lobby_hotspot.is_hover then
 							style.text_color = style.selected_unjoinable_color
 						else
 							style.text_color = style.base_color
@@ -2690,7 +2739,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 					pass_type = "text",
 					text_id = "selected_level_name",
 					content_check_function = function (content, style)
-						return content.joinable or not content.selected
+						return content.joinable or (not content.selected and not content.lobby_hotspot.is_hover)
 					end
 				},
 				{
@@ -2724,7 +2773,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 					content_change_function = function (content, style)
 						if content.joinable then
 							style.text_color = style.joinable_color
-						elseif content.selected then
+						elseif content.selected or content.lobby_hotspot.is_hover then
 							style.text_color = style.selected_unjoinable_color
 						else
 							style.text_color = style.base_color
@@ -2736,7 +2785,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 					pass_type = "text",
 					text_id = "no_flag_id",
 					content_check_function = function (content, style)
-						return (content.joinable or not content.selected) and not content.flag_id
+						return (content.joinable or (not content.selected and not content.lobby_hotspot.is_hover)) and not content.flag_id
 					end
 				},
 				{
@@ -2746,7 +2795,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 					content_change_function = function (content, style)
 						if content.joinable then
 							style.text_color = style.joinable_color
-						elseif content.selected then
+						elseif content.selected or content.lobby_hotspot.is_hover then
 							style.text_color = style.selected_unjoinable_color
 						else
 							style.text_color = style.base_color
@@ -2760,7 +2809,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 					content_change_function = function (content, style)
 						if content.joinable then
 							style.text_color = style.joinable_color
-						elseif content.selected then
+						elseif content.selected or content.lobby_hotspot.is_hover then
 							style.text_color = style.selected_unjoinable_color
 						else
 							style.text_color = style.base_color
@@ -2772,7 +2821,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 					pass_type = "text",
 					text_id = "difficulty_id",
 					content_check_function = function (content, style)
-						return content.joinable or not content.selected
+						return content.joinable or (not content.selected and not content.lobby_hotspot.is_hover)
 					end
 				},
 				{
@@ -2780,16 +2829,17 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 					pass_type = "text",
 					text_id = "num_players_id",
 					content_check_function = function (content, style)
-						return content.joinable or not content.selected
+						return content.joinable or (not content.selected and not content.lobby_hotspot.is_hover)
 					end
 				}
 			}
 		},
 		content = {
-			background_id = "rect_masked",
 			frame_id = "rect_masked",
 			selected = false,
+			background_id = "rect_masked",
 			lock_icon_id = "lobby_icon_lock",
+			lobby_hotspot = {},
 			host_name = host_name,
 			num_players_id = num_players .. "/4",
 			difficulty_id = difficulty,

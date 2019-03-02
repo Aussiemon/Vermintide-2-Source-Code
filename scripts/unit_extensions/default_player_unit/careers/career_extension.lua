@@ -16,6 +16,9 @@ CareerExtension.init = function (self, extension_init_context, unit, extension_i
 	self._career_name = career_data.name
 	self._profile_name = profile.display_name
 	self._cooldown = 0
+	self._max_cooldown = math.huge
+	self._last_cooldown = self._cooldown
+	self._last_max_cooldown = self._max_cooldown
 	self._career_data = career_data
 	local initial_ability_percentage = extension_init_data.initial_ability_percentage or 0
 	local max_cooldown = career_data.activated_ability.cooldown
@@ -55,6 +58,8 @@ CareerExtension.extensions_ready = function (self, world, unit)
 end
 
 CareerExtension.update = function (self, unit, input, dt, context, t)
+	self:_update_game_object_field(unit)
+
 	if self._cooldown_paused then
 		return
 	end
@@ -79,8 +84,6 @@ CareerExtension.update = function (self, unit, input, dt, context, t)
 			first_person_extension:play_hud_sound_event("Play_hud_ability_ready")
 		end
 	end
-
-	self:_update_game_object_field(unit)
 end
 
 CareerExtension.stop_ability = function (self, reason)
@@ -99,6 +102,11 @@ CareerExtension._update_game_object_field = function (self, unit)
 	end
 
 	local ability_cooldown, max_cooldown = self:current_ability_cooldown()
+
+	if self._last_cooldown == ability_cooldown and self._last_max_cooldown == max_cooldown then
+		return
+	end
+
 	local ability_percentage = 1
 
 	if ability_cooldown then
@@ -108,9 +116,12 @@ CareerExtension._update_game_object_field = function (self, unit)
 	local network_manager = Managers.state.network
 	local game = network_manager:game()
 	local go_id = Managers.state.unit_storage:go_id(unit)
-	ability_percentage = math.min(1, ability_percentage)
+	ability_percentage = math.clamp(ability_percentage, 0, 1)
 
 	GameSession.set_game_object_field(game, go_id, "ability_percentage", ability_percentage)
+
+	self._last_cooldown = ability_cooldown
+	self._last_max_cooldown = max_cooldown
 end
 
 CareerExtension.destroy = function (self)
@@ -135,7 +146,7 @@ CareerExtension.start_activated_ability_cooldown = function (self, refund_percen
 	end
 
 	local buff_extension = ScriptUnit.extension(self._unit, "buff_system")
-	local cooldown = buff_extension:apply_buffs_to_value(cooldown, "activated_cooldown")
+	cooldown = buff_extension:apply_buffs_to_value(cooldown, "activated_cooldown")
 	self._cooldown = cooldown
 	self._max_cooldown = activated_ability_data.cooldown
 	self._cooldown_paused = false
@@ -165,6 +176,10 @@ end
 
 CareerExtension.set_activated_ability_cooldown_paused = function (self)
 	self._cooldown_paused = true
+end
+
+CareerExtension.reset_cooldown = function (self)
+	self._cooldown = self._max_cooldown
 end
 
 CareerExtension.can_use_activated_ability = function (self)

@@ -32,6 +32,11 @@ end
 
 SimpleHuskInventoryExtension.drop_level_event_item = function (self, slot_data)
 	local item_template = self:get_item_template(slot_data)
+
+	if item_template.no_drop then
+		return
+	end
+
 	local action = item_template.actions.action_dropped.default
 	local projectile_info = action.projectile_info
 

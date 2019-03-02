@@ -53,6 +53,7 @@ require("scripts/managers/performance_title/performance_title_manager")
 require("scripts/settings/quest_settings")
 require("scripts/managers/achievements/achievement_manager")
 require("scripts/managers/quest/quest_manager")
+require("scripts/utils/fps_reporter")
 
 StateIngame = class(StateIngame)
 StateIngame.NAME = "StateIngame"
@@ -114,6 +115,9 @@ StateIngame.on_enter = function (self)
 	self.is_in_tutorial = level_key == "prologue"
 	DamageUtils.is_in_inn = self.is_in_inn
 	self._called_level_flow_events = false
+	self._onclose_popup_id = nil
+	self._onclose_called = false
+	self._quit_game = false
 
 	Managers.light_fx:set_lightfx_color_scheme((self.is_in_inn and "inn_level") or "ingame")
 
@@ -259,14 +263,6 @@ StateIngame.on_enter = function (self)
 	local content_revision = script_data.settings.content_revision
 
 	Managers.telemetry.events:header(engine_revision, content_revision)
-
-	local player_id = PLATFORM == "win32" and rawget(_G, "Steam") and Steam.user_id()
-	local difficulty = Managers.state.difficulty:get_difficulty()
-	local _ = Managers.deed:has_deed() and Managers.deed:active_deed()
-	local deed_id = nil
-	local eye_tracking = (rawget(_G, "Tobii") and Tobii.get_is_connected() and Application.user_setting("tobii_eyetracking")) or false
-
-	Managers.telemetry.events:game_started(player_id, self:peer_type(), level_key, difficulty, deed_id or "-", eye_tracking)
 
 	if is_server then
 		local session_id = Managers.state.network:session_id()
@@ -489,6 +485,13 @@ StateIngame.on_enter = function (self)
 	Managers.chat:register_network_event_delegate(network_event_delegate)
 	Managers.state.game_mode:setup_done()
 
+	local player_id = PLATFORM == "win32" and rawget(_G, "Steam") and Steam.user_id()
+	local difficulty = Managers.state.difficulty:get_difficulty()
+	local mutators = Managers.state.game_mode:activated_mutators()
+	local eye_tracking = (rawget(_G, "Tobii") and Tobii.get_is_connected() and Application.user_setting("tobii_eyetracking")) or false
+
+	Managers.telemetry.events:game_started(player_id, self:peer_type(), level_key, difficulty, mutators, eye_tracking)
+
 	if self.network_server then
 		self.network_server:on_game_entered(network_manager)
 	elseif self.network_client then
@@ -528,6 +531,8 @@ StateIngame.on_enter = function (self)
 
 		printf("Entered StateIngame with a deed active! is_owner(%s)", tostring(is_owner))
 	end
+
+	self._fps_reporter = FPSReporter:new()
 
 	Managers.state.event:trigger("start_game_time", Managers.state.network:network_time())
 end
@@ -882,6 +887,8 @@ StateIngame.update = function (self, dt, main_t)
 
 	Managers.state.bot_nav_transition:update(dt, t)
 	Managers.state.performance:update(dt, t)
+	self._fps_reporter:update(dt, t)
+	self:_update_onclose_check(dt, t)
 	self:_generate_ingame_clock()
 
 	if #self._level_flow_events > 0 and not self._called_level_flow_events then
@@ -895,6 +902,15 @@ StateIngame.update = function (self, dt, main_t)
 
 		self._called_level_flow_events = true
 	end
+end
+
+StateIngame._update_onclose_check = function (self, dt, t)
+	if self._onclose_called and not self._onclose_popup_id then
+		local popup_text = Localize("exit_game_popup_text") .. "\n\n" .. Localize("exit_game_popup_text_is_hosting_players")
+		self._onclose_popup_id = Managers.popup:queue_popup(popup_text, Localize("popup_exit_game_topic"), "end_game", Localize("popup_choice_yes"), "cancel_popup", Localize("popup_choice_no"))
+	end
+
+	self:_handle_onclose_warning_result()
 end
 
 StateIngame._update_deed_manager = function (self, dt)
@@ -1185,8 +1201,12 @@ StateIngame._check_exit = function (self, t)
 
 			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
 			Managers.transition:show_loading_icon()
-		elseif transition == "leave_game" then
-			self.exit_type = "left_game"
+		elseif transition == "leave_game" or transition == "quit_game" or self._quit_game then
+			if transition == "leave_game" then
+				self.exit_type = "left_game"
+			else
+				self.exit_type = "quit_game"
+			end
 
 			if self.network_server then
 				self.network_server:disconnect_all_peers("host_left_game")
@@ -1199,7 +1219,7 @@ StateIngame._check_exit = function (self, t)
 			end
 
 			if network_manager:in_game_session() then
-				local force_diconnect = true
+				local force_diconnect = not self.is_server
 
 				network_manager:leave_game(force_diconnect)
 			end
@@ -1225,7 +1245,7 @@ StateIngame._check_exit = function (self, t)
 			end
 
 			if network_manager:in_game_session() then
-				local force_diconnect = true
+				local force_diconnect = not self.is_server
 
 				network_manager:leave_game(force_diconnect)
 			end
@@ -1397,7 +1417,19 @@ StateIngame._check_exit = function (self, t)
 			Managers.deed:reset()
 		end
 
-		if exit_type == "join_lobby_failed" or exit_type == "left_game" or exit_type == "lobby_state_failed" or exit_type == "kicked_by_server" or exit_type == "afk_kick" then
+		if exit_type == "quit_game" then
+			if network_manager:in_game_session() then
+				local force_diconnect = true
+
+				network_manager:leave_game(force_diconnect)
+			end
+
+			if PLATFORM == "xb1" and Managers.voice_chat then
+				Managers.voice_chat:_remove_all_users()
+			end
+
+			Boot.quit_game = true
+		elseif exit_type == "join_lobby_failed" or exit_type == "left_game" or exit_type == "lobby_state_failed" or exit_type == "kicked_by_server" or exit_type == "afk_kick" then
 			printf("[StateIngame] Transition to StateLoadingRestartNetwork on %q", self.exit_type)
 			self.level_transition_handler:set_next_level(self.level_transition_handler:default_level_key())
 
@@ -1417,6 +1449,10 @@ StateIngame._check_exit = function (self, t)
 				self.parent.loading_context.previous_session_error = self.network_client.fail_reason
 			elseif exit_type == "afk_kick" then
 				self.parent.loading_context.previous_session_error = "afk_kick"
+			elseif (exit_type == "return_to_pc_menu" or exit_type == "left_game") and network_manager:in_game_session() then
+				local force_diconnect = true
+
+				network_manager:leave_game(force_diconnect)
 			end
 
 			self.parent.loading_context.restart_network = true
@@ -1909,6 +1945,20 @@ StateIngame.on_exit = function (self, application_shutdown)
 	Managers.unlock:enable_update_unlocks(false)
 end
 
+StateIngame.on_close = function (self)
+	if self.network_server and self.network_server:num_active_peers() > 1 and not Development.parameter("disable_exit_popup_warning") then
+		if self._onclose_called then
+			self._quit_game = true
+		else
+			self._onclose_called = true
+		end
+	else
+		self._quit_game = true
+	end
+
+	return false
+end
+
 StateIngame._check_and_add_end_game_telemetry = function (self, application_shutdown)
 	local player = Managers.player:player_from_peer_id(self.peer_id)
 	local level_key = self.level_key
@@ -2257,6 +2307,19 @@ StateIngame._remove_ingame_clock = function (self)
 
 	if time_system:has_timer("client_ingame") then
 		time_system:unregister_timer("client_ingame")
+	end
+end
+
+StateIngame._handle_onclose_warning_result = function (self)
+	if self._onclose_popup_id then
+		local popup_result = Managers.popup:query_result(self._onclose_popup_id)
+
+		if popup_result == "end_game" then
+			self._quit_game = true
+		elseif popup_result == "cancel_popup" then
+			self._onclose_popup_id = nil
+			self._onclose_called = false
+		end
 	end
 end
 

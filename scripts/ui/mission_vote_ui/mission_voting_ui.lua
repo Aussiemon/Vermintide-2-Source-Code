@@ -5,6 +5,7 @@ local deed_game_widget_definitions = definitions.deed_game_widgets
 local custom_game_widget_definitions = definitions.custom_game_widgets
 local adventure_game_widget_definitions = definitions.adventure_game_widgets
 local event_game_widget_definitions = definitions.event_game_widgets
+local twitch_mode_widget_funcs = definitions.twitch_mode_widget_funcs
 MissionVotingUI = class(MissionVotingUI)
 
 MissionVotingUI.init = function (self, parent, ingame_ui_context)
@@ -19,6 +20,7 @@ MissionVotingUI.init = function (self, parent, ingame_ui_context)
 		alpha_multiplier = 1,
 		snap_pixel_positions = true
 	}
+	self._is_server = ingame_ui_context.is_server
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
 	self._stats_id = local_player:stats_id()
@@ -41,6 +43,7 @@ MissionVotingUI.init = function (self, parent, ingame_ui_context)
 end
 
 MissionVotingUI.create_ui_elements = function (self)
+	self._ui_animations = {}
 	local widgets = {}
 	local widgets_by_name = {}
 
@@ -106,6 +109,18 @@ MissionVotingUI.create_ui_elements = function (self)
 
 	self._adventure_game_widgets = adventure_game_widgets
 	self._adventure_game_widgets_by_name = adventure_game_widgets_by_name
+	local twitch_widgets = {}
+	local twitch_widgets_by_name = {}
+
+	for name, widget_func in pairs(twitch_mode_widget_funcs) do
+		local widget_definition = widget_func(self._is_server)
+		local widget = UIWidget.init(widget_definition)
+		twitch_widgets[#twitch_widgets + 1] = widget
+		twitch_widgets_by_name[name] = widget
+	end
+
+	self._twitch_widgets = twitch_widgets
+	self._twitch_widgets_by_name = twitch_widgets_by_name
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	self.scenegraph_definition = definitions.scenegraph_definition
 
@@ -159,6 +174,9 @@ MissionVotingUI.start_vote = function (self, active_voting)
 	local is_deed = item_name ~= nil
 	local event_data = vote_data.event_data
 	local is_event = event_data ~= nil
+	local game_mode = vote_data.game_mode
+	self._twitch_mode_enabled = vote_data.twitch_enabled
+	self._game_mode = vote_data.game_mode
 
 	if is_deed then
 		local level_key = vote_data.level_key
@@ -223,6 +241,8 @@ MissionVotingUI.start_vote = function (self, active_voting)
 		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", 0.75)
 		ShadingEnvironment.apply(shading_env)
 	end
+
+	self._ui_animations.twitch_info = UIAnimation.init(UIAnimation.function_by_time, self.ui_scenegraph.twitch_mode_info.local_position, 1, 400, 0, 0.3, math.easeOutCubic)
 
 	self:_check_initial_votes()
 	self:_setup_gamepad_input_desc(vote_template)
@@ -416,6 +436,16 @@ MissionVotingUI._is_button_pressed = function (self, widget)
 	end
 end
 
+MissionVotingUI._update_animations = function (self, dt, t)
+	for animation_name, ui_animation in pairs(self._ui_animations) do
+		UIAnimation.update(ui_animation, dt)
+
+		if UIAnimation.completed(ui_animation) then
+			self._ui_animations[animation_name] = nil
+		end
+	end
+end
+
 MissionVotingUI.update = function (self, dt, t)
 	local parent = self._parent
 	local ingame_ui = parent:parent()
@@ -429,6 +459,9 @@ MissionVotingUI.update = function (self, dt, t)
 	end
 
 	self.menu_active = menu_active
+
+	self:_update_animations(dt, t)
+
 	local voting_manager = self.voting_manager
 
 	if voting_manager:vote_in_progress() and voting_manager:is_mission_vote() then
@@ -517,6 +550,18 @@ MissionVotingUI.draw = function (self, dt)
 		UIRenderer.draw_widget(ui_top_renderer, widget)
 
 		render_settings.snap_pixel_positions = snap_pixel_positions
+	end
+
+	if not self._twitch_mode_enabled and (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(self._game_mode) then
+		local twitch_widgets_by_name = self._twitch_widgets_by_name
+		local widget = twitch_widgets_by_name.twitch_disclaimer
+
+		UIRenderer.draw_widget(ui_top_renderer, widget)
+	elseif self._twitch_mode_enabled then
+		local twitch_widgets_by_name = self._twitch_widgets_by_name
+		local widget = twitch_widgets_by_name.twitch_mode
+
+		UIRenderer.draw_widget(ui_top_renderer, widget)
 	end
 
 	local presentation_type = self._presentation_type

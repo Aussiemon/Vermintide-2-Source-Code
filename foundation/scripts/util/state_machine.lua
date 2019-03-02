@@ -85,4 +85,12 @@ StateMachine.destroy = function (self, ...)
 	end
 end
 
+StateMachine.on_close = function (self)
+	if self._state and self._state.on_close then
+		return self._state:on_close()
+	end
+
+	return true
+end
+
 return

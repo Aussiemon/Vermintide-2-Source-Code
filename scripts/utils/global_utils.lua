@@ -29,6 +29,11 @@ function UPDATE_RESOLUTION_LOOKUP(force_update, optional_scale_multiplier)
 	local width_scale = w / UIResolutionWidthFragments()
 	local height_scale = h / UIResolutionHeightFragments()
 	local scale = math.min(width_scale, height_scale)
+
+	if Application.user_setting("hud_clamp_ui_scaling") then
+		scale = math.min(scale, 1) or scale
+	end
+
 	local scale_modified = false
 
 	if optional_scale_multiplier then

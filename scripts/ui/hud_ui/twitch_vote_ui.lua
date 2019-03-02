@@ -3,7 +3,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local definition_settings = definitions.settings
 local vote_texts_definition = definitions.vote_texts
 local DEBUG_VOTE_UI = false
-local DO_RELOAD = true
+local DO_RELOAD = false
 local RESULT_TIMER = 3
 local INIT_AUDIO_COUNTDOWN_AT = 5
 TwitchVoteUI = class(TwitchVoteUI)
@@ -656,6 +656,13 @@ TwitchVoteUI._update_standard_vote = function (self)
 	local timer = active_vote.timer
 	local time_left = math.abs(math.ceil(timer))
 	local timer_widget = self._widgets.timer
+
+	if not timer_widget then
+		table.dump(self._widgets, "### TWITCH VOTE UI CRASH INFO ###", 3)
+
+		return
+	end
+
 	timer_widget.content.text = time_left
 
 	self:_play_timer_sfx(time_left)

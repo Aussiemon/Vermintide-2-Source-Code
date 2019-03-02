@@ -363,21 +363,6 @@ Pickups.grenades.frag_grenade_t1 = {
 	local_pickup_sound = true,
 	hud_description = "grenade_frag"
 }
-Pickups.grenades.smoke_grenade_t1 = {
-	only_once = true,
-	item_description = "grenade_smoke",
-	slot_name = "slot_grenade",
-	type = "inventory_item",
-	spawn_weighting = 0,
-	debug_pickup_category = "grenades",
-	dupable = true,
-	pickup_sound_event = "pickup_grenade",
-	item_name = "grenade_smoke_01",
-	unit_name = "units/weapons/player/pup_grenades/pup_grenade_02_t1",
-	consumable_item = true,
-	local_pickup_sound = true,
-	hud_description = "grenade_smoke"
-}
 Pickups.grenades.fire_grenade_t1 = {
 	only_once = true,
 	item_description = "grenade_fire",
@@ -410,21 +395,6 @@ Pickups.improved_grenades.frag_grenade_t2 = {
 	consumable_item = true,
 	local_pickup_sound = true,
 	hud_description = "grenade_frag"
-}
-Pickups.improved_grenades.smoke_grenade_t2 = {
-	only_once = true,
-	type = "inventory_item",
-	slot_name = "slot_grenade",
-	item_description = "grenade_smoke",
-	spawn_weighting = 0,
-	debug_pickup_category = "grenades",
-	dupable = true,
-	pickup_sound_event = "pickup_grenade",
-	item_name = "grenade_smoke_02",
-	unit_name = "units/weapons/player/pup_grenades/pup_grenade_02_t2",
-	consumable_item = true,
-	local_pickup_sound = true,
-	hud_description = "grenade_smoke"
 }
 Pickups.improved_grenades.fire_grenade_t2 = {
 	only_once = true,
@@ -548,7 +518,7 @@ Pickups.lorebook_pages = {
 }
 Pickups.painting_scrap = {
 	painting_scrap = {
-		only_once = false,
+		only_once = true,
 		spawn_weighting = 1,
 		hide_on_pickup = true,
 		type = "painting_scrap",

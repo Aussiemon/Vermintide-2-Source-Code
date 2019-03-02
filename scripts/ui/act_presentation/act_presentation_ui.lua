@@ -93,7 +93,7 @@ ActPresentationUI._set_presentation_info = function (self, act_key, level_key)
 	local act_display_name = act_settings.display_name
 	local widgets_by_name = self._widgets_by_name
 	widgets_by_name.level.content.icon = level_image
-	widgets_by_name.act_title.content.text = Localize(act_display_name)
+	widgets_by_name.act_title.content.text = (act_display_name and Localize(act_display_name)) or ""
 	widgets_by_name.level_title.content.text = Localize(level_display_name)
 end
 

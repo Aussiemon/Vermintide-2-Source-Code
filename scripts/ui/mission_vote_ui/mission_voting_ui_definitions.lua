@@ -85,6 +85,20 @@ local scenegraph_definition = {
 			1
 		}
 	},
+	twitch_mode_info = {
+		vertical_alignment = "top",
+		parent = "screen",
+		horizontal_alignment = "right",
+		size = {
+			400,
+			200
+		},
+		position = {
+			0,
+			-215,
+			1
+		}
+	},
 	window_fade = {
 		vertical_alignment = "center",
 		parent = "window",
@@ -1193,6 +1207,538 @@ local function create_reward_presentation(scenegraph_id, size)
 	return widget
 end
 
+function create_twitch_disclaimer(is_server)
+	local scenegraph_id = "twitch_mode_info"
+	local size = scenegraph_definition[scenegraph_id].size
+	local frame_name = "menu_frame_08"
+	local frame_settings = UIFrameSettings[frame_name]
+	local frame_width = frame_settings.texture_sizes.corner[1]
+	local twitch_scale = {
+		350 / size[1],
+		108 / size[2]
+	}
+	local service_name = (PLATFORM == "xb1" and "Mixer") or "Twitch"
+	local disclaimer_text_id = (is_server and "twitch_warning_text_server") or "twitch_warning_text_client"
+	local disclaimer_text = string.format(Localize(disclaimer_text_id), service_name, service_name)
+	local widget = {
+		element = {
+			passes = {
+				{
+					texture_id = "frame",
+					style_id = "frame",
+					pass_type = "texture_frame"
+				},
+				{
+					pass_type = "rect",
+					style_id = "background"
+				},
+				{
+					texture_id = "twitch_background_texture_id",
+					style_id = "twitch_background",
+					pass_type = "texture",
+					content_check_function = function (content, style)
+						return PLATFORM ~= "xb1"
+					end
+				},
+				{
+					texture_id = "mixer_background_texture_id",
+					style_id = "mixer_background",
+					pass_type = "texture",
+					content_check_function = function (content, style)
+						return PLATFORM == "xb1"
+					end
+				},
+				{
+					style_id = "title_text",
+					pass_type = "text",
+					text_id = "title_text"
+				},
+				{
+					style_id = "title_text_shadow",
+					pass_type = "text",
+					text_id = "title_text"
+				},
+				{
+					style_id = "disclaimer_text",
+					pass_type = "text",
+					text_id = "disclaimer_text"
+				},
+				{
+					style_id = "disclaimer_text_shadow",
+					pass_type = "text",
+					text_id = "disclaimer_text"
+				},
+				{
+					pass_type = "texture",
+					style_id = "title_bg",
+					texture_id = "title_bg"
+				},
+				{
+					pass_type = "texture",
+					style_id = "title_edge",
+					texture_id = "title_edge"
+				}
+			}
+		},
+		content = {
+			twitch_background_texture_id = "menu_options_button_image_03",
+			title_text = "twitch_disconnect_warning",
+			title_edge = "game_option_divider",
+			title_bg = "playername_bg_02",
+			mixer_background_texture_id = "twitch_logo",
+			frame = frame_settings.texture,
+			disclaimer_text = disclaimer_text
+		},
+		style = {
+			frame = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					10
+				},
+				size = size,
+				texture_size = frame_settings.texture_size,
+				texture_sizes = frame_settings.texture_sizes
+			},
+			background = {
+				color = {
+					255,
+					0,
+					0,
+					0
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			},
+			twitch_background = {
+				horizontal_alignment = "right",
+				texture_size = {
+					size[1] * twitch_scale[1],
+					size[2] * twitch_scale[2]
+				},
+				color = {
+					192,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					1
+				}
+			},
+			mixer_background = {
+				horizontal_alignment = "right",
+				texture_size = {
+					210,
+					61.5
+				},
+				color = {
+					128,
+					255,
+					255,
+					255
+				},
+				offset = {
+					-15,
+					15,
+					1
+				}
+			},
+			title_bg = {
+				size = {
+					size[1],
+					40
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					size[2] - 38 - frame_width,
+					2
+				}
+			},
+			title_edge = {
+				size = {
+					size[1],
+					5
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					size[2] - 38 - frame_width,
+					4
+				}
+			},
+			title_text = {
+				font_size = 32,
+				upper_case = true,
+				localize = true,
+				word_wrap = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("red", 255),
+				default_text_color = Colors.get_color_table_with_alpha("red", 255),
+				offset = {
+					frame_width + 5,
+					-frame_width,
+					10
+				}
+			},
+			title_text_shadow = {
+				font_size = 32,
+				upper_case = true,
+				localize = true,
+				word_wrap = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				default_text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					frame_width + 5 + 2,
+					-(frame_width + 2),
+					9
+				}
+			},
+			disclaimer_text = {
+				word_wrap = true,
+				upper_case = false,
+				localize = false,
+				font_size = 24,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				size = {
+					size[1] - 15,
+					size[2]
+				},
+				text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				default_text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				offset = {
+					frame_width + 5,
+					-frame_width - 40,
+					10
+				}
+			},
+			disclaimer_text_shadow = {
+				word_wrap = true,
+				upper_case = false,
+				localize = false,
+				font_size = 24,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				size = {
+					size[1] - 15,
+					size[2]
+				},
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				default_text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					frame_width + 5 + 2,
+					-(frame_width + 2) - 40,
+					9
+				}
+			}
+		},
+		scenegraph_id = scenegraph_id,
+		offset = {
+			0,
+			0,
+			0
+		}
+	}
+
+	return widget
+end
+
+function create_twitch_mode(is_server)
+	local scenegraph_id = "twitch_mode_info"
+	local size = scenegraph_definition[scenegraph_id].size
+	local frame_name = "menu_frame_08"
+	local frame_settings = UIFrameSettings[frame_name]
+	local frame_width = frame_settings.texture_sizes.corner[1]
+	local twitch_scale = {
+		350 / size[1],
+		108 / size[2]
+	}
+	local service_name = (PLATFORM == "xb1" and "Mixer") or "Twitch"
+	local info_text_id = Localize("twitch_info_text_server")
+	local info_text = string.format(info_text_id, service_name)
+	local widget = {
+		element = {
+			passes = {
+				{
+					texture_id = "frame",
+					style_id = "frame",
+					pass_type = "texture_frame"
+				},
+				{
+					pass_type = "rect",
+					style_id = "background"
+				},
+				{
+					texture_id = "twitch_background_texture_id",
+					style_id = "twitch_background",
+					pass_type = "texture",
+					content_check_function = function (content, style)
+						return PLATFORM ~= "xb1"
+					end
+				},
+				{
+					texture_id = "mixer_background_texture_id",
+					style_id = "mixer_background",
+					pass_type = "texture",
+					content_check_function = function (content, style)
+						return PLATFORM == "xb1"
+					end
+				},
+				{
+					style_id = "title_text",
+					pass_type = "text",
+					text_id = "title_text"
+				},
+				{
+					style_id = "title_text_shadow",
+					pass_type = "text",
+					text_id = "title_text"
+				},
+				{
+					style_id = "info_text",
+					pass_type = "text",
+					text_id = "info_text"
+				},
+				{
+					style_id = "info_text_shadow",
+					pass_type = "text",
+					text_id = "info_text"
+				},
+				{
+					pass_type = "texture",
+					style_id = "title_bg",
+					texture_id = "title_bg"
+				},
+				{
+					pass_type = "texture",
+					style_id = "title_edge",
+					texture_id = "title_edge"
+				}
+			}
+		},
+		content = {
+			twitch_background_texture_id = "menu_options_button_image_03",
+			title_edge = "game_option_divider",
+			title_bg = "playername_bg_02",
+			mixer_background_texture_id = "twitch_logo",
+			frame = frame_settings.texture,
+			title_text = (PLATFORM == "xb1" and "mixer_mode") or "twitch_mode",
+			info_text = info_text
+		},
+		style = {
+			frame = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					10
+				},
+				size = size,
+				texture_size = frame_settings.texture_size,
+				texture_sizes = frame_settings.texture_sizes
+			},
+			background = {
+				color = {
+					255,
+					0,
+					0,
+					0
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			},
+			twitch_background = {
+				horizontal_alignment = "right",
+				texture_size = {
+					size[1] * twitch_scale[1],
+					size[2] * twitch_scale[2]
+				},
+				color = {
+					192,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					1
+				}
+			},
+			mixer_background = {
+				horizontal_alignment = "right",
+				texture_size = {
+					210,
+					61.5
+				},
+				color = {
+					128,
+					255,
+					255,
+					255
+				},
+				offset = {
+					-15,
+					15,
+					1
+				}
+			},
+			title_bg = {
+				size = {
+					size[1],
+					40
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					size[2] - 38 - frame_width,
+					2
+				}
+			},
+			title_edge = {
+				size = {
+					size[1],
+					5
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					size[2] - 38 - frame_width,
+					4
+				}
+			},
+			title_text = {
+				font_size = 32,
+				upper_case = true,
+				localize = true,
+				word_wrap = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				default_text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					frame_width + 5,
+					-frame_width,
+					10
+				}
+			},
+			title_text_shadow = {
+				font_size = 32,
+				upper_case = true,
+				localize = false,
+				word_wrap = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				default_text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					frame_width + 5 + 2,
+					-(frame_width + 2),
+					9
+				}
+			},
+			info_text = {
+				word_wrap = true,
+				upper_case = false,
+				localize = false,
+				font_size = 24,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				size = {
+					size[1] - 15,
+					size[2]
+				},
+				text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				default_text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				offset = {
+					frame_width + 5,
+					-frame_width - 40,
+					10
+				}
+			},
+			info_text_shadow = {
+				word_wrap = true,
+				upper_case = false,
+				localize = false,
+				font_size = 24,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				size = {
+					size[1] - 15,
+					size[2]
+				},
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				default_text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					frame_width + 5 + 2,
+					-(frame_width + 2) - 40,
+					9
+				}
+			}
+		},
+		scenegraph_id = scenegraph_id,
+		offset = {
+			0,
+			0,
+			0
+		}
+	}
+
+	return widget
+end
+
 local disable_with_gamepad = true
 local widgets = {
 	background = {
@@ -1285,6 +1831,10 @@ local event_game_widgets = {
 	event_summary_frame = UIWidgets.create_background_with_frame("event_summary_frame", scenegraph_definition.event_summary_frame.size, "game_options_bg_04", "menu_frame_08", true),
 	event_summary = UIWidgets.create_simple_item_presentation("event_summary", event_summary_passes)
 }
+local twitch_mode_widget_funcs = {
+	twitch_disclaimer = create_twitch_disclaimer,
+	twitch_mode = create_twitch_mode
+}
 local generic_input_actions = {
 	default = {},
 	default_voting = {
@@ -1310,5 +1860,6 @@ return {
 	custom_game_widgets = custom_game_widgets,
 	deed_game_widgets = deed_game_widgets,
 	event_game_widgets = event_game_widgets,
+	twitch_mode_widget_funcs = twitch_mode_widget_funcs,
 	widgets = widgets
 }

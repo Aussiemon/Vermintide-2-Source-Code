@@ -65,7 +65,7 @@ LevelSettings.inn_level = {
 	display_name = "level_name_keep",
 	conflict_settings = "disabled",
 	has_multiple_loading_images = true,
-	level_image = "level_image_any",
+	level_image = "level_icon_inn_level",
 	load_no_enemies = true,
 	loading_ui_package_name = "loading_screen_15",
 	knocked_down_setting = "knocked_down",
@@ -103,6 +103,46 @@ LevelSettings.inn_level = {
 			}
 		}
 	}
+}
+LevelSettings.inn_level_celebrate = {
+	ambient_sound_event = "silent_default_world_sound",
+	player_aux_bus_name = "environment_reverb_outside",
+	package_name = "resource_packages/levels/inn_celebrate",
+	environment_state = "interior",
+	no_bots_allowed = true,
+	display_name = "level_name_keep",
+	conflict_settings = "disabled",
+	has_multiple_loading_images = true,
+	level_image = "level_icon_inn_level",
+	load_no_enemies = true,
+	loading_ui_package_name = "loading_screen_15",
+	knocked_down_setting = "knocked_down",
+	level_name = "levels/inn/event_decoration/celebrate/world",
+	no_nav_mesh = false,
+	source_aux_bus_name = "environment_reverb_outside_source",
+	level_particle_effects = {},
+	level_screen_effects = {},
+	locations = {}
+}
+LevelSettings.inn_level_halloween = {
+	ambient_sound_event = "silent_default_world_sound",
+	player_aux_bus_name = "environment_reverb_outside",
+	package_name = "resource_packages/levels/inn_halloween",
+	environment_state = "interior",
+	no_bots_allowed = true,
+	display_name = "level_name_keep",
+	conflict_settings = "disabled",
+	has_multiple_loading_images = true,
+	level_image = "level_icon_inn_level",
+	load_no_enemies = true,
+	loading_ui_package_name = "loading_screen_15",
+	knocked_down_setting = "knocked_down",
+	level_name = "levels/inn/event_decoration/halloween/world",
+	no_nav_mesh = false,
+	source_aux_bus_name = "environment_reverb_outside_source",
+	level_particle_effects = {},
+	level_screen_effects = {},
+	locations = {}
 }
 LevelSettings.whitebox_old = {
 	source_aux_bus_name = "environment_reverb_outside_source",

@@ -61,6 +61,8 @@ MoodHandler.parse_environment_settings = function (self, environment)
 						elseif #var_value == 3 then
 							var_type = "vector3"
 							var_value = Vector3Box(var_value[1], var_value[2], var_value[3])
+						elseif #var_value == 4 then
+							var_type = "vector4"
 						end
 					end
 
@@ -232,6 +234,17 @@ MoodHandler.update_environment_variables = function (self)
 				elseif var_type == "vector2" or var_type == "vector3" then
 					value_to_set = value_to_set or Vector3(0, 0, 0)
 					value_to_set = value_to_set + var_value:unbox() * mood_weight
+				elseif var_type == "vector4" then
+					value_to_set = value_to_set or {
+						0,
+						0,
+						0,
+						0
+					}
+					value_to_set[1] = value_to_set[1] + var_value[1] * mood_weight
+					value_to_set[2] = value_to_set[2] + var_value[2] * mood_weight
+					value_to_set[3] = value_to_set[3] + var_value[3] * mood_weight
+					value_to_set[4] = value_to_set[4] + var_value[4] * mood_weight
 				end
 
 				variables_to_set[var_name] = value_to_set
@@ -268,6 +281,8 @@ MoodHandler.apply_environment_variables = function (self, shading_environment)
 				ShadingEnvironment.set_vector2(shading_environment, var_name, var_value:unbox())
 			elseif var_type == "vector3" then
 				ShadingEnvironment.set_vector3(shading_environment, var_name, var_value:unbox())
+			elseif var_type == "vector4" then
+				ShadingEnvironment.set_vector4(shading_environment, var_name, var_value[1], var_value[2], var_value[3], var_value[4])
 			end
 		elseif var_type == "texture" then
 			ShadingEnvironment.set_texture(shading_environment, var_name, var_value)
@@ -286,6 +301,18 @@ MoodHandler.apply_environment_variables = function (self, shading_environment)
 			local set_value = var_value:unbox() + default_value
 
 			ShadingEnvironment.set_vector3(shading_environment, var_name, set_value)
+		elseif var_type == "vector4" then
+			local default_x, default_y, default_z, default_w = Quaternion.to_elements(ShadingEnvironment.vector4(shading_environment, var_name))
+			default_x = default_x * weight_remainder
+			default_y = default_y * weight_remainder
+			default_z = default_z * weight_remainder
+			default_w = default_w * weight_remainder
+			local set_x = var_value[1] + default_x
+			local set_y = var_value[2] + default_y
+			local set_z = var_value[3] + default_z
+			local set_w = var_value[4] + default_w
+
+			ShadingEnvironment.set_vector4(shading_environment, var_name, set_x, set_y, set_z, set_w)
 		end
 	end
 end

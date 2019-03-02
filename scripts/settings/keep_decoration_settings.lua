@@ -98,6 +98,11 @@ KeepDecorationSettings = {
 		frame_type = "paint",
 		orientation = "horizontal",
 		backend_key = "keep_salty_painting_wood_base_2"
+	},
+	keep_bugmans_painting_wood_base_1 = {
+		frame_type = "paint",
+		orientation = "horizontal",
+		backend_key = "keep_bugmans_painting_wood_base_1"
 	}
 }
 

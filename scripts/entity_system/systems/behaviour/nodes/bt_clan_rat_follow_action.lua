@@ -62,14 +62,6 @@ BTClanRatFollowAction.enter = function (self, unit, blackboard, t)
 		else
 			blackboard.walk_timer = t + 3 + 1 * Math.random()
 		end
-
-		local dir = navigation_extension:desired_velocity()
-		local walk_anim, walk_dir = self:_calculate_walk_animation(Quaternion.right(rotation), Quaternion.forward(rotation), dir, position)
-		local network_manager = Managers.state.network
-
-		network_manager:anim_event(unit, walk_anim)
-
-		blackboard.walking_direction = walk_dir
 	end
 end
 
@@ -123,14 +115,8 @@ BTClanRatFollowAction.leave = function (self, unit, blackboard, t, reason, destr
 	blackboard.start_anim_done = nil
 	blackboard.anim_lock_fallback_time = nil
 	blackboard.deacceleration_factor = nil
-
-	if blackboard.walking then
-		blackboard.walking = nil
-		blackboard.walking_direction = nil
-
-		Managers.state.network:anim_event(unit, "move_fwd")
-	end
-
+	blackboard.walking = nil
+	blackboard.walking_direction = nil
 	local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
 	local navigation_extension = blackboard.navigation_extension
 

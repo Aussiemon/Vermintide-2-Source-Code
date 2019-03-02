@@ -220,6 +220,9 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 		ai_navigation_system = {
 			nav_world = nav_world
 		},
+		whereabouts_system = {
+			player = self
+		},
 		aim_system = {
 			is_husk = false,
 			template = "player"

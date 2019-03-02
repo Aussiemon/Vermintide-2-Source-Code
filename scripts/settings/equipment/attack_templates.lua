@@ -27,15 +27,6 @@ AttackTemplates = {
 			255
 		}
 	},
-	damage_on_push_proc = {
-		sound_type = "heavy",
-		damage_type = "blunt_tank",
-		damage = {
-			5,
-			5,
-			10
-		}
-	},
 	basic_debug_damage_ai = {
 		sound_type = "light",
 		damage_type = "slashing",
@@ -52,16 +43,6 @@ AttackTemplates = {
 		damage = 20,
 		damage_type = "slashing"
 	},
-	basic_debug_damage_kill = {
-		sound_type = "light",
-		damage = 255,
-		damage_type = "slashing"
-	},
-	wh_self_damage = {
-		sound_type = "light",
-		damage = 20,
-		damage_type = "slashing"
-	},
 	slashing_buffed_damage = {
 		sound_type = "light",
 		damage_type = "slashing_buffed"
@@ -70,19 +51,6 @@ AttackTemplates = {
 		sound_type = "light",
 		damage = 10,
 		damage_type = "slashing"
-	},
-	all_inclusive = {
-		dot_template_name = "weapon_bleed_dot_test",
-		sound_type = "light",
-		damage_type = "slashing",
-		dot_type = "poison_dot",
-		damage = {
-			9,
-			9,
-			9,
-			9,
-			9
-		}
 	},
 	markus_knight_charge = {
 		sound_type = "heavy",
@@ -382,22 +350,6 @@ AttackTemplates = {
 		sound_type = "medium",
 		damage_type = "burning_stab_fencer"
 	},
-	burning_stab_fencer_t2 = {
-		dot_type = "burning_dot",
-		sound_type = "medium",
-		damage_type = "burning_stab_fencer",
-		ranged_stagger = true,
-		stagger_angle = "stab",
-		dot_template_name = "burning_1W_dot"
-	},
-	burning_stab_fencer_t3 = {
-		dot_type = "burning_dot",
-		sound_type = "medium",
-		damage_type = "burning_stab_fencer",
-		ranged_stagger = true,
-		stagger_angle = "stab",
-		dot_template_name = "burning_1W_dot"
-	},
 	heavy_thrust_fencer = {
 		stagger_value = 2,
 		stagger_angle = "stab",
@@ -535,36 +487,6 @@ AttackTemplates = {
 		ranged_stagger = true,
 		stagger_angle = "stab"
 	},
-	repeating_pistol_special = {
-		stagger_value = 2,
-		sound_type = "medium",
-		damage_type = "shot_shotgun",
-		stagger_angle = "stab",
-		range_dropoff_settings = {
-			dropoff_start = 5,
-			dropoff_end = 30
-		}
-	},
-	repeating_pistol_special_t2 = {
-		stagger_value = 2,
-		sound_type = "medium",
-		damage_type = "shot_shotgun",
-		stagger_angle = "stab",
-		range_dropoff_settings = {
-			dropoff_start = 5,
-			dropoff_end = 30
-		}
-	},
-	repeating_pistol_special_t3 = {
-		stagger_value = 2,
-		sound_type = "medium",
-		damage_type = "shot_shotgun",
-		stagger_angle = "stab",
-		range_dropoff_settings = {
-			dropoff_start = 5,
-			dropoff_end = 30
-		}
-	},
 	shot_machinegun = {
 		stagger_value = 2,
 		stagger_angle = "stab",
@@ -574,60 +496,6 @@ AttackTemplates = {
 	shot_shotgun = {
 		sound_type = "heavy",
 		damage_type = "shot_shotgun"
-	},
-	shot_blunderbuss = {
-		stagger_value = 2,
-		sound_type = "medium",
-		damage_type = "shot_shotgun",
-		range_dropoff_settings = {
-			dropoff_start = 10,
-			dropoff_end = 30
-		}
-	},
-	shot_blunderbuss_t2 = {
-		stagger_value = 2,
-		sound_type = "medium",
-		damage_type = "shot_shotgun",
-		range_dropoff_settings = {
-			dropoff_start = 10,
-			dropoff_end = 30
-		}
-	},
-	shot_blunderbuss_t3 = {
-		stagger_value = 2,
-		sound_type = "medium",
-		damage_type = "shot_shotgun",
-		range_dropoff_settings = {
-			dropoff_start = 10,
-			dropoff_end = 30
-		}
-	},
-	shot_grudgeraker_twinbarrel = {
-		stagger_value = 2,
-		sound_type = "medium",
-		damage_type = "shot_shotgun",
-		range_dropoff_settings = {
-			dropoff_start = 20,
-			dropoff_end = 40
-		}
-	},
-	shot_grudgeraker_twinbarrel_t2 = {
-		stagger_value = 2,
-		sound_type = "medium",
-		damage_type = "shot_shotgun",
-		range_dropoff_settings = {
-			dropoff_start = 20,
-			dropoff_end = 40
-		}
-	},
-	shot_grudgeraker_twinbarrel_t3 = {
-		stagger_value = 2,
-		sound_type = "medium",
-		damage_type = "shot_shotgun",
-		range_dropoff_settings = {
-			dropoff_start = 20,
-			dropoff_end = 40
-		}
 	},
 	arrow_sniper = {
 		stagger_value = 2,
@@ -673,20 +541,6 @@ AttackTemplates = {
 		sound_type = "medium",
 		damage_type = "arrow_poison"
 	},
-	arrow_poison_aoe_t2 = {
-		dot_template_name = "aoe_poison_dot",
-		sound_type = "medium",
-		damage_type = "arrow_poison",
-		stagger_value = 2,
-		dot_type = "poison_dot"
-	},
-	arrow_poison_aoe_t3 = {
-		dot_template_name = "aoe_poison_dot",
-		sound_type = "medium",
-		damage_type = "arrow_poison",
-		stagger_value = 2,
-		dot_type = "poison_dot"
-	},
 	bolt_sniper = {
 		stagger_value = 2,
 		sound_type = "heavy",
@@ -701,20 +555,6 @@ AttackTemplates = {
 		sound_type = "medium",
 		damage_type = "bolt_machinegun"
 	},
-	wizard_staff_melee = {
-		dot_template_name = "burning_dot",
-		sound_type = "light",
-		damage_type = "drakegun_shot",
-		stagger_angle = "stab",
-		dot_type = "burning_dot",
-		damage = {
-			2,
-			0,
-			4,
-			1,
-			0
-		}
-	},
 	wizard_staff_geiser = {
 		dot_template_name = "burning_1W_dot",
 		sound_type = "light",
@@ -726,107 +566,6 @@ AttackTemplates = {
 			4,
 			0,
 			0
-		}
-	},
-	wizard_staff_geiser_t2 = {
-		dot_template_name = "burning_1W_dot",
-		sound_type = "light",
-		damage_type = "burn",
-		dot_type = "burning_dot",
-		damage = {
-			0,
-			0,
-			4,
-			0,
-			0
-		}
-	},
-	wizard_staff_geiser_t3 = {
-		dot_template_name = "burning_1W_dot",
-		sound_type = "light",
-		damage_type = "burn",
-		dot_type = "burning_dot",
-		damage = {
-			0,
-			0,
-			4,
-			0,
-			0
-		}
-	},
-	wizard_staff_geiser_fryem = {
-		dot_template_name = "burning_3W_dot",
-		sound_type = "light",
-		damage_type = "burn",
-		dot_type = "burning_dot",
-		damage = {
-			0,
-			0,
-			8,
-			0,
-			0.5
-		}
-	},
-	wizard_staff_geiser_fryem_t2 = {
-		dot_template_name = "burning_3W_dot",
-		sound_type = "light",
-		damage_type = "burn",
-		dot_type = "burning_dot",
-		damage = {
-			0,
-			0,
-			12,
-			0,
-			1.5
-		}
-	},
-	wizard_staff_geiser_fryem_t3 = {
-		dot_template_name = "burning_3W_dot",
-		sound_type = "light",
-		damage_type = "burn",
-		dot_type = "burning_dot",
-		damage = {
-			0,
-			0,
-			16,
-			0,
-			1
-		}
-	},
-	wizard_staff_geiser_crit = {
-		dot_template_name = "burning_3W_dot",
-		sound_type = "light",
-		damage_type = "fire_grenade_glance",
-		dot_type = "burning_dot",
-		damage = {
-			2,
-			1,
-			16,
-			2
-		}
-	},
-	wizard_staff_geiser_crit_t2 = {
-		dot_template_name = "burning_3W_dot",
-		sound_type = "light",
-		damage_type = "fire_grenade_glance",
-		dot_type = "burning_dot",
-		damage = {
-			3,
-			2,
-			20,
-			2.5
-		}
-	},
-	wizard_staff_geiser_crit_t3 = {
-		dot_template_name = "burning_3W_dot",
-		sound_type = "light",
-		damage_type = "fire_grenade_glance",
-		dot_type = "burning_dot",
-		damage = {
-			4,
-			3,
-			24,
-			4
 		}
 	},
 	wizard_staff_beam = {
@@ -844,36 +583,6 @@ AttackTemplates = {
 			1
 		}
 	},
-	wizard_staff_beam_t2 = {
-		stagger_block_offset = true,
-		sound_type = "light",
-		damage_type = "burn",
-		dot_template_name = "beam_burning_dot",
-		stagger_angle = "stab",
-		dot_type = "burning_dot",
-		damage = {
-			1.25,
-			0.5,
-			2.5,
-			1,
-			1.25
-		}
-	},
-	wizard_staff_beam_t3 = {
-		stagger_block_offset = true,
-		sound_type = "light",
-		damage_type = "burn",
-		dot_template_name = "beam_burning_dot",
-		stagger_angle = "stab",
-		dot_type = "burning_dot",
-		damage = {
-			1.5,
-			0.5,
-			3.5,
-			1,
-			1.5
-		}
-	},
 	wizard_staff_beam_sniper = {
 		sound_type = "heavy",
 		damage_type = "burn_sniper"
@@ -888,30 +597,6 @@ AttackTemplates = {
 		sound_type = "medium",
 		damage_type = "burn_machinegun",
 		stagger_angle = "stab",
-		range_dropoff_settings = {
-			dropoff_start = 2,
-			dropoff_end = 10
-		}
-	},
-	flamethrower_t2 = {
-		stagger_value = 2,
-		sound_type = "medium",
-		damage_type = "burn_shotgun",
-		dot_template_name = "burning_flamethrower_dot",
-		stagger_angle = "stab",
-		dot_type = "burning_dot",
-		range_dropoff_settings = {
-			dropoff_start = 2,
-			dropoff_end = 10
-		}
-	},
-	flamethrower_t3 = {
-		stagger_value = 2,
-		sound_type = "medium",
-		damage_type = "burn_shotgun",
-		dot_template_name = "burning_flamethrower_dot",
-		stagger_angle = "stab",
-		dot_type = "burning_dot",
 		range_dropoff_settings = {
 			dropoff_start = 2,
 			dropoff_end = 10
@@ -954,42 +639,14 @@ AttackTemplates = {
 		sound_type = "light",
 		damage_type = "burn_carbine"
 	},
-	fireball_t2 = {
-		dot_type = "burning_dot",
-		dot_template_name = "burning_1W_dot",
-		sound_type = "light",
-		damage_type = "burn_carbine"
-	},
-	fireball_t3 = {
-		dot_type = "burning_dot",
-		dot_template_name = "burning_1W_dot",
-		sound_type = "light",
-		damage_type = "burn_carbine"
-	},
 	drakegun = {
 		dot_template_name = "burning_1W_dot",
 		stagger_value = 2,
 		dot_type = "burning_dot"
 	},
-	drakegun_t2 = {
-		dot_template_name = "burning_1W_dot",
-		dot_type = "burning_dot"
-	},
-	drakegun_t3 = {
-		dot_template_name = "burning_1W_dot",
-		dot_type = "burning_dot"
-	},
 	drakegun_glance = {
 		dot_template_name = "burning_1W_dot",
 		stagger_value = 2,
-		dot_type = "burning_dot"
-	},
-	drakegun_glance_t2 = {
-		dot_template_name = "burning_1W_dot",
-		dot_type = "burning_dot"
-	},
-	drakegun_glance_t3 = {
-		dot_template_name = "burning_1W_dot",
 		dot_type = "burning_dot"
 	},
 	drake_pistol_shot = {
@@ -1002,51 +659,7 @@ AttackTemplates = {
 			dropoff_end = 20
 		}
 	},
-	drake_pistol_shot_t2 = {
-		stagger_value = 2,
-		sound_type = "light",
-		damage_type = "burn_carbine",
-		stagger_angle = "stab",
-		range_dropoff_settings = {
-			dropoff_start = 10,
-			dropoff_end = 20
-		}
-	},
-	drake_pistol_shot_t3 = {
-		stagger_value = 2,
-		sound_type = "light",
-		damage_type = "burn_carbine",
-		stagger_angle = "stab",
-		range_dropoff_settings = {
-			dropoff_start = 10,
-			dropoff_end = 20
-		}
-	},
 	drake_pistol_charged = {
-		stagger_value = 2,
-		sound_type = "medium",
-		damage_type = "burn_shotgun",
-		dot_template_name = "burning_1W_dot",
-		stagger_angle = "stab",
-		dot_type = "burning_dot",
-		range_dropoff_settings = {
-			dropoff_start = 3,
-			dropoff_end = 7
-		}
-	},
-	drake_pistol_charged_t2 = {
-		stagger_value = 2,
-		sound_type = "medium",
-		damage_type = "burn_shotgun",
-		dot_template_name = "burning_1W_dot",
-		stagger_angle = "stab",
-		dot_type = "burning_dot",
-		range_dropoff_settings = {
-			dropoff_start = 3,
-			dropoff_end = 7
-		}
-	},
-	drake_pistol_charged_t3 = {
 		stagger_value = 2,
 		sound_type = "medium",
 		damage_type = "burn_shotgun",

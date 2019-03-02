@@ -186,7 +186,7 @@ LiquidAreaDamageTemplates = {
 		},
 		nurgle_liquid = {
 			do_direct_damage_ai = true,
-			sfx_name_stop = "Stop_enemy_troll_puke_loop",
+			sfx_name_stop = "Stop_nurgle_infection_loop",
 			cell_size = 0.6,
 			liquid_spread_function = "pour_spread",
 			starting_pressure = 10,
@@ -195,7 +195,7 @@ LiquidAreaDamageTemplates = {
 			buff_template_name = "bile_troll_vomit_ground_base",
 			linearized_flow = false,
 			damage_type = "vomit_ground",
-			sfx_name_start = "Play_enemy_troll_puke_loop",
+			sfx_name_start = "Play_nurgle_infection_loop",
 			init_function = "bile_troll_vomit_init",
 			end_pressure = 3,
 			fx_name_filled = "fx/nurgle_liquid_blob_ground_01",

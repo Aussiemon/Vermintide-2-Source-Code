@@ -18,6 +18,9 @@ ActionCareerDRRanger.client_owner_start_action = function (self, new_action, t, 
 	self.inventory_extension:wield(slot)
 
 	self.power_level = power_level
+	local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
+
+	inventory_extension:check_and_drop_pickups("career_ability")
 end
 
 ActionCareerDRRanger._create_smoke_screen = function (self)
@@ -124,7 +127,7 @@ ActionCareerDRRanger.finish = function (self, reason)
 		self:_throw()
 	end
 
-	self.inventory_extension:wield_previous_slot()
+	self.inventory_extension:wield_previous_non_level_slot()
 	self.career_extension:start_activated_ability_cooldown()
 end
 

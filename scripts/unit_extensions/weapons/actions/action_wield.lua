@@ -8,7 +8,7 @@ ActionWield.init = function (self, world, item_name, is_server, owner_unit, dama
 	self.status_extension = ScriptUnit.extension(owner_unit, "status_system")
 end
 
-ActionWield.client_owner_start_action = function (self, new_action, t)
+ActionWield.client_owner_start_action = function (self, new_action, t, chain_attack_data)
 	self.current_action = new_action
 	self.action_time_started = t
 
@@ -30,6 +30,13 @@ ActionWield.client_owner_start_action = function (self, new_action, t)
 	local clear_input_buffer_from_wield = true
 
 	input_extension:clear_input_buffer(clear_input_buffer_from_wield)
+
+	local equipment = self.inventory_extension:equipment()
+	local slot_data = equipment.slots[new_slot]
+	local item_data = slot_data.item_data
+	local item_template = BackendUtils.get_item_template(item_data)
+	item_template.next_action = item_template.action_on_wield
+
 	input_extension:add_wield_cooldown(t + new_action.wield_cooldown)
 	self.inventory_extension:wield(self.new_slot)
 end

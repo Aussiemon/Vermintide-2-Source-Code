@@ -6,18 +6,6 @@ DLCSettings = {
 			ui = "scripts/settings/dlcs/social_wheel/social_wheel_ui_settings"
 		}
 	},
-	collectors_edition_ps4 = {
-		package_name = "resource_packages/dlcs/collectors_edition_ps4",
-		additional_settings = {
-			common = "scripts/settings/dlcs/collectors_edition_ps4/collectors_edition_ps4_common_settings"
-		}
-	},
-	pre_order_bonus_ps4 = {
-		package_name = "resource_packages/dlcs/pre_order_bonus_ps4",
-		additional_settings = {
-			common = "scripts/settings/dlcs/pre_order_bonus_ps4/pre_order_bonus_ps4_common_settings"
-		}
-	},
 	bogenhafen = {
 		package_name = "resource_packages/dlcs/bogenhafen",
 		additional_settings = {

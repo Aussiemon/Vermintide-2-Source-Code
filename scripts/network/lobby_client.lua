@@ -57,6 +57,12 @@ LobbyClient.get_stored_lobby_data = function (self)
 	return self.stored_lobby_data
 end
 
+LobbyClient.update_user_names = function (self)
+	if PLATFORM == "ps4" then
+		self.lobby:update_user_names()
+	end
+end
+
 LobbyClient.members = function (self)
 	return self.lobby_members
 end

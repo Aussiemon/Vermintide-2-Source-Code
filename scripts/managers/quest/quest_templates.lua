@@ -660,16 +660,41 @@ quest_templates.quests.event_mondstille_quickplay_console = {
 		}
 	end
 }
+quest_templates.quests.event_celebration_complete_2019 = {
+	reward = "frame_celebration_02",
+	name = "quest_celebration_01_name",
+	icon = "quest_book_mondstille",
+	desc = "quest_celebration_01_desc",
+	completed = function (statistics_db, stats_id, quest_key)
+		return statistics_db:get_persistent_stat(stats_id, "completed_levels", "dlc_celebrate_crawl") > 0
+	end
+}
+quest_templates.quests.event_celebration_drink_all_ale_2019 = {
+	reward = "frame_celebration_01",
+	name = "quest_celebration_02_name",
+	icon = "quest_book_mondstille",
+	desc = "quest_celebration_02_desc",
+	completed = function (statistics_db, stats_id, quest_key)
+		return statistics_db:get_stat(stats_id, "crawl_drink_all_ale") > 0
+	end
+}
 local weekly_complete_quickplay_missions_mappings = {
 	{
 		played_levels_quickplay = {}
+	}
+}
+local weekly_complete_weekly_event_missions_mappings = {
+	{
+		played_levels_event = {}
 	}
 }
 
 for i = 1, #UnlockableLevels, 1 do
 	local level_key = UnlockableLevels[i]
 	local complete_quickplay_missions_mapping = weekly_complete_quickplay_missions_mappings[1].played_levels_quickplay
+	local complete_weekly_event_missions_mapping = weekly_complete_weekly_event_missions_mappings[1].played_levels_event
 	complete_quickplay_missions_mapping[level_key] = true
+	complete_weekly_event_missions_mapping[level_key] = true
 end
 
 quest_templates.quests.weekly_complete_quickplay_missions = {
@@ -718,6 +743,32 @@ for i = 1, 3, 1 do
 			return {
 				count,
 				QuestSettings.weekly_complete_quickplay_missions[i]
+			}
+		end
+	}
+end
+
+for i = 1, 3, 1 do
+	local id = "weekly_complete_weekly_event_missions" .. "_" .. i
+	quest_templates.quests[id] = {
+		name = "quest_daily_complete_weekly_quest_missions_name",
+		icon = "quest_book_skull",
+		desc = function ()
+			return string.format(Localize("quest_daily_complete_weekly_event_missions_desc"), QuestSettings.weekly_complete_weekly_event_missions[i])
+		end,
+		stat_mappings = weekly_complete_weekly_event_missions_mappings,
+		completed = function (statistics_db, stats_id, quest_key)
+			local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+			return QuestSettings.weekly_complete_weekly_event_missions[i] <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+		end,
+		progress = function (statistics_db, stats_id, quest_key)
+			local stat_name = QuestSettings.stat_mappings[quest_key][1]
+			local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+
+			return {
+				count,
+				QuestSettings.weekly_complete_weekly_event_missions[i]
 			}
 		end
 	}

@@ -1577,14 +1577,7 @@ UIPasses.text_area_chat = {
 		local percent_num_texts_to_draw = num_texts_to_draw / num_texts
 		local text_start_offset = ui_content.text_start_offset
 		local num_texts_to_scale_on = (1 - percent_num_texts_to_draw) * num_texts
-		local start_index, discrepancy, _ = nil
-
-		if PLATFORM == "xb1" then
-			_, start_index = math.modf((1 + num_texts_to_scale_on) * text_start_offset)
-		else
-			start_index, discrepancy = math.modf((1 + num_texts_to_scale_on) * text_start_offset)
-		end
-
+		local start_index, discrepancy = math.modf((1 + num_texts_to_scale_on) * text_start_offset)
 		local stop_index = math.min(num_texts, start_index + num_texts_to_draw)
 		start_index = math.max(1, stop_index - num_texts_to_draw + 1)
 		local color_text = ui_style.text_color

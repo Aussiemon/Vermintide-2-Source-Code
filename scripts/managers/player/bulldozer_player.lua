@@ -242,7 +242,7 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 			wwise_voice_switch_value = profile.character_vo
 		},
 		whereabouts_system = {
-			nav_world = nav_world
+			player = self
 		},
 		aim_system = {
 			is_husk = false,

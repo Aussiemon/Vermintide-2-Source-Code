@@ -85,6 +85,26 @@ local action_classes = {
 	career_wh_two = ActionCareerWHBountyhunter
 }
 
+for _, dlc in pairs(DLCSettings) do
+	local action_template_file_names = dlc.action_template_file_names
+
+	if action_template_file_names then
+		for i = 1, #action_template_file_names, 1 do
+			local action_template_file_name = action_template_file_names[i]
+
+			require(action_template_file_name)
+		end
+	end
+
+	local action_classes_lookup = dlc.action_classes_lookup
+
+	if action_classes_lookup then
+		for key, class_name in pairs(action_classes_lookup) do
+			action_classes[key] = _G[class_name]
+		end
+	end
+end
+
 local function create_attack(item_name, attack_kind, world, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	return action_classes[attack_kind]:new(world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 end

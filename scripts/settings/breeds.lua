@@ -228,13 +228,20 @@ for i = #LAYER_ID_MAPPING + 1, NavTagVolumeStartLayer - 1, 1 do
 	LAYER_ID_MAPPING[i] = "dummy_layer" .. i
 end
 
+DEFAULT_NAV_TAG_VOLUME_LAYER_COST_AI = {}
+DEFAULT_NAV_TAG_VOLUME_LAYER_COST_BOTS = {
+	NO_BOTS_NO_SPAWN = 0,
+	NO_BOTS = 0
+}
 NAV_TAG_VOLUME_LAYER_COST_AI = NAV_TAG_VOLUME_LAYER_COST_AI or {}
 NAV_TAG_VOLUME_LAYER_COST_BOTS = NAV_TAG_VOLUME_LAYER_COST_BOTS or {}
 
 for _, layer_name in ipairs(NavTagVolumeLayers) do
 	LAYER_ID_MAPPING[#LAYER_ID_MAPPING + 1] = layer_name
-	NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] = NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] or 1
-	NAV_TAG_VOLUME_LAYER_COST_BOTS[layer_name] = NAV_TAG_VOLUME_LAYER_COST_BOTS[layer_name] or 1
+	local default_cost_ai = DEFAULT_NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] or 1
+	local default_cost_bots = DEFAULT_NAV_TAG_VOLUME_LAYER_COST_BOTS[layer_name] or 1
+	NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] = NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] or default_cost_ai
+	NAV_TAG_VOLUME_LAYER_COST_BOTS[layer_name] = NAV_TAG_VOLUME_LAYER_COST_BOTS[layer_name] or default_cost_bots
 end
 
 table.mirror_array_inplace(LAYER_ID_MAPPING)

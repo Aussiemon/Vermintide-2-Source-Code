@@ -1418,6 +1418,9 @@ go_type_table = {
 					profile = profile,
 					wwise_voice_switch_value = profile.character_vo
 				},
+				whereabouts_system = {
+					player = player
+				},
 				buff_system = {
 					is_husk = true
 				},
@@ -1534,6 +1537,9 @@ go_type_table = {
 					wwise_voice_switch_group = "character",
 					profile = profile,
 					wwise_voice_switch_value = profile.character_vo
+				},
+				whereabouts_system = {
+					player = player
 				},
 				attachment_system = {
 					profile = profile

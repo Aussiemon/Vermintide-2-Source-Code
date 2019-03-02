@@ -470,6 +470,14 @@ Boot._setup_statemachine = function (self, start_state, params)
 	self._machine = GameStateMachine:new(self, start_state, params, true)
 end
 
+Boot.on_close = function (self)
+	if self._machine and self._machine.on_close then
+		return self._machine:on_close()
+	end
+
+	return true
+end
+
 function init()
 	Boot:setup()
 end
@@ -491,7 +499,7 @@ function render()
 end
 
 function on_close()
-	return true
+	return Boot:on_close()
 end
 
 function shutdown()
@@ -644,14 +652,6 @@ Boot.game_update = function (self, real_world_dt)
 	Managers.world:update(dt, t)
 	Managers.url_loader:update(dt)
 
-	if self.quit_game then
-		Boot.is_controlled_exit = true
-
-		Application.quit()
-
-		return
-	end
-
 	if LEVEL_EDITOR_TEST and Keyboard.pressed(Keyboard.button_index("f5")) then
 		Application.console_send({
 			type = "stop_testing"
@@ -728,6 +728,12 @@ Boot.game_update = function (self, real_world_dt)
 	self._machine:post_update(dt)
 	FrameTable.swap_tables()
 	FrameTable.clear_tables()
+
+	if self.quit_game then
+		Boot.is_controlled_exit = true
+
+		Application.quit()
+	end
 end
 
 Boot.shutdown = function (self, dt)

@@ -447,32 +447,32 @@ end
 StartGameWindowPanelConsole._event_disable_function = function (self)
 	local is_connected = Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected())
 
-	return is_connected
+	return is_connected and not Managers.twitch:game_mode_supported("event")
 end
 
 StartGameWindowPanelConsole._adventure_disable_function = function (self)
 	local is_connected = Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected())
 
-	return is_connected
+	return is_connected and not Managers.twitch:game_mode_supported("adventure")
 end
 
 StartGameWindowPanelConsole._custom_game_disable_function = function (self)
 	local is_connected = Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected())
 
-	return is_connected
+	return is_connected and not Managers.twitch:game_mode_supported("custom")
 end
 
 StartGameWindowPanelConsole._heroic_deed_disable_function = function (self)
 	local is_connected = Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected())
 	local running_beta = script_data.use_beta_overlay
 
-	return is_connected or running_beta
+	return (is_connected and not Managers.twitch:game_mode_supported("deed")) or running_beta
 end
 
 StartGameWindowPanelConsole._lobby_browser_disable_function = function (self)
 	local is_connected = Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected())
 
-	return is_connected
+	return is_connected and not Managers.twitch:game_mode_supported("lobby_browser")
 end
 
 StartGameWindowPanelConsole._streaming_disable_function = function (self)

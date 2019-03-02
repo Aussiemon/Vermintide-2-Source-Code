@@ -728,14 +728,14 @@ PowerLevelTemplates = {
 			0.5,
 			2,
 			1,
-			0.75
+			1
 		},
 		impact_armor_power_modifer = {
 			1,
 			0.5,
 			0.5,
 			1,
-			0.75
+			1
 		}
 	},
 	cleave_distribution_linesman_M = {
@@ -915,14 +915,14 @@ PowerLevelTemplates = {
 			0.5,
 			2.5,
 			1,
-			0.75
+			1
 		},
 		impact_armor_power_modifer = {
 			1,
 			0.5,
 			0.5,
 			1,
-			0.5
+			1
 		}
 	},
 	cleave_distribution_linesman_H = {

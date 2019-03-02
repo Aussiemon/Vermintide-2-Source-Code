@@ -1,7 +1,9 @@
 require("scripts/ui/views/chat_gui")
 require("scripts/misc/script_retrieve_app_ticket_token")
 
-if PLATFORM ~= "win32" or script_data.honduras_demo or Development.parameter("attract_mode") then
+local PROFANITY_LIST = require("scripts/settings/profanity_list")
+
+if script_data.honduras_demo or Development.parameter("attract_mode") then
 	ChatGuiNull = class(ChatGuiNull)
 
 	for name, func in pairs(ChatGui) do
@@ -296,7 +298,7 @@ ChatManager.create_chat_gui = function (self)
 		chat_manager = self
 	}
 
-	if PLATFORM ~= "win32" or script_data.honduras_demo then
+	if script_data.honduras_demo then
 		self.chat_gui = ChatGuiNull
 	else
 		self.chat_gui = ChatGui:new(context)
@@ -656,6 +658,26 @@ ChatManager.rpc_chat_message = function (self, sender, channel_id, message_sende
 	end
 end
 
+ChatManager._profanity_check = function (self, message)
+	for _, profanity in pairs(PROFANITY_LIST) do
+		local start_index, end_index = string.find(message, profanity)
+
+		while start_index do
+			local replacement_text = ""
+			local length = UTF8Utils.string_length(profanity)
+
+			for i = 1, length, 1 do
+				replacement_text = replacement_text .. "*"
+			end
+
+			message = string.gsub(message, profanity, replacement_text)
+			start_index, end_index = string.find(message, profanity)
+		end
+	end
+
+	return message
+end
+
 ChatManager._add_message_to_list = function (self, channel_id, message_sender, local_player_id, message, is_system_message, pop_chat, is_dev, message_type, link, data)
 	local player_manager = Managers.player
 	local player = player_manager:player_from_peer_id(message_sender, local_player_id)
@@ -663,6 +685,10 @@ ChatManager._add_message_to_list = function (self, channel_id, message_sender, l
 
 	if player then
 		is_bot = not player:is_player_controlled()
+	end
+
+	if Application.user_setting("profanity_check") and not is_system_message then
+		message = self:_profanity_check(message)
 	end
 
 	local global_messages = self.global_messages

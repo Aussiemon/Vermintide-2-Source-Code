@@ -329,7 +329,7 @@ MatchmakingUI._update_matchmaking_info = function (self, t)
 		if quick_game then
 			text = "mission_vote_quick_play"
 		elseif is_event_game then
-			local level_settings = level_key and LevelSettings[level_key]
+			local level_settings = level_key and level_key ~= "n/a" and LevelSettings[level_key]
 			local level_display_name = (level_settings and level_settings.display_name) or "random_level"
 			text = level_display_name
 		else
@@ -387,7 +387,7 @@ MatchmakingUI._update_mission_vote_status = function (self)
 
 	if quick_game then
 		level_display_name = "mission_vote_quick_play"
-	elseif event_data and level_key == nil then
+	elseif level_key == nil then
 		level_display_name = "random_level"
 	else
 		local level_settings = LevelSettings[level_key]

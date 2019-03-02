@@ -13,8 +13,8 @@ UISettings = {
 	max_inventory_items = 1000,
 	hero_panel_height = 120,
 	chest_upgrade_score_topics_min_duration = 0.5,
-	chest_upgrade_score_topics_max_duration = 7,
 	wait_for_mip_streaming_items = false,
+	chest_upgrade_score_topics_max_duration = 7,
 	use_subtitles = true,
 	max_fatigue_shields = 20,
 	crafting_animation_out_time = 0.3,
@@ -66,6 +66,7 @@ UISettings = {
 		Application.user_setting("root_scale_y") or 1
 	},
 	hud_scale = Application.user_setting("hud_scale") or 100,
+	hud_clamp_ui_scaling = Application.user_setting("hud_clamp_ui_scaling") or false,
 	use_custom_hud_scale = Application.user_setting("use_custom_hud_scale") or false,
 	use_gamepad_menu_layout = Application.user_setting("use_gamepad_menu_layout") or false,
 	use_gamepad_hud_layout = Application.user_setting("use_gamepad_hud_layout") or false,

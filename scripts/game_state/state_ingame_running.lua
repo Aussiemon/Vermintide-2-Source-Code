@@ -492,7 +492,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 		print("Game won")
 
 		if self._is_in_event_game_mode then
-			StatisticsUtil.register_complete_event(statistics_db)
+			StatisticsUtil.register_played_weekly_event_level(statistics_db, player, level_key, difficulty_key)
 		end
 
 		StatisticsUtil.register_complete_level(statistics_db)
@@ -1203,6 +1203,12 @@ StateInGameRunning.rpc_trigger_local_afk_system_message = function (self, sender
 	if player then
 		local is_player_controlled = player:is_player_controlled()
 		local player_name = (is_player_controlled and ((rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id))) or player:name()
+
+		if PLATFORM ~= "win32" and not Managers.account:offline_mode() then
+			local lobby = Managers.state.network:lobby()
+			player_name = (is_player_controlled and (lobby:user_name(peer_id) or tostring(peer_id))) or player:name()
+		end
+
 		local channel_id = 1
 		local pop_chat = true
 		local message = string.format(Localize(message_id), player_name)
