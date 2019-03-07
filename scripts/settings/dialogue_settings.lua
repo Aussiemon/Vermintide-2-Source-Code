@@ -731,6 +731,7 @@ DialogueSettings.dialogue_category_config = {
 		}
 	},
 	level_talk_must_play = {
+		mutually_exclusive = false,
 		interrupted_by = {},
 		playable_during_category = {
 			enemy_alerts = true,
@@ -747,13 +748,15 @@ DialogueSettings.dialogue_category_config = {
 			enemy_basic_prio = true,
 			story_talk_vce = true,
 			knocked_down_override = true,
+			activate_ability = true,
 			cut_scene_interrupt_three = true,
 			enemy_high_prio = true,
 			npc_talk_interrupt_special = true,
 			cut_scene = true,
 			seen_items = true,
 			cut_scene_interrupt_two = true,
-			player_alerts = true
+			player_alerts = true,
+			enemy_alerts_high = true
 		}
 	},
 	npc_talk = {

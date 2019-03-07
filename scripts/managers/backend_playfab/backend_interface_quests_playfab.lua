@@ -303,6 +303,36 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 		end
 	end
 
+	local new_keep_decorations = function_result.new_keep_decorations
+
+	if new_keep_decorations then
+		for i = 1, #new_keep_decorations, 1 do
+			local keep_decoration_name = new_keep_decorations[i]
+
+			backend_mirror:add_keep_decoration(keep_decoration_name)
+
+			loot[#loot + 1] = {
+				type = "keep_decoration_painting",
+				keep_decoration_name = keep_decoration_name
+			}
+		end
+	end
+
+	local new_weapon_skins = function_result.new_weapon_skins
+
+	if new_weapon_skins then
+		for i = 1, #new_weapon_skins, 1 do
+			local weapon_skin_name = new_weapon_skins[i]
+
+			backend_mirror:add_unlocked_weapon_skin(weapon_skin_name)
+
+			loot[#loot + 1] = {
+				type = "weapon_skin",
+				weapon_skin_name = weapon_skin_name
+			}
+		end
+	end
+
 	if chips then
 		local peddler_interface = Managers.backend:get_interface("peddler")
 

@@ -60,8 +60,9 @@ GenericUnitInteractableExtension.hot_join_sync = function (self, sender)
 		local network_manager = Managers.state.network
 		local interactable_unit_id = network_manager:game_object_or_level_id(self.unit)
 		local used = Unit.get_data(interactable_unit, "interaction_data", "used") or false
+		local individual_pickup = Unit.get_data(interactable_unit, "interaction_data", "individual_pickup") or false
 
-		if used then
+		if not individual_pickup and used then
 			RPC.rpc_sync_interactable_used_state(sender, interactable_unit_id, self._is_level_object, used)
 		end
 	end

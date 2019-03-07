@@ -443,8 +443,6 @@ SpawnManager._update_player_status = function (self, dt, t)
 	local player_manager = Managers.player
 	local statuses = self._player_statuses
 	local ScriptUnit_extension = ScriptUnit.extension
-	local safe_positions = FrameTable.alloc_table()
-	local safe_rotations = FrameTable.alloc_table()
 
 	for i = 1, NUM_PLAYERS, 1 do
 		local status = statuses[i]
@@ -462,12 +460,9 @@ SpawnManager._update_player_status = function (self, dt, t)
 				if player_unit then
 					status.spawn_state = "spawned"
 					local safe_position = ScriptUnit_extension(player_unit, "locomotion_system"):last_position_on_navmesh()
-					local safe_rotation = Unit.local_rotation(player_unit, 0)
-					safe_positions[#safe_positions + 1] = safe_position
-					safe_rotations[#safe_rotations + 1] = safe_rotation
 
 					status.position:store(safe_position)
-					status.rotation:store(safe_rotation)
+					status.rotation:store(Unit.local_rotation(player_unit, 0))
 
 					local status_extension = ScriptUnit_extension(player_unit, "status_system")
 					local old_state = status.health_state
@@ -514,29 +509,10 @@ SpawnManager._update_player_status = function (self, dt, t)
 							consumables[slot_name] = item_key
 						end
 					end
-				else
-					status.want_safe_position = true
 				end
 			else
 				self:_free_status_slot(i)
 			end
-		end
-	end
-
-	for ii = 1, NUM_PLAYERS, 1 do
-		local status = statuses[ii]
-
-		if status.want_safe_position then
-			local num_positions = #safe_positions
-
-			if num_positions > 0 then
-				local random_index = Math.random(num_positions)
-
-				status.position:store(safe_positions[random_index])
-				status.rotation:store(safe_rotations[random_index])
-			end
-
-			status.want_safe_position = nil
 		end
 	end
 end

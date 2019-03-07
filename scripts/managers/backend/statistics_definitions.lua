@@ -92,6 +92,10 @@ player.total_collected_tomes = {
 	value = 0,
 	database_name = "total_collected_tomes"
 }
+player.total_collected_dice = {
+	value = 0,
+	database_name = "total_collected_dice"
+}
 player.times_friend_healed = {
 	value = 0,
 	database_name = "times_friend_healed"
@@ -107,6 +111,7 @@ player.completed_levels_witch_hunter = {}
 player.completed_levels_dwarf_ranger = {}
 player.collected_grimoires = {}
 player.collected_tomes = {}
+player.collected_dice = {}
 player.collected_painting_scraps = {}
 player.completed_heroic_deeds = {
 	value = 0,
@@ -624,6 +629,11 @@ player.collected_painting_scraps_generic = {
 	database_name = "collected_painting_scraps_generic",
 	source = "player_data"
 }
+player.collected_painting_scraps_unlimited = {
+	value = 0,
+	database_name = "collected_painting_scraps_unlimited",
+	source = "player_data"
+}
 player.collected_bogenhafen_cosmetics = {
 	value = 0,
 	database_name = "collected_bogenhafen_cosmetics"
@@ -635,6 +645,10 @@ player.last_played_level_id = {
 	sync_to_host = true
 }
 player.kills_total = {
+	value = 0,
+	sync_on_hot_join = true
+}
+player.kills_critter_total = {
 	value = 0,
 	sync_on_hot_join = true
 }
@@ -816,6 +830,17 @@ for level_key, level in pairs(LevelSettings) do
 		end
 
 		player.collected_tomes[level_key] = tome_name_definition
+		local die_name = "collected_die_" .. level_key
+		local die_name_definition = {
+			value = 0,
+			database_name = die_name
+		}
+
+		if is_dlc_level then
+			die_name_definition.source = "player_data"
+		end
+
+		player.collected_dice[level_key] = die_name_definition
 		local painting_name = "collected_painting_scraps_" .. level_key
 		player.collected_painting_scraps[level_key] = {
 			value = 0,

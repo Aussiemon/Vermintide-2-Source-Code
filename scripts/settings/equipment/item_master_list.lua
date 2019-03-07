@@ -1,6 +1,5 @@
 dofile("scripts/settings/equipment/item_master_list_local")
 dofile("scripts/settings/equipment/item_master_list_exported")
-dofile("scripts/settings/equipment/item_master_list_chips_bags")
 dofile("scripts/settings/equipment/attachments")
 dofile("scripts/settings/equipment/cosmetics")
 dofile("scripts/settings/equipment/player_wwise_dependencies")

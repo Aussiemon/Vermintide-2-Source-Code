@@ -40,6 +40,10 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 				statistics_db:increment_stat(stats_id, "headshots")
 			end
 
+			if breed.race and breed.race == "critter" then
+				statistics_db:increment_stat(stats_id, "kills_critter_total")
+			end
+
 			local damage_source = damage_data[DamageDataIndex.DAMAGE_SOURCE_NAME]
 			local master_list_item = rawget(ItemMasterList, damage_source)
 
@@ -334,6 +338,28 @@ StatisticsUtil.register_collected_tomes = function (collected_tomes, statistics_
 	end
 end
 
+StatisticsUtil.register_collected_dice = function (collected_dice, statistics_db)
+	local local_player = Managers.player:local_player()
+	local stats_id = local_player:stats_id()
+
+	for i = 1, collected_dice, 1 do
+		statistics_db:increment_stat(stats_id, "total_collected_dice")
+	end
+
+	local level_settings = LevelHelper:current_level_settings()
+	local level_id = level_settings.level_id
+
+	if not table.find(UnlockableLevels, level_id) then
+		return
+	end
+
+	local current_collected_dice = statistics_db:get_persistent_stat(stats_id, "collected_dice", level_id)
+
+	if current_collected_dice < collected_dice then
+		statistics_db:set_stat(stats_id, "collected_dice", level_id, collected_dice)
+	end
+end
+
 StatisticsUtil.register_complete_level = function (statistics_db)
 	local level_settings = LevelHelper:current_level_settings()
 	local level_id = level_settings.level_id
@@ -353,6 +379,7 @@ StatisticsUtil.register_complete_level = function (statistics_db)
 	local mission_system = Managers.state.entity:system("mission_system")
 	local grimoire_mission_data = mission_system:get_level_end_mission_data("grimoire_hidden_mission")
 	local tome_mission_data = mission_system:get_level_end_mission_data("tome_bonus_mission")
+	local dice_mission_data = mission_system:get_level_end_mission_data("bonus_dice_hidden_mission")
 
 	if grimoire_mission_data then
 		StatisticsUtil.register_collected_grimoires(grimoire_mission_data.current_amount, statistics_db)
@@ -360,6 +387,10 @@ StatisticsUtil.register_complete_level = function (statistics_db)
 
 	if tome_mission_data then
 		StatisticsUtil.register_collected_tomes(tome_mission_data.current_amount, statistics_db)
+	end
+
+	if dice_mission_data then
+		StatisticsUtil.register_collected_dice(dice_mission_data.current_amount, statistics_db)
 	end
 
 	statistics_db:increment_stat(stats_id, "completed_levels", level_id)

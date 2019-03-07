@@ -807,7 +807,11 @@ InteractionDefinitions.pickup_object = {
 						limited_item_extension:mark_for_transformation()
 					end
 
-					Managers.state.unit_spawner:mark_for_deletion(interactable_unit)
+					local individual_pickup = Unit.get_data(interactable_unit, "interaction_data", "individual_pickup")
+
+					if not individual_pickup then
+						Managers.state.unit_spawner:mark_for_deletion(interactable_unit)
+					end
 				end
 
 				local interactor_buff_extension = ScriptUnit.extension(interactor_unit, "buff_system")
@@ -839,6 +843,13 @@ InteractionDefinitions.pickup_object = {
 			Unit.animation_event(interactor_unit, "interaction_end")
 
 			if result == InteractionResult.SUCCESS then
+				local is_husk = data.is_husk or false
+				local only_once = Unit.get_data(interactable_unit, "interaction_data", "only_once")
+
+				if only_once and not is_husk then
+					Unit.set_data(interactable_unit, "interaction_data", "used", true)
+				end
+
 				local player = Managers.player:owner(interactor_unit)
 				local local_human = player.local_player
 				local is_player_controlled = player:is_player_controlled()
@@ -1202,6 +1213,8 @@ InteractionDefinitions.pickup_object = {
 						local level_key = Managers.state.game_mode:level_key()
 						local local_player = Managers.player:local_player()
 						local stats_id = local_player:stats_id()
+
+						statistics_db:increment_stat(stats_id, "collected_painting_scraps_unlimited")
 
 						if table.contains(UnlockableLevels, level_key) then
 							local statistics_id = "collected_painting_scraps"

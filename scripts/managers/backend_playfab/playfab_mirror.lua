@@ -392,12 +392,16 @@ PlayFabMirror.inventory_request_cb = function (self, result)
 		local item = inventory_items[i]
 
 		if not item.BundleContents then
-			local backend_id = item.ItemInstanceId
+			if item.ItemId and not rawget(ItemMasterList, item.ItemId) then
+				Crashify.print_exception("PlayfabMirror", string.format("ItemMasterList has no item %q", tostring(item.ItemId)))
+			else
+				local backend_id = item.ItemInstanceId
 
-			self:_update_data(item, backend_id)
+				self:_update_data(item, backend_id)
 
-			if item.data.item_type ~= "weapon_skin" then
-				self._inventory_items[backend_id] = item
+				if item.data.item_type ~= "weapon_skin" then
+					self._inventory_items[backend_id] = item
+				end
 			end
 		end
 	end
