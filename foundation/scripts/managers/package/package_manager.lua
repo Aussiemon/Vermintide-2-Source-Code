@@ -297,6 +297,63 @@ PackageManager.update = function (self)
 	return next(self._asynch_packages) == nil
 end
 
+PackageManager.num_references = function (self, package_name)
+	local num_references = 0
+	local references = self._references[package_name]
+
+	for reference_name, reference_count in pairs(references) do
+		num_references = num_references + reference_count
+	end
+
+	return num_references
+end
+
+PackageManager.unload_dangling_painting_materials = function (self)
+	local is_occuring = false
+
+	print("############### UNLOADING PACKAGES ###############")
+
+	for package_name, resource_handle in pairs(self._packages) do
+		if PaintingPackageNames[package_name] then
+			is_occuring = true
+
+			self:_force_unload(package_name)
+		end
+	end
+
+	if is_occuring then
+		Crashify.print_exception("Keep Decorations", "unloading dangling painting packages")
+	end
+end
+
+PackageManager._force_unload = function (self, package_name)
+	table.clear(self._references[package_name])
+
+	local resource_handle = self._packages[package_name]
+
+	if self._asynch_packages[package_name] then
+		resource_handle = self._asynch_packages[package_name].handle
+
+		assert(resource_handle, "Package '" .. tostring(package_name) .. "' is not loaded")
+	end
+
+	if resource_handle then
+		ResourcePackage.unload(resource_handle)
+		Application.release_resource_package(resource_handle)
+	end
+
+	self._packages[package_name] = nil
+	self._asynch_packages[package_name] = nil
+	self._references[package_name] = nil
+	self._queued_async_packages[package_name] = nil
+
+	if table.is_empty(self._asynch_packages) then
+		self:_pop_queue()
+	end
+
+	debug_print("Unload:  %s, %s", package_name, "Keep Painting Error")
+end
+
 PackageManager.dump_reference_counter = function (self, reference_name)
 	printf("[PackageManager] Dumping reference counters for %s", reference_name)
 

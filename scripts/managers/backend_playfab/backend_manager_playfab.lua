@@ -197,7 +197,11 @@ BackendManagerPlayFab.item_script_type = function (self)
 end
 
 BackendManagerPlayFab.get_interface = function (self, interface_name, player_id)
-	fassert(self._interfaces[interface_name], "Requesting unknown interface %q", interface_name)
+	if not self._interfaces[interface_name] then
+		Application.warning("BackendManagerPlayFab:get_interface: Requesting unknown interface " .. interface_name)
+
+		return nil
+	end
 
 	return self._interfaces[interface_name]
 end

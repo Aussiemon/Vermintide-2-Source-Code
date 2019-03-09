@@ -33,7 +33,7 @@ end
 KeepDecorationPaintingExtension.destroy = function (self)
 	local unit = self._painting_unit
 
-	if unit then
+	if Unit.alive(unit) then
 		World.destroy_unit(self._world, unit)
 	end
 
@@ -330,6 +330,8 @@ KeepDecorationPaintingExtension._load_painting_material = function (self, name, 
 		package_name = "resource_packages/keep_paintings/" .. subpath
 	end
 
+	local previous_package_name = self._current_package_name
+
 	local function cb_package_loaded()
 		self:_apply_material_by_sub_path(subpath)
 
@@ -339,8 +341,8 @@ KeepDecorationPaintingExtension._load_painting_material = function (self, name, 
 
 		self._loading_painting_material = false
 
-		if self._previous_package_name then
-			self:_unload_painting_material(self._previous_package_name)
+		if previous_package_name then
+			self:_unload_painting_material(previous_package_name)
 
 			self._previous_package_name = nil
 		end
@@ -369,8 +371,15 @@ end
 
 KeepDecorationPaintingExtension._unload_painting_material = function (self, package_name)
 	local reference_name = self._decoration_settings_key
+	local num_references = Managers.package:num_references(package_name)
 
-	Managers.package:unload(package_name, reference_name)
+	if num_references == 1 then
+		if Managers.package:can_unload(package_name) then
+			Managers.package:unload(package_name, reference_name)
+		end
+	else
+		Managers.package:unload(package_name, reference_name)
+	end
 end
 
 KeepDecorationPaintingExtension._create_game_object = function (self, painting)

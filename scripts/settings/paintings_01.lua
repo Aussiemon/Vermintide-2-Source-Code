@@ -798,4 +798,11 @@ end
 
 table.sort(PaintingOrder)
 
+local prefix = "resource_packages/keep_paintings/keep_painting_"
+PaintingPackageNames = PaintingPackageNames or {}
+
+for painting_name, _ in pairs(Paintings) do
+	PaintingPackageNames[prefix .. painting_name] = true
+end
+
 return

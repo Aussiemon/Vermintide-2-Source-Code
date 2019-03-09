@@ -439,6 +439,10 @@ function flow_query_wielded_weapon(params)
 end
 
 function flow_force_use_pickup_for_all_players(params)
+	if not Managers.player.is_server then
+		return
+	end
+
 	local pickup_name = params.pickup_name
 	local pickup_name_id = NetworkLookup.pickup_names[pickup_name]
 	local network_manager = Managers.state.network

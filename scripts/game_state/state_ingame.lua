@@ -1943,6 +1943,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 	Managers.transition:show_loading_icon()
 	self:_remove_ingame_clock()
 	Managers.unlock:enable_update_unlocks(false)
+	Managers.package:unload_dangling_painting_materials()
 end
 
 StateIngame.on_close = function (self)

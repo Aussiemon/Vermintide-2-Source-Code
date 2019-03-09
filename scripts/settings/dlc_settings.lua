@@ -23,6 +23,17 @@ DLCSettings = {
 			level = "scripts/settings/dlcs/holly/holly_level_settings"
 		}
 	},
+	celebrate = {
+		package_name = "resource_packages/dlcs/celebrate",
+		additional_settings = {
+			equipment = "scripts/settings/dlcs/celebrate/celebrate_equipment_settings",
+			common = "scripts/settings/dlcs/celebrate/celebrate_common_settings",
+			sound = "scripts/settings/dlcs/celebrate/celebrate_sound_settings",
+			buff = "scripts/settings/dlcs/celebrate/celebrate_buff_settings",
+			pickups = "scripts/settings/dlcs/celebrate/celebrate_pickups_settings",
+			level = "scripts/settings/dlcs/celebrate/celebrate_level_settings"
+		}
+	},
 	gecko = {
 		package_name = "resource_packages/dlcs/gecko",
 		additional_settings = {

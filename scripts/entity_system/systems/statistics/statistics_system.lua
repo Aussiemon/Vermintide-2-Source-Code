@@ -136,7 +136,7 @@ StatisticsSystem.rpc_register_ales_drunk = function (self, sender)
 
 	local amount_session = statistics_db:get_stat(stats_id, "crawl_ales_drunk_session")
 
-	if amount_session == 99 then
+	if amount_session == QuestSettings.event_crawl_drink_all_ale_amount then
 		statistics_db:set_stat(stats_id, "crawl_drink_all_ale", 1)
 	end
 
