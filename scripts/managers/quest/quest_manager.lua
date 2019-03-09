@@ -11,7 +11,8 @@ local quest_keys = {
 		"weekly_quest_2",
 		"weekly_quest_3",
 		"weekly_quest_4",
-		"weekly_quest_5"
+		"weekly_quest_5",
+		"weekly_quest_6"
 	},
 	event = {
 		"event_quest_1",

@@ -1293,6 +1293,42 @@ UIPlayerPortraitFrameSettings = {
 				136
 			}
 		}
+	},
+	frame_celebration_01 = {
+		{
+			texture = "portrait_frame_celebration_1",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_celebration_02 = {
+		{
+			texture = "portrait_frame_celebration_2",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_celebration_03 = {
+		{
+			texture = "portrait_frame_celebration_3",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
 	}
 }
 

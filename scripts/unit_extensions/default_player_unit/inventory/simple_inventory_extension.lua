@@ -41,6 +41,7 @@ SimpleInventoryExtension.init = function (self, extension_init_context, unit, ex
 	self._selected_consumable_slot = nil
 	self._previously_wielded_weapon_slot = "slot_melee"
 	self._previously_wielded_slot = "slot_melee"
+	self._previously_wielded_non_level_slot = "slot_melee"
 	self._backend_items = Managers.backend:get_interface("items")
 end
 
@@ -320,6 +321,12 @@ SimpleInventoryExtension.wield_previous_slot = function (self)
 	self:wield(slot_name)
 end
 
+SimpleInventoryExtension.wield_previous_non_level_slot = function (self)
+	local slot_name = self._previously_wielded_non_level_slot
+
+	self:wield(slot_name)
+end
+
 SimpleInventoryExtension.rewield_wielded_slot = function (self)
 	local equipment = self._equipment
 	local wielded_slot = equipment.wielded_slot
@@ -388,6 +395,10 @@ SimpleInventoryExtension.wield = function (self, slot_name)
 
 	if slot_name == "slot_melee" or slot_name == "slot_ranged" or slot_name == "slot_grenade" or slot_name == "slot_healthkit" or slot_name == "slot_potion" or slot_name == "slot_level_event" then
 		self._previously_wielded_slot = slot_name
+	end
+
+	if slot_name == "slot_melee" or slot_name == "slot_ranged" or slot_name == "slot_grenade" or slot_name == "slot_healthkit" or slot_name == "slot_potion" then
+		self._previously_wielded_non_level_slot = slot_name
 	end
 end
 
@@ -1022,16 +1033,16 @@ SimpleInventoryExtension.apply_buffs_to_ammo = function (self)
 		if slots_to_check[slot_name] then
 			local left_hand_unit = slot_data.left_unit_1p
 			local right_hand_unit = slot_data.right_unit_1p
-			local ammo_extension = ScriptUnit.has_extension(left_hand_unit, "ammo_system")
+			local left_hand_ammo_extension = ScriptUnit.has_extension(left_hand_unit, "ammo_system")
 
-			if ammo_extension then
-				ammo_extension:apply_buffs()
+			if left_hand_ammo_extension then
+				left_hand_ammo_extension:apply_buffs()
 			end
 
-			local ammo_extension = ScriptUnit.has_extension(right_hand_unit, "ammo_system")
+			local right_hand_ammo_extension = ScriptUnit.has_extension(right_hand_unit, "ammo_system")
 
-			if ammo_extension then
-				ammo_extension:apply_buffs()
+			if right_hand_ammo_extension then
+				right_hand_ammo_extension:apply_buffs()
 			end
 		end
 	end
@@ -1039,6 +1050,11 @@ end
 
 SimpleInventoryExtension.drop_level_event_item = function (self, slot_data)
 	local item_template = self:get_item_template(slot_data)
+
+	if item_template.no_drop then
+		return
+	end
+
 	local weapon_unit = slot_data.right_unit_1p or slot_data.left_unit_1p
 	local action = item_template.actions.action_dropped.default
 

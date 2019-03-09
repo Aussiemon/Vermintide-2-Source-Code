@@ -116,10 +116,12 @@ InventorySettings = {
 			category = "level_event",
 			drop_reasons = {
 				grabbed_by_chaos_spawn = true,
-				pounced_down = true,
+				grabbed_by_corruptor = true,
 				grabbed_by_pack_master = true,
+				pounced_down = true,
 				death = true,
 				knocked_down = true,
+				career_ability = true,
 				grabbed_by_tentacle = true
 			}
 		},

@@ -1838,6 +1838,54 @@ Missions.nurgle_escape_through_the_portal = {
 	mission_template_name = "goal",
 	text = "mission_nurgle_escape"
 }
+Missions.crawl_find_more_beer = {
+	mission_template_name = "goal",
+	text = "mission_crawl_find_more_beer"
+}
+Missions.crawl_go_to_first_pub = {
+	mission_template_name = "goal",
+	text = "mission_crawl_go_to_first_pub"
+}
+Missions.crawl_enter_first_pub = {
+	mission_template_name = "goal",
+	text = "mission_crawl_enter_first_pub"
+}
+Missions.crawl_survive_the_attack = {
+	mission_template_name = "goal",
+	text = "mission_crawl_survive_the_attack"
+}
+Missions.crawl_go_to_second_pub = {
+	mission_template_name = "goal",
+	text = "mission_crawl_go_to_second_pub"
+}
+Missions.crawl_have_a_drink = {
+	mission_template_name = "goal",
+	text = "mission_crawl_have_a_drink"
+}
+Missions.crawl_go_to_third_pub = {
+	mission_template_name = "goal",
+	text = "mission_crawl_go_to_third_pub"
+}
+Missions.crawl_find_way_in = {
+	mission_template_name = "goal",
+	text = "mission_crawl_find_way_in"
+}
+Missions.crawl_find_good_beer = {
+	mission_template_name = "goal",
+	text = "mission_crawl_find_good_beer"
+}
+Missions.crawl_survive_bar_fight = {
+	mission_template_name = "goal",
+	text = "mission_crawl_survive_bar_fight"
+}
+Missions.crawl_escape_bar_fight = {
+	mission_template_name = "goal",
+	text = "mission_crawl_escape_bar_fight"
+}
+Missions.crawl_into_the_portal = {
+	mission_template_name = "goal",
+	text = "mission_crawl_into_the_portal"
+}
 Missions.keep_enter_portal = {
 	mission_template_name = "goal",
 	text = "mission_keep_enter_portal"

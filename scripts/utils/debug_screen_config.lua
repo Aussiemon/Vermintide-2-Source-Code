@@ -141,6 +141,12 @@ local settings = {
 		}
 	},
 	{
+		description = "Disable popup warning when trying to exit the game",
+		is_boolean = true,
+		setting_name = "disable_exit_popup_warning",
+		category = "Allround useful stuff!"
+	},
+	{
 		description = "Converts all IRC messages to a random vote",
 		is_boolean = true,
 		setting_name = "twitch_randomize_votes",
@@ -1427,10 +1433,13 @@ Features that make player mechanics nicer to work with.
 		category = "AI"
 	},
 	{
-		description = "show nav mesh",
-		is_boolean = true,
+		description = "Toggle navmesh debug draw mode.",
 		setting_name = "nav_mesh_debug",
-		category = "AI"
+		category = "AI",
+		item_source = {
+			retained = "retained",
+			continuous = "continuous"
+		}
 	},
 	{
 		description = "Shows cover points as green spheres. Bad cover points as red capsules, only draws at level startup.",
@@ -1760,6 +1769,12 @@ Features that make player mechanics nicer to work with.
 		description = "debug sorting for proximity dependent sfx and vfx",
 		is_boolean = true,
 		setting_name = "debug_proximity_fx",
+		category = "Visual/audio"
+	},
+	{
+		description = "show values sent to wwise",
+		is_boolean = true,
+		setting_name = "debug_drunk_sound_values",
 		category = "Visual/audio"
 	},
 	{

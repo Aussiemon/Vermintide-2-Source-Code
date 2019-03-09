@@ -189,6 +189,7 @@ local components = {
 		class_name = "TwitchVoteUI",
 		filename = "scripts/ui/hud_ui/twitch_vote_ui",
 		visibility_groups = {
+			"realism",
 			"alive"
 		},
 		validation_function = function (context, is_in_inn)

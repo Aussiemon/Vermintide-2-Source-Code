@@ -33,6 +33,10 @@ MixerManager.init = function (self)
 	self._debug_vote_timer = 0.25
 end
 
+MixerManager.game_mode_supported = function (self, game_mode)
+	return MixerSettings.supported_game_modes[game_mode]
+end
+
 MixerManager.stream_type = function (self)
 	return "mixer"
 end
@@ -565,7 +569,7 @@ end
 MixerManager.update = function (self, dt, t)
 	self:_handle_disconnect_popup()
 
-	if not self._connected and not self._connecting then
+	if not self._connected and not self._connecting and not self._activated then
 		return
 	end
 

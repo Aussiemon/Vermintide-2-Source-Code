@@ -234,6 +234,21 @@ ProfileSynchronizer.profile_by_peer = function (self, peer_id, local_player_id)
 			return index
 		end
 	end
+
+	local player = Managers.player:player_from_peer_id(peer_id, local_player_id)
+	local player_unit = player and player.player_unit
+
+	if Unit.alive(player_unit) then
+		print("############# BOT DESPAWN FIX #############")
+
+		local career_extension = ScriptUnit.extension(player_unit, "career_system")
+		local career_name = career_extension:career_name()
+		local career_settings = CareerSettings[career_name]
+		local profile_name = career_settings.profile_name
+		local profile_index = FindProfileIndex(profile_name)
+
+		return profile_index
+	end
 end
 
 ProfileSynchronizer.owned_profiles = function (self, table_to_fill)

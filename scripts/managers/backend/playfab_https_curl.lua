@@ -71,6 +71,10 @@ function curl_callback(success, code, headers, data, id)
 				request_data.onSuccess(response.data)
 
 				PlayFabHttpsCurlData.active_requests[id] = nil
+			elseif request_data.onFail then
+				request_data.onFail(response)
+
+				PlayFabHttpsCurlData.active_requests[id] = nil
 			else
 				on_error(request_data, response, id)
 			end
@@ -109,7 +113,7 @@ function curl_callback(success, code, headers, data, id)
 end
 
 local PlayFabHttpsCurl = {
-	MakePlayFabApiCall = function (url_path, request, auth_key, auth_value, on_success_callback, on_fail_callback)
+	MakePlayFabApiCall = function (url_path, request, auth_key, auth_value, on_success_callback, optional_on_fail_callback)
 		local json_request = json.encode(request)
 		local headers = {
 			"X-ReportErrorAsSuccess: true",
@@ -125,11 +129,13 @@ local PlayFabHttpsCurl = {
 		local id = PlayFabHttpsCurlData.request_id + 1
 		local curl_manager = Managers.curl
 		local full_url = "https://" .. PlayFabSettings.settings.titleId .. ".playfabapi.com/" .. url_path
-		local options = {}
+		local options = {
+			[curl_manager._curl.OPT_SSL_OPTIONS] = curl_manager._curl.SSLOPT_NO_REVOKE
+		}
 		local request_data = {
 			retries = 0,
 			onSuccess = on_success_callback,
-			onFail = on_fail_callback,
+			onFail = optional_on_fail_callback,
 			url = full_url,
 			body = json_request,
 			headers = headers,

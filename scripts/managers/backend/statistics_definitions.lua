@@ -41,7 +41,7 @@ player.damage_dealt = {
 }
 local max_daily_quests = 3
 local max_event_quests = 3
-local max_weekly_quests = 5
+local max_weekly_quests = 6
 local num_quest_statistics_per_quest = 3
 player.quest_statistics = {}
 
@@ -92,6 +92,10 @@ player.total_collected_tomes = {
 	value = 0,
 	database_name = "total_collected_tomes"
 }
+player.total_collected_dice = {
+	value = 0,
+	database_name = "total_collected_dice"
+}
 player.times_friend_healed = {
 	value = 0,
 	database_name = "times_friend_healed"
@@ -107,6 +111,7 @@ player.completed_levels_witch_hunter = {}
 player.completed_levels_dwarf_ranger = {}
 player.collected_grimoires = {}
 player.collected_tomes = {}
+player.collected_dice = {}
 player.collected_painting_scraps = {}
 player.completed_heroic_deeds = {
 	value = 0,
@@ -408,6 +413,19 @@ player.holly_kills_es_dual_wield_hammer_sword = {
 	database_name = "holly_kills_es_dual_wield_hammer_sword",
 	source = "player_data"
 }
+player.crawl_ales_drunk_session = {
+	value = 0
+}
+player.crawl_total_ales_drunk = {
+	value = 0,
+	database_name = "crawl_total_ales_drunk",
+	source = "player_data"
+}
+player.crawl_drink_all_ale = {
+	value = 0,
+	database_name = "crawl_drink_all_ale",
+	source = "player_data"
+}
 local holly_lord_levels = {
 	"warcamp",
 	"skaven_stronghold",
@@ -611,6 +629,11 @@ player.collected_painting_scraps_generic = {
 	database_name = "collected_painting_scraps_generic",
 	source = "player_data"
 }
+player.collected_painting_scraps_unlimited = {
+	value = 0,
+	database_name = "collected_painting_scraps_unlimited",
+	source = "player_data"
+}
 player.collected_bogenhafen_cosmetics = {
 	value = 0,
 	database_name = "collected_bogenhafen_cosmetics"
@@ -625,6 +648,10 @@ player.kills_total = {
 	value = 0,
 	sync_on_hot_join = true
 }
+player.kills_critter_total = {
+	value = 0,
+	sync_on_hot_join = true
+}
 player.kills_per_breed = {}
 player.kill_assists_per_breed = {}
 player.damage_taken = {
@@ -636,7 +663,8 @@ player.completed_levels = {}
 player.completed_levels_difficulty = {}
 player.completed_career_levels = {}
 player.played_difficulty = {}
-player.completed_event_difficulty = {}
+player.played_levels_weekly_event = {}
+player.completed_weekly_event_difficulty = {}
 player.crafted_items = {
 	value = 0,
 	database_name = "crafted_items"
@@ -685,8 +713,8 @@ for diff, _ in pairs(DifficultySettings) do
 		source = "player_data",
 		database_name = database_name
 	}
-	database_name = string.format("completed_event_difficulty_%s", diff)
-	player.completed_event_difficulty[diff] = {
+	database_name = string.format("completed_weekly_event_difficulty_%s", diff)
+	player.completed_weekly_event_difficulty[diff] = {
 		value = 0,
 		source = "player_data",
 		database_name = database_name
@@ -731,12 +759,19 @@ for level_key, level in pairs(LevelSettings) do
 			sync_to_host = true,
 			database_name = "played_levels_quickplay_" .. level_key
 		}
+		local played_levels_weekly_event_definition = {
+			value = 0,
+			source = "player_data",
+			sync_to_host = true,
+			database_name = "played_levels_weekly_event_" .. level_key
+		}
 
 		if is_dlc_level then
 			played_levels_quickplay_definition.source = "player_data"
 		end
 
 		player.played_levels_quickplay[level_key] = played_levels_quickplay_definition
+		player.played_levels_weekly_event[level_key] = played_levels_weekly_event_definition
 		local heroes = {
 			"bright_wizard",
 			"wood_elf",
@@ -795,6 +830,17 @@ for level_key, level in pairs(LevelSettings) do
 		end
 
 		player.collected_tomes[level_key] = tome_name_definition
+		local die_name = "collected_die_" .. level_key
+		local die_name_definition = {
+			value = 0,
+			database_name = die_name
+		}
+
+		if is_dlc_level then
+			die_name_definition.source = "player_data"
+		end
+
+		player.collected_dice[level_key] = die_name_definition
 		local painting_name = "collected_painting_scraps_" .. level_key
 		player.collected_painting_scraps[level_key] = {
 			value = 0,

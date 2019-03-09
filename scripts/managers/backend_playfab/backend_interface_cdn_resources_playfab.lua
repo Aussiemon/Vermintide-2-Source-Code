@@ -1,14 +1,78 @@
+local json = require("PlayFab.json")
 BackendInterfaceCdnResourcesPlayFab = class(BackendInterfaceCdnResourcesPlayFab)
 local RESOURCE_URL_SECONDS_TO_LIVE = 3000
 local RESOURCE_URL_REQUEST_LIMIT = 10
+local LOCALIZATION_STATUSES = {
+	failed = 2,
+	loaded = 1
+}
 
 BackendInterfaceCdnResourcesPlayFab.init = function (self, backend_mirror)
 	self._backend_mirror = backend_mirror
 	self._url_cache = {}
+	self._localization_status = {}
 end
 
 BackendInterfaceCdnResourcesPlayFab.ready = function (self)
 	return true
+end
+
+BackendInterfaceCdnResourcesPlayFab.load_backend_localizations = function (self, language_id, external_cb)
+	local backend_resource_ids = {}
+	local localizations_to_load = {}
+
+	for _, dlc_settings in pairs(DLCSettings) do
+		local backend_localizations = dlc_settings.backend_localizations
+
+		if backend_localizations then
+			for key, localizations_by_language in pairs(backend_localizations) do
+				local resource_id = localizations_by_language[language_id] or localizations_by_language.en
+				backend_resource_ids[#backend_resource_ids + 1] = resource_id
+				localizations_to_load[resource_id] = key
+			end
+		end
+	end
+
+	self:get_resource_urls(backend_resource_ids, callback(self, "_cb_localization_urls_loaded", localizations_to_load, external_cb))
+end
+
+BackendInterfaceCdnResourcesPlayFab._cb_localization_urls_loaded = function (self, localizations_to_load, external_cb, result)
+	for resource_id, key in pairs(localizations_to_load) do
+		local url = result[resource_id]
+
+		if url then
+			if PLATFORM == "win32" then
+				Managers.curl:get(url, {}, callback(self, "_cb_localization_loaded", key, external_cb), nil, {})
+			else
+				Managers.rest_transport:get(url, {}, callback(self, "_cb_localization_loaded", key, external_cb), nil, nil)
+			end
+		else
+			self._localization_status[key] = LOCALIZATION_STATUSES.failed
+		end
+	end
+end
+
+BackendInterfaceCdnResourcesPlayFab._cb_localization_loaded = function (self, key, external_cb, success, code, headers, data)
+	if success then
+		local _, response = pcall(json.decode, data)
+
+		if response and type(response) == "table" then
+			self._localization_status[key] = LOCALIZATION_STATUSES.loaded
+			local localizations = {}
+
+			for string_id, value in pairs(response) do
+				if value ~= "" then
+					localizations[string_id] = value
+				end
+			end
+
+			external_cb(localizations)
+
+			return
+		end
+	end
+
+	self._localization_status[key] = LOCALIZATION_STATUSES.failed
 end
 
 local function chunk_array(t, chunk_size)
@@ -19,6 +83,14 @@ local function chunk_array(t, chunk_size)
 	end
 
 	return result
+end
+
+BackendInterfaceCdnResourcesPlayFab.has_localization_loaded = function (self, key)
+	return self._localization_status[key] == LOCALIZATION_STATUSES.loaded
+end
+
+BackendInterfaceCdnResourcesPlayFab.has_localization_failed = function (self, key)
+	return self._localization_status[key] == LOCALIZATION_STATUSES.failed
 end
 
 BackendInterfaceCdnResourcesPlayFab.get_resource_urls = function (self, resource_ids, external_cb)

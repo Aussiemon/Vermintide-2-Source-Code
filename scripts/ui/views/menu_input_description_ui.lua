@@ -176,6 +176,11 @@ local function create_input_description_widgets(amount)
 						text_id = "text"
 					},
 					{
+						style_id = "text_shadow",
+						pass_type = "text",
+						text_id = "text"
+					},
+					{
 						pass_type = "texture",
 						style_id = "icon",
 						texture_id = "icon"
@@ -199,6 +204,22 @@ local function create_input_description_widgets(amount)
 					offset = {
 						0,
 						0,
+						2
+					},
+					scenegraph_id = scenegraph_text_id
+				},
+				text_shadow = {
+					font_size = 24,
+					word_wrap = true,
+					pixel_perfect = true,
+					horizontal_alignment = "left",
+					vertical_alignment = "center",
+					dynamic_font = true,
+					font_type = "hell_shark",
+					text_color = Colors.get_color_table_with_alpha("black", 255),
+					offset = {
+						2,
+						-2,
 						1
 					},
 					scenegraph_id = scenegraph_text_id
@@ -227,7 +248,7 @@ MenuInputDescriptionUI.init = function (self, ingame_ui_context, ui_renderer, in
 		snap_pixel_positions = true
 	}
 	self._use_fullscreen_layout = use_fullscreen_layout
-	scenegraph_definition.screen.position[3] = layer + 10 or UILayer.controller_description
+	scenegraph_definition.screen.position[3] = (layer and layer + 10) or UILayer.controller_description
 
 	self:create_ui_elements(ui_renderer, number_of_elements, use_fullscreen_layout)
 end

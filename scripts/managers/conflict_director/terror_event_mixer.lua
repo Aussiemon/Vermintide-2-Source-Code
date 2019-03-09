@@ -807,7 +807,7 @@ end
 TerrorEventMixer.start_random_event = function (event_chunk_name)
 	local event_chunk = WeightedRandomTerrorEvents[event_chunk_name]
 
-	assert(event_chunk, "Cannot find a WeightedRandomTerrorEvent called %s", tostring(event_chunk_name))
+	fassert(event_chunk, "Cannot find a WeightedRandomTerrorEvent called %s", tostring(event_chunk_name))
 
 	local index = LoadedDice.roll_easy(event_chunk.loaded_probability_table)
 	local index = index * 2 - 1

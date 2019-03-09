@@ -58,14 +58,20 @@ BTSuicideRunAction.leave = function (self, unit, blackboard, t, reason, destroy)
 end
 
 BTSuicideRunAction.update_target_position = function (self, unit, blackboard, ai_navigation, stop)
-	if Unit.alive(blackboard.target_unit) and not stop then
-		local whereabouts_extension = ScriptUnit.extension(blackboard.target_unit, "whereabouts_system")
-		local pos = whereabouts_extension.last_pos_on_nav_mesh:unbox()
+	local target_unit = blackboard.target_unit
 
-		ai_navigation:move_to(pos)
-	else
-		ai_navigation:stop()
+	if ALIVE[target_unit] and not stop then
+		local whereabouts_extension = ScriptUnit.extension(target_unit, "whereabouts_system")
+		local last_position_on_navmesh = whereabouts_extension:last_position_on_navmesh()
+
+		if last_position_on_navmesh then
+			ai_navigation:move_to(last_position_on_navmesh)
+
+			return
+		end
 	end
+
+	ai_navigation:stop()
 end
 
 BTSuicideRunAction.play_unit_audio = function (self, unit, blackboard, sound_name)

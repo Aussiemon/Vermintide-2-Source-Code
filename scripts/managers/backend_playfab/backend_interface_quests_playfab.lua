@@ -44,7 +44,9 @@ BackendInterfaceQuestsPlayfab._refresh = function (self)
 	end
 
 	for key, data in pairs(self._quests.event) do
-		self._event_quest_update_times[key] = data.end_time / 1000
+		if data.end_time ~= nil then
+			self._event_quest_update_times[key] = data.end_time / 1000
+		end
 	end
 
 	self._dirty = false
@@ -83,12 +85,16 @@ BackendInterfaceQuestsPlayfab.update = function (self, dt)
 	end
 
 	for key, data in pairs(self._quests.event) do
-		local update_time = self:get_time_left_on_event_quest(key) - self._quest_timer
+		local event_update_time = self:get_time_left_on_event_quest(key)
 
-		if update_time < 0 and not self._quests_updating then
-			request_quest_update = true
+		if event_update_time then
+			local update_time = self:get_time_left_on_event_quest(key) - self._quest_timer
 
-			break
+			if update_time < 0 and not self._quests_updating then
+				request_quest_update = true
+
+				break
+			end
 		end
 	end
 
@@ -164,6 +170,10 @@ end
 BackendInterfaceQuestsPlayfab.get_time_left_on_event_quest = function (self, key)
 	if self._dirty then
 		self:_refresh()
+	end
+
+	if not self._event_quest_update_times[key] then
+		return nil
 	end
 
 	return self._event_quest_update_times[key] - self._quest_timer
@@ -269,6 +279,7 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 
 	local id = data.id
 	local items = function_result.items
+	local chips = function_result.chips
 	local backend_mirror = self._backend_mirror
 	local rewards = {
 		quest_key = data.quest_key,
@@ -289,6 +300,46 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 				backend_id = backend_id,
 				amount = amount
 			}
+		end
+	end
+
+	local new_keep_decorations = function_result.new_keep_decorations
+
+	if new_keep_decorations then
+		for i = 1, #new_keep_decorations, 1 do
+			local keep_decoration_name = new_keep_decorations[i]
+
+			backend_mirror:add_keep_decoration(keep_decoration_name)
+
+			loot[#loot + 1] = {
+				type = "keep_decoration_painting",
+				keep_decoration_name = keep_decoration_name
+			}
+		end
+	end
+
+	local new_weapon_skins = function_result.new_weapon_skins
+
+	if new_weapon_skins then
+		for i = 1, #new_weapon_skins, 1 do
+			local weapon_skin_name = new_weapon_skins[i]
+
+			backend_mirror:add_unlocked_weapon_skin(weapon_skin_name)
+
+			loot[#loot + 1] = {
+				type = "weapon_skin",
+				weapon_skin_name = weapon_skin_name
+			}
+		end
+	end
+
+	if chips then
+		local peddler_interface = Managers.backend:get_interface("peddler")
+
+		if peddler_interface then
+			for chip_type, amount in pairs(chips) do
+				peddler_interface:set_chips(chip_type, amount)
+			end
 		end
 	end
 

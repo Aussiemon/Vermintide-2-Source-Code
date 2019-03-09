@@ -41,6 +41,8 @@ ActionShotgun.client_owner_start_action = function (self, new_action, t, chain_a
 	end
 
 	self._shots_fired = 0
+	self._check_buffs = true
+	self._spread_done = false
 	self.extra_buff_shot = false
 	self.shield_users_blocking = {}
 	local HAS_TOBII = rawget(_G, "Tobii") and Application.user_setting("tobii_eyetracking")
@@ -86,7 +88,6 @@ end
 ActionShotgun._start_shooting = function (self)
 	local owner_unit = self.owner_unit
 	local current_action = self.current_action
-	local spread_extension = self.spread_extension
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 	local current_position = first_person_extension:current_position()
 	local current_rotation = first_person_extension:current_rotation()
@@ -110,12 +111,6 @@ ActionShotgun._start_shooting = function (self)
 
 	self:_use_ammo()
 	self:_add_overcharge()
-
-	local add_spread = not self.extra_buff_shot
-
-	if spread_extension and add_spread then
-		spread_extension:set_shooting()
-	end
 
 	if current_action.alert_sound_range_fire then
 		Managers.state.entity:system("ai_system"):alert_enemies_within_range(owner_unit, POSITION_LOOKUP[owner_unit], current_action.alert_sound_range_fire)
@@ -160,7 +155,7 @@ ActionShotgun._shoot = function (self, num_shots_total, num_shots_this_frame)
 	local current_rotation = self._fire_rotation:unbox()
 	local world = self.world
 	local physics_world = self.physics_world
-	local check_buffs = true
+	local check_buffs = self._check_buffs
 	local num_layers_spread = current_action.num_layers_spread or 1
 	local bullseye = current_action.bullseye or false
 	local spread_pitch = current_action.spread_pitch or 0.8
@@ -199,6 +194,8 @@ ActionShotgun._shoot = function (self, num_shots_total, num_shots_this_frame)
 		unit_flow_event(weapon_unit, "lua_bullet_trail")
 		unit_flow_event(weapon_unit, "lua_bullet_trail_set")
 	end
+
+	self._check_buffs = check_buffs
 end
 
 ActionShotgun.client_owner_post_update = function (self, dt, t, world, can_damage)
@@ -217,6 +214,14 @@ ActionShotgun.client_owner_post_update = function (self, dt, t, world, can_damag
 	end
 
 	if self.state == "shot" and self.active_reload_time then
+		local add_spread = not self.extra_buff_shot
+
+		if self.spread_extension and add_spread and not self._spread_done then
+			self.spread_extension:set_shooting()
+
+			self._spread_done = true
+		end
+
 		local input_extension = ScriptUnit.extension(owner_unit, "input_system")
 
 		if self.active_reload_time < t then

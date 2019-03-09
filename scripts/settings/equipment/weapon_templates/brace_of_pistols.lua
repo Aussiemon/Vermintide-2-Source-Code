@@ -56,6 +56,12 @@ weapon_template.actions = {
 					start_time = 0.75,
 					action = "weapon_reload",
 					input = "weapon_reload"
+				},
+				{
+					sub_action = "auto_reload",
+					start_time = 0.8,
+					action = "weapon_reload",
+					auto_chain = true
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -130,9 +136,21 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.25,
+					start_time = 0.2,
 					action = "weapon_reload",
 					input = "weapon_reload"
+				},
+				{
+					start_time = 0,
+					blocker = true,
+					input = "action_two_hold"
+				},
+				{
+					sub_action = "auto_reload",
+					action = "weapon_reload",
+					auto_chain = true,
+					release_required = "action_two_hold",
+					start_time = 0
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -200,6 +218,18 @@ weapon_template.actions = {
 					start_time = 0,
 					action = "weapon_reload",
 					input = "weapon_reload"
+				},
+				{
+					start_time = 0,
+					blocker = true,
+					input = "action_two_hold"
+				},
+				{
+					sub_action = "auto_reload",
+					action = "weapon_reload",
+					auto_chain = true,
+					release_required = "action_two_hold",
+					start_time = 0
 				}
 			},
 			condition_func = function (unit, input_extension, ammo_extension)
@@ -211,7 +241,100 @@ weapon_template.actions = {
 			end
 		}
 	},
-	weapon_reload = ActionTemplates.reload,
+	weapon_reload = {
+		default = {
+			weapon_action_hand = "either",
+			kind = "reload",
+			total_time = 0,
+			condition_func = function (action_user, input_extension)
+				local inventory_extension = ScriptUnit.extension(action_user, "inventory_system")
+				local status_extension = ScriptUnit.extension(action_user, "status_system")
+				local ammo_extension = nil
+				local zooming = status_extension:is_zooming()
+
+				if zooming then
+					return false
+				end
+
+				local equipment = inventory_extension:equipment()
+
+				if equipment.right_hand_wielded_unit ~= nil and ScriptUnit.has_extension(equipment.right_hand_wielded_unit, "ammo_system") then
+					ammo_extension = ScriptUnit.extension(equipment.right_hand_wielded_unit, "ammo_system")
+				elseif equipment.left_hand_wielded_unit ~= nil and ScriptUnit.has_extension(equipment.left_hand_wielded_unit, "ammo_system") then
+					ammo_extension = ScriptUnit.extension(equipment.left_hand_wielded_unit, "ammo_system")
+				end
+
+				return ammo_extension and ammo_extension:can_reload()
+			end,
+			chain_condition_func = function (action_user, input_extension)
+				local inventory_extension = ScriptUnit.extension(action_user, "inventory_system")
+				local status_extension = ScriptUnit.extension(action_user, "status_system")
+				local ammo_extension = nil
+				local zooming = status_extension:is_zooming()
+
+				if zooming then
+					return false
+				end
+
+				local equipment = inventory_extension:equipment()
+
+				if equipment.right_hand_wielded_unit ~= nil and ScriptUnit.has_extension(equipment.right_hand_wielded_unit, "ammo_system") then
+					ammo_extension = ScriptUnit.extension(equipment.right_hand_wielded_unit, "ammo_system")
+				elseif equipment.left_hand_wielded_unit ~= nil and ScriptUnit.has_extension(equipment.left_hand_wielded_unit, "ammo_system") then
+					ammo_extension = ScriptUnit.extension(equipment.left_hand_wielded_unit, "ammo_system")
+				end
+
+				return ammo_extension and ammo_extension:can_reload()
+			end,
+			allowed_chain_actions = {}
+		},
+		auto_reload = {
+			weapon_action_hand = "either",
+			kind = "reload",
+			total_time = 0,
+			condition_func = function (action_user, input_extension)
+				local inventory_extension = ScriptUnit.extension(action_user, "inventory_system")
+				local status_extension = ScriptUnit.extension(action_user, "status_system")
+				local ammo_extension = nil
+				local zooming = status_extension:is_zooming()
+
+				if zooming then
+					return false
+				end
+
+				local equipment = inventory_extension:equipment()
+
+				if equipment.right_hand_wielded_unit ~= nil and ScriptUnit.has_extension(equipment.right_hand_wielded_unit, "ammo_system") then
+					ammo_extension = ScriptUnit.extension(equipment.right_hand_wielded_unit, "ammo_system")
+				elseif equipment.left_hand_wielded_unit ~= nil and ScriptUnit.has_extension(equipment.left_hand_wielded_unit, "ammo_system") then
+					ammo_extension = ScriptUnit.extension(equipment.left_hand_wielded_unit, "ammo_system")
+				end
+
+				return ammo_extension and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload()
+			end,
+			chain_condition_func = function (action_user, input_extension)
+				local inventory_extension = ScriptUnit.extension(action_user, "inventory_system")
+				local status_extension = ScriptUnit.extension(action_user, "status_system")
+				local ammo_extension = nil
+				local zooming = status_extension:is_zooming()
+
+				if zooming then
+					return false
+				end
+
+				local equipment = inventory_extension:equipment()
+
+				if equipment.right_hand_wielded_unit ~= nil and ScriptUnit.has_extension(equipment.right_hand_wielded_unit, "ammo_system") then
+					ammo_extension = ScriptUnit.extension(equipment.right_hand_wielded_unit, "ammo_system")
+				elseif equipment.left_hand_wielded_unit ~= nil and ScriptUnit.has_extension(equipment.left_hand_wielded_unit, "ammo_system") then
+					ammo_extension = ScriptUnit.extension(equipment.left_hand_wielded_unit, "ammo_system")
+				end
+
+				return ammo_extension and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload()
+			end,
+			allowed_chain_actions = {}
+		}
+	},
 	action_inspect = ActionTemplates.action_inspect,
 	action_wield = ActionTemplates.wield,
 	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
@@ -222,6 +345,10 @@ weapon_template.actions = {
 	action_instant_equip_grimoire = ActionTemplates.instant_equip_grimoire,
 	action_instant_equip_grenade = ActionTemplates.instant_equip_grenade_only,
 	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught
+}
+weapon_template.action_on_wield = {
+	action = "weapon_reload",
+	sub_action = "default"
 }
 weapon_template.ammo_data = {
 	ammo_hand = "right",

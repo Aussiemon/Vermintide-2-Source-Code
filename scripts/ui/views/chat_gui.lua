@@ -502,7 +502,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 	local block_chat_activation = self.block_chat_activation_hack < 0.2
 
 	if chat_closed then
-		if tab_hotspot.on_release or ((input_service:get("activate_chat_input") or input_service:get("execute_chat_input")) and not block_chat_activation) then
+		if tab_hotspot.on_release or ((input_service:get("activate_chat_input") or input_service:get("execute_chat_input")) and not block_chat_activation and GameSettingsDevelopment.allow_chat_input) then
 			if chat_enabled then
 				chat_closed = false
 				chat_close_time = nil
@@ -566,7 +566,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 		tab_hotspot.on_release = false
 
 		if chat_focused and chat_enabled then
-			if input_service:get("execute_chat_input") then
+			if input_service:get("execute_chat_input") and GameSettingsDevelopment.allow_chat_input then
 				chat_closed = false
 				chat_focused = false
 
@@ -609,7 +609,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 				self.recent_message_index = nil
 
 				self:_handle_input_service_release(self.menu_active, menu_input_service, no_unblock)
-			elseif input_service:get("chat_next_old_message") then
+			elseif input_service:get("chat_next_old_message") and GameSettingsDevelopment.allow_chat_input then
 				local recent_chat_messages = Managers.chat:get_recently_sent_messages()
 				local num_recent_chat_messages = #recent_chat_messages
 
@@ -628,7 +628,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 					local text_table = KeystrokeHelper._build_utf8_table(self.chat_message)
 					self.chat_index = #text_table + 1
 				end
-			elseif input_service:get("chat_previous_old_message") then
+			elseif input_service:get("chat_previous_old_message") and GameSettingsDevelopment.allow_chat_input then
 				local recent_chat_messages = Managers.chat:get_recently_sent_messages()
 				local num_recent_chat_messages = #recent_chat_messages
 
@@ -646,7 +646,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 						self.old_chat_message = nil
 					end
 				end
-			elseif GameSettingsDevelopment.use_global_chat and input_service:get("chat_switch_view") then
+			elseif GameSettingsDevelopment.use_global_chat and input_service:get("chat_switch_view") and GameSettingsDevelopment.allow_chat_input then
 				self:clear_messages()
 				Managers.chat:switch_view()
 
@@ -654,7 +654,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 				self.chat_input_widget.content.header_field = view_name
 
 				self:_apply_color_values(self.chat_input_widget.style.header_text.text_color, color)
-			elseif GameSettingsDevelopment.use_global_chat and input_service:get("chat_switch_channel") then
+			elseif GameSettingsDevelopment.use_global_chat and input_service:get("chat_switch_channel") and GameSettingsDevelopment.allow_chat_input then
 				if Managers.chat:next_message_target() then
 					self:clear_messages()
 				end
@@ -676,7 +676,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 				self.chat_input_widget.content.header_field = view_name
 
 				self:_apply_color_values(self.chat_input_widget.style.header_text.text_color, color)
-			elseif input_service:get("chat_backspace_word") then
+			elseif input_service:get("chat_backspace_word") and GameSettingsDevelopment.allow_chat_input then
 				local text_table = KeystrokeHelper._build_utf8_table(self.chat_message)
 				local current_index = self.chat_index - 1
 				local char_step = false
@@ -708,13 +708,13 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 					self.chat_message = self.chat_message .. text_snippet
 					num_chars = num_chars + 1
 				end
-			elseif self.chat_index <= ChatGui.MAX_CHARS then
+			elseif self.chat_index <= ChatGui.MAX_CHARS and GameSettingsDevelopment.allow_chat_input then
 				local keystrokes = Keyboard.keystrokes()
 				local ctrl_button_index = Keyboard.button_index("left ctrl")
 				local ctrl_held = Keyboard.pressed(ctrl_button_index) or Keyboard.button(ctrl_button_index) > 0
 				self.chat_message, self.chat_index, self.chat_mode = KeystrokeHelper.parse_strokes(self.chat_message, self.chat_index, self.chat_mode, keystrokes, ctrl_held)
 			end
-		elseif input_service:get("activate_chat_input") or input_service:get("execute_chat_input") then
+		elseif input_service:get("activate_chat_input") or (input_service:get("execute_chat_input") and GameSettingsDevelopment.allow_chat_input) then
 			if chat_enabled then
 				chat_closed = false
 				chat_close_time = nil

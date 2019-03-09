@@ -521,8 +521,8 @@ ConflictDirector.update_player_areas = function (self)
 	if self.navigation_group_manager.operational then
 		for i = 1, #player_units, 1 do
 			local unit = player_units[i]
-			local last_pos_on_mesh = ScriptUnit.extension(unit, "whereabouts_system").last_pos_on_nav_mesh:unbox()
-			local area = self.navigation_group_manager:get_group_from_position(last_pos_on_mesh)
+			local last_pos_on_mesh = ScriptUnit.extension(unit, "whereabouts_system"):last_position_on_navmesh()
+			local area = last_pos_on_mesh and self.navigation_group_manager:get_group_from_position(last_pos_on_mesh)
 
 			if area then
 				player_areas[i] = area

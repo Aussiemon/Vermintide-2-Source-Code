@@ -71,41 +71,7 @@ BotNavTransitionManager.traverse_logic = function (self)
 end
 
 BotNavTransitionManager.update = function (self, dt, t)
-	if not script_data.ai_bots_debug and not script_data.ai_bot_transition_debug then
-		return
-	end
-
-	local drawer = Managers.state.debug:drawer({
-		mode = "immediate",
-		name = "BotNavTransitionManager"
-	})
-
-	for _, transition in pairs(self._bot_nav_transitions) do
-		local from = transition.from:unbox()
-		local to = transition.to:unbox()
-		local waypoint = transition.waypoint:unbox()
-		local g = 50 + math.cos(math.pi * 0.5 * (t % 2 - 1)) * 200
-		local color = Color(50, g, 50)
-
-		drawer:line(from, waypoint, color)
-		drawer:line(waypoint, to, color)
-		drawer:sphere(from, 0.3, color)
-		drawer:cone(to - Vector3.normalize(from - to) * 0.25, to, 0.3, color, 9, 9)
-	end
-
-	for _, transition in pairs(self._ladder_transitions) do
-		local from = transition.from:unbox()
-		local to = transition.to:unbox()
-		local color = (transition.failed and Color(0, 0, 0)) or Color(255, 125, 0)
-
-		drawer:line(from, to, color)
-		drawer:sphere(from, 0.3, color)
-		drawer:cone(to - Vector3.normalize(from - to) * 0.25, to, 0.3, color, 9, 9)
-	end
-
-	if Keyboard.pressed(Keyboard.button_index("l")) and Keyboard.button(Keyboard.button_index("left ctrl")) > 0 then
-		self:debug_refresh_ladders()
-	end
+	return
 end
 
 BotNavTransitionManager.clear_transitions = function (self)

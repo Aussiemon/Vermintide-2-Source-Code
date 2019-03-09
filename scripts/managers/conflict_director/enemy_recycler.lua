@@ -241,7 +241,7 @@ EnemyRecycler.setup = function (self, pos_list, pack_sizes, pack_rotations, pack
 
 			if not is_allowed_spawn(level, volume_list, volume_list_size, pos) then
 				spawn = false
-			elseif NavTagVolumeUtils.inside_level_volume_layer(level, nav_tag_volume_handler, pos, "NO_SPAWN") then
+			elseif NavTagVolumeUtils.inside_level_volume_layer(level, nav_tag_volume_handler, pos, "NO_SPAWN") or NavTagVolumeUtils.inside_level_volume_layer(level, nav_tag_volume_handler, pos, "NO_BOTS_NO_SPAWN") then
 				spawn = false
 			elseif roaming_patrols_allowed then
 				local area = self:inject_roaming_patrol(area_position, area_rot, pack_type, pack_size, zone_data)

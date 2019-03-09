@@ -2729,7 +2729,12 @@ TerrorEventBlueprints = {
 		{
 			"spawn_at_raw",
 			spawner_id = "farmlands_rat_ogre",
-			breed_name = "skaven_rat_ogre"
+			breed_name = {
+				"skaven_rat_ogre",
+				"skaven_stormfiend",
+				"chaos_troll",
+				"chaos_spawn"
+			}
 		},
 		{
 			"delay",
@@ -2738,7 +2743,7 @@ TerrorEventBlueprints = {
 		{
 			"continue_when",
 			condition = function (t)
-				return count_event_breed("skaven_rat_ogre") == 1
+				return count_event_breed("skaven_rat_ogre") == 1 or count_event_breed("skaven_stormfiend") == 1 or count_event_breed("chaos_troll") == 1 or count_event_breed("chaos_spawn") == 1
 			end
 		},
 		{
@@ -2752,7 +2757,7 @@ TerrorEventBlueprints = {
 		{
 			"continue_when",
 			condition = function (t)
-				return count_event_breed("skaven_rat_ogre") < 1
+				return count_event_breed("skaven_rat_ogre") < 1 and count_event_breed("skaven_stormfiend") < 1 and count_event_breed("chaos_troll") < 1 and count_event_breed("chaos_spawn") < 1
 			end
 		},
 		{

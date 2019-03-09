@@ -14,6 +14,10 @@ LobbyMembers.init = function (self, lobby)
 
 	self.members = my_members
 	self._members_changed = true
+
+	if PLATFORM ~= "win32" and not Managers.account:offline_mode() then
+		self.lobby:update_user_names()
+	end
 end
 
 LobbyMembers.clear = function (self)
@@ -36,10 +40,18 @@ LobbyMembers.update = function (self)
 
 			printf("[LobbyMembers] Member joined %s", tostring(peer_id))
 
-			if PLATFORM == "xb1" then
-				Managers.account:query_bandwidth()
+			if PLATFORM ~= "win32" then
+				local account_manager = Managers.account
 
-				self._members_changed = true
+				if PLATFORM == "xb1" then
+					account_manager:query_bandwidth()
+
+					self._members_changed = true
+				end
+
+				if not account_manager:offline_mode() then
+					self.lobby:update_user_names()
+				end
 			end
 		end
 

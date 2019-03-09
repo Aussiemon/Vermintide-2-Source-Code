@@ -8,6 +8,7 @@ LocalizationManager.init = function (self)
 	local has_steam = rawget(_G, "Steam")
 	local language_id = Application.user_setting("language_id") or (has_steam and Steam:language()) or "en"
 	self._language_id = language_id
+	self._backend_localizations = {}
 end
 
 LocalizationManager._setup_localizers = function (self)
@@ -36,6 +37,16 @@ LocalizationManager._base_lookup = function (self, text_id)
 		if text then
 			return text
 		end
+	end
+
+	return self._backend_localizations[text_id]
+end
+
+LocalizationManager.append_backend_localizations = function (self, localizations)
+	local backend_localizations = self._backend_localizations
+
+	for string_id, text in pairs(localizations) do
+		backend_localizations[string_id] = text
 	end
 end
 

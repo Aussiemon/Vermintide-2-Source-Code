@@ -28,11 +28,15 @@ ActionCareerWEWaywatcher.client_owner_start_action = function (self, new_action,
 	end
 
 	self:_play_vo()
+
+	local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
+
+	inventory_extension:check_and_drop_pickups("career_ability")
 end
 
 ActionCareerWEWaywatcher.finish = function (self, reason)
 	ActionCareerWEWaywatcher.super.finish(self, reason)
-	self.inventory_extension:wield_previous_slot()
+	self.inventory_extension:wield_previous_non_level_slot()
 
 	if self.state == "shot" then
 		self.career_extension:start_activated_ability_cooldown()

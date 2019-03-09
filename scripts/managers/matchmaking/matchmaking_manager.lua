@@ -645,12 +645,13 @@ MatchmakingManager.party_has_level_unlocked = function (self, level_key, ignore_
 	return true
 end
 
-MatchmakingManager._get_unlocked_levels_by_party = function (self, ignore_dlc_check, ommit_dlc_levels, event_mode)
+MatchmakingManager._get_unlocked_levels_by_party = function (self, ignore_dlc_check, ommit_dlc_levels, event_mode, excluded_level_keys)
 	local unlocked_levels = {}
+	excluded_level_keys = excluded_level_keys or {}
 	local level_keys = UnlockableLevelsByGameMode.adventure
 
 	for _, level_key in ipairs(level_keys) do
-		if self:party_has_level_unlocked(level_key, ignore_dlc_check, ommit_dlc_levels, event_mode) then
+		if self:party_has_level_unlocked(level_key, ignore_dlc_check, ommit_dlc_levels, event_mode) and not table.contains(excluded_level_keys, level_key) then
 			unlocked_levels[#unlocked_levels + 1] = level_key
 		end
 	end
@@ -830,7 +831,7 @@ MatchmakingManager._remove_irrelevant_level_weights = function (self)
 	self._level_weights = level_weights
 end
 
-MatchmakingManager.get_weighed_random_unlocked_level = function (self, ignore_dlc_check, custom_game)
+MatchmakingManager.get_weighed_random_unlocked_level = function (self, ignore_dlc_check, custom_game, excluded_level_keys)
 	local recent_games_played_json = Managers.backend:get_read_only_data("recent_quickplay_games")
 	local recent_games_played = (recent_games_played_json and cjson.decode(recent_games_played_json)) or {}
 	local search_config = self.state_context.search_config
@@ -853,7 +854,7 @@ MatchmakingManager.get_weighed_random_unlocked_level = function (self, ignore_dl
 		end
 	end
 
-	local level_keys = self:_get_unlocked_levels_by_party(ignore_dlc_check, ommit_dlc_levels, is_event_mode)
+	local level_keys = self:_get_unlocked_levels_by_party(ignore_dlc_check, ommit_dlc_levels, is_event_mode, excluded_level_keys)
 	local level_key, preferred_levels = self:_get_level_key_from_level_weights(level_keys, is_event_mode)
 
 	return level_key, preferred_levels
@@ -893,7 +894,7 @@ MatchmakingManager.set_matchmaking_data = function (self, next_level_key, diffic
 	lobby_data.difficulty = difficulty
 	lobby_data.quick_game = (quick_game and "true") or "false"
 	lobby_data.country_code = (rawget(_G, "Steam") and Steam.user_country_code()) or Managers.account:region()
-	lobby_data.twitch_enabled = (GameSettingsDevelopment.twitch_enabled and Managers.twitch:is_connected() and "true") or "false"
+	lobby_data.twitch_enabled = (GameSettingsDevelopment.twitch_enabled and Managers.twitch:is_connected() and Managers.twitch:game_mode_supported(game_mode) and "true") or "false"
 	lobby_data.eac_authorized = (eac_authorized and "true") or "false"
 
 	print("[MATCHMAKING] - Hosting game on level:", current_level_key, next_level_key)
@@ -937,7 +938,8 @@ MatchmakingManager.find_game = function (self, search_config)
 						ignore_dlc_check = false
 					end
 
-					self.state_context.search_config.level_key = self:get_weighed_random_unlocked_level(ignore_dlc_check)
+					local excluded_level_keys = search_config.excluded_level_keys
+					self.state_context.search_config.level_key = self:get_weighed_random_unlocked_level(ignore_dlc_check, false, excluded_level_keys)
 				end
 
 				next_state = MatchmakingStateHostGame

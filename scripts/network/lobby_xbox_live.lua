@@ -210,11 +210,11 @@ XboxLiveLobby = class(XboxLiveLobby)
 XboxLiveLobby.init = function (self, session_id, unique_server_name, session_template_name, is_hosting)
 	self._user_id = Managers.account:user_id()
 	self._session_id = session_id
-	self._data = {
-		unique_server_name = unique_server_name or LobbyInternal.SESSION_NAME,
-		session_name = unique_server_name,
-		session_template_name = session_template_name
-	}
+	self._data = {}
+	self._gamertags = {}
+	self._data.unique_server_name = unique_server_name or LobbyInternal.SESSION_NAME
+	self._data.session_name = unique_server_name
+	self._data.session_template_name = session_template_name
 	self._hopper_name = LobbyInternal.HOPPER_NAME
 	self._session_name = unique_server_name or "missing session name"
 	self._smartmatch_ticket_params = {}
@@ -658,14 +658,26 @@ XboxLiveLobby.members = function (self)
 	return peers
 end
 
+XboxLiveLobby.update_user_names = function (self)
+	local members = MultiplayerSession.members(self._session_id)
+
+	for _, member in pairs(members) do
+		self._gamertags[member.peer] = member.gamertag
+	end
+end
+
 XboxLiveLobby.user_name = function (self, peer_id)
 	local members = MultiplayerSession.members(self._session_id)
 
 	for _, member in pairs(members) do
 		if member.peer == peer_id then
+			self._gamertags[peer_id] = member.gamertag
+
 			return member.gamertag
 		end
 	end
+
+	return self._gamertags[peer_id]
 end
 
 XboxLiveLobby.xuid = function (self, peer_id)

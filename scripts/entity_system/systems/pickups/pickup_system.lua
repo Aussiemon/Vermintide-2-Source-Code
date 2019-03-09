@@ -5,7 +5,8 @@ PlayerTeleportingPickupExtension = class(PlayerTeleportingPickupExtension, Picku
 PickupSystem = class(PickupSystem, ExtensionSystemBase)
 RPCS = {
 	"rpc_spawn_pickup_with_physics",
-	"rpc_spawn_pickup"
+	"rpc_spawn_pickup",
+	"rpc_force_use_pickup"
 }
 local extensions = {
 	"PlayerTeleportingPickupExtension",
@@ -932,6 +933,77 @@ PickupSystem.rpc_spawn_pickup = function (self, sender, pickup_name_id, position
 	local pickup_settings = AllPickups[pickup_name]
 
 	self:_spawn_pickup(pickup_settings, pickup_name, position, rotation, false, spawn_type)
+end
+
+PickupSystem.rpc_force_use_pickup = function (self, sender, pickup_name_id)
+	local is_server = Managers.player.is_server
+
+	if is_server then
+		local network_manager = Managers.state.network
+		local network_transmit = network_manager.network_transmit
+
+		network_transmit:send_rpc_clients("rpc_force_use_pickup", pickup_name_id)
+	end
+
+	local player = Managers.player:local_player()
+
+	if not player then
+		return
+	end
+
+	local player_unit = player.player_unit
+
+	if not player_unit or not Unit.alive(player_unit) then
+		return
+	end
+
+	if player.bot_player then
+		return
+	end
+
+	local pickup_name = NetworkLookup.pickup_names[pickup_name_id]
+	local pickup_settings = AllPickups[pickup_name]
+	local on_pick_up_func = pickup_settings.on_pick_up_func
+
+	if on_pick_up_func then
+		local world = Application.main_world()
+
+		on_pick_up_func(world, player_unit, is_server)
+	end
+
+	local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
+	local career_extension = ScriptUnit.extension(player_unit, "career_system")
+	local slot_name = pickup_settings.slot_name
+	local item_name = pickup_settings.item_name
+	local wielded_slot_name = inventory_extension:get_wielded_slot_name()
+
+	if pickup_settings.wield_on_pickup or wielded_slot_name == slot_name then
+		CharacterStateHelper.stop_weapon_actions(inventory_extension, "picked_up_object")
+		CharacterStateHelper.stop_career_abilities(career_extension, "picked_up_object")
+	end
+
+	local slot_data = inventory_extension:get_slot_data(slot_name)
+	local item_data = ItemMasterList[item_name]
+
+	if slot_data then
+		inventory_extension:drop_level_event_item(slot_data)
+	end
+
+	local unit_template = nil
+	local extra_extension_init_data = {}
+
+	inventory_extension:add_equipment(slot_name, item_data, unit_template, extra_extension_init_data)
+
+	if pickup_settings.wield_on_pickup or wielded_slot_name == slot_name then
+		local action_on_wield = pickup_settings.action_on_wield
+
+		if action_on_wield then
+			local item_template = BackendUtils.get_item_template(item_data)
+			item_template.next_action = action_on_wield
+		end
+
+		inventory_extension:wield(slot_name)
+	end
 end
 
 PickupSystem.explosive_barrel = function (self, pickup_settings, position, rotation)

@@ -2422,6 +2422,15 @@ Cosmetics = {
 	},
 	frame_mondstille_03 = {
 		icon = "unit_frame_02"
+	},
+	frame_celebration_01 = {
+		icon = "unit_frame_02"
+	},
+	frame_celebration_02 = {
+		icon = "unit_frame_02"
+	},
+	frame_celebration_03 = {
+		icon = "unit_frame_02"
 	}
 }
 

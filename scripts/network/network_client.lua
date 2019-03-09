@@ -276,6 +276,11 @@ NetworkClient.update = function (self, dt)
 		for i, peer_id in ipairs(members_joined) do
 			if peer_id ~= lobby_client:lobby_host() then
 				local sender = (rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id)
+
+				if PLATFORM ~= "win32" then
+					sender = lobby_client:user_name(peer_id)
+				end
+
 				local message = string.format(Localize("system_chat_player_joined_the_game"), sender)
 				local pop_chat = true
 
@@ -288,6 +293,11 @@ NetworkClient.update = function (self, dt)
 		for i, peer_id in ipairs(members_left) do
 			if peer_id ~= lobby_client:lobby_host() then
 				local sender = (rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id)
+
+				if PLATFORM ~= "win32" then
+					sender = lobby_client:user_name(peer_id)
+				end
+
 				local message = string.format(Localize("system_chat_player_left_the_game"), sender)
 				local pop_chat = true
 

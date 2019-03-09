@@ -1,3 +1,4 @@
+local DEFAULT_ANGLE = 0
 LootItemUnitPreviewer = class(LootItemUnitPreviewer)
 
 LootItemUnitPreviewer.init = function (self, reward, spawn_position, background_world, background_viewport, unique_id)
@@ -6,6 +7,8 @@ LootItemUnitPreviewer.init = function (self, reward, spawn_position, background_
 	self.unique_id = unique_id
 	self.loaded_packages = {}
 	self.packages_to_load = {}
+	self._camera_xy_angle_target = DEFAULT_ANGLE
+	self._camera_xy_angle_current = DEFAULT_ANGLE
 	self.spawn_position = spawn_position
 	self.reward = reward
 	self._link_units = self:spawn_link_units(reward)
@@ -48,8 +51,76 @@ LootItemUnitPreviewer._destroy_units = function (self)
 	self.units_spawned = nil
 end
 
-LootItemUnitPreviewer.update = function (self, dt, t)
-	return
+LootItemUnitPreviewer.update = function (self, dt, t, input_service)
+	if self._items_spawned then
+		if input_service then
+			local input_manager = Managers.input
+
+			if input_manager:is_device_active("mouse") then
+				self:_handle_mouse_input(input_service, dt)
+			elseif input_manager:is_device_active("gamepad") then
+				self:_handle_controller_input(input_service, dt)
+			end
+		end
+
+		if self._camera_xy_angle_target > math.pi * 2 then
+			self._camera_xy_angle_current = self._camera_xy_angle_current - math.pi * 2
+			self._camera_xy_angle_target = self._camera_xy_angle_target - math.pi * 2
+		end
+
+		local character_xy_angle_new = math.lerp(self._camera_xy_angle_current, self._camera_xy_angle_target, 0.1)
+		self._camera_xy_angle_current = character_xy_angle_new
+		local rotation = Quaternion.axis_angle(Vector3(0, 0, 1), -character_xy_angle_new)
+		local link_units = self._link_units
+
+		for _, link_unit in pairs(link_units) do
+			Unit.set_local_rotation(link_unit, 0, rotation)
+		end
+	end
+end
+
+local mouse_pos_temp = {}
+
+LootItemUnitPreviewer._handle_mouse_input = function (self, input_service, dt)
+	local mouse = input_service:get("cursor")
+
+	if not mouse then
+		return
+	end
+
+	local is_hover = true
+
+	if is_hover then
+		if input_service:get("left_press") then
+			self._is_moving_camera = true
+			self._last_mouse_position = nil
+		elseif input_service:get("right_press") then
+			self._camera_xy_angle_target = DEFAULT_ANGLE
+		end
+	end
+
+	local is_moving_camera = self._is_moving_camera
+	local mouse_hold = input_service:get("left_hold")
+
+	if is_moving_camera and mouse_hold then
+		if self._last_mouse_position then
+			self._camera_xy_angle_target = self._camera_xy_angle_target - (mouse.x - self._last_mouse_position[1]) * 0.01
+		end
+
+		mouse_pos_temp[1] = mouse.x
+		mouse_pos_temp[2] = mouse.y
+		self._last_mouse_position = mouse_pos_temp
+	elseif is_moving_camera then
+		self._is_moving_camera = false
+	end
+end
+
+LootItemUnitPreviewer._handle_controller_input = function (self, input_service, dt)
+	local camera_move = input_service:get("gamepad_right_axis")
+
+	if camera_move and Vector3.length(camera_move) > 0.01 then
+		self._camera_xy_angle_target = self._camera_xy_angle_target + -camera_move.x * dt * 5
+	end
 end
 
 LootItemUnitPreviewer.post_update = function (self, dt, t)

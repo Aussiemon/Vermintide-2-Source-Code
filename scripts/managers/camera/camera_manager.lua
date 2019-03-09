@@ -794,7 +794,11 @@ CameraManager.camera_effect_shake_event = function (self, event_name, start_time
 	local duration = event.duration
 	local fade_in = event.fade_in
 	local fade_out = event.fade_out
-	duration = (duration or 0) + (fade_in or 0) + (fade_out or 0)
+
+	if duration and fade_out then
+		duration = duration + (fade_in or 0) + fade_out
+	end
+
 	data.event = event
 	data.start_time = start_time
 	data.end_time = duration and start_time + duration

@@ -22,6 +22,8 @@ local RPCS = {
 	"rpc_suicide",
 	"rpc_sync_damage_taken",
 	"rpc_take_falling_damage",
+	"rpc_request_knock_down",
+	"rpc_request_heal_wounds",
 	"rpc_request_revive"
 }
 local extensions = {
@@ -550,6 +552,23 @@ HealthSystem.rpc_take_falling_damage = function (self, sender, go_id, fall_heigh
 
 		DamageUtils.add_damage_network(unit, unit, fall_damage, hit_zone_name, damage_type, nil, damage_direction, "ground_impact")
 	end
+end
+
+HealthSystem.rpc_request_knock_down = function (self, sender, unit_go_id)
+	fassert(self.is_server or LEVEL_EDITOR_TEST, "Trying to request a knock down from a client")
+
+	local unit = self.unit_storage:unit(unit_go_id)
+	local health_extension = ScriptUnit.extension(unit, "health_system")
+
+	health_extension:knock_down(unit)
+end
+
+HealthSystem.rpc_request_heal_wounds = function (self, sender, unit_go_id)
+	fassert(self.is_server or LEVEL_EDITOR_TEST, "Trying to request a wound heal from a client")
+
+	local unit = self.unit_storage:unit(unit_go_id)
+
+	StatusUtils.set_wounded_network(unit, false, "healed")
 end
 
 HealthSystem.rpc_request_revive = function (self, sender, revived_unit_go_id, reviver_unit_go_id)

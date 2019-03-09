@@ -203,7 +203,6 @@ DamageBlobExtension.destroy = function (self)
 		fx_list[i] = nil
 	end
 
-	local unit = self.unit
 	local sfx_name_stop = self._sfx_name_stop
 
 	if sfx_name_stop and unit_alive(unit) then
@@ -248,7 +247,7 @@ DamageBlobExtension.place_blobs = function (self, unit, t)
 		self:insert_blob(position, blob_radius, rotation, t, nav_world)
 
 		if success then
-			local id, source = WwiseUtils.trigger_position_event(self.world, self._sfx_name_start_remains, position)
+			local _, source = WwiseUtils.trigger_position_event(self.world, self._sfx_name_start_remains, position)
 			local sfx_list = self.sfx_list
 			sfx_list[#sfx_list + 1] = {
 				source = source,
@@ -436,17 +435,21 @@ DamageBlobExtension.update_blobs_fx_and_sfx = function (self, t, dt)
 	local sfx_list = self.sfx_list
 	local sfx_name_stop_remains = self._sfx_name_stop_remains
 	local wwise_world = Managers.world:wwise_world(world)
+	local WwiseWorld_has_source = WwiseWorld.has_source
+	local WwiseWorld_trigger_event = WwiseWorld.trigger_event
 
 	for i = 1, #sfx_list, 1 do
 		local sfx_entry = sfx_list[i]
 		local sfx_source = sfx_entry.source
 		local sfx_time = sfx_entry.time
 
-		if sfx_time < t then
-			local has_source = WwiseWorld.has_source(wwise_world, sfx_source)
+		if sfx_time < t and not sfx_entry.stopped_sound_event then
+			local has_source = WwiseWorld_has_source(wwise_world, sfx_source)
 
 			if has_source then
-				WwiseWorld.trigger_event(wwise_world, sfx_name_stop_remains, sfx_source)
+				WwiseWorld_trigger_event(wwise_world, sfx_name_stop_remains, sfx_source)
+
+				sfx_entry.stopped_sound_event = true
 			end
 		end
 	end

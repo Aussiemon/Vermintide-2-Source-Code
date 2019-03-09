@@ -579,7 +579,7 @@ StartGameView.number_of_players = function (self)
 	return player_manager:num_human_players()
 end
 
-StartGameView.start_game = function (self, level_key, difficulty_key, private_game, quick_game, always_host, strict_matchmaking, t, game_mode, deed_backend_id, event_data)
+StartGameView.start_game = function (self, level_key, difficulty_key, private_game, quick_game, always_host, strict_matchmaking, t, game_mode, deed_backend_id, event_data, excluded_level_keys)
 	print("............................................................................................................")
 	print("............................................................................................................")
 	printf("GAME START SETTINGS -> Level: %s | Difficulty: %s | Private: %s | Always Host: %s | Strict Matchmaking: %s | Quick Game: %s | Game Mode: %s", (level_key and level_key) or "Not specified", difficulty_key, (private_game and "yes") or "no", (always_host and "yes") or "no", (strict_matchmaking and "yes") or "no", (quick_game and "yes") or "no", game_mode or "Not specified")
@@ -603,7 +603,8 @@ StartGameView.start_game = function (self, level_key, difficulty_key, private_ga
 			item_name = item_data.name,
 			level_key = level_key,
 			difficulty = difficulty,
-			game_mode = game_mode
+			game_mode = game_mode,
+			excluded_level_keys = excluded_level_keys
 		}
 
 		Managers.state.voting:request_vote("game_settings_deed_vote", vote_data, Network.peer_id())
@@ -616,7 +617,8 @@ StartGameView.start_game = function (self, level_key, difficulty_key, private_ga
 			always_host = always_host,
 			strict_matchmaking = strict_matchmaking,
 			event_data = event_data,
-			game_mode = game_mode
+			game_mode = game_mode,
+			excluded_level_keys = excluded_level_keys
 		}
 
 		Managers.state.voting:request_vote("game_settings_event_vote", vote_data, Network.peer_id())
@@ -628,7 +630,8 @@ StartGameView.start_game = function (self, level_key, difficulty_key, private_ga
 			private_game = private_game,
 			always_host = always_host,
 			strict_matchmaking = strict_matchmaking,
-			game_mode = game_mode
+			game_mode = game_mode,
+			excluded_level_keys = excluded_level_keys
 		}
 
 		Managers.state.voting:request_vote("game_settings_vote", vote_data, Network.peer_id())

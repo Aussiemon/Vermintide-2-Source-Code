@@ -718,6 +718,21 @@ Paintings.ver_marauder = {
 		wood = true
 	}
 }
+Paintings.ver_manaan01 = {
+	sound_event = "painting_manaan01_description",
+	rarity = "promo",
+	display_name = "painting_manaan01_name",
+	icon = "icon_painting_4",
+	frame = "painted",
+	description = "painting_manaan01_description",
+	artist = "painting_manaan01_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
 DefaultPaintings = {
 	"hor_none",
 	"ver_none",
@@ -770,7 +785,8 @@ local painting_order = {
 	"ver_champion01",
 	"ver_nurgle04",
 	"ver_marauder",
-	"ver_hugeldal01"
+	"ver_hugeldal01",
+	"ver_manaan01"
 }
 PaintingOrder = PaintingOrder or {}
 
@@ -781,5 +797,12 @@ for _, painting in ipairs(painting_order) do
 end
 
 table.sort(PaintingOrder)
+
+local prefix = "resource_packages/keep_paintings/keep_painting_"
+PaintingPackageNames = PaintingPackageNames or {}
+
+for painting_name, _ in pairs(Paintings) do
+	PaintingPackageNames[prefix .. painting_name] = true
+end
 
 return

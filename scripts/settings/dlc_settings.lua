@@ -6,18 +6,6 @@ DLCSettings = {
 			ui = "scripts/settings/dlcs/social_wheel/social_wheel_ui_settings"
 		}
 	},
-	collectors_edition_ps4 = {
-		package_name = "resource_packages/dlcs/collectors_edition_ps4",
-		additional_settings = {
-			common = "scripts/settings/dlcs/collectors_edition_ps4/collectors_edition_ps4_common_settings"
-		}
-	},
-	pre_order_bonus_ps4 = {
-		package_name = "resource_packages/dlcs/pre_order_bonus_ps4",
-		additional_settings = {
-			common = "scripts/settings/dlcs/pre_order_bonus_ps4/pre_order_bonus_ps4_common_settings"
-		}
-	},
 	bogenhafen = {
 		package_name = "resource_packages/dlcs/bogenhafen",
 		additional_settings = {
@@ -33,6 +21,17 @@ DLCSettings = {
 			achievements = "scripts/settings/dlcs/holly/holly_achievements_settings",
 			sound = "scripts/settings/dlcs/holly/holly_sound_settings",
 			level = "scripts/settings/dlcs/holly/holly_level_settings"
+		}
+	},
+	celebrate = {
+		package_name = "resource_packages/dlcs/celebrate",
+		additional_settings = {
+			equipment = "scripts/settings/dlcs/celebrate/celebrate_equipment_settings",
+			common = "scripts/settings/dlcs/celebrate/celebrate_common_settings",
+			sound = "scripts/settings/dlcs/celebrate/celebrate_sound_settings",
+			buff = "scripts/settings/dlcs/celebrate/celebrate_buff_settings",
+			pickups = "scripts/settings/dlcs/celebrate/celebrate_pickups_settings",
+			level = "scripts/settings/dlcs/celebrate/celebrate_level_settings"
 		}
 	},
 	gecko = {

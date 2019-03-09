@@ -774,6 +774,7 @@ StartGameStateSettingsOverview.play = function (self, t, game_mode_type)
 		local live_event_interface = Managers.backend:get_interface("live_events")
 		local game_mode_data = live_event_interface:get_game_mode_data()
 		local level_key = game_mode_data.level_key
+		local excluded_level_keys = game_mode_data.excluded_level_keys
 		local difficulty = self._selected_difficulty_key
 		local is_private = false
 		local quick_game = false
@@ -784,7 +785,11 @@ StartGameStateSettingsOverview.play = function (self, t, game_mode_type)
 			mutators = game_mode_data.mutators
 		}
 
-		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id, event_data)
+		if next(event_data) == nil then
+			event_data = nil
+		end
+
+		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id, event_data, excluded_level_keys)
 	else
 		ferror("Unknown game_mode_type(%s)", game_mode_type)
 	end

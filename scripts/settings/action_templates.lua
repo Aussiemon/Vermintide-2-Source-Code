@@ -23,6 +23,33 @@ ActionTemplates.wield = {
 		allowed_chain_actions = {}
 	}
 }
+ActionTemplates.wield_left = table.clone(ActionTemplates.wield)
+ActionTemplates.wield_left.default.weapon_action_hand = "left"
+ActionTemplates.wield_and_use = {
+	default = {
+		ammo_usage = 1,
+		slot_to_wield = "slot_level_event",
+		weapon_action_hand = "either",
+		kind = "instant_wield",
+		uninterruptible = true,
+		total_time = 0,
+		condition_func = function (action_user, input_extension)
+			local inventory_extension = ScriptUnit.extension(action_user, "inventory_system")
+
+			return inventory_extension:can_wield()
+		end,
+		chain_condition_func = function (action_user, input_extension)
+			local inventory_extension = ScriptUnit.extension(action_user, "inventory_system")
+
+			return inventory_extension:can_wield()
+		end,
+		action_on_wield = {
+			action = "action_one",
+			sub_action = "default"
+		},
+		allowed_chain_actions = {}
+	}
+}
 ActionTemplates.reload = {
 	default = {
 		weapon_action_hand = "either",
@@ -354,6 +381,9 @@ ActionTemplates.action_inspect = {
 		allowed_chain_actions = {}
 	}
 }
+ActionTemplates.action_inspect_left = table.clone(ActionTemplates.action_inspect)
+ActionTemplates.action_inspect_left.default.weapon_action_hand = "left"
+ActionTemplates.action_inspect_left.action_inspect_hold.weapon_action_hand = "left"
 ActionTemplates.action_use_consumable = {
 	default = {
 		slot_to_wield = "slot_healthkit",
@@ -569,13 +599,6 @@ ActionTemplates.instant_give_item = {
 		end
 	}
 }
-ActionTemplates.wield_left = table.clone(ActionTemplates.wield)
-ActionTemplates.wield_left.default.weapon_action_hand = "left"
-ActionTemplates.wield_left_delay = table.clone(ActionTemplates.wield)
-ActionTemplates.wield_left_delay.default.total_time = 0.5
-ActionTemplates.action_inspect_left = table.clone(ActionTemplates.action_inspect)
-ActionTemplates.action_inspect_left.default.weapon_action_hand = "left"
-ActionTemplates.action_inspect_left.action_inspect_hold.weapon_action_hand = "left"
 ActionTemplates.career_skill_dummy = {
 	default = {
 		kind = "dummy",
@@ -592,15 +615,18 @@ ActionTemplates.action_career_bw_1 = {
 		kind = "instant_wield",
 		total_time = 0,
 		condition_func = function (action_user, input_extension)
+			local buff_extension = ScriptUnit.extension(action_user, "buff_system")
+			local is_disabled = buff_extension:has_buff_perk("disable_career_ability")
+
+			if is_disabled then
+				return false
+			end
+
 			local career_extension = ScriptUnit.extension(action_user, "career_system")
 			local activated_ability_data = career_extension:get_activated_ability_data()
 
 			return activated_ability_data.action_name == "action_career_bw_1" and career_extension:can_use_activated_ability()
 		end,
-		action_on_wield = {
-			action = "action_career",
-			sub_action = "default"
-		},
 		allowed_chain_actions = {}
 	}
 }
@@ -612,15 +638,18 @@ ActionTemplates.action_career_dr_3 = {
 		kind = "instant_wield",
 		total_time = 0,
 		condition_func = function (action_user, input_extension)
+			local buff_extension = ScriptUnit.extension(action_user, "buff_system")
+			local is_disabled = buff_extension:has_buff_perk("disable_career_ability")
+
+			if is_disabled then
+				return false
+			end
+
 			local career_extension = ScriptUnit.extension(action_user, "career_system")
 			local activated_ability_data = career_extension:get_activated_ability_data()
 
 			return activated_ability_data.action_name == "action_career_dr_3" and career_extension:can_use_activated_ability()
 		end,
-		action_on_wield = {
-			action = "action_career",
-			sub_action = "default"
-		},
 		allowed_chain_actions = {}
 	}
 }
@@ -632,15 +661,18 @@ ActionTemplates.action_career_wh_2 = {
 		kind = "instant_wield",
 		total_time = 0,
 		condition_func = function (action_user, input_extension)
+			local buff_extension = ScriptUnit.extension(action_user, "buff_system")
+			local is_disabled = buff_extension:has_buff_perk("disable_career_ability")
+
+			if is_disabled then
+				return false
+			end
+
 			local career_extension = ScriptUnit.extension(action_user, "career_system")
 			local activated_ability_data = career_extension:get_activated_ability_data()
 
 			return activated_ability_data.action_name == "action_career_wh_2" and career_extension:can_use_activated_ability()
 		end,
-		action_on_wield = {
-			action = "action_career",
-			sub_action = "default"
-		},
 		allowed_chain_actions = {}
 	}
 }
@@ -659,15 +691,18 @@ ActionTemplates.action_career_we_3 = {
 				return false
 			end
 
+			local buff_extension = ScriptUnit.extension(action_user, "buff_system")
+			local is_disabled = buff_extension:has_buff_perk("disable_career_ability")
+
+			if is_disabled then
+				return false
+			end
+
 			local career_extension = ScriptUnit.extension(action_user, "career_system")
 			local activated_ability_data = career_extension:get_activated_ability_data()
 
 			return activated_ability_data.action_name == "action_career_we_3" and career_extension:can_use_activated_ability()
 		end,
-		action_on_wield = {
-			action = "action_career",
-			sub_action = "default"
-		},
 		allowed_chain_actions = {}
 	}
 }

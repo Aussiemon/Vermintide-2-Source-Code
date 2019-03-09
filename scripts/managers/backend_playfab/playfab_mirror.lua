@@ -49,17 +49,12 @@ PlayFabMirror.init = function (self, signin_result)
 	self._read_only_data = read_only_data_values
 	self._read_only_data_mirror = table.clone(read_only_data_values)
 	local title_data = info_result_payload.TitleData or {}
-	local title_data_values = {}
+	self._title_data = {}
 
 	for key, value in pairs(title_data) do
-		if tonumber(value) then
-			value = tonumber(value)
-		end
-
-		title_data_values[key] = value
+		self:set_title_data(key, value)
 	end
 
-	self._title_data = title_data_values
 	local user_data = info_result_payload.UserData or {}
 	local user_data_values = {}
 
@@ -397,12 +392,16 @@ PlayFabMirror.inventory_request_cb = function (self, result)
 		local item = inventory_items[i]
 
 		if not item.BundleContents then
-			local backend_id = item.ItemInstanceId
+			if item.ItemId and not rawget(ItemMasterList, item.ItemId) then
+				Crashify.print_exception("PlayfabMirror", string.format("ItemMasterList has no item %q", tostring(item.ItemId)))
+			else
+				local backend_id = item.ItemInstanceId
 
-			self:_update_data(item, backend_id)
+				self:_update_data(item, backend_id)
 
-			if item.data.item_type ~= "weapon_skin" then
-				self._inventory_items[backend_id] = item
+				if item.data.item_type ~= "weapon_skin" then
+					self._inventory_items[backend_id] = item
+				end
 			end
 		end
 	end
@@ -778,6 +777,14 @@ PlayFabMirror.get_title_data = function (self)
 	return self._title_data
 end
 
+PlayFabMirror.set_title_data = function (self, key, value)
+	if tonumber(value) then
+		value = tonumber(value)
+	end
+
+	self._title_data[key] = value
+end
+
 PlayFabMirror.get_user_data = function (self)
 	return self._user_data
 end
@@ -802,7 +809,7 @@ PlayFabMirror._commit_user_data = function (self, new_data, commit, commit_id)
 		self._user_data_mirror = table.clone(self._user_data)
 		local cb_user_data = callback(self, "update_user_data_cb", commit_id)
 
-		PlayFabClientApi.UpdateUserData(user_data_request, cb_user_data, cb_user_data)
+		PlayFabClientApi.UpdateUserData(user_data_request, cb_user_data)
 
 		commit.status = "waiting"
 		commit.wait_for_user_data = true
@@ -810,10 +817,6 @@ PlayFabMirror._commit_user_data = function (self, new_data, commit, commit_id)
 end
 
 PlayFabMirror.update_user_data_cb = function (self, commit_id, result)
-	if result.error then
-		Application.warning("[PlayFabMirror] Something went wrong when trying to submit user_data")
-	end
-
 	local commit = self._commits[commit_id]
 	commit.wait_for_user_data = false
 end

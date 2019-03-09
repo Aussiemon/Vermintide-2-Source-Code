@@ -8253,21 +8253,6 @@ ItemMasterList.we_longbow = {
 		"we_waywatcher"
 	}
 }
-ItemMasterList.we_longbow_trueflight = {
-	description = "description_plentiful_wood_elf_ww_trueflight",
-	rarity = "plentiful",
-	display_name = "display_name_plentiful_wood_elf_ww_trueflight",
-	inventory_icon = "icon_wpn_we_bow_01_t1",
-	slot_type = "ranged",
-	hud_icon = "weapon_generic_icon_bow",
-	left_hand_unit = "units/weapons/player/wpn_we_bow_01_t1/wpn_we_bow_01_t1",
-	has_power_level = true,
-	template = "longbow_trueflight_template_1",
-	property_table_name = "ranged",
-	item_type = "ww_trueflight",
-	trait_table_name = "ranged_ammo",
-	can_wield = {}
-}
 ItemMasterList.we_2h_axe = {
 	description = "we_2h_axe_skin_07_description",
 	rarity = "plentiful",

@@ -147,12 +147,7 @@ AIDebugger.update = function (self, t, dt)
 
 			if health_extension then
 				if health_extension:is_alive() then
-					local damage_amount = 255
-					local hit_zone_name = "full"
-					local damage_type = "forced"
-					local damage_direction = Vector3(0, 0, 1)
-
-					DamageUtils.add_damage_network(kill_unit, kill_unit, damage_amount, hit_zone_name, damage_type, nil, damage_direction, "debug")
+					health_extension:die("forced")
 				end
 			else
 				local blackboard = BLACKBOARDS[kill_unit]

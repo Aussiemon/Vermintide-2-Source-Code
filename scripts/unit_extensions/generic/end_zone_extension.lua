@@ -15,10 +15,12 @@ EndZoneExtension.init = function (self, extension_init_context, unit)
 	self._player_distances = {}
 	self._current_volume_id = nil
 	self._current_id_index = 0
+	self._is_start_waystone = false
 	self._waystone_type = Unit.get_data(unit, "waystone_type")
 	self._always_activated = Unit.get_data(unit, "always_activated")
 
 	if Unit.get_data(self._unit, "game_start_waystone") then
+		self._is_start_waystone = true
 		self._game_start_time = Unit.get_data(self._unit, "game_start_time")
 	end
 
@@ -76,6 +78,14 @@ end
 
 EndZoneExtension.end_time_left = function (self)
 	return self._state_data.end_zone_timer or self:end_time()
+end
+
+EndZoneExtension.end_long_time = function (self)
+	return EndZoneSettings.end_zone_long_timer
+end
+
+EndZoneExtension.end_long_time_left = function (self)
+	return self._state_data.end_zone_long_timer or self:end_long_time()
 end
 
 EndZoneExtension.update = function (self, unit, input, dt, context, t)
@@ -247,6 +257,7 @@ EndZoneExtension._open = function (self, dt, t)
 
 		if scale == 1 then
 			self._state_data.end_zone_timer = self:end_time()
+			self._state_data.end_zone_long_timer = self:end_long_time()
 			self._state = "_end_mission_check"
 		end
 	else
@@ -283,6 +294,7 @@ end
 EndZoneExtension._end_mission_check = function (self, dt, t)
 	if self._activated and (self._always_activated or self._closest_player <= EndZoneSettings.activate_size^2) then
 		local all_inside = nil
+		local one_inside = false
 
 		if self._is_server then
 			for player_unit, distance_squared in pairs(self._player_distances) do
@@ -296,6 +308,8 @@ EndZoneExtension._end_mission_check = function (self, dt, t)
 
 						status_extension:set_in_end_zone(false)
 					else
+						one_inside = true
+
 						if all_inside == nil then
 							all_inside = true
 						end
@@ -313,6 +327,16 @@ EndZoneExtension._end_mission_check = function (self, dt, t)
 				end
 			else
 				self._state_data.end_zone_timer = self:end_time()
+			end
+
+			if one_inside and self:_check_joining_players() and not self._is_start_waystone then
+				self._state_data.end_zone_long_timer = math.clamp(self:end_long_time_left() - dt, 0, self:end_long_time())
+
+				if self:end_long_time_left() <= 0 and not self._disable_complete_level then
+					Managers.state.game_mode:complete_level()
+				end
+			else
+				self._state_data.end_zone_long_timer = self:end_long_time()
 			end
 		else
 			all_inside = nil

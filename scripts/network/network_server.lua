@@ -483,6 +483,11 @@ NetworkServer.update = function (self, dt)
 
 				peer_state_machines[peer_id] = PeerStateMachine.create(self, peer_id)
 				local sender = (rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id)
+
+				if PLATFORM ~= "win32" then
+					sender = self.lobby_host:user_name(peer_id)
+				end
+
 				local message = string.format(Localize("system_chat_player_joined_the_game"), sender)
 				local pop_chat = true
 
@@ -496,6 +501,11 @@ NetworkServer.update = function (self, dt)
 			network_printf("Peer %s left server lobby.", peer_id)
 
 			local sender = (rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id)
+
+			if PLATFORM ~= "win32" then
+				sender = self.lobby_host:user_name(peer_id)
+			end
+
 			local message = string.format(Localize("system_chat_player_left_the_game"), sender)
 			local pop_chat = true
 

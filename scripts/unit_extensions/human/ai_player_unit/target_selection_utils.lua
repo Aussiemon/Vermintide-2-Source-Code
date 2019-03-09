@@ -871,6 +871,8 @@ PerceptionUtils.pick_rat_ogre_target_idle = function (unit, blackboard, breed, t
 					local enemy_dist = Vector3.distance(POSITION_LOOKUP[unit], POSITION_LOOKUP[ahead_unit])
 					local urgency_to_engage = 100
 
+					AiUtils.activate_unit(blackboard)
+
 					return ahead_unit, enemy_dist, urgency_to_engage
 				end
 			end

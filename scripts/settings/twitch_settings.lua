@@ -16,6 +16,14 @@ TwitchSettings = TwitchSettings or {
 		default_vote_d_str = "#d",
 		default_vote_a_str = "#a",
 		default_vote_e_str = "#e"
+	},
+	supported_game_modes = {
+		twitch = true,
+		deed = true,
+		adventure = true,
+		lobby_browser = true,
+		event = true,
+		custom = true
 	}
 }
 TwitchVoteTemplates = {}

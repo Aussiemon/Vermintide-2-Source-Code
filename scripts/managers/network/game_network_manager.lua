@@ -930,6 +930,12 @@ GameNetworkManager.rpc_coop_feedback = function (self, sender, player1_peer_id, 
 		local player_1_peer_id = player1.peer_id
 		local is_player_controlled = player1:is_player_controlled()
 		local player_1_name = (is_player_controlled and ((rawget(_G, "Steam") and Steam.user_name(player_1_peer_id)) or tostring(player_1_peer_id))) or player1:name()
+
+		if PLATFORM ~= "win32" and not Managers.account:offline_mode() then
+			local lobby = Managers.state.network:lobby()
+			player_1_name = (is_player_controlled and (lobby:user_name(player_1_peer_id) or tostring(player_1_peer_id))) or player1:name()
+		end
+
 		local pop_chat = true
 		local message = string.format(Localize("system_chat_player_discarded_grimoire"), player_1_name)
 

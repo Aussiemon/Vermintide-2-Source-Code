@@ -855,10 +855,7 @@ LobbyBrowserConsoleUI._fill_details = function (self, lobby_data)
 
 		local level_settings = LevelSettings[level_key]
 		level_name = level_settings.display_name
-
-		if level_key ~= "prologue" then
-			level_image = level_settings.level_image
-		end
+		level_image = level_settings.level_image or level_image
 	end
 
 	local level_image_widget = details_widgets.level_image

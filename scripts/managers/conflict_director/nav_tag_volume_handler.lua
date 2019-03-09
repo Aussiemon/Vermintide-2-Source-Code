@@ -37,7 +37,7 @@ NavTagVolumeHandler.create_tag_volume_from_mappings = function (self, level_volu
 
 	local a, b, c = Script.temp_count()
 
-	assert(self.mappings_available, "[NavTagVolumeHandler] Current level requires world_nav_tag_volumes.lua to be located in the level directory. Run SpawnGenerator in the level editor to export it!")
+	fassert(self.mappings_available, "[NavTagVolumeHandler] Current level requires world_nav_tag_volumes.lua to be located in the level directory. Run SpawnGenerator in the level editor to export it!")
 
 	local mapping = self.mappings[level_volume_name]
 
@@ -68,7 +68,7 @@ end
 NavTagVolumeHandler.create_mapping = function (self, pos, size, layer_name)
 	local volume_name = "runtime_volume_" .. self._runtime_volume_index
 
-	assert(not self.mappings[volume_name], string.format("[NavTagVolumeHandler] There is already a nav tag volume called %s registered", volume_name))
+	fassert(not self.mappings[volume_name], "[NavTagVolumeHandler] There is already a nav tag volume called %s registered", volume_name)
 
 	local mapping = {}
 	local left = pos + Vector3(-size, 0, 0)
@@ -133,25 +133,6 @@ NavTagVolumeHandler.create_mapping = function (self, pos, size, layer_name)
 	self.mappings[volume_name] = mapping
 	self.mapping_lookup_table[self._volume_lookup_id] = volume_name
 	self.mapping_lookup_table[volume_name] = self._volume_lookup_id
-
-	if script_data.debug_volume then
-		QuickDrawerStay:reset()
-
-		for i = 1, #mapping.bottom_points, 1 do
-			if i == #mapping.bottom_points then
-				local pos1 = Vector3(mapping.bottom_points[i][1], mapping.bottom_points[i][2], mapping.bottom_points[i][3] + 0.05)
-				local pos2 = Vector3(mapping.bottom_points[1][1], mapping.bottom_points[1][2], mapping.bottom_points[1][3] + 0.05)
-
-				QuickDrawerStay:line(pos1, pos2, Color(0, 255, 0))
-			else
-				local pos1 = Vector3(mapping.bottom_points[i][1], mapping.bottom_points[i][2], mapping.bottom_points[i][3] + 0.05)
-				local pos2 = Vector3(mapping.bottom_points[i + 1][1], mapping.bottom_points[i + 1][2], mapping.bottom_points[i + 1][3] + 0.05)
-
-				QuickDrawerStay:line(pos1, pos2, Color(0, 255, 0))
-			end
-		end
-	end
-
 	self._runtime_volume_index = self._runtime_volume_index + 1
 	self._volume_lookup_id = self._volume_lookup_id + 1
 
@@ -165,8 +146,8 @@ NavTagVolumeHandler.get_mapping_from_lookup_id = function (self, lookup_id)
 end
 
 NavTagVolumeHandler.destroy_nav_tag_volume = function (self, volume_name)
-	assert(self.mappings[volume_name], string.format("[NavTagVolumeHandler] There is not nav tag volume MAPPING with that name (%s)", volume_name))
-	assert(self.created_tag_volumes[volume_name], string.format("[NavTagVolumeHandler] There is not NAV TAG VOLUME with that name (%s)", volume_name))
+	fassert(self.mappings[volume_name], "[NavTagVolumeHandler] There is not nav tag volume MAPPING with that name (%s)", volume_name)
+	fassert(self.created_tag_volumes[volume_name], "[NavTagVolumeHandler] There is not NAV TAG VOLUME with that name (%s)", volume_name)
 
 	local lookup_id = self.mapping_lookup_table[volume_name]
 	local tag_volume = self.created_tag_volumes[volume_name]
@@ -180,7 +161,7 @@ NavTagVolumeHandler.destroy_nav_tag_volume = function (self, volume_name)
 end
 
 NavTagVolumeHandler.set_mapping_layer_name = function (self, level_volume_name, layer_name)
-	assert(self.mappings_available, "[NavTagVolumeHandler] Current level requires world_nav_tag_volumes.lua to be located in the level directory. Run SpawnGenerator in the level editor to export it!")
+	fassert(self.mappings_available, "[NavTagVolumeHandler] Current level requires world_nav_tag_volumes.lua to be located in the level directory. Run SpawnGenerator in the level editor to export it!")
 
 	local mapping = self.mappings[level_volume_name]
 

@@ -1,4 +1,4 @@
-MixerSettings = {
+MixerSettings = MixerSettings or {
 	cutoff_for_guaranteed_negative_vote = -300,
 	initial_downtime = 60,
 	default_draw_vote = "twitch_vote_draw",
@@ -42,9 +42,12 @@ MixerSettings = {
 		sparks_vote_d_str = "sparks_vote_d",
 		sparks_vote_e_str = "sparks_vote_e",
 		sparks_vote_b_str = "sparks_vote_b"
+	},
+	supported_game_modes = {
+		twitch = true
 	}
 }
-TwitchVoteTemplates = {}
+TwitchVoteTemplates = TwitchVoteTemplates or {}
 
 require("scripts/settings/twitch_vote_templates_buffs")
 require("scripts/settings/twitch_vote_templates_items")

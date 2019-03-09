@@ -1053,6 +1053,46 @@ AttachmentNodeLinking = {
 			}
 		}
 	},
+	potion_right = {
+		first_person = {
+			wielded = {
+				{
+					target = 0,
+					source = "j_rightweaponattach"
+				},
+				{
+					target = "p_cork",
+					source = "j_rightweaponcomponent1"
+				}
+			},
+			unwielded = {
+				{
+					target = 0,
+					source = "j_hips"
+				}
+			}
+		},
+		third_person = {
+			display = {
+				{
+					target = 0,
+					source = "j_rightweaponattach"
+				}
+			},
+			wielded = {
+				{
+					target = 0,
+					source = "j_rightweaponattach"
+				}
+			},
+			unwielded = {
+				{
+					target = 0,
+					source = "j_hips"
+				}
+			}
+		}
+	},
 	sack = {
 		first_person = {
 			wielded = {

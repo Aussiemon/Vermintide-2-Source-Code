@@ -833,6 +833,8 @@ IngameUI.get_transition = function (self)
 		return "join_lobby", self.join_lobby
 	elseif self.restart_game then
 		return "restart_game"
+	elseif self.quit_game then
+		return "quit_game"
 	end
 end
 
@@ -1113,6 +1115,12 @@ IngameUI.update_respawning = function (self)
 		else
 			Managers.state.network.network_transmit:send_rpc_server("rpc_client_respawn_player")
 		end
+	end
+end
+
+IngameUI._cancel_popup = function (self)
+	if self.popup_id then
+		Managers.popup:cancel_popup(self.popup_id)
 	end
 end
 

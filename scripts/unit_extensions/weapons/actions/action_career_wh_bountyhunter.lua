@@ -25,6 +25,10 @@ ActionCareerWHBountyhunter.client_owner_start_action = function (self, new_actio
 
 	ActionCareerWHBountyhunter.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level, action_init_data)
 	self:_play_vo()
+
+	local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
+
+	inventory_extension:check_and_drop_pickups("career_ability")
 end
 
 ActionCareerWHBountyhunter.finish = function (self, reason)
@@ -58,7 +62,7 @@ ActionCareerWHBountyhunter.finish = function (self, reason)
 		network_transmit:send_rpc_server("rpc_request_heal", unit_id, 35, heal_type_id)
 	end
 
-	inventory_extension:wield_previous_slot()
+	self.inventory_extension:wield_previous_non_level_slot()
 
 	if self.upper_shot_done and self.lower_shot_done then
 		career_extension:start_activated_ability_cooldown()

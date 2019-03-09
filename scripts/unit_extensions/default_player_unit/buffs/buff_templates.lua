@@ -9,45 +9,46 @@ RangedBuffTypes = {
 	RANGED = true
 }
 StatBuffApplicationMethods = {
-	protection_poison_wind = "stacking_multiplier",
-	shield_break_proc = "proc",
-	increased_weapon_damage_melee_1h = "stacking_multiplier",
+	"DEATH_PUSH_MULTIPLIER",
+	max_damage_taken = "stacking_bonus",
+	protection_chaos = "stacking_multiplier",
+	increased_weapon_damage_ranged_to_wounded = "stacking_multiplier",
 	max_health_alive = "stacking_multiplier",
-	reduced_spread = "stacking_multiplier",
-	damage_taken = "stacking_multiplier",
-	max_fatigue = "stacking_bonus",
+	curse_protection = "stacking_multiplier",
+	power_level_ranged = "stacking_multiplier",
+	automatic_head_shot = "proc",
 	vent_damage = "stacking_multiplier",
-	increased_max_targets = "stacking_bonus",
-	damage_taken_elites = "stacking_multiplier",
-	damage_taken_to_overcharge = "stacking_multiplier",
+	counter_push_power = "stacking_multiplier",
+	damage_taken_kd = "stacking_multiplier",
+	clip_size = "stacking_multiplier",
 	not_consume_grenade = "proc",
 	damage_taken_secondary = "stacking_multiplier",
 	reduced_overcharge = "stacking_multiplier",
 	protection_gutter_runner = "stacking_multiplier",
-	clip_size = "stacking_multiplier",
+	damage_taken_to_overcharge = "stacking_multiplier",
 	fatigue_regen = "stacking_multiplier",
-	damage_taken_kd = "stacking_multiplier",
+	damage_taken_elites = "stacking_multiplier",
+	increased_max_targets = "stacking_bonus",
+	block_angle = "stacking_multiplier",
 	reduced_spread_shot = "stacking_multiplier",
-	automatic_head_shot = "proc",
-	power_level_ranged = "stacking_multiplier",
 	increase_luck = "stacking_multiplier",
 	not_consume_potion = "proc",
 	max_health = "stacking_multiplier",
-	curse_protection = "stacking_multiplier",
+	max_fatigue = "stacking_bonus",
 	extra_shot = "proc",
 	heal_self_on_heal_other = "proc",
 	faster_revive = "stacking_multiplier",
-	critical_strike_chance_ranged = "stacking_bonus",
-	block_angle = "stacking_multiplier",
+	damage_taken = "stacking_multiplier",
+	reduced_spread = "stacking_multiplier",
 	block_cost = "stacking_multiplier",
-	counter_push_power = "stacking_multiplier",
+	critical_strike_chance_ranged = "stacking_bonus",
 	timed_block_cost = "stacking_multiplier",
 	vent_speed = "stacking_multiplier",
-	increased_weapon_damage_ranged_to_wounded = "stacking_multiplier",
+	increased_weapon_damage_melee_1h = "stacking_multiplier",
 	power_level_armoured = "stacking_multiplier",
-	protection_chaos = "stacking_multiplier",
+	shield_break_proc = "proc",
 	critical_strike_chance = "stacking_bonus",
-	max_damage_taken = "stacking_bonus",
+	protection_poison_wind = "stacking_multiplier",
 	max_overcharge = "stacking_multiplier",
 	critical_strike_effectiveness = "stacking_multiplier",
 	reload_speed = "stacking_multiplier",
@@ -2651,18 +2652,6 @@ BuffTemplates = {
 				damage_type = "burninating",
 				max_stacks = 1,
 				update_func = "apply_dot_damage"
-			}
-		}
-	},
-	slow_grenade_slow = {
-		buffs = {
-			{
-				duration = 1,
-				name = "slow_grenade_slow",
-				refresh_durations = true,
-				max_stacks = 1,
-				remove_buff_func = "remove_grenade_slow",
-				apply_buff_func = "apply_grenade_slow"
 			}
 		}
 	},
@@ -5693,6 +5682,15 @@ for _, dlc in pairs(DLCSettings) do
 
 	if buff_templates then
 		table.merge_recursive(BuffTemplates, buff_templates)
+	end
+
+	local add_sub_buffs_to_core_buffs = dlc.add_sub_buffs_to_core_buffs
+
+	if add_sub_buffs_to_core_buffs then
+		for i = 1, #add_sub_buffs_to_core_buffs, 1 do
+			local data = add_sub_buffs_to_core_buffs[i]
+			BuffTemplates[data.buff_name].buffs[#BuffTemplates[data.buff_name].buffs + 1] = data.sub_buff_to_add
+		end
 	end
 end
 

@@ -5,10 +5,8 @@ local StatisticsUtil = StatisticsUtil
 
 StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db, is_server)
 	local attacker_unit = AiUtils.get_actual_attacker_unit(damage_data[DamageDataIndex.ATTACKER])
-	local damaging_unit = damage_data[DamageDataIndex.DAMAGING_UNIT]
 	local player_manager = Managers.player
 	local attacker_player = player_manager:owner(attacker_unit)
-	local grenade_kill = false
 	local breed = Unit_get_data(victim_unit, "breed")
 
 	if attacker_player then
@@ -24,7 +22,6 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 				local predicate = "killed_special"
 				local local_human = not attacker_player.remote and not attacker_player.bot_player
 				local profile_index = attacker_player:profile_index()
-				local stats_id = attacker_player:stats_id()
 				local attacker_player_unit = attacker_player.player_unit
 
 				if Unit.alive(attacker_player_unit) then
@@ -41,6 +38,10 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 
 			if hit_zone == "head" then
 				statistics_db:increment_stat(stats_id, "headshots")
+			end
+
+			if breed.race and breed.race == "critter" then
+				statistics_db:increment_stat(stats_id, "kills_critter_total")
 			end
 
 			local damage_source = damage_data[DamageDataIndex.DAMAGE_SOURCE_NAME]
@@ -72,7 +73,7 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 		end
 	end
 
-	if (breed ~= nil and breed.elite) or breed.boss then
+	if breed and (breed.elite or breed.boss) then
 		local human_and_bot_players = player_manager:human_and_bot_players()
 
 		for _, player in pairs(human_and_bot_players) do
@@ -337,13 +338,26 @@ StatisticsUtil.register_collected_tomes = function (collected_tomes, statistics_
 	end
 end
 
-StatisticsUtil.register_complete_event = function (statistics_db)
+StatisticsUtil.register_collected_dice = function (collected_dice, statistics_db)
 	local local_player = Managers.player:local_player()
 	local stats_id = local_player:stats_id()
-	local difficulty_manager = Managers.state.difficulty
-	local difficulty_name = difficulty_manager:get_difficulty()
 
-	statistics_db:increment_stat(stats_id, "completed_event_difficulty", difficulty_name)
+	for i = 1, collected_dice, 1 do
+		statistics_db:increment_stat(stats_id, "total_collected_dice")
+	end
+
+	local level_settings = LevelHelper:current_level_settings()
+	local level_id = level_settings.level_id
+
+	if not table.find(UnlockableLevels, level_id) then
+		return
+	end
+
+	local current_collected_dice = statistics_db:get_persistent_stat(stats_id, "collected_dice", level_id)
+
+	if current_collected_dice < collected_dice then
+		statistics_db:set_stat(stats_id, "collected_dice", level_id, collected_dice)
+	end
 end
 
 StatisticsUtil.register_complete_level = function (statistics_db)
@@ -365,6 +379,7 @@ StatisticsUtil.register_complete_level = function (statistics_db)
 	local mission_system = Managers.state.entity:system("mission_system")
 	local grimoire_mission_data = mission_system:get_level_end_mission_data("grimoire_hidden_mission")
 	local tome_mission_data = mission_system:get_level_end_mission_data("tome_bonus_mission")
+	local dice_mission_data = mission_system:get_level_end_mission_data("bonus_dice_hidden_mission")
 
 	if grimoire_mission_data then
 		StatisticsUtil.register_collected_grimoires(grimoire_mission_data.current_amount, statistics_db)
@@ -372,6 +387,10 @@ StatisticsUtil.register_complete_level = function (statistics_db)
 
 	if tome_mission_data then
 		StatisticsUtil.register_collected_tomes(tome_mission_data.current_amount, statistics_db)
+	end
+
+	if dice_mission_data then
+		StatisticsUtil.register_collected_dice(dice_mission_data.current_amount, statistics_db)
 	end
 
 	statistics_db:increment_stat(stats_id, "completed_levels", level_id)
@@ -438,6 +457,21 @@ StatisticsUtil.register_played_quickplay_level = function (statistics_db, player
 
 	statistics_db:increment_stat(player:stats_id(), "played_levels_quickplay", level_key)
 	StatisticsUtil.register_last_played_level_id(statistics_db, player, level_key)
+end
+
+StatisticsUtil.register_played_weekly_event_level = function (statistics_db, player, level_key, difficulty_key)
+	if not table.find(UnlockableLevels, level_key) then
+		return
+	end
+
+	local stats_id = player:stats_id()
+
+	statistics_db:increment_stat(stats_id, "played_levels_weekly_event", level_key)
+
+	local difficulty_manager = Managers.state.difficulty
+	local difficulty_name = difficulty_manager:get_difficulty()
+
+	statistics_db:increment_stat(stats_id, "completed_weekly_event_difficulty", difficulty_name)
 end
 
 StatisticsUtil.register_last_played_level_id = function (statistics_db, player, level_key)

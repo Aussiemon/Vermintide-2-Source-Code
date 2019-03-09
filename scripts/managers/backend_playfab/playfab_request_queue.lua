@@ -44,7 +44,7 @@ PlayFabRequestQueue.enqueue = function (self, request, success_callback, send_ea
 	return id
 end
 
-PlayFabRequestQueue.enqueue_api_request = function (self, api_function_name, request, success_callback)
+PlayFabRequestQueue.enqueue_api_request = function (self, api_function_name, request, success_callback, optional_error_callback)
 	local id = self._id + 1
 	local entry = {
 		resends = 0,
@@ -52,6 +52,7 @@ PlayFabRequestQueue.enqueue_api_request = function (self, api_function_name, req
 		api_function_name = api_function_name,
 		request = table.clone(request),
 		success_callback = success_callback,
+		error_callback = optional_error_callback,
 		timeout = TIMEOUT_TIME,
 		id = id
 	}
@@ -171,8 +172,10 @@ PlayFabRequestQueue._send_request = function (self, entry)
 	local request = entry.request
 	local success_callback = entry.success_callback
 	local success_cb = callback(self, "playfab_request_success_cb", success_callback)
+	local error_callback = entry.error_callback
+	local error_cb = error_callback and callback(self, "playfab_request_error_cb", error_callback)
 
-	PlayFabClientApi[api_function_name](request, success_cb)
+	PlayFabClientApi[api_function_name](request, success_cb, error_cb)
 end
 
 PlayFabRequestQueue.playfab_request_success_cb = function (self, success_callback, result)
@@ -192,6 +195,19 @@ PlayFabRequestQueue.playfab_request_success_cb = function (self, success_callbac
 	self._active_entry = nil
 
 	success_callback(result)
+end
+
+PlayFabRequestQueue.playfab_request_error_cb = function (self, error_callback, result)
+	local entry = self._active_entry
+	local request = entry.request
+
+	print("[PlayFabRequestQueue] Request Error", entry.api_function_name, request.FunctionName, entry.id, result.errorCode, result.errorMessage)
+
+	local function reenable_queue_function()
+		self._active_entry = nil
+	end
+
+	error_callback(result, reenable_queue_function)
 end
 
 PlayFabRequestQueue._get_eac_response = function (self, challenge)

@@ -84,8 +84,6 @@ StateDedicatedServerInit.update = function (self, dt, t)
 	elseif state == "wait_for_connect" then
 		if server_state == GameServerState.CONNECTED then
 			self.parent:setup_network_server(game_server)
-			self.parent:setup_chat_manager(game_server)
-			self.parent:setup_enemy_package_loader(game_server)
 
 			return StateDedicatedServerRunning
 		elseif server_state == GameServerState.DISCONNECTED then

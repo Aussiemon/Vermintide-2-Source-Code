@@ -673,14 +673,14 @@ weapon_template.actions = {
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default_left",
+					sub_action = "default_down",
 					start_time = 0.45,
 					action = "action_one",
 					end_time = 1.35,
 					input = "action_one"
 				},
 				{
-					sub_action = "default_left",
+					sub_action = "default_down",
 					start_time = 0.45,
 					action = "action_one",
 					end_time = 1.35,

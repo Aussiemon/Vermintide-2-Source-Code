@@ -362,8 +362,7 @@ LevelSettings.mines = {
 		disable_screen_fx = true,
 		player_light_intensity = 0.15,
 		volumes = {
-			"environment_darkness_01",
-			default_surface_material = "stone"
+			"environment_darkness_01"
 		}
 	},
 	pickup_settings = {
@@ -941,20 +940,20 @@ LevelSettings.prologue = {
 	default_surface_material = "stone_wet",
 	display_name = "level_name_prologue",
 	ambient_sound_event = "silent_default_world_sound",
-	environment_state = "exterior",
 	player_aux_bus_name = "environment_reverb_outside",
-	package_name = "resource_packages/levels/honduras/prologue",
+	environment_state = "exterior",
+	level_name = "levels/honduras/prologue/world",
 	act = "prologue",
 	boss_spawning_method = "hand_placed",
 	unlockable = true,
 	game_mode = "tutorial",
 	main_game_level = true,
 	conflict_settings = "tutorial",
-	level_image = "level_icon_01",
+	level_image = "level_icon_00",
 	use_mini_patrols = false,
 	loading_ui_package_name = "loading_screen_9",
 	knocked_down_setting = "knocked_down",
-	level_name = "levels/honduras/prologue/world",
+	package_name = "resource_packages/levels/honduras/prologue",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
@@ -1369,6 +1368,21 @@ LevelSettings.fgr_slt = {
 	ambient_sound_event = "silent_default_world_sound",
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras/debug/fgr_slt/world",
+	level_image = "level_image_any",
+	loading_ui_package_name = "loading_screen_1",
+	source_aux_bus_name = "environment_reverb_outside_source",
+	level_particle_effects = {},
+	level_screen_effects = {},
+	locations = {}
+}
+LevelSettings.crawl_floor_fall = {
+	display_name = "crawl_floor_fall",
+	package_name = "resource_packages/levels/honduras/debug/crawl_floor_fall",
+	environment_state = "exterior",
+	player_aux_bus_name = "environment_reverb_outside",
+	ambient_sound_event = "silent_default_world_sound",
+	knocked_down_setting = "knocked_down",
+	level_name = "levels/honduras/debug/crawl_floor_fall/world",
 	level_image = "level_image_any",
 	loading_ui_package_name = "loading_screen_1",
 	source_aux_bus_name = "environment_reverb_outside_source",

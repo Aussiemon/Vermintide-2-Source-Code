@@ -25,14 +25,19 @@ TelemetryEvents.header = function (self, engine_revision, content_revision)
 	self.manager:register_event("header", params)
 end
 
-TelemetryEvents.game_started = function (self, player_id, peer_type, level_key, difficulty, deed, eye_tracking)
+TelemetryEvents.game_started = function (self, player_id, peer_type, level_key, difficulty, mutators, eye_tracking)
 	table.clear(params)
+
+	local mutator_names = {}
+
+	table.keys(mutators, mutator_names)
+	table.sort(mutator_names)
 
 	params.player_id = player_id
 	params.peer_type = peer_type
 	params.level_key = level_key
 	params.difficulty = difficulty
-	params.deed = deed
+	params.mutators = table.concat(mutator_names, ",")
 	params.eye_tracking = eye_tracking
 
 	self.manager:register_event("game_started", params)
@@ -432,6 +437,16 @@ TelemetryEvents.player_stuck = function (self, player, level_key)
 	params.level_key = level_key
 
 	self.manager:register_event("player_stuck", params)
+end
+
+TelemetryEvents.fps = function (self, min_fps, max_fps, avg_fps)
+	table.clear(params)
+
+	params.min_fps = min_fps
+	params.max_fps = max_fps
+	params.avg_fps = avg_fps
+
+	self.manager:register_event("fps", params)
 end
 
 return

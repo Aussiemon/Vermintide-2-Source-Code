@@ -198,7 +198,19 @@ MatchmakingStateSearchGame._search_for_game = function (self, dt)
 	local wanted_profile = profile_index
 	local search_config = self.search_config
 	local matchmaking_manager = self._matchmaking_manager
-	local _, preferred_levels = matchmaking_manager:get_weighed_random_unlocked_level(false, not search_config.quick_game)
+	local chosen_level = nil
+	local preferred_levels = {}
+	local game_mode = search_config.game_mode
+	local selected_level_key = search_config.level_key
+
+	if selected_level_key then
+		preferred_levels = {
+			selected_level_key
+		}
+	else
+		chosen_level, preferred_levels = matchmaking_manager:get_weighed_random_unlocked_level(false, not search_config.quick_game)
+	end
+
 	active_lobby = self:_find_suitable_lobby(lobbies, search_config, wanted_profile, preferred_levels)
 
 	return active_lobby
@@ -311,7 +323,7 @@ MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, searc
 				local ignore_dlc_check = search_config.quick_game
 				local is_event_mode = search_config.game_mode == "event"
 
-				if not discard and not matchmaking_manager:party_has_level_unlocked(level_key, ignore_dlc_check, nil, is_event_mode) then
+				if not selected_level_key and not discard and not matchmaking_manager:party_has_level_unlocked(level_key, ignore_dlc_check, nil, is_event_mode) then
 					discard = true
 					discard_reason = string.format("level(%s) is not unlocked by party", level_key)
 				end

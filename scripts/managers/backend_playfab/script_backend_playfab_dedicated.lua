@@ -27,21 +27,15 @@ ScriptBackendPlayFabDedicated.init = function (self)
 
 	local login_request_cb = callback(self, "login_request_cb")
 
-	PlayFabClientApi.LoginWithCustomID(login_request, login_request_cb, login_request_cb)
+	PlayFabClientApi.LoginWithCustomID(login_request, login_request_cb)
 end
 
 ScriptBackendPlayFabDedicated.login_request_cb = function (self, result)
 	self._signin_result = result
 
-	if result.error then
-		cprint("Backend sign-in failed")
+	cprint("Backend sign-in success")
 
-		self._signin_result_error = result
-	else
-		cprint("Backend sign-in success")
-
-		self._signed_in = true
-	end
+	self._signed_in = true
 end
 
 ScriptBackendPlayFabDedicated.generate_unique_id = function ()

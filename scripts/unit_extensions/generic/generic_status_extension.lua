@@ -1,10 +1,10 @@
 GenericStatusExtension = class(GenericStatusExtension)
-script_data.debug_draw_block_arcs = script_data.debug_draw_block_arcs or Development.parameter("debug_draw_block_arcs")
-script_data.debug_draw_push_arcs = script_data.debug_draw_push_arcs or Development.parameter("debug_draw_push_arcs")
 local DamageDataIndex = DamageDataIndex
 local ATTACK_INTENSITY_RESET = 0.25
 local ATTACK_INTENSITY_DECAY = 1
 local ATTACK_INTENSITY_DECAY_FAST = 2
+local MAX_INTOXICATION_LEVEL = 3
+local MIN_INTOXICATION_LEVEL = -3
 
 GenericStatusExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.world = extension_init_context.world
@@ -103,6 +103,8 @@ GenericStatusExtension.init = function (self, extension_init_context, unit, exte
 	if self.is_server then
 		self.conflict_director = Managers.state.conflict
 	end
+
+	self._intoxication_level = 0
 end
 
 GenericStatusExtension.extensions_ready = function (self)
@@ -151,6 +153,18 @@ GenericStatusExtension.add_intensity_by_difficulty = function (self, intensity_t
 
 	self.intensity = math.clamp(self.intensity + value, 0, 100)
 	self.intensity_decay_delay = CurrentIntensitySettings.decay_delay
+end
+
+GenericStatusExtension.add_intoxication_level = function (self, num_levels)
+	self._intoxication_level = math.clamp(self._intoxication_level + num_levels, MIN_INTOXICATION_LEVEL, MAX_INTOXICATION_LEVEL)
+end
+
+GenericStatusExtension.invert_intoxication_level = function (self)
+	self._intoxication_level = self._intoxication_level * -1
+end
+
+GenericStatusExtension.intoxication_level = function (self)
+	return self._intoxication_level
 end
 
 local intensity_ignored_damage_types = {
@@ -408,82 +422,6 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 
 			self._current_end_zone_state = in_end_zone
 		end
-	end
-end
-
-GenericStatusExtension._debug_draw_block_arcs = function (self, unit)
-	local inventory_extension = self.inventory_extension
-	local equipment = inventory_extension:equipment()
-	local weapon_template_name = equipment.wielded.template or equipment.wielded.temporary_template
-
-	if weapon_template_name then
-		local weapon_template = Weapons[weapon_template_name]
-		local player = self.player
-
-		if player then
-			local player_position = POSITION_LOOKUP[unit]
-			local network_manager = Managers.state.network
-			local game = network_manager:game()
-			local unit_id = network_manager:unit_game_object_id(unit)
-			local aim_direction = GameSession.game_object_field(game, unit_id, "aim_direction")
-			local player_direction_flat = Vector3.flat(aim_direction)
-			local buff_extension = self.buff_extension
-			local block_angle = buff_extension:apply_buffs_to_value(weapon_template.block_angle or 90, "block_angle")
-			local outer_block_angle = buff_extension:apply_buffs_to_value(weapon_template.outer_block_angle or 360, "block_angle")
-			block_angle = math.clamp(block_angle, 0, 360)
-			outer_block_angle = math.clamp(outer_block_angle, 0, 360)
-			local block_half_angle = math.rad(block_angle * 0.5)
-			local outer_block_half_angle = math.rad(outer_block_angle * 0.5)
-			local color = Color(255, 255, 255)
-
-			if self:is_blocking() then
-				local block_color = self._debug_draw_color
-
-				if block_color then
-					color = Color(unpack(block_color)) or color
-				end
-			end
-
-			local inner_left_direction = Quaternion.rotate(Quaternion(Vector3.up(), block_half_angle), player_direction_flat)
-			local inner_right_direction = Quaternion.rotate(Quaternion(Vector3.up(), -block_half_angle), player_direction_flat)
-
-			QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(inner_left_direction) * 2 + Vector3.up(), color)
-			QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(inner_right_direction) * 2 + Vector3.up(), color)
-
-			local outer_left_direction = Quaternion.rotate(Quaternion(Vector3.up(), outer_block_half_angle), player_direction_flat)
-			local outer_right_direction = Quaternion.rotate(Quaternion(Vector3.up(), -outer_block_half_angle), player_direction_flat)
-
-			QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(outer_left_direction) * 2 + Vector3.up(), color)
-			QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(outer_right_direction) * 2 + Vector3.up(), color)
-		end
-	end
-end
-
-GenericStatusExtension._debug_draw_push_arcs = function (self, unit)
-	local player = self.player
-	local current_action = self._current_action
-
-	if player and current_action then
-		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
-		local player_position = POSITION_LOOKUP[unit]
-		local player_rotation = (first_person_extension and first_person_extension:current_rotation()) or Unit.world_rotation(unit, 0)
-		local player_direction = Vector3.normalize(Quaternion.forward(player_rotation))
-		local player_direction_flat = Vector3.flat(player_direction)
-		local buff_extension = self.buff_extension
-		local push_half_angle = math.rad(buff_extension:apply_buffs_to_value(current_action.push_angle or 90, "block_angle") * 0.5)
-		local outer_push_half_angle = math.rad(buff_extension:apply_buffs_to_value(current_action.outer_push_angle or 360, "block_angle") * 0.5)
-		local color = Color(255, 255, 255)
-		local inner_left_direction = Quaternion.rotate(Quaternion(Vector3.up(), push_half_angle), player_direction_flat)
-		local inner_right_direction = Quaternion.rotate(Quaternion(Vector3.up(), -push_half_angle), player_direction_flat)
-
-		QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(inner_left_direction) * 2 + Vector3.up(), color)
-		QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(inner_right_direction) * 2 + Vector3.up(), color)
-
-		local outer_left_direction = Quaternion.rotate(Quaternion(Vector3.up(), outer_push_half_angle), player_direction_flat)
-		local outer_right_direction = Quaternion.rotate(Quaternion(Vector3.up(), -outer_push_half_angle), player_direction_flat)
-
-		QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(outer_left_direction) * 2 + Vector3.up(), color)
-		QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(outer_right_direction) * 2 + Vector3.up(), color)
 	end
 end
 
@@ -1124,6 +1062,10 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 		end
 
 		buff_extension:trigger_procs("on_knocked_down")
+
+		if self._intoxication_level < 0 then
+			self._intoxication_level = -1
+		end
 	else
 		health_extension:reset()
 
@@ -1673,28 +1615,22 @@ GenericStatusExtension.set_grabbed_by_corruptor = function (self, grabbed_status
 	self.grabbed_by_corruptor = is_grabbed
 	self.corruptor_unit = grabber_unit
 	self.corruptor_status = grabbed_status
-	local locomotion = ScriptUnit.extension(unit, "locomotion_system")
 
 	self:set_outline_incapacitated(is_grabbed or self:is_disabled(), grabber_unit, is_grabbed)
 
+	local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
+
 	if grabbed_status == "chaos_corruptor_grabbed" then
-		local inventory_extension = ScriptUnit.has_extension(unit, "inventory_system")
-		local career_extension = ScriptUnit.has_extension(unit, "career_system")
-
-		CharacterStateHelper.stop_weapon_actions(inventory_extension, "grabbed")
-		CharacterStateHelper.stop_career_abilities(career_extension, "grabbed")
-		Unit.animation_event(unit, "to_corruptor")
-
 		if not self.is_husk then
-			locomotion:set_wanted_velocity(Vector3.zero())
+			locomotion_extension:set_wanted_velocity(Vector3.zero())
 		end
 
 		SurroundingAwareSystem.add_event(unit, "grabbed", DialogueSettings.grabbed_broadcast_range, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)
 		Managers.music:trigger_event("enemy_pack_master_grabbed_stinger")
 	elseif grabbed_status == "chaos_corruptor_released" then
 		if not self.is_husk then
-			locomotion:set_wanted_velocity(Vector3.zero())
-			locomotion:move_to_non_intersecting_position()
+			locomotion_extension:set_wanted_velocity(Vector3.zero())
+			locomotion_extension:move_to_non_intersecting_position()
 		end
 
 		SurroundingAwareSystem.add_event(unit, "un_grabbed", DialogueSettings.grabbed_broadcast_range, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)

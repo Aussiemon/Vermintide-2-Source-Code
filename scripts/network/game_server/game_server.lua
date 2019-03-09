@@ -22,6 +22,7 @@ GameServer.init = function (self, network_options, server_name)
 	self._game_server = GameServerInternal.init_server(network_options, server_name)
 	self._data_table = {}
 	self._server_name = server_name
+	self._network_initialized = false
 end
 
 GameServer.destroy = function (self)
@@ -156,6 +157,14 @@ end
 
 GameServer.server_name = function (self)
 	return self._server_name
+end
+
+GameServer.set_network_initialized = function (self, initialized)
+	self._network_initialized = initialized
+end
+
+GameServer.network_initialized = function (self)
+	return self._network_initialized
 end
 
 return

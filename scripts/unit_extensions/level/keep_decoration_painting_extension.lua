@@ -19,6 +19,7 @@ KeepDecorationPaintingExtension.init = function (self, extension_init_context, u
 	self._start_hidden = Unit.get_data(unit, "painting_data", "start_hidden")
 	self._slow_update_count = 0
 	self._slot = nil
+	self._loading_painting_material = nil
 	local settings_key = Unit.get_data(unit, "decoration_settings_key")
 	local settings = KeepDecorationSettings[settings_key]
 	self._settings = settings
@@ -32,7 +33,7 @@ end
 KeepDecorationPaintingExtension.destroy = function (self)
 	local unit = self._painting_unit
 
-	if unit then
+	if Unit.alive(unit) then
 		World.destroy_unit(self._world, unit)
 	end
 
@@ -64,12 +65,14 @@ KeepDecorationPaintingExtension.extensions_ready = function (self)
 		return
 	end
 
-	local selected_painting = self:get_selected_painting()
+	local selected_painting = (self._is_client_painting and "hidden") or self:get_selected_painting()
 	self._current_preview_painting = selected_painting
 
 	local function on_material_loaded()
 		if Managers.state.network:in_game_session() then
 			self:_create_game_object(selected_painting)
+
+			self._loading_painting_material = false
 		else
 			self._waiting_for_game_session = true
 		end
@@ -159,7 +162,7 @@ KeepDecorationPaintingExtension.distributed_update = function (self)
 				local painting = self._paintings_lookup[painting_index]
 				self._currently_set_painting = painting
 
-				self:painting_selected(painting)
+				self:_load_painting(painting)
 			end
 		end
 	end
@@ -187,7 +190,7 @@ KeepDecorationPaintingExtension.distributed_update = function (self)
 end
 
 KeepDecorationPaintingExtension.set_client_painting = function (self, painting)
-	self:painting_selected(painting)
+	self:_load_painting(painting)
 	self:_set_selected_painting(painting)
 
 	local go_id = self._go_id
@@ -327,8 +330,7 @@ KeepDecorationPaintingExtension._load_painting_material = function (self, name, 
 		package_name = "resource_packages/keep_paintings/" .. subpath
 	end
 
-	self._previous_package_name = self._current_package_name
-	self._current_package_name = package_name
+	local previous_package_name = self._current_package_name
 
 	local function cb_package_loaded()
 		self:_apply_material_by_sub_path(subpath)
@@ -337,17 +339,25 @@ KeepDecorationPaintingExtension._load_painting_material = function (self, name, 
 			cb_done()
 		end
 
-		if self._previous_package_name then
-			self:_unload_painting_material(self._previous_package_name)
+		self._loading_painting_material = false
+
+		if previous_package_name then
+			self:_unload_painting_material(previous_package_name)
 
 			self._previous_package_name = nil
 		end
 	end
 
-	if no_package_required then
-		cb_package_loaded()
-	else
-		Managers.package:load(package_name, reference_name, cb_package_loaded, true)
+	if not self._loading_painting_material or self._is_client_painting then
+		self._loading_painting_material = true
+		self._previous_package_name = self._current_package_name
+		self._current_package_name = package_name
+
+		if no_package_required then
+			cb_package_loaded()
+		else
+			Managers.package:load(package_name, reference_name, cb_package_loaded, true)
+		end
 	end
 end
 
@@ -361,8 +371,15 @@ end
 
 KeepDecorationPaintingExtension._unload_painting_material = function (self, package_name)
 	local reference_name = self._decoration_settings_key
+	local num_references = Managers.package:num_references(package_name)
 
-	Managers.package:unload(package_name, reference_name)
+	if num_references == 1 then
+		if Managers.package:can_unload(package_name) then
+			Managers.package:unload(package_name, reference_name)
+		end
+	else
+		Managers.package:unload(package_name, reference_name)
+	end
 end
 
 KeepDecorationPaintingExtension._create_game_object = function (self, painting)

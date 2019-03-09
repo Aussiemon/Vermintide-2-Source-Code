@@ -105,11 +105,9 @@ ExplosiveBarrelHealthExtension.add_damage = function (self, attacker_unit, damag
 	self:_sync_out_damage(attacker_unit, unit_id, is_level_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, hit_react_type, is_critical_strike, added_dot)
 
 	if did_damage and not self.ignited then
-		local unit = self.unit
 		local network_time = Managers.state.network:network_time()
 		local fuse_time = (Unit.has_data(unit, "fuse_time") and Unit.get_data(unit, "fuse_time")) or 4
 		local insta_explode_time = network_time + 0.2
-		local enemies_ignore_fuse = Unit.get_data(unit, "enemies_ignore_fuse")
 		local explode_time = network_time + fuse_time
 
 		Unit.flow_event(unit, "exploding_barrel_fuse_init")

@@ -992,12 +992,12 @@ BTConditions.cant_reach_ally = function (blackboard)
 		return false
 	end
 
+	local self_unit = blackboard.unit
 	local level_settings = LevelHelper:current_level_settings()
 	local disable_bot_main_path_teleport_check = level_settings.disable_bot_main_path_teleport_check
 	local is_forwards = nil
 
 	if not disable_bot_main_path_teleport_check then
-		local self_unit = blackboard.unit
 		local conflict_director = Managers.state.conflict
 		local self_segment = conflict_director:get_player_unit_segment(self_unit)
 		local target_segment = conflict_director:get_player_unit_segment(follow_unit)
@@ -1013,6 +1013,15 @@ BTConditions.cant_reach_ally = function (blackboard)
 		end
 
 		is_forwards = self_segment < target_segment
+	end
+
+	local bot_whereabouts_extension = ScriptUnit.extension(self_unit, "whereabouts_system")
+	local follow_unit_whereabouts_extension = ScriptUnit.extension(follow_unit, "whereabouts_system")
+	local self_position = bot_whereabouts_extension:last_position_on_navmesh()
+	local follow_unit_position = follow_unit_whereabouts_extension:last_position_on_navmesh()
+
+	if not self_position or not follow_unit_position then
+		return false
 	end
 
 	local t = Managers.time:time("game")
@@ -1031,11 +1040,11 @@ BTConditions.should_teleport = function (blackboard)
 		return false
 	end
 
+	local self_unit = blackboard.unit
 	local level_settings = LevelHelper:current_level_settings()
 	local disable_bot_main_path_teleport_check = level_settings.disable_bot_main_path_teleport_check
 
 	if not disable_bot_main_path_teleport_check then
-		local self_unit = blackboard.unit
 		local conflict_director = Managers.state.conflict
 		local self_segment = conflict_director:get_player_unit_segment(self_unit) or 1
 		local target_segment = conflict_director:get_player_unit_segment(follow_unit)
@@ -1051,10 +1060,15 @@ BTConditions.should_teleport = function (blackboard)
 		return false
 	end
 
-	local bot_locomotion_extension = blackboard.locomotion_extension
-	local follow_unit_locomotion_extension = ScriptUnit.extension(follow_unit, "locomotion_system")
-	local self_position = bot_locomotion_extension:last_position_on_navmesh()
-	local follow_unit_position = follow_unit_locomotion_extension:last_position_on_navmesh()
+	local bot_whereabouts_extension = ScriptUnit.extension(self_unit, "whereabouts_system")
+	local follow_unit_whereabouts_extension = ScriptUnit.extension(follow_unit, "whereabouts_system")
+	local self_position = bot_whereabouts_extension:last_position_on_navmesh()
+	local follow_unit_position = follow_unit_whereabouts_extension:last_position_on_navmesh()
+
+	if not self_position or not follow_unit_position then
+		return false
+	end
+
 	local distance_squared = Vector3.distance_squared(self_position, follow_unit_position)
 
 	return FOLLOW_TELEPORT_DISTANCE_SQ <= distance_squared

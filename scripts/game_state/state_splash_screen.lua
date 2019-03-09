@@ -82,15 +82,25 @@ StateSplashScreen.on_enter = function (self)
 	self:load_packages()
 	Managers.transition:fade_out(1)
 
-	local args = {
-		Application.argv()
-	}
+	if LEVEL_EDITOR_TEST then
+		self._skip_splash = true
+	else
+		local skip_splash_screen_parameters = {
+			"auto_host_level",
+			"auto_join",
+			"skip_splash",
+			"attract_mode",
+			"benchmark_mode"
+		}
 
-	for _, parameter in pairs(args) do
-		if parameter == "-auto-host-level" or parameter == "-auto-join" or parameter == "-skip-splash" or parameter == "-attract-mode" or parameter == "-benchmark-mode" or LEVEL_EDITOR_TEST then
-			self._skip_splash = true
+		for i = 1, #skip_splash_screen_parameters, 1 do
+			local parameter = skip_splash_screen_parameters[i]
 
-			break
+			if Development.parameter(parameter) then
+				self._skip_splash = true
+
+				break
+			end
 		end
 	end
 

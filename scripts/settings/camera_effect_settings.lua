@@ -1259,6 +1259,28 @@ CameraEffectSettings = {
 			duration = 8,
 			fade_in = 4,
 			octaves = 8
+		},
+		intoxication = {
+			persistance = 0.6,
+			fade_out = 1.5,
+			amplitude = 7,
+			duration = 2.5,
+			fade_in = 0.5,
+			octaves = 3
+		},
+		hungover = {
+			persistance = 0.5,
+			fade_out = 2.5,
+			amplitude = 12,
+			duration = 1,
+			fade_in = 0.5,
+			octaves = 5
+		},
+		intoxication_after_effect = {
+			persistance = 0.6,
+			fade_in = 1.5,
+			amplitude = 4,
+			octaves = 2
 		}
 	}
 }

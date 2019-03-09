@@ -44,6 +44,10 @@ TwitchManager.init = function (self)
 	self._debug_vote_timer = 0.25
 end
 
+TwitchManager.game_mode_supported = function (self, game_mode)
+	return TwitchSettings.supported_game_modes[game_mode]
+end
+
 TwitchManager.stream_type = function (self)
 	return "twitch"
 end
@@ -74,7 +78,9 @@ TwitchManager.connect = function (self, twitch_user_name, optional_connection_fa
 	fassert(twitch_user_name, "[TwitchManager] You need to provide a user name to connect")
 
 	local url = "https://api.twitch.tv/kraken/users?login=" .. twitch_user_name
-	local options = {}
+	local options = {
+		[Managers.curl._curl.OPT_SSL_OPTIONS] = Managers.curl._curl.SSLOPT_NO_REVOKE
+	}
 	self._connecting = true
 	self._connection_failure_callback = optional_connection_failure_callback
 	self._connection_success_callback = optional_connection_success_callback

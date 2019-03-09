@@ -19,9 +19,9 @@ require("scripts/settings/terror_event_blueprints")
 require("scripts/unit_extensions/generic/interactions")
 require("scripts/settings/survival_settings")
 
-if PLATFORM == "win32" then
+if PLATFORM ~= "xb1" then
 	require("scripts/settings/twitch_settings")
-elseif PLATFORM == "xb1" then
+else
 	require("scripts/settings/mixer_settings")
 end
 
@@ -342,6 +342,7 @@ NetworkLookup.husks = {
 	"units/weapons/enemy/wpn_chaos_plague_vortex/wpn_chaos_plague_vortex",
 	"units/beings/critters/chr_critter_pig/chr_critter_pig",
 	"units/beings/critters/chr_critter_common_rat/chr_critter_common_rat",
+	"units/weapons/player/wpn_bullet_temp/wpn_bullet_temp_3ps",
 	"units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_3ps",
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1_3ps",
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t2_3ps",
@@ -437,7 +438,8 @@ NetworkLookup.husks = {
 	"units/gameplay/timed_door_base_02/timed_door_stick_pup",
 	"units/gameplay/timed_door_base_02/timed_door_base_02_handle",
 	"units/gameplay/line_of_sight_blocker/hemisphere_los_blocker",
-	"units/gameplay/portal_blob/portalblob"
+	"units/gameplay/portal_blob/portalblob",
+	"units/weapons/player/pup_ale/pup_ale"
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -445,11 +447,11 @@ for _, dlc in pairs(DLCSettings) do
 
 	if husk_lookup then
 		for i = 1, #husk_lookup, 1 do
-			local husk_name = husk_lookup[i]
+			local husk_unit = husk_lookup[i]
 
-			if not table.contains(NetworkLookup.husks, husk_name) then
-				NetworkLookup.husks[#NetworkLookup.husks + 1] = husk_name
-			end
+			assert(not NetworkLookup.anims[husk_unit], "The husk unit [\"%s\"] from DLC [\"%s\"] already exists in NetworkLookup.husks!")
+
+			NetworkLookup.husks[#NetworkLookup.husks + 1] = husk_unit
 		end
 	end
 end
@@ -669,9 +671,9 @@ for _, breed_data in pairs(BreedActions) do
 				local health_based_stagger_data = action_data.health_based_stagger_anims
 
 				for _, data in pairs(health_based_stagger_data) do
-					local anims_table = data.stagger_anims
+					local health_stagger_anims_table = data.stagger_anims
 
-					for _, dir_table in ipairs(anims_table) do
+					for _, dir_table in ipairs(health_stagger_anims_table) do
 						for _, anims in pairs(dir_table) do
 							for _, anim in ipairs(anims) do
 								anims_temp[anim] = anim
@@ -931,14 +933,13 @@ NetworkLookup.buff_weapon_types = {
 NetworkLookup.buff_templates = create_lookup({
 	"n/a"
 }, BuffTemplates)
+NetworkLookup.group_buff_templates = create_lookup({
+	"n/a"
+}, GroupBuffTemplates)
 NetworkLookup.buff_data_types = {
 	"n/a",
 	"variable_value",
 	"external_optional_multiplier"
-}
-NetworkLookup.group_buff_templates = {
-	"grimoire",
-	"blightreaper_curse"
 }
 NetworkLookup.proc_events = {
 	"on_reload",
@@ -1617,7 +1618,7 @@ for _, state in ipairs(music_lookups) do
 	music_group_states[state] = true
 end
 
-for level, settings in pairs(LevelSettings) do
+for _, settings in pairs(LevelSettings) do
 	if type(settings) == "table" then
 		for i, location in ipairs(settings.locations) do
 			NetworkLookup.locations[#NetworkLookup.locations + 1] = location

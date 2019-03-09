@@ -20,6 +20,7 @@ PickupUnitExtension.init = function (self, extension_init_context, unit, extensi
 	Unit.set_data(unit, "interaction_data", "interaction_length", Unit.get_data(unit, "interaction_data", "interaction_length") or 0)
 	Unit.set_data(unit, "interaction_data", "interaction_type", "pickup_object")
 	Unit.set_data(unit, "interaction_data", "only_once", pickup_settings.only_once)
+	Unit.set_data(unit, "interaction_data", "individual_pickup", pickup_settings.individual_pickup)
 
 	self.can_interact_time = Managers.time:time("game") + 1
 

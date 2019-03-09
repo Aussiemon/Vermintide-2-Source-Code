@@ -413,22 +413,6 @@ UtilityConsiderations = {
 			}
 		}
 	},
-	player_bot_default_shoot = {
-		distance_to_target = {
-			max_value = 20,
-			blackboard_input = "target_dist",
-			spline = {
-				0,
-				0,
-				0.04,
-				0,
-				0.2,
-				1,
-				1,
-				1
-			}
-		}
-	},
 	marauder_running_attack = {
 		distance_to_target = {
 			max_value = 5,

@@ -36,8 +36,8 @@ BTBotTeleportToAllyAction.run = function (self, unit, blackboard, t, dt)
 		check_direction = -Quaternion.forward(rotation)
 	end
 
-	local follow_unit_locomotion_extension = ScriptUnit.extension(follow_unit, "locomotion_system")
-	local from_position = follow_unit_locomotion_extension:last_position_on_navmesh()
+	local follow_unit_whereabouts_extension = ScriptUnit.extension(follow_unit, "whereabouts_system")
+	local from_position = follow_unit_whereabouts_extension:last_position_on_navmesh()
 	local best_position = nil
 	local best_distance_sq = -math.huge
 	local angle_sign = 1

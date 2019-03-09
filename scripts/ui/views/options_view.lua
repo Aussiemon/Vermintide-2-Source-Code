@@ -1659,6 +1659,12 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 		Application.set_max_frame_stacking(max_stacking_frames)
 	end
 
+	local hud_clamp_ui_scaling = user_settings.hud_clamp_ui_scaling
+
+	if hud_clamp_ui_scaling ~= nil then
+		UISettings.hud_clamp_ui_scaling = hud_clamp_ui_scaling
+	end
+
 	local use_custom_hud_scale = user_settings.use_custom_hud_scale
 
 	if use_custom_hud_scale ~= nil then
@@ -3948,6 +3954,60 @@ OptionsView.cb_vsync = function (self, content)
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.vsync = options_values[current_selection]
+end
+
+OptionsView.cb_hud_clamp_ui_scaling_setup = function (self)
+	local options = {
+		{
+			value = false,
+			text = Localize("menu_settings_off")
+		},
+		{
+			value = true,
+			text = Localize("menu_settings_on")
+		}
+	}
+
+	if not Application.user_setting("hud_clamp_ui_scaling") then
+		local hud_clamp_ui_scaling = false
+	end
+
+	if hud_clamp_ui_scaling then
+		slot3 = 2
+	else
+		local selection = 1
+	end
+
+	if DefaultUserSettings.get("user_settings", "hud_clamp_ui_scaling") then
+		slot4 = 2
+	else
+		local default_value = 1
+	end
+
+	return selection, options, "settings_menu_hud_clamp_ui_scaling", default_value
+end
+
+OptionsView.cb_hud_clamp_ui_scaling_saved_value = function (self, widget)
+	local use_custom_hud_scale = assigned(self.changed_user_settings.hud_clamp_ui_scaling, Application.user_setting("hud_clamp_ui_scaling"))
+	slot3 = widget.content
+
+	if use_custom_hud_scale then
+		slot4 = 2
+	else
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
+end
+
+OptionsView.cb_hud_clamp_ui_scaling = function (self, content)
+	local options_values = content.options_values
+	local current_selection = content.current_selection
+	local value = options_values[current_selection]
+	self.changed_user_settings.hud_clamp_ui_scaling = value
+	local force_update = true
+
+	UPDATE_RESOLUTION_LOOKUP(force_update)
 end
 
 OptionsView.cb_hud_custom_scale_setup = function (self)
@@ -9898,6 +9958,63 @@ OptionsView.cb_keybind_changed = function (self, new_key, device, content)
 
 	self.changed_keymaps = true
 	content.selected_key = get_button_locale_name(device, new_key)
+end
+
+OptionsView.cb_toggle_profanity_check = function (self, content)
+	local options_values = content.options_values
+	local current_selection = content.current_selection
+	self.changed_user_settings.profanity_check = options_values[current_selection]
+end
+
+OptionsView.cb_toggle_profanity_check_setup = function (self)
+	local options = {
+		{
+			value = true,
+			text = Localize("menu_settings_on")
+		},
+		{
+			value = false,
+			text = Localize("menu_settings_off")
+		}
+	}
+	local default_value = DefaultUserSettings.get("user_settings", "profanity_check")
+	local enabled = Application.user_setting("profanity_check")
+
+	if enabled == nil then
+		enabled = default_value
+	end
+
+	if enabled then
+		slot4 = 1
+	else
+		local selection = 2
+	end
+
+	if default_value then
+		slot5 = 1
+	else
+		local default_option = 2
+	end
+
+	return selection, options, "menu_settings_profanity_check", default_option
+end
+
+OptionsView.cb_toggle_profanity_check_saved_value = function (self, widget)
+	local enabled = assigned(self.changed_user_settings.profanity_check, Application.user_setting("profanity_check"))
+
+	if enabled == nil then
+		enabled = DefaultUserSettings.get("user_settings", "profanity_check")
+	end
+
+	slot3 = widget.content
+
+	if enabled then
+		slot4 = 1
+	else
+		slot4 = 2
+	end
+
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_twitch_vote_time = function (self, content)

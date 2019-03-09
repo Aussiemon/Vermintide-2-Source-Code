@@ -141,8 +141,8 @@ Dots = {
 	end
 }
 DotTypeLookup = {
-	burning_dot = "burning_dot",
 	burning_3W_dot = "burning_dot",
+	burning_dot = "burning_dot",
 	corpse_explosion_default = "poison_dot",
 	arrow_poison_dot = "poison_dot",
 	burning_dot_fire_grenade = "burning_dot",
@@ -151,7 +151,6 @@ DotTypeLookup = {
 	burning_1W_dot = "burning_dot",
 	burning_flamethrower_dot = "burning_dot",
 	aoe_poison_dot = "poison_dot",
-	slow_grenade_slow = "slow_debuff",
 	chaos_zombie_explosion = "poison_dot"
 }
 local checked_templates = {
@@ -167,6 +166,9 @@ for _, item in pairs(ItemMasterList) do
 
 	if slot_type == "melee" or slot_type == "ranged" or slot_type == "grenade" or slot_type == "healthkit" or slot_type == "potion" then
 		local template_name = item.template or item.temporary_template
+
+		fassert(Weapons[template_name], "Weapon template [\"%s\"] does not exist!", template_name)
+
 		local careers = item.can_wield
 
 		for i = 1, #careers, 1 do
