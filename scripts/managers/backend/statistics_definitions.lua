@@ -413,17 +413,9 @@ player.holly_kills_es_dual_wield_hammer_sword = {
 	database_name = "holly_kills_es_dual_wield_hammer_sword",
 	source = "player_data"
 }
-player.crawl_ales_drunk_session = {
-	value = 0
-}
 player.crawl_total_ales_drunk = {
 	value = 0,
 	database_name = "crawl_total_ales_drunk",
-	source = "player_data"
-}
-player.crawl_drink_all_ale = {
-	value = 0,
-	database_name = "crawl_drink_all_ale",
 	source = "player_data"
 }
 local holly_lord_levels = {

@@ -4,9 +4,8 @@ StatisticsSystem = class(StatisticsSystem, ExtensionSystemBase)
 local extensions = {
 	"StatisticsExtension"
 }
-local RPCS = {
+local CLIENT_RPCS = {
 	"rpc_register_kill",
-	"rpc_register_ales_drunk",
 	"rpc_set_unsigned_number_session_stat"
 }
 
@@ -18,7 +17,7 @@ StatisticsSystem.init = function (self, context, name)
 	self.network_event_delegate = network_event_delegate
 
 	if not self.is_server then
-		network_event_delegate:register(self, unpack(RPCS))
+		network_event_delegate:register(self, unpack(CLIENT_RPCS))
 	end
 end
 
@@ -124,25 +123,6 @@ StatisticsSystem.rpc_register_kill = function (self, sender, victim_unit_go_id)
 	local statistics_db = self.statistics_db
 
 	StatisticsUtil.register_kill(victim_unit, TEMP_ARGS, statistics_db, false)
-end
-
-StatisticsSystem.rpc_register_ales_drunk = function (self, sender)
-	local player_manager = Managers.player
-	local local_player = player_manager:local_player()
-	local statistics_db = player_manager:statistics_db()
-	local stats_id = local_player:stats_id()
-
-	statistics_db:increment_stat(stats_id, "crawl_ales_drunk_session")
-
-	local amount_session = statistics_db:get_stat(stats_id, "crawl_ales_drunk_session")
-
-	if amount_session == QuestSettings.event_crawl_drink_all_ale_amount then
-		statistics_db:set_stat(stats_id, "crawl_drink_all_ale", 1)
-	end
-
-	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_register_ales_drunk", sender)
-	end
 end
 
 return

@@ -24,26 +24,12 @@ settings.pickups = {
 
 				buff_extension:add_buff("intoxication_base")
 
-				local network_manager = Managers.state.network
 				local player_manager = Managers.player
 				local local_player = player_manager:local_player()
 				local statistics_db = player_manager:statistics_db()
 				local stats_id = local_player:stats_id()
 
 				statistics_db:increment_stat(stats_id, "crawl_total_ales_drunk")
-				statistics_db:increment_stat(stats_id, "crawl_ales_drunk_session")
-
-				local amount_session = statistics_db:get_stat(stats_id, "crawl_ales_drunk_session")
-
-				if QuestSettings.event_crawl_drink_all_ale_amount <= amount_session then
-					statistics_db:set_stat(stats_id, "crawl_drink_all_ale", 1)
-				end
-
-				if is_server then
-					network_manager.network_transmit:send_rpc_clients("rpc_register_ales_drunk")
-				else
-					network_manager.network_transmit:send_rpc_server("rpc_register_ales_drunk")
-				end
 			end,
 			can_interact_func = function (interactor_unit, interactable_unit, data)
 				local buff_extension = ScriptUnit.extension(interactor_unit, "buff_system")
@@ -76,27 +62,6 @@ settings.pickups = {
 
 				buff_extension:add_buff("intoxication_base")
 				buff_extension:add_buff("hinder_career_ability")
-
-				local network_manager = Managers.state.network
-				local player_manager = Managers.player
-				local local_player = player_manager:local_player()
-				local statistics_db = player_manager:statistics_db()
-				local stats_id = local_player:stats_id()
-
-				statistics_db:increment_stat(stats_id, "crawl_total_ales_drunk")
-				statistics_db:increment_stat(stats_id, "crawl_ales_drunk_session")
-
-				local amount_session = statistics_db:get_stat(stats_id, "crawl_ales_drunk_session")
-
-				if QuestSettings.event_crawl_drink_all_ale_amount <= amount_session then
-					statistics_db:set_stat(stats_id, "crawl_drink_all_ale", 1)
-				end
-
-				if is_server then
-					network_manager.network_transmit:send_rpc_clients("rpc_register_ales_drunk")
-				else
-					network_manager.network_transmit:send_rpc_server("rpc_register_ales_drunk")
-				end
 			end,
 			can_interact_func = function (interactor_unit, interactable_unit, data)
 				local buff_extension = ScriptUnit.extension(interactor_unit, "buff_system")

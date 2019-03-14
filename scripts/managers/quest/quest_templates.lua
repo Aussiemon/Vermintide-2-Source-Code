@@ -770,7 +770,15 @@ quest_templates.quests.event_celebration_drink_all_ale_2019 = {
 	icon = "quest_book_event_celebration",
 	desc = "quest_celebration_02_desc",
 	completed = function (statistics_db, stats_id, quest_key)
-		return statistics_db:get_persistent_stat(stats_id, "crawl_drink_all_ale") > 0
+		return QuestSettings.event_crawl_drink_all_ale_amount <= statistics_db:get_persistent_stat(stats_id, "crawl_total_ales_drunk")
+	end,
+	progress = function (statistics_db, stats_id, quest_key)
+		local count = statistics_db:get_persistent_stat(stats_id, "crawl_total_ales_drunk")
+
+		return {
+			count,
+			QuestSettings.event_crawl_drink_all_ale_amount
+		}
 	end
 }
 quest_templates.quests.event_celebration_collect_painting_scraps_2019 = {
