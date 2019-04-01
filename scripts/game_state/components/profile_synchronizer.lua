@@ -325,7 +325,11 @@ function inventory_map_to_network_array(inventory_map, destination)
 end
 
 ProfileSynchronizer.rpc_server_mark_profile_used = function (self, sender, peer_id, local_player_id, previous_profile_index, profile_index)
-	fassert(not self._is_server or sender == IS_LOCAL_CALL, "rpc_server_mark_profile_used was sent by another peer when we're server!")
+	if self._is_server and sender ~= IS_LOCAL_CALL then
+		network_printf("[NETWORK] got rpc_server_mark_profile_used from " .. sender .. ", is_server:" .. tostring(self.is_server) .. " --> ignoring")
+
+		return
+	end
 
 	if peer_id == NO_PEER then
 		peer_id = nil

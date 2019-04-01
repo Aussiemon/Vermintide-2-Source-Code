@@ -57,6 +57,16 @@ DLCSettings = {
 			equipment = "scripts/settings/dlcs/mutators_batch_01/mutators_batch_01_equipment_settings",
 			buff = "scripts/settings/dlcs/mutators_batch_01/mutators_batch_01_buff_settings"
 		}
+	},
+	mutators_batch_02 = {
+		package_name = "resource_packages/dlcs/mutators_batch_02",
+		additional_settings = {
+			equipment = "scripts/settings/dlcs/mutators_batch_02/mutators_batch_02_equipment_settings",
+			ai = "scripts/settings/dlcs/mutators_batch_02/mutators_batch_02_ai_settings",
+			common = "scripts/settings/dlcs/mutators_batch_02/mutators_batch_02_common_settings",
+			buff = "scripts/settings/dlcs/mutators_batch_02/mutators_batch_02_buff_settings",
+			pickups = "scripts/settings/dlcs/mutators_batch_02/mutators_batch_02_pickups_settings"
+		}
 	}
 }
 

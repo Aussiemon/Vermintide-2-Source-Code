@@ -33,7 +33,7 @@ ActionFlamethrower.client_owner_start_action = function (self, new_action, t, ch
 	self.damage_timer = 1
 	self.stop_sound_event = new_action.stop_fire_event or self.stop_sound_event
 	self.muzzle_node_name = new_action.fx_node or "fx_muzzle"
-	self.vfx_stopped = false
+	self._fx_stopped = false
 	self.dot_check = new_action.dot_check or 0.95
 	self.spray_range = (new_action.spray_range and math.abs(POSITION_TWEAK) + new_action.spray_range) or SPRAY_RANGE
 	self.charge_level = (chain_action_data and chain_action_data.charge_level) or 1
@@ -68,36 +68,32 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 		local flamethrower_effect_3p_id = NetworkLookup.effects[flamethrower_effect_3p]
 
 		if not self.owner_player.bot_player then
-			self.flamethrower_effect = World.create_particles(world, flamethrower_effect, muzzle_position, muzzle_rotation)
+			self._flamethrower_effect = World.create_particles(world, flamethrower_effect, muzzle_position, muzzle_rotation)
 
-			World.link_particles(world, self.flamethrower_effect, weapon_unit, muzzle_node, Matrix4x4.identity(), "destroy")
+			World.link_particles(world, self._flamethrower_effect, weapon_unit, muzzle_node, Matrix4x4.identity(), "destroy")
 		end
 
 		if self.is_server or LEVEL_EDITOR_TEST then
-			self.network_transmit:send_rpc_clients("rpc_start_flamethrower", go_id, flamethrower_effect_3p_id)
-
-			if self.owner_player.bot_player then
-				self.network_transmit:queue_local_rpc("rpc_start_flamethrower", go_id, flamethrower_effect_3p_id)
-			end
+			self.network_transmit:send_rpc_all("rpc_start_flamethrower", go_id, flamethrower_effect_3p_id)
 		else
 			self.network_transmit:send_rpc_server("rpc_start_flamethrower", go_id, flamethrower_effect_3p_id)
 		end
 
-		if self.source_id then
+		if self._source_id then
 			local owner = self.owner_player
 			local is_husk = not owner.local_player
 
-			WwiseWorld.set_switch(self.wwise_world, "husk", (is_husk and "true") or "false", self.source_id)
-			WwiseWorld.trigger_event(self.wwise_world, self.stop_sound_event, self.source_id)
+			WwiseWorld.set_switch(self.wwise_world, "husk", (is_husk and "true") or "false", self._source_id)
+			WwiseWorld.trigger_event(self.wwise_world, self.stop_sound_event, self._source_id)
 		else
-			self.source_id = WwiseWorld.make_auto_source(self.wwise_world, self.weapon_unit)
+			self._source_id = WwiseWorld.make_auto_source(self.wwise_world, self.weapon_unit)
 		end
 
 		local owner = self.owner_player
 		local is_husk = not owner.local_player
 
-		WwiseWorld.set_switch(self.wwise_world, "husk", (is_husk and "true") or "false", self.source_id)
-		WwiseWorld.trigger_event(self.wwise_world, current_action.fire_sound_event, self.source_id)
+		WwiseWorld.set_switch(self.wwise_world, "husk", (is_husk and "true") or "false", self._source_id)
+		WwiseWorld.trigger_event(self.wwise_world, current_action.fire_sound_event, self._source_id)
 	end
 
 	self.overcharge_timer = self.overcharge_timer + dt
@@ -234,51 +230,51 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 	elseif self.max_flame_time <= t and self.state == "shooting" then
 		self.state = "shot"
 
-		if self.flamethrower_effect then
-			World.stop_spawning_particles(self.world, self.flamethrower_effect)
+		self:_stop_fx()
+	end
+end
 
-			self.flamethrower_effect = nil
-		end
+ActionFlamethrower._stop_fx = function (self)
+	if self._fx_stopped then
+		return
+	end
 
-		local go_id = self.unit_id
+	if self._flamethrower_effect then
+		World.stop_spawning_particles(self.world, self._flamethrower_effect)
 
-		if self.is_server or LEVEL_EDITOR_TEST then
-			self.network_transmit:send_rpc_clients("rpc_end_flamethrower", go_id)
+		self._flamethrower_effect = nil
+	end
 
-			if self.owner_player.bot_player then
-				self.network_transmit:queue_local_rpc("rpc_end_flamethrower", go_id)
-			end
-		else
-			self.network_transmit:send_rpc_server("rpc_end_flamethrower", go_id)
-		end
+	local go_id = self.unit_id
 
-		local source_id = self.source_id
+	if self.is_server or LEVEL_EDITOR_TEST then
+		self.network_transmit:send_rpc_all("rpc_end_flamethrower", go_id)
+	else
+		self.network_transmit:send_rpc_server("rpc_end_flamethrower", go_id)
+	end
 
-		if source_id then
-			local owner = self.owner_player
-			local is_husk = not owner.local_player
+	local source_id = self._source_id
 
-			WwiseWorld.set_switch(self.wwise_world, "husk", (is_husk and "true") or "false", source_id)
-			WwiseWorld.trigger_event(self.wwise_world, self.stop_sound_event, source_id)
+	if source_id then
+		local owner = self.owner_player
+		local is_husk = not owner.local_player
 
-			self.source_id = nil
-		end
+		WwiseWorld.set_switch(self.wwise_world, "husk", (is_husk and "true") or "false", source_id)
+		WwiseWorld.trigger_event(self.wwise_world, self.stop_sound_event, source_id)
 
-		local hud_extension = ScriptUnit.has_extension(self.owner_unit, "hud_system")
+		self._source_id = nil
+	end
 
-		if hud_extension then
-			hud_extension.show_critical_indication = false
-		end
+	local hud_extension = ScriptUnit.has_extension(self.owner_unit, "hud_system")
 
-		self.vfx_stopped = true
+	if hud_extension then
+		hud_extension.show_critical_indication = false
+	end
 
-		if self._rumble_effect_id then
-			Managers.state.controller_features:stop_effect(self._rumble_effect_id)
+	if self._rumble_effect_id then
+		Managers.state.controller_features:stop_effect(self._rumble_effect_id)
 
-			self._rumble_effect_id = nil
-		end
-
-		self.buff_extension:trigger_procs("on_spell_used", current_action)
+		self._rumble_effect_id = nil
 	end
 end
 
@@ -289,56 +285,14 @@ ActionFlamethrower.finish = function (self, reason)
 		self.buff_extension:trigger_procs("on_spell_used", self.current_action)
 	end
 
-	if not self.vfx_stopped then
-		if self.flamethrower_effect then
-			World.stop_spawning_particles(self.world, self.flamethrower_effect)
-
-			self.flamethrower_effect = nil
-		end
-
-		local go_id = self.unit_id
-
-		if self.is_server or LEVEL_EDITOR_TEST then
-			self.network_transmit:send_rpc_clients("rpc_end_flamethrower", go_id)
-
-			if self.owner_player.bot_player then
-				self.network_transmit:queue_local_rpc("rpc_end_flamethrower", go_id)
-			end
-		else
-			self.network_transmit:send_rpc_server("rpc_end_flamethrower", go_id)
-		end
-
-		local source_id = self.source_id
-
-		if source_id then
-			local owner = self.owner_player
-			local is_husk = not owner.local_player
-
-			WwiseWorld.set_switch(self.wwise_world, "husk", (is_husk and "true") or "false", source_id)
-			WwiseWorld.trigger_event(self.wwise_world, self.stop_sound_event, source_id)
-
-			self.source_id = nil
-		end
-
-		local hud_extension = ScriptUnit.has_extension(self.owner_unit, "hud_system")
-
-		if hud_extension then
-			hud_extension.show_critical_indication = false
-		end
-	end
-
-	if self._rumble_effect_id then
-		Managers.state.controller_features:stop_effect(self._rumble_effect_id)
-
-		self._rumble_effect_id = nil
-	end
+	self:_stop_fx()
 end
 
 ActionFlamethrower.destroy = function (self)
-	if self.flamethrower_effect then
-		World.destroy_particles(self.world, self.flamethrower_effect)
+	if self._flamethrower_effect then
+		World.destroy_particles(self.world, self._flamethrower_effect)
 
-		self.flamethrower_effect = nil
+		self._flamethrower_effect = nil
 	end
 end
 

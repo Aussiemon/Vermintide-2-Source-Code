@@ -34,9 +34,9 @@ WeaponSystem.init = function (self, entity_system_creation_context, system_name)
 	global_is_inside_inn = entity_system_creation_context.startup_data.level_key == "inn_level"
 	self.game = Managers.state.network:game()
 	self.network_manager = Managers.state.network
-	self.beam_particle_effects = {}
-	self.geiser_particle_effects = {}
-	self.flamethrower_particle_effects = {}
+	self._beam_particle_effects = {}
+	self._geiser_particle_effects = {}
+	self._flamethrower_particle_effects = {}
 end
 
 WeaponSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
@@ -215,12 +215,12 @@ end
 WeaponSystem.destroy = function (self)
 	local world = self.world
 
-	for _, data in pairs(self.beam_particle_effects) do
+	for _, data in pairs(self._beam_particle_effects) do
 		World.destroy_particles(world, data.beam_effect)
 		World.destroy_particles(world, data.beam_end_effect)
 	end
 
-	self.beam_particle_effects = nil
+	self._beam_particle_effects = nil
 
 	self.network_event_delegate:unregister(self)
 end
@@ -243,7 +243,7 @@ WeaponSystem.update_synced_beam_particle_effects = function (self)
 	local network_manager = self.network_manager
 	local physics_world = World.get_data(self.world, "physics_world")
 
-	for unit, data in pairs(self.beam_particle_effects) do
+	for unit, data in pairs(self._beam_particle_effects) do
 		local unit_id = network_manager:unit_game_object_id(unit)
 		local weapon_unit = data.weapon_unit
 
@@ -251,7 +251,7 @@ WeaponSystem.update_synced_beam_particle_effects = function (self)
 			World.destroy_particles(self.world, data.beam_effect)
 			World.destroy_particles(self.world, data.beam_end_effect)
 
-			self.beam_particle_effects[unit] = nil
+			self._beam_particle_effects[unit] = nil
 		else
 			local aim_direction = GameSession.game_object_field(game, unit_id, "aim_direction")
 			local aim_position = GameSession.game_object_field(game, unit_id, "aim_position")
@@ -319,13 +319,13 @@ WeaponSystem.update_synced_geiser_particle_effects = function (self, context, t)
 	local world = self.world
 	local physics_world = World.get_data(world, "physics_world")
 
-	for unit, data in pairs(self.geiser_particle_effects) do
+	for unit, data in pairs(self._geiser_particle_effects) do
 		local unit_id = network_manager:unit_game_object_id(unit)
 
 		if not unit_id then
 			World.destroy_particles(world, data.geiser_effect)
 
-			self.geiser_particle_effects[unit] = nil
+			self._geiser_particle_effects[unit] = nil
 		else
 			local charge_value = (t - data.time_to_shoot) / data.charge_time
 			local radius = math.min(data.max_radius, data.max_radius * charge_value + data.min_radius)
@@ -351,14 +351,14 @@ end
 WeaponSystem.update_synced_flamethrower_particle_effects = function (self)
 	local network_manager = self.network_manager
 
-	for unit, data in pairs(self.flamethrower_particle_effects) do
+	for unit, data in pairs(self._flamethrower_particle_effects) do
 		local unit_id = network_manager:unit_game_object_id(unit)
 		local weapon_unit = data.weapon_unit
 
 		if not unit_id or not Unit.alive(weapon_unit) then
 			World.stop_spawning_particles(self.world, data.flamethrower_effect)
 
-			self.flamethrower_particle_effects[unit] = nil
+			self._flamethrower_particle_effects[unit] = nil
 		else
 			local world = self.world
 			local muzzle_position = Unit.world_position(weapon_unit, Unit.node(weapon_unit, "fx_muzzle"))
@@ -484,7 +484,7 @@ WeaponSystem.rpc_start_beam = function (self, sender, unit_id, beam_effect_id, b
 		local equipment = inventory_extension:equipment()
 		local weapon_unit = equipment.right_hand_wielded_unit_3p or equipment.left_hand_wielded_unit_3p
 		local world = self.world
-		self.beam_particle_effects[unit] = {
+		self._beam_particle_effects[unit] = {
 			beam_effect = World.create_particles(world, beam_effect, Vector3.zero()),
 			beam_end_effect = World.create_particles(world, beam_end_effect, Vector3.zero()),
 			beam_effect_length_id = World.find_particles_variable(world, beam_effect, "trail_length"),
@@ -504,13 +504,13 @@ WeaponSystem.rpc_end_beam = function (self, sender, unit_id)
 	if not LEVEL_EDITOR_TEST then
 		local world = self.world
 		local unit = self.unit_storage:unit(unit_id)
-		local data = self.beam_particle_effects[unit]
+		local data = self._beam_particle_effects[unit]
 
 		if data then
 			World.destroy_particles(world, data.beam_effect)
 			World.destroy_particles(world, data.beam_end_effect)
 
-			self.beam_particle_effects[unit] = nil
+			self._beam_particle_effects[unit] = nil
 
 			if self.is_server then
 				self.network_transmit:send_rpc_clients_except("rpc_end_beam", sender, unit_id)
@@ -528,7 +528,7 @@ WeaponSystem.rpc_start_geiser = function (self, sender, unit_id, geiser_effect_i
 		local unit = self.unit_storage:unit(unit_id)
 		local geiser_effect_name = NetworkLookup.effects[geiser_effect_id]
 		local world = self.world
-		self.geiser_particle_effects[unit] = {
+		self._geiser_particle_effects[unit] = {
 			geiser_effect = World.create_particles(world, geiser_effect_name, Vector3.zero()),
 			geiser_effect_variable = World.find_particles_variable(world, geiser_effect_name, "charge_radius"),
 			geiser_effect_name = geiser_effect_name,
@@ -546,12 +546,12 @@ WeaponSystem.rpc_end_geiser = function (self, sender, unit_id)
 	if not LEVEL_EDITOR_TEST then
 		local world = self.world
 		local unit = self.unit_storage:unit(unit_id)
-		local data = self.geiser_particle_effects[unit]
+		local data = self._geiser_particle_effects[unit]
 
 		if data then
 			World.destroy_particles(world, data.geiser_effect)
 
-			self.geiser_particle_effects[unit] = nil
+			self._geiser_particle_effects[unit] = nil
 
 			if self.is_server then
 				self.network_transmit:send_rpc_clients_except("rpc_end_geiser", sender, unit_id)
@@ -570,14 +570,20 @@ WeaponSystem.rpc_start_flamethrower = function (self, sender, unit_id, flamethro
 		local muzzle_position = Unit.world_position(weapon_unit, Unit.node(weapon_unit, "fx_muzzle"))
 		local muzzle_rotation = Unit.world_rotation(weapon_unit, Unit.node(weapon_unit, "fx_muzzle"))
 		local world = self.world
-		self.flamethrower_particle_effects[unit] = {
-			flamethrower_effect = World.create_particles(world, flamethrower_effect, muzzle_position, muzzle_rotation),
-			flamethrower_effect_name = flamethrower_effect,
-			weapon_unit = weapon_unit
-		}
+		local current_data = self._flamethrower_particle_effects[unit]
 
-		if self.is_server then
-			self.network_transmit:send_rpc_clients_except("rpc_start_flamethrower", sender, unit_id, flamethrower_effect_id)
+		if current_data then
+			World.stop_spawning_particles(world, current_data.flamethrower_effect)
+
+			current_data.flamethrower_effect = World.create_particles(world, flamethrower_effect, muzzle_position, muzzle_rotation)
+			current_data.flamethrower_effect_name = flamethrower_effect
+			current_data.weapon_unit = weapon_unit
+		else
+			self._flamethrower_particle_effects[unit] = {
+				flamethrower_effect = World.create_particles(world, flamethrower_effect, muzzle_position, muzzle_rotation),
+				flamethrower_effect_name = flamethrower_effect,
+				weapon_unit = weapon_unit
+			}
 		end
 	end
 end
@@ -586,16 +592,12 @@ WeaponSystem.rpc_end_flamethrower = function (self, sender, unit_id)
 	if not LEVEL_EDITOR_TEST then
 		local world = self.world
 		local unit = self.unit_storage:unit(unit_id)
-		local data = self.flamethrower_particle_effects[unit]
+		local data = self._flamethrower_particle_effects[unit]
 
 		if data then
 			World.stop_spawning_particles(world, data.flamethrower_effect)
 
-			self.flamethrower_particle_effects[unit] = nil
-
-			if self.is_server then
-				self.network_transmit:send_rpc_clients_except("rpc_end_flamethrower", sender, unit_id)
-			end
+			self._flamethrower_particle_effects[unit] = nil
 		end
 	end
 end
@@ -649,7 +651,7 @@ WeaponSystem.rpc_play_fx = function (self, sender, vfx_array, sfx_array, positio
 end
 
 WeaponSystem.hot_join_sync = function (self, sender)
-	for unit, data in pairs(self.beam_particle_effects) do
+	for unit, data in pairs(self._beam_particle_effects) do
 		local unit_id = Managers.state.network:unit_game_object_id(unit)
 		local beam_effect_id = NetworkLookup.effects[data.beam_effect_name]
 		local beam_end_effect_id = NetworkLookup.effects[data.beam_end_effect_name]
@@ -657,7 +659,7 @@ WeaponSystem.hot_join_sync = function (self, sender)
 		RPC.rpc_start_beam(sender, unit_id, beam_effect_id, beam_end_effect_id, data.range)
 	end
 
-	for unit, data in pairs(self.geiser_particle_effects) do
+	for unit, data in pairs(self._geiser_particle_effects) do
 		local unit_id = Managers.state.network:unit_game_object_id(unit)
 		local geiser_effect_id = NetworkLookup.effects[data.geiser_effect_name]
 		local min_radius = data.min_radius
