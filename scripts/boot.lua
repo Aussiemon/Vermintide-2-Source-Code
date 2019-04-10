@@ -499,10 +499,17 @@ function render()
 end
 
 function on_close()
-	return Boot:on_close()
+	local close = Boot:on_close()
+
+	if close then
+		Application.force_silent_exit_policy()
+	end
+
+	return close
 end
 
 function shutdown()
+	Application.force_silent_exit_policy()
 	Boot:shutdown()
 end
 

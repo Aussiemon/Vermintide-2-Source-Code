@@ -91,12 +91,21 @@ LobbyInternal.get_lobby = function (lobby_browser, index)
 	local lobby_data_all = lobby_browser:data_all(index)
 	lobby_data_all.id = lobby_data.id
 
-	if lobby_data_all.Host then
-		lobby_data_all.host = lobby_data_all.Host
-		lobby_data_all.Host = nil
+	if lobby_data_all.Host or lobby_data_all.Difficulty then
+		print("")
+		print(debug.traceback())
+		print("")
+		table.dump(lobby_data_all, "Lobby Data", 2)
+		Crashify.print_exception("LobbyInternal.get_lobby", "Found Capitalized lobby data field (Difficulty or Host)")
 	end
 
-	return lobby_data_all
+	local formatted_lobby_data = {}
+
+	for key, value in pairs(lobby_data_all) do
+		formatted_lobby_data[string.lower(key)] = value
+	end
+
+	return formatted_lobby_data
 end
 
 LobbyInternal.lobby_browser = function ()

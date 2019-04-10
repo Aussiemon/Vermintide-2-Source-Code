@@ -179,6 +179,7 @@ local transitions = {
 		invert_button_data.display_name = (button_name == "menu_invert_controls" and "menu_non_invert_controls") or "menu_invert_controls"
 	end,
 	end_game = function (self)
+		Application.force_silent_exit_policy()
 		self.input_manager:block_device_except_service(nil, "keyboard", 1)
 		self.input_manager:block_device_except_service(nil, "mouse", 1)
 		self.input_manager:block_device_except_service(nil, "gamepad", 1)
