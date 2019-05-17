@@ -450,11 +450,16 @@ local event_quickplay_mappings = {
 		played_levels_quickplay = {}
 	}
 }
+local event_weekly_mappings = {
+	{
+		played_levels_weekly_event = {}
+	}
+}
 
 for i = 1, #UnlockableLevels, 1 do
 	local level_key = UnlockableLevels[i]
-	local complete_quickplay_missions_mapping = event_quickplay_mappings[1].played_levels_quickplay
-	complete_quickplay_missions_mapping[level_key] = true
+	event_quickplay_mappings[1].played_levels_quickplay[level_key] = true
+	event_weekly_mappings[1].played_levels_weekly_event[level_key] = true
 end
 
 quest_templates.quests.event_skulls_for_the_skull_throne = {
@@ -462,13 +467,13 @@ quest_templates.quests.event_skulls_for_the_skull_throne = {
 	icon = "quest_book_event_skull",
 	summary_icon = "achievement_symbol_book_event_skull",
 	desc = function ()
-		return string.format(Localize("quest_event_skull_2018_desc"), QuestSettings.event_skulls_for_the_skull_throne)
+		return string.format(Localize("quest_event_skull_2018_desc"), QuestSettings.event_skulls_quickplay)
 	end,
 	stat_mappings = event_quickplay_mappings,
 	completed = function (statistics_db, stats_id, quest_key)
 		local stat_name = QuestSettings.stat_mappings[quest_key][1]
 
-		return QuestSettings.event_skulls_for_the_skull_throne <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+		return QuestSettings.event_skulls_quickplay <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
 	end,
 	progress = function (statistics_db, stats_id, quest_key)
 		local stat_name = QuestSettings.stat_mappings[quest_key][1]
@@ -476,7 +481,7 @@ quest_templates.quests.event_skulls_for_the_skull_throne = {
 
 		return {
 			count,
-			QuestSettings.event_skulls_for_the_skull_throne
+			QuestSettings.event_skulls_quickplay
 		}
 	end
 }
@@ -800,6 +805,99 @@ quest_templates.quests.event_celebration_collect_painting_scraps_2019 = {
 		return {
 			count,
 			QuestSettings.event_celebration_collect_painting_scraps
+		}
+	end
+}
+quest_templates.quests.event_skulls_quickplay_2019 = {
+	name = "quest_event_skulls_quickplay_2019_name",
+	icon = "quest_book_event_skull",
+	summary_icon = "achievement_symbol_book_event_skull",
+	desc = function ()
+		return string.format(Localize("quest_event_skulls_quickplay_2019_desc"), QuestSettings.event_skulls_quickplay)
+	end,
+	stat_mappings = event_quickplay_mappings,
+	completed = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+		return QuestSettings.event_skulls_quickplay <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+	end,
+	progress = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+		local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+
+		return {
+			count,
+			QuestSettings.event_skulls_quickplay
+		}
+	end
+}
+quest_templates.quests.event_skulls_weekly_event_2019 = {
+	name = "quest_event_skulls_weekly_event_2019_name",
+	icon = "quest_book_event_skull",
+	summary_icon = "achievement_symbol_book_event_skull",
+	desc = "quest_event_skulls_weekly_event_2019_desc",
+	stat_mappings = event_weekly_mappings,
+	completed = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+		return statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) > 0
+	end
+}
+local event_skulls_collected_painting_scraps_2019_mappings = {
+	{
+		collected_painting_scraps_unlimited = true
+	}
+}
+quest_templates.quests.event_skulls_painting_scraps_2019 = {
+	name = "quest_event_skulls_painting_scraps_2019_name",
+	icon = "quest_book_event_skull",
+	summary_icon = "achievement_symbol_book_event_skull",
+	desc = function ()
+		return string.format(Localize("quest_event_skulls_painting_scraps_2019_desc"), QuestSettings.event_skulls_collect_painting_scraps)
+	end,
+	stat_mappings = event_skulls_collected_painting_scraps_2019_mappings,
+	completed = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+		return QuestSettings.event_skulls_collect_painting_scraps <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+	end,
+	progress = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+		local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+
+		return {
+			count,
+			QuestSettings.event_skulls_collect_painting_scraps
+		}
+	end
+}
+local event_skulls_warcamp_mapping = {
+	{
+		completed_levels = {
+			warcamp = true
+		}
+	}
+}
+quest_templates.quests.event_skulls_warcamp_2019 = {
+	name = "quest_event_skulls_warcamp_2019_name",
+	icon = "quest_book_event_skull",
+	summary_icon = "achievement_symbol_book_event_skull",
+	desc = "quest_event_skulls_warcamp_2019_desc",
+	stat_mappings = event_skulls_warcamp_mapping,
+	completed = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+		return statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) > 0
+	end,
+	requirements = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+		local defeated_bodvarr = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) > 0
+
+		return {
+			{
+				name = "mission_warcamp_kill_chieftain",
+				completed = defeated_bodvarr
+			}
 		}
 	end
 }

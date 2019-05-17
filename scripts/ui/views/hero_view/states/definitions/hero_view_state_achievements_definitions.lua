@@ -33,6 +33,7 @@ local achievement_scrollbar_size = {
 }
 local achievement_presentation_amount = 4
 local achievement_spacing = 40
+local quest_scrollbar_bottom_inset = 20
 local checklist_entry_size = {
 	achievement_entry_expand_size[2] / 2,
 	30
@@ -2579,6 +2580,7 @@ return {
 	achievement_window_size = achievement_window_size,
 	achievement_scrollbar_size = achievement_scrollbar_size,
 	achievement_presentation_amount = achievement_presentation_amount,
+	quest_scrollbar_bottom_inset = quest_scrollbar_bottom_inset,
 	widgets = widgets,
 	overlay_widgets = overlay_widgets,
 	summary_widgets = summary_widgets,

@@ -249,6 +249,7 @@ KeepDecorationPaintingExtension._set_selected_painting = function (self, paintin
 end
 
 KeepDecorationPaintingExtension._load_painting = function (self, painting, callback)
+	painting = painting or "hor_none"
 	local painting_data = Paintings[painting]
 	local painting_orientation = painting_data.orientation
 	local painting_frame = painting_data.frame

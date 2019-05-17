@@ -40,7 +40,7 @@ player.damage_dealt = {
 	sync_on_hot_join = true
 }
 local max_daily_quests = 3
-local max_event_quests = 3
+local max_event_quests = 4
 local max_weekly_quests = 6
 local num_quest_statistics_per_quest = 3
 player.quest_statistics = {}

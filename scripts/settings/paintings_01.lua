@@ -733,6 +733,51 @@ Paintings.ver_manaan01 = {
 		wood = true
 	}
 }
+Paintings.ver_warriors_of_chaos_page_35 = {
+	sound_event = "painting_warriors_of_chaos_page_35_description",
+	rarity = "promo",
+	display_name = "painting_warriors_of_chaos_page_35_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_warriors_of_chaos_page_35_description",
+	artist = "painting_warriors_of_chaos_page_35_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_warriors_of_chaos_page_30 = {
+	sound_event = "painting_warriors_of_chaos_page_30_description",
+	rarity = "promo",
+	display_name = "painting_warriors_of_chaos_page_30_name",
+	icon = "icon_painting_2",
+	frame = "gold",
+	description = "painting_warriors_of_chaos_page_30_description",
+	artist = "painting_warriors_of_chaos_page_30_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_daemons_of_chaos_8th_edition_army_book_page_034 = {
+	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_034_description",
+	rarity = "promo",
+	display_name = "painting_daemons_of_chaos_8th_edition_army_book_page_034_name",
+	icon = "icon_painting_2",
+	frame = "painted",
+	description = "painting_daemons_of_chaos_8th_edition_army_book_page_034_description",
+	artist = "painting_daemons_of_chaos_8th_edition_army_book_page_034_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
 DefaultPaintings = {
 	"hor_none",
 	"ver_none",
@@ -786,7 +831,10 @@ local painting_order = {
 	"ver_nurgle04",
 	"ver_marauder",
 	"ver_hugeldal01",
-	"ver_manaan01"
+	"ver_manaan01",
+	"ver_warriors_of_chaos_page_35",
+	"ver_warriors_of_chaos_page_30",
+	"ver_daemons_of_chaos_8th_edition_army_book_page_034"
 }
 PaintingOrder = PaintingOrder or {}
 

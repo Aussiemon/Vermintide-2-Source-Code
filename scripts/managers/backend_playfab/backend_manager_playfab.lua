@@ -593,6 +593,8 @@ BackendManagerPlayFab._reason_localize_key = function (self, reason)
 			return "backend_err_playfab_eac"
 		elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_COMMIT_TIMEOUT then
 			return "backend_err_request_timeout"
+		elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_UNSUPPORTED_VERSION_ERROR then
+			return "backend_err_unsupported_version"
 		else
 			return "backend_err_connecting"
 		end

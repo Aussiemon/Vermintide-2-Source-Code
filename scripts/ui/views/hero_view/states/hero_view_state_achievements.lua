@@ -21,6 +21,7 @@ local achievement_spacing = definitions.achievement_spacing
 local achievement_presentation_amount = definitions.achievement_presentation_amount
 local generic_input_actions = definitions.generic_input_actions
 local console_cursor_definition = definitions.console_cursor_definition
+local quest_scrollbar_bottom_inset = definitions.quest_scrollbar_bottom_inset
 local DO_RELOAD = false
 local CHECKLIST_ENTRY_HEIGHT = checklist_entry_size[2]
 local ACHIEVEMENT_DEFAULT_HEIGHT = achievement_entry_size[2]
@@ -905,7 +906,13 @@ HeroViewStateAchievements._get_achievement_entries_height = function (self, star
 		total_height = total_height + widget_height
 	end
 
-	return total_height
+	local scrollbar_bottom_inset = 0
+
+	if self._achievement_layout_type == "quest" then
+		scrollbar_bottom_inset = quest_scrollbar_bottom_inset
+	end
+
+	return total_height + scrollbar_bottom_inset
 end
 
 HeroViewStateAchievements._setup_scrollbar = function (self, height, optional_value)

@@ -38,7 +38,9 @@ QuestSettings = {
 	daily_complete_levels_hero_empire_soldier = 2,
 	daily_complete_levels_hero_bright_wizard = 2,
 	daily_score_headshots = 50,
-	event_skulls_for_the_skull_throne = 10,
+	event_skulls_quickplay = 8,
+	event_skulls_collect_painting_scraps = 8,
+	event_skulls_kill_critters = 8,
 	event_sonnstill_quickplay_levels = 10,
 	event_sonnstill_difficulty_levels = 10,
 	event_geheimnisnacht_quickplay_levels = 10,
@@ -208,6 +210,11 @@ QuestSettings.stat_mappings = {
 		"event_quest_3_stat_1",
 		"event_quest_3_stat_2",
 		"event_quest_3_stat_3"
+	},
+	event_quest_4 = {
+		"event_quest_4_stat_1",
+		"event_quest_4_stat_2",
+		"event_quest_4_stat_3"
 	},
 	weekly_quest_1 = {
 		"weekly_quest_1_stat_1",

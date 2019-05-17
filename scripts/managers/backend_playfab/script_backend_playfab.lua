@@ -114,8 +114,7 @@ ScriptBackendPlayFab._validate_version_cb = function (self, result)
 	if valid ~= true then
 		self._signed_in = false
 		self._signin_result_error = {
-			errorCode = BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_UNSUPPORTED_VERSION_ERROR,
-			errorMessage = ERROR_CODES[BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_UNSUPPORTED_VERSION_ERROR]
+			errorCode = BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_UNSUPPORTED_VERSION_ERROR
 		}
 	end
 end

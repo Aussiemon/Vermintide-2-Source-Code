@@ -3,7 +3,8 @@ settings.mutators = {
 	"escort",
 	"slayer_curse",
 	"explosive_loot_rats",
-	"leash"
+	"leash",
+	"bloodlust"
 }
 settings.husk_lookup = {
 	"units/weapons/player/pup_mutator_statue_01/pup_mutator_statue_01",
