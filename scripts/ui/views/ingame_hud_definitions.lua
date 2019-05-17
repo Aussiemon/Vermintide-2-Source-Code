@@ -42,6 +42,23 @@ local components = {
 		}
 	},
 	{
+		class_name = "RewardsPopupUI",
+		filename = "scripts/ui/hud_ui/rewards_popup_ui",
+		visibility_groups = {
+			"entering_mission",
+			"hero_selection_popup",
+			"mission_vote",
+			"game_mode_disable_hud",
+			"cutscene",
+			"realism",
+			"dead",
+			"alive"
+		},
+		validation_function = function (context, is_in_inn)
+			return is_in_inn
+		end
+	},
+	{
 		class_name = "IngameNewsTickerUI",
 		filename = "scripts/ui/hud_ui/ingame_news_ticker_ui",
 		visibility_groups = {

@@ -83,8 +83,10 @@ ItemHelper.unmark_sign_in_reward_as_new = function (reward_id)
 
 	local reward_items = new_sign_in_rewards[reward_id]
 
-	for _, item_backend_id in ipairs(reward_items) do
-		ItemHelper.mark_backend_id_as_new(item_backend_id)
+	if reward_items then
+		for _, item_backend_id in ipairs(reward_items) do
+			ItemHelper.unmark_backend_id_as_new(item_backend_id)
+		end
 	end
 
 	new_sign_in_rewards[reward_id] = nil
@@ -97,10 +99,16 @@ ItemHelper.has_new_sign_in_reward = function (reward_id)
 		return false
 	end
 
-	local new_sign_in_rewards = PlayerData.new_sign_in_rewards
-	local reward_items = new_sign_in_rewards[reward_id]
+	if reward_id then
+		local new_sign_in_rewards = PlayerData.new_sign_in_rewards
+		local reward_items = new_sign_in_rewards[reward_id]
 
-	return (reward_items and true) or false
+		return (reward_items and true) or false
+	else
+		local has_rewards = next(PlayerData.new_sign_in_rewards) ~= nil
+
+		return has_rewards
+	end
 end
 
 ItemHelper.mark_backend_id_as_new = function (backend_id)

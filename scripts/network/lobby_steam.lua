@@ -90,15 +90,6 @@ LobbyInternal.get_lobby = function (lobby_browser, index)
 	local lobby_data = lobby_browser:lobby(index)
 	local lobby_data_all = lobby_browser:data_all(index)
 	lobby_data_all.id = lobby_data.id
-
-	if lobby_data_all.Host or lobby_data_all.Difficulty then
-		print("")
-		print(debug.traceback())
-		print("")
-		table.dump(lobby_data_all, "Lobby Data", 2)
-		Crashify.print_exception("LobbyInternal.get_lobby", "Found Capitalized lobby data field (Difficulty or Host)")
-	end
-
 	local formatted_lobby_data = {}
 
 	for key, value in pairs(lobby_data_all) do

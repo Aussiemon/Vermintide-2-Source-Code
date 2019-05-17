@@ -2366,6 +2366,9 @@ Cosmetics = {
 	frame_0081 = {
 		icon = "unit_frame_07"
 	},
+	frame_0091 = {
+		icon = "unit_frame_02"
+	},
 	frame_dev = {
 		icon = "unit_frame_02"
 	},

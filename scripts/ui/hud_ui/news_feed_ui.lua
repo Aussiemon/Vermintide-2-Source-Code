@@ -183,9 +183,12 @@ end
 
 NewsFeedUI._add_entry = function (self, template)
 	local template_name = template.name
+	local hidden = template.hidden
 	local duration = template.duration
 	local cooldown = template.cooldown
 	local infinite = template.infinite
+	local title = template.title
+	local description = template.description
 	local unused_news_widgets = self._unused_news_widgets
 	local num_news = #self._active_news
 
@@ -193,18 +196,9 @@ NewsFeedUI._add_entry = function (self, template)
 		return false
 	end
 
-	local widget = table.remove(unused_news_widgets, 1)
-	local widget_content = widget.content
-	local widget_style = widget.style
-	local title = template.title
-	local description = template.description
-	widget_content.title_text = Localize(title)
-	widget_content.text = Localize(description)
-	widget_content.is_infinite = infinite
 	local data = {
 		state = "enter",
 		name = template_name,
-		widget = widget,
 		duration = duration,
 		cooldown = cooldown,
 		infinite = infinite,
@@ -214,13 +208,26 @@ NewsFeedUI._add_entry = function (self, template)
 	local active_news = self._active_news
 	active_news[#active_news + 1] = data
 	num_news = #self._active_news
-	local vertical_spacing = WIDGET_SIZE[2] + NEWS_SPACING
-	local widget_offset = widget.offset
 
-	if num_news > 1 then
-		widget_offset[2] = active_news[num_news - 1].widget.offset[2] - vertical_spacing
-	else
-		widget_offset[2] = 0
+	if not hidden then
+		local widget = table.remove(unused_news_widgets, 1)
+		local widget_content = widget.content
+		data.widget = widget
+		widget_content.title_text = Localize(title)
+		widget_content.text = Localize(description)
+		widget_content.is_infinite = infinite
+		local vertical_spacing = WIDGET_SIZE[2] + NEWS_SPACING
+		local widget_offset = widget.offset
+
+		if num_news > 1 then
+			widget_offset[2] = active_news[num_news - 1].widget.offset[2] - vertical_spacing
+		else
+			widget_offset[2] = 0
+		end
+	end
+
+	if template.added_func then
+		template.added_func()
 	end
 
 	return true
@@ -231,15 +238,17 @@ NewsFeedUI._update_alignment_duration = function (self)
 
 	for _, data in ipairs(self._active_news) do
 		local widget = data.widget
-		local widget_offset = widget.offset
-		local current_position = widget_offset[2]
-		data.current_position = current_position
+
+		if widget then
+			local widget_offset = widget.offset
+			local current_position = widget_offset[2]
+			data.current_position = current_position
+		end
 	end
 end
 
 NewsFeedUI._update_entries_expire_time = function (self, dt, t)
 	for index, data in ipairs(self._active_news) do
-		local widget = data.widget
 		local duration = data.duration
 
 		if duration then
@@ -270,9 +279,13 @@ NewsFeedUI._remove_entry = function (self, index)
 	local active_news = self._active_news
 	local data = table.remove(active_news, index)
 	local widget = data.widget
-	local unused_news_widgets = self._unused_news_widgets
 
-	table.insert(unused_news_widgets, #unused_news_widgets + 1, widget)
+	if widget then
+		local unused_news_widgets = self._unused_news_widgets
+
+		table.insert(unused_news_widgets, #unused_news_widgets + 1, widget)
+	end
+
 	self:_update_alignment_duration()
 
 	local name = data.name
@@ -307,11 +320,14 @@ NewsFeedUI._update_alignment = function (self, dt)
 
 	for _, data in ipairs(self._active_news) do
 		local widget = data.widget
-		local widget_offset = widget.offset
-		local current_position = data.current_position
-		local diff = current_position - widget_target_position
-		widget_offset[2] = current_position - diff * (1 - anim_progress)
-		widget_target_position = widget_target_position - vertical_spacing
+
+		if widget then
+			local widget_offset = widget.offset
+			local current_position = data.current_position
+			local diff = current_position - widget_target_position
+			widget_offset[2] = current_position - diff * (1 - anim_progress)
+			widget_target_position = widget_target_position - vertical_spacing
+		end
 	end
 end
 
@@ -351,7 +367,9 @@ NewsFeedUI._update_state_animations = function (self, dt)
 			if not delete then
 				local widget = data.widget
 
-				self:_animate_widget(widget, state, progress)
+				if widget then
+					self:_animate_widget(widget, state, progress)
+				end
 			else
 				data.delete = delete
 			end
@@ -448,7 +466,9 @@ NewsFeedUI.draw = function (self, dt)
 	for _, data in ipairs(self._active_news) do
 		local widget = data.widget
 
-		UIRenderer.draw_widget(ui_renderer, widget)
+		if widget then
+			UIRenderer.draw_widget(ui_renderer, widget)
+		end
 	end
 
 	UIRenderer.end_pass(ui_renderer)
