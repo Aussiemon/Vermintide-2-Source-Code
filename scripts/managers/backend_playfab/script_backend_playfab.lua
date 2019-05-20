@@ -81,6 +81,7 @@ ScriptBackendPlayFab.update_signin = function (self)
 end
 
 ScriptBackendPlayFab.login_request_cb = function (self, result)
+	self._signin_result = result
 	local info_result_payload = result.InfoResultPayload
 	local read_only_data = info_result_payload.UserReadOnlyData
 
@@ -89,11 +90,10 @@ ScriptBackendPlayFab.login_request_cb = function (self, result)
 	elseif not read_only_data.account_data_set_up then
 		self:_set_up_initial_account_data()
 	else
-		self._signed_in = true
-		self._signin_result = result
-
 		self:_validate_version()
 	end
+
+	self._signed_in = true
 end
 
 ScriptBackendPlayFab._validate_version = function (self)
