@@ -408,410 +408,284 @@ return function ()
 		}
 	})
 	define_rule({
-		response = "nfl_debrief_helmgart_military_01",
-		name = "nfl_debrief_helmgart_military_01",
+		name = "nik_keep_idle_banter_one_01",
+		response = "nik_keep_idle_banter_one_01",
 		criterias = {
 			{
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"heard_speak"
 			},
 			{
 				"query_context",
-				"item_tag",
+				"sound_event",
 				OP.EQ,
-				"nfl_debrief_helmgart_military_01"
+				"npp_keep_idle_banter_one_01"
 			},
 			{
 				"query_context",
-				"level_name",
+				"source_name",
 				OP.EQ,
-				"military"
+				"inn_keeper"
+			},
+			{
+				"user_memory",
+				"nik_keep_idle_banter_one_01",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"user_memory",
+				"nik_keep_idle_banter_one_01",
+				OP.ADD,
+				1
 			}
 		}
 	})
 	define_rule({
-		response = "nfl_debrief_catacombs_01",
-		name = "nfl_debrief_catacombs_01",
+		name = "nik_keep_idle_banter_two_01",
+		response = "nik_keep_idle_banter_two_01",
 		criterias = {
 			{
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"heard_speak"
 			},
 			{
 				"query_context",
-				"item_tag",
+				"sound_event",
 				OP.EQ,
-				"nfl_debrief_catacombs_01"
+				"npp_keep_idle_banter_two_01"
 			},
 			{
 				"query_context",
-				"level_name",
+				"source_name",
 				OP.EQ,
-				"catacombs"
+				"inn_keeper"
+			},
+			{
+				"user_memory",
+				"nik_keep_idle_banter_two_01",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"user_memory",
+				"nik_keep_idle_banter_two_01",
+				OP.ADD,
+				1
 			}
 		}
 	})
 	define_rule({
-		response = "nfl_debrief_mines_01",
-		name = "nfl_debrief_mines_01",
+		name = "nik_keep_idle_banter_three",
+		response = "nik_keep_idle_banter_three",
 		criterias = {
 			{
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"heard_speak"
 			},
 			{
 				"query_context",
-				"item_tag",
+				"sound_event",
 				OP.EQ,
-				"nfl_debrief_mines_01"
+				"npp_keep_idle_banter_three_01"
 			},
 			{
 				"query_context",
-				"level_name",
+				"source_name",
 				OP.EQ,
-				"mines"
+				"inn_keeper"
+			},
+			{
+				"user_memory",
+				"nik_keep_idle_banter_three",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"user_memory",
+				"nik_keep_idle_banter_three",
+				OP.ADD,
+				1
 			}
 		}
 	})
 	define_rule({
-		response = "nfl_debrief_ground_zero_01",
-		name = "nfl_debrief_ground_zero_01",
+		name = "nik_keep_idle_banter_four_01",
+		response = "nik_keep_idle_banter_four_01",
 		criterias = {
 			{
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"nik_keep_idle_banter_four"
 			},
 			{
-				"query_context",
-				"item_tag",
+				"user_memory",
+				"nik_keep_idle_banter_four",
 				OP.EQ,
-				"nfl_debrief_ground_zero_01"
-			},
+				0
+			}
+		},
+		on_done = {
 			{
-				"global_context",
-				"level_name",
-				OP.EQ,
-				"ground_zero"
+				"user_memory",
+				"nik_keep_idle_banter_four",
+				OP.ADD,
+				1
 			}
 		}
 	})
 	define_rule({
-		response = "nfl_debrief_elven_ruins_01",
-		name = "nfl_debrief_elven_ruins_01",
+		name = "nik_keep_idle_banter_four_02",
+		response = "nik_keep_idle_banter_four_02",
 		criterias = {
 			{
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"heard_speak"
 			},
 			{
 				"query_context",
-				"item_tag",
+				"sound_event",
 				OP.EQ,
-				"nfl_debrief_elven_ruins_01"
+				"npp_keep_idle_banter_four_01"
 			},
 			{
 				"query_context",
-				"level_name",
+				"source_name",
 				OP.EQ,
-				"elven_ruins"
+				"inn_keeper"
+			},
+			{
+				"user_memory",
+				"nik_keep_idle_banter_four_02",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"user_memory",
+				"nik_keep_idle_banter_four_02",
+				OP.ADD,
+				1
 			}
 		}
 	})
 	define_rule({
-		response = "nfl_debrief_bell_01",
-		name = "nfl_debrief_bell_01",
+		name = "nik_keep_idle_painter_01",
+		response = "nik_keep_idle_painter_01",
 		criterias = {
 			{
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"nik_keep_idle_painter_01"
 			},
 			{
-				"query_context",
-				"item_tag",
+				"user_memory",
+				"nik_keep_idle_painter_01",
 				OP.EQ,
-				"nfl_debrief_bell_01"
-			},
+				0
+			}
+		},
+		on_done = {
 			{
-				"query_context",
-				"level_name",
-				OP.EQ,
-				"bell"
+				"user_memory",
+				"nik_keep_idle_painter_01",
+				OP.ADD,
+				1
 			}
 		}
 	})
 	define_rule({
-		response = "nfl_debrief_fort_01",
-		name = "nfl_debrief_fort_01",
+		name = "nik_keep_idle_painter_02",
+		response = "nik_keep_idle_painter_02",
 		criterias = {
 			{
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"nik_keep_idle_painter_02"
 			},
 			{
-				"query_context",
-				"item_tag",
+				"user_memory",
+				"nik_keep_idle_painter_02",
 				OP.EQ,
-				"nfl_debrief_fort_01"
-			},
+				0
+			}
+		},
+		on_done = {
 			{
-				"query_context",
-				"level_name",
-				OP.EQ,
-				"fort"
+				"user_memory",
+				"nik_keep_idle_painter_02",
+				OP.ADD,
+				1
 			}
 		}
 	})
 	define_rule({
-		response = "nfl_debrief_skaven_stronghold_01",
-		name = "nfl_debrief_skaven_stronghold_01",
+		name = "nik_keep_idle_painter_03",
+		response = "nik_keep_idle_painter_03",
 		criterias = {
 			{
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"nik_keep_idle_painter_03"
 			},
 			{
-				"query_context",
-				"item_tag",
+				"user_memory",
+				"nik_keep_idle_painter_03",
 				OP.EQ,
-				"nfl_debrief_skaven_stronghold_01"
-			},
+				0
+			}
+		},
+		on_done = {
 			{
-				"query_context",
-				"level_name",
-				OP.EQ,
-				"skaven_stronghold"
+				"user_memory",
+				"nik_keep_idle_painter_03",
+				OP.ADD,
+				1
 			}
 		}
 	})
 	define_rule({
-		response = "nfl_debrief_farmland_01",
-		name = "nfl_debrief_farmland_01",
+		name = "nik_keep_idle_painter_04",
+		response = "nik_keep_idle_painter_04",
 		criterias = {
 			{
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"nik_keep_idle_painter_04"
 			},
 			{
-				"query_context",
-				"item_tag",
+				"user_memory",
+				"nik_keep_idle_painter_04",
 				OP.EQ,
-				"nfl_debrief_farmland_01"
-			},
-			{
-				"query_context",
-				"level_name",
-				OP.EQ,
-				"farmlands"
+				0
 			}
-		}
-	})
-	define_rule({
-		response = "nfl_debrief_ussingen_01",
-		name = "nfl_debrief_ussingen_01",
-		criterias = {
+		},
+		on_done = {
 			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"nfl_debrief_ussingen_01"
-			},
-			{
-				"query_context",
-				"level_name",
-				OP.EQ,
-				"ussingen"
-			}
-		}
-	})
-	define_rule({
-		response = "nfl_debrief_nurgle_01",
-		name = "nfl_debrief_nurgle_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"nfl_debrief_nurgle_01"
-			},
-			{
-				"query_context",
-				"level_name",
-				OP.EQ,
-				"nurgle"
-			}
-		}
-	})
-	define_rule({
-		response = "nfl_debrief_war_camp_01",
-		name = "nfl_debrief_war_camp_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"nfl_debrief_war_camp_01"
-			},
-			{
-				"query_context",
-				"level_name",
-				OP.EQ,
-				"warcamp"
-			}
-		}
-	})
-	define_rule({
-		response = "nfl_debrief_skittergate_01",
-		name = "nfl_debrief_skittergate_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"nfl_debrief_skittergate_01"
-			},
-			{
-				"query_context",
-				"level_name",
-				OP.EQ,
-				"skittergate"
-			}
-		}
-	})
-	define_rule({
-		response = "nfl_debrief_magnus_tower",
-		name = "nfl_debrief_magnus_tower",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"nfl_debrief_magnus_tower"
-			},
-			{
-				"query_context",
-				"level_name",
-				OP.EQ,
-				"magnus"
-			}
-		}
-	})
-	define_rule({
-		response = "nfl_debrief_cemetery",
-		name = "nfl_debrief_cemetery",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"nfl_debrief_cemetery"
-			},
-			{
-				"query_context",
-				"level_name",
-				OP.EQ,
-				"cemetery"
-			}
-		}
-	})
-	define_rule({
-		response = "nfl_debrief_forest_ambush",
-		name = "nfl_debrief_forest_ambush",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"nfl_debrief_forest_ambush"
-			},
-			{
-				"query_context",
-				"level_name",
-				OP.EQ,
-				"forest_ambush"
-			}
-		}
-	})
-	define_rule({
-		response = "nfl_debrief_plaza",
-		name = "nfl_debrief_plaza",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"nfl_debrief_plaza"
-			},
-			{
-				"query_context",
-				"level_name",
-				OP.EQ,
-				"plaza"
+				"user_memory",
+				"nik_keep_idle_painter_04",
+				OP.ADD,
+				1
 			}
 		}
 	})
@@ -11590,7 +11464,848 @@ return function ()
 			}
 		}
 	})
+	define_rule({
+		response = "nfl_debrief_helmgart_military_01",
+		name = "nfl_debrief_helmgart_military_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_debrief_helmgart_military_01"
+			},
+			{
+				"query_context",
+				"level_name",
+				OP.EQ,
+				"military"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_debrief_catacombs_01",
+		name = "nfl_debrief_catacombs_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_debrief_catacombs_01"
+			},
+			{
+				"query_context",
+				"level_name",
+				OP.EQ,
+				"catacombs"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_debrief_mines_01",
+		name = "nfl_debrief_mines_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_debrief_mines_01"
+			},
+			{
+				"query_context",
+				"level_name",
+				OP.EQ,
+				"mines"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_debrief_ground_zero_01",
+		name = "nfl_debrief_ground_zero_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_debrief_ground_zero_01"
+			},
+			{
+				"global_context",
+				"level_name",
+				OP.EQ,
+				"ground_zero"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_debrief_elven_ruins_01",
+		name = "nfl_debrief_elven_ruins_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_debrief_elven_ruins_01"
+			},
+			{
+				"query_context",
+				"level_name",
+				OP.EQ,
+				"elven_ruins"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_debrief_bell_01",
+		name = "nfl_debrief_bell_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_debrief_bell_01"
+			},
+			{
+				"query_context",
+				"level_name",
+				OP.EQ,
+				"bell"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_debrief_fort_01",
+		name = "nfl_debrief_fort_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_debrief_fort_01"
+			},
+			{
+				"query_context",
+				"level_name",
+				OP.EQ,
+				"fort"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_debrief_skaven_stronghold_01",
+		name = "nfl_debrief_skaven_stronghold_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_debrief_skaven_stronghold_01"
+			},
+			{
+				"query_context",
+				"level_name",
+				OP.EQ,
+				"skaven_stronghold"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_debrief_farmland_01",
+		name = "nfl_debrief_farmland_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_debrief_farmland_01"
+			},
+			{
+				"query_context",
+				"level_name",
+				OP.EQ,
+				"farmlands"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_debrief_ussingen_01",
+		name = "nfl_debrief_ussingen_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_debrief_ussingen_01"
+			},
+			{
+				"query_context",
+				"level_name",
+				OP.EQ,
+				"ussingen"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_debrief_nurgle_01",
+		name = "nfl_debrief_nurgle_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_debrief_nurgle_01"
+			},
+			{
+				"query_context",
+				"level_name",
+				OP.EQ,
+				"nurgle"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_debrief_war_camp_01",
+		name = "nfl_debrief_war_camp_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_debrief_war_camp_01"
+			},
+			{
+				"query_context",
+				"level_name",
+				OP.EQ,
+				"warcamp"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_debrief_skittergate_01",
+		name = "nfl_debrief_skittergate_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_debrief_skittergate_01"
+			},
+			{
+				"query_context",
+				"level_name",
+				OP.EQ,
+				"skittergate"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_debrief_magnus_tower",
+		name = "nfl_debrief_magnus_tower",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_debrief_magnus_tower"
+			},
+			{
+				"query_context",
+				"level_name",
+				OP.EQ,
+				"magnus"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_debrief_cemetery",
+		name = "nfl_debrief_cemetery",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_debrief_cemetery"
+			},
+			{
+				"query_context",
+				"level_name",
+				OP.EQ,
+				"cemetery"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_debrief_forest_ambush",
+		name = "nfl_debrief_forest_ambush",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_debrief_forest_ambush"
+			},
+			{
+				"query_context",
+				"level_name",
+				OP.EQ,
+				"forest_ambush"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_debrief_plaza",
+		name = "nfl_debrief_plaza",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_debrief_plaza"
+			},
+			{
+				"query_context",
+				"level_name",
+				OP.EQ,
+				"plaza"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_olesya_tutorial_dlc_no_skittergate_01",
+		name = "nfl_olesya_tutorial_dlc_no_skittergate_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_olesya_tutorial_dlc_no_skittergate_01"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_olesya_tutorial_dlc_skittergate_complete_01",
+		name = "nfl_olesya_tutorial_dlc_skittergate_complete_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_olesya_tutorial_dlc_no_skittergate_01"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_olesya_tutorial_weaves_02a",
+		name = "nfl_olesya_tutorial_weaves_02a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_olesya_tutorial_weaves_02a"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_olesya_tutorial_weaves_02b",
+		name = "nfl_olesya_tutorial_weaves_02b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_olesya_tutorial_weaves_02b"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_olesya_tutorial_weaves_02c",
+		name = "nfl_olesya_tutorial_weaves_02c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_olesya_tutorial_weaves_02c"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_olesya_tutorial_weaves_03",
+		name = "nfl_olesya_tutorial_weaves_03",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_olesya_tutorial_weaves_03"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_olesya_tutorial_weaves_04",
+		name = "nfl_olesya_tutorial_weaves_04",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_olesya_tutorial_weaves_04"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_olesya_tutorial_weaves_05",
+		name = "nfl_olesya_tutorial_weaves_05",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_olesya_tutorial_weaves_05"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_olesya_tutorial_weaves_06",
+		name = "nfl_olesya_tutorial_weaves_06",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_olesya_tutorial_weaves_06"
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_olesya_tutorial_weaves_07",
+		name = "nfl_olesya_tutorial_weaves_07",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_olesya_tutorial_weaves_07"
+			}
+		}
+	})
+	define_rule({
+		name = "nfl_olesya_tutorial_weaves_08",
+		response = "nfl_olesya_tutorial_weaves_08",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_olesya_tutorial_weaves_08"
+			},
+			{
+				"user_memory",
+				"nfl_olesya_tutorial_weaves_08",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"user_memory",
+				"nfl_olesya_tutorial_weaves_08",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "nfl_olesya_tutorial_weaves_08a",
+		response = "nfl_olesya_tutorial_weaves_08a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_olesya_tutorial_weaves_08a"
+			},
+			{
+				"user_memory",
+				"nfl_olesya_tutorial_weaves_08",
+				OP.EQ,
+				1
+			},
+			{
+				"user_memory",
+				"nfl_olesya_tutorial_weaves_08a",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"user_memory",
+				"nfl_olesya_tutorial_weaves_08a",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_olesya_tutorial_weaves_08b",
+		name = "nfl_olesya_tutorial_weaves_08b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_olesya_tutorial_weaves_08b"
+			},
+			{
+				"user_memory",
+				"nfl_olesya_tutorial_weaves_08",
+				OP.EQ,
+				1
+			},
+			{
+				"user_memory",
+				"nfl_olesya_tutorial_weaves_08a",
+				OP.EQ,
+				1
+			}
+		}
+	})
+	define_rule({
+		response = "nfl_olesya_weaves_explain",
+		name = "nfl_olesya_weaves_explain",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nfl_olesya_weaves_explain"
+			}
+		}
+	})
+	define_rule({
+		name = "npp_keep_idle_banter_one_01",
+		response = "npp_keep_idle_banter_one_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"npp_keep_idle_banter_one"
+			},
+			{
+				"user_memory",
+				"npp_keep_idle_banter_one",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"user_memory",
+				"npp_keep_idle_banter_one",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "npp_keep_idle_banter_two_01",
+		response = "npp_keep_idle_banter_two_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"npp_keep_idle_banter_two"
+			},
+			{
+				"user_memory",
+				"npp_keep_idle_banter_two",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"user_memory",
+				"npp_keep_idle_banter_two",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "npp_keep_idle_banter_three_01",
+		response = "npp_keep_idle_banter_three_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"npp_keep_idle_banter_three"
+			},
+			{
+				"user_memory",
+				"npp_keep_idle_banter_three",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"user_memory",
+				"npp_keep_idle_banter_three",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "npp_keep_idle_banter_four",
+		response = "npp_keep_idle_banter_four",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"nik_keep_idle_banter_four_01"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"catrinne"
+			},
+			{
+				"user_memory",
+				"nik_keep_idle_banter_three",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"user_memory",
+				"nik_keep_idle_banter_three",
+				OP.ADD,
+				1
+			}
+		}
+	})
 	add_dialogues({
+		nfl_olesya_tutorial_weaves_05 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "nfl_olesya_tutorial_weaves_05"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "nfl_olesya_tutorial_weaves_05"
+			}
+		},
 		pes_bw_backstory_seven_05 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -11629,14 +12344,14 @@ return function ()
 				[1.0] = "pwh_dr_future_two_01"
 			}
 		},
-		pwe_es_backstory_one_03 = {
+		pwe_es_backstory_one_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_es_backstory_one_03"
+				[1.0] = "pwe_es_backstory_one_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -11645,7 +12360,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwe_es_backstory_one_03"
+				[1.0] = "pwe_es_backstory_one_02"
 			}
 		},
 		pwh_bw_backstory_three_03 = {
@@ -11743,62 +12458,14 @@ return function ()
 				[1.0] = "pwe_wh_backstory_two_01"
 			}
 		},
-		nfl_debrief_forest_ambush = {
-			sound_events_n = 3,
-			randomize_indexes_n = 0,
-			face_animations_n = 3,
-			database = "hub_conversations",
-			category = "npc_talk",
-			dialogue_animations_n = 3,
-			sound_events = {
-				"nfl_holly_level_debriefing_01",
-				"nfl_holly_level_debriefing_02",
-				"nfl_holly_level_debriefing_03"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			localization_strings = {
-				"nfl_holly_level_debriefing_01",
-				"nfl_holly_level_debriefing_02",
-				"nfl_holly_level_debriefing_03"
-			},
-			randomize_indexes = {}
-		},
-		nfl_debrief_skittergate_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "npc_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "nfl_debrief_skittergate_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "nfl_debrief_skittergate_01"
-			}
-		},
-		pes_es_future_four_02 = {
+		pdr_dr_backstory_five_03 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_es_future_four_02"
+				[1.0] = "pdr_dr_backstory_five_03"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -11807,7 +12474,45 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pes_es_future_four_02"
+				[1.0] = "pdr_dr_backstory_five_03"
+			}
+		},
+		pes_we_future_two_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_we_future_two_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_we_future_two_01"
+			}
+		},
+		pwh_bw_backstory_three_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_bw_backstory_three_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_bw_backstory_three_02"
 			}
 		},
 		pes_we_backstory_five_01 = {
@@ -11865,6 +12570,25 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pdr_dr_backstory_six_02"
+			}
+		},
+		nfl_olesya_tutorial_weaves_08a = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "nfl_olesya_tutorial_weaves_08a"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "nfl_olesya_tutorial_weaves_08a"
 			}
 		},
 		pdr_dr_backstory_six_01 = {
@@ -12057,23 +12781,24 @@ return function ()
 				[1.0] = "pes_es_future_five_03"
 			}
 		},
-		pwh_es_backstory_three_01 = {
+		nik_keep_idle_banter_four_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
+			sound_distance = 30,
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_es_backstory_three_01"
+				[1.0] = "nik_keep_idle_banter_four_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwh_es_backstory_three_01"
+				[1.0] = "nik_keep_idle_banter_four_02"
 			}
 		},
 		pwe_we_backstory_two_02 = {
@@ -12169,6 +12894,26 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pes_es_future_three_01"
+			}
+		},
+		nik_keep_idle_banter_two_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			sound_distance = 30,
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "nik_keep_idle_banter_two_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "nik_keep_idle_banter_two_01"
 			}
 		},
 		pbw_dr_future_four_01 = {
@@ -12361,23 +13106,23 @@ return function ()
 				[1.0] = "pwh_wh_backstory_two_03"
 			}
 		},
-		pwh_we_backstory_four_01 = {
+		pbw_bw_backstory_two_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_we_backstory_four_01"
+				[1.0] = "pbw_bw_backstory_two_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwh_we_backstory_four_01"
+				[1.0] = "pbw_bw_backstory_two_02"
 			}
 		},
 		pbw_es_backstory_two_03 = {
@@ -12475,22 +13220,39 @@ return function ()
 				[1.0] = "pdr_dr_future_four_01"
 			}
 		},
-		nik_hub_long_waiting_01 = {
-			sound_events_n = 5,
-			randomize_indexes_n = 0,
-			face_animations_n = 5,
+		nfl_olesya_tutorial_dlc_skittergate_complete_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "npc_talk",
-			dialogue_animations_n = 5,
+			dialogue_animations_n = 1,
 			sound_events = {
-				"nik_hub_greeting_08",
-				"nik_hub_greeting_19",
-				"nik_hub_idle_01",
-				"nik_hub_idle_02",
-				"nik_hub_idle_05"
+				[1.0] = "nfl_olesya_tutorial_dlc_skittergate_complete_01"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "nfl_olesya_tutorial_dlc_skittergate_complete_01"
+			}
+		},
+		nik_callout_unready_saltzpyre = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"nik_callout_unready_saltzpyre_01",
+				"nik_callout_unready_saltzpyre_02",
+				"nik_callout_unready_saltzpyre_03",
+				"nik_callout_unready_saltzpyre_04"
+			},
+			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
@@ -12500,15 +13262,13 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral",
-				"face_neutral",
 				"face_neutral"
 			},
 			localization_strings = {
-				"nik_hub_greeting_08",
-				"nik_hub_greeting_19",
-				"nik_hub_idle_01",
-				"nik_hub_idle_02",
-				"nik_hub_idle_05"
+				"nik_callout_unready_saltzpyre_01",
+				"nik_callout_unready_saltzpyre_02",
+				"nik_callout_unready_saltzpyre_03",
+				"nik_callout_unready_saltzpyre_04"
 			},
 			randomize_indexes = {}
 		},
@@ -12843,30 +13603,24 @@ return function ()
 				[1.0] = "pbw_bw_future_two_01"
 			}
 		},
-		nik_intro_forge_reminder = {
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
+		pes_es_backstory_huntsman_five_04 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "hub_conversations",
-			category = "npc_talk",
-			dialogue_animations_n = 2,
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "nik_intro_forge_reminder_01",
-				[2.0] = "nik_intro_forge_reminder_02"
+				[1.0] = "pes_es_backstory_huntsman_five_04"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
+				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "nik_intro_forge_reminder_01",
-				[2.0] = "nik_intro_forge_reminder_02"
-			},
-			randomize_indexes = {}
+				[1.0] = "pes_es_backstory_huntsman_five_04"
+			}
 		},
 		pbw_bw_future_three_04 = {
 			sound_events_n = 1,
@@ -12982,6 +13736,91 @@ return function ()
 				[1.0] = "pdr_bw_future_three_03"
 			}
 		},
+		nfl_olesya_weaves_explain = {
+			sound_events_n = 17,
+			randomize_indexes_n = 0,
+			face_animations_n = 17,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 17,
+			sound_events = {
+				"nfl_olesya_weaves_explain_01",
+				"nfl_olesya_weaves_explain_02",
+				"nfl_olesya_weaves_explain_03",
+				"nfl_olesya_weaves_explain_04",
+				"nfl_olesya_weaves_explain_05",
+				"nfl_olesya_weaves_explain_06",
+				"nfl_olesya_weaves_explain_07",
+				"nfl_olesya_weaves_explain_08",
+				"nfl_olesya_weaves_explain_09",
+				"nfl_olesya_weaves_explain_10",
+				"nfl_olesya_weaves_explain_11",
+				"nfl_olesya_weaves_explain_12",
+				"nfl_olesya_weaves_explain_13",
+				"nfl_olesya_weaves_explain_14",
+				"nfl_olesya_weaves_explain_15",
+				"nfl_olesya_weaves_explain_16",
+				"nfl_olesya_weaves_explain_17"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"nfl_olesya_weaves_explain_01",
+				"nfl_olesya_weaves_explain_02",
+				"nfl_olesya_weaves_explain_03",
+				"nfl_olesya_weaves_explain_04",
+				"nfl_olesya_weaves_explain_05",
+				"nfl_olesya_weaves_explain_06",
+				"nfl_olesya_weaves_explain_07",
+				"nfl_olesya_weaves_explain_08",
+				"nfl_olesya_weaves_explain_09",
+				"nfl_olesya_weaves_explain_10",
+				"nfl_olesya_weaves_explain_11",
+				"nfl_olesya_weaves_explain_12",
+				"nfl_olesya_weaves_explain_13",
+				"nfl_olesya_weaves_explain_14",
+				"nfl_olesya_weaves_explain_15",
+				"nfl_olesya_weaves_explain_16",
+				"nfl_olesya_weaves_explain_17"
+			},
+			randomize_indexes = {}
+		},
 		pes_es_backstory_three_03 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -13029,6 +13868,25 @@ return function ()
 				"nik_inventory_reminder_03"
 			},
 			randomize_indexes = {}
+		},
+		nik_keep_idle_painter_04 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "nik_keep_idle_painter_04"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "nik_keep_idle_painter_04"
+			}
 		},
 		pwe_we_future_one_02 = {
 			sound_events_n = 1,
@@ -13249,14 +14107,14 @@ return function ()
 				[1.0] = "pes_es_future_five_01"
 			}
 		},
-		pes_es_future_four_01 = {
+		pes_dr_future_four_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_es_future_four_01"
+				[1.0] = "pes_dr_future_four_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -13265,7 +14123,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pes_es_future_four_01"
+				[1.0] = "pes_dr_future_four_02"
 			}
 		},
 		pes_bw_backstory_two_02 = {
@@ -13553,23 +14411,23 @@ return function ()
 				[1.0] = "pes_wh_backstory_four_03"
 			}
 		},
-		nfl_debrief_helmgart_military_01 = {
+		pbw_bw_future_three_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
-			category = "npc_talk",
+			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "nfl_debrief_helmgart_military_01"
+				[1.0] = "pbw_bw_future_three_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "nfl_debrief_helmgart_military_01"
+				[1.0] = "pbw_bw_future_three_02"
 			}
 		},
 		pdr_dr_future_four_02 = {
@@ -13591,23 +14449,23 @@ return function ()
 				[1.0] = "pdr_dr_future_four_02"
 			}
 		},
-		pwh_we_backstory_two_04 = {
+		nik_keep_idle_painter_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_we_backstory_two_04"
+				[1.0] = "nik_keep_idle_painter_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwh_we_backstory_two_04"
+				[1.0] = "nik_keep_idle_painter_02"
 			}
 		},
 		pes_wh_future_one_02 = {
@@ -13629,23 +14487,24 @@ return function ()
 				[1.0] = "pes_wh_future_one_02"
 			}
 		},
-		pes_dr_future_one_02 = {
+		nik_keep_idle_banter_four_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
+			sound_distance = 30,
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_dr_future_one_02"
+				[1.0] = "nik_keep_idle_banter_four_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pes_dr_future_one_02"
+				[1.0] = "nik_keep_idle_banter_four_01"
 			}
 		},
 		pwe_we_future_three_02 = {
@@ -13743,23 +14602,23 @@ return function ()
 				[1.0] = "pwh_wh_backstory_four_04"
 			}
 		},
-		nfl_debrief_fort_01 = {
+		pdr_wh_backstory_one_03 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
-			category = "npc_talk",
+			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "nfl_debrief_fort_01"
+				[1.0] = "pdr_wh_backstory_one_03"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "nfl_debrief_fort_01"
+				[1.0] = "pdr_wh_backstory_one_03"
 			}
 		},
 		pwe_we_future_five_05 = {
@@ -13781,14 +14640,15 @@ return function ()
 				[1.0] = "pwe_we_future_five_05"
 			}
 		},
-		pes_dr_backstory_two_01 = {
+		nik_keep_idle_banter_one_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
+			sound_distance = 30,
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_dr_backstory_two_01"
+				[1.0] = "nik_keep_idle_banter_one_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -13797,7 +14657,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pes_dr_backstory_two_01"
+				[1.0] = "nik_keep_idle_banter_one_01"
 			}
 		},
 		pwh_wh_backstory_four_03 = {
@@ -14332,23 +15192,23 @@ return function ()
 				[1.0] = "pes_wh_backstory_four_05"
 			}
 		},
-		pwe_dr_backstory_one_03 = {
+		nik_hub_welcome = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
-			category = "story_talk_keep",
+			category = "npc_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_dr_backstory_one_03"
+				[1.0] = "nik_hub_welcome_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwe_dr_backstory_one_03"
+				[1.0] = "nik_hub_welcome_01"
 			}
 		},
 		pbw_es_future_one_01 = {
@@ -14408,14 +15268,14 @@ return function ()
 				[1.0] = "pbw_we_backstory_one_01"
 			}
 		},
-		pwe_bw_future_four_02 = {
+		pwh_we_future_one_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_bw_future_four_02"
+				[1.0] = "pwh_we_future_one_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -14424,7 +15284,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwe_bw_future_four_02"
+				[1.0] = "pwh_we_future_one_02"
 			}
 		},
 		pdr_es_future_three_02 = {
@@ -14464,6 +15324,32 @@ return function ()
 			localization_strings = {
 				[1.0] = "pbw_bw_backstory_three_03"
 			}
+		},
+		nik_keep_idle_banter_three = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "hub_conversations",
+			sound_distance = 30,
+			category = "story_talk_keep",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "nik_keep_idle_banter_three_01",
+				[2.0] = "nik_keep_idle_banter_three_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "nik_keep_idle_banter_three_01",
+				[2.0] = "nik_keep_idle_banter_three_02"
+			},
+			randomize_indexes = {}
 		},
 		pes_bw_backstory_two_033 = {
 			sound_events_n = 1,
@@ -14598,6 +15484,26 @@ return function ()
 				[1.0] = "pbw_bw_future_five_03"
 			}
 		},
+		npp_keep_idle_banter_four = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			sound_distance = 30,
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "npp_keep_idle_banter_four_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "npp_keep_idle_banter_four_01"
+			}
+		},
 		pwe_bw_future_four_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -14615,6 +15521,45 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pwe_bw_future_four_01"
+			}
+		},
+		npp_keep_idle_banter_three_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			sound_distance = 30,
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "npp_keep_idle_banter_three_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "npp_keep_idle_banter_three_01"
+			}
+		},
+		nik_keep_idle_painter_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "nik_keep_idle_painter_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "nik_keep_idle_painter_03"
 			}
 		},
 		nik_hub_the_plan = {
@@ -14636,6 +15581,46 @@ return function ()
 				[1.0] = "nik_hub_the_plan_01"
 			}
 		},
+		npp_keep_idle_banter_two_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			sound_distance = 30,
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "npp_keep_idle_banter_two_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "npp_keep_idle_banter_two_01"
+			}
+		},
+		npp_keep_idle_banter_one_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			sound_distance = 30,
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "npp_keep_idle_banter_one_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "npp_keep_idle_banter_one_01"
+			}
+		},
 		pwe_bw_future_four_03 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -14653,6 +15638,63 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pwe_bw_future_four_03"
+			}
+		},
+		nfl_olesya_tutorial_weaves_08b = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "nfl_olesya_tutorial_weaves_08b"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "nfl_olesya_tutorial_weaves_08b"
+			}
+		},
+		nfl_olesya_tutorial_weaves_08 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "nfl_olesya_tutorial_weaves_08"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "nfl_olesya_tutorial_weaves_08"
+			}
+		},
+		pwe_we_backstory_five_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_we_backstory_five_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_we_backstory_five_03"
 			}
 		},
 		nik_greeting_evening = {
@@ -14722,6 +15764,25 @@ return function ()
 				[1.0] = "pbw_bw_backstory_six_03"
 			}
 		},
+		nfl_olesya_tutorial_weaves_06 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "nfl_olesya_tutorial_weaves_06"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "nfl_olesya_tutorial_weaves_06"
+			}
+		},
 		pwe_we_future_five_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -14779,6 +15840,35 @@ return function ()
 				[1.0] = "pwe_es_future_four_01"
 			}
 		},
+		nfl_debrief_forest_ambush = {
+			sound_events_n = 3,
+			randomize_indexes_n = 0,
+			face_animations_n = 3,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 3,
+			sound_events = {
+				"nfl_holly_level_debriefing_01",
+				"nfl_holly_level_debriefing_02",
+				"nfl_holly_level_debriefing_03"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"nfl_holly_level_debriefing_01",
+				"nfl_holly_level_debriefing_02",
+				"nfl_holly_level_debriefing_03"
+			},
+			randomize_indexes = {}
+		},
 		pbw_bw_future_eight_03 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -14798,6 +15888,25 @@ return function ()
 				[1.0] = "pbw_bw_future_eight_03"
 			}
 		},
+		nfl_olesya_tutorial_weaves_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "nfl_olesya_tutorial_weaves_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "nfl_olesya_tutorial_weaves_03"
+			}
+		},
 		pwh_wh_future_one_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -14815,6 +15924,25 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pwh_wh_future_one_01"
+			}
+		},
+		nfl_olesya_tutorial_weaves_02c = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "npc_talk_interrupt",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "nfl_olesya_tutorial_weaves_02c"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "nfl_olesya_tutorial_weaves_02c"
 			}
 		},
 		nik_greeting = {
@@ -14853,6 +15981,25 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pbw_bw_future_four_02"
+			}
+		},
+		pdr_dr_future_three_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_dr_future_three_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_dr_future_three_01"
 			}
 		},
 		pdr_we_backstory_three_03 = {
@@ -14903,14 +16050,14 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_es_future_one_02 = {
+		pwe_we_backstory_two_04 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pbw_es_future_one_02"
+				[1.0] = "pwe_we_backstory_two_04"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -14919,7 +16066,45 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pbw_es_future_one_02"
+				[1.0] = "pwe_we_backstory_two_04"
+			}
+		},
+		nfl_olesya_tutorial_weaves_02a = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "npc_talk_interrupt",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "nfl_olesya_tutorial_weaves_02a"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "nfl_olesya_tutorial_weaves_02a"
+			}
+		},
+		pwe_we_future_two_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_we_future_two_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_we_future_two_03"
 			}
 		},
 		pbw_bw_future_one_02 = {
@@ -14941,33 +16126,43 @@ return function ()
 				[1.0] = "pbw_bw_future_one_02"
 			}
 		},
-		pdr_we_backstory_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
+		nfl_debrief_plaza = {
+			sound_events_n = 3,
+			randomize_indexes_n = 0,
+			face_animations_n = 3,
 			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
+			category = "npc_talk",
+			dialogue_animations_n = 3,
 			sound_events = {
-				[1.0] = "pdr_we_backstory_three_01"
+				"nfl_holly_level_debriefing_01",
+				"nfl_holly_level_debriefing_02",
+				"nfl_holly_level_debriefing_03"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pdr_we_backstory_three_01"
-			}
+				"nfl_holly_level_debriefing_01",
+				"nfl_holly_level_debriefing_02",
+				"nfl_holly_level_debriefing_03"
+			},
+			randomize_indexes = {}
 		},
-		pes_dr_backstory_five_01 = {
+		nfl_olesya_tutorial_weaves_04 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
-			category = "story_talk_keep",
+			category = "npc_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_dr_backstory_five_01"
+				[1.0] = "nfl_olesya_tutorial_weaves_04"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -14976,7 +16171,316 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pes_dr_backstory_five_01"
+				[1.0] = "nfl_olesya_tutorial_weaves_04"
+			}
+		},
+		nfl_debrief_cemetery = {
+			sound_events_n = 3,
+			randomize_indexes_n = 0,
+			face_animations_n = 3,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 3,
+			sound_events = {
+				"nfl_holly_level_debriefing_01",
+				"nfl_holly_level_debriefing_02",
+				"nfl_holly_level_debriefing_03"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"nfl_holly_level_debriefing_01",
+				"nfl_holly_level_debriefing_02",
+				"nfl_holly_level_debriefing_03"
+			},
+			randomize_indexes = {}
+		},
+		nfl_debrief_skittergate_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "nfl_debrief_skittergate_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "nfl_debrief_skittergate_01"
+			}
+		},
+		pwh_wh_backstory_four_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_wh_backstory_four_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_wh_backstory_four_02"
+			}
+		},
+		pes_es_future_two_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_es_future_two_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_es_future_two_03"
+			}
+		},
+		nfl_debrief_ussingen_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "nfl_debrief_ussingen_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "nfl_debrief_ussingen_01"
+			}
+		},
+		nfl_debrief_fort_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "nfl_debrief_fort_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "nfl_debrief_fort_01"
+			}
+		},
+		nfl_debrief_elven_ruins_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "nfl_debrief_elven_ruins_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "nfl_debrief_elven_ruins_01"
+			}
+		},
+		pbw_dr_future_three_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_dr_future_three_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pbw_dr_future_three_02"
+			}
+		},
+		pbw_es_future_one_04 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_es_future_one_04"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pbw_es_future_one_04"
+			}
+		},
+		pwh_wh_backstory_one_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_wh_backstory_one_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_wh_backstory_one_02"
+			}
+		},
+		nfl_debrief_catacombs_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "nfl_debrief_catacombs_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "nfl_debrief_catacombs_01"
+			}
+		},
+		nfl_debrief_helmgart_military_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "nfl_debrief_helmgart_military_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "nfl_debrief_helmgart_military_01"
+			}
+		},
+		pwe_we_future_three_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_we_future_three_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_we_future_three_01"
+			}
+		},
+		nik_callout_unready_kerillian = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"nik_callout_unready_kerillian_01",
+				"nik_callout_unready_kerillian_02",
+				"nik_callout_unready_kerillian_03",
+				"nik_callout_unready_kerillian_04"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"nik_callout_unready_kerillian_01",
+				"nik_callout_unready_kerillian_02",
+				"nik_callout_unready_kerillian_03",
+				"nik_callout_unready_kerillian_04"
+			},
+			randomize_indexes = {}
+		},
+		pwh_bw_future_two_033 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_bw_future_two_033"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_bw_future_two_033"
 			}
 		},
 		pwe_wh_future_three_01 = {
@@ -15017,14 +16521,14 @@ return function ()
 				[1.0] = "pdr_wh_future_four_02"
 			}
 		},
-		pbw_dr_future_three_02 = {
+		pes_we_backstory_five_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pbw_dr_future_three_02"
+				[1.0] = "pes_we_backstory_five_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -15033,7 +16537,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pbw_dr_future_three_02"
+				[1.0] = "pes_we_backstory_five_02"
 			}
 		},
 		pwh_wh_future_four_01 = {
@@ -15055,14 +16559,14 @@ return function ()
 				[1.0] = "pwh_wh_future_four_01"
 			}
 		},
-		pwh_wh_backstory_one_02 = {
+		pwe_bw_backstory_four_03 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_wh_backstory_one_02"
+				[1.0] = "pwe_bw_backstory_four_03"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -15071,7 +16575,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwh_wh_backstory_one_02"
+				[1.0] = "pwe_bw_backstory_four_03"
 			}
 		},
 		pdr_wh_future_four_01 = {
@@ -15112,196 +16616,6 @@ return function ()
 				[1.0] = "pwh_es_future_five_02"
 			}
 		},
-		pwe_we_future_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_we_future_three_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pwe_we_future_three_01"
-			}
-		},
-		pes_es_future_five_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_es_future_five_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pes_es_future_five_02"
-			}
-		},
-		pwh_bw_future_two_033 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_bw_future_two_033"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pwh_bw_future_two_033"
-			}
-		},
-		pwe_we_future_two_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_we_future_two_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pwe_we_future_two_03"
-			}
-		},
-		pes_we_future_two_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_we_future_two_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pes_we_future_two_03"
-			}
-		},
-		pes_we_backstory_five_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_we_backstory_five_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pes_we_backstory_five_02"
-			}
-		},
-		pwe_we_future_two_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_we_future_two_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pwe_we_future_two_02"
-			}
-		},
-		pwe_bw_backstory_four_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_bw_backstory_four_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pwe_bw_backstory_four_03"
-			}
-		},
-		pes_we_future_two_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_we_future_two_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pes_we_future_two_02"
-			}
-		},
-		pes_we_backstory_three_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_we_backstory_three_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pes_we_backstory_three_03"
-			}
-		},
 		pbw_bw_future_one_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -15321,23 +16635,23 @@ return function ()
 				[1.0] = "pbw_bw_future_one_01"
 			}
 		},
-		pes_we_future_two_01 = {
+		pes_es_future_five_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_we_future_two_01"
+				[1.0] = "pes_es_future_five_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pes_we_future_two_01"
+				[1.0] = "pes_es_future_five_02"
 			}
 		},
 		pwe_wh_backstory_two_02 = {
@@ -15378,14 +16692,14 @@ return function ()
 				[1.0] = "pes_bw_backstory_seven_03"
 			}
 		},
-		pbw_dr_backstory_three_01 = {
+		nfl_olesya_tutorial_dlc_no_skittergate_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
-			category = "story_talk_keep",
+			category = "npc_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pbw_dr_backstory_three_01"
+				[1.0] = "nfl_olesya_tutorial_dlc_no_skittergate_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -15394,7 +16708,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pbw_dr_backstory_three_01"
+				[1.0] = "nfl_olesya_tutorial_dlc_no_skittergate_01"
 			}
 		},
 		pwh_we_backstory_four_02 = {
@@ -15416,14 +16730,14 @@ return function ()
 				[1.0] = "pwh_we_backstory_four_02"
 			}
 		},
-		pwe_bw_future_five_02 = {
+		pes_we_future_two_03 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_bw_future_five_02"
+				[1.0] = "pes_we_future_two_03"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -15432,17 +16746,17 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwe_bw_future_five_02"
+				[1.0] = "pes_we_future_two_03"
 			}
 		},
-		pbw_bw_future_five_02 = {
+		pwe_we_future_two_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pbw_bw_future_five_02"
+				[1.0] = "pwe_we_future_two_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -15451,17 +16765,17 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pbw_bw_future_five_02"
+				[1.0] = "pwe_we_future_two_02"
 			}
 		},
-		pwe_we_backstory_five_03 = {
+		pes_we_future_two_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_we_backstory_five_03"
+				[1.0] = "pes_we_future_two_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -15470,7 +16784,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwe_we_backstory_five_03"
+				[1.0] = "pes_we_future_two_02"
 			}
 		},
 		pwh_wh_future_one_02 = {
@@ -15492,14 +16806,14 @@ return function ()
 				[1.0] = "pwh_wh_future_one_02"
 			}
 		},
-		pdr_we_backstory_five_02 = {
+		pwe_es_backstory_one_03 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_we_backstory_five_02"
+				[1.0] = "pwe_es_backstory_one_03"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -15508,7 +16822,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pdr_we_backstory_five_02"
+				[1.0] = "pwe_es_backstory_one_03"
 			}
 		},
 		pdr_dr_future_five_03 = {
@@ -15530,23 +16844,23 @@ return function ()
 				[1.0] = "pdr_dr_future_five_03"
 			}
 		},
-		pwe_we_backstory_five_01 = {
+		nfl_olesya_tutorial_weaves_02b = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
-			category = "story_talk_keep",
+			category = "npc_talk_interrupt",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_we_backstory_five_01"
+				[1.0] = "nfl_olesya_tutorial_weaves_02b"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwe_we_backstory_five_01"
+				[1.0] = "nfl_olesya_tutorial_weaves_02b"
 			}
 		},
 		pwh_we_backstory_four_03 = {
@@ -15587,14 +16901,14 @@ return function ()
 				[1.0] = "pes_bw_future_one_02"
 			}
 		},
-		nik_hub_welcome = {
+		nik_keep_idle_painter_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
-			category = "npc_talk",
+			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "nik_hub_welcome_01"
+				[1.0] = "nik_keep_idle_painter_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -15603,17 +16917,17 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "nik_hub_welcome_01"
+				[1.0] = "nik_keep_idle_painter_01"
 			}
 		},
-		pdr_dr_future_five_05 = {
+		pwe_bw_future_five_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_dr_future_five_05"
+				[1.0] = "pwe_bw_future_five_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -15622,7 +16936,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pdr_dr_future_five_05"
+				[1.0] = "pwe_bw_future_five_02"
 			}
 		},
 		pes_es_future_two_02 = {
@@ -15644,14 +16958,14 @@ return function ()
 				[1.0] = "pes_es_future_two_02"
 			}
 		},
-		pwh_we_future_one_02 = {
+		pbw_bw_future_five_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_we_future_one_02"
+				[1.0] = "pbw_bw_future_five_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -15660,26 +16974,26 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwh_we_future_one_02"
+				[1.0] = "pbw_bw_future_five_02"
 			}
 		},
-		pdr_dr_future_five_02 = {
+		nfl_olesya_tutorial_weaves_07 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
-			category = "story_talk_keep",
+			category = "npc_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_dr_future_five_02"
+				[1.0] = "nfl_olesya_tutorial_weaves_07"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pdr_dr_future_five_02"
+				[1.0] = "nfl_olesya_tutorial_weaves_07"
 			}
 		},
 		pwh_we_future_one_01 = {
@@ -15720,14 +17034,14 @@ return function ()
 				[1.0] = "pwe_bw_backstory_four_02"
 			}
 		},
-		pwe_dr_future_five_02 = {
+		pdr_we_backstory_five_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_dr_future_five_02"
+				[1.0] = "pdr_we_backstory_five_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -15736,17 +17050,17 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwe_dr_future_five_02"
+				[1.0] = "pdr_we_backstory_five_02"
 			}
 		},
-		pdr_dr_future_five_01 = {
+		pwe_we_backstory_five_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_dr_future_five_01"
+				[1.0] = "pwe_we_backstory_five_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -15755,7 +17069,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pdr_dr_future_five_01"
+				[1.0] = "pwe_we_backstory_five_01"
 			}
 		},
 		pdr_dr_future_four_03 = {
@@ -15777,14 +17091,14 @@ return function ()
 				[1.0] = "pdr_dr_future_four_03"
 			}
 		},
-		pdr_dr_backstory_four_03 = {
+		pbw_bw_future_three_03 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_dr_backstory_four_03"
+				[1.0] = "pbw_bw_future_three_03"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -15793,7 +17107,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pdr_dr_backstory_four_03"
+				[1.0] = "pbw_bw_future_three_03"
 			}
 		},
 		pwh_wh_backstory_two_05 = {
@@ -15834,14 +17148,14 @@ return function ()
 				[1.0] = "pwh_we_backstory_two_03"
 			}
 		},
-		pwe_dr_backstory_four_03 = {
+		pdr_dr_future_five_05 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_dr_backstory_four_03"
+				[1.0] = "pdr_dr_future_five_05"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -15850,7 +17164,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwe_dr_backstory_four_03"
+				[1.0] = "pdr_dr_future_five_05"
 			}
 		},
 		pes_es_backstory_two_03 = {
@@ -15872,14 +17186,14 @@ return function ()
 				[1.0] = "pes_es_backstory_two_03"
 			}
 		},
-		pdr_dr_backstory_four_02 = {
+		pwe_dr_future_five_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_dr_backstory_four_02"
+				[1.0] = "pwe_dr_future_five_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -15888,7 +17202,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pdr_dr_backstory_four_02"
+				[1.0] = "pwe_dr_future_five_02"
 			}
 		},
 		pbw_bw_backstory_five_01 = {
@@ -15910,14 +17224,14 @@ return function ()
 				[1.0] = "pbw_bw_backstory_five_01"
 			}
 		},
-		pwh_es_backstory_three_02 = {
+		pdr_dr_future_five_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_es_backstory_three_02"
+				[1.0] = "pdr_dr_future_five_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -15926,7 +17240,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwh_es_backstory_three_02"
+				[1.0] = "pdr_dr_future_five_02"
 			}
 		},
 		pwe_dr_future_five_03 = {
@@ -15948,14 +17262,14 @@ return function ()
 				[1.0] = "pwe_dr_future_five_03"
 			}
 		},
-		pbw_es_future_one_04 = {
+		pes_dr_future_one_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pbw_es_future_one_04"
+				[1.0] = "pes_dr_future_one_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -15964,17 +17278,17 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pbw_es_future_one_04"
+				[1.0] = "pes_dr_future_one_01"
 			}
 		},
-		pwh_wh_future_two_03 = {
+		pdr_dr_future_five_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_wh_future_two_03"
+				[1.0] = "pdr_dr_future_five_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -15983,17 +17297,17 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwh_wh_future_two_03"
+				[1.0] = "pdr_dr_future_five_01"
 			}
 		},
-		pes_wh_future_two_03 = {
+		pdr_dr_backstory_four_03 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_wh_future_two_03"
+				[1.0] = "pdr_dr_backstory_four_03"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -16002,17 +17316,17 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pes_wh_future_two_03"
+				[1.0] = "pdr_dr_backstory_four_03"
 			}
 		},
-		pbw_bw_future_three_02 = {
+		pwe_dr_backstory_four_03 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pbw_bw_future_three_02"
+				[1.0] = "pwe_dr_backstory_four_03"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -16021,17 +17335,17 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pbw_bw_future_three_02"
+				[1.0] = "pwe_dr_backstory_four_03"
 			}
 		},
-		pes_wh_future_two_02 = {
+		pdr_dr_backstory_four_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_wh_future_two_02"
+				[1.0] = "pdr_dr_backstory_four_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -16040,7 +17354,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pes_wh_future_two_02"
+				[1.0] = "pdr_dr_backstory_four_02"
 			}
 		},
 		pwe_we_backstory_two_03 = {
@@ -16062,34 +17376,24 @@ return function ()
 				[1.0] = "pwe_we_backstory_two_03"
 			}
 		},
-		nfl_debrief_plaza = {
-			sound_events_n = 3,
-			randomize_indexes_n = 0,
-			face_animations_n = 3,
+		pes_bw_backstory_two_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "hub_conversations",
-			category = "npc_talk",
-			dialogue_animations_n = 3,
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
 			sound_events = {
-				"nfl_holly_level_debriefing_01",
-				"nfl_holly_level_debriefing_02",
-				"nfl_holly_level_debriefing_03"
+				[1.0] = "pes_bw_backstory_two_01"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				"nfl_holly_level_debriefing_01",
-				"nfl_holly_level_debriefing_02",
-				"nfl_holly_level_debriefing_03"
-			},
-			randomize_indexes = {}
+				[1.0] = "pes_bw_backstory_two_01"
+			}
 		},
 		pdr_dr_future_two_03 = {
 			sound_events_n = 1,
@@ -16129,33 +17433,14 @@ return function ()
 				[1.0] = "pdr_bw_backstory_one_01"
 			}
 		},
-		pes_wh_future_two_01 = {
+		pes_dr_backstory_two_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_wh_future_two_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pes_wh_future_two_01"
-			}
-		},
-		pwe_bw_backstory_six_04 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_bw_backstory_six_04"
+				[1.0] = "pes_dr_backstory_two_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -16164,7 +17449,26 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwe_bw_backstory_six_04"
+				[1.0] = "pes_dr_backstory_two_02"
+			}
+		},
+		pwh_wh_future_two_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_wh_future_two_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_wh_future_two_03"
 			}
 		},
 		pdr_dr_future_one_03 = {
@@ -16224,14 +17528,14 @@ return function ()
 				[1.0] = "pbw_bw_backstory_two_01"
 			}
 		},
-		pwe_bw_backstory_six_02 = {
+		pes_wh_future_two_03 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_bw_backstory_six_02"
+				[1.0] = "pes_wh_future_two_03"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -16240,7 +17544,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwe_bw_backstory_six_02"
+				[1.0] = "pes_wh_future_two_03"
 			}
 		},
 		pes_we_backstory_three_05 = {
@@ -16295,14 +17599,14 @@ return function ()
 				[1.0] = "pbw_bw_future_three_01"
 			}
 		},
-		pbw_bw_backstory_six_01 = {
+		pes_dr_backstory_two_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pbw_bw_backstory_six_01"
+				[1.0] = "pes_dr_backstory_two_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -16311,7 +17615,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pbw_bw_backstory_six_01"
+				[1.0] = "pes_dr_backstory_two_01"
 			}
 		},
 		pbw_bw_future_two_02 = {
@@ -16366,14 +17670,14 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pes_bw_future_one_03 = {
+		pes_wh_future_two_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_bw_future_one_03"
+				[1.0] = "pes_wh_future_two_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -16382,7 +17686,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pes_bw_future_one_03"
+				[1.0] = "pes_wh_future_two_02"
 			}
 		},
 		pwe_dr_backstory_four_02 = {
@@ -16404,33 +17708,33 @@ return function ()
 				[1.0] = "pwe_dr_backstory_four_02"
 			}
 		},
-		pes_es_backstory_three_02 = {
+		pes_wh_future_two_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_es_backstory_three_02"
+				[1.0] = "pes_wh_future_two_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pes_es_backstory_three_02"
+				[1.0] = "pes_wh_future_two_01"
 			}
 		},
-		pwh_bw_backstory_three_02 = {
+		pwe_bw_backstory_six_04 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_bw_backstory_three_02"
+				[1.0] = "pwe_bw_backstory_six_04"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -16439,7 +17743,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwh_bw_backstory_three_02"
+				[1.0] = "pwe_bw_backstory_six_04"
 			}
 		},
 		pwh_bw_future_two_02 = {
@@ -16461,33 +17765,14 @@ return function ()
 				[1.0] = "pwh_bw_future_two_02"
 			}
 		},
-		pes_bw_backstory_two_01 = {
+		pwe_bw_backstory_six_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_bw_backstory_two_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pes_bw_backstory_two_01"
-			}
-		},
-		pbw_dr_future_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_dr_future_three_01"
+				[1.0] = "pwe_bw_backstory_six_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -16496,17 +17781,17 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pbw_dr_future_three_01"
+				[1.0] = "pwe_bw_backstory_six_02"
 			}
 		},
-		pdr_dr_future_three_01 = {
+		pbw_bw_backstory_six_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_dr_future_three_01"
+				[1.0] = "pbw_bw_backstory_six_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -16515,7 +17800,83 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pdr_dr_future_three_01"
+				[1.0] = "pbw_bw_backstory_six_01"
+			}
+		},
+		pes_bw_future_one_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_bw_future_one_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_bw_future_one_03"
+			}
+		},
+		pdr_we_future_three_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_we_future_three_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pdr_we_future_three_02"
+			}
+		},
+		pwh_es_backstory_three_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_es_backstory_three_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_es_backstory_three_02"
+			}
+		},
+		pes_es_backstory_three_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_es_backstory_three_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_es_backstory_three_02"
 			}
 		},
 		pwh_bw_future_eight_04 = {
@@ -16537,14 +17898,14 @@ return function ()
 				[1.0] = "pwh_bw_future_eight_04"
 			}
 		},
-		pes_dr_backstory_two_02 = {
+		pwh_es_backstory_three_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_dr_backstory_two_02"
+				[1.0] = "pwh_es_backstory_three_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -16553,74 +17914,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pes_dr_backstory_two_02"
-			}
-		},
-		pdr_dr_backstory_three_04 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_dr_backstory_three_04"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pdr_dr_backstory_three_04"
-			}
-		},
-		nik_greeting_rainy = {
-			sound_events_n = 3,
-			randomize_indexes_n = 0,
-			face_animations_n = 3,
-			database = "hub_conversations",
-			category = "npc_talk",
-			dialogue_animations_n = 3,
-			sound_events = {
-				"nik_hub_greeting_rainy_24",
-				"nik_hub_greeting_rainy_25",
-				"nik_hub_greeting_rainy_26"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			localization_strings = {
-				"nik_hub_greeting_rainy_24",
-				"nik_hub_greeting_rainy_25",
-				"nik_hub_greeting_rainy_26"
-			},
-			randomize_indexes = {}
-		},
-		pdr_dr_backstory_three_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_dr_backstory_three_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pdr_dr_backstory_three_03"
+				[1.0] = "pwh_es_backstory_three_01"
 			}
 		},
 		pdr_dr_backstory_three_02 = {
@@ -16680,14 +17974,14 @@ return function ()
 				[1.0] = "pdr_dr_backstory_four_01"
 			}
 		},
-		pdr_dr_backstory_five_03 = {
+		pbw_dr_future_three_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_dr_backstory_five_03"
+				[1.0] = "pbw_dr_future_three_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -16696,7 +17990,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pdr_dr_backstory_five_03"
+				[1.0] = "pbw_dr_future_three_01"
 			}
 		},
 		nfl_debrief_nurgle_01 = {
@@ -16756,14 +18050,14 @@ return function ()
 				[1.0] = "pes_es_backstory_huntsman_five_02"
 			}
 		},
-		pwe_es_backstory_one_02 = {
+		pwe_bw_future_four_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_es_backstory_one_02"
+				[1.0] = "pwe_bw_future_four_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -16772,7 +18066,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwe_es_backstory_one_02"
+				[1.0] = "pwe_bw_future_four_02"
 			}
 		},
 		pdr_dr_backstory_one_01 = {
@@ -16832,33 +18126,14 @@ return function ()
 				[1.0] = "pbw_bw_future_five_04"
 			}
 		},
-		nfl_debrief_ussingen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "npc_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "nfl_debrief_ussingen_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "nfl_debrief_ussingen_01"
-			}
-		},
-		pes_es_backstory_one_01 = {
+		pbw_bw_backstory_three_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_es_backstory_one_01"
+				[1.0] = "pbw_bw_backstory_three_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -16867,17 +18142,17 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pes_es_backstory_one_01"
+				[1.0] = "pbw_bw_backstory_three_02"
 			}
 		},
-		pwh_wh_future_one_03 = {
+		pes_es_future_four_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_wh_future_one_03"
+				[1.0] = "pes_es_future_four_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -16886,26 +18161,45 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwh_wh_future_one_03"
+				[1.0] = "pes_es_future_four_02"
 			}
 		},
-		nik_greeting_first_time = {
+		pdr_dr_backstory_three_04 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
-			category = "npc_talk",
+			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "nik_hub_welcome_01"
+				[1.0] = "pdr_dr_backstory_three_04"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "nik_hub_welcome_01"
+				[1.0] = "pdr_dr_backstory_three_04"
+			}
+		},
+		pdr_dr_backstory_three_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_dr_backstory_three_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pdr_dr_backstory_three_03"
 			}
 		},
 		pbw_es_backstory_two_01 = {
@@ -16927,14 +18221,14 @@ return function ()
 				[1.0] = "pbw_es_backstory_two_01"
 			}
 		},
-		pdr_bw_backstory_five_02 = {
+		pes_dr_future_one_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_bw_backstory_five_02"
+				[1.0] = "pes_dr_future_one_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -16943,26 +18237,26 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pdr_bw_backstory_five_02"
+				[1.0] = "pes_dr_future_one_02"
 			}
 		},
-		pes_dr_future_four_02 = {
+		pbw_dr_backstory_three_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_dr_future_four_02"
+				[1.0] = "pbw_dr_backstory_three_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pes_dr_future_four_02"
+				[1.0] = "pbw_dr_backstory_three_01"
 			}
 		},
 		pwe_we_future_two_01 = {
@@ -16984,14 +18278,14 @@ return function ()
 				[1.0] = "pwe_we_future_two_01"
 			}
 		},
-		pes_es_future_two_03 = {
+		pes_es_backstory_one_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_es_future_two_03"
+				[1.0] = "pes_es_backstory_one_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -17000,7 +18294,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pes_es_future_two_03"
+				[1.0] = "pes_es_backstory_one_01"
 			}
 		},
 		pbw_we_future_five_01 = {
@@ -17041,14 +18335,14 @@ return function ()
 				[1.0] = "pdr_bw_future_three_04"
 			}
 		},
-		pbw_bw_backstory_three_02 = {
+		pdr_bw_backstory_five_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pbw_bw_backstory_three_02"
+				[1.0] = "pdr_bw_backstory_five_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -17057,7 +18351,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pbw_bw_backstory_three_02"
+				[1.0] = "pdr_bw_backstory_five_02"
 			}
 		},
 		pes_bw_backstory_seven_04 = {
@@ -17079,14 +18373,14 @@ return function ()
 				[1.0] = "pes_bw_backstory_seven_04"
 			}
 		},
-		pdr_we_backstory_three_04 = {
+		pes_we_backstory_three_04 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_we_backstory_three_04"
+				[1.0] = "pes_we_backstory_three_04"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -17095,7 +18389,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pdr_we_backstory_three_04"
+				[1.0] = "pes_we_backstory_three_04"
 			}
 		},
 		pdr_dr_future_two_01 = {
@@ -17134,6 +18428,44 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pbw_bw_backstory_seven_03"
+			}
+		},
+		pes_dr_backstory_five_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_dr_backstory_five_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_dr_backstory_five_01"
+			}
+		},
+		pwh_wh_future_one_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_wh_future_one_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_wh_future_one_03"
 			}
 		},
 		nik_greeting_sunny = {
@@ -17176,44 +18508,6 @@ return function ()
 				"nik_hub_greeting_sunny_24"
 			},
 			randomize_indexes = {}
-		},
-		pbw_bw_future_three_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_bw_future_three_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pbw_bw_future_three_03"
-			}
-		},
-		nfl_debrief_catacombs_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "npc_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "nfl_debrief_catacombs_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "nfl_debrief_catacombs_01"
-			}
 		},
 		pdr_we_backstory_five_01 = {
 			sound_events_n = 1,
@@ -17323,14 +18617,14 @@ return function ()
 				[1.0] = "pes_we_backstory_three_01"
 			}
 		},
-		pwe_we_future_four_01 = {
+		pbw_es_future_one_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_we_future_four_01"
+				[1.0] = "pbw_es_future_one_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -17339,7 +18633,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwe_we_future_four_01"
+				[1.0] = "pbw_es_future_one_02"
 			}
 		},
 		pwh_wh_future_two_01 = {
@@ -17361,23 +18655,23 @@ return function ()
 				[1.0] = "pwh_wh_future_two_01"
 			}
 		},
-		pbw_bw_backstory_two_02 = {
+		pwh_wh_backstory_two_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pbw_bw_backstory_two_02"
+				[1.0] = "pwh_wh_backstory_two_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pbw_bw_backstory_two_02"
+				[1.0] = "pwh_wh_backstory_two_01"
 			}
 		},
 		pwh_dr_backstory_one_02 = {
@@ -17399,14 +18693,52 @@ return function ()
 				[1.0] = "pwh_dr_backstory_one_02"
 			}
 		},
-		nfl_debrief_elven_ruins_01 = {
+		pes_we_backstory_three_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
-			category = "npc_talk",
+			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "nfl_debrief_elven_ruins_01"
+				[1.0] = "pes_we_backstory_three_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_we_backstory_three_02"
+			}
+		},
+		pdr_we_backstory_three_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_we_backstory_three_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pdr_we_backstory_three_01"
+			}
+		},
+		pwh_we_backstory_four_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_we_backstory_four_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -17415,107 +18747,61 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "nfl_debrief_elven_ruins_01"
+				[1.0] = "pwh_we_backstory_four_01"
 			}
 		},
-		pbw_we_backstory_one_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_we_backstory_one_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pbw_we_backstory_one_02"
-			}
-		},
-		pes_dr_future_one_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_dr_future_one_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pes_dr_future_one_01"
-			}
-		},
-		pes_we_backstory_three_04 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_we_backstory_three_04"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pes_we_backstory_three_04"
-			}
-		},
-		nik_callout_unready_kerillian = {
-			sound_events_n = 4,
+		nik_intro_forge_reminder = {
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
-			face_animations_n = 4,
+			face_animations_n = 2,
 			database = "hub_conversations",
 			category = "npc_talk",
-			dialogue_animations_n = 4,
+			dialogue_animations_n = 2,
 			sound_events = {
-				"nik_callout_unready_kerillian_01",
-				"nik_callout_unready_kerillian_02",
-				"nik_callout_unready_kerillian_03",
-				"nik_callout_unready_kerillian_04"
+				[1.0] = "nik_intro_forge_reminder_01",
+				[2.0] = "nik_intro_forge_reminder_02"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
 			localization_strings = {
-				"nik_callout_unready_kerillian_01",
-				"nik_callout_unready_kerillian_02",
-				"nik_callout_unready_kerillian_03",
-				"nik_callout_unready_kerillian_04"
+				[1.0] = "nik_intro_forge_reminder_01",
+				[2.0] = "nik_intro_forge_reminder_02"
 			},
 			randomize_indexes = {}
 		},
-		pbw_bw_backstory_four_02 = {
+		nik_greeting_first_time = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "nik_hub_welcome_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "nik_hub_welcome_01"
+			}
+		},
+		pwe_we_future_four_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pbw_bw_backstory_four_02"
+				[1.0] = "pwe_we_future_four_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -17524,7 +18810,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pbw_bw_backstory_four_02"
+				[1.0] = "pwe_we_future_four_01"
 			}
 		},
 		nik_callout_unready_sienna = {
@@ -17552,14 +18838,14 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pdr_wh_backstory_one_03 = {
+		pbw_bw_backstory_four_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_wh_backstory_one_03"
+				[1.0] = "pbw_bw_backstory_four_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -17568,7 +18854,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pdr_wh_backstory_one_03"
+				[1.0] = "pbw_bw_backstory_four_02"
 			}
 		},
 		pes_we_future_four_01 = {
@@ -17590,14 +18876,14 @@ return function ()
 				[1.0] = "pes_we_future_four_01"
 			}
 		},
-		pwe_wh_backstory_two_04 = {
+		pdr_we_future_three_03 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_wh_backstory_two_04"
+				[1.0] = "pdr_we_future_three_03"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -17606,7 +18892,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwe_wh_backstory_two_04"
+				[1.0] = "pdr_we_future_three_03"
 			}
 		},
 		nfl_debrief_ground_zero_01 = {
@@ -17666,20 +18952,22 @@ return function ()
 				[1.0] = "pes_we_future_four_03"
 			}
 		},
-		nik_callout_unready_saltzpyre = {
-			sound_events_n = 4,
+		nik_hub_long_waiting_01 = {
+			sound_events_n = 5,
 			randomize_indexes_n = 0,
-			face_animations_n = 4,
+			face_animations_n = 5,
 			database = "hub_conversations",
 			category = "npc_talk",
-			dialogue_animations_n = 4,
+			dialogue_animations_n = 5,
 			sound_events = {
-				"nik_callout_unready_saltzpyre_01",
-				"nik_callout_unready_saltzpyre_02",
-				"nik_callout_unready_saltzpyre_03",
-				"nik_callout_unready_saltzpyre_04"
+				"nik_hub_greeting_08",
+				"nik_hub_greeting_19",
+				"nik_hub_idle_01",
+				"nik_hub_idle_02",
+				"nik_hub_idle_05"
 			},
 			dialogue_animations = {
+				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
@@ -17689,13 +18977,15 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral",
+				"face_neutral",
 				"face_neutral"
 			},
 			localization_strings = {
-				"nik_callout_unready_saltzpyre_01",
-				"nik_callout_unready_saltzpyre_02",
-				"nik_callout_unready_saltzpyre_03",
-				"nik_callout_unready_saltzpyre_04"
+				"nik_hub_greeting_08",
+				"nik_hub_greeting_19",
+				"nik_hub_idle_01",
+				"nik_hub_idle_02",
+				"nik_hub_idle_05"
 			},
 			randomize_indexes = {}
 		},
@@ -17737,23 +19027,23 @@ return function ()
 				[1.0] = "nik_intro_forge_01"
 			}
 		},
-		pwh_wh_backstory_two_01 = {
+		pwe_wh_backstory_two_04 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_wh_backstory_two_01"
+				[1.0] = "pwe_wh_backstory_two_04"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwh_wh_backstory_two_01"
+				[1.0] = "pwe_wh_backstory_two_04"
 			}
 		},
 		pbw_dr_backstory_three_03 = {
@@ -17813,14 +19103,14 @@ return function ()
 				[1.0] = "pwe_we_backstory_two_06"
 			}
 		},
-		pwe_we_backstory_two_04 = {
+		pwh_we_backstory_two_04 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_we_backstory_two_04"
+				[1.0] = "pwh_we_backstory_two_04"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -17829,26 +19119,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwe_we_backstory_two_04"
-			}
-		},
-		pwe_es_future_four_04 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_es_future_four_04"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pwe_es_future_four_04"
+				[1.0] = "pwh_we_backstory_two_04"
 			}
 		},
 		pwh_es_future_two_03 = {
@@ -17870,44 +19141,6 @@ return function ()
 				[1.0] = "pwh_es_future_two_03"
 			}
 		},
-		pes_dr_backstory_six_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_dr_backstory_six_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pes_dr_backstory_six_01"
-			}
-		},
-		pdr_we_future_three_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_we_future_three_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pdr_we_future_three_03"
-			}
-		},
 		pwe_es_future_four_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -17927,52 +19160,14 @@ return function ()
 				[1.0] = "pwe_es_future_four_02"
 			}
 		},
-		pes_es_backstory_huntsman_five_04 = {
+		pes_dr_backstory_six_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_es_backstory_huntsman_five_04"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pes_es_backstory_huntsman_five_04"
-			}
-		},
-		pdr_we_future_three_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_we_future_three_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pdr_we_future_three_02"
-			}
-		},
-		pdr_we_future_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_we_future_three_01"
+				[1.0] = "pes_dr_backstory_six_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -17981,17 +19176,17 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pdr_we_future_three_01"
+				[1.0] = "pes_dr_backstory_six_01"
 			}
 		},
-		pwe_we_backstory_one_01 = {
+		pdr_we_backstory_three_04 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_we_backstory_one_01"
+				[1.0] = "pdr_we_backstory_three_04"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -18000,7 +19195,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwe_we_backstory_one_01"
+				[1.0] = "pdr_we_backstory_three_04"
 			}
 		},
 		pdr_bw_future_three_01 = {
@@ -18022,6 +19217,92 @@ return function ()
 				[1.0] = "pdr_bw_future_three_01"
 			}
 		},
+		nik_greeting_rainy = {
+			sound_events_n = 3,
+			randomize_indexes_n = 0,
+			face_animations_n = 3,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 3,
+			sound_events = {
+				"nik_hub_greeting_rainy_24",
+				"nik_hub_greeting_rainy_25",
+				"nik_hub_greeting_rainy_26"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"nik_hub_greeting_rainy_24",
+				"nik_hub_greeting_rainy_25",
+				"nik_hub_greeting_rainy_26"
+			},
+			randomize_indexes = {}
+		},
+		pdr_we_future_three_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_we_future_three_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_we_future_three_01"
+			}
+		},
+		pes_we_backstory_three_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_we_backstory_three_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_we_backstory_three_03"
+			}
+		},
+		pwe_we_backstory_one_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_we_backstory_one_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_we_backstory_one_01"
+			}
+		},
 		pwe_we_backstory_one_03 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -18039,6 +19320,25 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pwe_we_backstory_one_03"
+			}
+		},
+		pwe_es_future_four_04 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_es_future_four_04"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_es_future_four_04"
 			}
 		},
 		pbw_we_future_five_02 = {
@@ -18060,14 +19360,14 @@ return function ()
 				[1.0] = "pbw_we_future_five_02"
 			}
 		},
-		pes_we_backstory_three_02 = {
+		pbw_we_backstory_one_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_we_backstory_three_02"
+				[1.0] = "pbw_we_backstory_one_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -18076,7 +19376,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pes_we_backstory_three_02"
+				[1.0] = "pbw_we_backstory_one_02"
 			}
 		},
 		pdr_dr_future_two_02 = {
@@ -18098,14 +19398,14 @@ return function ()
 				[1.0] = "pdr_dr_future_two_02"
 			}
 		},
-		pwh_wh_backstory_four_02 = {
+		pes_es_future_four_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_wh_backstory_four_02"
+				[1.0] = "pes_es_future_four_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -18114,7 +19414,7 @@ return function ()
 				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwh_wh_backstory_four_02"
+				[1.0] = "pes_es_future_four_01"
 			}
 		},
 		pwh_wh_future_two_02 = {
@@ -18193,34 +19493,24 @@ return function ()
 				[1.0] = "pbw_we_backstory_four_01"
 			}
 		},
-		nfl_debrief_cemetery = {
-			sound_events_n = 3,
-			randomize_indexes_n = 0,
-			face_animations_n = 3,
+		pwe_dr_backstory_one_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "hub_conversations",
-			category = "npc_talk",
-			dialogue_animations_n = 3,
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
 			sound_events = {
-				"nfl_holly_level_debriefing_01",
-				"nfl_holly_level_debriefing_02",
-				"nfl_holly_level_debriefing_03"
+				[1.0] = "pwe_dr_backstory_one_03"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
+				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				"nfl_holly_level_debriefing_01",
-				"nfl_holly_level_debriefing_02",
-				"nfl_holly_level_debriefing_03"
-			},
-			randomize_indexes = {}
+				[1.0] = "pwe_dr_backstory_one_03"
+			}
 		},
 		pwe_es_backstory_huntsman_five_05 = {
 			sound_events_n = 1,

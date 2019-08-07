@@ -93,26 +93,27 @@ LevelSettings.dlc_bogenhafen_slum = {
 LevelSettings.dlc_bogenhafen_city = {
 	act_unlock_order = 1,
 	display_name = "level_name_bogenhafen_city",
-	ambient_sound_event = "ambience_bogenhafen_city_night",
 	climate_type = "",
-	environment_state = "exterior",
 	player_aux_bus_name = "environment_reverb_outside",
+	environment_state = "exterior",
+	level_name = "levels/honduras_dlcs/bogenhafen/city/world",
 	act = "act_bogenhafen",
 	level_image = "level_icon_bgh_city",
-	unlockable = true,
-	use_mini_patrols = true,
-	level_name = "levels/honduras_dlcs/bogenhafen/city/world",
-	dlc_name = "bogenhafen",
-	description_text = "nik_loading_screen_dlc_bogenhafen_01",
-	act_presentation_order = 2,
-	boss_spawning_method = "hand_placed",
 	loading_ui_package_name = "loading_screen_17",
+	use_mini_patrols = true,
+	description_text = "nik_loading_screen_dlc_bogenhafen_01",
+	dlc_name = "bogenhafen",
+	boss_spawning_method = "hand_placed",
+	act_presentation_order = 2,
+	ambient_sound_event = "ambience_bogenhafen_city_night",
 	default_surface_material = "stone",
+	unlockable = true,
 	knocked_down_setting = "knocked_down",
 	package_name = "resource_packages/levels/dlcs/bogenhafen/city",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
+	camera_backlight = COLD_CAMERA_BACKLIGHT,
 	locations = {
 		"location_bogenhafen_city_cove",
 		"location_bogenhafen_city_sewers",
@@ -136,6 +137,13 @@ LevelSettings.dlc_bogenhafen_city = {
 		"location_bogenhafen_city_templecourtyard",
 		"location_bogenhafen_city_temple",
 		"location_bogenhafen_city_waystone"
+	},
+	darkness_settings = {
+		disable_screen_fx = true,
+		player_light_intensity = 0.15,
+		volumes = {
+			"sewerlight"
+		}
 	},
 	pickup_settings = {
 		{

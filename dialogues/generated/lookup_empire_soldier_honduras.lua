@@ -164,6 +164,17 @@ assert(DialogueLookup[DialogueLookup_n + 163] == nil)
 assert(DialogueLookup[DialogueLookup_n + 164] == nil)
 assert(DialogueLookup[DialogueLookup_n + 165] == nil)
 assert(DialogueLookup[DialogueLookup_n + 166] == nil)
+assert(DialogueLookup[DialogueLookup_n + 167] == nil)
+assert(DialogueLookup[DialogueLookup_n + 168] == nil)
+assert(DialogueLookup[DialogueLookup_n + 169] == nil)
+assert(DialogueLookup[DialogueLookup_n + 170] == nil)
+assert(DialogueLookup[DialogueLookup_n + 171] == nil)
+assert(DialogueLookup[DialogueLookup_n + 172] == nil)
+assert(DialogueLookup[DialogueLookup_n + 173] == nil)
+assert(DialogueLookup[DialogueLookup_n + 174] == nil)
+assert(DialogueLookup[DialogueLookup_n + 175] == nil)
+assert(DialogueLookup[DialogueLookup_n + 176] == nil)
+assert(DialogueLookup[DialogueLookup_n + 177] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pes_gameplay_casual_quotes"
 DialogueLookup[DialogueLookup_n + 2] = "pes_gameplay_witch_hunter_being_helped_up"
@@ -331,6 +342,17 @@ DialogueLookup[DialogueLookup_n + 163] = "pes_gameplay_hearing_a_skaven_rat_ogre
 DialogueLookup[DialogueLookup_n + 164] = "pes_gameplay_hearing_a_chaos_wizard_leech"
 DialogueLookup[DialogueLookup_n + 165] = "pes_gameplay_killing_a_chaos_wizard_leech"
 DialogueLookup[DialogueLookup_n + 166] = "pes_gameplay_ambush_horde_spawned"
-DialogueLookup_n = DialogueLookup_n + 166
+DialogueLookup[DialogueLookup_n + 167] = "pes_gameplay_hearing_a_standard_bearer"
+DialogueLookup[DialogueLookup_n + 168] = "pes_gameplay_hearing_a_standard_bearer_crater"
+DialogueLookup[DialogueLookup_n + 169] = "pes_gameplay_standard_bearer_has_planted_standard"
+DialogueLookup[DialogueLookup_n + 170] = "pes_gameplay_standard_bearer_has_planted_standard_crater"
+DialogueLookup[DialogueLookup_n + 171] = "pes_gameplay_standard_bearer_buff_active"
+DialogueLookup[DialogueLookup_n + 172] = "pes_gameplay_standard_bearer_buff_deactivated"
+DialogueLookup[DialogueLookup_n + 173] = "pes_gameplay_incoming_bestigor_attack"
+DialogueLookup[DialogueLookup_n + 174] = "pes_gameplay_hearing_a_minotaur"
+DialogueLookup[DialogueLookup_n + 175] = "pes_gameplay_killing_a_minotaur"
+DialogueLookup[DialogueLookup_n + 176] = "pes_gameplay_seeing_a_ungor_archer"
+DialogueLookup[DialogueLookup_n + 177] = "pes_gameplay_incoming_attack"
+DialogueLookup_n = DialogueLookup_n + 177
 
 return

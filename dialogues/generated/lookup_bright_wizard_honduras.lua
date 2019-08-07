@@ -148,6 +148,17 @@ assert(DialogueLookup[DialogueLookup_n + 147] == nil)
 assert(DialogueLookup[DialogueLookup_n + 148] == nil)
 assert(DialogueLookup[DialogueLookup_n + 149] == nil)
 assert(DialogueLookup[DialogueLookup_n + 150] == nil)
+assert(DialogueLookup[DialogueLookup_n + 151] == nil)
+assert(DialogueLookup[DialogueLookup_n + 152] == nil)
+assert(DialogueLookup[DialogueLookup_n + 153] == nil)
+assert(DialogueLookup[DialogueLookup_n + 154] == nil)
+assert(DialogueLookup[DialogueLookup_n + 155] == nil)
+assert(DialogueLookup[DialogueLookup_n + 156] == nil)
+assert(DialogueLookup[DialogueLookup_n + 157] == nil)
+assert(DialogueLookup[DialogueLookup_n + 158] == nil)
+assert(DialogueLookup[DialogueLookup_n + 159] == nil)
+assert(DialogueLookup[DialogueLookup_n + 160] == nil)
+assert(DialogueLookup[DialogueLookup_n + 161] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pbw_gameplay_globadier_guck"
 DialogueLookup[DialogueLookup_n + 2] = "pbw_gameplay_hit_by_goo"
@@ -299,6 +310,17 @@ DialogueLookup[DialogueLookup_n + 147] = "pbw_gameplay_seeing_a_Skaven_warpfire_
 DialogueLookup[DialogueLookup_n + 148] = "pbw_gameplay_seeing_a_stormfiend"
 DialogueLookup[DialogueLookup_n + 149] = "pbw_gameplay_seeing_a_troll"
 DialogueLookup[DialogueLookup_n + 150] = "pbw_gameplay_ambush_horde_spawned"
-DialogueLookup_n = DialogueLookup_n + 150
+DialogueLookup[DialogueLookup_n + 151] = "pbw_gameplay_hearing_a_standard_bearer"
+DialogueLookup[DialogueLookup_n + 152] = "pbw_gameplay_hearing_a_standard_bearer_crater"
+DialogueLookup[DialogueLookup_n + 153] = "pbw_gameplay_standard_bearer_has_planted_standard"
+DialogueLookup[DialogueLookup_n + 154] = "pbw_gameplay_standard_bearer_has_planted_standard_crater"
+DialogueLookup[DialogueLookup_n + 155] = "pbw_gameplay_standard_bearer_buff_active"
+DialogueLookup[DialogueLookup_n + 156] = "pbw_gameplay_standard_bearer_buff_deactivated"
+DialogueLookup[DialogueLookup_n + 157] = "pbw_gameplay_incoming_bestigor_attack"
+DialogueLookup[DialogueLookup_n + 158] = "pbw_gameplay_hearing_a_minotaur"
+DialogueLookup[DialogueLookup_n + 159] = "pbw_gameplay_killing_a_minotaur"
+DialogueLookup[DialogueLookup_n + 160] = "pbw_gameplay_seeing_a_ungor_archer"
+DialogueLookup[DialogueLookup_n + 161] = "pbw_gameplay_incoming_attack"
+DialogueLookup_n = DialogueLookup_n + 161
 
 return

@@ -168,6 +168,17 @@ assert(DialogueLookup[DialogueLookup_n + 167] == nil)
 assert(DialogueLookup[DialogueLookup_n + 168] == nil)
 assert(DialogueLookup[DialogueLookup_n + 169] == nil)
 assert(DialogueLookup[DialogueLookup_n + 170] == nil)
+assert(DialogueLookup[DialogueLookup_n + 171] == nil)
+assert(DialogueLookup[DialogueLookup_n + 172] == nil)
+assert(DialogueLookup[DialogueLookup_n + 173] == nil)
+assert(DialogueLookup[DialogueLookup_n + 174] == nil)
+assert(DialogueLookup[DialogueLookup_n + 175] == nil)
+assert(DialogueLookup[DialogueLookup_n + 176] == nil)
+assert(DialogueLookup[DialogueLookup_n + 177] == nil)
+assert(DialogueLookup[DialogueLookup_n + 178] == nil)
+assert(DialogueLookup[DialogueLookup_n + 179] == nil)
+assert(DialogueLookup[DialogueLookup_n + 180] == nil)
+assert(DialogueLookup[DialogueLookup_n + 181] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pwh_objective_interacting_with_objective"
 DialogueLookup[DialogueLookup_n + 2] = "pwh_objective_nearing_objective_deadline"
@@ -339,6 +350,17 @@ DialogueLookup[DialogueLookup_n + 167] = "pwh_gameplay_hearing_a_skaven_rat_ogre
 DialogueLookup[DialogueLookup_n + 168] = "pwh_gameplay_seeing_a_chaos_wizard_leech"
 DialogueLookup[DialogueLookup_n + 169] = "pwh_gameplay_killing_a_chaos_wizard_leech"
 DialogueLookup[DialogueLookup_n + 170] = "pwh_gameplay_ambush_horde_spawned"
-DialogueLookup_n = DialogueLookup_n + 170
+DialogueLookup[DialogueLookup_n + 171] = "pwh_gameplay_hearing_a_standard_bearer"
+DialogueLookup[DialogueLookup_n + 172] = "pwh_gameplay_hearing_a_standard_bearer_crater"
+DialogueLookup[DialogueLookup_n + 173] = "pwh_gameplay_standard_bearer_has_planted_standard"
+DialogueLookup[DialogueLookup_n + 174] = "pwh_gameplay_standard_bearer_has_planted_standard_crater"
+DialogueLookup[DialogueLookup_n + 175] = "pwh_gameplay_standard_bearer_buff_active"
+DialogueLookup[DialogueLookup_n + 176] = "pwh_gameplay_standard_bearer_buff_deactivated"
+DialogueLookup[DialogueLookup_n + 177] = "pwh_gameplay_incoming_bestigor_attack"
+DialogueLookup[DialogueLookup_n + 178] = "pwh_gameplay_hearing_a_minotaur"
+DialogueLookup[DialogueLookup_n + 179] = "pwh_gameplay_killing_a_minotaur"
+DialogueLookup[DialogueLookup_n + 180] = "pwh_gameplay_seeing_a_ungor_archer"
+DialogueLookup[DialogueLookup_n + 181] = "pwh_gameplay_incoming_attack"
+DialogueLookup_n = DialogueLookup_n + 181
 
 return
