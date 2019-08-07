@@ -63,9 +63,11 @@ BTSkulkIdleAction.run = function (self, unit, blackboard, t, dt)
 	end
 
 	local pos = POSITION_LOOKUP[unit]
+	local side = blackboard.side
+	local enemy_player_and_bot_positions = side.ENEMY_PLAYER_AND_BOT_POSITIONS
 
-	for i = 1, #PLAYER_AND_BOT_POSITIONS, 1 do
-		local enemy_pos = PLAYER_AND_BOT_POSITIONS[i]
+	for i = 1, #enemy_player_and_bot_positions, 1 do
+		local enemy_pos = enemy_player_and_bot_positions[i]
 
 		if Vector3.distance_squared(pos, enemy_pos) < move_distance_squared then
 			return "done"

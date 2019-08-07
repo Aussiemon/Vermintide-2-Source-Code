@@ -424,6 +424,11 @@ StateTitleScreenMainMenu._check_popup = function (self)
 		print("[StateTitleScreenMainMenu] Updating offline data...")
 		PlayfabBackendSaveDataUtils.update_offline_data(callback(self, "cb_offline_data_updated"))
 		self._title_start_ui:set_update_offline_data_enabled(false)
+		self._title_start_ui:disable_input(true)
+
+		self._input_disabled = true
+
+		Managers.transition:show_loading_icon(false)
 
 		self._state = "waiting_for_offline_data_update"
 	elseif result == "do_nothing" then
@@ -443,6 +448,12 @@ StateTitleScreenMainMenu.cb_offline_data_updated = function (self, success)
 	else
 		print("[StateTitleScreenMainMenu] Offline data update ERROR")
 	end
+
+	self._title_start_ui:disable_input(false)
+
+	self._input_disabled = false
+
+	Managers.transition:hide_loading_icon()
 
 	self._state = "none"
 end
@@ -494,6 +505,7 @@ StateTitleScreenMainMenu._update_input = function (self, dt, t)
 
 	if active_menu_selection and not self._input_disabled and not has_popup and not user_detached and not self._popup_id then
 		if current_menu_index and input_service:get("start", true) then
+			input_service:get("confirm_press", true)
 			menu_functions[current_menu_index](self)
 		elseif input_service:get("back") then
 			self:_close_menu()

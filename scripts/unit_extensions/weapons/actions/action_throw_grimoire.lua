@@ -5,6 +5,8 @@ ActionThrowGrimoire.init = function (self, world, item_name, is_server, owner_un
 end
 
 ActionThrowGrimoire.client_owner_start_action = function (self, new_action, t)
+	ActionThrowGrimoire.super.client_owner_start_action(self, new_action, t)
+
 	self.current_action = new_action
 	self.ammo_extension = ScriptUnit.extension(self.weapon_unit, "ammo_system")
 end

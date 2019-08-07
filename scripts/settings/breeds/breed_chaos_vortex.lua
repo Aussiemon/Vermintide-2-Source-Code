@@ -6,14 +6,12 @@ local breed_data = {
 	run_speed = 1.75,
 	far_off_despawn_immunity = true,
 	immediate_threat = true,
-	navigation_channel_radius = 7,
-	race = "chaos",
 	has_inventory = false,
+	race = "chaos",
 	exchange_order = 1,
 	animation_sync_rpc = "rpc_sync_anim_state_1",
 	perception = "perception_all_seeing",
 	debug_despawn_immunity = false,
-	navigation_spline_distance_to_borders = 3.5,
 	debug_spawn_category = "Misc",
 	use_navigation_path_splines = true,
 	bone_lod_level = 0,
@@ -21,6 +19,10 @@ local breed_data = {
 	base_unit = "units/weapons/enemy/wpn_chaos_plague_vortex/wpn_chaos_plague_vortex",
 	threat_value = 10,
 	ignore_activate_unit = true,
+	navigation_path_spline_config = {
+		spline_distance_to_borders = 3.5,
+		navigation_channel_radius = 7
+	},
 	debug_color = {
 		255,
 		255,

@@ -9,6 +9,8 @@ ActionWield.init = function (self, world, item_name, is_server, owner_unit, dama
 end
 
 ActionWield.client_owner_start_action = function (self, new_action, t, chain_attack_data)
+	ActionWield.super.client_owner_start_action(self, new_action, t, chain_attack_data)
+
 	self.current_action = new_action
 	self.action_time_started = t
 

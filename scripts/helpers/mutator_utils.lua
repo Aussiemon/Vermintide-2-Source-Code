@@ -1,13 +1,24 @@
 MutatorUtils = MutatorUtils or {}
 
 MutatorUtils.apply_buff_to_alive_player_units = function (context, data, buff_name)
-	local player_units = data.player_units
+	if not data.buffed_player_units then
+		data.buffed_player_units = {}
+	end
+
+	local buffed_player_units = data.buffed_player_units
+
+	if not buffed_player_units[buff_name] then
+		buffed_player_units[buff_name] = {}
+	end
+
+	local player_units = buffed_player_units[buff_name]
 
 	for unit, _ in pairs(player_units) do
 		player_units[unit] = false
 	end
 
-	local current_player_units = PLAYER_AND_BOT_UNITS
+	local side = Managers.state.side:get_side_from_name("heroes")
+	local current_player_units = side.PLAYER_AND_BOT_UNITS
 	local num_current_player_units = #current_player_units
 	local get_extension = ScriptUnit.extension
 	local unit_alive = AiUtils.unit_alive

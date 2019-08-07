@@ -167,4 +167,8 @@ GameServer.network_initialized = function (self)
 	return self._network_initialized
 end
 
+GameServer.failed = function (self)
+	return self._state == GameServerState.DISCONNECTED
+end
+
 return

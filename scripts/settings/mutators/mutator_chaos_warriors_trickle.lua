@@ -21,6 +21,9 @@ return {
 		data.old_threat_value = old_threat_value
 
 		Managers.state.conflict:set_threat_value("chaos_warrior", 1)
+
+		local side = Managers.state.side:get_side_from_name("dark_pact")
+		data.side_id = side.side_id
 	end,
 	server_update_function = function (context, data)
 		local t = Managers.time:time("game")
@@ -28,8 +31,10 @@ return {
 		if data.spawn_at < t then
 			local spawn_list = data.spawn_list
 			local horde_spawner = Managers.state.conflict.horde_spawner
+			local only_ahead = false
+			local side_id = data.side_id
 
-			horde_spawner:execute_custom_horde(spawn_list)
+			horde_spawner:execute_custom_horde(spawn_list, only_ahead, side_id)
 
 			local difficulty_rank = data.current_difficulty_rank
 			local spawn_frequency_modifier = 80 - difficulty_rank * 5

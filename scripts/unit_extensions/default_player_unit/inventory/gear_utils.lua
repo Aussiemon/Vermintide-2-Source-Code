@@ -6,11 +6,11 @@ GearUtils.create_equipment = function (world, slot_name, item_data, unit_1p, uni
 	local item_units = override_item_units or BackendUtils.get_item_units(item_data)
 
 	if item_units.right_hand_unit then
-		right_hand_weapon_unit_3p, right_hand_ammo_unit_3p, right_hand_weapon_unit_1p, right_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "right", item_template.third_person_extension_template, item_units.right_hand_unit, item_template.right_hand_attachment_node_linking, slot_name, item_data, unit_1p, unit_3p, unit_template, extra_extension_data, ammo_percent, item_units.material_settings)
+		right_hand_weapon_unit_3p, right_hand_ammo_unit_3p, right_hand_weapon_unit_1p, right_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "right", item_template, item_units, slot_name, item_data, unit_1p, unit_3p, unit_template, extra_extension_data, ammo_percent, item_units.material_settings)
 	end
 
 	if item_units.left_hand_unit then
-		left_hand_weapon_unit_3p, left_hand_ammo_unit_3p, left_hand_weapon_unit_1p, left_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "left", item_template.third_person_extension_template, item_units.left_hand_unit, item_template.left_hand_attachment_node_linking, slot_name, item_data, unit_1p, unit_3p, unit_template, extra_extension_data, ammo_percent, item_units.material_settings)
+		left_hand_weapon_unit_3p, left_hand_ammo_unit_3p, left_hand_weapon_unit_1p, left_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "left", item_template, item_units, slot_name, item_data, unit_1p, unit_3p, unit_template, extra_extension_data, ammo_percent, item_units.material_settings)
 	end
 
 	if right_hand_weapon_unit_3p then
@@ -61,7 +61,10 @@ GearUtils.create_equipment = function (world, slot_name, item_data, unit_1p, uni
 		left_unit_3p = left_hand_weapon_unit_3p,
 		left_ammo_unit_3p = left_hand_ammo_unit_3p,
 		left_unit_1p = left_hand_weapon_unit_1p,
-		left_ammo_unit_1p = left_hand_ammo_unit_1p
+		left_ammo_unit_1p = left_hand_ammo_unit_1p,
+		projectile_units_template = item_units.projectile_units_template,
+		pickup_template_name = item_units.pickup_template_name,
+		link_pickup_template_name = item_units.link_pickup_template_name
 	}
 
 	return slot_data
@@ -69,13 +72,15 @@ end
 
 GearUtils.apply_properties_to_item_template = function (template, backend_id)
 	local backend_items = Managers.backend:get_interface("items")
-	local properties = backend_items:get_properties(backend_id)
+	local item = backend_items:get_item_from_id(backend_id)
+	local properties = item and item.properties
 
 	if properties then
 		local template_clone = table.clone(template)
+		local properties_data = (item.rarity == "magic" and WeaveProperties.properties) or WeaponProperties.properties
 
-		for property_key, property_value in pairs(properties) do
-			local property_data = WeaponProperties.properties[property_key]
+		for property_key, _ in pairs(properties) do
+			local property_data = properties_data[property_key]
 			local template_function = property_data.template_function
 
 			if template_function and template_clone[template_function] then
@@ -135,51 +140,63 @@ GearUtils.apply_material_settings = function (unit, material_settings)
 	end
 end
 
-GearUtils.spawn_inventory_unit = function (world, hand, third_person_extension_template, unit_name, node_linking_settings, slot_name, item_data, owner_unit_1p, owner_unit_3p, unit_template, extra_extension_data, ammo_percent, material_settings)
-	local item_template = BackendUtils.get_item_template(item_data)
+GearUtils.spawn_inventory_unit = function (world, hand, item_template, item_units, slot_name, item_data, owner_unit_1p, owner_unit_3p, unit_template, extra_extension_data, ammo_percent, material_settings)
 	local ammo_data = item_template.ammo_data
-	local aim_data = item_template.aim_data
 	local item_name = item_data.name
+	local node_linking_settings = item_template[hand .. "_hand_attachment_node_linking"]
+	local weapon_unit_name = item_units[hand .. "_hand_unit"]
+	local ammo_unit_name = item_units.ammo_unit
+	local ammo_unit_name_3p = item_units.ammo_unit_3p
 	local ammo_unit_3p = nil
 
-	if ammo_data then
-		local ammo_unit_name = ammo_data.ammo_unit_3p
+	if ammo_data and ammo_unit_name then
+		local ammo_unit_attachment_node_linking = ammo_data.ammo_unit_attachment_node_linking
 
-		if ammo_unit_name then
-			local ammo_unit_attachment_node_linking = ammo_data.ammo_unit_attachment_node_linking
+		fassert(ammo_unit_attachment_node_linking, "ammo unit: [\"%s\"] defined in weapon without attachment node linking", ammo_unit_name)
 
-			fassert(ammo_unit_attachment_node_linking, "ammo unit: %s defined in weapon without attachment node linking", ammo_unit_name)
-
-			ammo_unit_3p = GearUtils._attach_ammo_unit(world, ammo_unit_name, ammo_unit_attachment_node_linking.third_person.wielded, owner_unit_3p)
-		end
+		ammo_unit_3p = GearUtils._attach_ammo_unit(world, ammo_unit_name_3p or ammo_unit_name .. "_3p", ammo_unit_attachment_node_linking.third_person.wielded, owner_unit_3p)
 	end
 
-	local attachment_node_linking = node_linking_settings.third_person.wielded
-	local unit_template_3p = third_person_extension_template or "weapon_unit_3p"
-	local extension_init_data_3p = {}
-	local weapon_unit_3p = Managers.state.unit_spawner:spawn_local_unit_with_extensions(unit_name .. "_3p", unit_template_3p, extension_init_data_3p)
-	local scene_graph_links = {}
+	local attachment_node_linking_3p = node_linking_settings.third_person.wielded
+	local unit_template_3p_name = item_template.third_person_extension_template or "weapon_unit_3p"
+	local extension_init_data_3p = nil
 
-	GearUtils.link(world, attachment_node_linking, scene_graph_links, owner_unit_3p, weapon_unit_3p)
+	if item_template.uses_weapon_system_on_3p and not owner_unit_1p then
+		extension_init_data_3p = {
+			weapon_system = {
+				item_template = item_template
+			}
+		}
+	else
+		unit_template_3p_name = "weapon_unit_3p"
+		extension_init_data_3p = {}
+	end
+
+	local weapon_unit_3p = Managers.state.unit_spawner:spawn_local_unit_with_extensions(weapon_unit_name .. "_3p", unit_template_3p_name, extension_init_data_3p)
+	local scene_graph_links_3p = {}
+
+	GearUtils.link(world, attachment_node_linking_3p, scene_graph_links_3p, owner_unit_3p, weapon_unit_3p)
 
 	if material_settings then
 		GearUtils.apply_material_settings(weapon_unit_3p, material_settings)
 	end
 
 	if owner_unit_1p then
-		local attachment_node_linking = node_linking_settings.first_person.wielded
+		local attachment_node_linking_1p = node_linking_settings.first_person.wielded
 		local extension_init_data_1p = {
 			weapon_system = {
 				first_person_rig = owner_unit_1p,
 				owner_unit = owner_unit_3p,
-				attach_nodes = attachment_node_linking,
-				item_name = item_name
+				attach_nodes = attachment_node_linking_1p,
+				item_name = item_name,
+				item_template = item_template
 			},
 			ammo_system = {
 				owner_unit = owner_unit_3p,
 				ammo_data = ammo_data,
 				ammo_percent = ammo_percent,
 				reload_event = item_template.reload_event,
+				pickup_reload_event_1p = item_template.pickup_reload_event_1p,
 				no_ammo_reload_event = item_template.no_ammo_reload_event,
 				last_reload_event = item_template.reload_end_event,
 				item_name = item_name,
@@ -199,18 +216,16 @@ GearUtils.spawn_inventory_unit = function (world, hand, third_person_extension_t
 		local ammo_hand = ammo_data and ammo_data.ammo_hand
 
 		if ammo_data then
-			fassert(ammo_hand, "weapon %s does not have an ammo hand defined in its ammo_data", item_name)
+			fassert(ammo_hand, "weapon [\"%s\"] does not have an ammo hand defined in its ammo_data", item_name)
 		end
 
 		local default_spread_template = item_template.default_spread_template
 
 		if ammo_data and ammo_hand == hand then
-			local ammo_unit_name = ammo_data.ammo_unit
-
 			if ammo_unit_name then
 				local ammo_unit_attachment_node_linking = ammo_data.ammo_unit_attachment_node_linking
 
-				fassert(ammo_unit_attachment_node_linking, "ammo unit: %s defined in weapon without attachment node linking", ammo_unit_name)
+				fassert(ammo_unit_attachment_node_linking, "ammo unit: [\"%s\"] defined in weapon without attachment node linking", ammo_unit_name)
 
 				ammo_unit_1p = GearUtils._attach_ammo_unit(world, ammo_unit_name, ammo_unit_attachment_node_linking.first_person.wielded, owner_unit_1p)
 			end
@@ -230,12 +245,14 @@ GearUtils.spawn_inventory_unit = function (world, hand, third_person_extension_t
 			unit_template_1p = unit_template
 
 			table.merge(extension_init_data_1p, extra_extension_data)
+		elseif item_template.unit_extension_template then
+			unit_template_1p = item_template.unit_extension_template
 		end
 
-		local weapon_unit_1p = Managers.state.unit_spawner:spawn_local_unit_with_extensions(unit_name, unit_template_1p, extension_init_data_1p)
+		local weapon_unit_1p = Managers.state.unit_spawner:spawn_local_unit_with_extensions(weapon_unit_name, unit_template_1p, extension_init_data_1p)
 		local scene_graph_links = {}
 
-		GearUtils.link(world, attachment_node_linking, scene_graph_links, owner_unit_1p, weapon_unit_1p)
+		GearUtils.link(world, attachment_node_linking_1p, scene_graph_links, owner_unit_1p, weapon_unit_1p)
 
 		if material_settings then
 			GearUtils.apply_material_settings(weapon_unit_1p, material_settings)
@@ -305,7 +322,6 @@ GearUtils.get_ammo_extension = function (right_hand_unit, left_hand_unit)
 end
 
 GearUtils.destroy_equipment = function (world, equipment)
-	local slots = equipment.slots
 	local unit_spawner = Managers.state.unit_spawner
 
 	if equipment.right_hand_wielded_unit_3p and Unit.alive(equipment.right_hand_wielded_unit_3p) then
@@ -516,11 +532,14 @@ GearUtils.get_property_and_trait_buffs = function (backend_items, backend_id, bu
 		return buffs_table
 	end
 
-	local properties = backend_items:get_properties(backend_id)
+	local item = backend_items:get_item_from_id(backend_id)
+	local properties = item and item.properties
 
 	if properties then
+		local properties_data = (item.rarity == "magic" and WeaveProperties.properties) or WeaponProperties.properties
+
 		for property_key, property_value in pairs(properties) do
-			local property_data = WeaponProperties.properties[property_key]
+			local property_data = properties_data[property_key]
 			local buff_name = property_data.buff_name
 			local buffer = property_data.buffer or "client"
 
@@ -532,11 +551,13 @@ GearUtils.get_property_and_trait_buffs = function (backend_items, backend_id, bu
 		end
 	end
 
-	local traits = backend_items:get_traits(backend_id)
+	local traits = item and item.traits
 
 	if traits then
+		local traits_data = (item.rarity == "magic" and WeaveTraits.traits) or WeaponTraits.traits
+
 		for _, trait_key in pairs(traits) do
-			local trait_data = WeaponTraits.traits[trait_key]
+			local trait_data = traits_data[trait_key]
 			local buff_name = trait_data.buff_name
 			local buffer = trait_data.buffer or "client"
 

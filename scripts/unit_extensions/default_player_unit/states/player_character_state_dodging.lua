@@ -72,6 +72,7 @@ PlayerCharacterStateDodging.on_exit = function (self, unit, input, dt, context, 
 
 	self.locomotion_extension:enable_rotation_towards_velocity(true)
 	self.status_extension:start_dodge_cooldown(t)
+	self.buff_extension:trigger_procs("on_dodge_finished")
 
 	local network_manager = Managers.state.network
 
@@ -108,6 +109,12 @@ PlayerCharacterStateDodging.update = function (self, unit, input, dt, context, t
 		return
 	end
 
+	if not csm.state_next and status_extension.do_leap then
+		csm:change_state("leaping")
+
+		return true
+	end
+
 	if CharacterStateHelper.is_pushed(status_extension) then
 		status_extension:set_pushed(false)
 
@@ -120,6 +127,15 @@ PlayerCharacterStateDodging.update = function (self, unit, input, dt, context, t
 		return
 	end
 
+	if CharacterStateHelper.is_charged(status_extension) then
+		local params = movement_settings_table.charged_settings.charged
+		params.hit_react_type = "charged"
+
+		csm:change_state("charged", params)
+
+		return
+	end
+
 	if CharacterStateHelper.is_block_broken(status_extension) then
 		status_extension:set_block_broken(false)
 
@@ -127,6 +143,25 @@ PlayerCharacterStateDodging.update = function (self, unit, input, dt, context, t
 		params.hit_react_type = "medium_push"
 
 		csm:change_state("stunned", params)
+
+		return
+	end
+
+	local interactor_extension = self.interactor_extension
+
+	if CharacterStateHelper.is_starting_interaction(input_extension, interactor_extension) then
+		local config = interactor_extension:interaction_config()
+
+		interactor_extension:start_interaction("interacting")
+
+		if not config.allow_movement then
+			local params = self.temp_params
+			params.swap_to_3p = config.swap_to_3p
+			params.show_weapons = config.show_weapons
+			params.activate_block = config.activate_block
+
+			csm:change_state("interacting", params)
+		end
 
 		return
 	end
@@ -244,6 +279,9 @@ PlayerCharacterStateDodging.start_dodge = function (self, unit, t)
 		network_manager.network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.dodging, true, unit_id, 0)
 	end
 
+	local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+
+	buff_extension:trigger_procs("on_dodge", self.dodge_direction)
 	assert(#movement_settings_table.dodging.speed_at_times > 1, "not enough speed at times in movementsettings")
 
 	self.current_speed_setting_index = 1

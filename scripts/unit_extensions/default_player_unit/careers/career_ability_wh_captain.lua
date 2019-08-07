@@ -119,6 +119,10 @@ end
 CareerAbilityWHCaptain._run_ability = function (self, new_initial_speed)
 	self:_stop_priming()
 
+	local career_extension = self._career_extension
+
+	career_extension:start_activated_ability_cooldown()
+
 	local world = self._world
 	local owner_unit = self._owner_unit
 	local is_server = self._is_server
@@ -134,7 +138,6 @@ CareerAbilityWHCaptain._run_ability = function (self, new_initial_speed)
 
 	local network_manager = self._network_manager
 	local network_transmit = network_manager.network_transmit
-	local career_extension = self._career_extension
 
 	CharacterStateHelper.play_animation_event(owner_unit, "witch_hunter_active_ability")
 
@@ -144,21 +147,55 @@ CareerAbilityWHCaptain._run_ability = function (self, new_initial_speed)
 		radius = 15
 	end
 
-	local nearby_player_units = FrameTable.alloc_table()
-	local proximity_extension = Managers.state.entity:system("proximity_system")
 	local position = POSITION_LOOKUP[owner_unit]
-	local broadphase = proximity_extension.player_units_broadphase
 
-	Broadphase.query(broadphase, position, radius, nearby_player_units)
+	if not talent_extension:has_talent("victor_witchhunter_activated_ability_guaranteed_crit_self_buff") then
+		local nearby_player_units = FrameTable.alloc_table()
+		local proximity_extension = Managers.state.entity:system("proximity_system")
+		local broadphase = proximity_extension.player_units_broadphase
 
-	for _, player_unit in pairs(nearby_player_units) do
-		if Unit.alive(player_unit) then
-			buff_system:add_buff(player_unit, buff_to_add, owner_unit)
+		Broadphase.query(broadphase, position, radius, nearby_player_units)
+
+		local side_manager = Managers.state.side
+
+		for _, player_unit in pairs(nearby_player_units) do
+			if Unit.alive(player_unit) and not side_manager:is_enemy(owner_unit, player_unit) then
+				buff_system:add_buff(player_unit, buff_to_add, owner_unit)
+			end
+		end
+	else
+		buff_to_add = "victor_witchhunter_activated_ability_guaranteed_crit_self_buff"
+
+		buff_system:add_buff(owner_unit, buff_to_add, owner_unit)
+	end
+
+	if talent_extension:has_talent("victor_witchhunter_activated_ability_refund_cooldown_on_enemies_hit") then
+		local nearby_enemy_units = FrameTable.alloc_table()
+		local proximity_extension = Managers.state.entity:system("proximity_system")
+		local broadphase = proximity_extension.enemy_broadphase
+
+		Broadphase.query(broadphase, position, radius, nearby_enemy_units)
+
+		local target_number = 1
+		local side_manager = Managers.state.side
+
+		for _, enemy_unit in pairs(nearby_enemy_units) do
+			if Unit.alive(enemy_unit) and side_manager:is_enemy(owner_unit, enemy_unit) then
+				DamageUtils.buff_on_attack(owner_unit, enemy_unit, "ability", false, "torso", target_number, false, "n/a")
+
+				target_number = target_number + 1
+			end
 		end
 	end
 
 	local explosion_template_name = "victor_captain_activated_ability_stagger"
 	local explosion_template = ExplosionTemplates[explosion_template_name]
+
+	if talent_extension:has_talent("victor_captain_activated_ability_stagger_ping_debuff", "witch_hunter", true) then
+		explosion_template_name = "victor_captain_activated_ability_stagger_ping_debuff"
+		explosion_template = ExplosionTemplates[explosion_template_name]
+	end
+
 	local scale = 1
 	local damage_source = "career_ability"
 	local is_husk = false
@@ -187,7 +224,6 @@ CareerAbilityWHCaptain._run_ability = function (self, new_initial_speed)
 
 	self:_play_vo()
 	self:_play_vfx()
-	career_extension:start_activated_ability_cooldown()
 end
 
 CareerAbilityWHCaptain._play_vo = function (self)

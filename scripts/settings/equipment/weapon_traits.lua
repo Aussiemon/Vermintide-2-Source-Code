@@ -826,6 +826,7 @@ WeaponTraits.traits = {
 	},
 	trinket_increase_grenade_radius = {
 		display_name = "trait_trinket_increase_grenade_radius",
+		buffer = "both",
 		advanced_description = "description_trait_trinket_increase_grenade_radius",
 		icon = "trinket_increase_grenade_radius",
 		buff_name = "trait_trinket_increase_grenade_radius",

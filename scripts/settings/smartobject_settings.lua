@@ -355,6 +355,68 @@ SmartObjectSettings.templates.special = {
 		}
 	}
 }
+SmartObjectSettings.templates.ungor = {
+	jump_up_anim_thresholds = {
+		{
+			horizontal_length = 1,
+			animation_fence = "jump_up_fence_1m",
+			height_threshold = 1.5,
+			vertical_length = 1,
+			animation_edge = "jump_up_1m"
+		},
+		{
+			horizontal_length = 1,
+			animation_fence = "jump_up_fence_3m",
+			height_threshold = 4,
+			vertical_length = 3,
+			animation_edge = "jump_up_3m"
+		},
+		{
+			horizontal_length = 1,
+			animation_fence = "jump_up_fence_5m",
+			vertical_length = 5,
+			animation_edge = "jump_up_5m",
+			height_threshold = math.huge
+		}
+	},
+	jump_down_anim_thresholds = {
+		{
+			animation_edge = "jump_down_1m",
+			animation_fence = "jump_down_fence_1m",
+			height_threshold = 1.5,
+			vertical_length = 1,
+			fence_horizontal_length = 1.5,
+			fence_land_length = 0
+		},
+		{
+			animation_edge = "jump_down",
+			animation_fence = "jump_down_fence_3m",
+			height_threshold = 4,
+			vertical_length = 3,
+			fence_horizontal_length = 1.1,
+			fence_land_length = 0.4
+		},
+		{
+			animation_edge = "jump_down",
+			animation_fence = "jump_down_fence_5m",
+			vertical_length = 5,
+			fence_horizontal_length = 1.1,
+			fence_land_length = 0.4,
+			height_threshold = math.huge
+		}
+	},
+	jump_across_anim_thresholds = {
+		{
+			horizontal_length = 4,
+			horizontal_threshold = math.huge,
+			animation_jump = {
+				"jump_over_gap_4m",
+				"jump_over_gap_4m_2",
+				"jump_over_gap_4m_3"
+			}
+		}
+	}
+}
 SmartObjectSettings.templates.rat_ogre = {
 	jump_up_anim_thresholds = {
 		{

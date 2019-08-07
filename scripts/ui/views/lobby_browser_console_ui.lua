@@ -928,8 +928,9 @@ LobbyBrowserConsoleUI._fill_details = function (self, lobby_data)
 			custom = "lb_game_type_custom"
 		}
 		local game_mode = lobby_data.game_mode
+		local level_setting = LevelSettings[lobby_data.level_key]
 		details_information_widget_content.game_type_id = (game_mode and (game_mode_lookup[game_mode] or "lb_unknown")) or "lb_game_type_none"
-		details_information_widget_content.status_id = (lobby_data.level_key == "inn_level" and "lb_in_inn") or "lb_playing"
+		details_information_widget_content.status_id = (level_setting.hub_level and "lb_in_inn") or "lb_playing"
 	else
 		details_information_widget_content.game_type_id = "lb_unknown"
 		details_information_widget_content.status_id = "lb_unknown"

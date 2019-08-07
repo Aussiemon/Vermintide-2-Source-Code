@@ -1,6 +1,5 @@
 ThrownUnitHuskExtension = class(ThrownUnitHuskExtension)
 local unit_alive = Unit.alive
-local player_and_bot_units = PLAYER_AND_BOT_UNITS
 local position_lookup = POSITION_LOOKUP
 
 ThrownUnitHuskExtension.init = function (self, extension_init_context, unit, extension_init_data)

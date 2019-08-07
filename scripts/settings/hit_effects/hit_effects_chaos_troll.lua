@@ -1,6 +1,6 @@
 HitEffectsChaosTroll = {
 	default = {
-		husk_hit_effect_name = "fx/impact_blood",
+		husk_hit_effect_name = "fx/impact_blood_chaos",
 		armour_type = "flesh",
 		extra_conditions = {
 			death = false
@@ -34,7 +34,7 @@ HitEffectsChaosTroll = {
 	},
 	default_head = {
 		inherits = "default",
-		husk_hit_effect_name = "fx/impact_blood",
+		husk_hit_effect_name = "fx/impact_blood_chaos",
 		armour_type = "flesh",
 		extra_conditions = {
 			hit_zone = {
@@ -47,7 +47,7 @@ HitEffectsChaosTroll = {
 	},
 	default_left_leg = {
 		inherits = "default",
-		husk_hit_effect_name = "fx/impact_blood",
+		husk_hit_effect_name = "fx/impact_blood_chaos",
 		armour_type = "flesh",
 		extra_conditions = {
 			hit_zone = {
@@ -60,7 +60,7 @@ HitEffectsChaosTroll = {
 	},
 	default_right_leg = {
 		inherits = "default",
-		husk_hit_effect_name = "fx/impact_blood",
+		husk_hit_effect_name = "fx/impact_blood_chaos",
 		armour_type = "flesh",
 		extra_conditions = {
 			hit_zone = {
@@ -73,7 +73,7 @@ HitEffectsChaosTroll = {
 	},
 	default_left_arm = {
 		inherits = "default",
-		husk_hit_effect_name = "fx/impact_blood",
+		husk_hit_effect_name = "fx/impact_blood_chaos",
 		armour_type = "flesh",
 		extra_conditions = {
 			hit_zone = {
@@ -86,7 +86,7 @@ HitEffectsChaosTroll = {
 	},
 	default_right_arm = {
 		inherits = "default",
-		husk_hit_effect_name = "fx/impact_blood",
+		husk_hit_effect_name = "fx/impact_blood_chaos",
 		armour_type = "flesh",
 		extra_conditions = {
 			hit_zone = {

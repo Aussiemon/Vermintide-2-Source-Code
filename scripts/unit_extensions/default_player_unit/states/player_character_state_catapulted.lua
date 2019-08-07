@@ -51,7 +51,6 @@ PlayerCharacterStateCatapulted.on_enter = function (self, unit, input, dt, conte
 end
 
 PlayerCharacterStateCatapulted.on_exit = function (self, unit, input, dt, context, t, next_state)
-	local direction = self._direction
 	self._direction = nil
 
 	self.status_extension:set_catapulted(false)

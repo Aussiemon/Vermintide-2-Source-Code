@@ -29,8 +29,9 @@ local function create_achievement_entry(scenegraph_id, size)
 		allow_multi_hover = true
 	}
 	local checklist_item_styles = {}
+	local checklist_max_items = 15
 
-	for i = 1, 10, 1 do
+	for i = 1, checklist_max_items, 1 do
 		checklist_content[i] = {
 			text = "n/a",
 			checkbox_marker = "matchmaking_checkbox",
@@ -45,17 +46,22 @@ local function create_achievement_entry(scenegraph_id, size)
 			},
 			size = checklist_entry_size,
 			text = {
-				vertical_alignment = "center",
+				word_wrap = true,
 				upper_case = false,
 				font_size = 22,
 				horizontal_alignment = "left",
-				word_wrap = true,
+				vertical_alignment = "center",
+				dynamic_font_size = true,
 				font_type = (masked and "hell_shark_masked") or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					31,
 					0,
 					2
+				},
+				size = {
+					300,
+					100
 				}
 			},
 			text_shadow = {

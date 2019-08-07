@@ -7,7 +7,6 @@ BTThrowWeaponAction.init = function (self, ...)
 end
 
 BTThrowWeaponAction.name = "BTThrowWeaponAction"
-local player_and_bot_units = PLAYER_AND_BOT_UNITS
 
 BTThrowWeaponAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
@@ -254,8 +253,11 @@ BTThrowWeaponAction.update_thrown_weapon = function (self, unit, blackboard, dt,
 
 	GameSession.set_game_object_field(game, go_id, "rotation", rot)
 
-	for i = 1, #player_and_bot_units, 1 do
-		local target_unit = player_and_bot_units[i]
+	local side = blackboard.side
+	local enemy_player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
+
+	for i = 1, #enemy_player_and_bot_units, 1 do
+		local target_unit = enemy_player_and_bot_units[i]
 
 		if Unit.alive(target_unit) and not blackboard.ignore_thrown_weapon_overlap then
 			self:check_overlap(action, blackboard.thrown_unit, unit, blackboard, target_unit)

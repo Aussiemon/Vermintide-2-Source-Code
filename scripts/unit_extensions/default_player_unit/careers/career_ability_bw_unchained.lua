@@ -129,6 +129,8 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 	local local_player = self._local_player
 	local bot_player = self._bot_player
 	local position = POSITION_LOOKUP[owner_unit]
+	local network_manager = self._network_manager
+	local network_transmit = network_manager.network_transmit
 	local career_extension = self._career_extension
 	local buff_extension = self._buff_extension
 	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
@@ -146,22 +148,52 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 	end
 
 	local rotation = Unit.local_rotation(owner_unit, 0)
-	local explosion_template = "explosion_bw_unchained_ability"
+	local explosion_template_name = "explosion_bw_unchained_ability"
 	local scale = 1
 
 	if talent_extension:has_talent("sienna_unchained_activated_ability_radius", "bright_wizard", true) then
-		explosion_template = "explosion_bw_unchained_ability_increased_radius"
+		explosion_template_name = "explosion_bw_unchained_ability_increased_radius"
 	end
 
 	local career_power_level = career_extension:get_career_power_level()
 
-	if talent_extension:has_talent("sienna_unchained_activated_ability_damage", "bright_wizard", true) then
-		career_power_level = career_power_level * 1.5
+	if talent_extension:has_talent("sienna_unchained_activated_ability_temp_health", "bright_wizard", true) then
+		local radius = 10
+		local nearby_player_units = FrameTable.alloc_table()
+		local proximity_extension = Managers.state.entity:system("proximity_system")
+		local broadphase = proximity_extension.player_units_broadphase
+
+		Broadphase.query(broadphase, POSITION_LOOKUP[owner_unit], radius, nearby_player_units)
+
+		local side_manager = Managers.state.side
+		local heal_amount = 30
+		local heal_type_id = NetworkLookup.heal_types.career_skill
+
+		for _, player_unit in pairs(nearby_player_units) do
+			if not side_manager:is_enemy(self._owner_unit, player_unit) then
+				local unit_go_id = network_manager:unit_game_object_id(player_unit)
+
+				if unit_go_id then
+					network_transmit:send_rpc_server("rpc_request_heal", unit_go_id, heal_amount, heal_type_id)
+				end
+			end
+		end
 	end
 
-	local area_damage_system = Managers.state.entity:system("area_damage_system")
+	local explosion_template = ExplosionTemplates[explosion_template_name]
+	local owner_unit_go_id = network_manager:unit_game_object_id(owner_unit)
+	local damage_source = "career_ability"
+	local explosion_template_id = NetworkLookup.explosion_templates[explosion_template_name]
+	local damage_source_id = NetworkLookup.damage_sources[damage_source]
+	local is_husk = false
 
-	area_damage_system:create_explosion(owner_unit, position, rotation, explosion_template, scale, "career_ability", career_power_level, false)
+	if is_server then
+		network_transmit:send_rpc_clients("rpc_create_explosion", owner_unit_go_id, false, position, rotation, explosion_template_id, scale, damage_source_id, career_power_level, false)
+	else
+		network_transmit:send_rpc_server("rpc_create_explosion", owner_unit_go_id, false, position, rotation, explosion_template_id, scale, damage_source_id, career_power_level, false)
+	end
+
+	DamageUtils.create_explosion(self._world, owner_unit, position, rotation, explosion_template, scale, damage_source, is_server, is_husk, owner_unit, career_power_level, false)
 	career_extension:start_activated_ability_cooldown()
 	CharacterStateHelper.play_animation_event(owner_unit, "unchained_ability_explosion")
 

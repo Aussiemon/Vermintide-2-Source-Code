@@ -1,10 +1,10 @@
 GenericStatusExtension = class(GenericStatusExtension)
 local DamageDataIndex = DamageDataIndex
-local ATTACK_INTENSITY_RESET = 0.25
-local ATTACK_INTENSITY_DECAY = 1
-local ATTACK_INTENSITY_DECAY_FAST = 2
 local MAX_INTOXICATION_LEVEL = 3
 local MIN_INTOXICATION_LEVEL = -3
+local NUM_PACK_MASTER_GRABS = 2
+local NUM_GLOBADIER_POISONS = 2
+local NUM_TIMES_KNOCKED_DOWN = 2
 
 GenericStatusExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.world = extension_init_context.world
@@ -13,8 +13,8 @@ GenericStatusExtension.init = function (self, extension_init_context, unit, exte
 	fassert(self.profile_id)
 
 	self.unit = unit
-	self.intensity = 0
-	self.intensity_decay_delay = 0
+	self.pacing_intensity = 0
+	self.pacing_intensity_decay_delay = 0
 	self.move_speed_multiplier = 1
 	self.move_speed_multiplier_timer = 1
 	self.invisible = false
@@ -52,14 +52,10 @@ GenericStatusExtension.init = function (self, extension_init_context, unit, exte
 	self.push_cooldown = false
 	self.push_cooldown_timer = false
 	self.timed_block = nil
+	self.charged = false
+	self.charged_at_t = -math.huge
 	self.interrupt_cooldown = false
 	self.interrupt_cooldown_timer = nil
-	self.attack_intensity = 0
-	self.attack_allowed = true
-	local difficulty_manager = Managers.state.difficulty
-	local difficulty_settings = difficulty_manager:get_difficulty_settings()
-	self.attack_intensity_threshold = difficulty_settings.attack_intensity_threshold or 3
-	self.attack_intensity_decay = difficulty_settings.attack_intensity_decay or ATTACK_INTENSITY_DECAY
 	self.inside_transport_unit = nil
 	self.using_transport = false
 	self.dodge_position = Vector3Box(0, 0, 0)
@@ -87,8 +83,9 @@ GenericStatusExtension.init = function (self, extension_init_context, unit, exte
 	end
 
 	self.max_wounds = self.wounds
-	self.poison_level = 0
-	self.times_poisoned = 0
+	self._num_times_grabbed_by_pack_master = 0
+	self._num_times_hit_by_globadier_poison = 0
+	self._num_times_knocked_down = 0
 	self.is_server = Managers.player.is_server
 	self.update_funcs = {}
 
@@ -105,6 +102,7 @@ GenericStatusExtension.init = function (self, extension_init_context, unit, exte
 	end
 
 	self._intoxication_level = 0
+	self.shade_stealth_counter = 0
 end
 
 GenericStatusExtension.extensions_ready = function (self)
@@ -130,20 +128,20 @@ GenericStatusExtension.destroy = function (self)
 end
 
 GenericStatusExtension.add_damage_intensity = function (self, percent_health_lost, damage_type)
-	self.intensity = math.clamp(self.intensity + percent_health_lost * CurrentIntensitySettings.intensity_add_per_percent_dmg_taken * 100, 0, 100)
-	self.intensity_decay_delay = CurrentIntensitySettings.decay_delay
+	self.pacing_intensity = math.clamp(self.pacing_intensity + percent_health_lost * CurrentIntensitySettings.intensity_add_per_percent_dmg_taken * 100, 0, 100)
+	self.pacing_intensity_decay_delay = CurrentIntensitySettings.decay_delay
 end
 
-GenericStatusExtension.add_intensity = function (self, value)
-	self.intensity = math.clamp(self.intensity + value, 0, 100)
-	self.intensity_decay_delay = CurrentIntensitySettings.decay_delay
+GenericStatusExtension.add_pacing_intensity = function (self, value)
+	self.pacing_intensity = math.clamp(self.pacing_intensity + value, 0, 100)
+	self.pacing_intensity_decay_delay = CurrentIntensitySettings.decay_delay
 end
 
 GenericStatusExtension.add_combo_target_count = function (self, value)
 	self.combo_target_count = math.clamp(self.combo_target_count + value, 0, 5)
 end
 
-GenericStatusExtension.add_intensity_by_difficulty = function (self, intensity_table)
+GenericStatusExtension.add_pacing_intensity_by_difficulty = function (self, intensity_table)
 	local difficulty = Managers.state.difficulty:get_difficulty()
 	local value = intensity_table[difficulty]
 
@@ -151,8 +149,8 @@ GenericStatusExtension.add_intensity_by_difficulty = function (self, intensity_t
 		return
 	end
 
-	self.intensity = math.clamp(self.intensity + value, 0, 100)
-	self.intensity_decay_delay = CurrentIntensitySettings.decay_delay
+	self.pacing_intensity = math.clamp(self.pacing_intensity + value, 0, 100)
+	self.pacing_intensity_decay_delay = CurrentIntensitySettings.decay_delay
 end
 
 GenericStatusExtension.add_intoxication_level = function (self, num_levels)
@@ -195,34 +193,13 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 			end
 		end
 
-		local ignore_decay_delay = self.conflict_director.pacing:ignore_intensity_decay_delay()
+		local ignore_pacing_decay_delay = self.conflict_director.pacing:ignore_pacing_intensity_decay_delay()
 
-		if (self.intensity_decay_delay <= 0 or ignore_decay_delay) and not self.conflict_director:intensity_decay_frozen() then
-			self.intensity = math.clamp(self.intensity - CurrentIntensitySettings.decay_per_second * dt, 0, CurrentIntensitySettings.max_intensity)
+		if (self.pacing_intensity_decay_delay <= 0 or ignore_pacing_decay_delay) and not self.conflict_director:intensity_decay_frozen() then
+			self.pacing_intensity = math.clamp(self.pacing_intensity - CurrentIntensitySettings.decay_per_second * dt, 0, CurrentIntensitySettings.max_intensity)
 		end
 
-		self.intensity_decay_delay = self.intensity_decay_delay - dt
-	end
-
-	local current_player_health = self.health_extension:current_health_percent()
-
-	if self.attack_intensity > 0 then
-		if self.attack_intensity_threshold < self.attack_intensity then
-			self.attack_allowed = false
-		elseif self.attack_intensity < ATTACK_INTENSITY_RESET then
-			self.attack_allowed = true
-		end
-
-		local attack_intensity_decay = self.attack_intensity_decay
-		local buff_extension = self.buff_extension
-
-		if buff_extension:has_buff_type("bardin_ironbreaker_activated_ability") or buff_extension:has_buff_type("bardin_ironbreaker_activated_ability_duration") then
-			attack_intensity_decay = ATTACK_INTENSITY_DECAY_FAST
-		end
-
-		self.attack_intensity = math.max(self.attack_intensity - dt * attack_intensity_decay * self.attack_intensity_threshold, 0)
-	else
-		self.attack_allowed = true
+		self.pacing_intensity_decay_delay = self.pacing_intensity_decay_delay - dt
 	end
 
 	if self.move_speed_multiplier_timer < 1 then
@@ -241,6 +218,11 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 
 			if PlayerUnitMovementSettings.slowing_damage_types[damage_type] then
 				slow_movement = true
+				local buff_extension = self.buff_extension
+
+				if buff_extension:has_buff_perk("no_moveslow_on_hit") then
+					slow_movement = false
+				end
 
 				break
 			end
@@ -319,7 +301,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 
 		if self.interrupt_cooldown then
 			if not self.interrupt_cooldown_timer then
-				self.interrupt_cooldown_timer = t + 1.5
+				self.interrupt_cooldown_timer = t + 0.5
 			elseif self.interrupt_cooldown_timer < t then
 				self.interrupt_cooldown = false
 				self.interrupt_cooldown_timer = nil
@@ -329,7 +311,8 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 		local first_person_extension = self.first_person_extension
 
 		if first_person_extension and self.low_health_playing_id then
-			local health = current_player_health * 100
+			local current_player_health_percentage = self.health_extension:current_health_percent()
+			local health = current_player_health_percentage * 100
 			local wwise_world = Managers.world:wwise_world(self.world)
 
 			WwiseWorld.set_source_parameter(wwise_world, self.low_health_source_id, "health_status", health)
@@ -382,32 +365,6 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 		elseif self.pack_master_status == "pack_master_released" then
 			self.pack_master_status = nil
 		end
-	end
-
-	local poison_level = math.min(PlayerUnitStatusSettings.poison_level_max, self.poison_level)
-
-	if self.is_server and poison_level > 0 and self.poison_next_t < t then
-		self.poison_next_t = t + PlayerUnitStatusSettings.poison_dot_time
-
-		if Unit.alive(self.poison_attacker) then
-			local damage = PlayerUnitStatusSettings.poison_dot_function(poison_level)
-
-			DamageUtils.add_damage_network(unit, self.poison_attacker, damage, "full", "globadier_gas_dot", nil, Vector3(1, 0, 0), "skaven_poison_wind_globadier")
-		end
-	end
-
-	if poison_level > 0 then
-		if self.poison_time_to_cough < t then
-			local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
-			local event_data = FrameTable.alloc_table()
-
-			dialogue_input:trigger_dialogue_event("hit_by_goo", event_data)
-
-			self.poison_time_to_cough = t + 2
-		end
-	elseif self.poison_t then
-		self.poison_next_t = nil
-		self.poison_time_to_cough = nil
 	end
 
 	for _, func in pairs(self.update_funcs) do
@@ -496,18 +453,7 @@ GenericStatusExtension._get_current_max_fatigue_points = function (self)
 		local item_data = slot_data.item_data
 		local item_template = slot_data.item_template or BackendUtils.get_item_template(item_data)
 		local max_fatigue_points = item_template.max_fatigue_points
-
-		if max_fatigue_points then
-			max_fatigue_points = self.buff_extension:apply_buffs_to_value(max_fatigue_points, "max_fatigue")
-			local player = self.player
-			local boon_handler = player.boon_handler
-
-			if boon_handler then
-				local num_bonus_fatigue_boons = boon_handler:get_num_boons("bonus_fatigue")
-				local boon_template = BoonTemplates.bonus_fatigue
-				max_fatigue_points = max_fatigue_points + num_bonus_fatigue_boons * boon_template.fatigue_increase
-			end
-		end
+		max_fatigue_points = max_fatigue_points and self.buff_extension:apply_buffs_to_value(max_fatigue_points, "max_fatigue")
 
 		return max_fatigue_points
 	end
@@ -726,6 +672,11 @@ end
 GenericStatusExtension.fatigued = function (self)
 	local max_fatigue = PlayerUnitStatusSettings.MAX_FATIGUE
 	local max_fatigue_points = self.max_fatigue_points
+	local no_push_fatigue_cost = self.buff_extension:has_buff_perk("no_push_fatigue_cost")
+
+	if no_push_fatigue_cost then
+		return false
+	end
 
 	return (max_fatigue_points == 0 and true) or self.fatigue > max_fatigue - max_fatigue / max_fatigue_points
 end
@@ -745,6 +696,8 @@ GenericStatusExtension.add_fatigue_points = function (self, fatigue_type, attack
 
 	if blocking_weapon_unit and self.timed_block and t < self.timed_block then
 		fatigue_cost = buff_extension:apply_buffs_to_value(fatigue_cost, "timed_block_cost")
+
+		buff_extension:trigger_procs("on_timed_block")
 	end
 
 	if amount and fatigue_point_costs_multiplier and amount < 2 and fatigue_point_costs_multiplier < 1 and buff_extension:has_buff_perk("in_arc_block_cost_reduction") then
@@ -808,12 +761,14 @@ GenericStatusExtension.add_fatigue_points = function (self, fatigue_type, attack
 	end
 
 	local position = POSITION_LOOKUP[self.unit]
-
-	Managers.telemetry.events:fatigue_gained(self.player, position, fatigue_type, block_breaking)
 end
 
 GenericStatusExtension.remove_fatigue_points = function (self, amount)
 	self.fatigue = math.max(self.fatigue - amount, 0)
+end
+
+GenericStatusExtension.remove_all_fatigue = function (self)
+	self.fatigue = 0
 end
 
 GenericStatusExtension.get_dodge_item_data = function (self)
@@ -854,7 +809,7 @@ GenericStatusExtension._block_breaking_fatigue_gain = function (self, fatigue_ty
 end
 
 GenericStatusExtension._block_breaking_fatigue_type = function (self, fatigue_type)
-	return fatigue_type == "blocked_attack" or fatigue_type == "sv_shove" or fatigue_type == "complete" or fatigue_type == "blocked_ranged" or fatigue_type == "blocked_running" or fatigue_type == "blocked_sv_cleave" or fatigue_type == "blocked_sv_sweep" or fatigue_type == "sv_push" or fatigue_type == "chaos_cleave" or fatigue_type == "blocked_berzerker" or fatigue_type == "chaos_spawn_combo"
+	return fatigue_type == "blocked_attack" or fatigue_type == "sv_shove" or fatigue_type == "complete" or fatigue_type == "blocked_ranged" or fatigue_type == "blocked_running" or fatigue_type == "blocked_sv_cleave" or fatigue_type == "blocked_sv_sweep" or fatigue_type == "blocked_sv_sweep_2" or fatigue_type == "sv_push" or fatigue_type == "chaos_cleave" or fatigue_type == "blocked_berzerker" or fatigue_type == "chaos_spawn_combo" or fatigue_type == "blocked_attack_2" or fatigue_type == "blocked_attack_3" or fatigue_type == "blocked_headbutt" or fatigue_type == "blocked_slam" or fatigue_type == "shield_blocked_slam" or fatigue_type == "blocked_charge"
 end
 
 GenericStatusExtension.current_fatigue = function (self)
@@ -880,6 +835,10 @@ GenericStatusExtension.set_pushed = function (self, pushed, t)
 	end
 end
 
+GenericStatusExtension.set_charged = function (self, charged, t)
+	self.charged = charged
+end
+
 GenericStatusExtension.set_pushed_no_cooldown = function (self, pushed, t)
 	self.pushed = pushed
 
@@ -902,20 +861,12 @@ GenericStatusExtension.hitreact_interrupt = function (self)
 	end
 end
 
-GenericStatusExtension.want_an_attack = function (self)
-	return self.attack_allowed
-end
-
-GenericStatusExtension.add_attack_intensity = function (self, attack_intensity, clamp_override)
-	self.attack_intensity = math.clamp(self.attack_intensity + attack_intensity, 0, clamp_override or 10)
-
-	if self.attack_intensity_threshold < self.attack_intensity then
-		self.attack_allowed = false
-	end
-end
-
 GenericStatusExtension.is_pushed = function (self)
 	return self.pushed and not self.overcharge_exploding
+end
+
+GenericStatusExtension.is_charged = function (self)
+	return self.charged
 end
 
 GenericStatusExtension.hit_react_type = function (self)
@@ -946,6 +897,7 @@ end
 GenericStatusExtension.set_pounced_down = function (self, pounced_down, pouncer_unit)
 	local unit = self.unit
 	local locomotion = ScriptUnit.extension(unit, "locomotion_system")
+	pounced_down = pounced_down and pouncer_unit ~= nil
 	self.pounced_down = pounced_down
 
 	if pounced_down then
@@ -1028,7 +980,17 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 	self:set_outline_incapacitated(knocked_down)
 
 	if knocked_down then
-		SurroundingAwareSystem.add_event(unit, "knocked_down", DialogueSettings.knocked_down_broadcast_range, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)
+		local dialogue_event = "knocked_down"
+		local num_times_knocked_down = self._num_times_knocked_down
+
+		if NUM_TIMES_KNOCKED_DOWN <= num_times_knocked_down then
+			dialogue_event = "knocked_down_multiple_times"
+		end
+
+		num_times_knocked_down = num_times_knocked_down + 1
+		self._num_times_knocked_down = num_times_knocked_down
+
+		SurroundingAwareSystem.add_event(unit, dialogue_event, DialogueSettings.knocked_down_broadcast_range, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)
 
 		local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 		local event_data = FrameTable.alloc_table()
@@ -1082,7 +1044,7 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 
 	if knocked_down then
 		if is_server then
-			self:add_intensity(CurrentIntensitySettings.intensity_add_knockdown)
+			self:add_pacing_intensity(CurrentIntensitySettings.intensity_add_knockdown)
 		end
 
 		local kill_damages, _ = health_extension:recent_damages()
@@ -1090,15 +1052,10 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 		pack_index[DamageDataIndex.STRIDE](biggest_hit, 1, unpack_index[DamageDataIndex.STRIDE](kill_damages, 1))
 
 		if player then
-			local local_player = player.local_player
-			local is_bot = player.bot_player
+			local damage_type = biggest_hit[DamageDataIndex.DAMAGE_TYPE]
+			local position = POSITION_LOOKUP[unit]
 
-			if (is_bot and self.is_server) or local_player then
-				local damage_type = biggest_hit[DamageDataIndex.DAMAGE_TYPE]
-				local position = POSITION_LOOKUP[unit]
-
-				Managers.telemetry.events:player_knocked_down(player, damage_type, position)
-			end
+			Managers.telemetry.events:player_knocked_down(player, damage_type, position)
 		end
 	end
 
@@ -1396,6 +1353,18 @@ GenericStatusExtension.set_catapulted = function (self, catapulted, velocity)
 	end
 end
 
+GenericStatusExtension.leap_start = function (self, unit)
+	local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+
+	buff_extension:trigger_procs("on_leap_start")
+end
+
+GenericStatusExtension.leap_finished = function (self, unit)
+	local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+
+	buff_extension:trigger_procs("on_leap_finished")
+end
+
 GenericStatusExtension.set_inside_transport_unit = function (self, unit)
 	self.inside_transport_unit = unit
 end
@@ -1541,7 +1510,18 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 		local pulled_anim_name = "attack_grab_" .. unit_name
 
 		Unit.animation_event(grabber_unit, pulled_anim_name)
-		SurroundingAwareSystem.add_event(unit, "grabbed", DialogueSettings.grabbed_broadcast_range, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)
+
+		local dialogue_event = "grabbed"
+		local num_times_grabbed = self._num_times_grabbed_by_pack_master
+
+		if NUM_PACK_MASTER_GRABS <= num_times_grabbed then
+			dialogue_event = "grabbed_multiple_times"
+		end
+
+		num_times_grabbed = num_times_grabbed + 1
+		self._num_times_grabbed_by_pack_master = num_times_grabbed
+
+		SurroundingAwareSystem.add_event(unit, dialogue_event, DialogueSettings.grabbed_broadcast_range, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)
 		Managers.music:trigger_event("enemy_pack_master_grabbed_stinger")
 
 		self.pack_master_hoisted = false
@@ -1609,6 +1589,21 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 	end
 end
 
+GenericStatusExtension.hit_by_globadier_poison = function (self)
+	local unit = self.unit
+	local dialogue_event = "hit_by_goo"
+	local num_times_poisoned = self._num_times_hit_by_globadier_poison
+
+	if NUM_GLOBADIER_POISONS <= num_times_poisoned then
+		dialogue_event = "hit_by_goo_multiple_times"
+	end
+
+	num_times_poisoned = num_times_poisoned + 1
+	self._num_times_hit_by_globadier_poison = num_times_poisoned
+
+	SurroundingAwareSystem.add_event(unit, dialogue_event, DialogueSettings.globadier_poisoned_broadcast_range, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)
+end
+
 GenericStatusExtension.set_grabbed_by_corruptor = function (self, grabbed_status, is_grabbed, grabber_unit)
 	local unit = self.unit
 	self.corruptor_grabbed = (is_grabbed and grabber_unit) or nil
@@ -1627,18 +1622,14 @@ GenericStatusExtension.set_grabbed_by_corruptor = function (self, grabbed_status
 
 		SurroundingAwareSystem.add_event(unit, "grabbed", DialogueSettings.grabbed_broadcast_range, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)
 		Managers.music:trigger_event("enemy_pack_master_grabbed_stinger")
-	elseif grabbed_status == "chaos_corruptor_released" then
-		if not self.is_husk then
-			locomotion_extension:set_wanted_velocity(Vector3.zero())
-			locomotion_extension:move_to_non_intersecting_position()
-		end
-
-		SurroundingAwareSystem.add_event(unit, "un_grabbed", DialogueSettings.grabbed_broadcast_range, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)
+	elseif grabbed_status == "chaos_corruptor_released" and not self.is_husk then
+		locomotion_extension:set_wanted_velocity(Vector3.zero())
+		locomotion_extension:move_to_non_intersecting_position()
 	end
 end
 
-GenericStatusExtension.get_intensity = function (self)
-	return self.intensity
+GenericStatusExtension.get_pacing_intensity = function (self)
+	return self.pacing_intensity
 end
 
 GenericStatusExtension.get_combo_target_count = function (self)
@@ -1859,6 +1850,23 @@ GenericStatusExtension.has_blocked = function (self)
 	return self._has_blocked
 end
 
+GenericStatusExtension.add_shade_stealth_counter = function (self)
+	self.shade_stealth_counter = self.shade_stealth_counter + 1
+
+	return self.shade_stealth_counter
+end
+
+GenericStatusExtension.subtract_shade_stealth_counter = function (self)
+	self.shade_stealth_counter = math.max(self.shade_stealth_counter - 1, 0)
+
+	return self.shade_stealth_counter
+end
+
+GenericStatusExtension.reset_move_speed_multiplier = function (self)
+	self.move_speed_multiplier = 1
+	self.move_speed_multiplier_timer = 1
+end
+
 GenericStatusExtension.current_move_speed_multiplier = function (self)
 	local lerp_t = math.smoothstep(self.move_speed_multiplier_timer, 0, 1)
 
@@ -1871,18 +1879,40 @@ GenericStatusExtension.set_invisible = function (self, invisible)
 	local flow_event_name = nil
 	local player = self.player
 	local is_third_person = self.is_husk or player.bot_player
+	local local_player = Managers.player:local_player()
+	local side_manager = Managers.state.side
+	local unit_side = side_manager.side_by_unit[unit]
+	local local_player_party = local_player and Managers.party:get_party_from_player_id(local_player:network_id(), local_player:local_player_id())
+	local local_player_side = local_player_party and side_manager.side_by_party[local_player_party]
+	local is_enemies = side_manager:is_enemy_by_side(local_player_side, unit_side)
+	local fade_value = (is_enemies and 1) or 0.8
+	local side = Managers.state.side.side_by_unit[unit]
+	local unit_is_hero = side and side:name() == "heroes"
 
 	if invisible then
 		flow_event_name = "lua_enabled_invisibility"
 
 		if is_third_person then
-			Managers.state.entity:system("fade_system"):set_min_fade(unit, 0.8)
+			Managers.state.entity:system("fade_system"):set_min_fade(unit, fade_value)
+		end
+
+		if unit_is_hero and is_enemies then
+			local outline_extension = ScriptUnit.extension(self.unit, "outline_system")
+
+			outline_extension.set_method("never")
 		end
 	else
 		flow_event_name = "lua_disabled_invisibility"
 
 		if is_third_person then
 			Managers.state.entity:system("fade_system"):set_min_fade(unit, 0)
+		end
+
+		if unit_is_hero and is_enemies then
+			local outline_extension = ScriptUnit.extension(self.unit, "outline_system")
+
+			outline_extension.set_method("outside_distance_or_not_visible")
+			outline_extension.update_override_method_player_setting()
 		end
 	end
 
@@ -1909,6 +1939,12 @@ GenericStatusExtension.set_invisible = function (self, invisible)
 			Managers.state.network.network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.invisible, invisible, go_id, 0)
 		end
 	end
+end
+
+GenericStatusExtension.set_move_through_ai = function (self, move_through_ai)
+	self.move_through_ai = move_through_ai
+
+	self:set_noclip(move_through_ai)
 end
 
 GenericStatusExtension.set_noclip = function (self, no_clip)
@@ -2002,44 +2038,6 @@ GenericStatusExtension.set_falling_height = function (self, override, override_h
 	self.update_funcs.falling = GenericStatusExtension.update_falling
 end
 
-GenericStatusExtension.modify_poison = function (self, increase, attacker_unit)
-	local poison_level_old = self.poison_level
-
-	if increase then
-		self.poison_attacker = attacker_unit
-		self.poison_level = poison_level_old + 1
-
-		if poison_level_old == 0 then
-			self.poison_next_t = 0
-			self.poison_time_to_cough = 0
-
-			if self.first_person_extension then
-				local buff_extension = ScriptUnit.extension(self.unit, "buff_system")
-
-				if buff_extension:has_buff_type("poison_screen_effect_immune") then
-					return
-				end
-
-				local particle_id = World.create_particles(self.world, "fx/screenspace_poison_globe_impact", Vector3(0, 0, 0))
-				self.poison_particle_id = particle_id
-			end
-		end
-	else
-		self.poison_level = poison_level_old - 1
-
-		assert(self.poison_level >= 0, "Poison level became negative")
-
-		if poison_level_old == 1 and self.poison_particle_id then
-			World.stop_spawning_particles(self.world, self.poison_particle_id)
-
-			self.poison_particle_id = nil
-			self.times_poisoned = self.times_poisoned + 1
-
-			SurroundingAwareSystem.add_event(self.unit, "was_hit_by_goo", DialogueSettings.grabbed_broadcast_range, "target_name", ScriptUnit.extension(self.unit, "dialogue_system").context.player_profile, "times_poisoned", self.times_poisoned)
-		end
-	end
-end
-
 GenericStatusExtension.max_wounds_network_safe = function (self)
 	local max_wounds = self.max_wounds
 
@@ -2083,6 +2081,7 @@ GenericStatusExtension.hot_join_sync = function (self, sender)
 
 	RPC.rpc_status_change_bool(sender, lookup.pounced_down, self.pounced_down, self_game_object_id, pouncer_unit_game_object_id)
 	RPC.rpc_status_change_bool(sender, lookup.pushed, self.pushed, self_game_object_id, 0)
+	RPC.rpc_status_change_bool(sender, lookup.charged, self.charged, self_game_object_id, 0)
 	RPC.rpc_status_change_bool(sender, lookup.dead, self.dead, self_game_object_id, 0)
 
 	local tentacle_grabber_go_id = network_manager:unit_game_object_id(self.grabbed_by_tentacle_unit) or NetworkConstants.invalid_game_object_id

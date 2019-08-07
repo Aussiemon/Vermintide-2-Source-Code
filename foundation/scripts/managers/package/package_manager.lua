@@ -229,7 +229,7 @@ PackageManager.can_unload = function (self, package_name)
 		resource_handle = self._asynch_packages[package_name].handle
 	end
 
-	if resource_handle then
+	if resource_handle and self._packages[package_name] then
 		return ResourcePackage.can_unload(resource_handle)
 	end
 

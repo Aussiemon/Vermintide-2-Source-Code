@@ -13,7 +13,7 @@ local function get_slider_value(min, max, value)
 	return norm_value / range
 end
 
-local function set_function(self, user_setting_name, widget_type, content, value_set_function)
+local function set_function(self, user_setting_name, widget_type, content, style, value_set_function)
 	local new_value = nil
 
 	if widget_type == "slider" then
@@ -26,7 +26,7 @@ local function set_function(self, user_setting_name, widget_type, content, value
 
 	self.changed_user_settings[user_setting_name] = new_value
 
-	value_set_function(new_value)
+	value_set_function(content, style, new_value)
 end
 
 local function setup_function(self, user_setting_name, widget_type, options)
@@ -63,7 +63,7 @@ local function setup_function(self, user_setting_name, widget_type, options)
 	end
 end
 
-local function saved_value_function(self, user_setting_name, widget_type, widget)
+local function saved_value_function(self, user_setting_name, widget_type, widget, saved_function)
 	local saved_value = assigned(self.changed_user_settings[user_setting_name], Application.user_setting(user_setting_name))
 	local default_value = DefaultUserSettings.get("user_settings", user_setting_name)
 
@@ -71,8 +71,10 @@ local function saved_value_function(self, user_setting_name, widget_type, widget
 		saved_value = default_value
 	end
 
+	local content = widget.content
+	local style = widget.style
+
 	if widget_type == "slider" then
-		local content = widget.content
 		local min = content.min
 		local max = content.max
 		saved_value = math.clamp(saved_value, min, max)
@@ -80,7 +82,6 @@ local function saved_value_function(self, user_setting_name, widget_type, widget
 		content.value = saved_value
 	else
 		local saved_index, default_index = nil
-		local content = widget.content
 
 		for index, value in pairs(content.options_values) do
 			if value == saved_value then
@@ -94,6 +95,8 @@ local function saved_value_function(self, user_setting_name, widget_type, widget
 
 		content.current_selection = saved_index or default_index
 	end
+
+	saved_function(content, style, saved_value)
 end
 
 local video_settings_definition = {
@@ -115,6 +118,14 @@ local video_settings_definition = {
 		callback = "cb_resolutions",
 		tooltip_text = "tooltip_resolutions",
 		widget_type = "drop_down"
+	},
+	{
+		setup = "cb_minimize_on_alt_tab_setup",
+		name = "minimize_on_alt_tab",
+		saved_value = "cb_minimize_on_alt_tab_saved_value",
+		callback = "cb_minimize_on_alt_tab",
+		tooltip_text = "tooltip_minimize_on_alt_tab",
+		widget_type = "stepper"
 	},
 	{
 		setup = "cb_fov_setup",
@@ -394,6 +405,7 @@ local video_settings_definition = {
 		widget_type = "empty"
 	}
 }
+local subtitles_background_color_preview = Colors.get_color_table_with_alpha("black", UISettings.subtitles_background_alpha)
 local audio_settings_definition = {
 	{
 		text = "settings_view_header_game_sound",
@@ -472,11 +484,84 @@ local audio_settings_definition = {
 		widget_type = "stepper"
 	},
 	{
+		setting_name = "sound_channel_configuration",
+		widget_type = "stepper",
+		value_set_function = function (content, style, value)
+			Wwise.set_bus_config("ingame_mastering_channel", value)
+		end,
+		options = {
+			{
+				text = Localize("menu_settings_auto"),
+				value = Wwise.AK_SPEAKER_SETUP_AUTO
+			},
+			{
+				text = Localize("menu_settings_mono"),
+				value = Wwise.AK_SPEAKER_SETUP_MONO
+			},
+			{
+				text = Localize("menu_settings_stereo"),
+				value = Wwise.AK_SPEAKER_SETUP_STEREO
+			},
+			{
+				text = Localize("menu_settings_surround_5_1"),
+				value = Wwise.AK_SPEAKER_SETUP_5POINT1
+			},
+			{
+				text = Localize("menu_settings_surround_7_1"),
+				value = Wwise.AK_SPEAKER_SETUP_7POINT1
+			}
+		}
+	},
+	{
 		setup = "cb_subtitles_setup",
 		saved_value = "cb_subtitles_saved_value",
 		callback = "cb_subtitles",
 		tooltip_text = "tooltip_subtitles",
 		widget_type = "stepper"
+	},
+	{
+		setting_name = "subtitles_background_opacity",
+		widget_type = "slider",
+		value_set_function = function (content, style, value)
+			subtitles_background_color_preview[1] = 2.55 * value
+		end,
+		value_saved_function = function (content, style, value)
+			subtitles_background_color_preview[1] = 2.55 * value
+		end,
+		options = {
+			decimals = 0,
+			min = 0,
+			max = 100
+		}
+	},
+	{
+		setting_name = "subtitles_font_size",
+		widget_type = "slider",
+		value_set_function = function (content, style, value)
+			style.slider_image_text.font_size = value
+		end,
+		value_saved_function = function (content, style, value)
+			style.slider_image_text.font_size = value
+			style.slider_image.color = subtitles_background_color_preview
+		end,
+		slider_image = {
+			slider_image = "rect_masked",
+			size = {
+				420,
+				50
+			},
+			color = subtitles_background_color_preview
+		},
+		slider_image_text = {
+			text = string.format("%s: %s", Localize("subtitle_name_witch_hunter"), Localize("pwh_activate_ability_zealot_03")),
+			font_size = UISettings.subtitles_font_size,
+			color = Colors.get_table("white")
+		},
+		options = {
+			decimals = 0,
+			min = 16,
+			max = 32
+		}
 	}
 }
 local gameplay_settings_definition = {
@@ -608,6 +693,27 @@ local gameplay_settings_definition = {
 		saved_value = "cb_blood_enabled_saved_value",
 		callback = "cb_blood_enabled",
 		tooltip_text = "tooltip_blood_enabled",
+		widget_type = "stepper"
+	},
+	{
+		setup = "cb_screen_blood_enabled_setup",
+		saved_value = "cb_screen_blood_enabled_saved_value",
+		callback = "cb_screen_blood_enabled",
+		tooltip_text = "tooltip_screen_blood_enabled",
+		widget_type = "stepper"
+	},
+	{
+		setup = "cb_dismemberment_enabled_setup",
+		saved_value = "cb_dismemberment_enabled_saved_value",
+		callback = "cb_dismemberment_enabled",
+		tooltip_text = "tooltip_dismemberment_enabled",
+		widget_type = "stepper"
+	},
+	{
+		setup = "cb_ragdoll_enabled_setup",
+		saved_value = "cb_ragdoll_enabled_saved_value",
+		callback = "cb_ragdoll_enabled",
+		tooltip_text = "tooltip_ragdoll_enabled",
 		widget_type = "stepper"
 	},
 	{
@@ -757,8 +863,8 @@ function generate_settings(settings_definition)
 			definition.callback = prefix
 			local widget_type = definition.widget_type
 
-			OptionsView[callback_name] = function (self, content)
-				return set_function(self, setting_name, widget_type, content, definition.value_set_function or function ()
+			OptionsView[callback_name] = function (self, content, style)
+				return set_function(self, setting_name, widget_type, content, style, definition.value_set_function or function ()
 					return
 				end)
 			end
@@ -774,7 +880,9 @@ function generate_settings(settings_definition)
 			definition.saved_value = saved_value_function_name
 
 			OptionsView[saved_value_function_name] = function (self, widget)
-				return saved_value_function(self, setting_name, widget_type, widget)
+				return saved_value_function(self, setting_name, widget_type, widget, definition.value_saved_function or function ()
+					return
+				end)
 			end
 
 			definition.tooltip_text = "tooltip_" .. setting_name
@@ -782,10 +890,14 @@ function generate_settings(settings_definition)
 	end
 end
 
+generate_settings(audio_settings_definition)
 generate_settings(gameplay_settings_definition)
 generate_settings(video_settings_definition)
 
-if rawget(_G, "LightFX") then
+local lightfx_defined = rawget(_G, "LightFX")
+local razerchroma_defined = rawget(_G, "RazerChroma")
+
+if lightfx_defined or razerchroma_defined then
 	gameplay_settings_definition[#gameplay_settings_definition + 1] = {
 		size_y = 30,
 		widget_type = "empty"
@@ -794,10 +906,23 @@ if rawget(_G, "LightFX") then
 		text = "settings_view_header_misc",
 		widget_type = "title"
 	}
+end
+
+if lightfx_defined then
 	gameplay_settings_definition[#gameplay_settings_definition + 1] = {
 		setup = "cb_alien_fx_setup",
 		saved_value = "cb_alien_fx_saved_value",
 		callback = "cb_alien_fx",
+		tooltip_text = "tooltip_alien_fx",
+		widget_type = "stepper"
+	}
+end
+
+if razerchroma_defined then
+	gameplay_settings_definition[#gameplay_settings_definition + 1] = {
+		setup = "cb_razer_chroma_setup",
+		saved_value = "cb_razer_chroma_saved_value",
+		callback = "cb_razer_chroma",
 		tooltip_text = "tooltip_alien_fx",
 		widget_type = "stepper"
 	}
@@ -1098,6 +1223,33 @@ local keybind_settings_definition = {
 		widget_type = "keybind",
 		actions = {
 			"hotkey_achievements"
+		}
+	},
+	{
+		keybind_description = "hotkey_weave_forge",
+		required_dlc = "scorpion",
+		keymappings_key = "IngameMenuKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"hotkey_weave_forge"
+		}
+	},
+	{
+		keybind_description = "hotkey_weave_play",
+		required_dlc = "scorpion",
+		keymappings_key = "IngameMenuKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"hotkey_weave_play"
+		}
+	},
+	{
+		keybind_description = "hotkey_weave_leaderboard",
+		required_dlc = "scorpion",
+		keymappings_key = "IngameMenuKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"hotkey_weave_leaderboard"
 		}
 	},
 	{

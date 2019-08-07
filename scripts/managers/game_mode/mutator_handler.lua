@@ -70,13 +70,27 @@ end
 MutatorHandler.hot_join_sync = function (self, peer_id)
 	local network_transmit = self._network_transmit
 	local active_mutators = self._active_mutators
+	local mutator_context = self._mutator_context
+	local is_server = self._is_server
 
 	for name, _ in pairs(active_mutators) do
 		local mutator_id = NetworkLookup.mutator_templates[name]
 
 		network_transmit:send_rpc("rpc_activate_mutator_client", peer_id, mutator_id)
 	end
+
+	for name, mutator_data in pairs(active_mutators) do
+		local template = mutator_data.template
+
+		if is_server then
+			template.server.hot_join_sync_function(mutator_context, mutator_data, peer_id)
+		else
+			template.client.hot_join_sync_function(mutator_context, mutator_data, peer_id)
+		end
+	end
 end
+
+local first_update = true
 
 MutatorHandler.update = function (self, dt, t)
 	local active_mutators = self._active_mutators
@@ -84,6 +98,12 @@ MutatorHandler.update = function (self, dt, t)
 	local is_server = self._is_server
 
 	for name, mutator_data in pairs(active_mutators) do
+		if first_update then
+			print("FIRST UPDATE @" .. t)
+
+			first_update = false
+		end
+
 		local template = mutator_data.template
 
 		if is_server and template.server.update then
@@ -104,7 +124,7 @@ MutatorHandler.activated_mutators = function (self)
 	return self._active_mutators
 end
 
-MutatorHandler.ai_killed = function (self, killed_unit, killer_unit, death_data)
+MutatorHandler.ai_killed = function (self, killed_unit, killer_unit, death_data, killing_blow)
 	local mutator_context = self._mutator_context
 	local active_mutators = self._active_mutators
 	local is_server = self._is_server
@@ -114,11 +134,125 @@ MutatorHandler.ai_killed = function (self, killed_unit, killer_unit, death_data)
 		local template = mutator_data.template
 
 		if is_server then
-			template.server.ai_killed_function(mutator_context, mutator_data, killed_unit, killer_unit, death_data)
+			template.server.ai_killed_function(mutator_context, mutator_data, killed_unit, killer_unit, death_data, killing_blow)
 		end
 
 		if has_local_client then
-			template.client.ai_killed_function(mutator_context, mutator_data, killed_unit, killer_unit, death_data)
+			template.client.ai_killed_function(mutator_context, mutator_data, killed_unit, killer_unit, death_data, killing_blow)
+		end
+	end
+end
+
+MutatorHandler.level_object_killed = function (self, killed_unit, killing_blow)
+	local mutator_context = self._mutator_context
+	local active_mutators = self._active_mutators
+	local is_server = self._is_server
+	local has_local_client = self._has_local_client
+
+	for _, mutator_data in pairs(active_mutators) do
+		local template = mutator_data.template
+
+		if is_server then
+			template.server.level_object_killed_function(mutator_context, mutator_data, killed_unit, killing_blow)
+		end
+
+		if has_local_client then
+			template.client.level_object_killed_function(mutator_context, mutator_data, killed_unit, killing_blow)
+		end
+	end
+end
+
+MutatorHandler.ai_hit_by_player = function (self, hit_unit, attacking_unit, attack_data)
+	local mutator_context = self._mutator_context
+	local active_mutators = self._active_mutators
+	local is_server = self._is_server
+	local has_local_client = self._has_local_client
+
+	for _, mutator_data in pairs(active_mutators) do
+		local template = mutator_data.template
+
+		if is_server then
+			template.server.ai_hit_by_player_function(mutator_context, mutator_data, hit_unit, attacking_unit, attack_data)
+		end
+
+		if has_local_client then
+			template.client.ai_hit_by_player_function(mutator_context, mutator_data, hit_unit, attacking_unit, attack_data)
+		end
+	end
+end
+
+MutatorHandler.player_hit = function (self, hit_unit, attacking_unit, attack_data)
+	local mutator_context = self._mutator_context
+	local active_mutators = self._active_mutators
+	local is_server = self._is_server
+	local has_local_client = self._has_local_client
+
+	for _, mutator_data in pairs(active_mutators) do
+		local template = mutator_data.template
+
+		if is_server then
+			template.server.player_hit_function(mutator_context, mutator_data, hit_unit, attacking_unit, attack_data)
+		end
+
+		if has_local_client then
+			template.client.player_hit_function(mutator_context, mutator_data, hit_unit, attacking_unit, attack_data)
+		end
+	end
+end
+
+MutatorHandler.player_respawned = function (self, spawned_unit)
+	local mutator_context = self._mutator_context
+	local active_mutators = self._active_mutators
+	local is_server = self._is_server
+	local has_local_client = self._has_local_client
+
+	for _, mutator_data in pairs(active_mutators) do
+		local template = mutator_data.template
+
+		if is_server then
+			template.server.player_respawned_function(mutator_context, mutator_data, spawned_unit)
+		end
+
+		if has_local_client then
+			template.client.player_respawned_function(mutator_context, mutator_data, spawned_unit)
+		end
+	end
+end
+
+MutatorHandler.damage_taken = function (self, attacked_unit, attacker_unit, damage, damage_source, damage_type)
+	local mutator_context = self._mutator_context
+	local active_mutators = self._active_mutators
+	local is_server = self._is_server
+	local has_local_client = self._has_local_client
+
+	for _, mutator_data in pairs(active_mutators) do
+		local template = mutator_data.template
+
+		if is_server then
+			template.server.damage_taken_function(mutator_context, mutator_data, attacked_unit, attacker_unit, damage, damage_source, damage_type)
+		end
+
+		if has_local_client then
+			template.client.damage_taken_function(mutator_context, mutator_data, attacked_unit, attacker_unit, damage, damage_source, damage_type)
+		end
+	end
+end
+
+MutatorHandler.ai_spawned = function (self, spawned_unit)
+	local mutator_context = self._mutator_context
+	local active_mutators = self._active_mutators
+	local is_server = self._is_server
+	local has_local_client = self._has_local_client
+
+	for _, mutator_data in pairs(active_mutators) do
+		local template = mutator_data.template
+
+		if is_server then
+			template.server.ai_spawned_function(mutator_context, mutator_data, spawned_unit)
+		end
+
+		if has_local_client then
+			template.client.ai_spawned_function(mutator_context, mutator_data, spawned_unit)
 		end
 	end
 end

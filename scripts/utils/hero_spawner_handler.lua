@@ -98,7 +98,6 @@ end
 
 HeroSpawnerHandler.save_selected_profile = function (self, index)
 	local save_manager = Managers.save
-	local save_data = SaveData
 	SaveData.wanted_profile_index = index
 
 	save_manager:auto_save(SaveFileName, SaveData, nil)
@@ -110,7 +109,7 @@ HeroSpawnerHandler.query_result = function (self, request_id)
 	return self.result
 end
 
-HeroSpawnerHandler.rpc_to_client_spawn_player = function (self, sender, local_player_id, profile_index, position, rotation, is_initial_spawn)
+HeroSpawnerHandler.rpc_to_client_spawn_player = function (self, sender, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn)
 	if self.hero_spawner_faded_in then
 		Managers.transition:fade_out(1)
 

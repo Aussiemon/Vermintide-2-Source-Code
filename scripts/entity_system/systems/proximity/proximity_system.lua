@@ -52,8 +52,9 @@ end
 
 ProximitySystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = {
+		last_num_friends_nearby = 0,
 		last_num_enemies_nearby = 0,
-		last_num_friends_nearby = 0
+		side = extension_init_data.side
 	}
 
 	ScriptUnit.set_extension(unit, "proximity_system", extension)
@@ -91,6 +92,14 @@ ProximitySystem.on_add_extension = function (self, world, unit, extension_name, 
 		extension.raycast_timer = 0
 		extension.hear_timer = 0
 		extension.player_broadphase_id = Broadphase.add(self.player_units_broadphase, unit, Unit.world_position(unit, 0), 0.5)
+		local breed = extension_init_data.breed
+
+		if breed and breed.proximity_system_check then
+			extension.special_broadphase_id = Broadphase.add(self.special_units_broadphase, unit, Unit.world_position(unit, 0), 0.5)
+			extension.bot_reaction_times = {}
+			extension.has_been_seen = false
+			self.special_unit_extension_map[unit] = extension
+		end
 	elseif extension_name == "AIProximityExtension" then
 		extension.enemy_broadphase_id = Broadphase.add(self.enemy_broadphase, unit, Unit.world_position(unit, 0), 0.5)
 		extension.bot_reaction_times = {}
@@ -105,6 +114,19 @@ ProximitySystem.on_add_extension = function (self, world, unit, extension_name, 
 	end
 
 	return extension
+end
+
+ProximitySystem.extensions_ready = function (self, world, unit, extension_name)
+	if extension_name == "PlayerProximityExtension" then
+		local extension = self.player_unit_extensions_map[unit]
+
+		if extension.side then
+			return
+		end
+
+		local side = Managers.state.side.side_by_unit[unit]
+		extension.side = side
+	end
 end
 
 ProximitySystem.on_remove_extension = function (self, unit, extension_name)
@@ -278,7 +300,9 @@ ProximitySystem.physics_async_update = function (self, context, t)
 	for unit, extension in pairs(self.ai_unit_extensions_map) do
 		local position = POSITION_LOOKUP[unit]
 
-		Broadphase_move(enemy_broadphase, extension.enemy_broadphase_id, position)
+		if position then
+			Broadphase_move(enemy_broadphase, extension.enemy_broadphase_id, position)
+		end
 	end
 
 	local player_unit_extensions_map = self.player_unit_extensions_map
@@ -287,7 +311,9 @@ ProximitySystem.physics_async_update = function (self, context, t)
 	for unit, extension in pairs(player_unit_extensions_map) do
 		local position = POSITION_LOOKUP[unit]
 
-		Broadphase_move(player_units_broadphase, extension.player_broadphase_id, position)
+		if position then
+			Broadphase_move(player_units_broadphase, extension.player_broadphase_id, position)
+		end
 	end
 
 	local special_units_broadphase = self.special_units_broadphase
@@ -295,7 +321,9 @@ ProximitySystem.physics_async_update = function (self, context, t)
 	for unit, extension in pairs(self.special_unit_extension_map) do
 		local position = POSITION_LOOKUP[unit]
 
-		Broadphase_move(special_units_broadphase, extension.special_broadphase_id, position)
+		if position then
+			Broadphase_move(special_units_broadphase, extension.special_broadphase_id, position)
+		end
 	end
 
 	local enemy_check_raycasts = self.enemy_check_raycasts
@@ -305,120 +333,139 @@ ProximitySystem.physics_async_update = function (self, context, t)
 	local ray_max = self.raycast_max_index
 
 	for unit, extension in pairs(player_unit_extensions_map) do
-		local position = POSITION_LOOKUP[unit]
+		repeat
+			local position = POSITION_LOOKUP[unit]
 
-		for proximity_type, proximity_data in pairs(extension.proximity_types) do
-			local broadphase = proximity_data.broadphase
-			local radius = proximity_data.distance
-			local num_nearby_units = Broadphase.query(broadphase, position, radius, nearby_units)
-			local check = proximity_data.check
-			local num_matching_units = 0
-
-			for i = 1, num_nearby_units, 1 do
-				local nearby_unit = nearby_units[i]
-
-				if nearby_unit ~= unit and check[nearby_unit] then
-					num_matching_units = num_matching_units + 1
-				end
+			if not position then
+				break
 			end
 
-			local last_num_matching_units = proximity_data.num
+			local side = extension.side
+			local enemy_units_lookup = side.enemy_units_lookup
 
-			if num_matching_units < last_num_matching_units * 0.5 or num_matching_units > last_num_matching_units * 1.5 then
-				proximity_data.num = num_matching_units
-				local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
-				local event_data = FrameTable.alloc_table()
-				event_data.num_units = num_matching_units
+			for proximity_type, proximity_data in pairs(extension.proximity_types) do
+				local broadphase = proximity_data.broadphase
+				local radius = proximity_data.distance
+				local num_nearby_units = Broadphase.query(broadphase, position, radius, nearby_units)
+				local check = proximity_data.check
+				local num_matching_units = 0
 
-				if proximity_type == "friends_close" then
+				for i = 1, num_nearby_units, 1 do
+					local nearby_unit = nearby_units[i]
+
+					if nearby_unit ~= unit and check[nearby_unit] then
+						num_matching_units = num_matching_units + 1
+					end
+				end
+
+				local last_num_matching_units = proximity_data.num
+
+				if num_matching_units < last_num_matching_units * 0.5 or num_matching_units > last_num_matching_units * 1.5 then
+					proximity_data.num = num_matching_units
+					local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+					local event_data = FrameTable.alloc_table()
+					event_data.num_units = num_matching_units
+
+					if proximity_type == "friends_close" then
+						for i = 1, num_nearby_units, 1 do
+							local nearby_unit = nearby_units[i]
+
+							if nearby_unit ~= unit and check[nearby_unit] then
+								local profile_name = ScriptUnit.extension(nearby_unit, "dialogue_system").context.player_profile
+								local near_title = near_lookup[profile_name]
+
+								if near_title then
+									event_data[near_title] = true
+								end
+							end
+						end
+					end
+
+					dialogue_input:trigger_dialogue_event(proximity_type, event_data)
+				end
+
+				table.clear(nearby_units)
+			end
+
+			local raycast_timer = extension.raycast_timer + dt
+			local hear_timer = extension.hear_timer + dt
+			local cast_ray, heard = nil
+
+			if RAYCAST_ENEMY_CHECK_INTERVAL < raycast_timer then
+				local my_direction = unit_forwards[unit]
+
+				if my_direction then
+					local my_pos_flat = Vector3.flat(position)
+					local height_position = my_direction.z
+					my_direction.z = 0
+					local radius = SPECIAL_PROXIMITY_DISTANCE
+					local num_nearby_units = Broadphase.query(special_units_broadphase, position, radius, nearby_units)
+
 					for i = 1, num_nearby_units, 1 do
 						local nearby_unit = nearby_units[i]
+						nearby_units[i] = nil
+						local is_alive = ScriptUnit.extension(nearby_unit, "health_system"):is_alive()
 
-						if nearby_unit ~= unit and check[nearby_unit] then
-							local profile_name = ScriptUnit.extension(nearby_unit, "dialogue_system").context.player_profile
-							local near_title = near_lookup[profile_name]
-							event_data[near_title] = true
-						end
-					end
-				end
+						if nearby_unit ~= unit and is_alive and enemy_units_lookup[nearby_unit] then
+							local nearby_unit_pos = POSITION_LOOKUP[nearby_unit]
+							local nearby_unit_pos_flat = Vector3.flat(nearby_unit_pos)
+							local direction_unit_nearby_unit = nearby_unit_pos_flat - my_pos_flat
+							direction_unit_nearby_unit = Vector3.normalize(direction_unit_nearby_unit)
 
-				dialogue_input:trigger_dialogue_event(proximity_type, event_data)
-			end
+							if HEAR_ENEMY_CHECK_INTERVAL < hear_timer then
+								local distance_sq = Vector3.distance_squared(nearby_unit_pos, position)
 
-			table.clear(nearby_units)
-		end
+								if distance_sq < SPECIAL_PROXIMITY_DISTANCE_HEARD_SQ then
+									local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+									local event_data = FrameTable.alloc_table()
+									local breed = Unit.get_data(nearby_unit, "breed")
 
-		local raycast_timer = extension.raycast_timer + dt
-		local hear_timer = extension.hear_timer + dt
-		local cast_ray, heard = nil
+									if breed then
+										event_data.enemy_tag = breed.name
 
-		if RAYCAST_ENEMY_CHECK_INTERVAL < raycast_timer then
-			local my_direction = unit_forwards[unit]
-			local my_pos_flat = Vector3.flat(position)
-			local height_position = my_direction.z
-			my_direction.z = 0
-			local radius = SPECIAL_PROXIMITY_DISTANCE
-			local num_nearby_units = Broadphase.query(special_units_broadphase, position, radius, nearby_units)
+										assert(event_data.enemy_tag)
 
-			for i = 1, num_nearby_units, 1 do
-				local nearby_unit = nearby_units[i]
-				nearby_units[i] = nil
-				local is_alive = ScriptUnit.extension(nearby_unit, "health_system"):is_alive()
+										event_data.enemy_unit = nearby_unit
+										event_data.distance = Vector3.distance(nearby_unit_pos_flat, my_pos_flat)
 
-				if nearby_unit ~= unit and is_alive then
-					local nearby_unit_pos = POSITION_LOOKUP[nearby_unit]
-					local nearby_unit_pos_flat = Vector3.flat(nearby_unit_pos)
-					local direction_unit_nearby_unit = nearby_unit_pos_flat - my_pos_flat
-					direction_unit_nearby_unit = Vector3.normalize(direction_unit_nearby_unit)
+										dialogue_input:trigger_dialogue_event("heard_enemy", event_data)
 
-					if HEAR_ENEMY_CHECK_INTERVAL < hear_timer then
-						local distance_sq = Vector3.distance_squared(nearby_unit_pos, position)
+										heard = true
+									end
+								end
+							end
 
-						if distance_sq < SPECIAL_PROXIMITY_DISTANCE_HEARD_SQ then
-							local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
-							local event_data = FrameTable.alloc_table()
-							event_data.enemy_tag = Unit.get_data(nearby_unit, "breed").name
+							local result = Vector3.dot(direction_unit_nearby_unit, my_direction)
 
-							assert(event_data.enemy_tag)
+							if result > 0.7 then
+								cast_ray = true
+								enemy_check_raycasts[ray_write_index] = unit
+								enemy_check_raycasts[ray_write_index + 1] = nearby_unit
+								ray_write_index = (ray_write_index + 1) % ray_max + 1
 
-							event_data.enemy_unit = nearby_unit
-							event_data.distance = Vector3.distance(nearby_unit_pos_flat, my_pos_flat)
-
-							dialogue_input:trigger_dialogue_event("heard_enemy", event_data)
-
-							heard = true
-						end
-					end
-
-					local result = Vector3.dot(direction_unit_nearby_unit, my_direction)
-
-					if result > 0.7 then
-						cast_ray = true
-						enemy_check_raycasts[ray_write_index] = unit
-						enemy_check_raycasts[ray_write_index + 1] = nearby_unit
-						ray_write_index = (ray_write_index + 1) % ray_max + 1
-
-						if ray_read_index == ray_write_index then
-							ray_read_index = (ray_read_index + 1) % ray_max + 1
+								if ray_read_index == ray_write_index then
+									ray_read_index = (ray_read_index + 1) % ray_max + 1
+								end
+							end
 						end
 					end
 				end
 			end
-		end
 
-		if cast_ray then
-			raycast_timer = 0
-		end
+			if cast_ray then
+				raycast_timer = 0
+			end
 
-		if heard then
-			hear_timer = 0
-		end
+			if heard then
+				hear_timer = 0
+			end
 
-		self.raycast_read_index = ray_read_index
-		self.raycast_write_index = ray_write_index
-		extension.hear_timer = hear_timer
-		extension.raycast_timer = raycast_timer
-		unit_forwards[unit] = nil
+			self.raycast_read_index = ray_read_index
+			self.raycast_write_index = ray_write_index
+			extension.hear_timer = hear_timer
+			extension.raycast_timer = raycast_timer
+			unit_forwards[unit] = nil
+		until true
 	end
 
 	self:_update_nearby_boss()
@@ -488,6 +535,11 @@ ProximitySystem._update_nearby_boss = function (self)
 
 	local broadphase_result = self._broadphase_result
 	local player_position = POSITION_LOOKUP[player_unit]
+
+	if not player_position then
+		return
+	end
+
 	local num_units = Broadphase.query(self.enemy_broadphase, player_position, 3, broadphase_result)
 	local closest_distance = math.huge
 
@@ -544,10 +596,6 @@ ProximitySystem._update_nearby_enemies = function (self)
 			if not old_nearby[unit] then
 				list_len = list_len + 1
 				list[list_len] = unit
-
-				if script_data.debug_proximity_fx then
-					Unit.set_data(unit, "debug_random", Math.random(111111, 999999))
-				end
 			end
 		end
 

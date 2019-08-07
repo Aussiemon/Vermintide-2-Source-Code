@@ -22,9 +22,12 @@ LiquidAreaDamageExtension.init = function (self, extension_init_context, unit, e
 	local template_name = extension_init_data.liquid_template
 	local template = LiquidAreaDamageTemplates.templates[template_name]
 	self._liquid_area_damage_template = template_name
-	local max_liquid = extension_init_data.max_liquid or template.max_liquid or 50
-	local position = self:_find_point(Unit.world_position(unit, 0))
+	local unit_position = Unit.world_position(unit, 0)
+	local above = template.above
+	local below = template.below
+	local position = self:_find_point(unit_position, above, below)
 	local cell_size = template.cell_size
+	local max_liquid = extension_init_data.max_liquid or template.max_liquid or 50
 	local xy_extents = math.min(max_liquid + 10, 50)
 	self._grid = HexGrid:new(position, xy_extents, 10, cell_size, 1)
 	local t = Managers.time:time("game")
@@ -251,15 +254,19 @@ LiquidAreaDamageExtension._create_liquid = function (self, real_index, angle)
 	self._inactive_flow[real_index] = liquid
 end
 
-LiquidAreaDamageExtension._find_point = function (self, position)
+LiquidAreaDamageExtension._find_point = function (self, position, above, below)
 	local nav_world = self._nav_world
-	local above = 2
-	local below = 2
-	local success, z = GwNavQueries.triangle_from_position(nav_world, position, above, below)
+	local success, z = GwNavQueries.triangle_from_position(nav_world, position, above or 2, below or 2)
 
 	if success then
 		return Vector3(position.x, position.y, z)
 	else
+		local navmesh_pos = GwNavQueries.inside_position_from_outside_position(nav_world, position, above or 2, below or 2, 2, 0.5)
+
+		if navmesh_pos then
+			return navmesh_pos
+		end
+
 		return nil
 	end
 end
@@ -284,21 +291,27 @@ LiquidAreaDamageExtension.destroy = function (self)
 		self._buff_affected_units[unit] = nil
 	end
 
-	local num_player_units = #PLAYER_AND_BOT_UNITS
+	local sides = Managers.state.side:sides()
 
-	for i = 1, num_player_units, 1 do
-		local player_unit = PLAYER_AND_BOT_UNITS[i]
+	for k = 1, #sides, 1 do
+		local side = sides[k]
+		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
+		local num_player_units = #player_and_bot_units
 
-		if Unit.alive(player_unit) then
-			local is_colliding = self._colliding_units[player_unit]
-			local status_extension = is_colliding and ScriptUnit.extension(player_unit, "status_system")
+		for i = 1, num_player_units, 1 do
+			local player_unit = player_and_bot_units[i]
 
-			if is_colliding and status_extension.in_liquid_unit == liquid_unit then
-				StatusUtils.set_in_liquid_network(player_unit, false)
+			if Unit.alive(player_unit) then
+				local is_colliding = self._colliding_units[player_unit]
+				local status_extension = is_colliding and ScriptUnit.extension(player_unit, "status_system")
+
+				if is_colliding and status_extension.in_liquid_unit == liquid_unit then
+					StatusUtils.set_in_liquid_network(player_unit, false)
+				end
 			end
-		end
 
-		self._colliding_units[player_unit] = nil
+			self._colliding_units[player_unit] = nil
+		end
 	end
 
 	if self._use_nav_cost_map_volumes then
@@ -526,49 +539,55 @@ LiquidAreaDamageExtension._update_collision_detection = function (self, dt, t)
 	local buff_condition = self._buff_condition
 
 	if self._check_player_units then
-		local num_player_units = #PLAYER_AND_BOT_UNITS
+		local sides = Managers.state.side:sides()
 
-		for i = 1, num_player_units, 1 do
-			local unit = PLAYER_AND_BOT_UNITS[i]
-			local status_extension = ScriptUnit.extension(unit, "status_system")
+		for k = 1, #sides, 1 do
+			local side = sides[k]
+			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
+			local num_player_units = #player_and_bot_units
 
-			if self:_is_unit_colliding(grid, unit) then
-				self._colliding_units[unit] = 4
+			for i = 1, num_player_units, 1 do
+				local unit = player_and_bot_units[i]
+				local status_extension = ScriptUnit.extension(unit, "status_system")
 
-				if status_extension.in_liquid_unit ~= liquid_unit then
-					StatusUtils.set_in_liquid_network(unit, true, liquid_unit)
-				end
+				if self:_is_unit_colliding(grid, unit) then
+					self._colliding_units[unit] = 4
 
-				if not self._affected_player_units[unit] and self._hit_player_function then
-					self._affected_player_units[unit] = true
+					if status_extension.in_liquid_unit ~= liquid_unit then
+						StatusUtils.set_in_liquid_network(unit, true, liquid_unit)
+					end
 
-					self._hit_player_function(unit, PLAYER_AND_BOT_UNITS, self._source_unit)
-				end
+					if not self._affected_player_units[unit] and self._hit_player_function then
+						self._affected_player_units[unit] = true
 
-				local buff_extension = ScriptUnit.extension(unit, "buff_system")
+						self._hit_player_function(unit, player_and_bot_units, self._source_unit)
+					end
 
-				if buff_name and apply_buff_to_player and not buff_extension:has_buff_type(buff_template_type) then
-					self:_add_buff_helper_function(unit, liquid_unit, buff_name, buff_condition, buff_system)
-				end
-			else
-				self._colliding_units[unit] = nil
+					local buff_extension = ScriptUnit.extension(unit, "buff_system")
 
-				if status_extension.in_liquid_unit == liquid_unit then
-					StatusUtils.set_in_liquid_network(unit, false)
-				end
+					if buff_name and apply_buff_to_player and not buff_extension:has_buff_type(buff_template_type) then
+						self:_add_buff_helper_function(unit, liquid_unit, buff_name, buff_condition, buff_system)
+					end
+				else
+					self._colliding_units[unit] = nil
 
-				if buff_name and self._buff_affected_units[unit] then
-					local server_buff_id = self._buff_affected_units[unit]
+					if status_extension.in_liquid_unit == liquid_unit then
+						StatusUtils.set_in_liquid_network(unit, false)
+					end
 
-					buff_system:remove_server_controlled_buff(unit, server_buff_id)
+					if buff_name and self._buff_affected_units[unit] then
+						local server_buff_id = self._buff_affected_units[unit]
 
-					self._buff_affected_units[unit] = nil
+						buff_system:remove_server_controlled_buff(unit, server_buff_id)
+
+						self._buff_affected_units[unit] = nil
+					end
 				end
 			end
-		end
 
-		self._check_player_units = false
-		units_per_frame = units_per_frame - num_player_units
+			self._check_player_units = false
+			units_per_frame = units_per_frame - num_player_units
+		end
 	end
 
 	local units = Managers.state.conflict:spawned_units()

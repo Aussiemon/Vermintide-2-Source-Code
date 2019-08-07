@@ -45,6 +45,30 @@ local game_object_templates = {
 		is_level_unit = false,
 		has_uniform_scaling = true
 	},
+	ai_unit_chaos_troll = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		syncs_yaw = true,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false,
+		has_uniform_scaling = true
+	},
+	ai_unit_beastmen_bestigor = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		syncs_yaw = true,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false,
+		has_uniform_scaling = true
+	},
+	ai_unit_beastmen_minotaur = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		syncs_yaw = true,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false,
+		has_uniform_scaling = true
+	},
 	ai_unit_with_inventory_and_target = {
 		game_object_created_func_name = "game_object_created_network_unit",
 		syncs_position = true,
@@ -162,13 +186,6 @@ local game_object_templates = {
 		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
 		is_level_unit = false
 	},
-	flame_wave_projectile_unit = {
-		game_object_created_func_name = "game_object_created_network_unit",
-		syncs_position = false,
-		syncs_rotation = false,
-		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
-		is_level_unit = false
-	},
 	true_flight_projectile_unit = {
 		game_object_created_func_name = "game_object_created_network_unit",
 		syncs_position = true,
@@ -225,10 +242,55 @@ local game_object_templates = {
 		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
 		is_level_unit = false
 	},
+	limited_owned_pickup_projectile_unit = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		syncs_rotation = true,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false
+	},
 	pickup_training_dummy_unit = {
 		game_object_created_func_name = "game_object_created_network_unit",
 		syncs_position = true,
 		syncs_rotation = true,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false
+	},
+	weave_capture_point_unit = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		syncs_rotation = true,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false
+	},
+	weave_target_unit = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		syncs_rotation = true,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false
+	},
+	weave_interaction_unit = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		syncs_rotation = true,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false
+	},
+	weave_doom_wheel_unit = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		syncs_rotation = true,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false
+	},
+	pickup_torch_unit_init = {
+		syncs_rotation = true
+	},
+	weave_kill_enemies_unit = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = false,
+		syncs_rotation = false,
 		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
 		is_level_unit = false
 	},
@@ -267,6 +329,20 @@ local game_object_templates = {
 		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
 		is_level_unit = false
 	},
+	shadow_flare_light = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		syncs_rotation = false,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false
+	},
+	thorn_bush_unit = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		syncs_rotation = true,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false
+	},
 	aoe_unit = {
 		game_object_created_func_name = "game_object_created_network_unit",
 		syncs_position = true,
@@ -295,6 +371,13 @@ local game_object_templates = {
 		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
 		is_level_unit = false
 	},
+	limited_owned_pickup_unit = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		syncs_rotation = true,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false
+	},
 	objective_pickup_unit = {
 		game_object_created_func_name = "game_object_created_network_unit",
 		syncs_position = true,
@@ -309,6 +392,31 @@ local game_object_templates = {
 		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
 		is_level_unit = false
 	},
+	positioned_prop_unit = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		syncs_rotation = true,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit"
+	},
+	destructible_objective_unit = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		syncs_rotation = true,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit"
+	},
+	objective_unit = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		is_level_unit = false,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit"
+	},
+	standard_unit = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		syncs_rotation = true,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false
+	},
 	network_synched_dummy_unit = {
 		game_object_created_func_name = "game_object_created_network_unit",
 		syncs_position = true,
@@ -316,6 +424,13 @@ local game_object_templates = {
 		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
 		is_level_unit = false,
 		has_uniform_scaling = true
+	},
+	position_synched_dummy_unit = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		syncs_rotation = true,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false
 	},
 	buff_aoe_unit = {
 		game_object_created_func_name = "game_object_created_network_unit",
@@ -387,8 +502,28 @@ local game_object_templates = {
 	keep_decoration_painting = {
 		game_object_created_func_name = "game_object_created_keep_decoration",
 		game_object_destroyed_func_name = "game_object_destroyed_keep_decoration"
+	},
+	progress_timer = {
+		game_object_created_func_name = "game_object_created_progress_timer",
+		game_object_destroyed_func_name = "game_object_destroyed_progress_timer"
+	},
+	weave = {
+		game_object_created_func_name = "game_object_created_weave",
+		game_object_destroyed_func_name = "game_object_destroyed_weave"
+	},
+	weave_objective = {
+		game_object_created_func_name = "game_object_created_weave_objective",
+		game_object_destroyed_func_name = "game_object_destroyed_weave_objective"
 	}
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local templates = dlc.game_object_templates
+
+	if templates then
+		table.merge_recursive(game_object_templates, templates)
+	end
+end
 
 for go_template_name, go_template in pairs(game_object_templates) do
 	go_template.go_type = go_template_name

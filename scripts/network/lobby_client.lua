@@ -83,8 +83,8 @@ LobbyClient.lobby_data = function (self, key)
 	return self.lobby:data(key)
 end
 
-LobbyClient.user_name = function (self, host)
-	return self.lobby:user_name(host)
+LobbyClient.user_name = function (self, peer_id)
+	return string.gsub(self.lobby:user_name(peer_id), "%c", "")
 end
 
 LobbyClient.is_joined = function (self)

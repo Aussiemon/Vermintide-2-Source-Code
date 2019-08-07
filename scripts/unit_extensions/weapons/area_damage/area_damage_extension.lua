@@ -24,6 +24,7 @@ AreaDamageExtension.init = function (self, extension_init_context, unit, extensi
 	self.nav_tag_volume_layer = extension_init_data.nav_tag_volume_layer or Unit.get_data(unit, "nav_tag_volume_layer")
 	self.explosion_template_name = extension_init_data.explosion_template_name
 	self.owner_player = extension_init_data.owner_player
+	self.slow_modifier = extension_init_data.slow_modifier
 	self.effect_size = self.radius * 1.5
 	self.damage_timer = 0
 	self.life_timer = 0
@@ -248,7 +249,7 @@ AreaDamageExtension.update = function (self, unit, input, dt, context, t)
 	local area_damage = AreaDamageTemplates.get_template(self.area_damage_template)
 
 	if self.is_server then
-		local updated, damage_buffer = area_damage.server.update(self.damage_source, self.unit, self.radius, self.aoe_dot_damage, self.life_time, self.life_timer, self.aoe_dot_damage_interval, self.damage_timer, self.damage_players, self.explosion_template_name)
+		local updated, damage_buffer = area_damage.server.update(self.damage_source, self.unit, self.radius, self.aoe_dot_damage, self.life_time, self.life_timer, self.aoe_dot_damage_interval, self.damage_timer, self.damage_players, self.explosion_template_name, self.slow_modifier)
 
 		if updated then
 			self:_add_to_damage_buffer(damage_buffer)
@@ -268,7 +269,7 @@ AreaDamageExtension.update = function (self, unit, input, dt, context, t)
 		end
 	end
 
-	area_damage.client.update(self.world, self.radius, self.unit, self.player_screen_effect_name, self.player_unit_particles, self.damage_players, self.explosion_template_name)
+	area_damage.client.update(self.world, self.radius, self.unit, self.player_screen_effect_name, self.player_unit_particles, self.damage_players, self.explosion_template_name, self.slow_modifier)
 
 	self.damage_timer = self.damage_timer + dt
 	self.life_timer = self.life_timer + dt
@@ -333,11 +334,7 @@ AreaDamageExtension._add_to_damage_buffer = function (self, temp_damage_buffer)
 end
 
 AreaDamageExtension.hot_join_sync = function (self, sender)
-	if self.enabled then
-		local level_index = Managers.state.network:level_object_id(self.unit)
-
-		RPC.rpc_enable_area_damage(sender, level_index, true)
-	end
+	return
 end
 
 return

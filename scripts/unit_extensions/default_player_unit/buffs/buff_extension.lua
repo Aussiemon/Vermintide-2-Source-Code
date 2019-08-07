@@ -34,23 +34,25 @@ end
 BuffExtension.extensions_ready = function (self, world, unit)
 	local breed = Unit.get_data(unit, "breed")
 
-	if breed then
+	if not breed or not breed.is_player then
 		return
 	end
 
-	local buff_system = Managers.state.entity:system("buff_system")
-	local group_buffs = buff_system:get_player_group_buffs()
-	local num_group_buffs = #group_buffs
+	if breed.is_hero then
+		local buff_system = Managers.state.entity:system("buff_system")
+		local group_buffs = buff_system:get_player_group_buffs()
+		local num_group_buffs = #group_buffs
 
-	if num_group_buffs > 0 then
-		for i = 1, num_group_buffs, 1 do
-			local group_buff_data = group_buffs[i]
-			local group_buff_template_name = group_buff_data.group_buff_template_name
-			local group_buff = GroupBuffTemplates[group_buff_template_name]
-			local buff_per_instance = group_buff.buff_per_instance
-			local recipients = group_buff_data.recipients
-			local id = self:add_buff(buff_per_instance)
-			recipients[unit] = id
+		if num_group_buffs > 0 then
+			for i = 1, num_group_buffs, 1 do
+				local group_buff_data = group_buffs[i]
+				local group_buff_template_name = group_buff_data.group_buff_template_name
+				local group_buff = GroupBuffTemplates[group_buff_template_name]
+				local buff_per_instance = group_buff.buff_per_instance
+				local recipients = group_buff_data.recipients
+				local id = self:add_buff(buff_per_instance)
+				recipients[unit] = id
+			end
 		end
 	end
 
@@ -239,6 +241,18 @@ BuffExtension.add_buff = function (self, template_name, params)
 						local max_multiplier = variable_multiplier_table[2]
 						multiplier = math.lerp(min_multiplier, max_multiplier, variable_value)
 					end
+
+					local variable_bonus_max = sub_buff_template.variable_bonus_max
+
+					if variable_bonus_max then
+						bonus = math.lerp(0, variable_bonus_max, variable_value)
+					end
+
+					local variable_multiplier_max = sub_buff_template.variable_multiplier_max
+
+					if variable_multiplier_max then
+						multiplier = math.lerp(0, variable_multiplier_max, variable_value)
+					end
 				end
 
 				bonus = params.external_optional_bonus or bonus
@@ -338,6 +352,14 @@ BuffExtension._add_stat_buff = function (self, sub_buff_template, buff)
 	local stat_buff_type = sub_buff_template.stat_buff
 	local stat_buff = stat_buffs[stat_buff_type]
 	local application_method = StatBuffApplicationMethods[stat_buff_type]
+
+	if sub_buff_template.wind_mutator then
+		local wind_strength = Managers.weave:get_wind_strength()
+		local difficulty_name = Managers.state.difficulty:get_difficulty()
+		local wind_settings = Managers.weave:get_active_wind_settings()
+		multiplier = wind_settings[sub_buff_template.stat_buff][difficulty_name][wind_strength]
+	end
+
 	local index = nil
 
 	if application_method == "proc" then
@@ -538,6 +560,14 @@ BuffExtension._remove_stat_buff = function (self, buff)
 	local stat_buff = sub_buff_template.stat_buff
 	local stat_buffs = self._stat_buffs[stat_buff]
 	local application_method = StatBuffApplicationMethods[stat_buff]
+
+	if sub_buff_template.wind_mutator then
+		local wind_strength = Managers.weave:get_wind_strength()
+		local difficulty_name = Managers.state.difficulty:get_difficulty()
+		local wind_settings = Managers.weave:get_active_wind_settings()
+		multiplier = wind_settings[sub_buff_template.stat_buff][difficulty_name][wind_strength]
+	end
+
 	local index = buff.stat_buff_index
 
 	if application_method == "proc" then
@@ -684,12 +714,19 @@ BuffExtension.apply_buffs_to_value = function (self, value, stat_buff)
 	local is_proc = StatBuffApplicationMethods[stat_buff] == "proc"
 	local id = nil
 
-	for _, stat_buff_data in pairs(stat_buffs) do
+	for name, stat_buff_data in pairs(stat_buffs) do
 		local proc_chance = stat_buff_data.proc_chance
 
 		if math.random() <= proc_chance then
 			local bonus = stat_buff_data.bonus
-			local multiplier = 1 + stat_buff_data.multiplier
+			local multiplier = stat_buff_data.multiplier
+
+			if type(multiplier) == "table" then
+				local wind_strength = Managers.weave:get_wind_strength()
+				multiplier = multiplier[wind_strength]
+			end
+
+			multiplier = multiplier + 1
 			final_value = final_value * multiplier + bonus
 
 			if is_proc then

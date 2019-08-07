@@ -26,6 +26,14 @@ ActionCareerWHBountyhunter.client_owner_start_action = function (self, new_actio
 	ActionCareerWHBountyhunter.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level, action_init_data)
 	self:_play_vo()
 
+	local career_extension = self.career_extension
+
+	career_extension:start_activated_ability_cooldown()
+
+	if talent_extension:has_talent("victor_bountyhunter_activated_ability_reset_cooldown_on_stacks") then
+		career_extension:set_activated_ability_cooldown_paused()
+	end
+
 	local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
 
 	inventory_extension:check_and_drop_pickups("career_ability")
@@ -34,10 +42,8 @@ end
 ActionCareerWHBountyhunter.finish = function (self, reason)
 	ActionCareerWHBountyhunter.super.finish(self, reason)
 
-	local owner_unit = self.owner_unit
 	local talent_extension = self.talent_extension
 	local inventory_extension = self.inventory_extension
-	local career_extension = self.career_extension
 
 	if talent_extension:has_talent("victor_bountyhunter_activated_ability_reload", "witch_hunter", true) then
 		local weapon_slot = "slot_ranged"
@@ -53,20 +59,7 @@ ActionCareerWHBountyhunter.finish = function (self, reason)
 		end
 	end
 
-	if talent_extension:has_talent("victor_bountyhunter_activated_ability_heal", "witch_hunter", true) then
-		local network_manager = Managers.state.network
-		local network_transmit = network_manager.network_transmit
-		local unit_id = network_manager:unit_game_object_id(owner_unit)
-		local heal_type_id = NetworkLookup.heal_types.career_skill
-
-		network_transmit:send_rpc_server("rpc_request_heal", unit_id, 35, heal_type_id)
-	end
-
 	self.inventory_extension:wield_previous_non_level_slot()
-
-	if self.upper_shot_done and self.lower_shot_done then
-		career_extension:start_activated_ability_cooldown()
-	end
 end
 
 ActionCareerWHBountyhunter._play_vo = function (self)

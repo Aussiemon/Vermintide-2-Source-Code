@@ -21,7 +21,6 @@ ActPresentationUI.init = function (self, ingame_ui_context)
 	self.wwise_world = Managers.world:wwise_world(self.world)
 
 	self:create_ui_elements()
-	rawset(_G, "act_presentation_ui", self)
 
 	local input_manager = self.input_manager
 
@@ -116,8 +115,6 @@ end
 
 ActPresentationUI.destroy = function (self)
 	self.ui_animator = nil
-
-	rawset(_G, "act_presentation_ui", nil)
 end
 
 ActPresentationUI._update_animations = function (self, dt)

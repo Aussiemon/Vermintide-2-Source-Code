@@ -1,6 +1,7 @@
 local SIZE_X = 1920
 local SIZE_Y = 1080
 local RETAINED_MODE_ENABLED = true
+local DAMAGE_FONT_SIZE = 24
 local portrait_scale = 1
 local slot_scale = 1
 local scenegraph_definition = {
@@ -380,20 +381,35 @@ local function create_dynamic_portait_widget()
 
 						return ammo_progress and ammo_progress <= 0
 					end
+				},
+				{
+					style_id = "respawn_countdown_text",
+					pass_type = "text",
+					text_id = "respawn_countdown_text",
+					retained_mode = false,
+					content_check_function = function (content)
+						return true
+					end
 				}
 			}
 		},
 		content = {
-			talk_indicator_highlight = "voip_wave",
-			connecting = false,
-			display_portrait_icon = false,
-			talk_indicator_glow = "voip_speaker_glow",
-			bar_start_side = "left",
-			portrait_icon = "status_icon_needs_assist",
+			respawn_timer = 0,
 			ammo_indicator_empty = "unit_frame_ammo_empty",
-			display_portrait_overlay = false,
+			display_portrait_icon = false,
+			state = "hidden",
+			last_counts = 4,
+			portrait_icon = "status_icon_needs_assist",
+			talk_indicator_highlight = "voip_wave",
+			total_countdown_time = 0,
+			respawn_countdown_text = "",
+			total_fadeout_time = 0.66,
 			connecting_icon = "matchmaking_connecting_icon",
 			talk_indicator_highlight_glow = "voip_wave_glow",
+			talk_indicator_glow = "voip_speaker_glow",
+			connecting = false,
+			bar_start_side = "left",
+			display_portrait_overlay = false,
 			talk_indicator = "voip_speaker",
 			ammo_indicator = "unit_frame_ammo_low",
 			ammo_bar = {
@@ -534,6 +550,24 @@ local function create_dynamic_portait_widget()
 					255,
 					255,
 					255
+				}
+			},
+			respawn_countdown_text = {
+				vertical_alignment = "center",
+				scenegraph_id = "portrait_pivot",
+				horizontal_alignment = "center",
+				font_type = "hell_shark",
+				font_size = 64,
+				text_color = {
+					255,
+					255,
+					168,
+					0
+				},
+				offset = {
+					0,
+					0,
+					16
 				}
 			}
 		},
@@ -1187,6 +1221,120 @@ local function create_dynamic_ability_widget()
 	}
 end
 
+local function create_damage_widget(rows)
+	local entries = {}
+
+	for i = 1, rows, 1 do
+		local widget_definition = {
+			scenegraph_id = "portrait_pivot",
+			element = {
+				passes = {
+					{
+						style_id = "text",
+						pass_type = "text",
+						text_id = "text"
+					},
+					{
+						style_id = "text_total_sum",
+						pass_type = "text",
+						text_id = "text_total_sum"
+					},
+					{
+						style_id = "text_last_dmg",
+						pass_type = "text",
+						text_id = "text_last_dmg"
+					}
+				}
+			},
+			content = {
+				text = "",
+				text_last_dmg_2 = "",
+				text_last_dmg = "",
+				text_total_sum = "",
+				text_last_dmg_3 = ""
+			},
+			style = {
+				text = {
+					vertical_alignment = "bottom",
+					dynamic_font = true,
+					horizontal_alignment = "left",
+					debug_draw_box = true,
+					font_type = "hell_shark",
+					font_size = DAMAGE_FONT_SIZE,
+					text_color = Colors.get_table("white"),
+					offset = {
+						0,
+						20 - i * 20,
+						0
+					}
+				},
+				text_total_sum = {
+					vertical_alignment = "bottom",
+					dynamic_font = true,
+					horizontal_alignment = "center",
+					debug_draw_box = true,
+					font_type = "hell_shark",
+					font_size = DAMAGE_FONT_SIZE,
+					text_color = Colors.get_table("green"),
+					offset = {
+						0,
+						20 - i * 20,
+						0
+					}
+				},
+				text_last_dmg = {
+					vertical_alignment = "bottom",
+					dynamic_font = true,
+					horizontal_alignment = "left",
+					debug_draw_box = true,
+					font_type = "hell_shark",
+					font_size = DAMAGE_FONT_SIZE,
+					text_color = Colors.get_table("yellow"),
+					offset = {
+						0,
+						20 - i * 20,
+						0
+					}
+				},
+				text_last_dmg_2 = {
+					vertical_alignment = "bottom",
+					dynamic_font = true,
+					horizontal_alignment = "left",
+					font_type = "hell_shark",
+					font_size = DAMAGE_FONT_SIZE,
+					text_color = Colors.get_table("yellow"),
+					offset = {
+						0,
+						20 - i * 20,
+						0
+					}
+				},
+				text_last_dmg_3 = {
+					vertical_alignment = "bottom",
+					dynamic_font = true,
+					horizontal_alignment = "left",
+					font_type = "hell_shark",
+					font_size = DAMAGE_FONT_SIZE,
+					text_color = Colors.get_table("yellow"),
+					offset = {
+						0,
+						20 - i * 20,
+						0
+					}
+				}
+			},
+			offset = {
+				64,
+				30,
+				0
+			}
+		}
+		entries[i] = widget_definition
+	end
+
+	return entries
+end
+
 local widget_definitions = {
 	loadout_dynamic = create_dynamic_loadout_widget(),
 	portrait_static = UIWidgets.create_portrait_frame("portrait_pivot", "default", "-", portrait_scale, RETAINED_MODE_ENABLED),
@@ -1195,9 +1343,11 @@ local widget_definitions = {
 	health_dynamic = create_dynamic_health_widget(),
 	ability_dynamic = create_dynamic_ability_widget()
 }
+local damage_widget_definitions = create_damage_widget(4)
 local features_list = {
 	equipment = true,
 	ammo = true,
+	damage = true,
 	ability = true
 }
 local widget_name_by_feature = {
@@ -1214,7 +1364,8 @@ local widget_name_by_feature = {
 		health = "health_dynamic",
 		equipment = "loadout_dynamic",
 		ammo = "default_dynamic",
-		ability = "ability_dynamic"
+		ability = "ability_dynamic",
+		damage = "damage_dynamic"
 	}
 }
 
@@ -1225,5 +1376,6 @@ return {
 	features_list = features_list,
 	widget_name_by_feature = widget_name_by_feature,
 	scenegraph_definition = scenegraph_definition,
-	widget_definitions = widget_definitions
+	widget_definitions = widget_definitions,
+	damage_widget_definitions = damage_widget_definitions
 }

@@ -46,8 +46,14 @@ end
 CareerAbilityWEShade._ability_available = function (self)
 	local career_extension = self._career_extension
 	local status_extension = self._status_extension
+	local talent_extension = ScriptUnit.extension(self._owner_unit, "talent_system")
+	local available = true
 
-	return career_extension:can_use_activated_ability() and not status_extension:is_disabled()
+	if talent_extension:has_talent("kerillian_shade_activated_ability_dash") then
+		available = false
+	end
+
+	return available and career_extension:can_use_activated_ability() and not status_extension:is_disabled()
 end
 
 CareerAbilityWEShade._run_ability = function (self)
@@ -60,11 +66,11 @@ CareerAbilityWEShade._run_ability = function (self)
 	local buff_extension = self._buff_extension
 	local career_extension = self._career_extension
 	local status_extension = self._status_extension
-	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
+	local talent_extension = ScriptUnit.extension(self._owner_unit, "talent_system")
 	local buff_name = "kerillian_shade_activated_ability"
 
-	if talent_extension:has_talent("kerillian_shade_activated_ability_duration", "wood_elf", true) then
-		buff_name = "kerillian_shade_activated_ability_duration"
+	if talent_extension:has_talent("kerillian_shade_activated_ability_quick_cooldown", "wood_elf", true) then
+		buff_name = "kerillian_shade_activated_ability_quick_cooldown"
 	end
 
 	local buff_template_name_id = NetworkLookup.buff_templates[buff_name]

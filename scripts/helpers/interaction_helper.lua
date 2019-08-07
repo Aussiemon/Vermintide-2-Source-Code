@@ -30,10 +30,13 @@ InteractionHelper.interactions = {
 	decoration = {},
 	achievement_access = {},
 	luckstone_access = {},
-	difficulty_selection_access = {}
+	difficulty_selection_access = {},
+	weave_level_select_access = {},
+	weave_magic_forge_access = {},
+	weave_leaderboard_access = {}
 }
 
-for name, dlc in pairs(DLCSettings) do
+for _, dlc in pairs(DLCSettings) do
 	local interactions = dlc.interactions
 
 	if interactions then
@@ -43,7 +46,7 @@ for name, dlc in pairs(DLCSettings) do
 	end
 end
 
-for interaction, config_table in pairs(InteractionHelper.interactions) do
+for _, config_table in pairs(InteractionHelper.interactions) do
 	config_table.request_rpc = config_table.request_rpc or "rpc_generic_interaction_request"
 end
 

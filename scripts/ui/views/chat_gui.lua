@@ -424,46 +424,21 @@ ChatGui.clear_current_transition = function (self)
 	self.transition_timer = nil
 end
 
-ChatGui.block_input = function (self, input_service_name)
-	local input_manager = self.input_manager
-
-	if input_service_name then
-		if Managers.popup:has_popup() then
-			input_manager:block_device_except_service("popup", "keyboard", 1)
-			input_manager:block_device_except_service("popup", "mouse", 1)
-			input_manager:block_device_except_service("popup", "gamepad", 1)
-		else
-			input_manager:block_device_except_service(input_service_name, "keyboard", 1)
-			input_manager:block_device_except_service(input_service_name, "mouse", 1)
-			input_manager:block_device_except_service(input_service_name, "gamepad", 1)
-		end
-
-		self:_hide_cursor()
-	else
-		input_manager:block_device_except_service("chat_input", "keyboard", 1)
-		input_manager:block_device_except_service("chat_input", "mouse", 1)
-		input_manager:block_device_except_service("chat_input", "gamepad", 1)
-		self:_show_cursor()
-	end
+ChatGui.block_input = function (self)
+	self.input_manager:capture_input({
+		"keyboard",
+		"gamepad",
+		"mouse"
+	}, 1, "chat_input", "ChatGui")
+	self:_show_cursor()
 end
 
-ChatGui.unblock_input = function (self, no_unblock)
-	local input_manager = self.input_manager
-
-	if Managers.popup:has_popup() then
-		input_manager:block_device_except_service("popup", "keyboard", 1)
-		input_manager:block_device_except_service("popup", "mouse", 1)
-		input_manager:block_device_except_service("popup", "gamepad", 1)
-	elseif no_unblock then
-		input_manager:block_device_except_service(nil, "keyboard", 1)
-		input_manager:block_device_except_service(nil, "mouse", 1)
-		input_manager:block_device_except_service(nil, "gamepad", 1)
-	else
-		input_manager:device_unblock_all_services("keyboard", 1)
-		input_manager:device_unblock_all_services("mouse", 1)
-		input_manager:device_unblock_all_services("gamepad", 1)
-	end
-
+ChatGui.unblock_input = function (self)
+	self.input_manager:release_input({
+		"keyboard",
+		"gamepad",
+		"mouse"
+	}, 1, "chat_input", "ChatGui")
 	self:_hide_cursor()
 end
 
@@ -552,7 +527,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 
 		if tab_hotspot.on_release or (input_service:get("deactivate_chat_input") and not block_chat_activation) or menu_close_press_outside_area or auto_close then
 			if chat_focused and (tab_hotspot.on_release or (input_service:get("deactivate_chat_input") and not block_chat_activation) or menu_close_press_outside_area) then
-				self:_handle_input_service_release(self.menu_active, menu_input_service, no_unblock)
+				self:unblock_input()
 				table.clear(tab_hotspot)
 			end
 
@@ -575,30 +550,19 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 				end
 
 				if self.chat_message ~= "" then
-					if self.chat_message == "/crashthegame123" then
-						if Application.crash then
-							print("crashing game from chat command")
-							Application.crash("access_violation")
-						end
-					elseif self.chat_message == "/scriptcrashthegame123" then
-						print("crashing game from script from chat command")
+					if self.chat_manager:has_channel(1) then
+						local localize = false
+						local localize_parameters = false
 
-						slot17 = debug + chrash
-					else
-						if self.chat_manager:has_channel(1) then
-							local localize = false
-							local localize_parameters = false
-
-							self.chat_manager:send_chat_message(1, 1, self.chat_message, localize, nil, localize_parameters, self.recent_message_index)
-						end
-
-						self.chat_message = ""
-						self.chat_mode = "insert"
-						self.chat_index = 1
-						self.chat_input_widget.content.caret_index = 1
-						self.chat_input_widget.content.text_index = 1
-						self.scrollbar_widget.content.internal_scroll_value = 0
+						self.chat_manager:send_chat_message(1, 1, self.chat_message, localize, nil, localize_parameters, self.recent_message_index)
 					end
+
+					self.chat_message = ""
+					self.chat_mode = "insert"
+					self.chat_index = 1
+					self.chat_input_widget.content.caret_index = 1
+					self.chat_input_widget.content.text_index = 1
+					self.scrollbar_widget.content.internal_scroll_value = 0
 				else
 					chat_closed = true
 					chat_close_time = 0
@@ -608,7 +572,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 				self.old_chat_message = nil
 				self.recent_message_index = nil
 
-				self:_handle_input_service_release(self.menu_active, menu_input_service, no_unblock)
+				self:unblock_input()
 			elseif input_service:get("chat_next_old_message") and GameSettingsDevelopment.allow_chat_input then
 				local recent_chat_messages = Managers.chat:get_recently_sent_messages()
 				local num_recent_chat_messages = #recent_chat_messages
@@ -777,20 +741,6 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 	end
 
 	return chat_focused, chat_closed, chat_close_time
-end
-
-ChatGui._handle_input_service_release = function (self, menu_active, menu_input_service, no_unblock)
-	if menu_active then
-		local input_service_name = menu_input_service.name
-
-		self:block_input(input_service_name)
-	elseif menu_input_service and menu_input_service.name ~= "chat_input" then
-		local input_service_name = menu_input_service.name
-
-		self:block_input(input_service_name)
-	else
-		self:unblock_input(no_unblock)
-	end
 end
 
 ChatGui._draw_widgets = function (self, dt, input_service, chat_enabled)

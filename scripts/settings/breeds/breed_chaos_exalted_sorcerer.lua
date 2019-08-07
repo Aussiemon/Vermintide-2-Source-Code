@@ -32,7 +32,7 @@ local breed_data = {
 	boss = true,
 	max_chain_stagger_time = 2,
 	bone_lod_level = 1,
-	difficulty_kill_achievement = "kill_chaos_exalted_sorcerer_difficulty_rank",
+	combat_music_state = "champion_chaos_exalted_sorcerer",
 	race = "chaos",
 	disable_second_hit_ragdoll = true,
 	proximity_system_check = true,
@@ -40,7 +40,6 @@ local breed_data = {
 	perception = "perception_all_seeing_boss",
 	player_locomotion_constrain_radius = 0.7,
 	smart_object_template = "special",
-	combat_music_state = "champion_chaos_exalted_sorcerer",
 	far_off_despawn_immunity = true,
 	is_of_interest_func = "is_of_interest_boss_sorcerer",
 	vortexable = false,
@@ -53,13 +52,7 @@ local breed_data = {
 		1.27,
 		1.27
 	},
-	max_health = {
-		650,
-		650,
-		1080,
-		1440,
-		2160
-	},
+	max_health = BreedTweaks.max_health.exalted_sorcerer,
 	bloodlust_health = BreedTweaks.bloodlust_health.monster,
 	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed)
 		if blackboard.stagger_count >= 3 then
@@ -85,10 +78,6 @@ local breed_data = {
 		head = "headshot"
 	},
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		head = {
 			prio = 1,
 			actors = {
@@ -110,7 +99,7 @@ local breed_data = {
 			}
 		},
 		torso = {
-			prio = 3,
+			prio = 2,
 			actors = {
 				"c_hips",
 				"c_spine",
@@ -123,7 +112,7 @@ local breed_data = {
 			}
 		},
 		left_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftarm",
 				"c_leftforearm",
@@ -134,7 +123,7 @@ local breed_data = {
 			}
 		},
 		right_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightarm",
 				"c_rightforearm",
@@ -145,7 +134,7 @@ local breed_data = {
 			}
 		},
 		left_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftupleg",
 				"c_leftleg",
@@ -159,7 +148,7 @@ local breed_data = {
 			}
 		},
 		right_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightupleg",
 				"c_rightleg",
@@ -171,6 +160,10 @@ local breed_data = {
 				"j_rightfoot",
 				"j_hips"
 			}
+		},
+		full = {
+			prio = 4,
+			actors = {}
 		},
 		afro = {
 			prio = 5,
@@ -189,6 +182,10 @@ local breed_data = {
 		teleporters = 5,
 		bot_poison_wind = 2,
 		fire_grenade = 10
+	},
+	difficulty_kill_achievements = {
+		"kill_chaos_exalted_sorcerer_difficulty_rank",
+		"kill_chaos_exalted_sorcerer_scorpion_hardest"
 	},
 	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone, t, damage_source)
 		if not Unit.alive(killer_unit) then
@@ -241,12 +238,12 @@ local action_data = {
 		},
 		after_casting_delay = {
 			harder = 0.5,
-			normal = 3,
 			hard = 1.5,
-			survival_hard = 1.5,
-			survival_harder = 0.5,
+			normal = 3,
 			hardest = 0,
-			survival_hardest = 0,
+			cataclysm = 1.5,
+			cataclysm_3 = 0,
+			cataclysm_2 = 0.5,
 			easy = 4
 		}
 	},
@@ -772,12 +769,12 @@ local action_data = {
 		animation = "idle_guard",
 		difficulty_spawn = {
 			harder = "sorcerer_boss_event_defensive",
-			normal = "sorcerer_boss_event_defensive",
 			hard = "sorcerer_boss_event_defensive",
-			survival_hard = "sorcerer_boss_event_defensive",
-			survival_harder = "sorcerer_boss_event_defensive",
+			normal = "sorcerer_boss_event_defensive",
 			hardest = "sorcerer_boss_event_defensive",
-			survival_hardest = "sorcerer_boss_event_defensive",
+			cataclysm = "sorcerer_boss_event_defensive",
+			cataclysm_3 = "sorcerer_boss_event_defensive",
+			cataclysm_2 = "sorcerer_boss_event_defensive",
 			easy = "sorcerer_boss_event_defensive"
 		},
 		ignore_staggers = {
@@ -797,12 +794,12 @@ local action_data = {
 		animation = "idle_guard",
 		difficulty_spawn = {
 			harder = "sorcerer_extra_spawn",
-			normal = "sorcerer_extra_spawn",
 			hard = "sorcerer_extra_spawn",
-			survival_hard = "sorcerer_extra_spawn",
-			survival_harder = "sorcerer_extra_spawn",
+			normal = "sorcerer_extra_spawn",
 			hardest = "sorcerer_extra_spawn",
-			survival_hardest = "sorcerer_extra_spawn",
+			cataclysm = "sorcerer_extra_spawn",
+			cataclysm_3 = "sorcerer_extra_spawn",
+			cataclysm_2 = "sorcerer_extra_spawn",
 			easy = "sorcerer_extra_spawn"
 		},
 		ignore_staggers = {
@@ -905,6 +902,26 @@ local action_data = {
 				left = {
 					"stagger_right_exp"
 				}
+			},
+			{
+				fwd = {
+					"stagger_fwd"
+				},
+				bwd = {
+					"stagger_bwd"
+				},
+				right = {
+					"stagger_left"
+				},
+				left = {
+					"stagger_right"
+				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
 			},
 			{
 				fwd = {

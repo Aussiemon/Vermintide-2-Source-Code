@@ -1,8 +1,11 @@
 local settings = DLCSettings.bogenhafen
 settings.unlock_settings = {
 	bogenhafen = {
+		id = "828790",
 		class = "UnlockDlc",
-		id = "828790"
+		always_unlocked_game_app_ids = {
+			1085780
+		}
 	}
 }
 settings.unlock_settings_xb1 = {
@@ -26,6 +29,9 @@ settings.unlock_settings_ps4 = {
 			class = "UnlockDlc"
 		}
 	}
+}
+settings.statistics_definitions = {
+	"scripts/managers/backend/statistics_definitions_bogenhafen"
 }
 
 return

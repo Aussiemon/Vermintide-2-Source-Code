@@ -9,7 +9,6 @@ require("scripts/utils/pool_tables/pool_blackboard")
 require("scripts/utils/pool_tables/pool_generic_extension")
 
 local alive = Unit.alive
-local PLAYER_AND_BOT_UNITS = PLAYER_AND_BOT_UNITS
 AISimpleExtension = class(AISimpleExtension)
 
 AISimpleExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -24,6 +23,10 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 	Unit.set_data(unit, "breed", breed)
 
 	self._breed = breed
+
+	fassert(extension_init_data.side_id, "no side_id")
+
+	self._side_id = extension_init_data.side_id
 	local is_passive = (breed.initial_is_passive == nil and true) or breed.initial_is_passive
 	local blackboard = Script.new_map(breed.blackboard_allocation_size or 75)
 	blackboard.world = extension_init_context.world
@@ -45,6 +48,8 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 	blackboard.stagger_count_reset_at = 0
 	blackboard.override_targets = {}
 	blackboard.optional_spawn_data = extension_init_data.optional_spawn_data
+	blackboard.spawn_category = extension_init_data.spawn_category
+	blackboard.is_ai = true
 	local health_extension = ScriptUnit.has_extension(unit, "health_system")
 	self._health_extension = health_extension
 	local locomotion_extension = ScriptUnit.has_extension(unit, "locomotion_system")
@@ -73,6 +78,12 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 	self:_set_size_variation(extension_init_data.size_variation, extension_init_data.size_variation_normalized)
 end
 
+AISimpleExtension.unit_removed_from_game = function (self)
+	Managers.state.side:remove_unit_from_side(self._unit)
+
+	self._side_id = nil
+end
+
 AISimpleExtension.destroy = function (self)
 	local blackboard = self._blackboard
 
@@ -94,6 +105,7 @@ STATIC_BLACKBOARD_KEYS = STATIC_BLACKBOARD_KEYS or {
 	locomotion_extension = true,
 	move_orders = true,
 	unit = true,
+	optional_spawn_data = true,
 	level = true,
 	system_api = true,
 	spawn_type = true,
@@ -103,13 +115,14 @@ STATIC_BLACKBOARD_KEYS = STATIC_BLACKBOARD_KEYS or {
 	stuck_check_time = true,
 	inventory_extension = true,
 	is_passive = true,
-	optional_spawn_dat = true,
 	breed = true,
 	nav_world = true
 }
 
 AISimpleExtension.freeze = function (self)
 	self._brain:exit_last_action()
+
+	self._side_id = nil
 end
 
 AISimpleExtension.unfreeze = function (self, unit, data)
@@ -124,6 +137,12 @@ AISimpleExtension.unfreeze = function (self, unit, data)
 	local spawn_category = data[4]
 	local spawn_type = data[6]
 	local optional_spawn_data = data[7]
+	local side_id = optional_spawn_data.side_id
+	self._side_id = side_id
+
+	fassert(side_id ~= nil, "no side_id")
+
+	local side = Managers.state.side:add_unit_to_side(self._unit, side_id)
 
 	table.clear(blackboard.move_orders)
 	table.clear(blackboard.node_data)
@@ -139,6 +158,7 @@ AISimpleExtension.unfreeze = function (self, unit, data)
 	blackboard.stagger_count = 0
 	blackboard.stagger_count_reset_at = 0
 	blackboard.optional_spawn_data = optional_spawn_data
+	blackboard.side = side
 	local breed = blackboard.breed
 	local is_horde = spawn_type == "horde_hidden" or spawn_type == "horde"
 	local behavior = (is_horde and breed.horde_behavior) or breed.behavior
@@ -153,10 +173,15 @@ AISimpleExtension.unfreeze = function (self, unit, data)
 	if breed.run_on_spawn then
 		breed.run_on_spawn(unit, blackboard)
 	end
+
+	Managers.state.game_mode:ai_spawned(unit)
 end
 
 AISimpleExtension.extensions_ready = function (self, world, unit)
 	local blackboard = self._blackboard
+	local side_id = self._side_id
+	local side = Managers.state.side:add_unit_to_side(unit, side_id)
+	blackboard.side = side
 	local breed = self._breed
 	local spawn_type = blackboard.spawn_type
 	local is_horde = spawn_type == "horde_hidden" or spawn_type == "horde"
@@ -176,6 +201,9 @@ AISimpleExtension.extensions_ready = function (self, world, unit)
 	if breed.run_on_spawn then
 		breed.run_on_spawn(unit, blackboard)
 	end
+
+	Managers.state.game_mode:ai_spawned(unit)
+	Unit.flow_event(unit, "lua_trigger_variation")
 end
 
 AISimpleExtension.get_overlap_context = function (self)
@@ -300,14 +328,16 @@ AISimpleExtension.size_variation = function (self)
 end
 
 AISimpleExtension.force_enemy_detection = function (self, t)
-	local num_targets = #PLAYER_AND_BOT_UNITS
+	local side = Managers.state.side.side_by_unit[self._unit]
+	local enemy_player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
+	local num_targets = #enemy_player_and_bot_units
 
 	if num_targets == 0 then
 		return
 	end
 
 	local target = Math.random(1, num_targets)
-	local random_enemy = PLAYER_AND_BOT_UNITS[target]
+	local random_enemy = enemy_player_and_bot_units[target]
 
 	if random_enemy then
 		self:enemy_aggro(self._unit, random_enemy)
@@ -338,8 +368,9 @@ end
 AISimpleExtension.attacked = function (self, attacker_unit, t, damage_hit)
 	local unit = self._unit
 	local blackboard = self._blackboard
+	local side = blackboard.side
 	attacker_unit = AiUtils.get_actual_attacker_unit(attacker_unit)
-	local attacker_is_valid_player_target = VALID_TARGETS_PLAYERS_AND_BOTS[attacker_unit]
+	local attacker_is_valid_player_target = side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[attacker_unit]
 
 	if attacker_is_valid_player_target then
 		if damage_hit and blackboard.confirmed_player_sighting and blackboard.target_unit == nil then
@@ -350,10 +381,10 @@ AISimpleExtension.attacked = function (self, attacker_unit, t, damage_hit)
 		end
 
 		blackboard.previous_attacker = attacker_unit
-	end
 
-	if not damage_hit and blackboard.stagger == 1 and AiUtils.unit_alive(unit) then
-		StatisticsUtil.check_save(attacker_unit, unit)
+		if not damage_hit and blackboard.stagger == 1 and AiUtils.unit_alive(unit) then
+			StatisticsUtil.check_save(attacker_unit, unit)
+		end
 	end
 end
 

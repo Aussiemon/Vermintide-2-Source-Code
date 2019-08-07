@@ -38,7 +38,13 @@ MatchmakingStateRequestProfiles.update = function (self, dt, t)
 			if self.search_config == nil then
 				self._matchmaking_manager:cancel_matchmaking()
 			else
-				self._next_state = MatchmakingStateSearchGame
+				local game_mode = self.search_config.game_mode
+
+				if game_mode == "weave_find_group" then
+					self._next_state = MatchmakingStateSearchForWeaveGroup
+				else
+					self._next_state = MatchmakingStateSearchGame
+				end
 			end
 		end
 	end

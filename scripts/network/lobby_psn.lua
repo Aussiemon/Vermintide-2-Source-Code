@@ -159,6 +159,10 @@ LobbyInternal.client_lost_context = function ()
 	return PsnClient.lost_context(LobbyInternal.client)
 end
 
+LobbyInternal.client_failed = function ()
+	return PsnClient.failed(LobbyInternal.client)
+end
+
 LobbyInternal.get_lobby_data_from_id = function (id)
 	local entry = LobbyInternal.room_data_entry(id)
 

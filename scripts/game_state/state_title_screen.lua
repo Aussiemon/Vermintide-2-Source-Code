@@ -244,11 +244,11 @@ StateTitleScreen._setup_state_machine = function (self)
 end
 
 StateTitleScreen._init_popup_manager = function (self)
-	Managers.popup = PopupManager:new()
+	Managers.popup = Managers.popup or PopupManager:new()
 
 	Managers.popup:set_input_manager(self._input_manager)
 
-	Managers.simple_popup = SimplePopup:new()
+	Managers.simple_popup = Managers.simple_popup or SimplePopup:new()
 end
 
 StateTitleScreen._init_chat_manager = function (self)
@@ -256,7 +256,7 @@ StateTitleScreen._init_chat_manager = function (self)
 end
 
 StateTitleScreen._init_beta_overlay = function (self)
-	Managers.beta_overlay = BetaOverlay:new()
+	Managers.beta_overlay = Managers.beta_overlay or BetaOverlay:new()
 end
 
 StateTitleScreen.update = function (self, dt, t)

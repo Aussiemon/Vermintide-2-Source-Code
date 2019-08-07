@@ -23,7 +23,11 @@ local lobby_list_size = {
 }
 local lobby_info_box_size_lobbies = {
 	300,
-	100
+	120
+}
+local lobby_info_box_size_lobbies_weaves = {
+	lobby_info_box_size_lobbies[1],
+	85
 }
 local lobby_info_box_size_servers = {
 	lobby_info_box_size_lobbies[1],
@@ -306,7 +310,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			-60,
+			-40,
 			2
 		}
 	},
@@ -327,6 +331,90 @@ local scenegraph_definition = {
 	lobby_info_level_text = {
 		vertical_alignment = "bottom",
 		parent = "lobby_info_level_image_frame",
+		horizontal_alignment = "center",
+		size = {
+			info_frame_size[1] - 40,
+			32
+		},
+		position = {
+			0,
+			-50,
+			0
+		}
+	},
+	wind_icon_bg = {
+		vertical_alignment = "bottom",
+		parent = "lobby_info_level_image_frame",
+		horizontal_alignment = "center",
+		size = {
+			62.05,
+			62.05
+		},
+		position = {
+			0,
+			-20,
+			2
+		}
+	},
+	wind_icon_slot = {
+		vertical_alignment = "center",
+		parent = "wind_icon_bg",
+		horizontal_alignment = "center",
+		size = {
+			54.4,
+			54.4
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	wind_icon_glow = {
+		vertical_alignment = "center",
+		parent = "wind_icon_slot",
+		horizontal_alignment = "center",
+		size = {
+			43.35,
+			45.05
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	wind_icon = {
+		vertical_alignment = "center",
+		parent = "wind_icon_slot",
+		horizontal_alignment = "center",
+		size = {
+			54.4,
+			54.4
+		},
+		position = {
+			0,
+			0,
+			2
+		}
+	},
+	lobby_info_weave_level_text = {
+		vertical_alignment = "top",
+		parent = "lobby_info_frame",
+		horizontal_alignment = "center",
+		size = {
+			info_frame_size[1] - 20,
+			32
+		},
+		position = {
+			0,
+			-20,
+			0
+		}
+	},
+	lobby_info_wind_text = {
+		vertical_alignment = "bottom",
+		parent = "lobby_info_level_text",
 		horizontal_alignment = "center",
 		size = {
 			info_frame_size[1],
@@ -359,7 +447,7 @@ local scenegraph_definition = {
 		size = lobby_info_box_size_lobbies,
 		position = {
 			0,
-			-100,
+			-60,
 			1
 		}
 	},
@@ -377,9 +465,23 @@ local scenegraph_definition = {
 			1
 		}
 	},
-	lobby_info_box_level_name_lobbies = {
+	lobby_info_box_game_type_lobbies = {
 		vertical_alignment = "bottom",
 		parent = "lobby_info_box_host_lobbies",
+		horizontal_alignment = "center",
+		size = {
+			lobby_info_box_size_lobbies[1] - 20,
+			16
+		},
+		position = {
+			0,
+			-16,
+			1
+		}
+	},
+	lobby_info_box_level_name_lobbies = {
+		vertical_alignment = "bottom",
+		parent = "lobby_info_box_game_type_lobbies",
 		horizontal_alignment = "center",
 		size = {
 			lobby_info_box_size_lobbies[1] - 20,
@@ -425,6 +527,87 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		size = {
 			lobby_info_box_size_lobbies[1] - 20,
+			16
+		},
+		position = {
+			0,
+			-16,
+			1
+		}
+	},
+	lobby_info_box_info_frame_lobbies_weaves = {
+		vertical_alignment = "center",
+		parent = "lobby_info_frame",
+		horizontal_alignment = "center",
+		size = lobby_info_box_size_lobbies_weaves,
+		position = {
+			0,
+			-30,
+			1
+		}
+	},
+	lobby_info_box_host_lobbies_weaves = {
+		vertical_alignment = "top",
+		parent = "lobby_info_box_info_frame_lobbies_weaves",
+		horizontal_alignment = "center",
+		size = {
+			lobby_info_box_size_lobbies_weaves[1] - 20,
+			16
+		},
+		position = {
+			0,
+			-10,
+			1
+		}
+	},
+	lobby_info_box_game_type_lobbies_weaves = {
+		vertical_alignment = "bottom",
+		parent = "lobby_info_box_host_lobbies_weaves",
+		horizontal_alignment = "center",
+		size = {
+			lobby_info_box_size_lobbies_weaves[1] - 20,
+			16
+		},
+		position = {
+			0,
+			-16,
+			1
+		}
+	},
+	lobby_info_box_level_name_lobbies_weaves = {
+		vertical_alignment = "bottom",
+		parent = "lobby_info_box_game_type_lobbies_weaves",
+		horizontal_alignment = "center",
+		size = {
+			lobby_info_box_size_lobbies_weaves[1] - 20,
+			16
+		},
+		position = {
+			0,
+			-16,
+			1
+		}
+	},
+	lobby_info_box_players_lobbies_weaves = {
+		vertical_alignment = "bottom",
+		parent = "lobby_info_box_game_type_lobbies_weaves",
+		horizontal_alignment = "center",
+		size = {
+			lobby_info_box_size_lobbies_weaves[1] - 20,
+			16
+		},
+		position = {
+			0,
+			-16,
+			1
+		}
+	},
+	lobby_info_box_status_lobbies_weaves = {
+		vertical_alignment = "bottom",
+		parent = "lobby_info_box_players_lobbies_weaves",
+		horizontal_alignment = "center",
+		size = {
+			lobby_info_box_size_lobbies_weaves[1] - 20,
 			16
 		},
 		position = {
@@ -603,6 +786,146 @@ local scenegraph_definition = {
 			0
 		}
 	},
+	mutator_window = {
+		vertical_alignment = "bottom",
+		parent = "lobby_info_box_info_frame_lobbies",
+		horizontal_alignment = "center",
+		size = {
+			info_frame_size[1],
+			0
+		},
+		position = {
+			0,
+			35,
+			1
+		}
+	},
+	mutator_icon = {
+		vertical_alignment = "top",
+		parent = "mutator_window",
+		horizontal_alignment = "left",
+		size = {
+			60,
+			60
+		},
+		position = {
+			10,
+			-50,
+			5
+		}
+	},
+	mutator_icon_frame = {
+		vertical_alignment = "center",
+		parent = "mutator_icon",
+		horizontal_alignment = "center",
+		size = {
+			60,
+			60
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	mutator_title_text = {
+		vertical_alignment = "top",
+		parent = "mutator_window",
+		horizontal_alignment = "left",
+		size = {
+			info_frame_size[1] * 0.6,
+			50
+		},
+		position = {
+			10,
+			-5,
+			1
+		}
+	},
+	mutator_title_divider = {
+		vertical_alignment = "bottom",
+		parent = "mutator_title_text",
+		horizontal_alignment = "left",
+		size = {
+			450,
+			4
+		},
+		position = {
+			0,
+			10,
+			1
+		}
+	},
+	mutator_description_text = {
+		vertical_alignment = "top",
+		parent = "mutator_icon",
+		horizontal_alignment = "left",
+		size = {
+			info_frame_size[1] - 110,
+			60
+		},
+		position = {
+			90,
+			0,
+			1
+		}
+	},
+	objective_title = {
+		vertical_alignment = "bottom",
+		parent = "mutator_icon",
+		horizontal_alignment = "left",
+		size = {
+			info_frame_size[1],
+			40
+		},
+		position = {
+			0,
+			-60,
+			3
+		}
+	},
+	objective_title_bg = {
+		vertical_alignment = "center",
+		parent = "objective_title",
+		horizontal_alignment = "center",
+		size = {
+			467,
+			59
+		},
+		position = {
+			0,
+			0,
+			-1
+		}
+	},
+	objective_1 = {
+		vertical_alignment = "bottom",
+		parent = "objective_title",
+		horizontal_alignment = "center",
+		size = {
+			info_frame_size[1],
+			30
+		},
+		position = {
+			0,
+			-35,
+			3
+		}
+	},
+	objective_2 = {
+		vertical_alignment = "bottom",
+		parent = "objective_1",
+		horizontal_alignment = "center",
+		size = {
+			info_frame_size[1],
+			30
+		},
+		position = {
+			0,
+			-35,
+			0
+		}
+	},
 	name_input_box = {
 		vertical_alignment = "top",
 		parent = "filter_frame",
@@ -671,13 +994,14 @@ local scenegraph_definition = {
 	},
 	invalid_checkbox = {
 		parent = "filter_frame",
+		horizontal_alignment = "left",
 		position = {
 			10,
 			200,
 			1
 		},
 		size = {
-			200,
+			300,
 			34
 		}
 	},
@@ -687,7 +1011,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		position = {
 			0,
-			-73,
+			-130,
 			1
 		},
 		size = {
@@ -709,11 +1033,11 @@ local scenegraph_definition = {
 	},
 	level_stepper = {
 		vertical_alignment = "top",
-		parent = "filter_frame",
+		parent = "game_mode_stepper",
 		horizontal_alignment = "center",
 		position = {
 			0,
-			-130,
+			-85,
 			1
 		},
 		size = {
@@ -851,7 +1175,7 @@ local function sort_level_list(a, b)
 	return a_sorting_index < b_sorting_index
 end
 
-local function setup_game_mode_data(statistics_db, player_stats_id)
+local function setup_game_mode_data(statistics_db, player_stats_id, game_mode_indices)
 	local game_mode_data = {}
 	local game_modes = {}
 	local only_release = GameSettingsDevelopment.release_levels_only
@@ -868,7 +1192,7 @@ local function setup_game_mode_data(statistics_db, player_stats_id)
 
 					if unlockable and LevelUnlockUtils.level_unlocked(statistics_db, player_stats_id, name) then
 						if not game_modes[game_mode] then
-							local index = #game_mode_data + 1
+							local index = table.find(game_mode_indices, game_mode)
 							local game_mode_settings = GameModeSettings[game_mode]
 							local game_mode_difficulties = game_mode_settings.difficulties
 							local game_mode_display_name = game_mode_settings.display_name
@@ -901,6 +1225,12 @@ local function setup_game_mode_data(statistics_db, player_stats_id)
 		levels[#levels + 1] = "any"
 	end
 
+	local adventure_game_mode_index = table.find(game_mode_indices, "adventure")
+	local custom_game_mode_index = table.find(game_mode_indices, "custom")
+	local any_game_mode_index = table.find(game_mode_indices, "any")
+	game_mode_data[custom_game_mode_index] = table.clone(game_mode_data[adventure_game_mode_index])
+	game_mode_data[any_game_mode_index] = table.clone(game_mode_data[adventure_game_mode_index])
+
 	return game_mode_data
 end
 
@@ -932,6 +1262,17 @@ local search_type_text_array = {
 	"lb_search_type_favorites",
 	"lb_search_type_history"
 }
+
+local function create_game_type_text_config()
+	return {
+		vertical_alignment = "center",
+		horizontal_alignment = "center",
+		localize = false,
+		font_size = 28,
+		font_type = "hell_shark",
+		text_color = Colors.get_color_table_with_alpha("cheeseburger", 255)
+	}
+end
 
 local function create_banner_text_config()
 	return {
@@ -1512,16 +1853,219 @@ hero_entry_frame_size = {
 	86 * hero_entry_size_scale,
 	108 * hero_entry_size_scale
 }
+
+local function create_objective(scenegraph_id, size)
+	return {
+		element = {
+			passes = {
+				{
+					texture_id = "background",
+					style_id = "background",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.text ~= "tutorial_no_text"
+					end
+				},
+				{
+					texture_id = "icon",
+					style_id = "icon",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.text ~= "tutorial_no_text"
+					end
+				},
+				{
+					style_id = "text",
+					pass_type = "text",
+					text_id = "text",
+					content_check_function = function (content)
+						return content.text ~= "tutorial_no_text"
+					end
+				},
+				{
+					style_id = "text_shadow",
+					pass_type = "text",
+					text_id = "text",
+					content_check_function = function (content)
+						return content.text ~= "tutorial_no_text"
+					end
+				}
+			}
+		},
+		content = {
+			text = "-",
+			icon = "trial_gem",
+			background = "chest_upgrade_fill_glow"
+		},
+		style = {
+			background = {
+				color = {
+					0,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			},
+			icon = {
+				vertical_alignment = "center",
+				horizontal_alignment = "left",
+				texture_size = {
+					49,
+					44
+				},
+				color = Colors.get_color_table_with_alpha("font_default", 255),
+				offset = {
+					0,
+					0,
+					1
+				}
+			},
+			text = {
+				word_wrap = true,
+				localize = true,
+				font_size = 26,
+				horizontal_alignment = "left",
+				vertical_alignment = "center",
+				dynamic_font_size = true,
+				font_type = "hell_shark",
+				size = {
+					size[1] - 60,
+					size[2]
+				},
+				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				offset = {
+					50,
+					0,
+					2
+				}
+			},
+			text_shadow = {
+				word_wrap = true,
+				localize = true,
+				font_size = 26,
+				horizontal_alignment = "left",
+				vertical_alignment = "center",
+				dynamic_font_size = true,
+				font_type = "hell_shark",
+				size = {
+					size[1] - 60,
+					size[2]
+				},
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					52,
+					-2,
+					1
+				}
+			}
+		},
+		offset = {
+			0,
+			0,
+			0
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
+
 local level_name_style = {
+	word_wrap = false,
+	upper_case = true,
+	localize = false,
+	use_shadow = true,
+	font_size = 32,
+	horizontal_alignment = "center",
+	vertical_alignment = "top",
+	dynamic_font_size = true,
+	font_type = "hell_shark_header",
+	text_color = Colors.get_color_table_with_alpha("font_title", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local weave_name_style = {
 	font_size = 32,
 	upper_case = true,
+	localize = false,
+	use_shadow = true,
+	word_wrap = false,
+	horizontal_alignment = "center",
+	vertical_alignment = "top",
+	dynamic_font_size = true,
+	font_type = "hell_shark_header",
+	text_color = Colors.get_color_table_with_alpha("font_title", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local wind_name_style = {
+	font_size = 20,
+	upper_case = false,
 	localize = false,
 	use_shadow = true,
 	word_wrap = true,
 	horizontal_alignment = "center",
 	vertical_alignment = "top",
 	font_type = "hell_shark_header",
+	text_color = Colors.get_color_table_with_alpha("white", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local mutator_title_text_style = {
+	font_size = 32,
+	upper_case = false,
+	localize = true,
+	use_shadow = true,
+	word_wrap = true,
+	horizontal_alignment = "left",
+	vertical_alignment = "top",
+	dynamic_font_size = true,
+	font_type = "hell_shark_header",
 	text_color = Colors.get_color_table_with_alpha("font_title", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local mutator_description_text_style = {
+	font_size = 18,
+	use_shadow = true,
+	localize = true,
+	dynamic_font_size_word_wrap = true,
+	word_wrap = true,
+	horizontal_alignment = "left",
+	vertical_alignment = "top",
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local objective_title_text_style = {
+	font_size = 28,
+	upper_case = true,
+	localize = true,
+	use_shadow = true,
+	word_wrap = true,
+	horizontal_alignment = "center",
+	vertical_alignment = "center",
+	font_type = "hell_shark_header",
+	text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 	offset = {
 		0,
 		0,
@@ -1570,17 +2114,19 @@ local widgets = {
 		reset_button = create_window_button("reset_button", scenegraph_definition.reset_button.size, Localize("lb_reset_filters"), 32, false),
 		lobby_type_button = create_window_button("lobby_type_button", scenegraph_definition.lobby_type_button.size, Localize("lb_lobby_type_lobbies"), 32, false),
 		join_button = create_window_button("join_button", scenegraph_definition.join_button.size, Localize("lb_join"), 32, false),
-		invalid_checkbox = UIWidgets.create_checkbox_widget("lb_show_invalid", "", "invalid_checkbox", 0, {
-			50,
+		invalid_checkbox = UIWidgets.create_checkbox_widget("lb_show_invalid", "", "invalid_checkbox", 10, {
+			-40,
 			0,
 			4
 		})
 	},
 	lobbies = {
+		game_type_stepper = UIWidgets.create_stepper("game_mode_stepper", scenegraph_definition.game_mode_stepper.size),
 		level_stepper = UIWidgets.create_stepper("level_stepper", scenegraph_definition.level_stepper.size),
 		difficulty_stepper = UIWidgets.create_stepper("difficulty_stepper", scenegraph_definition.difficulty_stepper.size),
 		show_lobbies_stepper = UIWidgets.create_stepper("show_lobbies_stepper", scenegraph_definition.show_lobbies_stepper.size),
 		distance_stepper = UIWidgets.create_stepper("distance_stepper", scenegraph_definition.distance_stepper.size),
+		game_mode_banner_widget = UIWidgets.create_title_and_tooltip("game_mode_banner", scenegraph_definition.level_banner.size, "lb_game_type", "lb_game_type_tooltip", create_banner_text_config()),
 		level_banner_widget = UIWidgets.create_title_and_tooltip("level_banner", scenegraph_definition.level_banner.size, "map_level_setting", "map_level_setting_tooltip", create_banner_text_config()),
 		difficulty_banner_widget = UIWidgets.create_title_and_tooltip("difficulty_banner", scenegraph_definition.difficulty_banner.size, "map_difficulty_setting", "map_difficulty_setting_tooltip", create_banner_text_config()),
 		show_lobbies_banner_widget = UIWidgets.create_title_and_tooltip("show_lobbies_banner", scenegraph_definition.show_lobbies_banner.size, "lb_show_lobbies", "lb_show_lobbies_tooltip", create_banner_text_config()),
@@ -1605,6 +2151,34 @@ local widgets = {
 			hero_entry_height
 		}, hero_icons, hero_entry_spacing, true, hero_entry_frame_size, true)
 	},
+	lobby_info_box_weaves = {
+		wind_icon = UIWidgets.create_simple_texture("icon_wind_azyr", "wind_icon"),
+		wind_icon_glow = UIWidgets.create_simple_texture("winds_icon_background_glow", "wind_icon_glow"),
+		wind_icon_bg = UIWidgets.create_simple_texture("weave_item_icon_border_selected", "wind_icon_bg"),
+		wind_icon_slot = UIWidgets.create_simple_texture("weave_item_icon_border_center", "wind_icon_slot"),
+		mutator_icon = UIWidgets.create_simple_texture("icons_placeholder", "mutator_icon"),
+		mutator_icon_frame = UIWidgets.create_simple_texture("talent_frame", "mutator_icon_frame"),
+		mutator_title_text = UIWidgets.create_simple_text("n/a", "mutator_title_text", nil, nil, mutator_title_text_style),
+		mutator_title_divider = UIWidgets.create_simple_texture("infoslate_frame_02_horizontal", "mutator_title_divider"),
+		mutator_description_text = UIWidgets.create_simple_text("n/a", "mutator_description_text", nil, nil, mutator_description_text_style),
+		objective_title_bg = UIWidgets.create_simple_texture("menu_subheader_bg", "objective_title_bg"),
+		objective_title = UIWidgets.create_simple_text("weave_objective_title", "objective_title", nil, nil, objective_title_text_style),
+		objective_1 = create_objective("objective_1", scenegraph_definition.objective_1.size),
+		objective_2 = create_objective("objective_2", scenegraph_definition.objective_2.size),
+		weave_name = UIWidgets.create_simple_text("weave_name", "lobby_info_weave_level_text", nil, nil, weave_name_style),
+		wind_name = UIWidgets.create_simple_text("wind_name", "lobby_info_wind_text", nil, nil, wind_name_style)
+	},
+	lobby_info_box_lobbies_weaves = {
+		info_frame = UIWidgets.create_frame("lobby_info_box_info_frame_lobbies_weaves", scenegraph_definition.lobby_info_box_info_frame_lobbies_weaves.size, window_frame, 5),
+		info_frame_host_title = UIWidgets.create_simple_text(Localize("lb_host") .. ":", "lobby_info_box_host_lobbies_weaves", nil, nil, info_frame_text_title_style),
+		info_frame_host_text = UIWidgets.create_simple_text("host", "lobby_info_box_host_lobbies_weaves", nil, nil, info_frame_text_style),
+		info_frame_players_title = UIWidgets.create_simple_text(Localize("lb_players") .. ":", "lobby_info_box_players_lobbies_weaves", nil, nil, info_frame_text_title_style),
+		info_frame_players_text = UIWidgets.create_simple_text("1/4", "lobby_info_box_players_lobbies_weaves", nil, nil, info_frame_text_style),
+		info_frame_status_title = UIWidgets.create_simple_text(Localize("lb_status") .. ":", "lobby_info_box_status_lobbies_weaves", nil, nil, info_frame_text_title_style),
+		info_frame_status_text = UIWidgets.create_simple_text("Started", "lobby_info_box_status_lobbies_weaves", nil, nil, info_frame_text_style),
+		info_frame_game_type_title = UIWidgets.create_simple_text(Localize("lb_game_type") .. ":", "lobby_info_box_game_type_lobbies_weaves", nil, nil, info_frame_text_title_style),
+		info_frame_game_type_text = UIWidgets.create_simple_text(Localize("lb_game_type_weave"), "lobby_info_box_game_type_lobbies_weaves", nil, nil, info_frame_text_style)
+	},
 	lobby_info_box_lobbies = {
 		info_frame = UIWidgets.create_frame("lobby_info_box_info_frame_lobbies", scenegraph_definition.lobby_info_box_info_frame_lobbies.size, window_frame, 5),
 		info_frame_host_title = UIWidgets.create_simple_text(Localize("lb_host") .. ":", "lobby_info_box_host_lobbies", nil, nil, info_frame_text_title_style),
@@ -1616,7 +2190,9 @@ local widgets = {
 		info_frame_players_title = UIWidgets.create_simple_text(Localize("lb_players") .. ":", "lobby_info_box_players_lobbies", nil, nil, info_frame_text_title_style),
 		info_frame_players_text = UIWidgets.create_simple_text("1/4", "lobby_info_box_players_lobbies", nil, nil, info_frame_text_style),
 		info_frame_status_title = UIWidgets.create_simple_text(Localize("lb_status") .. ":", "lobby_info_box_status_lobbies", nil, nil, info_frame_text_title_style),
-		info_frame_status_text = UIWidgets.create_simple_text("Started", "lobby_info_box_status_lobbies", nil, nil, info_frame_text_style)
+		info_frame_status_text = UIWidgets.create_simple_text("Started", "lobby_info_box_status_lobbies", nil, nil, info_frame_text_style),
+		info_frame_game_type_title = UIWidgets.create_simple_text(Localize("lb_game_type") .. ":", "lobby_info_box_game_type_lobbies", nil, nil, info_frame_text_title_style),
+		info_frame_game_type_text = UIWidgets.create_simple_text(Localize("lb_game_type_none"), "lobby_info_box_game_type_lobbies", nil, nil, info_frame_text_style)
 	},
 	lobby_info_box_servers = {
 		info_frame = UIWidgets.create_frame("lobby_info_box_info_frame_servers", scenegraph_definition.lobby_info_box_info_frame_servers.size, window_frame, 5),
@@ -1638,6 +2214,8 @@ local widgets = {
 		info_frame_players_text = UIWidgets.create_simple_text("1/4", "lobby_info_box_players_servers", nil, nil, info_frame_text_style),
 		info_frame_status_title = UIWidgets.create_simple_text(Localize("lb_status") .. ":", "lobby_info_box_status_servers", nil, nil, info_frame_text_title_style),
 		info_frame_status_text = UIWidgets.create_simple_text("Started", "lobby_info_box_status_servers", nil, nil, info_frame_text_style),
+		info_frame_game_type_title = UIWidgets.create_simple_text(Localize("lb_game_type") .. ":", "lobby_info_box_game_type_lobbies", nil, nil, info_frame_text_title_style),
+		info_frame_game_type_text = UIWidgets.create_simple_text(Localize("lb_game_type_none"), "lobby_info_box_game_type_lobbies", nil, nil, info_frame_text_style),
 		server_buttons_frame = UIWidgets.create_frame("lobby_info_dedicated_server_buttons_frame", scenegraph_definition.lobby_info_dedicated_server_buttons_frame.size, window_frame, 5),
 		add_to_favorites_button = create_window_button("lobby_info_add_to_favorites_button", scenegraph_definition.lobby_info_add_to_favorites_button.size, Localize("lb_add_to_favorites"), 20, false)
 	}

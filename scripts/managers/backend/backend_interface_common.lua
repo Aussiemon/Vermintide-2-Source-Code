@@ -129,6 +129,13 @@ local filter_macros = {
 			end
 		end
 	end,
+	is_weapon = function (item, backend_id)
+		local item_data = item.data
+		local slot_type = item_data.slot_type
+		local is_weapon = slot_type == "melee" or slot_type == "ranged"
+
+		return is_weapon
+	end,
 	equipped_by_current_career = function (item, backend_id, params)
 		local item_data = item.data
 		local profile_synchronizer = Managers.state.network.profile_synchronizer
@@ -458,7 +465,7 @@ local filter_macros = {
 			local backend_items = Managers.backend:get_interface("items")
 			local rarity = backend_items:get_item_rarity(backend_id)
 
-			if rarity ~= "default" and rarity ~= "promo" then
+			if rarity ~= "default" and rarity ~= "promo" and rarity ~= "magic" then
 				local career_names = backend_items:equipped_by(backend_id)
 
 				if #career_names == 0 then
@@ -501,6 +508,12 @@ local filter_macros = {
 
 		if slot_type == "ranged" or slot_type == "melee" then
 			local backend_items = Managers.backend:get_interface("items")
+			local rarity = backend_items:get_item_rarity(backend_id)
+
+			if rarity == "magic" then
+				return false
+			end
+
 			local backend_crafting = Managers.backend:get_interface("crafting")
 			local career_names = backend_items:equipped_by(backend_id)
 

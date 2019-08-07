@@ -6,6 +6,7 @@ dofile("scripts/entity_system/systems/behaviour/trees/skaven/skaven_horde_rat_be
 dofile("scripts/entity_system/systems/behaviour/trees/skaven/skaven_horde_shield_rat_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/skaven/skaven_loot_rat_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/skaven/skaven_pack_rat_behavior")
+dofile("scripts/entity_system/systems/behaviour/trees/skaven/skaven_slave_rat_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/skaven/skaven_dummy_clan_rat_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/skaven/skaven_packmaster_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/skaven/skaven_plague_monk_behavior")
@@ -43,7 +44,6 @@ dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_tentacle_sorce
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_zombie_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/critters/critter_pig_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/critters/critter_rat_behavior")
-dofile("scripts/entity_system/systems/behaviour/trees/pets/pet_pig_behavior")
 
 for _, dlc in pairs(DLCSettings) do
 	local behaviour_trees = dlc.behaviour_trees

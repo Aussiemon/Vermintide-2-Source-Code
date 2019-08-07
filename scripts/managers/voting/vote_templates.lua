@@ -313,6 +313,20 @@ VoteTemplates = {
 		min_required_voters = 1,
 		gamepad_input_desc = "default_voting",
 		timeout_vote_option = 2,
+		requirement_failed_message_func = function (requirement_check_data)
+			local text = Localize("vote_requirement_failed")
+			local player_manager = Managers.player
+
+			for peer_id, success in pairs(requirement_check_data.results) do
+				if not success then
+					local player = player_manager:player_from_peer_id(peer_id)
+					local name = player:name()
+					text = text .. name .. "\n"
+				end
+			end
+
+			return text
+		end,
 		vote_options = {
 			{
 				text = "popup_choice_accept",
@@ -354,6 +368,8 @@ VoteTemplates = {
 				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(game_mode) then
 					Managers.twitch:disconnect()
 				end
+
+				Managers.mechanism:reset_choose_next_state()
 
 				local matchmaking_manager = Managers.matchmaking
 
@@ -444,6 +460,20 @@ VoteTemplates = {
 		min_required_voters = 1,
 		gamepad_input_desc = "default_voting",
 		timeout_vote_option = 2,
+		requirement_failed_message_func = function (requirement_check_data)
+			local text = Localize("vote_requirement_failed")
+			local player_manager = Managers.player
+
+			for peer_id, success in pairs(requirement_check_data.results) do
+				if not success then
+					local player = player_manager:player_from_peer_id(peer_id)
+					local name = player:name()
+					text = text .. name .. "\n"
+				end
+			end
+
+			return text
+		end,
 		vote_options = {
 			{
 				text = "popup_choice_accept",
@@ -544,6 +574,20 @@ VoteTemplates = {
 		min_required_voters = 1,
 		gamepad_input_desc = "default_voting",
 		timeout_vote_option = 2,
+		requirement_failed_message_func = function (requirement_check_data)
+			local text = Localize("vote_requirement_failed")
+			local player_manager = Managers.player
+
+			for peer_id, success in pairs(requirement_check_data.results) do
+				if not success then
+					local player = player_manager:player_from_peer_id(peer_id)
+					local name = player:name()
+					text = text .. name .. "\n"
+				end
+			end
+
+			return text
+		end,
 		vote_options = {
 			{
 				text = "popup_choice_accept",
@@ -634,6 +678,360 @@ VoteTemplates = {
 					mutators = mutators
 				},
 				twitch_enabled = (twitch_enabled_id == 1 and true) or false
+			}
+
+			return data
+		end,
+		initial_vote_func = function (data)
+			local votes = {
+				[data.voter_peer_id] = 1
+			}
+
+			return votes
+		end
+	},
+	game_settings_weave_vote = {
+		client_start_vote_rpc = "rpc_server_request_start_vote_lookup",
+		ingame_vote = false,
+		mission_vote = true,
+		gamepad_support = true,
+		text = "game_settings_weave_vote",
+		minimum_voter_percent = 1,
+		success_percent = 1,
+		server_start_vote_rpc = "rpc_client_start_vote_lookup",
+		duration = 30,
+		priority = 110,
+		min_required_voters = 1,
+		gamepad_input_desc = "default_voting",
+		timeout_vote_option = 2,
+		requirement_failed_message_func = function (requirement_check_data)
+			local text = Localize("vote_weave_requirement_failed")
+			local player_manager = Managers.player
+
+			for peer_id, success in pairs(requirement_check_data.results) do
+				if not success then
+					local player = player_manager:player_from_peer_id(peer_id)
+					local name = player:name()
+					text = text .. name .. "\n"
+				end
+			end
+
+			return text
+		end,
+		vote_options = {
+			{
+				text = "popup_choice_accept",
+				gamepad_input = "confirm",
+				vote = 1,
+				input = "ingame_vote_yes"
+			},
+			{
+				text = "dlc1_3_1_decline",
+				gamepad_input = "back",
+				vote = 2,
+				input = "ingame_vote_no"
+			}
+		},
+		can_start_vote = function (data)
+			local is_server = Managers.player.is_server
+
+			if not is_server then
+				return true
+			end
+
+			local players_failing_requirements = ""
+			local game_mode_settings = GameModeSettings.weave
+			local human_players = Managers.player:human_players()
+			local statistics_db = Managers.player:statistics_db()
+
+			for _, player in pairs(human_players) do
+				local stats_id = player:stats_id()
+
+				if not game_mode_settings.extra_requirements_function(statistics_db, stats_id) then
+					players_failing_requirements = players_failing_requirements .. player:name() .. "\n"
+				end
+			end
+
+			if #players_failing_requirements > 0 then
+				local reply_string = Localize("vote_game_mode_requirement_failed")
+				reply_string = string.format(reply_string, players_failing_requirements)
+
+				return false, reply_string
+			else
+				return true
+			end
+		end,
+		on_start = function (ingame_context, data)
+			Managers.matchmaking:cancel_matchmaking()
+		end,
+		on_complete = function (vote_result, ingame_context, data)
+			if vote_result == 1 then
+				local weave_name = data.weave_name
+				local objective_index = data.objective_index
+				local weave_template = WeaveSettings.templates[weave_name]
+				local level_key = weave_template.objectives[objective_index].level_id
+				local difficulty = weave_template.difficulty_key
+				local private_game = data.private_game
+				local quick_game = false
+				local game_mode = "weave"
+				local search_config = {
+					level_key = level_key,
+					difficulty = difficulty,
+					private_game = private_game,
+					quick_game = quick_game,
+					game_mode = game_mode,
+					weave_name = weave_name
+				}
+
+				Managers.mechanism:choose_next_state("weave")
+				Managers.weave:set_next_weave(weave_name)
+				Managers.weave:set_next_objective(objective_index)
+				Managers.matchmaking:find_game(search_config)
+			end
+		end,
+		pack_sync_data = function (data)
+			local weave_name = data.weave_name
+			local objective_index = data.objective_index
+			local private_game = data.private_game
+			local sync_data = {
+				NetworkLookup.weave_names[weave_name],
+				objective_index,
+				(private_game and 1) or 2
+			}
+
+			return sync_data
+		end,
+		extract_sync_data = function (sync_data)
+			local weave_name_id = sync_data[1]
+			local weave_name = NetworkLookup.weave_names[weave_name_id]
+			local objective_index = sync_data[2]
+			local weave_template = WeaveSettings.templates[weave_name]
+			local level_key = weave_template.objectives[objective_index].level_id
+			local difficulty = weave_template.difficulty_key
+			local private_game = (sync_data[3] == 1 and true) or false
+			local data = {
+				game_mode = "weave",
+				level_key = level_key,
+				difficulty = difficulty,
+				weave_name = weave_name,
+				objective_index = objective_index,
+				private_game = private_game
+			}
+
+			return data
+		end,
+		initial_vote_func = function (data)
+			local votes = {
+				[data.voter_peer_id] = 1
+			}
+
+			return votes
+		end
+	},
+	game_settings_join_weave_vote = {
+		client_start_vote_rpc = "rpc_server_request_start_vote_lookup",
+		ingame_vote = false,
+		mission_vote = true,
+		gamepad_support = true,
+		text = "game_settings_join_weave_vote",
+		minimum_voter_percent = 1,
+		success_percent = 1,
+		server_start_vote_rpc = "rpc_client_start_vote_lookup",
+		duration = 30,
+		priority = 110,
+		min_required_voters = 1,
+		gamepad_input_desc = "default_voting",
+		timeout_vote_option = 2,
+		vote_options = {
+			{
+				text = "popup_choice_accept",
+				gamepad_input = "confirm",
+				vote = 1,
+				input = "ingame_vote_yes"
+			},
+			{
+				text = "matchmaking_surfix_continue_searching",
+				gamepad_input = "back",
+				vote = 2,
+				input = "ingame_vote_no"
+			}
+		},
+		on_start = function (ingame_context, data)
+			return
+		end,
+		on_complete = function (vote_result, ingame_context, data)
+			if vote_result == 1 then
+				local weave_name = data.weave_name
+				local objective_index = data.objective_index
+				local weave_template = WeaveSettings.templates[weave_name]
+				local level_key = weave_template.objectives[objective_index].level_id
+				local difficulty = weave_template.difficulty_key
+				local private_game = false
+				local quick_game = false
+				local game_mode = "weave"
+				local search_config = {
+					level_key = level_key,
+					difficulty = difficulty,
+					private_game = private_game,
+					quick_game = quick_game,
+					game_mode = game_mode,
+					weave_name = weave_name
+				}
+
+				Managers.matchmaking:weave_vote_result(true)
+			else
+				Managers.matchmaking:weave_vote_result(false)
+			end
+		end,
+		pack_sync_data = function (data)
+			local weave_name = data.weave_name
+			local objective_index = data.objective_index
+			local sync_data = {
+				NetworkLookup.weave_names[weave_name],
+				objective_index
+			}
+
+			return sync_data
+		end,
+		extract_sync_data = function (sync_data)
+			local weave_name_id = sync_data[1]
+			local weave_name = NetworkLookup.weave_names[weave_name_id]
+			local objective_index = sync_data[2]
+			local weave_template = WeaveSettings.templates[weave_name]
+			local level_key = weave_template.objectives[objective_index].level_id
+			local difficulty = weave_template.difficulty_key
+			local data = {
+				game_mode = "weave",
+				level_key = level_key,
+				difficulty = difficulty,
+				weave_name = weave_name,
+				objective_index = objective_index
+			}
+
+			return data
+		end,
+		initial_vote_func = function (data)
+			local votes = {}
+
+			return votes
+		end
+	},
+	game_settings_weave_find_group_vote = {
+		mission_vote = true,
+		ingame_vote = false,
+		client_start_vote_rpc = "rpc_server_request_start_vote_lookup",
+		server_requirement_check_rpc = "rpc_client_check_dlc",
+		client_requirement_check_reply_rpc = "rpc_server_check_dlc_reply",
+		gamepad_support = true,
+		text = "game_settings_vote",
+		minimum_voter_percent = 1,
+		success_percent = 1,
+		server_start_vote_rpc = "rpc_client_start_vote_lookup",
+		duration = 30,
+		priority = 110,
+		min_required_voters = 1,
+		gamepad_input_desc = "default_voting",
+		timeout_vote_option = 2,
+		requirement_data_func = function ()
+			local data = {
+				NetworkLookup.dlcs.scorpion
+			}
+
+			return data
+		end,
+		requirement_failed_message_func = function (requirement_check_data)
+			local text = Localize("vote_weave_requirement_failed")
+			local player_manager = Managers.player
+
+			for peer_id, success in pairs(requirement_check_data.results) do
+				if not success then
+					local player = player_manager:player_from_peer_id(peer_id)
+					local name = player:name()
+					text = text .. name .. "\n"
+				end
+			end
+
+			return text
+		end,
+		vote_options = {
+			{
+				text = "popup_choice_accept",
+				gamepad_input = "confirm",
+				vote = 1,
+				input = "ingame_vote_yes"
+			},
+			{
+				text = "dlc1_3_1_decline",
+				gamepad_input = "back",
+				vote = 2,
+				input = "ingame_vote_no"
+			}
+		},
+		can_start_vote = function (data)
+			local is_server = Managers.player.is_server
+
+			if not is_server then
+				return true
+			end
+
+			local players_failing_requirements = ""
+			local game_mode_settings = GameModeSettings.weave
+			local human_players = Managers.player:human_players()
+			local statistics_db = Managers.player:statistics_db()
+
+			for _, player in pairs(human_players) do
+				local stats_id = player:stats_id()
+
+				if not game_mode_settings.extra_requirements_function(statistics_db, stats_id) then
+					players_failing_requirements = players_failing_requirements .. player:name() .. "\n"
+				end
+			end
+
+			if #players_failing_requirements > 0 then
+				local reply_string = Localize("vote_game_mode_requirement_failed")
+				reply_string = string.format(reply_string, players_failing_requirements)
+
+				return false, reply_string
+			else
+				return true
+			end
+		end,
+		on_start = function (ingame_context, data)
+			Managers.matchmaking:cancel_matchmaking()
+		end,
+		on_complete = function (vote_result, ingame_context, data)
+			if vote_result == 1 then
+				local private_game = false
+				local quick_game = false
+				local level_key = "inn_level"
+				local difficulty = data.difficulty
+				local game_mode = "weave_find_group"
+				local search_config = {
+					level_key = level_key,
+					difficulty = difficulty,
+					private_game = private_game,
+					quick_game = quick_game,
+					game_mode = game_mode
+				}
+
+				Managers.matchmaking:find_game(search_config)
+			end
+		end,
+		pack_sync_data = function (data)
+			local difficulty = data.difficulty
+			local sync_data = {
+				NetworkLookup.difficulties[difficulty]
+			}
+
+			return sync_data
+		end,
+		extract_sync_data = function (sync_data)
+			local difficulty_id = sync_data[1]
+			local difficulty = NetworkLookup.difficulties[difficulty_id]
+			local data = {
+				level_key = "inn_level",
+				game_mode = "weave_find_group",
+				difficulty = difficulty
 			}
 
 			return data

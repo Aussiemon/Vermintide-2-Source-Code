@@ -70,25 +70,55 @@ CareerAbilityESHuntsman._run_ability = function (self)
 	local inventory_extension = self._inventory_extension
 	local buff_extension = self._buff_extension
 	local career_extension = self._career_extension
+	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 	local server_buff_names = {
 		"markus_huntsman_activated_ability",
 		"markus_huntsman_activated_ability_headshot_multiplier"
 	}
-	local local_buff_names = {
-		"markus_huntsman_activated_ability_increased_zoom",
-		"markus_huntsman_activated_ability_increased_reload_speed",
-		"markus_huntsman_activated_ability_decrease_move_speed",
-		"markus_huntsman_activated_ability_decrease_crouch_move_speed",
-		"markus_huntsman_activated_ability_decrease_walk_move_speed",
-		"markus_huntsman_activated_ability_decrease_dodge_speed",
-		"markus_huntsman_activated_ability_decrease_dodge_distance",
-		"markus_huntsman_end_activated_on_ranged_hit",
-		"markus_huntsman_end_activated_on_melee_hit"
-	}
-	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
+	local local_buff_names = {}
 
-	if talent_extension:has_talent("markus_huntsman_activated_ability_damage") then
-		server_buff_names[#server_buff_names + 1] = "markus_huntsman_activated_ability_damage"
+	if talent_extension:has_talent("markus_huntsman_activated_ability_improved_stealth") then
+		local_buff_names = {
+			"markus_huntsman_activated_ability_increased_zoom",
+			"markus_huntsman_activated_ability_increased_reload_speed",
+			"markus_huntsman_activated_ability_decrease_move_speed",
+			"markus_huntsman_activated_ability_decrease_crouch_move_speed",
+			"markus_huntsman_activated_ability_decrease_walk_move_speed",
+			"markus_huntsman_activated_ability_decrease_dodge_speed",
+			"markus_huntsman_activated_ability_decrease_dodge_distance"
+		}
+	elseif talent_extension:has_talent("markus_huntsman_activated_ability_duration") then
+		local_buff_names = {
+			"markus_huntsman_activated_ability_increased_zoom_duration",
+			"markus_huntsman_activated_ability_increased_reload_speed_duration",
+			"markus_huntsman_activated_ability_decrease_move_speed_duration",
+			"markus_huntsman_activated_ability_decrease_crouch_move_speed_duration",
+			"markus_huntsman_activated_ability_decrease_walk_move_speed_duration",
+			"markus_huntsman_activated_ability_decrease_dodge_speed_duration",
+			"markus_huntsman_activated_ability_decrease_dodge_distance_duration",
+			"markus_huntsman_end_activated_on_ranged_hit_duration",
+			"markus_huntsman_end_activated_on_melee_hit_duration"
+		}
+		server_buff_names = {
+			"markus_huntsman_activated_ability_duration",
+			"markus_huntsman_activated_ability_headshot_multiplier_duration"
+		}
+	else
+		local_buff_names = {
+			"markus_huntsman_activated_ability_increased_zoom",
+			"markus_huntsman_activated_ability_increased_reload_speed",
+			"markus_huntsman_activated_ability_decrease_move_speed",
+			"markus_huntsman_activated_ability_decrease_crouch_move_speed",
+			"markus_huntsman_activated_ability_decrease_walk_move_speed",
+			"markus_huntsman_activated_ability_decrease_dodge_speed",
+			"markus_huntsman_activated_ability_decrease_dodge_distance",
+			"markus_huntsman_end_activated_on_ranged_hit",
+			"markus_huntsman_end_activated_on_melee_hit"
+		}
+		server_buff_names = {
+			"markus_huntsman_activated_ability",
+			"markus_huntsman_activated_ability_headshot_multiplier"
+		}
 	end
 
 	local unit_object_id = network_manager:unit_game_object_id(owner_unit)

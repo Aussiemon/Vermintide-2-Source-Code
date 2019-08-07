@@ -7,118 +7,164 @@ require("scripts/unit_extensions/default_player_unit/careers/career_ability_es_k
 require("scripts/unit_extensions/default_player_unit/careers/career_ability_es_mercenary")
 require("scripts/unit_extensions/default_player_unit/careers/career_ability_we_maiden_guard")
 require("scripts/unit_extensions/default_player_unit/careers/career_ability_we_shade")
+require("scripts/unit_extensions/default_player_unit/careers/career_ability_we_shade_dash")
 require("scripts/unit_extensions/default_player_unit/careers/career_ability_wh_captain")
 require("scripts/unit_extensions/default_player_unit/careers/career_ability_wh_zealot")
 
 ActivatedAbilitySettings = {
 	dr_1 = {
-		description = "career_active_desc_dr_1",
-		display_name = "career_active_name_dr_1",
-		cooldown = 120,
-		icon = "bardin_ironbreaker_activated_ability",
-		ability_class = CareerAbilityDRIronbreaker
+		{
+			description = "career_active_desc_dr_1",
+			display_name = "career_active_name_dr_1",
+			cooldown = 120,
+			icon = "bardin_ironbreaker_activated_ability",
+			ability_class = CareerAbilityDRIronbreaker
+		}
 	},
 	dr_2 = {
-		description = "career_active_desc_dr_2_2",
-		display_name = "career_active_name_dr_2",
-		cooldown = 40,
-		icon = "bardin_slayer_activated_ability",
-		ability_class = CareerAbilityDRSlayer
+		{
+			description = "career_active_desc_dr_2_2",
+			display_name = "career_active_name_dr_2",
+			cooldown = 40,
+			icon = "bardin_slayer_activated_ability",
+			ability_class = CareerAbilityDRSlayer
+		}
 	},
 	dr_3 = {
-		description = "career_active_desc_dr_3_2",
-		weapon_name = "bardin_ranger_career_skill_weapon",
-		display_name = "career_active_name_dr_3",
-		cooldown = 120,
-		icon = "bardin_ranger_activated_ability",
-		action_name = "action_career_dr_3"
+		{
+			description = "career_active_desc_dr_3_2",
+			weapon_name = "bardin_ranger_career_skill_weapon",
+			display_name = "career_active_name_dr_3",
+			cooldown = 120,
+			icon = "bardin_ranger_activated_ability",
+			action_name = "action_career_dr_3"
+		}
 	},
 	es_1 = {
-		description = "career_active_desc_es_1_2",
-		display_name = "career_active_name_es_1",
-		cooldown = 90,
-		icon = "markus_huntsman_activated_ability",
-		ability_class = CareerAbilityESHuntsman
+		{
+			description = "career_active_desc_es_1_2",
+			display_name = "career_active_name_es_1",
+			cooldown = 90,
+			icon = "markus_huntsman_activated_ability",
+			ability_class = CareerAbilityESHuntsman
+		}
 	},
 	es_2 = {
-		description = "career_active_desc_es_2",
-		display_name = "career_active_name_es_2",
-		cooldown = 30,
-		icon = "markus_knight_activated_ability",
-		ability_class = CareerAbilityESKnight
+		{
+			description = "career_active_desc_es_2",
+			display_name = "career_active_name_es_2",
+			cooldown = 30,
+			icon = "markus_knight_activated_ability",
+			ability_class = CareerAbilityESKnight
+		}
 	},
 	es_3 = {
-		description = "career_active_desc_markus_mercenary_2",
-		display_name = "career_active_name_markus_mercenary",
-		cooldown = 90,
-		icon = "markus_mercenary_activated_ability",
-		ability_class = CareerAbilityESMercenary
+		{
+			description = "career_active_desc_markus_mercenary_2",
+			display_name = "career_active_name_markus_mercenary",
+			cooldown = 90,
+			icon = "markus_mercenary_activated_ability",
+			ability_class = CareerAbilityESMercenary
+		}
 	},
 	we_1 = {
-		description = "career_active_desc_we_1",
-		display_name = "career_active_name_we_1",
-		cooldown = 60,
-		icon = "kerillian_shade_activated_ability",
-		ability_class = CareerAbilityWEShade
+		{
+			description = "career_active_desc_we_1_2",
+			display_name = "career_active_name_we_1",
+			cooldown = 60,
+			icon = "kerillian_shade_activated_ability",
+			ability_class = CareerAbilityWEShade
+		},
+		{
+			description = "career_active_desc_we_1_2",
+			display_name = "career_active_name_we_1",
+			cooldown = 60,
+			icon = "kerillian_shade_activated_ability",
+			ability_class = CareerAbilityWEShadeDash
+		}
 	},
 	we_2 = {
-		description = "career_active_desc_we_2",
-		display_name = "career_active_name_we_2",
-		cooldown = 20,
-		icon = "kerillian_maidenguard_activated_ability",
-		ability_class = CareerAbilityWEMaidenGuard
+		{
+			description = "career_active_desc_we_2_2",
+			display_name = "career_active_name_we_2",
+			cooldown = 20,
+			icon = "kerillian_maidenguard_activated_ability",
+			ability_class = CareerAbilityWEMaidenGuard
+		}
 	},
 	we_3 = {
-		description = "career_active_desc_we_3",
-		weapon_name = "kerillian_waywatcher_career_skill_weapon",
-		display_name = "career_active_name_we_3",
-		cooldown = 80,
-		icon = "kerillian_waywatcher_activated_ability",
-		action_name = "action_career_we_3"
+		{
+			description = "career_active_desc_we_3",
+			weapon_name = "kerillian_waywatcher_career_skill_weapon",
+			display_name = "career_active_name_we_3",
+			cooldown = 80,
+			icon = "kerillian_waywatcher_activated_ability",
+			action_name = "action_career_we_3"
+		},
+		{
+			description = "career_active_desc_we_3",
+			weapon_name = "kerillian_waywatcher_career_skill_weapon_piercing_shot",
+			display_name = "career_active_name_we_3",
+			cooldown = 80,
+			icon = "kerillian_waywatcher_activated_ability",
+			action_name = "action_career_we_3_piercing"
+		}
 	},
 	wh_1 = {
-		description = "career_active_desc_wh_1",
-		display_name = "career_active_name_wh_1",
-		cooldown = 60,
-		icon = "victor_zealot_activated_ability",
-		ability_class = CareerAbilityWHZealot
+		{
+			description = "career_active_desc_wh_1",
+			display_name = "career_active_name_wh_1",
+			cooldown = 60,
+			icon = "victor_zealot_activated_ability",
+			ability_class = CareerAbilityWHZealot
+		}
 	},
 	wh_2 = {
-		description = "career_active_desc_wh_2",
-		weapon_name = "victor_bountyhunter_career_skill_weapon",
-		display_name = "career_active_name_wh_2",
-		cooldown = 70,
-		icon = "victor_bountyhunter_activated_ability",
-		action_name = "action_career_wh_2"
+		{
+			description = "career_active_desc_wh_2",
+			weapon_name = "victor_bountyhunter_career_skill_weapon",
+			display_name = "career_active_name_wh_2",
+			cooldown = 70,
+			icon = "victor_bountyhunter_activated_ability",
+			action_name = "action_career_wh_2"
+		}
 	},
 	wh_3 = {
-		description = "career_active_desc_victor_witchhunter_2",
-		display_name = "career_active_name_victor_witchhunter",
-		cooldown = 90,
-		icon = "victor_witchhunter_activated_ability",
-		ability_class = CareerAbilityWHCaptain
+		{
+			description = "career_active_desc_victor_witchhunter_2",
+			display_name = "career_active_name_victor_witchhunter",
+			cooldown = 90,
+			icon = "victor_witchhunter_activated_ability",
+			ability_class = CareerAbilityWHCaptain
+		}
 	},
 	bw_1 = {
-		description = "career_active_desc_bw_1",
-		weapon_name = "sienna_scholar_career_skill_weapon",
-		display_name = "career_active_name_bw_1",
-		cooldown = 60,
-		icon = "sienna_scholar_activated_ability",
-		action_name = "action_career_bw_1"
+		{
+			description = "career_active_desc_bw_1",
+			weapon_name = "sienna_scholar_career_skill_weapon",
+			display_name = "career_active_name_bw_1",
+			cooldown = 60,
+			icon = "sienna_scholar_activated_ability",
+			action_name = "action_career_bw_1"
+		}
 	},
 	bw_2 = {
-		description = "career_active_desc_bw_2_2",
-		display_name = "career_active_name_bw_2",
-		cooldown = 40,
-		icon = "sienna_adept_activated_ability",
-		ability_class = CareerAbilityBWAdept
+		{
+			description = "career_active_desc_bw_2_2",
+			display_name = "career_active_name_bw_2",
+			cooldown = 40,
+			icon = "sienna_adept_activated_ability",
+			ability_class = CareerAbilityBWAdept
+		}
 	},
 	bw_3 = {
-		description = "career_active_desc_bw_3",
-		display_name = "career_active_name_bw_3",
-		cooldown = 120,
-		icon = "sienna_unchained_activated_ability",
-		ability_class = CareerAbilityBWUnchained
+		{
+			description = "career_active_desc_bw_3",
+			display_name = "career_active_name_bw_3",
+			cooldown = 120,
+			icon = "sienna_unchained_activated_ability",
+			ability_class = CareerAbilityBWUnchained
+		}
 	}
 }
 PassiveAbilitySettings = {
@@ -159,12 +205,17 @@ PassiveAbilitySettings = {
 			"bardin_slayer_passive_attack_speed",
 			"bardin_slayer_passive_stacking_damage_buff_on_hit",
 			"bardin_slayer_ability_cooldown_on_damage_taken",
-			"bardin_slayer_ability_cooldown_on_hit"
+			"bardin_slayer_ability_cooldown_on_hit",
+			"bardin_slayer_passive_uninterruptible_heavy"
 		},
 		perks = {
 			{
 				display_name = "career_passive_name_dr_2b",
 				description = "career_passive_desc_dr_2b_2"
+			},
+			{
+				display_name = "career_passive_name_dr_2c",
+				description = "career_passive_desc_dr_2c"
 			}
 		}
 	},
@@ -325,7 +376,7 @@ PassiveAbilitySettings = {
 		perks = {
 			{
 				display_name = "career_passive_name_we_3b",
-				description = "career_passive_desc_we_3b_2"
+				description = "career_passive_desc_we_3b_3"
 			},
 			{
 				display_name = "career_passive_name_we_3c",
@@ -468,16 +519,30 @@ PassiveAbilitySettings = {
 	}
 }
 
-for career, data in pairs(ActivatedAbilitySettings) do
-	if data.action_name then
-		fassert(not data.ability_class, "Activated ability for \"%s\" cannot have an ability class if it is a weapon action", career)
-	end
+for _, dlc in pairs(DLCSettings) do
+	local career_ability_settings = dlc.career_ability_settings
 
-	if data.ability_class then
-		fassert(not data.action_name, "Activated ability for \"%s\" cannot have a weapon action if it uses an ability class", career)
+	if career_ability_settings then
+		for _, career_ability_file in ipairs(career_ability_settings) do
+			require(career_ability_file)
+		end
 	end
+end
 
-	fassert(data.action_name or data.ability_class, "Activated ability for \"%s\" must have either a weapon action or an ability class", career)
+for career, ability_list in pairs(ActivatedAbilitySettings) do
+	for i = 1, #ability_list, 1 do
+		local data = ability_list[i]
+
+		if data.action_name then
+			fassert(not data.ability_class, "Activated ability for \"%s\" cannot have an ability class if it is a weapon action", career)
+		end
+
+		if data.ability_class then
+			fassert(not data.action_name, "Activated ability for \"%s\" cannot have a weapon action if it uses an ability class", career)
+		end
+
+		fassert(data.action_name or data.ability_class, "Activated ability for \"%s\" must have either a weapon action or an ability class", career)
+	end
 end
 
 return

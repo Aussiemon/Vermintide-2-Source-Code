@@ -1,4 +1,6 @@
 require("scripts/settings/equipment/weapon_material_settings_templates")
+require("scripts/settings/equipment/projectile_units")
+require("scripts/settings/equipment/pickups")
 
 WeaponSkins = WeaponSkins or {}
 WeaponSkins.skins = {
@@ -124,90 +126,97 @@ WeaponSkins.skins = {
 		name = "wh_crossbow_skin_01",
 		data = {
 			description = "wh_crossbow_skin_01_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt",
+			display_name = "wh_crossbow_skin_01_name",
 			rarity = "common",
-			hud_icon = "weapon_generic_icon_crossbow",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_emp_crossbow_02_t1",
 			left_hand_unit = "units/weapons/player/wpn_emp_crossbow_02_t1/wpn_emp_crossbow_02_t1",
-			display_name = "wh_crossbow_skin_01_name",
-			template = "crossbow_template_1"
+			template = "crossbow_template_1",
+			hud_icon = "weapon_generic_icon_crossbow",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
 		name = "wh_crossbow_skin_02",
 		data = {
 			description = "wh_crossbow_skin_02_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt",
+			display_name = "wh_crossbow_skin_02_name",
 			rarity = "rare",
-			hud_icon = "weapon_generic_icon_crossbow",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_emp_crossbow_02_t2",
 			left_hand_unit = "units/weapons/player/wpn_emp_crossbow_02_t2/wpn_emp_crossbow_02_t2",
-			display_name = "wh_crossbow_skin_02_name",
-			template = "crossbow_template_1"
+			template = "crossbow_template_1",
+			hud_icon = "weapon_generic_icon_crossbow",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
 		name = "wh_crossbow_skin_02_runed_01",
 		data = {
 			description = "wh_crossbow_skin_02_runed_01_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt",
+			display_name = "wh_crossbow_skin_02_runed_01_name",
 			rarity = "rare",
-			hud_icon = "weapon_generic_icon_crossbow",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_emp_crossbow_02_t2",
 			left_hand_unit = "units/weapons/player/wpn_emp_crossbow_02_t2/wpn_emp_crossbow_02_t2_runed_01",
-			display_name = "wh_crossbow_skin_02_runed_01_name",
-			template = "crossbow_template_1"
+			template = "crossbow_template_1",
+			hud_icon = "weapon_generic_icon_crossbow",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
 		name = "wh_crossbow_skin_03",
 		data = {
 			description = "wh_crossbow_skin_03_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt",
+			display_name = "wh_crossbow_skin_03_name",
 			rarity = "exotic",
-			hud_icon = "weapon_generic_icon_crossbow",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_emp_crossbow_03_t1",
 			left_hand_unit = "units/weapons/player/wpn_emp_crossbow_03_t1/wpn_emp_crossbow_03_t1",
-			display_name = "wh_crossbow_skin_03_name",
-			template = "crossbow_template_1"
+			template = "crossbow_template_1",
+			hud_icon = "weapon_generic_icon_crossbow",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
 		name = "wh_crossbow_skin_04",
 		data = {
 			description = "wh_crossbow_skin_04_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt",
+			display_name = "wh_crossbow_skin_04_name",
 			rarity = "exotic",
-			hud_icon = "weapon_generic_icon_crossbow",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_emp_crossbow_03_t2",
 			left_hand_unit = "units/weapons/player/wpn_emp_crossbow_03_t2/wpn_emp_crossbow_03_t2",
-			display_name = "wh_crossbow_skin_04_name",
-			template = "crossbow_template_1"
+			template = "crossbow_template_1",
+			hud_icon = "weapon_generic_icon_crossbow",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
 		name = "wh_crossbow_skin_04_runed_01",
 		data = {
 			description = "wh_crossbow_skin_04_runed_01_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt",
+			display_name = "wh_crossbow_skin_04_runed_01_name",
 			rarity = "unique",
-			hud_icon = "weapon_generic_icon_crossbow",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_emp_crossbow_03_t2",
 			left_hand_unit = "units/weapons/player/wpn_emp_crossbow_03_t2/wpn_emp_crossbow_03_t2_runed_01",
-			display_name = "wh_crossbow_skin_04_runed_01_name",
-			template = "crossbow_template_1"
+			template = "crossbow_template_1",
+			hud_icon = "weapon_generic_icon_crossbow",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
 		name = "wh_crossbow_skin_04_runed_02",
 		data = {
 			description = "wh_crossbow_skin_04_runed_02_description",
-			rarity = "unique",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt",
 			display_name = "wh_crossbow_skin_04_runed_02_name",
-			hud_icon = "weapon_generic_icon_crossbow",
+			rarity = "unique",
 			inventory_icon = "icon_wpn_emp_crossbow_03_t2",
 			left_hand_unit = "units/weapons/player/wpn_emp_crossbow_03_t2/wpn_emp_crossbow_03_t2_runed_01",
 			template = "crossbow_template_1",
+			hud_icon = "weapon_generic_icon_crossbow",
 			display_unit = "units/weapons/weapon_display/display_rifle",
 			material_settings = WeaponMaterialSettingsTemplates.purple_glow
 		}
@@ -216,39 +225,42 @@ WeaponSkins.skins = {
 		name = "wh_crossbow_skin_05",
 		data = {
 			description = "wh_crossbow_skin_05_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt",
+			display_name = "wh_crossbow_skin_05_name",
 			rarity = "plentiful",
-			hud_icon = "weapon_generic_icon_crossbow",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_empire_crossbow_t1",
 			left_hand_unit = "units/weapons/player/wpn_empire_crossbow_t1/wpn_empire_crossbow_tier1",
-			display_name = "wh_crossbow_skin_05_name",
-			template = "crossbow_template_1"
+			template = "crossbow_template_1",
+			hud_icon = "weapon_generic_icon_crossbow",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
 		name = "wh_crossbow_skin_06",
 		data = {
 			description = "wh_crossbow_skin_06_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt",
+			display_name = "wh_crossbow_skin_06_name",
 			rarity = "exotic",
-			hud_icon = "weapon_generic_icon_crossbow",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_empire_crossbow_t2",
 			left_hand_unit = "units/weapons/player/wpn_empire_crossbow_t2/wpn_empire_crossbow_tier2",
-			display_name = "wh_crossbow_skin_06_name",
-			template = "crossbow_template_1"
+			template = "crossbow_template_1",
+			hud_icon = "weapon_generic_icon_crossbow",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
 		name = "wh_crossbow_skin_07",
 		data = {
 			description = "wh_crossbow_skin_07_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt",
+			display_name = "wh_crossbow_skin_07_name",
 			rarity = "unique",
-			hud_icon = "weapon_generic_icon_crossbow",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_empire_crossbow_t3",
 			left_hand_unit = "units/weapons/player/wpn_empire_crossbow_t3/wpn_empire_crossbow_tier3",
-			display_name = "wh_crossbow_skin_07_name",
-			template = "crossbow_template_1"
+			template = "crossbow_template_1",
+			hud_icon = "weapon_generic_icon_crossbow",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
@@ -916,64 +928,74 @@ WeaponSkins.skins = {
 		name = "wh_repeating_crossbow_skin_01",
 		data = {
 			description = "wh_repeating_crossbow_skin_01_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_pile",
+			display_name = "wh_repeating_crossbow_skin_01_name",
 			rarity = "rare",
-			hud_icon = "weapon_generic_icon_fencing_sword",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_wh_repeater_crossbow_t1",
 			left_hand_unit = "units/weapons/player/wpn_wh_repeater_crossbow_t1/wpn_wh_repeater_crossbow_t1",
-			display_name = "wh_repeating_crossbow_skin_01_name",
-			template = "repeating_crossbow_template_1"
+			template = "repeating_crossbow_template_1",
+			ammo_unit_3p = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_3p",
+			hud_icon = "weapon_generic_icon_fencing_sword",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
 		name = "wh_repeating_crossbow_skin_02",
 		data = {
 			description = "wh_repeating_crossbow_skin_02_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_pile",
+			display_name = "wh_repeating_crossbow_skin_02_name",
 			rarity = "exotic",
-			hud_icon = "weapon_generic_icon_fencing_sword",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_wh_repeater_crossbow_t2",
 			left_hand_unit = "units/weapons/player/wpn_wh_repeater_crossbow_t2/wpn_wh_repeater_crossbow_t2",
-			display_name = "wh_repeating_crossbow_skin_02_name",
-			template = "repeating_crossbow_template_1"
+			template = "repeating_crossbow_template_1",
+			ammo_unit_3p = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_3p",
+			hud_icon = "weapon_generic_icon_fencing_sword",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
 		name = "wh_repeating_crossbow_skin_03",
 		data = {
 			description = "wh_repeating_crossbow_skin_03_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_pile",
+			display_name = "wh_repeating_crossbow_skin_03_name",
 			rarity = "unique",
-			hud_icon = "weapon_generic_icon_fencing_sword",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_wh_repeater_crossbow_t3",
 			left_hand_unit = "units/weapons/player/wpn_wh_repeater_crossbow_t3/wpn_wh_repeater_crossbow_t3",
-			display_name = "wh_repeating_crossbow_skin_03_name",
-			template = "repeating_crossbow_template_1"
+			template = "repeating_crossbow_template_1",
+			ammo_unit_3p = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_3p",
+			hud_icon = "weapon_generic_icon_fencing_sword",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
 		name = "wh_repeating_crossbow_skin_03_runed_01",
 		data = {
 			description = "wh_repeating_crossbow_skin_03_runed_01_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_pile",
+			display_name = "wh_repeating_crossbow_skin_03_runed_01_name",
 			rarity = "unique",
-			hud_icon = "weapon_generic_icon_fencing_sword",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_wh_repeater_crossbow_t3",
 			left_hand_unit = "units/weapons/player/wpn_wh_repeater_crossbow_t3/wpn_wh_repeater_crossbow_t3_runed_01",
-			display_name = "wh_repeating_crossbow_skin_03_runed_01_name",
-			template = "repeating_crossbow_template_1"
+			template = "repeating_crossbow_template_1",
+			ammo_unit_3p = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_3p",
+			hud_icon = "weapon_generic_icon_fencing_sword",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
 		name = "wh_repeating_crossbow_skin_03_runed_02",
 		data = {
 			description = "wh_repeating_crossbow_skin_03_runed_02_description",
-			rarity = "unique",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_pile",
 			display_name = "wh_repeating_crossbow_skin_03_runed_02_name",
-			hud_icon = "weapon_generic_icon_fencing_sword",
+			rarity = "unique",
 			inventory_icon = "icon_wpn_wh_repeater_crossbow_t3",
 			left_hand_unit = "units/weapons/player/wpn_wh_repeater_crossbow_t3/wpn_wh_repeater_crossbow_t3_runed_01",
 			template = "repeating_crossbow_template_1",
+			ammo_unit_3p = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_3p",
+			hud_icon = "weapon_generic_icon_fencing_sword",
 			display_unit = "units/weapons/weapon_display/display_rifle",
 			material_settings = WeaponMaterialSettingsTemplates.purple_glow
 		}
@@ -3252,90 +3274,97 @@ WeaponSkins.skins = {
 		name = "dw_crossbow_skin_01",
 		data = {
 			description = "dw_crossbow_skin_01_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt",
+			display_name = "dw_crossbow_skin_01_name",
 			rarity = "plentiful",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_dw_xbox_01_t1",
 			left_hand_unit = "units/weapons/player/wpn_dw_xbow_01_t1/wpn_dw_xbow_01_t1",
-			display_name = "dw_crossbow_skin_01_name",
-			template = "crossbow_template_1"
+			template = "crossbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
 		name = "dw_crossbow_skin_02",
 		data = {
 			description = "dw_crossbow_skin_02_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt",
+			display_name = "dw_crossbow_skin_02_name",
 			rarity = "rare",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_dw_xbox_01_t2",
 			left_hand_unit = "units/weapons/player/wpn_dw_xbow_01_t2/wpn_dw_xbow_01_t2",
-			display_name = "dw_crossbow_skin_02_name",
-			template = "crossbow_template_1"
+			template = "crossbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
 		name = "dw_crossbow_skin_02_runed_01",
 		data = {
 			description = "dw_crossbow_skin_02_runed_01_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt",
+			display_name = "dw_crossbow_skin_02_runed_01_name",
 			rarity = "unique",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_dw_xbox_01_t2",
 			left_hand_unit = "units/weapons/player/wpn_dw_xbow_01_t2/wpn_dw_xbow_01_t2_runed_01",
-			display_name = "dw_crossbow_skin_02_runed_01_name",
-			template = "crossbow_template_1"
+			template = "crossbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
 		name = "dw_crossbow_skin_03",
 		data = {
 			description = "dw_crossbow_skin_03_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt",
+			display_name = "dw_crossbow_skin_03_name",
 			rarity = "common",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_dw_xbox_02_t1",
 			left_hand_unit = "units/weapons/player/wpn_dw_xbow_02_t1/wpn_dw_xbow_02_t1",
-			display_name = "dw_crossbow_skin_03_name",
-			template = "crossbow_template_1"
+			template = "crossbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
 		name = "dw_crossbow_skin_04",
 		data = {
 			description = "dw_crossbow_skin_04_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt",
+			display_name = "dw_crossbow_skin_04_name",
 			rarity = "exotic",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_dw_xbox_02_t2",
 			left_hand_unit = "units/weapons/player/wpn_dw_xbow_02_t2/wpn_dw_xbow_02_t2",
-			display_name = "dw_crossbow_skin_04_name",
-			template = "crossbow_template_1"
+			template = "crossbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
 		name = "dw_crossbow_skin_04_runed_01",
 		data = {
 			description = "dw_crossbow_skin_04_runed_01_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt",
+			display_name = "dw_crossbow_skin_04_runed_01_name",
 			rarity = "unique",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_dw_xbox_02_t2",
 			left_hand_unit = "units/weapons/player/wpn_dw_xbow_02_t2/wpn_dw_xbow_02_t2_runed_01",
-			display_name = "dw_crossbow_skin_04_runed_01_name",
-			template = "crossbow_template_1"
+			template = "crossbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
 		name = "dw_crossbow_skin_04_runed_02",
 		data = {
 			description = "dw_crossbow_skin_04_runed_02_description",
-			rarity = "unique",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt",
 			display_name = "dw_crossbow_skin_04_runed_02_name",
-			hud_icon = "weapon_generic_icon_staff_3",
+			rarity = "unique",
 			inventory_icon = "icon_wpn_dw_xbox_02_t2",
 			left_hand_unit = "units/weapons/player/wpn_dw_xbow_02_t2/wpn_dw_xbow_02_t2_runed_01",
 			template = "crossbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
 			display_unit = "units/weapons/weapon_display/display_rifle",
 			material_settings = WeaponMaterialSettingsTemplates.purple_glow
 		}
@@ -3344,13 +3373,14 @@ WeaponSkins.skins = {
 		name = "dw_crossbow_skin_05",
 		data = {
 			description = "dw_crossbow_skin_05_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt",
+			display_name = "dw_crossbow_skin_05_name",
 			rarity = "unique",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_dw_xbox_02_t3",
 			left_hand_unit = "units/weapons/player/wpn_dw_xbow_02_t3/wpn_dw_xbow_02_t3",
-			display_name = "dw_crossbow_skin_05_name",
-			template = "crossbow_template_1"
+			template = "crossbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
@@ -4292,103 +4322,111 @@ WeaponSkins.skins = {
 		name = "es_longbow_skin_01",
 		data = {
 			description = "es_longbow_skin_01_description",
+			ammo_unit = "units/weapons/player/wpn_emp_arrows/wpn_es_arrow_t1",
+			display_name = "es_longbow_skin_01_name",
 			rarity = "plentiful",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_emp_bow_01",
 			left_hand_unit = "units/weapons/player/wpn_emp_bow_01/wpn_emp_bow_01",
-			display_name = "es_longbow_skin_01_name",
-			template = "longbow_empire_template"
+			template = "longbow_empire_template",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "es_longbow_skin_02",
 		data = {
 			description = "es_longbow_skin_02_description",
+			ammo_unit = "units/weapons/player/wpn_emp_arrows/wpn_es_arrow_t1",
+			display_name = "es_longbow_skin_02_name",
 			rarity = "common",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_emp_bow_02",
 			left_hand_unit = "units/weapons/player/wpn_emp_bow_02/wpn_emp_bow_02",
-			display_name = "es_longbow_skin_02_name",
-			template = "longbow_empire_template"
+			template = "longbow_empire_template",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "es_longbow_skin_03",
 		data = {
 			description = "es_longbow_skin_03_description",
+			ammo_unit = "units/weapons/player/wpn_emp_arrows/wpn_es_arrow_t1",
+			display_name = "es_longbow_skin_03_name",
 			rarity = "rare",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_emp_bow_03",
 			left_hand_unit = "units/weapons/player/wpn_emp_bow_03/wpn_emp_bow_03",
-			display_name = "es_longbow_skin_03_name",
-			template = "longbow_empire_template"
+			template = "longbow_empire_template",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "es_longbow_skin_04",
 		data = {
 			description = "es_longbow_skin_04_description",
+			ammo_unit = "units/weapons/player/wpn_emp_arrows/wpn_es_arrow_t1",
+			display_name = "es_longbow_skin_04_name",
 			rarity = "exotic",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_emp_bow_04",
 			left_hand_unit = "units/weapons/player/wpn_emp_bow_04/wpn_emp_bow_04",
-			display_name = "es_longbow_skin_04_name",
-			template = "longbow_empire_template"
+			template = "longbow_empire_template",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "es_longbow_skin_04_runed_01",
 		data = {
 			description = "es_longbow_skin_04_runed_01_description",
+			ammo_unit = "units/weapons/player/wpn_emp_arrows/wpn_es_arrow_t1",
+			display_name = "es_longbow_skin_04_runed_01_name",
 			rarity = "unique",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_emp_bow_04",
 			left_hand_unit = "units/weapons/player/wpn_emp_bow_04/wpn_emp_bow_04_runed_01",
-			display_name = "es_longbow_skin_04_runed_01_name",
-			template = "longbow_empire_template"
+			template = "longbow_empire_template",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "es_longbow_skin_05",
 		data = {
 			description = "es_longbow_skin_05_description",
+			ammo_unit = "units/weapons/player/wpn_emp_arrows/wpn_es_arrow_t1",
+			display_name = "es_longbow_skin_05_name",
 			rarity = "unique",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_emp_bow_05",
 			left_hand_unit = "units/weapons/player/wpn_emp_bow_05/wpn_emp_bow_05",
-			display_name = "es_longbow_skin_05_name",
-			template = "longbow_empire_template"
+			template = "longbow_empire_template",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "es_longbow_skin_05_runed_01",
 		data = {
 			description = "es_longbow_skin_05_runed_01_description",
+			ammo_unit = "units/weapons/player/wpn_emp_arrows/wpn_es_arrow_t1",
+			display_name = "es_longbow_skin_05_runed_01_name",
 			rarity = "unique",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_emp_bow_05",
 			left_hand_unit = "units/weapons/player/wpn_emp_bow_05/wpn_emp_bow_05_runed_01",
-			display_name = "es_longbow_skin_05_runed_01_name",
-			template = "longbow_empire_template"
+			template = "longbow_empire_template",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "es_longbow_skin_05_runed_02",
 		data = {
 			description = "es_longbow_skin_05_runed_02_description",
-			rarity = "unique",
+			ammo_unit = "units/weapons/player/wpn_emp_arrows/wpn_es_arrow_t1",
 			display_name = "es_longbow_skin_05_runed_02_name",
-			hud_icon = "weapon_generic_icon_staff_3",
+			rarity = "unique",
 			inventory_icon = "icon_wpn_emp_bow_05",
 			left_hand_unit = "units/weapons/player/wpn_emp_bow_05/wpn_emp_bow_05_runed_01",
 			template = "longbow_empire_template",
+			hud_icon = "weapon_generic_icon_staff_3",
 			display_unit = "units/weapons/weapon_display/display_bow",
 			material_settings = WeaponMaterialSettingsTemplates.purple_glow
 		}
@@ -4895,77 +4933,89 @@ WeaponSkins.skins = {
 		name = "we_crossbow_skin_01",
 		data = {
 			description = "we_crossbow_skin_01_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_pile",
+			display_name = "we_crossbow_skin_01_name",
 			rarity = "common",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_we_repeater_crossbow_t1",
 			left_hand_unit = "units/weapons/player/wpn_we_repeater_crossbow_t1/wpn_we_repeater_crossbow_t1",
-			display_name = "we_crossbow_skin_01_name",
-			template = "repeating_crossbow_elf_template"
+			template = "repeating_crossbow_elf_template",
+			ammo_unit_3p = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_3p",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
 		name = "we_crossbow_skin_02",
 		data = {
 			description = "we_crossbow_skin_02_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_pile",
+			display_name = "we_crossbow_skin_02_name",
 			rarity = "rare",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_we_repeater_crossbow_t2",
 			left_hand_unit = "units/weapons/player/wpn_we_repeater_crossbow_t2/wpn_we_repeater_crossbow_t2",
-			display_name = "we_crossbow_skin_02_name",
-			template = "repeating_crossbow_elf_template"
+			template = "repeating_crossbow_elf_template",
+			ammo_unit_3p = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_3p",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
 		name = "we_crossbow_skin_02_runed_01",
 		data = {
 			description = "we_crossbow_skin_02_runed_01_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_pile",
+			display_name = "we_crossbow_skin_02_runed_01_name",
 			rarity = "unique",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_we_repeater_crossbow_t2",
 			left_hand_unit = "units/weapons/player/wpn_we_repeater_crossbow_t2/wpn_we_repeater_crossbow_t2_runed_01",
-			display_name = "we_crossbow_skin_02_runed_01_name",
-			template = "repeating_crossbow_elf_template"
+			template = "repeating_crossbow_elf_template",
+			ammo_unit_3p = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_3p",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
 		name = "we_crossbow_skin_03",
 		data = {
 			description = "we_crossbow_skin_03_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_pile",
+			display_name = "we_crossbow_skin_03_name",
 			rarity = "exotic",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_we_repeater_crossbow_t3",
 			left_hand_unit = "units/weapons/player/wpn_we_repeater_crossbow_t3/wpn_we_repeater_crossbow_t3",
-			display_name = "we_crossbow_skin_03_name",
-			template = "repeating_crossbow_elf_template"
+			template = "repeating_crossbow_elf_template",
+			ammo_unit_3p = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_3p",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
 		name = "we_crossbow_skin_03_runed_01",
 		data = {
 			description = "we_crossbow_skin_03_runed_01_description",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_pile",
+			display_name = "we_crossbow_skin_03_runed_01_name",
 			rarity = "unique",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_rifle",
 			inventory_icon = "icon_wpn_we_repeater_crossbow_t3",
 			left_hand_unit = "units/weapons/player/wpn_we_repeater_crossbow_t3/wpn_we_repeater_crossbow_t3_runed_01",
-			display_name = "we_crossbow_skin_03_runed_01_name",
-			template = "repeating_crossbow_elf_template"
+			template = "repeating_crossbow_elf_template",
+			ammo_unit_3p = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_3p",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_rifle"
 		}
 	},
 	{
 		name = "we_crossbow_skin_03_runed_02",
 		data = {
 			description = "we_crossbow_skin_03_runed_02_description",
-			rarity = "unique",
+			ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_pile",
 			display_name = "we_crossbow_skin_03_runed_02_name",
-			hud_icon = "weapon_generic_icon_staff_3",
+			rarity = "unique",
 			inventory_icon = "icon_wpn_we_repeater_crossbow_t3",
 			left_hand_unit = "units/weapons/player/wpn_we_repeater_crossbow_t3/wpn_we_repeater_crossbow_t3_runed_01",
 			template = "repeating_crossbow_elf_template",
+			ammo_unit_3p = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_3p",
+			hud_icon = "weapon_generic_icon_staff_3",
 			display_unit = "units/weapons/weapon_display/display_rifle",
 			material_settings = WeaponMaterialSettingsTemplates.purple_glow
 		}
@@ -4974,103 +5024,111 @@ WeaponSkins.skins = {
 		name = "we_longbow_skin_01",
 		data = {
 			description = "we_longbow_skin_05_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
+			display_name = "we_longbow_skin_05_name",
 			rarity = "plentiful",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_01_t1",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_01_t1/wpn_we_bow_01_t1",
-			display_name = "we_longbow_skin_05_name",
-			template = "longbow_template_1"
+			template = "longbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "we_longbow_skin_02",
 		data = {
 			description = "we_longbow_skin_02_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
+			display_name = "we_longbow_skin_02_name",
 			rarity = "common",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_01_t2",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_01_t2/wpn_we_bow_01_t2",
-			display_name = "we_longbow_skin_02_name",
-			template = "longbow_template_1"
+			template = "longbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "we_longbow_skin_03",
 		data = {
 			description = "we_longbow_skin_03_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
+			display_name = "we_longbow_skin_03_name",
 			rarity = "rare",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_02_t1",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_02_t1/wpn_we_bow_02_t1",
-			display_name = "we_longbow_skin_03_name",
-			template = "longbow_template_1"
+			template = "longbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "we_longbow_skin_04",
 		data = {
 			description = "we_longbow_skin_04_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
+			display_name = "we_longbow_skin_04_name",
 			rarity = "exotic",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_02_t2",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_02_t2/wpn_we_bow_02_t2",
-			display_name = "we_longbow_skin_04_name",
-			template = "longbow_template_1"
+			template = "longbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "we_longbow_skin_05",
 		data = {
 			description = "we_longbow_skin_01_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
+			display_name = "we_longbow_skin_01_name",
 			rarity = "common",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_03_t1",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_03_t1/wpn_we_bow_03_t1",
-			display_name = "we_longbow_skin_01_name",
-			template = "longbow_template_1"
+			template = "longbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "we_longbow_skin_06",
 		data = {
 			description = "we_longbow_skin_06_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
+			display_name = "we_longbow_skin_06_name",
 			rarity = "unique",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_03_t2",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_03_t2/wpn_we_bow_03_t2",
-			display_name = "we_longbow_skin_06_name",
-			template = "longbow_template_1"
+			template = "longbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "we_longbow_skin_06_runed_01",
 		data = {
 			description = "we_longbow_skin_06_runed_01_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
+			display_name = "we_longbow_skin_06_runed_01_name",
 			rarity = "unique",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_03_t2",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_03_t2/wpn_we_bow_03_t2_runed_01",
-			display_name = "we_longbow_skin_06_runed_01_name",
-			template = "longbow_template_1"
+			template = "longbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "we_longbow_skin_06_runed_02",
 		data = {
 			description = "we_longbow_skin_06_runed_02_description",
-			rarity = "unique",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
 			display_name = "we_longbow_skin_06_runed_02_name",
-			hud_icon = "weapon_generic_icon_staff_3",
+			rarity = "unique",
 			inventory_icon = "icon_wpn_we_bow_03_t2",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_03_t2/wpn_we_bow_03_t2_runed_01",
 			template = "longbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
 			display_unit = "units/weapons/weapon_display/display_bow",
 			material_settings = WeaponMaterialSettingsTemplates.purple_glow
 		}
@@ -5079,129 +5137,139 @@ WeaponSkins.skins = {
 		name = "we_longbow_skin_07",
 		data = {
 			description = "we_longbow_skin_07_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
+			display_name = "we_longbow_skin_07_name",
 			rarity = "rare",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_04_t1",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_04_t1/wpn_we_bow_04_t1",
-			display_name = "we_longbow_skin_07_name",
-			template = "longbow_template_1"
+			template = "longbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "we_longbow_skin_08",
 		data = {
 			description = "we_longbow_skin_08_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
+			display_name = "we_longbow_skin_08_name",
 			rarity = "exotic",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_04_t2",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_04_t2/wpn_we_bow_04_t2",
-			display_name = "we_longbow_skin_08_name",
-			template = "longbow_template_1"
+			template = "longbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "we_longbow_skin_09",
 		data = {
 			description = "we_longbow_skin_09_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
+			display_name = "we_longbow_skin_09_name",
 			rarity = "rare",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_05_t1",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_05_t1/wpn_we_bow_05_t1",
-			display_name = "we_longbow_skin_09_name",
-			template = "longbow_template_1"
+			template = "longbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "we_shortbow_skin_01",
 		data = {
 			description = "we_shortbow_skin_01_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
+			display_name = "we_shortbow_skin_01_name",
 			rarity = "plentiful",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_short_01",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_short_01/wpn_we_bow_short_01",
-			display_name = "we_shortbow_skin_01_name",
-			template = "shortbow_template_1"
+			template = "shortbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "we_shortbow_skin_01_runed_01",
 		data = {
 			description = "we_shortbow_skin_01_runed_01_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
+			display_name = "we_shortbow_skin_01_runed_01_name",
 			rarity = "unique",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_short_01",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_short_01/wpn_we_bow_short_01_runed_01",
-			display_name = "we_shortbow_skin_01_runed_01_name",
-			template = "shortbow_template_1"
+			template = "shortbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "we_shortbow_skin_02",
 		data = {
 			description = "we_shortbow_skin_02_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
+			display_name = "we_shortbow_skin_02_name",
 			rarity = "common",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_short_02",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_short_02/wpn_we_bow_short_02",
-			display_name = "we_shortbow_skin_02_name",
-			template = "shortbow_template_1"
+			template = "shortbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "we_shortbow_skin_03",
 		data = {
 			description = "we_shortbow_skin_03_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
+			display_name = "we_shortbow_skin_03_name",
 			rarity = "rare",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_short_03",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_short_03/wpn_we_bow_short_03",
-			display_name = "we_shortbow_skin_03_name",
-			template = "shortbow_template_1"
+			template = "shortbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "we_shortbow_skin_04",
 		data = {
 			description = "we_shortbow_skin_04_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
+			display_name = "we_shortbow_skin_04_name",
 			rarity = "exotic",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_short_04",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_short_04/wpn_we_bow_short_04",
-			display_name = "we_shortbow_skin_04_name",
-			template = "shortbow_template_1"
+			template = "shortbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "we_shortbow_skin_04_runed_01",
 		data = {
 			description = "we_shortbow_skin_04_runed_01_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
+			display_name = "we_shortbow_skin_04_runed_01_name",
 			rarity = "unique",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_short_04",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_short_04/wpn_we_bow_short_04_runed_01",
-			display_name = "we_shortbow_skin_04_runed_01_name",
-			template = "shortbow_template_1"
+			template = "shortbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "we_shortbow_skin_04_runed_02",
 		data = {
 			description = "we_shortbow_skin_04_runed_02_description",
-			rarity = "unique",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
 			display_name = "we_shortbow_skin_04_runed_02_name",
-			hud_icon = "weapon_generic_icon_staff_3",
+			rarity = "unique",
 			inventory_icon = "icon_wpn_we_bow_short_04",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_short_04/wpn_we_bow_short_04_runed_01",
 			template = "shortbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
 			display_unit = "units/weapons/weapon_display/display_bow",
 			material_settings = WeaponMaterialSettingsTemplates.purple_glow
 		}
@@ -5210,51 +5278,55 @@ WeaponSkins.skins = {
 		name = "we_shortbow_skin_05",
 		data = {
 			description = "we_shortbow_skin_05_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
+			display_name = "we_shortbow_skin_05_name",
 			rarity = "unique",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_short_05",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_short_05/wpn_we_bow_short_05",
-			display_name = "we_shortbow_skin_05_name",
-			template = "shortbow_template_1"
+			template = "shortbow_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "we_hagbane_skin_01",
 		data = {
 			description = "we_hagbane_skin_01_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_poison_arrow_t1",
+			display_name = "we_hagbane_skin_01_name",
 			rarity = "plentiful",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_short_01",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_short_01/wpn_we_bow_short_01",
-			display_name = "we_hagbane_skin_01_name",
-			template = "shortbow_hagbane_template_1"
+			template = "shortbow_hagbane_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "we_hagbane_skin_01_runed_01",
 		data = {
 			description = "we_hagbane_skin_01_runed_01_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_poison_arrow_t1",
+			display_name = "we_hagbane_skin_01_runed_01_name",
 			rarity = "unique",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_short_01",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_short_01/wpn_we_bow_short_01_runed_01",
-			display_name = "we_hagbane_skin_01_runed_01_name",
-			template = "shortbow_hagbane_template_1"
+			template = "shortbow_hagbane_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "we_hagbane_skin_01_runed_02",
 		data = {
 			description = "we_hagbane_skin_01_runed_02_description",
-			rarity = "unique",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_poison_arrow_t1",
 			display_name = "we_hagbane_skin_01_runed_02_name",
-			hud_icon = "weapon_generic_icon_staff_3",
+			rarity = "unique",
 			inventory_icon = "icon_wpn_we_bow_short_01",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_short_01/wpn_we_bow_short_01_runed_01",
 			template = "shortbow_hagbane_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
 			display_unit = "units/weapons/weapon_display/display_bow",
 			material_settings = WeaponMaterialSettingsTemplates.purple_glow
 		}
@@ -5263,64 +5335,69 @@ WeaponSkins.skins = {
 		name = "we_hagbane_skin_02",
 		data = {
 			description = "we_hagbane_skin_02_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_poison_arrow_t1",
+			display_name = "we_hagbane_skin_02_name",
 			rarity = "common",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_short_02",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_short_02/wpn_we_bow_short_02",
-			display_name = "we_hagbane_skin_02_name",
-			template = "shortbow_hagbane_template_1"
+			template = "shortbow_hagbane_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "we_hagbane_skin_03",
 		data = {
 			description = "we_hagbane_skin_03_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_poison_arrow_t1",
+			display_name = "we_hagbane_skin_03_name",
 			rarity = "rare",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_short_03",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_short_03/wpn_we_bow_short_03",
-			display_name = "we_hagbane_skin_03_name",
-			template = "shortbow_hagbane_template_1"
+			template = "shortbow_hagbane_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "we_hagbane_skin_04",
 		data = {
 			description = "we_hagbane_skin_04_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_poison_arrow_t1",
+			display_name = "we_hagbane_skin_04_name",
 			rarity = "exotic",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_short_04",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_short_04/wpn_we_bow_short_04",
-			display_name = "we_hagbane_skin_04_name",
-			template = "shortbow_hagbane_template_1"
+			template = "shortbow_hagbane_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "we_hagbane_skin_04_runed_01",
 		data = {
 			description = "we_hagbane_skin_04_runed_01_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_poison_arrow_t1",
+			display_name = "we_hagbane_skin_04_runed_01_name",
 			rarity = "unique",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_short_04",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_short_04/wpn_we_bow_short_04_runed_01",
-			display_name = "we_hagbane_skin_04_runed_01_name",
-			template = "shortbow_hagbane_template_1"
+			template = "shortbow_hagbane_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
 		name = "we_hagbane_skin_04_runed_02",
 		data = {
 			description = "we_hagbane_skin_04_runed_02_description",
-			rarity = "unique",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_poison_arrow_t1",
 			display_name = "we_hagbane_skin_04_runed_02_name",
-			hud_icon = "weapon_generic_icon_staff_3",
+			rarity = "unique",
 			inventory_icon = "icon_wpn_we_bow_short_04",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_short_04/wpn_we_bow_short_04_runed_01",
 			template = "shortbow_hagbane_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
 			display_unit = "units/weapons/weapon_display/display_bow",
 			material_settings = WeaponMaterialSettingsTemplates.purple_glow
 		}
@@ -5329,13 +5406,14 @@ WeaponSkins.skins = {
 		name = "we_hagbane_skin_05",
 		data = {
 			description = "we_hagbane_skin_05_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_poison_arrow_t1",
+			display_name = "we_hagbane_skin_05_name",
 			rarity = "unique",
-			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_bow",
 			inventory_icon = "icon_wpn_we_bow_short_05",
 			left_hand_unit = "units/weapons/player/wpn_we_bow_short_05/wpn_we_bow_short_05",
-			display_name = "we_hagbane_skin_05_name",
-			template = "shortbow_hagbane_template_1"
+			template = "shortbow_hagbane_template_1",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{

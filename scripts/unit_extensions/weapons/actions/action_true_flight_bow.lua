@@ -15,6 +15,8 @@ ActionTrueFlightBow.init = function (self, world, item_name, is_server, owner_un
 end
 
 ActionTrueFlightBow.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
+	ActionTrueFlightBow.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level, action_init_data)
+
 	self.current_action = new_action
 	self.true_flight_template_id = TrueFlightTemplates[new_action.true_flight_template].lookup_id
 
@@ -24,6 +26,12 @@ ActionTrueFlightBow.client_owner_start_action = function (self, new_action, t, c
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
 	self.num_projectiles = new_action.num_projectiles or 1
+	local talent_extension = ScriptUnit.has_extension(owner_unit, "talent_system")
+
+	if talent_extension:has_talent("kerillian_waywatcher_activated_ability_additional_projectile") then
+		self.num_projectiles = self.num_projectiles + 1
+	end
+
 	self.multi_projectile_spread = (self.num_projectiles > 1 and (new_action.multi_projectile_spread or 0.075)) or nil
 	self.num_projectiles_shot = 1
 

@@ -890,8 +890,6 @@ PopupJoinLobbyHandler.init = function (self, ingame_ui_context)
 	rawset(_G, "GLOBAL_MM_JL_UI", self)
 	self:create_ui_elements()
 
-	self.unblocked_services = {}
-	self.unblocked_services_n = 0
 	DO_RELOAD = false
 end
 
@@ -1024,29 +1022,22 @@ PopupJoinLobbyHandler.show = function (self, current_profile_index, current_care
 
 	self.cancel_timer = time_until_cancel
 	local input_manager = self.input_manager
-	self.unblocked_services_n = input_manager:get_unblocked_services(nil, nil, self.unblocked_services)
 
-	input_manager:device_block_services("keyboard", 1, self.unblocked_services, self.unblocked_services_n, "popup_join_lobby_handler")
-	input_manager:device_block_services("gamepad", 1, self.unblocked_services, self.unblocked_services_n, "popup_join_lobby_handler")
-	input_manager:device_block_services("mouse", 1, self.unblocked_services, self.unblocked_services_n, "popup_join_lobby_handler")
-	input_manager:device_unblock_service("keyboard", 1, "popup_join_lobby_handler")
-	input_manager:device_unblock_service("gamepad", 1, "popup_join_lobby_handler")
-	input_manager:device_unblock_service("mouse", 1, "popup_join_lobby_handler")
+	input_manager:capture_input({
+		"keyboard",
+		"gamepad",
+		"mouse"
+	}, 1, "popup_join_lobby_handler", "PopupJoinLobbyHandler")
 end
 
 PopupJoinLobbyHandler.hide = function (self)
 	local input_manager = self.input_manager
 
-	input_manager:device_block_service("keyboard", 1, "popup_join_lobby_handler")
-	input_manager:device_block_service("gamepad", 1, "popup_join_lobby_handler")
-	input_manager:device_block_service("mouse", 1, "popup_join_lobby_handler")
-	input_manager:device_unblock_services("keyboard", 1, self.unblocked_services, self.unblocked_services_n)
-	input_manager:device_unblock_services("gamepad", 1, self.unblocked_services, self.unblocked_services_n)
-	input_manager:device_unblock_services("mouse", 1, self.unblocked_services, self.unblocked_services_n)
-	table.clear(self.unblocked_services)
-
-	self.unblocked_services_n = 0
-
+	input_manager:release_input({
+		"keyboard",
+		"gamepad",
+		"mouse"
+	}, 1, "popup_join_lobby_handler", "PopupJoinLobbyHandler")
 	ShowCursorStack.pop()
 
 	self._selected_hero_name = nil

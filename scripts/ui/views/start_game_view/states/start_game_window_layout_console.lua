@@ -73,12 +73,13 @@ local windows = {
 local window_layouts = {
 	{
 		sound_event_enter = "play_gui_lobby_button_00_quickplay",
-		save_data_table = "adventure",
+		disable_function_name = "_adventure_disable_function",
 		display_name = "start_game_window_adventure_title",
 		game_mode_option = true,
-		disable_function_name = "_adventure_disable_function",
-		name = "adventure",
 		input_focus_window = "adventure_overview",
+		save_data_table = "adventure",
+		name = "adventure",
+		can_add_function_name = "_can_add_adventrue",
 		close_on_exit = true,
 		windows = {
 			adventure_overview = 3,
@@ -88,12 +89,13 @@ local window_layouts = {
 	},
 	{
 		sound_event_enter = "play_gui_lobby_button_00_custom",
-		save_data_table = "custom",
+		disable_function_name = "_custom_game_disable_function",
 		display_name = "start_game_window_specific_title",
 		game_mode_option = true,
-		disable_function_name = "_custom_game_disable_function",
-		name = "custom_game",
 		input_focus_window = "custom_game_overview",
+		save_data_table = "custom",
+		name = "custom_game",
+		can_add_function_name = "_can_add_custom_game",
 		close_on_exit = true,
 		windows = {
 			custom_game_overview = 3,
@@ -104,12 +106,13 @@ local window_layouts = {
 	},
 	{
 		sound_event_enter = "play_gui_lobby_button_00_heroic_deed",
-		save_data_table = "deeds",
+		disable_function_name = "_heroic_deed_disable_function",
 		display_name = "start_game_window_mutator_title",
 		game_mode_option = true,
-		disable_function_name = "_heroic_deed_disable_function",
-		name = "heroic_deeds",
 		input_focus_window = "mutator_overview",
+		save_data_table = "deeds",
+		name = "heroic_deeds",
+		can_add_function_name = "_can_add_heroic_deeds",
 		close_on_exit = true,
 		windows = {
 			mutator_overview = 3,
@@ -395,6 +398,27 @@ local generic_input_actions = {
 			}
 		}
 	},
+	select_difficulty_buy = {
+		ignore_generic_actions = true,
+		actions = {
+			{
+				input_action = "d_vertical",
+				priority = 1,
+				description_text = "input_description_navigate",
+				ignore_keybinding = true
+			},
+			{
+				input_action = "confirm",
+				priority = 2,
+				description_text = "menu_weave_area_no_wom_button"
+			},
+			{
+				input_action = "back",
+				priority = 3,
+				description_text = "input_description_close"
+			}
+		}
+	},
 	select_difficulty_confirm = {
 		ignore_generic_actions = true,
 		actions = {
@@ -429,6 +453,22 @@ local generic_input_actions = {
 				input_action = "confirm",
 				priority = 2,
 				description_text = (PLATFORM == "xb1" and "dlc1_4_input_description_storepage") or "buy_now"
+			},
+			{
+				input_action = "back",
+				priority = 3,
+				description_text = "input_description_close"
+			}
+		}
+	},
+	select_area_base = {
+		ignore_generic_actions = true,
+		actions = {
+			{
+				input_action = "d_horizontal",
+				priority = 1,
+				description_text = "input_description_navigate",
+				ignore_keybinding = true
 			},
 			{
 				input_action = "back",
@@ -522,6 +562,61 @@ local generic_input_actions = {
 				input_action = "refresh",
 				priority = 6,
 				description_text = "input_description_play"
+			}
+		}
+	},
+	cancel_matchmaking = {
+		actions = {
+			{
+				input_action = "refresh",
+				priority = 6,
+				description_text = "cancel_matchmaking"
+			}
+		}
+	},
+	set_next_weave_available = {
+		actions = {
+			{
+				input_action = "refresh",
+				priority = 1,
+				description_text = "input_description_play"
+			}
+		}
+	},
+	play_available_set_next_weave_available = {
+		actions = {
+			{
+				input_action = "special_1",
+				priority = 1,
+				description_text = "input_description_set_next_weave"
+			},
+			{
+				input_action = "refresh",
+				priority = 6,
+				description_text = "input_description_play"
+			}
+		}
+	},
+	cancel_available_set_next_weave_available = {
+		actions = {
+			{
+				input_action = "special_1",
+				priority = 1,
+				description_text = "input_description_set_next_weave"
+			},
+			{
+				input_action = "refresh",
+				priority = 6,
+				description_text = "cancel_matchmaking"
+			}
+		}
+	},
+	set_next_weave_available = {
+		actions = {
+			{
+				input_action = "special_1",
+				priority = 1,
+				description_text = "input_description_set_next_weave"
 			}
 		}
 	},

@@ -72,6 +72,10 @@ AIGroupTemplates.encampment = {
 
 		Debug.text(string.format("Encampment size: %d/%d awake %s", group.members_n, group.size, tostring(awake)))
 
+		local side = Managers.state.side:get_side_from_name("heroes")
+		local PLAYER_POSITIONS = side.PLAYER_POSITIONS
+		local PLAYER_UNITS = side.PLAYER_UNITS
+
 		if group.idle and awake then
 			local encampment_pos = group_data.encampment.pos:unbox()
 

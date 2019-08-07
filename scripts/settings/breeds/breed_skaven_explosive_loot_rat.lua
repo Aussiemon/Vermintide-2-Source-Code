@@ -17,17 +17,18 @@ local breed_data = {
 	threat_value = 0,
 	awards_positive_reinforcement_message = true,
 	hit_reaction = "ai_default",
-	leave_walk_distance = 2,
+	slot_template = "skaven_roamer",
 	wield_inventory_on_spawn = true,
 	default_inventory_template = "empty",
+	smart_object_template = "special",
 	smart_targeting_outer_width = 0.6,
 	hit_effect_template = "HitEffectsSkavenLootRat",
 	smart_targeting_height_multiplier = 3.5,
-	bone_lod_level = 1,
 	radius = 1,
 	use_slot_type = "large",
 	unit_template = "ai_unit_clan_rat",
-	smart_object_template = "special",
+	leave_walk_distance = 2,
+	bone_lod_level = 1,
 	race = "skaven",
 	proximity_system_check = true,
 	death_reaction = "explosive_loot_rat",
@@ -43,6 +44,9 @@ local breed_data = {
 		5,
 		7.5,
 		10,
+		15,
+		15,
+		15,
 		15
 	},
 	bloodlust_health = BreedTweaks.bloodlust_health.skaven_roamer,
@@ -66,10 +70,6 @@ local breed_data = {
 		head = "headshot"
 	},
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		head = {
 			prio = 1,
 			actors = {
@@ -93,7 +93,7 @@ local breed_data = {
 			}
 		},
 		torso = {
-			prio = 3,
+			prio = 2,
 			actors = {
 				"c_spine2",
 				"c_spine",
@@ -106,7 +106,7 @@ local breed_data = {
 			}
 		},
 		left_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftarm",
 				"c_leftforearm",
@@ -119,7 +119,7 @@ local breed_data = {
 			}
 		},
 		right_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightarm",
 				"c_rightforearm",
@@ -132,7 +132,7 @@ local breed_data = {
 			}
 		},
 		left_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftupleg",
 				"c_leftleg",
@@ -146,7 +146,7 @@ local breed_data = {
 			}
 		},
 		right_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightupleg",
 				"c_rightleg",
@@ -160,7 +160,7 @@ local breed_data = {
 			}
 		},
 		tail = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_tail1",
 				"c_tail2",
@@ -173,6 +173,10 @@ local breed_data = {
 				"j_hips",
 				"j_taill"
 			}
+		},
+		full = {
+			prio = 4,
+			actors = {}
 		},
 		afro = {
 			prio = 5,
@@ -253,14 +257,10 @@ Breeds.skaven_explosive_loot_rat = table.create_copy(Breeds.skaven_explosive_loo
 local action_data = {
 	smash_door = {
 		unblockable = true,
+		damage = 1,
 		damage_type = "cutting",
 		move_anim = "move_fwd",
-		attack_anim = "attack_pounce",
-		damage = {
-			5,
-			5,
-			5
-		}
+		attack_anim = "attack_pounce"
 	},
 	alerted = {
 		no_hesitation = true,
@@ -490,6 +490,42 @@ local action_data = {
 					"stun_right_sword_3",
 					"stagger_short_right",
 					"stagger_short_right_2"
+				},
+				dwn = {
+					"stun_down"
+				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
+			},
+			{
+				fwd = {
+					"stagger_fwd"
+				},
+				bwd = {
+					"stagger_bwd_fall",
+					"stagger_bwd_fall_2",
+					"stagger_bwd_heavy",
+					"stagger_bwd_heavy_2",
+					"stagger_bwd_heavy_3",
+					"stagger_bwd_heavy_4"
+				},
+				left = {
+					"stagger_left_heavy",
+					"stagger_left_heavy_2",
+					"stagger_left_heavy_3",
+					"stagger_left_heavy_4",
+					"stagger_left_heavy_5"
+				},
+				right = {
+					"stagger_right_heavy",
+					"stagger_right_heavy_2",
+					"stagger_right_heavy_3",
+					"stagger_right_heavy_4",
+					"stagger_right_heavy_5"
 				},
 				dwn = {
 					"stun_down"

@@ -41,6 +41,7 @@ MusicManager.init = function (self)
 	self._game_state = nil
 	self._game_object_id = nil
 	self._group_states = {}
+	self._event_queues = {}
 	local master_bus_volume = Application.user_setting("master_bus_volume")
 
 	if master_bus_volume ~= nil then
@@ -60,11 +61,21 @@ MusicManager.init = function (self)
 
 		self:set_panning_rule(rule)
 	end
+
+	local sound_channel_configuration = Application.user_setting("sound_channel_configuration")
+
+	Wwise.set_bus_config("ingame_mastering_channel", sound_channel_configuration)
 end
 
 MusicManager.stop_all_sounds = function (self)
 	dprint("stop_all_sounds")
 	self._wwise_world:stop_all()
+end
+
+MusicManager.stop_event_id = function (self, event_id)
+	if self._wwise_world:is_playing(event_id) then
+		self._wwise_world:stop_event(event_id)
+	end
 end
 
 MusicManager.trigger_event = function (self, event_name)
@@ -76,6 +87,21 @@ MusicManager.trigger_event = function (self, event_name)
 	print("MUSIC MANAGER", event_name, wwise_playing_id, wwise_source_id)
 
 	return wwise_playing_id, wwise_source_id
+end
+
+MusicManager.trigger_event_queue = function (self, event_queue_name, event_queue, delay)
+	fassert(not self._event_queues[event_queue_name], "[MusicManager:trigger_event_queue] There is already an event queue playing with that name")
+
+	local event_index = 1
+	local first_event = event_queue[1]
+	local wwise_playing_id, wwise_source_id = self:trigger_event(first_event)
+	self._event_queues[event_queue_name] = {
+		delay = delay or 0.5,
+		event_index = event_index,
+		wwise_playing_id = wwise_playing_id,
+		wwise_source_id = wwise_source_id,
+		event_queue = event_queue
+	}
 end
 
 MusicManager.update = function (self, dt, t)
@@ -92,12 +118,63 @@ MusicManager.update = function (self, dt, t)
 	end
 
 	self:_update_flags()
+	self:_handle_event_queues(dt, t)
 
 	local flags = self._flags
 
 	for _, player in pairs(self._music_players) do
 		player:update(flags, self._game_object_id)
 	end
+end
+
+local EVENT_QUEUS_TO_REMOVE = {}
+
+MusicManager._handle_event_queues = function (self, dt, t)
+	table.clear(EVENT_QUEUS_TO_REMOVE)
+
+	for event_queue_name, event_queue_data in pairs(self._event_queues) do
+		local wwise_playing_id = event_queue_data.wwise_playing_id
+
+		if not self:is_playing(wwise_playing_id) then
+			if not event_queue_data.current_delay then
+				event_queue_data.current_delay = t + event_queue_data.delay
+			elseif event_queue_data.current_delay < t then
+				local event_queue = event_queue_data.event_queue
+				local new_index = event_queue_data.event_index + 1
+				local new_event = event_queue[new_index]
+
+				if new_event then
+					local wwise_playing_id, wwise_source_id = self:trigger_event(new_event)
+					event_queue_data.event_index = new_index
+					event_queue_data.wwise_playing_id = wwise_playing_id
+					event_queue_data.wwise_source_id = wwise_source_id
+					event_queue_data.current_delay = nil
+				else
+					EVENT_QUEUS_TO_REMOVE[#EVENT_QUEUS_TO_REMOVE + 1] = event_queue_name
+				end
+			end
+		end
+	end
+
+	for _, event_queue_name in ipairs(EVENT_QUEUS_TO_REMOVE) do
+		self:stop_event_queue(event_queue_name)
+	end
+end
+
+MusicManager.stop_event_queue = function (self, event_queue_name)
+	local event_queue_data = self._event_queues[event_queue_name]
+
+	if not event_queue_data then
+		return
+	end
+
+	local wwise_playing_id = event_queue_data.wwise_playing_id
+
+	if self:is_playing(wwise_playing_id) then
+		self:stop_event_id(wwise_playing_id)
+	end
+
+	self._event_queues[event_queue_name] = nil
 end
 
 MusicManager.destroy = function (self)
@@ -305,7 +382,7 @@ MusicManager._get_combat_music_state = function (self, conflict_director)
 		local unit = boss_units[i]
 		local blackboard = BLACKBOARDS[unit]
 
-		if blackboard.is_angry then
+		if blackboard and blackboard.is_angry then
 			local breed = blackboard.breed
 			state = breed.combat_music_state or state
 
@@ -320,45 +397,48 @@ end
 
 MusicManager._update_boss_music_intensity = function (self, conflict_director)
 	local player_manager = Managers.player
-	local local_player = player_manager:local_player()
-	local player_unit = local_player.player_unit
 	local state_name = BossFightMusicIntensity.default_state
 	local group_name = BossFightMusicIntensity.group_name
+	local local_player = player_manager:local_player()
 
-	if Unit.alive(player_unit) then
-		local player_position = POSITION_LOOKUP[player_unit]
-		local boss_units = conflict_director:alive_bosses()
-		local additional_contributing_units = FrameTable.alloc_table()
+	if local_player then
+		local player_unit = local_player.player_unit
 
-		for _, breed in pairs(BossFightMusicIntensity.additional_contributing_units) do
-			table.append_non_indexed(additional_contributing_units, conflict_director:spawned_units_by_breed(breed))
-		end
+		if Unit.alive(player_unit) then
+			local player_position = POSITION_LOOKUP[player_unit]
+			local boss_units = conflict_director:alive_bosses()
+			local additional_contributing_units = FrameTable.alloc_table()
 
-		local min_distance_sq = math.huge
-
-		for _, unit in pairs(boss_units) do
-			local unit_position = POSITION_LOOKUP[unit]
-			local distance_sq = Vector3.distance_squared(player_position, unit_position)
-
-			if distance_sq < min_distance_sq then
-				min_distance_sq = distance_sq or min_distance_sq
+			for _, breed in pairs(BossFightMusicIntensity.additional_contributing_units) do
+				table.append_non_indexed(additional_contributing_units, conflict_director:spawned_units_by_breed(breed))
 			end
-		end
 
-		for _, unit in pairs(additional_contributing_units) do
-			local unit_position = POSITION_LOOKUP[unit]
-			local distance_sq = Vector3.distance_squared(player_position, unit_position)
+			local min_distance_sq = math.huge
 
-			if distance_sq < min_distance_sq then
-				min_distance_sq = distance_sq or min_distance_sq
+			for _, unit in pairs(boss_units) do
+				local unit_position = POSITION_LOOKUP[unit]
+				local distance_sq = Vector3.distance_squared(player_position, unit_position)
+
+				if distance_sq < min_distance_sq then
+					min_distance_sq = distance_sq or min_distance_sq
+				end
 			end
-		end
 
-		for _, boss_intensity_data in ipairs(BossFightMusicIntensity) do
-			if min_distance_sq < boss_intensity_data.max_distance^2 then
-				state_name = boss_intensity_data.state
+			for _, unit in pairs(additional_contributing_units) do
+				local unit_position = POSITION_LOOKUP[unit]
+				local distance_sq = Vector3.distance_squared(player_position, unit_position)
 
-				break
+				if distance_sq < min_distance_sq then
+					min_distance_sq = distance_sq or min_distance_sq
+				end
+			end
+
+			for _, boss_intensity_data in ipairs(BossFightMusicIntensity) do
+				if min_distance_sq < boss_intensity_data.max_distance^2 then
+					state_name = boss_intensity_data.state
+
+					break
+				end
 			end
 		end
 	end
@@ -453,6 +533,15 @@ MusicManager._update_game_state = function (self, dt, t, conflict_director)
 		elseif won then
 			local level_settings = LevelHelper:current_level_settings()
 			state = (level_settings and level_settings.music_won_state) or "won"
+			local active_weave = Managers.weave:get_active_weave()
+
+			if active_weave then
+				local weave_phase = Managers.weave:get_active_weave_phase() or 0
+
+				if weave_phase == 2 then
+					state = "won_between_winds"
+				end
+			end
 		elseif is_pre_horde and self._scream_delay and self._scream_delay < t then
 			self._scream_delay = nil
 			state = "horde"

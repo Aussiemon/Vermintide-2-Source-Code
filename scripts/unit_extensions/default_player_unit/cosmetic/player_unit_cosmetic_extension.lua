@@ -7,6 +7,7 @@ PlayerUnitCosmeticExtension.init = function (self, extension_init_context, unit,
 	self._unit = unit
 	self._profile = extension_init_data.profile
 	self._is_server = extension_init_data.is_server
+	self._player = extension_init_data.player
 	self._cosmetics = {}
 	self._skin_material_changes = {}
 	local skin_name = extension_init_data.skin_name
@@ -22,6 +23,9 @@ PlayerUnitCosmeticExtension.init = function (self, extension_init_context, unit,
 	end
 
 	self._frame_name = frame_name
+
+	CosmeticUtils.update_cosmetic_slot(self._player, "slot_frame", frame_name)
+	CosmeticUtils.update_cosmetic_slot(self._player, "slot_skin", skin_name)
 end
 
 PlayerUnitCosmeticExtension.extensions_ready = function (self, world, unit)
@@ -54,6 +58,8 @@ end
 PlayerUnitCosmeticExtension.set_equipped_frame = function (self, frame_name)
 	self._cosmetics.frame = Cosmetics[frame_name]
 	self._frame_name = frame_name
+
+	CosmeticUtils.update_cosmetic_slot(self._player, "slot_frame", frame_name)
 end
 
 PlayerUnitCosmeticExtension.get_equipped_frame_name = function (self)

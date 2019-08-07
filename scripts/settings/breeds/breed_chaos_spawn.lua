@@ -17,90 +17,6 @@ local pushed_data = {
 		0
 	}
 }
-local damage_table_light = {
-	easy = {
-		15,
-		10,
-		7
-	},
-	normal = {
-		15,
-		10,
-		10
-	},
-	hard = {
-		25,
-		17,
-		15
-	},
-	survival_hard = {
-		25,
-		17,
-		15
-	},
-	harder = {
-		40,
-		20,
-		15
-	},
-	survival_harder = {
-		40,
-		20,
-		15
-	},
-	hardest = {
-		60,
-		25,
-		15
-	},
-	survival_hardest = {
-		60,
-		25,
-		15
-	}
-}
-local damage_table_combo = {
-	easy = {
-		10,
-		10,
-		7
-	},
-	normal = {
-		6,
-		6,
-		6
-	},
-	hard = {
-		15,
-		17,
-		15
-	},
-	survival_hard = {
-		15,
-		17,
-		15
-	},
-	harder = {
-		30,
-		20,
-		15
-	},
-	survival_harder = {
-		30,
-		20,
-		15
-	},
-	hardest = {
-		50,
-		25,
-		15
-	},
-	survival_hardest = {
-		50,
-		25,
-		15
-	}
-}
 local default_bot_threat_difficulty_data = BotConstants and BotConstants.default.DEFAULT_BOT_THREAT_DIFFICULTY_DATA
 local breed_data = {
 	detection_radius = 9999999,
@@ -144,7 +60,7 @@ local breed_data = {
 	smart_targeting_width = 0.6,
 	is_bot_aid_threat = true,
 	behavior = "chaos_spawn",
-	boost_curve_multiplier_override = 3,
+	boost_curve_multiplier_override = 2,
 	has_inventory = false,
 	no_stagger_duration = false,
 	awards_positive_reinforcement_message = true,
@@ -186,13 +102,7 @@ local breed_data = {
 		distance_weight = 100,
 		target_disabled_mul = 0.15
 	},
-	max_health = {
-		600,
-		600,
-		1050,
-		1400,
-		2100
-	},
+	max_health = BreedTweaks.max_health.chaos_spawn,
 	bloodlust_health = BreedTweaks.bloodlust_health.monster,
 	stagger_duration = {
 		0,
@@ -217,10 +127,6 @@ local breed_data = {
 		head = "headshot"
 	},
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		head = {
 			prio = 1,
 			actors = {
@@ -243,7 +149,7 @@ local breed_data = {
 			}
 		},
 		torso = {
-			prio = 3,
+			prio = 2,
 			actors = {
 				"c_spine1",
 				"c_spine",
@@ -256,7 +162,7 @@ local breed_data = {
 			}
 		},
 		left_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftarm",
 				"c_leftforearm",
@@ -269,7 +175,7 @@ local breed_data = {
 			}
 		},
 		left_tentacle = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftfinger1_jnt",
 				"c_leftfinger2_jnt",
@@ -286,7 +192,7 @@ local breed_data = {
 			}
 		},
 		right_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightarm",
 				"c_rightforearm",
@@ -309,7 +215,7 @@ local breed_data = {
 			}
 		},
 		left_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftupleg",
 				"c_leftleg",
@@ -323,7 +229,7 @@ local breed_data = {
 			}
 		},
 		right_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightupleg",
 				"c_rightleg",
@@ -336,7 +242,7 @@ local breed_data = {
 			}
 		},
 		aux = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftarmA",
 				"c_leftforearmA",
@@ -382,6 +288,10 @@ local breed_data = {
 			push_actors = {
 				"j_spine1"
 			}
+		},
+		full = {
+			prio = 4,
+			actors = {}
 		},
 		afro = {
 			prio = 5,
@@ -440,6 +350,102 @@ for key, value in pairs(breed_data) do
 end
 
 Breeds.chaos_spawn_exalted_champion_norsca = table.create_copy(Breeds.chaos_spawn_exalted_champion_norsca, breed_data_norsca)
+local AttackIntensityPerDifficulty = {
+	melee_slam = {
+		easy = {
+			running = 2,
+			normal = 5
+		},
+		normal = {
+			running = 2,
+			normal = 5
+		},
+		hard = {
+			running = 2,
+			normal = 5
+		},
+		harder = {
+			running = 2,
+			normal = 5
+		},
+		hardest = {
+			running = 2,
+			normal = 5
+		},
+		cataclysm = {
+			running = 2,
+			normal = 5
+		},
+		cataclysm_2 = {
+			running = 2,
+			normal = 5
+		},
+		cataclysm_3 = {
+			running = 2,
+			normal = 5
+		}
+	},
+	combo = {
+		easy = {
+			running = 0.5,
+			normal = 3
+		},
+		normal = {
+			running = 0.5,
+			normal = 3
+		},
+		hard = {
+			running = 0.5,
+			normal = 3
+		},
+		harder = {
+			running = 0.5,
+			normal = 3
+		},
+		hardest = {
+			running = 0.5,
+			normal = 3
+		},
+		cataclysm = {
+			running = 0.5,
+			normal = 3
+		},
+		cataclysm_2 = {
+			running = 0.5,
+			normal = 3
+		},
+		cataclysm_3 = {
+			running = 0.5,
+			normal = 3
+		}
+	},
+	shove = {
+		easy = {
+			normal = 1
+		},
+		normal = {
+			normal = 1
+		},
+		hard = {
+			normal = 1
+		},
+		harder = {
+			normal = 1
+		},
+		hardest = {
+			normal = 1
+		},
+		cataclysm = {
+			normal = 1
+		},
+		cataclysm_2 = {
+			normal = 1
+		},
+		cataclysm_3 = {
+			normal = 1
+		}
+	}
+}
 local action_data = {
 	climb = {
 		catapult_players = {
@@ -450,9 +456,13 @@ local action_data = {
 		}
 	},
 	combo_attack = {
-		damage_type = "cutting",
 		fatigue_type = "chaos_spawn_combo",
+		shield_blocked_fatigue_type = "chaos_spawn_combo",
+		damage = 15,
+		damage_type = "cutting",
+		attack_intensity_type = "combo",
 		action_weight = 1,
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		considerations = UtilityConsiderations.chaos_spawn_combo,
 		attacks = {
 			{
@@ -537,84 +547,32 @@ local action_data = {
 				}
 			}
 		},
-		damage = {
-			15,
-			12,
-			10
-		},
-		difficulty_damage = damage_table_combo
+		difficulty_damage = BreedTweaks.difficulty_damage.boss_combo_attack
 	},
 	melee_slam = {
 		stagger_distance = 7,
-		radius = 1.2,
+		height = 2.5,
 		forward_offset = 1.75,
 		cooldown = -1,
 		fatigue_type = "blocked_slam",
-		height = 2.5,
+		radius = 1.2,
 		damage_type = "cutting",
+		damage = 20,
 		player_push_speed = 8,
+		attack_intensity_type = "melee_slam",
 		action_weight = 1,
+		blocked_damage = 5,
 		player_push_speed_blocked = 4,
 		unblockable = false,
 		attack_time = 1.1666666666666667,
 		dodge_mitigation_radius_squared = 2.25,
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		considerations = UtilityConsiderations.chaos_spawn_melee_slam,
 		attack_anim = {
 			"attack_melee_claw"
 		},
-		blocked_damage = {
-			5,
-			4,
-			2.5
-		},
-		blocked_difficulty_damage = {
-			easy = {
-				1,
-				1,
-				1.5
-			},
-			normal = {
-				1,
-				1,
-				1.5
-			},
-			hard = {
-				4,
-				5,
-				2.5
-			},
-			survival_hard = {
-				4,
-				5,
-				2.5
-			},
-			harder = {
-				6,
-				7.5,
-				5
-			},
-			survival_harder = {
-				6,
-				7.5,
-				5
-			},
-			hardest = {
-				10,
-				9,
-				7.5
-			},
-			survival_hardest = {
-				15,
-				12,
-				10.25
-			}
-		},
-		damage = {
-			20,
-			8,
-			5
-		},
-		difficulty_damage = damage_table_light,
+		blocked_difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack_blocked,
+		difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack,
 		stagger_impact = {
 			1,
 			2,
@@ -629,10 +587,13 @@ local action_data = {
 		}
 	},
 	melee_shove = {
-		damage_type = "cutting",
-		ignore_ai_damage = true,
 		fatigue_type = "ogre_shove",
+		damage = 20,
+		attack_intensity_type = "shove",
 		action_weight = 1,
+		ignore_ai_damage = true,
+		damage_type = "cutting",
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		considerations = UtilityConsiderations.spawn_melee_shove,
 		attacks = {
 			{
@@ -697,15 +658,11 @@ local action_data = {
 				}
 			}
 		},
-		damage = {
-			20,
-			20,
-			20
-		},
-		difficulty_damage = damage_table_light
+		difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack
 	},
 	attack_grabbed_smash = {
 		damage_type = "cutting",
+		damage = 20,
 		ignore_ai_damage = true,
 		fatigue_type = "ogre_shove",
 		action_weight = 1,
@@ -771,12 +728,7 @@ local action_data = {
 				}
 			}
 		},
-		damage = {
-			20,
-			20,
-			20
-		},
-		difficulty_damage = damage_table_light
+		difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack
 	},
 	attack_grabbed_throw = {
 		action_weight = 1,
@@ -784,93 +736,56 @@ local action_data = {
 	},
 	attack_grabbed_chew = {
 		damage_type = "cutting",
+		damage = 15,
 		max_chew_attacks = 3,
 		action_weight = 1,
 		considerations = UtilityConsiderations.attack_grabbed_chew,
-		damage = {
-			15,
-			12,
-			10
-		},
 		difficulty_damage = {
-			easy = {
-				3,
-				3,
-				3
-			},
-			normal = {
-				5,
-				5,
-				5
-			},
-			hard = {
-				8,
-				8,
-				8
-			},
-			survival_hard = {
-				8,
-				8,
-				8
-			},
-			harder = {
-				15,
-				15,
-				15
-			},
-			survival_harder = {
-				15,
-				15,
-				15
-			},
-			hardest = {
-				25,
-				25,
-				25
-			},
-			survival_hardest = {
-				25,
-				25,
-				25
-			}
+			harder = 15,
+			hard = 8,
+			normal = 5,
+			hardest = 25,
+			cataclysm = 32,
+			cataclysm_3 = 50,
+			cataclysm_2 = 40,
+			easy = 3
 		},
 		health_leech = {
 			harder = 200,
-			normal = 10,
 			hard = 100,
-			survival_hard = 60,
-			survival_harder = 80,
+			normal = 10,
 			hardest = 300,
-			survival_hardest = 125,
+			cataclysm = 60,
+			cataclysm_3 = 125,
+			cataclysm_2 = 80,
 			easy = 10
 		}
 	},
 	tentacle_grab = {
 		damage_type = "cutting",
-		ignore_ai_damage = true,
+		damage = 20,
 		fatigue_type = "ogre_shove",
 		action_weight = 6,
+		ignore_ai_damage = true,
+		ignore_shield_block = true,
 		considerations = UtilityConsiderations.chaos_spawn_tentacle_grab,
 		attacks = {
 			{
 				freeze_intensity_decay_time = 15,
 				height = 2,
-				ignores_dodging = false,
-				range = 2,
+				hit_only_players = true,
+				ignore_targets_behind = true,
 				catapult_player = false,
 				rotation_time = 0.3,
 				anim_driven = false,
-				use_extra_space = false,
-				hit_only_players = true,
+				ignores_dodging = false,
 				offset_forward = 0,
 				offset_up = 0,
-				ignore_targets_behind = true,
-				extra_space_up = true,
+				range = 2,
 				damage_done_time = 1,
 				hit_multiple_targets = false,
 				attack_time = 1.75,
 				width = 0.4,
-				extra_space_range = 1.2,
 				attack_anim = {
 					"attack_grab"
 				},
@@ -889,12 +804,6 @@ local action_data = {
 						blackboard.grabbed_state = "tentacle_grab"
 					end
 				end,
-				extra_space_directions = {
-					bwd = true,
-					fwd = true,
-					left = true,
-					right = true
-				},
 				continious_overlap = {
 					attack_grab = {
 						base_node_name = "j_leftforearm",
@@ -917,12 +826,7 @@ local action_data = {
 				}
 			}
 		},
-		damage = {
-			20,
-			20,
-			20
-		},
-		difficulty_damage = damage_table_light
+		difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack
 	},
 	erratic_follow = {
 		enter_catch_up_dist_sq = 1600,
@@ -1094,15 +998,11 @@ local action_data = {
 	smash_door = {
 		unblockable = true,
 		name = "smash_door",
+		damage = 25,
 		damage_type = "cutting",
 		move_anim = "move_fwd",
 		attack_anim = "attack_melee_claw",
 		door_attack_distance = 2,
-		damage = {
-			25,
-			25,
-			25
-		},
 		ignore_staggers = {
 			false,
 			true,
@@ -1207,6 +1107,18 @@ local action_data = {
 				right = {
 					"stagger_right_exp"
 				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
 			},
 			{
 				fwd = {},

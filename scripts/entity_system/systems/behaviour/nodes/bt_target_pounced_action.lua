@@ -65,14 +65,14 @@ BTTargetPouncedAction.enter = function (self, unit, blackboard, t)
 	local target_status_extension = ScriptUnit.extension(target_unit, "status_system")
 
 	target_status_extension:set_pounced_down(true, unit)
-	target_status_extension:add_intensity(CurrentIntensitySettings.intensity_add_pounced_down)
+	target_status_extension:add_pacing_intensity(CurrentIntensitySettings.intensity_add_pounced_down)
 
 	local dist = jump_data.total_distance
 	local breed_name = breed.name
 	local impact_damage = DamageUtils.calculate_damage(breed.pounce_impact_damage) + dist * breed.pounce_bonus_dmg_per_meter
 
 	DamageUtils.add_damage_network(target_unit, unit, impact_damage, "torso", "cutting", nil, Vector3(1, 0, 0), breed_name, nil, nil, nil, action.hit_react_type)
-	BTTargetPouncedAction.impact_pushback(target_position, action.close_impact_radius, action.far_impact_radius, action.impact_speed_given, blackboard.target_unit)
+	BTTargetPouncedAction.impact_pushback(unit, target_position, action.close_impact_radius, action.far_impact_radius, action.impact_speed_given, blackboard.target_unit)
 
 	local disabled_by_special = blackboard.group_blackboard.disabled_by_special
 
@@ -161,8 +161,9 @@ BTTargetPouncedAction.run = function (self, unit, blackboard, t, dt)
 	return "running"
 end
 
-BTTargetPouncedAction.impact_pushback = function (impact_position, close_impact_radius, far_impact_radius, impact_speed_given, excluded_player_unit)
-	local player_and_bot_units = PLAYER_AND_BOT_UNITS
+BTTargetPouncedAction.impact_pushback = function (pouncing_unit, impact_position, close_impact_radius, far_impact_radius, impact_speed_given, excluded_player_unit)
+	local side = Managers.state.side.side_by_unit[pouncing_unit]
+	local player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
 
 	for i = 1, #player_and_bot_units, 1 do
 		local player_unit = player_and_bot_units[i]
@@ -217,11 +218,9 @@ BTTargetPouncedAction.direct_damage = function (unit, blackboard)
 	local normalized_time = math.clamp(pounced_time, 0, 1)
 	local base_damage = action.damage
 	local multiplier = 1 + normalized_time * action.final_damage_multiplier
-	temp_damage_triplett[1] = base_damage[1] * multiplier
-	temp_damage_triplett[2] = base_damage[2] * multiplier
-	temp_damage_triplett[3] = base_damage[3] * multiplier
+	base_damage = base_damage * multiplier
 
-	AiUtils.damage_target(blackboard.target_unit, unit, blackboard.action, temp_damage_triplett)
+	AiUtils.damage_target(blackboard.target_unit, unit, blackboard.action, base_damage)
 end
 
 return

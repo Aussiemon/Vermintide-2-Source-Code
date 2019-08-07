@@ -175,8 +175,10 @@ BTHesitateAction.calculate_outnumber_multiplier = function (self, unit, blackboa
 		end
 
 		local enemies_nearby = 0
+		local side = blackboard.side
+		local positions = side.ENEMY_PLAYER_AND_BOT_POSITIONS
 
-		for i = 1, #PLAYER_AND_BOT_POSITIONS, 1 do
+		for i = 1, #positions, 1 do
 			local proximity = Vector3.distance_squared(target_pos, current_pos)
 
 			if proximity < 36 then
@@ -184,7 +186,7 @@ BTHesitateAction.calculate_outnumber_multiplier = function (self, unit, blackboa
 				blackboard.is_within_proximity = true
 			end
 
-			local distance = Vector3.distance(target_pos, PLAYER_AND_BOT_POSITIONS[i])
+			local distance = Vector3.distance(target_pos, positions[i])
 
 			if distance < 100 then
 				enemies_nearby = enemies_nearby + 1

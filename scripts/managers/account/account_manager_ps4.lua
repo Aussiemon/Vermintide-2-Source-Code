@@ -57,6 +57,10 @@ AccountManager.fetch_user_data = function (self)
 	self._online_id = PS4.online_id()
 	self._np_id = PS4.np_id()
 	self._account_id = PS4.account_id()
+
+	Crashify.print_property("ps4_online_id", self._online_id)
+	Crashify.print_property("ps4_account_id", self._account_id)
+	print("PSN_ID:", self._online_id)
 end
 
 AccountManager.np_title_id = function (self)
@@ -119,6 +123,7 @@ AccountManager.reset = function (self)
 		self._popup_id = nil
 	end
 
+	self._signed_in = false
 	self._offline_mode = nil
 	self._leave_game = nil
 	self._user_detached = nil
@@ -142,6 +147,10 @@ AccountManager.destroy = function (self)
 			self:leave_session()
 		end
 	end
+end
+
+AccountManager.sign_in = function (self)
+	self._signed_in = PS4.signed_in(self._initial_user_id)
 end
 
 AccountManager.is_online = function (self)
@@ -211,7 +220,7 @@ AccountManager._verify_profile = function (self)
 		if not self._user_detached then
 			user_detached = not PS4.signed_in(self._initial_user_id)
 
-			if user_detached then
+			if user_detached and self._signed_in then
 				self:_queue_popup(Localize("profile_signed_out_header"), Localize("popup_xboxlive_profile_acquire_error_header"), "retry_verify_profile", Localize("button_retry"))
 
 				self._user_detached = true
@@ -273,7 +282,7 @@ AccountManager._update_psn_client = function (self, dt)
 	end
 
 	if not LobbyInternal.client_ready() then
-		if LobbyInternal.client_lost_context() then
+		if LobbyInternal.client_lost_context() or LobbyInternal.client_failed() then
 			self._psn_client_error = "lost_context"
 		else
 			self._psn_client_timeout_timer = (self._psn_client_timeout_timer or 0) + dt

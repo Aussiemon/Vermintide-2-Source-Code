@@ -607,6 +607,9 @@ local function create_lobby_browser_frame(scenegraph_id)
 						local window_height = element_settings.window_height
 						local offset_y = -element_settings.spacing - content.scrollbar_progress * (window_height + style.texture_size[2])
 						style.offset[2] = offset_y
+						style.offset[1] = (Math.is_valid(style.offset[1]) and style.offset[1]) or 0
+						style.offset[2] = (Math.is_valid(style.offset[2]) and style.offset[2]) or 0
+						style.offset[3] = (Math.is_valid(style.offset[3]) and style.offset[3]) or 0
 					end
 				},
 				{
@@ -619,6 +622,9 @@ local function create_lobby_browser_frame(scenegraph_id)
 						local window_height = element_settings.window_height
 						local offset_y = -element_settings.spacing - content.scrollbar_progress * (window_height + style.texture_size[2])
 						style.offset[2] = offset_y
+						style.offset[1] = (Math.is_valid(style.offset[1]) and style.offset[1]) or 0
+						style.offset[2] = (Math.is_valid(style.offset[2]) and style.offset[2]) or 0
+						style.offset[3] = (Math.is_valid(style.offset[3]) and style.offset[3]) or 0
 					end
 				}
 			}
@@ -2018,6 +2024,9 @@ local function create_level_filter_scroller_func(num_elements)
 						local offset_y = start_pos - content.scrollbar_progress * scrollbar_length
 						local offset_y = start_pos - element_settings.spacing - content.scrollbar_progress * (scrollbar_length - style.texture_size[2] - start_pos)
 						style.offset[2] = offset_y
+						style.offset[1] = (Math.is_valid(style.offset[1]) and style.offset[1]) or 0
+						style.offset[2] = (Math.is_valid(style.offset[2]) and style.offset[2]) or 0
+						style.offset[3] = (Math.is_valid(style.offset[3]) and style.offset[3]) or 0
 					end
 				}
 			}
@@ -2749,11 +2758,6 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 					content_check_function = function (content, style)
 						return content.level_image_id
 					end
-				},
-				{
-					pass_type = "texture",
-					style_id = "level_image_frame",
-					texture_id = "frame_id"
 				},
 				{
 					pass_type = "texture",

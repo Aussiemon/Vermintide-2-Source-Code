@@ -53,7 +53,7 @@ UtilityConsiderations = {
 		},
 		max_occupied_slots = {
 			max_value = 3,
-			blackboard_input = "total_occupied_slots",
+			blackboard_input = "target_num_occupied_slots",
 			spline = {
 				0,
 				1,
@@ -116,17 +116,15 @@ UtilityConsiderations = {
 			}
 		},
 		distance_to_target_height = {
-			max_value = 1.5,
-			min_value = -0.6,
-			blackboard_input = "target_dist_z",
+			max_value = 1.75,
+			min_value = 0,
+			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
-				0,
-				0.01,
 				1,
-				0.99,
+				0.9,
 				1,
-				1,
+				0.92,
 				0
 			}
 		},
@@ -167,17 +165,15 @@ UtilityConsiderations = {
 			}
 		},
 		distance_to_target_height = {
-			max_value = 1.5,
-			min_value = -0.6,
-			blackboard_input = "target_dist_z",
+			max_value = 1.75,
+			min_value = 0,
+			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
-				0,
-				0.01,
 				1,
-				0.99,
+				0.9,
 				1,
-				1,
+				0.92,
 				0
 			}
 		},
@@ -212,17 +208,15 @@ UtilityConsiderations = {
 			}
 		},
 		distance_to_target_height = {
-			max_value = 1.5,
-			min_value = -0.6,
-			blackboard_input = "target_dist_z",
+			max_value = 1.75,
+			min_value = 0,
+			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
-				0,
-				0.01,
 				1,
-				0.99,
+				0.9,
 				1,
-				1,
+				0.92,
 				0
 			}
 		},
@@ -255,7 +249,7 @@ UtilityConsiderations = {
 	},
 	storm_vermin_special_attack = {
 		distance_to_target = {
-			max_value = 4,
+			max_value = 4.5,
 			blackboard_input = "target_dist",
 			spline = {
 				0,
@@ -287,7 +281,7 @@ UtilityConsiderations = {
 			}
 		},
 		time_since_last = {
-			max_value = 10,
+			max_value = 7,
 			blackboard_input = "time_since_last",
 			spline = {
 				0,
@@ -339,7 +333,7 @@ UtilityConsiderations = {
 			}
 		},
 		time_since_last = {
-			max_value = 10,
+			max_value = 7,
 			blackboard_input = "time_since_last",
 			spline = {
 				0,
@@ -399,16 +393,14 @@ UtilityConsiderations = {
 		},
 		distance_to_target_height = {
 			max_value = 3.75,
-			min_value = -2.9,
-			blackboard_input = "target_dist_z",
+			min_value = 0,
+			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
-				0,
-				0.01,
 				1,
-				0.99,
+				0.9,
 				1,
-				1,
+				0.92,
 				0
 			}
 		}
@@ -444,7 +436,7 @@ UtilityConsiderations = {
 		},
 		max_occupied_slots = {
 			max_value = 3,
-			blackboard_input = "total_occupied_slots",
+			blackboard_input = "target_num_occupied_slots",
 			spline = {
 				0,
 				1,
@@ -1027,20 +1019,38 @@ UtilityConsiderations = {
 			blackboard_input = "is_navbot_following_path"
 		}
 	},
-	pet_follow = {
+	reposition_on_slot = {
 		distance_to_target = {
 			max_value = 10,
 			blackboard_input = "target_dist",
 			spline = {
 				0,
 				0,
-				0.2,
+				0.28,
+				1,
+				0.29,
 				0,
-				0.21,
 				1,
-				1,
-				1
+				0
 			}
+		},
+		distance_to_destination = {
+			max_value = 5,
+			blackboard_input = "destination_dist",
+			spline = {
+				0,
+				0,
+				0.11333333333333333,
+				0,
+				0.15,
+				1,
+				1,
+				0
+			}
+		},
+		is_navbot_following_path = {
+			is_condition = true,
+			blackboard_input = "is_navbot_following_path"
 		}
 	},
 	storm_vermin_shield_push_attack_wake_up = {
@@ -1119,17 +1129,15 @@ UtilityConsiderations = {
 			}
 		},
 		distance_to_target_height = {
-			max_value = 1.5,
-			min_value = -0.6,
-			blackboard_input = "target_dist_z",
+			max_value = 3.75,
+			min_value = 0,
+			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
-				0,
-				0.01,
 				1,
-				0.99,
+				0.9,
 				1,
-				1,
+				0.92,
 				0
 			}
 		},
@@ -1172,17 +1180,15 @@ UtilityConsiderations = {
 			}
 		},
 		distance_to_target_height = {
-			max_value = 1.5,
-			min_value = -0.6,
-			blackboard_input = "target_dist_z",
+			max_value = 3.75,
+			min_value = 0,
+			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
-				0,
-				0.01,
 				1,
-				0.99,
+				0.9,
 				1,
-				1,
+				0.92,
 				0
 			}
 		},
@@ -1296,6 +1302,8 @@ UtilityConsiderations = {
 			spline = {
 				0,
 				0,
+				0.5,
+				0,
 				1,
 				1
 			}
@@ -1344,6 +1352,8 @@ UtilityConsiderations = {
 			spline = {
 				0,
 				0,
+				0.5,
+				0,
 				1,
 				1
 			}
@@ -1383,17 +1393,15 @@ UtilityConsiderations = {
 			}
 		},
 		distance_to_target_height = {
-			max_value = 1.5,
-			min_value = -0.6,
-			blackboard_input = "target_dist_z",
+			max_value = 3.75,
+			min_value = 0,
+			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
-				0,
-				0.01,
 				1,
-				0.99,
+				0.9,
 				1,
-				1,
+				0.92,
 				0
 			}
 		},
@@ -1432,16 +1440,14 @@ UtilityConsiderations = {
 		},
 		distance_to_target_height = {
 			max_value = 3.75,
-			min_value = -2.9,
-			blackboard_input = "target_dist_z",
+			min_value = 0,
+			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
-				0,
-				0.01,
 				1,
-				0.99,
+				0.9,
 				1,
-				1,
+				0.92,
 				0
 			}
 		},
@@ -1477,7 +1483,7 @@ UtilityConsiderations = {
 				1,
 				0.3392308,
 				1,
-				0.606528,
+				0.656528,
 				0,
 				0.8437957,
 				0,
@@ -1492,16 +1498,14 @@ UtilityConsiderations = {
 		},
 		distance_to_target_height = {
 			max_value = 3.75,
-			min_value = -2.9,
-			blackboard_input = "target_dist_z",
+			min_value = 0,
+			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
-				0,
-				0.01,
 				1,
-				0.99,
+				0.9,
 				1,
-				1,
+				0.92,
 				0
 			}
 		},
@@ -1564,16 +1568,14 @@ UtilityConsiderations = {
 		},
 		distance_to_target_height = {
 			max_value = 3.75,
-			min_value = -2.9,
-			blackboard_input = "target_dist_z",
+			min_value = 0,
+			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
-				0,
-				0.01,
 				1,
-				0.99,
+				0.9,
 				1,
-				1,
+				0.92,
 				0
 			}
 		},
@@ -1703,7 +1705,7 @@ UtilityConsiderations = {
 		},
 		max_occupied_slots = {
 			max_value = 3,
-			blackboard_input = "total_occupied_slots",
+			blackboard_input = "target_num_occupied_slots",
 			spline = {
 				0,
 				1,
@@ -1728,6 +1730,10 @@ UtilityConsiderations = {
 				1,
 				1
 			}
+		},
+		has_line_of_sight = {
+			is_condition = true,
+			blackboard_input = "has_line_of_sight"
 		}
 	},
 	chaos_raider_running_attack = {
@@ -1746,6 +1752,10 @@ UtilityConsiderations = {
 				1,
 				0
 			}
+		},
+		has_line_of_sight = {
+			is_condition = true,
+			blackboard_input = "has_line_of_sight"
 		},
 		distance_to_destination = {
 			max_value = 10,
@@ -1777,7 +1787,7 @@ UtilityConsiderations = {
 		},
 		max_occupied_slots = {
 			max_value = 3,
-			blackboard_input = "total_occupied_slots",
+			blackboard_input = "target_num_occupied_slots",
 			spline = {
 				0,
 				1,
@@ -2542,6 +2552,57 @@ UtilityConsiderations = {
 		is_navbot_following_path = {
 			is_condition = true,
 			blackboard_input = "is_navbot_following_path"
+		},
+		distance_to_target_height = {
+			max_value = 1.75,
+			min_value = 0,
+			blackboard_input = "target_dist_z_abs",
+			spline = {
+				0,
+				1,
+				0.9,
+				1,
+				0.92,
+				0
+			}
+		}
+	},
+	ungor_backwards_combat_step = {
+		distance_to_target = {
+			max_value = 5,
+			blackboard_input = "target_dist",
+			spline = {
+				0,
+				1,
+				0.4,
+				1,
+				0.45066666666666666,
+				0
+			}
+		},
+		have_slot = {
+			max_value = 1,
+			blackboard_input = "have_slot",
+			spline = {
+				0,
+				0,
+				0.5033333333333333,
+				0,
+				1,
+				1
+			}
+		},
+		time_since_last = {
+			max_value = 3,
+			blackboard_input = "time_since_last",
+			spline = {
+				0,
+				0,
+				0.3506666666666667,
+				0,
+				1,
+				1
+			}
 		}
 	},
 	chaos_marauder_combat_step = {
@@ -2553,7 +2614,7 @@ UtilityConsiderations = {
 				0,
 				0.4,
 				0,
-				0.5066666666666667,
+				0.42,
 				1,
 				0.7033333333333333,
 				1,
@@ -2610,23 +2671,22 @@ UtilityConsiderations = {
 				1
 			}
 		},
-		is_navbot_following_path = {
-			is_condition = true,
-			blackboard_input = "is_navbot_following_path"
-		},
-		max_occupied_slots = {
-			max_value = 6,
-			blackboard_input = "total_occupied_slots",
+		distance_to_target_height = {
+			max_value = 1.75,
+			min_value = 0,
+			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
 				1,
-				0.5033333333333333,
+				0.9,
 				1,
-				0.51,
-				0,
-				1,
+				0.92,
 				0
 			}
+		},
+		is_navbot_following_path = {
+			is_condition = true,
+			blackboard_input = "is_navbot_following_path"
 		},
 		wait_slot_distance = {
 			max_value = 10,
@@ -2985,6 +3045,10 @@ UtilityConsiderations = {
 				1,
 				1
 			}
+		},
+		target_is_not_downed = {
+			blackboard_input = "target_is_not_downed",
+			is_condition = true
 		}
 	},
 	rat_ogre_combo = {
@@ -3914,11 +3978,21 @@ UtilityConsiderations = {
 				1,
 				0.25,
 				1,
-				0.3,
+				0.45,
 				0
 			}
 		}
 	}
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local utility_considerations_file_names = dlc.utility_considerations_file_names
+
+	if utility_considerations_file_names then
+		for _, file_name in pairs(utility_considerations_file_names) do
+			require(file_name)
+		end
+	end
+end
 
 return

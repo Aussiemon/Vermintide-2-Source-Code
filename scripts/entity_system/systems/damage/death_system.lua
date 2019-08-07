@@ -203,15 +203,20 @@ DeathSystem._create_dummy_killing_blow = function (self, unit, damage_type)
 	local hit_zone_name = "full"
 	local damage_direction = Vector3.up()
 	local damage_direction_table = Vector3Aux.box(nil, damage_direction)
-	killing_blow[1] = NetworkConstants.damage.max
-	killing_blow[2] = damage_type
-	killing_blow[3] = unit
-	killing_blow[4] = hit_zone_name
-	killing_blow[5] = hit_position_table
-	killing_blow[6] = damage_direction_table
-	killing_blow[7] = "n/a"
-	killing_blow[8] = "n/a"
-	killing_blow[9] = "n/a"
+	killing_blow[DamageDataIndex.DAMAGE_AMOUNT] = NetworkConstants.damage.max
+	killing_blow[DamageDataIndex.DAMAGE_TYPE] = damage_type
+	killing_blow[DamageDataIndex.ATTACKER] = unit
+	killing_blow[DamageDataIndex.HIT_ZONE] = hit_zone_name
+	killing_blow[DamageDataIndex.POSITION] = hit_position_table
+	killing_blow[DamageDataIndex.DIRECTION] = damage_direction_table
+	killing_blow[DamageDataIndex.DAMAGE_SOURCE_NAME] = "n/a"
+	killing_blow[DamageDataIndex.HIT_RAGDOLL_ACTOR_NAME] = "n/a"
+	killing_blow[DamageDataIndex.DAMAGING_UNIT] = "n/a"
+	killing_blow[DamageDataIndex.HIT_REACT_TYPE] = "n/a"
+	killing_blow[DamageDataIndex.CRITICAL_HIT] = false
+	killing_blow[DamageDataIndex.FIRST_HIT] = true
+	killing_blow[DamageDataIndex.TOTAL_HITS] = 1
+	killing_blow[DamageDataIndex.BACKSTAB_MULTIPLIER] = 1
 
 	return killing_blow
 end

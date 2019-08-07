@@ -136,6 +136,34 @@ local settings_by_screen = {
 		contains_new_content = function ()
 			return false
 		end
+	},
+	{
+		description = "Start game",
+		display_name = "Leaderboard",
+		name = "leaderboard",
+		draw_background_world = true,
+		tab_screen = true,
+		state_name = "StartGameStateWeaveLeaderboard",
+		icons = {
+			selected = "tabs_icon_matchmaking_glow",
+			normal = "tabs_icon_matchmaking"
+		},
+		camera_position = {
+			0,
+			0,
+			0
+		},
+		camera_rotation = {
+			0,
+			0,
+			-0.1
+		},
+		require_function = function ()
+			return
+		end,
+		contains_new_content = function ()
+			return false
+		end
 	}
 }
 local title_text_style = {

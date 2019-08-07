@@ -37,7 +37,6 @@ local NAV_COST_MAP_ALLOWED_LAYERS = {
 }
 local FORMATION_MAX_TIME = 20
 local FORMATION_TIME = 8
-local valid_players_and_bots = VALID_TARGETS_PLAYERS_AND_BOTS
 local CIRCULAR_SPLINE_THRESHOLD = 5
 local CIRCULAR_SPLINE_THRESHOLD_SQ = CIRCULAR_SPLINE_THRESHOLD^2
 local play_sound, pick_sound_source_unit, update_animation_triggered_sounds, init_group, set_state, remove_dead_units, calculate_group_middle_position, change_path_direction, unit_animation_event, set_patrol_path_broken, enter_state_find_path_entry, set_path_direction, enter_state_forming, set_forming_positions, set_end_of_spline_positions, debug_draw_formation, check_is_in_formation, update_units, find_position_on_navmesh, enter_state_patrolling, update_spline_anchor_points, update_anchor_positions, update_anchor_direction, check_for_players, check_for_doors, check_prepare_for_combat, enter_state_opening_door, update_state_opening_door, enter_state_controlled_advance, acquire_targets, controlled_advance, prepare_for_combat, cleanup_after_combat, enter_state_combat = nil
@@ -1152,6 +1151,8 @@ function check_for_players(group, nav_world, t, dt)
 	local num_indexed_members = group.num_indexed_members
 	local use_controlled_advance = group.use_controlled_advance
 	local someone_is_climbing = false
+	local side = group.side
+	local VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS = side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS
 
 	for i = 1, num_indexed_members, 1 do
 		local unit = indexed_members[i]
@@ -1162,7 +1163,7 @@ function check_for_players(group, nav_world, t, dt)
 			someone_is_climbing = true
 		end
 
-		local valid_player = valid_players_and_bots[target_unit]
+		local valid_player = VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[target_unit]
 
 		if valid_player then
 			group_targets[target_unit] = true

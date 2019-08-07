@@ -40,6 +40,18 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_bear = {
+		{
+			texture = "portrait_frame_bear",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
 	frame_collectors_edition = {
 		{
 			texture = "portrait_frame_collectors_edition",
@@ -1345,6 +1357,270 @@ UIPlayerPortraitFrameSettings = {
 	frame_celebration_03 = {
 		{
 			texture = "portrait_frame_celebration_3",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_scorpion_complete_all_helmgart_levels_cataclysm = {
+		{
+			texture = "portrait_frame_helmgart_cataclysm",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_scorpion_complete_bogenhafen_cataclysm = {
+		{
+			texture = "portrait_frame_bogenhafen_5",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_scorpion_complete_plaza_cataclysm = {
+		{
+			texture = "portrait_ubersreik_05",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_scorpion_complete_crater_recruit = {
+		{
+			texture = "portrait_frame_crater_01",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_scorpion_complete_crater_veteran = {
+		{
+			texture = "portrait_frame_crater_02",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_scorpion_complete_crater_champion = {
+		{
+			texture = "portrait_frame_crater_03",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_scorpion_complete_crater_legend = {
+		{
+			texture = "portrait_frame_crater_04",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_scorpion_complete_crater_cataclysm = {
+		{
+			texture = "portrait_frame_crater_05",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_scorpion_season_1_beasts = {
+		{
+			texture = "portrait_frame_season_01_ghur",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_scorpion_season_1_death = {
+		{
+			texture = "portrait_frame_season_01_shyish",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_scorpion_season_1_fire = {
+		{
+			texture = "portrait_frame_season_01_aqshy",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_scorpion_season_1_heavens = {
+		{
+			texture = "portrait_frame_season_01_azyr",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_scorpion_season_1_life = {
+		{
+			texture = "portrait_frame_season_01_ghyran",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_scorpion_season_1_light = {
+		{
+			texture = "portrait_frame_season_01_hysh",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_scorpion_season_1_metal = {
+		{
+			texture = "portrait_frame_season_01_chamon",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_scorpion_season_1_shadow = {
+		{
+			texture = "portrait_frame_season_01_ulgu",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_scorpion_season_1_cataclysm_1 = {
+		{
+			texture = "portrait_frame_season_01_cataclysm_1",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_scorpion_season_1_cataclysm_2 = {
+		{
+			texture = "portrait_frame_season_01_cataclysm_2",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_scorpion_season_1_cataclysm_3 = {
+		{
+			texture = "portrait_frame_season_01_cataclysm_3",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_scorpion_season_1_leaderboard_1 = {
+		{
+			texture = "portrait_frame_season_01_leaderboard_03",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_scorpion_season_1_leaderboard_2 = {
+		{
+			texture = "portrait_frame_season_01_leaderboard_02",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_scorpion_season_1_leaderboard_3 = {
+		{
+			texture = "portrait_frame_season_01_leaderboard_01",
 			layer = 10,
 			color = {
 				255,

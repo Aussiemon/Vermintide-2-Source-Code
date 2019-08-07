@@ -5,6 +5,8 @@ local deed_game_widget_definitions = definitions.deed_game_widgets
 local custom_game_widget_definitions = definitions.custom_game_widgets
 local adventure_game_widget_definitions = definitions.adventure_game_widgets
 local event_game_widget_definitions = definitions.event_game_widgets
+local weave_game_widget_definitions = definitions.weave_game_widgets
+local weave_find_group_widget_definitions = definitions.weave_find_group_widgets
 local twitch_mode_widget_funcs = definitions.twitch_mode_widget_funcs
 MissionVotingUI = class(MissionVotingUI)
 
@@ -27,8 +29,6 @@ MissionVotingUI.init = function (self, parent, ingame_ui_context)
 
 	self:create_ui_elements()
 
-	self.unblocked_services = {}
-	self.unblocked_services_n = 0
 	local input_manager = self.input_manager
 
 	input_manager:create_input_service("mission_voting", "IngameMenuKeymaps", "IngameMenuFilters")
@@ -96,6 +96,32 @@ MissionVotingUI.create_ui_elements = function (self)
 
 	self._event_game_widgets = event_game_widgets
 	self._event_game_widgets_by_name = event_game_widgets_by_name
+	local weave_game_widgets = {}
+	local weave_game_widgets_by_name = {}
+
+	for name, widget_definition in pairs(weave_game_widget_definitions) do
+		if widget_definition then
+			local widget = UIWidget.init(widget_definition)
+			weave_game_widgets[#weave_game_widgets + 1] = widget
+			weave_game_widgets_by_name[name] = widget
+		end
+	end
+
+	self._weave_game_widgets = weave_game_widgets
+	self._weave_game_widgets_by_name = weave_game_widgets_by_name
+	local weave_find_group_widgets = {}
+	local weave_find_group_widgets_by_name = {}
+
+	for name, widget_definition in pairs(weave_find_group_widget_definitions) do
+		if widget_definition then
+			local widget = UIWidget.init(widget_definition)
+			weave_find_group_widgets[#weave_find_group_widgets + 1] = widget
+			weave_find_group_widgets_by_name[name] = widget
+		end
+	end
+
+	self._weave_find_group_widgets = weave_find_group_widgets
+	self._weave_find_group_widgets_by_name = weave_find_group_widgets_by_name
 	local adventure_game_widgets = {}
 	local adventure_game_widgets_by_name = {}
 
@@ -170,25 +196,32 @@ MissionVotingUI.start_vote = function (self, active_voting)
 	end
 
 	local vote_data = active_voting.data
-	local item_name = vote_data.item_name
-	local is_deed = item_name ~= nil
-	local event_data = vote_data.event_data
-	local is_event = event_data ~= nil
 	local game_mode = vote_data.game_mode
 	self._twitch_mode_enabled = vote_data.twitch_enabled
 	self._game_mode = vote_data.game_mode
 
-	if is_deed then
+	if game_mode == "deed" then
+		local item_name = vote_data.item_name
 		local level_key = vote_data.level_key
 		local difficulty = vote_data.difficulty
 
 		self:_set_deed_presentation(item_name, level_key, difficulty)
-	elseif is_event then
+	elseif game_mode == "event" then
+		local event_data = vote_data.event_data
 		local level_key = vote_data.level_key
 		local difficulty = vote_data.difficulty
-		local mutators = event_data.mutators
+		local mutators = (event_data and event_data.mutators) or {}
 
 		self:_set_event_game_presentation(difficulty, level_key, mutators)
+	elseif game_mode == "weave" then
+		local weave_name = vote_data.weave_name
+		local level_key = vote_data.level_key
+		local difficulty = vote_data.difficulty
+		local private_game = vote_data.private_game
+
+		self:_set_weave_presentation(difficulty, level_key, weave_name, private_game)
+	elseif game_mode == "weave_find_group" then
+		self:_set_weave_find_group_presentation()
 	else
 		local quick_game = vote_data.quick_game
 
@@ -310,7 +343,7 @@ end
 MissionVotingUI._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
 	local completed_frame_texture = "map_frame_00"
 
-	if difficulty_index > 0 then
+	if difficulty_index and difficulty_index > 0 then
 		local difficulty_key = DefaultDifficulties[difficulty_index]
 		local settings = DifficultySettings[difficulty_key]
 		completed_frame_texture = settings.completed_frame_texture
@@ -401,6 +434,91 @@ MissionVotingUI._set_event_game_presentation = function (self, difficulty, level
 		mutators = mutators
 	}
 	self._presentation_type = "event"
+end
+
+MissionVotingUI._set_weave_presentation = function (self, difficulty, level_key, weave_id, private_game)
+	local weave_game_widgets_by_name = self._weave_game_widgets_by_name
+	local game_option_1 = weave_game_widgets_by_name.game_option_1
+	local weave_template = WeaveSettings.templates[weave_id]
+	local weave_index = table.find(WeaveSettings.templates_ordered, weave_template)
+	local wind_name = weave_template.wind
+	local wind_settings = WindSettings[wind_name]
+	local level_settings = LevelSettings[level_key]
+	local level_image = level_settings.level_image
+	local difficulty_settings = DifficultySettings[difficulty]
+	local level_frame = difficulty_settings.completed_frame_texture
+	local level_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(level_image)
+	game_option_1.content.icon = level_image
+	local level_texture_size = game_option_1.style.icon.texture_size
+	level_texture_size[1] = level_texture_settings.size[1] * 0.8
+	level_texture_size[2] = level_texture_settings.size[2] * 0.8
+	game_option_1.content.title_text = weave_index .. ". " .. Localize(weave_template.display_name)
+	local wind_color = Colors.get_color_table_with_alpha(wind_name, 255)
+	game_option_1.style.icon_frame.color = wind_color
+	local thumbnail_icon = wind_settings.thumbnail_icon
+	local thumbnail_icon_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(thumbnail_icon)
+	local thumbnail_icon_size = thumbnail_icon_settings.size
+	local wind_icon_glow_style = game_option_1.style.wind_icon_glow
+	local wind_icon_glow_size = wind_icon_glow_style.texture_size
+	local wind_icon_glow_offset = wind_icon_glow_style.offset
+	local wind_icon_glow_color = wind_icon_glow_style.color
+	wind_icon_glow_color[1] = 128
+	wind_icon_glow_color[2] = wind_color[2]
+	wind_icon_glow_color[3] = wind_color[3]
+	wind_icon_glow_color[4] = wind_color[4]
+	local wind_icon_style = game_option_1.style.wind_icon
+	local wind_icon_size = wind_icon_style.texture_size
+	local wind_icon_offset = wind_icon_style.offset
+	wind_icon_size[1] = thumbnail_icon_size[1] * 0.8
+	wind_icon_size[2] = thumbnail_icon_size[2] * 0.8
+	wind_icon_offset[1] = wind_icon_glow_offset[1] - wind_icon_glow_size[1] / 2 + wind_icon_size[1] / 2
+	wind_icon_offset[2] = (wind_icon_glow_offset[2] + wind_icon_glow_size[2] / 2) - wind_icon_size[2] / 2
+	game_option_1.content.wind_icon = thumbnail_icon
+	game_option_1.content.mission_name = Localize(level_settings.display_name)
+	game_option_1.content.wind_name = Localize(wind_settings.display_name)
+	game_option_1.style.wind_name.text_color = wind_color
+	wind_icon_style.color = wind_color
+	local mutator_name = wind_settings.mutator
+	local mutator_data = MutatorTemplates[mutator_name]
+	local mutator_icon = weave_game_widgets_by_name.mutator_icon
+	local mutator_title_text = weave_game_widgets_by_name.mutator_title_text
+	local mutator_description_text = weave_game_widgets_by_name.mutator_description_text
+	mutator_icon.content.texture_id = mutator_data.icon
+	mutator_title_text.content.text = Localize(mutator_data.display_name)
+	mutator_description_text.content.text = Localize(mutator_data.description)
+	local objective_title = weave_game_widgets_by_name.objective_title
+	local objective_1 = weave_game_widgets_by_name.objective_1
+	local objective_2 = weave_game_widgets_by_name.objective_2
+	objective_title.content.text = "weave_objective_title"
+	local objectives = weave_template.objectives
+	local objective_spacing = 10
+	local largest_objective_width = 0
+
+	for i = 1, #objectives, 1 do
+		local objective = objectives[i]
+		local objective_display_name = objective.display_name
+		local objective_icon = objective.icon
+
+		self:_assign_objective(i, objective_display_name, objective_icon, objective_spacing)
+	end
+
+	local private_game_widget = weave_game_widgets_by_name.private_checkbox
+	private_game_widget.content.button_hotspot.is_selected = private_game
+	self._presentation_type = "weave"
+end
+
+MissionVotingUI._set_weave_find_group_presentation = function (self)
+	self._presentation_type = "weave_find_group"
+end
+
+MissionVotingUI._assign_objective = function (self, index, text, icon, spacing)
+	local widgets_by_name = self._weave_game_widgets_by_name
+	local widget_name = "objective_" .. index
+	local widget = widgets_by_name[widget_name]
+	local content = widget.content
+	local style = widget.style
+	content.icon = icon or "objective_icon_general"
+	content.text = text or "-"
 end
 
 MissionVotingUI._update_vote_timer = function (self)
@@ -623,6 +741,34 @@ MissionVotingUI.draw = function (self, dt)
 
 				render_settings.snap_pixel_positions = snap_pixel_positions
 			end
+		elseif presentation_type == "weave" then
+			local weave_game_widgets = self._weave_game_widgets
+
+			for i = 1, #weave_game_widgets, 1 do
+				local widget = weave_game_widgets[i]
+
+				if widget.snap_pixel_positions ~= nil then
+					render_settings.snap_pixel_positions = widget.snap_pixel_positions
+				end
+
+				UIRenderer.draw_widget(ui_top_renderer, widget)
+
+				render_settings.snap_pixel_positions = snap_pixel_positions
+			end
+		elseif presentation_type == "weave_find_group" then
+			local weave_find_group_widgets = self._weave_find_group_widgets
+
+			for i = 1, #weave_find_group_widgets, 1 do
+				local widget = weave_find_group_widgets[i]
+
+				if widget.snap_pixel_positions ~= nil then
+					render_settings.snap_pixel_positions = widget.snap_pixel_positions
+				end
+
+				UIRenderer.draw_widget(ui_top_renderer, widget)
+
+				render_settings.snap_pixel_positions = snap_pixel_positions
+			end
 		end
 	end
 
@@ -657,14 +803,12 @@ MissionVotingUI._acquire_input = function (self, ignore_cursor_stack)
 	self:_release_input(true)
 
 	local input_manager = self.input_manager
-	self.unblocked_services_n = input_manager:get_unblocked_services(nil, nil, self.unblocked_services)
 
-	input_manager:device_block_services("keyboard", 1, self.unblocked_services, self.unblocked_services_n, "mission_voting")
-	input_manager:device_block_services("gamepad", 1, self.unblocked_services, self.unblocked_services_n, "mission_voting")
-	input_manager:device_block_services("mouse", 1, self.unblocked_services, self.unblocked_services_n, "mission_voting")
-	input_manager:device_unblock_service("keyboard", 1, "mission_voting")
-	input_manager:device_unblock_service("gamepad", 1, "mission_voting")
-	input_manager:device_unblock_service("mouse", 1, "mission_voting")
+	input_manager:capture_input({
+		"keyboard",
+		"gamepad",
+		"mouse"
+	}, 1, "mission_voting", "MissionVotingUI")
 
 	if not ignore_cursor_stack then
 		ShowCursorStack.push()
@@ -674,15 +818,11 @@ end
 MissionVotingUI._release_input = function (self, ignore_cursor_stack)
 	local input_manager = self.input_manager
 
-	input_manager:device_block_service("keyboard", 1, "mission_voting")
-	input_manager:device_block_service("gamepad", 1, "mission_voting")
-	input_manager:device_block_service("mouse", 1, "mission_voting")
-	input_manager:device_unblock_services("keyboard", 1, self.unblocked_services, self.unblocked_services_n)
-	input_manager:device_unblock_services("gamepad", 1, self.unblocked_services, self.unblocked_services_n)
-	input_manager:device_unblock_services("mouse", 1, self.unblocked_services, self.unblocked_services_n)
-	table.clear(self.unblocked_services)
-
-	self.unblocked_services_n = 0
+	input_manager:release_input({
+		"keyboard",
+		"gamepad",
+		"mouse"
+	}, 1, "mission_voting", "MissionVotingUI")
 
 	if not ignore_cursor_stack then
 		ShowCursorStack.pop()

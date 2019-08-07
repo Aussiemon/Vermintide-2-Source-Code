@@ -300,6 +300,10 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 		opened_this_frame = true
 	end
 
+	if input_service:get("f1") then
+		Debug.create_jira_issue()
+	end
+
 	if not DebugScreen.active and DebugScreen.fade_timer == 0 then
 		for shortcut_input, cs in pairs(DebugScreen.shortcut_list) do
 			if Keyboard.pressed(Keyboard.button_index(shortcut_input)) then

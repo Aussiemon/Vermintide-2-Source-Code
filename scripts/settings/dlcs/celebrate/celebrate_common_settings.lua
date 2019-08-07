@@ -21,5 +21,11 @@ settings.unlock_settings_ps4 = {
 		}
 	}
 }
+settings.husk_lookup = {
+	"units/weapons/player/pup_ale/pup_ale"
+}
+settings.statistics_definitions = {
+	"scripts/managers/backend/statistics_definitions_celebrate"
+}
 
 return

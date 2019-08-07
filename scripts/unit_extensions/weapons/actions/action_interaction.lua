@@ -7,6 +7,8 @@ ActionInteraction.init = function (self, world, item_name, is_server, owner_unit
 end
 
 ActionInteraction.client_owner_start_action = function (self, new_action, t)
+	ActionInteraction.super.client_owner_start_action(self, new_action, t)
+
 	self.current_action = new_action
 	local interaction_type = new_action.interaction_type
 

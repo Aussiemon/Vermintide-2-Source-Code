@@ -168,6 +168,14 @@ LootChestData.chests_by_category = {
 			"units/gameplay/loot_chests/gameplay_loot_chest_d1_t5",
 			"units/gameplay/loot_chests/gameplay_loot_chest_d1_t6"
 		},
+		individual_chest_package_names = {
+			"resource_packages/individual_chests/loot_chest_d1_t1",
+			"resource_packages/individual_chests/loot_chest_d1_t2",
+			"resource_packages/individual_chests/loot_chest_d1_t3",
+			"resource_packages/individual_chests/loot_chest_d1_t4",
+			"resource_packages/individual_chests/loot_chest_d1_t5",
+			"resource_packages/individual_chests/loot_chest_d1_t6"
+		},
 		display_names = {
 			"display_name_loot_chest_normal_01",
 			"display_name_loot_chest_normal_02",
@@ -194,6 +202,14 @@ LootChestData.chests_by_category = {
 			"units/gameplay/loot_chests/gameplay_loot_chest_d1_t4",
 			"units/gameplay/loot_chests/gameplay_loot_chest_d1_t5",
 			"units/gameplay/loot_chests/gameplay_loot_chest_d1_t6"
+		},
+		individual_chest_package_names = {
+			"resource_packages/individual_chests/loot_chest_d1_t1",
+			"resource_packages/individual_chests/loot_chest_d1_t2",
+			"resource_packages/individual_chests/loot_chest_d1_t3",
+			"resource_packages/individual_chests/loot_chest_d1_t4",
+			"resource_packages/individual_chests/loot_chest_d1_t5",
+			"resource_packages/individual_chests/loot_chest_d1_t6"
 		},
 		display_names = {
 			"display_name_loot_chest_normal_01",
@@ -222,6 +238,14 @@ LootChestData.chests_by_category = {
 			"units/gameplay/loot_chests/gameplay_loot_chest_d2_t5",
 			"units/gameplay/loot_chests/gameplay_loot_chest_d2_t6"
 		},
+		individual_chest_package_names = {
+			"resource_packages/individual_chests/loot_chest_d2_t1",
+			"resource_packages/individual_chests/loot_chest_d2_t2",
+			"resource_packages/individual_chests/loot_chest_d2_t3",
+			"resource_packages/individual_chests/loot_chest_d2_t4",
+			"resource_packages/individual_chests/loot_chest_d2_t5",
+			"resource_packages/individual_chests/loot_chest_d2_t6"
+		},
 		display_names = {
 			"display_name_loot_chest_hard_01",
 			"display_name_loot_chest_hard_02",
@@ -249,6 +273,14 @@ LootChestData.chests_by_category = {
 			"units/gameplay/loot_chests/gameplay_loot_chest_d3_t5",
 			"units/gameplay/loot_chests/gameplay_loot_chest_d3_t6"
 		},
+		individual_chest_package_names = {
+			"resource_packages/individual_chests/loot_chest_d3_t1",
+			"resource_packages/individual_chests/loot_chest_d3_t2",
+			"resource_packages/individual_chests/loot_chest_d3_t3",
+			"resource_packages/individual_chests/loot_chest_d3_t4",
+			"resource_packages/individual_chests/loot_chest_d3_t5",
+			"resource_packages/individual_chests/loot_chest_d3_t6"
+		},
 		display_names = {
 			"display_name_loot_chest_nightmare_01",
 			"display_name_loot_chest_nightmare_02",
@@ -275,6 +307,119 @@ LootChestData.chests_by_category = {
 			"units/gameplay/loot_chests/gameplay_loot_chest_d4_t4",
 			"units/gameplay/loot_chests/gameplay_loot_chest_d4_t5",
 			"units/gameplay/loot_chests/gameplay_loot_chest_d4_t6"
+		},
+		individual_chest_package_names = {
+			"resource_packages/individual_chests/loot_chest_d4_t1",
+			"resource_packages/individual_chests/loot_chest_d4_t2",
+			"resource_packages/individual_chests/loot_chest_d4_t3",
+			"resource_packages/individual_chests/loot_chest_d4_t4",
+			"resource_packages/individual_chests/loot_chest_d4_t5",
+			"resource_packages/individual_chests/loot_chest_d4_t6"
+		},
+		display_names = {
+			"display_name_loot_chest_cataclysm_01",
+			"display_name_loot_chest_cataclysm_02",
+			"display_name_loot_chest_cataclysm_03",
+			"display_name_loot_chest_cataclysm_04",
+			"display_name_loot_chest_cataclysm_05",
+			"display_name_loot_chest_cataclysm_06"
+		}
+	},
+	cataclysm = {
+		package_name = "resource_packages/chests_d4",
+		backend_keys = {
+			"loot_chest_04_01",
+			"loot_chest_04_02",
+			"loot_chest_04_03",
+			"loot_chest_04_04",
+			"loot_chest_04_05",
+			"loot_chest_04_06"
+		},
+		chest_unit_names = {
+			"units/gameplay/loot_chests/gameplay_loot_chest_d4_t1",
+			"units/gameplay/loot_chests/gameplay_loot_chest_d4_t2",
+			"units/gameplay/loot_chests/gameplay_loot_chest_d4_t3",
+			"units/gameplay/loot_chests/gameplay_loot_chest_d4_t4",
+			"units/gameplay/loot_chests/gameplay_loot_chest_d4_t5",
+			"units/gameplay/loot_chests/gameplay_loot_chest_d4_t6"
+		},
+		individual_chest_package_names = {
+			"resource_packages/individual_chests/loot_chest_d4_t1",
+			"resource_packages/individual_chests/loot_chest_d4_t2",
+			"resource_packages/individual_chests/loot_chest_d4_t3",
+			"resource_packages/individual_chests/loot_chest_d4_t4",
+			"resource_packages/individual_chests/loot_chest_d4_t5",
+			"resource_packages/individual_chests/loot_chest_d4_t6"
+		},
+		display_names = {
+			"display_name_loot_chest_cataclysm_01",
+			"display_name_loot_chest_cataclysm_02",
+			"display_name_loot_chest_cataclysm_03",
+			"display_name_loot_chest_cataclysm_04",
+			"display_name_loot_chest_cataclysm_05",
+			"display_name_loot_chest_cataclysm_06"
+		}
+	},
+	cataclysm_2 = {
+		package_name = "resource_packages/chests_d4",
+		backend_keys = {
+			"loot_chest_04_01",
+			"loot_chest_04_02",
+			"loot_chest_04_03",
+			"loot_chest_04_04",
+			"loot_chest_04_05",
+			"loot_chest_04_06"
+		},
+		chest_unit_names = {
+			"units/gameplay/loot_chests/gameplay_loot_chest_d4_t1",
+			"units/gameplay/loot_chests/gameplay_loot_chest_d4_t2",
+			"units/gameplay/loot_chests/gameplay_loot_chest_d4_t3",
+			"units/gameplay/loot_chests/gameplay_loot_chest_d4_t4",
+			"units/gameplay/loot_chests/gameplay_loot_chest_d4_t5",
+			"units/gameplay/loot_chests/gameplay_loot_chest_d4_t6"
+		},
+		individual_chest_package_names = {
+			"resource_packages/individual_chests/loot_chest_d4_t1",
+			"resource_packages/individual_chests/loot_chest_d4_t2",
+			"resource_packages/individual_chests/loot_chest_d4_t3",
+			"resource_packages/individual_chests/loot_chest_d4_t4",
+			"resource_packages/individual_chests/loot_chest_d4_t5",
+			"resource_packages/individual_chests/loot_chest_d4_t6"
+		},
+		display_names = {
+			"display_name_loot_chest_cataclysm_01",
+			"display_name_loot_chest_cataclysm_02",
+			"display_name_loot_chest_cataclysm_03",
+			"display_name_loot_chest_cataclysm_04",
+			"display_name_loot_chest_cataclysm_05",
+			"display_name_loot_chest_cataclysm_06"
+		}
+	},
+	cataclysm_3 = {
+		package_name = "resource_packages/chests_d4",
+		backend_keys = {
+			"loot_chest_04_01",
+			"loot_chest_04_02",
+			"loot_chest_04_03",
+			"loot_chest_04_04",
+			"loot_chest_04_05",
+			"loot_chest_04_06"
+		},
+		chest_unit_names = {
+			"units/gameplay/loot_chests/gameplay_loot_chest_d4_t1",
+			"units/gameplay/loot_chests/gameplay_loot_chest_d4_t2",
+			"units/gameplay/loot_chests/gameplay_loot_chest_d4_t3",
+			"units/gameplay/loot_chests/gameplay_loot_chest_d4_t4",
+			"units/gameplay/loot_chests/gameplay_loot_chest_d4_t5",
+			"units/gameplay/loot_chests/gameplay_loot_chest_d4_t6"
+		},
+		individual_chest_package_names = {
+			"resource_packages/individual_chests/loot_chest_d4_t1",
+			"resource_packages/individual_chests/loot_chest_d4_t2",
+			"resource_packages/individual_chests/loot_chest_d4_t3",
+			"resource_packages/individual_chests/loot_chest_d4_t4",
+			"resource_packages/individual_chests/loot_chest_d4_t5",
+			"resource_packages/individual_chests/loot_chest_d4_t6"
 		},
 		display_names = {
 			"display_name_loot_chest_cataclysm_01",
@@ -309,6 +454,9 @@ LootChestData.chests_by_category = {
 		backend_keys = {
 			"level_chest"
 		},
+		individual_chest_package_names = {
+			"resource_packages/chests_level_up"
+		},
 		chest_unit_names = {
 			"units/gameplay/loot_chests/gameplay_loot_chest_level_up"
 		}
@@ -318,6 +466,9 @@ LootChestData.chests_by_category = {
 		backend_keys = {
 			"level_chest"
 		},
+		individual_chest_package_names = {
+			"resource_packages/chest_cc_t1"
+		},
 		chest_unit_names = {
 			"units/gameplay/loot_chests/gameplay_loot_chest_cc_t1"
 		}
@@ -326,6 +477,9 @@ LootChestData.chests_by_category = {
 		package_name = "resource_packages/chests_bogenhafen",
 		backend_keys = {
 			"bogenhafen_chest"
+		},
+		individual_chest_package_names = {
+			"resource_packages/chests_bogenhafen"
 		},
 		chest_unit_names = {
 			"units/gameplay/loot_chests/gameplay_loot_chest_bghf_01"

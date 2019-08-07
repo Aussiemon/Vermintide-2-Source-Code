@@ -4,17 +4,17 @@ UnitGibSettings = {
 	skaven_clan_rat = {
 		parts = {
 			head = {
-				stump_unit = "units/beings/enemies/skaven_clan_rat/gibs/skaven_clanrat_stump_head",
-				gib_unit = "units/beings/enemies/skaven_clan_rat/gibs/skaven_clanrat_gib_head",
+				gib_push_actor = "c_gib_head",
 				parent_scale = 0.01,
 				gib_push_force = 1,
+				stump_unit = "units/beings/enemies/skaven_clan_rat/gibs/skaven_clanrat_stump_head",
 				stump_parent_align_node = "j_neck",
 				gib_parent_align_node = "j_neck_1",
-				gib_push_actor = "c_gib_head",
-				vfx = "fx/impact_blood_maim",
 				parent_hide_group = "head_hood",
-				gib_unit_template = "dynamic_gib_unit",
 				stop_death_sound = true,
+				vfx = "fx/impact_blood_maim",
+				gib_unit = "units/beings/enemies/skaven_clan_rat/gibs/skaven_clanrat_gib_head",
+				gib_unit_template = "dynamic_gib_unit",
 				stump_link_nodes = {
 					"j_spine1",
 					"j_neck"
@@ -34,6 +34,9 @@ UnitGibSettings = {
 					"j_head",
 					"j_neck_1",
 					"j_neck"
+				},
+				disable_gibs = {
+					"upperbody"
 				}
 			},
 			left_arm = {
@@ -70,6 +73,9 @@ UnitGibSettings = {
 					"j_leftarm",
 					"j_leftforearm",
 					"j_lefthand"
+				},
+				disable_gibs = {
+					"upperbody"
 				}
 			},
 			left_leg = {
@@ -146,6 +152,9 @@ UnitGibSettings = {
 					"j_rightarm",
 					"j_rightforearm",
 					"j_righthand"
+				},
+				disable_gibs = {
+					"upperbody"
 				}
 			},
 			right_leg = {
@@ -281,33 +290,32 @@ UnitGibSettings = {
 					"j_neck",
 					"j_neck_1",
 					"j_head"
+				},
+				disable_gibs = {
+					"head",
+					"left_arm",
+					"right_arm"
 				}
 			}
 		},
 		explode = {
 			vfx_align_node = "root_point",
 			vfx = "fx/chr_skaven_dismembered",
+			push_force_multiplier = 3,
 			part_combos = {
 				{
 					"head",
+					"left_leg",
 					"right_leg"
 				},
 				{
-					"head",
-					"left_leg"
-				},
-				{
 					"upperbody",
-					"right_leg",
-					"tail"
+					"right_leg"
 				},
 				{
 					"left_arm",
-					"left_leg"
-				},
-				{
 					"right_arm",
-					"right_leg"
+					"left_leg"
 				},
 				{
 					"upperbody",
@@ -315,23 +323,17 @@ UnitGibSettings = {
 				},
 				{
 					"head",
-					"left_arm"
+					"left_arm",
+					"right_leg"
 				},
 				{
 					"head",
 					"right_arm",
+					"left_leg",
 					"tail"
 				},
 				{
 					"upperbody"
-				},
-				{
-					"right_arm",
-					"left_arm"
-				},
-				{
-					"right_leg",
-					"left_leg"
 				},
 				{
 					"right_arm",
@@ -379,6 +381,11 @@ UnitGibSettings.skaven_slave = {
 				"j_head",
 				"j_neck_1",
 				"j_neck"
+			},
+			disable_gibs = {
+				"upperbody",
+				"upperbody_right",
+				"upperbody_left"
 			}
 		},
 		left_arm = {
@@ -415,6 +422,11 @@ UnitGibSettings.skaven_slave = {
 				"j_leftarm",
 				"j_leftforearm",
 				"j_lefthand"
+			},
+			disable_gibs = {
+				"upperbody",
+				"upperbody_right",
+				"upperbody_left"
 			}
 		},
 		left_leg = {
@@ -491,6 +503,11 @@ UnitGibSettings.skaven_slave = {
 				"j_rightarm",
 				"j_rightforearm",
 				"j_righthand"
+			},
+			disable_gibs = {
+				"upperbody",
+				"upperbody_right",
+				"upperbody_left"
 			}
 		},
 		right_leg = {
@@ -627,6 +644,11 @@ UnitGibSettings.skaven_slave = {
 				"j_neck",
 				"j_neck_1",
 				"j_head"
+			},
+			disable_gibs = {
+				"head",
+				"left_arm",
+				"right_arm"
 			}
 		},
 		upperbody_right = {
@@ -677,6 +699,11 @@ UnitGibSettings.skaven_slave = {
 				"j_neck",
 				"j_neck_1",
 				"j_head"
+			},
+			disable_gibs = {
+				"head",
+				"left_arm",
+				"right_arm"
 			}
 		},
 		upperbody_left = {
@@ -727,69 +754,73 @@ UnitGibSettings.skaven_slave = {
 				"j_neck",
 				"j_neck_1",
 				"j_head"
+			},
+			disable_gibs = {
+				"head",
+				"left_arm",
+				"right_arm"
 			}
 		}
 	},
 	explode = {
 		vfx_align_node = "root_point",
 		vfx = "fx/chr_skaven_dismembered",
+		push_force_multiplier = 4,
 		part_combos = {
 			{
 				"head",
+				"left_leg",
+				"right_leg"
+			},
+			{
+				"upperbody",
+				"right_leg"
+			},
+			{
+				"left_arm",
+				"right_arm",
+				"left_leg"
+			},
+			{
+				"upperbody",
+				"left_leg"
+			},
+			{
+				"head",
+				"left_arm",
 				"right_leg"
 			},
 			{
 				"head",
+				"right_arm",
+				"left_leg",
+				"tail"
+			},
+			{
+				"upperbody"
+			},
+			{
+				"head",
+				"right_arm",
+				"left_arm",
+				"right_leg",
 				"left_leg"
 			},
 			{
 				"upperbody_left",
-				"right_leg",
-				"tail"
+				"right_leg"
 			},
 			{
 				"upperbody_left",
 				"right_arm"
 			},
 			{
-				"left_arm",
-				"left_leg"
-			},
-			{
-				"right_arm",
-				"right_leg"
-			},
-			{
 				"upperbody_right",
 				"left_leg"
 			},
 			{
 				"upperbody_right",
 				"left_arm"
-			},
-			{
-				"head",
-				"left_arm"
-			},
-			{
-				"head",
-				"right_arm",
-				"tail"
-			},
-			{
-				"upperbody",
-				"tail"
-			},
-			{
-				"right_arm",
-				"left_arm"
-			},
-			{
-				"right_leg",
-				"left_leg"
-			},
-			{
-				"upperbody"
 			}
 		}
 	}
@@ -827,6 +858,9 @@ UnitGibSettings.skaven_storm_vermin = {
 				"j_head",
 				"j_neck_1",
 				"j_neck"
+			},
+			disable_gibs = {
+				"upperbody"
 			}
 		},
 		left_arm = {
@@ -861,6 +895,9 @@ UnitGibSettings.skaven_storm_vermin = {
 				"j_leftarm",
 				"j_leftforearm",
 				"j_lefthand"
+			},
+			disable_gibs = {
+				"upperbody"
 			}
 		},
 		left_leg = {
@@ -925,6 +962,9 @@ UnitGibSettings.skaven_storm_vermin = {
 				"j_rightarm",
 				"j_rightforearm",
 				"j_righthand"
+			},
+			disable_gibs = {
+				"upperbody"
 			}
 		},
 		right_leg = {
@@ -1044,32 +1084,26 @@ UnitGibSettings.skaven_storm_vermin = {
 				"j_neck",
 				"j_neck_1",
 				"j_head"
+			},
+			disable_gibs = {
+				"head",
+				"left_arm",
+				"right_arm"
 			}
 		}
 	},
 	explode = {
 		vfx_align_node = "root_point",
 		vfx = "fx/chr_skaven_dismembered",
+		push_force_multiplier = 3,
 		part_combos = {
 			{
 				"head",
+				"left_leg",
 				"right_leg"
 			},
 			{
-				"head",
-				"left_leg"
-			},
-			{
 				"upperbody",
-				"right_leg",
-				"tail"
-			},
-			{
-				"left_arm",
-				"left_leg"
-			},
-			{
-				"right_arm",
 				"right_leg"
 			},
 			{
@@ -1078,30 +1112,21 @@ UnitGibSettings.skaven_storm_vermin = {
 			},
 			{
 				"head",
-				"left_arm"
+				"left_arm",
+				"right_leg"
 			},
 			{
-				"head",
-				"right_arm",
-				"tail"
+				"upperbody"
+			},
+			{
+				"upperbody",
+				"right_leg",
+				"left_leg"
 			},
 			{
 				"head",
 				"right_arm",
 				"left_arm",
-				"right_leg",
-				"left_leg"
-			},
-			{
-				"right_arm",
-				"left_arm"
-			},
-			{
-				"right_leg",
-				"left_leg"
-			},
-			{
-				"upperbody",
 				"right_leg",
 				"left_leg"
 			}
@@ -1150,6 +1175,9 @@ UnitGibSettings.chaos_marauder = {
 			ragdoll_destroy_actors = {
 				"j_head",
 				"j_neck"
+			},
+			disable_gibs = {
+				"upperbody"
 			}
 		},
 		left_arm = {
@@ -1191,6 +1219,10 @@ UnitGibSettings.chaos_marauder = {
 				"j_lefthand",
 				"j_leftforearm",
 				"j_leftarm"
+			},
+			disable_gibs = {
+				"upperbody",
+				"left_hand"
 			}
 		},
 		left_hand = {
@@ -1217,6 +1249,10 @@ UnitGibSettings.chaos_marauder = {
 			},
 			ragdoll_destroy_actors = {
 				"j_lefthand"
+			},
+			disable_gibs = {
+				"upperbody",
+				"left_arm"
 			}
 		},
 		left_lowerleg = {
@@ -1286,6 +1322,10 @@ UnitGibSettings.chaos_marauder = {
 				"j_righthand",
 				"j_rightforearm",
 				"j_rightarm"
+			},
+			disable_gibs = {
+				"upperbody",
+				"right_hand"
 			}
 		},
 		right_hand = {
@@ -1312,6 +1352,10 @@ UnitGibSettings.chaos_marauder = {
 			},
 			ragdoll_destroy_actors = {
 				"j_righthand"
+			},
+			disable_gibs = {
+				"upperbody",
+				"right_arm"
 			}
 		},
 		right_lowerleg = {
@@ -1343,17 +1387,17 @@ UnitGibSettings.chaos_marauder = {
 			}
 		},
 		upperbody = {
-			gib_unit_template = "dynamic_gib_unit",
-			gib_helmet_link_node = "a_helmet",
-			gib_push_force = 2,
-			stump_parent_align_node = "j_hips",
-			gib_unit = "units/beings/enemies/chaos_marauder/gibs/chaos_marauder_gib_upperbody",
-			gib_parent_align_node = "j_spine",
 			gib_push_actor = "j_spine1",
 			parent_scale = 0,
-			vfx = "fx/impact_blood_maim_chaos",
-			stump_unit = "units/beings/enemies/chaos_marauder/gibs/chaos_marauder_stump_upperbody",
+			gib_helmet_link_node = "a_helmet",
+			gib_unit_template = "dynamic_gib_unit",
+			stump_parent_align_node = "j_hips",
+			gib_parent_align_node = "j_spine",
 			parent_hide_group = "vg_torso",
+			stump_unit = "units/beings/enemies/chaos_marauder/gibs/chaos_marauder_stump_upperbody",
+			gib_push_force = 2.5,
+			vfx = "fx/impact_blood_maim_chaos",
+			gib_unit = "units/beings/enemies/chaos_marauder/gibs/chaos_marauder_gib_upperbody",
 			stump_link_nodes = {
 				"j_hips"
 			},
@@ -1388,32 +1432,25 @@ UnitGibSettings.chaos_marauder = {
 				"j_spine1",
 				"j_neck",
 				"j_head"
+			},
+			disable_gibs = {
+				"head",
+				"left_arm",
+				"right_arm",
+				"left_hand",
+				"right_hand"
 			}
 		}
 	},
 	explode = {
 		vfx_align_node = "root_point",
-		vfx = "fx/chr_skaven_dismembered",
+		vfx = "fx/chr_chaos_dismembered",
+		push_force_multiplier = 3,
 		part_combos = {
 			{
-				"head",
-				"right_lowerleg"
-			},
-			{
-				"head",
-				"left_lowerleg"
-			},
-			{
 				"upperbody",
-				"right_lowerleg"
-			},
-			{
-				"left_arm",
-				"left_lowerleg"
-			},
-			{
-				"right_arm",
-				"right_lowerleg"
+				"right_lowerleg",
+				"left_leg"
 			},
 			{
 				"upperbody",
@@ -1421,32 +1458,23 @@ UnitGibSettings.chaos_marauder = {
 			},
 			{
 				"head",
-				"left_arm"
-			},
-			{
-				"head",
-				"right_arm"
-			},
-			{
-				"right_arm",
 				"left_arm",
-				"right_lowerleg",
-				"left_lowerleg"
+				"right_lowerleg"
 			},
 			{
 				"head",
 				"right_arm",
+				"left_lowerleg"
+			},
+			{
+				"upperbody"
+			},
+			{
+				"head",
+				"right_arm",
 				"left_arm",
 				"right_lowerleg",
 				"left_lowerleg"
-			},
-			{
-				"right_lowerleg",
-				"left_lowerleg"
-			},
-			{
-				"right_arm",
-				"left_arm"
 			}
 		}
 	}
@@ -1655,10 +1683,12 @@ UnitGibSettings.chaos_raider = {
 	},
 	explode = {
 		vfx_align_node = "root_point",
-		vfx = "fx/chr_skaven_dismembered",
+		vfx = "fx/chr_chaos_dismembered",
+		push_force_multiplier = 3,
 		part_combos = {
 			{
 				"left_arm",
+				"right_arm",
 				"left_lowerleg"
 			},
 			{
@@ -1670,14 +1700,6 @@ UnitGibSettings.chaos_raider = {
 				"left_arm",
 				"right_lowerleg",
 				"left_lowerleg"
-			},
-			{
-				"right_lowerleg",
-				"left_lowerleg"
-			},
-			{
-				"right_arm",
-				"left_arm"
 			}
 		}
 	}
@@ -1687,17 +1709,17 @@ UnitGibSettings.chaos_raider_tutorial = table.create_copy(UnitGibSettings.chaos_
 UnitGibSettings.chaos_fanatic = {
 	parts = {
 		head = {
-			stump_unit = "units/beings/enemies/chaos_fanatic/gibs/chaos_fanatic_stump_head",
-			gib_unit = "units/beings/enemies/chaos_fanatic/gibs/chaos_fanatic_gib_head",
+			gib_push_actor = "c_ragdoll",
 			parent_scale = 0,
 			gib_push_force = 1,
+			stump_unit = "units/beings/enemies/chaos_fanatic/gibs/chaos_fanatic_stump_head",
 			stump_parent_align_node = "j_spine1",
 			gib_parent_align_node = "j_neck",
-			gib_push_actor = "c_ragdoll",
 			parent_hide_group = "vg_gib_head",
-			vfx = "fx/impact_blood_maim_chaos",
-			gib_unit_template = "dynamic_gib_unit",
 			stop_death_sound = true,
+			vfx = "fx/impact_blood_maim_chaos",
+			gib_unit = "units/beings/enemies/chaos_fanatic/gibs/chaos_fanatic_gib_head",
+			gib_unit_template = "dynamic_gib_unit",
 			stump_link_nodes = {
 				"j_spine1",
 				"j_leftshoulder",
@@ -1724,6 +1746,9 @@ UnitGibSettings.chaos_fanatic = {
 			ragdoll_destroy_actors = {
 				"j_head",
 				"j_neck"
+			},
+			disable_gibs = {
+				"upperbody"
 			}
 		},
 		left_arm = {
@@ -1765,6 +1790,9 @@ UnitGibSettings.chaos_fanatic = {
 				"j_lefthand",
 				"j_leftforearm",
 				"j_leftarm"
+			},
+			disable_gibs = {
+				"upperbody"
 			}
 		},
 		left_lowerleg = {
@@ -1834,6 +1862,9 @@ UnitGibSettings.chaos_fanatic = {
 				"j_righthand",
 				"j_rightforearm",
 				"j_rightarm"
+			},
+			disable_gibs = {
+				"upperbody"
 			}
 		},
 		right_lowerleg = {
@@ -1865,17 +1896,17 @@ UnitGibSettings.chaos_fanatic = {
 			}
 		},
 		upperbody = {
-			gib_unit_template = "dynamic_gib_unit",
-			gib_helmet_link_node = "a_helmet",
-			gib_push_force = 2,
-			stump_parent_align_node = "j_hips",
-			gib_unit = "units/beings/enemies/chaos_fanatic/gibs/chaos_fanatic_gib_upperbody",
-			gib_parent_align_node = "j_spine",
 			gib_push_actor = "j_spine1",
 			parent_scale = 0,
+			gib_helmet_link_node = "a_helmet",
+			gib_unit_template = "dynamic_gib_unit",
+			stump_parent_align_node = "j_hips",
+			gib_parent_align_node = "j_spine",
 			parent_hide_group = "vg_gib_torso",
-			vfx = "fx/impact_blood_maim_chaos",
 			stump_unit = "units/beings/enemies/chaos_fanatic/gibs/chaos_fanatic_stump_upperbody",
+			gib_push_force = 2,
+			vfx = "fx/impact_blood_maim_chaos",
+			gib_unit = "units/beings/enemies/chaos_fanatic/gibs/chaos_fanatic_gib_upperbody",
 			stump_link_nodes = {
 				"j_hips"
 			},
@@ -1910,20 +1941,23 @@ UnitGibSettings.chaos_fanatic = {
 				"j_spine1",
 				"j_neck",
 				"j_head"
+			},
+			disable_gibs = {
+				"head",
+				"left_arm",
+				"right_arm"
 			}
 		}
 	},
 	explode = {
 		vfx_align_node = "root_point",
-		vfx = "fx/chr_skaven_dismembered",
+		vfx = "fx/chr_chaos_dismembered",
+		push_force_multiplier = 3,
 		part_combos = {
 			{
 				"head",
+				"left_lowerleg",
 				"right_lowerleg"
-			},
-			{
-				"head",
-				"left_lowerleg"
 			},
 			{
 				"upperbody",
@@ -1931,11 +1965,8 @@ UnitGibSettings.chaos_fanatic = {
 			},
 			{
 				"left_arm",
-				"left_lowerleg"
-			},
-			{
 				"right_arm",
-				"right_lowerleg"
+				"left_lowerleg"
 			},
 			{
 				"upperbody",
@@ -1943,32 +1974,23 @@ UnitGibSettings.chaos_fanatic = {
 			},
 			{
 				"head",
-				"left_arm"
+				"left_arm",
+				"right_lowerleg"
 			},
 			{
 				"head",
-				"right_arm"
+				"right_arm",
+				"left_lowerleg",
+				"tail"
+			},
+			{
+				"upperbody"
 			},
 			{
 				"right_arm",
 				"left_arm",
 				"right_lowerleg",
 				"left_lowerleg"
-			},
-			{
-				"head",
-				"right_arm",
-				"left_arm",
-				"right_lowerleg",
-				"left_lowerleg"
-			},
-			{
-				"right_lowerleg",
-				"left_lowerleg"
-			},
-			{
-				"right_arm",
-				"left_arm"
 			}
 		}
 	}
@@ -2034,6 +2056,7 @@ UnitGibSettings.chaos_zombie = {
 		}
 	},
 	explode = {
+		push_force_multiplier = 3,
 		part_combos = {
 			{
 				"gib_07",
@@ -2090,5 +2113,13 @@ UnitGibSettings.chaos_zombie = {
 		}
 	}
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local unit_gib_settings = dlc.unit_gib_settings
+
+	if unit_gib_settings then
+		table.merge_recursive(UnitGibSettings, unit_gib_settings)
+	end
+end
 
 return

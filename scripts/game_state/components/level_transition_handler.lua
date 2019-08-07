@@ -16,7 +16,7 @@ LevelTransitionHandler = class(LevelTransitionHandler)
 
 LevelTransitionHandler.init = function (self)
 	self.loading_packages = {}
-	self.has_loaded_all_packages = false
+	self.has_loaded_all_packages = nil
 	self.loaded_levels = {}
 	self.enemy_package_loader = EnemyPackageLoader:new()
 end
@@ -55,10 +55,15 @@ end
 
 LevelTransitionHandler.default_level_key = function (self)
 	local boot_level_name = Boot.loading_context and Boot.loading_context.level_key
-	local attract_mode_level = check_bool_string(Development.parameter("attract_mode")) and BenchmarkSettings.auto_host_level
-	local level_name = check_bool_string(Development.parameter("auto_host_level")) or attract_mode_level or LevelSettings.default_start_level
 
-	return boot_level_name or level_name
+	if boot_level_name then
+		return boot_level_name
+	end
+
+	local attract_mode_level = check_bool_string(Development.parameter("attract_mode")) and BenchmarkSettings.auto_host_level
+	local level_name = check_bool_string(Development.parameter("auto_host_level")) or attract_mode_level or Managers.mechanism:get_starting_level()
+
+	return level_name
 end
 
 LevelTransitionHandler.load_default_level = function (self)
@@ -80,6 +85,8 @@ LevelTransitionHandler.load_level = function (self, level_key)
 	local level_package_name = LevelSettings[level_key].package_name
 
 	if self.level_key ~= level_key or (not Managers.package:has_loaded(level_package_name, "LevelTransitionHandler") and not Managers.package:is_loading(level_package_name)) then
+		self:_load_dlc_level_packages(level_key)
+
 		self.last_level_key = self.level_key
 		self.level_key = level_key
 		self.level_name = LevelSettings[level_key].level_name
@@ -93,13 +100,9 @@ LevelTransitionHandler.load_level = function (self, level_key)
 		Managers.package:load(level_package_name, "LevelTransitionHandler", nil, true)
 
 		self.has_loaded_all_packages = false
-
-		self:_load_dlc_level_packages(level_key)
 	else
 		self.last_level_key = self.level_key
 	end
-
-	self.enemy_package_loader:setup_startup_enemies(level_key)
 end
 
 LevelTransitionHandler.release_level_resources = function (self, level_key)
@@ -153,10 +156,6 @@ LevelTransitionHandler.load_next_level = function (self)
 		self.picked_level_key = nil
 	elseif self.transition_type ~= "reload_level" then
 		self:load_level(self.transition_type)
-	elseif self.transition_type == "reload_level" then
-		local level_key = self.level_key
-
-		self.enemy_package_loader:setup_startup_enemies(level_key)
 	end
 
 	self.transition_type = nil
@@ -185,7 +184,7 @@ LevelTransitionHandler.get_current_level_keys = function (self)
 end
 
 LevelTransitionHandler.all_packages_loaded = function (self)
-	return self.has_loaded_all_packages
+	return self.has_loaded_all_packages == true
 end
 
 LevelTransitionHandler.update = function (self)
@@ -211,18 +210,6 @@ LevelTransitionHandler.update = function (self)
 	end
 end
 
-LevelTransitionHandler.generate_level_seed = function (self)
-	local t = Managers.time:time("main")
-	local time_since_start = (os.clock() * 10000) % 961748927
-	local date_time = os.time()
-	local low_time = tonumber(tostring(string.format("%d", date_time)):reverse():sub(1, 6))
-	local seed = (time_since_start + low_time) % 15485867
-	seed = math.floor(seed)
-	self.level_seed = seed
-
-	print("[LevelTransitionHandler] Generated new level_seed:", seed)
-end
-
 LevelTransitionHandler.prepare_load_level = function (self, level_index, level_seed)
 	local level_name = NetworkLookup.level_keys[level_index]
 	self.transition_type = level_name
@@ -236,14 +223,14 @@ LevelTransitionHandler.prepare_load_level = function (self, level_index, level_s
 	else
 		printf("[LevelTransitionHandler] prepare_load_level : %s seed: %i. Same level as previously, NOT resetting package load status.", level_name, level_seed or -1)
 	end
-
-	print("[LevelTransitionHandler] Setting level_seed: ", level_seed)
-
-	self.level_seed = level_seed
 end
 
-LevelTransitionHandler.rpc_reload_level = function (self, sender)
+LevelTransitionHandler.rpc_reload_level = function (self, sender, level_seed, locked_director_functions_ids)
 	self:reload_level()
+	printf("[LevelTransitionHandler] rpc_reload_level : %s seed: %i. Same level as previously, NOT resetting package load status.", self.level_key, level_seed or -1)
+	print("[LevelTransitionHandler] Setting level_seed: ", level_seed)
+	Managers.mechanism:set_level_seed(level_seed)
+	Managers.mechanism:set_locked_director_functions_from_ids(locked_director_functions_ids)
 end
 
 LevelTransitionHandler.set_transition_exit_type = function (self, transition_exit_type)
@@ -320,6 +307,18 @@ LevelTransitionHandler._dlc_level_packages_loaded = function (self, level_key)
 	end
 
 	return true
+end
+
+LevelTransitionHandler._update_debug = function (self)
+	if script_data.debug_level_packages then
+		local level_seed = Managers.mechanism:get_level_seed()
+
+		for level_name, is_loaded in pairs(self.loaded_levels) do
+			Debug.text("Level %q is_loaded: %s", level_name, tostring(is_loaded))
+		end
+
+		Debug.text("Level Seed: %d", level_seed or -1)
+	end
 end
 
 return

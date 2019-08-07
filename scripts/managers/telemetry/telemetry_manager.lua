@@ -1,22 +1,44 @@
+require("scripts/managers/telemetry/telemetry_settings")
+require("scripts/managers/telemetry/telemetry_manager_dummy")
 require("scripts/managers/telemetry/telemetry_events")
 require("scripts/managers/telemetry/telemetry_rpc_listener")
+require("scripts/managers/telemetry/telemetry_heartbeat")
 
 local DEBUG = Development.parameter("debug_telemetry")
-local SAVE_FILE = "telemetry"
-local SAVE_DATA = {
-	upload_attempts = 0
-}
 TelemetryManager = class(TelemetryManager)
+
+TelemetryManager.create = function ()
+	if PLATFORM == "win32" and rawget(_G, "lcurl") == nil then
+		print("[TelemetryManager] No lcurl interface found! Fallback to dummy...")
+
+		return TelemetryManagerDummy:new()
+	elseif PLATFORM ~= "win32" and rawget(_G, "REST") == nil then
+		print("[TelemetryManager] No REST interface found! Fallback to dummy...")
+
+		return TelemetryManagerDummy:new()
+	elseif rawget(_G, "cjson") == nil then
+		print("[TelemetryManager] No cjson interface found! Fallback to dummy...")
+
+		return TelemetryManagerDummy:new()
+	elseif DEDICATED_SERVER then
+		print("[TelemetryManager] No telemetry on the dedicated server! Fallback to dummy...")
+
+		return TelemetryManagerDummy:new()
+	elseif TelemetrySettings.enabled == false then
+		print("[TelemetryManager] Disabled! Fallback to dummy...")
+
+		return TelemetryManagerDummy:new()
+	else
+		return TelemetryManager:new()
+	end
+end
 
 TelemetryManager.init = function (self)
 	self:reset()
 
 	self.events = TelemetryEvents:new(self)
 	self.rpc_listener = TelemetryRPCListener:new(self.events)
-
-	Managers.save:auto_load(SAVE_FILE, function (result)
-		SAVE_DATA = result.data or SAVE_DATA
-	end)
+	self._heartbeat = TelemetryHeartbeat:new()
 end
 
 TelemetryManager.reset = function (self)
@@ -24,8 +46,10 @@ TelemetryManager.reset = function (self)
 	self._current_tick = 0
 end
 
-TelemetryManager.update = function (self, dt)
+TelemetryManager.update = function (self, dt, t)
 	self._current_tick = self._current_tick + dt
+
+	self._heartbeat:update(dt, t)
 end
 
 local BLACKLIST = table.set(TelemetrySettings.blacklist or {})
@@ -41,7 +65,13 @@ TelemetryManager.register_event = function (self, event_type, event_params)
 	end
 
 	for k, param in pairs(event_params) do
-		if type(param) == "userdata" then
+		if Script.type_name(param) == "Vector3" then
+			event_params[k] = {
+				x = param.x,
+				y = param.y,
+				z = param.z
+			}
+		elseif type(param) == "userdata" then
 			event_params[k] = tostring(param)
 		end
 	end
@@ -59,35 +89,36 @@ TelemetryManager.register_event = function (self, event_type, event_params)
 end
 
 TelemetryManager.send = function (self)
-	self:register_event("upload_attempts", SAVE_DATA)
+	if DEBUG then
+		printf("[TelemetryManager] Sending session data")
+	end
 
-	local events_as_string = "[" .. table.concat(self._events_json, ", \n") .. "]"
-	local file_name = sprintf("%s_%s.json", TelemetrySettings.title_id, math.uuid())
-	local url = string.format("%s%s", TelemetrySettings.ftp_address, file_name)
+	local url = TelemetrySettings.endpoint
+	local payload = "[" .. table.concat(self._events_json, ", \n") .. "]"
 
-	Managers.curl:upload(url, events_as_string, callback(self, "cb_upload_complete"))
+	if PLATFORM == "win32" then
+		local headers = {
+			string.format("title_id: %s", TelemetrySettings.title_id)
+		}
+
+		Managers.curl:post(url, payload, headers, callback(self, "cb_send"))
+	else
+		local headers = {
+			"title_id",
+			TelemetrySettings.title_id
+		}
+
+		Managers.rest_transport:post(url, payload, headers, callback(self, "cb_send"))
+	end
 end
 
-TelemetryManager.cb_upload_complete = function (self, success, _, _, error)
+TelemetryManager.cb_send = function (self, success, _, _, error)
 	if success then
 		if DEBUG then
 			print("[TelemetryManager] Data sent successfully")
 		end
-
-		table.clear(SAVE_DATA)
-
-		SAVE_DATA.upload_attempts = 0
-
-		Managers.save:auto_save(SAVE_FILE, SAVE_DATA)
-	else
-		if DEBUG then
-			print("[TelemetryManager] Error during transmission", error)
-		end
-
-		SAVE_DATA.error = error
-		SAVE_DATA.upload_attempts = SAVE_DATA.upload_attempts + 1
-
-		Managers.save:auto_save(SAVE_FILE, SAVE_DATA)
+	elseif DEBUG then
+		print("[TelemetryManager] Error during transmission", error)
 	end
 end
 

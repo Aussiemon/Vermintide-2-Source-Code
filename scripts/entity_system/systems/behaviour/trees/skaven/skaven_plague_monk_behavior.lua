@@ -70,16 +70,19 @@ BreedBehaviors.plague_monk = {
 		{
 			"BTComboAttackAction",
 			name = "frenzy_attack_ranged",
+			condition = "ask_target_before_attacking",
 			action_data = ACTIONS.frenzy_attack_ranged
 		},
 		{
 			"BTComboAttackAction",
 			name = "frenzy_attack",
+			condition = "ask_target_before_attacking",
 			action_data = ACTIONS.frenzy_attack
 		},
 		{
 			"BTAttackAction",
 			name = "normal_attack",
+			condition = "ask_target_before_attacking",
 			action_data = ACTIONS.normal_attack
 		},
 		name = "in_combat",

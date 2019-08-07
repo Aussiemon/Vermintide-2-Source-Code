@@ -9,6 +9,7 @@ require("scripts/unit_extensions/generic/training_dummy_health_extension")
 require("scripts/unit_extensions/default_player_unit/player_unit_health_extension")
 require("scripts/unit_extensions/health/loot_rat_health_extension")
 require("scripts/unit_extensions/health/lure_health_extension")
+require("scripts/unit_extensions/health/target_health_extension")
 
 HealthSystem = class(HealthSystem, ExtensionSystemBase)
 local script_data = script_data
@@ -37,8 +38,27 @@ local extensions = {
 	"RatOgreHealthExtension",
 	"LureHealthExtension",
 	"OverpoweredBlobHealthExtension",
-	"TrainingDummyHealthExtension"
+	"TrainingDummyHealthExtension",
+	"TargetHealthExtension"
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local health_extension_files = dlc.health_extension_files
+
+	if health_extension_files then
+		for _, health_extension_file in ipairs(health_extension_files) do
+			require(health_extension_file)
+		end
+	end
+
+	local health_extensions = dlc.health_extensions
+
+	if health_extensions then
+		for _, health_extension in ipairs(health_extensions) do
+			extensions[#extensions + 1] = health_extension
+		end
+	end
+end
 
 HealthSystem.init = function (self, entity_system_creation_context, system_name)
 	HealthSystem.super.init(self, entity_system_creation_context, system_name, extensions)
@@ -312,7 +332,7 @@ HealthSystem.update_debug = function (self)
 	end
 end
 
-HealthSystem.rpc_add_damage = function (self, sender, victim_unit_go_id, victim_unit_is_level_unit, attacker_unit_go_id, attacker_is_level_unit, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot)
+HealthSystem.rpc_add_damage = function (self, sender, victim_unit_go_id, victim_unit_is_level_unit, attacker_unit_go_id, attacker_is_level_unit, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 	fassert(not self.is_server, "Tried sending rpc_add_damage to something other than client")
 
 	local victim_unit = nil
@@ -345,29 +365,34 @@ HealthSystem.rpc_add_damage = function (self, sender, victim_unit_go_id, victim_
 	local victim_health_extension = self.unit_extensions[victim_unit]
 
 	if damage_type ~= "sync_health" then
-		victim_health_extension:add_damage((attacker_unit_alive and attacker_unit) or victim_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source, hit_ragdoll_actor, nil, hit_react_type, is_critical_strike, added_dot)
+		victim_health_extension:add_damage((attacker_unit_alive and attacker_unit) or victim_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source, hit_ragdoll_actor, nil, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 	end
 
 	if victim_health_extension:is_alive() and is_dead then
 		local killing_blow = FrameTable.alloc_table()
 		local hit_position_table = hit_position and Vector3Aux.box(nil, hit_position)
 		local damage_direction_table = Vector3Aux.box(nil, damage_direction)
-		killing_blow[1] = damage_amount
-		killing_blow[2] = damage_type
-		killing_blow[3] = (attacker_unit_alive and attacker_unit) or victim_unit
-		killing_blow[4] = hit_zone_name
-		killing_blow[5] = hit_position_table
-		killing_blow[6] = damage_direction_table
-		killing_blow[7] = damage_source
-		killing_blow[8] = hit_ragdoll_actor
-		killing_blow[9] = "n/a"
+		killing_blow[DamageDataIndex.DAMAGE_AMOUNT] = damage_amount
+		killing_blow[DamageDataIndex.DAMAGE_TYPE] = damage_type
+		killing_blow[DamageDataIndex.ATTACKER] = (attacker_unit_alive and attacker_unit) or victim_unit
+		killing_blow[DamageDataIndex.HIT_ZONE] = hit_zone_name
+		killing_blow[DamageDataIndex.POSITION] = hit_position_table
+		killing_blow[DamageDataIndex.DIRECTION] = damage_direction_table
+		killing_blow[DamageDataIndex.DAMAGE_SOURCE_NAME] = damage_source
+		killing_blow[DamageDataIndex.HIT_RAGDOLL_ACTOR_NAME] = hit_ragdoll_actor
+		killing_blow[DamageDataIndex.DAMAGING_UNIT] = "n/a"
+		killing_blow[DamageDataIndex.HIT_REACT_TYPE] = hit_react_type
+		killing_blow[DamageDataIndex.CRITICAL_HIT] = is_critical_strike
+		killing_blow[DamageDataIndex.FIRST_HIT] = first_hit
+		killing_blow[DamageDataIndex.TOTAL_HITS] = total_hits
+		killing_blow[DamageDataIndex.BACKSTAB_MULTIPLIER] = backstab_multiplier
 		local death_system = Managers.state.entity:system("death_system")
 
 		death_system:kill_unit(victim_unit, killing_blow)
 	end
 end
 
-HealthSystem.rpc_add_damage_network = function (self, sender, victim_unit_go_id, victim_unit_is_level_unit, attacker_unit_go_id, attacker_is_level_unit, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_react_type_id, is_critical_strike, added_dot)
+HealthSystem.rpc_add_damage_network = function (self, sender, victim_unit_go_id, victim_unit_is_level_unit, attacker_unit_go_id, attacker_is_level_unit, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_react_type_id, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 	fassert(self.is_server, "Tried sending rpc_add_damage_network to something other than the server")
 
 	local victim_unit = nil
@@ -395,8 +420,11 @@ HealthSystem.rpc_add_damage_network = function (self, sender, victim_unit_go_id,
 	local damage_type = NetworkLookup.damage_types[damage_type_id]
 	local damage_source = NetworkLookup.damage_sources[damage_source_id]
 	local hit_react_type = NetworkLookup.hit_react_types[hit_react_type_id]
+	local hit_ragdoll_actor, damaging_unit, buff_attack_type = nil
+	first_hit = first_hit or false
+	total_hits = total_hits or 0
 
-	DamageUtils.add_damage_network(victim_unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source, nil, nil, nil, hit_react_type, is_critical_strike, added_dot)
+	DamageUtils.add_damage_network(victim_unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source, hit_ragdoll_actor, damaging_unit, buff_attack_type, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 end
 
 HealthSystem.rpc_damage_taken_overcharge = function (self, sender, unit_go_id, damage)

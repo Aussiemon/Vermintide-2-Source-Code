@@ -330,10 +330,13 @@ EntityManager2.unregister_units = function (self, units, num_units)
 			for i = extensions_list_n, 1, -1 do
 				local extension_name = extensions_list[i]
 				local system = self:system_by_extension(extension_name)
-				local system_name = system.NAME
 
-				if ScriptUnit_has_extension(unit, system_name) then
-					ScriptUnit_destroy_extension(unit, system_name)
+				if system ~= nil then
+					local system_name = system.NAME
+
+					if ScriptUnit_has_extension(unit, system_name) then
+						ScriptUnit_destroy_extension(unit, system_name)
+					end
 				end
 			end
 

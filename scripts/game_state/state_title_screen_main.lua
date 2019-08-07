@@ -1,4 +1,5 @@
 require("scripts/ui/views/title_main_ui")
+require("scripts/ui/views/weave_splash_ui")
 
 if script_data.honduras_demo then
 	require("scripts/ui/views/demo_title_ui")
@@ -293,12 +294,18 @@ StateTitleScreenMain._update_input = function (self, dt, t)
 				self._start_pressed = false
 
 				return
+			end
 
-				local user_id = controller and controller.user_id()
+			if not Managers.account:all_lobbies_freed() then
+				self._start_pressed = false
 
-				if Application.is_constrained() then
-					self._has_engaged = false
-				end
+				return
+			end
+
+			local user_id = controller and controller.user_id()
+
+			if Application.is_constrained() then
+				self._has_engaged = false
 			end
 
 			local can_proceed = true

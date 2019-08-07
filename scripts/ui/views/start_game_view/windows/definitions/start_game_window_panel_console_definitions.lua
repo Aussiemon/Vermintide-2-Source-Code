@@ -119,7 +119,7 @@ local scenegraph_definition = {
 		parent = "panel",
 		horizontal_alignment = "left",
 		size = {
-			1280,
+			1600,
 			70
 		},
 		position = {

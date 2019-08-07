@@ -7,9 +7,11 @@ local U_BREED_NAME = 2
 local U_POSITION = 3
 local U_ROTATION = 4
 local U_OPTIONAL_DATA = 5
+local AREA_UNITS = 2
 local AREA_PACK_SIZE_OR_EVENT_NAME = 5
+local AREA_TYPE = 7
 local AREA_ROTATION_OR_EVENT_DATA = 8
-local AREA_PACK_TYPE = 9
+local AREA_PACK_MEMBERS = 9
 local ZONE_DATA = 10
 local AREA_ID = 11
 local MP_TRAVEL_DIST = 1
@@ -26,7 +28,8 @@ local function fast_array_remove(array, index)
 	return value
 end
 
-EnemyRecycler.init = function (self, world, nav_world, pos_list, pack_sizes, pack_rotations, pack_types, zone_data_list)
+EnemyRecycler.init = function (self, world, nav_world, pos_list, pack_sizes, pack_rotations, pack_members, zone_data_list, level_seed)
+	self._seed = level_seed
 	self.world = world
 	self.nav_world = nav_world
 	self.conflict_director = Managers.state.conflict
@@ -45,7 +48,27 @@ EnemyRecycler.init = function (self, world, nav_world, pos_list, pack_sizes, pac
 	self.ai_group_system = Managers.state.entity:system("ai_group_system")
 	self.patrol_analysis = self.conflict_director.patrol_analysis
 
-	self:setup(pos_list, pack_sizes, pack_rotations, pack_types, zone_data_list)
+	self:setup(pos_list, pack_sizes, pack_rotations, pack_members, zone_data_list)
+end
+
+EnemyRecycler._random = function (self, ...)
+	local seed, value = Math.next_random(self._seed, ...)
+	self._seed = seed
+
+	return value
+end
+
+EnemyRecycler._random_dice_roll = function (self, prob, alias)
+	local seed, value = LoadedDice.roll_seeded(prob, alias, self._seed)
+	self._seed = seed
+
+	return value
+end
+
+EnemyRecycler.set_seed = function (self, seed)
+	fassert(seed and type(seed) == "number", "Bad seed input!")
+
+	self._seed = seed
 end
 
 EnemyRecycler.setup_forbidden_zones = function (self, pos)
@@ -96,6 +119,12 @@ end
 EnemyRecycler.add_critters = function (self)
 	local level_key = Managers.state.game_mode:level_key()
 	local level_name = LevelSettings[level_key].level_name
+	local num_nested_levels = LevelResource.nested_level_count(level_name)
+
+	if num_nested_levels > 0 then
+		level_name = LevelResource.nested_level_resource_name(level_name, 0)
+	end
+
 	local unit_ind = LevelResource.unit_indices(level_name, "units/hub_elements/critter_spawner")
 
 	for _, id in ipairs(unit_ind) do
@@ -157,7 +186,7 @@ EnemyRecycler.inject_roaming_patrol = function (self, area_position, area_rot, p
 
 	local ptrl = BreedPacks[pack_type].patrol_overrides
 
-	if ptrl and math.random() < ptrl.patrol_chance then
+	if ptrl and self:_random() < ptrl.patrol_chance then
 		local use_any_pos_on_spline = false
 		local spline_name, spline_data, start_pos = self.conflict_director.level_analysis:get_closest_roaming_spline(area_position:unbox(), use_any_pos_on_spline)
 
@@ -168,14 +197,14 @@ EnemyRecycler.inject_roaming_patrol = function (self, area_position, area_rot, p
 		local spline = self.ai_group_system:spline(spline_name)
 
 		if spline then
-			start_pos = self.patrol_analysis:get_path_point(spline.spline_points, nil, math.random() * 0.9)
+			start_pos = self.patrol_analysis:get_path_point(spline.spline_points, nil, self:_random() * 0.9)
 		end
 
 		local zone = self.group_manager:get_group_from_position(start_pos)
 		local pack_data = BreedPacksBySize[pack_type][amount]
 		local prob = pack_data.prob
 		local alias = pack_data.alias
-		local pack_index = LoadedDice.roll(prob, alias)
+		local pack_index = self:_random_dice_roll(prob, alias)
 		local pack = pack_data.packs[pack_index]
 		local spline_start_position = Vector3Box(start_pos)
 		local waypoints = spline_data.waypoints
@@ -202,8 +231,7 @@ EnemyRecycler.inject_roaming_patrol = function (self, area_position, area_rot, p
 			"roaming_patrol",
 			zone,
 			"event",
-			event_data,
-			pack_type
+			event_data
 		}
 
 		return area
@@ -212,7 +240,7 @@ EnemyRecycler.inject_roaming_patrol = function (self, area_position, area_rot, p
 	return false
 end
 
-EnemyRecycler.setup = function (self, pos_list, pack_sizes, pack_rotations, pack_types, zone_data_list)
+EnemyRecycler.setup = function (self, pos_list, pack_sizes, pack_rotations, pack_members, zone_data_list)
 	self.unique_area_id = 0
 
 	self:reset_areas()
@@ -233,7 +261,7 @@ EnemyRecycler.setup = function (self, pos_list, pack_sizes, pack_rotations, pack
 			local area_position = pos_list[i]
 			local pack_size = pack_sizes[i]
 			local area_rot = pack_rotations[i]
-			local pack_type = pack_types[i]
+			local members = pack_members[i]
 			local zone_data = zone_data_list[i]
 			local pos = area_position:unbox()
 			local spawn = true
@@ -244,7 +272,7 @@ EnemyRecycler.setup = function (self, pos_list, pack_sizes, pack_rotations, pack
 			elseif NavTagVolumeUtils.inside_level_volume_layer(level, nav_tag_volume_handler, pos, "NO_SPAWN") or NavTagVolumeUtils.inside_level_volume_layer(level, nav_tag_volume_handler, pos, "NO_BOTS_NO_SPAWN") then
 				spawn = false
 			elseif roaming_patrols_allowed then
-				local area = self:inject_roaming_patrol(area_position, area_rot, pack_type, pack_size, zone_data)
+				local area = self:inject_roaming_patrol(area_position, area_rot, members.type, pack_size, zone_data)
 
 				if area then
 					areas[k] = area
@@ -253,7 +281,7 @@ EnemyRecycler.setup = function (self, pos_list, pack_sizes, pack_rotations, pack
 				end
 			end
 
-			assert(pack_size, "Fatal error, missing interest point unit")
+			fassert(pack_size, "Fatal error, missing interest point unit")
 
 			if spawn then
 				areas[k] = {
@@ -265,7 +293,7 @@ EnemyRecycler.setup = function (self, pos_list, pack_sizes, pack_rotations, pack
 					zone,
 					"pack",
 					area_rot,
-					pack_type,
+					members,
 					zone_data
 				}
 				k = k + 1
@@ -284,6 +312,15 @@ EnemyRecycler.reset_areas = function (self)
 	local areas = self.areas
 
 	for i = 1, #areas, 1 do
+		local area = areas[i]
+		local area_type = area[AREA_TYPE]
+		local units_in_area = area[AREA_UNITS]
+		local area_is_activated = units_in_area and (area_type ~= "pack" or units_in_area[1][1] ~= nil)
+
+		if area_is_activated then
+			self:deactivate_area(area)
+		end
+
 		areas[i] = nil
 	end
 
@@ -347,12 +384,12 @@ EnemyRecycler.update_main_path_events = function (self, t)
 	end
 end
 
-EnemyRecycler.spawn_interest_point = function (self, unit_name, position, do_spawn, angle, pack_type, zone_data)
+EnemyRecycler.spawn_interest_point = function (self, unit_name, position, do_spawn, angle, pack_members, zone_data)
 	local extension_init_data = {
 		ai_interest_point_system = {
 			recycler = true,
 			do_spawn = do_spawn,
-			pack_type = pack_type,
+			pack_members = pack_members,
 			zone_data = zone_data
 		}
 	}
@@ -400,9 +437,8 @@ end
 
 EnemyRecycler.activate_area = function (self, area, threat_population)
 	local INDEX_UNITLIST = 2
-	local INDEX_TYPE = 7
-	local units_in_area = area[2]
-	local area_type = area[INDEX_TYPE]
+	local units_in_area = area[AREA_UNITS]
+	local area_type = area[AREA_TYPE]
 
 	if not units_in_area then
 		if area_type == "pack" then
@@ -410,11 +446,11 @@ EnemyRecycler.activate_area = function (self, area, threat_population)
 				return true
 			else
 				local unit_name = area[AREA_PACK_SIZE_OR_EVENT_NAME]
-				local pack_type = area[AREA_PACK_TYPE]
+				local pack_members = area[AREA_PACK_MEMBERS]
 				local zone_data = area[ZONE_DATA]
 				local position = area[1]
 				local do_spawn_yes = true
-				local interest_point_unit = self:spawn_interest_point(unit_name, position, do_spawn_yes, area[AREA_ROTATION_OR_EVENT_DATA], pack_type, zone_data)
+				local interest_point_unit = self:spawn_interest_point(unit_name, position, do_spawn_yes, area[AREA_ROTATION_OR_EVENT_DATA], pack_members, zone_data)
 				local units_in_area = {
 					{
 						interest_point_unit,
@@ -426,7 +462,6 @@ EnemyRecycler.activate_area = function (self, area, threat_population)
 			end
 		elseif area_type == "event" then
 			local boxed_pos = area[1]
-			local event_data = area[8]
 			local event_name = area[AREA_PACK_SIZE_OR_EVENT_NAME]
 			local event_data = area[AREA_ROTATION_OR_EVENT_DATA]
 
@@ -488,9 +523,8 @@ end
 local REFREEZE_DISTANCE_SQUARED = 25
 
 EnemyRecycler.deactivate_area = function (self, area)
-	local INDEX_TYPE = 7
-	local units_in_area = area[2]
-	local area_type = area[INDEX_TYPE]
+	local units_in_area = area[AREA_UNITS]
+	local area_type = area[AREA_TYPE]
 	local BLACKBOARDS = BLACKBOARDS
 
 	if area_type == "pack" then
@@ -966,17 +1000,16 @@ EnemyRecycler.far_off_despawn = function (self, t, dt, player_positions, spawned
 			if not blackboard.far_off_despawn_immunity then
 				local navigation_extension = blackboard.navigation_extension
 
-				if navigation_extension._enabled then
-					local distance_squared = Vector3_distance_squared(navigation_extension:destination(), pos)
-
-					if distance_squared > 5 then
-						local velocity = ScriptUnit.extension(unit, "locomotion_system"):current_velocity()
-
-						if Vector3_distance_squared(velocity, Vector3.zero()) == 0 then
-							ai_stuck = true
-							destroy_distance_squared = RecycleSettings.destroy_stuck_distance_squared
-						end
+				if navigation_extension._enabled and blackboard.no_path_found then
+					if not blackboard.stuck_time then
+						blackboard.stuck_time = t + 3
+					elseif blackboard.stuck_time < t then
+						ai_stuck = true
+						destroy_distance_squared = RecycleSettings.destroy_stuck_distance_squared
+						blackboard.stuck_time = nil
 					end
+				elseif not blackboard.no_path_found then
+					blackboard.stuck_time = nil
 				end
 			end
 
@@ -996,7 +1029,7 @@ EnemyRecycler.far_off_despawn = function (self, t, dt, player_positions, spawned
 
 		if num_players_far_away == num_players then
 			if ai_stuck then
-				print("Destroying unit - ai got stuck", blackboard.breed.name, i, index, size)
+				printf("Destroying unit - ai got stuck breed: %s index: %d size: %d action: %s", blackboard.breed.name, index, size, blackboard.action and blackboard.action.name)
 				self.conflict_director:destroy_unit(unit, blackboard, "stuck")
 			elseif not blackboard.far_off_despawn_immunity then
 				print("Destroying unit - ai too far away from all players. ", blackboard.breed.name, i, index, size)

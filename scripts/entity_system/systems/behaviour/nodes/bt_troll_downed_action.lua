@@ -2,8 +2,6 @@ require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTTrollDownedAction = class(BTTrollDownedAction, BTNode)
 BTTrollDownedAction.name = "BTTrollDownedAction"
-local POSITION_LOOKUP = POSITION_LOOKUP
-local PLAYER_POSITIONS = PLAYER_POSITIONS
 local script_data = script_data
 
 BTTrollDownedAction.init = function (self, ...)

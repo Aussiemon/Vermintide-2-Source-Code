@@ -890,7 +890,7 @@ end
 
 local description_text_style = {
 	word_wrap = true,
-	font_size = 18,
+	font_size = 22,
 	localize = false,
 	use_shadow = true,
 	horizontal_alignment = "center",

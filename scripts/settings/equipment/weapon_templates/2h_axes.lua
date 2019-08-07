@@ -8,6 +8,7 @@ weapon_template.actions = {
 			aim_assist_ramp_decay_delay = 0.1,
 			anim_end_event = "attack_finished",
 			kind = "melee_start",
+			attack_hold_input = "action_one_hold",
 			aim_assist_max_ramp_multiplier = 0.4,
 			aim_assist_ramp_multiplier = 0.2,
 			anim_event = "attack_swing_charge",
@@ -587,7 +588,6 @@ weapon_template.actions = {
 			anim_end_event = "attack_finished",
 			outer_push_angle = 180,
 			kind = "push_stagger",
-			hit_time = 0.1,
 			damage_profile_outer = "light_push",
 			weapon_action_hand = "right",
 			push_angle = 100,
@@ -737,10 +737,10 @@ weapon_template.outer_block_fatigue_point_multiplier = 2
 weapon_template.sound_event_block_within_arc = "weapon_foley_blunt_2h_block_wood"
 weapon_template.buffs = {
 	change_dodge_distance = {
-		external_optional_multiplier = 0.95
+		external_optional_multiplier = 1
 	},
 	change_dodge_speed = {
-		external_optional_multiplier = 0.95
+		external_optional_multiplier = 1
 	}
 }
 weapon_template.attack_meta_data = {

@@ -45,7 +45,7 @@ local ranged_damage_types = {
 }
 HitEffectsChaosSpawn = {
 	default = {
-		husk_hit_effect_name = "fx/impact_blood",
+		husk_hit_effect_name = "fx/impact_blood_chaos",
 		armour_type = "cloth"
 	},
 	burn = {

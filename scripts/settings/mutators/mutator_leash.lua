@@ -18,9 +18,11 @@ return {
 	start_damage_sound_event = "Play_mutator_leash_loop",
 	damage_sound_global_parameter = "leash_distance",
 	center_effect_name = "fx/leash_beam_center_01",
-	calculate_center_position = function ()
+	calculate_center_position = function (data)
 		local num_alive_players = 0
 		local center_position = Vector3.zero()
+		local hero_side = data.hero_side
+		local PLAYER_UNITS = hero_side.PLAYER_UNITS
 
 		for i = 1, #PLAYER_UNITS, 1 do
 			local player_unit = PLAYER_UNITS[i]
@@ -41,12 +43,15 @@ return {
 	end,
 	server_start_function = function (context, data)
 		data.player_damage_data = {}
+		data.hero_side = Managers.state.side:get_side_from_name("heroes")
 	end,
 	server_update_function = function (context, data)
 		local t = Managers.time:time("game")
 		local template = data.template
-		local center_position = template.calculate_center_position()
+		local center_position = template.calculate_center_position(data)
 		local player_damage_data = data.player_damage_data
+		local hero_side = data.hero_side
+		local PLAYER_UNITS = hero_side.PLAYER_UNITS
 
 		for i = 1, #PLAYER_UNITS, 1 do
 			local player_unit = PLAYER_UNITS[i]
@@ -83,7 +88,7 @@ return {
 		for player_unit, damage_data in pairs(player_damage_data) do
 			local player_health_extension = ScriptUnit.has_extension(player_unit, "health_system")
 
-			if not ALIVE[player_unit] or not VALID_PLAYERS_AND_BOTS[player_unit] or not player_health_extension:is_alive() then
+			if not ALIVE[player_unit] or not player_health_extension:is_alive() then
 				player_damage_data[player_unit] = nil
 			elseif damage_data.do_damage then
 				local distance = damage_data.distance_to_center
@@ -110,6 +115,7 @@ return {
 		local world = context.world
 		local player_manager = Managers.player
 		local wwise_world = Managers.world:wwise_world(world)
+		local hero_side = Managers.state.side:get_side_from_name("heroes")
 		data.wwise_world = wwise_world
 		data.local_player = player_manager:local_player()
 		data.beam_start_variable_id = World.find_particles_variable(world, beam_effect_name, "start")
@@ -118,6 +124,7 @@ return {
 		data.center_sound = nil
 		data.beam_effects = {}
 		data.playing_sounds = {}
+		data.hero_side = hero_side
 	end,
 	client_update_function = function (context, data)
 		local world = context.world
@@ -125,7 +132,7 @@ return {
 		local template = data.template
 		local start_damage_sound_event = template.start_damage_sound_event
 		local stop_damage_sound_event = template.stop_damage_sound_event
-		local center_position, num_alive_players = data.template.calculate_center_position()
+		local center_position, num_alive_players = data.template.calculate_center_position(data)
 		local beam_effects = data.beam_effects
 		local playing_sounds = data.playing_sounds
 
@@ -164,11 +171,14 @@ return {
 
 			WwiseWorld.set_source_position(wwise_world, data.center_sound.source_id, center_position)
 
+			local hero_side = data.hero_side
+			local PLAYER_UNITS = hero_side.PLAYER_UNITS
+
 			for i = 1, #PLAYER_UNITS, 1 do
 				local player_unit = PLAYER_UNITS[i]
 				local player_health_extension = ScriptUnit.has_extension(player_unit, "health_system")
 
-				if ALIVE[player_unit] and VALID_PLAYERS_AND_BOTS[player_unit] and player_health_extension:is_alive() then
+				if ALIVE[player_unit] and player_health_extension:is_alive() then
 					if not beam_effects[player_unit] then
 						local beam_effect_id = World.create_particles(world, beam_effect_name, Vector3.zero(), Quaternion.identity())
 						local player_effect_id = World.create_particles(world, player_effect_name, Vector3.zero(), Quaternion.identity())
@@ -250,7 +260,7 @@ return {
 		for player_unit, effects in pairs(beam_effects) do
 			local player_health_extension = ScriptUnit.has_extension(player_unit, "health_system")
 
-			if not ALIVE[player_unit] or not VALID_PLAYERS_AND_BOTS[player_unit] or not player_health_extension:is_alive() or num_alive_players == 1 then
+			if not ALIVE[player_unit] or not player_health_extension:is_alive() or num_alive_players == 1 then
 				for _, effect_id in pairs(effects) do
 					World.destroy_particles(world, effect_id)
 				end

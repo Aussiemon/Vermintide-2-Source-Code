@@ -9,6 +9,8 @@ ActionInstantWield.init = function (self, world, item_name, is_server, owner_uni
 end
 
 ActionInstantWield.client_owner_start_action = function (self, new_action, t, chain_attack_data)
+	ActionInstantWield.super.client_owner_start_action(self, new_action, t)
+
 	local slot = new_action.slot_to_wield
 	local action_on_wield = new_action.action_on_wield
 	local equipment = self.inventory_extension:equipment()

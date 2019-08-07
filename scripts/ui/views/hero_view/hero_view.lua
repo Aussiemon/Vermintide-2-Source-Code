@@ -1,9 +1,11 @@
+require("scripts/ui/ui_unit_previewer")
 require("scripts/ui/views/menu_world_previewer")
 require("scripts/ui/views/hero_view/item_grid_ui")
 require("scripts/ui/views/hero_view/states/hero_view_state_overview")
 require("scripts/ui/views/hero_view/states/hero_view_state_loot")
 require("scripts/ui/views/hero_view/states/hero_view_state_achievements")
 require("scripts/ui/views/hero_view/states/hero_view_state_keep_decorations")
+require("scripts/ui/views/hero_view/states/hero_view_state_weave_forge")
 require("scripts/settings/news_feed_templates")
 
 for name, dlc in pairs(DLCSettings) do
@@ -151,6 +153,65 @@ HeroView.create_ui_elements = function (self)
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, definitions.animations)
 end
 
+HeroView._setup_hdr_gui = function (self)
+	if self.is_in_inn then
+		local hdr_gui_data = {}
+		local default_hdr_name = "hero_view_hdr"
+
+		if default_hdr_name then
+			local renderer, world, viewport_name = self:_setup_hdr_renderer(default_hdr_name, 600)
+			hdr_gui_data.bottom = {
+				renderer = renderer,
+				world = world,
+				viewport_name = viewport_name
+			}
+		end
+
+		local top_hdr_name = "hero_view_hdr_top"
+
+		if top_hdr_name then
+			local renderer, world, viewport_name = self:_setup_hdr_renderer(top_hdr_name, 850)
+			hdr_gui_data.top = {
+				renderer = renderer,
+				world = world,
+				viewport_name = viewport_name
+			}
+		end
+
+		self._hdr_gui_data = hdr_gui_data
+	end
+end
+
+HeroView._setup_hdr_renderer = function (self, name, layer)
+	local world_flags = {
+		Application.DISABLE_SOUND,
+		Application.DISABLE_ESRAM
+	}
+	local world_name = name
+	local viewport_name = name
+	local shading_environment = "environment/ui_hdr"
+	local world = Managers.world:create_world(world_name, shading_environment, nil, layer, unpack(world_flags))
+	local viewport_type = "overlay"
+	local viewport = ScriptWorld.create_viewport(world, viewport_name, viewport_type, 999)
+	local renderer = self.ingame_ui:create_ui_renderer(world, false, self.is_in_inn)
+
+	return renderer, world, viewport_name
+end
+
+HeroView.hdr_renderer = function (self)
+	local hdr_gui_data = self._hdr_gui_data
+	local hdr_data = hdr_gui_data.bottom
+
+	return hdr_data.renderer
+end
+
+HeroView.hdr_top_renderer = function (self)
+	local hdr_gui_data = self._hdr_gui_data
+	local hdr_data = hdr_gui_data.top
+
+	return hdr_data.renderer
+end
+
 HeroView.draw = function (self, dt, input_service)
 	local ui_renderer = self.ui_renderer
 	local ui_top_renderer = self.ui_top_renderer
@@ -228,6 +289,7 @@ HeroView.update = function (self, dt, t)
 end
 
 HeroView.on_enter = function (self, params)
+	self:_setup_hdr_gui()
 	ShowCursorStack.push()
 
 	local input_manager = self.input_manager
@@ -315,9 +377,9 @@ HeroView.hotkey_allowed = function (self, input, mapping_data)
 		end
 
 		if name == transition_state then
-			local active_sub_settings_name = current_state.active_settings_name and current_state:active_settings_name()
+			local active_sub_settings_name = current_state.get_selected_layout_name and current_state:get_selected_layout_name()
 
-			if transition_sub_state == active_sub_settings_name then
+			if not transition_sub_state or transition_sub_state == active_sub_settings_name then
 				return true
 			end
 		end
@@ -396,6 +458,7 @@ HeroView.post_update_on_exit = function (self)
 	end
 
 	Managers.backend:commit()
+	self:destroy_hdr_gui()
 end
 
 HeroView.on_exit = function (self)
@@ -483,6 +546,26 @@ HeroView.destroy = function (self)
 		self._machine:destroy()
 
 		self._machine = nil
+	end
+
+	self:destroy_hdr_gui()
+end
+
+HeroView.destroy_hdr_gui = function (self)
+	local hdr_gui_data = self._hdr_gui_data
+
+	if hdr_gui_data then
+		for _, data in pairs(hdr_gui_data) do
+			local renderer = data.renderer
+			local world = data.world
+			local viewport_name = data.viewport_name
+
+			UIRenderer.destroy(renderer, world)
+			ScriptWorld.destroy_viewport(world, viewport_name)
+			Managers.world:destroy_world(world)
+		end
+
+		self._hdr_gui_data = nil
 	end
 end
 

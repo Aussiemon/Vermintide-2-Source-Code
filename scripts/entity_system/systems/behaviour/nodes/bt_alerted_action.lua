@@ -68,6 +68,11 @@ BTAlertedAction.init_alerted = function (self, unit, blackboard, t)
 		end
 	end
 
+	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+	local event_data = FrameTable.alloc_table()
+
+	dialogue_input:trigger_networked_dialogue_event("startled", event_data)
+
 	local world = blackboard.world
 	local physics_world = World.physics_world(world)
 	local has_line_of_sight = PerceptionUtils.raycast_spine_to_spine(unit, blackboard.target_unit, physics_world)
@@ -77,11 +82,6 @@ BTAlertedAction.init_alerted = function (self, unit, blackboard, t)
 
 		return false
 	end
-
-	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
-	local event_data = FrameTable.alloc_table()
-
-	dialogue_input:trigger_networked_dialogue_event("startled", event_data)
 
 	return true
 end

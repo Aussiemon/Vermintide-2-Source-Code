@@ -18,7 +18,7 @@ BTMoveToGoalAction.enter = function (self, unit, blackboard, t)
 
 	local network_manager = Managers.state.network
 	local breed = blackboard.breed
-	local passive_in_patrol = breed.passive_in_patrol == nil or breed.passive_in_patrol
+	local passive_in_patrol = breed.passive_in_patrol == nil or (breed.passive_in_patrol and not blackboard.ignore_passive_on_patrol)
 
 	if passive_in_patrol then
 		network_manager:anim_event(unit, "to_passive")
@@ -91,7 +91,7 @@ BTMoveToGoalAction.run = function (self, unit, blackboard, t, dt)
 			local goal_destination = blackboard.goal_destination:unbox()
 			local distance_to_goal_sq = Vector3.distance_squared(unit_position, goal_destination)
 
-			if distance_to_goal_sq < 0.0625 then
+			if distance_to_goal_sq < 0.5625 then
 				blackboard.goal_destination = nil
 			end
 		end

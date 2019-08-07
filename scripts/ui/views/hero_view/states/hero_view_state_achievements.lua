@@ -287,6 +287,8 @@ HeroViewStateAchievements.create_ui_elements = function (self, params)
 	local achievement_category_window = additional_achievement_widgets_by_name.left_window
 
 	self:_set_uvs_scale_progress(achievement_category_window.scenegraph_id, achievement_category_window.content.texture_id.uvs, 1)
+
+	self._category_scrollbar = ScrollBarLogic:new(widgets_by_name.category_scrollbar)
 end
 
 HeroViewStateAchievements._setup_achievement_progress_overview = function (self)
@@ -318,13 +320,15 @@ HeroViewStateAchievements._setup_achievement_progress_overview = function (self)
 	local achievement_outline = achievement_manager:outline()
 
 	for i, category in ipairs(achievement_outline.categories) do
-		local category_progress_data = {
-			display_name = category.name
-		}
-		local amount, amount_completed = gather_category_progress(category, 0, 0)
-		category_progress_data.amount = amount
-		category_progress_data.amount_completed = amount_completed
-		progress_overview[i] = category_progress_data
+		if category.present_progression then
+			local category_progress_data = {
+				display_name = category.name
+			}
+			local amount, amount_completed = gather_category_progress(category, 0, 0)
+			category_progress_data.amount = amount
+			category_progress_data.amount_completed = amount_completed
+			progress_overview[i] = category_progress_data
+		end
 	end
 
 	self:_set_summary_achievement_categories_progress(progress_overview)
@@ -415,6 +419,7 @@ HeroViewStateAchievements._on_layout_button_pressed = function (self, widget, wi
 
 		self._achievement_widgets = nil
 		self._widgets_by_name.achievement_scrollbar.content.visible = false
+		self._widgets_by_name.category_scrollbar.content.visible = false
 	else
 		if layout_type == "achievements" then
 			self._additional_type_widgets = self._additional_achievement_widgets
@@ -436,6 +441,10 @@ HeroViewStateAchievements._on_layout_button_pressed = function (self, widget, wi
 		self:_setup_layout(layout_type)
 
 		self._widgets_by_name.achievement_scrollbar.content.visible = true
+		self._widgets_by_name.category_scrollbar.content.visible = true
+
+		self:_update_categories_scroll_height(0)
+
 		local tab_widget_index = 1
 		local tab_widget = self._category_tab_widgets[tab_widget_index]
 
@@ -620,7 +629,7 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 		end
 
 		local requirements = entry_data.requirements
-		local completed = entry_data.completed
+		local completed = entry_data.completed or script_data.set_all_challenges_claimable
 		local progress = entry_data.progress
 		local claimed = entry_data.claimed
 		local reward = entry_data.reward
@@ -784,7 +793,7 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 
 	self.scroll_value = nil
 
-	self:_update_scroll_height()
+	self:_update_achievements_scroll_height()
 	self:_setup_achievement_entries_animations()
 
 	if num_entries > 0 then
@@ -877,12 +886,33 @@ HeroViewStateAchievements._set_achievement_expand_height = function (self, widge
 	style.expand_background_edge.offset[2] = -height
 end
 
-HeroViewStateAchievements._update_scroll_height = function (self, optional_scroll_value)
+HeroViewStateAchievements._update_achievements_scroll_height = function (self, optional_scroll_value)
 	local total_height = self:_get_achievement_entries_height()
 	self.total_scroll_height = math.max(total_height - ACHIEVEMENT_WINDOW_HEIGHT, 0)
 
 	self:_setup_scrollbar(total_height, optional_scroll_value)
 	self:_align_achievement_entries()
+end
+
+HeroViewStateAchievements._update_categories_scroll_height = function (self, optional_scroll_value)
+	local window_size = scenegraph_definition.category_window_mask.size
+	local scrollbar_size = scenegraph_definition.category_scrollbar.size
+	local scrollbar_logic = self._category_scrollbar
+	local draw_length = window_size[2]
+	local content_length = self:_get_category_entries_height()
+	local scrollbar_length = scrollbar_size[2]
+	local step_size = 220
+	local scroll_step_multiplier = 1
+
+	scrollbar_logic:set_scrollbar_values(draw_length, content_length, scrollbar_length, step_size, scroll_step_multiplier)
+
+	if optional_scroll_value then
+		scrollbar_logic:set_scroll_percentage(optional_scroll_value)
+	else
+		local active_tab_start, active_tab_size = self:_get_active_category_height()
+
+		scrollbar_logic:scroll_to_fit(active_tab_start, active_tab_size)
+	end
 end
 
 HeroViewStateAchievements._get_achievement_entries_height = function (self, start_index)
@@ -913,6 +943,36 @@ HeroViewStateAchievements._get_achievement_entries_height = function (self, star
 	end
 
 	return total_height + scrollbar_bottom_inset
+end
+
+HeroViewStateAchievements._get_category_entries_height = function (self)
+	local num_tabs = #self._category_tab_widgets
+	local tab_size = category_tab_info.tab_size
+	local tab_list_entry_spacing = category_tab_info.tab_list_entry_spacing
+	local tab_height = math.max(tab_size[2] * num_tabs + tab_list_entry_spacing * (num_tabs - 1), 0)
+
+	return tab_height + self:_get_active_tabs_height()
+end
+
+HeroViewStateAchievements._get_active_tabs_height = function (self)
+	local active_tab = self._active_tab
+	local num_sub_tabs = (active_tab and active_tab.style.list_style.num_draws) or 0
+	local tab_list_entry_size = category_tab_info.tab_list_entry_size
+	local tab_list_entry_spacing = category_tab_info.tab_list_entry_spacing
+	local tab_list_height = math.max(tab_list_entry_size[2] * num_sub_tabs + tab_list_entry_spacing * (num_sub_tabs - 1), 0)
+
+	return tab_list_height
+end
+
+HeroViewStateAchievements._get_active_category_height = function (self)
+	local active_tab = self._active_tab_index or 1
+	local num_tabs = active_tab - 1
+	local tab_size = category_tab_info.tab_size
+	local tab_list_entry_spacing = category_tab_info.tab_list_entry_spacing
+	local tab_start_height = math.max(tab_size[2] * num_tabs + tab_list_entry_spacing * (num_tabs - 1), 0)
+	local tab_list_height = self:_get_active_tabs_height()
+
+	return tab_start_height, tab_size[2] + tab_list_entry_spacing + tab_list_height
 end
 
 HeroViewStateAchievements._setup_scrollbar = function (self, height, optional_value)
@@ -1009,6 +1069,16 @@ HeroViewStateAchievements._update_achievement_read_index = function (self, fract
 	self.ui_scenegraph.achievement_root.position[2] = math.floor(height_scrolled)
 end
 
+HeroViewStateAchievements._update_category_scroll_position = function (self)
+	local scrollbar_logic = self._category_scrollbar
+	local length = scrollbar_logic:get_scrolled_length()
+
+	if length ~= self._category_scrolled_length then
+		self.ui_scenegraph.category_root.local_position[2] = math.round(length)
+		self._category_scrolled_length = length
+	end
+end
+
 HeroViewStateAchievements._on_achievement_pressed = function (self, widget)
 	local content = widget.content
 	local style = widget.style
@@ -1054,7 +1124,7 @@ HeroViewStateAchievements._on_achievement_pressed = function (self, widget)
 			new_scroll_fraction = math.min(new_scroll_fraction + missing_widget_fraction, 1)
 		end
 
-		self:_update_scroll_height(new_scroll_fraction)
+		self:_update_achievements_scroll_height(new_scroll_fraction)
 	end
 end
 
@@ -1622,6 +1692,9 @@ HeroViewStateAchievements._handle_input = function (self, dt, t)
 		self:play_sound("Play_gui_achivements_menu_achivements_tab")
 	end
 
+	self._category_scrollbar:update(dt, t, false)
+	self:_update_category_scroll_position()
+
 	for index, widget in ipairs(self._category_tab_widgets) do
 		local visible = widget.content.visible
 
@@ -1806,6 +1879,8 @@ HeroViewStateAchievements._activate_tab = function (self, widget, index, tab_lis
 	elseif not ignore_sound then
 		self:play_sound("Play_gui_achivements_menu_select_category")
 	end
+
+	self:_update_categories_scroll_height()
 end
 
 HeroViewStateAchievements._deactivate_active_tab = function (self)
@@ -1828,6 +1903,8 @@ HeroViewStateAchievements._deactivate_active_tab = function (self)
 	content.active = false
 	content.list_content.active = false
 	content.button_hotspot.is_selected = false
+
+	self:_update_categories_scroll_height()
 end
 
 HeroViewStateAchievements.close_menu = function (self, ignore_sound_on_close_menu)

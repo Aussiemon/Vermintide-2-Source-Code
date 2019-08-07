@@ -203,7 +203,7 @@ DemoTitleUI._populate_career_page = function (self, profile_name, career_index)
 	local description = career_settings.description
 	local icon = career_settings.icon
 	local passive_ability_data = career_settings.passive_ability
-	local activated_ability_data = career_settings.activated_ability
+	local activated_ability_data = career_settings.activated_ability[1]
 	local passive_display_name = passive_ability_data.display_name
 	local passive_description = passive_ability_data.description
 	local passive_icon = passive_ability_data.icon
@@ -837,7 +837,7 @@ DemoTitleUI.destroy = function (self)
 	self._character_previewers = {}
 
 	print("destroying demo_ui")
-	World.destroy_level(self._world, self._level)
+	ScriptWorld.destroy_level_from_reference(self._world, self._level)
 	UIRenderer.destroy(self._ui_renderer, self._world)
 	UIRenderer.destroy(self._career_video_ui_renderer, self._world)
 	World.destroy_gui(self._world, self._world_gui)

@@ -24,13 +24,14 @@ BTStormVerminAttackAction.enter = function (self, unit, blackboard, t)
 	blackboard.attack_finished = false
 	blackboard.attack_aborted = false
 	blackboard.target_speed = 0
+	blackboard.attack_token = true
 
 	if action.blocked_anim then
 		blackboard.blocked_anim = action.blocked_anim
 	end
 
 	local target_unit = blackboard.target_unit
-	blackboard.target_unit_status_extension = (ScriptUnit.has_extension(target_unit, "status_system") and ScriptUnit.extension(target_unit, "status_system")) or nil
+	blackboard.target_unit_status_extension = ScriptUnit.has_extension(target_unit, "status_system") or nil
 	blackboard.attacking_target = blackboard.target_unit
 
 	self:_init_attack(unit, blackboard, t)
@@ -51,11 +52,23 @@ BTStormVerminAttackAction.enter = function (self, unit, blackboard, t)
 		blackboard.backstab_attack_trigger = true
 	end
 
-	local attack_intensity = (blackboard.moving_attack and action.moving_attack_intensity) or action.attack_intensity or 0.75
-	local target_unit_status_extension = blackboard.target_unit_status_extension
+	AiUtils.add_attack_intensity(target_unit, action, blackboard)
 
-	if target_unit_status_extension then
-		target_unit_status_extension:add_attack_intensity(attack_intensity * (0.75 + 0.5 * math.random()))
+	if action.attack_finished_duration then
+		local difficulty = Managers.state.difficulty:get_difficulty()
+		local attack_finished_duration = action.attack_finished_duration[difficulty]
+
+		if attack_finished_duration then
+			blackboard.attack_finished_t = t + Math.random_range(attack_finished_duration[1], attack_finished_duration[2])
+		end
+	end
+
+	if blackboard.moving_attack and ScriptUnit.has_extension(unit, "ai_slot_system") then
+		local ai_slot_system = Managers.state.entity:system("ai_slot_system")
+
+		ai_slot_system:set_release_slot_lock(unit, true)
+
+		blackboard.keep_target = true
 	end
 end
 
@@ -124,18 +137,31 @@ end
 BTStormVerminAttackAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.navigation_extension:set_enabled(true)
 
-	blackboard.target_unit_status_extension = nil
 	blackboard.active_node = nil
+	blackboard.anim_cb_stagger_immune = nil
 	blackboard.attack_aborted = nil
+	blackboard.attack_finished_at_t = nil
 	blackboard.attack_rotation = nil
 	blackboard.attack_rotation_update_timer = nil
 	blackboard.reset_attack = nil
-	blackboard.anim_cb_stagger_immune = nil
-	blackboard.moving_attack = nil
+	blackboard.target_unit_status_extension = nil
+
+	if blackboard.moving_attack and ScriptUnit.has_extension(unit, "ai_slot_system") then
+		local ai_slot_system = Managers.state.entity:system("ai_slot_system")
+
+		ai_slot_system:set_release_slot_lock(unit, false)
+
+		blackboard.keep_target = nil
+	end
+
+	blackboard.anim_cb_attack_cooldown = nil
+	blackboard.attack_finished_t = nil
+	blackboard.attack_token = nil
 	blackboard.attacking_target = nil
+	blackboard.moving_attack = nil
 	blackboard.reset_attack = nil
-	blackboard.reset_attack_delay = nil
 	blackboard.reset_attack_animation_locked = nil
+	blackboard.reset_attack_delay = nil
 	local action = blackboard.action
 	local reset_stagger_count = action.reset_stagger_count
 
@@ -165,7 +191,7 @@ BTStormVerminAttackAction.run = function (self, unit, blackboard, t, dt)
 		BTStormVerminAttackAction.catapult_enemies(unit, blackboard)
 	end
 
-	if blackboard.attack_finished or not target_is_valid then
+	if (blackboard.anim_cb_attack_cooldown and blackboard.attack_finished_t and blackboard.attack_finished_t < t) or (not blackboard.attack_finished_t and blackboard.attack_finished) then
 		return "done"
 	end
 
@@ -230,7 +256,16 @@ BTStormVerminAttackAction.anim_cb_attack_vce = function (self, unit, blackboard)
 	local game = network_manager:game()
 
 	if game and blackboard.target_unit_status_extension then
-		DialogueSystem:trigger_attack(blackboard.target_unit, unit, false, blackboard)
+		DialogueSystem:trigger_attack(blackboard, blackboard.target_unit, unit, false, false)
+	end
+end
+
+BTStormVerminAttackAction.anim_cb_attack_vce_long = function (self, unit, blackboard)
+	local network_manager = Managers.state.network
+	local game = network_manager:game()
+
+	if game and blackboard.target_unit_status_extension then
+		DialogueSystem:trigger_attack(blackboard, blackboard.target_unit, unit, false, true)
 	end
 end
 
@@ -320,6 +355,8 @@ BTStormVerminAttackAction.anim_cb_damage = function (self, unit, blackboard)
 	if blackboard.moving_attack then
 		blackboard.navigation_extension:set_enabled(false)
 		blackboard.locomotion_extension:set_wanted_velocity(Vector3(0, 0, 0))
+	else
+		slot22 = Managers.time:time("game")
 	end
 
 	for _, actor in ipairs(hit_actors) do
@@ -369,6 +406,10 @@ BTStormVerminAttackAction.anim_cb_damage = function (self, unit, blackboard)
 			end
 		end
 	end
+end
+
+BTStormVerminAttackAction.anim_cb_attack_finished = function (self, unit, blackboard)
+	blackboard.attack_finished = true
 end
 
 BTStormVerminAttackAction._calculate_cylinder_collision = function (self, action, self_pos, self_rot)

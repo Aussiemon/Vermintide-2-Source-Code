@@ -25,6 +25,14 @@ StateTitleScreenLoadSave.on_enter = function (self, params)
 end
 
 StateTitleScreenLoadSave._handle_tutorial_auto_start = function (self)
+	if PLATFORM == "win32" and rawget(_G, "Steam") then
+		local app_id = Steam.app_id()
+
+		if app_id == 1085780 then
+			return
+		end
+	end
+
 	if SaveData.has_completed_tutorial or script_data.disable_tutorial_at_start then
 		return
 	end

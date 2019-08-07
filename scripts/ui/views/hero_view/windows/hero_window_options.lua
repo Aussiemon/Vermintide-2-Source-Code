@@ -278,14 +278,15 @@ end
 HeroWindowOptions._update_experience_presentation = function (self)
 	local widgets_by_name = self._widgets_by_name
 	local experience = ExperienceSettings.get_experience(self.hero_name)
-	local level, progress, _, extra_levels = ExperienceSettings.get_level(experience)
-	local is_max_level = level == ExperienceSettings.max_level
+	local level, progress = ExperienceSettings.get_level(experience)
+	local experience_pool = ExperienceSettings.get_experience_pool(self.hero_name)
+	local extra_levels = ExperienceSettings.get_extra_level(experience_pool)
 	local experience_bar_default_size = scenegraph_definition.experience_bar.size
 	local experience_bar_size = self.ui_scenegraph.experience_bar.size
 	experience_bar_size[1] = math.ceil(experience_bar_default_size[1] * progress)
 	local text = Localize("level") .. " " .. tostring(level)
 
-	if is_max_level and extra_levels and extra_levels > 0 then
+	if extra_levels and extra_levels > 0 then
 		text = text .. " (+" .. tostring(extra_levels) .. ")"
 	end
 
@@ -519,17 +520,21 @@ HeroWindowOptions._sync_news = function (self, dt, t)
 	end
 
 	local player = Managers.player:local_player(1)
-	local player_unit = player.player_unit
-	local news_templates = NewsFeedTemplates
-	local conditions_params = self.conditions_params
-	local button_widgets_by_news_template = self.button_widgets_by_news_template
 
-	if player_unit then
-		for template_name, widget in pairs(button_widgets_by_news_template) do
-			local template_index = FindNewsTemplateIndex(template_name)
-			local template = news_templates[template_index]
-			local condition_func = template.condition_func
-			widget.content.new = condition_func(conditions_params)
+	if player then
+		local player_unit = player.player_unit
+
+		if player_unit then
+			local news_templates = NewsFeedTemplates
+			local conditions_params = self.conditions_params
+			local button_widgets_by_news_template = self.button_widgets_by_news_template
+
+			for template_name, widget in pairs(button_widgets_by_news_template) do
+				local template_index = FindNewsTemplateIndex(template_name)
+				local template = news_templates[template_index]
+				local condition_func = template.condition_func
+				widget.content.new = condition_func(conditions_params)
+			end
 		end
 	end
 

@@ -1,6 +1,5 @@
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_loadout_inventory_console_definitions")
 local widget_definitions = definitions.widgets
-local category_settings = definitions.category_settings
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local generic_input_actions = definitions.generic_input_actions
@@ -83,17 +82,18 @@ HeroWindowLoadoutInventoryConsole.on_enter = function (self, params, offset)
 	local career_data = profile.careers[self.career_index]
 	self.career_name = career_data.name
 	self._animations = {}
+	self._categories = self:_create_item_categories(self.profile_index, self.career_index)
 
 	self:create_ui_elements(params, offset)
-	self:_setup_category_index_lookups()
 	self:_setup_input_buttons()
 
-	local item_grid = ItemGridUI:new(category_settings, self._widgets_by_name.item_grid, self.hero_name, self.career_index)
+	local item_grid = ItemGridUI:new(self._categories, self._widgets_by_name.item_grid, self.hero_name, self.career_index)
 	self._item_grid = item_grid
 
 	item_grid:mark_equipped_items(true)
 	item_grid:mark_locked_items(true)
 	item_grid:disable_locked_items(true)
+	item_grid:disable_unwieldable_items(true)
 	item_grid:disable_item_drag()
 	item_grid:apply_item_sorting_function(item_sort_func)
 	self:_set_item_compare_enable_state(false)
@@ -109,6 +109,47 @@ HeroWindowLoadoutInventoryConsole.on_enter = function (self, params, offset)
 	end
 
 	self:_start_transition_animation("on_enter")
+end
+
+HeroWindowLoadoutInventoryConsole._create_item_categories = function (self, profile_index, career_index)
+	local career_index = self.career_index
+	local profile_index = self.profile_index
+	local profile = SPProfiles[profile_index]
+	local careers = profile.careers
+	local career = careers[career_index]
+	local item_slot_types_by_slot_name = career.item_slot_types_by_slot_name
+	local categories = {}
+
+	for slot_name, slot_types in pairs(item_slot_types_by_slot_name) do
+		local slot = InventorySettings.slots_by_name[slot_name]
+		local ui_slot_index = slot.ui_slot_index
+
+		if ui_slot_index then
+			local item_filter = "( "
+
+			for index, slot_type in ipairs(slot_types) do
+				item_filter = item_filter .. "slot_type == " .. slot_type
+
+				if index < #slot_types then
+					item_filter = item_filter .. " or "
+				else
+					item_filter = item_filter .. " ) and item_rarity ~= magic"
+				end
+			end
+
+			local category = {
+				hero_specific_filter = true,
+				name = slot_name,
+				item_types = slot_types,
+				slot_index = ui_slot_index,
+				slot_name = slot_name,
+				item_filter = item_filter
+			}
+			categories[ui_slot_index] = category
+		end
+	end
+
+	return categories
 end
 
 HeroWindowLoadoutInventoryConsole._start_transition_animation = function (self, animation_name)
@@ -149,27 +190,6 @@ HeroWindowLoadoutInventoryConsole.create_ui_elements = function (self, params, o
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
 	end
-end
-
-HeroWindowLoadoutInventoryConsole._setup_category_index_lookups = function (self)
-	local profile = SPProfiles[self.profile_index]
-	local careers = profile.careers
-	local career_index = self.career_index
-	local career = careers[career_index]
-	local loadout_equipment_slots = career.loadout_equipment_slots
-	local career_category_settings_index_lookup = {}
-
-	for index, name in ipairs(loadout_equipment_slots) do
-		for category_index, category_setting in ipairs(category_settings) do
-			if name == category_setting.name then
-				career_category_settings_index_lookup[index] = category_index
-
-				break
-			end
-		end
-	end
-
-	self._career_category_settings_index_lookup = career_category_settings_index_lookup
 end
 
 HeroWindowLoadoutInventoryConsole.set_focus = function (self, focused)
@@ -245,7 +265,7 @@ HeroWindowLoadoutInventoryConsole._update_equipped_item_tooltip = function (self
 	local slot = InventorySettings.slots_by_slot_index[slot_index]
 	local slot_name = slot.name
 	local item_interface = Managers.backend:get_interface("items")
-	local backend_id = item_interface:get_loadout_item_id(self.career_name, slot_name)
+	local backend_id = BackendUtils.get_loadout_item_id(self.career_name, slot_name)
 	local item = backend_id and item_interface:get_item_from_id(backend_id)
 	local widget = self._widgets_by_name.item_tooltip_compare
 	widget.content.item = item
@@ -324,7 +344,7 @@ HeroWindowLoadoutInventoryConsole._handle_gamepad_input = function (self, dt, t)
 		local selected_item, is_equipped = item_grid:selected_item()
 
 		if selected_item and item_grid:is_item_wieldable(selected_item) then
-			parent:_set_loadout_item(selected_item, self._strict_slot_type)
+			parent:_set_loadout_item(selected_item, self._strict_slot_name)
 			self:_play_sound("play_gui_equipment_equip_hero")
 		end
 	elseif input_service:get("special_1", true) then
@@ -370,7 +390,7 @@ HeroWindowLoadoutInventoryConsole._handle_input = function (self, dt, t)
 	end
 
 	if item and not is_equipped then
-		parent:_set_loadout_item(item, self._strict_slot_type)
+		parent:_set_loadout_item(item, self._strict_slot_name)
 		self:_play_sound("play_gui_equipment_equip_hero")
 	end
 
@@ -410,19 +430,32 @@ HeroWindowLoadoutInventoryConsole._update_page_info = function (self)
 	end
 end
 
-HeroWindowLoadoutInventoryConsole._get_actual_loadout_category_index = function (self, index)
-	return self._career_category_settings_index_lookup[index]
+HeroWindowLoadoutInventoryConsole._update_selected_loadout_slot_index = function (self)
+	local slot_index = self.parent:get_selected_loadout_slot_index()
+	local category_index = self:_get_category_index_by_slot_index(slot_index)
+
+	if slot_index ~= self._selected_loadout_slot_index then
+		self:_change_category_by_index(category_index)
+
+		self._selected_loadout_slot_index = slot_index
+		self._category_index = category_index
+	end
 end
 
-HeroWindowLoadoutInventoryConsole._update_selected_loadout_slot_index = function (self)
-	local index = self.parent:get_selected_loadout_slot_index()
-	local internal_slot_index = self._career_category_settings_index_lookup[index]
+HeroWindowLoadoutInventoryConsole._get_category_slot_index = function (self, index)
+	local categories = self._categories
+	local category = categories[index]
 
-	if index ~= self._selected_loadout_slot_index then
-		self:_change_category_by_index(index)
+	return category.slot_index
+end
 
-		self._selected_loadout_slot_index = index
-		self._internal_slot_index = internal_slot_index
+HeroWindowLoadoutInventoryConsole._get_category_index_by_slot_index = function (self, slot_index)
+	local categories = self._categories
+
+	for i, category in ipairs(categories) do
+		if category.slot_index == slot_index then
+			return i
+		end
 	end
 end
 
@@ -486,27 +519,14 @@ HeroWindowLoadoutInventoryConsole._play_sound = function (self, event)
 	self.parent:play_sound(event)
 end
 
-HeroWindowLoadoutInventoryConsole._change_category_by_index = function (self, index, force_update)
-	local internal_slot_index = self._career_category_settings_index_lookup[index]
+HeroWindowLoadoutInventoryConsole._change_category_by_index = function (self, index)
+	local categories = self._categories
+	local category = categories[index]
+	local category_slot_name = category.slot_name
+	self._strict_slot_name = category_slot_name
+	local category_name = category.name
 
-	if force_update then
-		index = self._internal_slot_index or 1
-	end
-
-	local actual_category_setting = category_settings[index]
-	local actual_category_name = actual_category_setting.name
-	self._strict_slot_type = actual_category_name
-
-	if self._internal_slot_index == internal_slot_index then
-		return
-	end
-
-	local category_setting = category_settings[internal_slot_index]
-	local category_name = category_setting.name
-	local display_name = category_setting.display_name
-	local item_grid = self._item_grid
-
-	item_grid:change_category(category_name)
+	self._item_grid:change_category(category_name)
 
 	return true
 end

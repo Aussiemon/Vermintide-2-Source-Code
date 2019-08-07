@@ -22,7 +22,7 @@ settings.explosion_templates = {
 			alert_enemies_radius = 10,
 			sound_event_name = "Play_enemy_combat_warpfire_backpack_explode",
 			catapult_force = 10,
-			effect_name = "fx/chr_warp_fire_explosion_01",
+			effect_name = "fx/mutator_warp_explosion_01",
 			always_hurt_players = true,
 			max_damage_radius = 1.5,
 			catapult_players = true,
@@ -50,15 +50,15 @@ settings.explosion_templates = {
 					power_level_glance = 500,
 					power_level = 1000
 				},
-				survival_hard = {
+				cataclysm = {
 					power_level_glance = 300,
 					power_level = 600
 				},
-				survival_harder = {
+				cataclysm_2 = {
 					power_level_glance = 400,
 					power_level = 800
 				},
-				survival_hardest = {
+				cataclysm_3 = {
 					power_level_glance = 500,
 					power_level = 1000
 				}
@@ -115,15 +115,15 @@ settings.explosion_templates = {
 					power_level_glance = 500,
 					power_level = 1000
 				},
-				survival_hard = {
+				cataclysm = {
 					power_level_glance = 300,
 					power_level = 600
 				},
-				survival_harder = {
+				cataclysm_2 = {
 					power_level_glance = 400,
 					power_level = 800
 				},
-				survival_hardest = {
+				cataclysm_3 = {
 					power_level_glance = 500,
 					power_level = 1000
 				}

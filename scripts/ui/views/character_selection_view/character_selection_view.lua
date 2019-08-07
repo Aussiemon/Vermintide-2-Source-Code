@@ -270,7 +270,9 @@ CharacterSelectionView.on_enter = function (self, params)
 
 	local profile_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
 
-	self:set_current_hero(profile_index)
+	if profile_index then
+		self:set_current_hero(profile_index)
+	end
 
 	self.waiting_for_post_update_enter = true
 	self._on_enter_transition_params = params
@@ -297,6 +299,8 @@ CharacterSelectionView.on_enter = function (self, params)
 	end
 
 	UISettings.hero_fullscreen_menu_on_enter()
+
+	self._exit_transition = params.exit_transition
 end
 
 CharacterSelectionView.set_current_hero = function (self, profile_index)
@@ -371,7 +375,7 @@ CharacterSelectionView.hotkey_allowed = function (self, input, mapping_data)
 		local name = current_screen_settings.name
 
 		if name == transition_state then
-			local active_sub_settings_name = current_state.active_settings_name and current_state:active_settings_name()
+			local active_sub_settings_name = current_state.get_selected_layout_name and current_state:get_selected_layout_name()
 
 			if not transition_sub_state or transition_sub_state == active_sub_settings_name then
 				return true
@@ -512,7 +516,7 @@ CharacterSelectionView.on_exit = function (self)
 end
 
 CharacterSelectionView.exit = function (self, return_to_game)
-	local exit_transition = (self:initial_profile_view() and "exit_initial_character_selection") or "exit_menu"
+	local exit_transition = self._exit_transition or (self:initial_profile_view() and "exit_initial_character_selection") or "exit_menu"
 
 	self.ingame_ui:transition_with_fade(exit_transition)
 	self:play_sound("Play_hud_button_close")

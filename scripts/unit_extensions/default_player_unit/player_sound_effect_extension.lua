@@ -12,6 +12,7 @@ local aggro_breed_ranges_sq = {
 	skaven_storm_vermin_warlord = 100,
 	skaven_rat_ogre = 100,
 	chaos_exalted_champion_norsca = 100,
+	beastmen_minotaur = 100,
 	chaos_troll = 100,
 	chaos_spawn = 100,
 	skaven_stormfiend_boss = 100,

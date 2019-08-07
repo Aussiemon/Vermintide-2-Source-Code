@@ -169,7 +169,6 @@ BTSelector_gutter_runner.run = function (self, unit, blackboard, t, dt)
 	end
 
 	local node_approach_target = children[8]
-	local wwise_world = Managers.world:wwise_world(blackboard.world)
 	local t = Managers.time:time("game")
 	local pounce_timer_is_finished = blackboard.initial_pounce_timer < t
 	local condition_result = (blackboard.target_unit or blackboard.comitted_to_target) and pounce_timer_is_finished

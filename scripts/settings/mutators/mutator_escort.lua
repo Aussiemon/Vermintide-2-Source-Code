@@ -8,9 +8,10 @@ return {
 	screenspace_end_effect_name = "fx/screenspace_statue_veins/screenspace_statue_veins_fade_out",
 	buildup_sound_global_parameter = "mutator_escort_buildup",
 	time_until_explosion = 10,
-	is_player_carrying_pickup = function (pickup_name)
+	is_player_carrying_pickup = function (pickup_name, side)
 		local pickup_settings = AllPickups[pickup_name]
 		local slot_name = pickup_settings.slot_name
+		local PLAYER_AND_BOT_UNITS = side.PLAYER_AND_BOT_UNITS
 
 		for i = 1, #PLAYER_AND_BOT_UNITS, 1 do
 			local player_unit = PLAYER_AND_BOT_UNITS[i]
@@ -68,11 +69,14 @@ return {
 		data.server = {
 			escort_unit_spawned = false
 		}
+		data.hero_side = Managers.state.side:get_side_from_name("heroes")
 	end,
 	server_update_function = function (context, data)
 		local template = data.template
 		local pickup_name = template.pickup_name
 		local server_data = data.server
+		local hero_side = data.hero_side
+		local PLAYER_UNITS = hero_side.PLAYER_UNITS
 
 		if not server_data.escort_unit_spawned and PLAYER_UNITS[1] then
 			local player_unit = PLAYER_UNITS[1]
@@ -97,7 +101,7 @@ return {
 
 			server_data.escort_unit_spawned = true
 		elseif server_data.escort_unit_spawned then
-			local player_is_carrying_pickup = template.is_player_carrying_pickup(pickup_name)
+			local player_is_carrying_pickup = template.is_player_carrying_pickup(pickup_name, hero_side)
 
 			if player_is_carrying_pickup and server_data.pickup_dropped_at_t then
 				server_data.pickup_dropped_at_t = nil
@@ -111,6 +115,9 @@ return {
 				end
 
 				if server_data.explosion_t < t and not server_data.players_killed then
+					local hero_side = data.hero_side
+					local PLAYER_AND_BOT_UNITS = hero_side.PLAYER_AND_BOT_UNITS
+
 					for i = 1, #PLAYER_AND_BOT_UNITS, 1 do
 						local player_unit = PLAYER_AND_BOT_UNITS[i]
 
@@ -145,11 +152,12 @@ return {
 			escort_unit_spawned = false,
 			local_player = local_player
 		}
+		data.hero_side = Managers.state.side:get_side_from_name("heroes")
 	end,
 	client_update_function = function (context, data)
 		local template = data.template
 		local pickup_name = template.pickup_name
-		local player_is_carrying_pickup = template.is_player_carrying_pickup(pickup_name)
+		local player_is_carrying_pickup = template.is_player_carrying_pickup(pickup_name, data.hero_side)
 		local client_data = data.client
 
 		if client_data.escort_unit_spawned then

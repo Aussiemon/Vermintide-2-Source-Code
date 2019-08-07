@@ -174,8 +174,10 @@ BTJumpAcrossAction.run = function (self, unit, blackboard, t, dt)
 					local animation_distance = jump_anim_threshold.horizontal_length
 					local forward_factor = horizontal_length / animation_distance
 					local height_factor = jump_vector.z
+					local ai_extension = ScriptUnit.extension(unit, "ai_system")
+					local animation_translation_scale = 1 / ai_extension:size_variation()
 
-					LocomotionUtils.set_animation_translation_scale(unit, Vector3(forward_factor, forward_factor, height_factor))
+					LocomotionUtils.set_animation_translation_scale(unit, Vector3(forward_factor * animation_translation_scale, forward_factor * animation_translation_scale, height_factor * animation_translation_scale))
 
 					break
 				end

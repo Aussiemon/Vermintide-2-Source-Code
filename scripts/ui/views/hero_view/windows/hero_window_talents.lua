@@ -330,7 +330,7 @@ HeroWindowTalents._populate_talents_by_hero = function (self, initialize)
 			-- Decompilation error in this vicinity:
 			local is_selected = selected_column == j
 			local talent_name = tree[i][j]
-			local id = TalentIDLookup[talent_name]
+			local id = TalentIDLookup[talent_name].talent_id
 			local talent_data = all_talents[id]
 			local name_suffix = "_" .. tostring(j)
 			local icon_name = "icon" .. name_suffix
@@ -457,7 +457,7 @@ HeroWindowTalents._populate_career_info = function (self, initialize)
 	}
 	widgets_by_name.career_background.style.background.color = career_color
 	local passive_ability_data = career_settings.passive_ability
-	local activated_ability_data = career_settings.activated_ability
+	local activated_ability_data = career_settings.activated_ability[1]
 	local passive_display_name = passive_ability_data.display_name
 	local passive_description = passive_ability_data.description
 	local passive_icon = passive_ability_data.icon

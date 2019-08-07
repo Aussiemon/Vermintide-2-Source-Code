@@ -3,13 +3,13 @@ local breed_data = {
 	has_inventory = true,
 	summon_sound_event = "chaos_sorcerer_vortex_summoning",
 	no_stagger_duration = true,
-	stagger_reduction = 2,
 	stagger_threshold_explosion = 5,
 	race = "chaos",
 	armor_category = 1,
 	animation_sync_rpc = "rpc_sync_anim_state_7",
 	stagger_threshold_heavy = 3,
 	stagger_threshold_medium = 2,
+	debug_spawn_category = "Specials",
 	stagger_threshold_light = 0.5,
 	death_sound_event = "chaos_sorcerer_vortex_death",
 	base_unit = "units/beings/enemies/chaos_vortex_sorcerer/chr_chaos_vortex_sorcerer",
@@ -20,31 +20,11 @@ local breed_data = {
 	dialogue_source_name = "chaos_vortex_sorcerer",
 	threat_value = 10,
 	special_on_spawn_stinger = "Play_vortex_sorcerer_spawn",
-	max_health = {
-		20,
-		20,
-		30,
-		40,
-		60
-	},
+	max_health = BreedTweaks.max_health.vortex_sorcerer,
 	bloodlust_health = BreedTweaks.bloodlust_health.chaos_special,
-	stagger_duration = {
-		1,
-		1,
-		1,
-		1,
-		1,
-		1,
-		1,
-		1
-	},
-	diff_stagger_resist = {
-		3,
-		3,
-		4,
-		5,
-		5
-	},
+	stagger_duration = BreedTweaks.stagger_duration.sorcerer,
+	stagger_reduction = BreedTweaks.stagger_reduction.sorcerer,
+	diff_stagger_resist = BreedTweaks.diff_stagger_resist.sorcerer,
 	run_on_spawn = AiBreedSnippets.on_chaos_vortex_sorcerer_spawn,
 	run_on_death = AiBreedSnippets.on_chaos_vortex_sorcerer_death,
 	run_on_despawn = AiBreedSnippets.on_chaos_vortex_sorcerer_despawn,
@@ -233,6 +213,26 @@ local action_data = {
 				left = {
 					"stagger_right_exp"
 				}
+			},
+			{
+				fwd = {
+					"stagger_fwd"
+				},
+				bwd = {
+					"stagger_bwd"
+				},
+				right = {
+					"stagger_left"
+				},
+				left = {
+					"stagger_right"
+				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
 			},
 			{
 				fwd = {

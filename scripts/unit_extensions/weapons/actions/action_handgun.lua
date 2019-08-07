@@ -7,6 +7,8 @@ ActionHandgun.init = function (self, world, item_name, is_server, owner_unit, da
 end
 
 ActionHandgun.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
+	ActionHandgun.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level)
+
 	local weapon_unit = self.weapon_unit
 	local owner_unit = self.owner_unit
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)

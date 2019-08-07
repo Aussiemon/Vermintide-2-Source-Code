@@ -29,7 +29,7 @@ MatchmakingStateHostGame.on_enter = function (self, state_context)
 		local time_taken = Managers.time:time("main") - self.state_context.started_matchmaking_t
 		local using_strict_matchmaking = self.search_config.strict_matchmaking
 
-		Managers.telemetry.events:matchmaking_connection(player, connection_state, time_taken, using_strict_matchmaking)
+		Managers.telemetry.events:matchmaking_hosting(player, time_taken)
 
 		self.state_context.started_hosting_t = Managers.time:time("main")
 	end
@@ -42,8 +42,8 @@ MatchmakingStateHostGame.set_debug_info = function (self)
 	local peer_id = Network.peer_id()
 	local player = Managers.player:player_from_peer_id(peer_id)
 	local profile_index = player:profile_index()
-	local profile = SPProfiles[profile_index]
-	local profile_name = profile.display_name
+	local profile = profile_index and SPProfiles[profile_index]
+	local profile_name = (profile and profile.display_name) or "random"
 	Managers.matchmaking.debug.state = "hosting game"
 	Managers.matchmaking.debug.level = level
 	Managers.matchmaking.debug.difficulty = difficulty
@@ -55,7 +55,11 @@ MatchmakingStateHostGame.on_exit = function (self)
 end
 
 MatchmakingStateHostGame.update = function (self, dt, t)
-	return MatchmakingStateWaitForCountdown, self.state_context
+	if self._skip_waystone then
+		return MatchmakingStateStartGame, self.state_context
+	else
+		return MatchmakingStateWaitForCountdown, self.state_context
+	end
 end
 
 MatchmakingStateHostGame._start_hosting_game = function (self)
@@ -66,6 +70,7 @@ MatchmakingStateHostGame._start_hosting_game = function (self)
 	local difficulty = search_config.difficulty
 	local game_mode = search_config.game_mode
 	local private_game = search_config.private_game
+	local weave_name = search_config.weave_name
 
 	fassert(private_game ~= nil, "Private status variable wasn't set.")
 
@@ -97,19 +102,23 @@ MatchmakingStateHostGame._start_hosting_game = function (self)
 	local is_leader_on_dedicated_server = is_leader and is_dedicated_server
 
 	if not is_leader_on_dedicated_server then
-		self._matchmaking_manager:set_matchmaking_data(level_key, difficulty, act_key, game_mode, private_game, quick_game, eac_authorized)
+		self._matchmaking_manager:set_matchmaking_data(level_key, difficulty, act_key, game_mode, private_game, quick_game, eac_authorized, weave_name)
 		self._matchmaking_manager:set_game_privacy(private_game)
 	end
 
 	self._game_created = true
-	local waystone_type = 1
+	self._skip_waystone = self.search_config.skip_waystone
 
-	if not quick_game and game_mode ~= "event" then
-		local level_settings = LevelSettings[level_key]
-		waystone_type = level_settings.waystone_type or waystone_type
+	if not self._skip_waystone then
+		local waystone_type = 1
+
+		if not quick_game and game_mode ~= "event" then
+			local level_settings = LevelSettings[level_key]
+			waystone_type = level_settings.waystone_type or waystone_type
+		end
+
+		self._matchmaking_manager:activate_waystone_portal(true, waystone_type)
 	end
-
-	self._matchmaking_manager:activate_waystone_portal(true, waystone_type)
 end
 
 return

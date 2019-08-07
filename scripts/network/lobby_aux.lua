@@ -64,6 +64,24 @@ LobbyDistanceFilter.CLOSE = "close"
 LobbyDistanceFilter.MEDIUM = "medium"
 LobbyDistanceFilter.FAR = "far"
 LobbyDistanceFilter.WORLD = "world"
+LobbyGameModes = {
+	"adventure",
+	"custom",
+	"n/a",
+	"tutorial",
+	"event",
+	"deed",
+	"weave",
+	"twitch"
+}
+local lookup = {}
+
+for idx, game_mode in pairs(LobbyGameModes) do
+	lookup[idx] = game_mode
+	lookup[game_mode] = idx
+end
+
+LobbyGameModes = lookup
 
 LobbyDistanceFilter.get_next = function (current_filter, max_filter)
 	if current_filter == LobbyDistanceFilter.CLOSE and max_filter ~= LobbyDistanceFilter.CLOSE then

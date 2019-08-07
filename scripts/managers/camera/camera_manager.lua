@@ -298,17 +298,37 @@ CameraManager.shading_callback = function (self, world, shading_env, viewport)
 			end
 		end
 
-		for name, settings in pairs(OutlineSettings.colors) do
-			local c = settings.color
-			local color = Vector3(c[2] / 255, c[3] / 255, c[4] / 255)
-			local multiplier = settings.outline_multiplier
+		local colors = nil
+		local local_player = Managers.player:local_player()
 
-			if settings.pulsate then
-				multiplier = settings.outline_multiplier * 0.5 + math.sin(Application.time_since_launch() * settings.pulse_multiplier) * settings.outline_multiplier * 0.5
+		if local_player then
+			local peer_id = local_player:network_id()
+			local local_player_id = local_player:local_player_id()
+			local party = Managers.party:get_party_from_player_id(peer_id, local_player_id)
+			local side = Managers.state.side.side_by_party[party]
+
+			if side then
+				local side_name = side:name()
+
+				if side_name == "heroes" then
+					colors = OutlineSettings.colors
+				end
 			end
+		end
 
-			ShadingEnvironment.set_vector3(shading_env, settings.variable, color)
-			ShadingEnvironment.set_scalar(shading_env, settings.outline_multiplier_variable, multiplier)
+		if colors then
+			for name, settings in pairs(colors) do
+				local c = settings.color
+				local color = Vector3(c[2] / 255, c[3] / 255, c[4] / 255)
+				local multiplier = settings.outline_multiplier
+
+				if settings.pulsate then
+					multiplier = settings.outline_multiplier * 0.5 + math.sin(Application.time_since_launch() * settings.pulse_multiplier) * settings.outline_multiplier * 0.5
+				end
+
+				ShadingEnvironment.set_vector3(shading_env, settings.variable, color)
+				ShadingEnvironment.set_scalar(shading_env, settings.outline_multiplier_variable, multiplier)
+			end
 		end
 
 		if self._frame == 0 then
@@ -812,7 +832,7 @@ CameraManager.camera_effect_shake_event = function (self, event_name, start_time
 	if use_rumble and Managers.state.controller_features then
 		Managers.state.controller_features:add_effect("camera_shake", {
 			shake_settings = data,
-			scale = scale,
+			scale = scale or 1,
 			duration = duration,
 			event_name = event_name
 		})

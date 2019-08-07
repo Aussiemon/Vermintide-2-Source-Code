@@ -28,6 +28,34 @@ local scenegraph_definition = {
 			0,
 			0
 		}
+	},
+	message_animated_base = {
+		vertical_alignment = "top",
+		parent = "root",
+		horizontal_alignment = "right",
+		position = {
+			-190,
+			-60,
+			1
+		},
+		size = {
+			0,
+			0
+		}
+	},
+	message_animated_offset = {
+		vertical_alignment = "top",
+		parent = "root",
+		horizontal_alignment = "right",
+		position = {
+			-465,
+			-60,
+			1
+		},
+		size = {
+			0,
+			0
+		}
 	}
 }
 

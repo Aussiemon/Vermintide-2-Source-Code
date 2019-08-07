@@ -75,6 +75,8 @@ StartGameStateSettingsOverview.on_enter = function (self, params)
 		snap_pixel_positions = true
 	}
 	self._network_lobby = ingame_ui_context.network_lobby
+	self._is_in_inn = ingame_ui_context.is_in_inn
+	self._ingame_ui = ingame_ui_context.ingame_ui
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
 	self._stats_id = local_player:stats_id()
@@ -87,8 +89,10 @@ StartGameStateSettingsOverview.on_enter = function (self, params)
 	self._always_host = false
 	self._use_strict_matchmaking = true
 	self._is_open = true
+	self._selected_weave_objective_index = 1
 
 	self:_create_ui_elements(params)
+	self:_create_hdr_gui()
 
 	if params.initial_state then
 		params.initial_state = nil
@@ -102,7 +106,8 @@ StartGameStateSettingsOverview.on_enter = function (self, params)
 		parent = self,
 		windows_settings = self._windows_settings,
 		input_service = fake_input_service,
-		layout_settings = self._layout_settings
+		layout_settings = self._layout_settings,
+		start_state = params.start_state
 	}
 
 	self:set_confirm_button_visibility(false)
@@ -111,6 +116,43 @@ StartGameStateSettingsOverview.on_enter = function (self, params)
 	if self._gamepad_style_active then
 		self:disable_player_world()
 	end
+
+	self:_calculate_current_weave()
+end
+
+StartGameStateSettingsOverview._calculate_current_weave = function (self)
+	local ignore_dlc_check = true
+	local weave_templates = WeaveSettings.templates_ordered
+	local num_entries = #weave_templates
+	local statistics_db = Managers.player:statistics_db()
+	local stats_id = Managers.player:local_player():stats_id()
+	local unlocked_weave_templates = {}
+	local highest_consecutive_unlocked_weave = 1
+	local highest_consecutive_unlocked_weave_found = false
+
+	for i = 1, num_entries, 1 do
+		local template = weave_templates[i]
+		local weave_completed = LevelUnlockUtils.weave_unlocked(statistics_db, stats_id, template.name, ignore_dlc_check)
+
+		if weave_completed or highest_consecutive_unlocked_weave == i then
+			unlocked_weave_templates[i] = true
+
+			if weave_completed and not highest_consecutive_unlocked_weave_found then
+				if weave_templates[i + 1] then
+					highest_consecutive_unlocked_weave = i + 1
+				end
+			else
+				highest_consecutive_unlocked_weave_found = true
+			end
+		end
+	end
+
+	local weave_template = (highest_consecutive_unlocked_weave and weave_templates[highest_consecutive_unlocked_weave]) or weave_templates[1]
+	local weave_name = weave_template.name
+	self._next_weave = weave_name
+
+	self:set_selected_weave_id(self._next_weave)
+	self:set_selected_weave_objective_index(1)
 end
 
 StartGameStateSettingsOverview._setup_menu_layout = function (self)
@@ -162,6 +204,28 @@ StartGameStateSettingsOverview._create_ui_elements = function (self, params)
 	end
 
 	self:_create_video_players()
+end
+
+StartGameStateSettingsOverview._create_hdr_gui = function (self)
+	local world_flags = {
+		Application.DISABLE_SOUND,
+		Application.DISABLE_ESRAM
+	}
+	local layer = 800
+	local world_name = "start_game_menu_hdr_view"
+	local viewport_name = "start_game_menu_hdr_view"
+	local shading_environment = "environment/ui_hdr"
+	local world = Managers.world:create_world(world_name, shading_environment, nil, layer, unpack(world_flags))
+	local viewport_type = "overlay"
+	local viewport = ScriptWorld.create_viewport(world, viewport_name, viewport_type, layer)
+	self._ui_hdr_viewport_name = viewport_name
+	self._ui_hdr_world_name = world_name
+	self._ui_hdr_world = world
+	self._ui_hdr_renderer = self._ingame_ui:create_ui_renderer(world, false, self._is_in_inn)
+end
+
+StartGameStateSettingsOverview.hdr_renderer = function (self)
+	return self._ui_hdr_renderer
 end
 
 StartGameStateSettingsOverview._create_video_players = function (self)
@@ -249,7 +313,7 @@ StartGameStateSettingsOverview._initial_windows_setups = function (self, params)
 	if Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) then
 		self:set_layout_by_name("twitch")
 	else
-		local start_layout_name = self:_start_layout_name()
+		local start_layout_name = params.start_state or self:_start_layout_name()
 
 		self:set_layout_by_name(start_layout_name)
 	end
@@ -533,6 +597,16 @@ StartGameStateSettingsOverview.enable_widget = function (self, active_window_ind
 	end
 end
 
+StartGameStateSettingsOverview.disable_input = function (self, input_name)
+	local active_windows = self._active_windows
+
+	for _, active_window in pairs(active_windows) do
+		if active_window.disable_input and active_window:disable_input(input_name) then
+			return true
+		end
+	end
+end
+
 StartGameStateSettingsOverview.transitioning = function (self)
 	if self.exiting then
 		return true
@@ -574,6 +648,21 @@ StartGameStateSettingsOverview.on_exit = function (self, params)
 	end
 
 	self:_reset_cloned_materials()
+
+	if self._ui_hdr_renderer then
+		UIRenderer.destroy(self._ui_hdr_renderer, self._ui_hdr_world)
+
+		self._ui_hdr_renderer = nil
+	end
+
+	if self._ui_hdr_world then
+		ScriptWorld.destroy_viewport(self._ui_hdr_world, self._ui_hdr_viewport_name)
+		Managers.world:destroy_world(self._ui_hdr_world)
+
+		self._ui_hdr_viewport_name = nil
+		self._ui_hdr_world_name = nil
+		self._ui_hdr_world = nil
+	end
 end
 
 StartGameStateSettingsOverview._close_active_windows = function (self)
@@ -723,7 +812,11 @@ StartGameStateSettingsOverview.close_menu = function (self, ignore_sound_on_clos
 	self.parent:close_menu(nil, ignore_sound_on_close_menu)
 end
 
-StartGameStateSettingsOverview.play = function (self, t, game_mode_type)
+StartGameStateSettingsOverview.cancel_matchmaking = function (self)
+	self.parent:cancel_matchmaking()
+end
+
+StartGameStateSettingsOverview.play = function (self, t, game_mode_type, force_close_menu)
 	printf("[StartGameStateSettingsOverview:play() - game_mode_type(%s)", game_mode_type)
 
 	local is_offline = Managers.account:offline_mode()
@@ -735,9 +828,9 @@ StartGameStateSettingsOverview.play = function (self, t, game_mode_type)
 		local quick_game = true
 		local always_host = is_offline
 		local strict_matchmaking = false
-		local deed_backend_id = nil
+		local deed_backend_id, event_data = nil
 
-		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id)
+		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id, event_data)
 	elseif game_mode_type == "custom" then
 		local network_lobby = self._network_lobby
 		local num_members = #network_lobby:members():get_members()
@@ -748,9 +841,9 @@ StartGameStateSettingsOverview.play = function (self, t, game_mode_type)
 		local quick_game = false
 		local always_host = is_offline or is_private or self:is_always_host_option_enabled()
 		local strict_matchmaking = is_alone and not is_private and not always_host and self:is_strict_matchmaking_option_enabled()
-		local deed_backend_id = nil
+		local deed_backend_id, event_data = nil
 
-		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id)
+		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id, event_data)
 	elseif game_mode_type == "deed" then
 		local level_key, difficulty = nil
 		local is_private = true
@@ -758,8 +851,9 @@ StartGameStateSettingsOverview.play = function (self, t, game_mode_type)
 		local always_host = true
 		local strict_matchmaking = false
 		local deed_backend_id = self:get_selected_heroic_deed_backend_id()
+		local event_data = nil
 
-		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id)
+		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id, event_data)
 	elseif game_mode_type == "twitch" then
 		local level_key = self:get_selected_level_id()
 		local difficulty = self._selected_difficulty_key
@@ -767,9 +861,9 @@ StartGameStateSettingsOverview.play = function (self, t, game_mode_type)
 		local quick_game = false
 		local always_host = true
 		local strict_matchmaking = false
-		local deed_backend_id = nil
+		local deed_backend_id, event_data = nil
 
-		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id)
+		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id, event_data)
 	elseif game_mode_type == "event" then
 		local live_event_interface = Managers.backend:get_interface("live_events")
 		local game_mode_data = live_event_interface:get_game_mode_data()
@@ -790,6 +884,14 @@ StartGameStateSettingsOverview.play = function (self, t, game_mode_type)
 		end
 
 		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id, event_data, excluded_level_keys)
+	elseif game_mode_type == "weave" then
+		local weave_name = self:get_selected_weave_id()
+		local objective_index = self:get_selected_weave_objective_index()
+		local is_private = self:is_private_option_enabled()
+
+		self.parent:start_game_weave(weave_name, objective_index, is_private)
+	elseif game_mode_type == "weave_find_group" then
+		self.parent:start_game_weave_find_group(force_close_menu)
 	else
 		ferror("Unknown game_mode_type(%s)", game_mode_type)
 	end
@@ -874,6 +976,30 @@ StartGameStateSettingsOverview._start_transition_animation = function (self, key
 	self._animations[key] = anim_id
 end
 
+StartGameStateSettingsOverview.get_selected_weave_id = function (self)
+	return self._selected_weave_id
+end
+
+StartGameStateSettingsOverview.get_selected_weave_objective_index = function (self)
+	return self._selected_weave_objective_index
+end
+
+StartGameStateSettingsOverview.set_next_weave = function (self)
+	if self._selected_weave_id ~= self._next_weave then
+		self:set_selected_weave_id(self._next_weave)
+		self:set_selected_weave_objective_index(1)
+		self:play_sound("play_gui_lobby_button_00_quickplay")
+	end
+end
+
+StartGameStateSettingsOverview.set_selected_weave_id = function (self, weave_name)
+	self._selected_weave_id = weave_name
+end
+
+StartGameStateSettingsOverview.set_selected_weave_objective_index = function (self, objective_index)
+	self._selected_weave_objective_index = objective_index
+end
+
 StartGameStateSettingsOverview.get_selected_heroic_deed_backend_id = function (self)
 	return self._selected_heroic_deed_backend_id
 end
@@ -883,7 +1009,25 @@ StartGameStateSettingsOverview.set_selected_heroic_deed_backend_id = function (s
 end
 
 StartGameStateSettingsOverview.get_selected_level_id = function (self)
-	return self._specific_level_id
+	local dlc_approved = true
+	local extra_requirements_approved = true
+	local level_settings = self._specific_level_id and LevelSettings[self._specific_level_id]
+
+	if level_settings and level_settings.dlc_name then
+		dlc_approved = Managers.unlock:is_dlc_unlocked(level_settings.dlc_name)
+	end
+
+	local selected_area_name = self:get_selected_area_name()
+
+	if selected_area_name then
+		local area_settings = AreaSettings[selected_area_name]
+
+		if area_settings and area_settings.unlock_requirement_function then
+			extra_requirements_approved = area_settings.unlock_requirement_function(self._statistics_db, self._stats_id)
+		end
+	end
+
+	return (dlc_approved and extra_requirements_approved and self._specific_level_id) or nil
 end
 
 StartGameStateSettingsOverview.set_selected_level_id = function (self, level_id)
@@ -975,6 +1119,10 @@ StartGameStateSettingsOverview.is_strict_matchmaking_option_enabled = function (
 end
 
 StartGameStateSettingsOverview.is_difficulty_approved = function (self, difficulty_key)
+	if Development.parameter("unlock_all_difficulties") then
+		return true
+	end
+
 	if script_data.disable_hero_power_requirement then
 		return true
 	end
@@ -983,14 +1131,35 @@ StartGameStateSettingsOverview.is_difficulty_approved = function (self, difficul
 		return false
 	end
 
+	local difficulty_approved = true
+	local extra_requirement, dlc_requirement, below_power_level = nil
 	local human_players = Managers.player:human_players()
 	local players_below_difficulty = DifficultyManager.players_below_required_power_level(difficulty_key, human_players)
 
 	if #players_below_difficulty > 0 then
-		return false
+		difficulty_approved = false
+		below_power_level = true
 	end
 
-	return true
+	local difficulty_settings = DifficultySettings[difficulty_key]
+
+	if difficulty_settings.dlc_requirement and not Managers.unlock:is_dlc_unlocked(difficulty_settings.dlc_requirement) then
+		difficulty_approved = false
+		dlc_requirement = difficulty_settings.dlc_requirement
+	end
+
+	if difficulty_settings.extra_requirement_name then
+		local players_not_meeting_requirements = DifficultyManager.players_below_difficulty_rank(difficulty_key, human_players)
+
+		if #players_not_meeting_requirements > 0 then
+			local extra_requirement_name = difficulty_settings.extra_requirement_name
+			local requirement_data = ExtraDifficultyRequirements[extra_requirement_name]
+			extra_requirement = requirement_data.description_text
+			difficulty_approved = false
+		end
+	end
+
+	return difficulty_approved, extra_requirement, dlc_requirement, below_power_level
 end
 
 StartGameStateSettingsOverview.set_difficulty_option = function (self, difficulty_key)
@@ -1040,21 +1209,54 @@ StartGameStateSettingsOverview.get_mutator_option = function (self)
 	return self._selected_mutator_key
 end
 
+StartGameStateSettingsOverview._can_add_adventrue = function (self)
+	local on_enter_sub_state = self.parent:on_enter_sub_state()
+	local is_weave_menu = on_enter_sub_state == "weave"
+
+	return not is_weave_menu
+end
+
+StartGameStateSettingsOverview._can_add_custom_game = function (self)
+	local on_enter_sub_state = self.parent:on_enter_sub_state()
+	local is_weave_menu = on_enter_sub_state == "weave"
+
+	return not is_weave_menu
+end
+
+StartGameStateSettingsOverview._can_add_heroic_deeds = function (self)
+	local on_enter_sub_state = self.parent:on_enter_sub_state()
+	local is_weave_menu = on_enter_sub_state == "weave"
+
+	return not is_weave_menu
+end
+
+StartGameStateSettingsOverview._can_add_weave_game_mode_option = function (self)
+	local on_enter_sub_state = self.parent:on_enter_sub_state()
+	local is_weave_menu = on_enter_sub_state == "weave"
+
+	return is_weave_menu
+end
+
 StartGameStateSettingsOverview._can_add_event_game_mode_option = function (self)
+	local on_enter_sub_state = self.parent:on_enter_sub_state()
+	local is_weave_menu = on_enter_sub_state == "weave"
 	local live_event_interface = Managers.backend:get_interface("live_events")
 	local game_mode_data = live_event_interface:get_game_mode_data()
 
-	return game_mode_data ~= nil
+	return game_mode_data ~= nil and not is_weave_menu
 end
 
 StartGameStateSettingsOverview._can_add_streaming_function = function (self)
+	local on_enter_sub_state = self.parent:on_enter_sub_state()
+	local is_weave_menu = on_enter_sub_state == "weave"
+
 	if PLATFORM == "ps4" then
 		local twitch_enabled = GameSettingsDevelopment.twitch_enabled
 		local is_offline = Managers.account:offline_mode()
 
-		return twitch_enabled and not is_offline
+		return twitch_enabled and not is_offline and not is_weave_menu
 	else
-		return true
+		return not is_weave_menu
 	end
 end
 

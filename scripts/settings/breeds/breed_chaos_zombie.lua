@@ -32,14 +32,15 @@ local breed_data = {
 	threat_value = 2.5,
 	perception_previous_attacker_stickyness_value = -7.75,
 	leave_walk_distance = 5,
+	debug_spawn_category = "Misc",
 	bone_lod_level = 1,
-	smart_object_template = "chaos_zombie",
 	death_reaction = "chaos_zombie",
 	perception = "perception_regular",
 	player_locomotion_constrain_radius = 0.7,
+	smart_object_template = "chaos_zombie",
 	weapon_reach = 2.25,
-	scale_death_push = 0.35,
 	horde_target_selection = "horde_pick_closest_target_with_spillover",
+	scale_death_push = 0.35,
 	vortexable = true,
 	behavior = "chaos_zombie",
 	base_unit = "units/beings/enemies/chaos_nurgle_corpses/chr_npc_chaos_nurgle_corpse",
@@ -58,6 +59,9 @@ local breed_data = {
 		5,
 		7.5,
 		10,
+		15,
+		15,
+		15,
 		15
 	},
 	diff_stagger_resist = {
@@ -85,10 +89,6 @@ local breed_data = {
 		head = "headshot"
 	},
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		head = {
 			prio = 1,
 			actors = {
@@ -112,7 +112,7 @@ local breed_data = {
 			}
 		},
 		torso = {
-			prio = 3,
+			prio = 2,
 			actors = {
 				"c_spine1",
 				"c_spine",
@@ -125,7 +125,7 @@ local breed_data = {
 			}
 		},
 		left_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftarm",
 				"c_leftforearm",
@@ -139,7 +139,7 @@ local breed_data = {
 			}
 		},
 		right_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightarm",
 				"c_rightforearm",
@@ -153,7 +153,7 @@ local breed_data = {
 			}
 		},
 		left_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftupleg",
 				"c_leftleg",
@@ -166,7 +166,7 @@ local breed_data = {
 			}
 		},
 		right_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightupleg",
 				"c_rightleg",
@@ -177,6 +177,10 @@ local breed_data = {
 				"j_rightfoot",
 				"j_hips"
 			}
+		},
+		full = {
+			prio = 4,
+			actors = {}
 		},
 		afro = {
 			prio = 5,
@@ -408,6 +412,29 @@ local action_data = {
 				dwn = {
 					"stagger_bwd"
 				}
+			},
+			{
+				fwd = {
+					"stagger_fwd"
+				},
+				bwd = {
+					"stagger_bwd"
+				},
+				left = {
+					"stagger_left"
+				},
+				right = {
+					"stagger_right"
+				},
+				dwn = {
+					"stagger_bwd"
+				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
 			},
 			{
 				fwd = {

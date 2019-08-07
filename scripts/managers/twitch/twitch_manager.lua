@@ -95,9 +95,9 @@ end
 TwitchManager.cb_on_user_info_received = function (self, success, code, headers, data, userdata)
 	self:_show_result_info(success, code, headers, data, userdata)
 
-	local result_data = cjson.decode(data)
-
 	if success then
+		local result_data = cjson.decode(data)
+
 		if result_data then
 			if result_data.error then
 				local message = string.format(Localize("start_game_window_twitch_error_connection"), result_data.message, result_data.error, code)
@@ -160,26 +160,28 @@ end
 TwitchManager.cb_on_user_streams_received = function (self, success, code, headers, data, userdata)
 	self:_show_result_info(success, code, headers, data, userdata)
 
-	local result_data = cjson.decode(data)
+	if success then
+		local result_data = cjson.decode(data)
 
-	if result_data then
-		local stream = result_data.stream
+		if result_data then
+			local stream = result_data.stream
 
-		if stream and type(stream) == "table" then
-			local channel = stream.channel
+			if stream and type(stream) == "table" then
+				local channel = stream.channel
 
-			if channel then
-				local channel_name = "#" .. channel.name
-				local settings = {
-					port = 6667,
-					allow_send = false,
-					address = "irc.chat.twitch.tv",
-					channel_name = channel_name
-				}
+				if channel then
+					local channel_name = "#" .. channel.name
+					local settings = {
+						port = 6667,
+						allow_send = false,
+						address = "irc.chat.twitch.tv",
+						channel_name = channel_name
+					}
 
-				Managers.irc:connect(nil, nil, settings, callback(self, "cb_on_notify_connected"))
+					Managers.irc:connect(nil, nil, settings, callback(self, "cb_on_notify_connected"))
 
-				return
+					return
+				end
 			end
 		end
 	end

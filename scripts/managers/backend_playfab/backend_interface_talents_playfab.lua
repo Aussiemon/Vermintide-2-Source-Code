@@ -39,6 +39,15 @@ BackendInterfaceTalentsPlayfab.make_dirty = function (self)
 	self._dirty = true
 end
 
+BackendInterfaceTalentsPlayfab.get_talent_tree = function (self, career_name)
+	local career_settings = CareerSettings[career_name]
+	local profile_name = career_settings.profile_name
+	local talent_tree_index = career_settings.talent_tree_index
+	local talent_tree = talent_tree_index and TalentTrees[profile_name][talent_tree_index]
+
+	return talent_tree
+end
+
 BackendInterfaceTalentsPlayfab.set_talents = function (self, career_name, talents)
 	local talent_string = ""
 

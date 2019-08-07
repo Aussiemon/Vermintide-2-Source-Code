@@ -5,7 +5,8 @@ local RPCS = {}
 local extensions = {
 	"LimitedItemTrackSpawner",
 	"HeldLimitedItemExtension",
-	"LimitedItemExtension"
+	"LimitedItemExtension",
+	"WeaveLimitedItemTrackSpawner"
 }
 
 LimitedItemTrackSystem.init = function (self, entity_system_creation_context, system_name)
@@ -25,6 +26,7 @@ LimitedItemTrackSystem.init = function (self, entity_system_creation_context, sy
 	self.active_groups = {}
 	self.active_groups_n = 0
 	self.queued_group_spawners = {}
+	self.queued_weave_group_spawners = {}
 	self.no_group_spawners = {}
 	self.marked_items = {}
 
@@ -71,6 +73,19 @@ LimitedItemTrackSystem.register_group = function (self, group_name, pool_size)
 	}
 end
 
+LimitedItemTrackSystem.register_weave_group = function (self, group_name, pool_size)
+	fassert(self.groups[group_name] == nil, "Limited Item Group with name %q, is already registered", group_name)
+
+	local spawners = self.queued_weave_group_spawners[group_name] or {}
+	local spawners_n = #spawners
+	self.queued_weave_group_spawners[group_name] = nil
+	self.groups[group_name] = {
+		spawners = spawners,
+		spawners_n = spawners_n,
+		pool_size = pool_size
+	}
+end
+
 LimitedItemTrackSystem.decrease_group_pool_size = function (self, group_name)
 	local group = self.groups[group_name]
 	local pool_size = math.max(group.pool_size - 1, 0)
@@ -98,6 +113,30 @@ LimitedItemTrackSystem.activate_group = function (self, group_name, pool_size)
 	self.active_groups_n = active_groups_n + 1
 	active_groups[self.active_groups_n] = group_name
 	self.groups[group_name].pool_size = pool_size
+end
+
+LimitedItemTrackSystem.weave_activate_spawner = function (self, unit, group_name)
+	if not self.groups[group_name] then
+		self:register_weave_group(group_name, 0)
+	end
+
+	local active_groups = self.active_groups
+	local active_groups_n = self.active_groups_n
+	local active_group_index = active_groups_n + 1
+
+	for i = 1, active_groups_n, 1 do
+		local active_group_name = active_groups[i]
+
+		if active_group_name == group_name then
+			active_group_index = i
+
+			break
+		end
+	end
+
+	active_groups[active_group_index] = group_name
+	self.groups[group_name].pool_size = self.groups[group_name].pool_size + 1
+	self.active_groups_n = #active_groups
 end
 
 LimitedItemTrackSystem.deactivate_group = function (self, group_name)
@@ -182,6 +221,23 @@ LimitedItemTrackSystem.on_add_extension = function (self, world, unit, extension
 		extension_init_data.network_manager = nil
 
 		return extension
+	elseif extension_name == "WeaveLimitedItemTrackSpawner" then
+		local template_name = Unit.get_data(unit, "template_name")
+		extension_init_data.pool = 1
+		extension_init_data.template_name = template_name
+		local extension = LimitedItemTrackSystem.super.on_add_extension(self, world, unit, "LimitedItemTrackSpawner", extension_init_data)
+		extension.enable = self.enable_spawner
+		extension.disable = self.disable_spawner
+		self.spawners[unit] = extension
+		local group_name = Unit.get_data(unit, "weave_objective_id")
+		local queued_weave_group_spawners = self.queued_weave_group_spawners[group_name] or {}
+		queued_weave_group_spawners[#queued_weave_group_spawners + 1] = extension
+		self.queued_weave_group_spawners[group_name] = queued_weave_group_spawners
+		extension_init_data.pool = nil
+		extension_init_data.template_name = nil
+		extension_init_data.network_manager = nil
+
+		return extension
 	else
 		local extension = {}
 		local extension_alias = self.NAME
@@ -222,7 +278,7 @@ LimitedItemTrackSystem.on_add_extension = function (self, world, unit, extension
 end
 
 LimitedItemTrackSystem.on_remove_extension = function (self, unit, extension_name)
-	if extension_name == "LimitedItemTrackSpawner" then
+	if extension_name == "LimitedItemTrackSpawner" or extension_name == "WeaveLimitedItemTrackSpawner" then
 		LimitedItemTrackSystem.super.on_remove_extension(self, unit, extension_name)
 	elseif extension_name == "LimitedItemExtension" then
 		if self.is_server then

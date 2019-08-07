@@ -109,8 +109,14 @@ end
 PingSystem.rpc_ping_unit = function (self, sender, pinger_unit_id, pinged_unit_id, flash)
 	local pinger_unit = self._unit_storage:unit(pinger_unit_id)
 	local pinged_unit = self._unit_storage:unit(pinged_unit_id)
+	local buff_extension = ScriptUnit.has_extension(pinged_unit, "buff_system")
+	local has_shadow_mutator_buff = nil
 
-	if not Unit.alive(pinged_unit) then
+	if buff_extension then
+		has_shadow_mutator_buff = buff_extension:has_buff_type("mutator_shadow_damage_reduction")
+	end
+
+	if not Unit.alive(pinged_unit) or has_shadow_mutator_buff then
 		return
 	end
 
@@ -151,7 +157,7 @@ PingSystem.add_ping = function (self, pinger_unit, pinged_unit, flash)
 	local ping_extension = ScriptUnit.extension(pinged_unit, "ping_system")
 
 	if ping_extension.set_pinged then
-		ping_extension:set_pinged(true, flash)
+		ping_extension:set_pinged(true, flash, pinger_unit)
 	end
 
 	local event = "hud_ping"
@@ -203,8 +209,10 @@ end
 PingSystem.play_ping_vo = function (self, pinger_unit, pinged_unit)
 	local event_data = FrameTable.alloc_table()
 	local dialogue_input = ScriptUnit.extension_input(pinger_unit, "dialogue_system")
+	local is_enemy = Managers.state.side:is_enemy(pinger_unit, pinged_unit)
+	local is_dummy = Unit.get_data(pinged_unit, "is_dummy")
 
-	if Unit.get_data(pinged_unit, "breed") then
+	if is_enemy and not is_dummy then
 		local breed_data = Unit.get_data(pinged_unit, "breed")
 		local name = breed_data.name
 		event_data.enemy_tag = name

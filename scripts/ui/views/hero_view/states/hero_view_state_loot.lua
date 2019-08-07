@@ -234,6 +234,7 @@ HeroViewStateLoot.on_enter = function (self, params, optional_ignore_item_popula
 	local career_index = hero_attributes:get(display_name, "career")
 	self.career_index = career_index
 	self.profile_index = profile_index
+	self._loaded_package = nil
 	self._animations = {}
 	self._units = {}
 	self.world_manager = ingame_ui_context.world_manager
@@ -688,6 +689,18 @@ HeroViewStateLoot.on_exit = function (self, params)
 	end
 
 	self:enable_player_world()
+
+	if self._loaded_package then
+		self:_unload_package(self._loaded_package)
+
+		self._loaded_package = nil
+	end
+
+	if self._package_loading then
+		self:_unload_package(self._package_loading)
+
+		self._package_loading = nil
+	end
 end
 
 HeroViewStateLoot._update_transition_timer = function (self, dt)
@@ -1073,7 +1086,7 @@ HeroViewStateLoot._select_grid_item = function (self, item, t)
 		local chest_category = item_data.chest_category
 		local chest_tier = item_data.chest_tier
 		local chests_by_category = LootChestData.chests_by_category
-		local unit_name, sound_event = nil
+		local unit_name, sound_event, package_name = nil
 
 		for key, chests_data in pairs(chests_by_category) do
 			if key == chest_category then
@@ -1087,12 +1100,27 @@ HeroViewStateLoot._select_grid_item = function (self, item, t)
 						break
 					end
 				end
+
+				local individual_chest_package_names = chests_data.individual_chest_package_names
+
+				if individual_chest_package_names then
+					for index, chest_package_name in ipairs(individual_chest_package_names) do
+						if index == chest_tier then
+							package_name = chest_package_name
+
+							break
+						end
+					end
+				end
 			end
 		end
 
 		if unit_name then
-			self:play_sound(sound_event)
-			self:_spawn_chest_unit(unit_name, nil, t)
+			self._unit_to_spawn = unit_name
+			self._sound_event = sound_event
+			self._package_to_spawn = package_name
+
+			self:_load_package(package_name)
 		end
 
 		local _, display_name, _ = UIUtils.get_ui_information_from_item(item)
@@ -1572,7 +1600,7 @@ HeroViewStateLoot._setup_rewards = function (self, rewards)
 				local preview_position = {
 					0,
 					0,
-					0
+					-0.2
 				}
 				local item_previewer = LootItemUnitPreviewer:new(item, preview_position, world, viewport, index)
 				data.item_previewer = item_previewer
@@ -1913,6 +1941,51 @@ HeroViewStateLoot.set_reward_options_height_progress = function (self, progress)
 	ui_scenegraph.loot_option_3.local_position[2] = -h * (1 - math.catmullrom(math.easeOutCubic(progress_3), 0, 0, 1, -1.8))
 end
 
+HeroViewStateLoot._load_package = function (self, package_name)
+	if self._chest_unit then
+		local world = self:get_viewport_world()
+
+		World.destroy_unit(world, self._chest_unit)
+
+		self._chest_unit = nil
+	end
+
+	if self._loaded_package then
+		self:_unload_package(self._loaded_package)
+
+		self._loaded_package = nil
+	end
+
+	if self._package_loading then
+		self:_unload_package(self._package_loading)
+
+		self._package_loading = nil
+	end
+
+	self._package_loading = package_name
+	local package_manager = Managers.package
+	local cb = callback(self, "_on_load_complete", package_name)
+	local reference_name = "HeroViewStateLoot"
+
+	package_manager:load(package_name, reference_name, cb, true)
+end
+
+HeroViewStateLoot._on_load_complete = function (self, package_name)
+	self:play_sound(self._sound_event)
+	print("on loaded complet")
+	self:_spawn_chest_unit(self._unit_to_spawn, nil, nil)
+
+	self._loaded_package = package_name
+	self._package_loading = nil
+end
+
+HeroViewStateLoot._unload_package = function (self, package_name)
+	local reference_name = "HeroViewStateLoot"
+	local package_manager = Managers.package
+
+	package_manager:unload(package_name, reference_name)
+end
+
 HeroViewStateLoot._spawn_chest_unit = function (self, unit_name, instant_spawn, t)
 	local world = self:get_viewport_world()
 
@@ -1939,7 +2012,6 @@ HeroViewStateLoot._spawn_chest_unit = function (self, unit_name, instant_spawn, 
 		self._camera_shake_chest_spawn_duration = 0
 	end
 
-	self._current_chest_unit_name = unit_name
 	self._chest_unit = unit
 end
 

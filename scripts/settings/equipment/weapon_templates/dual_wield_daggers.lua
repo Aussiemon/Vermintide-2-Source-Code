@@ -1,13 +1,14 @@
 local push_radius = 2
-local time_mod = 0.9
+local time_mod = 0.95
 local weapon_template = weapon_template or {}
 weapon_template.actions = {
 	action_one = {
 		default = {
-			anim_end_event = "attack_finished",
 			aim_assist_ramp_multiplier = 0.2,
-			aim_assist_ramp_decay_delay = 0.1,
+			anim_end_event = "attack_finished",
 			kind = "melee_start",
+			attack_hold_input = "action_one_hold",
+			aim_assist_ramp_decay_delay = 0.1,
 			aim_assist_max_ramp_multiplier = 0.4,
 			uninterruptible = true,
 			anim_event = "attack_swing_charge",
@@ -829,7 +830,6 @@ weapon_template.actions = {
 			anim_end_event = "attack_finished",
 			outer_push_angle = 180,
 			kind = "push_stagger",
-			hit_time = 0.1,
 			damage_profile_outer = "light_push",
 			fatigue_cost = "action_stun_push",
 			weapon_action_hand = "right",
@@ -955,13 +955,13 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.45,
+					start_time = 0.3,
 					action = "action_two",
 					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 1,
+					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
 				}
@@ -971,7 +971,7 @@ weapon_template.actions = {
 	action_two = {
 		default = {
 			cooldown = 0.15,
-			minimum_hold_time = 0.25,
+			minimum_hold_time = 0.2,
 			anim_end_event = "parry_finished",
 			kind = "block",
 			hold_input = "action_two_hold",
@@ -1044,10 +1044,10 @@ weapon_template.block_fatigue_point_multiplier = 0.5
 weapon_template.outer_block_fatigue_point_multiplier = 2
 weapon_template.buffs = {
 	change_dodge_distance = {
-		external_optional_multiplier = 1.25
+		external_optional_multiplier = 1.35
 	},
 	change_dodge_speed = {
-		external_optional_multiplier = 1.25
+		external_optional_multiplier = 1.35
 	}
 }
 weapon_template.wield_anim = "to_dual_daggers"

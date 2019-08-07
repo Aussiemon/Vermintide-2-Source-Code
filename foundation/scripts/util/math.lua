@@ -72,6 +72,18 @@ math.round = function (value_in)
 	return math.floor(value + 0.5)
 end
 
+math.round_to_closest_multiple = function (value, multiple)
+	multiple = multiple or 1
+	local modulo = value % multiple
+	local middle_point = multiple / 2
+
+	if modulo <= middle_point then
+		return value - modulo
+	end
+
+	return (value + multiple) - modulo
+end
+
 math.smoothstep = function (value, min, max)
 	local x = math.clamp((value - min) / (max - min), 0, 1)
 
@@ -558,6 +570,10 @@ end
 
 math.index_wrapper = function (index, max_index)
 	return (index - 1) % max_index + 1
+end
+
+math.value_inside_range = function (value, min, max)
+	return min <= value and value <= max
 end
 
 return

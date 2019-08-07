@@ -1,0 +1,89 @@
+WeaveLoadoutSettings = WeaveLoadoutSettings or {}
+WeaveLoadoutSettings.dr_ranger = {
+	talent_tree = {
+		{
+			"bardin_ranger_vanguard",
+			"bardin_ranger_reaper",
+			"bardin_ranger_heal_share"
+		},
+		{
+			"bardin_ranger_increased_melee_damage_on_no_ammo",
+			"bardin_ranger_cooldown_on_reload",
+			"bardin_ranger_attack_speed"
+		},
+		{
+			"bardin_ranger_tank_unbalance",
+			"bardin_ranger_linesman_unbalance",
+			"bardin_ranger_power_level_unbalance"
+		},
+		{
+			"bardin_ranger_passive_ammo_on_ally_pickup",
+			"bardin_ranger_passive_improved_ammo",
+			"bardin_ranger_passive_spawn_potions_or_bombs"
+		},
+		{
+			"bardin_ranger_movement_speed",
+			"bardin_ranger_reduced_damage_taken_headshot",
+			"bardin_ranger_reload_speed_on_multi_hit"
+		},
+		{
+			"bardin_ranger_activated_ability_duration",
+			"bardin_ranger_activated_ability_stealth_outside_of_smoke",
+			"bardin_ranger_ability_free_grenade"
+		}
+	},
+	properties = {
+		"weave_attack_speed",
+		"weave_crit_boost",
+		"weave_power_vs_skaven",
+		"weave_power_vs_chaos",
+		"weave_power_vs_unarmoured",
+		"weave_power_vs_armoured",
+		"weave_power_vs_large",
+		"weave_power_vs_frenzy",
+		"weave_stamina",
+		"weave_health",
+		"weave_push_block_arc",
+		"weave_block_cost",
+		"weave_protection_skaven",
+		"weave_protection_chaos",
+		"weave_protection_aoe",
+		"weave_crit_chance",
+		"weave_ability_cooldown_reduction",
+		"weave_curse_resistance",
+		"weave_respawn_speed",
+		"weave_revive_speed",
+		"weave_fatigue_regen",
+		"weave_movespeed"
+	},
+	traits = {
+		"weave_melee_attack_speed_on_crit",
+		"weave_melee_timed_block_cost",
+		"weave_melee_counter_push_power",
+		"weave_melee_reduce_cooldown_on_crit",
+		"weave_melee_increase_damage_on_block",
+		"weave_melee_shield_on_assist",
+		"weave_ranged_replenish_ammo_headshot",
+		"weave_ranged_restore_stamina_headshot",
+		"weave_ranged_reduced_overcharge",
+		"weave_ranged_reduce_cooldown_on_crit",
+		"weave_ranged_replenish_ammo_on_crit",
+		"weave_ranged_remove_overcharge_on_crit",
+		"weave_ranged_increase_power_level_vs_armour_crit",
+		"weave_ranged_consecutive_hits_increase_power",
+		"weave_ring_not_consume_potion",
+		"weave_ring_potion_spread",
+		"weave_ring_all_potions",
+		"weave_ring_potion_duration",
+		"weave_necklace_not_consume_healing",
+		"weave_necklace_heal_self_on_heal_other",
+		"weave_necklace_increased_healing_received",
+		"weave_necklace_no_healing_health_regen",
+		"weave_necklace_damage_taken_reduction_on_heal",
+		"weave_trinket_not_consume_grenade",
+		"weave_trinket_increase_grenade_radius",
+		"weave_trinket_grenade_damage_taken"
+	}
+}
+
+return

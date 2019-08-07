@@ -7,6 +7,14 @@ require("scripts/helpers/nav_tag_volume_utils")
 require("scripts/settings/difficulty_settings")
 require("scripts/settings/attachment_node_linking")
 
+for _, dlc in pairs(DLCSettings) do
+	local flow_callbacks = dlc.flow_callbacks
+
+	if flow_callbacks then
+		dofile(flow_callbacks)
+	end
+end
+
 local flow_return_table = Boot.flow_return_table
 local unit_alive = Unit.alive
 
@@ -42,7 +50,7 @@ function flow_callback_set_start_area(params)
 end
 
 function flow_callback_add_coop_spawn_point(params)
-	Managers.state.spawn:flow_callback_add_spawn_point(params.unit)
+	Managers.state.game_mode:flow_callback_add_spawn_point(params.unit)
 end
 
 function flow_callback_set_checkpoint(params)
@@ -244,10 +252,10 @@ function flow_callback_select_output_by_number(params)
 	return ret
 end
 
-local player_units = PLAYER_UNITS
-
 function flow_query_number_of_active_players(params)
 	local output_value = 0
+	local side = Managers.state.side:get_side_from_name("heroes")
+	local player_units = side.PLAYER_UNITS
 	local num_player_units = #player_units
 
 	for i = 1, num_player_units, 1 do
@@ -291,6 +299,15 @@ function flow_callback_pickup_gizmo_spawned(params)
 	end
 end
 
+function flow_callback_weave_item_gizmo_spawned(params)
+	local entity_manager = Managers.state.entity
+	local weave_item_spawner_system = entity_manager:system("weave_item_spawner_system")
+
+	if weave_item_spawner_system then
+		weave_item_spawner_system:item_gizmo_spawned(params.unit)
+	end
+end
+
 function flow_callback_boss_gizmo_spawned(params)
 	local conflict_director = Managers.state.conflict
 
@@ -308,7 +325,7 @@ function flow_callback_generic_ai_node_spawned(params)
 end
 
 function flow_callback_respawn_unit_spawned(params)
-	Managers.state.spawn.respawn_handler:respawn_unit_spawned(params.unit)
+	Managers.state.game_mode:respawn_unit_spawned(params.unit)
 end
 
 function flow_callback_respawn_enabled(params)
@@ -318,7 +335,7 @@ function flow_callback_respawn_enabled(params)
 
 	local enabled = params.enabled
 
-	Managers.state.spawn:set_respawning_enabled(enabled)
+	Managers.state.game_mode:set_respawning_enabled(enabled)
 end
 
 function flow_callback_force_respawn_dead_players(params)
@@ -328,7 +345,17 @@ function flow_callback_force_respawn_dead_players(params)
 
 	local enabled = params.enabled
 
-	Managers.state.spawn:force_respawn_dead_players()
+	Managers.state.game_mode:force_respawn_dead_players()
+end
+
+function flow_callback_increase_weave_score(params)
+	if not Managers.player.is_server then
+		return
+	end
+
+	local weave_manager = Managers.weave
+
+	weave_manager:increase_bar_score(params.amount)
 end
 
 function flow_callback_activate_triggered_pickup_spawners(params)
@@ -406,6 +433,8 @@ function flow_query_wielded_weapon(params)
 		flow_return_table.lefthandammo3p = nil
 		flow_return_table.lefthandweapon = nil
 		flow_return_table.lefthandammo1p = nil
+		flow_return_table.aliverighthandammo1p = nil
+		flow_return_table.alivelefthandammo1p = nil
 
 		return flow_return_table
 	end
@@ -435,7 +464,100 @@ function flow_query_wielded_weapon(params)
 	flow_return_table.lefthandweapon = left_hand_wielded_unit
 	flow_return_table.lefthandammo1p = left_hand_ammo_unit_1p
 
+	if right_hand_ammo_unit_1p and Unit.alive(right_hand_ammo_unit_1p) then
+		flow_return_table.aliverighthandammo1p = true
+	else
+		flow_return_table.aliverighthandammo1p = false
+	end
+
+	if left_hand_ammo_unit_1p and Unit.alive(left_hand_ammo_unit_1p) then
+		flow_return_table.alivelefthandammo1p = true
+	else
+		flow_return_table.alivelefthandammo1p = false
+	end
+
 	return flow_return_table
+end
+
+function flow_query_wielded_weapon_rarity(params)
+	local player = Managers.player:local_player()
+
+	if not player then
+		flow_return_table.rarity = nil
+
+		return flow_return_table
+	end
+
+	local player_unit = player.player_unit
+
+	if not unit_alive(player_unit) then
+		flow_return_table.rarity = nil
+
+		return flow_return_table
+	end
+
+	local inventory_extension = ScriptUnit.has_extension(player_unit, "inventory_system")
+
+	if not inventory_extension then
+		flow_return_table.rarity = nil
+
+		return flow_return_table
+	end
+
+	local slot_data = inventory_extension:get_wielded_slot_data()
+
+	if not slot_data then
+		flow_return_table.rarity = nil
+
+		return flow_return_table
+	end
+
+	local item_data = slot_data.item_data
+	local backend_id = item_data.backend_id
+
+	if not backend_id then
+		flow_return_table.rarity = nil
+
+		return flow_return_table
+	end
+
+	local backend_items = Managers.backend:get_interface("items")
+	local item = backend_items:get_item_from_id(backend_id)
+
+	if not item then
+		flow_return_table.rarity = nil
+
+		return flow_return_table
+	end
+
+	local rarity = item.rarity
+	flow_return_table.rarity = rarity
+
+	return flow_return_table
+end
+
+function flow_show_1p_ammo(params)
+	local player = Managers.player:local_player()
+
+	if not player then
+		return
+	end
+
+	local player_unit = player.player_unit
+
+	if not unit_alive(player_unit) then
+		return
+	end
+
+	local first_person_extension = ScriptUnit.has_extension(player_unit, "first_person_system")
+
+	if not first_person_extension then
+		return
+	end
+
+	local show = params.show
+
+	first_person_extension:show_first_person_ammo(show)
 end
 
 function flow_force_use_pickup_for_all_players(params)
@@ -554,6 +676,66 @@ function flow_callback_debug_crash_game(params)
 
 		Application.crash(crash_type)
 	end
+end
+
+function flow_callback_debug_draw_line(params)
+	local drawer = (params.stay and QuickDrawerStay) or QuickDrawer
+	local from = params.from
+	local to = params.to
+	local color = params.color
+
+	drawer:line(from, to, color)
+end
+
+function flow_callback_debug_draw_vector(params)
+	local drawer = (params.stay and QuickDrawerStay) or QuickDrawer
+	local vector = params.vector
+	local color = params.color
+
+	drawer:vector(vector, color)
+end
+
+function flow_callback_debug_draw_sphere(params)
+	local drawer = (params.stay and QuickDrawerStay) or QuickDrawer
+	local center = params.center
+	local radius = params.radius
+	local color = params.color
+	local segments = params.segments
+	local parts = params.parts
+
+	drawer:sphere(center, radius, color, segments, parts)
+end
+
+function flow_callback_debug_draw_capsule(params)
+	local drawer = (params.stay and QuickDrawerStay) or QuickDrawer
+	local from = params.from
+	local to = params.to
+	local radius = params.radius
+	local color = params.color
+
+	drawer:capsule(from, to, radius, color)
+end
+
+function flow_callback_debug_draw_box(params)
+	local drawer = (params.stay and QuickDrawerStay) or QuickDrawer
+	local position = params.position
+	local rotation = params.rotation
+	local extents = params.extents
+	local color = params.color
+	local pose = Matrix4x4.from_quaternion_position(rotation, position)
+
+	drawer:box(pose, extents, color)
+end
+
+function flow_callback_debug_draw_circle(params)
+	local drawer = (params.stay and QuickDrawerStay) or QuickDrawer
+	local center = params.center
+	local radius = params.radius
+	local normal = params.normal
+	local color = params.color
+	local segments = params.segments
+
+	drawer:circle(center, radius, normal, color, segments)
 end
 
 function flow_callback_reload_level(params)
@@ -887,7 +1069,7 @@ end
 flow_cb_set_flow_object_set_enabled = flow_callback_set_flow_object_set_enabled
 
 function flow_callback_create_networked_flow_state(params)
-	local created, out_value = Managers.state.networked_flow_state:flow_cb_create_state(params.unit, params.state_name, params.in_value, params.client_state_changed_event, params.client_hot_join_event)
+	local created, out_value = Managers.state.networked_flow_state:flow_cb_create_state(params.unit, params.state_name, params.in_value, params.client_state_changed_event, params.client_hot_join_event, params.is_game_object)
 
 	if created then
 		flow_return_table.created = created
@@ -1110,9 +1292,16 @@ function flow_callback_objective_entered_socket_zone(params)
 	if Managers.player.is_server then
 		local socket_unit = params.socket_unit
 		local objective_unit = params.objective_unit
-		local objective_socket_extension = ScriptUnit.extension(socket_unit, "objective_socket_system")
+		local socket_data = Unit.get_data(socket_unit, "socket_type") or "none"
+		local objective_data = Unit.get_data(objective_unit, "socket_type") or "none"
 
-		objective_socket_extension:objective_entered_zone_server(objective_unit)
+		if socket_data == objective_data then
+			local objective_socket_extension = ScriptUnit.extension(socket_unit, "objective_socket_system")
+
+			objective_socket_extension:objective_entered_zone_server(objective_unit)
+		else
+			print("[flow_callback_objective_entered_socket_zone] Socket type doesn't match", params.socket_unit, params.objective_unit)
+		end
 	end
 end
 
@@ -1140,18 +1329,24 @@ function flow_callback_ussingen_barrel_challenge_completed(params)
 	print("[flow_callback_ussingen_barrel_challenge_completed]")
 
 	if Managers.player.is_server then
-		local stat_name = "ussingen_used_no_barrels"
-		local current_difficulty = Managers.state.difficulty:get_difficulty()
-		local allowed_difficulties = QuestSettings.allowed_difficulties[stat_name]
-		local allowed_difficulty = allowed_difficulties[current_difficulty]
+		local stat_names = {
+			"ussingen_used_no_barrels",
+			"ussingen_used_no_barrels_cata"
+		}
 
-		if allowed_difficulty then
-			local num_valid_barrels = params.num_valid_barrels
+		for i = 1, #stat_names, 1 do
+			local current_difficulty = Managers.state.difficulty:get_difficulty()
+			local allowed_difficulties = QuestSettings.allowed_difficulties[stat_names[i]]
+			local allowed_difficulty = allowed_difficulties[current_difficulty]
 
-			if num_valid_barrels >= 3 then
-				local statistics_db = Managers.player:statistics_db()
+			if allowed_difficulty then
+				local num_valid_barrels = params.num_valid_barrels
 
-				statistics_db:increment_stat_and_sync_to_clients(stat_name)
+				if num_valid_barrels >= 3 then
+					local statistics_db = Managers.player:statistics_db()
+
+					statistics_db:increment_stat_and_sync_to_clients(stat_names[i])
+				end
 			end
 		end
 	end
@@ -1525,8 +1720,9 @@ end
 
 function flow_callback_spawn_tutorial_bot(params)
 	local profile_index = params.profile_index
+	local career_index = 1
 
-	Managers.state.entity:system("play_go_tutorial_system"):spawn_bot(profile_index)
+	Managers.state.game_mode:game_mode():add_bot(profile_index, career_index)
 end
 
 function flow_callback_set_bot_ready_for_assisted_respawn(params)
@@ -1878,6 +2074,9 @@ function flow_callback_overcharge_reset_unit(params)
 	end
 end
 
+local PI = math.pi
+local TWO_PI = PI * 2
+
 function flow_callback_fire_light_weight_projectile(params)
 	if not Managers.player.is_server then
 		return
@@ -1894,7 +2093,7 @@ function flow_callback_fire_light_weight_projectile(params)
 		local spread_angle = Math.random() * light_weight_projectile_template.spread
 		local direction = Quaternion.forward(Unit.world_rotation(unit, 0))
 		local pitch = Quaternion(Vector3.right(), spread_angle)
-		local roll = Quaternion(Vector3.forward(), Math.random() * math.pi * 2)
+		local roll = Quaternion(Vector3.forward(), Math.random() * TWO_PI)
 		local dir_rot = Quaternion.look(direction, Vector3.up())
 		local spread_rot = Quaternion.multiply(Quaternion.multiply(dir_rot, roll), pitch)
 		local spread_direction = Quaternion.forward(spread_rot)
@@ -1902,16 +2101,17 @@ function flow_callback_fire_light_weight_projectile(params)
 		local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
 		local power_level = light_weight_projectile_template.attack_power_level[difficulty_rank]
 		local action_data = {
-			attack_template = light_weight_projectile_template.attack_template,
 			power_level = power_level,
 			damage_profile = light_weight_projectile_template.damage_profile,
 			hit_effect = light_weight_projectile_template.hit_effect,
-			afro_hit_sound = light_weight_projectile_template.afro_hit_sound,
-			player_push_velocity = Vector3Box(direction * light_weight_projectile_template.impact_push_speed)
+			player_push_velocity = Vector3Box(direction * light_weight_projectile_template.impact_push_speed),
+			projectile_linker = light_weight_projectile_template.projectile_linker,
+			first_person_hit_flow_events = light_weight_projectile_template.first_person_hit_flow_events
 		}
 		local projectile_system = Managers.state.entity:system("projectile_system")
+		local owner_peer_id = Network.peer_id()
 
-		projectile_system:create_light_weight_projectile(item_name, unit, position, spread_direction, light_weight_projectile_template.projectile_speed, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_particle_effect)
+		projectile_system:create_light_weight_projectile(item_name, unit, position, spread_direction, light_weight_projectile_template.projectile_speed, nil, nil, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_effect, owner_peer_id)
 	end
 end
 
@@ -2061,6 +2261,18 @@ function flow_callback_objective_unit_set_active(params)
 	extension:set_active(params.active)
 end
 
+function flow_callback_objective_unit_set_active_generic(params)
+	if not Managers.player.is_server then
+		return
+	end
+
+	local unit = params.unit
+	local system_name = params.system_name
+	local extension = ScriptUnit.extension(unit, system_name)
+
+	extension:set_active(params.active, params.unit)
+end
+
 function flow_callback_umbra_set_gate_closed(params)
 	local unit = params.unit
 	local world = Unit.world(unit)
@@ -2167,6 +2379,48 @@ function flow_callback_trigger_event_with_subtitles(params)
 	local speaker = params.speaker
 
 	DialogueSystem:trigger_sound_event_with_subtitles(sound_event, subtitle_event, speaker)
+end
+
+function flow_callback_trigger_event_with_unit_and_subtitles(params)
+	local sound_event = params.sound_event
+	local subtitle_event = params.subtitle_event
+	local speaker = params.speaker
+	local source_unit = params.source_unit
+	local unit_node = params.unit_node
+
+	DialogueSystem:trigger_sound_event_with_subtitles(sound_event, subtitle_event, speaker, source_unit, unit_node)
+end
+
+function flow_callback_trigger_random_event_with_unit_and_subtitles(params)
+	local sound_events = {
+		params.sound_event01,
+		params.sound_event02,
+		params.sound_event03,
+		params.sound_event04,
+		params.sound_event05,
+		params.sound_event06,
+		params.sound_event07,
+		params.sound_event08,
+		params.sound_event09,
+		params.sound_event10,
+		params.sound_event11,
+		params.sound_event12,
+		params.sound_event13,
+		params.sound_event14,
+		params.sound_event15,
+		params.sound_event16,
+		params.sound_event17,
+		params.sound_event18,
+		params.sound_event19,
+		params.sound_event20
+	}
+	local sound_event = sound_events[math.random(#sound_events)]
+	local subtitle_event = sound_event
+	local speaker = params.speaker
+	local source_unit = params.source_unit
+	local unit_node = params.unit_node
+
+	DialogueSystem:trigger_sound_event_with_subtitles(sound_event, subtitle_event, speaker, source_unit, unit_node)
 end
 
 function flow_callback_override_start_dialogue_system()
@@ -2291,6 +2545,56 @@ function flow_callback_start_fade(params)
 	end
 end
 
+function flow_callback_start_fade_chr_inventory(params)
+	fassert(params.unit, "[flow_callback_start_fade_chr_inventory] You need to specify the Unit")
+	fassert(params.duration, "[flow_callback_start_fade_chr_inventory] You need to specify duration")
+	fassert(params.fade_switch, "[flow_callback_start_fade_chr_inventory] You need to specify whether to fade in or out (0 or 1)")
+
+	local unit = params.unit
+	params.mesh_name = nil
+	local unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
+
+	if unit_inventory_extension ~= nil then
+		for i = 1, #unit_inventory_extension.stump_items, 1 do
+			params.unit = unit_inventory_extension.stump_items[i]
+
+			flow_callback_start_fade(params)
+		end
+
+		for i = 1, #unit_inventory_extension.inventory_item_outfit_units, 1 do
+			params.unit = unit_inventory_extension.inventory_item_outfit_units[i]
+
+			flow_callback_start_fade(params)
+		end
+
+		local helmet_unit = unit_inventory_extension.inventory_item_helmet_unit
+
+		if helmet_unit ~= nil then
+			params.unit = helmet_unit
+
+			flow_callback_start_fade(params)
+		end
+	end
+end
+
+function flow_callback_start_fade_chr_outfit(params)
+	fassert(params.unit, "[flow_callback_start_fade_chr_outfit] You need to specify the Unit")
+	fassert(params.duration, "[flow_callback_start_fade_chr_outfit] You need to specify duration")
+	fassert(params.fade_switch, "[flow_callback_start_fade_chr_outfit] You need to specify whether to fade in or out (0 or 1)")
+
+	local unit = params.unit
+	params.mesh_name = nil
+	local unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
+
+	if unit_inventory_extension ~= nil then
+		for i = 1, #unit_inventory_extension.inventory_item_outfit_units, 1 do
+			params.unit = unit_inventory_extension.inventory_item_outfit_units[i]
+
+			flow_callback_start_fade(params)
+		end
+	end
+end
+
 function flow_callback_start_fade_chr_stumps(params)
 	fassert(params.unit, "[flow_callback_start_fade_chr_stumps] You need to specify the Unit")
 	fassert(params.duration, "[flow_callback_start_fade_chr_stumps] You need to specify duration")
@@ -2332,6 +2636,53 @@ end
 function flow_callback_force_death_end(params)
 	if Managers.state.network.is_server and ScriptUnit.has_extension(params.unit, "death_system") then
 		ScriptUnit.extension(params.unit, "death_system"):force_end()
+	end
+end
+
+function flow_callback_chr_editor_inventory_spawn(params)
+	return {
+		spawn = true
+	}
+end
+
+function flow_callback_chr_editor_inventory_unspawn(params)
+	return {
+		unspawn = true
+	}
+end
+
+function flow_callback_chr_editor_inventory_drop(params)
+	return {
+		dropped = true
+	}
+end
+
+function flow_callback_chr_enemy_inventory_send_event(params)
+	fassert(params.unit, "[flow_callback_chr_enemy_inventory_send_event] You need to specify the Unit")
+	fassert(params.event, "[flow_callback_chr_enemy_inventory_send_event] You need to specify an event name")
+
+	local unit = params.unit
+	local event = params.event
+	local unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
+
+	if unit_inventory_extension ~= nil then
+		for i = 1, #unit_inventory_extension.stump_items, 1 do
+			Unit.flow_event(unit_inventory_extension.stump_items[i], event)
+		end
+
+		for i = 1, #unit_inventory_extension.inventory_item_outfit_units, 1 do
+			Unit.flow_event(unit_inventory_extension.inventory_item_outfit_units[i], event)
+		end
+
+		for i = 1, #unit_inventory_extension.stump_items, 1 do
+			Unit.flow_event(unit_inventory_extension.stump_items[i], event)
+		end
+
+		local helmet_unit = unit_inventory_extension.inventory_item_helmet_unit
+
+		if helmet_unit ~= nil then
+			Unit.flow_event(helmet_unit, event)
+		end
 	end
 end
 
@@ -2379,6 +2730,21 @@ function flow_callback_increment_player_stat(params)
 	local stat_name = params.stat_name
 
 	statistics_db:increment_stat(stats_id, stat_name)
+end
+
+function flow_callback_set_player_stat(params)
+	local player = Managers.player:local_player()
+
+	if not player then
+		return
+	end
+
+	local statistics_db = Managers.player:statistics_db()
+	local stats_id = player:stats_id()
+	local stat_name = params.stat_name
+	local value = params.stat_value
+
+	statistics_db:set_stat(stats_id, stat_name, value)
 end
 
 function flow_callback_add_subtitle(params)
@@ -2546,7 +2912,7 @@ function flow_callback_show_difficulty(params)
 end
 
 function flow_callback_get_difficulty(params)
-	local difficulty_easy, difficulty_normal, difficulty_hard, difficulty_survival_hard, difficulty_harder, difficulty_hardest, difficulty_survival_harder, difficulty_survival_hardest = nil
+	local difficulty_easy, difficulty_normal, difficulty_hard, difficulty_cataclysm, difficulty_harder, difficulty_hardest, difficulty_cataclysm_2, difficulty_cataclysm_3 = nil
 	local getdifficulty = Managers.state.difficulty:get_difficulty()
 
 	if getdifficulty == "easy" then
@@ -2561,34 +2927,34 @@ function flow_callback_get_difficulty(params)
 		difficulty_hard = true
 	end
 
-	if getdifficulty == "survival_hard" then
-		difficulty_survival_hard = true
+	if getdifficulty == "cataclysm" then
+		difficulty_cataclysm = true
 	end
 
 	if getdifficulty == "harder" then
 		difficulty_harder = true
 	end
 
-	if getdifficulty == "survival_harder" then
-		difficulty_survival_harder = true
+	if getdifficulty == "cataclysm_2" then
+		difficulty_cataclysm_2 = true
 	end
 
 	if getdifficulty == "hardest" then
 		difficulty_hardest = true
 	end
 
-	if getdifficulty == "survival_hardest" then
-		difficulty_survival_hardest = true
+	if getdifficulty == "cataclysm_3" then
+		difficulty_cataclysm_3 = true
 	end
 
 	flow_return_table.easy = difficulty_easy
 	flow_return_table.normal = difficulty_normal
 	flow_return_table.hard = difficulty_hard
-	flow_return_table.survival_hard = difficulty_survival_hard
+	flow_return_table.cataclysm = difficulty_cataclysm
 	flow_return_table.harder = difficulty_harder
-	flow_return_table.survival_harder = difficulty_survival_harder
+	flow_return_table.cataclysm_2 = difficulty_cataclysm_2
 	flow_return_table.hardest = difficulty_hardest
-	flow_return_table.survival_hardest = difficulty_survival_hardest
+	flow_return_table.cataclysm_3 = difficulty_cataclysm_3
 	flow_return_table.difficulty = getdifficulty
 
 	return flow_return_table
@@ -2664,8 +3030,8 @@ function flow_callback_broadphase_deal_damage(params)
 		local target_index = nil
 		local boost_curve_multiplier = 0
 		local is_critical_strike = false
-		local can_damage = false
-		local can_stagger = false
+		local can_damage = hazard_settings.enemy.can_damage
+		local can_stagger = hazard_settings.enemy.can_stagger
 		local blocking = false
 		local shield_breaking_hit = false
 		local num_hits = AiUtils.broadphase_query(pos, radius, RESULT_TABLE)
@@ -2683,7 +3049,9 @@ function flow_callback_broadphase_deal_damage(params)
 	if hits_human_players or (hits_bot_players and hazard_settings.player) then
 		local settings = hazard_settings.player
 		local action_data = settings.action_data
-		local damage = settings.difficulty_damage[Managers.state.difficulty:get_difficulty()]
+		local difficulty_manager = Managers.state.difficulty
+		local difficulty = difficulty_manager:get_difficulty()
+		local damage = settings.difficulty_damage[difficulty]
 
 		for _, player in pairs(Managers.player:players()) do
 			local player_controlled = player:is_player_controlled()
@@ -2781,7 +3149,7 @@ end
 function flow_callback_activate_end_zone(params)
 	local unit = params.unit
 	local activate = params.activate
-	local props_ext = ScriptUnit.extension(unit, "props_system")
+	local props_ext = ScriptUnit.extension(unit, "end_zone_system")
 
 	props_ext:activation_allowed(activate)
 end
@@ -3023,9 +3391,12 @@ function flow_callback_enforce_player_positions(params)
 	local player_manager = Managers.player
 	local health_system = Managers.state.entity:system("health_system")
 	local valid_position = nil
+	local hero_side = Managers.state.side:get_side_from_name("heroes")
+	local player_units = hero_side.PLAYER_UNITS
+	local player_positions = hero_side.PLAYER_POSITIONS
 
-	for i, unit in pairs(PLAYER_UNITS) do
-		local pos = PLAYER_POSITIONS[i]
+	for i, unit in pairs(player_units) do
+		local pos = player_positions[i]
 		local pos_ok = Level.is_point_inside_volume(level, volume_name, pos) == inside
 
 		if pos_ok then
@@ -3038,6 +3409,9 @@ function flow_callback_enforce_player_positions(params)
 			end
 		end
 	end
+
+	local PLAYER_AND_BOT_UNITS = hero_side.PLAYER_AND_BOT_UNITS
+	local PLAYER_AND_BOT_POSITIONS = hero_side.PLAYER_AND_BOT_POSITIONS
 
 	for i, unit in pairs(PLAYER_AND_BOT_UNITS) do
 		local owner = player_manager:owner(unit)
@@ -3065,7 +3439,7 @@ function flow_callback_enforce_player_positions(params)
 	end
 
 	if valid_position then
-		Managers.state.spawn:teleport_despawned_players(valid_position)
+		Managers.state.game_mode:teleport_despawned_players(valid_position)
 	end
 end
 
@@ -3325,10 +3699,10 @@ function flow_callbacks_tutorial_enable_career_skill(params)
 	local career_extension = ScriptUnit.extension(unit, "career_system")
 
 	if not enable then
-		career_extension:start_activated_ability_cooldown(0)
-		career_extension:set_activated_ability_cooldown_paused()
+		career_extension:start_activated_ability_cooldown(1, 0)
+		career_extension:set_activated_ability_cooldown_paused(1)
 	else
-		career_extension:start_activated_ability_cooldown(1)
+		career_extension:start_activated_ability_cooldown(1, 1)
 	end
 end
 
@@ -3486,6 +3860,15 @@ function flow_callback_set_unit_physics(params)
 		Unit.enable_physics(params.unit)
 	else
 		Unit.disable_physics(params.unit)
+	end
+end
+
+function flow_callback_specific_pickup_gizmo_spawned(params)
+	local entity_manager = Managers.state.entity
+	local pickup_system = entity_manager:system("pickup_system")
+
+	if pickup_system then
+		pickup_system:specific_pickup_gizmo_spawned(params.unit)
 	end
 end
 

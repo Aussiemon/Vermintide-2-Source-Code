@@ -18,6 +18,19 @@ require("scripts/managers/backend/statistics_database")
 require("scripts/settings/terror_event_blueprints")
 require("scripts/unit_extensions/generic/interactions")
 require("scripts/settings/survival_settings")
+require("scripts/settings/spawn_unit_templates")
+require("scripts/unit_extensions/weaves/weave_item_templates")
+require("scripts/settings/unlock_settings")
+
+for _, dlc in pairs(DLCSettings) do
+	local files = dlc.statistics_database
+
+	if files then
+		for _, file in ipairs(files) do
+			require(file)
+		end
+	end
+end
 
 if PLATFORM ~= "xb1" then
 	require("scripts/settings/twitch_settings")
@@ -127,7 +140,8 @@ local dialogue_lookup_tables = {
 	"dialogues/generated/lookup_wood_elf_ground_zero",
 	"dialogues/generated/lookup_empire_soldier_ground_zero",
 	"dialogues/generated/lookup_hero_conversations_ground_zero",
-	"dialogues/generated/lookup_hub_conversations"
+	"dialogues/generated/lookup_hub_conversations",
+	"dialogues/generated/lookup_ping_dialogues_honduras"
 }
 NetworkLookup = {}
 
@@ -180,8 +194,9 @@ for attachment_name, _ in pairs(Attachments) do
 	attachments_table[#attachments_table + 1] = attachment_name
 end
 
-NetworkLookup.cosmetics = create_lookup({}, Cosmetics)
-NetworkLookup.cosmetics[#NetworkLookup.cosmetics + 1] = "default"
+NetworkLookup.cosmetics = create_lookup({
+	"default"
+}, Cosmetics)
 local item_template_table = {}
 NetworkLookup.actions = {}
 NetworkLookup.sub_actions = {}
@@ -255,7 +270,8 @@ local damage_sources = {
 	"knockdown_bleed",
 	"volume_insta_kill",
 	"career_ability",
-	"corpse_explosion"
+	"corpse_explosion",
+	"buff"
 }
 
 for hazard, _ in pairs(EnvironmentalHazards) do
@@ -290,6 +306,10 @@ NetworkLookup.husks = {
 	"units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_husk_base",
 	"units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_husk_base",
 	"units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_husk_base",
+	"units/beings/player/skaven_gutter_runner/chr_skaven_gutter_runner",
+	"units/beings/player/skaven_pack_master/chr_skaven_pack_master",
+	"units/beings/player/skaven_wind_globadier/chr_skaven_wind_globadier",
+	"units/beings/player/chaos_sorcerer_corruptor/chr_chaos_sorcerer_corruptor",
 	"units/beings/enemies/skaven_clan_rat/chr_skaven_clan_rat",
 	"units/beings/enemies/skaven_clan_rat/chr_skaven_clan_rat_baked_var1",
 	"units/beings/enemies/skaven_clan_rat/chr_skaven_clan_rat_baked_var2",
@@ -361,7 +381,6 @@ NetworkLookup.husks = {
 	"units/weapons/player/wpn_emp_grenade_03_t2/wpn_emp_grenade_03_t2_3p",
 	"units/weapons/player/fireball_projectile/fireball_projectile_3ps",
 	"units/weapons/player/fireball_projectile/charged_fireball_projectile_3ps",
-	"units/weapons/player/flame_wave_projectile/flame_wave_projectile_3ps",
 	"units/weapons/projectile/insect_swarm_missile/insect_swarm_missile_01",
 	"units/weapons/projectile/strike_missile/strike_missile",
 	"units/weapons/projectile/warp_lightning_bolt/warp_lightning_bolt",
@@ -380,22 +399,29 @@ NetworkLookup.husks = {
 	"units/weapons/player/pup_explosive_barrel/pup_gun_powder_barrel_01",
 	"units/weapons/player/pup_grenades/pup_grenade_01_t1",
 	"units/weapons/player/pup_grenades/pup_grenade_01_t2",
-	"units/weapons/player/pup_grenades/pup_grenade_02_t1",
-	"units/weapons/player/pup_grenades/pup_grenade_02_t2",
 	"units/weapons/player/pup_grenades/pup_grenade_03_t1",
 	"units/weapons/player/pup_grenades/pup_grenade_03_t2",
 	"units/weapons/player/pup_scrolls/pup_scroll_t1",
 	"units/weapons/player/pup_ammo_box/pup_ammo_box",
 	"units/weapons/player/pup_ammo_box/pup_ammo_box_limited",
 	"units/weapons/player/pup_torch/pup_torch",
+	"units/weapons/player/pup_shadow_torch/pup_shadow_torch",
 	"units/weapons/player/pup_grimoire_01/pup_grimoire_01",
 	"units/weapons/player/pup_side_objective_tome/pup_side_objective_tome_01",
 	"units/weapons/player/pup_cannon_ball_01/pup_cannon_ball_01",
 	"units/weapons/player/wpn_cannon_ball_01/wpn_cannon_ball_01",
 	"units/weapons/player/wpn_cannon_ball_01/wpn_cannon_ball_01_3p",
 	"units/weapons/player/pup_gargoyle_head/pup_gargoyle_head_01",
+	"units/weapons/player/pup_shadow_gargoyle_head/pup_shadow_gargoyle_head_01",
+	"units/weapons/player/wpn_shadow_flare/wpn_shadow_flare",
+	"units/weapons/player/wpn_shadow_flare/wpn_shadow_flare_3p",
 	"units/weapons/player/wpn_gargoyle_head/wpn_gargoyle_head",
+	"units/weapons/player/pup_magic_crystal/pup_magic_crystal",
+	"units/weapons/player/wpn_magic_crystal/wpn_magic_crystal",
+	"units/weapons/player/wpn_magic_crystal/wpn_magic_crystal_3p",
+	"units/weapons/player/wpn_shadow_gargoyle_head/wpn_shadow_gargoyle_head",
 	"units/weapons/player/wpn_gargoyle_head/wpn_gargoyle_head_3p",
+	"units/weapons/player/wpn_shadow_gargoyle_head/wpn_shadow_gargoyle_head_3p",
 	"units/weapons/player/pup_potion_01/pup_potion_extra_01",
 	"units/weapons/player/pup_potion_01/pup_potion_healing_01",
 	"units/weapons/player/pup_potion_01/pup_potion_speed_01",
@@ -410,6 +436,9 @@ NetworkLookup.husks = {
 	"units/gameplay/training_dummy/training_dummy_skaven/training_dummy_skaven",
 	"units/gameplay/training_dummy/training_dummy_skaven/wpn_training_dummy_skaven",
 	"units/gameplay/training_dummy/training_dummy_skaven/wpn_training_dummy_skaven_3p",
+	"units/weapons/player/pup_magic_barrel/pup_magic_barrel_01",
+	"units/weapons/player/pup_magic_barrel/wpn_magic_barrel_01",
+	"units/weapons/player/pup_magic_barrel/wpn_magic_barrel_01_3p",
 	"units/weapons/projectile/poison_wind_globe/poison_wind_globe",
 	"units/weapons/projectile/vortex_rune/vortex_rune",
 	"units/weapons/projectile/magic_missile/magic_missile",
@@ -439,7 +468,17 @@ NetworkLookup.husks = {
 	"units/gameplay/timed_door_base_02/timed_door_base_02_handle",
 	"units/gameplay/line_of_sight_blocker/hemisphere_los_blocker",
 	"units/gameplay/portal_blob/portalblob",
-	"units/weapons/player/pup_ale/pup_ale"
+	"units/brushes/brush_thorn_life_mutator",
+	"units/weave/life/life_thorn_bushes_mutator",
+	"units/hub_elements/objective_unit",
+	"units/props/lanterns/lantern_02/prop_lantern_02_blue_static",
+	"units/fx/vfx_animation_death_spirit_02",
+	"units/fx/essence_unit",
+	"units/decals/decal_heavens_01",
+	"units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1_3p",
+	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_01_3ps",
+	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_02_3ps",
+	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_03_3ps"
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -460,7 +499,6 @@ NetworkLookup.go_types = {
 	"player",
 	"ai_player",
 	"player_sync_data",
-	"team",
 	"player_unit",
 	"player_bot_unit",
 	"ai_unit",
@@ -477,18 +515,21 @@ NetworkLookup.go_types = {
 	"ai_inventory_item",
 	"ai_unit_tentacle",
 	"ai_unit_tentacle_portal",
+	"ai_unit_beastmen_bestigor",
+	"ai_unit_beastmen_minotaur",
 	"damage_wave_unit",
 	"damage_blob_unit",
 	"ai_unit_vortex",
 	"ai_unit_plague_wave_spawner",
 	"player_projectile_unit",
-	"flame_wave_projectile_unit",
 	"aoe_projectile_unit",
 	"projectile_unit",
 	"pickup_torch_unit",
 	"pickup_torch_unit_init",
 	"pickup_projectile_unit",
 	"pickup_projectile_unit_limited",
+	"life_time_pickup_projectile_unit",
+	"limited_owned_pickup_projectile_unit",
 	"explosive_pickup_projectile_unit",
 	"explosive_pickup_projectile_unit_limited",
 	"true_flight_projectile_unit",
@@ -496,12 +537,20 @@ NetworkLookup.go_types = {
 	"ai_true_flight_killable_projectile_unit",
 	"ai_true_flight_projectile_unit_without_raycast",
 	"prop_unit",
+	"positioned_prop_unit",
+	"objective_unit",
+	"standard_unit",
 	"overpowering_blob_unit",
 	"network_synched_dummy_unit",
+	"position_synched_dummy_unit",
 	"buff_aoe_unit",
 	"thrown_weapon_unit",
 	"aoe_unit",
+	"thorn_bush_unit",
+	"shadow_flare_light",
 	"pickup_unit",
+	"life_time_pickup_unit",
+	"limited_owned_pickup_unit",
 	"objective_pickup_unit",
 	"player_profile",
 	"music_states",
@@ -515,8 +564,27 @@ NetworkLookup.go_types = {
 	"lure_unit",
 	"pickup_training_dummy_unit",
 	"keep_decoration_painting",
-	"timed_explosion_unit"
+	"weave",
+	"timed_explosion_unit",
+	"progress_timer",
+	"ai_unit_chaos_troll",
+	"destructible_objective_unit",
+	"weave_objective",
+	"weave_capture_point_unit",
+	"weave_target_unit",
+	"weave_interaction_unit",
+	"weave_doom_wheel_unit",
+	"weave_kill_enemies_unit"
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local go_types = dlc.network_go_types
+
+	if go_types then
+		table.append(NetworkLookup.go_types, go_types)
+	end
+end
+
 NetworkLookup.spawn_health_state = {
 	"alive",
 	"bleeding",
@@ -572,6 +640,8 @@ NetworkLookup.heal_types = {
 	"bandage_temp_health",
 	"buff_shared_medpack_temp_health"
 }
+NetworkLookup.conflict_director_lock_lookup = create_lookup({}, ConflictDirectorLockedFunctions)
+NetworkLookup.dlcs = create_lookup({}, UnlockSettings[1].unlocks)
 NetworkLookup.difficulties = create_lookup({}, DifficultySettings)
 NetworkLookup.linked_particle_policies = {
 	"destroy",
@@ -638,7 +708,9 @@ NetworkLookup.game_modes = {
 	"demo",
 	"event",
 	"twitch",
-	"deed"
+	"deed",
+	"weave",
+	"weave_find_group"
 }
 NetworkLookup.buff_attack_types = {
 	"n/a",
@@ -647,7 +719,9 @@ NetworkLookup.buff_attack_types = {
 	"heavy_attack",
 	"light_attack",
 	"instant_projectile",
-	"grenade"
+	"grenade",
+	"ability",
+	"wind_mutator"
 }
 local anims_temp = {}
 local actions_temp = {}
@@ -810,6 +884,7 @@ NetworkLookup.damage_types = {
 	"player_overcharge_explosion_brw",
 	"player_overcharge_explosion_dwarf",
 	"knockdown_bleed",
+	"blade_storm",
 	"light_slashing_linesman",
 	"light_slashing_linesman_hs",
 	"slashing_linesman",
@@ -863,6 +938,7 @@ NetworkLookup.damage_types = {
 	"arrow_carbine",
 	"arrow_machinegun",
 	"arrow_poison",
+	"throwing_axe",
 	"bolt_sniper",
 	"bolt_carbine",
 	"bolt_machinegun",
@@ -899,15 +975,16 @@ NetworkLookup.damage_types = {
 	"push",
 	"pack_master_grab",
 	"overcharge",
-	"weapon_bleed_dot_test",
+	"weapon_bleed_dot_dagger",
+	"weapon_bleed_dot_maidenguard",
 	"sync_health",
 	"killing_blow",
 	"military_finish",
 	"volume_generic_dot",
 	"volume_insta_kill",
-	"globadier_gas_dot",
 	"inside_forbidden_tag_volume",
-	"undefined"
+	"undefined",
+	"charge_death"
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -918,6 +995,9 @@ for _, dlc in pairs(DLCSettings) do
 	end
 end
 
+NetworkLookup.weave_names = create_lookup({}, WeaveSettings.templates)
+NetworkLookup.weave_objective_names = create_lookup({}, WeaveSettings.weave_objective_names)
+NetworkLookup.weave_item_template_names = create_lookup({}, WeaveItemTemplates)
 NetworkLookup.hit_react_types = {
 	"light",
 	"medium",
@@ -928,7 +1008,15 @@ NetworkLookup.buff_weapon_types = {
 	"n/a",
 	"MELEE_1H",
 	"MELEE_2H",
-	"RANGED"
+	"RANGED",
+	"RANGED_ABILITY"
+}
+NetworkLookup.single_weapon_states = {
+	"shoot_start",
+	"stop_shooting",
+	"shoot_end",
+	"windup_start",
+	"windup_end"
 }
 NetworkLookup.buff_templates = create_lookup({
 	"n/a"
@@ -946,7 +1034,8 @@ NetworkLookup.proc_events = {
 	"on_ammo_used",
 	"on_unwield",
 	"on_last_ammo_used",
-	"on_gained_ammo_from_no_ammo"
+	"on_gained_ammo_from_no_ammo",
+	"on_bardin_consumable_picked_up_any_player"
 }
 NetworkLookup.proc_functions = create_lookup({}, ProcFunctions)
 NetworkLookup.coop_feedback = {
@@ -972,6 +1061,7 @@ NetworkLookup.projectile_templates = {
 NetworkLookup.overpowered_templates = create_lookup({}, PlayerUnitMovementSettings.overpowered_templates)
 NetworkLookup.vortex_templates = create_lookup({}, VortexTemplates)
 NetworkLookup.tentacle_templates = create_lookup({}, TentacleTemplates)
+NetworkLookup.standard_templates = create_lookup({}, BeastmenStandardTemplates)
 NetworkLookup.explosion_templates = create_lookup({
 	"n/a"
 }, ExplosionTemplates)
@@ -998,6 +1088,7 @@ NetworkLookup.level_keys = create_lookup({
 NetworkLookup.act_keys = create_lookup({
 	"n/a"
 }, GameActs)
+NetworkLookup.mechanism_keys = create_lookup({}, MechanismSettings)
 NetworkLookup.game_mode_keys = create_lookup({}, GameModeSettings)
 NetworkLookup.fatigue_types = create_lookup({}, PlayerUnitStatusSettings.fatigue_point_costs)
 NetworkLookup.pickup_names = create_lookup({}, AllPickups)
@@ -1066,7 +1157,12 @@ NetworkLookup.effects = {
 	"fx/chr_grey_seer_lightning_hit_02",
 	"fx/chr_chaos_sorcerer_boss_projectile_flies_impact"
 }
-NetworkLookup.light_weight_projectile_particle_effects = create_lookup({}, LightWeightProjectileParticleEffects)
+NetworkLookup.light_weight_projectile_effects = create_lookup({}, LightWeightProjectileEffects)
+NetworkLookup.flow_events = {
+	"arrow_left",
+	"arrow_right",
+	"arrow_center"
+}
 NetworkLookup.localized_strings = {
 	"level_completed",
 	"attackers_win",
@@ -1105,6 +1201,7 @@ NetworkLookup.statuses = {
 	"wounded",
 	"revived",
 	"pushed",
+	"charged",
 	"pack_master_pulling",
 	"pack_master_dragging",
 	"pack_master_hoisting",
@@ -1166,6 +1263,7 @@ NetworkLookup.sound_events = {
 	"weapon_staff_spark_spear_charged",
 	"weapon_staff_spark_spear",
 	"Play_career_ability_maiden_guard_charge",
+	"Play_career_ability_shade_shadowstep_charge",
 	"Play_career_ability_kerillian_shade_enter",
 	"Play_career_ability_kerillian_shade_loop",
 	"Play_career_ability_kerillian_shade_exit",
@@ -1305,19 +1403,60 @@ NetworkLookup.sound_events = {
 	"Stop_enemy_corruptor_sorcerer_sucking_magic",
 	"Play_enemy_corruptor_sorcerer_throw_magic",
 	"Stop_enemy_corruptor_sorcerer_throw_magic",
-	"Play_enemy_mutator_chaos_sorcerer_hunting_loop",
-	"Stop_enemy_mutator_chaos_sorcerer_hunting_loop",
-	"Play_enemy_mutator_chaos_sorcerer_skulking_loop",
-	"Stop_enemy_mutator_chaos_sorcerer_skulking_loop",
-	"Play_enemy_mutator_chaos_sorcerer_wind_loop",
-	"Stop_enemy_mutator_chaos_sorcerer_wind_loop"
+	"Play_generic_pushed_impact",
+	"Play_generic_pushed_impact_large",
+	"Play_generic_pushed_impact_small",
+	"Play_generic_pushed_impact_small_armour",
+	"Play_generic_pushed_impact_large_armour",
+	"Play_enemy_ungor_attack_player_back_vce",
+	"Play_enemy_ungor_attack_vce",
+	"Play_enemy_ungor_attack_husk_vce",
+	"Play_enemy_ungor_die_vce",
+	"play_enemy_gor_attack_player_back_vce",
+	"play_enemy_gor_attack_vce",
+	"play_enemy_gor_attack_husk_vce",
+	"play_enemy_gor_attack_short_vce",
+	"play_enemy_gor_attack_short_husk_vce",
+	"play_enemy_gor_die_vce",
+	"Play_enemy_bestigor_attack_player_back_vce",
+	"Play_enemy_bestigor_attack_short_vce",
+	"Play_enemy_bestigor_attack_short_husk_vce",
+	"Play_enemy_bestigor_die_short_vce",
+	"enemy_horde_beastmen_stinger",
+	"Play_enemy_ungor_archer_group_attack_vce",
+	"Play_enemy_ungor_archer_attack_order_vce",
+	"play_enemy_standard_bearer_attack_vce",
+	"play_enemy_standard_bearer_attack_husk_vce",
+	"Play_enemy_standard_bearer_attack_player_back_vce",
+	"Play_standard_bearer_die_vce",
+	"Play_enemy_minotaur_die_vce",
+	"Stop_enemy_beastmen_standar_spell_loop",
+	"Play_enemy_standard_bearer_place_standar",
+	"Play_enemy_beastmen_standar_spell_loop",
+	"Play_enemy_beastmen_standar_destroy",
+	"Play_enemy_beastmen_standar_taking_damage",
+	"Play_prop_magic_barrel_socket",
+	"Play_prop_magic_barrel_explosion"
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local sound_events = dlc.network_sound_events
+
+	if sound_events then
+		for i = 1, #sound_events, 1 do
+			local sound_event = sound_events[i]
+			NetworkLookup.sound_events[#NetworkLookup.sound_events + 1] = sound_event
+		end
+	end
+end
+
 NetworkLookup.global_parameter_names = {
 	"occupied_slots_percentage",
 	"stormfiend_mood",
 	"demo_slowmo",
 	"champion_crowd_voices",
-	"champion_crowd_voices_walla"
+	"champion_crowd_voices_walla",
+	"charge_parameter"
 }
 local weapon_sound_events = {}
 
@@ -1367,18 +1506,29 @@ NetworkLookup.movement_funcs = {
 NetworkLookup.ai_inventory = {
 	"empty",
 	"sword",
+	"skaven_clan_rat_sword",
+	"opt_skaven_clan_rat_sword",
+	"skaven_slave_sword",
+	"opt_skaven_slave_sword",
 	"dual_sword",
 	"dual_axes",
 	"spear",
+	"skaven_clan_rat_spear",
+	"opt_skaven_clan_rat_spear",
+	"skaven_slave_spear",
+	"opt_skaven_slave_spear",
 	"halberd",
 	"halberd_stormvermin_champion",
 	"sword_and_shield",
+	"skaven_clan_rat_sword_and_shield",
+	"opt_skaven_clan_rat_sword_and_shield",
 	"stormvermin_sword_and_shield",
 	"stormvermin_dual_wield",
 	"pack_master",
 	"loot_rat_sack",
 	"ratlinggun",
 	"rat_ogre",
+	"stormfiend_warpfire",
 	"gutter_runner",
 	"chaos_troll",
 	"chaos_sorcerer",
@@ -1398,7 +1548,20 @@ NetworkLookup.ai_inventory = {
 	"berzerker_dual_axes",
 	"warlord_dual_setups",
 	"fanatic",
-	"zombie_blobs"
+	"zombie_blobs",
+	"beastmen_ungor_1h",
+	"beastmen_ungor_spear",
+	"opt_beastmen_ungor_spear",
+	"beastmen_gor_1h",
+	"opt_beastmen_gor_1h",
+	"beastmen_bestigor_2h_axe",
+	"beastmen_standard_bearer_2h_axe",
+	"beastmen_2h_axe_standard",
+	"beastmen_standard_bearer_dual_setup",
+	"beastmen_ungor_bow",
+	"beastmen_ungor_archer_bow_and_spear",
+	"opt_beastmen_ungor_archer_bow_and_spear",
+	"beastmen_minotaur_dual_axes"
 }
 NetworkLookup.connection_fails = {
 	"no_peer_data_on_join",
@@ -1413,7 +1576,8 @@ NetworkLookup.connection_fails = {
 	"eac_authorize_failed",
 	"host_has_no_backend_connection",
 	"host_plays_prologue",
-	"client_is_banned"
+	"client_is_banned",
+	"cannot_join_weave"
 }
 NetworkLookup.health_statuses = {
 	"alive",
@@ -1470,9 +1634,15 @@ NetworkLookup.dialogue_event_data_names = {
 	"grenade",
 	"grimoire",
 	"torch",
+	"shadow_torch",
 	"grain_sack",
 	"beer_barrel",
 	"gargoyle_head",
+	"weave_gargoyle_head",
+	"magic_crystal",
+	"magic_barrel",
+	"shadow_flare",
+	"shadow_gargoyle_head",
 	"explosive_barrel",
 	"lamp_oil",
 	"explosive_barrel_objective",
@@ -1545,15 +1715,19 @@ NetworkLookup.music_group_states = {
 	"lost",
 	"survival_lost",
 	"won",
+	"won_between_winds",
 	"pre_horde",
 	"pre_ambush",
 	"horde",
+	"pre_ambush_beastmen",
+	"horde_beastmen",
 	"horde_chaos",
 	"pre_ambush_chaos",
 	"no_boss",
 	"rat_ogre",
 	"stormfiend",
 	"chaos_spawn",
+	"minotaur",
 	"troll",
 	"champion_skaven_stormvermin",
 	"champion_chaos_exalted_warcamp",
@@ -1565,6 +1739,9 @@ NetworkLookup.music_group_states = {
 NetworkLookup.locations = {
 	"test",
 	"test2"
+}
+NetworkLookup.statistics_group_name = {
+	"season_1"
 }
 NetworkLookup.statistics = {
 	"elven_ruins_speed_event",
@@ -1580,6 +1757,19 @@ NetworkLookup.statistics = {
 	"ussingen_used_no_barrels",
 	"forest_fort_kill_cannonball",
 	"catacombs_added_souls",
+	"elven_ruins_speed_event_cata",
+	"farmlands_speed_event_cata",
+	"bell_speed_event_cata",
+	"mines_speed_event_cata",
+	"skittergate_speed_event_cata",
+	"exalted_champion_charge_chaos_warrior_cata",
+	"military_statue_kill_chaos_warriors_cata",
+	"halescourge_tornado_enemies_cata",
+	"storm_vermin_warlord_kills_enemies_cata",
+	"nurgle_bathed_all_cata",
+	"ussingen_used_no_barrels_cata",
+	"forest_fort_kill_cannonball_cata",
+	"catacombs_added_souls_cata",
 	"globadier_kill_before_throwing",
 	"globadier_kill_during_suicide",
 	"globadier_enemies_killed_by_poison",
@@ -1609,8 +1799,23 @@ NetworkLookup.statistics = {
 	"rat_ogre_killed_without_dealing_damage",
 	"stormfiend_killed_without_burn_damage",
 	"stormfiend_killed_on_controller",
-	"killed_lord_as_last_player_standing"
+	"killed_lord_as_last_player_standing",
+	"scorpion_bestigor_charge_chaos_warrior",
+	"scorpion_kill_minotaur_farmlands_oak",
+	"scorpion_kill_archers_kill_minotaur",
+	"scorpion_slay_gors_warpfire_damage"
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local statistics_lookup = dlc.statistics_lookup
+
+	if statistics_lookup then
+		for i = 1, #statistics_lookup, 1 do
+			NetworkLookup.statistics[#NetworkLookup.statistics + 1] = statistics_lookup[i]
+		end
+	end
+end
+
 local music_group_states = {}
 local music_lookups = NetworkLookup.music_group_states
 
@@ -1672,7 +1877,9 @@ NetworkLookup.game_ping_reply = {
 	"game_mode_ended",
 	"not_searching_for_players",
 	"lobby_has_active_deed",
-	"obsolete_request"
+	"obsolete_request",
+	"cannot_join_weave",
+	"dlc_required"
 }
 NetworkLookup.sync_names = {
 	"ferry_lady",
@@ -1715,6 +1922,24 @@ NetworkLookup.twitch_vote_types = {
 	"standard_vote",
 	"multiple_choice"
 }
+NetworkLookup.spawn_states = {
+	"w8_to_spawn",
+	"w8_for_profile",
+	"spawning",
+	"spawned",
+	"dead"
+}
+NetworkLookup.weave_winds = {
+	"none",
+	"fire",
+	"beasts",
+	"death",
+	"heavens",
+	"light",
+	"shadow",
+	"life",
+	"metal"
+}
 NetworkLookup.bot_orders = create_lookup({}, AIBotGroupSystem.bot_orders)
 NetworkLookup.twitch_vote_templates = create_lookup({
 	"draw",
@@ -1728,9 +1953,7 @@ NetworkLookup.dot_type_lookup = create_lookup({
 	"n/a"
 }, DotTypeLookup)
 NetworkLookup.boost_curves = create_lookup({}, BoostCurves)
-NetworkLookup.boons = create_lookup({
-	"n/a"
-}, BoonTemplates)
+NetworkLookup.spawn_unit_templates = create_lookup({}, SpawnUnitTemplates)
 NetworkLookup.weapon_skins = create_lookup({
 	"n/a"
 }, WeaponSkins.skins)
@@ -1775,12 +1998,14 @@ NetworkLookup.voting_types = create_lookup({}, VoteTemplates)
 NetworkLookup.session_stats = create_lookup({}, StatisticsDefinitions.session)
 local flow_events = {}
 
-for _, blueprint in pairs(TerrorEventBlueprints) do
-	for _, event in ipairs(blueprint) do
-		local name = event.flow_event_name
+for level_key, terror_events in pairs(TerrorEventBlueprints) do
+	for _, blueprint in pairs(terror_events) do
+		for _, event in ipairs(blueprint) do
+			local name = event.flow_event_name
 
-		if name and not event.disable_network_send then
-			flow_events[name] = true
+			if name and not event.disable_network_send then
+				flow_events[name] = true
+			end
 		end
 	end
 end

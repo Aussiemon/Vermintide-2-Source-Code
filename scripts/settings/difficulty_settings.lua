@@ -4,26 +4,26 @@ DifficultySettings.normal = {
 	display_name = "difficulty_normal",
 	always_damage_heavy = true,
 	allow_respawns = true,
-	friendly_fire_ranged = false,
 	friendly_fire_melee = false,
-	stagger_modifier = 0.8,
+	slot_healthkit = "potion_healing_draught_01",
+	stagger_modifier = 1,
 	required_power_level = 0,
 	power_level_cap = 400,
-	attack_intensity_decay = 1,
 	xp_multiplier = 2,
 	max_chest_power_level = 100,
-	display_image = "difficulty_option_2",
+	friendly_fire_ranged = false,
+	damage_percent_cap = 0.1,
 	wounds = 5,
 	description = "difficulty_normal_desc",
-	damage_percent_cap = 0.1,
-	slot_healthkit = "potion_healing_draught_01",
+	stagger_damage_multiplier = 0.2,
 	knocked_down_damage_multiplier = 0.5,
-	power_level_max_target = 100,
+	min_stagger_damage_coefficient = 1,
+	power_level_max_target = 400,
 	rank = 2,
 	chance_of_shield_vermin_patrol = 0.3,
 	max_hp = 150,
 	amount_shield_vermin_patrol = 2,
-	attack_intensity_threshold = 2.5,
+	display_image = "difficulty_option_2",
 	respawn = {
 		temporary_health_percentage = 0,
 		health_percentage = 0.5,
@@ -33,29 +33,32 @@ DifficultySettings.normal = {
 	level_failed_reward = {
 		token_type = "iron_tokens",
 		token_amount = 8
+	},
+	weave_settings = {
+		experience_reward_on_complete = 200
 	}
 }
 DifficultySettings.hard = {
 	completed_frame_texture = "map_frame_02",
 	display_name = "difficulty_hard",
 	allow_respawns = true,
-	friendly_fire_melee = false,
-	display_image = "difficulty_option_3",
 	friendly_fire_ranged = false,
-	stagger_modifier = 0.9,
-	attack_intensity_decay = 1,
+	friendly_fire_melee = false,
+	stagger_modifier = 1,
 	required_power_level = 300,
-	power_level_cap = 600,
+	power_level_cap = 500,
 	xp_multiplier = 2,
+	max_chest_power_level = 300,
 	wounds = 3,
 	description = "difficulty_hard_desc",
-	max_chest_power_level = 300,
-	power_level_max_target = 100,
+	stagger_damage_multiplier = 0.2,
+	min_stagger_damage_coefficient = 1,
+	power_level_max_target = 500,
 	rank = 3,
 	chance_of_shield_vermin_patrol = 0.7,
 	max_hp = 150,
 	amount_shield_vermin_patrol = 2,
-	attack_intensity_threshold = 3.5,
+	display_image = "difficulty_option_3",
 	respawn = {
 		temporary_health_percentage = 0,
 		health_percentage = 0.5,
@@ -71,31 +74,33 @@ DifficultySettings.hard = {
 	},
 	pacing_overrides = {
 		peak_intensity_threshold = 50
+	},
+	weave_settings = {
+		experience_reward_on_complete = 200
 	}
 }
-DifficultySettings.survival_hard = table.clone(DifficultySettings.hard)
-DifficultySettings.survival_hard.display_name = "dlc1_2_difficulty_survival_hard"
 DifficultySettings.harder = {
 	completed_frame_texture = "map_frame_03",
-	display_name = "difficulty_harder",
-	friendly_fire_multiplier = 0.1,
 	friendly_fire_melee = false,
+	friendly_fire_multiplier = 0.1,
+	display_name = "difficulty_harder",
 	friendly_fire_ranged = true,
-	display_image = "difficulty_option_4",
 	allow_respawns = true,
-	attack_intensity_decay = 1,
-	stagger_modifier = 0.8,
+	stagger_modifier = 1,
 	required_power_level = 400,
-	power_level_cap = 1000,
-	wounds = 2,
-	description = "difficulty_harder_desc",
+	power_level_cap = 800,
 	xp_multiplier = 2,
 	max_chest_power_level = 300,
+	wounds = 2,
+	description = "difficulty_harder_desc",
+	stagger_damage_multiplier = 0.2,
+	min_stagger_damage_coefficient = 1,
+	power_level_max_target = 300,
 	rank = 4,
 	chance_of_shield_vermin_patrol = 1,
 	max_hp = 150,
 	amount_shield_vermin_patrol = 2,
-	attack_intensity_threshold = 4,
+	display_image = "difficulty_option_4",
 	respawn = {
 		temporary_health_percentage = 0,
 		health_percentage = 0.5,
@@ -111,35 +116,36 @@ DifficultySettings.harder = {
 	},
 	pacing_overrides = {
 		peak_intensity_threshold = 55
+	},
+	weave_settings = {
+		experience_reward_on_complete = 200
 	}
 }
-DifficultySettings.survival_harder = table.clone(DifficultySettings.harder)
-DifficultySettings.survival_harder.friendly_fire_ranged = false
-DifficultySettings.survival_harder.display_name = "dlc1_2_difficulty_survival_harder"
 DifficultySettings.hardest = {
 	completed_frame_texture = "map_frame_04",
-	display_name = "difficulty_hardest",
-	friendly_fire_multiplier = 0.25,
 	friendly_fire_melee = false,
+	friendly_fire_multiplier = 0.25,
+	display_name = "difficulty_hardest",
 	friendly_fire_ranged = true,
-	display_image = "difficulty_option_5",
 	allow_respawns = true,
-	attack_intensity_decay = 1,
-	stagger_modifier = 0.6,
+	stagger_modifier = 0.9,
 	required_power_level = 600,
-	power_level_cap = 1000,
-	wounds = 2,
-	description = "difficulty_hardest_desc",
+	power_level_cap = 935,
 	xp_multiplier = 2,
 	max_chest_power_level = 300,
+	wounds = 2,
+	description = "difficulty_hardest_desc",
+	stagger_damage_multiplier = 0.2,
+	min_stagger_damage_coefficient = 1,
+	power_level_max_target = 400,
 	rank = 5,
 	chance_of_shield_vermin_patrol = 1,
 	max_hp = 100,
 	amount_shield_vermin_patrol = 2,
-	attack_intensity_threshold = 10,
+	display_image = "difficulty_option_5",
 	respawn = {
-		temporary_health_percentage = 0,
-		health_percentage = 0.75,
+		temporary_health_percentage = 0.25,
+		health_percentage = 0.5,
 		ammo_melee = 0.5,
 		ammo_ranged = 0.5
 	},
@@ -152,12 +158,179 @@ DifficultySettings.hardest = {
 	},
 	pacing_overrides = {
 		peak_intensity_threshold = 70
+	},
+	weave_settings = {
+		experience_reward_on_complete = 200
 	}
 }
-DifficultySettings.survival_hardest = table.clone(DifficultySettings.hardest)
-DifficultySettings.survival_hardest.max_hp = 150
-DifficultySettings.survival_hardest.friendly_fire_ranged = false
-DifficultySettings.survival_hardest.display_name = "dlc1_2_difficulty_survival_hardest"
+DifficultySettings.cataclysm = {
+	completed_frame_texture = "map_frame_05",
+	friendly_fire_melee = false,
+	friendly_fire_multiplier = 0.25,
+	display_name = "difficulty_cataclysm",
+	extra_requirement_name = "kill_all_lords_on_legend",
+	friendly_fire_ranged = true,
+	allow_respawns = true,
+	stagger_modifier = 0.75,
+	required_power_level = 700,
+	power_level_cap = 2000,
+	xp_multiplier = 2,
+	max_chest_power_level = 300,
+	wounds = 2,
+	description = "difficulty_cataclysm_desc",
+	dlc_requirement = "scorpion",
+	stagger_damage_multiplier = 0.2,
+	show_warning = true,
+	min_stagger_damage_coefficient = 1,
+	power_level_max_target = 100,
+	rank = 6,
+	chance_of_shield_vermin_patrol = 1,
+	max_hp = 100,
+	amount_shield_vermin_patrol = 2,
+	display_image = "difficulty_option_6",
+	respawn = {
+		temporary_health_percentage = 0.25,
+		health_percentage = 0.5,
+		ammo_melee = 0.5,
+		ammo_ranged = 0.5
+	},
+	level_failed_reward = {
+		token_type = "silver_tokens",
+		token_amount = 8
+	},
+	intensity_overrides = {
+		intensity_add_per_percent_dmg_taken = 0.5
+	},
+	pacing_overrides = {
+		peak_intensity_threshold = 70
+	},
+	weave_settings = {
+		experience_reward_on_complete = 200
+	},
+	button_textures = {
+		lit_texture = "scorpion_icon_lit",
+		background = "difficulty_cataclysm_button_background",
+		unlit_texture = "scorpion_icon_unlit"
+	}
+}
+DifficultySettings.cataclysm_2 = {
+	completed_frame_texture = "map_frame_05",
+	friendly_fire_melee = false,
+	friendly_fire_multiplier = 0.25,
+	display_name = "difficulty_cataclysm_2",
+	extra_requirement_name = "kill_all_lords_on_legend",
+	friendly_fire_ranged = true,
+	allow_respawns = true,
+	stagger_modifier = 0.6,
+	required_power_level = 700,
+	power_level_cap = 2000,
+	xp_multiplier = 2,
+	max_chest_power_level = 300,
+	wounds = 2,
+	description = "difficulty_cataclysm_desc",
+	dlc_requirement = "scorpion",
+	stagger_damage_multiplier = 0.3,
+	show_warning = true,
+	min_stagger_damage_coefficient = 1,
+	power_level_max_target = 100,
+	rank = 7,
+	chance_of_shield_vermin_patrol = 1,
+	max_hp = 100,
+	amount_shield_vermin_patrol = 2,
+	display_image = "difficulty_option_5",
+	respawn = {
+		temporary_health_percentage = 0.5,
+		health_percentage = 0.25,
+		ammo_melee = 0.5,
+		ammo_ranged = 0.5
+	},
+	level_failed_reward = {
+		token_type = "silver_tokens",
+		token_amount = 8
+	},
+	intensity_overrides = {
+		intensity_add_per_percent_dmg_taken = 0.5
+	},
+	pacing_overrides = {
+		peak_intensity_threshold = 70
+	},
+	weave_settings = {
+		experience_reward_on_complete = 200
+	},
+	button_textures = {
+		lit_texture = "scorpion_icon_lit",
+		background = "difficulty_cataclysm_button_background",
+		unlit_texture = "scorpion_icon_unlit"
+	}
+}
+DifficultySettings.cataclysm_3 = {
+	completed_frame_texture = "map_frame_05",
+	friendly_fire_melee = false,
+	friendly_fire_multiplier = 0.25,
+	display_name = "difficulty_cataclysm_3",
+	extra_requirement_name = "kill_all_lords_on_legend",
+	friendly_fire_ranged = true,
+	allow_respawns = true,
+	stagger_modifier = 0.6,
+	required_power_level = 700,
+	power_level_cap = 2000,
+	xp_multiplier = 2,
+	max_chest_power_level = 300,
+	wounds = 2,
+	description = "difficulty_cataclysm_desc",
+	dlc_requirement = "scorpion",
+	stagger_damage_multiplier = 0.5,
+	show_warning = true,
+	min_stagger_damage_coefficient = 1,
+	rank = 8,
+	chance_of_shield_vermin_patrol = 1,
+	max_hp = 100,
+	amount_shield_vermin_patrol = 2,
+	display_image = "difficulty_option_5",
+	respawn = {
+		temporary_health_percentage = 0.65,
+		health_percentage = 0.1,
+		ammo_melee = 0.5,
+		ammo_ranged = 0.5
+	},
+	level_failed_reward = {
+		token_type = "silver_tokens",
+		token_amount = 8
+	},
+	intensity_overrides = {
+		intensity_add_per_percent_dmg_taken = 0.5
+	},
+	pacing_overrides = {
+		peak_intensity_threshold = 70
+	},
+	weave_settings = {
+		experience_reward_on_complete = 200
+	},
+	button_textures = {
+		lit_texture = "scorpion_icon_lit",
+		background = "difficulty_cataclysm_button_background",
+		unlit_texture = "scorpion_icon_unlit"
+	}
+}
+ExtraDifficultyRequirements = {
+	kill_all_lords_on_legend = {
+		description_text = "achv_scorpion_cataclysm_unlock_kill_all_lords_desc",
+		requirement_function = function ()
+			if Development.parameter("unlock_all_difficulties") then
+				return true
+			end
+
+			local backend_stats = Managers.backend:get_stats()
+			local champion_completed = (tonumber(backend_stats.kill_chaos_exalted_champion_scorpion_hardest) or 0) >= 5
+			local sorcerer_completed = (tonumber(backend_stats.kill_chaos_exalted_sorcerer_scorpion_hardest) or 0) >= 5
+			local gray_seer_completed = (tonumber(backend_stats.kill_skaven_grey_seer_scorpion_hardest) or 0) >= 5
+			local storm_vermin_completed = (tonumber(backend_stats.kill_skaven_storm_vermin_warlord_scorpion_hardest) or 0) >= 5
+			local difficulty_approved = champion_completed and sorcerer_completed and gray_seer_completed and storm_vermin_completed
+
+			return difficulty_approved
+		end
+	}
+}
 DifficultyRanks = {}
 
 for _, settings in pairs(DifficultySettings) do
@@ -169,38 +342,25 @@ Difficulties = {
 	"hard",
 	"harder",
 	"hardest",
-	"survival_hard",
-	"survival_harder",
-	"survival_hardest"
+	"cataclysm",
+	"cataclysm_2",
+	"cataclysm_3"
 }
 DefaultDifficulties = {
 	"normal",
 	"hard",
 	"harder",
-	"hardest"
+	"hardest",
+	"cataclysm"
 }
-SurvivalDifficulties = {
-	"survival_hard",
-	"survival_harder",
-	"survival_hardest"
+DifficultyMapping = {
+	hardest = "legend",
+	hard = "veteran",
+	harder = "champion",
+	cataclysm = "cataclysm",
+	normal = "recruit"
 }
 DefaultStartingDifficulty = "hard"
 DefaultQuickPlayStartingDifficulty = "normal"
-SurvivalStartWaveByDifficulty = {
-	survival_harder = 13,
-	survival_hardest = 26,
-	survival_hard = 0
-}
-SurvivalDifficultyByStartWave = {}
-
-for difficulty, wave in pairs(SurvivalStartWaveByDifficulty) do
-	SurvivalDifficultyByStartWave[wave] = difficulty
-end
-
-SurvivalEndWaveByDifficulty = {
-	survival_harder = 26,
-	survival_hardest = 39,
-	survival_hard = 13
-}
 
 return

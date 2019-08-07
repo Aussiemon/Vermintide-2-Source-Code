@@ -14,31 +14,37 @@ local CHAOS_WARRIOR_COMBAT = {
 	{
 		"BTStormVerminAttackAction",
 		name = "running_attack_right",
+		condition = "ask_target_before_attacking",
 		action_data = ACTIONS.running_attack_right
 	},
 	{
 		"BTStormVerminAttackAction",
 		name = "special_attack_cleave",
+		condition = "ask_target_before_attacking",
 		action_data = ACTIONS.special_attack_cleave
 	},
 	{
 		"BTStormVerminAttackAction",
 		name = "special_attack_sweep",
+		condition = "ask_target_before_attacking",
 		action_data = ACTIONS.special_attack_sweep
 	},
 	{
 		"BTStormVerminAttackAction",
 		name = "special_attack_launch",
+		condition = "ask_target_before_attacking",
 		action_data = ACTIONS.special_attack_launch
 	},
 	{
 		"BTStormVerminPushAction",
 		name = "push_attack",
+		condition = "ask_target_before_attacking",
 		action_data = ACTIONS.push_attack
 	},
 	{
 		"BTStormVerminAttackAction",
 		name = "special_attack_quick",
+		condition = "ask_target_before_attacking",
 		action_data = ACTIONS.special_attack_quick
 	},
 	condition = "confirmed_player_sighting",

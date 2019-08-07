@@ -1,8 +1,6 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTIdleAction = class(BTIdleAction, BTNode)
-local PLAYER_POSITIONS = PLAYER_POSITIONS
-local PLAYER_UNITS = PLAYER_UNITS
 
 BTIdleAction.init = function (self, ...)
 	BTIdleAction.super.init(self, ...)
@@ -64,16 +62,16 @@ BTIdleAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.navigation_extension:set_enabled(true)
 end
 
-local function player_within_distance(unit, sqr_near_dist)
+local function player_within_distance(unit, sqr_near_dist, side)
 	local pos = POSITION_LOOKUP[unit]
-	local player_positions = PLAYER_POSITIONS
+	local player_positions = side.ENEMY_PLAYER_POSITIONS
 
 	for i = 1, #player_positions, 1 do
 		local player_pos = player_positions[i]
 		local sqr_dist = Vector3.distance_squared(pos, player_pos)
 
 		if sqr_dist < sqr_near_dist then
-			return PLAYER_UNITS[i]
+			return side.ENEMY_PLAYER_UNITS[i]
 		end
 	end
 end
@@ -82,7 +80,7 @@ BTIdleAction._discovery_sound_when_close = function (self, unit, blackboard)
 	local near_distance_sqr = blackboard.action and blackboard.action.sound_when_near_distance_sqr
 
 	if near_distance_sqr and not blackboard.sound_when_near_played then
-		local player_unit = player_within_distance(unit, near_distance_sqr)
+		local player_unit = player_within_distance(unit, near_distance_sqr, blackboard.side)
 
 		if player_unit then
 			local player = Managers.player:unit_owner(player_unit)
@@ -92,7 +90,7 @@ BTIdleAction._discovery_sound_when_close = function (self, unit, blackboard)
 			local sound_id = NetworkLookup.sound_events[sound_event]
 			local unit_id = network_manager:unit_game_object_id(unit)
 
-			network_manager.network_transmit:send_rpc("rpc_server_audio_unit_event", peer_id, sound_id, unit_id, 0)
+			network_manager.network_transmit:send_rpc("rpc_server_audio_unit_event", peer_id, sound_id, unit_id, false, 0)
 
 			blackboard.sound_when_near_played = true
 		end

@@ -54,7 +54,7 @@ local only_release = true
 
 local function validate_level_data(level_key, level_data)
 	if type(level_data) == "table" then
-		local debug_level = string.match(level_data.package_name, "resource_packages/levels/debug/") or string.match(level_data.package_name, "resource_packages/levels/honduras/debug/")
+		local debug_level = string.match(level_data.package_name, "resource_packages/levels/debug/")
 
 		if debug_level then
 			DebugLevels[level_key] = true
@@ -161,6 +161,9 @@ LevelUnlockUtils.highest_completed_difficulty_index_by_act = function (statistic
 	local act_levels = GameActs[act_name]
 
 	if not act_levels then
+		print(table.dump(GameActs, nil, 2))
+		fassert(false, "act name is not included in GameActs: %s", tostring(act_name))
+
 		return math.huge
 	end
 
@@ -168,6 +171,10 @@ LevelUnlockUtils.highest_completed_difficulty_index_by_act = function (statistic
 
 	for _, level_key in ipairs(act_levels) do
 		local difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, player_stats_id, level_key)
+
+		if not difficulty_index or difficulty_index > 5 or difficulty_index < 0 then
+			fassert(false, "highest completed difficulty index was incorrect: %s", (difficulty_index and tostring(difficulty_index)) or "n/a")
+		end
 
 		if difficulty_index < act_difficulty_completed_index then
 			act_difficulty_completed_index = difficulty_index
@@ -295,6 +302,64 @@ LevelUnlockUtils.get_required_completed_levels = function (statistics_db, player
 	end
 
 	return required_completed_levels
+end
+
+LevelUnlockUtils.current_weave = function (statistics_db, player_stats_id, ignore_dlc_check)
+	if script_data.unlock_all_levels then
+		local weave_data = WeaveSettings.templates_ordered[#WeaveSettings.templates_ordered]
+
+		return weave_data.name
+	end
+
+	if not ignore_dlc_check then
+		local weave_data = WeaveSettings.templates_ordered[1]
+		local dlc_name = weave_data.dlc_name
+
+		if dlc_name and not Managers.unlock:is_dlc_unlocked(dlc_name) then
+			return weave_data.name
+		end
+	end
+
+	local weave_templates = WeaveSettings.templates_ordered
+	local num_entries = #weave_templates
+	local highest_consecutive_unlocked_weave = 1
+	local highest_consecutive_unlocked_weave_found = false
+
+	for i = 1, num_entries, 1 do
+		local template = weave_templates[i]
+		local weave_completed = LevelUnlockUtils.weave_unlocked(statistics_db, player_stats_id, template.name, ignore_dlc_check)
+
+		if weave_completed then
+			local next_weave = i + 1
+
+			if weave_templates[next_weave] then
+				highest_consecutive_unlocked_weave = next_weave
+			end
+		else
+			break
+		end
+	end
+
+	local weave_template = weave_templates[highest_consecutive_unlocked_weave]
+
+	return weave_template.name
+end
+
+LevelUnlockUtils.weave_unlocked = function (statistics_db, player_stats_id, weave_name, ignore_dlc_check)
+	if script_data.unlock_all_levels then
+		return true
+	end
+
+	if not ignore_dlc_check then
+		local weave_data = WeaveSettings.templates[weave_name]
+		local dlc_name = weave_data.dlc_name
+
+		if dlc_name and not Managers.unlock:is_dlc_unlocked(dlc_name) then
+			return false
+		end
+	end
+
+	return statistics_db:get_persistent_stat(player_stats_id, "completed_weaves", weave_name) > 0
 end
 
 LevelUnlockUtils.level_unlocked = function (statistics_db, player_stats_id, level_key, ignore_dlc_check)
@@ -553,6 +618,21 @@ LevelUnlockUtils.debug_completed_act_levels = function (act_key, complete)
 			statistics_db:set_stat(stats_id, "completed_levels", level_key, 0)
 		end
 	end
+
+	local backend_stats = {}
+
+	statistics_db:generate_backend_stats(stats_id, backend_stats)
+	Managers.backend:set_stats(backend_stats)
+	Managers.backend:commit()
+end
+
+LevelUnlockUtils.debug_complete_level = function (level_key)
+	local player_manager = Managers.player
+	local statistics_db = player_manager:statistics_db()
+	local player = player_manager:local_player()
+	local stats_id = player:stats_id()
+
+	statistics_db:set_stat(stats_id, "completed_levels", level_key, 1)
 
 	local backend_stats = {}
 

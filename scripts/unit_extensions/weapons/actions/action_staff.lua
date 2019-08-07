@@ -15,6 +15,8 @@ ActionStaff.init = function (self, world, item_name, is_server, owner_unit, dama
 end
 
 ActionStaff.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
+	ActionStaff.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level)
+
 	self.current_action = new_action
 	local owner_unit = self.owner_unit
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)

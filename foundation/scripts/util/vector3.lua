@@ -57,6 +57,10 @@ Vector3.project_on_plane = function (vector, normal)
 	return vector - Vector3.dot(vector, normal) * normal
 end
 
+Vector3.reflect = function (vector, surface_normal)
+	return vector - 2 * Vector3.dot(vector, surface_normal) * surface_normal
+end
+
 Vector3Aux = Vector3Aux or {}
 
 Vector3Aux.box = function (destination, vector_3)

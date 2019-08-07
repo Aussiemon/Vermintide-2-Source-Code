@@ -35,6 +35,10 @@ BTStormfiendDualShootAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.navigation_extension:set_enabled(false)
 	blackboard.locomotion_extension:set_wanted_velocity(Vector3.zero())
+
+	local target_unit = blackboard.target_unit
+
+	AiUtils.add_attack_intensity(target_unit, action, blackboard)
 end
 
 BTStormfiendDualShootAction.leave = function (self, unit, blackboard, t, reason, destroy)
@@ -240,12 +244,11 @@ BTStormfiendDualShootAction._update_ratling_gun = function (self, unit, blackboa
 	end
 end
 
+local TWO_PI = math.pi * 2
+
 BTStormfiendDualShootAction._shoot_ratling_gun = function (self, unit, blackboard, t, dt, muzzle_node_name)
 	local action = blackboard.action
-	local two_pi = math.pi * 2
 	local data = blackboard.shoot_data
-	local world = blackboard.world
-	local physics_world = World.get_data(world, "physics_world")
 	local light_weight_projectile_template_name = action.light_weight_projectile_template_name
 	local light_weight_projectile_template = LightWeightProjectiles[light_weight_projectile_template_name]
 	local from_position, direction = self:_fire_from_position_direction(unit, blackboard, data, dt, muzzle_node_name)
@@ -253,24 +256,24 @@ BTStormfiendDualShootAction._shoot_ratling_gun = function (self, unit, blackboar
 	local spread_angle = Math.random() * light_weight_projectile_template.spread
 	local dir_rot = Quaternion.look(normalized_direction, Vector3.up())
 	local pitch = Quaternion(Vector3.right(), spread_angle)
-	local roll = Quaternion(Vector3.forward(), Math.random() * two_pi)
+	local roll = Quaternion(Vector3.forward(), Math.random() * TWO_PI)
 	local spread_rot = Quaternion.multiply(Quaternion.multiply(dir_rot, roll), pitch)
 	local spread_direction = Quaternion.forward(spread_rot)
-	local distance = 40
 	local collision_filter = "filter_enemy_player_ray_projectile"
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
 	local power_level = light_weight_projectile_template.attack_power_level[difficulty_rank]
 	local action_data = {
-		attack_template = light_weight_projectile_template.attack_template,
 		power_level = power_level,
 		damage_profile = light_weight_projectile_template.damage_profile,
 		hit_effect = light_weight_projectile_template.hit_effect,
-		afro_hit_sound = light_weight_projectile_template.afro_hit_sound,
-		player_push_velocity = Vector3Box(normalized_direction * light_weight_projectile_template.impact_push_speed)
+		player_push_velocity = Vector3Box(normalized_direction * light_weight_projectile_template.impact_push_speed),
+		projectile_linker = light_weight_projectile_template.projectile_linker,
+		first_person_hit_flow_events = light_weight_projectile_template.first_person_hit_flow_events
 	}
 	local projectile_system = Managers.state.entity:system("projectile_system")
+	local owner_peer_id = Network.peer_id()
 
-	projectile_system:create_light_weight_projectile(Unit.get_data(unit, "breed").name, unit, from_position, spread_direction, light_weight_projectile_template.projectile_speed, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_particle_effect)
+	projectile_system:create_light_weight_projectile(blackboard.breed.name, unit, from_position, spread_direction, light_weight_projectile_template.projectile_speed, nil, nil, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_effect, owner_peer_id)
 end
 
 BTStormfiendDualShootAction.anim_cb_attack_fire = function (self, unit, blackboard)

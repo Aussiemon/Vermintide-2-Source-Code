@@ -29,14 +29,14 @@ end
 GraphDrawer.update = function (self, input_service, t)
 	if input_service:get("f11") then
 		if not self.active then
-			self.unblocked_services_n = self.input_manager:get_unblocked_services(nil, nil, self.unblocked_services)
-
-			self.input_manager:device_block_services("mouse", 1, self.unblocked_services, self.unblocked_services_n)
-			self.input_manager:device_unblock_service("mouse", 1, "Debug")
+			self.input_manager:capture_input({
+				"mouse"
+			}, 1, "Debug", "GraphDrawer")
 			Window.set_show_cursor(true)
 		else
-			self.input_manager:device_block_service("mouse", 1, "Debug")
-			self.input_manager:device_unblock_services("mouse", 1, self.unblocked_services, self.unblocked_services_n)
+			self.input_manager:release_input({
+				"mouse"
+			}, 1, "Debug", "GraphDrawer")
 			Window.set_show_cursor(false)
 		end
 

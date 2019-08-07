@@ -19,31 +19,22 @@ settings.buff_templates = {
 				stat_buff = "attack_speed",
 				multiplier = 0.05,
 				max_stacks = 10,
-				duration = 6,
+				duration = 4,
 				refresh_durations = true
 			},
 			{
-				refresh_durations = true,
-				name = "mutator_bloodlust_crit",
-				stat_buff = "critical_strike_chance",
-				max_stacks = 10,
-				duration = 6,
-				bonus = 0.01
-			},
-			{
-				remove_buff_func = "remove_movement_buff",
-				name = "mutator_bloodlust_movespeed",
-				multiplier = 1.04,
-				max_stacks = 10,
-				duration = 6,
 				apply_buff_func = "apply_movement_buff",
+				multiplier = 1.05,
+				duration = 4,
 				refresh_durations = true,
+				max_stacks = 10,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"move_speed"
 				}
 			},
 			{
-				duration = 6,
+				duration = 4,
 				remove_buff_func = "remove_bloodlust",
 				max_stacks = 10,
 				refresh_durations = true,
@@ -54,21 +45,14 @@ settings.buff_templates = {
 	mutator_bloodlust_debuff = {
 		buffs = {
 			{
-				damage_percentage = 0.05,
-				name = "mutator_bloodlust_debuff",
 				update_func = "update_bloodlust_debuff",
+				name = "mutator_bloodlust_debuff",
+				damage_percentage = 0.05,
+				icon = "troll_vomit_debuff",
 				dormant = true,
 				remove_buff_func = "remove_bloodlust_debuff",
 				apply_buff_func = "apply_bloodlust_debuff",
-				damage_frequency = 1,
-				icon = "troll_vomit_debuff",
-				starting_tick_frequency = {
-					10,
-					10,
-					8,
-					6,
-					5
-				}
+				damage_frequency = 1
 			}
 		}
 	}
@@ -118,9 +102,7 @@ settings.buff_function_templates = {
 			return
 		end
 
-		local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-		buff.buff_tick_t_index = buff.template.starting_tick_frequency[difficulty_rank] or 5
-		buff.next_damage_tick_t = params.t + buff.buff_tick_t_index
+		buff.next_damage_tick_t = params.t + buff.template.damage_frequency
 	end,
 	update_bloodlust_debuff = function (unit, buff, params, world)
 		if not Managers.state.network.is_server then
@@ -139,10 +121,9 @@ settings.buff_function_templates = {
 			if health_left > 0 then
 				local damage_direction = -Vector3.up()
 
-				DamageUtils.add_damage_network(unit, unit, damage, "torso", "health_degen", nil, damage_direction)
+				DamageUtils.add_damage_network(unit, unit, damage, "torso", "wounded_dot", nil, damage_direction)
 
-				buff.next_damage_tick_t = t + buff.buff_tick_t_index
-				buff.buff_tick_t_index = math.max(buff.buff_tick_t_index - 1, 1)
+				buff.next_damage_tick_t = t + buff.template.damage_frequency
 			end
 		end
 	end,

@@ -78,14 +78,29 @@ OutlineSettings.colors = {
 	}
 }
 OutlineSettings.ranges = {
+	interactable = 15,
 	pickup = 10,
 	elevators = 10,
-	doors = 12.5,
 	objective_light = 20,
+	revive = 50,
+	doors = 12.5,
 	objective = 35,
 	player_husk = 40,
-	revive = 50,
-	interactable = 15
+	small_pickup = 2
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local outline_settings = dlc.outline_settings
+
+	if outline_settings then
+		for _, outline_file in ipairs(outline_settings) do
+			require(outline_file)
+		end
+	end
+end
+
+for name, settings in pairs(OutlineSettings.colors) do
+	settings.name = name
+end
 
 return

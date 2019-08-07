@@ -1,4 +1,4 @@
-local reload = true
+local DO_RELOAD = false
 SubtitleTimedGui = class(SubtitleTimedGui)
 
 local function extract_lines(text)
@@ -49,25 +49,31 @@ local function extract_lines(text)
 end
 
 SubtitleTimedGui.init = function (self, subtitle_timing_name, target_widgets)
-	if subtitle_timing_name ~= "" then
-		subtitle_timing_name = Localize(subtitle_timing_name) or subtitle_timing_name
+	local localized_subtitle_timing_name = ""
+
+	if type(subtitle_timing_name) == "table" then
+		for _, subtitle_name in ipairs(subtitle_timing_name) do
+			localized_subtitle_timing_name = localized_subtitle_timing_name .. Localize(subtitle_name) .. " "
+		end
+	else
+		localized_subtitle_timing_name = (subtitle_timing_name ~= "" and Localize(subtitle_timing_name)) or subtitle_timing_name
 	end
 
-	self.texts = extract_lines(subtitle_timing_name)
+	self.texts = extract_lines(localized_subtitle_timing_name)
 	self.text_scroll_height = 0
 	self.next_text_index = 0
 	self.text_speed = 20
-	self.subtitle_timing_name = subtitle_timing_name
+	self.subtitle_timing_name = localized_subtitle_timing_name
 	self.target_widgets = target_widgets
-	reload = false
+	DO_RELOAD = false
 end
 
 SubtitleTimedGui.update = function (self, dt)
 	local target_widgets = self.target_widgets
 
-	if reload then
-		reload = false
-		self.texts = extract_lines(Localize(self.subtitle_timing_name))
+	if DO_RELOAD then
+		DO_RELOAD = false
+		self.texts = extract_lines(self.subtitle_timing_name)
 		self.next_text_index = 0
 
 		for i = 1, #target_widgets, 1 do

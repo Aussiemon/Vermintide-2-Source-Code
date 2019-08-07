@@ -35,6 +35,9 @@ BTJumpSlamAction.enter = function (self, unit, blackboard, t)
 	end
 
 	blackboard.action = action
+	local target_unit = blackboard.target_unit
+
+	AiUtils.add_attack_intensity(target_unit, action, blackboard)
 end
 
 BTJumpSlamAction.leave = function (self, unit, blackboard, t, reason, destroy)

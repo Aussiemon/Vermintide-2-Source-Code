@@ -1,0 +1,89 @@
+WeaveLoadoutSettings = WeaveLoadoutSettings or {}
+WeaveLoadoutSettings.wh_zealot = {
+	talent_tree = {
+		{
+			"victor_zealot_reaper",
+			"victor_zealot_bloodlust_2",
+			"victor_zealot_heal_share"
+		},
+		{
+			"victor_zealot_attack_speed_on_health_percent",
+			"victor_zealot_crit_count",
+			"victor_zealot_power"
+		},
+		{
+			"victor_zealot_smiter_unbalance",
+			"victor_zealot_linesman_unbalance",
+			"victor_zealot_power_level_unbalance"
+		},
+		{
+			"victor_zealot_passive_move_speed",
+			"victor_zealot_passive_healing_received",
+			"victor_zealot_passive_damage_taken"
+		},
+		{
+			"victor_zealot_move_speed_on_damage_taken",
+			"victor_zealot_max_stamina_on_damage_taken",
+			"victor_zealot_reduced_damage_taken"
+		},
+		{
+			"victor_zealot_activated_ability_power_on_hit",
+			"victor_zealot_activated_ability_ignore_death",
+			"victor_zealot_activated_ability_cooldown_stack_on_hit"
+		}
+	},
+	properties = {
+		"weave_attack_speed",
+		"weave_crit_boost",
+		"weave_power_vs_skaven",
+		"weave_power_vs_chaos",
+		"weave_power_vs_unarmoured",
+		"weave_power_vs_armoured",
+		"weave_power_vs_large",
+		"weave_power_vs_frenzy",
+		"weave_stamina",
+		"weave_health",
+		"weave_push_block_arc",
+		"weave_block_cost",
+		"weave_protection_skaven",
+		"weave_protection_chaos",
+		"weave_protection_aoe",
+		"weave_crit_chance",
+		"weave_ability_cooldown_reduction",
+		"weave_curse_resistance",
+		"weave_respawn_speed",
+		"weave_revive_speed",
+		"weave_fatigue_regen",
+		"weave_movespeed"
+	},
+	traits = {
+		"weave_melee_attack_speed_on_crit",
+		"weave_melee_timed_block_cost",
+		"weave_melee_counter_push_power",
+		"weave_melee_reduce_cooldown_on_crit",
+		"weave_melee_increase_damage_on_block",
+		"weave_melee_shield_on_assist",
+		"weave_ranged_replenish_ammo_headshot",
+		"weave_ranged_restore_stamina_headshot",
+		"weave_ranged_reduced_overcharge",
+		"weave_ranged_reduce_cooldown_on_crit",
+		"weave_ranged_replenish_ammo_on_crit",
+		"weave_ranged_remove_overcharge_on_crit",
+		"weave_ranged_increase_power_level_vs_armour_crit",
+		"weave_ranged_consecutive_hits_increase_power",
+		"weave_ring_not_consume_potion",
+		"weave_ring_potion_spread",
+		"weave_ring_all_potions",
+		"weave_ring_potion_duration",
+		"weave_necklace_not_consume_healing",
+		"weave_necklace_heal_self_on_heal_other",
+		"weave_necklace_increased_healing_received",
+		"weave_necklace_no_healing_health_regen",
+		"weave_necklace_damage_taken_reduction_on_heal",
+		"weave_trinket_not_consume_grenade",
+		"weave_trinket_increase_grenade_radius",
+		"weave_trinket_grenade_damage_taken"
+	}
+}
+
+return

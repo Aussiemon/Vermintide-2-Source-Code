@@ -1,7 +1,6 @@
 local breed_data = {
-	angry_run_speed = 6,
+	has_running_attack = true,
 	walk_speed = 2,
-	threat_value = 32,
 	headshot_coop_stamina_fatigue_type = "headshot_special",
 	is_bot_aid_threat = true,
 	poison_resistance = 100,
@@ -9,14 +8,16 @@ local breed_data = {
 	aoe_radius = 0.6,
 	animation_sync_rpc = "rpc_sync_anim_state_6",
 	bot_hitbox_radius_approximation = 1,
-	target_selection = "pick_rat_ogre_target_with_weights",
+	death_sound_event = "Play_stormvermin_die_vce",
 	run_speed = 6.109090909090908,
 	race = "skaven",
-	has_running_attack = true,
+	threat_value = 32,
 	disable_crowd_dispersion = true,
+	slot_template = "skaven_elite",
 	bot_opportunity_target_melee_range = 7,
 	bone_lod_level = 1,
 	wield_inventory_on_spawn = true,
+	target_selection = "pick_rat_ogre_target_with_weights",
 	default_inventory_template = "halberd",
 	dialogue_source_name = "skaven_storm_vermin_champion",
 	boss_staggers = true,
@@ -26,7 +27,7 @@ local breed_data = {
 	proximity_system_check = true,
 	death_reaction = "storm_vermin_champion",
 	armor_category = 2,
-	death_sound_event = "Play_stormvermin_die_vce",
+	angry_run_speed = 6,
 	smart_targeting_width = 0.2,
 	perception_continuous = "perception_continuous_rat_ogre",
 	initial_is_passive = false,
@@ -81,19 +82,13 @@ local breed_data = {
 		350,
 		400,
 		500,
+		800,
+		800,
+		800,
 		800
 	},
 	bloodlust_health = BreedTweaks.bloodlust_health.monster,
-	stagger_duration = {
-		1,
-		1,
-		1,
-		1,
-		1,
-		1,
-		1,
-		1
-	},
+	stagger_duration = BreedTweaks.stagger_duration.stormvermin,
 	debug_color = {
 		255,
 		200,
@@ -111,10 +106,6 @@ local breed_data = {
 		ward = "protected_spot"
 	},
 	hit_zones = {
-		full = {
-			prio = 2,
-			actors = {}
-		},
 		ward = {
 			prio = 1,
 			actors = {
@@ -228,8 +219,12 @@ local breed_data = {
 				"j_taill"
 			}
 		},
-		afro = {
+		full = {
 			prio = 5,
+			actors = {}
+		},
+		afro = {
+			prio = 6,
 			actors = {
 				"c_afro"
 			}
@@ -342,104 +337,32 @@ local action_data = {
 		offset_up = 0,
 		attack_anim = "attack_special",
 		range = 4,
+		damage = 30,
 		player_push_speed = 10,
+		blocked_damage = 0,
 		player_push_speed_blocked = 8,
 		move_anim = "move_fwd",
 		width = 0.4,
 		throw_dialogue_system_event_on_dodged_attack = true,
-		blocked_damage = {
-			0,
-			0,
-			0
-		},
 		blocked_difficulty_damage = {
-			easy = {
-				0,
-				0,
-				0
-			},
-			normal = {
-				0,
-				0,
-				0
-			},
-			hard = {
-				2,
-				2,
-				2
-			},
-			survival_hard = {
-				2,
-				2,
-				2
-			},
-			harder = {
-				5,
-				5,
-				5
-			},
-			survival_harder = {
-				5,
-				5,
-				5
-			},
-			hardest = {
-				10,
-				10,
-				10
-			},
-			survival_hardest = {
-				10,
-				10,
-				10
-			}
-		},
-		damage = {
-			30,
-			25,
-			20
+			harder = 5,
+			hard = 2,
+			normal = 0,
+			hardest = 10,
+			cataclysm = 15,
+			cataclysm_3 = 30,
+			cataclysm_2 = 20,
+			easy = 0
 		},
 		difficulty_damage = {
-			easy = {
-				20,
-				20,
-				15
-			},
-			normal = {
-				30,
-				25,
-				20
-			},
-			hard = {
-				40,
-				35,
-				30
-			},
-			survival_hard = {
-				40,
-				35,
-				30
-			},
-			harder = {
-				50,
-				40,
-				30
-			},
-			survival_harder = {
-				50,
-				40,
-				30
-			},
-			hardest = {
-				100,
-				50,
-				30
-			},
-			survival_hardest = {
-				150,
-				75,
-				45
-			}
+			harder = 50,
+			hard = 40,
+			normal = 30,
+			hardest = 100,
+			cataclysm = 100,
+			cataclysm_3 = 100,
+			cataclysm_2 = 100,
+			easy = 20
 		},
 		ignore_staggers = {
 			true,
@@ -466,7 +389,9 @@ local action_data = {
 		attack_anim = "attack_spin_charge",
 		offset_right = 0,
 		bot_threat_duration = 2,
+		damage = 20,
 		action_weight = 4,
+		blocked_damage = 0,
 		player_push_speed_blocked = 15,
 		move_anim = "move_fwd",
 		attack_sequence = {
@@ -478,99 +403,25 @@ local action_data = {
 				at = 2
 			}
 		},
-		blocked_damage = {
-			0,
-			0,
-			0
-		},
 		blocked_difficulty_damage = {
-			easy = {
-				0,
-				0,
-				0
-			},
-			normal = {
-				0,
-				0,
-				0
-			},
-			hard = {
-				2,
-				2,
-				2
-			},
-			survival_hard = {
-				2,
-				2,
-				2
-			},
-			harder = {
-				5,
-				5,
-				5
-			},
-			survival_harder = {
-				5,
-				5,
-				5
-			},
-			hardest = {
-				10,
-				10,
-				10
-			},
-			survival_hardest = {
-				10,
-				10,
-				10
-			}
-		},
-		damage = {
-			20,
-			10,
-			5
+			harder = 5,
+			hard = 2,
+			normal = 0,
+			hardest = 10,
+			cataclysm = 10,
+			cataclysm_3 = 10,
+			cataclysm_2 = 10,
+			easy = 0
 		},
 		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				20,
-				10,
-				5
-			},
-			hard = {
-				25,
-				15,
-				10
-			},
-			survival_hard = {
-				25,
-				15,
-				10
-			},
-			harder = {
-				30,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				50,
-				30,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
+			harder = 30,
+			hard = 25,
+			normal = 20,
+			hardest = 50,
+			cataclysm = 60,
+			cataclysm_3 = 100,
+			cataclysm_2 = 75,
+			easy = 15
 		},
 		ignore_staggers = {
 			true,
@@ -598,7 +449,9 @@ local action_data = {
 		attack_anim = "attack_spin_charge",
 		offset_right = 0,
 		bot_threat_duration = 2,
+		damage = 20,
 		action_weight = 4,
+		blocked_damage = 0,
 		player_push_speed_blocked = 15,
 		move_anim = "move_fwd",
 		exit_flow_event = "lua_disable_weapon_fx",
@@ -615,99 +468,25 @@ local action_data = {
 				end
 			}
 		},
-		blocked_damage = {
-			0,
-			0,
-			0
-		},
 		blocked_difficulty_damage = {
-			easy = {
-				0,
-				0,
-				0
-			},
-			normal = {
-				0,
-				0,
-				0
-			},
-			hard = {
-				2,
-				2,
-				2
-			},
-			survival_hard = {
-				2,
-				2,
-				2
-			},
-			harder = {
-				5,
-				5,
-				5
-			},
-			survival_harder = {
-				5,
-				5,
-				5
-			},
-			hardest = {
-				10,
-				10,
-				10
-			},
-			survival_hardest = {
-				10,
-				10,
-				10
-			}
-		},
-		damage = {
-			20,
-			10,
-			5
+			harder = 5,
+			hard = 2,
+			normal = 0,
+			hardest = 10,
+			cataclysm = 10,
+			cataclysm_3 = 10,
+			cataclysm_2 = 10,
+			easy = 0
 		},
 		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				20,
-				10,
-				5
-			},
-			hard = {
-				25,
-				15,
-				10
-			},
-			survival_hard = {
-				25,
-				15,
-				10
-			},
-			harder = {
-				30,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				50,
-				30,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
+			harder = 30,
+			hard = 25,
+			normal = 20,
+			hardest = 50,
+			cataclysm = 50,
+			cataclysm_3 = 100,
+			cataclysm_2 = 75,
+			easy = 15
 		},
 		ignore_staggers = {
 			true,
@@ -735,58 +514,22 @@ local action_data = {
 		attack_anim = "attack_sweep_left",
 		collision_type = "cylinder",
 		height = 2,
+		damage = 20,
 		player_push_speed = 8,
 		overlap_start_time = 0.5151515151515151,
 		bot_threat_duration = 1,
 		player_push_speed_blocked = 6,
 		move_anim = "move_fwd",
 		throw_dialogue_system_event_on_dodged_attack = true,
-		damage = {
-			20,
-			10,
-			5
-		},
 		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				20,
-				10,
-				5
-			},
-			hard = {
-				25,
-				15,
-				10
-			},
-			survival_hard = {
-				25,
-				15,
-				10
-			},
-			harder = {
-				30,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				50,
-				30,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
+			harder = 30,
+			hard = 25,
+			normal = 20,
+			hardest = 50,
+			cataclysm = 60,
+			cataclysm_3 = 100,
+			cataclysm_2 = 75,
+			easy = 15
 		},
 		overlap_start_angle_offset = -math.pi,
 		overlap_end_angle_offset = 0.5 * math.pi,
@@ -815,58 +558,22 @@ local action_data = {
 		attack_anim = "attack_sweep_right",
 		collision_type = "cylinder",
 		height = 2,
+		damage = 20,
 		player_push_speed = 8,
 		overlap_start_time = 0.36666666666666664,
 		bot_threat_duration = 1,
 		player_push_speed_blocked = 6,
 		move_anim = "move_fwd",
 		throw_dialogue_system_event_on_dodged_attack = true,
-		damage = {
-			20,
-			10,
-			5
-		},
 		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				20,
-				10,
-				5
-			},
-			hard = {
-				25,
-				15,
-				10
-			},
-			survival_hard = {
-				25,
-				15,
-				10
-			},
-			harder = {
-				30,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				50,
-				30,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
+			harder = 30,
+			hard = 25,
+			normal = 20,
+			hardest = 50,
+			cataclysm = 50,
+			cataclysm_3 = 50,
+			cataclysm_2 = 50,
+			easy = 15
 		},
 		overlap_start_angle_offset = -0.5 * math.pi,
 		overlap_end_angle_offset = math.pi,
@@ -895,9 +602,11 @@ local action_data = {
 		offset_up = 0,
 		overlap_check_walls_time = 1.75,
 		range = 2,
+		damage = 20,
 		height = 2,
 		wall_collision_anim = "charge_attack_lunge_miss",
 		action_weight = 5,
+		blocked_damage = 5,
 		player_push_speed_blocked = 8,
 		move_anim = "move_fwd",
 		width = 1,
@@ -913,99 +622,25 @@ local action_data = {
 				attack_anim = "charge_attack_lunge"
 			}
 		},
-		blocked_damage = {
-			5,
-			4,
-			2.5
-		},
 		blocked_difficulty_damage = {
-			easy = {
-				4,
-				4,
-				2.5
-			},
-			normal = {
-				5,
-				4,
-				2.5
-			},
-			hard = {
-				7,
-				5,
-				2.5
-			},
-			survival_hard = {
-				7,
-				5,
-				2.5
-			},
-			harder = {
-				9,
-				7.5,
-				5
-			},
-			survival_harder = {
-				9,
-				7.5,
-				5
-			},
-			hardest = {
-				12,
-				10,
-				7.5
-			},
-			survival_hardest = {
-				18,
-				15,
-				11.25
-			}
-		},
-		damage = {
-			20,
-			10,
-			5
+			harder = 9,
+			hard = 7,
+			normal = 5,
+			hardest = 15,
+			cataclysm = 17,
+			cataclysm_3 = 21.25,
+			cataclysm_2 = 19,
+			easy = 4
 		},
 		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				20,
-				10,
-				5
-			},
-			hard = {
-				25,
-				15,
-				10
-			},
-			survival_hard = {
-				25,
-				15,
-				10
-			},
-			harder = {
-				30,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				50,
-				30,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
+			harder = 30,
+			hard = 25,
+			normal = 20,
+			hardest = 50,
+			cataclysm = 69,
+			cataclysm_3 = 100,
+			cataclysm_2 = 75,
+			easy = 15
 		},
 		ignore_staggers = {
 			true,
@@ -1030,8 +665,10 @@ local action_data = {
 		damage_type = "cutting",
 		player_push_speed = 12,
 		offset_up = 0,
+		damage = 20,
 		movement_controlled_rotation = false,
 		action_weight = 5,
+		blocked_damage = 0,
 		player_push_speed_blocked = 12,
 		width = 0.3,
 		considerations = UtilityConsiderations.storm_vermin_champion_running_attack,
@@ -1044,99 +681,25 @@ local action_data = {
 				at = 0.16666666666666666
 			}
 		},
-		blocked_damage = {
-			0,
-			0,
-			0
-		},
 		blocked_difficulty_damage = {
-			easy = {
-				0,
-				0,
-				0
-			},
-			normal = {
-				0,
-				0,
-				0
-			},
-			hard = {
-				2,
-				2,
-				2
-			},
-			survival_hard = {
-				2,
-				2,
-				2
-			},
-			harder = {
-				5,
-				5,
-				5
-			},
-			survival_harder = {
-				5,
-				5,
-				5
-			},
-			hardest = {
-				10,
-				10,
-				10
-			},
-			survival_hardest = {
-				10,
-				10,
-				10
-			}
-		},
-		damage = {
-			20,
-			10,
-			5
+			harder = 5,
+			hard = 2,
+			normal = 0,
+			hardest = 10,
+			cataclysm = 20,
+			cataclysm_3 = 35,
+			cataclysm_2 = 25,
+			easy = 0
 		},
 		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				20,
-				10,
-				5
-			},
-			hard = {
-				25,
-				15,
-				10
-			},
-			survival_hard = {
-				25,
-				15,
-				10
-			},
-			harder = {
-				30,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				50,
-				30,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
+			harder = 30,
+			hard = 25,
+			normal = 20,
+			hardest = 50,
+			cataclysm = 25,
+			cataclysm_3 = 75,
+			cataclysm_2 = 30,
+			easy = 15
 		},
 		ignore_staggers = {
 			true,
@@ -1159,6 +722,7 @@ local action_data = {
 	special_attack_shatter = {
 		wave_fx = "fx/chr_stormvermin_champion_beam_impact_dot",
 		anticipation_fx = "fx/chr_stormvermin_champion_beam_anticipation_dot",
+		damage = 20,
 		cooldown = 1,
 		rotation_time = 0,
 		fatigue_type = "blocked_slam",
@@ -1174,6 +738,7 @@ local action_data = {
 		wave_speed = 20,
 		overlap_start_time = 2.1666666666666665,
 		action_weight = 5,
+		blocked_damage = 5,
 		move_anim = "move_fwd",
 		width = 2,
 		considerations = UtilityConsiderations.storm_vermin_champion_shatter_attack,
@@ -1186,99 +751,25 @@ local action_data = {
 				at = 1.5
 			}
 		},
-		blocked_damage = {
-			5,
-			4,
-			2.5
-		},
 		blocked_difficulty_damage = {
-			easy = {
-				4,
-				4,
-				2.5
-			},
-			normal = {
-				5,
-				4,
-				2.5
-			},
-			hard = {
-				7,
-				5,
-				2.5
-			},
-			survival_hard = {
-				7,
-				5,
-				2.5
-			},
-			harder = {
-				9,
-				7.5,
-				5
-			},
-			survival_harder = {
-				9,
-				7.5,
-				5
-			},
-			hardest = {
-				12,
-				10,
-				7.5
-			},
-			survival_hardest = {
-				18,
-				15,
-				11.25
-			}
-		},
-		damage = {
-			20,
-			10,
-			5
+			harder = 9,
+			hard = 7,
+			normal = 5,
+			hardest = 12,
+			cataclysm = 17,
+			cataclysm_3 = 35,
+			cataclysm_2 = 25,
+			easy = 4
 		},
 		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				20,
-				10,
-				5
-			},
-			hard = {
-				25,
-				15,
-				10
-			},
-			survival_hard = {
-				25,
-				15,
-				10
-			},
-			harder = {
-				30,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				50,
-				30,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
+			harder = 30,
+			hard = 25,
+			normal = 20,
+			hardest = 50,
+			cataclysm = 60,
+			cataclysm_3 = 100,
+			cataclysm_2 = 75,
+			easy = 15
 		},
 		ignore_staggers = {
 			true,
@@ -1292,6 +783,7 @@ local action_data = {
 	defensive_attack_shatter = {
 		wave_fx = "fx/chr_stormvermin_champion_beam_impact_dot",
 		anticipation_fx = "fx/chr_stormvermin_champion_beam_anticipation_dot",
+		damage = 20,
 		cooldown = 1,
 		rotation_time = 0,
 		fatigue_type = "blocked_slam",
@@ -1307,6 +799,7 @@ local action_data = {
 		wave_speed = 20,
 		overlap_start_time = 2.1666666666666665,
 		action_weight = 5,
+		blocked_damage = 5,
 		move_anim = "move_fwd",
 		width = 2,
 		considerations = UtilityConsiderations.storm_vermin_champion_defensive_shatter_attack,
@@ -1319,99 +812,25 @@ local action_data = {
 				at = 1.5
 			}
 		},
-		blocked_damage = {
-			5,
-			4,
-			2.5
-		},
 		blocked_difficulty_damage = {
-			easy = {
-				4,
-				4,
-				2.5
-			},
-			normal = {
-				5,
-				4,
-				2.5
-			},
-			hard = {
-				7,
-				5,
-				2.5
-			},
-			survival_hard = {
-				7,
-				5,
-				2.5
-			},
-			harder = {
-				9,
-				7.5,
-				5
-			},
-			survival_harder = {
-				9,
-				7.5,
-				5
-			},
-			hardest = {
-				12,
-				10,
-				7.5
-			},
-			survival_hardest = {
-				18,
-				15,
-				11.25
-			}
-		},
-		damage = {
-			20,
-			10,
-			5
+			harder = 9,
+			hard = 7,
+			normal = 5,
+			hardest = 12,
+			cataclysm = 15,
+			cataclysm_3 = 30,
+			cataclysm_2 = 20,
+			easy = 4
 		},
 		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				20,
-				10,
-				5
-			},
-			hard = {
-				25,
-				15,
-				10
-			},
-			survival_hard = {
-				25,
-				15,
-				10
-			},
-			harder = {
-				30,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				50,
-				30,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
+			harder = 30,
+			hard = 25,
+			normal = 20,
+			hardest = 50,
+			cataclysm = 60,
+			cataclysm_3 = 100,
+			cataclysm_2 = 75,
+			easy = 15
 		},
 		ignore_staggers = {
 			true,
@@ -1425,14 +844,10 @@ local action_data = {
 	smash_door = {
 		unblockable = true,
 		name = "smash_door",
+		damage = 3,
 		damage_type = "cutting",
 		move_anim = "move_fwd",
-		attack_anim = "attack_pounce",
-		damage = {
-			3,
-			3,
-			3
-		}
+		attack_anim = "attack_pounce"
 	},
 	blocked = {
 		blocked_anims = {
@@ -1545,6 +960,26 @@ local action_data = {
 				right = {
 					"stagger_right"
 				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
+			},
+			{
+				fwd = {
+					"stagger_fwd"
+				},
+				bwd = {
+					"stagger_bwd"
+				},
+				left = {
+					"stagger_left_heavy"
+				},
+				right = {
+					"stagger_right_heavy"
+				}
 			}
 		}
 	},
@@ -1599,17 +1034,9 @@ local action_data = {
 				"skaven_storm_vermin",
 				"skaven_storm_vermin"
 			},
-			survival_hard = {
-				"skaven_storm_vermin",
-				"skaven_storm_vermin"
-			},
 			harder = {
 				"skaven_storm_vermin",
 				"skaven_storm_vermin",
-				"skaven_storm_vermin",
-				"skaven_storm_vermin"
-			},
-			survival_harder = {
 				"skaven_storm_vermin",
 				"skaven_storm_vermin"
 			},
@@ -1621,7 +1048,15 @@ local action_data = {
 				"skaven_storm_vermin",
 				"skaven_storm_vermin"
 			},
-			survival_hardest = {
+			cataclysm = {
+				"skaven_storm_vermin",
+				"skaven_storm_vermin"
+			},
+			cataclysm_2 = {
+				"skaven_storm_vermin",
+				"skaven_storm_vermin"
+			},
+			cataclysm_3 = {
 				"skaven_storm_vermin",
 				"skaven_storm_vermin",
 				"skaven_storm_vermin",
@@ -1632,12 +1067,12 @@ local action_data = {
 		},
 		difficulty_spawn = {
 			harder = "stormdorf_boss_event_defensive_harder",
-			normal = "stormdorf_boss_event_defensive_normal",
 			hard = "stormdorf_boss_event_defensive_hard",
-			survival_hard = "stormdorf_boss_event_defensive_hard",
-			survival_harder = "stormdorf_boss_event_defensive_hard",
+			normal = "stormdorf_boss_event_defensive_normal",
 			hardest = "stormdorf_boss_event_defensive_hardest",
-			survival_hardest = "stormdorf_boss_event_defensive_hard",
+			cataclysm = "stormdorf_boss_event_defensive_hard",
+			cataclysm_3 = "stormdorf_boss_event_defensive_hard",
+			cataclysm_2 = "stormdorf_boss_event_defensive_hard",
 			easy = "stormdorf_boss_event_defensive_easy"
 		},
 		start_anims = {

@@ -274,7 +274,9 @@ StartMenuView.on_enter = function (self, params)
 
 	local profile_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
 
-	self:set_current_hero(profile_index)
+	if profile_index then
+		self:set_current_hero(profile_index)
+	end
 
 	self.waiting_for_post_update_enter = true
 	self._on_enter_transition_params = params
@@ -344,7 +346,7 @@ StartMenuView.hotkey_allowed = function (self, input, mapping_data)
 		local name = current_screen_settings.name
 
 		if name == transition_state then
-			local active_sub_settings_name = current_state.active_settings_name and current_state:active_settings_name()
+			local active_sub_settings_name = current_state.get_selected_layout_name and current_state:get_selected_layout_name()
 
 			if not transition_sub_state or transition_sub_state == active_sub_settings_name then
 				return true

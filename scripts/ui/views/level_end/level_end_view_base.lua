@@ -1,0 +1,1295 @@
+require("scripts/ui/reward_popup/reward_popup_ui")
+
+for _, dlc in pairs(DLCSettings) do
+	local files = dlc.end_view_state
+
+	if files then
+		for _, file in ipairs(files) do
+			require(file)
+		end
+	end
+end
+
+local fake_input_service = {
+	get = function ()
+		return
+	end,
+	has = function ()
+		return
+	end
+}
+local RPCS = {
+	"rpc_signal_end_of_level_done",
+	"rpc_notify_lobby_joined"
+}
+LevelEndView_Base = class(LevelEndView_Base)
+
+LevelEndView_Base.init = function (self, context)
+	self:setup_world(context)
+
+	local game_won = context.game_won
+	local rewards = context.rewards
+	self.context = context
+	self.game_won = game_won
+	self.game_mode_key = context.game_mode_key
+	self.player_manager = context.player_manager
+	self.input_manager = context.input_manager
+	self.ingame_ui = context.ingame_ui
+	self.profile_synchronizer = context.profile_synchronizer
+	self.peer_id = context.peer_id
+	self.local_player_id = context.local_player_id
+	self.rewards = rewards
+	self.render_settings = {
+		alpha_multiplier = 0,
+		snap_pixel_positions = true
+	}
+	self._lobby = context.lobby
+	self.is_server = context.is_server
+	local is_untrusted = script_data["eac-untrusted"]
+	self._is_untrusted = is_untrusted
+
+	if not is_untrusted then
+		self.level_up_rewards = self:_get_level_up_rewards()
+		self.deed_rewards = self:_get_deed_rewards()
+		self.keep_decoration_rewards = self:_get_keep_decoration_rewards()
+		self.event_rewards = self:_get_event_rewards()
+	end
+
+	self._reward_presentation_queue = {}
+	self.reward_popup = RewardPopupUI:new(context)
+	local index_by_state_name = self:setup_pages(game_won, rewards)
+	local state_name_by_index = {}
+
+	for state_name, index in pairs(index_by_state_name) do
+		state_name_by_index[index] = state_name
+	end
+
+	self._index_by_state_name = index_by_state_name
+	self._state_name_by_index = state_name_by_index
+	self._state_machine_params = {
+		parent = self,
+		context = context,
+		game_won = game_won,
+		game_mode_key = self.game_mode_key
+	}
+
+	self:create_ui_elements()
+	self:setup_camera()
+
+	self._done_peers = {}
+	self._wants_reload = {}
+	self.waiting_to_start = true
+	self._wants_to_exit_to_game = nil
+	self._started_exit = nil
+
+	if self._lobby == nil then
+		self:left_lobby()
+	end
+end
+
+LevelEndView_Base.register_rpcs = function (self, network_event_delegate)
+	self._registered_rpcs = true
+
+	network_event_delegate:register(self, unpack(RPCS))
+
+	self._network_event_delegate = network_event_delegate
+end
+
+LevelEndView_Base.unregister_rpcs = function (self)
+	self._network_event_delegate:unregister(self)
+
+	self._network_event_delegate = nil
+	self._registered_rpcs = false
+end
+
+LevelEndView_Base.enable_chat = function (self)
+	return true
+end
+
+LevelEndView_Base.start = function (self)
+	self:_activate_viewport()
+
+	self.waiting_to_start = nil
+	self.state_auto_change = true
+
+	self:_proceed_to_next_auto_state(1, #self._state_name_by_index)
+end
+
+LevelEndView_Base.on_enter = function (self)
+	return
+end
+
+LevelEndView_Base.on_exit = function (self)
+	if not self._is_untrusted then
+		local difficulty_key = Managers.state.difficulty:get_difficulty()
+		local chest_settings = LootChestData.chests_by_category[difficulty_key]
+		local chests_package_name = chest_settings.package_name
+
+		Managers.package:unload(chests_package_name, "global")
+	end
+end
+
+LevelEndView_Base._vote_to_leave_game = function (self)
+	local voting_manager = Managers.state.voting
+
+	voting_manager:vote(1)
+
+	self._voted = true
+end
+
+LevelEndView_Base.exit_to_game = function (self)
+	self:play_sound(self._stop_music_event)
+
+	self._exit_timer = 2
+	self._started_exit = true
+end
+
+LevelEndView_Base.done = function (self)
+	return self._wants_to_exit_to_game
+end
+
+LevelEndView_Base.setup_pages = function (self, game_won, rewards)
+	local index_by_state_name = {}
+
+	return index_by_state_name
+end
+
+LevelEndView_Base.create_ui_elements = function (self)
+	return
+end
+
+LevelEndView_Base._activate_viewport = function (self)
+	local world, viewport = self:get_viewport_world()
+
+	ScriptWorld.activate_viewport(world, viewport)
+end
+
+LevelEndView_Base.get_world_link_unit = function (self)
+	local level_name = "levels/end_screen/world"
+	local world = self:get_viewport_world()
+	local level = ScriptWorld.level(world, level_name)
+
+	if level then
+		local units = Level.units(level)
+
+		for i, level_unit in ipairs(units) do
+			local unit_name = Unit.get_data(level_unit, "name")
+
+			if unit_name and unit_name == "loot_chest_spawn" then
+				return level_unit
+			end
+		end
+	end
+end
+
+LevelEndView_Base.get_viewport_world = function (self)
+	return self._world, self._world_viewport
+end
+
+LevelEndView_Base.update = function (self, dt, t)
+	if self.suspended or self.waiting_for_post_update_enter then
+		return
+	end
+
+	local active_camera_shakes = self._active_camera_shakes
+
+	if active_camera_shakes then
+		for settings, _ in pairs(active_camera_shakes) do
+			self:_apply_shake_event(settings, t)
+		end
+	end
+
+	local input_service = self:input_service()
+
+	if self._started_force_shutdown then
+		self:update_force_shutdown(dt)
+	end
+
+	if self._started_exit then
+		self:_update_exit(dt)
+	end
+
+	if self.reward_popup then
+		self.reward_popup:update(dt)
+	end
+
+	self:_handle_queued_presentations()
+
+	if self._machine then
+		self._machine:update(dt, t)
+
+		if self._new_state_name then
+			self:_handle_state_exit()
+		elseif self.state_auto_change then
+			self:_handle_state_auto_change()
+		elseif self._page_selector_widget then
+			local index = self:_is_page_selector_pressed()
+
+			if index then
+				local state_name = self._state_name_by_index[index]
+
+				self:_request_state_change(state_name)
+			end
+		end
+	end
+end
+
+LevelEndView_Base.transitioning = function (self)
+	return self.exiting
+end
+
+LevelEndView_Base.left_lobby = function (self)
+	self._left_lobby = true
+	self._lobby = nil
+
+	if self._done_peers[Network.peer_id()] then
+		self:exit_to_game()
+	end
+end
+
+LevelEndView_Base.destroy = function (self)
+	if self._registered_rpcs then
+		self._network_event_delegate:unregister(self)
+
+		self._network_event_delegate = nil
+	end
+
+	self.ui_animator = nil
+
+	if self._machine then
+		self._machine:destroy()
+
+		self._machine = nil
+	end
+
+	if self.reward_popup then
+		self.reward_popup:destroy()
+
+		self.reward_popup = nil
+	end
+
+	self:_pop_mouse_cursor()
+	self:play_sound("play_gui_chestroom_stop")
+	self:play_sound("unmute_all_world_sounds")
+	self:destroy_world()
+end
+
+LevelEndView_Base.play_sound = function (self, event)
+	WwiseWorld.trigger_event(self.wwise_world, event)
+end
+
+LevelEndView_Base._is_button_pressed = function (self, widget)
+	local button_hotspot = widget.content.button_hotspot
+
+	if button_hotspot.on_release then
+		button_hotspot.on_release = nil
+
+		return true
+	end
+end
+
+LevelEndView_Base._is_button_hover_enter = function (self, widget)
+	local content = widget.content
+	local hotspot = content.button_hotspot
+
+	return hotspot.on_hover_enter
+end
+
+LevelEndView_Base._is_page_selector_pressed = function (self)
+	local widget = self._page_selector_widget
+	local content = widget.content
+	local amount = content.amount
+
+	for i = 1, amount, 1 do
+		local name_sufix = "_" .. tostring(i)
+		local hotspot_name = "hotspot" .. name_sufix
+		local hotspot = content[hotspot_name]
+
+		if hotspot.on_release and not hotspot.is_selected then
+			return i
+		end
+	end
+end
+
+LevelEndView_Base._set_page_selector_selection = function (self, index)
+	local widget = self._page_selector_widget
+	local content = widget.content
+	local amount = content.amount
+
+	for i = 1, amount, 1 do
+		local name_sufix = "_" .. tostring(i)
+		local hotspot_name = "hotspot" .. name_sufix
+		local hotspot = content[hotspot_name]
+		hotspot.is_selected = index == i
+	end
+end
+
+LevelEndView_Base._update_exit = function (self, dt)
+	self._exit_timer = math.max(0, self._exit_timer - dt)
+
+	if self._exit_timer == 0 then
+		self._started_exit = false
+		self._wants_to_exit_to_game = true
+	end
+end
+
+LevelEndView_Base.do_retry = function (self)
+	return false
+end
+
+LevelEndView_Base._get_level_up_rewards = function (self)
+	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
+	local items_by_level = {}
+
+	for reward_name, item in pairs(end_of_level_rewards) do
+		if string.find(reward_name, "level_up_reward") == 1 then
+			local data = string.split(reward_name, ";")
+			local level = tonumber(data[2])
+			local index = tonumber(data[3])
+
+			if not items_by_level[level] then
+				items_by_level[level] = {}
+			end
+
+			items_by_level[level][index] = item
+		end
+	end
+
+	return items_by_level
+end
+
+LevelEndView_Base._get_deed_rewards = function (self)
+	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
+	local deed_rewards = {}
+
+	for reward_name, item in pairs(end_of_level_rewards) do
+		if string.find(reward_name, "deed_reward") == 1 then
+			deed_rewards[#deed_rewards + 1] = item
+		end
+	end
+
+	return deed_rewards
+end
+
+LevelEndView_Base._get_event_rewards = function (self)
+	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
+	local event_rewards = {}
+
+	for reward_name, item in pairs(end_of_level_rewards) do
+		if string.find(reward_name, "event_reward") == 1 then
+			event_rewards[#event_rewards + 1] = item
+		end
+	end
+
+	return event_rewards
+end
+
+LevelEndView_Base._get_keep_decoration_rewards = function (self)
+	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
+	local keep_decoration_rewards = {}
+
+	for reward_name, item in pairs(end_of_level_rewards) do
+		if string.find(reward_name, "keep_decoration_painting") == 1 then
+			keep_decoration_rewards[#keep_decoration_rewards + 1] = item
+		end
+	end
+
+	return keep_decoration_rewards
+end
+
+LevelEndView_Base._present_reward = function (self, data)
+	local reward_popup = self.reward_popup
+
+	if self:displaying_reward_presentation() then
+		local reward_presentation_queue = self._reward_presentation_queue
+		reward_presentation_queue[#reward_presentation_queue + 1] = data
+	else
+		reward_popup:display_presentation(data)
+	end
+end
+
+LevelEndView_Base._handle_queued_presentations = function (self)
+	if self:_is_reward_presentation_complete() or (#self._reward_presentation_queue == 0 and not self:displaying_reward_presentation()) then
+		local reward_presentation_queue = self._reward_presentation_queue
+		local num_queued_rewards = #reward_presentation_queue
+
+		if num_queued_rewards > 0 then
+			local next_reward = table.remove(reward_presentation_queue, 1)
+
+			self:_present_reward(next_reward)
+		else
+			self._reward_presentation_done = true
+		end
+	end
+end
+
+LevelEndView_Base.displaying_reward_presentation = function (self)
+	return self.reward_popup:is_presentation_active()
+end
+
+LevelEndView_Base._is_reward_presentation_complete = function (self)
+	return self.reward_popup:is_presentation_complete()
+end
+
+LevelEndView_Base.reward_presentation_done = function (self)
+	return self._reward_presentation_done
+end
+
+LevelEndView_Base.present_level_up = function (self, hero_name, hero_level)
+	local level_unlocks = ProgressionUnlocks.get_level_unlocks(hero_level, hero_name)
+	local level_up_rewards = self.level_up_rewards[hero_level]
+	local has_level_up_unlocks = level_unlocks and #level_unlocks > 0
+	local has_level_up_rewards = level_up_rewards and #level_up_rewards > 0
+	local presentation_data = nil
+
+	if has_level_up_rewards or has_level_up_unlocks then
+		presentation_data = {}
+	end
+
+	if has_level_up_unlocks then
+		for index, template in ipairs(level_unlocks) do
+			local entry = {}
+			local title = template.title
+			local description = template.description
+
+			if title and description then
+				entry[#entry + 1] = {
+					widget_type = "description",
+					value = {
+						Localize(title),
+						Localize(description)
+					}
+				}
+			elseif title then
+				entry[#entry + 1] = {
+					widget_type = "title",
+					value = Localize(title)
+				}
+			elseif description then
+				entry[#entry + 1] = {
+					widget_type = "title",
+					value = Localize(description)
+				}
+			end
+
+			entry[#entry + 1] = {
+				value = template.value,
+				widget_type = template.unlock_type
+			}
+			presentation_data[#presentation_data + 1] = entry
+		end
+	end
+
+	if has_level_up_rewards then
+		local item_interface = Managers.backend:get_interface("items")
+
+		for index, item in ipairs(level_up_rewards) do
+			local entry = {}
+			local backend_id = item.backend_id
+			local reward_item = item_interface:get_item_from_id(backend_id)
+			local item_data = item_interface:get_item_masterlist_data(backend_id)
+			local item_type = item_data.item_type
+			local description = {}
+			local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
+
+			if item_type == "loot_chest" then
+				description[1] = Localize(display_name)
+				description[2] = Localize("end_screen_chest_received")
+			else
+				description[1] = Localize(item_type)
+				description[2] = Localize("reward_weapon")
+			end
+
+			if description then
+				entry[#entry + 1] = {
+					widget_type = "description",
+					value = description
+				}
+			end
+
+			entry[#entry + 1] = {
+				widget_type = "item",
+				value = item
+			}
+			presentation_data[#presentation_data + 1] = entry
+		end
+	end
+
+	if presentation_data then
+		self:_present_reward(presentation_data)
+	end
+end
+
+LevelEndView_Base.present_additional_rewards = function (self)
+	local deed_rewards = self.deed_rewards
+	local num_deed_rewards = #deed_rewards
+	local item_interface = Managers.backend:get_interface("items")
+
+	if num_deed_rewards > 0 then
+		local presentation_data = {
+			{
+				{
+					widget_type = "title",
+					value = Localize("deed_completed_title")
+				}
+			}
+		}
+
+		for _, item in ipairs(deed_rewards) do
+			local entry = {}
+			local backend_id = item.backend_id
+			local reward_item = item_interface:get_item_from_id(backend_id)
+			local item_data = item_interface:get_item_masterlist_data(backend_id)
+			local item_type = item_data.item_type
+			local description = {}
+			local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
+
+			if item_type == "loot_chest" then
+				description[1] = Localize(display_name)
+				description[2] = Localize("end_screen_chest_received")
+			else
+				description[1] = Localize(item_type)
+				description[2] = Localize("reward_weapon")
+			end
+
+			if description then
+				entry[#entry + 1] = {
+					widget_type = "description",
+					value = description
+				}
+			end
+
+			entry[#entry + 1] = {
+				widget_type = "item",
+				value = item
+			}
+			presentation_data[#presentation_data + 1] = entry
+		end
+
+		self:_present_reward(presentation_data)
+	end
+
+	local keep_decoration_rewards = self.keep_decoration_rewards
+	local num_keep_decoration_rewards = #keep_decoration_rewards
+
+	if num_keep_decoration_rewards > 0 then
+		local presentation_data = {}
+
+		for _, item in ipairs(keep_decoration_rewards) do
+			local entry = {}
+			local backend_id = item.backend_id
+			local reward_item = item_interface:get_item_from_id(backend_id)
+			local item_data = item_interface:get_item_masterlist_data(backend_id)
+			local item_type = item_data.item_type
+			local description = {}
+			local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
+
+			if item_type == "keep_decoration_painting" then
+				description[1] = Localize(display_name)
+				description[2] = Localize("keep_decoration_painting_recieved")
+			end
+
+			if description then
+				entry[#entry + 1] = {
+					widget_type = "description",
+					value = description
+				}
+			end
+
+			entry[#entry + 1] = {
+				widget_type = "item",
+				value = item
+			}
+			presentation_data[#presentation_data + 1] = entry
+		end
+
+		self:_present_reward(presentation_data)
+	end
+
+	local event_rewards = self.event_rewards
+	local num_event_rewards = #event_rewards
+
+	if num_event_rewards > 0 then
+		local presentation_data = {}
+
+		for _, item in ipairs(event_rewards) do
+			local entry = {}
+			local backend_id = item.backend_id
+			local reward_item = item_interface:get_item_from_id(backend_id)
+			local description = {}
+			local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
+			description[1] = Localize(display_name)
+			description[2] = Localize("end_screen_you_received")
+
+			if description then
+				entry[#entry + 1] = {
+					widget_type = "description",
+					value = description
+				}
+			end
+
+			entry[#entry + 1] = {
+				widget_type = "item",
+				value = item
+			}
+			presentation_data[#presentation_data + 1] = entry
+		end
+
+		self:_present_reward(presentation_data)
+	end
+end
+
+LevelEndView_Base.present_chest_rewards = function (self)
+	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
+	local item_interface = Managers.backend:get_interface("items")
+	local chest = end_of_level_rewards.chest
+
+	if chest then
+		local backend_id = chest.backend_id
+		local reward_item = item_interface:get_item_from_id(backend_id)
+		local item_data = item_interface:get_item_masterlist_data(backend_id)
+		local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
+		local item_name = item_data.name
+		local presentation_data = {
+			{
+				{
+					widget_type = "description",
+					value = {
+						Localize(display_name),
+						Localize("end_screen_chest_received")
+					}
+				},
+				{
+					widget_type = "loot_chest",
+					value = item_name
+				}
+			}
+		}
+
+		self:_present_reward(presentation_data)
+	end
+
+	local bonus_chest = end_of_level_rewards.bonus_chest
+
+	if bonus_chest then
+		local backend_id = bonus_chest.backend_id
+		local item_data = item_interface:get_item_masterlist_data(backend_id)
+		local item_name = item_data.name
+		local presentation_data = {
+			{
+				{
+					widget_type = "title",
+					value = Localize("end_screen_quick_play_bonus")
+				}
+			},
+			{
+				{
+					widget_type = "title",
+					value = Localize("end_screen_you_received")
+				},
+				{
+					widget_type = "loot_chest",
+					value = item_name
+				}
+			}
+		}
+
+		self:_present_reward(presentation_data)
+	end
+end
+
+LevelEndView_Base.wanted_menu_state = function (self)
+	return self._wanted_menu_state
+end
+
+LevelEndView_Base.clear_wanted_menu_state = function (self)
+	self._wanted_menu_state = nil
+end
+
+LevelEndView_Base._request_state_change = function (self, state_name)
+	local state_machine = self._machine
+
+	if not state_machine then
+		return
+	end
+
+	local current_state = state_machine:state()
+	local current_state_name = current_state.NAME
+	local direction = nil
+	local new_state_index = self._index_by_state_name[state_name]
+	local current_state_index = self._index_by_state_name[current_state_name]
+
+	if current_state_index < new_state_index then
+		direction = "left"
+	else
+		direction = "right"
+	end
+
+	current_state:exit(direction)
+
+	self._new_state_name = state_name
+end
+
+LevelEndView_Base._handle_state_exit = function (self)
+	local state_machine = self._machine
+
+	if not state_machine then
+		return
+	end
+
+	local current_state = state_machine:state()
+
+	if current_state:exit_done() then
+		self:_setup_state_machine(self._new_state_name)
+
+		self._new_state_name = nil
+	end
+end
+
+LevelEndView_Base._setup_state_machine = function (self, optional_start_state_name, initial)
+	if self._machine then
+		self._machine:destroy()
+
+		self._machine = nil
+	end
+
+	local state_name = optional_start_state_name or "EndViewStateSummary"
+	local state_index = self._index_by_state_name[state_name]
+	local start_state = rawget(_G, state_name)
+	local profiling_debugging_enabled = false
+	local state_machine_params = self._state_machine_params
+	state_machine_params.initial_state = initial
+	local direction = nil
+
+	if not initial then
+		local previous_state_name = self._current_state_name
+		local previous_state_index = self._index_by_state_name[previous_state_name]
+
+		if previous_state_index < state_index then
+			direction = "left"
+		else
+			direction = "right"
+		end
+	end
+
+	state_machine_params.direction = direction
+	self._current_state_name = state_name
+	self._machine = StateMachine:new(self, start_state, state_machine_params, profiling_debugging_enabled)
+end
+
+LevelEndView_Base._handle_state_auto_change = function (self)
+	local state_machine = self._machine
+
+	if not state_machine then
+		return
+	end
+
+	local current_state = state_machine:state()
+	local state_name = current_state.NAME
+	local state_name_by_index = self._state_name_by_index
+	local index_by_state_name = self._index_by_state_name
+	local current_state_index = index_by_state_name[state_name]
+	local num_states = #state_name_by_index
+
+	if self._next_auto_state_index then
+		if current_state:exit_done() then
+			if num_states < self._next_auto_state_index then
+				if not self._started_exit then
+					self:exit_to_game()
+				end
+			else
+				self:_proceed_to_next_auto_state(self._next_auto_state_index, num_states)
+			end
+		end
+	else
+		local new_state_index = nil
+		local displaying_reward_presentation = self:displaying_reward_presentation()
+
+		if not displaying_reward_presentation then
+			if current_state:done() then
+				new_state_index = current_state_index + 1
+			end
+
+			if new_state_index then
+				current_state:exit()
+
+				self._next_auto_state_index = new_state_index
+			end
+		end
+	end
+end
+
+LevelEndView_Base._proceed_to_next_auto_state = function (self, index, num_states)
+	local new_state = self._state_name_by_index[index]
+
+	self:_setup_state_machine(new_state, true)
+
+	if index == num_states then
+		self:_push_mouse_cursor()
+	end
+
+	self._next_auto_state_index = nil
+end
+
+LevelEndView_Base.rpc_signal_end_of_level_done = function (self, sender, peer_id, do_reload)
+	if self.is_server then
+		local lobby = self._lobby
+		local members = lobby:members():get_members()
+		local my_peer_id = Network.peer_id()
+
+		for i, member_peer_id in ipairs(members) do
+			if member_peer_id ~= peer_id and member_peer_id ~= my_peer_id then
+				RPC.rpc_signal_end_of_level_done(member_peer_id, peer_id, do_reload)
+			end
+		end
+	end
+
+	self:peer_signaled_done(peer_id, do_reload)
+end
+
+LevelEndView_Base.signal_done = function (self, do_reload)
+	if self._signaled_done then
+		return
+	end
+
+	if not self._left_lobby then
+		if self.is_server then
+			local lobby = self._lobby
+			local lobby_members = lobby:members()
+
+			if lobby_members then
+				local members = lobby_members:get_members()
+				local own_peer_id = Network.peer_id()
+
+				for i, peer_id in ipairs(members) do
+					if peer_id ~= own_peer_id then
+						RPC.rpc_signal_end_of_level_done(peer_id, own_peer_id, do_reload)
+					end
+				end
+			end
+		else
+			local lobby = self._lobby
+			local host = lobby:lobby_host()
+			local my_peer_id = Network.peer_id()
+
+			RPC.rpc_signal_end_of_level_done(host, my_peer_id, do_reload)
+		end
+	end
+
+	self:peer_signaled_done(Network.peer_id(), do_reload)
+end
+
+LevelEndView_Base.peer_signaled_done = function (self, peer_id, do_reload)
+	if not self._started_force_shutdown then
+		self:start_force_shutdown()
+	end
+
+	self._done_peers[peer_id] = true
+	self._wants_reload[peer_id] = do_reload
+end
+
+LevelEndView_Base.rpc_notify_lobby_joined = function (self, peer_id)
+	if self.is_server then
+		local do_reload = false
+		local lobby = self._lobby
+		local members = lobby:members():get_members()
+		local my_peer_id = Network.peer_id()
+
+		for i, member_peer_id in ipairs(members) do
+			if member_peer_id ~= peer_id and member_peer_id ~= my_peer_id then
+				RPC.rpc_signal_end_of_level_done(member_peer_id, peer_id, do_reload)
+			end
+		end
+
+		self:peer_signaled_done(peer_id, do_reload)
+	end
+end
+
+LevelEndView_Base.start_force_shutdown = function (self)
+	self._started_force_shutdown = true
+	self._force_shutdown_timer = 10
+	self._force_shutdown_timer_start = self._force_shutdown_timer
+end
+
+LevelEndView_Base.get_force_shutdown_time = function (self)
+	return self._force_shutdown_timer, self._force_shutdown_timer_start
+end
+
+LevelEndView_Base.is_force_shutdown_active = function (self)
+	return self._started_force_shutdown
+end
+
+LevelEndView_Base.update_force_shutdown = function (self, dt)
+	self._force_shutdown_timer = math.max(0, self._force_shutdown_timer - dt)
+
+	if self._force_shutdown_timer == 0 and not self._signaled_done then
+		self:signal_done(false)
+
+		self._signaled_done = true
+	elseif not self._left_lobby then
+		local all_done = true
+		local lobby_members = self._lobby:members()
+
+		if lobby_members then
+			local members = self._lobby:members():get_members()
+
+			for i, peer_id in ipairs(members) do
+				if not self._done_peers[peer_id] then
+					all_done = false
+
+					break
+				end
+			end
+		end
+
+		if all_done then
+			self:exit_to_game()
+		end
+	end
+
+	if self._started_exit then
+		self._started_force_shutdown = false
+	end
+end
+
+local cam_shake_settings = {
+	persistance = 1,
+	fade_out = 0.5,
+	amplitude = 0.9,
+	seed = 0,
+	duration = 0.5,
+	fade_in = 0.1,
+	octaves = 7
+}
+
+LevelEndView_Base.setup_camera = function (self)
+	local camera_pose = nil
+	local level_name = "levels/end_screen/world"
+	local unit_indices = LevelResource.unit_indices(level_name, "units/hub_elements/cutscene_camera/cutscene_camera")
+
+	for _, index in pairs(unit_indices) do
+		local unit_data = LevelResource.unit_data(level_name, index)
+		local name = DynamicData.get(unit_data, "name")
+
+		if name and name == "end_screen_camera" then
+			local position = LevelResource.unit_position(level_name, index)
+			local rotation = LevelResource.unit_rotation(level_name, index)
+			local pose = Matrix4x4.from_quaternion_position(rotation, position)
+			camera_pose = Matrix4x4Box(pose)
+
+			print("Found camera: " .. name)
+		end
+	end
+
+	self._camera_pose = camera_pose
+
+	self:position_camera()
+end
+
+LevelEndView_Base.add_camera_shake = function (self, settings, start_time, scale)
+	local data = {}
+	local current_rot = self:get_camera_rotation()
+	local settings = settings or cam_shake_settings
+	local duration = settings.duration
+	local fade_in = settings.fade_in
+	local fade_out = settings.fade_out
+	duration = (duration or 0) + (fade_in or 0) + (fade_out or 0)
+	data.shake_settings = settings
+	data.start_time = start_time
+	data.end_time = duration and start_time + duration
+	data.fade_in_time = fade_in and start_time + fade_in
+	data.fade_out_time = fade_out and data.end_time - fade_out
+	data.seed = settings.seed or Math.random(1, 100)
+	data.scale = scale or 1
+	data.camera_rotation_boxed = QuaternionBox(current_rot)
+	self._active_camera_shakes = {
+		[data] = true
+	}
+end
+
+LevelEndView_Base._apply_shake_event = function (self, settings, t)
+	local active_camera_shakes = self._active_camera_shakes
+	local start_time = settings.start_time
+	local end_time = settings.end_time
+	local fade_in_time = settings.fade_in_time
+	local fade_out_time = settings.fade_out_time
+
+	if fade_in_time and t <= fade_in_time then
+		settings.fade_progress = math.clamp((t - start_time) / (fade_in_time - start_time), 0, 1)
+	elseif fade_out_time and fade_out_time <= t then
+		settings.fade_progress = math.clamp((end_time - t) / (end_time - fade_out_time), 0, 1)
+	end
+
+	local pitch_noise_value = self:_calculate_perlin_value(t - settings.start_time, settings) * settings.scale
+	local yaw_noise_value = self:_calculate_perlin_value(t - settings.start_time + 10, settings) * settings.scale
+	local starting_rotation = settings.camera_rotation_boxed:unbox()
+	local deg_to_rad = math.pi / 180
+	local yaw_offset = Quaternion(Vector3.up(), yaw_noise_value * deg_to_rad)
+	local pitch_offset = Quaternion(Vector3.right(), pitch_noise_value * deg_to_rad)
+	local total_offset = Quaternion.multiply(yaw_offset, pitch_offset)
+	local rotation = Quaternion.multiply(starting_rotation, total_offset)
+
+	self:set_camera_rotation(rotation)
+
+	if settings.end_time and settings.end_time <= t then
+		active_camera_shakes[settings] = nil
+	end
+end
+
+LevelEndView_Base._calculate_perlin_value = function (self, x, settings)
+	local total = 0
+	local shake_settings = settings.shake_settings
+	local persistance = shake_settings.persistance
+	local number_of_octaves = shake_settings.octaves
+
+	for i = 0, number_of_octaves, 1 do
+		local frequency = 2^i
+		local amplitude = persistance^i
+		total = total + self:_interpolated_noise(x * frequency, settings) * amplitude
+	end
+
+	local amplitude_multiplier = shake_settings.amplitude or 1
+	local fade_multiplier = settings.fade_progress or 1
+	total = total * amplitude_multiplier * fade_multiplier
+
+	return total
+end
+
+LevelEndView_Base._interpolated_noise = function (self, x, settings)
+	local x_floored = math.floor(x)
+	local remainder = x - x_floored
+	local v1 = self:_smoothed_noise(x_floored, settings)
+	local v2 = self:_smoothed_noise(x_floored + 1, settings)
+
+	return math.lerp(v1, v2, remainder)
+end
+
+LevelEndView_Base._smoothed_noise = function (self, x, settings)
+	return self:_noise(x, settings) / 2 + self:_noise(x - 1, settings) / 4 + self:_noise(x + 1, settings) / 4
+end
+
+LevelEndView_Base._noise = function (self, x, settings)
+	local next_seed, _ = Math.next_random(x + settings.seed)
+	local _, value = Math.next_random(next_seed)
+
+	return value * 2 - 1
+end
+
+LevelEndView_Base.set_camera_position = function (self, position)
+	local _, viewport = self:get_viewport_world()
+	local camera = ScriptViewport.camera(viewport)
+
+	return ScriptCamera.set_local_position(camera, position)
+end
+
+LevelEndView_Base.set_camera_rotation = function (self, rotation)
+	local _, viewport = self:get_viewport_world()
+	local camera = ScriptViewport.camera(viewport)
+
+	return ScriptCamera.set_local_rotation(camera, rotation)
+end
+
+LevelEndView_Base.get_camera_position = function (self)
+	local _, viewport = self:get_viewport_world()
+	local camera = ScriptViewport.camera(viewport)
+
+	return ScriptCamera.position(camera)
+end
+
+LevelEndView_Base.get_camera_rotation = function (self)
+	local _, viewport = self:get_viewport_world()
+	local camera = ScriptViewport.camera(viewport)
+
+	return ScriptCamera.rotation(camera)
+end
+
+LevelEndView_Base.position_camera = function (self, optional_pose, fov)
+	local world, viewport = self:get_viewport_world()
+	local camera = ScriptViewport.camera(viewport)
+	local camera_pose = optional_pose or self._camera_pose:unbox()
+
+	if camera_pose then
+		local fov = fov or 65
+
+		Camera.set_vertical_fov(camera, math.degrees_to_radians(fov))
+		ScriptCamera.set_local_pose(camera, camera_pose)
+		ScriptCamera.force_update(world, camera)
+	end
+end
+
+LevelEndView_Base.set_camera_zoom = function (self, progress)
+	local camera_pose = self._camera_pose:unbox()
+	local translation = Matrix4x4.translation(camera_pose)
+	local rotation = Matrix4x4.rotation(camera_pose)
+	local max_distance = 0.5
+	local distance = max_distance * progress
+	local dir = Quaternion.forward(rotation)
+	local position = translation + dir * distance
+
+	self:set_camera_position(position)
+end
+
+LevelEndView_Base._setup_viewport_camera = function (self)
+	local world, viewport = self:get_viewport_world()
+	local level_camera_unit = World.unit_by_name(world, "camera")
+	local level_camera_rot = Unit.world_rotation(level_camera_unit, 0)
+	local level_camera_pos = Unit.world_position(level_camera_unit, 0)
+	local level_camera_look = Quaternion.forward(level_camera_rot)
+	level_camera_pos = level_camera_pos - level_camera_look * 3
+	local viewport_camera = ScriptViewport.camera(viewport)
+
+	ScriptCamera.set_local_rotation(viewport_camera, level_camera_rot)
+	ScriptCamera.set_local_position(viewport_camera, level_camera_pos)
+end
+
+LevelEndView_Base._push_mouse_cursor = function (self)
+	if not self._cursor_visible then
+		ShowCursorStack.push()
+
+		self._cursor_visible = true
+	end
+end
+
+LevelEndView_Base._pop_mouse_cursor = function (self)
+	if self._cursor_visible then
+		ShowCursorStack.pop()
+
+		self._cursor_visible = nil
+	end
+end
+
+LevelEndView_Base.set_input_manager = function (self, input_manager)
+	self.input_manager = input_manager
+
+	if self.reward_popup then
+		self.reward_popup:set_input_manager(input_manager)
+	end
+
+	local state = self._machine:state()
+
+	state:set_input_manager(input_manager)
+end
+
+LevelEndView_Base.input_service = function (self)
+	return (self:displaying_reward_presentation() and fake_input_service) or self.input_manager:get_service("end_of_level")
+end
+
+LevelEndView_Base.menu_input_service = function (self)
+	return (self.input_blocked and fake_input_service) or self:input_service()
+end
+
+LevelEndView_Base.set_input_blocked = function (self, blocked)
+	self.input_blocked = blocked
+end
+
+LevelEndView_Base.input_enabled = function (self)
+	return true
+end
+
+LevelEndView_Base.setup_world = function (self, context)
+	local world, top_world = self:create_world(context)
+	local level = self:spawn_level(context, world)
+	local viewport = self:create_viewport(context, world)
+	local ui_renderer, ui_top_renderer = self:create_ui_renderer(context, world, top_world)
+	local wwise_world = Managers.world:wwise_world(world)
+	self._world = world
+	self._top_world = top_world
+	self._world_viewport = viewport
+	self.ui_renderer = ui_renderer
+	self.ui_top_renderer = ui_top_renderer
+	self.wwise_world = wwise_world
+	context.world = world
+	context.top_world = top_world
+	context.world_viewport = viewport
+	context.ui_renderer = ui_renderer
+	context.ui_top_renderer = ui_top_renderer
+	context.wwise_world = wwise_world
+end
+
+LevelEndView_Base.destroy_world = function (self)
+	UIRenderer.destroy(self.ui_renderer, self._world)
+
+	self.ui_renderer = nil
+
+	UIRenderer.destroy(self.ui_top_renderer, self._top_world)
+
+	self.ui_top_renderer = nil
+
+	Managers.world:destroy_world(self._world)
+
+	self._world = nil
+	self._top_world = nil
+end
+
+LevelEndView_Base.get_world_flags = function (self)
+	local flags = {
+		Application.DISABLE_SOUND,
+		Application.DISABLE_ESRAM,
+		Application.ENABLE_VOLUMETRICS
+	}
+
+	if Application.user_setting("disable_apex_cloth") then
+		table.insert(flags, Application.DISABLE_APEX_CLOTH)
+	else
+		table.insert(flags, Application.APEX_LOD_RESOURCE_BUDGET)
+		table.insert(flags, Application.user_setting("apex_lod_resource_budget") or ApexClothQuality.high.apex_lod_resource_budget)
+	end
+
+	return flags
+end
+
+LevelEndView_Base.create_world = function (self, context)
+	local world_name = "end_screen"
+	local shading_environment = "environment/ui_end_screen"
+	local layer = 2
+	local flags = self:get_world_flags()
+	local world = Managers.world:create_world(world_name, shading_environment, nil, layer, unpack(flags))
+
+	World.set_data(world, "avoid_blend", true)
+
+	local top_world = Managers.world:world("top_ingame_view")
+
+	return world, top_world
+end
+
+LevelEndView_Base.create_viewport = function (self, context, world)
+	local viewport_name = "end_screen_viewport"
+	local viewport_type = "default"
+	local layer = 2
+	local viewport = ScriptWorld.create_viewport(world, viewport_name, viewport_type, layer)
+
+	return viewport
+end
+
+LevelEndView_Base.spawn_level = function (self, context, world)
+	local level_name = "levels/end_screen/world"
+	local object_sets = {}
+	local level = ScriptWorld.load_level(world, level_name, object_sets, nil, nil, nil)
+
+	Level.spawn_background(level)
+
+	return level
+end
+
+LevelEndView_Base.create_ui_renderer = function (self, context, world, top_world)
+	local materials = {
+		"material",
+		"materials/ui/ui_1080p_hud_atlas_textures",
+		"material",
+		"materials/ui/ui_1080p_hud_single_textures",
+		"material",
+		"materials/ui/ui_1080p_menu_atlas_textures",
+		"material",
+		"materials/ui/ui_1080p_menu_single_textures",
+		"material",
+		"materials/ui/ui_1080p_common",
+		"material",
+		"materials/fonts/gw_fonts"
+	}
+	local ui_renderer = UIRenderer.create(world, unpack(materials))
+	local ui_top_renderer = UIRenderer.create(top_world, unpack(materials))
+
+	return ui_renderer, ui_top_renderer
+end
+
+return

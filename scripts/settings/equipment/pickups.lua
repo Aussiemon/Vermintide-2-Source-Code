@@ -175,6 +175,26 @@ Pickups.level_events.torch = {
 		end
 	end
 }
+Pickups.level_events.shadow_torch = {
+	only_once = true,
+	individual_pickup = false,
+	type = "inventory_item",
+	item_description = "interaction_torch",
+	spawn_weighting = 1e-06,
+	debug_pickup_category = "level_event",
+	teleport_time = 3.5,
+	slot_name = "slot_level_event",
+	item_name = "shadow_torch",
+	unit_name = "units/weapons/player/pup_shadow_torch/pup_shadow_torch",
+	unit_template_name = "pickup_torch_unit_init",
+	wield_on_pickup = true,
+	hud_description = "interaction_torch",
+	on_pick_up_func = function (world, interactor_unit, is_server)
+		if is_server then
+			LevelHelper:flow_event(world, "lua_torch_picked_up")
+		end
+	end
+}
 Pickups.level_events.explosive_barrel = {
 	only_once = true,
 	individual_pickup = false,
@@ -234,6 +254,21 @@ Pickups.level_events.beer_barrel = {
 	wield_on_pickup = true,
 	hud_description = "beer_barrel"
 }
+Pickups.level_events.magic_barrel = {
+	only_once = true,
+	individual_pickup = false,
+	type = "inventory_item",
+	item_description = "magic_barrel",
+	spawn_weighting = 1e-06,
+	debug_pickup_category = "level_event",
+	slot_name = "slot_level_event",
+	item_name = "magic_barrel",
+	unit_name = "units/weapons/player/pup_magic_barrel/pup_magic_barrel_01",
+	additional_data_func = "explosive_barrel",
+	unit_template_name = "explosive_pickup_projectile_unit_limited",
+	wield_on_pickup = true,
+	hud_description = "magic_barrel"
+}
 Pickups.level_events.grimoire = {
 	only_once = true,
 	individual_pickup = false,
@@ -290,6 +325,34 @@ Pickups.level_events.gargoyle_head = {
 	wield_on_pickup = true,
 	hud_description = "gargoyle_head"
 }
+Pickups.level_events.magic_crystal = {
+	only_once = true,
+	individual_pickup = false,
+	type = "inventory_item",
+	item_description = "magic_crystal",
+	spawn_weighting = 1e-06,
+	debug_pickup_category = "level_event",
+	slot_name = "slot_level_event",
+	item_name = "wpn_magic_crystal",
+	unit_name = "units/weapons/player/pup_magic_crystal/pup_magic_crystal",
+	unit_template_name = "pickup_projectile_unit_limited",
+	wield_on_pickup = true,
+	hud_description = "magic_crystal"
+}
+Pickups.level_events.shadow_gargoyle_head = {
+	only_once = true,
+	individual_pickup = false,
+	type = "inventory_item",
+	item_description = "gargoyle_head",
+	spawn_weighting = 1e-06,
+	debug_pickup_category = "level_event",
+	slot_name = "slot_level_event",
+	item_name = "wpn_shadow_gargoyle_head",
+	unit_name = "units/weapons/player/pup_shadow_gargoyle_head/pup_shadow_gargoyle_head_01",
+	unit_template_name = "pickup_projectile_unit",
+	wield_on_pickup = true,
+	hud_description = "gargoyle_head"
+}
 Pickups.ammo = Pickups.ammo or {}
 Pickups.ammo.all_ammo = {
 	only_once = false,
@@ -308,9 +371,16 @@ Pickups.ammo.all_ammo = {
 		return (full_ammo and "pickup_ammo_full") or "pickup_ammo"
 	end,
 	can_interact_func = function (interactor_unit, interactable_unit, data)
-		local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
+		local inventory_extension = ScriptUnit.has_extension(interactor_unit, "inventory_system")
 
-		return inventory_extension:has_ammo_consuming_weapon_equipped()
+		if not inventory_extension then
+			return false
+		end
+
+		local has_ammo_consuming_weapon = inventory_extension:has_ammo_consuming_weapon_equipped()
+		local is_throwing_axe = inventory_extension:has_ammo_consuming_weapon_equipped("throwing_axe")
+
+		return has_ammo_consuming_weapon and not is_throwing_axe
 	end
 }
 Pickups.ammo.all_ammo_small = {
@@ -326,47 +396,70 @@ Pickups.ammo.all_ammo_small = {
 	local_pickup_sound = true,
 	hud_description = "interaction_ammunition",
 	can_interact_func = function (interactor_unit, interactable_unit, data)
-		local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
+		local inventory_extension = ScriptUnit.has_extension(interactor_unit, "inventory_system")
 
-		return inventory_extension:has_ammo_consuming_weapon_equipped()
+		if not inventory_extension then
+			return false
+		end
+
+		local has_ammo_consuming_weapon = inventory_extension:has_ammo_consuming_weapon_equipped()
+		local is_throwing_axe = inventory_extension:has_ammo_consuming_weapon_equipped("throwing_axe")
+
+		return has_ammo_consuming_weapon and not is_throwing_axe
 	end
 }
 Pickups.ammo.ammo_ranger = {
 	only_once = true,
+	ranger_ammo = true,
 	individual_pickup = false,
-	refill_amount = 0.1,
 	type = "ammo",
 	spawn_weighting = 1e-06,
-	debug_pickup_category = "consumables",
+	refill_percentage = 0.1,
 	pickup_sound_event = "pickup_ammo",
+	debug_pickup_category = "consumables",
 	unit_name = "units/weapons/player/pup_ammo_box/pup_ammo_box_limited",
 	unit_template_name = "pickup_unit",
 	consumable_item = true,
 	local_pickup_sound = true,
 	hud_description = "interaction_ranger_ammunition",
 	can_interact_func = function (interactor_unit, interactable_unit, data)
-		local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
+		local inventory_extension = ScriptUnit.has_extension(interactor_unit, "inventory_system")
 
-		return inventory_extension:has_ammo_consuming_weapon_equipped()
+		if not inventory_extension then
+			return false
+		end
+
+		local has_ammo_consuming_weapon = inventory_extension:has_ammo_consuming_weapon_equipped()
+		local is_throwing_axe = inventory_extension:has_ammo_consuming_weapon_equipped("throwing_axe")
+
+		return has_ammo_consuming_weapon and not is_throwing_axe
 	end
 }
 Pickups.ammo.ammo_ranger_improved = {
 	only_once = true,
+	ranger_ammo = true,
 	individual_pickup = false,
-	refill_amount = 0.3,
 	type = "ammo",
 	spawn_weighting = 1e-06,
-	debug_pickup_category = "consumables",
+	refill_percentage = 0.3,
 	pickup_sound_event = "pickup_ammo",
+	debug_pickup_category = "consumables",
 	unit_name = "units/weapons/player/pup_ammo_box/pup_ammo_box_limited",
 	unit_template_name = "pickup_unit",
 	consumable_item = true,
 	local_pickup_sound = true,
 	hud_description = "interaction_ranger_ammunition_improved",
 	can_interact_func = function (interactor_unit, interactable_unit, data)
-		local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
+		local inventory_extension = ScriptUnit.has_extension(interactor_unit, "inventory_system")
 
-		return inventory_extension:has_ammo_consuming_weapon_equipped()
+		if not inventory_extension then
+			return false
+		end
+
+		local has_ammo_consuming_weapon = inventory_extension:has_ammo_consuming_weapon_equipped()
+		local is_throwing_axe = inventory_extension:has_ammo_consuming_weapon_equipped("throwing_axe")
+
+		return has_ammo_consuming_weapon and not is_throwing_axe
 	end
 }
 Pickups.grenades = Pickups.grenades or {}

@@ -39,6 +39,10 @@ Timer.time = function (self)
 	return self._t
 end
 
+Timer.time_and_delta = function (self)
+	return self._t, self._dt
+end
+
 Timer.active = function (self)
 	return self._active
 end

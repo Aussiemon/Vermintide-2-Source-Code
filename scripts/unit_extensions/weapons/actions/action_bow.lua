@@ -11,6 +11,8 @@ ActionBow.init = function (self, world, item_name, is_server, owner_unit, damage
 end
 
 ActionBow.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
+	ActionBow.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level)
+
 	local owner_unit = self.owner_unit
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
@@ -56,7 +58,7 @@ ActionBow.client_owner_post_update = function (self, dt, t, world, can_damage)
 
 	if self.state == "shooting" then
 		local buff_extension = self.owner_buff_extension
-		local _, procced = buff_extension:apply_buffs_to_value(0, "extra_shot")
+		local extra_shot_perk = buff_extension:has_buff_perk("extra_shot") and not current_action.career_skill
 		local add_spread = not self.extra_buff_shot
 
 		if not Managers.player:owner(self.owner_unit).bot_player then
@@ -79,7 +81,7 @@ ActionBow.client_owner_post_update = function (self, dt, t, world, can_damage)
 			end
 		end
 
-		if procced and not self.extra_buff_shot then
+		if extra_shot_perk and not self.extra_buff_shot then
 			self.state = "waiting_to_shoot"
 			self.time_to_shoot = t + 0.1
 			self.extra_buff_shot = true
@@ -116,6 +118,8 @@ ActionBow.finish = function (self, reason, data)
 
 		self.state = "shot"
 
+		self:reload(current_action)
+	elseif self.state == "shot" and (reason == "stunned" or reason == "charged") then
 		self:reload(current_action)
 	end
 

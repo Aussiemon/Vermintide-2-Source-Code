@@ -353,7 +353,12 @@ ScriptWorld.load_level = function (world, name, object_sets, position, rotation,
 	fassert(levels[name] == nil, "Level %q already loaded", name)
 
 	local level = World.load_level_with_object_sets(world, name, object_sets or {}, {}, position or Vector3.zero(), rotation or Quaternion.identity(), Vector3(1, 1, 1), name, "force_render")
-	levels[name] = level
+	local nested_levels = Level.nested_levels(level)
+	local logic_level = nested_levels[1] or level
+	levels[name] = {
+		level = level,
+		nested_levels = nested_levels
+	}
 	local shading_env_name = Level.get_data(level, "shading_environment")
 
 	if shading_env_name:len() > 0 then
@@ -377,24 +382,99 @@ ScriptWorld.load_level = function (world, name, object_sets, position, rotation,
 		end
 	end
 
-	return level
+	return logic_level
 end
 
 ScriptWorld.level = function (world, name)
 	local levels = World.get_data(world, "levels")
+	local level_data = levels[name]
 
-	fassert(levels[name], "Level %q doesn't exist", name)
+	fassert(level_data, "Level %q doesn't exist", name)
 
-	return levels[name]
+	local nested_levels = level_data.nested_levels
+	local logic_level = nested_levels[1] or level_data.level
+
+	return logic_level
+end
+
+ScriptWorld.nested_levels = function (world, name)
+	local levels = World.get_data(world, "levels")
+	local level_data = levels[name]
+
+	fassert(level_data, "Level %q doesn't exist", name)
+
+	return level_data.nested_levels
 end
 
 ScriptWorld.destroy_level = function (world, name)
 	local levels = World.get_data(world, "levels")
+	local level_data = levels[name]
 
-	fassert(levels[name], "Level %q doesn't exist", name)
-	World.destroy_level(world, levels[name])
+	fassert(level_data, "Level %q doesn't exist", name)
+	World.destroy_level(world, level_data.level)
 
 	levels[name] = nil
+end
+
+ScriptWorld.destroy_level_from_reference = function (world, level)
+	local levels = World.get_data(world, "levels")
+	local removed_level_name = nil
+
+	for level_name, level_data in pairs(levels) do
+		local base_level = level_data.level
+		local nested_levels = level_data.nested_levels
+
+		if base_level == level or table.contains(nested_levels, level) then
+			World.destroy_level(world, base_level)
+
+			removed_level_name = level_name
+
+			break
+		end
+	end
+
+	if removed_level_name then
+		levels[removed_level_name] = nil
+	else
+		fassert(false, "Level doesn't exist")
+	end
+end
+
+ScriptWorld.optimize_level_units = function (world, name)
+	local levels = World.get_data(world, "levels")
+	local level_data = levels[name]
+	local base_level = level_data.level
+	local nested_levels = level_data.nested_levels
+
+	for i = 1, #nested_levels, 1 do
+		local nested_level = nested_levels[i]
+		local level_units = Level.units(nested_level)
+
+		for _, unit in ipairs(level_units) do
+			ScriptUnit.optimize(unit)
+		end
+	end
+
+	local level_units = Level.units(base_level)
+
+	for _, unit in ipairs(level_units) do
+		ScriptUnit.optimize(unit)
+	end
+end
+
+ScriptWorld.trigger_level_loaded = function (world, name)
+	local levels = World.get_data(world, "levels")
+	local level_data = levels[name]
+	local base_level = level_data.level
+	local nested_levels = level_data.nested_levels
+
+	for i = 1, #nested_levels, 1 do
+		local nested_level = nested_levels[i]
+
+		Level.trigger_level_loaded(nested_level)
+	end
+
+	Level.trigger_level_loaded(base_level)
 end
 
 ScriptWorld.create_particles_linked = function (world, effect_name, unit, node, policy, pose)

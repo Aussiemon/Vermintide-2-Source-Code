@@ -55,11 +55,22 @@ MatchmakingStateSearchGame._start_searching_for_games = function (self)
 	end
 
 	local game_mode = search_config.game_mode
-	local comparison = (game_mode == "event" and LobbyComparison.EQUAL) or LobbyComparison.NOT_EQUAL
-	current_filters.game_mode = {
-		value = "event",
-		comparison = comparison
-	}
+
+	if game_mode == "adventure" then
+		local game_mode = "custom"
+		local game_mode_index = NetworkLookup.game_modes[game_mode]
+		current_filters.game_mode = {
+			value = game_mode_index,
+			comparison = LobbyComparison.LESS_OR_EQUAL
+		}
+	else
+		local game_mode_index = NetworkLookup.game_modes[game_mode]
+		current_filters.game_mode = {
+			value = game_mode_index,
+			comparison = LobbyComparison.EQUAL
+		}
+	end
+
 	local eac_authorized = false
 
 	if PLATFORM == "win32" then
@@ -109,11 +120,22 @@ MatchmakingStateSearchGame._start_searching_for_games = function (self)
 	self._matchmaking_manager:send_system_chat_message(difficulty_display_name)
 
 	local player = Managers.player:local_player()
-	local connection_state = "started_search"
-	local time_taken = Managers.time:time("main") - self.state_context.started_matchmaking_t
-	local using_strict_matchmaking = self.search_config.strict_matchmaking
+	local game_mode = search_config.game_mode
+	local level_key = search_config.level_key
+	local difficulty = search_config.difficulty
+	local country_code = lobby_data.country_code
+	local quick_game = search_config.quick_game
+	local strict_matchmaking = self.search_config.strict_matchmaking
 
-	Managers.telemetry.events:matchmaking_connection(player, connection_state, time_taken, using_strict_matchmaking)
+	Managers.telemetry.events:matchmaking_search({
+		player = player,
+		game_mode = game_mode,
+		level_key = level_key,
+		difficulty = difficulty,
+		country_code = country_code,
+		quick_game = quick_game,
+		strict_matchmaking = strict_matchmaking
+	})
 end
 
 MatchmakingStateSearchGame.on_exit = function (self)
@@ -182,7 +204,7 @@ MatchmakingStateSearchGame.update = function (self, dt, t)
 		local time_taken = main_t - started_matchmaking_t
 		local using_strict_matchmaking = self.search_config.strict_matchmaking
 
-		Managers.telemetry.events:matchmaking_connection(player, connection_state, time_taken, using_strict_matchmaking)
+		Managers.telemetry.events:matchmaking_search_timeout(player, time_taken)
 
 		return MatchmakingStateHostGame, self.state_context
 	end
@@ -299,6 +321,7 @@ MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, searc
 	local selected_level_key = search_config.level_key
 	local difficulty = search_config.difficulty
 	local game_mode = search_config.game_mode
+	local weave_name = search_config.weave_name
 	local act_key = search_config.act_key
 	local using_strict_matchmaking = search_config.strict_matchmaking
 	local reached_max_distance = self._current_distance_filter == MatchmakingSettings.max_distance_filter
@@ -313,7 +336,7 @@ MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, searc
 
 		for _, lobby_data in ipairs(lobbies) do
 			local host_name = lobby_data.unique_server_name or lobby_data.host
-			local lobby_match, reason = matchmaking_manager:lobby_match(lobby_data, act_key, level_key, difficulty, game_mode, self._peer_id)
+			local lobby_match, reason = matchmaking_manager:lobby_match(lobby_data, act_key, level_key, difficulty, game_mode, self._peer_id, weave_name)
 
 			if lobby_match then
 				local discard = false

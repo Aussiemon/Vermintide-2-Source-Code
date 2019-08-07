@@ -1,11 +1,12 @@
 RemotePlayer = class(RemotePlayer)
 
-RemotePlayer.init = function (self, network_manager, peer, player_controlled, is_server, local_player_id, unique_id, clan_tag)
+RemotePlayer.init = function (self, network_manager, peer, player_controlled, is_server, local_player_id, unique_id, clan_tag, ui_id)
 	self.network_manager = network_manager
 	self.remote = true
 	self.peer_id = peer
 	self.is_server = is_server
 	self._player_controlled = player_controlled
+	self._ui_id = ui_id
 	self.owned_units = {}
 	self.game_object_id = nil
 	self._unique_id = unique_id
@@ -25,6 +26,10 @@ RemotePlayer.profile_id = function (self)
 end
 
 RemotePlayer.ui_id = function (self)
+	return self._ui_id
+end
+
+RemotePlayer.unique_id = function (self)
 	return self._unique_id
 end
 
@@ -57,6 +62,10 @@ RemotePlayer.set_profile_index = function (self, index)
 	assert(true, "Why are we trying to set profile index for a remote player?")
 end
 
+RemotePlayer.set_career_index = function (self, index)
+	error("Why are we trying to set career index for a remote player?")
+end
+
 RemotePlayer.character_name = function (self)
 	local profile_synchronizer = self.network_manager.profile_synchronizer
 	local profile_index = profile_synchronizer:profile_by_peer(self.peer_id, self._local_player_id)
@@ -86,7 +95,22 @@ RemotePlayer.profile_display_name = function (self)
 end
 
 RemotePlayer.career_index = function (self)
-	return self._career_index or 1
+	local profile_synchronizer = self.network_manager.profile_synchronizer
+	local profile_index, career_index = profile_synchronizer:profile_by_peer(self.peer_id, self._local_player_id)
+
+	return career_index or 1
+end
+
+RemotePlayer.career_name = function (self)
+	local profile_index = self:profile_index()
+	local profile = SPProfiles[profile_index]
+	local display_name = profile and profile.display_name
+
+	if display_name then
+		local career_index = self:career_index()
+
+		return profile.careers[career_index].name
+	end
 end
 
 RemotePlayer.stats_id = function (self)
@@ -109,10 +133,6 @@ RemotePlayer.is_player_controlled = function (self)
 	return self._player_controlled
 end
 
-RemotePlayer.create_boon_handler = function (self, world)
-	return
-end
-
 RemotePlayer.get_data = function (self, key)
 	return self._player_sync_data:get_data(key)
 end
@@ -122,6 +142,7 @@ RemotePlayer.name = function (self)
 
 	if not self._player_controlled then
 		name = Localize(self:character_name())
+		self._cached_name = name
 	elseif rawget(_G, "Steam") then
 		if self._cached_name then
 			return self._cached_name
@@ -162,6 +183,10 @@ RemotePlayer.name = function (self)
 	return name
 end
 
+RemotePlayer.cached_name = function (self)
+	return self._cached_name or self._debug_name
+end
+
 RemotePlayer.destroy = function (self)
 	if self._player_sync_data then
 		self._player_sync_data:destroy()
@@ -173,35 +198,13 @@ RemotePlayer.destroy = function (self)
 end
 
 RemotePlayer.create_game_object = function (self)
-	local empty_boon_id = NetworkLookup.boons["n/a"]
 	local game_object_data_table = {
-		boon_poll_time = 0,
-		boon_8_remaining_duration = 0,
-		boon_9_remaining_duration = 0,
 		ping = 0,
-		boon_1_remaining_duration = 0,
-		boon_2_remaining_duration = 0,
-		boon_3_remaining_duration = 0,
-		boon_4_remaining_duration = 0,
-		boon_5_remaining_duration = 0,
-		boon_6_remaining_duration = 0,
-		boon_7_remaining_duration = 0,
-		boon_10_remaining_duration = 0,
 		go_type = NetworkLookup.go_types.player,
 		network_id = self:network_id(),
 		local_player_id = self:local_player_id(),
 		player_controlled = self._player_controlled,
-		clan_tag = self._clan_tag,
-		boon_1_id = empty_boon_id,
-		boon_2_id = empty_boon_id,
-		boon_3_id = empty_boon_id,
-		boon_4_id = empty_boon_id,
-		boon_5_id = empty_boon_id,
-		boon_6_id = empty_boon_id,
-		boon_7_id = empty_boon_id,
-		boon_8_id = empty_boon_id,
-		boon_9_id = empty_boon_id,
-		boon_10_id = empty_boon_id
+		clan_tag = self._clan_tag
 	}
 	local callback = callback(self, "cb_game_session_disconnect")
 	self.game_object_id = self.network_manager:create_player_game_object("player", game_object_data_table, callback)
@@ -215,10 +218,6 @@ end
 
 RemotePlayer.cb_game_session_disconnect = function (self)
 	self.game_object_id = nil
-
-	if self.boon_handler then
-		self.boon_handler = nil
-	end
 end
 
 RemotePlayer.set_game_object_id = function (self, id)

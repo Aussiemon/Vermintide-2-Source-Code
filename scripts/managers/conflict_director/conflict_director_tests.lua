@@ -1,8 +1,4 @@
 ConflictDirectorTests = {}
-local player_and_bot_positions = PLAYER_AND_BOT_POSITIONS
-local player_positions = PLAYER_POSITIONS
-local player_units = PLAYER_UNITS
-local players_and_bot_units = PLAYER_AND_BOT_UNITS
 local utility_comparison = false
 
 ConflictDirectorTests.start_utility_comparison = function ()
@@ -108,7 +104,7 @@ ConflictDirectorTests.test_main_path_optimization = function (self, t, dt)
 		closest_pos_at_main_path_opt(pos)
 	end
 
-	local p = PLAYER_POSITIONS[1]
+	local p = self.hero_player_positions[1]
 	local p1 = Vector3(100, 20, 130)
 	local p2 = Vector3(-100, -420, 30)
 	local res = nil
@@ -152,7 +148,7 @@ function test_spawn_pos_ahead_half_sphere(self)
 		local avoid_dist_sqr = 25
 
 		for i = 1, 25, 1 do
-			local p = ConflictUtils.get_hidden_pos(self._world, self.nav_world, epicenter, player_and_bot_positions, 30, 10, avoid_dist_sqr, 10, forward_path_dir, math.pi)
+			local p = ConflictUtils.get_hidden_pos(self._world, self.nav_world, epicenter, self.hero_player_and_bot_positions, 30, 10, avoid_dist_sqr, 10, forward_path_dir, math.pi)
 
 			if p then
 				QuickDrawer:sphere(p, 1)
@@ -194,7 +190,7 @@ function debug_bot_transitions(self, t)
 end
 
 function test_player_path_pos_and_50m_ahead(self)
-	local pos = player_positions[1]
+	local pos = self.hero_player_positions[1]
 	local main_paths = self.level_analysis.main_paths
 	local path_pos, travel_dist = MainPathUtils.closest_pos_at_main_path(main_paths, pos)
 	local total_path_dist = MainPathUtils.total_path_dist()
@@ -226,7 +222,7 @@ end
 
 function setup_reachable_coverpoints_test(self)
 	local point_list = {}
-	local num_found, cover_points = ConflictUtils.hidden_cover_points(player_positions[1], PLAYER_POSITIONS, 2, 45, 1)
+	local num_found, cover_points = ConflictUtils.hidden_cover_points(self.hero_player_positions[1], self.hero_player_positions, 2, 45, 1)
 
 	for i = 1, num_found, 1 do
 		point_list[i] = Vector3Box(Unit.local_position(cover_points[i], 0))
@@ -284,7 +280,9 @@ function process_reachable_navgraph_test(self)
 end
 
 ConflictDirectorTests.update = function (conflict_director, t, dt)
-	return
+	local side = Managers.state.side:get_side_from_name("heroes")
+	conflict_director.hero_player_and_bot_positions = side.PLAYER_AND_BOT_POSITIONS
+	conflict_director.hero_player_positions = side.PLAYER_POSITIONS
 end
 
 return

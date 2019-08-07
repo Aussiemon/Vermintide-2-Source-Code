@@ -109,6 +109,20 @@ local scenegraph_definition = {
 			0
 		}
 	},
+	level_key_info_box = {
+		vertical_alignment = "top",
+		parent = "detailed_info_box",
+		horizontal_alignment = "left",
+		size = {
+			270,
+			150
+		},
+		position = {
+			0,
+			0,
+			0
+		}
+	},
 	party_slot_root = {
 		vertical_alignment = "top",
 		parent = "detailed_info_box",
@@ -723,6 +737,7 @@ local default_text_style = {
 local title_text_style = table.clone(default_text_style)
 title_text_style.vertical_alignment = "top"
 title_text_style.horizontal_alignment = "left"
+title_text_style.dynamic_font_size = true
 title_text_style.offset[2] = -10
 title_text_style.offset[1] = 15
 local difficulty_text_style = table.clone(default_text_style)
@@ -821,7 +836,7 @@ local widget_definitions = {
 local widget_detail_definitions = {
 	detailed_info_box_frame = UIWidgets.create_frame("detailed_info_box", scenegraph_definition.detailed_info_box.size, "menu_frame_09", 1),
 	detailed_info_box = UIWidgets.create_background("detailed_info_box", scenegraph_definition.detailed_info_box.size, "matchmaking_window_01"),
-	title_text = UIWidgets.create_simple_text("n/a", "detailed_info_box", nil, nil, title_text_style),
+	title_text = UIWidgets.create_simple_text("n/a", "level_key_info_box", nil, nil, title_text_style),
 	difficulty_text = UIWidgets.create_simple_text("n/a", "detailed_info_box", nil, nil, difficulty_text_style),
 	party_slot_1 = UIWidgets.create_matchmaking_portrait(scenegraph_definition.party_slot_1.size, "party_slot_1"),
 	party_slot_2 = UIWidgets.create_matchmaking_portrait(scenegraph_definition.party_slot_2.size, "party_slot_2"),

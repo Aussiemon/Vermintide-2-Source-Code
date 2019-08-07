@@ -7,6 +7,7 @@ weapon_template.actions = {
 			aim_assist_ramp_decay_delay = 0.1,
 			anim_end_event = "attack_finished",
 			kind = "melee_start",
+			attack_hold_input = "action_one_hold",
 			stop_action_on_leave_for_bot = true,
 			aim_assist_max_ramp_multiplier = 0.4,
 			aim_assist_ramp_multiplier = 0.2,
@@ -18,7 +19,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.3,
+					external_multiplier = 0.75,
 					buff_name = "planted_charging_decrease_movement"
 				}
 			},
@@ -68,19 +69,19 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.75,
+					external_multiplier = 0.8,
 					end_time = 0.2,
 					buff_name = "planted_decrease_movement"
 				},
 				{
 					start_time = 0.2,
-					external_multiplier = 0.9,
+					external_multiplier = 1.05,
 					end_time = 0.3,
 					buff_name = "planted_decrease_movement"
 				},
 				{
 					start_time = 0.3,
-					external_multiplier = 0.6,
+					external_multiplier = 0.75,
 					end_time = 0.5,
 					buff_name = "planted_decrease_movement"
 				}
@@ -125,19 +126,19 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.75,
+					external_multiplier = 0.8,
 					end_time = 0.2,
 					buff_name = "planted_decrease_movement"
 				},
 				{
 					start_time = 0.2,
-					external_multiplier = 0.9,
+					external_multiplier = 1.05,
 					end_time = 0.3,
 					buff_name = "planted_decrease_movement"
 				},
 				{
 					start_time = 0.3,
-					external_multiplier = 0.6,
+					external_multiplier = 0.75,
 					end_time = 0.5,
 					buff_name = "planted_decrease_movement"
 				}
@@ -180,7 +181,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.25,
+					external_multiplier = 0.65,
 					buff_name = "planted_charging_decrease_movement"
 				}
 			},
@@ -228,7 +229,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.5,
+					external_multiplier = 0.75,
 					buff_name = "planted_charging_decrease_movement"
 				}
 			},
@@ -276,7 +277,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.5,
+					external_multiplier = 0.75,
 					buff_name = "planted_charging_decrease_movement"
 				}
 			},
@@ -348,7 +349,7 @@ weapon_template.actions = {
 				},
 				{
 					start_time = 0.3,
-					external_multiplier = 0.5,
+					external_multiplier = 0.65,
 					end_time = 0.4,
 					buff_name = "planted_fast_decrease_movement"
 				}
@@ -362,7 +363,7 @@ weapon_template.actions = {
 					input = "action_one"
 				},
 				{
-					sub_action = "default_charge_2",
+					sub_action = "default_left",
 					start_time = 0.6,
 					action = "action_one",
 					input = "action_one_hold"
@@ -408,7 +409,7 @@ weapon_template.actions = {
 			dedicated_target_range = 3,
 			weapon_up_offset_mod = 0.15,
 			uninterruptible = true,
-			anim_event = "attack_swing_left_diagonal_last",
+			anim_event = "attack_swing_heavy_left",
 			hit_stop_anim = "attack_hit",
 			reset_aim_on_attack = true,
 			total_time = 1.2,
@@ -425,7 +426,7 @@ weapon_template.actions = {
 				},
 				{
 					start_time = 0.3,
-					external_multiplier = 0.5,
+					external_multiplier = 0.65,
 					end_time = 0.4,
 					buff_name = "planted_fast_decrease_movement"
 				}
@@ -489,7 +490,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.6,
+					external_multiplier = 0.75,
 					end_time = 0.5,
 					buff_name = "planted_decrease_movement"
 				}
@@ -555,7 +556,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.6,
+					external_multiplier = 0.75,
 					end_time = 0.5,
 					buff_name = "planted_decrease_movement"
 				}
@@ -627,7 +628,7 @@ weapon_template.actions = {
 				},
 				{
 					start_time = 0.45,
-					external_multiplier = 0.6,
+					external_multiplier = 0.75,
 					end_time = 0.6,
 					buff_name = "planted_decrease_movement"
 				}
@@ -696,7 +697,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.6,
+					external_multiplier = 0.75,
 					end_time = 0.5,
 					buff_name = "planted_decrease_movement"
 				}
@@ -735,12 +736,12 @@ weapon_template.actions = {
 			range_mod = 1.25,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
-			no_damage_impact_sound_event = "flail_hit_armour",
 			width_mod = 25,
+			no_damage_impact_sound_event = "flail_hit_armour",
 			use_precision_sweep = false,
 			ignore_armour_hit = false,
-			damage_profile = "light_blunt_tank_spiked",
 			hit_effect = "melee_hit_hammers_1h",
+			damage_profile = "light_blunt_tank_spiked",
 			damage_window_end = 0.45,
 			impact_sound_event = "flail_hit",
 			anim_end_event = "attack_finished",
@@ -756,7 +757,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.6,
+					external_multiplier = 0.75,
 					end_time = 0.5,
 					buff_name = "planted_decrease_movement"
 				}
@@ -791,14 +792,14 @@ weapon_template.actions = {
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
-			end
+			end,
+			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		push = {
 			damage_window_start = 0.05,
 			anim_end_event = "attack_finished",
 			outer_push_angle = 180,
 			kind = "push_stagger",
-			hit_time = 0.1,
 			damage_profile_outer = "light_push",
 			weapon_action_hand = "right",
 			push_angle = 100,
@@ -939,18 +940,18 @@ weapon_template.display_unit = "units/weapons/weapon_display/display_1h_weapon"
 weapon_template.wield_anim = "to_1h_flail"
 weapon_template.buff_type = "MELEE_1H"
 weapon_template.weapon_type = "FLAIL_1H"
-weapon_template.max_fatigue_points = 4
-weapon_template.dodge_count = 3
+weapon_template.max_fatigue_points = 6
+weapon_template.dodge_count = 4
 weapon_template.block_angle = 90
 weapon_template.outer_block_angle = 360
 weapon_template.block_fatigue_point_multiplier = 0.5
 weapon_template.outer_block_fatigue_point_multiplier = 2
 weapon_template.buffs = {
 	change_dodge_distance = {
-		external_optional_multiplier = 1
+		external_optional_multiplier = 1.15
 	},
 	change_dodge_speed = {
-		external_optional_multiplier = 1
+		external_optional_multiplier = 1.15
 	}
 }
 weapon_template.attack_meta_data = {
@@ -1001,7 +1002,7 @@ weapon_template.attack_meta_data = {
 						bot_wanted_input = "hold_attack"
 					},
 					heavy_attack = {
-						wanted_sub_action_name = "default_charge_2",
+						wanted_sub_action_name = "default_left",
 						wanted_action_name = "action_one",
 						bot_wanted_input = "hold_attack"
 					},

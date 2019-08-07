@@ -80,6 +80,7 @@ end
 local RPCS = {
 	"rpc_sync_statistics_number",
 	"rpc_increment_stat",
+	"rpc_increment_stat_group",
 	"rpc_set_local_player_stat"
 }
 
@@ -542,8 +543,21 @@ StatisticsDatabase.rpc_increment_stat = function (self, sender, stat_id)
 
 	local stats_id = player:stats_id()
 
-	print("Incremented stat ", stat)
 	self:increment_stat(stats_id, stat)
+end
+
+StatisticsDatabase.rpc_increment_stat_group = function (self, sender, group_id, stat_id)
+	local stat_group_name = NetworkLookup.statistics_group_name[group_id]
+	local stat_name = NetworkLookup.statistics[stat_id]
+	local player = Managers.player:local_player()
+
+	if not player then
+		return
+	end
+
+	local stats_id = player:stats_id()
+
+	self:increment_stat(stats_id, stat_group_name, stat_name)
 end
 
 StatisticsDatabase.rpc_set_local_player_stat = function (self, sender, stat_id, amount)

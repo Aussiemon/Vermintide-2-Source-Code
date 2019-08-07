@@ -139,6 +139,10 @@ HeroWindowCrafting.on_exit = function (self, params)
 
 		self._active_page:on_exit(params)
 	end
+
+	if self:is_crafting_anim_playing() then
+		self:cancel_crafting_animation()
+	end
 end
 
 HeroWindowCrafting.update = function (self, dt, t)
@@ -230,6 +234,10 @@ HeroWindowCrafting._is_button_held = function (self, widget)
 end
 
 HeroWindowCrafting._handle_input = function (self, dt, t)
+	if self:is_crafting_anim_playing() then
+		return
+	end
+
 	local widgets_by_name = self._widgets_by_name
 	local page_button_next = widgets_by_name.page_button_next
 	local page_button_previous = widgets_by_name.page_button_previous
@@ -353,6 +361,10 @@ HeroWindowCrafting._set_page_index = function (self, page_index)
 		if active_page.on_exit then
 			active_page:on_exit(params)
 		end
+	end
+
+	if self:is_crafting_anim_playing() then
+		self:cancel_crafting_animation()
 	end
 
 	local page_class = rawget(_G, page_class_name)
@@ -505,6 +517,10 @@ HeroWindowCrafting.craft = function (self, items, recipe_override)
 	if craft_id then
 		self._waiting_for_craft = true
 		self._craft_start_duration = 0
+		self._craft_glow_in_duration = nil
+		self._craft_glow_wait_duration = nil
+		self._craft_glow_out_duration = nil
+		self._craft_end_duration = nil
 
 		self:lock_input()
 
@@ -527,6 +543,23 @@ end
 
 HeroWindowCrafting.waiting_for_craft = function (self)
 	return self._waiting_for_craft
+end
+
+HeroWindowCrafting.is_crafting_anim_playing = function (self)
+	return self._craft_start_duration ~= nil or self._craft_glow_in_duration ~= nil or self._craft_glow_wait_duration ~= nil or self._craft_glow_out_duration ~= nil or self._craft_end_duration ~= nil or self:waiting_for_craft()
+end
+
+HeroWindowCrafting.cancel_crafting_animation = function (self)
+	self._waiting_for_craft = nil
+	self._craft_start_duration = nil
+	self._craft_glow_in_duration = nil
+	self._craft_glow_wait_duration = nil
+	self._craft_glow_out_duration = nil
+	self._craft_end_duration = nil
+
+	self:_play_sound("play_gui_craft_forge_end")
+
+	self._current_craft_id = nil
 end
 
 HeroWindowCrafting.lock_input = function (self)

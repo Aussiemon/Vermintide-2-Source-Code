@@ -554,7 +554,7 @@ CameraEffectSettings = {
 				}
 			}
 		},
-		kerillian_shade_active_ability = {
+		landed_leap = {
 			time_to_recuperate_to = 20,
 			values = {
 				roll = {
@@ -563,16 +563,28 @@ CameraEffectSettings = {
 						time_stamp = 0
 					},
 					{
-						value = -0.56,
-						time_stamp = 0.16
+						value = -0.196,
+						time_stamp = 0.06
 					},
 					{
-						value = 0.11,
-						time_stamp = 0.34
+						value = 0.0385,
+						time_stamp = 0.14
+					},
+					{
+						value = 0.32899999999999996,
+						time_stamp = 0.24
 					},
 					{
 						value = 0,
 						time_stamp = 0.38
+					},
+					{
+						value = 0.017499999999999998,
+						time_stamp = 0.46
+					},
+					{
+						value = 0,
+						time_stamp = 0.65
 					}
 				},
 				pitch = {
@@ -581,16 +593,28 @@ CameraEffectSettings = {
 						time_stamp = 0
 					},
 					{
-						value = -1.7300000000000002,
-						time_stamp = 0.16
+						value = 5.28325,
+						time_stamp = 0.06
 					},
 					{
-						value = -0.4466666666666667,
-						time_stamp = 0.34
+						value = -2.6845,
+						time_stamp = 0.14
+					},
+					{
+						value = 3.1814999999999998,
+						time_stamp = 0.24
 					},
 					{
 						value = 0,
 						time_stamp = 0.38
+					},
+					{
+						value = -0.6615,
+						time_stamp = 0.46
+					},
+					{
+						value = 0,
+						time_stamp = 0.65
 					}
 				},
 				yaw = {
@@ -599,16 +623,28 @@ CameraEffectSettings = {
 						time_stamp = 0
 					},
 					{
-						value = -0.245,
-						time_stamp = 0.16
+						value = 0.303625,
+						time_stamp = 0.06
 					},
 					{
-						value = -0.09833333333333333,
-						time_stamp = 0.34
+						value = -0.051625,
+						time_stamp = 0.14
+					},
+					{
+						value = -2.7405,
+						time_stamp = 0.24
 					},
 					{
 						value = 0,
 						time_stamp = 0.38
+					},
+					{
+						value = -0.40599999999999997,
+						time_stamp = 0.46
+					},
+					{
+						value = 0,
+						time_stamp = 0.65
 					}
 				},
 				x = {
@@ -617,16 +653,24 @@ CameraEffectSettings = {
 						time_stamp = 0
 					},
 					{
-						value = 0.009420000000000001,
-						time_stamp = 0.16
+						value = 0.0082425,
+						time_stamp = 0.06
 					},
 					{
-						value = 0.00139,
-						time_stamp = 0.34
+						value = 0.0012162499999999999,
+						time_stamp = 0.14
 					},
 					{
-						value = -0.00515,
+						value = -0.007209999999999999,
+						time_stamp = 0.24
+					},
+					{
+						value = 0,
 						time_stamp = 0.38
+					},
+					{
+						value = 0,
+						time_stamp = 0.46
 					},
 					{
 						value = 0,
@@ -639,24 +683,28 @@ CameraEffectSettings = {
 						time_stamp = 0
 					},
 					{
-						value = 0.07,
-						time_stamp = 0.15
+						value = -0.031412499999999996,
+						time_stamp = 0.06
 					},
 					{
-						value = 0.09,
-						time_stamp = 0.2
+						value = 0.0018549999999999999,
+						time_stamp = 0.14
 					},
 					{
-						value = 0.07,
-						time_stamp = 0.25
-					},
-					{
-						value = 0.05,
-						time_stamp = 0.6
+						value = 0.02086,
+						time_stamp = 0.24
 					},
 					{
 						value = 0,
-						time_stamp = 1.5
+						time_stamp = 0.38
+					},
+					{
+						value = 0,
+						time_stamp = 0.46
+					},
+					{
+						value = 0,
+						time_stamp = 0.65
 					}
 				},
 				z = {
@@ -665,24 +713,213 @@ CameraEffectSettings = {
 						time_stamp = 0
 					},
 					{
-						value = -0.12,
-						time_stamp = 0.15
+						value = -0.09633,
+						time_stamp = 0.06
 					},
 					{
-						value = -0.13,
-						time_stamp = 0.2
+						value = 0.0242125,
+						time_stamp = 0.14
 					},
 					{
-						value = -0.12,
-						time_stamp = 0.25
-					},
-					{
-						value = -0.1,
-						time_stamp = 0.6
+						value = 0.12285,
+						time_stamp = 0.24
 					},
 					{
 						value = 0,
-						time_stamp = 1.5
+						time_stamp = 0.38
+					},
+					{
+						value = 0,
+						time_stamp = 0.46
+					},
+					{
+						value = 0,
+						time_stamp = 0.65
+					}
+				}
+			}
+		},
+		leap_stomp = {
+			time_to_recuperate_to = 25,
+			values = {
+				roll = {
+					{
+						value = 0,
+						time_stamp = 0
+					},
+					{
+						value = -0.14,
+						time_stamp = 0.075
+					},
+					{
+						value = 0.0275,
+						time_stamp = 0.17500000000000002
+					},
+					{
+						value = 0.235,
+						time_stamp = 0.3
+					},
+					{
+						value = 0,
+						time_stamp = 0.475
+					},
+					{
+						value = 0.0125,
+						time_stamp = 0.5750000000000001
+					},
+					{
+						value = 0,
+						time_stamp = 0.8125
+					}
+				},
+				pitch = {
+					{
+						value = 0,
+						time_stamp = 0
+					},
+					{
+						value = 7.5475,
+						time_stamp = 0.075
+					},
+					{
+						value = -3.835,
+						time_stamp = 0.17500000000000002
+					},
+					{
+						value = 4.545,
+						time_stamp = 0.3
+					},
+					{
+						value = 0,
+						time_stamp = 0.475
+					},
+					{
+						value = -0.945,
+						time_stamp = 0.5750000000000001
+					},
+					{
+						value = 0,
+						time_stamp = 0.8125
+					}
+				},
+				yaw = {
+					{
+						value = 0,
+						time_stamp = 0
+					},
+					{
+						value = 0.650625,
+						time_stamp = 0.075
+					},
+					{
+						value = -0.110625,
+						time_stamp = 0.17500000000000002
+					},
+					{
+						value = -5.8725000000000005,
+						time_stamp = 0.3
+					},
+					{
+						value = 0,
+						time_stamp = 0.475
+					},
+					{
+						value = -0.8699999999999999,
+						time_stamp = 0.5750000000000001
+					},
+					{
+						value = 0,
+						time_stamp = 0.8125
+					}
+				},
+				x = {
+					{
+						value = 0,
+						time_stamp = 0
+					},
+					{
+						value = 0.0058875,
+						time_stamp = 0.075
+					},
+					{
+						value = 0.00086875,
+						time_stamp = 0.17500000000000002
+					},
+					{
+						value = -0.00515,
+						time_stamp = 0.3
+					},
+					{
+						value = 0,
+						time_stamp = 0.475
+					},
+					{
+						value = 0,
+						time_stamp = 0.5750000000000001
+					},
+					{
+						value = 0,
+						time_stamp = 0.8125
+					}
+				},
+				y = {
+					{
+						value = 0,
+						time_stamp = 0
+					},
+					{
+						value = -0.0224375,
+						time_stamp = 0.075
+					},
+					{
+						value = 0.001325,
+						time_stamp = 0.17500000000000002
+					},
+					{
+						value = 0.0149,
+						time_stamp = 0.3
+					},
+					{
+						value = 0,
+						time_stamp = 0.475
+					},
+					{
+						value = 0,
+						time_stamp = 0.5750000000000001
+					},
+					{
+						value = 0,
+						time_stamp = 0.8125
+					}
+				},
+				z = {
+					{
+						value = 0,
+						time_stamp = 0
+					},
+					{
+						value = -0.0741,
+						time_stamp = 0.075
+					},
+					{
+						value = 0.018625,
+						time_stamp = 0.17500000000000002
+					},
+					{
+						value = 0.0945,
+						time_stamp = 0.3
+					},
+					{
+						value = 0,
+						time_stamp = 0.475
+					},
+					{
+						value = 0,
+						time_stamp = 0.5750000000000001
+					},
+					{
+						value = 0,
+						time_stamp = 0.8125
 					}
 				}
 			}
@@ -1148,6 +1385,13 @@ CameraEffectSettings = {
 			fade_out = 0.1,
 			octaves = 6
 		},
+		lightning_strike = {
+			persistance = 1.25,
+			amplitude = 0.77,
+			duration = 0.3,
+			fade_out = 0.3,
+			octaves = 10
+		},
 		bell_thunder_01 = {
 			persistance = 0.9,
 			fade_out = 0.3,
@@ -1262,25 +1506,29 @@ CameraEffectSettings = {
 		},
 		intoxication = {
 			persistance = 0.6,
-			fade_out = 1.5,
+			octaves = 3,
 			amplitude = 7,
+			fade_out = 1.5,
 			duration = 2.5,
 			fade_in = 0.5,
-			octaves = 3
+			no_rumble = true
 		},
 		hungover = {
 			persistance = 0.5,
-			fade_out = 2.5,
+			octaves = 5,
 			amplitude = 12,
+			fade_out = 2.5,
 			duration = 1,
 			fade_in = 0.5,
-			octaves = 5
+			no_rumble = true
 		},
 		intoxication_after_effect = {
 			persistance = 0.6,
-			fade_in = 1.5,
+			octaves = 2,
 			amplitude = 4,
-			octaves = 2
+			duration = 5000,
+			fade_in = 1.5,
+			no_rumble = true
 		}
 	}
 }

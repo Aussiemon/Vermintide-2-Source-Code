@@ -424,6 +424,33 @@ ItemMasterList.beer_barrel = {
 		"es_mercenary"
 	}
 }
+ItemMasterList.magic_barrel = {
+	temporary_template = "magic_barrel",
+	slot_type = "healthkit",
+	rarity = "plentiful",
+	inventory_icon = "icons_placeholder",
+	left_hand_unit = "units/weapons/player/pup_magic_barrel/wpn_magic_barrel_01",
+	gamepad_hud_icon = "consumables_icon_defence",
+	hud_icon = "consumables_icon_defence",
+	item_type = "inventory_item",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
 ItemMasterList.wpn_gargoyle_head = {
 	temporary_template = "gargoyle_head",
 	slot_type = "healthkit",
@@ -451,9 +478,90 @@ ItemMasterList.wpn_gargoyle_head = {
 		"es_mercenary"
 	}
 }
+ItemMasterList.wpn_magic_crystal = {
+	temporary_template = "magic_crystal",
+	slot_type = "healthkit",
+	rarity = "plentiful",
+	inventory_icon = "icons_placeholder",
+	left_hand_unit = "units/weapons/player/wpn_magic_crystal/wpn_magic_crystal",
+	gamepad_hud_icon = "consumables_icon_defence",
+	hud_icon = "consumables_icon_defence",
+	item_type = "inventory_item",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.wpn_shadow_gargoyle_head = {
+	temporary_template = "shadow_gargoyle_head",
+	slot_type = "healthkit",
+	rarity = "plentiful",
+	inventory_icon = "icons_placeholder",
+	left_hand_unit = "units/weapons/player/wpn_shadow_gargoyle_head/wpn_shadow_gargoyle_head",
+	gamepad_hud_icon = "consumables_icon_defence",
+	hud_icon = "consumables_icon_defence",
+	item_type = "inventory_item",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
 ItemMasterList.torch = {
 	temporary_template = "torch",
 	right_hand_unit = "units/weapons/player/wpn_torch/wpn_torch",
+	rarity = "plentiful",
+	inventory_icon = "icons_placeholder",
+	slot_type = "healthkit",
+	gamepad_hud_icon = "consumables_icon_defence",
+	hud_icon = "consumables_icon_defence",
+	item_type = "inventory_item",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.shadow_torch = {
+	temporary_template = "shadow_torch",
+	right_hand_unit = "units/weapons/player/wpn_shadow_torch/wpn_shadow_torch",
 	rarity = "plentiful",
 	inventory_icon = "icons_placeholder",
 	slot_type = "healthkit",
@@ -589,6 +697,36 @@ ItemMasterList.potion_cooldown_reduction_01 = {
 		"es_mercenary"
 	}
 }
+ItemMasterList.shadow_flare = {
+	description = "description_grenade_frag_01",
+	temporary_template = "shadow_flare",
+	right_hand_unit = "units/weapons/player/wpn_shadow_flare/wpn_shadow_flare",
+	inventory_icon = "icons_placeholder",
+	left_hand_unit = "units/weapons/player/wpn_emp_grenade_01_t2/wpn_emp_grenade_lighter_01_t2",
+	slot_type = "grenade",
+	description_type = "grenade",
+	rarity = "plentiful",
+	gamepad_hud_icon = "hud_icon_bomb_01",
+	hud_icon = "hud_inventory_icon_bomb",
+	item_type = "grenade",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
 ItemMasterList.bardin_ranger_career_skill_weapon = {
 	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_emp_grenade_02_t2/wpn_emp_grenade_02_t2",
@@ -596,15 +734,35 @@ ItemMasterList.bardin_ranger_career_skill_weapon = {
 	can_wield = {}
 }
 ItemMasterList.kerillian_waywatcher_career_skill_weapon = {
+	ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_tripple_arrow_t1",
 	template = "kerillian_waywatcher_career_skill_weapon",
+	ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_tripple_arrow_t1_3p",
 	slot_to_use = "slot_ranged",
 	rarity = "plentiful",
-	can_wield = {}
+	can_wield = {},
+	item_units_to_replace = {
+		right_hand_unit = true,
+		left_hand_unit = true
+	}
+}
+ItemMasterList.kerillian_waywatcher_career_skill_weapon_piercing_shot = {
+	ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
+	ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1_3p",
+	template = "kerillian_waywatcher_career_skill_weapon_piercing_shot",
+	slot_to_use = "slot_ranged",
+	rarity = "plentiful",
+	can_wield = {},
+	item_units_to_replace = {
+		right_hand_unit = true,
+		left_hand_unit = true
+	}
 }
 ItemMasterList.sienna_scholar_career_skill_weapon = {
 	template = "sienna_scholar_career_skill_weapon",
-	left_hand_unit = "units/weapons/player/wpn_invisible_weapon",
+	ammo_unit = "units/weapons/player/wpn_burning_head/wpn_burning_head",
+	ammo_unit_3p = "units/weapons/player/wpn_burning_head/wpn_burning_head_3p",
 	rarity = "plentiful",
+	left_hand_unit = "units/weapons/player/wpn_invisible_weapon",
 	can_wield = {}
 }
 ItemMasterList.victor_bountyhunter_career_skill_weapon = {

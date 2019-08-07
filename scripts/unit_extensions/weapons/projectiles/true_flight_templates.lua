@@ -4,7 +4,7 @@ TrueFlightTemplates.active_ability_kerillian_way_watcher = {
 	forward_search_distance_to_find_target = 5,
 	target_node = "c_head",
 	target_tracking_check_func = "update_towards_target",
-	legitimate_target_func = "legitimate_target",
+	legitimate_target_func = "legitimate_target_keep_target",
 	dot_threshold = 1,
 	lerp_squared_distance_threshold = 625,
 	speed_multiplier = 0.01,
@@ -20,7 +20,7 @@ TrueFlightTemplates.active_ability_sienna_scholar = {
 	forward_search_distance_to_find_target = 5,
 	target_node = "c_head",
 	target_tracking_check_func = "update_towards_target",
-	legitimate_target_func = "legitimate_target",
+	legitimate_target_func = "legitimate_target_keep_target",
 	broadphase_radius = 7.5,
 	speed_multiplier = 0.01,
 	find_target_func = "find_closest_highest_value_target",
@@ -133,7 +133,10 @@ TrueFlightTemplates.sorcerer_slow_bomb_missile = {
 		7,
 		15,
 		35,
-		50
+		50,
+		70,
+		70,
+		70
 	},
 	lerp_modifier_func = function (distance)
 		return (distance < 5 and 1) or 5 / distance

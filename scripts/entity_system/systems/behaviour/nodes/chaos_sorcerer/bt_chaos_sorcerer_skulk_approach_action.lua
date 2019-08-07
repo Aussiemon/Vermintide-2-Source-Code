@@ -56,7 +56,7 @@ BTChaosSorcererSkulkApproachAction.enter = function (self, unit, blackboard, t)
 			blackboard.spell = blackboard.portal_data
 		end
 	elseif action.sorcerer_type == "vortex" and not blackboard.vortex_data then
-		self:_initialize_vortex_data(blackboard, action)
+		self:initialize_vortex_data(blackboard, action.vortex_template_name)
 
 		blackboard.spell = blackboard.vortex_data
 	end
@@ -73,8 +73,8 @@ end
 
 local VORTEX_CHECK_ANGLE_INCREMENT = math.pi / 4
 
-BTChaosSorcererSkulkApproachAction._initialize_vortex_data = function (self, blackboard, action)
-	local vortex_template = VortexTemplates[action.vortex_template_name]
+BTChaosSorcererSkulkApproachAction.initialize_vortex_data = function (self, blackboard, vortex_template_name)
+	local vortex_template = VortexTemplates[vortex_template_name]
 	local max_radius = vortex_template.full_inner_radius
 	local start_check_direction = Vector3.forward() * max_radius
 	local check_directions = {}

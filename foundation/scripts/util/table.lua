@@ -366,27 +366,6 @@ function _add_tabs(str, tabs)
 	return str
 end
 
-local random_indices = {}
-local all = {}
-
-table.get_random_array_indices = function (size, num_picks)
-	assert(num_picks <= size, "Can't pick more elements than the size of the")
-	assert(size < 128, "Don't use this for large arrays, since it will be inefficient. It creates large tables then.")
-
-	for i = 1, size, 1 do
-		all[i] = i
-	end
-
-	for i = 1, num_picks, 1 do
-		local random_index = Math.random(1, size)
-		random_indices[i] = all[random_index]
-		all[random_index] = all[size]
-		size = size - 1
-	end
-
-	return random_indices
-end
-
 table.tostring = function (t, tabs)
 	tabs = tabs or 0
 	local str = "{\n"

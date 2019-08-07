@@ -5,22 +5,24 @@ local breed_data = {
 	aoe_height = 1.4,
 	leave_walk_distance = 5,
 	patrol_active_target_selection = "pick_closest_target_with_spillover",
-	hesitation_timer = 7,
+	flingable = true,
 	look_at_range = 30,
 	run_speed = 4.8,
 	animation_sync_rpc = "rpc_sync_anim_state_7",
 	aim_template = "chaos_marauder",
 	target_selection = "pick_closest_target_with_spillover",
 	wwise_voice_switch_group = "marauder_vce_variations",
+	attack_player_sound_event = "Play_enemy_marauder_attack_player_vce",
 	uses_attack_sfx_callback = true,
 	threat_value = 1.5,
+	slot_template = "chaos_horde",
 	bone_lod_level = 1,
 	smart_object_template = "chaos_marauder",
 	attack_general_sound_event = "Play_enemy_marauder_attack_husk_vce",
 	default_inventory_template = "fanatic",
 	stagger_resistance = 1.75,
 	patrol_detection_radius = 10,
-	flingable = true,
+	hesitation_timer = 7,
 	panic_close_detection_radius_sq = 9,
 	radius = 1.5,
 	hit_mass_count = 4,
@@ -35,7 +37,6 @@ local breed_data = {
 	behavior = "fanatic",
 	use_regular_horde_spawning = true,
 	during_horde_detection_radius = 15,
-	attack_player_sound_event = "Play_enemy_marauder_attack_player_vce",
 	has_inventory = true,
 	scale_death_push = 0.5,
 	follow_reach = 1,
@@ -82,7 +83,7 @@ local breed_data = {
 	bloodlust_health = BreedTweaks.bloodlust_health.chaos_horde,
 	diff_stagger_resist = BreedTweaks.diff_stagger_resist.fanatic,
 	stagger_duration = BreedTweaks.stagger_duration.fanatic,
-	stagger_duration_difficulty_mod = BreedTweaks.stagger_duration_difficulty_mod.fast,
+	stagger_duration_difficulty_mod = BreedTweaks.stagger_duration_difficulty_mod.default,
 	hit_mass_counts = BreedTweaks.hit_mass_counts.fanatic,
 	wwise_voices = {
 		"fanatic"
@@ -103,13 +104,6 @@ local breed_data = {
 				stagger = 0
 				duration = 0
 				length = 0
-			end
-
-			if direction and (blackboard.stagger_immune_time or blackboard.heavy_stagger_immune_time) then
-				local t = Managers.time:time("game")
-				blackboard.fallen_stagger = true
-				blackboard.fallen_stagger_timer = t + 0.5
-				blackboard.fallen_stagger_direction = Vector3Box(direction)
 			end
 		end
 
@@ -139,10 +133,6 @@ local breed_data = {
 		head = "headshot"
 	},
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		head = {
 			prio = 1,
 			actors = {
@@ -168,7 +158,7 @@ local breed_data = {
 			}
 		},
 		torso = {
-			prio = 3,
+			prio = 2,
 			actors = {
 				"c_spine1",
 				"c_spine",
@@ -182,7 +172,7 @@ local breed_data = {
 			}
 		},
 		left_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftarm",
 				"c_leftforearm",
@@ -197,7 +187,7 @@ local breed_data = {
 			}
 		},
 		right_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightarm",
 				"c_rightforearm",
@@ -212,7 +202,7 @@ local breed_data = {
 			}
 		},
 		left_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftupleg",
 				"c_leftleg",
@@ -226,7 +216,7 @@ local breed_data = {
 			}
 		},
 		right_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightupleg",
 				"c_rightleg",
@@ -238,6 +228,10 @@ local breed_data = {
 				"j_hips",
 				"j_spine"
 			}
+		},
+		full = {
+			prio = 4,
+			actors = {}
 		},
 		afro = {
 			prio = 5,
@@ -292,525 +286,57 @@ local breed_data = {
 	}
 }
 Breeds.chaos_fanatic = table.create_copy(Breeds.chaos_fanatic, breed_data)
-local BreedActionDimishingDamageDifficulty = {
-	easy = {
-		{
-			damage = 2,
-			cooldown = {
-				3,
-				5
-			}
-		},
-		{
-			damage = 1.5,
-			cooldown = {
-				3,
-				5
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				3,
-				5
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				3,
-				5
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				3.3,
-				7
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				3.6,
-				7
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				4,
-				7
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				4.5,
-				8
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				5,
-				8
-			}
-		}
-	},
+local AttackIntensityPerDifficulty = {
 	normal = {
-		{
-			damage = 2,
-			cooldown = {
-				0.5,
-				1
-			}
+		easy = {
+			normal = 2
 		},
-		{
-			damage = 2,
-			cooldown = {
-				0.5,
-				1
-			}
+		normal = {
+			normal = 2
 		},
-		{
-			damage = 1.5,
-			cooldown = {
-				1,
-				2
-			}
+		hard = {
+			normal = 2
 		},
-		{
-			damage = 1,
-			cooldown = {
-				1.25,
-				2.25
-			}
+		harder = {
+			normal = 2
 		},
-		{
-			damage = 1,
-			cooldown = {
-				1.5,
-				2.5
-			}
+		hardest = {
+			normal = 2
 		},
-		{
-			damage = 1,
-			cooldown = {
-				1.75,
-				2.75
-			}
+		cataclysm = {
+			normal = 2
 		},
-		{
-			damage = 1,
-			cooldown = {
-				2,
-				3
-			}
+		cataclysm_2 = {
+			normal = 2
 		},
-		{
-			damage = 1,
-			cooldown = {
-				2.25,
-				3.25
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				2.5,
-				3.5
-			}
+		cataclysm_3 = {
+			normal = 2
 		}
 	},
-	hard = {
-		{
-			damage = 2,
-			cooldown = {
-				1,
-				2
-			}
+	running = {
+		easy = {
+			running = 2.5
 		},
-		{
-			damage = 2,
-			cooldown = {
-				1,
-				2
-			}
+		normal = {
+			running = 2.5
 		},
-		{
-			damage = 1.5,
-			cooldown = {
-				1,
-				2
-			}
+		hard = {
+			running = 2.5
 		},
-		{
-			damage = 1,
-			cooldown = {
-				1.25,
-				2.25
-			}
+		harder = {
+			running = 2.5
 		},
-		{
-			damage = 1,
-			cooldown = {
-				1.5,
-				2.5
-			}
+		hardest = {
+			running = 2.5
 		},
-		{
-			damage = 1,
-			cooldown = {
-				1.75,
-				2.75
-			}
+		cataclysm = {
+			running = 2.5
 		},
-		{
-			damage = 1,
-			cooldown = {
-				2,
-				3
-			}
+		cataclysm_2 = {
+			running = 2.5
 		},
-		{
-			damage = 1,
-			cooldown = {
-				2.25,
-				3.25
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				2.5,
-				3.5
-			}
-		}
-	},
-	survival_hard = {
-		{
-			damage = 2,
-			cooldown = {
-				1,
-				1.5
-			}
-		},
-		{
-			damage = 2,
-			cooldown = {
-				1,
-				1.5
-			}
-		},
-		{
-			damage = 1.5,
-			cooldown = {
-				1,
-				1.5
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				1.25,
-				1.75
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				1.5,
-				2
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				1.75,
-				2.25
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				2,
-				2.5
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				2.25,
-				3.25
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				2.5,
-				3.5
-			}
-		}
-	},
-	harder = {
-		{
-			damage = 2.5,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 2,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 1.5,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.6,
-				1.1
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.7,
-				1.2
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.8,
-				1.3
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.9,
-				1.4
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				1,
-				1.5
-			}
-		}
-	},
-	survival_harder = {
-		{
-			damage = 2.5,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 2,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 1.5,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.6,
-				1.1
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.7,
-				1.2
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.8,
-				1.3
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.9,
-				1.4
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				1,
-				1.5
-			}
-		}
-	},
-	hardest = {
-		{
-			damage = 2.5,
-			cooldown = {
-				0,
-				0.25
-			}
-		},
-		{
-			damage = 2,
-			cooldown = {
-				0,
-				0.25
-			}
-		},
-		{
-			damage = 2,
-			cooldown = {
-				0,
-				0.25
-			}
-		},
-		{
-			damage = 1.8,
-			cooldown = {
-				0,
-				0.3
-			}
-		},
-		{
-			damage = 1.6,
-			cooldown = {
-				0,
-				0.35
-			}
-		},
-		{
-			damage = 1.4,
-			cooldown = {
-				0,
-				0.4
-			}
-		},
-		{
-			damage = 1.2,
-			cooldown = {
-				0,
-				0.45
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0,
-				0.5
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0,
-				0.5
-			}
-		}
-	},
-	survival_hardest = {
-		{
-			damage = 2.5,
-			cooldown = {
-				0,
-				0.25
-			}
-		},
-		{
-			damage = 2,
-			cooldown = {
-				0,
-				0.25
-			}
-		},
-		{
-			damage = 2,
-			cooldown = {
-				0,
-				0.25
-			}
-		},
-		{
-			damage = 1.8,
-			cooldown = {
-				0,
-				0.3
-			}
-		},
-		{
-			damage = 1.6,
-			cooldown = {
-				0,
-				0.35
-			}
-		},
-		{
-			damage = 1.4,
-			cooldown = {
-				0,
-				0.4
-			}
-		},
-		{
-			damage = 1.2,
-			cooldown = {
-				0,
-				0.45
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0,
-				0.5
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0,
-				0.5
-			}
+		cataclysm_3 = {
+			running = 2.5
 		}
 	}
 }
@@ -942,15 +468,16 @@ local action_data = {
 		}
 	},
 	running_attack = {
-		damage_type = "cutting",
-		hit_react_type = "medium",
-		player_push_speed = 3,
-		fatigue_type = "blocked_running",
-		action_weight = 10,
 		dodge_rotation_time = 1,
-		dodge_window_start = 1.1,
+		hit_react_type = "medium",
+		damage_type = "cutting",
 		attack_intensity = 0.5,
 		moving_attack = true,
+		damage = 3,
+		player_push_speed = 3,
+		attack_intensity_type = "running",
+		action_weight = 10,
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		considerations = UtilityConsiderations.clan_rat_running_attack,
 		default_attack = {
 			anims = {
@@ -960,67 +487,28 @@ local action_data = {
 				"attack_move_4"
 			}
 		},
-		damage = {
-			3,
-			2,
-			1
-		},
-		difficulty_damage = {
-			easy = {
-				2,
-				2,
-				1
-			},
-			normal = {
-				2.5,
-				2,
-				1
-			},
-			hard = {
-				6,
-				4,
-				2
-			},
-			survival_hard = {
-				6,
-				4,
-				2
-			},
-			harder = {
-				10,
-				6,
-				3
-			},
-			survival_harder = {
-				10,
-				6,
-				3
-			},
-			hardest = {
-				15,
-				8,
-				4
-			},
-			survival_hardest = {
-				22.5,
-				12,
-				6
-			}
-		},
-		dimishing_damage = {},
-		difficulty_diminishing_damage = BreedActionDimishingDamageDifficulty
+		difficulty_damage = BreedTweaks.difficulty_damage.chaos_horde_attack,
+		fatigue_type = BreedTweaks.fatigue_types.horde.running_attack,
+		diminishing_damage = {},
+		difficulty_diminishing_damage = BreedTweaks.diminishing_damage_and_cooldown.horde,
+		dodge_window_start = BreedTweaks.dodge_windows.running_attack,
+		dodge_window_duration = BreedTweaks.dodge_window_durations.running_attack,
+		attack_finished_duration = BreedTweaks.attack_finished_duration.chaos_horde
 	},
 	normal_attack = {
-		dodge_window_start = 0.25,
-		moving_attack_intensity = 0.75,
-		fatigue_type = "blocked_attack",
-		hit_react_type = "medium",
-		dodge_rotation_time = 1.2,
 		damage_type = "cutting",
+		hit_react_type = "medium",
 		attack_intensity = 0.5,
-		player_push_speed = 5,
+		dodge_rotation_time = 1.2,
+		moving_attack_intensity = 0.75,
+		damage = 3,
+		player_push_speed = 3,
+		attack_intensity_type = "normal",
 		action_weight = 1,
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		considerations = UtilityConsiderations.clan_rat_attack,
+		dodge_window_start = BreedTweaks.dodge_windows.normal_attack,
+		dodge_window_duration = BreedTweaks.dodge_window_durations.normal_attack,
 		default_attack = {
 			anims = {
 				"attack_pounce",
@@ -1101,55 +589,10 @@ local action_data = {
 				}
 			}
 		},
-		damage = {
-			3,
-			2,
-			1
-		},
-		difficulty_damage = {
-			easy = {
-				2,
-				2,
-				1
-			},
-			normal = {
-				2.5,
-				2,
-				1
-			},
-			hard = {
-				6,
-				4,
-				2
-			},
-			survival_hard = {
-				6,
-				4,
-				2
-			},
-			harder = {
-				10,
-				6,
-				3
-			},
-			survival_harder = {
-				10,
-				6,
-				3
-			},
-			hardest = {
-				15,
-				8,
-				4
-			},
-			survival_hardest = {
-				22.5,
-				12,
-				6
-			}
-		},
-		dimishing_damage = {},
-		difficulty_diminishing_damage = BreedActionDimishingDamageDifficulty,
+		difficulty_damage = BreedTweaks.difficulty_damage.chaos_horde_attack,
+		fatigue_type = BreedTweaks.fatigue_types.horde.normal_attack,
+		diminishing_damage = {},
+		difficulty_diminishing_damage = BreedTweaks.diminishing_damage_and_cooldown.horde,
 		attack_directions = {
 			attack_reach_down = "left",
 			attack_run_3 = "left",
@@ -1172,7 +615,8 @@ local action_data = {
 			attack_pounce_4 = "right",
 			attack_pounce_3 = "left",
 			attack_pounce = "left"
-		}
+		},
+		attack_finished_duration = BreedTweaks.attack_finished_duration.chaos_horde
 	},
 	combat_shout = {
 		cooldown = -1,
@@ -1183,10 +627,26 @@ local action_data = {
 	combat_step = {
 		move_speed = 4,
 		action_weight = 1,
-		considerations = UtilityConsiderations.chaos_marauder_combat_step
+		considerations = UtilityConsiderations.chaos_marauder_combat_step,
+		start_anims_data = {
+			combat_step_fwd = {},
+			combat_step_bwd = {
+				dir = -1,
+				rad = math.pi
+			},
+			combat_step_left = {
+				dir = 1,
+				rad = math.pi / 2
+			},
+			combat_step_right = {
+				dir = -1,
+				rad = math.pi / 2
+			}
+		}
 	},
 	smash_door = {
 		unblockable = true,
+		damage = 4,
 		damage_type = "cutting",
 		move_anim = "move_fwd",
 		door_attack_distance = 1,
@@ -1194,11 +654,6 @@ local action_data = {
 			"attack_blocker",
 			"attack_blocker_2",
 			"attack_blocker_3"
-		},
-		damage = {
-			4,
-			4,
-			4
 		}
 	},
 	utility_action = {
@@ -1209,7 +664,8 @@ local action_data = {
 	blocked = {
 		blocked_anims = {
 			"blocked"
-		}
+		},
+		difficulty_duration = BreedTweaks.blocked_duration.chaos_horde
 	},
 	stagger = {
 		scale_animation_speeds = true,
@@ -1429,6 +885,45 @@ local action_data = {
 				},
 				dwn = {
 					"stun_down"
+				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
+			},
+			{
+				fwd = {
+					"stagger_fwd",
+					"stagger_fwd_2",
+					"stagger_fwd_3",
+					"stagger_fwd_4"
+				},
+				bwd = {
+					"stagger_bwd",
+					"stagger_bwd_2",
+					"stagger_bwd_3",
+					"stagger_bwd_4"
+				},
+				left = {
+					"stagger_left",
+					"stagger_left_2",
+					"stagger_left_3",
+					"stagger_left_4",
+					"stagger_left_5"
+				},
+				right = {
+					"stagger_right",
+					"stagger_right_2",
+					"stagger_right_3",
+					"stagger_right_4",
+					"stagger_right_5"
+				},
+				dwn = {
+					"stagger_medium_downward",
+					"stagger_medium_downward_2",
+					"stagger_medium_downward_3"
 				}
 			}
 		}

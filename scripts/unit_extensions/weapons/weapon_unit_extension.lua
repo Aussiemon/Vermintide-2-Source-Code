@@ -18,7 +18,6 @@ require("scripts/unit_extensions/weapons/actions/action_true_flight_bow")
 require("scripts/unit_extensions/weapons/actions/action_true_flight_bow_aim")
 require("scripts/unit_extensions/weapons/actions/action_bullet_spray")
 require("scripts/unit_extensions/weapons/actions/action_flamethrower")
-require("scripts/unit_extensions/weapons/actions/action_flamepatch")
 require("scripts/unit_extensions/weapons/actions/action_aim")
 require("scripts/unit_extensions/weapons/actions/action_reload")
 require("scripts/unit_extensions/weapons/actions/action_shotgun")
@@ -32,11 +31,13 @@ require("scripts/unit_extensions/weapons/actions/action_geiser")
 require("scripts/unit_extensions/weapons/actions/action_geiser_targeting")
 require("scripts/unit_extensions/weapons/actions/action_throw_grimoire")
 require("scripts/unit_extensions/weapons/actions/action_healing_draught")
+require("scripts/unit_extensions/weapons/actions/action_career_aim")
 require("scripts/unit_extensions/weapons/actions/action_career_dummy")
 require("scripts/unit_extensions/weapons/actions/action_career_true_flight_aim")
 require("scripts/unit_extensions/weapons/actions/action_career_dr_ranger")
 require("scripts/unit_extensions/weapons/actions/action_career_bw_scholar")
 require("scripts/unit_extensions/weapons/actions/action_career_we_waywatcher")
+require("scripts/unit_extensions/weapons/actions/action_career_we_waywatcher_piercing")
 require("scripts/unit_extensions/weapons/actions/action_career_wh_bountyhunter")
 
 if Development.parameter("debug_weapons") then
@@ -44,6 +45,7 @@ if Development.parameter("debug_weapons") then
 end
 
 local action_classes = {
+	career_aim = ActionCareerAim,
 	career_dummy = ActionCareerDummy,
 	career_true_flight_aim = ActionCareerTrueFlightAim,
 	charge = ActionCharge,
@@ -78,10 +80,10 @@ local action_classes = {
 	throw_grimoire = ActionThrowGrimoire,
 	healing_draught = ActionHealingDraught,
 	flamethrower = ActionFlamethrower,
-	flamepatch = ActionFlamepatch,
 	career_dr_three = ActionCareerDRRanger,
 	career_bw_one = ActionCareerBWScholar,
 	career_we_three = ActionCareerWEWaywatcher,
+	career_we_three_piercing = ActionCareerWEWaywatcherPiercing,
 	career_wh_two = ActionCareerWHBountyhunter
 }
 
@@ -259,7 +261,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 				new_action, new_sub_action = nil
 			end
 		elseif ammo_count < ammo_requirement then
-			if ammo_extension:total_remaining_ammo() == 0 and (not self.reload_failed_timer or self.reload_failed_timer < t) and (not action.interaction_type or action.interaction_type ~= "heal") then
+			if ammo_extension:total_remaining_ammo() == 0 and (not self.reload_failed_timer or self.reload_failed_timer < t) and (not action.interaction_type or action.interaction_type ~= "heal") and not action.no_out_of_ammo_vo then
 				local dialogue_input = ScriptUnit.extension_input(owner_unit, "dialogue_system")
 				local event_data = FrameTable.alloc_table()
 				event_data.fail_reason = "out_of_ammo"
@@ -423,7 +425,12 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 				anim_time_scale = anim_time_scale * 1.2
 			end
 
-			local first_person_variable_id = Unit.animation_find_variable(first_person_unit, "attack_speed")
+			local first_person_variable_id = nil
+			local hero_player = true
+
+			if hero_player then
+				first_person_variable_id = Unit.animation_find_variable(first_person_unit, "attack_speed")
+			end
 
 			Unit.animation_set_variable(first_person_unit, first_person_variable_id, anim_time_scale)
 
@@ -436,7 +443,12 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 			end
 
 			if not script_data.disable_third_person_weapon_animation_events then
-				local third_person_variable_id = Unit.animation_find_variable(owner_unit, "attack_speed")
+				local third_person_variable_id = nil
+				hero_player = true
+
+				if hero_player then
+					third_person_variable_id = Unit.animation_find_variable(owner_unit, "attack_speed")
+				end
 
 				Unit.animation_set_variable(owner_unit, third_person_variable_id, anim_time_scale)
 
@@ -487,8 +499,6 @@ WeaponUnitExtension._finish_action = function (self, reason, data)
 		table.clear(action_buff_data)
 	end
 
-	self:_handle_proc_events(current_action_settings, reason)
-
 	local chain_action_data = action:finish(reason, data)
 
 	self:anim_end_event(reason, current_action_settings)
@@ -500,14 +510,6 @@ WeaponUnitExtension._finish_action = function (self, reason, data)
 	self.current_action_settings = nil
 
 	return chain_action_data
-end
-
-WeaponUnitExtension._handle_proc_events = function (self, current_action_settings, reason)
-	local buff_extension = ScriptUnit.extension(self.owner_unit, "buff_system")
-
-	if current_action_settings.is_spell and not current_action_settings.no_spell_proc_on_attack_end then
-		buff_extension:trigger_procs("on_spell_used", current_action_settings)
-	end
 end
 
 WeaponUnitExtension.anim_end_event = function (self, reason, current_action_settings)
@@ -528,7 +530,10 @@ WeaponUnitExtension.anim_end_event = function (self, reason, current_action_sett
 		end
 
 		Unit.animation_event(self.first_person_unit, event)
-		Unit.animation_event(self.owner_unit, event)
+
+		if not script_data.disable_third_person_weapon_animation_events then
+			Unit.animation_event(self.owner_unit, event)
+		end
 
 		self._looping_anim_event_started = nil
 	end

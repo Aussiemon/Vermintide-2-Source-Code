@@ -128,11 +128,6 @@ AIDebugger.update = function (self, t, dt)
 		self.show_slots = not self.show_slots
 	end
 
-	if DebugKeyHandler.key_pressed("x", "clear quickdraw", "ai debugger", nil, "FreeFlight") then
-		QuickDrawerStay:reset()
-		Debug.reset_sticky_world_texts()
-	end
-
 	if DebugKeyHandler.key_pressed("j", "kill all but selected AI", "ai", "left shift") then
 		Managers.state.conflict:destroy_close_units(self.active_unit, 262144)
 	elseif DebugKeyHandler.key_pressed("j", "kill selected AI", "ai") then
@@ -147,7 +142,14 @@ AIDebugger.update = function (self, t, dt)
 
 			if health_extension then
 				if health_extension:is_alive() then
-					health_extension:die("forced")
+					local status_extension = ScriptUnit.has_extension(kill_unit, "status_system")
+					local should_knock_down = status_extension and not status_extension:is_knocked_down()
+
+					if should_knock_down then
+						health_extension:knock_down(kill_unit)
+					else
+						health_extension:die("forced")
+					end
 				end
 			else
 				local blackboard = BLACKBOARDS[kill_unit]
@@ -704,7 +706,7 @@ AIDebugger.debug_player_intensity = function (self, t, dt)
 	local row = win_y
 	local conflict_director = Managers.state.conflict
 	local pacing = conflict_director.pacing
-	local sum_intensity, player_intensity = pacing:get_intensity()
+	local sum_pacing_intensity, player_intensity = pacing:get_pacing_intensity()
 
 	for k = 1, #player_intensity, 1 do
 		local int = player_intensity[k] * 0.01
@@ -728,21 +730,20 @@ AIDebugger.debug_player_intensity = function (self, t, dt)
 	row = row + bar_height * 1
 
 	ScriptGUI.irect(gui, res_x, res_y, win_x, row + bar_height, win_x + bar_width, row, 1, Color(100, 90, 10, 10))
-	ScriptGUI.irect(gui, res_x, res_y, win_x, row + bar_height, win_x + bar_width * sum_intensity * 0.01, row, 2, Color(200, 130, 10, 10))
+	ScriptGUI.irect(gui, res_x, res_y, win_x, row + bar_height, win_x + bar_width * sum_pacing_intensity * 0.01, row, 2, Color(200, 130, 10, 10))
 
 	local decay_text = ""
 	local frozen = conflict_director:intensity_decay_frozen()
 
 	if frozen then
 		decay_text = string.format("decay delay frozen: %.1f", math.clamp(conflict_director.frozen_intensity_decay_until - t, 0, 100))
-	elseif pacing:ignore_intensity_decay_delay() then
+	elseif pacing:ignore_pacing_intensity_decay_delay() then
 		decay_text = "decay delay: ignored"
 	else
 		local player = Managers.player:local_player(1)
 		local status_extension = ScriptUnit.has_extension(player.player_unit, "status_system")
 
 		if status_extension then
-			decay_text = "decay delay: " .. string.format("[%.1f] ", math.clamp(status_extension.intensity_decay_delay, 0, 100))
 		end
 	end
 

@@ -403,7 +403,8 @@ TutorialUI.update_mission_tooltip = function (self, tooltip_tutorial, player_uni
 		elseif use_screen_position then
 			local current_size = ui_scenegraph.tooltip_mission_icon.size[1]
 			local original_size = definitions.FLOATING_ICON_SIZE[1]
-			local new_icon_size = self:get_icon_size(world_position, my_position, current_size, original_size, mission_tooltip_settings)
+			local icon_scale = 1
+			local new_icon_size = self:get_icon_size(world_position, my_position, current_size, original_size, mission_tooltip_settings, icon_scale)
 			ui_scenegraph.tooltip_mission_icon.size[1] = new_icon_size
 			ui_scenegraph.tooltip_mission_icon.size[2] = new_icon_size
 		else
@@ -576,6 +577,14 @@ TutorialUI.setup_objective_tooltip_widget = function (self, widget_holder, objec
 	widget.style.texture_id.color[1] = 0
 	widget.style.arrow.color[1] = 0
 	widget.mission_tooltip_animation_in_time = 0
+	widget.size_scale = Unit.get_data(unit, "tutorial_size_scale") or 1
+	local position_offset_x = Unit.get_data(unit, "tutorial_position_offset", "x")
+
+	if position_offset_x ~= nil then
+		local position_offset_y = Unit.get_data(unit, "tutorial_position_offset", "y")
+		local position_offset_z = Unit.get_data(unit, "tutorial_position_offset", "z")
+		widget.position_offset = Vector3Box(position_offset_x, position_offset_y, position_offset_z)
+	end
 end
 
 TutorialUI._floating_icon_overlap = function (self, widget_holder, x, y, scale)
@@ -627,7 +636,9 @@ TutorialUI.update_objective_tooltip_widget = function (self, widget_holder, play
 		return
 	end
 
-	local objective_unit_position = Unit.world_position(objective_unit, 0) + Vector3.up()
+	local widget = widget_holder.widget
+	local position_offset = (widget.position_offset and Vector3.up() + widget.position_offset:unbox()) or Vector3.up()
+	local objective_unit_position = Unit.world_position(objective_unit, 0) + position_offset
 	local first_person_extension = self:get_player_first_person_extension()
 	local player_position = first_person_extension:current_position()
 	local player_rotation = first_person_extension:current_rotation()
@@ -677,7 +688,8 @@ TutorialUI.update_objective_tooltip_widget = function (self, widget_holder, play
 	elseif use_screen_position then
 		local current_size = ui_scenegraph[widget_holder.scenegraph_icon].size[1]
 		local original_size = definitions.FLOATING_ICON_SIZE[1]
-		local new_icon_size, new_icon_scale = self:get_icon_size(objective_unit_position, player_position, current_size, original_size, objective_tooltip_settings)
+		local icon_scale = widget.size_scale
+		local new_icon_size, new_icon_scale = self:get_icon_size(objective_unit_position, player_position, current_size, original_size, objective_tooltip_settings, icon_scale)
 		ui_scenegraph.tooltip_mission_icon.size[1] = new_icon_size
 		ui_scenegraph.tooltip_mission_icon.size[2] = new_icon_size
 		widget.style.texture_id.size[1] = new_icon_size
@@ -850,8 +862,9 @@ TutorialUI.get_arrow_angle_and_offset = function (self, forward_dot, right_dot, 
 	return static_angle_value, offset_x, offset_y, offset_z
 end
 
-TutorialUI.get_icon_size = function (self, position, player_position, current_size, original_size, tooltip_settings)
-	local size = original_size
+TutorialUI.get_icon_size = function (self, position, player_position, current_size, original_size, tooltip_settings, scale)
+	local original_size_scaled = original_size * scale
+	local size = original_size_scaled
 	local start_scale_distance = tooltip_settings.start_scale_distance
 	local end_scale_distance = tooltip_settings.end_scale_distance
 	local distance = Vector3.distance(position, player_position)
@@ -859,7 +872,7 @@ TutorialUI.get_icon_size = function (self, position, player_position, current_si
 
 	if start_scale_distance < distance then
 		icon_scale = self:icon_scale_by_distance(distance - start_scale_distance, end_scale_distance)
-		size = math.lerp(current_size, icon_scale * original_size, 0.2)
+		size = math.lerp(current_size, icon_scale * original_size_scaled, 0.2)
 	end
 
 	return size, icon_scale

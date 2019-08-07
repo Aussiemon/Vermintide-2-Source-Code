@@ -145,6 +145,15 @@ PlayerCharacterStateFalling.update = function (self, unit, input, dt, context, t
 		return
 	end
 
+	if CharacterStateHelper.is_charged(status_extension) then
+		local params = movement_settings_table.charged_settings.charged
+		params.hit_react_type = "charged"
+
+		csm:change_state("charged", params)
+
+		return
+	end
+
 	if CharacterStateHelper.is_block_broken(status_extension) then
 		status_extension:set_block_broken(false)
 

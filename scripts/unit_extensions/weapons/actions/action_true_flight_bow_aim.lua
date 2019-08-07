@@ -14,6 +14,8 @@ ActionTrueFlightBowAim.init = function (self, world, item_name, is_server, owner
 end
 
 ActionTrueFlightBowAim.client_owner_start_action = function (self, new_action, t, chain_action_data)
+	ActionTrueFlightBowAim.super.client_owner_start_action(self, new_action, t, chain_action_data)
+
 	self.current_action = new_action
 	self.aim_timer = 0
 	self.target = (chain_action_data and chain_action_data.target) or nil

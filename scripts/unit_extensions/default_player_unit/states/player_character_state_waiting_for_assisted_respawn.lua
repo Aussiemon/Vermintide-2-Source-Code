@@ -3,7 +3,6 @@ PlayerCharacterStateWaitingForAssistedRespawn = class(PlayerCharacterStateWaitin
 PlayerCharacterStateWaitingForAssistedRespawn.init = function (self, character_state_init_context)
 	PlayerCharacterState.init(self, character_state_init_context, "waiting_for_assisted_respawn")
 
-	local context = character_state_init_context
 	self.recovery_timer = nil
 	self.recovered = false
 end
@@ -30,10 +29,14 @@ PlayerCharacterStateWaitingForAssistedRespawn.on_enter = function (self, unit, i
 	local flavour_animation = Unit.get_data(flavour_unit, "on_enter_loop_anim")
 
 	CharacterStateHelper.play_animation_event(unit, flavour_animation)
+
+	local career_extension = ScriptUnit.extension(unit, "career_system")
+
+	CharacterStateHelper.stop_weapon_actions(self.inventory_extension, "respawning")
+	CharacterStateHelper.stop_career_abilities(career_extension, "respawning")
 end
 
 PlayerCharacterStateWaitingForAssistedRespawn.on_exit = function (self, unit, input, dt, context, t, next_state)
-	local flavour_unit = self.flavour_unit
 	local first_person_extension = self.first_person_extension
 
 	first_person_extension:toggle_visibility(CameraTransitionSettings.perspective_transition_time)
@@ -67,7 +70,6 @@ PlayerCharacterStateWaitingForAssistedRespawn.on_exit = function (self, unit, in
 		local helper_unit = self.status_extension:get_assisted_respawn_helper_unit()
 		local go_id = network_manager:unit_game_object_id(unit) or 0
 		local helper_go_id = (helper_unit and network_manager:unit_game_object_id(helper_unit)) or 0
-		local peer_id = Network.peer_id()
 
 		network_manager.network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.respawned, true, go_id, helper_go_id)
 	end
@@ -75,8 +77,13 @@ end
 
 PlayerCharacterStateWaitingForAssistedRespawn.update = function (self, unit, input, dt, context, t)
 	local csm = self.csm
-	local unit = self.unit
 	local status_extension = self.status_extension
+
+	if CharacterStateHelper.is_dead(status_extension) then
+		csm:change_state("dead")
+
+		return
+	end
 
 	if CharacterStateHelper.is_assisted_respawning(status_extension) then
 		if not self.recovery_timer then

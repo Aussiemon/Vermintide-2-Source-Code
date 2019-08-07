@@ -66,9 +66,11 @@ MOTDPopupUI.show = function (self, texture_resource)
 	self.is_visible = true
 
 	ShowCursorStack.push()
-	self.input_manager:block_device_except_service("motd", "keyboard", 1, "popup")
-	self.input_manager:block_device_except_service("motd", "mouse", 1, "popup")
-	self.input_manager:block_device_except_service("motd", "gamepad", 1, "popup")
+	self.input_manager:capture_input({
+		"keyboard",
+		"gamepad",
+		"mouse"
+	}, 1, "motd", "MOTDPopupUI")
 end
 
 MOTDPopupUI.hide = function (self)
@@ -80,9 +82,11 @@ MOTDPopupUI.hide = function (self)
 	self.is_visible = false
 
 	ShowCursorStack.pop()
-	self.input_manager:device_unblock_all_services("keyboard", 1)
-	self.input_manager:device_unblock_all_services("mouse", 1)
-	self.input_manager:device_unblock_all_services("gamepad", 1)
+	self.input_manager:release_input({
+		"keyboard",
+		"gamepad",
+		"mouse"
+	}, 1, "motd", "MOTDPopupUI")
 	Managers.url_loader:unload_resource(self.dynamic_texture)
 
 	self.dynamic_texture = nil

@@ -1,7 +1,7 @@
 local PLAYER_NAME_MAX_LENGTH = 10
 UnitFrameUI = class(UnitFrameUI)
 
-UnitFrameUI.init = function (self, ingame_ui_context, definitions, data, frame_index)
+UnitFrameUI.init = function (self, ingame_ui_context, definitions, data, frame_index, player_data, frame_type)
 	self.definitions = definitions
 	self.features_list = definitions.features_list
 	self.widget_name_by_feature = definitions.widget_name_by_feature
@@ -18,7 +18,13 @@ UnitFrameUI.init = function (self, ingame_ui_context, definitions, data, frame_i
 	self.peer_id = ingame_ui_context.peer_id
 	self.player_manager = ingame_ui_context.player_manager
 	self.ui_animations = {}
+	self._damage_events = {}
+	self._hash_order = {}
+	self._hash_widget_lookup = {}
+	self.world = ingame_ui_context.world_manager:world("level_world")
+	self._show_respawn_ui = false
 	self.data = data
+	self._frame_type = frame_type
 
 	self:_create_ui_elements(frame_index)
 end
@@ -38,6 +44,12 @@ UnitFrameUI._create_ui_elements = function (self, frame_index)
 		default_dynamic = widgets.default_dynamic,
 		default_static = widgets.default_static
 	}
+	self._damage_widgets = {}
+
+	for _, widget in pairs(definitions.damage_widget_definitions) do
+		self._damage_widgets[#self._damage_widgets + 1] = UIWidget.init(widget)
+	end
+
 	self._portrait_widgets = {
 		portrait_static = widgets.portrait_static
 	}
@@ -50,6 +62,9 @@ UnitFrameUI._create_ui_elements = function (self, frame_index)
 	}
 	self._ability_widgets = {
 		ability_dynamic = widgets.ability_dynamic
+	}
+	self._respawn_widgets = {
+		respawn_dynamic = widgets.respawn_dynamic
 	}
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
@@ -139,6 +154,16 @@ UnitFrameUI.set_portrait_alpha = function (self, alpha)
 	self:set_dirty()
 end
 
+UnitFrameUI.set_damage_alpha = function (self, alpha)
+	self._damage_alpha_multiplier = alpha
+
+	for _, widget in pairs(self._damage_widgets) do
+		self:_set_widget_dirty(widget)
+	end
+
+	self:set_dirty()
+end
+
 UnitFrameUI.set_equipment_alpha = function (self, alpha)
 	self._equipment_alpha_multiplier = alpha
 
@@ -169,10 +194,21 @@ UnitFrameUI.set_ability_alpha = function (self, alpha)
 	self:set_dirty()
 end
 
+UnitFrameUI.set_respawn_alpha = function (self, alpha)
+	self._respawn_alpha_multiplier = alpha
+
+	for _, widget in pairs(self._respawn_widgets) do
+		self:_set_widget_dirty(widget)
+	end
+
+	self:set_dirty()
+end
+
 UnitFrameUI.update = function (self, dt, t)
 	local features_list = self.features_list
 	local update_equipment = features_list.equipment
 	local update_weapons = features_list.weapons
+	local update_damage = features_list.damage
 	local dirty = false
 	local data = self.data
 	local is_dead = data.is_dead
@@ -214,12 +250,18 @@ UnitFrameUI.update = function (self, dt, t)
 		dirty = true
 	end
 
+	if update_damage and self:_update_damage_feedback(dt, t) then
+		dirty = true
+	end
+
 	if dirty then
 		self:set_dirty()
 	end
 end
 
 UnitFrameUI.on_resolution_modified = function (self)
+	self:set_player_name(self._player_name or "")
+
 	for _, widget in pairs(self._widgets) do
 		self:_set_widget_dirty(widget)
 	end
@@ -250,6 +292,12 @@ UnitFrameUI.draw = function (self, dt)
 		UIRenderer.draw_widget(ui_renderer, widget)
 	end
 
+	render_settings.alpha_multiplier = self._damage_alpha_multiplier or alpha_multiplier
+
+	for _, widget in pairs(self._damage_widgets) do
+		UIRenderer.draw_widget(ui_renderer, widget)
+	end
+
 	render_settings.alpha_multiplier = self._portrait_alpha_multiplier or alpha_multiplier
 
 	for _, widget in pairs(self._portrait_widgets) do
@@ -271,6 +319,12 @@ UnitFrameUI.draw = function (self, dt)
 	render_settings.alpha_multiplier = self._ability_alpha_multiplier or alpha_multiplier
 
 	for _, widget in pairs(self._ability_widgets) do
+		UIRenderer.draw_widget(ui_renderer, widget)
+	end
+
+	render_settings.alpha_multiplier = self._respawn_alpha_multiplier or alpha_multiplier
+
+	for _, widget in pairs(self._respawn_widgets) do
 		UIRenderer.draw_widget(ui_renderer, widget)
 	end
 
@@ -431,6 +485,8 @@ UnitFrameUI.set_player_name = function (self, name_text)
 
 		self:_set_widget_dirty(widget)
 	end
+
+	self._player_name = name_text
 end
 
 UnitFrameUI.set_inventory_slot_data = function (self, slot_name, slot_visible, item_data)
@@ -703,6 +759,267 @@ UnitFrameUI._update_total_health_bar_animation = function (self, dt, t)
 
 		return true
 	end
+end
+
+UnitFrameUI.show_respawn_ui = function (self)
+	return self._show_respawn_ui
+end
+
+UnitFrameUI.show_respawn_countdown = function (self, player, is_local_player, respawn_time)
+	self._show_respawn_ui = true
+	local widget = (self._frame_type == "player" and self:_widget_by_name("respawn_dynamic")) or self:_widget_by_name("default_dynamic")
+	local widget_content = widget.content
+	widget_content.respawn_timer = respawn_time
+	widget_content.total_countdown_time = respawn_time
+	widget_content.state = "countdown"
+	widget_content.respawn_info_text = "Respawn in"
+end
+
+local event_colors = {
+	fade_to = Colors.get_table("white"),
+	default = Colors.get_table("cheeseburger"),
+	kill = Colors.get_table("red"),
+	personal = Colors.get_table("dodger_blue")
+}
+local MAX_NUMBER_OF_DAMAGE_MESSAGES = 4
+
+UnitFrameUI.add_damage_feedback = function (self, hash, is_local_player, event_type, attacker_player, target_player, damage_amount)
+	local events = self._damage_events
+	local full_hash = hash .. event_type
+	local hash_order = self._hash_order
+	local t = Managers.time:time("game")
+	local increment_duration = UISettings.damage_feedback.increment_duration
+	local existing_event = events[full_hash]
+	local target_name = target_player:cached_name() or target_player.character_name
+
+	if not existing_event then
+		existing_event = {
+			current_index = 0,
+			text = "",
+			shown_amount = 0,
+			event_type = event_type,
+			amount = {},
+			live_amounts = {},
+			next_increment = t - increment_duration,
+			remove_time = math.huge,
+			local_player = is_local_player,
+			target_name = target_name
+		}
+		events[full_hash] = existing_event
+	else
+		local index = table.find(hash_order, full_hash)
+
+		table.remove(hash_order, index)
+		table.remove(self._hash_widget_lookup, index)
+	end
+
+	hash_order[#hash_order + 1] = full_hash
+	local amount = existing_event.amount
+	amount[#amount + 1] = damage_amount
+	existing_event.remove_time = math.huge
+
+	if MAX_NUMBER_OF_DAMAGE_MESSAGES < #hash_order then
+		local first_hash = hash_order[1]
+		events[first_hash] = nil
+
+		table.remove(hash_order, 1)
+		table.remove(self._hash_widget_lookup, 1)
+	end
+
+	local widget_index = 0
+
+	table.clear(self._hash_widget_lookup)
+
+	for i = #hash_order, 1, -1 do
+		widget_index = widget_index + 1
+		local hash = hash_order[i]
+		self._hash_widget_lookup[hash] = self._damage_widgets[widget_index]
+	end
+
+	local widget_text_style = self._hash_widget_lookup[full_hash].style.text
+	widget_text_style.text_color[1] = 255
+end
+
+local damage_templates = {
+	dealing_damage = {
+		text_function = function (total_amount, target_name, last_amount)
+			return string.format("hit %s for ", target_name), total_amount, last_amount
+		end,
+		sound_function = function ()
+			return "hud_achievement_unlock_02"
+		end
+	},
+	other_dealing_damage = {
+		text_function = function (total_amount, target_name, last_amount)
+			return string.format("hit %s for ", target_name), total_amount, last_amount
+		end,
+		sound_function = function ()
+			return "Play_hud_socialwheel_hover"
+		end
+	}
+}
+local pop_dmg_time = 0.7
+local pop_dmg_fade_time = 0.9
+
+UnitFrameUI._update_damage_feedback = function (self, dt, t)
+	local ui_renderer = self.ui_renderer
+	local ui_scenegraph = self.ui_scenegraph
+	local input_service = self.input_manager:get_service("Player")
+	local hash_order = self._hash_order
+
+	for i = #hash_order, 1, -1 do
+		local full_hash = hash_order[i]
+		local widget = self._hash_widget_lookup[full_hash]
+		local widget_content = widget.content
+		local widget_style = widget.style
+		local event = self._damage_events[full_hash]
+		local template = damage_templates[event.event_type]
+
+		if event.remove_time < t then
+			self._damage_events[full_hash] = nil
+
+			table.remove(hash_order, i)
+		elseif event.next_increment < t and event.current_index < #event.amount then
+			event.current_index = event.current_index + 1
+			event.last_damage_shown = event.amount[event.current_index]
+			event.old_shown_amount = event.shown_amount
+			event.shown_amount = event.shown_amount + event.last_damage_shown
+			event.next_increment = t + UISettings.damage_feedback.increment_duration
+			event.scale_timer = t + pop_dmg_time
+			local wwise_world = Managers.world:wwise_world(self.world)
+			local sound_event = template.sound_function()
+
+			if sound_event then
+				WwiseWorld.trigger_event(wwise_world, sound_event)
+			end
+
+			event.text, event.text_total_sum, event.text_last_dmg = template.text_function(event.shown_amount, event.target_name, event.last_damage_shown)
+			event.remove_time = t + UISettings.damage_feedback.show_duration
+			local font, scaled_font_size = UIFontByResolution(widget_style.text)
+			event.text_width = UIRenderer.text_size(ui_renderer, event.text, font[1], scaled_font_size)
+		end
+
+		local time_left = event.remove_time - t
+		local fade_duration = UISettings.damage_feedback.fade_duration
+		local alpha = 255 * math.clamp(time_left / fade_duration, 0, 1)
+		widget_content.text = event.text
+		widget_content.icon_texture = event.icon_texture
+		widget_style.text.text_color[1] = alpha
+		local v = 0
+		local v2 = 0
+		local scale = 0
+
+		if event.scale_timer then
+			if t <= event.scale_timer then
+				v = math.clamp((event.scale_timer - t) / pop_dmg_time, 0, 1)
+
+				if v > 0.5 then
+					v2 = 0.7
+				else
+					v2 = 0
+				end
+
+				scale = math.ease_pulse(v)
+			else
+				event.scale_timer = nil
+			end
+		end
+
+		event.text_total_sum = (v > 0.5 and event.old_shown_amount) or event.shown_amount
+		local font, scaled_font_size = UIFontByResolution(widget.style.text_total_sum)
+		event.text_width_total_sum = UIRenderer.text_size(ui_renderer, event.text_total_sum, font[1], scaled_font_size)
+		local tcol = (v > 0.5 and v < 0.7 and Colors.get_table("gold")) or Colors.get_table("dark_orange")
+		local DAMAGE_FONT_SIZE = 24
+		widget_style.text_total_sum.font_size = DAMAGE_FONT_SIZE + 10 * scale
+		widget.content.text_total_sum = event.text_total_sum
+		widget_style.text_total_sum.offset[1] = widget_style.text.offset[1] + event.text_width + event.text_width_total_sum * 0.6
+		widget_style.text_total_sum.text_color = tcol
+		widget_style.text_total_sum.text_color[1] = alpha
+		widget.content.text_last_dmg = event.text_last_dmg
+		widget_style.text_last_dmg.offset[1] = widget_style.text_total_sum.offset[1] + event.text_width_total_sum + math.easeOutCubic(1 - v) * 100
+		widget_style.text_last_dmg.text_color[1] = 255 * v2
+	end
+
+	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
+
+	for _, widget in pairs(self._hash_widget_lookup) do
+		UIRenderer.draw_widget(ui_renderer, widget)
+	end
+
+	UIRenderer.end_pass(ui_renderer)
+end
+
+UnitFrameUI.update_respawn_countdown = function (self, dt, t)
+	local ui_renderer = self.ui_renderer
+	local ui_scenegraph = self.ui_scenegraph
+	local input_service = self.input_manager:get_service("Player")
+	local player_frame = self._frame_type == "player"
+	local widget = (player_frame and self:_widget_by_name("respawn_dynamic")) or self:_widget_by_name("default_dynamic")
+	local widget_content = widget.content
+	local state = widget_content.state
+	t, dt = Managers.time:time_and_delta("game")
+	local respawn_countdown_text = nil
+
+	if state == "countdown" then
+		local respawn_timer = widget_content.respawn_timer
+		respawn_timer = math.clamp(respawn_timer - dt, 0, 9999)
+		respawn_countdown_text = string.format("%.0f", respawn_timer)
+
+		if player_frame then
+			local ftime = math.floor(respawn_timer + 0.5)
+
+			if ftime <= 3 and widget_content.last_counts ~= ftime then
+				local wwise_world = Managers.world:wwise_world(self.world)
+				local sound_name = (ftime == 0 and "hud_compleation_ver2") or "hud_difficulty_increased_end"
+
+				WwiseWorld.trigger_event(wwise_world, sound_name)
+
+				widget_content.last_counts = ftime
+			end
+		end
+
+		if respawn_timer <= 0 then
+			widget_content.fadeout_time = widget_content.total_fadeout_time
+			state = "fadeout"
+		end
+
+		widget_content.respawn_timer = respawn_timer
+		widget_content.respawn_countdown_text = respawn_countdown_text
+	elseif state == "fadeout" then
+		local widget_style = widget.style
+		local fadeout_time = widget_content.fadeout_time - dt
+		local normalized_alpha = (fadeout_time - dt) / widget_content.total_fadeout_time
+		local alpha = normalized_alpha * 255
+		local style_n = widget_style.respawn_countdown_text
+		style_n.text_color[1] = alpha
+
+		if player_frame then
+			local style_t = widget_style.respawn_info_text
+			style_t.text_color[1] = alpha
+		end
+
+		widget_content.fadeout_time = fadeout_time
+
+		if fadeout_time <= 0 then
+			state = "hidden"
+			self._show_respawn_ui = false
+			widget_content.respawn_countdown_text = ""
+
+			if player_frame then
+				widget_content.respawn_info_text = ""
+			end
+		end
+	end
+
+	widget_content.state = state
+
+	Debug.text("RESPAWN GUI UPDATED")
+	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
+	UIRenderer.draw_widget(ui_renderer, widget)
+	UIRenderer.end_pass(ui_renderer)
+	self:set_dirty()
+
+	return true
 end
 
 UnitFrameUI._update_overcharge_animation = function (self, dt, t)

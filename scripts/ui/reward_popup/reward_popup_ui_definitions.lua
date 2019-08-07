@@ -481,10 +481,90 @@ local widget_definitions = {
 	title = UIWidgets.create_simple_text("n/a", "title_root", nil, nil, title_text_style),
 	level = UIWidgets.create_simple_text("n/a", "level_root", nil, nil, level_text_style),
 	description = create_description_text_widget("n/a", "title_root"),
-	texture = UIWidgets.create_simple_texture("icons_placeholder", "texture_root"),
+	texture = {
+		scenegraph_id = "item_root",
+		element = {
+			passes = {
+				{
+					texture_id = "texture_id",
+					style_id = "texture_id",
+					pass_type = "texture"
+				}
+			}
+		},
+		content = {
+			texture_id = "icons_placeholder"
+		},
+		style = {
+			texture_id = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					40,
+					40
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			}
+		},
+		offset = {
+			0,
+			0,
+			0
+		}
+	},
+	icon = {
+		scenegraph_id = "item_root",
+		element = {
+			passes = {
+				{
+					texture_id = "texture_id",
+					style_id = "texture_id",
+					pass_type = "texture"
+				}
+			}
+		},
+		content = {
+			texture_id = "icons_placeholder"
+		},
+		style = {
+			texture_id = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					40,
+					40
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			}
+		},
+		offset = {
+			0,
+			0,
+			0
+		}
+	},
 	item = create_item_widget("icons_placeholder", "item_root"),
 	loot_chest = create_item_widget("icons_placeholder", "item_root"),
-	icon = create_icon_widget("icons_placeholder", "item_root"),
 	career = UIWidgets.create_simple_texture("icons_placeholder", "career_root"),
 	background_top = UIWidgets.create_simple_texture("reward_popup_panel", "background_top"),
 	background_center = UIWidgets.create_simple_uv_texture("reward_pop_up_01_bg", {

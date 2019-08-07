@@ -29,6 +29,10 @@ FadeSystem.set_min_fade = function (self, unit, min_fade)
 	EngineOptimizedExtensions.fade_set_min_fade(self.fade_system, unit, min_fade)
 end
 
+FadeSystem.new_linked_units = function (self, unit, new_linked_units)
+	EngineOptimizedExtensions.fade_new_linked_units(self.fade_system, unit, new_linked_units)
+end
+
 FadeSystem.on_remove_extension = function (self, unit, extension_name)
 	EngineOptimizedExtensions.fade_on_remove_extension(self.fade_system, unit)
 	ScriptUnit.remove_extension(unit, self.name)

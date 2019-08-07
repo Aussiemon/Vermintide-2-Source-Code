@@ -745,6 +745,22 @@ HitEffectsPoisonWind = {
 			lateral_force = 0
 		}
 	},
+	throwing_axe_death = {
+		inherits = "bolt_death",
+		extra_conditions = {
+			damage_type = {
+				"throwing_axe"
+			}
+		},
+		animations = {
+			"ragdoll"
+		},
+		push = {
+			distal_force = 80,
+			vertical_force = 10,
+			lateral_force = 0
+		}
+	},
 	burn = {
 		flow_event = "burn",
 		extra_conditions = {
@@ -842,7 +858,7 @@ HitEffectsPoisonWind = {
 		}
 	},
 	arrow_poison_dot = {
-		hit_effect_name = "fx/wpnfx_poison_arrow_impact",
+		flow_event = "poisoned",
 		extra_conditions = {
 			damage_type = {
 				"arrow_poison_dot",
@@ -852,7 +868,7 @@ HitEffectsPoisonWind = {
 	},
 	arrow_poison_dot_death = {
 		inherits = "arrow_poison_dot",
-		hit_effect_name = "fx/wpnfx_poison_arrow_impact",
+		flow_event = "poisoned",
 		extra_conditions = {
 			death = true,
 			damage_type = {

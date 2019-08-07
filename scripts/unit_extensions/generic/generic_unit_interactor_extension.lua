@@ -59,14 +59,13 @@ GenericUnitInteractorExtension.destroy = function (self)
 end
 
 local IGNORED_DAMAGE_TYPES = {
-	aoe_poison_dot = true,
-	buff_shared_medpack_temp_health = true,
-	buff = true,
-	volume_generic_dot = true,
-	arrow_poison_dot = true,
 	warpfire_ground = true,
+	buff_shared_medpack_temp_health = true,
+	arrow_poison_dot = true,
+	volume_generic_dot = true,
+	buff = true,
+	aoe_poison_dot = true,
 	damage_over_time = true,
-	globadier_gas_dot = true,
 	buff_shared_medpack = true,
 	plague_ground = true,
 	temporary_health_degen = true,

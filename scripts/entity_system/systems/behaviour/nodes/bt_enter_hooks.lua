@@ -1,5 +1,6 @@
 BTEnterHooks = BTEnterHooks or {}
 local BTEnterHooks = BTEnterHooks
+local unit_local_position = Unit.local_position
 local unit_alive = Unit.alive
 local ScriptUnit = ScriptUnit
 
@@ -36,7 +37,7 @@ BTEnterHooks.rage_on_enter = function (unit, blackboard, t)
 end
 
 BTEnterHooks.attack_grabbed_smash = function (unit, blackboard, t)
-	if Unit.alive(blackboard.victim_grabbed) then
+	if unit_alive(blackboard.victim_grabbed) then
 		StatusUtils.set_grabbed_by_chaos_spawn_status_network(blackboard.victim_grabbed, "beating_with")
 	end
 
@@ -132,9 +133,12 @@ BTEnterHooks.stormfiend_boss_charge_enter = function (unit, blackboard, t)
 	local self_pos = POSITION_LOOKUP[unit] + Vector3.up()
 	local world = blackboard.world
 	local physics_world = World.get_data(world, "physics_world")
+	local side = blackboard.side
+	local ENEMY_PLAYER_AND_BOT_POSITIONS = side.ENEMY_PLAYER_AND_BOT_POSITIONS
+	local ENEMY_PLAYER_AND_BOT_UNITS = side.ENEMY_PLAYER_AND_BOT_UNITS
 
-	for i, pos in ipairs(PLAYER_AND_BOT_POSITIONS) do
-		local player_unit = PLAYER_AND_BOT_UNITS[i]
+	for i, pos in ipairs(ENEMY_PLAYER_AND_BOT_POSITIONS) do
+		local player_unit = ENEMY_PLAYER_AND_BOT_UNITS[i]
 		local distance = Vector3.distance(self_pos, pos)
 		local target_pos = pos + Vector3.up()
 
@@ -163,7 +167,7 @@ BTEnterHooks.on_chaos_exalted_champion_intro_enter = function (unit, blackboard,
 
 	if node_units then
 		local node_unit = node_units[1]
-		local pos = Unit.local_position(node_unit, 0)
+		local pos = unit_local_position(node_unit, 0)
 		blackboard.goal_destination = Vector3Box(pos)
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 		health_extension.is_invincible = true
@@ -180,7 +184,7 @@ BTEnterHooks.on_chaos_exalted_sorcerer_intro_enter = function (unit, blackboard,
 
 	if node_units then
 		local node_unit = node_units[1]
-		local pos = Unit.local_position(node_unit, 0)
+		local pos = unit_local_position(node_unit, 0)
 		local rot = Unit.local_rotation(node_unit, 0)
 		blackboard.quick_teleport_exit_pos = Vector3Box(pos)
 		blackboard.quick_teleport = true
@@ -207,7 +211,7 @@ BTEnterHooks.on_skaven_warlord_intro_enter = function (unit, blackboard, t)
 
 	if node_units then
 		local node_unit = node_units[1]
-		local pos = Unit.local_position(node_unit, 0)
+		local pos = unit_local_position(node_unit, 0)
 		blackboard.goal_destination = Vector3Box(pos)
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 		health_extension.is_invincible = true
@@ -242,7 +246,7 @@ local function setup_sorcerer_boss_spawning(unit, blackboard, data)
 	local spawner = ConflictUtils.get_random_spawner_with_id("sorcerer_boss")
 
 	if spawner then
-		call_position = Unit.local_position(spawner, 0)
+		call_position = unit_local_position(spawner, 0)
 		local fwd = Vector3.normalize(Vector3.flat(Quaternion.forward(ScriptUnit.extension(spawner, "spawner_system"):spawn_rotation())))
 		data.spawn_forward = Vector3Box(fwd)
 		local spawners = {
@@ -310,7 +314,7 @@ BTEnterHooks.teleport_to_center = function (unit, blackboard, t)
 	local level_analysis = Managers.state.conflict.level_analysis
 	local node_units = level_analysis.generic_ai_node_units.sorcerer_boss_center
 	local center_unit = node_units[1]
-	local teleport_pos = Unit.local_position(center_unit, 0)
+	local teleport_pos = unit_local_position(center_unit, 0)
 
 	if teleport_pos then
 		blackboard.quick_teleport_exit_pos = Vector3Box(teleport_pos)
@@ -363,8 +367,10 @@ BTEnterHooks.sorcerer_evade = function (unit, blackboard, t)
 	local strictly_not_close_to_players = true
 	local silent = true
 	local limit_spawners = nil
+	local side = blackboard.side
+	local side_id = side.side_id
 
-	conflict_director.horde_spawner:execute_event_horde(t, spawner_event_id, composition_type, limit_spawners, silent, nil, strictly_not_close_to_players)
+	conflict_director.horde_spawner:execute_event_horde(t, spawner_event_id, side_id, composition_type, limit_spawners, silent, nil, strictly_not_close_to_players)
 
 	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 	local event_data = FrameTable.alloc_table()
@@ -378,16 +384,19 @@ BTEnterHooks.warlord_defensive_on_enter = function (unit, blackboard, t)
 	local furthest_distance = 0
 	local wanted_pos = nil
 
-	for i = 1, #spawn_allies_positions, 1 do
-		local position = spawn_allies_positions[i]:unbox()
-		local distance = Vector3.distance(self_position, position)
+	if spawn_allies_positions then
+		for i = 1, #spawn_allies_positions, 1 do
+			local position = spawn_allies_positions[i]:unbox()
+			local distance = Vector3.distance(self_position, position)
 
-		if furthest_distance < distance then
-			wanted_pos = position
-			furthest_distance = distance
+			if furthest_distance < distance then
+				wanted_pos = position
+				furthest_distance = distance
+			end
 		end
 	end
 
+	wanted_pos = wanted_pos or self_position
 	blackboard.override_spawn_allies_call_position = Vector3Box(wanted_pos)
 end
 
@@ -395,9 +404,30 @@ BTEnterHooks.keep_target = function (unit, blackboard, t)
 	blackboard.keep_target = true
 end
 
+BTEnterHooks.add_invincibility = function (unit, blackboard, t)
+	local health_extension = ScriptUnit.extension(unit, "health_system")
+	health_extension.is_invincible = true
+end
+
 BTEnterHooks.remove_invincibility = function (unit, blackboard, t)
 	local health_extension = ScriptUnit.extension(unit, "health_system")
 	health_extension.is_invincible = false
+end
+
+BTEnterHooks.activate_slot_system = function (unit, blackboard, t)
+	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
+
+	ai_slot_system:do_slot_search(unit, true)
+end
+
+for _, dlc in pairs(DLCSettings) do
+	local bt_enter_hooks = dlc.bt_enter_hooks
+
+	if bt_enter_hooks then
+		for hook_name, hook_func in pairs(bt_enter_hooks) do
+			BTEnterHooks[hook_name] = hook_func
+		end
+	end
 end
 
 return

@@ -40,6 +40,20 @@ local scenegraph_definition = {
 			500
 		}
 	},
+	weave_loading_icon = {
+		vertical_alignment = "bottom",
+		parent = "dead_space_filler",
+		horizontal_alignment = "right",
+		position = {
+			-90,
+			114,
+			99
+		},
+		size = {
+			114,
+			114
+		}
+	},
 	menu_root = {
 		vertical_alignment = "center",
 		parent = "root",
@@ -407,11 +421,100 @@ local background_image = {
 				pass_type = "texture",
 				style_id = "bg_texture",
 				texture_id = "bg_texture"
+			},
+			{
+				pass_type = "texture",
+				style_id = "fade_texture",
+				texture_id = "fade_texture",
+				content_check_function = function (content)
+					return content.is_weave
+				end
+			},
+			{
+				style_id = "weave_name",
+				pass_type = "text",
+				text_id = "weave_name",
+				content_check_function = function (content)
+					return content.is_weave
+				end
+			},
+			{
+				style_id = "weave_name_shadow",
+				pass_type = "text",
+				text_id = "weave_name",
+				content_check_function = function (content)
+					return content.is_weave
+				end
+			},
+			{
+				style_id = "location_header",
+				pass_type = "text",
+				text_id = "location_header",
+				content_check_function = function (content)
+					return content.is_weave
+				end
+			},
+			{
+				style_id = "location_name",
+				pass_type = "text",
+				text_id = "location_name",
+				content_check_function = function (content)
+					return content.is_weave
+				end
+			},
+			{
+				style_id = "location_name_shadow",
+				pass_type = "text",
+				text_id = "location_name",
+				content_check_function = function (content)
+					return content.is_weave
+				end
+			},
+			{
+				style_id = "mutator_name",
+				pass_type = "text",
+				text_id = "mutator_name",
+				content_check_function = function (content)
+					return content.is_weave
+				end
+			},
+			{
+				style_id = "mutator_description",
+				pass_type = "text",
+				text_id = "mutator_description",
+				content_check_function = function (content)
+					return content.is_weave
+				end
+			},
+			{
+				texture_id = "objective_icon",
+				style_id = "objective_icon",
+				pass_type = "texture",
+				content_check_function = function (content)
+					return content.is_weave and not content.is_arena
+				end
+			},
+			{
+				style_id = "objective_text",
+				pass_type = "text",
+				text_id = "objective_text",
+				content_check_function = function (content)
+					return content.is_weave and not content.is_arena
+				end
 			}
 		}
 	},
 	content = {
-		bg_texture = "to_be_set"
+		objective_icon = "loading_objective_icon",
+		weave_name = "",
+		location_header = "location",
+		mutator_description = "",
+		bg_texture = "to_be_set",
+		location_name = "",
+		fade_texture = "loading_screen_fade",
+		objective_text = " ",
+		is_weave = false,
+		mutator_name = ""
 	},
 	style = {
 		bg_rect = {
@@ -426,6 +529,201 @@ local background_image = {
 				0,
 				0,
 				-1
+			}
+		},
+		fade_texture = {
+			vertical_alignment = "bottom",
+			horizontal_alignment = "center",
+			color = {
+				255,
+				0,
+				0,
+				0
+			},
+			offset = {
+				0,
+				0,
+				5
+			},
+			texture_size = {
+				1920,
+				599
+			}
+		},
+		weave_name = {
+			vertical_alignment = "top",
+			upper_case = true,
+			localize = true,
+			font_size = 26,
+			font_type = "hell_shark_header",
+			horizontal_alignment = "left",
+			text_color = {
+				255,
+				215,
+				215,
+				215
+			},
+			offset = {
+				130,
+				-60,
+				6
+			}
+		},
+		weave_name_shadow = {
+			vertical_alignment = "top",
+			upper_case = true,
+			localize = true,
+			font_size = 26,
+			font_type = "hell_shark_header",
+			horizontal_alignment = "left",
+			text_color = {
+				255,
+				0,
+				0,
+				0
+			},
+			offset = {
+				130,
+				-62,
+				5
+			}
+		},
+		location_header = {
+			vertical_alignment = "bottom",
+			upper_case = true,
+			localize = false,
+			horizontal_alignment = "left",
+			font_size = 24,
+			font_type = "hell_shark_header",
+			text_color = {
+				255,
+				125,
+				125,
+				125
+			},
+			offset = {
+				130,
+				335,
+				6
+			}
+		},
+		location_name = {
+			vertical_alignment = "bottom",
+			upper_case = true,
+			localize = true,
+			horizontal_alignment = "left",
+			font_size = 58,
+			font_type = "hell_shark_header",
+			text_color = {
+				255,
+				215,
+				215,
+				215
+			},
+			offset = {
+				130,
+				270,
+				6
+			}
+		},
+		location_name_shadow = {
+			vertical_alignment = "bottom",
+			upper_case = true,
+			localize = true,
+			horizontal_alignment = "left",
+			font_size = 58,
+			font_type = "hell_shark_header",
+			text_color = {
+				255,
+				0,
+				0,
+				0
+			},
+			offset = {
+				130,
+				268,
+				5
+			}
+		},
+		mutator_name = {
+			vertical_alignment = "bottom",
+			upper_case = false,
+			localize = true,
+			horizontal_alignment = "left",
+			font_size = 32,
+			font_type = "hell_shark_header",
+			text_color = {
+				255,
+				215,
+				215,
+				215
+			},
+			offset = {
+				130,
+				200,
+				6
+			}
+		},
+		mutator_description = {
+			word_wrap = true,
+			upper_case = false,
+			localize = true,
+			font_size = 24,
+			horizontal_alignment = "left",
+			vertical_alignment = "top",
+			font_type = "hell_shark_header",
+			text_color = {
+				255,
+				215,
+				215,
+				215
+			},
+			size = {
+				680,
+				0
+			},
+			offset = {
+				130,
+				200,
+				6
+			}
+		},
+		objective_icon = {
+			vertical_alignment = "bottom",
+			horizontal_alignment = "left",
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			offset = {
+				130,
+				174,
+				10
+			},
+			texture_size = {
+				30,
+				30
+			}
+		},
+		objective_text = {
+			vertical_alignment = "bottom",
+			upper_case = false,
+			localize = true,
+			horizontal_alignment = "left",
+			font_size = 24,
+			font_type = "hell_shark_header",
+			text_color = {
+				255,
+				215,
+				215,
+				215
+			},
+			offset = {
+				170,
+				170,
+				6
 			}
 		}
 	}
@@ -745,6 +1043,7 @@ local definitions = {
 	}),
 	news_ticker_text_widget = UIWidgets.create_simple_text("", "news_ticker_text", nil, nil, news_ticker_text_style),
 	news_ticker_mask_widget = UIWidgets.create_simple_texture("mask_rect", "news_ticker_mask"),
+	weave_loading_icon = UIWidgets.create_simple_texture("wom_loading", "weave_loading_icon"),
 	MAXIMUM_TIP_WIDTH = MAXIMUM_TIP_WIDTH,
 	ICON_SIZE = ICON_SIZE
 }

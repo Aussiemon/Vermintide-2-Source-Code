@@ -1,6 +1,5 @@
 DamageBlobExtension = class(DamageBlobExtension)
 local unit_alive = Unit.alive
-local player_and_bot_units = PLAYER_AND_BOT_UNITS
 local position_lookup = POSITION_LOOKUP
 
 DamageBlobExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -24,6 +23,7 @@ DamageBlobExtension.init = function (self, extension_init_context, unit, extensi
 	local buff_system = entity_manager:system("buff_system")
 	self.buff_system = buff_system
 	self._source_unit = extension_init_data.source_unit
+	self._source_side = Managers.state.side.side_by_unit[self._source_unit]
 	local template_name = extension_init_data.damage_blob_template_name
 	local template = DamageBlobTemplates.templates[template_name]
 	self.template = template
@@ -46,6 +46,8 @@ DamageBlobExtension.init = function (self, extension_init_context, unit, extensi
 	self._sfx_name_stop = template.sfx_name_stop
 	self._sfx_name_start_remains = template.sfx_name_start_remains
 	self._sfx_name_stop_remains = template.sfx_name_stop_remains
+	self.is_server = Managers.player.is_server
+	self._create_blobs = template.create_blobs
 	local init_function = template.init_function
 
 	if init_function then
@@ -76,17 +78,20 @@ DamageBlobExtension.start_placing_blobs = function (self, wait_time, t)
 	local unit = self.unit
 	self.unit_id = Managers.state.network:unit_game_object_id(unit)
 	self.wait_time = t + wait_time
-	local template = self.template
-	local use_nav_cost_map_volumes = template.use_nav_cost_map_volumes
 
-	if use_nav_cost_map_volumes then
-		local nav_cost_map_cost_type = template.nav_cost_map_cost_type
-		local num_volumes_guess = 10
-		local ai_system = self.ai_system
-		self._nav_cost_map_id = ai_system:create_nav_cost_map(nav_cost_map_cost_type, num_volumes_guess)
+	if self._create_blobs then
+		local template = self.template
+		local use_nav_cost_map_volumes = template.use_nav_cost_map_volumes
+
+		if use_nav_cost_map_volumes then
+			local nav_cost_map_cost_type = template.nav_cost_map_cost_type
+			local num_volumes_guess = 10
+			local ai_system = self.ai_system
+			self._nav_cost_map_id = ai_system:create_nav_cost_map(nav_cost_map_cost_type, num_volumes_guess)
+		end
+
+		self.use_nav_cost_map_volumes = use_nav_cost_map_volumes
 	end
-
-	self.use_nav_cost_map_volumes = use_nav_cost_map_volumes
 end
 
 local BLOB_EXTRA_SAFE_DISTANCE = 0.5
@@ -290,13 +295,17 @@ DamageBlobExtension.update = function (self, unit, input, dt, context, t)
 			self.state = "running"
 		end
 	elseif state == "running" then
-		self:place_blobs(unit, t)
+		if self._create_blobs then
+			self:place_blobs(unit, t)
+		end
 	elseif state == "lingering" and self.linger_time < t then
 		Managers.state.unit_spawner:mark_for_deletion(unit)
 	end
 
-	self:update_blobs_fx_and_sfx(t, dt)
-	self:update_blob_overlaps(t)
+	if self._create_blobs then
+		self:update_blobs_fx_and_sfx(t, dt)
+		self:update_blob_overlaps(t)
+	end
 
 	local blob_update_function = self._blob_update_function
 
@@ -307,7 +316,11 @@ DamageBlobExtension.update = function (self, unit, input, dt, context, t)
 		if not result and unit_id then
 			self._blob_update_function = nil
 
-			self.network_transmit:send_rpc_clients("rpc_abort_damage_blob", unit_id)
+			if self.is_server then
+				self.network_transmit:send_rpc_clients("rpc_abort_damage_blob", unit_id)
+			else
+				self.network_transmit:send_rpc_server("rpc_abort_damage_blob", unit_id)
+			end
 		end
 	end
 end
@@ -391,7 +404,11 @@ DamageBlobExtension.insert_fx = function (self, position, rot, t)
 	if unit_id then
 		local life_time_percentage = 1
 
-		self.network_transmit:send_rpc_clients("rpc_add_damage_blob_fx", unit_id, position, life_time_percentage)
+		if self.is_server then
+			self.network_transmit:send_rpc_clients("rpc_add_damage_blob_fx", unit_id, position, life_time_percentage)
+		else
+			self.network_transmit:send_rpc_server("rpc_add_damage_blob_fx", unit_id, position, life_time_percentage)
+		end
 	end
 
 	self.last_fx_pos:store(position)
@@ -471,10 +488,11 @@ DamageBlobExtension.update_blob_overlaps = function (self, t)
 	local last_blob_position = Vector3(last_blob[1], last_blob[2], last_blob[3])
 
 	if self.apply_buff_to_player then
+		local enemy_player_and_bot_units = self._source_side.ENEMY_PLAYER_AND_BOT_UNITS
 		local blob_radius = self.blob_radius
 
-		for i = 1, #player_and_bot_units, 1 do
-			local target_unit = player_and_bot_units[i]
+		for i = 1, #enemy_player_and_bot_units, 1 do
+			local target_unit = enemy_player_and_bot_units[i]
 
 			self:check_overlap(unit, target_unit, blob_radius, first_blob_position, last_blob_position, buff_system, num_blobs)
 		end

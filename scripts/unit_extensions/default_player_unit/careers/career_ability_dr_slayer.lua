@@ -1,20 +1,54 @@
 CareerAbilityDRSlayer = class(CareerAbilityDRSlayer)
+local MIN_DISTANCE_FOR_LEAP = 2
+
+local function ballistic_raycast(physics_world, max_steps, max_time, position, velocity, gravity, collision_filter)
+	local time_step = max_time / max_steps
+
+	for i = 1, max_steps, 1 do
+		local new_position = position + velocity * time_step
+		local delta = new_position - position
+		local direction = Vector3.normalize(delta)
+		local distance = Vector3.length(delta)
+		local result, hit_position, _, normal, _ = PhysicsWorld.immediate_raycast(physics_world, position, direction, distance, "closest", "collision_filter", collision_filter)
+
+		if result then
+			if Vector3.dot(normal, Vector3.up()) < 0.95 then
+				local step_back_distance = 1.5
+				local step_back = Vector3.normalize(hit_position - position) * step_back_distance
+				local step_back_position = hit_position - step_back
+				local new_result, new_hit_position, _, _, _ = PhysicsWorld.immediate_raycast(physics_world, step_back_position, Vector3.down(), 10, "closest", "collision_filter", collision_filter)
+
+				if new_result then
+					return true, new_hit_position
+				end
+			end
+
+			return true, hit_position
+		end
+
+		velocity = velocity + gravity * time_step
+		position = new_position
+	end
+
+	return false, position
+end
+
 local segment_list = {}
 
 local function get_leap_data(physics_world, own_position, target_position)
 	local gravity = -PlayerUnitMovementSettings.gravity_acceleration
-	local jump_speed = nil
-	local jump_angle = math.pi / 6
+	local jump_angle = math.degrees_to_radians(45)
 	local sections = 8
-	local in_los, velocity, time_of_flight, hit_pos = nil
 	local target_velocity = Vector3.zero()
 	local acceptable_accuracy = 0.1
-	jump_speed, hit_pos = WeaponHelper.speed_to_hit_moving_target(own_position, target_position, jump_angle, target_velocity, -gravity, acceptable_accuracy)
-	in_los, velocity, time_of_flight = WeaponHelper.test_angled_trajectory(physics_world, own_position, target_position, gravity, jump_speed, jump_angle, segment_list, sections, nil, true)
+	local jump_speed, hit_pos = WeaponHelper.speed_to_hit_moving_target(own_position, target_position, jump_angle, target_velocity, gravity, acceptable_accuracy)
+	local in_los, velocity, _ = WeaponHelper.test_angled_trajectory(physics_world, own_position, target_position, -gravity, jump_speed, jump_angle, segment_list, sections, nil, true)
 
 	fassert(in_los, "no landing location for leap")
 
-	return velocity, time_of_flight, hit_pos
+	local direction = Vector3.normalize(velocity)
+
+	return direction, jump_speed, hit_pos
 end
 
 CareerAbilityDRSlayer.init = function (self, extension_init_context, unit, extension_init_data)
@@ -41,6 +75,7 @@ CareerAbilityDRSlayer.extensions_ready = function (self, world, unit)
 	self._buff_extension = ScriptUnit.extension(unit, "buff_system")
 	self._locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
 	self._input_extension = ScriptUnit.has_extension(unit, "input_system")
+	self._talent_extension = ScriptUnit.has_extension(unit, "talent_system")
 
 	if self._first_person_extension then
 		self._first_person_unit = self._first_person_extension:get_first_person_unit()
@@ -67,7 +102,7 @@ CareerAbilityDRSlayer.update = function (self, unit, input, dt, context, t)
 			self:_start_priming()
 		end
 	elseif self._is_priming then
-		local landing_position = self:_update_priming()
+		local landing_position, leap_distance = self:_update_priming()
 
 		if input_extension:get("action_two") or input_extension:get("jump") or input_extension:get("jump_only") then
 			self:_stop_priming()
@@ -91,8 +126,10 @@ CareerAbilityDRSlayer.update = function (self, unit, input, dt, context, t)
 			return
 		end
 
-		if self._last_valid_landing_position and not input_extension:get("action_career_hold") then
-			self:_run_ability()
+		if self._last_valid_landing_position and not input_extension:get("action_career_hold") and leap_distance <= MIN_DISTANCE_FOR_LEAP then
+			self:_do_stomp(t)
+		elseif self._last_valid_landing_position and not input_extension:get("action_career_hold") then
+			self:_do_leap()
 		end
 	end
 end
@@ -126,42 +163,32 @@ CareerAbilityDRSlayer._update_priming = function (self)
 	local world = self._world
 	local physics_world = World.get_data(world, "physics_world")
 	local first_person_extension = self._first_person_extension
+	local talent_extension = self._talent_extension
 	local player_position = first_person_extension:current_position()
 	local player_rotation = first_person_extension:current_rotation()
-	local player_direction = Vector3.normalize(Quaternion.forward(player_rotation))
-	local player_direction_flat = Vector3.normalize(Vector3.flat(player_direction))
-	local cross = Vector3.cross(player_direction, Vector3.forward())
-
-	if cross.x < 0 then
-		player_direction = player_direction_flat or player_direction
-	end
-
-	local landing_position = nil
 	local collision_filter = "filter_adept_teleport"
-	local result, hit_position, _, normal = PhysicsWorld.immediate_raycast(physics_world, player_position, player_direction, 10, "closest", "collision_filter", collision_filter)
+	local min_pitch = math.degrees_to_radians(45)
+	local max_pitch = math.degrees_to_radians(12.5)
+	local yaw = Quaternion.yaw(player_rotation)
+	local pitch = math.clamp(Quaternion.pitch(player_rotation), -min_pitch, max_pitch)
+	local yaw_rotation = Quaternion(Vector3.up(), yaw)
+	local pitch_rotation = Quaternion(Vector3.right(), pitch)
+	local raycast_rotation = Quaternion.multiply(yaw_rotation, pitch_rotation)
+	local raycast_direction = Quaternion.forward(raycast_rotation)
+	local speed = 11
 
-	if result then
-		landing_position = hit_position
-
-		if Vector3.dot(normal, Vector3.up()) < 0.75 then
-			local step_back = Vector3.normalize(hit_position - player_position) * 1
-			local step_back_position = hit_position - step_back
-			local new_result, new_hit_position, _, _ = PhysicsWorld.immediate_raycast(physics_world, step_back_position, Vector3.down(), 100, "closest", "collision_filter", collision_filter)
-
-			if new_result then
-				landing_position = new_hit_position
-			end
-		end
-	else
-		landing_position = hit_position
-		local new_result, new_hit_position, _, _ = PhysicsWorld.immediate_raycast(physics_world, player_position + player_direction * 10, Vector3.down(), 100, "closest", "collision_filter", collision_filter)
-
-		if new_result then
-			landing_position = new_hit_position
-		end
+	if talent_extension:has_talent("bardin_slayer_activated_ability_leap_range") then
+		speed = 17
 	end
 
-	if landing_position and Vector3.length(landing_position - player_position) <= 0.1 then
+	local velocity = raycast_direction * speed
+	local max_time = 10
+	local max_steps = 30
+	local gravity = Vector3(0, 0, -11)
+	local _, landing_position = ballistic_raycast(physics_world, max_steps, max_time, player_position, velocity, gravity, collision_filter)
+	local leap_distance = Vector3.length(landing_position - player_position)
+
+	if landing_position and leap_distance <= 0.1 then
 		landing_position = nil
 	end
 
@@ -169,7 +196,7 @@ CareerAbilityDRSlayer._update_priming = function (self)
 		World.move_particles(world, effect_id, landing_position)
 	end
 
-	return landing_position
+	return landing_position, leap_distance
 end
 
 CareerAbilityDRSlayer._stop_priming = function (self)
@@ -182,62 +209,43 @@ CareerAbilityDRSlayer._stop_priming = function (self)
 	self._is_priming = false
 end
 
-CareerAbilityDRSlayer._run_ability = function (self)
-	self:_stop_priming()
-
-	if not self._locomotion_extension:is_on_ground() then
-		return
-	end
-
-	local world = self._world
+CareerAbilityDRSlayer._do_common_stuff = function (self)
 	local owner_unit = self._owner_unit
 	local is_server = self._is_server
 	local local_player = self._local_player
 	local bot_player = self._bot_player
 	local network_manager = self._network_manager
 	local network_transmit = network_manager.network_transmit
-	local status_extension = self._status_extension
 	local career_extension = self._career_extension
-	local buff_name_1 = "bardin_slayer_activated_ability"
-	local buff_name_2 = nil
-	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
-	local buff_2 = talent_extension:has_talent("bardin_slayer_activated_ability_uninterruptible", "dwarf_ranger", true) or talent_extension:has_talent("bardin_slayer_activated_ability_movement", "dwarf_ranger", true)
+	local talent_extension = self._talent_extension
+	local buffs = {
+		"bardin_slayer_activated_ability"
+	}
 
-	if talent_extension:has_talent("bardin_slayer_activated_ability_uninterruptible", "dwarf_ranger", true) then
-		buff_name_2 = "bardin_slayer_activated_ability_uninterruptible"
-	end
-
-	if talent_extension:has_talent("bardin_slayer_activated_ability_movement", "dwarf_ranger", true) then
-		buff_name_2 = "bardin_slayer_activated_ability_movement"
+	if talent_extension:has_talent("bardin_slayer_activated_ability_movement") then
+		buffs[#buffs + 1] = "bardin_slayer_activated_ability_movement"
 	end
 
 	local unit_object_id = network_manager:unit_game_object_id(owner_unit)
-	local buff_template_name_id_1 = NetworkLookup.buff_templates[buff_name_1]
-	local buff_template_name_id_2 = nil
-
-	if buff_2 then
-		buff_template_name_id_2 = NetworkLookup.buff_templates[buff_name_2]
-	end
 
 	if is_server then
 		local buff_extension = self._buff_extension
 
-		buff_extension:add_buff(buff_name_1, {
-			attacker_unit = owner_unit
-		})
-		network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id_1, unit_object_id, 0, false)
+		for i = 1, #buffs, 1 do
+			local buff_name = buffs[i]
+			local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
 
-		if buff_2 then
-			buff_extension:add_buff(buff_name_2, {
+			buff_extension:add_buff(buff_name, {
 				attacker_unit = owner_unit
 			})
-			network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id_2, unit_object_id, 0, false)
+			network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 		end
 	else
-		network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id_1, unit_object_id, 0, true)
+		for i = 1, #buffs, 1 do
+			local buff_name = buffs[i]
+			local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
 
-		if buff_2 then
-			network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id_2, unit_object_id, 0, true)
+			network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
 		end
 	end
 
@@ -255,33 +263,121 @@ CareerAbilityDRSlayer._run_ability = function (self)
 		end
 	end
 
+	career_extension:start_activated_ability_cooldown()
+	self:_play_vo()
+end
+
+CareerAbilityDRSlayer._do_stomp = function (self, t)
+	self:_stop_priming()
+
+	if not self._locomotion_extension:is_on_ground() then
+		return
+	end
+
+	self:_do_common_stuff()
+
+	local owner_unit = self._owner_unit
+	local local_player = self._local_player
+	local career_extension = self._career_extension
+	local talent_extension = self._talent_extension
+	local has_impact_damage_buff = talent_extension:has_talent("bardin_slayer_activated_ability_impact_damage")
+	local rotation = Quaternion.identity()
+	local explosion_template = (has_impact_damage_buff and "bardin_slayer_activated_ability_landing_stagger_impact") or "bardin_slayer_activated_ability_landing_stagger"
+	local scale = 1
+	local career_power_level = career_extension:get_career_power_level() * ((has_impact_damage_buff and 2) or 1)
+	local area_damage_system = Managers.state.entity:system("area_damage_system")
+	local position = POSITION_LOOKUP[owner_unit]
+
+	area_damage_system:create_explosion(owner_unit, position, rotation, explosion_template, scale, "career_ability", career_power_level, false)
+
+	if local_player then
+		local first_person_extension = self._first_person_extension
+
+		first_person_extension:play_unit_sound_event("Play_career_ability_bardin_slayer_impact", owner_unit, 0, true)
+		first_person_extension:play_camera_effect_sequence("leap_stomp", t)
+	end
+end
+
+CareerAbilityDRSlayer._do_leap = function (self)
+	self:_stop_priming()
+
+	if not self._locomotion_extension:is_on_ground() then
+		return
+	end
+
+	self:_do_common_stuff()
+
+	local world = self._world
+	local owner_unit = self._owner_unit
+	local local_player = self._local_player
+	local network_manager = self._network_manager
+	local network_transmit = network_manager.network_transmit
+	local status_extension = self._status_extension
+	local career_extension = self._career_extension
+	local talent_extension = self._talent_extension
+	local locomotion_extension = self._locomotion_extension
+
+	locomotion_extension:set_external_velocity_enabled(false)
+	status_extension:reset_move_speed_multiplier()
 	status_extension:set_noclip(true)
 
-	local has_impact_buff = talent_extension:has_talent("bardin_slayer_activated_ability_impact_damage")
+	if Managers.state.network:game() then
+		status_extension:set_is_dodging(true)
+
+		local unit_id = network_manager:unit_game_object_id(owner_unit)
+
+		network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.dodging, true, unit_id, 0)
+	end
+
 	local landing_position = self._last_valid_landing_position:unbox()
 	local physics_world = World.get_data(world, "physics_world")
-	local velocity, time_of_flight, hit_pos = get_leap_data(physics_world, POSITION_LOOKUP[owner_unit], landing_position)
+	local direction, speed, hit_pos = get_leap_data(physics_world, POSITION_LOOKUP[owner_unit], landing_position)
+	local distance = Vector3.distance(POSITION_LOOKUP[owner_unit], landing_position)
+	local vertical_speed_modifier = math.clamp(distance / 10, 0, 1)
+	local has_impact_damage_buff = talent_extension:has_talent("bardin_slayer_activated_ability_impact_damage")
 	status_extension.do_leap = {
-		anim_start_event = "jump_fwd",
-		initial_velocity = Vector3Box(velocity),
-		time_of_flight = time_of_flight,
+		camera_effect_sequence_start = "jump",
+		anim_start_event_3p = "jump_fwd",
+		camera_effect_sequence_land = "landed_leap",
+		anim_start_event_1p = "slayer_jump_ability",
+		move_function = "leap",
+		direction = Vector3Box(direction),
+		speed = speed,
+		initial_vertical_speed = PlayerUnitMovementSettings.leap.jump_speed * vertical_speed_modifier,
 		projected_hit_pos = Vector3Box(hit_pos),
 		sfx_event_jump = local_player and "Play_career_ability_bardin_slayer_jump",
 		sfx_event_land = local_player and "Play_career_ability_bardin_slayer_impact",
-		leap_finish = function (owner_unit, position)
-			local rotation = Quaternion.identity()
-			local explosion_template = (has_impact_buff and "bardin_slayer_activated_ability_landing_stagger_impact") or "bardin_slayer_activated_ability_landing_stagger"
-			local scale = 1
-			local career_power_level = career_extension:get_career_power_level()
-			local area_damage_system = Managers.state.entity:system("area_damage_system")
+		leap_events = {
+			finished = function (this, aborted, final_position)
+				local unit_3p = this.unit
+				local player = this.player
 
-			area_damage_system:create_explosion(owner_unit, position, rotation, explosion_template, scale, "career_ability", career_power_level, false)
-			ScriptUnit.extension(owner_unit, "status_system"):set_noclip(false)
-		end
+				if not aborted then
+					local rotation = Quaternion.identity()
+					local explosion_template = (has_impact_damage_buff and "bardin_slayer_activated_ability_landing_stagger_impact") or "bardin_slayer_activated_ability_landing_stagger"
+					local scale = 1
+					local career_power_level = career_extension:get_career_power_level() * ((has_impact_damage_buff and 2) or 1)
+					local area_damage_system = Managers.state.entity:system("area_damage_system")
+
+					area_damage_system:create_explosion(unit_3p, final_position, rotation, explosion_template, scale, "career_ability", career_power_level, false)
+				end
+
+				ScriptUnit.extension(unit_3p, "status_system"):set_noclip(false)
+
+				local game = Managers.state.network:game()
+
+				if player and not player.remote and game then
+					local status_ext = ScriptUnit.extension(unit_3p, "status_system")
+
+					status_ext:set_is_dodging(false)
+
+					local unit_id = network_manager:unit_game_object_id(unit_3p)
+
+					network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.dodging, false, unit_id, 0)
+				end
+			end
+		}
 	}
-
-	career_extension:start_activated_ability_cooldown()
-	self:_play_vo()
 end
 
 CareerAbilityDRSlayer._play_vo = function (self)

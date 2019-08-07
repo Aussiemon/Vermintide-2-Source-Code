@@ -1,9 +1,6 @@
-require("scripts/managers/player/player_boon_handler")
-require("scripts/managers/player/boon_templates")
-
 BulldozerPlayer = class(BulldozerPlayer, Player)
 
-BulldozerPlayer.init = function (self, network_manager, input_source, viewport_name, viewport_world_name, is_server, local_player_id, unique_id)
+BulldozerPlayer.init = function (self, network_manager, input_source, viewport_name, viewport_world_name, is_server, local_player_id, unique_id, ui_id, backend_id)
 	BulldozerPlayer.super.init(self, network_manager, input_source, viewport_name, viewport_world_name, is_server, local_player_id)
 
 	self.local_player = true
@@ -15,6 +12,8 @@ BulldozerPlayer.init = function (self, network_manager, input_source, viewport_n
 	self._debug_name = "Local #" .. peer_id:sub(-3, -1)
 	self._local_player_id = local_player_id
 	self._unique_id = unique_id
+	self._ui_id = ui_id
+	self._backend_id = backend_id
 	self.is_server = is_server
 
 	Managers.music:register_active_player(local_player_id)
@@ -55,6 +54,8 @@ BulldozerPlayer.profile_display_name = function (self)
 end
 
 BulldozerPlayer.despawn = function (self)
+	self:_set_spawn_state("despawned")
+
 	for mood, _ in pairs(MoodSettings) do
 		MOOD_BLACKBOARD[mood] = false
 	end
@@ -70,19 +71,27 @@ BulldozerPlayer.despawn = function (self)
 	local player_unit = self.player_unit
 
 	if Unit.alive(player_unit) then
-		REMOVE_PLAYER_UNIT_FROM_LISTS(player_unit)
 		Managers.state.unit_spawner:mark_for_deletion(player_unit)
 	else
-		print("bulldozer_player was already despanwed. Should not happen.")
+		ferror("bulldozer_player was already despawned. Should not happen.")
 	end
+
+	Managers.state.event:trigger("delete_limited_owned_pickups", self.peer_id)
 end
 
 BulldozerPlayer.career_index = function (self)
-	local hero_name = self:profile_display_name()
-	local hero_attributes = Managers.backend:get_interface("hero_attributes")
-	local career_index = hero_attributes:get(hero_name, "career") or 1
+	if self._career_index then
+		return self._career_index
+	end
+
+	local profile_synchronizer = self.network_manager.profile_synchronizer
+	local profile_index, career_index = profile_synchronizer:profile_by_peer(self.peer_id, self._local_player_id)
 
 	return career_index
+end
+
+BulldozerPlayer.set_career_index = function (self, index)
+	self._career_index = index
 end
 
 BulldozerPlayer.career_name = function (self)
@@ -102,7 +111,39 @@ BulldozerPlayer.set_spawn_position_rotation = function (self, position, rotation
 	self.spawn_rotation = QuaternionBox(rotation)
 end
 
-BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is_initial_spawn, ammo_melee, ammo_ranged, healthkit, potion, grenade)
+BulldozerPlayer._spawn_unit_at_pos_rot = function (self, unit_name, extension_init_data, unit_template_name, pos, rot)
+	local unit = nil
+	local unit_spawner = Managers.state.unit_spawner
+
+	if not LEVEL_EDITOR_TEST then
+		unit = unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, pos, rot)
+
+		if self.is_server then
+			ScriptUnit.extension(unit, "health_system"):sync_health_state()
+		end
+	else
+		unit = unit_spawner:spawn_local_unit_with_extensions(unit_name, unit_template_name, extension_init_data, pos, rot)
+	end
+
+	return unit
+end
+
+BulldozerPlayer.spawn_unit = function (self, unit_name, extension_init_data, unit_template_name, optional_position, optional_rotation)
+	if LEVEL_EDITOR_TEST then
+		local pose = Application.get_data("camera")
+		local pos = Matrix4x4.translation(pose)
+		local rot = Matrix4x4.rotation(pose)
+
+		return self:_spawn_unit_at_pos_rot(unit_name, extension_init_data, unit_template_name, pos, rot)
+	else
+		local camera_fwd_vector = Quaternion.forward(optional_rotation)
+		local camera_flat_rot = Quaternion.look(Vector3.flat(camera_fwd_vector), Vector3.up())
+
+		return self:_spawn_unit_at_pos_rot(unit_name, extension_init_data, unit_template_name, optional_position, camera_flat_rot)
+	end
+end
+
+BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is_initial_spawn, ammo_melee, ammo_ranged, healthkit, potion, grenade, ability_cooldown_percent_int)
 	local profile_index = self:profile_index()
 	local profile = SPProfiles[profile_index]
 	local careers = profile.careers
@@ -110,14 +151,8 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 
 	fassert(profile, "[SpawnManager] Trying to spawn with profile %q that doesn't exist in %q.", profile_index, "SPProfiles")
 
-	local nav_world = Managers.state.entity:system("ai_system"):nav_world()
-	local difficulty_manager = Managers.state.difficulty
-	local difficulty_settings = difficulty_manager:get_difficulty_settings()
-	local player_wounds = difficulty_settings.wounds
-
-	if Managers.state.game_mode:has_activated_mutator("instant_death") then
-		player_wounds = 1
-	end
+	local game_mode_manager = Managers.state.game_mode
+	local player_wounds = game_mode_manager:get_player_wounds(profile)
 
 	if self.spawn_position then
 		optional_position = self.spawn_position:unbox()
@@ -129,41 +164,16 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 		self.spawn_rotation = nil
 	end
 
-	local character_state_class_list = {
-		PlayerCharacterStateDead,
-		PlayerCharacterStateInteracting,
-		PlayerCharacterStateInspecting,
-		PlayerCharacterStateJumping,
-		PlayerCharacterStateClimbingLadder,
-		PlayerCharacterStateLeavingLadderTop,
-		PlayerCharacterStateEnterLadderTop,
-		PlayerCharacterStateFalling,
-		PlayerCharacterStateKnockedDown,
-		PlayerCharacterStatePouncedDown,
-		PlayerCharacterStateStanding,
-		PlayerCharacterStateWalking,
-		PlayerCharacterStateDodging,
-		PlayerCharacterStateLedgeHanging,
-		PlayerCharacterStateLeaveLedgeHangingPullUp,
-		PlayerCharacterStateLeaveLedgeHangingFalling,
-		PlayerCharacterStateCatapulted,
-		PlayerCharacterStateStunned,
-		PlayerCharacterStateUsingTransport,
-		PlayerCharacterStateGrabbedByPackMaster,
-		PlayerCharacterStateGrabbedByTentacle,
-		PlayerCharacterStateWaitingForAssistedRespawn,
-		PlayerCharacterStateOverchargeExploding,
-		PlayerCharacterStateInVortex,
-		PlayerCharacterStateGrabbedByChaosSpawn,
-		PlayerCharacterStateLunging,
-		PlayerCharacterStateLeaping,
-		PlayerCharacterStateOverpowered,
-		PlayerCharacterStateInHangingCage,
-		PlayerCharacterStateGrabbedByCorruptor
-	}
-	local initial_inventory = self:_get_initial_inventory(healthkit, potion, grenade)
+	local aim_template = profile.aim_template or "player"
+	local initial_inventory = game_mode_manager:get_initial_inventory(healthkit, potion, grenade, profile)
 	local hero_name = profile.display_name
 	local career = profile.careers[career_index]
+	local character_state_class_list = {}
+
+	for _, character_state_name in ipairs(career.character_state_list) do
+		character_state_class_list[#character_state_class_list + 1] = rawget(_G, character_state_name)
+	end
+
 	local base_skin = career.base_skin
 	local base_frame = "default"
 	local career_name = career.name
@@ -175,6 +185,12 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 	frame_item = frame_item or BackendUtils.try_set_loadout_item(career_name, "slot_frame", "frame_0000")
 	local frame_name = (frame_item and frame_item.data.name) or base_frame
 	local overcharge_data = OverchargeData[career_name] or {}
+	local faction = profile.dialogue_faction or "player"
+	local status = Managers.party:get_status_from_unique_id(self._unique_id)
+	local party = Managers.party:get_party(status.party_id)
+	local side = Managers.state.side.side_by_party[party]
+	local breed = career.breed or profile.breed
+	local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 	local extension_init_data = {
 		input_system = {
 			player = self
@@ -219,7 +235,8 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 		cosmetic_system = {
 			profile = profile,
 			skin_name = skin_name,
-			frame_name = frame_name
+			frame_name = frame_name,
+			player = self
 		},
 		locomotion_system = {
 			player = self
@@ -236,9 +253,9 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 		},
 		dialogue_system = {
 			local_player = true,
-			faction = "player",
 			wwise_voice_switch_group = "character",
 			profile = profile,
+			faction = faction,
 			wwise_voice_switch_value = profile.character_vo
 		},
 		whereabouts_system = {
@@ -246,7 +263,7 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 		},
 		aim_system = {
 			is_husk = false,
-			template = "player"
+			template = aim_template
 		},
 		buff_system = {
 			is_husk = false
@@ -265,13 +282,21 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 		career_system = {
 			player = self,
 			profile_index = profile_index,
-			career_index = career_index
+			career_index = career_index,
+			ability_cooldown_percent_int = ability_cooldown_percent_int
 		},
 		overcharge_system = {
 			overcharge_data = overcharge_data
 		},
 		smart_targeting_system = {
 			player = self
+		},
+		aggro_system = {
+			side = side
+		},
+		proximity_system = {
+			side = side,
+			breed = breed
 		}
 	}
 	local unit_name = skin_data.third_person
@@ -281,13 +306,19 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 		unit_template_name = profile.unit_template_name
 	}
 	local spawn_manager = Managers.state.spawn
-	local unit = spawn_manager:spawn_unit(spawn_data, optional_position, optional_rotation)
+	local unit = self:spawn_unit(unit_name, extension_init_data, profile.unit_template_name, optional_position, optional_rotation)
 	local player_manager = Managers.player
 	local world = spawn_manager.world
 
 	LevelHelper:set_flow_parameter(world, "local_player_profile_name", hero_name)
 	Unit.set_data(unit, "sound_character", career.sound_character)
-	Unit.create_actor(unit, "human_collision", false)
+
+	if breed.starting_animation then
+		local anim = breed.starting_animation
+		local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+
+		CharacterStateHelper.play_animation_event_first_person(first_person_extension, anim)
+	end
 
 	local career_voice_parameter = profile.career_voice_parameter
 
@@ -307,6 +338,16 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 	Managers.state.event:trigger("level_start_local_player_spawned", is_initial_spawn)
 	Managers.telemetry.events:player_spawned(self)
 
+	if not breed.is_hero then
+		Unit.create_actor(unit, "enemy_collision", false)
+
+		local status_extension = ScriptUnit.extension(unit, "status_system")
+
+		status_extension:set_move_through_ai(true)
+	else
+		Unit.create_actor(unit, "human_collision", false)
+	end
+
 	if self.is_server then
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 
@@ -314,58 +355,19 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 	end
 
 	Managers.state.event:trigger("camera_teleported")
+	self:_set_spawn_state("spawned")
 
 	return unit
 end
 
-BulldozerPlayer.create_boon_handler = function (self, world)
-	local backend_settings = GameSettingsDevelopment.backend_settings
-
-	if backend_settings.quests_enabled then
-	end
-end
-
-BulldozerPlayer._get_initial_inventory = function (self, healthkit, potion, grenade)
-	local initial_inventory = {
-		slot_packmaster_claw = "packmaster_claw",
-		slot_healthkit = healthkit,
-		slot_potion = potion,
-		slot_grenade = grenade
-	}
-
-	return initial_inventory
-end
-
 BulldozerPlayer.create_game_object = function (self)
-	local empty_boon_id = NetworkLookup.boons["n/a"]
 	local game_object_data_table = {
-		boon_poll_time = 0,
-		boon_8_remaining_duration = 0,
-		boon_9_remaining_duration = 0,
 		ping = 0,
-		boon_1_remaining_duration = 0,
-		boon_2_remaining_duration = 0,
-		boon_3_remaining_duration = 0,
-		boon_4_remaining_duration = 0,
-		boon_5_remaining_duration = 0,
-		boon_6_remaining_duration = 0,
-		boon_7_remaining_duration = 0,
-		boon_10_remaining_duration = 0,
 		player_controlled = true,
 		go_type = NetworkLookup.go_types.player,
 		network_id = self:network_id(),
 		local_player_id = self:local_player_id(),
-		clan_tag = Application.user_setting("clan_tag") or "0",
-		boon_1_id = empty_boon_id,
-		boon_2_id = empty_boon_id,
-		boon_3_id = empty_boon_id,
-		boon_4_id = empty_boon_id,
-		boon_5_id = empty_boon_id,
-		boon_6_id = empty_boon_id,
-		boon_7_id = empty_boon_id,
-		boon_8_id = empty_boon_id,
-		boon_9_id = empty_boon_id,
-		boon_10_id = empty_boon_id
+		clan_tag = Application.user_setting("clan_tag") or "0"
 	}
 	local callback = callback(self, "cb_game_session_disconnect")
 	local game_object_id = self.network_manager:create_player_game_object("player", game_object_data_table, callback)
@@ -382,11 +384,6 @@ end
 
 BulldozerPlayer.cb_game_session_disconnect = function (self)
 	self.game_object_id = nil
-
-	if self.boon_handler then
-		self.boon_handler = nil
-	end
-
 	self._player_sync_data = nil
 end
 
@@ -413,6 +410,10 @@ BulldozerPlayer.profile_id = function (self)
 end
 
 BulldozerPlayer.ui_id = function (self)
+	return self._ui_id
+end
+
+BulldozerPlayer.unique_id = function (self)
 	return self._unique_id
 end
 
@@ -421,7 +422,7 @@ BulldozerPlayer.stats_id = function (self)
 end
 
 BulldozerPlayer.telemetry_id = function (self)
-	return self._unique_id
+	return self._backend_id
 end
 
 BulldozerPlayer.is_player_controlled = function (self)
@@ -442,6 +443,10 @@ end
 
 BulldozerPlayer.get_data = function (self, key)
 	return self._player_sync_data:get_data(key)
+end
+
+BulldozerPlayer.reevaluate_highest_difficulty = function (self)
+	self._player_sync_data:reevaluate_highest_difficulty()
 end
 
 BulldozerPlayer.name = function (self)
@@ -473,6 +478,10 @@ BulldozerPlayer.name = function (self)
 	else
 		return self._debug_name
 	end
+end
+
+BulldozerPlayer.cached_name = function (self)
+	return self._cached_name or self._debug_name
 end
 
 BulldozerPlayer.destroy = function (self)

@@ -26,6 +26,14 @@ BackendSettings.dev_steam_playfab = {
 	environment = rawget(_G, "Backend") and Backend.ENV_STAGE,
 	allow_local = local_backend_available
 }
+BackendSettings.beta_steam_playfab = {
+	enable_sessions = false,
+	allow_tutorial = true,
+	implementation = "playfab",
+	title_id = "D537D",
+	environment = rawget(_G, "Backend") and Backend.ENV_STAGE,
+	allow_local = local_backend_available
+}
 BackendSettings.stage_xbone_playfab = {
 	enable_sessions = false,
 	allow_tutorial = true,

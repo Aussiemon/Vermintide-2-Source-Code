@@ -327,7 +327,7 @@ AttackTemplates = {
 		damage_type = "stab_smiter"
 	},
 	heavy_stab_smiter = {
-		stagger_angle = "smiter",
+		stagger_angle = "stab",
 		sound_type = "heavy",
 		damage_type = "heavy_stab_smiter"
 	},
@@ -389,23 +389,20 @@ AttackTemplates = {
 		damage_type = "burning_linesman"
 	},
 	burning_tank = {
-		dot_type = "burning_dot",
-		sound_type = "medium",
-		damage_type = "burning_tank",
 		stagger_value = 2,
-		dot_template_name = "burning_1W_dot"
+		sound_type = "medium",
+		damage_type = "burning_tank"
 	},
 	burning_smiter = {
 		stagger_value = 2,
+		stagger_angle = "smiter",
 		sound_type = "medium",
 		damage_type = "burning_smiter"
 	},
 	heavy_burning_tank = {
-		dot_type = "burning_dot",
-		sound_type = "heavy",
-		damage_type = "heavy_burning_tank",
 		stagger_value = 2,
-		dot_template_name = "burning_1W_dot"
+		sound_type = "heavy",
+		damage_type = "heavy_burning_tank"
 	},
 	basic_sweep_push = {
 		is_push = true,
@@ -503,6 +500,12 @@ AttackTemplates = {
 		sound_type = "heavy",
 		damage_type = "arrow_sniper"
 	},
+	arrow_ungor = {
+		stagger_value = 2,
+		stagger_angle = "stab",
+		sound_type = "heavy",
+		damage_type = "cutting"
+	},
 	arrow_sniper_1 = {
 		stagger_value = 2,
 		stagger_angle = "stab",
@@ -545,6 +548,11 @@ AttackTemplates = {
 		stagger_value = 2,
 		sound_type = "heavy",
 		damage_type = "bolt_sniper"
+	},
+	throwing_axe = {
+		stagger_value = 2,
+		sound_type = "heavy",
+		damage_type = "throwing_axe"
 	},
 	bolt_carbine = {
 		stagger_value = 2,
@@ -610,13 +618,6 @@ AttackTemplates = {
 			dropoff_start = 2,
 			dropoff_end = 10
 		}
-	},
-	flame_wave = {
-		dot_template_name = "burning_dot",
-		sound_type = "medium",
-		damage_type = "burn_shotgun",
-		stagger_angle = "stab",
-		dot_type = "burning_dot"
 	},
 	wizard_staff_spark = {
 		stagger_angle = "stab",
@@ -714,6 +715,10 @@ AttackTemplates = {
 		stagger_type = "ai_stagger",
 		sound_type = "medium",
 		damage_type = "buff"
+	},
+	blade_storm = {
+		sound_type = "light",
+		damage_type = "blade_storm"
 	},
 	grenade = {
 		stagger_value = 2,

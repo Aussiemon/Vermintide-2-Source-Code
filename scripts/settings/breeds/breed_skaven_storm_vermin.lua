@@ -2,7 +2,7 @@ local breed_data = {
 	is_bot_threat = true,
 	wwise_voice_switch_group = "stormvermin_vce",
 	walk_speed = 2.75,
-	poison_resistance = 100,
+	death_reaction = "ai_default",
 	has_inventory = true,
 	patrol_active_target_selection = "storm_patrol_death_squad_target_selection",
 	aoe_height = 1.7,
@@ -12,24 +12,26 @@ local breed_data = {
 	aoe_radius = 0.4,
 	has_running_attack = true,
 	opt_base_unit = "units/beings/enemies/skaven_stormvermin/chr_skaven_stormvermin_baked",
-	scale_death_push = 1,
+	no_stagger_duration = false,
 	detection_radius = 12,
+	push_sound_event = "Play_generic_pushed_impact_small_armour",
 	headshot_coop_stamina_fatigue_type = "headshot_special",
 	threat_value = 5,
+	slot_template = "skaven_elite",
 	awards_positive_reinforcement_message = true,
-	bone_lod_level = 1,
-	smart_object_template = "special",
 	default_inventory_template = "halberd",
 	stagger_resistance = 2.25,
 	patrol_detection_radius = 10,
+	bone_lod_level = 1,
 	flingable = true,
 	panic_close_detection_radius_sq = 9,
 	radius = 1,
+	smart_object_template = "special",
 	hit_mass_count = 5,
 	patrol_active_perception = "perception_regular",
 	perception_previous_attacker_stickyness_value = -4.5,
 	race = "skaven",
-	death_reaction = "ai_default",
+	poison_resistance = 100,
 	armor_category = 2,
 	backstab_player_sound_event = "Play_clan_rat_attack_player_back_vce",
 	death_sound_event = "Play_stormvermin_die_vce",
@@ -38,7 +40,7 @@ local breed_data = {
 	behavior = "storm_vermin",
 	bots_should_flank = true,
 	target_selection = "pick_closest_target_with_spillover",
-	no_stagger_duration = false,
+	scale_death_push = 1,
 	follow_reach = 1,
 	exchange_order = 3,
 	stagger_threshold_light = 0.5,
@@ -49,8 +51,8 @@ local breed_data = {
 	smart_targeting_height_multiplier = 2.5,
 	horde_behavior = "horde_vermin",
 	unit_template = "ai_unit_storm_vermin",
-	stagger_reduction = 1,
 	leave_walk_distance = 4.5,
+	no_stagger_damage_reduction = true,
 	perception = "perception_regular",
 	player_locomotion_constrain_radius = 0.7,
 	weapon_reach = 2,
@@ -69,38 +71,12 @@ local breed_data = {
 		1.1,
 		1.175
 	},
-	max_health = {
-		13,
-		13,
-		20,
-		26,
-		39
-	},
+	max_health = BreedTweaks.max_health.stormvermin,
 	bloodlust_health = BreedTweaks.bloodlust_health.skaven_elite,
-	diff_stagger_resist = {
-		2.25,
-		2.25,
-		3,
-		3.75,
-		3.75
-	},
-	stagger_duration = {
-		0.5,
-		1,
-		1.5,
-		1,
-		1.25,
-		3,
-		1,
-		1
-	},
-	hit_mass_counts = {
-		5,
-		5,
-		7.5,
-		10,
-		10
-	},
+	diff_stagger_resist = BreedTweaks.diff_stagger_resist.stormvermin,
+	stagger_reduction = BreedTweaks.stagger_reduction.stormvermin,
+	stagger_duration = BreedTweaks.stagger_duration.stormvermin,
+	hit_mass_counts = BreedTweaks.hit_mass_counts.stormvermin,
 	wwise_voices = {
 		"low",
 		"medium",
@@ -121,10 +97,6 @@ local breed_data = {
 		head = "headshot"
 	},
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		head = {
 			prio = 1,
 			actors = {
@@ -148,7 +120,7 @@ local breed_data = {
 			}
 		},
 		torso = {
-			prio = 3,
+			prio = 2,
 			actors = {
 				"c_spine2",
 				"c_spine",
@@ -161,7 +133,7 @@ local breed_data = {
 			}
 		},
 		left_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftarm",
 				"c_leftforearm",
@@ -174,7 +146,7 @@ local breed_data = {
 			}
 		},
 		right_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightarm",
 				"c_rightforearm",
@@ -187,7 +159,7 @@ local breed_data = {
 			}
 		},
 		left_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftupleg",
 				"c_leftleg",
@@ -201,7 +173,7 @@ local breed_data = {
 			}
 		},
 		right_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightupleg",
 				"c_rightleg",
@@ -215,7 +187,7 @@ local breed_data = {
 			}
 		},
 		tail = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_tail1",
 				"c_tail2",
@@ -228,6 +200,10 @@ local breed_data = {
 				"j_hips",
 				"j_taill"
 			}
+		},
+		full = {
+			prio = 4,
+			actors = {}
 		},
 		afro = {
 			prio = 5,
@@ -296,6 +272,128 @@ local breed_data = {
 Breeds.skaven_storm_vermin = table.create_copy(Breeds.skaven_storm_vermin, breed_data)
 Breeds.skaven_storm_vermin_commander = table.create_copy(Breeds.skaven_storm_vermin_commander, breed_data)
 Breeds.skaven_storm_vermin_commander.behavior = "storm_vermin_commander"
+local AttackIntensityPerDifficulty = {
+	sweep = {
+		easy = {
+			normal = 1,
+			sweep = 2
+		},
+		normal = {
+			normal = 1,
+			sweep = 2
+		},
+		hard = {
+			normal = 1,
+			sweep = 2
+		},
+		harder = {
+			normal = 1,
+			sweep = 2
+		},
+		hardest = {
+			normal = 1,
+			sweep = 2
+		},
+		cataclysm = {
+			normal = 1,
+			sweep = 2
+		},
+		cataclysm_2 = {
+			normal = 1,
+			sweep = 2
+		},
+		cataclysm_3 = {
+			normal = 1,
+			sweep = 2
+		}
+	},
+	cleave = {
+		easy = {
+			cleave = 2,
+			normal = 1
+		},
+		normal = {
+			cleave = 2,
+			normal = 1
+		},
+		hard = {
+			cleave = 2,
+			normal = 1
+		},
+		harder = {
+			cleave = 2,
+			normal = 1
+		},
+		hardest = {
+			cleave = 11,
+			normal = -10
+		},
+		cataclysm = {
+			cleave = 11,
+			normal = -10
+		},
+		cataclysm_2 = {
+			cleave = 11,
+			normal = -10
+		},
+		cataclysm_3 = {
+			cleave = 11,
+			normal = -10
+		}
+	},
+	push = {
+		easy = {
+			push = 1.5
+		},
+		normal = {
+			push = 1.5
+		},
+		hard = {
+			push = 1.5
+		},
+		harder = {
+			push = 1.5
+		},
+		hardest = {
+			push = 1.5
+		},
+		cataclysm = {
+			push = 1.5
+		},
+		cataclysm_2 = {
+			push = 1.5
+		},
+		cataclysm_3 = {
+			push = 1.5
+		}
+	},
+	running = {
+		easy = {
+			running = 2.5
+		},
+		normal = {
+			running = 2.5
+		},
+		hard = {
+			running = 2.5
+		},
+		harder = {
+			running = 2.5
+		},
+		hardest = {
+			running = 2.5
+		},
+		cataclysm = {
+			running = 2.5
+		},
+		cataclysm_2 = {
+			running = 2.5
+		},
+		cataclysm_3 = {
+			running = 2.5
+		}
+	}
+}
 local action_data = {
 	alerted = {
 		no_hesitation = true,
@@ -358,72 +456,29 @@ local action_data = {
 		considerations = UtilityConsiderations.storm_vermin_running_attack
 	},
 	special_attack_cleave = {
-		offset_up = 0,
-		offset_forward = 0,
 		height = 3,
-		hit_react_type = "heavy",
+		offset_forward = 0,
+		offset_up = 0,
 		cooldown = 1,
 		rotation_time = 1,
-		fatigue_type = "blocked_sv_cleave",
+		hit_react_type = "heavy",
 		bot_threat_duration = 0.7,
 		bot_threat_start_time = 0.5,
 		damage_type = "cutting",
 		attack_anim = "attack_special",
 		range = 3,
+		damage = 30,
 		knocked_down_attack_threshold = 0.6,
+		attack_intensity_type = "cleave",
 		move_anim = "move_fwd",
 		width = 0.4,
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		knocked_down_attack_anim = {
 			"attack_downed",
 			"attack_downed_2"
 		},
-		damage = {
-			30,
-			25,
-			20
-		},
-		difficulty_damage = {
-			easy = {
-				20,
-				20,
-				15
-			},
-			normal = {
-				30,
-				25,
-				20
-			},
-			hard = {
-				40,
-				35,
-				30
-			},
-			survival_hard = {
-				40,
-				35,
-				30
-			},
-			harder = {
-				50,
-				40,
-				30
-			},
-			survival_harder = {
-				50,
-				40,
-				30
-			},
-			hardest = {
-				100,
-				50,
-				30
-			},
-			survival_hardest = {
-				150,
-				75,
-				45
-			}
-		},
+		difficulty_damage = BreedTweaks.difficulty_damage.elite_attack_heavy,
+		fatigue_type = BreedTweaks.fatigue_types.elite_cleave.normal_attack,
 		ignore_staggers = {
 			true,
 			false,
@@ -431,23 +486,26 @@ local action_data = {
 			true,
 			true,
 			false
-		}
+		},
+		attack_finished_duration = BreedTweaks.attack_finished_duration.skaven_elite
 	},
 	special_attack_sweep = {
-		offset_up = 1,
-		offset_forward = 0.5,
-		height = 0.1,
 		hit_react_type = "medium",
+		height = 0.1,
+		offset_forward = 0.5,
+		offset_up = 1,
 		cooldown = 1,
 		rotation_time = 1,
-		fatigue_type = "blocked_sv_sweep",
 		bot_threat_duration = 0.7,
 		bot_threat_start_time = 0.5,
 		damage_type = "cutting",
 		range = 2.2,
+		damage = 20,
 		knocked_down_attack_threshold = 0.6,
+		attack_intensity_type = "sweep",
 		move_anim = "move_fwd",
 		width = 2,
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		attack_anim = {
 			"attack_pounce",
 			"attack_pounce_2"
@@ -460,53 +518,8 @@ local action_data = {
 			"attack_downed",
 			"attack_downed_2"
 		},
-		damage = {
-			20,
-			10,
-			5
-		},
-		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				15,
-				10,
-				5
-			},
-			hard = {
-				20,
-				15,
-				10
-			},
-			survival_hard = {
-				20,
-				15,
-				10
-			},
-			harder = {
-				30,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				50,
-				30,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
-		},
+		difficulty_damage = BreedTweaks.difficulty_damage.elite_attack,
+		fatigue_type = BreedTweaks.fatigue_types.elite_sweep.normal_attack,
 		ignore_staggers = {
 			false,
 			false,
@@ -514,23 +527,22 @@ local action_data = {
 			false,
 			false,
 			false
-		}
+		},
+		attack_finished_duration = BreedTweaks.attack_finished_duration.skaven_elite
 	},
 	push_attack = {
-		max_impact_push_speed = 8,
-		hit_react_type = "heavy",
-		fatigue_type = "sv_push",
-		damage_type = "blunt",
 		impact_push_speed = 7,
+		damage = 0,
+		max_impact_push_speed = 8,
+		fatigue_type = "sv_push",
+		hit_react_type = "heavy",
+		attack_intensity_type = "push",
 		action_weight = 1,
+		damage_type = "blunt",
 		unblockable = true,
 		attack_anim = "attack_push",
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		considerations = UtilityConsiderations.storm_vermin_push_attack,
-		damage = {
-			0,
-			0,
-			0
-		},
 		ignore_staggers = {
 			true,
 			false,
@@ -538,7 +550,8 @@ local action_data = {
 			true,
 			true,
 			false
-		}
+		},
+		attack_finished_duration = BreedTweaks.attack_finished_duration.skaven_elite
 	},
 	combat_shout = {
 		cooldown = -1,
@@ -549,21 +562,18 @@ local action_data = {
 	smash_door = {
 		hit_react_type = "medium",
 		name = "smash_door",
+		damage = 3,
 		damage_type = "cutting",
 		move_anim = "move_fwd",
 		unblockable = true,
-		attack_anim = "attack_pounce",
-		damage = {
-			3,
-			3,
-			3
-		}
+		attack_anim = "attack_pounce"
 	},
 	blocked = {
 		blocked_anims = {
 			"blocked",
 			"blocked_2"
-		}
+		},
+		difficulty_duration = BreedTweaks.blocked_duration.skaven_elite
 	},
 	stagger = {
 		stagger_anims = {
@@ -673,6 +683,29 @@ local action_data = {
 				},
 				bwd = {
 					"stagger_bwd"
+				},
+				left = {
+					"stagger_left"
+				},
+				right = {
+					"stagger_right"
+				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
+			},
+			{
+				fwd = {
+					"stagger_fwd"
+				},
+				bwd = {
+					"stagger_bwd",
+					"stagger_bwd_2",
+					"stagger_bwd_3",
+					"stagger_bwd_4"
 				},
 				left = {
 					"stagger_left"

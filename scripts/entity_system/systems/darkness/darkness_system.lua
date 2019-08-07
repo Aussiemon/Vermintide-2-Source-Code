@@ -3,9 +3,12 @@ require("scripts/settings/level_settings")
 DarknessSystem = class(DarknessSystem, ExtensionSystemBase)
 local extensions = {
 	"LightSourceExtension",
-	"PlayerUnitDarknessExtension"
+	"PlayerUnitDarknessExtension",
+	"ShadowFlareExtension"
 }
-local PLAYER_UNITS = PLAYER_UNITS
+local RPCS = {
+	"rpc_shadow_flare_done"
+}
 DarknessSystem.DARKNESS_THRESHOLD = 0.025
 DarknessSystem.TOTAL_DARKNESS_TRESHOLD = 0.0125
 
@@ -40,6 +43,9 @@ DarknessSystem.init = function (self, entity_system_creation_context, system_nam
 
 	self._in_darkness = false
 	self._global_darkness = false
+	self._network_event_delegate = entity_system_creation_context.network_event_delegate
+
+	self._network_event_delegate:register(self, unpack(RPCS))
 end
 
 DarknessSystem.set_global_darkness = function (self, set)
@@ -56,9 +62,15 @@ end
 
 DarknessSystem.destroy = function (self)
 	self._environment_handler = nil
+
+	self._network_event_delegate:unregister(self)
 end
 
 DarknessSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
+	if extension_name == "ShadowFlareExtension" then
+		return DarknessSystem.super.on_add_extension(self, world, unit, extension_name, extension_init_data)
+	end
+
 	local extension = {
 		intensity = (extension_init_data and extension_init_data.intensity) or 1
 	}
@@ -94,6 +106,8 @@ DarknessSystem.update = function (self, context, t)
 		self:_update_player_unit_darkness(dt, t)
 		self:_update_darkness_fx(dt, t)
 	end
+
+	self:_update_shadow_flare_extensions(dt, t)
 end
 
 DarknessSystem._update_light_sources = function (self, dt, t)
@@ -118,7 +132,8 @@ DarknessSystem._update_player_unit_darkness = function (self, dt, t)
 		local light_value = nil
 
 		if in_darkness then
-			light_value = self:calculate_light_value(pos)
+			local side = Managers.state.side.side_by_unit[unit]
+			light_value = self:calculate_light_value(pos, side.PLAYER_UNITS)
 
 			if LIGHT_LIGHT_VALUE < light_value then
 				data.intensity = 0
@@ -233,7 +248,7 @@ DarknessSystem.is_in_darkness_volume = function (self, position)
 	return false
 end
 
-DarknessSystem.calculate_light_value = function (self, position)
+DarknessSystem.calculate_light_value = function (self, position, player_units)
 	local light_value = 0
 
 	for unit, data in pairs(self._light_source_data) do
@@ -248,8 +263,8 @@ DarknessSystem.calculate_light_value = function (self, position)
 	if self._player_light_intensity then
 		local closest_distance_sq = math.huge
 
-		for i = 1, #PLAYER_UNITS, 1 do
-			local player_unit = PLAYER_UNITS[i]
+		for i = 1, #player_units, 1 do
+			local player_unit = player_units[i]
 			local player_position = POSITION_LOOKUP[player_unit]
 			local distance_sq = math.max(Vector3.distance_squared(player_position, position), 1)
 
@@ -269,9 +284,37 @@ DarknessSystem.is_in_darkness = function (self, position, darkness_treshold)
 		return false
 	end
 
-	local light_value = self:calculate_light_value(position)
+	local side = Managers.state.side:get_side_from_name("heroes")
+	local light_value = self:calculate_light_value(position, side.PLAYER_UNITS)
 
 	return light_value < (darkness_treshold or DarknessSystem.DARKNESS_THRESHOLD)
+end
+
+DarknessSystem._update_shadow_flare_extensions = function (self, dt, t)
+	local units = Managers.state.entity:get_entities("ShadowFlareExtension")
+
+	for unit, extension in pairs(units) do
+		extension:update(unit, dt)
+	end
+end
+
+DarknessSystem.shadow_flares_on_ground = function (self)
+	return Managers.state.entity:get_entities("ShadowFlareExtension")
+end
+
+DarknessSystem.rpc_shadow_flare_done = function (self, sender, unit_id)
+	if self.is_server then
+		local network_manager = Managers.state.network
+
+		network_manager.network_transmit:send_rpc_clients_except("rpc_shadow_flare_done", sender, unit_id)
+	end
+
+	local rpc_unit = Managers.state.unit_storage:unit(unit_id)
+	local script = ScriptUnit.extension(rpc_unit, "darkness_system")
+
+	if script then
+		script:set_flare_done()
+	end
 end
 
 return

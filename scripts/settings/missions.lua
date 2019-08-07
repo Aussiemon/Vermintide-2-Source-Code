@@ -2,7 +2,8 @@ Missions = {
 	test_collect_01 = {
 		text = "test_collect_01_mission_text",
 		mission_template_name = "collect",
-		collect_amount = 1
+		collect_amount = 1,
+		hidden = true
 	},
 	test_defend_01 = {
 		text = "test_defend_01_mission_text",
@@ -1889,6 +1890,12 @@ Missions.crawl_into_the_portal = {
 Missions.keep_enter_portal = {
 	mission_template_name = "goal",
 	text = "mission_keep_enter_portal"
+}
+Missions.weave_collect_limited_item_objective = {
+	text = "",
+	mission_template_name = "collect",
+	collect_amount = 1,
+	hidden = true
 }
 
 for _, dlc in pairs(DLCSettings) do

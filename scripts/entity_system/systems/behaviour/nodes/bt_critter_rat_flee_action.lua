@@ -7,7 +7,6 @@ BTCritterRatFleeAction.init = function (self, ...)
 end
 
 BTCritterRatFleeAction.name = "BTCritterRatFleeAction"
-local player_and_bot_positions = PLAYER_AND_BOT_POSITIONS
 
 BTCritterRatFleeAction.enter = function (self, unit, blackboard, t)
 	blackboard.action = self._tree_node.action_data
@@ -113,7 +112,8 @@ BTCritterRatFleeAction._get_cover_point_flee_pos = function (self, unit, blackbo
 		if not blackboard.current_check_list then
 			local min_dist = data.min_cover_point_check_dist
 			local max_dist = data.max_cover_point_check_dist
-			local avoid_pos_list = player_and_bot_positions
+			local side = blackboard.side
+			local avoid_pos_list = side.ENEMY_PLAYER_AND_BOT_POSITIONS
 			local num_cover_units, cover_units = ConflictUtils.hidden_cover_points(current_position, avoid_pos_list, min_dist, max_dist)
 			blackboard.current_check_list = cover_units
 

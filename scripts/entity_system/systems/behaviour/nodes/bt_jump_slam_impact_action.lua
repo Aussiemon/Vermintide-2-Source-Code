@@ -1,7 +1,6 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 local position_lookup = POSITION_LOOKUP
-local player_and_bot_units = PLAYER_AND_BOT_UNITS
 BTJumpSlamImpactAction = class(BTJumpSlamImpactAction, BTNode)
 
 BTJumpSlamImpactAction.init = function (self, ...)
@@ -54,13 +53,16 @@ BTJumpSlamImpactAction.jump_slam_impact = function (self, unit, blackboard, t)
 	BTJumpSlamImpactAction.impact_damage(unit, t, action.stagger_radius, action.stagger_distance, action.stagger_impact, action.damage, action.damage_type, action.hit_react_type, action.max_damage_radius, impact_position)
 
 	if action.catapult_players then
-		BTJumpSlamImpactAction.catapult_players(impact_position, action.catapult_within_radius, action.catapulted_player_speed)
+		local side = blackboard.side
+		local enemy_player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
+
+		BTJumpSlamImpactAction.catapult_players(enemy_player_and_bot_units, impact_position, action.catapult_within_radius, action.catapulted_player_speed)
 	end
 end
 
-BTJumpSlamImpactAction.catapult_players = function (impact_position, radius, speed)
-	for i = 1, #player_and_bot_units, 1 do
-		local target_unit = player_and_bot_units[i]
+BTJumpSlamImpactAction.catapult_players = function (unit_list, impact_position, radius, speed)
+	for i = 1, #unit_list, 1 do
+		local target_unit = unit_list[i]
 
 		BTJumpSlamImpactAction.catapult_player(target_unit, impact_position, radius, speed)
 	end
@@ -109,26 +111,21 @@ BTJumpSlamImpactAction.impact_damage = function (attacking_unit, t, radius, stag
 					AiUtils.stagger(ai_unit, target_ai_blackboard, attacking_unit, vector_to_target, stagger_length, stagger_type, stagger_duration, nil, t)
 				end
 
-				if damage then
-					local target_armor = target_ai_blackboard.breed.armor_category
-					local raw_damage = damage[target_armor] or damage[1]
+				if damage and damage > 0 then
+					local direction = Vector3.normalize(Vector3(Vector3.x(vector_to_target), Vector3.y(vector_to_target), 0))
+					local distance = Vector3.length(vector_to_target)
+					local is_inside_radius = distance < radius
 
-					if raw_damage > 0 then
-						local direction = Vector3.normalize(Vector3(Vector3.x(vector_to_target), Vector3.y(vector_to_target), 0))
-						local distance = Vector3.length(vector_to_target)
-						local is_inside_radius = distance < radius
+					if is_inside_radius then
+						local damage_done = nil
 
-						if is_inside_radius then
-							local damage_done = nil
-
-							if max_damage_radius < distance then
-								damage_done = raw_damage * (distance - max_damage_radius) / falloff_radius
-							else
-								damage_done = raw_damage
-							end
-
-							DamageUtils.add_damage_network(ai_unit, attacking_unit, damage_done, "full", damage_type, nil, Vector3(0, 0, -1), nil, nil, nil, nil, hit_react_type)
+						if max_damage_radius < distance then
+							damage_done = damage * (distance - max_damage_radius) / falloff_radius
+						else
+							damage_done = damage
 						end
+
+						DamageUtils.add_damage_network(ai_unit, attacking_unit, damage_done, "full", damage_type, nil, Vector3(0, 0, -1), nil, nil, nil, nil, hit_react_type)
 					end
 				end
 			end

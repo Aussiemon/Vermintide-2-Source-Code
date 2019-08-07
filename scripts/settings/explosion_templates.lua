@@ -63,6 +63,55 @@ ExplosionTemplates = {
 			effect_name = "fx/wpnfx_fireball_charged_impact"
 		}
 	},
+	flaming_flail_impact = {
+		explosion = {
+			use_attacker_power_level = true,
+			radius_min = 0.5,
+			no_friendly_fire = true,
+			radius_max = 1,
+			attacker_power_level_offset = 0.25,
+			max_damage_radius_min = 0.1,
+			damage_profile_glance = "fireball_explosion_glance",
+			max_damage_radius_max = 0.75,
+			sound_event_name = "drakepistol_hit",
+			damage_profile = "fireball_explosion",
+			effect_name = "fx/wpnfx_flaming_flail_hit_01"
+		}
+	},
+	flaming_flail_impact_heavy = {
+		explosion = {
+			use_attacker_power_level = true,
+			radius_min = 1.5,
+			sound_event_name = "fireball_big_hit",
+			radius_max = 3,
+			exponential_falloff = true,
+			attacker_power_level_offset = 0.1,
+			max_damage_radius_min = 0.2,
+			alert_enemies_radius = 10,
+			no_friendly_fire = true,
+			damage_profile_glance = "flaming_flail_explosion_glance",
+			max_damage_radius_max = 0.25,
+			alert_enemies = false,
+			damage_profile = "flaming_flail_explosion",
+			effect_name = "fx/wpnfx_flaming_flail_hit_01"
+		}
+	},
+	sienna_unchained_burning_enemies_explosion = {
+		explosion = {
+			use_attacker_power_level = true,
+			max_damage_radius_min = 0.5,
+			effect_name = "fx/wpnfx_fireball_charged_impact",
+			radius_max = 1.5,
+			sound_event_name = "fireball_big_hit",
+			attacker_power_level_offset = 0.01,
+			radius_min = 0.5,
+			alert_enemies_radius = 10,
+			max_damage_radius_max = 2,
+			alert_enemies = true,
+			damage_profile = "slayer_leap_landing",
+			no_friendly_fire = true
+		}
+	},
 	grenade = {
 		is_grenade = true,
 		explosion = {
@@ -97,15 +146,15 @@ ExplosionTemplates = {
 					power_level_glance = 500,
 					power_level = 1000
 				},
-				survival_hard = {
+				cataclysm = {
 					power_level_glance = 300,
 					power_level = 600
 				},
-				survival_harder = {
+				cataclysm_2 = {
 					power_level_glance = 400,
 					power_level = 800
 				},
-				survival_hardest = {
+				cataclysm_3 = {
 					power_level_glance = 500,
 					power_level = 1000
 				}
@@ -154,15 +203,15 @@ ExplosionTemplates = {
 					power_level_glance = 500,
 					power_level = 1000
 				},
-				survival_hard = {
+				cataclysm = {
 					power_level_glance = 300,
 					power_level = 600
 				},
-				survival_harder = {
+				cataclysm_2 = {
 					power_level_glance = 400,
 					power_level = 800
 				},
-				survival_hardest = {
+				cataclysm_3 = {
 					power_level_glance = 500,
 					power_level = 1000
 				}
@@ -204,15 +253,15 @@ ExplosionTemplates = {
 					power_level_glance = 250,
 					power_level = 500
 				},
-				survival_hard = {
+				cataclysm = {
 					power_level_glance = 150,
 					power_level = 300
 				},
-				survival_harder = {
+				cataclysm_2 = {
 					power_level_glance = 200,
 					power_level = 400
 				},
-				survival_hardest = {
+				cataclysm_3 = {
 					power_level_glance = 250,
 					power_level = 500
 				}
@@ -266,15 +315,15 @@ ExplosionTemplates = {
 					power_level_glance = 400,
 					power_level = 400
 				},
-				survival_hard = {
+				cataclysm = {
 					power_level_glance = 300,
 					power_level = 600
 				},
-				survival_harder = {
+				cataclysm_2 = {
 					power_level_glance = 400,
 					power_level = 800
 				},
-				survival_hardest = {
+				cataclysm_3 = {
 					power_level_glance = 500,
 					power_level = 1000
 				}
@@ -382,15 +431,15 @@ ExplosionTemplates = {
 					power_level_glance = 150,
 					power_level = 200
 				},
-				survival_hard = {
+				cataclysm = {
 					power_level_glance = 150,
 					power_level = 300
 				},
-				survival_harder = {
+				cataclysm_2 = {
 					power_level_glance = 200,
 					power_level = 400
 				},
-				survival_hardest = {
+				cataclysm_3 = {
 					power_level_glance = 250,
 					power_level = 500
 				}
@@ -453,7 +502,7 @@ ExplosionTemplates = {
 			collision_filter = "filter_simple_explosion_overlap",
 			alert_enemies = false,
 			damage_profile = "elven_ruins_finish",
-			power_level = 1000,
+			power_level = 2000,
 			level_unit_damage = true
 		}
 	},
@@ -514,26 +563,32 @@ ExplosionTemplates.cannon_ball_throw = {
 			far_distance = 20
 		},
 		on_death_func = function (hit_unit)
-			local stat_name = "forest_fort_kill_cannonball"
-			local current_difficulty = Managers.state.difficulty:get_difficulty()
-			local allowed_difficulties = QuestSettings.allowed_difficulties[stat_name]
-			local allowed_difficulty = allowed_difficulties[current_difficulty]
-			local death_extension = ScriptUnit.extension(hit_unit, "death_system")
+			local stat_names = {
+				"forest_fort_kill_cannonball",
+				"forest_fort_kill_cannonball_cata"
+			}
 
-			if allowed_difficulty and not death_extension:has_death_started() then
-				local local_player = Managers.player:local_player()
-				local status_extension = ScriptUnit.has_extension(local_player.player_unit, "status_system")
+			for i = 1, #stat_names, 1 do
+				local current_difficulty = Managers.state.difficulty:get_difficulty()
+				local allowed_difficulties = QuestSettings.allowed_difficulties[stat_names[i]]
+				local allowed_difficulty = allowed_difficulties[current_difficulty]
+				local death_extension = ScriptUnit.extension(hit_unit, "death_system")
 
-				if status_extension and not status_extension.completed_cannonball_challenge then
-					status_extension.num_cannonball_kills = (status_extension.num_cannonball_kills and status_extension.num_cannonball_kills + 1) or 1
+				if allowed_difficulty and not death_extension:has_death_started() then
+					local local_player = Managers.player:local_player()
+					local status_extension = ScriptUnit.has_extension(local_player.player_unit, "status_system")
 
-					if QuestSettings.forest_fort_kill_cannonball <= status_extension.num_cannonball_kills then
-						local statistics_db = Managers.player:statistics_db()
+					if status_extension and not status_extension.completed_cannonball_challenge then
+						status_extension.num_cannonball_kills = (status_extension.num_cannonball_kills and status_extension.num_cannonball_kills + 1) or 1
 
-						statistics_db:increment_stat_and_sync_to_clients(stat_name)
+						if QuestSettings.forest_fort_kill_cannonball <= status_extension.num_cannonball_kills then
+							local statistics_db = Managers.player:statistics_db()
 
-						status_extension.num_cannonball_kills = nil
-						status_extension.completed_cannonball_challenge = true
+							statistics_db:increment_stat_and_sync_to_clients(stat_names[i])
+
+							status_extension.num_cannonball_kills = nil
+							status_extension.completed_cannonball_challenge = true
+						end
 					end
 				end
 			end
@@ -556,12 +611,80 @@ ExplosionTemplates.victor_captain_activated_ability_stagger = {
 		no_friendly_fire = true
 	}
 }
+ExplosionTemplates.victor_captain_activated_ability_stagger_ping_debuff = {
+	explosion = {
+		use_attacker_power_level = true,
+		radius = 10,
+		no_prop_damage = true,
+		max_damage_radius = 2,
+		always_hurt_players = false,
+		alert_enemies = true,
+		alert_enemies_radius = 15,
+		attack_template = "drakegun",
+		enemy_debuff = "defence_debuff_enemies",
+		damage_type = "grenade",
+		damage_profile = "ability_push",
+		ignore_attacker_unit = true,
+		no_friendly_fire = true
+	}
+}
+ExplosionTemplates.sienna_adept_activated_ability_start_stagger = {
+	explosion = {
+		use_attacker_power_level = true,
+		radius = 3,
+		dot_template_name = "burning_1W_dot",
+		max_damage_radius = 1.5,
+		no_friendly_fire = true,
+		always_hurt_players = false,
+		alert_enemies = true,
+		attack_template = "drakegun",
+		alert_enemies_radius = 15,
+		damage_type = "grenade",
+		damage_profile = "ability_push",
+		ignore_attacker_unit = true,
+		effect_name = "fx/wpnfx_fireball_charged_impact"
+	}
+}
+ExplosionTemplates.sienna_adept_activated_ability_step_stagger = {
+	explosion = {
+		use_attacker_power_level = true,
+		radius = 2,
+		dot_template_name = "burning_1W_dot",
+		max_damage_radius = 1,
+		no_friendly_fire = true,
+		always_hurt_players = false,
+		alert_enemies = true,
+		attack_template = "drakegun",
+		alert_enemies_radius = 15,
+		damage_type = "grenade",
+		damage_profile = "ability_push",
+		ignore_attacker_unit = true,
+		effect_name = "fx/brw_adept_skill_03"
+	}
+}
 ExplosionTemplates.sienna_adept_activated_ability_end_stagger = {
 	explosion = {
 		use_attacker_power_level = true,
 		radius = 4,
 		dot_template_name = "burning_1W_dot",
 		max_damage_radius = 2,
+		no_friendly_fire = true,
+		always_hurt_players = false,
+		alert_enemies = true,
+		attack_template = "drakegun",
+		alert_enemies_radius = 15,
+		damage_type = "grenade",
+		damage_profile = "ability_push",
+		ignore_attacker_unit = true,
+		effect_name = "fx/brw_adept_skill_01"
+	}
+}
+ExplosionTemplates.sienna_adept_activated_ability_end_stagger_improved = {
+	explosion = {
+		use_attacker_power_level = true,
+		radius = 8,
+		dot_template_name = "burning_3W_dot",
+		max_damage_radius = 4,
 		no_friendly_fire = true,
 		always_hurt_players = false,
 		alert_enemies = true,
@@ -606,19 +729,46 @@ ExplosionTemplates.bardin_ranger_activated_ability_stagger = {
 }
 ExplosionTemplates.bardin_ranger_activated_ability_upgraded_stagger = {
 	explosion = {
-		use_attacker_power_level = true,
-		radius = 7,
-		damage_type = "grenade",
-		max_damage_radius = 2,
-		no_friendly_fire = true,
-		no_prop_damage = true,
 		always_hurt_players = false,
-		attack_template = "drakegun",
+		radius = 10,
+		no_prop_damage = true,
+		max_damage_radius = 3,
+		use_attacker_power_level = true,
+		attacker_power_level_offset = 0.01,
+		alert_enemies_radius = 15,
+		alert_enemies = true,
+		damage_profile = "ability_push",
+		no_friendly_fire = true
+	}
+}
+ExplosionTemplates.bardin_ironbreaker_gromril_stagger = {
+	explosion = {
+		no_prop_damage = true,
+		radius = 5,
+		use_attacker_power_level = true,
+		max_damage_radius = 2,
+		always_hurt_players = false,
 		alert_enemies = true,
 		alert_enemies_radius = 15,
-		sound_event_name = "Play_bardin_ranger_smoke_grenade_ability",
+		attack_template = "drakegun",
+		damage_type = "grenade",
 		damage_profile = "ability_push",
-		effect_name = "fx/wpnfx_smoke_grenade_impact_Upgraded"
+		no_friendly_fire = true
+	}
+}
+ExplosionTemplates.bardin_slayer_push_on_dodge = {
+	explosion = {
+		no_prop_damage = true,
+		radius = 1.5,
+		use_attacker_power_level = true,
+		max_damage_radius = 1.5,
+		always_hurt_players = false,
+		alert_enemies = false,
+		alert_enemies_radius = 15,
+		attack_template = "drakegun",
+		damage_type = "grenade",
+		damage_profile = "light_push",
+		no_friendly_fire = true
 	}
 }
 ExplosionTemplates.chaos_zombie_explosion = {
@@ -797,8 +947,9 @@ ExplosionTemplates.chaos_slow_bomb_missile = {
 	server_hit_func = function (projectile_unit, damage_source, owner_unit, hit_position, recent_impacts, explosion_template)
 		local hit_unit = recent_impacts[ProjectileImpactDataIndex.UNIT]
 		local hit_player = false
+		local attacker_side = Managers.state.side.side_by_unit[owner_unit]
 
-		if VALID_PLAYERS_AND_BOTS[hit_unit] then
+		if attacker_side and attacker_side.VALID_ENEMY_PLAYERS_AND_BOTS[hit_unit] then
 			local status_extension = ScriptUnit.has_extension(hit_unit, "status_system")
 
 			if status_extension and not status_extension:is_disabled() then
@@ -853,6 +1004,88 @@ ExplosionTemplates.corpse_explosion_default = {
 		effect_name = "fx/chr_nurgle_explosion_01",
 		immune_breeds = {
 			all = true
+		}
+	}
+}
+ExplosionTemplates.lightning_strike = {
+	explosion = {
+		trigger_on_server_only = true,
+		radius = 4,
+		damage_interval = 0,
+		alert_enemies_radius = 20,
+		attack_template = "grenade",
+		sound_event_name = "Play_mutator_enemy_split_large",
+		always_hurt_players = true,
+		buildup_effect_time = 1.5,
+		wind_mutator = true,
+		different_power_levels_for_players = true,
+		alert_enemies = true,
+		damage_profile = "heavens_lightning_strike",
+		buildup_effect_name = "fx/magic_wind_heavens_lightning_strike_02",
+		effect_name = "fx/magic_wind_heavens_lightning_strike_01",
+		camera_effect = {
+			near_distance = 5,
+			near_scale = 1,
+			shake_name = "lightning_strike",
+			far_scale = 0.15,
+			far_distance = 20
+		}
+	}
+}
+ExplosionTemplates.death_spirit_bomb = {
+	explosion = {
+		trigger_on_server_only = true,
+		radius = 1,
+		wind_mutator = true,
+		power_level = 0,
+		effect_name = "fx/magic_wind_death_spirit_explosion_01"
+	}
+}
+ExplosionTemplates.light_pulse = {
+	explosion = {
+		always_hurt_players = true,
+		buff_to_apply = "mutator_light_cleansing_curse_buff",
+		radius = 5,
+		trigger_on_server_only = true,
+		power_level = 0,
+		wind_mutator = true,
+		effect_name = "fx/magic_wind_light_beacon_01",
+		immune_breeds = {
+			all = true
+		}
+	}
+}
+ExplosionTemplates.metal_mutator_blade_dance = {
+	explosion = {
+		wind_mutator = true,
+		radius = 4,
+		hit_sound_event = "Play_wind_metal_gameplay_mutator_wind_hit",
+		damage_type = "grenade_glance",
+		damage_profile = "blade_storm",
+		attack_type = "wind_mutator",
+		no_friendly_fire = true
+	}
+}
+ExplosionTemplates.fire_bomb = {
+	explosion = {
+		always_hurt_players = true,
+		radius = 1,
+		dot_template_name = "burning_1W_dot",
+		sound_event_name = "Play_mutator_ticking_bomb_explosion",
+		alert_enemies = true,
+		damage_type_glance = "grenade_glance",
+		alert_enemies_radius = 10,
+		attack_template = "ticking_bomb_explosion",
+		damage_type = "grenade",
+		bot_damage_profile = "ticking_bomb_explosion_bot",
+		damage_profile = "ticking_bomb_explosion",
+		effect_name = "fx/magic_wind_fire_explosion_01",
+		camera_effect = {
+			near_distance = 5,
+			near_scale = 1,
+			shake_name = "frag_grenade_explosion",
+			far_scale = 0.15,
+			far_distance = 20
 		}
 	}
 }

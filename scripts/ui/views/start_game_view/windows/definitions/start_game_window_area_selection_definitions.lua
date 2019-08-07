@@ -200,6 +200,36 @@ local scenegraph_definition = {
 			40,
 			12
 		}
+	},
+	requirements_not_met_text = {
+		vertical_alignment = "bottom",
+		parent = "window",
+		horizontal_alignment = "center",
+		size = {
+			800,
+			50
+		},
+		position = {
+			0,
+			150,
+			12
+		}
+	}
+}
+local requirements_not_met_text_style = {
+	word_wrap = true,
+	upper_case = true,
+	localize = true,
+	use_shadow = true,
+	font_size = 28,
+	horizontal_alignment = "center",
+	vertical_alignment = "center",
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("red", 255),
+	offset = {
+		0,
+		0,
+		3
 	}
 }
 local not_owned_text_style = {
@@ -419,6 +449,7 @@ local widgets = {
 	title_divider = UIWidgets.create_simple_texture("divider_01_top", "title_divider"),
 	description_text = UIWidgets.create_simple_text("description_text", "description_text", nil, nil, description_text_style),
 	not_owned_text = UIWidgets.create_simple_text("dlc1_2_dlc_level_locked_tooltip", "not_owned_text", nil, nil, not_owned_text_style),
+	requirements_not_met_text = UIWidgets.create_simple_text("lb_unknown", "requirements_not_met_text", nil, nil, requirements_not_met_text_style),
 	select_button = UIWidgets.create_default_button("select_button", scenegraph_definition.select_button.size, nil, nil, Localize("menu_select"), 32, nil, nil, nil, disable_with_gamepad)
 }
 local area_widgets = {}

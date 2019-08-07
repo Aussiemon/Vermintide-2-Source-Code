@@ -94,7 +94,13 @@ AreaDamageSystem.create_explosion = function (self, attacker_unit, position, rot
 		return false
 	end
 
-	local explosion_template = ExplosionTemplates[explosion_template_name]
+	local explosion_template = table.clone(ExplosionTemplates[explosion_template_name])
+	local difficulty_name = Managers.state.difficulty:get_difficulty()
+
+	if explosion_template.scaling then
+		explosion_template.explosion.radius = explosion_template.explosion.radius[difficulty_name]
+	end
+
 	local is_husk = false
 
 	DamageUtils.create_explosion(self.world, attacker_unit, position, rotation, explosion_template, scale, damage_source, self.is_server, is_husk, attacker_unit, attacker_power_level, is_critical_strike)
@@ -109,9 +115,9 @@ AreaDamageSystem.create_explosion = function (self, attacker_unit, position, rot
 
 	if game then
 		if self.is_server then
-			network_manager.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, attacker_is_level_unit, position, rotation, explosion_template_id, scale, damage_source_id, attacker_power_level, is_critical_strike)
+			self.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, attacker_is_level_unit, position, rotation, explosion_template_id, scale, damage_source_id, attacker_power_level, is_critical_strike)
 		else
-			network_manager.network_transmit:send_rpc_server("rpc_create_explosion", attacker_unit_id, attacker_is_level_unit, position, rotation, explosion_template_id, scale, damage_source_id, attacker_power_level, is_critical_strike)
+			self.network_transmit:send_rpc_server("rpc_create_explosion", attacker_unit_id, attacker_is_level_unit, position, rotation, explosion_template_id, scale, damage_source_id, attacker_power_level, is_critical_strike)
 		end
 	end
 end
@@ -296,7 +302,7 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 		local item_data = rawget(ItemMasterList, damage_source)
 
 		if breed and item_data and not IGNORED_ITEM_TYPES_FOR_BUFFS[item_data.item_type] then
-			local attack_type = "aoe"
+			local attack_type = explosion_data.attack_type or "aoe"
 
 			if item_data and item_data.item_type == "grenade" then
 				attack_type = item_data.item_type
@@ -306,7 +312,7 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 
 			if attacker_player and attacker_player.remote then
 				local peer_id = attacker_player.peer_id
-				local attack_type_id = NetworkLookup.buff_attack_types.aoe
+				local attack_type_id = NetworkLookup.buff_attack_types[explosion_data.attack_type or "aoe"]
 				local network_manager = Managers.state.network
 				local attacker_unit_id = network_manager:unit_game_object_id(attacker_unit)
 				local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
@@ -319,7 +325,7 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 				DamageUtils.buff_on_attack(attacker_unit, hit_unit, attack_type, is_critical_strike and allow_critical_proc, hit_zone_name, 1, send_to_server, "n/a")
 			end
 
-			if not explosion_template.no_aggro then
+			if not explosion_template.no_aggro and not breed.is_player then
 				AiUtils.aggro_unit_of_enemy(hit_unit, attacker_unit)
 			end
 		end
@@ -354,9 +360,12 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 		local target_index = nil
 		local boost_curve_multiplier = 0
 		local backstab_multiplier = 1
-		local is_critical_strike = false
+		is_critical_strike = false
+		local added_dot = nil
+		local first_hit = false
+		local total_hits = 0
 
-		DamageUtils.add_damage_network_player(damage_profile, target_index, actual_power_level, hit_unit, attacker_unit, hit_zone_name, impact_position, hit_direction, damage_source, hit_ragdoll_actor, boost_curve_multiplier, is_critical_strike, backstab_multiplier)
+		DamageUtils.add_damage_network_player(damage_profile, target_index, actual_power_level, hit_unit, attacker_unit, hit_zone_name, impact_position, hit_direction, damage_source, hit_ragdoll_actor, boost_curve_multiplier, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 
 		local target_alive = AiUtils.unit_alive(hit_unit)
 
@@ -454,7 +463,7 @@ AreaDamageSystem.rpc_update_liquid_damage_blob = function (self, sender, liquid_
 	end
 
 	local liquid_area_damage_extension = ScriptUnit.extension(unit, "area_damage_system")
-	local state = NetworkLookup.liquid_damage_blob_states[state]
+	state = NetworkLookup.liquid_damage_blob_states[state]
 
 	if state == "filled" then
 		liquid_area_damage_extension:set_damage_blob_filled(blob_id)
@@ -473,7 +482,7 @@ AreaDamageSystem.rpc_damage_wave_set_state = function (self, sender, unit_id, st
 	end
 
 	local damage_wave_extension = ScriptUnit.extension(unit, "area_damage_system")
-	local state = NetworkLookup.damage_wave_states[state]
+	state = NetworkLookup.damage_wave_states[state]
 
 	if state == "impact" then
 		damage_wave_extension:on_wavefront_impact(unit)
@@ -528,6 +537,10 @@ AreaDamageSystem.rpc_abort_damage_blob = function (self, sender, damage_blob_uni
 	local unit = self.unit_storage:unit(damage_blob_unit_id)
 
 	if unit then
+		if self.is_server then
+			self.network_transmit:send_rpc_clients_except("rpc_abort_damage_blob", sender, damage_blob_unit_id)
+		end
+
 		local damage_blob_extension = ScriptUnit.extension(unit, "area_damage_system")
 
 		damage_blob_extension:abort()

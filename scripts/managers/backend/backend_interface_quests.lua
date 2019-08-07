@@ -6,14 +6,13 @@ end
 
 BackendInterfaceQuests = class(BackendInterfaceQuests)
 
-BackendInterfaceQuests.init = function (self, boons_interface)
+BackendInterfaceQuests.init = function (self)
 	self._tokens = {}
 	self._initiated = false
 	self._active_quest = nil
 	self._available_quests = {}
 	self._active_contracts = {}
 	self._available_contracts = {}
-	self._boons = boons_interface
 	self._expire_times = nil
 	self._reward_queue = {}
 end
@@ -44,8 +43,6 @@ BackendInterfaceQuests._register_executors = function (self, queue)
 	queue:register_executor("rewarded", callback(self, "_command_rewarded"))
 	queue:register_executor("expire_times", callback(self, "_command_expire_times"))
 	queue:register_executor("status", callback(self, "_command_status"))
-	queue:register_executor("boons", callback(self, "_command_boons"))
-	queue:register_executor("boons_add", callback(self, "_command_boons_add"))
 end
 
 BackendInterfaceQuests._command_quests = function (self, quests)
@@ -179,12 +176,6 @@ BackendInterfaceQuests._command_rewarded = function (self, rewarded)
 			}
 
 			table.insert(self._reward_queue, reward)
-		elseif reward.type == "boon" then
-			local gui_reward = {
-				reward.data
-			}
-
-			table.insert(self._reward_queue, reward)
 		end
 	end
 end
@@ -201,14 +192,6 @@ BackendInterfaceQuests._command_status = function (self, status)
 
 	self._status_dirty = true
 	self._status = status
-end
-
-BackendInterfaceQuests._command_boons = function (self, boons)
-	self._boons:set_boons(boons)
-end
-
-BackendInterfaceQuests._command_boons_add = function (self, boons)
-	self._boons:add_boons(boons)
 end
 
 BackendInterfaceQuests.are_quests_dirty = function (self)
@@ -284,11 +267,6 @@ end
 
 BackendInterfaceQuests.complete_contract = function (self, contract_id)
 	local token = self._queue:add_item("qnc_turn_in_contract_1", "contract_id", cjson.encode(contract_id))
-	self._tokens[#self._tokens + 1] = token
-end
-
-BackendInterfaceQuests.query_boons = function (self)
-	local token = self._queue:add_item("qnc_get_boons_1")
 	self._tokens[#self._tokens + 1] = token
 end
 

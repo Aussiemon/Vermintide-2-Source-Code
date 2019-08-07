@@ -45,6 +45,7 @@ UnitVariationSettings.skaven_skin = {
 }
 UnitVariationSettings.skaven_grey_seer = table.create_copy(UnitVariationSettings.skaven_grey_seer, UnitVariationSettings.skaven_skin)
 UnitVariationSettings.skaven_gutter_runner = table.create_copy(UnitVariationSettings.skaven_gutter_runner, UnitVariationSettings.skaven_skin)
+UnitVariationSettings.skaven_night_runner = table.create_copy(UnitVariationSettings.skaven_night_runner, UnitVariationSettings.skaven_skin)
 UnitVariationSettings.skaven_poison_wind_globadier = table.create_copy(UnitVariationSettings.skaven_poison_wind_globadier, UnitVariationSettings.skaven_skin)
 UnitVariationSettings.skaven_common = table.create_copy(UnitVariationSettings.skaven_common, UnitVariationSettings.skaven_skin)
 UnitVariationSettings.skaven_common.material_variations.cloth_tint = {
@@ -120,112 +121,6 @@ UnitVariationSettings.skaven_stormfiend.materials_enabled_from_start = {
 UnitVariationSettings.skaven_stormfiend_boss = table.create_copy(UnitVariationSettings.skaven_stormfiend_boss, UnitVariationSettings.skaven_stormfiend)
 UnitVariationSettings.skaven_stormfiend_demo = table.create_copy(UnitVariationSettings.skaven_stormfiend_demo, UnitVariationSettings.skaven_stormfiend)
 UnitVariationSettings.skaven_clan_rat = {
-	enabled_from_start = {
-		"upper_body",
-		"head",
-		"left_arm",
-		"right_arm",
-		"legs"
-	},
-	body_parts = {
-		upper_body = {
-			{
-				weight = 1,
-				group = "body_hood"
-			},
-			{
-				weight = 1,
-				group = "body_tunic"
-			},
-			{
-				weight = 1,
-				group = "body_tunic_hood"
-			},
-			{
-				weight = 1,
-				group = "body_nothing"
-			}
-		},
-		head = {
-			{
-				group = "head_helmet_fur",
-				weight = 1,
-				enables = {
-					"head_helmet"
-				}
-			},
-			{
-				group = "head_hood",
-				weight = 1,
-				enables = {
-					"head_helmet"
-				}
-			},
-			{
-				weight = 1,
-				group = "head_mask"
-			},
-			{
-				weight = 1,
-				group = "head_nothing"
-			}
-		},
-		left_arm = {
-			{
-				weight = 1,
-				group = "left_arm_leather"
-			},
-			{
-				weight = 1,
-				group = "left_arm_metal"
-			},
-			{
-				weight = 1,
-				group = "left_arm_nothing"
-			},
-			{
-				weight = 1,
-				group = "left_arm_straps"
-			}
-		},
-		right_arm = {
-			{
-				weight = 1,
-				group = "right_arm_leather"
-			},
-			{
-				weight = 1,
-				group = "right_arm_metal"
-			},
-			{
-				weight = 1,
-				group = "right_arm_nothing"
-			},
-			{
-				weight = 1,
-				group = "right_arm_straps"
-			}
-		},
-		legs = {
-			{
-				weight = 1,
-				group = "leg_straps"
-			},
-			{
-				weight = 1
-			}
-		},
-		head_helmet = {
-			{
-				weight = 1,
-				group = "head_helmet_soft"
-			},
-			{
-				weight = 1,
-				group = "head_helmet_sharp"
-			}
-		}
-	},
 	materials_enabled_from_start = {
 		"skin_tint",
 		"cloth_tint"
@@ -250,131 +145,6 @@ UnitVariationSettings.skaven_clan_rat = {
 			},
 			variables = {
 				"tint_color_variation"
-			},
-			meshes = {
-				"g_hipcloth_lod0",
-				"g_hipcloth_lod1",
-				"g_hipcloth_lod2"
-			}
-		},
-		leg_straps = {
-			min = 0,
-			max = 31,
-			materials = {
-				"mtr_outfit"
-			},
-			variables = {
-				"tint_color_variation"
-			},
-			meshes = {
-				"g_legs_straps_lod0",
-				"g_legs_straps_lod1",
-				"g_legs_straps_lod2"
-			}
-		},
-		body_hood = {
-			min = 0,
-			max = 31,
-			materials = {
-				"mtr_outfit"
-			},
-			variables = {
-				"tint_color_variation"
-			},
-			meshes = {
-				"g_body_hood_lod0",
-				"g_body_hood_lod1",
-				"g_body_hood_lod2"
-			}
-		},
-		body_tunic_hood = {
-			min = 0,
-			max = 31,
-			materials = {
-				"mtr_outfit"
-			},
-			variables = {
-				"tint_color_variation"
-			},
-			meshes = {
-				"g_body_tunic_hood_lod0",
-				"g_body_tunic_hood_lod1",
-				"g_body_tunic_hood_lod2"
-			}
-		},
-		body_tunic = {
-			min = 0,
-			max = 31,
-			materials = {
-				"mtr_outfit"
-			},
-			variables = {
-				"tint_color_variation"
-			},
-			meshes = {
-				"g_body_tunic_lod0",
-				"g_body_tunic_lod1",
-				"g_body_tunic_lod2"
-			}
-		},
-		head_mask = {
-			min = 0,
-			max = 31,
-			materials = {
-				"mtr_outfit"
-			},
-			variables = {
-				"tint_color_variation"
-			},
-			meshes = {
-				"g_head_mask_lod0",
-				"g_head_mask_lod1",
-				"g_head_mask_lod2"
-			}
-		},
-		head_hood = {
-			min = 0,
-			max = 31,
-			materials = {
-				"mtr_outfit"
-			},
-			variables = {
-				"tint_color_variation"
-			},
-			meshes = {
-				"g_head_hood_lod0",
-				"g_head_hood_lod1",
-				"g_head_hood_lod2"
-			}
-		},
-		left_arm_straps = {
-			min = 0,
-			max = 31,
-			materials = {
-				"mtr_outfit"
-			},
-			variables = {
-				"tint_color_variation"
-			},
-			meshes = {
-				"g_arm_left_straps_lod0",
-				"g_arm_left_straps_lod1",
-				"g_arm_left_straps_lod2"
-			}
-		},
-		right_arm_straps = {
-			min = 0,
-			max = 31,
-			materials = {
-				"mtr_outfit"
-			},
-			variables = {
-				"tint_color_variation"
-			},
-			meshes = {
-				"g_arm_right_straps_lod0",
-				"g_arm_right_straps_lod1",
-				"g_arm_right_straps_lod2"
 			}
 		}
 	},
@@ -386,22 +156,9 @@ UnitVariationSettings.skaven_clan_rat = {
 		}
 	}
 }
+UnitVariationSettings.skaven_clan_rat_baked = table.create_copy(UnitVariationSettings.skaven_clan_rat_baked, UnitVariationSettings.skaven_clan_rat)
 UnitVariationSettings.skaven_dummy_clan_rat = table.create_copy(UnitVariationSettings.skaven_dummy_clan_rat, UnitVariationSettings.skaven_clan_rat)
 UnitVariationSettings.skaven_clan_rat_with_shield = table.create_copy(UnitVariationSettings.skaven_clan_rat_with_shield, UnitVariationSettings.skaven_clan_rat)
-UnitVariationSettings.skaven_clan_rat_with_shield.body_parts.upper_body = {
-	{
-		weight = 1,
-		group = "body_hood"
-	},
-	{
-		weight = 1,
-		group = "body_tunic"
-	},
-	{
-		weight = 1,
-		group = "body_tunic_hood"
-	}
-}
 UnitVariationSettings.skaven_clan_rat_with_shield.material_variations.tint_set_1 = {
 	min = 2,
 	max = 2,
@@ -428,81 +185,11 @@ UnitVariationSettings.skaven_clan_rat_with_shield.materials_enabled_from_start =
 	"tint_set_1",
 	"tint_set_2"
 }
+UnitVariationSettings.skaven_clan_rat_with_shield_baked = table.create_copy(UnitVariationSettings.skaven_clan_rat_with_shield_baked, UnitVariationSettings.skaven_clan_rat_with_shield)
 UnitVariationSettings.skaven_loot_rat = table.create_copy(UnitVariationSettings.skaven_loot_rat, UnitVariationSettings.skaven_clan_rat)
-UnitVariationSettings.skaven_loot_rat.enabled_from_start = {
-	"upper_body",
-	"head",
-	"left_arm",
-	"right_arm"
-}
-UnitVariationSettings.skaven_loot_rat.body_parts.upper_body = {
-	{
-		weight = 1,
-		group = "body_hood"
-	},
-	{
-		weight = 1,
-		group = "body_tunic"
-	},
-	{
-		weight = 1,
-		group = "body_tunic_hood"
-	}
-}
-UnitVariationSettings.skaven_loot_rat.body_parts.head = {
-	{
-		group = "head_helmet_fur",
-		weight = 1,
-		enables = {
-			"head_helmet"
-		}
-	},
-	{
-		group = "head_hood",
-		weight = 1,
-		enables = {
-			"head_helmet"
-		}
-	},
-	{
-		weight = 1,
-		group = "head_mask"
-	}
-}
-UnitVariationSettings.skaven_loot_rat.body_parts.left_arm = {
-	{
-		weight = 1,
-		group = "left_arm_leather"
-	},
-	{
-		weight = 1,
-		group = "left_arm_metal"
-	}
-}
-UnitVariationSettings.skaven_loot_rat.body_parts.right_arm = {
-	{
-		weight = 1,
-		group = "right_arm_leather"
-	},
-	{
-		weight = 1,
-		group = "right_arm_metal"
-	}
-}
-UnitVariationSettings.skaven_loot_rat.material_variations.cloth_tint.meshes = {
-	"g_hipcloth_lod0",
-	"g_hipcloth_lod1",
-	"g_hipcloth_lod2",
-	"g_legs_straps_lod0",
-	"g_legs_straps_lod1",
-	"g_legs_straps_lod2",
-	"g_scarf_lod0",
-	"g_scarf_lod1",
-	"g_scarf_lod2"
-}
 UnitVariationSettings.skaven_loot_rat.material_variations.tint_set_1 = {
-	min = 6,
-	max = 6,
+	min = 7,
+	max = 7,
 	materials = {
 		"mtr_outfit"
 	},
@@ -511,8 +198,8 @@ UnitVariationSettings.skaven_loot_rat.material_variations.tint_set_1 = {
 	}
 }
 UnitVariationSettings.skaven_loot_rat.material_variations.tint_set_2 = {
-	min = 7,
-	max = 7,
+	min = 6,
+	max = 6,
 	materials = {
 		"mtr_outfit"
 	},
@@ -521,69 +208,6 @@ UnitVariationSettings.skaven_loot_rat.material_variations.tint_set_2 = {
 	}
 }
 UnitVariationSettings.skaven_loot_rat.materials_enabled_from_start = {
-	"skin_tint",
-	"cloth_tint",
-	"tint_set_1",
-	"tint_set_2"
-}
-UnitVariationSettings.skaven_clan_rat_baked = {
-	materials_enabled_from_start = {
-		"skin_tint",
-		"cloth_tint"
-	},
-	material_variations = {
-		skin_tint = {
-			min = 0,
-			max = 28,
-			materials = {
-				"mtr_skin",
-				"mtr_fur"
-			},
-			variables = {
-				"tint_color_variation"
-			}
-		},
-		cloth_tint = {
-			min = 0,
-			max = 31,
-			materials = {
-				"mtr_outfit"
-			},
-			variables = {
-				"tint_color_variation"
-			}
-		}
-	},
-	scale_variation = {
-		helmet_spikes = {
-			"j_helmet_spikes_1",
-			"j_helmet_spikes_2",
-			"j_helmet_spikes_3"
-		}
-	}
-}
-UnitVariationSettings.skaven_clan_rat_with_shield_baked = table.create_copy(UnitVariationSettings.skaven_clan_rat_with_shield_baked, UnitVariationSettings.skaven_clan_rat_baked)
-UnitVariationSettings.skaven_clan_rat_with_shield_baked.material_variations.tint_set_1 = {
-	min = 2,
-	max = 2,
-	materials = {
-		"mtr_outfit"
-	},
-	variables = {
-		"tint_color_set_1"
-	}
-}
-UnitVariationSettings.skaven_clan_rat_with_shield_baked.material_variations.tint_set_2 = {
-	min = 3,
-	max = 3,
-	materials = {
-		"mtr_outfit"
-	},
-	variables = {
-		"tint_color_set_2"
-	}
-}
-UnitVariationSettings.skaven_clan_rat_with_shield_baked.materials_enabled_from_start = {
 	"skin_tint",
 	"cloth_tint",
 	"tint_set_1",
@@ -1276,7 +900,6 @@ UnitVariationSettings.chaos_marauder = {
 		"cloth_tint",
 		"body_tint",
 		"tattoo",
-		"tattoo_amount",
 		"tattoo_color",
 		"moc_attachments_tints"
 	},
@@ -1309,16 +932,6 @@ UnitVariationSettings.chaos_marauder = {
 			},
 			variables = {
 				"tattoo_style"
-			}
-		},
-		tattoo_amount = {
-			min = 0,
-			max = 4,
-			materials = {
-				"mtr_body"
-			},
-			variables = {
-				"tattoo_amount"
 			}
 		},
 		tattoo_color = {
@@ -1480,7 +1093,6 @@ UnitVariationSettings.chaos_marauder_with_shield.materials_enabled_from_start = 
 	"tint_column_detail",
 	"body_tint",
 	"tattoo",
-	"tattoo_amount",
 	"tattoo_color",
 	"moc_attachments_tints"
 }
@@ -1533,7 +1145,6 @@ UnitVariationSettings.chaos_berzerker = {
 		"tint_column_detail",
 		"body_tint",
 		"tattoo",
-		"tattoo_amount",
 		"tattoo_color"
 	},
 	material_variations = {
@@ -1586,16 +1197,6 @@ UnitVariationSettings.chaos_berzerker = {
 			},
 			variables = {
 				"tattoo_style"
-			}
-		},
-		tattoo_amount = {
-			min = 0,
-			max = 4,
-			materials = {
-				"mtr_body"
-			},
-			variables = {
-				"tattoo_amount"
 			}
 		},
 		tattoo_color = {
@@ -1662,7 +1263,6 @@ UnitVariationSettings.chaos_raider = {
 		"tint_column_detail",
 		"body_tint",
 		"tattoo",
-		"tattoo_amount",
 		"tattoo_color"
 	},
 	material_variations = {
@@ -1715,16 +1315,6 @@ UnitVariationSettings.chaos_raider = {
 			},
 			variables = {
 				"tattoo_style"
-			}
-		},
-		tattoo_amount = {
-			min = 0,
-			max = 4,
-			materials = {
-				"mtr_body"
-			},
-			variables = {
-				"tattoo_amount"
 			}
 		},
 		tattoo_color = {
@@ -2132,5 +1722,13 @@ UnitVariationSettings.chaos_fanatic = {
 UnitVariationSettings.chaos_fanatic_baked = table.create_copy(UnitVariationSettings.chaos_fanatic_baked, UnitVariationSettings.chaos_fanatic)
 UnitVariationSettings.chaos_fanatic_baked.enabled_from_start = {}
 UnitVariationSettings.chaos_fanatic_baked.body_parts = {}
+
+for _, dlc in pairs(DLCSettings) do
+	local unit_variation_settings = dlc.unit_variation_settings
+
+	if unit_variation_settings then
+		table.merge_recursive(UnitVariationSettings, unit_variation_settings)
+	end
+end
 
 return

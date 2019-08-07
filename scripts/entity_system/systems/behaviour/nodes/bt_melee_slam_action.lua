@@ -32,6 +32,10 @@ BTMeleeSlamAction.enter = function (self, unit, blackboard, t)
 	blackboard.rotate_towards_target = true
 
 	Managers.state.conflict:freeze_intensity_decay(15)
+
+	local target_unit = blackboard.target_unit
+
+	AiUtils.add_attack_intensity(target_unit, action, blackboard)
 end
 
 BTMeleeSlamAction.init_attack = function (self, unit, blackboard, action, t)
@@ -95,7 +99,6 @@ end
 BTMeleeSlamAction._calculate_collision = function (self, action, self_pos, forward_direction)
 	local height = action.height
 	local pos = self_pos + forward_direction * action.forward_offset + Vector3(0, 0, height * 0.5)
-	local radius = action.radius
 	local size = Vector3(action.radius, height, action.radius)
 	local rotation = Quaternion.look(Vector3.up(), Vector3.up())
 
@@ -149,21 +152,23 @@ BTMeleeSlamAction.anim_cb_damage = function (self, unit, blackboard)
 
 			if target_status_extension then
 				local dodge = nil
+				local to_target = Vector3.flat(POSITION_LOOKUP[hit_unit] - pos)
 
-				if target_status_extension.is_dodging then
-					local to_target = Vector3.flat(POSITION_LOOKUP[hit_unit] - pos)
-
-					if action.dodge_mitigation_radius_squared < Vector3.length_squared(to_target) then
-						dodge = true
-					end
+				if target_status_extension.is_dodging and action.dodge_mitigation_radius_squared < Vector3.length_squared(to_target) then
+					dodge = true
 				end
 
 				if not dodge then
-					local attack_direction = action.attack_directions and action.attack_directions[blackboard.attack_anim]
+					local attack_direction_name = action.attack_directions and action.attack_directions[blackboard.attack_anim]
 
 					if target_status_extension:is_disabled() then
 						damage = action.damage
-					elseif DamageUtils.check_block(unit, hit_unit, action.fatigue_type, attack_direction) then
+					elseif DamageUtils.check_ranged_block(unit, hit_unit, Vector3.normalize(to_target), action.shield_blocked_fatigue_type or "shield_blocked_slam") then
+						local blocked_velocity = action.player_push_speed_blocked * Vector3.normalize(POSITION_LOOKUP[hit_unit] - self_pos)
+						local locomotion_extension = ScriptUnit.extension(hit_unit, "locomotion_system")
+
+						locomotion_extension:add_external_velocity(blocked_velocity)
+					elseif DamageUtils.check_block(unit, hit_unit, action.fatigue_type, attack_direction_name) then
 						local blocked_velocity = action.player_push_speed_blocked * Vector3.normalize(POSITION_LOOKUP[hit_unit] - self_pos)
 						local locomotion_extension = ScriptUnit.extension(hit_unit, "locomotion_system")
 
@@ -175,7 +180,7 @@ BTMeleeSlamAction.anim_cb_damage = function (self, unit, blackboard)
 					end
 				end
 
-				if action.hit_player_func then
+				if action.hit_player_func and damage then
 					action.hit_player_func(unit, blackboard, hit_unit, damage)
 				end
 			elseif Unit.has_data(hit_unit, "breed") then

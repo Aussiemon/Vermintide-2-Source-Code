@@ -176,6 +176,7 @@ local viewport_widget = {
 	style = {
 		viewport = {
 			layer = 990,
+			shading_environment = "environment/ui_inventory_preview",
 			viewport_name = "character_preview_viewport",
 			clear_screen_on_create = true,
 			level_name = "levels/ui_inventory_preview/world",

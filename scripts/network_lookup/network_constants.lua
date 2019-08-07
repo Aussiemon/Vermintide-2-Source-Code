@@ -30,6 +30,7 @@ NetworkConstants.number = Network.type_info("number")
 NetworkConstants.game_object_id_max = Network.type_info("game_object_id").max
 NetworkConstants.invalid_game_object_id = NetworkConstants.game_object_id_max
 NetworkConstants.max_overcharge = Network.type_info("max_overcharge")
+NetworkConstants.weave_score = Network.type_info("weave_score")
 NetworkConstants.statistics_path_max_size = Network.type_info("statistics_path").max_size
 
 check_bounderies("damage_profile", "damage_profiles")
@@ -37,7 +38,7 @@ check_bounderies("anim_event", "anims")
 check_bounderies("bt_action_name", "bt_action_names")
 check_bounderies("surface_material_effect", "surface_material_effects")
 check_bounderies("vfx", "effects")
-check_bounderies("light_weight_projectile_particle_lookup", "light_weight_projectile_particle_effects")
+check_bounderies("light_weight_projectile_lookup", "light_weight_projectile_effects")
 
 NetworkConstants.light_weight_projectile_speed = Network.type_info("light_weight_projectile_speed")
 NetworkConstants.light_weight_projectile_index = Network.type_info("light_weight_projectile_index")
@@ -113,11 +114,28 @@ NetworkConstants.max_breed_freezer_units_per_rpc = Network.type_info("packed_bre
 check_bounderies("mutator_lookup", "mutator_templates")
 check_bounderies("statistics_path_lookup", "statistics_path_names")
 
+local mechanism_id = Network.type_info("mechanism_id")
+
+fassert(table.size(MechanismSettings) <= mechanism_id.max, "Too many mechanism settings, please up mechanism_id value in global.network_config")
+
+local party_slot_id = Network.type_info("party_slot_id")
+NetworkConstants.INVALID_PARTY_SLOT_ID = party_slot_id.min
+
+fassert(NetworkConstants.INVALID_PARTY_SLOT_ID == 0, "party_slot_ids should start at one because we need an invalid slot id for syncing purposes.")
+
+local max_statistics_paths = Network.type_info("statistics_path_lookup").max
+local num_statistics_paths = #NetworkLookup.statistics_path_names
+
+fassert(num_statistics_paths <= max_statistics_paths, "Too many entries in statistics_path lookup (%d, max:%d), raise global.network_config value for statistics_path by a factor 2", num_statistics_paths, max_statistics_paths)
+
 NetworkConstants.mutator_array = Network.type_info("mutator_array")
+local ready_request_id = Network.type_info("ready_request_id")
+NetworkConstants.READY_REQUEST_ID_MAX = ready_request_id.max
 
 check_bounderies("health_status_lookup", "health_statuses")
 check_bounderies("interaction_lookup", "interactions")
 check_bounderies("interaction_state_lookup", "interaction_states")
 check_bounderies("proc_function_lookup", "proc_functions")
+check_bounderies("difficulty_lookup", "difficulties")
 
 return

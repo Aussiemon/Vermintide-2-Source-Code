@@ -48,6 +48,8 @@ CharacterSelectionStateCharacter.on_enter = function (self, params)
 	self._animations = {}
 	self._ui_animations = {}
 	self._available_profiles = {}
+	local network_handler = ingame_ui_context.network_server or ingame_ui_context.network_client
+	self._profile_requester = network_handler:profile_requester()
 	local parent = self.parent
 	local input_service = self:input_service()
 	local gui_layer = UILayer.default + 30
@@ -60,11 +62,15 @@ CharacterSelectionStateCharacter.on_enter = function (self, params)
 
 	self._hero_preview_skin = nil
 	local hero_name = self._hero_name
-	local profile_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
-	local hero_attributes = Managers.backend:get_interface("hero_attributes")
-	self._career_index = hero_attributes:get(hero_name, "career") or 1
+	local profile_index, career_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
 
-	self:_select_hero(profile_index, self._career_index, true)
+	if profile_index and hero_name then
+		local hero_attributes = Managers.backend:get_interface("hero_attributes")
+		self._career_index = career_index
+
+		self:_select_hero(profile_index, self._career_index, true)
+	end
+
 	self.parent:set_input_blocked(false)
 end
 
@@ -200,11 +206,19 @@ CharacterSelectionStateCharacter._update_available_profiles = function (self)
 	local is_button_enabled = true
 	local selected_career_index = self._selected_career_index
 	local selected_profile_index = self._selected_profile_index
+	local mechanism_manager = Managers.mechanism
 
 	for i, profile_index in ipairs(ProfilePriority) do
 		local profile_settings = SPProfiles[profile_index]
-		local is_profile_available = not profile_synchronizer:owner(profile_index)
-		available_profiles[profile_index] = is_profile_available
+		local is_profile_available = false
+
+		if player then
+			local peer_id = player:network_id()
+			local local_player_id = player:local_player_id()
+			local profile_name = profile_settings.display_name
+			is_profile_available = mechanism_manager:profile_available_for_peer(peer_id, local_player_id, profile_name)
+		end
+
 		local is_currently_played_profile = own_player_profile_index == profile_index
 		local can_play_profile = is_currently_played_profile or is_profile_available
 		local careers = profile_settings.careers
@@ -232,27 +246,24 @@ CharacterSelectionStateCharacter._handle_mouse_selection = function (self)
 	local num_max_columns = self._num_max_hero_columns
 	local selected_row = self._selected_hero_row
 	local selected_column = self._selected_hero_column
+	local widget_index = 1
 
-	if selected_row and selected_column then
-		local widget_index = 1
+	for i = 1, num_max_rows, 1 do
+		for j = 1, num_max_columns, 1 do
+			local widget = hero_widgets[widget_index]
+			local content = widget.content
+			local button_hotspot = content.button_hotspot
 
-		for i = 1, num_max_rows, 1 do
-			for j = 1, num_max_columns, 1 do
-				local widget = hero_widgets[widget_index]
-				local content = widget.content
-				local button_hotspot = content.button_hotspot
+			if button_hotspot.on_pressed and (i ~= selected_row or j ~= selected_column) then
+				local profile_index = ProfilePriority[i]
+				local career_index = j
 
-				if button_hotspot.on_pressed and (i ~= selected_row or j ~= selected_column) then
-					local profile_index = ProfilePriority[i]
-					local career_index = j
+				self:_select_hero(profile_index, career_index)
 
-					self:_select_hero(profile_index, career_index)
-
-					return
-				end
-
-				widget_index = widget_index + 1
+				return
 			end
+
+			widget_index = widget_index + 1
 		end
 	end
 end
@@ -617,7 +628,7 @@ CharacterSelectionStateCharacter._populate_career_info = function (self, profile
 	local career_settings = profile.careers[career_index]
 	local career_name = career_settings.name
 	local passive_ability_data = career_settings.passive_ability
-	local activated_ability_data = career_settings.activated_ability
+	local activated_ability_data = career_settings.activated_ability[1]
 	local passive_display_name = passive_ability_data.display_name
 	local passive_description = passive_ability_data.description
 	local passive_icon = passive_ability_data.icon
@@ -719,7 +730,7 @@ CharacterSelectionStateCharacter._handle_input = function (self, dt, t)
 	self:_handle_gamepad_selection(input_service)
 	self:_handle_mouse_selection()
 
-	local current_profile_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
+	local current_profile_index, current_career_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
 	local select_button = self._widgets_by_name.select_button
 
 	UIWidgetUtils.animate_default_button(select_button, dt)
@@ -736,13 +747,12 @@ CharacterSelectionStateCharacter._handle_input = function (self, dt, t)
 	if self:_is_button_pressed(select_button) or confirm_pressed then
 		self:_play_sound("play_gui_start_menu_button_click")
 
-		if current_profile_index ~= self._selected_profile_index then
+		if current_profile_index ~= self._selected_profile_index or current_career_index ~= self._selected_career_index then
 			self:_change_profile(self._selected_profile_index, self._selected_career_index)
+			self.parent:set_input_blocked(true)
 		else
-			self:_change_career(self._selected_profile_index, self._selected_career_index)
+			self.parent:close_menu()
 		end
-
-		self.parent:set_input_blocked(true)
 	elseif back_pressed then
 		self.parent:close_menu()
 	end
@@ -802,27 +812,13 @@ CharacterSelectionStateCharacter._start_transition_animation = function (self, k
 end
 
 CharacterSelectionStateCharacter._change_profile = function (self, profile_index, career_index)
-	local profile_synchronizer = self.profile_synchronizer
-
-	if profile_synchronizer:has_pending_request() then
-		return
-	end
-
 	local peer_id = self.peer_id
-	local player = self.player_manager:player_from_peer_id(peer_id)
+	local local_player_id = 1
+	local profile = SPProfiles[profile_index]
+	local profile_name = profile.display_name
+	local career_name = profile.careers[career_index].display_name
 
-	if player.player_unit then
-		self._despawning_player_unit_profile_change = player.player_unit
-
-		Managers.state.spawn:delayed_despawn(player)
-	else
-		profile_synchronizer:request_select_profile(profile_index, self.local_player_id)
-	end
-
-	local hero_attributes = Managers.backend:get_interface("hero_attributes")
-	local hero_name = self._selected_hero_name
-
-	hero_attributes:set(hero_name, "career", career_index)
+	self._profile_requester:request_profile(peer_id, local_player_id, profile_name, career_name)
 
 	self._pending_profile_request = true
 	self._requested_profile_index = profile_index
@@ -868,50 +864,24 @@ end
 
 CharacterSelectionStateCharacter._update_profile_request = function (self)
 	if self._pending_profile_request then
-		local synchronizer = self.profile_synchronizer
+		local profile_requester = self._profile_requester
+		local result = profile_requester:result()
 
-		if self._despawning_player_unit_profile_change then
-			if not Unit.alive(self._despawning_player_unit_profile_change) then
-				synchronizer:request_select_profile(self._requested_profile_index, self.local_player_id)
+		if result == "success" then
+			self._pending_profile_request = nil
+			local profile_index = self._requested_profile_index
+			local career_index = self._requested_career_index
+			local hero_attributes = Managers.backend:get_interface("hero_attributes")
+			local hero_name = SPProfiles[profile_index].display_name
 
-				self._requested_profile_index = nil
-				self._despawning_player_unit_profile_change = nil
+			hero_attributes:set(hero_name, "career", career_index)
+			self:_save_selected_profile(profile_index)
+			self.parent:set_current_hero(profile_index)
+			self.parent:close_menu()
+		elseif result == "failure" then
+			self._pending_profile_request = nil
 
-				if self.is_server then
-					Managers.state.network.network_server:peer_despawned_player(self.peer_id)
-				end
-			end
-		else
-			local result, result_local_player_id = synchronizer:profile_request_result()
-			local local_player_id = self.local_player_id
-
-			assert(not result or local_player_id == result_local_player_id, "Local player id mismatch between ui and request.")
-
-			if result == "success" then
-				local peer_id = self.peer_id
-				local profile_index = synchronizer:profile_by_peer(peer_id, local_player_id)
-				local player = self.player_manager:player(peer_id, local_player_id)
-
-				player:set_profile_index(profile_index)
-				synchronizer:clear_profile_request_result()
-				self:_save_selected_profile(profile_index)
-
-				self._respawn_player_unit = nil
-				self._pending_profile_request = nil
-				self._requested_career_index = nil
-
-				self.parent:set_current_hero(self._selected_profile_index)
-				self.parent:close_menu()
-			elseif result == "failure" then
-				local hero_attributes = Managers.backend:get_interface("hero_attributes")
-				local hero_name = self._hero_name
-
-				hero_attributes:set(hero_name, "career", self._career_index)
-
-				self._respawn_player_unit = true
-
-				self.parent:close_menu()
-			end
+			self.parent:set_input_blocked(false)
 		end
 	end
 end

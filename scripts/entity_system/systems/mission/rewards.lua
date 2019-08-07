@@ -23,7 +23,7 @@ Rewards.init = function (self, level_key, game_mode_key, quickplay_bonus)
 	self._quickplay_bonus = quickplay_bonus
 end
 
-Rewards.award_end_of_level_rewards = function (self, game_won, hero_name, is_in_event_game_mode)
+Rewards.award_end_of_level_rewards = function (self, game_won, hero_name, is_in_event_game_mode, weave_tier, weave_won_count, weave_progress, game_time, current_weave_index)
 	local deed_manager = Managers.deed
 
 	if game_won and deed_manager:has_deed() and not deed_manager:is_deed_owner() then
@@ -32,7 +32,12 @@ Rewards.award_end_of_level_rewards = function (self, game_won, hero_name, is_in_
 		self._consuming_deed = true
 		self._end_of_level_info = {
 			game_won = game_won,
-			hero_name = hero_name
+			hero_name = hero_name,
+			weave_tier = weave_tier,
+			weave_won_count = weave_won_count,
+			weave_progress = weave_progress,
+			game_time = game_time,
+			current_weave_index = current_weave_index
 		}
 		local cb = callback(self, "cb_deed_consumed")
 
@@ -40,14 +45,15 @@ Rewards.award_end_of_level_rewards = function (self, game_won, hero_name, is_in_
 	else
 		local loot_profile_name = (is_in_event_game_mode and "event") or "default"
 
-		self:_award_end_of_level_rewards(game_won, hero_name, loot_profile_name)
+		self:_award_end_of_level_rewards(game_won, hero_name, loot_profile_name, weave_tier, weave_won_count, weave_progress, game_time, current_weave_index)
 	end
 end
 
-Rewards._award_end_of_level_rewards = function (self, game_won, hero_name, loot_profile_name)
+Rewards._award_end_of_level_rewards = function (self, game_won, hero_name, loot_profile_name, weave_tier, weave_won_count, weave_progress, game_time, current_weave_index)
 	local backend_manager = Managers.backend
 	local hero_attributes = backend_manager:get_interface("hero_attributes")
 	local start_experience = hero_attributes:get(hero_name, "experience")
+	local start_experience_pool = hero_attributes:get(hero_name, "experience_pool")
 	local deed_item_name, deed_item_backend_id = nil
 
 	if Managers.deed:has_deed() then
@@ -60,9 +66,10 @@ Rewards._award_end_of_level_rewards = function (self, game_won, hero_name, loot_
 
 	self._mission_results = self:_mission_results(game_won)
 	self._start_experience = start_experience
+	self._start_experience_pool = start_experience_pool
 	local level_end, end_experience = self:get_level_end()
 
-	self:_generate_end_of_level_loot(game_won, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id)
+	self:_generate_end_of_level_loot(game_won, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id, weave_tier, weave_won_count, weave_progress, game_time, current_weave_index)
 end
 
 Rewards._mission_results = function (self, game_won)
@@ -74,6 +81,16 @@ Rewards._mission_results = function (self, game_won)
 
 	if game_mode_key == "survival" then
 		self:_add_missions_from_mission_system(mission_results, 1, 1)
+	elseif game_mode_key == "weave" then
+		if game_won then
+			local difficulty_settings = difficulty_manager:get_difficulty_settings()
+			local weave_settings = difficulty_settings.weave_settings
+			local experience_reward = weave_settings.experience_reward_on_complete
+			mission_results[1] = {
+				text = "end_screen_mission_completed",
+				experience = experience_reward * self:experience_multiplier()
+			}
+		end
 	elseif game_won then
 		self:_add_missions_from_mission_system(mission_results, difficulty_rank)
 
@@ -85,17 +102,25 @@ Rewards._mission_results = function (self, game_won)
 		table.insert(mission_results, 1, mission_complete_reward)
 	else
 		local mission_system = Managers.state.entity:system("mission_system")
-		local completed_distance = mission_system:percentage_completed() or 0
+		local percentages_completed = mission_system:percentages_completed()
+		local best_completed_distance = 0
+
+		for _, completed_distance in pairs(percentages_completed) do
+			if best_completed_distance < completed_distance then
+				best_completed_distance = completed_distance
+			end
+		end
+
 		local current_level_settings = LevelHelper:current_level_settings()
 		local disable_percentage_completed = current_level_settings and current_level_settings.disable_percentage_completed
 
 		if difficulty_rank <= 2 and not disable_percentage_completed then
-			completed_distance = math.clamp(completed_distance, 0.25, 1)
+			best_completed_distance = math.clamp(best_completed_distance, 0.25, 1)
 		end
 
 		local mission_failed_reward = {
 			text = "mission_failed_" .. difficulty,
-			experience = EXPERIENCE_REWARD * self:experience_multiplier() * completed_distance
+			experience = EXPERIENCE_REWARD * self:experience_multiplier() * best_completed_distance
 		}
 
 		table.insert(mission_results, 1, mission_failed_reward)
@@ -178,7 +203,7 @@ Rewards._add_missions_from_mission_system = function (self, mission_rewards, dif
 	end
 end
 
-Rewards._generate_end_of_level_loot = function (self, game_won, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id)
+Rewards._generate_end_of_level_loot = function (self, game_won, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id, weave_tier, weave_won_count, weave_progress, game_time, current_weave_index)
 	local difficulty_manager = Managers.state.difficulty
 	local difficulty = difficulty_manager:get_difficulty()
 	local mission_system = Managers.state.entity:system("mission_system")
@@ -200,7 +225,7 @@ Rewards._generate_end_of_level_loot = function (self, game_won, hero_name, start
 		num_painting_scraps = (painting_scraps_mission_data and painting_scraps_mission_data.current_amount) or 0
 	end
 
-	self._end_of_level_loot_id = loot_interface:generate_end_of_level_loot(game_won, quickplay, difficulty, self._level_key, num_tomes, num_grims, num_loot_dice, num_painting_scraps, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id)
+	self._end_of_level_loot_id = loot_interface:generate_end_of_level_loot(game_won, quickplay, difficulty, self._level_key, num_tomes, num_grims, num_loot_dice, num_painting_scraps, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id, self._game_mode_key, weave_tier, weave_won_count, weave_progress, game_time, current_weave_index)
 end
 
 Rewards.cb_deed_consumed = function (self)
@@ -212,8 +237,13 @@ Rewards.cb_deed_consumed = function (self)
 	local game_won = end_of_level_info.game_won
 	local hero_name = end_of_level_info.hero_name
 	local loot_profile_name = "default"
+	local weave_tier = end_of_level_info.weave_tier
+	local weave_won_count = end_of_level_info.weave_won_count
+	local weave_progress = end_of_level_info.weave_progress
+	local game_time = end_of_level_info.game_time
+	local current_weave_index = end_of_level_info.current_weave_index
 
-	self:_award_end_of_level_rewards(game_won, hero_name, loot_profile_name)
+	self:_award_end_of_level_rewards(game_won, hero_name, loot_profile_name, weave_tier, weave_won_count, weave_progress, game_time, current_weave_index)
 end
 
 Rewards.rewards_generated = function (self)
@@ -257,8 +287,9 @@ end
 
 Rewards.get_level_start = function (self)
 	local start_experience = self._start_experience or 0
+	local start_experience_pool = self._start_experience_pool or 0
 
-	return ExperienceSettings.get_level(start_experience), start_experience
+	return ExperienceSettings.get_level(start_experience), start_experience, start_experience_pool
 end
 
 Rewards.get_level_end = function (self)

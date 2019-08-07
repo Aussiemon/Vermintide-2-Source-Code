@@ -4,9 +4,10 @@ local weapon_template = weapon_template or {}
 weapon_template.actions = {
 	action_one = {
 		default = {
-			aim_assist_ramp_multiplier = 0.2,
 			anim_end_event = "attack_finished",
 			kind = "melee_start",
+			attack_hold_input = "action_one_hold",
+			aim_assist_ramp_multiplier = 0.2,
 			aim_assist_ramp_decay_delay = 0.1,
 			aim_assist_max_ramp_multiplier = 0.4,
 			uninterruptible = true,
@@ -568,8 +569,8 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "blunt_hit_armour",
-			additional_critical_strike_chance = 0,
 			width_mod = 25,
+			additional_critical_strike_chance = 0,
 			use_precision_sweep = false,
 			damage_profile = "light_blunt_tank",
 			hit_effect = "melee_hit_hammers_2h",
@@ -619,7 +620,8 @@ weapon_template.actions = {
 					input = "action_wield"
 				}
 			},
-			critical_strike = {}
+			critical_strike = {},
+			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		light_attack_right = {
 			damage_window_start = 0.38,
@@ -627,8 +629,8 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "blunt_hit_armour",
-			additional_critical_strike_chance = 0,
 			width_mod = 25,
+			additional_critical_strike_chance = 0,
 			use_precision_sweep = false,
 			damage_profile = "light_blunt_tank_diag",
 			hit_effect = "melee_hit_hammers_2h",
@@ -680,7 +682,8 @@ weapon_template.actions = {
 			},
 			critical_strike = {
 				critical_damage_attack_template = "light_blunt_tank"
-			}
+			},
+			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		light_attack_last = {
 			damage_window_start = 0.23,
@@ -688,8 +691,8 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "blunt_hit_armour",
-			additional_critical_strike_chance = 0,
 			width_mod = 25,
+			additional_critical_strike_chance = 0,
 			use_precision_sweep = false,
 			damage_profile = "light_blunt_tank_upper",
 			hit_effect = "melee_hit_hammers_2h",
@@ -741,7 +744,8 @@ weapon_template.actions = {
 			},
 			critical_strike = {
 				critical_damage_attack_template = "light_blunt_tank"
-			}
+			},
+			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		light_attack_bopp = {
 			damage_window_start = 0.4,
@@ -815,7 +819,6 @@ weapon_template.actions = {
 			anim_end_event = "attack_finished",
 			outer_push_angle = 180,
 			kind = "push_stagger",
-			hit_time = 0.1,
 			damage_profile_outer = "medium_push",
 			weapon_action_hand = "right",
 			push_angle = 100,
@@ -1013,7 +1016,7 @@ weapon_template.wield_anim = "to_1h_hammer_shield"
 weapon_template.buff_type = "MELEE_1H"
 weapon_template.weapon_type = "MACE_1H_SHIELD"
 weapon_template.max_fatigue_points = 10
-weapon_template.dodge_count = 1
+weapon_template.dodge_count = 2
 weapon_template.can_block_ranged_attacks = true
 weapon_template.block_angle = 180
 weapon_template.outer_block_angle = 360
@@ -1021,10 +1024,10 @@ weapon_template.block_fatigue_point_multiplier = 0.2
 weapon_template.outer_block_fatigue_point_multiplier = 2
 weapon_template.buffs = {
 	change_dodge_distance = {
-		external_optional_multiplier = 0.85
+		external_optional_multiplier = 1
 	},
 	change_dodge_speed = {
-		external_optional_multiplier = 0.85
+		external_optional_multiplier = 1
 	}
 }
 weapon_template.wwise_dep_right_hand = {

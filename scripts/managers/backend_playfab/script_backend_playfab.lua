@@ -84,6 +84,9 @@ ScriptBackendPlayFab.login_request_cb = function (self, result)
 	self._signin_result = result
 	local info_result_payload = result.InfoResultPayload
 	local read_only_data = info_result_payload.UserReadOnlyData
+	local playfab_id = result.PlayFabId
+
+	Crashify.print_property("playfab_id", playfab_id)
 
 	if result.NewlyCreated or not read_only_data.account_set_up then
 		self:_set_up_initial_account()

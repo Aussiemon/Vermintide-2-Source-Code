@@ -30,7 +30,7 @@ MissionSystem.init = function (self, entity_system_creation_context, system_name
 	self.network_manager = network_manager
 	self.network_transmit = network_manager.network_transmit
 	self.is_server = entity_system_creation_context.is_server
-	self._percentage_completed = 0
+	self._percentage_completed = {}
 end
 
 MissionSystem.create_checkpoint_data = function (self)
@@ -384,10 +384,22 @@ end
 
 MissionSystem._update_level_progress = function (self, dt)
 	if self.is_server then
-		local completion = Managers.state.conflict:main_path_completion()
+		local conflict_director = Managers.state.conflict
+		local percentage_completed = self._percentage_completed
+		local player_manager = Managers.player
+		local hero_side = Managers.state.side:get_side_from_name("heroes")
+		local PLAYER_AND_BOT_UNITS = hero_side.PLAYER_AND_BOT_UNITS
 
-		if self._percentage_completed < completion then
-			self._percentage_completed = completion
+		for i = 1, #PLAYER_AND_BOT_UNITS, 1 do
+			local player_unit = PLAYER_AND_BOT_UNITS[i]
+			local main_path_completion = conflict_director:main_path_completion(player_unit)
+			local player = player_manager:owner(player_unit)
+			local unique_id = player:unique_id()
+			local saved_main_path_completion = percentage_completed[unique_id] or 0
+
+			if main_path_completion > saved_main_path_completion then
+				percentage_completed[unique_id] = main_path_completion
+			end
 		end
 	end
 end
@@ -398,16 +410,13 @@ MissionSystem.override_percentage_completed = function (self, progression)
 	end
 end
 
-MissionSystem.percentage_completed = function (self)
-	local percentage_completed = self._percentage_completed_override or self._percentage_completed
-	local clamped_percentage = math.clamp(percentage_completed, 0, 1)
-	local current_level_settings = LevelHelper:current_level_settings()
-
-	if current_level_settings and current_level_settings.disable_percentage_completed then
-		clamped_percentage = 0
+MissionSystem.percentages_completed = function (self)
+	for unique_id, main_path_completion in pairs(self._percentage_completed) do
+		local percentage_completed = self._percentage_completed_override or main_path_completion
+		self._percentage_completed[unique_id] = math.clamp(percentage_completed, 0, 1)
 	end
 
-	return clamped_percentage
+	return self._percentage_completed
 end
 
 return

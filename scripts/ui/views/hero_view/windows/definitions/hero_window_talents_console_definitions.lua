@@ -8,7 +8,7 @@ local career_info_size = {
 }
 local talent_button_size = {
 	364,
-	100
+	80
 }
 local console_menu_scenegraphs = UISettings.console_menu_scenegraphs
 local scenegraph_definition = {
@@ -297,11 +297,11 @@ local scenegraph_definition = {
 		horizontal_alignment = "left",
 		size = {
 			career_window_size[1] - 20,
-			100
+			80
 		},
 		position = {
 			0,
-			110,
+			90,
 			0
 		}
 	},
@@ -311,11 +311,11 @@ local scenegraph_definition = {
 		horizontal_alignment = "left",
 		size = {
 			career_window_size[1] - 20,
-			100
+			80
 		},
 		position = {
 			0,
-			110,
+			90,
 			0
 		}
 	},
@@ -325,11 +325,11 @@ local scenegraph_definition = {
 		horizontal_alignment = "left",
 		size = {
 			career_window_size[1] - 20,
-			100
+			80
 		},
 		position = {
 			0,
-			110,
+			90,
 			0
 		}
 	},
@@ -339,21 +339,35 @@ local scenegraph_definition = {
 		horizontal_alignment = "left",
 		size = {
 			career_window_size[1] - 20,
-			100
+			80
 		},
 		position = {
 			0,
-			110,
+			90,
 			0
 		}
 	},
 	talent_row_5 = {
 		vertical_alignment = "bottom",
+		parent = "talent_row_6",
+		horizontal_alignment = "left",
+		size = {
+			career_window_size[1] - 20,
+			80
+		},
+		position = {
+			0,
+			90,
+			0
+		}
+	},
+	talent_row_6 = {
+		vertical_alignment = "bottom",
 		parent = "area_left",
 		horizontal_alignment = "left",
 		size = {
 			career_window_size[1] - 20,
-			100
+			80
 		},
 		position = {
 			0,
@@ -648,7 +662,7 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 			},
 			size = {
 				97,
-				97
+				size[2]
 			},
 			offset = {
 				3,
@@ -658,7 +672,7 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 		},
 		level_text = {
 			word_wrap = true,
-			font_size = 32,
+			font_size = 26,
 			localize = false,
 			horizontal_alignment = "center",
 			vertical_alignment = "center",
@@ -670,13 +684,13 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 			},
 			offset = {
 				3,
-				-6,
+				-12,
 				3
 			}
 		},
 		level_text_shadow = {
 			word_wrap = true,
-			font_size = 32,
+			font_size = 26,
 			localize = false,
 			horizontal_alignment = "center",
 			vertical_alignment = "center",
@@ -688,7 +702,7 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 			},
 			offset = {
 				5,
-				-8,
+				-14,
 				2
 			}
 		}
@@ -729,10 +743,10 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 		style[background_name] = {
 			size = button_size,
 			color = {
-				220,
-				10,
-				10,
-				10
+				100,
+				0,
+				0,
+				0
 			},
 			offset = {
 				offset[1],
@@ -759,7 +773,7 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 			offset = {
 				offset[1],
 				offset[2],
-				4
+				7
 			}
 		}
 		content[frame_name] = frame_settings.texture
@@ -777,10 +791,7 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 		style[selected_name] = {
 			vertical_alignment = "center",
 			horizontal_alignment = "center",
-			texture_size = {
-				button_size[1] + 4,
-				button_size[2] + 4
-			},
+			texture_size = button_size,
 			size = button_size,
 			color = {
 				255,
@@ -808,18 +819,18 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 		}
 		style[title_text_name] = {
 			word_wrap = true,
-			font_size = 28,
+			font_size = 24,
 			localize = false,
 			horizontal_alignment = "left",
 			vertical_alignment = "center",
 			font_type = "hell_shark_header",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			size = {
-				button_size[1] - 110,
+				button_size[1] - 100,
 				button_size[2]
 			},
 			offset = {
-				offset[1] + 100,
+				offset[1] + 90,
 				offset[2],
 				3
 			}
@@ -838,18 +849,18 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 		}
 		style[title_text_selected_name] = {
 			word_wrap = true,
-			font_size = 28,
+			font_size = 24,
 			localize = false,
 			horizontal_alignment = "left",
 			vertical_alignment = "center",
 			font_type = "hell_shark_header",
 			text_color = Colors.get_color_table_with_alpha("font_title", 255),
 			size = {
-				button_size[1] - 110,
+				button_size[1] - 100,
 				button_size[2]
 			},
 			offset = {
-				offset[1] + 100,
+				offset[1] + 90,
 				offset[2],
 				3
 			}
@@ -867,7 +878,7 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 		}
 		style[title_text_disabled_name] = {
 			word_wrap = true,
-			font_size = 28,
+			font_size = 24,
 			localize = false,
 			horizontal_alignment = "left",
 			vertical_alignment = "center",
@@ -879,11 +890,11 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 				50
 			},
 			size = {
-				button_size[1] - 110,
+				button_size[1] - 100,
 				button_size[2]
 			},
 			offset = {
-				offset[1] + 100,
+				offset[1] + 90,
 				offset[2],
 				3
 			}
@@ -896,18 +907,18 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 		}
 		style[title_text_shadow_name] = {
 			word_wrap = true,
-			font_size = 28,
+			font_size = 24,
 			localize = false,
 			horizontal_alignment = "left",
 			vertical_alignment = "center",
 			font_type = "hell_shark_header",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			size = {
-				button_size[1] - 110,
+				button_size[1] - 100,
 				button_size[2]
 			},
 			offset = {
-				offset[1] + 100 + 2,
+				offset[1] + 90 + 2,
 				offset[2] - 2,
 				2
 			}
@@ -958,7 +969,7 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 			offset = {
 				offset[1],
 				(offset[2] + button_size[2]) - 8,
-				3
+				5
 			}
 		}
 		content[glass_top_name] = "button_glass_01"
@@ -973,12 +984,12 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 			size = icon_size,
 			color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
-				offset[1] + 10,
-				(offset[2] + button_size[2] / 2) - icon_size[2] / 2 - 1,
+				offset[1],
+				(offset[2] + button_size[2] / 2) - icon_size[2] / 2,
 				3
 			}
 		}
-		content[icon_name] = "talent_damage_dwarf"
+		content[icon_name] = "icons_placeholder"
 		local icon_rect_name = "icon_rect" .. name_suffix
 		passes[#passes + 1] = {
 			pass_type = "rect",
@@ -998,8 +1009,8 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 				0
 			},
 			offset = {
-				offset[1] + 10,
-				(offset[2] + button_size[2] / 2) - icon_size[2] / 2 - 1,
+				offset[1],
+				(offset[2] + button_size[2] / 2) - icon_size[2] / 2,
 				4
 			}
 		}
@@ -1022,27 +1033,30 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 				0
 			},
 			offset = {
-				offset[1] + 10,
-				(offset[2] + button_size[2] / 2) - icon_size[2] / 2 - 1,
+				offset[1],
+				(offset[2] + button_size[2] / 2) - icon_size[2] / 2,
 				4
 			}
 		}
-		local icon_frame_name = "icon_frame" .. name_suffix
+		local icon_divider_name = "icon_divider" .. name_suffix
 		passes[#passes + 1] = {
 			pass_type = "texture",
-			texture_id = icon_frame_name,
-			style_id = icon_frame_name
+			texture_id = icon_divider_name,
+			style_id = icon_divider_name
 		}
-		style[icon_frame_name] = {
-			size = icon_size,
+		style[icon_divider_name] = {
+			size = {
+				5,
+				icon_size[2] - 2
+			},
 			color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
-				offset[1] + 10,
-				(offset[2] + button_size[2] / 2) - icon_size[2] / 2 - 1,
-				5
+				(offset[1] + icon_size[1]) - 5,
+				(offset[2] + button_size[2] / 2) - icon_size[2] / 2 + 1,
+				6
 			}
 		}
-		content[icon_frame_name] = "icon_talent_frame"
+		content[icon_divider_name] = "menu_frame_09_divider_vertical"
 		local tooltip_name = "tooltip" .. name_suffix
 		passes[#passes + 1] = {
 			talent_id = "talent",
@@ -1226,6 +1240,7 @@ local widgets = {
 	talent_row_3 = talent_row("talent_row_3", scenegraph_definition.talent_row_3.size, talent_button_size, 3),
 	talent_row_4 = talent_row("talent_row_4", scenegraph_definition.talent_row_4.size, talent_button_size, 3),
 	talent_row_5 = talent_row("talent_row_5", scenegraph_definition.talent_row_5.size, talent_button_size, 3),
+	talent_row_6 = talent_row("talent_row_6", scenegraph_definition.talent_row_6.size, talent_button_size, 3),
 	info_window_background = UIWidgets.create_rect_with_outer_frame("info_window", scenegraph_definition.info_window.size, "frame_outer_fade_02", 0, UISettings.console_menu_rect_color),
 	perk_title_text = UIWidgets.create_simple_text(Localize("hero_view_perk_title"), "perk_title_text", nil, nil, sub_title_text_style),
 	perk_title_divider = UIWidgets.create_simple_texture("infoslate_frame_02_horizontal", "perk_title_divider"),

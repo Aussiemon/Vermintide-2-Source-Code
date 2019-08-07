@@ -46,7 +46,7 @@ GameNetworkManager.init = function (self, world, lobby, is_server, event_delegat
 
 	self._event_delegate = event_delegate
 
-	event_delegate:register(self, "rpc_play_particle_effect", "rpc_gm_event_end_conditions_met", "rpc_gm_event_round_started", "rpc_surface_mtr_fx", "rpc_surface_mtr_fx_lvl_unit", "rpc_skinned_surface_mtr_fx", "rpc_play_melee_hit_effects", "game_object_created", "game_session_disconnect", "game_object_destroyed", "rpc_enemy_is_alerted", "rpc_assist", "rpc_coop_feedback", "rpc_ladder_shake", "rpc_set_boon_handler_game_object_fields")
+	event_delegate:register(self, "rpc_play_particle_effect", "rpc_gm_event_end_conditions_met", "rpc_gm_event_round_started", "rpc_surface_mtr_fx", "rpc_surface_mtr_fx_lvl_unit", "rpc_skinned_surface_mtr_fx", "rpc_play_melee_hit_effects", "game_object_created", "game_session_disconnect", "game_object_destroyed", "rpc_enemy_is_alerted", "rpc_assist", "rpc_coop_feedback", "rpc_ladder_shake", "rpc_request_spawn_network_unit")
 end
 
 GameNetworkManager.lobby = function (self)
@@ -68,6 +68,12 @@ GameNetworkManager.set_max_upload_speed = function (self, max_speed)
 		debug_print("Network caps: min/peer %d kbps, total %d kbps", max_speed, max_speed)
 		Network.enable_qos(max_speed, max_speed, max_speed)
 	end
+end
+
+GameNetworkManager.ping_by_peer = function (self, peer_id)
+	fassert(self.is_server, "tried to fetch ping by peer id as a client")
+
+	return self._lobby:ping_by_peer(peer_id)
 end
 
 GameNetworkManager.set_small_network_packets = function (self, enable)
@@ -100,8 +106,10 @@ GameNetworkManager.post_init = function (self, context)
 	end
 
 	self.network_server = context.network_server
+	self.network_client = context.network_client
 	self.statistics_db = context.statistics_db
 	self.difficulty_manager = context.difficulty_manager
+	self.weave_manager = context.weave_manager
 	self.voting_manager = context.voting_manager
 	self.matchmaking_manager = context.matchmaking_manager
 	self.game_server_manager = context.game_server_manager
@@ -235,8 +243,10 @@ GameNetworkManager.leave_game = function (self, force_disconnect)
 		local local_players = Managers.player:players_at_peer(Network.peer_id())
 
 		for _, player in pairs(local_players) do
-			Managers.state.spawn:delayed_despawn(player)
-			printf("despawning player %s", player:name())
+			if player:needs_despawn() then
+				Managers.state.spawn:delayed_despawn(player)
+				printf("despawning player %s", player:name())
+			end
 		end
 
 		GameSession.leave(self.game_session)
@@ -330,37 +340,14 @@ GameNetworkManager.game_object_template = function (self, go_type)
 	return game_object_templates[go_type]
 end
 
-GameNetworkManager.spawn_peer_player = function (self, peer_id, local_player_id, clan_tag)
-	fassert(self.is_server, "Only server is allowed to spawn peer player!")
-
-	local player_manager = self.player_manager
-	local player_controlled = true
-	local player = nil
-
-	if peer_id == self.peer_id then
-		player = player_manager:player(peer_id, local_player_id)
-	else
-		local room_manager = self.room_manager
-
-		if room_manager then
-			if room_manager:has_room(peer_id) then
-				room_manager:destroy_room(peer_id, false)
-			end
-
-			room_manager:create_room(peer_id, local_player_id)
-		end
-
-		if not player_manager:player_exists(peer_id, local_player_id) then
-			debug_print("ADDING REMOTE PLAYER FOR PEER %s", peer_id)
-
-			player = player_manager:add_remote_player(peer_id, player_controlled, local_player_id, clan_tag)
-
-			player:create_boon_handler(self._world)
-			self.network_transmit:send_rpc("rpc_to_client_session_synch", peer_id, self._session_id)
-		end
+GameNetworkManager.request_profile = function (self, local_player_id, profile_name, career_name)
+	if self.network_server then
+		self.network_server:request_profile(local_player_id, profile_name, career_name)
 	end
 
-	Managers.state.spawn:ready_to_spawn(peer_id, local_player_id)
+	if self.network_client then
+		self.network_client:request_profile(local_player_id, profile_name, career_name)
+	end
 end
 
 GameNetworkManager.create_game_object = function (self, object_template, data_table, session_disconnect_callback)
@@ -409,7 +396,6 @@ GameNetworkManager.game_object_created_player = function (self, go_id, owner_pee
 		local player = player_manager:player(peer_id, local_player_id)
 
 		player:set_game_object_id(go_id)
-		player:create_boon_handler(self._world)
 		player:create_sync_data()
 
 		local stats_id = player:stats_id()
@@ -426,7 +412,6 @@ GameNetworkManager.game_object_created_player = function (self, go_id, owner_pee
 		local player = player_manager:add_remote_player(peer_id, player_controlled, local_player_id)
 
 		player:set_game_object_id(go_id)
-		player:create_boon_handler(self._world)
 		player:create_sync_data()
 	end
 end
@@ -554,6 +539,44 @@ GameNetworkManager.game_object_destroyed_keep_decoration = function (self, game_
 	keep_decoration_extension:on_game_object_destroyed()
 end
 
+GameNetworkManager.game_object_created_progress_timer = function (self, game_object_id, owner_id, go_template)
+	local unit_level_index = GameSession.game_object_field(self.game_session, game_object_id, "level_unit_index")
+	local level = LevelHelper:current_level(self._world)
+	local unit = Level.unit_by_index(level, unit_level_index)
+	local progress_extension = ScriptUnit.extension(unit, "progress_system")
+
+	progress_extension:on_game_object_created(game_object_id)
+end
+
+GameNetworkManager.game_object_destroyed_progress_timer = function (self, game_object_id, owner_id, go_template)
+	local unit_level_index = GameSession.game_object_field(self.game_session, game_object_id, "level_unit_index")
+	local level = LevelHelper:current_level(self._world)
+	local unit = Level.unit_by_index(level, unit_level_index)
+	local progress_extension = ScriptUnit.extension(unit, "progress_system")
+
+	progress_extension:on_game_object_destroyed()
+end
+
+GameNetworkManager.game_object_created_weave = function (self, game_object_id, owner_id, go_template)
+	Managers.weave:game_object_created(game_object_id)
+end
+
+GameNetworkManager.game_object_destroyed_weave = function (self, game_object_id)
+	Managers.weave:game_object_destroyed(game_object_id)
+end
+
+GameNetworkManager.game_object_created_weave_objective = function (self, game_object_id, owner_id, go_template)
+	local weave_objective_system = Managers.state.entity:system("weave_objective_system")
+
+	weave_objective_system:game_object_created(game_object_id)
+end
+
+GameNetworkManager.game_object_destroyed_weave_objective = function (self, game_object_id)
+	local weave_objective_system = Managers.state.entity:system("weave_objective_system")
+
+	weave_objective_system:game_object_destroyed(game_object_id)
+end
+
 GameNetworkManager.destroy_game_object = function (self, go_id)
 	debug_print("destroying game object with go_id=%d", go_id)
 
@@ -586,8 +609,6 @@ end
 
 GameNetworkManager.game_object_destroyed_player_unit = function (self, go_id, owner_id, go_template)
 	local player_unit = self.unit_storage:unit(go_id)
-
-	REMOVE_PLAYER_UNIT_FROM_LISTS(player_unit)
 
 	if self.is_server then
 		self.network_server:peer_despawned_player(owner_id)
@@ -692,6 +713,7 @@ GameNetworkManager._hot_join_sync = function (self, peer_id)
 	end
 
 	self.difficulty_manager:hot_join_sync(peer_id)
+	self.weave_manager:hot_join_sync(peer_id)
 	self.entity_system:hot_join_sync(peer_id)
 	self.game_mode:hot_join_sync(peer_id)
 	self.networked_flow_state:hot_join_sync(peer_id)
@@ -714,6 +736,8 @@ GameNetworkManager._hot_join_sync = function (self, peer_id)
 		Managers.state.conflict:hot_join_sync(peer_id)
 	end
 
+	RPC.rpc_to_client_sync_session_id(peer_id, self._session_id)
+
 	self._object_synchronizing_clients[peer_id] = nil
 
 	self.network_transmit:remove_peer_ignore(peer_id)
@@ -730,19 +754,62 @@ GameNetworkManager.rpc_play_particle_effect = function (self, sender, effect_id,
 	Managers.state.event:trigger("event_play_particle_effect", effect_name, unit, node_id, offset, rotation_offset, linked)
 end
 
-GameNetworkManager.gm_event_end_conditions_met = function (self, reason, checkpoint_available, percentage_completed)
-	local reason_id = NetworkLookup.game_end_reasons[reason]
-	local percentage_completed = math.clamp(percentage_completed, 0, 1)
+GameNetworkManager._pack_percentages_completed_arrays = function (self, percentages_completed)
+	local peer_ids = {}
+	local local_player_ids = {}
+	local percentages = {}
+	local i = 1
+	local player_manager = Managers.player
 
-	self.network_transmit:send_rpc_clients("rpc_gm_event_end_conditions_met", reason_id, checkpoint_available, percentage_completed)
+	for unique_id, percentage_complete in pairs(percentages_completed) do
+		local player = player_manager:player_from_unique_id(unique_id)
+
+		if player then
+			local peer_id = player:network_id()
+			local local_player_id = player:local_player_id()
+			peer_ids[i] = peer_id
+			local_player_ids[i] = local_player_id
+			percentages[i] = percentage_complete
+			i = i + 1
+		end
+	end
+
+	return peer_ids, local_player_ids, percentages
 end
 
-GameNetworkManager.rpc_gm_event_end_conditions_met = function (self, sender, reason_id, checkpoint_available, percentage_completed)
+GameNetworkManager._unpack_percentages_completed_arrays = function (self, peer_ids, local_player_ids, percentages)
+	local percentages_completed = {}
+	local player_manager = Managers.player
+
+	for i = 1, #peer_ids, 1 do
+		local peer_id = peer_ids[i]
+		local local_player_id = local_player_ids[i]
+		local percentage_completed = percentages[i]
+		local player = player_manager:player(peer_id, local_player_id)
+
+		if player then
+			local unique_id = player:unique_id()
+			percentages_completed[unique_id] = math.clamp(percentage_completed, 0, 1)
+		end
+	end
+
+	return percentages_completed
+end
+
+GameNetworkManager.gm_event_end_conditions_met = function (self, reason, checkpoint_available, percentages_completed)
+	local peer_ids, local_player_ids, percentages = self:_pack_percentages_completed_arrays(percentages_completed)
+	local reason_id = NetworkLookup.game_end_reasons[reason]
+
+	self.network_transmit:send_rpc_clients("rpc_gm_event_end_conditions_met", reason_id, checkpoint_available, peer_ids, local_player_ids, percentages)
+end
+
+GameNetworkManager.rpc_gm_event_end_conditions_met = function (self, sender, reason_id, checkpoint_available, peer_ids, local_player_ids, percentages)
 	if not self.is_server then
+		local percentages_completed = self:_unpack_percentages_completed_arrays(peer_ids, local_player_ids, percentages)
 		local end_reason = NetworkLookup.game_end_reasons[reason_id]
 
 		Managers.state.game_mode:set_end_reason(end_reason)
-		Managers.state.game_mode:trigger_event("end_conditions_met", end_reason, checkpoint_available, percentage_completed)
+		Managers.state.game_mode:trigger_event("end_conditions_met", end_reason, checkpoint_available, percentages_completed)
 	end
 end
 
@@ -771,18 +838,14 @@ GameNetworkManager.rpc_play_melee_hit_effects = function (self, sender, sound_ev
 	EffectHelper.play_melee_hit_effects(sound_event, self._world, hit_position, sound_type, true, hit_unit)
 end
 
-GameNetworkManager.rpc_set_boon_handler_game_object_fields = function (self, sender, player_game_object_id, name_ids, remaining_durations)
+GameNetworkManager.rpc_request_spawn_network_unit = function (self, sender, request_spawn_template_id, position, rotation, source_unit_go_id, state_int)
+	local source_unit = self.unit_storage:unit(source_unit_go_id)
+	local template_name = NetworkLookup.spawn_unit_templates[request_spawn_template_id]
+	local spawn_template = SpawnUnitTemplates[template_name]
+
+	spawn_template.spawn_func(source_unit, position, rotation, state_int)
+
 	local players = Managers.player:human_players()
-
-	for _, player in pairs(players) do
-		if player.game_object_id == player_game_object_id then
-			local boon_handler = player.boon_handler
-
-			boon_handler:set_game_object_fields(name_ids, remaining_durations)
-
-			break
-		end
-	end
 end
 
 GameNetworkManager.rpc_surface_mtr_fx = function (self, sender, effect_name_id, unit_game_object_id, position, rotation, normal, actor_index)

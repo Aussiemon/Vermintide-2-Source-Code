@@ -233,7 +233,7 @@ for _, dlc in pairs(DLCSettings) do
 
 		if new_window_layouts then
 			for i = 1, #new_window_layouts, 1 do
-				table.insert(window_layouts, 1, new_window_layouts[i])
+				table.insert(window_layouts, 3, new_window_layouts[i])
 			end
 		end
 	end

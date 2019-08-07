@@ -2375,6 +2375,9 @@ Cosmetics = {
 	frame_dev = {
 		icon = "unit_frame_02"
 	},
+	frame_bear = {
+		icon = "unit_frame_02"
+	},
 	frame_collectors_edition = {
 		icon = "unit_frame_02"
 	},
@@ -2437,8 +2440,90 @@ Cosmetics = {
 	},
 	frame_celebration_03 = {
 		icon = "unit_frame_02"
+	},
+	frame_scorpion_complete_all_helmgart_levels_cataclysm = {
+		icon = "unit_frame_02"
+	},
+	frame_scorpion_complete_bogenhafen_cataclysm = {
+		icon = "unit_frame_02"
+	},
+	frame_scorpion_complete_plaza_cataclysm = {
+		icon = "unit_frame_02"
+	},
+	frame_scorpion_complete_crater_recruit = {
+		icon = "unit_frame_02"
+	},
+	frame_scorpion_complete_crater_veteran = {
+		icon = "unit_frame_02"
+	},
+	frame_scorpion_complete_crater_champion = {
+		icon = "unit_frame_02"
+	},
+	frame_scorpion_complete_crater_legend = {
+		icon = "unit_frame_02"
+	},
+	frame_scorpion_complete_crater_cataclysm = {
+		icon = "unit_frame_02"
+	},
+	frame_scorpion_season_1_beasts = {
+		icon = "unit_frame_02"
+	},
+	frame_scorpion_season_1_death = {
+		icon = "unit_frame_02"
+	},
+	frame_scorpion_season_1_fire = {
+		icon = "unit_frame_02"
+	},
+	frame_scorpion_season_1_heavens = {
+		icon = "unit_frame_02"
+	},
+	frame_scorpion_season_1_life = {
+		icon = "unit_frame_02"
+	},
+	frame_scorpion_season_1_light = {
+		icon = "unit_frame_02"
+	},
+	frame_scorpion_season_1_metal = {
+		icon = "unit_frame_02"
+	},
+	frame_scorpion_season_1_shadow = {
+		icon = "unit_frame_02"
+	},
+	frame_scorpion_season_1_cataclysm_1 = {
+		icon = "unit_frame_02"
+	},
+	frame_scorpion_season_1_cataclysm_2 = {
+		icon = "unit_frame_02"
+	},
+	frame_scorpion_season_1_cataclysm_3 = {
+		icon = "unit_frame_02"
+	},
+	frame_scorpion_season_1_leaderboard_1 = {
+		icon = "unit_frame_02"
+	},
+	frame_scorpion_season_1_leaderboard_2 = {
+		icon = "unit_frame_02"
+	},
+	frame_scorpion_season_1_leaderboard_3 = {
+		icon = "unit_frame_02"
 	}
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local files_names = dlc.cosmetics_files
+
+	if files_names then
+		for _, file_name in ipairs(files_names) do
+			local cosmetics_templates = require(file_name)
+
+			if cosmetics_templates then
+				for template_name, template in pairs(cosmetics_templates) do
+					Cosmetics[template_name] = template
+				end
+			end
+		end
+	end
+end
 
 for name, cosmetic_data in pairs(Cosmetics) do
 	cosmetic_data.name = name

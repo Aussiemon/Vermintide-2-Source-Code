@@ -264,9 +264,14 @@ TwitchVoteTemplates.twitch_spawn_horde_vector_blob = {
 
 			local horde_type = "vector_blob"
 			local amount = 1
+			local side = Managers.state.side:get_side_from_name("dark_pact")
+			local side_id = side.side_id
+			local extra_data = {
+				override_composition_type = "huge"
+			}
 
 			for i = 1, amount, 1 do
-				Managers.state.conflict.horde_spawner:horde(horde_type)
+				Managers.state.conflict.horde_spawner:horde(horde_type, extra_data, side_id)
 			end
 		end
 	end

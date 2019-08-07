@@ -151,25 +151,39 @@ CareerAbilityWHZealot._run_ability = function (self)
 	local network_transmit = network_manager.network_transmit
 	local status_extension = self._status_extension
 	local career_extension = self._career_extension
-	local buff_name = "victor_zealot_activated_ability"
+	local buff_extension = self._buff_extension
+	local buff_names = {
+		"victor_zealot_activated_ability"
+	}
 	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 
-	if talent_extension:has_talent("victor_zealot_activated_ability_duration", "witch_hunter", true) then
-		buff_name = "victor_zealot_activated_ability_duration"
+	if talent_extension:has_talent("victor_zealot_activated_ability_power_on_hit", "witch_hunter", true) then
+		buff_names[#buff_names + 1] = "victor_zealot_activated_ability_power_on_hit"
 	end
 
-	local unit_object_id = network_manager:unit_game_object_id(owner_unit)
-	local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
+	if talent_extension:has_talent("victor_zealot_activated_ability_ignore_death", "witch_hunter", true) then
+		buff_names[#buff_names + 1] = "victor_zealot_activated_ability_ignore_death"
+	end
 
-	if is_server then
-		local buff_extension = self._buff_extension
-
-		buff_extension:add_buff(buff_name, {
+	if talent_extension:has_talent("victor_zealot_activated_ability_cooldown_stack_on_hit", "witch_hunter", true) then
+		buff_extension:add_buff("victor_zealot_activated_ability_cooldown_stack_on_hit", {
 			attacker_unit = owner_unit
 		})
-		network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
-	else
-		network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
+	end
+
+	for i = 1, #buff_names, 1 do
+		local buff_name = buff_names[i]
+		local unit_object_id = network_manager:unit_game_object_id(owner_unit)
+		local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
+
+		if is_server then
+			buff_extension:add_buff(buff_name, {
+				attacker_unit = owner_unit
+			})
+			network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
+		else
+			network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
+		end
 	end
 
 	if local_player or (is_server and self._bot_player) then

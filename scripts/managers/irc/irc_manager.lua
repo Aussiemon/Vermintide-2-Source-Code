@@ -1,8 +1,10 @@
+require("scripts/managers/irc/script_irc_token")
+
 IRCManager = class(IRCManager)
 Irc.LIST_END_MSG = 8
 Irc.META_MSG = 9
 local DEBUG_PRINT = false
-local CONNECTION_TIMER = 5
+local CONNECTION_RETRIES = 3
 local MESSAGES_TO_SEND = {}
 
 local function debug_print(message, ...)
@@ -17,7 +19,6 @@ end
 
 IRCManager._reset = function (self)
 	self._state = "none"
-	self._connection_timer = 0
 	self._connection_retries = 0
 	self._user_name = nil
 	self._port = nil
@@ -303,6 +304,11 @@ IRCManager.update = function (self, dt)
 	IRCStates[self._state](self, dt)
 end
 
+IRCManager.cb_connect_token_received = function (self, data)
+	print("[IrcManager:cb_connect_token_received] Result: " .. tostring(data.result))
+	self:_change_state("verify_connection")
+end
+
 IRCManager._change_state = function (self, state)
 	fassert(IRCStates[state], "[IRCManager] There is no state called %s", state)
 	debug_print("Leaving state: %s", self._state)
@@ -351,37 +357,18 @@ IRCStates.initialize = function (irc_manager, dt)
 end
 
 IRCStates.connect = function (irc_manager, dt)
-	local is_connected = Irc.is_connected()
+	local host_address = irc_manager._host_address
+	local host_port = irc_manager._port
+	local default_user_name = "justinfan" .. Math.random(9999)
+	local user_name = irc_manager._user_name or default_user_name
+	local password = irc_manager._password or nil
+	local token = Irc.connect_async_token(host_address, host_port, user_name, password)
+	local script_token = ScriptIrcToken:new(token)
 
-	if is_connected then
-		if irc_manager._auto_join_channel then
-			irc_manager:_change_state("join_channel")
-		else
-			irc_manager:_change_state("connected")
-			irc_manager:_notify_connected(true)
-		end
-	elseif irc_manager._connection_timer <= 0 then
-		local host_address = irc_manager._host_address
-		local host_port = irc_manager._port
-		local default_user_name = "justinfan" .. Math.random(9999)
-		local user_name = irc_manager._user_name or default_user_name
-		local password = irc_manager._password or nil
+	Managers.token:register_token(script_token, callback(irc_manager, "cb_connect_token_received"))
+	irc_manager:_change_state("wait_for_connection")
 
-		Irc.connect(host_address, host_port, user_name, password)
-
-		irc_manager._connection_timer = CONNECTION_TIMER
-		irc_manager._connection_retries = irc_manager._connection_retries + 1
-	elseif irc_manager._connection_retries > 3 then
-		local host_address = irc_manager._host_address
-		local host_port = irc_manager._port
-		local default_user_name = "justinfan" .. Math.random(9999)
-		local user_name = irc_manager._user_name or default_user_name
-
-		Application.error("[IRCManager] Failed connecting to " .. host_address .. ":" .. host_port .. " with user_name: " .. user_name)
-		irc_manager:_change_state("disconnect")
-	else
-		irc_manager._connection_timer = irc_manager._connection_timer - dt
-	end
+	irc_manager._connection_retries = irc_manager._connection_retries + 1
 end
 
 IRCStates.join_channel = function (irc_manager, dt)
@@ -431,6 +418,31 @@ IRCStates.disconnect = function (irc_manager, dt)
 	irc_manager:_notify_connected(false)
 	irc_manager:_reset()
 	irc_manager:_change_state("none")
+end
+
+IRCStates.verify_connection = function (irc_manager, dt)
+	local is_connected = Irc.is_connected()
+
+	if is_connected then
+		if irc_manager._auto_join_channel then
+			irc_manager:_change_state("join_channel")
+		else
+			irc_manager:_change_state("connected")
+			irc_manager:_notify_connected(true)
+		end
+	elseif CONNECTION_RETRIES < irc_manager._connection_retries then
+		local host_address = irc_manager._host_address
+		local host_port = irc_manager._port
+		local default_user_name = "justinfan" .. Math.random(9999)
+		local user_name = irc_manager._user_name or default_user_name
+
+		Application.error("[IRCManager] Failed connecting to " .. host_address .. ":" .. host_port .. " with user_name: " .. user_name)
+		irc_manager:_change_state("disconnect")
+	end
+end
+
+IRCStates.wait_for_connection = function (irc_manager, dt)
+	return
 end
 
 return

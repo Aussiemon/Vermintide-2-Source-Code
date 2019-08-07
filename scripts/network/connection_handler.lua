@@ -215,4 +215,8 @@ ConnectionHandler.get_broken_connections = function (self)
 	return self.broken_connections, num_broken_connections
 end
 
+ConnectionHandler.any_connections = function (self)
+	return table.size(self.pending_connects) > 0 or table.size(self.current_connections) > 0
+end
+
 return

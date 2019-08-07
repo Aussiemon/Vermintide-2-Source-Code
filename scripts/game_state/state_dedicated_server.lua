@@ -155,9 +155,14 @@ StateDedicatedServer.update = function (self, dt, t)
 		local start_game_params = Managers.game_server:start_game_params()
 
 		if start_game_params then
-			self._level_transition_handler:set_next_level(start_game_params.level_key)
-			self._network_server:set_current_level(start_game_params.level_key)
-			self._level_transition_handler:level_completed()
+			local level_key = start_game_params.level_key
+			local level_transition_handler = self._level_transition_handler
+
+			Managers.mechanism:generate_locked_director_functions(level_key)
+			Managers.mechanism:generate_level_seed()
+			level_transition_handler:set_next_level(level_key)
+			self._network_server:set_current_level(level_key)
+			level_transition_handler:level_completed()
 
 			self._wanted_state = StateLoading
 		end
@@ -172,35 +177,16 @@ StateDedicatedServer.update = function (self, dt, t)
 	end
 end
 
-StateDedicatedServer.setup_network_options = function (self)
-	if not self._network_options then
-		local server_port = script_data.server_port or script_data.settings.server_port or GameSettingsDevelopment.network_port
-		local query_port = script_data.query_port or script_data.settings.query_port
-		local steam_port = script_data.steam_port or script_data.settings.steam_port
-		local ip_address = Network.default_network_address()
-		local network_options = {
-			map = "None",
-			max_members = 4,
-			config_file_name = "global",
-			project_hash = "bulldozer",
-			ip_address = ip_address,
-			steam_port = steam_port or 8766,
-			query_port = query_port or 27016,
-			server_port = server_port or 27015
-		}
-		self._network_options = network_options
-	end
-end
-
 StateDedicatedServer.setup_network_server = function (self, game_server)
 	self._game_server = game_server
-	local initial_level = self._level_transition_handler:default_level_key()
+	local level_transition_handler = self._level_transition_handler
+	local initial_level = level_transition_handler:default_level_key()
 	local loading_context = self.parent.loading_context
 
 	fassert(Managers.game_server == nil, "Already has a game server manager.")
 
-	Managers.game_server = GameServerManager:new(self._level_transition_handler)
-	self._network_server = NetworkServer:new(Managers.player, game_server, initial_level, nil, self._level_transition_handler, Managers.game_server)
+	Managers.game_server = GameServerManager:new(level_transition_handler)
+	self._network_server = NetworkServer:new(Managers.player, game_server, initial_level, nil, level_transition_handler, Managers.game_server)
 	self._network_transmit = loading_context.network_transmit or NetworkTransmit:new(true, self._network_server.connection_handler)
 
 	self._network_transmit:set_network_event_delegate(self._network_event_delegate)
@@ -223,7 +209,7 @@ StateDedicatedServer.setup_network_server = function (self, game_server)
 		network_transmit = self._network_transmit,
 		lobby = game_server,
 		peer_id = Network.peer_id(),
-		level_transition_handler = self._level_transition_handler,
+		level_transition_handler = level_transition_handler,
 		profile_synchronizer = self._profile_synchronizer,
 		network_server = self._network_server,
 		slot_allocator = self._network_server.slot_allocator
@@ -232,13 +218,15 @@ StateDedicatedServer.setup_network_server = function (self, game_server)
 
 	Managers.matchmaking:register_rpcs(self._network_event_delegate)
 
-	local loading_context = self.parent.loading_context
 	loading_context.game_server = game_server
 	loading_context.network_server = self._network_server
 
+	Managers.mechanism:generate_locked_director_functions(level_key)
+	Managers.mechanism:generate_level_seed()
+	level_transition_handler:set_next_level(initial_level)
 	self._network_server:set_current_level(initial_level)
-	self._level_transition_handler:set_next_level(initial_level)
-	self._level_transition_handler:load_next_level()
+	level_transition_handler:set_next_level(initial_level)
+	level_transition_handler:level_completed()
 end
 
 StateDedicatedServer.setup_chat_manager = function (self, game_server)
@@ -264,8 +252,11 @@ StateDedicatedServer.setup_enemy_package_loader = function (self, game_server)
 	self._level_transition_handler.enemy_package_loader:network_context_created(game_server, peer_id, peer_id)
 end
 
-StateDedicatedServer.network_options = function (self)
-	return self._network_options
+StateDedicatedServer.setup_global_managers = function (self, game_server)
+	local peer_id = Network.peer_id()
+
+	Managers.mechanism:network_context_created(game_server, peer_id, peer_id)
+	Managers.party:network_context_created(game_server, peer_id, peer_id)
 end
 
 StateDedicatedServer._update_network = function (self, dt)

@@ -39,53 +39,63 @@ local function play_screen_space_blood(world, unit, attacker_unit, killing_blow,
 end
 
 local function handle_boss_difficulty_kill_achievement_tracking(breed, statistics_db)
-	local difficulty_kill_achievement = breed.difficulty_kill_achievement
+	local difficulty_kill_achievements = breed.difficulty_kill_achievements
 
-	if difficulty_kill_achievement then
-		local current_rank = Managers.state.difficulty:get_difficulty_rank()
-		local player_manager = Managers.player
-		local local_player_id = 1
+	if difficulty_kill_achievements then
+		for i = 1, #difficulty_kill_achievements, 1 do
+			local kill_achivement = difficulty_kill_achievements[i]
+			local current_rank = Managers.state.difficulty:get_difficulty_rank()
+			local player_manager = Managers.player
+			local local_player_id = 1
 
-		while player_manager:local_player(local_player_id) ~= nil do
-			if local_player_id > 4 then
-				ferror("Sanity check, how did we get above 4 here?")
+			while player_manager:local_player(local_player_id) ~= nil do
+				if local_player_id > 4 then
+					ferror("Sanity check, how did we get above 4 here?")
 
-				break
-			end
-
-			local player = player_manager:local_player(local_player_id)
-
-			if not player.bot_player then
-				local saved_rank = statistics_db:get_persistent_stat(player:stats_id(), difficulty_kill_achievement)
-
-				if saved_rank < current_rank then
-					statistics_db:set_stat(player:stats_id(), difficulty_kill_achievement, current_rank)
+					break
 				end
-			end
 
-			local_player_id = local_player_id + 1
+				local player = player_manager:local_player(local_player_id)
+
+				if not player.bot_player then
+					local saved_rank = statistics_db:get_persistent_stat(player:stats_id(), kill_achivement)
+
+					if saved_rank < current_rank then
+						statistics_db:set_stat(player:stats_id(), kill_achivement, current_rank)
+					end
+				end
+
+				local_player_id = local_player_id + 1
+			end
 		end
 	end
 end
 
 local function handle_military_event_achievement(damage_type, breed_name, statistics_db)
 	if damage_type == "military_finish" and breed_name == "chaos_warrior" then
-		local allowed_difficulties = QuestSettings.allowed_difficulties.military_statue_kill_chaos_warriors
-		local difficulty = Managers.state.difficulty:get_difficulty()
+		local stat_names = {
+			"military_statue_kill_chaos_warriors",
+			"military_statue_kill_chaos_warriors_cata"
+		}
 
-		if allowed_difficulties[difficulty] then
-			local local_player = Managers.player:local_player()
+		for i = 1, #stat_names, 1 do
+			local allowed_difficulties = QuestSettings.allowed_difficulties[stat_names[i]]
+			local difficulty = Managers.state.difficulty:get_difficulty()
 
-			if local_player then
-				local stats_id = local_player:stats_id()
+			if allowed_difficulties[difficulty] then
+				local local_player = Managers.player:local_player()
 
-				statistics_db:increment_stat(stats_id, "military_statue_kill_chaos_warriors_session")
+				if local_player then
+					local stats_id = local_player:stats_id()
 
-				local num_chaos_warriors_killed = statistics_db:get_stat(stats_id, "military_statue_kill_chaos_warriors_session")
+					statistics_db:increment_stat(stats_id, "military_statue_kill_chaos_warriors_session")
 
-				if num_chaos_warriors_killed >= 3 then
-					statistics_db:increment_stat(stats_id, "military_statue_kill_chaos_warriors")
-					Managers.state.network.network_transmit:send_rpc_clients("rpc_increment_stat", NetworkLookup.statistics.military_statue_kill_chaos_warriors)
+					local num_chaos_warriors_killed = statistics_db:get_stat(stats_id, "military_statue_kill_chaos_warriors_session")
+
+					if num_chaos_warriors_killed >= 3 then
+						statistics_db:increment_stat(stats_id, stat_names[i])
+						Managers.state.network.network_transmit:send_rpc_clients("rpc_increment_stat", NetworkLookup.statistics[stat_names[i]])
+					end
 				end
 			end
 		end
@@ -185,14 +195,19 @@ local function ai_default_unit_start(unit, context, t, killing_blow, is_server)
 		finish_time = t + (breed.time_to_unspawn_after_death or 10),
 		wall_nail_data = death_extension.wall_nail_data
 	}
+	local force_despawn = breed.force_despawn
 
-	if breed.force_despawn then
+	if Managers.state.game_mode:has_activated_mutator("metal") and damage_type == "metal_mutator" then
+		force_despawn = true
+	end
+
+	if force_despawn then
 		Managers.state.unit_spawner:mark_for_deletion(unit)
 	elseif not breed.ignore_death_watch_timer then
 		data.push_to_death_watch_timer = 0
 	end
 
-	Managers.state.game_mode:ai_killed(unit, owner_unit, data)
+	Managers.state.game_mode:ai_killed(unit, owner_unit, data, killing_blow)
 
 	return data, DeathReactions.IS_NOT_DONE
 end
@@ -427,8 +442,7 @@ local function ai_default_husk_start(unit, context, t, killing_blow, is_server)
 		wall_nail_data = death_extension.wall_nail_data
 	}
 
-	Managers.state.unit_spawner:freeze_unit_extensions(unit, t, data)
-	Managers.state.game_mode:ai_killed(unit, owner_unit)
+	Managers.state.game_mode:ai_killed(unit, owner_unit, data, killing_blow)
 
 	return data, DeathReactions.IS_NOT_DONE
 end
@@ -531,31 +545,57 @@ end
 local function trigger_player_killing_blow_ai_buffs(ai_unit, killing_blow)
 	local attacker_unit = killing_blow[DamageDataIndex.ATTACKER]
 
-	if Unit.alive(attacker_unit) and ScriptUnit.has_extension(attacker_unit, "buff_system") then
-		local buff_extension = ScriptUnit.extension(attacker_unit, "buff_system")
-
-		buff_extension:trigger_procs("on_kill", killing_blow, breed_data)
+	if not Unit.alive(attacker_unit) or not Unit.alive(ai_unit) then
+		return
 	end
 
-	local breed_data = Unit.get_data(ai_unit, "breed")
-	local player_and_bot_units = PLAYER_AND_BOT_UNITS
+	local breed_attacker = Unit.get_data(attacker_unit, "breed")
+	local breed_killed = Unit.get_data(ai_unit, "breed")
 
-	if breed_data.boss then
+	if not breed_attacker or not breed_attacker.is_player or not breed_killed then
+		return
+	end
+
+	local side_manager = Managers.state.side
+
+	if not side_manager:is_enemy(attacker_unit, ai_unit) then
+		return
+	end
+
+	local buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
+
+	if buff_extension then
+		buff_extension:trigger_procs("on_kill", killing_blow, breed_killed, ai_unit)
+	end
+
+	if (breed_killed.special or breed_killed.elite) and buff_extension then
+		buff_extension:trigger_procs("on_kill_elite_special", killing_blow, breed_killed, ai_unit)
+	end
+
+	local side = side_manager.side_by_unit[ai_unit]
+
+	if breed_killed.boss then
+		local player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
+
 		for i = 1, #player_and_bot_units, 1 do
 			local unit = player_and_bot_units[i]
 			local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 
 			if buff_extension then
-				buff_extension:trigger_procs("on_boss_killed", killing_blow, breed_data)
+				buff_extension:trigger_procs("on_boss_killed", killing_blow, breed_killed)
 			end
 		end
-	elseif breed_data.special then
+	end
+
+	if breed_killed.special then
+		local player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
+
 		for i = 1, #player_and_bot_units, 1 do
 			local unit = player_and_bot_units[i]
 			local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 
 			if buff_extension then
-				buff_extension:trigger_procs("on_special_killed", killing_blow, breed_data, ai_unit)
+				buff_extension:trigger_procs("on_special_killed", killing_blow, breed_killed, ai_unit)
 			end
 		end
 	end
@@ -563,14 +603,103 @@ local function trigger_player_killing_blow_ai_buffs(ai_unit, killing_blow)
 	local ping_extension = ScriptUnit.has_extension(ai_unit, "ping_system")
 
 	if ping_extension then
+		local player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
+
 		for i = 1, #player_and_bot_units, 1 do
 			local unit = player_and_bot_units[i]
 			local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 
 			if buff_extension then
-				buff_extension:trigger_procs("on_ping_target_killed", killing_blow, breed_data)
+				buff_extension:trigger_procs("on_ping_target_killed", killing_blow, breed_killed)
 			end
 		end
+	end
+
+	local attacker_talent_extension = ScriptUnit.has_extension(attacker_unit, "talent_system")
+	local attacker_buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
+	local is_server = Managers.state.network.is_server
+
+	if is_server and attacker_talent_extension and attacker_talent_extension:has_talent("sienna_unchained_exploding_burning_enemies") and attacker_buff_extension:has_buff_perk("sienna_unchained") then
+		local ai_buff_extension = ScriptUnit.has_extension(ai_unit, "buff_system")
+		local proc_chance = 0.35
+
+		if math.random() <= proc_chance and ai_buff_extension and ai_buff_extension:has_buff_perk("burning") then
+			local career_extension = ScriptUnit.has_extension(attacker_unit, "career_system")
+			local area_damage_system = Managers.state.entity:system("area_damage_system")
+			local position = POSITION_LOOKUP[ai_unit]
+			local damage_source = "buff"
+			local explosion_template = "sienna_unchained_burning_enemies_explosion"
+			local rotation = Quaternion.identity()
+			local career_power_level = career_extension:get_career_power_level()
+			local scale = 1
+			local is_critical_strike = false
+
+			area_damage_system:create_explosion(attacker_unit, position, rotation, explosion_template, scale, damage_source, career_power_level, is_critical_strike)
+		end
+	end
+end
+
+local function kill_minotaur_under_oak_challenge(player, unit)
+	local is_server = Managers.player.is_server
+
+	if is_server then
+		local level_key = Managers.state.game_mode:level_key()
+		local current_level_name = LevelSettings[level_key].display_name
+		local oak_level = LevelSettings.farmlands.display_name
+
+		if current_level_name ~= oak_level then
+			return
+		end
+
+		local minotaur_position = POSITION_LOOKUP[unit]
+		local oak_position = Vector3(18.843, -117.7, 5.5)
+		local distance_between = Vector3.distance(oak_position, minotaur_position)
+		local reasonable_distance = 35
+
+		if distance_between < reasonable_distance then
+			local stat_name = "scorpion_kill_minotaur_farmlands_oak"
+			local statistics_db = Managers.player:statistics_db()
+
+			statistics_db:increment_stat_and_sync_to_clients(stat_name)
+		end
+	end
+end
+
+local function ungor_archer_kill_minotaur_challenge(attacker)
+	local hit_unit_blackboard = BLACKBOARDS[attacker]
+	local breed_name = hit_unit_blackboard.breed and hit_unit_blackboard.breed.name
+
+	if breed_name ~= "beastmen_ungor_archer" then
+		return
+	end
+
+	local stat_name = "scorpion_kill_archers_kill_minotaur"
+	local stat_name_index = NetworkLookup.statistics[stat_name]
+	local statistics_db = Managers.player:statistics_db()
+	local local_player = Managers.player:local_player()
+	local stats_id = local_player:stats_id()
+
+	statistics_db:increment_stat(stats_id, stat_name)
+	Managers.state.network.network_transmit:send_rpc_clients("rpc_increment_stat", stat_name_index)
+end
+
+local function gors_killed_by_warpfire_challenge()
+	local statistics_db = Managers.player:statistics_db()
+	local local_player = Managers.player:local_player()
+	local stats_id = local_player:stats_id()
+
+	statistics_db:increment_stat(stats_id, "warpfire_killed_gors")
+
+	local num_killed_gors = statistics_db:get_stat(stats_id, "warpfire_killed_gors")
+
+	if QuestSettings.num_gors_killed_by_warpfire <= num_killed_gors then
+		statistics_db:set_stat(stats_id, "warpfire_killed_gors", 0)
+
+		local stat_name = "scorpion_slay_gors_warpfire_damage"
+		local stat_name_index = NetworkLookup.statistics[stat_name]
+
+		statistics_db:increment_stat(stats_id, stat_name)
+		Managers.state.network.network_transmit:send_rpc_clients("rpc_increment_stat", stat_name_index)
 	end
 end
 
@@ -592,6 +721,10 @@ DeathReactions.templates = {
 					ScriptUnit.extension(unit, "ai_system"):attacked(killing_blow[DamageDataIndex.ATTACKER], t, killing_blow)
 				end
 
+				local attacker_unit = killing_blow[DamageDataIndex.ATTACKER]
+
+				Managers.state.game_mode:ai_hit_by_player(unit, attacker_unit, killing_blow)
+
 				return data, result
 			end,
 			update = function (unit, dt, context, t, data)
@@ -610,6 +743,12 @@ DeathReactions.templates = {
 				if not is_hot_join_sync(killing_blow) then
 					trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 				end
+
+				Managers.state.unit_spawner:freeze_unit_extensions(unit, t, data)
+
+				local attacker_unit = killing_blow[DamageDataIndex.ATTACKER]
+
+				Managers.state.game_mode:ai_hit_by_player(unit, attacker_unit, killing_blow)
 
 				return data, result
 			end,
@@ -649,6 +788,8 @@ DeathReactions.templates = {
 				if not is_hot_join_sync(killing_blow) then
 					trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 				end
+
+				Managers.state.unit_spawner:freeze_unit_extensions(unit, t, data)
 
 				return data, result
 			end,
@@ -747,6 +888,8 @@ DeathReactions.templates = {
 					trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 				end
 
+				Managers.state.unit_spawner:freeze_unit_extensions(unit, t, data)
+
 				return data, result
 			end,
 			update = function (unit, dt, context, t, data)
@@ -785,11 +928,13 @@ DeathReactions.templates = {
 				ai_default_husk_pre_start(unit, context, t, killing_blow)
 			end,
 			start = function (unit, context, t, killing_blow, is_server)
-				ai_default_husk_start(unit, context, t, killing_blow, is_server)
+				local data, result = ai_default_husk_start(unit, context, t, killing_blow, is_server)
 
 				if not is_hot_join_sync(killing_blow) then
 					trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 				end
+
+				Managers.state.unit_spawner:freeze_unit_extensions(unit, t, data)
 
 				return nil, DeathReactions.IS_DONE
 			end,
@@ -860,6 +1005,8 @@ DeathReactions.templates = {
 					trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 				end
 
+				Managers.state.unit_spawner:freeze_unit_extensions(unit, t, data)
+
 				return data, result
 			end,
 			update = function (unit, dt, context, t, data)
@@ -928,6 +1075,8 @@ DeathReactions.templates = {
 			end,
 			start = function (unit, context, t, killing_blow, is_server)
 				local data, result = ai_default_husk_start(unit, context, t, killing_blow)
+
+				Managers.state.unit_spawner:freeze_unit_extensions(unit, t, data)
 
 				return data, result
 			end,
@@ -1013,6 +1162,7 @@ DeathReactions.templates = {
 				end
 
 				WwiseUtils.trigger_unit_event(Managers.world:world("level_world"), "Stop_enemy_vo_warpfire", unit, Unit.node(unit, "a_voice"))
+				Managers.state.unit_spawner:freeze_unit_extensions(unit, t, data)
 
 				return data, result
 			end,
@@ -1122,6 +1272,8 @@ DeathReactions.templates = {
 					trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 				end
 
+				Managers.state.unit_spawner:freeze_unit_extensions(unit, t, data)
+
 				return data, result
 			end,
 			update = function (unit, dt, context, t, data)
@@ -1193,6 +1345,8 @@ DeathReactions.templates = {
 					trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 				end
 
+				Managers.state.unit_spawner:freeze_unit_extensions(unit, t, data)
+
 				return data, result
 			end,
 			update = function (unit, dt, context, t, data)
@@ -1221,7 +1375,7 @@ DeathReactions.templates = {
 				return
 			end,
 			start = function (unit, context, t, killing_blow, is_server)
-				if not is_hot_join_sync(killing_blow) then
+				if not is_hot_join_sync(killing_blow) and ScriptUnit.has_extension(unit, "dialogue_system") then
 					SurroundingAwareSystem.add_event(unit, "player_death", DialogueSettings.death_discover_distance, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)
 				end
 
@@ -1235,6 +1389,7 @@ DeathReactions.templates = {
 				return
 			end,
 			start = function (unit, context, t, killing_blow, is_server)
+				Managers.state.game_mode:level_object_killed(unit, killing_blow)
 				Unit.set_flow_variable(unit, "current_health", 0)
 				Unit.flow_event(unit, "lua_on_death")
 			end,
@@ -1247,7 +1402,53 @@ DeathReactions.templates = {
 				return
 			end,
 			start = function (unit, context, t, killing_blow, is_server)
+				Managers.state.game_mode:level_object_killed(unit, killing_blow)
 				Unit.flow_event(unit, "lua_on_death")
+			end,
+			update = function (unit, dt, context, t, data)
+				return
+			end
+		}
+	},
+	standard = {
+		unit = {
+			pre_start = function (unit, context, t, killing_blow)
+				return
+			end,
+			start = function (unit, context, t, killing_blow, is_server)
+				local data = {
+					despawn_after_time = t + 8
+				}
+				local standard_extension = ScriptUnit.has_extension(unit, "ai_supplementary_system")
+
+				standard_extension:on_death(killing_blow[DamageDataIndex.ATTACKER])
+
+				local projectile_linker_system = Managers.state.entity:system("projectile_linker_system")
+
+				projectile_linker_system:clear_linked_projectiles(unit)
+
+				return data, DeathReactions.IS_NOT_DONE
+			end,
+			update = function (unit, dt, context, t, data)
+				if data.despawn_after_time and data.despawn_after_time < t then
+					Managers.state.unit_spawner:mark_for_deletion(unit)
+
+					return DeathReactions.IS_DONE
+				end
+
+				return DeathReactions.IS_NOT_DONE
+			end
+		},
+		husk = {
+			pre_start = function (unit, context, t, killing_blow)
+				return
+			end,
+			start = function (unit, context, t, killing_blow, is_server)
+				local standard_extension = ScriptUnit.has_extension(unit, "ai_supplementary_system")
+
+				standard_extension:on_death(killing_blow[DamageDataIndex.ATTACKER])
+
+				return nil, DeathReactions.IS_DONE
 			end,
 			update = function (unit, dt, context, t, data)
 				return
@@ -1439,9 +1640,26 @@ DeathReactions.templates = {
 
 						local position = Unit.local_position(unit, 0)
 						local nav_world = Managers.state.entity:system("ai_system"):nav_world()
-						local position_on_navmesh = LocomotionUtils.get_close_pos_below_on_mesh(nav_world, position, 4)
+						local position_on_navmesh = LocomotionUtils.get_close_pos_below_on_mesh(nav_world, position, 4, 1, 30)
 
 						if not position_on_navmesh then
+							local template_name = "nurgle_liquid"
+							local template = LiquidAreaDamageTemplates.templates[template_name]
+							local hit_player_func = template.hit_player_function
+							local sides = Managers.state.side:sides()
+
+							for k = 1, #sides, 1 do
+								local side = sides[k]
+								local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
+								local num_player_units = #player_and_bot_units
+
+								for i = 1, num_player_units, 1 do
+									local player_unit = player_and_bot_units[i]
+
+									hit_player_func(player_unit, player_and_bot_units)
+								end
+							end
+
 							result = DeathReactions.IS_DONE
 						else
 							local rotation = Unit.local_rotation(unit, 0)
@@ -1663,6 +1881,77 @@ DeathReactions.templates = {
 				return nil, DeathReactions.IS_DONE
 			end
 		}
+	},
+	minotaur = {
+		unit = {
+			pre_start = function (unit, context, t, killing_blow)
+				ai_default_unit_pre_start(unit, context, t, killing_blow)
+			end,
+			start = function (unit, context, t, killing_blow, is_server)
+				local attacker = killing_blow[DamageDataIndex.ATTACKER]
+				local player = Managers.player:unit_owner(attacker)
+
+				if player then
+					kill_minotaur_under_oak_challenge(player, unit)
+				end
+
+				ungor_archer_kill_minotaur_challenge(attacker)
+
+				return DeathReactions.templates.ai_default.unit.start(unit, context, t, killing_blow, is_server)
+			end,
+			update = function (unit, dt, context, t, data)
+				local result = ai_default_unit_update(unit, dt, context, t, data)
+
+				return result
+			end
+		},
+		husk = {
+			pre_start = function (unit, context, t, killing_blow)
+				ai_default_husk_pre_start(unit, context, t, killing_blow)
+			end,
+			start = function (unit, context, t, killing_blow, is_server)
+				return DeathReactions.templates.ai_default.husk.start(unit, context, t, killing_blow, is_server)
+			end,
+			update = function (unit, dt, context, t, data)
+				local result = ai_default_husk_update(unit, dt, context, t, data)
+
+				return result
+			end
+		}
+	},
+	gor = {
+		unit = {
+			pre_start = function (unit, context, t, killing_blow)
+				ai_default_unit_pre_start(unit, context, t, killing_blow)
+			end,
+			start = function (unit, context, t, killing_blow, is_server)
+				local damage_type = killing_blow[DamageDataIndex.DAMAGE_TYPE]
+
+				if damage_type == "warpfire" or damage_type == "warpfire_ground" then
+					gors_killed_by_warpfire_challenge()
+				end
+
+				return DeathReactions.templates.ai_default.unit.start(unit, context, t, killing_blow, is_server)
+			end,
+			update = function (unit, dt, context, t, data)
+				local result = ai_default_unit_update(unit, dt, context, t, data)
+
+				return result
+			end
+		},
+		husk = {
+			pre_start = function (unit, context, t, killing_blow)
+				ai_default_husk_pre_start(unit, context, t, killing_blow)
+			end,
+			start = function (unit, context, t, killing_blow, is_server)
+				return DeathReactions.templates.ai_default.husk.start(unit, context, t, killing_blow, is_server)
+			end,
+			update = function (unit, dt, context, t, data)
+				local result = ai_default_husk_update(unit, dt, context, t, data)
+
+				return result
+			end
+		}
 	}
 }
 
@@ -1679,15 +1968,10 @@ end
 DeathReactions._add_ai_killed_by_player_telemetry = function (victim_unit, breed_name, player_unit, player, damage_type, weapon_name, death_hit_zone)
 	local network_manager = Managers.state.network
 	local is_server = network_manager.is_server
-	local local_player = player.local_player
-	local is_bot = player.bot_player
+	local player_position = POSITION_LOOKUP[player_unit]
+	local victim_position = POSITION_LOOKUP[victim_unit]
 
-	if (is_bot and is_server) or local_player then
-		local player_position = POSITION_LOOKUP[player_unit]
-		local victim_position = POSITION_LOOKUP[victim_unit]
-
-		Managers.telemetry.events:player_killed_ai(player, player_position, victim_position, breed_name, weapon_name, damage_type, death_hit_zone)
-	end
+	Managers.telemetry.events:player_killed_ai(player, player_position, victim_position, breed_name, weapon_name, damage_type, death_hit_zone)
 end
 
 return

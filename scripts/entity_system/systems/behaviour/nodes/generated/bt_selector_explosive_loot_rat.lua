@@ -81,7 +81,11 @@ BTSelector_explosive_loot_rat.run = function (self, unit, blackboard, t, dt)
 	end
 
 	local node_stagger = children[4]
-	local condition_result = BTConditions.stagger(blackboard) and not blackboard.dodge_damage_success
+	local condition_result = nil
+
+	if blackboard.stagger then
+		condition_result = not blackboard.stagger_prohibited
+	end
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_stagger, "aborted")
@@ -159,13 +163,13 @@ BTSelector_explosive_loot_rat.run = function (self, unit, blackboard, t, dt)
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_alerted = children[7]
-	local condition_result = unit_alive(blackboard.target_unit)
+	local node_idle = children[7]
+	local condition_result = not unit_alive(blackboard.target_unit)
 
 	if condition_result then
-		self:set_running_child(unit, blackboard, t, node_alerted, "aborted")
+		self:set_running_child(unit, blackboard, t, node_idle, "aborted")
 
-		local result, evaluate = node_alerted:run(unit, blackboard, t, dt)
+		local result, evaluate = node_idle:run(unit, blackboard, t, dt)
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -174,15 +178,15 @@ BTSelector_explosive_loot_rat.run = function (self, unit, blackboard, t, dt)
 		if result ~= "failed" then
 			return result, evaluate
 		end
-	elseif node_alerted == child_running then
+	elseif node_idle == child_running then
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_idle = children[8]
+	local node_fallback_idle = children[8]
 
-	self:set_running_child(unit, blackboard, t, node_idle, "aborted")
+	self:set_running_child(unit, blackboard, t, node_fallback_idle, "aborted")
 
-	local result, evaluate = node_idle:run(unit, blackboard, t, dt)
+	local result, evaluate = node_fallback_idle:run(unit, blackboard, t, dt)
 
 	if result ~= "running" then
 		self:set_running_child(unit, blackboard, t, nil, result)

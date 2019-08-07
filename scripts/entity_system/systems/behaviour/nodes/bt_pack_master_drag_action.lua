@@ -143,8 +143,9 @@ end
 BTPackMasterDragAction.safe_to_hoist = function (self, unit, blackboard)
 	local rat_pos = POSITION_LOOKUP[unit]
 	local vector3_distance_squared = Vector3.distance_squared
-	local player_and_bot_positions = PLAYER_AND_BOT_POSITIONS
-	local player_and_bot_units = PLAYER_AND_BOT_UNITS
+	local side = blackboard.side
+	local player_and_bot_positions = side.ENEMY_PLAYER_AND_BOT_POSITIONS
+	local player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
 	local safe_dist_squared = blackboard.action.safe_hoist_dist_squared_from_humans
 
 	for k, enemy_unit in ipairs(player_and_bot_units) do
@@ -303,11 +304,14 @@ function find_position_to_avoid(unit, blackboard, test)
 	local position = POSITION_LOOKUP[unit]
 	local threat_vec = Vector3(0, 0, 0)
 	local threatening_players_n = 0
+	local side = blackboard.side
+	local ENEMY_PLAYER_AND_BOT_UNITS = side.ENEMY_PLAYER_AND_BOT_UNITS
+	local ENEMY_PLAYER_AND_BOT_POSITIONS = side.ENEMY_PLAYER_AND_BOT_POSITIONS
 
-	for idx, enemy_unit in pairs(PLAYER_AND_BOT_UNITS) do
+	for idx, enemy_unit in pairs(ENEMY_PLAYER_AND_BOT_UNITS) do
 		if blackboard.drag_target_unit ~= enemy_unit and not ScriptUnit.extension(enemy_unit, "status_system"):is_disabled() then
 			threatening_players_n = threatening_players_n + 1
-			local enemy_pos = PLAYER_AND_BOT_POSITIONS[idx]
+			local enemy_pos = ENEMY_PLAYER_AND_BOT_POSITIONS[idx]
 			local distance_sq = Vector3.distance_squared(enemy_pos, position)
 
 			if distance_sq > 0 and distance_sq < max_distance_sq then

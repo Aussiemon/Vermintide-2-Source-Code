@@ -67,6 +67,11 @@ BackendManagerPlayFab.init = function (self, signin_name, mirror_name, server_qu
 
 		self:_load_save_data(local_backend_data, local_backend_save_version)
 	end
+
+	self._loadout_interface_overrides = {}
+	self._current_loadout_interface_override = nil
+	self._talents_interface_overrides = {}
+	self._current_talents_interface_override = nil
 end
 
 BackendManagerPlayFab.is_local = function (self)
@@ -323,6 +328,67 @@ BackendManagerPlayFab.stop_benchmark = function (self)
 	self._benchmark_backend = nil
 end
 
+BackendManagerPlayFab.add_loadout_interface_override = function (self, override_name, interface_name_by_slot)
+	self._loadout_interface_overrides[override_name] = interface_name_by_slot
+end
+
+BackendManagerPlayFab.set_loadout_interface_override = function (self, override_name)
+	local current_name = self._current_loadout_interface_override
+	local verified_name = self._loadout_interface_overrides[override_name] and override_name
+	local changed = false
+
+	if verified_name ~= current_name then
+		self._current_loadout_interface_override = verified_name
+		changed = true
+	end
+
+	return changed, current_name, verified_name
+end
+
+BackendManagerPlayFab.get_loadout_interface_by_slot = function (self, slot_name)
+	local override_name = self._current_loadout_interface_override
+
+	if not override_name then
+		return self._interfaces.items
+	end
+
+	local override = self._loadout_interface_overrides[override_name]
+	local interface_name = override[slot_name]
+	local interface = interface_name and self._interfaces[interface_name]
+
+	return interface
+end
+
+BackendManagerPlayFab.add_talents_interface_override = function (self, override_name, interface_name)
+	self._talents_interface_overrides[override_name] = interface_name
+end
+
+BackendManagerPlayFab.set_talents_interface_override = function (self, override_name)
+	local current_name = self._current_talents_interface_override
+	local verified_name = self._talents_interface_overrides[override_name] and override_name
+	local changed = false
+
+	if verified_name ~= current_name then
+		self._current_talents_interface_override = verified_name
+		changed = true
+	end
+
+	return changed
+end
+
+BackendManagerPlayFab.get_talents_interface = function (self)
+	local override_name = self._current_talents_interface_override
+
+	if not override_name then
+		return self._interfaces.talents
+	end
+
+	local interface_name = self._talents_interface_overrides[override_name]
+	local interface = self._interfaces[interface_name]
+
+	return interface
+end
+
 BackendManagerPlayFab._update_state = function (self)
 	local settings = GameSettingsDevelopment.backend_settings
 	local signin = self._backend_signin
@@ -358,11 +424,15 @@ BackendManagerPlayFab._update_state = function (self)
 	end
 end
 
+function string_is_url(str)
+	return string.starts_with(str, "http://") or string.starts_with(str, "https://")
+end
+
 BackendManagerPlayFab._update_error_handling = function (self, dt)
 	if #self._errors > 0 and not self._error_dialog and not self._is_disconnected and not DEDICATED_SERVER then
 		local error_data = table.remove(self._errors, 1)
 
-		self:_show_error_dialog(error_data.reason, error_data.details)
+		self:_show_error_dialog(error_data.reason, error_data.details, error_data.optional_error_topic, error_data.optional_url_button)
 	end
 
 	if self._error_dialog ~= nil and not Managers.popup:has_popup_with_id(self._error_dialog) then
@@ -378,7 +448,15 @@ BackendManagerPlayFab._update_error_handling = function (self, dt)
 
 			self._error_dialog = nil
 
-			if result == self._button_disconnected then
+			if type(result) == "table" then
+				if result.open_url and string_is_url(result.open_url) then
+					Application.open_url_in_browser(result.open_url)
+				end
+
+				if result.application_quit then
+					Application.quit()
+				end
+			elseif result == self._button_disconnected then
 				self._is_disconnected = true
 			elseif result == self._button_retry then
 				self._is_disconnected = true
@@ -502,6 +580,18 @@ BackendManagerPlayFab.playfab_error = function (self, reason, details)
 	self:_post_error(error_data)
 end
 
+BackendManagerPlayFab.missing_required_dlc_error = function (self, details, optional_error_topic, optional_url_button)
+	local reason = BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_MISSING_REQUIRED_DLC
+	local error_data = {
+		reason = reason,
+		details = details,
+		optional_error_topic = optional_error_topic,
+		optional_url_button = optional_url_button
+	}
+
+	self:_post_error(error_data, nil, true)
+end
+
 BackendManagerPlayFab.signed_in = function (self)
 	local signin = self._backend_signin
 
@@ -534,8 +624,10 @@ BackendManagerPlayFab.error_string = function (self)
 	end
 end
 
-BackendManagerPlayFab._post_error = function (self, error_data, crashify_override)
-	ScriptApplication.send_to_crashify("Backend_Error", "ERROR: %s", crashify_override or error_data.details)
+BackendManagerPlayFab._post_error = function (self, error_data, crashify_override, ignore_crashify)
+	if not ignore_crashify then
+		ScriptApplication.send_to_crashify("Backend_Error", "ERROR: %s", crashify_override or error_data.details)
+	end
 
 	local queue = self._data_server_queue
 
@@ -556,7 +648,7 @@ BackendManagerPlayFab._post_error = function (self, error_data, crashify_overrid
 end
 
 BackendManagerPlayFab._is_fatal = function (self, reason)
-	local harmless = reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ACHIEVEMENT_REWARD_CLAIMED or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_QUEST_REFRESH_UNAVAILABLE or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_NON_FATAL_ERROR
+	local harmless = reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ACHIEVEMENT_REWARD_CLAIMED or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_QUEST_REFRESH_UNAVAILABLE or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_NON_FATAL_STORE_ERROR
 
 	return not harmless
 end
@@ -595,12 +687,14 @@ BackendManagerPlayFab._reason_localize_key = function (self, reason)
 			return "backend_err_request_timeout"
 		elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_UNSUPPORTED_VERSION_ERROR then
 			return "backend_err_unsupported_version"
+		elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_MISSING_REQUIRED_DLC then
+			return nil
 		else
 			return "backend_err_connecting"
 		end
 	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_EAC_ERROR or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_COMMIT_TIMEOUT then
 		return ERROR_CODES[reason]
-	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ACHIEVEMENT_REWARD_CLAIMED or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_QUEST_REFRESH_UNAVAILABLE or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_NON_FATAL_ERROR then
+	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ACHIEVEMENT_REWARD_CLAIMED or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_QUEST_REFRESH_UNAVAILABLE or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_NON_FATAL_STORE_ERROR then
 		return ERROR_CODES[reason]
 	else
 		return "backend_err_network"
@@ -609,26 +703,26 @@ end
 
 BackendManagerPlayFab._format_error_message_console = function (self, reason)
 	local button = {
-		id = self._button_retry,
+		result = self._button_retry,
 		text = Localize("button_ok")
 	}
 
 	return self:_reason_localize_key(reason), button
 end
 
-BackendManagerPlayFab._format_error_message_windows = function (self, reason)
+BackendManagerPlayFab._format_error_message_windows = function (self, reason, optional_url_button)
 	local error_text = self:_reason_localize_key(reason)
-	local button_1, button_2 = nil
+	local button_1, button_2, button_3 = nil
 
 	if not self:profiles_loaded() then
 		button_1 = {
-			id = self._button_quit,
+			result = self._button_quit,
 			text = Localize("menu_quit")
 		}
 
 		if GameSettingsDevelopment.backend_settings.allow_local then
 			button_2 = {
-				id = self._button_local_backend,
+				result = self._button_local_backend,
 				text = Localize("backend_button_local")
 			}
 		end
@@ -636,46 +730,70 @@ BackendManagerPlayFab._format_error_message_windows = function (self, reason)
 		print("backend error", reason, ERROR_CODES[reason])
 	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_EAC_ERROR or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_COMMIT_TIMEOUT then
 		button_1 = {
-			id = self._button_quit,
+			result = self._button_quit,
 			text = Localize("menu_quit")
 		}
-	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ACHIEVEMENT_REWARD_CLAIMED or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_QUEST_REFRESH_UNAVAILABLE or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_NON_FATAL_ERROR then
+	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ACHIEVEMENT_REWARD_CLAIMED or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_QUEST_REFRESH_UNAVAILABLE or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_NON_FATAL_STORE_ERROR then
 		button_1 = {
-			id = self._button_ok,
+			result = self._button_ok,
 			text = Localize("button_ok")
 		}
 	else
 		button_1 = {
-			id = self._button_disconnected,
+			result = self._button_disconnected,
 			text = Localize("button_ok")
 		}
 	end
 
-	return error_text, button_1, button_2
+	if optional_url_button then
+		local url_button = {
+			result = {
+				application_quit = true,
+				open_url = optional_url_button.url
+			},
+			text = optional_url_button.text
+		}
+
+		if button_2 then
+			button_3 = url_button
+		elseif button_1 then
+			button_2 = url_button
+		else
+			button_1 = url_button
+		end
+	end
+
+	return error_text, button_1, button_2, button_3
 end
 
-BackendManagerPlayFab._show_error_dialog = function (self, reason, details_message)
+BackendManagerPlayFab._show_error_dialog = function (self, reason, details_message, optional_error_topic, optional_url_button)
 	print(string.format("[BackendManagerPlayFab] Showing error dialog: %q, %q", reason or "nil", details_message or "nil"))
 
-	local error_topic = Localize("backend_error_topic")
-	local error_text, button_1, button_2 = nil
+	local error_topic = optional_error_topic or Localize("backend_error_topic")
+	local error_text, button_1, button_2, button_3 = nil
 
 	if PLATFORM == "xb1" or PLATFORM == "ps4" then
 		error_text, button_1 = self:_format_error_message_console(reason)
 	else
-		error_text, button_1, button_2 = self:_format_error_message_windows(reason)
+		error_text, button_1, button_2, button_3 = self:_format_error_message_windows(reason, optional_url_button)
 	end
 
-	local localized_error_text = Localize(error_text)
+	local localized_error_text = error_text and Localize(error_text)
 
-	if details_message and PLATFORM == "win32" then
-		localized_error_text = localized_error_text .. " : " .. details_message
+	if PLATFORM == "win32" then
+		if localized_error_text and details_message then
+			localized_error_text = localized_error_text .. " : " .. details_message
+		elseif details_message then
+			localized_error_text = details_message
+		end
 	end
 
-	if button_2 then
-		self._error_dialog = Managers.popup:queue_popup(localized_error_text, error_topic, button_1.id, button_1.text, button_2.id, button_2.text)
+	if button_3 then
+		self._error_dialog = Managers.popup:queue_popup(localized_error_text, error_topic, button_1.result, button_1.text, button_2.result, button_2.text, button_3.result, button_3.text)
+	elseif button_2 then
+		self._error_dialog = Managers.popup:queue_popup(localized_error_text, error_topic, button_1.result, button_1.text, button_2.result, button_2.text)
 	else
-		self._error_dialog = Managers.popup:queue_popup(localized_error_text, error_topic, button_1.id, button_1.text)
+		self._error_dialog = Managers.popup:queue_popup(localized_error_text, error_topic, button_1.result, button_1.text)
 	end
 end
 
@@ -893,16 +1011,6 @@ BackendManagerPlayFab._create_items_interface = function (self, settings, force_
 	end
 end
 
-BackendManagerPlayFab._create_boons_interface = function (self, settings, force_local)
-	if settings.quests_enabled then
-		if force_local then
-			self._interfaces.boons = BackendInterfaceBoonsLocal:new(self._save_data)
-		else
-			self._interfaces.boons = BackendInterfaceBoonsLocal:new(self._save_data)
-		end
-	end
-end
-
 BackendManagerPlayFab._create_quests_interface = function (self, settings, force_local)
 	if force_local then
 		self._interfaces.quests = BackendInterfaceQuestsLocal:new(self._save_data)
@@ -1101,6 +1209,19 @@ BackendManagerPlayFab._cb_backend_localizations_loaded = function (self, localiz
 
 		localizer:append_backend_localizations(localizations)
 	end
+end
+
+BackendManagerPlayFab.player_id = function (self)
+	local signin = self._backend_signin
+
+	if not signin then
+		return "-"
+	end
+
+	local result = signin:get_signin_result()
+	local playfab_id = result.PlayFabId
+
+	return playfab_id
 end
 
 return

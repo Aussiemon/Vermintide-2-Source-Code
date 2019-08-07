@@ -9,7 +9,10 @@ local data_fields = {
 	"HIT_RAGDOLL_ACTOR_NAME",
 	"DAMAGING_UNIT",
 	"HIT_REACT_TYPE",
-	"CRITICAL_HIT"
+	"CRITICAL_HIT",
+	"FIRST_HIT",
+	"TOTAL_HITS",
+	"BACKSTAB_MULTIPLIER"
 }
 DamageDataIndex = {}
 local DamageDataIndex = DamageDataIndex
@@ -46,7 +49,8 @@ GenericHealthExtension.init = function (self, extension_init_context, unit, exte
 	self.damage = extension_init_data.damage or 0
 	self._recent_damage_type = nil
 	self._recent_hit_react_type = nil
-	self._damage_cap_per_hit = Unit.get_data(unit, "damage_cap_per_hit") or health
+	self._damage_cap_per_hit = extension_init_data.damage_cap_per_hit or Unit.get_data(unit, "damage_cap_per_hit") or health
+	self.last_damage_data = {}
 
 	self:set_max_health(health)
 
@@ -102,8 +106,11 @@ GenericHealthExtension.hot_join_sync = function (self, sender)
 			local is_dead = true
 			local is_critical_strike = false
 			local added_dot = false
+			local first_hit = false
+			local total_hits = 0
+			local backstab_multiplier = 1
 
-			network_transmit:send_rpc("rpc_add_damage", sender, go_id, is_level_unit, go_id, is_level_unit, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot)
+			network_transmit:send_rpc("rpc_add_damage", sender, go_id, is_level_unit, go_id, is_level_unit, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 		end
 	end
 end
@@ -153,7 +160,7 @@ GenericHealthExtension.set_max_health = function (self, health)
 	end
 end
 
-GenericHealthExtension._add_to_damage_history_buffer = function (self, unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
+GenericHealthExtension._add_to_damage_history_buffer = function (self, unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, first_hit, total_hits, backstab_multiplier)
 	local hit_position_table = (hit_position and {
 		hit_position.x,
 		hit_position.y,
@@ -180,8 +187,11 @@ GenericHealthExtension._add_to_damage_history_buffer = function (self, unit, att
 	temp_table[DamageDataIndex.DAMAGING_UNIT] = damaging_unit or "n/a"
 	temp_table[DamageDataIndex.HIT_REACT_TYPE] = hit_react_type or "light"
 	temp_table[DamageDataIndex.CRITICAL_HIT] = is_critical_strike or false
+	temp_table[DamageDataIndex.FIRST_HIT] = first_hit or false
+	temp_table[DamageDataIndex.TOTAL_HITS] = total_hits or 0
+	temp_table[DamageDataIndex.BACKSTAB_MULTIPLIER] = backstab_multiplier or false
 
-	pdArray.push_back11(damage_queue, unpack(temp_table))
+	pdArray.push_back14(damage_queue, unpack(temp_table))
 
 	return temp_table
 end
@@ -190,23 +200,49 @@ GenericHealthExtension._should_die = function (self)
 	return self.health <= self.damage
 end
 
-GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot)
+GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 	local unit = self.unit
 	local network_manager = Managers.state.network
 	local unit_id, is_level_unit = network_manager:game_object_or_level_id(unit)
-	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
+	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, first_hit, total_hits, backstab_multiplier)
 
-	StatisticsUtil.register_damage(unit, damage_table, self.statistics_db)
 	fassert(damage_type, "No damage_type!")
 
 	self._recent_damage_type = damage_type
 	self._recent_hit_react_type = hit_react_type
 
+	if damage_type ~= "temporary_health_degen" and damage_type ~= "knockdown_bleed" then
+		attacker_unit = AiUtils.get_actual_attacker_unit(attacker_unit)
+
+		if AiUtils.unit_alive(attacker_unit) then
+			local breed = Unit.get_data(attacker_unit, "breed")
+
+			StatisticsUtil.register_damage(unit, damage_table, self.statistics_db)
+
+			local ai_suicide = attacker_unit == unit and breed and not breed.is_player
+
+			if not ai_suicide and (attacker_unit ~= unit or damage_type ~= "cutting") and breed then
+				local last_damage_data = self.last_damage_data
+				last_damage_data.breed = breed
+				last_damage_data.damage_type = damage_type
+				local player = Managers.player:owner(attacker_unit)
+
+				if player then
+					last_damage_data.attacker_unique_id = player:unique_id()
+					last_damage_data.attacker_side = Managers.state.side.side_by_unit[attacker_unit]
+				else
+					last_damage_data.attacker_unique_id = nil
+					last_damage_data.attacker_side = nil
+				end
+			end
+		end
+	end
+
 	if ScriptUnit.has_extension(attacker_unit, "hud_system") then
 		DamageUtils.handle_hit_indication(attacker_unit, unit, damage_amount, hit_zone_name, added_dot)
 	end
 
-	if not self.is_invincible and not self.dead then
+	if not self:get_is_invincible() and not self.dead then
 		self.damage = self.damage + math.min(damage_amount, self._damage_cap_per_hit)
 
 		if self:_should_die() and (self.is_server or not unit_id) then
@@ -216,10 +252,10 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 		end
 	end
 
-	self:_sync_out_damage(attacker_unit, unit_id, is_level_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, hit_react_type, is_critical_strike, added_dot)
+	self:_sync_out_damage(attacker_unit, unit_id, is_level_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 end
 
-GenericHealthExtension._sync_out_damage = function (self, attacker_unit, unit_id, is_level_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, hit_react_type, is_critical_strike, added_dot)
+GenericHealthExtension._sync_out_damage = function (self, attacker_unit, unit_id, is_level_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 	if self.is_server and unit_id then
 		local network_manager = Managers.state.network
 		local attacker_unit_id, attacker_is_level_unit = network_manager:game_object_or_level_id(attacker_unit)
@@ -232,8 +268,11 @@ GenericHealthExtension._sync_out_damage = function (self, attacker_unit, unit_id
 		local is_dead = self.dead or false
 		is_critical_strike = is_critical_strike or false
 		added_dot = added_dot or false
+		first_hit = first_hit or false
+		total_hits = total_hits or 0
+		backstab_multiplier = backstab_multiplier or 1
 
-		network_transmit:send_rpc_clients("rpc_add_damage", unit_id, is_level_unit, attacker_unit_id, attacker_is_level_unit, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot)
+		network_transmit:send_rpc_clients("rpc_add_damage", unit_id, is_level_unit, attacker_unit_id, attacker_is_level_unit, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 	end
 end
 
@@ -287,6 +326,20 @@ end
 
 GenericHealthExtension.recently_damaged = function (self)
 	return self._recent_damage_type, self._recent_hit_react_type
+end
+
+GenericHealthExtension.get_is_invincible = function (self)
+	local unit = self.unit
+	local has_invincibility_buff = false
+	local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+
+	if buff_extension then
+		has_invincibility_buff = buff_extension:has_buff_perk("invincibility")
+	end
+
+	local dlc_is_invincible = false
+
+	return self.is_invincible or has_invincibility_buff or dlc_is_invincible
 end
 
 return

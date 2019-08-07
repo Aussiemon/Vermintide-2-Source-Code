@@ -7,7 +7,6 @@ BTQuickTeleportAction.init = function (self, ...)
 end
 
 BTQuickTeleportAction.name = "BTQuickTeleportAction"
-local player_and_bot_units = PLAYER_AND_BOT_UNITS
 
 local function randomize(event)
 	if type(event) == "table" then
@@ -111,8 +110,11 @@ BTQuickTeleportAction.anim_cb_teleport_start_finished = function (self, unit, bl
 	self:play_teleport_effect(unit, blackboard, entrance_position, teleport_position)
 
 	if blackboard.action.push_close_players then
-		for i = 1, #player_and_bot_units, 1 do
-			local target_unit = player_and_bot_units[i]
+		local side = blackboard.side
+		local ENEMY_PLAYER_AND_BOT_UNITS = side.ENEMY_PLAYER_AND_BOT_UNITS
+
+		for i = 1, #ENEMY_PLAYER_AND_BOT_UNITS, 1 do
+			local target_unit = ENEMY_PLAYER_AND_BOT_UNITS[i]
 
 			self:push_close_players(unit, blackboard, entrance_position, target_unit)
 		end

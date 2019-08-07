@@ -184,27 +184,14 @@ CutsceneUI.set_player_input_enabled = function (self, enabled)
 	local input_manager = self.input_manager
 
 	if enabled then
-		if Managers.chat:chat_is_focused() then
-			input_manager:block_device_except_service("chat_input", "keyboard")
-			input_manager:block_device_except_service("chat_input", "mouse")
-			input_manager:block_device_except_service("chat_input", "gamepad")
-		else
-			input_manager:device_unblock_all_services("keyboard")
-			input_manager:device_unblock_all_services("mouse")
-			input_manager:device_unblock_all_services("gamepad")
-		end
+		input_manager:device_unblock_all_services("keyboard")
+		input_manager:device_unblock_all_services("mouse")
+		input_manager:device_unblock_all_services("gamepad")
 	else
 		self.ingame_ui:handle_transition("close_active")
-
-		if Managers.chat:chat_is_focused() then
-			input_manager:block_device_except_service("chat_input", "keyboard")
-			input_manager:block_device_except_service("chat_input", "mouse")
-			input_manager:block_device_except_service("chat_input", "gamepad")
-		else
-			input_manager:block_device_except_service("cutscene", "keyboard")
-			input_manager:block_device_except_service("cutscene", "mouse")
-			input_manager:block_device_except_service("cutscene", "gamepad")
-		end
+		input_manager:block_device_except_service("cutscene", "keyboard")
+		input_manager:block_device_except_service("cutscene", "mouse")
+		input_manager:block_device_except_service("cutscene", "gamepad")
 	end
 end
 

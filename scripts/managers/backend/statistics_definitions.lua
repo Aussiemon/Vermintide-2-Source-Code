@@ -245,207 +245,71 @@ player.storm_vermin_warlord_kills_enemies = {
 	database_name = "storm_vermin_warlord_kills_enemies",
 	source = "player_data"
 }
-player.bogenhafen_city_no_braziers_lit = {
+player.military_statue_kill_chaos_warriors_cata = {
 	value = 0,
-	database_name = "bogenhafen_city_no_braziers_lit",
+	database_name = "military_statue_kill_chaos_warriors_cata",
 	source = "player_data"
 }
-player.bogenhafen_city_torch_not_picked_up = {
+player.halescourge_tornado_enemies_cata = {
 	value = 0,
-	database_name = "bogenhafen_city_torch_not_picked_up",
+	database_name = "halescourge_tornado_enemies_cata",
 	source = "player_data"
 }
-player.bogenhafen_city_fast_switches = {
+player.forest_fort_kill_cannonball_cata = {
 	value = 0,
-	database_name = "bogenhafen_city_fast_switches",
+	database_name = "forest_fort_kill_cannonball_cata",
 	source = "player_data"
 }
-player.bogenhafen_city_all_wine_collected = {
+player.nurgle_bathed_all_cata = {
 	value = 0,
-	database_name = "bogenhafen_city_all_wine_collected",
+	database_name = "nurgle_bathed_all_cata",
 	source = "player_data"
 }
-player.bogenhafen_city_jumping_puzzle = {
+player.catacombs_added_souls_cata = {
 	value = 0,
-	database_name = "bogenhafen_city_jumping_puzzle",
+	database_name = "catacombs_added_souls_cata",
 	source = "player_data"
 }
-player.bogenhafen_slum_no_ratling_damage = {
+player.ussingen_used_no_barrels_cata = {
 	value = 0,
-	database_name = "bogenhafen_slum_no_ratling_damage",
+	database_name = "ussingen_used_no_barrels_cata",
 	source = "player_data"
 }
-player.damage_taken_from_ratling_gunner = {
-	value = 0
-}
-player.bogenhafen_slum_no_windows_broken = {
+player.elven_ruins_speed_event_cata = {
 	value = 0,
-	database_name = "bogenhafen_slum_no_windows_broken",
+	database_name = "elven_ruins_speed_event_cata",
 	source = "player_data"
 }
-player.bogenhafen_slum_find_hidden_stash = {
+player.farmlands_speed_event_cata = {
 	value = 0,
-	database_name = "bogenhafen_slum_find_hidden_stash",
+	database_name = "farmlands_speed_event_cata",
 	source = "player_data"
 }
-player.bogenhafen_slum_jumping_puzzle = {
+player.bell_speed_event_cata = {
 	value = 0,
-	database_name = "bogenhafen_slum_jumping_puzzle",
+	database_name = "bell_speed_event_cata",
 	source = "player_data"
 }
-player.bogenhafen_slum_event_speedrun = {
+player.mines_speed_event_cata = {
 	value = 0,
-	database_name = "bogenhafen_slum_event_speedrun",
+	database_name = "mines_speed_event_cata",
 	source = "player_data"
 }
-player.holly_magnus_barrel_relay_race = {
+player.skittergate_speed_event_cata = {
 	value = 0,
-	database_name = "holly_magnus_barrel_relay_race",
+	database_name = "skittergate_speed_event_cata",
 	source = "player_data"
 }
-player.holly_magnus_barrel_relay_race_hardest = {
+player.exalted_champion_charge_chaos_warrior_cata = {
 	value = 0,
-	database_name = "holly_magnus_barrel_relay_race_hardest",
+	database_name = "exalted_champion_charge_chaos_warrior_cata",
 	source = "player_data"
 }
-player.holly_magnus_secret_room = {
+player.storm_vermin_warlord_kills_enemies_cata = {
 	value = 0,
-	database_name = "holly_magnus_secret_room",
+	database_name = "storm_vermin_warlord_kills_enemies_cata",
 	source = "player_data"
 }
-player.holly_magnus_gutter_runner_treasure = {
-	value = 0,
-	database_name = "holly_magnus_gutter_runner_treasure",
-	source = "player_data"
-}
-player.holly_magnus_gutter_runner_treasure_hardest = {
-	value = 0,
-	database_name = "holly_magnus_gutter_runner_treasure_hardest",
-	source = "player_data"
-}
-player.holly_magnus_rune = {
-	value = 0,
-	database_name = "holly_magnus_rune",
-	source = "player_data"
-}
-player.holly_forest_ambush_synchronized_explosives = {
-	value = 0,
-	database_name = "holly_forest_ambush_synchronized_explosives",
-	source = "player_data"
-}
-player.holly_forest_ambush_synchronized_explosives_hardest = {
-	value = 0,
-	database_name = "holly_forest_ambush_synchronized_explosives_hardest",
-	source = "player_data"
-}
-player.holly_forest_ambush_bretonnian_dance = {
-	value = 0,
-	database_name = "holly_forest_ambush_bretonnian_dance",
-	source = "player_data"
-}
-player.holly_forest_ambush_dragonbane_gem = {
-	value = 0,
-	database_name = "holly_forest_ambush_dragonbane_gem",
-	source = "player_data"
-}
-player.holly_forest_ambush_rune = {
-	value = 0,
-	database_name = "holly_forest_ambush_rune",
-	source = "player_data"
-}
-player.holly_cemetery_sleep = {
-	value = 0,
-	database_name = "holly_cemetery_sleep",
-	source = "player_data"
-}
-player.holly_cemetery_rune = {
-	value = 0,
-	database_name = "holly_cemetery_rune",
-	source = "player_data"
-}
-player.holly_cemetery_bones = {
-	value = 0,
-	database_name = "holly_cemetery_bones",
-	source = "player_data"
-}
-player.holly_cemetery_synchronized_chains = {
-	value = 0,
-	database_name = "holly_cemetery_synchronized_chains",
-	source = "player_data"
-}
-player.holly_cemetery_synchronized_chains_hardest = {
-	value = 0,
-	database_name = "holly_cemetery_synchronized_chains_hardest",
-	source = "player_data"
-}
-player.holly_find_all_runes = {
-	value = 0,
-	database_name = "holly_find_all_runes",
-	source = "player_data"
-}
-player.holly_difficulty_selection_plaza = {
-	value = 1,
-	database_name = "holly_difficulty_selection_plaza",
-	source = "player_data"
-}
-player.holly_kills_we_1h_axe = {
-	value = 0,
-	database_name = "holly_kills_we_1h_axe",
-	source = "player_data"
-}
-player.holly_kills_bw_1h_crowbill = {
-	value = 0,
-	database_name = "holly_kills_bw_1h_crowbill",
-	source = "player_data"
-}
-player.holly_kills_wh_dual_wield_axe_falchion = {
-	value = 0,
-	database_name = "holly_kills_wh_dual_wield_axe_falchion",
-	source = "player_data"
-}
-player.holly_kills_dr_dual_wield_hammers = {
-	value = 0,
-	database_name = "holly_kills_dr_dual_wield_hammers",
-	source = "player_data"
-}
-player.holly_kills_es_dual_wield_hammer_sword = {
-	value = 0,
-	database_name = "holly_kills_es_dual_wield_hammer_sword",
-	source = "player_data"
-}
-player.crawl_total_ales_drunk = {
-	value = 0,
-	database_name = "crawl_total_ales_drunk",
-	source = "player_data"
-}
-local holly_lord_levels = {
-	"warcamp",
-	"skaven_stronghold",
-	"ground_zero",
-	"skittergate"
-}
-local weapon_names = {
-	"we_1h_axe",
-	"bw_1h_crowbill",
-	"wh_dual_wield_axe_falchion",
-	"dr_dual_wield_hammers",
-	"es_dual_wield_hammer_sword"
-}
-
-for i = 1, #holly_lord_levels, 1 do
-	local level_name = holly_lord_levels[i]
-
-	for i = 1, #weapon_names, 1 do
-		local weapon_name = weapon_names[i]
-		local stat_name = "holly_completed_level_" .. level_name .. "_with_" .. weapon_name
-		player[stat_name] = {
-			value = 0,
-			source = "player_data",
-			database_name = stat_name
-		}
-	end
-end
-
 player.bonfire_lit_mines = {
 	value = 0,
 	database_name = "bonfire_lit_mines",
@@ -655,6 +519,16 @@ player.completed_levels = {}
 player.completed_levels_difficulty = {}
 player.completed_career_levels = {}
 player.played_difficulty = {}
+player.completed_daily_quests = {
+	value = 0,
+	database_name = "completed_daily_quests",
+	source = "player_data"
+}
+player.completed_weekly_quests = {
+	value = 0,
+	database_name = "completed_weekly_quests",
+	source = "player_data"
+}
 player.played_levels_weekly_event = {}
 player.completed_weekly_event_difficulty = {}
 player.crafted_items = {
@@ -734,6 +608,9 @@ LevelDifficultyDBNames = {}
 for level_key, level in pairs(LevelSettings) do
 	if table.contains(UnlockableLevels, level_key) then
 		local is_dlc_level = level.dlc_name ~= nil
+
+		print("level display name ", level_key)
+
 		local completed_levels_definition = {
 			value = 0,
 			sync_on_hot_join = true,
@@ -839,6 +716,16 @@ for level_key, level in pairs(LevelSettings) do
 			source = "player_data",
 			database_name = painting_name
 		}
+	end
+end
+
+for _, dlc in pairs(DLCSettings) do
+	local files = dlc.statistics_definitions
+
+	if files then
+		for _, file in ipairs(files) do
+			dofile(file)
+		end
 	end
 end
 

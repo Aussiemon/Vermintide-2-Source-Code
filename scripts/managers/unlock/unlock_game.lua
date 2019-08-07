@@ -1,6 +1,6 @@
 UnlockGame = class(UnlockGame)
 
-UnlockGame.init = function (self, name, app_id, backend_reward_id)
+UnlockGame.init = function (self, name, app_id, backend_reward_id, always_unlocked_game_app_ids)
 	return
 end
 
@@ -9,7 +9,7 @@ UnlockGame.cb_get_inventory_items_done = function (self, info)
 end
 
 UnlockGame.ready = function (self)
-	return
+	return true
 end
 
 UnlockGame.has_error = function (self)

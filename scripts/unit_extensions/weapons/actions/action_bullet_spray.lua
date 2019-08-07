@@ -23,6 +23,8 @@ ActionBulletSpray.init = function (self, world, item_name, is_server, owner_unit
 end
 
 ActionBulletSpray.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
+	ActionBulletSpray.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level)
+
 	local owner_unit = self.owner_unit
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
 	self.power_level = power_level
@@ -35,6 +37,7 @@ ActionBulletSpray.client_owner_start_action = function (self, new_action, t, cha
 		self.used_ammo = false
 	end
 
+	self._spell_proc_time = new_action.spell_proc_time and t + new_action.spell_proc_time
 	local cone_hypotenuse = math.sqrt(SPRAY_RANGE * SPRAY_RANGE + SPRAY_RADIUS * SPRAY_RADIUS)
 	self.CONE_COS_ALPHA = SPRAY_RANGE / cone_hypotenuse
 	local overcharge_type = new_action.overcharge_type
@@ -97,7 +100,7 @@ ActionBulletSpray.client_owner_post_update = function (self, dt, t, world, can_d
 		local breed = Unit.get_data(current_target, "breed")
 		local node = "j_spine"
 
-		if breed then
+		if breed and not breed.is_hero then
 			local rand = math.random()
 			local chance = 1 / #NODES
 			local cumalative_value = 0
@@ -136,6 +139,16 @@ ActionBulletSpray.client_owner_post_update = function (self, dt, t, world, can_d
 	end
 
 	self._target_index = target_index + 1
+
+	self:_check_on_spell_used_proc(t)
+end
+
+ActionBulletSpray._check_on_spell_used_proc = function (self, t)
+	if self._spell_proc_time and self._spell_proc_time <= t then
+		self.buff_extension:trigger_procs("on_spell_used", self.current_action)
+
+		self._spell_proc_time = nil
+	end
 end
 
 ActionBulletSpray.finish = function (self, reason)
@@ -154,6 +167,8 @@ ActionBulletSpray.finish = function (self, reason)
 	if hud_extension then
 		hud_extension.show_critical_indication = false
 	end
+
+	self:_check_on_spell_used_proc(math.huge)
 end
 
 ActionBulletSpray._clear_targets = function (self)
@@ -200,6 +215,8 @@ ActionBulletSpray._select_targets = function (self, world, show_outline)
 	end)
 
 	if result then
+		local side = Managers.state.side.side_by_unit[self.owner_unit]
+		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local num_hits = #result
 		local targets = self.targets
 		local v, q, m = Script.temp_count()
@@ -216,7 +233,7 @@ ActionBulletSpray._select_targets = function (self, world, show_outline)
 				local breed = Unit.get_data(hit_unit, "breed")
 				local dummy = not breed and Unit.get_data(hit_unit, "is_dummy")
 
-				if table.contains(PLAYER_AND_BOT_UNITS, hit_unit) and not ignore_hitting_allies then
+				if table.contains(player_and_bot_units, hit_unit) and not ignore_hitting_allies then
 					if self:_is_infront_player(player_position, player_direction, hit_position) and self:_check_within_cone(player_position, player_direction, hit_unit, true) then
 						targets[#targets + 1] = hit_unit
 						hit_units[hit_unit] = true

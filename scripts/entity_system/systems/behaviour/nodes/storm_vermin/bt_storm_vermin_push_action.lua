@@ -22,6 +22,7 @@ BTStormVerminPushAction.enter = function (self, unit, blackboard, t)
 	blackboard.active_node = BTStormVerminPushAction
 	blackboard.attack_finished = false
 	blackboard.attack_aborted = false
+	blackboard.attack_token = true
 	local network_manager = Managers.state.network
 	local navigation_extension = blackboard.navigation_extension
 
@@ -37,6 +38,17 @@ BTStormVerminPushAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.spawn_to_running = nil
 	blackboard.wake_up_push = 0
+
+	if action.attack_finished_duration then
+		local difficulty = Managers.state.difficulty:get_difficulty()
+		local attack_finished_duration = action.attack_finished_duration[difficulty]
+
+		if attack_finished_duration then
+			blackboard.attack_finished_t = t + Math.random_range(attack_finished_duration[1], attack_finished_duration[2])
+		end
+	end
+
+	AiUtils.add_attack_intensity(target_unit, action, blackboard)
 end
 
 BTStormVerminPushAction.leave = function (self, unit, blackboard, t, reason, destroy)
@@ -45,7 +57,10 @@ BTStormVerminPushAction.leave = function (self, unit, blackboard, t, reason, des
 	blackboard.active_node = nil
 	blackboard.attack_aborted = nil
 	blackboard.attacking_target = nil
+	blackboard.attack_finished = nil
 	blackboard.attack_anim = nil
+	blackboard.attack_finished_t = nil
+	blackboard.attack_token = nil
 end
 
 BTStormVerminPushAction.run = function (self, unit, blackboard, t, dt)
@@ -55,7 +70,7 @@ BTStormVerminPushAction.run = function (self, unit, blackboard, t, dt)
 		network_manager:anim_event(unit, "idle")
 
 		return "done"
-	elseif blackboard.attack_finished then
+	elseif (blackboard.attack_finished_t and blackboard.attack_finished_t < t and blackboard.attack_finished) or (not blackboard.attack_finished_t and blackboard.attack_finished) then
 		return "done"
 	else
 		self:attack(unit, t, dt, blackboard)
@@ -93,6 +108,10 @@ BTStormVerminPushAction.anim_cb_stormvermin_push = function (self, unit, blackbo
 
 		locomotion_extension:add_external_velocity(velocity, action.max_impact_push_speed)
 	end
+end
+
+BTStormVerminPushAction.anim_cb_attack_finished = function (self, unit, blackboard)
+	blackboard.attack_finished = true
 end
 
 return

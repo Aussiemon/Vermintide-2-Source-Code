@@ -6,6 +6,7 @@ local ignored_damage_types = {
 	buff_shared_medpack = true,
 	buff = true,
 	buff_shared_medpack_temp_health = true,
+	push = true,
 	health_degen = true,
 	wounded_dot = true,
 	heal = true,
@@ -62,14 +63,19 @@ HitReactions.templates = {
 				ScriptUnit.extension(unit, "ai_system"):attacked(attacker_unit, t, hit)
 				trigger_enemy_armor_hit_dialogue(unit, attacker_unit, damage_taken, hit)
 			end
+
+			Managers.state.game_mode:ai_hit_by_player(unit, attacker_unit, hit)
 		end,
 		husk = function (unit, dt, context, t, hit)
-			return
+			local attacker_unit = hit[DamageDataIndex.ATTACKER]
+
+			Managers.state.game_mode:ai_hit_by_player(unit, attacker_unit, hit)
 		end
 	},
 	player = {
 		unit = function (unit, dt, context, t, hit)
 			local damage_type = hit[DamageDataIndex.DAMAGE_TYPE]
+			local attacker_unit = hit[DamageDataIndex.ATTACKER]
 
 			if not ignored_damage_types[damage_type] then
 				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
@@ -80,12 +86,14 @@ HitReactions.templates = {
 
 				local attacker = hit[DamageDataIndex.ATTACKER]
 
+				Managers.state.game_mode:player_hit(unit, attacker_unit, hit)
 				trigger_player_friendly_fire_dialogue(unit, attacker)
 			end
 		end,
 		husk = function (unit, dt, context, t, hit)
 			local attacker = hit[DamageDataIndex.ATTACKER]
 
+			Managers.state.game_mode:player_hit(unit, attacker, hit)
 			trigger_player_friendly_fire_dialogue(unit, attacker)
 		end
 	},

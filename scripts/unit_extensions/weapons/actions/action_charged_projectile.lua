@@ -15,6 +15,8 @@ ActionChargedProjectile.init = function (self, world, item_name, is_server, owne
 end
 
 ActionChargedProjectile.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
+	ActionChargedProjectile.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level)
+
 	local owner_unit = self.owner_unit
 	local is_critical_strike = ActionUtils.is_critical_strike(self.owner_unit, new_action, t)
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
@@ -35,6 +37,7 @@ ActionChargedProjectile.client_owner_start_action = function (self, new_action, 
 
 	self.time_to_shoot = t + new_action.fire_time
 	self.extra_buff_shot = false
+	self._spell_proc_time = new_action.spell_proc_time and t + new_action.spell_proc_time
 	local spread_template_override = new_action.spread_template_override
 
 	if spread_template_override then
@@ -47,6 +50,12 @@ ActionChargedProjectile.client_owner_start_action = function (self, new_action, 
 		local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
 
 		inventory_extension:set_loaded_projectile_override(loaded_projectile_settings)
+	end
+
+	local is_spell = new_action.is_spell
+
+	if self.charge_level and self.charge_level >= 1 and is_spell then
+		buff_extension:trigger_procs("on_full_charge_action", new_action, t, chain_action_data)
 	end
 
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
@@ -63,6 +72,16 @@ ActionChargedProjectile.client_owner_post_update = function (self, dt, t, world,
 
 	if self.state == "shooting" then
 		self:_shoot(t)
+	end
+
+	self:_check_on_spell_used_proc(t)
+end
+
+ActionChargedProjectile._check_on_spell_used_proc = function (self, t)
+	if self._spell_proc_time and self._spell_proc_time <= t then
+		self.owner_buff_extension:trigger_procs("on_spell_used", self.current_action)
+
+		self._spell_proc_time = nil
 	end
 end
 
@@ -89,14 +108,17 @@ ActionChargedProjectile._shoot = function (self, t)
 	if self.ammo_extension then
 		local ammo_usage = self.current_action.ammo_usage
 		local _, procced = self.owner_buff_extension:apply_buffs_to_value(0, "not_consume_grenade")
+		local free_grenade_perk = self.owner_buff_extension:has_buff_perk("free_grenade")
 
-		if not procced then
+		if not procced and not free_grenade_perk then
 			self.ammo_extension:use_ammo(ammo_usage)
 		else
 			local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
 
 			inventory_extension:wield_previous_weapon()
 		end
+
+		self.owner_buff_extension:trigger_procs("on_grenade_use")
 	end
 
 	if not Managers.player:owner(self.owner_unit).bot_player then
@@ -250,6 +272,8 @@ ActionChargedProjectile.finish = function (self, reason)
 	if hud_extension then
 		hud_extension.show_critical_indication = false
 	end
+
+	self:_check_on_spell_used_proc(math.huge)
 end
 
 return

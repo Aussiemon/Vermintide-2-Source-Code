@@ -2,8 +2,6 @@ require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTChewAttackAction = class(BTChewAttackAction, BTNode)
 BTChewAttackAction.name = "BTChewAttackAction"
-local PLAYER_POSITIONS = PLAYER_POSITIONS
-local PLAYER_UNITS = PLAYER_UNITS
 
 BTChewAttackAction.init = function (self, ...)
 	BTChewAttackAction.super.init(self, ...)

@@ -299,7 +299,7 @@ local function create_settings_option(scenegraph_id, size, title_text, button_te
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not button_hotspot.disable_button and content.option_text == ""
+						return not button_hotspot.disable_button and (content.option_text == "" or content.option_text == "n/a")
 					end
 				},
 				{

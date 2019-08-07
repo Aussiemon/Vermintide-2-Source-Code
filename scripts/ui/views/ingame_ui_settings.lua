@@ -186,13 +186,14 @@ local transitions = {
 
 		local telemetry_survey_view = self.views.telemetry_survey
 		local level_key = Managers.state.game_mode:level_key()
+		local level_setting = LevelSettings[level_key]
 		local use_survey = TelemetrySettings.send and TelemetrySettings.use_session_survey
 		local is_answered = telemetry_survey_view:is_survey_answered()
 		local is_timed_out = telemetry_survey_view:is_survey_timed_out()
 		local backend_manager = Managers.backend
 
 		local function commit_complete_callback()
-			if (use_survey and (is_answered or is_timed_out)) or not use_survey or level_key == "inn_level" then
+			if (use_survey and (is_answered or is_timed_out)) or not use_survey or level_setting.hub_level then
 				self.quit_game = true
 				self.current_view = nil
 			else
@@ -219,7 +220,13 @@ local transitions = {
 		self.restart_demo = true
 	end,
 	do_return_to_pc_menu = function (self)
-		self.return_to_pc_menu = true
+		local network_server = Managers.state.network.network_server
+
+		if network_server and network_server:are_all_peers_ingame() then
+			self.return_to_pc_menu = true
+		elseif not network_server then
+			self.return_to_pc_menu = true
+		end
 	end,
 	leave_game = function (self)
 		self:_cancel_popup()
@@ -340,7 +347,7 @@ local transitions = {
 	character_selection = function (self)
 		self.current_view = "character_selection"
 	end,
-	initial_character_selection_force = function (self)
+	initial_character_selection_force = function (self, params)
 		self.current_view = "character_selection"
 		self.initial_profile_view = true
 		self.views[self.current_view].exit_to_game = true
@@ -447,7 +454,7 @@ view_settings = {
 				materials[#materials + 1] = video_settings.resource
 			end
 
-			for name, dlc in pairs(DLCSettings) do
+			for _, dlc in pairs(DLCSettings) do
 				local ui_materials_in_inn = dlc.ui_materials_in_inn
 
 				if ui_materials_in_inn then
@@ -455,6 +462,17 @@ view_settings = {
 						materials[#materials + 1] = "material"
 						materials[#materials + 1] = path
 					end
+				end
+			end
+		end
+
+		for _, dlc in pairs(DLCSettings) do
+			local ui_materials = dlc.ui_materials
+
+			if ui_materials then
+				for _, path in ipairs(ui_materials) do
+					materials[#materials + 1] = "material"
+					materials[#materials + 1] = path
 				end
 			end
 		end
@@ -506,7 +524,7 @@ view_settings = {
 				materials[#materials + 1] = video_settings.resource
 			end
 
-			for name, dlc in pairs(DLCSettings) do
+			for _, dlc in pairs(DLCSettings) do
 				local ui_materials_in_inn = dlc.ui_materials_in_inn
 
 				if ui_materials_in_inn then
@@ -514,6 +532,17 @@ view_settings = {
 						materials[#materials + 1] = "material"
 						materials[#materials + 1] = path
 					end
+				end
+			end
+		end
+
+		for _, dlc in pairs(DLCSettings) do
+			local ui_materials = dlc.ui_materials
+
+			if ui_materials then
+				for _, path in ipairs(ui_materials) do
+					materials[#materials + 1] = "material"
+					materials[#materials + 1] = path
 				end
 			end
 		end
@@ -536,7 +565,7 @@ view_settings = {
 		end
 	end,
 	views_function = function (ingame_ui_context)
-		return {
+		local views = {
 			credits_view = CreditsView:new(ingame_ui_context),
 			telemetry_survey = TelemetrySurveyView:new(ingame_ui_context),
 			options_view = OptionsView:new(ingame_ui_context),
@@ -548,6 +577,8 @@ view_settings = {
 			chat_view = (PLATFORM == "win32" and ChatView:new(ingame_ui_context)) or nil,
 			console_friends_view = ConsoleFriendsView:new(ingame_ui_context)
 		}
+
+		return views
 	end,
 	hotkey_mapping = {
 		hotkey_hero = {
@@ -583,6 +614,39 @@ view_settings = {
 			transition_state = "achievements",
 			disable_when_matchmaking_ready = true,
 			in_transition_menu = "hero_view"
+		},
+		hotkey_weave_forge = {
+			disable_when_matchmaking = false,
+			can_interact_func = "weaves_requirements_fulfilled",
+			in_transition = "hero_view_force",
+			view = "hero_view",
+			in_transition_menu = "hero_view",
+			error_message = "matchmaking_ready_interaction_message_weave_forge",
+			transition_state = "weave_forge",
+			disable_when_matchmaking_ready = true,
+			required_dlc = "scorpion"
+		},
+		hotkey_weave_play = {
+			can_interact_func = "weaves_requirements_fulfilled",
+			transition_sub_state = "weave",
+			in_transition = "start_game_view_force",
+			view = "start_game_view",
+			in_transition_menu = "start_game_view",
+			error_message = "matchmaking_ready_interaction_message_weave_play",
+			transition_state = "play",
+			disable_when_matchmaking_ready = true,
+			required_dlc = "scorpion"
+		},
+		hotkey_weave_leaderboard = {
+			disable_when_matchmaking = false,
+			can_interact_func = "weaves_requirements_fulfilled",
+			in_transition = "start_game_view_force",
+			view = "start_game_view",
+			in_transition_menu = "start_game_view",
+			error_message = "matchmaking_ready_interaction_message_weave_leaderboard",
+			transition_state = "leaderboard",
+			disable_when_matchmaking_ready = true,
+			required_dlc = "scorpion"
 		}
 	},
 	blocked_transitions = {}

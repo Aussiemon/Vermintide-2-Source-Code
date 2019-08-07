@@ -50,6 +50,10 @@ OverchargeBarUI._update_overcharge = function (self, player, dt)
 		return
 	end
 
+	if not ScriptUnit.has_extension(player_unit, "overcharge_system") then
+		return
+	end
+
 	local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
 	local equipment = inventory_extension:equipment()
 

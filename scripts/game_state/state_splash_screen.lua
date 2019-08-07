@@ -71,6 +71,8 @@ StateSplashScreen.on_enter = function (self)
 
 	if Managers.popup then
 		Managers.popup:destroy()
+
+		Managers.popup = nil
 	end
 
 	local loading_context = self.parent.loading_context

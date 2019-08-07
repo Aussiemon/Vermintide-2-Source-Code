@@ -17,6 +17,7 @@ DifficultyManager.set_difficulty = function (self, difficulty)
 	self.difficulty = difficulty
 	self.difficulty_rank = DifficultySettings[difficulty].rank
 
+	Managers.mechanism:set_difficulty(difficulty)
 	SET_BREED_DIFFICULTY()
 
 	if self.is_server then
@@ -92,6 +93,28 @@ DifficultyManager.players_below_required_power_level = function (difficulty_key,
 	end
 
 	return players_below_power_level
+end
+
+local player_below_difficulty_rank = {}
+
+DifficultyManager.players_below_difficulty_rank = function (difficulty_key, players)
+	table.clear(player_below_difficulty_rank)
+
+	local difficulty_settings = DifficultySettings[difficulty_key]
+
+	for unique_id, player in pairs(players) do
+		if player:sync_data_active() then
+			local difficulty_id = player:get_data("highest_unlocked_difficulty")
+			local highest_difficulty = NetworkLookup.difficulties[difficulty_id]
+			local highest_difficulty_settings = DifficultySettings[highest_difficulty]
+
+			if highest_difficulty_settings.rank < difficulty_settings.rank then
+				player_below_difficulty_rank[#player_below_difficulty_rank + 1] = player
+			end
+		end
+	end
+
+	return player_below_difficulty_rank
 end
 
 return

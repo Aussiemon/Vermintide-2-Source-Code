@@ -46,6 +46,9 @@ local breed_data = {
 		25,
 		37.5,
 		50,
+		75,
+		75,
+		75,
 		75
 	},
 	bloodlust_health = BreedTweaks.bloodlust_health.skaven_special,
@@ -71,10 +74,6 @@ local breed_data = {
 		head = "headshot"
 	},
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		head = {
 			prio = 1,
 			actors = {
@@ -98,7 +97,7 @@ local breed_data = {
 			}
 		},
 		torso = {
-			prio = 3,
+			prio = 2,
 			actors = {
 				"c_spine2",
 				"c_spine",
@@ -111,7 +110,7 @@ local breed_data = {
 			}
 		},
 		left_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftarm",
 				"c_leftforearm",
@@ -124,7 +123,7 @@ local breed_data = {
 			}
 		},
 		right_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightarm",
 				"c_rightforearm",
@@ -137,7 +136,7 @@ local breed_data = {
 			}
 		},
 		left_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftupleg",
 				"c_leftleg",
@@ -151,7 +150,7 @@ local breed_data = {
 			}
 		},
 		right_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightupleg",
 				"c_rightleg",
@@ -165,7 +164,7 @@ local breed_data = {
 			}
 		},
 		tail = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_tail1",
 				"c_tail2",
@@ -178,6 +177,10 @@ local breed_data = {
 				"j_hips",
 				"j_taill"
 			}
+		},
+		full = {
+			prio = 4,
+			actors = {}
 		},
 		afro = {
 			prio = 5,
@@ -258,14 +261,10 @@ Breeds.skaven_loot_rat = table.create_copy(Breeds.skaven_loot_rat, breed_data)
 local action_data = {
 	smash_door = {
 		unblockable = true,
+		damage = 5,
 		damage_type = "cutting",
 		move_anim = "move_fwd",
-		attack_anim = "smash_door",
-		damage = {
-			5,
-			5,
-			5
-		}
+		attack_anim = "smash_door"
 	},
 	flee = {
 		escaped_players_distance_sq = 10000
@@ -380,6 +379,26 @@ local action_data = {
 				right = {
 					"stagger_fwd_gather"
 				}
+			},
+			{
+				fwd = {
+					"stagger_fwd_gather"
+				},
+				bwd = {
+					"stagger_fwd_gather"
+				},
+				left = {
+					"stagger_fwd_gather"
+				},
+				right = {
+					"stagger_fwd_gather"
+				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
 			},
 			{
 				fwd = {

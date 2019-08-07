@@ -30,7 +30,7 @@ local dismembering_damage_types = {
 }
 HitEffectsChaosMarauder = {
 	default = {
-		husk_hit_effect_name = "fx/impact_blood",
+		husk_hit_effect_name = "fx/impact_blood_chaos",
 		armour_type = "cloth",
 		animations = {
 			"hit_reaction"
@@ -47,7 +47,7 @@ HitEffectsChaosMarauder = {
 		}
 	},
 	default_death = {
-		husk_hit_effect_name = "fx/impact_blood",
+		husk_hit_effect_name = "fx/impact_blood_chaos",
 		armour_type = "cloth",
 		extra_conditions = {
 			death = true
@@ -57,8 +57,8 @@ HitEffectsChaosMarauder = {
 		}
 	},
 	default_bleed = {
-		hit_effect_name = "fx/impact_blood",
-		husk_hit_effect_name = "fx/impact_blood",
+		hit_effect_name = "fx/impact_blood_chaos",
+		husk_hit_effect_name = "fx/impact_blood_chaos",
 		armour_type = "cloth",
 		extra_conditions = {
 			damage_type = "bleed"
@@ -69,8 +69,8 @@ HitEffectsChaosMarauder = {
 	},
 	default_bleed_death = {
 		inherits = "default_bleed",
-		hit_effect_name = "fx/impact_blood",
-		husk_hit_effect_name = "fx/impact_blood",
+		hit_effect_name = "fx/impact_blood_chaos",
+		husk_hit_effect_name = "fx/impact_blood_chaos",
 		armour_type = "cloth",
 		extra_conditions = {
 			death = true
@@ -431,6 +431,22 @@ HitEffectsChaosMarauder = {
 			distal_force = 5,
 			vertical_force = -30,
 			lateral_force = 10
+		}
+	},
+	heavy_stab_smiter_death = {
+		inherits = "default_death",
+		extra_conditions = {
+			damage_type = {
+				"heavy_stab_smiter"
+			}
+		},
+		animations = {
+			"ragdoll"
+		},
+		push = {
+			distal_force = 150,
+			vertical_force = -10,
+			lateral_force = 0
 		}
 	},
 	light_slashing_smiter_death = {
@@ -1576,8 +1592,8 @@ HitEffectsChaosMarauder = {
 		}
 	},
 	shot_default = {
-		hit_effect_name = "fx/impact_blood",
-		husk_hit_effect_name = "fx/impact_blood",
+		hit_effect_name = "fx/impact_blood_chaos",
+		husk_hit_effect_name = "fx/impact_blood_chaos",
 		armour_type = "cloth",
 		extra_conditions = {
 			damage_type = {
@@ -1590,22 +1606,6 @@ HitEffectsChaosMarauder = {
 		},
 		animations = {
 			"hit_reaction"
-		}
-	},
-	shot_torso_crater_front = {
-		inherits = "shot_default",
-		flow_event = "wound_crater_torso_front",
-		extra_conditions = {
-			hit_zone = "torso",
-			hit_direction = "front"
-		}
-	},
-	shot_torso_crater_back = {
-		inherits = "shot_default",
-		flow_event = "wound_crater_torso_back",
-		extra_conditions = {
-			hit_zone = "torso",
-			hit_direction = "back"
 		}
 	},
 	shot_death_machinegun = {
@@ -1642,22 +1642,6 @@ HitEffectsChaosMarauder = {
 			lateral_force = 0
 		}
 	},
-	shot_death_torso_crater_front = {
-		inherits = "shot_death",
-		flow_event = "wound_crater_torso_back",
-		extra_conditions = {
-			hit_zone = "torso",
-			hit_direction = "front"
-		}
-	},
-	shot_death_torso_crater_back = {
-		inherits = "shot_death",
-		flow_event = "wound_crater_torso_front",
-		extra_conditions = {
-			hit_zone = "torso",
-			hit_direction = "back"
-		}
-	},
 	shot_death_head = {
 		inherits = "shot_death",
 		flow_event = "explode_head",
@@ -1689,22 +1673,6 @@ HitEffectsChaosMarauder = {
 			distal_force = 180,
 			vertical_force = -40,
 			lateral_force = 0
-		}
-	},
-	shot_sniper_handgun_death_torso_crater_front = {
-		inherits = "shot_sniper_handgun_death",
-		flow_event = "wound_crater_torso_back",
-		extra_conditions = {
-			hit_zone = "torso",
-			hit_direction = "front"
-		}
-	},
-	shot_sniper_handgun_death_torso_crater_back = {
-		inherits = "shot_sniper_handgun_death",
-		flow_event = "wound_crater_torso_front",
-		extra_conditions = {
-			hit_zone = "torso",
-			hit_direction = "back"
 		}
 	},
 	shot_sniper_handgun_death_head = {
@@ -1750,22 +1718,6 @@ HitEffectsChaosMarauder = {
 			distal_force = 60,
 			vertical_force = 10,
 			lateral_force = 0
-		}
-	},
-	shot_repeating_handgun_death_torso_crater_front = {
-		inherits = "shot_repeating_handgun_death",
-		flow_event = "wound_crater_torso_back",
-		extra_conditions = {
-			hit_zone = "torso",
-			hit_direction = "front"
-		}
-	},
-	shot_repeating_handgun_death_torso_crater_back = {
-		inherits = "shot_repeating_handgun_death",
-		flow_event = "wound_crater_torso_front",
-		extra_conditions = {
-			hit_zone = "torso",
-			hit_direction = "back"
 		}
 	},
 	shot_repeating_handgun_death_head = {
@@ -1816,22 +1768,6 @@ HitEffectsChaosMarauder = {
 			lateral_force = 0
 		}
 	},
-	shotgun_death_torso_crater_front = {
-		inherits = "shotgun_death",
-		flow_event = "wound_crater_torso_back",
-		extra_conditions = {
-			hit_zone = "torso",
-			hit_direction = "front"
-		}
-	},
-	shotgun_death_torso_crater_back = {
-		inherits = "shotgun_death",
-		flow_event = "wound_crater_torso_front",
-		extra_conditions = {
-			hit_zone = "torso",
-			hit_direction = "back"
-		}
-	},
 	shotgun_death_head = {
 		inherits = "shotgun_death",
 		flow_event = "explode_head",
@@ -1846,8 +1782,8 @@ HitEffectsChaosMarauder = {
 		}
 	},
 	arrow_default = {
-		hit_effect_name = "fx/impact_blood",
-		husk_hit_effect_name = "fx/impact_blood",
+		hit_effect_name = "fx/impact_blood_chaos",
+		husk_hit_effect_name = "fx/impact_blood_chaos",
 		armour_type = "flesh",
 		extra_conditions = {
 			damage = true,
@@ -1957,8 +1893,8 @@ HitEffectsChaosMarauder = {
 		}
 	},
 	poison_arrow = {
-		husk_hit_effect_name = "fx/impact_blood",
-		hit_effect_name = "fx/impact_blood",
+		husk_hit_effect_name = "fx/impact_blood_chaos",
+		hit_effect_name = "fx/impact_blood_chaos",
 		extra_conditions = {
 			damage = true,
 			damage_type = {
@@ -2052,6 +1988,59 @@ HitEffectsChaosMarauder = {
 				"head",
 				"neck"
 			}
+		},
+		push = {
+			distal_force = 120,
+			vertical_force = 30,
+			lateral_force = 0
+		}
+	},
+	throwing_axe_death = {
+		inherits = "bolt_death",
+		extra_conditions = {
+			damage_type = {
+				"throwing_axe"
+			}
+		},
+		animations = {
+			"ragdoll"
+		},
+		push = {
+			distal_force = 180,
+			vertical_force = 10,
+			lateral_force = 0
+		}
+	},
+	throwing_axe_death_head = {
+		inherits = "throwing_axe_death",
+		extra_conditions = {
+			hit_zone = {
+				"head",
+				"neck"
+			}
+		},
+		animations = {
+			"ragdoll"
+		},
+		push = {
+			distal_force = 120,
+			vertical_force = 30,
+			lateral_force = 0
+		}
+	},
+	throwing_axe_dismember_limb = {
+		inherits = "throwing_axe_death",
+		do_dismember = true,
+		extra_conditions = {
+			hit_zone = {
+				"left_arm",
+				"right_arm",
+				"right_leg",
+				"left_leg"
+			}
+		},
+		animations = {
+			"ragdoll"
 		},
 		push = {
 			distal_force = 120,
@@ -2587,7 +2576,7 @@ HitEffectsChaosMarauder = {
 		}
 	},
 	wound_default = {
-		husk_hit_effect_name = "fx/impact_blood",
+		husk_hit_effect_name = "fx/impact_blood_chaos",
 		armour_type = "cloth",
 		extra_conditions = {
 			death = false,
@@ -2597,7 +2586,7 @@ HitEffectsChaosMarauder = {
 	wound_left_arm = {
 		inherits = "wound_default",
 		do_dismember = true,
-		husk_hit_effect_name = "fx/impact_blood",
+		husk_hit_effect_name = "fx/impact_blood_chaos",
 		armour_type = "cloth",
 		extra_conditions = {
 			death = false,

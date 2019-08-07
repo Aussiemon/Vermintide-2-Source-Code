@@ -71,7 +71,7 @@ Pacing.get_pacing_data = function (self)
 	return self.pacing_state, self._state_start_time, self._threat_population, self._specials_population, self._horde_population, self._end_pacing_time
 end
 
-Pacing.ignore_intensity_decay_delay = function (self)
+Pacing.ignore_pacing_intensity_decay_delay = function (self)
 	return self.pacing_state == "pacing_relax"
 end
 
@@ -107,7 +107,7 @@ Pacing.enemy_killed = function (self, killed_unit, player_units)
 
 		local status_ext = ScriptUnit.extension(player_unit, "status_system")
 
-		status_ext:add_intensity(amount)
+		status_ext:add_pacing_intensity(amount)
 	end
 end
 
@@ -179,7 +179,7 @@ Pacing.update = function (self, t, dt, alive_player_units)
 	for k = 1, num_alive_player_units, 1 do
 		local unit = alive_player_units[k]
 		local status_ext = ScriptUnit.extension(unit, "status_system")
-		local intensity = status_ext:get_intensity()
+		local intensity = status_ext:get_pacing_intensity()
 		self.player_intensity[k] = intensity
 		sum_intensity = sum_intensity + intensity
 	end
@@ -212,7 +212,7 @@ Pacing.debug_add_intensity = function (self, player_units, value)
 		local unit = player_units[k]
 		local status_ext = ScriptUnit.extension(unit, "status_system")
 
-		status_ext:add_intensity(value)
+		status_ext:add_pacing_intensity(value)
 	end
 end
 
@@ -288,7 +288,7 @@ Pacing.annotate_graph = function (self, text, color)
 	})
 end
 
-Pacing.get_intensity = function (self)
+Pacing.get_pacing_intensity = function (self)
 	return self.total_intensity, self.player_intensity
 end
 

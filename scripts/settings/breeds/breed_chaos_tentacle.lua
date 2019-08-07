@@ -131,6 +131,9 @@ local breed_data = {
 		70,
 		120,
 		140,
+		205,
+		205,
+		205,
 		205
 	},
 	stagger_duration = {

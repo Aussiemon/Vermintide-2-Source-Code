@@ -36,68 +36,26 @@ local running_pushed_data = {
 		0
 	}
 }
-local damage_table_light = {
-	easy = {
-		15,
-		10,
-		7
-	},
-	normal = {
-		15,
-		10,
-		10
-	},
-	hard = {
-		25,
-		17,
-		15
-	},
-	survival_hard = {
-		25,
-		17,
-		15
-	},
-	harder = {
-		40,
-		20,
-		15
-	},
-	survival_harder = {
-		40,
-		20,
-		15
-	},
-	hardest = {
-		60,
-		25,
-		15
-	},
-	survival_hardest = {
-		60,
-		25,
-		15
-	}
-}
 local default_bot_threat_difficulty_data = BotConstants and BotConstants.default.DEFAULT_BOT_THREAT_DIFFICULTY_DATA
 local breed_data = {
 	detection_radius = 9999999,
 	proximity_system_check = true,
 	walk_speed = 4,
 	big_boy_turning_dot = 0.4,
-	boss = true,
-	use_avoidance = false,
+	patrol_detection_radius = 10,
+	patrol_active_perception = "perception_rat_ogre",
 	patrol_active_target_selection = "pick_rat_ogre_target_with_weights",
 	regen_taken_damage_pause_time = 2,
 	always_look_at_target = true,
-	exchange_order = 1,
+	boss = true,
 	animation_sync_rpc = "rpc_sync_anim_state_9",
 	aoe_radius = 1,
-	patrol_detection_radius = 10,
-	run_speed = 5.25,
 	scale_death_push = 1,
+	use_avoidance = false,
+	target_selection_angry = "pick_chaos_troll_target_with_weights",
 	behavior = "troll",
 	regen_pulse_intensity = 0.05,
-	death_reaction = "ai_default",
+	no_stagger_duration = false,
 	ignore_nav_propagation_box = true,
 	stagger_threshold_medium = 1,
 	bot_opportunity_target_melee_range = 7,
@@ -113,40 +71,41 @@ local breed_data = {
 	keep_weapon_on_death = false,
 	hit_mass_count = 50,
 	chance_of_starting_sleepy = 0,
-	target_selection = "pick_rat_ogre_target_idle",
+	animation_movement_template = "chaos_troll",
 	race = "chaos",
-	downed_pulse_interval = 1,
+	exchange_order = 1,
 	poison_resistance = 100,
 	armor_category = 3,
+	downed_pulse_interval = 1,
 	is_bot_aid_threat = true,
 	stagger_threshold_heavy = 1,
 	bot_opportunity_target_melee_range_while_ranged = 5,
 	bots_should_flank = true,
 	bot_hitbox_radius_approximation = 1,
-	combat_music_state = "troll",
 	use_big_boy_turning = true,
 	use_navigation_path_splines = true,
-	trigger_dialogue_on_target_switch = true,
+	combat_music_state = "troll",
 	distance_sq_can_detect_target = 2025,
-	headshot_coop_stamina_fatigue_type = "headshot_special",
+	trigger_dialogue_on_target_switch = true,
 	perception_continuous = "perception_continuous_chaos_troll",
 	initial_is_passive = false,
 	bone_lod_level = 0,
-	smart_object_template = "chaos_troll",
-	boost_curve_multiplier_override = 3,
+	boost_curve_multiplier_override = 2,
 	downed_pulse_intensity = 0.2,
+	smart_object_template = "chaos_troll",
 	bot_melee_aim_node = "j_hips",
 	has_inventory = true,
-	threat_value = 32,
-	no_stagger_duration = false,
+	run_speed = 5.25,
 	awards_positive_reinforcement_message = true,
-	patrol_active_perception = "perception_rat_ogre",
+	headshot_coop_stamina_fatigue_type = "headshot_special",
+	target_selection = "pick_rat_ogre_target_idle",
 	aim_template = "chaos_warrior",
+	threat_value = 32,
 	passive_in_patrol_start_anim = "move_fwd",
 	reach_distance = 4.2,
 	navigation_spline_distance_to_borders = 1,
-	target_selection_angry = "pick_chaos_troll_target_with_weights",
 	stagger_threshold_light = 1,
+	death_reaction = "ai_default",
 	hit_reaction = "ai_default",
 	passive_in_patrol = true,
 	patrol_passive_target_selection = "patrol_passive_target_selection",
@@ -183,13 +142,7 @@ local breed_data = {
 		distance_weight = 10,
 		target_disabled_mul = 0
 	},
-	max_health = {
-		450,
-		570,
-		900,
-		1200,
-		1800
-	},
+	max_health = BreedTweaks.max_health.chaos_troll,
 	bloodlust_health = BreedTweaks.bloodlust_health.monster,
 	stagger_duration = {
 		0,
@@ -206,14 +159,20 @@ local breed_data = {
 		4,
 		7,
 		14,
-		28
+		28,
+		32,
+		34,
+		36
 	},
 	max_health_regen_time = {
 		12,
 		12,
 		10,
 		8,
-		6
+		6,
+		4,
+		3,
+		2
 	},
 	debug_color = {
 		255,
@@ -231,10 +190,6 @@ local breed_data = {
 		head = "headshot"
 	},
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		head = {
 			prio = 1,
 			actors = {
@@ -256,7 +211,7 @@ local breed_data = {
 			}
 		},
 		torso = {
-			prio = 3,
+			prio = 2,
 			actors = {
 				"c_spine",
 				"c_spine1",
@@ -270,7 +225,7 @@ local breed_data = {
 			}
 		},
 		left_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftarm",
 				"c_leftforearm",
@@ -283,7 +238,7 @@ local breed_data = {
 			}
 		},
 		right_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightarm",
 				"c_rightforearm",
@@ -296,7 +251,7 @@ local breed_data = {
 			}
 		},
 		left_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftupleg",
 				"c_leftleg",
@@ -309,7 +264,7 @@ local breed_data = {
 			}
 		},
 		right_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightupleg",
 				"c_rightleg",
@@ -321,6 +276,10 @@ local breed_data = {
 				"j_rightfoot"
 			}
 		},
+		full = {
+			prio = 4,
+			actors = {}
+		},
 		afro = {
 			prio = 5,
 			actors = {
@@ -329,15 +288,14 @@ local breed_data = {
 		}
 	},
 	allowed_layers = {
-		planks = 1.5,
 		ledges = 1.5,
-		bot_ratling_gun_fire = 15,
-		jumps = 1.5,
-		big_boy_destructible = 1.5,
 		ledges_with_fence = 1.5,
+		big_boy_destructible = 1.5,
+		jumps = 1.5,
+		bot_ratling_gun_fire = 15,
 		doors = 1.5,
 		teleporters = 5,
-		bot_poison_wind = 0,
+		planks = 1.5,
 		fire_grenade = 15
 	},
 	nav_cost_map_allowed_layers = {
@@ -361,6 +319,136 @@ local breed_data = {
 	end
 }
 Breeds.chaos_troll = table.create_copy(Breeds.chaos_troll, breed_data)
+local AttackIntensityPerDifficulty = {
+	cleave = {
+		easy = {
+			running = 2,
+			normal = 5
+		},
+		normal = {
+			running = 2,
+			normal = 5
+		},
+		hard = {
+			running = 2,
+			normal = 5
+		},
+		harder = {
+			running = 2,
+			normal = 5
+		},
+		hardest = {
+			running = 2,
+			normal = 5
+		},
+		cataclysm = {
+			running = 2,
+			normal = 5
+		},
+		cataclysm_2 = {
+			running = 2,
+			normal = 5
+		},
+		cataclysm_3 = {
+			running = 2,
+			normal = 5
+		}
+	},
+	sweep = {
+		easy = {
+			running = 2,
+			normal = 5
+		},
+		normal = {
+			running = 2,
+			normal = 5
+		},
+		hard = {
+			running = 2,
+			normal = 5
+		},
+		harder = {
+			running = 2,
+			normal = 5
+		},
+		hardest = {
+			running = 2,
+			normal = 5
+		},
+		cataclysm = {
+			running = 2,
+			normal = 5
+		},
+		cataclysm_2 = {
+			running = 2,
+			normal = 5
+		},
+		cataclysm_3 = {
+			running = 2,
+			normal = 5
+		}
+	},
+	shove = {
+		easy = {
+			normal = 1
+		},
+		normal = {
+			normal = 1
+		},
+		hard = {
+			normal = 1
+		},
+		harder = {
+			normal = 1
+		},
+		hardest = {
+			normal = 1
+		},
+		cataclysm = {
+			normal = 1
+		},
+		cataclysm_2 = {
+			normal = 1
+		},
+		cataclysm_3 = {
+			normal = 1
+		}
+	},
+	vomit = {
+		easy = {
+			running = 0.5,
+			normal = 3
+		},
+		normal = {
+			running = 0.5,
+			normal = 3
+		},
+		hard = {
+			running = 0.5,
+			normal = 3
+		},
+		harder = {
+			running = 0.5,
+			normal = 3
+		},
+		hardest = {
+			running = 0.5,
+			normal = 3
+		},
+		cataclysm = {
+			running = 0.5,
+			normal = 3
+		},
+		cataclysm_2 = {
+			running = 0.5,
+			normal = 3
+		},
+		cataclysm_3 = {
+			running = 0.5,
+			normal = 3
+		}
+	}
+}
 local action_data = {
 	follow = {
 		follow_target_function_name = "_follow_target_rat_ogre",
@@ -428,28 +516,28 @@ local action_data = {
 	smash_door = {
 		unblockable = true,
 		name = "smash_door",
+		damage = 25,
 		damage_type = "cutting",
 		move_anim = "move_start_fwd",
 		attack_anim = "smash_door",
-		door_attack_distance = 2,
-		damage = {
-			25,
-			25,
-			25
-		}
+		door_attack_distance = 2
 	},
 	attack_cleave = {
+		blocked_damage = 15,
+		damage = 30,
+		fatigue_type = "chaos_cleave",
 		damage_type = "cutting",
 		target_running_velocity_threshold = 1,
-		fatigue_type = "chaos_cleave",
+		attack_intensity_type = "cleave",
 		action_weight = 1,
 		target_running_distance_threshold = 4.5,
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		considerations = UtilityConsiderations.troll_cleave,
 		attacks = {
 			{
 				height = 2.5,
 				offset_forward = 1.1,
-				ignores_dodging = false,
+				ignores_dodging = true,
 				rotation_time = 1.7,
 				anim_driven = false,
 				offset_up = 0,
@@ -516,100 +604,8 @@ local action_data = {
 				}
 			}
 		},
-		damage = {
-			30,
-			25,
-			20
-		},
-		difficulty_damage = {
-			easy = {
-				15,
-				20,
-				15
-			},
-			normal = {
-				15,
-				25,
-				20
-			},
-			hard = {
-				30,
-				35,
-				30
-			},
-			survival_hard = {
-				30,
-				35,
-				30
-			},
-			harder = {
-				50,
-				40,
-				30
-			},
-			survival_harder = {
-				50,
-				40,
-				30
-			},
-			hardest = {
-				100,
-				50,
-				30
-			},
-			survival_hardest = {
-				100,
-				75,
-				45
-			}
-		},
-		blocked_damage = {
-			15,
-			4,
-			2.5
-		},
-		blocked_difficulty_damage = {
-			easy = {
-				2,
-				3,
-				2.5
-			},
-			normal = {
-				3,
-				3,
-				2.5
-			},
-			hard = {
-				10,
-				5,
-				2.5
-			},
-			survival_hard = {
-				10,
-				5,
-				2.5
-			},
-			harder = {
-				20,
-				7.5,
-				5
-			},
-			survival_harder = {
-				9,
-				7.5,
-				5
-			},
-			hardest = {
-				25,
-				10,
-				7.5
-			},
-			survival_hardest = {
-				50,
-				15,
-				11.25
-			}
-		},
+		difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack,
+		blocked_difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack_blocked,
 		ignore_staggers = {
 			true,
 			false,
@@ -620,10 +616,13 @@ local action_data = {
 		}
 	},
 	attack_crouch_sweep = {
-		cooldown = -1,
 		fatigue_type = "ogre_shove",
-		action_weight = 1,
 		damage_type = "cutting",
+		damage = 8,
+		cooldown = -1,
+		attack_intensity_type = "sweep",
+		action_weight = 1,
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		considerations = UtilityConsiderations.attack_crouch_sweep,
 		attacks = {
 			{
@@ -631,7 +630,7 @@ local action_data = {
 				height = 2,
 				hit_only_players = false,
 				ignore_targets_behind = true,
-				ignores_dodging = false,
+				ignores_dodging = true,
 				rotation_time = 1,
 				freeze_intensity_decay_time = 15,
 				catapult_player = true,
@@ -692,12 +691,7 @@ local action_data = {
 				}
 			}
 		},
-		damage = {
-			8,
-			20,
-			20
-		},
-		difficulty_damage = damage_table_light,
+		difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack,
 		ignore_staggers = {
 			true,
 			false,
@@ -708,13 +702,16 @@ local action_data = {
 		}
 	},
 	melee_shove = {
+		fatigue_type = "ogre_shove",
+		damage = 8,
 		damage_type = "cutting",
 		target_running_velocity_threshold = 0.75,
-		fatigue_type = "ogre_shove",
+		attack_intensity_type = "shove",
 		action_weight = 1,
 		ignore_ai_damage = true,
 		self_running_speed_threshold = 2,
 		target_running_distance_threshold = 4,
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		considerations = UtilityConsiderations.troll_melee_shove,
 		attacks = {
 			{
@@ -844,21 +841,20 @@ local action_data = {
 				}
 			}
 		},
-		damage = {
-			8,
-			20,
-			20
-		},
-		difficulty_damage = damage_table_light
+		difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack
 	},
 	melee_sweep = {
+		blocked_damage = 2,
+		damage = 8,
+		fatigue_type = "ogre_shove",
 		damage_type = "cutting",
 		target_running_velocity_threshold = 0.75,
-		fatigue_type = "ogre_shove",
+		attack_intensity_type = "sweep",
 		action_weight = 1,
 		ignore_ai_damage = true,
 		self_running_speed_threshold = 2,
 		target_running_distance_threshold = 4,
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		considerations = UtilityConsiderations.troll_melee_sweep,
 		attacks = {
 			{
@@ -866,7 +862,7 @@ local action_data = {
 				height = 0.8,
 				hit_only_players = false,
 				catapult_player = true,
-				ignores_dodging = false,
+				ignores_dodging = true,
 				rotation_time = 0.6,
 				freeze_intensity_decay_time = 15,
 				range = 0.8,
@@ -988,66 +984,17 @@ local action_data = {
 				}
 			}
 		},
-		damage = {
-			8,
-			20,
-			20
-		},
-		difficulty_damage = damage_table_light,
-		blocked_damage = {
-			2,
-			4,
-			2.5
-		},
-		blocked_difficulty_damage = {
-			easy = {
-				1,
-				2,
-				2.5
-			},
-			normal = {
-				2,
-				2,
-				2.5
-			},
-			hard = {
-				4,
-				5,
-				2.5
-			},
-			survival_hard = {
-				4,
-				5,
-				2.5
-			},
-			harder = {
-				6,
-				7.5,
-				5
-			},
-			survival_harder = {
-				6,
-				7.5,
-				5
-			},
-			hardest = {
-				10,
-				10,
-				7.5
-			},
-			survival_hardest = {
-				10,
-				10,
-				7.5
-			}
-		}
+		difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack,
+		blocked_difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack_blocked
 	},
 	vomit = {
 		firing_time = 0.77,
 		rotation_time = 0.8,
+		attack_intensity_type = "vomit",
 		action_weight = 1,
 		near_vomit_distance = 25,
 		attack_time = 2.5,
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		considerations = UtilityConsiderations.vomit,
 		attack_anims = {
 			ranged_vomit = "attack_vomit_high",
@@ -1159,6 +1106,18 @@ local action_data = {
 				right = {
 					"stagger_right_exp"
 				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
 			},
 			{
 				fwd = {},

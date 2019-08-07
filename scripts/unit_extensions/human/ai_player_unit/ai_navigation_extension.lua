@@ -154,23 +154,27 @@ AINavigationExtension.init_position = function (self)
 	end
 
 	if breed.use_navigation_path_splines then
-		local CHANNEL_RADIUS = breed.navigation_channel_radius or 4
-		local TURN_SAMPLING_ANGLE = 30
-		local CHANNEL_SMOOTHING_ANGLE = 30
-		local MIN_DISTANCE_BETWEEN_GATES = 0.5
-		local MAX_DISTANCE_BETWEEN_GATES = 10
+		local config = breed.navigation_path_spline_config
+		local CHANNEL_RADIUS = (config and config.navigation_channel_radius) or 4
+		local TURN_SAMPLING_ANGLE = (config and config.turn_sampling_angle) or 30
+		local CHANNEL_SMOOTHING_ANGLE = (config and config.channel_smoothing_anle) or 30
+		local MIN_DISTANCE_BETWEEN_GATES = (config and config.min_distance_between_gates) or 0.5
+		local MAX_DISTANCE_BETWEEN_GATES = (config and config.max_distance_between_gates) or 10
 
 		GwNavBot.set_channel_computer_configuration(nav_bot, CHANNEL_RADIUS, TURN_SAMPLING_ANGLE, CHANNEL_SMOOTHING_ANGLE, MIN_DISTANCE_BETWEEN_GATES, MAX_DISTANCE_BETWEEN_GATES)
 
 		local SCRIPT_DRIVEN = false
-		local MAX_DISTANCE_TO_SPLINE_POSITION = 5
-		local SPLINE_LENGTH = 100
-		local SPLINE_DISTANCE_TO_BORDERS = breed.navigation_spline_distance_to_borders or 0.5
-		local SPLINE_RECOMPUTION_RATIO = 1
+		local MAX_DISTANCE_TO_SPLINE_POSITION = (config and config.max_distance_to_spline_position) or 5
+		local SPLINE_LENGTH = (config and config.spline_length) or 100
+		local SPLINE_DISTANCE_TO_BORDERS = (config and config.spline_distance_to_borders) or 1
+		local SPLINE_RECOMPUTION_RATIO = (config and config.spline_recomputation_ratio) or 1
 		local TARGET_ON_SPLINE_DISTANCE = 0
 
 		GwNavBot.set_spline_trajectory_configuration(nav_bot, SCRIPT_DRIVEN, MAX_DISTANCE_TO_SPLINE_POSITION, SPLINE_LENGTH, SPLINE_DISTANCE_TO_BORDERS, SPLINE_RECOMPUTION_RATIO, TARGET_ON_SPLINE_DISTANCE)
-		GwNavBot.set_use_channel(nav_bot, true)
+
+		if not breed.deactivate_navigation_path_splines_on_spawn then
+			GwNavBot.set_use_channel(nav_bot, true)
+		end
 	end
 end
 
@@ -460,6 +464,10 @@ AINavigationExtension.set_layer_cost = function (self, layer_name, layer_cost)
 	GwNavTagLayerCostTable.set_layer_cost_multiplier(self._navtag_layer_cost_table, layer_id, layer_cost)
 end
 
+AINavigationExtension.get_navtag_layer_cost_table = function (self)
+	return self._navtag_layer_cost_table
+end
+
 AINavigationExtension.get_current_and_next_node_positions_in_nav_path = function (self)
 	local nav_bot = self._nav_bot
 
@@ -497,6 +505,40 @@ AINavigationExtension.get_current_and_next_node_positions_in_nav_path = function
 	local next_node_2_position = GwNavBot.get_path_node_pos(nav_bot, next_node_2_index)
 
 	return current_node_position, next_node_1_position, next_node_2_position
+end
+
+AINavigationExtension.get_current_and_node_position_in_nav_path = function (self, wanted_node_index)
+	local nav_bot = self._nav_bot
+
+	if nav_bot == nil then
+		return nil, nil
+	end
+
+	local following_path = self._is_navbot_following_path
+
+	if not following_path then
+		return nil, nil
+	end
+
+	local node_count = GwNavBot.get_path_nodes_count(nav_bot)
+
+	if node_count < 1 then
+		return nil, nil
+	end
+
+	local current_node_index = GwNavBot.get_path_current_node_index(nav_bot)
+	local current_node_position = GwNavBot.get_path_node_pos(nav_bot, current_node_index)
+	local wanted_node_index = current_node_index + wanted_node_index
+
+	if node_count <= wanted_node_index then
+		wanted_node_index = node_count
+
+		return nil, nil
+	end
+
+	local wanted_node_position = GwNavBot.get_path_node_pos(nav_bot, wanted_node_index)
+
+	return current_node_position, wanted_node_position
 end
 
 AINavigationExtension.get_path_node_count = function (self)

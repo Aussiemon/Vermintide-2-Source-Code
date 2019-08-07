@@ -778,6 +778,126 @@ Paintings.ver_daemons_of_chaos_8th_edition_army_book_page_034 = {
 		wood = true
 	}
 }
+Paintings.hor_beastmen_page_08 = {
+	sound_event = "painting_beastmen_page_08_description",
+	rarity = "common",
+	display_name = "painting_beastmen_page_08_name",
+	icon = "icon_painting_1",
+	frame = "wood",
+	description = "painting_beastmen_page_08_description",
+	artist = "painting_beastmen_page_08_artist",
+	orientation = "horizontal",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_beastmen_page_38 = {
+	sound_event = "painting_beastmen_page_38_description",
+	rarity = "common",
+	display_name = "painting_beastmen_page_38_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_beastmen_page_38_description",
+	artist = "painting_beastmen_page_38_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_beastmen_page_41 = {
+	sound_event = "painting_beastmen_page_41_description",
+	rarity = "common",
+	display_name = "painting_beastmen_page_41_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_beastmen_page_41_description",
+	artist = "painting_beastmen_page_41_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_beastmen_page_60 = {
+	sound_event = "painting_beastmen_page_60_description",
+	rarity = "common",
+	display_name = "painting_beastmen_page_60_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_beastmen_page_60_description",
+	artist = "painting_beastmen_page_60_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_beastmen_page_93 = {
+	sound_event = "painting_beastmen_page_93_description",
+	rarity = "common",
+	display_name = "painting_beastmen_page_93_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_beastmen_page_93_description",
+	artist = "painting_beastmen_page_93_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_beastmen_page_39 = {
+	sound_event = "painting_beastmen_page_39_description",
+	rarity = "common",
+	display_name = "painting_beastmen_page_39_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_beastmen_page_39_description",
+	artist = "painting_beastmen_page_39_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_beastmen_page_98 = {
+	sound_event = "painting_beastmen_page_98_description",
+	rarity = "common",
+	display_name = "painting_beastmen_page_98_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_beastmen_page_98_description",
+	artist = "painting_beastmen_page_98_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.hor_wom = {
+	sound_event = "painting_wom_01_description",
+	rarity = "rare",
+	display_name = "painting_wom_01_name",
+	icon = "icon_painting_2",
+	frame = "painted",
+	description = "painting_wom_01_description",
+	artist = "painting_wom_01_artist",
+	orientation = "horizontal",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
 DefaultPaintings = {
 	"hor_none",
 	"ver_none",
@@ -805,6 +925,8 @@ local painting_order = {
 	"hor_fort01",
 	"hor_barnogre01",
 	"hor_entrance01",
+	"hor_beastmen_page_08",
+	"hor_wom",
 	"ver_none",
 	"ver_bw01",
 	"ver_khorne04",
@@ -834,7 +956,12 @@ local painting_order = {
 	"ver_manaan01",
 	"ver_warriors_of_chaos_page_35",
 	"ver_warriors_of_chaos_page_30",
-	"ver_daemons_of_chaos_8th_edition_army_book_page_034"
+	"ver_daemons_of_chaos_8th_edition_army_book_page_034",
+	"ver_beastmen_page_38",
+	"ver_beastmen_page_39",
+	"ver_beastmen_page_41",
+	"ver_beastmen_page_60",
+	"ver_beastmen_page_98"
 }
 PaintingOrder = PaintingOrder or {}
 

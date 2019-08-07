@@ -200,21 +200,18 @@ CrosshairUI.configure_hit_marker_color_and_size = function (self, hit_marker, hi
 	local hit_zone = hit_marker_data.hit_zone
 	local hit_critical = hit_marker_data.hit_critical
 	local has_armor = hit_marker_data.has_armor
-	local hit_player = hit_marker_data.hit_player
+	local friendly_fire = hit_marker_data.friendly_fire
 	local added_dot = hit_marker_data.added_dot
 	local shield_break = hit_marker_data.shield_break
 	local shield_open = hit_marker_data.shield_open
 	local is_critical = false
 	local is_armored = false
-	local friendly_fire = false
 	local additional_hit_icon = nil
 	local hit_armored_markers = self._hit_armored_markers
 	local hit_marker_config = definitions.hit_marker_configurations
 
 	if damage_amount <= 0 and has_armor and not added_dot then
 		is_armored = true
-	elseif hit_player then
-		friendly_fire = true
 	elseif hit_critical then
 		is_critical = true
 	end

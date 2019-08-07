@@ -351,6 +351,34 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 	backend_mirror:set_quest_data("current_weekly_quests", current_weekly_quests)
 	backend_mirror:set_quest_data("current_event_quests", current_event_quests)
 
+	local player = Managers.player and Managers.player:local_player()
+	local statistics_db = Managers.player:statistics_db()
+
+	if not player or not statistics_db then
+		Application.warning("[BackendInterfaceQuestsPlayfab] Could not get statistics_db, skipping updating statistics...")
+	else
+		local player_stats_id = player:stats_id()
+		local quests = self:get_quests()
+		local daily_quests = quests.daily
+		local weekly_quests = quests.weekly
+
+		for quest_key, _ in pairs(daily_quests) do
+			if quest_key == data.quest_key then
+				statistics_db:increment_stat(player_stats_id, "completed_daily_quests")
+
+				break
+			end
+		end
+
+		for quest_key, _ in pairs(weekly_quests) do
+			if quest_key == data.quest_key then
+				statistics_db:increment_stat(player_stats_id, "completed_weekly_quests")
+
+				break
+			end
+		end
+	end
+
 	self._quest_reward_requests[id] = rewards
 	self._dirty = true
 end

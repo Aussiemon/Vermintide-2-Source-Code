@@ -12,6 +12,7 @@ HuskTalentExtension.init = function (self, extension_init_context, unit, extensi
 		0,
 		0,
 		0,
+		0,
 		0
 	}
 end
@@ -83,7 +84,17 @@ end
 
 HuskTalentExtension.has_talent = function (self, talent_name)
 	local talent_ids = self._talent_ids
-	local wanted_talent_id = TalentIDLookup[talent_name]
+	local wanted_talent_lookup = TalentIDLookup[talent_name]
+
+	if not wanted_talent_lookup then
+		return false
+	end
+
+	if wanted_talent_lookup.hero_name ~= self._hero_name then
+		return false
+	end
+
+	local wanted_talent_id = wanted_talent_lookup.talent_id
 
 	for i = 1, #talent_ids, 1 do
 		local talent_id = talent_ids[i]
@@ -99,14 +110,15 @@ end
 HuskTalentExtension.get_talent_names = function (self)
 	local talent_ids = self._talent_ids
 	local talent_names = {}
-	local career_index = self.career_extension:career_index()
-	local talent_trees = TalentTrees[self._hero_name][career_index]
+	local talent_interface = Managers.backend:get_talents_interface()
+	local career_name = self._career_name
+	local talent_tree = talent_interface:get_talent_tree(career_name)
 
 	for row, column in pairs(talent_ids) do
 		if column == 0 then
 			talent_names[#talent_names + 1] = "none"
 		else
-			talent_names[#talent_names + 1] = talent_trees[row][column]
+			talent_names[#talent_names + 1] = talent_tree[row][column]
 		end
 	end
 

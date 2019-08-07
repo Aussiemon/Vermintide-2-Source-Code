@@ -1,67 +1,128 @@
 require("scripts/unit_extensions/pickups/pickup_unit_extension")
 require("scripts/unit_extensions/pickups/pickup_spawner_extension")
 
+LifeTimePickupUnitExtension = class(LifeTimePickupUnitExtension, PickupUnitExtension)
+LimitedOwnedPickupUnitExtension = class(LimitedOwnedPickupUnitExtension, PickupUnitExtension)
 PlayerTeleportingPickupExtension = class(PlayerTeleportingPickupExtension, PickupUnitExtension)
 PickupSystem = class(PickupSystem, ExtensionSystemBase)
-RPCS = {
+local RPCS = {
 	"rpc_spawn_pickup_with_physics",
 	"rpc_spawn_pickup",
-	"rpc_force_use_pickup"
+	"rpc_spawn_linked_pickup",
+	"rpc_force_use_pickup",
+	"rpc_delete_pickup",
+	"rpc_delete_limited_owned_pickup_unit",
+	"rpc_delete_limited_owned_pickups"
 }
 local extensions = {
+	"LifeTimePickupUnitExtension",
+	"LimitedOwnedPickupUnitExtension",
 	"PlayerTeleportingPickupExtension",
 	"PickupUnitExtension",
 	"PickupSpawnerExtension"
 }
-local bonus_starting_gear_boon_events = {
-	"starting_gear_boon_01",
-	"starting_gear_boon_02",
-	"starting_gear_boon_03",
-	"starting_gear_boon_04"
-}
 
-PickupSystem.init = function (self, entity_system_creation_context, system_name)
-	PickupSystem.super.init(self, entity_system_creation_context, system_name, extensions)
+PickupSystem.init = function (self, context, system_name)
+	PickupSystem.super.init(self, context, system_name, extensions)
 
 	self._debug_spawned_pickup = {}
-	local network_event_delegate = entity_system_creation_context.network_event_delegate
+	local network_event_delegate = context.network_event_delegate
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
 
-	self.network_manager = entity_system_creation_context.network_manager
-	self.statistics_db = entity_system_creation_context.statistics_db
-	self._dice_keeper = entity_system_creation_context.dice_keeper
+	self._network_manager = context.network_manager
+	self._statistics_db = context.statistics_db
+	local level_seed = Managers.mechanism:get_level_seed("pickups")
+
+	self:set_seed(level_seed)
+
 	self.guaranteed_pickup_spawners = {}
 	self.triggered_pickup_spawners = {}
-	self._spawned_pickups = {}
-	self._amount_spawned = {}
-	self._starting_seed = nil
 	self._next_index = 1
-	self._n_original_chests_in_level = 0
-	self._removed_chest_ids = {}
 	self._broadphase = Broadphase(255, 15)
 	self._broadphase_ids = {}
+	self._pickup_units_by_type = {}
+
+	for pickup_name, _ in pairs(AllPickups) do
+		self._pickup_units_by_type[pickup_name] = {}
+	end
+
 	self.primary_pickup_spawners = {}
 	self.secondary_pickup_spawners = {}
+	self.specified_pickup_spawners = {}
 	self._teleporting_pickups = {}
-	self._spawned_bonus_starting_gear_index = 0
+	self._life_time_pickups = {}
+	self._limited_owned_pickups = {}
+
+	Managers.state.event:register(self, "delete_limited_owned_pickups", "event_delete_limited_owned_pickups")
+end
+
+PickupSystem._random = function (self, ...)
+	local seed, value = Math.next_random(self._seed, ...)
+	self._seed = seed
+
+	return value
+end
+
+PickupSystem._shuffle = function (self, source)
+	self._seed = table.shuffle(source, self._seed)
+end
+
+PickupSystem.set_seed = function (self, seed)
+	fassert(seed and type(seed) == "number", "Bad seed input!")
+
+	self._seed = seed
+	self._starting_seed = seed
 end
 
 PickupSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data, ...)
 	if extension_name ~= "PickupSpawnerExtension" then
 		local position = POSITION_LOOKUP[unit]
+		local pickup_name = extension_init_data.pickup_name
 		local id = Broadphase.add(self._broadphase, unit, position, 0.1)
 		self._broadphase_ids[unit] = id
 
 		if extension_name == "PlayerTeleportingPickupExtension" then
 			local t = Managers.time:time("game")
-			local pickup = AllPickups[extension_init_data.pickup_name]
+			local pickup_settings = AllPickups[pickup_name]
 			self._teleporting_pickups[unit] = {
 				line_of_sight_fails = 0,
 				init_data = extension_init_data,
-				next_line_of_sight_check = t + pickup.teleport_time
+				next_line_of_sight_check = t + pickup_settings.teleport_time
 			}
+		end
+
+		if extension_name == "LifeTimePickupUnitExtension" then
+			local t = Managers.time:time("game")
+			local pickup_settings = AllPickups[pickup_name]
+			self._life_time_pickups[unit] = {
+				init_data = extension_init_data,
+				pickup_settings = pickup_settings,
+				life_time = t + pickup_settings.life_time
+			}
+		end
+
+		if extension_name == "LimitedOwnedPickupUnitExtension" then
+			local peer_id = extension_init_data.owner_peer_id
+
+			if peer_id then
+				local limited_owned_pickups = self._limited_owned_pickups
+
+				if not limited_owned_pickups[peer_id] then
+					limited_owned_pickups[peer_id] = {
+						spawn_limit = extension_init_data.spawn_limit,
+						units = {}
+					}
+				end
+
+				limited_owned_pickups[peer_id].units[#limited_owned_pickups[peer_id].units + 1] = unit
+			end
+		end
+
+		if extension_name == "LifeTimePickupUnitExtension" or extension_name == "LimitedOwnedPickupUnitExtension" or extension_name == "PlayerTeleportingPickupExtension" or extension_name == "PickupUnitExtension" then
+			local units = self._pickup_units_by_type[pickup_name]
+			units[#units + 1] = unit
 		end
 	end
 
@@ -80,6 +141,30 @@ PickupSystem.on_remove_extension = function (self, unit, extension_name, ...)
 		if extension_name == "PlayerTeleportingPickupExtension" then
 			self._teleporting_pickups[unit] = nil
 		end
+
+		if extension_name == "LifeTimePickupUnitExtension" then
+			self._life_time_pickups[unit] = nil
+		end
+
+		if extension_name == "LifeTimePickupUnitExtension" or extension_name == "PlayerTeleportingPickupExtension" or extension_name == "PickupUnitExtension" then
+			local pickup_name = Unit.get_data(unit, "pickup_name")
+			local units = self._pickup_units_by_type[pickup_name]
+			local index = nil
+
+			for i = 1, #units, 1 do
+				local pickup_unit = units[i]
+
+				if pickup_unit == unit then
+					index = i
+
+					break
+				end
+			end
+
+			if index then
+				table.remove(units, index)
+			end
+		end
 	end
 
 	return PickupSystem.super.on_remove_extension(self, unit, extension_name, ...)
@@ -89,7 +174,11 @@ PickupSystem.get_pickups = function (self, position, radius, result)
 	return Broadphase.query(self._broadphase, position, radius, result)
 end
 
-local potential_spawns = {}
+PickupSystem.get_pickups_by_type = function (self, pickup_name)
+	local pickup_units_by_type = self._pickup_units_by_type
+
+	return pickup_units_by_type[pickup_name]
+end
 
 PickupSystem.pickup_gizmo_spawned = function (self, unit)
 	if not self.is_server and not LEVEL_EDITOR_TEST then
@@ -102,8 +191,6 @@ PickupSystem.pickup_gizmo_spawned = function (self, unit)
 		return
 	end
 
-	local position = Unit.local_position(unit, 0)
-	local rotation = Unit.local_rotation(unit, 0)
 	local guaranteed_spawn = Unit.get_data(unit, "guaranteed_spawn")
 	local triggered_spawn_id = Unit.get_data(unit, "triggered_spawn_id")
 
@@ -127,6 +214,14 @@ PickupSystem.pickup_gizmo_spawned = function (self, unit)
 	else
 		self.primary_pickup_spawners[#self.primary_pickup_spawners + 1] = unit
 	end
+end
+
+PickupSystem.specific_pickup_gizmo_spawned = function (self, unit)
+	if not self.is_server and not LEVEL_EDITOR_TEST then
+		return
+	end
+
+	self.specified_pickup_spawners[#self.specified_pickup_spawners + 1] = unit
 end
 
 PickupSystem.activate_triggered_pickup_spawners = function (self, triggered_spawn_id)
@@ -166,7 +261,9 @@ PickupSystem.remove_pickups_due_to_crossroads = function (self, removed_path_dis
 		self.triggered_pickup_spawners
 	}
 
-	for k, spawners in ipairs(remove_tables) do
+	for k = 1, #remove_tables, 1 do
+		local spawners = remove_tables[k]
+
 		for i = 1, #spawners, 1 do
 			local spawner_unit = spawners[i]
 			local percentage_through_level = Unit.get_data(spawner_unit, "percentage_through_level")
@@ -199,16 +296,53 @@ PickupSystem.setup_taken_pickups = function (self, checkpoint_data)
 	end
 end
 
-PickupSystem.populate_pickups = function (self, checkpoint_data)
-	local seed = nil
+local PRIMARY_TO_REMOVE = {}
+local SECONDARY_TO_REMOVE = {}
 
-	if checkpoint_data then
-		seed = checkpoint_data.seed
-	else
-		seed = Math.random(math.random_seed())
+PickupSystem.disable_spawners = function (self, spawner_types)
+	table.clear(PRIMARY_TO_REMOVE)
+	table.clear(SECONDARY_TO_REMOVE)
+
+	self._disabled_spawner_types = self._disabled_spawner_types or {}
+
+	for _, spawner_type in ipairs(spawner_types) do
+		if not self._disabled_spawner_types[spawner_type] then
+			for idx, unit in pairs(self.primary_pickup_spawners) do
+				if Unit.get_data(unit, spawner_type) then
+					PRIMARY_TO_REMOVE[#PRIMARY_TO_REMOVE + 1] = idx
+				end
+			end
+
+			for idx, unit in pairs(self.secondary_pickup_spawners) do
+				if Unit.get_data(unit, spawner_type) then
+					SECONDARY_TO_REMOVE[#SECONDARY_TO_REMOVE + 1] = idx
+				end
+			end
+		end
+
+		self._disabled_spawner_types[spawner_type] = true
 	end
 
-	self._starting_seed = seed
+	for i = #PRIMARY_TO_REMOVE, 1, -1 do
+		local to_remove = PRIMARY_TO_REMOVE[i]
+
+		table.remove(self.primary_pickup_spawners, to_remove)
+	end
+
+	for i = #SECONDARY_TO_REMOVE, 1, -1 do
+		local to_remove = SECONDARY_TO_REMOVE[i]
+
+		table.remove(self.secondary_pickup_spawners, to_remove)
+	end
+end
+
+PickupSystem.populate_pickups = function (self, checkpoint_data)
+	if checkpoint_data then
+		local checkpoint_seed = checkpoint_data.seed
+
+		self:set_seed(checkpoint_seed)
+	end
+
 	local level_settings = LevelHelper:current_level_settings()
 	local level_pickup_settings = level_settings.pickup_settings
 
@@ -219,7 +353,6 @@ PickupSystem.populate_pickups = function (self, checkpoint_data)
 	end
 
 	local difficulty_manager = Managers.state.difficulty
-	local difficulty_rank = difficulty_manager:get_difficulty_rank()
 	local difficulty = difficulty_manager:get_difficulty()
 	local pickup_settings = level_pickup_settings[difficulty]
 
@@ -228,9 +361,6 @@ PickupSystem.populate_pickups = function (self, checkpoint_data)
 
 		pickup_settings = level_pickup_settings.default or level_pickup_settings[1]
 	end
-
-	local primary_pickup_spawners = self.primary_pickup_spawners
-	local secondary_pickup_spawners = self.secondary_pickup_spawners
 
 	local function comparator(a, b)
 		local percentage_a = Unit.get_data(a, "percentage_through_level")
@@ -244,193 +374,190 @@ PickupSystem.populate_pickups = function (self, checkpoint_data)
 
 	self:spawn_guarenteed_pickups()
 
+	local primary_pickup_spawners = self.primary_pickup_spawners
 	local primary_pickup_settings = pickup_settings.primary or pickup_settings
-	seed = self:spawn_spread_pickups(primary_pickup_spawners, primary_pickup_settings, comparator, seed, 1)
+
+	self:_spawn_spread_pickups(primary_pickup_spawners, primary_pickup_settings, comparator, 1)
+
+	local secondary_pickup_spawners = self.secondary_pickup_spawners
 	local secondary_pickup_settings = pickup_settings.secondary
 
 	if secondary_pickup_settings then
-		seed = self:spawn_spread_pickups(secondary_pickup_spawners, secondary_pickup_settings, comparator, seed, 2)
+		self:_spawn_spread_pickups(secondary_pickup_spawners, secondary_pickup_settings, comparator, 2)
+	end
+end
+
+PickupSystem.populate_specified_pickups = function (self, checkpoint_data)
+	if checkpoint_data then
+		local checkpoint_seed = checkpoint_data.seed
+
+		self:set_seed(checkpoint_seed)
 	end
 
-	if script_data.debug_pickup_spawners then
-		self:debug_draw_spread_pickups()
-	end
+	self:_spawn_specified_pickups()
 end
 
 local pickups_to_spawn = {}
 local section_spawners = {}
 local used_spawners = {}
 
-PickupSystem.spawn_spread_pickups = function (self, spawners, pickup_settings, comparator, seed, priority)
+PickupSystem._spawn_spread_pickups = function (self, spawners, pickup_settings, comparator, priority)
 	table.sort(spawners, comparator)
 
 	for pickup_type, value in pairs(pickup_settings) do
-		repeat
-			table.clear(pickups_to_spawn)
+		table.clear(pickups_to_spawn)
 
-			if type(value) == "table" then
-				for pickup_name, amount in pairs(value) do
-					for i = 1, amount, 1 do
+		if type(value) == "table" then
+			for pickup_name, amount in pairs(value) do
+				for i = 1, amount, 1 do
+					pickups_to_spawn[#pickups_to_spawn + 1] = pickup_name
+				end
+			end
+		else
+			for i = 1, value, 1 do
+				local spawn_value = self:_random()
+				local pickups = Pickups[pickup_type]
+				local spawn_weighting_total = 0
+				local selected_pickup = false
+
+				for pickup_name, settings in pairs(pickups) do
+					spawn_weighting_total = spawn_weighting_total + settings.spawn_weighting
+
+					if spawn_value <= spawn_weighting_total then
 						pickups_to_spawn[#pickups_to_spawn + 1] = pickup_name
+						selected_pickup = true
+
+						break
 					end
 				end
-			else
-				for i = 1, value, 1 do
-					local spawn_value = nil
-					seed, spawn_value = Math.next_random(seed)
-					local pickups = Pickups[pickup_type]
-					local spawn_weighting_total = 0
-					local selected_pickup = false
 
-					for pickup_name, settings in pairs(pickups) do
-						spawn_weighting_total = spawn_weighting_total + settings.spawn_weighting
+				fassert(selected_pickup, "Problem selecting a pickup to spawn, spawn_weighting_total = %s, spawn_value = %s", spawn_weighting_total, spawn_value)
+			end
+		end
 
-						if spawn_value <= spawn_weighting_total then
-							pickups_to_spawn[#pickups_to_spawn + 1] = pickup_name
-							selected_pickup = true
+		local num_sections = #pickups_to_spawn
+		local section_size = 1 / num_sections
+		local section_start_point = 0
+		local section_end_point = nil
+		local spawn_debt = 0
 
-							break
-						end
-					end
+		if #spawners >= 2 then
+			local first_spawner_percentage_through_level = Unit.get_data(spawners[1], "percentage_through_level")
+			local last_spawner_percentage_through_level = Unit.get_data(spawners[#spawners], "percentage_through_level")
+			local section_scale = 1 - first_spawner_percentage_through_level - (1 - last_spawner_percentage_through_level)
+			local section_start_point_offset = first_spawner_percentage_through_level
+			section_size = section_scale / num_sections
+			section_start_point = section_start_point_offset
+		end
 
-					fassert(selected_pickup, "Problem selecting a pickup to spawn, spawn_weighting_total = %s, spawn_value = %s", spawn_weighting_total, spawn_value)
+		for i = 1, num_sections, 1 do
+			table.clear(section_spawners)
+			table.clear(used_spawners)
+
+			section_end_point = section_start_point + section_size
+			local num_pickup_spawners = #spawners
+
+			for j = 1, num_pickup_spawners, 1 do
+				local spawner_unit = spawners[j]
+				local percentage_through_level = Unit.get_data(spawner_unit, "percentage_through_level")
+
+				if (section_start_point <= percentage_through_level and percentage_through_level < section_end_point) or (num_sections == i and percentage_through_level == 1) then
+					section_spawners[#section_spawners + 1] = spawner_unit
 				end
 			end
 
-			local num_sections = #pickups_to_spawn
-			local section_size = 1 / num_sections
-			local section_start_point = 0
-			local section_end_point = 0
-			local spawn_debt = 0
+			section_start_point = section_end_point
+			local num_section_spawners = #section_spawners
 
-			if #spawners >= 2 then
-				local first_spawner_percentage_through_level = Unit.get_data(spawners[1], "percentage_through_level")
-				local last_spawner_percentage_through_level = Unit.get_data(spawners[#spawners], "percentage_through_level")
-				local section_scale = 1 - first_spawner_percentage_through_level - (1 - last_spawner_percentage_through_level)
-				local section_start_point_offset = first_spawner_percentage_through_level
-				section_size = section_scale / num_sections
-				section_start_point = section_start_point_offset
-			end
+			if num_section_spawners > 0 and spawn_debt >= 0 then
+				local remaining_sections = num_sections - i + 1
+				local pickups_in_section = math.min(1 + math.ceil(spawn_debt / remaining_sections), num_section_spawners)
+				local rnd = self:_random()
+				local bonus_spawn = remaining_sections ~= 1 and pickups_in_section == 1 and rnd < NearPickupSpawnChance[pickup_type]
+				pickups_in_section = pickups_in_section + ((bonus_spawn and 1) or 0)
 
-			for i = 1, num_sections, 1 do
-				table.clear(section_spawners)
-				table.clear(used_spawners)
+				self:_shuffle(section_spawners)
 
-				local num_pickup_spawners = #spawners
-				section_end_point = section_start_point + section_size
+				local num_spawned_pickups_in_section = 0
+				local previously_selected_spawner = nil
 
-				for j = 1, num_pickup_spawners, 1 do
-					local spawner_unit = spawners[j]
-					local percentage_through_level = Unit.get_data(spawner_unit, "percentage_through_level")
+				for j = 1, pickups_in_section, 1 do
+					local num_available_section_spawners = #section_spawners
+					local selected_spawner, pickup_index = nil
 
-					if (section_start_point <= percentage_through_level and percentage_through_level < section_end_point) or (num_sections == i and percentage_through_level == 1) then
-						section_spawners[#section_spawners + 1] = spawner_unit
+					if previously_selected_spawner then
+						local percentage_through_level = Unit.get_data(previously_selected_spawner, "percentage_through_level")
 
-						if script_data.debug_pickup_spawners then
-							self:_debug_add_spread_pickup_spawner(pickup_type, i, spawner_unit, priority)
+						local function comparator_two(a, b)
+							local percentage_a = Unit.get_data(a, "percentage_through_level")
+							local percentage_b = Unit.get_data(b, "percentage_through_level")
+
+							return math.abs(percentage_through_level - percentage_a) < math.abs(percentage_through_level - percentage_b)
 						end
+
+						table.sort(section_spawners, comparator_two)
 					end
-				end
 
-				section_start_point = section_end_point
-				local num_section_spawners = #section_spawners
+					for k = 1, num_available_section_spawners, 1 do
+						local num_pickups_to_spawn = #pickups_to_spawn
+						local spawner_unit = section_spawners[k]
 
-				if num_section_spawners > 0 and spawn_debt >= 0 then
-					local remaining_sections = num_sections - i + 1
-					local pickups_in_section = math.min(1 + math.ceil(spawn_debt / remaining_sections), num_section_spawners)
-					local rnd = nil
-					seed, rnd = Math.next_random(seed)
-					local bonus_spawn = remaining_sections ~= 1 and pickups_in_section == 1 and rnd < NearPickupSpawnChance[pickup_type]
-					pickups_in_section = pickups_in_section + ((bonus_spawn and 1) or 0)
-					local num_spawned_pickups_in_section = 0
-					seed = table.shuffle(section_spawners, seed)
-					local previously_selected_spawner = nil
+						for l = 1, num_pickups_to_spawn, 1 do
+							local pickup_name = pickups_to_spawn[l]
+							local can_spawn = Unit.get_data(spawner_unit, pickup_name)
 
-					for j = 1, pickups_in_section, 1 do
-						local num_available_section_spawners = #section_spawners
-						local selected_spawner, pickup_index = nil
+							if can_spawn then
+								local settings = AllPickups[pickup_name]
+								local spawner_extension = ScriptUnit.extension(spawner_unit, "pickup_system")
+								local position, rotation, full = spawner_extension:get_spawn_location_data()
+								local spawn_type = "spawner"
+								local pickup_unit, _ = self:_spawn_pickup(settings, pickup_name, position, rotation, false, spawn_type)
+								num_spawned_pickups_in_section = num_spawned_pickups_in_section + 1
+								selected_spawner = spawner_unit
+								pickup_index = l
 
-						if previously_selected_spawner then
-							local percentage_through_level = Unit.get_data(previously_selected_spawner, "percentage_through_level")
-
-							local function comparator_two(a, b)
-								local percentage_a = Unit.get_data(a, "percentage_through_level")
-								local percentage_b = Unit.get_data(b, "percentage_through_level")
-
-								return math.abs(percentage_through_level - percentage_a) < math.abs(percentage_through_level - percentage_b)
-							end
-
-							table.sort(section_spawners, comparator_two)
-						end
-
-						for k = 1, num_available_section_spawners, 1 do
-							local num_pickups_to_spawn = #pickups_to_spawn
-							local spawner_unit = section_spawners[k]
-
-							for l = 1, num_pickups_to_spawn, 1 do
-								local pickup_name = pickups_to_spawn[l]
-								local can_spawn = Unit.get_data(spawner_unit, pickup_name)
-
-								if can_spawn then
-									local settings = AllPickups[pickup_name]
-									local spawner_extension = ScriptUnit.extension(spawner_unit, "pickup_system")
-									local position, rotation, full = spawner_extension:get_spawn_location_data()
-									local spawn_type = "spawner"
-									local pickup_unit = self:_spawn_pickup(settings, pickup_name, position, rotation, false, spawn_type)
-
-									if script_data.debug_pickup_spawners and pickup_unit then
-										self:_debug_add_spread_pickup(spawner_unit, pickup_type)
-									end
-
-									num_spawned_pickups_in_section = num_spawned_pickups_in_section + 1
-									selected_spawner = spawner_unit
-									pickup_index = l
-
-									if full then
-										used_spawners[#used_spawners + 1] = spawner_unit
-									end
-
-									break
+								if full then
+									used_spawners[#used_spawners + 1] = spawner_unit
 								end
-							end
 
-							if selected_spawner then
 								break
 							end
 						end
 
 						if selected_spawner then
-							local index = table.find(section_spawners, selected_spawner)
-
-							table.remove(section_spawners, index)
-							table.remove(pickups_to_spawn, pickup_index)
-
-							previously_selected_spawner = selected_spawner
+							break
 						end
 					end
 
-					spawn_debt = spawn_debt - (num_spawned_pickups_in_section - 1)
-				else
-					spawn_debt = spawn_debt + 1
+					if selected_spawner then
+						local index = table.find(section_spawners, selected_spawner)
+
+						table.remove(section_spawners, index)
+						table.remove(pickups_to_spawn, pickup_index)
+
+						previously_selected_spawner = selected_spawner
+					end
 				end
 
-				local num_used_spawners = #used_spawners
-
-				for j = 1, num_used_spawners, 1 do
-					local spawner_unit = used_spawners[j]
-					local index = table.find(spawners, spawner_unit)
-
-					table.remove(spawners, index)
-				end
+				spawn_debt = spawn_debt - (num_spawned_pickups_in_section - 1)
+			else
+				spawn_debt = spawn_debt + 1
 			end
 
-			if spawn_debt > 1 then
-				Application.warning("[PickupSystem] Remaining spawn debt when trying to spawn %s pickups ", pickup_type)
+			local num_used_spawners = #used_spawners
+
+			for j = 1, num_used_spawners, 1 do
+				local spawner_unit = used_spawners[j]
+				local index = table.find(spawners, spawner_unit)
+
+				table.remove(spawners, index)
 			end
-		until true
+		end
+
+		if spawn_debt > 1 then
+			Application.warning("[PickupSystem] Remaining spawn debt when trying to spawn %s pickups ", pickup_type)
+		end
 	end
-
-	return seed
 end
 
 PickupSystem._debug_add_spread_pickup_spawner = function (self, pickup_type, section_index, spawner_unit, priority)
@@ -579,7 +706,7 @@ PickupSystem.debug_draw_spread_pickups = function (self)
 	if draw_mode == 0 then
 		print("Drawing all spawners colored by pickup type")
 
-		for priority, pickup_types in ipairs(spawners) do
+		for _, pickup_types in ipairs(spawners) do
 			for pickup_type, sections in pairs(pickup_types) do
 				for _, spawner_units in pairs(sections) do
 					for _, spawner_unit in ipairs(spawner_units) do
@@ -602,7 +729,7 @@ PickupSystem.debug_draw_spread_pickups = function (self)
 end
 
 PickupSystem.disable_teleporting_pickups = function (self)
-	for unit, data in pairs(self._teleporting_pickups) do
+	for unit, _ in pairs(self._teleporting_pickups) do
 		self._teleporting_pickups[unit] = nil
 	end
 end
@@ -633,34 +760,157 @@ PickupSystem._spawn_guaranteed_pickup = function (self, spawner_unit, spawn_type
 	local num_potential_pickups = #potential_pickups
 
 	if num_potential_pickups > 0 then
-		local random_index = math.random(num_potential_pickups)
+		local random_index = self:_random(num_potential_pickups)
 		local pickup_to_spawn = potential_pickups[random_index]
 		local position = Unit.local_position(spawner_unit, 0)
 		local rotation = Unit.local_rotation(spawner_unit, 0)
 		local settings = AllPickups[pickup_to_spawn]
-		local spawned_unit = self:_spawn_pickup(settings, pickup_to_spawn, position, rotation, false, spawn_type)
+		local spawned_unit, _ = self:_spawn_pickup(settings, pickup_to_spawn, position, rotation, false, spawn_type)
 
 		return spawned_unit
 	end
 end
 
+PickupSystem._spawn_specified_pickups = function (self)
+	local spawners = self.specified_pickup_spawners
+	local num_spawners = #spawners
+	local spawn_type = "guaranteed"
+
+	for i = 1, num_spawners, 1 do
+		local unit = spawners[i]
+
+		table.clear(potential_pickups)
+
+		for pickup_name, settings in pairs(AllPickups) do
+			local can_spawn = Unit.get_data(unit, pickup_name)
+
+			if can_spawn then
+				potential_pickups[#potential_pickups + 1] = pickup_name
+			end
+		end
+
+		local num_potential_pickups = #potential_pickups
+
+		if num_potential_pickups > 0 then
+			local random_index = self:_random(num_potential_pickups)
+			local pickup_to_spawn = potential_pickups[random_index]
+			local position = Unit.local_position(unit, 0)
+			local rotation = Unit.local_rotation(unit, 0)
+			local settings = AllPickups[pickup_to_spawn]
+
+			self:_spawn_pickup(settings, pickup_to_spawn, position, rotation, false, spawn_type)
+		end
+	end
+end
+
 PickupSystem.update = function (self, dt, t)
 	if self.is_server then
+		self:_update_life_time_pickups(dt, t)
 		self:_update_teleporting_pickups(dt, t)
-		self:_check_bonus_starting_gear_boon()
 	end
 
-	local statistics_db = self.statistics_db
+	local statistics_db = self._statistics_db
 	local update_list = self.update_list
 
 	for extension_name, _ in pairs(self.extensions) do
 		local profiler_name = self.profiler_names[extension_name]
 
-		for unit, extension in pairs(update_list[extension_name].update) do
+		for _, extension in pairs(update_list[extension_name].update) do
 			local hide_func = extension.hide_func
 
 			if not DEDICATED_SERVER and hide_func and hide_func(statistics_db) and not extension.hidden then
 				extension:hide()
+			end
+		end
+	end
+end
+
+PickupSystem.get_and_delete_limited_owned_pickup_with_index = function (self, owner_peer_id, index)
+	local limited_owned_pickups = self._limited_owned_pickups[owner_peer_id]
+
+	if not limited_owned_pickups then
+		return nil
+	end
+
+	local pickup_units = limited_owned_pickups.units
+	local removed_unit = table.remove(pickup_units, index)
+	local unit_spawner = Managers.state.unit_spawner
+	local is_alive = removed_unit and Unit.alive(removed_unit)
+
+	if not is_alive or (is_alive and unit_spawner:is_marked_for_deletion(removed_unit)) then
+		return nil
+	end
+
+	if self.is_server then
+		self:_delete_pickup(removed_unit)
+	else
+		local removed_unit_id = Managers.state.network:game_object_or_level_id(removed_unit)
+
+		Managers.state.network.network_transmit:send_rpc_server("rpc_delete_limited_owned_pickup_unit", owner_peer_id, removed_unit_id)
+	end
+
+	return removed_unit
+end
+
+PickupSystem.delete_limited_owned_pickup_unit = function (self, owner_peer_id, pickup_unit)
+	local limited_owned_pickups = self._limited_owned_pickups[owner_peer_id]
+
+	if not limited_owned_pickups then
+		return
+	end
+
+	local pickup_units = limited_owned_pickups.units
+	local index = table.find(pickup_units, pickup_unit)
+
+	if index then
+		table.remove(pickup_units, index)
+	end
+
+	local unit_spawner = Managers.state.unit_spawner
+	local is_alive = pickup_unit and Unit.alive(pickup_unit)
+
+	if not is_alive or (is_alive and unit_spawner:is_marked_for_deletion(pickup_unit)) then
+		return
+	end
+
+	if self.is_server then
+		self:_delete_pickup(pickup_unit)
+	else
+		local pickup_unit_id = Managers.state.network:game_object_or_level_id(pickup_unit)
+
+		Managers.state.network.network_transmit:send_rpc_server("rpc_delete_limited_owned_pickup_unit", owner_peer_id, pickup_unit_id)
+	end
+end
+
+PickupSystem.event_delete_limited_owned_pickups = function (self, peer_id)
+	if self.is_server then
+		local limited_owned_pickups = self._limited_owned_pickups[peer_id]
+
+		if not limited_owned_pickups then
+			return
+		end
+
+		local pickup_units = limited_owned_pickups.units
+
+		if pickup_units then
+			for _, unit in pairs(pickup_units) do
+				self:_delete_pickup(unit)
+			end
+
+			table.clear(pickup_units)
+		end
+	else
+		self.network_transmit:send_rpc_server("rpc_delete_limited_owned_pickups", peer_id)
+	end
+end
+
+PickupSystem._update_life_time_pickups = function (self, dt, t)
+	for unit, data in pairs(self._life_time_pickups) do
+		if data.life_time < t and data.pickup_settings.on_life_over_func then
+			data.pickup_settings.on_life_over_func()
+
+			if Unit.alive(unit) then
+				Managers.state.unit_spawner:mark_for_deletion(unit)
 			end
 		end
 	end
@@ -753,36 +1003,8 @@ PickupSystem._teleport_pickup = function (self, unit)
 	end
 end
 
-PickupSystem._check_bonus_starting_gear_boon = function (self)
-	local human_players = Managers.player:human_players()
-	local num_bonus_starting_gear_boons = 0
-
-	for _, player in pairs(human_players) do
-		local player_boon_handler = player.boon_handler
-
-		if player_boon_handler then
-			local num_boons = player_boon_handler:get_num_boons("bonus_starting_gear")
-
-			if num_bonus_starting_gear_boons < num_boons then
-				num_bonus_starting_gear_boons = num_boons
-			end
-		end
-	end
-
-	local spawned_bonus_starting_gear_index = self._spawned_bonus_starting_gear_index
-
-	if spawned_bonus_starting_gear_index < num_bonus_starting_gear_boons then
-		for i = spawned_bonus_starting_gear_index, num_bonus_starting_gear_boons, 1 do
-			local event_name = bonus_starting_gear_boon_events[i]
-
-			self:activate_triggered_pickup_spawners(event_name)
-		end
-
-		self._spawned_bonus_starting_gear_index = num_bonus_starting_gear_boons
-	end
-end
-
 PickupSystem.destroy = function (self)
+	Managers.state.event:unregister("delete_limited_owned_pickups", self)
 	self.network_event_delegate:unregister(self)
 end
 
@@ -790,35 +1012,10 @@ PickupSystem.hot_join_sync = function (self, sender)
 	return
 end
 
-PickupSystem.debug_spawn_pickup = function (self, pickup_name, optional_pos)
-	local pickup_settings = AllPickups[pickup_name]
-	local player_manager = Managers.player
-	local player = player_manager:local_player()
-	local player_unit = player.player_unit
-	local position = optional_pos or POSITION_LOOKUP[player_unit]
-
-	if not position then
-		return
-	end
-
-	local rotation = Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360)))
-	local with_physics = false
-	local spawn_type = "debug"
-	local pickup_unit = self:_spawn_pickup(pickup_settings, pickup_name, position, rotation, with_physics, spawn_type)
-
-	if pickup_unit then
-		self._debug_spawned_pickup[#self._debug_spawned_pickup + 1] = pickup_unit
-
-		return pickup_unit
-	end
-end
-
 PickupSystem.buff_spawn_pickup = function (self, pickup_name, position, raycast_down)
 	if not position then
 		return
 	end
-
-	local pickup_settings = AllPickups[pickup_name]
 
 	if raycast_down then
 		local physics_world = World.physics_world(self.world)
@@ -834,30 +1031,15 @@ PickupSystem.buff_spawn_pickup = function (self, pickup_name, position, raycast_
 	local rotation = Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360)))
 	local with_physics = false
 	local spawn_type = "buff"
-	local pickup_unit = self:_spawn_pickup(pickup_settings, pickup_name, position, rotation, with_physics, spawn_type)
+	local pickup_settings = AllPickups[pickup_name]
+	local pickup_unit, _ = self:_spawn_pickup(pickup_settings, pickup_name, position, rotation, with_physics, spawn_type)
 
 	if pickup_unit then
 		return pickup_unit
 	end
 end
 
-PickupSystem.debug_destroy_all_pickups = function (self)
-	local network_manager = Managers.state.network
-
-	if not network_manager:game() then
-		return
-	end
-
-	for k, unit in ipairs(self._debug_spawned_pickup) do
-		if Unit.alive(unit) then
-			Managers.state.unit_spawner:mark_for_deletion(unit)
-		end
-	end
-
-	table.clear(self._debug_spawned_pickup)
-end
-
-PickupSystem._spawn_pickup = function (self, pickup_settings, pickup_name, position, rotation, with_physics, spawn_type)
+PickupSystem._spawn_pickup = function (self, pickup_settings, pickup_name, position, rotation, with_physics, spawn_type, owner_peer_id, spawn_limit)
 	local next_index = self._next_index
 
 	if self._taken[next_index] then
@@ -875,7 +1057,9 @@ PickupSystem._spawn_pickup = function (self, pickup_settings, pickup_name, posit
 			pickup_name = pickup_name,
 			has_physics = with_physics,
 			spawn_type = spawn_type,
-			spawn_index = next_index
+			spawn_index = next_index,
+			owner_peer_id = owner_peer_id,
+			spawn_limit = spawn_limit
 		},
 		projectile_locomotion_system = {
 			network_position = AiAnimUtils.position_network_scale(position, true),
@@ -896,51 +1080,117 @@ PickupSystem._spawn_pickup = function (self, pickup_settings, pickup_name, posit
 	end
 
 	local unit_name = pickup_settings.unit_name
-	local pickup_unit = Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, position, rotation)
+	local pickup_unit, pickup_unit_go_id = Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, position, rotation)
 
 	if self.is_server then
-		self._spawned_pickups[#self._spawned_pickups + 1] = pickup_unit
-		local amount_spawned = self._amount_spawned
-		local amount = amount_spawned[pickup_name]
-
-		if amount then
-			amount_spawned[pickup_name] = amount + 1
-		else
-			amount_spawned[pickup_name] = 1
-		end
 	end
 
-	return pickup_unit
+	self:_update_limited_limited_owned_pickups(pickup_settings, pickup_name, position, rotation, with_physics, spawn_type, owner_peer_id)
+
+	return pickup_unit, pickup_unit_go_id
+end
+
+PickupSystem._update_limited_limited_owned_pickups = function (self, pickup_settings, pickup_name, position, rotation, with_physics, spawn_type, owner_peer_id)
+	local limited_owned_pickups = self._limited_owned_pickups[owner_peer_id]
+
+	if not limited_owned_pickups then
+		return
+	end
+
+	local spawn_limit = limited_owned_pickups.spawn_limit
+	local pickup_units = limited_owned_pickups.units
+	local num_pickup_units = #pickup_units
+
+	if spawn_limit < num_pickup_units then
+		local index = 1
+		local removed_unit = table.remove(pickup_units, index)
+
+		self:_delete_pickup(removed_unit)
+	end
 end
 
 PickupSystem.rpc_spawn_pickup_with_physics = function (self, sender, pickup_name_id, position, rotation, spawn_type_id)
 	local pickup_name = NetworkLookup.pickup_names[pickup_name_id]
-	local spawn_type = NetworkLookup.pickup_spawn_types[spawn_type_id]
 
 	fassert(AllPickups[pickup_name], "pickup name %s does not exist in Pickups table", pickup_name)
 
 	local pickup_settings = AllPickups[pickup_name]
+	local spawn_type = NetworkLookup.pickup_spawn_types[spawn_type_id]
 
 	self:_spawn_pickup(pickup_settings, pickup_name, position, rotation, true, spawn_type)
 end
 
 PickupSystem.rpc_spawn_pickup = function (self, sender, pickup_name_id, position, rotation, spawn_type_id)
 	local pickup_name = NetworkLookup.pickup_names[pickup_name_id]
+
+	fassert(AllPickups[pickup_name], "pickup name %s does not exist in Pickups table", pickup_name)
+
+	local owner_peer_id = sender or Network.peer_id()
+	local pickup_settings = AllPickups[pickup_name]
+	local spawn_type = NetworkLookup.pickup_spawn_types[spawn_type_id]
+
+	self:_spawn_pickup(pickup_settings, pickup_name, position, rotation, false, spawn_type, owner_peer_id)
+end
+
+PickupSystem.rpc_spawn_linked_pickup = function (self, sender, pickup_name_id, link_position, link_rotation, spawn_type_id, hit_unit_go_id, node_index, is_level_unit, spawn_limit)
+	fassert(self.is_server, "Can only spawn linked pickups on the server!")
+
+	local pickup_name = NetworkLookup.pickup_names[pickup_name_id]
 	local spawn_type = NetworkLookup.pickup_spawn_types[spawn_type_id]
 
 	fassert(AllPickups[pickup_name], "pickup name %s does not exist in Pickups table", pickup_name)
 
-	local pickup_settings = AllPickups[pickup_name]
+	local unit_spawner = Managers.state.unit_spawner
+	local hit_unit = Managers.state.network:game_object_or_level_unit(hit_unit_go_id, is_level_unit)
+	local link_pickup = false
+	local with_physics = true
 
-	self:_spawn_pickup(pickup_settings, pickup_name, position, rotation, false, spawn_type)
+	if hit_unit and Unit.alive(hit_unit) and not unit_spawner:is_marked_for_deletion(hit_unit) then
+		link_pickup = true
+		with_physics = false
+	end
+
+	local owner_peer_id = sender or Network.peer_id()
+	local pickup_settings = AllPickups[pickup_name]
+	local pickup_unit, pickup_unit_go_id = self:_spawn_pickup(pickup_settings, pickup_name, link_position, link_rotation, with_physics, spawn_type, owner_peer_id, spawn_limit)
+
+	if link_pickup then
+		local projectile_linker_system = Managers.state.entity:system("projectile_linker_system")
+
+		projectile_linker_system:link_pickup(pickup_unit, link_position, link_rotation, hit_unit, node_index)
+		self._network_manager.network_transmit:send_rpc_clients("rpc_link_pickup", pickup_unit_go_id, link_position, link_rotation, hit_unit_go_id, node_index, is_level_unit)
+	end
+end
+
+PickupSystem._delete_pickup = function (self, unit)
+	local unit_spawner = Managers.state.unit_spawner
+
+	if unit and Unit.alive(unit) and not unit_spawner:is_marked_for_deletion(unit) then
+		unit_spawner:mark_for_deletion(unit)
+	end
+end
+
+PickupSystem.rpc_delete_pickup = function (self, sender, unit_id)
+	local unit = Managers.state.network:game_object_or_level_unit(unit_id)
+
+	self:_delete_pickup(unit)
+end
+
+PickupSystem.rpc_delete_limited_owned_pickup_unit = function (self, sender, owner_peer_id, pickup_unit_id)
+	local pickup_unit = Managers.state.network:game_object_or_level_unit(pickup_unit_id)
+
+	self:delete_limited_owned_pickup_unit(owner_peer_id, pickup_unit)
+end
+
+PickupSystem.rpc_delete_limited_owned_pickups = function (self, sender, owner_peer_id)
+	self:event_delete_limited_owned_pickups(owner_peer_id)
 end
 
 PickupSystem.rpc_force_use_pickup = function (self, sender, pickup_name_id)
 	local is_server = Managers.player.is_server
 
 	if is_server then
-		local network_manager = Managers.state.network
-		local network_transmit = network_manager.network_transmit
+		local network_transmit = self.network_transmit
 
 		network_transmit:send_rpc_clients("rpc_force_use_pickup", pickup_name_id)
 	end
@@ -1053,61 +1303,6 @@ end
 PickupSystem.set_taken = function (self, spawn_index)
 	if self.is_server then
 		self._taken[spawn_index] = true
-	end
-end
-
-local spiral = {}
-local spiral_segments = 8
-
-PickupSystem.debug_show_pickups = function (self, dt, t)
-	local spawned_pickups = self._spawned_pickups
-	local local_position = Unit.local_position
-	local color = Color(45, 245, 100)
-	local step = (2 * math.pi) / 6
-
-	for i = 1, spiral_segments, 1 do
-		spiral[i] = Vector3(math.sin(t * 6 + i * step) * 0.3, math.cos(t * 6 + i * step) * 0.5, (i - 1) * 4)
-	end
-
-	for k, unit in pairs(spawned_pickups) do
-		if Unit.alive(unit) then
-			local pos = local_position(unit, 0)
-			local pos1 = Vector3(0, 0, 0)
-
-			for i = 1, spiral_segments, 1 do
-				local pos2 = spiral[i]
-
-				QuickDrawer:line(pos + pos1, pos + pos2, color)
-
-				pos1 = pos2
-			end
-		else
-			spawned_pickups[k] = nil
-		end
-	end
-
-	self:display_number_of_pickups()
-end
-
-PickupSystem.display_number_of_pickups = function (self)
-	local amount_spawned = self._amount_spawned
-	local s = "PICKUPS:" .. tostring(#self._spawned_pickups) .. ", "
-	local items = 0
-
-	for name, amount in pairs(amount_spawned) do
-		s = s .. name .. "=" .. amount .. ", "
-		items = items + 1
-
-		if items > 5 then
-			Debug.text(s)
-
-			s = ""
-			items = 0
-		end
-	end
-
-	if items > 0 then
-		Debug.text(s)
 	end
 end
 

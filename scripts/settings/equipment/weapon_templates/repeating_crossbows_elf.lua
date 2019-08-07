@@ -73,33 +73,35 @@ weapon_template.actions = {
 			}
 		},
 		zoomed_shot = {
+			burst = true,
+			reload_when_out_of_ammo = true,
+			alert_sound_range_hit = 2,
+			alert_sound_range_fire = 4,
+			multi_projectile_spread = 0.045,
+			unit_fire_sound_event = "player_combat_weapon_repeating_crossbow_elf_fire",
+			ammo_usage = 1,
+			weapon_action_hand = "left",
+			cooldown_from_start = true,
+			kind = "crossbow",
+			anim_event_last_ammo = "attack_shoot",
+			minimum_hold_time = 0.3,
+			anim_end_event = "to_unzoom",
+			speed = 8000,
+			anim_event = "attack_shoot",
+			apply_recoil = true,
 			apply_burst_recoil = true,
 			no_burst_spread = true,
-			unit_fire_sound_event = "player_combat_weapon_repeating_crossbow_elf_fire",
 			cooldown = 0.45,
 			anim_event_no_ammo_left = "attack_shoot",
 			unit_fire_sound_source_node = "j_crossbow_top",
-			multi_projectile_spread = 0.045,
-			cooldown_from_start = true,
-			weapon_action_hand = "left",
 			hit_effect = "arrow_impact",
-			anim_event_last_ammo = "attack_shoot",
-			alert_sound_range_fire = 4,
-			alert_sound_range_hit = 2,
-			ammo_usage = 1,
-			anim_end_event = "to_unzoom",
-			reload_when_out_of_ammo = true,
 			charge_value = "zoomed_arrow_hit",
 			num_projectiles = 3,
-			kind = "crossbow",
-			speed = 8000,
-			burst = true,
-			apply_recoil = true,
-			anim_event = "attack_shoot",
-			total_time = 1.25,
+			hold_input = "action_two_hold",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action"
 			end,
+			total_time = math.huge,
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
@@ -111,19 +113,16 @@ weapon_template.actions = {
 					sub_action = "zoomed_shot",
 					start_time = 0.45,
 					action = "action_one",
+					input = "action_one",
+					hold_required = {
+						"action_two_hold"
+					}
+				},
+				{
+					sub_action = "default",
+					start_time = 0.45,
+					action = "action_one",
 					input = "action_one"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.45,
-					action = "action_two",
-					input = "action_two_hold"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.45,
-					action = "weapon_reload",
-					input = "weapon_reload"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -205,12 +204,6 @@ weapon_template.actions = {
 					start_time = 0.3,
 					action = "action_one",
 					input = "action_one"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.3,
-					action = "weapon_reload",
-					input = "weapon_reload"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -245,14 +238,12 @@ weapon_template.actions = {
 	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught
 }
 weapon_template.ammo_data = {
-	ammo_per_reload = 15,
-	ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_pile",
-	destroy_when_out_of_ammo = false,
-	ammo_per_clip = 15,
-	ammo_hand = "left",
-	play_reload_anim_on_wield_reload = true,
-	ammo_unit_3p = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_3p",
 	max_ammo = 30,
+	ammo_per_reload = 15,
+	ammo_per_clip = 15,
+	play_reload_anim_on_wield_reload = true,
+	ammo_hand = "left",
+	destroy_when_out_of_ammo = false,
 	reload_on_ammo_pickup = false,
 	reload_time = 2.5,
 	ammo_unit_attachment_node_linking = AttachmentNodeLinking.repeating_bolt

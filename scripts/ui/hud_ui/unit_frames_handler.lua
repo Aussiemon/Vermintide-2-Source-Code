@@ -10,7 +10,7 @@ local allowed_weapon_slots = {
 	slot_ranged = true,
 	slot_melee = true
 }
-local NUM_TEAM_MEMBERS = 3
+local NUM_PARTY_MEMBERS = 3
 UnitFramesHandler = class(UnitFramesHandler)
 
 UnitFramesHandler.init = function (self, parent, ingame_ui_context)
@@ -28,14 +28,46 @@ UnitFramesHandler.init = function (self, parent, ingame_ui_context)
 	local network_transmit = network_manager.network_transmit
 	local server_peer_id = network_transmit.server_peer_id
 	self.host_peer_id = server_peer_id or network_transmit.peer_id
+	local party_manager = Managers.party
+	local local_player_id = 1
+	local player_status = party_manager:get_player_status(self.peer_id, local_player_id)
+	local party_id = player_status.party_id
+	local party = party_manager:get_party(party_id)
+	local side = Managers.state.side.side_by_party[party]
 	self.platform = PLATFORM
 	self._unit_frames = {}
 	self._unit_frame_index_by_ui_id = {}
+	self.unit_frame_by_player = {}
 
 	self:_create_player_unit_frame()
-	self:_create_team_members_unit_frames()
+	self:_create_party_members_unit_frames()
+
+	local event_manager = Managers.state.event
+
+	event_manager:register(self, "add_damage_feedback_event", "add_damage_feedback_event")
+	event_manager:register(self, "add_respawn_counter_event", "add_respawn_counter_event")
 
 	self._current_frame_index = 1
+end
+
+UnitFramesHandler.add_damage_feedback_event = function (self, hash, is_local_player, event_type, attacker_player, target_player, damage_amount)
+	local unit_frame = self.unit_frame_by_player[attacker_player]
+
+	if unit_frame then
+		local widget = unit_frame.widget
+
+		widget:add_damage_feedback(hash, is_local_player, event_type, attacker_player, target_player, damage_amount)
+	end
+end
+
+UnitFramesHandler.add_respawn_counter_event = function (self, player, is_local_player, respawn_time)
+	local unit_frame = self.unit_frame_by_player[player]
+
+	if unit_frame then
+		local widget = unit_frame.widget
+
+		widget:show_respawn_countdown(player, is_local_player, respawn_time)
+	end
 end
 
 UnitFramesHandler.unit_frame_amount = function (self)
@@ -61,26 +93,29 @@ UnitFramesHandler._create_player_unit_frame = function (self)
 	local player_data = {
 		player_ui_id = player_ui_id,
 		player = player,
-		own_player = true,
-		peer_id = player:network_id(),
-		local_player_id = player:local_player_id()
+		own_player = true
 	}
+	local peer_id = player:network_id()
+	player_data.peer_id = peer_id
+	local local_player_id = player:local_player_id()
+	player_data.local_player_id = local_player_id
 	local unit_frame = self:_create_unit_frame_by_type("player")
 	unit_frame.player_data = player_data
 	unit_frame.sync = true
 	self._unit_frames[1] = unit_frame
+	self.unit_frame_by_player[player] = unit_frame
 	self._unit_frame_index_by_ui_id[player_ui_id] = 1
 end
 
-UnitFramesHandler._create_team_members_unit_frames = function (self)
+UnitFramesHandler._create_party_members_unit_frames = function (self)
 	local unit_frames = self._unit_frames
 
-	for i = 1, NUM_TEAM_MEMBERS, 1 do
+	for i = 1, NUM_PARTY_MEMBERS, 1 do
 		local unit_frame = self:_create_unit_frame_by_type("team", i)
 		unit_frames[#unit_frames + 1] = unit_frame
 	end
 
-	self:_align_team_member_frames()
+	self:_align_party_member_frames()
 end
 
 UnitFramesHandler._create_unit_frame_by_type = function (self, frame_type, frame_index)
@@ -94,8 +129,9 @@ UnitFramesHandler._create_unit_frame_by_type = function (self, frame_type, frame
 		definitions = local_require("scripts/ui/hud_ui/team_member_unit_frame_ui_definitions")
 	elseif frame_type == "player" then
 		local gamepad_active = self.input_manager:is_device_active("gamepad") or PLATFORM ~= "win32"
+		local should_use_game_pad = self.platform ~= "win32" or ((gamepad_active or UISettings.use_gamepad_hud_layout == "always") and UISettings.use_gamepad_hud_layout ~= "never")
 
-		if self.platform ~= "win32" or ((gamepad_active or UISettings.use_gamepad_hud_layout == "always") and UISettings.use_gamepad_hud_layout ~= "never") then
+		if should_use_game_pad then
 			definitions = local_require("scripts/ui/hud_ui/player_console_unit_frame_ui_definitions")
 			unit_frame.gamepad_version = true
 		else
@@ -110,7 +146,7 @@ UnitFramesHandler._create_unit_frame_by_type = function (self, frame_type, frame
 	unit_frame.definitions = definitions
 	unit_frame.features_list = definitions.features_list
 	unit_frame.widget_name_by_feature = definitions.widget_name_by_feature
-	unit_frame.widget = UnitFrameUI:new(ingame_ui_context, definitions, state_data, frame_index, player_data)
+	unit_frame.widget = UnitFrameUI:new(ingame_ui_context, definitions, state_data, frame_index, player_data, frame_type)
 
 	return unit_frame
 end
@@ -150,6 +186,12 @@ UnitFramesHandler._reset_unit_frame = function (self, unit_frame)
 	unit_frame.sync = false
 end
 
+UnitFramesHandler.get_frame_by_player = function (self, player)
+	local unit_frames = self._unit_frames
+	local unit_frame_index_by_ui_id = self.unit_frame_index_by_ui_id
+	local unit_frames_used_by_players = 0
+end
+
 local temp_active_ui_ids = {}
 local temp_active_peer_ids = {}
 local temp_connecting_peer_ids = {}
@@ -160,64 +202,81 @@ UnitFramesHandler._handle_unit_frame_assigning = function (self)
 	local unit_frame_index_by_ui_id = self._unit_frame_index_by_ui_id
 	local unit_frames_used_by_players = 0
 	local my_player = self.my_player
+	local my_peer_id = my_player:network_id()
+	local my_local_peer_id = my_player:local_player_id()
 
 	table.clear(temp_active_ui_ids)
 	table.clear(temp_active_peer_ids)
 
+	local party = Managers.party:get_party_from_player_id(my_peer_id, my_local_peer_id)
 	local frames_changed = false
 
-	for _, player in pairs(players) do
-		local player_ui_id = player:ui_id()
-		local player_peer_id = player:network_id()
-		temp_active_ui_ids[player_ui_id] = true
-		temp_active_peer_ids[player_peer_id] = true
-		local own_player = player == my_player
+	if party then
+		local occupied_slots = party.occupied_slots
 
-		if not own_player then
-			if not unit_frame_index_by_ui_id[player_ui_id] then
-				local add_unit_frame = true
-				local game_mode_key = Managers.state.game_mode:game_mode_key()
+		for i = 1, #occupied_slots, 1 do
+			local status = occupied_slots[i]
+			local player_peer_id = status.peer_id
+			local local_player_id = status.local_player_id
+			local player = player_manager:player(player_peer_id, local_player_id)
 
-				if game_mode_key == "tutorial" then
-					local play_go_tutorial_system = Managers.state.entity:system("play_go_tutorial_system")
-					add_unit_frame = play_go_tutorial_system:bot_portrait_enabled(player)
-				end
+			if player then
+				local player_ui_id = player:ui_id()
+				temp_active_ui_ids[player_ui_id] = true
+				temp_active_peer_ids[player_peer_id] = true
+				local own_player = player == my_player
 
-				if add_unit_frame then
-					local avaiable_unit_frame, unit_frame_index = self:_get_unit_frame_by_connecting_peer_id(player_peer_id)
+				if not own_player then
+					if not unit_frame_index_by_ui_id[player_ui_id] then
+						local add_unit_frame = true
+						local game_mode_key = Managers.state.game_mode:game_mode_key()
 
-					if not avaiable_unit_frame then
-						avaiable_unit_frame, unit_frame_index = self:_get_unused_unit_frame()
-					end
-
-					if avaiable_unit_frame then
-						unit_frame_index_by_ui_id[player_ui_id] = unit_frame_index
-
-						table.clear(avaiable_unit_frame.data)
-
-						local player_data = {
-							player_ui_id = player_ui_id,
-							player = player,
-							own_player = own_player,
-							peer_id = player_peer_id,
-							local_player_id = player:local_player_id()
-						}
-						avaiable_unit_frame.player_data = player_data
-						avaiable_unit_frame.sync = true
-						frames_changed = true
-
-						if player:is_player_controlled() then
-							unit_frames_used_by_players = unit_frames_used_by_players + 1
+						if game_mode_key == "tutorial" then
+							local play_go_tutorial_system = Managers.state.entity:system("play_go_tutorial_system")
+							add_unit_frame = play_go_tutorial_system:bot_portrait_enabled(player)
 						end
+
+						if add_unit_frame then
+							local avaiable_unit_frame, unit_frame_index = self:_get_unit_frame_by_connecting_peer_id(player_peer_id)
+
+							if not avaiable_unit_frame then
+								avaiable_unit_frame, unit_frame_index = self:_get_unused_unit_frame()
+							end
+
+							if avaiable_unit_frame then
+								unit_frame_index_by_ui_id[player_ui_id] = unit_frame_index
+
+								table.clear(avaiable_unit_frame.data)
+
+								local player_data = {
+									player_ui_id = player_ui_id,
+									player = player,
+									own_player = own_player,
+									peer_id = player_peer_id,
+									local_player_id = local_player_id
+								}
+								avaiable_unit_frame.player_data = player_data
+								avaiable_unit_frame.sync = true
+								frames_changed = true
+
+								if player:is_player_controlled() then
+									unit_frames_used_by_players = unit_frames_used_by_players + 1
+								end
+
+								self.unit_frame_by_player[player] = avaiable_unit_frame
+							end
+						end
+					elseif player:is_player_controlled() then
+						unit_frames_used_by_players = unit_frames_used_by_players + 1
 					end
 				end
-			elseif player:is_player_controlled() then
-				unit_frames_used_by_players = unit_frames_used_by_players + 1
 			end
 		end
 	end
 
-	if self:_handle_connecting_peers(temp_active_peer_ids, unit_frames_used_by_players) then
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+
+	if mechanism_name == "adventure" and self:_handle_connecting_peers(temp_active_peer_ids, unit_frames_used_by_players) then
 		frames_changed = true
 	end
 
@@ -226,7 +285,7 @@ UnitFramesHandler._handle_unit_frame_assigning = function (self)
 	end
 
 	if frames_changed then
-		self:_align_team_member_frames()
+		self:_align_party_member_frames()
 	end
 end
 
@@ -299,7 +358,7 @@ UnitFramesHandler._cleanup_unused_unit_frames = function (self, active_ui_ids, c
 	return frames_cleared
 end
 
-UnitFramesHandler._align_team_member_frames = function (self)
+UnitFramesHandler._align_party_member_frames = function (self)
 	local start_offset_y = -100
 	local start_offset_x = 80
 	local spacing = 220
@@ -349,7 +408,7 @@ local function get_ammunition_count(left_hand_wielded_unit, right_hand_wielded_u
 	local ammo_count = ammo_extension:ammo_count()
 	local remaining_ammo = ammo_extension:remaining_ammo()
 	local single_clip = ammo_extension:using_single_clip()
-	local max_ammo = ammo_extension.max_ammo
+	local max_ammo = ammo_extension:max_ammo()
 
 	return ammo_count, remaining_ammo, max_ammo, single_clip
 end
@@ -369,7 +428,6 @@ UnitFramesHandler._set_player_extensions = function (self, player_data, player_u
 		health = ScriptUnit.extension(player_unit, "health_system"),
 		status = ScriptUnit.extension(player_unit, "status_system"),
 		inventory = ScriptUnit.extension(player_unit, "inventory_system"),
-		dialogue = ScriptUnit.extension(player_unit, "dialogue_system"),
 		buff = ScriptUnit.extension(player_unit, "buff_system")
 	}
 	player_data.extensions = extensions
@@ -455,7 +513,10 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 		local twitch_multiplier = PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF
 		local num_slayer_curses = buff_extension:num_buff_perk("slayer_curse")
 		local slayer_curse_multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.SLAYER_CURSE_HEALTH_DEBUFF, "curse_protection")
-		active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier + num_slayer_curses * slayer_curse_multiplier
+		local difficulty_name = Managers.state.difficulty:get_difficulty()
+		local num_mutator_curses = buff_extension:num_buff_perk("mutator_curse")
+		local mutator_curse_multiplier = buff_extension:apply_buffs_to_value(WindSettings.light.curse_settings.value[difficulty_name], "curse_protection")
+		active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier + num_slayer_curses * slayer_curse_multiplier + num_mutator_curses * mutator_curse_multiplier
 		equipment = inventory_extension:equipment()
 		career_index = career_extension:career_index()
 
@@ -765,6 +826,11 @@ UnitFramesHandler.destroy = function (self)
 	self.ui_animator = nil
 
 	self:set_visible(false)
+
+	local event_manager = Managers.state.event
+
+	event_manager:unregister("add_damage_feedback_event", self)
+	event_manager:unregister("add_respawn_counter_event", self)
 end
 
 UnitFramesHandler.set_visible = function (self, visible)
@@ -833,8 +899,9 @@ UnitFramesHandler.update = function (self, dt, t)
 	local parent = self._parent
 	local ignore_own_player = parent:is_own_player_dead()
 	local gamepad_active = self.input_manager:is_device_active("gamepad") or PLATFORM ~= "win32"
+	local use_game_pad = (gamepad_active or UISettings.use_gamepad_hud_layout == "always") and UISettings.use_gamepad_hud_layout ~= "never"
 
-	if (gamepad_active or UISettings.use_gamepad_hud_layout == "always") and UISettings.use_gamepad_hud_layout ~= "never" then
+	if use_game_pad then
 		if not self.gamepad_active_last_frame then
 			self.gamepad_active_last_frame = true
 
@@ -853,10 +920,14 @@ UnitFramesHandler.update = function (self, dt, t)
 	local unit_frames = self._unit_frames
 
 	for i = 1, #unit_frames, 1 do
-		if i ~= 1 or not ignore_own_player then
-			local unit_frame = unit_frames[i]
+		local unit_frame = unit_frames[i]
 
+		if i ~= 1 or not ignore_own_player then
 			unit_frame.widget:update(dt, t)
+		end
+
+		if unit_frame.widget:show_respawn_ui() then
+			unit_frame.widget:update_respawn_countdown(dt, t)
 		end
 	end
 

@@ -66,6 +66,13 @@ LoadedDice = {
 		local biased_coin_toss = math.random() < prob[column]
 
 		return (biased_coin_toss and column) or alias[column]
+	end,
+	roll_seeded = function (prob, alias, seed)
+		local seed, column = Math.next_random(seed, 1, #prob)
+		local seed, random_value = Math.next_random(seed)
+		local biased_coin_toss = random_value < prob[column]
+
+		return seed, (biased_coin_toss and column) or alias[column]
 	end
 }
 local only_prob_table = {}
@@ -92,6 +99,10 @@ end
 
 LoadedDice.roll_easy = function (loaded_table)
 	return LoadedDice.roll(loaded_table[1], loaded_table[2])
+end
+
+LoadedDice.roll_easy_seeded = function (loaded_table, seed)
+	return LoadedDice.roll_seeded(loaded_table[1], loaded_table[2], seed)
 end
 
 LoadedDice.test = function ()

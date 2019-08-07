@@ -1,6 +1,6 @@
 ItemMasterList.we_1h_axe = {
 	description = "we_1h_axe_skin_01_description",
-	rarity = "default",
+	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_we_axe_01_t2/wpn_we_axe_01_t2",
 	hud_icon = "weapon_generic_icon_falken",
 	skin_combination_table = "we_1h_axe_skins",
@@ -20,7 +20,7 @@ ItemMasterList.we_1h_axe = {
 }
 ItemMasterList.bw_1h_crowbill = {
 	description = "bw_1h_crowbill_skin_01_description",
-	rarity = "default",
+	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_brw_crowbill_01/wpn_brw_crowbill_01",
 	hud_icon = "weapon_generic_icon_falken",
 	skin_combination_table = "bw_1h_crowbill_skins",
@@ -40,7 +40,7 @@ ItemMasterList.bw_1h_crowbill = {
 }
 ItemMasterList.wh_dual_wield_axe_falchion = {
 	description = "wh_dual_wield_axe_falchion_skin_01_description",
-	rarity = "default",
+	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_axe_hatchet_t2/wpn_axe_hatchet_t2",
 	skin_combination_table = "wh_dual_wield_axe_falchion_skins",
 	inventory_icon = "icon_wh_dual_wield_axe_falchion_01",
@@ -61,7 +61,7 @@ ItemMasterList.wh_dual_wield_axe_falchion = {
 }
 ItemMasterList.dr_dual_wield_hammers = {
 	description = "dr_dual_wield_hammers_skin_01_description",
-	rarity = "default",
+	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_dw_hammer_03_t1/wpn_dw_hammer_03_t1",
 	skin_combination_table = "dr_dual_wield_hammers_skins",
 	inventory_icon = "icon_dr_dual_wield_hammers_01",
@@ -82,7 +82,7 @@ ItemMasterList.dr_dual_wield_hammers = {
 }
 ItemMasterList.es_dual_wield_hammer_sword = {
 	description = "es_dual_wield_hammer_sword_skin_01_description",
-	rarity = "default",
+	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_emp_mace_04_t2/wpn_emp_mace_04_t2",
 	skin_combination_table = "es_dual_wield_hammer_sword_skins",
 	inventory_icon = "icon_es_dual_wield_hammer_sword_01",

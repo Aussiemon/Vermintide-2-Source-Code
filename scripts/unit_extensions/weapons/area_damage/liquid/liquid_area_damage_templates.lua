@@ -52,21 +52,7 @@ LiquidAreaDamageTemplates = {
 					0,
 					1
 				},
-				survival_hard = {
-					1,
-					1,
-					0,
-					0,
-					1
-				},
 				harder = {
-					1,
-					1,
-					0,
-					0,
-					1
-				},
-				survival_harder = {
 					1,
 					1,
 					0,
@@ -80,7 +66,21 @@ LiquidAreaDamageTemplates = {
 					0,
 					1
 				},
-				survival_hardest = {
+				cataclysm = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				cataclysm_2 = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				cataclysm_3 = {
 					1,
 					1,
 					0,
@@ -141,21 +141,7 @@ LiquidAreaDamageTemplates = {
 					0,
 					1
 				},
-				survival_hard = {
-					1,
-					1,
-					0,
-					0,
-					1
-				},
 				harder = {
-					1,
-					1,
-					0,
-					0,
-					1
-				},
-				survival_harder = {
 					1,
 					1,
 					0,
@@ -169,7 +155,21 @@ LiquidAreaDamageTemplates = {
 					0,
 					1
 				},
-				survival_hardest = {
+				cataclysm = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				cataclysm_2 = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				cataclysm_3 = {
 					1,
 					1,
 					0,
@@ -180,7 +180,10 @@ LiquidAreaDamageTemplates = {
 			hit_player_function = function (player_unit, player_and_bot_units, source_unit)
 				if Unit.alive(source_unit) then
 					local blackboard = BLACKBOARDS[source_unit]
-					blackboard.has_done_bile_damage = true
+
+					if blackboard then
+						blackboard.has_done_bile_damage = true
+					end
 				end
 			end
 		},
@@ -236,21 +239,7 @@ LiquidAreaDamageTemplates = {
 					0,
 					1
 				},
-				survival_hard = {
-					1,
-					1,
-					0,
-					0,
-					1
-				},
 				harder = {
-					1,
-					1,
-					0,
-					0,
-					1
-				},
-				survival_harder = {
 					1,
 					1,
 					0,
@@ -264,7 +253,21 @@ LiquidAreaDamageTemplates = {
 					0,
 					1
 				},
-				survival_hardest = {
+				cataclysm = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				cataclysm_2 = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				cataclysm_3 = {
 					1,
 					1,
 					0,
@@ -273,43 +276,50 @@ LiquidAreaDamageTemplates = {
 				}
 			},
 			hit_player_function = function (hit_player_unit, player_and_bot_units)
-				local stat_name = "nurgle_bathed_all"
-				local current_difficulty = Managers.state.difficulty:get_difficulty()
-				local allowed_difficulties = QuestSettings.allowed_difficulties[stat_name]
-				local allowed_difficulty = allowed_difficulties[current_difficulty]
+				local stat_names = {
+					"nurgle_bathed_all",
+					"nurgle_bathed_all_cata"
+				}
 
-				if allowed_difficulty then
-					local status_extension = ScriptUnit.extension(hit_player_unit, "status_system")
-					local num_times_bathed_in_nurgle_liquid = status_extension.num_times_bathed_in_nurgle_liquid or 0
-					status_extension.num_times_bathed_in_nurgle_liquid = num_times_bathed_in_nurgle_liquid + 1
-					local completed_challenge = false
+				for h = 1, #stat_names, 1 do
+					local current_difficulty = Managers.state.difficulty:get_difficulty()
+					local stat_name = stat_names[h]
+					local allowed_difficulties = QuestSettings.allowed_difficulties[stat_name]
+					local allowed_difficulty = allowed_difficulties[current_difficulty]
 
-					for i = 0, #player_and_bot_units, 1 do
-						local player_unit = player_and_bot_units[i]
+					if allowed_difficulty then
+						local status_extension = ScriptUnit.extension(hit_player_unit, "status_system")
+						local num_times_bathed_in_nurgle_liquid = status_extension.num_times_bathed_in_nurgle_liquid or 0
+						status_extension.num_times_bathed_in_nurgle_liquid = num_times_bathed_in_nurgle_liquid + 1
+						local completed_challenge = false
 
-						if Unit.alive(player_unit) then
-							local player_unit_status_extension = ScriptUnit.extension(player_unit, "status_system")
-							local num_times_bathed = player_unit_status_extension.num_times_bathed_in_nurgle_liquid
-
-							if num_times_bathed and QuestSettings.nurgle_bathed_all <= num_times_bathed then
-								local statistics_db = Managers.player:statistics_db()
-
-								statistics_db:increment_stat_and_sync_to_clients(stat_name)
-
-								completed_challenge = true
-
-								break
-							end
-						end
-					end
-
-					if completed_challenge then
 						for i = 0, #player_and_bot_units, 1 do
 							local player_unit = player_and_bot_units[i]
 
 							if Unit.alive(player_unit) then
 								local player_unit_status_extension = ScriptUnit.extension(player_unit, "status_system")
-								player_unit_status_extension.num_times_bathed_in_nurgle_liquid = nil
+								local num_times_bathed = player_unit_status_extension.num_times_bathed_in_nurgle_liquid
+
+								if num_times_bathed and QuestSettings.nurgle_bathed_all <= num_times_bathed then
+									local statistics_db = Managers.player:statistics_db()
+
+									statistics_db:increment_stat_and_sync_to_clients(stat_names[h])
+
+									completed_challenge = true
+
+									break
+								end
+							end
+						end
+
+						if completed_challenge then
+							for i = 0, #player_and_bot_units, 1 do
+								local player_unit = player_and_bot_units[i]
+
+								if Unit.alive(player_unit) then
+									local player_unit_status_extension = ScriptUnit.extension(player_unit, "status_system")
+									player_unit_status_extension.num_times_bathed_in_nurgle_liquid = nil
+								end
 							end
 						end
 					end
@@ -369,26 +379,12 @@ LiquidAreaDamageTemplates = {
 					0,
 					3
 				},
-				survival_hard = {
-					1,
-					1,
-					0,
-					0,
-					1
-				},
 				harder = {
 					6,
 					6,
 					0,
 					0,
 					6
-				},
-				survival_harder = {
-					1,
-					1,
-					0,
-					0,
-					1
 				},
 				hardest = {
 					8,
@@ -397,7 +393,21 @@ LiquidAreaDamageTemplates = {
 					0,
 					8
 				},
-				survival_hardest = {
+				cataclysm = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				cataclysm_2 = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				cataclysm_3 = {
 					1,
 					1,
 					0,
@@ -452,21 +462,7 @@ LiquidAreaDamageTemplates = {
 					6,
 					10
 				},
-				survival_hard = {
-					10,
-					10,
-					10,
-					6,
-					10
-				},
 				harder = {
-					10,
-					10,
-					10,
-					7,
-					10
-				},
-				survival_harder = {
 					10,
 					10,
 					10,
@@ -480,7 +476,21 @@ LiquidAreaDamageTemplates = {
 					8,
 					10
 				},
-				survival_hardest = {
+				cataclysm = {
+					10,
+					10,
+					10,
+					6,
+					10
+				},
+				cataclysm_2 = {
+					10,
+					10,
+					10,
+					7,
+					10
+				},
+				cataclysm_3 = {
 					10,
 					10,
 					10,
@@ -529,21 +539,7 @@ LiquidAreaDamageTemplates = {
 					6,
 					10
 				},
-				survival_hard = {
-					10,
-					10,
-					10,
-					6,
-					10
-				},
 				harder = {
-					10,
-					10,
-					10,
-					7,
-					10
-				},
-				survival_harder = {
 					10,
 					10,
 					10,
@@ -557,7 +553,21 @@ LiquidAreaDamageTemplates = {
 					8,
 					10
 				},
-				survival_hardest = {
+				cataclysm = {
+					10,
+					10,
+					10,
+					6,
+					10
+				},
+				cataclysm_2 = {
+					10,
+					10,
+					10,
+					7,
+					10
+				},
+				cataclysm_3 = {
 					10,
 					10,
 					10,
@@ -567,20 +577,22 @@ LiquidAreaDamageTemplates = {
 			}
 		},
 		sienna_unchained_ability_patch = {
-			damage_buff_template_name = "burning_1W_dot",
-			fx_name_rim = "fx/chr_unchained_living_bomb_lingering",
-			cell_size = 1,
-			liquid_spread_function = "pour_spread",
-			starting_pressure = 15,
 			do_direct_damage_ai = false,
+			cell_size = 1,
+			max_liquid = 10,
+			below = 30,
+			starting_pressure = 15,
 			do_direct_damage_player = false,
+			damage_buff_template_name = "burning_1W_dot",
 			linearized_flow = false,
+			fx_name_rim = "fx/chr_unchained_living_bomb_lingering",
+			liquid_spread_function = "pour_spread",
 			damage_type = "burninating",
 			sfx_name_start = "Play_props_lamp_oil_fire",
 			end_pressure = 2,
 			fx_name_filled = "fx/chr_unchained_living_bomb_lingering_rim",
 			time_of_life = 3,
-			max_liquid = 10,
+			above = 2,
 			sfx_name_stop = "Stop_props_lamp_oil_fire",
 			immune_breeds = {},
 			difficulty_direct_damage = {
@@ -605,21 +617,7 @@ LiquidAreaDamageTemplates = {
 					0,
 					0
 				},
-				survival_hard = {
-					0,
-					0,
-					0,
-					0,
-					0
-				},
 				harder = {
-					0,
-					0,
-					0,
-					0,
-					0
-				},
-				survival_harder = {
 					0,
 					0,
 					0,
@@ -633,7 +631,21 @@ LiquidAreaDamageTemplates = {
 					0,
 					0
 				},
-				survival_hardest = {
+				cataclysm = {
+					0,
+					0,
+					0,
+					0,
+					0
+				},
+				cataclysm_2 = {
+					0,
+					0,
+					0,
+					0,
+					0
+				},
+				cataclysm_3 = {
 					0,
 					0,
 					0,
@@ -643,20 +655,22 @@ LiquidAreaDamageTemplates = {
 			}
 		},
 		sienna_unchained_ability_patch_increased_damage = {
-			damage_buff_template_name = "burning_1W_dot",
-			fx_name_rim = "fx/wpnfx_lamp_oil_remains_rim",
-			cell_size = 1,
-			liquid_spread_function = "pour_spread",
-			starting_pressure = 15,
 			do_direct_damage_ai = false,
+			cell_size = 1,
+			max_liquid = 10,
+			below = 30,
+			starting_pressure = 15,
 			do_direct_damage_player = false,
+			damage_buff_template_name = "burning_1W_dot",
 			linearized_flow = false,
+			fx_name_rim = "fx/chr_unchained_living_bomb_lingering",
+			liquid_spread_function = "pour_spread",
 			damage_type = "burninating",
 			sfx_name_start = "Play_props_lamp_oil_fire",
 			end_pressure = 2,
 			fx_name_filled = "fx/chr_unchained_living_bomb_lingering_rim",
 			time_of_life = 3,
-			max_liquid = 10,
+			above = 2,
 			sfx_name_stop = "Stop_props_lamp_oil_fire",
 			immune_breeds = {},
 			difficulty_direct_damage = {
@@ -681,21 +695,7 @@ LiquidAreaDamageTemplates = {
 					0,
 					10
 				},
-				survival_hard = {
-					10,
-					10,
-					10,
-					0,
-					10
-				},
 				harder = {
-					10,
-					10,
-					10,
-					0,
-					10
-				},
-				survival_harder = {
 					10,
 					10,
 					10,
@@ -709,7 +709,21 @@ LiquidAreaDamageTemplates = {
 					0,
 					10
 				},
-				survival_hardest = {
+				cataclysm = {
+					10,
+					10,
+					10,
+					0,
+					10
+				},
+				cataclysm_2 = {
+					10,
+					10,
+					10,
+					0,
+					10
+				},
+				cataclysm_3 = {
 					10,
 					10,
 					10,

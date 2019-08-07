@@ -143,6 +143,10 @@ EndViewStateScore.on_exit = function (self, params)
 	self.ui_animator = nil
 end
 
+EndViewStateScore.done = function (self)
+	return false
+end
+
 EndViewStateScore._update_transition_timer = function (self, dt)
 	if not self._transition_timer then
 		return

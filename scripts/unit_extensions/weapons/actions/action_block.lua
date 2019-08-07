@@ -1,4 +1,4 @@
-ActionBlock = class(ActionBlock)
+ActionBlock = class(ActionBlock, ActionBase)
 
 ActionBlock.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	self.world = world
@@ -13,6 +13,8 @@ ActionBlock.init = function (self, world, item_name, is_server, owner_unit, dama
 end
 
 ActionBlock.client_owner_start_action = function (self, new_action, t)
+	ActionBlock.super.client_owner_start_action(self, new_action, t)
+
 	self.current_action = new_action
 	self.action_time_started = t
 	local input_extension = ScriptUnit.extension(self.owner_unit, "input_system")

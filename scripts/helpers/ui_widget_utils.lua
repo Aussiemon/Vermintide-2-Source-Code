@@ -43,21 +43,48 @@ UIWidgetUtils.animate_default_button = function (widget, dt)
 	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
 	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
 	local input_alpha = 255 * input_progress
-	style.clicked_rect.color[1] = 100 * input_progress
-	local hover_alpha = 255 * combined_progress
-	style.hover_glow.color[1] = hover_alpha
-	local text_disabled_style = style.title_text_disabled
-	local disabled_default_text_color = text_disabled_style.default_text_color
-	local disabled_text_color = text_disabled_style.text_color
-	disabled_text_color[2] = disabled_default_text_color[2] * 0.4
-	disabled_text_color[3] = disabled_default_text_color[3] * 0.4
-	disabled_text_color[4] = disabled_default_text_color[4] * 0.4
-	local title_text_style = style.title_text
-	local title_text_color = title_text_style.text_color
-	local title_default_text_color = title_text_style.default_text_color
-	local title_select_text_color = title_text_style.select_text_color
+	local clicked_rect_style = style.clicked_rect
 
-	Colors.lerp_color_tables(title_default_text_color, title_select_text_color, combined_progress, title_text_color)
+	if clicked_rect_style then
+		clicked_rect_style.color[1] = 100 * input_progress
+	end
+
+	local hover_glow_style = style.hover_glow
+
+	if hover_glow_style then
+		local hover_alpha = 255 * combined_progress
+		hover_glow_style.color[1] = hover_alpha
+	end
+
+	local text_disabled_style = style.title_text_disabled
+
+	if text_disabled_style then
+		local disabled_default_text_color = text_disabled_style.default_text_color
+		local disabled_text_color = text_disabled_style.text_color
+		disabled_text_color[2] = disabled_default_text_color[2] * 0.4
+		disabled_text_color[3] = disabled_default_text_color[3] * 0.4
+		disabled_text_color[4] = disabled_default_text_color[4] * 0.4
+	end
+
+	local icon_style = style.icon
+
+	if icon_style then
+		local icon_color = icon_style.color
+		local icon_default_color = icon_style.default_color
+		local icon_select_color = icon_style.select_color
+
+		Colors.lerp_color_tables(icon_default_color, icon_select_color, combined_progress, icon_color)
+	end
+
+	local title_text_style = style.title_text
+
+	if title_text_style then
+		local title_text_color = title_text_style.text_color
+		local title_default_text_color = title_text_style.default_text_color
+		local title_select_text_color = title_text_style.select_text_color
+
+		Colors.lerp_color_tables(title_default_text_color, title_select_text_color, combined_progress, title_text_color)
+	end
 
 	hotspot.hover_progress = hover_progress
 	hotspot.input_progress = input_progress
@@ -174,12 +201,22 @@ UIWidgetUtils.animate_default_checkbox_button = function (widget, dt)
 	local combined_progress = math.max(hover_progress, selection_progress)
 	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
 	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
-	local clicked_rect_name = "clicked_rect"
 	local input_alpha = 255 * input_progress
-	style[clicked_rect_name].color[1] = 100 * input_progress
-	local hover_glow_name = "hover_glow"
+	local clicked_rect_name = "clicked_rect"
+	local clicked_rect_style = style[clicked_rect_name]
+
+	if clicked_rect_style then
+		clicked_rect_style.color[1] = 100 * input_progress
+	end
+
 	local hover_alpha = 255 * hover_progress
-	style[hover_glow_name].color[1] = hover_alpha
+	local hover_glow_name = "hover_glow"
+	local hover_glow_style = style[hover_glow_name]
+
+	if hover_glow_style then
+		hover_glow_style.color[1] = hover_alpha
+	end
+
 	local text_disabled_name = "text_disabled"
 	local text_disabled_style = style[text_disabled_name]
 	local disabled_default_text_color = text_disabled_style.default_text_color
@@ -467,6 +504,43 @@ UIWidgetUtils.animate_arrow_button = function (widget, dt)
 
 	local combined_progress = math.max(hover_progress, selection_progress)
 	style.texture_hover_id.color[1] = 255 * combined_progress
+	hotspot.hover_progress = hover_progress
+	hotspot.selection_progress = selection_progress
+end
+
+UIWidgetUtils.animate_icon_button = function (widget, dt)
+	local content = widget.content
+	local style = widget.style
+	local hotspot = content.hotspot or content.button_hotspot
+	local has_focus = content.has_focus
+	local is_hover = hotspot.is_hover or has_focus
+	local is_selected = hotspot.is_selected
+	local input_pressed = not is_selected and hotspot.is_clicked and hotspot.is_clicked == 0
+	local hover_progress = hotspot.hover_progress or 0
+	local selection_progress = hotspot.selection_progress or 0
+	local speed = 8
+
+	if is_hover then
+		hover_progress = math.min(hover_progress + dt * speed, 1)
+	else
+		hover_progress = math.max(hover_progress - dt * speed, 0)
+	end
+
+	if is_selected then
+		selection_progress = math.min(selection_progress + dt * speed, 1)
+	else
+		selection_progress = math.max(selection_progress - dt * speed, 0)
+	end
+
+	local combined_progress = math.max(hover_progress, selection_progress)
+	style.texture_hover.color[1] = 255 * combined_progress
+	local texture_icon_style = style.texture_icon
+	local texture_icon_color = texture_icon_style.color
+	local texture_icon_default_color = texture_icon_style.default_color
+	local texture_icon_hover_color = texture_icon_style.hover_color
+
+	Colors.lerp_color_tables(texture_icon_default_color, texture_icon_hover_color, combined_progress, texture_icon_color)
+
 	hotspot.hover_progress = hover_progress
 	hotspot.selection_progress = selection_progress
 end

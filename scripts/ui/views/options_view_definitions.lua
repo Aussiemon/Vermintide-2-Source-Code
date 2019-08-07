@@ -473,12 +473,6 @@ local function create_safe_rect_widget(scenegraph_id)
 		5,
 		5
 	}
-
-	if PLATFORM == "ps4" and PS4.is_pro() then
-		extra_offset[1] = border_size[1] * 2
-		extra_offset[2] = border_size[2] * 1
-	end
-
 	local widget = {
 		scenegraph_id = "safe_rect",
 		element = {
@@ -1472,7 +1466,7 @@ local SLIDER_WIDGET_SIZE = {
 	30
 }
 
-local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offset, slider_image)
+local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offset, slider_image, slider_image_text)
 	base_offset[2] = base_offset[2] - SLIDER_WIDGET_SIZE[2]
 	local definition = {
 		element = {
@@ -1559,11 +1553,11 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 						ui_content.internal_value = value
 
 						if old_value ~= value and not ui_content.callback_on_release then
-							ui_content:callback()
+							ui_content:callback(ui_style.parent)
 						end
 					end,
 					release_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-						ui_content:callback()
+						ui_content:callback(ui_style.parent)
 					end
 				},
 				{
@@ -1674,6 +1668,14 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 					texture_id = "slider_image",
 					content_check_function = function (content)
 						return content.slider_image ~= ""
+					end
+				},
+				{
+					style_id = "slider_image_text",
+					pass_type = "text",
+					text_id = "slider_image_text",
+					content_check_function = function (content)
+						return content.slider_image_text ~= ""
 					end
 				},
 				{
@@ -1788,15 +1790,16 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 			}
 		},
 		content = {
+			slider = "slider_thumb",
 			internal_value = 0.5,
 			rect_masked = "rect_masked",
 			slider_hover = "slider_thumb_hover",
 			value = 0.5,
 			highlight_texture = "playerlist_hover",
-			slider = "slider_thumb",
 			scenegraph_id = scenegraph_id,
 			text = text,
 			slider_image = (slider_image and slider_image.slider_image) or "",
+			slider_image_text = (slider_image_text and slider_image_text.text) or "",
 			tooltip_text = tooltip_text,
 			hotspot = {},
 			highlight_hotspot = {
@@ -2044,6 +2047,7 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 			},
 			slider_image = {
 				masked = true,
+				color = (slider_image and slider_image.color) or nil,
 				size = (slider_image and slider_image.size) or {
 					0,
 					0
@@ -2053,6 +2057,21 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 					base_offset[2] - ((slider_image and slider_image.size[2]) or 0),
 					base_offset[3] + 15
 				}
+			},
+			slider_image_text = {
+				horizontal_alignment = "left",
+				vertical_alignment = "center",
+				dynamic_font = true,
+				offset = {
+					(base_offset[1] + SLIDER_WIDGET_SIZE[1]) - ((slider_image and slider_image.size[1]) or 0) + 5,
+					base_offset[2] - ((slider_image and slider_image.size[2] / 2) or 0),
+					base_offset[3] + 16
+				},
+				text_color = (slider_image_text and slider_image_text.color) or Colors.get_color_table_with_alpha("font_default", 255),
+				upper_case = (slider_image_text and slider_image_text.upper_case) or false,
+				font_type = (slider_image_text and slider_image_text.font) or "hell_shark_masked",
+				font_size = (slider_image_text and slider_image_text.font_size) or 16,
+				localize = (slider_image_text and slider_image_text.localize) or false
 			},
 			bottom_edge = {
 				offset = {

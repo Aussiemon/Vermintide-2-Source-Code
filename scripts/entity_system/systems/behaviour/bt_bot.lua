@@ -377,7 +377,7 @@ BotBehaviors.default = {
 					action_data = ACTIONS_DEFAULT.switch_ranged
 				},
 				{
-					"BTBotVentOverchargeAction",
+					"BTBotReloadAction",
 					name = "vent"
 				},
 				name = "vent_overcharge",
@@ -387,6 +387,27 @@ BotBehaviors.default = {
 					start_max_percentage = 0.99,
 					stop_percentage = 0.1,
 					overcharge_limit_type = "threshold"
+				}
+			},
+			{
+				"BTSelector",
+				{
+					"BTBotInventorySwitchAction",
+					name = "switch_ranged",
+					condition = "is_slot_not_wielded",
+					condition_args = {
+						"slot_ranged"
+					},
+					action_data = ACTIONS_DEFAULT.switch_ranged
+				},
+				{
+					"BTBotReloadAction",
+					name = "recall"
+				},
+				name = "recall_throwing_axes",
+				condition = "should_recall_throwing_axes",
+				condition_args = {
+					ammo_percentage_threshold = 0.2
 				}
 			},
 			{

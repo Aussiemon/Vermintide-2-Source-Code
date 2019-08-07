@@ -51,10 +51,13 @@ InputService.get = function (self, input_data_name, consume)
 		local mapped_devices = self.mapped_devices
 		local input_devices_data = self.input_devices_data
 		local name = self.name
+		local disabled_input_group = self.disabled_input_group
 		local action_value = nil
 		local n = keymap_binding.n
 
-		if n then
+		if disabled_input_group then
+			action_value = nil
+		elseif n then
 			for j = 1, n, 3 do
 				local device_type = keymap_binding[j]
 				local key_index = keymap_binding[j + 1]
@@ -276,11 +279,15 @@ InputService.has = function (self, keymap_name)
 end
 
 InputService.is_blocked = function (self)
-	return self.service_is_blocked
+	return self.service_is_blocked or self.disabled_input_group
 end
 
-InputService.set_blocked = function (self, is_blocked)
+InputService.set_blocked = function (self, is_blocked, disabled_input_group)
 	self.service_is_blocked = is_blocked
+end
+
+InputService.set_disabled_input_group = function (self, disabled_input_group)
+	self.disabled_input_group = disabled_input_group
 end
 
 InputService.set_input_blocked = function (self, input_data_name, blocked)

@@ -107,6 +107,7 @@ DamageProfileTemplates.medium_slashing_axe_linesman = {
 new_template("medium_slashing_axe_linesman", "_1h", nil, "heavy_attack")
 
 DamageProfileTemplates.medium_slashing_axe_linesman_1h.targets = "targets_axe_linesman_M_1h"
+DamageProfileTemplates.medium_slashing_axe_linesman_1h.melee_boost_override = 6
 
 new_template("medium_slashing_axe_linesman_1h", nil, "medium_slashing_axe_linesman_dual", nil)
 
@@ -142,6 +143,7 @@ DamageProfileTemplates.light_slashing_linesman_elf.armor_modifier = "armor_modif
 
 new_template("light_slashing_linesman_dual", "_medium", nil, "heavy_attack")
 
+DamageProfileTemplates.light_slashing_linesman_dual_medium.melee_boost_override = 4
 DamageProfileTemplates.light_slashing_linesman_dual_medium.armor_modifier = "armor_modifier_linesman_dual_M"
 DamageProfileTemplates.light_slashing_linesman_dual_medium.targets = "targets_linesman_dual_M"
 DamageProfileTemplates.light_slashing_linesman_dual_medium.critical_strike = "critical_strike_linesman_dual_M"
@@ -189,14 +191,6 @@ DamageProfileTemplates.heavy_slashing_linesman = {
 	default_target = "default_target_linesman_H",
 	targets = "targets_linesman_H"
 }
-DamageProfileTemplates.heavy_slashing_linesman_bopp = {
-	armor_modifier = "armor_modifier_linesman_H",
-	critical_strike = "critical_strike_linesman_H",
-	charge_value = "light_attack",
-	cleave_distribution = "cleave_distribution_linesman_H",
-	default_target = "default_target_linesman_H",
-	targets = "targets_linesman_H"
-}
 DamageProfileTemplates.heavy_slashing_linesman_polearm = {
 	armor_modifier = "armor_modifier_linesman_H",
 	critical_strike = "critical_strike_linesman_H",
@@ -214,40 +208,56 @@ DamageProfileTemplates.heavy_slashing_linesman_executioner = {
 	targets = "targets_linesman_executioner_H"
 }
 DamageProfileTemplates.light_blunt_tank = {
-	armor_modifier = "armor_modifier_tank_L",
+	stagger_duration_modifier = 1.25,
 	critical_strike = "critical_strike_tank_L",
 	charge_value = "light_attack",
 	cleave_distribution = "cleave_distribution_tank_L",
 	default_target = "default_target_tank_L",
-	targets = "targets_tank_L"
+	targets = "targets_tank_L",
+	armor_modifier = "armor_modifier_tank_L"
 }
 
 new_template("light_blunt_tank", "_diag", nil, nil, "light_blunt_linesman", "blunt_linesman")
 new_template("light_blunt_tank", "_upper", nil, nil, "light_blunt_linesman", "blunt_tank_uppercut")
 
+DamageProfileTemplates.light_blunt_tank_dual = {
+	armor_modifier = "armor_modifier_tank_L",
+	critical_strike = "critical_strike_tank_L",
+	charge_value = "light_attack",
+	cleave_distribution = "cleave_distribution_tank_dual_L",
+	default_target = "default_target_tank_dual_L",
+	targets = "targets_tank_dual_L"
+}
+
+new_template("light_blunt_tank_dual", "_diag", nil, nil, "light_blunt_linesman", "blunt_linesman")
+new_template("light_blunt_tank_dual", "_upper", nil, nil, "light_blunt_linesman", "blunt_tank_uppercut")
+
 DamageProfileTemplates.light_blunt_tank_spiked = {
-	armor_modifier = "armor_modifier_tank_spiked_L",
+	stagger_duration_modifier = 1.5,
 	critical_strike = "critical_strike_tank_spiked_L",
 	charge_value = "light_attack",
 	cleave_distribution = "cleave_distribution_tank_spiked_L",
 	default_target = "default_target_tank_spiked_L",
-	targets = "targets_tank_spiked_L"
+	targets = "targets_tank_spiked_L",
+	armor_modifier = "armor_modifier_tank_spiked_L"
 }
 DamageProfileTemplates.medium_burning_tank = {
-	armor_modifier = "armor_modifier_burning_tank_M",
+	stagger_duration_modifier = 1.5,
 	critical_strike = "critical_strike_burning_tank_M",
 	charge_value = "heavy_attack",
 	cleave_distribution = "cleave_distribution_burning_tank_M",
 	default_target = "default_target_burning_tank_M",
-	targets = "targets_burning_tank_M"
+	targets = "targets_burning_tank_M",
+	armor_modifier = "armor_modifier_burning_tank_M"
 }
 DamageProfileTemplates.medium_blunt_tank = {
-	armor_modifier = "armor_modifier_tank_M",
+	stagger_duration_modifier = 1.5,
 	critical_strike = "critical_strike_tank_M",
 	charge_value = "light_attack",
 	cleave_distribution = "cleave_distribution_tank_M",
 	default_target = "default_target_tank_M",
-	targets = "targets_tank_M"
+	targets = "targets_tank_M",
+	armor_modifier = "armor_modifier_tank_M"
 }
 
 new_template("medium_blunt_tank", "_1h", nil, "heavy_attack")
@@ -260,30 +270,36 @@ new_template("medium_blunt_tank_1h", nil, "medium_blunt_tank_dual", nil, nil)
 
 DamageProfileTemplates.medium_blunt_tank_dual.targets = "targets_tank_M_dual"
 DamageProfileTemplates.medium_blunt_tank_spiked = {
-	armor_modifier = "armor_modifier_tank_spiked_M",
+	stagger_duration_modifier = 1.5,
 	critical_strike = "critical_strike_tank_spiked_M",
 	charge_value = "heavy_attack",
 	cleave_distribution = "cleave_distribution_tank_spiked_M",
 	default_target = "default_target_tank_spiked_M",
-	targets = "targets_tank_spiked_M"
+	targets = "targets_tank_spiked_M",
+	armor_modifier = "armor_modifier_tank_spiked_M"
 }
 
 new_template("medium_blunt_tank_spiked", nil, "medium_blunt_tank_upper_1h", "heavy_attack", "light_blunt_linesman", "blunt_tank_uppercut")
 
 DamageProfileTemplates.heavy_blunt_tank = {
-	armor_modifier = "armor_modifier_tank_H",
+	stagger_duration_modifier = 1.8,
 	critical_strike = "critical_strike_tank_H",
 	charge_value = "heavy_attack",
 	cleave_distribution = "cleave_distribution_tank_H",
 	default_target = "default_target_tank_H",
-	targets = "targets_tank_H"
+	targets = "targets_tank_H",
+	armor_modifier = "armor_modifier_tank_H"
 }
+
+new_template("heavy_blunt_tank", nil, "heavy_slashing_tank", "heavy_attack", "heavy_slashing_tank", "slashing_tank", "slashing_tank", "light_slashing_tank")
+
 DamageProfileTemplates.light_slashing_smiter = {
 	armor_modifier = "armor_modifier_smiter_L",
 	critical_strike = "critical_strike_smiter_L",
 	charge_value = "light_attack",
 	cleave_distribution = "cleave_distribution_smiter_default",
 	default_target = "default_target_smiter_L",
+	ignore_stagger_reduction = true,
 	targets = "targets_smiter_L"
 }
 DamageProfileTemplates.light_pointy_smiter = {
@@ -306,15 +322,18 @@ new_template("light_slashing_smiter_diag", "_dual_L", nil, nil)
 DamageProfileTemplates.light_slashing_smiter_diag_dual_L.default_target = "default_target_smiter_L_dual_light"
 DamageProfileTemplates.light_slashing_smiter_diag_dual_L.armor_modifier = "armor_modifier_smiter_L_dual_light"
 DamageProfileTemplates.light_slashing_smiter_diag_dual_L.critical_strike = "critical_strike_smiter_L_dual_light"
+DamageProfileTemplates.light_slashing_smiter_diag_dual_L.ignore_stagger_reduction = false
 
 new_template("light_slashing_smiter", "_dual", nil, "heavy_attack")
 
 DamageProfileTemplates.light_slashing_smiter_dual.default_target = "default_target_smiter_L_dual_heavy"
+DamageProfileTemplates.light_slashing_smiter_dual.ignore_stagger_reduction = false
 
 new_template("light_slashing_smiter", "_dual_bopp", nil, "light_attack")
 
 DamageProfileTemplates.light_slashing_smiter_dual_bopp.default_target = "default_target_smiter_L_dual_light"
 DamageProfileTemplates.light_slashing_smiter_dual_bopp.critical_strike = "critical_strike_smiter_L_dual_light"
+DamageProfileTemplates.light_slashing_smiter_dual_bopp.ignore_stagger_reduction = false
 
 new_template("light_slashing_smiter", nil, "light_blunt_smiter", nil, "light_blunt_smiter")
 new_template("light_slashing_smiter_dual", nil, "light_blunt_smiter_dual", nil, "blunt_smiter")
@@ -334,6 +353,9 @@ DamageProfileTemplates.medium_slashing_smiter = {
 new_template("medium_slashing_smiter", "_diag", nil, nil, "heavy_slashing_linesman")
 new_template("medium_slashing_smiter", "_1h", nil, "heavy_attack")
 new_template("medium_slashing_smiter", "_upper", nil, "heavy_attack", "slashing_upper")
+
+DamageProfileTemplates.medium_slashing_smiter_1h.melee_boost_override = 5
+
 new_template("medium_slashing_smiter", "_2h")
 
 DamageProfileTemplates.medium_slashing_smiter_2h.default_target = "default_target_smiter_M_2H"
@@ -382,6 +404,15 @@ DamageProfileTemplates.medium_blunt_smiter_burn = {
 	targets = "targets_smiter_M",
 	shield_break = true
 }
+DamageProfileTemplates.heavy_blunt_smiter_burn = {
+	armor_modifier = "armor_modifier_smiter_M",
+	critical_strike = "critical_strike_smiter_M",
+	charge_value = "heavy_attack",
+	cleave_distribution = "cleave_distribution_smiter_default",
+	default_target = "default_target_smiter_burn_H",
+	targets = "targets_smiter_M",
+	shield_break = true
+}
 DamageProfileTemplates.light_slashing_smiter_stab = {
 	armor_modifier = "armor_modifier_stab_smiter_L",
 	critical_strike = "critical_strike_stab_smiter_L",
@@ -408,15 +439,21 @@ DamageProfileTemplates.medium_slashing_smiter_stab = {
 	critical_strike = "critical_strike_stab_smiter_M",
 	charge_value = "light_attack",
 	cleave_distribution = "cleave_distribution_smiter_default",
-	default_target = "default_target_stab_smiter_M"
+	default_target = "default_target_stab_smiter_M",
+	melee_boost_override = 2.5
 }
+
+new_template("medium_slashing_smiter_stab", nil, "medium_spear_smiter_stab", "heavy_attack")
+
+DamageProfileTemplates.medium_spear_smiter_stab.default_target = "default_target_spear_stab_smiter_M"
 
 new_template("medium_blunt_smiter_burn", nil, "medium_burning_smiter_stab_H", "heavy_attack")
 
 DamageProfileTemplates.medium_burning_smiter_stab_H.default_target = "default_target_burning_stab_smiter_M"
+DamageProfileTemplates.medium_burning_smiter_stab_H.ignore_stagger_reduction = true
 DamageProfileTemplates.medium_slashing_smiter_stab_1h = {
 	armor_modifier = "armor_modifier_stab_smiter_M_1h",
-	critical_strike = "critical_strike_stab_smiter_M",
+	critical_strike = "critical_strike_stab_smiter_M_1h",
 	charge_value = "heavy_attack",
 	cleave_distribution = "cleave_distribution_smiter_default",
 	default_target = "default_target_stab_smiter_M_1h"
@@ -424,9 +461,9 @@ DamageProfileTemplates.medium_slashing_smiter_stab_1h = {
 
 new_template("light_slashing_smiter_stab", nil, "light_slashing_smiter_stab_dual", "heavy_attack")
 
-DamageProfileTemplates.light_slashing_smiter_stab_dual.melee_boost_override = 6
 DamageProfileTemplates.light_slashing_smiter_stab_dual.armor_modifier = "armor_modifier_stab_smiter_M_1h"
 DamageProfileTemplates.light_slashing_smiter_stab_dual.targets = "targets_stab_dual_smiter_L"
+DamageProfileTemplates.light_slashing_smiter_stab_dual.melee_boost_override = 3.5
 DamageProfileTemplates.heavy_slashing_smiter_stab = {
 	armor_modifier = "armor_modifier_stab_smiter_H",
 	critical_strike = "critical_strike_stab_smiter_H",
@@ -434,23 +471,33 @@ DamageProfileTemplates.heavy_slashing_smiter_stab = {
 	cleave_distribution = "cleave_distribution_smiter_default",
 	default_target = "default_target_stab_smiter_H",
 	targets = "targets_stab_smiter_H",
-	melee_boost_override = 2.5
+	melee_boost_override = 3
 }
 DamageProfileTemplates.heavy_slashing_smiter_stab_polearm = {
 	armor_modifier = "armor_modifier_stab_smiter_H",
-	critical_strike = "critical_strike_stab_smiter_polearm_H",
+	critical_strike = "critical_strike_stab_smiter_heavy_polearm_H",
 	charge_value = "heavy_attack",
 	cleave_distribution = "cleave_distribution_smiter_default",
 	default_target = "default_target_stab_smiter_H",
-	targets = "targets_stab_smiter_polearm_H"
+	targets = "targets_stab_smiter_polearm_H",
+	melee_boost_override = 2.5
 }
 DamageProfileTemplates.maidenguard_dash_ability = {
 	armor_modifier = "armor_modifier_fencer_stab_L_AP",
 	critical_strike = "critical_strike_fencer_stab_L",
-	charge_value = "light_attack",
+	charge_value = "ability",
 	cleave_distribution = "cleave_distribution_smiter_default",
 	default_target = "default_target_maidenguard_dash_ability",
 	require_damage_for_dot = false
+}
+DamageProfileTemplates.maidenguard_dash_ability_bleed = {
+	armor_modifier = "armor_modifier_fencer_stab_L_AP",
+	critical_strike = "critical_strike_fencer_stab_L",
+	charge_value = "ability",
+	cleave_distribution = "cleave_distribution_smiter_default",
+	default_target = "default_target_maidenguard_dash_ability_bleed",
+	require_damage_for_dot = false,
+	is_dot = true
 }
 DamageProfileTemplates.light_fencer_stab = {
 	armor_modifier = "armor_modifier_fencer_stab_L_AP",
@@ -462,10 +509,10 @@ DamageProfileTemplates.light_fencer_stab = {
 	require_damage_for_dot = true
 }
 
-new_template("light_fencer_stab", "_H", nil, "heavy_attack")
 new_template("light_fencer_stab", "_diag", nil, nil, "light_slashing_linesman_hs")
 
 DamageProfileTemplates.light_fencer_stab_diag.armor_modifier = "armor_modifier_fencer_stab_L"
+DamageProfileTemplates.light_fencer_stab_diag.cleave_distribution = "cleave_distribution_smiter_fencer"
 DamageProfileTemplates.medium_fencer_stab = {
 	armor_modifier = "armor_modifier_fencer_stab_M",
 	critical_strike = "critical_strike_fencer_stab_M",
@@ -488,14 +535,21 @@ DamageProfileTemplates.heavy_slashing_smiter = {
 	shield_break = true
 }
 
+new_template("heavy_slashing_smiter", "_polearm", nil)
+
+DamageProfileTemplates.heavy_slashing_smiter_polearm.no_stagger_damage_reduction = false
+DamageProfileTemplates.heavy_slashing_smiter_polearm.shield_break = false
+
 new_template("heavy_slashing_smiter", nil, "heavy_slashing_smiter_executioner")
 
 DamageProfileTemplates.heavy_slashing_smiter_executioner.default_target = "default_target_smiter_executioner_H"
+DamageProfileTemplates.heavy_slashing_smiter_executioner.critical_strike = "critical_strike_smiter_executioner_H"
 
 new_template("heavy_slashing_smiter", nil, "heavy_slashing_smiter_glaive")
 
 DamageProfileTemplates.heavy_slashing_smiter_glaive.default_target = "default_target_smiter_glaive_H"
-DamageProfileTemplates.heavy_slashing_smiter_glaive.melee_boost_override = 2
+DamageProfileTemplates.heavy_slashing_smiter_glaive.melee_boost_override = 3
+DamageProfileTemplates.heavy_slashing_smiter_glaive.critical_strike = "critical_strike_smiter_glaive_H"
 
 new_template("heavy_slashing_smiter", nil, "heavy_blunt_smiter", nil, "heavy_blunt_smiter")
 new_template("heavy_blunt_smiter", nil, "heavy_blunt_smiter_pick")
@@ -619,7 +673,7 @@ DamageProfileTemplates.torch = {
 		impact = 100
 	},
 	default_target = {
-		stagger_duration_modifier = 1.25,
+		stagger_duration_modifier = 1.5,
 		dot_template_name = "burning_1W_dot",
 		dead_attack_template = "flame_blast",
 		boost_curve_type = "tank_curve",
@@ -657,7 +711,7 @@ DamageProfileTemplates.torch_heavy = {
 		impact = 100
 	},
 	default_target = {
-		stagger_duration_modifier = 1.5,
+		stagger_duration_modifier = 1.75,
 		dot_template_name = "burning_3W_dot",
 		dead_attack_template = "flame_blast",
 		boost_curve_type = "tank_curve",
@@ -695,7 +749,7 @@ DamageProfileTemplates.torch_stab = {
 		impact = 0.1
 	},
 	default_target = {
-		stagger_duration_modifier = 2,
+		stagger_duration_modifier = 1.75,
 		dot_template_name = "burning_3W_dot",
 		dead_attack_template = "flame_blast",
 		boost_curve_type = "tank_curve",
@@ -708,11 +762,12 @@ DamageProfileTemplates.torch_stab = {
 	}
 }
 DamageProfileTemplates.heavy_push = {
-	is_push = true,
+	stagger_duration_modifier = 1.75,
 	armor_modifier = "armor_modifier_push_H",
 	charge_value = "action_push",
 	cleave_distribution = "cleave_distribution_push_default",
 	default_target = "target_push_H",
+	is_push = true,
 	damage_type = "push",
 	no_damage = true
 }
@@ -737,14 +792,14 @@ DamageProfileTemplates.slayer_leap_landing_impact = {
 DamageProfileTemplates.ability_push = {
 	armor_modifier = "armor_modifier_push_Ability",
 	is_explosion = true,
-	charge_value = "action_push",
+	charge_value = "ability",
 	cleave_distribution = "cleave_distribution_push_default",
 	default_target = "target_push_Ability",
 	no_friendly_fire = true,
 	no_damage = true
 }
 DamageProfileTemplates.medium_push = {
-	stagger_duration_modifier = 2,
+	stagger_duration_modifier = 1.3,
 	armor_modifier = "armor_modifier_push_M",
 	charge_value = "action_push",
 	cleave_distribution = "cleave_distribution_push_default",
@@ -757,10 +812,22 @@ DamageProfileTemplates.shield_push = {
 	cleave_distribution = "cleave_distribution_push_default",
 	armor_modifier = "armor_modifier_shield_push_M",
 	charge_value = "action_push",
-	stagger_duration_modifier = 2,
+	stagger_duration_modifier = 1.8,
 	default_target = "target_push_M",
 	is_push = true,
 	damage_type = "push",
+	ignore_stagger_reduction = true,
+	no_damage = true
+}
+DamageProfileTemplates.shield_light_push = {
+	armor_modifier = "armor_modifier_shield_push_M",
+	stagger_duration_modifier = 1.75,
+	charge_value = "action_push",
+	damage_type = "push",
+	default_target = "target_push_M",
+	is_push = true,
+	cleave_distribution = "cleave_distribution_push_default",
+	stagger_distance_modifier = 0.75,
 	ignore_stagger_reduction = true,
 	no_damage = true
 }
@@ -799,6 +866,7 @@ local rapier_dropoff_ranges = {
 }
 DamageProfileTemplates.crossbow_bolt = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	shield_break = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
@@ -822,7 +890,7 @@ DamageProfileTemplates.crossbow_bolt = {
 		attack = {
 			1,
 			0.8,
-			1,
+			1.5,
 			1,
 			0.75,
 			0
@@ -840,7 +908,7 @@ DamageProfileTemplates.crossbow_bolt = {
 		attack = {
 			1,
 			0.6,
-			1,
+			1.5,
 			1,
 			0.75,
 			0
@@ -864,11 +932,11 @@ DamageProfileTemplates.crossbow_bolt = {
 		boost_curve_coefficient = 1,
 		attack_template = "bolt_sniper",
 		power_distribution_near = {
-			attack = 0.6,
+			attack = 0.7,
 			impact = 0.4
 		},
 		power_distribution_far = {
-			attack = 0.5,
+			attack = 0.6,
 			impact = 0.3
 		},
 		range_dropoff_settings = sniper_dropoff_ranges
@@ -876,6 +944,7 @@ DamageProfileTemplates.crossbow_bolt = {
 }
 DamageProfileTemplates.longbow_empire = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	shield_break = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
@@ -936,7 +1005,7 @@ DamageProfileTemplates.longbow_empire = {
 		impact = 0.3
 	},
 	default_target = {
-		boost_curve_coefficient_headshot = 2.5,
+		boost_curve_coefficient_headshot = 1.5,
 		boost_curve_type = "smiter_curve",
 		boost_curve_coefficient = 1,
 		attack_template = "bolt_sniper",
@@ -953,6 +1022,7 @@ DamageProfileTemplates.longbow_empire = {
 }
 DamageProfileTemplates.crossbow_bolt_repeating = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
@@ -1029,11 +1099,12 @@ DamageProfileTemplates.crossbow_bolt_repeating = {
 }
 DamageProfileTemplates.shot_shotgun = {
 	charge_value = "instant_projectile",
+	no_stagger_damage_reduction_ranged = true,
 	shield_break = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
-			0.5,
+			0.3,
 			0.5,
 			1,
 			0.5,
@@ -1051,7 +1122,7 @@ DamageProfileTemplates.shot_shotgun = {
 	armor_modifier_near = {
 		attack = {
 			1,
-			0.3,
+			0.2,
 			0.4,
 			0.75,
 			1,
@@ -1059,7 +1130,7 @@ DamageProfileTemplates.shot_shotgun = {
 		},
 		impact = {
 			1,
-			0.5,
+			0.75,
 			3,
 			0,
 			1,
@@ -1085,8 +1156,8 @@ DamageProfileTemplates.shot_shotgun = {
 		}
 	},
 	cleave_distribution = {
-		attack = 0.2,
-		impact = 0.2
+		attack = 0.1,
+		impact = 0.1
 	},
 	default_target = {
 		boost_curve_coefficient_headshot = 0.75,
@@ -1098,7 +1169,7 @@ DamageProfileTemplates.shot_shotgun = {
 			impact = 0.3
 		},
 		power_distribution_far = {
-			attack = 0.2,
+			attack = 0.15,
 			impact = 0.15
 		},
 		range_dropoff_settings = machinegun_dropoff_ranges
@@ -1106,6 +1177,7 @@ DamageProfileTemplates.shot_shotgun = {
 }
 DamageProfileTemplates.shot_machinegun = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
@@ -1182,6 +1254,7 @@ DamageProfileTemplates.shot_machinegun = {
 }
 DamageProfileTemplates.shot_machinegun_shotgun = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
@@ -1258,11 +1331,12 @@ DamageProfileTemplates.shot_machinegun_shotgun = {
 }
 DamageProfileTemplates.shot_carbine = {
 	charge_value = "instant_projectile",
+	no_stagger_damage_reduction_ranged = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1.5,
 			0.75,
-			2.5,
+			1.5,
 			1,
 			1,
 			0.5
@@ -1270,7 +1344,7 @@ DamageProfileTemplates.shot_carbine = {
 		impact_armor_power_modifer = {
 			1,
 			0.75,
-			2.5,
+			1.5,
 			1,
 			1,
 			0.5
@@ -1280,7 +1354,7 @@ DamageProfileTemplates.shot_carbine = {
 		attack = {
 			1.5,
 			0.75,
-			2.5,
+			1.5,
 			1,
 			1,
 			0
@@ -1288,7 +1362,7 @@ DamageProfileTemplates.shot_carbine = {
 		impact = {
 			1,
 			0.75,
-			2.5,
+			1,
 			1,
 			1,
 			0
@@ -1298,7 +1372,7 @@ DamageProfileTemplates.shot_carbine = {
 		attack = {
 			1,
 			0.5,
-			1.5,
+			1,
 			1,
 			1,
 			0
@@ -1306,7 +1380,7 @@ DamageProfileTemplates.shot_carbine = {
 		impact = {
 			1,
 			0.5,
-			1.5,
+			1,
 			1,
 			1,
 			0
@@ -1334,6 +1408,7 @@ DamageProfileTemplates.shot_carbine = {
 }
 DamageProfileTemplates.shot_carbine_rapier = {
 	charge_value = "instant_projectile",
+	no_stagger_damage_reduction_ranged = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1.5,
@@ -1410,6 +1485,7 @@ DamageProfileTemplates.shot_carbine_rapier = {
 }
 DamageProfileTemplates.shot_drakefire = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	dot_template_name = "burning_1W_dot",
 	critical_strike = {
 		attack_armor_power_modifer = {
@@ -1487,6 +1563,7 @@ DamageProfileTemplates.shot_drakefire = {
 }
 DamageProfileTemplates.shot_repeating = {
 	charge_value = "instant_projectile",
+	no_stagger_damage_reduction_ranged = true,
 	shield_break = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
@@ -1564,11 +1641,12 @@ DamageProfileTemplates.shot_repeating = {
 }
 DamageProfileTemplates.shot_sniper = {
 	charge_value = "instant_projectile",
+	no_stagger_damage_reduction_ranged = true,
 	shield_break = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
-			1,
+			1.4,
 			1.5,
 			1,
 			0.75,
@@ -1586,7 +1664,7 @@ DamageProfileTemplates.shot_sniper = {
 	armor_modifier_near = {
 		attack = {
 			1,
-			1,
+			1.2,
 			1.5,
 			1,
 			0.75,
@@ -1630,7 +1708,7 @@ DamageProfileTemplates.shot_sniper = {
 		boost_curve_coefficient = 1,
 		attack_template = "shot_sniper",
 		power_distribution_near = {
-			attack = 0.9,
+			attack = 1,
 			impact = 0.5
 		},
 		power_distribution_far = {
@@ -1643,6 +1721,7 @@ DamageProfileTemplates.shot_sniper = {
 DamageProfileTemplates.shot_sniper_ability = {
 	charge_value = "instant_projectile",
 	shield_break = true,
+	no_stagger_damage_reduction_ranged = true,
 	is_explosion = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
@@ -1690,15 +1769,16 @@ DamageProfileTemplates.shot_sniper_ability = {
 		boost_curve_coefficient = 0.5,
 		attack_template = "shot_sniper",
 		power_distribution = {
-			attack = 1,
-			impact = 1
+			attack = 2,
+			impact = 2
 		},
 		range_dropoff_settings = sniper_dropoff_ranges
 	}
 }
 DamageProfileTemplates.shot_shotgun_ability = {
-	charge_value = "instant_projectile",
 	shield_break = true,
+	charge_value = "instant_projectile",
+	no_stagger_damage_reduction_ranged = true,
 	is_explosion = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
@@ -1776,11 +1856,12 @@ DamageProfileTemplates.shot_shotgun_ability = {
 }
 DamageProfileTemplates.arrow_sniper_kruber = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	shield_break = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
-			0.75,
+			1,
 			1.5,
 			1,
 			0.75,
@@ -1798,7 +1879,7 @@ DamageProfileTemplates.arrow_sniper_kruber = {
 	armor_modifier_near = {
 		attack = {
 			1,
-			0.75,
+			1,
 			1.5,
 			1,
 			0.75,
@@ -1816,7 +1897,7 @@ DamageProfileTemplates.arrow_sniper_kruber = {
 	armor_modifier_far = {
 		attack = {
 			1,
-			0.25,
+			0.5,
 			1.5,
 			1,
 			0.75,
@@ -1836,7 +1917,7 @@ DamageProfileTemplates.arrow_sniper_kruber = {
 		impact = 0.3
 	},
 	default_target = {
-		boost_curve_coefficient_headshot = 1,
+		boost_curve_coefficient_headshot = 2.5,
 		boost_curve_type = "smiter_curve",
 		boost_curve_coefficient = 1,
 		attack_template = "bolt_sniper",
@@ -1851,8 +1932,165 @@ DamageProfileTemplates.arrow_sniper_kruber = {
 		range_dropoff_settings = sniper_dropoff_ranges
 	}
 }
+DamageProfileTemplates.throwing_axe = {
+	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
+	shield_break = true,
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			0.75,
+			0.5
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+			0.75
+		}
+	},
+	armor_modifier_near = {
+		attack = {
+			1,
+			0.8,
+			1,
+			1,
+			0.75,
+			0.25
+		},
+		impact = {
+			1,
+			1,
+			1,
+			1,
+			1,
+			0.75
+		}
+	},
+	armor_modifier_far = {
+		attack = {
+			1,
+			0.6,
+			1,
+			1,
+			0.75,
+			0.25
+		},
+		impact = {
+			1,
+			1,
+			1,
+			1,
+			1,
+			0.5
+		}
+	},
+	cleave_distribution = {
+		attack = 0.01,
+		impact = 0.01
+	},
+	default_target = {
+		boost_curve_coefficient_headshot = 1,
+		boost_curve_type = "smiter_curve",
+		boost_curve_coefficient = 1,
+		attack_template = "throwing_axe",
+		power_distribution_near = {
+			attack = 0.8,
+			impact = 0.85
+		},
+		power_distribution_far = {
+			attack = 0.5,
+			impact = 0.75
+		},
+		range_dropoff_settings = carbine_dropoff_ranges
+	}
+}
+DamageProfileTemplates.throwing_axe_charged = {
+	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
+	shield_break = true,
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			0.75,
+			0.5
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+			0.75
+		}
+	},
+	armor_modifier_near = {
+		attack = {
+			1,
+			0.8,
+			1,
+			1,
+			0.75,
+			0.25
+		},
+		impact = {
+			1,
+			1,
+			1,
+			1,
+			1,
+			0.75
+		}
+	},
+	armor_modifier_far = {
+		attack = {
+			1,
+			0.6,
+			1,
+			1,
+			0.75,
+			0.25
+		},
+		impact = {
+			1,
+			1,
+			1,
+			1,
+			1,
+			0.5
+		}
+	},
+	cleave_distribution = {
+		attack = 0.4,
+		impact = 0.4
+	},
+	default_target = {
+		boost_curve_coefficient_headshot = 1,
+		boost_curve_type = "smiter_curve",
+		boost_curve_coefficient = 1,
+		attack_template = "throwing_axe",
+		power_distribution_near = {
+			attack = 0.8,
+			impact = 0.85
+		},
+		power_distribution_far = {
+			attack = 0.5,
+			impact = 0.75
+		},
+		range_dropoff_settings = carbine_dropoff_ranges
+	}
+}
 DamageProfileTemplates.arrow_machinegun = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
@@ -1929,6 +2167,7 @@ DamageProfileTemplates.arrow_machinegun = {
 }
 DamageProfileTemplates.arrow_carbine = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
@@ -2005,10 +2244,11 @@ DamageProfileTemplates.arrow_carbine = {
 }
 DamageProfileTemplates.arrow_sniper = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
-			0.6,
+			1,
 			1.5,
 			1,
 			1,
@@ -2026,7 +2266,7 @@ DamageProfileTemplates.arrow_sniper = {
 	armor_modifier_near = {
 		attack = {
 			1,
-			0.6,
+			0.8,
 			1.5,
 			1,
 			0.5,
@@ -2044,7 +2284,7 @@ DamageProfileTemplates.arrow_sniper = {
 	armor_modifier_far = {
 		attack = {
 			1,
-			0.6,
+			0.8,
 			1.5,
 			1,
 			0.5,
@@ -2069,11 +2309,11 @@ DamageProfileTemplates.arrow_sniper = {
 		boost_curve_coefficient = 0.75,
 		attack_template = "arrow_sniper",
 		power_distribution_near = {
-			attack = 0.5,
+			attack = 0.6,
 			impact = 0.25
 		},
 		power_distribution_far = {
-			attack = 0.2,
+			attack = 0.4,
 			impact = 0.15
 		},
 		range_dropoff_settings = sniper_dropoff_ranges
@@ -2081,6 +2321,7 @@ DamageProfileTemplates.arrow_sniper = {
 }
 DamageProfileTemplates.arrow_sniper_trueflight = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
@@ -2155,8 +2396,87 @@ DamageProfileTemplates.arrow_sniper_trueflight = {
 		range_dropoff_settings = sniper_dropoff_ranges
 	}
 }
+DamageProfileTemplates.arrow_sniper_ability_piercing = {
+	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			0,
+			1,
+			1,
+			1
+		}
+	},
+	armor_modifier_near = {
+		attack = {
+			1,
+			1,
+			1,
+			0.25,
+			1,
+			0.25
+		},
+		impact = {
+			1,
+			1,
+			0,
+			0,
+			1,
+			1
+		}
+	},
+	armor_modifier_far = {
+		attack = {
+			1,
+			1,
+			2,
+			0.25,
+			1,
+			0.25
+		},
+		impact = {
+			1,
+			1,
+			0,
+			0,
+			1,
+			0
+		}
+	},
+	cleave_distribution = {
+		attack = 1,
+		impact = 1
+	},
+	default_target = {
+		boost_curve_coefficient_headshot = 7,
+		boost_curve_type = "ninja_curve",
+		boost_curve_coefficient = 0.75,
+		attack_template = "arrow_sniper",
+		power_distribution_near = {
+			attack = 1,
+			impact = 0.3
+		},
+		power_distribution_far = {
+			attack = 0.75,
+			impact = 0.25
+		},
+		range_dropoff_settings = sniper_dropoff_ranges
+	}
+}
 DamageProfileTemplates.shortbow_hagbane = {
 	charge_value = "projectile",
+	ignore_stagger_reduction = true,
+	no_stagger_damage_reduction_ranged = true,
 	require_damage_for_dot = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
@@ -2244,9 +2564,20 @@ DamageProfileTemplates.shortbow_hagbane_charged.armor_modifier_near.attack = {
 	1.5,
 	0
 }
+DamageProfileTemplates.shortbow_hagbane_charged.armor_modifier_near.impact = {
+	1,
+	1,
+	1.5,
+	1,
+	1.5,
+	0
+}
+DamageProfileTemplates.shortbow_hagbane_charged.default_target.power_distribution_near.impact = 0.25
+DamageProfileTemplates.shortbow_hagbane_charged.default_target.power_distribution_far.impact = 0.2
 DamageProfileTemplates.staff_fireball = {
 	charge_value = "projectile",
 	require_damage_for_dot = true,
+	no_stagger_damage_reduction_ranged = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
@@ -2305,6 +2636,7 @@ DamageProfileTemplates.staff_fireball = {
 }
 DamageProfileTemplates.fire_spark = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
@@ -2381,6 +2713,7 @@ DamageProfileTemplates.fire_spark = {
 }
 DamageProfileTemplates.fire_spear = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
@@ -2436,8 +2769,8 @@ DamageProfileTemplates.fire_spear = {
 		}
 	},
 	cleave_distribution = {
-		attack = 0.5,
-		impact = 0.5
+		attack = 0.3,
+		impact = 0.3
 	},
 	default_target = {
 		boost_curve_coefficient_headshot = 1.5,
@@ -2457,6 +2790,7 @@ DamageProfileTemplates.fire_spear = {
 }
 DamageProfileTemplates.fire_spear_2 = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
@@ -2512,8 +2846,8 @@ DamageProfileTemplates.fire_spear_2 = {
 		}
 	},
 	cleave_distribution = {
-		attack = 0.4,
-		impact = 0.4
+		attack = 0.45,
+		impact = 0.45
 	},
 	default_target = {
 		boost_curve_coefficient_headshot = 1.5,
@@ -2521,7 +2855,7 @@ DamageProfileTemplates.fire_spear_2 = {
 		boost_curve_coefficient = 0.75,
 		attack_template = "wizard_staff_spear",
 		power_distribution_near = {
-			attack = 0.45,
+			attack = 0.5,
 			impact = 0.35
 		},
 		power_distribution_far = {
@@ -2533,6 +2867,7 @@ DamageProfileTemplates.fire_spear_2 = {
 }
 DamageProfileTemplates.fire_spear_trueflight = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	is_explosion = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
@@ -2610,10 +2945,11 @@ DamageProfileTemplates.fire_spear_trueflight = {
 }
 DamageProfileTemplates.fire_spear_3 = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
-			0.5,
+			1,
 			1.5,
 			1,
 			1,
@@ -2631,10 +2967,10 @@ DamageProfileTemplates.fire_spear_3 = {
 	armor_modifier_near = {
 		attack = {
 			1,
-			0.5,
+			0.75,
 			1.5,
 			1,
-			0.5,
+			1,
 			0.4
 		},
 		impact = {
@@ -2649,24 +2985,24 @@ DamageProfileTemplates.fire_spear_3 = {
 	armor_modifier_far = {
 		attack = {
 			1,
-			0.4,
+			0.75,
 			1.5,
 			1,
-			0.5,
-			0.2
+			1,
+			0.4
 		},
 		impact = {
 			1,
-			0.4,
+			0.8,
 			1,
 			1,
 			1,
-			0.2
+			0.4
 		}
 	},
 	cleave_distribution = {
-		attack = 0.5,
-		impact = 0.5
+		attack = 0.6,
+		impact = 0.6
 	},
 	default_target = {
 		boost_curve_coefficient_headshot = 2,
@@ -2674,11 +3010,11 @@ DamageProfileTemplates.fire_spear_3 = {
 		boost_curve_coefficient = 0.75,
 		attack_template = "wizard_staff_spear",
 		power_distribution_near = {
-			attack = 0.75,
+			attack = 1,
 			impact = 0.5
 		},
 		power_distribution_far = {
-			attack = 0.5,
+			attack = 1,
 			impact = 0.5
 		},
 		range_dropoff_settings = sniper_dropoff_ranges
@@ -2686,6 +3022,7 @@ DamageProfileTemplates.fire_spear_3 = {
 }
 DamageProfileTemplates.staff_fireball_charged = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
@@ -2744,10 +3081,11 @@ DamageProfileTemplates.staff_fireball_charged = {
 }
 DamageProfileTemplates.flamethrower_spray = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
-			0.25,
+			1,
 			1,
 			1,
 			1,
@@ -2755,7 +3093,7 @@ DamageProfileTemplates.flamethrower_spray = {
 		},
 		impact_armor_power_modifer = {
 			1,
-			0.75,
+			1,
 			1,
 			1,
 			1,
@@ -2765,7 +3103,7 @@ DamageProfileTemplates.flamethrower_spray = {
 	armor_modifier = {
 		attack = {
 			1,
-			0.25,
+			1,
 			1.5,
 			1,
 			1,
@@ -2773,7 +3111,7 @@ DamageProfileTemplates.flamethrower_spray = {
 		},
 		impact = {
 			1,
-			0.75,
+			1,
 			1,
 			1,
 			1,
@@ -2781,8 +3119,8 @@ DamageProfileTemplates.flamethrower_spray = {
 		}
 	},
 	cleave_distribution = {
-		attack = 0.1,
-		impact = 0.1
+		attack = 0.01,
+		impact = 0.01
 	},
 	default_target = {
 		boost_curve_coefficient_headshot = 0,
@@ -2790,11 +3128,11 @@ DamageProfileTemplates.flamethrower_spray = {
 		boost_curve_coefficient = 0.5,
 		attack_template = "wizard_staff_beam",
 		power_distribution_near = {
-			attack = 0.1,
+			attack = 0.15,
 			impact = 0.3
 		},
 		power_distribution_far = {
-			attack = 0.05,
+			attack = 0.1,
 			impact = 0.25
 		},
 		range_dropoff_settings = flamethrower_dropoff_ranges
@@ -2802,21 +3140,22 @@ DamageProfileTemplates.flamethrower_spray = {
 }
 DamageProfileTemplates.flamethrower = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
 			0.25,
 			1,
 			1,
-			1,
+			0.5,
 			0.25
 		},
 		impact_armor_power_modifer = {
 			1,
+			0.5,
 			1,
 			1,
-			1,
-			1,
+			0.5,
 			0
 		}
 	},
@@ -2831,7 +3170,7 @@ DamageProfileTemplates.flamethrower = {
 		},
 		impact = {
 			1,
-			1,
+			0.3,
 			1,
 			1,
 			0.5,
@@ -2849,11 +3188,11 @@ DamageProfileTemplates.flamethrower = {
 		boost_curve_coefficient = 1,
 		attack_template = "wizard_staff_beam",
 		power_distribution_near = {
-			attack = 0.1,
+			attack = 0.075,
 			impact = 0.1
 		},
 		power_distribution_far = {
-			attack = 0.075,
+			attack = 0.05,
 			impact = 0.05
 		},
 		range_dropoff_settings = flamethrower_dropoff_ranges
@@ -2861,6 +3200,7 @@ DamageProfileTemplates.flamethrower = {
 }
 DamageProfileTemplates.flamethrower_initial = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
@@ -2890,7 +3230,7 @@ DamageProfileTemplates.flamethrower_initial = {
 		},
 		impact = {
 			1,
-			1,
+			0.35,
 			1,
 			1,
 			0.25,
@@ -2908,11 +3248,11 @@ DamageProfileTemplates.flamethrower_initial = {
 		boost_curve_coefficient = 1,
 		attack_template = "wizard_staff_beam",
 		power_distribution_near = {
-			attack = 0.15,
+			attack = 0.1,
 			impact = 0.2
 		},
 		power_distribution_far = {
-			attack = 0.1,
+			attack = 0.075,
 			impact = 0.1
 		},
 		range_dropoff_settings = flamethrower_dropoff_ranges
@@ -2921,6 +3261,7 @@ DamageProfileTemplates.flamethrower_initial = {
 DamageProfileTemplates.beam = {
 	charge_value = "projectile",
 	ignore_stagger_reduction = true,
+	no_stagger_damage_reduction_ranged = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
@@ -2981,6 +3322,7 @@ DamageProfileTemplates.beam = {
 DamageProfileTemplates.beam_initial = {
 	charge_value = "projectile",
 	no_procs = true,
+	no_stagger_damage_reduction_ranged = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
@@ -3057,6 +3399,7 @@ DamageProfileTemplates.beam_initial = {
 }
 DamageProfileTemplates.blast = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	dot_template_name = "burning_1W_dot",
 	critical_strike = {
 		attack_armor_power_modifer = {
@@ -3116,6 +3459,7 @@ DamageProfileTemplates.blast = {
 }
 DamageProfileTemplates.beam_shot = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
@@ -3194,6 +3538,7 @@ DamageProfileTemplates.beam_shot = {
 DamageProfileTemplates.geiser = {
 	dot_template_name = "burning_1W_dot",
 	charge_value = "aoe",
+	no_stagger_damage_reduction_ranged = true,
 	attack_template = "wizard_staff_geiser",
 	critical_strike = {
 		attack_armor_power_modifer = {
@@ -3288,6 +3633,7 @@ DamageProfileTemplates.tutorial_longbow_charged.armor_modifier_far.attack[6] = 0
 DamageProfileTemplates.frag_grenade = {
 	charge_value = "grenade",
 	is_explosion = true,
+	no_stagger_damage_reduction_ranged = true,
 	armor_modifier = {
 		attack = {
 			1,
@@ -3321,6 +3667,7 @@ DamageProfileTemplates.frag_grenade_glance.default_target.power_distribution.dam
 DamageProfileTemplates.explosive_barrel = {
 	charge_value = "grenade",
 	is_explosion = true,
+	no_stagger_damage_reduction_ranged = true,
 	armor_modifier = {
 		attack = {
 			1,
@@ -3348,6 +3695,7 @@ DamageProfileTemplates.explosive_barrel = {
 }
 DamageProfileTemplates.fire_grenade_aoe = {
 	charge_value = "grenade",
+	no_stagger_damage_reduction_ranged = true,
 	armor_modifier = {
 		attack = {
 			1,
@@ -3376,6 +3724,7 @@ DamageProfileTemplates.fire_grenade_aoe = {
 }
 DamageProfileTemplates.fireball_explosion = {
 	charge_value = "aoe",
+	no_stagger_damage_reduction_ranged = true,
 	armor_modifier = {
 		attack = {
 			1,
@@ -3403,11 +3752,46 @@ DamageProfileTemplates.fireball_explosion = {
 		}
 	}
 }
+DamageProfileTemplates.blade_storm = {
+	charge_value = "n/a",
+	cleave_distribution = {
+		attack = 0.25,
+		impact = 0.25
+	},
+	armor_modifier = {
+		attack = {
+			1,
+			0.5,
+			1,
+			1,
+			0.5,
+			0
+		},
+		impact = {
+			1,
+			0.5,
+			1,
+			1,
+			0.5,
+			0
+		}
+	},
+	default_target = {
+		boost_curve_type = "tank_curve",
+		boost_curve_coefficient = 0.2,
+		attack_template = "blade_storm",
+		power_distribution = {
+			attack = 0.1,
+			impact = 0.1
+		}
+	}
+}
 DamageProfileTemplates.fireball_explosion_glance = table.clone(DamageProfileTemplates.fireball_explosion)
 DamageProfileTemplates.fireball_explosion_glance.default_target.attack_template = "drakegun_glance"
 DamageProfileTemplates.fireball_explosion_glance.default_target.damage_type = "drakegun_glance"
 DamageProfileTemplates.fireball_charged_explosion = {
 	charge_value = "aoe",
+	no_stagger_damage_reduction_ranged = true,
 	armor_modifier = {
 		attack = {
 			1,
@@ -3441,8 +3825,9 @@ DamageProfileTemplates.fireball_charged_explosion_glance.default_target.attack_t
 DamageProfileTemplates.fireball_charged_explosion_glance.default_target.damage_type = "drakegun_glance"
 DamageProfileTemplates.fireball_charged_explosion_glance.default_target.dot_template_name = "burning_1W_dot"
 DamageProfileTemplates.overcharge_explosion_ability = {
-	charge_value = "aoe",
+	charge_value = "ability",
 	is_explosion = true,
+	no_stagger_damage_reduction_ranged = true,
 	armor_modifier = {
 		attack = {
 			1,
@@ -3478,6 +3863,7 @@ DamageProfileTemplates.overcharge_explosion_glance_ability.default_target.dot_te
 DamageProfileTemplates.overcharge_explosion = {
 	charge_value = "aoe",
 	is_explosion = true,
+	no_stagger_damage_reduction_ranged = true,
 	armor_modifier = {
 		attack = {
 			1,
@@ -3513,6 +3899,7 @@ DamageProfileTemplates.overcharge_explosion_glance.default_target.dot_template_n
 DamageProfileTemplates.elven_ruins_finish = {
 	charge_value = "aoe",
 	is_explosion = true,
+	no_stagger_damage_reduction_ranged = true,
 	armor_modifier = {
 		attack = {
 			1,
@@ -3545,6 +3932,7 @@ DamageProfileTemplates.military_finish = {
 	instant_death = true,
 	charge_value = "aoe",
 	is_explosion = true,
+	no_stagger_damage_reduction_ranged = true,
 	armor_modifier = {
 		attack = {
 			1,
@@ -3573,6 +3961,7 @@ DamageProfileTemplates.military_finish = {
 DamageProfileTemplates.cannonball_impact = {
 	charge_value = "aoe",
 	is_explosion = true,
+	no_stagger_damage_reduction_ranged = true,
 	armor_modifier = {
 		attack = {
 			1,
@@ -3598,9 +3987,39 @@ DamageProfileTemplates.cannonball_impact = {
 		}
 	}
 }
+DamageProfileTemplates.heavens_lightning_strike = {
+	charge_value = "grenade",
+	is_explosion = true,
+	no_stagger_damage_reduction_ranged = true,
+	armor_modifier = {
+		attack = {
+			1,
+			0.5,
+			3,
+			3,
+			1
+		},
+		impact = {
+			1,
+			0.5,
+			100,
+			1,
+			1
+		}
+	},
+	default_target = {
+		damage_type = "grenade",
+		attack_template = "drakegun",
+		power_distribution = {
+			attack = 0.5,
+			impact = 2
+		}
+	}
+}
 DamageProfileTemplates.warpfire_thrower_explosion = {
 	charge_value = "grenade",
 	is_explosion = true,
+	no_stagger_damage_reduction_ranged = true,
 	armor_modifier = {
 		attack = {
 			1.5,
@@ -3628,16 +4047,22 @@ DamageProfileTemplates.warpfire_thrower_explosion = {
 }
 DamageProfileTemplates.globadier_gas_cloud = table.clone(DamageProfileTemplates.default)
 DamageProfileTemplates.globadier_gas_cloud.default_target.attack_template = "poison_globe_ai_initial_damage"
+DamageProfileTemplates.globadier_gas_cloud.no_stagger_damage_reduction_ranged = true
 DamageProfileTemplates.spike_trap = table.clone(DamageProfileTemplates.default)
 DamageProfileTemplates.spike_trap.default_target.attack_template = "spike_trap"
+DamageProfileTemplates.spike_trap.no_stagger_damage_reduction_ranged = true
 DamageProfileTemplates.environment_fire = table.clone(DamageProfileTemplates.default)
 DamageProfileTemplates.environment_fire.default_target.attack_template = "environment_fire"
+DamageProfileTemplates.environment_fire.no_stagger_damage_reduction_ranged = true
 DamageProfileTemplates.payload_wagon = table.clone(DamageProfileTemplates.default)
 DamageProfileTemplates.payload_wagon.default_target.attack_template = "payload_wagon"
 DamageProfileTemplates.payload_wagon.default_target.power_distribution.impact = 1
 DamageProfileTemplates.payload_wagon.is_explosion = true
+DamageProfileTemplates.payload_wagon.no_stagger_damage_reduction_ranged = true
 DamageProfileTemplates.poison = {
+	is_dot = true,
 	charge_value = "n/a",
+	no_stagger_damage_reduction_ranged = true,
 	no_stagger = true,
 	cleave_distribution = {
 		attack = 0.25,
@@ -3645,7 +4070,7 @@ DamageProfileTemplates.poison = {
 	},
 	armor_modifier = {
 		attack = {
-			1,
+			1.25,
 			1,
 			3,
 			1,
@@ -3671,7 +4096,9 @@ DamageProfileTemplates.poison = {
 	}
 }
 DamageProfileTemplates.poison_direct = {
+	is_dot = true,
 	charge_value = "n/a",
+	no_stagger_damage_reduction_ranged = true,
 	no_stagger = true,
 	cleave_distribution = {
 		attack = 0.25,
@@ -3679,8 +4106,8 @@ DamageProfileTemplates.poison_direct = {
 	},
 	armor_modifier = {
 		attack = {
-			1,
-			1,
+			1.25,
+			1.25,
 			3,
 			1,
 			0.5,
@@ -3699,18 +4126,20 @@ DamageProfileTemplates.poison_direct = {
 		attack_template = "arrow_poison_aoe",
 		damage_type = "arrow_poison_dot",
 		power_distribution = {
-			attack = 0.05,
+			attack = 0.08,
 			impact = 0
 		}
 	}
 }
 DamageProfileTemplates.poison_aoe = {
 	no_friendly_fire = true,
+	is_dot = true,
 	require_damage_for_dot = true,
+	no_stagger_damage_reduction_ranged = true,
 	no_stagger = false,
 	armor_modifier = {
 		attack = {
-			1,
+			1.25,
 			0,
 			1.5,
 			1,
@@ -3737,7 +4166,9 @@ DamageProfileTemplates.poison_aoe = {
 	}
 }
 DamageProfileTemplates.bleed = {
+	is_dot = true,
 	charge_value = "n/a",
+	no_stagger_damage_reduction_ranged = true,
 	no_stagger = true,
 	cleave_distribution = {
 		attack = 0.25,
@@ -3748,7 +4179,7 @@ DamageProfileTemplates.bleed = {
 			1,
 			0.5,
 			1,
-			1,
+			0.25,
 			0.5,
 			0
 		},
@@ -3756,7 +4187,7 @@ DamageProfileTemplates.bleed = {
 			1,
 			0.5,
 			1,
-			1,
+			0.25,
 			0.5,
 			0
 		}
@@ -3773,7 +4204,9 @@ DamageProfileTemplates.bleed = {
 	}
 }
 DamageProfileTemplates.bleed_maidenguard = {
+	is_dot = true,
 	charge_value = "n/a",
+	no_stagger_damage_reduction_ranged = true,
 	no_stagger = true,
 	cleave_distribution = {
 		attack = 0.25,
@@ -3784,7 +4217,7 @@ DamageProfileTemplates.bleed_maidenguard = {
 			1,
 			0.5,
 			1,
-			1,
+			0.25,
 			0.5,
 			0
 		},
@@ -3792,7 +4225,7 @@ DamageProfileTemplates.bleed_maidenguard = {
 			1,
 			0.5,
 			1,
-			1,
+			0.25,
 			0.5,
 			0
 		}
@@ -3810,6 +4243,8 @@ DamageProfileTemplates.bleed_maidenguard = {
 }
 DamageProfileTemplates.burning_dot = table.clone(DamageProfileTemplates.default)
 DamageProfileTemplates.burning_dot.no_stagger = true
+DamageProfileTemplates.burning_dot.is_dot = true
+DamageProfileTemplates.burning_dot.no_stagger_damage_reduction_ranged = true
 DamageProfileTemplates.burning_dot.default_target.damage_type = "burninating"
 DamageProfileTemplates.burning_dot.default_target.armor_modifier = {
 	attack = {
@@ -3830,11 +4265,13 @@ DamageProfileTemplates.burning_dot.default_target.armor_modifier = {
 	}
 }
 DamageProfileTemplates.burning_dot.default_target.power_distribution = {
-	attack = 0.05,
+	attack = 0.07,
 	impact = 0.05
 }
 DamageProfileTemplates.burning_dot_firegrenade = table.clone(DamageProfileTemplates.default)
 DamageProfileTemplates.burning_dot_firegrenade.no_stagger = true
+DamageProfileTemplates.burning_dot_firegrenade.is_dot = true
+DamageProfileTemplates.burning_dot_firegrenade.no_stagger_damage_reduction_ranged = true
 DamageProfileTemplates.burning_dot_firegrenade.default_target.damage_type = "burninating"
 DamageProfileTemplates.burning_dot_firegrenade.default_target.armor_modifier = {
 	attack = {
@@ -3860,6 +4297,8 @@ DamageProfileTemplates.burning_dot_firegrenade.default_target.power_distribution
 }
 DamageProfileTemplates.beam_burning_dot = table.clone(DamageProfileTemplates.default)
 DamageProfileTemplates.beam_burning_dot.no_stagger = true
+DamageProfileTemplates.beam_burning_dot.is_dot = true
+DamageProfileTemplates.beam_burning_dot.no_stagger_damage_reduction_ranged = true
 DamageProfileTemplates.beam_burning_dot.default_target.damage_type = "burninating"
 DamageProfileTemplates.beam_burning_dot.default_target.armor_modifier = {
 	attack = {
@@ -3885,6 +4324,8 @@ DamageProfileTemplates.beam_burning_dot.default_target.power_distribution = {
 }
 DamageProfileTemplates.flamethrower_burning_dot = table.clone(DamageProfileTemplates.default)
 DamageProfileTemplates.flamethrower_burning_dot.no_stagger = true
+DamageProfileTemplates.flamethrower_burning_dot.is_dot = true
+DamageProfileTemplates.flamethrower_burning_dot.no_stagger_damage_reduction_ranged = true
 DamageProfileTemplates.flamethrower_burning_dot.default_target.damage_type = "burninating"
 DamageProfileTemplates.flamethrower_burning_dot.default_target.armor_modifier = {
 	attack = {
@@ -3910,9 +4351,11 @@ DamageProfileTemplates.flamethrower_burning_dot.default_target.power_distributio
 }
 DamageProfileTemplates.mutator_player_dot = table.clone(DamageProfileTemplates.default)
 DamageProfileTemplates.mutator_player_dot.no_stagger = true
+DamageProfileTemplates.mutator_player_dot.no_stagger_damage_reduction_ranged = true
 DamageProfileTemplates.mutator_player_dot.default_target.damage_type = "wounded_dot"
 DamageProfileTemplates.corpse_explosion_default = {
 	charge_value = "n/a",
+	no_stagger_damage_reduction_ranged = true,
 	no_stagger = false,
 	cleave_distribution = {
 		attack = 0.25,
@@ -3948,6 +4391,7 @@ DamageProfileTemplates.corpse_explosion_default = {
 }
 DamageProfileTemplates.sienna_adept_blink = {
 	charge_value = "aoe",
+	no_stagger_damage_reduction_ranged = true,
 	dot_template_name = "burning_1W_dot",
 	cleave_distribution = {
 		attack = 0.5,
@@ -3986,17 +4430,20 @@ DamageProfileTemplates.markus_knight_charge = {
 	is_explosion = true,
 	charge_value = "heavy_attack",
 	cleave_distribution = "cleave_distribution_markus_knight_charge",
-	default_target = "default_target_markus_knight_charge"
+	default_target = "default_target_markus_knight_charge",
+	no_stagger_damage_reduction_ranged = true
 }
 DamageProfileTemplates.markus_knight_charge_blast = {
 	armor_modifier = "armor_modifier_markus_knight_charge",
 	is_explosion = true,
 	charge_value = "heavy_attack",
 	cleave_distribution = "cleave_distribution_markus_knight_charge",
-	default_target = "default_target_markus_knight_charge"
+	default_target = "default_target_markus_knight_charge",
+	no_stagger_damage_reduction_ranged = true
 }
 DamageProfileTemplates.ratling_gunner = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	cleave_distribution = {
 		attack = 0.25,
 		impact = 0.25
@@ -4031,6 +4478,7 @@ DamageProfileTemplates.ratling_gunner = {
 }
 DamageProfileTemplates.stormfiend_boss = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	cleave_distribution = {
 		attack = 0.25,
 		impact = 0.25
@@ -4065,6 +4513,7 @@ DamageProfileTemplates.stormfiend_boss = {
 }
 DamageProfileTemplates.stormfiend_boss_narrow = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	cleave_distribution = {
 		attack = 0.25,
 		impact = 0.25
@@ -4099,6 +4548,7 @@ DamageProfileTemplates.stormfiend_boss_narrow = {
 }
 DamageProfileTemplates.stormfiend_boss_dual_intro = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	cleave_distribution = {
 		attack = 0.25,
 		impact = 0.25
@@ -4133,6 +4583,7 @@ DamageProfileTemplates.stormfiend_boss_dual_intro = {
 }
 DamageProfileTemplates.ratling_gunner_backdrop = {
 	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
 	cleave_distribution = {
 		attack = 0.25,
 		impact = 0.25

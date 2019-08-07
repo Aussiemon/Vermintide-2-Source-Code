@@ -9,20 +9,23 @@ local CHAOS_RAIDER_COMBAT = {
 	{
 		"BTStormVerminAttackAction",
 		name = "running_attack",
+		condition = "ask_target_before_attacking",
 		action_data = ACTIONS.running_attack
 	},
 	{
 		"BTRandom",
 		{
 			"BTStormVerminAttackAction",
-			name = "running_special_attack_sweep",
 			weight = 1,
+			name = "running_special_attack_sweep",
+			condition = "ask_target_before_attacking",
 			action_data = ACTIONS.special_attack_sweep
 		},
 		{
 			"BTStormVerminAttackAction",
-			name = "running_special_attack_cleave",
 			weight = 1,
+			name = "running_special_attack_cleave",
+			condition = "ask_target_before_attacking",
 			action_data = ACTIONS.special_attack_cleave
 		},
 		name = "moving_attack",
@@ -32,14 +35,16 @@ local CHAOS_RAIDER_COMBAT = {
 		"BTRandom",
 		{
 			"BTStormVerminAttackAction",
-			name = "special_attack_cleave",
 			weight = 1,
+			name = "special_attack_cleave",
+			condition = "ask_target_before_attacking",
 			action_data = ACTIONS.special_attack_cleave
 		},
 		{
 			"BTStormVerminAttackAction",
-			name = "special_attack_sweep",
 			weight = 1,
+			name = "special_attack_sweep",
+			condition = "ask_target_before_attacking",
 			action_data = ACTIONS.special_attack_sweep
 		},
 		name = "special_attack",
@@ -167,8 +172,9 @@ BreedBehaviors.raider_tutorial = {
 		},
 		{
 			"BTStormVerminAttackAction",
-			name = "special_attack_cleave_tutorial",
 			weight = 1,
+			name = "special_attack_cleave_tutorial",
+			condition = "ask_target_before_attacking",
 			action_data = ACTIONS.special_attack_cleave_tutorial
 		},
 		condition = "confirmed_player_sighting",

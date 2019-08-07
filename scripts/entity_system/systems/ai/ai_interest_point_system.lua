@@ -71,11 +71,25 @@ AIInterestPointSystem.init = function (self, context, name)
 
 	network_event_delegate:register(self, "rpc_interest_point_chatter_update")
 
-	self.level_seed = Managers.state.game_mode.level_transition_handler.level_seed
+	local level_seed = Managers.mechanism:get_level_seed()
+	self._seed = level_seed
 
-	print("[AIInterestPointSystem] Level Seed: ", self.level_seed)
+	print("[AIInterestPointSystem] Level Seed: ", level_seed)
 
 	self.current_obsolete_request = nil
+end
+
+AIInterestPointSystem._random = function (self, ...)
+	local seed, value = Math.next_random(self._seed, ...)
+	self._seed = seed
+
+	return value
+end
+
+AIInterestPointSystem.set_seed = function (self, seed)
+	fassert(seed and type(seed) == "number", "Bad seed input!")
+
+	self._seed = seed
 end
 
 AIInterestPointSystem.destroy = function (self)
@@ -113,11 +127,10 @@ local dummy_input = {}
 
 AIInterestPointSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = {}
-	local go_id, is_level_unit = self.network_manager:game_object_or_level_id(unit)
+	local _, is_level_unit = self.network_manager:game_object_or_level_id(unit)
 
 	if not extension_init_data.recycler and is_level_unit and not script_data.ai_dont_randomize_interest_points then
-		local level_seed, random_float = Math.next_random(self.level_seed)
-		self.level_seed = level_seed
+		local random_float = self:_random()
 
 		if random_float < InterestPointSettings.interest_point_spawn_chance then
 			if script_data.ai_interest_point_debug then
@@ -142,7 +155,6 @@ AIInterestPointSystem.on_add_extension = function (self, world, unit, extension_
 			local anim_lookup_n = #anim_lookup
 			local nav_world = self.nav_world
 			local unit_position = Unit.local_position(unit, 0)
-			local unit_rotation = Unit.local_rotation(unit, 0)
 			self.interest_points[unit] = extension
 
 			if script_data.ai_interest_point_debug then
@@ -177,7 +189,7 @@ AIInterestPointSystem.on_add_extension = function (self, world, unit, extension_
 						local anim_enabled = Unit.get_data(unit, "interest_point", "points", point_i, "animation_map", anim_name)
 
 						if anim_enabled then
-							assert(anim_name ~= nil, "No animation name in interest point unit %q for point %d", tostring(unit), point_i)
+							fassert(anim_name ~= nil, "No animation name in interest point unit %q for point %d", tostring(unit), point_i)
 
 							anim_i = anim_i + 1
 							animations[anim_i] = anim_name
@@ -205,15 +217,15 @@ AIInterestPointSystem.on_add_extension = function (self, world, unit, extension_
 				point_i = point_i + 1
 			end
 
-			local broadphase_radius = 4
-			extension.broadphase_id = Broadphase.add(self.broadphase, unit, unit_position, broadphase_radius)
+			local radius = 4
+			extension.broadphase_id = Broadphase.add(self.broadphase, unit, unit_position, radius)
 			extension.num_valid_to_spawn = num_valid_to_spawn
 
 			if num_valid_to_spawn == 0 then
 				extension.points_n = 0
 			else
 				extension.points_n = point_i
-				extension.pack_type = extension_init_data.pack_type or "standard"
+				extension.pack_members = extension_init_data.pack_members
 				extension.zone_data = extension_init_data.zone_data
 
 				if extension_init_data.do_spawn then
@@ -291,22 +303,6 @@ AIInterestPointSystem.update = function (self, context, t)
 	end
 end
 
-AIInterestPointSystem.debug_draw_baker_data = function (self, hi_data, data, breed_name, point)
-	if data.max_amount < data.count then
-		local c = Colors.distinct_colors_lookup[hi_data.id] or Colors.distinct_colors_lookup[1]
-		local color = Color(c[1], c[2], c[3])
-
-		QuickDrawerStay:sphere(Vector3Aux.unbox(point.position), 0.5, color)
-		print(string.format("SPAWN SWITCH breed %s -> %s, hidata-id: %s count: %d/%d", breed_name, data.switch_breed.name, hi_data.id, data.switch_count, data.max_amount))
-	else
-		local c = Colors.distinct_colors_lookup[hi_data.id] or Colors.distinct_colors_lookup[1]
-		local color = Color(c[1], c[2], c[3])
-
-		QuickDrawerStay:sphere(Vector3Aux.unbox(point.position), 0.1, color)
-		print(string.format("SPAWN NORMAL breed %s, hidata-id: %s count: %d/%d", breed_name, hi_data.id, data.switch_count, data.max_amount))
-	end
-end
-
 AIInterestPointSystem.breed_spawned_callback = function (ai_unit, breed, optional_data)
 	local point = optional_data.dead_breed_data
 	BREED_DIE_LOOKUP[ai_unit] = {
@@ -327,52 +323,23 @@ AIInterestPointSystem.spawn_interest_points = function (self)
 	local num_to_spawn = 8
 	local interest_points_to_spawn = self.interest_points_to_spawn
 	local interest_point_unit = next(interest_points_to_spawn)
-	local BreedPacksBySize = BreedPacksBySize
 	local breed_override_lookup = self._breed_override_lookup
 
 	while num_to_spawn > 0 and interest_point_unit ~= nil do
 		local point_extension = interest_points_to_spawn[interest_point_unit]
-		local pack_type = point_extension.pack_type
-		local pack_type_by_size = BreedPacksBySize[pack_type]
-		local zone_data = point_extension.zone_data
-		local hi_data = zone_data and zone_data.hi_data
+		local members = point_extension.pack_members
 		local points_n = point_extension.points_n
-		local packs_by_size = pack_type_by_size[points_n]
-		local prob = packs_by_size.prob
-		local alias = packs_by_size.alias
-		local pack_index = LoadedDice.roll(prob, alias)
-		local pack = packs_by_size.packs[pack_index]
-		local members = pack.members
-		local member_index = 0
 
 		for i = 1, points_n, 1 do
 			local point = point_extension.points[i]
 
 			if point.is_position_on_navmesh then
-				member_index = member_index + 1
-				local breed = members[member_index]
+				local breed = members[i]
 				local optional_data = nil
 				local spawn_category = "enemy_recycler"
 				local spawn_animation = nil
 				local spawn_type = "roam"
 				local group_data = nil
-
-				if hi_data then
-					local breed_count = hi_data.breed_count
-
-					if breed_count then
-						local data = breed_count[breed.name]
-
-						if data then
-							data.count = data.count + 1
-
-							if data.max_amount < data.count then
-								breed = data.switch_breed
-								data.switch_count = data.switch_count + 1
-							end
-						end
-					end
-				end
 
 				if breed_override_lookup and breed_override_lookup[breed.name] then
 					breed = Breeds[breed_override_lookup[breed.name]]

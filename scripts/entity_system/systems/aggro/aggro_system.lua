@@ -6,11 +6,23 @@ local extensions = {
 AggroSystem.init = function (self, context, name)
 	AggroSystem.super.init(self, context, name, extensions)
 
-	self.aggroable_units = {}
+	self.aggroable_units = {
+		[0] = {}
+	}
+	local sides = Managers.state.side:sides()
+
+	for i = 1, #sides, 1 do
+		self.aggroable_units[i] = {}
+	end
+
+	self._reverse_lookup = {}
 end
 
 AggroSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
-	self.aggroable_units[unit] = true
+	local side = extension_init_data.side or Managers.state.side:get_side_from_name("heroes")
+	local side_id = side.side_id
+	self.aggroable_units[side_id][unit] = true
+	self._reverse_lookup[unit] = side_id
 	local _, is_level_unit = Managers.state.network:game_object_or_level_id(unit)
 
 	if is_level_unit then
@@ -21,18 +33,13 @@ AggroSystem.on_add_extension = function (self, world, unit, extension_name, exte
 end
 
 AggroSystem.on_remove_extension = function (self, unit, extension_name)
-	REMOVE_AGGRO_UNITS(unit)
 	AggroSystem.super.on_remove_extension(self, unit, extension_name)
 
-	self.aggroable_units[unit] = nil
-end
+	local side_id = self._reverse_lookup[unit]
+	self.aggroable_units[side_id][unit] = nil
+	self._reverse_lookup[unit] = nil
 
-AggroSystem.disable_aggro_for_unit = function (self, unit)
-	self.aggroable_units[unit] = nil
-end
-
-AggroSystem.enable_aggro_for_unit = function (self, unit)
-	self.aggroable_units[unit] = true
+	Managers.state.side:remove_aggro_unit(side_id, unit)
 end
 
 AggroSystem.destroy = function (self)

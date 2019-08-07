@@ -3,13 +3,13 @@ local breed_data = {
 	perception = "perception_no_seeing",
 	has_inventory = true,
 	animation_sync_rpc = "rpc_sync_anim_state_8",
+	not_bot_target = true,
 	walk_speed = 0.65,
 	run_speed = 0.65,
 	target_selection = "pick_no_targets",
-	death_reaction = "ai_default",
-	not_bot_target = true,
-	armored_on_no_damage = true,
 	exchange_order = 1,
+	armored_on_no_damage = true,
+	death_reaction = "ai_default",
 	combat_music_state = "no_boss",
 	debug_spawn_category = "Misc",
 	bone_lod_level = 0,
@@ -34,18 +34,12 @@ local breed_data = {
 		1500,
 		1500,
 		1500,
+		1500,
+		1500,
+		1500,
 		1500
 	},
-	stagger_duration = {
-		1,
-		1,
-		1,
-		1,
-		1,
-		1,
-		1,
-		1
-	},
+	stagger_duration = BreedTweaks.stagger_duration.sorcerer,
 	hit_mass_counts = {
 		8,
 		8,
@@ -64,10 +58,6 @@ local breed_data = {
 	},
 	hitzone_multiplier_types = {},
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		head = {
 			prio = 1,
 			actors = {
@@ -89,7 +79,7 @@ local breed_data = {
 			}
 		},
 		torso = {
-			prio = 3,
+			prio = 2,
 			actors = {
 				"c_hips",
 				"c_spine",
@@ -102,7 +92,7 @@ local breed_data = {
 			}
 		},
 		left_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftarm",
 				"c_leftforearm",
@@ -113,7 +103,7 @@ local breed_data = {
 			}
 		},
 		right_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightarm",
 				"c_rightforearm",
@@ -124,7 +114,7 @@ local breed_data = {
 			}
 		},
 		left_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftupleg",
 				"c_leftleg",
@@ -138,7 +128,7 @@ local breed_data = {
 			}
 		},
 		right_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightupleg",
 				"c_rightleg",
@@ -150,6 +140,10 @@ local breed_data = {
 				"j_rightfoot",
 				"j_hips"
 			}
+		},
+		full = {
+			prio = 4,
+			actors = {}
 		},
 		afro = {
 			prio = 5,

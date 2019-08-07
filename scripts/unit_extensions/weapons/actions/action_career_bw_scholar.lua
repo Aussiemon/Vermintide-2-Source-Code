@@ -6,6 +6,7 @@ ActionCareerBWScholar.init = function (self, world, item_name, is_server, owner_
 	self.career_extension = ScriptUnit.extension(owner_unit, "career_system")
 	self.inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
 	self.talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
+	self.buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 end
 
 ActionCareerBWScholar.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
@@ -30,25 +31,47 @@ ActionCareerBWScholar.client_owner_start_action = function (self, new_action, t,
 		local unit_id = network_manager:unit_game_object_id(owner_unit)
 		local heal_type_id = NetworkLookup.heal_types.career_skill
 
-		network_transmit:send_rpc_server("rpc_request_heal", unit_id, 50, heal_type_id)
+		network_transmit:send_rpc_server("rpc_request_heal", unit_id, 35, heal_type_id)
 	end
 
 	self:_play_vo()
+	self.career_extension:start_activated_ability_cooldown()
 
-	local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
+	local inventory_extension = self.inventory_extension
 
 	inventory_extension:check_and_drop_pickups("career_ability")
+
+	self._spell_proc_time = new_action.spell_proc_time and t + new_action.spell_proc_time
+end
+
+ActionCareerBWScholar.client_owner_post_update = function (self, dt, t, world, can_damage)
+	ActionCareerBWScholar.super.client_owner_post_update(self, dt, t, world, can_damage)
+	self:_check_on_spell_used_proc(t)
+end
+
+ActionCareerBWScholar._check_on_spell_used_proc = function (self, t)
+	if self._spell_proc_time and self._spell_proc_time <= t then
+		self.owner_buff_extension:trigger_procs("on_spell_used", self.current_action)
+
+		self._spell_proc_time = nil
+	end
 end
 
 ActionCareerBWScholar.finish = function (self, reason)
-	ActionCareerBWScholar.super.finish(self, reason)
+	if self.state == "waiting_to_shoot" then
+		self:fire(self.current_action, false)
+
+		self.state = "shot"
+	end
+
+	self:_check_on_spell_used_proc(math.huge)
 	Unit.flow_event(self.owner_unit, "lua_force_stop")
 	Unit.flow_event(self.first_person_unit, "lua_force_stop")
-	self.inventory_extension:wield_previous_non_level_slot()
+	ActionCareerBWScholar.super.finish(self, reason)
 
-	if self.state == "shot" then
-		self.career_extension:start_activated_ability_cooldown()
-	end
+	local inventory_extension = self.inventory_extension
+
+	inventory_extension:wield_previous_non_level_slot()
 end
 
 ActionCareerBWScholar._play_vo = function (self)

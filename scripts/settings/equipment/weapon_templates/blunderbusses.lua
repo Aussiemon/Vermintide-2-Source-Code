@@ -4,7 +4,7 @@ weapon_template.actions = {
 	action_one = {
 		default = {
 			damage_window_start = 0.1,
-			bullseye = false,
+			play_reload_animation = true,
 			fire_at_gaze_setting = "tobii_fire_at_gaze_blunderbuss",
 			kind = "shotgun",
 			damage_profile = "shot_shotgun",
@@ -16,16 +16,17 @@ weapon_template.actions = {
 			reload_when_out_of_ammo = true,
 			hit_effect = "shotgun_bullet_impact",
 			anim_event_last_ammo = "attack_shoot_last",
+			bullseye = false,
 			shot_count = 12,
-			apply_recoil = true,
 			damage_window_end = 0,
 			range = 100,
 			ammo_usage = 1,
 			fire_time = 0,
+			apply_recoil = true,
 			anim_event_secondary = "reload",
 			active_reload_time = 0.35,
 			anim_event = "attack_shoot",
-			total_time = 0.66,
+			total_time = 1,
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
@@ -41,21 +42,21 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.5,
-					action = "action_one",
-					input = "action_one_hold"
-				},
-				{
-					sub_action = "default",
 					start_time = 0.4,
 					action = "action_two",
 					input = "action_two"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.75,
+					start_time = 0.6,
 					action = "weapon_reload",
 					input = "weapon_reload"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.75,
+					action = "weapon_reload",
+					auto_chain = true
 				}
 			},
 			hit_mass_count = LINESMAN_HIT_MASS_COUNT,

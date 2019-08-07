@@ -39,6 +39,8 @@ return {
 				32
 			}
 		}
+		local side = Managers.state.side:get_side_from_name("dark_pact")
+		data.side_id = side.side_id
 	end,
 	server_players_left_safe_zone = function (context, data)
 		data.has_left_safe_zone = true
@@ -64,10 +66,12 @@ return {
 			end
 
 			local conflict_director = Managers.state.conflict
+			local only_ahead = false
+			local side_id = data.side_id
 			local main_path_info = conflict_director.main_path_info
 
-			if (main_path_info.ahead_unit and Unit.alive(main_path_info.ahead_unit)) or (main_path_info.behind_unit and Unit.alive(main_path_info.behind_unit)) then
-				conflict_director.horde_spawner:execute_custom_horde(spawn_list)
+			if main_path_info.ahead_unit or main_path_info.behind_unit then
+				conflict_director.horde_spawner:execute_custom_horde(spawn_list, only_ahead, side_id)
 
 				data.spawn_loot_rats_at = t + spawn_frequency
 			end

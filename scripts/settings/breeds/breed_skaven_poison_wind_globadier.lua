@@ -36,13 +36,7 @@ local breed_data = {
 	base_unit = "units/beings/enemies/skaven_wind_globadier/chr_skaven_wind_globadier",
 	threat_value = 8,
 	detection_radius = math.huge,
-	max_health = {
-		20,
-		20,
-		30,
-		40,
-		60
-	},
+	max_health = BreedTweaks.max_health.globadier,
 	bloodlust_health = BreedTweaks.bloodlust_health.skaven_special,
 	stagger_duration = {
 		0.5,
@@ -66,10 +60,6 @@ local breed_data = {
 		head = "headshot"
 	},
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		head = {
 			prio = 1,
 			actors = {
@@ -91,7 +81,7 @@ local breed_data = {
 			}
 		},
 		torso = {
-			prio = 3,
+			prio = 2,
 			actors = {
 				"c_hips",
 				"c_spine",
@@ -104,7 +94,7 @@ local breed_data = {
 			}
 		},
 		left_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftarm",
 				"c_leftforearm",
@@ -115,7 +105,7 @@ local breed_data = {
 			}
 		},
 		right_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightarm",
 				"c_rightforearm",
@@ -126,7 +116,7 @@ local breed_data = {
 			}
 		},
 		left_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftleg",
 				"c_leftupleg",
@@ -140,7 +130,7 @@ local breed_data = {
 			}
 		},
 		right_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightleg",
 				"c_rightupleg",
@@ -154,7 +144,7 @@ local breed_data = {
 			}
 		},
 		tail = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_tail1",
 				"c_tail2",
@@ -168,7 +158,7 @@ local breed_data = {
 			}
 		},
 		aux = {
-			prio = 5,
+			prio = 4,
 			actors = {
 				"c_compressor_valve",
 				"c_compressor",
@@ -180,8 +170,12 @@ local breed_data = {
 				"j_backpack_root"
 			}
 		},
-		afro = {
+		full = {
 			prio = 5,
+			actors = {}
+		},
+		afro = {
+			prio = 6,
 			actors = {
 				"c_afro"
 			}
@@ -268,58 +262,23 @@ local action_data = {
 		attack_time = 1.44,
 		attack_anim = "attack_throw",
 		aoe_init_damage = {
-			{
-				0,
-				1,
-				0
-			},
-			{
-				0,
-				1,
-				0
-			},
-			{
-				5,
-				1,
-				0
-			},
-			{
-				7,
-				1,
-				0
-			},
-			{
-				10,
-				1,
-				0
-			}
+			0,
+			0,
+			5,
+			7,
+			10,
+			10,
+			10
 		},
 		aoe_dot_damage = {
-			{
-				2,
-				0,
-				0
-			},
-			{
-				4,
-				0,
-				0
-			},
-			{
-				6,
-				0,
-				0
-			},
-			{
-				8,
-				0,
-				0
-			},
-			{
-				15,
-				0,
-				0
-			}
+			2,
+			4,
+			6,
+			8,
+			15,
+			15,
+			15,
+			15
 		},
 		radius = GLOBE_RADIUS,
 		time_between_throws = {
@@ -329,14 +288,10 @@ local action_data = {
 	},
 	smash_door = {
 		unblockable = true,
+		damage = 5,
 		damage_type = "cutting",
 		move_anim = "move_fwd",
-		attack_anim = "smash_door",
-		damage = {
-			5,
-			5,
-			5
-		}
+		attack_anim = "smash_door"
 	},
 	suicide_run = {
 		suicide_explosion_timer = 6,
@@ -349,58 +304,24 @@ local action_data = {
 		duration = 3,
 		aoe_dot_damage_interval = 1,
 		aoe_init_damage = {
-			{
-				10,
-				3,
-				0
-			},
-			{
-				15,
-				3,
-				0
-			},
-			{
-				20,
-				3,
-				0
-			},
-			{
-				25,
-				3,
-				0
-			},
-			{
-				40,
-				3,
-				0
-			}
+			10,
+			15,
+			20,
+			25,
+			40,
+			40,
+			40,
+			40
 		},
 		aoe_dot_damage = {
-			{
-				2,
-				0,
-				0
-			},
-			{
-				4,
-				0,
-				0
-			},
-			{
-				6,
-				0,
-				0
-			},
-			{
-				8,
-				0,
-				0
-			},
-			{
-				10,
-				0,
-				0
-			}
+			2,
+			4,
+			6,
+			8,
+			10,
+			10,
+			10,
+			10
 		},
 		ignore_staggers = {
 			true,
@@ -497,6 +418,26 @@ local action_data = {
 				right = {
 					"stagger_right_exp"
 				}
+			},
+			{
+				fwd = {
+					"stagger_fwd"
+				},
+				bwd = {
+					"stagger_bwd"
+				},
+				left = {
+					"stagger_left"
+				},
+				right = {
+					"stagger_right"
+				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
 			},
 			{
 				fwd = {

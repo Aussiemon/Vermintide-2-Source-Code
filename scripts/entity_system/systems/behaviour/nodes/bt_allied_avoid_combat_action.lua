@@ -11,11 +11,10 @@ BTAlliedAvoidCombatAction.name = "BTAlliedAvoidCombatAction"
 BTAlliedAvoidCombatAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	blackboard.action = action
-	blackboard.target_status_extension = ScriptUnit.extension(blackboard.player_controller, "status_system")
+	blackboard.target_status_extension = ScriptUnit.extension(blackboard.player_controller_unit, "status_system")
 	local self_pos = POSITION_LOOKUP[unit]
-	local flee_dir = self_pos - POSITION_LOOKUP[blackboard.player_controller]
-	local wanted_position = self_pos + flee_dir
-	local pos_on_nav_mesh = GwNavQueries.inside_position_from_outside_position(blackboard.nav_world, wanted_position, 6, 6, 4, 0.5)
+	local wanted_position = POSITION_LOOKUP[blackboard.player_controller_unit]
+	local pos_on_nav_mesh = LocomotionUtils.pos_on_mesh(blackboard.nav_world, wanted_position, 1, 1)
 	local final_pos = pos_on_nav_mesh or self_pos
 	blackboard.wanted_flee_pos = Vector3Box(final_pos)
 	local navigation_extension = blackboard.navigation_extension
@@ -28,6 +27,14 @@ BTAlliedAvoidCombatAction.leave = function (self, unit, blackboard, t, reason, d
 	local navigation_extension = blackboard.navigation_extension
 
 	navigation_extension:set_max_speed(default_move_speed)
+	Unit.set_unit_visibility(unit, true)
+
+	if blackboard.player_controller_unit then
+		local wanted_position = POSITION_LOOKUP[blackboard.player_controller_unit]
+		local locomotion_extension = blackboard.locomotion_extension
+
+		locomotion_extension:teleport_to(wanted_position)
+	end
 
 	blackboard.wanted_flee_pos = nil
 end
@@ -45,14 +52,7 @@ BTAlliedAvoidCombatAction._go_idle = function (self, unit, blackboard, locomotio
 	local action = blackboard.action
 
 	Managers.state.network:anim_event(unit, action.idle_anim or "idle")
-
-	local target_unit = blackboard.target_unit
-
-	if target_unit then
-		local rot = LocomotionUtils.rotation_towards_unit_flat(unit, target_unit)
-
-		locomotion_extension:set_wanted_rotation(rot)
-	end
+	Unit.set_unit_visibility(unit, false)
 end
 
 BTAlliedAvoidCombatAction._go_moving = function (self, unit, blackboard, action)
@@ -81,12 +81,11 @@ BTAlliedAvoidCombatAction.flee = function (self, unit, t, dt, blackboard, locomo
 		self:_go_idle(unit, blackboard, locomotion_extension)
 	end
 
-	local target_intensity = blackboard.target_status_extension and blackboard.target_status_extension:get_intensity()
+	local target_intensity = blackboard.target_status_extension and blackboard.target_status_extension:get_pacing_intensity()
 	blackboard.target_is_in_combat = target_intensity and target_intensity > 0
 end
 
 BTAlliedAvoidCombatAction._move_to_flee_location = function (self, unit, blackboard, t, dt)
-	local action = blackboard.action
 	local navigation_extension = blackboard.navigation_extension
 	local wanted_position = blackboard.wanted_flee_pos:unbox()
 

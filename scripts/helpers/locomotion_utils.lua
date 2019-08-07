@@ -755,9 +755,11 @@ LocomotionUtils.get_close_pos_on_mesh = function (nav_world, pos, searches)
 	return nil, failed_points
 end
 
-LocomotionUtils.get_close_pos_below_on_mesh = function (nav_world, pos, searches)
+LocomotionUtils.get_close_pos_below_on_mesh = function (nav_world, pos, searches, above, below)
+	above = above or 1
+	below = below or 8
 	local failed_points = {}
-	local success, altitude, p1, p2, p3 = GwNavQueries.triangle_from_position(nav_world, pos, 1, 8)
+	local success, altitude, p1, p2, p3 = GwNavQueries.triangle_from_position(nav_world, pos, above, below)
 
 	if success then
 		local projected_pos = Vector3(pos.x, pos.y, altitude)
@@ -773,7 +775,7 @@ LocomotionUtils.get_close_pos_below_on_mesh = function (nav_world, pos, searches
 			for y = -1, 1, 1 do
 				if x ~= 0 or y ~= 0 then
 					local new_pos = pos + Vector3(x * k, y * k, 0)
-					local success, altitude, p1, p2, p3 = GwNavQueries.triangle_from_position(nav_world, new_pos, 1, 8)
+					local success, altitude, p1, p2, p3 = GwNavQueries.triangle_from_position(nav_world, new_pos, above, below)
 
 					if success then
 						local projected_pos = Vector3(new_pos.x, new_pos.y, altitude)
@@ -1046,7 +1048,8 @@ end
 LocomotionUtils.in_crosshairs_dodge = function (unit, blackboard, t, radius, in_crosshairs_time, min_distance, max_distance)
 	min_distance = min_distance or 0
 	max_distance = max_distance or math.huge
-	local units = PLAYER_AND_BOT_UNITS
+	local side = Managers.state.side.side_by_unit[unit]
+	local units = side.ENEMY_PLAYER_AND_BOT_UNITS
 	blackboard.aim_times = blackboard.aim_times or {}
 	local aim_times = blackboard.aim_times
 	local debug_ai_movement = script_data.debug_ai_movement
@@ -1214,13 +1217,13 @@ LocomotionUtils.check_start_turning = function (unit, t, dt, blackboard)
 	local forward = Quaternion.forward(rotation)
 	local right = Quaternion.right(rotation)
 	local navigation_velocity = Vector3.normalize(navigation_extension:desired_velocity())
+
+	LocomotionUtils.update_leaning(unit, blackboard, nav_path_node_position)
+
 	local right_dot = Vector3.dot(right, nav_path_direction)
 	local fwd_dot = Vector3.dot(forward, nav_path_direction)
 	local abs_right_dot = math.abs(right_dot)
 	local abs_fwd_dot = math.abs(fwd_dot)
-
-	LocomotionUtils.update_leaning(unit, blackboard, dt, abs_fwd_dot, right_dot)
-
 	local big_boy_turning_dot = breed.big_boy_turning_dot
 	local dont_need_to_turn = big_boy_turning_dot < fwd_dot
 
@@ -1251,23 +1254,18 @@ LocomotionUtils.check_start_turning = function (unit, t, dt, blackboard)
 	blackboard.anim_cb_move = nil
 end
 
-LocomotionUtils.update_leaning = function (unit, blackboard, dt, abs_fwd_dot, right_dot)
-	local leaning_left = right_dot < 0
-	local target_lean = (1 - abs_fwd_dot) * 25
+LocomotionUtils.update_leaning = function (unit, blackboard, target_lean_position)
+	if not blackboard.enabled_animation_movement_system then
+		local go_id = Managers.state.unit_storage:go_id(unit)
 
-	if leaning_left then
-		target_lean = -target_lean or target_lean
+		Managers.state.network.network_transmit:send_rpc_all("rpc_enable_animation_movement_system", go_id, true)
+
+		blackboard.enabled_animation_movement_system = true
 	end
 
-	target_lean = math.clamp(target_lean, -1, 1)
-	local current_lean = blackboard.animation_lean or 0
-	local lerp_speed = 5
-	local lean = math.lerp(current_lean, target_lean, lerp_speed * dt)
-	local animation_variable_lean = Unit.animation_find_variable(unit, "lean")
+	blackboard.lean_target_position_boxed = blackboard.lean_target_position_boxed or Vector3Box()
 
-	Unit.animation_set_variable(unit, animation_variable_lean, lean)
-
-	blackboard.animation_lean = lean
+	blackboard.lean_target_position_boxed:store(target_lean_position)
 end
 
 LocomotionUtils.update_turning = function (unit, t, dt, blackboard)
@@ -1302,6 +1300,13 @@ LocomotionUtils.reset_turning = function (unit, blackboard)
 
 	LocomotionUtils.set_animation_driven_movement(unit, false)
 	LocomotionUtils.set_animation_rotation_scale(unit, 1)
+
+	local go_id = Managers.state.unit_storage:go_id(unit)
+
+	Managers.state.network.network_transmit:send_rpc_all("rpc_enable_animation_movement_system", go_id, false)
+
+	blackboard.lean_target_position_boxed = nil
+	blackboard.enabled_animation_movement_system = nil
 end
 
 return

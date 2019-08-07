@@ -2,8 +2,6 @@ require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTVictimGrabbedThrowAwayAction = class(BTVictimGrabbedThrowAwayAction, BTNode)
 BTVictimGrabbedThrowAwayAction.name = "BTVictimGrabbedThrowAwayAction"
-local PLAYER_POSITIONS = PLAYER_POSITIONS
-local PLAYER_UNITS = PLAYER_UNITS
 
 BTVictimGrabbedThrowAwayAction.init = function (self, ...)
 	BTVictimGrabbedThrowAwayAction.super.init(self, ...)

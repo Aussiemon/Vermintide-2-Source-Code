@@ -165,45 +165,10 @@ BTThrowPoisonGlobeAction.launch_projectile = function (self, blackboard, action,
 	local duration = action.duration
 	local damage_source = blackboard.breed.name
 	local create_nav_tag_volume = action.create_nav_tag_volume
-	local nav_tag_volume_layer = action.nav_tag_volume_layer
-	local extension_init_data = {
-		projectile_locomotion_system = {
-			trajectory_template_name = "throw_trajectory",
-			angle = angle,
-			speed = speed,
-			target_vector = target_vector,
-			initial_position = initial_position
-		},
-		projectile_impact_system = {
-			server_side_raycast = true,
-			collision_filter = "filter_enemy_ray_projectile",
-			owner_unit = owner_unit
-		},
-		projectile_system = {
-			impact_template_name = "explosion_impact",
-			damage_source = damage_source,
-			owner_unit = owner_unit
-		},
-		area_damage_system = {
-			invisible_unit = false,
-			player_screen_effect_name = "fx/screenspace_poison_globe_impact",
-			area_ai_random_death_template = "area_poison_ai_random_death",
-			dot_effect_name = "fx/wpnfx_poison_wind_globe_impact",
-			area_damage_template = "area_dot_damage",
-			damage_players = true,
-			aoe_dot_damage = aoe_dot_damage,
-			aoe_init_damage = aoe_init_damage,
-			aoe_dot_damage_interval = aoe_dot_damage_interval,
-			radius = radius,
-			initial_radius = initial_radius,
-			life_time = duration,
-			damage_source = damage_source,
-			create_nav_tag_volume = create_nav_tag_volume,
-			nav_tag_volume_layer = nav_tag_volume_layer
-		}
-	}
-	local projectile_unit_name = "units/weapons/projectile/poison_wind_globe/poison_wind_globe"
-	local projectile_unit = Managers.state.unit_spawner:spawn_network_unit(projectile_unit_name, "aoe_projectile_unit", extension_init_data, initial_position)
+	local instant_explosion = false
+
+	Managers.state.entity:system("projectile_system"):spawn_globadier_globe(initial_position, target_vector, angle, speed, initial_radius, radius, duration, owner_unit, damage_source, aoe_dot_damage, aoe_init_damage, aoe_dot_damage_interval, create_nav_tag_volume, instant_explosion)
+
 	blackboard.has_thrown_first_globe = true
 end
 

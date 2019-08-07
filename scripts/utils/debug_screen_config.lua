@@ -38,6 +38,12 @@ local settings = {
 		category = "Allround useful stuff!"
 	},
 	{
+		description = "Allows clients to join an ongoing weave game mode",
+		is_boolean = true,
+		setting_name = "allow_weave_joining",
+		category = "Allround useful stuff!"
+	},
+	{
 		setting_name = "teleport player",
 		description = "Teleports the player to a portal hub element",
 		category = "Allround useful stuff!",
@@ -47,7 +53,7 @@ local settings = {
 
 			local portals = ConflictUtils.get_teleporter_portals()
 
-			for key, boxed_pos in pairs(portals) do
+			for key, _ in pairs(portals) do
 				options[#options + 1] = key
 			end
 		end,
@@ -71,6 +77,53 @@ local settings = {
 			end
 
 			print("TELEPORT")
+		end
+	},
+	{
+		setting_name = "teleport player to player",
+		description = "Teleports the player to another player.",
+		category = "Allround useful stuff!",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			local data = {}
+			options.data = data
+			local players = Managers.player:players()
+			local local_player = Managers.player:local_player()
+
+			for _, player in pairs(players) do
+				if player ~= local_player then
+					options[#options + 1] = player:name()
+					data[#data + 1] = player
+				end
+			end
+		end,
+		func = function (options, index)
+			local local_player = Managers.player:local_player()
+			local data = options.data
+
+			if local_player then
+				local player_unit = local_player.player_unit
+
+				if not Unit.alive(player_unit) then
+					return
+				end
+
+				local target_player_unit = data[index].player_unit
+
+				if not Unit.alive(target_player_unit) then
+					return
+				end
+
+				local player_locomotion_ext = ScriptUnit.extension(player_unit, "locomotion_system")
+				local target_locomotion_ext = ScriptUnit.extension(target_player_unit, "locomotion_system")
+				local mover = Unit.mover(target_player_unit)
+				local pos = Mover.position(mover)
+				local rot = target_locomotion_ext:current_rotation()
+
+				player_locomotion_ext:teleport_to(pos, rot)
+			end
 		end
 	},
 	{
@@ -147,6 +200,61 @@ local settings = {
 		category = "Allround useful stuff!"
 	},
 	{
+		description = "Sets the fadeout time to zero when exiting the game",
+		is_boolean = true,
+		setting_name = "zero_exit_time",
+		category = "Allround useful stuff!"
+	},
+	{
+		setting_name = "load_level",
+		description = "Loads the selected level.",
+		category = "Allround useful stuff!",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			for key, settings in pairs(LevelSettings) do
+				if type(settings) == "table" then
+					options[#options + 1] = key
+				end
+			end
+
+			table.sort(options, function (a, b)
+				local settings_a = LevelSettings[a]
+				local settings_b = LevelSettings[b]
+				local act_a_index = table.find(GameActsOrder, settings_a.act) or math.huge
+				local act_b_index = table.find(GameActsOrder, settings_b.act) or math.huge
+
+				if act_a_index < act_b_index then
+					return true
+				elseif act_a_index == act_b_index then
+					local act_presentation_order_a = settings_a.act_presentation_order
+					local act_presentation_order_b = settings_b.act_presentation_order
+
+					if act_presentation_order_a or act_presentation_order_b then
+						return (act_presentation_order_a or math.huge) < (act_presentation_order_b or math.huge)
+					else
+						local debug_sorting_a = settings_a.map_settings and settings_a.map_settings.sorting
+						local debug_sorting_b = settings_b.map_settings and settings_b.map_settings.sorting
+
+						if debug_sorting_a or debug_sorting_b then
+							return (debug_sorting_a or math.huge) < (debug_sorting_b or math.huge)
+						else
+							return a < b
+						end
+					end
+				else
+					return false
+				end
+			end)
+		end,
+		func = function (options, index)
+			local level_name = options[index]
+
+			debug.load_level(level_name)
+		end
+	},
+	{
 		description = "Converts all IRC messages to a random vote",
 		is_boolean = true,
 		setting_name = "twitch_randomize_votes",
@@ -172,6 +280,12 @@ local settings = {
 		func = function ()
 			Managers.twitch:debug_activate_twitch_game_mode()
 		end
+	},
+	{
+		description = "Display your current matchmaking settings on the screen for easier testing/debug",
+		is_boolean = true,
+		setting_name = "debug_weave_matchmaking",
+		category = "Weave Matchmaking"
 	},
 	{
 		description = "",
@@ -240,7 +354,7 @@ local settings = {
 			ai_roaming_spawning_disabled = true,
 			ai_boss_spawning_disabled = true,
 			ai_rush_intervention_disabled = true,
-			ai_outside_navmesh_intervention_disabled = true,
+			ai_terror_events_disabled = true,
 			ai_bots_disabled = true,
 			ai_specials_spawning_disabled = true,
 			ai_pacing_disabled = true,
@@ -258,7 +372,7 @@ local settings = {
 			ai_roaming_spawning_disabled = false,
 			ai_boss_spawning_disabled = false,
 			ai_rush_intervention_disabled = false,
-			ai_outside_navmesh_intervention_disabled = false,
+			ai_terror_events_disabled = false,
 			ai_bots_disabled = false,
 			ai_specials_spawning_disabled = false,
 			ai_pacing_disabled = false,
@@ -276,8 +390,8 @@ local settings = {
 			ai_roaming_spawning_disabled = true,
 			ai_boss_spawning_disabled = false,
 			debug_ai_recycler = true,
-			ai_outside_navmesh_intervention_disabled = true,
 			debug_ai_pacing = true,
+			ai_terror_events_disabled = true,
 			debug_player_intensity = true,
 			ai_bots_disabled = true,
 			ai_specials_spawning_disabled = true,
@@ -451,6 +565,147 @@ Features that make player mechanics nicer to work with.
 		}
 	},
 	{
+		description = "Sets the career index you would like to start the game with.",
+		setting_name = "wanted_career_index",
+		category = "Player mechanics recommended",
+		item_source = {
+			1,
+			2,
+			3
+		}
+	},
+	{
+		setting_name = "switch_class",
+		description = "Switch player class to play",
+		category = "Player mechanics recommended",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			local data = {}
+			options.data = data
+			local player = Managers.player:local_player()
+			local peer_id = player:network_id()
+			local local_player_id = player:local_player_id()
+			local party_manager = Managers.party
+			local party = party_manager:get_party_from_player_id(peer_id, local_player_id)
+			local side = Managers.state.side.side_by_party[party]
+			local available_profiles = side.available_profiles
+			available_profiles = available_profiles or PROFILES_BY_AFFILIATION.heroes
+
+			for k = 1, #available_profiles, 1 do
+				local profile_name = available_profiles[k]
+				local index = #options + 1
+				options[index] = profile_name
+				data[index] = profile_name
+			end
+		end,
+		func = function (options, index)
+			local profile_name = options.data[index]
+
+			if profile_name then
+				local profile_index = FindProfileIndex(profile_name)
+				local career_index = 1
+				local career_name = SPProfiles[profile_index].careers[career_index].display_name
+
+				Managers.state.network:request_profile(1, profile_name, career_name)
+			end
+		end
+	},
+	{
+		setting_name = "switch_party",
+		description = "Switch party you you want to spawn in. Note: you need to 'switch_class' for it to be fulfilled",
+		category = "Player mechanics recommended",
+		item_source = {},
+		load_items_source_func = function (options)
+			local party_manager = Managers.party
+			local parties = party_manager:parties()
+
+			table.clear(options)
+
+			local data = {}
+			options.data = data
+
+			for k, party in ipairs(parties) do
+				local index = #options + 1
+				local num_used_slots = party.num_used_slots - party.num_bots
+
+				if num_used_slots < party.num_slots then
+					options[index] = string.format("%s (%d/%d)", party.party_id, num_used_slots, party.num_slots)
+				else
+					options[index] = string.format("%s (%d/%d) FULL!", party.party_id, num_used_slots, party.num_slots)
+				end
+
+				data[index] = party.party_id
+			end
+		end,
+		func = function (options, index)
+			local party_id = options.data[index]
+
+			if party_id then
+				local party = Managers.party:get_party(party_id)
+
+				if party.num_open_slots > 0 then
+					print("Debug switching wanted party to:", party_id)
+
+					local player = Managers.player:local_player()
+					local local_player_id = player:local_player_id()
+					local peer_id = player:network_id()
+
+					Managers.party:request_join_party(peer_id, local_player_id, party_id)
+					Managers.state.spawn:delayed_despawn(player)
+				end
+			end
+		end
+	},
+	{
+		setting_name = "wanted_party",
+		description = "automatically puts you in selected party on join",
+		category = "Player mechanics",
+		item_source = {},
+		load_items_source_func = function (options)
+			local party_manager = Managers.party
+			local parties = party_manager:parties()
+
+			table.clear(options)
+
+			for i = 1, #parties, 1 do
+				local party = parties[i]
+				options[#options + 1] = party.party_id
+			end
+		end,
+		func = function (options, index)
+			local party_tag = options[index]
+
+			if party_tag then
+			end
+		end
+	},
+	{
+		setting_name = "switch_ai_debug_spawning_party",
+		description = "Switch what party you want debugging spawning (P) AI units to belong to",
+		category = "Player mechanics recommended",
+		item_source = {},
+		load_items_source_func = function (options)
+			local side_manager = Managers.state.side
+			local sides = side_manager:sides()
+
+			table.clear(options)
+
+			for k, side in pairs(sides) do
+				local index = #options + 1
+				options[index] = side.side_id
+			end
+		end,
+		func = function (options, index)
+			local side_id = options[index]
+
+			if side_id then
+				Managers.state.conflict:set_debug_spawn_side(side_id)
+			end
+		end
+	},
+	{
 		description = "Show the units currently equipped in left/right hand.",
 		is_boolean = true,
 		setting_name = "show_equipped_weapon_units",
@@ -460,6 +715,12 @@ Features that make player mechanics nicer to work with.
 		description = "For enabling melee weapon debugging.",
 		is_boolean = true,
 		setting_name = "debug_weapons",
+		category = "Player mechanics"
+	},
+	{
+		description = "The enemy that got target will always get hit",
+		is_boolean = true,
+		setting_name = "debug_weapons_always_hit_target",
 		category = "Player mechanics"
 	},
 	{
@@ -493,7 +754,7 @@ Features that make player mechanics nicer to work with.
 		category = "Player mechanics"
 	},
 	{
-		description = "Disables the nice movement by silly people who need to promote themselves.",
+		description = "Disables the nice movement by Markus, Peder and Platt.",
 		is_boolean = true,
 		setting_name = "disable_nice_movement",
 		category = "Player mechanics"
@@ -533,6 +794,23 @@ Features that make player mechanics nicer to work with.
 		is_boolean = true,
 		setting_name = "debug_unlock_talents",
 		category = "Player mechanics"
+	},
+	{
+		description = "Resets all talents for the current career. Needs to be done outside of a menu to take effect",
+		category = "Player mechanics",
+		setting_name = "reset_career_talents",
+		func = function ()
+			local player = Managers.player:local_player()
+			local career_name = player:career_name()
+
+			Managers.backend:get_interface("talents"):set_talents(career_name, {
+				0,
+				0,
+				0,
+				0,
+				0
+			})
+		end
 	},
 	{
 		description = "Enable hero stats in inventory",
@@ -729,7 +1007,10 @@ Features that make player mechanics nicer to work with.
 			925,
 			950,
 			975,
-			1000
+			1000,
+			1200,
+			1400,
+			1600
 		},
 		custom_item_source_order = function (item_source, options)
 			for _, v in ipairs(item_source) do
@@ -768,15 +1049,7 @@ Features that make player mechanics nicer to work with.
 			725,
 			750,
 			775,
-			800,
-			825,
-			850,
-			875,
-			900,
-			925,
-			950,
-			975,
-			1000
+			800
 		},
 		custom_item_source_order = function (item_source, options)
 			for _, v in ipairs(item_source) do
@@ -792,6 +1065,12 @@ Features that make player mechanics nicer to work with.
 		category = "Player mechanics"
 	},
 	{
+		description = "Show player ammo",
+		is_boolean = true,
+		setting_name = "show_player_ammo",
+		category = "Player mechanics"
+	},
+	{
 		description = "Enables players and bots to respawn quickly at respawn points",
 		is_boolean = true,
 		setting_name = "fast_respawns",
@@ -801,6 +1080,12 @@ Features that make player mechanics nicer to work with.
 		description = "Disables triggering weapon animations for third person. Useful for testing new weapons. öddfg (to spite Seb)",
 		is_boolean = true,
 		setting_name = "disable_third_person_weapon_animation_events",
+		category = "Player mechanics"
+	},
+	{
+		description = "Draw some helpful lines for player leaps",
+		is_boolean = true,
+		setting_name = "debug_draw_player_leap",
 		category = "Player mechanics"
 	},
 	{
@@ -846,12 +1131,6 @@ Features that make player mechanics nicer to work with.
 		category = "AI recommended"
 	},
 	{
-		description = "Disables AI outside navmesh intervention (specials)",
-		is_boolean = true,
-		setting_name = "ai_outside_navmesh_intervention_disabled",
-		category = "AI recommended"
-	},
-	{
 		description = "Disables AI roam spawning.",
 		is_boolean = true,
 		setting_name = "ai_roaming_spawning_disabled",
@@ -879,6 +1158,12 @@ Features that make player mechanics nicer to work with.
 		description = "Disables critter spawning",
 		is_boolean = true,
 		setting_name = "ai_critter_spawning_disabled",
+		category = "AI recommended"
+	},
+	{
+		description = "Disables AI terror events spawning",
+		is_boolean = true,
+		setting_name = "ai_terror_events_disabled",
 		category = "AI recommended"
 	},
 	{
@@ -976,8 +1261,9 @@ Features that make player mechanics nicer to work with.
 					id = Managers.state.entity:system("ai_group_system"):generate_group_id()
 				}
 				local t = Managers.time:time("game")
+				local side_id = nil
 
-				Managers.state.conflict:mini_patrol(t, nil, composition, group_template)
+				Managers.state.conflict:mini_patrol(t, nil, side_id, composition, group_template)
 			end
 		end
 	},
@@ -1050,6 +1336,12 @@ Features that make player mechanics nicer to work with.
 		category = "Conflict & Pacing"
 	},
 	{
+		description = "Shows the contained breeds of the current conflict_director.",
+		is_boolean = true,
+		setting_name = "debug_conflict_director_breeds",
+		category = "Conflict & Pacing"
+	},
+	{
 		description = "Displays current threat value from aggroed enemies, and what systems will delay their spawning.",
 		is_boolean = true,
 		setting_name = "debug_current_threat_value",
@@ -1089,12 +1381,6 @@ Features that make player mechanics nicer to work with.
 		description = "Handles speedrunners by spawning specials or small hordes ahead of players, activate this to see its states",
 		is_boolean = true,
 		setting_name = "debug_speed_running_intervention",
-		category = "Conflict & Pacing"
-	},
-	{
-		description = "Shows player that is outside navmesh...",
-		is_boolean = true,
-		setting_name = "debug_outside_navmesh_intervention",
 		category = "Conflict & Pacing"
 	},
 	{
@@ -1241,7 +1527,7 @@ Features that make player mechanics nicer to work with.
 	{
 		description = "Injects all bosses into the main path'",
 		category = "AI",
-		setting_name = "debug_spawn_all_bosses",
+		setting_name = "debug_inject_bosses_in_all_boss_spawners",
 		func = function ()
 			print("All boss enemies are now injected into the main path!")
 			Managers.state.conflict.level_analysis:inject_all_bosses_into_main_path()
@@ -1579,53 +1865,10 @@ Features that make player mechanics nicer to work with.
 		category = "AI"
 	},
 	{
-		setting_name = "load_level",
-		description = "Loads the selected level.",
-		category = "Gamemode/level",
-		item_source = {},
-		load_items_source_func = function (options)
-			table.clear(options)
-
-			for key, settings in pairs(LevelSettings) do
-				if type(settings) == "table" then
-					options[#options + 1] = key
-				end
-			end
-
-			table.sort(options, function (a, b)
-				local settings_a = LevelSettings[a]
-				local settings_b = LevelSettings[b]
-				local act_a_index = table.find(GameActsOrder, settings_a.act) or math.huge
-				local act_b_index = table.find(GameActsOrder, settings_b.act) or math.huge
-
-				if act_a_index < act_b_index then
-					return true
-				elseif act_a_index == act_b_index then
-					local act_presentation_order_a = settings_a.act_presentation_order
-					local act_presentation_order_b = settings_b.act_presentation_order
-
-					if act_presentation_order_a or act_presentation_order_b then
-						return (act_presentation_order_a or math.huge) < (act_presentation_order_b or math.huge)
-					else
-						local debug_sorting_a = settings_a.map_settings and settings_a.map_settings.sorting
-						local debug_sorting_b = settings_b.map_settings and settings_b.map_settings.sorting
-
-						if debug_sorting_a or debug_sorting_b then
-							return (debug_sorting_a or math.huge) < (debug_sorting_b or math.huge)
-						else
-							return a < b
-						end
-					end
-				else
-					return false
-				end
-			end)
-		end,
-		func = function (options, index)
-			local level_name = options[index]
-
-			debug.load_level(level_name)
-		end
+		description = "Shows the values for current attack intensity",
+		is_boolean = true,
+		setting_name = "debug_attack_intensity",
+		category = "AI"
 	},
 	{
 		description = "Find it annoying that the game ends every time you die? Well enable this setting then!",
@@ -1640,9 +1883,21 @@ Features that make player mechanics nicer to work with.
 		category = "Gamemode/level"
 	},
 	{
+		description = "Unlock all difficulties in the map",
+		is_boolean = true,
+		setting_name = "unlock_all_difficulties",
+		category = "Gamemode/level"
+	},
+	{
 		description = "Various level debug stuff",
 		is_boolean = true,
 		setting_name = "debug_level",
+		category = "Gamemode/level"
+	},
+	{
+		description = "Shows debug information about Weave spawning",
+		is_boolean = true,
+		setting_name = "debug_weave_spawning",
 		category = "Gamemode/level"
 	},
 	{
@@ -1670,6 +1925,38 @@ Features that make player mechanics nicer to work with.
 		item_source = DifficultySettings
 	},
 	{
+		description = "Set difficulty. No restart required for most stuff, mostly used for testing enemies. Some stuff might need restart of level.",
+		setting_name = "set_difficulty",
+		category = "Gamemode/level",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			for _, difficulty in pairs(Difficulties) do
+				options[#options + 1] = difficulty
+			end
+
+			table.sort(options)
+		end,
+		func = function (options, index)
+			local item = options[index]
+
+			Managers.state.difficulty:set_difficulty(item)
+
+			local side = Managers.state.side:get_side_from_name("heroes")
+			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
+
+			for i = 1, #player_and_bot_units, 1 do
+				local player_unit = player_and_bot_units[i]
+				local player_unit_attack_intensity_extension = ScriptUnit.has_extension(player_unit, "attack_intensity_system")
+
+				player_unit_attack_intensity_extension:debug_set_difficulty(item)
+			end
+
+			print("Set difficulty to ", item)
+		end
+	},
+	{
 		description = "Enables debug options for mutators",
 		is_boolean = true,
 		setting_name = "debug_mutators",
@@ -1679,6 +1966,12 @@ Features that make player mechanics nicer to work with.
 		description = "Debug for darkness in drachenfells castle dungeon level.",
 		is_boolean = true,
 		setting_name = "debug_darkness",
+		category = "Gamemode/level"
+	},
+	{
+		description = "Shows state of the game-mode and in what parties different players are.",
+		is_boolean = true,
+		setting_name = "show_gamemode_debug",
 		category = "Gamemode/level"
 	},
 	{
@@ -5069,7 +5362,7 @@ Features that make player mechanics nicer to work with.
 			local dialogue_files = DialogueSettings.auto_load_files
 
 			if dialogue_files ~= nil then
-				for key, file in pairs(dialogue_files) do
+				for _, file in pairs(dialogue_files) do
 					options[#options + 1] = string.match(file, "^.+/(.+)$")
 				end
 			end
@@ -5078,7 +5371,7 @@ Features that make player mechanics nicer to work with.
 			local level_dialogue_files = DialogueSettings.level_specific_load_files[level_key]
 
 			if level_dialogue_files ~= nil then
-				for key, file in pairs(level_dialogue_files) do
+				for _, file in pairs(level_dialogue_files) do
 					options[#options + 1] = string.match(file, "^.+/(.+)$")
 				end
 			end
@@ -5091,6 +5384,18 @@ Features that make player mechanics nicer to work with.
 		description = "Missing vo sound event triggers an error sound",
 		is_boolean = true,
 		setting_name = "dialogue_debug_missing_vo_trigger_error_sound",
+		category = "Dialogue"
+	},
+	{
+		description = "Enables Text-To-Speech for ALL dialogues",
+		is_boolean = true,
+		setting_name = "debug_text_to_speech_forced",
+		category = "Dialogue"
+	},
+	{
+		description = "Enables Text-To-Speech for dialogues with missing VO",
+		is_boolean = true,
+		setting_name = "debug_text_to_speech_missing",
 		category = "Dialogue"
 	},
 	{
@@ -5287,6 +5592,12 @@ Features that make player mechanics nicer to work with.
 		category = "Misc"
 	},
 	{
+		description = "Shows currently loaded levels and the level_seed.",
+		is_boolean = true,
+		setting_name = "debug_level_packages",
+		category = "Misc"
+	},
+	{
 		description = "Disable luajit ",
 		category = "Misc",
 		setting_name = "luajit_disabled",
@@ -5306,21 +5617,31 @@ Features that make player mechanics nicer to work with.
 		category = "Misc"
 	},
 	{
+		description = "Spawns all player characters base and husk units, and prints to console if any unit is missing any hit-zone actors etc. Units will spawn in base/husk pairs at (0,0,0) upwards into the sky. They will not be removed.",
+		category = "Misc",
+		setting_name = "check_player_base_and_husk_hitzones",
+		func = function ()
+			CHECK_PLAYER_HITZONES()
+		end
+	},
+	{
 		description = "Throttles FPS to a value. Default means no throttle. Note that this doesn't automatically gets set at startup.",
 		setting_name = "force_limit_fps",
 		category = "Misc",
 		item_source = {
 			default = true,
-			throttle_fps_5 = true,
+			throttle_fps_60 = true,
 			throttle_fps_15 = true,
 			throttle_fps_1 = true,
 			throttle_fps_10 = true,
-			throttle_fps_60 = true,
-			throttle_fps_30 = true
+			throttle_fps_45 = true,
+			throttle_fps_25 = true,
+			throttle_fps_20 = true,
+			throttle_fps_30 = true,
+			throttle_fps_5 = true
 		},
 		func = function (options, index)
 			local option = options[index]
-			local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 			local fps = 60
 
 			if option == "default" then
@@ -5335,8 +5656,14 @@ Features that make player mechanics nicer to work with.
 				fps = 10
 			elseif option == "throttle_fps_15" then
 				fps = 15
+			elseif option == "throttle_fps_20" then
+				fps = 20
+			elseif option == "throttle_fps_25" then
+				fps = 25
 			elseif option == "throttle_fps_30" then
 				fps = 30
+			elseif option == "throttle_fps_45" then
+				fps = 45
 			elseif option == "throttle_fps_60" then
 				fps = 60
 			end
@@ -5794,14 +6121,13 @@ Features that make player mechanics nicer to work with.
 		category = "Bots"
 	},
 	{
-		description = "Will set the total number of players + bots in game",
+		description = "Will cap the total number of bots in game",
 		setting_name = "cap_num_bots",
 		category = "Bots",
 		item_source = {
 			0,
 			1,
-			2,
-			3
+			2
 		}
 	},
 	{
@@ -5815,6 +6141,24 @@ Features that make player mechanics nicer to work with.
 			wood_elf = true,
 			bright_wizard = true
 		}
+	},
+	{
+		description = "Next spawned bot will use this career index, clear to use the last choosen one (Tip: Toggle ai_bots_disabled on/off).",
+		setting_name = "wanted_bot_career_index",
+		category = "Bots",
+		item_source = {
+			item_source = {
+				1,
+				2,
+				3
+			}
+		}
+	},
+	{
+		description = "Only works together with wanted_bot_profile. Will make all spawned the same as defined in wanted_bot_profile. (Might need to toggle_ai_bots on/off.)",
+		is_boolean = true,
+		setting_name = "allow_same_bots",
+		category = "Bots"
 	},
 	{
 		no_nil = false,
@@ -6061,6 +6405,18 @@ Features that make player mechanics nicer to work with.
 		end
 	},
 	{
+		description = " ",
+		category = "Progression",
+		setting_name = "Complete DLC Celebrate",
+		func = function ()
+			LevelUnlockUtils.debug_complete_level("dlc_celebrate_crawl")
+
+			local world = Managers.world:world("level_world")
+
+			LevelHelper:flow_event(world, "lua_unlock_challenge_debug_event")
+		end
+	},
+	{
 		description = "Adds 1000 Experience to your account.",
 		category = "Progression",
 		setting_name = "1000 Experience",
@@ -6280,14 +6636,26 @@ Features that make player mechanics nicer to work with.
 		end
 	},
 	{
-		{},
 		description = "Will display all active buffs on the player (max 30 at once)",
-		category = "HUD",
-		setting_name = "debug_player_buffs",
 		is_boolean = true,
-		func = function ()
-			debug.load_level("inn_level")
-		end
+		setting_name = "debug_player_buffs",
+		category = "HUD"
+	},
+	{
+		description = "Will display all properties on the player",
+		is_boolean = true,
+		setting_name = "debug_show_player_properties",
+		category = "HUD"
+	},
+	{
+		description = "Will display all properties on the player, all = all properties, limited = buffs chosen by QA",
+		setting_name = "debug_show_player_active_buffs",
+		category = "HUD",
+		is_boolean = true,
+		item_source = {
+			all = "all",
+			limited = "limited"
+		}
 	},
 	{
 		description = "Prints the number of server controlled buffs.",
@@ -6299,6 +6667,12 @@ Features that make player mechanics nicer to work with.
 		description = "Shows current career sound state",
 		is_boolean = true,
 		setting_name = "debug_career_sound_state",
+		category = "Player mechanics"
+	},
+	{
+		description = "Disables the weave score UI on screen",
+		is_boolean = true,
+		setting_name = "disable_weave_score_ui",
 		category = "Player mechanics"
 	},
 	{
@@ -6334,192 +6708,6 @@ Features that make player mechanics nicer to work with.
 				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 2, 1, 0, display_name, 0, 0, loot_profile_name, nil, nil)
 			elseif item == "tier_5" then
 				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 3, 4, 0, display_name, 0, 0, loot_profile_name, nil, nil)
-			end
-		end
-	},
-	{
-		description = "Adds all melee items for this hero.",
-		setting_name = "Add All Melee Items",
-		category = "Items",
-		func = function ()
-			local hero_attributes = Managers.backend:get_interface("hero_attributes")
-			local item_master_list = ItemMasterList
-			local item_interface = Managers.backend:get_interface("items")
-			local player_manager = Managers.player
-			local player = player_manager:local_player(1)
-			local profile_index = player:profile_index()
-			local profile_settings = SPProfiles[profile_index]
-			local profile_name = profile_settings.display_name
-			local career_index = hero_attributes:get(profile_name, "career")
-			local careers = profile_settings.careers
-			local career_settings = careers[career_index]
-			local name = career_settings.name
-
-			for key, item in pairs(item_master_list) do
-				if item.slot_type == "melee" and table.contains(item.can_wield, name) and not item_interface:has_item(key) then
-					item_interface:award_item(key)
-				end
-			end
-		end
-	},
-	{
-		description = "Adds all ranged items for this hero.",
-		setting_name = "Add All Ranged Items",
-		category = "Items",
-		func = function ()
-			local hero_attributes = Managers.backend:get_interface("hero_attributes")
-			local item_master_list = ItemMasterList
-			local item_interface = Managers.backend:get_interface("items")
-			local player_manager = Managers.player
-			local player = player_manager:local_player(1)
-			local profile_index = player:profile_index()
-			local profile_settings = SPProfiles[profile_index]
-			local profile_name = profile_settings.display_name
-			local career_index = hero_attributes:get(profile_name, "career")
-			local careers = profile_settings.careers
-			local career_settings = careers[career_index]
-			local name = career_settings.name
-
-			for key, item in pairs(item_master_list) do
-				if item.slot_type == "ranged" and table.contains(item.can_wield, name) and not item_interface:has_item(key) then
-					item_interface:award_item(key)
-				end
-			end
-		end
-	},
-	{
-		description = "Lists all items with functionality to add them to inventory.",
-		setting_name = "Add Melee Items",
-		category = "Items",
-		item_source = {},
-		load_items_source_func = function (options)
-			table.clear(options)
-
-			local item_master_list = ItemMasterList
-
-			for key, item in pairs(item_master_list) do
-				if item.slot_type == "melee" then
-					options[#options + 1] = key
-				end
-			end
-
-			table.sort(options)
-		end,
-		func = function (options, index)
-			local item_interface = Managers.backend:get_interface("items")
-			local item = options[index]
-
-			if item then
-				item_interface:award_item(item)
-			end
-		end
-	},
-	{
-		description = "Lists all items with functionality to add them to inventory.",
-		setting_name = "Add Ranged Items",
-		category = "Items",
-		item_source = {},
-		load_items_source_func = function (options)
-			table.clear(options)
-
-			local item_master_list = ItemMasterList
-
-			for key, item in pairs(item_master_list) do
-				if item.slot_type == "ranged" then
-					options[#options + 1] = key
-				end
-			end
-
-			table.sort(options)
-		end,
-		func = function (options, index)
-			local item_interface = Managers.backend:get_interface("items")
-			local item = options[index]
-
-			if item then
-				item_interface:award_item(item)
-			end
-		end
-	},
-	{
-		description = "Lists all items with functionality to add them to inventory.",
-		setting_name = "Add Ring Items",
-		category = "Items",
-		item_source = {},
-		load_items_source_func = function (options)
-			table.clear(options)
-
-			local item_master_list = ItemMasterList
-
-			for key, item in pairs(item_master_list) do
-				if item.slot_type == "ring" then
-					options[#options + 1] = key
-				end
-			end
-
-			table.sort(options)
-		end,
-		func = function (options, index)
-			local item_interface = Managers.backend:get_interface("items")
-			local item = options[index]
-
-			if item then
-				item_interface:award_item(item)
-			end
-		end
-	},
-	{
-		no_nil = true,
-		description = "Lists all items with functionality to add them to inventory.",
-		setting_name = "Add Necklace Items",
-		category = "Items",
-		item_source = {},
-		load_items_source_func = function (options)
-			table.clear(options)
-
-			local item_master_list = ItemMasterList
-
-			for key, item in pairs(item_master_list) do
-				if item.slot_type == "necklace" then
-					options[#options + 1] = key
-				end
-			end
-
-			table.sort(options)
-		end,
-		func = function (options, index)
-			local item_interface = Managers.backend:get_interface("items")
-			local item = options[index]
-
-			if item then
-				item_interface:award_item(item)
-			end
-		end
-	},
-	{
-		description = "Lists all items with functionality to add them to inventory.",
-		setting_name = "Add Trinket Items",
-		category = "Items",
-		item_source = {},
-		load_items_source_func = function (options)
-			table.clear(options)
-
-			local item_master_list = ItemMasterList
-
-			for key, item in pairs(item_master_list) do
-				if item.slot_type == "trinket" then
-					options[#options + 1] = key
-				end
-			end
-
-			table.sort(options)
-		end,
-		func = function (options, index)
-			local item_interface = Managers.backend:get_interface("items")
-			local item = options[index]
-
-			if item then
-				item_interface:award_item(item)
 			end
 		end
 	},
@@ -6665,29 +6853,42 @@ Features that make player mechanics nicer to work with.
 		func = function ()
 			local item_master_list = ItemMasterList
 			local item_interface = Managers.backend:get_interface("items")
+			local owned_skins = {}
 			local added_skins = {}
+			local commit_backend = false
+			local all_items = item_interface:get_all_backend_items()
+
+			for _, item in pairs(all_items) do
+				if item.skin then
+					owned_skins[item.skin] = true
+				end
+			end
 
 			for key, item in pairs(item_master_list) do
 				if (item.slot_type == "melee" or item.slot_type == "ranged") and item.skin_combination_table then
 					table.clear(added_skins)
 
-					local skin_combinations_by_rarity = WeaponSkins.skin_combinations[item.skin_combination_table]
+					if item.rarity ~= "magic" then
+						local skin_combinations_by_rarity = WeaponSkins.skin_combinations[item.skin_combination_table]
 
-					for rarity, skins in pairs(skin_combinations_by_rarity) do
-						for _, skin_name in ipairs(skins) do
-							if not added_skins[skin_name] then
-								added_skins[skin_name] = true
-								local backend_id = item_interface:award_item(key)
-								local weapon = item_interface:get_item_from_id(backend_id)
-								weapon.skin = skin_name
-								weapon.rarity = rarity
+						for rarity, skins in pairs(skin_combinations_by_rarity) do
+							for _, skin_name in ipairs(skins) do
+								if not owned_skins[skin_name] and not added_skins[skin_name] then
+									added_skins[skin_name] = true
+
+									item_interface:award_item(key, nil, skin_name)
+
+									commit_backend = true
+								end
 							end
 						end
 					end
 				end
 			end
 
-			Managers.backend:commit()
+			if commit_backend then
+				Managers.backend:commit()
+			end
 		end
 	},
 	{
@@ -6766,6 +6967,10 @@ Features that make player mechanics nicer to work with.
 						template.debug_unlock(stats_db, stats_id)
 						print("Unlocked challenge ", options[index])
 
+						local world = Managers.world:world("level_world")
+
+						LevelHelper:flow_event(world, "lua_unlock_challenge_debug_event")
+
 						return
 					end
 				end
@@ -6810,8 +7015,386 @@ Features that make player mechanics nicer to work with.
 
 			print("Could not reset challenge ", options[index])
 		end
+	},
+	{
+		description = "Sets all Okris challenges to be claimable in the UI",
+		is_boolean = true,
+		setting_name = "set_all_challenges_claimable",
+		category = "Progress"
+	},
+	{
+		description = "Show data for objectives in the current weave",
+		is_boolean = true,
+		setting_name = "debug_weave_objectives",
+		category = "Gamemode/level"
+	},
+	{
+		description = "Draws debug information for each active objective",
+		is_boolean = true,
+		setting_name = "show_weave_objectives",
+		category = "Gamemode/level"
+	},
+	{
+		description = "Activates all objectives for the current weave",
+		setting_name = "activate_all_weave_objectives",
+		category = "Gamemode/level",
+		func = function ()
+			local world = Managers.world:world("level_world")
+			local units = World.units(world)
+			local objectives = {}
+
+			for _, unit in ipairs(units) do
+				if not Unit.is_frozen(unit) then
+					local name = Unit.debug_name(unit)
+
+					if name:match(".*weave_capture_point_spawner") or name:match(".*weave_interaction_spawner") or name:match(".*weave_prop_skaven_doom_wheel_01_spawner") or name:match(".*weave_limited_item_track_spawner") then
+						local objective_id = Unit.get_data(unit, "weave_objective_id")
+						local i = #NetworkLookup.weave_objective_names + 1
+						NetworkLookup.weave_objective_names[i] = objective_id
+						NetworkLookup.weave_objective_names[objective_id] = i
+						objectives[objective_id] = {}
+
+						print(name)
+					end
+				end
+			end
+
+			local i = #NetworkLookup.weave_objective_names + 1
+			NetworkLookup.weave_objective_names[i] = "kill_enemies"
+			NetworkLookup.weave_objective_names.kill_enemies = i
+			objectives.kill_enemies = {}
+			local weave_objective_system = Managers.state.entity:system("weave_objective_system")
+
+			weave_objective_system:activate_objectives({
+				objectives
+			})
+		end
+	},
+	{
+		description = "Use the standard loadout in weaves (requires restart)",
+		is_boolean = true,
+		setting_name = "disable_weave_loadout",
+		category = "Player mechanics"
+	},
+	{
+		description = "Use the standard talents in weaves (requires restart)",
+		is_boolean = true,
+		setting_name = "disable_weave_talents",
+		category = "Player mechanics"
+	},
+	{
+		description = "Adds 10 Weave Essence to your account",
+		setting_name = "10 Weave Essence",
+		category = "Gamemode/level",
+		func = function ()
+			Managers.backend:get_interface("weaves"):debug_grant_essence(10)
+		end
+	},
+	{
+		description = "Adds 100 Weave Essence to your account",
+		setting_name = "100 Weave Essence",
+		category = "Gamemode/level",
+		func = function ()
+			Managers.backend:get_interface("weaves"):debug_grant_essence(100)
+		end
+	},
+	{
+		description = "Adds 1000 Weave Essence to your account",
+		setting_name = "1,000 Weave Essence",
+		category = "Gamemode/level",
+		func = function ()
+			Managers.backend:get_interface("weaves"):debug_grant_essence(1000)
+		end
+	},
+	{
+		description = "Adds 10000 Weave Essence to your account",
+		setting_name = "10,000 Weave Essence",
+		category = "Gamemode/level",
+		func = function ()
+			Managers.backend:get_interface("weaves"):debug_grant_essence(10000)
+		end
+	},
+	{
+		description = "Adds $$$ ONE MILLION $$$ Weave Essence to your account",
+		setting_name = "1,000,000 Weave Essence",
+		category = "Gamemode/level",
+		func = function ()
+			Managers.backend:get_interface("weaves"):debug_grant_essence(1000000)
+		end
+	},
+	{
+		description = "Removes all magic weave weapons from the inventory except for default weapons equipped ones",
+		setting_name = "Remove Magic Weave Weapons",
+		category = "Gamemode/level",
+		func = function ()
+			Managers.backend:get_interface("weaves"):debug_remove_magic_items()
+		end
+	},
+	{
+		setting_name = "Weave Onboarding",
+		description = "change onboarding stat",
+		category = "Onboarding",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			options[#options + 1] = "1"
+			options[#options + 1] = "2"
+			options[#options + 1] = "3"
+			options[#options + 1] = "4"
+			options[#options + 1] = "5"
+			options[#options + 1] = "6"
+			options[#options + 1] = "7"
+			options[#options + 1] = "8"
+			options[#options + 1] = "9"
+			options[#options + 1] = "clear"
+
+			table.sort(options)
+		end,
+		func = function (options, index)
+			local chosen_state = options[index]
+			local statistics_db = Managers.player:statistics_db()
+			local local_player = Managers.player:local_player()
+			local stats_id = local_player:stats_id()
+
+			if chosen_state == "1" then
+				statistics_db:set_stat(stats_id, "scorpion_onboarding_step", 1)
+			elseif chosen_state == "2" then
+				statistics_db:set_stat(stats_id, "scorpion_onboarding_step", 2)
+			elseif chosen_state == "3" then
+				statistics_db:set_stat(stats_id, "scorpion_onboarding_step", 3)
+			elseif chosen_state == "4" then
+				statistics_db:set_stat(stats_id, "scorpion_onboarding_step", 4)
+			elseif chosen_state == "5" then
+				statistics_db:set_stat(stats_id, "scorpion_onboarding_step", 5)
+			elseif chosen_state == "6" then
+				statistics_db:set_stat(stats_id, "scorpion_onboarding_step", 6)
+			elseif chosen_state == "7" then
+				statistics_db:set_stat(stats_id, "scorpion_onboarding_step", 7)
+			elseif chosen_state == "8" then
+				statistics_db:set_stat(stats_id, "scorpion_onboarding_step", 8)
+			elseif chosen_state == "9" then
+				statistics_db:set_stat(stats_id, "scorpion_onboarding_step", 9)
+			elseif chosen_state == "clear" then
+				statistics_db:set_stat(stats_id, "scorpion_onboarding_step", 0)
+			end
+		end
+	},
+	{
+		description = "resets weave onboarding ui tutorial",
+		setting_name = "Weave Onboarding UI Reset",
+		category = "Onboarding",
+		func = function ()
+			local statistics_db = Managers.player:statistics_db()
+			local local_player = Managers.player:local_player()
+			local stats_id = local_player:stats_id()
+
+			statistics_db:set_stat(stats_id, "scorpion_ui_onboarding_state", 0)
+		end
+	},
+	{
+		description = "resets the flag keeps track of Olesya's VO that is played when player first fails a weave.",
+		setting_name = "Clear Olesya Failed VO Played Flag ",
+		category = "Onboarding",
+		func = function ()
+			local statistics_db = Managers.player:statistics_db()
+			local local_player = Managers.player:local_player()
+			local stats_id = local_player:stats_id()
+
+			statistics_db:set_stat(stats_id, "scorpion_onboarding_weave_first_fail_vo_played", 0)
+		end
 	}
 }
+
+local function add_melee_preset(rarity)
+	return {
+		{
+			description = "Lists all items with functionality to add them to inventory.",
+			category = "Items",
+			setting_name = "Add Melee Items (" .. rarity .. ")",
+			item_source = {},
+			load_items_source_func = function (options)
+				table.clear(options)
+
+				local item_master_list = ItemMasterList
+
+				for key, item in pairs(item_master_list) do
+					if item.slot_type == "melee" then
+						options[#options + 1] = key
+					end
+				end
+
+				table.sort(options)
+			end,
+			func = function (options, index)
+				local item_interface = Managers.backend:get_interface("items")
+				local item = options[index]
+
+				if item then
+					item_interface:award_item(item, nil, nil, rarity)
+				end
+			end
+		}
+	}
+end
+
+local function add_ranged_preset(rarity)
+	return {
+		{
+			description = "Lists all items with functionality to add them to inventory.",
+			category = "Items",
+			setting_name = "Add Ranged Items (" .. rarity .. ")",
+			item_source = {},
+			load_items_source_func = function (options)
+				table.clear(options)
+
+				local item_master_list = ItemMasterList
+
+				for key, item in pairs(item_master_list) do
+					if item.slot_type == "ranged" then
+						options[#options + 1] = key
+					end
+				end
+
+				table.sort(options)
+			end,
+			func = function (options, index)
+				local item_interface = Managers.backend:get_interface("items")
+				local item = options[index]
+
+				if item then
+					item_interface:award_item(item, nil, nil, rarity)
+				end
+			end
+		}
+	}
+end
+
+local function add_ring_preset(rarity)
+	return {
+		{
+			description = "Lists all items with functionality to add them to inventory.",
+			category = "Items",
+			setting_name = "Add Ring Items (" .. rarity .. ")",
+			item_source = {},
+			load_items_source_func = function (options)
+				table.clear(options)
+
+				local item_master_list = ItemMasterList
+
+				for key, item in pairs(item_master_list) do
+					if item.slot_type == "ring" then
+						options[#options + 1] = key
+					end
+				end
+
+				table.sort(options)
+			end,
+			func = function (options, index)
+				local item_interface = Managers.backend:get_interface("items")
+				local item = options[index]
+
+				if item then
+					item_interface:award_item(item, nil, nil, rarity)
+				end
+			end
+		}
+	}
+end
+
+local function add_necklace_preset(rarity)
+	return {
+		{
+			no_nil = true,
+			description = "Lists all items with functionality to add them to inventory.",
+			category = "Items",
+			setting_name = "Add Necklace Items (" .. rarity .. ")",
+			item_source = {},
+			load_items_source_func = function (options)
+				table.clear(options)
+
+				local item_master_list = ItemMasterList
+
+				for key, item in pairs(item_master_list) do
+					if item.slot_type == "necklace" then
+						options[#options + 1] = key
+					end
+				end
+
+				table.sort(options)
+			end,
+			func = function (options, index)
+				local item_interface = Managers.backend:get_interface("items")
+				local item = options[index]
+
+				if item then
+					item_interface:award_item(item, nil, nil, rarity)
+				end
+			end
+		}
+	}
+end
+
+local function add_trinket_preset(rarity)
+	return {
+		{
+			description = "Lists all items with functionality to add them to inventory.",
+			category = "Items",
+			setting_name = "Add Trinket Items (" .. rarity .. ")",
+			item_source = {},
+			load_items_source_func = function (options)
+				table.clear(options)
+
+				local item_master_list = ItemMasterList
+
+				for key, item in pairs(item_master_list) do
+					if item.slot_type == "trinket" then
+						options[#options + 1] = key
+					end
+				end
+
+				table.sort(options)
+			end,
+			func = function (options, index)
+				local item_interface = Managers.backend:get_interface("items")
+				local item = options[index]
+
+				if item then
+					item_interface:award_item(item, nil, nil, rarity)
+				end
+			end
+		}
+	}
+end
+
+local item_rarities = {
+	"plentiful",
+	"common",
+	"rare",
+	"exotic",
+	"unique"
+}
+
+for _, rarity in ipairs(item_rarities) do
+	table.append(settings, add_melee_preset(rarity))
+end
+
+for _, rarity in ipairs(item_rarities) do
+	table.append(settings, add_ranged_preset(rarity))
+end
+
+for _, rarity in ipairs(item_rarities) do
+	table.append(settings, add_ring_preset(rarity))
+end
+
+for _, rarity in ipairs(item_rarities) do
+	table.append(settings, add_necklace_preset(rarity))
+end
+
+for _, rarity in ipairs(item_rarities) do
+	table.append(settings, add_trinket_preset(rarity))
+end
+
 local platform = PLATFORM
 
 if platform == "ps4" then
@@ -6905,7 +7488,7 @@ if platform == "ps4" or platform == "xb1" then
 	table.append(settings, settings_console)
 end
 
-for settings_key, settings_value in pairs(settings) do
+for _, settings_value in pairs(settings) do
 	if settings_value.preset then
 		for preset_key, preset_value in pairs(settings_value.preset) do
 			settings_value.description = string.format("%s¤ %s = %s \n", settings_value.description, preset_key, tostring(preset_value))

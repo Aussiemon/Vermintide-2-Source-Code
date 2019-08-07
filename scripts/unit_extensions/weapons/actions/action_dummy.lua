@@ -13,6 +13,8 @@ ActionDummy.init = function (self, world, item_name, is_server, owner_unit, dama
 end
 
 ActionDummy.client_owner_start_action = function (self, new_action, t)
+	ActionDummy.super.client_owner_start_action(self, new_action, t)
+
 	self.current_action = new_action
 	self.action_time_started = t
 	local spread_template_override = new_action.spread_template_override
@@ -30,6 +32,9 @@ ActionDummy.finish = function (self, reason)
 	if self.spread_extension then
 		self.spread_extension:reset_spread_template()
 	end
+
+	Unit.flow_event(self.owner_unit, "lua_force_stop")
+	Unit.flow_event(self.first_person_unit, "lua_force_stop")
 end
 
 return

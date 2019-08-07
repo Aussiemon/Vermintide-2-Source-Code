@@ -216,25 +216,10 @@ PlayerCharacterStateLunging.update = function (self, unit, input, dt, context, t
 
 	if CharacterStateHelper.is_pushed(status_extension) then
 		status_extension:set_pushed(false)
-
-		local params = movement_settings_table.stun_settings.pushed
-		local hit_react_type = status_extension:hit_react_type()
-		params.hit_react_type = hit_react_type .. "_push"
-
-		csm:change_state("stunned", params)
-
-		return
 	end
 
 	if CharacterStateHelper.is_block_broken(status_extension) then
 		status_extension:set_block_broken(false)
-
-		local params = movement_settings_table.stun_settings.parry_broken
-		params.hit_react_type = "medium_push"
-
-		csm:change_state("stunned", params)
-
-		return
 	end
 
 	if not self._stop then
@@ -423,6 +408,7 @@ PlayerCharacterStateLunging._parse_attack_data = function (self, damage_settings
 	local career_power_level = self.career_extension:get_career_power_level()
 	local power_level_multiplier = damage_settings.power_level_multiplier
 	local power_level = career_power_level * power_level_multiplier
+	power_level = math.clamp(power_level, MIN_POWER_LEVEL, MAX_POWER_LEVEL)
 	local damage_profile_name = damage_settings.damage_profile or "default"
 	local damage_profile_id = NetworkLookup.damage_profiles[damage_profile_name]
 	local hit_zone_hit_name = damage_settings.hit_zone_hit_name
@@ -431,8 +417,11 @@ PlayerCharacterStateLunging._parse_attack_data = function (self, damage_settings
 	return damage_profile_id, power_level, hit_zone_id, damage_settings.ignore_shield, damage_settings.allow_backstab
 end
 
-PlayerCharacterStateLunging._calculate_hit_mass = function (self, shield_blocked, current_action, hit_unit, breed)
-	if breed and AiUtils.unit_alive(hit_unit) then
+PlayerCharacterStateLunging._calculate_hit_mass = function (self, shield_blocked, current_action, hit_unit, breed, unit)
+	local side_manager = Managers.state.side
+	local is_enemy = side_manager:is_enemy(unit, hit_unit)
+
+	if breed and is_enemy and AiUtils.unit_alive(hit_unit) then
 		local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
 		local hit_mass_total = (shield_blocked and ((breed.hit_mass_counts_block and breed.hit_mass_counts_block[difficulty_rank]) or breed.hit_mass_count_block)) or (breed.hit_mass_counts and breed.hit_mass_counts[difficulty_rank]) or breed.hit_mass_count or 1
 		local action_mass_override = current_action.hit_mass_count
@@ -461,7 +450,8 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 	local rot = Quaternion.look(delta_move, Vector3.up())
 	local first_person_extension = self.first_person_extension
 	local forward_direction = Quaternion.forward(first_person_extension:current_rotation())
-	local mid_pos = (new_pos + old_pos) * 0.5 + Vector3(0, 0, half_height) + (damage_data.offset_forward or 0) * forward_direction
+	local forward_direction_flat = Vector3.flat(forward_direction)
+	local mid_pos = (new_pos + old_pos) * 0.5 + Vector3(0, 0, half_height) + (damage_data.offset_forward or 0) * forward_direction_flat
 	local size = Vector3(half_width, half_length, half_height)
 	local collision_filter = damage_data.collision_filter
 	local actors, num_actors = PhysicsWorld.immediate_overlap(self.physics_world, "shape", "oobb", "position", mid_pos, "rotation", rot, "size", size, "collision_filter", collision_filter, "use_global_table")
@@ -471,12 +461,14 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 	local attacker_unit_id = network_manager:unit_game_object_id(unit)
 	local attack_direction = Vector3.normalize(delta_move)
 	local weapon_system = Managers.state.entity:system("weapon_system")
+	local buff_hit_target_index = 0
 
 	for i = 1, num_actors, 1 do
 		local hit_actor = actors[i]
 		local hit_unit = Actor.unit(hit_actor)
 
 		if not hit_units[hit_unit] then
+			buff_hit_target_index = buff_hit_target_index + 1
 			hit_units[hit_unit] = true
 			local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
 			local hit_unit_pos = POSITION_LOOKUP[hit_unit]
@@ -500,7 +492,7 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 					end
 				end
 
-				shield_blocked = self:_calculate_hit_mass(shield_blocked, damage_data, hit_unit, breed)
+				shield_blocked = self:_calculate_hit_mass(shield_blocked, damage_data, hit_unit, breed, unit)
 			else
 				shield_blocked = false
 			end
@@ -529,6 +521,7 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 				local can_damage = true
 				local can_stagger = true
 
+				buff_extension:trigger_procs("on_charge_ability_hit", hit_unit, buff_hit_target_index)
 				weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_unit_pos, final_stagger_direction, damage_profile_id, "power_level", power_level, "hit_target_index", actual_hit_target_index, "blocking", shield_blocked, "shield_break_procced", shield_break_procc, "boost_curve_multiplier", boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", can_damage, "can_stagger", can_stagger)
 
 				self._num_impacts = self._num_impacts + 1
@@ -575,9 +568,11 @@ PlayerCharacterStateLunging._do_blast = function (self, new_pos, forward_directi
 		local weapon_system = Managers.state.entity:system("weapon_system")
 		local unit = self.unit
 		local attacker_unit_id = network_manager:unit_game_object_id(unit)
+		local buff_extension = self.buff_extension
 		local radius = blast_damage_data.radius
 		local blast_pos = new_pos + forward_direction * radius
 		local actors, num_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "sphere", "position", blast_pos, "size", radius, "collision_filter", collision_filter, "use_global_table")
+		local buff_hit_target_index = 0
 
 		table.clear(hit_units)
 
@@ -592,6 +587,7 @@ PlayerCharacterStateLunging._do_blast = function (self, new_pos, forward_directi
 				if breed then
 					local damage_profile_id, power_level, hit_zone_id, ignore_shield, allow_backstab = self:_parse_attack_data(blast_damage_data)
 					local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
+					buff_hit_target_index = buff_hit_target_index + 1
 					local damage_source = "career_ability"
 					local damage_source_id = NetworkLookup.damage_sources[damage_source]
 					local target_position = POSITION_LOOKUP[hit_unit]
@@ -604,6 +600,7 @@ PlayerCharacterStateLunging._do_blast = function (self, new_pos, forward_directi
 					local can_damage = true
 					local can_stagger = true
 
+					buff_extension:trigger_procs("on_charge_ability_hit_blast", hit_unit, buff_hit_target_index)
 					weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, target_position, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", actual_hit_target_index, "blocking", shield_blocked, "shield_break_procced", shield_break_procc, "boost_curve_multiplier", boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", can_damage, "can_stagger", can_stagger)
 				end
 			end

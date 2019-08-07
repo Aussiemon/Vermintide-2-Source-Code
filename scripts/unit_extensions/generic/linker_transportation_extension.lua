@@ -75,6 +75,7 @@ LinkerTransportationExtension.init = function (self, extension_init_context, uni
 	self._movement_delta = Vector3Box(0, 0, 0)
 	self._old_position = Vector3Box(Unit.local_position(unit, 0))
 	self._unlink_after_update = false
+	self._side = Managers.state.side:get_side_from_name("heroes")
 end
 
 LinkerTransportationExtension.extensions_ready = function (self)
@@ -170,7 +171,7 @@ LinkerTransportationExtension._link_all_transported_units = function (self, inte
 	self._disable_spawning = true
 
 	if self.is_server then
-		Managers.state.spawn:disable_spawning(true, self.unit)
+		Managers.state.game_mode:disable_player_spawning(true, self.unit)
 		Managers.state.event:trigger("event_delay_pacing", true)
 	end
 
@@ -181,13 +182,14 @@ LinkerTransportationExtension._link_all_transported_units = function (self, inte
 	self:_link_transported_unit(interactor_unit)
 
 	if self.takes_party then
-		local players = Managers.player:players()
+		local player_and_bot_units = self._side.PLAYER_AND_BOT_UNITS
 
-		for _, player in pairs(players) do
-			local unit = player.player_unit
+		for i = 1, #player_and_bot_units, 1 do
+			local unit = player_and_bot_units[i]
 
 			if unit_alive(unit) and unit ~= interactor_unit then
 				local status_ext = ScriptUnit.extension(unit, "status_system")
+				local player = Managers.player:owner(unit)
 				local is_dead = status_ext:is_dead()
 				local is_inside_transportation_unit = self:_is_inside_transportation_unit(unit)
 				local is_disabled = status_ext:is_disabled()
@@ -401,7 +403,7 @@ LinkerTransportationExtension.update = function (self, unit, input, dt, context,
 				local position = Unit.world_position(self.unit, node)
 				local rotation = Unit.world_rotation(self.unit, node)
 
-				Managers.state.spawn:disable_spawning(false, self.unit, position + Vector3(0, 0, 1), rotation)
+				Managers.state.game_mode:disable_player_spawning(false, self.unit, position + Vector3(0, 0, 1), rotation)
 			end
 		end
 	end
@@ -483,12 +485,11 @@ LinkerTransportationExtension.destroy = function (self)
 	if self._transporting and self.is_server then
 		local unit = self.unit
 		local safe_node = "elevator_slot_01"
-		local position, rotation = nil
 		local node = Unit.node(unit, safe_node)
-		position = Unit.world_position(unit, node)
-		rotation = Unit.world_rotation(unit, node)
+		local position = Unit.world_position(unit, node)
+		local rotation = Unit.world_rotation(unit, node)
 
-		Managers.state.spawn:disable_spawning(false, unit, position, rotation)
+		Managers.state.game_mode:disable_player_spawning(false, unit, position + Vector3(0, 0, 1), rotation)
 		Managers.state.event:trigger("event_delay_pacing", false)
 	end
 

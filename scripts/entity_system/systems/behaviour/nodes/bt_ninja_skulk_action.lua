@@ -329,7 +329,8 @@ BTNinjaSkulkAction.dodge = function (self, unit, blackboard, dodge_vec, aim_vec)
 end
 
 BTNinjaSkulkAction.in_crosshairs = function (self, unit, blackboard, t, data)
-	local units = PLAYER_AND_BOT_UNITS
+	local side = blackboard.side
+	local units = side.ENEMY_PLAYER_AND_BOT_UNITS
 
 	for i = 1, #units, 1 do
 		local player_unit = units[i]

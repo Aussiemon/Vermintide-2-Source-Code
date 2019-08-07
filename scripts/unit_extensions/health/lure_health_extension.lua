@@ -1,25 +1,3 @@
-local data_fields = {
-	"DAMAGE_AMOUNT",
-	"DAMAGE_TYPE",
-	"ATTACKER",
-	"HIT_ZONE",
-	"POSITION",
-	"DIRECTION",
-	"DAMAGE_SOURCE_NAME",
-	"HIT_RAGDOLL_ACTOR_NAME",
-	"DAMAGING_UNIT",
-	"HIT_REACT_TYPE",
-	"CRITICAL_HIT"
-}
-DamageDataIndex = {}
-local DamageDataIndex = DamageDataIndex
-
-for index, field_name in ipairs(data_fields) do
-	DamageDataIndex[field_name] = index
-end
-
-DamageDataIndex.STRIDE = #data_fields
-data_fields = nil
 LureHealthExtension = class(LureHealthExtension)
 
 LureHealthExtension.init = function (self, extension_init_context, unit, extension_init_data)

@@ -134,8 +134,7 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 			if this_hash == other_hash then
 				mm_printf("Network hashes matches, waiting to connect to host with user name '%s'...", tostring(host_name))
 
-				self._state = "waiting_to_connect"
-				self._connect_timeout = t + MatchmakingSettings.REQUEST_JOIN_LOBBY_REPLY_TIME
+				self._state = "verify_game_mode"
 			else
 				mm_printf("Network hashes differ. lobby_id=%s, host_id:%s", lobby_id, host_name)
 				self:_join_fail_popup(string.format(Localize("failure_start_join_server_incorrect_hash"), this_hash, other_hash))
@@ -146,6 +145,81 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 			mm_printf("Failed to get lobby data in time. lobby_id=%s, host_id:%s", lobby_id, host_name)
 
 			return self:_join_game_failed(lobby_id, "lobby_data_timeout", t, true)
+		end
+	elseif state == "verify_game_mode" then
+		local game_mode_id = lobby_client:lobby_data("game_mode")
+
+		if not game_mode_id then
+			self._state = "verify_difficulty"
+
+			return
+		end
+
+		local game_mode = (PLATFORM == "ps4" and game_mode_id) or NetworkLookup.game_modes[tonumber(game_mode_id)]
+
+		if game_mode == "weave_find_group" then
+			game_mode = "weave"
+		end
+
+		local game_mode_settings = GameModeSettings[game_mode]
+
+		if game_mode_settings and game_mode_settings.extra_requirements_function then
+			if game_mode_settings.extra_requirements_function() then
+				if game_mode_settings.disable_difficulty_check then
+					self._state = "waiting_to_connect"
+					self._connect_timeout = t + MatchmakingSettings.REQUEST_JOIN_LOBBY_REPLY_TIME
+				else
+					self._state = "verify_difficulty"
+				end
+			else
+				local host_name = (LobbyInternal.user_name and LobbyInternal.user_name(host)) or "-"
+				local game_reply = "failure_start_join_server_game_mode_requirements_failed"
+
+				return self:_join_game_failed(lobby_id, game_reply, t, false, nil, true)
+			end
+		elseif game_mode_settings and game_mode_settings.disable_difficulty_check then
+			self._state = "waiting_to_connect"
+			self._connect_timeout = t + MatchmakingSettings.REQUEST_JOIN_LOBBY_REPLY_TIME
+		else
+			self._state = "verify_difficulty"
+		end
+	elseif state == "verify_difficulty" then
+		if Development.parameter("unlock_all_difficulties") then
+			self._state = "waiting_to_connect"
+			self._connect_timeout = t + MatchmakingSettings.REQUEST_JOIN_LOBBY_REPLY_TIME
+
+			return
+
+			local difficulty = lobby_client:lobby_data("difficulty") or "normal"
+			local difficutly_settings = DifficultySettings[difficulty]
+			local local_player = Managers.player:local_player()
+			local best_aquired_power_level = local_player:best_aquired_power_level()
+			local difficulty_approved = true
+			local requirements = ""
+
+			if best_aquired_power_level < difficutly_settings.required_power_level then
+				difficulty_approved = false
+				requirements = string.format("%s: %s\n", Localize("required_power_level"), tostring(UIUtils.presentable_hero_power_level(difficutly_settings.required_power_level)))
+			end
+
+			if difficutly_settings.extra_requirement_name then
+				local extra_requirement_data = ExtraDifficultyRequirements[difficutly_settings.extra_requirement_name]
+
+				if not extra_requirement_data.requirement_function() then
+					difficulty_approved = false
+					requirements = requirements .. "* " .. Localize(extra_requirement_data.description_text) .. "\n"
+				end
+			end
+
+			if not difficulty_approved then
+				local host_name = (LobbyInternal.user_name and LobbyInternal.user_name(host)) or "-"
+				local game_reply = "failure_start_join_server_difficulty_requirements_failed"
+
+				return self:_join_game_failed(lobby_id, game_reply, t, false, requirements, true)
+			else
+				self._state = "waiting_to_connect"
+				self._connect_timeout = t + MatchmakingSettings.REQUEST_JOIN_LOBBY_REPLY_TIME
+			end
 		end
 	elseif state == "waiting_to_connect" then
 		if self._connected_to_server then
@@ -178,7 +252,9 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 				friend_join = not not self.state_context.friend_join
 			end
 
-			self._handshaker_client:send_rpc_to_host("rpc_matchmaking_request_join_lobby", lobby_id, friend_join)
+			local unlocked_dlcs_array = self:_gather_dlc_ids()
+
+			self._handshaker_client:send_rpc_to_host("rpc_matchmaking_request_join_lobby", lobby_id, friend_join, unlocked_dlcs_array)
 
 			self._join_timeout = t + MatchmakingSettings.REQUEST_JOIN_LOBBY_REPLY_TIME
 			self._state = "asking_to_join"
@@ -207,12 +283,27 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 			else
 				mm_printf_force("Failed to join game due to host responding '%s'. lobby_id=%s, host_id:%s", game_reply, lobby_id, host_name)
 
-				return self:_join_game_failed(lobby_id, game_reply, t, game_reply == "lobby_id_mismatch")
+				return self:_join_game_failed(lobby_id, game_reply, t, game_reply == "lobby_id_mismatch", self._game_reply_variable, true)
 			end
 		end
 	end
 
 	return nil
+end
+
+MatchmakingStateRequestJoinGame._gather_dlc_ids = function (self)
+	local unlocked_dlcs = {}
+	local dlcs = UnlockSettings[1].unlocks
+
+	for dlc_name, _ in pairs(dlcs) do
+		if Managers.unlock:is_dlc_unlocked(dlc_name) then
+			print(dlc_name)
+
+			unlocked_dlcs[#unlocked_dlcs + 1] = NetworkLookup.dlcs[dlc_name]
+		end
+	end
+
+	return unlocked_dlcs
 end
 
 MatchmakingStateRequestJoinGame._join_game_success = function (self, t)
@@ -230,7 +321,7 @@ MatchmakingStateRequestJoinGame._join_fail_popup = function (self, fail_text)
 	end
 end
 
-MatchmakingStateRequestJoinGame._join_game_failed = function (self, lobby_id, reason, t, is_bad_connection)
+MatchmakingStateRequestJoinGame._join_game_failed = function (self, lobby_id, reason, t, is_bad_connection, reason_variable, disable_chat_message)
 	if lobby_id ~= nil then
 		self._matchmaking_manager:add_broken_lobby(lobby_id, t, is_bad_connection)
 	end
@@ -245,7 +336,7 @@ MatchmakingStateRequestJoinGame._join_game_failed = function (self, lobby_id, re
 
 	self.state_context.join_lobby_data = nil
 
-	if reason ~= "cancelled" then
+	if reason ~= "cancelled" and not disable_chat_message then
 		local status_message = "matchmaking_status_join_game_failed_" .. reason
 
 		self._matchmaking_manager:send_system_chat_message(status_message)
@@ -254,20 +345,28 @@ MatchmakingStateRequestJoinGame._join_game_failed = function (self, lobby_id, re
 	local join_by_lobby_browser = self.state_context.join_by_lobby_browser
 
 	if join_by_lobby_browser then
-		self._matchmaking_manager:cancel_join_lobby(reason)
+		self._matchmaking_manager:cancel_join_lobby(reason, reason_variable)
 
 		return MatchmakingStateIdle, self.state_context
 	else
-		return MatchmakingStateSearchGame, self.state_context
+		local search_config = self.state_context.search_config
+		local game_mode = search_config and search_config.game_mode
+
+		if game_mode == "weave_find_group" then
+			return MatchmakingStateSearchForWeaveGroup, self.state_context
+		else
+			return MatchmakingStateSearchGame, self.state_context
+		end
 	end
 end
 
-MatchmakingStateRequestJoinGame.rpc_matchmaking_request_join_lobby_reply = function (self, sender, client_cookie, host_cookie, reply_id)
+MatchmakingStateRequestJoinGame.rpc_matchmaking_request_join_lobby_reply = function (self, sender, client_cookie, host_cookie, reply_id, reply_variable)
 	if not self._handshaker_client:validate_cookies(client_cookie, host_cookie) then
 		return
 	end
 
 	self._game_reply = NetworkLookup.game_ping_reply[reply_id]
+	self._game_reply_variable = reply_variable
 end
 
 MatchmakingStateRequestJoinGame.rpc_notify_connected = function (self, sender)

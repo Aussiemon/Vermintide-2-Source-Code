@@ -19,14 +19,14 @@ BTComboAttackAction.enter = function (self, unit, blackboard, t)
 	blackboard.attack_finished = false
 	blackboard.attack_aborted = false
 	blackboard.attack_damage_triggered = false
+	blackboard.attack_token = true
 	local target_unit = blackboard.target_unit
 	local target_status_extension = ScriptUnit.has_extension(target_unit, "status_system")
 
 	if target_status_extension then
-		blackboard.target_status_extension = target_status_extension
-
-		target_status_extension:add_attack_intensity(action.attack_intensity or 5)
 		target_status_extension:add_combo_target_count(1)
+
+		blackboard.target_status_extension = target_status_extension
 	end
 
 	blackboard.attacking_target = target_unit
@@ -85,6 +85,7 @@ BTComboAttackAction.enter = function (self, unit, blackboard, t)
 		DialogueSystem:trigger_general_unit_event(unit, action.start_sound_event)
 	end
 
+	AiUtils.add_attack_intensity(target_unit, action, blackboard)
 	self:_start_attack(unit, blackboard, t, action, "attack_1")
 end
 
@@ -208,6 +209,7 @@ BTComboAttackAction.leave = function (self, unit, blackboard, t, reason, destroy
 	blackboard.target_dodged_during_attack = nil
 	blackboard.anim_cb_move_stop = nil
 	blackboard.action = nil
+	blackboard.attack_token = nil
 
 	if reason == "aborted" then
 		combo.aborted = true
@@ -291,7 +293,7 @@ BTComboAttackAction.run = function (self, unit, blackboard, t, dt)
 	if push then
 		local forward_direction = Vector3.normalize(Vector3.flat(Quaternion.forward(combo.rotation_target:unbox())))
 
-		self:_push_non_targets(POSITION_LOOKUP[unit], attacking_target, combo, forward_direction, push.close_impact_radius, push.far_impact_radius, push.forward_impact_speed, push.lateral_impact_speed)
+		self:_push_non_targets(unit, POSITION_LOOKUP[unit], attacking_target, combo, forward_direction, push.close_impact_radius, push.far_impact_radius, push.forward_impact_speed, push.lateral_impact_speed)
 	end
 
 	return "running"
@@ -407,9 +409,10 @@ BTComboAttackAction.attack_cooldown = function (self, unit, blackboard)
 	blackboard.is_in_attack_cooldown = cooldown
 end
 
-BTComboAttackAction._push_non_targets = function (self, self_pos, current_target, combo, forward_direction, close_impact_radius, far_impact_radius, forward_impact_speed, lateral_impact_speed)
+BTComboAttackAction._push_non_targets = function (self, unit, self_pos, current_target, combo, forward_direction, close_impact_radius, far_impact_radius, forward_impact_speed, lateral_impact_speed)
 	local far_impact_radius_sq = far_impact_radius^2
-	local player_and_bot_units = PLAYER_AND_BOT_UNITS
+	local side = Managers.state.side.side_by_unit[unit]
+	local player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
 
 	for i = 1, #player_and_bot_units, 1 do
 		local player_unit = player_and_bot_units[i]
@@ -501,9 +504,9 @@ BTComboAttackAction.get_attack_cooldown_finished_at = function (self, unit, blac
 		return false, 0
 	end
 
-	local dimishing_damage_data = blackboard.action.dimishing_damage
+	local diminishing_damage_data = blackboard.action.diminishing_damage
 
-	if not dimishing_damage_data then
+	if not diminishing_damage_data then
 		return false, 0
 	end
 
@@ -520,8 +523,8 @@ BTComboAttackAction.get_attack_cooldown_finished_at = function (self, unit, blac
 		return false, 0
 	end
 
-	local dimishing_damage = dimishing_damage_data[math.min(slots_n, 9)]
-	local cooldown_data = dimishing_damage.cooldown
+	local diminishing_damage = diminishing_damage_data[math.min(slots_n, 9)]
+	local cooldown_data = diminishing_damage.cooldown
 	local cooldown = AiUtils.random(cooldown_data[1], cooldown_data[2])
 
 	return true, cooldown + t
@@ -532,7 +535,7 @@ BTComboAttackAction.anim_cb_attack_vce = function (self, unit, blackboard)
 	local game = network_manager:game()
 
 	if game then
-		DialogueSystem:trigger_attack(blackboard.target_unit, unit, false, blackboard)
+		DialogueSystem:trigger_attack(blackboard, blackboard.target_unit, unit, false, false)
 	end
 end
 

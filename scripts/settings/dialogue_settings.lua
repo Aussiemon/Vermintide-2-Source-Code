@@ -6,7 +6,8 @@ DialogueSettings.auto_load_files = {
 	"dialogues/generated/wood_elf_honduras",
 	"dialogues/generated/empire_soldier_honduras",
 	"dialogues/generated/special_occasions_honduras",
-	"dialogues/generated/enemies"
+	"dialogues/generated/enemies",
+	"dialogues/generated/ping_dialogues_honduras"
 }
 DialogueSettings.level_specific_load_files = {
 	whitebox_climb = {
@@ -155,6 +156,14 @@ DialogueSettings.blocked_auto_load_files = {
 }
 
 for _, dlc in pairs(DLCSettings) do
+	local auto_load_files = dlc.auto_load_files
+
+	if auto_load_files then
+		table.append(DialogueSettings.auto_load_files, auto_load_files)
+	end
+end
+
+for _, dlc in pairs(DLCSettings) do
 	local dialogue_settings = dlc.dialogue_settings
 
 	if dialogue_settings then
@@ -174,7 +183,7 @@ end
 
 DialogueSettings.max_view_distance = 50
 DialogueSettings.default_view_distance = 10
-DialogueSettings.default_hear_distance = 25
+DialogueSettings.default_hear_distance = 10
 DialogueSettings.death_discover_distance = 40
 DialogueSettings.discover_enemy_attack_distance = 25
 DialogueSettings.see_vortex_distance = 30
@@ -193,32 +202,70 @@ DialogueSettings.suicide_run_broadcast_range = 40
 DialogueSettings.troll_vomit_broadcast_range = 20
 DialogueSettings.troll_incapacitaded_broadcast_range = 20
 DialogueSettings.grabbed_broadcast_range = 40
+DialogueSettings.globadier_poisoned_broadcast_range = 20
 DialogueSettings.armor_hit_broadcast_range = 7
 DialogueSettings.dialogue_level_start_delay = 120
 DialogueSettings.story_start_delay = 60
 DialogueSettings.story_tick_time = 10
 DialogueSettings.ambush_delay = 2
 DialogueSettings.vector_delay = 3
+DialogueSettings.breed_types_trigger_on_spawn = {
+	chaos_troll = true,
+	chaos_spawn = true,
+	chaos_corruptor_sorcerer = true,
+	chaos_vortex_sorcerer = true,
+	skaven_rat_ogre = true,
+	skaven_stormfiend = true
+}
+DialogueSettings.bunny_jumping = {
+	tick_time = 5,
+	jump_threshold = 6
+}
+DialogueSettings.raycast_enemy_check_interval = 0.25
+DialogueSettings.hear_enemy_check_interval = 10
+DialogueSettings.special_proximity_distance = 30
+DialogueSettings.special_proximity_distance_heard = 30
+HealthTriggerSettings = {
+	levels = {
+		0.2,
+		0.5,
+		1
+	},
+	rapid_health_loss = {
+		tick_time = 2,
+		tick_loss_threshold = 0.2
+	}
+}
 DialogueSettings.max_hear_distance = math.max(25, DialogueSettings.knocked_down_broadcast_range, DialogueSettings.pounced_down_broadcast_range, DialogueSettings.death_discover_distance)
 DialogueSettings.dialogue_category_config = {
 	default = {
 		mutually_exclusive = true,
-		interrupted_by = {
-			activate_ability = true,
-			level_talk_must_play = true,
-			npc_talk_interrupt_special = true,
+		interrupted_by = {},
+		playable_during_category = {
+			enemy_basic_prio = true,
+			enemy_high_prio = true
+		}
+	},
+	special_occasion = {
+		mutually_exclusive = true,
+		interrupted_by = {},
+		playable_during_category = {
+			default = true,
+			enemy_high_prio = true,
+			guidance = true,
 			enemy_alerts = true,
+			player_alerts = true,
+			player_feedback = true,
+			seen_items = true,
+			casual_talk = true,
+			story_talk = true,
+			enemy_basic_prio = true,
 			enemy_alerts_high = true,
-			level_talk_tutorial = true
-		},
-		playable_during_category = {}
+			knocked_down_override = true
+		}
 	},
 	activate_ability = {
-		interrupted_by = {
-			champion_opening = true,
-			level_talk_must_play = true,
-			boss_talk = true
-		},
+		interrupted_by = {},
 		playable_during_category = {
 			enemy_alerts = true,
 			npc_talk = true,
@@ -233,7 +280,6 @@ DialogueSettings.dialogue_category_config = {
 			level_talk = true,
 			boss_reaction_talk = true,
 			story_talk_vce = true,
-			knocked_down_override = true,
 			enemy_high_prio = true,
 			help_talk = true,
 			seen_items = true,
@@ -244,13 +290,7 @@ DialogueSettings.dialogue_category_config = {
 	},
 	enemy_alerts_high = {
 		mutually_exclusive = true,
-		interrupted_by = {
-			level_talk_must_play = true,
-			npc_talk_interrupt_special = true,
-			champion_opening = true,
-			player_alerts_boss = true,
-			boss_talk = true
-		},
+		interrupted_by = {},
 		playable_during_category = {
 			default = true,
 			player_feedback = true,
@@ -264,15 +304,7 @@ DialogueSettings.dialogue_category_config = {
 	},
 	enemy_alerts = {
 		mutually_exclusive = true,
-		interrupted_by = {
-			player_alerts_boss = true,
-			level_talk_must_play = true,
-			npc_talk_interrupt_special = true,
-			enemy_alerts_high = true,
-			champion_opening = true,
-			level_talk_tutorial = true,
-			boss_talk = true
-		},
+		interrupted_by = {},
 		playable_during_category = {
 			default = true,
 			player_feedback = true,
@@ -285,10 +317,7 @@ DialogueSettings.dialogue_category_config = {
 	},
 	player_alerts_boss = {
 		mutually_exclusive = true,
-		interrupted_by = {
-			level_talk_must_play = true,
-			npc_talk_interrupt = true
-		},
+		interrupted_by = {},
 		playable_during_category = {
 			default = true,
 			enemy_high_prio = true,
@@ -308,15 +337,7 @@ DialogueSettings.dialogue_category_config = {
 	},
 	player_alerts = {
 		mutually_exclusive = true,
-		interrupted_by = {
-			champion_opening = true,
-			level_talk_must_play = true,
-			npc_talk_interrupt_special = true,
-			player_alerts_boss = true,
-			level_talk_tutorial_interrupt = true,
-			level_talk_tutorial = true,
-			boss_talk = true
-		},
+		interrupted_by = {},
 		playable_during_category = {
 			default = true,
 			player_feedback = true,
@@ -330,42 +351,22 @@ DialogueSettings.dialogue_category_config = {
 	},
 	player_feedback = {
 		mutually_exclusive = true,
-		interrupted_by = {
-			enemy_alerts = true,
-			level_talk_tutorial_interrupt = true,
-			npc_talk_interrupt_special = true,
-			player_alerts = true,
-			champion_opening = true,
-			level_talk_tutorial = true,
-			boss_talk = true,
-			level_talk_must_play = true,
-			enemy_alerts_high = true,
-			player_alerts_boss = true
-		},
+		interrupted_by = {},
 		playable_during_category = {
-			npc_talk_special = true,
+			default = true,
 			enemy_high_prio = true,
-			story_talk_vce = true,
-			enemy_basic_prio = true
+			enemy_basic_prio = true,
+			npc_talk_special = true,
+			story_talk_vce = true
 		}
 	},
 	player_feedback_reply = {
 		mutually_exclusive = true,
-		interrupted_by = {
-			enemy_alerts = true,
-			level_talk_tutorial_interrupt = true,
-			npc_talk_interrupt_special = true,
-			player_alerts = true,
-			champion_opening = true,
-			level_talk_tutorial = true,
-			boss_talk = true,
-			level_talk_must_play = true,
-			enemy_alerts_high = true,
-			player_alerts_boss = true
-		},
+		interrupted_by = {},
 		playable_during_category = {
-			player_feedback = true,
+			default = true,
 			enemy_high_prio = true,
+			player_feedback = true,
 			enemy_basic_prio = true,
 			npc_talk_special = true,
 			story_talk_vce = true
@@ -373,50 +374,28 @@ DialogueSettings.dialogue_category_config = {
 	},
 	guidance = {
 		mutually_exclusive = true,
-		interrupted_by = {
-			enemy_alerts = true,
-			enemy_alerts_high = true,
-			npc_talk_interrupt_special = true,
-			player_alerts = true,
-			champion_opening = true,
-			level_talk_tutorial = true,
-			boss_talk = true,
-			level_talk_must_play = true,
-			level_talk_tutorial_interrupt = true
-		},
+		interrupted_by = {},
 		playable_during_category = {
-			story_talk_vce = true,
+			default = true,
 			enemy_high_prio = true,
+			story_talk_vce = true,
 			enemy_basic_prio = true
 		}
 	},
 	seen_items = {
 		mutually_exclusive = true,
-		interrupted_by = {
-			enemy_alerts = true,
-			level_talk_must_play = true,
-			npc_talk_interrupt_special = true,
-			enemy_alerts_high = true,
-			champion_opening = true,
-			level_talk_tutorial = true,
-			player_alerts_boss = true,
-			player_alerts = true
-		},
+		interrupted_by = {},
 		playable_during_category = {
-			story_talk_vce = true,
+			default = true,
 			enemy_high_prio = true,
+			story_talk_vce = true,
 			enemy_basic_prio = true
 		}
 	},
 	level_talk = {
 		mutually_exclusive = true,
 		interrupted_by = {
-			player_alerts_boss = true,
-			level_talk_must_play = true,
-			npc_talk_interrupt_special = true,
-			champion_opening = true,
-			level_talk_tutorial = true,
-			boss_talk = true
+			level_talk_must_play = true
 		},
 		playable_during_category = {
 			default = true,
@@ -428,49 +407,31 @@ DialogueSettings.dialogue_category_config = {
 	},
 	casual_talk = {
 		mutually_exclusive = true,
-		interrupted_by = {
-			enemy_alerts = true,
-			player_alerts = true,
-			npc_talk_interrupt_special = true,
-			champion_opening = true,
-			level_talk_tutorial = true,
-			boss_talk = true,
-			level_talk_must_play = true,
-			enemy_alerts_high = true,
-			player_alerts_boss = true
-		},
+		interrupted_by = {},
 		playable_during_category = {
-			story_talk_vce = true,
+			default = true,
 			enemy_high_prio = true,
+			story_talk_vce = true,
 			enemy_basic_prio = true
 		}
 	},
 	story_talk = {
 		mutually_exclusive = true,
 		interrupted_by = {
-			player_alerts_boss = true,
 			level_talk_must_play = true,
-			npc_talk_interrupt_special = true,
-			champion_opening = true,
-			level_talk_tutorial = true,
-			boss_talk = true
+			npc_talk = true,
+			npc_talk_interrupt = true
 		},
 		playable_during_category = {
-			story_talk_vce = true,
+			default = true,
 			enemy_high_prio = true,
+			story_talk_vce = true,
 			enemy_basic_prio = true
 		}
 	},
 	story_talk_vce = {
 		mutually_exclusive = false,
-		interrupted_by = {
-			player_alerts_boss = true,
-			level_talk_must_play = true,
-			npc_talk_interrupt_special = true,
-			champion_opening = true,
-			level_talk_tutorial = true,
-			boss_talk = true
-		},
+		interrupted_by = {},
 		playable_during_category = {
 			enemy_alerts = true,
 			npc_talk = true,
@@ -503,8 +464,7 @@ DialogueSettings.dialogue_category_config = {
 	},
 	cut_scene = {
 		interrupted_by = {
-			cut_scene_interrupt = true,
-			level_talk_must_play = true
+			cut_scene_interrupt = true
 		},
 		playable_during_category = {
 			enemy_alerts = true,
@@ -921,13 +881,7 @@ DialogueSettings.dialogue_category_config = {
 	},
 	enemy_basic_prio = {
 		interrupted_by = {
-			activate_ability = true,
-			enemy_high_prio = true,
-			npc_talk_interrupt_special = true,
-			player_alerts_boss = true,
-			champion_opening = true,
-			level_talk_tutorial = true,
-			boss_talk = true
+			enemy_high_prio = true
 		},
 		playable_during_category = {
 			enemy_alerts = true,
@@ -940,66 +894,35 @@ DialogueSettings.dialogue_category_config = {
 			casual_talk = true,
 			boss_talk = true,
 			story_talk = true,
-			level_talk = true,
-			boss_reaction_talk = true,
-			story_talk_vce = true,
-			knocked_down_override = true
-		}
-	},
-	enemy_high_prio = {
-		interrupted_by = {
-			activate_ability = true,
-			player_alerts_boss = true,
-			npc_talk_interrupt_special = true,
-			champion_opening = true,
-			level_talk_tutorial = true,
-			boss_talk = true
-		},
-		playable_during_category = {
-			enemy_alerts = true,
-			guidance = true,
-			help_talk = true,
-			default = true,
-			story_talk = true,
-			player_alerts = true,
-			seen_items = true,
-			casual_talk = true,
-			boss_talk = true,
-			player_feedback = true,
 			level_talk = true,
 			boss_reaction_talk = true,
 			enemy_alerts_high = true,
 			knocked_down_override = true,
-			enemy_basic_prio = true,
 			story_talk_vce = true
 		}
-	}
-}
-DialogueSettings.breed_types_trigger_on_spawn = {
-	chaos_troll = true,
-	chaos_spawn = true,
-	chaos_corruptor_sorcerer = true,
-	chaos_vortex_sorcerer = true,
-	skaven_rat_ogre = true,
-	skaven_stormfiend = true
-}
-DialogueSettings.bunny_jumping = {
-	tick_time = 5,
-	jump_threshold = 6
-}
-DialogueSettings.raycast_enemy_check_interval = 0.25
-DialogueSettings.hear_enemy_check_interval = 10
-DialogueSettings.special_proximity_distance = 50
-DialogueSettings.special_proximity_distance_heard = 50
-HealthTriggerSettings = {
-	levels = {
-		0.2,
-		0.5,
-		1
 	},
-	rapid_health_loss = {
-		tick_time = 2,
-		tick_loss_threshold = 0.2
+	enemy_high_prio = {
+		interrupted_by = {},
+		playable_during_category = {
+			default = true,
+			boss_reaction_talk = true,
+			story_talk = true,
+			knocked_down_override = true,
+			guidance = true,
+			enemy_alerts = true,
+			boss_talk = true,
+			casual_talk = true,
+			special_occasion = true,
+			player_feedback = true,
+			level_talk = true,
+			enemy_basic_prio = true,
+			activate_ability = true,
+			story_talk_vce = true,
+			help_talk = true,
+			seen_items = true,
+			player_alerts = true,
+			enemy_alerts_high = true
+		}
 	}
 }
 SpecialSubtitleEvents = {

@@ -39,6 +39,12 @@ NavigationGroupManager.form_groups = function (self, radius, finish_point, optio
 		level_name = LevelSettings[level_key].level_name
 	end
 
+	local num_nested_levels = LevelResource.nested_level_count(level_name)
+
+	if num_nested_levels > 0 then
+		level_name = LevelResource.nested_level_resource_name(level_name, 0)
+	end
+
 	local unit_indices = LevelResource.unit_indices(level_name, "core/gwnav/units/seedpoint/seedpoint")
 	self._num_groups = 0
 	local first_poly = GwNavTraversal.get_seed_triangle(nav_world, finish_point:unbox())
@@ -95,6 +101,12 @@ NavigationGroupManager.form_groups_start = function (self, radius, finish_point,
 	if not optional_level_name then
 		local level_key = Managers.state.game_mode:level_key()
 		level_name = LevelSettings[level_key].level_name
+	end
+
+	local num_nested_levels = LevelResource.nested_level_count(level_name)
+
+	if num_nested_levels > 0 then
+		level_name = LevelResource.nested_level_resource_name(level_name, 0)
 	end
 
 	local unit_indices = LevelResource.unit_indices(level_name, "core/gwnav/units/seedpoint/seedpoint")

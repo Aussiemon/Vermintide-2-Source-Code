@@ -1,7 +1,7 @@
 require("scripts/entity_system/systems/extension_system_base")
 require("scripts/entity_system/systems/aggro/aggro_system")
 require("scripts/entity_system/systems/ai/ai_system")
-require("scripts/entity_system/systems/ai/ai_melee_line_of_sight_system")
+require("scripts/entity_system/systems/ai/ai_line_of_sight_system")
 require("scripts/entity_system/systems/ai/ai_bot_group_system")
 require("scripts/entity_system/systems/ai/ai_group_system")
 require("scripts/entity_system/systems/ai/ai_inventory_system")
@@ -13,6 +13,7 @@ require("scripts/entity_system/systems/ai/ai_slot_system")
 require("scripts/entity_system/systems/ai/nav_graph_system")
 require("scripts/entity_system/systems/animation/animation_system")
 require("scripts/entity_system/systems/animation/aim_system")
+require("scripts/entity_system/systems/animation/animation_movement_system")
 require("scripts/entity_system/systems/attachment/attachment_system")
 require("scripts/entity_system/systems/cosmetic/cosmetic_system")
 require("scripts/entity_system/systems/area_damage/area_damage_system")
@@ -41,7 +42,9 @@ require("scripts/entity_system/systems/locomotion/locomotion_system")
 require("scripts/entity_system/systems/network/game_object_system")
 require("scripts/entity_system/systems/objective_socket/objective_socket_system")
 require("scripts/entity_system/systems/outlines/outline_system")
+require("scripts/entity_system/systems/mutator_item/mutator_item_system")
 require("scripts/entity_system/systems/pickups/pickup_system")
+require("scripts/entity_system/systems/progress/progress_system")
 require("scripts/entity_system/systems/projectile_impact/projectile_impact_system")
 require("scripts/entity_system/systems/projectile_locomotion/projectile_locomotion_system")
 require("scripts/entity_system/systems/round_started/round_started_system")
@@ -56,6 +59,7 @@ require("scripts/entity_system/systems/volumes/volume_system")
 require("scripts/entity_system/systems/projectile/projectile_system")
 require("scripts/entity_system/systems/proximity/proximity_system")
 require("scripts/entity_system/systems/projectile/projectile_linker_system")
+require("scripts/entity_system/systems/props/end_zone_system")
 require("scripts/entity_system/systems/props/props_system")
 require("scripts/entity_system/systems/status/status_system")
 require("scripts/entity_system/systems/transportation/transportation_system")
@@ -69,6 +73,21 @@ require("scripts/entity_system/systems/payload/payload_system")
 require("scripts/entity_system/systems/target_override/target_override_system")
 require("scripts/entity_system/systems/position_lookup/position_lookup_system")
 require("scripts/entity_system/systems/keep_decoration/keep_decoration_system")
+require("scripts/entity_system/systems/whereabouts/whereabouts_system")
+require("scripts/entity_system/systems/weaves/weave_objective_system")
+require("scripts/entity_system/systems/weaves/weave_item_spawner_system")
+require("scripts/entity_system/systems/weaves/weave_loadout_system")
+
+for _, dlc in pairs(DLCSettings) do
+	local files = dlc.systems
+
+	if files then
+		for _, file in ipairs(files) do
+			require(file)
+		end
+	end
+end
+
 require("scripts/unit_extensions/human/ai_player_unit/ai_anim_utils")
 require("scripts/unit_extensions/human/ai_player_unit/ai_husk_base_extension")
 require("scripts/unit_extensions/human/ai_player_unit/ai_simple_extension")
@@ -83,11 +102,18 @@ require("scripts/unit_extensions/generic/generic_death_extension")
 require("scripts/unit_extensions/generic/generic_trail_extension")
 require("scripts/unit_extensions/generic/generic_unit_aim_extension")
 require("scripts/unit_extensions/generic/generic_hit_reaction_extension")
+require("scripts/unit_extensions/generic/ai_line_of_sight_extension")
 require("scripts/unit_extensions/generic/ladder_extension")
+require("scripts/unit_extensions/generic/player_in_zone_extension")
 require("scripts/unit_extensions/default_player_unit/player_eyetracking_extension")
+require("scripts/unit_extensions/generic/shadow_flare_extension")
 require("scripts/unit_extensions/generic/tentacle_spline_extension")
 require("scripts/unit_extensions/generic/tentacle_templates")
+require("scripts/unit_extensions/generic/thorn_mutator_extension")
 require("scripts/unit_extensions/generic/thrown_unit_husk_extension")
+require("scripts/unit_extensions/ai_supplementary/beastmen_standard_extension")
+require("scripts/unit_extensions/ai_supplementary/beastmen_standard_templates")
+require("scripts/unit_extensions/ai_supplementary/unit_synchronization_extension")
 require("scripts/unit_extensions/ai_supplementary/vortex_extension")
 require("scripts/unit_extensions/ai_supplementary/vortex_templates")
 require("scripts/unit_extensions/ai_supplementary/vortex_husk_extension")
@@ -99,6 +125,7 @@ require("scripts/unit_extensions/weapons/area_damage/liquid/damage_wave_template
 require("scripts/unit_extensions/weapons/area_damage/liquid/damage_blob_extension")
 require("scripts/unit_extensions/weapons/area_damage/liquid/damage_blob_husk_extension")
 require("scripts/unit_extensions/weapons/area_damage/liquid/damage_blob_templates")
+require("scripts/unit_extensions/default_player_unit/player_unit_attack_intensity_extension")
 require("scripts/unit_extensions/default_player_unit/player_input_extension")
 require("scripts/unit_extensions/default_player_unit/player_input_tutorial_extension")
 require("scripts/unit_extensions/default_player_unit/player_sound_effect_extension")
@@ -107,38 +134,6 @@ require("scripts/unit_extensions/default_player_unit/lure_whereabouts_extension"
 require("scripts/unit_extensions/human/player_bot_unit/player_bot_base")
 require("scripts/unit_extensions/human/player_bot_unit/player_bot_input")
 require("scripts/unit_extensions/human/player_bot_unit/player_bot_navigation")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_helper")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_dead")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_interacting")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_jumping")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_leaping")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_ledge_hanging")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_leave_ledge_hanging_falling")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_leave_ledge_hanging_pull_up")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_climbing_ladder")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_leaving_ladder_top")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_enter_ladder_top")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_falling")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_knocked_down")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_pounced_down")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_standing")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_inspecting")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_walking")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_dodging")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_lunging")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_waiting_for_assisted_respawn")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_catapulted")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_stunned")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_overpowered")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_using_transport")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_grabbed_by_pack_master")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_grabbed_by_corruptor")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_grabbed_by_tentacle")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_grabbed_by_chaos_spawn")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_in_hanging_cage")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_in_vortex")
-require("scripts/unit_extensions/default_player_unit/states/player_character_state_overcharge_exploding")
 require("scripts/unit_extensions/default_player_unit/talents/talent_extension")
 require("scripts/unit_extensions/default_player_unit/talents/husk_talent_extension")
 require("scripts/unit_extensions/default_player_unit/careers/career_extension")
@@ -151,7 +146,6 @@ require("scripts/unit_extensions/weapons/area_damage/area_damage_templates")
 require("scripts/unit_extensions/weapons/projectiles/projectile_physics_husk_locomotion_extension")
 require("scripts/unit_extensions/weapons/projectiles/projectile_physics_unit_locomotion_extension")
 require("scripts/unit_extensions/weapons/projectiles/projectile_script_unit_locomotion_extension")
-require("scripts/unit_extensions/weapons/projectiles/projectile_flame_wave_locomotion_extension")
 require("scripts/unit_extensions/weapons/ammo/active_reload_ammo_user_extension")
 require("scripts/unit_extensions/weapons/spread/weapon_spread_extension")
 require("scripts/unit_extensions/default_player_unit/buffs/buff_area_extension")
@@ -165,13 +159,20 @@ require("scripts/unit_extensions/smart_targeting/player_unit_smart_targeting_ext
 require("scripts/unit_extensions/human/ai_player_unit/ai_shield_user_extension")
 require("scripts/unit_extensions/human/ai_player_unit/ai_shield_user_husk_extension")
 require("scripts/unit_extensions/props/quest_challenge_prop_extension")
+require("scripts/unit_extensions/weaves/weave_capture_point_extension")
+require("scripts/unit_extensions/weaves/weave_target_extension")
+require("scripts/unit_extensions/weaves/weave_limited_item_spawner_extension")
+require("scripts/unit_extensions/weaves/weave_doom_wheel_extension")
+require("scripts/unit_extensions/weaves/weave_socket_extension")
+require("scripts/unit_extensions/weaves/weave_item_extension")
+require("scripts/unit_extensions/weaves/weave_interaction_extension")
+require("scripts/unit_extensions/weaves/weave_kill_enemies_extension")
 
 local projectile_locomotion_extensions = {
 	"ProjectilePhysicsHuskLocomotionExtension",
 	"ProjectilePhysicsUnitLocomotionExtension",
 	"ProjectileScriptUnitLocomotionExtension",
-	"ProjectileTrueFlightLocomotionExtension",
-	"ProjectileFlameWaveLocomotionExtension"
+	"ProjectileTrueFlightLocomotionExtension"
 }
 EntitySystem = class(EntitySystem)
 
@@ -207,7 +208,7 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 		"TargetOverrideExtension"
 	})
 	self:_add_system("ai_system", AISystem, entity_system_creation_context)
-	self:_add_system("ai_melee_line_of_sight_system", AIMeleeLineOfSightSystem, entity_system_creation_context)
+	self:_add_system("ai_line_of_sight_system", AILineOfSightSystem, entity_system_creation_context)
 	self:_add_system("ai_interest_point_system", AIInterestPointSystem, entity_system_creation_context)
 	self:_add_system("input_system", ExtensionSystemBase, entity_system_creation_context, {
 		"PlayerInputExtension",
@@ -234,9 +235,11 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	})
 	self:_add_system("ai_inventory_system", AIInventorySystem, entity_system_creation_context)
 	self:_add_system("ai_inventory_item_system", AIInventoryItemSystem, entity_system_creation_context)
+	self:_add_system("objective_socket_system", ObjectiveSocketSystem, entity_system_creation_context)
+	self:_add_system("weave_objective_system", WeaveObjectiveSystem, entity_system_creation_context)
+	self:_add_system("weave_item_spawner_system", WeaveItemSpawnerSystem, entity_system_creation_context)
 	self:_add_system("limited_item_track_system", LimitedItemTrackSystem, entity_system_creation_context)
 	self:_add_system("aggro_system", AggroSystem, entity_system_creation_context)
-	self:_add_system("objective_socket_system", ObjectiveSocketSystem, entity_system_creation_context)
 	self:_add_system("ping_system", PingSystem, entity_system_creation_context)
 	self:_add_system("smart_targeting_system", ExtensionSystemBase, entity_system_creation_context, {
 		"PlayerUnitSmartTargetingExtension"
@@ -244,8 +247,10 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("weapon_system", WeaponSystem, entity_system_creation_context)
 	self:_add_system("projectile_locomotion_system", ProjectileLocomotionSystem, entity_system_creation_context, projectile_locomotion_extensions)
 	self:_add_system("projectile_impact_system", ProjectileImpactSystem, entity_system_creation_context)
-	self:_add_system("projectile_system", ProjectileSystem, entity_system_creation_context)
 	self:_add_system("projectile_linker_system", ProjectileLinkerSystem, entity_system_creation_context)
+	self:_add_system("projectile_system", ProjectileSystem, entity_system_creation_context)
+	self:_add_system("mutator_item_system", MutatorItemSystem, entity_system_creation_context)
+	self:_add_system("weave_loadout_system", WeaveLoadoutSystem, entity_system_creation_context)
 	self:_add_system("buff_system", BuffSystem, entity_system_creation_context)
 	self:_add_system("buff_area_system", ExtensionSystemBase, entity_system_creation_context, {
 		"BuffAreaExtension"
@@ -260,6 +265,9 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	})
 	self:_add_system("health_system", HealthSystem, entity_system_creation_context)
 	self:_add_system("status_system", StatusSystem, entity_system_creation_context)
+	self:_add_system("attack_intensity_system", ExtensionSystemBase, entity_system_creation_context, {
+		"PlayerUnitAttackIntensityExtension"
+	})
 	self:_add_system("hit_reaction_system", HitReactionSystem, entity_system_creation_context)
 	self:_add_system("overcharge_system", ExtensionSystemBase, entity_system_creation_context, {
 		"PlayerUnitOverchargeExtension",
@@ -283,15 +291,18 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 		"AINavigationExtension",
 		"PlayerBotNavigation"
 	}, nil, no_pre_update, has_post_update)
-	self:_add_system("whereabouts_system", ExtensionSystemBase, entity_system_creation_context, {
+	self:_add_system("whereabouts_system", WhereaboutsSystem, entity_system_creation_context, {
 		"PlayerWhereaboutsExtension",
-		"LureWhereaboutsExtension"
-	}, nil, no_pre_update, has_post_update)
+		"LureWhereaboutsExtension",
+		"JumpsWhereaboutsExtension"
+	}, nil, no_pre_update)
 	self:_add_system("ai_supplementary_system", ExtensionSystemBase, entity_system_creation_context, {
 		"TentacleSplineExtension",
 		"VortexExtension",
 		"VortexHuskExtension",
-		"ThrownUnitHuskExtension"
+		"ThrownUnitHuskExtension",
+		"BeastmenStandardExtension",
+		"UnitSynchronizationExtension"
 	})
 	self:_add_system("ai_beam_effect_system", ExtensionSystemBase, entity_system_creation_context, {
 		"CorruptorBeamExtension",
@@ -305,6 +316,9 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("keep_decoration_system", KeepDecorationSystem, entity_system_creation_context)
 	self:_add_system("aim_system", AimSystem, entity_system_creation_context, {
 		"GenericUnitAimExtension"
+	})
+	self:_add_system("animation_movement_system", AnimationMovementSystem, entity_system_creation_context, {
+		"GenericUnitAnimationMovementSystem"
 	})
 	self:_add_system("transportation_system", TransportationSystem, entity_system_creation_context, nil, nil, no_pre_update, has_post_update)
 	self:_add_system("locomotion_system", LocomotionSystem, entity_system_creation_context, nil, nil, no_pre_update, has_post_update)
@@ -339,12 +353,13 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("round_started_system", RoundStartedSystem, entity_system_creation_context)
 	self:_add_system("spawner_system", SpawnerSystem, entity_system_creation_context)
 	self:_add_system("props_system", PropsSystem, entity_system_creation_context, {
-		"BotNavTransitionExtension",
-		"EndZoneExtension"
+		"BotNavTransitionExtension"
 	}, {
 		"PerlinLightExtension",
 		"QuestChallengePropExtension"
 	})
+	self:_add_system("end_zone_system", EndZoneSystem, entity_system_creation_context)
+	self:_add_system("progress_system", ProgressSystem, entity_system_creation_context)
 	self:_add_system("nav_graph_system", NavGraphSystem, entity_system_creation_context)
 	self:_add_system("audio_system", AudioSystem, entity_system_creation_context)
 

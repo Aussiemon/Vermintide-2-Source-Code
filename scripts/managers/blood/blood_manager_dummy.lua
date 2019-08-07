@@ -47,6 +47,26 @@ BloodManagerDummy.destroy = function (self)
 	return
 end
 
+BloodManagerDummy.update_blood_enabled = function (self, blood_enabled)
+	return
+end
+
+BloodManagerDummy.update_num_blood_decals = function (self, num_blood_decals)
+	return
+end
+
+BloodManagerDummy.update_screen_blood_enabled = function (self, screen_blood_enabled)
+	return
+end
+
+BloodManagerDummy.update_dismemberment_enabled = function (self, dismemberment_enabled)
+	return
+end
+
+BloodManagerDummy.update_ragdoll_enabled = function (self, ragdoll_enabled)
+	return
+end
+
 ApiVerification.ensure_public_api(BloodManager, BloodManagerDummy)
 
 return

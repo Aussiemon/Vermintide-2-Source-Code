@@ -1,4 +1,5 @@
 require("scripts/settings/unit_spawner_settings")
+require("scripts/settings/spawn_unit_templates")
 
 local unit_templates = require("scripts/network/unit_extension_templates")
 
@@ -326,6 +327,19 @@ UnitSpawner.spawn_network_unit = function (self, unit_name, unit_template_name, 
 	self.entity_manager:sync_unit_extensions(unit, go_id)
 
 	return unit, go_id
+end
+
+UnitSpawner.request_spawn_network_unit = function (self, template_name, position, rotation, source_unit, state_int)
+	if self.is_server then
+		local spawn_template = SpawnUnitTemplates[template_name]
+
+		spawn_template.spawn_func(source_unit, position, rotation, state_int)
+	else
+		local template_id = NetworkLookup.spawn_unit_templates[template_name]
+		local source_unit_id = Managers.state.unit_storage:go_id(source_unit)
+
+		Managers.state.network.network_transmit:send_rpc_server("rpc_request_spawn_network_unit", template_id, position, rotation, source_unit_id, state_int)
+	end
 end
 
 UnitSpawner.world_delete_units = function (self, world, units_list, units_list_n)

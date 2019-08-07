@@ -81,7 +81,7 @@ ActionAssertFuncs = {
 	charge = function (weapon_name, action_name, sub_action_name, action)
 		local charge_time = action.charge_time
 
-		fassert(charge_time, "No charge time set")
+		fassert(charge_time, "No charge time set for [\"%s.%s\"] in weapon [\"%s\"]", action_name, sub_action_name, weapon_name)
 	end
 }
 

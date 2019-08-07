@@ -27,33 +27,35 @@ Utility.get_action_utility = function (breed_action, action_name, blackboard, fr
 	local considerations = breed_action.considerations
 
 	for name, consideration in pairs(considerations) do
-		repeat
-			local input = consideration.blackboard_input
-			local blackboard_value = blackboard_action_data[input] or blackboard[input]
-			local utility = 0
+		local input = consideration.blackboard_input
+		local blackboard_value = blackboard_action_data[input] or blackboard[input]
+		local utility = 0
 
-			if consideration.is_condition then
-				local invert = consideration.invert
+		if consideration.is_condition then
+			local invert = consideration.invert
 
-				if blackboard_value then
-					if invert then
-						utility = 0
-					else
-						utility = 1
-					end
-				elseif invert then
-					utility = 1
-				else
+			if blackboard_value then
+				if invert then
 					utility = 0
+				else
+					utility = 1
 				end
+			elseif invert then
+				utility = 1
 			else
-				local min_value = consideration.min_value or 0
-				local norm_value = math.clamp((blackboard_value - min_value) / (consideration.max_value - min_value), 0, 1)
-				utility = get_utility_from_spline(consideration.spline, norm_value)
+				utility = 0
 			end
+		else
+			local min_value = consideration.min_value or 0
+			local norm_value = math.clamp((blackboard_value - min_value) / (consideration.max_value - min_value), 0, 1)
+			utility = get_utility_from_spline(consideration.spline, norm_value)
+		end
 
-			total_utility = total_utility * utility
-		until true
+		if utility <= 0 then
+			return 0
+		end
+
+		total_utility = total_utility * utility
 	end
 
 	total_utility = total_utility * breed_action.action_weight

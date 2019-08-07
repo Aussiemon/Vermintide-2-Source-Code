@@ -15,9 +15,11 @@ ObjectiveSocketUnitExtension.init = function (self, extension_init_context, unit
 	self.num_sockets = 0
 	self.num_open_sockets = 0
 	self.num_closed_sockets = 0
+	self.distance = 10000
 
 	self:setup_sockets(unit)
 
+	self.use_game_object_id = extension_init_data.use_game_object_id
 	self.pick_config = Unit.get_data(unit, "pick_config") or "ordered"
 	POSITION_LOOKUP[unit] = Unit.world_position(unit, 0)
 

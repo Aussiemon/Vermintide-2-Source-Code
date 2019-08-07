@@ -210,6 +210,61 @@ gargoyle_head.actions.action_dropped.default.projectile_info = {
 	drop_on_player_destroyed = true,
 	projectile_unit_name = "units/weapons/player/pup_gargoyle_head/pup_gargoyle_head_01"
 }
+local shadow_gargoyle_head = table.clone(weapon_template)
+shadow_gargoyle_head.left_hand_unit = "units/weapons/player/wpn_shadow_gargoyle_head/wpn_shadow_gargoyle_head"
+shadow_gargoyle_head.actions.action_one.default.speed = 8
+shadow_gargoyle_head.actions.action_one.default.throw_time = 0.35000000000000003
+shadow_gargoyle_head.actions.action_one.default.throw_offset = {
+	0.3,
+	0.5,
+	0
+}
+shadow_gargoyle_head.actions.action_one.default.buff_data = {
+	{
+		start_time = 0,
+		external_multiplier = 1,
+		end_time = 0.28,
+		buff_name = "planted_fast_decrease_movement"
+	}
+}
+shadow_gargoyle_head.actions.action_one.default.projectile_info = {
+	projectile_unit_template_name = "pickup_projectile_unit",
+	pickup_name = "shadow_gargoyle_head",
+	drop_on_player_destroyed = true,
+	projectile_unit_name = "units/weapons/player/pup_shadow_gargoyle_head/pup_shadow_gargoyle_head_01"
+}
+shadow_gargoyle_head.actions.action_dropped.default.projectile_info = {
+	projectile_unit_template_name = "pickup_projectile_unit",
+	pickup_name = "shadow_gargoyle_head",
+	drop_on_player_destroyed = true,
+	projectile_unit_name = "units/weapons/player/pup_shadow_gargoyle_head/pup_shadow_gargoyle_head_01"
+}
+local magic_crystal = table.clone(weapon_template)
+magic_crystal.left_hand_unit = "units/weapons/player/wpn_magic_crystal/wpn_magic_crystal"
+magic_crystal.actions.action_one.default.speed = 8
+magic_crystal.actions.action_one.default.throw_time = 0.35000000000000003
+magic_crystal.actions.action_one.default.throw_offset = {
+	-0.2,
+	0.5,
+	0
+}
+magic_crystal.actions.action_one.default.buff_data = {}
+magic_crystal.wield_anim_3p = "to_crystal"
+magic_crystal.wield_anim = "to_crystal"
+magic_crystal.left_hand_attachment_node_linking = AttachmentNodeLinking.magic_crystal
+magic_crystal.buffs = {}
+magic_crystal.actions.action_one.default.projectile_info = {
+	projectile_unit_template_name = "pickup_projectile_unit",
+	pickup_name = "magic_crystal",
+	drop_on_player_destroyed = true,
+	projectile_unit_name = "units/weapons/player/pup_magic_crystal/pup_magic_crystal"
+}
+magic_crystal.actions.action_dropped.default.projectile_info = {
+	projectile_unit_template_name = "pickup_projectile_unit",
+	pickup_name = "magic_crystal",
+	drop_on_player_destroyed = true,
+	projectile_unit_name = "units/weapons/player/pup_magic_crystal/pup_magic_crystal"
+}
 local training_dummy = table.clone(weapon_template)
 training_dummy.buffs = nil
 training_dummy.left_hand_unit = "units/gameplay/training_dummy/wpn_training_dummy"
@@ -255,6 +310,8 @@ training_dummy_skaven.actions.action_dropped.default.projectile_info.pickup_name
 return {
 	cannon_ball = cannon_ball,
 	gargoyle_head = gargoyle_head,
+	shadow_gargoyle_head = shadow_gargoyle_head,
+	magic_crystal = magic_crystal,
 	training_dummy = training_dummy,
 	training_dummy_armored = training_dummy_armored,
 	training_dummy_skaven = training_dummy_skaven

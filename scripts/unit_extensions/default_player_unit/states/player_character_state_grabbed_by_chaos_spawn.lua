@@ -78,9 +78,11 @@ PlayerCharacterStateGrabbedByChaosSpawn.on_exit = function (self, unit, input, d
 
 	locomotion_extension:teleport_to(pos, current_rotation)
 
-	local status_extension = self.status_extension
-
-	status_extension:set_grabbed_by_chaos_spawn(false)
+	if self.is_server then
+		StatusUtils.set_grabbed_by_chaos_spawn_network(unit, false, self.chaos_spawn_unit)
+	else
+		status_extension:set_grabbed_by_chaos_spawn(false)
+	end
 
 	local camera_state = self.camera_state
 	local include_local_player = camera_state ~= "first_person" or false

@@ -338,7 +338,7 @@ BTWarpfireThrowerShootAction._close_range_attack = function (self, unit, attack_
 			local hit_unit = Actor.unit(actor)
 
 			if hit_unit ~= unit then
-				local is_ai_unit = DamageUtils.is_enemy(hit_unit)
+				local is_ai_unit = DamageUtils.is_enemy(blackboard.target_unit, hit_unit)
 				local is_player_unit = DamageUtils.is_player_unit(hit_unit)
 				local unit_is_character = is_ai_unit or is_player_unit
 

@@ -252,7 +252,7 @@ end
 StartGameWindowCustomGameOverviewConsole._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
 	local completed_frame_texture = "map_frame_00"
 
-	if difficulty_index > 0 then
+	if difficulty_index and difficulty_index > 0 then
 		local difficulty_key = DefaultDifficulties[difficulty_index]
 		local settings = DifficultySettings[difficulty_key]
 		completed_frame_texture = settings.completed_frame_texture

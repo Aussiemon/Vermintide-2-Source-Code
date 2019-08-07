@@ -164,10 +164,15 @@ BenchmarkHandler._setup_initial_values = function (self, t)
 end
 
 BenchmarkHandler.run_func_on_bots = function (self, f, ...)
-	for _, bot_unit in ipairs(PLAYER_AND_BOT_UNITS) do
-		local blackboard = BLACKBOARDS[bot_unit]
+	local hero_side = Managers.state.side:get_side_from_name("heroes")
+	local PLAYER_AND_BOT_UNITS = hero_side.PLAYER_AND_BOT_UNITS
+	local player_manager = Managers.player
 
-		if blackboard then
+	for _, bot_unit in ipairs(PLAYER_AND_BOT_UNITS) do
+		local player = player_manager:owner(bot_unit)
+
+		if not player:is_player_controlled() then
+			local blackboard = BLACKBOARDS[bot_unit]
 			local result = f(bot_unit, blackboard, ...)
 
 			if result then
@@ -224,6 +229,8 @@ BenchmarkHandler.update = function (self, dt, t)
 	end
 
 	local sum = 0
+	local hero_side = Managers.state.side:get_side_from_name("heroes")
+	local PLAYER_AND_BOT_UNITS = hero_side.PLAYER_AND_BOT_UNITS
 
 	for _, bot_unit in ipairs(PLAYER_AND_BOT_UNITS) do
 		local blackboard = BLACKBOARDS[bot_unit]
@@ -435,6 +442,8 @@ BenchmarkHandler._update_main_path = function (self, dt, t, total_proximate_enem
 	local min_dist_sqr = math.huge
 	local closest_ally = nil
 	local player_pos = POSITION_LOOKUP[player_unit]
+	local hero_side = Managers.state.side:get_side_from_name("heroes")
+	local PLAYER_AND_BOT_UNITS = hero_side.PLAYER_AND_BOT_UNITS
 
 	for _, bot_unit in ipairs(PLAYER_AND_BOT_UNITS) do
 		if bot_unit ~= player_unit then

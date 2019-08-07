@@ -1,9 +1,9 @@
 AreaDamageTemplates = {}
 local ai_units = {}
 AreaDamageTemplates.templates = {
-	area_dot_damage = {
+	globadier_area_dot_damage = {
 		server = {
-			update = function (damage_source, unit, radius, damage, life_time, life_timer, damage_interval, damage_timer, aoe_dot_player_take_damage)
+			update = function (damage_source, unit, radius, damage, life_time, life_timer, damage_interval, damage_timer, aoe_dot_player_take_damage, explosion_template_name, slow_modifier)
 				if life_time < life_timer then
 					Managers.state.unit_spawner:mark_for_deletion(unit)
 
@@ -23,18 +23,23 @@ AreaDamageTemplates.templates = {
 						local player_unit = player.player_unit
 
 						if player_unit ~= nil then
-							local unit_position = POSITION_LOOKUP[player_unit]
-							local distance = Vector3.distance(unit_position, area_damage_position)
-							local is_inside_radius = distance < radius
+							local blackboard = BLACKBOARDS[player_unit]
+							local breed = blackboard.breed
 
-							if is_inside_radius then
-								local damage_data = {
-									area_damage_template = "area_dot_damage",
-									unit = player_unit,
-									damage = damage,
-									damage_source = damage_source
-								}
-								damage_buffer[#damage_buffer + 1] = damage_data
+							if breed.poison_resistance < 100 then
+								local unit_position = POSITION_LOOKUP[player_unit]
+								local distance = Vector3.distance(unit_position, area_damage_position)
+								local is_inside_radius = distance < radius
+
+								if is_inside_radius then
+									local damage_data = {
+										area_damage_template = "globadier_area_dot_damage",
+										unit = player_unit,
+										damage = damage,
+										damage_source = damage_source
+									}
+									damage_buffer[#damage_buffer + 1] = damage_data
+								end
 							end
 						end
 					end
@@ -43,15 +48,139 @@ AreaDamageTemplates.templates = {
 				return true, damage_buffer
 			end,
 			do_damage = function (data, extension_unit)
-				local unit = data.unit
+				local hit_unit = data.unit
 				local damage = data.damage
 				local damage_source = data.damage_source
 
-				DamageUtils.add_damage_network(unit, extension_unit, damage, "torso", "damage_over_time", nil, Vector3(1, 0, 0), damage_source)
+				DamageUtils.add_damage_network(hit_unit, extension_unit, damage, "torso", "damage_over_time", nil, Vector3(1, 0, 0), damage_source)
 			end
 		},
 		client = {
-			update = function (world, radius, aoe_unit, player_screen_effect_name, player_unit_particles, aoe_dot_player_take_damage)
+			update = function (world, radius, aoe_unit, player_screen_effect_name, player_unit_particles, aoe_dot_player_take_damage, explosion_template_name, slow_modifier)
+				if Development.parameter("screen_space_player_camera_reactions") == false then
+					return
+				end
+
+				for _, player in pairs(Managers.player:players()) do
+					local player_unit = player.player_unit
+
+					if player.local_player and Unit.alive(player_unit) and aoe_dot_player_take_damage and player_screen_effect_name ~= nil and not ScriptUnit.extension(player_unit, "buff_system"):has_buff_type("poison_screen_effect_immune") then
+						local unit_position = POSITION_LOOKUP[player_unit]
+						local area_damage_position = Unit.local_position(aoe_unit, 0)
+						local distance_sq = Vector3.distance_squared(unit_position, area_damage_position)
+						local is_inside_radius = distance_sq < radius * radius
+						local t = Managers.time:time("game")
+
+						if is_inside_radius and not player_unit_particles[player_unit] then
+							local particle_id = World.create_particles(world, player_screen_effect_name, Vector3(0, 0, 0))
+							player_unit_particles[player_unit] = {
+								particle_id = particle_id,
+								start_time = t
+							}
+							local status_extension = ScriptUnit.has_extension(player_unit, "status_system")
+
+							if status_extension then
+								status_extension:hit_by_globadier_poison()
+							end
+						elseif is_inside_radius and t >= player_unit_particles[player_unit].start_time + 5 then
+							local particle_id = player_unit_particles[player_unit].particle_id
+
+							World.stop_spawning_particles(world, particle_id)
+
+							player_unit_particles[player_unit] = nil
+						elseif not is_inside_radius and player_unit_particles[player_unit] and not player_unit_particles[player_unit].fade_time then
+							local particle_id = player_unit_particles[player_unit].particle_id
+
+							World.stop_spawning_particles(world, particle_id)
+
+							local new_particle_id = World.create_particles(world, player_screen_effect_name, Vector3(0, 0, 0))
+							player_unit_particles[player_unit].fade_time = t + 1.5
+							player_unit_particles[player_unit].particle_id = new_particle_id
+						elseif not is_inside_radius and player_unit_particles[player_unit] and player_unit_particles[player_unit].fade_time <= t then
+							local particle_id = player_unit_particles[player_unit].particle_id
+
+							World.stop_spawning_particles(world, particle_id)
+
+							player_unit_particles[player_unit] = nil
+						end
+					end
+				end
+			end,
+			spawn_effect = function (world, unit, effect_name, particle_var_table)
+				local position = Unit.local_position(unit, 0)
+				local effect_id = World.create_particles(world, effect_name, position)
+
+				if particle_var_table ~= nil then
+					for _, element in pairs(particle_var_table) do
+						local effect_variable_id = World.find_particles_variable(world, effect_name, element.particle_variable)
+
+						World.set_particles_variable(world, effect_id, effect_variable_id, element.value)
+					end
+				end
+
+				return effect_id
+			end,
+			destroy = function ()
+				return
+			end
+		}
+	},
+	sorcerer_area_dot_damage = {
+		server = {
+			update = function (damage_source, unit, radius, damage, life_time, life_timer, damage_interval, damage_timer, aoe_dot_player_take_damage, explosion_template_name, slow_modifier)
+				if life_time < life_timer then
+					Managers.state.unit_spawner:mark_for_deletion(unit)
+
+					return false
+				end
+
+				local area_damage_position = Unit.local_position(unit, 0)
+
+				if damage_timer >= 0 and damage_timer < damage_interval then
+					return false
+				end
+
+				local damage_buffer = {}
+
+				if aoe_dot_player_take_damage then
+					for _, player in pairs(Managers.player:players()) do
+						local player_unit = player.player_unit
+
+						if player_unit ~= nil then
+							local blackboard = BLACKBOARDS[player_unit]
+							local breed = blackboard.breed
+
+							if breed.poison_resistance < 100 then
+								local unit_position = POSITION_LOOKUP[player_unit]
+								local distance = Vector3.distance(unit_position, area_damage_position)
+								local is_inside_radius = distance < radius
+
+								if is_inside_radius then
+									local damage_data = {
+										area_damage_template = "sorcerer_area_dot_damage",
+										unit = player_unit,
+										damage = damage,
+										damage_source = damage_source
+									}
+									damage_buffer[#damage_buffer + 1] = damage_data
+								end
+							end
+						end
+					end
+				end
+
+				return true, damage_buffer
+			end,
+			do_damage = function (data, extension_unit)
+				local hit_unit = data.unit
+				local damage = data.damage
+				local damage_source = data.damage_source
+
+				DamageUtils.add_damage_network(hit_unit, extension_unit, damage, "torso", "damage_over_time", nil, Vector3(1, 0, 0), damage_source)
+			end
+		},
+		client = {
+			update = function (world, radius, aoe_unit, player_screen_effect_name, player_unit_particles, aoe_dot_player_take_damage, explosion_template_name, slow_modifier)
 				if Development.parameter("screen_space_player_camera_reactions") == false then
 					return
 				end
@@ -99,120 +228,10 @@ AreaDamageTemplates.templates = {
 			spawn_effect = function (world, unit, effect_name, particle_var_table)
 				local position = Unit.local_position(unit, 0)
 				local effect_id = World.create_particles(world, effect_name, position)
-				local effect_variable_id = nil
 
 				if particle_var_table ~= nil then
-					for index, element in pairs(particle_var_table) do
-						effect_variable_id = World.find_particles_variable(world, effect_name, element.particle_variable)
-
-						World.set_particles_variable(world, effect_id, effect_variable_id, element.value)
-					end
-				end
-
-				return effect_id
-			end,
-			destroy = function ()
-				return
-			end
-		}
-	},
-	area_dot_damage_courtyard_well_hack = {
-		server = {
-			update = function (damage_source, unit, radius, damage, life_time, life_timer, damage_interval, damage_timer, aoe_dot_player_take_damage)
-				local area_damage_position = Unit.local_position(unit, 0)
-
-				if life_time < life_timer then
-					return false
-				end
-
-				if damage_timer > 0 and damage_timer < damage_interval then
-					return false
-				end
-
-				local damage_buffer = {}
-
-				if aoe_dot_player_take_damage then
-					for _, player in pairs(Managers.player:players()) do
-						local player_unit = player.player_unit
-
-						if player_unit ~= nil then
-							local unit_position = POSITION_LOOKUP[player_unit]
-							local distance = Vector3.distance(unit_position, area_damage_position)
-							local is_inside_radius = distance < radius
-
-							if is_inside_radius then
-								local damage_data = {
-									area_damage_template = "area_dot_damage_courtyard_well_hack",
-									unit = player_unit,
-									damage = damage,
-									damage_source = damage_source
-								}
-								damage_buffer[#damage_buffer + 1] = damage_data
-							end
-						end
-					end
-				end
-
-				return true, damage_buffer
-			end,
-			do_damage = function (data, extension_unit)
-				local unit = data.unit
-				local damage = data.damage
-				local damage_source = data.damage_source
-
-				DamageUtils.add_damage_network(unit, unit, damage, "torso", "damage_over_time", nil, Vector3(1, 0, 0), damage_source)
-			end
-		},
-		client = {
-			update = function (world, radius, aoe_unit, player_screen_effect_name, player_unit_particles, aoe_dot_player_take_damage)
-				for _, player in pairs(Managers.player:players()) do
-					local player_unit = player.player_unit
-
-					if player.local_player and Unit.alive(player_unit) and aoe_dot_player_take_damage and player_screen_effect_name ~= nil and not ScriptUnit.extension(player_unit, "buff_system"):has_buff_type("poison_screen_effect_immune") then
-						local unit_position = POSITION_LOOKUP[player_unit]
-						local area_damage_position = Unit.local_position(aoe_unit, 0)
-						local distance_sq = Vector3.distance_squared(unit_position, area_damage_position)
-						local is_inside_radius = distance_sq < radius * radius
-						local t = Managers.time:time("game")
-
-						if is_inside_radius and not player_unit_particles[player_unit] then
-							local particle_id = World.create_particles(world, player_screen_effect_name, Vector3(0, 0, 0))
-							player_unit_particles[player_unit] = {
-								particle_id = particle_id,
-								start_time = t
-							}
-						elseif is_inside_radius and t >= player_unit_particles[player_unit].start_time + 5 then
-							local particle_id = player_unit_particles[player_unit].particle_id
-
-							World.stop_spawning_particles(world, particle_id)
-
-							player_unit_particles[player_unit] = nil
-						elseif not is_inside_radius and player_unit_particles[player_unit] and not player_unit_particles[player_unit].fade_time then
-							local particle_id = player_unit_particles[player_unit].particle_id
-
-							World.stop_spawning_particles(world, particle_id)
-
-							local new_particle_id = World.create_particles(world, player_screen_effect_name, Vector3(0, 0, 0))
-							player_unit_particles[player_unit].fade_time = t + 1.5
-							player_unit_particles[player_unit].particle_id = new_particle_id
-						elseif not is_inside_radius and player_unit_particles[player_unit] and player_unit_particles[player_unit].fade_time <= t then
-							local particle_id = player_unit_particles[player_unit].particle_id
-
-							World.stop_spawning_particles(world, particle_id)
-
-							player_unit_particles[player_unit] = nil
-						end
-					end
-				end
-			end,
-			spawn_effect = function (world, unit, effect_name, particle_var_table)
-				local position = Unit.local_position(unit, 0)
-				local effect_id = World.create_particles(world, effect_name, position)
-				local effect_variable_id = nil
-
-				if particle_var_table ~= nil then
-					for index, element in pairs(particle_var_table) do
-						effect_variable_id = World.find_particles_variable(world, effect_name, element.particle_variable)
+					for _, element in pairs(particle_var_table) do
+						local effect_variable_id = World.find_particles_variable(world, effect_name, element.particle_variable)
 
 						World.set_particles_variable(world, effect_id, effect_variable_id, element.value)
 					end
@@ -227,7 +246,7 @@ AreaDamageTemplates.templates = {
 	},
 	explosion_template_aoe = {
 		server = {
-			update = function (damage_source, unit, radius, damage, life_time, life_timer, damage_interval, damage_timer, aoe_dot_player_take_damage, explosion_template_name)
+			update = function (damage_source, unit, radius, damage, life_time, life_timer, damage_interval, damage_timer, aoe_dot_player_take_damage, explosion_template_name, slow_modifier)
 				if life_time < life_timer then
 					Managers.state.unit_spawner:mark_for_deletion(unit)
 
@@ -277,7 +296,6 @@ AreaDamageTemplates.templates = {
 					local damage_buffer = {}
 					local dot_template_name = aoe_data.dot_template_name
 					local hit_zone_name = "full"
-					local dot_damage = aoe_data.dot_damage
 
 					for i = 1, num_ai_units, 1 do
 						local ai_unit = ai_units[i]
@@ -301,7 +319,6 @@ AreaDamageTemplates.templates = {
 								local unit_position = POSITION_LOOKUP[player_unit]
 								local distance = Vector3.distance(unit_position, area_damage_position)
 								local is_inside_radius = distance < radius
-								local backstab_multiplier = 1
 
 								if is_inside_radius then
 									local damage_data = {
@@ -344,11 +361,10 @@ AreaDamageTemplates.templates = {
 			spawn_effect = function (world, unit, effect_name, particle_var_table, override_position)
 				local position = override_position or Unit.world_position(unit, 0)
 				local effect_id = World.create_particles(world, effect_name, position)
-				local effect_variable_id = nil
 
 				if particle_var_table ~= nil then
-					for index, element in pairs(particle_var_table) do
-						effect_variable_id = World.find_particles_variable(world, effect_name, element.particle_variable)
+					for _, element in pairs(particle_var_table) do
+						local effect_variable_id = World.find_particles_variable(world, effect_name, element.particle_variable)
 
 						World.set_particles_variable(world, effect_id, effect_variable_id, element.value)
 					end
@@ -412,11 +428,176 @@ AreaDamageTemplates.templates = {
 
 				weapon_system:send_rpc_attack_hit(damage_source_id, unit_id, unit_id, hit_zone_id, area_damage_position, damage_direction, damage_profile_id, "power_level", power_level, "hit_target_index", nil, "blocking", false, "shield_break_procced", false, "boost_curve_multiplier", 0, "is_critical_strike", false)
 
-				local is_ai_unit = DamageUtils.is_enemy(unit)
+				local is_ai_unit = DamageUtils.is_ai(unit)
 
 				if is_ai_unit and not AiUtils.unit_alive(unit) then
 					QuestSettings.check_num_enemies_killed_by_poison(unit, extension_unit)
 				end
+			end
+		}
+	},
+	mutator_life_poison = {
+		server = {
+			update = function (damage_source, unit, radius, damage, life_time, life_timer, damage_interval, damage_timer, aoe_dot_player_take_damage, explosion_template_name, slow_modifier)
+				if life_time < life_timer then
+					Managers.state.unit_spawner:mark_for_deletion(unit)
+
+					return false
+				end
+
+				local area_damage_position = Unit.local_position(unit, 0)
+
+				if damage_timer >= 0 and damage_timer < damage_interval then
+					return false
+				end
+
+				local damage_buffer = {}
+
+				if aoe_dot_player_take_damage then
+					for _, player in pairs(Managers.player:players()) do
+						local player_unit = player.player_unit
+
+						if player_unit ~= nil then
+							local blackboard = BLACKBOARDS[player_unit]
+							local breed = blackboard.breed
+
+							if breed.poison_resistance < 100 then
+								local unit_position = POSITION_LOOKUP[player_unit]
+								local distance = Vector3.distance(unit_position, area_damage_position)
+								local is_inside_radius = distance < radius
+
+								if is_inside_radius then
+									if slow_modifier then
+										local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+
+										if buff_extension then
+											local wind_settings = WindSettings.life
+											local weave_manager = Managers.weave
+											local wind_strength = weave_manager:get_wind_strength()
+											local difficulty = Managers.state.difficulty:get_difficulty()
+											local duration = wind_settings.thorns_buff_duration[difficulty][wind_strength]
+											local params = {
+												external_optional_duration = duration
+											}
+											local slowdown_buff_name = "mutator_life_poison"
+
+											buff_extension:add_buff(slowdown_buff_name, params)
+										end
+									end
+
+									local damage_data = {
+										area_damage_template = "mutator_life_poison",
+										unit = player_unit,
+										damage = damage,
+										damage_source = damage_source
+									}
+									damage_buffer[#damage_buffer + 1] = damage_data
+								end
+							end
+						end
+					end
+				end
+
+				return true, damage_buffer
+			end,
+			do_damage = function (data, extension_unit)
+				local hit_unit = data.unit
+				local damage = data.damage
+				local damage_source = data.damage_source
+
+				DamageUtils.add_damage_network(hit_unit, extension_unit, damage, "torso", "damage_over_time", nil, Vector3(1, 0, 0), damage_source)
+			end
+		},
+		client = {
+			update = function (world, radius, aoe_unit, player_screen_effect_name, player_unit_particles, aoe_dot_player_take_damage, explosion_template_name, slow_modifier)
+				if Development.parameter("screen_space_player_camera_reactions") == false then
+					return
+				end
+
+				for _, player in pairs(Managers.player:players()) do
+					local player_unit = player.player_unit
+
+					if player.local_player and Unit.alive(player_unit) and aoe_dot_player_take_damage and player_screen_effect_name ~= nil and not ScriptUnit.extension(player_unit, "buff_system"):has_buff_type("poison_screen_effect_immune") then
+						local unit_position = POSITION_LOOKUP[player_unit]
+						local area_damage_position = Unit.local_position(aoe_unit, 0)
+						local distance_sq = Vector3.distance_squared(unit_position, area_damage_position)
+						local is_inside_radius = distance_sq < radius * radius
+						local t = Managers.time:time("game")
+
+						if is_inside_radius and slow_modifier then
+							local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+
+							if buff_extension then
+								local slowdown_buff_name = "mutator_life_poison"
+								local has_buff = buff_extension:has_buff_type(slowdown_buff_name)
+
+								if not has_buff then
+									local wind_settings = WindSettings.life
+									local weave_manager = Managers.weave
+									local wind_strength = weave_manager:get_wind_strength()
+									local difficulty = Managers.state.difficulty:get_difficulty()
+									local duration = wind_settings.thorns_buff_duration[difficulty][wind_strength]
+									local params = {
+										external_optional_duration = duration
+									}
+
+									buff_extension:add_buff(slowdown_buff_name, params)
+
+									local statistics_db = Managers.player:statistics_db()
+									local player_stats_id = player:stats_id()
+									local life_stat_id = "weave_life_stepped_in_bush"
+
+									statistics_db:increment_stat(player_stats_id, "season_1", life_stat_id)
+								end
+							end
+						end
+
+						if is_inside_radius and not player_unit_particles[player_unit] then
+							local particle_id = World.create_particles(world, player_screen_effect_name, Vector3(0, 0, 0))
+							player_unit_particles[player_unit] = {
+								particle_id = particle_id,
+								start_time = t
+							}
+						elseif is_inside_radius and t >= player_unit_particles[player_unit].start_time + 5 then
+							local particle_id = player_unit_particles[player_unit].particle_id
+
+							World.stop_spawning_particles(world, particle_id)
+
+							player_unit_particles[player_unit] = nil
+						elseif not is_inside_radius and player_unit_particles[player_unit] and not player_unit_particles[player_unit].fade_time then
+							local particle_id = player_unit_particles[player_unit].particle_id
+
+							World.stop_spawning_particles(world, particle_id)
+
+							local new_particle_id = World.create_particles(world, player_screen_effect_name, Vector3(0, 0, 0))
+							player_unit_particles[player_unit].fade_time = t + 1.5
+							player_unit_particles[player_unit].particle_id = new_particle_id
+						elseif not is_inside_radius and player_unit_particles[player_unit] and player_unit_particles[player_unit].fade_time <= t then
+							local particle_id = player_unit_particles[player_unit].particle_id
+
+							World.stop_spawning_particles(world, particle_id)
+
+							player_unit_particles[player_unit] = nil
+						end
+					end
+				end
+			end,
+			spawn_effect = function (world, unit, effect_name, particle_var_table)
+				local position = Unit.local_position(unit, 0)
+				local effect_id = World.create_particles(world, effect_name, position)
+
+				if particle_var_table ~= nil then
+					for _, element in pairs(particle_var_table) do
+						local effect_variable_id = World.find_particles_variable(world, effect_name, element.particle_variable)
+
+						World.set_particles_variable(world, effect_id, effect_variable_id, element.value)
+					end
+				end
+
+				return effect_id
+			end,
+			destroy = function ()
+				return
 			end
 		}
 	}

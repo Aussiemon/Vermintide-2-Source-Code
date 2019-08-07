@@ -28,6 +28,25 @@ local network_options = {
 	lobby_port = GameSettingsDevelopment.network_port,
 	max_members = MatchmakingSettings.MAX_NUMBER_OF_PLAYERS
 }
+local GAME_MODE_LOOKUP_STRINGS = {
+	weave = "lb_game_type_weave",
+	deed = "lb_game_type_deed",
+	event = "lb_game_type_event",
+	custom = "lb_game_type_custom",
+	demo = "lb_game_type_none",
+	adventure = "lb_game_type_quick_play",
+	tutorial = "lb_game_type_prologue",
+	twitch = "lb_game_type_twitch",
+	["n/a"] = "lb_game_type_none",
+	any = "lobby_browser_mission"
+}
+local GAME_TYPES = {
+	"adventure",
+	"custom",
+	"event",
+	"weave",
+	"any"
+}
 StartGameWindowLobbyBrowserConsole = class(StartGameWindowLobbyBrowserConsole)
 StartGameWindowLobbyBrowserConsole.NAME = "StartGameWindowLobbyBrowserConsole"
 
@@ -49,6 +68,8 @@ StartGameWindowLobbyBrowserConsole.on_enter = function (self, params, offset)
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
+	self._profile_name = local_player:profile_display_name()
+	self._career_name = local_player:career_name()
 	self._animations = {}
 	self._ui_animations = {}
 	local lobby_finder = LobbyFinder:new(network_options, MatchmakingSettings.MAX_NUM_LOBBIES, true)
@@ -64,7 +85,7 @@ StartGameWindowLobbyBrowserConsole.on_enter = function (self, params, offset)
 	end
 
 	self.game_server_finder = game_server_finder
-	definitions.game_mode_data = definitions.setup_game_mode_data(self.statistics_db, self._stats_id)
+	definitions.game_mode_data = definitions.setup_game_mode_data(self.statistics_db, self._stats_id, GAME_TYPES)
 
 	self:create_ui_elements(params, offset)
 
@@ -147,6 +168,28 @@ StartGameWindowLobbyBrowserConsole.create_ui_elements = function (self, params, 
 
 	self._lobby_info_box_base_widgets = lobby_info_box_base_widgets
 	self._lobby_info_box_base_widgets_by_name = lobby_info_box_base_widgets_by_name
+	local lobby_info_box_weaves_widgets = {}
+	local lobby_info_box_weaves_widgets_by_name = {}
+
+	for name, widget_definition in pairs(widget_definitions.lobby_info_box_weaves) do
+		local widget = UIWidget.init(widget_definition)
+		lobby_info_box_weaves_widgets[#lobby_info_box_weaves_widgets + 1] = widget
+		lobby_info_box_weaves_widgets_by_name[name] = widget
+	end
+
+	self._lobby_info_box_weaves_widgets = lobby_info_box_weaves_widgets
+	self._lobby_info_box_weaves_widgets_by_name = lobby_info_box_weaves_widgets_by_name
+	local lobby_info_box_lobbies_weaves_widgets = {}
+	local lobby_info_box_lobbies_weaves_widgets_by_name = {}
+
+	for name, widget_definition in pairs(widget_definitions.lobby_info_box_lobbies_weaves) do
+		local widget = UIWidget.init(widget_definition)
+		lobby_info_box_lobbies_weaves_widgets[#lobby_info_box_lobbies_weaves_widgets + 1] = widget
+		lobby_info_box_lobbies_weaves_widgets_by_name[name] = widget
+	end
+
+	self._lobby_info_box_lobbies_weaves_widgets = lobby_info_box_lobbies_weaves_widgets
+	self._lobby_info_box_lobbies_weaves_widgets_by_name = lobby_info_box_lobbies_weaves_widgets_by_name
 	local lobby_info_box_lobbies_widgets = {}
 	local lobby_info_box_lobbies_widgets_by_name = {}
 
@@ -332,27 +375,16 @@ StartGameWindowLobbyBrowserConsole.post_update = function (self, dt, t)
 end
 
 StartGameWindowLobbyBrowserConsole._setup_lobby_info_box = function (self, lobby_data)
-	local info_box_widgets = self._lobby_info_box_base_widgets_by_name
-	local info_box_widgets_lobbies = self._lobby_info_box_lobbies_widgets_by_name
-	local info_box_widgets_servers = self._lobby_info_box_servers_widgets_by_name
-	local level_image = "level_image_any"
-	local level_name = "lb_level_unknown"
-	local level_key = lobby_data.selected_level_key or lobby_data.level_key
+	local game_type_text = "lb_unknown"
+	local game_mode = lobby_data.game_mode
+	local game_mode_name = ""
 
-	if level_key then
-		local level_settings = LevelSettings[level_key]
-		level_image = level_settings.level_image
-		level_name = level_settings.display_name
+	if game_mode then
+		local game_mode_names = table.clone(NetworkLookup.game_modes)
+		game_mode_name = game_mode_names[tonumber(game_mode)]
+		game_type_text = GAME_MODE_LOOKUP_STRINGS[game_mode_name] or game_type_text
 	end
 
-	local level_image_widget = info_box_widgets.level_image
-	level_image_widget.content.texture_id = level_image
-	local level_name_widget = info_box_widgets.level_name
-	level_name_widget.content.text = Localize(level_name)
-	local info_frame_level_name_lobbies_widget = info_box_widgets_lobbies.info_frame_level_name_text
-	info_frame_level_name_lobbies_widget.content.text = Localize(level_name)
-	local info_frame_level_name_servers_widget = info_box_widgets_servers.info_frame_level_name_text
-	info_frame_level_name_servers_widget.content.text = Localize(level_name)
 	local occupied_profiles = {}
 	local num_profiles = #SPProfiles
 
@@ -362,7 +394,7 @@ StartGameWindowLobbyBrowserConsole._setup_lobby_info_box = function (self, lobby
 		end
 	end
 
-	local content = info_box_widgets.hero_tabs.content
+	local content = self._lobby_info_box_base_widgets_by_name.hero_tabs.content
 
 	for i = 1, #ProfilePriority, 1 do
 		local profile_index = ProfilePriority[i]
@@ -377,6 +409,174 @@ StartGameWindowLobbyBrowserConsole._setup_lobby_info_box = function (self, lobby
 		end
 	end
 
+	if game_mode_name == "weave" then
+		self:_handle_weave_data(lobby_data)
+	else
+		self:_handle_lobby_data(game_type_text, lobby_data)
+	end
+end
+
+StartGameWindowLobbyBrowserConsole._handle_weave_data = function (self, lobby_data)
+	local info_box_weaves_widgets = self._lobby_info_box_weaves_widgets_by_name
+	local info_box_widgets = self._lobby_info_box_base_widgets_by_name
+	local info_box_widgets_weave = self._lobby_info_box_lobbies_weaves_widgets_by_name
+	local weave_name_widget = info_box_weaves_widgets.weave_name
+	weave_name_widget.content.text = Localize("tutorial_no_text")
+	local wind_name_widget = info_box_weaves_widgets.wind_name
+	wind_name_widget.content.text = Localize("tutorial_no_text")
+	local level_image_frame = info_box_widgets.level_image_frame
+	level_image_frame.content.texture_id = "map_frame_00"
+	level_image_frame.style.texture_id.color = Colors.get_color_table_with_alpha("white", 255)
+	local wind_icon = info_box_weaves_widgets.wind_icon
+	wind_icon.style.texture_id.color[1] = 0
+	local wind_icon_glow = info_box_weaves_widgets.wind_icon_glow
+	wind_icon_glow.style.texture_id.color[1] = 0
+	local wind_icon_bg = info_box_weaves_widgets.wind_icon_bg
+	wind_icon_bg.style.texture_id.color[1] = 0
+	local wind_icon_slot = info_box_weaves_widgets.wind_icon_slot
+	wind_icon_slot.style.texture_id.color[1] = 0
+	local mutator_icon = info_box_weaves_widgets.mutator_icon
+	mutator_icon.style.texture_id.color[1] = 0
+	local mutator_icon_frame = info_box_weaves_widgets.mutator_icon_frame
+	mutator_icon_frame.style.texture_id.color[1] = 0
+	local mutator_title_divider = info_box_weaves_widgets.mutator_title_divider
+	mutator_title_divider.style.texture_id.color[1] = 0
+	local mutator_title_text = info_box_weaves_widgets.mutator_title_text
+	mutator_title_text.content.text = "tutorial_no_text"
+	local mutator_description_text = info_box_weaves_widgets.mutator_description_text
+	mutator_description_text.content.text = "tutorial_no_text"
+	local objective_title_bg = info_box_weaves_widgets.objective_title_bg
+	objective_title_bg.style.texture_id.color[1] = 0
+	local objective_title = info_box_weaves_widgets.objective_title
+	objective_title.content.text = "tutorial_no_text"
+	local objective_1 = info_box_weaves_widgets.objective_1
+	objective_1.content.text = "tutorial_no_text"
+	local objective_2 = info_box_weaves_widgets.objective_2
+	objective_2.content.text = "tutorial_no_text"
+	local weave_template = WeaveSettings.templates[lobby_data.weave_name]
+	local weave_identifier = Localize("lb_unknown")
+
+	if lobby_data.weave_name then
+		local weave_name_data = string.split(lobby_data.weave_name, "_")
+		weave_identifier = "Weave " .. weave_name_data[2]
+
+		if weave_template then
+			weave_name_widget.content.text = ""
+			local wind_name = weave_template.wind
+			local wind_settings = WindSettings[wind_name]
+			wind_name_widget.content.text = Localize(wind_settings.display_name)
+			level_image_frame.content.texture_id = "map_frame_weaves"
+			local wind_color = Colors.get_color_table_with_alpha(wind_name, 255)
+			level_image_frame.style.texture_id.color = wind_color
+			wind_name_widget.style.text.text_color = wind_color
+			wind_icon.content.texture_id = wind_settings.thumbnail_icon
+			wind_icon_glow.style.texture_id.color = wind_color
+			wind_icon_bg.style.texture_id.color = wind_color
+			local thumbnail_icon = wind_settings.thumbnail_icon
+			local thumbnail_icon_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(thumbnail_icon)
+			local thumbnail_icon_size = thumbnail_icon_settings.size
+			local wind_icon_style = wind_icon.style.texture_id
+			wind_icon_style.texture_size = {
+				thumbnail_icon_size[1] * 0.8,
+				thumbnail_icon_size[2] * 0.8
+			}
+			wind_icon_style.horizontal_alignment = "center"
+			wind_icon_style.vertical_alignment = "center"
+			local mutator_name = wind_settings.mutator
+			local mutator_data = MutatorTemplates[mutator_name]
+			mutator_icon.content.texture_id = mutator_data.icon
+			mutator_title_text.content.text = mutator_data.display_name
+			mutator_description_text.content.text = mutator_data.description
+			objective_title.content.text = "weave_objective_title"
+			local objectives = weave_template.objectives
+			local objective_spacing = 10
+			local largest_objective_width = 0
+
+			for i = 1, #objectives, 1 do
+				local objective = objectives[i]
+				local objective_display_name = objective.display_name
+				local objective_icon = objective.icon
+
+				self:_assign_objective(i, objective_display_name, objective_icon, objective_spacing)
+			end
+
+			wind_icon.style.texture_id.color[1] = 255
+			wind_icon_slot.style.texture_id.color[1] = 255
+			mutator_icon.style.texture_id.color[1] = 255
+			mutator_icon_frame.style.texture_id.color[1] = 255
+			mutator_title_divider.style.texture_id.color[1] = 255
+			objective_title_bg.style.texture_id.color[1] = 255
+		end
+	end
+
+	local level_image = "level_image_any"
+	local level_name = "lb_unknown"
+	local level_key = lobby_data.selected_level_key or lobby_data.level_key
+
+	if level_key and level_key ~= "n/a" then
+		local level_settings = LevelSettings[level_key]
+		level_image = level_settings.level_image
+		level_name = level_settings.display_name
+	end
+
+	local level_image_widget = info_box_widgets.level_image
+	level_image_widget.content.texture_id = level_image
+	local level_name_widget = info_box_widgets.level_name
+	level_name_widget.content.text = (weave_template and Localize(weave_template.display_name)) or ""
+	local num_players_text = "n/a"
+	local num_players = lobby_data.num_players
+
+	if num_players then
+		num_players_text = string.format("%s/%s", num_players, tostring(MatchmakingSettings.MAX_NUMBER_OF_PLAYERS))
+	end
+
+	info_box_widgets_weave.info_frame_players_text.content.text = num_players_text
+	local status_text = LobbyItemsList.lobby_status_text(lobby_data)
+	info_box_widgets_weave.info_frame_status_text.content.text = status_text
+	local host = lobby_data.server_name or lobby_data.unique_server_name or lobby_data.name or lobby_data.host
+	info_box_widgets_weave.info_frame_host_text.content.text = host or Localize("lb_unknown")
+	self._show_weave_widgets = true
+end
+
+StartGameWindowLobbyBrowserConsole._assign_objective = function (self, index, text, icon, spacing)
+	local widgets_by_name = self._lobby_info_box_weaves_widgets_by_name
+	local widget_name = "objective_" .. index
+	local widget = widgets_by_name[widget_name]
+	local content = widget.content
+	local style = widget.style
+	content.icon = icon or "trial_gem"
+	content.text = text or "-"
+end
+
+StartGameWindowLobbyBrowserConsole._handle_lobby_data = function (self, game_type, lobby_data)
+	local info_box_widgets = self._lobby_info_box_base_widgets_by_name
+	local info_box_widgets_lobbies = self._lobby_info_box_lobbies_widgets_by_name
+	local info_box_widgets_servers = self._lobby_info_box_servers_widgets_by_name
+	info_box_widgets_lobbies.info_frame_game_type_text.content.text = Localize(game_type)
+	info_box_widgets_servers.info_frame_game_type_text.content.text = Localize(game_type)
+	local level_image = "level_image_any"
+	local level_name = "lb_unknown"
+	local level_key = lobby_data.selected_level_key or lobby_data.level_key
+
+	if level_key and level_key ~= "n/a" then
+		local level_settings = LevelSettings[level_key]
+		level_image = level_settings.level_image
+		level_name = level_settings.display_name
+	end
+
+	local level_image_frame = info_box_widgets.level_image_frame
+	level_image_frame.content.texture_id = "map_frame_00"
+	level_image_frame.style.texture_id.color = Colors.get_color_table_with_alpha("white", 255)
+	local level_image_widget = info_box_widgets.level_image
+	level_image_widget.content.texture_id = level_image
+	local level_name_widget = info_box_widgets.level_name
+	level_name_widget.content.text = Localize(level_name)
+	local info_frame_level_name_lobbies_widget = info_box_widgets_lobbies.info_frame_level_name_text
+	info_frame_level_name_lobbies_widget.content.text = Localize(level_name)
+	local info_frame_level_name_servers_widget = info_box_widgets_servers.info_frame_level_name_text
+	info_frame_level_name_servers_widget.content.text = Localize(level_name)
+	local info_frame_difficulty_title = info_box_widgets_lobbies.info_frame_difficulty_title
+	local info_frame_difficulty_text = info_box_widgets_lobbies.info_frame_difficulty_text
 	local difficulty_text = "lb_difficulty_unknown"
 	local difficulty = lobby_data.difficulty
 
@@ -418,6 +618,8 @@ StartGameWindowLobbyBrowserConsole._setup_lobby_info_box = function (self, lobby
 		info_box_widgets_servers.info_frame_favorite_text.content.text = (favorite and Localize("lb_yes")) or Localize("lb_no")
 		info_box_widgets_servers.add_to_favorites_button.content.button_text = (favorite and Localize("lb_remove_from_favorites")) or Localize("lb_add_to_favorites")
 	end
+
+	self._show_weave_widgets = false
 end
 
 StartGameWindowLobbyBrowserConsole._update_animations = function (self, dt)
@@ -461,6 +663,7 @@ end
 StartGameWindowLobbyBrowserConsole._handle_input = function (self, dt, t)
 	local lobbies_widgets_by_name = self._lobbies_widgets_by_name
 
+	self:_handle_stepper_input("game_type_stepper", lobbies_widgets_by_name.game_type_stepper, callback(self, "_on_game_type_stepper_input"))
 	self:_handle_stepper_input("level_stepper", lobbies_widgets_by_name.level_stepper, callback(self, "_on_level_stepper_input"))
 	self:_handle_stepper_input("difficulty_stepper", lobbies_widgets_by_name.difficulty_stepper, callback(self, "_on_difficulty_stepper_input"))
 	self:_handle_stepper_input("show_lobbies_stepper", lobbies_widgets_by_name.show_lobbies_stepper, callback(self, "_on_show_lobbies_stepper_input"))
@@ -564,7 +767,23 @@ StartGameWindowLobbyBrowserConsole.draw = function (self, dt)
 			UIRenderer.draw_widget(ui_top_renderer, widget)
 		end
 
-		if current_lobby_type == "lobbies" then
+		if self._show_weave_widgets then
+			local lobby_info_box_weaves_widgets = self._lobby_info_box_weaves_widgets
+
+			for i = 1, #lobby_info_box_weaves_widgets, 1 do
+				local widget = lobby_info_box_weaves_widgets[i]
+
+				UIRenderer.draw_widget(ui_top_renderer, widget)
+			end
+
+			local lobby_info_box_lobbies_weaves_widgets = self._lobby_info_box_lobbies_weaves_widgets
+
+			for i = 1, #lobby_info_box_lobbies_weaves_widgets, 1 do
+				local widget = lobby_info_box_lobbies_weaves_widgets[i]
+
+				UIRenderer.draw_widget(ui_top_renderer, widget)
+			end
+		elseif current_lobby_type == "lobbies" then
 			local lobby_info_box_lobbies_widgets = self._lobby_info_box_lobbies_widgets
 
 			for i = 1, #lobby_info_box_lobbies_widgets, 1 do
@@ -674,43 +893,90 @@ StartGameWindowLobbyBrowserConsole._valid_lobby = function (self, lobby_data)
 		return false
 	end
 
+	local level_key = lobby_data.selected_level_key or lobby_data.level_key
+	local num_players = tonumber(lobby_data.num_players)
+
+	if not level_key or num_players == MatchmakingSettings.MAX_NUMBER_OF_PLAYERS then
+		return false
+	end
+
 	local is_server = lobby_data.server_info ~= nil
 
-	if not is_server then
-		local is_matchmaking = lobby_data.matchmaking and lobby_data.matchmaking ~= "false"
-		local level_key = lobby_data.selected_level_key or lobby_data.level_key
-		local difficulty = lobby_data.difficulty
-		local num_players = tonumber(lobby_data.num_players)
-
-		if not is_matchmaking or not level_key or not difficulty or num_players == MatchmakingSettings.MAX_NUMBER_OF_PLAYERS then
-			return false
-		end
-
-		local player_manager = Managers.player
-		local player = player_manager:local_player()
-		local statistics_db = player_manager:statistics_db()
-		local player_stats_id = player:stats_id()
-		local level_unlocked = LevelUnlockUtils.level_unlocked(statistics_db, player_stats_id, level_key)
-
-		if not level_unlocked then
-			return false
-		end
-
-		local profile_name = player:profile_display_name()
-		local career_name = player:career_name()
-		local has_required_power_level = Managers.matchmaking:has_required_power_level(lobby_data, profile_name, career_name)
-
-		if not has_required_power_level then
-			return false
-		end
-	elseif is_server then
+	if is_server then
 		local wanted_server_name = self._current_server_name
 
 		if wanted_server_name ~= "" and string.find(lobby_data.server_info.server_name, wanted_server_name) == nil then
 			return false
 		end
 	else
-		ferror("Sanity check")
+		local required_dlcs = {}
+		local statistics_db = self.statistics_db
+		local player_stats_id = self._stats_id
+		local weave_name = lobby_data.weave_name
+		local difficulty = lobby_data.difficulty
+
+		if difficulty then
+			local difficulty_settings = DifficultySettings[difficulty]
+
+			if difficulty_settings.extra_requirement_name then
+				local extra_requirement = ExtraDifficultyRequirements[difficulty_settings.extra_requirement_name]
+
+				if not Development.parameter("unlock_all_difficulties") and not extra_requirement.requirement_function() then
+					return false
+				end
+			end
+
+			if difficulty_settings.dlc_requirement then
+				required_dlc[difficulty_settings.dlc_requirement] = true
+			end
+		end
+
+		local game_mode_index = tonumber(lobby_data.game_mode)
+		local game_mode_names = table.clone(NetworkLookup.game_modes)
+		local game_mode = game_mode_names[game_mode_index]
+		local game_mode_settings = GameModeSettings[game_mode]
+
+		if game_mode_settings and game_mode_settings.required_dlc then
+			required_dlcs[game_mode_settings.required_dlc] = true
+		end
+
+		for dlc_name, _ in pairs(required_dlcs) do
+			if not Managers.unlock:is_dlc_unlocked(dlc_name) then
+				return false
+			end
+		end
+
+		if game_mode_settings and game_mode_settings.extra_requirements_function and not game_mode_settings.extra_requirements_function() then
+			return false
+		end
+
+		if game_mode == "weave" then
+			local ignore_dlc_check = false
+			local weave_unlocked = LevelUnlockUtils.weave_unlocked(statistics_db, player_stats_id, weave_name, ignore_dlc_check) or weave_name == self._current_weave
+
+			if not weave_unlocked then
+				return false
+			end
+		else
+			local level_unlocked = LevelUnlockUtils.level_unlocked(statistics_db, player_stats_id, level_key)
+
+			if not level_unlocked then
+				return false
+			end
+
+			local has_required_power_level = Managers.matchmaking:has_required_power_level(lobby_data, self._profile_name, self._career_name)
+
+			if not has_required_power_level then
+				return false
+			end
+		end
+
+		local difficulty = lobby_data.difficulty
+		local is_matchmaking = lobby_data.matchmaking and lobby_data.matchmaking ~= "false"
+
+		if not is_matchmaking or not difficulty or level_key == "n/a" then
+			return false
+		end
 	end
 
 	return true
@@ -753,6 +1019,11 @@ StartGameWindowLobbyBrowserConsole._update_join_button = function (self, lobby_d
 end
 
 StartGameWindowLobbyBrowserConsole._reset_filters = function (self)
+	local game_type_table = GAME_TYPES
+	local any_game_type_index = #game_type_table
+
+	self:_on_game_type_stepper_input(0, any_game_type_index)
+
 	local levels_table = self:_get_levels()
 	local any_level_index = #levels_table
 
@@ -783,6 +1054,8 @@ end
 
 StartGameWindowLobbyBrowserConsole._create_filter_requirements = function (self)
 	local lobby_finder = self.lobby_finder
+	local game_mode_index = self.selected_game_mode_index
+	local game_mode = GAME_TYPES[game_mode_index]
 	local level_index = self.selected_level_index
 	local levels_table = self:_get_levels()
 	local level_key = levels_table[level_index]
@@ -830,24 +1103,26 @@ StartGameWindowLobbyBrowserConsole._create_filter_requirements = function (self)
 		comparison = LobbyComparison.EQUAL
 	}
 
-	if difficulty_key ~= "any" then
+	if difficulty_key ~= "any" and difficulty_key then
 		requirements.filters.difficulty = {
 			value = difficulty_key,
 			comparison = LobbyComparison.EQUAL
 		}
 	end
 
-	if level_key ~= "any" then
+	if level_key ~= "any" and level_key then
 		requirements.filters.selected_level_key = {
 			value = level_key,
 			comparison = LobbyComparison.EQUAL
 		}
 	end
 
-	requirements.filters.game_mode = {
-		value = "event",
-		comparison = LobbyComparison.NOT_EQUAL
-	}
+	if game_mode ~= "any" then
+		requirements.filters.game_mode = {
+			value = NetworkLookup.game_modes[game_mode],
+			comparison = LobbyComparison.EQUAL
+		}
+	end
 
 	if only_show_valid_lobbies then
 		requirements.filters.network_hash = {
@@ -908,8 +1183,10 @@ end
 StartGameWindowLobbyBrowserConsole._get_levels = function (self)
 	local game_mode_data = definitions.game_mode_data
 	local game_mode_index = self.selected_game_mode_index or 1
-	local data = game_mode_data[game_mode_index]
-	local levels = data.levels
+	local data = game_mode_data and game_mode_data[game_mode_index]
+	local levels = (data and data.levels) or {
+		"any"
+	}
 
 	return levels
 end
@@ -917,10 +1194,55 @@ end
 StartGameWindowLobbyBrowserConsole._get_difficulties = function (self)
 	local game_mode_data = definitions.game_mode_data
 	local game_mode_index = self.selected_game_mode_index or 1
-	local data = game_mode_data[game_mode_index]
-	local difficulties = data.difficulties
+	local data = game_mode_data and game_mode_data[game_mode_index]
+	local difficulties = (data and data.difficulties) or {
+		"any"
+	}
 
 	return difficulties
+end
+
+StartGameWindowLobbyBrowserConsole._on_game_type_stepper_input = function (self, index_change, specific_index)
+	local stepper = self._lobbies_widgets_by_name.game_type_stepper
+	local game_types_table = GAME_TYPES
+	local current_index = self.selected_game_mode_index or 1
+	local new_index = self:_on_stepper_input(stepper, game_types_table, current_index, index_change, specific_index)
+	local level_display_name = "lobby_browser_mission"
+	local game_type = game_types_table[new_index]
+	stepper.content.setting_text = Localize(GAME_MODE_LOOKUP_STRINGS[game_type])
+	self.selected_game_mode_index = new_index
+	self.search_timer = input_delay_before_start_new_search
+	local level_index = self.selected_level_index or 1
+	local levels_table = self:_get_levels()
+	local level_key = levels_table[level_index]
+	local banner_content = self._lobbies_widgets_by_name.level_banner_widget.content
+	local stepper_content = self._lobbies_widgets_by_name.level_stepper.content
+
+	if not level_key or #levels_table == 1 then
+		banner_content.disabled = true
+		stepper_content.button_hotspot_left.disable_button = true
+		stepper_content.button_hotspot_right.disable_button = true
+	else
+		banner_content.disabled = false
+		stepper_content.button_hotspot_left.disable_button = false
+		stepper_content.button_hotspot_right.disable_button = false
+	end
+
+	local difficulty_index = self.selected_difficulty_index or 1
+	local difficulty_table = self:_get_difficulties()
+	local difficulty_key = difficulty_table[difficulty_index]
+	local banner_content = self._lobbies_widgets_by_name.difficulty_banner_widget.content
+	local stepper_content = self._lobbies_widgets_by_name.difficulty_stepper.content
+
+	if not difficulty_key or #levels_table == 1 then
+		banner_content.disabled = true
+		stepper_content.button_hotspot_left.disable_button = true
+		stepper_content.button_hotspot_right.disable_button = true
+	else
+		banner_content.disabled = false
+		stepper_content.button_hotspot_left.disable_button = false
+		stepper_content.button_hotspot_right.disable_button = false
+	end
 end
 
 StartGameWindowLobbyBrowserConsole._on_level_stepper_input = function (self, index_change, specific_index)

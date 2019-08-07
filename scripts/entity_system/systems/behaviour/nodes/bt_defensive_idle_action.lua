@@ -1,8 +1,6 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTDefensiveIdleAction = class(BTDefensiveIdleAction, BTNode)
-local PLAYER_POSITIONS = PLAYER_POSITIONS
-local PLAYER_UNITS = PLAYER_UNITS
 
 BTDefensiveIdleAction.init = function (self, ...)
 	BTDefensiveIdleAction.super.init(self, ...)

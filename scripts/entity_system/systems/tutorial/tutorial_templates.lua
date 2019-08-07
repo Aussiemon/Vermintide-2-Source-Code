@@ -367,21 +367,32 @@ TutorialTemplates.objective_pickup = {
 		local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
 		local slot_name = inventory_extension:get_wielded_slot_name()
 		local slot_data = inventory_extension:get_slot_data(slot_name)
+		local obj_units = Managers.state.entity:get_entities("ObjectivePickupTutorialExtension")
 
 		if slot_name == "slot_level_event" and slot_data ~= nil then
-			return false
+			for objective_unit, _ in pairs(obj_units) do
+				local obj_pickup_name = Unit.get_data(objective_unit, "interaction_data", "item_name")
+				local obj_wpn_data = ItemMasterList[obj_pickup_name]
+				local obj_left_hand_unit = obj_wpn_data.left_hand_unit
+				local obj_right_hand_unit = obj_wpn_data.right_hand_unit
+				local carrying_objective_item = obj_left_hand_unit and obj_left_hand_unit == slot_data.left_hand_unit_name
+				carrying_objective_item = carrying_objective_item and obj_right_hand_unit == slot_data.right_hand_unit_name
+
+				if carrying_objective_item then
+					return false
+				end
+			end
 		end
 
 		local unit_position = POSITION_LOOKUP[unit]
 		local best_distance_sq = 10000
 		local objective_units_n = 0
-		local units = Managers.state.entity:get_entities("ObjectivePickupTutorialExtension")
 
-		for pickup_unit, pickup_extension in pairs(units) do
+		for pickup_unit, pickup_extension in pairs(obj_units) do
 			if unit ~= pickup_unit then
-				local disregard = false
+				local disregard = pickup_extension.disregard
 
-				if ScriptUnit.has_extension(pickup_unit, "death_system") then
+				if not disregard and ScriptUnit.has_extension(pickup_unit, "death_system") then
 					local death_extension = ScriptUnit.extension(pickup_unit, "death_system")
 
 					if death_extension:has_death_started() then
@@ -458,7 +469,6 @@ TutorialTemplates.objective_socket = {
 		local slot_data = inventory_extension:get_slot_data(slot_name)
 
 		if slot_name == "slot_level_event" and slot_data ~= nil then
-			local best_distance_sq = 10000
 			local units = Managers.state.entity:get_entities("ObjectiveSocketUnitExtension")
 			local unit_get_data = Unit.get_data
 			local objective_units_n = 0
@@ -470,7 +480,7 @@ TutorialTemplates.objective_socket = {
 				if sockets_enabled and tutorial_text_enabled then
 					local distance_sq = Vector3.distance_squared(unit_position, POSITION_LOOKUP[socket_unit])
 
-					if socket_extension.num_closed_sockets < socket_extension.num_sockets and distance_sq < best_distance_sq then
+					if socket_extension.num_closed_sockets < socket_extension.num_sockets and distance_sq < socket_extension.distance then
 						objective_units_n = objective_units_n + 1
 						objective_units[objective_units_n] = socket_unit
 					end

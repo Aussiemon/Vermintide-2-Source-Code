@@ -131,6 +131,12 @@ TimeManager.time = function (self, name)
 	end
 end
 
+TimeManager.time_and_delta = function (self, name)
+	if self._timers[name] then
+		return self._timers[name]:time_and_delta()
+	end
+end
+
 TimeManager.active = function (self, name)
 	return self._timers[name]:active()
 end

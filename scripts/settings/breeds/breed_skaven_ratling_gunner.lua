@@ -29,7 +29,6 @@ local breed_data = {
 	radius = 1,
 	awards_positive_reinforcement_message = true,
 	unit_template = "ai_unit_ratling_gunner",
-	stagger_reduction = 1,
 	perception_previous_attacker_stickyness_value = -20,
 	race = "skaven",
 	bone_lod_level = 1,
@@ -51,21 +50,10 @@ local breed_data = {
 		1.1,
 		1.1
 	},
-	max_health = {
-		12,
-		12,
-		18,
-		24,
-		36
-	},
+	max_health = BreedTweaks.max_health.ratling_gunner,
 	bloodlust_health = BreedTweaks.bloodlust_health.skaven_special,
-	diff_stagger_resist = {
-		2.25,
-		2.25,
-		3,
-		3.75,
-		3.75
-	},
+	diff_stagger_resist = BreedTweaks.diff_stagger_resist.ratling_gunner,
+	stagger_reduction = BreedTweaks.stagger_reduction.ratling_gunner,
 	stagger_duration = {
 		1,
 		1,
@@ -94,10 +82,6 @@ local breed_data = {
 		head = "headshot"
 	},
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		head = {
 			prio = 1,
 			actors = {
@@ -120,7 +104,7 @@ local breed_data = {
 			}
 		},
 		torso = {
-			prio = 3,
+			prio = 2,
 			actors = {
 				"c_hips",
 				"c_spine",
@@ -133,7 +117,7 @@ local breed_data = {
 			}
 		},
 		left_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftarm",
 				"c_leftforearm",
@@ -144,7 +128,7 @@ local breed_data = {
 			}
 		},
 		right_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightarm",
 				"c_rightforearm",
@@ -155,7 +139,7 @@ local breed_data = {
 			}
 		},
 		left_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftleg",
 				"c_leftupleg",
@@ -169,7 +153,7 @@ local breed_data = {
 			}
 		},
 		right_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightleg",
 				"c_rightupleg",
@@ -183,7 +167,7 @@ local breed_data = {
 			}
 		},
 		tail = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_tail1",
 				"c_tail2",
@@ -196,19 +180,23 @@ local breed_data = {
 				"j_hips"
 			}
 		},
-		afro = {
-			prio = 5,
-			actors = {
-				"c_afro"
-			}
-		},
 		aux = {
-			prio = 6,
+			prio = 4,
 			actors = {
 				"c_backpack"
 			},
 			push_actors = {
 				"j_backpack"
+			}
+		},
+		full = {
+			prio = 5,
+			actors = {}
+		},
+		afro = {
+			prio = 6,
+			actors = {
+				"c_afro"
 			}
 		}
 	},
@@ -256,14 +244,10 @@ local action_data = {
 	},
 	smash_door = {
 		unblockable = true,
+		damage = 5,
 		damage_type = "cutting",
 		move_anim = "move_fwd",
-		attack_anim = "smash_door",
-		damage = {
-			5,
-			5,
-			5
-		}
+		attack_anim = "smash_door"
 	},
 	shoot_ratling_gun = {
 		fire_rate_at_start = 10,
@@ -386,6 +370,26 @@ local action_data = {
 				right = {
 					"stagger_right_exp"
 				}
+			},
+			{
+				fwd = {
+					"stagger_fwd"
+				},
+				bwd = {
+					"stagger_bwd"
+				},
+				left = {
+					"stagger_left"
+				},
+				right = {
+					"stagger_right"
+				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
 			},
 			{
 				fwd = {

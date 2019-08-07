@@ -1,23 +1,11 @@
 require("scripts/settings/breeds")
-require("scripts/settings/conflict_settings")
+require("scripts/settings/patrol_formation_settings")
+require("scripts/managers/conflict_director/breed_packs")
 
 ConflictUtils = {}
 local ConflictUtils = ConflictUtils
 local distance_squared = Vector3.distance_squared
-local length_squared = Vector3.length_squared
-local SPHERES = 1
-local LINES = 2
-local RED = 1
-local YELLOW = 2
-local GREEN = 3
-local WHITE = 4
 local math_random = Math.random
-local colors = {
-	QuaternionBox(255, 184, 46, 0),
-	QuaternionBox(255, 250, 140, 0),
-	QuaternionBox(255, 0, 220, 0),
-	QuaternionBox(200, 235, 235, 235)
-}
 
 ConflictUtils.random_interval = function (numbers)
 	if type(numbers) == "table" then
@@ -193,22 +181,11 @@ local found_cover_units = {}
 local hidden_cover_units = {}
 
 ConflictUtils.hidden_cover_points = function (center_position, avoid_pos_list, min_rad, max_rad, dot_threshold)
-	if script_data.debug_near_cover_points then
-		local free_flight_manager = Managers.free_flight
-		local in_free_flight = free_flight_manager:active("global")
-
-		if in_free_flight then
-			center_position = free_flight_manager:camera_position_rotation()
-		end
-	end
-
 	local bp = Managers.state.conflict.level_analysis.cover_points_broadphase
 	min_rad = min_rad * min_rad
 	dot_threshold = dot_threshold or -0.9
 	local MAX_RANGE = 40
 	local num_found_cover_units = Broadphase.query(bp, center_position, math.min(max_rad, MAX_RANGE), found_cover_units)
-	local red = Colors.get("red")
-	local green = Colors.get("green")
 	local vector3_normalize = Vector3.normalize
 	local quaternion_forward = Quaternion.forward
 	local unit_local_rotation = Unit.local_rotation
@@ -245,14 +222,6 @@ ConflictUtils.hidden_cover_points = function (center_position, avoid_pos_list, m
 			if num_to_avoid == num_valid then
 				num_found = num_found + 1
 				hidden_cover_units[num_found] = cover_unit
-
-				if script_data.debug_near_cover_points then
-					QuickDrawer:sphere(pos, 0.8, green)
-					QuickDrawer:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot) * 2 + Vector3(0, 0, 1), green)
-				end
-			elseif script_data.debug_near_cover_points then
-				QuickDrawer:sphere(pos, 0.8, red)
-				QuickDrawer:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot) * 2 + Vector3(0, 0, 1), red)
 			end
 		end
 	end
@@ -260,7 +229,7 @@ ConflictUtils.hidden_cover_points = function (center_position, avoid_pos_list, m
 	return num_found, hidden_cover_units
 end
 
-ConflictUtils.test_is_cover_point_hidden = function ()
+ConflictUtils.debug_is_cover_point_hidden = function ()
 	local bp = Managers.state.conflict.level_analysis.cover_points_broadphase
 	local num_found_cover_units = Broadphase.query(bp, PLAYER_POSITIONS[1], 20, found_cover_units)
 	local red = Colors.get("red")
@@ -460,7 +429,6 @@ ConflictUtils.get_hidden_pos = function (world, nav_world, center_pos, avoid_pos
 	local h = Vector3(0, 0, 1)
 	local half_radius_spread = radius_spread * 0.5
 	local ignore_umbra = not World.umbra_available(world)
-	local drawfunc = QuickDrawerStay
 
 	for i = 1, max_tries, 1 do
 		local check_pos = nil
@@ -471,14 +439,11 @@ ConflictUtils.get_hidden_pos = function (world, nav_world, center_pos, avoid_pos
 			check_pos = ConflictUtils.get_spawn_pos_on_circle(nav_world, center_pos, radius, radius_spread, 10)
 		end
 
-		local extra_pos = nil
-
 		if check_pos then
 			local hidden = true
 
 			for j = 1, #avoid_positions, 1 do
 				local avoid_pos = avoid_positions[j]
-				local to_vec = check_pos - avoid_pos
 				local los = ignore_umbra or World.umbra_has_line_of_sight(world, check_pos + h, avoid_pos + h)
 
 				if los then
@@ -493,33 +458,6 @@ ConflictUtils.get_hidden_pos = function (world, nav_world, center_pos, avoid_pos
 			end
 		end
 	end
-end
-
-local work_list = {}
-local work_list_lookup = {}
-
-ConflictUtils.condense_array_randomly = function (array, wanted_size)
-	local array_size = #array
-
-	if wanted_size >= array_size then
-		return array
-	end
-
-	table.clear(work_list_lookup)
-	table.clear(work_list)
-
-	local index = math.random(1, array_size)
-
-	for i = 1, wanted_size, 1 do
-		while work_list_lookup[index] do
-			index = math.random(1, array_size)
-		end
-
-		work_list[i] = array[index]
-		work_list_lookup[index] = true
-	end
-
-	return work_list
 end
 
 ConflictUtils.find_center_tri = function (nav_world, pos)
@@ -546,50 +484,6 @@ ConflictUtils.simulate_dummy_target = function (nav_world, center_pos, t)
 	end
 
 	return pos
-end
-
-ConflictUtils.check_spawn_pos = function (mesh, pos)
-	local poly = NavigationMesh.find_polygon(mesh, pos)
-
-	if poly then
-		local cpos, fail = NavigationMesh.constrain_to_polygon(mesh, pos, poly)
-
-		if not fail then
-			local p1, p2, p3 = NavigationMesh.polygon_vertices(mesh, poly)
-			local triangle_center = (NavigationMesh.vertex(mesh, p1) + NavigationMesh.vertex(mesh, p2) + NavigationMesh.vertex(mesh, p3)) / 3
-
-			if math.abs(cpos.z - triangle_center.z) < 3 then
-				return true
-
-				if true then
-				end
-			end
-		end
-	end
-
-	return false
-end
-
-ConflictUtils.get_spawn_pos_on_circle_segment = function (nav_world, center_pos, radius, direction, width, tries)
-	local lifted = center_pos + Vector3.up() * 1
-	local _, base_angle = math.cartesian_to_polar(direction.x, direction.y)
-	local r_steps = radius / tries
-
-	for ii = 1, tries, 1 do
-		local angle_offset = Math.random_range(-width / 2, width / 2)
-		local angle = base_angle + angle_offset
-		local dir = Vector3.normalize(direction)
-		local distance = Math.random_range(radius - ii * r_steps, radius - (ii - 1) * r_steps)
-		local x, y = math.polar_to_cartesian(distance, angle)
-		local search_pos = center_pos + Vector3(x, y, direction.z)
-		local pos = ConflictUtils.find_center_tri(nav_world, search_pos)
-
-		if pos then
-			return pos
-		end
-	end
-
-	return false
 end
 
 ConflictUtils.test_cake_slice = function (nav_world, center_pos, t)
@@ -655,95 +549,6 @@ ConflictUtils.get_spawn_pos_on_circle_with_func = function (nav_world, center_po
 	return false
 end
 
-ConflictUtils.get_closest_spawn_dist = function (mesh, unit_list, ray_from, ray_to, dir, radius)
-	if #unit_list == 0 then
-		return ray_to
-	end
-
-	local closest = nil
-	local min_ray_dist = math.huge
-
-	for i = 1, #unit_list, 1 do
-		local cu_pos = unit_list[i][1]
-		local cu_rad = unit_list[i][2]
-		local proj_pos = math.closest_point_on_line(cu_pos, ray_from, ray_to)
-		local dist = Vector3.distance(proj_pos, cu_pos)
-
-		if dist < cu_rad then
-			local ray_dist = Vector3.distance(ray_from, proj_pos)
-
-			if ray_dist < min_ray_dist then
-				min_ray_dist = ray_dist
-				closest = unit_list[i]
-			end
-		end
-	end
-
-	if closest then
-		local spawn_pos = closest[1] + dir * (closest[2] + radius) * MonsterToppingsDef.spawn_dist_multiplier
-
-		if ConflictUtils.check_spawn_pos(mesh, spawn_pos) then
-			return spawn_pos
-		end
-	else
-		return ray_to
-	end
-end
-
-local MAX_TRIED_POSITIONS = 256
-
-ConflictUtils.tetris_spawn = function (world, spawn_func, player, spawn_list, pos, rot)
-	local already_spawned = {}
-	local mesh = Managers.state.level:nav_mesh()
-	local ray_dist = 10
-	local max_dir_tries = 10
-	local spawn_index = 1
-	local loops = 0
-
-	dprint("\tTETRIS SPAWN, UNITS: ", #spawn_list, " AT:", pos)
-
-	while spawn_index <= #spawn_list and loops < MAX_TRIED_POSITIONS do
-		local breed = spawn_list[spawn_index]
-		local radius = breed.radius
-
-		for i = 1, max_dir_tries, 1 do
-			local radians = math.random() * 2 * math.pi
-			local dir = Vector3(math.cos(radians), math.sin(radians), 0)
-			local end_pos = pos + dir * ray_dist
-			local spawn_pos = ConflictUtils.get_closest_spawn_dist(mesh, already_spawned, end_pos, pos, dir, radius)
-
-			if spawn_pos then
-				local spawn_rot = rot
-
-				if GameTweakData.RANDOM_MONSTER_SPAWN_ROT then
-					local add_rot = Quaternion(Vector3.up(), math.random() * GameTweakData.RANDOM_MONSTER_SPAWN_ROT - math.random() * GameTweakData.RANDOM_MONSTER_SPAWN_ROT)
-					spawn_rot = Quaternion.multiply(add_rot, rot)
-				end
-
-				if spawn_func(world, breed, spawn_pos, spawn_rot, player) then
-					already_spawned[#already_spawned + 1] = {
-						spawn_pos,
-						radius
-					}
-				end
-
-				break
-			else
-				dprint("\t\tFAIL DIR-POS")
-			end
-		end
-
-		loops = loops + 1
-		spawn_index = spawn_index + 1
-	end
-end
-
-ConflictUtils.boxify_pos_array = function (array)
-	for i = 1, #array, 1 do
-		array[i] = Vector3Box(array[i])
-	end
-end
-
 ConflictUtils.draw_stack_of_balls = function (pos, a, r, g, b)
 	QuickDrawer:sphere(pos + Vector3(0, 0, 1), 0.4, Color(a, r, g, b))
 	QuickDrawer:sphere(pos + Vector3(0, 0, 1.5), 0.3, Color(a, r * 0.75, g * 0.75, b * 0.75))
@@ -782,8 +587,6 @@ ConflictUtils.get_teleporter_portals = function ()
 	return portals
 end
 
-local InterestPointUnitsLookup = InterestPointUnitsLookup
-
 ConflictUtils.interest_point_outside_nav_mesh = function (nav_world, unit_name, pos, interest_point_rot)
 	local lookup = InterestPointUnitsLookup[unit_name]
 
@@ -792,7 +595,7 @@ ConflictUtils.interest_point_outside_nav_mesh = function (nav_world, unit_name, 
 		local local_pos = point[1]:unbox()
 		local_pos = Quaternion.rotate(interest_point_rot, local_pos)
 		local point_world_position = pos + local_pos
-		local is_position_on_navmesh, altitude = GwNavQueries.triangle_from_position(nav_world, point_world_position, 0.3, 0.3)
+		local is_position_on_navmesh, _ = GwNavQueries.triangle_from_position(nav_world, point_world_position, 0.3, 0.3)
 
 		if not is_position_on_navmesh then
 			return point_world_position
@@ -806,7 +609,7 @@ ConflictUtils.generate_spawn_point_lookup = function (world)
 	local position = Vector3(0, 0, -1000)
 	local rotation = Quaternion.identity()
 
-	for size, unit_names in ipairs(InterestPointUnits) do
+	for _, unit_names in ipairs(InterestPointUnits) do
 		if unit_names then
 			for k, unit_name in ipairs(unit_names) do
 				local unit = World.spawn_unit(world, unit_name, position, rotation)
@@ -890,25 +693,7 @@ ConflictUtils.show_where_ai_is = function (spawned)
 	end
 end
 
-ConflictUtils.get_level_units_with_id = function (unit_name, unit_list, id)
-	unit_name = unit_name or "units/hub_elements/generic_ai_node"
-	local level_key = Managers.state.game_mode:level_key()
-	local level_name = LevelSettings[level_key].level_name
-	local unit_ind = LevelResource.unit_indices(level_name, unit_name)
-
-	for _, id in ipairs(unit_ind) do
-		local pos = LevelResource.unit_position(level_name, id)
-		local unit_data = LevelResource.unit_data(level_name, id)
-		local portal_id = DynamicData.get(unit_data, "id")
-		local boxed_rot = QuaternionBox(Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360))))
-		local boxed_pos = Vector3Box(pos)
-		unit_list[portal_id] = boxed_pos
-	end
-
-	return unit_list
-end
-
-ConflictUtils.make_roaming_spawns = function (self, nav_world, level_analysis)
+ConflictUtils.make_roaming_spawns = function (nav_world, level_analysis)
 	local list = {}
 
 	if LEVEL_EDITOR_TEST then
@@ -916,12 +701,6 @@ ConflictUtils.make_roaming_spawns = function (self, nav_world, level_analysis)
 	end
 
 	local density = CurrentConflictSettings.roaming.density or 0.01
-	local n = {
-		false,
-		false,
-		false
-	}
-	local offset = Vector3(0, 0, 0.1)
 	local seed_pos = level_analysis:get_start_and_finish()
 
 	if seed_pos then
@@ -931,10 +710,9 @@ ConflictUtils.make_roaming_spawns = function (self, nav_world, level_analysis)
 		local level_name = LevelSettings[level_key].level_name
 		local unit_ind = LevelResource.unit_indices(level_name, "core/gwnav/units/seedpoint/seedpoint")
 
-		for _, id in ipairs(unit_ind) do
+		if #unit_ind > 0 then
+			local id = unit_ind[1]
 			seed_pos = LevelResource.unit_position(level_name, id)
-
-			break
 		end
 	end
 
@@ -960,7 +738,6 @@ ConflictUtils.make_roaming_spawns = function (self, nav_world, level_analysis)
 			list[#list + 1] = Vector3Box(triangle_center)
 		end
 
-		QuickDrawerStay:line(p1, p1 + Vector3(0, 0, 10))
 		Script.set_temp_count(a, b, c)
 
 		local neighbors = {
@@ -985,6 +762,430 @@ ConflictUtils.make_roaming_spawns = function (self, nav_world, level_analysis)
 	end
 
 	return list
+end
+
+local function add_breeds_from_patrol_formation(formation, difficulty, output)
+	local difficulty_rows = formation[difficulty]
+
+	if difficulty_rows then
+		for i = 1, #difficulty_rows, 1 do
+			local row = difficulty_rows[i]
+
+			for j = 1, #row, 1 do
+				local breed_name = row[j]
+
+				if Breeds[breed_name] then
+					output[breed_name] = true
+				end
+			end
+		end
+	end
+end
+
+local function add_breed_or_breeds(breed_name, output)
+	if type(breed_name) == "table" then
+		for i = 1, #breed_name, 1 do
+			local sub_breed_name = breed_name[i]
+			output[sub_breed_name] = true
+		end
+	else
+		output[breed_name] = true
+	end
+end
+
+ConflictUtils.add_breeds_from_event = function (event_name, event, difficulty, difficulty_rank, output, terror_event_lookup)
+	for i = 1, #event, 1 do
+		repeat
+			local sub_event = event[i]
+			local sub_event_name = sub_event[1]
+			local difficulty_requirement = sub_event.difficulty_requirement
+
+			if difficulty_requirement and difficulty_requirement < (difficulty_rank or 1) then
+				break
+			end
+
+			if sub_event_name == "spawn" or sub_event_name == "spawn_at_raw" or sub_event_name == "spawn_special" then
+				add_breed_or_breeds(sub_event.breed_name, output)
+			elseif sub_event_name == "spawn_patrol" then
+				local formations = sub_event.formations
+
+				for j = 1, #formations, 1 do
+					local formation_name = formations[j]
+					local formation = PatrolFormationSettings[formation_name]
+
+					add_breeds_from_patrol_formation(formation, difficulty, output)
+				end
+			elseif sub_event_name == "start_event" then
+				local contained_event_name = sub_event.start_event_name
+				local contained_event = terror_event_lookup[contained_event_name]
+
+				if contained_event_name ~= event_name then
+					ConflictUtils.add_breeds_from_event(event_name, contained_event, difficulty, difficulty_rank, output, terror_event_lookup)
+				end
+			elseif sub_event_name == "event_horde" then
+				local event_composition_type = sub_event.composition_type
+				local difficulty_index = DifficultySettings[difficulty].rank - 1
+				local event_composition = HordeCompositions[event_composition_type][difficulty_index]
+
+				fassert(event_composition ~= nil, string.format("No horde composition found for '%s' on difficulty '%s'", event_composition_type, difficulty))
+
+				for j = 1, #event_composition, 1 do
+					local composition = event_composition[j]
+					local breeds = composition.breeds
+
+					for k = 1, #breeds, 2 do
+						local breed_name = breeds[k]
+						output[breed_name] = true
+					end
+				end
+			end
+		until true
+	end
+end
+
+local function add_breeds_from_boss_settings(boss_settings, difficulty, output)
+	local difficulty_rank = DifficultySettings[difficulty].rank
+
+	for _, settings in pairs(boss_settings) do
+		if type(settings) == "table" then
+			local event_lookup = settings.event_lookup
+
+			for _, lookup in pairs(event_lookup) do
+				for i = 1, #lookup, 1 do
+					local event_name = lookup[i]
+					local terror_event_lookup = GenericTerrorEvents
+					local event = terror_event_lookup[event_name]
+
+					ConflictUtils.add_breeds_from_event(event_name, event, difficulty, difficulty_rank, output, terror_event_lookup)
+				end
+			end
+		end
+	end
+end
+
+local function add_breeds_from_special_settings(special_settings, difficulty, output)
+	local breeds = special_settings.breeds
+
+	for i = 1, #breeds, 1 do
+		local breed_name = breeds[i]
+		output[breed_name] = true
+	end
+
+	local rush_intervention = special_settings.rush_intervention
+	local rush_intervention_breeds = rush_intervention.breeds
+
+	for i = 1, #rush_intervention_breeds, 1 do
+		local breed_name = rush_intervention_breeds[i]
+		output[breed_name] = true
+	end
+
+	local speed_running_intervention = special_settings.speed_running_intervention or SpecialsSettings.default.speed_running_intervention
+	local speed_running_intervention_breeds = speed_running_intervention.breeds
+
+	for i = 1, #speed_running_intervention_breeds, 1 do
+		local breed_name = speed_running_intervention_breeds[i]
+		output[breed_name] = true
+	end
+
+	local speed_running_intervention_vector_horde_breeds = speed_running_intervention.vector_horde_breeds
+
+	for i = 1, #speed_running_intervention_vector_horde_breeds, 1 do
+		local breed_name = speed_running_intervention_vector_horde_breeds[i]
+		output[breed_name] = true
+	end
+end
+
+local function add_breeds_from_breed_packs(breed_packs, difficulty, output)
+	local zone_checks = breed_packs.zone_checks
+	local REPLACEMENT_BREED_INDEX = 3
+	local clamp_breeds_low = zone_checks.clamp_breeds_low[difficulty]
+
+	if clamp_breeds_low then
+		for i = 1, #clamp_breeds_low, 1 do
+			local clamp_breeds = clamp_breeds_low[i]
+			local replacement_breed_name = clamp_breeds[REPLACEMENT_BREED_INDEX].name
+			output[replacement_breed_name] = true
+		end
+	end
+
+	local clamp_breeds_hi = zone_checks.clamp_breeds_hi[difficulty]
+
+	if clamp_breeds_hi then
+		for i = 1, #clamp_breeds_hi, 1 do
+			local clamp_breeds = clamp_breeds_hi[i]
+			local replacement_breed_name = clamp_breeds[REPLACEMENT_BREED_INDEX].name
+			output[replacement_breed_name] = true
+		end
+	end
+
+	for i = 1, #breed_packs, 1 do
+		local pack = breed_packs[i]
+		local breed_members = pack.members
+
+		for j = 1, #breed_members, 1 do
+			local breed = breed_members[j]
+			local breed_name = breed.name
+			output[breed_name] = true
+		end
+	end
+end
+
+local function add_breeds_from_pack_spawning_settings(pack_spawning_settings, difficulty, output)
+	local roaming_set = pack_spawning_settings.roaming_set
+	local breed_packs_name = roaming_set.breed_packs
+	local breed_packs = BreedPacks[breed_packs_name]
+
+	add_breeds_from_breed_packs(breed_packs, difficulty, output)
+
+	local PACK_OVERRIDE_BREED_INDEX = 1
+	local breed_packs_override = roaming_set.breed_packs_override
+
+	for i = 1, #breed_packs_override, 1 do
+		local pack_override_data = breed_packs_override[i]
+		local pack_override_name = pack_override_data[PACK_OVERRIDE_BREED_INDEX]
+		local pack_override = BreedPacks[pack_override_name]
+
+		add_breeds_from_breed_packs(pack_override, difficulty, output)
+	end
+end
+
+local function add_breeds_from_horde_settings(horde_settings, difficulty, output)
+	local compositions_pacing = horde_settings.compositions_pacing
+	local ambush_composition = horde_settings.ambush_composition
+
+	if type(ambush_composition) == "table" then
+		for i = 1, #ambush_composition, 1 do
+			local wave_compositions = ambush_composition[i]
+			local composition_wave_table = HordeWaveCompositions[wave_compositions]
+
+			for j = 1, #composition_wave_table, 1 do
+				local composition_name = composition_wave_table[j]
+				local composition = compositions_pacing[composition_name]
+
+				for h = 1, #composition, 1 do
+					local variant = composition[h]
+					local breeds = variant.breeds
+
+					for k = 1, #breeds, 2 do
+						local breed_name = breeds[k]
+						output[breed_name] = true
+					end
+				end
+			end
+		end
+	else
+		local composition_table = compositions_pacing[ambush_composition]
+
+		for i = 1, #composition_table, 1 do
+			local composition = composition_table[i]
+			local breeds = composition.breeds
+
+			for j = 1, #breeds, 2 do
+				local breed_name = breeds[j]
+				output[breed_name] = true
+			end
+		end
+	end
+
+	local vector_composition = horde_settings.vector_composition
+
+	if type(vector_composition) == "table" then
+		for i = 1, #vector_composition, 1 do
+			local wave_compositions = vector_composition[i]
+			local composition_wave_table = HordeWaveCompositions[wave_compositions]
+
+			for j = 1, #composition_wave_table, 1 do
+				local composition_name = composition_wave_table[j]
+				local composition = compositions_pacing[composition_name]
+
+				for h = 1, #composition, 1 do
+					local variant = composition[h]
+					local breeds = variant.breeds
+
+					for k = 1, #breeds, 2 do
+						local breed_name = breeds[k]
+						output[breed_name] = true
+					end
+				end
+			end
+		end
+	else
+		local composition_table = compositions_pacing[vector_composition]
+
+		for i = 1, #composition_table, 1 do
+			local composition = composition_table[i]
+			local breeds = composition.breeds
+
+			for j = 1, #breeds, 2 do
+				local breed_name = breeds[j]
+				output[breed_name] = true
+			end
+		end
+	end
+
+	local vector_blob_composition = horde_settings.vector_blob_composition
+
+	if type(vector_blob_composition) == "table" then
+		for i = 1, #vector_blob_composition, 1 do
+			local wave_compositions = vector_blob_composition[i]
+			local composition_wave_table = HordeWaveCompositions[wave_compositions]
+
+			for j = 1, #composition_wave_table, 1 do
+				local composition_name = composition_wave_table[j]
+				local composition = compositions_pacing[composition_name]
+
+				for h = 1, #composition, 1 do
+					local variant = composition[h]
+					local breeds = variant.breeds
+
+					for k = 1, #breeds, 2 do
+						local breed_name = breeds[k]
+						output[breed_name] = true
+					end
+				end
+			end
+		end
+	else
+		local composition_table = compositions_pacing[vector_blob_composition]
+
+		for i = 1, #composition_table, 1 do
+			local composition = composition_table[i]
+			local breeds = composition.breeds
+
+			for j = 1, #breeds, 2 do
+				local breed_name = breeds[j]
+				output[breed_name] = true
+			end
+		end
+	end
+
+	local mini_patrol_composition_name = horde_settings.mini_patrol_composition
+	local mini_patrol_composition = compositions_pacing[mini_patrol_composition_name]
+
+	for i = 1, #mini_patrol_composition, 1 do
+		local composition = mini_patrol_composition[i]
+		local breeds = composition.breeds
+
+		for j = 1, #breeds, 2 do
+			local breed_name = breeds[j]
+			output[breed_name] = true
+		end
+	end
+end
+
+ConflictUtils.find_conflict_director_breeds = function (conflict_director, difficulty, output)
+	if not conflict_director.boss.disabled then
+		local boss_settings = table.clone(conflict_director.boss)
+
+		ConflictUtils.patch_settings_with_difficulty(boss_settings, difficulty)
+		add_breeds_from_boss_settings(boss_settings, difficulty, output)
+	end
+
+	if not conflict_director.specials.disabled then
+		local special_settings = table.clone(conflict_director.specials)
+
+		ConflictUtils.patch_settings_with_difficulty(special_settings, difficulty)
+		add_breeds_from_special_settings(special_settings, difficulty, output)
+	end
+
+	if not conflict_director.pack_spawning.disabled then
+		local pack_spawning_settings = table.clone(conflict_director.pack_spawning)
+
+		ConflictUtils.patch_settings_with_difficulty(pack_spawning_settings, difficulty)
+		add_breeds_from_pack_spawning_settings(pack_spawning_settings, difficulty, output)
+	end
+
+	if not conflict_director.horde.disabled then
+		local horde_settings = table.clone(conflict_director.horde)
+
+		ConflictUtils.patch_settings_with_difficulty(horde_settings, difficulty)
+		add_breeds_from_horde_settings(horde_settings, difficulty, output)
+	end
+
+	return output
+end
+
+ConflictUtils.patch_settings_with_difficulty = function (source_settings, difficulty)
+	local overrides = source_settings.difficulty_overrides
+
+	if overrides and overrides[difficulty] then
+		local override_settings = overrides[difficulty]
+
+		for key, _ in pairs(source_settings) do
+			if key ~= "difficulty_overrides" then
+				source_settings[key] = override_settings[key] or source_settings[key]
+			end
+		end
+
+		source_settings.difficulty_overrides = nil
+
+		return source_settings
+	else
+		return source_settings
+	end
+end
+
+ConflictUtils.patch_terror_events_with_weaves = function (level_key, weave_data)
+	local weave_name = weave_data.name
+	local weave_template = WeaveSettings.templates[weave_name]
+	local objectives = weave_template.objectives
+	local objective_events = weave_template.terror_events
+	local weave_terror_events = TerrorEventBlueprints.weaves
+	TerrorEventBlueprints[level_key] = TerrorEventBlueprints[level_key] or {}
+
+	table.clear(TerrorEventBlueprints[level_key])
+
+	for i = 1, #objectives, 1 do
+		local objective = objectives[i]
+		local spawning_settings = objective.spawning_settings
+
+		if spawning_settings then
+			local main_path_spawning = spawning_settings.main_path_spawning
+			local terror_event_trickle = spawning_settings.terror_event_trickle
+
+			if main_path_spawning then
+				for j = 1, #main_path_spawning, 1 do
+					local main_path_spawning_setting = main_path_spawning[j]
+					local terror_event_name = main_path_spawning_setting.terror_event_name
+					TerrorEventBlueprints[level_key][terror_event_name] = weave_terror_events[terror_event_name]
+				end
+			end
+
+			if terror_event_trickle then
+				TerrorEventBlueprints[level_key][terror_event_trickle] = weave_terror_events[terror_event_trickle]
+			end
+		end
+	end
+
+	if objective_events then
+		for i = 1, #objective_events, 1 do
+			local objective_event = objective_events[i]
+			TerrorEventBlueprints[level_key][objective_event] = weave_terror_events[objective_event]
+		end
+	end
+end
+
+ConflictUtils.generate_conflict_director_locked_function_ids = function (level_key)
+	local locked_director_function_ids = {}
+
+	for director_name, locked_func in pairs(ConflictDirectorLockedFunctions) do
+		if locked_func(level_key) then
+			local conflict_director_lock_lookup = NetworkLookup.conflict_director_lock_lookup[director_name]
+			locked_director_function_ids[#locked_director_function_ids + 1] = conflict_director_lock_lookup
+		end
+	end
+
+	return locked_director_function_ids
+end
+
+ConflictUtils.extract_conflict_director_locked_functions = function (locked_director_function_ids)
+	local locked_director_functions = {}
+
+	for _, locked_function_id in ipairs(locked_director_function_ids) do
+		locked_director_functions[NetworkLookup.conflict_director_lock_lookup[locked_function_id]] = true
+	end
+
+	return locked_director_functions
 end
 
 return

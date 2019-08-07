@@ -8,6 +8,7 @@ weapon_template.actions = {
 			kind = "melee_start",
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_charge_left_down",
+			attack_hold_input = "action_one_hold",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
@@ -754,7 +755,6 @@ weapon_template.actions = {
 			anim_end_event = "attack_finished",
 			outer_push_angle = 180,
 			kind = "push_stagger",
-			hit_time = 0.1,
 			damage_profile_outer = "light_push",
 			weapon_action_hand = "right",
 			push_angle = 100,
@@ -896,17 +896,17 @@ weapon_template.wield_anim = "to_2h_hammer"
 weapon_template.buff_type = "MELEE_2H"
 weapon_template.weapon_type = "PICK_2H"
 weapon_template.max_fatigue_points = 6
-weapon_template.dodge_count = 1
+weapon_template.dodge_count = 2
 weapon_template.block_angle = 90
 weapon_template.outer_block_angle = 360
 weapon_template.block_fatigue_point_multiplier = 0.5
 weapon_template.outer_block_fatigue_point_multiplier = 2
 weapon_template.buffs = {
 	change_dodge_distance = {
-		external_optional_multiplier = 0.9
+		external_optional_multiplier = 1
 	},
 	change_dodge_speed = {
-		external_optional_multiplier = 0.9
+		external_optional_multiplier = 1
 	}
 }
 weapon_template.attack_meta_data = {

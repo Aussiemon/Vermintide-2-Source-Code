@@ -50,6 +50,10 @@ BTMeleeOverlapAttackAction.enter = function (self, unit, blackboard, t)
 	if freeze_intensity_decay_time > 0 then
 		Managers.state.conflict:freeze_intensity_decay(freeze_intensity_decay_time)
 	end
+
+	local target_unit = blackboard.target_unit
+
+	AiUtils.add_attack_intensity(target_unit, action, blackboard)
 end
 
 local function debug_print(...)
@@ -168,47 +172,6 @@ BTMeleeOverlapAttackAction._init_attack = function (self, unit, blackboard, acti
 	blackboard.physics_world = blackboard.physics_world or World.get_data(blackboard.world, "physics_world")
 	local to_target_rotation = LocomotionUtils.rotation_towards_unit_flat(unit, target_unit)
 	blackboard.attack_rotation = QuaternionBox(to_target_rotation)
-
-	if attack.use_extra_space then
-		local pos = POSITION_LOOKUP[unit] + Vector3.up()
-		local nav_world = blackboard.nav_world
-		local directions = attack.extra_space_directions
-		local rotation = Unit.local_rotation(unit, 0)
-
-		for dir, should_use in pairs(directions) do
-			if should_use then
-				local qua = Quaternion.forward
-
-				if dir == "right" or dir == "left" then
-					qua = Quaternion.right
-				end
-
-				local direction = qua(rotation)
-
-				if dir == "bwd" or dir == "left" then
-					direction = -direction
-				end
-
-				local space_check_pos = pos + direction * (attack.extra_space_range or 1.2)
-				local can_go = GwNavQueries.raycango(nav_world, pos, space_check_pos)
-
-				if not can_go then
-					return false
-				end
-			end
-		end
-
-		if attack.extra_space_up then
-			local ray_length = attack.extra_space_range or 1.2
-			local space_check_pos = pos + Vector3.up() * 2
-			local result, hit_position = PhysicsWorld.immediate_raycast(blackboard.physics_world, pos, space_check_pos, ray_length, "closest", "collision_filter", "filter_ai_mover")
-
-			if result then
-				return false
-			end
-		end
-	end
-
 	local translation_scale = attack.animation_translation_scale
 
 	if anim_driven and translation_scale then
@@ -576,14 +539,18 @@ BTMeleeOverlapAttackAction.hit_player = function (self, unit, blackboard, hit_un
 	local dealt_damage = false
 
 	if DamageUtils.check_block(unit, hit_unit, action.fatigue_type, attack_direction) then
-		if action.blocked_damage then
-			AiUtils.damage_target(hit_unit, unit, action, action.blocked_damage)
+		if not action.ignore_shield_block and DamageUtils.check_ranged_block(unit, hit_unit, Vector3.normalize(POSITION_LOOKUP[hit_unit] - POSITION_LOOKUP[unit]), action.shield_blocked_fatigue_type or "shield_blocked_slam") then
+			self:push_player(unit, hit_unit, attack.player_push_speed_blocked, attack.player_push_speed_blocked_z, false)
+		else
+			if action.blocked_damage then
+				AiUtils.damage_target(hit_unit, unit, action, action.blocked_damage)
 
-			dealt_damage = true
-		end
+				dealt_damage = true
+			end
 
-		if attack.player_push_speed_blocked and not hit_unit_status_extension.knocked_down then
-			self:push_player(unit, hit_unit, attack.player_push_speed_blocked, attack.player_push_speed_blocked_z, attack.catapult_player)
+			if attack.player_push_speed_blocked and not hit_unit_status_extension.knocked_down then
+				self:push_player(unit, hit_unit, attack.player_push_speed_blocked, attack.player_push_speed_blocked_z, attack.catapult_player)
+			end
 		end
 	else
 		AiUtils.damage_target(hit_unit, unit, action, action.damage)
@@ -621,7 +588,7 @@ BTMeleeOverlapAttackAction.hit_ai = function (self, unit, hit_unit, action, atta
 			local hit_unit_pos = POSITION_LOOKUP[hit_unit]
 			local direction = Vector3.normalize(hit_unit_pos - self_pos)
 
-			AiUtils.stagger(hit_unit, hit_unit_blackboard, unit, direction, push_data.stagger_distance, stagger_type, stagger_duration, nil, t)
+			AiUtils.stagger(hit_unit, hit_unit_blackboard, unit, direction, push_data.stagger_distance, stagger_type, stagger_duration, nil, t, nil, nil, nil, true)
 		end
 	end
 
@@ -707,8 +674,11 @@ BTMeleeOverlapAttackAction.push_close_units = function (self, unit, blackboard, 
 		end
 	end
 
-	for i = 1, #PLAYER_AND_BOT_UNITS, 1 do
-		local hit_unit = PLAYER_AND_BOT_UNITS[i]
+	local side = blackboard.side
+	local ENEMY_PLAYER_AND_BOT_UNITS = side.ENEMY_PLAYER_AND_BOT_UNITS
+
+	for i = 1, #ENEMY_PLAYER_AND_BOT_UNITS, 1 do
+		local hit_unit = ENEMY_PLAYER_AND_BOT_UNITS[i]
 		local hit_unit_pos = POSITION_LOOKUP[hit_unit]
 		local to_target = hit_unit_pos - push_pos
 

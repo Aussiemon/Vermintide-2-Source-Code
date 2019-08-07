@@ -201,7 +201,7 @@ LobbyHost.lobby_host = function (self)
 end
 
 LobbyHost.user_name = function (self, peer_id)
-	return self.lobby:user_name(peer_id)
+	return string.gsub(self.lobby:user_name(peer_id), "%c", "")
 end
 
 LobbyHost.id = function (self)

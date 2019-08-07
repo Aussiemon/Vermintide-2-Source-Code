@@ -1,7 +1,6 @@
 VortexExtension = class(VortexExtension)
 local unit_alive = Unit.alive
 local position_lookup = POSITION_LOOKUP
-local player_and_bot_units = PLAYER_AND_BOT_UNITS
 local BLACKBOARDS = BLACKBOARDS
 local NUMBER_OF_RAYCASTS = 36
 local RAYCAST_INVERAL_RAD = (2 * math.pi) / NUMBER_OF_RAYCASTS
@@ -154,25 +153,31 @@ VortexExtension.destroy = function (self)
 	local ai_units_inside = vortex_data.ai_units_inside
 	local BLACKBOARDS = BLACKBOARDS
 	local unit = self.unit
-	local number_player_and_bots = #player_and_bot_units
+	local sides = Managers.state.side:sides()
 
-	for i = 1, number_player_and_bots, 1 do
-		local player_unit = player_and_bot_units[i]
+	for k = 1, #sides, 1 do
+		local side = sides[k]
+		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
+		local number_player_and_bots = #player_and_bot_units
 
-		if unit_alive(player_unit) then
-			if players_inside[player_unit] then
-				StatusUtils.set_in_vortex_network(player_unit, false, nil)
+		for i = 1, number_player_and_bots, 1 do
+			local player_unit = player_and_bot_units[i]
 
-				players_inside[player_unit] = nil
-			elseif players_ejected[player_unit] then
-				players_ejected[player_unit] = nil
-			end
+			if unit_alive(player_unit) then
+				if players_inside[player_unit] then
+					StatusUtils.set_in_vortex_network(player_unit, false, nil)
 
-			local target_status_extension = ScriptUnit.extension(player_unit, "status_system")
-			target_status_extension.smacked_into_wall = false
+					players_inside[player_unit] = nil
+				elseif players_ejected[player_unit] then
+					players_ejected[player_unit] = nil
+				end
 
-			if target_status_extension.near_vortex_unit == unit then
-				StatusUtils.set_near_vortex_network(player_unit, false)
+				local target_status_extension = ScriptUnit.extension(player_unit, "status_system")
+				target_status_extension.smacked_into_wall = false
+
+				if target_status_extension.near_vortex_unit == unit then
+					StatusUtils.set_near_vortex_network(player_unit, false)
+				end
 			end
 		end
 	end
@@ -482,103 +487,111 @@ VortexExtension._update_attract_players = function (self, unit, blackboard, vort
 	local land_test_below = 15
 	local epsilon_up = Vector3.up() * 0.05
 	local near_vortex_distance = outer_radius + 2
-	local num_player_and_bots = #player_and_bot_units
+	local sides = Managers.state.side:sides()
 
-	for i = 1, num_player_and_bots, 1 do
-		local player_unit = player_and_bot_units[i]
-		local target_status_extension = ScriptUnit.extension(player_unit, "status_system")
-		local valid_vortex_target = target_status_extension:is_valid_vortex_target()
-		local locomotion_extension = ScriptUnit.extension(player_unit, "locomotion_system")
-		local player_position = position_lookup[player_unit]
-		local suck_dir = center_pos - player_position
-		local height = -suck_dir.z
+	for k = 1, #sides, 1 do
+		local side = sides[k]
+		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
+		local num_player_and_bots = #player_and_bot_units
 
-		Vector3.set_z(suck_dir, 0)
+		for i = 1, num_player_and_bots, 1 do
+			local player_unit = player_and_bot_units[i]
+			local player_blackboard = BLACKBOARDS[player_unit]
+			local player_breed = player_blackboard.breed
+			local target_status_extension = ScriptUnit.extension(player_unit, "status_system")
+			local valid_vortex_target = player_breed.vortexable and target_status_extension:is_valid_vortex_target()
+			local locomotion_extension = ScriptUnit.extension(player_unit, "locomotion_system")
+			local player_position = position_lookup[player_unit]
+			local suck_dir = center_pos - player_position
+			local height = -suck_dir.z
 
-		local player_distance = Vector3.length(suck_dir)
+			Vector3.set_z(suck_dir, 0)
 
-		if not target_status_extension.near_vortex and player_distance < near_vortex_distance then
-			StatusUtils.set_near_vortex_network(player_unit, true, unit)
-		elseif target_status_extension.near_vortex_unit == unit and near_vortex_distance <= player_distance then
-			StatusUtils.set_near_vortex_network(player_unit, false)
-		end
+			local player_distance = Vector3.length(suck_dir)
 
-		if players_inside[player_unit] then
-			local vortex_eject_height = players_inside[player_unit].vortex_eject_height
-			local vortex_eject_time = players_inside[player_unit].vortex_eject_time
-			local mover = Unit.mover(player_unit)
-			local side_collides = Mover.collides_sides(mover)
-
-			if side_collides then
-				if not target_status_extension.smacked_into_wall then
-					target_status_extension.smacked_into_wall = t + 0.7
-					local player_velocity = locomotion_extension:current_velocity()
-					local player_velocity_normalized = Vector3.normalize(player_velocity)
-					local breed_name = blackboard.breed.name
-					local impact_damage = DamageUtils.calculate_damage(vortex_template.damage, player_unit, unit)
-
-					DamageUtils.add_damage_network(player_unit, unit, impact_damage, "torso", "cutting", nil, -player_velocity_normalized, breed_name, nil, nil, nil, vortex_template.hit_react_type)
-				end
-			elseif target_status_extension.smacked_into_wall and target_status_extension.smacked_into_wall < t then
-				target_status_extension.smacked_into_wall = false
+			if not target_status_extension.near_vortex and player_distance < near_vortex_distance then
+				StatusUtils.set_near_vortex_network(player_unit, true, unit)
+			elseif target_status_extension.near_vortex_unit == unit and near_vortex_distance <= player_distance then
+				StatusUtils.set_near_vortex_network(player_unit, false)
 			end
 
-			if not valid_vortex_target or allowed_distance < player_distance then
-				StatusUtils.set_in_vortex_network(player_unit, false, nil)
+			if players_inside[player_unit] then
+				local vortex_eject_height = players_inside[player_unit].vortex_eject_height
+				local vortex_eject_time = players_inside[player_unit].vortex_eject_time
+				local mover = Unit.mover(player_unit)
+				local side_collides = Mover.collides_sides(mover)
 
-				players_inside[player_unit] = nil
-				vortex_data.num_players_inside = vortex_data.num_players_inside - 1
-			elseif vortex_eject_height < height or vortex_height < height or vortex_eject_time < t then
-				local current_velocity = locomotion_extension:current_velocity()
-				local velocity_normalized = Vector3.normalize(current_velocity)
-				local wanted_landing_position = LocomotionUtils.pos_on_mesh(nav_world, player_position + velocity_normalized * eject_distance, land_test_above, land_test_below)
+				if side_collides then
+					if not target_status_extension.smacked_into_wall then
+						target_status_extension.smacked_into_wall = t + 0.7
+						local player_velocity = locomotion_extension:current_velocity()
+						local player_velocity_normalized = Vector3.normalize(player_velocity)
+						local breed_name = blackboard.breed.name
+						local impact_damage = DamageUtils.calculate_damage(vortex_template.damage, player_unit, unit)
 
-				if wanted_landing_position then
-					local success, velocity = WeaponHelper.test_angled_trajectory(physics_world, player_position, wanted_landing_position + epsilon_up, -player_gravity, player_eject_speed, nil, EJECT_SEGMENT_LIST, NUM_SEGMENTS, player_collision_filter)
+						DamageUtils.add_damage_network(player_unit, unit, impact_damage, "torso", "cutting", nil, -player_velocity_normalized, breed_name, nil, nil, nil, vortex_template.hit_react_type)
+					end
+				elseif target_status_extension.smacked_into_wall and target_status_extension.smacked_into_wall < t then
+					target_status_extension.smacked_into_wall = false
+				end
 
-					if success then
-						StatusUtils.set_in_vortex_network(player_unit, false, nil)
-						StatusUtils.set_catapulted_network(player_unit, true, velocity)
+				if not valid_vortex_target or allowed_distance < player_distance then
+					StatusUtils.set_in_vortex_network(player_unit, false, nil)
 
-						players_inside[player_unit] = nil
-						players_ejected[player_unit] = -1
-						vortex_data.num_players_inside = vortex_data.num_players_inside - 1
+					players_inside[player_unit] = nil
+					vortex_data.num_players_inside = vortex_data.num_players_inside - 1
+				elseif vortex_eject_height < height or vortex_height < height or vortex_eject_time < t then
+					local current_velocity = locomotion_extension:current_velocity()
+					local velocity_normalized = Vector3.normalize(current_velocity)
+					local wanted_landing_position = LocomotionUtils.pos_on_mesh(nav_world, player_position + velocity_normalized * eject_distance, land_test_above, land_test_below)
+
+					if wanted_landing_position then
+						local success, velocity = WeaponHelper.test_angled_trajectory(physics_world, player_position, wanted_landing_position + epsilon_up, -player_gravity, player_eject_speed, nil, EJECT_SEGMENT_LIST, NUM_SEGMENTS, player_collision_filter)
+
+						if success then
+							StatusUtils.set_in_vortex_network(player_unit, false, nil)
+							StatusUtils.set_catapulted_network(player_unit, true, velocity)
+
+							players_inside[player_unit] = nil
+							players_ejected[player_unit] = -1
+							vortex_data.num_players_inside = vortex_data.num_players_inside - 1
+						end
 					end
 				end
-			end
-		elseif players_ejected[player_unit] then
-			local bliss_time = players_ejected[player_unit]
+			elseif players_ejected[player_unit] then
+				local bliss_time = players_ejected[player_unit]
 
-			if bliss_time < 0 then
-				if not target_status_extension:is_catapulted() then
-					if player_distance < outer_radius then
-						local edge_distance = outer_radius - player_distance
-						local time_multiplier = edge_distance / outer_radius
-						players_ejected[player_unit] = t + 0.5 + vortex_template.player_ejected_bliss_time * 0.5 + vortex_template.player_ejected_bliss_time * time_multiplier * 0.5
-					else
-						players_ejected[player_unit] = t + 0.5 + vortex_template.player_ejected_bliss_time
+				if bliss_time < 0 then
+					if not target_status_extension:is_catapulted() then
+						if player_distance < outer_radius then
+							local edge_distance = outer_radius - player_distance
+							local time_multiplier = edge_distance / outer_radius
+							players_ejected[player_unit] = t + 0.5 + vortex_template.player_ejected_bliss_time * 0.5 + vortex_template.player_ejected_bliss_time * time_multiplier * 0.5
+						else
+							players_ejected[player_unit] = t + 0.5 + vortex_template.player_ejected_bliss_time
+						end
 					end
+				elseif bliss_time < t then
+					players_ejected[player_unit] = nil
 				end
-			elseif bliss_time < t then
-				players_ejected[player_unit] = nil
-			end
-		elseif valid_vortex_target and not target_status_extension:is_in_vortex() and player_distance < outer_radius and minimum_height_diff <= height and height < vortex_height then
-			if inner_radius < player_distance then
-				local distance_to_inner_radius = player_distance - inner_radius
-				local k = math.clamp(1 - distance_to_inner_radius / falloff_radius, 0, 1)
-				local speed = player_attract_speed * k * k
-				local dir = Vector3.normalize(suck_dir)
+			elseif valid_vortex_target and not target_status_extension:is_in_vortex() and player_distance < outer_radius and minimum_height_diff <= height and height < vortex_height then
+				if inner_radius < player_distance then
+					local distance_to_inner_radius = player_distance - inner_radius
+					local k = math.clamp(1 - distance_to_inner_radius / falloff_radius, 0, 1)
+					local speed = player_attract_speed * k * k
+					local dir = Vector3.normalize(suck_dir)
 
-				locomotion_extension:add_external_velocity(dir * speed)
-			else
-				StatusUtils.set_in_vortex_network(player_unit, true, unit)
+					locomotion_extension:add_external_velocity(dir * speed)
+				else
+					StatusUtils.set_in_vortex_network(player_unit, true, unit)
 
-				local vortex_eject_height = ConflictUtils.random_interval(vortex_template.player_eject_height)
-				players_inside[player_unit] = {
-					vortex_eject_height = vortex_eject_height,
-					vortex_eject_time = t + vortex_template.player_in_vortex_max_duration
-				}
-				vortex_data.num_players_inside = vortex_data.num_players_inside + 1
+					local vortex_eject_height = ConflictUtils.random_interval(vortex_template.player_eject_height)
+					players_inside[player_unit] = {
+						vortex_eject_height = vortex_eject_height,
+						vortex_eject_time = t + vortex_template.player_in_vortex_max_duration
+					}
+					vortex_data.num_players_inside = vortex_data.num_players_inside + 1
+				end
 			end
 		end
 	end

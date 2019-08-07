@@ -11,6 +11,7 @@ require("foundation/scripts/util/error")
 require("scripts/unit_extensions/human/ai_player_unit/ai_breed_snippets")
 require("scripts/settings/dlc_settings")
 require("scripts/settings/player_bots_settings")
+require("scripts/settings/breeds/breed_players")
 
 DEFAULT_BREED_AOE_HEIGHT = 1.5
 DEFAULT_BREED_AOE_RADIUS = 0.3
@@ -61,7 +62,7 @@ dofile("scripts/settings/breeds/breed_chaos_exalted_champion")
 dofile("scripts/settings/breeds/breed_chaos_exalted_sorcerer")
 dofile("scripts/settings/breeds/breed_chaos_zombie")
 dofile("scripts/settings/breeds/breed_critters")
-dofile("scripts/settings/breeds/breed_pets")
+dofile("scripts/settings/breeds/breed_players")
 
 for _, dlc in pairs(DLCSettings) do
 	local breeds = dlc.breeds
@@ -75,6 +76,7 @@ end
 
 CHAOS = {}
 SKAVEN = {}
+BEASTMEN = {}
 CRITTER = {}
 ELITES = {}
 local DEFAULT_NAVTAG_LAYERS = {
@@ -129,7 +131,7 @@ for breed_name, breed_data in pairs(Breeds) do
 	end
 end
 
-for breed_name, breed_actions in pairs(BreedActions) do
+for _, breed_actions in pairs(BreedActions) do
 	for action_name, action_data in pairs(breed_actions) do
 		action_data.name = action_name
 	end
@@ -185,21 +187,21 @@ end
 function SET_BREED_DIFFICULTY()
 	local current_difficulty = (Managers and Managers.state.difficulty and Managers.state.difficulty:get_difficulty()) or "normal"
 
-	for breed_name, breed_actions in pairs(BreedActions) do
-		for action_name, action_data in pairs(breed_actions) do
+	for _, breed_actions in pairs(BreedActions) do
+		for _, action_data in pairs(breed_actions) do
 			if action_data.difficulty_diminishing_damage then
-				local difficulty_dimishing_damage = action_data.difficulty_diminishing_damage[current_difficulty]
-				action_data.dimishing_damage = table.clone(difficulty_dimishing_damage)
+				local difficulty_diminishing_damage = action_data.difficulty_diminishing_damage[current_difficulty]
+				action_data.diminishing_damage = table.clone(difficulty_diminishing_damage)
 			end
 
 			if action_data.difficulty_damage then
 				local difficulty_damage = action_data.difficulty_damage[current_difficulty]
-				action_data.damage = table.clone(difficulty_damage)
+				action_data.damage = difficulty_damage
 			end
 
 			if action_data.blocked_difficulty_damage then
 				local blocked_difficulty_damage = action_data.blocked_difficulty_damage[current_difficulty]
-				action_data.blocked_damage = table.clone(blocked_difficulty_damage)
+				action_data.blocked_damage = blocked_difficulty_damage
 			end
 
 			find_and_set_bot_threat_tweak_data(action_data, current_difficulty)
@@ -248,13 +250,14 @@ table.mirror_array_inplace(LAYER_ID_MAPPING)
 table.mirror_array_inplace(NAV_COST_MAP_LAYER_ID_MAPPING)
 
 local PerceptionTypes = {
-	perception_regular_update_aggro = true,
-	perception_regular = true,
-	perception_all_seeing_boss = true,
-	perception_no_seeing = true,
-	perception_all_seeing = true,
 	perception_pack_master = true,
+	perception_no_seeing = true,
+	perception_all_seeing_boss = true,
+	perception_regular = true,
+	perception_regular_update_aggro = true,
 	perception_all_seeing_re_evaluate = true,
+	perception_standard_bearer = true,
+	perception_all_seeing = true,
 	perception_rat_ogre = true
 }
 local TargetSelectionTypes = {
@@ -262,6 +265,7 @@ local TargetSelectionTypes = {
 	pick_ninja_approach_target = true,
 	pick_chaos_warrior_target_with_weights = true,
 	pick_flee_target = true,
+	pick_bestigor_target_with_weights = true,
 	pick_rat_ogre_target_idle = true,
 	pick_player_controller_allied = true,
 	pick_solitary_target = true,
@@ -279,6 +283,7 @@ local TargetSelectionTypes = {
 
 for name, breed in pairs(Breeds) do
 	breed.name = name
+	breed.is_ai = true
 
 	if not breed.allowed_layers then
 		breed.allowed_layers = table.clone(DEFAULT_NAVTAG_LAYERS)
@@ -304,6 +309,8 @@ for name, breed in pairs(Breeds) do
 		CHAOS[breed.name] = true
 	elseif breed.race == "skaven" then
 		SKAVEN[breed.name] = true
+	elseif breed.race == "beastmen" then
+		BEASTMEN[breed.name] = true
 	elseif breed.race == "critter" then
 		CRITTER[breed.name] = true
 	elseif breed.race then

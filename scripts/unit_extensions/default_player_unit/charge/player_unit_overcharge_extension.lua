@@ -26,10 +26,6 @@ PlayerUnitOverchargeExtension.init = function (self, extension_init_context, uni
 	self.has_overcharge = false
 	self.network_manager = Managers.state.network
 	self.venting_anim = nil
-	local first_person_extension = ScriptUnit.extension(self.unit, "first_person_system")
-	self.first_person_extension = first_person_extension
-	self.first_person_unit = first_person_extension:get_first_person_unit()
-	self.overcharge_blend_id = Unit.animation_find_variable(self.first_person_unit, "overcharge")
 	self.update_overcharge_flow_timer = 0
 	self.is_exploding = false
 	local overcharge_opacity = Application.user_setting("overcharge_opacity") or 100
@@ -42,6 +38,10 @@ PlayerUnitOverchargeExtension.init = function (self, extension_init_context, uni
 end
 
 PlayerUnitOverchargeExtension.extensions_ready = function (self, world, unit)
+	local first_person_extension = ScriptUnit.extension(self.unit, "first_person_system")
+	self.first_person_extension = first_person_extension
+	self.first_person_unit = first_person_extension:get_first_person_unit()
+	self.overcharge_blend_id = Unit.animation_find_variable(self.first_person_unit, "overcharge")
 	self.buff_extension = ScriptUnit.extension(self.unit, "buff_system")
 	self.overcharge_value = 0
 	self.original_max_value = self.max_value
@@ -180,7 +180,7 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 			local damage_amount = 2 + self.overcharge_value / 12
 			damage_amount = buff_extension:apply_buffs_to_value(damage_amount, "vent_damage")
 
-			DamageUtils.add_damage_network(wielder, wielder, damage_amount, "torso", "overcharge", nil, Vector3(0, 1, 0), "overcharge")
+			DamageUtils.add_damage_network(wielder, wielder, damage_amount, "torso", "overcharge", nil, Vector3(0, 1, 0), "overcharge", nil, nil, nil, nil, false, false, false, 0, 1)
 
 			self.vent_damage_pool = 0
 		end
@@ -327,6 +327,10 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 			end
 		end
 	end
+
+	local current_overcharge_value = self.overcharge_value
+	local overcharge_threshold = self.overcharge_threshold
+	self.above_threshold = overcharge_threshold <= current_overcharge_value
 end
 
 PlayerUnitOverchargeExtension.add_charge = function (self, overcharge_amount, charge_level)
@@ -401,7 +405,6 @@ PlayerUnitOverchargeExtension._check_overcharge_level_thresholds = function (sel
 		end
 	elseif overcharge_threshold <= new_overcharge_value then
 		if not self.above_threshold then
-			self.above_threshold = true
 			local wwise_world = Managers.world:wwise_world(self.world)
 
 			WwiseWorld.trigger_event(wwise_world, self.hit_overcharge_threshold_sound)
@@ -423,7 +426,7 @@ PlayerUnitOverchargeExtension._check_overcharge_level_thresholds = function (sel
 					self:hud_sound(self.overcharge_warning_high_sound_event or "staff_overcharge_warning_high", self.first_person_extension)
 				end
 
-				if buff_extension:has_buff_type("sienna_unchained_passive") then
+				if buff_extension:has_buff_type("sienna_unchained_passive") or buff_extension:has_buff_perk("overcharge_no_slow") then
 					self.overcharged_critical_buff_id = buff_extension:add_buff("overcharged_critical_no_attack_penalty")
 				else
 					self.overcharged_critical_buff_id = buff_extension:add_buff("overcharged_critical")
@@ -459,7 +462,7 @@ PlayerUnitOverchargeExtension._check_overcharge_level_thresholds = function (sel
 			if not self.overcharged_buff_id and not self.overcharged_critical_buff_id then
 				self:hud_sound(self.overcharge_warning_med_sound_event or "staff_overcharge_warning_med", self.first_person_extension)
 
-				if buff_extension:has_buff_type("sienna_unchained_passive") then
+				if buff_extension:has_buff_type("sienna_unchained_passive") or buff_extension:has_buff_perk("overcharge_no_slow") then
 					self.overcharged_buff_id = buff_extension:add_buff("overcharged_no_attack_penalty")
 				else
 					self.overcharged_buff_id = buff_extension:add_buff("overcharged")
@@ -534,7 +537,7 @@ PlayerUnitOverchargeExtension.are_you_exploding = function (self)
 end
 
 PlayerUnitOverchargeExtension.overcharge_fraction = function (self)
-	return self.overcharge_value / self.max_value
+	return math.clamp(self.overcharge_value / self.max_value, 0, 1)
 end
 
 PlayerUnitOverchargeExtension.threshold_fraction = function (self)

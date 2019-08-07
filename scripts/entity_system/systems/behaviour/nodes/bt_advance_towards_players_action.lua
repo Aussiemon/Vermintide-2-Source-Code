@@ -130,7 +130,7 @@ BTAdvanceTowardsPlayersAction.run = function (self, unit, blackboard, t, dt)
 
 	local can_throw = self:can_throw(unit, blackboard, t)
 
-	if self:has_valid_target(target_unit) and can_throw and self:_calculate_trajectory_to_target(unit, blackboard.world, blackboard, action) then
+	if self:has_valid_target(target_unit, blackboard) and can_throw and self:_calculate_trajectory_to_target(unit, blackboard.world, blackboard, action) then
 		blackboard.has_thrown = true
 		blackboard.move_pos = nil
 
@@ -181,8 +181,10 @@ BTAdvanceTowardsPlayersAction._calculate_trajectory_to_target = function (self, 
 	return hit
 end
 
-BTAdvanceTowardsPlayersAction.has_valid_target = function (self, target_unit)
-	return VALID_TARGETS_PLAYERS_AND_BOTS[target_unit]
+BTAdvanceTowardsPlayersAction.has_valid_target = function (self, target_unit, blackboard)
+	local side = blackboard.side
+
+	return side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[target_unit]
 end
 
 BTAdvanceTowardsPlayersAction.want_to_throw = function (self, unit, blackboard, t)

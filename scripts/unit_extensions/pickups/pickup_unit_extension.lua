@@ -12,25 +12,24 @@ PickupUnitExtension.init = function (self, extension_init_context, unit, extensi
 	self.spawn_type = spawn_type
 	self.is_server = network_transmit.is_server
 	self.spawn_index = extension_init_data.spawn_index
-	local pickup_settings = AllPickups[self.pickup_name]
+	self.owner_peer_id = extension_init_data.owner_peer_id
+	self.spawn_limit = extension_init_data.spawn_limit
+	local pickup_settings = AllPickups[pickup_name]
 	self.hide_func = pickup_settings.hide_func
 	self.hidden = false
 
+	Unit.set_data(unit, "interaction_data", "item_name", pickup_settings.item_name)
 	Unit.set_data(unit, "interaction_data", "hud_description", pickup_settings.hud_description)
 	Unit.set_data(unit, "interaction_data", "interaction_length", Unit.get_data(unit, "interaction_data", "interaction_length") or 0)
 	Unit.set_data(unit, "interaction_data", "interaction_type", "pickup_object")
 	Unit.set_data(unit, "interaction_data", "only_once", pickup_settings.only_once)
 	Unit.set_data(unit, "interaction_data", "individual_pickup", pickup_settings.individual_pickup)
+	Unit.set_data(unit, "pickup_name", pickup_name)
 
-	self.can_interact_time = Managers.time:time("game") + 1
+	self._can_interact_time = Managers.time:time("game") + 1
+	self.life_time = pickup_settings.life_time
 
-	if Unit.find_actor(unit, "pickup") then
-		if has_physics then
-			Unit.create_actor(unit, "pickup")
-		else
-			Unit.destroy_actor(unit, "pickup")
-		end
-	end
+	self:set_physics_enabled(has_physics)
 
 	if self.is_server then
 		local position = POSITION_LOOKUP[unit]
@@ -40,7 +39,25 @@ PickupUnitExtension.init = function (self, extension_init_context, unit, extensi
 end
 
 PickupUnitExtension.extensions_ready = function (self)
-	return
+	local outline_extension = ScriptUnit.has_extension(self.unit, "outline_system")
+
+	if outline_extension then
+		local pickup_settings = AllPickups[self.pickup_name]
+		local outline_distance_type = pickup_settings.outline_distance
+
+		if outline_distance_type then
+			outline_extension.set_distance(outline_distance_type)
+		end
+
+		if pickup_settings.outline_available_func then
+			local local_player_unit = Managers.player:local_player().player_unit
+			local available = pickup_settings.outline_available_func(local_player_unit)
+
+			if not available then
+				outline_extension.set_method("never")
+			end
+		end
+	end
 end
 
 PickupUnitExtension.update = function (self, unit, input, dt, context, t)
@@ -76,9 +93,21 @@ end
 
 PickupUnitExtension.can_interact = function (self)
 	local t = Managers.time:time("game")
-	local return_value = t <= self.can_interact_time
+	local return_value = t <= self._can_interact_time
 
 	return not return_value
+end
+
+PickupUnitExtension.set_physics_enabled = function (self, has_physics)
+	local unit = self.unit
+
+	if Unit.find_actor(unit, "pickup") then
+		if has_physics then
+			Unit.create_actor(unit, "pickup")
+		else
+			Unit.destroy_actor(unit, "pickup")
+		end
+	end
 end
 
 return

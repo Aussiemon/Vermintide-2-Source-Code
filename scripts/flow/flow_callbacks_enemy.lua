@@ -13,7 +13,7 @@ local function enemy_variation_tint_meshes(unit, meshes, material, variable, val
 	end
 end
 
-local function enemy_variation_tint_part(unit, variation, material_result)
+local function enemy_variation_tint_part(unit, outfit_units, variation, material_result)
 	local variable_value = math.random(variation.min, variation.max)
 
 	if variation.scale ~= nil then
@@ -25,11 +25,27 @@ local function enemy_variation_tint_part(unit, variation, material_result)
 	if not meshes then
 		for j = 1, #variation.variables, 1 do
 			Unit.set_scalar_for_material_table(unit, variation.materials, variation.variables[j], variable_value)
+
+			if outfit_units ~= nil then
+				for k = 1, #outfit_units, 1 do
+					local outfit_unit = outfit_units[k]
+
+					Unit.set_scalar_for_material_table(outfit_unit, variation.materials, variation.variables[j], variable_value)
+				end
+			end
 		end
 	else
 		for i = 1, #variation.materials, 1 do
 			for j = 1, #variation.variables, 1 do
 				enemy_variation_tint_meshes(unit, meshes, variation.materials[i], variation.variables[j], variable_value)
+
+				if outfit_units ~= nil then
+					for k = 1, #outfit_units, 1 do
+						local outfit_unit = outfit_units[k]
+
+						enemy_variation_tint_meshes(outfit_unit, meshes, variation.materials[i], variation.variables[j], variable_value)
+					end
+				end
 			end
 		end
 	end
@@ -48,13 +64,13 @@ local function enemy_variation_tint_part(unit, variation, material_result)
 	return {}
 end
 
-local function enemy_variation_tint_materials(unit, variationsettings, material_sections, material_result)
+local function enemy_variation_tint_materials(unit, outfit_units, variationsettings, material_sections, material_result)
 	for i = 1, #material_sections, 1 do
-		enemy_variation_tint_part(unit, variationsettings.material_variations[material_sections[i]], material_result)
+		enemy_variation_tint_part(unit, outfit_units, variationsettings.material_variations[material_sections[i]], material_result)
 	end
 end
 
-local function enemy_variation_enable_parts(unit, variationsettings, body_parts, group_result, material_result)
+local function enemy_variation_enable_parts(unit, outfit_units, variationsettings, body_parts, group_result, material_result)
 	for i = 1, #body_parts, 1 do
 		local body_part = body_parts[i]
 		local part_settings = variationsettings.body_parts[body_part]
@@ -68,26 +84,38 @@ local function enemy_variation_enable_parts(unit, variationsettings, body_parts,
 				local tint_variation = variationsettings.material_variations[variation.group]
 
 				if tint_variation then
-					enemy_variation_tint_part(unit, tint_variation, material_result)
+					enemy_variation_tint_part(unit, outfit_units, tint_variation, material_result)
 				end
 			end
 		end
 
 		if variation.enables then
-			enemy_variation_enable_parts(unit, variationsettings, variation.enables, group_result, material_result)
+			enemy_variation_enable_parts(unit, outfit_units, variationsettings, variation.enables, group_result, material_result)
 		end
 	end
 end
 
-local function enemy_variation_scale_nodes(unit, variationsettings, scaling_result)
+local function enemy_variation_scale_nodes(unit, outfit_units, variationsettings, scaling_result)
 	local node_id = nil
 
-	for key, scale_nodes in pairs(variationsettings.scale_variation) do
+	for _, scale_nodes in pairs(variationsettings.scale_variation) do
 		for j = 1, #scale_nodes, 1 do
 			if scale_nodes[j] ~= nil then
-				node_id = Unit.node(unit, scale_nodes[j])
+				if Unit.has_node(unit, scale_nodes[j]) then
+					node_id = Unit.node(unit, scale_nodes[j])
 
-				Unit.set_local_scale(unit, node_id, Vector3(0, 0, 0))
+					Unit.set_local_scale(unit, node_id, Vector3(0, 0, 0))
+				end
+
+				if outfit_units ~= nil then
+					for k = 1, #outfit_units, 1 do
+						if Unit.has_node(outfit_units[k], scale_nodes[j]) then
+							node_id = Unit.node(outfit_units[k], scale_nodes[j])
+
+							Unit.set_local_scale(outfit_units[k], node_id, Vector3(0, 0, 0))
+						end
+					end
+				end
 
 				scaling_result[scale_nodes[j]] = 0
 			end
@@ -96,9 +124,21 @@ local function enemy_variation_scale_nodes(unit, variationsettings, scaling_resu
 		local node_to_scale_up = scale_nodes[math.random(#scale_nodes)]
 
 		if node_to_scale_up ~= nil then
-			node_id = Unit.node(unit, node_to_scale_up)
+			if Unit.has_node(unit, node_to_scale_up) then
+				node_id = Unit.node(unit, node_to_scale_up)
 
-			Unit.set_local_scale(unit, node_id, Vector3(1, 1, 1))
+				Unit.set_local_scale(unit, node_id, Vector3(1, 1, 1))
+			end
+
+			if outfit_units ~= nil then
+				for k = 1, #outfit_units, 1 do
+					if Unit.has_node(outfit_units[k], node_to_scale_up) then
+						node_id = Unit.node(outfit_units[k], node_to_scale_up)
+
+						Unit.set_local_scale(outfit_units[k], node_id, Vector3(1, 1, 1))
+					end
+				end
+			end
 
 			scaling_result[node_to_scale_up] = 1
 		end
@@ -115,8 +155,6 @@ function flow_callback_enemy_variation(params)
 	end
 
 	if breed_type == nil then
-		print("[flow_callback_enemy_variation] Skipped variation due to missing breed data")
-
 		return {}
 	end
 
@@ -125,8 +163,6 @@ function flow_callback_enemy_variation(params)
 	end
 
 	if UnitVariationSettings[breed_type] == nil then
-		print("[flow_callback_enemy_variation] Skipped variation due to missing breed in settings file -> " .. breed_type)
-
 		return {}
 	end
 
@@ -135,9 +171,41 @@ function flow_callback_enemy_variation(params)
 	local material_result = {}
 	local group_result = {}
 	local scaling_result = {}
+	local outfit_units = {}
+	local helmet_units = {}
+
+	if ScriptUnit ~= nil then
+		local unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
+
+		if unit_inventory_extension ~= nil then
+			outfit_units = unit_inventory_extension.inventory_item_outfit_units
+			helmet_units = unit_inventory_extension.inventory_item_helmet_units
+		end
+	else
+		outfit_units = Unit.get_data(unit, "outfit_items") or {}
+		helmet_units = Unit.get_data(unit, "helmet_items") or {}
+	end
+
+	if outfit_units ~= nil then
+		for k = 1, #outfit_units, 1 do
+			local outfit_variation = Unit.get_data(outfit_units[k], "gib_variation")
+
+			if outfit_variation ~= nil then
+				table.insert(group_result, outfit_variation)
+			end
+		end
+	end
+
+	if helmet_units ~= nil then
+		outfit_units = table.shallow_copy(outfit_units)
+
+		for i = 1, #helmet_units, 1 do
+			table.insert(outfit_units, helmet_units[i])
+		end
+	end
 
 	if variationsettings.materials_enabled_from_start ~= nil then
-		enemy_variation_tint_materials(unit, variationsettings, variationsettings.materials_enabled_from_start, material_result)
+		enemy_variation_tint_materials(unit, outfit_units, variationsettings, variationsettings.materials_enabled_from_start, material_result)
 	end
 
 	if variationsettings.enabled_from_start ~= nil then
@@ -145,11 +213,11 @@ function flow_callback_enemy_variation(params)
 			Unit.set_visibility(unit, "all", false)
 		end
 
-		enemy_variation_enable_parts(unit, variationsettings, variationsettings.enabled_from_start, group_result, material_result)
+		enemy_variation_enable_parts(unit, outfit_units, variationsettings, variationsettings.enabled_from_start, group_result, material_result)
 	end
 
 	if variationsettings.scale_variation ~= nil then
-		enemy_variation_scale_nodes(unit, variationsettings, scaling_result)
+		enemy_variation_scale_nodes(unit, outfit_units, variationsettings, scaling_result)
 	end
 
 	variation_result.groups = group_result
@@ -157,25 +225,59 @@ function flow_callback_enemy_variation(params)
 	variation_result.scaling = scaling_result
 
 	Unit.set_data(unit, "variation_data", variation_result)
+	Unit.set_data(unit, "dismember_filter", {})
 
 	return {}
 end
 
-local function enemy_dismember_can_spawn_gib(unit, gibsettings)
-	if gibsettings.parent_destroy_actors then
-		for _, actor_name in ipairs(gibsettings.parent_destroy_actors) do
-			local unit_actor = Unit.actor(unit, actor_name)
+local function enemy_dismember_can_spawn_gib(unit, bodypart)
+	local dismember_filter = Unit.get_data(unit, "dismember_filter") or {}
 
-			if not unit_actor or not Actor.is_scene_query_enabled(unit_actor) then
-				return false
-			end
-		end
+	if table.contains(dismember_filter, bodypart) then
+		return false
 	end
 
 	return true
 end
 
-local function enemy_dismember_spawn_gib(unit_spawner, unit, world, gibsettings, unit_inventory_extension, unit_ai_system_extension)
+local function enemy_dismember_set_dismember_filter(unit, bodypart, gibsettings)
+	local dismember_filter = Unit.get_data(unit, "dismember_filter") or {}
+
+	if not table.contains(dismember_filter, bodypart) then
+		table.insert(dismember_filter, bodypart)
+	end
+
+	if gibsettings.disable_gibs ~= nil then
+		for i = 1, #gibsettings.disable_gibs, 1 do
+			if not table.contains(dismember_filter, gibsettings.disable_gibs[i]) then
+				table.insert(dismember_filter, gibsettings.disable_gibs[i])
+			end
+		end
+	end
+
+	Unit.set_data(unit, "dismember_filter", dismember_filter)
+end
+
+local function enemy_dismember_get_helmet_units(unit, unit_inventory_extension)
+	local helmet_units = {}
+	helmet_units = (unit_inventory_extension == nil or unit_inventory_extension.inventory_item_helmet_units) and (Unit.get_data(unit, "helmet_items") or {})
+
+	return helmet_units
+end
+
+local function enemy_dismember_disable_helmets(unit, unit_inventory_extension, gibsettings)
+	if gibsettings.gib_helmet_link_node ~= nil then
+		local helmet_units = enemy_dismember_get_helmet_units(unit, unit_inventory_extension)
+
+		for i = 1, #helmet_units, 1 do
+			if Unit.has_animation_state_machine(helmet_units[i]) then
+				Unit.disable_animation_state_machine(helmet_units[i])
+			end
+		end
+	end
+end
+
+local function enemy_dismember_spawn_gib(unit_spawner, unit, world, gibsettings, force_multiplier, unit_inventory_extension, unit_ai_system_extension)
 	local node_id = Unit.node(unit, gibsettings.gib_parent_align_node)
 	local spawn_pose = Matrix4x4.from_quaternion_position(Unit.world_rotation(unit, node_id), Unit.world_position(unit, node_id))
 
@@ -202,20 +304,19 @@ local function enemy_dismember_spawn_gib(unit_spawner, unit, world, gibsettings,
 		gib_unit = World.spawn_unit(world, gibsettings.gib_unit, spawn_pose)
 	end
 
-	if unit_inventory_extension ~= nil and gibsettings.gib_helmet_link_node ~= nil then
-		local helmet_unit = unit_inventory_extension.inventory_item_helmet_unit
+	if gibsettings.gib_helmet_link_node ~= nil then
+		local helmet_units = enemy_dismember_get_helmet_units(unit, unit_inventory_extension)
 
-		if helmet_unit ~= nil then
-			World.unlink_unit(world, helmet_unit)
-			World.link_unit(Unit.world(gib_unit), helmet_unit, gib_unit, Unit.node(gib_unit, gibsettings.gib_helmet_link_node))
-			Unit.set_shader_pass_flag_for_meshes_in_unit_and_childs(helmet_unit, "outline_unit", false)
+		for i = 1, #helmet_units, 1 do
+			World.unlink_unit(world, helmet_units[i])
+			World.link_unit(Unit.world(gib_unit), helmet_units[i], gib_unit, Unit.node(gib_unit, gibsettings.gib_helmet_link_node))
+			Unit.set_shader_pass_flag_for_meshes_in_unit_and_childs(helmet_units[i], "outline_unit", false)
 		end
 	end
 
 	local actor = Unit.actor(gib_unit, gibsettings.gib_push_actor)
 
 	if not actor then
-		print("[enemy_dismember_spawn_gib] Skipped gib unit push. Could not find actor " .. gibsettings.gib_push_actor .. " in unit")
 	else
 		if Unit.has_node(gib_unit, "a_push") then
 			node_id = Unit.node(gib_unit, "a_push")
@@ -223,7 +324,12 @@ local function enemy_dismember_spawn_gib(unit_spawner, unit, world, gibsettings,
 			node_id = Script.index_offset()
 		end
 
-		Actor.add_velocity(actor, Quaternion.rotate(Unit.world_rotation(gib_unit, node_id), Vector3(2 + 0.5 * math.random(), math.random() - 0.5, math.random() - 0.5)) * gibsettings.gib_push_force)
+		if force_multiplier ~= 1 then
+			Actor.add_velocity(actor, Quaternion.rotate(Unit.world_rotation(gib_unit, node_id), Vector3(2 + math.random(-0.5, 0.5), math.random(-1, 1), math.random(-1, 1))) * gibsettings.gib_push_force * 0.75 * force_multiplier)
+			Actor.add_angular_velocity(actor, Vector3(math.random(0, 2), math.random(0, 2), math.random(0, 2)) * force_multiplier)
+		else
+			Actor.add_velocity(actor, Quaternion.rotate(Unit.world_rotation(gib_unit, node_id), Vector3(2 + 0.5 * math.random(), math.random() - 0.5, math.random() - 0.5)) * gibsettings.gib_push_force)
+		end
 	end
 
 	return gib_unit
@@ -343,21 +449,9 @@ local function enemy_dismember_set_variations(unit, gib_unit, stump_unit)
 	end
 end
 
-local function enemy_dismember_kill_actors(unit, actors, unit_inventory_extension, destroy)
-	if destroy then
-		for i = 1, #actors, 1 do
-			local current_actor = Unit.actor(unit, actors[i])
-
-			if current_actor ~= nil then
-				Unit.destroy_actor(unit, actors[i])
-			end
-		end
-	else
-		local disabled_actors = nil
-
-		if unit_inventory_extension ~= nil then
-			disabled_actors = unit_inventory_extension.disabled_actors
-		end
+local function enemy_dismember_kill_actors(unit, actors, unit_inventory_extension)
+	if unit_inventory_extension ~= nil then
+		local disabled_actors = unit_inventory_extension.disabled_actors
 
 		for i = 1, #actors, 1 do
 			local unit_actor = Unit.actor(unit, actors[i])
@@ -372,8 +466,14 @@ local function enemy_dismember_kill_actors(unit, actors, unit_inventory_extensio
 			end
 		end
 
-		if unit_inventory_extension ~= nil then
-			unit_inventory_extension.disabled_actors = disabled_actors
+		unit_inventory_extension.disabled_actors = disabled_actors
+	else
+		for i = 1, #actors, 1 do
+			local current_actor = Unit.actor(unit, actors[i])
+
+			if current_actor ~= nil then
+				Unit.destroy_actor(unit, actors[i])
+			end
 		end
 	end
 end
@@ -388,8 +488,6 @@ local function enemy_dismember(params, spawn_gib)
 	end
 
 	if breed_type == nil then
-		print("[enemy_dismember] Skipped gib due to missing breed data")
-
 		return
 	end
 
@@ -398,21 +496,17 @@ local function enemy_dismember(params, spawn_gib)
 	end
 
 	if UnitGibSettings[breed_type] == nil then
-		print("[enemy_dismember] Skipped gib due to missing breed in settings file -> " .. breed_type)
-
 		return
 	end
 
 	local bodypart = params.bodypart
 
 	if UnitGibSettings[breed_type].parts[bodypart] == nil then
-		print("[enemy_dismember] Skipped gib due to missing body part for breed in settings file -> " .. breed_type .. " -> " .. bodypart)
-
 		return
 	end
 
 	local gibsettings = UnitGibSettings[breed_type].parts[bodypart]
-	local can_spawn_gib = enemy_dismember_can_spawn_gib(unit, gibsettings)
+	local can_spawn_gib = enemy_dismember_can_spawn_gib(unit, bodypart)
 
 	if not can_spawn_gib then
 		return
@@ -425,16 +519,24 @@ local function enemy_dismember(params, spawn_gib)
 		unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
 		unit_ai_system_extension = ScriptUnit.has_extension(unit, "ai_system")
 		unit_spawner = Managers.state.unit_spawner
+
+		if ScriptUnit.has_extension(unit, "projectile_linker_system") then
+			local projectile_linker_system = Managers.state.entity:system("projectile_linker_system")
+
+			projectile_linker_system:clear_linked_projectiles(unit)
+		end
 	end
 
 	local gib_unit = nil
 
 	if spawn_gib then
-		gib_unit = enemy_dismember_spawn_gib(unit_spawner, unit, world, gibsettings, unit_inventory_extension, unit_ai_system_extension)
+		gib_unit = enemy_dismember_spawn_gib(unit_spawner, unit, world, gibsettings, 1, unit_inventory_extension, unit_ai_system_extension)
+	else
+		enemy_dismember_disable_helmets(unit, unit_inventory_extension, gibsettings)
 	end
 
-	enemy_dismember_kill_actors(unit, gibsettings.parent_destroy_actors, unit_inventory_extension, false)
-	enemy_dismember_kill_actors(unit, gibsettings.ragdoll_destroy_actors, nil, true)
+	enemy_dismember_kill_actors(unit, gibsettings.parent_destroy_actors, unit_inventory_extension)
+	enemy_dismember_kill_actors(unit, gibsettings.ragdoll_destroy_actors, nil)
 
 	local stump_unit = enemy_dismember_spawn_stump(unit_spawner, unit, world, gibsettings, not spawn_gib)
 
@@ -472,22 +574,39 @@ local function enemy_dismember(params, spawn_gib)
 		Unit.set_visibility(unit, gibsettings.parent_hide_group, false)
 	end
 
-	node_id = Unit.node(stump_unit, "a_vfx")
+	if gibsettings.send_outfit_event ~= nil then
+		if unit_inventory_extension ~= nil then
+			for i = 1, #unit_inventory_extension.inventory_item_outfit_units, 1 do
+				Unit.flow_event(unit_inventory_extension.inventory_item_outfit_units[i], gibsettings.send_outfit_event)
+			end
+		else
+			local outfit_items = Unit.get_data(unit, "outfit_items") or {}
 
-	if gibsettings.vfx ~= nil then
-		local vfx_id = World.create_particles(world, gibsettings.vfx, Unit.world_position(stump_unit, node_id), Unit.world_rotation(stump_unit, node_id))
-
-		World.link_particles(world, vfx_id, stump_unit, node_id, Matrix4x4.identity(), "destroy")
+			for i = 1, #outfit_items, 1 do
+				Unit.flow_event(outfit_items[i], gibsettings.send_outfit_event)
+			end
+		end
 	end
 
-	if gib_unit == nil and gibsettings.pulp_vfx ~= nil then
-		local vfx_id = World.create_particles(world, gibsettings.pulp_vfx, Unit.world_position(stump_unit, node_id), Unit.world_rotation(stump_unit, node_id))
+	if BloodSettings.enemy_blood.enabled then
+		node_id = Unit.node(stump_unit, "a_vfx")
 
-		World.link_particles(world, vfx_id, stump_unit, node_id, Matrix4x4.identity(), "destroy")
+		if gibsettings.vfx ~= nil then
+			local vfx_id = World.create_particles(world, gibsettings.vfx, Unit.world_position(stump_unit, node_id), Unit.world_rotation(stump_unit, node_id))
+
+			World.link_particles(world, vfx_id, stump_unit, node_id, Matrix4x4.identity(), "destroy")
+		end
+
+		if gib_unit == nil and gibsettings.pulp_vfx ~= nil then
+			local vfx_id = World.create_particles(world, gibsettings.pulp_vfx, Unit.world_position(stump_unit, node_id), Unit.world_rotation(stump_unit, node_id))
+
+			World.link_particles(world, vfx_id, stump_unit, node_id, Matrix4x4.identity(), "destroy")
+		end
 	end
 
 	if not spawn_gib and bodypart == "head" then
 		local wwise_world = Wwise.wwise_world(world)
+		node_id = Unit.node(stump_unit, "a_vfx")
 
 		WwiseWorld.trigger_event(wwise_world, "Play_combat_enemy_head_crush", stump_unit, node_id)
 	end
@@ -532,6 +651,8 @@ local function enemy_dismember(params, spawn_gib)
 		table.insert(stump_items, stump_unit)
 		Unit.set_data(unit, "stump_items", stump_items)
 	end
+
+	enemy_dismember_set_dismember_filter(unit, bodypart, gibsettings)
 end
 
 function enemy_explode(params)
@@ -544,8 +665,6 @@ function enemy_explode(params)
 	end
 
 	if breed_type == nil then
-		print("[enemy_dismember] Skipped explode due to missing breed data")
-
 		return
 	end
 
@@ -554,22 +673,16 @@ function enemy_explode(params)
 	end
 
 	if UnitGibSettings[breed_type] == nil then
-		print("[enemy_dismember] Skipped explode due to missing breed in settings file -> " .. breed_type)
-
 		return
 	end
 
 	if UnitGibSettings[breed_type].explode == nil then
-		print("[enemy_dismember] Skipped explode due to missing explode info for breed in settings file -> " .. breed_type)
-
 		return
 	end
 
 	local explodesettings = UnitGibSettings[breed_type].explode
 
 	if explodesettings.part_combos == nil then
-		print("[enemy_dismember] Skipped explode due to missing part combo info for breed in settings file -> " .. breed_type)
-
 		return
 	end
 
@@ -581,6 +694,18 @@ function enemy_explode(params)
 		unit_spawner = Managers.state.unit_spawner
 	end
 
+	if unit_inventory_extension ~= nil then
+		if #unit_inventory_extension.stump_items ~= 0 then
+			return
+		end
+	elseif Unit.get_data(unit, "stump_items") ~= nil then
+		return
+	end
+
+	if Unit.get_data(unit, "exploded") then
+		return
+	end
+
 	local already_burned = nil
 
 	if Unit.get_data(unit, "was_burned") then
@@ -588,13 +713,18 @@ function enemy_explode(params)
 	end
 
 	local part_combo = explodesettings.part_combos[math.random(#explodesettings.part_combos)]
+	local relinked_helmet = false
+	local push_force_multiplier = 1
+
+	if type(explodesettings.push_force_multiplier) == "number" then
+		push_force_multiplier = explodesettings.push_force_multiplier
+	end
 
 	for i = 1, #part_combo, 1 do
 		if UnitGibSettings[breed_type].parts[part_combo[i]] == nil then
-			print("[enemy_dismember] Skipped spawning gib part due to missing body part for breed in settings file -> " .. breed_type .. " -> " .. part_combo[i])
 		else
 			local gibsettings = UnitGibSettings[breed_type].parts[part_combo[i]]
-			local gib_unit = enemy_dismember_spawn_gib(unit_spawner, unit, world, gibsettings, unit_inventory_extension)
+			local gib_unit = enemy_dismember_spawn_gib(unit_spawner, unit, world, gibsettings, push_force_multiplier, unit_inventory_extension)
 
 			enemy_dismember_set_variations(unit, gib_unit, nil)
 
@@ -603,11 +733,15 @@ function enemy_explode(params)
 			end
 
 			Unit.flow_event(gib_unit, "lua_start_despawn_timer")
+
+			if gibsettings.gib_helmet_link_node ~= nil then
+				relinked_helmet = true
+			end
 		end
 	end
 
-	if explodesettings.vfx_align_node ~= nil then
-		node_id = Unit.node(unit, explodesettings.vfx_align_node)
+	if BloodSettings.enemy_blood.enabled and explodesettings.vfx_align_node ~= nil then
+		local node_id = Unit.node(unit, explodesettings.vfx_align_node)
 
 		if explodesettings.vfx ~= nil then
 			local vfx_id = World.create_particles(world, explodesettings.vfx, Unit.world_position(unit, node_id), Unit.world_rotation(unit, node_id))
@@ -616,24 +750,63 @@ function enemy_explode(params)
 		end
 	end
 
+	local outfit_items = {}
+
+	if unit_inventory_extension ~= nil then
+		outfit_items = unit_inventory_extension.inventory_item_outfit_units or {}
+	else
+		outfit_items = Unit.get_data(unit, "outfit_items") or {}
+	end
+
+	for i = 1, #outfit_items, 1 do
+		Unit.set_unit_visibility(outfit_items[i], false)
+	end
+
+	if gibsettings.send_outfit_event ~= nil then
+		for i = 1, #outfit_items, 1 do
+			Unit.flow_event(outfit_items[i], gibsettings.send_outfit_event)
+		end
+	end
+
+	local helmet_units = enemy_dismember_get_helmet_units(unit, unit_inventory_extension)
+
+	for i = 1, #helmet_units, 1 do
+		if relinked_helmet == false then
+			Unit.set_unit_visibility(helmet_units[i], false)
+		else
+			if unit_inventory_extension == nil then
+				Unit.set_data(unit, "helmet_items", {})
+			end
+
+			Unit.flow_event(helmet_units[i], "lua_start_despawn_timer")
+		end
+	end
+
 	Unit.set_unit_visibility(unit, false)
 	Unit.disable_physics(unit)
+	Unit.set_data(unit, "exploded", true)
 end
 
 function flow_callback_enemy_gib(params)
-	enemy_dismember(params, true)
+	if BloodSettings.dismemberment.enabled then
+		enemy_dismember(params, true)
+	end
 
 	return {}
 end
 
 function flow_callback_enemy_pulp(params)
-	enemy_dismember(params, false)
+	if BloodSettings.dismemberment.enabled then
+		enemy_dismember(params, false)
+	end
 
 	return {}
 end
 
 function flow_callback_enemy_explode(params)
-	enemy_explode(params)
+	if BloodSettings.dismemberment.enabled then
+		enemy_explode(params)
+	end
 
 	return {}
 end

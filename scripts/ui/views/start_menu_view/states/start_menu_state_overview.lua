@@ -23,6 +23,7 @@ local menu_functions = {
 		this:_activate_view("options_view")
 	end,
 	function (this)
+		Managers.state.difficulty:set_difficulty("normal")
 		Managers.state.game_mode:start_specific_level("prologue")
 	end,
 	function (this)
@@ -76,10 +77,14 @@ StartMenuStateOverview.on_enter = function (self, params)
 	self._hero_preview_skin = nil
 	local profile_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
 	local hero_name = self._hero_name
-	local hero_attributes = Managers.backend:get_interface("hero_attributes")
-	local career_index = hero_attributes:get(hero_name, "career") or 1
 
-	self:_populate_career_page(hero_name, career_index)
+	if hero_name then
+		local hero_attributes = Managers.backend:get_interface("hero_attributes")
+		local career_index = hero_attributes:get(hero_name, "career") or 1
+
+		self:_populate_career_page(hero_name, career_index)
+	end
+
 	Managers.input:enable_gamepad_cursor()
 end
 
@@ -297,7 +302,7 @@ StartMenuStateOverview._populate_career_page = function (self, hero_name, career
 	local description = career_settings.description
 	local icon = career_settings.icon
 	local passive_ability_data = career_settings.passive_ability
-	local activated_ability_data = career_settings.activated_ability
+	local activated_ability_data = career_settings.activated_ability[1]
 	local passive_display_name = passive_ability_data.display_name
 	local passive_description = passive_ability_data.description
 	local passive_icon = passive_ability_data.icon

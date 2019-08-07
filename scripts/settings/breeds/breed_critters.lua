@@ -40,10 +40,6 @@ local pig_data = {
 	},
 	hitzone_multiplier_types = {},
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		neck = {
 			prio = 1,
 			actors = {
@@ -51,7 +47,7 @@ local pig_data = {
 			}
 		},
 		torso = {
-			prio = 1,
+			prio = 2,
 			actors = {
 				"c_neck",
 				"c_hips",
@@ -62,9 +58,16 @@ local pig_data = {
 			push_actors = {
 				"c_spine2"
 			}
+		},
+		full = {
+			prio = 3,
+			actors = {}
 		}
 	},
 	max_health = {
+		3,
+		3,
+		3,
 		3,
 		3,
 		3,
@@ -151,6 +154,9 @@ local rat_data = {
 		}
 	},
 	max_health = {
+		1,
+		1,
+		1,
 		1,
 		1,
 		1,

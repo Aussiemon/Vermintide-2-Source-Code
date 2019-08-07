@@ -103,7 +103,12 @@ BTSpawnAllies.leave = function (self, unit, blackboard, t, reason)
 
 	if blackboard.action.stay_still then
 		if blackboard.action.defensive_mode_duration then
-			blackboard.defensive_mode_duration = blackboard.action.defensive_mode_duration
+			if type(blackboard.action.defensive_mode_duration) == "table" then
+				local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+				blackboard.defensive_mode_duration = blackboard.action.defensive_mode_duration[difficulty_rank]
+			else
+				blackboard.defensive_mode_duration = blackboard.action.defensive_mode_duration
+			end
 		end
 
 		blackboard.action = nil
@@ -113,7 +118,14 @@ BTSpawnAllies.leave = function (self, unit, blackboard, t, reason)
 		nav_ext:set_max_speed(blackboard.run_speed)
 
 		blackboard.run_speed_overridden = nil
-		blackboard.defensive_mode_duration = blackboard.action.defensive_mode_duration or 20
+
+		if blackboard.action.defensive_mode_duration and type(blackboard.action.defensive_mode_duration) == "table" then
+			local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+			blackboard.defensive_mode_duration = blackboard.action.defensive_mode_duration[difficulty_rank]
+		else
+			blackboard.defensive_mode_duration = blackboard.action.defensive_mode_duration or 20
+		end
+
 		blackboard.action = nil
 		blackboard.spawning_allies = nil
 		blackboard.spawned_allies_wave = blackboard.spawned_allies_wave + 1
@@ -162,11 +174,14 @@ BTSpawnAllies.find_spawn_point = function (unit, blackboard, action, data, overr
 	fassert(spawners_raw, "Level %s is lacking spawners of spawner group %s, this is necessary to use BTSpawnAllies behaviour in breed %s", Managers.state.game_mode:level_key(), spawn_group, blackboard.breed.name)
 
 	local spawners = table.clone(spawners_raw)
+	local side = blackboard.side
+	local ENEMY_PLAYER_AND_BOT_POSITIONS = side.ENEMY_PLAYER_AND_BOT_POSITIONS
+	local ENEMY_PLAYER_AND_BOT_UNITS = side.ENEMY_PLAYER_AND_BOT_UNITS
 	local average_player_position = Vector3(0, 0, 0)
 	local num_players = 0
 
-	for i, pos in ipairs(PLAYER_AND_BOT_POSITIONS) do
-		local player_unit = PLAYER_AND_BOT_UNITS[i]
+	for i, pos in ipairs(ENEMY_PLAYER_AND_BOT_POSITIONS) do
+		local player_unit = ENEMY_PLAYER_AND_BOT_UNITS[i]
 
 		if not ScriptUnit.extension(player_unit, "status_system"):is_disabled() then
 			num_players = num_players + 1
@@ -288,6 +303,8 @@ BTSpawnAllies._spawn = function (self, unit, data, blackboard, t)
 
 	blackboard.navigation_extension:set_enabled(false)
 
+	local side = blackboard.side
+	local side_id = side.side_id
 	local loc_ext = blackboard.locomotion_extension
 
 	loc_ext:set_wanted_velocity(Vector3.zero())
@@ -307,9 +324,9 @@ BTSpawnAllies._spawn = function (self, unit, data, blackboard, t)
 		for i = 1, #spawn_list, 1 do
 			local unit = spawners[(i - 1) % #spawners + 1]
 
-			spawner_system:spawn_horde(unit, 1, {
-				Breeds[spawn_list[i]]
-			})
+			spawner_system:spawn_horde(unit, {
+				spawn_list[i]
+			}, side_id)
 		end
 	end
 
@@ -321,7 +338,7 @@ BTSpawnAllies._spawn = function (self, unit, data, blackboard, t)
 		local terror_event_id = action.terror_event_id
 		local conflict_director = Managers.state.conflict
 
-		conflict_director.horde_spawner:execute_event_horde(t, terror_event_id, composition_type, limit_spawners, silent, nil, strictly_not_close_to_players)
+		conflict_director.horde_spawner:execute_event_horde(t, terror_event_id, side_id, composition_type, limit_spawners, silent, nil, strictly_not_close_to_players)
 	end
 end
 

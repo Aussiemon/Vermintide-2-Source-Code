@@ -51,6 +51,15 @@ BreedFreezerSettings = {
 		},
 		chaos_warrior = {
 			pool_size = 6
+		},
+		beastmen_ungor = {
+			pool_size = 50
+		},
+		beastmen_gor = {
+			pool_size = 32
+		},
+		beastmen_bestigor = {
+			pool_size = 16
 		}
 	},
 	breeds_index_lookup = {}
@@ -350,16 +359,18 @@ BreedFreezer.try_unfreeze_breed = function (self, breed, data)
 
 	Managers.state.unit_storage:unfreeze(unit)
 
+	local optional_data = data[7]
+	local side_id = optional_data.side_id
 	local network_manager = Managers.state.network
 	local unit_id = network_manager:unit_game_object_id(unit)
 
-	network_manager.network_transmit:send_rpc_clients("rpc_breed_unfreeze_breed", NetworkLookup.breeds[breed_name], data[2]:unbox(), data[3]:unbox(), unit_id)
+	network_manager.network_transmit:send_rpc_clients("rpc_breed_unfreeze_breed", NetworkLookup.breeds[breed_name], data[2]:unbox(), data[3]:unbox(), side_id, unit_id)
 	self:unfreeze_unit(unit, breed_name, data)
 
 	return unit
 end
 
-BreedFreezer.rpc_breed_unfreeze_breed = function (self, peer_id, breed_id, pos, rot, go_id)
+BreedFreezer.rpc_breed_unfreeze_breed = function (self, peer_id, breed_id, pos, rot, side_id, go_id)
 	fassert(self._freezer_initialized, "Received unfreeze before freezer was initialized!")
 
 	local breed_name = NetworkLookup.breeds[breed_id]
@@ -375,11 +386,17 @@ BreedFreezer.rpc_breed_unfreeze_breed = function (self, peer_id, breed_id, pos, 
 
 	local ai_extension = ScriptUnit.has_extension(unit, "ai_system")
 	local breed = ai_extension:breed()
+	local optional_data = {
+		side_id = side_id
+	}
 	local data = self.spawn_data
 	data[1] = breed
 
 	data[2]:store(pos)
 	data[3]:store(rot)
+
+	data[7] = optional_data
+
 	self:unfreeze_unit(unit, breed_name, data)
 end
 
@@ -413,6 +430,8 @@ BreedFreezer.unfreeze_unit = function (self, unit, breed_name, data)
 			system:unfreeze(unit, breed_extension_names[i], data)
 		end
 	end
+
+	Unit.flow_event(unit, "lua_trigger_variation")
 
 	return unit
 end

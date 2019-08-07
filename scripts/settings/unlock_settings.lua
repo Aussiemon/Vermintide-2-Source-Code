@@ -4,6 +4,10 @@ UnlockSettings = {
 			pre_order = {
 				class = "UnlockDlc",
 				id = "737040"
+			},
+			scorpion = {
+				class = "UnlockDlc",
+				id = "1033060"
 			}
 		}
 	}

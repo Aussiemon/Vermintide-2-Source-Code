@@ -316,10 +316,12 @@ NetworkedFlowStateManager._sync_stories = function (self, peer)
 end
 
 NetworkedFlowStateManager._sync_states = function (self, peer)
+	local network_manager = Managers.state.network
+
 	for unit, unit_states in pairs(self._object_states) do
 		fassert(Unit.alive(unit), "[NetworkedFlowStateManager] Trying to hot join sync state variable for destroyed unit.")
 
-		local unit_level_id = Level.unit_index(self._level, unit)
+		local unit_id, is_level_id = network_manager:game_object_or_level_id(unit)
 
 		for state_name, state_table in pairs(unit_states.states) do
 			local value = state_table.value
@@ -329,7 +331,7 @@ NetworkedFlowStateManager._sync_states = function (self, peer)
 				local type_data = FLOW_STATE_TYPES[type(value)]
 				value = self:_clamp_state(state_name, type_data, value)
 
-				RPC[type_data.rpcs.change](peer, unit_level_id, state_network_id, value, true)
+				RPC[type_data.rpcs.change](peer, unit_id, state_network_id, value, true, not is_level_id)
 			end
 		end
 	end
@@ -339,7 +341,7 @@ NetworkedFlowStateManager.set_level = function (self, level)
 	self._level = level
 end
 
-NetworkedFlowStateManager.flow_cb_create_state = function (self, unit, state_name, default_value, client_data_changed_event, hot_join_sync_event)
+NetworkedFlowStateManager.flow_cb_create_state = function (self, unit, state_name, default_value, client_data_changed_event, hot_join_sync_event, is_game_object)
 	fassert(Unit.alive(unit), "[NetworkedFlowStateManager] Passing destroyed unit into create flow state for state_name %q", state_name)
 	fassert(self._num_states < self._max_states, "[NetworkedFlowStateManager] Too many object states(%i).", self._max_states)
 
@@ -362,7 +364,8 @@ NetworkedFlowStateManager.flow_cb_create_state = function (self, unit, state_nam
 		default_value = default_value,
 		client_state_changed_event = client_data_changed_event,
 		client_state_set_event = hot_join_sync_event,
-		state_network_id = state_network_id
+		state_network_id = state_network_id,
+		is_game_object = is_game_object or false
 	}
 	states[unit] = unit_states
 	self._num_states = self._num_states + 1
@@ -395,7 +398,7 @@ NetworkedFlowStateManager.flow_cb_change_state = function (self, unit, state_nam
 	fassert(current_state ~= nil, "[NetworkedFlowStateManager] State %q unit %q is being changed but has not yet been created.", state_name, Unit.debug_name(unit))
 
 	current_state.value = new_state
-	local unit_level_id = Level.unit_index(level, unit)
+	local unit_id = Managers.state.network:game_object_or_level_id(unit)
 	local state_network_id = current_state.state_network_id
 	local changed = current_state ~= new_state
 
@@ -403,7 +406,7 @@ NetworkedFlowStateManager.flow_cb_change_state = function (self, unit, state_nam
 		local type_data = FLOW_STATE_TYPES[type(new_state)]
 		new_state = self:_clamp_state(state_name, type_data, new_state)
 
-		Managers.state.network.network_transmit:send_rpc_clients(type_data.rpcs.change, unit_level_id, state_network_id, new_state, false)
+		Managers.state.network.network_transmit:send_rpc_clients(type_data.rpcs.change, unit_id, state_network_id, new_state, false, current_state.is_game_object or false)
 	end
 
 	return changed, new_state
@@ -421,8 +424,8 @@ NetworkedFlowStateManager._clamp_state = function (self, state_name, type_data, 
 	return new_state
 end
 
-NetworkedFlowStateManager.client_flow_state_changed = function (self, unit_level_id, state_network_id, new_state, only_set)
-	local unit = Level.unit_by_index(self._level, unit_level_id)
+NetworkedFlowStateManager.client_flow_state_changed = function (self, unit_id, state_network_id, new_state, only_set, is_game_object)
+	local unit = Managers.state.network:game_object_or_level_unit(unit_id, not is_game_object)
 	local states = self._object_states
 	local unit_states = states[unit]
 
@@ -441,12 +444,12 @@ NetworkedFlowStateManager.client_flow_state_changed = function (self, unit_level
 	Unit.flow_event(unit, flow_event)
 end
 
-NetworkedFlowStateManager.rpc_flow_state_bool_changed = function (self, sender, unit_level_id, state_network_id, new_state, only_set)
-	self:client_flow_state_changed(unit_level_id, state_network_id, new_state, only_set)
+NetworkedFlowStateManager.rpc_flow_state_bool_changed = function (self, sender, unit_id, state_network_id, new_state, only_set, is_game_object)
+	self:client_flow_state_changed(unit_id, state_network_id, new_state, only_set, is_game_object)
 end
 
-NetworkedFlowStateManager.rpc_flow_state_number_changed = function (self, sender, unit_level_id, state_network_id, new_state, only_set)
-	self:client_flow_state_changed(unit_level_id, state_network_id, new_state, only_set)
+NetworkedFlowStateManager.rpc_flow_state_number_changed = function (self, sender, unit_id, state_network_id, new_state, only_set, is_game_object)
+	self:client_flow_state_changed(unit_id, state_network_id, new_state, only_set, is_game_object)
 end
 
 return

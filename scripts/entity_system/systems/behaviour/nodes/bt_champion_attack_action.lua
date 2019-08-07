@@ -746,7 +746,7 @@ BTChampionAttackAction._deal_damage = function (self, unit, blackboard, action, 
 		local target_unit = Actor_unit(actor)
 		local is_a_character = DamageUtils.is_character(target_unit)
 
-		if is_a_character and Unit_alive(target_unit) and not hit_players[target_unit] then
+		if is_a_character and Unit_alive(target_unit) and not hit_players[target_unit] and unit ~= target_unit then
 			hit_players[target_unit] = true
 			local attack_direction = action.attack_directions and action.attack_directions[blackboard.attack_anim]
 			local blocked = DamageUtils.check_block(unit, target_unit, action.fatigue_type, attack_direction)
@@ -794,13 +794,13 @@ BTChampionAttackAction._deal_damage = function (self, unit, blackboard, action, 
 					return
 				end
 			else
-				AiUtils_damage_target(target_unit, unit, action, action.damage)
-
-				local is_ai_unit = DamageUtils.is_enemy(target_unit)
+				local is_ai_unit = DamageUtils.is_enemy(blackboard.attacking_target, target_unit)
 
 				if is_ai_unit and action.hit_ai_func then
 					action.hit_ai_func(unit, blackboard, target_unit)
 				end
+
+				AiUtils_damage_target(target_unit, unit, action, action.damage)
 			end
 		end
 	end

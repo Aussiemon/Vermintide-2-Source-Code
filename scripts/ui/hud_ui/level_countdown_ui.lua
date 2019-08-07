@@ -162,7 +162,7 @@ LevelCountdownUI._get_active_waystone_extension = function (self)
 
 			for i, unit in ipairs(units) do
 				if Unit.alive(unit) and Unit.has_data(unit, "waystone_type") then
-					local status_extension = ScriptUnit.extension(unit, "props_system")
+					local status_extension = ScriptUnit.extension(unit, "end_zone_system")
 
 					if status_extension then
 						local activated = status_extension:activated()
@@ -178,7 +178,11 @@ LevelCountdownUI._get_active_waystone_extension = function (self)
 end
 
 LevelCountdownUI.set_waystone_activation = function (self, enable, optional_waystone_type)
-	self._waystone_unit = nil
+	self._waystone_unit = LevelCountdownUI.set_waystone_activation_without_ui(enable, optional_waystone_type)
+end
+
+LevelCountdownUI.set_waystone_activation_without_ui = function (enable, optional_waystone_type)
+	local waystone_unit = nil
 	local world_manager = Managers.world
 
 	if world_manager:has_world("level_world") then
@@ -196,9 +200,9 @@ LevelCountdownUI.set_waystone_activation = function (self, enable, optional_ways
 
 						if waystone_type == optional_waystone_type then
 							Unit.flow_event(level_unit, "activate")
-							fassert(self._waystone_unit == nil, "[LevelCountdownUI] - Found multiple waystone units with the same type: %s", tostring(waystone_type))
+							fassert(waystone_unit == nil, "[LevelCountdownUI] - Found multiple waystone units with the same type: %s", tostring(waystone_type))
 
-							self._waystone_unit = level_unit
+							waystone_unit = level_unit
 						else
 							Unit.flow_event(level_unit, "deactivate")
 						end
@@ -209,6 +213,8 @@ LevelCountdownUI.set_waystone_activation = function (self, enable, optional_ways
 			end
 		end
 	end
+
+	return waystone_unit
 end
 
 return

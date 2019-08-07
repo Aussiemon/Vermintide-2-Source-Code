@@ -7,6 +7,7 @@ weapon_template.actions = {
 			aim_assist_ramp_decay_delay = 0.1,
 			anim_end_event = "attack_finished",
 			kind = "melee_start",
+			attack_hold_input = "action_one_hold",
 			aim_assist_max_ramp_multiplier = 0.4,
 			aim_assist_ramp_multiplier = 0.2,
 			anim_event = "attack_swing_charge_left",
@@ -185,10 +186,10 @@ weapon_template.actions = {
 			no_damage_impact_sound_event = "blunt_hit_armour",
 			sweep_z_offset = 0.1,
 			width_mod = 25,
-			hit_shield_stop_anim = "attack_hit_shield",
 			additional_critical_strike_chance = 0,
-			hit_effect = "melee_hit_axes_2h",
+			hit_shield_stop_anim = "attack_hit_shield",
 			use_precision_sweep = false,
+			hit_effect = "melee_hit_axes_2h",
 			damage_profile = "medium_slashing_axe_linesman",
 			damage_window_end = 0.55,
 			impact_sound_event = "axe_1h_hit",
@@ -257,8 +258,7 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			},
-			hit_mass_count = LINESMAN_HIT_MASS_COUNT
+			}
 		},
 		light_attack_left_upward = {
 			damage_window_start = 0.2,
@@ -269,12 +269,12 @@ weapon_template.actions = {
 			width_mod = 25,
 			no_damage_impact_sound_event = "blunt_hit_armour",
 			hit_shield_stop_anim = "attack_hit_shield",
-			hit_effect = "melee_hit_axes_2h",
 			additional_critical_strike_chance = 0,
+			hit_effect = "melee_hit_axes_2h",
 			use_precision_sweep = false,
+			damage_profile = "medium_slashing_axe_linesman",
 			damage_window_end = 0.45,
 			impact_sound_event = "axe_1h_hit",
-			damage_profile = "medium_slashing_axe_linesman",
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 3,
 			weapon_up_offset_mod = 0.15,
@@ -343,8 +343,7 @@ weapon_template.actions = {
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
-			end,
-			hit_mass_count = LINESMAN_HIT_MASS_COUNT
+			end
 		},
 		light_attack_left = {
 			damage_window_start = 0.2,
@@ -669,7 +668,6 @@ weapon_template.actions = {
 			anim_end_event = "attack_finished",
 			outer_push_angle = 180,
 			kind = "push_stagger",
-			hit_time = 0.1,
 			damage_profile_outer = "light_push",
 			weapon_action_hand = "right",
 			push_angle = 100,
@@ -772,6 +770,16 @@ weapon_template.actions = {
 					action = "action_one",
 					doubleclick_window = 0,
 					input = "action_one",
+					hold_required = {
+						"action_two_hold"
+					}
+				},
+				{
+					sub_action = "push",
+					start_time = 0.3,
+					action = "action_one",
+					doubleclick_window = 0,
+					input = "action_one_hold",
 					hold_required = {
 						"action_two_hold"
 					}

@@ -97,7 +97,7 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 	self._loot_requests[id] = loot
 end
 
-BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_won, quick_play_bonus, difficulty, level_key, num_tomes, num_grims, num_loot_dice, num_painting_scraps, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_backend_id)
+BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_won, quick_play_bonus, difficulty, level_key, num_tomes, num_grims, num_loot_dice, num_painting_scraps, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_backend_id, game_mode_key, weave_tier, weave_won_count, weave_progress, game_time, current_weave_index)
 	local id = self:_new_id()
 	local remote_player_ids_and_characters = self:_get_remote_player_network_ids_and_characters()
 	local data = {
@@ -115,7 +115,13 @@ BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_wo
 		deed_item_name = deed_item_name,
 		deed_backend_id = deed_backend_id,
 		id = id,
-		remote_player_ids_and_characters = remote_player_ids_and_characters
+		remote_player_ids_and_characters = remote_player_ids_and_characters,
+		game_mode_key = game_mode_key,
+		weave_tier = weave_tier,
+		weave_won_count = weave_won_count,
+		weave_progress = weave_progress,
+		game_time = game_time,
+		current_weave_index = current_weave_index
 	}
 	local generate_end_of_level_loot_request = {
 		FunctionName = "generateEndOfLevelLoot",
@@ -130,6 +136,8 @@ BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_wo
 end
 
 BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data, result)
+	Managers.telemetry.events:end_of_game_rewards(result.FunctionResult)
+
 	local function_result = result.FunctionResult
 	local id = data.id
 	local rewards = function_result.Rewards
@@ -137,9 +145,12 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 	local random_value = function_result.RandomValue
 	local consumed_deed_result = function_result.ConsumedDeedResult
 	local experience = function_result.Experience
+	local experience_pool = function_result.ExperiencePool
 	local recent_quickplay_games = function_result.RecentQuickplayGames
+	local essence_rewards = function_result.EssenceRewards
 	local num_items = #items
 	local loot_request = {}
+	local backend_mirror = self._backend_mirror
 
 	for item_type, item_data in pairs(rewards) do
 		local backend_id, item = nil
@@ -162,13 +173,13 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 			loot_request[item_type].random_value = random_value
 		end
 
-		self._backend_mirror:add_item(backend_id, item)
+		backend_mirror:add_item(backend_id, item)
 	end
 
 	if consumed_deed_result then
 		local deed_backend_id = consumed_deed_result.ItemInstanceId
 
-		self._backend_mirror:remove_item(deed_backend_id)
+		backend_mirror:remove_item(deed_backend_id)
 	end
 
 	local hero_name = data.hero_name
@@ -176,8 +187,22 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 
 	self._backend_mirror:set_read_only_data(key, experience, true)
 
+	if experience_pool then
+		local xp_pool_key = hero_name .. "_experience_pool"
+
+		self._backend_mirror:set_read_only_data(xp_pool_key, experience_pool, true)
+	end
+
 	if recent_quickplay_games then
-		self._backend_mirror:set_read_only_data("recent_quickplay_games", recent_quickplay_games, true)
+		backend_mirror:set_read_only_data("recent_quickplay_games", recent_quickplay_games, true)
+	end
+
+	if essence_rewards and #essence_rewards > 0 then
+		loot_request.essence = essence_rewards
+		local final_essence_reward = essence_rewards[#essence_rewards]
+		local new_total_essence = final_essence_reward.new_total
+
+		backend_mirror:set_essence(new_total_essence)
 	end
 
 	Managers.backend:dirtify_interfaces()

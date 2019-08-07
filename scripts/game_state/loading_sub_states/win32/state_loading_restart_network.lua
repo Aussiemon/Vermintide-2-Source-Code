@@ -47,10 +47,11 @@ StateLoadingRestartNetwork._init_network = function (self)
 	local host_to_join = nil
 	local lobby_is_server = lobby_to_join ~= nil
 	local loading_context = self.parent.parent.loading_context
+	local increment_lobby_port = true
 
-	self.parent:setup_network_options()
+	Managers.lobby:setup_network_options(increment_lobby_port)
 
-	LOBBY_PORT_INCREMENT = LOBBY_PORT_INCREMENT + 1
+	local network_options = Managers.lobby:network_options()
 	local platform = PLATFORM
 
 	if not rawget(_G, "LobbyInternal") or not LobbyInternal.network_initialized() then
@@ -111,7 +112,7 @@ StateLoadingRestartNetwork._init_network = function (self)
 			end
 		end
 
-		LobbyInternal.init_client(self.parent:network_options())
+		LobbyInternal.init_client(network_options)
 	elseif PLATFORM == "xb1" then
 		if Managers.account:offline_mode() then
 			if package.loaded["scripts/network/lobby_xbox_live"] then
@@ -127,7 +128,7 @@ StateLoadingRestartNetwork._init_network = function (self)
 			end
 
 			require("scripts/network/lobby_xbox_live")
-			LobbyInternal.init_client(self.parent:network_options())
+			LobbyInternal.init_client(network_options)
 		end
 	elseif PLATFORM == "ps4" then
 		if Managers.account:offline_mode() then
@@ -144,7 +145,7 @@ StateLoadingRestartNetwork._init_network = function (self)
 			end
 
 			require("scripts/network/lobby_psn")
-			LobbyInternal.init_client(self.parent:network_options())
+			LobbyInternal.init_client(network_options)
 		end
 	end
 
@@ -158,9 +159,13 @@ StateLoadingRestartNetwork._init_network = function (self)
 		self.parent:register_rpcs()
 	end
 
-	slot7 = self._starting_tutorial and Managers.invite:get_invited_lobby_data()
+	slot9 = self._starting_tutorial and Managers.invite:get_invited_lobby_data()
+	local loadout_resync_state = StateLoading.LoadoutResyncStates.WAIT_FOR_RPC_LOAD_LEVEL
+	local has_invitation = Managers.invite:has_invitation()
 
-	if Managers.invite:has_invitation() and not self._starting_tutorial then
+	print("[StateLoadingRestartNetwork] Selecting loadout_resync_state...", has_invitation, self._starting_tutorial, loading_context.join_lobby_data, loading_context.join_server_data, auto_join_setting, lobby_to_join, host_to_join, platform)
+
+	if has_invitation and not self._starting_tutorial then
 		self._has_invitation = true
 	elseif loading_context.join_lobby_data or loading_context.join_server_data then
 		self.parent:setup_join_lobby()
@@ -175,6 +180,14 @@ StateLoadingRestartNetwork._init_network = function (self)
 		self.parent:setup_lobby_host()
 
 		self._server_created = true
+		loadout_resync_state = StateLoading.LoadoutResyncStates.CHECK_RESYNC
+	end
+
+	if self.parent:loadout_resync_state() == StateLoading.LoadoutResyncStates.IDLE then
+		print("[StateLoadingRestartNetwork] loadout_resync_state IDLE ->", loadout_resync_state)
+		self.parent:set_loadout_resync_state(loadout_resync_state)
+	else
+		print("[StateLoadingRestartNetwork] Ignoring selected loadout_resync_state, wasn't IDLE")
 	end
 
 	if loading_context.previous_session_error then

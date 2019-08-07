@@ -390,6 +390,14 @@ frag_grenade_t2.wield_anim = weapon_template_frag.wield_anim
 frag_grenade_t2.right_hand_unit = "units/weapons/player/wpn_emp_grenade_01_t2/wpn_emp_grenade_01_t2"
 frag_grenade_t2.left_hand_unit = "units/weapons/player/wpn_emp_grenade_01_t2/wpn_emp_grenade_lighter_01_t2"
 frag_grenade_t2.pickup_data.pickup_name = "frag_grenade_t2"
+local shadow_flare = table.clone(weapon_template_frag)
+shadow_flare.right_hand_unit = "units/weapons/player/wpn_shadow_flare/wpn_shadow_flare"
+shadow_flare.left_hand_unit = "units/weapons/player/wpn_emp_grenade_01_t2/wpn_emp_grenade_lighter_01_t2"
+shadow_flare.actions.action_one.throw.impact_data.aoe = ExplosionTemplates.shadow_flare
+shadow_flare.actions.action_one.throw.timed_data.aoe = ExplosionTemplates.shadow_flare
+shadow_flare.actions.action_instant_throw_grenade.instant_throw.impact_data.aoe = ExplosionTemplates.shadow_flare
+shadow_flare.actions.action_instant_throw_grenade.instant_throw.impact_data.aoe = ExplosionTemplates.shadow_flare
+shadow_flare.pickup_data = nil
 local fire_grenade_t1 = table.clone(weapon_template_fire_dot)
 fire_grenade_t1.left_hand_unit = weapon_template_fire_dot.left_hand_unit
 fire_grenade_t1.wield_anim = weapon_template_fire_dot.wield_anim
@@ -412,5 +420,6 @@ return {
 	frag_grenade_t1 = frag_grenade_t1,
 	frag_grenade_t2 = frag_grenade_t2,
 	fire_grenade_t1 = fire_grenade_t1,
-	fire_grenade_t2 = fire_grenade_t2
+	fire_grenade_t2 = fire_grenade_t2,
+	shadow_flare = shadow_flare
 }

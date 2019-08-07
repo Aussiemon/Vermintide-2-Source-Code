@@ -4,13 +4,15 @@ AiBreedSnippets = AiBreedSnippets or {}
 local vector3_distance = Vector3.distance
 
 local function set_initial_aggro(unit, blackboard)
+	local side = Managers.state.side.side_by_unit[unit]
+	local enemy_player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
 	local breed = blackboard.breed
 	local weights = breed.perception_weights
 	local best_score = 0
 	local best_enemy = nil
 
-	for i = 1, #PLAYER_AND_BOT_UNITS, 1 do
-		local enemy_unit = PLAYER_AND_BOT_UNITS[i]
+	for i = 1, #enemy_player_and_bot_units, 1 do
+		local enemy_unit = enemy_player_and_bot_units[i]
 		local enemy_pos = POSITION_LOOKUP[enemy_unit]
 		local pos = POSITION_LOOKUP[unit]
 		local dist = vector3_distance(pos, enemy_pos)
@@ -495,12 +497,15 @@ AiBreedSnippets.on_storm_vermin_hot_join_sync = function (sender, unit)
 end
 
 AiBreedSnippets.on_storm_vermin_champion_update = function (unit, blackboard, t, dt)
+	local side = Managers.state.side.side_by_unit[unit]
+	local enemy_player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
+	local enemy_player_and_bot_positions = side.ENEMY_PLAYER_AND_BOT_POSITIONS
 	local self_pos = POSITION_LOOKUP[unit]
 	local range = BreedActions.skaven_storm_vermin_champion.special_attack_spin.radius
 	local num = 0
 
-	for i, position in ipairs(PLAYER_AND_BOT_POSITIONS) do
-		local player_unit = PLAYER_AND_BOT_UNITS[i]
+	for i, position in ipairs(enemy_player_and_bot_positions) do
+		local player_unit = enemy_player_and_bot_units[i]
 
 		if Vector3.distance(self_pos, position) < range and not ScriptUnit.extension(player_unit, "status_system"):is_disabled() and not ScriptUnit.extension(player_unit, "status_system"):is_invisible() then
 			num = num + 1
@@ -521,8 +526,9 @@ AiBreedSnippets.on_storm_vermin_champion_update = function (unit, blackboard, t,
 			local silent = true
 			local composition_type = "stronghold_boss_trickle"
 			local limit_spawners, terror_event_id = nil
+			local side_id = side.side_id
 
-			conflict_director.horde_spawner:execute_event_horde(t, terror_event_id, composition_type, limit_spawners, silent, nil, strictly_not_close_to_players)
+			conflict_director.horde_spawner:execute_event_horde(t, terror_event_id, side_id, composition_type, limit_spawners, silent, nil, strictly_not_close_to_players)
 
 			blackboard.trickle_timer = t + 15
 		else
@@ -571,7 +577,7 @@ AiBreedSnippets.on_storm_vermin_champion_update = function (unit, blackboard, t,
 	end
 
 	if blackboard.displaced_units then
-		AiUtils.push_intersecting_players(unit, blackboard.displaced_units, breed.displace_players_data, t, dt)
+		AiUtils.push_intersecting_players(unit, unit, blackboard.displaced_units, breed.displace_players_data, t, dt)
 	end
 end
 
@@ -616,7 +622,7 @@ AiBreedSnippets.on_chaos_warrior_update = function (unit, blackboard, t)
 		return
 	end
 
-	AiUtils.push_intersecting_players(unit, blackboard.displaced_units, displace_players_data, t)
+	AiUtils.push_intersecting_players(unit, unit, blackboard.displaced_units, displace_players_data, t)
 end
 
 AiBreedSnippets.on_chaos_tentacle_despawn = function (unit, blackboard)
@@ -984,8 +990,9 @@ function check_for_recent_attackers(unit, blackboard, t)
 
 	if nr_damages > 0 then
 		local attacking_unit = recent_damages[DamageDataIndex.ATTACKER]
+		local side = blackboard.side
 
-		if Unit.alive(attacking_unit) and VALID_TARGETS_PLAYERS_AND_BOTS[attacking_unit] then
+		if Unit.alive(attacking_unit) and side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[attacking_unit] then
 			local dist_sqr = Vector3.distance_squared(POSITION_LOOKUP[unit], POSITION_LOOKUP[attacking_unit])
 
 			if min_retaliation_dist_sqr < dist_sqr then
@@ -1064,6 +1071,10 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_update = function (unit, blackboard, t
 end
 
 AiBreedSnippets.reward_boss_kill_loot_die = function (unit, blackboard)
+	if Managers.weave:get_active_weave() then
+		return
+	end
+
 	local nav_world = blackboard.nav_world
 	local position = POSITION_LOOKUP[unit]
 	local below = 1
@@ -1081,9 +1092,21 @@ AiBreedSnippets.reward_boss_kill_loot_die = function (unit, blackboard)
 	end
 
 	wanted_drop_position = wanted_drop_position or position
+	local pickup_name = "loot_die"
+	local extension_init_data = {
+		pickup_system = {
+			has_physics = true,
+			spawn_type = "loot",
+			pickup_name = pickup_name
+		}
+	}
+	local pickup_settings = AllPickups[pickup_name]
+	local unit_name = pickup_settings.unit_name
+	local unit_template_name = pickup_settings.unit_template_name or "pickup_unit"
+	local rotation = Quaternion.identity()
 	local offset = Vector3(0, 0, 0.6)
 
-	AiBreedSnippets.drop_loot_dice(1, wanted_drop_position + offset, true)
+	Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, wanted_drop_position + offset, rotation)
 
 	blackboard.rewarded_boss_loot_die = true
 end
@@ -1213,9 +1236,12 @@ AiBreedSnippets.on_chaos_exalted_champion_update = function (unit, blackboard, t
 	local range = BreedActions.chaos_exalted_champion.special_attack_aoe.radius
 	local num = 0
 	local player_average_hp = 0
+	local side = Managers.state.side.side_by_unit[unit]
+	local enemy_player_and_bot_positions = side.ENEMY_PLAYER_AND_BOT_POSITIONS
+	local enemy_player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
 
-	for i, position in ipairs(PLAYER_AND_BOT_POSITIONS) do
-		local player_unit = PLAYER_AND_BOT_UNITS[i]
+	for i, position in ipairs(enemy_player_and_bot_positions) do
+		local player_unit = enemy_player_and_bot_units[i]
 
 		if Vector3.distance(self_pos, position) < range and not ScriptUnit.extension(player_unit, "status_system"):is_disabled() and not ScriptUnit.extension(player_unit, "status_system"):is_invisible() then
 			num = num + 1
@@ -1261,9 +1287,7 @@ AiBreedSnippets.on_chaos_exalted_champion_update = function (unit, blackboard, t
 	if blackboard.defensive_mode_duration then
 		local remaining = blackboard.defensive_mode_duration - dt
 
-		if remaining <= 0 or (remaining <= 20 and conflict_director:spawned_during_event() <= 4) then
-			blackboard.defensive_mode_duration = nil
-		elseif remaining <= 20 and conflict_director:count_units_by_breed("chaos_marauder") < 4 then
+		if remaining <= 0 then
 			blackboard.defensive_mode_duration = nil
 		else
 			blackboard.defensive_mode_duration = remaining
@@ -1280,8 +1304,9 @@ AiBreedSnippets.on_chaos_exalted_champion_update = function (unit, blackboard, t
 			local composition_type = "warcamp_boss_event_trickle"
 			local limit_spawners = nil
 			local terror_event_id = "warcamp_boss_minions"
+			local side_id = side.side_id
 
-			conflict_director.horde_spawner:execute_event_horde(t, terror_event_id, composition_type, limit_spawners, silent, nil, strictly_not_close_to_players)
+			conflict_director.horde_spawner:execute_event_horde(t, terror_event_id, side_id, composition_type, limit_spawners, silent, nil, strictly_not_close_to_players)
 
 			blackboard.trickle_timer = t + timer
 		else
@@ -1290,7 +1315,7 @@ AiBreedSnippets.on_chaos_exalted_champion_update = function (unit, blackboard, t
 	end
 
 	if blackboard.displaced_units then
-		AiUtils.push_intersecting_players(unit, blackboard.displaced_units, breed.displace_players_data, t, dt)
+		AiUtils.push_intersecting_players(unit, unit, blackboard.displaced_units, breed.displace_players_data, t, dt)
 	end
 
 	AiBreedSnippets.update_exalted_champion_cheer_state(unit, blackboard, t, dt, player_average_hp)
@@ -1346,7 +1371,7 @@ AiBreedSnippets.on_chaos_exalted_champion_norsca_update = function (unit, blackb
 	end
 
 	if blackboard.displaced_units then
-		AiUtils.push_intersecting_players(unit, blackboard.displaced_units, breed.displace_players_data, t, dt)
+		AiUtils.push_intersecting_players(unit, unit, blackboard.displaced_units, breed.displace_players_data, t, dt)
 	end
 
 	if blackboard.ray_can_go_update_time < t and blackboard.target_unit then
@@ -1419,11 +1444,14 @@ AiBreedSnippets.on_stormfiend_boss_update = function (unit, blackboard)
 	local hp = ScriptUnit.extension(blackboard.unit, "health_system"):current_health_percent()
 	local hp_at_mounted = blackboard.hp_at_mounted
 	local self_pos = POSITION_LOOKUP[unit]
+	local side = Managers.state.side.side_by_unit[unit]
+	local enemy_player_and_bot_positions = side.ENEMY_PLAYER_AND_BOT_POSITIONS
+	local enemy_player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
 	local num = 0
 	local range = 4
 
-	for i, position in ipairs(PLAYER_AND_BOT_POSITIONS) do
-		local player_unit = PLAYER_AND_BOT_UNITS[i]
+	for i, position in ipairs(enemy_player_and_bot_positions) do
+		local player_unit = enemy_player_and_bot_units[i]
 
 		if Vector3.distance(self_pos, position) < range and not ScriptUnit.extension(player_unit, "status_system"):is_disabled() then
 			num = num + 1
@@ -1600,8 +1628,10 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 		local composition_type = "skittergate_grey_seer_trickle"
 		local limit_spawners, terror_event_id = nil
 		local conflict_director = Managers.state.conflict
+		local side = blackboard.side
+		local side_id = side.side_id
 
-		conflict_director.horde_spawner:execute_event_horde(t, terror_event_id, composition_type, limit_spawners, silent, nil, strictly_not_close_to_players)
+		conflict_director.horde_spawner:execute_event_horde(t, terror_event_id, side_id, composition_type, limit_spawners, silent, nil, strictly_not_close_to_players)
 	elseif current_phase == 2 and hp < 0.5 then
 		blackboard.current_phase = 3
 	elseif current_phase == 1 and hp < 0.75 then
@@ -1686,8 +1716,10 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 			local silent = true
 			local composition_type = "skittergate_grey_seer_trickle"
 			local limit_spawners, terror_event_id = nil
+			local side = blackboard.side
+			local side_id = side.side_id
 
-			conflict_director.horde_spawner:execute_event_horde(t, terror_event_id, composition_type, limit_spawners, silent, nil, strictly_not_close_to_players)
+			conflict_director.horde_spawner:execute_event_horde(t, terror_event_id, side_id, composition_type, limit_spawners, silent, nil, strictly_not_close_to_players)
 
 			blackboard.trickle_timer = t + timer
 		else
@@ -1740,6 +1772,16 @@ AiBreedSnippets.on_gutter_runner_spawn = function (unit, blackboard)
 	blackboard.initial_pounce_timer = t + math.random(2, 3)
 
 	Managers.state.entity:system("surrounding_aware_system"):add_system_event(unit, "heard_enemy", DialogueSettings.enemies_distant_distance, "enemy_tag", "skaven_gutter_runner")
+end
+
+for _, dlc in pairs(DLCSettings) do
+	local ai_breed_snippets_file_names = dlc.ai_breed_snippets_file_names
+
+	if ai_breed_snippets_file_names then
+		for _, file_name in pairs(ai_breed_snippets_file_names) do
+			require(file_name)
+		end
+	end
 end
 
 return

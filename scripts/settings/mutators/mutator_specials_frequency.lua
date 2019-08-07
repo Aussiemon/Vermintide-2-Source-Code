@@ -11,7 +11,7 @@ return {
 			local template = data.template
 
 			if settings.max_specials then
-				settings.max_specials = settings.max_specials + template.max_specials
+				settings.max_specials = settings.max_specials * template.max_specials
 			end
 
 			local spawn_time_reduction = template.spawn_time_reduction

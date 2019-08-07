@@ -18,19 +18,25 @@ NavGraphSystem.init = function (self, context, system_name)
 	self.nav_world = ai_system:nav_world()
 	local version = nil
 	local level_settings = LevelHelper:current_level_settings(self.world)
-	local level_name = level_settings.level_name
+	local level_path = level_settings.level_name
 
 	if LEVEL_EDITOR_TEST then
-		level_name = Application.get_data("LevelEditor", "level_resource_name")
+		level_path = Application.get_data("LevelEditor", "level_resource_name")
+	end
+
+	local num_nested_levels = LevelResource.nested_level_count(level_path)
+
+	if num_nested_levels > 0 then
+		level_path = LevelResource.nested_level_resource_name(level_path, 0)
 	end
 
 	if level_settings.no_nav_mesh then
 		self.ledgelator_version = WANTED_LEDGELATOR_VERSION
 		self.smart_objects = {}
 		self.no_nav_mesh = true
-	elseif level_name then
-		local smart_object_path = level_name .. "_smartobjects"
-		local ledge_path = level_name .. "_ledges"
+	elseif level_path then
+		local smart_object_path = level_path .. "_smartobjects"
+		local ledge_path = level_path .. "_ledges"
 
 		if Application.can_get("lua", smart_object_path) then
 			local smart_objects = require(smart_object_path)
@@ -78,6 +84,7 @@ NavGraphSystem.init_nav_graphs = function (self, unit, smart_object_id, extensio
 	local smart_objects = self.smart_objects
 	local debug_color = Colors.get("orange")
 	local smart_object_unit_data = smart_objects[smart_object_id]
+	local level_jumps = self.level_jumps
 
 	for smart_object, smart_object_data in pairs(smart_object_unit_data) do
 		local smart_object_type = smart_object_data.smart_object_type or "ledges"
@@ -86,7 +93,7 @@ NavGraphSystem.init_nav_graphs = function (self, unit, smart_object_id, extensio
 		control_points[2] = Vector3Aux.unbox(smart_object_data.pos2)
 		local is_bidirectional = true
 
-		if smart_object_unit_data.is_one_way or (smart_object_type ~= "teleporter" and SmartObjectSettings.jump_up_max_height < math.abs(control_points[1].z - control_points[2].z)) then
+		if smart_object_unit_data.is_one_way or (smart_object_type ~= "teleporters" and SmartObjectSettings.jump_up_max_height < math.abs(control_points[1].z - control_points[2].z)) then
 			is_bidirectional = false
 		end
 

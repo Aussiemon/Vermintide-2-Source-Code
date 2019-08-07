@@ -1,8 +1,6 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTGreySeerMountedAction = class(BTGreySeerMountedAction, BTNode)
-local PLAYER_POSITIONS = PLAYER_POSITIONS
-local PLAYER_UNITS = PLAYER_UNITS
 
 BTGreySeerMountedAction.init = function (self, ...)
 	BTGreySeerMountedAction.super.init(self, ...)

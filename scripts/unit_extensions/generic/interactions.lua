@@ -686,7 +686,10 @@ InteractionDefinitions.smartobject = {
 			return InteractionResult.ONGOING
 		end,
 		stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
-			return
+			if result == InteractionResult.SUCCESS then
+				local interactable_system = ScriptUnit.extension(interactable_unit, "interactable_system")
+				interactable_system.num_times_successfully_completed = interactable_system.num_times_successfully_completed + 1
+			end
 		end,
 		can_interact = function (interactor_unit, interactable_unit)
 			local custom_interaction_check_name = Unit.get_data(interactable_unit, "interaction_data", "custom_interaction_check_name")
@@ -820,6 +823,35 @@ InteractionDefinitions.pickup_object = {
 
 				if pickup_settings.consumable_item then
 					interactor_buff_extension:trigger_procs("on_consumable_picked_up", interactable_unit, pickup_settings)
+
+					local side = Managers.state.side.side_by_unit[interactor_unit]
+					local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
+					local num_players_and_bots = #player_and_bot_units
+
+					if pickup_settings.ranger_ammo then
+						local local_player = Managers.player:local_player()
+						local local_player_unit = local_player.player_unit
+						local buff_extension = ScriptUnit.has_extension(local_player_unit, "buff_system")
+
+						buff_extension:trigger_procs("on_bardin_consumable_picked_up_any_player")
+
+						for i = 1, num_players_and_bots, 1 do
+							local player_unit = player_and_bot_units[i]
+
+							if Unit.alive(player_unit) then
+								local player_manager = Managers.player
+								local owner_player = player_manager:owner(player_unit)
+
+								if not LEVEL_EDITOR_TEST and player_manager.is_server then
+									local peer_id = owner_player:network_id()
+									local local_player_id = owner_player:local_player_id()
+									local event_id = NetworkLookup.proc_events.on_bardin_consumable_picked_up_any_player
+
+									Managers.state.network.network_transmit:send_rpc_clients("rpc_proc_event", peer_id, local_player_id, event_id)
+								end
+							end
+						end
+					end
 				end
 			end
 		end,
@@ -859,11 +891,15 @@ InteractionDefinitions.pickup_object = {
 				local pickup_extension = ScriptUnit.extension(interactable_unit, "pickup_system")
 				local pickup_settings = pickup_extension:get_pickup_settings()
 				local peer_id = player.peer_id
-				local interactor_name = (is_player_controlled and ((rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id))) or player:name()
+				local interactor_name = nil
 
-				if PLATFORM ~= "win32" and not Managers.account:offline_mode() then
+				if PLATFORM == "win32" then
+					interactor_name = (is_player_controlled and ((rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id))) or player:name()
+				elseif Managers.account:is_online() then
 					local lobby = Managers.state.network:lobby()
-					interactor_name = (is_player_controlled and (lobby:user_name(peer_id) or tostring(peer_id))) or player:name()
+					interactor_name = (is_player_controlled and lobby:user_name(peer_id)) or player:name()
+				else
+					interactor_name = player:name()
 				end
 
 				local pop_chat = true
@@ -937,7 +973,7 @@ InteractionDefinitions.pickup_object = {
 				if on_pick_up_func then
 					local is_server = data.is_server
 
-					on_pick_up_func(world, interactor_unit, is_server)
+					on_pick_up_func(world, interactor_unit, is_server, interactable_unit)
 				end
 
 				local local_bot_or_human = not player.remote
@@ -1055,15 +1091,18 @@ InteractionDefinitions.pickup_object = {
 								local pickup_data = item_template.pickup_data
 
 								if pickup_data then
-									local position = POSITION_LOOKUP[interactable_unit]
-									local rotation = Unit.local_rotation(interactable_unit, 0)
-									local pickup_spawn_type = "dropped"
 									local pickup_name = pickup_data.pickup_name
-									local pickup_name_id = NetworkLookup.pickup_names[pickup_name]
-									local pickup_spawn_type_id = NetworkLookup.pickup_spawn_types[pickup_spawn_type]
-									local network_manager = Managers.state.network
 
-									network_manager.network_transmit:send_rpc_server("rpc_spawn_pickup", pickup_name_id, position, rotation, pickup_spawn_type_id)
+									if pickup_name then
+										local position = POSITION_LOOKUP[interactable_unit]
+										local rotation = Unit.local_rotation(interactable_unit, 0)
+										local pickup_spawn_type = "dropped"
+										local pickup_name_id = NetworkLookup.pickup_names[pickup_name]
+										local pickup_spawn_type_id = NetworkLookup.pickup_spawn_types[pickup_spawn_type]
+										local network_manager = Managers.state.network
+
+										network_manager.network_transmit:send_rpc_server("rpc_spawn_pickup", pickup_name_id, position, rotation, pickup_spawn_type_id)
+									end
 								end
 							end
 
@@ -1231,6 +1270,26 @@ InteractionDefinitions.pickup_object = {
 								statistics_db:increment_stat(stats_id, statistics_id .. "_generic")
 							end
 						end
+					elseif pickup_settings.type == "crater_pendant" then
+						local dlc_name = "scorpion"
+						local has_dlc = Managers.unlock:is_dlc_unlocked(dlc_name)
+
+						if has_dlc then
+							local local_player = Managers.player:local_player()
+							local stats_id = local_player:stats_id()
+
+							statistics_db:set_stat(stats_id, "scorpion_crater_pendant", 1)
+						end
+					elseif pickup_settings.type == "crater_painting" then
+						local dlc_name = "scorpion"
+						local has_dlc = Managers.unlock:is_dlc_unlocked(dlc_name)
+
+						if has_dlc then
+							local local_player = Managers.player:local_player()
+							local stats_id = local_player:stats_id()
+
+							statistics_db:set_stat(stats_id, "scorpion_crater_dark_tongue_3", 1)
+						end
 					end
 				end
 			end
@@ -1389,7 +1448,8 @@ InteractionDefinitions.give_item = {
 		end,
 		can_interact = function (interactor_unit, interactable_unit)
 			local status_extension = ScriptUnit.extension(interactable_unit, "status_system")
-			local can_receive_item = not status_extension:is_disabled()
+			local is_enemy_unit = Managers.state.side:is_enemy(interactor_unit, interactable_unit)
+			local can_receive_item = not status_extension:is_disabled() and not is_enemy_unit
 
 			return can_receive_item
 		end
@@ -1451,6 +1511,10 @@ InteractionDefinitions.give_item = {
 			end
 
 			if not ScriptUnit.has_extension(interactable_unit, "status_system") then
+				return false
+			end
+
+			if Managers.state.side:is_enemy(interactor_unit, interactable_unit) then
 				return false
 			end
 
@@ -1764,14 +1828,15 @@ InteractionDefinitions.linker_transportation_unit.client.can_interact = function
 			return false, "enemies_inside"
 		end
 
+		local side = Managers.state.side.side_by_unit[interactor_unit]
+		local player_units = side.PLAYER_UNITS
 		local humans_inside = units_inside_oobb.human.count
 		local alive_players = 0
-		local PLAYER_UNITS = PLAYER_UNITS
 		local ScriptUnit_extension = ScriptUnit.extension
-		local num_player_units = #PLAYER_UNITS
+		local num_player_units = #player_units
 
 		for i = 1, num_player_units, 1 do
-			local player_unit = PLAYER_UNITS[i]
+			local player_unit = player_units[i]
 			local health_extension = ScriptUnit_extension(player_unit, "health_system")
 			local status_extension = ScriptUnit_extension(player_unit, "status_system")
 			local is_alive = health_extension:is_alive()
@@ -1854,7 +1919,7 @@ InteractionDefinitions.chest.server.stop = function (world, interactor_unit, int
 	local success = result == InteractionResult.SUCCESS
 	local can_spawn_dice = Unit.get_data(interactable_unit, "can_spawn_dice")
 
-	if not can_spawn_dice then
+	if not can_spawn_dice or Managers.weave:get_active_weave() then
 		return
 	end
 
@@ -2297,7 +2362,8 @@ InteractionDefinitions.luckstone_access.server.stop = function (world, interacto
 			always_host = true,
 			game_mode = "event",
 			level_key = "plaza",
-			difficulty = DefaultDifficulties[current_difficulty]
+			difficulty = DefaultDifficulties[current_difficulty],
+			event_data = {}
 		}
 		local interaction_player = Managers.player:owner(interactor_unit)
 
@@ -2337,8 +2403,11 @@ InteractionDefinitions.difficulty_selection_access.config.swap_to_3p = false
 InteractionDefinitions.difficulty_selection_access.server.stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
 	if result == InteractionResult.SUCCESS then
 		local current_difficulty = unit_get_data(interactable_unit, "current_difficulty")
+		local dlc_name = "scorpion"
+		local has_dlc = Managers.unlock:is_dlc_unlocked(dlc_name)
+		local difficulty_steps = (has_dlc and 4) or 3
 
-		if current_difficulty > 3 then
+		if current_difficulty > difficulty_steps then
 			current_difficulty = 1
 		else
 			current_difficulty = current_difficulty + 1
@@ -2367,7 +2436,7 @@ InteractionDefinitions.difficulty_selection_access.client.hud_description = func
 	return unit_get_data(interactable_unit, "interaction_data", "hud_description"), DifficultySettings[DefaultDifficulties[current_difficulty]].display_name
 end
 
-for name, dlc in pairs(DLCSettings) do
+for _, dlc in pairs(DLCSettings) do
 	local interactions_filenames = dlc.interactions_filenames
 
 	if interactions_filenames then

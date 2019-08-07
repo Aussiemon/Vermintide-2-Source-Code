@@ -111,8 +111,9 @@ StartGameWindowAreaSelection._setup_area_widgets = function (self)
 		content.area_name = name
 		local highest_completed_difficulty_index = math.huge
 		local acts = settings.acts
+		local num_acts = #acts
 
-		for j = 1, #acts, 1 do
+		for j = 1, num_acts, 1 do
 			local act_name = acts[j]
 			local difficulty_index = LevelUnlockUtils.highest_completed_difficulty_index_by_act(statistics_db, stats_id, act_name)
 
@@ -134,7 +135,7 @@ end
 StartGameWindowAreaSelection._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
 	local completed_frame_texture = "map_frame_00"
 
-	if difficulty_index > 0 then
+	if difficulty_index and difficulty_index > 0 then
 		local difficulty_key = DefaultDifficulties[difficulty_index]
 		local settings = DifficultySettings[difficulty_key]
 		completed_frame_texture = settings.completed_frame_texture
@@ -181,10 +182,37 @@ StartGameWindowAreaSelection._set_area_presentation_info = function (self, area_
 	end
 
 	local widgets_by_name = self._widgets_by_name
-	widgets_by_name.select_button.content.title_text = (unlocked and Localize("menu_select")) or Localize("area_selection_visit_store")
 	widgets_by_name.area_title.content.text = title_text
 	widgets_by_name.description_text.content.text = description_text
-	widgets_by_name.not_owned_text.content.visible = not unlocked
+
+	if not unlocked then
+		widgets_by_name.not_owned_text.content.visible = true
+		widgets_by_name.select_button.content.visible = true
+		widgets_by_name.requirements_not_met_text.content.visible = false
+		widgets_by_name.select_button.content.title_text = Localize("area_selection_visit_store")
+	else
+		local requirements_fulfilled = true
+
+		if settings.unlock_requirement_function then
+			local local_player = Managers.player:local_player()
+			local stats_id = local_player:stats_id()
+			local statistics_db = Managers.player:statistics_db()
+			requirements_fulfilled = settings.unlock_requirement_function(statistics_db, stats_id)
+		end
+
+		if requirements_fulfilled then
+			widgets_by_name.select_button.content.visible = true
+			widgets_by_name.requirements_not_met_text.content.visible = false
+			widgets_by_name.select_button.content.title_text = Localize("menu_select")
+		else
+			widgets_by_name.select_button.content.visible = false
+			widgets_by_name.requirements_not_met_text.content.visible = true
+			widgets_by_name.requirements_not_met_text.content.text = settings.unlock_requirement_description
+		end
+
+		widgets_by_name.not_owned_text.content.visible = false
+	end
+
 	local video_settings = settings.video_settings
 	local material_name = video_settings.material_name
 	local resource = video_settings.resource
@@ -341,6 +369,7 @@ StartGameWindowAreaSelection._on_select_button_pressed = function (self)
 		local store_page_url = settings.store_page_url
 
 		if store_page_url then
+			print("store_page_url", area_name, store_page_url)
 			self:_show_storepage(store_page_url)
 		end
 	end

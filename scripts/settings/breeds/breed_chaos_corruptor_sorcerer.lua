@@ -7,6 +7,7 @@ local breed_data = {
 	death_sound_event = "chaos_sorcerer_corrupt_death",
 	animation_sync_rpc = "rpc_sync_anim_state_8",
 	perception = "perception_pack_master",
+	debug_spawn_category = "Specials",
 	stagger_threshold_light = 0.5,
 	weapon_reach = 15,
 	armor_category = 1,
@@ -16,31 +17,10 @@ local breed_data = {
 	stagger_resistance = 3,
 	dialogue_source_name = "chaos_corruptor_sorcerer",
 	threat_value = 8,
-	max_health = {
-		20,
-		20,
-		30,
-		40,
-		60
-	},
+	max_health = BreedTweaks.max_health.corruptor_sorcerer,
 	bloodlust_health = BreedTweaks.bloodlust_health.chaos_special,
-	stagger_duration = {
-		0.5,
-		1,
-		1,
-		1,
-		1,
-		1,
-		1,
-		1
-	},
-	diff_stagger_resist = {
-		3,
-		3,
-		4,
-		5,
-		5
-	},
+	stagger_duration = BreedTweaks.stagger_duration.sorcerer,
+	diff_stagger_resist = BreedTweaks.diff_stagger_resist.sorcerer,
 	hitzone_multiplier_types = {
 		head = "headshot"
 	},
@@ -115,8 +95,8 @@ local action_data = {
 		drain_life_tick_rate = 1,
 		dodge_angle = 3.5,
 		projectile_radius = 2,
-		cooldown = 4,
 		max_distance_squared = 144,
+		cooldown = 4,
 		fatigue_type = "blocked_attack",
 		projectile_speed = 25,
 		dodge_distance = 1.25,
@@ -124,67 +104,27 @@ local action_data = {
 		min_dodge_angle_squared = 4,
 		drag_in_anim = "attack_dementor_drag_in",
 		attack_anim = "attack_dementor_start",
+		damage = 5,
 		unblockable = true,
 		disable_player_time = math.huge,
-		damage = {
-			0,
-			0
-		},
-		damage = {
-			5,
-			8,
-			10
-		},
 		difficulty_damage = {
-			easy = {
-				3,
-				3,
-				3
-			},
-			normal = {
-				5,
-				5,
-				5
-			},
-			hard = {
-				8,
-				8,
-				8
-			},
-			survival_hard = {
-				8,
-				8,
-				8
-			},
-			harder = {
-				15,
-				15,
-				15
-			},
-			survival_harder = {
-				15,
-				15,
-				15
-			},
-			hardest = {
-				25,
-				25,
-				25
-			},
-			survival_hardest = {
-				25,
-				25,
-				25
-			}
+			harder = 15,
+			hard = 8,
+			normal = 5,
+			hardest = 25,
+			cataclysm = 30,
+			cataclysm_3 = 50,
+			cataclysm_2 = 40,
+			easy = 3
 		},
 		health_leech = {
 			harder = 10,
-			normal = 2,
 			hard = 5,
-			survival_hard = 30,
-			survival_harder = 40,
+			normal = 2,
 			hardest = 20,
-			survival_hardest = 20,
+			cataclysm = 30,
+			cataclysm_3 = 50,
+			cataclysm_2 = 40,
 			easy = 2
 		}
 	},
@@ -317,6 +257,26 @@ local action_data = {
 				left = {
 					"stagger_right"
 				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
+			},
+			{
+				fwd = {
+					"stagger_fwd"
+				},
+				bwd = {
+					"stagger_bwd"
+				},
+				right = {
+					"stagger_left"
+				},
+				left = {
+					"stagger_right"
+				}
 			}
 		},
 		grabbing_stagger_anims = {
@@ -403,6 +363,26 @@ local action_data = {
 				left = {
 					"stagger_right_dementor"
 				}
+			},
+			{
+				fwd = {
+					"stagger_fwd_dementor"
+				},
+				bwd = {
+					"stagger_bwd_dementor"
+				},
+				right = {
+					"stagger_left_dementor"
+				},
+				left = {
+					"stagger_right_dementor"
+				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
 			},
 			{
 				fwd = {

@@ -21,8 +21,21 @@ BTConditions.blocked = function (blackboard)
 	return blackboard.blocked
 end
 
-BTConditions.ask_target_before_attacking = function (blackboard)
-	return blackboard.attack_token
+BTConditions.ask_target_before_attacking = function (blackboard, condition_args, action)
+	if blackboard.attack_token then
+		return blackboard.attack_token
+	end
+
+	local want_an_attack = false
+	local target_unit = blackboard.target_unit
+	local target_unit_attack_intensity_extension = ScriptUnit.has_extension(target_unit, "attack_intensity_system")
+
+	if target_unit_attack_intensity_extension then
+		local attack_type = action.attack_intensity_type or "normal"
+		want_an_attack = target_unit_attack_intensity_extension:want_an_attack(attack_type)
+	end
+
+	return want_an_attack
 end
 
 BTConditions.first_shots_fired = function (blackboard)
@@ -321,7 +334,6 @@ BTConditions.approach_target = function (blackboard)
 end
 
 BTConditions.comitted_to_target = function (blackboard)
-	local wwise_world = Managers.world:wwise_world(blackboard.world)
 	local t = Managers.time:time("game")
 	local pounce_timer_is_finished = blackboard.initial_pounce_timer < t
 
@@ -358,14 +370,6 @@ end
 
 BTConditions.confirmed_player_sighting = function (blackboard)
 	return unit_alive(blackboard.target_unit) and blackboard.confirmed_player_sighting
-end
-
-BTConditions.player_controller_is_alive = function (blackboard)
-	return blackboard.player_controller and unit_alive(blackboard.player_controller) and not blackboard.target_is_in_combat
-end
-
-BTConditions.player_controller_is_in_combat = function (blackboard)
-	return blackboard.player_controller and blackboard.target_is_in_combat
 end
 
 BTConditions.suiciding_whilst_staggering = function (blackboard)
@@ -538,6 +542,39 @@ end
 
 BTConditions.grey_seer_waiting_for_pickup = function (blackboard)
 	return blackboard.waiting_for_pickup
+end
+
+BTConditions.should_use_emote = function (blackboard)
+	return blackboard.should_use_emote
+end
+
+BTConditions.should_wait_idle = function (blackboard)
+	if blackboard.idle_time then
+		local t = Managers.time:time("game")
+		local time_spent_in_idle = t - blackboard.idle_time
+
+		return time_spent_in_idle >= 3
+	else
+		return false
+	end
+end
+
+BTConditions.switch_to_melee_weapon = function (blackboard)
+	return BTConditions.ungor_archer_enter_melee_combat(blackboard) and not blackboard.has_switched_weapons
+end
+
+BTConditions.confirmed_player_sighting_and_has_switched_weapons = function (blackboard)
+	return blackboard.confirmed_player_sighting and blackboard.has_switched_weapons
+end
+
+for _, dlc in pairs(DLCSettings) do
+	local bt_conditions = dlc.bt_conditions
+
+	if bt_conditions then
+		for function_name, condition_function in pairs(bt_conditions) do
+			BTConditions[function_name] = condition_function
+		end
+	end
 end
 
 return

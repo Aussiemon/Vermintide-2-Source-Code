@@ -189,7 +189,105 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			-374,
+			-260,
+			1
+		}
+	},
+	summary_entry_total_essence_group = {
+		vertical_alignment = "center",
+		parent = "background",
+		horizontal_alignment = "center",
+		size = {
+			838,
+			137
+		},
+		position = {
+			0,
+			-340,
+			1
+		}
+	},
+	summary_entry_essence_background = {
+		vertical_alignment = "center",
+		parent = "summary_entry_total_essence_group",
+		horizontal_alignment = "center",
+		size = {
+			890,
+			88
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	summary_entry_essence_background_effect_left = {
+		vertical_alignment = "center",
+		parent = "summary_entry_essence_background",
+		horizontal_alignment = "left",
+		size = {
+			240,
+			88
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	summary_entry_essence_background_effect_right = {
+		vertical_alignment = "center",
+		parent = "summary_entry_essence_background",
+		horizontal_alignment = "right",
+		size = {
+			240,
+			88
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	summary_entry_total_essence_title = {
+		vertical_alignment = "center",
+		parent = "summary_entry_essence_background",
+		horizontal_alignment = "left",
+		size = {
+			646,
+			97
+		},
+		position = {
+			34,
+			0,
+			1
+		}
+	},
+	summary_entry_total_essence_gained = {
+		vertical_alignment = "center",
+		parent = "summary_entry_essence_background",
+		horizontal_alignment = "right",
+		size = {
+			100,
+			97
+		},
+		position = {
+			-34,
+			0,
+			1
+		}
+	},
+	summary_entry_essence_icon = {
+		vertical_alignment = "center",
+		parent = "summary_entry_total_essence_gained",
+		horizontal_alignment = "right",
+		size = {
+			32,
+			32
+		},
+		position = {
+			0,
+			0,
 			1
 		}
 	},
@@ -298,7 +396,12 @@ local objective_title_text_style = {
 	horizontal_alignment = "left",
 	vertical_alignment = "bottom",
 	font_type = "hell_shark",
-	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	text_color = {
+		255,
+		120,
+		120,
+		120
+	},
 	offset = {
 		0,
 		0,
@@ -313,7 +416,12 @@ local experience_title_text_style = {
 	horizontal_alignment = "right",
 	vertical_alignment = "bottom",
 	font_type = "hell_shark",
-	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	text_color = {
+		255,
+		120,
+		120,
+		120
+	},
 	offset = {
 		0,
 		0,
@@ -365,6 +473,36 @@ local level_up_text_style = {
 		10
 	}
 }
+local essence_text_style = {
+	font_size = 32,
+	upper_case = true,
+	word_wrap = true,
+	use_shadow = true,
+	horizontal_alignment = "left",
+	vertical_alignment = "center",
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local essence_amount_style = {
+	font_size = 32,
+	upper_case = true,
+	word_wrap = true,
+	use_shadow = true,
+	horizontal_alignment = "right",
+	vertical_alignment = "center",
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
 local widgets = {
 	objective_title = UIWidgets.create_simple_text(Localize("summary_screen_objective_title"), "summary_entry_title", nil, nil, objective_title_text_style),
 	experience_title = UIWidgets.create_simple_text(Localize("summary_screen_experience_title"), "summary_entry_title", nil, nil, experience_title_text_style),
@@ -385,7 +523,42 @@ local widgets = {
 		255,
 		255,
 		255
-	})
+	}),
+	essence_background = UIWidgets.create_tiled_texture("summary_entry_essence_background", "menu_frame_bg_06", {
+		256,
+		256
+	}, nil, nil, {
+		255,
+		100,
+		100,
+		100
+	}),
+	essence_background_shadow = UIWidgets.create_simple_texture("options_window_fade_01", "summary_entry_essence_background", nil, nil, nil, 2),
+	essence_background_effect_left = UIWidgets.create_simple_uv_texture("scorpion_icon_lit", {
+		{
+			1,
+			0
+		},
+		{
+			0,
+			1
+		}
+	}, "summary_entry_essence_background_effect_left", nil, nil, {
+		255,
+		100,
+		100,
+		100
+	}),
+	essence_background_effect_right = UIWidgets.create_simple_texture("scorpion_icon_lit", "summary_entry_essence_background_effect_right", nil, nil, {
+		150,
+		255,
+		255,
+		255
+	}),
+	essence_background_frame = UIWidgets.create_frame("summary_entry_essence_background", scenegraph_definition.summary_entry_essence_background.size, "button_frame_01", 3),
+	total_essence_title = UIWidgets.create_simple_text(Localize("summary_total_essence_title"), "summary_entry_total_essence_title", nil, nil, essence_text_style),
+	essence_total_text = UIWidgets.create_simple_text("", "summary_entry_total_essence_gained", nil, nil, essence_amount_style),
+	icon_essence = UIWidgets.create_simple_texture("icon_crafting_essence_small", "summary_entry_essence_icon")
 }
 local num_experience_entries = 10
 

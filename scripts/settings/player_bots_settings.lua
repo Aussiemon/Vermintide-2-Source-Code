@@ -203,6 +203,15 @@ BotConstants.default = {
 		},
 		hardest = {
 			max_start_delay = 0
+		},
+		cataclysm = {
+			max_start_delay = 0
+		},
+		cataclysm_2 = {
+			max_start_delay = 0
+		},
+		cataclysm_3 = {
+			max_start_delay = 0
 		}
 	},
 	OPPORTUNITY_TARGET_REACTION_TIMES = {
@@ -219,6 +228,18 @@ BotConstants.default = {
 			min = 0.2
 		},
 		hardest = {
+			max = 0.65,
+			min = 0.2
+		},
+		cataclysm = {
+			max = 0.65,
+			min = 0.2
+		},
+		cataclysm_2 = {
+			max = 0.65,
+			min = 0.2
+		},
+		cataclysm_3 = {
 			max = 0.65,
 			min = 0.2
 		}

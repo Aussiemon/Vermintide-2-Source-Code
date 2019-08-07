@@ -1,3 +1,5 @@
+require("scripts/settings/equipment/projectile_units")
+require("scripts/settings/equipment/pickups")
 dofile("scripts/settings/equipment/item_master_list_local")
 dofile("scripts/settings/equipment/item_master_list_exported")
 dofile("scripts/settings/equipment/attachments")

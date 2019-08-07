@@ -1,8 +1,9 @@
 require("scripts/game_state/components/profile_synchronizer")
 require("scripts/game_state/components/slot_allocator")
+require("scripts/utils/profile_requester")
 
 NetworkClient = class(NetworkClient)
-local NUM_PROFILES = #SPProfiles
+local NUM_PROFILES = #PROFILES_BY_AFFILIATION.heroes
 local CONNECTION_TIMEOUT = 15
 
 local function network_printf(format, ...)
@@ -18,12 +19,25 @@ NetworkClient.init = function (self, level_transition_handler, server_peer_id, l
 
 	self.connection_handler = ConnectionHandler:new(server_peer_id)
 	self.server_peer_id = server_peer_id
-	self.profile_synchronizer = ProfileSynchronizer:new(false)
-	self.wanted_profile_index = wanted_profile_index or SaveData.wanted_profile_index or 1
+	self.profile_synchronizer = ProfileSynchronizer:new(false, lobby_client, self)
+	self._profile_requester = ProfileRequester:new(false, nil, self.profile_synchronizer)
+	self.wanted_profile_index = FindProfileIndex(Development.parameter("wanted_profile")) or wanted_profile_index or SaveData.wanted_profile_index or 1
+
+	Managers.mechanism:set_profile_synchronizer(self.profile_synchronizer)
+
+	local profile = SPProfiles[self.wanted_profile_index]
+
+	if profile then
+		local hero_name = profile.display_name
+		local hero_attributes = Managers.backend:get_interface("hero_attributes")
+		self.wanted_career_index = Development.parameter("wanted_career_index") or hero_attributes:get(hero_name, "career") or 1
+	else
+		self.wanted_career_index = 0
+	end
+
 	self.lobby_client = lobby_client
 	local is_server = false
 	self.slot_allocator = SlotAllocator:new(is_server, self.lobby_client, NUM_PROFILES)
-	local profile = SPProfiles[self.wanted_profile_index]
 	local display_name = (profile and profile.display_name) or "no profile wanted"
 
 	network_printf("init - wanted_profile_index, %s, %s", self.wanted_profile_index, display_name)
@@ -35,7 +49,6 @@ NetworkClient.init = function (self, level_transition_handler, server_peer_id, l
 		RPC.rpc_clear_peer_state(self.server_peer_id)
 	end
 
-	local is_server = false
 	local voip_params = {
 		is_server = is_server,
 		connection_handler = self.connection_handler,
@@ -53,13 +66,17 @@ end
 NetworkClient.destroy = function (self)
 	EAC.after_leave()
 
-	if self.network_message_router then
+	if self._network_event_delegate then
 		self:unregister_rpcs()
 	end
 
 	self.voip:destroy()
 
 	self.voip = nil
+
+	self._profile_requester:destroy()
+
+	self._profile_requester = nil
 
 	self.profile_synchronizer:destroy()
 
@@ -72,20 +89,22 @@ NetworkClient.destroy = function (self)
 	GarbageLeakDetector.register_object(self, "Network Client")
 end
 
-NetworkClient.register_rpcs = function (self, network_message_router, network_transmit)
-	network_message_router:register(self, "rpc_loading_synced", "rpc_notify_in_post_game", "rpc_reload_level", "rpc_load_level", "rpc_game_started", "rpc_disconnect_peer", "rpc_connection_failed", "rpc_notify_connected", "rpc_set_migration_host")
+NetworkClient.register_rpcs = function (self, network_event_delegate, network_transmit)
+	network_event_delegate:register(self, "rpc_loading_synced", "rpc_notify_in_post_game", "rpc_reload_level", "rpc_load_level", "rpc_game_started", "rpc_disconnect_peer", "rpc_connection_failed", "rpc_notify_connected", "rpc_set_migration_host")
 
-	self.network_message_router = network_message_router
+	self._network_event_delegate = network_event_delegate
 
-	self.profile_synchronizer:register_rpcs(network_message_router, network_transmit)
-	self.voip:register_rpcs(network_message_router, network_transmit)
+	self.profile_synchronizer:register_rpcs(network_event_delegate, network_transmit)
+	self._profile_requester:register_rpcs(network_event_delegate, network_transmit)
+	self.voip:register_rpcs(network_event_delegate, network_transmit)
 end
 
 NetworkClient.unregister_rpcs = function (self)
 	self.voip:unregister_rpcs()
-	self.network_message_router:unregister(self)
+	self._profile_requester:unregister_rpcs()
+	self._network_event_delegate:unregister(self)
 
-	self.network_message_router = nil
+	self._network_event_delegate = nil
 
 	self.profile_synchronizer:unregister_network_events()
 end
@@ -111,7 +130,7 @@ NetworkClient.rpc_notify_connected = function (self, sender)
 		self._eac_has_set_host = true
 
 		EAC.validate_host()
-		RPC.rpc_notify_lobby_joined(self.server_peer_id, self.wanted_profile_index, Application.user_setting("clan_tag") or "0")
+		RPC.rpc_notify_lobby_joined(self.server_peer_id, self.wanted_profile_index, self.wanted_career_index, Application.user_setting("clan_tag") or "0")
 
 		self._notification_sent = true
 
@@ -149,11 +168,19 @@ NetworkClient.rpc_loading_synced = function (self, sender)
 	end
 end
 
-NetworkClient.rpc_reload_level = function (self, sender)
+NetworkClient.rpc_reload_level = function (self, sender, level_seed)
 	self:set_state("loading")
 end
 
-NetworkClient.rpc_load_level = function (self, sender, level_index, level_seed)
+NetworkClient.rpc_load_level = function (self, sender, level_index, level_seed, difficulty_id, locked_director_functions_ids)
+	local difficulty = NetworkLookup.difficulties[difficulty_id]
+	local mechanism_manager = Managers.mechanism
+
+	mechanism_manager:set_difficulty(difficulty)
+	mechanism_manager:set_level_seed(level_seed)
+	mechanism_manager:set_locked_director_functions_from_ids(locked_director_functions_ids)
+	printf("[NetworkClient] Setting difficulty to: %s, level_seed to: %d", difficulty, level_seed)
+
 	local level_transition_handler = self.level_transition_handler
 
 	if level_transition_handler:transition_in_progress() then
@@ -161,9 +188,6 @@ NetworkClient.rpc_load_level = function (self, sender, level_index, level_seed)
 	end
 
 	self:set_state("loading")
-
-	local level_key = NetworkLookup.level_keys[level_index]
-
 	self.level_transition_handler:prepare_load_level(level_index, level_seed)
 end
 
@@ -197,6 +221,14 @@ NetworkClient.on_game_entered = function (self)
 	RPC.rpc_is_ingame(self.server_peer_id)
 end
 
+NetworkClient.request_profile = function (self, local_player_id, profile_name, career_name)
+	self._profile_requester:request_profile(Network.peer_id(), local_player_id, profile_name, career_name)
+end
+
+NetworkClient.profile_requester = function (self)
+	return self._profile_requester
+end
+
 NetworkClient.rpc_game_started = function (self, sender, round_id)
 	Application.error(string.format("SETTING ROUND ID %s", tostring(round_id)))
 
@@ -222,6 +254,7 @@ end
 NetworkClient.update = function (self, dt)
 	local connection_handler = self.connection_handler
 
+	self._profile_requester:update(dt)
 	self.profile_synchronizer:update()
 	connection_handler:update(dt)
 

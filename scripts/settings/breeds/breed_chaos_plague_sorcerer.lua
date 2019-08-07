@@ -3,13 +3,13 @@ local breed_data = {
 	target_selection = "pick_closest_target_with_filter",
 	summon_sound_event = "chaos_sorcerer_plague_summoning",
 	no_stagger_duration = true,
-	stagger_reduction = 2,
 	armor_category = 1,
 	race = "chaos",
 	animation_sync_rpc = "rpc_sync_anim_state_8",
 	stagger_threshold_heavy = 3,
 	stagger_threshold_explosion = 5,
 	stagger_threshold_medium = 2,
+	debug_spawn_category = "Misc",
 	stagger_threshold_light = 0.5,
 	death_sound_event = "chaos_sorcerer_plague_death",
 	is_of_interest_func = "is_of_interest_plague_wave_sorcerer",
@@ -22,6 +22,9 @@ local breed_data = {
 		25,
 		37.5,
 		50,
+		75,
+		75,
+		75,
 		75
 	},
 	bloodlust_health = BreedTweaks.bloodlust_health.chaos_special,
@@ -35,13 +38,8 @@ local breed_data = {
 		1,
 		1
 	},
-	diff_stagger_resist = {
-		3,
-		3,
-		4,
-		5,
-		5
-	},
+	stagger_reduction = BreedTweaks.stagger_reduction.sorcerer,
+	diff_stagger_resist = BreedTweaks.diff_stagger_resist.sorcerer,
 	run_on_spawn = AiBreedSnippets.on_chaos_plague_sorcerer_spawn,
 	target_player_sound_events = {
 		witch_hunter = "chaos_sorcerer_plague_targeting_saltspyre",
@@ -206,6 +204,26 @@ local action_data = {
 				left = {
 					"stagger_right_exp"
 				}
+			},
+			{
+				fwd = {
+					"stagger_fwd"
+				},
+				bwd = {
+					"stagger_bwd"
+				},
+				right = {
+					"stagger_left"
+				},
+				left = {
+					"stagger_right"
+				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
 			},
 			{
 				fwd = {

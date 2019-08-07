@@ -3,6 +3,9 @@ return {
 	display_name = "display_name_mutator_darkness",
 	icon = "mutator_icon_darkness",
 	server_update_function = function (context, data)
+		local side = Managers.state.side:get_side_from_name("heroes")
+		local PLAYER_AND_BOT_UNITS = side.PLAYER_AND_BOT_UNITS
+
 		if #PLAYER_AND_BOT_UNITS > 0 and not data.has_spawned_torches then
 			local player_unit = PLAYER_AND_BOT_UNITS[1]
 			local position = Unit.world_position(player_unit, 0) + Vector3.up()

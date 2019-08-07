@@ -3,9 +3,10 @@ ScrollBarLogic = class(ScrollBarLogic)
 ScrollBarLogic.init = function (self, scrollbar_widget)
 	self._scrollbar_widget = scrollbar_widget
 	self._scroll_value = 0
+	self._draw_length = 0
 end
 
-ScrollBarLogic.update = function (self, dt, t)
+ScrollBarLogic.update = function (self, dt, t, disable_mouse_scroll)
 	local scrollbar_enabled = self._scrollbar_enabled
 
 	if not scrollbar_enabled then
@@ -20,7 +21,7 @@ ScrollBarLogic.update = function (self, dt, t)
 
 	local mouse_scroll_value = scroll_bar_info.scroll_value
 
-	if not mouse_scroll_value then
+	if not mouse_scroll_value or disable_mouse_scroll then
 		return
 	end
 
@@ -49,11 +50,29 @@ ScrollBarLogic.set_scrollbar_values = function (self, draw_length, content_lengt
 	self:_set_scroll_amount(scroll_amount)
 
 	self._scrollbar_enabled = scroll_length > 0
+	self._draw_length = draw_length
 	self._initialized = true
 end
 
 ScrollBarLogic.set_scroll_percentage = function (self, percentage)
 	self:_set_scrollbar_value(percentage or 0)
+end
+
+ScrollBarLogic.set_scroll_distance = function (self, distance)
+	local percentage = distance / self:get_scroll_length()
+
+	self:set_scroll_percentage(percentage)
+end
+
+ScrollBarLogic.scroll_to_fit = function (self, start, size)
+	local scrolled_length = self:get_scrolled_length()
+	local draw_length = self._draw_length
+
+	if start < scrolled_length then
+		self:set_scroll_distance(start)
+	elseif start + size > scrolled_length + draw_length then
+		self:set_scroll_distance((start + draw_length) - size)
+	end
 end
 
 ScrollBarLogic.get_scroll_percentage = function (self)
@@ -78,6 +97,13 @@ end
 
 ScrollBarLogic.enabled = function (self)
 	return self._scrollbar_enabled
+end
+
+ScrollBarLogic.is_scrolling = function (self)
+	local scroll_bar_info = self:_get_scrollbar_info()
+	local scrolling = scroll_bar_info.scroll_add ~= nil
+
+	return scrolling
 end
 
 ScrollBarLogic._get_scrollbar_info = function (self)

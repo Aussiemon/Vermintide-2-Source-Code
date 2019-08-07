@@ -46,15 +46,15 @@ settings.explosion_templates = {
 					power_level_glance = 500,
 					power_level = 1000
 				},
-				survival_hard = {
+				cataclysm = {
 					power_level_glance = 300,
 					power_level = 600
 				},
-				survival_harder = {
+				cataclysm_2 = {
 					power_level_glance = 400,
 					power_level = 800
 				},
-				survival_hardest = {
+				cataclysm_3 = {
 					power_level_glance = 500,
 					power_level = 1000
 				}

@@ -10,6 +10,8 @@ LimitedItemTrackSpawner.init = function (self, world, unit, extension_init_data)
 	self.unit = unit
 	self.num_items = 0
 	self.items = {}
+	self.socketed_items = {}
+	self.num_socketed_items = 0
 	self.pool = extension_init_data.pool
 	self.template_name = extension_init_data.template_name
 	self.time_between_spawns = 2
@@ -33,6 +35,12 @@ LimitedItemTrackSpawner.update = function (self, unit, input, dt, context, t)
 	return
 end
 
+LimitedItemTrackSpawner.socket_item = function (self, unit)
+	local id = self:find_item_id(unit)
+	self.socketed_items[id] = unit
+	self.num_socketed_items = table.size(self.socketed_items)
+end
+
 LimitedItemTrackSpawner.spawn_item = function (self)
 	local self_unit = self.unit
 	local id = self:find_empty_id()
@@ -48,6 +56,19 @@ LimitedItemTrackSpawner.spawn_item = function (self)
 	self.num_items = self.num_items + 1
 
 	Unit.flow_event(self_unit, "lua_spawner_spawn_item")
+end
+
+LimitedItemTrackSpawner.find_item_id = function (self, unit)
+	local pool = self.pool
+	local items = self.items
+
+	for i = 1, pool, 1 do
+		local item = items[i]
+
+		if item == unit then
+			return i
+		end
+	end
 end
 
 LimitedItemTrackSpawner.find_empty_id = function (self)
@@ -89,6 +110,26 @@ LimitedItemTrackSpawner.is_transformed = function (self, id)
 	else
 		return false
 	end
+end
+
+LimitedItemTrackSpawner.is_any_transformed = function (self)
+	local pool = self.pool
+	local items = self.items
+
+	for i = 1, pool, 1 do
+		if self:is_transformed(i) then
+			return true
+		end
+	end
+
+	return false
+end
+
+LimitedItemTrackSpawner.is_any_item_spawned = function (self)
+	local pool = self.pool
+	local items = self.items
+
+	return #items > 0
 end
 
 return

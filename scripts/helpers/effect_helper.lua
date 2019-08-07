@@ -51,7 +51,9 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 		Managers.state.debug_text:output_world_text(material, 0.1, draw_pos, 30, "material_text", Vector3(0, 255, 0))
 	end
 
-	fassert(not Unit.get_data(hit_unit, "breed"), "Trying to apply surface material effect to unit %q with breed.", hit_unit)
+	local breed = Unit.get_data(hit_unit, "breed")
+
+	fassert(not breed or breed.is_player, "Trying to apply surface material effect to unit %q an ai unit.", hit_unit)
 	fassert(not ScriptUnit.has_extension(hit_unit, "ai_inventory_item_system"), "Trying to apply surface material effect to unit %q with ai_inventory_item extension.", hit_unit)
 
 	local decal_settings = effect_settings.decal and effect_settings.decal.settings
@@ -73,6 +75,9 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 			if decal_settings.random_rotation then
 				local random_angle = math.degrees_to_radians(Math.random(360000) * 0.001)
 				rotation = Quaternion.axis_angle(normal, random_angle)
+			elseif decal_settings.rotation then
+				local angle = math.degrees_to_radians(decal_settings.rotation)
+				rotation = Quaternion.axis_angle(normal, angle)
 			end
 
 			if decal_settings.random_size_multiplier then
@@ -99,6 +104,8 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 	end
 
 	local sound = effect_settings.sound and effect_settings.sound[material]
+	local switches = effect_settings.additional_sound_parameters and effect_settings.additional_sound_parameters.switch_params
+	local rtpcs = effect_settings.additional_sound_parameters and effect_settings.additional_sound_parameters.rtpc_params
 
 	if sound then
 		local wwise_source_id, wwise_world = WwiseUtils.make_position_auto_source(world, position)
@@ -119,6 +126,26 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 
 		if sound_character then
 			WwiseWorld.set_switch(wwise_world, "character_foley", sound_character, wwise_source_id)
+		end
+
+		if rtpcs then
+			for parameter_name, parameter_value in pairs(rtpcs) do
+				if script_data.debug_material_effects then
+					printf("   sound param: %q, sound_value %q", parameter_name, parameter_value)
+				end
+
+				WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, parameter_name, parameter_value)
+			end
+		end
+
+		if switches then
+			for parameter_name, parameter_value in pairs(switches) do
+				if script_data.debug_material_effects then
+					printf("   sound param: %q, sound_value %q", parameter_name, parameter_value)
+				end
+
+				WwiseWorld.set_switch(wwise_world, parameter_name, parameter_value, wwise_source_id)
+			end
 		end
 
 		WwiseWorld.set_switch(wwise_world, "husk", (husk and "true") or "false", wwise_source_id)
@@ -163,12 +190,14 @@ end
 EffectHelper.play_skinned_surface_material_effects = function (effect_name, world, hit_unit, position, rotation, normal, husk, enemy_type, damage_sound, no_damage, hit_zone_name, shield_blocked)
 	local effect_settings = MaterialEffectMappings[effect_name]
 	local material = nil
+	local skip_particles = false
 
 	if hit_zone_name == "ward" then
 		material = "ward"
 	elseif no_damage then
 		material = "armored"
 	else
+		skip_particles = not BloodSettings.enemy_blood.enabled
 		material = "flesh"
 	end
 
@@ -227,12 +256,14 @@ EffectHelper.play_skinned_surface_material_effects = function (effect_name, worl
 		WwiseWorld.trigger_event(wwise_world, sound.event, source_id)
 	end
 
-	local particles = effect_settings.particles and effect_settings.particles[material]
+	if not skip_particles then
+		local particles = effect_settings.particles and effect_settings.particles[material]
 
-	if particles then
-		local normal_rotation = Quaternion.look(normal, Vector3.up())
+		if particles then
+			local normal_rotation = Quaternion.look(normal, Vector3.up())
 
-		World.create_particles(world, particles, position, normal_rotation)
+			World.create_particles(world, particles, position, normal_rotation)
+		end
 	end
 
 	local flow_event = effect_settings.flow_event and effect_settings.flow_event[material]
@@ -442,6 +473,8 @@ EffectHelper.flow_cb_play_footstep_surface_material_effects = function (effect_n
 		local effect_settings = MaterialEffectMappings[effect_name]
 		local level_settings = LevelHelper:current_level_settings()
 		local material = level_settings.default_surface_material or DefaultSurfaceMaterial
+		local switches = effect_settings.additional_sound_parameters and effect_settings.additional_sound_parameters.switch_params
+		local rtpcs = effect_settings.additional_sound_parameters and effect_settings.additional_sound_parameters.rtpc_params
 		local sound = effect_settings.sound and effect_settings.sound[material]
 
 		if sound then
@@ -470,6 +503,26 @@ EffectHelper.flow_cb_play_footstep_surface_material_effects = function (effect_n
 				end
 
 				WwiseWorld.set_switch(wwise_world, "character_foley", sound_character, wwise_source_id)
+			end
+
+			if rtpcs then
+				for parameter_name, parameter_value in pairs(rtpcs) do
+					if debug then
+						printf("   sound param: %q, sound_value %q", parameter_name, parameter_value)
+					end
+
+					WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, parameter_name, parameter_value)
+				end
+			end
+
+			if switches then
+				for parameter_name, parameter_value in pairs(switches) do
+					if debug then
+						printf("   sound param: %q, sound_value %q", parameter_name, parameter_value)
+					end
+
+					WwiseWorld.set_switch(wwise_world, parameter_name, parameter_value, wwise_source_id)
+				end
 			end
 
 			WwiseWorld.trigger_event(wwise_world, sound.event, use_occlusion, wwise_source_id)

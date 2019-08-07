@@ -46,7 +46,6 @@ PlayerUnitMovementSettings.move_speed = 4
 PlayerUnitMovementSettings.backward_move_scale = 0.75
 PlayerUnitMovementSettings.move_acceleration_up = 8
 PlayerUnitMovementSettings.move_acceleration_down = 5
-PlayerUnitMovementSettings.leap_speed = 10
 PlayerUnitMovementSettings.post_dodge_jump_velocity_scale = 0.2
 PlayerUnitMovementSettings.post_dodge_jump_speed_scale = 1
 PlayerUnitMovementSettings.backwards_jump_velocity_scale = 0.35
@@ -191,6 +190,12 @@ PlayerUnitMovementSettings.slowing_damage_types = {
 	warpfire_face = false,
 	cutting = true,
 	crush = true
+}
+PlayerUnitMovementSettings.charged_settings = PlayerUnitMovementSettings.charged_settings or {}
+PlayerUnitMovementSettings.charged_settings.charged = {
+	duration = 1,
+	first_person_anim_name = "interrupt",
+	third_person_anim_name = "idle"
 }
 PlayerUnitMovementSettings.stun_settings = PlayerUnitMovementSettings.stun_settings or {}
 PlayerUnitMovementSettings.stun_settings.parry_broken = {
@@ -352,6 +357,25 @@ PlayerUnitMovementSettings.hit_react_settings = {
 
 			return "fx/screenspace_head_blow_heavy"
 		end
+	},
+	charged = {
+		start_look_sense_override = 0.4,
+		end_look_sense_override = 0.8,
+		movement_speed_modifier = 0.65,
+		look_override_function = function ()
+			local look_override_x = 0
+			local look_override_y = 0.45
+
+			return look_override_x, look_override_y
+		end,
+		duration_function = function ()
+			local duration = 1
+
+			return duration
+		end,
+		onscreen_particle_function = function (duration)
+			return "fx/screenspace_head_blow_medium_push"
+		end
 	}
 }
 PlayerUnitMovementSettings.overpowered_templates = PlayerUnitMovementSettings.overpowered_templates or {}
@@ -360,7 +384,13 @@ PlayerUnitMovementSettings.gravity_acceleration = 11
 PlayerUnitMovementSettings.jump = PlayerUnitMovementSettings.jump or {}
 PlayerUnitMovementSettings.jump.stamina_cost = 0
 PlayerUnitMovementSettings.jump.initial_vertical_speed = 4.25
-PlayerUnitMovementSettings.jump.initial_vertical_leap_speed = 5
+PlayerUnitMovementSettings.leap = PlayerUnitMovementSettings.leap or {}
+PlayerUnitMovementSettings.leap.jump_speed = 6.5
+PlayerUnitMovementSettings.leap.move_speed = 13.5
+PlayerUnitMovementSettings.leap.slam_speed = 18
+PlayerUnitMovementSettings.teleleap = PlayerUnitMovementSettings.teleleap or {}
+PlayerUnitMovementSettings.teleleap.jump_speed = 12
+PlayerUnitMovementSettings.teleleap.move_speed = 60
 PlayerUnitMovementSettings.fall = PlayerUnitMovementSettings.fall or {}
 PlayerUnitMovementSettings.fall.heights = PlayerUnitMovementSettings.fall.heights or {}
 PlayerUnitMovementSettings.fall.heights.FALL_DAMAGE_MULTIPLIER = 14
@@ -404,5 +434,13 @@ PlayerUnitMovementSettings.parry.keyboard_controlled = false
 PlayerUnitMovementSettings.parry.raise_delay = 0.18
 PlayerUnitMovementSettings.block = PlayerUnitMovementSettings.block or {}
 PlayerUnitMovementSettings.block.raise_delay = 0.18
+
+for _, dlc in pairs(DLCSettings) do
+	local file = dlc.player_movement_settings
+
+	if file then
+		require(file)
+	end
+end
 
 return

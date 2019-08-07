@@ -12,6 +12,7 @@ BTCombatShoutAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	blackboard.action = action
 	blackboard.anim_cb_shout_finished = nil
+	blackboard.active_node = BTCombatShoutAction
 	local network_manager = Managers.state.network
 
 	network_manager:anim_event(unit, action.shout_anim)
@@ -29,16 +30,14 @@ BTCombatShoutAction.enter = function (self, unit, blackboard, t)
 	locomotion_extension:set_wanted_rotation(rotation)
 
 	blackboard.spawn_to_running = nil
-	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
-	local event_data = FrameTable.alloc_table()
-
-	dialogue_input:trigger_networked_dialogue_event("shouting", event_data)
 end
 
 BTCombatShoutAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	local navigation_extension = blackboard.navigation_extension
 
 	navigation_extension:set_enabled(true)
+
+	blackboard.active_node = nil
 end
 
 BTCombatShoutAction.run = function (self, unit, blackboard, t, dt)
@@ -47,10 +46,24 @@ BTCombatShoutAction.run = function (self, unit, blackboard, t, dt)
 
 	locomotion_extension:set_wanted_rotation(rot)
 
-	if blackboard.anim_cb_shout_finished then
+	local have_slot = blackboard.have_slot == 1
+
+	if blackboard.anim_cb_shout_finished or have_slot then
 		return "done"
 	else
 		return "running"
+	end
+end
+
+BTCombatShoutAction.anim_cb_shout_vo = function (self, unit, blackboard)
+	local network_manager = Managers.state.network
+	local game = network_manager:game()
+
+	if game then
+		local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+		local event_data = FrameTable.alloc_table()
+
+		dialogue_input:trigger_networked_dialogue_event("shouting", event_data)
 	end
 end
 

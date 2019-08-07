@@ -29,7 +29,6 @@ local breed_data = {
 	smart_object_template = "stormfiend",
 	boss = true,
 	dialogue_source_name = "skaven_grey_seer",
-	difficulty_kill_achievement = "kill_skaven_grey_seer_difficulty_rank",
 	race = "skaven",
 	behavior = "grey_seer",
 	proximity_system_check = true,
@@ -60,13 +59,7 @@ local breed_data = {
 		distance_weight = 20,
 		target_disabled_mul = 0.15
 	},
-	max_health = {
-		400,
-		400,
-		600,
-		800,
-		1200
-	},
+	max_health = BreedTweaks.max_health.grey_seer,
 	bloodlust_health = BreedTweaks.bloodlust_health.monster,
 	debug_color = {
 		255,
@@ -82,7 +75,7 @@ local breed_data = {
 		local health_extension = ScriptUnit.extension(blackboard.unit, "health_system")
 		local hp = health_extension:current_health_percent()
 
-		if not health_extension.is_invincible and hp < 0.05 and blackboard.current_phase ~= 6 then
+		if not health_extension:get_is_invincible() and hp < 0.05 and blackboard.current_phase ~= 6 then
 			local max_health = health_extension:get_max_health()
 			health_extension.is_invincible = true
 
@@ -104,10 +97,6 @@ local breed_data = {
 		head = "headshot"
 	},
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		head = {
 			prio = 1,
 			actors = {
@@ -134,7 +123,7 @@ local breed_data = {
 			}
 		},
 		torso = {
-			prio = 3,
+			prio = 2,
 			actors = {
 				"c_spine2",
 				"c_spine",
@@ -148,7 +137,7 @@ local breed_data = {
 			}
 		},
 		left_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftshoulder",
 				"c_leftarm",
@@ -163,7 +152,7 @@ local breed_data = {
 			}
 		},
 		right_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightshoulder",
 				"c_rightarm",
@@ -178,7 +167,7 @@ local breed_data = {
 			}
 		},
 		left_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftupleg",
 				"c_leftleg",
@@ -192,7 +181,7 @@ local breed_data = {
 			}
 		},
 		right_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightupleg",
 				"c_rightleg",
@@ -206,7 +195,7 @@ local breed_data = {
 			}
 		},
 		tail = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_tail1",
 				"c_tail2",
@@ -219,6 +208,10 @@ local breed_data = {
 				"j_hips",
 				"j_taill"
 			}
+		},
+		full = {
+			prio = 4,
+			actors = {}
 		},
 		afro = {
 			prio = 5,
@@ -248,9 +241,11 @@ local breed_data = {
 		stormfiend_warpfire = 1,
 		vortex_danger_zone = 1
 	},
+	difficulty_kill_achievements = {
+		"kill_skaven_grey_seer_difficulty_rank",
+		"kill_skaven_grey_seer_scorpion_hardest"
+	},
 	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone, t, damage_source)
-		local blackboard = BLACKBOARDS[unit]
-
 		if not Unit.alive(killer_unit) then
 			return
 		end
@@ -666,6 +661,36 @@ local action_data = {
 				},
 				right = {
 					"stagger_weakspot"
+				}
+			},
+			{
+				fwd = {
+					"stagger_fwd",
+					"stagger_fwd_2",
+					"stagger_fwd_3",
+					"stagger_fwd_4"
+				},
+				bwd = {
+					"stagger_bwd",
+					"stagger_bwd_2",
+					"stagger_bwd_3",
+					"stagger_bwd_4",
+					"stagger_bwd_5"
+				},
+				left = {
+					"stagger_left",
+					"stagger_left_2",
+					"stagger_left_3",
+					"stagger_left_4"
+				},
+				right = {
+					"stagger_right",
+					"stagger_right_2",
+					"stagger_right_3",
+					"stagger_right_4"
+				},
+				dwn = {
+					"stun_down"
 				}
 			}
 		}

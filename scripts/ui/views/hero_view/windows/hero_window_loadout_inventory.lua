@@ -1,6 +1,5 @@
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_loadout_inventory_definitions")
 local widget_definitions = definitions.widgets
-local category_settings = definitions.category_settings
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local generic_input_actions = definitions.generic_input_actions
@@ -55,6 +54,14 @@ local function item_sort_func(item_1, item_2)
 	end
 end
 
+local display_titles_by_slot_type = {
+	melee = Localize("inventory_screen_melee_weapon_title"),
+	ranged = Localize("inventory_screen_ranged_weapon_title"),
+	necklace = Localize("inventory_screen_necklace_title"),
+	trinket = Localize("inventory_screen_trinket_title"),
+	ring = Localize("inventory_screen_ring_title")
+}
+
 HeroWindowLoadoutInventory.on_enter = function (self, params, offset)
 	print("[HeroViewWindow] Enter Substate HeroWindowLoadoutInventory")
 
@@ -75,16 +82,18 @@ HeroWindowLoadoutInventory.on_enter = function (self, params, offset)
 	self.hero_name = params.hero_name
 	self.career_index = params.career_index
 	self.profile_index = params.profile_index
+	self._categories = self:_create_item_categories(self.profile_index, self.career_index)
 	self._animations = {}
 
 	self:create_ui_elements(params, offset)
 
-	local item_grid = ItemGridUI:new(category_settings, self._widgets_by_name.item_grid, self.hero_name, self.career_index)
+	local item_grid = ItemGridUI:new(self._categories, self._widgets_by_name.item_grid, self.hero_name, self.career_index)
 	self._item_grid = item_grid
 
 	item_grid:mark_equipped_items(true)
 	item_grid:mark_locked_items(true)
 	item_grid:disable_locked_items(true)
+	item_grid:disable_unwieldable_items(true)
 	item_grid:disable_item_drag()
 	item_grid:apply_item_sorting_function(item_sort_func)
 
@@ -97,6 +106,79 @@ HeroWindowLoadoutInventory.on_enter = function (self, params, offset)
 			inventory_extension:check_and_drop_pickups("enter_inventory")
 		end
 	end
+end
+
+HeroWindowLoadoutInventory._create_item_categories = function (self, profile_index, career_index)
+	local career_index = self.career_index
+	local profile_index = self.profile_index
+	local profile = SPProfiles[profile_index]
+	local careers = profile.careers
+	local career = careers[career_index]
+	local item_slot_types_by_slot_name = career.item_slot_types_by_slot_name
+	local categories = {}
+
+	for slot_name, slot_types in pairs(item_slot_types_by_slot_name) do
+		local slot = InventorySettings.slots_by_name[slot_name]
+		local ui_slot_index = slot.ui_slot_index
+
+		if ui_slot_index then
+			local item_filter = "( "
+			local display_name = ""
+			local slot_icon = nil
+			local potential_icons = {}
+
+			for index, slot_type in ipairs(slot_types) do
+				local slot_display_name = display_titles_by_slot_type[slot_type]
+				display_name = display_name .. slot_display_name
+				item_filter = item_filter .. "slot_type == " .. slot_type
+
+				if index < #slot_types then
+					display_name = display_name .. " - "
+					item_filter = item_filter .. " or "
+				else
+					item_filter = item_filter .. " ) and item_rarity ~= magic"
+				end
+
+				for icon_key, icon in pairs(UISettings.slot_icons) do
+					if string.find(icon_key, slot_type) then
+						potential_icons[icon_key] = icon
+					end
+				end
+			end
+
+			for icon_key, icon in pairs(potential_icons) do
+				local is_correct_icon = true
+
+				for _, slot_type in ipairs(slot_types) do
+					if not string.find(icon_key, slot_type) then
+						is_correct_icon = false
+
+						break
+					end
+				end
+
+				if is_correct_icon then
+					slot_icon = icon
+
+					break
+				end
+			end
+
+			local category = {
+				hero_specific_filter = true,
+				name = slot_name,
+				display_name = display_name,
+				icon = slot_icon,
+				item_types = slot_types,
+				slot_index = ui_slot_index,
+				slot_name = slot_name,
+				item_filter = item_filter
+			}
+			categories[ui_slot_index] = category
+		end
+	end
+
+	return categories
 end
 
 HeroWindowLoadoutInventory.create_ui_elements = function (self, params, offset)
@@ -128,55 +210,22 @@ HeroWindowLoadoutInventory.create_ui_elements = function (self, params, offset)
 end
 
 HeroWindowLoadoutInventory._setup_tab_widget = function (self)
-	local profile = SPProfiles[self.profile_index]
-	local careers = profile.careers
-	local career_index = self.career_index
-	local career = careers[career_index]
-	local loadout_equipment_slots = career.loadout_equipment_slots
-	local career_category_settings_index_lookup = {}
-	local unique_categories = {}
-
-	for index, name in ipairs(loadout_equipment_slots) do
-		for category_index, category_setting in ipairs(category_settings) do
-			if name == category_setting.name then
-				unique_categories[category_index] = true
-				career_category_settings_index_lookup[index] = category_index
-
-				break
-			end
-		end
-	end
-
-	local num_unique_item_tabs = 0
-	local tabs_category_index_lookups = {}
-
-	for index, _ in pairs(unique_categories) do
-		num_unique_item_tabs = num_unique_item_tabs + 1
-		tabs_category_index_lookups[#tabs_category_index_lookups + 1] = index
-	end
-
-	local function sort_tabs_indices(a, b)
-		return a < b
-	end
-
-	table.sort(tabs_category_index_lookups, sort_tabs_indices)
-
-	self._tabs_category_index_lookups = tabs_category_index_lookups
-	self._career_category_settings_index_lookup = career_category_settings_index_lookup
+	local categories = self._categories
+	local num_tabs = #categories
 	local widgets = self._widgets
 	local widgets_by_name = self._widgets_by_name
 	local item_tabs_segments = UIWidget.init(UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_vertical", {
 		5,
 		35
-	}, "item_tabs_segments", num_unique_item_tabs - 1))
+	}, "item_tabs_segments", num_tabs - 1))
 	local item_tabs_segments_top = UIWidget.init(UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_top", {
 		17,
 		9
-	}, "item_tabs_segments_top", num_unique_item_tabs - 1))
+	}, "item_tabs_segments_top", num_tabs - 1))
 	local item_tabs_segments_bottom = UIWidget.init(UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_bottom", {
 		17,
 		9
-	}, "item_tabs_segments_bottom", num_unique_item_tabs - 1))
+	}, "item_tabs_segments_bottom", num_tabs - 1))
 	widgets_by_name.item_tabs_segments = item_tabs_segments
 	widgets_by_name.item_tabs_segments_top = item_tabs_segments_top
 	widgets_by_name.item_tabs_segments_bottom = item_tabs_segments_bottom
@@ -185,21 +234,21 @@ HeroWindowLoadoutInventory._setup_tab_widget = function (self)
 	widgets[#widgets + 1] = item_tabs_segments_bottom
 	local scenegraph_id = "item_tabs"
 	local size = scenegraph_definition.item_tabs.size
-	local widget_definition = UIWidgets.create_default_icon_tabs(scenegraph_id, size, num_unique_item_tabs)
+	local widget_definition = UIWidgets.create_default_icon_tabs(scenegraph_id, size, num_tabs)
 	local widget = UIWidget.init(widget_definition)
 	widgets_by_name[scenegraph_id] = widget
 	widgets[#widgets + 1] = widget
 	local widget_content = widget.content
 
-	for index, category_index in ipairs(tabs_category_index_lookups) do
+	for index, category in ipairs(categories) do
 		local name_suffix = "_" .. tostring(index)
 		local hotspot_name = "hotspot" .. name_suffix
 		local icon_name = "icon" .. name_suffix
 		local hotspot_content = widget_content[hotspot_name]
-		local category = category_settings[category_index]
+		local slot_index = category.slot_index
 		local icon = category.icon
 		hotspot_content[icon_name] = icon
-		hotspot_content.category_index = category_index
+		hotspot_content.slot_index = slot_index
 	end
 end
 
@@ -297,12 +346,12 @@ HeroWindowLoadoutInventory._is_inventory_tab_pressed = function (self)
 		local hotspot_content = widget_content[hotspot_name]
 
 		if hotspot_content.on_release and not hotspot_content.is_selected then
-			return hotspot_content.category_index
+			return i
 		end
 	end
 end
 
-HeroWindowLoadoutInventory._select_tab_by_category_index = function (self, index)
+HeroWindowLoadoutInventory._select_tab_by_slot_index = function (self, index)
 	local widget = self._widgets_by_name.item_tabs
 	local widget_content = widget.content
 	local amount = widget_content.amount
@@ -311,8 +360,8 @@ HeroWindowLoadoutInventory._select_tab_by_category_index = function (self, index
 		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
 		local hotspot_content = widget_content[hotspot_name]
-		local category_index = hotspot_content.category_index
-		hotspot_content.is_selected = index == category_index
+		local slot_index = hotspot_content.slot_index
+		hotspot_content.is_selected = index == slot_index
 	end
 end
 
@@ -333,7 +382,7 @@ HeroWindowLoadoutInventory._handle_input = function (self, dt, t)
 	end
 
 	if item and not is_equipped then
-		parent:_set_loadout_item(item, self._strict_slot_type)
+		parent:_set_loadout_item(item, self._strict_slot_name)
 		self:_play_sound("play_gui_equipment_equip_hero")
 	end
 
@@ -349,13 +398,15 @@ HeroWindowLoadoutInventory._handle_input = function (self, dt, t)
 
 	local tab_index_pressed = self:_is_inventory_tab_pressed()
 
-	if tab_index_pressed and tab_index_pressed ~= self._internal_slot_index then
-		parent:set_selected_loadout_slot_index(tab_index_pressed)
+	if tab_index_pressed and tab_index_pressed ~= self._category_index then
+		local slot_index = self:_get_category_slot_index(tab_index_pressed)
+
+		parent:set_selected_loadout_slot_index(slot_index)
 		self:_play_sound("play_gui_inventory_tab_click")
 	elseif Managers.input:is_device_active("gamepad") then
 		local input_service = Managers.input:get_service("hero_view")
 		local current_index = parent._selected_loadout_slot_index or 1
-		local num_tabs = #self._career_category_settings_index_lookup
+		local num_tabs = #self._categories
 
 		if input_service:get("cycle_previous") and current_index > 1 then
 			parent:set_selected_loadout_slot_index(current_index - 1)
@@ -405,19 +456,32 @@ HeroWindowLoadoutInventory._update_page_info = function (self)
 	end
 end
 
-HeroWindowLoadoutInventory._get_actual_loadout_category_index = function (self, index)
-	return self._career_category_settings_index_lookup[index]
+HeroWindowLoadoutInventory._get_category_slot_index = function (self, index)
+	local categories = self._categories
+	local category = categories[index]
+
+	return category.slot_index
+end
+
+HeroWindowLoadoutInventory._get_category_index_by_slot_index = function (self, slot_index)
+	local categories = self._categories
+
+	for i, category in ipairs(categories) do
+		if category.slot_index == slot_index then
+			return i
+		end
+	end
 end
 
 HeroWindowLoadoutInventory._update_selected_loadout_slot_index = function (self)
-	local index = self.parent:get_selected_loadout_slot_index()
-	local internal_slot_index = self._career_category_settings_index_lookup[index]
+	local slot_index = self.parent:get_selected_loadout_slot_index()
+	local category_index = self:_get_category_index_by_slot_index(slot_index)
 
-	if index ~= self._selected_loadout_slot_index then
-		self:_change_category_by_index(index)
+	if slot_index ~= self._selected_loadout_slot_index then
+		self:_change_category_by_index(category_index)
 
-		self._selected_loadout_slot_index = index
-		self._internal_slot_index = internal_slot_index
+		self._selected_loadout_slot_index = slot_index
+		self._category_index = category_index
 	end
 end
 
@@ -451,14 +515,6 @@ HeroWindowLoadoutInventory.draw = function (self, dt)
 		UIRenderer.draw_widget(ui_top_renderer, widget)
 	end
 
-	local active_node_widgets = self._active_node_widgets
-
-	if active_node_widgets then
-		for _, widget in ipairs(active_node_widgets) do
-			UIRenderer.draw_widget(ui_top_renderer, widget)
-		end
-	end
-
 	UIRenderer.end_pass(ui_top_renderer)
 end
 
@@ -466,26 +522,15 @@ HeroWindowLoadoutInventory._play_sound = function (self, event)
 	self.parent:play_sound(event)
 end
 
-HeroWindowLoadoutInventory._change_category_by_index = function (self, index, force_update)
-	local internal_slot_index = self._career_category_settings_index_lookup[index]
+HeroWindowLoadoutInventory._change_category_by_index = function (self, index)
+	self:_select_tab_by_slot_index(index)
 
-	self:_select_tab_by_category_index(internal_slot_index)
-
-	if force_update then
-		index = self._internal_slot_index or 1
-	end
-
-	local actual_category_setting = category_settings[index]
-	local actual_category_name = actual_category_setting.name
-	self._strict_slot_type = actual_category_name
-
-	if self._internal_slot_index == internal_slot_index then
-		return
-	end
-
-	local category_setting = category_settings[internal_slot_index]
-	local category_name = category_setting.name
-	local display_name = category_setting.display_name
+	local categories = self._categories
+	local category = categories[index]
+	local category_slot_name = category.slot_name
+	self._strict_slot_name = category_slot_name
+	local category_name = category.name
+	local display_name = category.display_name
 	self._widgets_by_name.item_grid_header.content.text = display_name
 
 	self._item_grid:change_category(category_name)

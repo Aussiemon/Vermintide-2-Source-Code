@@ -5,7 +5,6 @@ CareerExtension.init = function (self, extension_init_context, unit, extension_i
 	self.world = extension_init_context.world
 	self.is_server = Managers.player.is_server
 	self.player = extension_init_data.player
-	self._is_ready = false
 	self.input_manager = Managers.input
 	local profile_index = extension_init_data.profile_index
 	local career_index = extension_init_data.career_index
@@ -15,20 +14,57 @@ CareerExtension.init = function (self, extension_init_context, unit, extension_i
 	self._career_index = career_index
 	self._career_name = career_data.name
 	self._profile_name = profile.display_name
-	self._cooldown = 0
-	self._max_cooldown = math.huge
-	self._last_cooldown = self._cooldown
-	self._last_max_cooldown = self._max_cooldown
 	self._career_data = career_data
-	local initial_ability_percentage = extension_init_data.initial_ability_percentage or 0
-	local max_cooldown = career_data.activated_ability.cooldown
-	local initial_cooldown_percentage = 1 - initial_ability_percentage
-	initial_cooldown_percentage = math.clamp(initial_cooldown_percentage, 0, 1)
-	self._initial_cooldown = max_cooldown * initial_cooldown_percentage
+	local num_abilities = #career_data.activated_ability
+	self._num_abilities = num_abilities
+	self._abilities = {}
 
-	if career_data.activated_ability.ability_class then
-		self._activated_ability = career_data.activated_ability.ability_class:new(extension_init_context, unit, extension_init_data)
+	for ability_id = 1, num_abilities, 1 do
+		local ability_data = career_data.activated_ability[ability_id]
+		local ability_class = ability_data.ability_class
+		local cooldown = (ability_data.spawn_cooldown_percent or 1) * ability_data.cooldown
+		local cooldown_percent_int = extension_init_data.ability_cooldown_percent_int or 100
+
+		if cooldown_percent_int < 100 then
+			local cooldown_percent = cooldown_percent_int * 0.01
+			cooldown = cooldown_percent * ability_data.cooldown
+		end
+
+		self._abilities[ability_id] = {
+			cooldown_paused = false,
+			is_ready = false,
+			name = ability_data.name,
+			cooldown = cooldown,
+			initial_max_cooldown = ability_data.cooldown,
+			max_cooldown = ability_data.cooldown,
+			spawn_cooldown = cooldown,
+			activated_ability = ability_class and ability_class:new(extension_init_context, unit, extension_init_data, ability_data),
+			weapon_name = ability_data.weapon_name,
+			uses_conditionals = ability_data.uses_conditionals
+		}
 	end
+
+	local breed = career_data.breed or profile.breed
+
+	Unit.set_data(unit, "breed", breed)
+	fassert(breed.hit_zones, "Player Breed '%s' is missing a 'hit_zones' table.", profile.display_name)
+	DamageUtils.create_hit_zone_lookup(unit, breed)
+end
+
+CareerExtension.ability_id = function (self, ability_name)
+	for ability_id, ability in ipairs(self._abilities) do
+		if ability.name == ability_name then
+			return ability_id
+		end
+	end
+
+	return nil
+end
+
+CareerExtension.ability_was_triggered = function (self, ability_id)
+	local ability = self._abilities[ability_id].activated_ability
+
+	return ability:was_triggered()
 end
 
 CareerExtension.extensions_ready = function (self, world, unit)
@@ -45,54 +81,72 @@ CareerExtension.extensions_ready = function (self, world, unit)
 		end
 	end
 
-	self:start_activated_ability_cooldown()
-
 	self._first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 	self._buff_extension = ScriptUnit.extension(unit, "buff_system")
+	local abilities = self._abilities
 
-	if self._activated_ability then
-		self._activated_ability:extensions_ready(world, unit)
+	for i = 1, self._num_abilities, 1 do
+		local ability = abilities[i]
+		local activated_ability = ability.activated_ability
+
+		if activated_ability then
+			activated_ability:extensions_ready(world, unit)
+		end
 	end
 
 	Managers.state.event:register(self, "ingame_menu_opened", "stop_ability")
 end
 
 CareerExtension.update = function (self, unit, input, dt, context, t)
-	self:_update_game_object_field(unit)
+	local abilities = self._abilities
 
-	if self._cooldown_paused then
-		return
+	for i = 1, self._num_abilities, 1 do
+		local ability = abilities[i]
+
+		if not ability.cooldown_paused then
+			local buff_extension = ScriptUnit.extension(unit, "buff_system")
+			local cooldown_speed_multiplier = buff_extension:apply_buffs_to_value(1, "cooldown_regen")
+			ability.cooldown = math.max(ability.cooldown - dt * cooldown_speed_multiplier, 0)
+			local uses_conditionals = ability.uses_conditionals
+
+			if ability.is_ready or uses_conditionals then
+				local player = self.player
+
+				if ability.activated_ability and ((self.is_server and player.bot_player) or player.local_player) then
+					ability.activated_ability:update(unit, input, dt, context, t)
+				end
+
+				if uses_conditionals then
+					ability.is_ready = ability.activated_ability:conditions_met()
+				end
+			elseif ability.cooldown == 0 and not uses_conditionals then
+				ability.is_ready = true
+				local first_person_extension = self._first_person_extension
+
+				if first_person_extension then
+					first_person_extension:play_hud_sound_event("Play_hud_ability_ready")
+				end
+			end
+		end
 	end
 
-	local buff_extension = ScriptUnit.extension(unit, "buff_system")
-	local cooldown_speed_multiplier = buff_extension:apply_buffs_to_value(1, "cooldown_regen")
-	self._cooldown = math.max(self._cooldown - dt * cooldown_speed_multiplier, 0)
-
-	if self._is_ready then
-		local player = self.player
-
-		if self._activated_ability and ((self.is_server and player.bot_player) or player.local_player) then
-			self._activated_ability:update(unit, input, dt, context, t)
-		end
-
-		return
-	elseif self._cooldown == 0 then
-		self._is_ready = true
-		local first_person_extension = self._first_person_extension
-
-		if first_person_extension then
-			first_person_extension:play_hud_sound_event("Play_hud_ability_ready")
-		end
+	if not abilities[1].is_ready then
+		self:_update_game_object_field(unit)
 	end
 end
 
-CareerExtension.stop_ability = function (self, reason)
-	local activated_ability = self._activated_ability
+CareerExtension.stop_ability = function (self, reason, ability_id)
 	local is_server = self.is_server
 	local player = self.player
 
-	if activated_ability and ((is_server and player.bot_player) or player.local_player) then
-		activated_ability:stop(reason)
+	if (is_server and player.bot_player) or player.local_player then
+		ability_id = ability_id or 1
+		local ability = self._abilities[ability_id]
+		local activated_ability = ability.activated_ability
+
+		if activated_ability then
+			activated_ability:stop(reason)
+		end
 	end
 end
 
@@ -101,12 +155,7 @@ CareerExtension._update_game_object_field = function (self, unit)
 		return
 	end
 
-	local ability_cooldown, max_cooldown = self:current_ability_cooldown()
-
-	if self._last_cooldown == ability_cooldown and self._last_max_cooldown == max_cooldown then
-		return
-	end
-
+	local ability_cooldown, max_cooldown = self:current_ability_cooldown(1)
 	local ability_percentage = 1
 
 	if ability_cooldown then
@@ -119,83 +168,121 @@ CareerExtension._update_game_object_field = function (self, unit)
 	ability_percentage = math.clamp(ability_percentage, 0, 1)
 
 	GameSession.set_game_object_field(game, go_id, "ability_percentage", ability_percentage)
-
-	self._last_cooldown = ability_cooldown
-	self._last_max_cooldown = max_cooldown
 end
 
 CareerExtension.destroy = function (self)
 	return
 end
 
-CareerExtension.get_activated_ability_data = function (self)
+CareerExtension.get_activated_ability_data = function (self, ability_id)
+	ability_id = ability_id or 1
 	local career_data = self._career_data
-	local activated_ability_data = career_data.activated_ability
+	local activated_ability_data = career_data.activated_ability[ability_id]
 
 	return activated_ability_data
 end
 
-CareerExtension.start_activated_ability_cooldown = function (self, refund_percent)
-	self._is_ready = false
-	local activated_ability_data = self:get_activated_ability_data()
-	local cooldown = activated_ability_data.cooldown * (1 - (refund_percent or 0))
-
-	if self._initial_cooldown then
-		cooldown = (Development.parameter("short_ability_cooldowns") and cooldown) or self._initial_cooldown
-		self._initial_cooldown = nil
-	end
-
+CareerExtension.start_activated_ability_cooldown = function (self, ability_id, refund_percent)
+	ability_id = ability_id or 1
+	local ability = self._abilities[ability_id]
+	local cooldown = ability.max_cooldown * (1 - (refund_percent or 0))
 	local buff_extension = ScriptUnit.extension(self._unit, "buff_system")
-	cooldown = buff_extension:apply_buffs_to_value(cooldown, "activated_cooldown")
-	self._cooldown = cooldown
-	self._max_cooldown = activated_ability_data.cooldown
-	self._cooldown_paused = false
-
-	if Development.parameter("short_ability_cooldowns") then
-		self._cooldown = 5
-	end
+	ability.cooldown = buff_extension:apply_buffs_to_value(cooldown, "activated_cooldown")
+	ability.cooldown_paused = false
+	ability.is_ready = false
 end
 
-CareerExtension.reduce_activated_ability_cooldown_percent = function (self, amount)
-	if self._cooldown_paused then
+CareerExtension.reduce_activated_ability_cooldown_percent = function (self, amount, ability_id, ignore_paused)
+	ability_id = ability_id or 1
+	local ability = self._abilities[ability_id]
+
+	if ability.cooldown_paused and not ignore_paused then
 		return
 	end
 
-	local max_cooldown = self._max_cooldown
+	local max_cooldown = ability.max_cooldown
 	local reduction = max_cooldown * amount
-	self._cooldown = self._cooldown - reduction
+	ability.cooldown = ability.cooldown - reduction
+
+	if ignore_paused and ability.cooldown <= 0 then
+		self:set_activated_ability_cooldown_unpaused(ability_id)
+	end
 end
 
-CareerExtension.reduce_activated_ability_cooldown = function (self, amount)
-	if self._cooldown_paused then
+CareerExtension.reduce_activated_ability_cooldown = function (self, amount, ability_id, ignore_paused)
+	ability_id = ability_id or 1
+	local ability = self._abilities[ability_id]
+
+	if ability.cooldown_paused and not ignore_paused then
 		return
 	end
 
-	self._cooldown = self._cooldown - amount
+	ability.cooldown = ability.cooldown - amount
+
+	if ignore_paused and ability.cooldown <= 0 then
+		self:set_activated_ability_cooldown_unpaused(ability_id)
+	end
 end
 
-CareerExtension.set_activated_ability_cooldown_paused = function (self)
-	self._cooldown_paused = true
+CareerExtension.uses_cooldown = function (self, ability_id)
+	ability_id = ability_id or 1
+	local ability = self._abilities[ability_id]
+
+	return not ability.uses_conditionals
 end
 
-CareerExtension.reset_cooldown = function (self)
-	self._cooldown = self._max_cooldown
+CareerExtension.set_activated_ability_cooldown_paused = function (self, ability_id)
+	ability_id = ability_id or 1
+	local ability = self._abilities[ability_id]
+	ability.cooldown_paused = true
 end
 
-CareerExtension.can_use_activated_ability = function (self)
-	return self._is_ready and not self._cooldown_paused
+CareerExtension.set_activated_ability_cooldown_unpaused = function (self, ability_id)
+	ability_id = ability_id or 1
+	local ability = self._abilities[ability_id]
+	ability.cooldown_paused = false
 end
 
-CareerExtension.current_ability_cooldown = function (self)
-	return self._cooldown, self._max_cooldown
+CareerExtension.reset_cooldown = function (self, ability_id)
+	ability_id = ability_id or 1
+	local ability = self._abilities[ability_id]
+	ability.cooldown = ability.max_cooldown
 end
 
-CareerExtension.get_max_ability_cooldown = function (self)
-	return self._max_cooldown
+CareerExtension.can_use_activated_ability = function (self, ability_id)
+	ability_id = ability_id or 1
+	local ability = self._abilities[ability_id]
+
+	return ability.is_ready and not ability.cooldown_paused
 end
 
-CareerExtension.current_ability_paused = function (self)
-	return self._cooldown_paused
+CareerExtension.current_ability_cooldown = function (self, ability_id)
+	ability_id = ability_id or 1
+	local ability = self._abilities[ability_id]
+
+	return ability.cooldown, ability.max_cooldown
+end
+
+CareerExtension.current_ability_cooldown_percentage = function (self, ability_id)
+	local network_manager = Managers.state.network
+	local game = network_manager:game()
+	local go_id = Managers.state.unit_storage:go_id(self._unit)
+
+	return GameSession.game_object_field(game, go_id, "ability_percentage")
+end
+
+CareerExtension.get_max_ability_cooldown = function (self, ability_id)
+	ability_id = ability_id or 1
+	local ability = self._abilities[ability_id]
+
+	return ability.max_cooldown
+end
+
+CareerExtension.current_ability_paused = function (self, ability_id)
+	ability_id = ability_id or 1
+	local ability = self._abilities[ability_id]
+
+	return ability.cooldown_paused
 end
 
 CareerExtension.career_index = function (self)
@@ -210,8 +297,12 @@ CareerExtension.career_settings = function (self)
 	return self._career_data
 end
 
-CareerExtension.career_skill_weapon_name = function (self)
-	return self:get_activated_ability_data().weapon_name
+CareerExtension.career_skill_weapon_name = function (self, ability_id)
+	ability_id = ability_id or 1
+	local ability = self._abilities[ability_id]
+	local weapon_name = ability.weapon_name
+
+	return weapon_name
 end
 
 CareerExtension.get_base_critical_strike_chance = function (self)
@@ -229,7 +320,7 @@ end
 
 CareerExtension.has_ranged_boost = function (self)
 	local buff_extension = self._buff_extension
-	local has_murder_hobo_buff = buff_extension:has_buff_type("markus_huntsman_activated_ability")
+	local has_murder_hobo_buff = buff_extension:has_buff_type("markus_huntsman_activated_ability") or buff_extension:has_buff_type("markus_huntsman_activated_ability_duration")
 	local has_ranger_buff = buff_extension:has_buff_type("bardin_ranger_activated_ability") or buff_extension:has_buff_type("bardin_ranger_activated_ability_duration")
 	local multiplier = (has_murder_hobo_buff and 1.5) or (has_ranger_buff and 1) or 0
 
@@ -261,7 +352,16 @@ CareerExtension.get_career_power_level = function (self)
 		end
 	end
 
-	return BackendUtils.get_total_power_level(profile_name, career_name)
+	local buff_extension = self._buff_extension
+	local power_level = BackendUtils.get_total_power_level(profile_name, career_name)
+
+	if buff_extension then
+		power_level = buff_extension:apply_buffs_to_value(power_level, "flat_power_level")
+	end
+
+	local clamped_power_level = math.clamp(power_level, MIN_POWER_LEVEL, MAX_POWER_LEVEL)
+
+	return clamped_power_level
 end
 
 CareerExtension.set_state = function (self, state)
@@ -270,6 +370,10 @@ end
 
 CareerExtension.get_state = function (self)
 	return self._state or "default"
+end
+
+CareerExtension.ability_amount = function (self)
+	return self._num_abilities
 end
 
 return

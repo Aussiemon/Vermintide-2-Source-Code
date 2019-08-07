@@ -27,6 +27,7 @@ StartGameWindowSettings.on_enter = function (self, params, offset)
 	self._ui_animations = {}
 
 	self:create_ui_elements(params, offset)
+	self:_update_mission_selection()
 	self:_update_difficulty_option()
 end
 
@@ -233,7 +234,9 @@ StartGameWindowSettings._handle_input = function (self, dt, t)
 	end
 
 	if self:_is_button_released(widgets_by_name.play_button) then
-		parent:play(t, "custom")
+		local game_mode_type = "custom"
+
+		parent:play(t, game_mode_type)
 	end
 end
 
@@ -289,13 +292,14 @@ StartGameWindowSettings._update_additional_options = function (self)
 
 	if is_alone ~= self._is_alone or private_enabled ~= self._private_enabled or always_host_enabled ~= self._always_host_enabled or strict_matchmaking_enabled ~= self._strict_matchmaking_enabled or twitch_active ~= self._twitch_active then
 		local widgets_by_name = self._widgets_by_name
+		local always_host_disabled = nil
 		local private_is_selected = private_enabled
 		local private_is_disabled = twitch_active
 		local private_hotspot = widgets_by_name.private_button.content.button_hotspot
 		private_hotspot.is_selected = private_is_selected
 		private_hotspot.disable_button = private_is_disabled
 		local always_host_is_selected = private_enabled or not is_alone or always_host_enabled
-		local always_host_is_disabled = private_enabled or not is_alone or twitch_active
+		local always_host_is_disabled = private_enabled or not is_alone or twitch_active or always_host_disabled
 		local host_hotspot = widgets_by_name.host_button.content.button_hotspot
 		host_hotspot.is_selected = always_host_is_selected
 		host_hotspot.disable_button = always_host_is_disabled
@@ -316,7 +320,7 @@ StartGameWindowSettings._update_difficulty_option = function (self)
 	local parent = self.parent
 	local difficulty_key = parent:get_difficulty_option()
 
-	if difficulty_key ~= self._difficulty_key then
+	if not difficulty_key or difficulty_key ~= self._difficulty_key then
 		self:_set_difficulty_option(difficulty_key)
 
 		self._difficulty_key = difficulty_key
@@ -352,7 +356,7 @@ StartGameWindowSettings._update_mission_selection = function (self)
 	local parent = self.parent
 	local selected_level_id = parent:get_selected_level_id()
 
-	if selected_level_id ~= self._selected_level_id then
+	if not selected_level_id or selected_level_id ~= self._selected_level_id then
 		self:_set_selected_level(selected_level_id)
 
 		self._selected_level_id = selected_level_id
@@ -386,7 +390,7 @@ end
 StartGameWindowSettings._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
 	local completed_frame_texture = "map_frame_00"
 
-	if difficulty_index > 0 then
+	if difficulty_index and difficulty_index > 0 then
 		local difficulty_key = DefaultDifficulties[difficulty_index]
 		local settings = DifficultySettings[difficulty_key]
 		completed_frame_texture = settings.completed_frame_texture

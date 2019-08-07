@@ -24,4 +24,8 @@ LobbyUnclaimed.is_host = function (self)
 	return
 end
 
+LobbyUnclaimed.unregister_rpcs = function (self)
+	return
+end
+
 return

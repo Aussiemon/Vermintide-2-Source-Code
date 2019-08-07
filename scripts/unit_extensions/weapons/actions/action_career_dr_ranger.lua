@@ -10,6 +10,8 @@ ActionCareerDRRanger.init = function (self, world, item_name, is_server, owner_u
 end
 
 ActionCareerDRRanger.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
+	ActionCareerDRRanger.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level)
+
 	self.current_action = new_action
 	self.action_time_started = t
 	self.thrown = nil
@@ -38,11 +40,14 @@ ActionCareerDRRanger._create_smoke_screen = function (self)
 		buff_name = "bardin_ranger_activated_ability_duration"
 	end
 
-	if talent_extension:has_talent("bardin_ranger_activated_ability_heal", "dwarf_ranger", true) then
-		local unit_id = network_manager:unit_game_object_id(owner_unit)
-		local heal_type_id = NetworkLookup.heal_types.career_skill
+	local has_stealth_outside_of_smoke_talent = talent_extension:has_talent("bardin_ranger_activated_ability_stealth_outside_of_smoke", "dwarf_ranger", true)
 
-		network_transmit:send_rpc_server("rpc_request_heal", unit_id, 50, heal_type_id)
+	if has_stealth_outside_of_smoke_talent then
+		buff_name = "bardin_ranger_activated_ability_stealth_outside_of_smoke"
+	end
+
+	if talent_extension:has_talent("bardin_ranger_ability_free_grenade", "dwarf_ranger", true) then
+		buff_extension:add_buff("bardin_ranger_ability_free_grenade_buff")
 	end
 
 	buff_extension:add_buff(buff_name, {

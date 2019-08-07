@@ -1,30 +1,33 @@
 local breed_data = {
 	detection_radius = 12,
 	walk_speed = 2.75,
-	passive_walk_speed = 2,
-	patrol_active_target_selection = "storm_patrol_death_squad_target_selection",
 	wwise_voice_switch_group = "clan_rat_vce",
+	patrol_active_target_selection = "storm_patrol_death_squad_target_selection",
 	poison_resistance = 70,
 	patrol_detection_radius = 10,
 	animation_sync_rpc = "rpc_sync_anim_state_7",
-	radius = 2,
-	hit_mass_count_block = 3,
+	bone_lod_level = 1,
 	run_speed = 4.75,
 	target_selection = "pick_closest_target_with_spillover",
+	uses_attack_sfx_callback = true,
+	slot_template = "skaven_roamer",
+	use_backstab_vo = true,
+	hit_mass_count_block = 3,
 	has_running_attack = true,
-	bone_lod_level = 1,
-	no_stagger_duration = false,
 	attack_general_sound_event = "Play_clan_rat_attack_vce",
-	default_inventory_template = "sword_and_shield",
+	default_inventory_template = "skaven_clan_rat_sword_and_shield",
 	stagger_resistance = 1.5,
 	dialogue_source_name = "skaven_clan_rat_with_shield",
-	threat_value = 2,
 	flingable = true,
 	panic_close_detection_radius_sq = 9,
+	radius = 2,
+	no_stagger_duration = false,
 	hit_mass_count = 1.5,
 	patrol_active_perception = "perception_regular",
+	threat_value = 2,
 	perception_previous_attacker_stickyness_value = -7.75,
 	race = "skaven",
+	proximity_system_check = true,
 	death_reaction = "ai_default",
 	backstab_player_sound_event = "Play_clan_rat_attack_player_back_vce",
 	death_sound_event = "Play_clan_rat_die_vce",
@@ -40,7 +43,7 @@ local breed_data = {
 	patrol_passive_target_selection = "patrol_passive_target_selection",
 	unit_variation_setting_name = "skaven_clan_rat_with_shield",
 	hit_effect_template = "HitEffectsSkavenClanRatShield",
-	uses_attack_sfx_callback = true,
+	passive_walk_speed = 2,
 	horde_behavior = "horde_shield_rat",
 	unit_template = "ai_unit_shield_rat",
 	smart_object_template = "default_clan_rat",
@@ -48,17 +51,12 @@ local breed_data = {
 	player_locomotion_constrain_radius = 0.7,
 	weapon_reach = 2,
 	horde_target_selection = "horde_pick_closest_target_with_spillover",
-	use_backstab_vo = true,
+	opt_default_inventory_template = "opt_skaven_clan_rat_sword_and_shield",
 	patrol_passive_perception = "perception_regular",
 	vortexable = true,
 	allow_aoe_push = true,
 	base_unit = "units/beings/enemies/skaven_clan_rat/chr_skaven_clan_rat",
 	aoe_height = 1.4,
-	opt_base_unit = {
-		"units/beings/enemies/skaven_clan_rat/chr_skaven_clan_rat_baked_var2",
-		"units/beings/enemies/skaven_clan_rat/chr_skaven_clan_rat_baked_var3",
-		"units/beings/enemies/skaven_clan_rat/chr_skaven_clan_rat_baked_var4"
-	},
 	size_variation_range = {
 		1.05,
 		1.075
@@ -73,10 +71,6 @@ local breed_data = {
 		head = "headshot"
 	},
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		head = {
 			prio = 1,
 			actors = {
@@ -100,7 +94,7 @@ local breed_data = {
 			}
 		},
 		torso = {
-			prio = 3,
+			prio = 2,
 			actors = {
 				"c_spine2",
 				"c_spine",
@@ -113,7 +107,7 @@ local breed_data = {
 			}
 		},
 		left_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftarm",
 				"c_leftforearm",
@@ -126,7 +120,7 @@ local breed_data = {
 			}
 		},
 		right_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightarm",
 				"c_rightforearm",
@@ -139,7 +133,7 @@ local breed_data = {
 			}
 		},
 		left_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftupleg",
 				"c_leftleg",
@@ -153,7 +147,7 @@ local breed_data = {
 			}
 		},
 		right_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightupleg",
 				"c_rightleg",
@@ -167,7 +161,7 @@ local breed_data = {
 			}
 		},
 		tail = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_tail1",
 				"c_tail2",
@@ -180,6 +174,10 @@ local breed_data = {
 				"j_hips",
 				"j_taill"
 			}
+		},
+		full = {
+			prio = 4,
+			actors = {}
 		},
 		afro = {
 			prio = 5,
@@ -248,45 +246,13 @@ local breed_data = {
 		poison_well = true,
 		wizard_destructible = true
 	},
-	max_health = {
-		5,
-		5,
-		7.5,
-		10,
-		15
-	},
+	max_health = BreedTweaks.max_health.clan_rat_with_shield,
 	bloodlust_health = BreedTweaks.bloodlust_health.skaven_roamer,
-	diff_stagger_resist = {
-		2.1,
-		2.1,
-		2.8,
-		3.5,
-		3.5
-	},
-	stagger_duration = {
-		1,
-		2.5,
-		4,
-		1.5,
-		2,
-		5,
-		1,
-		1
-	},
-	hit_mass_counts = {
-		1.5,
-		1.5,
-		2.25,
-		3,
-		3
-	},
-	hit_mass_counts_block = {
-		3,
-		3,
-		4.5,
-		6,
-		6
-	},
+	diff_stagger_resist = BreedTweaks.diff_stagger_resist.clan_rat,
+	stagger_duration = BreedTweaks.stagger_duration.clan_rat,
+	stagger_duration_difficulty_mod = BreedTweaks.stagger_duration_difficulty_mod.default,
+	hit_mass_counts = BreedTweaks.hit_mass_counts.clan_rat,
+	hit_mass_counts_block = BreedTweaks.hit_mass_counts.clan_rat_shield_block,
 	num_push_anims = {
 		push_backward = 2
 	},
@@ -304,525 +270,57 @@ local breed_data = {
 	}
 }
 Breeds.skaven_clan_rat_with_shield = table.create_copy(Breeds.skaven_clan_rat_with_shield, breed_data)
-local BreedActionDimishingDamageDifficulty = {
-	easy = {
-		{
-			damage = 2,
-			cooldown = {
-				1.25,
-				2
-			}
-		},
-		{
-			damage = 2,
-			cooldown = {
-				1.25,
-				2
-			}
-		},
-		{
-			damage = 1.5,
-			cooldown = {
-				1.25,
-				2
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				1.5,
-				2.25
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				1.75,
-				2.5
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				2,
-				2.75
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				2.25,
-				3
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				2.5,
-				3.25
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				2.75,
-				3.5
-			}
-		}
-	},
+local AttackIntensityPerDifficulty = {
 	normal = {
-		{
-			damage = 2,
-			cooldown = {
-				1.25,
-				2
-			}
+		easy = {
+			normal = 2
 		},
-		{
-			damage = 2,
-			cooldown = {
-				1.25,
-				2
-			}
+		normal = {
+			normal = 2
 		},
-		{
-			damage = 1.5,
-			cooldown = {
-				1.25,
-				2
-			}
+		hard = {
+			normal = 2
 		},
-		{
-			damage = 1,
-			cooldown = {
-				1.5,
-				2.25
-			}
+		harder = {
+			normal = 2
 		},
-		{
-			damage = 1,
-			cooldown = {
-				1.75,
-				2.5
-			}
+		hardest = {
+			normal = 2
 		},
-		{
-			damage = 1,
-			cooldown = {
-				2,
-				2.75
-			}
+		cataclysm = {
+			normal = 2
 		},
-		{
-			damage = 1,
-			cooldown = {
-				2.25,
-				3
-			}
+		cataclysm_2 = {
+			normal = 2
 		},
-		{
-			damage = 1,
-			cooldown = {
-				2.5,
-				3.25
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				2.75,
-				3.5
-			}
+		cataclysm_3 = {
+			normal = 2
 		}
 	},
-	hard = {
-		{
-			damage = 2,
-			cooldown = {
-				1,
-				1.5
-			}
+	running = {
+		easy = {
+			running = 2.5
 		},
-		{
-			damage = 2,
-			cooldown = {
-				1,
-				1.5
-			}
+		normal = {
+			running = 2.5
 		},
-		{
-			damage = 1.5,
-			cooldown = {
-				1,
-				1.5
-			}
+		hard = {
+			running = 2.5
 		},
-		{
-			damage = 1,
-			cooldown = {
-				1.25,
-				1.75
-			}
+		harder = {
+			running = 2.5
 		},
-		{
-			damage = 1,
-			cooldown = {
-				1.5,
-				2
-			}
+		hardest = {
+			running = 2.5
 		},
-		{
-			damage = 1,
-			cooldown = {
-				1.75,
-				2.25
-			}
+		cataclysm = {
+			running = 2.5
 		},
-		{
-			damage = 1,
-			cooldown = {
-				2,
-				2.5
-			}
+		cataclysm_2 = {
+			running = 2.5
 		},
-		{
-			damage = 1,
-			cooldown = {
-				2.25,
-				3.25
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				2.5,
-				3.5
-			}
-		}
-	},
-	survival_hard = {
-		{
-			damage = 2,
-			cooldown = {
-				1,
-				1.5
-			}
-		},
-		{
-			damage = 2,
-			cooldown = {
-				1,
-				1.5
-			}
-		},
-		{
-			damage = 1.5,
-			cooldown = {
-				1,
-				1.5
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				1.25,
-				1.75
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				1.5,
-				2
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				1.75,
-				2.25
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				2,
-				2.5
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				2.25,
-				3.25
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				2.5,
-				3.5
-			}
-		}
-	},
-	harder = {
-		{
-			damage = 2.5,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 2,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 1.5,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.6,
-				1.1
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.7,
-				1.2
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.8,
-				1.3
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.9,
-				1.4
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				1,
-				1.5
-			}
-		}
-	},
-	survival_harder = {
-		{
-			damage = 2.5,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 2,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 1.5,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.6,
-				1.1
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.7,
-				1.2
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.8,
-				1.3
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.9,
-				1.4
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				1,
-				1.5
-			}
-		}
-	},
-	hardest = {
-		{
-			damage = 2.5,
-			cooldown = {
-				0,
-				0.25
-			}
-		},
-		{
-			damage = 2,
-			cooldown = {
-				0,
-				0.25
-			}
-		},
-		{
-			damage = 2,
-			cooldown = {
-				0,
-				0.25
-			}
-		},
-		{
-			damage = 1.8,
-			cooldown = {
-				0,
-				0.3
-			}
-		},
-		{
-			damage = 1.6,
-			cooldown = {
-				0,
-				0.35
-			}
-		},
-		{
-			damage = 1.4,
-			cooldown = {
-				0,
-				0.4
-			}
-		},
-		{
-			damage = 1.2,
-			cooldown = {
-				0,
-				0.45
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0,
-				0.5
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0,
-				0.5
-			}
-		}
-	},
-	survival_hardest = {
-		{
-			damage = 2.5,
-			cooldown = {
-				0,
-				0.25
-			}
-		},
-		{
-			damage = 2,
-			cooldown = {
-				0,
-				0.25
-			}
-		},
-		{
-			damage = 2,
-			cooldown = {
-				0,
-				0.25
-			}
-		},
-		{
-			damage = 1.8,
-			cooldown = {
-				0,
-				0.3
-			}
-		},
-		{
-			damage = 1.6,
-			cooldown = {
-				0,
-				0.35
-			}
-		},
-		{
-			damage = 1.4,
-			cooldown = {
-				0,
-				0.4
-			}
-		},
-		{
-			damage = 1.2,
-			cooldown = {
-				0,
-				0.45
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0,
-				0.5
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0,
-				0.5
-			}
+		cataclysm_3 = {
+			running = 2.5
 		}
 	}
 }
@@ -881,73 +379,39 @@ local action_data = {
 	},
 	climb = {},
 	running_attack = {
+		damage = 3,
 		damage_type = "cutting",
 		player_push_speed = 3,
-		fatigue_type = "blocked_running",
+		attack_intensity_type = "running",
 		action_weight = 10,
 		moving_attack = true,
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		default_attack = {
 			anims = "attack_move"
 		},
-		damage = {
-			3,
-			2,
-			1
-		},
-		difficulty_damage = {
-			easy = {
-				2,
-				2,
-				1
-			},
-			normal = {
-				2.5,
-				2,
-				1
-			},
-			hard = {
-				6,
-				4,
-				2
-			},
-			survival_hard = {
-				6,
-				4,
-				2
-			},
-			harder = {
-				10,
-				6,
-				3
-			},
-			survival_harder = {
-				10,
-				6,
-				3
-			},
-			hardest = {
-				15,
-				8,
-				4
-			},
-			survival_hardest = {
-				15,
-				8,
-				4
-			}
-		},
-		dimishing_damage = {},
-		difficulty_diminishing_damage = BreedActionDimishingDamageDifficulty,
-		considerations = UtilityConsiderations.clan_rat_running_attack
+		difficulty_damage = BreedTweaks.difficulty_damage.skaven_roamer_attack,
+		diminishing_damage = {},
+		difficulty_diminishing_damage = BreedTweaks.diminishing_damage_and_cooldown.roamer,
+		considerations = UtilityConsiderations.clan_rat_running_attack,
+		fatigue_type = BreedTweaks.fatigue_types.roamer.running_attack,
+		attack_finished_duration = BreedTweaks.attack_finished_duration.skaven_roamer,
+		dodge_window_start = BreedTweaks.dodge_windows.running_attack,
+		dodge_window_duration = BreedTweaks.dodge_window_durations.running_attack
 	},
 	normal_attack = {
 		damage_type = "cutting",
-		move_anim = "move_fwd",
-		fatigue_type = "blocked_attack",
+		damage = 3,
 		player_push_speed = 3,
+		attack_intensity_type = "normal",
 		action_weight = 1,
+		move_anim = "move_fwd",
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		default_attack = {
-			anims = "attack_pounce",
+			anims = {
+				"attack_pounce",
+				"attack_pounce_3",
+				"attack_pounce_4"
+			},
 			damage_box_range = {
 				flat = 2,
 				up = 1.7,
@@ -1018,78 +482,34 @@ local action_data = {
 				}
 			}
 		},
-		damage = {
-			3,
-			2,
-			1
-		},
-		difficulty_damage = {
-			easy = {
-				2,
-				2,
-				1
-			},
-			normal = {
-				2.5,
-				2,
-				1
-			},
-			hard = {
-				6,
-				4,
-				2
-			},
-			survival_hard = {
-				6,
-				4,
-				2
-			},
-			harder = {
-				10,
-				6,
-				3
-			},
-			survival_harder = {
-				10,
-				6,
-				3
-			},
-			hardest = {
-				15,
-				8,
-				4
-			},
-			survival_hardest = {
-				15,
-				8,
-				4
-			}
-		},
-		dimishing_damage = {},
-		difficulty_diminishing_damage = BreedActionDimishingDamageDifficulty,
+		difficulty_damage = BreedTweaks.difficulty_damage.skaven_roamer_attack,
+		diminishing_damage = {},
+		difficulty_diminishing_damage = BreedTweaks.diminishing_damage_and_cooldown.roamer,
 		considerations = UtilityConsiderations.clan_rat_attack,
-		target_type_exceptions = {
-			poison_well = {
-				attack_anim = "poison_well"
-			}
-		},
+		fatigue_type = BreedTweaks.fatigue_types.roamer.normal_attack,
 		attack_directions = {
-			attack_run = "left",
-			attack_move_2 = "left",
-			attack_pounce_down_2 = "right",
-			attack_pounce_4 = "left",
-			attack_reach_up = "left",
-			attack_pounce_2 = "left",
-			attack_reach_down_3 = "right",
-			attack_move_1 = "left",
 			attack_pounce_down_3 = "left",
-			attack_pounce_down = "left",
+			attack_move_2 = "left",
 			attack_reach_down_2 = "left",
-			attack_pounce_3 = "left",
+			attack_pounce_2 = "left",
+			attack_reach_up_3 = "right",
+			attack_move_1 = "left",
+			attack_reach_up_2 = "left",
+			attack_pounce_down = "left",
 			attack_move = "left",
 			attack_reach_down = "left",
+			attack_run = "left",
+			attack_pounce_down_2 = "right",
+			attack_reach_up_4 = "left",
+			attack_reach_up = "left",
+			attack_reach_down_3 = "right",
+			attack_pounce_4 = "left",
+			attack_pounce_3 = "left",
 			attack_pounce = "left"
-		}
+		},
+		attack_finished_duration = BreedTweaks.attack_finished_duration.skaven_roamer,
+		dodge_window_start = BreedTweaks.dodge_windows.normal_attack,
+		dodge_window_duration = BreedTweaks.dodge_window_durations.normal_attack
 	},
 	combat_shout = {
 		cooldown = -1,
@@ -1100,14 +520,10 @@ local action_data = {
 	smash_door = {
 		unblockable = true,
 		name = "smash_door",
+		damage = 1,
 		damage_type = "cutting",
 		move_anim = "move_fwd",
-		attack_anim = "attack_pounce",
-		damage = {
-			1,
-			1,
-			1
-		}
+		attack_anim = "attack_pounce"
 	},
 	interest_point_choose = {
 		max_range = 10,
@@ -1119,7 +535,8 @@ local action_data = {
 			"blocked",
 			"blocked_2",
 			"blocked_3"
-		}
+		},
+		difficulty_duration = BreedTweaks.blocked_duration.skaven_roamer
 	},
 	stagger = {
 		scale_animation_speeds = true,
@@ -1314,6 +731,36 @@ local action_data = {
 				dwn = {
 					"stun_down"
 				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
+			},
+			{
+				fwd = {
+					"stagger_fwd"
+				},
+				bwd = {
+					"stagger_bwd",
+					"stagger_bwd_2"
+				},
+				left = {
+					"stagger_left",
+					"stagger_left_2",
+					"stagger_left_3",
+					"stagger_left_4"
+				},
+				right = {
+					"stagger_right",
+					"stagger_right_2",
+					"stagger_right_3",
+					"stagger_right_4"
+				},
+				dwn = {
+					"stun_down"
+				}
 			}
 		},
 		shield_block_anims = {
@@ -1450,6 +897,32 @@ local action_data = {
 				dwn = {
 					"stagger_bwd_shield_up_light"
 				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
+			},
+			{
+				fwd = {
+					"stagger_fwd"
+				},
+				bwd = {
+					"stagger_bwd_shield_up",
+					"stagger_bwd_shield_up_2",
+					"stagger_bwd_shield_up_3"
+				},
+				left = {
+					"stagger_left_shield_up"
+				},
+				right = {
+					"stagger_right_shield_up"
+				},
+				dwn = {
+					"stagger_bwd_shield_up_head",
+					"stagger_bwd_shield_up_head_2"
+				}
 			}
 		},
 		shield_break_anims = {
@@ -1554,6 +1027,29 @@ local action_data = {
 				dwn = {
 					"stagger_shield_break_bwd"
 				}
+			},
+			{
+				fwd = {
+					"stun_bwd_sword"
+				},
+				bwd = {
+					"stagger_shield_break_bwd"
+				},
+				left = {
+					"stagger_shield_break_left"
+				},
+				right = {
+					"stagger_shield_break_right"
+				},
+				dwn = {
+					"stagger_shield_break_bwd"
+				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
 			},
 			{
 				fwd = {
@@ -1703,6 +1199,32 @@ local action_data = {
 				},
 				dwn = {
 					"stagger_bwd_shield_light"
+				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
+			},
+			{
+				fwd = {
+					"stagger_fwd_exp",
+					"stagger_fwd_exp_2"
+				},
+				bwd = {
+					"stagger_bwd_shield",
+					"stagger_bwd_shield_2",
+					"stagger_bwd_shield_3"
+				},
+				left = {
+					"stagger_left_shield"
+				},
+				right = {
+					"stagger_right_shield"
+				},
+				dwn = {
+					"stagger_bwd_shield"
 				}
 			}
 		}

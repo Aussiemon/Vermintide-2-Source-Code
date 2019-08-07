@@ -36,15 +36,17 @@ BTMoveToPlayersAction.enter = function (self, unit, blackboard, t)
 	}
 	blackboard.move_to_players = move_to_players
 
-	self:_init_targets(move_to_players, t)
+	self:_init_targets(move_to_players, t, unit, blackboard)
 end
 
-BTMoveToPlayersAction._init_targets = function (self, data, t)
+BTMoveToPlayersAction._init_targets = function (self, data, t, unit, blackboard)
 	data.index = 0
 	data.eval_timer = t + EVALUATE_TIME
 	data.find_move_position_attempts = 0
+	local side = blackboard.side
+	local ENEMY_PLAYER_UNITS = side.ENEMY_PLAYER_UNITS
 
-	table.merge(data.target_units, PLAYER_UNITS)
+	table.merge(data.target_units, ENEMY_PLAYER_UNITS)
 end
 
 BTMoveToPlayersAction.leave = function (self, unit, blackboard, t, reason, destroy)
@@ -108,7 +110,7 @@ BTMoveToPlayersAction._evalute_targets = function (self, unit, blackboard, data,
 
 	if not next_target_unit then
 		table.clear(data.target_units)
-		self:_init_targets(data, t)
+		self:_init_targets(data, t, unit, blackboard)
 
 		return "running"
 	else
@@ -128,7 +130,7 @@ BTMoveToPlayersAction._find_target_globadier = function (self, unit, blackboard,
 		throw_globe_data.next_throw_at = -math.huge
 	end
 
-	if self:_valid_globadier_target(next_target_unit, blackboard.target_dist, action) and self:_has_line_of_sight(unit, next_target_unit, blackboard.world, t) then
+	if self:_valid_globadier_target(next_target_unit, blackboard, blackboard.target_dist, action) and self:_has_line_of_sight(unit, next_target_unit, blackboard.world, t) then
 		local has_trajectory, angle, speed, throw_from_pos, target_vector = self:_calculate_trajectory_to_target(unit, blackboard.world, next_target_unit, action.attack_throw_offset, blackboard.breed.max_globe_throw_speed)
 
 		if has_trajectory then
@@ -228,8 +230,10 @@ BTMoveToPlayersAction._calculate_trajectory_to_target = function (self, unit, wo
 	return hit, angle, speed, throw_pos, target_vector
 end
 
-BTMoveToPlayersAction._valid_globadier_target = function (self, target_unit, target_distance, action)
-	return VALID_TARGETS_PLAYERS_AND_BOTS[target_unit] and target_distance < action.attack_distance
+BTMoveToPlayersAction._valid_globadier_target = function (self, target_unit, blackboard, target_distance, action)
+	local side = blackboard.side
+
+	return side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[target_unit] and target_distance < action.attack_distance
 end
 
 BTMoveToPlayersAction._has_line_of_sight = function (self, unit, target_unit, world, t)

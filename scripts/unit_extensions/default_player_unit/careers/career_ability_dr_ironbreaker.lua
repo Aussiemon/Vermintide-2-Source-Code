@@ -131,12 +131,20 @@ CareerAbilityDRIronbreaker._run_ability = function (self)
 
 	CharacterStateHelper.play_animation_event(owner_unit, "iron_breaker_active_ability")
 
-	local buff_name_1 = "bardin_ironbreaker_activated_ability"
-	local buff_name_2 = "bardin_ironbreaker_activated_ability_block_cost"
+	local buffs = {
+		"bardin_ironbreaker_activated_ability",
+		"bardin_ironbreaker_activated_ability_block_cost",
+		"bardin_ironbreaker_activated_ability_attack_intensity_decay_increase"
+	}
 
-	if talent_extension:has_talent("bardin_ironbreaker_activated_ability_duration", "dwarf_ranger", true) then
-		buff_name_1 = "bardin_ironbreaker_activated_ability_duration"
-		buff_name_2 = "bardin_ironbreaker_activated_ability_duration_block_cost"
+	if talent_extension:has_talent("bardin_ironbreaker_activated_ability_taunt_range_and_duration") then
+		table.clear(buffs)
+
+		buffs = {
+			"bardin_ironbreaker_activated_ability_taunt_range_and_duration",
+			"bardin_ironbreaker_activated_ability_taunt_range_and_duration_block_cost",
+			"bardin_ironbreaker_activated_ability_taunt_range_and_duration_attack_intensity_decay_increase"
+		}
 	end
 
 	local targets = FrameTable.alloc_table()
@@ -144,16 +152,41 @@ CareerAbilityDRIronbreaker._run_ability = function (self)
 	local range = 10
 	local duration = 10
 
-	if talent_extension:has_talent("bardin_ironbreaker_activated_ability_duration", "dwarf_ranger", true) then
+	if talent_extension:has_talent("bardin_ironbreaker_activated_ability_taunt_range_and_duration") then
 		duration = 15
-	end
-
-	if talent_extension:has_talent("bardin_ironbreaker_activated_ability_taunt_range", "dwarf_ranger", true) then
 		range = 15
 	end
 
+	if talent_extension:has_talent("bardin_ironbreaker_activated_ability_power_buff_allies") then
+		local side = Managers.state.side.side_by_unit[owner_unit]
+		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
+		local num_targets = #player_and_bot_units
+
+		for i = 1, num_targets, 1 do
+			local target_unit = player_and_bot_units[i]
+			local ally_position = POSITION_LOOKUP[target_unit]
+			local owner_position = POSITION_LOOKUP[owner_unit]
+			local distance_squared = Vector3.distance_squared(owner_position, ally_position)
+			local range_squared = range * range
+
+			if distance_squared < range_squared then
+				local buff_to_add = "bardin_ironbreaker_activated_ability_power_buff"
+				local target_unit_object_id = network_manager:unit_game_object_id(target_unit)
+				local target_buff_extension = ScriptUnit.extension(target_unit, "buff_system")
+				local buff_template_name_id = NetworkLookup.buff_templates[buff_to_add]
+
+				if is_server then
+					target_buff_extension:add_buff(buff_to_add)
+					network_transmit:send_rpc_clients("rpc_add_buff", target_unit_object_id, buff_template_name_id, owner_unit_id, 0, false)
+				else
+					network_transmit:send_rpc_server("rpc_add_buff", target_unit_object_id, buff_template_name_id, owner_unit_id, 0, true)
+				end
+			end
+		end
+	end
+
 	local stagger = true
-	local taunt_bosses = talent_extension:has_talent("bardin_ironbreaker_activated_ability_taunt_bosses", "dwarf_ranger", true)
+	local taunt_bosses = talent_extension:has_talent("bardin_ironbreaker_activated_ability_taunt_bosses")
 
 	if is_server then
 		local target_override_extension = ScriptUnit.extension(owner_unit, "target_override_system")
@@ -163,8 +196,6 @@ CareerAbilityDRIronbreaker._run_ability = function (self)
 		network_transmit:send_rpc_server("rpc_taunt", owner_unit_id, range, duration, stagger, taunt_bosses)
 	end
 
-	local buff_template_name_id_1 = NetworkLookup.buff_templates[buff_name_1]
-	local buff_template_name_id_2 = NetworkLookup.buff_templates[buff_name_2]
 	local num_targets = #targets
 
 	for i = 1, num_targets, 1 do
@@ -172,18 +203,17 @@ CareerAbilityDRIronbreaker._run_ability = function (self)
 		local target_unit_object_id = network_manager:unit_game_object_id(target_unit)
 		local target_buff_extension = ScriptUnit.extension(target_unit, "buff_system")
 
-		if is_server then
-			target_buff_extension:add_buff(buff_name_1, {
-				attacker_unit = owner_unit
-			})
-			target_buff_extension:add_buff(buff_name_2, {
-				attacker_unit = owner_unit
-			})
-			network_transmit:send_rpc_clients("rpc_add_buff", target_unit_object_id, buff_template_name_id_1, owner_unit_id, 0, false)
-			network_transmit:send_rpc_clients("rpc_add_buff", target_unit_object_id, buff_template_name_id_2, owner_unit_id, 0, false)
-		else
-			network_transmit:send_rpc_server("rpc_add_buff", target_unit_object_id, buff_template_name_id_1, owner_unit_id, 0, true)
-			network_transmit:send_rpc_server("rpc_add_buff", target_unit_object_id, buff_template_name_id_2, owner_unit_id, 0, true)
+		for j, buff_name in ipairs(buffs) do
+			local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
+
+			if is_server then
+				target_buff_extension:add_buff(buff_name, {
+					attacker_unit = owner_unit
+				})
+				network_transmit:send_rpc_clients("rpc_add_buff", target_unit_object_id, buff_template_name_id, owner_unit_id, 0, false)
+			else
+				network_transmit:send_rpc_server("rpc_add_buff", target_unit_object_id, buff_template_name_id, owner_unit_id, 0, true)
+			end
 		end
 	end
 

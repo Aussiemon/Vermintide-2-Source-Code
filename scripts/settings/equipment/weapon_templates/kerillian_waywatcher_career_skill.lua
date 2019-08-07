@@ -187,12 +187,10 @@ weapon_template.actions = {
 }
 weapon_template.ammo_data = {
 	ammo_immediately_available = true,
-	ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_tripple_arrow_t1",
 	ammo_per_reload = 1,
 	ammo_per_clip = 1,
-	ammo_hand = "left",
-	ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_tripple_arrow_t1_3p",
 	reload_time = 0.4,
+	ammo_hand = "left",
 	max_ammo = math.huge,
 	ammo_unit_attachment_node_linking = AttachmentNodeLinking.arrow_tripple
 }
@@ -221,7 +219,7 @@ weapon_template.wield_anim = "to_longbow"
 weapon_template.wield_anim_no_ammo = "to_longbow_noammo"
 weapon_template.crosshair_style = "default"
 weapon_template.no_ammo_reload_event = "reload"
-weapon_template.buff_type = "RANGED"
+weapon_template.buff_type = "RANGED_ABILITY"
 weapon_template.weapon_type = "LONGBOW_TRUEFLIGHT"
 weapon_template.dodge_count = 3
 weapon_template.buffs = {

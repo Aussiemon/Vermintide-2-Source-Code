@@ -13,12 +13,12 @@ GameModeDemo.init = function (self, settings, world, ...)
 end
 
 GameModeDemo.evaluate_end_conditions = function (self, round_started, dt, t)
-	local spawn_manager = Managers.state.spawn
-	local humans_dead = spawn_manager:all_humans_dead()
-	local players_disabled = spawn_manager:all_players_disabled()
+	local ignore_bots = true
+	local humans_dead = GameModeHelper.side_is_dead("heroes", ignore_bots)
+	local players_disabled = GameModeHelper.side_is_disabled("heroes")
 	local lost = humans_dead or players_disabled or self._level_failed or self:_is_time_up()
 
-	if self._level_completed or lost then
+	if self._level_completed or lost or self:update_end_level_areas() then
 		self:complete_level()
 
 		COMPLETE_LEVEL_VAR = false

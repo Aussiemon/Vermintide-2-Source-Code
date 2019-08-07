@@ -612,7 +612,7 @@ AccountManager.verify_profile = function (self)
 	end
 
 	local most_recent_device = Managers.input:get_most_recent_device()
-	local user_id = most_recent_device.user_id()
+	local user_id = most_recent_device.user_id and most_recent_device.user_id()
 
 	if not user_id then
 		show_wrong_profile_popup(self)
@@ -687,7 +687,7 @@ end
 
 AccountManager._hard_sign_in = function (self, user_id, controller)
 	dprint("Hard-sign in", user_id)
-	Crashify.print_property("user_id", user_id)
+	Crashify.print_property("xb1_user_id", user_id)
 	self:_set_user_id(user_id, controller)
 	self:_unmap_other_controllers()
 	self:_on_user_signed_in()
@@ -728,8 +728,8 @@ AccountManager.cb_user_profiles = function (self, data)
 		for xuid, gamertag in pairs(data.user_profiles) do
 			self._gamertags[xuid] = gamertag
 
-			Crashify.print_property("xuid", xuid)
-			Crashify.print_property("gamertag", gamertag)
+			Crashify.print_property("xb1_xuid", xuid)
+			Crashify.print_property("xb1_gamertag", gamertag)
 		end
 	end
 

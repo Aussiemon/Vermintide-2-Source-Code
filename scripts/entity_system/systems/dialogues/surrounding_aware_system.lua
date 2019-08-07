@@ -151,6 +151,10 @@ SurroundingAwareSystem.update = function (self, context, t)
 end
 
 local function check_raycast_center(physics_world, unit, target, ray_position, ray_direction, ray_length, collision_filter)
+	if Vector3.length(ray_direction) == 0 then
+		return true
+	end
+
 	local hits = PhysicsWorld.immediate_raycast(physics_world, ray_position, ray_direction, ray_length, "all", "types", "both", "collision_filter", collision_filter or "filter_lookat_object_ray")
 
 	if hits then
@@ -481,7 +485,7 @@ SurroundingAwareSystem.update_events = function (self, context, t)
 
 					if unit then
 						local target_world_pos = POSITION_LOOKUP[target] or Unit.local_position(target, 0)
-						slot24 = Vector3.distance(source_wp, target_world_pos)
+						distance = Vector3.distance(source_wp, target_world_pos)
 					end
 
 					event_data.distance = distance

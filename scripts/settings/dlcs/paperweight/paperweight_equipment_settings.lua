@@ -1,9 +1,9 @@
 local settings = DLCSettings.paperweight
-settings.weapon_skins_file_names = {
-	"scripts/settings/equipment/weapon_skins_paperweight"
-}
 settings.item_master_list_file_names = {
 	"scripts/settings/equipment/item_master_list_paperweight"
+}
+settings.weapon_skins_file_names = {
+	"scripts/settings/equipment/weapon_skins_paperweight"
 }
 settings.weapon_template_file_names = {
 	"scripts/settings/equipment/weapon_templates/1h_axes_wood_elf",

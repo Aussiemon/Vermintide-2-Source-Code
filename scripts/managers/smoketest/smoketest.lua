@@ -328,6 +328,8 @@ Mods.hook.set(mod_name, SmoketestManager, "update", function (func, self, dt)
 end)
 
 function smoketest_change_items()
+	Crashify.print_property("autotest", true)
+
 	if not Managers.backend:is_local() then
 		local function contains(tab, career)
 			for _, v in pairs(tab) do
@@ -366,7 +368,32 @@ function smoketest_change_items()
 			"dr_slayer",
 			"dr_ironbreaker"
 		}
+
+		if Managers.player == nil then
+			print("Managers.player is nil! Aborting change items!")
+
+			return
+		end
+
+		if Managers.player:local_player() == nil then
+			print("Managers.player:local_player() is nil! Aborting change items!")
+
+			return
+		end
+
+		if Managers.player:local_player().player_unit == nil then
+			print("Managers.player:local_player().player_unit is nil! Aborting change items!")
+
+			return
+		end
+
 		local player_career = ScriptUnit.extension(Managers.player:local_player().player_unit, "career_system")._career_name
+
+		if player_career == nil then
+			print("Player career is nil! Aborting change items!")
+
+			return
+		end
 
 		remove_one_career(careers, player_career)
 

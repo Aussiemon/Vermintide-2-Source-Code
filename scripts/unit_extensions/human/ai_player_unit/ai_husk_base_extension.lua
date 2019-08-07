@@ -21,9 +21,16 @@ AiHuskBaseExtension.init = function (self, extension_init_context, unit, extensi
 	if breed.special_on_spawn_stinger then
 		WwiseUtils.trigger_unit_event(extension_init_context.world, breed.special_on_spawn_stinger, unit, 0)
 	end
+
+	local side_id = extension_init_data.side_id
+	self._side_id = side_id
 end
 
 AiHuskBaseExtension.extensions_ready = function (self, world, unit)
+	local side_id = self._side_id
+
+	Managers.state.side:add_unit_to_side(unit, side_id)
+
 	local health_extension = ScriptUnit.has_extension(unit, "health_system")
 
 	if health_extension then
@@ -33,9 +40,21 @@ AiHuskBaseExtension.extensions_ready = function (self, world, unit)
 		self.broadphase = broadphase
 		self._health_extension = health_extension
 	end
+
+	Unit.flow_event(unit, "lua_trigger_variation")
 end
 
-AiHuskBaseExtension.unfreeze = function (self)
+AiHuskBaseExtension.freeze = function (self)
+	self._side_id = nil
+end
+
+AiHuskBaseExtension.unfreeze = function (self, unit, data)
+	local optional_data = data[7]
+	local side_id = optional_data.side_id
+	self._side_id = side_id
+
+	Managers.state.side:add_unit_to_side(unit, side_id)
+
 	local run_on_husk_spawn = self._breed.run_on_husk_spawn
 
 	if run_on_husk_spawn then
@@ -63,6 +82,12 @@ AiHuskBaseExtension.update = function (self, unit, input, dt, context)
 			Broadphase.move(self.broadphase, self.broadphase_id, POSITION_LOOKUP[unit])
 		end
 	end
+end
+
+AiHuskBaseExtension.unit_removed_from_game = function (self)
+	Managers.state.side:remove_unit_from_side(self.unit)
+
+	self._side_id = nil
 end
 
 AiHuskBaseExtension.destroy = function (self, unit, input)

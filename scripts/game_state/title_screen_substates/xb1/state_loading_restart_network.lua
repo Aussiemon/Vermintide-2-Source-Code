@@ -24,14 +24,16 @@ end
 
 StateLoadingRestartNetwork._init_network = function (self)
 	local loading_context = self.parent.parent.loading_context
+	local increment_lobby_port = true
 
-	self.parent:setup_network_options()
-
-	LOBBY_PORT_INCREMENT = LOBBY_PORT_INCREMENT + 1
+	Managers.lobby:setup_network_options(increment_lobby_port)
 
 	if not rawget(_G, "LobbyInternal") or not LobbyInternal.network_initialized() then
 		require("scripts/network/lobby_xbox_live")
-		LobbyInternal.init_client(self.parent:network_options())
+
+		local network_options = Managers.lobby:network_options()
+
+		LobbyInternal.init_client(network_options)
 	end
 
 	self.parent:setup_level_transition()

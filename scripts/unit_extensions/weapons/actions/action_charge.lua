@@ -24,6 +24,8 @@ ActionCharge.init = function (self, world, item_name, is_server, owner_unit, dam
 end
 
 ActionCharge.client_owner_start_action = function (self, new_action, t)
+	ActionCharge.super.client_owner_start_action(self, new_action, t)
+
 	local owner_unit = self.owner_unit
 	self.current_action = new_action
 	self.charge_ready_sound_event = self.current_action.charge_ready_sound_event

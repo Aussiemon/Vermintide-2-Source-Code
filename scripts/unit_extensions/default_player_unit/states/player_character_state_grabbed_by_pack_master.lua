@@ -339,8 +339,16 @@ PlayerCharacterStateGrabbedByPackMaster.update = function (self, unit, input, dt
 
 	local direction = Vector3.normalize(best_crumb_position - packmaster_unit_position)
 	local wanted_position = packmaster_unit_position + direction * wanted_distance
+	local packmaster_speed = nil
 	local breed = Unit.get_data(packmaster_unit, "breed")
-	local packmaster_speed = breed.walk_speed
+
+	if not breed then
+		local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(packmaster_unit)
+		packmaster_speed = movement_settings_table.move_speed
+	else
+		packmaster_speed = breed.walk_speed
+	end
+
 	local distance_sq = Vector3.distance_squared(position, packmaster_unit_position)
 	local distance_sq_from_desired = distance_sq - wanted_distance_sq
 	local speed_factor_from_distance = packmaster_speed * 0.9 + distance_sq_from_desired * 0.4

@@ -24,15 +24,13 @@ PlayerProjectileImpactUnitExtension.init = function (self, extension_init_contex
 	self.static_impact_type = projectile_info.static_impact_type
 	local enemy_collision_filter = "filter_player_ray_projectile_dynamic_only"
 	local collision_filter = "filter_player_ray_projectile_no_player"
-	local static_collision_filter = "filter_player_ray_projectile_no_player"
+	local static_collision_filter = "filter_player_ray_projectile_static_only"
 	local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
 
 	if DamageUtils.allow_friendly_fire_ranged(difficulty_settings, owner_player) then
-		enemy_collision_filter = "filter_player_ray_projectile_dynamic_only"
 		collision_filter = "filter_player_ray_projectile"
 	end
 
-	local static_collision_filter = "filter_player_ray_projectile_static_only"
 	self.enemy_collision_filter = extension_init_data.collision_filter or enemy_collision_filter
 	self.static_collision_filter = extension_init_data.collision_filter or static_collision_filter
 	self.collision_filter = extension_init_data.collision_filter or collision_filter
@@ -74,7 +72,6 @@ PlayerProjectileImpactUnitExtension.update = function (self, unit, input, dt, co
 end
 
 local INDEX_POSITION = 1
-local INDEX_DISTANCE = 2
 local INDEX_NORMAL = 3
 local INDEX_ACTOR = 4
 
@@ -85,9 +82,8 @@ PlayerProjectileImpactUnitExtension.update_raycast = function (self, unit, input
 		return
 	end
 
-	local velocity = locomotion_extension:current_velocity()
-	local cached_position = POSITION_LOOKUP[unit]
-	local moved_position = cached_position + velocity
+	local cached_position = locomotion_extension:last_position()
+	local moved_position = locomotion_extension:current_position()
 	local physics_world = self.physics_world
 	local collision_filter = override_collision_filter or self.collision_filter
 	local last_position = self.last_position
@@ -107,10 +103,10 @@ PlayerProjectileImpactUnitExtension._do_raycast = function (self, unit, from, to
 	local direction = to - from
 	local length = Vector3.length(direction)
 	direction = Vector3.normalize(direction)
-	local offset = Vector3(0, 0, self.scene_query_height_offset)
 
 	PhysicsWorld.prepare_actors_for_raycast(physics_world, from, direction, 0, 1, length * length)
 
+	local offset = Vector3(0, 0, self.scene_query_height_offset)
 	local result = PhysicsWorld.immediate_raycast(physics_world, from + offset, direction, length, "all", "collision_filter", collision_filter)
 
 	if not result then
@@ -122,7 +118,6 @@ PlayerProjectileImpactUnitExtension._do_raycast = function (self, unit, from, to
 	for i = 1, num_hits, 1 do
 		local hit = result[i]
 		local hit_position = hit[INDEX_POSITION]
-		local hit_distance = hit[INDEX_DISTANCE]
 		local hit_normal = hit[INDEX_NORMAL]
 		local hit_actor = hit[INDEX_ACTOR]
 		local hit_unit = Actor.unit(hit_actor)
@@ -144,7 +139,7 @@ PlayerProjectileImpactUnitExtension._do_raycast = function (self, unit, from, to
 					end
 				end
 
-				assert(actor_index, "No actor index")
+				fassert(actor_index, "No actor index found for unit [\"%s\"] that was hit on actor [\"%s\"]", hit_unit, hit_actor)
 				self:impact(hit_unit, hit_position, direction, hit_normal, actor_index)
 			end
 		end
@@ -159,15 +154,13 @@ PlayerProjectileImpactUnitExtension.update_sphere_sweep = function (self, unit, 
 	end
 
 	local offset = Vector3(0, 0, self.scene_query_height_offset)
-	local velocity = locomotion_extension:current_velocity()
-	local cached_position = POSITION_LOOKUP[unit] + offset
-	local moved_position = cached_position + velocity + offset
+	local cached_position = locomotion_extension:last_position() + offset
+	local moved_position = locomotion_extension:current_position() + offset
 	local physics_world = self.physics_world
 
 	PhysicsWorld.prepare_actors_for_raycast(physics_world, cached_position, Vector3.normalize(moved_position - cached_position), 0, 1, Vector3.length_squared(moved_position - cached_position))
 
 	local result = PhysicsWorld.linear_sphere_sweep(physics_world, cached_position, moved_position, radius, 100, "collision_filter", collision_filter, "report_initial_overlap")
-	local unit = self.unit
 
 	if result then
 		local direction = Vector3.normalize(moved_position - cached_position)
@@ -175,10 +168,9 @@ PlayerProjectileImpactUnitExtension.update_sphere_sweep = function (self, unit, 
 
 		for i = 1, num_hits, 1 do
 			local hit = result[i]
-			local hit_actor = hit.actor
 			local hit_position = hit.position
 			local hit_normal = hit.normal
-			local hit_distance = hit.distance
+			local hit_actor = hit.actor
 			local hit_unit = Actor.unit(hit_actor)
 
 			if not Unit.is_frozen(hit_unit) then
@@ -198,17 +190,11 @@ PlayerProjectileImpactUnitExtension.update_sphere_sweep = function (self, unit, 
 						end
 					end
 
-					assert(actor_index, "No actor index")
+					fassert(actor_index, "No actor index found for unit [\"%s\"] that was hit on actor [\"%s\"]", hit_unit, hit_actor)
 					self:impact(hit_unit, hit_position, direction, hit_normal, actor_index)
 				end
 			end
 		end
-	end
-
-	if script_data.debug_projectiles then
-		QuickDrawerStay:sphere(cached_position, radius, Color(255, 255, 0, 0))
-		QuickDrawerStay:sphere(moved_position, radius, Color(255, 0, 255, 0))
-		QuickDrawerStay:line(moved_position, cached_position, Color(255, 0, 255, 255))
 	end
 end
 

@@ -1,10 +1,22 @@
 require("scripts/settings/game_mode_settings")
+require("scripts/managers/game_mode/game_mode_helper")
 require("scripts/managers/game_mode/game_modes/game_mode_adventure")
 require("scripts/managers/game_mode/game_modes/game_mode_survival")
 require("scripts/managers/game_mode/game_modes/game_mode_tutorial")
 require("scripts/managers/game_mode/game_modes/game_mode_inn")
 require("scripts/managers/game_mode/game_modes/game_mode_demo")
+require("scripts/managers/game_mode/game_modes/game_mode_weave")
 require("scripts/managers/game_mode/mutator_handler")
+
+for _, dlc in pairs(DLCSettings) do
+	local game_mode_files = dlc.game_mode_files
+
+	if game_mode_files then
+		for _, game_mode_file in ipairs(game_mode_files) do
+			require(game_mode_file)
+		end
+	end
+end
 
 local RPCS = {
 	"rpc_to_client_spawn_player",
@@ -12,7 +24,7 @@ local RPCS = {
 }
 GameModeManager = class(GameModeManager)
 
-GameModeManager.init = function (self, world, lobby_host, lobby_client, level_transition_handler, network_event_delegate, statistics_db, game_mode_key, network_server, network_transmit)
+GameModeManager.init = function (self, world, lobby_host, lobby_client, level_transition_handler, network_event_delegate, statistics_db, game_mode_key, network_server, network_transmit, profile_synchronizer)
 	local level_key = level_transition_handler:get_current_level_keys()
 	self.level_transition_handler = level_transition_handler
 	self._lobby_host = lobby_host
@@ -29,6 +41,7 @@ GameModeManager.init = function (self, world, lobby_host, lobby_client, level_tr
 	self.statistics_db = statistics_db
 	self.network_server = network_server
 	self._network_transmit = network_transmit
+	self._profile_synchronizer = profile_synchronizer
 
 	self:_init_game_mode(game_mode_key)
 
@@ -42,11 +55,10 @@ GameModeManager.init = function (self, world, lobby_host, lobby_client, level_tr
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
+	self._game_mode:register_rpcs(network_event_delegate, network_transmit)
 
 	self._object_sets = nil
 	self._object_set_names = nil
-	self._end_level_areas = {}
-	self._debug_end_level_areas = {}
 	local max_size = 8192
 	self._flow_set_data = {
 		units_per_frame = 150,
@@ -61,6 +73,11 @@ GameModeManager.init = function (self, world, lobby_host, lobby_client, level_tr
 	local has_local_client = not DEDICATED_SERVER
 	self._mutator_handler = MutatorHandler:new(mutators, self.is_server, has_local_client, world, network_event_delegate, network_transmit)
 	self._looping_event_timers = {}
+	self._disable_spawning_reasons = {}
+
+	if self.is_server then
+		self._initial_peers_ready = false
+	end
 end
 
 GameModeManager.destroy = function (self)
@@ -70,9 +87,16 @@ GameModeManager.destroy = function (self)
 	self._lobby_client = nil
 	self.level_transition_handler = nil
 
+	self._game_mode:unregister_rpcs()
+	self._game_mode:destroy()
+	Managers.party:cleanup_game_mode_data()
 	self.network_event_delegate:unregister(self)
 
 	self.network_event_delegate = nil
+end
+
+GameModeManager.cleanup_game_mode_units = function (self)
+	self._game_mode:cleanup_game_mode_units()
 end
 
 GameModeManager.conflict_director_updated_settings = function (self)
@@ -83,11 +107,15 @@ GameModeManager.settings = function (self)
 	return GameModeSettings[self._game_mode_key]
 end
 
+GameModeManager.setting = function (self, setting_name)
+	return GameModeSettings[self._game_mode_key][setting_name]
+end
+
 GameModeManager.object_sets = function (self)
 	return self._game_mode:object_sets()
 end
 
-GameModeManager.gm_event_end_conditions_met = function (self, reason)
+GameModeManager.gm_event_end_conditions_met = function (self, reason, checkpoint_available, percentages_completed)
 	self._gm_event_end_conditions_met = true
 
 	if reason == "lost" then
@@ -96,6 +124,9 @@ GameModeManager.gm_event_end_conditions_met = function (self, reason)
 
 		Level.trigger_event(level, round_lost_string)
 	end
+
+	self._game_mode:gm_event_end_conditions_met(reason, checkpoint_available, percentages_completed)
+	self:_save_last_level_completed(reason)
 end
 
 GameModeManager.is_game_mode_ended = function (self)
@@ -103,15 +134,72 @@ GameModeManager.is_game_mode_ended = function (self)
 end
 
 GameModeManager.setup_done = function (self)
+	self._game_mode:setup_done()
 	self._mutator_handler:activate_mutators()
 end
 
-GameModeManager.ai_killed = function (self, killed_unit, killer_unit, death_data)
-	self._mutator_handler:ai_killed(killed_unit, killer_unit, death_data)
+GameModeManager.player_entered_game_session = function (self, peer_id, local_player_id)
+	self._game_mode:player_entered_game_session(peer_id, local_player_id)
+end
+
+GameModeManager.player_left_game_session = function (self, peer_id, local_player_id)
+	self._game_mode:player_left_game_session(peer_id, local_player_id)
+end
+
+GameModeManager.player_joined_party = function (self, peer_id, local_player_id, new_party_id, slot_id)
+	self._game_mode:player_joined_party(peer_id, local_player_id, new_party_id, slot_id)
+end
+
+GameModeManager.player_left_party = function (self, peer_id, local_player_id, party_id, slot_id)
+	self._game_mode:player_left_party(peer_id, local_player_id, party_id, slot_id)
+end
+
+GameModeManager.ai_killed = function (self, killed_unit, killer_unit, death_data, killing_blow)
+	self._mutator_handler:ai_killed(killed_unit, killer_unit, death_data, killing_blow)
+
+	local game_mode = self._game_mode
+
+	if game_mode.ai_killed then
+		game_mode:ai_killed(killed_unit, killer_unit, death_data, killing_blow)
+	end
+end
+
+GameModeManager.level_object_killed = function (self, killed_unit, killing_blow)
+	self._mutator_handler:level_object_killed(killed_unit, killing_blow)
+end
+
+GameModeManager.ai_hit_by_player = function (self, hit_unit, attacking_unit, attack_data)
+	self._mutator_handler:ai_hit_by_player(hit_unit, attacking_unit, attack_data)
+end
+
+GameModeManager.player_hit = function (self, hit_unit, attacking_unit, attack_data)
+	self._mutator_handler:player_hit(hit_unit, attacking_unit, attack_data)
+end
+
+GameModeManager.player_respawned = function (self, spawned_unit)
+	self._mutator_handler:player_respawned(spawned_unit)
+end
+
+GameModeManager.damage_taken = function (self, attacked_unit, attacker_unit, damage, damage_source, damage_type)
+	self._mutator_handler:damage_taken(attacked_unit, attacker_unit, damage, damage_source, damage_type)
+end
+
+GameModeManager.ai_spawned = function (self, spawned_unit)
+	self._mutator_handler:ai_spawned(spawned_unit)
+end
+
+GameModeManager.set_override_respawn_group = function (self, respawn_group_name, active)
+	if self._game_mode.set_override_respawn_group then
+		self._game_mode:set_override_respawn_group(respawn_group_name, active)
+	end
 end
 
 GameModeManager.players_left_safe_zone = function (self)
 	self._mutator_handler:players_left_safe_zone()
+
+	if self._game_mode.players_left_safe_zone then
+		self._game_mode.players_left_safe_zone()
+	end
 end
 
 GameModeManager.has_activated_mutator = function (self, name)
@@ -124,6 +212,26 @@ end
 
 GameModeManager.evaluate_end_zone_activation_conditions = function (self)
 	return self._mutator_handler:evaluate_end_zone_activation_conditions()
+end
+
+GameModeManager.bots_disabled = function (self)
+	local settings = self:settings()
+	local bots_disabled = settings.bots_disabled
+
+	return bots_disabled
+end
+
+GameModeManager.get_saved_game_mode_data = function (self)
+	if self._game_mode.get_saved_game_mode_data then
+		return self._game_mode:get_saved_game_mode_data()
+	end
+end
+
+GameModeManager.get_conflict_settings = function (self)
+	local game_mode = self._game_mode
+	local conflict_settings = game_mode:get_conflict_settings()
+
+	return conflict_settings
 end
 
 GameModeManager._set_flow_object_set_enabled = function (self, set, enable, set_name)
@@ -304,6 +412,23 @@ GameModeManager._set_flow_object_set_unit_enabled = function (self, level, index
 	end
 end
 
+GameModeManager.get_end_screen_config = function (self, game_won, game_lost, player)
+	local screen_name, screen_config = self._game_mode:get_end_screen_config(game_won, game_lost, player)
+
+	fassert(screen_name ~= nil, "No screen name returned")
+	fassert(screen_config ~= nil, "No screen config returned")
+
+	return screen_name, screen_config
+end
+
+GameModeManager.get_player_wounds = function (self, profile)
+	return self._game_mode:get_player_wounds(profile)
+end
+
+GameModeManager.get_initial_inventory = function (self, healthkit, potion, grenade, profile)
+	return self._game_mode:get_initial_inventory(healthkit, potion, grenade, profile)
+end
+
 GameModeManager.flow_cb_set_flow_object_set_enabled = function (self, set_name, enabled)
 	local set = self._object_sets["flow_" .. set_name]
 
@@ -338,10 +463,10 @@ GameModeManager._init_game_mode = function (self, game_mode_key)
 
 	local settings = GameModeSettings[game_mode_key]
 	local class = rawget(_G, settings.class_name)
-	self._game_mode = class:new(settings, self._world, self.network_server, self.level_transition_handler)
+	self._game_mode = class:new(settings, self._world, self.network_server, self.level_transition_handler, self.is_server, self._profile_synchronizer, self._level_key, self.statistics_db)
 end
 
-GameModeManager.rpc_to_client_spawn_player = function (self, sender, local_player_id, profile_index, position, rotation, is_initial_spawn)
+GameModeManager.rpc_to_client_spawn_player = function (self, sender, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn)
 	if sender == Network.peer_id() then
 		Managers.state.entity:system("round_started_system"):player_spawned()
 	end
@@ -380,10 +505,7 @@ end
 GameModeManager.complete_level = function (self)
 	print("Complete level triggered.")
 	self._game_mode:complete_level(self._level_key)
-
-	for unit, _ in pairs(self._end_level_areas) do
-		Unit.flow_event(unit, "lua_level_completed_triggered")
-	end
+	self._game_mode:trigger_end_level_area_events()
 end
 
 GameModeManager.wanted_transition = function (self)
@@ -396,6 +518,28 @@ end
 
 GameModeManager.retry_level = function (self)
 	self.level_transition_handler:reload_level()
+end
+
+GameModeManager.disable_player_spawning = function (self, disable, reason, safe_position, safe_rotation)
+	local reasons = self._disable_spawning_reasons
+
+	if disable then
+		fassert(not reasons[reason], "Reason already disables player spawning")
+
+		if table.is_empty(reasons) then
+			self._game_mode:disable_player_spawning()
+		end
+
+		reasons[reason] = true
+	else
+		fassert(reasons[reason], "Trying to enable spawning without disabling spawning first with reason")
+
+		reasons[reason] = nil
+
+		if table.is_empty(reasons) then
+			self._game_mode:enable_player_spawning(safe_position, safe_rotation)
+		end
+	end
 end
 
 GameModeManager.start_specific_level = function (self, level_key, time_until_start)
@@ -430,6 +574,10 @@ GameModeManager.update_timebased_level_start = function (self, dt)
 	end
 end
 
+GameModeManager.pre_update = function (self, t, dt)
+	self._game_mode:pre_update(t, dt)
+end
+
 GameModeManager.register_looping_event_timer = function (self, timer_name, delay, event_name)
 	local t = os.clock()
 	self._looping_event_timers[timer_name] = {
@@ -446,6 +594,10 @@ end
 GameModeManager.update = function (self, dt, t)
 	self._mutator_handler:update(dt, t)
 
+	if self._game_mode.update then
+		self._game_mode:update(t, dt)
+	end
+
 	local t = os.clock()
 	local level = LevelHelper:current_level(self._world)
 
@@ -458,16 +610,23 @@ GameModeManager.update = function (self, dt, t)
 	end
 end
 
+GameModeManager._update_initial_join = function (self, t, dt)
+	if self.network_server:are_all_peers_ingame() then
+		self._initial_peers_ready = true
+
+		self._game_mode:all_peers_ready()
+	end
+end
+
 GameModeManager.server_update = function (self, dt, t)
+	if not self._initial_peers_ready then
+		self:_update_initial_join(t, dt)
+	end
+
+	self._game_mode:server_update(t, dt)
+
 	if not self._end_conditions_met and not LEVEL_EDITOR_TEST then
-		if not self._game_mode:level_completed() then
-			local level_completed = self:_update_end_level_areas()
-
-			if level_completed then
-				self:complete_level()
-			end
-		end
-
+		local game_mode = self._game_mode
 		local mutator_handler = self._mutator_handler
 		local round_started = self._round_started
 		local ended, reason = self._game_mode:evaluate_end_conditions(round_started, dt, t, mutator_handler)
@@ -479,20 +638,22 @@ GameModeManager.server_update = function (self, dt, t)
 				return
 			end
 
+			game_mode:ended(reason)
+
+			local level_key = Managers.mechanism:game_round_ended(t, dt, reason)
+
+			Managers.mechanism:progress_state()
 			self.network_server:enter_post_game()
 
 			self._end_conditions_met = true
 			self._end_reason = reason
 			local checkpoint_available = (reason == "lost" and Managers.state.spawn:checkpoint_data() and true) or false
 			local mission_system = Managers.state.entity:system("mission_system")
-			local percentage_completed = mission_system:percentage_completed()
+			local percentages_completed = mission_system:percentages_completed()
 
-			self:trigger_event("end_conditions_met", reason, checkpoint_available, percentage_completed)
+			self:trigger_event("end_conditions_met", reason, checkpoint_available, percentages_completed)
 
 			self._gm_event_end_conditions_met = true
-
-			self:_save_last_level_completed(reason)
-
 			self._ready_for_transition = {}
 			local human_players = Managers.player:human_players()
 
@@ -506,11 +667,11 @@ GameModeManager.server_update = function (self, dt, t)
 			elseif reason == "won" then
 				local default_level_key = self.level_transition_handler:default_level_key()
 
-				self.level_transition_handler:set_next_level(default_level_key)
+				self.level_transition_handler:set_next_level(level_key or default_level_key)
 			elseif reason == "lost" then
 				local default_level_key = self.level_transition_handler:default_level_key()
 
-				self.level_transition_handler:set_next_level(default_level_key)
+				self.level_transition_handler:set_next_level(level_key or default_level_key)
 			elseif reason == "reload" then
 				self:retry_level()
 			else
@@ -598,27 +759,59 @@ GameModeManager.hot_join_sync = function (self, sender)
 end
 
 GameModeManager.activate_end_level_area = function (self, unit, object, from, to)
-	local extents = (to - from) * 0.5
-	local offset = (from + to) * 0.5
-	self._end_level_areas[unit] = {
-		object = object,
-		extents = Vector3Box(extents),
-		offset = Vector3Box(offset)
-	}
+	local game_mode = self._game_mode
+
+	game_mode:activate_end_level_area(unit, object, from, to)
 end
 
 GameModeManager.debug_end_level_area = function (self, unit, object, from, to)
-	local extents = (to - from) * 0.5
-	local offset = (from + to) * 0.5
-	self._debug_end_level_areas[unit] = {
-		object = object,
-		extents = Vector3Box(extents),
-		offset = Vector3Box(offset)
-	}
+	local game_mode = self._game_mode
+
+	game_mode:debug_end_level_area(unit, object, from, to)
 end
 
 GameModeManager.disable_end_level_area = function (self, unit)
-	self._end_level_areas[unit] = nil
+	local game_mode = self._game_mode
+
+	game_mode:disable_end_level_area(unit)
+end
+
+GameModeManager.teleport_despawned_players = function (self, position)
+	self._game_mode:teleport_despawned_players(position)
+end
+
+GameModeManager.flow_callback_add_spawn_point = function (self, unit)
+	self._game_mode:flow_callback_add_spawn_point(unit)
+end
+
+GameModeManager.remove_respawn_units_due_to_crossroads = function (self, removed_path_distances, total_main_path_length)
+	if self._game_mode.remove_respawn_units_due_to_crossroads then
+		self._game_mode:remove_respawn_units_due_to_crossroads(removed_path_distances, total_main_path_length)
+	end
+end
+
+GameModeManager.recalc_respawner_dist_due_to_crossroads = function (self)
+	if self._game_mode.recalc_respawner_dist_due_to_crossroads then
+		self._game_mode:recalc_respawner_dist_due_to_crossroads()
+	end
+end
+
+GameModeManager.respawn_unit_spawned = function (self, unit)
+	self._game_mode:respawn_unit_spawned(unit)
+end
+
+GameModeManager.force_respawn = function (self, peer_id, local_player_id)
+	self._game_mode:force_respawn(peer_id, local_player_id)
+end
+
+GameModeManager.force_respawn_dead_players = function (self)
+	self._game_mode:force_respawn_dead_players()
+end
+
+GameModeManager.set_respawning_enabled = function (self, enabled)
+	if self._game_mode.set_respawning_enabled then
+		self._game_mode:set_respawning_enabled(enabled)
+	end
 end
 
 GameModeManager._update_end_level_areas = function (self)

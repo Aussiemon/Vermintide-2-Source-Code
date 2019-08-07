@@ -138,13 +138,16 @@ CareerAbilityESMercenary._run_ability = function (self, new_initial_speed)
 
 	Broadphase.query(broadphase, POSITION_LOOKUP[owner_unit], radius, nearby_player_units)
 
+	local side_manager = Managers.state.side
 	local revivable_units = FrameTable.alloc_table()
 
 	for _, friendly_unit in pairs(nearby_player_units) do
-		local friendly_unit_status_extension = ScriptUnit.extension(friendly_unit, "status_system")
+		if not side_manager:is_enemy(self._owner_unit, friendly_unit) then
+			local friendly_unit_status_extension = ScriptUnit.extension(friendly_unit, "status_system")
 
-		if friendly_unit_status_extension:is_available_for_career_revive() then
-			revivable_units[#revivable_units + 1] = friendly_unit
+			if friendly_unit_status_extension:is_available_for_career_revive() then
+				revivable_units[#revivable_units + 1] = friendly_unit
+			end
 		end
 	end
 
@@ -163,15 +166,25 @@ CareerAbilityESMercenary._run_ability = function (self, new_initial_speed)
 
 	if talent_extension:has_talent("markus_mercenary_activated_ability_improved_healing") then
 		heal_amount = 45
+	elseif talent_extension:has_talent("markus_mercenary_activated_ability_cooldown_no_heal") then
+		heal_amount = 0
 	end
 
 	local heal_type_id = NetworkLookup.heal_types.career_skill
 
 	for _, player_unit in pairs(nearby_player_units) do
-		local unit_go_id = network_manager:unit_game_object_id(player_unit)
+		if not side_manager:is_enemy(self._owner_unit, player_unit) then
+			local unit_go_id = network_manager:unit_game_object_id(player_unit)
 
-		if unit_go_id then
-			network_transmit:send_rpc_server("rpc_request_heal", unit_go_id, heal_amount, heal_type_id)
+			if unit_go_id then
+				if talent_extension:has_talent("markus_mercenary_activated_ability_damage_reduction") then
+					local buff_system = Managers.state.entity:system("buff_system")
+
+					buff_system:add_buff(player_unit, "markus_mercenary_activated_ability_damage_reduction", self._owner_unit, false)
+				end
+
+				network_transmit:send_rpc_server("rpc_request_heal", unit_go_id, heal_amount, heal_type_id)
+			end
 		end
 	end
 
@@ -190,15 +203,16 @@ CareerAbilityESMercenary._run_ability = function (self, new_initial_speed)
 	local is_husk = false
 	local rotation = Quaternion.identity()
 	local career_power_level = career_extension:get_career_power_level()
-	local player_and_bot_units = PLAYER_AND_BOT_UNITS
+	local side = Managers.state.side.side_by_unit[owner_unit]
+	local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 	local num_player_units = #player_and_bot_units
 
 	for i = 1, num_player_units, 1 do
 		local player_unit = player_and_bot_units[i]
-		local friendly_status_extension = ScriptUnit.extension(player_unit, "status_system")
+		local friendly_attack_intensity_extension = ScriptUnit.has_extension(player_unit, "attack_intensity_system")
 
-		if friendly_status_extension then
-			friendly_status_extension:add_attack_intensity(20, 20)
+		if friendly_attack_intensity_extension then
+			friendly_attack_intensity_extension:add_attack_intensity("normal", 20, 20)
 		end
 	end
 

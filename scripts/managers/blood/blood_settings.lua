@@ -44,6 +44,21 @@ BloodSettingsDefault = BloodSettingsDefault or {
 	},
 	screen_space = {
 		enabled = true
+	},
+	hit_effects = {
+		enabled = true,
+		first_person_per_race = {
+			default = "fx/impact_blood",
+			skaven = "fx/impact_blood",
+			chaos = "fx/impact_blood_chaos",
+			beastmen = "fx/impact_blood_beastman"
+		}
+	},
+	dismemberment = {
+		enabled = true
+	},
+	ragdoll_push = {
+		enabled = true
 	}
 }
 BloodSettings = BloodSettings or table.clone(BloodSettingsDefault)
@@ -51,6 +66,14 @@ BloodSettings = BloodSettings or table.clone(BloodSettingsDefault)
 if PLATFORM == "win32" then
 	local num_decals = Application.user_setting("num_blood_decal") or BloodSettings.blood_decals.num_decals
 	BloodSettings.blood_decals.num_decals = num_decals
+end
+
+BloodSettings.get_hit_effect_for_race = function (self, race)
+	if self.hit_effects.enabled then
+		return self.hit_effects.first_person_per_race[race] or self.hit_effects.first_person_per_race.default
+	end
+
+	return nil
 end
 
 return

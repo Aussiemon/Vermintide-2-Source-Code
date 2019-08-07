@@ -9,10 +9,11 @@ local BOT_COLORS = {
 	empire_soldier = QuaternionBox(255, 220, 20, 60)
 }
 
-PlayerBot.init = function (self, player_name, bot_profile_name, is_server, profile_index, local_player_id, unique_id)
+PlayerBot.init = function (self, player_name, bot_profile_name, is_server, profile_index, career_index, local_player_id, unique_id, ui_id)
 	self.player_name = player_name
 	self.bot_profile = PlayerBots[bot_profile_name]
 	self._profile_index = profile_index
+	self._career_index = career_index
 	self.game_object_id = nil
 	self.owned_units = {}
 	self.bot_player = true
@@ -25,10 +26,16 @@ PlayerBot.init = function (self, player_name, bot_profile_name, is_server, profi
 	self.bot_telemetry_id = "Bot_" .. profile.display_name
 	self._local_player_id = local_player_id
 	self._unique_id = unique_id
+	self._ui_id = ui_id
+	self._spawn_state = "despawned"
 end
 
 PlayerBot.profile_index = function (self)
 	return self._profile_index
+end
+
+PlayerBot.career_index = function (self)
+	return self._career_index
 end
 
 PlayerBot.stats_id = function (self)
@@ -36,11 +43,15 @@ PlayerBot.stats_id = function (self)
 end
 
 PlayerBot.ui_id = function (self)
-	return self._unique_id
+	return self._ui_id
 end
 
 PlayerBot.local_player_id = function (self)
 	return self._local_player_id
+end
+
+PlayerBot.unique_id = function (self)
+	return self._unique_id
 end
 
 PlayerBot.platform_id = function (self)
@@ -67,13 +78,14 @@ PlayerBot.profile_display_name = function (self)
 end
 
 PlayerBot.despawn = function (self)
+	self:_set_spawn_state("despawned")
+
 	local player_unit = self.player_unit
 
 	if Unit.alive(player_unit) then
-		REMOVE_PLAYER_UNIT_FROM_LISTS(player_unit)
 		Managers.state.unit_spawner:mark_for_deletion(player_unit)
 	else
-		print("player_bot was already despanwed. Should not happen.")
+		print("player_bot was already despawned. Should not happen.")
 	end
 end
 
@@ -85,18 +97,11 @@ PlayerBot.telemetry_id = function (self)
 	return self.bot_telemetry_id
 end
 
-PlayerBot.career_index = function (self)
-	local hero_name = self:profile_display_name()
-	local hero_attributes = Managers.backend:get_interface("hero_attributes")
-	local career_index = hero_attributes:get(hero_name, "career") or 1
-
-	return career_index
-end
-
 PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_melee, ammo_ranged, healthkit, potion, grenade)
 	local profile_index = self._profile_index
 	local profile = SPProfiles[profile_index]
 	local career_index = self:career_index()
+	local career = profile.careers[career_index]
 
 	fassert(profile, "[SpawnManager] Trying to spawn with profile %q that doesn't exist in %q.", profile_index, "SPProfiles")
 
@@ -104,46 +109,16 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 	local difficulty_manager = Managers.state.difficulty
 	local difficulty_settings = difficulty_manager:get_difficulty_settings()
 	local player_health = difficulty_settings.max_hp
-	local player_wounds = difficulty_settings.wounds
+	local game_mode_manager = Managers.state.game_mode
+	local player_wounds = game_mode_manager:get_player_wounds(profile)
+	local character_state_class_list = {}
 
-	if Managers.state.game_mode:has_activated_mutator("instant_death") then
-		player_wounds = 1
+	for _, character_state_name in ipairs(career.character_state_list) do
+		character_state_class_list[#character_state_class_list + 1] = rawget(_G, character_state_name)
 	end
 
-	local character_state_class_list = {
-		PlayerCharacterStateDead,
-		PlayerCharacterStateInteracting,
-		PlayerCharacterStateJumping,
-		PlayerCharacterStateClimbingLadder,
-		PlayerCharacterStateLeavingLadderTop,
-		PlayerCharacterStateEnterLadderTop,
-		PlayerCharacterStateFalling,
-		PlayerCharacterStateKnockedDown,
-		PlayerCharacterStatePouncedDown,
-		PlayerCharacterStateStanding,
-		PlayerCharacterStateWalking,
-		PlayerCharacterStateDodging,
-		PlayerCharacterStateLedgeHanging,
-		PlayerCharacterStateLeaveLedgeHangingPullUp,
-		PlayerCharacterStateLeaveLedgeHangingFalling,
-		PlayerCharacterStateCatapulted,
-		PlayerCharacterStateStunned,
-		PlayerCharacterStateUsingTransport,
-		PlayerCharacterStateGrabbedByPackMaster,
-		PlayerCharacterStateGrabbedByTentacle,
-		PlayerCharacterStateWaitingForAssistedRespawn,
-		PlayerCharacterStateOverchargeExploding,
-		PlayerCharacterStateInVortex,
-		PlayerCharacterStateGrabbedByChaosSpawn,
-		PlayerCharacterStateLunging,
-		PlayerCharacterStateLeaping,
-		PlayerCharacterStateOverpowered,
-		PlayerCharacterStateInHangingCage,
-		PlayerCharacterStateGrabbedByCorruptor
-	}
-	local initial_inventory = self:_get_initial_inventory(healthkit, potion, grenade)
+	local initial_inventory = game_mode_manager:get_initial_inventory(healthkit, potion, grenade, profile)
 	local hero_name = profile.display_name
-	local career = profile.careers[career_index]
 	local base_skin = career.base_skin
 	local base_frame = "default"
 	local career_name = career.name
@@ -153,6 +128,10 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 	local frame_item = BackendUtils.get_loadout_item(career_name, "slot_frame")
 	local frame_name = (frame_item and frame_item.data.name) or base_frame
 	local overcharge_data = OverchargeData[career_name] or {}
+	local status = Managers.party:get_status_from_unique_id(self._unique_id)
+	local party = Managers.party:get_party(status.party_id)
+	local side = Managers.state.side.side_by_party[party]
+	local breed = career.breed or profile.breed
 	local extension_init_data = {
 		ai_system = {
 			player = self,
@@ -160,7 +139,8 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 			nav_world = nav_world
 		},
 		ai_bot_group_system = {
-			initial_inventory = initial_inventory
+			initial_inventory = initial_inventory,
+			side = side
 		},
 		input_system = {
 			player = self
@@ -257,16 +237,18 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 		},
 		overcharge_system = {
 			overcharge_data = overcharge_data
+		},
+		aggro_system = {
+			side = side
+		},
+		proximity_system = {
+			side = side,
+			breed = breed
 		}
 	}
 	local unit_template_name = "player_bot_unit"
 	local unit_name = skin_data.third_person
-	local spawn_data = {
-		unit_template_name = unit_template_name,
-		unit_name = unit_name,
-		extension_init_data = extension_init_data
-	}
-	local unit = Managers.state.spawn:spawn_unit(spawn_data, position, rotation)
+	local unit = self:spawn_unit(unit_name, extension_init_data, unit_template_name, position, rotation)
 
 	ScriptUnit.extension(unit, "attachment_system"):show_attachments(true)
 	Unit.set_data(unit, "sound_character", career.sound_character)
@@ -284,6 +266,8 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 
 		health_extension:create_health_game_object()
 	end
+
+	self:_set_spawn_state("spawned")
 
 	return unit
 end

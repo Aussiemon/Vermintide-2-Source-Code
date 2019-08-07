@@ -206,8 +206,8 @@ CareerAbilityESKnight._run_ability = function (self)
 		attacker_unit = owner_unit
 	})
 
-	if talent_extension:has_talent("markus_knight_activated_ability_damage_buff", "empire_soldier", true) then
-		buff_name = "markus_knight_activated_ability_damage_buff"
+	if talent_extension:has_talent("markus_knight_ability_invulnerability", "empire_soldier", true) then
+		buff_name = "markus_knight_ability_invulnerability_buff"
 
 		buff_extension:add_buff(buff_name, {
 			attacker_unit = owner_unit
@@ -220,12 +220,6 @@ CareerAbilityESKnight._run_ability = function (self)
 		else
 			network_transmit:send_rpc_server("rpc_add_buff", owner_unit_id, buff_template_name_id, owner_unit_id, 0, false)
 		end
-	end
-
-	if talent_extension:has_talent("markus_knight_activated_ability_infinite_block", "empire_soldier", true) then
-		buff_extension:add_buff("markus_knight_activated_ability_infinite_block", {
-			attacker_unit = owner_unit
-		})
 	end
 
 	status_extension:set_noclip(true)

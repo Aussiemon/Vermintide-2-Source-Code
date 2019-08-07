@@ -3,8 +3,10 @@ GenericUnitInteractableExtension = class(GenericUnitInteractableExtension)
 GenericUnitInteractableExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.unit = unit
 	self._is_level_object = Unit.level(unit) ~= nil
-	self.interactable_type = Unit.get_data(unit, "interaction_data", "interaction_type")
+	self.interactable_type = Unit.get_data(unit, "interaction_data", "interaction_type") or "player_generic"
 	self.interactor_unit = nil
+	self.num_times_successfully_completed = 0
+	self.interaction_result = nil
 
 	fassert(self.interactable_type, "Unit: %s missing interaction_type in its unit data, should it have an interaction extension?", unit)
 end
@@ -39,6 +41,7 @@ GenericUnitInteractableExtension.set_is_being_interacted_with = function (self, 
 		end
 	else
 		fassert(interactor_unit ~= nil, "Interactor unit was already nil.")
+		Unit.set_flow_variable(unit, "lua_interaction_started_unit", interactor_unit)
 
 		local flow_event = "lua_interaction_started_" .. interaction_type
 
@@ -46,6 +49,7 @@ GenericUnitInteractableExtension.set_is_being_interacted_with = function (self, 
 	end
 
 	self.interactor_unit = interactor_unit
+	self.interaction_result = interaction_result
 end
 
 GenericUnitInteractableExtension.is_being_interacted_with = function (self)

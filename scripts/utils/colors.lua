@@ -883,6 +883,12 @@ Colors.color_definitions = {
 		31,
 		38
 	},
+	magic = {
+		ALPHA,
+		0,
+		211,
+		178
+	},
 	promo = {
 		ALPHA,
 		140,
@@ -1236,6 +1242,54 @@ Colors.color_definitions = {
 		240,
 		32,
 		0
+	},
+	life = {
+		ALPHA,
+		50,
+		205,
+		50
+	},
+	metal = {
+		ALPHA,
+		255,
+		255,
+		0
+	},
+	death = {
+		ALPHA,
+		139,
+		0,
+		139
+	},
+	heavens = {
+		ALPHA,
+		0,
+		191,
+		255
+	},
+	light = {
+		ALPHA,
+		255,
+		255,
+		255
+	},
+	beasts = {
+		ALPHA,
+		139,
+		69,
+		19
+	},
+	fire = {
+		ALPHA,
+		220,
+		20,
+		60
+	},
+	shadow = {
+		ALPHA,
+		128,
+		128,
+		128
 	}
 }
 

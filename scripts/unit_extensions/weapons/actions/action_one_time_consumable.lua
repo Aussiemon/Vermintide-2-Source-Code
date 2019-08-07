@@ -8,6 +8,8 @@ ActionOneTimeConsumable.init = function (self, world, item_name, is_server, owne
 end
 
 ActionOneTimeConsumable.client_owner_start_action = function (self, new_action, t)
+	ActionOneTimeConsumable.super.client_owner_start_action(self, new_action, t)
+
 	self.current_action = new_action
 end
 

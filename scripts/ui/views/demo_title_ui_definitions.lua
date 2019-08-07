@@ -783,7 +783,12 @@ local widget_definitions = {
 	info_ability_description = UIWidgets.create_simple_text("n/a", "info_ability_description", nil, nil, skill_description_style),
 	info_window_passive_title = UIWidgets.create_title_widget("info_window_passive_title", scenegraph_definition.info_window_passive_title.size, "Passive Effect", false, true),
 	info_window_ability_title = UIWidgets.create_title_widget("info_window_ability_title", scenegraph_definition.info_window_ability_title.size, "Active Ability", false, true),
-	info_window = UIWidgets.create_simple_texture("divider_01_bg", "info_window"),
+	info_window = UIWidgets.create_simple_texture("divider_01_bg", "info_window", nil, nil, {
+		255,
+		0,
+		0,
+		0
+	}),
 	info_window_top = UIWidgets.create_simple_texture("divider_01_bottom", "info_window_bottom"),
 	info_window_bottom = UIWidgets.create_simple_texture("divider_01_top", "info_window_top"),
 	demo_bg_01 = UIWidgets.create_simple_texture("demo_bg_01", "info_window_ink"),

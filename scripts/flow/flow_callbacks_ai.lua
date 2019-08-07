@@ -1,3 +1,5 @@
+local flow_return_table = Boot.flow_return_table
+
 function flow_callback_activate_ai_spawner(params)
 	local spawner_unit = params.spawner_unit
 
@@ -88,6 +90,45 @@ function flow_callback_ai_unlock_breed_package(params)
 	local enemy_package_loader = Managers.state.game_mode.level_transition_handler.enemy_package_loader
 
 	enemy_package_loader:unlock_breed_package(breed_name)
+end
+
+function flow_callback_spawn_ai_and_move_to_unit(params)
+	if not Managers.player.is_server then
+		return
+	end
+
+	local breed_name = params.breed_name
+	local spawn_unit = params.spawn_unit
+	local move_to_unit_1 = params.move_to_unit1
+	local move_to_unit_2 = params.move_to_unit2
+	local move_to_unit_3 = params.move_to_unit3
+	local move_to_table = {
+		[#move_to_table + 1] = move_to_unit_1
+	}
+
+	if move_to_unit_2 then
+		move_to_table[#move_to_table + 1] = move_to_unit_2
+	end
+
+	if move_to_unit_3 then
+		move_to_table[#move_to_table + 1] = move_to_unit_3
+	end
+
+	local move_to_unit = move_to_table[math.random(1, #move_to_table)]
+	local spawn_position = Vector3Box(Unit.world_position(spawn_unit, 0))
+	local move_to_position = Vector3Box(Unit.world_position(move_to_unit, 0))
+	local breed = Breeds[breed_name]
+	local optional_data = {
+		move_to_position = move_to_position,
+		spawned_func = function (unit, breed, optional_data)
+			local blackboard = BLACKBOARDS[unit]
+			blackboard.goal_destination = optional_data.move_to_position
+			blackboard.move_and_place_standard = true
+			blackboard.ignore_standard_pickup = true
+		end
+	}
+
+	Managers.state.conflict:spawn_queued_unit(breed, spawn_position, QuaternionBox(Quaternion.identity()), "terror_event", nil, "terror_event", optional_data)
 end
 
 function trigger_ai_equipment_flow_event(params)
@@ -280,13 +321,7 @@ end
 
 function flow_callback_override_player_respawning(params)
 	if Managers.player.is_server or LEVEL_EDITOR_TEST then
-		Managers.state.spawn.respawn_handler:set_override_respawn_group(params.respawn_group_name, params.active)
-	end
-end
-
-function flow_callback_pick_crossroad_path(params)
-	if Managers.player.is_server or LEVEL_EDITOR_TEST then
-		Managers.state.conflict.level_analysis:pick_crossroad_path(params.crossroad_id, params.path_id)
+		Managers.state.game_mode:set_override_respawn_group(params.respawn_group_name, params.active)
 	end
 end
 
@@ -438,6 +473,16 @@ function flow_callback_broadphase_ai_set_goal_destination(params)
 	else
 		Application.warning(string.format("[flow_callback_broadphase_ai_set_goal_destination] Couldn't find nearby navmesh for Goal Unit: %s", tostring(goal_unit)))
 	end
+end
+
+function flow_callback_get_crossroad_path_id(params)
+	local crossroad_id = params.crossroad_id
+	local level_analysis = Managers.state.conflict.level_analysis
+	local chosen_crossroads = level_analysis.chosen_crossroads
+	local chosen_road_id = chosen_crossroads[crossroad_id]
+	flow_return_table.path_id = chosen_road_id
+
+	return flow_return_table
 end
 
 return

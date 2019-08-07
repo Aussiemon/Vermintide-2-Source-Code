@@ -168,7 +168,13 @@ CareerAbilityWEMaidenGuard._run_ability = function (self)
 		network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.dodging, true, unit_id, 0)
 	end
 
-	local has_impact_damage_buff = talent_extension:has_talent("kerillian_maidenguard_activated_ability_damage", "wood_elf", true)
+	local damage_profile = "maidenguard_dash_ability"
+	local bleed = talent_extension:has_talent("kerillian_maidenguard_activated_ability_damage")
+
+	if bleed then
+		damage_profile = "maidenguard_dash_ability_bleed"
+	end
+
 	status_extension.do_lunge = {
 		animation_end_event = "maiden_guard_active_ability_charge_hit",
 		allow_rotation = false,
@@ -189,10 +195,10 @@ CareerAbilityWEMaidenGuard._run_ability = function (self)
 			ignore_shield = true,
 			interrupt_on_max_hit_mass = false,
 			interrupt_on_first_hit = false,
-			damage_profile = "maidenguard_dash_ability",
 			width = 1.5,
 			allow_backstab = true,
-			power_level_multiplier = (has_impact_damage_buff and 2.5) or 1.5,
+			damage_profile = damage_profile,
+			power_level_multiplier = (bleed and 1) or 0,
 			stagger_angles = {
 				max = 90,
 				min = 90

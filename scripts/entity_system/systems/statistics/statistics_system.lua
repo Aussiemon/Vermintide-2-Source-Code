@@ -120,6 +120,8 @@ StatisticsSystem.rpc_register_kill = function (self, sender, victim_unit_go_id)
 	TEMP_ARGS[DamageDataIndex.DAMAGING_UNIT] = "n/a"
 	TEMP_ARGS[DamageDataIndex.HIT_REACT_TYPE] = "light"
 	TEMP_ARGS[DamageDataIndex.CRITICAL_HIT] = false
+	TEMP_ARGS[DamageDataIndex.FIRST_HIT] = true
+	TEMP_ARGS[DamageDataIndex.TOTAL_HITS] = 0
 	local statistics_db = self.statistics_db
 
 	StatisticsUtil.register_kill(victim_unit, TEMP_ARGS, statistics_db, false)

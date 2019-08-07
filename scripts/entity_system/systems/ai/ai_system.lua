@@ -72,16 +72,30 @@ AISystem.init = function (self, context, name)
 
 	local level_settings = LevelHelper:current_level_settings()
 	local level_name = level_settings.level_name
+	local world = context.world
 
 	if LEVEL_EDITOR_TEST then
 		level_name = Application.get_data("LevelEditor", "level_resource_name")
 	end
 
 	if not level_settings.no_nav_mesh then
-		self._nav_data = GwNavWorld.add_navdata(nav_world, level_name)
+		local num_nested_levels = LevelResource.nested_level_count(level_name)
+		local nav_data = {
+			[#nav_data + 1] = GwNavWorld.add_navdata(nav_world, level_name)
+		}
+
+		for i = 0, num_nested_levels - 1, 1 do
+			local nested_level_name = LevelResource.nested_level_resource_name(level_name, i)
+
+			print("nested_level_name", nested_level_name)
+
+			nav_data[#nav_data + 1] = GwNavWorld.add_navdata(nav_world, nested_level_name)
+		end
+
+		self._nav_data = nav_data
 
 		if script_data.debug_enabled then
-			self.ai_debugger = AIDebugger:new(context.world, nav_world, self.group_blackboard, self.is_server, context.free_flight_manager)
+			self.ai_debugger = AIDebugger:new(world, nav_world, self.group_blackboard, self.is_server, context.free_flight_manager)
 		end
 	end
 
@@ -382,7 +396,13 @@ AISystem.destroy = function (self)
 	self._nav_cost_maps_data = nil
 
 	if self._nav_data then
-		GwNavWorld.remove_navdata(nil, self._nav_data)
+		local nav_data = self._nav_data
+
+		for i = 1, #nav_data, 1 do
+			local data = nav_data[i]
+
+			GwNavWorld.remove_navdata(nil, data)
+		end
 	end
 
 	GwNavWorld.destroy(self._nav_world)
@@ -456,13 +476,15 @@ AISystem.set_default_blackboard_values = function (self, unit, blackboard)
 	blackboard.have_slot = 0
 	blackboard.wait_slot_distance = math.huge
 	blackboard.target_dist = math.huge
-	blackboard.target_dist_z = math.huge
+	blackboard.target_dist_z_abs = math.huge
 	blackboard.target_dist_xy_sq = math.huge
 	blackboard.ally_distance = math.huge
 	blackboard.slot_dist_z = math.huge
 	blackboard.move_speed = 0
 	blackboard.total_slots_count = 0
 	blackboard.total_occupied_slots = 0
+	blackboard.target_num_occupied_slots = 0
+	blackboard.target_num_disabled_slots = 0
 	blackboard.target_speed_away = 0
 	blackboard.target_speed_away_small_sample = 0
 	blackboard.spawn = true
@@ -470,6 +492,9 @@ AISystem.set_default_blackboard_values = function (self, unit, blackboard)
 end
 
 AISystem.on_remove_extension = function (self, unit, extension_name)
+	local ext = self.unit_extension_data[unit] or self.frozen_unit_extension_data[unit]
+
+	ext:unit_removed_from_game()
 	self:_cleanup_extension(unit, extension_name)
 
 	self.blackboards[unit] = nil
@@ -537,8 +562,11 @@ end
 
 AISystem.freeze = function (self, unit, extension_name, reason)
 	local frozen_extensions = self.frozen_unit_extension_data
+	local frozen_extension = frozen_extensions[unit]
 
-	if frozen_extensions[unit] then
+	if frozen_extension then
+		frozen_extension:unit_removed_from_game()
+
 		return
 	end
 
@@ -547,6 +575,9 @@ AISystem.freeze = function (self, unit, extension_name, reason)
 	self:_cleanup_extension(unit, extension_name)
 
 	self.unit_extension_data[unit] = nil
+
+	extension:unit_removed_from_game()
+
 	frozen_extensions[unit] = extension
 
 	if extension.freeze then
@@ -955,24 +986,34 @@ AISystem.update_debug_draw = function (self, t)
 		for unit, extension in pairs(self.ai_units_alive) do
 			repeat
 				local blackboard = BLACKBOARDS[unit]
-				local spine_node = Unit.node(unit, "j_spine")
-				local position = Unit.world_position(unit, spine_node)
-				local have_slot = blackboard.have_slot
+				local spine_node = Unit.has_node(unit, "j_spine") and Unit.node(unit, "j_spine")
 
-				if blackboard.stagger or blackboard.blocked then
-					QuickDrawer:sphere(position, 0.25, Colors.get("blue"))
-				elseif have_slot > 0 then
-					local attack_cooldown_at = blackboard.attack_cooldown_at
+				if spine_node then
+					local position = Unit.world_position(unit, spine_node)
+					local have_slot = blackboard.have_slot
+					local debug_text_manager = Managers.state.debug_text
 
-					if blackboard.attack_token then
-						QuickDrawer:sphere(position, 0.35, Colors.get("red"))
-					elseif t < attack_cooldown_at then
-						QuickDrawer:sphere(position, 0.35, Colors.get("orange"))
+					debug_text_manager:clear_unit_text(unit, "attack_type")
+
+					if blackboard.stagger or blackboard.blocked then
+						QuickDrawer:sphere(position, 0.25, Colors.get("blue"))
+					elseif have_slot > 0 then
+						local attack_cooldown_at = blackboard.attack_cooldown_at
+
+						if blackboard.attack_token then
+							QuickDrawer:sphere(position, 0.35, Colors.get("red"))
+
+							local attack_type = (blackboard.action.attack_intensity_type and blackboard.action.attack_intensity_type) or "normal"
+
+							debug_text_manager:output_unit_text(attack_type, 0.16, unit, spine_node, Vector3.zero(), nil, "attack_type", Vector3(255, 255, 255), "player_1")
+						elseif t < attack_cooldown_at then
+							QuickDrawer:sphere(position, 0.35, Colors.get("orange"))
+						else
+							QuickDrawer:sphere(position, 0.25, Colors.get("lime"))
+						end
 					else
-						QuickDrawer:sphere(position, 0.25, Colors.get("lime"))
+						QuickDrawer:sphere(position, 0.25, Colors.get("gray"))
 					end
-				else
-					QuickDrawer:sphere(position, 0.25, Colors.get("gray"))
 				end
 			until true
 		end
@@ -1027,7 +1068,6 @@ local function update_blackboard(unit, blackboard, t, dt)
 	blackboard.have_slot = (ai_slot_system:ai_unit_have_slot(unit) and 1) or 0
 	blackboard.wait_slot_distance = ai_slot_system:ai_unit_wait_slot_distance(unit)
 	blackboard.total_slots_count = ai_slot_system.num_total_enemies
-	blackboard.total_occupied_slots = ai_slot_system.num_occupied_slots
 	local target_unit = blackboard.target_unit
 	local target_alive = unit_alive(target_unit)
 	local breed = blackboard.breed
@@ -1069,6 +1109,15 @@ local function update_blackboard(unit, blackboard, t, dt)
 			blackboard.target_speed_away = 0
 			blackboard.target_speed_away_small_sample = 0
 		end
+
+		local target_unit_slot_extension = ScriptUnit.has_extension(target_unit, "ai_slot_system")
+
+		if target_unit_slot_extension then
+			local num_occupied_slots = target_unit_slot_extension.num_occupied_slots
+			blackboard.total_occupied_slots = num_occupied_slots
+			local disabled_slots_count = ai_slot_system:disabled_slots_count(target_unit)
+			blackboard.target_num_disabled_slots = (blackboard.have_slot > 0 and 0) or disabled_slots_count
+		end
 	else
 		blackboard.target_speed_away = 0
 		blackboard.target_speed_away_small_sample = 0
@@ -1087,7 +1136,7 @@ local function update_blackboard(unit, blackboard, t, dt)
 
 	local attacking_target = blackboard.attacking_target
 	local has_attacking_target = unit_alive(attacking_target)
-	local attacking_target_is_valid = not has_attacking_target or VALID_TARGETS_PLAYERS_AND_BOTS[attacking_target]
+	local attacking_target_is_valid = not has_attacking_target or blackboard.side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[attacking_target]
 
 	if target_alive and attacking_target_is_valid then
 		local unit_position = POSITION_LOOKUP[unit]
@@ -1097,7 +1146,7 @@ local function update_blackboard(unit, blackboard, t, dt)
 		local x = offset.x
 		local y = offset.y
 		local flat_sq = x * x + y * y
-		blackboard.target_dist_z = z
+		blackboard.target_dist_z_abs = math.abs(z)
 		blackboard.target_dist_xy_sq = flat_sq
 		local target_dist = sqrt(flat_sq + z * z)
 		local inside_priority_distance = target_dist < PRIORITIZED_DISTANCE
@@ -1105,14 +1154,23 @@ local function update_blackboard(unit, blackboard, t, dt)
 		local slot_pos = ai_slot_system:ai_unit_slot_position(unit) or current_position
 		local slot_dist = slot_pos.z - current_position.z
 		blackboard.slot_dist_z = slot_dist
+		local target_slot_extension = ScriptUnit.has_extension(target_unit, "ai_slot_system")
+
+		if target_slot_extension then
+			local slots_n = target_slot_extension.num_occupied_slots
+			blackboard.target_num_occupied_slots = slots_n
+		else
+			blackboard.target_num_occupied_slots = 0
+		end
 
 		return inside_priority_distance
 	elseif not target_alive or not attacking_target_is_valid then
 		blackboard.target_unit = nil
 		blackboard.target_dist = math.huge
-		blackboard.target_dist_z = math.huge
+		blackboard.target_dist_z_abs = math.huge
 		blackboard.target_dist_xy_sq = math.huge
 		blackboard.slot_dist_z = math.huge
+		blackboard.target_num_occupied_slots = 0
 
 		if not attacking_target_is_valid then
 			blackboard.attack_aborted = true

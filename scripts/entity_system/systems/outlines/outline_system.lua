@@ -165,7 +165,9 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 	end
 
 	extension.set_pinged = function (pinged, flash)
-		if self._disabled then
+		local outline_system = Managers.state.entity:system("outline_system")
+
+		if outline_system._disabled then
 			return
 		end
 
@@ -182,6 +184,10 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 
 			extension.pinged = pinged
 
+			if not extension.flag then
+				extension.flag = "outline_unit"
+			end
+
 			return
 		end
 
@@ -190,7 +196,7 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 		end
 
 		if extension.ping_pulse_id then
-			self:set_pulsing(unit, false, extension.ping_pulse_id)
+			outline_system:set_pulsing(unit, false, extension.ping_pulse_id)
 
 			extension.ping_pulse_id = nil
 		end
@@ -201,26 +207,27 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 			end
 
 			if flash then
-				extension.ping_pulse_id = self:set_pulsing(unit, true, "flash")
+				extension.ping_pulse_id = outline_system:set_pulsing(unit, true, "flash")
 			end
 
-			local c = extension.outline_color.channel
-			local channel = Color(c[1], c[2], c[3], c[4])
+			local c, channel = nil
+			c = extension.outline_color.channel
+			channel = Color(c[1], c[2], c[3], c[4])
 
-			self:outline_unit(unit, extension.previous_flag, channel, false, extension.apply_method, false)
+			outline_system:outline_unit(unit, extension.previous_flag, channel, false, extension.apply_method, false)
 
 			extension.flag = "outline_unit"
-			local c = OutlineSettings.colors.player_attention.channel
-			local channel = Color(c[1], c[2], c[3], c[4])
+			c = OutlineSettings.colors.player_attention.channel
+			channel = Color(c[1], c[2], c[3], c[4])
 
-			self:outline_unit(unit, extension.flag, channel, true, extension.apply_method, false)
+			outline_system:outline_unit(unit, extension.flag, channel, true, extension.apply_method, false)
 
 			extension.outlined = true
 		else
 			local c = OutlineSettings.colors.player_attention.channel
 			local channel = Color(c[1], c[2], c[3], c[4])
 
-			self:outline_unit(unit, extension.flag, channel, false, extension.apply_method, false)
+			outline_system:outline_unit(unit, extension.flag, channel, false, extension.apply_method, false)
 
 			extension.flag = extension.previous_flag
 			extension.reapply = true
@@ -453,7 +460,6 @@ OutlineSystem._update_pulsing = function (self, dt, t)
 
 		if extension then
 			local is_pinged = extension.pinged
-			local method = (is_pinged and extension.pinged_method) or extension.method
 			local c = (is_pinged and OutlineSettings.colors.player_attention.channel) or extension.outline_color.channel
 			local t_val = data.f(t)
 			local channel = Color(c[1] * t_val, c[2] * t_val, c[3] * t_val, c[4] * t_val)
@@ -533,7 +539,7 @@ end
 
 OutlineSystem.distance_to_unit = function (self, unit)
 	local camera_position = Unit.local_position(self.camera_unit, 0)
-	local pose, radius = Unit.box(unit)
+	local pose, _ = Unit.box(unit)
 	local unit_center = Matrix4x4.translation(pose)
 	local distance = Vector3.distance(camera_position, unit_center)
 
@@ -558,7 +564,7 @@ OutlineSystem.always = function (self, unit, extension)
 end
 
 OutlineSystem.visible = function (self, unit, extension)
-	local pose, radius = Unit.box(unit)
+	local pose, _ = Unit.box(unit)
 	local unit_center = Matrix4x4.translation(pose)
 	local in_darkness = self.darkness_system:is_in_darkness(unit_center)
 	local active_cutscene = self:_is_cutscene_active()
@@ -567,7 +573,7 @@ OutlineSystem.visible = function (self, unit, extension)
 end
 
 OutlineSystem.not_in_dark = function (self, unit, extension)
-	local pose, radius = Unit.box(unit)
+	local pose, _ = Unit.box(unit)
 	local unit_center = Matrix4x4.translation(pose)
 	local in_darkness = self.darkness_system:is_in_darkness(unit_center)
 	local active_cutscene = self:_is_cutscene_active()
@@ -586,7 +592,7 @@ OutlineSystem.within_distance_and_not_in_dark = function (self, unit, extension)
 		return false
 	end
 
-	local pose, radius = Unit.box(unit)
+	local pose, _ = Unit.box(unit)
 	local unit_center = Matrix4x4.translation(pose)
 	local in_darkness = self.darkness_system:is_in_darkness(unit_center)
 	local active_cutscene = self:_is_cutscene_active()

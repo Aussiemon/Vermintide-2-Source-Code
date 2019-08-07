@@ -11,6 +11,8 @@ ActionThrow.init = function (self, world, item_name, is_server, owner_unit, dama
 end
 
 ActionThrow.client_owner_start_action = function (self, new_action, t)
+	ActionThrow.super.client_owner_start_action(self, new_action, t)
+
 	self.current_action = new_action
 	self.action_time_started = t
 	self.thrown = nil
@@ -105,7 +107,11 @@ ActionThrow._throw = function (self)
 end
 
 ActionThrow.finish = function (self, reason)
-	return
+	if reason == "stunned" or (reason == "interacting" and not self.thrown) then
+		self:_throw()
+
+		self.thrown = true
+	end
 end
 
 return

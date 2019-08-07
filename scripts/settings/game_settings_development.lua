@@ -29,6 +29,7 @@ GameSettingsDevelopment.lowest_resolution = 600
 GameSettingsDevelopment.allow_ranged_attacks_to_damage_props = false
 GameSettingsDevelopment.release_levels_only = true
 GameSettingsDevelopment.use_engine_optimized_ai_locomotion = true
+GameSettingsDevelopment.allow_retry_weave = false
 local script_data = script_data
 script_data.debug_behaviour_trees = (script_data.debug_behaviour_trees ~= nil and script_data.debug_behaviour_trees) or false
 GameSettingsDevelopment.use_backend = not Development.parameter("use_local_backend")
@@ -107,9 +108,11 @@ if settings.steam or Development.parameter("force_steam") then
 		GameSettingsDevelopment.show_fps = Development.parameter("show_fps") or false
 
 		if app_id == 795750 and test_backend == nil then
-			GameSettingsDevelopment.backend_settings = BackendSettings.dev_steam_playfab
+			GameSettingsDevelopment.backend_settings = BackendSettings.stage_steam_playfab
 		elseif app_id == 552500 then
 			GameSettingsDevelopment.backend_settings = BackendSettings.prod_steam_playfab
+		elseif app_id == 1085780 then
+			GameSettingsDevelopment.backend_settings = BackendSettings.beta_steam_playfab
 		end
 	else
 		Application.quit_with_message("Vermintide 2. You need to have the Steam Client running to play the game.")
@@ -117,7 +120,7 @@ if settings.steam or Development.parameter("force_steam") then
 elseif BUILD == "dev" or BUILD == "debug" then
 	GameSettingsDevelopment.network_mode = (LEVEL_EDITOR_TEST and "lan") or (Development.parameter("force_steam") and "steam") or "lan"
 	GameSettingsDevelopment.show_fps = Development.parameter("show_fps") == nil or Development.parameter("show_fps")
-	script_data.unlock_all_levels = Development.parameter("unlock-all-levels")
+	script_data.unlock_all_levels = Development.parameter("unlock-all-levels") or script_data.unlock_all_levels
 elseif not script_data.honduras_demo and not Development.parameter("attract_mode") and not DEDICATED_SERVER then
 	print("Running release game without content revision, quitting.")
 	Application.quit("FAIL")
@@ -141,7 +144,6 @@ end
 
 GameSettingsDevelopment.network_port = 27015
 GameSettingsDevelopment.editor_lobby_port = 10004
-GameSettingsDevelopment.lobby_max_members = 4
 GameSettingsDevelopment.network_revision_check_enabled = false
 GameSettingsDevelopment.use_high_quality_fur = Application.user_setting("use_high_quality_fur")
 
@@ -322,7 +324,8 @@ GameSettingsDevelopment.ignored_rpc_logs = {
 	"rpc_generic_impact_projectile_impact",
 	"rpc_show_inventory",
 	"rpc_server_set_inventory_packages",
-	"rpc_server_mark_profile_used",
+	"rpc_server_assign_peer_to_profile",
+	"rpc_server_unassign_peer_to_profile",
 	"rpc_add_equipment",
 	"rpc_create_attachment",
 	"rpc_client_select_inventory",

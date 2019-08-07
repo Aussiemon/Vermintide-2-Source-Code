@@ -20,20 +20,14 @@ DialogueContextSystem.destroy = function (self)
 end
 
 DialogueContextSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
-	local health_extension = ScriptUnit.extension(unit, "health_system")
-	local status_extension = ScriptUnit.extension(unit, "status_system")
-	local proximity_extension = ScriptUnit.extension(unit, "proximity_system")
 	local context = ScriptUnit.extension(unit, "dialogue_system").context
-	local extension = {
-		health_extension = health_extension,
-		status_extension = status_extension,
-		proximity_extension = proximity_extension,
-		context = context
-	}
 
 	fassert(extension_init_data.profile, "Missing profile!")
 
 	context.player_profile = extension_init_data.profile.character_vo
+	local extension = {
+		context = context
+	}
 
 	ScriptUnit.set_extension(unit, "dialogue_context_system", extension, {})
 
@@ -46,6 +40,16 @@ DialogueContextSystem.on_remove_extension = function (self, unit, extension_name
 	self.unit_extension_data[unit] = nil
 
 	ScriptUnit.remove_extension(unit, self.NAME)
+end
+
+DialogueContextSystem.extensions_ready = function (self, world, unit, extension_name)
+	local health_extension = ScriptUnit.extension(unit, "health_system")
+	local status_extension = ScriptUnit.extension(unit, "status_system")
+	local proximity_extension = ScriptUnit.extension(unit, "proximity_system")
+	local extension = self.unit_extension_data[unit]
+	extension.health_extension = health_extension
+	extension.status_extension = status_extension
+	extension.proximity_extension = proximity_extension
 end
 
 DialogueContextSystem.update = function (self, system_context, t)
@@ -61,7 +65,7 @@ DialogueContextSystem.update = function (self, system_context, t)
 	local status_extension = extension.status_extension
 	context.is_pounced_down = not not status_extension:is_pounced_down()
 	context.is_knocked_down = not not status_extension:is_knocked_down()
-	context.intensity = status_extension:get_intensity()
+	context.intensity = status_extension:get_pacing_intensity()
 	context.pacing_state = Managers.state.conflict.pacing.pacing_state
 	local proximity_extension = extension.proximity_extension
 	local proximity_types = proximity_extension.proximity_types

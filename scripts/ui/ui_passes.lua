@@ -279,6 +279,12 @@ UIPasses.list_pass = {
 		element_position[3] = element_alignment_position[3]
 		local index = 0
 		local row_count = 0
+
+		if PLATFORM == "ps4" then
+			row_count = math.max(start_index - 1, 0)
+			index = 0
+		end
+
 		local change_row = true
 
 		for i = start_index, stop_index, 1 do
@@ -2249,7 +2255,7 @@ UIPasses.viewport = {
 		local ui_renderer = nil
 
 		if style.enable_sub_gui then
-			ui_renderer = UIRenderer.create(world, "material", "materials/ui/ui_1080p_hud_atlas_textures", "material", "materials/ui/ui_1080p_hud_single_textures", "material", "materials/ui/ui_1080p_menu_atlas_textures", "material", "materials/ui/ui_1080p_menu_single_textures", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_popup", "material", "materials/fonts/gw_fonts")
+			ui_renderer = UIRenderer.create(world, "material", "materials/ui/ui_1080p_hud_atlas_textures", "material", "materials/ui/ui_1080p_hud_single_textures", "material", "materials/ui/ui_1080p_menu_atlas_textures", "material", "materials/ui/ui_1080p_menu_single_textures", "material", "materials/ui/ui_1080p_common", "material", "materials/fonts/gw_fonts")
 		end
 
 		return {
@@ -2266,6 +2272,8 @@ UIPasses.viewport = {
 	destroy = function (ui_renderer, pass_data, pass_definition)
 		if pass_data.ui_renderer then
 			UIRenderer.destroy(pass_data.ui_renderer, pass_data.world)
+
+			pass_data.ui_renderer = nil
 		end
 
 		ScriptWorld.destroy_viewport(pass_data.world, pass_data.viewport_name)
@@ -2638,7 +2646,7 @@ UIPasses.generic_tooltip = {
 
 		for _, tooltip_pass in loop_func(passes) do
 			local data = tooltip_pass.data
-			local pass_height = tooltip_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global)
 			size[2] = size[2] + pass_height
 
 			if draw_downwards then
@@ -2655,26 +2663,34 @@ UIPasses.generic_tooltip = {
 
 		if end_pass then
 			local data = end_pass.data
-			slot23 = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+			slot23 = end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global)
 		end
 	end
 }
 UIPasses.additional_option_tooltip = {
 	init = function (pass_definition, ui_content, ui_style, style_global)
 		local pass_data = {}
-		local passes = {
-			{
-				data = UITooltipPasses.additional_option_info.setup_data(),
-				draw = UITooltipPasses.additional_option_info.draw
-			}
+		local pass_definitions = pass_definition.content_passes or {
+			"additional_option_info"
 		}
+		local passes = {}
+
+		for _, pass_name in ipairs(pass_definitions) do
+			passes[#passes + 1] = {
+				data = UITooltipPasses[pass_name].setup_data(),
+				draw = UITooltipPasses[pass_name].draw
+			}
+		end
+
 		pass_data.end_pass = {
 			data = UITooltipPasses.background.setup_data(),
 			draw = UITooltipPasses.background.draw
 		}
+		local style = ui_style and ui_style[pass_definition.style_id]
+		local max_width = (style and style.max_width) or 400
 		pass_data.passes = passes
 		pass_data.size = {
-			400,
+			max_width,
 			0
 		}
 		pass_data.alpha_multiplier = 1
@@ -2725,6 +2741,9 @@ UIPasses.additional_option_tooltip = {
 			end
 		end
 
+		local default_position_x = position[1]
+		local default_position_y = position[2]
+		local default_position_z = position[3]
 		local size = pass_data.size
 		size[2] = 0
 		local draw_downwards = true
@@ -2744,7 +2763,7 @@ UIPasses.additional_option_tooltip = {
 
 		if end_pass then
 			local data = end_pass.data
-			local pass_height = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+			local pass_height = end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global)
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
@@ -2753,7 +2772,7 @@ UIPasses.additional_option_tooltip = {
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
 			data.frame_margin = frame_margin
-			local pass_height = tooltip_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, additional_option_data, data, draw_downwards)
+			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, additional_option_data)
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
@@ -2767,6 +2786,10 @@ UIPasses.additional_option_tooltip = {
 			position[2] = position[2] + tooltip_total_height
 		end
 
+		if ui_style.grow_downwards then
+			position[2] = position[2] - tooltip_total_height
+		end
+
 		local position_x = position[1]
 		local position_y = position[2]
 		local position_z = position[3]
@@ -2775,7 +2798,7 @@ UIPasses.additional_option_tooltip = {
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
 			data.frame_margin = frame_margin
-			local pass_height = tooltip_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, additional_option_data, data, draw_downwards)
+			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, additional_option_data)
 			size[2] = size[2] + pass_height
 			position[2] = position[2] - pass_height
 		end
@@ -2786,8 +2809,12 @@ UIPasses.additional_option_tooltip = {
 
 		if end_pass then
 			local data = end_pass.data
-			slot31 = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+			slot34 = end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global)
 		end
+
+		position[1] = default_position_x
+		position[2] = default_position_y
+		position[3] = default_position_z
 	end
 }
 UIPasses.level_tooltip = {
@@ -2863,7 +2890,7 @@ UIPasses.level_tooltip = {
 
 		if end_pass then
 			local data = end_pass.data
-			local pass_height = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+			local pass_height = end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global)
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
@@ -2872,7 +2899,7 @@ UIPasses.level_tooltip = {
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
 			data.frame_margin = frame_margin
-			local pass_height = tooltip_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, level_data, data, draw_downwards)
+			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, level_data)
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
@@ -2888,7 +2915,7 @@ UIPasses.level_tooltip = {
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
 			data.frame_margin = frame_margin
-			local pass_height = tooltip_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, level_data, data, draw_downwards)
+			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, level_data)
 			size[2] = size[2] + pass_height
 			position[2] = position[2] - pass_height
 		end
@@ -2899,7 +2926,7 @@ UIPasses.level_tooltip = {
 
 		if end_pass then
 			local data = end_pass.data
-			slot30 = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+			slot30 = end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global)
 		end
 	end
 }
@@ -2987,7 +3014,7 @@ UIPasses.hero_power_tooltip = {
 
 		if end_pass then
 			local data = end_pass.data
-			local pass_height = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+			local pass_height = end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global)
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
@@ -2997,7 +3024,7 @@ UIPasses.hero_power_tooltip = {
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
 			data.frame_margin = frame_margin
-			local pass_height = tooltip_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global)
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
@@ -3013,7 +3040,7 @@ UIPasses.hero_power_tooltip = {
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
 			data.frame_margin = frame_margin
-			local pass_height = tooltip_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global)
 			size[2] = size[2] + pass_height
 			position[2] = position[2] - pass_height
 		end
@@ -3024,7 +3051,7 @@ UIPasses.hero_power_tooltip = {
 
 		if end_pass then
 			local data = end_pass.data
-			slot29 = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+			slot29 = end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global)
 		end
 
 		position[1] = position_x
@@ -3104,7 +3131,7 @@ UIPasses.option_tooltip = {
 
 		if end_pass then
 			local data = end_pass.data
-			local pass_height = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+			local pass_height = end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global)
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
@@ -3113,7 +3140,7 @@ UIPasses.option_tooltip = {
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
 			data.frame_margin = frame_margin
-			local pass_height = tooltip_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global)
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
@@ -3129,7 +3156,7 @@ UIPasses.option_tooltip = {
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
 			data.frame_margin = frame_margin
-			local pass_height = tooltip_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global)
 			size[2] = size[2] + pass_height
 			position[2] = position[2] - pass_height
 		end
@@ -3140,7 +3167,7 @@ UIPasses.option_tooltip = {
 
 		if end_pass then
 			local data = end_pass.data
-			slot30 = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+			slot30 = end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global)
 		end
 	end
 }
@@ -3321,14 +3348,14 @@ UIPasses.item_tooltip = {
 
 			if end_pass then
 				local data = end_pass.data
-				local pass_height = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
+				local pass_height = end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item)
 				tooltip_total_height = tooltip_total_height + pass_height
 			end
 
 			for _, tooltip_pass in loop_func(passes) do
 				local data = tooltip_pass.data
 				data.frame_margin = frame_margin
-				local pass_height = tooltip_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
+				local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item)
 				tooltip_total_height = tooltip_total_height + pass_height
 			end
 
@@ -3434,7 +3461,7 @@ UIPasses.item_tooltip = {
 					local data = tooltip_pass.data
 					data.frame_margin = frame_margin
 					data.equipped_items = pass_data.equipped_items
-					local pass_height = tooltip_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
+					local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item)
 					size[2] = size[2] + pass_height
 
 					if draw_downwards then
@@ -3450,7 +3477,7 @@ UIPasses.item_tooltip = {
 
 				if end_pass then
 					local data = end_pass.data
-					slot53 = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
+					slot53 = end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item)
 				end
 			end
 
@@ -3531,7 +3558,7 @@ UIPasses.talent_tooltip = {
 
 		if end_pass then
 			local data = end_pass.data
-			local pass_height = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+			local pass_height = end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global)
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
@@ -3540,7 +3567,7 @@ UIPasses.talent_tooltip = {
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
 			data.frame_margin = frame_margin
-			local pass_height = tooltip_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, talent, data, draw_downwards)
+			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, talent)
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
@@ -3556,7 +3583,7 @@ UIPasses.talent_tooltip = {
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
 			data.frame_margin = frame_margin
-			local pass_height = tooltip_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, talent, data, draw_downwards)
+			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, talent)
 			size[2] = size[2] + pass_height
 			position[2] = position[2] - pass_height
 		end
@@ -3567,7 +3594,7 @@ UIPasses.talent_tooltip = {
 
 		if end_pass then
 			local data = end_pass.data
-			slot30 = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+			slot30 = end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global)
 		end
 	end
 }
@@ -3952,7 +3979,7 @@ UIPasses.hotspot = {
 
 				if ui_content.input_pressed then
 					ui_content.on_pressed = true
-				elseif left_hold then
+				elseif left_hold and left_pressed then
 					ui_content.is_held = true
 				end
 			elseif not double_click_accepted then
@@ -4276,14 +4303,14 @@ UIPasses.item_presentation = {
 
 		if end_pass and draw_end_passes then
 			local data = end_pass.data
-			local pass_height = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
+			local pass_height = end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item)
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
 			data.frame_margin = frame_margin
-			local pass_height = tooltip_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
+			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item)
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
@@ -4299,7 +4326,7 @@ UIPasses.item_presentation = {
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
 			data.frame_margin = frame_margin
-			local pass_height = tooltip_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
+			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item)
 			size[2] = size[2] + pass_height
 
 			if draw_downwards then
@@ -4315,7 +4342,7 @@ UIPasses.item_presentation = {
 
 		if end_pass and draw_end_passes then
 			local data = end_pass.data
-			slot24 = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
+			slot24 = end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item)
 		end
 
 		ui_style.item_presentation_height = size[2]

@@ -13,7 +13,6 @@ require("scripts/utils/keystroke_helper")
 require("scripts/game_state/components/dice_keeper")
 require("scripts/ui/views/loading_view")
 require("scripts/entity_system/systems/mission/rewards")
-require("scripts/ui/views/level_end/level_end_view_wrapper")
 
 local RPCS = {
 	"rpc_trigger_local_afk_system_message"
@@ -68,9 +67,12 @@ StateInGameRunning.on_enter = function (self, params)
 	self.local_player_id = local_player_id
 	self.player = player
 
+	if Managers.razer_chroma then
+		Managers.razer_chroma:lit_keybindings(true)
+	end
+
 	if self.is_server then
 		player:create_game_object()
-		player:create_boon_handler(self.world)
 	end
 
 	if self.is_server and Managers.state.room and not Managers.state.room:has_room(peer_id) then
@@ -93,7 +95,7 @@ StateInGameRunning.on_enter = function (self, params)
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "game_started", "event_game_started")
-	event_manager:register(self, "level_start_local_player_spawned", "event_local_player_spawned")
+	event_manager:register(self, "game_mode_ready_to_start", "event_game_mode_ready_to_start")
 	event_manager:register(self, "checkpoint_vote_cancelled", "on_checkpoint_vote_cancelled")
 	event_manager:register(self, "conflict_director_setup_done", "event_conflict_director_setup_done")
 	event_manager:register(self, "close_ingame_menu", "event_close_ingame_menu")
@@ -152,29 +154,23 @@ StateInGameRunning.on_enter = function (self, params)
 		stats_id = stats_id,
 		matchmaking_manager = Managers.matchmaking,
 		network_server = params.network_server,
+		network_client = params.network_client,
 		chat_manager = Managers.chat,
 		voip = params.voip
 	}
 	DamageUtils.is_in_inn = params.is_in_inn
 	self.ingame_ui_context = ingame_ui_context
 
-	self:create_ingame_ui(ingame_ui_context)
+	if not script_data["-no-rendering"] then
+		self:create_ingame_ui(ingame_ui_context)
+	end
 
 	local loading_context = self.parent.parent.loading_context
 	loading_context.play_end_of_level_game = nil
 	local quickplay_bonus = loading_context.quickplay_bonus
 	self.game_mode_key = Managers.state.game_mode:game_mode_key()
 	self.rewards = Rewards:new(level_key, self.game_mode_key, quickplay_bonus)
-	local profile_index = self.profile_synchronizer:profile_by_peer(peer_id, local_player_id)
-	local profile = SPProfiles[profile_index]
-	local hero_name = profile.display_name
-	self.level_end_view_context = {
-		world_manager = Managers.world,
-		is_server = params.is_server,
-		is_quickplay = not not quickplay_bonus,
-		peer_id = peer_id,
-		local_player_hero_name = hero_name
-	}
+	self.is_quickplay = not not quickplay_bonus
 	self._level_end_view_wrapper = params.level_end_view_wrapper
 
 	if self._level_end_view_wrapper then
@@ -201,6 +197,7 @@ StateInGameRunning.on_enter = function (self, params)
 
 	Managers.state.camera:apply_level_particle_effects(LevelSettings[level_key].level_particle_effects, viewport_name)
 	Managers.state.camera:apply_level_screen_effects(LevelSettings[level_key].level_screen_effects, viewport_name)
+	Managers.razer_chroma:load_packages()
 
 	if Managers.chat:chat_is_focused() then
 		Managers.chat.chat_gui:block_input()
@@ -243,20 +240,37 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 		local game_won = not self.game_lost
 		local players_session_score = ScoreboardHelper.get_grouped_topic_statistics(self.statistics_db, self.profile_synchronizer)
 		local scoreboard_session_data = ScoreboardHelper.get_sorted_topic_statistics(self.statistics_db, self.profile_synchronizer)
-		local level_end_view_context = self.level_end_view_context
-		level_end_view_context.scoreboard_session_data = scoreboard_session_data
-		level_end_view_context.players_session_score = players_session_score
-		level_end_view_context.game_won = game_won
-		level_end_view_context.game_mode_key = Managers.state.game_mode:game_mode_key()
-		level_end_view_context.difficulty = Managers.state.difficulty:get_difficulty()
+		local hero_name = nil
+		local peer_id = Network.peer_id()
+		local local_player_id = self.local_player_id
+		local profile_index = self.profile_synchronizer:profile_by_peer(peer_id, local_player_id)
+
+		if profile_index then
+			local profile = SPProfiles[profile_index]
+			hero_name = profile.display_name
+		end
+
+		local level_end_view_context = {
+			world_manager = Managers.world,
+			is_server = self.is_server,
+			is_quickplay = self.is_quickplay,
+			peer_id = peer_id,
+			local_player_hero_name = hero_name,
+			scoreboard_session_data = scoreboard_session_data,
+			players_session_score = players_session_score,
+			game_won = game_won,
+			game_mode_key = Managers.state.game_mode:game_mode_key(),
+			difficulty = Managers.state.difficulty:get_difficulty()
+		}
 
 		if not self._booted_eac_untrusted then
-			local level, base_experience = self.rewards:get_level_start()
+			local level, start_experience, start_experience_pool = self.rewards:get_level_start()
 			level_end_view_context.rewards = {
 				end_of_level_rewards = table.clone(self.rewards:get_rewards()),
 				level_start = {
 					level,
-					base_experience
+					start_experience,
+					start_experience_pool
 				},
 				mission_results = table.clone(self.rewards:get_mission_results())
 			}
@@ -269,6 +283,8 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 			loot_dice_mission_data = mission_system:get_level_end_mission_data("bonus_dice_hidden_mission"),
 			painting_scraps_mission_data = mission_system:get_level_end_mission_data("painting_scrap_hidden_mission")
 		}
+		local party_data = Managers.mechanism:score_information()
+		level_end_view_context.party_data = party_data
 		self.parent.parent.loading_context.level_end_view_context = level_end_view_context
 
 		if PLATFORM == "ps4" then
@@ -280,7 +296,6 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 		end
 	end
 
-	self.level_end_view_context = nil
 	self.has_setup_end_of_level = true
 end
 
@@ -346,9 +361,10 @@ StateInGameRunning.check_invites = function (self)
 			current_lobby_id = (self._lobby_host and self._lobby_host:id()) or self._lobby_client:id()
 		end
 
+		local active_mission_vote = Managers.state.voting and Managers.state.voting:vote_in_progress() and Managers.state.voting:active_vote_template().mission_vote
 		local current_level = self.level_transition_handler.level_key
 
-		if Managers.matchmaking:is_game_matchmaking() and self.network_server and current_level == "inn_level" then
+		if (Managers.matchmaking:is_game_matchmaking() or active_mission_vote) and self.network_server and current_level == "inn_level" then
 			mm_printf("Found an invite, but was matchmaking.")
 
 			self.popup_id = Managers.popup:queue_popup(Localize("popup_join_while_matchmaking"), Localize("popup_error_topic"), "ok", Localize("button_ok"))
@@ -387,7 +403,11 @@ StateInGameRunning.wanted_transition = function (self)
 		return
 	end
 
-	local wanted_transition, data = self.ingame_ui:get_transition()
+	local wanted_transition, data = nil
+
+	if self.ingame_ui then
+		wanted_transition, data = self.ingame_ui:get_transition()
+	end
 
 	if wanted_transition then
 		mm_printf("Doing transition %s from UI", wanted_transition)
@@ -445,7 +465,7 @@ StateInGameRunning.on_end_screen_ui_complete = function (self)
 	end
 end
 
-StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpoint_available, percentage_completed)
+StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpoint_available, percentages_completed)
 	if not self._spawn_initialized then
 		Managers.transition:hide_loading_icon()
 		Managers.transition:fade_out(GameSettings.transition_fade_in_speed)
@@ -469,7 +489,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 
 	local mission_system = Managers.state.entity:system("mission_system")
 
-	mission_system:set_percentage_completed(percentage_completed)
+	mission_system:set_percentage_completed(percentages_completed)
 
 	if Managers.twitch then
 		Managers.twitch:deactivate_twitch_game_mode()
@@ -480,6 +500,8 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 	achievement_manager:evaluate_end_of_level_achievements(statistics_db, stats_id, level_key, difficulty_key)
 
 	local stats_interface = Managers.backend:get_interface("statistics")
+	local is_final_objective = game_mode_key ~= "weave" or not Managers.weave:calculate_next_objective_index()
+	local weave_won_count = nil
 
 	if game_mode_key == "survival" then
 		if game_won then
@@ -496,6 +518,11 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 		end
 
 		StatisticsUtil.register_complete_level(statistics_db)
+
+		if is_final_objective and game_mode_key == "weave" then
+			weave_won_count = StatisticsUtil.register_weave_complete(statistics_db, player)
+		end
+
 		stats_interface:save()
 	elseif game_lost then
 		print("Game lost")
@@ -503,32 +530,33 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 		self.checkpoint_available = checkpoint_available
 	end
 
+	local screen_name, screen_config = Managers.state.game_mode:get_end_screen_config(game_won, game_lost, player)
 	local is_booted_unstrusted = self._booted_eac_untrusted
 
 	local function callback(status)
 		if status == "commit_error" then
 			Managers.backend:commit_error()
-		elseif game_mode_key ~= "inn" then
-			local profile_synchronizer = self.profile_synchronizer
-			local peer_id = Network.peer_id()
-			local local_player_id = self.local_player_id
-			local profile_index = profile_synchronizer:profile_by_peer(peer_id, local_player_id)
-			local profile = SPProfiles[profile_index]
-			local hero_name = profile.display_name
 
-			if not is_booted_unstrusted then
-				self.rewards:award_end_of_level_rewards(game_won, hero_name, self._is_in_event_game_mode)
+			return
+		end
+
+		if game_mode_key == "weave" then
+			Managers.weave:store_saved_game_mode_data()
+
+			if not is_booted_unstrusted and game_won and is_final_objective and is_server then
+				self:_submit_weave_scores()
+			end
+		end
+
+		local game_mode_setting = GameModeSettings[game_mode_key]
+		local end_mission_rewards = game_mode_setting.end_mission_rewards
+
+		if end_mission_rewards then
+			if not is_booted_unstrusted and (game_lost or is_final_objective) then
+				self:_award_end_of_level_rewards(statistics_db, stats_id, game_won, difficulty_key, weave_won_count)
 			end
 
-			ingame_ui:activate_end_screen_ui(game_won, checkpoint_available, level_key, previous_completed_difficulty_index)
-
-			if not is_booted_unstrusted then
-				local chest_settings = LootChestData.chests_by_category[difficulty_key]
-				local chests_package_name = chest_settings.package_name
-				self.chests_package_name = chests_package_name
-
-				Managers.package:load(chests_package_name, "global")
-			end
+			ingame_ui:activate_end_screen_ui(screen_name, screen_config)
 		end
 	end
 
@@ -564,39 +592,59 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 	end
 end
 
-StateInGameRunning.on_checkpoint_vote_cancelled = function (self)
-	self.checkpoint_vote_cancelled = true
+StateInGameRunning._current_weave_index = function (self, statistics_db, stats_id)
+	local ignore_dlc_check = false
+	local current_weave = LevelUnlockUtils.current_weave(statistics_db, stats_id, ignore_dlc_check)
+	local weave_template = WeaveSettings.templates[current_weave]
+	local weave_templates_ordererd = WeaveSettings.templates_ordered
+	local current_weave_index = table.find(weave_templates_ordererd, weave_template)
+
+	return current_weave_index
 end
 
-StateInGameRunning._debug_update_rooms = function (self, dt, t)
-	self._debug_room_handler_settings = self._debug_room_handler_settings or {
-		tapped_players = {}
-	}
-	local settings = self._debug_room_handler_settings
-	local room_manager = Managers.state.room
+StateInGameRunning._award_end_of_level_rewards = function (self, statistics_db, stats_id, game_won, difficulty_key, weave_won_count)
+	local profile_synchronizer = self.profile_synchronizer
+	local peer_id = Network.peer_id()
+	local local_player_id = self.local_player_id
+	local profile_index = profile_synchronizer:profile_by_peer(peer_id, local_player_id)
+	local profile = SPProfiles[profile_index]
+	local hero_name = profile.display_name
+	local is_weave_game_mode = self.game_mode_key == "weave"
+	local weave_tier, weave_progress = nil
 
-	if room_manager and self.is_server then
-		local button = "f"
-		local category = "rooms"
-
-		for i = 1, 4, 1 do
-			local tapped_player = settings.tapped_players[i]
-
-			if not tapped_player and DebugKeyHandler.key_pressed(button .. tostring(i), "create room", category) then
-				room_manager:create_room(i)
-
-				settings.tapped_players[i] = {
-					button = button .. tostring(i)
-				}
-			elseif tapped_player and DebugKeyHandler.key_pressed(tapped_player.button, "destroy room", category) then
-				room_manager:destroy_room(i)
-
-				settings.tapped_players[i] = nil
-			end
-		end
+	if is_weave_game_mode then
+		local weave_manager = Managers.weave
+		weave_tier = weave_manager:get_weave_tier()
+		weave_progress = weave_manager:current_bar_score()
 	end
 
-	self._debug_room_handler_settings = settings
+	local current_weave_index = self:_current_weave_index(statistics_db, stats_id)
+	local game_time = math.floor(Managers.time:time("game"))
+
+	self.rewards:award_end_of_level_rewards(game_won, hero_name, self._is_in_event_game_mode, weave_tier, weave_won_count, weave_progress, game_time, current_weave_index)
+
+	local chest_settings = LootChestData.chests_by_category[difficulty_key]
+
+	if chest_settings then
+		local chests_package_name = chest_settings.package_name
+		self.chests_package_name = chests_package_name
+
+		Managers.package:load(chests_package_name, "global")
+	end
+end
+
+StateInGameRunning._submit_weave_scores = function (self)
+	local weave_manager = Managers.weave
+	local weave_tier = weave_manager:get_weave_tier()
+	local score = weave_manager:get_score()
+	local num_players = weave_manager:get_num_players()
+	local weave_interface = Managers.backend:get_interface("weaves")
+
+	weave_interface:submit_scores(weave_tier, score, num_players)
+end
+
+StateInGameRunning.on_checkpoint_vote_cancelled = function (self)
+	self.checkpoint_vote_cancelled = true
 end
 
 if PLATFORM ~= "win32" and (BUILD == "dev" or BUILD == "debug") then
@@ -616,19 +664,6 @@ if PLATFORM ~= "win32" and (BUILD == "dev" or BUILD == "debug") then
 end
 
 StateInGameRunning.update = function (self, dt, t)
-	if DebugKeyHandler.key_pressed("f5", "reload_ui", "ui") and self.ingame_ui then
-		local current_transition = self.ingame_ui.last_transition_name
-		local current_params = self.ingame_ui.last_transition_params
-
-		self:create_ingame_ui(self.ingame_ui_context)
-
-		local ingame_ui = self.ingame_ui
-
-		if current_transition then
-			ingame_ui:handle_transition(current_transition, current_params)
-		end
-	end
-
 	if self._waiting_for_peers_message_timer and self._waiting_for_peers_message_timer < t then
 		if self.is_server then
 			local lobby_members_class = self._lobby_host:members()
@@ -644,10 +679,6 @@ StateInGameRunning.update = function (self, dt, t)
 
 			self._waiting_for_peers_message_timer = nil
 		end
-	end
-
-	if script_data.debug_rooms then
-		self:_debug_update_rooms(dt, t)
 	end
 
 	if Development.parameter("auto_host_dedicated") and self._spawn_initialized then
@@ -666,7 +697,6 @@ StateInGameRunning.update = function (self, dt, t)
 		Development.set_parameter("auto_host_dedicated", nil)
 	end
 
-	Managers.state.debug_text:update(dt, self.viewport_name)
 	self:update_mood(dt, t)
 
 	if self.checkpoint_vote_cancelled then
@@ -675,11 +705,14 @@ StateInGameRunning.update = function (self, dt, t)
 	end
 
 	local ingame_ui = self.ingame_ui
-	local ui_ready = not ingame_ui.survey_active and not self.has_setup_end_of_level and ingame_ui:end_screen_active() and ingame_ui:end_screen_fade_in_complete()
-	local rewards_ready = self._booted_eac_untrusted or (self.rewards:rewards_generated() and not self.rewards:consuming_deed() and self.chests_package_name and Managers.package:has_loaded(self.chests_package_name, "global"))
 
-	if ui_ready and rewards_ready then
-		self:_setup_end_of_level_UI()
+	if self.ingame_ui then
+		local ui_ready = not ingame_ui.survey_active and not self.has_setup_end_of_level and ingame_ui:end_screen_active() and ingame_ui:end_screen_fade_in_complete()
+		local rewards_ready = self._booted_eac_untrusted or (self.rewards:rewards_generated() and not self.rewards:consuming_deed() and self.chests_package_name and Managers.package:has_loaded(self.chests_package_name, "global"))
+
+		if ui_ready and rewards_ready then
+			self:_setup_end_of_level_UI()
+		end
 	end
 
 	if self.popup_id then
@@ -756,7 +789,10 @@ StateInGameRunning.update_ui = function (self)
 		return
 	end
 
-	local time_manager = Managers.time
+	if not self.ingame_ui then
+		return
+	end
+
 	local t = Application.time_since_launch()
 	local dt = Application.time_since_launch() - (self._t or t)
 	local disable_ingame_ui = script_data.disable_ui or DebugScreen.active or (self.waiting_for_transition and Managers.state.network:game_session_host() ~= nil)
@@ -828,7 +864,9 @@ StateInGameRunning.post_update = function (self, dt, t)
 	local level_end_view_wrapper = self._level_end_view_wrapper
 	local disable_ingame_ui = script_data.disable_ui or level_end_view_wrapper ~= nil or (self.waiting_for_transition and Managers.state.network:game_session_host() ~= nil)
 
-	self.ingame_ui:post_update(dt, t, disable_ingame_ui)
+	if self.ingame_ui then
+		self.ingame_ui:post_update(dt, t, disable_ingame_ui)
+	end
 
 	if level_end_view_wrapper then
 		level_end_view_wrapper:update(dt, t)
@@ -890,9 +928,11 @@ StateInGameRunning.on_exit = function (self)
 		Managers.account:set_realtime_multiplay(false)
 	end
 
-	self.ingame_ui:destroy()
+	if self.ingame_ui then
+		self.ingame_ui:destroy()
 
-	self.ingame_ui = nil
+		self.ingame_ui = nil
+	end
 
 	if self.loading_view then
 		self.loading_view:destroy()
@@ -1032,8 +1072,8 @@ StateInGameRunning.event_conflict_director_setup_done = function (self)
 	self:_catchup_framerate_before_starting()
 end
 
-StateInGameRunning.event_local_player_spawned = function (self, is_initial_spawn)
-	self._player_has_spawned = true
+StateInGameRunning.event_game_mode_ready_to_start = function (self, is_initial_spawn)
+	self._game_mode_ready_to_start = true
 	self._is_initial_spawn = is_initial_spawn
 
 	self:_catchup_framerate_before_starting()
@@ -1061,13 +1101,19 @@ StateInGameRunning._update_catchup_framerate_before_starting = function (self)
 end
 
 StateInGameRunning._game_actually_starts = function (self)
-	if not self._spawn_initialized and self._player_has_spawned and (not self.is_server or self._conflict_directory_is_ready) then
+	if not self._spawn_initialized and self._game_mode_ready_to_start and (not self.is_server or self._conflict_directory_is_ready) then
 		local platform = PLATFORM
 		local loading_context = self.parent.parent.loading_context
 		local first_hero_selection_made = SaveData.first_hero_selection_made
 		local show_profile_on_startup = loading_context.show_profile_on_startup
 		local backend_waiting_for_input = Managers.backend:is_waiting_for_user_input()
 		local level_key = Managers.state.game_mode:level_key()
+		local mechanism_name = Managers.mechanism:current_mechanism_name()
+		local game_mode_setting = GameModeSettings[self.game_mode_key]
+
+		if game_mode_setting.show_profile_on_startup then
+			show_profile_on_startup = true
+		end
 
 		if show_profile_on_startup and level_key == "inn_level" and not LEVEL_EDITOR_TEST and not Development.parameter("skip-start-menu") then
 			if platform == "ps4" or platform == "xb1" then
@@ -1083,7 +1129,9 @@ StateInGameRunning._game_actually_starts = function (self)
 				}
 				local view = "initial_start_menu_view_force"
 
-				self.ingame_ui:transition_with_fade(view, transition_params)
+				if self.ingame_ui then
+					self.ingame_ui:transition_with_fade(view, transition_params)
+				end
 			end
 
 			loading_context.show_profile_on_startup = nil
@@ -1105,7 +1153,7 @@ StateInGameRunning._game_actually_starts = function (self)
 
 		self._spawn_initialized = true
 		self._conflict_directory_is_ready = nil
-		self._player_has_spawned = nil
+		self._game_mode_ready_to_start = nil
 
 		Managers.transition:hide_loading_icon()
 		Managers.transition:show_waiting_for_peers_message(false)
@@ -1121,6 +1169,15 @@ StateInGameRunning._game_actually_starts = function (self)
 			if level_settings and not level_settings.disable_twitch_game_mode then
 				Managers.twitch:activate_twitch_game_mode(self.network_event_delegate, Managers.state.game_mode:game_mode_key())
 			end
+		end
+
+		local weave_manager = Managers.weave
+
+		if self.is_server and self.game_mode_key == "weave" then
+			weave_manager:store_player_ids()
+			weave_manager:start_objective()
+			weave_manager:reset_statistics_for_challenges()
+			weave_manager:start_timer()
 		end
 	end
 end

@@ -120,7 +120,8 @@ BTConditions.can_activate.es_mercenary = function (blackboard)
 	local self_position = POSITION_LOOKUP[self_unit]
 	local max_ally_distance_sq = 225
 	local num_players_within_range = 0
-	local PLAYER_AND_BOT_UNITS = PLAYER_AND_BOT_UNITS
+	local side = blackboard.side
+	local PLAYER_AND_BOT_UNITS = side.PLAYER_AND_BOT_UNITS
 	local num_players = #PLAYER_AND_BOT_UNITS
 
 	for i = 1, num_players, 1 do
@@ -353,7 +354,8 @@ BTConditions.can_activate.wh_captain = function (blackboard)
 	local self_position = POSITION_LOOKUP[self_unit]
 	local max_ally_distance_sq = 100
 	local num_players_within_range = 0
-	local PLAYER_AND_BOT_UNITS = PLAYER_AND_BOT_UNITS
+	local side = blackboard.side
+	local PLAYER_AND_BOT_UNITS = side.PLAYER_AND_BOT_UNITS
 	local num_players = #PLAYER_AND_BOT_UNITS
 
 	for i = 1, num_players, 1 do
@@ -946,7 +948,6 @@ BTConditions.should_vent_overcharge = function (blackboard, args)
 	local overcharge_extension = blackboard.overcharge_extension
 	local overcharge_limit_type = args.overcharge_limit_type
 	local current_oc, threshold_oc, max_oc = overcharge_extension:current_overcharge_status()
-	local should_vent = false
 	local overcharge_percentage = 0
 
 	if overcharge_limit_type == "threshold" then
@@ -955,13 +956,35 @@ BTConditions.should_vent_overcharge = function (blackboard, args)
 		overcharge_percentage = current_oc / max_oc
 	end
 
-	if blackboard.venting then
+	local should_vent = nil
+
+	if blackboard.reloading then
 		should_vent = args.stop_percentage <= overcharge_percentage
 	else
 		should_vent = args.start_min_percentage <= overcharge_percentage and overcharge_percentage <= args.start_max_percentage
 	end
 
 	return should_vent
+end
+
+BTConditions.should_recall_throwing_axes = function (blackboard, args)
+	local inventory_extension = blackboard.inventory_extension
+	local current, max = inventory_extension:current_ammo_status("slot_ranged")
+
+	if not current or not max then
+		return false
+	end
+
+	local ammo_percentage = current / max
+	local should_recall = nil
+
+	if blackboard.reloading then
+		should_recall = current ~= max
+	else
+		should_recall = ammo_percentage <= args.ammo_percentage_threshold
+	end
+
+	return should_recall
 end
 
 BTConditions.can_open_door = function (blackboard)

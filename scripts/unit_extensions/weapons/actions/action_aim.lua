@@ -27,6 +27,8 @@ local function scale_delay_value(action_settings, value, owner_unit, buff_extens
 end
 
 ActionAim.client_owner_start_action = function (self, new_action, t)
+	ActionAim.super.client_owner_start_action(self, new_action, t)
+
 	local owner_unit = self.owner_unit
 	self.current_action = new_action
 	self.zoom_condition_function = new_action.zoom_condition_function

@@ -617,7 +617,12 @@ local widgets = {
 	logo = UIWidgets.create_simple_texture("hero_view_home_logo", "logo"),
 	selection_info_top = UIWidgets.create_simple_texture("divider_01_top", "selection_info_top"),
 	selection_info_bottom = UIWidgets.create_simple_texture("divider_01_bottom", "selection_info_bottom"),
-	selection_info = UIWidgets.create_simple_texture("divider_01_bg", "selection_info"),
+	selection_info = UIWidgets.create_simple_texture("divider_01_bg", "selection_info", nil, nil, {
+		255,
+		0,
+		0,
+		0
+	}),
 	info_career_name = UIWidgets.create_simple_text("n/a", "info_career_name", nil, nil, hero_career_style),
 	info_hero_name = UIWidgets.create_simple_text("n/a", "info_hero_name", nil, nil, hero_name_style),
 	info_hero_level = UIWidgets.create_simple_text("n/a", "info_hero_level", nil, nil, hero_level_style)

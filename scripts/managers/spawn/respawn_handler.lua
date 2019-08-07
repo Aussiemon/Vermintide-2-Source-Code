@@ -1,13 +1,31 @@
-RespawnHandler = class(RespawnHandler, ExtensionSystemBase)
+RespawnHandler = class(RespawnHandler)
 local RESPAWN_DISTANCE = 70
 local END_OF_LEVEL_BUFFER = 35
 local RESPAWN_TIME = 30
+local RPCS = {
+	"rpc_to_client_respawn_player",
+	"rpc_respawn_confirmed"
+}
 
-RespawnHandler.init = function (self)
-	self._respawnable_players = {}
+RespawnHandler.init = function (self, profile_synchronizer)
+	self._profile_synchronizer = profile_synchronizer
 	self._respawn_units = {}
 	self._respawner_groups = {}
 	self._active_overridden_units = {}
+end
+
+RespawnHandler.register_rpcs = function (self, network_event_delegate, network_transmit)
+	network_event_delegate:register(self, unpack(RPCS))
+
+	self._network_event_delegate = network_event_delegate
+	self._network_transmit = network_transmit
+end
+
+RespawnHandler.unregister_rpcs = function (self)
+	self._network_event_delegate:unregister(self)
+
+	self._network_event_delegate = nil
+	self._network_transmit = nil
 end
 
 RespawnHandler.set_respawn_unit_available = function (self, unit)
@@ -162,11 +180,15 @@ RespawnHandler.recalc_respawner_dist_due_to_crossroads = function (self)
 	end
 end
 
-local ready_players = {}
+RespawnHandler.update = function (self, dt, t, slots)
+	local profile_synchronizer = self._profile_synchronizer
+	local all_synced = profile_synchronizer:all_synced()
 
-RespawnHandler.update = function (self, dt, t, player_statuses)
-	for _, status in ipairs(player_statuses) do
-		if status.health_state == "dead" and not status.ready_for_respawn and not status.respawn_timer then
+	for i = 1, #slots, 1 do
+		local status = slots[i]
+		local data = status.game_mode_data
+
+		if data.health_state == "dead" and not data.ready_for_respawn and not data.respawn_timer then
 			local peer_id = status.peer_id
 			local local_player_id = status.local_player_id
 			local respawn_time = (Development.parameter("fast_respawns") and 2) or RESPAWN_TIME
@@ -181,10 +203,28 @@ RespawnHandler.update = function (self, dt, t, player_statuses)
 				end
 			end
 
-			status.respawn_timer = t + respawn_time
-		elseif status.health_state == "dead" and not status.ready_for_respawn and status.respawn_timer < t then
-			status.respawn_timer = nil
-			status.ready_for_respawn = true
+			data.respawn_timer = t + respawn_time
+		elseif data.health_state == "dead" and not data.ready_for_respawn and data.respawn_timer < t then
+			data.respawn_timer = nil
+			data.ready_for_respawn = true
+		end
+
+		if all_synced and data.health_state == "dead" and data.ready_for_respawn and status.peer_id then
+			local data_respawn_unit = data.respawn_unit
+			local respawn_unit = self:get_respawn_unit()
+			local respawn_unit_to_use = data_respawn_unit or respawn_unit
+
+			if respawn_unit_to_use then
+				local respawn_unit_id = Managers.state.network:level_object_id(respawn_unit_to_use)
+				local network_consumables = SpawningHelper.netpack_consumables(data.consumables)
+
+				Managers.state.network.network_transmit:send_rpc("rpc_to_client_respawn_player", status.peer_id, status.local_player_id, status.profile_index, status.career_index, respawn_unit_id, unpack(network_consumables))
+
+				data.health_state = "respawning"
+				data.respawn_unit = respawn_unit_to_use
+				data.health_percentage = Managers.state.difficulty:get_difficulty_settings().respawn.health_percentage
+				data.temporary_health_percentage = Managers.state.difficulty:get_difficulty_settings().respawn.temporary_health_percentage
+			end
 		end
 	end
 end
@@ -193,6 +233,7 @@ local BOSS_TERROR_EVENT_LOOKUP = {
 	boss_event_chaos_spawn = true,
 	boss_event_storm_fiend = true,
 	boss_event_chaos_troll = true,
+	boss_event_minotaur = true,
 	boss_event_rat_ogre = true
 }
 
@@ -204,6 +245,8 @@ RespawnHandler.get_respawn_unit = function (self)
 		for unit, respawn_data in pairs(active_overridden) do
 			if respawn_data.available then
 				respawn_data.available = false
+
+				print("Returning override respawn unit")
 
 				return respawn_data.unit
 			end
@@ -321,6 +364,58 @@ RespawnHandler.get_active_respawn_units = function (self)
 	end
 
 	return active_respawn_units
+end
+
+RespawnHandler.rpc_to_client_respawn_player = function (self, sender, local_player_id, profile_index, career_index, respawn_unit_id, health_kit_id, potion_id, grenade_id)
+	if not Managers.state.network:game() then
+		return
+	end
+
+	printf("RespawnSystem:rpc_to_client_respawn_player(%s, %s)", tostring(sender), tostring(profile_index))
+
+	local network_manager = Managers.state.network
+	local respawn_unit = network_manager:game_object_or_level_unit(respawn_unit_id, true)
+	local player_manager = Managers.player
+	local player = player_manager:local_player(local_player_id)
+
+	self:_respawn_player(player, profile_index, career_index, respawn_unit, NetworkLookup.item_names[health_kit_id], NetworkLookup.item_names[potion_id], NetworkLookup.item_names[grenade_id])
+end
+
+RespawnHandler._respawn_player = function (self, player, profile_index, career_index, respawn_unit, health_kit, potion, grenade)
+	player:set_profile_index(profile_index)
+	player:set_career_index(career_index)
+
+	local position = Unit.local_position(respawn_unit, 0)
+	local rotation = Unit.local_rotation(respawn_unit, 0)
+	local respawn_settings = Managers.state.difficulty:get_difficulty_settings().respawn
+	local ammo_melee = respawn_settings.ammo_melee
+	local ammo_ranged = respawn_settings.ammo_ranged
+	local unit = player:spawn(position, rotation, false, ammo_melee, ammo_ranged, health_kit, potion, grenade)
+	local status_extension = ScriptUnit.extension(unit, "status_system")
+
+	status_extension:set_ready_for_assisted_respawn(true, respawn_unit)
+
+	local network_manager = Managers.state.network
+	local unit_id = network_manager:unit_game_object_id(unit)
+	local respawn_unit_id = network_manager:level_object_id(respawn_unit)
+
+	network_manager.network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.ready_for_assisted_respawn, true, unit_id, respawn_unit_id)
+	network_manager.network_transmit:send_rpc_server("rpc_respawn_confirmed", player:local_player_id())
+end
+
+RespawnHandler.rpc_respawn_confirmed = function (self, sender, local_player_id)
+	local status = Managers.party:get_player_status(sender, local_player_id)
+	status.game_mode_data.ready_for_respawn = false
+end
+
+RespawnHandler.force_respawn_dead_players = function (self, party)
+	local occupied_slots = party.occupied_slots
+
+	for i = 1, #occupied_slots, 1 do
+		local status = occupied_slots[i]
+		local data = status.game_mode_data
+		data.respawn_timer = 0
+	end
 end
 
 return

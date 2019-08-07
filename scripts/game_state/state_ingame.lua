@@ -16,11 +16,12 @@ require("scripts/managers/room/room_manager_client")
 require("scripts/managers/difficulty/difficulty_manager")
 require("scripts/managers/matchmaking/matchmaking_manager")
 require("scripts/managers/url_loader/url_loader_manager")
-require("scripts/helpers/locomotion_utils")
-require("scripts/helpers/damage_utils")
 require("scripts/helpers/action_utils")
-require("scripts/helpers/status_utils")
+require("scripts/helpers/camera_carrier")
+require("scripts/helpers/damage_utils")
 require("scripts/helpers/graph_drawer")
+require("scripts/helpers/locomotion_utils")
+require("scripts/helpers/status_utils")
 require("scripts/utils/debug_screen")
 require("scripts/utils/debug_key_handler")
 require("scripts/utils/function_call_profiler")
@@ -54,6 +55,17 @@ require("scripts/settings/quest_settings")
 require("scripts/managers/achievements/achievement_manager")
 require("scripts/managers/quest/quest_manager")
 require("scripts/utils/fps_reporter")
+require("scripts/managers/side/side_manager")
+
+for _, dlc in pairs(DLCSettings) do
+	local files = dlc.statistics_database
+
+	if files then
+		for _, file in ipairs(files) do
+			require(file)
+		end
+	end
+end
 
 StateIngame = class(StateIngame)
 StateIngame.NAME = "StateIngame"
@@ -111,7 +123,8 @@ StateIngame.on_enter = function (self)
 	Crashify.print_property("level", level_key)
 
 	self.level_key = level_key
-	self.is_in_inn = level_key == "inn_level"
+	local level_setting = LevelSettings[level_key]
+	self.is_in_inn = level_setting.hub_level
 	self.is_in_tutorial = level_key == "prologue"
 	DamageUtils.is_in_inn = self.is_in_inn
 	self._called_level_flow_events = false
@@ -203,19 +216,18 @@ StateIngame.on_enter = function (self)
 	end
 
 	Managers.state.crafting = CraftingManager:new()
-	local difficulty = nil
+	local difficulty = Managers.mechanism:get_difficulty()
 
-	if not loading_context.difficulty then
-		difficulty = script_data.current_difficulty_setting or "normal"
-	else
-		difficulty = loading_context.difficulty
+	if Development.parameter("weave_name") then
+		local weave_name = Development.parameter("weave_name")
+		local weave_template = WeaveSettings.templates[weave_name]
+		difficulty = weave_template.difficulty_key
 	end
 
 	Managers.state.difficulty = DifficultyManager:new(world, is_server, network_event_delegate, self._lobby_host)
 
 	Managers.state.difficulty:set_difficulty(difficulty)
 
-	loading_context.difficulty = difficulty
 	local num_players = (DEDICATED_SERVER and 0) or 1
 	self.num_local_human_players = num_players
 
@@ -251,6 +263,8 @@ StateIngame.on_enter = function (self)
 	Managers.deed:register_rpcs(network_event_delegate)
 	self:_setup_state_context(world, is_server, network_event_delegate)
 	self.level_transition_handler:register_rpcs(network_event_delegate)
+	Managers.mechanism:register_rpcs(network_event_delegate)
+	Managers.party:register_rpcs(network_event_delegate)
 
 	if rawget(_G, "ControllerFeaturesManager") then
 		Managers.state.controller_features = ControllerFeaturesManager:new(self.is_in_inn)
@@ -274,12 +288,13 @@ StateIngame.on_enter = function (self)
 
 	event_manager:register(self, "event_play_particle_effect", "event_play_particle_effect", "event_start_network_timer", "event_start_network_timer", "xbox_one_hack_start_game", "event_xbox_one_hack_start_game", "gm_event_end_conditions_met", "gm_event_end_conditions_met")
 
-	local level = self:_create_level()
+	local level, level_key = self:_create_level()
 	self.level = level
 
 	Managers.state.entity:system("darkness_system"):set_level(level)
 	Managers.state.entity:system("ai_group_system"):set_level(level)
 
+	local level_seed = Managers.mechanism:get_level_seed()
 	local checkpoint_data = loading_context.checkpoint_data
 
 	if self.is_server then
@@ -293,7 +308,7 @@ StateIngame.on_enter = function (self)
 
 			loading_context.checkpoint_data = nil
 		else
-			local override_seed = Development.parameter("attract_mode") and BenchmarkSettings.game_seed
+			local override_seed = (Development.parameter("attract_mode") and BenchmarkSettings.game_seed) or level_seed
 
 			Managers.state.conflict.level_analysis:set_random_seed(checkpoint_data, override_seed)
 		end
@@ -303,12 +318,9 @@ StateIngame.on_enter = function (self)
 		Managers.state.room:setup_level_anchor_points(self.level)
 	end
 
-	local level_units = Level.units(level)
+	local level_name = LevelSettings[level_key].level_name
 
-	for _, unit in ipairs(level_units) do
-		ScriptUnit.optimize(unit)
-	end
-
+	ScriptWorld.optimize_level_units(world, level_name)
 	InputDebugger:setup(world, self.input_manager)
 
 	self.machines = {}
@@ -317,11 +329,7 @@ StateIngame.on_enter = function (self)
 	for i = 1, num_players, 1 do
 		local viewport_name = "player_" .. i
 		self.viewport_name = viewport_name
-		local network_options = {
-			project_hash = "bulldozer",
-			config_file_name = "global",
-			lobby_port = GameSettingsDevelopment.network_port
-		}
+		local network_options = Managers.lobby:network_options()
 		local params = {
 			local_player_id = i,
 			viewport_name = viewport_name,
@@ -378,7 +386,7 @@ StateIngame.on_enter = function (self)
 		Managers.matchmaking:setup_post_init_data(post_init_data)
 	end
 
-	Level.trigger_level_loaded(level)
+	ScriptWorld.trigger_level_loaded(world, level_name)
 	World.set_data(self.world, "level_seed", nil)
 
 	if checkpoint_data then
@@ -391,12 +399,6 @@ StateIngame.on_enter = function (self)
 		SaveData.first_time_in_inn = true
 
 		Managers.save:auto_save(SaveFileName, SaveData, callback(self, "cb_save_data"))
-	end
-
-	local nested_levels = Level.nested_levels(level)
-
-	for _, level in ipairs(nested_levels) do
-		Level.trigger_level_loaded(level)
 	end
 
 	local platform = PLATFORM
@@ -412,7 +414,7 @@ StateIngame.on_enter = function (self)
 	local is_spawn_owner = self._lobby_host and network_game
 
 	if is_spawn_owner or LEVEL_EDITOR_TEST then
-		Managers.state.conflict:ai_ready()
+		Managers.state.conflict:ai_ready(level_seed)
 
 		local volume_system = Managers.state.entity:system("volume_system")
 
@@ -422,9 +424,17 @@ StateIngame.on_enter = function (self)
 	end
 
 	if self.is_server and checkpoint_data then
-		Managers.state.entity:system("pickup_system"):populate_pickups(checkpoint_data.pickup)
+		if Managers.state.game_mode:setting("specified_pickups") then
+			Managers.state.entity:system("pickup_system"):populate_specified_pickups(checkpoint_data.pickup)
+		else
+			Managers.state.entity:system("pickup_system"):populate_pickups(checkpoint_data.pickup)
+		end
 	elseif self.is_server then
-		Managers.state.entity:system("pickup_system"):populate_pickups()
+		if Managers.state.game_mode:setting("specified_pickups") then
+			Managers.state.entity:system("pickup_system"):populate_specified_pickups()
+		else
+			Managers.state.entity:system("pickup_system"):populate_pickups()
+		end
 	end
 
 	Managers.state.entity:system("payload_system"):init_payloads()
@@ -485,12 +495,19 @@ StateIngame.on_enter = function (self)
 	Managers.chat:register_network_event_delegate(network_event_delegate)
 	Managers.state.game_mode:setup_done()
 
-	local player_id = PLATFORM == "win32" and rawget(_G, "Steam") and Steam.user_id()
+	local player_id = Managers.backend:player_id()
 	local difficulty = Managers.state.difficulty:get_difficulty()
 	local mutators = Managers.state.game_mode:activated_mutators()
-	local eye_tracking = (rawget(_G, "Tobii") and Tobii.get_is_connected() and Application.user_setting("tobii_eyetracking")) or false
+	local game_mode = Managers.state.game_mode:settings().key
 
-	Managers.telemetry.events:game_started(player_id, self:peer_type(), level_key, difficulty, mutators, eye_tracking)
+	Managers.telemetry.events:game_started({
+		player_id = player_id,
+		peer_type = self:peer_type(),
+		game_mode = game_mode,
+		level_key = level_key,
+		difficulty = difficulty,
+		mutators = mutators
+	})
 
 	if self.network_server then
 		self.network_server:on_game_entered(network_manager)
@@ -498,6 +515,7 @@ StateIngame.on_enter = function (self)
 		self.network_client:on_game_entered()
 	end
 
+	self._camera_carrier = CameraCarrier:new()
 	local fullscreen = Application.user_setting("fullscreen")
 	local borderless_fullscreen = Application.user_setting("borderless_fullscreen")
 	local windowed = not fullscreen and not borderless_fullscreen
@@ -620,7 +638,7 @@ StateIngame.shading_callback = function (self, world, shading_env, viewport)
 end
 
 StateIngame._teardown_level = function (self)
-	World.destroy_level(self.world, self.level)
+	ScriptWorld.destroy_level_from_reference(self.world, self.level)
 end
 
 StateIngame._teardown_world = function (self)
@@ -665,29 +683,55 @@ StateIngame._create_level = function (self)
 	local game_mode_object_sets = game_mode_manager:object_sets()
 	local spawned_object_sets = {}
 	local object_sets = {}
-	local available_level_sets = LevelResource.object_set_names(level_name)
+	local num_nested_levels = LevelResource.nested_level_count(level_name)
 
-	for key, set in ipairs(available_level_sets) do
-		local object_set_table = {
-			type = "",
-			key = key,
-			units = LevelResource.unit_indices_in_object_set(level_name, set)
-		}
+	if num_nested_levels > 0 then
+		local available_level_sets = LevelResource.nested_level_object_set_names(level_name, 1)
 
-		if game_mode_object_sets[set] or set == "shadow_lights" then
-			spawned_object_sets[#spawned_object_sets + 1] = set
-		elseif string.sub(set, 1, 5) == "flow_" then
-			spawned_object_sets[#spawned_object_sets + 1] = set
-			object_set_table.type = "flow"
-		elseif string.sub(set, 1, 5) == "team_" then
-			spawned_object_sets[#spawned_object_sets + 1] = set
-			object_set_table.type = "team"
+		for key, set in ipairs(available_level_sets) do
+			local object_set_table = {
+				type = "",
+				key = key,
+				units = LevelResource.nested_level_unit_indices_in_object_set(level_name, 1, set)
+			}
+
+			if game_mode_object_sets[set] or set == "shadow_lights" then
+				spawned_object_sets[#spawned_object_sets + 1] = set
+			elseif string.sub(set, 1, 5) == "flow_" then
+				spawned_object_sets[#spawned_object_sets + 1] = set
+				object_set_table.type = "flow"
+			elseif string.sub(set, 1, 5) == "team_" then
+				spawned_object_sets[#spawned_object_sets + 1] = set
+				object_set_table.type = "team"
+			end
+
+			object_sets[set] = object_set_table
 		end
+	else
+		local available_level_sets = LevelResource.object_set_names(level_name)
 
-		object_sets[set] = object_set_table
+		for key, set in ipairs(available_level_sets) do
+			local object_set_table = {
+				type = "",
+				key = key,
+				units = LevelResource.unit_indices_in_object_set(level_name, set)
+			}
+
+			if game_mode_object_sets[set] or set == "shadow_lights" then
+				spawned_object_sets[#spawned_object_sets + 1] = set
+			elseif string.sub(set, 1, 5) == "flow_" then
+				spawned_object_sets[#spawned_object_sets + 1] = set
+				object_set_table.type = "flow"
+			elseif string.sub(set, 1, 5) == "team_" then
+				spawned_object_sets[#spawned_object_sets + 1] = set
+				object_set_table.type = "team"
+			end
+
+			object_sets[set] = object_set_table
+		end
 	end
 
-	local level_seed = Managers.state.game_mode.level_transition_handler.level_seed
+	local level_seed = Managers.mechanism:get_level_seed()
 
 	print("[StateIngame] Level seed:", level_seed)
 	World.set_data(self.world, "level_seed", level_seed)
@@ -741,7 +785,7 @@ StateIngame._create_level = function (self)
 
 	self._level_flow_events = level_flow_events
 
-	return level
+	return level, level_key
 end
 
 StateIngame.pre_update = function (self, dt)
@@ -749,7 +793,7 @@ StateIngame.pre_update = function (self, dt)
 	local network_manager = Managers.state.network
 
 	UPDATE_POSITION_LOOKUP()
-	UPDATE_PLAYER_LISTS()
+	Managers.state.side:update_frame_tables()
 	network_manager:update_receive(dt)
 
 	if self.network_server then
@@ -760,7 +804,8 @@ StateIngame.pre_update = function (self, dt)
 		self.network_client:update(dt)
 	end
 
-	Managers.state.spawn:update(dt, t)
+	Managers.state.spawn:pre_update(dt, t)
+	Managers.state.game_mode:pre_update(t, dt)
 	Managers.state.conflict:pre_update()
 	self.entity_system:commit_and_remove_pending_units()
 
@@ -809,6 +854,7 @@ StateIngame.update = function (self, dt, main_t)
 
 	self:_update_deed_manager(dt)
 	Managers.deed:update(dt)
+	Managers.party:update(t, dt)
 
 	if Managers.state.quest then
 		Managers.state.quest:update(dt, t)
@@ -890,6 +936,7 @@ StateIngame.update = function (self, dt, main_t)
 	self._fps_reporter:update(dt, t)
 	self:_update_onclose_check(dt, t)
 	self:_generate_ingame_clock()
+	self._camera_carrier:update(dt)
 
 	if #self._level_flow_events > 0 and not self._called_level_flow_events then
 		local flow_events = self._level_flow_events
@@ -967,6 +1014,8 @@ StateIngame._check_exit = function (self, t)
 	local network_manager = Managers.state.network
 	local lobby = self._lobby_host or self._lobby_client
 	local platform = PLATFORM
+	local difficulty = Managers.state.difficulty:get_difficulty()
+	local difficulty_id = NetworkLookup.difficulties[difficulty]
 	local backend_manager = Managers.backend
 	local waiting_user_input = backend_manager:is_waiting_for_user_input()
 	local backend_items = backend_manager:get_interface("items")
@@ -1173,7 +1222,10 @@ StateIngame._check_exit = function (self, t)
 			self.exit_type = "reload_level"
 
 			if self.is_server then
-				network_manager.network_transmit:send_rpc_clients("rpc_reload_level")
+				local _, locked_director_function_ids = Managers.mechanism:generate_locked_director_functions(self.level_key)
+				local level_seed = Managers.mechanism:generate_level_seed()
+
+				network_manager.network_transmit:send_rpc_clients("rpc_reload_level", level_seed, locked_director_function_ids)
 				network_manager:leave_game()
 			end
 
@@ -1186,9 +1238,11 @@ StateIngame._check_exit = function (self, t)
 
 			if self.is_server then
 				local level_to_transition_to = self.level_transition_handler:get_current_transition_level()
+				local _, locked_director_function_ids = Managers.mechanism:generate_locked_director_functions(level_to_transition_to)
+				local level_seed = Managers.mechanism:generate_level_seed()
 
 				self.network_server:set_current_level(level_to_transition_to)
-				network_manager.network_transmit:send_rpc_clients("rpc_load_level", NetworkLookup.level_keys[level_to_transition_to], self.level_transition_handler.level_seed)
+				network_manager.network_transmit:send_rpc_clients("rpc_load_level", NetworkLookup.level_keys[level_to_transition_to], level_seed, difficulty_id, locked_director_function_ids)
 				network_manager:leave_game()
 
 				if level_to_transition_to == "prologue" then
@@ -1311,10 +1365,12 @@ StateIngame._check_exit = function (self, t)
 			printf("Transition type %q, is server: %s", tostring(level_transition_type), tostring(self.is_server))
 
 			if self.is_server then
+				local _, locked_director_function_ids = Managers.mechanism:generate_locked_director_functions(level_to_transition_to)
 				local level_to_transition_to = DemoSettings.demo_level
+				local level_seed = Managers.mechanism:generate_level_seed()
 
 				self.network_server:set_current_level(level_to_transition_to)
-				network_manager.network_transmit:send_rpc_clients("rpc_load_level", NetworkLookup.level_keys[level_to_transition_to], self.level_transition_handler.level_seed)
+				network_manager.network_transmit:send_rpc_clients("rpc_load_level", NetworkLookup.level_keys[level_to_transition_to], level_seed, difficulty_id, locked_director_function_ids)
 				network_manager:leave_game()
 			else
 				self.network_client:set_wait_for_state_loading(true)
@@ -1352,7 +1408,8 @@ StateIngame._check_exit = function (self, t)
 				Managers.matchmaking:clear_game_mode_event_data()
 			end
 
-			self.exit_time = t + 2
+			local exit_time = 2
+			self.exit_time = t + exit_time
 
 			printf("StateIngame: Got transition %s, set exit type to %s. Will exit at t=%.2f", tostring(transition), self.exit_type, self.exit_time)
 
@@ -1508,7 +1565,6 @@ StateIngame._check_exit = function (self, t)
 			end
 
 			local is_private = self._lobby_client:lobby_data("is_private")
-			local difficulty = Managers.state.difficulty:get_difficulty()
 			host_migration_info.lobby_data = {
 				is_private = is_private,
 				difficulty = difficulty
@@ -1521,7 +1577,6 @@ StateIngame._check_exit = function (self, t)
 		elseif exit_type == "leave_game_server" then
 			local loading_context = self.parent.loading_context
 			local is_private = self._lobby_client:lobby_data("is_private")
-			local difficulty = Managers.state.difficulty:get_difficulty()
 			loading_context.host_migration_info = {
 				host_to_migrate_to = loading_context.leave_game_server_data,
 				lobby_data = {
@@ -1635,7 +1690,6 @@ StateIngame.post_update = function (self, dt)
 	Managers.state.unit_spawner:update_death_watch_list(dt, t)
 	Managers.state.conflict:post_update()
 	self.entity_system:commit_and_remove_pending_units()
-	Managers.state.spawn:post_unit_destroy_update()
 	network_manager:update_transmit(dt)
 
 	if Managers.voice_chat then
@@ -1681,7 +1735,10 @@ end
 
 StateIngame.on_exit = function (self, application_shutdown)
 	UPDATE_POSITION_LOOKUP()
-	UPDATE_PLAYER_LISTS()
+	self._camera_carrier:destroy()
+
+	self._camera_carrier = nil
+
 	self.free_flight_manager:cleanup_free_flight()
 
 	if PLATFORM == "xb1" and not self.hero_stats_updated then
@@ -1700,13 +1757,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 	end
 
 	if TelemetrySettings.send then
-		local game_mode_key = Managers.state.game_mode:game_mode_key()
-
-		if game_mode_key == "inn" then
-			print("[StateIngame] Skipped uploading telemetry data for the inn level")
-		else
-			Managers.telemetry:send()
-		end
+		Managers.telemetry:send()
 	else
 		printf("[StateIngame] Skipped uploading telemetry data")
 	end
@@ -1743,16 +1794,12 @@ StateIngame.on_exit = function (self, application_shutdown)
 
 	Network.write_dump_tag("end of game")
 	Managers.music:on_exit_level()
-
-	local current_difficulty = Managers.state.difficulty:get_difficulty()
-
-	if self.exit_type ~= "return_to_title_screen" then
-		self.parent.loading_context.difficulty = current_difficulty
-	end
-
 	self.level_transition_handler:unregister_rpcs()
 	self.level_transition_handler:unregister_events(Managers.state.event)
 	self.level_transition_handler:clear_transition_exit_type()
+	Managers.mechanism:unregister_rpcs()
+	Managers.party:unregister_rpcs()
+	Managers.state.game_mode:cleanup_game_mode_units()
 
 	local unit_spawner = Managers.state.unit_spawner
 	unit_spawner.locked = false
@@ -1773,6 +1820,10 @@ StateIngame.on_exit = function (self, application_shutdown)
 	Level.trigger_level_shutdown(self.level)
 	Managers.player:exit_ingame()
 	self:_teardown_level()
+	Managers.weave:teardown()
+
+	local difficulty = Managers.state.difficulty:get_difficulty()
+
 	Managers.state:destroy()
 	VisualAssertLog.cleanup()
 	self:_teardown_world()
@@ -1829,6 +1880,8 @@ StateIngame.on_exit = function (self, application_shutdown)
 		Managers.chat:unregister_channel(1)
 		Managers.deed:network_context_destroyed()
 		self.level_transition_handler.enemy_package_loader:network_context_destroyed()
+		Managers.party:network_context_destroyed()
+		Managers.mechanism:network_context_destroyed()
 
 		local network_event_meta_table = {
 			__index = function (event_table, event_key)
@@ -1889,9 +1942,9 @@ StateIngame.on_exit = function (self, application_shutdown)
 
 		if self.is_server and not self.is_in_inn and not self.is_in_tutorial and PLATFORM == "xb1" and not script_data.honduras_demo then
 			local level_key = self.level_transition_handler:get_next_level_key()
-			local difficulty = current_difficulty
+			local level_setting = LevelSettings[level_key]
 
-			if level_key == "inn_level" or level_key == "prologue" then
+			if level_setting.hub_level or level_key == "prologue" then
 				Application.warning("Cancelling matchmaking")
 				self._lobby_host:enable_matchmaking(false)
 			else
@@ -1952,6 +2005,9 @@ StateIngame.on_close = function (self)
 			self._quit_game = true
 		else
 			self._onclose_called = true
+
+			Managers.chat.chat_gui:hide_chat()
+			Managers.chat.chat_gui:unblock_input()
 		end
 	else
 		self._quit_game = true
@@ -2010,24 +2066,30 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 		self._debug_event_manager_rpc = DebugEventManagerRPC:new(network_event_delegate)
 	end
 
+	if Development.parameter("weave_name") and not Managers.weave:get_active_objective() then
+		Managers.mechanism:choose_next_state("weave")
+		Managers.mechanism:progress_state()
+	end
+
+	local game_mode_key, side_compositions = Managers.mechanism:start_next_round(self.level_transition_handler)
+	Managers.state.side = SideManager:new(side_compositions)
 	Managers.state.event = EventManager:new()
 
 	self.level_transition_handler:register_events(Managers.state.event)
 
-	local level_key = self.level_transition_handler:get_current_level_keys()
-	Managers.state.conflict = ConflictDirector:new(world, level_key, network_event_delegate)
-	local game_mode_key = nil
-
-	if self.is_in_inn then
-		game_mode_key = "inn"
-	else
-		local level_settings = LevelSettings[level_key]
-		local level_game_mode = level_settings.game_mode
-		game_mode_key = level_game_mode
-	end
-
 	self.game_mode_key = game_mode_key
-	Managers.state.game_mode = GameModeManager:new(world, self._lobby_host, self._lobby_client, self.level_transition_handler, network_event_delegate, self.statistics_db, game_mode_key, self.network_server, self.network_transmit)
+
+	Managers.weave:initiate(world, network_event_delegate, is_server, game_mode_key)
+	Managers.backend:set_talents_interface_override(game_mode_key)
+
+	local loadout_changed = Managers.backend:set_loadout_interface_override(game_mode_key)
+
+	fassert(not loadout_changed, "[StateIngame] Correct loadout should already have been selected and re-synced in StateLoading")
+
+	Managers.state.game_mode = GameModeManager:new(world, self._lobby_host, self._lobby_client, self.level_transition_handler, network_event_delegate, self.statistics_db, game_mode_key, self.network_server, self.network_transmit, self.profile_synchronizer)
+	local level_key = self.level_transition_handler:get_current_level_keys()
+	local level_seed = Managers.mechanism:get_level_seed()
+	Managers.state.conflict = ConflictDirector:new(world, level_key, network_event_delegate, level_seed, is_server)
 	Managers.state.networked_flow_state = NetworkedFlowStateManager:new(world, is_server, network_event_delegate)
 
 	GarbageLeakDetector.register_object(Managers.state.game_mode, "GameModeManager")
@@ -2116,7 +2178,8 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 
 	Managers.state.debug = DebugManager:new(world, self.free_flight_manager, self.input_manager, network_event_delegate, is_server)
 	Managers.state.spawn = SpawnManager:new(world, is_server, network_event_delegate, unit_spawner, self.profile_synchronizer, self.network_server)
-	local level_key = self.level_transition_handler:get_current_level_keys()
+	local level_transition_handler = self.level_transition_handler
+	local level_key = level_transition_handler:get_current_level_keys()
 	local network_manager_post_init_data = {
 		profile_synchronizer = self.profile_synchronizer,
 		game_mode = Managers.state.game_mode,
@@ -2127,8 +2190,10 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 		player_manager = Managers.player,
 		network_transmit = self.network_transmit,
 		network_server = self.network_server,
+		network_client = self.network_client,
 		statistics_db = self.statistics_db,
 		difficulty_manager = Managers.state.difficulty,
+		weave_manager = Managers.weave,
 		matchmaking_manager = Managers.matchmaking,
 		voting_manager = Managers.state.voting,
 		game_server_manager = Managers.game_server
@@ -2159,7 +2224,8 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 		dice_keeper = self.dice_keeper,
 		system_api = {},
 		statistics_db = self.statistics_db,
-		num_local_human_players = self.num_local_human_players
+		num_local_human_players = self.num_local_human_players,
+		level_transition_handler = level_transition_handler
 	}
 	local entity_system = EntitySystem:new(entity_systems_init_context)
 
@@ -2234,7 +2300,7 @@ StateIngame.event_play_particle_effect = function (self, effect_name, unit, node
 	end
 end
 
-StateIngame.gm_event_end_conditions_met = function (self, reason, checkpoint_available, percentage_completed)
+StateIngame.gm_event_end_conditions_met = function (self, reason, checkpoint_available, percentages_completed)
 	LevelHelper:flow_event(self.world, "gm_event_end_conditions_met")
 
 	if self.is_server then
@@ -2285,7 +2351,7 @@ StateIngame.gm_event_end_conditions_met = function (self, reason, checkpoint_ava
 	end
 
 	for _, machine in pairs(self.machines) do
-		machine:state():gm_event_end_conditions_met(reason, checkpoint_available, percentage_completed)
+		machine:state():gm_event_end_conditions_met(reason, checkpoint_available, percentages_completed)
 	end
 end
 

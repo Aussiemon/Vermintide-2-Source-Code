@@ -23,6 +23,7 @@ TwitchSettings = TwitchSettings or {
 		adventure = true,
 		lobby_browser = true,
 		event = true,
+		weave = true,
 		custom = true
 	}
 }

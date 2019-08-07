@@ -95,7 +95,6 @@ local daily_collect_loot_die_mappings = {
 	}
 }
 quest_templates.quests.daily_collect_loot_die = {
-	reward = "loot_chest_03_06",
 	name = "quest_daily_collect_loot_die_name",
 	icon = "quest_book_generic_pickup",
 	desc = function ()
@@ -123,7 +122,6 @@ local daily_collect_painting_scrap_mappings = {
 	}
 }
 quest_templates.quests.daily_collect_painting_scrap = {
-	reward = "loot_chest_03_06",
 	name = "quest_daily_collect_painting_scrap_name",
 	icon = "quest_book_generic_pickup",
 	desc = function ()
@@ -225,7 +223,6 @@ local daily_kill_critter_mappings = {
 	}
 }
 quest_templates.quests.daily_kill_critters = {
-	reward = "loot_chest_03_06",
 	name = "quest_daily_kill_critters_name",
 	icon = "quest_book_skull",
 	desc = function ()
@@ -423,7 +420,6 @@ local daily_score_headshots_mappings = {
 	}
 }
 quest_templates.quests.daily_score_headshots = {
-	reward = "loot_chest_03_06",
 	name = "quest_daily_score_headshots_name",
 	icon = "quest_book_skull",
 	desc = function ()
@@ -835,7 +831,7 @@ quest_templates.quests.event_skulls_weekly_event_2019 = {
 	name = "quest_event_skulls_weekly_event_2019_name",
 	icon = "quest_book_event_skull",
 	summary_icon = "achievement_symbol_book_event_skull",
-	desc = "quest_event_skulls_weekly_event_2019_desc",
+	desc = "complete_one_weekly_event",
 	stat_mappings = event_weekly_mappings,
 	completed = function (statistics_db, stats_id, quest_key)
 		local stat_name = QuestSettings.stat_mappings[quest_key][1]
@@ -1060,25 +1056,25 @@ for i = 1, 3, 1 do
 	}
 end
 
-local weekly_collect_loot_die_mappings = {
+local weekly_collect_dice_mappings = {
 	{
 		total_collected_dice = true
 	}
 }
 
 for i = 1, 3, 1 do
-	local id = "weekly_collect_loot_die" .. "_" .. i
+	local id = "weekly_collect_dice" .. "_" .. i
 	quest_templates.quests[id] = {
 		name = "quest_daily_collect_loot_die_name",
 		icon = "quest_book_generic_pickup",
 		desc = function ()
-			return string.format(Localize("quest_daily_collect_loot_die_desc"), QuestSettings.weekly_collect_loot_die[i])
+			return string.format(Localize("quest_daily_collect_loot_die_desc"), QuestSettings.weekly_collect_dice[i])
 		end,
-		stat_mappings = weekly_collect_loot_die_mappings,
+		stat_mappings = weekly_collect_dice_mappings,
 		completed = function (statistics_db, stats_id, quest_key)
 			local stat_name = QuestSettings.stat_mappings[quest_key][1]
 
-			return QuestSettings.weekly_collect_loot_die[i] <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+			return QuestSettings.weekly_collect_dice[i] <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
 		end,
 		progress = function (statistics_db, stats_id, quest_key)
 			local stat_name = QuestSettings.stat_mappings[quest_key][1]
@@ -1086,7 +1082,7 @@ for i = 1, 3, 1 do
 
 			return {
 				count,
-				QuestSettings.weekly_collect_loot_die[i]
+				QuestSettings.weekly_collect_dice[i]
 			}
 		end
 	}
@@ -1456,6 +1452,38 @@ for i = 1, 3, 1 do
 			return {
 				count,
 				QuestSettings.weekly_score_headshots[i]
+			}
+		end
+	}
+end
+
+local weekly_daily_quests_mappings = {
+	{
+		completed_daily_quests = true
+	}
+}
+
+for i = 1, 3, 1 do
+	local id = "weekly_daily_quests" .. "_" .. i
+	quest_templates.quests[id] = {
+		name = "quest_weekly_daily_quests_name",
+		icon = "quest_book_skull",
+		desc = function ()
+			return string.format(Localize("quest_weekly_daily_quests_name"), QuestSettings.weekly_daily_quests[i])
+		end,
+		stat_mappings = weekly_daily_quests_mappings,
+		completed = function (statistics_db, stats_id, quest_key)
+			local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+			return QuestSettings.weekly_daily_quests[i] <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+		end,
+		progress = function (statistics_db, stats_id, quest_key)
+			local stat_name = QuestSettings.stat_mappings[quest_key][1]
+			local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+
+			return {
+				count,
+				QuestSettings.weekly_daily_quests[i]
 			}
 		end
 	}

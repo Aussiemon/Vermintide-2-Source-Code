@@ -38,6 +38,13 @@ local tip_type_list = {
 	"kerillian",
 	"okri"
 }
+local objective_texts = {
+	objective_sockets_name = "nfl_olesya_all_weave_objective_essence_refine_01",
+	objective_kill_enemies_name = "nfl_olesya_all_weave_objective_kill_02",
+	objective_capture_points_name = "nfl_olesya_all_weave_objective_essence_capture_02",
+	objective_destroy_doom_wheels_name = "nfl_olesya_all_weave_objective_essence_nodes_02",
+	objective_targets_name = "nfl_olesya_all_weave_objective_essence_shards_04"
+}
 LoadingView = class(LoadingView)
 local fake_input_service = {
 	get = function ()
@@ -71,13 +78,32 @@ LoadingView.init = function (self, ui_context)
 	self.ui_renderer = UIRenderer.create(self.world, "material", "materials/ui/loading_screens/" .. self.default_loading_screen, "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_hud_atlas_textures", "material", "materials/ui/ui_1080p_chat")
 
 	self:create_ui_elements()
+	self:_create_hdr_gui()
 
 	self._gamepad_active = Managers.input:is_device_active("gamepad")
 	DO_RELOAD = false
 	self.active = true
 end
 
-LoadingView.texture_resource_loaded = function (self, level_key, act_progression_index, game_difficulty)
+LoadingView._create_hdr_gui = function (self)
+	local world_flags = {
+		Application.DISABLE_SOUND,
+		Application.DISABLE_ESRAM
+	}
+	local layer = 800
+	local world_name = "loading_hdr_world"
+	local viewport_name = "loading_hdr_viewport"
+	local shading_environment = "environment/ui_hdr"
+	local world = Managers.world:create_world(world_name, shading_environment, nil, layer, unpack(world_flags))
+	local viewport_type = "overlay"
+	local viewport = ScriptWorld.create_viewport(world, viewport_name, viewport_type, layer)
+	self._ui_hdr_viewport_name = viewport_name
+	self._ui_hdr_world_name = world_name
+	self._ui_hdr_world = world
+	self._ui_hdr_renderer = UIRenderer.create(world, "material", "materials/ui/ui_1080p_loading", "immediate")
+end
+
+LoadingView.texture_resource_loaded = function (self, level_key, act_progression_index, game_difficulty, optional_loading_ui_package_name, optional_loading_screen_material_name, weave_data)
 	if self.return_to_pc_menu then
 		return
 	end
@@ -88,7 +114,7 @@ LoadingView.texture_resource_loaded = function (self, level_key, act_progression
 	self.act_progression_index = act_progression_index
 	local level_settings = LevelSettings[level_key]
 	local has_multiple_loading_images = level_settings.has_multiple_loading_images
-	local loading_ui_package_name = level_settings.loading_ui_package_name
+	local loading_ui_package_name = optional_loading_ui_package_name or level_settings.loading_ui_package_name
 	local game_mode = level_settings.game_mode or "adventure"
 	local bg_material = "materials/ui/loading_screens/" .. (loading_ui_package_name or self.default_loading_screen)
 
@@ -100,15 +126,53 @@ LoadingView.texture_resource_loaded = function (self, level_key, act_progression
 		self.ui_renderer = UIRenderer.create(self.world, "material", "materials/ui/loading_screens/" .. self.default_loading_screen, "material", bg_material, "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_hud_atlas_textures", "material", "materials/ui/ui_1080p_chat")
 	end
 
-	self.bg_widget.content.bg_texture = "loading_screen"
+	self.bg_widget.content.bg_texture = optional_loading_screen_material_name or "loading_screen"
 
-	if level_key ~= "inn_level" and level_settings.level_type ~= "survival" then
-		self:setup_act_text(level_key)
-		self:setup_difficulty_text(game_difficulty)
+	if weave_data then
+		local wind_name = weave_data.wind_name
+		local weave_display_name = weave_data.weave_display_name
+		local location_display_name = weave_data.location_display_name
+		local objective_name = weave_data.objective_name
+		local objective_text = objective_texts[objective_name]
+		self.bg_widget.content.weave_name = weave_display_name
+		self.bg_widget.content.location_name = location_display_name
+		self.bg_widget.content.wind_name = wind_name
+		self.bg_widget.content.mutator_name = MutatorTemplates[wind_name].display_name
+		self.bg_widget.content.mutator_description = MutatorTemplates[wind_name].description
+		self.bg_widget.content.objective_text = objective_text or self.bg_widget.content.objective_text
+		self.bg_widget.content.is_weave = true
+		self.bg_widget.content.is_arena = weave_data.is_arena
+		local text = self.bg_widget.content.mutator_description
+		local mutator_desc_style = self.bg_widget.style.mutator_description
+		local font, size_of_font = UIFontByResolution(mutator_desc_style)
+		local font_material = font[1]
+		local font_size = font[2]
+		local font_name = font[3]
+		local font_height, font_min, font_max = UIGetFontHeight(self.ui_renderer.gui, font_name, font_size)
+		font_size = size_of_font
+		local texts = UIRenderer.word_wrap(self.ui_renderer, Localize(text), font_material, font_size, mutator_desc_style.size[1])
+		local offset = #texts * 30 + 30
+		self.bg_widget.style.objective_icon.offset[2] = self.bg_widget.style.objective_icon.offset[2] - offset
+		self.bg_widget.style.objective_text.offset[2] = self.bg_widget.style.objective_text.offset[2] - offset
+		self.weave_loading_icon = UIWidget.init(definitions.weave_loading_icon)
+
+		Managers.transition:hide_loading_icon()
+
+		self._weave_data = weave_data
+		self._optional_loading_screen_material_name = optional_loading_screen_material_name
+	else
+		self.bg_widget.content.is_weave = false
+
+		if level_key ~= "inn_level" and level_settings.level_type ~= "survival" then
+			self:setup_act_text(level_key)
+			self:setup_difficulty_text(game_difficulty)
+		end
+
+		self:setup_level_text(level_key)
+		self:setup_tip_text(act_progression_index, game_mode)
+
+		self.weave_loading_icon = nil
 	end
-
-	self:setup_level_text(level_key)
-	self:setup_tip_text(act_progression_index, game_mode)
 end
 
 LoadingView.deactivate = function (self)
@@ -189,12 +253,52 @@ LoadingView.create_ui_elements = function (self)
 	local game_mode = (level_settings and level_settings.game_mode) or "adventure"
 
 	self:setup_tip_text(self.act_progression_index, game_mode, self._tip_localization_key)
+
+	if self._weave_data then
+		local weave_data = self._weave_data
+		local wind_name = weave_data.wind_name
+		local weave_display_name = weave_data.weave_display_name
+		local location_display_name = weave_data.location_display_name
+		local objective_name = weave_data.objective_name
+		local objective_text = objective_texts[objective_name]
+		self.bg_widget.content.weave_name = weave_display_name
+		self.bg_widget.content.location_name = location_display_name
+		self.bg_widget.content.wind_name = wind_name
+		self.bg_widget.content.mutator_name = MutatorTemplates[wind_name].display_name
+		self.bg_widget.content.mutator_description = MutatorTemplates[wind_name].description
+		self.bg_widget.content.objective_text = objective_text or self.bg_widget.content.objective_text
+		self.bg_widget.content.is_weave = true
+		self.bg_widget.content.is_arena = weave_data.is_arena
+		local text = self.bg_widget.content.mutator_description
+		local mutator_desc_style = self.bg_widget.style.mutator_description
+		local font, size_of_font = UIFontByResolution(mutator_desc_style)
+		local font_material = font[1]
+		local font_size = font[2]
+		local font_name = font[3]
+		local font_height, font_min, font_max = UIGetFontHeight(self.ui_renderer.gui, font_name, font_size)
+		font_size = size_of_font
+		local texts = UIRenderer.word_wrap(self.ui_renderer, Localize(text), font_material, font_size, mutator_desc_style.size[1])
+		local offset = #texts * 30 + 30
+		self.bg_widget.style.objective_icon.offset[2] = self.bg_widget.style.objective_icon.offset[2] - offset
+		self.bg_widget.style.objective_text.offset[2] = self.bg_widget.style.objective_text.offset[2] - offset
+		self.bg_widget.content.bg_texture = self._optional_loading_screen_material_name
+		self.weave_loading_icon = UIWidget.init(definitions.weave_loading_icon)
+
+		Managers.transition:hide_loading_icon()
+	end
+
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 end
 
 LoadingView.trigger_subtitles = function (self, wwise_event, t)
 	if wwise_event and not self.subtitle_timed_gui and Application.user_setting("use_subtitles") then
 		self.subtitle_timed_gui = SubtitleTimedGui:new(wwise_event, self._subtitle_row_widgets)
+	end
+end
+
+LoadingView.trigger_weave_subtitles = function (self, wwise_events, t)
+	if wwise_events and not self.subtitle_timed_gui and Application.user_setting("use_subtitles") then
+		self.subtitle_timed_gui = SubtitleTimedGui:new(wwise_events, self._subtitle_row_widgets)
 	end
 end
 
@@ -552,6 +656,7 @@ end
 
 LoadingView.draw = function (self, dt)
 	local ui_renderer = self.ui_renderer
+	local ui_hdr_renderer = self._ui_hdr_renderer
 	local ui_scenegraph = self.ui_scenegraph
 
 	if not script_data.disable_news_ticker then
@@ -579,11 +684,20 @@ LoadingView.draw = function (self, dt)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
+
+	if self.weave_loading_icon then
+		UIRenderer.begin_pass(ui_hdr_renderer, ui_scenegraph, fake_input_service, dt, nil, self.render_settings)
+		UIRenderer.draw_widget(ui_hdr_renderer, self.weave_loading_icon)
+		UIRenderer.end_pass(ui_hdr_renderer)
+	end
 end
 
 LoadingView.destroy = function (self)
 	VisualAssertLog.cleanup()
 	UIRenderer.destroy(self.ui_renderer, self.world)
+	UIRenderer.destroy(self._ui_hdr_renderer, self._ui_hdr_world)
+	Managers.world:destroy_world(self._ui_hdr_world)
+	Managers.transition:show_loading_icon()
 end
 
 LoadingView.is_done = function (self)

@@ -1,6 +1,5 @@
 require("scripts/ui/views/loading_view")
 
-DO_RELOAD = false
 StateLoadingRunning = class(StateLoadingRunning)
 StateLoadingRunning.NAME = "StateLoadingRunning"
 
@@ -27,8 +26,6 @@ StateLoadingRunning.on_enter = function (self, params)
 
 		self.parent:create_popup(previous_session_error, self._previous_session_error_headers_lookup[previous_session_error] or "popup_notice_topic", "continue")
 	end
-
-	DO_RELOAD = false
 end
 
 StateLoadingRunning._init_network = function (self)
@@ -39,9 +36,13 @@ StateLoadingRunning._init_network = function (self)
 		self.parent:register_rpcs()
 	end
 
+	local loadout_resync_state = StateLoading.LoadoutResyncStates.WAIT_FOR_RPC_LOAD_LEVEL
+
+	print("[StateLoadingRunning] Selecting loadout_resync_state...", loading_context.join_lobby_data, loading_context.join_server_data, loading_context.start_lobby_data)
+
 	if loading_context.join_lobby_data or loading_context.join_server_data then
 		self.parent:set_matchmaking(false)
-		self.parent:setup_network_options()
+		Managers.lobby:setup_network_options()
 		self.parent:setup_join_lobby(true)
 		self.parent:clear_network_loading_context()
 		Managers.transition:show_icon_background()
@@ -54,9 +55,13 @@ StateLoadingRunning._init_network = function (self)
 		local network_client_setup_successful = self.parent:setup_network_client(true, lobby_client)
 
 		if network_client_setup_successful then
-			self.parent:setup_chat_manager(lobby_client, lobby_client:lobby_host(), Network.peer_id(), false)
-			self.parent:setup_deed_manager(lobby_client, lobby_client:lobby_host(), Network.peer_id())
-			self.parent:setup_enemy_package_loader(lobby_client, lobby_client:lobby_host(), Network.peer_id())
+			local peer_id = Network.peer_id()
+			local lobby_host = lobby_client:lobby_host()
+
+			self.parent:setup_chat_manager(lobby_client, lobby_host, peer_id, false)
+			self.parent:setup_deed_manager(lobby_client, lobby_host, peer_id)
+			self.parent:setup_enemy_package_loader(lobby_client, lobby_host, peer_id)
+			self.parent:setup_global_managers(lobby_client, lobby_host, peer_id)
 		end
 
 		loading_context.start_lobby_data = nil
@@ -72,6 +77,15 @@ StateLoadingRunning._init_network = function (self)
 			self._network_client:set_wait_for_state_loading(nil)
 			self.parent:setup_network_transmit(self._network_client)
 		end
+
+		loadout_resync_state = StateLoading.LoadoutResyncStates.CHECK_RESYNC
+	end
+
+	if self.parent:loadout_resync_state() == StateLoading.LoadoutResyncStates.IDLE then
+		print("[StateLoadingRunning] loadout_resync_state IDLE ->", loadout_resync_state)
+		self.parent:set_loadout_resync_state(loadout_resync_state)
+	else
+		print("[StateLoadingRunning] Ignoring selected loadout_resync_state, wasn't IDLE")
 	end
 end
 
@@ -92,6 +106,7 @@ StateLoadingRunning.update = function (self, dt)
 		end
 
 		self._level_transition_handler:load_next_level()
+		self.parent:should_start_breed_load_process()
 	end
 
 	if script_data.honduras_demo and not self.parent:loading_view_setup_done() then

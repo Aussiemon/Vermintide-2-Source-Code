@@ -16,6 +16,7 @@ local RPCS = {
 	"rpc_set_animation_rotation_scale",
 	"rpc_disable_locomotion",
 	"rpc_teleport_unit_to",
+	"rpc_teleport_unit_with_yaw_rotation",
 	"rpc_enable_linked_movement",
 	"rpc_disable_linked_movement",
 	"rpc_add_external_velocity",
@@ -366,6 +367,21 @@ LocomotionSystem.rpc_teleport_unit_to = function (self, sender, game_object_id, 
 		return
 	end
 
+	local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
+
+	locomotion_extension:teleport_to(position, rotation)
+end
+
+LocomotionSystem.rpc_teleport_unit_with_yaw_rotation = function (self, sender, game_object_id, position, yaw)
+	local unit = self.unit_storage:unit(game_object_id)
+
+	if not unit then
+		printf("unit from game_object_id %d is nil", game_object_id)
+
+		return
+	end
+
+	local rotation = Quaternion(Vector3.up(), yaw)
 	local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
 
 	locomotion_extension:teleport_to(position, rotation)

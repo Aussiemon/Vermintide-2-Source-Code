@@ -11,6 +11,8 @@ ActionCrossbow.init = function (self, world, item_name, is_server, owner_unit, d
 end
 
 ActionCrossbow.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
+	ActionCrossbow.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level)
+
 	local owner_unit = self.owner_unit
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
@@ -21,7 +23,7 @@ ActionCrossbow.client_owner_start_action = function (self, new_action, t, chain_
 	self.multi_projectile_spread = new_action.multi_projectile_spread or 0.075
 
 	if self.ammo_extension and self.num_projectiles then
-		self.num_projectiles = math.min(self.num_projectiles, self.ammo_extension.current_ammo)
+		self.num_projectiles = math.min(self.num_projectiles, self.ammo_extension:current_ammo())
 	end
 
 	self.num_projectiles_shot = 1
@@ -203,15 +205,15 @@ ActionCrossbow.finish = function (self, reason)
 	local owner_unit = self.owner_unit
 
 	if reason ~= "new_interupting_action" then
+		local status_extension = ScriptUnit.extension(owner_unit, "status_system")
+
+		status_extension:set_zooming(false)
+
 		if ammo_extension and current_action.reload_when_out_of_ammo and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
 			local play_reload_animation = true
 
 			ammo_extension:start_reload(play_reload_animation)
 		end
-
-		local status_extension = ScriptUnit.extension(owner_unit, "status_system")
-
-		status_extension:set_zooming(false)
 	end
 
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")

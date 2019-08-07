@@ -35,6 +35,9 @@ BTVomitAction.enter = function (self, unit, blackboard, t)
 	end
 
 	blackboard.update_puke_pos_at_t = t + 0.2
+	local target_unit = blackboard.target_unit
+
+	AiUtils.add_attack_intensity(target_unit, action, blackboard)
 end
 
 BTVomitAction._position_on_navmesh = function (self, position, blackboard)
@@ -181,7 +184,7 @@ BTVomitAction.run = function (self, unit, blackboard, t, dt)
 			end
 
 			if blackboard.check_puke_time < t then
-				self:player_vomit_hit_check(unit, blackboard)
+				self.player_vomit_hit_check(unit, blackboard.puke_position:unbox(), blackboard.physics_world, blackboard)
 			end
 		elseif t < blackboard.rotation_time and not target_unit_status_extension:get_is_dodging() and not target_unit_status_extension:is_invisible() and blackboard.update_puke_pos_at_t < t then
 			local puke_position, puke_distance_sq, puke_direction = self:_get_vomit_position(unit, blackboard)
@@ -239,15 +242,13 @@ BTVomitAction.run = function (self, unit, blackboard, t, dt)
 	return "done"
 end
 
-BTVomitAction.player_vomit_hit_check = function (self, unit, blackboard)
+BTVomitAction.player_vomit_hit_check = function (unit, puke_pos, physics_world, blackboard)
 	local troll_head_node = Unit.node(unit, "j_head")
 	local troll_head_pos = Unit.world_position(unit, troll_head_node)
-	local puke_pos = blackboard.puke_position:unbox()
 	local offset_dir = 2 * Vector3.normalize(puke_pos - POSITION_LOOKUP[unit]) + Vector3(0, 0, 1)
 	local to_puke = (puke_pos + offset_dir) - troll_head_pos
 	local puke_direction = Vector3.normalize(to_puke)
 	local puke_distance = Vector3.length(to_puke)
-	local physics_world = blackboard.physics_world
 	local result = PhysicsWorld.linear_sphere_sweep(physics_world, troll_head_pos, puke_pos, 0.5, 10, "collision_filter", "filter_enemy_ray_projectile", "report_initial_overlap")
 
 	if result then
@@ -266,7 +267,9 @@ BTVomitAction.player_vomit_hit_check = function (self, unit, blackboard)
 				if not buff_extension:has_buff_type("troll_bile_face") then
 					buff_system:add_buff(hit_unit, "bile_troll_vomit_face_base", unit)
 
-					blackboard.has_done_bile_damage = true
+					if blackboard then
+						blackboard.has_done_bile_damage = true
+					end
 				end
 			end
 		end

@@ -14,10 +14,23 @@ TrainingDummyHealthExtension.init = function (self, extension_init_context, unit
 	self.health = NetworkConstants.health.max
 	self.damage = 0
 	self.state = "alive"
+	self._side_name = "neutral"
 end
 
-TrainingDummyHealthExtension.destroy = function (self)
-	return
+TrainingDummyHealthExtension.extensions_ready = function (self, world, unit)
+	local side_manager = Managers.state.side
+	local side = side_manager:get_side_from_name(self._side_name)
+	local side_id = side.side_id
+
+	side_manager:add_unit_to_side(self.unit, side_id)
+end
+
+TrainingDummyHealthExtension.freeze = function (self)
+	self:set_dead()
+end
+
+TrainingDummyHealthExtension.unfreeze = function (self)
+	self:reset()
 end
 
 TrainingDummyHealthExtension.reset = function (self)
@@ -50,7 +63,7 @@ local dot_hit_types = {
 	arrow_poison_dot = true
 }
 
-TrainingDummyHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot)
+TrainingDummyHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 	local unit = self.unit
 	local network_manager = Managers.state.network
 	local unit_id, is_level_unit = network_manager:game_object_or_level_id(unit)
@@ -104,8 +117,11 @@ TrainingDummyHealthExtension.add_damage = function (self, attacker_unit, damage_
 		local is_dead = self.dead or false
 		is_critical_strike = is_critical_strike or false
 		added_dot = added_dot or false
+		first_hit = first_hit or false
+		total_hits = total_hits or 0
+		backstab_multiplier = backstab_multiplier or 1
 
-		network_transmit:send_rpc_clients("rpc_add_damage", unit_id, is_level_unit, attacker_unit_id, attacker_is_level_unit, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot)
+		network_transmit:send_rpc_clients("rpc_add_damage", unit_id, is_level_unit, attacker_unit_id, attacker_is_level_unit, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 	end
 end
 

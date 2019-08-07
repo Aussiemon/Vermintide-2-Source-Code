@@ -45,6 +45,14 @@ PositiveReinforcementUI.destroy = function (self)
 end
 
 PositiveReinforcementUI.create_ui_elements = function (self)
+	local game_mode_key = Managers.state.game_mode:game_mode_key()
+
+	if game_mode_key == "weave" then
+		definitions.scenegraph_definition.message_animated = table.clone(definitions.scenegraph_definition.message_animated_offset)
+	else
+		definitions.scenegraph_definition.message_animated = table.clone(definitions.scenegraph_definition.message_animated_base)
+	end
+
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
@@ -191,6 +199,10 @@ PositiveReinforcementUI.event_add_positive_enforcement = function (self, hash, i
 	local player_1_profile_image = player_1_profile_index and player_1_career_index and self:_get_hero_portrait(player_1_profile_index, player_1_career_index)
 	local player_2_profile_image = player_2_profile_index and player_2_career_index and self:_get_hero_portrait(player_2_profile_index, player_2_career_index)
 
+	if not player_1_profile_image or not player_2_profile_image then
+		return
+	end
+
 	if event_type == "aid" then
 		return
 	end
@@ -198,22 +210,25 @@ PositiveReinforcementUI.event_add_positive_enforcement = function (self, hash, i
 	self:add_event(hash, is_local_player, event_colors.default, event_type, player_1_profile_image, player_2_profile_image)
 end
 
-PositiveReinforcementUI.event_add_positive_enforcement_kill = function (self, hash, is_local_player, event_type, profile_index, career_index, breed_name)
-	local breed_texture = breed_textures[breed_name]
+PositiveReinforcementUI.event_add_positive_enforcement_kill = function (self, hash, is_local_player, event_type, breed_name_attacker, breed_name_killed)
+	local breed_texture_attacker = breed_textures[breed_name_attacker]
+	local breed_texture_killed = breed_textures[breed_name_killed]
 
-	if not event_settings[event_type] or not breed_texture then
+	if not event_settings[event_type] or not breed_texture_attacker or not breed_texture_killed then
 		return
 	end
 
-	local attacker_texture = self:_get_hero_portrait(profile_index, career_index)
-
-	self:add_event(hash, is_local_player, event_colors.kill, event_type, attacker_texture, breed_texture)
+	self:add_event(hash, is_local_player, event_colors.kill, event_type, breed_texture_attacker, breed_texture_killed)
 end
 
 PositiveReinforcementUI.event_add_positive_enforcement_player_knocked_down_or_killed = function (self, hash, is_local_player, event_type, profile_index, breed_name)
 	local breed_texture = breed_textures[breed_name]
 
 	if not event_settings[event_type] or not breed_texture then
+		return
+	end
+
+	if not profile_index then
 		return
 	end
 
@@ -241,7 +256,15 @@ PositiveReinforcementUI._get_hero_portrait = function (self, profile_index, care
 	return "small_" .. character_portrait
 end
 
+local DO_RELOAD = false
+
 PositiveReinforcementUI.update = function (self, dt, t)
+	if DO_RELOAD then
+		self:create_ui_elements()
+
+		DO_RELOAD = false
+	end
+
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.input_manager:get_service("Player")

@@ -8,10 +8,6 @@ PerceptionUtils = {}
 local AiUtils_unit_alive = AiUtils.unit_alive
 local unit_knocked_down = AiUtils.unit_knocked_down
 local POSITION_LOOKUP = POSITION_LOOKUP
-local AI_TARGET_UNITS = AI_TARGET_UNITS
-local PLAYER_AND_BOT_UNITS = PLAYER_AND_BOT_UNITS
-local PLAYER_AND_BOT_POSITIONS = PLAYER_AND_BOT_POSITIONS
-local PLAYER_UNITS = PLAYER_UNITS
 local AI_UTILS = AI_UTILS
 local ScriptUnit_extension = ScriptUnit.extension
 
@@ -34,7 +30,7 @@ PerceptionUtils.troll_crouch_check = function (unit, blackboard, t)
 end
 
 PerceptionUtils.perception_continuous_chaos_troll = function (unit, blackboard, breed, t, dt)
-	AiUtils.push_intersecting_players(unit, blackboard.displaced_units, breed.displace_players_data, t, dt)
+	AiUtils.push_intersecting_players(unit, unit, blackboard.displaced_units, breed.displace_players_data, t, dt)
 	PerceptionUtils.troll_crouch_check(unit, blackboard, t)
 	AiUtils.update_aggro(unit, blackboard, breed, t, dt)
 
@@ -57,9 +53,10 @@ end
 
 PerceptionUtils.perception_continuous_keep_target = function (unit, blackboard, breed, t, dt)
 	local target_unit = blackboard.target_unit
+	local side = blackboard.side
 	local target_alive = AiUtils_unit_alive(target_unit)
 
-	return not target_alive or (DamageUtils.is_player_unit(target_unit) and not VALID_TARGETS_PLAYERS_AND_BOTS[target_unit])
+	return not target_alive or (DamageUtils.is_player_unit(target_unit) and not side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[target_unit])
 end
 
 PerceptionUtils.perception_no_seeing = function (self, unit, blackboard, breed, pick_target_func, t)
@@ -121,6 +118,44 @@ PerceptionUtils.perception_all_seeing_boss = function (unit, blackboard, breed, 
 
 		sound_effect_system:aggro_unit_changed(old_aggro_unit, unit, false)
 		sound_effect_system:aggro_unit_changed(new_aggro_unit, unit, true)
+	end
+end
+
+PerceptionUtils.perception_standard_bearer = function (unit, blackboard, breed, pick_target_func, t)
+	if blackboard.spawn_category == "patrol" then
+		local ai_group_extension = ScriptUnit.has_extension(unit, "ai_group_system")
+
+		if ai_group_extension and ai_group_extension.in_patrol then
+			return
+		end
+	end
+
+	local target_unit = blackboard.target_unit
+	local closest_enemy, closest_dist = pick_target_func(unit, blackboard, breed)
+
+	if closest_enemy and closest_enemy ~= target_unit then
+		local special_targets = blackboard.group_blackboard.special_targets
+
+		if target_unit then
+			special_targets[target_unit] = nil
+		end
+
+		special_targets[closest_enemy] = unit
+		blackboard.previous_target_unit = blackboard.target_unit
+		blackboard.target_unit = closest_enemy
+		blackboard.target_unit_found_time = t
+		blackboard.target_dist = closest_dist
+		blackboard.is_passive = false
+	elseif closest_enemy then
+		blackboard.target_dist = closest_dist
+	else
+		if target_unit then
+			blackboard.group_blackboard.special_targets[target_unit] = nil
+		end
+
+		blackboard.previous_target_unit = blackboard.target_unit
+		blackboard.target_unit = nil
+		blackboard.target_dist = math.huge
 	end
 end
 
@@ -270,7 +305,13 @@ end
 PerceptionUtils.perception_regular = function (unit, blackboard, breed, pick_target_func, t)
 	local target_unit = blackboard.target_unit
 	local target_alive = AiUtils_unit_alive(target_unit)
+
+	if blackboard.keep_target then
+		return false
+	end
+
 	local best_enemy = pick_target_func(unit, blackboard, breed, t)
+	local new_target_unit = false
 
 	if target_unit and target_alive and best_enemy == target_unit then
 		local status_extension = ScriptUnit.has_extension(target_unit, "status_system")
@@ -404,6 +445,10 @@ local num_healthy_targets = 0
 
 PerceptionUtils.special_opportunity = function (unit, blackboard)
 	num_healthy_targets = 0
+	local side = blackboard.side
+	local PLAYER_AND_BOT_UNITS = side.ENEMY_PLAYER_AND_BOT_UNITS
+	local VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS = side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS
+	local PLAYER_AND_BOT_POSITIONS = side.ENEMY_PLAYER_AND_BOT_POSITIONS
 	local num_enemies = #PLAYER_AND_BOT_UNITS
 	local urgency_to_engage = 0
 
@@ -415,7 +460,7 @@ PerceptionUtils.special_opportunity = function (unit, blackboard)
 		local player_unit = PLAYER_AND_BOT_UNITS[i]
 		local status_extension = ScriptUnit.extension(player_unit, "status_system")
 
-		if VALID_TARGETS_PLAYERS_AND_BOTS[player_unit] and not status_extension.using_transport then
+		if VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[player_unit] and not status_extension.using_transport then
 			if status_extension:is_knocked_down() then
 				urgency_to_engage = 10
 			elseif status_extension:is_grabbed_by_pack_master() then

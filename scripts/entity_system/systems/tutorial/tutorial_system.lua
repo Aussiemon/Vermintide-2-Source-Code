@@ -95,6 +95,7 @@ TutorialSystem.on_add_extension = function (self, world, unit, extension_name, e
 
 	if extension_name == "ObjectivePickupTutorialExtension" then
 		extension.approach_text = Unit.get_data(unit, "approach_text") or "<approach_text not set>"
+		extension.disregard = false
 	end
 
 	if extension_name == "ObjectiveSocketTutorialExtension" then
@@ -104,6 +105,7 @@ TutorialSystem.on_add_extension = function (self, world, unit, extension_name, e
 
 	if extension_name == "ObjectiveUnitExtension" then
 		local server_only = Unit.get_data(unit, "objective_server_only")
+		local network_synced = Unit.get_data(unit, "network_synced")
 		local activate_func = nil
 
 		if Managers.player.is_server and not server_only then
@@ -112,10 +114,13 @@ TutorialSystem.on_add_extension = function (self, world, unit, extension_name, e
 					Application.warning("[ObjectiveUnitExtension] Trying to set active on unit %q to %q when it's already %q", tostring(unit), active, extension.active)
 				else
 					extension.active = active
-					local network_manager = Managers.state.network
-					local level_object_id = network_manager:level_object_id(extension.unit)
 
-					network_manager.network_transmit:send_rpc_clients("rpc_objective_unit_set_active", level_object_id, active)
+					if network_synced then
+						local network_manager = Managers.state.network
+						local unit_id, is_level_unit = network_manager:game_object_or_level_id(extension.unit)
+
+						network_manager.network_transmit:send_rpc_clients("rpc_objective_unit_set_active", unit_id, is_level_unit, active)
+					end
 				end
 			end
 		elseif Managers.player.is_server or not server_only then
@@ -124,7 +129,7 @@ TutorialSystem.on_add_extension = function (self, world, unit, extension_name, e
 			end
 		else
 			function activate_func(extension, active)
-				local lol = math.random()
+				extension.active = active
 			end
 		end
 
@@ -132,6 +137,7 @@ TutorialSystem.on_add_extension = function (self, world, unit, extension_name, e
 		extension.active = false
 		extension.set_active = activate_func
 		extension.server_only = server_only
+		extension.network_synced = network_synced
 	end
 
 	POSITION_LOOKUP[unit] = Unit.world_position(unit, 0)
@@ -476,8 +482,8 @@ TutorialSystem.rpc_pacing_changed = function (self, sender, pacing_id)
 	tutprintf("Changing pacing state to %s", pacing)
 end
 
-TutorialSystem.rpc_objective_unit_set_active = function (self, sender, level_object_id, activate)
-	local unit = Managers.state.network:game_object_or_level_unit(level_object_id, true)
+TutorialSystem.rpc_objective_unit_set_active = function (self, sender, level_object_id, is_level_unit, activate)
+	local unit = Managers.state.network:game_object_or_level_unit(level_object_id, is_level_unit)
 	local extension = ScriptUnit.extension(unit, "tutorial_system")
 
 	extension:set_active(activate)
@@ -510,10 +516,10 @@ TutorialSystem.hot_join_sync = function (self, peer_id)
 	local units = Managers.state.entity:get_entities("ObjectiveUnitExtension")
 
 	for objective_unit, extension in pairs(units) do
-		if extension.active and not extension.server_only then
-			local level_object_id = network_manager:level_object_id(objective_unit)
+		if extension.active and not extension.server_only and extension.network_synced then
+			local unit_id, is_level_unit = network_manager:game_object_or_level_id(objective_unit)
 
-			network_manager.network_transmit:send_rpc("rpc_objective_unit_set_active", peer_id, level_object_id, true)
+			network_manager.network_transmit:send_rpc("rpc_objective_unit_set_active", peer_id, unit_id, is_level_unit, true)
 		end
 	end
 

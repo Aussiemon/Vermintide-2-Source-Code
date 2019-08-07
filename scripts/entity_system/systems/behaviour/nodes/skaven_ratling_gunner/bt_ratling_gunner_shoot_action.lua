@@ -31,6 +31,7 @@ BTRatlingGunnerShootAction.enter = function (self, unit, blackboard, t)
 	data.target_switch_distance_squared = AiUtils.random(action.target_switch_distance[1], action.target_switch_distance[2])^2
 	data.target_obscured = false
 	data.target_check = t + 0.2 + Math.random() * 0.1
+	data.peer_id = data.peer_id or Network.peer_id()
 	self._use_obstacle = false
 
 	if self._use_obstacle then
@@ -538,8 +539,6 @@ end
 BTRatlingGunnerShootAction._shoot = function (self, unit, blackboard)
 	local action = blackboard.action
 	local data = blackboard.attack_pattern_data
-	local world = blackboard.world
-	local physics_world = World.get_data(world, "physics_world")
 	local light_weight_projectile_template_name = action.light_weight_projectile_template_name
 	local light_weight_projectile_template = LightWeightProjectiles[light_weight_projectile_template_name]
 	local from_position, direction = self:_fire_from_position_direction(blackboard, data)
@@ -550,21 +549,21 @@ BTRatlingGunnerShootAction._shoot = function (self, unit, blackboard)
 	local roll = Quaternion(Vector3.forward(), Math.random() * TWO_PI)
 	local spread_rot = Quaternion.multiply(Quaternion.multiply(dir_rot, roll), pitch)
 	local spread_direction = Quaternion.forward(spread_rot)
-	local distance = 40
 	local collision_filter = "filter_enemy_player_afro_ray_projectile"
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
 	local power_level = light_weight_projectile_template.attack_power_level[difficulty_rank]
 	local action_data = {
-		attack_template = light_weight_projectile_template.attack_template,
 		power_level = power_level,
 		damage_profile = light_weight_projectile_template.damage_profile,
 		hit_effect = light_weight_projectile_template.hit_effect,
-		afro_hit_sound = light_weight_projectile_template.afro_hit_sound,
-		player_push_velocity = Vector3Box(normalized_direction * light_weight_projectile_template.impact_push_speed)
+		player_push_velocity = Vector3Box(normalized_direction * light_weight_projectile_template.impact_push_speed),
+		projectile_linker = light_weight_projectile_template.projectile_linker,
+		first_person_hit_flow_events = light_weight_projectile_template.first_person_hit_flow_events
 	}
 	local projectile_system = Managers.state.entity:system("projectile_system")
+	local peer_id = data.peer_id
 
-	projectile_system:create_light_weight_projectile(Unit.get_data(unit, "breed").name, unit, from_position, spread_direction, light_weight_projectile_template.projectile_speed, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_particle_effect)
+	projectile_system:create_light_weight_projectile(blackboard.breed.name, unit, from_position, spread_direction, light_weight_projectile_template.projectile_speed, nil, nil, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_effect, peer_id)
 end
 
 return

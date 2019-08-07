@@ -10,6 +10,8 @@ ActionGeiserTargeting.init = function (self, world, item_name, is_server, owner_
 end
 
 ActionGeiserTargeting.client_owner_start_action = function (self, new_action, t)
+	ActionGeiserTargeting.super.client_owner_start_action(self, new_action, t)
+
 	local world = self.world
 	local network_transmit = self.network_transmit
 	local owner_unit = self.owner_unit

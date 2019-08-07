@@ -70,7 +70,7 @@ RoomHandler.destroy_room = function (self, room_id)
 
 	local room = self._rooms[room_id]
 
-	World.destroy_level(world, room.level)
+	ScriptWorld.destroy_level_from_reference(world, room.level)
 
 	self._rooms[room_id] = {
 		available = true
@@ -119,7 +119,7 @@ RoomHandler.destroy = function (self)
 	for i = 1, num_rooms, 1 do
 		local room = self._rooms[i]
 
-		World.destroy_level(self._world, room.level)
+		ScriptWorld.destroy_level_from_reference(self._world, room.level)
 	end
 end
 

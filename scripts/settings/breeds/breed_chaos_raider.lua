@@ -1,43 +1,46 @@
 local breed_data = {
 	detection_radius = 12,
-	poison_resistance = 100,
-	walk_speed = 2.2,
-	disable_crowd_dispersion = true,
-	patrol_active_target_selection = "storm_patrol_death_squad_target_selection",
-	dont_wield_weapon_on_patrol = true,
-	aim_template = "chaos_marauder",
-	animation_sync_rpc = "rpc_sync_anim_state_7",
 	aoe_radius = 0.4,
+	walk_speed = 2.2,
+	patrol_active_target_selection = "storm_patrol_death_squad_target_selection",
+	line_of_sight_distance_sq = 64,
+	dont_wield_weapon_on_patrol = true,
 	scale_death_push = 0.75,
-	opt_base_unit = "units/beings/enemies/chaos_raider/chr_chaos_raider_baked",
+	animation_sync_rpc = "rpc_sync_anim_state_7",
+	disable_crowd_dispersion = true,
 	target_selection = "pick_closest_target_with_spillover",
-	look_at_range = 30,
+	opt_base_unit = "units/beings/enemies/chaos_raider/chr_chaos_raider_baked",
+	poison_resistance = 100,
+	hit_mass_count = 8,
+	aim_template = "chaos_marauder",
 	no_stagger_duration = true,
 	is_bot_threat = true,
+	slot_template = "chaos_elite",
 	dialogue_source_name = "chaos_marauder",
-	attack_player_sound_event = "Play_enemy_marauder_attack_player_vce",
-	headshot_coop_stamina_fatigue_type = "headshot_special",
 	attack_general_sound_event = "Play_enemy_marauder_attack_husk_vce",
 	default_inventory_template = "raider_axe_2h",
 	stagger_resistance = 3,
 	patrol_detection_radius = 10,
-	threat_value = 5,
+	attack_player_sound_event = "Play_enemy_marauder_attack_player_vce",
 	flingable = true,
 	wwise_voice_switch_group = "marauder_vce_variations",
 	panic_close_detection_radius_sq = 9,
 	radius = 2,
 	use_slot_type = "medium",
-	awards_positive_reinforcement_message = true,
-	hit_mass_count = 8,
+	push_sound_event = "Play_generic_pushed_impact_large",
+	look_at_range = 30,
 	patrol_active_perception = "perception_regular",
+	headshot_coop_stamina_fatigue_type = "headshot_special",
 	perception_previous_attacker_stickyness_value = -4.5,
 	race = "chaos",
-	bone_lod_level = 1,
+	threat_value = 5,
 	death_reaction = "ai_default",
 	armor_category = 1,
-	smart_object_template = "special",
+	awards_positive_reinforcement_message = true,
 	backstab_player_sound_event = "Play_enemy_marauder_attack_player_back_vce",
 	death_sound_event = "Play_enemy_marauder_death_vce",
+	bone_lod_level = 1,
+	smart_object_template = "special",
 	smart_targeting_width = 0.2,
 	is_bot_aid_threat = true,
 	behavior = "raider",
@@ -47,7 +50,7 @@ local breed_data = {
 	run_speed = 4.8,
 	exchange_order = 3,
 	stagger_threshold_heavy = 3,
-	stagger_multiplier = 0.4,
+	stagger_multiplier = 0.6,
 	stagger_threshold_light = 0.25,
 	hit_reaction = "ai_default",
 	patrol_passive_target_selection = "patrol_passive_target_selection",
@@ -58,6 +61,7 @@ local breed_data = {
 	horde_behavior = "raider",
 	unit_template = "ai_unit_chaos_warrior",
 	has_running_attack = true,
+	no_stagger_damage_reduction = true,
 	perception = "perception_regular",
 	player_locomotion_constrain_radius = 0.7,
 	weapon_reach = 2.1,
@@ -81,38 +85,11 @@ local breed_data = {
 		1.15,
 		1.15
 	},
-	max_health = {
-		30,
-		30,
-		45,
-		60,
-		90
-	},
+	max_health = BreedTweaks.max_health.raider,
 	bloodlust_health = BreedTweaks.bloodlust_health.chaos_elite,
-	diff_stagger_resist = {
-		3,
-		3,
-		4,
-		5,
-		5
-	},
-	stagger_reduction = {
-		0.9,
-		0.9,
-		1.2,
-		1.5,
-		1.5
-	},
-	stagger_duration = {
-		0.5,
-		0.75,
-		1,
-		1,
-		1,
-		1,
-		1,
-		1
-	},
+	diff_stagger_resist = BreedTweaks.diff_stagger_resist.raider,
+	stagger_reduction = BreedTweaks.stagger_reduction.raider,
+	stagger_duration = BreedTweaks.stagger_duration.raider,
 	hitzone_armor_categories = {
 		head = 2
 	},
@@ -125,13 +102,7 @@ local breed_data = {
 	hitzone_multiplier_types = {
 		head = "headshot"
 	},
-	hit_mass_counts = {
-		8,
-		8,
-		12,
-		16,
-		16
-	},
+	hit_mass_counts = BreedTweaks.hit_mass_counts.raider,
 	wwise_voices = {
 		"marauder_andreas",
 		"marauder_olof"
@@ -149,8 +120,6 @@ local breed_data = {
 	},
 	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed, direction)
 		if blackboard.stagger_type == 3 then
-			local t = Managers.time:time("game")
-
 			if stagger == 3 and blackboard.heavy_stagger_immune_time then
 				stagger = 0
 				duration = 0
@@ -160,27 +129,11 @@ local breed_data = {
 				duration = 0
 				length = 0
 			end
-
-			if direction then
-				local unit_dir = Quaternion.forward(Unit.local_rotation(blackboard.unit, 0))
-				local angle = Vector3.dot(Vector3.normalize(direction), Vector3.normalize(unit_dir))
-				local direction_allowed = angle >= -0.35 and angle <= 1
-
-				if direction_allowed then
-					blackboard.fallen_stagger = true
-					blackboard.fallen_stagger_timer = t + 0.5
-					blackboard.fallen_stagger_direction = Vector3Box(direction)
-				end
-			end
 		end
 
 		return stagger, duration, length
 	end,
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		head = {
 			prio = 1,
 			actors = {
@@ -204,7 +157,7 @@ local breed_data = {
 			}
 		},
 		torso = {
-			prio = 3,
+			prio = 2,
 			actors = {
 				"c_spine1",
 				"c_spine",
@@ -217,7 +170,7 @@ local breed_data = {
 			}
 		},
 		left_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftarm",
 				"c_leftforearm",
@@ -231,7 +184,7 @@ local breed_data = {
 			}
 		},
 		right_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightarm",
 				"c_rightforearm",
@@ -245,7 +198,7 @@ local breed_data = {
 			}
 		},
 		left_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftupleg",
 				"c_leftleg",
@@ -258,7 +211,7 @@ local breed_data = {
 			}
 		},
 		right_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightupleg",
 				"c_rightleg",
@@ -269,6 +222,10 @@ local breed_data = {
 				"j_rightfoot",
 				"j_hips"
 			}
+		},
+		full = {
+			prio = 4,
+			actors = {}
 		},
 		afro = {
 			prio = 5,
@@ -327,6 +284,128 @@ Breeds.chaos_raider_tutorial = table.create_copy(Breeds.chaos_raider_tutorial, b
 Breeds.chaos_raider_tutorial.behavior = "raider_tutorial"
 Breeds.chaos_raider_tutorial.horde_behavior = "raider_tutorial"
 Breeds.chaos_raider_tutorial.debug_spawn_category = "Misc"
+local AttackIntensityPerDifficulty = {
+	sweep = {
+		easy = {
+			normal = 1.5,
+			sweep = 3
+		},
+		normal = {
+			normal = 1.5,
+			sweep = 3
+		},
+		hard = {
+			normal = 1.5,
+			sweep = 3
+		},
+		harder = {
+			normal = 1.5,
+			sweep = 3
+		},
+		hardest = {
+			normal = 1.5,
+			sweep = 3
+		},
+		cataclysm = {
+			normal = 1.5,
+			sweep = 3
+		},
+		cataclysm_2 = {
+			normal = 1.5,
+			sweep = 3
+		},
+		cataclysm_3 = {
+			normal = 1.5,
+			sweep = 3
+		}
+	},
+	cleave = {
+		easy = {
+			cleave = 3,
+			normal = 1.5
+		},
+		normal = {
+			cleave = 3,
+			normal = 1.5
+		},
+		hard = {
+			cleave = 3,
+			normal = 1.5
+		},
+		harder = {
+			cleave = 3,
+			normal = 1.5
+		},
+		hardest = {
+			cleave = 3,
+			normal = 1.5
+		},
+		cataclysm = {
+			cleave = 3,
+			normal = 1.5
+		},
+		cataclysm_2 = {
+			cleave = 3,
+			normal = 1.5
+		},
+		cataclysm_3 = {
+			cleave = 3,
+			normal = 1.5
+		}
+	},
+	push = {
+		easy = {
+			push = 1.5
+		},
+		normal = {
+			push = 1.5
+		},
+		hard = {
+			push = 1.5
+		},
+		harder = {
+			push = 1.5
+		},
+		hardest = {
+			push = 1.5
+		},
+		cataclysm = {
+			push = 1.5
+		},
+		cataclysm_2 = {
+			push = 1.5
+		},
+		cataclysm_3 = {
+			push = 1.5
+		}
+	},
+	running = {
+		easy = {
+			running = 3.5
+		},
+		normal = {
+			running = 3.5
+		},
+		hard = {
+			running = 3.5
+		},
+		harder = {
+			running = 3.5
+		},
+		hardest = {
+			running = 3.5
+		},
+		cataclysm = {
+			running = 3.5
+		},
+		cataclysm_2 = {
+			running = 3.5
+		},
+		cataclysm_3 = {
+			running = 3.5
+		}
+	}
+}
 local action_data = {
 	alerted = {
 		action_weight = 1,
@@ -405,73 +484,30 @@ local action_data = {
 		considerations = UtilityConsiderations.chaos_raider_moving_attack
 	},
 	running_attack = {
-		height = 1.1,
-		offset_forward = 0,
 		hit_react_type = "heavy",
+		height = 1.1,
+		offset_forward = 0.5,
 		cooldown = 1,
 		rotation_time = 1,
-		fatigue_type = "blocked_sv_cleave",
 		bot_threat_start_time = 1,
 		damage_type = "cutting",
 		offset_up = 0,
 		attack_anim = "attack_cleave",
-		range = 2.5,
+		range = 1.95,
+		damage = 30,
 		bot_threat_duration = 0.7,
+		attack_intensity_type = "running",
 		action_weight = 10,
 		move_anim = "move_fwd",
-		width = 2,
+		width = 1.6,
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		considerations = UtilityConsiderations.chaos_raider_running_attack,
 		step_attack_anim = {
 			"attack_run",
 			"attack_run_2"
 		},
-		damage = {
-			30,
-			25,
-			20
-		},
-		difficulty_damage = {
-			easy = {
-				20,
-				20,
-				15
-			},
-			normal = {
-				30,
-				25,
-				20
-			},
-			hard = {
-				40,
-				35,
-				30
-			},
-			survival_hard = {
-				40,
-				35,
-				30
-			},
-			harder = {
-				50,
-				40,
-				30
-			},
-			survival_harder = {
-				50,
-				40,
-				30
-			},
-			hardest = {
-				100,
-				50,
-				30
-			},
-			survival_hardest = {
-				150,
-				75,
-				45
-			}
-		},
+		difficulty_damage = BreedTweaks.difficulty_damage.elite_attack_heavy,
+		fatigue_type = BreedTweaks.fatigue_types.elite_sweep.running_attack,
 		ignore_staggers = {
 			true,
 			false,
@@ -479,25 +515,28 @@ local action_data = {
 			false,
 			false,
 			false
-		}
+		},
+		attack_finished_duration = BreedTweaks.attack_finished_duration.chaos_elite
 	},
 	special_attack_cleave = {
-		offset_forward = 0,
 		height = 2,
+		offset_forward = 0,
 		hit_react_type = "heavy",
 		rotation_time_step = 2.1,
 		cooldown = 1,
 		rotation_time = 1,
-		fatigue_type = "chaos_cleave",
 		bot_threat_start_time = 0.7,
 		no_block_stagger = true,
 		damage_type = "cutting",
 		offset_up = 0,
 		range = 2.25,
+		damage = 30,
 		bot_threat_duration = 0.7,
+		attack_intensity_type = "cleave",
 		bot_threat_start_time_step = 1.6,
 		move_anim = "move_fwd",
 		width = 0.4,
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		attack_anim = {
 			"attack_cleave",
 			"attack_cleave_02"
@@ -505,53 +544,8 @@ local action_data = {
 		step_attack_anim = {
 			"attack_cleave_moving_01"
 		},
-		damage = {
-			30,
-			25,
-			20
-		},
-		difficulty_damage = {
-			easy = {
-				20,
-				20,
-				15
-			},
-			normal = {
-				30,
-				25,
-				20
-			},
-			hard = {
-				40,
-				35,
-				30
-			},
-			survival_hard = {
-				40,
-				35,
-				30
-			},
-			harder = {
-				50,
-				40,
-				30
-			},
-			survival_harder = {
-				50,
-				40,
-				30
-			},
-			hardest = {
-				100,
-				50,
-				30
-			},
-			survival_hardest = {
-				150,
-				75,
-				45
-			}
-		},
+		difficulty_damage = BreedTweaks.difficulty_damage.elite_attack_heavy,
+		fatigue_type = BreedTweaks.fatigue_types.elite_cleave.normal_attack,
 		ignore_staggers = {
 			true,
 			false,
@@ -559,21 +553,24 @@ local action_data = {
 			false,
 			false,
 			false
-		}
+		},
+		attack_finished_duration = BreedTweaks.attack_finished_duration.chaos_elite
 	},
 	special_attack_sweep = {
-		range = 2.5,
+		offset_forward = 0.5,
 		height = 1.1,
-		width = 2,
 		cooldown = 1,
 		rotation_time = 1,
-		fatigue_type = "blocked_sv_sweep",
-		offset_forward = 0,
 		bot_threat_start_time = 0.6,
-		bot_threat_duration = 0.7,
 		damage_type = "cutting",
-		move_anim = "move_fwd",
 		offset_up = 0,
+		range = 2.1,
+		damage = 20,
+		bot_threat_duration = 0.7,
+		attack_intensity_type = "sweep",
+		move_anim = "move_fwd",
+		width = 1.6,
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		attack_anim = {
 			"attack_pounce",
 			"attack_pounce_2",
@@ -584,48 +581,8 @@ local action_data = {
 			"attack_move",
 			"attack_move_2"
 		},
-		difficulty_damage = {
-			easy = {
-				10,
-				10,
-				5
-			},
-			normal = {
-				10,
-				10,
-				5
-			},
-			hard = {
-				20,
-				15,
-				10
-			},
-			survival_hard = {
-				20,
-				15,
-				10
-			},
-			harder = {
-				30,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				50,
-				30,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
-		},
+		difficulty_damage = BreedTweaks.difficulty_damage.elite_attack,
+		fatigue_type = BreedTweaks.fatigue_types.elite_sweep.normal_attack,
 		ignore_staggers = {
 			true,
 			false,
@@ -633,23 +590,22 @@ local action_data = {
 			false,
 			false,
 			false
-		}
+		},
+		attack_finished_duration = BreedTweaks.attack_finished_duration.chaos_elite
 	},
 	push_attack = {
 		impact_push_speed = 7,
-		damage_type = "blunt",
+		damage = 0,
 		fatigue_type = "sv_push",
-		max_impact_push_speed = 8,
 		hit_react_type = "heavy",
+		max_impact_push_speed = 8,
+		attack_intensity_type = "push",
 		action_weight = 1,
+		damage_type = "blunt",
 		unblockable = true,
 		attack_anim = "attack_push",
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		considerations = UtilityConsiderations.chaos_raider_push_attack,
-		damage = {
-			0,
-			0,
-			0
-		},
 		ignore_staggers = {
 			true,
 			false,
@@ -657,7 +613,8 @@ local action_data = {
 			true,
 			true,
 			false
-		}
+		},
+		attack_finished_duration = BreedTweaks.attack_finished_duration.chaos_elite
 	},
 	combat_shout = {
 		cooldown = -1,
@@ -668,90 +625,44 @@ local action_data = {
 	smash_door = {
 		unblockable = true,
 		name = "smash_door",
+		damage = 3,
 		damage_type = "cutting",
 		move_anim = "move_fwd",
-		attack_anim = "attack_blocker",
-		damage = {
-			3,
-			3,
-			3
-		}
+		attack_anim = "attack_blocker"
 	},
 	blocked = {
 		blocked_anims = {
 			"blocked",
 			"blocked_2"
-		}
+		},
+		difficulty_duration = BreedTweaks.blocked_duration.chaos_elite
 	},
 	special_attack_cleave_tutorial = {
+		fatigue_type = "chaos_cleave",
 		height = 2,
 		offset_forward = 0,
-		hit_react_type = "heavy",
 		rotation_time_step = 2.1,
 		cooldown = 1,
 		rotation_time = 1,
-		fatigue_type = "chaos_cleave",
+		hit_react_type = "heavy",
 		bot_threat_start_time = 0.7,
 		no_block_stagger = true,
 		damage_type = "cutting",
 		offset_up = 0,
 		range = 3.1,
+		damage = 30,
 		bot_threat_duration = 0.7,
+		attack_intensity_type = "cleave",
 		action_weight = 1,
 		bot_threat_start_time_step = 1.6,
 		move_anim = "move_fwd",
 		width = 0.4,
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		considerations = UtilityConsiderations.chaos_raider_special_attack,
 		attack_anim = {
 			"attack_cleave_02"
 		},
-		damage = {
-			30,
-			25,
-			20
-		},
-		difficulty_damage = {
-			easy = {
-				20,
-				20,
-				15
-			},
-			normal = {
-				30,
-				25,
-				20
-			},
-			hard = {
-				40,
-				35,
-				30
-			},
-			survival_hard = {
-				40,
-				35,
-				30
-			},
-			harder = {
-				50,
-				40,
-				30
-			},
-			survival_harder = {
-				50,
-				40,
-				30
-			},
-			hardest = {
-				100,
-				50,
-				30
-			},
-			survival_hardest = {
-				150,
-				75,
-				45
-			}
-		},
+		difficulty_damage = BreedTweaks.difficulty_damage.elite_attack_heavy,
 		ignore_staggers = {
 			true,
 			false,
@@ -759,7 +670,8 @@ local action_data = {
 			false,
 			false,
 			false
-		}
+		},
+		attack_finished_duration = BreedTweaks.attack_finished_duration.chaos_elite
 	},
 	stagger = {
 		scale_animation_speeds = true,
@@ -959,6 +871,47 @@ local action_data = {
 				},
 				bwd = {
 					"stagger_bwd_light",
+					"stagger_bwd_light_4",
+					"stagger_bwd_light_5",
+					"stagger_bwd_light_6",
+					"stagger_bwd_light_7",
+					"stagger_bwd_light_8"
+				},
+				left = {
+					"stagger_left_light",
+					"stagger_left_light_2",
+					"stagger_left_light_3",
+					"stagger_left_light_4"
+				},
+				right = {
+					"stagger_right_light",
+					"stagger_right_light_2",
+					"stagger_right_light_3",
+					"stagger_right_light_4"
+				},
+				dwn = {
+					"stun_down"
+				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
+			},
+			{
+				fwd = {
+					"stagger_fwd_light",
+					"stagger_fwd_light_2",
+					"stagger_fwd_light_3",
+					"stagger_fwd_light_4",
+					"stagger_fwd_light_5",
+					"stagger_fwd_light_6"
+				},
+				bwd = {
+					"stagger_bwd_light",
+					"stagger_bwd_light_2",
+					"stagger_bwd_light_3",
 					"stagger_bwd_light_4",
 					"stagger_bwd_light_5",
 					"stagger_bwd_light_6",

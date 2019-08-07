@@ -323,7 +323,7 @@ local crafting_recipes = {
 		validation_function = "craft_validation_func",
 		result_function_playfab = "craftingRerollProperties",
 		hero_specific_filter = true,
-		item_filter = "has_properties",
+		item_filter = "has_properties and item_rarity ~= magic",
 		description_text = "description_crafting_recipe_weapon_reroll_properties",
 		display_icon_console = "console_crafting_recipe_icon_properties",
 		ingredients = {
@@ -393,7 +393,7 @@ local crafting_recipes = {
 		validation_function = "craft_validation_func",
 		result_function_playfab = "craftingRerollProperties",
 		hero_specific_filter = true,
-		item_filter = "has_properties",
+		item_filter = "has_properties and item_rarity ~= magic",
 		description_text = "description_crafting_recipe_jewellery_reroll_properties",
 		display_icon_console = "console_crafting_recipe_icon_properties",
 		ingredients = {
@@ -463,7 +463,7 @@ local crafting_recipes = {
 		validation_function = "craft_validation_func",
 		result_function_playfab = "craftingRerollTraits",
 		hero_specific_filter = true,
-		item_filter = "has_traits",
+		item_filter = "has_traits and item_rarity ~= magic",
 		description_text = "description_crafting_recipe_weapon_reroll_traits",
 		display_icon_console = "console_crafting_recipe_icon_trait",
 		ingredients = {
@@ -529,7 +529,7 @@ local crafting_recipes = {
 		validation_function = "craft_validation_func",
 		result_function_playfab = "craftingRerollTraits",
 		hero_specific_filter = true,
-		item_filter = "has_traits",
+		item_filter = "has_traits and item_rarity ~= magic",
 		description_text = "description_crafting_recipe_jewellery_reroll_traits",
 		display_icon_console = "console_crafting_recipe_icon_trait",
 		ingredients = {
@@ -553,7 +553,7 @@ local crafting_recipes = {
 		validation_function = "craft_validation_func",
 		result_function_playfab = "craftingExtractSkin",
 		hero_specific_filter = true,
-		item_filter = "has_applied_skin and not is_equipped",
+		item_filter = "has_applied_skin and item_rarity ~= magic and not is_equipped",
 		description_text = "description_crafting_recipe_extract_weapon_skin",
 		display_icon_console = "console_crafting_recipe_icon_extract",
 		ingredients = {
@@ -616,7 +616,7 @@ local crafting_recipes = {
 		validation_function = "weapon_skin_application_validation_func",
 		result_function_playfab = "craftingApplySkin2",
 		hero_specific_filter = true,
-		item_filter = "can_apply_skin and not is_equipped",
+		item_filter = "can_apply_skin and item_rarity ~= magic and not is_equipped",
 		description_text = "description_crafting_recipe_apply_weapon_skin",
 		display_icon_console = "console_crafting_recipe_icon_apply",
 		ingredients = {

@@ -160,6 +160,47 @@ PatrolFormationSettings.chaos_warrior_default = {
 			"chaos_marauder_with_shield",
 			"chaos_marauder_with_shield"
 		}
+	},
+	cataclysm = {
+		{
+			"chaos_raider"
+		},
+		{
+			"chaos_warrior",
+			"chaos_warrior"
+		},
+		{
+			"chaos_warrior",
+			"chaos_warrior"
+		},
+		{
+			"chaos_warrior",
+			"chaos_warrior"
+		},
+		{
+			"chaos_raider",
+			"chaos_raider"
+		},
+		{
+			"chaos_warrior",
+			"chaos_warrior"
+		},
+		{
+			"chaos_marauder_with_shield",
+			"chaos_marauder_with_shield"
+		},
+		{
+			"chaos_warrior",
+			"chaos_warrior"
+		},
+		{
+			"chaos_raider",
+			"chaos_raider"
+		},
+		{
+			"chaos_warrior",
+			"chaos_warrior"
+		}
 	}
 }
 PatrolFormationSettings.storm_vermin_two_column = {
@@ -256,6 +297,52 @@ PatrolFormationSettings.storm_vermin_two_column = {
 		{
 			"skaven_storm_vermin_with_shield",
 			"skaven_storm_vermin_with_shield"
+		},
+		{
+			"skaven_storm_vermin_with_shield",
+			"skaven_storm_vermin_with_shield"
+		},
+		{
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
+		}
+	},
+	cataclysm = {
+		{
+			"skaven_storm_vermin_with_shield",
+			"skaven_storm_vermin_with_shield"
+		},
+		{
+			"skaven_storm_vermin_with_shield",
+			"skaven_storm_vermin_with_shield"
+		},
+		{
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
 		},
 		{
 			"skaven_storm_vermin_with_shield",
@@ -393,6 +480,50 @@ PatrolFormationSettings.storm_vermin_shields_infront = {
 			"skaven_storm_vermin",
 			"skaven_storm_vermin",
 			"skaven_storm_vermin",
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin",
+			EMPTY,
+			EMPTY,
+			"skaven_storm_vermin"
+		}
+	},
+	cataclysm = {
+		{
+			"skaven_storm_vermin_with_shield"
+		},
+		{
+			"skaven_storm_vermin_with_shield",
+			"skaven_storm_vermin_with_shield"
+		},
+		{
+			"skaven_storm_vermin_with_shield",
+			"skaven_storm_vermin",
+			"skaven_storm_vermin_with_shield"
+		},
+		{
+			"skaven_storm_vermin",
+			"skaven_storm_vermin",
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin",
+			"skaven_storm_vermin",
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin",
+			"skaven_storm_vermin",
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin",
+			EMPTY,
+			EMPTY,
 			"skaven_storm_vermin"
 		},
 		{
@@ -1985,6 +2116,22 @@ PatrolFormationSettings.small_stormvermins = {
 			"skaven_storm_vermin_with_shield",
 			"skaven_storm_vermin_with_shield"
 		}
+	},
+	cataclysm = {
+		{
+			"skaven_storm_vermin_with_shield",
+			"skaven_storm_vermin_with_shield"
+		},
+		{
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin_with_shield",
+			"skaven_storm_vermin_with_shield"
+		}
 	}
 }
 PatrolFormationSettings.small_stormvermins_long = {
@@ -2092,6 +2239,35 @@ PatrolFormationSettings.small_stormvermins_long = {
 		}
 	},
 	hardest = {
+		{
+			"skaven_storm_vermin_with_shield"
+		},
+		{
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin_with_shield"
+		},
+		{
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin_with_shield"
+		}
+	},
+	cataclysm = {
 		{
 			"skaven_storm_vermin_with_shield"
 		},
@@ -2257,6 +2433,36 @@ PatrolFormationSettings.medium_stormvermins = {
 			"skaven_storm_vermin_with_shield",
 			"skaven_storm_vermin_with_shield"
 		}
+	},
+	cataclysm = {
+		{
+			"skaven_storm_vermin_with_shield",
+			"skaven_storm_vermin_with_shield"
+		},
+		{
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin_with_shield",
+			"skaven_storm_vermin_with_shield"
+		},
+		{
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin_with_shield",
+			"skaven_storm_vermin_with_shield"
+		}
 	}
 }
 PatrolFormationSettings.medium_stormvermins_wide = {
@@ -2388,6 +2594,43 @@ PatrolFormationSettings.medium_stormvermins_wide = {
 		}
 	},
 	hardest = {
+		{
+			"skaven_storm_vermin_with_shield",
+			"skaven_storm_vermin_with_shield",
+			"skaven_storm_vermin_with_shield"
+		},
+		{
+			"skaven_storm_vermin",
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin",
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin_with_shield",
+			"skaven_storm_vermin_with_shield",
+			"skaven_storm_vermin_with_shield"
+		},
+		{
+			"skaven_storm_vermin",
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin",
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
+		},
+		{
+			"skaven_storm_vermin_with_shield",
+			"skaven_storm_vermin_with_shield",
+			"skaven_storm_vermin_with_shield"
+		}
+	},
+	cataclysm = {
 		{
 			"skaven_storm_vermin_with_shield",
 			"skaven_storm_vermin_with_shield",
@@ -2641,6 +2884,27 @@ PatrolFormationSettings.chaos_warrior_small = {
 			"chaos_marauder",
 			"chaos_marauder"
 		}
+	},
+	cataclysm = {
+		{
+			"chaos_marauder",
+			"chaos_marauder"
+		},
+		{
+			"chaos_marauder",
+			"chaos_marauder"
+		},
+		{
+			"chaos_warrior"
+		},
+		{
+			"chaos_marauder",
+			"chaos_marauder"
+		},
+		{
+			"chaos_marauder",
+			"chaos_marauder"
+		}
 	}
 }
 PatrolFormationSettings.chaos_warrior_long = {
@@ -2772,6 +3036,38 @@ PatrolFormationSettings.chaos_warrior_long = {
 			"chaos_marauder_with_shield",
 			"chaos_marauder_with_shield"
 		}
+	},
+	cataclysm = {
+		{
+			"chaos_marauder_with_shield",
+			"chaos_marauder_with_shield"
+		},
+		{
+			"chaos_marauder",
+			"chaos_marauder"
+		},
+		{
+			"chaos_marauder",
+			"chaos_marauder"
+		},
+		{
+			"chaos_warrior"
+		},
+		{
+			"chaos_warrior"
+		},
+		{
+			"chaos_marauder",
+			"chaos_marauder"
+		},
+		{
+			"chaos_marauder",
+			"chaos_marauder"
+		},
+		{
+			"chaos_marauder_with_shield",
+			"chaos_marauder_with_shield"
+		}
 	}
 }
 PatrolFormationSettings.chaos_warrior_wide = {
@@ -2873,6 +3169,38 @@ PatrolFormationSettings.chaos_warrior_wide = {
 		}
 	},
 	hardest = {
+		{
+			"chaos_marauder_with_shield",
+			"chaos_marauder_with_shield",
+			"chaos_marauder_with_shield"
+		},
+		{
+			"chaos_marauder",
+			"chaos_marauder",
+			"chaos_marauder",
+			"chaos_marauder"
+		},
+		{
+			"chaos_warrior",
+			"chaos_warrior"
+		},
+		{
+			"chaos_warrior",
+			"chaos_warrior"
+		},
+		{
+			"chaos_marauder",
+			"chaos_marauder",
+			"chaos_marauder",
+			"chaos_marauder"
+		},
+		{
+			"chaos_marauder_with_shield",
+			"chaos_marauder_with_shield",
+			"chaos_marauder_with_shield"
+		}
+	},
+	cataclysm = {
 		{
 			"chaos_marauder_with_shield",
 			"chaos_marauder_with_shield",
@@ -3122,6 +3450,60 @@ PatrolFormationSettings.prologue_skittergate_patrol = {
 			"chaos_marauder_with_shield",
 			"chaos_marauder_with_shield"
 		}
+	},
+	cataclysm = {
+		{
+			"chaos_marauder_with_shield",
+			"chaos_marauder_with_shield",
+			"chaos_marauder_with_shield"
+		},
+		{
+			"chaos_marauder",
+			"chaos_marauder",
+			"chaos_marauder",
+			"chaos_marauder"
+		},
+		{
+			"chaos_warrior",
+			"chaos_warrior"
+		},
+		{
+			"chaos_warrior",
+			"chaos_warrior"
+		},
+		{
+			"chaos_warrior",
+			"chaos_warrior"
+		},
+		{
+			"chaos_marauder",
+			"chaos_marauder",
+			"chaos_marauder",
+			"chaos_marauder"
+		},
+		{
+			"chaos_marauder",
+			"chaos_marauder",
+			"chaos_marauder",
+			"chaos_marauder"
+		},
+		{
+			"chaos_warrior",
+			"chaos_warrior"
+		},
+		{
+			"chaos_warrior",
+			"chaos_warrior"
+		},
+		{
+			"chaos_warrior",
+			"chaos_warrior"
+		},
+		{
+			"chaos_marauder_with_shield",
+			"chaos_marauder_with_shield",
+			"chaos_marauder_with_shield"
+		}
 	}
 }
 PatrolFormationSettings.prologue_marauder = {
@@ -3181,8 +3563,36 @@ PatrolFormationSettings.prologue_marauder = {
 			"chaos_marauder",
 			"chaos_marauder"
 		}
+	},
+	cataclysm = {
+		{
+			"chaos_marauder",
+			"chaos_marauder"
+		},
+		{
+			"chaos_marauder",
+			"chaos_marauder"
+		},
+		{
+			"chaos_marauder",
+			"chaos_marauder"
+		}
 	}
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local patrol_formation_settings = dlc.patrol_formation_settings
+
+	if patrol_formation_settings then
+		table.merge_recursive(PatrolFormationSettings, patrol_formation_settings)
+	end
+
+	local patrol_formations = dlc.patrol_formations
+
+	if patrol_formations then
+		table.merge_recursive(PatrolFormationSettings, patrol_formations)
+	end
+end
 
 PatrolFormationSettings.random_roaming_formation = function (breed_pack)
 	local members = breed_pack.members

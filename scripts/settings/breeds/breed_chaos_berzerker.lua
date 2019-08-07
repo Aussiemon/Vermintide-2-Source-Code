@@ -5,56 +5,57 @@ local MOVING_HVY_STAGGERS = {
 	"run_stagger_right"
 }
 local breed_data = {
-	patrol_active_perception = "perception_regular",
+	proximity_system_check = true,
 	walk_speed = 2.25,
+	bone_lod_level = 0,
 	attack_start_slow_fraction = 0.5,
 	patrol_active_target_selection = "storm_patrol_death_squad_target_selection",
 	exchange_order = 3,
 	berzerker_alert = true,
 	animation_sync_rpc = "rpc_sync_anim_state_7",
-	look_at_range = 30,
 	death_reaction = "ai_default",
 	opt_base_unit = "units/beings/enemies/chaos_berzerker/chr_chaos_berzerker_baked",
-	dont_wield_weapon_on_patrol = true,
-	has_inventory = true,
+	patrol_active_perception = "perception_regular",
 	is_bot_threat = true,
-	bone_lod_level = 0,
+	hit_mass_count = 4,
+	dont_wield_weapon_on_patrol = true,
 	scale_death_push = 0.65,
+	slot_template = "chaos_elite",
 	detection_radius = 24,
-	smart_object_template = "special",
 	match_speed_distance = 2,
 	default_inventory_template = "berzerker_dual_axes",
 	stagger_resistance = 3,
 	patrol_detection_radius = 10,
+	smart_object_template = "special",
 	flingable = true,
 	wwise_voice_switch_group = "marauder_vce_variations",
 	panic_close_detection_radius_sq = 9,
 	radius = 1.25,
 	use_slot_type = "medium",
-	attack_player_sound_event = "Play_enemy_berserker_attack_player_vce",
-	hit_mass_count = 4,
+	look_at_range = 30,
 	stagger_threshold_explosion = 5,
-	attack_general_sound_event = "Play_enemy_berserker_attack_husk_vce",
+	attack_player_sound_event = "Play_enemy_berserker_attack_player_vce",
 	perception_previous_attacker_stickyness_value = 0,
 	race = "chaos",
-	uses_attack_sfx_callback = true,
-	proximity_system_check = true,
+	attack_general_sound_event = "Play_enemy_berserker_attack_husk_vce",
 	poison_resistance = 70,
 	armor_category = 5,
+	uses_attack_sfx_callback = true,
 	dialogue_source_name = "chaos_berzerker",
-	aoe_height = 1.4,
 	backstab_player_sound_event = "Play_enemy_marauder_attack_player_back_vce",
 	death_sound_event = "Play_enemy_marauder_death_vce",
 	dodge_timer = 0.15,
+	aoe_height = 1.4,
 	has_running_attack = true,
 	threat_value = 5,
-	awards_positive_reinforcement_message = true,
 	smart_targeting_width = 0.2,
-	berzerking_stagger_time = 0.75,
+	awards_positive_reinforcement_message = true,
 	is_bot_aid_threat = true,
 	behavior = "berzerker",
-	run_speed_interpolation_factor = 0.5,
+	berzerking_stagger_time = 0.75,
+	has_inventory = true,
 	during_horde_detection_radius = 24,
+	run_speed_interpolation_factor = 0.5,
 	force_walk_while_tired = true,
 	target_selection = "pick_closest_target_with_spillover",
 	attack_start_slow_factor_time = 0.35,
@@ -116,10 +117,6 @@ local breed_data = {
 		head = "headshot"
 	},
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		head = {
 			prio = 1,
 			actors = {
@@ -143,7 +140,7 @@ local breed_data = {
 			}
 		},
 		torso = {
-			prio = 3,
+			prio = 2,
 			actors = {
 				"c_spine1",
 				"c_spine",
@@ -156,7 +153,7 @@ local breed_data = {
 			}
 		},
 		left_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftarm",
 				"c_leftforearm",
@@ -170,7 +167,7 @@ local breed_data = {
 			}
 		},
 		right_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightarm",
 				"c_rightforearm",
@@ -184,7 +181,7 @@ local breed_data = {
 			}
 		},
 		left_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftupleg",
 				"c_leftleg",
@@ -197,7 +194,7 @@ local breed_data = {
 			}
 		},
 		right_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightupleg",
 				"c_rightleg",
@@ -208,6 +205,10 @@ local breed_data = {
 				"j_rightfoot",
 				"j_hips"
 			}
+		},
+		full = {
+			prio = 4,
+			actors = {}
 		},
 		afro = {
 			prio = 5,
@@ -271,45 +272,12 @@ local breed_data = {
 		poison_well = true,
 		wizard_destructible = true
 	},
-	max_health = {
-		18,
-		18,
-		27,
-		36,
-		54
-	},
+	max_health = BreedTweaks.max_health.berzerker,
 	bloodlust_health = BreedTweaks.bloodlust_health.chaos_elite,
-	diff_stagger_resist = {
-		2.7,
-		2.7,
-		3.6,
-		4.5,
-		4.5
-	},
-	stagger_reduction = {
-		0.75,
-		0.75,
-		1,
-		1.25,
-		1.25
-	},
-	stagger_duration = {
-		0.25,
-		1.75,
-		3.5,
-		0.5,
-		0.5,
-		4,
-		0.25,
-		0.25
-	},
-	hit_mass_counts = {
-		4,
-		4,
-		6,
-		8,
-		8
-	},
+	diff_stagger_resist = BreedTweaks.diff_stagger_resist.berzerker,
+	stagger_reduction = BreedTweaks.stagger_reduction.berzerker,
+	stagger_duration = BreedTweaks.stagger_duration.berzerker,
+	hit_mass_counts = BreedTweaks.hit_mass_counts.berzerker,
 	num_push_anims = {
 		push_backward = 2
 	},
@@ -325,525 +293,91 @@ local breed_data = {
 	}
 }
 Breeds.chaos_berzerker = table.create_copy(Breeds.chaos_berzerker, breed_data)
-local BreedActionDimishingDamageDifficulty = {
-	easy = {
-		{
-			damage = 2,
-			cooldown = {
-				2,
-				5
-			}
-		},
-		{
-			damage = 1.5,
-			cooldown = {
-				2,
-				5
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				2,
-				5
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				2,
-				5
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				3,
-				7
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				3,
-				7
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				3,
-				7
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				4,
-				8
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				4,
-				8
-			}
-		}
-	},
+local AttackIntensityPerDifficulty = {
 	normal = {
-		{
-			damage = 2,
-			cooldown = {
-				2,
-				3
-			}
+		easy = {
+			normal = 2
 		},
-		{
-			damage = 2,
-			cooldown = {
-				2,
-				3
-			}
+		normal = {
+			normal = 2
 		},
-		{
-			damage = 1.5,
-			cooldown = {
-				2,
-				3
-			}
+		hard = {
+			normal = 2
 		},
-		{
-			damage = 1,
-			cooldown = {
-				2.25,
-				3.25
-			}
+		harder = {
+			normal = 2
 		},
-		{
-			damage = 1,
-			cooldown = {
-				2.5,
-				3.5
-			}
+		hardest = {
+			normal = 2
 		},
-		{
-			damage = 1,
-			cooldown = {
-				2.75,
-				3.75
-			}
+		cataclysm = {
+			normal = 2
 		},
-		{
-			damage = 1,
-			cooldown = {
-				3,
-				4
-			}
+		cataclysm_2 = {
+			normal = 2
 		},
-		{
-			damage = 1,
-			cooldown = {
-				3.25,
-				4.25
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				3.5,
-				4.5
-			}
+		cataclysm_3 = {
+			normal = 2
 		}
 	},
-	hard = {
-		{
-			damage = 2,
-			cooldown = {
-				1,
-				1.5
-			}
+	frenzy = {
+		easy = {
+			normal = 2.5,
+			frenzy = 5
 		},
-		{
-			damage = 2,
-			cooldown = {
-				1,
-				1.5
-			}
+		normal = {
+			normal = 2.5,
+			frenzy = 5
 		},
-		{
-			damage = 1.5,
-			cooldown = {
-				1,
-				1.5
-			}
+		hard = {
+			normal = 2.5,
+			frenzy = 5
 		},
-		{
-			damage = 1,
-			cooldown = {
-				1.25,
-				1.75
-			}
+		harder = {
+			normal = 2.5,
+			frenzy = 5
 		},
-		{
-			damage = 1,
-			cooldown = {
-				1.5,
-				2
-			}
+		hardest = {
+			normal = 2.5,
+			frenzy = 5
 		},
-		{
-			damage = 1,
-			cooldown = {
-				1.75,
-				2.25
-			}
+		cataclysm = {
+			normal = 2.5,
+			frenzy = 5
 		},
-		{
-			damage = 1,
-			cooldown = {
-				2,
-				2.5
-			}
+		cataclysm_2 = {
+			normal = 2.5,
+			frenzy = 5
 		},
-		{
-			damage = 1,
-			cooldown = {
-				2.25,
-				3.25
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				2.5,
-				3.5
-			}
+		cataclysm_3 = {
+			normal = 2.5,
+			frenzy = 5
 		}
 	},
-	survival_hard = {
-		{
-			damage = 2,
-			cooldown = {
-				1,
-				1.5
-			}
+	running = {
+		easy = {
+			running = 2.5
 		},
-		{
-			damage = 2,
-			cooldown = {
-				1,
-				1.5
-			}
+		normal = {
+			running = 2.5
 		},
-		{
-			damage = 1.5,
-			cooldown = {
-				1,
-				1.5
-			}
+		hard = {
+			running = 2.5
 		},
-		{
-			damage = 1,
-			cooldown = {
-				1.25,
-				1.75
-			}
+		harder = {
+			running = 2.5
 		},
-		{
-			damage = 1,
-			cooldown = {
-				1.5,
-				2
-			}
+		hardest = {
+			running = 2.5
 		},
-		{
-			damage = 1,
-			cooldown = {
-				1.75,
-				2.25
-			}
+		cataclysm = {
+			running = 2.5
 		},
-		{
-			damage = 1,
-			cooldown = {
-				2,
-				2.5
-			}
+		cataclysm_2 = {
+			running = 2.5
 		},
-		{
-			damage = 1,
-			cooldown = {
-				2.25,
-				3.25
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				2.5,
-				3.5
-			}
-		}
-	},
-	harder = {
-		{
-			damage = 2.5,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 2,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 1.5,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.6,
-				1.1
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.7,
-				1.2
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.8,
-				1.3
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.9,
-				1.4
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				1,
-				1.5
-			}
-		}
-	},
-	survival_harder = {
-		{
-			damage = 2.5,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 2,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 1.5,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.5,
-				1
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.6,
-				1.1
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.7,
-				1.2
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.8,
-				1.3
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0.9,
-				1.4
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				1,
-				1.5
-			}
-		}
-	},
-	hardest = {
-		{
-			damage = 2.5,
-			cooldown = {
-				0,
-				0.25
-			}
-		},
-		{
-			damage = 2,
-			cooldown = {
-				0,
-				0.25
-			}
-		},
-		{
-			damage = 2,
-			cooldown = {
-				0,
-				0.25
-			}
-		},
-		{
-			damage = 1.8,
-			cooldown = {
-				0,
-				0.3
-			}
-		},
-		{
-			damage = 1.6,
-			cooldown = {
-				0,
-				0.35
-			}
-		},
-		{
-			damage = 1.4,
-			cooldown = {
-				0,
-				0.4
-			}
-		},
-		{
-			damage = 1.2,
-			cooldown = {
-				0,
-				0.45
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0,
-				0.5
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0,
-				0.5
-			}
-		}
-	},
-	survival_hardest = {
-		{
-			damage = 2.5,
-			cooldown = {
-				0,
-				0.25
-			}
-		},
-		{
-			damage = 2,
-			cooldown = {
-				0,
-				0.25
-			}
-		},
-		{
-			damage = 2,
-			cooldown = {
-				0,
-				0.25
-			}
-		},
-		{
-			damage = 1.8,
-			cooldown = {
-				0,
-				0.3
-			}
-		},
-		{
-			damage = 1.6,
-			cooldown = {
-				0,
-				0.35
-			}
-		},
-		{
-			damage = 1.4,
-			cooldown = {
-				0,
-				0.4
-			}
-		},
-		{
-			damage = 1.2,
-			cooldown = {
-				0,
-				0.45
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0,
-				0.5
-			}
-		},
-		{
-			damage = 1,
-			cooldown = {
-				0,
-				0.5
-			}
+		cataclysm_3 = {
+			running = 2.5
 		}
 	}
 }
@@ -864,15 +398,6 @@ local OPENING_ALLOWED_STAGGERS = {
 	true,
 	false,
 	true
-}
-local JUMPATTACK_ALLOWED_STAGGERS = {
-	false,
-	false,
-	false,
-	false,
-	false,
-	true,
-	false
 }
 local JUMPATTACK_IGNORE_STAGGERS = {
 	true,
@@ -966,71 +491,33 @@ local action_data = {
 		considerations = UtilityConsiderations.clan_rat_follow
 	},
 	running_attack = {
-		damage_type = "cutting",
+		damage = 3,
+		attack_intensity_type = "running",
 		player_push_speed = 3,
-		fatigue_type = "blocked_running",
 		action_weight = 10,
 		moving_attack = true,
+		damage_type = "cutting",
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		default_attack = {
 			anims = "attack_lunge"
 		},
-		damage = {
-			3,
-			2,
-			1
-		},
-		difficulty_damage = {
-			easy = {
-				2,
-				2,
-				1
-			},
-			normal = {
-				3,
-				2,
-				1
-			},
-			hard = {
-				6,
-				4,
-				2
-			},
-			survival_hard = {
-				6,
-				4,
-				2
-			},
-			harder = {
-				10,
-				6,
-				3
-			},
-			survival_harder = {
-				10,
-				6,
-				3
-			},
-			hardest = {
-				15,
-				8,
-				4
-			},
-			survival_hardest = {
-				15,
-				8,
-				4
-			}
-		},
+		difficulty_damage = BreedTweaks.difficulty_damage.chaos_roamer_attack,
 		considerations = UtilityConsiderations.chaos_berzerker_running_attack,
-		difficulty_diminishing_damage = BreedActionDimishingDamageDifficulty,
-		ignore_staggers = JUMPATTACK_IGNORE_STAGGERS
+		fatigue_type = BreedTweaks.fatigue_types.roamer.running_attack,
+		difficulty_diminishing_damage = BreedTweaks.diminishing_damage_and_cooldown.berzerker,
+		ignore_staggers = JUMPATTACK_IGNORE_STAGGERS,
+		attack_finished_duration = BreedTweaks.attack_finished_duration.chaos_elite,
+		dodge_window_start = BreedTweaks.dodge_windows.running_attack,
+		dodge_window_duration = BreedTweaks.dodge_window_durations.running_attack
 	},
 	normal_attack = {
-		player_push_speed = 3,
-		fatigue_type = "blocked_attack",
-		action_weight = 1,
-		move_anim = "move_fwd",
 		damage_type = "cutting",
+		move_anim = "move_fwd",
+		damage = 3,
+		player_push_speed = 3,
+		attack_intensity_type = "normal",
+		action_weight = 1,
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		default_attack = {
 			anims = {
 				"attack_pounce",
@@ -1106,55 +593,13 @@ local action_data = {
 				}
 			}
 		},
-		damage = {
-			3,
-			2,
-			1
-		},
-		difficulty_damage = {
-			easy = {
-				2,
-				2,
-				1
-			},
-			normal = {
-				3,
-				2,
-				1
-			},
-			hard = {
-				6,
-				4,
-				2
-			},
-			survival_hard = {
-				6,
-				4,
-				2
-			},
-			harder = {
-				10,
-				6,
-				3
-			},
-			survival_harder = {
-				10,
-				6,
-				3
-			},
-			hardest = {
-				15,
-				8,
-				4
-			},
-			survival_hardest = {
-				22.5,
-				12,
-				6
-			}
-		},
+		difficulty_damage = BreedTweaks.difficulty_damage.chaos_roamer_attack,
 		considerations = UtilityConsiderations.berzerker_attack,
-		difficulty_diminishing_damage = BreedActionDimishingDamageDifficulty
+		fatigue_type = BreedTweaks.fatigue_types.roamer.normal_attack,
+		difficulty_diminishing_damage = BreedTweaks.diminishing_damage_and_cooldown.berzerker,
+		attack_finished_duration = BreedTweaks.attack_finished_duration.chaos_elite,
+		dodge_window_start = BreedTweaks.dodge_windows.normal_attack,
+		dodge_window_duration = BreedTweaks.dodge_window_durations.normal_attack
 	},
 	combat_shout = {
 		cooldown = -1,
@@ -1165,14 +610,10 @@ local action_data = {
 	smash_door = {
 		unblockable = true,
 		name = "smash_door",
+		damage = 1,
 		damage_type = "cutting",
 		move_anim = "move_fwd",
-		attack_anim = "attack_pounce",
-		damage = {
-			1,
-			1,
-			1
-		}
+		attack_anim = "attack_pounce"
 	},
 	interest_point_choose = {
 		max_range = 10,
@@ -1184,7 +625,8 @@ local action_data = {
 			"blocked",
 			"blocked_2",
 			"blocked_3"
-		}
+		},
+		difficulty_duration = BreedTweaks.blocked_duration.chaos_elite
 	},
 	stagger = {
 		moving_stagger_minimum_destination_distance = 4,
@@ -1309,13 +751,15 @@ local action_data = {
 					"stagger_left_heavy",
 					"stagger_left_heavy_2",
 					"stagger_left_heavy_3",
-					"stagger_left_heavy_4"
+					"stagger_left_heavy_4",
+					"stagger_left_heavy_5"
 				},
 				right = {
 					"stagger_right_heavy",
 					"stagger_right_heavy_2",
 					"stagger_right_heavy_3",
-					"stagger_right_heavy_4"
+					"stagger_right_heavy_4",
+					"stagger_right_heavy_5"
 				},
 				dwn = {
 					"stagger_bwd_heavy",
@@ -1453,23 +897,75 @@ local action_data = {
 				moving_left = MOVING_STAGGERS,
 				moving_right = MOVING_STAGGERS,
 				moving_dwn = MOVING_STAGGERS
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {},
+				moving_fwd = {},
+				moving_bwd = {},
+				moving_left = {},
+				moving_right = {},
+				moving_dwn = {}
+			},
+			{
+				fwd = {
+					"stagger_fwd",
+					"stagger_fwd_2",
+					"stagger_fwd_3",
+					"stagger_fwd_4"
+				},
+				bwd = {
+					"stagger_bwd",
+					"stagger_bwd_2",
+					"stagger_bwd_3",
+					"stagger_bwd_4"
+				},
+				left = {
+					"stagger_left",
+					"stagger_left_2",
+					"stagger_left_3",
+					"stagger_left_4",
+					"stagger_left_5"
+				},
+				right = {
+					"stagger_right",
+					"stagger_right_2",
+					"stagger_right_3",
+					"stagger_right_4",
+					"stagger_right_5"
+				},
+				dwn = {
+					"stagger_medium_downward",
+					"stagger_medium_downward_2",
+					"stagger_medium_downward_3"
+				},
+				moving_fwd = MOVING_STAGGERS,
+				moving_bwd = MOVING_STAGGERS,
+				moving_left = MOVING_STAGGERS,
+				moving_right = MOVING_STAGGERS,
+				moving_dwn = MOVING_STAGGERS
 			}
 		}
 	}
 }
 local frenzy_attack = {
 	action_weight = 10,
+	attack_intensity = 5,
 	combo_anim_variations = 3,
 	combo_attack_cycle_index = 0,
 	cooldown = -1,
 	num_attacks = 3,
 	fatigue_type = "blocked_attack",
-	attack_intensity = 5,
 	moving_attack = true,
 	attack_anim = "attack_pounce",
 	damage_type = "cutting_berserker",
+	damage = 4,
 	player_push_speed = 4,
+	attack_intensity_type = "frenzy",
 	move_anim = "move_fwd",
+	difficulty_attack_intensity = AttackIntensityPerDifficulty,
 	considerations = UtilityConsiderations.berzerker_frenzy_attack,
 	ignore_staggers = DEFAULT_ALLOWED_STAGGERS,
 	attack_directions = {
@@ -1587,8 +1083,6 @@ local frenzy_attack = {
 			attack_start_slow_factor_time = 0.25,
 			no_abort_attack = true,
 			fatigue_type = "blocked_berzerker",
-			move_anim = "attack_combo_2_04",
-			anim = "attack_combo_2_04",
 			anim = {
 				"attack_combo_1_04",
 				"attack_combo_2_04",
@@ -1651,98 +1145,11 @@ local frenzy_attack = {
 				attack_combo_2_finish = 1.2463768115942029,
 				attack_combo_3_finish = 1
 			},
-			difficulty_damage = {
-				easy = {
-					5,
-					4,
-					2
-				},
-				normal = {
-					8,
-					4,
-					2
-				},
-				hard = {
-					14,
-					8,
-					4
-				},
-				survival_hard = {
-					14,
-					8,
-					4
-				},
-				harder = {
-					25,
-					12,
-					6
-				},
-				survival_harder = {
-					25,
-					12,
-					6
-				},
-				hardest = {
-					40,
-					16,
-					8
-				},
-				survival_hardest = {
-					40,
-					16,
-					8
-				}
-			}
+			difficulty_damage = BreedTweaks.difficulty_damage.elite_attack
 		}
 	},
-	damage = {
-		4,
-		2,
-		1
-	},
-	difficulty_damage = {
-		easy = {
-			2,
-			2,
-			2
-		},
-		normal = {
-			2,
-			2,
-			2
-		},
-		hard = {
-			7,
-			6,
-			4
-		},
-		survival_hard = {
-			7,
-			6,
-			4
-		},
-		harder = {
-			12,
-			12,
-			6
-		},
-		survival_harder = {
-			12,
-			12,
-			6
-		},
-		hardest = {
-			20,
-			16,
-			8
-		},
-		survival_hardest = {
-			20,
-			16,
-			8
-		}
-	},
-	difficulty_diminishing_damage = BreedActionDimishingDamageDifficulty,
+	difficulty_damage = BreedTweaks.difficulty_damage.berzerker_frenzy_attack,
+	difficulty_diminishing_damage = BreedTweaks.diminishing_damage_and_cooldown.berzerker,
 	target_type_exceptions = {
 		poison_well = {
 			attack_anim = "poison_well"
@@ -1752,13 +1159,15 @@ local frenzy_attack = {
 action_data.frenzy_attack = table.create_copy(action_data.frenzy_attack, frenzy_attack)
 action_data.frenzy_attack.considerations = UtilityConsiderations.berzerker_frenzy_attack
 action_data.frenzy_attack.combo_attacks.attack_1 = {
-	fatigue_type = "blocked_berzerker",
 	run_speed = 5,
+	rotation_scheme = "continuous",
+	fatigue_type = "blocked_berzerker",
 	no_abort_attack = true,
 	bot_threat_duration = 0.2,
-	rotation_scheme = "continuous",
+	attack_intensity_type = "frenzy",
 	combo_cooldown_start = true,
 	next = "attack_2",
+	difficulty_attack_intensity = AttackIntensityPerDifficulty,
 	anim = {
 		"attack_combo_1_01",
 		"attack_combo_2_01",

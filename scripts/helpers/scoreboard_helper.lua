@@ -356,11 +356,34 @@ ScoreboardHelper.get_grouped_topic_statistics = function (statistics_db, profile
 		local stats_id = player:stats_id()
 		local profile_index = profile_synchronizer:profile_by_peer(player_peer_id, player:local_player_id())
 		local player_unit = player.player_unit
-		local career_extension = Unit.alive(player_unit) and ScriptUnit.extension(player_unit, "career_system")
+		local unit_alive = Unit.alive(player_unit)
+		local career_extension = unit_alive and ScriptUnit.extension(player_unit, "career_system")
 		local career_index = (career_extension and career_extension:career_index()) or player:career_index()
 		local is_player_controlled = player:is_player_controlled()
-		local portrait_frame = cosmetic_system:get_equipped_frame(player_unit)
 		local player_level = ExperienceSettings.get_player_level(player)
+		local profile = SPProfiles[profile_index]
+		local careers = profile.careers
+		local career_settings = careers[career_index]
+		local preview_wield_slot_type = career_settings.preview_wield_slot
+		local preview_wield_slot = InventorySettings.slot_names_by_type[preview_wield_slot_type]
+		local preview_wield_slot_name = preview_wield_slot[1]
+		local portrait_frame = CosmeticUtils.get_cosmetic_slot(player, "slot_frame")
+		local hero_skin = CosmeticUtils.get_cosmetic_slot(player, "slot_skin")
+		local hat = CosmeticUtils.get_cosmetic_slot(player, "slot_hat")
+		local weapon = CosmeticUtils.get_cosmetic_slot(player, preview_wield_slot_name)
+
+		if not CosmeticUtils.is_valid(hero_skin) then
+			hero_skin = CosmeticUtils.get_default_cosmetic_slot(career_settings, "slot_skin")
+		end
+
+		if not CosmeticUtils.is_valid(hat) then
+			hat = CosmeticUtils.get_default_cosmetic_slot(career_settings, "slot_hat")
+		end
+
+		if not CosmeticUtils.is_valid(weapon) then
+			weapon = CosmeticUtils.get_default_cosmetic_slot(career_settings, preview_wield_slot_name)
+		end
+
 		player_list[stats_id] = {
 			name = player_name,
 			peer_id = player_peer_id,
@@ -369,8 +392,11 @@ ScoreboardHelper.get_grouped_topic_statistics = function (statistics_db, profile
 			stats_id = stats_id,
 			profile_index = profile_index,
 			is_player_controlled = is_player_controlled,
-			portrait_frame = portrait_frame,
-			player_level = player_level
+			player_level = player_level,
+			portrait_frame = portrait_frame and portrait_frame.item_name,
+			hero_skin = hero_skin and hero_skin.item_name,
+			weapon = weapon,
+			hat = hat
 		}
 
 		if is_local_player then

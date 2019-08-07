@@ -578,7 +578,7 @@ local category_settings = {
 		wield = true,
 		name = "melee",
 		display_name = "Melee Weapons",
-		item_filter = "slot_type == melee",
+		item_filter = "slot_type == melee and item_rarity ~= magic",
 		hero_specific_filter = true,
 		item_types = {
 			"melee"
@@ -589,7 +589,7 @@ local category_settings = {
 		wield = true,
 		name = "ranged",
 		display_name = "Ranged Weapons",
-		item_filter = "slot_type == ranged",
+		item_filter = "slot_type == ranged and item_rarity ~= magic",
 		hero_specific_filter = true,
 		item_types = {
 			"ranged"

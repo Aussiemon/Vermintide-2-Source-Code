@@ -11,9 +11,10 @@ IngameHud.init = function (self, parent, ingame_ui_context)
 	self._peer_id = Network.peer_id()
 	self._ingame_ui_context = ingame_ui_context
 	self._currently_visible_components = {}
+	local is_adventure_mechanism = Managers.mechanism:current_mechanism_name() == "adventure"
 	local has_tobii = rawget(_G, "Tobii")
 
-	if has_tobii then
+	if has_tobii and is_adventure_mechanism then
 		ingame_ui_context.cleanui = UICleanUI.create(self._peer_id)
 		self._clean_ui = ingame_ui_context.cleanui
 		self._clean_ui.hud = self

@@ -9,7 +9,7 @@ StateDedicatedServerInit.on_enter = function (self, params)
 end
 
 StateDedicatedServerInit._init_network = function (self)
-	self.parent:setup_network_options()
+	Managers.lobby:setup_network_options()
 
 	local platform = PLATFORM
 
@@ -25,7 +25,7 @@ StateDedicatedServerInit._init_network = function (self)
 		end
 	end
 
-	local network_options = self.parent:network_options()
+	local network_options = Managers.lobby:network_options()
 	local game_server_name = script_data.server_name or script_data.settings.server_name
 
 	cprint("Network Options:")
@@ -76,14 +76,26 @@ StateDedicatedServerInit.update = function (self, dt, t)
 			Managers.backend:signin()
 
 			self._state = "load_save"
+
+			CommandWindow.print("Loading save...")
 		end
 	elseif state == "load_save" then
 		if self._save_data_loaded then
+			self._state = "wait_for_signin"
+
+			CommandWindow.print("Signing in...")
+		end
+	elseif state == "wait_for_signin" then
+		if Managers.backend:signed_in() then
 			self._state = "wait_for_connect"
+
+			CommandWindow.print("Connecting to Steam...")
 		end
 	elseif state == "wait_for_connect" then
 		if server_state == GameServerState.CONNECTED then
+			CommandWindow.print("Connected to Steam")
 			self.parent:setup_network_server(game_server)
+			self.parent:setup_global_managers(game_server)
 
 			return StateDedicatedServerRunning
 		elseif server_state == GameServerState.DISCONNECTED then
@@ -91,6 +103,8 @@ StateDedicatedServerInit.update = function (self, dt, t)
 			Application.quit()
 		end
 	end
+
+	Managers.backend:update(dt)
 
 	return nil
 end

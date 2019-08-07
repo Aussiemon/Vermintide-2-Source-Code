@@ -38,8 +38,12 @@ local checklist_entry_size = {
 	achievement_entry_expand_size[2] / 2,
 	30
 }
+local category_window_size = {
+	left_window_size[1] - 22,
+	left_window_size[2] - 48
+}
 local tab_size = {
-	left_window_size[1] - 100,
+	left_window_size[1] - 120,
 	60
 }
 local tab_active_size = {
@@ -240,6 +244,84 @@ local scenegraph_definition = {
 			0,
 			0,
 			1
+		}
+	},
+	category_window = {
+		vertical_alignment = "ceter",
+		parent = "left_window",
+		horizontal_alignment = "center",
+		size = category_window_size,
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	category_window_mask = {
+		vertical_alignment = "ceter",
+		parent = "category_window",
+		horizontal_alignment = "center",
+		size = {
+			category_window_size[1],
+			left_window_size[2] - 44
+		},
+		position = {
+			0,
+			0,
+			0
+		}
+	},
+	category_window_mask_top = {
+		vertical_alignment = "top",
+		parent = "category_window_mask",
+		horizontal_alignment = "center",
+		size = {
+			category_window_size[1],
+			30
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	category_window_mask_bottom = {
+		vertical_alignment = "bottom",
+		parent = "category_window_mask",
+		horizontal_alignment = "center",
+		size = {
+			category_window_size[1],
+			30
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	category_root = {
+		vertical_alignment = "top",
+		parent = "category_window",
+		horizontal_alignment = "center",
+		size = {
+			0,
+			0
+		},
+		position = {
+			0,
+			0,
+			0
+		}
+	},
+	category_scrollbar = {
+		vertical_alignment = "center",
+		parent = "category_window",
+		horizontal_alignment = "right",
+		size = achievement_scrollbar_size,
+		position = {
+			-small_window_spacing,
+			0,
+			3
 		}
 	},
 	achievement_window = {
@@ -1023,7 +1105,7 @@ local summary_title_text_style = {
 }
 
 local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
-	local masked = false
+	local masked = true
 	local background_texture = "button_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local frame_settings = UIFrameSettings.button_frame_01
@@ -1047,6 +1129,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 			hover_glow = "button_state_default",
 			new = false,
 			background_fade = "button_bg_fade",
+			rect_masked = "rect_masked",
 			new_texture = "list_item_tag_new",
 			icon = "tooltip_marker",
 			button_hotspot = {},
@@ -1145,6 +1228,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				}
 			},
 			rect = {
+				masked = masked,
 				size = {
 					tab_list_entry_size[1],
 					tab_list_entry_size[2]
@@ -1164,6 +1248,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 			icon = {
 				vertical_alignment = "center",
 				horizontal_alignment = "left",
+				masked = masked,
 				texture_size = {
 					13,
 					13
@@ -1181,6 +1266,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				}
 			},
 			side_detail_left = {
+				masked = masked,
 				color = {
 					255,
 					255,
@@ -1195,6 +1281,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				size = small_side_detail_texture_size
 			},
 			side_detail_right = {
+				masked = masked,
 				color = {
 					255,
 					255,
@@ -1209,6 +1296,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				size = small_side_detail_texture_size
 			},
 			frame = {
+				masked = masked,
 				size = tab_list_entry_size,
 				texture_size = frame_settings.texture_size,
 				texture_sizes = frame_settings.texture_sizes,
@@ -1225,6 +1313,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				}
 			},
 			background = {
+				masked = masked,
 				size = tab_list_entry_size,
 				color = {
 					255,
@@ -1239,6 +1328,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				}
 			},
 			background_fade = {
+				masked = masked,
 				color = {
 					200,
 					255,
@@ -1256,6 +1346,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				}
 			},
 			hover_glow = {
+				masked = masked,
 				color = {
 					255,
 					255,
@@ -1273,6 +1364,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				}
 			},
 			clicked_rect = {
+				masked = masked,
 				size = tab_list_entry_size,
 				color = {
 					0,
@@ -1287,6 +1379,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				}
 			},
 			disabled_rect = {
+				masked = masked,
 				size = tab_list_entry_size,
 				color = {
 					150,
@@ -1301,6 +1394,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				}
 			},
 			glass_top = {
+				masked = masked,
 				color = {
 					255,
 					255,
@@ -1318,6 +1412,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				}
 			},
 			glass_bottom = {
+				masked = masked,
 				color = {
 					100,
 					255,
@@ -1335,6 +1430,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				}
 			},
 			new_texture = {
+				masked = masked,
 				color = {
 					255,
 					255,
@@ -1383,12 +1479,14 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 					pass_type = "texture"
 				},
 				{
-					pass_type = "rect",
-					style_id = "clicked_rect"
+					texture_id = "rect_masked",
+					style_id = "clicked_rect",
+					pass_type = "texture"
 				},
 				{
+					texture_id = "rect_masked",
 					style_id = "disabled_rect",
-					pass_type = "rect",
+					pass_type = "texture",
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
@@ -1544,12 +1642,14 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 							end
 						},
 						{
-							pass_type = "rect",
-							style_id = "clicked_rect"
+							texture_id = "rect_masked",
+							style_id = "clicked_rect",
+							pass_type = "texture"
 						},
 						{
+							texture_id = "rect_masked",
 							style_id = "disabled_rect",
-							pass_type = "rect",
+							pass_type = "texture",
 							content_check_function = function (content)
 								local button_hotspot = content.button_hotspot
 
@@ -1589,6 +1689,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 			background_fade = "button_bg_fade",
 			new = false,
 			glass = "button_glass_02",
+			rect_masked = "rect_masked",
 			new_texture = "list_item_tag_new",
 			list_content = list_content,
 			side_detail = {
@@ -1623,10 +1724,11 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 		},
 		style = {
 			list_style = {
-				vertical_alignment = "top",
-				num_draws = 0,
 				start_index = 1,
 				horizontal_alignment = "center",
+				vertical_alignment = "top",
+				num_draws = 0,
+				masked = masked,
 				list_member_offset = {
 					0,
 					tab_list_entry_size[2],
@@ -1640,6 +1742,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				item_styles = item_styles
 			},
 			hotspot = {
+				masked = masked,
 				size = {
 					size[1],
 					size[2]
@@ -1651,6 +1754,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				}
 			},
 			background = {
+				masked = masked,
 				color = {
 					255,
 					150,
@@ -1664,6 +1768,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				}
 			},
 			background_fade = {
+				masked = masked,
 				color = {
 					200,
 					255,
@@ -1681,6 +1786,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				}
 			},
 			hover_glow = {
+				masked = masked,
 				color = {
 					0,
 					255,
@@ -1698,6 +1804,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				}
 			},
 			clicked_rect = {
+				masked = masked,
 				color = {
 					0,
 					0,
@@ -1711,6 +1818,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				}
 			},
 			disabled_rect = {
+				masked = masked,
 				color = {
 					150,
 					20,
@@ -1729,7 +1837,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				font_size = 24,
 				horizontal_alignment = "left",
 				vertical_alignment = "center",
-				font_type = "hell_shark",
+				font_type = (masked and "hell_shark_masked") or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 				default_text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 				select_text_color = Colors.get_color_table_with_alpha("white", 255),
@@ -1745,7 +1853,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				word_wrap = true,
 				horizontal_alignment = "left",
 				vertical_alignment = "center",
-				font_type = "hell_shark",
+				font_type = (masked and "hell_shark_masked") or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("gray", 255),
 				default_text_color = Colors.get_color_table_with_alpha("gray", 255),
 				offset = {
@@ -1760,7 +1868,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				word_wrap = true,
 				horizontal_alignment = "left",
 				vertical_alignment = "center",
-				font_type = "hell_shark",
+				font_type = (masked and "hell_shark_masked") or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				default_text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
@@ -1770,6 +1878,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				}
 			},
 			frame = {
+				masked = masked,
 				texture_size = frame_settings.texture_size,
 				texture_sizes = frame_settings.texture_sizes,
 				color = {
@@ -1785,6 +1894,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				}
 			},
 			glass_top = {
+				masked = masked,
 				color = {
 					255,
 					255,
@@ -1802,6 +1912,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				}
 			},
 			glass_bottom = {
+				masked = masked,
 				color = {
 					100,
 					255,
@@ -1819,6 +1930,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				}
 			},
 			side_detail_left = {
+				masked = masked,
 				color = {
 					255,
 					255,
@@ -1836,6 +1948,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				}
 			},
 			side_detail_right = {
+				masked = masked,
 				color = {
 					255,
 					255,
@@ -1853,6 +1966,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				}
 			},
 			new_texture = {
+				masked = masked,
 				color = {
 					255,
 					255,
@@ -1870,6 +1984,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				}
 			},
 			locked = {
+				masked = masked,
 				color = {
 					255,
 					100,
@@ -2303,6 +2418,18 @@ local widgets = {
 		255
 	}),
 	left_window_frame = UIWidgets.create_frame("left_window", scenegraph_definition.left_window.size, "menu_frame_11", 20),
+	left_window_mask = UIWidgets.create_simple_texture("mask_rect", "category_window"),
+	category_window_mask_top = UIWidgets.create_simple_texture("mask_rect_edge_fade", "category_window_mask_top"),
+	category_window_mask_bottom = UIWidgets.create_simple_uv_texture("mask_rect_edge_fade", {
+		{
+			0,
+			1
+		},
+		{
+			1,
+			0
+		}
+	}, "category_window_mask_bottom"),
 	right_window_frame = UIWidgets.create_frame("right_window", scenegraph_definition.right_window.size, "menu_frame_11", 20),
 	right_window_fade = UIWidgets.create_simple_texture("options_window_fade_01", "right_window_fade"),
 	right_window = UIWidgets.create_tiled_texture("right_window", "achievement_background_leather", {
@@ -2328,6 +2455,7 @@ local widgets = {
 	title_bg = UIWidgets.create_background("title_bg", scenegraph_definition.title_bg.size, "menu_frame_bg_02"),
 	title_text = UIWidgets.create_simple_text(Localize("achv_menu_title"), "title_text", nil, nil, title_text_style),
 	achievement_scrollbar = UIWidgets.create_chain_scrollbar("achievement_scrollbar", nil, scenegraph_definition.achievement_scrollbar.size),
+	category_scrollbar = UIWidgets.create_chain_scrollbar("category_scrollbar", "category_window_mask", scenegraph_definition.category_scrollbar.size),
 	achievement_window = {
 		scenegraph_id = "achievement_window_mask",
 		element = {
@@ -2492,12 +2620,12 @@ for i = 1, 8, 1 do
 	local previous_scenegraph_list_id = "category_tab_" .. i - 1 .. "_list"
 	scenegraph_definition[scenegraph_id] = {
 		horizontal_alignment = "center",
-		parent = (first_entry and "left_window") or previous_scenegraph_list_id,
+		parent = (first_entry and "category_root") or previous_scenegraph_list_id,
 		vertical_alignment = (first_entry and "top") or "bottom",
 		size = tab_size,
 		position = {
-			0,
-			(first_entry and -40) or -(tab_size[2] + tab_list_entry_spacing),
+			(first_entry and -15) or 0,
+			(first_entry and -20) or -(tab_size[2] + tab_list_entry_spacing),
 			3
 		}
 	}

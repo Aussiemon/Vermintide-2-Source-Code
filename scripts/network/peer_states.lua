@@ -9,7 +9,7 @@ PeerStates.Connecting = {
 		self.resend_timer = time_between_resend_rpc_notify_connected
 		self.resend_post_game_timer = time_between_resend_rpc_notify_connected
 	end,
-	rpc_notify_lobby_joined = function (self, wanted_profile_index, clan_tag)
+	rpc_notify_lobby_joined = function (self, wanted_profile_index, wanted_career_index, clan_tag)
 		self.num_players = 1
 		self.has_received_rpc_notify_lobby_joined = true
 		self.clan_tag = clan_tag
@@ -17,6 +17,12 @@ PeerStates.Connecting = {
 		printf("[PSM] Peer %s joined. Want to use profile index %q", tostring(self.peer_id), tostring(wanted_profile_index), tostring(clan_tag))
 
 		self.wanted_profile_index = wanted_profile_index
+		self.wanted_career_index = wanted_career_index
+		local is_client = self.peer_id ~= Network.peer_id()
+
+		if is_client then
+			Managers.mechanism:client_joined(self.peer_id)
+		end
 	end,
 	rpc_post_game_notified = function (self, in_post_game)
 		self._has_been_notfied_of_post_game_state = true
@@ -61,6 +67,51 @@ PeerStates.Connecting = {
 			end
 		end
 
+		if not Development.parameter("allow_weave_joining") then
+			local lobby = self.server.lobby_host
+			local game_mode_manager = Managers.state.game_mode
+			local matchmaking = lobby:lobby_data("matchmaking")
+			local game_mode_id = lobby:lobby_data("game_mode")
+
+			if not game_mode_manager then
+				local game_mode_key = "n/a"
+
+				if game_mode_id then
+					game_mode_key = (PLATFORM == "ps4" and game_mode_id) or NetworkLookup.game_modes[tonumber(game_mode_id)]
+				end
+
+				if game_mode_key == "weave" and matchmaking == "false" then
+					local loading_context = Boot.loading_context
+					local weave_data = loading_context and loading_context.weave_data
+					local player_ids = weave_data and weave_data.player_ids
+
+					if player_ids then
+						if not player_ids[self.peer_id] then
+							self.server:disconnect_peer(self.peer_id, "cannot_join_weave")
+
+							return PeerStates.Disconnecting
+						end
+					else
+						self.server:disconnect_peer(self.peer_id, "cannot_join_weave")
+
+						return PeerStates.Disconnecting
+					end
+				end
+			else
+				local game_mode_key = game_mode_manager:game_mode_key()
+
+				if game_mode_key == "weave" and matchmaking == "false" then
+					local player_ids = Managers.weave:get_player_ids()
+
+					if not player_ids[self.peer_id] then
+						self.server:disconnect_peer(self.peer_id, "cannot_join_weave")
+
+						return PeerStates.Disconnecting
+					end
+				end
+			end
+		end
+
 		local server_in_post_game = self.server:is_in_post_game()
 
 		if self._has_been_notfied_of_post_game_state then
@@ -84,6 +135,14 @@ PeerStates.Connecting = {
 							return PeerStates.Disconnecting
 						end
 					end
+
+					local local_player_id = 1
+					local wanted_party = 0
+					local party_manager = Managers.party
+
+					party_manager:hot_join_sync(self.peer_id, local_player_id)
+					party_manager:server_peer_hot_join_synced(self.peer_id)
+					party_manager:assign_peer_to_party(self.peer_id, local_player_id, wanted_party)
 
 					return PeerStates.Loading
 				end
@@ -118,8 +177,10 @@ PeerStates.Loading = {
 		self.game_started = false
 		self.is_ingame = nil
 		local level_key = self.server.level_key
-		local game_mode_manager = Managers.state.game_mode
-		local level_seed = self.server.level_transition_handler.level_seed
+		local level_seed = Managers.mechanism:get_level_seed()
+		local difficulty = Managers.mechanism:get_difficulty()
+		local difficulty_id = NetworkLookup.difficulties[difficulty]
+		local locked_director_function_ids = Managers.mechanism:get_locked_director_function_ids(level_key)
 
 		if level_seed == nil then
 			Application.warning("[PSM] No level seed set, fallbacking to 0")
@@ -128,7 +189,7 @@ PeerStates.Loading = {
 		end
 
 		print("SENDING RPC_LOAD_LEVEL FROM PEER_STATE", self.peer_id)
-		self.server.network_transmit:send_rpc("rpc_load_level", self.peer_id, NetworkLookup.level_keys[level_key], level_seed)
+		self.server.network_transmit:send_rpc("rpc_load_level", self.peer_id, NetworkLookup.level_keys[level_key], level_seed, difficulty_id, locked_director_function_ids)
 	end,
 	rpc_is_ingame = function (self)
 		print("[PSM] Got rpc_is_ingame in PeerStates.Loading, is that ok?")
@@ -170,47 +231,32 @@ PeerStates.LoadingProfilePackages = {
 		local profile_synchronizer = server.profile_synchronizer
 		local peer_id = self.peer_id
 		local local_player_id = 1
-		local old_index = profile_synchronizer:profile_by_peer(peer_id, local_player_id)
+		local old_profile_index, old_career_index = profile_synchronizer:profile_by_peer(peer_id, local_player_id)
 		local wanted_profile_index = self.wanted_profile_index
-		self.wait_for_bot_despawn = false
+		local wanted_career_index = self.wanted_career_index
 		local loaded_level = self.loaded_level
 		local level_settings = LevelSettings[loaded_level]
 		local is_tutorial = level_settings and level_settings.game_mode == "tutorial"
 
 		if is_tutorial then
 			wanted_profile_index = TUTORIAL_PROFILE_INDEX
-		elseif old_index == TUTORIAL_PROFILE_INDEX then
-			old_index = nil
+		elseif old_profile_index == TUTORIAL_PROFILE_INDEX then
+			old_profile_index = nil
 		end
 
-		if old_index and not is_tutorial then
-			self.my_profile_index = old_index
-
-			return
+		if old_profile_index and not is_tutorial then
+			self.wanted_profile_index = old_profile_index
+			self.wanted_career_index = old_career_index
 		elseif wanted_profile_index == 0 then
-			self.my_profile_index = profile_synchronizer:get_first_free_profile()
+			self.wanted_profile_index, self.wanted_career_index = profile_synchronizer:get_first_free_profile()
 		elseif is_tutorial then
-			self.my_profile_index = wanted_profile_index
 		else
-			local owner_type = profile_synchronizer:owner_type(wanted_profile_index)
-
-			if owner_type == "human" then
-				self.my_profile_index = profile_synchronizer:get_first_free_profile()
-			elseif owner_type == "bot" then
-				self.my_profile_index = wanted_profile_index
-				self.wait_for_bot_despawn = true
-			elseif owner_type == "available" then
-				self.my_profile_index = wanted_profile_index
-			else
-				Application.error("owner type unknown", owner_type)
-			end
+			self.wanted_profile_index = wanted_profile_index
+			self.wanted_career_index = wanted_career_index
 		end
 
-		if self.wait_for_bot_despawn then
-			profile_synchronizer:reserve_profile(self.my_profile_index, peer_id, local_player_id)
-		else
-			profile_synchronizer:peer_entered_session(peer_id)
-			profile_synchronizer:set_profile_peer_id(self.my_profile_index, peer_id, local_player_id)
+		if not profile_synchronizer:peer_already_added(peer_id) then
+			profile_synchronizer:peer_entered_session(peer_id, local_player_id)
 			profile_synchronizer:hot_join_sync(peer_id, {
 				local_player_id
 			})
@@ -223,37 +269,14 @@ PeerStates.LoadingProfilePackages = {
 		local server = self.server
 		local synchronizer = server.profile_synchronizer
 
-		if self.wait_for_bot_despawn then
-			local profile_index = self.my_profile_index
-			local owner = synchronizer:owner(profile_index)
-
-			if not owner then
-				local peer_id = self.peer_id
-				local local_player_id = 1
-
-				synchronizer:unreserve_profile(profile_index, peer_id, local_player_id)
-				synchronizer:peer_entered_session(peer_id)
-				synchronizer:set_profile_peer_id(profile_index, peer_id, local_player_id)
-				synchronizer:hot_join_sync(peer_id, {
-					local_player_id
-				})
-
-				self.wait_for_bot_despawn = false
-			end
-		elseif synchronizer:all_synced() then
+		if synchronizer:all_synced() then
 			server.network_transmit:send_rpc("rpc_loading_synced", self.peer_id)
 
 			return PeerStates.WaitingForEnterGame
 		end
 	end,
 	on_exit = function (self, new_state)
-		if self.wait_for_bot_despawn then
-			local peer_id = self.peer_id
-			local local_player_id = 1
-			local profile_index = self.my_profile_index
-
-			synchronizer:unreserve_profile(profile_index, peer_id, local_player_id)
-		end
+		return
 	end
 }
 PeerStates.WaitingForEnterGame = {
@@ -276,9 +299,11 @@ PeerStates.WaitingForEnterGame = {
 				local all_synced = server.profile_synchronizer:all_synced()
 
 				if game_session and all_synced then
-					GameSession.add_peer(game_session, peer_id)
+					if self.peer_id ~= Network.peer_id() then
+						GameSession.add_peer(game_session, peer_id)
 
-					server.peers_added_to_gamesession[peer_id] = true
+						server.peers_added_to_gamesession[peer_id] = true
+					end
 				else
 					return
 				end
@@ -309,6 +334,15 @@ PeerStates.WaitingForGameObjectSync = {
 				self.game_started = true
 			end
 
+			if self.peer_id ~= Network.peer_id() then
+				local player_controlled = true
+				local local_player_id = 1
+
+				Managers.player:add_remote_player(self.peer_id, player_controlled, local_player_id, self.clan_tag)
+			end
+
+			Managers.state.game_mode:player_entered_game_session(self.peer_id, 1)
+
 			return PeerStates.WaitingForPlayers
 		end
 	end,
@@ -327,30 +361,9 @@ PeerStates.WaitingForPlayers = {
 			local server = self.server
 
 			if server:are_all_peers_ready() then
-				return PeerStates.SpawningPlayer
+				return PeerStates.InGame
 			end
 		elseif cutscene_system:has_intro_cutscene_finished_playing() then
-			return PeerStates.SpawningPlayer
-		end
-	end,
-	on_exit = function (self, new_state)
-		return
-	end
-}
-PeerStates.SpawningPlayer = {
-	on_enter = function (self, previous_state)
-		Network.write_dump_tag(string.format("%s spawning player", self.peer_id))
-	end,
-	update = function (self, dt)
-		local server = self.server
-
-		if server.profile_synchronizer:all_synced() then
-			local peer_id = self.peer_id
-
-			for i = 1, self.num_players, 1 do
-				self.server.game_network_manager:spawn_peer_player(peer_id, i, self.clan_tag)
-			end
-
 			return PeerStates.InGame
 		end
 	end,
@@ -371,20 +384,7 @@ PeerStates.InGame = {
 		self.despawned_player = true
 	end,
 	update = function (self, dt)
-		if self.respawn_player then
-			self.respawn_player = nil
-
-			return PeerStates.SpawningPlayer
-		elseif self.despawned_player then
-			local profile_index = self.server.profile_synchronizer:profile_by_peer(self.peer_id, 1)
-
-			if profile_index ~= self.my_profile_index then
-				self.my_profile_index = profile_index
-				self.despawned_player = nil
-
-				return PeerStates.LoadingProfilePackages
-			end
-		end
+		return
 	end,
 	on_exit = function (self, new_state)
 		self.despawned_player = nil
@@ -461,13 +461,16 @@ PeerStates.Disconnected = {
 		local local_player_id = 1
 		local old_index = profile_synchronizer:profile_by_peer(peer_id, local_player_id)
 
-		if old_index then
-			profile_synchronizer:set_profile_peer_id(old_index, nil)
-		else
+		if not old_index then
 			server.slot_allocator:free_peer_slots(peer_id, local_player_id)
 		end
 
+		if Managers.state.game_mode then
+			Managers.state.game_mode:player_left_game_session(peer_id, local_player_id)
+		end
+
 		profile_synchronizer:peer_left_session(peer_id)
+		Managers.party:server_peer_left_session(peer_id)
 		server.connection_handler:disconnect_peers(peer_id)
 	end,
 	update = function (self, dt)

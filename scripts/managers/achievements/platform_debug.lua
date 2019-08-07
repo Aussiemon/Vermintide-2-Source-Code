@@ -16,8 +16,6 @@ local platform_functions = {
 		return false
 	end,
 	unlock = function (template)
-		print("[AchievementDebug] Unlocked:", template.id)
-
 		local token = Application.time_since_launch() + 5 + math.random() * 2
 
 		return token

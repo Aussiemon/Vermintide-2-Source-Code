@@ -233,7 +233,7 @@ HeroWindowCosmeticsLoadoutInventoryConsole._update_equipped_item_tooltip = funct
 	local slot = InventorySettings.slots_by_cosmetic_index[slot_index]
 	local slot_name = slot.name
 	local item_interface = Managers.backend:get_interface("items")
-	local backend_id = item_interface:get_loadout_item_id(self.career_name, slot_name)
+	local backend_id = BackendUtils.get_loadout_item_id(self.career_name, slot_name)
 	local item = backend_id and item_interface:get_item_from_id(backend_id)
 	local widget = self._widgets_by_name.item_tooltip_compare
 	widget.content.item = item
@@ -312,7 +312,7 @@ HeroWindowCosmeticsLoadoutInventoryConsole._handle_gamepad_input = function (sel
 		local selected_item, is_equipped = item_grid:selected_item()
 
 		if selected_item and item_grid:is_item_wieldable(selected_item) then
-			parent:_set_loadout_item(selected_item, self._strict_slot_type)
+			parent:_set_loadout_item(selected_item)
 			self:_play_sound("play_gui_equipment_equip_hero")
 
 			local item_data = selected_item.data
@@ -365,7 +365,7 @@ HeroWindowCosmeticsLoadoutInventoryConsole._handle_input = function (self, dt, t
 	end
 
 	if item and not is_equipped then
-		parent:_set_loadout_item(item, self._strict_slot_type)
+		parent:_set_loadout_item(item)
 		self:_play_sound("play_gui_equipment_equip_hero")
 
 		local item_data = item.data

@@ -1,4 +1,47 @@
 require("scripts/unit_extensions/generic/generic_state_machine")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_helper")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_dead")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_interacting")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_jumping")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_leaping")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_ledge_hanging")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_leave_ledge_hanging_falling")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_leave_ledge_hanging_pull_up")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_climbing_ladder")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_leaving_ladder_top")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_enter_ladder_top")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_falling")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_knocked_down")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_pounced_down")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_standing")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_inspecting")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_walking")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_dodging")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_lunging")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_waiting_for_assisted_respawn")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_catapulted")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_stunned")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_overpowered")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_using_transport")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_grabbed_by_pack_master")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_grabbed_by_corruptor")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_grabbed_by_tentacle")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_grabbed_by_chaos_spawn")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_in_hanging_cage")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_in_vortex")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_overcharge_exploding")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_charged")
+
+for _, dlc in pairs(DLCSettings) do
+	local character_states = dlc.character_states
+
+	if character_states then
+		for _, character_state_file in ipairs(character_states) do
+			dofile(character_state_file)
+		end
+	end
+end
 
 GenericCharacterStateMachineExtension = class(GenericCharacterStateMachineExtension)
 

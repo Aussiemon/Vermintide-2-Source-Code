@@ -471,22 +471,22 @@ local scenegraph_definition = {
 			70
 		},
 		position = {
-			0,
+			250,
 			80,
 			15
 		}
 	},
 	retry_button = {
-		vertical_alignment = "center",
-		parent = "ready_button",
+		vertical_alignment = "bottom",
+		parent = "screen",
 		horizontal_alignment = "center",
 		size = {
 			370,
 			70
 		},
 		position = {
-			-400,
-			0,
+			-250,
+			80,
 			1
 		}
 	},
@@ -505,6 +505,134 @@ local scenegraph_definition = {
 		}
 	}
 }
+
+local function create_checkboxes(scenegraph_id, color)
+	local size = {
+		30,
+		30
+	}
+	local spacing = 7
+	local base_offset = {
+		spacing,
+		size[2] + spacing
+	}
+
+	return {
+		element = {
+			passes = {
+				{
+					texture_id = "texture_id",
+					style_id = "checkbox_1",
+					pass_type = "texture",
+					content_check_function = function (content, style)
+						return GameSettingsDevelopment.allow_retry_weave and content.votes > 0
+					end
+				},
+				{
+					texture_id = "texture_id",
+					style_id = "checkbox_2",
+					pass_type = "texture",
+					content_check_function = function (content, style)
+						return GameSettingsDevelopment.allow_retry_weave and content.votes > 1
+					end
+				},
+				{
+					texture_id = "texture_id",
+					style_id = "checkbox_3",
+					pass_type = "texture",
+					content_check_function = function (content, style)
+						return GameSettingsDevelopment.allow_retry_weave and content.votes > 2
+					end
+				},
+				{
+					texture_id = "texture_id",
+					style_id = "checkbox_4",
+					pass_type = "texture",
+					content_check_function = function (content, style)
+						return GameSettingsDevelopment.allow_retry_weave and content.votes > 3
+					end
+				}
+			}
+		},
+		content = {
+			texture_id = "matchmaking_checkbox",
+			votes = 0
+		},
+		style = {
+			checkbox_1 = {
+				vertical_alignment = "top",
+				horizontal_alignment = "left",
+				color = color or {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					base_offset[1] + (size[1] + spacing) * 0,
+					base_offset[2],
+					0
+				},
+				texture_size = size
+			},
+			checkbox_2 = {
+				vertical_alignment = "top",
+				horizontal_alignment = "left",
+				color = color or {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					base_offset[1] + (size[1] + spacing) * 1,
+					base_offset[2],
+					0
+				},
+				texture_size = size
+			},
+			checkbox_3 = {
+				vertical_alignment = "top",
+				horizontal_alignment = "left",
+				color = color or {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					base_offset[1] + (size[1] + spacing) * 2,
+					base_offset[2],
+					0
+				},
+				texture_size = size
+			},
+			checkbox_4 = {
+				vertical_alignment = "top",
+				horizontal_alignment = "left",
+				color = color or {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					base_offset[1] + (size[1] + spacing) * 3,
+					base_offset[2],
+					0
+				},
+				texture_size = size
+			}
+		},
+		offset = {
+			0,
+			0,
+			10
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
+
 local timer_text_style = {
 	word_wrap = true,
 	font_size = 52,
@@ -540,7 +668,6 @@ local disable_with_gamepad = true
 local widgets_definitions = {
 	timer_text = UIWidgets.create_simple_text(Localize("timer_prefix_time_left"), "timer_text", nil, nil, timer_text_style),
 	timer_bg = UIWidgets.create_simple_texture("tab_menu_bg_03", "timer_bg"),
-	retry_button = UIWidgets.create_default_button("retry_button", scenegraph_definition.retry_button.size, nil, nil, Localize("button_retry"), 32),
 	ready_button = UIWidgets.create_default_button("ready_button", scenegraph_definition.ready_button.size, nil, nil, Localize("return_to_inn"), 32, nil, nil, nil, disable_with_gamepad),
 	reset_button = UIWidgets.create_simple_two_state_button("reset_button", "scroll_bar_button_up", "scroll_bar_button_up_clicked"),
 	page_background = UIWidgets.create_simple_rect("page_background", {
@@ -548,10 +675,22 @@ local widgets_definitions = {
 		0,
 		0,
 		0
+	}),
+	retry_checkboxes = create_checkboxes("retry_button", {
+		255,
+		0,
+		255,
+		0
+	}),
+	reload_checkboxes = create_checkboxes("ready_button", {
+		255,
+		255,
+		0,
+		0
 	})
 }
 local animations = {
-	ready_button_entry = {
+	ready_button_entry_alone = {
 		{
 			name = "entry",
 			start_progress = 0,
@@ -563,6 +702,44 @@ local animations = {
 				local alpha_progress = math.easeCubic(progress)
 				local anim_progress = math.easeCubic(1 - progress)
 				ui_scenegraph.ready_button_alone.local_position[2] = scenegraph_definition.ready_button_alone.position[2] - 100 * anim_progress
+				params.render_settings.alpha_multiplier = alpha_progress
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	},
+	ready_button_entry = {
+		{
+			name = "entry",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 0
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local alpha_progress = math.easeCubic(progress)
+				local anim_progress = math.easeCubic(1 - progress)
+				ui_scenegraph.ready_button.local_position[2] = scenegraph_definition.ready_button.position[2] - 100 * anim_progress
+				params.render_settings.alpha_multiplier = alpha_progress
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	},
+	retry_button_entry = {
+		{
+			name = "entry",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 0
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local alpha_progress = math.easeCubic(progress)
+				local anim_progress = math.easeCubic(1 - progress)
+				ui_scenegraph.retry_button.local_position[2] = scenegraph_definition.retry_button.position[2] - 100 * anim_progress
 				params.render_settings.alpha_multiplier = alpha_progress
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)

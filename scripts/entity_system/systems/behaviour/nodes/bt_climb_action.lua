@@ -1,7 +1,5 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
-local PLAYER_AND_BOT_UNITS = PLAYER_AND_BOT_UNITS
-
 local function randomize(event)
 	if type(event) == "table" then
 		return event[Math.random(1, #event)]
@@ -437,6 +435,9 @@ BTClimbAction._catapult_players = function (self, unit, blackboard, data)
 	local shape = data.shape
 	local radius = data.radius
 	local pos = Unit.world_position(unit, 0)
+	local side = blackboard.side
+	local PLAYER_AND_BOT_POSITIONS = side.ENEMY_PLAYER_AND_BOT_POSITIONS
+	local PLAYER_AND_BOT_UNITS = side.ENEMY_PLAYER_AND_BOT_UNITS
 
 	for i = 1, #PLAYER_AND_BOT_POSITIONS, 1 do
 		local player_pos = PLAYER_AND_BOT_POSITIONS[i]

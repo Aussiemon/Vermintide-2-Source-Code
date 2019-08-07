@@ -90,8 +90,9 @@ KeepDecorationSystem.update = function (self, context, t)
 	extension_to_update:distributed_update()
 
 	local level_key = Managers.state.game_mode:level_key()
+	local level_setting = LevelSettings[level_key]
 
-	if self._is_leader and level_key == "inn_level" then
+	if self._is_leader and level_setting.use_keep_decorations then
 		local players = Managers.player:human_players()
 		local num_players = 0
 
@@ -188,8 +189,9 @@ end
 
 KeepDecorationSystem.hot_join_sync = function (self, sender)
 	local level_key = Managers.state.game_mode:level_key()
+	local level_setting = LevelSettings[level_key]
 
-	if level_key == "inn_level" then
+	if level_setting.use_keep_decorations then
 		RPC.rpc_request_painting(sender)
 	end
 end

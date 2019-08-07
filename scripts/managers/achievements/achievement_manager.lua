@@ -53,7 +53,7 @@ AchievementManager.init = function (self, world, statistics_db)
 	printf("[AchievementManager] Achievements using the %s platform", self.platform)
 	self:event_enable_achievements(true)
 
-	if template_count == 0 or script_data.settings.use_beta_overlay then
+	if template_count == 0 or script_data.settings.use_beta_overlay or Managers.state.game_mode:setting("disable_achievements") then
 		self._enabled = false
 	end
 
@@ -74,6 +74,10 @@ end
 
 AchievementManager.event_enable_achievements = function (self, enable)
 	self._enabled = enable
+end
+
+AchievementManager.is_enabled = function (self)
+	return self._enabled
 end
 
 AchievementManager.update = function (self, dt, t)
@@ -236,6 +240,10 @@ AchievementManager.setup_achievement_data = function (self)
 end
 
 AchievementManager.setup_achievement_data_from_list = function (self, achievement_ids)
+	if not self._enabled then
+		return
+	end
+
 	for i, achievement_id in ipairs(achievement_ids) do
 		self:_setup_achievement_data(achievement_id)
 	end
@@ -422,6 +430,10 @@ AchievementManager._achievement_completed = function (self, achievement_id)
 end
 
 AchievementManager.setup_incompleted_achievements = function (self)
+	if not self._enabled then
+		return
+	end
+
 	local template_count = 0
 
 	for id, template in pairs(AchievementTemplates.achievements) do
@@ -439,7 +451,7 @@ end
 AchievementManager._setup_achievement_data = function (self, achievement_id)
 	local achievement_data = AchievementTemplates.achievements[achievement_id]
 
-	assert(achievement_data)
+	fassert(achievement_data, "Missing achievemnt for [\"%s\"]", achievement_id)
 
 	local name, desc, completed, progress, requirements, claimed, required_dlc = nil
 	local player_manager = Managers.player

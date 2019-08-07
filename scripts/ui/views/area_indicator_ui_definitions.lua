@@ -14,12 +14,12 @@ local scenegraph_definition = {
 		}
 	},
 	area_text_box = {
-		vertical_alignment = "center",
+		vertical_alignment = "top",
 		parent = "screen",
 		horizontal_alignment = "center",
 		position = {
 			0,
-			200,
+			-310,
 			100
 		},
 		size = {
@@ -28,6 +28,11 @@ local scenegraph_definition = {
 		}
 	}
 }
+
+if PLATFORM ~= "win32" then
+	scenegraph_definition.screen.scale = "hud_fit"
+end
+
 local text_style = {
 	word_wrap = false,
 	font_size = 52,

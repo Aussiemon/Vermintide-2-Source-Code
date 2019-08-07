@@ -6,66 +6,76 @@ MeleeBuffTypes = {
 	MELEE_2H = true
 }
 RangedBuffTypes = {
-	RANGED = true
+	RANGED = true,
+	RANGED_ABILITY = true
 }
 StatBuffApplicationMethods = {
-	"DEATH_PUSH_MULTIPLIER",
-	max_damage_taken = "stacking_bonus",
-	protection_chaos = "stacking_multiplier",
-	increased_weapon_damage_ranged_to_wounded = "stacking_multiplier",
-	max_health_alive = "stacking_multiplier",
-	curse_protection = "stacking_multiplier",
-	power_level_ranged = "stacking_multiplier",
-	automatic_head_shot = "proc",
-	vent_damage = "stacking_multiplier",
-	counter_push_power = "stacking_multiplier",
-	damage_taken_kd = "stacking_multiplier",
-	clip_size = "stacking_multiplier",
-	not_consume_grenade = "proc",
-	damage_taken_secondary = "stacking_multiplier",
-	reduced_overcharge = "stacking_multiplier",
-	protection_gutter_runner = "stacking_multiplier",
-	damage_taken_to_overcharge = "stacking_multiplier",
-	fatigue_regen = "stacking_multiplier",
-	damage_taken_elites = "stacking_multiplier",
-	increased_max_targets = "stacking_bonus",
-	block_angle = "stacking_multiplier",
 	reduced_spread_shot = "stacking_multiplier",
+	reduced_spread = "stacking_multiplier",
+	power_level_frenzy = "stacking_multiplier",
+	max_health_alive = "stacking_multiplier",
+	power_level_unarmoured = "stacking_multiplier",
+	power_level_armoured = "stacking_multiplier",
+	curse_protection = "stacking_multiplier",
+	vent_damage = "stacking_multiplier",
+	increased_max_targets = "stacking_bonus",
+	damage_taken_kd = "stacking_multiplier",
+	increased_weapon_damage_ranged_to_wounded = "stacking_multiplier",
+	not_consume_grenade = "proc",
+	damage_taken_to_overcharge = "stacking_multiplier",
+	increased_weapon_damage_melee_1h = "stacking_multiplier",
+	protection_gutter_runner = "stacking_multiplier",
+	reduced_overcharge = "stacking_multiplier",
+	fatigue_regen = "stacking_multiplier",
+	faster_respawn = "stacking_multiplier",
+	power_level_large = "stacking_multiplier",
+	damage_taken_elites = "stacking_multiplier",
+	protection_ratling_gunner = "stacking_multiplier",
 	increase_luck = "stacking_multiplier",
-	not_consume_potion = "proc",
+	power_level_melee_cleave = "stacking_multiplier",
 	max_health = "stacking_multiplier",
-	max_fatigue = "stacking_bonus",
+	projectile_bounces = "stacking_bonus",
 	extra_shot = "proc",
 	heal_self_on_heal_other = "proc",
 	faster_revive = "stacking_multiplier",
-	damage_taken = "stacking_multiplier",
-	reduced_spread = "stacking_multiplier",
-	block_cost = "stacking_multiplier",
+	max_damage_taken = "stacking_bonus",
 	critical_strike_chance_ranged = "stacking_bonus",
+	block_cost = "stacking_multiplier",
+	block_angle = "stacking_multiplier",
 	timed_block_cost = "stacking_multiplier",
 	vent_speed = "stacking_multiplier",
-	increased_weapon_damage_melee_1h = "stacking_multiplier",
-	power_level_armoured = "stacking_multiplier",
-	shield_break_proc = "proc",
+	not_consume_potion = "proc",
+	clip_size = "stacking_multiplier",
+	counter_push_power = "stacking_multiplier",
 	critical_strike_chance = "stacking_bonus",
-	protection_poison_wind = "stacking_multiplier",
-	max_overcharge = "stacking_multiplier",
+	push_power = "stacking_multiplier",
 	critical_strike_effectiveness = "stacking_multiplier",
+	protection_chaos = "stacking_multiplier",
+	max_overcharge = "stacking_multiplier",
+	healing_received = "stacking_multiplier",
+	reduced_non_burn_damage = "stacking_multiplier",
 	reload_speed = "stacking_multiplier",
 	stun_duration = "stacking_multiplier",
 	cooldown_regen = "stacking_multiplier",
 	activated_cooldown = "stacking_multiplier",
 	increased_weapon_damage_heavy_attack = "stacking_multiplier",
 	not_consume_pickup = "proc",
+	attack_intensity_decay = "stacking_multiplier",
 	no_push_fatigue_cost = "proc",
 	power_level_chaos = "stacking_multiplier",
-	power_level_large = "stacking_multiplier",
+	increased_burn_damage = "stacking_multiplier",
+	attack_intensity_reset = "stacking_multiplier",
 	reduced_spread_moving = "stacking_multiplier",
+	unbalanced_damage_dealt = "stacking_multiplier",
 	critical_strike_chance_melee = "stacking_bonus",
 	increased_weapon_damage_melee = "stacking_multiplier",
+	unbalanced_damage_taken = "stacking_bonus",
+	flat_power_level = "stacking_bonus",
 	power_level = "stacking_multiplier",
+	shield_break_proc = "proc",
+	dummy_stagger = "stacking_bonus",
 	coop_stamina = "proc",
-	healing_received = "stacking_multiplier",
+	power_level_ranged = "stacking_multiplier",
 	headshot_multiplier = "stacking_multiplier",
 	protection_skaven = "stacking_multiplier",
 	power_level_melee = "stacking_multiplier",
@@ -79,8 +89,9 @@ StatBuffApplicationMethods = {
 	overcharge_regen = "stacking_multiplier",
 	grimoire_max_health = "stacking_multiplier",
 	overcharge_damage_immunity = "proc",
-	penetrating_shot_proc = "proc",
-	power_level_unarmoured = "stacking_multiplier",
+	max_fatigue = "stacking_bonus",
+	power_level_impact = "stacking_multiplier",
+	damage_taken = "stacking_multiplier",
 	attack_speed = "stacking_multiplier",
 	increased_move_speed_while_aiming = "stacking_multiplier",
 	protection_pack_master = "stacking_multiplier",
@@ -88,14 +99,17 @@ StatBuffApplicationMethods = {
 	not_consume_medpack = "proc",
 	outer_block_angle = "stacking_multiplier",
 	increased_weapon_damage_melee_2h = "stacking_multiplier",
+	increased_weapon_damage_poisoned_or_bleeding = "stacking_multiplier",
 	reduced_spread_hit = "stacking_multiplier",
-	protection_ratling_gunner = "stacking_multiplier",
+	damage_taken_secondary = "stacking_multiplier",
 	backstab_multiplier = "stacking_bonus",
-	faster_respawn = "stacking_multiplier",
+	protection_poison_wind = "stacking_multiplier",
 	movement_speed = "stacking_multiplier",
 	power_level_skaven = "stacking_multiplier",
+	damage_taken_burning_enemy = "stacking_multiplier",
 	shielding_player_by_assist = "proc",
-	power_level_frenzy = "stacking_multiplier"
+	attack_intensity_threshold = "stacking_multiplier",
+	power_level_ranged_drakefire = "stacking_multiplier"
 }
 WeaponSpecificStatBuffs = {}
 
@@ -118,11 +132,13 @@ end
 ProcEvents = {
 	"on_hit",
 	"on_kill",
+	"on_kill_elite_special",
 	"on_boss_killed",
 	"on_special_killed",
 	"on_ping_target_killed",
 	"on_block",
 	"on_block_broken",
+	"on_timed_block",
 	"on_knocked_down",
 	"on_revived",
 	"on_revived_ally",
@@ -133,15 +149,26 @@ ProcEvents = {
 	"on_assisted_ally",
 	"on_push",
 	"on_damage_taken",
+	"on_consumable_picked_up",
 	"on_reload",
 	"on_ammo_used",
 	"on_unwield",
 	"on_critical_hit",
-	"on_consumable_picked_up",
 	"on_last_ammo_used",
 	"on_gained_ammo_from_no_ammo",
 	"on_damage_dealt",
 	"on_stagger",
+	"on_charge_ability_hit",
+	"on_charge_ability_hit_blast",
+	"on_bardin_consumable_picked_up_any_player",
+	"on_dodge",
+	"on_dodge_finished",
+	"on_leap_start",
+	"on_leap_finished",
+	"on_enemy_pinged",
+	"on_start_action",
+	"on_full_charge_action",
+	"on_enemy_ignited",
 	"on_push_used",
 	"on_backstab",
 	"on_sweep",
@@ -149,6 +176,7 @@ ProcEvents = {
 	"on_critical_sweep",
 	"on_critical_action",
 	"on_spell_used",
+	"on_grenade_use",
 	"on_gromril_armour_removed"
 }
 local buff_params = {}
@@ -169,6 +197,30 @@ local function is_bot(unit)
 	return player and player.bot_player
 end
 
+local function get_killing_blow_slot_type(params)
+	local killing_blow_data = params[1]
+
+	if not killing_blow_data then
+		return
+	end
+
+	local master_list_key = killing_blow_data[DamageDataIndex.DAMAGE_SOURCE_NAME]
+
+	if not master_list_key then
+		return
+	end
+
+	local master_list_data = rawget(ItemMasterList, master_list_key)
+
+	if not master_list_data then
+		return
+	end
+
+	local slot_type = master_list_data.slot_type
+
+	return slot_type
+end
+
 ProcFunctions = {
 	heal = function (player, buff, params)
 		local player_unit = player.player_unit
@@ -179,12 +231,43 @@ ProcFunctions = {
 			DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
 		end
 	end,
+	damage_attacker = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) and Managers.player.is_server then
+			local damage_amount = buff.bonus
+
+			DamageUtils.add_damage_network(player_unit, player_unit, damage_amount, "full", "buff", nil, Vector3(1, 0, 0), "buff")
+		end
+	end,
+	metal_mutator_stacks_on_hit = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) and Managers.player.is_server then
+			local current_stacks = buff.current_stacks or 0
+			current_stacks = current_stacks + 1
+
+			if current_stacks == buff.template.num_stacks then
+				local damage_amount = buff.bonus
+				local hit_unit = params[1]
+				local breed = AiUtils.unit_breed(hit_unit)
+				local breeds = buff.template.breeds
+
+				if table.contains(breeds, breed.name) then
+					DamageUtils.add_damage_network(hit_unit, player_unit, damage_amount, "full", "metal_mutator", nil, Vector3(1, 0, 0), "buff")
+				end
+
+				current_stacks = 0
+			end
+
+			buff.current_stacks = current_stacks
+		end
+	end,
 	heal_permanent = function (player, buff, params)
 		local player_unit = player.player_unit
 
 		if Unit.alive(player_unit) and Managers.player.is_server then
 			local heal_amount = buff.bonus
-			local breed = AiUtils.unit_breed(target_unit)
 
 			DamageUtils.heal_network(player_unit, player_unit, heal_amount, "bandage")
 		end
@@ -194,7 +277,8 @@ ProcFunctions = {
 
 		if Unit.alive(player_unit) and Managers.player.is_server then
 			local heal_amount = buff.bonus
-			local player_and_bot_units = PLAYER_AND_BOT_UNITS
+			local side = Managers.state.side.side_by_unit[player_unit]
+			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 
 			for i = 1, #player_and_bot_units, 1 do
 				DamageUtils.heal_network(player_and_bot_units[i], player_unit, heal_amount, "heal_from_proc")
@@ -209,12 +293,13 @@ ProcFunctions = {
 		local range_squared = range * range
 
 		if Unit.alive(player_unit) and Managers.player.is_server then
-			local player_and_bot_units = PLAYER_AND_BOT_UNITS
+			local side = Managers.state.side.side_by_unit[player_unit]
+			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 
 			for i = 1, #player_and_bot_units, 1 do
 				local healed_unit = player_and_bot_units[i]
 
-				if healed_unit ~= player_unit then
+				if healed_unit ~= player_unit and Unit.alive(healed_unit) then
 					local unit_position = POSITION_LOOKUP[healed_unit]
 					local distance_squared = Vector3.distance_squared(healer_position, unit_position)
 
@@ -273,7 +358,7 @@ ProcFunctions = {
 				if hit_unit_health_extension and hit_unit_health_extension:current_health() <= damage_amount then
 					local breed = AiUtils.unit_breed(hit_unit)
 
-					if breed then
+					if breed and not breed.is_hero then
 						local heal_amount = breed.bloodlust_health or 0
 
 						DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
@@ -291,7 +376,6 @@ ProcFunctions = {
 		local heal_amount = buff.bonus
 		local has_procced = buff.has_procced
 		local hit_unit = params[1]
-		local attack_type = params[2]
 		local hit_zone_name = params[3]
 		local target_number = params[4]
 		local buff_type = params[5]
@@ -327,21 +411,19 @@ ProcFunctions = {
 		if Unit.alive(player_unit) then
 			local hit_unit = params[1]
 			local damage_profile = params[2]
-			local attacker_unit = params[3]
-			local stagger_type = params[4]
-			local stagger_duration = params[5]
 			local stagger_value = params[6]
 			local buff_type = params[7]
+			local target_index = params[8]
 			local breed = AiUtils.unit_breed(hit_unit)
 			local multiplier = buff.multiplier
 			local is_push = damage_profile.is_push
 			local heal_amount = stagger_value * multiplier
 
 			if is_push then
-				heal_amount = 0.4
+				heal_amount = 0.6
 			end
 
-			if breed and (buff_type == "MELEE_1H" or buff_type == "MELEE_2H") then
+			if target_index and target_index < 5 and breed and not breed.is_hero and (buff_type == "MELEE_1H" or buff_type == "MELEE_2H") then
 				DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
 			end
 		end
@@ -354,18 +436,54 @@ ProcFunctions = {
 		local player_unit = player.player_unit
 		local buff_template = buff.template
 		local max_targets = buff_template.max_targets
-		local heal_amount = buff.bonus or 0.25
-		local multiplier = buff.multiplier or -0.05
 		local hit_unit = params[1]
 		local damage_amount = params[2]
 		local buff_type = params[6]
 		local target_number = params[7]
 		local breed = AiUtils.unit_breed(hit_unit)
 
-		if Unit.alive(player_unit) and breed and (buff_type == "MELEE_1H" or buff_type == "MELEE_2H") and damage_amount > 0 and target_number and target_number <= max_targets then
-			heal_amount = heal_amount^(target_number * multiplier)
+		if Unit.alive(player_unit) and breed and (buff_type == "MELEE_1H" or buff_type == "MELEE_2H") and damage_amount > 0 and target_number and target_number > 1 and target_number <= max_targets then
+			local heal_amount = 0.5
+
+			if target_number == 1 then
+				heal_amount = heal_amount / 2
+			end
 
 			DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
+		end
+	end,
+	heal_finesse_damage_on_ranged = function (player, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		local player_unit = player.player_unit
+		local heal_amount = buff.bonus
+		local has_procced = buff.has_procced
+		local hit_unit = params[1]
+		local hit_zone_name = params[3]
+		local target_number = params[4]
+		local buff_type = params[5]
+		local critical_hit = params[6]
+		local breed = AiUtils.unit_breed(hit_unit)
+
+		if target_number == 1 then
+			buff.has_procced = false
+			has_procced = false
+		end
+
+		if Unit.alive(player_unit) and breed and buff_type == "RANGED" and not has_procced then
+			if hit_zone_name == "head" or hit_zone_name == "neck" or hit_zone_name == "weakspot" then
+				buff.has_procced = true
+
+				DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
+			end
+
+			if critical_hit then
+				DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
+
+				buff.has_procced = true
+			end
 		end
 	end,
 	on_hit_debuff_enemy_defence = function (player, buff, params)
@@ -377,6 +495,19 @@ ProcFunctions = {
 
 			if buff_extension then
 				buff_extension:add_buff("defence_debuff_enemies")
+			end
+		end
+	end,
+	unbalance_debuff_on_stagger = function (player, buff, params)
+		local player_unit = player.player_unit
+		local hit_unit = params[1]
+		local is_dummy = Unit.get_data(hit_unit, "is_dummy")
+
+		if Unit.alive(player_unit) and (is_dummy or Unit.alive(hit_unit)) and Managers.player.is_server then
+			local buff_extension = ScriptUnit.extension(hit_unit, "buff_system")
+
+			if buff_extension then
+				buff_extension:add_buff("tank_unbalance_buff")
 			end
 		end
 	end,
@@ -414,7 +545,6 @@ ProcFunctions = {
 		local attack_type = params[2]
 
 		if Unit.alive(player_unit) and hit_zone_name == "head" and (attack_type == "light_attack" or attack_type == "heavy_attack") then
-			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 			local buff_template = buff.template
 			local heal_amount = buff_template.bonus
 
@@ -427,7 +557,6 @@ ProcFunctions = {
 		local attack_type = params[2]
 
 		if Unit.alive(player_unit) and hit_zone_name == "head" and (attack_type == "projectile" or attack_type == "instant_projectile") then
-			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 			local buff_template = buff.template
 			local heal_amount = buff_template.bonus
 
@@ -438,11 +567,37 @@ ProcFunctions = {
 		local player_unit = player.player_unit
 
 		if Unit.alive(player_unit) then
-			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 			local buff_template = buff.template
 			local heal_amount = buff_template.bonus
 
 			DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
+		end
+	end,
+	add_buff_on_ranged_critical_hit = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local buff_type = params[5]
+			local is_critical = params[6]
+
+			if is_critical and buff_type ~= "MELEE_1H" and buff_type ~= "MELEE_2H" then
+				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+				local buff_template = buff.template
+				local buff_name = buff_template.buff_to_add
+				local network_manager = Managers.state.network
+				local network_transmit = network_manager.network_transmit
+				local unit_object_id = network_manager:unit_game_object_id(player_unit)
+				local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
+
+				if is_server() then
+					buff_extension:add_buff(buff_name, {
+						attacker_unit = player_unit
+					})
+					network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
+				else
+					network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
+				end
+			end
 		end
 	end,
 	remove_wounded = function (player, buff, params)
@@ -471,7 +626,6 @@ ProcFunctions = {
 	end,
 	regen_stamina_on_charged_attacks = function (player, buff, params)
 		local player_unit = player.player_unit
-		local hit_unit = params[1]
 		local attack_type = params[2]
 
 		if attack_type ~= "heavy_attack" then
@@ -486,7 +640,6 @@ ProcFunctions = {
 	end,
 	sienna_unchained_regen_stamina_on_charged_attacks = function (player, buff, params)
 		local player_unit = player.player_unit
-		local hit_unit = params[1]
 		local attack_type = params[2]
 
 		if attack_type ~= "heavy_attack" then
@@ -501,7 +654,6 @@ ProcFunctions = {
 	end,
 	markus_mercenary_regen_stamina_on_charged_attacks = function (player, buff, params)
 		local player_unit = player.player_unit
-		local hit_unit = params[1]
 		local attack_type = params[2]
 
 		if attack_type ~= "heavy_attack" then
@@ -516,7 +668,6 @@ ProcFunctions = {
 	end,
 	markus_knight_regen_stamina_on_charged_attacks = function (player, buff, params)
 		local player_unit = player.player_unit
-		local hit_unit = params[1]
 		local attack_type = params[2]
 
 		if attack_type ~= "heavy_attack" then
@@ -529,9 +680,69 @@ ProcFunctions = {
 			buff_extension:add_buff("markus_knight_stamina_regen_buff", buff_params)
 		end
 	end,
+	bardin_ironbreaker_gromril_stagger = function (player, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local template = buff.template
+			local explosion_template = template.explosion_template
+			local world = Application.main_world()
+			local player_position = POSITION_LOOKUP[player_unit]
+			local rotation = Quaternion.identity()
+			local owner_is_bot = player and player.bot_player
+			local is_husk = (owner_is_bot and true) or false
+			local career_extension = ScriptUnit.has_extension(player_unit, "career_system")
+			local career_power_level = career_extension:get_career_power_level()
+
+			DamageUtils.create_explosion(world, player_unit, player_position, rotation, explosion_template, 1, "career_ability", true, is_husk, player_unit, career_power_level, false)
+		end
+	end,
+	bardin_slayer_push_on_dodge = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local status_extension = ScriptUnit.has_extension(player_unit, "status_system")
+
+			if status_extension:get_dodge_cooldown() >= 1 then
+				local first_person_extension = ScriptUnit.has_extension(player_unit, "first_person_system")
+				local career_extension = ScriptUnit.has_extension(player_unit, "career_system")
+				local dodge_direction_box = params[1]
+				local dodge_direction = dodge_direction_box:unbox()
+				local template = buff.template
+				local explosion_template = template.explosion_template
+				local player_position = POSITION_LOOKUP[player_unit]
+				local unit_rotation = first_person_extension:current_rotation()
+				local career_power_level = career_extension:get_career_power_level()
+				local offset_distance = 2
+				local flat_unit_rotation = Quaternion.look(Vector3.flat(Quaternion.forward(unit_rotation)), Vector3.up())
+				local move_direction = Quaternion.rotate(flat_unit_rotation, dodge_direction)
+				local offset_position = player_position + Vector3.normalize(move_direction) * offset_distance
+				local area_damage_system = Managers.state.entity:system("area_damage_system")
+
+				area_damage_system:create_explosion(player_unit, offset_position, unit_rotation, explosion_template, 1, "career_ability", career_power_level, false)
+			end
+		end
+	end,
+	bardin_ironbreaker_regen_stamina_on_block_broken = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local template = buff.template
+			local procced = math.random() <= template.proc_chance
+
+			if procced then
+				local status_extension = ScriptUnit.has_extension(player_unit, "status_system")
+
+				status_extension:remove_all_fatigue()
+			end
+		end
+	end,
 	bardin_ironbreaker_regen_stamina_on_charged_attacks = function (player, buff, params)
 		local player_unit = player.player_unit
-		local hit_unit = params[1]
 		local attack_type = params[2]
 
 		if attack_type ~= "heavy_attack" then
@@ -542,6 +753,84 @@ ProcFunctions = {
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 
 			buff_extension:add_buff("bardin_ironbreaker_regen_stamina_on_charged_attacks_buff", buff_params)
+		end
+	end,
+	bardin_ironbreaker_cooldown_reduction_on_kill_while_full_stamina = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if not Unit.alive(player_unit) then
+			return
+		end
+
+		local status_extension = ScriptUnit.has_extension(player_unit, "status_system")
+		local fatigued = status_extension and status_extension:fatigued()
+
+		if fatigued then
+			return
+		end
+
+		local slot_type = get_killing_blow_slot_type(params)
+		local is_melee = slot_type == "melee"
+
+		if not is_melee then
+			return
+		end
+
+		local template = buff.template
+		local cooldown_reduction = template.cooldown_reduction
+		local career_extension = ScriptUnit.has_extension(player_unit, "career_system")
+
+		career_extension:reduce_activated_ability_cooldown_percent(cooldown_reduction)
+	end,
+	bardin_ironbreaker_add_power_buff_on_block = function (player, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		local player_unit = player.player_unit
+		local template = buff.template
+
+		if Unit.alive(player_unit) then
+			local buff_to_add = template.buff_to_add
+			local buff_system = Managers.state.entity:system("buff_system")
+
+			if not buff.buff_list then
+				buff.buff_list = {}
+			end
+
+			local num_buff_list = #buff.buff_list
+			local max_sub_buff_stacks = template.max_sub_buff_stacks
+
+			if num_buff_list < max_sub_buff_stacks then
+				buff.buff_list[num_buff_list + 1] = buff_system:add_buff(player_unit, buff_to_add, player_unit, true)
+			end
+		end
+	end,
+	bardin_ironbreaker_remove_on_block_power_buff = function (player, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local target_number_damage = params[7]
+			local target_number_stagger = params[8]
+			local template = buff.template
+			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			local buff_system = Managers.state.entity:system("buff_system")
+			local reference_buff_name = template.reference_buff
+			local reference_buff = buff_extension:get_non_stacking_buff(reference_buff_name)
+
+			if reference_buff and reference_buff.buff_list and ((target_number_damage and target_number_damage == 1) or (target_number_stagger and target_number_stagger == 1)) then
+				for i = 1, #reference_buff.buff_list, 1 do
+					local buff_to_remove = table.remove(reference_buff.buff_list)
+
+					if buff_to_remove then
+						buff_system:remove_server_controlled_buff(player_unit, buff_to_remove)
+					end
+				end
+			end
 		end
 	end,
 	increased_melee_damage = function (player, buff, params)
@@ -594,20 +883,49 @@ ProcFunctions = {
 
 		if Unit.alive(player_unit) and not status_extension:is_knocked_down() then
 			local health_extension = ScriptUnit.extension(player_unit, "health_system")
+			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 			local damage = params[2]
 			local current_health = health_extension:current_health()
 			local killing_blow = current_health <= damage
+			local template = buff.template
+			local buff_to_add = template.buff_to_add
 
-			if killing_blow then
+			if Managers.state.network.is_server then
+				local heal_amount = (current_health - damage) * -1 + 1
+
+				DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
+			end
+
+			if killing_blow and not buff_extension:has_buff_perk("victor_zealot_activated_ability") then
+				buff_extension:add_buff(buff_to_add)
+
+				return true
+			end
+		end
+	end,
+	sienna_unchained_vent_overheat_on_low_health = function (player, buff, params)
+		local player_unit = player.player_unit
+		local status_extension = ScriptUnit.extension(player_unit, "status_system")
+
+		if Unit.alive(player_unit) and not status_extension:is_knocked_down() then
+			local health_extension = ScriptUnit.extension(player_unit, "health_system")
+			local damage = params[2]
+			local current_health = health_extension:current_health()
+			local new_health = current_health - damage
+			local max_health = health_extension:get_max_health()
+			local new_health_percentage = new_health / max_health
+			local current_health_percentage = health_extension:current_health_percent()
+			local template = buff.template
+			local health_threshold = template.threshold
+			local trigger = new_health_percentage <= health_threshold and health_threshold < current_health_percentage
+
+			if trigger then
+				local overcharge_extension = ScriptUnit.has_extension(player_unit, "overcharge_system")
 				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+				local buff_to_add = template.buff_to_add
 
-				buff_extension:add_buff("victor_zealot_invulnerability_on_lethal_damage_taken")
-
-				if Managers.state.network.is_server then
-					local heal_amount = (current_health - damage) * -1 + 1
-
-					DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
-				end
+				overcharge_extension:reset()
+				buff_extension:add_buff(buff_to_add)
 
 				return true
 			end
@@ -704,6 +1022,83 @@ ProcFunctions = {
 			buff_extension:add_buff("defence_debuff_enemies")
 		end
 	end,
+	victor_witchhunter_activated_ability_refund_cooldown_on_enemies_hit = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local target_number = params[4]
+			local attack_type = params[2]
+			local template = buff.template
+			local required_targets = template.required_targets
+
+			if target_number == 1 then
+				buff.can_trigger = true
+			end
+
+			if attack_type == "ability" and required_targets <= target_number and buff.can_trigger then
+				local career_extension = ScriptUnit.has_extension(player_unit, "career_system")
+				local cooldown_reduction = template.cooldown_reduction
+
+				career_extension:reduce_activated_ability_cooldown_percent(cooldown_reduction)
+
+				buff.can_trigger = false
+			end
+		end
+	end,
+	sienna_unchained_activated_ability_power_on_enemies_hit = function (player, buff, params)
+		if Managers.state.network.is_server then
+			local player_unit = player.player_unit
+
+			if Unit.alive(player_unit) then
+				local attack_type = params[2]
+
+				if attack_type and attack_type == "ability" then
+					local template = buff.template
+					local buff_system = Managers.state.entity:system("buff_system")
+					local buff_to_add = template.buff_to_add
+
+					buff_system:add_buff(player_unit, buff_to_add, player_unit, false)
+				end
+			end
+		end
+	end,
+	sienna_adept_add_attack_speed_buff_on_enemies_hit = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local target_number = params[4]
+			local template = buff.template
+			local required_targets = template.required_targets
+
+			if target_number == 1 then
+				buff.can_trigger = true
+			end
+
+			if target_number and required_targets <= target_number and buff.can_trigger then
+				local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
+				local buff_to_add = template.buff_to_add
+
+				buff_extension:add_buff(buff_to_add)
+
+				buff.can_trigger = false
+			end
+		end
+	end,
+	sienna_scholar_refund_activated_ability_cooldown = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local target_number = params[4]
+			local buff_type = params[5]
+			local is_critical = params[6]
+
+			if target_number <= 1 and buff_type == "RANGED_ABILITY" and is_critical then
+				local career_extension = ScriptUnit.has_extension(player_unit, "career_system")
+
+				career_extension:reduce_activated_ability_cooldown_percent(1)
+			end
+		end
+	end,
 	kerillian_shade_debuff_defence_on_crit = function (player, buff, params)
 		local player_unit = player.player_unit
 		local hit_unit = params[1]
@@ -712,6 +1107,98 @@ ProcFunctions = {
 			local buff_extension = ScriptUnit.extension(hit_unit, "buff_system")
 
 			buff_extension:add_buff("defence_debuff_enemies")
+		end
+	end,
+	kerillian_shade_stealth_on_backstab_kill = function (player, buff, params)
+		local player_unit = player.player_unit
+		local local_player = player.local_player
+		local bot_player = player.bot_player
+		local killing_blow_table = params[1]
+		local backstab_multiplier = killing_blow_table[DamageDataIndex.BACKSTAB_MULTIPLIER]
+
+		if Unit.alive(player_unit) and backstab_multiplier and backstab_multiplier > 1 then
+			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			local status_extension = ScriptUnit.extension(player_unit, "status_system")
+			local buffs_to_add = {
+				"kerillian_shade_activated_ability_short",
+				"kerillian_shade_end_activated_ability"
+			}
+
+			if local_player or (is_server and bot_player) then
+				status_extension:set_invisible(true)
+				status_extension:set_noclip(true)
+
+				local network_manager = Managers.state.network
+				local network_transmit = network_manager.network_transmit
+
+				for i = 1, #buffs_to_add, 1 do
+					local buff_name = buffs_to_add[i]
+					local unit_object_id = network_manager:unit_game_object_id(player_unit)
+					local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
+
+					if is_server() then
+						buff_extension:add_buff(buff_name, {
+							attacker_unit = player_unit
+						})
+						network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
+					else
+						network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
+					end
+				end
+			end
+		end
+	end,
+	kerillian_waywatcher_restore_ammo_on_career_skill_special_kill = function (player, buff, params)
+		local player_unit = player.player_unit
+		local killing_blow_table = params[1]
+		local killer_unit = killing_blow_table[DamageDataIndex.ATTACKER]
+		local damage_source = killing_blow_table[DamageDataIndex.DAMAGE_SOURCE_NAME]
+		local breed_data = params[2]
+		local can_trigger = nil
+
+		if breed_data then
+			can_trigger = breed_data.elite or breed_data.special
+		end
+
+		if Unit.alive(player_unit) and can_trigger and player_unit == killer_unit and damage_source == "kerillian_waywatcher_career_skill_weapon" then
+			local buff_template = buff.template
+			local weapon_slot = "slot_ranged"
+			local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
+			local slot_data = inventory_extension:get_slot_data(weapon_slot)
+			local right_unit_1p = slot_data.right_unit_1p
+			local left_unit_1p = slot_data.left_unit_1p
+			local right_hand_ammo_extension = ScriptUnit.has_extension(right_unit_1p, "ammo_system")
+			local left_hand_ammo_extension = ScriptUnit.has_extension(left_unit_1p, "ammo_system")
+			local ammo_extension = right_hand_ammo_extension or left_hand_ammo_extension
+			local ammo_bonus_fraction = buff_template.ammo_bonus_fraction
+			local ammo_amount = math.max(math.round(ammo_extension:max_ammo() * ammo_bonus_fraction), 1)
+
+			if ammo_extension then
+				ammo_extension:add_ammo_to_reserve(ammo_amount)
+			end
+		end
+	end,
+	restore_ammo_on_special_kill = function (player, buff, params)
+		local player_unit = player.player_unit
+		local killing_blow_table = params[1]
+		local killer_unit = killing_blow_table[DamageDataIndex.ATTACKER]
+
+		if Unit.alive(player_unit) and player_unit == killer_unit then
+			local buff_template = buff.template
+			local weapon_slot = "slot_ranged"
+			local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
+			local slot_data = inventory_extension:get_slot_data(weapon_slot)
+			local right_unit_1p = slot_data.right_unit_1p
+			local left_unit_1p = slot_data.left_unit_1p
+			local right_hand_ammo_extension = ScriptUnit.has_extension(right_unit_1p, "ammo_system")
+			local left_hand_ammo_extension = ScriptUnit.has_extension(left_unit_1p, "ammo_system")
+			local ammo_extension = right_hand_ammo_extension or left_hand_ammo_extension
+			local ammo_bonus_fraction = buff_template.ammo_bonus_fraction
+			local ammo_amount = math.max(math.round(ammo_extension:max_ammo() * ammo_bonus_fraction), 1)
+
+			if ammo_extension then
+				ammo_extension:add_ammo_to_reserve(ammo_amount)
+			end
 		end
 	end,
 	buff_defence_on_heal = function (player, buff, params)
@@ -741,6 +1228,43 @@ ProcFunctions = {
 			end
 		end
 	end,
+	add_buff_on_enemy_damage_taken = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local attacker_unit = params[1]
+			local damage_amount = params[2]
+			local damage_type = params[3]
+			local buff_system = Managers.state.entity:system("buff_system")
+			local template = buff.template
+			local buff_to_add = template.buff_to_add
+			local server_controlled = false
+			local player_side = Managers.state.side.side_by_unit[player_unit]
+			local attacker_side = Managers.state.side.side_by_unit[attacker_unit]
+			local is_ally = player_side == attacker_side
+
+			if not is_ally and attacker_unit ~= player_unit and damage_amount > 0 and damage_type ~= "overcharge" then
+				buff_system:add_buff(player_unit, buff_to_add, player_unit, server_controlled)
+			end
+		end
+	end,
+	restore_stamina_on_enemy_damage_taken = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local attacker_unit = params[1]
+			local damage_amount = params[2]
+			local damage_type = params[3]
+			local status_extension = ScriptUnit.has_extension(player_unit, "status_system")
+			local player_side = Managers.state.side.side_by_unit[player_unit]
+			local attacker_side = Managers.state.side.side_by_unit[attacker_unit]
+			local is_ally = player_side == attacker_side
+
+			if not is_ally and attacker_unit ~= player_unit and damage_amount > 0 and damage_type ~= "overcharge" then
+				status_extension:remove_all_fatigue()
+			end
+		end
+	end,
 	bardin_ranger_scavenge_proc = function (player, buff, params)
 		if not Managers.state.network.is_server then
 			return
@@ -765,11 +1289,11 @@ ProcFunctions = {
 					else
 						pickup_system:buff_spawn_pickup("frag_grenade_t1", enemy_pos, raycast_down)
 					end
-				elseif talent_extension:has_talent("bardin_ranger_passive_spawn_potions", "dwarf_ranger", true) then
-					local drop_result = math.random(1, 3)
+				elseif talent_extension:has_talent("bardin_ranger_passive_spawn_potions_or_bombs", "dwarf_ranger", true) then
+					local drop_result = math.random(1, 5)
 
 					if drop_result == 1 then
-						local potion_result = math.random(1, 3)
+						local potion_result = math.random(1, 5)
 
 						if potion_result == 1 then
 							pickup_system:buff_spawn_pickup("damage_boost_potion", enemy_pos, raycast_down)
@@ -777,6 +1301,10 @@ ProcFunctions = {
 							pickup_system:buff_spawn_pickup("speed_boost_potion", enemy_pos, raycast_down)
 						elseif potion_result == 3 then
 							pickup_system:buff_spawn_pickup("cooldown_reduction_potion", enemy_pos, raycast_down)
+						elseif potion_result == 4 then
+							pickup_system:buff_spawn_pickup("frag_grenade_t1", enemy_pos, raycast_down)
+						elseif potion_result == 5 then
+							pickup_system:buff_spawn_pickup("fire_grenade_t1", enemy_pos, raycast_down)
 						end
 					else
 						pickup_system:buff_spawn_pickup("ammo_ranger", enemy_pos, raycast_down)
@@ -819,14 +1347,12 @@ ProcFunctions = {
 		local buff_template = buff.template
 		local buff_to_remove = buff_template.buff_to_remove
 		local active_buff = buff_extension:get_non_stacking_buff(buff_to_remove)
-		local server_controlled = true
 
 		if active_buff and active_buff.server_buff_id then
 			buff_system:remove_server_controlled_buff(player_unit, active_buff.server_buff_id)
 		end
 	end,
 	debuff_defence_grenade_hit = function (player, buff, params)
-		local player_unit = player.player_unit
 		local hit_unit = params[1]
 		local attack_type = params[2]
 		local breed = Unit.get_data(hit_unit, "breed")
@@ -867,7 +1393,9 @@ ProcFunctions = {
 		local buff_system = Managers.state.entity:system("buff_system")
 		local template = buff.template
 		local buff_to_add = template.buff_to_add
-		local player_and_bot_units = PLAYER_AND_BOT_UNITS
+		local player_unit = player.player_unit
+		local side = Managers.state.side.side_by_unit[player_unit]
+		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local num_units = #player_and_bot_units
 
 		for i = 1, num_units, 1 do
@@ -878,20 +1406,93 @@ ProcFunctions = {
 			end
 		end
 	end,
+	life_mutator_remove_regen = function (player, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			local ids = buff.health_regeneration_stack_ids
+
+			if #ids > 0 then
+				local id = table.remove(ids, 1)
+
+				buff_extension:remove_buff(id)
+			end
+		end
+	end,
+	add_buff_on_stacks_on_hit = function (player, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		local player_unit = player.player_unit
+		local buff_template = buff.template
+		local buff_system = Managers.state.entity:system("buff_system")
+		local target_number = params[4]
+		local buff_to_add = buff_template.buff_to_add
+		local buff_on_stacks = buff_template.buff_on_stacks
+		local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+
+		if not buff_extension:has_buff_type(buff_to_add) and target_number < 2 then
+			if not buff.stack then
+				buff.stack = 1
+			else
+				buff.stack = buff.stack + 1
+			end
+
+			if buff.stack and buff_on_stacks <= buff.stack then
+				buff.added_buff_id = buff_system:add_buff(player_unit, buff_to_add, player_unit, true)
+				buff.stack = 0
+			end
+		elseif buff.added_buff_id and target_number < 2 then
+			buff_system:remove_server_controlled_buff(player_unit, buff.added_buff_id)
+		end
+	end,
+	add_buff_on_stacks_on_event = function (player, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		local player_unit = player.player_unit
+		local buff_template = buff.template
+		local buff_system = Managers.state.entity:system("buff_system")
+		local buff_to_add = buff_template.buff_to_add
+		local buff_on_stacks = buff_template.buff_on_stacks
+		local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+
+		if not buff_extension:has_buff_type(buff_to_add) then
+			if not buff.stack then
+				buff.stack = 1
+			else
+				buff.stack = buff.stack + 1
+			end
+
+			if buff.stack and buff_on_stacks <= buff.stack then
+				buff.added_buff_id = buff_system:add_buff(player_unit, buff_to_add, player_unit, true)
+				buff.stack = 0
+			end
+		elseif buff.added_buff_id then
+			buff_system:remove_server_controlled_buff(player_unit, buff.added_buff_id)
+		end
+	end,
 	buff_consecutive_shots_damage = function (player, buff, params)
 		local player_unit = player.player_unit
 		local hit_unit = params[1]
+		local attack_type = params[2]
 		local hit_unit_buff_extension = ScriptUnit.has_extension(hit_unit, "buff_system")
 		local player_unit_buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 
-		if hit_unit_buff_extension:has_buff_type("consecutive_shot_debuff") then
+		if hit_unit_buff_extension:has_buff_type("consecutive_shot_debuff") and attack_type ~= "aoe" then
 			player_unit_buff_extension:add_buff("consecutive_shot_buff")
 		end
 
 		hit_unit_buff_extension:add_buff("consecutive_shot_debuff")
 	end,
 	block_increase_enemy_damage_taken = function (player, buff, params)
-		local buff_template = buff.template
 		local attacking_unit = params[1]
 
 		if Unit.alive(attacking_unit) then
@@ -909,8 +1510,223 @@ ProcFunctions = {
 			local buff_template = buff.template
 			local buff_name = buff_template.buff_to_add
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			local network_manager = Managers.state.network
+			local network_transmit = network_manager.network_transmit
+			local unit_object_id = network_manager:unit_game_object_id(player_unit)
+			local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
 
-			buff_extension:add_buff(buff_name)
+			if is_server() then
+				buff_extension:add_buff(buff_name, {
+					attacker_unit = player_unit
+				})
+				network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
+			else
+				network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
+			end
+		end
+	end,
+	add_buff_on_first_target_hit = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local target_number = params[4]
+
+			if target_number < 2 then
+				local buff_template = buff.template
+				local buff_name = buff_template.buff_to_add
+				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+				local network_manager = Managers.state.network
+				local network_transmit = network_manager.network_transmit
+				local unit_object_id = network_manager:unit_game_object_id(player_unit)
+				local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
+
+				if is_server() then
+					buff_extension:add_buff(buff_name, {
+						attacker_unit = player_unit
+					})
+					network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
+				else
+					network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
+				end
+			end
+		end
+	end,
+	set_noclip = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local status_extension = ScriptUnit.extension(player_unit, "status_system")
+			local template = buff.template
+			local set_status = template.set_status
+
+			status_extension:set_noclip(set_status)
+		end
+	end,
+	add_buff_on_elite_or_special_kill = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local killed_unit_breed_data = params[2]
+
+			if killed_unit_breed_data.special or killed_unit_breed_data.elite then
+				local buff_template = buff.template
+				local buff_name = buff_template.buff_to_add
+				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+				local network_manager = Managers.state.network
+				local network_transmit = network_manager.network_transmit
+				local unit_object_id = network_manager:unit_game_object_id(player_unit)
+				local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
+
+				if is_server() then
+					buff_extension:add_buff(buff_name, {
+						attacker_unit = player_unit
+					})
+					network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
+				else
+					network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
+				end
+			end
+		end
+	end,
+	add_buff_on_special_kill = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local killed_unit_breed_data = params[2]
+
+			if killed_unit_breed_data.special then
+				local buff_template = buff.template
+				local buff_name = buff_template.buff_to_add
+				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+				local network_manager = Managers.state.network
+				local network_transmit = network_manager.network_transmit
+				local unit_object_id = network_manager:unit_game_object_id(player_unit)
+				local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
+
+				if is_server() then
+					buff_extension:add_buff(buff_name, {
+						attacker_unit = player_unit
+					})
+					network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
+				else
+					network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
+				end
+			end
+		end
+	end,
+	add_buff_on_headshot = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local hit_zone = params[3]
+
+			if hit_zone and (hit_zone == "head" or hit_zone == "neck") then
+				local buff_template = buff.template
+				local buff_name = buff_template.buff_to_add
+				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+				local network_manager = Managers.state.network
+				local network_transmit = network_manager.network_transmit
+				local unit_object_id = network_manager:unit_game_object_id(player_unit)
+				local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
+
+				if is_server() then
+					buff_extension:add_buff(buff_name, {
+						attacker_unit = player_unit
+					})
+					network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
+				else
+					network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
+				end
+			end
+		end
+	end,
+	sienna_unchained_add_buff_on_vent_damage = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local damage_type = params[3]
+
+			if damage_type and damage_type == "overcharge" then
+				local buff_template = buff.template
+				local buff_name = buff_template.buff_to_add
+				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+				local network_manager = Managers.state.network
+				local network_transmit = network_manager.network_transmit
+				local unit_object_id = network_manager:unit_game_object_id(player_unit)
+				local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
+
+				if is_server() then
+					buff_extension:add_buff(buff_name, {
+						attacker_unit = player_unit
+					})
+					network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
+				else
+					network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
+				end
+			end
+		end
+	end,
+	add_buff_on_ranged_headshot = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local hit_zone = params[3]
+			local buff_type = params[5] == "MELEE_1H" or params[5] == "MELEE_2H"
+
+			if hit_zone and (hit_zone == "head" or hit_zone == "neck") and not buff_type then
+				local buff_template = buff.template
+				local buff_name = buff_template.buff_to_add
+				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+				local network_manager = Managers.state.network
+				local network_transmit = network_manager.network_transmit
+				local unit_object_id = network_manager:unit_game_object_id(player_unit)
+				local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
+
+				if is_server() then
+					buff_extension:add_buff(buff_name, {
+						attacker_unit = player_unit
+					})
+					network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
+				else
+					network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
+				end
+			end
+		end
+	end,
+	bardin_ranger_add_reload_speed_buff = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
+			local template = buff.template
+			local buff_to_add = template.buff_to_add
+
+			if not buff_extension:has_buff_type(buff_to_add) then
+				local buff_type = params[5]
+
+				if buff_type ~= "MELEE_1H" and buff_type ~= "MELEE_2H" then
+					local target_number = params[4]
+					local required_target = template.target_number
+
+					if required_target <= target_number then
+						buff_extension:add_buff(buff_to_add)
+					end
+				end
+			end
+		end
+	end,
+	remove_non_stacking_buff = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
+			local template = buff.template
+			local buff_to_remove = template.buff_to_remove
+			local removable_buff = buff_extension:get_non_stacking_buff(buff_to_remove)
+
+			if removable_buff then
+				buff_extension:remove_buff(removable_buff.id)
+			end
 		end
 	end,
 	add_bardin_slayer_passive_buff = function (player, buff, params)
@@ -924,19 +1740,19 @@ ProcFunctions = {
 		if Unit.alive(player_unit) then
 			local buff_name = "bardin_slayer_passive_stacking_damage_buff"
 			local talent_extension = ScriptUnit.extension(player_unit, "talent_system")
+			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 
-			if talent_extension:has_talent("bardin_slayer_passive_stacking_damage_buff_increased_duration", "dwarf_ranger", true) then
-				buff_name = "bardin_slayer_passive_stacking_damage_buff_increased_duration"
+			if talent_extension:has_talent("bardin_slayer_passive_increased_max_stacks", "dwarf_ranger", true) then
+				buff_name = "bardin_slayer_passive_increased_max_stacks"
 			end
 
-			if talent_extension:has_talent("bardin_slayer_passive_stacking_damage_buff_grants_defence", "dwarf_ranger", true) then
-				buff_system:add_buff(player_unit, "bardin_slayer_passive_stacking_defence_buff", player_unit, false)
+			if talent_extension:has_talent("bardin_slayer_passive_movement_speed", "dwarf_ranger", true) then
+				buff_extension:add_buff("bardin_slayer_passive_movement_speed")
 			end
 
 			buff_system:add_buff(player_unit, buff_name, player_unit, false)
 
 			if talent_extension:has_talent("bardin_slayer_passive_cooldown_reduction_on_max_stacks", "dwarf_ranger", true) then
-				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 				local num_stacks = buff_extension:num_buff_type(buff_name)
 				local max_stacks = buff.template.max_stacks
 
@@ -1011,22 +1827,68 @@ ProcFunctions = {
 
 		if Unit.alive(player_unit) then
 			local talent_extension = ScriptUnit.extension(player_unit, "talent_system")
-			local ranged_stealth = talent_extension:has_talent("kerillian_shade_activated_ability_no_break_on_ranged", "wood_elf", true)
-			local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
-			local wielded_slot = inventory_extension:get_wielded_slot_name()
+			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			local shade_activated_ability_buff = {}
+			local restealth = false
 
-			if wielded_slot == "slot_melee" or (wielded_slot == "slot_ranged" and not ranged_stealth) or wielded_slot == "slot_level_event" then
-				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-				local shade_activated_ability_buff = nil
+			if talent_extension:has_talent("kerillian_shade_activated_ability_quick_cooldown", "wood_elf", true) then
+				shade_activated_ability_buff[#shade_activated_ability_buff + 1] = buff_extension:get_non_stacking_buff("kerillian_shade_activated_ability_quick_cooldown")
+				buff.restealth_delay = nil
+			end
 
-				if talent_extension:has_talent("kerillian_shade_activated_ability_duration", "wood_elf", true) then
-					shade_activated_ability_buff = buff_extension:get_non_stacking_buff("kerillian_shade_activated_ability_duration")
-				else
-					shade_activated_ability_buff = buff_extension:get_non_stacking_buff("kerillian_shade_activated_ability")
+			if talent_extension:has_talent("kerillian_shade_passive_stealth_on_backstab_kill", "wood_elf", true) then
+				shade_activated_ability_buff[#shade_activated_ability_buff + 1] = buff_extension:get_non_stacking_buff("kerillian_shade_activated_ability_short")
+			end
+
+			if talent_extension:has_talent("kerillian_shade_activated_ability_restealth", "wood_elf", true) then
+				if buff_extension:has_buff_type("kerillian_shade_activated_ability") then
+					restealth = true
 				end
 
-				if shade_activated_ability_buff then
-					buff_extension:remove_buff(shade_activated_ability_buff.id)
+				local t = Managers.time:time("game")
+
+				if buff.restealth_delay and buff.restealth_delay < t then
+					shade_activated_ability_buff[#shade_activated_ability_buff + 1] = buff_extension:get_non_stacking_buff("kerillian_shade_activated_ability_quick_cooldown")
+				end
+			end
+
+			shade_activated_ability_buff[#shade_activated_ability_buff + 1] = buff_extension:get_non_stacking_buff("kerillian_shade_activated_ability")
+
+			if #shade_activated_ability_buff > 0 then
+				for i = 1, #shade_activated_ability_buff, 1 do
+					local buff_to_remove = shade_activated_ability_buff[i]
+
+					if buff_to_remove then
+						local buff_id = buff_to_remove.id
+
+						if buff_id then
+							buff_extension:remove_buff(buff_id)
+						end
+					end
+				end
+			end
+
+			if restealth and not buff_extension:has_buff_type("kerillian_shade_activated_ability_quick_cooldown") then
+				local status_extension = ScriptUnit.extension(player_unit, "status_system")
+
+				status_extension:set_invisible(true)
+				status_extension:set_noclip(true)
+
+				local buff_name = "kerillian_shade_activated_ability_quick_cooldown"
+				local network_manager = Managers.state.network
+				local network_transmit = network_manager.network_transmit
+				local unit_object_id = network_manager:unit_game_object_id(player_unit)
+				local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
+				local t = Managers.time:time("game")
+				buff.restealth_delay = t + 1
+
+				if is_server() then
+					buff_extension:add_buff(buff_name, {
+						attacker_unit = player_unit
+					})
+					network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
+				else
+					network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
 				end
 			end
 		end
@@ -1057,14 +1919,13 @@ ProcFunctions = {
 					}
 					local network_manager = Managers.state.network
 					local network_transmit = network_manager.network_transmit
-					local is_server = Managers.player.is_server
 					local unit_id = network_manager:unit_game_object_id(player_unit)
 					local node_id = 0
 
 					for _, event in ipairs(events) do
 						local event_id = NetworkLookup.sound_events[event]
 
-						if is_server then
+						if is_server() then
 							network_transmit:send_rpc_clients("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
 						else
 							network_transmit:send_rpc_server("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
@@ -1147,7 +2008,6 @@ ProcFunctions = {
 		end
 
 		if Unit.alive(player_unit) then
-			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 			local buff_template = buff.template
 			local weapon_slot = "slot_ranged"
 			local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
@@ -1157,12 +2017,70 @@ ProcFunctions = {
 			local right_hand_ammo_extension = ScriptUnit.has_extension(right_unit_1p, "ammo_system")
 			local left_hand_ammo_extension = ScriptUnit.has_extension(left_unit_1p, "ammo_system")
 			local ammo_extension = right_hand_ammo_extension or left_hand_ammo_extension
-			local ammo_percent = ammo_extension:total_ammo_fraction()
 			local ammo_bonus_fraction = buff_template.ammo_bonus_fraction
-			local ammo_amount = math.max(math.round(ammo_extension:get_max_ammo() * ammo_bonus_fraction), 1)
+			local ammo_amount = math.max(math.round(ammo_extension:max_ammo() * ammo_bonus_fraction), 1)
 
 			if ammo_extension then
 				ammo_extension:add_ammo_to_reserve(ammo_amount)
+			end
+		end
+	end,
+	victor_bounty_hunter_ammo_fraction_gain_out_of_ammo = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if player and player.remote then
+			return
+		end
+
+		if Unit.alive(player_unit) then
+			local killed_unit_breed_data = params[2]
+
+			if killed_unit_breed_data.elite then
+				local buff_template = buff.template
+				local weapon_slot = "slot_ranged"
+				local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
+				local slot_data = inventory_extension:get_slot_data(weapon_slot)
+				local right_unit_1p = slot_data.right_unit_1p
+				local left_unit_1p = slot_data.left_unit_1p
+				local right_hand_ammo_extension = ScriptUnit.has_extension(right_unit_1p, "ammo_system")
+				local left_hand_ammo_extension = ScriptUnit.has_extension(left_unit_1p, "ammo_system")
+				local ammo_extension = right_hand_ammo_extension or left_hand_ammo_extension
+				local current_ammo = ammo_extension:remaining_ammo()
+				local clip_ammo = ammo_extension:ammo_count()
+
+				if current_ammo < 1 and clip_ammo < 1 then
+					local ammo_bonus_fraction = buff_template.ammo_bonus_fraction
+					local ammo_amount = math.max(math.round(ammo_extension:max_ammo() * ammo_bonus_fraction), 1)
+
+					if ammo_extension then
+						ammo_extension:add_ammo_to_reserve(ammo_amount)
+					end
+				end
+			end
+		end
+	end,
+	bardin_ranger_restore_ammo_on_ally_picked_up_ammo = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local talent_extension = ScriptUnit.has_extension(player_unit, "talent_system")
+
+			if talent_extension and talent_extension:has_talent("bardin_ranger_passive_ammo_on_ally_pickup") then
+				local buff_template = buff.template
+				local weapon_slot = "slot_ranged"
+				local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
+				local slot_data = inventory_extension:get_slot_data(weapon_slot)
+				local right_unit_1p = slot_data.right_unit_1p
+				local left_unit_1p = slot_data.left_unit_1p
+				local right_hand_ammo_extension = ScriptUnit.has_extension(right_unit_1p, "ammo_system")
+				local left_hand_ammo_extension = ScriptUnit.has_extension(left_unit_1p, "ammo_system")
+				local ammo_extension = right_hand_ammo_extension or left_hand_ammo_extension
+				local ammo_bonus_fraction = buff_template.ammo_bonus_fraction
+				local ammo_amount = math.max(math.round(ammo_extension:max_ammo() * ammo_bonus_fraction), 1)
+
+				if ammo_extension then
+					ammo_extension:add_ammo_to_reserve(ammo_amount)
+				end
 			end
 		end
 	end,
@@ -1174,22 +2092,21 @@ ProcFunctions = {
 		end
 
 		if Unit.alive(player_unit) then
-			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 			local buff_template = buff.template
 			local weapon_slot = "slot_ranged"
 			local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
 			local slot_data = inventory_extension:get_slot_data(weapon_slot)
 			local target_number = params[4]
+			local attack_type = params[2]
 			local right_unit_1p = slot_data.right_unit_1p
 			local left_unit_1p = slot_data.left_unit_1p
 			local right_hand_ammo_extension = ScriptUnit.has_extension(right_unit_1p, "ammo_system")
 			local left_hand_ammo_extension = ScriptUnit.has_extension(left_unit_1p, "ammo_system")
 			local ammo_extension = right_hand_ammo_extension or left_hand_ammo_extension
-			local ammo_percent = ammo_extension:total_ammo_fraction()
 			local ammo_bonus_fraction = buff_template.ammo_bonus_fraction
-			local ammo_amount = math.max(math.round(ammo_extension:get_max_ammo() * ammo_bonus_fraction), 1)
+			local ammo_amount = math.max(math.round(ammo_extension:max_ammo() * ammo_bonus_fraction), 1)
 
-			if ammo_extension then
+			if ammo_extension and (attack_type == "instant_projectile" or attack_type == "projectile") then
 				if target_number == 1 then
 					buff.has_procced = false
 				end
@@ -1197,7 +2114,16 @@ ProcFunctions = {
 				local has_procced = buff.has_procced
 
 				if not has_procced then
+					local do_reload = ammo_extension:remaining_ammo() == 0
+					local clip_full = ammo_extension:clip_full()
+
 					ammo_extension:add_ammo_to_reserve(ammo_amount)
+
+					if do_reload and not clip_full then
+						local play_animation = true
+
+						ammo_extension:start_reload(play_animation)
+					end
 
 					buff.has_procced = true
 				end
@@ -1212,7 +2138,6 @@ ProcFunctions = {
 		end
 
 		if Unit.alive(player_unit) then
-			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 			local buff_template = buff.template
 			local weapon_slot = "slot_ranged"
 			local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
@@ -1225,7 +2150,7 @@ ProcFunctions = {
 			local ammo_percent = ammo_extension:total_ammo_fraction()
 			local activate_bonus = ammo_percent < buff_template.activation_ammo
 			local ammo_bonus_fraction = buff_template.ammo_bonus_fraction
-			local ammo_amount = math.max(math.round(ammo_extension:get_max_ammo() * ammo_bonus_fraction), 1)
+			local ammo_amount = math.max(math.round(ammo_extension:max_ammo() * ammo_bonus_fraction), 1)
 
 			if ammo_extension and activate_bonus then
 				ammo_extension:add_ammo_to_reserve(ammo_amount)
@@ -1243,10 +2168,6 @@ ProcFunctions = {
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 			local talent_extension = ScriptUnit.extension(player_unit, "talent_system")
 
-			if talent_extension:has_talent("markus_huntsman_passive_improved", "empire_soldier", true) then
-				ammo_amount = ammo_amount * 2
-			end
-
 			if talent_extension:has_talent("markus_huntsman_passive_crit_buff_on_headshot", "empire_soldier", true) then
 				buff_extension:add_buff("markus_huntsman_passive_crit_buff")
 				buff_extension:add_buff("markus_huntsman_passive_crit_buff_removal")
@@ -1261,7 +2182,16 @@ ProcFunctions = {
 			local ammo_extension = right_hand_ammo_extension or left_hand_ammo_extension
 
 			if ammo_extension then
+				local do_reload = ammo_extension:remaining_ammo() == 0
+				local clip_full = ammo_extension:clip_full()
+
 				ammo_extension:add_ammo_to_reserve(ammo_amount)
+
+				if do_reload and not clip_full then
+					local play_animation = true
+
+					ammo_extension:start_reload(play_animation)
+				end
 			end
 		end
 	end,
@@ -1292,7 +2222,16 @@ ProcFunctions = {
 			local ammo_extension = right_hand_ammo_extension or left_hand_ammo_extension
 
 			if ammo_extension then
+				local do_reload = ammo_extension:remaining_ammo() == 0
+				local clip_full = ammo_extension:clip_full()
+
 				ammo_extension:add_ammo_to_reserve(ammo_amount)
+
+				if do_reload and not clip_full then
+					local play_animation = true
+
+					ammo_extension:start_reload(play_animation)
+				end
 			end
 		end
 	end,
@@ -1314,8 +2253,90 @@ ProcFunctions = {
 				buff_extension:remove_buff(tranquility_buff.id)
 			end
 
-			buff_extension:add_buff("sienna_adept_passive")
+			local buff_to_add = "sienna_adept_passive"
+			local talent_extension = ScriptUnit.has_extension(player_unit, "talent_system")
+
+			if talent_extension and talent_extension:has_talent("sienna_adept_passive_cooldown") then
+				buff_to_add = "sienna_adept_passive_cooldown"
+			end
+
+			buff_extension:add_buff(buff_to_add)
 		end
+	end,
+	maidenguard_reset_unharmed_buff = function (player, buff, params)
+		local player_unit = player.player_unit
+		local attacker_unit = params[1]
+		local damage_amount = params[2]
+		local damaged = true
+
+		if damage_amount and damage_amount == 0 then
+			damaged = false
+		end
+
+		if Unit.alive(player_unit) and attacker_unit ~= player_unit and damaged then
+			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
+			local buff_name = "kerillian_maidenguard_power_level_on_unharmed_cooldown"
+			local network_manager = Managers.state.network
+			local network_transmit = network_manager.network_transmit
+			local unit_object_id = network_manager:unit_game_object_id(player_unit)
+			local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
+
+			if is_server() then
+				buff_extension:add_buff(buff_name, {
+					attacker_unit = player_unit
+				})
+			else
+				network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
+			end
+
+			return true
+		end
+	end,
+	buff_on_stagger_enemy = function (player, buff, params)
+		local buff_template = buff.template
+		local player_unit = player.player_unit
+		local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+		local hit_unit = params[1]
+		local breed = Unit.get_data(hit_unit, "breed")
+		local buff_name = buff_template.buff_to_add
+		local enemy_type_list = buff_template.enemy_type or nil
+		local add_buff = false
+
+		if breed and enemy_type_list then
+			for i = 1, #enemy_type_list, 1 do
+				local enemy_type = enemy_type_list[i]
+
+				if breed[enemy_type] then
+					add_buff = true
+				end
+			end
+		elseif breed then
+			add_buff = true
+		end
+
+		if add_buff then
+			local network_manager = Managers.state.network
+			local network_transmit = network_manager.network_transmit
+			local unit_object_id = network_manager:unit_game_object_id(player_unit)
+			local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
+
+			if is_server() then
+				buff_extension:add_buff(buff_name, {
+					attacker_unit = player_unit
+				})
+				network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
+			else
+				network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
+			end
+		end
+	end,
+	buff_on_blocked_attack = function (player, buff, params)
+		local buff_template = buff.template
+		local player_unit = player.player_unit
+		local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+		local buff_to_add = buff_template.buff_to_add
+
+		buff_extension:add_buff(buff_to_add)
 	end,
 	gain_markus_mercenary_passive_proc = function (player, buff, params)
 		if not Managers.state.network.is_server then
@@ -1333,8 +2354,17 @@ ProcFunctions = {
 		if Unit.alive(player_unit) and target_number and buff_template.targets <= target_number and (attack_type == "light_attack" or attack_type == "heavy_attack") then
 			local talent_extension = ScriptUnit.extension(player_unit, "talent_system")
 
+			if talent_extension:has_talent("markus_mercenary_passive_improved", "empire_soldier", true) then
+				if target_number >= 4 then
+					buff_system:add_buff(player_unit, "markus_mercenary_passive_improved", owner_unit, false)
+				end
+
+				return
+			end
+
 			if talent_extension:has_talent("markus_mercenary_passive_group_proc", "empire_soldier", true) then
-				local player_and_bot_units = PLAYER_AND_BOT_UNITS
+				local side = Managers.state.side.side_by_unit[player_unit]
+				local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 				local num_units = #player_and_bot_units
 
 				for i = 1, num_units, 1 do
@@ -1353,9 +2383,112 @@ ProcFunctions = {
 		local player_unit = player.player_unit
 
 		if Unit.alive(player_unit) then
+			local attack_type = params[2]
 			local career_extension = ScriptUnit.extension(player_unit, "career_system")
 
-			career_extension:reduce_activated_ability_cooldown(buff.bonus)
+			if (attack_type and attack_type ~= "ability") or not attack_type then
+				career_extension:reduce_activated_ability_cooldown(buff.bonus)
+			end
+		end
+	end,
+	victor_bountyhunter_reduce_activated_ability_cooldown_ignore_paused_on_kill = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local killing_blow_table = params[1]
+			local killing_blow_damage_source = killing_blow_table[DamageDataIndex.DAMAGE_SOURCE_NAME]
+			local career_extension = ScriptUnit.extension(player_unit, "career_system")
+
+			if career_extension and killing_blow_damage_source ~= "victor_bountyhunter_career_skill_weapon" then
+				local ignore_paused = true
+
+				career_extension:reduce_activated_ability_cooldown_percent(buff.multiplier, nil, ignore_paused)
+			end
+		end
+	end,
+	victor_bounty_hunter_reduce_activated_ability_cooldown_railgun = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local hit_zone = params[3]
+			local target_number = params[4]
+			local buff_type = params[5]
+
+			if target_number and target_number <= 1 then
+				buff.can_trigger = true
+			end
+
+			if buff.can_trigger and buff_type == "RANGED_ABILITY" and (hit_zone == "head" or hit_zone == "neck") then
+				local career_extension = ScriptUnit.extension(player_unit, "career_system")
+
+				career_extension:reduce_activated_ability_cooldown_percent(buff.multiplier)
+
+				buff.can_trigger = false
+			end
+		end
+	end,
+	kerillian_waywatcher_reduce_activated_ability_cooldown = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local hit_zone = params[3]
+			local target_number = params[4]
+			local buff_type = params[5]
+
+			if target_number and target_number <= 1 then
+				buff.can_trigger = true
+			end
+
+			if buff.can_trigger and buff_type == "RANGED_ABILITY" and (hit_zone == "head" or hit_zone == "neck") then
+				local career_extension = ScriptUnit.extension(player_unit, "career_system")
+
+				career_extension:reduce_activated_ability_cooldown_percent(buff.multiplier)
+
+				buff.can_trigger = false
+			end
+		end
+	end,
+	kerillian_waywatcher_add_extra_shot_buff_on_melee_kill = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if not Unit.alive(player_unit) then
+			return
+		end
+
+		local slot_type = get_killing_blow_slot_type(params)
+		local is_melee = slot_type == "melee"
+
+		if not is_melee then
+			return
+		end
+
+		local buff_template = buff.template
+		local buff_name = buff_template.buff_to_add
+		local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+
+		buff_extension:add_buff(buff_name, {
+			attacker_unit = player_unit
+		})
+	end,
+	reduce_activated_ability_cooldown_boss_hit = function (player, buff, params)
+		local player_unit = player.player_unit
+		local hit_unit = params[1]
+		local target_number = params[2]
+
+		if Unit.alive(player_unit) then
+			local breed = Unit.get_data(hit_unit, "breed")
+
+			if target_number <= 1 then
+				buff.can_trigger = true
+			end
+
+			if breed and breed.boss and buff.can_trigger then
+				local career_extension = ScriptUnit.extension(player_unit, "career_system")
+
+				career_extension:reduce_activated_ability_cooldown(buff.bonus)
+
+				buff.can_trigger = false
+			end
 		end
 	end,
 	reduce_activated_ability_cooldown_with_internal_cooldown_on_crit = function (player, buff, params)
@@ -1384,6 +2517,22 @@ ProcFunctions = {
 			local cooldown_removed = buff.bonus * damage_taken
 
 			career_extension:reduce_activated_ability_cooldown(cooldown_removed)
+		end
+	end,
+	sienna_adept_reduce_activated_ability_cooldown_on_burning_enemy_killed = function (player, buff, params)
+		local player_unit = player.player_unit
+		local killed_unit = params[3]
+
+		if Unit.alive(killed_unit) then
+			local killed_unit_buff_extension = ScriptUnit.has_extension(killed_unit, "buff_system")
+
+			if killed_unit_buff_extension and killed_unit_buff_extension:has_buff_perk("burning") then
+				local career_extension = ScriptUnit.extension(player_unit, "career_system")
+				local template = buff.template
+				local cooldown_removed = template.cooldown_reduction
+
+				career_extension:reduce_activated_ability_cooldown(cooldown_removed)
+			end
 		end
 	end,
 	remove_victor_bountyhunter_passive_crit_buff = function (player, buff, params)
@@ -1438,6 +2587,33 @@ ProcFunctions = {
 			buff_extension:add_buff("bardin_slayer_uninterruptible_on_block_broken_buff")
 		end
 	end,
+	bardin_slayer_add_buff_on_leap_start = function (player, buff, params)
+		local player_unit = player.player_unit
+		local buff_system = Managers.state.entity:system("buff_system")
+		local buff_to_add = buff.template.buff_to_add
+
+		if Unit.alive(player_unit) and Managers.player.is_server then
+			buff.server_buff_id = buff_system:add_buff(player_unit, buff_to_add, player_unit, true)
+		end
+	end,
+	bardin_slayer_remove_buff_on_leap_finished = function (player, buff, params)
+		local player_unit = player.player_unit
+		local buff_system = Managers.state.entity:system("buff_system")
+		local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
+		local parent_buff_name = buff.template.parent_buff
+
+		if Unit.alive(player_unit) and Managers.player.is_server then
+			local parent_buff = buff_extension:get_non_stacking_buff(parent_buff_name)
+
+			if parent_buff then
+				local sub_buff_id = parent_buff.server_buff_id
+
+				if sub_buff_id then
+					buff_system:remove_server_controlled_buff(player_unit, sub_buff_id)
+				end
+			end
+		end
+	end,
 	gain_markus_knight_uninterruptible_on_block_broken_buff = function (player, buff, params)
 		local player_unit = player.player_unit
 
@@ -1467,47 +2643,45 @@ ProcFunctions = {
 	end,
 	victor_bountyhunter_activate_passive_on_melee_kill = function (player, buff, params)
 		local player_unit = player.player_unit
+
+		if not Unit.alive(player_unit) then
+			return
+		end
+
 		local killing_blow_data = params[1]
 
 		if not killing_blow_data then
 			return
 		end
 
-		local master_list_key = killing_blow_data[DamageDataIndex.DAMAGE_SOURCE_NAME]
-
-		if not master_list_key then
-			return
-		end
-
-		local master_list_data = ItemMasterList[master_list_key]
-
-		if not master_list_data then
-			return
-		end
-
-		local slot_type = master_list_data.slot_type
-
-		if not slot_type then
-			return
-		end
-
 		local damage_type = killing_blow_data[DamageDataIndex.DAMAGE_TYPE]
 		local rapier_pistol = damage_type == "shot_carbine"
-		local melee_weapon = slot_type == "melee" and not rapier_pistol
 
-		if melee_weapon and Unit.alive(player_unit) then
-			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-			local cooldown_buff = buff_extension:get_non_stacking_buff("victor_bountyhunter_passive_crit_cooldown")
-			local talent_extension = ScriptUnit.extension(player_unit, "talent_system")
-
-			if talent_extension:has_talent("victor_bountyhunter_passive_reduced_cooldown", "witch_hunter", true) then
-				cooldown_buff = buff_extension:get_non_stacking_buff("victor_bountyhunter_passive_reduced_cooldown")
-			end
-
-			if cooldown_buff then
-				cooldown_buff.duration = 0
-			end
+		if rapier_pistol then
+			return
 		end
+
+		local slot_type = get_killing_blow_slot_type(params)
+		local is_melee = slot_type == "melee"
+
+		if not is_melee then
+			return
+		end
+
+		local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+		local cooldown_buff = buff_extension:get_non_stacking_buff("victor_bountyhunter_passive_crit_cooldown")
+		local talent_extension = ScriptUnit.extension(player_unit, "talent_system")
+
+		if talent_extension:has_talent("victor_bountyhunter_passive_reduced_cooldown", "witch_hunter", true) then
+			cooldown_buff = buff_extension:get_non_stacking_buff("victor_bountyhunter_passive_reduced_cooldown")
+		end
+
+		if cooldown_buff then
+			cooldown_buff.duration = 0
+		end
+	end,
+	dummy_function = function (player, buff, params)
+		return true
 	end
 }
 MaxStackFunctions = {
@@ -1595,6 +2769,17 @@ InfiniteBurnDotLookup = {
 	beam_burning_dot = "beam_burning_dot_infinite"
 }
 BuffTemplates = {
+	end_zone_invincibility = {
+		buffs = {
+			{
+				refresh_durations = true,
+				name = "end_zone_invincibility",
+				duration = 1,
+				max_stacks = 1,
+				perk = "invincibility"
+			}
+		}
+	},
 	twitch_damage_boost = {
 		buffs = {
 			{
@@ -1657,13 +2842,13 @@ BuffTemplates = {
 	twitch_health_regen = {
 		buffs = {
 			{
-				update_func = "health_regen_update",
+				update_func = "health_regen_all_update",
 				heal_type = "health_regen",
 				name = "twitch_health_regen",
 				icon = "bardin_ranger_activated_ability_heal",
 				time_between_heal = 2,
 				max_stacks = 1,
-				apply_buff_func = "health_regen_start",
+				apply_buff_func = "health_regen_all_start",
 				heal = 1,
 				duration = 60
 			}
@@ -1701,12 +2886,12 @@ BuffTemplates = {
 	twitch_power_boost_dismember = {
 		buffs = {
 			{
-				duration = 60,
+				icon = "markus_huntsman_activated_ability",
 				multiplier = 0.25,
 				stat_buff = "power_level",
 				perk = "bloody_mess",
 				max_stacks = 1,
-				icon = "markus_huntsman_activated_ability"
+				duration = 60
 			}
 		}
 	},
@@ -2358,6 +3543,7 @@ BuffTemplates = {
 				death_flow_event = "poisoned_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				perk = "poisoned",
 				time_between_dot_damages = 0.6,
 				damage_profile = "poison_direct",
 				update_func = "apply_dot_damage",
@@ -2375,6 +3561,7 @@ BuffTemplates = {
 				death_flow_event = "poisoned_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				perk = "poisoned",
 				time_between_dot_damages = 0.75,
 				damage_profile = "poison",
 				update_func = "apply_dot_damage",
@@ -2382,17 +3569,18 @@ BuffTemplates = {
 			}
 		}
 	},
-	weapon_bleed_dot_test = {
+	weapon_bleed_dot_dagger = {
 		buffs = {
 			{
 				damage_profile = "bleed",
-				name = "weapon bleed dot test",
-				duration = 5,
+				name = "weapon bleed dot dagger",
+				duration = 2,
+				perk = "bleeding",
 				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
-				time_between_dot_damages = 1,
+				time_between_dot_damages = 0.75,
 				hit_zone = "neck",
-				max_stacks = 1,
+				max_stacks = 3,
 				update_func = "apply_dot_damage"
 			}
 		}
@@ -2401,8 +3589,9 @@ BuffTemplates = {
 		buffs = {
 			{
 				damage_profile = "bleed_maidenguard",
-				name = "weapon bleed dot test",
+				name = "weapon bleed dot maidenguard",
 				duration = 3,
+				perk = "bleeding",
 				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
 				time_between_dot_damages = 1,
@@ -2418,6 +3607,7 @@ BuffTemplates = {
 				duration = 10,
 				name = "kerillian_shade_ability_dot",
 				time_between_dot_damages = 1,
+				perk = "poisoned",
 				damage_profile = "poison",
 				update_func = "apply_dot_damage",
 				apply_buff_func = "start_dot_damage"
@@ -2442,6 +3632,7 @@ BuffTemplates = {
 				death_flow_event = "burn_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				perk = "burning",
 				time_between_dot_damages = 0.1,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
@@ -2459,6 +3650,7 @@ BuffTemplates = {
 				death_flow_event = "burn_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				perk = "burning",
 				time_between_dot_damages = 0.1,
 				damage_type = "burninating",
 				max_stacks = 1,
@@ -2476,6 +3668,7 @@ BuffTemplates = {
 				death_flow_event = "burn_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				perk = "burning",
 				time_between_dot_damages = 1,
 				damage_type = "burninating",
 				damage_profile = "beam_burning_dot",
@@ -2493,6 +3686,7 @@ BuffTemplates = {
 				death_flow_event = "burn_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				perk = "burning",
 				time_between_dot_damages = 1,
 				damage_type = "burninating",
 				max_stacks = 1,
@@ -2513,6 +3707,7 @@ BuffTemplates = {
 				max_stacks = 1,
 				refresh_durations = true,
 				time_between_dot_damages = 0.65,
+				perk = "burning",
 				damage_type = "burninating",
 				damage_profile = "flamethrower_burning_dot",
 				update_func = "apply_dot_damage"
@@ -2522,17 +3717,18 @@ BuffTemplates = {
 	burning_flamethrower_dot_infinite = {
 		buffs = {
 			{
-				damage_profile = "flamethrower_burning_dot",
+				apply_buff_func = "start_dot_damage",
 				name = "burning dot",
-				end_flow_event = "smoke",
 				start_flow_event = "burn_infinity",
 				death_flow_event = "burn_death",
+				max_stacks = 1,
 				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage",
+				end_flow_event = "smoke",
 				refresh_durations = true,
+				perk = "burning",
 				time_between_dot_damages = 0.65,
 				damage_type = "burninating",
-				max_stacks = 1,
+				damage_profile = "flamethrower_burning_dot",
 				update_func = "apply_dot_damage"
 			}
 		}
@@ -2544,6 +3740,7 @@ BuffTemplates = {
 				name = "burning dot",
 				start_flow_event = "burn",
 				death_flow_event = "burn_death",
+				perk = "burning",
 				remove_buff_func = "remove_dot_damage",
 				end_flow_event = "smoke",
 				time_between_dot_damages = 0.25,
@@ -2563,6 +3760,7 @@ BuffTemplates = {
 				death_flow_event = "burn_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				perk = "burning",
 				time_between_dot_damages = 0.25,
 				damage_type = "burninating",
 				max_stacks = 1,
@@ -2580,6 +3778,7 @@ BuffTemplates = {
 				death_flow_event = "burn_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				perk = "burning",
 				time_between_dot_damages = 1,
 				damage_type = "burninating",
 				damage_profile = "burning_dot_firegrenade",
@@ -2597,7 +3796,28 @@ BuffTemplates = {
 				death_flow_event = "burn_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				perk = "burning",
 				time_between_dot_damages = 1.5,
+				damage_type = "burninating",
+				damage_profile = "burning_dot",
+				update_func = "apply_dot_damage"
+			}
+		}
+	},
+	burning_1W_dot_unchained_push = {
+		buffs = {
+			{
+				duration = 2,
+				name = "burning dot",
+				end_flow_event = "smoke",
+				start_flow_event = "burn",
+				death_flow_event = "burn_death",
+				remove_buff_func = "remove_dot_damage",
+				apply_buff_func = "start_dot_damage",
+				perk = "burning",
+				refresh_durations = true,
+				time_between_dot_damages = 1.5,
+				max_stacks = 1,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage"
@@ -2614,6 +3834,7 @@ BuffTemplates = {
 				death_flow_event = "burn_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				perk = "burning",
 				time_between_dot_damages = 1.5,
 				damage_type = "burninating",
 				max_stacks = 1,
@@ -2631,7 +3852,8 @@ BuffTemplates = {
 				death_flow_event = "burn_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
-				time_between_dot_damages = 1.25,
+				perk = "burning",
+				time_between_dot_damages = 1,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage"
@@ -2648,26 +3870,11 @@ BuffTemplates = {
 				death_flow_event = "burn_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
-				time_between_dot_damages = 1.25,
+				perk = "burning",
+				time_between_dot_damages = 1,
 				damage_type = "burninating",
 				max_stacks = 1,
 				update_func = "apply_dot_damage"
-			}
-		}
-	},
-	globadier_gas_dot = {
-		buffs = {
-			{
-				damage_scale = 0.1,
-				name = "globadier_gas_dot",
-				duration = 5,
-				player_screen_effect_name = "fx/screenspace_poison_globe_impact",
-				remove_buff_func = "remove_dot_damage_globadier_gas",
-				apply_buff_func = "start_dot_damage_globadier_gas",
-				time_between_dot_damages = 1,
-				damage_type = "globadier_gas_dot",
-				update_func = "apply_dot_damage_globadier_gas",
-				bonus = 1
 			}
 		}
 	},
@@ -2763,21 +3970,7 @@ BuffTemplates = {
 						1,
 						1
 					},
-					survival_hard = {
-						1,
-						1,
-						0,
-						1,
-						1
-					},
 					harder = {
-						1,
-						1,
-						0,
-						2,
-						1
-					},
-					survival_harder = {
 						1,
 						1,
 						0,
@@ -2791,7 +3984,21 @@ BuffTemplates = {
 						4,
 						1
 					},
-					survival_hardest = {
+					cataclysm = {
+						1,
+						1,
+						0,
+						1,
+						1
+					},
+					cataclysm_2 = {
+						1,
+						1,
+						0,
+						2,
+						1
+					},
+					cataclysm_3 = {
 						1,
 						1,
 						0,
@@ -2872,6 +4079,83 @@ BuffTemplates = {
 			}
 		}
 	},
+	dummy_stagger = {
+		buffs = {
+			{
+				refresh_durations = true,
+				name = "dummy_stagger",
+				stat_buff = "dummy_stagger",
+				max_stacks = 2,
+				duration = 1,
+				bonus = 1
+			}
+		}
+	},
+	linesman_unbalance = {
+		buffs = {
+			{
+				max_display_multiplier = 0.6,
+				name = "linesman_unbalance",
+				perk = "linesman_stagger_damage",
+				max_stacks = 1,
+				display_multiplier = 0.2
+			}
+		}
+	},
+	smiter_unbalance = {
+		buffs = {
+			{
+				max_display_multiplier = 0.4,
+				name = "smiter_unbalance",
+				display_multiplier = 0.2,
+				perk = "smiter_stagger_damage"
+			}
+		}
+	},
+	finesse_unbalance = {
+		buffs = {
+			{
+				max_display_multiplier = 0.4,
+				name = "finesse_unbalance",
+				display_multiplier = 0.2,
+				perk = "finesse_stagger_damage"
+			}
+		}
+	},
+	tank_unbalance = {
+		buffs = {
+			{
+				max_display_multiplier = 0.4,
+				name = "tank_unbalance",
+				event_buff = true,
+				event = "on_stagger",
+				display_multiplier = 0.2,
+				buff_func = ProcFunctions.unbalance_debuff_on_stagger
+			}
+		}
+	},
+	tank_unbalance_buff = {
+		buffs = {
+			{
+				refresh_durations = true,
+				name = "tank_unbalance_buff",
+				stat_buff = "unbalanced_damage_taken",
+				max_stacks = 1,
+				duration = 2,
+				bonus = 0.1
+			}
+		}
+	},
+	power_level_unbalance = {
+		buffs = {
+			{
+				max_stacks = 1,
+				name = "power_level_unbalance",
+				stat_buff = "power_level",
+				multiplier = 0.075
+			}
+		}
+	},
 	defence_debuff_enemies = {
 		buffs = {
 			{
@@ -2942,6 +4226,254 @@ BuffTemplates = {
 				multiplier = 1,
 				name = "damage_taken_from_powerful_elites",
 				stat_buff = "damage_taken_elites"
+			}
+		}
+	},
+	mutator_life_damage_on_hit = {
+		buffs = {
+			{
+				name = "mutator_life_damage_on_hit",
+				event_buff = true,
+				event = "on_hit",
+				bonus = 1,
+				buff_func = ProcFunctions.damage_attacker
+			}
+		}
+	},
+	mutator_life_health_regeneration = {
+		buffs = {
+			{
+				name = "mutator_life_health_regeneration",
+				event_buff = true,
+				event = "on_damage_taken",
+				update_func = "mutator_life_health_regeneration_update",
+				apply_buff_func = "mutator_life_health_regeneration_start",
+				buff_func = ProcFunctions.life_mutator_remove_regen
+			}
+		}
+	},
+	mutator_life_health_regeneration_stacks = {
+		buffs = {
+			{
+				heal = 1,
+				name = "mutator_life_health_regeneration_stacks",
+				heal_type = "health_regen",
+				time_between_heal = 1,
+				update_func = "health_regen_update",
+				apply_buff_func = "health_regen_start"
+			}
+		}
+	},
+	mutator_life_thorns_poison = {
+		buffs = {
+			{
+				slowdown_buff_name = "cemetery_floor_plague_slowdown",
+				name = "mutator_life_thorns_poison",
+				apply_buff_func = "apply_mutator_life_thorns_poison",
+				refresh_durations = true,
+				remove_buff_func = "remove_mutator_life_thorns_poison",
+				dormant = true,
+				time_between_dot_damages = 0.01,
+				debuff = true,
+				max_stacks = 1,
+				update_func = "update_mutator_life_thorns_poison",
+				difficulty_damage = {
+					harder = 6,
+					hard = 4,
+					normal = 2,
+					hardest = 8,
+					cataclysm = 12,
+					cataclysm_3 = 20,
+					cataclysm_2 = 16,
+					easy = 2
+				}
+			}
+		}
+	},
+	mutator_fire_mutator_bomb = {
+		buffs = {
+			{
+				update_func = "update_fire_mutator_bomb",
+				name = "mutator_fire_mutator_bomb",
+				icon = "buff_icon_mutator_ticking_bomb",
+				max_stacks = 1,
+				remove_buff_func = "remove_fire_mutator_bomb",
+				apply_buff_func = "apply_fire_mutator_bomb"
+			}
+		}
+	},
+	mutator_fire_player_dot = {
+		buffs = {
+			{
+				update_func = "apply_dot_damage",
+				name = "mutator_fire_player_dot",
+				icon = "buff_icon_mutator_ticking_bomb",
+				time_between_dot_damages = 1,
+				damage_profile = "mutator_player_dot",
+				remove_buff_func = "remove_dot_damage",
+				apply_buff_func = "start_dot_damage"
+			}
+		}
+	},
+	mutator_fire_enemy_dot = {
+		buffs = {
+			{
+				apply_buff_func = "start_dot_damage",
+				name = "mutator_fire_enemy_dot",
+				start_flow_event = "burn",
+				death_flow_event = "burn_death",
+				remove_buff_func = "remove_dot_damage",
+				end_flow_event = "smoke",
+				time_between_dot_damages = 1,
+				damage_profile = "mutator_player_dot",
+				update_func = "apply_dot_damage"
+			}
+		}
+	},
+	mutator_metal_blade_dance = {
+		buffs = {
+			{
+				activation_effect = "fx/screenspace_potion_01",
+				name = "mutator_metal_blade_dance",
+				remove_buff_func = "remove_blade_dance",
+				duration = 16,
+				icon = "teammate_consumable_icon_defence",
+				refresh_durations = true,
+				apply_buff_func = "start_blade_dance",
+				max_stacks = 1,
+				update_func = "update_blade_dance"
+			}
+		}
+	},
+	mutator_light_debuff = {
+		buffs = {
+			{
+				perk = "mutator_curse",
+				name = "mutator_light_debuff",
+				debuff = true,
+				icon = "buff_icon_mutator_icon_slayer_curse",
+				dormant = true
+			},
+			{
+				multiplier = 0.015,
+				name = "death_attack_speed_buff",
+				stat_buff = "attack_speed"
+			}
+		}
+	},
+	mutator_light_cleansing_curse_buff = {
+		buffs = {
+			{
+				screenspace_effect_name = "fx/screenspace_light_beacon_01",
+				name = "mutator_light_cleansing_curse_buff",
+				refresh_durations = true,
+				duration = 1,
+				apply_buff_func = "apply_screenspace_effect"
+			}
+		}
+	},
+	mutator_beasts_totem_buff = {
+		buffs = {
+			{
+				wind_mutator = true,
+				name = "mutator_beasts_totem_buff",
+				stat_buff = "damage_taken",
+				refresh_durations = true,
+				remove_buff_func = "remove_beasts_totem_buff",
+				apply_buff_func = "apply_beasts_totem_buff",
+				max_stacks = 1,
+				icon = "buff_icon_mutator_ticking_bomb",
+				reapply_buff_func = "apply_beasts_totem_buff"
+			}
+		}
+	},
+	metal_mutator_gromril_armour = {
+		buffs = {
+			{
+				icon = "teammate_consumable_icon_defence",
+				name = "metal_mutator_gromril_armour",
+				max_stacks = 10,
+				remove_buff_func = "remove_metal_mutator_gromril_armour",
+				dormant = true
+			}
+		}
+	},
+	metal_mutator_damage_boost = {
+		activation_effect = "fx/screenspace_potion_01",
+		deactivation_sound = "hud_gameplay_stance_deactivate",
+		activation_sound = "hud_gameplay_stance_smiter_activate",
+		buffs = {
+			{
+				icon = "icon_wpn_emp_mace_04_t3",
+				name = "armor penetration",
+				stat_buff = "increased_weapon_damage",
+				refresh_durations = true,
+				max_stacks = 1,
+				duration = 8
+			},
+			{
+				multiplier = 0.5,
+				name = "metal_mutator_unbalanced_damage_dealt",
+				stat_buff = "unbalanced_damage_dealt",
+				max_stacks = 1,
+				duration = 8
+			}
+		}
+	},
+	mutator_death_attack_speed_player_buff = {
+		buffs = {
+			{
+				activation_effect = "fx/screenspace_potion_03",
+				multiplier = 0.25,
+				stat_buff = "attack_speed",
+				name = "death_attack_speed_buff",
+				icon = "buff_icon_mutator_icon_slayer_curse"
+			},
+			{
+				name = "increased_damage",
+				multiplier = 0.25,
+				stat_buff = "increased_weapon_damage",
+				max_stacks = 1,
+				icon = "icon_bw_1h_crowbill_01"
+			}
+		}
+	},
+	mutator_shadow_damage_reduction = {
+		buffs = {
+			{
+				wind_mutator = true,
+				name = "mutator_shadow_damage_reduction",
+				stat_buff = "damage_taken"
+			}
+		}
+	},
+	mutator_metal_killing_blow = {
+		buffs = {
+			{
+				num_stacks = 15,
+				name = "mutator_metal_killing_blow",
+				event_buff = true,
+				event = "on_hit",
+				bonus = 100,
+				buff_func = ProcFunctions.metal_mutator_stacks_on_hit,
+				breeds = {
+					"skaven_slave",
+					"skaven_clan_rat",
+					"skaven_clan_rat_with_shield",
+					"skaven_plague_monk",
+					"skaven_pack_master",
+					"skaven_gutter_runner",
+					"skaven_storm_vermin",
+					"skaven_storm_vermin_with_shield",
+					"skaven_poison_wind_globadier",
+					"chaos_fanatic",
+					"chaos_marauder",
+					"chaos_marauder_with_shield",
+					"chaos_raider",
+					"chaos_berzerker",
+					"chaos_corruptor_sorcerer",
+					"chaos_vortex_sorcerer"
+				}
 			}
 		}
 	},
@@ -3844,25 +5376,11 @@ BuffTemplates = {
 						7.5,
 						1
 					},
-					survival_hard = {
-						1,
-						1,
-						0,
-						7,
-						1
-					},
 					harder = {
 						1,
 						1,
 						0,
 						8.5,
-						1
-					},
-					survival_harder = {
-						1,
-						1,
-						0,
-						8,
 						1
 					},
 					hardest = {
@@ -3872,7 +5390,21 @@ BuffTemplates = {
 						9.5,
 						1
 					},
-					survival_hardest = {
+					cataclysm = {
+						1,
+						1,
+						0,
+						7,
+						1
+					},
+					cataclysm_2 = {
+						1,
+						1,
+						0,
+						8,
+						1
+					},
+					cataclysm_3 = {
 						1,
 						1,
 						0,
@@ -3901,7 +5433,7 @@ BuffTemplates = {
 				max_stacks = 1,
 				icon = "troll_vomit_debuff",
 				difficulty_damage = {
-					normal = {
+					easy = {
 						3,
 						1,
 						0,
@@ -3922,26 +5454,12 @@ BuffTemplates = {
 						7.5,
 						2
 					},
-					survival_hard = {
-						4,
-						2,
-						0,
-						7,
-						3
-					},
 					harder = {
 						5,
 						3,
 						0,
 						8.5,
 						4
-					},
-					survival_harder = {
-						5,
-						3,
-						0,
-						8,
-						3
 					},
 					hardest = {
 						7.5,
@@ -3950,7 +5468,21 @@ BuffTemplates = {
 						9.5,
 						5
 					},
-					survival_hardest = {
+					cataclysm = {
+						4,
+						2,
+						0,
+						7,
+						3
+					},
+					cataclysm_2 = {
+						5,
+						3,
+						0,
+						8,
+						3
+					},
+					cataclysm_3 = {
 						7.5,
 						4,
 						0,
@@ -4000,25 +5532,11 @@ BuffTemplates = {
 						7.5,
 						2
 					},
-					survival_hard = {
-						12,
-						2,
-						0,
-						7,
-						2
-					},
 					harder = {
 						15,
 						3,
 						0,
 						8.5,
-						3
-					},
-					survival_harder = {
-						15,
-						3,
-						0,
-						8,
 						3
 					},
 					hardest = {
@@ -4028,7 +5546,21 @@ BuffTemplates = {
 						9.5,
 						4
 					},
-					survival_hardest = {
+					cataclysm = {
+						12,
+						2,
+						0,
+						7,
+						2
+					},
+					cataclysm_2 = {
+						15,
+						3,
+						0,
+						8,
+						3
+					},
+					cataclysm_3 = {
 						20,
 						4,
 						0,
@@ -4163,21 +5695,7 @@ BuffTemplates = {
 						1,
 						1
 					},
-					survival_hard = {
-						1,
-						1,
-						0,
-						1,
-						1
-					},
 					harder = {
-						1,
-						1,
-						0,
-						2,
-						1
-					},
-					survival_harder = {
 						1,
 						1,
 						0,
@@ -4191,7 +5709,21 @@ BuffTemplates = {
 						4,
 						1
 					},
-					survival_hardest = {
+					cataclysm = {
+						1,
+						1,
+						0,
+						1,
+						1
+					},
+					cataclysm_2 = {
+						1,
+						1,
+						0,
+						2,
+						1
+					},
+					cataclysm_3 = {
 						1,
 						1,
 						0,
@@ -4328,21 +5860,7 @@ BuffTemplates = {
 						1,
 						1
 					},
-					survival_hard = {
-						1,
-						1,
-						0,
-						1,
-						1
-					},
 					harder = {
-						1,
-						1,
-						0,
-						2,
-						1
-					},
-					survival_harder = {
 						1,
 						1,
 						0,
@@ -4356,7 +5874,21 @@ BuffTemplates = {
 						4,
 						1
 					},
-					survival_hardest = {
+					cataclysm = {
+						1,
+						1,
+						0,
+						4,
+						1
+					},
+					cataclysm_2 = {
+						1,
+						1,
+						0,
+						4,
+						1
+					},
+					cataclysm_3 = {
 						1,
 						1,
 						0,
@@ -4448,6 +5980,92 @@ BuffTemplates = {
 				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
 				refresh_durations = true,
+				path_to_movement_setting_to_modify = {
+					"dodging",
+					"distance_modifier"
+				}
+			}
+		}
+	},
+	mutator_life_poison = {
+		buffs = {
+			{
+				max_stacks = 1,
+				name = "mutator_life_poison",
+				apply_buff_func = "apply_mutator_life_poison_buff",
+				refresh_durations = true
+			},
+			{
+				name = "decrease_speed_mutator_life_poison",
+				multiplier = 0.5,
+				lerp_time = 0.1,
+				max_stacks = 1,
+				remove_buff_func = "remove_movement_buff",
+				apply_buff_func = "apply_movement_buff",
+				refresh_durations = true,
+				path_to_movement_setting_to_modify = {
+					"move_speed"
+				}
+			},
+			{
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				multiplier = 0.5,
+				name = "decrease_crouch_speed_mutator_life_poison",
+				refresh_durations = true,
+				remove_buff_func = "remove_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_crouch_movement",
+				lerp_time = 0.1,
+				max_stacks = 1,
+				update_func = "update_charging_action_lerp_movement_buff",
+				path_to_movement_setting_to_modify = {
+					"crouch_move_speed"
+				}
+			},
+			{
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				multiplier = 0.5,
+				name = "decrease_walk_speed_mutator_life_poison",
+				refresh_durations = true,
+				remove_buff_func = "remove_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_walk_movement",
+				lerp_time = 0.1,
+				max_stacks = 1,
+				update_func = "update_charging_action_lerp_movement_buff",
+				path_to_movement_setting_to_modify = {
+					"walk_move_speed"
+				}
+			},
+			{
+				name = "decrease_jump_speed_mutator_life_poison",
+				multiplier = 0.5,
+				refresh_durations = true,
+				max_stacks = 1,
+				remove_buff_func = "remove_movement_buff",
+				apply_buff_func = "apply_movement_buff",
+				path_to_movement_setting_to_modify = {
+					"jump",
+					"initial_vertical_speed"
+				}
+			},
+			{
+				name = "decrease_dodge_speed_mutator_life_poison",
+				multiplier = 0.6,
+				refresh_durations = true,
+				max_stacks = 1,
+				remove_buff_func = "remove_movement_buff",
+				apply_buff_func = "apply_movement_buff",
+				path_to_movement_setting_to_modify = {
+					"dodging",
+					"speed_modifier"
+				}
+			},
+			{
+				name = "decrease_dodge_distance_mutator_life_poison",
+				multiplier = 0.6,
+				refresh_durations = true,
+				max_stacks = 1,
+				remove_buff_func = "remove_movement_buff",
+				apply_buff_func = "apply_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
 					"distance_modifier"
@@ -4670,25 +6288,11 @@ BuffTemplates = {
 						3,
 						1
 					},
-					survival_hard = {
-						1,
-						1,
-						0,
-						1,
-						1
-					},
 					harder = {
 						1,
 						1,
 						0,
 						4,
-						1
-					},
-					survival_harder = {
-						1,
-						1,
-						0,
-						2,
 						1
 					},
 					hardest = {
@@ -4698,7 +6302,21 @@ BuffTemplates = {
 						6,
 						1
 					},
-					survival_hardest = {
+					cataclysm = {
+						1,
+						1,
+						0,
+						1,
+						1
+					},
+					cataclysm_2 = {
+						1,
+						1,
+						0,
+						2,
+						1
+					},
+					cataclysm_3 = {
 						1,
 						1,
 						0,
@@ -4780,21 +6398,7 @@ BuffTemplates = {
 						1,
 						1
 					},
-					survival_hard = {
-						1,
-						1,
-						0,
-						1,
-						1
-					},
 					harder = {
-						1,
-						1,
-						0,
-						2,
-						1
-					},
-					survival_harder = {
 						1,
 						1,
 						0,
@@ -4808,7 +6412,21 @@ BuffTemplates = {
 						4,
 						1
 					},
-					survival_hardest = {
+					cataclysm = {
+						1,
+						1,
+						0,
+						1,
+						1
+					},
+					cataclysm_2 = {
+						1,
+						1,
+						0,
+						2,
+						1
+					},
+					cataclysm_3 = {
 						1,
 						1,
 						0,
@@ -4892,21 +6510,7 @@ BuffTemplates = {
 						1,
 						1
 					},
-					survival_hard = {
-						1,
-						1,
-						0,
-						1,
-						1
-					},
 					harder = {
-						1,
-						1,
-						0,
-						2,
-						1
-					},
-					survival_harder = {
 						1,
 						1,
 						0,
@@ -4920,7 +6524,21 @@ BuffTemplates = {
 						4,
 						1
 					},
-					survival_hardest = {
+					cataclysm = {
+						1,
+						1,
+						0,
+						4,
+						1
+					},
+					cataclysm_2 = {
+						1,
+						1,
+						0,
+						4,
+						1
+					},
+					cataclysm_3 = {
 						1,
 						1,
 						0,
@@ -5100,25 +6718,11 @@ BuffTemplates = {
 						5,
 						1
 					},
-					survival_hard = {
-						1,
-						1,
-						0,
-						1,
-						1
-					},
 					harder = {
 						1,
 						1,
 						0,
 						8,
-						1
-					},
-					survival_harder = {
-						1,
-						1,
-						0,
-						2,
 						1
 					},
 					hardest = {
@@ -5128,11 +6732,25 @@ BuffTemplates = {
 						16,
 						1
 					},
-					survival_hardest = {
+					cataclysm = {
 						1,
 						1,
 						0,
-						4,
+						16,
+						1
+					},
+					cataclysm_2 = {
+						1,
+						1,
+						0,
+						16,
+						1
+					},
+					cataclysm_3 = {
+						1,
+						1,
+						0,
+						16,
 						1
 					}
 				}
@@ -5255,21 +6873,7 @@ BuffTemplates = {
 						2.5,
 						4
 					},
-					survival_hard = {
-						4,
-						3,
-						0,
-						2.5,
-						4
-					},
 					harder = {
-						6,
-						5,
-						0,
-						4.5,
-						5
-					},
-					survival_harder = {
 						6,
 						5,
 						0,
@@ -5283,7 +6887,21 @@ BuffTemplates = {
 						8.5,
 						6
 					},
-					survival_hardest = {
+					cataclysm = {
+						4,
+						3,
+						0,
+						8.5,
+						4
+					},
+					cataclysm_2 = {
+						6,
+						5,
+						0,
+						8.5,
+						5
+					},
+					cataclysm_3 = {
 						8,
 						8,
 						0,
@@ -5329,21 +6947,7 @@ BuffTemplates = {
 						2,
 						2
 					},
-					survival_hard = {
-						4,
-						2,
-						0,
-						2,
-						2
-					},
 					harder = {
-						5,
-						3,
-						0,
-						3,
-						3
-					},
-					survival_harder = {
 						5,
 						3,
 						0,
@@ -5357,7 +6961,21 @@ BuffTemplates = {
 						5,
 						4
 					},
-					survival_hardest = {
+					cataclysm = {
+						4,
+						2,
+						0,
+						5,
+						2
+					},
+					cataclysm_2 = {
+						5,
+						3,
+						0,
+						5,
+						3
+					},
+					cataclysm_3 = {
 						6,
 						4,
 						0,
@@ -5436,21 +7054,7 @@ BuffTemplates = {
 						1,
 						1
 					},
-					survival_hard = {
-						1,
-						1,
-						0,
-						1,
-						1
-					},
 					harder = {
-						1,
-						1,
-						0,
-						2,
-						1
-					},
-					survival_harder = {
 						1,
 						1,
 						0,
@@ -5464,7 +7068,21 @@ BuffTemplates = {
 						4,
 						1
 					},
-					survival_hardest = {
+					cataclysm = {
+						1,
+						1,
+						0,
+						1,
+						1
+					},
+					cataclysm_2 = {
+						1,
+						1,
+						0,
+						2,
+						1
+					},
+					cataclysm_3 = {
 						1,
 						1,
 						0,
@@ -5668,6 +7286,8 @@ require("scripts/unit_extensions/default_player_unit/buffs/buff_utils")
 require("scripts/managers/talents/talent_settings")
 require("scripts/settings/equipment/weapon_properties")
 require("scripts/settings/equipment/weapon_traits")
+require("scripts/settings/equipment/weave_properties")
+require("scripts/settings/equipment/weave_traits")
 table.merge_recursive(BuffTemplates, OldTalentBuffTemplates)
 
 for _, buffs in pairs(TalentBuffTemplates) do
@@ -5676,6 +7296,8 @@ end
 
 table.merge_recursive(BuffTemplates, WeaponProperties.buff_templates)
 table.merge_recursive(BuffTemplates, WeaponTraits.buff_templates)
+table.merge_recursive(BuffTemplates, WeaveProperties.buff_templates)
+table.merge_recursive(BuffTemplates, WeaveTraits.buff_templates)
 
 for _, dlc in pairs(DLCSettings) do
 	local buff_templates = dlc.buff_templates

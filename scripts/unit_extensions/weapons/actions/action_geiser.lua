@@ -10,6 +10,8 @@ ActionGeiser.init = function (self, world, item_name, is_server, owner_unit, dam
 end
 
 ActionGeiser.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
+	ActionGeiser.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level)
+
 	self.current_action = new_action
 	local owner_unit = self.owner_unit
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action)
@@ -29,7 +31,12 @@ ActionGeiser.client_owner_start_action = function (self, new_action, t, chain_ac
 
 	self._damage_buffer_index = 1
 	self._check_buffs = true
+	self._spell_proc_time = new_action.spell_proc_time and t + new_action.spell_proc_time
 	self._is_critical_strike = is_critical_strike
+
+	if self.charge_value and self.charge_value >= 1 then
+		buff_extension:trigger_procs("on_full_charge_action", new_action, t, chain_action_data)
+	end
 end
 
 ActionGeiser.client_owner_post_update = function (self, dt, t, world, can_damage)
@@ -52,6 +59,16 @@ ActionGeiser.client_owner_post_update = function (self, dt, t, world, can_damage
 			self.state = "shot"
 		end
 	end
+
+	self:_check_on_spell_used_proc(t)
+end
+
+ActionGeiser._check_on_spell_used_proc = function (self, t)
+	if self._spell_proc_time and self._spell_proc_time <= t then
+		self.owner_buff_extension:trigger_procs("on_spell_used", self.current_action)
+
+		self._spell_proc_time = nil
+	end
 end
 
 ActionGeiser.finish = function (self, reason)
@@ -65,6 +82,8 @@ ActionGeiser.finish = function (self, reason)
 	if hud_extension then
 		hud_extension.show_critical_indication = false
 	end
+
+	self:_check_on_spell_used_proc(math.huge)
 end
 
 ActionGeiser.fire = function (self, reason)
@@ -132,6 +151,8 @@ ActionGeiser.fire = function (self, reason)
 	local hit_units = {}
 	local damage_profile_name = current_action.damage_profile or "default"
 	local damage_profile = DamageProfileTemplates[damage_profile_name]
+	local side_manager = Managers.state.side
+	local side = side_manager.side_by_unit[owner_unit]
 
 	if num_actors > 0 then
 		for i = 1, num_actors, 1 do
@@ -141,37 +162,45 @@ ActionGeiser.fire = function (self, reason)
 			local breed = Unit.get_data(hit_unit, "breed")
 			local dummy = not breed and Unit.get_data(hit_unit, "is_dummy")
 
-			if not hit_units[hit_unit] and (breed or dummy or (table.contains(PLAYER_AND_BOT_UNITS, hit_unit) and not ignore_hitting_allies)) then
-				local attack_vector = hit_position - source_pos
-				local attack_distance = Vector3.length(attack_vector)
-				local target_index = nil
+			if not hit_units[hit_unit] then
+				local is_enemy = side_manager:is_enemy(owner_unit, hit_unit)
+				local hit_unit_side = side_manager.side_by_unit[hit_unit]
+				local is_friend = side == hit_unit_side
+				local friendly_fire = is_friend and not ignore_hitting_allies
+				local should_hit = dummy or is_enemy or friendly_fire
 
-				if damage_profile.target_radius and damage_profile.targets then
-					local proximity_factor = attack_distance / radius
-					local shield_blocked = AiUtils.attack_is_shield_blocked(hit_unit, owner_unit)
+				if should_hit then
+					local attack_vector = hit_position - source_pos
+					local attack_distance = Vector3.length(attack_vector)
+					local target_index = nil
 
-					if shield_blocked then
-						proximity_factor = math.lerp(proximity_factor, 1, 0.5)
-					end
+					if damage_profile.target_radius and damage_profile.targets then
+						local proximity_factor = attack_distance / radius
+						local shield_blocked = AiUtils.attack_is_shield_blocked(hit_unit, owner_unit)
 
-					for index, target_radius in pairs(damage_profile.target_radius) do
-						if proximity_factor <= target_radius then
-							target_index = index
+						if shield_blocked then
+							proximity_factor = math.lerp(proximity_factor, 1, 0.5)
+						end
 
-							break
+						for index, target_radius in pairs(damage_profile.target_radius) do
+							if proximity_factor <= target_radius then
+								target_index = index
+
+								break
+							end
 						end
 					end
-				end
 
-				hit_units[hit_unit] = true
-				local damage_data = {
-					hit_zone_name = "torso",
-					hit_unit = hit_unit,
-					damage_profile_name = damage_profile_name,
-					target_index = target_index,
-					allow_critical_proc = target_index == 1
-				}
-				damage_buffer[#damage_buffer + 1] = damage_data
+					hit_units[hit_unit] = true
+					local damage_data = {
+						hit_zone_name = "torso",
+						hit_unit = hit_unit,
+						damage_profile_name = damage_profile_name,
+						target_index = target_index,
+						allow_critical_proc = target_index == 1
+					}
+					damage_buffer[#damage_buffer + 1] = damage_data
+				end
 			end
 		end
 	end
@@ -218,10 +247,11 @@ ActionGeiser._update_damage = function (self, current_action)
 
 			local has_ranged_boost, ranged_boost_curve_multiplier = ActionUtils.get_ranged_boost(owner_unit)
 			local is_critical_strike = self._is_critical_strike or has_ranged_boost
+			local target_number = i
 			local send_to_server = true
 			local buff_type = DamageUtils.get_item_buff_type(self.item_name)
 
-			DamageUtils.buff_on_attack(owner_unit, hit_unit, "aoe", is_critical_strike and allow_critical_proc, hit_zone_name, #damage_buffer, send_to_server, buff_type)
+			DamageUtils.buff_on_attack(owner_unit, hit_unit, "aoe", is_critical_strike and allow_critical_proc, hit_zone_name, target_number, send_to_server, buff_type)
 
 			local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
 

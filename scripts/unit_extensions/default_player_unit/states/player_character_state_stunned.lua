@@ -108,6 +108,12 @@ PlayerCharacterStateStunned.update = function (self, unit, input, dt, context, t
 		return
 	end
 
+	if not csm.state_next and status_extension.do_leap then
+		csm:change_state("leaping")
+
+		return
+	end
+
 	self:queue_input(input, input_extension, inventory_extension)
 
 	local player = Managers.player:owner(unit)

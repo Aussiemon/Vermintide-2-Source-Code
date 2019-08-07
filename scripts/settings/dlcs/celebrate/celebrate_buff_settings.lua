@@ -663,7 +663,8 @@ settings.buff_function_templates = {
 }
 settings.group_buff_templates = {
 	celebrate_group = {
-		buff_per_instance = "celebrate_group"
+		buff_per_instance = "celebrate_group",
+		side_name = "heroes"
 	}
 }
 settings.add_sub_buffs_to_core_buffs = {

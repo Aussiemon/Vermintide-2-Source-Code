@@ -26,8 +26,10 @@ for i = 1, #weapon_template_files_names, 1 do
 	local file_name = weapon_template_files_names[i]
 	local weapon_templates = dofile(file_name)
 
-	for template_name, template in pairs(weapon_templates) do
-		Weapons[template_name] = template
+	if weapon_templates then
+		for template_name, template in pairs(weapon_templates) do
+			Weapons[template_name] = template
+		end
 	end
 end
 
@@ -38,7 +40,6 @@ DAMAGE_TYPES_AOE = {
 	vomit_face = true,
 	vomit_ground = true,
 	poison = true,
-	globadier_gas_dot = true,
 	plague_face = true,
 	warpfire_ground = true
 }
@@ -115,11 +116,17 @@ Dots = {
 
 		if talent_extension then
 			local breed = AiUtils.unit_breed(target_unit)
-			local infinite_burn_talent = talent_extension:has_talent("sienna_adept_infinite_burn", "bright_wizard")
+			local infinite_burn_talent = talent_extension:has_talent("sienna_adept_infinite_burn")
 
-			if infinite_burn_talent and breed then
+			if infinite_burn_talent and breed and not breed.is_hero then
 				dot_template_name = InfiniteBurnDotLookup[dot_template_name]
 			end
+		end
+
+		local attacker_unit_buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
+
+		if attacker_unit_buff_extension then
+			attacker_unit_buff_extension:trigger_procs("on_enemy_ignited", dot_template_name, damage_profile, target_index, target_unit, hit_zone_name, damage_source, is_critical_strike)
 		end
 
 		add_dot(dot_template_name, target_unit, attacker_unit, damage_source, power_level)
@@ -141,15 +148,17 @@ Dots = {
 	end
 }
 DotTypeLookup = {
+	burning_flamethrower_dot = "burning_dot",
 	burning_3W_dot = "burning_dot",
 	burning_dot = "burning_dot",
-	corpse_explosion_default = "poison_dot",
 	arrow_poison_dot = "poison_dot",
+	weapon_bleed_dot_maidenguard = "poison_dot",
+	corpse_explosion_default = "poison_dot",
 	burning_dot_fire_grenade = "burning_dot",
 	beam_burning_dot = "burning_dot",
-	weapon_bleed_dot_test = "poison_dot",
+	weapon_bleed_dot_dagger = "poison_dot",
 	burning_1W_dot = "burning_dot",
-	burning_flamethrower_dot = "burning_dot",
+	burning_1W_dot_unchained_push = "burning_dot",
 	aoe_poison_dot = "poison_dot",
 	chaos_zombie_explosion = "poison_dot"
 }
@@ -177,7 +186,7 @@ for _, item in pairs(ItemMasterList) do
 			local profile_name = career_data.profile_name
 			local action_names = CareerActionNames[profile_name]
 
-			if not checked_templates[profile_name][template_name] then
+			if checked_templates[profile_name] and not checked_templates[profile_name][template_name] then
 				checked_templates[profile_name][template_name] = true
 				local template = Weapons[template_name]
 				local actions = template.actions
@@ -233,6 +242,23 @@ for item_template_name, item_template in pairs(Weapons) do
 					local current_attack_range = hold_attack_meta_data.max_range or math.huge
 					local hold_attack_range = HOLD_ATTACK_BASE_RANGE_OFFSET + WEAPON_DAMAGE_UNIT_LENGTH_EXTENT * range_mod
 					hold_attack_meta_data.max_range = math.min(current_attack_range, hold_attack_range)
+				end
+			end
+
+			local impact_data = sub_action_data.impact_data
+
+			if impact_data then
+				local pickup_settings = impact_data.pickup_settings
+
+				if pickup_settings then
+					local link_hit_zones = pickup_settings.link_hit_zones
+
+					if link_hit_zones then
+						for i = 1, #link_hit_zones, 1 do
+							local hit_zone_name = link_hit_zones[i]
+							link_hit_zones[hit_zone_name] = true
+						end
+					end
 				end
 			end
 		end

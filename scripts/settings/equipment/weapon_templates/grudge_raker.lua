@@ -4,7 +4,7 @@ weapon_template.actions = {
 	action_one = {
 		default = {
 			damage_window_start = 0.1,
-			kind = "shotgun",
+			play_reload_animation = true,
 			fire_at_gaze_setting = "tobii_fire_at_gaze_grudgeraker",
 			total_time_secondary = 2,
 			bullseye = true,
@@ -16,11 +16,12 @@ weapon_template.actions = {
 			hit_effect = "shotgun_bullet_impact",
 			anim_event_last_ammo = "attack_shoot_last",
 			reload_when_out_of_ammo = true,
-			shot_count = 9,
+			kind = "shotgun",
 			damage_window_end = 0,
 			range = 100,
 			ammo_usage = 1,
 			fire_time = 0,
+			shot_count = 9,
 			apply_recoil = true,
 			anim_event_secondary = "reload",
 			active_reload_time = 0.35,
@@ -43,21 +44,21 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.5,
-					action = "action_one",
-					input = "action_one_hold"
-				},
-				{
-					sub_action = "default",
 					start_time = 0.4,
 					action = "action_two",
 					input = "action_two"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.75,
+					start_time = 0.5,
 					action = "weapon_reload",
 					input = "weapon_reload"
+				},
+				{
+					sub_action = "auto_reload_on_empty",
+					start_time = 0.6,
+					action = "weapon_reload",
+					auto_chain = true
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -122,7 +123,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.3,
+					start_time = 0.65,
 					action = "weapon_reload",
 					input = "weapon_reload"
 				}

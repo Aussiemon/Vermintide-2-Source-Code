@@ -1,8 +1,6 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTGreySeerGroundCombatAction = class(BTGreySeerGroundCombatAction, BTNode)
-local PLAYER_POSITIONS = PLAYER_POSITIONS
-local PLAYER_UNITS = PLAYER_UNITS
 
 BTGreySeerGroundCombatAction.init = function (self, ...)
 	BTGreySeerGroundCombatAction.super.init(self, ...)
@@ -204,8 +202,10 @@ BTGreySeerGroundCombatAction.spawn_allies = function (self, unit, blackboard, t)
 	local limit_spawners = nil
 	local terror_event_id = action.terror_event_id
 	local conflict_director = Managers.state.conflict
+	local side = blackboard.side
+	local side_id = side.side_id
 
-	conflict_director.horde_spawner:execute_event_horde(t, terror_event_id, composition_type, limit_spawners, silent, nil, strictly_not_close_to_players)
+	conflict_director.horde_spawner:execute_event_horde(t, terror_event_id, side_id, composition_type, limit_spawners, silent, nil, strictly_not_close_to_players)
 end
 
 return

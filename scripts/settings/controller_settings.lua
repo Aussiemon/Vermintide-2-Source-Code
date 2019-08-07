@@ -338,6 +338,11 @@ if InputUtils.keymaps_key_approved("win32") then
 			"cursor",
 			"axis"
 		},
+		show_career_help = {
+			"keyboard",
+			"f1",
+			"held"
+		},
 		next_observer_target = {
 			"mouse",
 			"left",
@@ -3045,6 +3050,7 @@ TitleScreenKeyMaps = {
 			"esc",
 			"pressed"
 		},
+		confirm_press = {},
 		start_1 = {
 			"keyboard",
 			"enter",
@@ -3127,6 +3133,11 @@ TitleScreenKeyMaps = {
 			"a",
 			"released"
 		},
+		confirm_press = {
+			"gamepad",
+			"a",
+			"pressed"
+		},
 		start_1 = {
 			"gamepad",
 			"a",
@@ -3198,6 +3209,11 @@ TitleScreenKeyMaps = {
 			"gamepad",
 			"cross",
 			"released"
+		},
+		confirm_press = {
+			"gamepad",
+			"cross",
+			"pressed"
 		},
 		start_1 = {
 			"gamepad",
@@ -4069,6 +4085,21 @@ if InputUtils.keymaps_key_approved("win32") then
 			"m",
 			"pressed"
 		},
+		hotkey_weave_leaderboard = {
+			"keyboard",
+			"l",
+			"pressed"
+		},
+		hotkey_weave_forge = {
+			"keyboard",
+			"k",
+			"pressed"
+		},
+		hotkey_weave_play = {
+			"keyboard",
+			"j",
+			"pressed"
+		},
 		hotkey_talents = {
 			"keyboard",
 			"t",
@@ -4084,19 +4115,9 @@ if InputUtils.keymaps_key_approved("win32") then
 			"i",
 			"pressed"
 		},
-		hotkey_journal = {
-			"keyboard",
-			"j",
-			"pressed"
-		},
 		hotkey_altar = {
 			"keyboard",
 			"h",
-			"pressed"
-		},
-		hotkey_lobby_browser = {
-			"keyboard",
-			"l",
 			"pressed"
 		},
 		hotkey_quests = {
@@ -4148,6 +4169,16 @@ if InputUtils.keymaps_key_approved("win32") then
 			"mouse",
 			"right",
 			"held"
+		},
+		execute_login_1 = {
+			"keyboard",
+			"enter",
+			"pressed"
+		},
+		execute_login_2 = {
+			"keyboard",
+			"numpad enter",
+			"pressed"
 		}
 	}
 end
@@ -4916,6 +4947,13 @@ IngameMenuFilters = {
 			input_mappings = {
 				button_1 = "item_detail_1",
 				button_2 = "item_detail_2"
+			}
+		},
+		execute_chat_input = {
+			filter_type = "or",
+			input_mappings = {
+				button_1 = "execute_login_1",
+				button_2 = "execute_login_2"
 			}
 		}
 	},

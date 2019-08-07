@@ -20,11 +20,9 @@ local function profile_packages(profile_index, career_index, packages_list, is_f
 	end
 
 	local profile = SPProfiles[profile_index]
-	local profile_name = profile.display_name
 	local careers = profile.careers
 	local career = careers[career_index]
 	local career_name = career.name
-	local slots = InventorySettings.slots
 	local slots_n = #InventorySettings.slots
 
 	for i = 1, slots_n, 1 do
@@ -58,10 +56,17 @@ local function profile_packages(profile_index, career_index, packages_list, is_f
 					packages_list[right_hand_unit_name .. "_3p"] = false
 				end
 
+				local ammo_unit_name = item_units.ammo_unit
+
+				if ammo_unit_name then
+					packages_list[ammo_unit_name] = first_person_value
+					packages_list[item_units.ammo_unit_3p or ammo_unit_name .. "_3p"] = false
+				end
+
 				local actions = item_template.actions
 
-				for action_name, sub_actions in pairs(actions) do
-					for sub_action_name, sub_action_data in pairs(sub_actions) do
+				for _, sub_actions in pairs(actions) do
+					for _, sub_action_data in pairs(sub_actions) do
 						local projectile_info = sub_action_data.projectile_info
 
 						if projectile_info then
@@ -74,23 +79,11 @@ local function profile_packages(profile_index, career_index, packages_list, is_f
 							end
 
 							if projectile_info.dummy_linker_broken_units then
-								for unit_name, unit in pairs(projectile_info.dummy_linker_broken_units) do
+								for _, unit in pairs(projectile_info.dummy_linker_broken_units) do
 									packages_list[unit] = false
 								end
 							end
 						end
-					end
-				end
-
-				local ammo_data = item_template.ammo_data
-
-				if ammo_data then
-					if ammo_data.ammo_unit then
-						packages_list[ammo_data.ammo_unit] = first_person_value
-					end
-
-					if ammo_data.ammo_unit_3p then
-						packages_list[ammo_data.ammo_unit_3p] = false
 					end
 				end
 			else
@@ -112,7 +105,7 @@ local function profile_packages(profile_index, career_index, packages_list, is_f
 					break
 				end
 
-				error("InventoryPackageSynchronizerClient unknown template_type: " .. template_type)
+				error("InventoryPackageSynchronizerClient unknown slot_category: " .. slot_category)
 			end
 		until true
 	end
@@ -194,7 +187,7 @@ local function inventory_array_to_set(array, destination)
 	end
 end
 
-local temp_package_map = {}
+local TEMP_PACKAGE_MAP = {}
 
 InventoryPackageSynchronizerClient.rpc_server_set_inventory_packages = function (self, sender, inventory_sync_id, inventory_package_list)
 	local network_manager = Managers.state and Managers.state.network
@@ -215,7 +208,7 @@ InventoryPackageSynchronizerClient.rpc_server_set_inventory_packages = function 
 	network_printf("[NETWORK] rpc_server_set_inventory_packages, sender:%s inventory_sync_id:%d my_peer_id:%s", sender, inventory_sync_id, peer_id)
 
 	self.inventory_sync_id = inventory_sync_id
-	local temp_package_map = temp_package_map
+	local temp_package_map = TEMP_PACKAGE_MAP
 
 	inventory_array_to_set(inventory_package_list, temp_package_map)
 
@@ -241,8 +234,6 @@ InventoryPackageSynchronizerClient.rpc_server_set_inventory_packages = function 
 		unload_package_map[package_name] = 2
 		packages_map[package_name] = nil
 	end
-
-	local package_manager = Managers.package
 
 	for package_name, _ in pairs(temp_package_map) do
 		packages_map[package_name] = package_manager:has_loaded(package_name)

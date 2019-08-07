@@ -1,4 +1,4 @@
-AimTemplates = {}
+AimTemplates = AimTemplates or {}
 local BLACKBOARDS = BLACKBOARDS
 local AIM_DIRECTION_MAX = 1.9999999
 local HUSK_MIN_PITCH = -0.95
@@ -10,7 +10,7 @@ local function look_at_target_unit(unit, data, dt, target_unit, target_distance,
 	if not previously_used_head_constraint and not always_on then
 		data.is_using_head_constraint = true
 
-		Unit.animation_event(unit, "look_at_on")
+		Unit.animation_event(unit, data.look_at_on_animation or "look_at_on")
 	end
 
 	if not target_unit or not Unit.alive(target_unit) then
@@ -76,7 +76,7 @@ AimTemplates.player = {
 
 			if data.status_extension:is_grabbed_by_pack_master() then
 				local packmaster_unit = data.status_extension:get_pack_master_grabber()
-				local node = Unit.node(packmaster_unit, "j_claw_align")
+				local node = Unit.node(packmaster_unit, "j_righthand")
 				local node_position = Unit.world_position(packmaster_unit, node)
 
 				Unit.animation_set_constraint_target(unit, data.packmaster_claw_aim_constraint, node_position)
@@ -768,12 +768,13 @@ AimTemplates.innkeeper = {
 			local inn_keeper_position = Unit.local_position(unit, 0)
 			local best_player = nil
 			local best_dist_sq = 9
-			local PLAYER_UNITS = PLAYER_UNITS
+			local side = Managers.state.side:get_side_from_name("heroes")
+			local player_units = side.PLAYER_UNITS
 			local old_target = data.current_target
 			local stickiness_multiplier = 0.9025
 
-			for i = 1, #PLAYER_UNITS, 1 do
-				local player_unit = PLAYER_UNITS[i]
+			for i = 1, #player_units, 1 do
+				local player_unit = player_units[i]
 				local dist_sq = Vector3.distance_squared(POSITION_LOOKUP[player_unit], inn_keeper_position)
 
 				if player_unit == old_target then
@@ -829,5 +830,15 @@ AimTemplates.innkeeper = {
 		end
 	}
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local aim_templates_file_names = dlc.aim_templates_file_names
+
+	if aim_templates_file_names then
+		for _, file_name in pairs(aim_templates_file_names) do
+			require(file_name)
+		end
+	end
+end
 
 return

@@ -11,10 +11,6 @@ local breed_data = {
 		head = "headshot"
 	},
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		head = {
 			prio = 1,
 			actors = {
@@ -37,7 +33,7 @@ local breed_data = {
 			}
 		},
 		torso = {
-			prio = 3,
+			prio = 2,
 			actors = {
 				"c_spine2",
 				"c_spine",
@@ -51,7 +47,7 @@ local breed_data = {
 			}
 		},
 		left_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftarm",
 				"c_leftforearm"
@@ -61,7 +57,7 @@ local breed_data = {
 			}
 		},
 		right_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightarm",
 				"c_rightforearm"
@@ -71,7 +67,7 @@ local breed_data = {
 			}
 		},
 		left_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftupleg",
 				"c_leftleg",
@@ -85,7 +81,7 @@ local breed_data = {
 			}
 		},
 		right_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightupleg",
 				"c_rightleg",
@@ -99,7 +95,7 @@ local breed_data = {
 			}
 		},
 		tail = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_tail1",
 				"c_tail2",
@@ -112,18 +108,22 @@ local breed_data = {
 				"j_hips"
 			}
 		},
-		afro = {
-			prio = 5,
-			actors = {
-				"c_afro"
-			}
-		},
 		aux = {
-			prio = 6,
+			prio = 4,
 			actors = {
 				"c_packmaster_sling",
 				"c_packmaster_sling_02",
 				"c_back_pack"
+			}
+		},
+		full = {
+			prio = 5,
+			actors = {}
+		},
+		afro = {
+			prio = 6,
+			actors = {
+				"c_afro"
 			}
 		}
 	},
@@ -272,7 +272,7 @@ local action_data = {
 				0,
 				10
 			},
-			survival_hard = {
+			cataclysm = {
 				10,
 				10,
 				0,
@@ -286,7 +286,7 @@ local action_data = {
 				0,
 				10
 			},
-			survival_harder = {
+			cataclysm_2 = {
 				10,
 				10,
 				0,
@@ -300,7 +300,7 @@ local action_data = {
 				0,
 				10
 			},
-			survival_hardest = {
+			cataclysm_3 = {
 				10,
 				10,
 				0,

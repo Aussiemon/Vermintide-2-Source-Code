@@ -73,7 +73,14 @@ ActionTemplates.reload = {
 				ammo_extension = ScriptUnit.extension(equipment.left_hand_wielded_unit, "ammo_system")
 			end
 
-			return ammo_extension and ammo_extension:can_reload()
+			if not ammo_extension then
+				return false
+			end
+
+			local can_reload = ammo_extension:can_reload()
+			local is_reloading = ammo_extension:is_reloading()
+
+			return can_reload and not is_reloading
 		end,
 		chain_condition_func = function (action_user, input_extension)
 			local inventory_extension = ScriptUnit.extension(action_user, "inventory_system")
@@ -93,7 +100,51 @@ ActionTemplates.reload = {
 				ammo_extension = ScriptUnit.extension(equipment.left_hand_wielded_unit, "ammo_system")
 			end
 
-			return ammo_extension and ammo_extension:can_reload()
+			if not ammo_extension then
+				return false
+			end
+
+			local can_reload = ammo_extension:can_reload()
+			local is_reloading = ammo_extension:is_reloading()
+
+			return can_reload and not is_reloading
+		end,
+		allowed_chain_actions = {}
+	},
+	auto_reload_on_empty = {
+		weapon_action_hand = "either",
+		kind = "reload",
+		total_time = 0,
+		condition_func = function (action_user, input_extension)
+			return false
+		end,
+		chain_condition_func = function (action_user, input_extension)
+			local inventory_extension = ScriptUnit.extension(action_user, "inventory_system")
+			local status_extension = ScriptUnit.extension(action_user, "status_system")
+			local ammo_extension = nil
+			local zooming = status_extension:is_zooming()
+
+			if zooming then
+				return false
+			end
+
+			local equipment = inventory_extension:equipment()
+
+			if equipment.right_hand_wielded_unit ~= nil and ScriptUnit.has_extension(equipment.right_hand_wielded_unit, "ammo_system") then
+				ammo_extension = ScriptUnit.extension(equipment.right_hand_wielded_unit, "ammo_system")
+			elseif equipment.left_hand_wielded_unit ~= nil and ScriptUnit.has_extension(equipment.left_hand_wielded_unit, "ammo_system") then
+				ammo_extension = ScriptUnit.extension(equipment.left_hand_wielded_unit, "ammo_system")
+			end
+
+			if not ammo_extension then
+				return false
+			end
+
+			local can_reload = ammo_extension:can_reload()
+			local is_reloading = ammo_extension:is_reloading()
+			local ammo_count = ammo_extension:ammo_count()
+
+			return can_reload and ammo_count == 0 and not is_reloading
 		end,
 		allowed_chain_actions = {}
 	}
@@ -627,6 +678,10 @@ ActionTemplates.action_career_bw_1 = {
 
 			return activated_ability_data.action_name == "action_career_bw_1" and career_extension:can_use_activated_ability()
 		end,
+		action_on_wield = {
+			action = "action_career_hold",
+			sub_action = "default"
+		},
 		allowed_chain_actions = {}
 	}
 }
@@ -650,6 +705,10 @@ ActionTemplates.action_career_dr_3 = {
 
 			return activated_ability_data.action_name == "action_career_dr_3" and career_extension:can_use_activated_ability()
 		end,
+		action_on_wield = {
+			action = "action_career_hold",
+			sub_action = "default"
+		},
 		allowed_chain_actions = {}
 	}
 }
@@ -673,6 +732,10 @@ ActionTemplates.action_career_wh_2 = {
 
 			return activated_ability_data.action_name == "action_career_wh_2" and career_extension:can_use_activated_ability()
 		end,
+		action_on_wield = {
+			action = "action_career_hold",
+			sub_action = "default"
+		},
 		allowed_chain_actions = {}
 	}
 }
@@ -699,10 +762,64 @@ ActionTemplates.action_career_we_3 = {
 			end
 
 			local career_extension = ScriptUnit.extension(action_user, "career_system")
-			local activated_ability_data = career_extension:get_activated_ability_data()
+			local activated_ability_data = career_extension:get_activated_ability_data(1)
 
-			return activated_ability_data.action_name == "action_career_we_3" and career_extension:can_use_activated_ability()
+			if not activated_ability_data then
+				return false
+			end
+
+			local talent_extension = ScriptUnit.has_extension(action_user, "talent_system")
+			local piercing_talent = talent_extension:has_talent("kerillian_waywatcher_activated_ability_piercing_shot")
+			local can_use = career_extension:can_use_activated_ability(1)
+
+			return activated_ability_data.action_name == "action_career_we_3" and can_use and not piercing_talent
 		end,
+		action_on_wield = {
+			action = "action_career_hold",
+			sub_action = "default"
+		},
+		allowed_chain_actions = {}
+	}
+}
+ActionTemplates.action_career_we_3_piercing = {
+	default = {
+		slot_to_wield = "slot_career_skill_weapon",
+		input_override = "action_career",
+		weapon_action_hand = "either",
+		kind = "instant_wield",
+		total_time = 0,
+		condition_func = function (action_user, input_extension)
+			local inventory_extension = ScriptUnit.extension(action_user, "inventory_system")
+			local slot_data = inventory_extension:get_slot_data("slot_career_skill_weapon")
+
+			if not slot_data then
+				return false
+			end
+
+			local buff_extension = ScriptUnit.extension(action_user, "buff_system")
+			local is_disabled = buff_extension:has_buff_perk("disable_career_ability")
+
+			if is_disabled then
+				return false
+			end
+
+			local career_extension = ScriptUnit.extension(action_user, "career_system")
+			local activated_ability_data = career_extension:get_activated_ability_data(2)
+
+			if not activated_ability_data then
+				return false
+			end
+
+			local talent_extension = ScriptUnit.has_extension(action_user, "talent_system")
+			local piercing_talent = talent_extension:has_talent("kerillian_waywatcher_activated_ability_piercing_shot")
+			local can_use = career_extension:can_use_activated_ability(1)
+
+			return activated_ability_data.action_name == "action_career_we_3_piercing" and can_use and piercing_talent
+		end,
+		action_on_wield = {
+			action = "action_career_hold",
+			sub_action = "default"
+		},
 		allowed_chain_actions = {}
 	}
 }

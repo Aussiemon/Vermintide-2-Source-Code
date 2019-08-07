@@ -209,12 +209,12 @@ VolumeSystem.volume_has_units_inside = function (self, volume_name)
 end
 
 VolumeSystem.all_alive_human_players_inside = function (self, volume_name)
-	local human_players = Managers.player:human_players()
+	local side = Managers.state.side:get_side_from_name("heroes")
+	local PLAYER_UNITS = side.PLAYER_UNITS
 	local to_test_count = 0
 	local to_test = {}
 
-	for _, player in pairs(human_players) do
-		local player_unit = player.player_unit
+	for _, player_unit in ipairs(PLAYER_UNITS) do
 		local status_ext = Unit.alive(player_unit) and ScriptUnit.has_extension(player_unit, "status_system")
 
 		if status_ext and not status_ext:is_disabled() then
@@ -231,12 +231,12 @@ VolumeSystem.all_alive_human_players_inside = function (self, volume_name)
 end
 
 VolumeSystem.all_alive_or_respawned_human_players_inside = function (self, volume_name)
-	local human_players = Managers.player:human_players()
+	local side = Managers.state.side:get_side_from_name("heroes")
+	local PLAYER_UNITS = side.PLAYER_UNITS
 	local to_test_count = 0
 	local to_test = {}
 
-	for _, player in pairs(human_players) do
-		local player_unit = player.player_unit
+	for _, player_unit in ipairs(PLAYER_UNITS) do
 		local status_ext = Unit.alive(player_unit) and ScriptUnit.has_extension(player_unit, "status_system")
 
 		if status_ext and (not status_ext:is_disabled() or (status_ext:is_disabled() and not status_ext:is_ready_for_assisted_respawn())) then

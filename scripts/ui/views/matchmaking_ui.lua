@@ -20,6 +20,17 @@ local function get_portrait_name_by_profile_index(profile_index, career_index)
 	return "small_" .. portrait_image
 end
 
+local WIND_COLORS = {
+	default = Colors.get_color_table_with_alpha("font_button_normal", 255),
+	life = Colors.get_color_table_with_alpha("lime_green", 255),
+	metal = Colors.get_color_table_with_alpha("yellow", 255),
+	death = Colors.get_color_table_with_alpha("dark_magenta", 255),
+	heavens = Colors.get_color_table_with_alpha("deep_sky_blue", 255),
+	light = Colors.get_color_table_with_alpha("white", 255),
+	beasts = Colors.get_color_table_with_alpha("saddle_brown", 255),
+	fire = Colors.get_color_table_with_alpha("crimson", 255),
+	shadow = Colors.get_color_table_with_alpha("gray", 255)
+}
 MatchmakingUI = class(MatchmakingUI)
 
 MatchmakingUI.init = function (self, parent, ingame_ui_context)
@@ -36,7 +47,8 @@ MatchmakingUI.init = function (self, parent, ingame_ui_context)
 		snap_pixel_positions = true
 	}
 	self.voting_manager = ingame_ui_context.voting_manager
-	self.is_in_inn = ingame_ui_context.is_in_inn
+	self._cached_matchmaking_info = {}
+	self._is_in_inn = ingame_ui_context.is_in_inn
 	self.matchmaking_manager = Managers.matchmaking
 	local input_manager = ingame_ui_context.input_manager
 	self.input_manager = input_manager
@@ -46,7 +58,6 @@ MatchmakingUI.init = function (self, parent, ingame_ui_context)
 	self.num_players_text = Localize("number_of_players")
 	self.max_number_of_players = MatchmakingSettings.MAX_NUMBER_OF_PLAYERS
 	self.portrait_index_table = {}
-	self._cached_matchmaking_info = {}
 	self._my_peer_id = Network.peer_id()
 
 	if Managers.party:is_leader(self._my_peer_id) then
@@ -57,6 +68,8 @@ MatchmakingUI.init = function (self, parent, ingame_ui_context)
 end
 
 MatchmakingUI.create_ui_elements = function (self)
+	table.clear(self._cached_matchmaking_info)
+
 	self.ui_animations = {}
 	local widgets = {}
 	local widgets_by_name = {}
@@ -117,10 +130,14 @@ MatchmakingUI._get_detail_widget = function (self, name)
 end
 
 MatchmakingUI.is_in_inn = function (self)
-	return self.is_in_inn
+	return self._is_in_inn
 end
 
 MatchmakingUI.update = function (self, dt, t)
+	if RESOLUTION_LOOKUP.modified then
+		self:_update_button_prompts()
+	end
+
 	local parent = self._parent
 	local ingame_ui = parent:parent()
 	local menu_active = ingame_ui.menu_active
@@ -131,7 +148,7 @@ MatchmakingUI.update = function (self, dt, t)
 	local ui_top_renderer = self.ui_top_renderer
 	local input_manager = self.input_manager
 	local input_service = input_manager:get_service("ingame_menu")
-	local is_matchmaking = self.matchmaking_manager:is_game_matchmaking() and self.is_in_inn
+	local is_matchmaking = self.matchmaking_manager:is_game_matchmaking() and self._is_in_inn
 	local ingame_ui = self.ingame_ui
 	local ingame_hud = ingame_ui.ingame_hud
 	local countdown_ui = ingame_hud:component("LevelCountdownUI")
@@ -181,6 +198,10 @@ MatchmakingUI.update = function (self, dt, t)
 
 					if Managers.deed:has_deed() then
 						Managers.deed:reset()
+					end
+
+					if Managers.weave:get_next_weave() then
+						Managers.weave:set_next_weave(nil)
 					end
 				end
 			end
@@ -305,48 +326,80 @@ MatchmakingUI._update_matchmaking_info = function (self, t)
 		return
 	end
 
-	local difficulty = matchmaking_info.difficulty
+	local game_mode = matchmaking_info.game_mode
 
-	if difficulty ~= cached_matchmaking_info.difficulty then
-		cached_matchmaking_info.difficulty = difficulty
-		local difficulty_setting = difficulty and DifficultySettings[difficulty]
-		local difficulty_display_name = (difficulty_setting and difficulty_setting.display_name) or "dlc1_2_difficulty_unavailable"
+	if game_mode == "weave" then
+		local weave_name = matchmaking_info.weave_name
+		local weave_templates = WeaveSettings.templates
+		local weave_template = weave_name and weave_templates[weave_name]
+		local weave_index = (weave_template and table.find(WeaveSettings.templates_ordered, weave_template)) or nil
+		local weave_display_name = (weave_template and weave_index .. ". " .. Localize(weave_template.display_name)) or Localize("level_display_name_unavailable")
 
-		self:_set_detail_difficulty_text(difficulty_display_name)
-	end
+		self:_set_detail_level_text(weave_display_name, false)
 
-	local quick_game = matchmaking_info.quick_game
-	local quick_game_changed = quick_game ~= cached_matchmaking_info.quick_game
-	local level_key = matchmaking_info.level_key
-	local level_key_changed = level_key ~= cached_matchmaking_info.level_key
+		local wind = weave_template and weave_template.wind
+		local wind_settings = wind and WindSettings[wind]
+		local wind_display_name = (wind_settings and wind_settings.display_name) or ""
 
-	if quick_game_changed or level_key_changed then
-		cached_matchmaking_info.quick_game = quick_game
-		cached_matchmaking_info.level_key = level_key
-		local is_event_game = matchmaking_manager:game_mode_event_data()
-		local text = nil
+		self:_set_detail_difficulty_text(wind_display_name, WIND_COLORS[wind])
+	elseif game_mode == "weave_find_group" then
+		local text = ""
+		local dots = math.floor(t * 3) % 4
 
-		if quick_game then
-			text = "mission_vote_quick_play"
-		elseif is_event_game then
-			local level_settings = level_key and level_key ~= "n/a" and LevelSettings[level_key]
-			local level_display_name = (level_settings and level_settings.display_name) or "random_level"
-			text = level_display_name
-		else
-			local level_settings = level_key and level_key ~= "n/a" and LevelSettings[level_key]
-			local level_display_name = (level_settings and level_settings.display_name) or "level_display_name_unavailable"
-			text = level_display_name
+		for i = 1, dots, 1 do
+			text = text .. "."
 		end
 
-		self:_set_detail_level_text(text)
+		self:_set_detail_level_text(text, false)
+		self:_set_detail_difficulty_text("", nil, true)
+	else
+		local difficulty = matchmaking_info.difficulty
+
+		if difficulty ~= cached_matchmaking_info.difficulty then
+			cached_matchmaking_info.difficulty = difficulty
+			local difficulty_setting = difficulty and DifficultySettings[difficulty]
+			local difficulty_display_name = (difficulty_setting and difficulty_setting.display_name) or "dlc1_2_difficulty_unavailable"
+
+			self:_set_detail_difficulty_text(difficulty_display_name)
+		end
+
+		local quick_game = matchmaking_info.quick_game
+		local quick_game_changed = quick_game ~= cached_matchmaking_info.quick_game
+		local level_key = matchmaking_info.level_key
+		local level_key_changed = level_key ~= cached_matchmaking_info.level_key
+
+		if quick_game_changed or level_key_changed then
+			cached_matchmaking_info.quick_game = quick_game
+			cached_matchmaking_info.level_key = level_key
+			local is_event_game = matchmaking_manager:game_mode_event_data()
+			local text = nil
+
+			if quick_game then
+				text = "mission_vote_quick_play"
+			elseif is_event_game then
+				local level_settings = level_key and level_key ~= "n/a" and LevelSettings[level_key]
+				local level_display_name = (level_settings and level_settings.display_name) or "random_level"
+				text = level_display_name
+			else
+				local level_settings = level_key and level_key ~= "n/a" and LevelSettings[level_key]
+				local level_display_name = (level_settings and level_settings.display_name) or "level_display_name_unavailable"
+				text = level_display_name
+			end
+
+			self:_set_detail_level_text(text, true)
+		end
 	end
 
-	local status = matchmaking_info.status
+	if game_mode == "weave_find_group" then
+		self:_set_status_text("finding_weave_group")
+	else
+		local status = matchmaking_info.status
 
-	if status ~= cached_matchmaking_info[status] then
-		cached_matchmaking_info.status = status
+		if status ~= cached_matchmaking_info[status] then
+			cached_matchmaking_info.status = status
 
-		self:_set_status_text(status)
+			self:_set_status_text(status)
+		end
 	end
 end
 
@@ -381,23 +434,47 @@ MatchmakingUI._update_mission_vote_status = function (self)
 	local level_key = active_vote_data.level_key
 	local quick_game = active_vote_data.quick_game
 	local event_data = active_vote_data.event_data
-	local difficulty_settings = DifficultySettings[difficulty]
-	local difficulty_display_name = difficulty_settings.display_name
-	local level_display_name = nil
+	local game_mode = active_vote_data.game_mode
+	local weave_name = active_vote_data.weave_name
 
-	if quick_game then
-		level_display_name = "mission_vote_quick_play"
-	elseif level_key == nil then
-		level_display_name = "random_level"
+	if game_mode == "weave" then
+		local weave_templates = WeaveSettings.templates
+		local weave_template = weave_name and weave_templates[weave_name]
+		local weave_index = (weave_template and table.find(WeaveSettings.templates_ordered, weave_template)) or nil
+		local weave_display_name = (weave_template and weave_index .. ". " .. Localize(weave_template.display_name)) or Localize("level_display_name_unavailable")
+
+		self:_set_detail_level_text(weave_display_name, false)
+
+		local wind = weave_template and weave_template.wind
+		local wind_settings = wind and WindSettings[wind]
+		local wind_display_name = (wind_settings and wind_settings.display_name) or ""
+
+		self:_set_detail_difficulty_text(wind_display_name, WIND_COLORS[wind])
+	elseif game_mode == "weave_find_group" then
+		active_vote_name = "start_game_window_weave_find_group"
+
+		self:_set_detail_level_text("", false)
+		self:_set_detail_difficulty_text("", nil, true)
 	else
-		local level_settings = LevelSettings[level_key]
-		level_display_name = level_settings.display_name
+		local difficulty_settings = DifficultySettings[difficulty]
+		local difficulty_display_name = difficulty_settings and difficulty_settings.display_name
+		local level_display_name = nil
+
+		if quick_game then
+			level_display_name = "mission_vote_quick_play"
+		elseif level_key == nil then
+			level_display_name = "random_level"
+		else
+			local level_settings = LevelSettings[level_key]
+			level_display_name = level_settings.display_name
+		end
+
+		self:_set_detail_difficulty_text(difficulty_display_name or "")
+		self:_set_detail_level_text(level_display_name, true)
 	end
 
 	local status = active_vote_name
 
-	self:_set_detail_difficulty_text(difficulty_display_name)
-	self:_set_detail_level_text(level_display_name)
 	self:_set_status_text(status)
 end
 
@@ -724,7 +801,7 @@ MatchmakingUI.large_window_set_player_portrait = function (self, index, peer_id)
 end
 
 MatchmakingUI._get_party_slot_index_by_peer_id = function (self, peer_id)
-	for i = 1, 4, 1 do
+	for i = 1, MatchmakingSettings.MAX_NUMBER_OF_PLAYERS, 1 do
 		local widget_name = "party_slot_" .. i
 		local widget = self:_get_detail_widget(widget_name)
 		local content = widget.content
@@ -780,14 +857,15 @@ MatchmakingUI._set_player_voted_yes = function (self, index, voted_yes)
 	widget.content.voted_yes = voted_yes
 end
 
-MatchmakingUI._set_detail_difficulty_text = function (self, text)
+MatchmakingUI._set_detail_difficulty_text = function (self, text, optional_color, disable_localization)
 	local widget = self:_get_detail_widget("difficulty_text")
-	widget.content.text = Localize(text)
+	widget.content.text = (disable_localization and text) or Localize(text)
+	widget.style.text.text_color = optional_color or WIND_COLORS.default
 end
 
-MatchmakingUI._set_detail_level_text = function (self, text)
+MatchmakingUI._set_detail_level_text = function (self, text, localize)
 	local widget = self:_get_detail_widget("title_text")
-	widget.content.text = Localize(text)
+	widget.content.text = (localize and Localize(text)) or text
 end
 
 MatchmakingUI._set_status_text = function (self, text)

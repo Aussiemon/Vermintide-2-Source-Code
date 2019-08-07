@@ -1,4 +1,4 @@
-local experience_levels_main = {
+local experience_levels = {
 	0,
 	200,
 	400,
@@ -28,13 +28,20 @@ local experience_levels_main = {
 	2600,
 	2700,
 	2800,
-	2900
+	2900,
+	3000,
+	3100,
+	3200,
+	3300,
+	3400
 }
-local experience_for_levels_after_main = 5000
-local total_experience_for_main_levels = 0
+local num_base_levels = 30
+local num_defined_levels = #experience_levels
+local experience_for_extra_levels = experience_levels[num_base_levels]
+local total_defined_experience = 0
 
-for i = 1, #experience_levels_main, 1 do
-	total_experience_for_main_levels = total_experience_for_main_levels + experience_levels_main[i]
+for i = 1, num_defined_levels, 1 do
+	total_defined_experience = total_defined_experience + experience_levels[i]
 end
 
 ExperienceSettings = {
@@ -74,6 +81,12 @@ ExperienceSettings.get_experience = function (hero_name)
 	return hero_attributes:get(hero_name, "experience") or 0
 end
 
+ExperienceSettings.get_experience_pool = function (hero_name)
+	local hero_attributes = Managers.backend:get_interface("hero_attributes")
+
+	return hero_attributes:get(hero_name, "experience_pool") or 0
+end
+
 ExperienceSettings.get_level = function (experience)
 	experience = experience or 0
 
@@ -83,51 +96,42 @@ ExperienceSettings.get_level = function (experience)
 	local level = 0
 	local progress = 0
 	local experience_into_level = 0
-	local num_defined_experience_levels = #experience_levels_main
 	local previous_exp_total = 0
 
-	if total_experience_for_main_levels <= experience then
-		local required_exp = experience_levels_main[num_defined_experience_levels]
-		local experience_into_level = (experience - total_experience_for_main_levels) % required_exp
-		local progress = experience_into_level / required_exp
-		local extra_levels = math.floor((experience - total_experience_for_main_levels) / required_exp)
+	if total_defined_experience <= experience then
+		local experience_into_level = 0
+		local progress = 0
 
-		return num_defined_experience_levels, progress, experience_into_level, extra_levels
+		return num_defined_levels, progress, experience_into_level
 	end
 
-	for i = 1, num_defined_experience_levels, 1 do
+	for i = 1, num_defined_levels, 1 do
 		previous_exp_total = exp_total
-		exp_total = exp_total + experience_levels_main[i]
+		exp_total = exp_total + experience_levels[i]
 
 		if experience < exp_total then
 			level = i - 1
 			experience_into_level = experience - previous_exp_total
-			progress = experience_into_level / experience_levels_main[i]
+			progress = experience_into_level / experience_levels[i]
 
 			break
 		end
 	end
 
-	return level, progress, experience_into_level, 0
+	return level, progress, experience_into_level
 end
 
-ExperienceSettings.get_experience_required_for_level = function (level)
-	local experience = 0
+ExperienceSettings.get_extra_level = function (experience_pool)
+	local extra_level = math.floor(experience_pool / experience_for_extra_levels)
 
-	if level <= #experience_levels_main then
-		experience = experience_levels_main[level]
-	else
-		experience = experience_for_levels_after_main
-	end
-
-	return experience
+	return extra_level
 end
 
 ExperienceSettings.get_total_experience_required_for_level = function (level)
 	local experience = 0
 
 	for i = 1, level, 1 do
-		local level_experience = experience_levels_main[i] or experience_for_levels_after_main
+		local level_experience = experience_levels[i] or experience_for_extra_levels
 		experience = experience + level_experience
 	end
 
@@ -151,8 +155,8 @@ ExperienceSettings.get_highest_character_level = function ()
 	return highest_level
 end
 
-ExperienceSettings.max_experience = total_experience_for_main_levels
-ExperienceSettings.max_level = #experience_levels_main
+ExperienceSettings.max_experience = total_defined_experience
+ExperienceSettings.max_level = num_defined_levels
 ExperienceSettings.multiplier = 1
 ExperienceSettings.level_length_experience_multiplier = {
 	short = 1,

@@ -141,6 +141,20 @@ explosive_barrel_objective.actions.action_one.default.projectile_info = {
 	drop_on_player_destroyed = true,
 	projectile_unit_name = "units/weapons/player/pup_explosive_barrel/pup_gun_powder_barrel_01"
 }
+local magic_barrel = table.clone(explosive_barrel_objective)
+magic_barrel.left_hand_unit = "units/weapons/player/pup_magic_barrel/wpn_magic_barrel_01"
+magic_barrel.actions.action_one.default.projectile_info = {
+	projectile_unit_template_name = "pickup_projectile_unit",
+	pickup_name = "magic_barrel",
+	drop_on_player_destroyed = true,
+	projectile_unit_name = "units/weapons/player/pup_magic_barrel/pup_magic_barrel_01"
+}
+magic_barrel.actions.action_dropped.default.projectile_info = {
+	projectile_unit_template_name = "pickup_projectile_unit",
+	pickup_name = "magic_barrel",
+	drop_on_player_destroyed = true,
+	projectile_unit_name = "units/weapons/player/pup_magic_barrel/pup_magic_barrel_01"
+}
 local lamp_oil = table.clone(weapon_template)
 lamp_oil.left_hand_unit = "units/weapons/player/wpn_oil_jug_01/wpn_oil_jug_01"
 lamp_oil.actions.action_one.default.projectile_info = {
@@ -164,10 +178,17 @@ beer_barrel.actions.action_one.default.projectile_info = {
 	drop_on_player_destroyed = true,
 	projectile_unit_name = "units/weapons/player/pup_explosive_barrel/pup_explosive_barrel_01"
 }
+beer_barrel.actions.action_dropped.default.projectile_info = {
+	projectile_unit_template_name = "pickup_projectile_unit",
+	pickup_name = "beer_barrel",
+	drop_on_player_destroyed = true,
+	projectile_unit_name = "units/weapons/player/pup_explosive_barrel/pup_explosive_barrel_01"
+}
 
 return {
 	explosive_barrel = explosive_barrel,
 	explosive_barrel_objective = explosive_barrel_objective,
 	lamp_oil = lamp_oil,
-	beer_barrel = beer_barrel
+	beer_barrel = beer_barrel,
+	magic_barrel = magic_barrel
 }

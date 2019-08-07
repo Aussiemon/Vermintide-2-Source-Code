@@ -23,14 +23,6 @@ HealthTriggerSystem.on_add_extension = function (self, world, unit, extension_na
 	ScriptUnit.set_extension(unit, "health_trigger_system", extension)
 
 	self.unit_extensions[unit] = extension
-	extension.health_extension = ScriptUnit.extension(unit, "health_system")
-
-	assert(extension.health_extension)
-
-	extension.last_health_percent = extension.health_extension:current_health_percent()
-	extension.last_health_tick_percent = extension.health_extension:current_health_percent()
-	extension.dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
-	extension.tick_time = 0
 
 	GarbageLeakDetector.register_object(extension, "health_trigger_extension")
 
@@ -42,6 +34,18 @@ HealthTriggerSystem.on_remove_extension = function (self, unit, extension_name)
 	ScriptUnit.remove_extension(unit, "health_trigger_system")
 
 	self.unit_extensions[unit] = nil
+end
+
+HealthTriggerSystem.extensions_ready = function (self, world, unit, extension_name)
+	local extension = self.unit_extensions[unit]
+	extension.health_extension = ScriptUnit.extension(unit, "health_system")
+
+	assert(extension.health_extension)
+
+	extension.last_health_percent = extension.health_extension:current_health_percent()
+	extension.last_health_tick_percent = extension.health_extension:current_health_percent()
+	extension.dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+	extension.tick_time = 0
 end
 
 local health_trigger_levels = HealthTriggerSettings.levels

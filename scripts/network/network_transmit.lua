@@ -92,6 +92,7 @@ NetworkTransmit.send_rpc = function (self, rpc_name, peer_id, ...)
 	local my_peer_id = self.peer_id
 
 	fassert(rpc, "[NetworkTransmit:send_rpc()] rpc does not exist %q", rpc_name)
+	self:_validate_rpc(rpc_name, ...)
 
 	if peer_id == my_peer_id then
 		self:queue_local_rpc(rpc_name, ...)
@@ -104,6 +105,7 @@ NetworkTransmit.send_rpc_server = function (self, rpc_name, ...)
 	local rpc = RPC[rpc_name]
 
 	fassert(rpc, "[NetworkTransmit:send_rpc_server()] rpc does not exist %q", rpc_name)
+	self:_validate_rpc(rpc_name, ...)
 
 	if self.is_server then
 		self:queue_local_rpc(rpc_name, ...)
@@ -119,6 +121,7 @@ NetworkTransmit.send_rpc_clients = function (self, rpc_name, ...)
 	local rpc = RPC[rpc_name]
 
 	fassert(rpc, "[NetworkTransmit:send_rpc_clients()] rpc does not exist: %q", rpc_name)
+	self:_validate_rpc(rpc_name, ...)
 
 	local session = self.game_session
 
@@ -204,6 +207,31 @@ NetworkTransmit.send_rpc_all_except = function (self, rpc_name, except, ...)
 	for _, peer_id in ipairs(GameSession.other_peers(session)) do
 		if peer_id ~= except and not peer_ignore_list[peer_id] then
 			rpc(peer_id, ...)
+		end
+	end
+end
+
+local _rpc_params_table = {}
+
+NetworkTransmit._validate_rpc = function (self, rpc_name, ...)
+	table.clear(_rpc_params_table)
+
+	for i = 1, select("#", ...), 1 do
+		_rpc_params_table[i] = select(i, ...)
+	end
+
+	local message_info = Network.message_info(rpc_name)
+	local arguments = message_info.arguments
+
+	for i, argument in ipairs(arguments) do
+		local param = _rpc_params_table[i]
+
+		if type(param) == "table" and argument.max_size and argument.max_size < #param then
+			Application.warning("[NetworkTransmit:_validate_rpc] %s above max size: %d > %d", rpc_name, #param, argument.max_size)
+
+			for _, p in ipairs(param) do
+				Application.warning(p)
+			end
 		end
 	end
 end

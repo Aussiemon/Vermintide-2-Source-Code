@@ -5,9 +5,10 @@ weapon_template.actions = {
 	action_one = {
 		default = {
 			aim_assist_ramp_multiplier = 0.2,
-			aim_assist_ramp_decay_delay = 0.1,
 			anim_end_event = "attack_finished",
 			kind = "melee_start",
+			attack_hold_input = "action_one_hold",
+			aim_assist_ramp_decay_delay = 0.1,
 			aim_assist_max_ramp_multiplier = 0.4,
 			uninterruptible = true,
 			anim_event = "attack_swing_charge",
@@ -724,6 +725,13 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
+					start_time = 0.35,
+					action = "action_two",
+					release_required = "action_two_hold",
+					input = "action_two_hold"
+				},
+				{
+					sub_action = "default",
 					start_time = 0.5,
 					action = "action_two",
 					input = "action_two_hold"
@@ -733,8 +741,7 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				release_required = "action_two_hold"
+				}
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
@@ -745,7 +752,6 @@ weapon_template.actions = {
 			anim_end_event = "attack_finished",
 			outer_push_angle = 180,
 			kind = "push_stagger",
-			hit_time = 0.1,
 			damage_profile_outer = "medium_push",
 			weapon_action_hand = "right",
 			push_angle = 100,
@@ -891,7 +897,7 @@ weapon_template.wield_anim = "to_1h_axe_shield"
 weapon_template.buff_type = "MELEE_1H"
 weapon_template.weapon_type = "AXE_1H_SHIELD"
 weapon_template.max_fatigue_points = 10
-weapon_template.dodge_count = 1
+weapon_template.dodge_count = 2
 weapon_template.can_block_ranged_attacks = true
 weapon_template.block_angle = 180
 weapon_template.outer_block_angle = 360
@@ -899,10 +905,10 @@ weapon_template.block_fatigue_point_multiplier = 0.2
 weapon_template.outer_block_fatigue_point_multiplier = 2
 weapon_template.buffs = {
 	change_dodge_distance = {
-		external_optional_multiplier = 0.85
+		external_optional_multiplier = 1
 	},
 	change_dodge_speed = {
-		external_optional_multiplier = 0.85
+		external_optional_multiplier = 1
 	}
 }
 weapon_template.attack_meta_data = {

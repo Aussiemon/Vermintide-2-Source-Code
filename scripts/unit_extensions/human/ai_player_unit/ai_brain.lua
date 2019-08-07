@@ -42,16 +42,18 @@ AIBrain.init_utility_actions = function (self, blackboard, breed)
 	local actions = self._bt:action_data()
 
 	for action_name, data in pairs(actions) do
-		utility_actions[action_name] = {
-			last_time = -math.huge,
-			time_since_last = math.huge,
-			last_done_time = -math.huge,
-			time_since_last_done = math.huge
-		}
+		if data.considerations then
+			utility_actions[action_name] = {
+				last_time = -math.huge,
+				time_since_last = math.huge,
+				last_done_time = -math.huge,
+				time_since_last_done = math.huge
+			}
 
-		if data.init_blackboard then
-			for name, value in pairs(data.init_blackboard) do
-				blackboard[name] = value
+			if data.init_blackboard then
+				for name, value in pairs(data.init_blackboard) do
+					blackboard[name] = value
+				end
 			end
 		end
 	end

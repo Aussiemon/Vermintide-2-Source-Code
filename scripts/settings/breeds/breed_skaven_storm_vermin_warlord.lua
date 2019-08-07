@@ -29,43 +29,44 @@ local WARLORD_ALLOWED_STAGGERS = {
 local breed_data = {
 	bots_should_flank = true,
 	walk_speed = 2.545454545454545,
-	is_bot_aid_threat = true,
+	angry_run_speed = 6,
 	unbreakable_shield = true,
-	proximity_system_check = true,
 	behavior = "storm_vermin_warlord",
 	smart_targeting_height_multiplier = 2.5,
 	disable_crowd_dispersion = true,
 	target_selection = "pick_rat_ogre_target_with_weights",
 	no_effects_on_shield_block = true,
 	aoe_radius = 0.6,
-	angry_run_speed = 6,
+	is_bot_aid_threat = true,
 	death_reaction = "storm_vermin_champion",
 	bot_hitbox_radius_approximation = 1,
 	shield_slashing_block_sound = "weapon_stormvermin_champion_sword_block",
 	shield_stab_block_sound = "weapon_stormvermin_champion_sword_block",
 	shield_blunt_block_sound = "weapon_stormvermin_champion_sword_block",
-	headshot_coop_stamina_fatigue_type = "headshot_special",
+	slot_template = "skaven_elite",
 	bot_opportunity_target_melee_range = 7,
 	wield_inventory_on_spawn = true,
 	default_inventory_template = "warlord_dual_setups",
 	stagger_resistance = 1,
 	dialogue_source_name = "skaven_storm_vermin_warlord",
-	threat_value = 32,
+	headshot_coop_stamina_fatigue_type = "headshot_special",
 	boss_staggers = false,
 	primary_armor_category = 6,
-	awards_positive_reinforcement_message = true,
+	threat_value = 32,
 	radius = 1,
-	server_controlled_health_bar = true,
+	awards_positive_reinforcement_message = true,
 	boss = true,
-	bone_lod_level = 1,
+	server_controlled_health_bar = true,
+	smart_object_template = "special",
 	race = "skaven",
 	disable_second_hit_ragdoll = true,
+	proximity_system_check = true,
 	poison_resistance = 100,
 	armor_category = 2,
 	animation_sync_rpc = "rpc_sync_anim_state_6",
 	death_sound_event = "Play_stormvermin_die_vce",
 	burning_hit_block_sound = "weapon_stormvermin_champion_sword_block",
-	smart_object_template = "special",
+	bone_lod_level = 1,
 	smart_targeting_width = 0.2,
 	perception_continuous = "perception_continuous_rat_ogre",
 	initial_is_passive = false,
@@ -83,7 +84,6 @@ local breed_data = {
 	hit_effect_template = "HitEffectsStormVerminChampion",
 	using_combo = true,
 	unit_template = "ai_unit_storm_vermin_warlord",
-	difficulty_kill_achievement = "kill_skaven_storm_vermin_warlord_difficulty_rank",
 	has_running_attack = true,
 	perception = "perception_rat_ogre",
 	player_locomotion_constrain_radius = 1,
@@ -119,28 +119,10 @@ local breed_data = {
 		1.4,
 		1.4
 	},
-	max_health = {
-		450,
-		450,
-		750,
-		1000,
-		1500
-	},
+	max_health = BreedTweaks.max_health.stormvermin_warlord,
 	bloodlust_health = BreedTweaks.bloodlust_health.monster,
-	diff_stagger_resist = {
-		2.25,
-		2.25,
-		3,
-		3.75,
-		3.75
-	},
-	stagger_reduction = {
-		1.35,
-		1.35,
-		1.8,
-		2.25,
-		2.25
-	},
+	diff_stagger_resist = BreedTweaks.diff_stagger_resist.stormvermin,
+	stagger_reduction = BreedTweaks.stagger_reduction.stormvermin_warlord,
 	stagger_duration = {
 		0.35,
 		0.35,
@@ -164,11 +146,37 @@ local breed_data = {
 	run_on_despawn = AiBreedSnippets.on_storm_vermin_champion_despawn,
 	hot_join_sync = AiBreedSnippets.on_storm_vermin_hot_join_sync,
 	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed)
+		local t = Managers.time:time("game")
+
+		if t < blackboard.intro_timer then
+			stagger = 0
+
+			return stagger, duration, length
+		end
+
+		local ai_shield_extension = ScriptUnit.extension(blackboard.unit, "ai_shield_system")
+
 		if not blackboard.dual_wield_mode and stagger ~= 6 then
 			stagger = 0
-			local ai_shield_extension = ScriptUnit.extension(blackboard.unit, "ai_shield_system")
 
 			ai_shield_extension:set_is_blocking(false)
+		elseif blackboard.dual_wield_mode and stagger ~= 6 then
+			if not blackboard.next_stagger_block_t or blackboard.next_stagger_block_t < t then
+				blackboard.stagger_block_timer = blackboard.stagger_block_timer or t + 3
+			else
+				ai_shield_extension:set_is_blocking(false)
+
+				stagger = 0
+			end
+
+			if blackboard.stagger_block_timer and blackboard.stagger_block_timer < t then
+				blackboard.next_stagger_block_t = t + 10
+				blackboard.stagger_block_timer = nil
+
+				ai_shield_extension:set_is_blocking(false)
+
+				stagger = 0
+			end
 		end
 
 		return stagger, duration, length
@@ -178,10 +186,6 @@ local breed_data = {
 		ward = "protected_spot"
 	},
 	hit_zones = {
-		full = {
-			prio = 2,
-			actors = {}
-		},
 		ward = {
 			prio = 1,
 			actors = {
@@ -295,8 +299,12 @@ local breed_data = {
 				"j_taill"
 			}
 		},
-		afro = {
+		full = {
 			prio = 5,
+			actors = {}
+		},
+		afro = {
+			prio = 6,
 			actors = {
 				"c_afro"
 			}
@@ -358,9 +366,11 @@ local breed_data = {
 		j_rightforearm = 0.2,
 		j_tail2 = 0.05
 	},
+	difficulty_kill_achievements = {
+		"kill_skaven_storm_vermin_warlord_difficulty_rank",
+		"kill_skaven_storm_vermin_warlord_scorpion_hardest"
+	},
 	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone, t, damage_source)
-		local blackboard = BLACKBOARDS[unit]
-
 		if not Unit.alive(killer_unit) then
 			return
 		end
@@ -435,103 +445,31 @@ local action_data = {
 		offset_up = 0,
 		attack_anim = "attack_special",
 		range = 4,
+		damage = 30,
 		bot_threat_duration = 0.7333333333333333,
+		blocked_damage = 0,
 		player_push_speed_blocked = 8,
 		width = 0.4,
 		throw_dialogue_system_event_on_dodged_attack = true,
-		blocked_damage = {
-			0,
-			0,
-			0
-		},
 		blocked_difficulty_damage = {
-			easy = {
-				0,
-				0,
-				0
-			},
-			normal = {
-				0,
-				0,
-				0
-			},
-			hard = {
-				2,
-				2,
-				2
-			},
-			survival_hard = {
-				2,
-				2,
-				2
-			},
-			harder = {
-				5,
-				5,
-				5
-			},
-			survival_harder = {
-				5,
-				5,
-				5
-			},
-			hardest = {
-				10,
-				10,
-				10
-			},
-			survival_hardest = {
-				10,
-				10,
-				10
-			}
-		},
-		damage = {
-			30,
-			25,
-			20
+			harder = 5,
+			hard = 2,
+			normal = 0,
+			hardest = 10,
+			cataclysm = 15,
+			cataclysm_3 = 30,
+			cataclysm_2 = 20,
+			easy = 0
 		},
 		difficulty_damage = {
-			easy = {
-				20,
-				20,
-				15
-			},
-			normal = {
-				15,
-				20,
-				15
-			},
-			hard = {
-				20,
-				25,
-				20
-			},
-			survival_hard = {
-				40,
-				35,
-				30
-			},
-			harder = {
-				30,
-				40,
-				30
-			},
-			survival_harder = {
-				50,
-				40,
-				30
-			},
-			hardest = {
-				40,
-				50,
-				30
-			},
-			survival_hardest = {
-				150,
-				75,
-				45
-			}
+			harder = 50,
+			hard = 40,
+			normal = 30,
+			hardest = 100,
+			cataclysm = 100,
+			cataclysm_3 = 100,
+			cataclysm_2 = 100,
+			easy = 20
 		},
 		ignore_staggers = {
 			true,
@@ -553,58 +491,22 @@ local action_data = {
 		offset_up = 0,
 		attack_anim = "attack_pounce",
 		range = 3.2,
+		damage = 20,
 		bot_threat_duration = 1,
 		action_weight = 1,
 		player_push_speed_blocked = 8,
 		width = 2.25,
 		throw_dialogue_system_event_on_dodged_attack = true,
 		considerations = UtilityConsiderations.storm_vermin_champion_special_attack,
-		damage = {
-			30,
-			25,
-			20
-		},
 		difficulty_damage = {
-			easy = {
-				20,
-				20,
-				15
-			},
-			normal = {
-				15,
-				20,
-				15
-			},
-			hard = {
-				20,
-				25,
-				20
-			},
-			survival_hard = {
-				20,
-				35,
-				30
-			},
-			harder = {
-				30,
-				45,
-				30
-			},
-			survival_harder = {
-				50,
-				40,
-				30
-			},
-			hardest = {
-				40,
-				50,
-				40
-			},
-			survival_hardest = {
-				150,
-				75,
-				45
-			}
+			harder = 30,
+			hard = 25,
+			normal = 20,
+			hardest = 50,
+			cataclysm = 50,
+			cataclysm_3 = 50,
+			cataclysm_2 = 50,
+			easy = 15
 		},
 		ignore_staggers = {
 			true,
@@ -630,8 +532,10 @@ local action_data = {
 		offset_up = 0,
 		offset_right = 0,
 		player_push_speed = 20,
+		damage = 20,
 		fatigue_type = "blocked_slam",
 		action_weight = 4,
+		blocked_damage = 0,
 		player_push_speed_blocked = 15,
 		ignore_abort_on_blocked_attack = true,
 		considerations = UtilityConsiderations.storm_vermin_champion_spin,
@@ -644,129 +548,61 @@ local action_data = {
 				at = 2
 			}
 		},
-		blocked_damage = {
-			0,
-			0,
-			0
-		},
 		blocked_difficulty_damage = {
-			easy = {
-				0,
-				0,
-				0
-			},
-			normal = {
-				0,
-				0,
-				0
-			},
-			hard = {
-				2,
-				2,
-				2
-			},
-			survival_hard = {
-				2,
-				2,
-				2
-			},
-			harder = {
-				5,
-				5,
-				5
-			},
-			survival_harder = {
-				5,
-				5,
-				5
-			},
-			hardest = {
-				10,
-				10,
-				10
-			},
-			survival_hardest = {
-				10,
-				10,
-				10
-			}
-		},
-		damage = {
-			20,
-			10,
-			5
+			harder = 5,
+			hard = 2,
+			normal = 0,
+			hardest = 10,
+			cataclysm = 10,
+			cataclysm_3 = 10,
+			cataclysm_2 = 10,
+			easy = 0
 		},
 		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				20,
-				10,
-				5
-			},
-			hard = {
-				25,
-				15,
-				10
-			},
-			survival_hard = {
-				25,
-				15,
-				10
-			},
-			harder = {
-				30,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				50,
-				30,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
+			harder = 30,
+			hard = 25,
+			normal = 20,
+			hardest = 50,
+			cataclysm = 60,
+			cataclysm_3 = 100,
+			cataclysm_2 = 75,
+			easy = 15
 		},
 		ignore_staggers = {
 			true,
-			false,
-			false,
+			true,
+			true,
 			false,
 			false,
 			false
 		},
 		hit_ai_func = function (unit, blackboard, hit_unit)
-			local stat_name = "storm_vermin_warlord_kills_enemies"
-			local current_difficulty = Managers.state.difficulty:get_difficulty()
-			local allowed_difficulties = QuestSettings.allowed_difficulties[stat_name]
-			local allowed_difficulty = allowed_difficulties[current_difficulty]
+			local stat_names = {
+				"storm_vermin_warlord_kills_enemies",
+				"storm_vermin_warlord_kills_enemies_cata"
+			}
 
-			if allowed_difficulty and not blackboard.kill_skaven_challenge_completed then
-				local hit_unit_blackboard = BLACKBOARDS[hit_unit]
-				local is_skaven = hit_unit_blackboard.breed.race == "skaven"
-				local num_times_hit_skaven = blackboard.num_times_hit_skaven
+			for i = 1, #stat_names, 1 do
+				local current_difficulty = Managers.state.difficulty:get_difficulty()
+				local allowed_difficulties = QuestSettings.allowed_difficulties[stat_names[i]]
+				local allowed_difficulty = allowed_difficulties[current_difficulty]
 
-				if is_skaven then
-					blackboard.num_times_hit_skaven = num_times_hit_skaven + 1
-				end
+				if allowed_difficulty and not blackboard.kill_skaven_challenge_completed then
+					local hit_unit_blackboard = BLACKBOARDS[hit_unit]
+					local is_skaven = hit_unit_blackboard.breed.race == "skaven"
+					local num_times_hit_skaven = blackboard.num_times_hit_skaven
 
-				if QuestSettings.storm_vermin_warlord_kills_enemies <= blackboard.num_times_hit_skaven then
-					local statistics_db = Managers.player:statistics_db()
+					if is_skaven then
+						blackboard.num_times_hit_skaven = num_times_hit_skaven + 1
+					end
 
-					statistics_db:increment_stat_and_sync_to_clients(stat_name)
+					if QuestSettings.storm_vermin_warlord_kills_enemies <= blackboard.num_times_hit_skaven then
+						local statistics_db = Managers.player:statistics_db()
 
-					blackboard.kill_skaven_challenge_completed = true
+						statistics_db:increment_stat_and_sync_to_clients(stat_names[i])
+
+						blackboard.kill_skaven_challenge_completed = true
+					end
 				end
 			end
 		end
@@ -786,8 +622,10 @@ local action_data = {
 		offset_up = 0,
 		offset_right = 0,
 		player_push_speed = 20,
+		damage = 20,
 		fatigue_type = "blocked_slam",
 		action_weight = 4,
+		blocked_damage = 0,
 		player_push_speed_blocked = 15,
 		ignore_abort_on_blocked_attack = true,
 		considerations = UtilityConsiderations.storm_vermin_champion_defensive_spin,
@@ -804,99 +642,25 @@ local action_data = {
 				end
 			}
 		},
-		blocked_damage = {
-			0,
-			0,
-			0
-		},
 		blocked_difficulty_damage = {
-			easy = {
-				0,
-				0,
-				0
-			},
-			normal = {
-				0,
-				0,
-				0
-			},
-			hard = {
-				2,
-				2,
-				2
-			},
-			survival_hard = {
-				2,
-				2,
-				2
-			},
-			harder = {
-				5,
-				5,
-				5
-			},
-			survival_harder = {
-				5,
-				5,
-				5
-			},
-			hardest = {
-				10,
-				10,
-				10
-			},
-			survival_hardest = {
-				10,
-				10,
-				10
-			}
-		},
-		damage = {
-			20,
-			10,
-			5
+			harder = 5,
+			hard = 2,
+			normal = 0,
+			hardest = 10,
+			cataclysm = 10,
+			cataclysm_3 = 10,
+			cataclysm_2 = 10,
+			easy = 0
 		},
 		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				20,
-				10,
-				5
-			},
-			hard = {
-				25,
-				15,
-				10
-			},
-			survival_hard = {
-				25,
-				15,
-				10
-			},
-			harder = {
-				30,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				50,
-				30,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
+			harder = 30,
+			hard = 25,
+			normal = 20,
+			hardest = 50,
+			cataclysm = 50,
+			cataclysm_3 = 50,
+			cataclysm_2 = 50,
+			easy = 15
 		},
 		ignore_staggers = {
 			true,
@@ -907,22 +671,32 @@ local action_data = {
 			true
 		},
 		hit_ai_func = function (unit, blackboard, hit_unit)
-			if not blackboard.kill_skaven_challenge_completed then
-				local hit_unit_blackboard = BLACKBOARDS[hit_unit]
-				local is_skaven = hit_unit_blackboard.breed.race == "skaven"
-				local num_times_hit_skaven = blackboard.num_times_hit_skaven
+			local stat_names = {
+				"storm_vermin_warlord_kills_enemies",
+				"storm_vermin_warlord_kills_enemies_cata"
+			}
 
-				if is_skaven then
-					blackboard.num_times_hit_skaven = num_times_hit_skaven + 1
-				end
+			for i = 1, #stat_names, 1 do
+				local current_difficulty = Managers.state.difficulty:get_difficulty()
+				local allowed_difficulties = QuestSettings.allowed_difficulties[stat_names[i]]
+				local allowed_difficulty = allowed_difficulties[current_difficulty]
 
-				if QuestSettings.storm_vermin_warlord_kills_enemies <= blackboard.num_times_hit_skaven then
-					local stat_name = "storm_vermin_warlord_kills_enemies"
-					local statistics_db = Managers.player:statistics_db()
+				if allowed_difficulty and not blackboard.kill_skaven_challenge_completed then
+					local hit_unit_blackboard = BLACKBOARDS[hit_unit]
+					local is_skaven = hit_unit_blackboard.breed.race == "skaven"
+					local num_times_hit_skaven = blackboard.num_times_hit_skaven
 
-					statistics_db:increment_stat_and_sync_to_clients(stat_name)
+					if is_skaven then
+						blackboard.num_times_hit_skaven = num_times_hit_skaven + 1
+					end
 
-					blackboard.kill_skaven_challenge_completed = true
+					if QuestSettings.storm_vermin_warlord_kills_enemies <= blackboard.num_times_hit_skaven then
+						local statistics_db = Managers.player:statistics_db()
+
+						statistics_db:increment_stat_and_sync_to_clients(stat_names[i])
+
+						blackboard.kill_skaven_challenge_completed = true
+					end
 				end
 			end
 		end
@@ -930,71 +704,35 @@ local action_data = {
 	special_attack_sweep_left = {
 		height = 2,
 		hit_react_type = "medium",
-		radius = 2.6,
+		radius = 2.4,
 		rotation_time = 0,
-		fatigue_type = "blocked_sv_sweep",
 		collision_filter = "filter_player_and_husk_trigger",
 		offset_right = 0,
 		mode = "radial_cylinder",
 		direction = "counter_clockwise",
-		overlap_end_time = 0.7575757575757576,
+		overlap_end_time = 0.7936507936507936,
 		offset_forward = -1.5,
 		offset_up = 0,
 		attack_anim = "attack_sweep_left",
 		collision_type = "cylinder",
 		bot_threat_duration = 1,
+		damage = 20,
 		damage_type = "cutting",
-		overlap_start_time = 0.5151515151515151,
-		player_push_speed = 14,
-		player_push_speed_blocked = 12,
+		overlap_start_time = 0.5396825396825397,
+		player_push_speed = 12,
+		player_push_speed_blocked = 10,
 		throw_dialogue_system_event_on_dodged_attack = true,
-		damage = {
-			20,
-			10,
-			5
-		},
 		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				15,
-				10,
-				5
-			},
-			hard = {
-				25,
-				15,
-				10
-			},
-			survival_hard = {
-				25,
-				15,
-				10
-			},
-			harder = {
-				30,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				50,
-				30,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
+			harder = 30,
+			hard = 25,
+			normal = 20,
+			hardest = 50,
+			cataclysm = 60,
+			cataclysm_3 = 100,
+			cataclysm_2 = 75,
+			easy = 15
 		},
+		fatigue_type = BreedTweaks.fatigue_types.elite_sweep.normal_attack,
 		overlap_start_angle_offset = -math.pi,
 		overlap_end_angle_offset = 0.5 * math.pi,
 		ignore_staggers = {
@@ -1009,9 +747,8 @@ local action_data = {
 	special_attack_sweep_right = {
 		height = 2,
 		hit_react_type = "medium",
-		radius = 2.6,
+		radius = 2.4,
 		rotation_time = 0,
-		fatigue_type = "blocked_sv_sweep",
 		collision_filter = "filter_player_and_husk_trigger",
 		offset_right = 0,
 		mode = "radial_cylinder",
@@ -1022,58 +759,23 @@ local action_data = {
 		attack_anim = "attack_sweep_right",
 		collision_type = "cylinder",
 		bot_threat_duration = 0.8333333333333334,
+		damage = 20,
 		damage_type = "cutting",
 		overlap_start_time = 0.36666666666666664,
 		player_push_speed = 14,
 		player_push_speed_blocked = 12,
 		throw_dialogue_system_event_on_dodged_attack = true,
-		damage = {
-			20,
-			10,
-			5
-		},
 		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				15,
-				10,
-				5
-			},
-			hard = {
-				25,
-				15,
-				10
-			},
-			survival_hard = {
-				25,
-				15,
-				10
-			},
-			harder = {
-				30,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				50,
-				30,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
+			harder = 30,
+			hard = 25,
+			normal = 20,
+			hardest = 50,
+			cataclysm = 50,
+			cataclysm_3 = 50,
+			cataclysm_2 = 50,
+			easy = 15
 		},
+		fatigue_type = BreedTweaks.fatigue_types.elite_sweep.normal_attack,
 		overlap_start_angle_offset = -0.5 * math.pi,
 		overlap_end_angle_offset = math.pi,
 		ignore_staggers = {
@@ -1088,8 +790,9 @@ local action_data = {
 	dual_lunge_attack = {
 		animation_driven = true,
 		height = 2,
-		overlap_end_time = 1.6333333333333333,
 		fatigue_type = "blocked_attack",
+		overlap_start_time = 0.8333333333333334,
+		overlap_end_time = 1.6333333333333333,
 		rotation_time = 1.5,
 		hit_react_type = "medium",
 		offset_forward = 0.15,
@@ -1098,8 +801,8 @@ local action_data = {
 		damage_type = "cutting",
 		offset_up = 0,
 		range = 2.2,
+		damage = 20,
 		movement_controlled_rotation = false,
-		overlap_start_time = 0.8333333333333334,
 		action_weight = 5,
 		player_push_speed_blocked = 12,
 		width = 1,
@@ -1109,99 +812,15 @@ local action_data = {
 				attack_anim = "attack_run_2"
 			}
 		},
-		blocked_damage = {
-			0,
-			0,
-			0
-		},
-		blocked_difficulty_damage = {
-			easy = {
-				0,
-				0,
-				0
-			},
-			normal = {
-				0,
-				0,
-				0
-			},
-			hard = {
-				2,
-				2,
-				2
-			},
-			survival_hard = {
-				2,
-				2,
-				2
-			},
-			harder = {
-				5,
-				5,
-				5
-			},
-			survival_harder = {
-				5,
-				5,
-				5
-			},
-			hardest = {
-				10,
-				10,
-				10
-			},
-			survival_hardest = {
-				10,
-				10,
-				10
-			}
-		},
-		damage = {
-			20,
-			10,
-			5
-		},
 		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				15,
-				10,
-				5
-			},
-			hard = {
-				25,
-				15,
-				10
-			},
-			survival_hard = {
-				25,
-				15,
-				10
-			},
-			harder = {
-				30,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				40,
-				30,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
+			harder = 30,
+			hard = 25,
+			normal = 20,
+			hardest = 40,
+			cataclysm = 40,
+			cataclysm_3 = 40,
+			cataclysm_2 = 40,
+			easy = 15
 		},
 		ignore_staggers = {
 			true,
@@ -1226,6 +845,7 @@ local action_data = {
 		damage_type = "cutting",
 		offset_up = 0,
 		range = 2,
+		damage = 20,
 		movement_controlled_rotation = false,
 		action_weight = 5,
 		player_push_speed_blocked = 12,
@@ -1240,52 +860,15 @@ local action_data = {
 				at = 0.1282051282051282
 			}
 		},
-		damage = {
-			20,
-			10,
-			5
-		},
 		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				20,
-				10,
-				5
-			},
-			hard = {
-				25,
-				15,
-				10
-			},
-			survival_hard = {
-				25,
-				15,
-				10
-			},
-			harder = {
-				30,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				50,
-				30,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
+			harder = 30,
+			hard = 25,
+			normal = 20,
+			hardest = 40,
+			cataclysm = 40,
+			cataclysm_3 = 40,
+			cataclysm_2 = 40,
+			easy = 15
 		},
 		ignore_staggers = {
 			true,
@@ -1312,6 +895,7 @@ local action_data = {
 		overlap_check_walls_time = 1.75,
 		height = 2,
 		range = 2,
+		damage = 20,
 		overlap_start_time = 1.1,
 		wall_collision_anim = "charge_attack_lunge_miss",
 		action_weight = 5,
@@ -1329,52 +913,15 @@ local action_data = {
 				attack_anim = "charge_attack_lunge"
 			}
 		},
-		damage = {
-			20,
-			10,
-			5
-		},
 		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				20,
-				10,
-				5
-			},
-			hard = {
-				25,
-				15,
-				10
-			},
-			survival_hard = {
-				25,
-				15,
-				10
-			},
-			harder = {
-				30,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				50,
-				30,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
+			harder = 30,
+			hard = 25,
+			normal = 20,
+			hardest = 50,
+			cataclysm = 50,
+			cataclysm_3 = 50,
+			cataclysm_2 = 50,
+			easy = 15
 		},
 		ignore_staggers = {
 			true,
@@ -1387,107 +934,51 @@ local action_data = {
 	},
 	smash_door = {
 		unblockable = true,
+		damage = 3,
 		damage_type = "cutting",
 		move_anim = "move_fwd",
-		attack_anim = "attack_pounce",
-		damage = {
-			3,
-			3,
-			3
-		}
+		attack_anim = "attack_pounce"
 	},
 	stagger = {
-		scale_animation_speeds = true,
 		stagger_animation_scale = 3.5,
+		ignore_block_on_leave = true,
+		scale_animation_speeds = true,
 		custom_enter_function = function (unit, blackboard, t, action)
 			assert(ScriptUnit.has_extension(unit, "ai_shield_system"), "skaven_storm_vermin_warlord dont have ai_shield_user_extension")
 
-			local breed = blackboard.breed
-			local blocked = blackboard.blocked
 			local stagger = blackboard.stagger
 			local stagger_type = blackboard.stagger_type
 			local ai_shield_extension = ScriptUnit.extension(unit, "ai_shield_system")
 			local shield_user = not ai_shield_extension.shield_broken
-			local is_blocking = ai_shield_extension.is_blocking
 			local is_dual_wield_mode = blackboard.dual_wield_mode
-			local is_dodging = ai_shield_extension.is_dodging
 			local stagger_anims = action.stagger_anims[stagger_type]
-			local idle_event = nil
-			local stagger_count = blackboard.stagger_count
+			local idle_event = "idle"
 
 			if stagger_type == 6 then
-				idle_event = "idle"
-
 				return stagger_anims, idle_event
 			end
 
 			blackboard.stagger_ignore_anim_cb = false
 
 			if shield_user and stagger and is_dual_wield_mode then
-				blackboard.stagger_avoid_timer = blackboard.stagger_avoid_timer or t + 3
-				local avoid_timer = blackboard.stagger_avoid_timer
-				local avoid_broken_timer = blackboard.stagger_avoid_broken_timer
-				local avoid_attack = false
-
-				if avoid_broken_timer and t < avoid_broken_timer then
-					avoid_attack = false
-				elseif avoid_broken_timer and avoid_broken_timer < t then
-					blackboard.stagger_avoid_timer = t + 3
-					blackboard.stagger_avoid_broken_timer = nil
-					avoid_attack = true
-				elseif avoid_timer and t < avoid_timer then
-					avoid_attack = true
-				elseif avoid_timer < t then
-					if blackboard.stagger_count and blackboard.stagger_count >= 5 then
-						blackboard.stagger_avoid_broken_timer = t + 3
-					else
-						blackboard.stagger_avoid_timer = t + 3
-					end
-
-					avoid_attack = false
-				end
-
-				if avoid_attack then
-					local should_dodge_next_attack = false
+				if blackboard.stagger_block_timer and t < blackboard.stagger_block_timer then
 					blackboard.stagger_time = blackboard.stagger_time + 0.35
 
-					if should_dodge_next_attack then
-						ai_shield_extension:set_is_dodging(true)
-						ai_shield_extension:set_is_blocking(false)
-					else
-						ai_shield_extension:set_is_blocking(true)
-						ai_shield_extension:set_is_dodging(false)
-					end
+					ai_shield_extension:set_is_blocking(true)
 
-					is_blocking = ai_shield_extension.is_blocking
-
-					if is_blocking then
-						stagger_anims = action.shield_block_anims[stagger_type]
-					elseif is_dodging then
-						stagger_anims = action.dodge_anims[stagger_type]
-					end
-
-					idle_event = "idle_guard_up"
+					stagger_anims = action.shield_block_anims[stagger_type]
 				else
 					blackboard.stagger_time = 0
 					stagger_anims = action.stagger_anims[stagger_type]
-					idle_event = "idle_guard_up"
 
-					ai_shield_extension:set_is_dodging(false)
 					ai_shield_extension:set_is_blocking(false)
 				end
-
-				blackboard.stagger_ignore_anim_cb = true
 			else
 				blackboard.stagger_time = 0
 				stagger_anims = action.stagger_anims[stagger_type]
-				idle_event = "idle_guard_down"
 
-				ai_shield_extension:set_is_dodging(false)
 				ai_shield_extension:set_is_blocking(false)
 			end
-
-			idle_event = "idle"
 
 			return stagger_anims, idle_event
 		end,
@@ -1595,6 +1086,26 @@ local action_data = {
 				right = {
 					"stagger_right"
 				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
+			},
+			{
+				fwd = {
+					"stagger_fwd"
+				},
+				bwd = {
+					"stagger_bwd"
+				},
+				left = {
+					"stagger_left_heavy"
+				},
+				right = {
+					"stagger_right_heavy"
+				}
 			}
 		},
 		shield_block_anims = {
@@ -1699,6 +1210,29 @@ local action_data = {
 				dwn = {
 					"stagger_bwd_exp"
 				}
+			},
+			{
+				fwd = {
+					"stagger_bwd_block"
+				},
+				bwd = {
+					"stagger_bwd_block"
+				},
+				left = {
+					"stagger_left_block"
+				},
+				right = {
+					"stagger_right_block"
+				},
+				dwn = {
+					"stagger_bwd_block"
+				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
 			},
 			{
 				fwd = {
@@ -1885,6 +1419,37 @@ local action_data = {
 					"stagger_left_dodge",
 					"stagger_right_dodge"
 				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
+			},
+			{
+				fwd = {
+					"stagger_bwd_dodge",
+					"stagger_left_dodge",
+					"stagger_right_dodge"
+				},
+				bwd = {
+					"stagger_bwd_dodge",
+					"stagger_left_dodge",
+					"stagger_right_dodge"
+				},
+				left = {
+					"stagger_bwd_dodge",
+					"stagger_left_dodge"
+				},
+				right = {
+					"stagger_bwd_dodge",
+					"stagger_right_dodge"
+				},
+				dwn = {
+					"stagger_bwd_dodge",
+					"stagger_left_dodge",
+					"stagger_right_dodge"
+				}
 			}
 		},
 		shield_stagger_anims = {
@@ -2006,6 +1571,29 @@ local action_data = {
 				dwn = {
 					"stun_bwd_sword"
 				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
+			},
+			{
+				fwd = {
+					"stagger_fwd"
+				},
+				bwd = {
+					"stagger_bwd"
+				},
+				left = {
+					"stagger_left"
+				},
+				right = {
+					"stagger_right"
+				},
+				dwn = {
+					"stagger_bwd"
+				}
 			}
 		}
 	},
@@ -2063,16 +1651,8 @@ local action_data = {
 				"skaven_storm_vermin",
 				"skaven_storm_vermin"
 			},
-			survival_hard = {
-				"skaven_storm_vermin",
-				"skaven_storm_vermin"
-			},
 			harder = {
 				"skaven_storm_vermin",
-				"skaven_storm_vermin",
-				"skaven_storm_vermin"
-			},
-			survival_harder = {
 				"skaven_storm_vermin",
 				"skaven_storm_vermin"
 			},
@@ -2082,7 +1662,15 @@ local action_data = {
 				"skaven_storm_vermin",
 				"skaven_storm_vermin"
 			},
-			survival_hardest = {
+			cataclysm = {
+				"skaven_storm_vermin",
+				"skaven_storm_vermin"
+			},
+			cataclysm_2 = {
+				"skaven_storm_vermin",
+				"skaven_storm_vermin"
+			},
+			cataclysm_3 = {
 				"skaven_storm_vermin",
 				"skaven_storm_vermin",
 				"skaven_storm_vermin",
@@ -2093,12 +1681,12 @@ local action_data = {
 		},
 		difficulty_spawn = {
 			harder = "stronghold_boss_event_defensive",
-			normal = "stronghold_boss_event_defensive",
 			hard = "stronghold_boss_event_defensive",
-			survival_hard = "stronghold_boss_event_defensive",
-			survival_harder = "stronghold_boss_event_defensive",
+			normal = "stronghold_boss_event_defensive",
 			hardest = "stronghold_boss_event_defensive",
-			survival_hardest = "stronghold_boss_event_defensive",
+			cataclysm = "stronghold_boss_event_defensive",
+			cataclysm_3 = "stronghold_boss_event_defensive",
+			cataclysm_2 = "stronghold_boss_event_defensive",
 			easy = "stronghold_boss_event_defensive"
 		},
 		start_anims = {
@@ -2153,6 +1741,7 @@ local action_data = {
 	dual_combo_attack2 = {
 		stagger_distance = 2,
 		hit_react_type = "medium",
+		damage = 20,
 		unblockable = false,
 		player_push_speed_blocked = 6,
 		player_push_speed = 10,
@@ -2229,52 +1818,15 @@ local action_data = {
 				push_units_in_the_way = pushed_data
 			}
 		},
-		damage = {
-			20,
-			25,
-			20
-		},
 		difficulty_damage = {
-			easy = {
-				15,
-				20,
-				15
-			},
-			normal = {
-				10,
-				15,
-				20
-			},
-			hard = {
-				20,
-				25,
-				20
-			},
-			survival_hard = {
-				25,
-				35,
-				30
-			},
-			harder = {
-				25,
-				30,
-				25
-			},
-			survival_harder = {
-				35,
-				40,
-				30
-			},
-			hardest = {
-				35,
-				40,
-				35
-			},
-			survival_hardest = {
-				50,
-				75,
-				45
-			}
+			harder = 30,
+			hard = 25,
+			normal = 20,
+			hardest = 50,
+			cataclysm = 50,
+			cataclysm_3 = 50,
+			cataclysm_2 = 50,
+			easy = 15
 		},
 		stagger_impact = {
 			1,

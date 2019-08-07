@@ -206,6 +206,19 @@ DoorSystem.open_boss_doors = function (self, map_section)
 	end
 end
 
+DoorSystem.get_boss_door_units = function (self)
+	local boss_door_units = {}
+
+	for map_section, boss_doors in pairs(self._boss_doors) do
+		for i = 1, #boss_doors, 1 do
+			local boss_door_unit = boss_doors[i]
+			boss_door_units[#boss_door_units + 1] = boss_door_unit
+		end
+	end
+
+	return boss_door_units
+end
+
 DoorSystem.rpc_sync_door_state = function (self, sender, level_object_id, door_state_id)
 	local level = LevelHelper:current_level(self.world)
 	local door_unit = Level.unit_by_index(level, level_object_id)

@@ -12,7 +12,7 @@ local breed_data = {
 	aoe_radius = 0.7,
 	special = true,
 	poison_resistance = 100,
-	armor_category = 5,
+	debug_spawn_category = "Misc",
 	is_bot_aid_threat = true,
 	bot_hitbox_radius_approximation = 0.8,
 	headshot_coop_stamina_fatigue_type = "headshot_special",
@@ -36,6 +36,7 @@ local breed_data = {
 	death_reaction = "ai_default",
 	perception = "perception_all_seeing",
 	player_locomotion_constrain_radius = 0.7,
+	armor_category = 5,
 	vortexable = false,
 	perception_continuous = "perception_continuous_keep_target",
 	behavior = "chaos_tentacle_sorcerer",
@@ -46,6 +47,9 @@ local breed_data = {
 		16,
 		20,
 		24,
+		35,
+		35,
+		35,
 		35
 	},
 	bloodlust_health = BreedTweaks.bloodlust_health.chaos_special,
@@ -59,13 +63,7 @@ local breed_data = {
 		1,
 		1
 	},
-	hit_mass_counts = {
-		8,
-		8,
-		12,
-		16,
-		16
-	},
+	hit_mass_counts = BreedTweaks.hit_mass_counts.sorcerer,
 	debug_color = {
 		255,
 		200,
@@ -78,10 +76,6 @@ local breed_data = {
 		head = "headshot"
 	},
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		head = {
 			prio = 1,
 			actors = {
@@ -103,7 +97,7 @@ local breed_data = {
 			}
 		},
 		torso = {
-			prio = 3,
+			prio = 2,
 			actors = {
 				"c_hips",
 				"c_spine",
@@ -116,7 +110,7 @@ local breed_data = {
 			}
 		},
 		left_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftarm",
 				"c_leftforearm",
@@ -127,7 +121,7 @@ local breed_data = {
 			}
 		},
 		right_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightarm",
 				"c_rightforearm",
@@ -138,7 +132,7 @@ local breed_data = {
 			}
 		},
 		left_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftupleg",
 				"c_leftleg",
@@ -152,7 +146,7 @@ local breed_data = {
 			}
 		},
 		right_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightupleg",
 				"c_rightleg",
@@ -164,6 +158,10 @@ local breed_data = {
 				"j_rightfoot",
 				"j_hips"
 			}
+		},
+		full = {
+			prio = 4,
+			actors = {}
 		},
 		afro = {
 			prio = 5,
@@ -301,6 +299,26 @@ local action_data = {
 				left = {
 					"stagger_right_exp"
 				}
+			},
+			{
+				fwd = {
+					"stagger_fwd"
+				},
+				bwd = {
+					"stagger_bwd"
+				},
+				right = {
+					"stagger_left"
+				},
+				left = {
+					"stagger_right"
+				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
 			},
 			{
 				fwd = {

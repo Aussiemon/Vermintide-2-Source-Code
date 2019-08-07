@@ -3,7 +3,6 @@ require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 BTNinjaVanishAction = class(BTNinjaVanishAction, BTNode)
 BTNinjaVanishAction.name = "BTNinjaVanishAction"
 local POSITION_LOOKUP = POSITION_LOOKUP
-local PLAYER_POSITIONS = PLAYER_POSITIONS
 local script_data = script_data
 
 BTNinjaVanishAction.init = function (self, ...)
@@ -108,7 +107,8 @@ BTNinjaVanishAction.find_escape_position = function (unit, blackboard)
 	local hidden_cover_units = nil
 
 	if center_position then
-		num_found, hidden_cover_units = ConflictUtils.hidden_cover_points(center_position, PLAYER_POSITIONS, 15, 40)
+		local side = blackboard.side
+		num_found, hidden_cover_units = ConflictUtils.hidden_cover_points(center_position, side.ENEMY_PLAYER_POSITIONS, 15, 40)
 	end
 
 	if num_found > 0 then

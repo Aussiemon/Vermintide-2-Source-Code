@@ -1,45 +1,3 @@
-local damage_table_light = {
-	easy = {
-		15,
-		10,
-		7
-	},
-	normal = {
-		15,
-		10,
-		10
-	},
-	hard = {
-		25,
-		17,
-		15
-	},
-	survival_hard = {
-		25,
-		17,
-		15
-	},
-	harder = {
-		40,
-		20,
-		15
-	},
-	survival_harder = {
-		40,
-		20,
-		15
-	},
-	hardest = {
-		60,
-		25,
-		15
-	},
-	survival_hardest = {
-		60,
-		25,
-		15
-	}
-}
 local default_bot_threat_difficulty_data = BotConstants and BotConstants.default.DEFAULT_BOT_THREAT_DIFFICULTY_DATA
 local breed_data = {
 	detection_radius = 9999999,
@@ -50,7 +8,7 @@ local breed_data = {
 	has_inventory = true,
 	always_look_at_target = true,
 	aoe_radius = 1,
-	animation_sync_rpc = "rpc_sync_anim_state_10",
+	animation_sync_rpc = "rpc_sync_anim_state_9",
 	bot_hitbox_radius_approximation = 1,
 	chance_of_starting_sleepy = 0,
 	behavior = "stormfiend",
@@ -62,7 +20,7 @@ local breed_data = {
 	threat_value = 32,
 	bot_opportunity_target_melee_range = 7,
 	bone_lod_level = 0,
-	default_inventory_template = "rat_ogre",
+	default_inventory_template = "stormfiend_warpfire",
 	stagger_resistance = 100,
 	perception = "perception_rat_ogre",
 	boss_staggers = true,
@@ -79,7 +37,7 @@ local breed_data = {
 	smart_targeting_width = 0.6,
 	perception_continuous = "perception_continuous_rat_ogre",
 	initial_is_passive = false,
-	boost_curve_multiplier_override = 3,
+	boost_curve_multiplier_override = 2,
 	target_selection = "pick_rat_ogre_target_idle",
 	run_speed = 5,
 	awards_positive_reinforcement_message = true,
@@ -122,13 +80,7 @@ local breed_data = {
 		distance_weight = 20,
 		target_disabled_mul = 0.15
 	},
-	max_health = {
-		550,
-		550,
-		1050,
-		1400,
-		2100
-	},
+	max_health = BreedTweaks.max_health.stormfiend,
 	bloodlust_health = BreedTweaks.bloodlust_health.monster,
 	stagger_duration = {
 		0,
@@ -166,10 +118,6 @@ local breed_data = {
 		aux = 6
 	},
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		head = {
 			prio = 1,
 			actors = {
@@ -192,7 +140,7 @@ local breed_data = {
 			}
 		},
 		torso = {
-			prio = 3,
+			prio = 2,
 			actors = {
 				"c_spine2",
 				"c_spine",
@@ -206,7 +154,7 @@ local breed_data = {
 			}
 		},
 		left_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftarm",
 				"c_leftforearm"
@@ -217,7 +165,7 @@ local breed_data = {
 			}
 		},
 		right_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightarm",
 				"c_rightforearm"
@@ -228,7 +176,7 @@ local breed_data = {
 			}
 		},
 		left_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftupleg",
 				"c_leftleg",
@@ -242,7 +190,7 @@ local breed_data = {
 			}
 		},
 		right_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightupleg",
 				"c_rightleg",
@@ -256,7 +204,7 @@ local breed_data = {
 			}
 		},
 		tail = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_tail1",
 				"c_tail2",
@@ -274,7 +222,7 @@ local breed_data = {
 			}
 		},
 		weakspot = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_packmaster_sling_02"
 			},
@@ -282,14 +230,8 @@ local breed_data = {
 				"j_spine1"
 			}
 		},
-		afro = {
-			prio = 5,
-			actors = {
-				"c_afro"
-			}
-		},
 		aux = {
-			prio = 6,
+			prio = 4,
 			actors = {
 				"c_packmaster_sling",
 				"c_back_pack"
@@ -297,6 +239,16 @@ local breed_data = {
 			push_actors = {
 				"j_packmaster_sling",
 				"j_packmaster_sling_02"
+			}
+		},
+		full = {
+			prio = 5,
+			actors = {}
+		},
+		afro = {
+			prio = 6,
+			actors = {
+				"c_afro"
 			}
 		}
 	},
@@ -333,6 +285,68 @@ local breed_data = {
 	end
 }
 Breeds.skaven_stormfiend = table.create_copy(Breeds.skaven_stormfiend, breed_data)
+local AttackIntensityPerDifficulty = {
+	shove = {
+		easy = {
+			normal = 1
+		},
+		normal = {
+			normal = 1
+		},
+		hard = {
+			normal = 1
+		},
+		harder = {
+			normal = 1
+		},
+		hardest = {
+			normal = 1
+		},
+		cataclysm = {
+			normal = 1
+		},
+		cataclysm_2 = {
+			normal = 1
+		},
+		cataclysm_3 = {
+			normal = 1
+		}
+	},
+	charge = {
+		easy = {
+			running = 0.5,
+			normal = 3
+		},
+		normal = {
+			running = 0.5,
+			normal = 3
+		},
+		hard = {
+			running = 0.5,
+			normal = 3
+		},
+		harder = {
+			running = 0.5,
+			normal = 3
+		},
+		hardest = {
+			running = 0.5,
+			normal = 3
+		},
+		cataclysm = {
+			running = 0.5,
+			normal = 3
+		},
+		cataclysm_2 = {
+			running = 0.5,
+			normal = 3
+		},
+		cataclysm_3 = {
+			running = 0.5,
+			normal = 3
+		}
+	}
+}
 local action_data = {
 	climb = {
 		catapult_players = {
@@ -451,21 +465,7 @@ local action_data = {
 				0,
 				10
 			},
-			survival_hard = {
-				10,
-				10,
-				0,
-				0,
-				10
-			},
 			harder = {
-				20,
-				10,
-				0,
-				0,
-				10
-			},
-			survival_harder = {
 				20,
 				10,
 				0,
@@ -479,7 +479,21 @@ local action_data = {
 				0,
 				10
 			},
-			survival_hardest = {
+			cataclysm = {
+				40,
+				10,
+				0,
+				0,
+				10
+			},
+			cataclysm_2 = {
+				40,
+				10,
+				0,
+				0,
+				10
+			},
+			cataclysm_3 = {
 				40,
 				10,
 				0,
@@ -568,10 +582,13 @@ local action_data = {
 		}
 	},
 	melee_shove = {
-		damage_type = "cutting",
-		ignore_ai_damage = true,
 		fatigue_type = "ogre_shove",
+		damage = 20,
+		attack_intensity_type = "shove",
 		action_weight = 1,
+		ignore_ai_damage = true,
+		damage_type = "cutting",
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		considerations = UtilityConsiderations.melee_shove,
 		attacks = {
 			{
@@ -710,18 +727,17 @@ local action_data = {
 				}
 			}
 		},
-		damage = {
-			20,
-			20,
-			20
-		},
-		difficulty_damage = damage_table_light
+		difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack
 	},
 	charge = {
-		damage_type = "cutting",
 		fatigue_type = "blocked_slam",
+		damage = 20,
+		attack_intensity_type = "charge",
 		action_weight = 20,
+		blocked_damage = 5,
 		ignore_ai_damage = true,
+		damage_type = "cutting",
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		considerations = UtilityConsiderations.stormfiend_charge,
 		attacks = {
 			{
@@ -778,59 +794,8 @@ local action_data = {
 				}
 			}
 		},
-		blocked_damage = {
-			5,
-			4,
-			2.5
-		},
-		blocked_difficulty_damage = {
-			easy = {
-				4,
-				4,
-				2.5
-			},
-			normal = {
-				5,
-				4,
-				2.5
-			},
-			hard = {
-				7,
-				5,
-				2.5
-			},
-			survival_hard = {
-				7,
-				5,
-				2.5
-			},
-			harder = {
-				9,
-				7.5,
-				5
-			},
-			survival_harder = {
-				9,
-				7.5,
-				5
-			},
-			hardest = {
-				12,
-				10,
-				7.5
-			},
-			survival_hardest = {
-				18,
-				15,
-				11.25
-			}
-		},
-		damage = {
-			20,
-			10,
-			5
-		},
-		difficulty_damage = damage_table_light,
+		blocked_difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack_blocked,
+		difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack,
 		ignore_staggers = {
 			true,
 			true,
@@ -845,15 +810,11 @@ local action_data = {
 	smash_door = {
 		unblockable = true,
 		name = "smash_door",
+		damage = 25,
 		damage_type = "cutting",
 		move_anim = "move_fwd",
 		attack_anim = "attack_slam",
 		door_attack_distance = 2,
-		damage = {
-			25,
-			25,
-			25
-		},
 		ignore_staggers = {
 			false,
 			true,
@@ -932,6 +893,12 @@ local action_data = {
 				right = {
 					"stagger_weakspot"
 				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
 			}
 		},
 		custom_weakspot_function = function (unit, blackboard, t, action)

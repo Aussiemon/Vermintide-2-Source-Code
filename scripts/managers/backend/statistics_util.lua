@@ -4,44 +4,41 @@ StatisticsUtil = {}
 local StatisticsUtil = StatisticsUtil
 
 StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db, is_server)
-	local attacker_unit = AiUtils.get_actual_attacker_unit(damage_data[DamageDataIndex.ATTACKER])
-	local player_manager = Managers.player
-	local attacker_player = player_manager:owner(attacker_unit)
-	local breed = Unit_get_data(victim_unit, "breed")
+	local victim_health_extension = ScriptUnit.has_extension(victim_unit, "health_system")
+	local victim_damage_data = victim_health_extension.last_damage_data
 
-	if attacker_player then
+	if not victim_damage_data then
+		return
+	end
+
+	local player_manager = Managers.player
+	local victim_player = player_manager:owner(victim_unit)
+	local breed_killed = Unit_get_data(victim_unit, "breed")
+	local breed_attacker = victim_damage_data.breed
+	local attacker_side = victim_damage_data.attacker_side
+	local attacker_unique_id = victim_damage_data.attacker_unique_id
+	local attacker_player = player_manager:player_from_unique_id(attacker_unique_id)
+
+	if attacker_player and attacker_player ~= victim_player then
 		local stats_id = attacker_player:stats_id()
 
 		statistics_db:increment_stat(stats_id, "kills_total")
 
-		if breed ~= nil then
-			local breed_name = breed.name
-			local print_message = breed.awards_positive_reinforcement_message
+		if breed_killed then
+			local breed_killed_name = breed_killed.name
 
-			if print_message then
-				local predicate = "killed_special"
-				local local_human = not attacker_player.remote and not attacker_player.bot_player
-				local profile_index = attacker_player:profile_index()
-				local attacker_player_unit = attacker_player.player_unit
-
-				if Unit.alive(attacker_player_unit) then
-					local career_extension = ScriptUnit.extension(attacker_player_unit, "career_system")
-					local career_index = (career_extension and career_extension:career_index()) or attacker_player:career_index()
-
-					Managers.state.event:trigger("add_coop_feedback_kill", stats_id .. breed_name, local_human, predicate, profile_index, career_index, breed_name)
-				end
+			if not breed_killed.is_player then
+				statistics_db:increment_stat(stats_id, "kills_per_breed", breed_killed_name)
 			end
 
-			statistics_db:increment_stat(stats_id, "kills_per_breed", breed_name)
+			if breed_killed.race and breed_killed.race == "critter" then
+				statistics_db:increment_stat(stats_id, "kills_critter_total")
+			end
 
 			local hit_zone = damage_data[DamageDataIndex.HIT_ZONE]
 
 			if hit_zone == "head" then
 				statistics_db:increment_stat(stats_id, "headshots")
-			end
-
-			if breed.race and breed.race == "critter" then
-				statistics_db:increment_stat(stats_id, "kills_critter_total")
 			end
 
 			local damage_source = damage_data[DamageDataIndex.DAMAGE_SOURCE_NAME]
@@ -73,19 +70,77 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 		end
 	end
 
-	if breed and (breed.elite or breed.boss) then
-		local human_and_bot_players = player_manager:human_and_bot_players()
+	if breed_killed and breed_attacker then
+		local print_message = breed_killed.awards_positive_reinforcement_message
 
-		for _, player in pairs(human_and_bot_players) do
-			if player ~= attacker_player then
-				local stats_id = player:stats_id()
+		if print_message then
+			local breed_attacker_name = breed_attacker.name
+			local breed_killed_name = breed_killed.name
+			local predicate = "killed_special"
+			local local_human = false
+			local stats_id = ""
 
-				if breed ~= nil then
-					local breed_name = breed.name
+			if attacker_player then
+				local_human = attacker_player.local_player
+				stats_id = attacker_player:stats_id()
+			end
 
-					statistics_db:increment_stat(stats_id, "kill_assists_per_breed", breed_name)
+			Managers.state.event:trigger("add_coop_feedback_kill", stats_id .. breed_killed_name, local_human, predicate, breed_attacker_name, breed_killed_name, attacker_player, victim_player)
+		end
+	end
+
+	if breed_killed and (breed_killed.elite or breed_killed.boss) then
+		local victim_side = Managers.state.side.side_by_unit[victim_unit]
+
+		if attacker_side and attacker_side ~= victim_side then
+			local party = attacker_side.party
+			local occupied_slots = party.occupied_slots
+
+			for _, player_status in ipairs(occupied_slots) do
+				local player = player_status.player
+
+				if player ~= attacker_player then
+					local stats_id = player:stats_id()
+					local breed_killed_name = breed_killed.name
+
+					statistics_db:increment_stat(stats_id, "kill_assists_per_breed", breed_killed_name)
 				end
 			end
+		end
+	end
+end
+
+StatisticsUtil.register_knockdown = function (victim_unit, damage_data, statistics_db, is_server)
+	local victim_health_extension = ScriptUnit.has_extension(victim_unit, "health_system")
+	local victim_damage_data = victim_health_extension.last_damage_data
+
+	if not victim_damage_data then
+		return
+	end
+
+	local player_manager = Managers.player
+	local victim_player = player_manager:owner(victim_unit)
+	local breed_killed = Unit_get_data(victim_unit, "breed")
+	local breed_attacker = victim_damage_data.breed
+	local attacker_unique_id = victim_damage_data.attacker_unique_id
+	local attacker_player = player_manager:player_from_unique_id(attacker_unique_id)
+
+	if breed_killed and breed_attacker then
+		local print_message = breed_killed.awards_positive_reinforcement_message
+
+		if print_message then
+			local breed_attacker_name = breed_attacker.name
+			local breed_killed_name = breed_killed.name
+			local predicate = "player_knocked_down"
+			local local_human = false
+			local stats_id = ""
+
+			if attacker_player then
+				local_human = attacker_player.local_player
+				stats_id = attacker_player:stats_id()
+			end
+
+			Managers.state.event:trigger("add_coop_feedback_kill", stats_id .. breed_killed_name, local_human, predicate, breed_attacker_name, breed_killed_name)
 		end
 	end
 end
@@ -256,10 +311,10 @@ StatisticsUtil.register_damage = function (victim_unit, damage_data, statistics_
 	local attacker_player = player_manager:owner(attacker_unit)
 
 	if attacker_player then
-		local breed = Unit_alive(victim_unit) and Unit_get_data(victim_unit, "breed")
+		local target_breed = Unit_alive(victim_unit) and Unit_get_data(victim_unit, "breed")
 
-		if breed then
-			local breed_name = breed.name
+		if target_breed then
+			local breed_name = target_breed.name
 			local health_extension = ScriptUnit.extension(victim_unit, "health_system")
 			local current_health = health_extension:current_health()
 
@@ -268,7 +323,10 @@ StatisticsUtil.register_damage = function (victim_unit, damage_data, statistics_
 				damage_amount = math.clamp(damage_amount, 0, current_health)
 
 				statistics_db:modify_stat_by_amount(stats_id, "damage_dealt", damage_amount)
-				statistics_db:modify_stat_by_amount(stats_id, "damage_dealt_per_breed", breed_name, damage_amount)
+
+				if not target_breed.is_player then
+					statistics_db:modify_stat_by_amount(stats_id, "damage_dealt_per_breed", breed_name, damage_amount)
+				end
 			end
 		end
 	end
@@ -437,6 +495,88 @@ StatisticsUtil.register_complete_level = function (statistics_db)
 					statistics_db:increment_stat(stats_id, stat_name)
 				end
 			end
+		end
+	end
+end
+
+StatisticsUtil.register_weave_complete = function (statistics_db, player)
+	local weave_manager = Managers.weave
+	local weave_tier = weave_manager:get_weave_tier()
+	local weave_name = weave_manager:get_active_weave()
+	local wind = weave_manager:get_active_wind()
+	local score = weave_manager:get_score()
+	local num_players = weave_manager:get_num_players()
+	local stat_name = "weave_score_weave_" .. weave_tier .. "_" .. num_players .. "_players"
+	local stats_id = player:stats_id()
+	local profile_index = player:profile_index()
+	local profile = SPProfiles[profile_index]
+	local career_index = player:career_index()
+	local career_data = profile.careers[career_index]
+	local career_name = career_data.name
+	local career_stat_name = "weaves_complete_" .. career_name .. "_season_1"
+	local rainbow_stat_name = "weave_rainbow_" .. wind .. "_" .. career_name .. "_season_1"
+
+	statistics_db:set_stat(stats_id, "season_1", rainbow_stat_name, 1)
+	statistics_db:increment_stat(stats_id, "season_1", career_stat_name)
+	StatisticsUtil._register_mutator_challenges(statistics_db, stats_id, wind)
+	statistics_db:increment_stat(stats_id, "completed_weaves", weave_name)
+	statistics_db:increment_stat(stats_id, "season_1", "weave_won", weave_tier)
+
+	local weave_won_count = statistics_db:get_persistent_stat(stats_id, "season_1", "weave_won", weave_tier)
+	local value = statistics_db:get_persistent_stat(stats_id, "season_1", stat_name)
+
+	if value < score then
+		statistics_db:set_stat(stats_id, "season_1", stat_name, score)
+	end
+
+	return weave_won_count
+end
+
+StatisticsUtil._register_mutator_challenges = function (statistics_db, stats_id, wind)
+	if wind == "life" then
+		local life_stat_id = "weave_life_stepped_in_bush"
+		local result = statistics_db:get_persistent_stat(stats_id, "season_1", life_stat_id)
+
+		if result == 0 then
+			local id = "scorpion_weaves_life_season_1"
+
+			statistics_db:increment_stat(stats_id, "season_1", id)
+		end
+	elseif wind == "death" then
+		local death_stat_id = "weave_death_hit_by_spirit"
+		local result = statistics_db:get_persistent_stat(stats_id, "season_1", death_stat_id)
+
+		if result == 0 then
+			local id = "scorpion_weaves_death_season_1"
+
+			statistics_db:increment_stat(stats_id, "season_1", id)
+		end
+	elseif wind == "beasts" then
+		local beasts_stat_id = "weave_beasts_destroyed_totems"
+		local result = statistics_db:get_persistent_stat(stats_id, "season_1", beasts_stat_id)
+
+		if result == 0 then
+			local id = "scorpion_weaves_beasts_season_1"
+
+			statistics_db:increment_stat(stats_id, "season_1", id)
+		end
+	elseif wind == "light" then
+		local beasts_stat_id = "weave_light_low_curse"
+		local result = statistics_db:get_persistent_stat(stats_id, "season_1", beasts_stat_id)
+
+		if result == 0 then
+			local id = "scorpion_weaves_light_season_1"
+
+			statistics_db:increment_stat(stats_id, "season_1", id)
+		end
+	elseif wind == "shadow" then
+		local beasts_stat_id = "weave_shadow_kill_no_shrouded"
+		local result = statistics_db:get_persistent_stat(stats_id, "season_1", beasts_stat_id)
+
+		if result == 0 then
+			local id = "scorpion_weaves_shadow_season_1"
+
+			statistics_db:increment_stat(stats_id, "season_1", id)
 		end
 	end
 end

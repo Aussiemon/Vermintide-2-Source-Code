@@ -13,7 +13,9 @@ PlayerUnitLocomotionExtension.init = function (self, extension_init_context, uni
 	self.is_server = Managers.player.is_server
 	self.velocity_network = Vector3Box()
 	self.velocity_current = Vector3Box()
+	self.animation_translation_scale = Vector3Box(1, 1, 1)
 	self.external_velocity = nil
+	self._external_velocity_enabled = true
 	self.velocity_forced = nil
 	self.use_drag = true
 
@@ -25,6 +27,7 @@ PlayerUnitLocomotionExtension.init = function (self, extension_init_context, uni
 	self.time_since_last_down_collide = 0
 	self.rotate_along_direction = true
 	self.debugging_animations = false
+	self.ignore_gravity = false
 
 	self:_initialize_sample_velocities()
 
@@ -60,6 +63,8 @@ PlayerUnitLocomotionExtension.init = function (self, extension_init_context, uni
 		ladder = false,
 		enemy_noclip = false
 	}
+	self._climb_entrance = nil
+	self._climb_exit = nil
 end
 
 PlayerUnitLocomotionExtension.set_mover_filter_property = function (self, property, bool)
@@ -305,7 +310,6 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 	local velocity_current = self.velocity_current:unbox() + Vector3(0, 0, (external_velocity and external_velocity.z) or 0)
 	local velocity_wanted = self.velocity_wanted:unbox()
 	local mover = Unit.mover(unit)
-	local initial_mover = Mover.position(mover)
 
 	if calculate_fall_velocity then
 		velocity_wanted.z = velocity_current.z
@@ -314,7 +318,6 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 	local velocity_forced = self.velocity_forced
 
 	if velocity_forced then
-		local velocity_forced = self.velocity_forced
 		velocity_wanted = velocity_forced
 		self.velocity_forced = nil
 	end
@@ -323,7 +326,6 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 
 	if external_velocity then
 		local flat_external_velocity = Vector3.flat(external_velocity)
-		local flat_wanted_velocity = Vector3.flat(external_velocity)
 		external_dir = Vector3.normalize(flat_external_velocity)
 		local external_length = Vector3.length(flat_external_velocity)
 		local external_direction_component = Vector3.dot(external_dir, velocity_wanted)
@@ -372,7 +374,6 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 	if velocity_flat_length > 0.001 then
 		velocity_flat_normalized = velocity_flat_normalized / velocity_flat_length
 		local flat_player_pos = Vector3.flat(current_position)
-		local constrain_end_pos = flat_player_pos + velocity_flat_normalized * 2
 		local constrained_target = nil
 		local min_dot = -1
 		local max_dot = 1
@@ -451,11 +452,19 @@ PlayerUnitLocomotionExtension.update_animation_driven_movement = function (self,
 	local wanted_position = Matrix4x4.translation(wanted_pose)
 	local current_position = POSITION_LOOKUP[unit]
 	local delta_anim = wanted_position - current_position
+	delta_anim = Vector3.multiply_elements(delta_anim, self.animation_translation_scale:unbox())
+	local delta_total = nil
 	local velocity = self.velocity_current:unbox()
 	local velocity_fall = Vector3(0, 0, velocity.z)
-	velocity_fall.z = velocity_fall.z - 9.82 * dt
-	local delta_velocity = velocity_fall * dt
-	local delta_total = delta_velocity + delta_anim
+
+	if self.ignore_gravity then
+		delta_total = delta_anim
+	else
+		velocity_fall.z = velocity_fall.z - 9.82 * dt
+		local delta_velocity = velocity_fall * dt
+		delta_total = delta_velocity + delta_anim
+	end
+
 	local mover = Unit.mover(unit)
 
 	Mover.move(mover, delta_total, dt)
@@ -467,7 +476,7 @@ PlayerUnitLocomotionExtension.update_animation_driven_movement = function (self,
 	local final_position = Vector3(wanted_position.x, wanted_position.y, mover_position.z)
 	local velocity_new = (final_position - current_position) / dt
 
-	if self:moving_on_slope(true, unit, mover, mover_position) then
+	if not self.ignore_gravity and self:moving_on_slope(true, unit, mover, mover_position) then
 		velocity_new.z = velocity_fall.z
 	end
 
@@ -475,6 +484,10 @@ PlayerUnitLocomotionExtension.update_animation_driven_movement = function (self,
 
 	self.velocity_network:store(velocity_new)
 	self.velocity_current:store(velocity_new)
+end
+
+PlayerUnitLocomotionExtension.set_animation_translation_scale = function (self, animation_translation_scale)
+	self.animation_translation_scale:store(animation_translation_scale)
 end
 
 PlayerUnitLocomotionExtension.update_animation_driven_movement_no_mover = function (self, unit, dt, t)
@@ -497,6 +510,17 @@ PlayerUnitLocomotionExtension.update_animation_driven_movement_with_rotation_no_
 	local final_rotation = Matrix4x4.rotation(wanted_pose)
 
 	Unit.set_local_rotation(unit, 0, final_rotation)
+end
+
+PlayerUnitLocomotionExtension.update_animation_driven_movement_entrance_and_exit_no_mover = function (self, unit, dt, t)
+	self:update_animation_driven_movement_no_mover(unit, dt, t)
+
+	local exit_pos = self._climb_exit:unbox()
+	local entrance_pos = self._climb_entrance:unbox()
+	local look_direction_wanted = Vector3.normalize(Vector3.flat(exit_pos - entrance_pos))
+	local look_rotation_wanted = Quaternion.look(look_direction_wanted)
+
+	Unit.set_local_rotation(unit, 0, look_rotation_wanted)
 end
 
 PlayerUnitLocomotionExtension.update_script_driven_ladder_transition_movement = function (self, unit, dt, t)
@@ -624,6 +648,10 @@ PlayerUnitLocomotionExtension.set_script_movement_time_scale = function (self, s
 end
 
 PlayerUnitLocomotionExtension.add_external_velocity = function (self, velocity_delta, upper_limit)
+	if not self._external_velocity_enabled then
+		return
+	end
+
 	if not self.external_velocity then
 		self.external_velocity = Vector3Box()
 	end
@@ -648,6 +676,14 @@ PlayerUnitLocomotionExtension.set_forced_velocity = function (self, velocity_for
 		else
 			self.velocity_forced = nil
 		end
+	end
+end
+
+PlayerUnitLocomotionExtension.set_external_velocity_enabled = function (self, enabled)
+	self._external_velocity_enabled = enabled
+
+	if self.external_velocity and not enabled then
+		self.external_velocity = nil
 	end
 end
 
@@ -724,8 +760,15 @@ PlayerUnitLocomotionExtension.disable_linked_movement = function (self)
 	end
 end
 
-PlayerUnitLocomotionExtension.enable_animation_driven_movement = function (self)
+PlayerUnitLocomotionExtension.enable_animation_driven_movement = function (self, ignore_gravity)
+	self.ignore_gravity = ignore_gravity
 	self.state = "animation_driven"
+end
+
+PlayerUnitLocomotionExtension.enable_animation_driven_movement_entrance_and_exit_no_mover = function (self, entrance, exit)
+	self._climb_entrance = Vector3Box(entrance)
+	self._climb_exit = Vector3Box(exit)
+	self.state = "animation_driven_entrance_and_exit_no_mover"
 end
 
 PlayerUnitLocomotionExtension.enable_animation_driven_movement_with_rotation_no_mover = function (self)

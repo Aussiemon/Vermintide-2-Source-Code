@@ -32,7 +32,6 @@ local breed_data = {
 	unit_template = "ai_unit_pack_master",
 	awards_positive_reinforcement_message = true,
 	patrol_active_perception = "perception_regular",
-	stagger_reduction = 2,
 	race = "skaven",
 	proximity_system_check = true,
 	death_reaction = "ai_default",
@@ -50,21 +49,10 @@ local breed_data = {
 	behavior = "pack_master",
 	base_unit = "units/beings/enemies/skaven_pack_master/chr_skaven_pack_master",
 	threat_value = 8,
-	max_health = {
-		25,
-		25,
-		37.5,
-		50,
-		75
-	},
+	max_health = BreedTweaks.max_health.pack_master,
 	bloodlust_health = BreedTweaks.bloodlust_health.skaven_special,
-	diff_stagger_resist = {
-		4,
-		4,
-		5.3,
-		6.5,
-		6.5
-	},
+	stagger_reduction = BreedTweaks.stagger_reduction.packmaster,
+	diff_stagger_resist = BreedTweaks.diff_stagger_resist.packmaster,
 	stagger_duration = {
 		0.25,
 		1,
@@ -86,10 +74,6 @@ local breed_data = {
 		head = "headshot"
 	},
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		head = {
 			prio = 1,
 			actors = {
@@ -111,7 +95,7 @@ local breed_data = {
 			}
 		},
 		torso = {
-			prio = 3,
+			prio = 2,
 			actors = {
 				"c_spine2",
 				"c_spine",
@@ -124,7 +108,7 @@ local breed_data = {
 			}
 		},
 		left_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftarm",
 				"c_leftforearm",
@@ -135,7 +119,7 @@ local breed_data = {
 			}
 		},
 		right_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightarm",
 				"c_rightforearm",
@@ -146,7 +130,7 @@ local breed_data = {
 			}
 		},
 		left_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftupleg",
 				"c_leftleg",
@@ -160,7 +144,7 @@ local breed_data = {
 			}
 		},
 		right_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightupleg",
 				"c_rightleg",
@@ -174,7 +158,7 @@ local breed_data = {
 			}
 		},
 		tail = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_tail1",
 				"c_tail2",
@@ -187,19 +171,23 @@ local breed_data = {
 				"j_hips"
 			}
 		},
-		afro = {
-			prio = 5,
-			actors = {
-				"c_afro"
-			}
-		},
 		aux = {
-			prio = 6,
+			prio = 4,
 			actors = {
 				"c_backpack"
 			},
 			push_actors = {
 				"j_backpack"
+			}
+		},
+		full = {
+			prio = 5,
+			actors = {}
+		},
+		afro = {
+			prio = 6,
+			actors = {
+				"c_afro"
 			}
 		}
 	},
@@ -255,17 +243,14 @@ local action_data = {
 	grab_attack = {
 		attack_anim_duration = 1,
 		dodge_angle = 12.5,
+		damage = 0,
 		bot_threat_start_time = 0.1,
 		cooldown = 4,
 		fatigue_type = "blocked_attack",
 		dodge_distance = 4,
 		damage_type = "pack_master_grab",
 		unblockable = true,
-		attack_anim = "attack_grab",
-		damage = {
-			0,
-			0
-		}
+		attack_anim = "attack_grab"
 	},
 	initial_pull = {
 		cooldown = 4,
@@ -312,14 +297,10 @@ local action_data = {
 	},
 	smash_door = {
 		unblockable = true,
+		damage = 5,
 		damage_type = "cutting",
 		move_anim = "move_fwd",
-		attack_anim = "smash_door",
-		damage = {
-			5,
-			5,
-			5
-		}
+		attack_anim = "smash_door"
 	},
 	stagger = {
 		scale_animation_speeds = true,
@@ -407,6 +388,26 @@ local action_data = {
 				right = {
 					"stagger_right_exp"
 				}
+			},
+			{
+				fwd = {
+					"stagger_fwd"
+				},
+				bwd = {
+					"stagger_bwd"
+				},
+				left = {
+					"stagger_left"
+				},
+				right = {
+					"stagger_right"
+				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
 			},
 			{
 				fwd = {

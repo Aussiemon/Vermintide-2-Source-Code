@@ -44,9 +44,14 @@ weapon_template.actions = {
 					sub_action = "default",
 					start_time = 0.2,
 					action = "action_one",
-					release_required = "action_one_hold",
 					input = "action_one",
 					end_time = math.huge
+				},
+				{
+					sub_action = "default",
+					start_time = 0.25,
+					action = "action_one",
+					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
@@ -338,13 +343,11 @@ weapon_template.actions = {
 }
 weapon_template.ammo_data = {
 	ammo_per_reload = 1,
-	ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
-	ammo_hand = "left",
-	ammo_per_clip = 1,
-	ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1_3p",
 	max_ammo = 50,
+	ammo_per_clip = 1,
 	reload_on_ammo_pickup = true,
 	reload_time = 0.2,
+	ammo_hand = "left",
 	ammo_unit_attachment_node_linking = AttachmentNodeLinking.arrow
 }
 weapon_template.attack_meta_data = {

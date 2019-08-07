@@ -7,6 +7,7 @@ weapon_template.actions = {
 			kind = "melee_start",
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_charge_left",
+			attack_hold_input = "action_one_hold",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
@@ -711,7 +712,6 @@ weapon_template.actions = {
 			anim_end_event = "attack_finished",
 			outer_push_angle = 180,
 			kind = "push_stagger",
-			hit_time = 0.1,
 			damage_profile_outer = "light_push",
 			weapon_action_hand = "right",
 			push_angle = 100,
@@ -850,7 +850,7 @@ weapon_template.right_hand_unit = "units/weapons/player/wpn_emp_mace_04_t1/wpn_e
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.right
 weapon_template.left_hand_unit = "units/weapons/player/wpn_empire_short_sword/wpn_empire_short_sword"
 weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.left
-weapon_template.display_unit = "units/weapons/weapon_display/display_dual_swords"
+weapon_template.display_unit = "units/weapons/weapon_display/display_1h_weapon"
 weapon_template.buff_type = "MELEE_1H"
 weapon_template.weapon_type = "AXE_1H"
 weapon_template.max_fatigue_points = 6

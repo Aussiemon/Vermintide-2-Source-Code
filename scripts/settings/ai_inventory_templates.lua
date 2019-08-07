@@ -1,6 +1,11 @@
 require("scripts/settings/attachment_node_linking")
 
 local items = {
+	outfit_null = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/player/chr_dummy_hat",
+		attachment_node_linking = AttachmentNodeLinking.non_visual_attachment
+	},
 	wpn_skaven_sword_01_right = {
 		unit_name = "units/weapons/enemy/wpn_skaven_set/wpn_skaven_sword_01",
 		attachment_node_linking = AttachmentNodeLinking.ai_1h_weapon.right
@@ -233,6 +238,131 @@ local items = {
 		unit_name = "units/weapons/enemy/wpn_skaven_set/wpn_skaven_spear_30",
 		attachment_node_linking = AttachmentNodeLinking.ai_spear
 	},
+	outfit_skaven_clan_rat_head_01 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_head_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_head_ears
+	},
+	outfit_skaven_clan_rat_head_02 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_head_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_head_ears
+	},
+	outfit_skaven_clan_rat_head_03 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_head_03",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_head_ears
+	},
+	outfit_skaven_clan_rat_head_04 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_head_04",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_head_ears
+	},
+	outfit_skaven_clan_rat_head_05 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_head_05",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_head_ears
+	},
+	outfit_skaven_clan_rat_head_06 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_head_06",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_head_ears
+	},
+	outfit_skaven_clan_rat_head_07 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_head_07",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_head_ears
+	},
+	outfit_skaven_clan_rat_arm_l_01 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_arm_l_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_l_arm_scale_thumb
+	},
+	outfit_skaven_clan_rat_arm_l_02 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_arm_l_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_l_arm_scale_thumb
+	},
+	outfit_skaven_clan_rat_arm_l_03 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_arm_l_03",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_l_arm_scale_thumb
+	},
+	outfit_skaven_clan_rat_arm_l_04 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_arm_l_04",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_l_arm_scale_thumb
+	},
+	outfit_skaven_clan_rat_arm_r_01 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_arm_r_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_r_arm_scale_thumb
+	},
+	outfit_skaven_clan_rat_arm_r_02 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_arm_r_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_r_arm_scale_thumb
+	},
+	outfit_skaven_clan_rat_arm_r_03 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_arm_r_03",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_r_arm_scale_thumb
+	},
+	outfit_skaven_clan_rat_arm_r_04 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_arm_r_04",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_r_arm_scale_thumb
+	},
+	outfit_skaven_clan_rat_legs_01 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_legs_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_legs_scale
+	},
+	outfit_skaven_clan_rat_body_01 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_body_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_body_scale_w_tail
+	},
+	outfit_skaven_clan_rat_body_02 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_body_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_body_scale_w_tail
+	},
+	outfit_skaven_clan_rat_body_03 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_body_03",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_body_scale_w_tail
+	},
+	outfit_skaven_clan_rat_body_04 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_body_04",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_body_scale_w_tail
+	},
+	outfit_skaven_clan_rat_neck_01 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_neck_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_neck_long
+	},
+	outfit_skaven_clan_rat_baked_01 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_baked_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_scale_w_tail
+	},
+	outfit_skaven_clan_rat_baked_02 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_baked_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_scale_w_tail
+	},
+	outfit_skaven_clan_rat_baked_03 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_baked_03",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_scale_w_tail
+	},
+	outfit_skaven_clan_rat_baked_04 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_baked_04",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_scale_w_tail
+	},
 	wpn_skaven_triangle_shield = {
 		unit_extension_template = "ai_shield_unit",
 		unit_name = "units/weapons/enemy/wpn_skaven_triangle_shield/wpn_skaven_triangle_shield",
@@ -427,6 +557,16 @@ local items = {
 	wpn_skaven_halberd_stormvermin_champion = {
 		unit_name = "units/weapons/enemy/wpn_skaven_set/wpn_skaven_halberd_stormvermin_champion",
 		attachment_node_linking = AttachmentNodeLinking.ai_spear
+	},
+	wpn_stormfiend_warpfire_r = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_stormfiend/outfits/chr_skaven_stormfiend_warpfire_r_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_r_arm_simple
+	},
+	wpn_stormfiend_warpfire_l = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/skaven_stormfiend/outfits/chr_skaven_stormfiend_warpfire_l_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_l_arm_simple
 	},
 	wpn_chaos_2h_axe_1 = {
 		drop_on_hit = true,
@@ -648,22 +788,313 @@ local items = {
 		attachment_node_linking = AttachmentNodeLinking.ai_helmet
 	},
 	zombie_blob_01 = {
-		unit_extension_template = "ai_helmet_unit",
 		unit_name = "units/beings/enemies/addons/chaos_nurgle_corpses/tumors/tumor_01",
 		weak_spot = "left_arm",
 		attachment_node_linking = AttachmentNodeLinking.ai_zombie_blob_left
 	},
 	zombie_blob_02 = {
-		unit_extension_template = "ai_helmet_unit",
 		unit_name = "units/beings/enemies/addons/chaos_nurgle_corpses/tumors/tumor_01",
 		weak_spot = "right_arm",
 		attachment_node_linking = AttachmentNodeLinking.ai_zombie_blob_right
 	},
 	zombie_blob_03 = {
-		unit_extension_template = "ai_helmet_unit",
 		unit_name = "units/beings/enemies/addons/chaos_nurgle_corpses/tumors/tumor_01",
 		weak_spot = "head",
 		attachment_node_linking = AttachmentNodeLinking.ai_zombie_blob_head
+	},
+	wpn_beastmen_2h_axe_2_moc = {
+		unit_name = "units/weapons/enemy/wpn_chaos_set/wpn_moc_2h_axe_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_spear
+	},
+	wpn_bm_gor_axe_01 = {
+		unit_name = "units/weapons/enemy/wpn_bm_gor_set_01/wpn_bm_gor_axe_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_1h_weapon.right
+	},
+	wpn_bm_gor_axe_02 = {
+		unit_name = "units/weapons/enemy/wpn_bm_gor_set_01/wpn_bm_gor_axe_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_1h_weapon.right
+	},
+	wpn_bm_gor_axe_03 = {
+		unit_name = "units/weapons/enemy/wpn_bm_gor_set_01/wpn_bm_gor_axe_03",
+		attachment_node_linking = AttachmentNodeLinking.ai_1h_weapon.right
+	},
+	wpn_bm_gor_axe_04 = {
+		unit_name = "units/weapons/enemy/wpn_bm_gor_set_01/wpn_bm_gor_axe_04",
+		attachment_node_linking = AttachmentNodeLinking.ai_1h_weapon.right
+	},
+	wpn_bm_gor_flail_01 = {
+		unit_name = "units/weapons/enemy/wpn_bm_gor_set_01/wpn_bm_gor_flail_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_1h_weapon.right
+	},
+	wpn_bm_gor_sword_01 = {
+		unit_name = "units/weapons/enemy/wpn_bm_gor_set_01/wpn_bm_gor_sword_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_1h_weapon.right
+	},
+	wpn_bm_gor_sword_02 = {
+		unit_name = "units/weapons/enemy/wpn_bm_gor_set_01/wpn_bm_gor_sword_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_1h_weapon.right
+	},
+	wpn_bm_gor_sword_03 = {
+		unit_name = "units/weapons/enemy/wpn_bm_gor_set_01/wpn_bm_gor_sword_03",
+		attachment_node_linking = AttachmentNodeLinking.ai_1h_weapon.right
+	},
+	wpn_bm_gor_sword_04 = {
+		unit_name = "units/weapons/enemy/wpn_bm_gor_set_01/wpn_bm_gor_sword_04",
+		attachment_node_linking = AttachmentNodeLinking.ai_1h_weapon.right
+	},
+	wpn_bm_gor_sword_05 = {
+		unit_name = "units/weapons/enemy/wpn_bm_gor_set_01/wpn_bm_gor_sword_05",
+		attachment_node_linking = AttachmentNodeLinking.ai_1h_weapon.right
+	},
+	wpn_bm_gor_sword_06 = {
+		unit_name = "units/weapons/enemy/wpn_bm_gor_set_01/wpn_bm_gor_sword_06",
+		attachment_node_linking = AttachmentNodeLinking.ai_1h_weapon.right
+	},
+	wpn_bm_bestigor_halberd_01 = {
+		unit_name = "units/weapons/enemy/wpn_bm_bestigor_set_01/wpn_bm_bestigor_halberd_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_bm_standard_axe
+	},
+	wpn_bm_bestigor_halberd_02 = {
+		unit_name = "units/weapons/enemy/wpn_bm_bestigor_set_01/wpn_bm_bestigor_halberd_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_spear
+	},
+	wpn_bm_bestigor_halberd_03 = {
+		unit_name = "units/weapons/enemy/wpn_bm_bestigor_set_01/wpn_bm_bestigor_halberd_03",
+		attachment_node_linking = AttachmentNodeLinking.ai_spear
+	},
+	wpn_bm_bestigor_halberd_04 = {
+		unit_name = "units/weapons/enemy/wpn_bm_bestigor_set_01/wpn_bm_bestigor_halberd_04",
+		attachment_node_linking = AttachmentNodeLinking.ai_bm_standard_axe
+	},
+	wpn_bm_bestigor_halberd_05 = {
+		unit_name = "units/weapons/enemy/wpn_bm_bestigor_set_01/wpn_bm_bestigor_halberd_05",
+		attachment_node_linking = AttachmentNodeLinking.ai_spear
+	},
+	wpn_bm_bestigor_halberd_06 = {
+		unit_name = "units/weapons/enemy/wpn_bm_bestigor_set_01/wpn_bm_bestigor_halberd_06",
+		attachment_node_linking = AttachmentNodeLinking.ai_spear
+	},
+	wpn_bm_standard_01 = {
+		unit_name = "units/weapons/enemy/wpn_bm_standard_01/wpn_bm_standard_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_bm_standard
+	},
+	wpn_bm_ungor_spear_01 = {
+		unit_name = "units/weapons/enemy/wpn_bm_ungor_set_01/wpn_bm_ungor_spear_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_spear
+	},
+	wpn_bm_ungor_spear_02 = {
+		unit_name = "units/weapons/enemy/wpn_bm_ungor_set_01/wpn_bm_ungor_spear_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_spear
+	},
+	wpn_bm_ungor_spear_03 = {
+		unit_name = "units/weapons/enemy/wpn_bm_ungor_set_01/wpn_bm_ungor_spear_03",
+		attachment_node_linking = AttachmentNodeLinking.ai_spear
+	},
+	wpn_bm_ungor_bow_01 = {
+		unit_name = "units/weapons/enemy/wpn_bm_ungor_set_01/wpn_bm_ungor_bow_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_bm_ungor_bow
+	},
+	wpn_bm_ungor_bow_02 = {
+		unit_name = "units/weapons/enemy/wpn_bm_ungor_set_01/wpn_bm_ungor_bow_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_bm_ungor_bow
+	},
+	outfit_bm_ungor_head_00 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_ungor/outfits/chr_beastmen_ungor_head_00",
+		attachment_node_linking = AttachmentNodeLinking.ai_bm_ungor_head_00
+	},
+	outfit_bm_ungor_head_01 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_ungor/outfits/chr_beastmen_ungor_head_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_bm_ungor_head_01
+	},
+	outfit_bm_ungor_head_02 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_ungor/outfits/chr_beastmen_ungor_head_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_bm_ungor_head_02
+	},
+	outfit_bm_ungor_head_03 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_ungor/outfits/chr_beastmen_ungor_head_03",
+		attachment_node_linking = AttachmentNodeLinking.ai_bm_ungor_head_03
+	},
+	outfit_bm_ungor_arm_l_01 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_ungor/outfits/chr_beastmen_ungor_l_arm_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_l_arm_scale_short
+	},
+	outfit_bm_ungor_arm_l_02 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_ungor/outfits/chr_beastmen_ungor_l_arm_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_l_arm_scale
+	},
+	outfit_bm_ungor_arm_r_01 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_ungor/outfits/chr_beastmen_ungor_r_arm_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_r_arm_scale_short
+	},
+	outfit_bm_ungor_arm_r_02 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_ungor/outfits/chr_beastmen_ungor_r_arm_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_r_arm_scale
+	},
+	outfit_bm_ungor_necklace_01 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_ungor/outfits/chr_beastmen_ungor_necklace_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_scale_neck_long_wide
+	},
+	outfit_bm_ungor_necklace_02 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_ungor/outfits/chr_beastmen_ungor_necklace_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_scale_neck_long_wide
+	},
+	outfit_bm_ungor_necklace_03 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_ungor/outfits/chr_beastmen_ungor_necklace_03",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_scale_neck_long_wide
+	},
+	outfit_bm_ungor_baked_01 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_ungor/outfits/chr_beastmen_ungor_outfit_baked_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_upper_scale_arm
+	},
+	outfit_bm_ungor_baked_02 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_ungor/outfits/chr_beastmen_ungor_outfit_baked_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_upper_scale_arm
+	},
+	outfit_bm_ungor_baked_03 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_ungor/outfits/chr_beastmen_ungor_outfit_baked_03",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_upper_scale_arm
+	},
+	outfit_bm_gor_horns_01 = {
+		unit_extension_template = "ai_helmet_unit",
+		unit_name = "units/beings/enemies/beastmen_gor/outfits/chr_beastmen_gor_horns_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_helmet
+	},
+	outfit_bm_gor_horns_02 = {
+		unit_extension_template = "ai_helmet_unit",
+		unit_name = "units/beings/enemies/beastmen_gor/outfits/chr_beastmen_gor_horns_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_helmet
+	},
+	outfit_bm_gor_horns_03 = {
+		unit_extension_template = "ai_helmet_unit",
+		unit_name = "units/beings/enemies/beastmen_gor/outfits/chr_beastmen_gor_horns_03",
+		attachment_node_linking = AttachmentNodeLinking.ai_helmet
+	},
+	outfit_bm_gor_horns_04 = {
+		unit_extension_template = "ai_helmet_unit",
+		unit_name = "units/beings/enemies/beastmen_gor/outfits/chr_beastmen_gor_horns_04",
+		attachment_node_linking = AttachmentNodeLinking.ai_helmet
+	},
+	outfit_bm_gor_horns_05 = {
+		unit_extension_template = "ai_helmet_unit",
+		unit_name = "units/beings/enemies/beastmen_gor/outfits/chr_beastmen_gor_horns_05",
+		attachment_node_linking = AttachmentNodeLinking.ai_helmet
+	},
+	outfit_bm_gor_belt_addon_01 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_gor/outfits/chr_beastmen_gor_belt_addon_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_belt
+	},
+	outfit_bm_gor_belt_addon_02 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_gor/outfits/chr_beastmen_gor_belt_addon_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_belt
+	},
+	outfit_bm_gor_belt_addon_03 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_gor/outfits/chr_beastmen_gor_belt_addon_03",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_belt
+	},
+	outfit_bm_gor_necklace_01 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_gor/outfits/chr_beastmen_gor_necklace_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_neck_wide
+	},
+	outfit_bm_gor_necklace_02 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_gor/outfits/chr_beastmen_gor_necklace_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_neck_wide
+	},
+	outfit_bm_gor_arm_r_01 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_gor/outfits/chr_beastmen_gor_outfit_right_arm_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_r_arm_forarm_scale
+	},
+	outfit_bm_gor_arm_r_02 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_gor/outfits/chr_beastmen_gor_outfit_right_arm_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_r_arm_forarm_scale
+	},
+	outfit_bm_gor_arm_r_03 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_gor/outfits/chr_beastmen_gor_outfit_right_arm_03",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_r_arm_forarm_scale
+	},
+	outfit_bm_gor_arm_l_01 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_gor/outfits/chr_beastmen_gor_outfit_left_arm_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_l_arm_forearm_scale
+	},
+	outfit_bm_gor_arm_l_02 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_gor/outfits/chr_beastmen_gor_outfit_left_arm_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_l_arm_forearm_scale
+	},
+	outfit_bm_gor_arm_l_03 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_gor/outfits/chr_beastmen_gor_outfit_left_arm_03",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_l_arm_forearm_scale
+	},
+	outfit_bm_baked_01 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_gor/outfits/chr_beastmen_gor_outfit_baked_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_upper_scale_forearm
+	},
+	outfit_bm_baked_02 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_gor/outfits/chr_beastmen_gor_outfit_baked_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_upper_scale_forearm
+	},
+	outfit_bm_baked_03 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_gor/outfits/chr_beastmen_gor_outfit_baked_03",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_upper_scale_forearm
+	},
+	outfit_bm_baked_04 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_gor/outfits/chr_beastmen_gor_outfit_baked_04",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_upper_scale_forearm
+	},
+	outfit_bm_bestigor_arm_r_upper_01 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_bestigor/outfits/chr_beastmen_bestigor_outfit_right_upperarm_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_r_upperarm
+	},
+	outfit_bm_bestigor_arm_r_upper_02 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_bestigor/outfits/chr_beastmen_bestigor_outfit_right_upperarm_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_r_upperarm
+	},
+	outfit_bm_bestigor_arm_l_upper_01 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_bestigor/outfits/chr_beastmen_bestigor_outfit_left_upperarm_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_l_upperarm
+	},
+	outfit_bm_bestigor_arm_l_upper_02 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/enemies/beastmen_bestigor/outfits/chr_beastmen_bestigor_outfit_left_upperarm_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_outfit_l_upperarm
+	},
+	wpn_beastmen_minotaur_dual_axes_left = {
+		unit_name = "units/weapons/enemy/wpn_bm_minotaur_set_01/wpn_bm_minotaur_axe_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_beastmen_minotaur_dual.left
+	},
+	wpn_beastmen_minotaur_dual_axes_right = {
+		unit_name = "units/weapons/enemy/wpn_bm_minotaur_set_01/wpn_bm_minotaur_axe_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_beastmen_minotaur_dual.right
 	}
 }
 local item_categories = {
@@ -752,6 +1183,87 @@ local item_categories = {
 		items.wpn_skaven_spear_29,
 		items.wpn_skaven_spear_30
 	},
+	bow = {
+		items.wpn_bm_ungor_bow_01,
+		items.wpn_bm_ungor_bow_02
+	},
+	clan_rat_outfit_head = {
+		items.outfit_skaven_clan_rat_head_01,
+		items.outfit_skaven_clan_rat_head_02,
+		items.outfit_skaven_clan_rat_head_03,
+		items.outfit_skaven_clan_rat_head_04,
+		items.outfit_skaven_clan_rat_head_05,
+		items.outfit_skaven_clan_rat_head_06
+	},
+	clan_rat_outfit_body = {
+		items.outfit_skaven_clan_rat_body_01,
+		items.outfit_skaven_clan_rat_body_02,
+		items.outfit_skaven_clan_rat_body_03,
+		items.outfit_skaven_clan_rat_body_04
+	},
+	clan_rat_outfit_arm_l = {
+		items.outfit_skaven_clan_rat_arm_l_01,
+		items.outfit_skaven_clan_rat_arm_l_02,
+		items.outfit_skaven_clan_rat_arm_l_03,
+		items.outfit_skaven_clan_rat_arm_l_04
+	},
+	clan_rat_outfit_arm_r = {
+		items.outfit_skaven_clan_rat_arm_r_01,
+		items.outfit_skaven_clan_rat_arm_r_02,
+		items.outfit_skaven_clan_rat_arm_r_03,
+		items.outfit_skaven_clan_rat_arm_r_04
+	},
+	clan_rat_outfit_legs = {
+		items.outfit_null,
+		items.outfit_skaven_clan_rat_legs_01
+	},
+	clan_rat_outfit_opt = {
+		items.outfit_skaven_clan_rat_baked_01,
+		items.outfit_skaven_clan_rat_baked_02,
+		items.outfit_skaven_clan_rat_baked_03,
+		items.outfit_skaven_clan_rat_baked_04
+	},
+	clan_rat_shield_outfit_head = {
+		items.outfit_skaven_clan_rat_head_05,
+		items.outfit_skaven_clan_rat_head_06,
+		items.outfit_skaven_clan_rat_head_07
+	},
+	clan_rat_shield_outfit_body = {
+		items.outfit_skaven_clan_rat_body_02,
+		items.outfit_skaven_clan_rat_body_03,
+		items.outfit_skaven_clan_rat_body_04
+	},
+	clan_rat_shield_outfit_arm_l = {
+		items.outfit_skaven_clan_rat_arm_l_03,
+		items.outfit_skaven_clan_rat_arm_l_04
+	},
+	clan_rat_shield_outfit_arm_r = {
+		items.outfit_skaven_clan_rat_arm_r_03,
+		items.outfit_skaven_clan_rat_arm_r_04
+	},
+	clan_rat_shield_outfit_opt = {
+		items.outfit_skaven_clan_rat_baked_03,
+		items.outfit_skaven_clan_rat_baked_04
+	},
+	clan_rat_loot_outfit_head = {
+		items.outfit_skaven_clan_rat_head_03,
+		items.outfit_skaven_clan_rat_head_04
+	},
+	clan_rat_loot_outfit_neck = {
+		items.outfit_skaven_clan_rat_neck_01
+	},
+	clan_rat_loot_outfit_body = {
+		items.outfit_skaven_clan_rat_body_02,
+		items.outfit_skaven_clan_rat_body_04
+	},
+	clan_rat_loot_outfit_arm_l = {
+		items.outfit_skaven_clan_rat_arm_l_01,
+		items.outfit_skaven_clan_rat_arm_l_02
+	},
+	clan_rat_loot_outfit_arm_r = {
+		items.outfit_skaven_clan_rat_arm_r_01,
+		items.outfit_skaven_clan_rat_arm_r_02
+	},
 	mace = {
 		items.wpn_moc_mace_01,
 		items.wpn_moc_mace_02,
@@ -765,6 +1277,12 @@ local item_categories = {
 	},
 	halberd_stormvermin_champion = {
 		items.wpn_skaven_halberd_stormvermin_champion
+	},
+	stormfiend_warpfire_r = {
+		items.wpn_stormfiend_warpfire_r
+	},
+	stormfiend_warpfire_l = {
+		items.wpn_stormfiend_warpfire_l
 	},
 	axe = {
 		items.wpn_chaos_2h_axe_1,
@@ -802,6 +1320,9 @@ local item_categories = {
 		items.moc_helmet_04c,
 		items.moc_helmet_04d
 	},
+	marauder_shield_helmet = {
+		items.moc_helmet_11
+	},
 	zombie_blobs = {
 		items.zombie_blob_01,
 		items.zombie_blob_02,
@@ -825,6 +1346,12 @@ local item_categories = {
 	},
 	stormvermin_one_hand_weapon_dual_left = {
 		items.wpn_skaven_sword_dual_left
+	},
+	beastmen_minotaur_dual_axes_right = {
+		items.wpn_beastmen_minotaur_dual_axes_right
+	},
+	beastmen_minotaur_dual_axes_left = {
+		items.wpn_beastmen_minotaur_dual_axes_left
 	},
 	shield = {
 		items.wpn_skaven_shield_38,
@@ -870,6 +1397,113 @@ local item_categories = {
 	},
 	chaos_sorcerer_book = {
 		items.wpn_chaos_sorcerer_book
+	},
+	beastmen_1h = {
+		items.wpn_bm_gor_axe_01,
+		items.wpn_bm_gor_axe_02,
+		items.wpn_bm_gor_axe_03,
+		items.wpn_bm_gor_axe_04,
+		items.wpn_bm_gor_flail_01,
+		items.wpn_bm_gor_sword_01,
+		items.wpn_bm_gor_sword_02,
+		items.wpn_bm_gor_sword_03,
+		items.wpn_bm_gor_sword_04,
+		items.wpn_bm_gor_sword_05,
+		items.wpn_bm_gor_sword_06
+	},
+	beastmen_gor_outfit_head = {
+		items.outfit_bm_gor_horns_02,
+		items.outfit_bm_gor_horns_03,
+		items.outfit_bm_gor_horns_04,
+		items.outfit_bm_gor_horns_05
+	},
+	beastmen_gor_outfit_neck = {
+		items.outfit_null,
+		items.outfit_null,
+		items.outfit_bm_gor_necklace_01,
+		items.outfit_bm_gor_necklace_02
+	},
+	beastmen_gor_outfit_r_arm = {
+		items.outfit_bm_gor_arm_r_01,
+		items.outfit_bm_gor_arm_r_02,
+		items.outfit_bm_gor_arm_r_03
+	},
+	beastmen_gor_outfit_l_arm = {
+		items.outfit_bm_gor_arm_l_01,
+		items.outfit_bm_gor_arm_l_02,
+		items.outfit_bm_gor_arm_l_03
+	},
+	beastmen_gor_belt = {
+		items.outfit_null,
+		items.outfit_bm_gor_belt_addon_01,
+		items.outfit_bm_gor_belt_addon_02,
+		items.outfit_bm_gor_belt_addon_03
+	},
+	beastmen_gor_outfit_baked = {
+		items.outfit_bm_baked_01,
+		items.outfit_bm_baked_02,
+		items.outfit_bm_baked_03,
+		items.outfit_bm_baked_04
+	},
+	beastmen_bestigor_outfit_r_arm_upper = {
+		items.outfit_bm_bestigor_arm_r_upper_01,
+		items.outfit_bm_bestigor_arm_r_upper_02
+	},
+	beastmen_bestigor_outfit_l_arm_upper = {
+		items.outfit_bm_bestigor_arm_l_upper_01,
+		items.outfit_bm_bestigor_arm_l_upper_02
+	},
+	beastmen_ungor_spear = {
+		items.wpn_bm_ungor_spear_01,
+		items.wpn_bm_ungor_spear_02,
+		items.wpn_bm_ungor_spear_03
+	},
+	beastmen_ungor_outfit_head = {
+		items.outfit_bm_ungor_head_00,
+		items.outfit_bm_ungor_head_01,
+		items.outfit_bm_ungor_head_02,
+		items.outfit_bm_ungor_head_03
+	},
+	beastmen_ungor_outfit_r_arm = {
+		items.outfit_bm_ungor_arm_r_01,
+		items.outfit_bm_ungor_arm_r_02
+	},
+	beastmen_ungor_outfit_l_arm = {
+		items.outfit_bm_ungor_arm_l_01,
+		items.outfit_bm_ungor_arm_l_02
+	},
+	beastmen_ungor_outfit_neck = {
+		items.outfit_null,
+		items.outfit_bm_ungor_necklace_01,
+		items.outfit_bm_ungor_necklace_02,
+		items.outfit_bm_ungor_necklace_03
+	},
+	beastmen_ungor_outfit_baked = {
+		items.outfit_bm_ungor_baked_01,
+		items.outfit_bm_ungor_baked_02,
+		items.outfit_bm_ungor_baked_03
+	},
+	beastmen_bestigor_outfit_head = {
+		items.outfit_bm_gor_horns_01
+	},
+	beastmen_standard_bearer_outfit_head = {
+		items.outfit_bm_gor_horns_02
+	},
+	beastmen_2h_axe_2_moc = {
+		items.wpn_beastmen_2h_axe_2_moc
+	},
+	beastmen_2h = {
+		items.wpn_bm_bestigor_halberd_02,
+		items.wpn_bm_bestigor_halberd_03,
+		items.wpn_bm_bestigor_halberd_05,
+		items.wpn_bm_bestigor_halberd_06
+	},
+	beastmen_2h_axe_standard = {
+		items.wpn_bm_bestigor_halberd_01,
+		items.wpn_bm_bestigor_halberd_04
+	},
+	beastmen_standard = {
+		items.wpn_bm_standard_01
 	}
 }
 local drop_reasons_shield = {
@@ -893,6 +1527,40 @@ InventoryConfigurations = {
 		anim_state_event = "to_sword",
 		items = {}
 	},
+	skaven_clan_rat_sword = {
+		enemy_hit_sound = "sword",
+		anim_state_event = "to_sword",
+		items = {
+			item_categories.one_hand_weapon_right,
+			item_categories.clan_rat_outfit_head,
+			item_categories.clan_rat_outfit_arm_l,
+			item_categories.clan_rat_outfit_arm_r,
+			item_categories.clan_rat_outfit_legs,
+			item_categories.clan_rat_outfit_body
+		}
+	},
+	opt_skaven_clan_rat_sword = {
+		enemy_hit_sound = "sword",
+		anim_state_event = "to_sword",
+		items = {
+			item_categories.one_hand_weapon_right,
+			item_categories.clan_rat_outfit_opt
+		}
+	},
+	skaven_slave_sword = {
+		enemy_hit_sound = "sword",
+		anim_state_event = "to_sword",
+		items = {
+			item_categories.one_hand_weapon_right
+		}
+	},
+	opt_skaven_slave_sword = {
+		enemy_hit_sound = "sword",
+		anim_state_event = "to_sword",
+		items = {
+			item_categories.one_hand_weapon_right
+		}
+	},
 	sword = {
 		enemy_hit_sound = "sword",
 		anim_state_event = "to_sword",
@@ -914,6 +1582,40 @@ InventoryConfigurations = {
 		items = {
 			item_categories.berzerker_right,
 			item_categories.berzerker_left
+		}
+	},
+	skaven_clan_rat_spear = {
+		enemy_hit_sound = "spear",
+		anim_state_event = "to_spear",
+		items = {
+			item_categories.spear,
+			item_categories.clan_rat_outfit_head,
+			item_categories.clan_rat_outfit_arm_l,
+			item_categories.clan_rat_outfit_arm_r,
+			item_categories.clan_rat_outfit_legs,
+			item_categories.clan_rat_outfit_body
+		}
+	},
+	opt_skaven_clan_rat_spear = {
+		enemy_hit_sound = "spear",
+		anim_state_event = "to_spear",
+		items = {
+			item_categories.spear,
+			item_categories.clan_rat_outfit_opt
+		}
+	},
+	skaven_slave_spear = {
+		enemy_hit_sound = "spear",
+		anim_state_event = "to_spear",
+		items = {
+			item_categories.spear
+		}
+	},
+	opt_skaven_slave_spear = {
+		enemy_hit_sound = "spear",
+		anim_state_event = "to_spear",
+		items = {
+			item_categories.spear
 		}
 	},
 	spear = {
@@ -984,6 +1686,28 @@ InventoryConfigurations = {
 			item_categories.shield
 		}
 	},
+	skaven_clan_rat_sword_and_shield = {
+		enemy_hit_sound = "sword",
+		anim_state_event = "to_shield_1h",
+		items = {
+			item_categories.one_hand_weapon_right,
+			item_categories.shield,
+			item_categories.clan_rat_shield_outfit_head,
+			item_categories.clan_rat_shield_outfit_arm_l,
+			item_categories.clan_rat_shield_outfit_arm_r,
+			item_categories.clan_rat_shield_outfit_body,
+			item_categories.clan_rat_outfit_legs
+		}
+	},
+	opt_skaven_clan_rat_sword_and_shield = {
+		enemy_hit_sound = "sword",
+		anim_state_event = "to_shield_1h",
+		items = {
+			item_categories.one_hand_weapon_right,
+			item_categories.shield,
+			item_categories.clan_rat_shield_outfit_opt
+		}
+	},
 	stormvermin_sword_and_shield = {
 		enemy_hit_sound = "sword",
 		anim_state_event = "to_shield_1h",
@@ -1019,7 +1743,7 @@ InventoryConfigurations = {
 		enemy_hit_sound = "sword",
 		anim_state_event = "to_shield",
 		items = {
-			item_categories.marauder_helmet,
+			item_categories.marauder_shield_helmet,
 			item_categories.mace,
 			item_categories.marauder_shield
 		}
@@ -1058,7 +1782,13 @@ InventoryConfigurations = {
 	},
 	loot_rat_sack = {
 		items = {
-			item_categories.loot_rat_sack
+			item_categories.loot_rat_sack,
+			item_categories.clan_rat_loot_outfit_head,
+			item_categories.clan_rat_loot_outfit_arm_l,
+			item_categories.clan_rat_loot_outfit_arm_r,
+			item_categories.clan_rat_loot_outfit_body,
+			item_categories.clan_rat_loot_outfit_neck,
+			item_categories.clan_rat_outfit_legs
 		}
 	},
 	ratlinggun = {
@@ -1076,6 +1806,20 @@ InventoryConfigurations = {
 	rat_ogre = {
 		enemy_hit_sound = "melee",
 		items = {}
+	},
+	beastmen_minotaur_dual_axes = {
+		enemy_hit_sound = "sword",
+		items = {
+			item_categories.beastmen_minotaur_dual_axes_right,
+			item_categories.beastmen_minotaur_dual_axes_left
+		}
+	},
+	stormfiend_warpfire = {
+		enemy_hit_sound = "melee",
+		items = {
+			item_categories.stormfiend_warpfire_r,
+			item_categories.stormfiend_warpfire_l
+		}
 	},
 	chaos_troll = {
 		enemy_hit_sound = "sword",
@@ -1112,6 +1856,118 @@ InventoryConfigurations = {
 		anim_state_event = "to_sword",
 		items = {
 			item_categories.mace
+		}
+	},
+	chaos_sorcerer_vortex = {
+		items = {
+			item_categories.chaos_sorcerer_book
+		}
+	},
+	beastmen_ungor_1h = {
+		enemy_hit_sound = "sword",
+		anim_state_event = "to_sword",
+		items = {
+			item_categories.one_hand_weapon_right,
+			item_categories.beastmen_ungor_outfit_head,
+			item_categories.beastmen_ungor_outfit_r_arm,
+			item_categories.beastmen_ungor_outfit_l_arm,
+			item_categories.beastmen_ungor_outfit_neck
+		}
+	},
+	beastmen_ungor_spear = {
+		enemy_hit_sound = "spear",
+		anim_state_event = "to_halberd",
+		items = {
+			item_categories.beastmen_ungor_spear,
+			item_categories.beastmen_ungor_outfit_head,
+			item_categories.beastmen_ungor_outfit_r_arm,
+			item_categories.beastmen_ungor_outfit_l_arm,
+			item_categories.beastmen_ungor_outfit_neck
+		}
+	},
+	opt_beastmen_ungor_spear = {
+		enemy_hit_sound = "spear",
+		anim_state_event = "to_halberd",
+		items = {
+			item_categories.beastmen_ungor_spear,
+			item_categories.beastmen_ungor_outfit_head,
+			item_categories.beastmen_ungor_outfit_baked
+		}
+	},
+	beastmen_ungor_archer_bow_and_spear = {
+		enemy_hit_sound = "spear",
+		multiple_configurations = {
+			"beastmen_ungor_bow",
+			"beastmen_ungor_spear"
+		}
+	},
+	opt_beastmen_ungor_archer_bow_and_spear = {
+		enemy_hit_sound = "spear",
+		multiple_configurations = {
+			"beastmen_ungor_bow",
+			"opt_beastmen_ungor_spear"
+		}
+	},
+	beastmen_ungor_bow = {
+		enemy_hit_sound = "spear",
+		anim_state_event = "to_bow",
+		items = {
+			item_categories.bow
+		}
+	},
+	beastmen_gor_1h = {
+		enemy_hit_sound = "sword",
+		anim_state_event = "to_sword",
+		items = {
+			item_categories.beastmen_1h,
+			item_categories.beastmen_gor_outfit_head,
+			item_categories.beastmen_gor_outfit_neck,
+			item_categories.beastmen_gor_belt,
+			item_categories.beastmen_gor_outfit_r_arm,
+			item_categories.beastmen_gor_outfit_l_arm
+		}
+	},
+	opt_beastmen_gor_1h = {
+		enemy_hit_sound = "sword",
+		anim_state_event = "to_sword",
+		items = {
+			item_categories.beastmen_1h,
+			item_categories.beastmen_gor_outfit_head,
+			item_categories.beastmen_gor_outfit_baked
+		}
+	},
+	beastmen_bestigor_2h_axe = {
+		enemy_hit_sound = "spear",
+		anim_state_event = "to_halberd",
+		equip_anim = "equip_halberd",
+		items = {
+			item_categories.beastmen_2h,
+			item_categories.beastmen_bestigor_outfit_head,
+			item_categories.beastmen_bestigor_outfit_r_arm_upper,
+			item_categories.beastmen_bestigor_outfit_l_arm_upper
+		}
+	},
+	beastmen_standard_bearer_2h_axe = {
+		enemy_hit_sound = "spear",
+		anim_state_event = "to_halberd",
+		equip_anim = "equip_halberd",
+		items = {
+			item_categories.beastmen_2h_axe_standard,
+			item_categories.beastmen_standard_bearer_outfit_head
+		}
+	},
+	beastmen_2h_axe_standard = {
+		enemy_hit_sound = "spear",
+		anim_state_event = "to_standard_bearer",
+		equip_anim = "equip_halberd",
+		items = {
+			item_categories.beastmen_standard
+		}
+	},
+	beastmen_standard_bearer_dual_setup = {
+		multiple_configurations = {
+			"beastmen_2h_axe_standard",
+			"beastmen_standard_bearer_2h_axe"
 		}
 	}
 }

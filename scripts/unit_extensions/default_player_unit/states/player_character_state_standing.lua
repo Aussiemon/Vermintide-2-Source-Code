@@ -29,6 +29,7 @@ PlayerCharacterStateStanding.on_enter = function (self, unit, input, dt, context
 		return
 	end
 
+	self.side = Managers.state.side.side_by_unit[unit]
 	self.current_animation = "idle"
 
 	CharacterStateHelper.play_animation_event(unit, "idle")
@@ -99,6 +100,15 @@ PlayerCharacterStateStanding.update = function (self, unit, input, dt, context, 
 		params.hit_react_type = hit_react_type .. "_push"
 
 		csm:change_state("stunned", params)
+
+		return
+	end
+
+	if CharacterStateHelper.is_charged(status_extension) then
+		local params = movement_settings_table.charged_settings.charged
+		params.hit_react_type = "charged"
+
+		csm:change_state("charged", params)
 
 		return
 	end
@@ -212,7 +222,7 @@ PlayerCharacterStateStanding.update = function (self, unit, input, dt, context, 
 	local toggle_crouch = input_extension.toggle_crouch
 
 	if self.time_when_can_be_pushed < t and self.player:is_player_controlled() then
-		self.current_animation = CharacterStateHelper.update_soft_collision_movement(first_person_extension, status_extension, locomotion_extension, unit, self.world, self.current_animation)
+		self.current_animation = CharacterStateHelper.update_soft_collision_movement(first_person_extension, status_extension, locomotion_extension, unit, self.world, self.current_animation, self.side)
 	end
 
 	CharacterStateHelper.check_crouch(unit, input_extension, status_extension, toggle_crouch, first_person_extension, t)

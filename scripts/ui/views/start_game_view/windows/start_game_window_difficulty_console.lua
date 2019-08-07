@@ -1,6 +1,7 @@
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_difficulty_console_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
+local create_difficulty_button = definitions.create_difficulty_button
 local animation_definitions = definitions.animation_definitions
 local STARTING_DIFFICULTY_INDEX = 1
 local SELECTION_INPUT = "confirm_press"
@@ -78,10 +79,16 @@ StartGameWindowDifficultyConsole.create_ui_elements = function (self, params, of
 end
 
 StartGameWindowDifficultyConsole._setup_difficulties = function (self)
+	local difficulty_widgets = {}
 	local difficulties = self:_get_difficulty_options()
+	local widgets = self._widgets
 	local widgets_by_name = self._widgets_by_name
 	local widget_index_counter = 1
 	local widget_prefix = "difficulty_option_"
+	local spacing = 10
+	local scenegraph_id = "difficulty_option"
+	local size = scenegraph_definition[scenegraph_id].size
+	local widget_definition = create_difficulty_button(scenegraph_id, size)
 
 	for i = STARTING_DIFFICULTY_INDEX, #difficulties, 1 do
 		local difficulty_key = difficulties[i]
@@ -89,15 +96,25 @@ StartGameWindowDifficultyConsole._setup_difficulties = function (self)
 		local display_name = difficulty_settings.display_name
 		local display_image = difficulty_settings.display_image
 		local frame_texture = difficulty_settings.completed_frame_texture
+		local widget = UIWidget.init(widget_definition)
 		local widget_name = widget_prefix .. widget_index_counter
-		local widget = widgets_by_name[widget_name]
+		widgets_by_name[widget_name] = widget
+		widgets[#widgets + 1] = widget
+		difficulty_widgets[#difficulty_widgets + 1] = widget
+		local offset = widget.offset
 		local content = widget.content
+		content.difficulty_key = difficulty_key
+		content.title_text = Localize(display_name)
+		content.icon = display_image
 		content.difficulty_key = difficulty_key
 		content.text_title = Localize(display_name)
 		content.icon_texture = display_image
 		content.icon_frame_texture = frame_texture
+		offset[2] = -(size[2] + spacing) * (widget_index_counter - 1)
 		widget_index_counter = widget_index_counter + 1
 	end
+
+	self._difficulty_widgets = difficulty_widgets
 end
 
 StartGameWindowDifficultyConsole._get_difficulty_options = function (self)
@@ -157,13 +174,6 @@ StartGameWindowDifficultyConsole._is_button_hover_enter = function (self, widget
 	return hotspot.on_hover_enter and not hotspot.is_selected
 end
 
-local difficulties_select_sounds = {
-	"play_gui_lobby_button_01_difficulty_select_normal",
-	"play_gui_lobby_button_01_difficulty_select_hard",
-	"play_gui_lobby_button_01_difficulty_select_nightmare",
-	"play_gui_lobby_button_01_difficulty_select_cataclysm"
-}
-
 StartGameWindowDifficultyConsole._handle_input = function (self, dt, t)
 	local input_service = self.parent:window_input_service()
 	local gamepad_active = Managers.input:is_device_active("gamepad")
@@ -176,14 +186,10 @@ StartGameWindowDifficultyConsole._handle_input = function (self, dt, t)
 		end
 	end
 
-	local difficulties = self:_get_difficulty_options()
-	local widgets_by_name = self._widgets_by_name
-	local widget_index_counter = 1
-	local widget_prefix = "difficulty_option_"
+	local difficulty_widgets = self._difficulty_widgets
 
-	for i = STARTING_DIFFICULTY_INDEX, #difficulties, 1 do
-		local widget_name = widget_prefix .. widget_index_counter
-		local widget = widgets_by_name[widget_name]
+	for i = 1, #difficulty_widgets, 1 do
+		local widget = difficulty_widgets[i]
 		local content = widget.content
 
 		if not content.is_selected and self:_is_button_hover_enter(widget) then
@@ -195,14 +201,37 @@ StartGameWindowDifficultyConsole._handle_input = function (self, dt, t)
 
 			return
 		end
-
-		widget_index_counter = widget_index_counter + 1
 	end
 
-	local gamepad_confirm_pressed = gamepad_active and self._difficulty_approved and input_service:get(SELECTION_INPUT, true)
+	local widgets_by_name = self._widgets_by_name
+	local buy_button = widgets_by_name.buy_button
+
+	UIWidgetUtils.animate_default_button(buy_button, dt)
+
+	if self:_is_button_hover_enter(buy_button) then
+		self:_play_sound("play_gui_lobby_button_01_difficulty_confirm_hover")
+	end
+
+	if self:_is_button_released(buy_button) then
+		local dlc_name = buy_button.content.dlc_name
+		local area_settings = AreaSettings[dlc_name]
+		local store_page_url = area_settings.store_page_url
+
+		self:_show_storepage(store_page_url)
+	end
+
+	local gamepad_confirm_pressed = gamepad_active and input_service:get(SELECTION_INPUT, true)
 
 	if gamepad_confirm_pressed then
-		self:_on_difficulty_selection_confirmed()
+		if self._difficulty_approved then
+			self:_on_difficulty_selection_confirmed()
+		elseif self._dlc_locked then
+			local dlc_name = self._dlc_locked
+			local area_settings = AreaSettings[dlc_name]
+			local store_page_url = area_settings.store_page_url
+
+			self:_show_storepage(store_page_url)
+		end
 	end
 end
 
@@ -211,7 +240,8 @@ StartGameWindowDifficultyConsole._on_difficulty_selection_confirmed = function (
 
 	parent:set_difficulty_option(self._selected_difficulty_key)
 
-	local sound_event = difficulties_select_sounds[self._difficulty_navigation_id]
+	local difficulties_select_sounds = UISettings.difficulties_select_sounds
+	local sound_event = difficulties_select_sounds[self._difficulty_navigation_id] or difficulties_select_sounds[#difficulties_select_sounds]
 
 	self:_play_sound(sound_event)
 
@@ -252,18 +282,14 @@ StartGameWindowDifficultyConsole._get_difficulty_navigation_id_from_difficulty_k
 end
 
 StartGameWindowDifficultyConsole._set_selected_difficulty_option = function (self, new_difficulty_key)
-	local difficulties = self:_get_difficulty_options()
-	local widgets_by_name = self._widgets_by_name
-	local widget_index_counter = 1
-	local widget_prefix = "difficulty_option_"
+	local difficulty_widgets = self._difficulty_widgets
 
-	for i = STARTING_DIFFICULTY_INDEX, #difficulties, 1 do
-		local difficulty_key = difficulties[i]
-		local widget_name = widget_prefix .. widget_index_counter
-		local widget = widgets_by_name[widget_name]
+	for i = 1, #difficulty_widgets, 1 do
+		local widget = difficulty_widgets[i]
 		local content = widget.content
-		content.is_selected = difficulty_key == new_difficulty_key
-		widget_index_counter = widget_index_counter + 1
+		local difficulty_key = content.difficulty_key
+		local is_selected = difficulty_key == new_difficulty_key
+		content.is_selected = is_selected
 	end
 end
 
@@ -272,42 +298,86 @@ StartGameWindowDifficultyConsole._set_info_window = function (self, difficulty_k
 	local description = difficulty_settings.description
 	local display_name = difficulty_settings.display_name
 	local display_image = difficulty_settings.display_image
-	local xp_multiplier_number = difficulty_settings.xp_multiplier
 	local chest_max_powerlevel = difficulty_settings.max_chest_power_level
 	local widgets_by_name = self._widgets_by_name
 	widgets_by_name.difficulty_title.content.text = Localize(display_name)
 	widgets_by_name.difficulty_texture.content.texture_id = display_image
 	widgets_by_name.description_text.content.text = Localize(description)
 	widgets_by_name.difficulty_chest_info.content.text = Localize("difficulty_chest_max_powerlevel") .. ": " .. tostring(chest_max_powerlevel)
-	widgets_by_name.xp_multiplier.content.text = Localize("difficulty_xp_multiplier") .. ": " .. tostring(xp_multiplier_number * 100) .. "%"
 end
 
 StartGameWindowDifficultyConsole._update_difficulty_lock = function (self)
 	local widgets_by_name = self._widgets_by_name
+	local buy_button = widgets_by_name.buy_button
+	local extreme_difficulty_bg = widgets_by_name.extreme_difficulty_bg
+	local extremely_hard_text = widgets_by_name.extremely_hard_text
+	local dlc_lock_text = widgets_by_name.dlc_lock_text
 	local selected_difficulty_key = self._selected_difficulty_key
 
 	if selected_difficulty_key then
-		local difficulty_approved = self._difficulty_approved
-		local approved = self.parent:is_difficulty_approved(selected_difficulty_key)
+		local difficulty_settings = DifficultySettings[selected_difficulty_key]
+		local approved, extra_requirement_failed, dlc_locked, below_power_level = self.parent:is_difficulty_approved(selected_difficulty_key)
 
-		if approved ~= difficulty_approved then
-			if not approved then
-				local difficulty_settings = DifficultySettings[selected_difficulty_key]
-				local required_power_level = difficulty_settings.required_power_level
-				local difficulty_lock_text = Localize("required_power_level")
-				widgets_by_name.difficulty_lock_text.content.text = string.format("%s: %s", difficulty_lock_text, tostring(UIUtils.presentable_hero_power_level(required_power_level)))
+		if not approved then
+			if dlc_locked then
+				buy_button.content.button_hotspot.disable_button = false
+				buy_button.content.visible = true
+				buy_button.content.dlc_name = dlc_locked
+				dlc_lock_text.content.visible = true
+				self._dlc_locked = dlc_locked
+			else
+				buy_button.content.button_hotspot.disable_button = true
+				buy_button.content.visible = false
+				buy_button.content.dlc_name = nil
+				dlc_lock_text.content.visible = false
+				self._dlc_locked = nil
+			end
+
+			if below_power_level or extra_requirement_failed then
 				widgets_by_name.difficulty_is_locked_text.content.text = Localize("required_power_level_not_met_in_party")
 
-				self.parent:set_input_description("select_difficulty")
-			else
-				widgets_by_name.difficulty_lock_text.content.text = ""
-				widgets_by_name.difficulty_is_locked_text.content.text = ""
-
-				self.parent:set_input_description("select_difficulty_confirm")
+				if below_power_level then
+					local required_power_level = difficulty_settings.required_power_level
+					local difficulty_lock_text = Localize("required_power_level")
+					widgets_by_name.difficulty_lock_text.content.text = string.format("%s: %s", difficulty_lock_text, tostring(UIUtils.presentable_hero_power_level(required_power_level)))
+					widgets_by_name.difficulty_second_lock_text.content.text = (extra_requirement_failed and Localize(extra_requirement_failed)) or ""
+				else
+					widgets_by_name.difficulty_lock_text.content.text = (extra_requirement_failed and Localize(extra_requirement_failed)) or ""
+				end
 			end
+
+			if dlc_locked then
+				self.parent:set_input_description("select_difficulty_buy")
+			else
+				self.parent:set_input_description("select_difficulty")
+			end
+		else
+			buy_button.content.button_hotspot.disable_button = true
+			buy_button.content.visible = false
+			buy_button.content.dlc_name = nil
+			dlc_lock_text.content.visible = false
+			widgets_by_name.difficulty_lock_text.content.text = ""
+			widgets_by_name.difficulty_second_lock_text.content.text = ""
+			widgets_by_name.difficulty_is_locked_text.content.text = ""
+			self._dlc_locked = nil
+
+			self.parent:set_input_description("select_difficulty_confirm")
 		end
 
+		extreme_difficulty_bg.content.visible = difficulty_settings.show_warning or false
+		extremely_hard_text.content.visible = difficulty_settings.show_warning or false
 		self._difficulty_approved = approved
+	else
+		buy_button.content.button_hotspot.disable_button = true
+		buy_button.content.visible = false
+		buy_button.content.dlc_name = nil
+		extreme_difficulty_bg.content.visible = false
+		extremely_hard_text.content.visible = false
+		dlc_lock_text.content.visible = false
+
+		if not self._has_exited then
+			self.parent:set_input_description(nil)
+		end
 	end
 end
 
@@ -343,6 +413,25 @@ end
 
 StartGameWindowDifficultyConsole._play_sound = function (self, event)
 	self.parent:play_sound(event)
+end
+
+StartGameWindowDifficultyConsole._is_button_released = function (self, widget)
+	local content = widget.content
+	local hotspot = content.button_hotspot
+
+	if hotspot.on_release then
+		hotspot.on_release = false
+
+		return true
+	end
+end
+
+StartGameWindowDifficultyConsole._show_storepage = function (self, store_page_url)
+	local platform = PLATFORM
+
+	if platform == "win32" and rawget(_G, "Steam") then
+		Steam.open_url(store_page_url)
+	end
 end
 
 return

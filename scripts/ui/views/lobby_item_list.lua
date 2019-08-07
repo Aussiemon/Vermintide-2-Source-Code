@@ -458,11 +458,26 @@ local function lobby_level_display_name(lobby_data)
 		level = nil
 	end
 
-	local level_setting = level and LevelSettings[level]
-	local level_display_name = level and level_setting.display_name
-	local level_text = (level and Localize(level_display_name)) or "-"
+	local game_mode_index = tonumber(lobby_data.game_mode)
+	local game_mode_names = table.clone(NetworkLookup.game_modes)
+	local game_mode_name = game_mode_index and game_mode_names[game_mode_index]
 
-	return level_text
+	if game_mode_name == "weave" then
+		if lobby_data.weave_name then
+			local weave_name_data = string.split(lobby_data.weave_name, "_")
+			local weave_name = "Weave " .. weave_name_data[2]
+
+			return weave_name
+		else
+			return "Unknown"
+		end
+	else
+		local level_setting = level and LevelSettings[level]
+		local level_display_name = level and level_setting.display_name
+		local level_text = (level and Localize(level_display_name)) or "-"
+
+		return level_text
+	end
 end
 
 local function lobby_level_sort_order(lobby_data)
@@ -505,7 +520,8 @@ function level_is_locked(lobby_data)
 		return false
 	end
 
-	local in_inn = lobby_data.level_key == "inn_level"
+	local level_setting = LevelSettings[lobby_data.level_key]
+	local in_inn = level_setting.hub_level
 
 	if in_inn then
 		return false
@@ -515,6 +531,28 @@ function level_is_locked(lobby_data)
 	local player = player_manager:local_player()
 	local statistics_db = player_manager:statistics_db()
 	local player_stats_id = player:stats_id()
+	local game_mode_index = tonumber(lobby_data.game_mode)
+	local game_mode_names = table.clone(NetworkLookup.game_modes)
+	local game_mode = game_mode_names[game_mode_index]
+
+	if game_mode == "weave" then
+		local ignore_dlc_check = true
+		local weave_name = lobby_data.weave_name
+		local weave_unlocked = LevelUnlockUtils.weave_unlocked(statistics_db, player_stats_id, weave_name, ignore_dlc_check)
+
+		if weave_unlocked then
+			return false
+		end
+
+		local current_weave = LevelUnlockUtils.current_weave(statistics_db, player_stats_id, ignore_dlc_check)
+
+		if current_weave == weave_name then
+			return false
+		end
+
+		return true
+	end
+
 	local level_unlocked = LevelUnlockUtils.level_unlocked(statistics_db, player_stats_id, level)
 
 	if not level_unlocked then
@@ -523,6 +561,14 @@ function level_is_locked(lobby_data)
 end
 
 function difficulty_is_locked(lobby_data)
+	local game_mode_index = tonumber(lobby_data.game_mode)
+	local game_mode_names = table.clone(NetworkLookup.game_modes)
+	local game_mode = game_mode_names[game_mode_index]
+
+	if game_mode == "weave" then
+		return false
+	end
+
 	local level_key = lobby_data.selected_level_key or lobby_data.level_key
 	local player_manager = Managers.player
 	local player = player_manager:local_player()
@@ -816,9 +862,11 @@ end
 
 LobbyItemsList.lobby_status_text = function (lobby_data)
 	local is_dedicated_server = lobby_data.server_info ~= nil
+	local level_key = lobby_data.selected_level_key or lobby_data.level_key
 	local is_private = (is_dedicated_server and lobby_data.server_info.password) or (not is_dedicated_server and lobby_data.matchmaking == "false")
 	local is_full = lobby_data.num_players == MatchmakingSettings.MAX_NUMBER_OF_PLAYERS
-	local is_in_inn = lobby_data.level_key == "inn_level"
+	local level_setting = LevelSettings[level_key]
+	local is_in_inn = level_setting.hub_level
 	local is_broken = lobby_data.is_broken
 	local status = (is_broken and "lb_broken") or (is_private and "lb_private") or (is_full and "lb_full") or (is_in_inn and "lb_in_inn") or "lb_started"
 	local status_text = (status and Localize(status)) or ""

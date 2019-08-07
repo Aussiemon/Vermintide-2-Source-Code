@@ -77,6 +77,20 @@ local scenegraph_definition = {
 			0
 		}
 	},
+	area_text_background = {
+		vertical_alignment = "center",
+		parent = "background",
+		horizontal_alignment = "center",
+		size = {
+			1800,
+			90
+		},
+		position = {
+			0,
+			0,
+			0
+		}
+	},
 	top_center = {
 		vertical_alignment = "center",
 		parent = "mission_pivot",
@@ -820,9 +834,9 @@ local widget_definitions = {
 				font_size = 30,
 				default_font_size = 30,
 				horizontal_alignment = "center",
-				word_wrap = false,
+				word_wrap = true,
 				vertical_alignment = "center",
-				scenegraph_id = "background",
+				scenegraph_id = "area_text_background",
 				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
@@ -838,9 +852,9 @@ local widget_definitions = {
 				font_size = 30,
 				default_font_size = 30,
 				horizontal_alignment = "center",
-				word_wrap = false,
+				word_wrap = true,
 				vertical_alignment = "center",
-				scenegraph_id = "background",
+				scenegraph_id = "area_text_background",
 				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
@@ -1281,8 +1295,12 @@ local animation_definitions = {
 				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress
+				local game_mode_key = Managers.state.game_mode:game_mode_key()
+
+				if game_mode_key ~= "weave" then
+					local anim_progress = math.easeOutCubic(progress)
+					params.render_settings.alpha_multiplier = anim_progress
+				end
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
 				params.render_settings.snap_pixel_positions = true
@@ -1299,8 +1317,12 @@ local animation_definitions = {
 				params.render_settings.snap_pixel_positions = false
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = 1 - anim_progress
+				local game_mode_key = Managers.state.game_mode:game_mode_key()
+
+				if game_mode_key ~= "weave" then
+					local anim_progress = math.easeOutCubic(progress)
+					params.render_settings.alpha_multiplier = 1 - anim_progress
+				end
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
 				return

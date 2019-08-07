@@ -122,6 +122,8 @@ PlayerUnitAttachmentExtension.create_attachment = function (self, slot_name, ite
 			cosmetic_extension:change_skin_materials(character_material_changes)
 		end
 	end
+
+	CosmeticUtils.update_cosmetic_slot(self._player, slot_name, item_data.name)
 end
 
 PlayerUnitAttachmentExtension.remove_attachment = function (self, slot_name)

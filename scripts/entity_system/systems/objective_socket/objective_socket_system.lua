@@ -30,9 +30,18 @@ ObjectiveSocketSystem.init = function (self, entity_system_creation_context, sys
 
 		if self.is_server then
 			local network_manager = self.network_manager
-			local unit_id = network_manager:level_object_id(extension.unit)
+			local unit_id = network_manager:game_object_or_level_id(extension.unit)
 
-			self.network_manager.network_transmit:send_rpc_clients("rpc_objective_entered_socket_zone", unit_id, socket_id)
+			self.network_manager.network_transmit:send_rpc_clients("rpc_objective_entered_socket_zone", unit_id, socket_id, extension.use_game_object_id or false)
+
+			local limited_item_track_extension = ScriptUnit.has_extension(unit, "limited_item_track_system")
+
+			if limited_item_track_extension then
+				local spawner_unit = limited_item_track_extension.spawner_unit
+				local limited_item_track_spawner_extension = ScriptUnit.has_extension(spawner_unit, "limited_item_track_system")
+
+				limited_item_track_spawner_extension:socket_item(unit)
+			end
 
 			local unit_spawner = Managers.state.unit_spawner
 
@@ -94,23 +103,23 @@ ObjectiveSocketSystem.hot_join_sync = function (self, sender)
 	for unit, extension in pairs(self.socket_extensions) do
 		local sockets = extension.sockets
 		local num_sockets = extension.num_sockets
-		local unit_id = self.network_manager:level_object_id(unit)
+		local unit_id = self.network_manager:game_object_or_level_id(unit)
 
 		for socket_id = 1, num_sockets, 1 do
 			local socket = sockets[socket_id]
 
 			if not socket.open then
-				RPC.rpc_objective_entered_socket_zone(sender, unit_id, socket_id)
+				RPC.rpc_objective_entered_socket_zone(sender, unit_id, socket_id, extension.use_game_object_id or false)
 			end
 		end
 	end
 end
 
-ObjectiveSocketSystem.rpc_objective_entered_socket_zone = function (self, sender, unit_id, socket_id)
+ObjectiveSocketSystem.rpc_objective_entered_socket_zone = function (self, sender, unit_id, socket_id, is_game_object)
 	fassert(not self.is_server, "Should only be called on the client")
 
 	local level = LevelHelper:current_level(self.world)
-	local unit = Level.unit_by_index(level, unit_id)
+	local unit = self.network_manager:game_object_or_level_unit(unit_id, not is_game_object)
 	local objective_socket_extension = ScriptUnit.extension(unit, "objective_socket_system")
 
 	objective_socket_extension:objective_entered_zone_client(socket_id)

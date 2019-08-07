@@ -26,8 +26,9 @@ local STORM_VERMIN_COMBAT = {
 		"BTRandom",
 		{
 			"BTStormVerminAttackAction",
-			name = "running_special_attack_sweep",
 			weight = 1,
+			name = "running_special_attack_sweep",
+			condition = "ask_target_before_attacking",
 			action_data = ACTIONS.special_attack_sweep
 		},
 		name = "running_attack",
@@ -37,14 +38,16 @@ local STORM_VERMIN_COMBAT = {
 		"BTRandom",
 		{
 			"BTStormVerminAttackAction",
-			name = "special_attack_cleave",
 			weight = 1,
+			name = "special_attack_cleave",
+			condition = "ask_target_before_attacking",
 			action_data = ACTIONS.special_attack_cleave
 		},
 		{
 			"BTStormVerminAttackAction",
-			name = "special_attack_sweep",
 			weight = 1,
+			name = "special_attack_sweep",
+			condition = "ask_target_before_attacking",
 			action_data = ACTIONS.special_attack_sweep
 		},
 		name = "special_attack",
@@ -53,6 +56,7 @@ local STORM_VERMIN_COMBAT = {
 	{
 		"BTStormVerminPushAction",
 		name = "push_attack",
+		condition = "ask_target_before_attacking",
 		action_data = ACTIONS.push_attack
 	},
 	{
@@ -74,8 +78,9 @@ local STORM_VERMIN_SHIELD_COMBAT = {
 		"BTRandom",
 		{
 			"BTStormVerminAttackAction",
-			name = "special_attack_sweep",
 			weight = 1,
+			name = "special_attack_sweep",
+			condition = "ask_target_before_attacking",
 			action_data = ACTIONS_SHIELD.special_attack_sweep
 		},
 		name = "special_attack",
@@ -84,21 +89,25 @@ local STORM_VERMIN_SHIELD_COMBAT = {
 	{
 		"BTStormVerminPushAction",
 		name = "push_attack",
+		condition = "ask_target_before_attacking",
 		action_data = ACTIONS_SHIELD.push_attack
 	},
 	{
 		"BTStormVerminPushAction",
 		name = "push_attack_wake_up",
+		condition = "ask_target_before_attacking",
 		action_data = ACTIONS_SHIELD.push_attack_wake_up
 	},
 	{
 		"BTComboAttackAction",
 		name = "frenzy_attack_ranged",
+		condition = "ask_target_before_attacking",
 		action_data = ACTIONS_SHIELD.frenzy_attack_ranged
 	},
 	{
 		"BTComboAttackAction",
 		name = "frenzy_attack",
+		condition = "ask_target_before_attacking",
 		action_data = ACTIONS_SHIELD.frenzy_attack
 	},
 	{

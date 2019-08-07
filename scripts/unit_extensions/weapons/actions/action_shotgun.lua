@@ -18,6 +18,8 @@ ActionShotgun.init = function (self, world, item_name, is_server, owner_unit, da
 end
 
 ActionShotgun.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
+	ActionShotgun.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level)
+
 	self.current_action = new_action
 	self.state = "waiting_to_shoot"
 	self.time_to_shoot = t + new_action.fire_time
@@ -63,7 +65,7 @@ ActionShotgun._use_ammo = function (self)
 	local num_shots_total = current_action.shot_count or 1
 
 	if current_action.special_ammo_thing and not self.extra_buff_shot then
-		ammo_usage = ammo_extension.current_ammo
+		ammo_usage = ammo_extension:current_ammo()
 		num_shots_total = ammo_usage
 	end
 
@@ -238,10 +240,17 @@ ActionShotgun.client_owner_post_update = function (self, dt, t, world, can_damag
 	end
 end
 
-ActionShotgun.finish = function (self, reason)
+ActionShotgun.reload = function (self, current_action)
 	local ammo_extension = self.ammo_extension
-	local current_action = self.current_action
 
+	if ammo_extension:can_reload() and current_action.reload_when_out_of_ammo and ammo_extension:ammo_count() == 0 then
+		local play_reload_animation = current_action.play_reload_animation
+
+		ammo_extension:start_reload(play_reload_animation, current_action.override_reload_time)
+	end
+end
+
+ActionShotgun.finish = function (self, reason)
 	if self.state == "start_shooting" then
 		self:_start_shooting()
 	end
@@ -252,14 +261,12 @@ ActionShotgun.finish = function (self, reason)
 		self:_shooting(t, true)
 	end
 
-	if self.spread_extension then
-		self.spread_extension:reset_spread_template()
+	if self.state == "shot" and reason == "charged" then
+		self:reload(self.current_action)
 	end
 
-	if ammo_extension and current_action.reload_when_out_of_ammo and (ammo_extension:ammo_count() == 0 or reason == "reload") and ammo_extension:can_reload() then
-		local play_reload_animation = true
-
-		ammo_extension:start_reload(play_reload_animation)
+	if self.spread_extension then
+		self.spread_extension:reset_spread_template()
 	end
 
 	local hud_extension = ScriptUnit.has_extension(self.owner_unit, "hud_system")

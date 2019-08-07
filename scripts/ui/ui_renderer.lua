@@ -160,9 +160,13 @@ local Gui_update_bitmap_3d = Gui.update_bitmap_3d
 local Gui_bitmap_3d = Gui.bitmap_3d
 
 UIRenderer.script_draw_bitmap_3d = function (gui, render_settings, material, tm, gui_layer, gui_size, color, optional_uvs, masked, retained_id)
-	local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(material)
 	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
 	color = color and Color(color[1] * alpha_multiplier, color[2], color[3], color[4])
+	local texture_settings = nil
+
+	if UIAtlasHelper.has_atlas_settings_by_texture_name(material) then
+		texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(material)
+	end
 
 	if texture_settings then
 		local material_name = nil
@@ -190,6 +194,18 @@ UIRenderer.script_draw_bitmap_3d = function (gui, render_settings, material, tm,
 			return Gui_update_bitmap_3d_uv(gui, retained_id, material_name, Vector2(uv00[1], uv00[2]), Vector2(uv11[1], uv11[2]), tm, Vector3.zero(), gui_layer, gui_size, color)
 		else
 			return Gui_bitmap_3d_uv(gui, material_name, Vector2(uv00[1], uv00[2]), Vector2(uv11[1], uv11[2]), tm, Vector3.zero(), gui_layer, gui_size, color)
+		end
+	elseif optional_uvs then
+		local new_uvs1 = optional_uvs[1]
+		local new_uvs2 = optional_uvs[2]
+		local uv00, uv11 = nil
+		uv00 = Vector2(new_uvs1[1], new_uvs1[2])
+		uv11 = Vector2(new_uvs2[1], new_uvs2[2])
+
+		if retained_id then
+			return Gui_update_bitmap_3d_uv(gui, retained_id, material, Vector2(uv00[1], uv00[2]), Vector2(uv11[1], uv11[2]), tm, Vector3.zero(), gui_layer, gui_size, color)
+		else
+			return Gui_bitmap_3d_uv(gui, material, Vector2(uv00[1], uv00[2]), Vector2(uv11[1], uv11[2]), tm, Vector3.zero(), gui_layer, gui_size, color)
 		end
 	elseif retained_id then
 		return Gui_update_bitmap_3d(gui, retained_id, material, tm, Vector3.zero(), gui_layer, gui_size, color)

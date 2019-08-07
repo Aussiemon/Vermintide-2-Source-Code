@@ -125,7 +125,8 @@ AIGroupSystem.init_extension = function (self, unit, extension, extension_init_d
 			formation_settings = formation_settings,
 			group_type = extension_init_data.group_type,
 			group_start_position = extension_init_data.group_start_position,
-			despawn_at_end = despawn_at_end
+			despawn_at_end = despawn_at_end,
+			side = extension_init_data.side
 		}
 		local spline_name = group.spline_name
 		local spline = self._patrol_splines[spline_name] or self._roaming_splines[spline_name] or self._event_splines[spline_name]
@@ -176,7 +177,7 @@ AIGroupSystem.extensions_ready = function (self, world, unit, extension_name)
 	local pre_unit_init = AIGroupTemplates[extension.template] and AIGroupTemplates[extension.template].pre_unit_init
 
 	if pre_unit_init then
-		pre_unit_init(unit, extension.group.template)
+		pre_unit_init(unit, extension.group)
 	end
 end
 
@@ -576,12 +577,6 @@ AIGroupSystem.update = function (self, context, t)
 		template_update(world, nav_world, group, t, context.dt)
 	end
 
-	if not script_data.ai_group_debug then
-		local drawer = Managers.state.debug:drawer(debug_drawer_info)
-
-		drawer:reset()
-	end
-
 	if self.patrol_analysis and self._computing_splines then
 		self.patrol_analysis:run()
 
@@ -597,40 +592,35 @@ AIGroupSystem.update = function (self, context, t)
 				local spline_points = spline.spline_points
 				local start_position_boxed = spline_points[1]
 
-				if not start_position_boxed then
-					ScriptApplication.send_to_crashify("AiGroupSystem", "Tried to spawn a patrol but could not generate a path. (Most likely nav-mesh is missing) Patrol-id: %s", spline_name)
-					self:_add_spline(spline_name, "failed", spline_type)
+				fassert(start_position_boxed, "missing starting spline point, for spline %s", spline.id)
 
-					self._computing_splines[spline_name] = nil
-				else
-					local start_position = start_position_boxed:unbox()
+				local start_position = start_position_boxed:unbox()
 
-					if #spline_points == 2 then
-						table.insert(spline_points, 2, Vector3Box((start_position + spline_points[2]:unbox()) / 2))
-					end
-
-					local start_direction = Vector3.normalize(spline_points[3]:unbox() - start_position)
-					local num_spline_points = #spline_points
-
-					for i = num_spline_points, 2, -1 do
-						local point_1 = spline_points[i]:unbox()
-						local point_2 = spline_points[i - 1]:unbox()
-
-						if Vector3.equal(point_1, point_2) then
-							table.remove(spline_points, i)
-						end
-					end
-
-					local spline_data = {
-						start_position = start_position_boxed,
-						start_direction = Vector3Box(start_direction),
-						spline_points = spline_points
-					}
-
-					self:_add_spline(spline_name, spline_data, spline_type)
-
-					self._computing_splines[spline_name] = nil
+				if #spline_points == 2 then
+					table.insert(spline_points, 2, Vector3Box((start_position + spline_points[2]:unbox()) / 2))
 				end
+
+				local start_direction = Vector3.normalize(spline_points[3]:unbox() - start_position)
+				local num_spline_points = #spline_points
+
+				for i = num_spline_points, 2, -1 do
+					local point_1 = spline_points[i]:unbox()
+					local point_2 = spline_points[i - 1]:unbox()
+
+					if Vector3.equal(point_1, point_2) then
+						table.remove(spline_points, i)
+					end
+				end
+
+				local spline_data = {
+					start_position = start_position_boxed,
+					start_direction = Vector3Box(start_direction),
+					spline_points = spline_points
+				}
+
+				self:_add_spline(spline_name, spline_data, spline_type)
+
+				self._computing_splines[spline_name] = nil
 			until true
 		end
 	end

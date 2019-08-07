@@ -529,6 +529,47 @@ if Development.parameter("use_beta_overlay") or script_data.settings.use_beta_ov
 				0
 			}
 		}
+	elseif PLATFORM == "win32" then
+		local is_beta = rawget(_G, "Steam") and Steam.app_id() == 1085780
+
+		if is_beta then
+			splash_content[#splash_content + 1] = {
+				scenegraph_id = "background",
+				type = "texture",
+				axis = 2,
+				time = 10,
+				text_vertical_alignment = "center",
+				forced = true,
+				text_horizontal_alignment = "center",
+				spacing = 5,
+				dynamic_font = false,
+				direction = 1,
+				pixel_perfect = false,
+				texts_scenegraph_id = "texts",
+				font_type = "hell_shark",
+				localize = false,
+				texts = {
+					"PRE-RELEASE SOFTWARE",
+					"***",
+					"This game is in a pre-release stage of development. This means ",
+					"that some parts of the game, including online features",
+					"(like chat and multiplayer), might not function as expected (or might",
+					"not function at all). The game might even crash. Because this is",
+					"a pre-release game, Fatshark does not commit",
+					"to providing customer support for the game."
+				},
+				font_size = (is_pro and 52) or 36,
+				size = {
+					1920,
+					(is_pro and 70) or 50
+				},
+				offset = {
+					0,
+					750,
+					0
+				}
+			}
+		end
 	end
 end
 
@@ -573,6 +614,10 @@ SplashView.init = function (self, input_manager, world)
 		input_manager:map_device_to_service("splash_view", "mouse")
 
 		self.input_manager = input_manager
+	end
+
+	if script_data["-no-rendering"] then
+		self._current_index = #splash_content + 1
 	end
 
 	self:_next_splash(true)

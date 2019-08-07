@@ -98,13 +98,13 @@ AudioSystem.play_audio_unit_event = function (self, event, unit, object)
 	self:_play_event(event, unit, object_id)
 
 	local network_manager = Managers.state.network
-	local unit_id = network_manager:unit_game_object_id(unit)
+	local unit_id, is_level_unit = network_manager:game_object_or_level_id(unit)
 	local sound_event_id = NetworkLookup.sound_events[event]
 
 	if self.is_server then
-		network_manager.network_transmit:send_rpc_clients("rpc_server_audio_unit_event", sound_event_id, unit_id, object_id)
+		network_manager.network_transmit:send_rpc_clients("rpc_server_audio_unit_event", sound_event_id, unit_id, is_level_unit, object_id)
 	else
-		network_manager.network_transmit:send_rpc_server("rpc_server_audio_unit_event", sound_event_id, unit_id, object_id)
+		network_manager.network_transmit:send_rpc_server("rpc_server_audio_unit_event", sound_event_id, unit_id, is_level_unit, object_id)
 	end
 end
 
@@ -232,8 +232,7 @@ AudioSystem.rpc_server_audio_event = function (self, sender, sound_id)
 	local distance = math.huge
 
 	surrounding_aware_system:add_system_event(unit, event_name, distance, "heard_event", sound_event)
-
-	local wwise_playing_id, wwise_source_id = WwiseWorld.trigger_event(wwise_world, sound_event)
+	WwiseWorld.trigger_event(wwise_world, sound_event)
 end
 
 AudioSystem.rpc_server_audio_event_at_pos = function (self, sender, sound_id, position)
@@ -246,19 +245,21 @@ AudioSystem.rpc_server_audio_event_at_pos = function (self, sender, sound_id, po
 	local distance = math.huge
 
 	surrounding_aware_system:add_system_event(unit, event_name, distance, "heard_event", sound_event)
-
-	local wwise_playing_id, wwise_source_id = WwiseWorld.trigger_event(wwise_world, sound_event, position)
+	WwiseWorld.trigger_event(wwise_world, sound_event, position)
 end
 
-AudioSystem.rpc_server_audio_unit_event = function (self, sender, sound_id, unit_id, object_id)
+AudioSystem.rpc_server_audio_unit_event = function (self, sender, sound_id, unit_id, is_level_unit, object_id)
 	if self.is_server then
-		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_server_audio_unit_event", sender, sound_id, unit_id, object_id)
+		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_server_audio_unit_event", sender, sound_id, unit_id, is_level_unit, object_id)
 	end
 
 	local event = NetworkLookup.sound_events[sound_id]
-	local unit = self.unit_storage:unit(unit_id)
+	local network_manager = Managers.state.network
+	local unit = network_manager:game_object_or_level_unit(unit_id, is_level_unit)
 
-	self:_play_event(event, unit, object_id)
+	if unit then
+		self:_play_event(event, unit, object_id)
+	end
 end
 
 AudioSystem.rpc_server_audio_position_event = function (self, sender, sound_id, position)

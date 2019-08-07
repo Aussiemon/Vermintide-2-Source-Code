@@ -46,8 +46,9 @@ UnlockManager._init_unlocks = function (self)
 			local class_name = unlock_config.class
 			local id = unlock_config.id
 			local backend_reward_id = unlock_config.backend_reward_id
+			local always_unlocked_game_app_ids = unlock_config.always_unlocked_game_app_ids
 			local class = rawget(_G, class_name)
-			local instance = class:new(unlock_name, id, backend_reward_id)
+			local instance = class:new(unlock_name, id, backend_reward_id, always_unlocked_game_app_ids)
 			unlocks[unlock_name] = instance
 			unlocks_indexed[i][unlock_name] = instance
 		end
@@ -282,7 +283,7 @@ UnlockManager.is_dlc_unlocked = function (self, name)
 
 	fassert(unlock, "No such unlock %q", name or "nil")
 
-	return unlock:unlocked()
+	return unlock and unlock:unlocked()
 end
 
 UnlockManager.dlc_id = function (self, name)

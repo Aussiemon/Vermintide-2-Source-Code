@@ -10,6 +10,7 @@ return {
 		data.apply_aoe_threat_after_t = 4
 		data.apply_movement_debuff_after_t = 5
 		data.player_bomb_data = {}
+		data.hero_side = Managers.state.side:get_side_from_name("heroes")
 	end,
 	server_players_left_safe_zone = function (context, data)
 		data.has_left_safe_zone = true
@@ -27,7 +28,8 @@ return {
 		if data.apply_bomb_buff_at_t < t then
 			table.clear(player_bomb_data)
 
-			local current_player_units = PLAYER_AND_BOT_UNITS
+			local hero_side = data.hero_side
+			local current_player_units = hero_side.PLAYER_AND_BOT_UNITS
 			local num_current_player_units = #current_player_units
 			local random_num_affected_players = math.random(1, #current_player_units)
 

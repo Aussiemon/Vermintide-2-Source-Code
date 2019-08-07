@@ -1,5 +1,6 @@
 local breed_data = {
 	behavior = "gutter_runner",
+	pounce_impact_damage = 5,
 	walk_speed = 3,
 	run_speed = 9,
 	stagger_in_air_mover_check_radius = 0.2,
@@ -45,10 +46,6 @@ local breed_data = {
 	initial_is_passive = false,
 	base_unit = "units/beings/enemies/skaven_gutter_runner/chr_skaven_gutter_runner",
 	threat_value = 8,
-	pounce_impact_damage = {
-		5,
-		7
-	},
 	detection_radius = math.huge,
 	perception_weights = {
 		sticky_bonus = 5,
@@ -56,13 +53,7 @@ local breed_data = {
 		distance_weight = 10,
 		max_distance = 40
 	},
-	max_health = {
-		12,
-		12,
-		18,
-		24,
-		36
-	},
+	max_health = BreedTweaks.max_health.gutter_runner,
 	bloodlust_health = BreedTweaks.bloodlust_health.skaven_special,
 	stagger_duration = {
 		1,
@@ -82,15 +73,10 @@ local breed_data = {
 		0
 	},
 	disabled = Development.setting("disable_gutter_runner") or false,
-	run_on_spawn = AiBreedSnippets.on_gutter_runner_spawn,
 	hitzone_multiplier_types = {
 		head = "headshot"
 	},
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		head = {
 			prio = 1,
 			actors = {
@@ -112,7 +98,7 @@ local breed_data = {
 			}
 		},
 		torso = {
-			prio = 3,
+			prio = 2,
 			actors = {
 				"c_hips",
 				"c_spine",
@@ -125,7 +111,7 @@ local breed_data = {
 			}
 		},
 		left_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftarm",
 				"c_leftforearm",
@@ -136,7 +122,7 @@ local breed_data = {
 			}
 		},
 		right_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightarm",
 				"c_rightforearm",
@@ -147,7 +133,7 @@ local breed_data = {
 			}
 		},
 		left_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftleg",
 				"c_leftupleg",
@@ -161,7 +147,7 @@ local breed_data = {
 			}
 		},
 		right_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightleg",
 				"c_rightupleg",
@@ -175,7 +161,7 @@ local breed_data = {
 			}
 		},
 		tail = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_tail1",
 				"c_tail2",
@@ -187,6 +173,10 @@ local breed_data = {
 			push_actors = {
 				"j_hips"
 			}
+		},
+		full = {
+			prio = 4,
+			actors = {}
 		},
 		afro = {
 			prio = 5,
@@ -216,6 +206,7 @@ Breeds.skaven_gutter_runner = table.create_copy(Breeds.skaven_gutter_runner, bre
 local action_data = {
 	target_pounced = {
 		final_damage_multiplier = 5,
+		damage = 1.5,
 		foff_after_pounce_kill = true,
 		fatigue_type = "blocked_attack",
 		far_impact_radius = 6,
@@ -228,6 +219,9 @@ local action_data = {
 			10,
 			5,
 			5,
+			5,
+			5,
+			5,
 			5
 		},
 		time_to_reach_final_damage_multiplier = {
@@ -235,55 +229,20 @@ local action_data = {
 			15,
 			10,
 			10,
+			10,
+			10,
+			10,
 			10
 		},
-		damage = {
-			1.5,
-			1.5,
-			1.5,
-			1.5
-		},
 		difficulty_damage = {
-			easy = {
-				1,
-				0.5,
-				0.25
-			},
-			normal = {
-				1,
-				0.5,
-				0.25
-			},
-			hard = {
-				2,
-				1,
-				0.5
-			},
-			survival_hard = {
-				2,
-				1,
-				0.5
-			},
-			harder = {
-				2.5,
-				1.5,
-				0.5
-			},
-			survival_harder = {
-				2.5,
-				1.5,
-				0.5
-			},
-			hardest = {
-				5,
-				2,
-				0.5
-			},
-			survival_hardest = {
-				7.5,
-				3,
-				0.75
-			}
+			harder = 2.5,
+			hard = 2,
+			normal = 1,
+			hardest = 5,
+			cataclysm = 10,
+			cataclysm_3 = 20,
+			cataclysm_2 = 15,
+			easy = 1
 		},
 		ignore_staggers = {
 			true,
@@ -301,11 +260,17 @@ local action_data = {
 			0.3,
 			0.3,
 			0.3,
+			0.3,
+			0.3,
+			0.3,
 			0.3
 		}
 	},
 	prepare_crazy_jump = {
 		difficulty_prepare_jump_time = {
+			0.5,
+			0.5,
+			0.5,
 			0.5,
 			0.5,
 			0.5,
@@ -320,14 +285,10 @@ local action_data = {
 	},
 	smash_door = {
 		unblockable = true,
+		damage = 5,
 		damage_type = "cutting",
 		move_anim = "move_fwd",
-		attack_anim = "smash_door",
-		damage = {
-			5,
-			5,
-			5
-		}
+		attack_anim = "smash_door"
 	},
 	stagger = {
 		stagger_anims = {
@@ -427,6 +388,26 @@ local action_data = {
 				},
 				right = {
 					"stagger_right"
+				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
+			},
+			{
+				fwd = {
+					"stagger_fwd_heavy"
+				},
+				bwd = {
+					"stagger_bwd_heavy"
+				},
+				left = {
+					"stagger_left_heavy"
+				},
+				right = {
+					"stagger_right_heavy"
 				}
 			}
 		}

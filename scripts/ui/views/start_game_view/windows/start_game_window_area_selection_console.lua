@@ -34,9 +34,9 @@ StartGameWindowAreaSelectionConsole.on_enter = function (self, params, offset)
 	params.return_layout_name = self.parent:get_selected_game_mode_layout_name()
 	self._area_unavailable = true
 
+	self.parent:set_input_description("select_area_confirm")
 	self:_setup_area_widgets()
 	self:_update_area_option()
-	self.parent:set_input_description("select_area_confirm")
 end
 
 StartGameWindowAreaSelectionConsole.create_ui_elements = function (self, params, offset)
@@ -137,7 +137,7 @@ end
 StartGameWindowAreaSelectionConsole._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
 	local completed_frame_texture = "map_frame_00"
 
-	if difficulty_index > 0 then
+	if difficulty_index and difficulty_index > 0 then
 		local difficulty_key = DefaultDifficulties[difficulty_index]
 		local settings = DifficultySettings[difficulty_key]
 		completed_frame_texture = settings.completed_frame_texture
@@ -192,7 +192,36 @@ StartGameWindowAreaSelectionConsole._set_area_presentation_info = function (self
 	local widgets_by_name = self._widgets_by_name
 	widgets_by_name.area_title.content.text = title_text
 	widgets_by_name.description_text.content.text = description_text
-	widgets_by_name.not_owned_text.content.visible = not unlocked
+
+	if not unlocked then
+		self.parent:set_input_description("select_area_buy")
+
+		widgets_by_name.not_owned_text.content.visible = true
+		widgets_by_name.requirements_not_met_text.content.visible = false
+	else
+		local requirements_fulfilled = true
+
+		if settings.unlock_requirement_function then
+			local local_player = Managers.player:local_player()
+			local stats_id = local_player:stats_id()
+			local statistics_db = Managers.player:statistics_db()
+			requirements_fulfilled = settings.unlock_requirement_function(statistics_db, stats_id)
+		end
+
+		if requirements_fulfilled then
+			self.parent:set_input_description("select_area_confirm")
+
+			widgets_by_name.requirements_not_met_text.content.visible = false
+		else
+			self.parent:set_input_description("select_area_base")
+
+			widgets_by_name.requirements_not_met_text.content.visible = true
+			widgets_by_name.requirements_not_met_text.content.text = settings.unlock_requirement_description
+		end
+
+		widgets_by_name.not_owned_text.content.visible = false
+	end
+
 	local parent = self.parent
 	local video_player = parent:get_video_player_by_name(area_name)
 	local video_settings = settings.video_settings
@@ -369,16 +398,27 @@ StartGameWindowAreaSelectionConsole._on_select_button_pressed = function (self)
 	end
 
 	if unlocked then
-		local parent = self.parent
-		local selected_layout_name = parent:get_selected_layout_name()
-		local new_layout_name = "mission_selection"
+		local requirements_fulfilled = true
 
-		if selected_layout_name == "area_selection" then
-			new_layout_name = "mission_selection"
+		if settings.unlock_requirement_function then
+			local local_player = Managers.player:local_player()
+			local stats_id = local_player:stats_id()
+			local statistics_db = Managers.player:statistics_db()
+			requirements_fulfilled = settings.unlock_requirement_function(statistics_db, stats_id)
 		end
 
-		parent:set_selected_area_name(area_name)
-		parent:set_layout_by_name(new_layout_name)
+		if requirements_fulfilled then
+			local parent = self.parent
+			local selected_layout_name = parent:get_selected_layout_name()
+			local new_layout_name = "mission_selection"
+
+			if selected_layout_name == "area_selection" then
+				new_layout_name = "mission_selection"
+			end
+
+			parent:set_selected_area_name(area_name)
+			parent:set_layout_by_name(new_layout_name)
+		end
 	else
 		local store_page_url = settings.store_page_url
 

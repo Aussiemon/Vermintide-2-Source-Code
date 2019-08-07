@@ -250,7 +250,7 @@ weapon_template.actions = {
 			kind = "aim",
 			weapon_action_hand = "left",
 			aim_sound_event = "player_combat_weapon_bow_tighten_grip_loop",
-			aim_zoom_delay = 1,
+			aim_zoom_delay = 0.4,
 			spread_template_override = "empire_longbow",
 			aim_sound_delay = 0.1,
 			anim_end_event = "draw_cancel",
@@ -289,18 +289,18 @@ weapon_template.actions = {
 					end_time = math.huge
 				},
 				{
+					sub_action = "shoot_charged",
+					start_time = 0.5,
+					action = "action_one",
+					end_time = 1,
+					input = "action_one"
+				},
+				{
 					sub_action = "shoot_charged_heavy",
 					start_time = 1.25,
 					action = "action_one",
 					input = "action_one",
 					end_time = math.huge
-				},
-				{
-					sub_action = "shoot_charged",
-					start_time = 0.5,
-					action = "action_one",
-					end_time = 0.8,
-					input = "action_one"
 				},
 				{
 					sub_action = "default",
@@ -338,13 +338,11 @@ weapon_template.actions = {
 }
 weapon_template.ammo_data = {
 	ammo_per_reload = 1,
-	ammo_unit = "units/weapons/player/wpn_emp_arrows/wpn_es_arrow_t1",
-	ammo_hand = "left",
-	ammo_per_clip = 1,
-	ammo_unit_3p = "units/weapons/player/wpn_emp_arrows/wpn_es_arrow_t1_3p",
 	max_ammo = 20,
+	ammo_per_clip = 1,
 	reload_on_ammo_pickup = true,
 	reload_time = 0.65,
+	ammo_hand = "left",
 	ammo_unit_attachment_node_linking = AttachmentNodeLinking.arrow
 }
 weapon_template.attack_meta_data = {

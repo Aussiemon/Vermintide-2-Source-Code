@@ -1,13 +1,21 @@
 UnlockDlc = class(UnlockDlc)
 
-UnlockDlc.init = function (self, name, app_id, backend_reward_id)
+UnlockDlc.init = function (self, name, app_id, backend_reward_id, always_unlocked_game_app_ids)
 	self._name = name
 	self._id = app_id
 	self._backend_reward_id = backend_reward_id
 	self._unlocked = false
 
-	if rawget(_G, "Steam") and Steam.is_installed(app_id) then
-		self._unlocked = true
+	if rawget(_G, "Steam") then
+		if Steam.is_installed(app_id) then
+			self._unlocked = true
+		elseif always_unlocked_game_app_ids then
+			local steam_app_id = Steam.app_id()
+
+			if steam_app_id and table.contains(always_unlocked_game_app_ids, steam_app_id) then
+				self._unlocked = true
+			end
+		end
 	end
 end
 

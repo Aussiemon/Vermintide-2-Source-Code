@@ -5,6 +5,8 @@ ActionBountyHunterHandgun.init = function (self, world, item_name, is_server, ow
 end
 
 ActionBountyHunterHandgun.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
+	ActionBountyHunterHandgun.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level, action_init_data)
+
 	local weapon_unit = self.weapon_unit
 	local owner_unit = self.owner_unit
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
@@ -195,15 +197,14 @@ ActionBountyHunterHandgun._do_aoe = function (self)
 	local collision_filter = "filter_melee_sweep"
 	local actors, actors_n = PhysicsWorld.immediate_overlap(physics_world, "shape", "sphere", "position", attack_pos, "size", radius, "types", "dynamics", "collision_filter", collision_filter, "use_global_table")
 	local hit_units = self.hit_units
-	local unit_get_data = Unit.get_data
 
 	for i = 1, actors_n, 1 do
 		repeat
 			local hit_actor = actors[i]
 			local hit_unit = Actor.unit(hit_actor)
-			local breed = unit_get_data(hit_unit, "breed")
+			local breed = AiUtils.unit_breed(hit_unit)
 
-			if breed and not hit_units[hit_unit] then
+			if breed and not hit_units[hit_unit] and not breed.is_player then
 				hit_units[hit_unit] = true
 				local node = Actor.node(hit_actor)
 				local target_hit_position = Unit.world_position(hit_unit, node)

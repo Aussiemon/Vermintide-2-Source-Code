@@ -11,7 +11,14 @@ NavTagVolumeHandler.init = function (self, world, nav_world)
 	self._volume_lookup_id = 1
 	self.mappings = {}
 	local level_settings = LevelHelper:current_level_settings(world)
-	local file_path = level_settings.level_name .. "_nav_tag_volumes"
+	local level_path = level_settings.level_name
+	local num_nested_levels = LevelResource.nested_level_count(level_path)
+
+	if num_nested_levels > 0 then
+		level_path = LevelResource.nested_level_resource_name(level_path, 0)
+	end
+
+	local file_path = level_path .. "_nav_tag_volumes"
 
 	if Application.can_get("lua", file_path) then
 		local mappings = require(file_path)

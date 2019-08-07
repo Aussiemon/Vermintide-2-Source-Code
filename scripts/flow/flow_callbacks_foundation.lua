@@ -1,5 +1,6 @@
 require("foundation/scripts/util/table")
 require("scripts/settings/attachment_node_linking")
+require("scripts/settings/ai_inventory_templates")
 
 local unit_alive = Unit.alive
 
@@ -346,33 +347,11 @@ function flow_callback_distance_between(params)
 	return returns
 end
 
-local function split_string(text, sep)
-	sep = sep or "\n"
-	local lines = {}
-	local pos = 1
-
-	while true do
-		local b, e = text:find(sep, pos)
-
-		if not b then
-			table.insert(lines, text:sub(pos))
-
-			break
-		end
-
-		table.insert(lines, text:sub(pos, b - 1))
-
-		pos = e + 1
-	end
-
-	return lines
-end
-
 function flow_callback_link_objects_in_units_and_store(params)
 	local parentunit = params.parent_unit
 	local childunit = params.child_unit
-	local parentnodes = split_string(params.parent_nodes, ";")
-	local childnodes = split_string(params.child_nodes, ";")
+	local parentnodes = split(params.parent_nodes, ";")
+	local childnodes = split(params.child_nodes, ";")
 	local world = Unit.world(parentunit)
 	local index_offset = Script.index_offset()
 
@@ -431,7 +410,7 @@ end
 
 function flow_callback_attach_unit(params)
 	local node_link_table = AttachmentNodeLinking
-	local node_linking_template = split_string(params.node_link_template, "/")
+	local node_linking_template = split(params.node_link_template, "/")
 
 	if not node_linking_template then
 		print("No attachment node linking defined in flow!")
@@ -761,6 +740,46 @@ function flow_callback_start_fade(params)
 	end
 end
 
+function flow_callback_start_fade_chr_inventory(params)
+	assert(params.unit, "[flow_callback_start_fade_chr_outfit] You need to specify the Unit")
+	assert(params.duration, "[flow_callback_start_fade_chr_outfit] You need to specify duration")
+	assert(params.fade_switch, "[flow_callback_start_fade_chr_outfit] You need to specify whether to fade in or out (0 or 1)")
+
+	local unit = params.unit
+	params.mesh_name = nil
+	local outfit_items = Unit.get_data(unit, "outfit_items") or {}
+
+	for i = 1, #outfit_items, 1 do
+		params.unit = outfit_items[i]
+
+		flow_callback_start_fade(params)
+	end
+
+	local stump_items = Unit.get_data(unit, "stump_items") or {}
+
+	for i = 1, #stump_items, 1 do
+		params.unit = stump_items[i]
+
+		flow_callback_start_fade(params)
+	end
+end
+
+function flow_callback_start_fade_chr_outfit(params)
+	assert(params.unit, "[flow_callback_start_fade_chr_outfit] You need to specify the Unit")
+	assert(params.duration, "[flow_callback_start_fade_chr_outfit] You need to specify duration")
+	assert(params.fade_switch, "[flow_callback_start_fade_chr_outfit] You need to specify whether to fade in or out (0 or 1)")
+
+	local unit = params.unit
+	params.mesh_name = nil
+	local outfit_items = Unit.get_data(unit, "outfit_items") or {}
+
+	for i = 1, #outfit_items, 1 do
+		params.unit = outfit_items[i]
+
+		flow_callback_start_fade(params)
+	end
+end
+
 function flow_callback_start_fade_chr_stumps(params)
 	assert(params.unit, "[flow_callback_start_fade_chr_stumps] You need to specify the Unit")
 	assert(params.duration, "[flow_callback_start_fade_chr_stumps] You need to specify duration")
@@ -768,7 +787,7 @@ function flow_callback_start_fade_chr_stumps(params)
 
 	local unit = params.unit
 	params.mesh_name = nil
-	stump_items = Unit.get_data(unit, "stump_items") or {}
+	local stump_items = Unit.get_data(unit, "stump_items") or {}
 
 	for i = 1, #stump_items, 1 do
 		params.unit = stump_items[i]
@@ -781,6 +800,197 @@ function flow_callback_start_fade_chr_helmet(params)
 	assert(params.unit, "[flow_callback_start_fade_chr_helmet] You need to specify the Unit")
 	assert(params.duration, "[flow_callback_start_fade_chr_helmet] You need to specify duration")
 	assert(params.fade_switch, "[flow_callback_start_fade_chr_helmet] You need to specify whether to fade in or out (0 or 1)")
+
+	local unit = params.unit
+	params.mesh_name = nil
+	local helmet_items = Unit.get_data(unit, "helmet_items") or {}
+
+	for i = 1, #helmet_items, 1 do
+		params.unit = helmet_items[i]
+
+		flow_callback_start_fade(params)
+	end
+end
+
+function flow_callback_chr_editor_inventory_spawn(params)
+	local unit = params.unit
+	local world = Unit.world(unit)
+	local unwielded = params.unwield
+	local inventory_configuration = InventoryConfigurations[params.inventory_config]
+
+	if inventory_configuration ~= nil then
+		local outfit_items = Unit.get_data(unit, "outfit_items") or {}
+		local helmet_items = Unit.get_data(unit, "helmet_items") or {}
+		local shield_items = Unit.get_data(unit, "shield_items") or {}
+		local other_items = Unit.get_data(unit, "other_items") or {}
+
+		for i = 1, #inventory_configuration.items, 1 do
+			local item = inventory_configuration.items[i][math.random(1, inventory_configuration.items[i].count)]
+			local item_node_linking = item.attachment_node_linking
+			local node_linking_data = item_node_linking.wielded or item_node_linking
+
+			if unwielded then
+				node_linking_data = item_node_linking.unwielded or item_node_linking
+			end
+
+			local item_position, item_rotation = nil
+
+			for _, data in ipairs(node_linking_data) do
+				if data.target == 0 then
+					local source_node = data.source
+					local source_node_index = (type(source_node) == "string" and Unit.node(unit, source_node)) or source_node + 1
+					item_position = Unit.world_position(unit, source_node_index)
+					item_rotation = Unit.world_rotation(unit, source_node_index)
+
+					break
+				end
+			end
+
+			local item_unit = World.spawn_unit(world, item.unit_name, item_position, item_rotation)
+
+			link_attachment(node_linking_data, world, item_unit, unit)
+			Unit.set_data(item_unit, "node_linking_data", node_linking_data)
+
+			if Unit.has_animation_state_machine(item_unit) and Unit.has_animation_event(item_unit, "linked") then
+				Unit.animation_event(item_unit, "linked")
+			end
+
+			local item_unit_template_name = item.unit_extension_template or "ai_inventory_item"
+
+			if item_unit_template_name == "ai_shield_unit" then
+				table.insert(shield_items, item_unit)
+			elseif item_unit_template_name == "ai_helmet_unit" then
+				table.insert(helmet_items, item_unit)
+			elseif item_unit_template_name == "ai_outfit_unit" then
+				table.insert(outfit_items, item_unit)
+			else
+				table.insert(other_items, item_unit)
+			end
+		end
+
+		if unwielded ~= true then
+			local anim_state_event = inventory_configuration.anim_state_event
+
+			if anim_state_event and Unit.has_animation_event(unit, anim_state_event) then
+				Unit.animation_event(unit, anim_state_event)
+			end
+		end
+
+		Unit.set_data(unit, "outfit_items", outfit_items)
+		Unit.set_data(unit, "helmet_items", helmet_items)
+		Unit.set_data(unit, "shield_items", shield_items)
+		Unit.set_data(unit, "other_items", other_items)
+	end
+
+	return {
+		spawned = true
+	}
+end
+
+function flow_callback_chr_editor_inventory_unspawn(params)
+	local unit = params.unit
+	local world = Unit.world(unit)
+	local outfit_items = Unit.get_data(unit, "outfit_items") or {}
+	local helmet_items = Unit.get_data(unit, "helmet_items") or {}
+	local shield_items = Unit.get_data(unit, "shield_items") or {}
+	local other_items = Unit.get_data(unit, "other_items") or {}
+
+	for i = 1, #outfit_items, 1 do
+		World.destroy_unit(world, outfit_items[i])
+	end
+
+	for i = 1, #helmet_items, 1 do
+		World.destroy_unit(world, helmet_items[i])
+	end
+
+	for i = 1, #shield_items, 1 do
+		World.destroy_unit(world, shield_items[i])
+	end
+
+	for i = 1, #other_items, 1 do
+		World.destroy_unit(world, other_items[i])
+	end
+
+	Unit.set_data(unit, "outfit_items", {})
+	Unit.set_data(unit, "helmet_items", {})
+	Unit.set_data(unit, "shield_items", {})
+	Unit.set_data(unit, "other_items", {})
+
+	return {
+		unspawned = true
+	}
+end
+
+function flow_callback_chr_editor_inventory_drop(params)
+	local unit = params.unit
+	local world = Unit.world(unit)
+	local shield_items = Unit.get_data(unit, "shield_items") or {}
+	local other_items = Unit.get_data(unit, "other_items") or {}
+
+	for i = 1, #other_items, 1 do
+		local item_unit = other_items[i]
+		local node_linking_data = Unit.get_data(item_unit, "node_linking_data") or {}
+
+		if node_linking_data then
+			unlink_attachment(node_linking_data, world, item_unit)
+			Unit.flow_event(item_unit, "lua_dropped")
+
+			local actor = Unit.create_actor(item_unit, "rp_dropped")
+
+			Actor.add_angular_velocity(actor, Vector3(math.random(), math.random(), math.random()) * 40)
+			Actor.add_velocity(actor, optional_drop_direction or Vector3(2 * math.random() - 0.5, 2 * math.random() - 0.5, 4.5))
+		end
+	end
+
+	for i = 1, #shield_items, 1 do
+		local item_unit = shield_items[i]
+		local node_linking_data = Unit.get_data(item_unit, "node_linking_data") or {}
+
+		if node_linking_data then
+			unlink_attachment(node_linking_data, world, item_unit)
+			Unit.flow_event(item_unit, "lua_dropped")
+
+			local actor = Unit.create_actor(item_unit, "rp_dropped")
+
+			Actor.add_angular_velocity(actor, Vector3(math.random(), math.random(), math.random()) * 40)
+			Actor.add_velocity(actor, optional_drop_direction or Vector3(2 * math.random() - 0.5, 2 * math.random() - 0.5, 4.5))
+		end
+	end
+
+	return {
+		dropped = true
+	}
+end
+
+function flow_callback_chr_enemy_inventory_send_event(params)
+	assert(params.unit, "[flow_callback_chr_enemy_inventory_send_event] You need to specify the Unit")
+	assert(params.event, "[flow_callback_chr_enemy_inventory_send_event] You need to specify an event name")
+
+	local unit = params.unit
+	local event = params.event
+	local outfit_items = Unit.get_data(unit, "outfit_items") or {}
+
+	for i = 1, #outfit_items, 1 do
+		Unit.flow_event(outfit_items[i], event)
+	end
+
+	local helmet_items = Unit.get_data(unit, "helmet_items") or {}
+
+	for i = 1, #helmet_items, 1 do
+		Unit.flow_event(helmet_items[i], event)
+	end
+
+	local shield_items = Unit.get_data(unit, "shield_items") or {}
+
+	for i = 1, #shield_items, 1 do
+		Unit.flow_event(shield_items[i], event)
+	end
+
+	local shield_items = Unit.get_data(unit, "stump_items") or {}
+
+	for i = 1, #shield_items, 1 do
+		Unit.flow_event(shield_items[i], event)
+	end
 end
 
 function flow_callback_is_character_alive(params)
@@ -1061,6 +1271,32 @@ function split(text, sep)
 	end
 
 	return lines
+end
+
+function link_attachment(attachment_node_link, world, target, source)
+	for i, attachment_nodes in ipairs(attachment_node_link) do
+		local source_node = attachment_nodes.source
+		local target_node = attachment_nodes.target
+		local source_node_index = (type(source_node) == "string" and Unit.node(source, source_node)) or source_node + 1
+		local target_node_index = (type(target_node) == "string" and Unit.node(target, target_node)) or target_node + 1
+
+		World.link_unit(world, target, target_node_index, source, source_node_index)
+	end
+end
+
+function unlink_attachment(attachment_node_link, world, target)
+	World.unlink_unit(world, target)
+
+	local node_linking_data = attachment_node_link.wielded or attachment_node_link
+
+	for _, attachment_nodes in ipairs(node_linking_data) do
+		local target_node = attachment_nodes.target
+		local target_node_index = (type(target_node) == "string" and Unit.node(target, target_node)) or target_node + 1
+
+		if target_node_index > 1 then
+			Unit.scene_graph_link(target, target_node_index, 1)
+		end
+	end
 end
 
 function flow_callback_wwise_trigger_event_with_environment()

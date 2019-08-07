@@ -263,6 +263,7 @@ PlayerBotBase.extensions_ready = function (self, world, unit)
 	blackboard.ai_bot_group_extension = ai_bot_group_ext
 	blackboard.ai_extension = ai_ext
 	blackboard.career_extension = career_extension
+	blackboard.side = Managers.state.side.side_by_unit[unit]
 end
 
 PlayerBotBase._init_brain = function (self)
@@ -509,14 +510,15 @@ PlayerBotBase._update_slot_target = function (self, dt, t, self_position)
 		end
 	end
 
-	local players = Managers.player:human_and_bot_players()
+	local side = Managers.state.side.side_by_unit[unit]
+	local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 	local best_target = nil
 	local best_dist = math.huge
 
-	for _, player in pairs(players) do
-		local player_unit = player.player_unit
+	for k = 1, #player_and_bot_units, 1 do
+		local player_unit = player_and_bot_units[k]
 
-		if ALIVE[player_unit] and player_unit ~= ally_unit and player_unit ~= unit then
+		if player_unit ~= ally_unit and player_unit ~= unit then
 			local target, dist = self:_get_closest_target_in_slot(pos, player_unit, current_target)
 
 			if dist < best_dist then
@@ -538,7 +540,7 @@ PlayerBotBase._update_slot_target = function (self, dt, t, self_position)
 end
 
 local BOT_THREAT_MODIFIER = -1
-local SLOT_TYPES = table.keys(SlotSettings)
+local SLOT_TYPES = table.keys(SlotTypeSettings)
 
 PlayerBotBase._get_closest_target_in_slot = function (self, position, unit, current_enemy_unit, is_self)
 	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
@@ -834,18 +836,20 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 	local self_segment = conflict_director:get_player_unit_segment(unit) or 1
 	local level_settings = LevelHelper:current_level_settings()
 	local disable_bot_main_path_teleport_check = level_settings.disable_bot_main_path_teleport_check
-	local players = Managers.player:players()
+	local side = Managers.state.side.side_by_unit[unit]
+	local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 
-	for k, player in pairs(players) do
-		local player_unit = player.player_unit
-		local is_bot = player.bot_player
+	for k = 1, #player_and_bot_units, 1 do
+		local player_unit = player_and_bot_units[k]
 
-		if AiUtils.unit_alive(player_unit) and player_unit ~= unit then
+		if player_unit ~= unit and AiUtils.unit_alive(player_unit) then
 			local status_ext = ScriptUnit.extension(player_unit, "status_system")
 			local utility = 0
 			local look_at_ally = false
 
 			if not status_ext:is_ready_for_assisted_respawn() and not status_ext.near_vortex and (disable_bot_main_path_teleport_check or self_segment <= (conflict_director:get_player_unit_segment(player_unit) or 1)) then
+				local player = Managers.player:owner(player_unit)
+				local is_bot = not player:is_player_controlled()
 				local in_need_type = nil
 
 				if status_ext:is_knocked_down() then
@@ -1699,6 +1703,10 @@ PlayerBotBase._find_position_on_navmesh = function (self, nav_world, original_po
 			return GwNavQueries.inside_position_from_outside_position(nav_world, original_position, above, below, lateral, distance)
 		end
 	end
+end
+
+PlayerBotBase.unit_removed_from_game = function (self)
+	return
 end
 
 PlayerBotBase.destroy = function (self)

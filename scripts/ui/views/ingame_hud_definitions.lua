@@ -1,3 +1,7 @@
+local function validate_component()
+	return true
+end
+
 local components = {
 	{
 		use_hud_scale = true,
@@ -6,7 +10,10 @@ local components = {
 		visibility_groups = {
 			"dead",
 			"alive"
-		}
+		},
+		validation_function = function ()
+			return validate_component()
+		end
 	},
 	{
 		use_hud_scale = true,
@@ -14,7 +21,10 @@ local components = {
 		filename = "scripts/ui/hud_ui/wait_for_rescue_ui",
 		visibility_groups = {
 			"dead"
-		}
+		},
+		validation_function = function ()
+			return validate_component()
+		end
 	},
 	{
 		use_hud_scale = true,
@@ -22,7 +32,10 @@ local components = {
 		filename = "scripts/ui/hud_ui/item_received_feedback_ui",
 		visibility_groups = {
 			"alive"
-		}
+		},
+		validation_function = function ()
+			return validate_component()
+		end
 	},
 	{
 		use_hud_scale = true,
@@ -30,7 +43,10 @@ local components = {
 		filename = "scripts/ui/hud_ui/overcharge_bar_ui",
 		visibility_groups = {
 			"alive"
-		}
+		},
+		validation_function = function ()
+			return validate_component()
+		end
 	},
 	{
 		use_hud_scale = true,
@@ -119,7 +135,10 @@ local components = {
 		filename = "scripts/ui/hud_ui/buff_ui",
 		visibility_groups = {
 			"alive"
-		}
+		},
+		validation_function = function ()
+			return validate_component()
+		end
 	},
 	{
 		use_hud_scale = true,
@@ -127,7 +146,10 @@ local components = {
 		filename = "scripts/ui/hud_ui/buff_presentation_ui",
 		visibility_groups = {
 			"alive"
-		}
+		},
+		validation_function = function ()
+			return validate_component()
+		end
 	},
 	{
 		use_hud_scale = true,
@@ -135,7 +157,10 @@ local components = {
 		filename = "scripts/ui/hud_ui/equipment_ui",
 		visibility_groups = {
 			"alive"
-		}
+		},
+		validation_function = function ()
+			return validate_component()
+		end
 	},
 	{
 		use_hud_scale = true,
@@ -143,7 +168,10 @@ local components = {
 		filename = "scripts/ui/hud_ui/gamepad_equipment_ui",
 		visibility_groups = {
 			"alive"
-		}
+		},
+		validation_function = function ()
+			return validate_component()
+		end
 	},
 	{
 		use_hud_scale = true,
@@ -151,7 +179,10 @@ local components = {
 		filename = "scripts/ui/hud_ui/ability_ui",
 		visibility_groups = {
 			"alive"
-		}
+		},
+		validation_function = function ()
+			return validate_component()
+		end
 	},
 	{
 		use_hud_scale = true,
@@ -159,7 +190,10 @@ local components = {
 		filename = "scripts/ui/hud_ui/gamepad_ability_ui",
 		visibility_groups = {
 			"alive"
-		}
+		},
+		validation_function = function ()
+			return validate_component()
+		end
 	},
 	{
 		use_hud_scale = true,
@@ -251,7 +285,10 @@ local components = {
 			"realism",
 			"game_mode_disable_hud",
 			"alive"
-		}
+		},
+		validation_function = function ()
+			return validate_component()
+		end
 	},
 	{
 		use_hud_scale = true,
@@ -287,7 +324,10 @@ local components = {
 			"game_mode_disable_hud",
 			"dead",
 			"alive"
-		}
+		},
+		validation_function = function ()
+			return validate_component()
+		end
 	},
 	{
 		use_hud_scale = true,
@@ -303,7 +343,10 @@ local components = {
 		filename = "scripts/ui/views/fatigue_ui",
 		visibility_groups = {
 			"alive"
-		}
+		},
+		validation_function = function ()
+			return validate_component()
+		end
 	},
 	{
 		use_hud_scale = true,
@@ -311,7 +354,10 @@ local components = {
 		filename = "scripts/ui/views/bonus_dice_ui",
 		visibility_groups = {
 			"alive"
-		}
+		},
+		validation_function = function ()
+			return validate_component()
+		end
 	},
 	{
 		class_name = "IngamePlayerListUI",
@@ -449,8 +495,26 @@ local components = {
 			"dead",
 			"alive"
 		}
+	},
+	{
+		class_name = "FloatingIconUI",
+		filename = "scripts/ui/hud_ui/floating_icon_ui",
+		visibility_groups = {
+			"alive"
+		}
 	}
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local ingame_components = dlc.ingame_hud_components
+
+	if ingame_components then
+		for _, component in ipairs(ingame_components) do
+			components[#components + 1] = component
+		end
+	end
+end
+
 local visibility_groups = {
 	{
 		name = "disable_ingame_ui",

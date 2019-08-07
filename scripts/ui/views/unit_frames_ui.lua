@@ -407,7 +407,10 @@ UnitFramesUI.update_teammates_unit_frames = function (self, dt, t, ui_scenegraph
 				local twitch_multiplier = PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF
 				local num_slayer_curses = buff_extension:num_buff_perk("slayer_curse")
 				local slayer_curse_multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.SLAYER_CURSE_HEALTH_DEBUFF, "curse_protection")
-				active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier + num_slayer_curses * slayer_curse_multiplier
+				local difficulty_name = Managers.state.difficulty:get_difficulty()
+				local num_mutator_curses = buff_extension.num_buff_perk("mutator_curse")
+				local mutator_curse_multiplier = buff_extension:apply_buffs_to_value(WindSettings.light.curse_settings.value[difficulty_name], "curse_protection")
+				active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier + num_slayer_curses * slayer_curse_multiplier + num_mutator_curses * mutator_curse_multiplier
 			end
 
 			fassert(health_percent * active_percentage <= 1, "Health was greater then 1. %s , %s", health_percent, active_percentage)
@@ -624,7 +627,10 @@ UnitFramesUI.update_player_unit_frame = function (self, dt, t, ui_scenegraph, ui
 		local twitch_multiplier = PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF
 		local num_slayer_curses = buff_extension:num_buff_perk("slayer_curse")
 		local slayer_curse_multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.SLAYER_CURSE_HEALTH_DEBUFF, "curse_protection")
-		active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier + num_slayer_curses * slayer_curse_multiplier
+		local difficulty_name = Managers.state.difficulty:get_difficulty()
+		local num_mutator_curses = buff_extension:num_buff_perk("mutator_curse")
+		local mutator_curse_multiplier = buff_extension:apply_buffs_to_value(WindSettings.light.curse_settings.value[difficulty_name], "curse_protection")
+		active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier + num_slayer_curses * slayer_curse_multiplier + num_mutator_curses * mutator_curse_multiplier
 	else
 		health_percent = 0
 		is_knocked_down = false

@@ -42,6 +42,7 @@ BuffSystem.init = function (self, entity_system_creation_context, system_name)
 	end
 
 	self.active_buff_units = {}
+	self._activated_buff_units_during_update = {}
 end
 
 BuffSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
@@ -150,6 +151,12 @@ BuffSystem.update = function (self, context, t)
 			assert(#extension._buffs > 0, "Unit was active but didn't have buffs")
 			extension:update(unit, dummy_input, dt, context, t)
 		end
+
+		for unit, extension in pairs(self._activated_buff_units_during_update) do
+			active_buff_units[unit] = extension
+		end
+
+		table.clear(self._activated_buff_units_during_update)
 
 		self.in_update = false
 	else
@@ -263,6 +270,12 @@ BuffSystem.remove_server_controlled_buff = function (self, unit, server_buff_id)
 	return num_buffs_removed
 end
 
+BuffSystem.has_server_controlled_buff = function (self, unit, server_buff_id)
+	fassert(self.is_server, "[BuffSystem]: Only the server can explicitly can check server controlled buffs!")
+
+	return self.server_controlled_buffs[unit] and self.server_controlled_buffs[unit][server_buff_id]
+end
+
 BuffSystem.add_volume_buff_multiplier = function (self, unit, buff_template_name, multiplier)
 	fassert(self.is_server, "[BuffSystem] add_volume_buff_multiplier should only be called on server!")
 
@@ -373,15 +386,16 @@ BuffSystem.rpc_remove_volume_buff = function (self, sender, unit_id, buff_templa
 end
 
 BuffSystem.rpc_add_group_buff = function (self, sender, group_buff_template_id, num_instances)
-	local group_buff_template_name = NetworkLookup.group_buff_templates[group_buff_template_id]
-	local group_buff = GroupBuffTemplates[group_buff_template_name]
-	local buff_per_instance = group_buff.buff_per_instance
-
 	if self.is_server then
 		self.network_manager.network_transmit:send_rpc_clients("rpc_add_group_buff", group_buff_template_id, num_instances)
 	end
 
-	local players = Managers.player:human_and_bot_players()
+	local group_buff_template_name = NetworkLookup.group_buff_templates[group_buff_template_id]
+	local group_buff = GroupBuffTemplates[group_buff_template_name]
+	local buff_per_instance = group_buff.buff_per_instance
+	local buff_side_name = group_buff.side_name
+	local side = Managers.state.side:get_side_from_name(buff_side_name)
+	local player_units = side:player_units()
 
 	for i = 1, num_instances, 1 do
 		local group_buff_data = {
@@ -389,9 +403,7 @@ BuffSystem.rpc_add_group_buff = function (self, sender, group_buff_template_id, 
 			recipients = {}
 		}
 
-		for _, player in pairs(players) do
-			local unit = player.player_unit
-
+		for _, unit in ipairs(player_units) do
 			if Unit.alive(unit) then
 				local buff_extension = ScriptUnit.extension(unit, "buff_system")
 				local id = buff_extension:add_buff(buff_per_instance)
@@ -461,9 +473,11 @@ BuffSystem.rpc_proc_event = function (self, sender, peer_id, local_player_id, ev
 	local player = Managers.player:player(peer_id, local_player_id)
 	local event = NetworkLookup.proc_events[event_id]
 	local player_unit = player.player_unit
-	local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+	local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 
-	buff_extension:trigger_procs(event)
+	if buff_extension then
+		buff_extension:trigger_procs(event)
+	end
 end
 
 BuffSystem.rpc_remove_gromril_armour = function (self, sender, unit_id)
@@ -488,9 +502,11 @@ end
 
 BuffSystem.set_buff_ext_active = function (self, unit, is_active)
 	if is_active then
-		fassert(not self.in_update, "Tried to activate extension while in BuffSystem:update()")
-
-		self.active_buff_units[unit] = self.unit_extension_data[unit]
+		if self.in_update then
+			self._activated_buff_units_during_update[unit] = self.unit_extension_data[unit]
+		else
+			self.active_buff_units[unit] = self.unit_extension_data[unit]
+		end
 	else
 		self.active_buff_units[unit] = nil
 	end

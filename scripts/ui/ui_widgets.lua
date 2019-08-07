@@ -1637,13 +1637,17 @@ UIWidgets.create_chain_scrollbar = function (scenegraph_id, scroll_area_scenegra
 	}
 	local content = {
 		disable_frame = false,
-		scroll = {},
+		scroll = {
+			allow_multi_hover = true
+		},
 		disable_background = disable_background,
 		scroll_bar_info = {
 			button_scroll_step = 0.1,
 			axis = 2,
 			value = 0,
 			bar_height_percentage = 1,
+			scroll_amount = 0,
+			allow_multi_hover = true,
 			scenegraph_id = scenegraph_id,
 			scroll_length = size[2]
 		},
@@ -1749,10 +1753,12 @@ UIWidgets.create_chain_scrollbar = function (scenegraph_id, scroll_area_scenegra
 				local parent_content = ui_content.parent
 				local scroll_bar_info = parent_content.scroll_bar_info
 				local total_scroll_height = scroll_bar_info.total_scroll_height
+				local scroll_amount = scroll_bar_info.scroll_amount
 
 				if axis_input ~= 0 and ui_content.is_hover then
 					scroll_bar_info.axis_input = axis_input
-					scroll_bar_info.scroll_add = axis_input * scroll_bar_info.scroll_amount
+					local previous_scroll_add = scroll_bar_info.scroll_add or 0
+					scroll_bar_info.scroll_add = previous_scroll_add + axis_input * scroll_amount
 				else
 					axis_input = scroll_bar_info.axis_input
 				end
@@ -1760,17 +1766,21 @@ UIWidgets.create_chain_scrollbar = function (scenegraph_id, scroll_area_scenegra
 				local scroll_add = scroll_bar_info.scroll_add
 
 				if scroll_add then
-					local step = scroll_add * dt * 5
+					local speed = scroll_bar_info.scroll_speed or 5
+					local step = scroll_add * dt * speed
 					scroll_add = scroll_add - step
 
-					if math.abs(scroll_add) > 0 then
+					if math.abs(scroll_add) > scroll_amount / 20 then
 						scroll_bar_info.scroll_add = scroll_add
 					else
 						scroll_bar_info.scroll_add = nil
 					end
 
 					local current_scroll_value = scroll_bar_info.scroll_value
-					scroll_bar_info.scroll_value = math.clamp(current_scroll_value + step, 0, 1)
+
+					if current_scroll_value then
+						scroll_bar_info.scroll_value = math.clamp(current_scroll_value + step, 0, 1)
+					end
 				end
 			end
 		}
@@ -4960,7 +4970,51 @@ UIWidgets.create_simple_tooltip = function (text, scenegraph_id, max_width, opti
 	}
 end
 
-UIWidgets.create_simple_hotspot = function (scenegraph_id)
+UIWidgets.create_additional_option_tooltip = function (scenegraph_id, size, content_passes, tooltip_data, max_width, horizontal_alignment, vertical_alignment, grow_downwards, offset)
+	return {
+		element = {
+			passes = {
+				{
+					pass_type = "hotspot",
+					content_id = "button_hotspot"
+				},
+				{
+					style_id = "tooltip",
+					additional_option_id = "tooltip",
+					pass_type = "additional_option_tooltip",
+					content_passes = content_passes or {
+						"additional_option_info"
+					},
+					content_check_function = function (content)
+						return content.tooltip and content.button_hotspot.is_hover
+					end
+				}
+			}
+		},
+		content = {
+			tooltip = tooltip_data or nil,
+			button_hotspot = {
+				allow_multi_hover = true
+			}
+		},
+		style = {
+			tooltip = {
+				grow_downwards = grow_downwards,
+				max_width = max_width or 300,
+				horizontal_alignment = horizontal_alignment or "center",
+				vertical_alignment = vertical_alignment or "bottom",
+				offset = offset or {
+					0,
+					0,
+					0
+				}
+			}
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
+
+UIWidgets.create_simple_hotspot = function (scenegraph_id, allow_multi_hover)
 	return {
 		element = {
 			passes = {
@@ -4971,7 +5025,9 @@ UIWidgets.create_simple_hotspot = function (scenegraph_id)
 			}
 		},
 		content = {
-			hotspot = {}
+			hotspot = {
+				allow_multi_hover = allow_multi_hover
+			}
 		},
 		style = {},
 		scenegraph_id = scenegraph_id
@@ -5411,7 +5467,7 @@ UIWidgets.create_simple_uv_rotated_texture = function (texture, uvs, angle, pivo
 	}
 end
 
-UIWidgets.create_simple_uv_texture = function (texture, uvs, scenegraph_id, masked, retained, color)
+UIWidgets.create_simple_uv_texture = function (texture, uvs, scenegraph_id, masked, retained, color, layer)
 	return {
 		element = {
 			passes = {
@@ -5435,7 +5491,7 @@ UIWidgets.create_simple_uv_texture = function (texture, uvs, scenegraph_id, mask
 				offset = {
 					0,
 					0,
-					0
+					layer or 0
 				},
 				color = color or {
 					255,

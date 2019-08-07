@@ -14,6 +14,8 @@ ActionBeam.init = function (self, world, item_name, is_server, owner_unit, damag
 end
 
 ActionBeam.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
+	ActionBeam.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level)
+
 	self.current_action = new_action
 	local owner_unit = self.owner_unit
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
@@ -160,7 +162,7 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 		if result then
 			local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
 			local owner_player = self.owner_player
-			local friendly_fire = DamageUtils.allow_friendly_fire_ranged(difficulty_settings, owner_player)
+			local allow_friendly_fire = DamageUtils.allow_friendly_fire_ranged(difficulty_settings, owner_player)
 
 			for _, hit_data in pairs(result) do
 				local potential_hit_position = hit_data[INDEX_POSITION]
@@ -170,16 +172,14 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 
 				if potential_hit_unit ~= owner_unit then
 					local breed = Unit.get_data(potential_hit_unit, "breed")
-					local is_player = DamageUtils.is_player_unit(potential_hit_unit)
 					local hit_enemy = nil
 
 					if breed then
+						local is_enemy = DamageUtils.is_enemy(owner_unit, potential_hit_unit)
 						local node = Actor.node(hit_actor)
 						local hit_zone = breed.hit_zones_lookup[node]
 						local hit_zone_name = hit_zone.name
-						hit_enemy = hit_zone_name ~= "afro"
-					elseif is_player then
-						hit_enemy = friendly_fire and hit_actor ~= Unit.actor(potential_hit_unit, "c_afro")
+						hit_enemy = (allow_friendly_fire or is_enemy) and hit_zone_name ~= "afro"
 					else
 						hit_enemy = true
 					end
@@ -285,7 +285,7 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 	end
 end
 
-ActionBeam._clean_up = function (self)
+ActionBeam._stop_fx = function (self)
 	local world = self.world
 
 	if self.beam_end_effect_id then
@@ -309,9 +309,7 @@ ActionBeam._clean_up = function (self)
 	self:_stop_charge_sound()
 end
 
-ActionBeam.finish = function (self, reason)
-	self.status_extension:set_zooming(false)
-
+ActionBeam._stop_client_vfx = function (self)
 	local go_id = self.unit_id
 
 	if self.is_server or LEVEL_EDITOR_TEST then
@@ -323,8 +321,13 @@ ActionBeam.finish = function (self, reason)
 	else
 		self.network_transmit:send_rpc_server("rpc_end_beam", go_id)
 	end
+end
 
-	self:_clean_up()
+ActionBeam.finish = function (self, reason)
+	self.status_extension:set_zooming(false)
+	self:_stop_client_vfx()
+	self:_stop_fx()
+	self.owner_buff_extension:trigger_procs("on_spell_used", self.current_action)
 
 	return {
 		beam_consecutive_hits = math.max(self.consecutive_hits - 1, 0)
@@ -332,7 +335,8 @@ ActionBeam.finish = function (self, reason)
 end
 
 ActionBeam.destroy = function (self)
-	self:_clean_up()
+	self:_stop_client_vfx()
+	self:_stop_fx()
 end
 
 return

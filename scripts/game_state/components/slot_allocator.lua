@@ -30,6 +30,8 @@ end
 
 SlotAllocator.allocate_slot = function (self, profile_index, peer_id, local_player_index)
 	assert(self._is_server)
+	assert(peer_id ~= nil)
+	assert(local_player_index ~= nil)
 	sa_printf("Allocate slot %d for %s:%d", profile_index, peer_id, local_player_index)
 
 	local profile_table = self._profiles[profile_index]
@@ -127,6 +129,8 @@ SlotAllocator.pack_for_transmission = function (self)
 
 		sa_printf("Packing slot %d as %s:%d", profile_index, peer, index)
 	end
+
+	fassert(#peers == #player_indices)
 
 	return peers, player_indices
 end

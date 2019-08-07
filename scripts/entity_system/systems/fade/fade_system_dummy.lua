@@ -31,6 +31,10 @@ FadeSystemDummy.set_min_fade = function (self, unit, min_fade)
 	return
 end
 
+FadeSystemDummy.new_linked_units = function (self, unit, new_linked_units)
+	return
+end
+
 FadeSystemDummy.on_remove_extension = function (self, unit, extension_name)
 	return
 end

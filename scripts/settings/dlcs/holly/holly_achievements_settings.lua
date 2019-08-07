@@ -6,10 +6,12 @@ settings.achievement_outline = {
 			"holly_complete_veteran",
 			"holly_complete_champion",
 			"holly_complete_legend",
+			"scorpion_complete_back_to_ubersreik_cataclysm",
 			"holly_complete_plaza_recruit",
 			"holly_complete_plaza_veteran",
 			"holly_complete_plaza_champion",
-			"holly_complete_plaza_legend"
+			"holly_complete_plaza_legend",
+			"scorpion_complete_plaza_cataclysm"
 		},
 		categories = {
 			{

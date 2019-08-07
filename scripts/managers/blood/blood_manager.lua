@@ -14,6 +14,8 @@ BloodManager.init = function (self, world)
 
 	local max_bloodballs_per_frame = 5
 	self._blood_system = EngineOptimizedExtensions.blood_init_system(self._blood_system, self._world, "blood_ball", max_bloodballs_per_frame)
+
+	self:_init_settings()
 end
 
 BloodManager.destroy = function (self)
@@ -22,34 +24,70 @@ BloodManager.destroy = function (self)
 end
 
 BloodManager.update = function (self, dt, t)
-	local blood_enabled = Application.user_setting("blood_enabled")
-	BloodSettings.blood_decals.num_decals = Application.user_setting("num_blood_decals") or BloodSettings.blood_decals.num_decals
-
-	if blood_enabled or blood_enabled == nil then
-		if not self._blood_active then
-			self:_enable_blood(true)
-		end
-
+	if self._blood_active then
 		local world_t = World.time(self._world)
 
 		self:_update_weapon_blood(dt, world_t)
 		self:_update_blood_ball_buffer()
-	elseif self._blood_active then
-		self:clear_weapon_blood()
-		self:clear_blood_decals()
-		self:_enable_blood(false)
 	end
 
 	self:_update_blood_effects()
 	EngineOptimizedExtensions.blood_update(self._blood_system)
 end
 
-BloodManager._enable_blood = function (self, enable)
-	self._blood_active = enable
-	BloodSettings.enemy_blood.enabled = enable
-	BloodSettings.blood_decals.enabled = enable
-	BloodSettings.weapon_blood.enabled = enable
-	BloodSettings.screen_space.enabled = enable
+BloodManager.update_blood_enabled = function (self, blood_enabled)
+	if not blood_enabled and self._blood_active then
+		self:clear_weapon_blood()
+		self:clear_blood_decals()
+	end
+
+	self._blood_active = blood_enabled
+	BloodSettings.enemy_blood.enabled = blood_enabled
+	BloodSettings.blood_decals.enabled = blood_enabled
+	BloodSettings.weapon_blood.enabled = blood_enabled
+	BloodSettings.hit_effects.enabled = blood_enabled
+end
+
+BloodManager.update_num_blood_decals = function (self, num_blood_decals)
+	BloodSettings.blood_decals.num_decals = num_blood_decals
+end
+
+BloodManager.update_screen_blood_enabled = function (self, screen_blood_enabled)
+	BloodSettings.screen_space.enabled = screen_blood_enabled
+end
+
+BloodManager.update_dismemberment_enabled = function (self, dismemberment_enabled)
+	BloodSettings.dismemberment.enabled = dismemberment_enabled
+end
+
+BloodManager.update_ragdoll_enabled = function (self, ragdoll_enabled)
+	BloodSettings.ragdoll_push.enabled = ragdoll_enabled
+end
+
+BloodManager._init_settings = function (self)
+	local blood_enabled = Application.user_setting("blood_enabled")
+	blood_enabled = blood_enabled or blood_enabled == nil
+
+	self:update_blood_enabled(blood_enabled)
+
+	local num_blood_decals = Application.user_setting("num_blood_decals") or BloodSettings.blood_decals.num_decals
+
+	self:update_num_blood_decals(num_blood_decals)
+
+	local screen_blood_enabled = Application.user_setting("screen_blood_enabled")
+	screen_blood_enabled = screen_blood_enabled or screen_blood_enabled == nil
+
+	self:update_screen_blood_enabled(screen_blood_enabled)
+
+	local dismemberment_enabled = Application.user_setting("dismemberment_enabled")
+	dismemberment_enabled = dismemberment_enabled or dismemberment_enabled == nil
+
+	self:update_dismemberment_enabled(dismemberment_enabled)
+
+	local ragdoll_enabled = Application.user_setting("ragdoll_enabled")
+	ragdoll_enabled = ragdoll_enabled or ragdoll_enabled == nil
+
+	self:update_ragdoll_enabled(ragdoll_enabled)
 end
 
 BloodManager._update_weapon_blood = function (self, dt, t)

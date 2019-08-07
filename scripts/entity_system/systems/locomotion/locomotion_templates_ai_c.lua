@@ -21,6 +21,9 @@ LocomotionTemplates.AILocomotionExtensionC = {
 			killing_blow[DamageDataIndex.DAMAGING_UNIT] = "n/a"
 			killing_blow[DamageDataIndex.HIT_REACT_TYPE] = "light"
 			killing_blow[DamageDataIndex.CRITICAL_HIT] = false
+			killing_blow[DamageDataIndex.FIRST_HIT] = true
+			killing_blow[DamageDataIndex.TOTAL_HITS] = 1
+			killing_blow[DamageDataIndex.BACKSTAB_MULTIPLIER] = 1
 
 			for i = 1, #units_to_kill, 1 do
 				print("Destroying unit since outside mesh or world")

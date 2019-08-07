@@ -102,6 +102,7 @@ HeroViewStateKeepDecorations.on_enter = function (self, params)
 	if decoration_settings_key then
 		local keep_decoration_extension = ScriptUnit.extension(interactable_unit, "keep_decoration_system")
 		local selected_painting = keep_decoration_extension:get_selected_painting()
+		self._keep_decoration_extension = keep_decoration_extension
 		local view_only = Unit.get_data(interactable_unit, "interaction_data", "view_only") or not self._is_server
 
 		if view_only then
@@ -285,6 +286,7 @@ HeroViewStateKeepDecorations.update = function (self, dt, t)
 
 	local input_service = (self._input_blocked and fake_input_service) or self:input_service()
 
+	self:_update_client_paintings(dt)
 	self:_update_sound_trigger_delay(dt)
 	self:_update_scroll_position()
 	self:draw(input_service, dt)
@@ -308,6 +310,26 @@ HeroViewStateKeepDecorations.update = function (self, dt, t)
 			self.parent:clear_wanted_state()
 
 			return wanted_state or self._new_state
+		end
+	end
+end
+
+HeroViewStateKeepDecorations._update_client_paintings = function (self, dt)
+	if not Unit.alive(self._interactable_unit) or not self._keep_decoration_extension or not self._keep_decoration_extension.get_selected_painting then
+		return
+	end
+
+	if self._is_server then
+		local painting = self._keep_decoration_extension:get_selected_painting()
+
+		if painting == "hidden" then
+			self:close_menu()
+		end
+	else
+		local painting = self._keep_decoration_extension:get_selected_painting()
+
+		if painting ~= self._selected_painting then
+			self:_set_info_by_painting_key(painting, false)
 		end
 	end
 end
@@ -563,6 +585,7 @@ HeroViewStateKeepDecorations._set_info_by_painting_key = function (self, key, lo
 	local artist = settings.artist
 	local description_text = (locked and Localize("interaction_unavailable")) or Localize(description)
 	local artist_text = (artist and not locked and Localize(artist)) or ""
+	self._selected_painting = key
 
 	self:_set_info_texts(Localize(display_name), description_text, artist_text)
 	self:_play_sound("Stop_all_keep_decorations_desc_vo")
@@ -630,6 +653,8 @@ HeroViewStateKeepDecorations._on_list_index_selected = function (self, index, sc
 
 	if ItemHelper.is_new_keep_decoration_id(selected_key) then
 		ItemHelper.unmark_keep_decoration_as_new(selected_key)
+
+		selected_content.new = false
 	end
 
 	local locked = selected_content.locked

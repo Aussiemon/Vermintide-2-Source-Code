@@ -261,42 +261,6 @@ local action_one_variants = {
 	action_one_hold = true
 }
 
-PlayerInputExtension.add_buffer = function (self, input_key, doubleclick_window)
-	if input_key == "action_one_hold" or (self.priority_input[self.buffer_key] and not self.priority_input[input_key]) then
-		return
-	elseif input_key == "action_two_hold" then
-		return
-	end
-
-	local value = self.input_service:get(input_key)
-
-	if value then
-		if self.priority_input[input_key] then
-			self.input_buffer_timer = 1
-			self.input_buffer = value
-			self.buffer_key = input_key
-		else
-			self.new_input_buffer_timer = 0.6
-			self.new_input_buffer = value
-
-			if self.buffer_key and self.buffer_key ~= input_key and (not action_one_variants[self.buffer_key] or not action_one_variants[input_key]) then
-				self.new_buffer_key_doubleclick_window = 0
-			else
-				self.new_buffer_key_doubleclick_window = doubleclick_window
-			end
-
-			self.new_buffer_key = input_key
-		end
-	end
-end
-
-PlayerInputExtension.add_stun_buffer = function (self, input_key)
-	self.added_stun_buffer = true
-	self.input_buffer_timer = 1
-	self.input_buffer = 1
-	self.buffer_key = input_key
-end
-
 PlayerInputExtension.reset_input_buffer = function (self)
 	if self.priority_input[self.buffer_key] then
 		return
@@ -332,6 +296,42 @@ PlayerInputExtension.clear_input_buffer = function (self, clear_from_wield)
 	self.new_input_buffer_timer = 0
 	self.new_input_buffer = nil
 	self.new_buffer_key = nil
+end
+
+PlayerInputExtension.add_buffer = function (self, input_key, doubleclick_window, is_melee_slot)
+	if input_key == "action_one_hold" or (input_key ~= "action_two_hold" and self.priority_input[self.buffer_key] and not self.priority_input[input_key]) then
+		return
+	elseif input_key == "action_two_hold" then
+		return
+	end
+
+	local value = self.input_service:get(input_key)
+
+	if value then
+		if self.priority_input[input_key] then
+			self.input_buffer_timer = 1
+			self.input_buffer = value
+			self.buffer_key = input_key
+		else
+			self.new_input_buffer_timer = 0.6
+			self.new_input_buffer = value
+
+			if self.buffer_key and self.buffer_key ~= input_key and (not action_one_variants[self.buffer_key] or not action_one_variants[input_key]) then
+				self.new_buffer_key_doubleclick_window = 0
+			else
+				self.new_buffer_key_doubleclick_window = doubleclick_window
+			end
+
+			self.new_buffer_key = input_key
+		end
+	end
+end
+
+PlayerInputExtension.add_stun_buffer = function (self, input_key)
+	self.added_stun_buffer = true
+	self.input_buffer_timer = 1
+	self.input_buffer = 1
+	self.buffer_key = input_key
 end
 
 return

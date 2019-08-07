@@ -258,7 +258,7 @@ end
 
 PlayerWhereaboutsExtension._calculate_hang_ledge_spawn_position = function (self, hang_ledge_position)
 	local nav_world = self._nav_world
-	local p = GwNavQueries.inside_position_from_outside_position(nav_world, hang_ledge_position, 5, 5, 10, 0.5)
+	local p = GwNavQueries.inside_position_from_outside_position(nav_world, hang_ledge_position, 5, 5, 10, 0.25)
 
 	if p then
 		self.hang_ledge_spawn_position = Vector3Box(p)

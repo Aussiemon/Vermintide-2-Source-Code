@@ -5,7 +5,8 @@ FirstPersonSystem = class(FirstPersonSystem, ExtensionSystemBase)
 local RPCS = {
 	"rpc_play_first_person_sound",
 	"rpc_play_husk_sound_event",
-	"rpc_play_husk_unit_sound_event"
+	"rpc_play_husk_unit_sound_event",
+	"rpc_first_person_flow_event"
 }
 local EXTENSIONS = {
 	"PlayerUnitFirstPerson",
@@ -81,6 +82,25 @@ FirstPersonSystem.rpc_play_husk_unit_sound_event = function (self, sender, unit_
 
 	WwiseWorld.set_switch(wwise_world, "husk", "true", wwise_source_id)
 	WwiseWorld.trigger_event(wwise_world, event, wwise_source_id)
+end
+
+FirstPersonSystem.rpc_first_person_flow_event = function (self, sender, unit_id, event_id)
+	local unit = self.unit_storage:unit(unit_id)
+
+	if not unit then
+		printf("unit from game_object_id %d is nil", unit_id)
+
+		return
+	end
+
+	local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
+
+	if first_person_extension then
+		local first_person_unit = first_person_extension:get_first_person_unit()
+		local event_name = NetworkLookup.flow_events[event_id]
+
+		Unit.flow_event(first_person_unit, event_name)
+	end
 end
 
 return

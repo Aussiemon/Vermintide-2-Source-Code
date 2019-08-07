@@ -7,6 +7,7 @@ weapon_template.actions = {
 			aim_assist_ramp_decay_delay = 0.2,
 			anim_end_event = "attack_finished",
 			kind = "melee_start",
+			attack_hold_input = "action_one_hold",
 			aim_assist_max_ramp_multiplier = 0.8,
 			aim_assist_ramp_multiplier = 0.4,
 			anim_event = "attack_swing_charge",
@@ -528,9 +529,15 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
+					start_time = 0.5,
+					action = "action_two",
+					release_required = "action_two_hold",
+					input = "action_two_hold"
+				},
+				{
+					sub_action = "default",
 					start_time = 0.6,
 					action = "action_two",
-					release_required = "action_two",
 					input = "action_two_hold"
 				},
 				{
@@ -550,7 +557,6 @@ weapon_template.actions = {
 			anim_end_event = "attack_finished",
 			outer_push_angle = 180,
 			kind = "push_stagger",
-			hit_time = 0.1,
 			damage_profile_outer = "light_push",
 			weapon_action_hand = "right",
 			push_angle = 100,

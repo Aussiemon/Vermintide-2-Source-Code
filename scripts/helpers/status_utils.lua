@@ -92,8 +92,6 @@ StatusUtils = {
 		end
 	end,
 	set_grabbed_by_pack_master_network = function (status_name, grabbed_unit, is_grabbed, grabber_unit)
-		fassert(Managers.player.is_server or LEVEL_EDITOR_TEST)
-
 		if not Managers.state.network:game() then
 			return
 		end
@@ -108,12 +106,14 @@ StatusUtils = {
 			local grabber_go_id = network_manager:unit_game_object_id(grabber_unit) or NetworkConstants.invalid_game_object_id
 			local status_id = NetworkLookup.statuses[status_name]
 
-			network_manager.network_transmit:send_rpc_clients("rpc_status_change_bool", status_id, is_grabbed, grabbed_go_id, grabber_go_id)
+			if Managers.player.is_server then
+				network_manager.network_transmit:send_rpc_clients("rpc_status_change_bool", status_id, is_grabbed, grabbed_go_id, grabber_go_id)
+			else
+				network_manager.network_transmit:send_rpc_server("rpc_status_change_bool", status_id, is_grabbed, grabbed_go_id, grabber_go_id)
+			end
 		end
 	end,
 	set_grabbed_by_corruptor_network = function (status_name, grabbed_unit, is_grabbed, grabber_unit)
-		fassert(Managers.player.is_server or LEVEL_EDITOR_TEST)
-
 		if not Managers.state.network:game() then
 			return
 		end
@@ -128,7 +128,11 @@ StatusUtils = {
 			local grabber_go_id = network_manager:unit_game_object_id(grabber_unit) or NetworkConstants.invalid_game_object_id
 			local status_id = NetworkLookup.statuses[status_name]
 
-			network_manager.network_transmit:send_rpc_clients("rpc_status_change_bool", status_id, is_grabbed, grabbed_go_id, grabber_go_id)
+			if Managers.player.is_server then
+				network_manager.network_transmit:send_rpc_clients("rpc_status_change_bool", status_id, is_grabbed, grabbed_go_id, grabber_go_id)
+			else
+				network_manager.network_transmit:send_rpc_server("rpc_status_change_bool", status_id, is_grabbed, grabbed_go_id, grabber_go_id)
+			end
 		end
 	end,
 	set_pushed_network = function (pushed_unit, pushed)
@@ -144,6 +148,21 @@ StatusUtils = {
 			local go_id = network_manager:unit_game_object_id(pushed_unit)
 
 			network_manager.network_transmit:send_rpc_clients("rpc_status_change_bool", NetworkLookup.statuses.pushed, pushed, go_id, 0)
+		end
+	end,
+	set_charged_network = function (charged_unit, charged)
+		fassert(Managers.player.is_server or LEVEL_EDITOR_TEST)
+
+		local t = Managers.time:time("game")
+		local status_extension = ScriptUnit.extension(charged_unit, "status_system")
+
+		status_extension:set_charged(charged, t)
+
+		if not LEVEL_EDITOR_TEST then
+			local network_manager = Managers.state.network
+			local go_id = network_manager:unit_game_object_id(charged_unit)
+
+			network_manager.network_transmit:send_rpc_clients("rpc_status_change_bool", NetworkLookup.statuses.charged, charged, go_id, 0)
 		end
 	end,
 	set_catapulted_network = function (unit, catapulted, velocity)
@@ -318,6 +337,28 @@ StatusUtils = {
 					status_ext:add_fatigue_points(fatigue_type)
 					status_ext:set_has_bonus_fatigue_active()
 				end
+			end
+		end
+	end,
+	set_pounced_down_network = function (status_name, pounced_unit, is_pounced, pouncer_unit)
+		if not Managers.state.network:game() then
+			return
+		end
+
+		local target_status_extension = ScriptUnit.extension(pounced_unit, "status_system")
+
+		target_status_extension:set_pounced_down(is_pounced, pouncer_unit)
+
+		if not LEVEL_EDITOR_TEST then
+			local network_manager = Managers.state.network
+			local pounced_go_id = network_manager:unit_game_object_id(pounced_unit)
+			local pouncer_go_id = network_manager:unit_game_object_id(pouncer_unit) or NetworkConstants.invalid_game_object_id
+			local status_id = NetworkLookup.statuses[status_name]
+
+			if Managers.player.is_server then
+				target_status_extension:set_pounced_down(is_pounced, pouncer_unit)
+			else
+				network_manager.network_transmit:send_rpc_server("rpc_status_change_bool", status_id, is_pounced, pounced_go_id, pouncer_go_id)
 			end
 		end
 	end

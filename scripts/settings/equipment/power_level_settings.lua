@@ -1,10 +1,11 @@
 MIN_POWER_LEVEL = 0
-MAX_POWER_LEVEL = 1000
+MAX_POWER_LEVEL = 2000
 MIN_POWER_LEVEL_CAP = 200
+MAX_POWER_LEVEL_CAP = 1600
 POWER_LEVEL_DIFF_RATIO = {
-	impact = 2,
-	attack = 3.5,
-	cleave = 3.5
+	impact = 4.375,
+	attack = 6.625,
+	cleave = 6.625
 }
 BoostCurves = {
 	default = {
@@ -44,7 +45,7 @@ BoostCurves = {
 	}
 }
 Cleave = {
-	max = 50,
+	max = 100,
 	min = 0
 }
 SweepRangeMod = 1.1
@@ -52,45 +53,45 @@ SweepWidthMod = 1.25
 SweepHeigthMod = 1
 ImpactTypeOutput = {
 	{
-		max = 100,
-		min = 0.5
+		max = 200,
+		min = 0
 	},
 	{
-		max = 100,
-		min = 0.5
+		max = 200,
+		min = 0
 	},
 	{
-		max = 100,
-		min = 0.5
+		max = 200,
+		min = 0
 	},
 	{
-		max = 100,
-		min = 0.5
+		max = 200,
+		min = 0
 	},
 	{
-		max = 100,
-		min = 0.5
+		max = 200,
+		min = 0
 	}
 }
 ImpactDurationOutput = {
 	{
-		max = 10,
+		max = 20,
 		min = 1
 	},
 	{
-		max = 10,
+		max = 20,
 		min = 1
 	},
 	{
-		max = 10,
+		max = 20,
 		min = 1
 	},
 	{
-		max = 10,
+		max = 20,
 		min = 1
 	},
 	{
-		max = 10,
+		max = 20,
 		min = 1
 	}
 }
@@ -140,23 +141,23 @@ DefaultRangeDropoffSettings = {
 }
 DamageOutput = {
 	{
-		max = 100,
+		max = 200,
 		min = 0
 	},
 	{
-		max = 100,
+		max = 200,
 		min = 0
 	},
 	{
-		max = 100,
+		max = 200,
 		min = 0
 	},
 	{
-		max = 100,
+		max = 200,
 		min = 0
 	},
 	{
-		max = 100,
+		max = 200,
 		min = 0
 	}
 }
@@ -265,6 +266,12 @@ PowerLevelMaximums = {
 PowerLevelFromLevelSettings = {
 	starting_power_level = 185,
 	power_level_per_level = 10
+}
+PowerLevelFromMagicLevel = {
+	power_level_per_magic_level = 30,
+	starting_power_level = 200,
+	max_power_level = 2000,
+	amulet_power_level_per_magic_level = 0
 }
 
 return

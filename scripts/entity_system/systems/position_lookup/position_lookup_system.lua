@@ -19,7 +19,7 @@ PositionLookupSystem.on_add_extension = function (self, world, unit, extension_n
 		position = POSITION_LOOKUP[unit]
 	}
 
-	ScriptUnit.set_extension(unit, self.NAME, extension, {})
+	ScriptUnit.set_extension(unit, self.NAME, extension)
 
 	return extension
 end

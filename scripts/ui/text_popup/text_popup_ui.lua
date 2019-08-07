@@ -66,9 +66,11 @@ TextPopupUI.show = function (self, header_localization_key, text_localization_ke
 	self.is_visible = true
 
 	ShowCursorStack.push()
-	self._input_manager:block_device_except_service("Text", "keyboard", 1, "popup")
-	self._input_manager:block_device_except_service("Text", "mouse", 1, "popup")
-	self._input_manager:block_device_except_service("Text", "gamepad", 1, "popup")
+	self._input_manager:capture_input({
+		"keyboard",
+		"gamepad",
+		"mouse"
+	}, 1, "Text", "TextPopupUI")
 end
 
 TextPopupUI.hide = function (self)
@@ -80,9 +82,11 @@ TextPopupUI.hide = function (self)
 	self.is_visible = false
 
 	ShowCursorStack.pop()
-	self._input_manager:device_unblock_all_services("keyboard", 1)
-	self._input_manager:device_unblock_all_services("mouse", 1)
-	self._input_manager:device_unblock_all_services("gamepad", 1)
+	self._input_manager:release_input({
+		"keyboard",
+		"gamepad",
+		"mouse"
+	}, 1, "Text", "TextPopupUI")
 
 	if self._on_close_callback then
 		self._on_close_callback()

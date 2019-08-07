@@ -6,6 +6,7 @@ AI_TEST_COUNTER = 0
 AISpawner.init = function (self, world, unit)
 	self._spawner_system = Managers.state.entity:system("spawner_system")
 	self._config = {}
+	self._breed_list = {}
 	self._world = world
 	self._unit = unit
 	self._spawned_units = 0
@@ -85,21 +86,21 @@ AISpawner.check_for_enabled = function (self)
 	until true
 end
 
-AISpawner.add_breeds = function (self, breed_list)
-	self._breed_list = self._breed_list or {}
+AISpawner.on_activate = function (self, breed_list, side_id, group_template)
+	local spawn_data = {
+		side_id,
+		group_template
+	}
+	local list = self._breed_list
+	local size = #list
+	self._max_amount = self._max_amount + #breed_list
+	local j = size + 1
 
-	table.append(self._breed_list, breed_list)
-
-	self._max_amount = #self._breed_list
-end
-
-AISpawner.on_activate = function (self, amount, breeds, breed_list)
-	if breed_list then
-		self:add_breeds(breed_list)
-	else
-		self._breed_list = nil
-		self._breeds = breeds
-		self._max_amount = self._max_amount + amount
+	for i = 1, #breed_list, 1 do
+		list[j] = breed_list[i]
+		j = j + 1
+		list[j] = spawn_data
+		j = j + 1
 	end
 end
 
@@ -108,6 +109,7 @@ AISpawner.on_deactivate = function (self)
 	self._spawned_units = 0
 
 	self._spawner_system:deactivate_spawner(self._unit)
+	table.clear(self._breed_list)
 end
 
 AISpawner.update = function (self, unit, input, dt, context, t)
@@ -127,26 +129,15 @@ AISpawner.spawn_rate = function (self)
 end
 
 AISpawner.spawn_unit = function (self)
-	local breed, group_template, breed_name = nil
-
-	if self._breed_list then
-		local size = #self._breed_list
-		local data = self._breed_list[size]
-
-		if type(data) == "table" then
-			breed_name = data[1]
-			group_template = data[2]
-		else
-			breed_name = data
-		end
-
-		breed = Breeds[breed_name]
-		self._breed_list[size] = nil
-	else
-		local index = math.random(1, #self._breeds)
-		breed = self._breeds[index]
-	end
-
+	local breed_name = nil
+	local breed_list = self._breed_list
+	local last = #breed_list
+	local spawn_data = breed_list[last]
+	breed_list[last] = nil
+	last = last - 1
+	local breed_name = breed_list[last]
+	breed_list[last] = nil
+	local breed = Breeds[breed_name]
 	local unit = self._unit
 
 	Unit.flow_event(unit, "lua_spawn")
@@ -168,14 +159,16 @@ AISpawner.spawn_unit = function (self)
 
 	local spawn_animation = spawn_type == "horde" and animation_events[math.random(#animation_events)]
 	local spawner_name = self:get_spawner_name()
-	local optional_data = nil
+	local side_id = spawn_data[1]
+	local optional_data = {
+		side_id = side_id
+	}
+	local group_template = spawn_data[2]
 
 	conflict_director:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(spawn_rotation), spawn_category, spawn_animation, spawn_type, optional_data, group_template)
 	conflict_director:add_horde(1)
 
 	self._spawned_units = self._spawned_units + 1
-
-	self._spawner_system:add_waiting_to_spawn(-1)
 end
 
 AISpawner.spawn_rotation = function (self)

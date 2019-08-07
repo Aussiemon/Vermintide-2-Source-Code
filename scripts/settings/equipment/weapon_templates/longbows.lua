@@ -83,14 +83,15 @@ weapon_template.actions = {
 		},
 		shoot_charged = {
 			reset_aim_on_attack = true,
-			attack_template = "arrow_sniper_1",
+			anim_end_event = "to_unzoom",
 			kind = "bow",
 			charge_value = "zoomed_arrow_hit",
 			weapon_action_hand = "left",
+			attack_template = "arrow_sniper_1",
 			apply_recoil = true,
-			anim_end_event = "to_unzoom",
 			anim_event_last_ammo = "attack_shoot_last",
 			minimum_hold_time = 0.4,
+			anim_time_scale = 1.25,
 			ammo_usage = 1,
 			fire_sound_event = "player_combat_weapon_bow_fire_heavy",
 			speed = 16000,
@@ -110,7 +111,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.55,
+					start_time = 0.25,
 					action = "action_one",
 					release_required = "action_two_hold",
 					input = "action_one"
@@ -163,6 +164,7 @@ weapon_template.actions = {
 			apply_recoil = true,
 			anim_event_last_ammo = "attack_shoot_last",
 			minimum_hold_time = 0.4,
+			anim_time_scale = 1.25,
 			ammo_usage = 1,
 			fire_sound_event = "player_combat_weapon_bow_fire_heavy",
 			speed = 16000,
@@ -182,7 +184,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.55,
+					start_time = 0.25,
 					action = "action_one",
 					release_required = "action_two_hold",
 					input = "action_one"
@@ -235,11 +237,12 @@ weapon_template.actions = {
 	action_two = {
 		default = {
 			default_zoom = "zoom_in",
-			aim_zoom_delay = 0.01,
 			kind = "aim",
+			aim_zoom_delay = 0.01,
+			anim_time_scale = 1.25,
 			aim_at_gaze_setting = "tobii_aim_at_gaze_longbow",
-			anim_end_event = "draw_cancel",
 			aim_sound_delay = 0.5,
+			anim_end_event = "draw_cancel",
 			aim_assist_ramp_multiplier = 0.6,
 			aim_assist_ramp_decay_delay = 0.2,
 			aim_sound_event = "player_combat_weapon_bow_tighten_grip_loop",
@@ -274,7 +277,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "shoot_special_charged",
-					start_time = 0.8,
+					start_time = 0.5,
 					action = "action_one",
 					end_time = 1,
 					input = "action_one"
@@ -334,13 +337,11 @@ weapon_template.actions = {
 }
 weapon_template.ammo_data = {
 	ammo_per_reload = 1,
-	ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
-	ammo_hand = "left",
-	ammo_per_clip = 1,
-	ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1_3p",
 	max_ammo = 20,
+	ammo_per_clip = 1,
 	reload_on_ammo_pickup = true,
 	reload_time = 0,
+	ammo_hand = "left",
 	ammo_unit_attachment_node_linking = AttachmentNodeLinking.arrow
 }
 weapon_template.attack_meta_data = {

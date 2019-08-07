@@ -1,6 +1,6 @@
 WorldInteractionSettings = {
 	foliage = {
-		local_player_multiplier = 2.5,
+		local_player_multiplier = 2,
 		duplicate_edge_cases = false,
 		shading_env_variable = "world_interaction_window_size",
 		window_size = 30,

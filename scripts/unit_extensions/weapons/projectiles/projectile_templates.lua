@@ -39,15 +39,15 @@ ProjectileTemplates.trajectory_templates = {
 			return angle, estimated_target_position
 		end,
 		unit = {
-			update = function (speed, angle, gravity, initial_position, target_vector, dt)
-				local position = WeaponHelper:position_on_trajectory(initial_position, target_vector, speed, angle, gravity, dt)
+			update = function (speed, radians, gravity, initial_position, target_vector, dt)
+				local position = WeaponHelper:position_on_trajectory(initial_position, target_vector, speed, radians, gravity, dt)
 
 				return position
 			end
 		},
 		husk = {
-			update = function (speed, angle, gravity, initial_position, target_vector, dt)
-				local position = WeaponHelper:position_on_trajectory(initial_position, target_vector, speed, angle, gravity, dt)
+			update = function (speed, radians, gravity, initial_position, target_vector, dt)
+				local position = WeaponHelper:position_on_trajectory(initial_position, target_vector, speed, radians, gravity, dt)
 
 				return position
 			end
@@ -92,11 +92,15 @@ ProjectileTemplates.impact_templates = {
 						end
 					end
 
-					local dialogue_input = ScriptUnit.extension_input(owner_unit, "dialogue_system")
-					local event_data = FrameTable.alloc_table()
-					event_data.num_units = players_inside
+					local dialogue_extension = ScriptUnit.has_extension(owner_unit, "dialogue_system")
 
-					dialogue_input:trigger_dialogue_event("pwg_projectile_hit", event_data)
+					if dialogue_extension then
+						local dialogue_input = dialogue_extension.input
+						local event_data = FrameTable.alloc_table()
+						event_data.num_units = players_inside
+
+						dialogue_input:trigger_dialogue_event("pwg_projectile_hit", event_data)
+					end
 				end
 
 				return true

@@ -1,5 +1,25 @@
 AIInventoryExtension = class(AIInventoryExtension)
 
+local function store_scene_graph_data(item_unit, attachment_node_linking)
+	local scene_graph_data = {}
+	local node_linking_data = attachment_node_linking.wielded or attachment_node_linking
+
+	for i, attachment_nodes in ipairs(node_linking_data) do
+		local target_node = attachment_nodes.target
+
+		if target_node ~= 0 then
+			local target_node_index = (type(target_node) == "string" and Unit.node(item_unit, target_node)) or target_node
+			scene_graph_data[#scene_graph_data + 1] = {
+				i = target_node_index,
+				parent = Unit.scene_graph_parent(item_unit, target_node_index),
+				local_pose = Matrix4x4Box(Unit.local_pose(item_unit, target_node_index))
+			}
+		end
+	end
+
+	Unit.set_data(item_unit, "scene_graph_data", scene_graph_data)
+end
+
 local function link_unit(attachment_node_linking, world, target, source)
 	for i, attachment_nodes in ipairs(attachment_node_linking) do
 		local source_node = attachment_nodes.source
@@ -11,18 +31,14 @@ local function link_unit(attachment_node_linking, world, target, source)
 	end
 end
 
-local function unlink_unit(attachment_node_linking, world, target)
-	World.unlink_unit(world, target)
+local function unlink_unit(item_unit, world)
+	local scene_graph_data = Unit.get_data(item_unit, "scene_graph_data") or {}
 
-	local node_linking_data = attachment_node_linking.wielded or attachment_node_linking
+	World.unlink_unit(world, item_unit)
 
-	for _, attachment_nodes in ipairs(node_linking_data) do
-		local target_node = attachment_nodes.target
-		local target_node_index = (type(target_node) == "string" and Unit.node(target, target_node)) or target_node
-
-		if target_node_index > 0 then
-			Unit.scene_graph_link(target, target_node_index, 0)
-		end
+	for i, link in ipairs(scene_graph_data) do
+		Unit.scene_graph_link(item_unit, link.i, link.parent)
+		Unit.set_local_pose(item_unit, link.i, link.local_pose:unbox())
 	end
 end
 
@@ -44,6 +60,7 @@ AIInventoryExtension._setup_configuration = function (self, unit, start_n, inven
 		local item = item_category[item_index]
 		local item_unit_name = item.unit_name
 		local item_unit_template_name = item.unit_extension_template or "ai_inventory_item"
+		local item_flow_event = item.flow_event or nil
 
 		if item.extension_init_data then
 			for data, value in pairs(item.extension_init_data) do
@@ -72,6 +89,7 @@ AIInventoryExtension._setup_configuration = function (self, unit, start_n, inven
 
 		local item_unit = unit_spawner:spawn_local_unit_with_extensions(item_unit_name, item_unit_template_name, item_extension_init_data, item_position, item_rotation)
 
+		store_scene_graph_data(item_unit, attachment_node_linking)
 		link_unit(node_linking_data, self.world, item_unit, unit)
 
 		inventory_item_units[index] = item_unit
@@ -83,7 +101,13 @@ AIInventoryExtension._setup_configuration = function (self, unit, start_n, inven
 
 			self.inventory_item_shield_unit = item_unit
 		elseif item_unit_template_name == "ai_helmet_unit" then
-			self.inventory_item_helmet_unit = item_unit
+			table.insert(self.inventory_item_helmet_units, item_unit)
+		elseif item_unit_template_name == "ai_outfit_unit" then
+			table.insert(self.inventory_item_outfit_units, item_unit)
+		end
+
+		if item_flow_event ~= nil then
+			Unit.flow_event(unit, item_flow_event)
 		end
 
 		if item.weak_spot and self.is_server then
@@ -102,6 +126,8 @@ AIInventoryExtension.init = function (self, unit, extension_init_data)
 	self.inventory_item_units_by_category = {}
 	self.inventory_item_units = {}
 	self.inventory_item_definitions = {}
+	self.inventory_item_outfit_units = {}
+	self.inventory_item_helmet_units = {}
 	self.dropped_items = {}
 	self.gib_items = {}
 	self.stump_items = {}
@@ -159,8 +185,10 @@ AIInventoryExtension.destroy = function (self)
 	local inventory_items_n = self.inventory_items_n
 
 	for i = 1, inventory_items_n, 1 do
-		unit_spawner:mark_for_deletion(self.inventory_item_units[i])
-		self:destroy_dropped_items(i)
+		if Unit.alive(self.inventory_item_units[i]) then
+			unit_spawner:mark_for_deletion(self.inventory_item_units[i])
+			self:destroy_dropped_items(i)
+		end
 	end
 
 	for i = 1, #self.gib_items, 1 do
@@ -199,17 +227,19 @@ AIInventoryExtension.freeze = function (self)
 	local unit_spawner = Managers.state.unit_spawner
 	local world = self.world
 	local inventory_items_n = self.inventory_items_n
-	local inventory_item_units = self.inventory_item_units
 	local unit = self.unit
 
 	for i = 1, inventory_items_n, 1 do
-		local item_unit = inventory_item_units[i]
-
-		unit_spawner:mark_for_deletion(item_unit)
-		self:destroy_dropped_items(i)
+		if Unit.alive(self.inventory_item_units[i]) then
+			unit_spawner:mark_for_deletion(self.inventory_item_units[i])
+			self:destroy_dropped_items(i)
+		end
 	end
 
 	self.inventory_items_n = 0
+	self.inventory_item_units = {}
+	self.inventory_item_outfit_units = {}
+	self.inventory_item_helmet_units = {}
 	local one_scale = Vector3(1, 1, 1)
 
 	for i = 1, #self.gibbed_nodes, 1 do
@@ -301,7 +331,7 @@ AIInventoryExtension.drop_single_item = function (self, item_inventory_index, re
 	local item = self.inventory_item_definitions[item_inventory_index]
 	local item_unit_template_name = item.unit_extension_template or "ai_inventory_item"
 
-	if item_extension and not item_extension.dropped and item.drop_reasons[reason] and item_unit_template_name ~= "ai_helmet_unit" then
+	if item_extension and not item_extension.dropped and item.drop_reasons[reason] and item_unit_template_name ~= "ai_helmet_unit" and item_unit_template_name ~= "ai_outfit_unit" then
 		if item.drop_unit_name ~= nil then
 			self:_drop_unit(item.drop_unit_name, item_unit, item, item_inventory_index, reason, false, optional_drop_direction)
 			self:disable_inventory_item(item, item_unit)
@@ -316,7 +346,7 @@ AIInventoryExtension.drop_single_item = function (self, item_inventory_index, re
 
 			self:disable_inventory_item(item, item_unit)
 		else
-			unlink_unit(item.attachment_node_linking, self.world, item_unit)
+			unlink_unit(item_unit, self.world)
 			Unit.set_flow_variable(item_unit, "lua_drop_reason", reason)
 			Unit.set_shader_pass_flag_for_meshes_in_unit_and_childs(item_unit, "outline_unit", false)
 			Unit.flow_event(item_unit, "lua_dropped")
@@ -356,6 +386,12 @@ AIInventoryExtension.disable_inventory_item = function (self, item, item_unit)
 	item_system.wielding_unit = nil
 	item_system.dropped = true
 	item.dropped = true
+
+	if ScriptUnit.has_extension(item_unit, "projectile_linker_system") then
+		local projectile_linker_system = Managers.state.entity:system("projectile_linker_system")
+
+		projectile_linker_system:clear_linked_projectiles(item_unit)
+	end
 end
 
 AIInventoryExtension._drop_unit = function (self, drop_unit_name, item_unit, item, item_inventory_index, reason, drop_multiple, optional_drop_direction)
@@ -380,7 +416,7 @@ AIInventoryExtension._drop_unit = function (self, drop_unit_name, item_unit, ite
 	end
 end
 
-AIInventoryExtension.wield_item_set = function (self, item_set_index)
+AIInventoryExtension.wield_item_set = function (self, item_set_index, ignore_animation_event)
 	local unit = self.unit
 	local network_manager = Managers.state.network
 	local unit_id = network_manager:unit_game_object_id(unit)
@@ -390,13 +426,13 @@ AIInventoryExtension.wield_item_set = function (self, item_set_index)
 	local item_set = self.item_sets[item_set_index]
 	local anim_state_event = item_set.inventory_configuration.anim_state_event
 
-	if anim_state_event then
+	if not ignore_animation_event and anim_state_event then
 		Managers.state.network:anim_event(unit, anim_state_event)
 	end
 
 	local equip_anim = item_set.equip_anim
 
-	if equip_anim then
+	if not ignore_animation_event and equip_anim then
 		Managers.state.network:anim_event(unit, equip_anim)
 	end
 end
@@ -412,6 +448,7 @@ AIInventoryExtension.unwield_set = function (self, item_set_index)
 		if unwielded then
 			local item_unit = self.inventory_item_units[j]
 
+			unlink_unit(item_unit, self.world)
 			link_unit(unwielded, self.world, item_unit, self.unit)
 		end
 	end

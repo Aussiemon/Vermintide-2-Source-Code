@@ -83,6 +83,27 @@ IngamePlayerListUI.init = function (self, parent, ingame_ui_context)
 	local network_transmit = network_manager.network_transmit
 	local server_peer_id = network_transmit.server_peer_id
 	self.host_peer_id = server_peer_id or network_transmit.peer_id
+	self._show_difficulty = not gamemode_settings.hide_difficulty
+
+	if not self._show_difficulty then
+		self:set_difficulty_name("")
+	end
+
+	local weave_manager = Managers.weave
+
+	if weave_manager then
+		local weave_template = weave_manager:get_active_weave_template()
+
+		if weave_template then
+			local weave_display_name = weave_template.tier .. ". " .. Localize(weave_template.display_name)
+			local wind = weave_template.wind
+			local wind_settings = WindSettings[wind]
+			local wind_display_name = wind_settings.display_name
+
+			self:set_level_name(weave_display_name)
+			self:set_difficulty_name(Localize(wind_display_name))
+		end
+	end
 end
 
 IngamePlayerListUI.create_ui_elements = function (self)
@@ -124,6 +145,12 @@ IngamePlayerListUI.create_ui_elements = function (self)
 	self.input_description_text_widget = UIWidget.init(specific_widget_definitions.input_description_text)
 	self.background = UIWidget.init(specific_widget_definitions.background)
 	self.private_checkbox_widget = UIWidget.init(specific_widget_definitions.private_checkbox)
+
+	if Managers.state.game_mode:game_mode_key() == "weave" then
+		local content = self.private_checkbox_widget.content
+		content.is_disabled = true
+	end
+
 	static_widgets_by_name.banner_top_edge.offset[3] = 1
 	local banner_bottom_edge = static_widgets_by_name.banner_bottom_edge
 	local banner_bottom_edge_scenegraph_id = banner_bottom_edge.scenegraph_id
@@ -131,7 +158,7 @@ IngamePlayerListUI.create_ui_elements = function (self)
 	banner_bottom_edge.offset[3] = 1
 	local player_list_widgets = {}
 
-	for i = 1, 4, 1 do
+	for i = 1, 8, 1 do
 		player_list_widgets[i] = UIWidget.init(definitions.player_widget_definition(i))
 	end
 
@@ -561,7 +588,7 @@ IngamePlayerListUI.update_player_information = function (self)
 			if player_data.sync_local_player_info then
 				player_data.sync_local_player_info = nil
 				local passive_ability_data = career_settings.passive_ability
-				local activated_ability_data = career_settings.activated_ability
+				local activated_ability_data = career_settings.activated_ability[1]
 				local activated_display_name = activated_ability_data.display_name
 				local activated_description = activated_ability_data.description
 				local activated_icon = activated_ability_data.icon
@@ -711,10 +738,14 @@ IngamePlayerListUI.update = function (self, dt)
 		end
 
 		self:update_player_list(dt)
-		self:update_difficulty()
 
-		if self.local_player.is_server and not self.is_in_inn then
-			local private_checkbox_content = self.private_checkbox_widget.content
+		if self._show_difficulty then
+			self:update_difficulty()
+		end
+
+		local private_checkbox_content = self.private_checkbox_widget.content
+
+		if self.local_player.is_server and not self.is_in_inn and not private_checkbox_content.is_disabled then
 			local private_checkbox_hotspot = private_checkbox_content.button_hotspot
 
 			if private_checkbox_hotspot.on_hover_enter then

@@ -119,16 +119,17 @@ ActionUtils.get_armor_power_modifier = function (power_type, damage_profile, tar
 end
 
 ActionUtils.scale_power_levels = function (power_level, power_type, attacker_unit, difficulty_level)
-	local actual_power_level = power_level
+	local actual_power_level = math.clamp(power_level, MIN_POWER_LEVEL, MAX_POWER_LEVEL)
 
-	if not global_is_inside_inn then
+	if Managers and Managers.state.game_mode:setting("cap_power_level") then
 		local difficulty_settings = DifficultySettings[difficulty_level]
 		local difficulty_power_level_cap = difficulty_settings.power_level_cap
+		local power_level_max = MAX_POWER_LEVEL
 		local difficulty_power_level_max_target = difficulty_settings.power_level_max_target
 
 		if difficulty_power_level_cap < actual_power_level and difficulty_power_level_max_target then
 			local above_cap = actual_power_level - difficulty_power_level_cap
-			local cap_to_max = 800 - difficulty_power_level_cap
+			local cap_to_max = power_level_max - difficulty_power_level_cap
 			actual_power_level = difficulty_power_level_cap + difficulty_power_level_max_target * above_cap / cap_to_max
 		else
 			actual_power_level = math.min(power_level, difficulty_power_level_cap)
@@ -140,7 +141,7 @@ ActionUtils.scale_power_levels = function (power_level, power_type, attacker_uni
 	if MIN_POWER_LEVEL_CAP <= actual_power_level then
 		local starting_power_level_bonus = 50
 		local starting_bonus_range = 100
-		local native_diff_ratio = 5
+		local native_diff_ratio = 10
 		local scaled_power_level_section = nil
 
 		if actual_power_level >= MIN_POWER_LEVEL_CAP + starting_bonus_range then
@@ -243,6 +244,8 @@ ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, bre
 		return power_level
 	end
 
+	local power_level_weapon_multiplier = 1
+
 	if damage_source then
 		local item_data = rawget(ItemMasterList, damage_source)
 		local weapon_template_name = item_data and item_data.template
@@ -252,34 +255,42 @@ ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, bre
 			local buff_type = weapon_template.buff_type
 			local is_melee = MeleeBuffTypes[buff_type]
 			local is_ranged = RangedBuffTypes[buff_type]
+			local weapon_type = weapon_template.weapon_type
 
 			if is_melee then
-				power_level = buff_extension:apply_buffs_to_value(power_level, "power_level_melee")
+				power_level_weapon_multiplier = buff_extension:apply_buffs_to_value(power_level_weapon_multiplier, "power_level_melee")
 			elseif is_ranged then
-				power_level = buff_extension:apply_buffs_to_value(power_level, "power_level_ranged")
+				power_level_weapon_multiplier = buff_extension:apply_buffs_to_value(power_level_weapon_multiplier, "power_level_ranged")
+			end
+
+			if weapon_type and weapon_type == "DRAKEFIRE" then
+				power_level_weapon_multiplier = buff_extension:apply_buffs_to_value(power_level_weapon_multiplier, "power_level_ranged_drakefire")
 			end
 		end
 	end
 
+	local power_level_target_multiplier = 1
 	local armor_category = (breed and breed.armor_category) or dummy_unit_armor or 1
 
 	if armor_category == 2 then
-		power_level = buff_extension:apply_buffs_to_value(power_level, "power_level_armoured")
+		power_level_target_multiplier = buff_extension:apply_buffs_to_value(power_level_target_multiplier, "power_level_armoured")
 	elseif armor_category == 3 then
-		power_level = buff_extension:apply_buffs_to_value(power_level, "power_level_large")
+		power_level_target_multiplier = buff_extension:apply_buffs_to_value(power_level_target_multiplier, "power_level_large")
 	elseif armor_category == 5 then
-		power_level = buff_extension:apply_buffs_to_value(power_level, "power_level_frenzy")
+		power_level_target_multiplier = buff_extension:apply_buffs_to_value(power_level_target_multiplier, "power_level_frenzy")
 	elseif armor_category == 1 then
-		power_level = buff_extension:apply_buffs_to_value(power_level, "power_level_unarmoured")
+		power_level_target_multiplier = buff_extension:apply_buffs_to_value(power_level_target_multiplier, "power_level_unarmoured")
 	end
 
 	local race = (breed and breed.race) or unit_get_data(unit, "race")
 
-	if race == "chaos" then
-		power_level = buff_extension:apply_buffs_to_value(power_level, "power_level_chaos")
-	elseif race == "skaven" then
-		power_level = buff_extension:apply_buffs_to_value(power_level, "power_level_skaven")
+	if race == "chaos" or race == "beastmen" or dummy_unit_armor == 1 then
+		power_level_target_multiplier = buff_extension:apply_buffs_to_value(power_level_target_multiplier, "power_level_chaos")
+	elseif race == "skaven" or dummy_unit_armor == 2 then
+		power_level_target_multiplier = buff_extension:apply_buffs_to_value(power_level_target_multiplier, "power_level_skaven")
 	end
+
+	power_level = power_level * (power_level_weapon_multiplier + power_level_target_multiplier - 1)
 
 	return power_level
 end
@@ -326,13 +337,6 @@ ActionUtils.get_ranged_boost = function (unit)
 	end
 
 	return has_ranged_boost, boost_curve_multiplier
-end
-
-ActionUtils.spawn_flame_wave_projectile = function (owner_unit, scale, item_template_name, action_name, sub_action_name, position, flat_angle, lateral_speed, initial_forward_speed)
-	scale = scale or 100
-	local projectile_system = Managers.state.entity:system("projectile_system")
-
-	projectile_system:spawn_flame_wave_projectile(owner_unit, scale, item_name, item_template_name, action_name, sub_action_name, position, flat_angle, lateral_speed, initial_forward_speed)
 end
 
 ActionUtils.spawn_player_projectile = function (owner_unit, position, rotation, scale, angle, target_vector, speed, item_name, item_template_name, action_name, sub_action_name, is_critical_strike, power_level, gaze_settings)
@@ -395,7 +399,10 @@ ActionUtils.spawn_pickup_projectile = function (world, weapon_unit, projectile_u
 
 		Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_pickup_projectile_limited", projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, spawner_unit_id, limited_item_id, spawn_type_id)
 	else
-		Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_pickup_projectile", projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, spawn_type_id)
+		local ammo_extension = ScriptUnit.has_extension(weapon_unit, "ammo_system")
+		local spawn_limit = (ammo_extension and ammo_extension:max_ammo()) or 1
+
+		Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_pickup_projectile", projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, spawn_type_id, spawn_limit)
 	end
 end
 
@@ -616,37 +623,39 @@ end
 local last_attack_critical = false
 
 ActionUtils.is_critical_strike = function (unit, action, t)
+	local buff_extension = ScriptUnit.extension(unit, "buff_system")
+	local talent_extension = ScriptUnit.extension(unit, "talent_system")
+	local no_random_crits = talent_extension:has_talent_perk("no_random_crits") or nil
+	local guaranteed_crit = buff_extension:has_buff_perk("guaranteed_crit") or nil
+	local crit_chance = ActionUtils.get_critical_strike_chance(unit, action)
+	local rand = Math.random()
+	local critical_strike = guaranteed_crit or (rand < crit_chance and not no_random_crits)
+
 	if script_data.no_critical_strikes then
 		return false
 	end
 
 	if script_data.always_critical_strikes then
-		return true
+		critical_strike = true
 	end
 
 	if script_data.alternating_critical_strikes then
 		if last_attack_critical == true then
 			last_attack_critical = false
-
-			return false
+			critical_strike = false
 		elseif last_attack_critical == false then
 			last_attack_critical = true
-
-			return true
+			critical_strike = true
 		end
 	end
 
-	local crit_chance = ActionUtils.get_critical_strike_chance(unit, action)
-	local rand = Math.random()
-
-	if rand < crit_chance then
-		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+	if critical_strike then
 		local action_type = action.kind
 
 		buff_extension:trigger_procs("on_critical_action", action_type)
 	end
 
-	return rand < crit_chance
+	return critical_strike
 end
 
 ActionUtils.pitch_from_rotation = function (rotation)

@@ -1,9 +1,8 @@
-local default_bot_threat_difficulty_data = BotConstants and BotConstants.default.DEFAULT_BOT_THREAT_DIFFICULTY_DATA
 local breed_data = {
 	is_bot_aid_threat = true,
 	target_selection_angry = "pick_rat_ogre_target_with_weights",
+	poison_resistance = 100,
 	use_avoidance = false,
-	stagger_count_reset_time = 5,
 	target_selection = "pick_rat_ogre_target_idle",
 	lord_damage_reduction = true,
 	always_look_at_target = true,
@@ -11,23 +10,22 @@ local breed_data = {
 	armored_on_no_damage = true,
 	bot_hitbox_radius_approximation = 1,
 	behavior = "stormfiend_boss",
-	animation_sync_rpc = "rpc_sync_anim_state_10",
+	animation_sync_rpc = "rpc_sync_anim_state_9",
+	stagger_count_reset_time = 5,
 	run_speed = 5,
 	walk_speed = 5,
 	aim_template = "stormfiend",
-	bots_should_flank = true,
 	ignore_nav_propagation_box = true,
-	headshot_coop_stamina_fatigue_type = "headshot_special",
+	bots_should_flank = true,
 	bot_opportunity_target_melee_range = 7,
 	threat_value = 32,
-	awards_positive_reinforcement_message = true,
+	server_controlled_health_bar = true,
 	default_inventory_template = "rat_ogre",
 	stagger_resistance = 5,
-	server_controlled_health_bar = true,
-	boss_staggers = true,
 	bone_lod_level = 0,
+	boss_staggers = true,
+	perception = "perception_rat_ogre",
 	radius = 2,
-	poison_resistance = 100,
 	boss = true,
 	hit_mass_count = 20,
 	chance_of_starting_sleepy = 0,
@@ -42,6 +40,7 @@ local breed_data = {
 	boost_curve_multiplier_override = 2,
 	has_inventory = true,
 	no_stagger_duration = true,
+	awards_positive_reinforcement_message = true,
 	exchange_order = 1,
 	default_spawn_animation = "to_stormfiend_rasknitt_boss",
 	reach_distance = 3,
@@ -54,7 +53,7 @@ local breed_data = {
 	unit_template = "ai_unit_stormfiend_boss",
 	stagger_reduction = 1,
 	smart_object_template = "stormfiend",
-	perception = "perception_rat_ogre",
+	headshot_coop_stamina_fatigue_type = "headshot_special",
 	player_locomotion_constrain_radius = 1.5,
 	bot_opportunity_target_melee_range_while_ranged = 5,
 	distance_sq_idle_auto_detect_target = 49,
@@ -80,21 +79,8 @@ local breed_data = {
 		distance_weight = 20,
 		target_disabled_mul = 0.15
 	},
-	max_health = {
-		500,
-		500,
-		750,
-		1000,
-		1500
-	},
+	max_health = BreedTweaks.max_health.stormfiend_boss,
 	bloodlust_health = BreedTweaks.bloodlust_health.monster,
-	diff_stagger_resist = {
-		4,
-		4,
-		5,
-		6,
-		8
-	},
 	stagger_duration = {
 		1,
 		1,
@@ -126,10 +112,6 @@ local breed_data = {
 		aux = 2
 	},
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		head = {
 			prio = 1,
 			actors = {
@@ -152,7 +134,7 @@ local breed_data = {
 			}
 		},
 		torso = {
-			prio = 3,
+			prio = 2,
 			actors = {
 				"c_spine2",
 				"c_spine",
@@ -166,7 +148,7 @@ local breed_data = {
 			}
 		},
 		left_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftforearm_ammo",
 				"c_leftarm",
@@ -177,7 +159,7 @@ local breed_data = {
 			}
 		},
 		right_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightforearm_ammo",
 				"c_rightarm",
@@ -188,7 +170,7 @@ local breed_data = {
 			}
 		},
 		left_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftupleg",
 				"c_leftleg",
@@ -202,7 +184,7 @@ local breed_data = {
 			}
 		},
 		right_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightupleg",
 				"c_rightleg",
@@ -216,7 +198,7 @@ local breed_data = {
 			}
 		},
 		tail = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_tail1",
 				"c_tail2",
@@ -230,7 +212,7 @@ local breed_data = {
 			}
 		},
 		weakspot = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_packmaster_sling_02"
 			},
@@ -238,17 +220,21 @@ local breed_data = {
 				"j_spine1"
 			}
 		},
-		afro = {
-			prio = 5,
-			actors = {
-				"c_afro"
-			}
-		},
 		aux = {
-			prio = 6,
+			prio = 4,
 			actors = {
 				"c_packmaster_sling",
 				"c_back_pack"
+			}
+		},
+		full = {
+			prio = 5,
+			actors = {}
+		},
+		afro = {
+			prio = 6,
+			actors = {
+				"c_afro"
 			}
 		}
 	},
@@ -275,6 +261,102 @@ local breed_data = {
 	}
 }
 Breeds.skaven_stormfiend_boss = table.create_copy(Breeds.skaven_stormfiend_boss, breed_data)
+local AttackIntensityPerDifficulty = {
+	aoe = {
+		easy = {
+			running = 2,
+			normal = 5
+		},
+		normal = {
+			running = 2,
+			normal = 5
+		},
+		hard = {
+			running = 2,
+			normal = 5
+		},
+		harder = {
+			running = 2,
+			normal = 5
+		},
+		hardest = {
+			running = 2,
+			normal = 5
+		},
+		cataclysm = {
+			running = 2,
+			normal = 5
+		},
+		cataclysm_2 = {
+			running = 2,
+			normal = 5
+		},
+		cataclysm_3 = {
+			running = 2,
+			normal = 5
+		}
+	},
+	charge = {
+		easy = {
+			running = 0.5,
+			normal = 3
+		},
+		normal = {
+			running = 0.5,
+			normal = 3
+		},
+		hard = {
+			running = 0.5,
+			normal = 3
+		},
+		harder = {
+			running = 0.5,
+			normal = 3
+		},
+		hardest = {
+			running = 0.5,
+			normal = 3
+		},
+		cataclysm = {
+			running = 0.5,
+			normal = 3
+		},
+		cataclysm_2 = {
+			running = 0.5,
+			normal = 3
+		},
+		cataclysm_3 = {
+			running = 0.5,
+			normal = 3
+		}
+	},
+	shove = {
+		easy = {
+			normal = 1
+		},
+		normal = {
+			normal = 1
+		},
+		hard = {
+			normal = 1
+		},
+		harder = {
+			normal = 1
+		},
+		hardest = {
+			normal = 1
+		},
+		cataclysm = {
+			normal = 1
+		},
+		cataclysm_2 = {
+			normal = 1
+		},
+		cataclysm_3 = {
+			normal = 1
+		}
+	}
+}
 local action_data = {
 	climb = {
 		sync_with_linked_unit = false,
@@ -289,10 +371,14 @@ local action_data = {
 		animation = "back_up_on_back"
 	},
 	charge = {
-		damage_type = "cutting",
 		fatigue_type = "blocked_slam",
+		damage = 20,
+		attack_intensity_type = "charge",
 		action_weight = 20,
+		blocked_damage = 5,
 		ignore_ai_damage = true,
+		damage_type = "cutting",
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		considerations = UtilityConsiderations.stormfiend_boss_charge,
 		attacks = {
 			{
@@ -352,99 +438,25 @@ local action_data = {
 				}
 			}
 		},
-		blocked_damage = {
-			5,
-			4,
-			2.5
-		},
 		blocked_difficulty_damage = {
-			easy = {
-				4,
-				4,
-				2.5
-			},
-			normal = {
-				5,
-				4,
-				2.5
-			},
-			hard = {
-				7,
-				5,
-				2.5
-			},
-			survival_hard = {
-				7,
-				5,
-				2.5
-			},
-			harder = {
-				9,
-				7.5,
-				5
-			},
-			survival_harder = {
-				9,
-				7.5,
-				5
-			},
-			hardest = {
-				12,
-				10,
-				7.5
-			},
-			survival_hardest = {
-				18,
-				15,
-				11.25
-			}
-		},
-		damage = {
-			20,
-			10,
-			5
+			harder = 9,
+			hard = 7,
+			normal = 5,
+			hardest = 10,
+			cataclysm = 12,
+			cataclysm_3 = 20,
+			cataclysm_2 = 15,
+			easy = 4
 		},
 		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				20,
-				10,
-				5
-			},
-			hard = {
-				25,
-				15,
-				10
-			},
-			survival_hard = {
-				25,
-				15,
-				10
-			},
-			harder = {
-				30,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				50,
-				30,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
+			harder = 30,
+			hard = 25,
+			normal = 20,
+			hardest = 50,
+			cataclysm = 25,
+			cataclysm_3 = 75,
+			cataclysm_2 = 30,
+			easy = 15
 		},
 		ignore_staggers = {
 			true,
@@ -458,10 +470,13 @@ local action_data = {
 		}
 	},
 	fling_skaven = {
-		damage_type = "cutting",
-		sync_with_linked_unit = false,
-		ignore_ai_damage = true,
 		fatigue_type = "ogre_shove",
+		sync_with_linked_unit = false,
+		damage = 20,
+		attack_intensity_type = "shove",
+		ignore_ai_damage = true,
+		damage_type = "cutting",
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		attacks = {
 			{
 				anim_driven = true,
@@ -545,52 +560,15 @@ local action_data = {
 				}
 			}
 		},
-		damage = {
-			20,
-			20,
-			20
-		},
 		difficulty_damage = {
-			easy = {
-				20,
-				20,
-				20
-			},
-			normal = {
-				30,
-				20,
-				20
-			},
-			hard = {
-				40,
-				25,
-				25
-			},
-			survival_hard = {
-				40,
-				25,
-				25
-			},
-			harder = {
-				50,
-				30,
-				30
-			},
-			survival_harder = {
-				50,
-				30,
-				30
-			},
-			hardest = {
-				75,
-				50,
-				50
-			},
-			survival_hardest = {
-				112.5,
-				75,
-				75
-			}
+			harder = 50,
+			hard = 40,
+			normal = 30,
+			hardest = 75,
+			cataclysm = 100,
+			cataclysm_3 = 100,
+			cataclysm_2 = 100,
+			easy = 20
 		}
 	},
 	follow = {
@@ -676,11 +654,14 @@ local action_data = {
 		}
 	},
 	melee_shove = {
-		damage_type = "cutting",
-		sync_with_linked_unit = false,
 		fatigue_type = "ogre_shove",
+		damage = 20,
+		sync_with_linked_unit = false,
+		attack_intensity_type = "shove",
 		action_weight = 1,
 		ignore_ai_damage = true,
+		damage_type = "cutting",
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		considerations = UtilityConsiderations.stormfiend_boss_melee_shove,
 		attacks = {
 			{
@@ -821,52 +802,15 @@ local action_data = {
 				}
 			}
 		},
-		damage = {
-			20,
-			20,
-			20
-		},
 		difficulty_damage = {
-			easy = {
-				15,
-				20,
-				20
-			},
-			normal = {
-				20,
-				20,
-				20
-			},
-			hard = {
-				30,
-				25,
-				25
-			},
-			survival_hard = {
-				30,
-				25,
-				25
-			},
-			harder = {
-				40,
-				30,
-				30
-			},
-			survival_harder = {
-				40,
-				30,
-				30
-			},
-			hardest = {
-				60,
-				50,
-				50
-			},
-			survival_hardest = {
-				90,
-				75,
-				75
-			}
+			harder = 40,
+			hard = 30,
+			normal = 20,
+			hardest = 60,
+			cataclysm = 75,
+			cataclysm_3 = 100,
+			cataclysm_2 = 100,
+			easy = 15
 		}
 	},
 	special_attack_aoe = {
@@ -882,58 +826,24 @@ local action_data = {
 		offset_up = -0.6,
 		attack_anim = "attack_push_back",
 		offset_right = 0,
+		damage = 20,
 		player_push_speed = 20,
+		attack_intensity_type = "aoe",
 		action_weight = 4,
 		shove_speed = 10,
 		player_push_speed_blocked = 15,
 		ignore_abort_on_blocked_attack = true,
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		considerations = UtilityConsiderations.stormfiend_boss_aoe,
-		damage = {
-			20,
-			10,
-			5
-		},
 		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				10,
-				5,
-				2
-			},
-			hard = {
-				15,
-				10,
-				5
-			},
-			survival_hard = {
-				25,
-				15,
-				10
-			},
-			harder = {
-				25,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				30,
-				25,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
+			harder = 25,
+			hard = 15,
+			normal = 10,
+			hardest = 30,
+			cataclysm = 45,
+			cataclysm_3 = 100,
+			cataclysm_2 = 75,
+			easy = 15
 		},
 		ignore_staggers = {
 			true,
@@ -1063,21 +973,7 @@ local action_data = {
 				0,
 				10
 			},
-			survival_hard = {
-				10,
-				10,
-				0,
-				0,
-				10
-			},
 			harder = {
-				10,
-				10,
-				0,
-				0,
-				10
-			},
-			survival_harder = {
 				10,
 				10,
 				0,
@@ -1091,7 +987,21 @@ local action_data = {
 				0,
 				10
 			},
-			survival_hardest = {
+			cataclysm = {
+				10,
+				10,
+				0,
+				0,
+				10
+			},
+			cataclysm_2 = {
+				10,
+				10,
+				0,
+				0,
+				10
+			},
+			cataclysm_3 = {
 				10,
 				10,
 				0,
@@ -1211,21 +1121,7 @@ local action_data = {
 				0,
 				10
 			},
-			survival_hard = {
-				10,
-				10,
-				0,
-				0,
-				10
-			},
 			harder = {
-				10,
-				10,
-				0,
-				0,
-				10
-			},
-			survival_harder = {
 				10,
 				10,
 				0,
@@ -1239,7 +1135,21 @@ local action_data = {
 				0,
 				10
 			},
-			survival_hardest = {
+			cataclysm = {
+				10,
+				10,
+				0,
+				0,
+				10
+			},
+			cataclysm_2 = {
+				10,
+				10,
+				0,
+				0,
+				10
+			},
+			cataclysm_3 = {
 				10,
 				10,
 				0,
@@ -1307,21 +1217,7 @@ local action_data = {
 				0,
 				10
 			},
-			survival_hard = {
-				10,
-				10,
-				0,
-				0,
-				10
-			},
 			harder = {
-				10,
-				10,
-				0,
-				0,
-				10
-			},
-			survival_harder = {
 				10,
 				10,
 				0,
@@ -1335,7 +1231,21 @@ local action_data = {
 				0,
 				10
 			},
-			survival_hardest = {
+			cataclysm = {
+				10,
+				10,
+				0,
+				0,
+				10
+			},
+			cataclysm_2 = {
+				10,
+				10,
+				0,
+				0,
+				10
+			},
+			cataclysm_3 = {
 				10,
 				10,
 				0,
@@ -1355,15 +1265,11 @@ local action_data = {
 	},
 	smash_door = {
 		unblockable = true,
+		damage = 25,
 		damage_type = "cutting",
 		move_anim = "move_fwd",
 		attack_anim = "attack_slam",
 		door_attack_distance = 2,
-		damage = {
-			25,
-			25,
-			25
-		},
 		ignore_staggers = {
 			false,
 			true,
@@ -1443,6 +1349,12 @@ local action_data = {
 				right = {
 					"stagger_weakspot"
 				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
 			}
 		}
 	},

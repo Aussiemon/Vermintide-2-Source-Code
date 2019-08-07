@@ -14,9 +14,23 @@ local scenegraph_definition = {
 		}
 	},
 	pivot = {
-		vertical_alignment = "center",
+		vertical_alignment = "bottom",
 		parent = "screen",
-		horizontal_alignment = "center",
+		horizontal_alignment = "left",
+		position = {
+			0,
+			0,
+			1
+		},
+		size = {
+			0,
+			0
+		}
+	},
+	bar_pivot = {
+		vertical_alignment = "bottom",
+		parent = "screen",
+		horizontal_alignment = "left",
 		position = {
 			0,
 			0,
@@ -28,6 +42,72 @@ local scenegraph_definition = {
 		}
 	}
 }
+
+local function create_simple_bar(scenegraph_id, size)
+	return {
+		element = {
+			passes = {
+				{
+					pass_type = "rect",
+					style_id = "background"
+				},
+				{
+					pass_type = "rect",
+					style_id = "foreground"
+				}
+			}
+		},
+		content = {},
+		style = {
+			background = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "left",
+				texture_size = size,
+				color = {
+					200,
+					30,
+					30,
+					30
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			},
+			foreground = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "left",
+				texture_size = {
+					size[1] - 4,
+					size[2] - 4
+				},
+				default_size = {
+					size[1] - 4,
+					size[2] - 4
+				},
+				color = {
+					255,
+					255,
+					0,
+					0
+				},
+				offset = {
+					2,
+					2,
+					1
+				}
+			}
+		},
+		offset = {
+			0,
+			0,
+			0
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
+
 local widget_definitions = {
 	default = {
 		scenegraph_id = "pivot",
@@ -131,8 +211,17 @@ local widget_definitions = {
 					255
 				}
 			}
+		},
+		offset = {
+			0,
+			0,
+			0
 		}
-	}
+	},
+	progress_bar = create_simple_bar("bar_pivot", {
+		300,
+		50
+	})
 }
 local animation_definitions = {}
 

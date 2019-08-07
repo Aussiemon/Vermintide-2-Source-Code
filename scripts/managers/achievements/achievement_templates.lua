@@ -2948,13 +2948,14 @@ for i, limit in ipairs(AchievementTemplates.completed_deed_limits) do
 end
 
 AchievementTemplates.difficulties = {
-	harder = "champion",
-	hard = "veteran",
-	hardest = "legend",
-	normal = "recruit"
+	"normal",
+	"hard",
+	"harder",
+	"hardest"
 }
 
-for diff_key, diff_id in pairs(AchievementTemplates.difficulties) do
+for _, diff_key in ipairs(AchievementTemplates.difficulties) do
+	local diff_id = DifficultyMapping[diff_key]
 	local id = "complete_all_helmgart_levels_" .. diff_id
 	AchievementTemplates.achievements[id] = {
 		name = "achv_complete_all_helmgart_levels_" .. diff_id .. "_name",
@@ -2998,68 +2999,86 @@ for diff_key, diff_id in pairs(AchievementTemplates.difficulties) do
 	}
 end
 
-for career, _ in pairs(CareerSettings) do
-	if career ~= "empire_soldier_tutorial" then
-		for diff_key, diff_id in pairs(AchievementTemplates.difficulties) do
-			local id = "complete_all_helmgart_levels_" .. diff_id .. "_" .. career
-			AchievementTemplates.achievements[id] = {
-				name = "achv_complete_all_helmgart_levels_" .. diff_id .. "_" .. career .. "_name",
-				desc = "achv_complete_all_helmgart_levels_" .. diff_id .. "_" .. career .. "_desc",
-				icon = "achievement_trophy_" .. diff_id .. "_" .. career,
-				completed = function (statistics_db, stats_id)
-					return check_level_list_difficulty(statistics_db, stats_id, main_game_levels, DifficultySettings[diff_key].rank, career)
-				end,
-				progress = function (statistics_db, stats_id)
-					local num_completed = 0
+local hero_careers = {
+	"dr_ironbreaker",
+	"dr_slayer",
+	"dr_ranger",
+	"es_huntsman",
+	"es_knight",
+	"es_mercenary",
+	"we_shade",
+	"we_maidenguard",
+	"we_waywatcher",
+	"wh_zealot",
+	"wh_bountyhunter",
+	"wh_captain",
+	"bw_scholar",
+	"bw_adept",
+	"bw_unchained"
+}
 
-					for _, level in ipairs(main_game_levels) do
-						if check_level_list_difficulty(statistics_db, stats_id, {
-							level
-						}, DifficultySettings[diff_key].rank, career) then
-							num_completed = num_completed + 1
-						end
+for _, career_name in ipairs(hero_careers) do
+	fassert(CareerSettings[career_name] ~= nil, "No career with such name (%s)", career_name)
+
+	for _, diff_key in ipairs(AchievementTemplates.difficulties) do
+		local diff_id = DifficultyMapping[diff_key]
+		local id = "complete_all_helmgart_levels_" .. diff_id .. "_" .. career_name
+		AchievementTemplates.achievements[id] = {
+			name = "achv_complete_all_helmgart_levels_" .. diff_id .. "_" .. career_name .. "_name",
+			desc = "achv_complete_all_helmgart_levels_" .. diff_id .. "_" .. career_name .. "_desc",
+			icon = "achievement_trophy_" .. diff_id .. "_" .. career_name,
+			completed = function (statistics_db, stats_id)
+				return check_level_list_difficulty(statistics_db, stats_id, main_game_levels, DifficultySettings[diff_key].rank, career_name)
+			end,
+			progress = function (statistics_db, stats_id)
+				local num_completed = 0
+
+				for _, level in ipairs(main_game_levels) do
+					if check_level_list_difficulty(statistics_db, stats_id, {
+						level
+					}, DifficultySettings[diff_key].rank, career_name) then
+						num_completed = num_completed + 1
 					end
-
-					return {
-						num_completed,
-						#main_game_levels
-					}
-				end,
-				requirements = function (statistics_db, stats_id)
-					local reqs = {}
-
-					for _, level in ipairs(main_game_levels) do
-						local completed = check_level_list_difficulty(statistics_db, stats_id, {
-							level
-						}, DifficultySettings[diff_key].rank, career)
-
-						table.insert(reqs, {
-							name = LevelSettings[level].display_name,
-							completed = completed
-						})
-					end
-
-					return reqs
 				end
-			}
-		end
+
+				return {
+					num_completed,
+					#main_game_levels
+				}
+			end,
+			requirements = function (statistics_db, stats_id)
+				local reqs = {}
+
+				for _, level in ipairs(main_game_levels) do
+					local completed = check_level_list_difficulty(statistics_db, stats_id, {
+						level
+					}, DifficultySettings[diff_key].rank, career_name)
+
+					table.insert(reqs, {
+						name = LevelSettings[level].display_name,
+						completed = completed
+					})
+				end
+
+				return reqs
+			end
+		}
 	end
 end
 
-for diff_key, diff_id in pairs(AchievementTemplates.difficulties) do
+for _, diff_key in ipairs(AchievementTemplates.difficulties) do
+	local diff_id = DifficultyMapping[diff_key]
 	local id = "complete_all_helmgart_levels_all_careers_" .. diff_id
 	AchievementTemplates.achievements[id] = {
 		name = "achv_complete_all_helmgart_levels_all_careers_" .. diff_id .. "_name",
 		desc = "achv_complete_all_helmgart_levels_all_careers_" .. diff_id .. "_desc",
 		icon = "achievement_trophy_all_careers_" .. diff_id,
 		completed = function (statistics_db, stats_id)
-			for career, _ in pairs(CareerSettings) do
-				if career ~= "empire_soldier_tutorial" then
-					local completed = check_level_list_difficulty(statistics_db, stats_id, main_game_levels, DifficultySettings[diff_key].rank, career)
+			for _, career_name in ipairs(hero_careers) do
+				local completed = check_level_list_difficulty(statistics_db, stats_id, main_game_levels, DifficultySettings[diff_key].rank, career_name)
 
-					if not completed then
-						return false
-					end
+				if not completed then
+					return false
 				end
 			end
 
@@ -3069,14 +3088,12 @@ for diff_key, diff_id in pairs(AchievementTemplates.difficulties) do
 			local num_completed = 0
 			local total = 0
 
-			for career, _ in pairs(CareerSettings) do
-				if career ~= "empire_soldier_tutorial" then
-					total = total + 1
-					local completed = check_level_list_difficulty(statistics_db, stats_id, main_game_levels, DifficultySettings[diff_key].rank, career)
+			for _, career_name in ipairs(hero_careers) do
+				total = total + 1
+				local completed = check_level_list_difficulty(statistics_db, stats_id, main_game_levels, DifficultySettings[diff_key].rank, career_name)
 
-					if completed then
-						num_completed = num_completed + 1
-					end
+				if completed then
+					num_completed = num_completed + 1
 				end
 			end
 
@@ -3088,15 +3105,13 @@ for diff_key, diff_id in pairs(AchievementTemplates.difficulties) do
 		requirements = function (statistics_db, stats_id)
 			local reqs = {}
 
-			for career, _ in pairs(CareerSettings) do
-				if career ~= "empire_soldier_tutorial" then
-					local completed = check_level_list_difficulty(statistics_db, stats_id, main_game_levels, DifficultySettings[diff_key].rank, career)
+			for _, career_name in ipairs(hero_careers) do
+				local completed = check_level_list_difficulty(statistics_db, stats_id, main_game_levels, DifficultySettings[diff_key].rank, career_name)
 
-					table.insert(reqs, {
-						name = career,
-						completed = completed
-					})
-				end
+				table.insert(reqs, {
+					name = career_name,
+					completed = completed
+				})
 			end
 
 			return reqs
@@ -3104,42 +3119,42 @@ for diff_key, diff_id in pairs(AchievementTemplates.difficulties) do
 	}
 end
 
-for career, _ in pairs(CareerSettings) do
-	if career ~= "empire_soldier_tutorial" then
-		local id = "complete_100_missions_champion_" .. career
-		AchievementTemplates.achievements[id] = {
-			name = "achv_complete_100_missions_champion_" .. career .. "_name",
-			desc = "achv_complete_100_missions_champion_" .. career .. "_desc",
-			icon = "achievement_trophy_100_missions_champion_" .. career,
-			completed = function (statistics_db, stats_id)
-				local wins = 0
+for _, career_name in ipairs(hero_careers) do
+	fassert(CareerSettings[career_name] ~= nil, "No such career (%s)", career_name)
 
-				for _, level in ipairs(UnlockableLevels) do
-					wins = wins + statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career, level, "harder")
-					wins = wins + statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career, level, "hardest")
-				end
+	local id = "complete_100_missions_champion_" .. career_name
+	AchievementTemplates.achievements[id] = {
+		name = "achv_complete_100_missions_champion_" .. career_name .. "_name",
+		desc = "achv_complete_100_missions_champion_" .. career_name .. "_desc",
+		icon = "achievement_trophy_100_missions_champion_" .. career_name,
+		completed = function (statistics_db, stats_id)
+			local wins = 0
 
-				return wins >= 100
-			end,
-			progress = function (statistics_db, stats_id)
-				local wins = 0
-
-				for _, level in ipairs(UnlockableLevels) do
-					wins = wins + statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career, level, "harder")
-					wins = wins + statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career, level, "hardest")
-				end
-
-				if wins > 100 then
-					wins = 100
-				end
-
-				return {
-					wins,
-					100
-				}
+			for _, level in ipairs(UnlockableLevels) do
+				wins = wins + statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career_name, level, "harder")
+				wins = wins + statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career_name, level, "hardest")
 			end
-		}
-	end
+
+			return wins >= 100
+		end,
+		progress = function (statistics_db, stats_id)
+			local wins = 0
+
+			for _, level in ipairs(UnlockableLevels) do
+				wins = wins + statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career_name, level, "harder")
+				wins = wins + statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career_name, level, "hardest")
+			end
+
+			if wins > 100 then
+				wins = 100
+			end
+
+			return {
+				wins,
+				100
+			}
+		end
+	}
 end
 
 AchievementTemplates.achievements.elven_ruins_align_leylines_timed = {
@@ -3188,7 +3203,7 @@ AchievementTemplates.achievements.ground_zero_burblespew_tornado_enemies = {
 	display_completion_ui = true,
 	icon = "achievement_trophy_ground_zero_burblespew_tornado_enemies",
 	desc = function ()
-		return string.format(Localize("achv_ground_zero_burblespew_tornado_enemies_desc"), QuestSettings.halescourge_tornado_enemies)
+		return string.format(Localize("achv_ground_zero_burblespew_tornado_enemies_desc"), QuestSettings.halescourge_tornado_enemies_cata)
 	end,
 	completed = function (statistics_db, stats_id)
 		return statistics_db:get_persistent_stat(stats_id, "halescourge_tornado_enemies") > 0
@@ -3214,7 +3229,7 @@ AchievementTemplates.achievements.nurgle_player_showered_in_pus = {
 	display_completion_ui = true,
 	icon = "achievement_trophy_nurgle_player_showered_in_pus",
 	desc = function ()
-		return string.format(Localize("achv_nurgle_player_showered_in_pus_desc"), QuestSettings.nurgle_bathed_all)
+		return string.format(Localize("achv_nurgle_player_showered_in_pus_desc"), QuestSettings.nurgle_bathed_all_cata)
 	end,
 	completed = function (statistics_db, stats_id)
 		return statistics_db:get_persistent_stat(stats_id, "nurgle_bathed_all") > 0
@@ -3681,13 +3696,14 @@ for _, dlc in pairs(DLCSettings) do
 	end
 end
 
-for difficulty_id, difficulty_name in pairs(AchievementTemplates.difficulties) do
-	local id = "kill_bodvarr_burblespew_" .. difficulty_name
-	local difficulty_rank = DifficultySettings[difficulty_id].rank
+for _, diff_key in ipairs(AchievementTemplates.difficulties) do
+	local diff_id = DifficultyMapping[diff_key]
+	local id = "kill_bodvarr_burblespew_" .. diff_id
+	local difficulty_rank = DifficultySettings[diff_key].rank
 	AchievementTemplates.achievements[id] = {
-		name = "achv_kill_bodvarr_burblespew_" .. difficulty_name .. "_name",
-		desc = "achv_kill_bodvarr_burblespew_" .. difficulty_name .. "_desc",
-		icon = "achievement_trophy_kill_bodvarr_burblespew_" .. difficulty_name,
+		name = "achv_kill_bodvarr_burblespew_" .. diff_id .. "_name",
+		desc = "achv_kill_bodvarr_burblespew_" .. diff_id .. "_desc",
+		icon = "achievement_trophy_kill_bodvarr_burblespew_" .. diff_id,
 		completed = function (statistics_db, stats_id)
 			local champion_completed = difficulty_rank <= statistics_db:get_persistent_stat(stats_id, "kill_chaos_exalted_champion_difficulty_rank")
 			local sorcerer_completed = difficulty_rank <= statistics_db:get_persistent_stat(stats_id, "kill_chaos_exalted_sorcerer_difficulty_rank")
@@ -3710,11 +3726,11 @@ for difficulty_id, difficulty_name in pairs(AchievementTemplates.difficulties) d
 			}
 		end
 	}
-	id = "kill_skarrik_rasknitt_" .. difficulty_name
+	id = "kill_skarrik_rasknitt_" .. diff_id
 	AchievementTemplates.achievements[id] = {
-		name = "achv_kill_skarrik_rasknitt_" .. difficulty_name .. "_name",
-		desc = "achv_kill_skarrik_rasknitt_" .. difficulty_name .. "_desc",
-		icon = "achievement_trophy_kill_skarrik_rasknitt_" .. difficulty_name,
+		name = "achv_kill_skarrik_rasknitt_" .. diff_id .. "_name",
+		desc = "achv_kill_skarrik_rasknitt_" .. diff_id .. "_desc",
+		icon = "achievement_trophy_kill_skarrik_rasknitt_" .. diff_id,
 		completed = function (statistics_db, stats_id)
 			local gray_seer_completed = difficulty_rank <= statistics_db:get_persistent_stat(stats_id, "kill_skaven_grey_seer_difficulty_rank")
 			local storm_vermin_completed = difficulty_rank <= statistics_db:get_persistent_stat(stats_id, "kill_skaven_storm_vermin_warlord_difficulty_rank")

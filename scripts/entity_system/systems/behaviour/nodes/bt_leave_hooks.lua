@@ -1,4 +1,4 @@
-BTLeaveHooks = BTHooksLeave or {}
+BTLeaveHooks = BTLeaveHooks or {}
 local BTLeaveHooks = BTLeaveHooks
 local unit_alive = Unit.alive
 local ScriptUnit = ScriptUnit
@@ -217,6 +217,11 @@ BTLeaveHooks.reset_chain_stagger = function (unit, blackboard, t)
 	blackboard.num_chain_stagger = nil
 end
 
+BTLeaveHooks.remove_invincibility = function (unit, blackboard, t)
+	local health_extension = ScriptUnit.extension(unit, "health_system")
+	health_extension.is_invincible = false
+end
+
 BTLeaveHooks.mutator_sorcerer_activate_teleport = function (unit, blackboard, t)
 	if blackboard.stagger then
 		blackboard.quick_teleport = true
@@ -225,6 +230,13 @@ end
 
 BTLeaveHooks.destroy_unit_leave_hook = function (unit, blackboard, t)
 	Managers.state.conflict:destroy_unit(unit, blackboard, "debug")
+end
+
+BTLeaveHooks.beastmen_standard_bearer_leave_move_and_plant_standard = function (unit, blackboard, t)
+	blackboard.move_and_place_standard = nil
+	blackboard.stagger = nil
+	local health_extension = ScriptUnit.extension(unit, "health_system")
+	health_extension.is_invincible = false
 end
 
 return

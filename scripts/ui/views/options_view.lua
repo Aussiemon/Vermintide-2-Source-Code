@@ -330,6 +330,7 @@ OptionsView._setup_input_functions = function (self)
 		end,
 		slider = function (widget, input_source, dt)
 			local content = widget.content
+			local style = widget.style
 			local left_hotspot = content.left_hotspot
 			local right_hotspot = content.right_hotspot
 			local callback_on_release = content.callback_on_release
@@ -337,7 +338,7 @@ OptionsView._setup_input_functions = function (self)
 			if content.changed then
 				content.changed = nil
 
-				content:callback()
+				content:callback(style)
 			end
 
 			local left_hold = input_source:get("left_hold")
@@ -484,9 +485,10 @@ OptionsView._setup_input_functions = function (self)
 			if new_selection ~= current_selection then
 				WwiseWorld.trigger_event(self.wwise_world, "Play_hud_select")
 
+				local style = widget.style
 				content.current_selection = new_selection
 
-				content:callback()
+				content:callback(style)
 			end
 		end,
 		keybind = function (widget, input_source, dt)
@@ -931,40 +933,43 @@ OptionsView.build_settings_list = function (self, definition, scenegraph_id)
 		local widget = nil
 		local size_y = 0
 		local widget_type = element.widget_type
+		local required_dlc = element.required_dlc
 
-		if widget_type == "drop_down" then
-			widget = self:build_drop_down_widget(element, scenegraph_id_start, base_offset)
-		elseif widget_type == "option" then
-			widget = self:build_option_widget(element, scenegraph_id_start, base_offset)
-		elseif widget_type == "slider" then
-			widget = self:build_slider_widget(element, scenegraph_id_start, base_offset)
-		elseif widget_type == "checkbox" then
-			widget = self:build_checkbox_widget(element, scenegraph_id_start, base_offset)
-		elseif widget_type == "stepper" then
-			widget = self:build_stepper_widget(element, scenegraph_id_start, base_offset)
-		elseif widget_type == "keybind" then
-			widget = self:build_keybind_widget(element, scenegraph_id_start, base_offset)
-		elseif widget_type == "sorted_list" then
-			widget = self:build_sorted_list_widget(element, scenegraph_id_start, base_offset)
-		elseif widget_type == "image" then
-			widget = self:build_image(element, scenegraph_id_start, base_offset)
-		elseif widget_type == "gamepad_layout" then
-			widget = self:build_gamepad_layout(element, scenegraph_id_start, base_offset)
-			self.gamepad_layout_widget = widget
-			local gamepad_layout = assigned(self.changed_user_settings.gamepad_layout, Application.user_setting("gamepad_layout"))
-			local using_left_handed_option = assigned(self.changed_user_settings.gamepad_left_handed, Application.user_setting("gamepad_left_handed"))
-			local gamepad_keymaps_layout = (using_left_handed_option and AlternatateGamepadKeymapsLayoutsLeftHanded) or AlternatateGamepadKeymapsLayouts
-			local gamepad_keymaps = gamepad_keymaps_layout[gamepad_layout]
+		if not required_dlc or Managers.unlock:is_dlc_unlocked(required_dlc) then
+			if widget_type == "drop_down" then
+				widget = self:build_drop_down_widget(element, scenegraph_id_start, base_offset)
+			elseif widget_type == "option" then
+				widget = self:build_option_widget(element, scenegraph_id_start, base_offset)
+			elseif widget_type == "slider" then
+				widget = self:build_slider_widget(element, scenegraph_id_start, base_offset)
+			elseif widget_type == "checkbox" then
+				widget = self:build_checkbox_widget(element, scenegraph_id_start, base_offset)
+			elseif widget_type == "stepper" then
+				widget = self:build_stepper_widget(element, scenegraph_id_start, base_offset)
+			elseif widget_type == "keybind" then
+				widget = self:build_keybind_widget(element, scenegraph_id_start, base_offset)
+			elseif widget_type == "sorted_list" then
+				widget = self:build_sorted_list_widget(element, scenegraph_id_start, base_offset)
+			elseif widget_type == "image" then
+				widget = self:build_image(element, scenegraph_id_start, base_offset)
+			elseif widget_type == "gamepad_layout" then
+				widget = self:build_gamepad_layout(element, scenegraph_id_start, base_offset)
+				self.gamepad_layout_widget = widget
+				local gamepad_layout = assigned(self.changed_user_settings.gamepad_layout, Application.user_setting("gamepad_layout"))
+				local using_left_handed_option = assigned(self.changed_user_settings.gamepad_left_handed, Application.user_setting("gamepad_left_handed"))
+				local gamepad_keymaps_layout = (using_left_handed_option and AlternatateGamepadKeymapsLayoutsLeftHanded) or AlternatateGamepadKeymapsLayouts
+				local gamepad_keymaps = gamepad_keymaps_layout[gamepad_layout]
 
-			self:update_gamepad_layout_widget(gamepad_keymaps, using_left_handed_option)
-		elseif widget_type == "empty" then
-			size_y = element.size_y
-		elseif widget_type == "title" then
-			widget = self:build_title(element, scenegraph_id_start, base_offset)
-		elseif widget_type == "text_link" then
-			widget = self:build_text_link(element, scenegraph_id_start, base_offset)
-		else
-			error("[OptionsView] Unsupported widget type")
+				self:update_gamepad_layout_widget(gamepad_keymaps, using_left_handed_option)
+			elseif widget_type == "empty" then
+				size_y = element.size_y
+			elseif widget_type == "title" then
+				widget = self:build_title(element, scenegraph_id_start, base_offset)
+			elseif widget_type == "text_link" then
+				widget = self:build_text_link(element, scenegraph_id_start, base_offset)
+			else
+				error("[OptionsView] Unsupported widget type")
+			end
 		end
 
 		if widget then
@@ -1136,11 +1141,12 @@ OptionsView.build_slider_widget = function (self, element, scenegraph_id, base_o
 	local saved_value_cb = callback(self, saved_value_cb_name)
 	local setup_name = element.setup
 	local slider_image = element.slider_image
+	local slider_image_text = element.slider_image_text
 	local value, min, max, num_decimals, text, default_value = self[setup_name](self)
 
 	fassert(type(value) == "number", "Value type is wrong, need number, got %q", type(value))
 
-	local widget = definitions.create_slider_widget(text, element.tooltip_text, scenegraph_id, base_offset, slider_image)
+	local widget = definitions.create_slider_widget(text, element.tooltip_text, scenegraph_id, base_offset, slider_image, slider_image_text)
 	local content = widget.content
 	content.min = min
 	content.max = max
@@ -1404,6 +1410,7 @@ end
 
 OptionsView.on_enter = function (self)
 	ShowCursorStack.push()
+	self:_setup_text_buttons_width()
 	self:set_original_settings()
 	self:reset_changed_settings()
 	self:select_settings_title(1)
@@ -1689,6 +1696,18 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 		UISettings.use_subtitles = use_subtitles
 	end
 
+	local subtitles_font_size = user_settings.subtitles_font_size
+
+	if subtitles_font_size then
+		UISettings.subtitles_font_size = subtitles_font_size
+	end
+
+	local subtitles_background_opacity = user_settings.subtitles_background_opacity
+
+	if subtitles_background_opacity then
+		UISettings.subtitles_background_alpha = 2.55 * subtitles_background_opacity
+	end
+
 	local master_bus_volume = user_settings.master_bus_volume
 
 	if master_bus_volume then
@@ -1745,6 +1764,12 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 		end
 
 		self:set_wwise_parameter("dynamic_range_sound", setting)
+	end
+
+	local sound_channel_configuration = user_settings.sound_channel_configuration
+
+	if sound_channel_configuration then
+		Wwise.set_bus_config("ingame_mastering_channel", sound_channel_configuration)
 	end
 
 	local sound_panning_rule = user_settings.sound_panning_rule
@@ -2139,6 +2164,44 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 		end
 	end
 
+	local use_razer_chroma = user_settings.use_razer_chroma
+
+	if use_razer_chroma then
+		Managers.razer_chroma:load_packages()
+	else
+		Managers.razer_chroma:unload_packages()
+	end
+
+	local blood_enabled = user_settings.blood_enabled
+
+	if blood_enabled ~= nil then
+		Managers.state.blood:update_blood_enabled(blood_enabled)
+	end
+
+	local num_blood_decals = user_settings.num_blood_decals
+
+	if num_blood_decals ~= nil then
+		Managers.state.blood:update_num_blood_decals(num_blood_decals)
+	end
+
+	local screen_blood_enabled = user_settings.screen_blood_enabled
+
+	if screen_blood_enabled ~= nil then
+		Managers.state.blood:update_screen_blood_enabled(screen_blood_enabled)
+	end
+
+	local dismemberment_enabled = user_settings.dismemberment_enabled
+
+	if dismemberment_enabled ~= nil then
+		Managers.state.blood:update_dismemberment_enabled(dismemberment_enabled)
+	end
+
+	local ragdoll_enabled = user_settings.ragdoll_enabled
+
+	if ragdoll_enabled ~= nil then
+		Managers.state.blood:update_ragdoll_enabled(ragdoll_enabled)
+	end
+
 	self:apply_bot_spawn_priority_changes(bot_spawn_priority, show_bot_spawn_priority_popup)
 
 	if PLATFORM == "win32" then
@@ -2216,6 +2279,8 @@ OptionsView.apply_keymap_changes = function (self, keymaps_data, save_keymaps)
 		else
 			Managers.save:auto_save(SaveFileName, SaveData, callback(self, "cb_save_done"))
 		end
+
+		Managers.razer_chroma:lit_keybindings(true)
 	end
 
 	if Managers.state.event then
@@ -2283,6 +2348,10 @@ local HAS_TOBII = rawget(_G, "Tobii")
 OptionsView.update = function (self, dt)
 	if self.suspended then
 		return
+	end
+
+	if RESOLUTION_LOOKUP.modified then
+		self:_setup_text_buttons_width()
 	end
 
 	local disable_all_input = self.disable_all_input
@@ -2654,7 +2723,7 @@ OptionsView._handle_apply_changes = function (self)
 		self:apply_changes(self.changed_user_settings, self.changed_render_settings, self.session_bot_spawn_priority, self.changed_bot_spawn_priority)
 	end
 
-	if self.selected_settings_list.needs_apply_confirmation then
+	if PLATFORM == "win32" and self.selected_settings_list.needs_apply_confirmation then
 		local text = Localize("keep_changes_popup_text")
 		self.apply_popup_id = Managers.popup:queue_popup(text, Localize("popup_keep_changes_topic"), "keep_changes", Localize("popup_choice_keep"), "revert_changes", Localize("popup_choice_revert"))
 
@@ -2713,11 +2782,12 @@ end
 
 OptionsView.reset_to_default_slider = function (self, widget)
 	local content = widget.content
+	local style = widget.style
 	local default_value = content.default_value
 	content.value = default_value
 	content.internal_value = get_slider_value(content.min, content.max, default_value)
 
-	content:callback()
+	content:callback(style)
 end
 
 OptionsView.reset_to_default_checkbox = function (self, widget)
@@ -2730,10 +2800,11 @@ end
 
 OptionsView.reset_to_default_stepper = function (self, widget)
 	local content = widget.content
+	local style = widget.style
 	local default_value = content.default_value
 	content.current_selection = default_value
 
-	content:callback()
+	content:callback(style)
 end
 
 OptionsView.reset_to_default_option = function (self, widget)
@@ -4276,6 +4347,12 @@ OptionsView.cb_fullscreen = function (self, content)
 	else
 		self:set_widget_disabled("resolutions", false)
 	end
+
+	if value == "fullscreen" then
+		self:set_widget_disabled("minimize_on_alt_tab", false)
+	else
+		self:set_widget_disabled("minimize_on_alt_tab", true)
+	end
 end
 
 OptionsView.cb_adapter_setup = function (self)
@@ -4309,6 +4386,54 @@ OptionsView.cb_adapter = function (self, content, selected_index)
 	local value = options_values[content.current_selection]
 	local changed_user_settings = self.changed_user_settings
 	changed_user_settings.adapter_index = value
+end
+
+OptionsView.cb_minimize_on_alt_tab_setup = function (self)
+	local options = {
+		{
+			value = true,
+			text = Localize("menu_settings_on")
+		},
+		{
+			value = false,
+			text = Localize("menu_settings_off")
+		}
+	}
+	local minimize_on_alt_tab = Application.user_setting("fullscreen_minimize_on_alt_tab")
+	local selected_option = 1
+
+	for i, step in ipairs(options) do
+		if minimize_on_alt_tab == step.value then
+			selected_option = i
+
+			break
+		end
+	end
+
+	return selected_option, options, "menu_settings_minimize_on_alt_tab", true
+end
+
+OptionsView.cb_minimize_on_alt_tab_saved_value = function (self, widget)
+	local options_values = widget.content.options_values
+	local minimize_on_alt_tab = assigned(self.changed_user_settings.fullscreen_minimize_on_alt_tab, Application.user_setting("fullscreen_minimize_on_alt_tab"))
+	local selected_option = 1
+
+	for i, value in ipairs(options_values) do
+		if minimize_on_alt_tab == value then
+			selected_option = i
+
+			break
+		end
+	end
+
+	widget.content.current_selection = selected_option
+end
+
+OptionsView.cb_minimize_on_alt_tab = function (self, content, selected_index)
+	local options_values = content.options_values
+	local value = options_values[content.current_selection]
+	local changed_user_settings = self.changed_user_settings
+	changed_user_settings.fullscreen_minimize_on_alt_tab = value
 end
 
 OptionsView.cb_graphics_quality_setup = function (self)
@@ -8715,6 +8840,67 @@ OptionsView.cb_alien_fx = function (self, content)
 	GameSettingsDevelopment.use_alien_fx = options_values[current_selection]
 end
 
+OptionsView.cb_razer_chroma_setup = function (self)
+	print("cb_razer_chroma_setup")
+
+	local options = {
+		{
+			value = false,
+			text = Localize("menu_settings_off")
+		},
+		{
+			value = true,
+			text = Localize("menu_settings_on")
+		}
+	}
+	local use_razer_chroma = Application.user_setting("use_razer_chroma")
+
+	if use_razer_chroma == nil then
+		use_razer_chroma = false
+	end
+
+	if use_razer_chroma then
+		slot3 = 2
+	else
+		local selection = 1
+	end
+
+	if DefaultUserSettings.get("user_settings", "use_razer_chroma") then
+		slot4 = 2
+	else
+		local default_selection = 1
+	end
+
+	GameSettingsDevelopment.use_razer_chroma = use_razer_chroma
+
+	return selection, options, "menu_settings_razer_chroma", default_selection
+end
+
+OptionsView.cb_razer_chroma_saved_value = function (self, widget)
+	local use_razer_chroma = assigned(self.changed_user_settings.use_razer_chroma, Application.user_setting("use_razer_chroma"))
+
+	if use_razer_chroma == nil then
+		use_razer_chroma = false
+	end
+
+	slot3 = widget.content
+
+	if use_razer_chroma then
+		slot4 = 2
+	else
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
+end
+
+OptionsView.cb_razer_chroma = function (self, content)
+	local options_values = content.options_values
+	local current_selection = content.current_selection
+	self.changed_user_settings.use_razer_chroma = options_values[current_selection]
+	GameSettingsDevelopment.use_razer_chroma = options_values[current_selection]
+end
+
 OptionsView.cb_ssr_setup = function (self)
 	local options = {
 		{
@@ -8941,6 +9127,186 @@ end
 OptionsView.cb_blood_enabled = function (self, content)
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.blood_enabled = value
+end
+
+OptionsView.cb_screen_blood_enabled_setup = function (self)
+	local options = {
+		{
+			value = true,
+			text = Localize("menu_settings_on")
+		},
+		{
+			value = false,
+			text = Localize("menu_settings_off")
+		}
+	}
+	local screen_blood_enabled = Application.user_setting("screen_blood_enabled")
+	local default_value = DefaultUserSettings.get("user_settings", "screen_blood_enabled")
+
+	if screen_blood_enabled == nil then
+		screen_blood_enabled = default_value
+	end
+
+	local selected_option = 1
+
+	if not screen_blood_enabled then
+		selected_option = 2
+	end
+
+	local default_option = 1
+
+	if not default_value then
+		default_option = 2
+	end
+
+	return selected_option, options, "menu_settings_screen_blood_enabled", default_option
+end
+
+OptionsView.cb_screen_blood_enabled_saved_value = function (self, widget)
+	local options_values = widget.content.options_values
+	local screen_blood_enabled = assigned(self.changed_user_settings.screen_blood_enabled, Application.user_setting("screen_blood_enabled"))
+
+	if screen_blood_enabled == nil then
+		screen_blood_enabled = true
+	end
+
+	local selected_option = 1
+
+	for idx, value in pairs(options_values) do
+		if value == screen_blood_enabled then
+			selected_option = idx
+
+			break
+		end
+	end
+
+	widget.content.current_selection = selected_option
+	widget.content.selected_option = selected_option
+end
+
+OptionsView.cb_screen_blood_enabled = function (self, content)
+	local value = content.options_values[content.current_selection]
+	self.changed_user_settings.screen_blood_enabled = value
+end
+
+OptionsView.cb_dismemberment_enabled_setup = function (self)
+	local options = {
+		{
+			value = true,
+			text = Localize("menu_settings_on")
+		},
+		{
+			value = false,
+			text = Localize("menu_settings_off")
+		}
+	}
+	local dismemberment_enabled = Application.user_setting("dismemberment_enabled")
+	local default_value = DefaultUserSettings.get("user_settings", "dismemberment_enabled")
+
+	if dismemberment_enabled == nil then
+		dismemberment_enabled = default_value
+	end
+
+	local selected_option = 1
+
+	if not dismemberment_enabled then
+		selected_option = 2
+	end
+
+	local default_option = 1
+
+	if not default_value then
+		default_option = 2
+	end
+
+	return selected_option, options, "menu_settings_dismemberment_enabled", default_option
+end
+
+OptionsView.cb_dismemberment_enabled_saved_value = function (self, widget)
+	local options_values = widget.content.options_values
+	local dismemberment_enabled = assigned(self.changed_user_settings.dismemberment_enabled, Application.user_setting("dismemberment_enabled"))
+
+	if dismemberment_enabled == nil then
+		dismemberment_enabled = true
+	end
+
+	local selected_option = 1
+
+	for idx, value in pairs(options_values) do
+		if value == dismemberment_enabled then
+			selected_option = idx
+
+			break
+		end
+	end
+
+	widget.content.current_selection = selected_option
+	widget.content.selected_option = selected_option
+end
+
+OptionsView.cb_dismemberment_enabled = function (self, content)
+	local value = content.options_values[content.current_selection]
+	self.changed_user_settings.dismemberment_enabled = value
+end
+
+OptionsView.cb_ragdoll_enabled_setup = function (self)
+	local options = {
+		{
+			value = true,
+			text = Localize("menu_settings_on")
+		},
+		{
+			value = false,
+			text = Localize("menu_settings_off")
+		}
+	}
+	local ragdoll_enabled = Application.user_setting("ragdoll_enabled")
+	local default_value = DefaultUserSettings.get("user_settings", "ragdoll_enabled")
+
+	if ragdoll_enabled == nil then
+		ragdoll_enabled = default_value
+	end
+
+	local selected_option = 1
+
+	if not ragdoll_enabled then
+		selected_option = 2
+	end
+
+	local default_option = 1
+
+	if not default_value then
+		default_option = 2
+	end
+
+	return selected_option, options, "menu_settings_ragdoll_enabled", default_option
+end
+
+OptionsView.cb_ragdoll_enabled_saved_value = function (self, widget)
+	local options_values = widget.content.options_values
+	local ragdoll_enabled = assigned(self.changed_user_settings.ragdoll_enabled, Application.user_setting("ragdoll_enabled"))
+
+	if ragdoll_enabled == nil then
+		ragdoll_enabled = true
+	end
+
+	local selected_option = 1
+
+	for idx, value in pairs(options_values) do
+		if value == ragdoll_enabled then
+			selected_option = idx
+
+			break
+		end
+	end
+
+	widget.content.current_selection = selected_option
+	widget.content.selected_option = selected_option
+end
+
+OptionsView.cb_ragdoll_enabled = function (self, content)
+	local value = content.options_values[content.current_selection]
+	self.changed_user_settings.ragdoll_enabled = value
 end
 
 OptionsView.cb_chat_enabled_setup = function (self)

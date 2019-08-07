@@ -1,5 +1,6 @@
 require("scripts/unit_extensions/weapons/weapon_unit_extension")
 require("scripts/unit_extensions/weapons/ai_weapon_unit_extension")
+require("scripts/unit_extensions/weapons/single_weapon_unit_extension")
 
 WeaponSystem = class(WeaponSystem, ExtensionSystemBase)
 global_is_inside_inn = false
@@ -16,11 +17,13 @@ local RPCS = {
 	"rpc_start_geiser",
 	"rpc_end_geiser",
 	"rpc_weapon_blood",
-	"rpc_play_fx"
+	"rpc_play_fx",
+	"rpc_change_single_weapon_state"
 }
 local extensions = {
 	"WeaponUnitExtension",
-	"AiWeaponUnitExtension"
+	"AiWeaponUnitExtension",
+	"SingleWeaponUnitExtension"
 }
 
 WeaponSystem.init = function (self, entity_system_creation_context, system_name)
@@ -31,7 +34,9 @@ WeaponSystem.init = function (self, entity_system_creation_context, system_name)
 
 	network_event_delegate:register(self, unpack(RPCS))
 
-	global_is_inside_inn = entity_system_creation_context.startup_data.level_key == "inn_level"
+	local level_setting = LevelSettings[entity_system_creation_context.startup_data.level_key]
+	global_is_inside_inn = level_setting.hub_level or false
+	self._player_damage_forbidden = Managers.state.game_mode:setting("player_damage_forbidden")
 	self.game = Managers.state.network:game()
 	self.network_manager = Managers.state.network
 	self._beam_particle_effects = {}
@@ -62,7 +67,9 @@ end
 local ARGS = {
 	{
 		default = 0,
-		name = "power_level"
+		name = "power_level",
+		min = MIN_POWER_LEVEL,
+		max = MAX_POWER_LEVEL
 	},
 	{
 		default = 0,
@@ -103,6 +110,14 @@ local ARGS = {
 	{
 		default = false,
 		name = "attacker_is_level_unit"
+	},
+	{
+		default = false,
+		name = "first_hit"
+	},
+	{
+		default = 0,
+		name = "total_hits"
 	}
 }
 
@@ -129,6 +144,14 @@ WeaponSystem.send_rpc_attack_hit = function (self, damage_source_id, attacker_un
 
 		if val == nil then
 			val = setting.default
+		end
+
+		if setting.min and setting.max then
+			val = math.clamp(val, setting.min, setting.max)
+		elseif setting.min then
+			val = math.max(val, setting.min)
+		elseif setting.max then
+			val = math.min(val, setting.max)
 		end
 
 		RPC_ATTACK_HIT_TEMP[i] = val
@@ -158,7 +181,7 @@ end
 
 local BLACKBOARDS = BLACKBOARDS
 
-WeaponSystem.rpc_attack_hit = function (self, sender, damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, power_level, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, hit_ragdoll_actor_id, blocking, shield_break_procced, backstab_multiplier, attacker_is_level_unit)
+WeaponSystem.rpc_attack_hit = function (self, sender, damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, power_level, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, hit_ragdoll_actor_id, blocking, shield_break_procced, backstab_multiplier, attacker_is_level_unit, first_hit, total_hits)
 	local hit_unit = self.unit_storage:unit(hit_unit_id)
 	local attacker_unit = self.network_manager:game_object_or_level_unit(attacker_unit_id, attacker_is_level_unit)
 
@@ -166,8 +189,12 @@ WeaponSystem.rpc_attack_hit = function (self, sender, damage_source_id, attacker
 		return
 	end
 
-	if global_is_inside_inn and table.contains(PLAYER_AND_BOT_UNITS, hit_unit) and table.contains(PLAYER_AND_BOT_UNITS, attacker_unit) then
-		return
+	if self._player_damage_forbidden then
+		local player_manager = Managers.player
+
+		if player_manager:is_player_unit(hit_unit) and player_manager:is_player_unit(attacker_unit) then
+			return
+		end
 	end
 
 	local damage_source = NetworkLookup.damage_sources[damage_source_id]
@@ -177,7 +204,7 @@ WeaponSystem.rpc_attack_hit = function (self, sender, damage_source_id, attacker
 	local target_override_extension = (ScriptUnit.has_extension(attacker_unit, "target_override_system") and ScriptUnit.extension(attacker_unit, "target_override_system")) or nil
 	local status_extension = (ScriptUnit.has_extension(attacker_unit, "status_system") and ScriptUnit.extension(attacker_unit, "status_system")) or nil
 	local attacker_not_incapacitated = (status_extension and not status_extension:is_disabled()) or nil
-	local hit_unit_is_enemy = DamageUtils.is_enemy(hit_unit)
+	local hit_unit_is_enemy = DamageUtils.is_enemy(attacker_unit, hit_unit)
 	local hit_ragdoll_actor = NetworkLookup.hit_ragdoll_actors[hit_ragdoll_actor_id]
 	local damage_profile_name = NetworkLookup.damage_profiles[damage_profile_id]
 	local damage_profile = DamageProfileTemplates[damage_profile_name]
@@ -192,7 +219,7 @@ WeaponSystem.rpc_attack_hit = function (self, sender, damage_source_id, attacker
 
 	local shield_breaking_hit = false
 
-	if blackboard and blackboard.breed then
+	if blackboard and blackboard.breed and blackboard.breed.is_ai then
 		if hit_unit_is_enemy and uses_slot_system and target_override_extension and attacker_not_incapacitated then
 			local has_override_targets = next(blackboard.override_targets)
 
@@ -209,7 +236,7 @@ WeaponSystem.rpc_attack_hit = function (self, sender, damage_source_id, attacker
 
 	local t = self.t
 
-	DamageUtils.server_apply_hit(t, attacker_unit, hit_unit, hit_zone_name or "full", hit_position, attack_direction, hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit, backstab_multiplier)
+	DamageUtils.server_apply_hit(t, attacker_unit, hit_unit, hit_zone_name or "full", hit_position, attack_direction, hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit, backstab_multiplier, first_hit, total_hits)
 end
 
 WeaponSystem.destroy = function (self)
@@ -369,64 +396,6 @@ WeaponSystem.update_synced_flamethrower_particle_effects = function (self)
 	end
 end
 
-WeaponSystem._update_debug = function (self)
-	if script_data.player_mechanics_goodness_debug and not DEDICATED_SERVER then
-		local player = Managers.player:player_from_peer_id(Network.peer_id())
-
-		if not player then
-			return
-		end
-
-		local unit = player.player_unit
-
-		if Unit.alive(unit) then
-			if DebugKeyHandler.key_pressed("b", "take some damage", "player") then
-				DamageUtils.debug_deal_damage(unit)
-			elseif DebugKeyHandler.key_pressed("v", "kill player", "player", "left ctrl") then
-				local status_extension = ScriptUnit.extension(unit, "status_system")
-				status_extension.wounds = 0
-
-				DamageUtils.debug_deal_damage(unit, true)
-			elseif DebugKeyHandler.key_pressed("b", "revive player", "player", "left shift") then
-				local network_manager = self.network_manager
-				local unit_id = network_manager:unit_game_object_id(unit)
-				local status_extension = ScriptUnit.extension(unit, "status_system")
-
-				if status_extension:is_knocked_down() then
-					network_manager.network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.revived, true, unit_id, unit_id)
-					status_extension:set_respawned(true)
-				elseif status_extension:is_ready_for_assisted_respawn() then
-					network_manager.network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.assisted_respawning, true, unit_id, unit_id)
-					status_extension:set_assisted_respawning(true, unit)
-				end
-			elseif DebugKeyHandler.key_pressed("b", "heal player", "player", "left ctrl") then
-				DamageUtils.debug_heal(unit, 20)
-			elseif DebugKeyHandler.key_pressed("b", "block", "player", "left alt") then
-				local status_extension = ScriptUnit.extension(unit, "status_system")
-				local network_manager = self.network_manager
-				local unit_id = network_manager:unit_game_object_id(unit)
-
-				network_manager.network_transmit:send_rpc_server("rpc_set_blocking", unit_id, true)
-				status_extension:set_blocking(true)
-			end
-		end
-	end
-
-	if DebugKeyHandler.key_pressed("z", "clear weapon/material debug") then
-		local drawer = Managers.state.debug:drawer({
-			mode = "retained",
-			name = "weapon_system"
-		})
-
-		drawer:reset()
-		Managers.state.debug:drawer({
-			mode = "retained",
-			name = "DEBUG_DRAW_IMPACT_DECAL_HIT"
-		})
-		drawer:reset()
-	end
-end
-
 WeaponSystem.rpc_ai_weapon_shoot_start = function (self, sender, owner_unit_id, shoot_time)
 	local owner_unit = Managers.state.unit_storage:unit(owner_unit_id)
 
@@ -473,6 +442,36 @@ WeaponSystem.rpc_ai_weapon_shoot_end = function (self, sender, owner_unit_id)
 	local ai_weapon_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
 
 	ai_weapon_extension:shoot_end(owner_unit)
+end
+
+WeaponSystem.rpc_change_single_weapon_state = function (self, sender, owner_unit_id, state_id)
+	local owner_unit = Managers.state.unit_storage:unit(owner_unit_id)
+
+	if not owner_unit then
+		return
+	end
+
+	local single_weapon_state = NetworkLookup.single_weapon_states[state_id]
+	local received_via_network = true
+
+	self:change_single_weapon_state(owner_unit, single_weapon_state, sender, received_via_network)
+end
+
+WeaponSystem.change_single_weapon_state = function (self, owner_unit, state, except_peer, received_via_network)
+	local blackboard = BLACKBOARDS[owner_unit]
+	local weapon_unit = blackboard.weapon_unit
+	local single_weapon_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
+
+	single_weapon_extension:change_state(state)
+
+	local owner_unit_id = Managers.state.unit_storage:go_id(owner_unit)
+	local state_id = NetworkLookup.single_weapon_states[state]
+
+	if self.is_server then
+		self.network_transmit:send_rpc_clients_except("rpc_change_single_weapon_state", except_peer, owner_unit_id, state_id)
+	elseif not received_via_network then
+		self.network_transmit:send_rpc_server("rpc_change_single_weapon_state", owner_unit_id, state_id)
+	end
 end
 
 WeaponSystem.rpc_start_beam = function (self, sender, unit_id, beam_effect_id, beam_end_effect_id, range)
@@ -585,6 +584,10 @@ WeaponSystem.rpc_start_flamethrower = function (self, sender, unit_id, flamethro
 				weapon_unit = weapon_unit
 			}
 		end
+
+		if self.is_server then
+			self.network_transmit:send_rpc_clients_except("rpc_start_flamethrower", sender, unit_id, flamethrower_effect_id)
+		end
 	end
 end
 
@@ -598,6 +601,10 @@ WeaponSystem.rpc_end_flamethrower = function (self, sender, unit_id)
 			World.stop_spawning_particles(world, data.flamethrower_effect)
 
 			self._flamethrower_particle_effects[unit] = nil
+
+			if self.is_server then
+				self.network_transmit:send_rpc_clients_except("rpc_end_flamethrower", sender, unit_id)
+			end
 		end
 	end
 end

@@ -1389,8 +1389,6 @@ PopupHandler.init = function (self, context, from_manager)
 		enabled = Colors.get_color_table_with_alpha("white", 255),
 		disabled = Colors.get_color_table_with_alpha("gray", 255)
 	}
-	self.unblocked_services = {}
-	self.unblocked_services_n = 0
 	self.mock_input_manager = MockInputManager:new()
 end
 
@@ -1463,15 +1461,11 @@ PopupHandler.acquire_input = function (self, ignore_cursor_stack)
 	local input_manager = self.input_manager
 
 	self:release_input(true)
-
-	self.unblocked_services_n = input_manager:get_unblocked_services(nil, nil, self.unblocked_services)
-
-	input_manager:device_block_services("keyboard", 1, self.unblocked_services, self.unblocked_services_n, "popup")
-	input_manager:device_block_services("gamepad", 1, self.unblocked_services, self.unblocked_services_n, "popup")
-	input_manager:device_block_services("mouse", 1, self.unblocked_services, self.unblocked_services_n, "popup")
-	input_manager:device_unblock_service("keyboard", 1, "popup")
-	input_manager:device_unblock_service("gamepad", 1, "popup")
-	input_manager:device_unblock_service("mouse", 1, "popup")
+	input_manager:capture_input({
+		"keyboard",
+		"gamepad",
+		"mouse"
+	}, 1, "popup", "PopupHandler")
 
 	if not ignore_cursor_stack then
 		ShowCursorStack.push()
@@ -1481,15 +1475,11 @@ end
 PopupHandler.release_input = function (self, ignore_cursor_stack)
 	local input_manager = self.input_manager
 
-	input_manager:device_block_service("keyboard", 1, "popup")
-	input_manager:device_block_service("gamepad", 1, "popup")
-	input_manager:device_block_service("mouse", 1, "popup")
-	input_manager:device_unblock_services("keyboard", 1, self.unblocked_services, self.unblocked_services_n)
-	input_manager:device_unblock_services("gamepad", 1, self.unblocked_services, self.unblocked_services_n)
-	input_manager:device_unblock_services("mouse", 1, self.unblocked_services, self.unblocked_services_n)
-	table.clear(self.unblocked_services)
-
-	self.unblocked_services_n = 0
+	input_manager:release_input({
+		"keyboard",
+		"gamepad",
+		"mouse"
+	}, 1, "popup", "PopupHandler")
 
 	if not ignore_cursor_stack then
 		ShowCursorStack.pop()

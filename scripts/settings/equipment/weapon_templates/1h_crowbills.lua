@@ -1,5 +1,5 @@
 local push_radius = 2
-local time_mod = 1
+local time_mod = 0.95
 local weapon_template = weapon_template or {}
 weapon_template.actions = {
 	action_one = {
@@ -7,6 +7,7 @@ weapon_template.actions = {
 			kind = "melee_start",
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_charge_left",
+			attack_hold_input = "action_one_hold",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
@@ -747,7 +748,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0,
+					start_time = 0.3,
 					action = "action_two",
 					release_required = "action_two_hold",
 					input = "action_two_hold"
@@ -755,6 +756,12 @@ weapon_template.actions = {
 				{
 					sub_action = "default",
 					start_time = 0.5,
+					action = "action_two",
+					input = "action_two_hold"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
 				}

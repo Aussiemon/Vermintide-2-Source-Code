@@ -564,4 +564,12 @@ Debug.test_despawn_unit = function (profile_name, career_index)
 	end
 end
 
+Debug.create_jira_issue = function ()
+	local valid, err = pcall(require, "core/plugins/reporter")
+
+	if valid then
+		Reporter.create_jira_issue("honduras")
+	end
+end
+
 return

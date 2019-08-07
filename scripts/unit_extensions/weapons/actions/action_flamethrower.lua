@@ -25,6 +25,8 @@ ActionFlamethrower.init = function (self, world, item_name, is_server, owner_uni
 end
 
 ActionFlamethrower.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
+	ActionFlamethrower.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level)
+
 	self.current_action = new_action
 	self.power_level = power_level
 	self.state = "waiting_to_shoot"
@@ -44,6 +46,10 @@ ActionFlamethrower.client_owner_start_action = function (self, new_action, t, ch
 
 	self.max_flame_time = slot5
 
+	if chain_action_data and chain_action_data.charge_level and self.charge_level and self.charge_level >= 1 then
+		self.buff_extension:trigger_procs("on_full_charge_action", new_action, t, chain_action_data)
+	end
+
 	table.clear(self.old_targets)
 	table.clear(self.targets)
 end
@@ -54,6 +60,10 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 	local owner_unit = self.owner_unit
 	local first_person_unit = self.first_person_unit
 	local current_action = self.current_action
+	local owner_player = self.owner_player
+	local bot_player = owner_player.bot_player
+	local network_transmit = self.network_transmit
+	local is_server = self.is_server
 
 	if self.state == "waiting_to_shoot" and self.time_to_shoot <= t then
 		self.state = "shooting"
@@ -67,16 +77,20 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 		local flamethrower_effect_3p = current_action.particle_effect_flames_3p
 		local flamethrower_effect_3p_id = NetworkLookup.effects[flamethrower_effect_3p]
 
-		if not self.owner_player.bot_player then
+		if not bot_player then
 			self._flamethrower_effect = World.create_particles(world, flamethrower_effect, muzzle_position, muzzle_rotation)
 
 			World.link_particles(world, self._flamethrower_effect, weapon_unit, muzzle_node, Matrix4x4.identity(), "destroy")
 		end
 
-		if self.is_server or LEVEL_EDITOR_TEST then
-			self.network_transmit:send_rpc_all("rpc_start_flamethrower", go_id, flamethrower_effect_3p_id)
+		if is_server or LEVEL_EDITOR_TEST then
+			if bot_player then
+				network_transmit:send_rpc_all("rpc_start_flamethrower", go_id, flamethrower_effect_3p_id)
+			else
+				network_transmit:send_rpc_clients("rpc_start_flamethrower", go_id, flamethrower_effect_3p_id)
+			end
 		else
-			self.network_transmit:send_rpc_server("rpc_start_flamethrower", go_id, flamethrower_effect_3p_id)
+			network_transmit:send_rpc_server("rpc_start_flamethrower", go_id, flamethrower_effect_3p_id)
 		end
 
 		if self._source_id then
@@ -126,6 +140,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 		end
 
 		local do_damage = current_action.damage_interval
+		local buff_target_number = 0
 
 		if do_damage then
 			if current_action.damage_interval <= self.damage_timer then
@@ -146,6 +161,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 						local node = "j_spine"
 
 						if breed then
+							buff_target_number = buff_target_number + 1
 							local rand = math.random()
 							local chance = 1 / #NODES
 							local cumalative_value = 0
@@ -180,7 +196,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 								override_damage_profile = current_action.initial_damage_profile or current_action.damage_profile or "default"
 							end
 
-							DamageUtils.process_projectile_hit(world, self.item_name, self.owner_unit, self.is_server, result, current_action, direction, true, current_target, nil, self._is_critical_strike, power_level, override_damage_profile)
+							DamageUtils.process_projectile_hit(world, self.item_name, owner_unit, is_server, result, current_action, direction, true, current_target, nil, self._is_critical_strike, power_level, override_damage_profile, buff_target_number)
 						end
 					end
 				end
@@ -196,8 +212,9 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 
 				if result then
 					local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
-					local owner_player = self.owner_player
 					local friendly_fire = DamageUtils.allow_friendly_fire_ranged(difficulty_settings, owner_player)
+					local side = Managers.state.side.side_by_unit[self.owner_unit]
+					local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 
 					for _, hit in pairs(result) do
 						local hit_actor = hit[INDEX_ACTOR]
@@ -205,7 +222,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 						local breed = hit_unit and Unit.get_data(hit_unit, "breed")
 
 						if potential_hit_unit ~= self.owner_unit and not breed then
-							if table.contains(PLAYER_AND_BOT_UNITS, potential_hit_unit) then
+							if table.contains(player_and_bot_units, potential_hit_unit) then
 								if friendly_fire then
 									hit_unit = potential_hit_unit
 
@@ -220,7 +237,9 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 					end
 
 					if hit_unit and result then
-						DamageUtils.process_projectile_hit(world, self.item_name, self.owner_unit, self.is_server, result, current_action, player_direction, true, hit_unit, nil, self._is_critical_strike, self.power_level)
+						local check_buff = false
+
+						DamageUtils.process_projectile_hit(world, self.item_name, self.owner_unit, is_server, result, current_action, player_direction, check_buff, hit_unit, nil, self._is_critical_strike, self.power_level)
 					end
 				end
 			end
@@ -231,6 +250,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 		self.state = "shot"
 
 		self:_stop_fx()
+		self.buff_extension:trigger_procs("on_spell_used", current_action)
 	end
 end
 
@@ -248,7 +268,11 @@ ActionFlamethrower._stop_fx = function (self)
 	local go_id = self.unit_id
 
 	if self.is_server or LEVEL_EDITOR_TEST then
-		self.network_transmit:send_rpc_all("rpc_end_flamethrower", go_id)
+		if self.owner_player.bot_player then
+			self.network_transmit:send_rpc_all("rpc_end_flamethrower", go_id)
+		else
+			self.network_transmit:send_rpc_clients("rpc_end_flamethrower", go_id)
+		end
 	else
 		self.network_transmit:send_rpc_server("rpc_end_flamethrower", go_id)
 	end
@@ -312,46 +336,47 @@ ActionFlamethrower._clear_targets = function (self)
 	self.old_targets = current_targets
 end
 
+local hit_units = {}
+
 ActionFlamethrower._select_targets = function (self, world, show_outline)
 	local owner_unit = self.owner_unit
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-	local player_position = first_person_extension:current_position()
+	local position_offset = Vector3(0, 0, -0.4)
+	local player_position = first_person_extension:current_position() + position_offset
 	local first_person_unit = self.first_person_unit
 	local player_rotation = Unit.world_rotation(first_person_unit, 0)
 	local player_direction = Vector3.normalize(Quaternion.forward(player_rotation))
 	local ignore_hitting_allies = not Managers.state.difficulty:get_difficulty_settings().friendly_fire_ranged
 	local start_point = player_position + player_direction * POSITION_TWEAK + player_direction * SPRAY_RADIUS
 	local broadphase_radius = 6
+	local blackboard = BLACKBOARDS[owner_unit]
+	local side = blackboard.side
 	local ai_units = {}
 	local ai_units_n = AiUtils.broadphase_query(player_position + player_direction * broadphase_radius, broadphase_radius, ai_units)
 	local physics_world = World.get_data(world, "physics_world")
 
 	PhysicsWorld.prepare_actors_for_overlap(physics_world, start_point, SPRAY_RANGE * SPRAY_RANGE)
 
-	if ai_units then
-		local num_hits = ai_units_n
+	if ai_units_n > 0 then
 		local targets = self.targets
 		local v, q, m = Script.temp_count()
-		local hit_units = {}
+
+		table.clear(hit_units)
+
 		local num_hit = 0
 
-		for i = 1, num_hits, 1 do
+		for i = 1, ai_units_n, 1 do
 			local hit_unit = ai_units[i]
 			local hit_position = POSITION_LOOKUP[hit_unit] + Vector3.up()
 
 			if not hit_units[hit_unit] then
-				local breed = Unit.get_data(hit_unit, "breed")
+				local is_enemy = side.enemy_units_lookup[hit_unit]
 
-				if table.contains(PLAYER_AND_BOT_UNITS, hit_unit) and not ignore_hitting_allies then
-					if self:_is_infront_player(player_position, player_direction, hit_position) and self:_check_within_cone(start_point, player_direction, hit_unit, true) then
-						targets[#targets + 1] = hit_unit
-						hit_units[hit_unit] = true
-					end
-				elseif breed and self:_is_infront_player(player_position, player_direction, hit_position) and self:_check_within_cone(start_point, player_direction, hit_unit) then
+				if (is_enemy or not ignore_hitting_allies) and self:_is_infront_player(player_position, player_direction, hit_position) and self:_check_within_cone(start_point, player_direction, hit_unit, is_enemy) then
 					targets[#targets + 1] = hit_unit
 					hit_units[hit_unit] = true
 
-					if ScriptUnit.extension(hit_unit, "health_system"):is_alive() then
+					if is_enemy and ScriptUnit.extension(hit_unit, "health_system"):is_alive() then
 						num_hit = num_hit + 1
 					end
 				end
@@ -366,19 +391,13 @@ ActionFlamethrower._select_targets = function (self, world, show_outline)
 	end
 end
 
-ActionFlamethrower._check_within_cone = function (self, player_position, player_direction, target, player)
+ActionFlamethrower._check_within_cone = function (self, player_position, player_direction, target, is_enemy)
 	local target_position = Unit.world_position(target, Unit.node(target, "j_neck"))
 	local target_direction = Vector3.normalize(target_position - player_position)
 	local target_cos_alpha = Vector3.dot(player_direction, target_direction)
-	local dot_threshold = nil
+	local dot_threshold = (is_enemy and self.dot_check) or 0.99
 
-	if table.contains(PLAYER_AND_BOT_UNITS, target) then
-		dot_threshold = 0.99
-	else
-		dot_threshold = self.dot_check
-	end
-
-	if dot_threshold <= target_cos_alpha then
+	if target_cos_alpha >= dot_threshold then
 		return true
 	end
 

@@ -201,13 +201,14 @@ CharacterStateHelper.move_on_ground = function (first_person_extension, input_ex
 	locomotion_extension:set_wanted_velocity(move_direction * speed)
 end
 
-CharacterStateHelper.update_soft_collision_movement = function (first_person_extension, status_extension, locomotion_extension, unit, world, current_animation)
+CharacterStateHelper.update_soft_collision_movement = function (first_person_extension, status_extension, locomotion_extension, unit, world, current_animation, side)
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local final_velocity = Vector3(0, 0, 0)
 	local own_position = POSITION_LOOKUP[unit]
 	local rotation = Unit.local_rotation(unit, 0)
+	local player_units = side.PLAYER_UNITS
 
-	for index, player_unit in pairs(PLAYER_UNITS) do
+	for index, player_unit in pairs(player_units) do
 		if player_unit ~= unit and StatusUtils.use_soft_collision(player_unit) then
 			local distance = own_position - POSITION_LOOKUP[player_unit]
 			local height_diference = math.abs(Vector3.z(distance))
@@ -447,16 +448,16 @@ CharacterStateHelper.look = function (input_extension, viewport_name, first_pers
 	first_person_extension:set_look_delta(look_delta)
 end
 
-CharacterStateHelper.look_limited_rotation_freedom = function (input_extension, viewport_name, first_person_extension, ledge_unit, unit, max_radians_yaw, max_radians_pitch, status_extension, inventory_extension)
+CharacterStateHelper.look_limited_rotation_freedom = function (input_extension, viewport_name, first_person_extension, unit, rotation, max_radians_yaw, max_radians_pitch, status_extension, inventory_extension, override_sens)
 	local camera_manager = Managers.state.camera
-	local look_sensitivity = (camera_manager:has_viewport(viewport_name) and Managers.state.camera:fov(viewport_name) / 0.785) or 1
+	local look_sensitivity = override_sens or (camera_manager:has_viewport(viewport_name) and Managers.state.camera:fov(viewport_name) / 0.785) or 1
 	local is_3p = false
 	local look_delta = CharacterStateHelper.get_look_input(input_extension, status_extension, inventory_extension, is_3p)
 	look_delta = look_delta * look_sensitivity
 	local new_look_delta = look_delta
 
 	if max_radians_yaw then
-		local ladder_yaw = Quaternion.yaw(Unit.local_rotation(ledge_unit, 0))
+		local ladder_yaw = Quaternion.yaw(rotation)
 		local own_yaw = Quaternion.yaw(Unit.local_rotation(first_person_extension.first_person_unit, 0))
 		local dif_yaw = ladder_yaw - own_yaw
 		local look_delta_x = Vector3.x(new_look_delta)
@@ -473,7 +474,7 @@ CharacterStateHelper.look_limited_rotation_freedom = function (input_extension, 
 	end
 
 	if max_radians_pitch then
-		local ladder_pitch = Quaternion.pitch(Unit.local_rotation(ledge_unit, 0))
+		local ladder_pitch = Quaternion.pitch(rotation)
 		local own_pitch = Quaternion.pitch(Unit.local_rotation(first_person_extension.first_person_unit, 0))
 		local dif_pitch = ladder_pitch - own_pitch
 		local look_delta_y = Vector3.y(new_look_delta)
@@ -624,7 +625,7 @@ CharacterStateHelper.set_is_on_ledge = function (ledge_unit, unit, on_ledge, is_
 	end
 end
 
-CharacterStateHelper.get_buffered_input = function (input_id, input_extension, no_buffer, doubleclick_window, softbutton_threshold)
+CharacterStateHelper.get_buffered_input = function (input_id, input_extension, no_buffer, doubleclick_window, softbutton_threshold, is_melee_slot)
 	local input = nil
 
 	if input_id then
@@ -637,6 +638,7 @@ CharacterStateHelper.get_buffered_input = function (input_id, input_extension, n
 		if not no_buffer then
 			if input then
 				input_extension:add_buffer(input_id, doubleclick_window)
+				input_extension:add_buffer(input_id, doubleclick_window, is_melee_slot)
 			else
 				input = input_extension:get_buffer(input_id)
 			end
@@ -675,7 +677,7 @@ CharacterStateHelper.wield_input = function (input_extension, inventory_extensio
 			local wield_input = slot.wield_input
 			local name = slot.name
 
-			if equipment.slots[name] and CharacterStateHelper.get_buffered_input(wield_input, input_extension) then
+			if equipment.slots[name] and CharacterStateHelper.get_buffered_input(wield_input, input_extension, nil, nil, nil, wielded_slot_name == "slot_melee") then
 				slot_to_wield = name
 
 				break
@@ -683,7 +685,7 @@ CharacterStateHelper.wield_input = function (input_extension, inventory_extensio
 		end
 	end
 
-	if not slot_to_wield and CharacterStateHelper.get_buffered_input("wield_switch", input_extension) then
+	if not slot_to_wield and CharacterStateHelper.get_buffered_input("wield_switch", input_extension, nil, nil, nil, wielded_slot_name == "slot_melee") then
 		if current_slot.name ~= "slot_melee" then
 			slot_to_wield = "slot_melee"
 		else
@@ -795,7 +797,7 @@ CharacterStateHelper.get_current_action_data = function (left_hand_weapon_extens
 	return current_action_settings, current_action_extension, current_action_hand
 end
 
-CharacterStateHelper._check_chain_action = function (wield_input, action_data, item_template, current_action_extension, input_extension, inventory_extension, unit, t)
+CharacterStateHelper._check_chain_action = function (wield_input, action_data, item_template, current_action_extension, input_extension, inventory_extension, unit, t, ammo_extension)
 	local new_action, new_sub_action, send_buffer, clear_buffer = nil
 	local release_required = action_data.release_required
 	local input_extra_requirement = true
@@ -829,7 +831,9 @@ CharacterStateHelper._check_chain_action = function (wield_input, action_data, i
 	end
 
 	if input_extra_requirement and not blocked then
-		input = CharacterStateHelper.get_buffered_input(input_id, input_extension, no_buffer, doubleclick_window, softbutton_threshold)
+		local equipment = inventory_extension:equipment()
+		local wielded_slot_name = equipment.wielded_slot
+		input = CharacterStateHelper.get_buffered_input(input_id, input_extension, no_buffer, doubleclick_window, softbutton_threshold, wielded_slot_name == "slot_melee")
 	end
 
 	if not input then
@@ -854,11 +858,15 @@ CharacterStateHelper._check_chain_action = function (wield_input, action_data, i
 				new_sub_action = sub_action
 				local action_settings = item_template.actions[new_action] and item_template.actions[new_action][new_sub_action]
 				local condition_func = action_settings and action_settings.chain_condition_func
+				local condition_failed = false
+
+				if condition_func then
+					condition_failed = not condition_func(unit, input_extension, ammo_extension)
+				end
+
 				local cooldown = CharacterStateHelper:_check_cooldown(current_action_extension, new_action, t)
 
-				if not action_settings or (condition_func and not condition_func(unit, input_extension)) or cooldown then
-					new_action, new_sub_action = nil
-				else
+				if action_settings and not condition_failed and not cooldown then
 					send_buffer = action_data.send_buffer
 					clear_buffer = action_data.clear_buffer
 
@@ -878,20 +886,28 @@ local career_chain_action = {
 	input = "action_career"
 }
 
-CharacterStateHelper._get_chain_action_data = function (item_template, current_action_extension, current_action_settings, input_extension, inventory_extension, unit, t, is_bot_player)
-	local done, _, new_action, new_sub_action, wield_input, send_buffer, clear_buffer = nil
+CharacterStateHelper._get_chain_action_data = function (item_template, current_action_extension, current_action_settings, input_extension, inventory_extension, unit, t, ammo_extension)
+	local done, new_action, new_sub_action, wield_input, send_buffer, clear_buffer = nil
 	local career_extension = ScriptUnit.has_extension(unit, "career_system")
 
 	if career_extension then
 		local lookup_data = current_action_settings.lookup_data
 		local current_action_name = lookup_data.action_name
-		local activated_ability_data = career_extension:get_activated_ability_data()
-		local action_name = activated_ability_data.action_name
+		local num_abilities = career_extension:ability_amount()
 
-		if action_name and action_name ~= current_action_name then
-			local action_data = career_chain_action
-			action_data.action = action_name
-			_, new_action, new_sub_action, wield_input, send_buffer, clear_buffer = CharacterStateHelper._check_chain_action(wield_input, action_data, item_template, current_action_extension, input_extension, inventory_extension, unit, t)
+		for i = 1, num_abilities, 1 do
+			local activated_ability_data = career_extension:get_activated_ability_data(i)
+			local action_name = activated_ability_data.action_name
+
+			if action_name and action_name ~= current_action_name then
+				local action_data = career_chain_action
+				action_data.action = action_name
+				done, new_action, new_sub_action, wield_input, send_buffer, clear_buffer = CharacterStateHelper._check_chain_action(wield_input, action_data, item_template, current_action_extension, input_extension, inventory_extension, unit, t, ammo_extension)
+
+				if done then
+					break
+				end
+			end
 		end
 	end
 
@@ -900,7 +916,7 @@ CharacterStateHelper._get_chain_action_data = function (item_template, current_a
 
 		for i = 1, #chain_actions, 1 do
 			local action_data = chain_actions[i]
-			done, new_action, new_sub_action, wield_input, send_buffer, clear_buffer = CharacterStateHelper._check_chain_action(wield_input, action_data, item_template, current_action_extension, input_extension, inventory_extension, unit, t)
+			done, new_action, new_sub_action, wield_input, send_buffer, clear_buffer = CharacterStateHelper._check_chain_action(wield_input, action_data, item_template, current_action_extension, input_extension, inventory_extension, unit, t, ammo_extension)
 
 			if done then
 				break
@@ -925,21 +941,21 @@ local function validate_action(unit, action_name, sub_action_name, action_settin
 	local input_id = action_settings.input_override or action_name
 	local skip_hold = action_settings.do_not_validate_with_hold
 	local hold_input = not skip_hold and action_settings.hold_input
+	local attack_hold_input = action_settings.attack_hold_input
 	local wield_input = CharacterStateHelper.wield_input(input_extension, inventory_extension, input_id)
 	local buffered_input = input_extension:get_buffer(input_id)
 	local action_input = input_extension:get(input_id)
 	local action_hold_input = hold_input and input_extension:get(hold_input)
+	local attack_hold_input = attack_hold_input and input_extension:get(attack_hold_input)
 	local allow_toggle = action_settings.allow_hold_toggle and input_extension.toggle_alternate_attack
 	local hold_or_toggle_input = (allow_toggle and action_input) or (not allow_toggle and (action_input or action_hold_input))
 
-	if only_check_condition or wield_input or buffered_input or hold_or_toggle_input then
+	if only_check_condition or wield_input or buffered_input or hold_or_toggle_input or attack_hold_input then
 		local condition_func = action_settings.condition_func
-		local condition_passed = nil
+		local condition_passed = true
 
 		if condition_func then
 			condition_passed = condition_func(unit, input_extension, ammo_extension)
-		else
-			condition_passed = true
 		end
 
 		local cooldown = CharacterStateHelper:_check_cooldown(current_action_extension, action_name, t)
@@ -980,17 +996,16 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 	local uninterruptible_heavy = false
 
 	if current_action_settings then
-		local damage_profile = current_action_settings.damage_profile
-		uninterruptible_heavy = damage_profile and DamageProfileTemplates[damage_profile].charge_value == "heavy_attack" and buff_extension:has_buff_perk("uninterruptible_heavy")
+		local action_type = current_action_settings.kind
+		uninterruptible_heavy = action_type and action_type == "melee_start" and buff_extension:has_buff_perk("uninterruptible_heavy")
 	end
 
 	local can_interrupt, reloading = nil
 	local player = Managers.player:owner(unit)
 	local is_bot_player = player and player.bot_player
+	local ammo_extension = (left_hand_weapon_extension and left_hand_weapon_extension.ammo_extension) or (right_hand_weapon_extension and right_hand_weapon_extension.ammo_extension)
 
 	if recent_damage_type and weapon_action_interrupt_damage_types[recent_damage_type] then
-		local ammo_extension = (left_hand_weapon_extension and left_hand_weapon_extension.ammo_extension) or (right_hand_weapon_extension and right_hand_weapon_extension.ammo_extension)
-
 		if ammo_extension then
 			if left_hand_weapon_extension and left_hand_weapon_extension.ammo_extension then
 				reloading = left_hand_weapon_extension.ammo_extension:is_reloading()
@@ -1047,7 +1062,7 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 	local next_action_init_data = nil
 
 	if current_action_settings then
-		new_action, new_sub_action = CharacterStateHelper._get_chain_action_data(item_template, current_action_extension, current_action_settings, input_extension, inventory_extension, unit, t)
+		new_action, new_sub_action = CharacterStateHelper._get_chain_action_data(item_template, current_action_extension, current_action_settings, input_extension, inventory_extension, unit, t, ammo_extension)
 
 		if not new_action then
 			if current_action_settings.allow_hold_toggle and input_extension.toggle_alternate_attack then
@@ -1088,7 +1103,6 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 
 		item_template.next_action = nil
 	else
-		local ammo_extension = (left_hand_weapon_extension and left_hand_weapon_extension.ammo_extension) or (right_hand_weapon_extension and right_hand_weapon_extension.ammo_extension)
 		local highest_priority_action = 0
 
 		for action_name, sub_actions in pairs(item_template.actions) do
@@ -1379,6 +1393,10 @@ end
 
 CharacterStateHelper.is_pushed = function (status_extension)
 	return status_extension:is_pushed()
+end
+
+CharacterStateHelper.is_charged = function (status_extension)
+	return status_extension:is_charged()
 end
 
 CharacterStateHelper.is_block_broken = function (status_extension)

@@ -1,7 +1,7 @@
 return {
 	description = "description_mutator_bloodlust",
 	display_name = "display_name_mutator_bloodlust",
-	debuff_start_time = 6.25,
+	debuff_start_time = 4.25,
 	icon = "mutator_icon_bloodlust",
 	amount_of_stacks_per_breed = {
 		chaos_vortex_sorcerer = 2,

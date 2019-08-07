@@ -13,7 +13,7 @@ local wounding_damage_types = {
 }
 HitEffectsChaosExaltedChampion = {
 	default = {
-		husk_hit_effect_name = "fx/impact_blood",
+		husk_hit_effect_name = "fx/impact_blood_chaos",
 		armour_type = "metal_hollow",
 		animations = {
 			"hit_reaction"
@@ -30,7 +30,7 @@ HitEffectsChaosExaltedChampion = {
 		}
 	},
 	default_death = {
-		husk_hit_effect_name = "fx/impact_blood_02",
+		husk_hit_effect_name = "fx/impact_blood_chaos_02",
 		armour_type = "metal_hollow",
 		extra_conditions = {
 			death = true
@@ -52,8 +52,8 @@ HitEffectsChaosExaltedChampion = {
 		}
 	},
 	shot_default = {
-		hit_effect_name = "fx/impact_blood_02",
-		husk_hit_effect_name = "fx/impact_blood_02",
+		hit_effect_name = "fx/impact_blood_chaos_02",
+		husk_hit_effect_name = "fx/impact_blood_chaos_02",
 		armour_type = "metal_hollow",
 		extra_conditions = {
 			damage = true,
@@ -69,25 +69,9 @@ HitEffectsChaosExaltedChampion = {
 			"hit_reaction"
 		}
 	},
-	shot_torso_crater_front = {
-		inherits = "shot_default",
-		flow_event = "wound_crater_torso_front",
-		extra_conditions = {
-			hit_zone = "torso",
-			hit_direction = "front"
-		}
-	},
-	shot_torso_crater_back = {
-		inherits = "shot_default",
-		flow_event = "wound_crater_torso_back",
-		extra_conditions = {
-			hit_zone = "torso",
-			hit_direction = "back"
-		}
-	},
 	arrow_default = {
-		hit_effect_name = "fx/impact_blood_02",
-		husk_hit_effect_name = "fx/impact_blood_02",
+		hit_effect_name = "fx/impact_blood_chaos_02",
+		husk_hit_effect_name = "fx/impact_blood_chaos_02",
 		armour_type = "flesh",
 		extra_conditions = {
 			damage = true,
@@ -107,8 +91,8 @@ HitEffectsChaosExaltedChampion = {
 		}
 	},
 	poison_arrow = {
-		husk_hit_effect_name = "fx/impact_blood_02",
-		hit_effect_name = "fx/impact_blood_02",
+		husk_hit_effect_name = "fx/impact_blood_chaos_02",
+		hit_effect_name = "fx/impact_blood_chaos_02",
 		extra_conditions = {
 			damage_type = {
 				"arrow_poison"
@@ -233,7 +217,7 @@ HitEffectsChaosExaltedChampion = {
 		}
 	},
 	wound_default = {
-		husk_hit_effect_name = "fx/impact_blood_02",
+		husk_hit_effect_name = "fx/impact_blood_chaos_02",
 		armour_type = "metal_hollow",
 		extra_conditions = {
 			death = false,

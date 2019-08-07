@@ -10,10 +10,6 @@ return {
 		method.same_breeds = true
 		method.coordinated_trickle_time = 1
 		method.always_coordinated = true
-		method.spawn_cooldown = {
-			60,
-			90
-		}
 		method.after_safe_zone_delay = {
 			30,
 			70

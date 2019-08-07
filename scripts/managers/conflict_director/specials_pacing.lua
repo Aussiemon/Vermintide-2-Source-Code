@@ -1,14 +1,14 @@
 SpecialsPacing = class(SpecialsPacing)
 local ai_utils_unit_alive = AiUtils.unit_alive
-local player_and_bot_positions = PLAYER_AND_BOT_POSITIONS
 
-SpecialsPacing.init = function (self, nav_world)
+SpecialsPacing.init = function (self, nav_world, specials_side)
 	self.nav_world = nav_world
 	self._specials_timer = 0
 	self._disabled = false
 	self._specials_spawn_queue = {}
 	self._specials_slots = {}
 	self._state_data = {}
+	self._side = specials_side
 	self.method_name = CurrentSpecialsSettings.spawn_method
 
 	self:remove_unwanted_breeds()
@@ -42,20 +42,6 @@ SpecialsPacing.remove_unwanted_breeds = function (self)
 				if breed.disabled then
 					print("remove_unwanted_breeds", breed_name)
 					table.remove(rush_breeds, i)
-				end
-			end
-		end
-
-		local outside_navmesh_intervention_breeds = special_setting.outside_navmesh_intervention and special_setting.outside_navmesh_intervention.breeds
-
-		if outside_navmesh_intervention_breeds then
-			for i = #outside_navmesh_intervention_breeds, 1, -1 do
-				local breed_name = outside_navmesh_intervention_breeds[i]
-				local breed = Breeds[breed_name]
-
-				if breed.disabled then
-					print("remove_unwanted_breeds", breed_name)
-					table.remove(outside_navmesh_intervention_breeds, i)
 				end
 			end
 		end
@@ -675,20 +661,26 @@ SpecialsPacing.get_special_spawn_pos = function (self, spawning_rule)
 	end
 
 	if not epicenter then
-		epicenter = PLAYER_POSITIONS[math.random(#PLAYER_POSITIONS)]
+		local enemy_positions = self._side.ENEMY_PLAYER_POSITIONS
+		epicenter = enemy_positions[math.random(#enemy_positions)]
 		debug_string = "specialspawn: fallback - epicenter around random player"
 	end
 
 	local world = conflict_director._world
-	local pos = ConflictUtils.get_hidden_pos(world, self.nav_world, epicenter, player_and_bot_positions, 30, 10, 225, 10)
+	local avoid_positions = self._side.ENEMY_PLAYER_AND_BOT_POSITIONS
+	local pos = nil
 
-	if not pos then
-		local spawner = ConflictUtils.get_random_hidden_spawner(epicenter, 40)
+	if epicenter then
+		pos = ConflictUtils.get_hidden_pos(world, self.nav_world, epicenter, avoid_positions, 30, 10, 225, 10)
 
-		if spawner then
-			pos = Unit.local_position(spawner, 0)
-		else
-			pos = ConflictUtils.get_hidden_pos(world, self.nav_world, epicenter, player_and_bot_positions, 16, 5, 225, 3)
+		if not pos then
+			local spawner = ConflictUtils.get_random_hidden_spawner(epicenter, 40)
+
+			if spawner then
+				pos = Unit.local_position(spawner, 0)
+			else
+				pos = ConflictUtils.get_hidden_pos(world, self.nav_world, epicenter, avoid_positions, 16, 5, 225, 3)
+			end
 		end
 	end
 
@@ -702,8 +694,9 @@ SpecialsPacing.get_special_spawn_pos = function (self, spawning_rule)
 	return pos
 end
 
-local function find_suitable_intervention_spawn_position(world, nav_world, center_pos, avoid_dist_sqr)
-	local spawn_pos = ConflictUtils.get_hidden_pos(world, nav_world, center_pos, player_and_bot_positions, 30, 10, avoid_dist_sqr, 15)
+local function find_suitable_intervention_spawn_position(world, nav_world, center_pos, avoid_dist_sqr, party)
+	local avoid_positions = party.ENEMY_PLAYER_AND_BOT_POSITIONS
+	local spawn_pos = ConflictUtils.get_hidden_pos(world, nav_world, center_pos, avoid_positions, 30, 10, avoid_dist_sqr, 15)
 
 	if not spawn_pos then
 		print("Intervention Spawn: Failed to find spawn pos, trying hidden spawner")
@@ -796,7 +789,7 @@ SpecialsPacing.request_rushing_intervention = function (self, t, player_unit, ma
 		local player_pos = POSITION_LOOKUP[main_path_info.ahead_unit]
 		local epicenter = self:get_relative_main_path_pos(main_paths, main_path_player_info[main_path_info.ahead_unit], 20)
 		local forward_path_dir = epicenter - player_pos
-		local spawn_pos, description = find_suitable_intervention_spawn_position(world, nav_world, epicenter, avoid_dist_sqr)
+		local spawn_pos, description = find_suitable_intervention_spawn_position(world, nav_world, epicenter, avoid_dist_sqr, self._side)
 
 		if not spawn_pos then
 			return false, description
@@ -863,7 +856,7 @@ SpecialsPacing.request_speed_running_intervention = function (self, t, player_un
 		local avoid_dist_sqr = 25
 		local player_pos = POSITION_LOOKUP[player_unit]
 		local epicenter = self:get_relative_main_path_pos(main_paths, main_path_player_info[player_unit], 20)
-		local spawn_pos, description = find_suitable_intervention_spawn_position(world, nav_world, epicenter, avoid_dist_sqr)
+		local spawn_pos, description = find_suitable_intervention_spawn_position(world, nav_world, epicenter, avoid_dist_sqr, self._side)
 
 		if not spawn_pos then
 			return false, description
@@ -888,79 +881,6 @@ SpecialsPacing.request_speed_running_intervention = function (self, t, player_un
 	end
 
 	return false, "no slots available"
-end
-
-local function cb_outside_navmesh_intervention_unit_spawned(special_unit, breed, optional_data)
-	local ai_extension = ScriptUnit.extension(special_unit, "ai_system")
-	local blackboard = ai_extension:blackboard()
-	blackboard.target_unit = optional_data.player_unit
-	local slot = optional_data.slot
-	slot.breed = breed.name
-	slot.unit = special_unit
-	slot.time = nil
-	slot.state = "alive"
-	slot.desc = "outside navmesh intervention"
-	local alive_specials = optional_data.alive_specials
-	alive_specials[#alive_specials + 1] = unit
-end
-
-SpecialsPacing.request_outside_navmesh_intervention = function (self, player_unit)
-	if script_data.ai_specials_spawning_disabled then
-		return false, "specials spawning disabled"
-	end
-
-	local specials_settings = CurrentSpecialsSettings
-	local breeds = specials_settings.outside_navmesh_intervention.breeds
-	local num_breeds = #breeds
-
-	if num_breeds <= 0 then
-		print("No outside navmesh intervention breeds available. Cannot intervent player outside navmesh by spawning a special (SpecialsSettings.specials.outside_navmesh_intervention.breeds)")
-
-		return false, "No outside navmesh intervention breeds set"
-	end
-
-	local slots = self._specials_slots
-	local best_slot = get_best_specials_slot(slots)
-
-	if best_slot then
-		local slot = slots[best_slot]
-		local pick_index = Math.random(1, num_breeds)
-		local breed_name = breeds[pick_index]
-		local breed = Breeds[breed_name]
-		local player_position = POSITION_LOOKUP[player_unit]
-		local conflict_director = Managers.state.conflict
-		local world = conflict_director._world
-		local nav_world = self.nav_world
-		local avoid_dist_sqr = 25
-		local spawn_pos, description = find_suitable_intervention_spawn_position(world, nav_world, player_position, avoid_dist_sqr)
-
-		if not spawn_pos then
-			return false, description
-		end
-
-		print("Outside navmesh intervention - spawning ", breed_name)
-
-		local conflict_director = Managers.state.conflict
-		local alive_specials = conflict_director:alive_specials()
-		local optional_data = {
-			spawned_func = cb_outside_navmesh_intervention_unit_spawned,
-			player_unit = player_unit,
-			slot = slot,
-			alive_specials = alive_specials
-		}
-
-		if breed.special_spawn_stinger then
-			self:_play_stinger(breed.special_spawn_stinger, slot)
-		end
-
-		local rotation = Quaternion(Vector3.up(), 0)
-
-		conflict_director:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(rotation), "outside_navmesh_intervention", nil, nil, optional_data)
-
-		slot.state = "wants_to_spawn"
-
-		return true, breed_name
-	end
 end
 
 SpecialsPacing.get_relative_main_path_pos = function (self, main_paths, player_info, extra_distance)

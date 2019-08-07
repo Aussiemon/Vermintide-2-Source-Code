@@ -15,17 +15,14 @@ FloatingIconUI.init = function (self, parent, ingame_ui_context)
 	self.peer_id = ingame_ui_context.peer_id
 	local world = self.world_manager:world("level_world")
 	self.wwise_world = Managers.world:wwise_world(world)
-	self.saved_mission_objectives = {}
-	self.completed_mission_objectives = {}
-	self.current_mission_objective = nil
-	self.index_count = 0
 	self._animations = {}
 	self.render_settings = {
 		snap_pixel_positions = true
 	}
 
 	self:create_ui_elements()
-	rawset(_G, "floating_icon_ui", self)
+	Managers.state.event:register(self, "start_progression_zone", "show_progression_bar")
+	Managers.state.event:register(self, "stop_progression_zone", "hide_progression_bar")
 end
 
 local DO_RELOAD = true
@@ -54,21 +51,39 @@ end
 FloatingIconUI.destroy = function (self)
 	self.ui_animator = nil
 
-	rawset(_G, "floating_icon_ui", nil)
+	if Managers.state.event then
+		Managers.state.event:unregister("start_progression_zone", self)
+		Managers.state.event:unregister("stop_progression_zone", self)
+	end
+end
+
+FloatingIconUI.show_progression_bar = function (self, unit, extension)
+	if self._progress_unit and self._progress_unit == unit then
+		return
+	end
+
+	self._progress_unit = unit
+	self._progress_extension = extension
+end
+
+FloatingIconUI.hide_progression_bar = function (self, unit)
+	if self._progress_unit == unit then
+		self._progress_unit = nil
+		self._progress_extension = nil
+	end
 end
 
 FloatingIconUI.update = function (self, dt)
 	if DO_RELOAD then
 		self:create_ui_elements()
-
-		self.active_floating_name = nil
-		self.mission_tooltip_animation_in_time = nil
 	end
 
-	self:draw(dt)
+	if self._progress_unit then
+		self:_draw_progressbar(dt)
+	end
 end
 
-FloatingIconUI.draw = function (self, dt)
+FloatingIconUI._draw_progressbar = function (self, dt)
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.input_manager:get_service("ingame_menu")
@@ -76,142 +91,71 @@ FloatingIconUI.draw = function (self, dt)
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
-	local widgets = self._widgets
+	local fulfill_show_bar_personal = self._progress_extension:progress_bar_personal() and self._progress_extension:player_been_in_zone()
+	local fulfill_show_bar = self._progress_extension:progress_bar_global() or fulfill_show_bar_personal
 
-	if widgets then
-		for _, widget in ipairs(widgets) do
-			UIRenderer.draw_widget(ui_renderer, widget)
+	if fulfill_show_bar_personal or fulfill_show_bar then
+		local progress = self._progress_extension:progress()
+
+		if self._progress_extension:should_progress_count_down() then
+			progress = 1 - self._progress_extension:progress()
 		end
+
+		self:_draw(self._progress_unit, progress, dt)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
 end
 
-FloatingIconUI.sync_active_missions = function (self, dt)
-	local peer_id = self.peer_id
-	local my_player = self.player_manager:player_from_peer_id(peer_id)
-	local player_unit = my_player.player_unit
+FloatingIconUI._get_camera = function (self)
+	local viewport_name = "player_1"
 
-	if not player_unit then
-		return
-	end
+	if self.camera_manager:has_viewport(viewport_name) then
+		local world_name = "level_world"
+		local world_manager = self.world_manager
 
-	local tutorial_extension = ScriptUnit.extension(player_unit, "tutorial_system")
-	self.mission_tutorial_tooltip_to_update = nil
+		if world_manager:has_world(world_name) then
+			local world = world_manager:world(world_name)
+			local viewport = ScriptWorld.viewport(world, viewport_name)
 
-	if tutorial_extension then
-		local objective_tooltips = tutorial_extension.objective_tooltips
-
-		self:update_objective_icon(objective_tooltips, player_unit, dt)
+			return ScriptViewport.camera(viewport)
+		end
 	end
 end
 
-local center_position = {
-	scenegraph_definition.screen.size[1] * 0.5,
-	scenegraph_definition.screen.size[2] * 0.5
-}
-
-FloatingIconUI.update_objective_icon = function (self, data, player_unit, dt)
-	local ui_scenegraph = self.ui_scenegraph
-	local widget = self._widgets_by_name.default
-	local content = widget.content
-	local style = widget.style
-	local mission_tooltip_settings = UISettings.tutorial.mission_tooltip
-	local tooltip_name = data.name
-	local active_floating_name = self.active_floating_name
-	local first_update = false
-
-	if not active_floating_name or active_floating_name ~= tooltip_name then
-		local active_template = TutorialTemplates[tooltip_name]
-		local text = (active_template.text and Localize(active_template.text)) or ""
-		content.text = "yolo"
-		self.active_floating_name = tooltip_name
-		content.texture_id = (active_template.icon and active_template.icon) or "hud_tutorial_icon_info"
-		style.texture_id.color[1] = 255
-		style.arrow.color[1] = 255
-		first_update = true
-	end
-
-	local objective_unit = data.unit
-
-	if not objective_unit or not Unit.alive(objective_unit) or not Unit.alive(player_unit) then
-		return
-	end
-
-	local objective_unit_position = Unit.world_position(objective_unit, 0) + Vector3.up()
+FloatingIconUI._get_player_rotation_and_position = function (self)
 	local first_person_extension = self:get_player_first_person_extension()
 	local player_position = first_person_extension:current_position()
 	local player_rotation = first_person_extension:current_rotation()
-	local player_direction_forward = Quaternion.forward(player_rotation)
-	player_direction_forward = Vector3.normalize(Vector3.flat(player_direction_forward))
-	local player_direction_right = Quaternion.right(player_rotation)
-	player_direction_right = Vector3.normalize(Vector3.flat(player_direction_right))
-	local offset = objective_unit_position - player_position
-	local direction = Vector3.normalize(Vector3.flat(offset))
-	local forward_dot = Vector3.dot(player_direction_forward, direction)
-	local right_dot = Vector3.dot(player_direction_right, direction)
-	local x_pos, y_pos = self:convert_world_to_screen_position(camera, objective_unit_position)
-	local x, y, is_clamped, is_behind = self:get_floating_icon_position(x_pos, y_pos, forward_dot, right_dot, objective_tooltip_settings)
 
-	if is_clamped or is_behind then
-		if not self.mission_tooltip_animation_in_time then
-			local arrow_size = ui_scenegraph.tooltip_mission_arrow.size
-			local icon_size = ui_scenegraph.tooltip_mission_icon.size
-			local height_from_center = y_pos - center_position[2]
-			local arrow_angle, offset_x, offset_y, offset_z = self:get_arrow_angle_and_offset(forward_dot, right_dot, arrow_size, icon_size, height_from_center)
+	return player_position, player_rotation
+end
 
-			if offset_x ~= nil then
-				local offset = style.arrow.offset
-				offset[1] = offset_x
-				offset[2] = offset_y
-				offset[3] = offset_z
-			end
+FloatingIconUI._set_widget_position = function (self, widget, x, y)
+	local offset = widget.offset
+	offset[1] = x
+	offset[2] = y
+end
 
-			style.arrow.angle = arrow_angle
-		end
-	else
-		style.arrow.color[1] = 0
-	end
+FloatingIconUI._set_bar_progress = function (self, widget, progress, dt)
+	local style = widget.style
+	local foreground_style = style.foreground
+	local default_foreground_size = foreground_style.default_size
+	local foreground_size = foreground_style.texture_size
+	foreground_size[1] = math.floor(default_foreground_size[1] * progress)
+end
 
-	local use_screen_position = not is_clamped and not is_behind
+FloatingIconUI._draw = function (self, unit, progress, dt)
+	local ui_renderer = self.ui_renderer
+	local widget = self._widgets_by_name.progress_bar
 
-	if use_screen_position then
-		local current_size = ui_scenegraph.tooltip_mission_icon.size[1]
-		local original_size = definitions.FLOATING_ICON_SIZE[1]
-		local new_icon_size = self:get_icon_size(objective_unit_position, player_position, current_size, original_size, mission_tooltip_settings)
-		ui_scenegraph.tooltip_mission_icon.size[1] = new_icon_size
-		ui_scenegraph.tooltip_mission_icon.size[2] = new_icon_size
-	else
-		local original_size = definitions.FLOATING_ICON_SIZE[1]
-		ui_scenegraph.tooltip_mission_icon.size[1] = original_size
-		ui_scenegraph.tooltip_mission_icon.size[2] = original_size
-	end
+	self:_set_bar_progress(widget, progress, dt)
 
-	local ui_local_position = ui_scenegraph.pivot.local_position
-	local used_screen_position_last_frame = self.mission_tooltip_use_screen_position
+	local position_x = 100
+	local position_y = 100
 
-	if (used_screen_position_last_frame and not use_screen_position) or (not used_screen_position_last_frame and use_screen_position) then
-		self.mission_tooltip_lerp_speed = 0
-	end
-
-	if not first_update and self.mission_tooltip_lerp_speed then
-		local lerp_speed = self.mission_tooltip_lerp_speed
-		lerp_speed = math.min(lerp_speed + dt, 1)
-		ui_local_position[1] = math.lerp(ui_local_position[1], clamped_x_pos, lerp_speed)
-		ui_local_position[2] = math.lerp(ui_local_position[2], clamped_y_pos, lerp_speed)
-
-		if lerp_speed == 1 then
-			self.mission_tooltip_lerp_speed = nil
-		else
-			self.mission_tooltip_lerp_speed = lerp_speed
-		end
-	else
-		ui_local_position[1] = clamped_x_pos
-		ui_local_position[2] = clamped_y_pos
-	end
-
-	self.mission_tooltip_use_screen_position = use_screen_position
-	self.active_tooltip_widget = widget
+	self:_set_widget_position(widget, position_x, position_y)
+	UIRenderer.draw_widget(ui_renderer, widget)
 end
 
 FloatingIconUI.convert_world_to_screen_position = function (self, camera, world_position)
@@ -250,49 +194,15 @@ FloatingIconUI.get_floating_icon_position = function (self, screen_pos_x, screen
 	local clamped_y_pos = screen_pos_y
 	local is_behind = (forward_dot < 0 and true) or false
 	local is_clamped = ((is_x_clamped or is_y_clamped) and true) or false
-
-	if is_clamped or is_behind then
-		local distance_from_center = tooltip_settings.distance_from_center
-		clamped_x_pos = scaled_root_size_x_half + right_dot * distance_from_center.width * scale
-		clamped_y_pos = scaled_root_size_y_half + forward_dot * distance_from_center.height * scale
-	else
-		local screen_pos_diff_x = screen_width - scaled_root_size_x
-		local screen_pos_diff_y = screen_height - scaled_root_size_y
-		clamped_x_pos = clamped_x_pos - screen_pos_diff_x / 2
-		clamped_y_pos = clamped_y_pos - screen_pos_diff_y / 2
-	end
-
+	local screen_pos_diff_x = screen_width - scaled_root_size_x
+	local screen_pos_diff_y = screen_height - scaled_root_size_y
+	clamped_x_pos = clamped_x_pos - screen_pos_diff_x / 2
+	clamped_y_pos = clamped_y_pos - screen_pos_diff_y / 2
 	local inverse_scale = RESOLUTION_LOOKUP.inv_scale
 	clamped_x_pos = clamped_x_pos * inverse_scale
 	clamped_y_pos = clamped_y_pos * inverse_scale
 
 	return clamped_x_pos, clamped_y_pos, is_clamped, is_behind
-end
-
-FloatingIconUI.get_arrow_angle_and_offset = function (self, forward_dot, right_dot, arrow_size, icon_size, height_from_center)
-	local static_angle_value = 1.57079633
-	local offset_x = 0
-	local offset_y = 0
-	local offset_z = 0
-	local angle = math.atan2(right_dot, forward_dot)
-
-	if height_from_center < -400 and forward_dot > 0.6 then
-		offset_y = -(icon_size[2] * 0.5 + arrow_size[2])
-		static_angle_value = static_angle_value * 2
-	elseif height_from_center > 400 and forward_dot > 0.6 then
-		offset_y = icon_size[2] * 0.5 + arrow_size[2]
-		static_angle_value = 0
-	elseif angle > 0 then
-		offset_x = icon_size[2] * 0.5 + arrow_size[2]
-	elseif angle < 0 then
-		offset_x = -(icon_size[2] * 0.5 + arrow_size[2])
-		static_angle_value = -static_angle_value
-	else
-		offset_x, offset_y, offset_z = nil
-		static_angle_value = 0
-	end
-
-	return static_angle_value, offset_x, offset_y, offset_z
 end
 
 FloatingIconUI.get_icon_size = function (self, position, player_position, current_size, original_size, tooltip_settings)

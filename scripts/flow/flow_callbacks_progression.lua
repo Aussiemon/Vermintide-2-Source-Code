@@ -16,6 +16,32 @@ function flow_callback_get_last_level_played(params)
 	return flow_return_table
 end
 
+function flow_callback_last_level_played_was_weave(params)
+	local last_played_level = SaveData.last_played_level or "N/A"
+	local last_played_level_won = SaveData.last_played_level_result == "won"
+	local weave_templates = WeaveSettings.templates
+	local was_weave_level = false
+	local was_boss_level = false
+
+	for weave, template in pairs(weave_templates) do
+		local objectives = template.objectives
+		local weave_level = objectives[1]
+		local boss_level = objectives[2]
+
+		if weave_level.level_id == last_played_level then
+			was_weave_level = true
+		elseif boss_level.level_id == last_played_level then
+			was_boss_level = true
+		end
+	end
+
+	flow_return_table.was_weave_level = was_weave_level
+	flow_return_table.was_boss_level = was_boss_level
+	flow_return_table.won = last_played_level_won
+
+	return flow_return_table
+end
+
 function flow_callback_get_completed_game_difficulty(params)
 	local player_manager = Managers.player
 	local statistics_db = player_manager:statistics_db()
@@ -113,22 +139,22 @@ function flow_callback_get_completed_survival_waves(params)
 		local stats_id = server_player:stats_id()
 
 		for level_key, _ in pairs(returns) do
-			local hard = StatisticsUtil.get_survival_stat(statistics_db, level_key, "survival_hard", "waves", stats_id)
+			local hard = StatisticsUtil.get_survival_stat(statistics_db, level_key, "cataclysm", "waves", stats_id)
 
 			if hard > 0 then
-				hard = hard + start_waves.survival_hard
+				hard = hard + start_waves.cataclysm
 			end
 
-			local harder = StatisticsUtil.get_survival_stat(statistics_db, level_key, "survival_harder", "waves", stats_id)
+			local harder = StatisticsUtil.get_survival_stat(statistics_db, level_key, "cataclysm_2", "waves", stats_id)
 
 			if harder > 0 then
-				harder = harder + start_waves.survival_harder
+				harder = harder + start_waves.cataclysm_2
 			end
 
-			local hardest = StatisticsUtil.get_survival_stat(statistics_db, level_key, "survival_hardest", "waves", stats_id)
+			local hardest = StatisticsUtil.get_survival_stat(statistics_db, level_key, "cataclysm_3", "waves", stats_id)
 
 			if hardest > 0 then
-				hardest = hardest + start_waves.survival_hardest
+				hardest = hardest + start_waves.cataclysm_3
 			end
 
 			returns[level_key] = math.max(hard, harder, hardest)
@@ -266,8 +292,20 @@ function flow_query_leader_completed_storm_vermin_warlord_difficulty(params)
 	return flow_return_table
 end
 
+function flow_query_leader_completed_celebrate_event_2019(params)
+	local leader_peer_id = Managers.party:leader()
+	local local_peer_id = Network.peer_id()
+
+	fassert(leader_peer_id == local_peer_id, "Flow node \"Leader Completed Celebrate Event 2019\" should only be called by the leader player")
+
+	local completed = get_presistent_stat_from_peer_id(leader_peer_id, "completed_levels", "dlc_celebrate_crawl") > 0
+	flow_return_table.value = completed
+
+	return flow_return_table
+end
+
 function flow_query_leader_achievement_completed(params)
-	if script_data.settings.use_beta_overlay then
+	if script_data.settings.use_beta_overlay or not Managers.state.achievement:is_enabled() then
 		flow_return_table.value = false
 
 		return flow_return_table
@@ -287,11 +325,39 @@ function flow_query_leader_achievement_completed(params)
 	local achievement_name = params.achievement_name
 	local achievement_data = AchievementTemplates.achievements[achievement_name]
 
-	fassert(achievement_data, "Achievement %s not found in AchievementTemplates", achievement_name)
+	fassert(achievement_data, "Achievement [\"%s\"] not found in AchievementTemplates!", achievement_name)
 
 	local player_manager = Managers.player
 	local statistics_db = player_manager:statistics_db()
 	local player = player_manager:player(leader_peer_id, 1)
+	local stats_id = player:stats_id()
+	local completed = achievement_data.completed(statistics_db, stats_id)
+	flow_return_table.value = completed
+
+	return flow_return_table
+end
+
+function flow_query_local_player_achievement_completed(params)
+	if script_data.settings.use_beta_overlay or not Managers.state.achievement:is_enabled() then
+		flow_return_table.value = false
+
+		return flow_return_table
+	end
+
+	if script_data.achievement_completed_flow_override ~= nil then
+		flow_return_table.value = script_data.achievement_completed_flow_override
+
+		return flow_return_table
+	end
+
+	local achievement_name = params.achievement_name
+	local achievement_data = AchievementTemplates.achievements[achievement_name]
+
+	fassert(achievement_data, "Achievement [\"%s\"] not found in AchievementTemplates!", achievement_name)
+
+	local player_manager = Managers.player
+	local statistics_db = player_manager:statistics_db()
+	local player = player_manager:local_player()
 	local stats_id = player:stats_id()
 	local completed = achievement_data.completed(statistics_db, stats_id)
 	flow_return_table.value = completed
@@ -378,6 +444,21 @@ function flow_query_leader_has_dlc(params)
 
 	fassert(leader_peer_id == local_peer_id, "Flow node \"Leader Has DLC\" should only be called by the leader player")
 
+	local dlc_name = params.dlc_name
+
+	if dlc_name == "pre_order" and script_data.has_dlc_pre_order_flow_override ~= nil then
+		flow_return_table.value = script_data.has_dlc_pre_order_flow_override
+
+		return flow_return_table
+	end
+
+	local has_dlc = Managers.unlock:is_dlc_unlocked(dlc_name)
+	flow_return_table.value = has_dlc
+
+	return flow_return_table
+end
+
+function flow_query_local_player_has_dlc(params)
 	local dlc_name = params.dlc_name
 
 	if dlc_name == "pre_order" and script_data.has_dlc_pre_order_flow_override ~= nil then

@@ -261,7 +261,8 @@ end
 
 BTBotMeleeAction._aim_position = function (self, target_unit, blackboard)
 	local node = 0
-	local target_breed = Unit.get_data(target_unit, "breed")
+	local target_unit_blackboard = BLACKBOARDS[target_unit]
+	local target_breed = target_unit_blackboard and target_unit_blackboard.breed
 	local aim_node = (target_breed and (target_breed.bot_melee_aim_node or "j_spine")) or "rp_center"
 
 	if Unit.has_node(target_unit, aim_node) then

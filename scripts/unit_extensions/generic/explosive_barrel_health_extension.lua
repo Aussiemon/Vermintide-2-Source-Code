@@ -75,6 +75,10 @@ ExplosiveBarrelHealthExtension.update = function (self, dt, context, t)
 end
 
 ExplosiveBarrelHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot)
+	if damage_type and damage_type == "blade_storm" then
+		return
+	end
+
 	local did_damage = damage_amount > 0
 	local unit = self.unit
 	local network_manager = Managers.state.network
@@ -91,7 +95,7 @@ ExplosiveBarrelHealthExtension.add_damage = function (self, attacker_unit, damag
 		DamageUtils.handle_hit_indication(attacker_unit, unit, damage_amount, hit_zone_name, added_dot)
 	end
 
-	if not self.is_invincible and not self.dead then
+	if not self:get_is_invincible() and not self.dead then
 		local internal_damage_amount = (did_damage and self.insta_explode and self.health) or 0
 		self.damage = self.damage + internal_damage_amount
 

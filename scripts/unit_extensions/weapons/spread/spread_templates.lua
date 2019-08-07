@@ -1130,4 +1130,12 @@ SpreadTemplates.rake_shot = table.create_copy(SpreadTemplates.rake_shot, SpreadT
 SpreadTemplates.rake_twin_shot = table.create_copy(SpreadTemplates.rake_twin_shot, SpreadTemplates.rake_twin_shot) or table.clone(SpreadTemplates.default)
 SpreadTemplates.rake_twin_shot = SpreadTemplates.rake_twin_shot or table.clone(SpreadTemplates.default)
 
+for _, dlc in pairs(DLCSettings) do
+	local spread_templates = dlc.spread_templates
+
+	if spread_templates then
+		table.merge_recursive(SpreadTemplates, spread_templates)
+	end
+end
+
 return

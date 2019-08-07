@@ -1,5 +1,6 @@
 require("scripts/ui/views/hero_view/item_grid_ui")
 require("scripts/ui/views/start_game_view/states/start_game_state_settings_overview")
+require("scripts/ui/views/start_game_view/states/start_game_state_weave_leaderboard")
 
 local definitions = local_require("scripts/ui/views/start_game_view/start_game_view_definitions")
 local widget_definitions = definitions.widgets_definitions
@@ -312,12 +313,17 @@ StartGameView.on_enter = function (self, params)
 
 	self.waiting_for_post_update_enter = true
 	self._on_enter_transition_params = params
+	self._on_enter_sub_state = params.menu_sub_state_name
 
 	self:play_sound("hud_in_inventory_state_on")
 
 	self._draw_loading = false
 
 	self:_init_menu_views()
+end
+
+StartGameView.on_enter_sub_state = function (self)
+	return self._on_enter_sub_state
 end
 
 StartGameView.set_current_hero = function (self, profile_index)
@@ -356,6 +362,12 @@ StartGameView._handle_input = function (self, dt, t)
 	local input_service = self:input_service()
 
 	if input_service:get("show_gamercard") and menu_functions.console_friends_menu then
+		local state = self._machine:state()
+
+		if state.disable_input and state:disable_input("show_gamercard") then
+			return
+		end
+
 		menu_functions.console_friends_menu(self)
 	end
 end
@@ -386,16 +398,20 @@ StartGameView.hotkey_allowed = function (self, input, mapping_data)
 	if state_machine then
 		local current_state = state_machine:state()
 		local current_state_name = current_state.NAME
+
+		if current_state.hotkey_allowed and not current_state:hotkey_allowed(input, mapping_data) then
+			return false
+		end
+
 		local current_screen_settings = self:_get_screen_settings_by_state_name(current_state_name)
 		local name = current_screen_settings.name
 
 		if name == transition_state then
-			local active_sub_settings_name = current_state.active_settings_name and current_state:active_settings_name()
+			local active_sub_settings_name = current_state.get_selected_layout_name and current_state:get_selected_layout_name()
 
 			if not transition_sub_state or transition_sub_state == active_sub_settings_name then
 				return true
 			elseif transition_sub_state then
-				current_state:requested_screen_change_by_name(transition_sub_state)
 			end
 		elseif transition_state then
 			self:requested_screen_change_by_name(transition_state, transition_sub_state)
@@ -487,6 +503,15 @@ StartGameView.on_exit = function (self)
 		self._machine = nil
 	end
 
+	local active_view = self._active_view
+	local views = self._views
+
+	if views[active_view] and views[active_view].on_exit then
+		views[active_view]:on_exit()
+	end
+
+	self._active_view = nil
+
 	self:play_sound("hud_in_inventory_state_off")
 
 	self._draw_loading = false
@@ -496,6 +521,10 @@ StartGameView.exit = function (self, return_to_game, ignore_sound)
 	local exit_transition = (return_to_game and "exit_menu") or "ingame_menu"
 
 	self.ingame_ui:transition_with_fade(exit_transition)
+
+	if self._active_view then
+		self:exit_current_view()
+	end
 
 	if not ignore_sound then
 		self:play_sound("Play_hud_button_close")
@@ -586,14 +615,11 @@ StartGameView.start_game = function (self, level_key, difficulty_key, private_ga
 	print("............................................................................................................")
 	print("............................................................................................................")
 
-	self._selected_level_key = level_key
-	self._selected_difficulty_key = difficulty_key
-
 	if deed_backend_id then
 		Managers.deed:select_deed(deed_backend_id, Network.peer_id())
 	end
 
-	if deed_backend_id then
+	if game_mode == "deed" then
 		local item_interface = Managers.backend:get_interface("items")
 		local item = item_interface:get_item_from_id(deed_backend_id)
 		local item_data = item.data
@@ -608,7 +634,7 @@ StartGameView.start_game = function (self, level_key, difficulty_key, private_ga
 		}
 
 		Managers.state.voting:request_vote("game_settings_deed_vote", vote_data, Network.peer_id())
-	elseif event_data then
+	elseif game_mode == "event" then
 		local vote_data = {
 			level_key = level_key,
 			difficulty = difficulty_key,
@@ -633,12 +659,60 @@ StartGameView.start_game = function (self, level_key, difficulty_key, private_ga
 			game_mode = game_mode,
 			excluded_level_keys = excluded_level_keys
 		}
+		local vote_template = "game_settings_vote"
 
-		Managers.state.voting:request_vote("game_settings_vote", vote_data, Network.peer_id())
+		Managers.state.voting:request_vote(vote_template, vote_data, Network.peer_id())
 	end
 
 	self:play_sound("play_gui_lobby_button_play")
 	self:close_menu()
+end
+
+StartGameView.start_game_weave = function (self, weave_name, objective_index, private_game)
+	local weave_template = WeaveSettings.templates[weave_name]
+	local level_key = weave_template.objectives[objective_index].level_id
+	local difficulty = weave_template.difficulty_key
+	local vote_data = {
+		game_mode = "weave",
+		level_key = level_key,
+		difficulty = difficulty,
+		private_game = private_game,
+		weave_name = weave_name,
+		objective_index = objective_index
+	}
+
+	Managers.state.voting:request_vote("game_settings_weave_vote", vote_data, Network.peer_id())
+	self:play_sound("menu_wind_level_choose_wind")
+	self:close_menu()
+end
+
+StartGameView.start_game_weave_find_group = function (self, force_close)
+	local ignore_dlc_checks = false
+	local statistics_db = Managers.player:statistics_db()
+	local local_player = Managers.player:local_player()
+	local stats_id = local_player:stats_id()
+	local current_weave = LevelUnlockUtils.current_weave(statistics_db, stats_id, ignore_dlc_checks)
+	local weave_template = WeaveSettings.templates[current_weave]
+	local difficulty_key = weave_template.difficulty_key
+	local vote_data = {
+		game_mode = "weave_find_group",
+		difficulty = difficulty_key
+	}
+
+	Managers.state.voting:request_vote("game_settings_weave_find_group_vote", vote_data, Network.peer_id())
+	self:play_sound("play_gui_lobby_button_play")
+
+	if force_close then
+		self:close_menu()
+	end
+end
+
+StartGameView.cancel_matchmaking = function (self)
+	local matchmaking_manager = Managers.matchmaking
+
+	if matchmaking_manager:is_game_matchmaking() then
+		matchmaking_manager:cancel_matchmaking()
+	end
 end
 
 return

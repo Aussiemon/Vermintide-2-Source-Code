@@ -4,6 +4,7 @@ require("scripts/managers/input/network_input_device")
 require("scripts/managers/input/input_aux")
 require("scripts/managers/input/input_filters")
 require("scripts/managers/input/input_debugger")
+require("scripts/managers/input/input_stack_settings")
 
 local most_recent_input_device = most_recent_input_device or (PLATFORM == "win32" and Keyboard) or Pad1
 local most_recent_input_device_type = most_recent_input_device_type or (PLATFORM == "win32" and "keyboard") or "gamepad"
@@ -24,6 +25,8 @@ InputManager.init = function (self)
 	self.stored_keymaps_data = {}
 	self.stored_filters_data = {}
 	self.blocked_gamepad_services = {}
+	self._device_input_groups = {}
+	self._active_input_group_id = nil
 	local device_list = InputAux.input_device_mapping.gamepad
 
 	for _, input_device in ipairs(device_list) do
@@ -390,6 +393,172 @@ InputManager.device_unblock_services = function (self, device_type, device_index
 	end
 end
 
+InputManager.capture_input = function (self, device_types, device_index, service_name, capture_owner)
+	if not device_types then
+		return
+	end
+
+	if not device_index then
+		return
+	end
+
+	if not service_name then
+		return
+	end
+
+	if not capture_owner then
+		return
+	end
+
+	for i = 1, #device_types, 1 do
+		self:device_unblock_service(device_types[i], device_index, service_name)
+	end
+
+	local group_name = self:_find_service_input_group(service_name)
+
+	if group_name then
+		local device_input_groups = self._device_input_groups
+		local input_group = device_input_groups[group_name]
+
+		if not input_group then
+			input_group = {}
+			device_input_groups[group_name] = input_group
+		end
+
+		local service = input_group[service_name]
+
+		if not service then
+			service = {}
+			input_group[service_name] = service
+		end
+
+		if not table.contains(service, capture_owner) then
+			local service_was_disabled = table.is_empty(service)
+
+			table.insert(service, capture_owner)
+
+			if service_was_disabled then
+				self:_refresh_active_input_group()
+			end
+		end
+	end
+end
+
+InputManager.release_input = function (self, device_types, device_index, service_name, capture_owner)
+	if not device_types then
+		return
+	end
+
+	if not device_index then
+		return
+	end
+
+	if not service_name then
+		return
+	end
+
+	if not capture_owner then
+		return
+	end
+
+	for i = 1, #device_types, 1 do
+		self:device_block_service(device_types[i], device_index, service_name)
+	end
+
+	local group_name = self:_find_service_input_group(service_name)
+
+	if group_name then
+		local device_input_groups = self._device_input_groups
+		local input_group = device_input_groups[group_name]
+
+		if not input_group then
+			return
+		end
+
+		local service = input_group[service_name]
+
+		if not service then
+			return
+		end
+
+		table.remove(service, table.find(service, capture_owner))
+
+		if table.is_empty(service) then
+			input_group[service_name] = nil
+
+			if table.is_empty(input_group) then
+				device_input_groups[group_name] = nil
+			end
+
+			self:_refresh_active_input_group()
+		end
+	end
+end
+
+InputManager._find_service_input_group = function (self, service_name)
+	local group_id = InputServiceToGroupMap[service_name]
+
+	if not group_id then
+		return nil
+	end
+
+	return InputStackSettings[group_id].group_name
+end
+
+InputManager._refresh_active_input_group = function (self)
+	local device_input_groups = self._device_input_groups
+	local active_input_group = self:_find_active_input_group_id(device_input_groups)
+
+	self:_capture_input_group(active_input_group)
+end
+
+InputManager._capture_input_group = function (self, active_input_group)
+	self._active_input_group_id = active_input_group
+	local services = self.input_services
+	local input_group = active_input_group and InputStackSettings[active_input_group]
+
+	if input_group then
+		for service_name, service in pairs(services) do
+			local group_id = InputServiceToGroupMap[service_name]
+			local disabled = group_id == nil or active_input_group < group_id
+
+			service:set_disabled_input_group(disabled)
+		end
+	else
+		for service_name, service in pairs(services) do
+			service:set_disabled_input_group(nil)
+		end
+	end
+end
+
+InputManager._update_service_input_group = function (self, service, active_input_group)
+	if not service then
+		return
+	end
+
+	local input_group = active_input_group and InputStackSettings[active_input_group]
+
+	if not input_group then
+		service:set_disabled_input_group(nil)
+	else
+		local active_group = table.contains(input_group.services, service.name)
+
+		service:set_disabled_input_group(not active_group)
+	end
+end
+
+InputManager._find_active_input_group_id = function (self, device_input_groups)
+	for i = 1, #InputStackSettings, 1 do
+		local group_name = InputStackSettings[i].group_name
+
+		if device_input_groups[group_name] then
+			return i
+		end
+	end
+
+	return nil
+end
+
 InputManager.create_input_service = function (self, input_service_name, keymaps_name, filters_name, block_reasons)
 	local keymaps = rawget(_G, keymaps_name)
 
@@ -409,7 +578,10 @@ InputManager.create_input_service = function (self, input_service_name, keymaps_
 		end
 	end
 
-	self.input_services[input_service_name] = InputService:new(input_service_name, keymaps_name, filters_name, block_reasons)
+	local new_input_service = InputService:new(input_service_name, keymaps_name, filters_name, block_reasons)
+	self.input_services[input_service_name] = new_input_service
+
+	self:_update_service_input_group(new_input_service, self._active_input_group_id)
 end
 
 InputManager.get_input_service = function (self, input_service_name)

@@ -1,87 +1,3 @@
-local damage_table_light = {
-	easy = {
-		15,
-		10,
-		7
-	},
-	normal = {
-		15,
-		10,
-		10
-	},
-	hard = {
-		25,
-		17,
-		15
-	},
-	survival_hard = {
-		25,
-		17,
-		15
-	},
-	harder = {
-		40,
-		20,
-		15
-	},
-	survival_harder = {
-		40,
-		20,
-		15
-	},
-	hardest = {
-		60,
-		25,
-		15
-	},
-	survival_hardest = {
-		60,
-		25,
-		15
-	}
-}
-local damage_table_combo = {
-	easy = {
-		10,
-		10,
-		7
-	},
-	normal = {
-		7,
-		7,
-		7
-	},
-	hard = {
-		15,
-		17,
-		15
-	},
-	survival_hard = {
-		15,
-		17,
-		15
-	},
-	harder = {
-		30,
-		20,
-		15
-	},
-	survival_harder = {
-		30,
-		20,
-		15
-	},
-	hardest = {
-		50,
-		25,
-		15
-	},
-	survival_hardest = {
-		50,
-		25,
-		15
-	}
-}
 local default_bot_threat_difficulty_data = BotConstants and BotConstants.default.DEFAULT_BOT_THREAT_DIFFICULTY_DATA
 local breed_data = {
 	detection_radius = 9999999,
@@ -130,7 +46,7 @@ local breed_data = {
 	smart_targeting_width = 0.6,
 	perception_continuous = "perception_continuous_rat_ogre",
 	behavior = "ogre",
-	boost_curve_multiplier_override = 3,
+	boost_curve_multiplier_override = 2,
 	has_inventory = true,
 	run_speed = 7,
 	awards_positive_reinforcement_message = true,
@@ -174,13 +90,7 @@ local breed_data = {
 		distance_weight = 100,
 		target_disabled_mul = 0.15
 	},
-	max_health = {
-		600,
-		600,
-		1050,
-		1400,
-		2100
-	},
+	max_health = BreedTweaks.max_health.rat_ogre,
 	bloodlust_health = BreedTweaks.bloodlust_health.monster,
 	stagger_duration = {
 		0,
@@ -265,10 +175,6 @@ local breed_data = {
 		head = "headshot"
 	},
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		head = {
 			prio = 1,
 			actors = {
@@ -290,7 +196,7 @@ local breed_data = {
 			}
 		},
 		torso = {
-			prio = 3,
+			prio = 2,
 			actors = {
 				"c_spine2",
 				"c_spine",
@@ -305,7 +211,7 @@ local breed_data = {
 			}
 		},
 		left_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftarm",
 				"c_leftforearm",
@@ -318,7 +224,7 @@ local breed_data = {
 			}
 		},
 		right_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightarm",
 				"c_rightforearm",
@@ -331,7 +237,7 @@ local breed_data = {
 			}
 		},
 		left_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftupleg",
 				"c_leftleg",
@@ -345,7 +251,7 @@ local breed_data = {
 			}
 		},
 		right_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightupleg",
 				"c_rightleg",
@@ -359,7 +265,7 @@ local breed_data = {
 			}
 		},
 		tail = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_tail1",
 				"c_tail2",
@@ -375,6 +281,10 @@ local breed_data = {
 				"j_tail3",
 				"j_tail4"
 			}
+		},
+		full = {
+			prio = 4,
+			actors = {}
 		},
 		afro = {
 			prio = 5,
@@ -435,6 +345,136 @@ local pushed_data = {
 		0
 	}
 }
+local AttackIntensityPerDifficulty = {
+	melee_slam = {
+		easy = {
+			running = 2,
+			normal = 5
+		},
+		normal = {
+			running = 2,
+			normal = 5
+		},
+		hard = {
+			running = 2,
+			normal = 5
+		},
+		harder = {
+			running = 2,
+			normal = 5
+		},
+		hardest = {
+			running = 2,
+			normal = 5
+		},
+		cataclysm = {
+			running = 2,
+			normal = 5
+		},
+		cataclysm_2 = {
+			running = 2,
+			normal = 5
+		},
+		cataclysm_3 = {
+			running = 2,
+			normal = 5
+		}
+	},
+	combo = {
+		easy = {
+			running = 0.5,
+			normal = 3
+		},
+		normal = {
+			running = 0.5,
+			normal = 3
+		},
+		hard = {
+			running = 0.5,
+			normal = 3
+		},
+		harder = {
+			running = 0.5,
+			normal = 3
+		},
+		hardest = {
+			running = 0.5,
+			normal = 3
+		},
+		cataclysm = {
+			running = 0.5,
+			normal = 3
+		},
+		cataclysm_2 = {
+			running = 0.5,
+			normal = 3
+		},
+		cataclysm_3 = {
+			running = 0.5,
+			normal = 3
+		}
+	},
+	shove = {
+		easy = {
+			normal = 1
+		},
+		normal = {
+			normal = 1
+		},
+		hard = {
+			normal = 1
+		},
+		harder = {
+			normal = 1
+		},
+		hardest = {
+			normal = 1
+		},
+		cataclysm = {
+			normal = 1
+		},
+		cataclysm_2 = {
+			normal = 1
+		},
+		cataclysm_3 = {
+			normal = 1
+		}
+	},
+	jump_slam = {
+		easy = {
+			running = 2,
+			normal = 5
+		},
+		normal = {
+			running = 2,
+			normal = 5
+		},
+		hard = {
+			running = 2,
+			normal = 5
+		},
+		harder = {
+			running = 2,
+			normal = 5
+		},
+		hardest = {
+			running = 2,
+			normal = 5
+		},
+		cataclysm = {
+			running = 2,
+			normal = 5
+		},
+		cataclysm_2 = {
+			running = 2,
+			normal = 5
+		},
+		cataclysm_3 = {
+			running = 2,
+			normal = 5
+		}
+	}
+}
 local action_data = {
 	follow = {
 		follow_target_function_name = "_follow_target_rat_ogre",
@@ -469,16 +509,12 @@ local action_data = {
 	smash_door = {
 		move_anim = "move_fwd",
 		name = "smash_door",
+		damage = 15,
 		hit_react_type = "heavy",
 		damage_type = "cutting",
 		unblockable = true,
 		attack_anim = "attack_slam",
 		door_attack_distance = 2,
-		damage = {
-			25,
-			25,
-			25
-		},
 		ignore_staggers = {
 			false,
 			true,
@@ -519,19 +555,23 @@ local action_data = {
 	},
 	melee_slam = {
 		stagger_distance = 7,
-		height = 2.5,
-		hit_react_type = "heavy",
+		radius = 1.2,
 		forward_offset = 1.75,
 		cooldown = -1,
+		height = 2.5,
 		fatigue_type = "blocked_slam",
-		radius = 1.2,
+		hit_react_type = "heavy",
 		damage_type = "cutting",
+		damage = 10,
 		player_push_speed = 8,
+		attack_intensity_type = "melee_slam",
 		action_weight = 1,
+		blocked_damage = 5,
 		player_push_speed_blocked = 4,
 		unblockable = false,
 		attack_time = 1.3333333333333333,
 		dodge_mitigation_radius_squared = 2.25,
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		considerations = UtilityConsiderations.melee_slam,
 		attack_anim = {
 			"attack_slam",
@@ -539,59 +579,8 @@ local action_data = {
 			"attack_slam_3",
 			"attack_slam_4"
 		},
-		blocked_damage = {
-			5,
-			4,
-			2.5
-		},
-		blocked_difficulty_damage = {
-			easy = {
-				2,
-				1,
-				0.5
-			},
-			normal = {
-				2,
-				1,
-				0.5
-			},
-			hard = {
-				7,
-				5,
-				2.5
-			},
-			survival_hard = {
-				7,
-				5,
-				2.5
-			},
-			harder = {
-				9,
-				7.5,
-				5
-			},
-			survival_harder = {
-				9,
-				7.5,
-				5
-			},
-			hardest = {
-				10,
-				9,
-				7.5
-			},
-			survival_hardest = {
-				15,
-				12,
-				10.25
-			}
-		},
-		damage = {
-			20,
-			8,
-			5
-		},
-		difficulty_damage = damage_table_light,
+		blocked_difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack_blocked,
+		difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack,
 		stagger_impact = {
 			1,
 			2,
@@ -612,9 +601,13 @@ local action_data = {
 		end
 	},
 	combo_attack = {
-		damage_type = "cutting",
 		fatigue_type = "chaos_spawn_combo",
+		shield_blocked_fatigue_type = "chaos_spawn_combo",
+		damage = 15,
+		damage_type = "cutting",
+		attack_intensity_type = "combo",
 		action_weight = 1,
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		considerations = UtilityConsiderations.rat_ogre_combo,
 		attacks = {
 			{
@@ -665,12 +658,7 @@ local action_data = {
 				end
 			}
 		},
-		damage = {
-			15,
-			12,
-			10
-		},
-		difficulty_damage = damage_table_combo,
+		difficulty_damage = BreedTweaks.difficulty_damage.boss_combo_attack,
 		ignore_staggers = {
 			true,
 			false,
@@ -681,12 +669,15 @@ local action_data = {
 		}
 	},
 	melee_shove = {
+		fatigue_type = "ogre_shove",
+		damage = 20,
 		hit_react_type = "heavy",
 		damage_type = "cutting",
 		target_running_velocity_threshold = 2,
-		fatigue_type = "ogre_shove",
+		attack_intensity_type = "shove",
 		action_weight = 1,
 		ignore_ai_damage = true,
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		considerations = UtilityConsiderations.melee_shove,
 		attacks = {
 			{
@@ -843,18 +834,15 @@ local action_data = {
 				end
 			}
 		},
-		damage = {
-			20,
-			20,
-			20
-		},
-		difficulty_damage = damage_table_light
+		difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack
 	},
 	target_unreachable = {
 		move_anim = "move_start_fwd"
 	},
 	jump_slam = {
+		attack_intensity_type = "jump_slam",
 		action_weight = 1,
+		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		considerations = UtilityConsiderations.jump_slam,
 		bot_threats = {
 			{
@@ -869,6 +857,7 @@ local action_data = {
 	jump_slam_impact = {
 		stagger_distance = 7,
 		stagger_radius = 7.5,
+		damage = 10,
 		max_damage_radius = 2.5,
 		catapult_players = true,
 		fatigue_type = "blocked_jump_slam",
@@ -876,12 +865,7 @@ local action_data = {
 		damage_type = "blunt",
 		catapult_within_radius = 7,
 		catapulted_player_speed = 7,
-		damage = {
-			10,
-			0,
-			0
-		},
-		difficulty_damage = damage_table_light,
+		difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack,
 		stagger_impact = {
 			1,
 			2,
@@ -944,6 +928,18 @@ local action_data = {
 				right = {
 					"stagger_right_exp"
 				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
 			},
 			{
 				fwd = {},

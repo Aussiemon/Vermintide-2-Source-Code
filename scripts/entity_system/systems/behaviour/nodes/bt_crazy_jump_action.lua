@@ -2,7 +2,6 @@ require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTCrazyJumpAction = class(BTCrazyJumpAction, BTNode)
 local position_lookup = POSITION_LOOKUP
-local PLAYER_AND_BOT_UNITS = PLAYER_AND_BOT_UNITS
 
 BTCrazyJumpAction.init = function (self, ...)
 	BTCrazyJumpAction.super.init(self, ...)
@@ -412,11 +411,13 @@ BTCrazyJumpAction.check_colliding_players = function (self, unit, blackboard, po
 			end
 		end
 	else
+		local side = blackboard.side
+		local enemy_player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
 		local shortest_dist_squared = 4
 		local hit_unit = nil
 
-		for i = 1, #PLAYER_AND_BOT_UNITS, 1 do
-			local player_unit = PLAYER_AND_BOT_UNITS[i]
+		for i = 1, #enemy_player_and_bot_units, 1 do
+			local player_unit = enemy_player_and_bot_units[i]
 			local player_pos = position_lookup[player_unit]
 			local dist_squared = Vector3.distance_squared(pos, player_pos)
 

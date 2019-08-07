@@ -2,7 +2,7 @@ require("scripts/helpers/steam_helper")
 
 UnlockClan = class(UnlockClan)
 
-UnlockClan.init = function (self, name, clan_id, backend_reward_id)
+UnlockClan.init = function (self, name, clan_id, backend_reward_id, always_unlocked_game_app_ids)
 	self._name = name
 	self._id = clan_id
 	self._backend_reward_id = backend_reward_id

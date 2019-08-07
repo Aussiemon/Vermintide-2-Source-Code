@@ -1,6 +1,7 @@
 EnemyPackageLoaderSettings = EnemyPackageLoaderSettings or {}
 EnemyPackageLoaderSettings.policy = "default"
-EnemyPackageLoaderSettings.unload_startup_packages_between_levels = false
+EnemyPackageLoaderSettings.max_loaded_breed_cap = 40
+EnemyPackageLoaderSettings.unload_startup_packages_between_levels = true
 EnemyPackageLoaderSettings.breed_path = "resource_packages/breeds/"
 EnemyPackageLoaderSettings.categories = {
 	{
@@ -53,8 +54,6 @@ EnemyPackageLoaderSettings.categories = {
 			"chaos_zombie",
 			"chaos_tentacle",
 			"chaos_tentacle_sorcerer",
-			"pet_rat",
-			"pet_pig",
 			"skaven_stormfiend_demo"
 		}
 	},
@@ -134,6 +133,7 @@ local category_changes = nil
 if PLATFORM == "xb1" or PLATFORM == "ps4" or script_data.enemy_package_loader_policy == "console" then
 	EnemyPackageLoaderSettings.policy = "console"
 	EnemyPackageLoaderSettings.unload_startup_packages_between_levels = true
+	EnemyPackageLoaderSettings.max_loaded_breed_cap = 40
 	category_changes = {
 		bosses = {
 			limit = 1,
@@ -155,7 +155,7 @@ if PLATFORM == "xb1" or PLATFORM == "ps4" or script_data.enemy_package_loader_po
 	}
 end
 
-print("enemy_package_loader_policy:", EnemyPackageLoaderSettings.policy)
+print("[EnemyPackageLoaderSettings] enemy_package_loader_policy:", EnemyPackageLoaderSettings.policy)
 
 if category_changes then
 	local categories = EnemyPackageLoaderSettings.categories
@@ -195,6 +195,25 @@ EnemyPackageLoaderSettings.alias_to_breed = {
 	skaven_dummy_clan_rat = "skaven_clan_rat"
 }
 EnemyPackageLoaderSettings.breed_to_aliases = {}
+
+for dlc_name, dlc in pairs(DLCSettings) do
+	local dlc_alias_to_breed = dlc.alias_to_breed
+
+	if dlc_alias_to_breed then
+		for alias, breed_name in pairs(dlc_alias_to_breed) do
+			EnemyPackageLoaderSettings.alias_to_breed[alias] = breed_name
+		end
+	end
+
+	local dlc_opt_lookup_breed_names = dlc.opt_lookup_breed_names
+
+	if dlc_opt_lookup_breed_names then
+		for alias, breed_name in pairs(dlc_opt_lookup_breed_names) do
+			EnemyPackageLoaderSettings.opt_lookup_breed_names[alias] = breed_name
+		end
+	end
+end
+
 local alias_to_breed = EnemyPackageLoaderSettings.alias_to_breed
 local breed_to_aliases = EnemyPackageLoaderSettings.breed_to_aliases
 

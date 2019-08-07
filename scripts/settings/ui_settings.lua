@@ -2,25 +2,25 @@ require("scripts/ui/ui_layer")
 require("scripts/utils/colors")
 
 UISettings = {
+	bots_level_display_text = "BOT",
 	tooltip_fade_in_speed = 4,
 	start_drag_threshold = 0.15,
 	double_click_threshold = 0.1,
 	crafting_progress_time = 0.5,
-	bots_level_display_text = "BOT",
 	max_craft_material_presentation_amount = 999,
-	tooltip_wait_duration = 0.1,
+	crafting_animation_wait_time = 0.5,
 	console_menu_camera_move_duration = 0.5,
+	tooltip_wait_duration = 0.1,
 	max_inventory_items = 1000,
 	hero_panel_height = 120,
-	chest_upgrade_score_topics_min_duration = 0.5,
 	wait_for_mip_streaming_items = false,
-	chest_upgrade_score_topics_max_duration = 7,
 	use_subtitles = true,
 	max_fatigue_shields = 20,
 	crafting_animation_out_time = 0.3,
+	chest_upgrade_score_topics_min_duration = 0.5,
+	chest_upgrade_score_topics_max_duration = 7,
 	crafting_animation_in_time = 0.3,
 	wait_for_mip_streaming_character = true,
-	crafting_animation_wait_time = 0.5,
 	console_menu_rect_color = Colors.get_color_table_with_alpha("console_menu_rect", 125),
 	console_start_game_menu_rect_color = Colors.get_color_table_with_alpha("console_menu_rect", 125),
 	game_start_windows = {
@@ -61,6 +61,8 @@ UISettings = {
 		warpstone = 6,
 		wood = 2
 	},
+	subtitles_font_size = Application.user_setting("subtitles_font_size") or 20,
+	subtitles_background_alpha = 2.55 * (Application.user_setting("subtitles_background_opacity") or 20),
 	root_scale = {
 		Application.user_setting("root_scale_x") or 1,
 		Application.user_setting("root_scale_y") or 1
@@ -276,47 +278,74 @@ UISettings = {
 		show_duration = 4,
 		increment_duration = 0.33
 	},
+	damage_feedback = {
+		fade_duration = 0.5,
+		show_duration = 4,
+		increment_duration = 0.33
+	},
 	use_ps4_input_icons = Application.user_setting("gamepad_use_ps4_style_input_icons"),
 	breed_textures = {
-		chaos_exalted_champion_warcamp = "unit_frame_portrait_enemy_chaos_warrior",
-		chaos_raider = "unit_frame_portrait_enemy_raider",
-		skaven_stormfiend = "unit_frame_portrait_enemy_stormfiend",
-		chaos_exalted_champion_norsca = "unit_frame_portrait_enemy_chaos_warrior",
-		skaven_storm_vermin_warlord = "unit_frame_portrait_enemy_warlord",
-		skaven_storm_vermin_with_shield = "unit_frame_portrait_enemy_stormvermin",
-		skaven_poison_wind_globadier = "unit_frame_portrait_enemy_poison_wind",
-		skaven_gutter_runner = "unit_frame_portrait_enemy_gutter_runner",
-		skaven_clan_rat_with_shield = "unit_frame_portrait_enemy_clanrat",
+		skaven_stormfiend_demo = "unit_frame_portrait_enemy_stormfiend",
 		skaven_plague_monk = "unit_frame_portrait_enemy_plague_monk",
+		hero_wh_zealot = "small_unit_frame_portrait_victor_zealot",
+		beastmen_bestigor = "unit_frame_portrait_enemy_bestigor",
+		skaven_storm_vermin_warlord = "unit_frame_portrait_enemy_warlord",
+		skaven_poison_wind_globadier = "unit_frame_portrait_enemy_poison_wind",
+		hero_bw_scholar = "small_unit_frame_portrait_sienna_scholar",
+		skaven_gutter_runner = "unit_frame_portrait_enemy_gutter_runner",
+		hero_es_mercenary = "small_unit_frame_portrait_kruber_mercenary",
+		beastmen_minotaur = "unit_frame_portrait_enemy_minotaur",
 		chaos_fanatic = "unit_frame_portrait_enemy_fanatic",
 		skaven_slave = "unit_frame_portrait_enemy_slave_rat",
-		chaos_vortex_sorcerer = "unit_frame_portrait_enemy_sorcerer_vortex",
-		chaos_vortex = "unit_frame_portrait_enemy_sorcerer_vortex",
+		chaos_marauder = "unit_frame_portrait_enemy_chaos_marauder",
+		hero_wh_bountyhunter = "small_unit_frame_portrait_victor_bountyhunter",
 		skaven_clan_rat = "unit_frame_portrait_enemy_clanrat",
-		skaven_stormfiend_demo = "unit_frame_portrait_enemy_stormfiend",
-		chaos_plague_sorcerer = "unit_frame_portrait_enemy_chaos_sorcerer",
-		skaven_ratling_gunner = "unit_frame_portrait_enemy_ratling_gunner",
+		skaven_stormfiend = "unit_frame_portrait_enemy_stormfiend",
+		chaos_berzerker = "unit_frame_portrait_enemy_savage",
+		chaos_raider = "unit_frame_portrait_enemy_raider",
 		chaos_exalted_sorcerer = "unit_frame_portrait_enemy_sorcerer_boss",
 		chaos_tentacle_sorcerer = "unit_frame_portrait_enemy_chaos_sorcerer",
-		chaos_zombie = "unit_frame_portrait_enemy_plague_zombie",
+		chaos_vortex_sorcerer = "unit_frame_portrait_enemy_sorcerer_vortex",
 		skaven_rat_ogre = "unit_frame_portrait_enemy_rat_ogre",
+		chaos_vortex = "unit_frame_portrait_enemy_sorcerer_vortex",
+		chaos_plague_sorcerer = "unit_frame_portrait_enemy_chaos_sorcerer",
 		chaos_troll = "unit_frame_portrait_enemy_chaos_troll",
 		chaos_spawn = "unit_frame_portrait_enemy_chaos_spawn",
 		chaos_corruptor_sorcerer = "unit_frame_portrait_enemy_sorcerer_corruptor",
+		hero_dr_slayer = "small_unit_frame_portrait_bardin_slayer",
 		skaven_stormfiend_boss = "unit_frame_portrait_enemy_stormfiend",
 		skaven_storm_vermin = "unit_frame_portrait_enemy_stormvermin",
-		chaos_marauder = "unit_frame_portrait_enemy_chaos_marauder",
-		chaos_berzerker = "unit_frame_portrait_enemy_savage",
+		beastmen_gor = "unit_frame_portrait_enemy_standard_bearer",
+		skaven_storm_vermin_with_shield = "unit_frame_portrait_enemy_stormvermin",
+		hero_we_waywatcher = "small_unit_frame_portrait_kerillian_waywatcher",
+		chaos_zombie = "unit_frame_portrait_enemy_plague_zombie",
+		hero_we_maidenguard = "small_unit_frame_portrait_kerillian_maidenguard",
+		hero_bw_adept = "small_unit_frame_portrait_sienna_adept",
+		chaos_exalted_champion_warcamp = "unit_frame_portrait_enemy_chaos_warrior",
 		skaven_warpfire_thrower = "unit_frame_portrait_enemy_warpfire",
-		chaos_marauder_with_shield = "unit_frame_portrait_enemy_chaos_marauder",
+		skaven_clan_rat_with_shield = "unit_frame_portrait_enemy_clanrat",
+		hero_we_shade = "small_unit_frame_portrait_kerillian_shade",
+		chaos_exalted_champion_norsca = "unit_frame_portrait_enemy_chaos_warrior",
+		hero_bw_unchained = "small_unit_frame_portrait_sienna_unchained",
 		chaos_tentacle = "unit_frame_portrait_enemy_chaos_sorcerer",
 		skaven_loot_rat = "unit_frame_portrait_enemy_lootrat",
 		skaven_pack_master = "unit_frame_portrait_enemy_packmaster",
 		chaos_spawn_exalted_champion_norsca = "unit_frame_portrait_enemy_chaos_spawn",
+		hero_dr_ranger = "small_unit_frame_portrait_bardin_ranger",
+		beastmen_ungor = "unit_frame_portrait_enemy_standard_bearer",
+		skaven_ratling_gunner = "unit_frame_portrait_enemy_ratling_gunner",
+		skaven_storm_vermin_champion = "unit_frame_portrait_enemy_stormvermin",
 		skaven_grey_seer = "unit_frame_portrait_enemy_rasknitt",
 		chaos_warrior = "unit_frame_portrait_enemy_chaos_warrior",
+		hero_es_huntsman = "small_unit_frame_portrait_kruber_huntsman",
+		hero_dr_ironbreaker = "small_unit_frame_portrait_bardin_ironbreaker",
+		hero_es_knight = "small_unit_frame_portrait_kruber_knight",
+		beastmen_ungor_archer = "unit_frame_portrait_enemy_standard_bearer",
+		beastmen_standard_bearer = "unit_frame_portrait_enemy_standard_bearer",
+		chaos_marauder_with_shield = "unit_frame_portrait_enemy_chaos_marauder",
+		hero_wh_captain = "small_unit_frame_portrait_victor_captain",
 		skaven_storm_vermin_commander = "unit_frame_portrait_enemy_stormvermin",
-		skaven_storm_vermin_champion = "unit_frame_portrait_enemy_stormvermin"
+		beastmen_standard_bearer_crater = "unit_frame_portrait_enemy_standard_bearer"
 	},
 	chest_upgrade_score_topics = {
 		{
@@ -654,6 +683,12 @@ for _, dlc in pairs(DLCSettings) do
 	end
 end
 
+UISettings.difficulties_select_sounds = {
+	"play_gui_lobby_button_01_difficulty_select_normal",
+	"play_gui_lobby_button_01_difficulty_select_hard",
+	"play_gui_lobby_button_01_difficulty_select_nightmare",
+	"play_gui_lobby_button_01_difficulty_select_cataclysm"
+}
 UISettings.hero_icons = {
 	small = {
 		witch_hunter = "tabs_class_icon_witch_hunter_normal",
@@ -679,10 +714,11 @@ UISettings.hero_tooltips = {
 }
 UISettings.slot_icons = {
 	crafting_material = "tabs_icon_crafting_material",
+	melee_ranged = "tabs_icon_melee_ranged",
 	necklace = "tabs_icon_necklace",
-	forge = "tabs_icon_anvil",
 	trinket = "tabs_icon_trinkets",
 	melee = "tabs_icon_equipment",
+	forge = "tabs_icon_anvil",
 	portrait_frame = "tabs_icon_portrait_frame",
 	hat = "tabs_icon_cosmetics",
 	ring = "tabs_icon_charm",
@@ -696,10 +732,20 @@ UISettings.item_type_store_icons = {
 	bundle = "store_tag_icon_bundle",
 	frame = "store_tag_icon_frame",
 	skin = "store_tag_icon_skin",
-	currency = "store_tag_icon_currency",
 	dlc = "store_tag_icon_dlc",
-	pet = "store_tag_icon_pet"
+	currency = "store_tag_icon_currency"
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local item_type_store_icons = dlc.item_type_store_icons
+
+	if item_type_store_icons then
+		for type, icon in pairs(item_type_store_icons) do
+			UISettings.item_type_store_icons[type] = icon
+		end
+	end
+end
+
 UISettings.crafting_material_order = {
 	"crafting_material_scrap",
 	"crafting_material_weapon",
@@ -736,19 +782,21 @@ UISettings.item_rarity_textures = {
 	common = "icon_bg_common",
 	promo = "icon_bg_promo",
 	exotic = "icon_bg_exotic",
-	default = "icon_bg_default",
+	magic = "icon_bg_magic",
 	plentiful = "icon_bg_plentiful",
+	default = "icon_bg_default",
 	rare = "icon_bg_rare",
 	unique = "icon_bg_unique"
 }
 UISettings.item_rarity_order = {
-	common = 5,
+	common = 6,
 	promo = 1,
-	exotic = 3,
-	default = 7,
-	plentiful = 6,
-	rare = 4,
-	unique = 2
+	exotic = 4,
+	magic = 2,
+	plentiful = 7,
+	default = 8,
+	rare = 5,
+	unique = 3
 }
 UISettings.cosmetics_sorting_order = {
 	weapon_skin = 3,

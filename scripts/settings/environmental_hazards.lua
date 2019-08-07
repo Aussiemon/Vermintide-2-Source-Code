@@ -2,7 +2,9 @@ EnvironmentalHazards = {
 	spike_trap = {
 		enemy = {
 			damage_profile = "spike_trap",
-			power_level = 500
+			power_level = 500,
+			can_damage = true,
+			can_stagger = true
 		},
 		player = {
 			action_data = {
@@ -10,38 +12,23 @@ EnvironmentalHazards = {
 				damage_type = "cutting"
 			},
 			difficulty_damage = {
-				easy = {
-					7,
-					6,
-					5
-				},
-				normal = {
-					12,
-					10,
-					5
-				},
-				hard = {
-					15,
-					11,
-					7
-				},
-				harder = {
-					18,
-					15,
-					11
-				},
-				hardest = {
-					23,
-					17,
-					12
-				}
+				harder = 18,
+				hard = 15,
+				normal = 12,
+				hardest = 23,
+				cataclysm = 30,
+				cataclysm_3 = 50,
+				cataclysm_2 = 40,
+				easy = 7
 			}
 		}
 	},
 	thorn_trap = {
 		enemy = {
 			damage_profile = "spike_trap",
-			power_level = 500
+			power_level = 500,
+			can_damage = true,
+			can_stagger = false
 		},
 		player = {
 			action_data = {
@@ -49,38 +36,23 @@ EnvironmentalHazards = {
 				damage_type = "cutting"
 			},
 			difficulty_damage = {
-				easy = {
-					3,
-					2,
-					1
-				},
-				normal = {
-					4,
-					3,
-					2
-				},
-				hard = {
-					5,
-					4,
-					3
-				},
-				harder = {
-					6,
-					5,
-					4
-				},
-				hardest = {
-					7,
-					6,
-					5
-				}
+				harder = 6,
+				hard = 5,
+				normal = 4,
+				hardest = 7,
+				cataclysm = 8,
+				cataclysm_3 = 10,
+				cataclysm_2 = 9,
+				easy = 3
 			}
 		}
 	},
 	fire = {
 		enemy = {
 			damage_profile = "environment_fire",
-			power_level = 500
+			power_level = 500,
+			can_damage = true,
+			can_stagger = false
 		},
 		player = {
 			action_data = {
@@ -88,38 +60,23 @@ EnvironmentalHazards = {
 				damage_type = "burn"
 			},
 			difficulty_damage = {
-				easy = {
-					3,
-					2,
-					1
-				},
-				normal = {
-					4,
-					3,
-					2
-				},
-				hard = {
-					5,
-					4,
-					3
-				},
-				harder = {
-					6,
-					5,
-					4
-				},
-				hardest = {
-					7,
-					6,
-					5
-				}
+				harder = 6,
+				hard = 5,
+				normal = 4,
+				hardest = 7,
+				cataclysm = 8,
+				cataclysm_3 = 10,
+				cataclysm_2 = 9,
+				easy = 3
 			}
 		}
 	},
 	payload = {
 		enemy = {
 			damage_profile = "payload_wagon",
-			power_level = 100
+			power_level = 100,
+			can_damage = false,
+			can_stagger = true
 		}
 	}
 }

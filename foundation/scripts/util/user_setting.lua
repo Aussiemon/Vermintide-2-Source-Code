@@ -88,11 +88,17 @@ Development.init_user_settings = function ()
 		Development.set_setting("dummy_field_to_spawn_development_settings_table", true)
 	end
 
+	print("VALUES:")
+
 	for param, value in pairs(development_settings) do
 		if value ~= false then
 			script_data[param] = value
+
+			print(param, script_data[param])
 		end
 	end
+
+	print("VALUES END")
 end
 
 Application.test_user_setting = function (...)

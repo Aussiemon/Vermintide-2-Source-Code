@@ -328,6 +328,8 @@ Boot.booting_update = function (self, dt)
 
 		Boot.startup_state = "loading_dlcs"
 	elseif Boot.startup_state == "loading_dlcs" then
+		foundation_require("util", "local_require")
+
 		local done = Managers.package:update()
 
 		if done then
@@ -386,7 +388,7 @@ Boot.booting_update = function (self, dt)
 		if PLATFORM == "win32" then
 			if rawget(_G, "Steam") then
 				Crashify.print_property("steam_id", Steam.user_id())
-				Crashify.print_property("steam_user_name", Steam.user_name())
+				Crashify.print_property("steam_profile_name", Steam.user_name())
 			end
 
 			Crashify.print_property("machine_id", Application.machine_id())
@@ -630,6 +632,8 @@ function force_render(dt)
 	render()
 end
 
+local EMPTY_TABLE = {}
+
 Boot.game_update = function (self, real_world_dt)
 	local dt = Managers.time:scaled_delta_time(real_world_dt)
 
@@ -651,9 +655,30 @@ Boot.game_update = function (self, real_world_dt)
 
 	local t = Managers.time:time("main")
 
+	for _, dlc in pairs(DLCSettings) do
+		local manager_settings = dlc.manager_settings or EMPTY_TABLE
+
+		for name, manager_data in pairs(manager_settings) do
+			if manager_data.pre_update then
+				Managers[name].pre_update(Managers[name], dt, t)
+			end
+		end
+	end
+
 	self._machine:pre_update(dt, t)
 	Managers.package:update(dt, t)
 	Managers.token:update(dt, t)
+
+	for _, dlc in pairs(DLCSettings) do
+		local manager_settings = dlc.manager_settings or EMPTY_TABLE
+
+		for name, manager_data in pairs(manager_settings) do
+			if manager_data.update then
+				Managers[name].update(Managers[name], dt, t)
+			end
+		end
+	end
+
 	self._machine:update(dt, t)
 	Managers.state_machine:update(dt)
 	Managers.world:update(dt, t)
@@ -670,18 +695,19 @@ Boot.game_update = function (self, real_world_dt)
 		Managers.irc:update(dt)
 		Managers.twitch:update(dt)
 	elseif PLATFORM == "xb1" then
-		Managers.rest_transport:update(true)
+		Managers.rest_transport:update(true, dt, t)
 
 		if GameSettingsDevelopment.twitch_enabled then
 			Managers.twitch:update(dt)
 		end
 	elseif PLATFORM == "ps4" then
-		Managers.rest_transport:update(true)
+		Managers.rest_transport:update(true, dt, t)
 		Managers.irc:update(dt)
 		Managers.twitch:update(dt)
 		Managers.system_dialog:update(dt)
 	end
 
+	Managers.weave:update(dt, t)
 	Managers.news_ticker:update(dt)
 	Managers.transition:update(dt)
 	Managers.load_time:update(dt)
@@ -690,7 +716,7 @@ Boot.game_update = function (self, real_world_dt)
 		Managers.splitscreen:update(dt)
 	end
 
-	Managers.telemetry:update(dt)
+	Managers.telemetry:update(dt, t)
 	Managers.smoketest:update(dt)
 	Managers.invite:update(dt)
 	Managers.admin:update(dt)
@@ -703,6 +729,10 @@ Boot.game_update = function (self, real_world_dt)
 		Managers.light_fx:update(dt)
 	end
 
+	if Managers.razer_chroma then
+		Managers.razer_chroma:update(dt)
+	end
+
 	if Managers.unlock then
 		Managers.unlock:update(dt)
 	end
@@ -710,10 +740,6 @@ Boot.game_update = function (self, real_world_dt)
 	if Managers.popup then
 		Managers.simple_popup:update(dt)
 		Managers.popup:update(dt)
-	end
-
-	if Managers.player then
-		Managers.player:update(dt)
 	end
 
 	if Managers.beta_overlay then
@@ -732,6 +758,17 @@ Boot.game_update = function (self, real_world_dt)
 
 	end_function_call_collection()
 	table.clear(Boot.flow_return_table)
+
+	for _, dlc in pairs(DLCSettings) do
+		local manager_settings = dlc.manager_settings or EMPTY_TABLE
+
+		for name, manager_data in pairs(manager_settings) do
+			if manager_data.post_update then
+				Managers[name].post_update(Managers[name], dt, t)
+			end
+		end
+	end
+
 	self._machine:post_update(dt)
 	FrameTable.swap_tables()
 	FrameTable.clear_tables()
@@ -837,6 +874,14 @@ Game.setup = function (self)
 		profile(p, "physics_dump")
 		DebugHelper.enable_physics_dump()
 		profile(p, "physics_dump")
+	end
+
+	for _, dlc in pairs(DLCSettings) do
+		local ingame_package_name = dlc.ingame_package_name
+
+		if ingame_package_name then
+			GlobalResources[#GlobalResources + 1] = ingame_package_name
+		end
 	end
 
 	profile(p, "init random")
@@ -1197,14 +1242,13 @@ Game._handle_revision_info = function (self)
 end
 
 Game.require_game_scripts = function (self)
-	foundation_require("util", "local_require")
 	game_require("utils", "patches", "colors", "framerate", "random_table", "global_utils", "function_call_stats", "util", "loaded_dice", "script_application", "benchmark/benchmark_handler")
 	game_require("settings", "version_settings")
 	game_require("ui", "views/show_cursor_stack", "ui_fonts")
 	game_require("settings", "demo_settings", "motion_control_settings", "game_settings_development", "controller_settings", "default_user_settings")
 	game_require("entity_system", "entity_system")
 	game_require("game_state", "game_state_machine", "state_context", "state_splash_screen", "state_loading", "state_ingame", "state_demo_end")
-	game_require("managers", "admin/admin_manager", "news_ticker/news_ticker_manager", "player/player_manager", "player/player_bot", "save/save_manager", "save/save_data", "perfhud/perfhud_manager", "music/music_manager", "network/party_manager", "transition/transition_manager", "smoketest/smoketest_manager", "debug/updator", "invite/invite_manager", "unlock/unlock_manager", "popup/popup_manager", "popup/simple_popup", "light_fx/light_fx_manager", "play_go/play_go_manager", "controller_features/controller_features_manager", "deed/deed_manager", "telemetry/telemetry_create", "load_time/load_time_manager")
+	game_require("managers", "admin/admin_manager", "news_ticker/news_ticker_manager", "player/player_manager", "player/player_bot", "save/save_manager", "save/save_data", "perfhud/perfhud_manager", "music/music_manager", "network/party_manager", "network/lobby_manager", "transition/transition_manager", "smoketest/smoketest_manager", "debug/updator", "invite/invite_manager", "unlock/unlock_manager", "popup/popup_manager", "popup/simple_popup", "light_fx/light_fx_manager", "razer_chroma/razer_chroma_manager", "play_go/play_go_manager", "controller_features/controller_features_manager", "deed/deed_manager", "telemetry/telemetry_manager", "load_time/load_time_manager", "game_mode/game_mechanism_manager", "weave/weave_manager")
 
 	if PLATFORM == "win32" then
 		game_require("managers", "irc/irc_manager", "curl/curl_manager", "twitch/twitch_manager")
@@ -1218,7 +1262,7 @@ Game.require_game_scripts = function (self)
 	game_require("network", "unit_spawner", "unit_storage", "network_unit")
 	self:_init_localization_manager()
 	require("scripts/ui/views/ingame_ui")
-	require("scripts/ui/views/level_end/level_end_view")
+	require("scripts/ui/views/level_end/level_end_view_wrapper")
 	require("scripts/ui/views/title_loading_ui")
 	require("scripts/network_lookup/network_lookup")
 end
@@ -1415,19 +1459,33 @@ Game._init_managers = function (self)
 		Managers.twitch = TwitchManager:new()
 	end
 
-	Managers.telemetry = CreateTelemetryManager()
+	Managers.weave = WeaveManager:new()
+	Managers.telemetry = TelemetryManager.create()
 	Managers.player = PlayerManager:new()
 	Managers.free_flight = FreeFlightManager:new()
 	Managers.smoketest = SmoketestManager:new()
 	Managers.invite = InviteManager:new()
 	Managers.news_ticker = NewsTickerManager:new()
 	Managers.light_fx = LightFXManager:new()
+	Managers.razer_chroma = RazerChromaManager:new()
 	Managers.party = PartyManager:new()
 	Managers.deed = DeedManager:new()
 	Managers.load_time = LoadTimeManager:new()
+	Managers.mechanism = GameMechanismManager:new()
+	Managers.lobby = LobbyManager:new()
 
 	if GameSettingsDevelopment.use_leaderboards or Development.parameter("use_leaderboards") then
 		Managers.leaderboards = LeaderboardManager:new()
+	end
+
+	local empty_table = {}
+
+	for dlc_name, dlc in pairs(DLCSettings) do
+		local manager_settings = dlc.manager_settings or empty_table
+
+		for manager_name, manager_data in pairs(manager_settings) do
+			Managers[manager_name] = rawget(_G, manager_data.klass):new()
+		end
 	end
 end
 

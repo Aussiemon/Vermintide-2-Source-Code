@@ -34,14 +34,20 @@ local function swap(t, i, j)
 	t[j] = temp
 end
 
-local function randomize_actions(unit, actions, blackboard, t)
+local function randomize_actions(unit, actions, blackboard, t, node_children)
 	local num_actions = #actions
 	local total_utility_score = 0
 
 	for i = 1, num_actions, 1 do
 		local action = actions[i]
 		local action_name = action.name
-		local score = Utility.get_action_utility(action, action_name, blackboard, t)
+		local node = node_children[action_name]
+		local score = 0
+
+		if node:condition(blackboard) then
+			score = Utility.get_action_utility(action, action_name, blackboard, t)
+		end
+
 		actions[i].utility_score = score
 		total_utility_score = total_utility_score + score
 	end
@@ -111,7 +117,7 @@ BTUtilityNode.run = function (self, unit, blackboard, t, dt)
 	end
 
 	local actions = self._action_list
-	local num_actions = randomize_actions(unit, actions, blackboard, t)
+	local num_actions = randomize_actions(unit, actions, blackboard, t, self._children)
 
 	for i = 1, num_actions, 1 do
 		local action = actions[i]
@@ -154,7 +160,7 @@ BTUtilityNode.run = function (self, unit, blackboard, t, dt)
 	fail_cooldown_t = fail_cooldown_blackboard_identifier and blackboard[fail_cooldown_blackboard_identifier]
 
 	if fail_cooldown_t == nil then
-		fail_cooldown_t = t + 0.5
+		fail_cooldown_t = t + ((action_data and action_data.fail_cooldown) or 0.5)
 	end
 
 	blackboard[self.fail_cooldown_name] = fail_cooldown_t

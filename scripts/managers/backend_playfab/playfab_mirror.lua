@@ -30,8 +30,9 @@ PlayFabMirror.init = function (self, signin_result)
 	self._fake_inventory_items = {}
 	self._best_power_levels = nil
 	self.sum_best_power_levels = nil
+	self._playfab_id = signin_result.PlayFabId
 	local info_result_payload = signin_result.InfoResultPayload
-	local read_only_data = info_result_payload.UserReadOnlyData
+	local read_only_data = info_result_payload.UserReadOnlyData or {}
 	local read_only_data_values = {}
 
 	for key, data in pairs(read_only_data) do
@@ -203,6 +204,52 @@ end
 
 PlayFabMirror.execute_dlc_logic_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+	local function_result = result.FunctionResult
+
+	if function_result then
+		local info = function_result.missing_dlc_info
+
+		if info then
+			local popup_text = (info.presentation_text_localized and Localize(info.presentation_text_localized)) or info.presentation_text
+			local popup_title = (info.presentation_title_localized and Localize(info.presentation_title_localized)) or info.presentation_title
+			local popup_url_button = nil
+
+			if info.presentation_url_button then
+				popup_url_button = {
+					text = (info.presentation_url_button.text_localized and Localize(info.presentation_url_button.text_localized)) or info.presentation_url_button.text,
+					url = info.presentation_url_button.url
+				}
+			end
+
+			Managers.backend:missing_required_dlc_error(popup_text, popup_title, popup_url_button)
+
+			return
+		end
+	end
+
+	self:_set_up_additional_account_data()
+end
+
+PlayFabMirror._set_up_additional_account_data = function (self)
+	local request = {
+		FunctionName = "additionalAccountDataSetUp",
+		FunctionParameter = {}
+	}
+	local request_cb = callback(self, "additional_data_setup_request_cb")
+
+	PlayFabClientApi.ExecuteCloudScript(request, request_cb)
+
+	self._num_items_to_load = self._num_items_to_load + 1
+end
+
+PlayFabMirror.additional_data_setup_request_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+	local function_result = result.FunctionResult
+	local new_read_only_data = function_result.new_user_read_only_data
+
+	for key, value in pairs(new_read_only_data) do
+		self:set_read_only_data(key, value, true)
+	end
 
 	self:_request_best_power_levels()
 end
@@ -326,6 +373,14 @@ end
 
 PlayFabMirror.fix_inventory_data_1_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+	local function_result = result.FunctionResult
+	local updated_xp_data = function_result and function_result.updated_xp_data
+
+	if updated_xp_data then
+		for key, value in pairs(updated_xp_data) do
+			self:set_read_only_data(key, value, true)
+		end
+	end
 
 	self:_request_fix_inventory_data_2()
 end
@@ -365,7 +420,38 @@ PlayFabMirror.read_only_data_request_cb = function (self, result)
 	local function_result = result.FunctionResult
 	local achievement_rewards = function_result.achievement_rewards
 	self._achievement_rewards = cjson.decode(achievement_rewards)
+	local weaves_progression_settings = function_result.weaves_progression_settings
+	self._weaves_progression_settings = (weaves_progression_settings and cjson.decode(weaves_progression_settings)) or {}
 
+	self:_weaves_player_setup()
+end
+
+PlayFabMirror._weaves_player_setup = function (self)
+	self._num_items_to_load = self._num_items_to_load + 1
+	local request = {
+		FunctionName = "weavesPlayerSetup",
+		FunctionParameter = {}
+	}
+	local request_cb = callback(self, "weaves_player_setup_request_cb")
+
+	PlayFabClientApi.ExecuteCloudScript(request, request_cb)
+end
+
+PlayFabMirror.weaves_player_setup_request_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+	local function_result = result.FunctionResult
+	local created = function_result.created
+	local essence = function_result.essence
+
+	if created then
+		local new_user_data = function_result.new_user_data
+
+		for key, value in pairs(new_user_data) do
+			self:set_read_only_data(key, value, true)
+		end
+	end
+
+	self:set_essence(essence)
 	self:_request_user_inventory()
 end
 
@@ -571,6 +657,9 @@ local slot_mapping = {
 }
 
 PlayFabMirror._verify_items_are_usable = function (self, broken_slots, character_data, career_name)
+	local career_settings = CareerSettings[career_name]
+	local item_slot_types_by_slot_name = career_settings.item_slot_types_by_slot_name
+
 	for i = 1, #slots_to_verify_by_item_data, 1 do
 		local slot_name = slots_to_verify_by_item_data[i]
 
@@ -586,13 +675,11 @@ PlayFabMirror._verify_items_are_usable = function (self, broken_slots, character
 					broken_slots[slot_name] = true
 				end
 
-				local item_slot_name = slot_mapping[item_data.slot_type]
+				local accepted_slot_types = item_slot_types_by_slot_name[slot_name]
+				local item_slot_type = item_data.slot_type
+				local item_rarity = item_data.rarity
 
-				if career_name == "dr_slayer" and slot_name == "slot_ranged" then
-					if item_data.slot_type ~= "melee" then
-						broken_slots[slot_name] = true
-					end
-				elseif item_slot_name and item_slot_name ~= slot_name then
+				if not table.contains(accepted_slot_types, item_slot_type) or item_rarity == "magic" then
 					broken_slots[slot_name] = true
 				end
 			end
@@ -644,6 +731,12 @@ PlayFabMirror._update_data = function (self, item, backend_id)
 
 		if difficulty then
 			item.difficulty = difficulty
+		end
+
+		local magic_level = custom_data.magic_level
+
+		if magic_level then
+			item.magic_level = tonumber(magic_level)
 		end
 	end
 
@@ -742,7 +835,7 @@ PlayFabMirror._commit_status = function (self)
 
 	if commit_data.status == "commit_error" then
 		return "commit_error"
-	elseif commit_data.num_updates == commit_data.updates_to_make and not commit_data.wait_for_stats and not commit_data.wait_for_keep_decorations and not commit_data.wait_for_user_data and not commit_data.wait_for_read_only_data then
+	elseif commit_data.num_updates == commit_data.updates_to_make and not commit_data.wait_for_stats and not commit_data.wait_for_weave_user_data and not commit_data.wait_for_keep_decorations and not commit_data.wait_for_user_data and not commit_data.wait_for_read_only_data then
 		if PLATFORM ~= "win32" and not Managers.account:offline_mode() then
 			PlayfabBackendSaveDataUtils.store_online_data(self)
 		end
@@ -755,6 +848,10 @@ end
 
 PlayFabMirror.request_queue = function (self)
 	return self._request_queue
+end
+
+PlayFabMirror.get_playfab_id = function (self)
+	return self._playfab_id
 end
 
 PlayFabMirror.get_character_data = function (self, career_name, key)
@@ -855,6 +952,10 @@ end
 
 PlayFabMirror.get_achievement_rewards = function (self)
 	return self._achievement_rewards
+end
+
+PlayFabMirror.get_weaves_progression_settings = function (self)
+	return self._weaves_progression_settings
 end
 
 PlayFabMirror.get_unlocked_weapon_skins = function (self)
@@ -1019,6 +1120,14 @@ PlayFabMirror.add_unlocked_weapon_skin = function (self, weapon_skin)
 	end
 end
 
+PlayFabMirror.set_essence = function (self, amount)
+	self._essence = amount
+end
+
+PlayFabMirror.get_essence = function (self)
+	return self._essence
+end
+
 PlayFabMirror.commit = function (self, skip_queue, commit_complete_callback)
 	local queued_commit = self._queued_commit
 	local id = nil
@@ -1174,19 +1283,36 @@ PlayFabMirror._commit_internal = function (self, queue_id, commit_complete_callb
 		commit.request_queue_ids[#commit.request_queue_ids + 1] = id
 	end
 
+	if not script_data["eac-untrusted"] then
+		local weaves_interface = Managers.backend:get_interface("weaves")
+		local weave_user_data = weaves_interface:get_dirty_user_data()
+
+		if weave_user_data then
+			local weave_user_data_request = {
+				FunctionName = "updateWeaveUserData",
+				FunctionParameter = weave_user_data
+			}
+			local id = self._request_queue:enqueue(weave_user_data_request, callback(self, "update_weave_user_data_cb", commit_id), true)
+			commit.status = "waiting"
+			commit.wait_for_weave_user_data = true
+			commit.request_queue_ids[#commit.request_queue_ids + 1] = id
+		end
+	end
+
 	table.clear(new_data)
 
+	local read_only_data_mirror = self._read_only_data_mirror
 	local keep_decorations_interface = Managers.backend:get_interface("keep_decorations")
 	local keep_decorations_json = keep_decorations_interface:get_keep_decorations_json()
 
-	if keep_decorations_json ~= self._read_only_data_mirror.keep_decorations then
+	if keep_decorations_json ~= read_only_data_mirror.keep_decorations then
 		new_data.keep_decorations = keep_decorations_json
 	end
 
 	for i = 1, #hero_attributes, 1 do
 		local key = hero_attributes[i]
 		local value = self._read_only_data[key]
-		local mirror_value = self._read_only_data_mirror[key]
+		local mirror_value = read_only_data_mirror[key]
 
 		if value ~= mirror_value then
 			new_data[key] = value
@@ -1260,6 +1386,23 @@ PlayFabMirror.save_statistics_cb = function (self, commit_id, stats, result)
 	stats_interface:clear_dirty_flags(stats)
 
 	commit.wait_for_stats = false
+end
+
+PlayFabMirror.update_weave_user_data_cb = function (self, commit_id, result)
+	local commit = self._commits[commit_id]
+	commit.wait_for_weave_user_data = false
+	local weaves_interface = Managers.backend:get_interface("weaves")
+
+	weaves_interface:clear_dirty_user_data()
+
+	local function_result = result.FunctionResult
+	local new_read_only_data = function_result.new_read_only_data
+
+	if new_read_only_data then
+		for key, value in pairs(new_read_only_data) do
+			self:set_read_only_data(key, value, true)
+		end
+	end
 end
 
 PlayFabMirror.save_keep_decorations_cb = function (self, commit_id, on_complete, success)

@@ -52,7 +52,6 @@ PlayGoTutorialSystem.on_add_extension = function (self, world, unit, extension_n
 	self._tutorial_started = true
 	self._tutorial_unit = unit
 	self._world = world
-	script_data.cap_num_bots = 1
 	self._num_bots_active = 1
 	script_data.ai_bots_disabled = true
 	script_data.info_slates_disabled = true
@@ -124,21 +123,12 @@ PlayGoTutorialSystem.on_remove_extension = function (self, unit, extension_name)
 	ScriptUnit.remove_extension(unit, self.NAME)
 	self:_unload_profile_packages()
 
-	script_data.cap_num_bots = nil
 	script_data.ai_bots_disabled = nil
 	script_data.info_slates_disabled = nil
 	self._saved_definition.position = self._saved_position
 	self._active = false
 	self._tutorial_started = false
 	self._tutorial_unit = nil
-end
-
-PlayGoTutorialSystem.spawn_bot = function (self, profile_index)
-	Managers.state.spawn:set_forced_bot_profile_index(profile_index)
-
-	script_data.ai_bots_disabled = false
-	script_data.cap_num_bots = self._num_bots_active
-	self._num_bots_active = self._num_bots_active + 1
 end
 
 PlayGoTutorialSystem.set_bot_ready_for_assisted_respawn = function (self, unit, respawn_unit)
@@ -150,7 +140,7 @@ end
 PlayGoTutorialSystem.remove_player_ammo = function (self)
 	local player = Managers.player:local_player()
 	local inventory_extension = ScriptUnit.extension(player.player_unit, "inventory_system")
-	local current, max = inventory_extension:current_ammo_status("slot_ranged")
+	local current, _ = inventory_extension:current_ammo_status("slot_ranged")
 
 	if current and current > 0 then
 		local slot_data = inventory_extension:get_slot_data("slot_ranged")
@@ -168,7 +158,7 @@ end
 PlayGoTutorialSystem.check_player_ammo = function (self)
 	local player = Managers.player:local_player()
 	local inventory_extension = ScriptUnit.extension(player.player_unit, "inventory_system")
-	local current, max = inventory_extension:current_ammo_status("slot_ranged")
+	local current, _ = inventory_extension:current_ammo_status("slot_ranged")
 
 	if current > 0 then
 		return true
@@ -180,8 +170,6 @@ end
 PlayGoTutorialSystem.enable_player_ammo_refill = function (self)
 	self.player_ammo_refill = true
 end
-
-local DO_RELOAD = false
 
 PlayGoTutorialSystem.give_player_potion_from_bot = function (self, player_unit, bot_unit)
 	local inventory = ScriptUnit.extension(player_unit, "inventory_system")
@@ -207,27 +195,6 @@ PlayGoTutorialSystem.update = function (self, context, t)
 
 	if not Unit.alive(player.player_unit) then
 		return
-	end
-
-	if DO_RELOAD then
-		self._animation_hooks = {}
-
-		Managers.time:set_global_time_scale(1)
-
-		local player = Managers.player:local_player()
-		local player_unit = player.player_unit
-		local player_input = ScriptUnit.extension(player_unit, "input_system")
-
-		player_input:set_enabled(true)
-
-		self._current_animation_hook = nil
-
-		if self._unit_animation_event then
-			Unit.animation_event = self._unit_animation_event
-			self._unit_animation_event = nil
-		end
-
-		DO_RELOAD = false
 	end
 
 	self:_update_animation_hooks(player, t)
@@ -414,38 +381,41 @@ PlayGoTutorialSystem._load_profile_packages = function (self)
 						profile_packages[right_hand_unit_name .. "_3p"] = true
 					end
 
+					local ammo_unit_name = item_units.ammo_unit
+
+					if ammo_unit_name then
+						if is_first_person[profile_index] then
+							profile_packages[ammo_unit_name] = true
+						end
+
+						profile_packages[item_units.ammo_unit_3p or ammo_unit_name .. "_3p"] = true
+					end
+
 					local actions = item_template.actions
 
-					for action_name, sub_actions in pairs(actions) do
-						for sub_action_name, sub_action_data in pairs(sub_actions) do
+					for _, sub_actions in pairs(actions) do
+						for _, sub_action_data in pairs(sub_actions) do
 							local projectile_info = sub_action_data.projectile_info
 
 							if projectile_info then
-								if projectile_info.projectile_unit_name then
-									profile_packages[projectile_info.projectile_unit_name] = true
+								local projectile_units_template = projectile_info.projectile_units_template
+								local projectile_units = ProjectileUnits[projectile_units_template]
+
+								if projectile_units.projectile_unit_name then
+									profile_packages[projectile_units.projectile_unit_name] = true
 								end
 
-								if projectile_info.dummy_linker_unit_name then
-									profile_packages[projectile_info.dummy_linker_unit_name] = true
+								if projectile_units.dummy_linker_unit_name then
+									profile_packages[projectile_units.dummy_linker_unit_name] = true
 								end
 
-								if projectile_info.dummy_linker_broken_units then
-									for unit_name, unit in pairs(projectile_info.dummy_linker_broken_units) do
+								if projectile_units.dummy_linker_broken_units then
+									for _, unit in pairs(projectile_units.dummy_linker_broken_units) do
 										profile_packages[unit] = true
 									end
 								end
 							end
 						end
-					end
-
-					local ammo_data = item_template.ammo_data
-
-					if ammo_data and ammo_data.ammo_unit then
-						if is_first_person[profile_index] then
-							profile_packages[ammo_data.ammo_unit] = true
-						end
-
-						profile_packages[ammo_data.ammo_unit_3p] = true
 					end
 				elseif slot_category == "attachment" then
 					profile_packages[item_units.unit] = true

@@ -4,10 +4,23 @@ PerformanceManager.init = function (self, gui, is_server, level_key)
 	self._gui = gui
 	self._is_server = is_server
 	self._tracked_ai_breeds = {
+		skaven_plague_monk = true,
+		chaos_raider = true,
+		chaos_marauder = true,
+		beastmen_bestigor = true,
+		chaos_berzerker = true,
+		skaven_clan_rat_with_shield = true,
+		chaos_marauder_with_shield = true,
+		chaos_fanatic = true,
+		skaven_slave = true,
+		skaven_clan_rat = true,
+		beastmen_ungor = true,
+		chaos_warrior = true,
+		beastmen_ungor_archer = true,
 		skaven_storm_vermin_commander = true,
 		skaven_storm_vermin = true,
-		skaven_clan_rat = true,
-		skaven_slave = true
+		beastmen_gor = true,
+		skaven_storm_vermin_with_shield = true
 	}
 	self._num_ai_spawned = 0
 	self._num_ai_active = 0
@@ -121,6 +134,12 @@ end
 
 PerformanceManager.event_ai_unit_deactivated = function (self, unit, breed_name)
 	self._activated_per_breed[breed_name] = math.clamp(self._activated_per_breed[breed_name] - 1, 0, 999999)
+
+	if not self._tracked_ai_breeds[breed_name] then
+		return
+	end
+
+	self._num_ai_active = math.max(self._num_ai_active - 1, 0)
 end
 
 PerformanceManager.event_ai_unit_despawned = function (self, breed_name, active, event_spawned)

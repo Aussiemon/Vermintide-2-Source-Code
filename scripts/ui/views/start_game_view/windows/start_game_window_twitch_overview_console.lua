@@ -344,7 +344,7 @@ StartGameWindowTwitchOverviewConsole._handle_twitch_login_input = function (self
 				local keystrokes = Keyboard.keystrokes()
 				frame_widget_content.twitch_name, frame_widget_content.caret_index = KeystrokeHelper.parse_strokes(frame_widget_content.twitch_name, frame_widget_content.caret_index, "insert", keystrokes)
 
-				if input_service:get("execute_login", true) then
+				if input_service:get("execute_chat_input", true) then
 					frame_widget_content.text_field_active = false
 					local user_name = string.gsub(frame_widget_content.twitch_name, " ", "")
 
@@ -459,7 +459,7 @@ end
 StartGameWindowTwitchOverviewConsole._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
 	local completed_frame_texture = "map_frame_00"
 
-	if difficulty_index > 0 then
+	if difficulty_index and difficulty_index > 0 then
 		local difficulty_key = DefaultDifficulties[difficulty_index]
 		local settings = DifficultySettings[difficulty_key]
 		completed_frame_texture = settings.completed_frame_texture

@@ -2,11 +2,11 @@ require("scripts/network/peer_state_machine")
 require("scripts/network/connection_handler")
 require("scripts/network/voip")
 require("scripts/game_state/components/profile_synchronizer")
+require("scripts/utils/profile_requester")
 require("scripts/game_state/components/slot_allocator")
 require("scripts/settings/profiles/sp_profiles")
 
-local NUM_PROFILES = #SPProfiles
-local DISCONNECT_TIMER = 4
+local NUM_PROFILES = #PROFILES_BY_AFFILIATION.heroes
 local KICK_PEER_WAIT_TIMER = 5
 
 local function network_printf(format, ...)
@@ -37,8 +37,11 @@ NetworkServer.init = function (self, player_manager, lobby_host, initial_level, 
 
 	self:set_current_level(initial_level)
 
-	local is_server = true
 	self.profile_synchronizer = ProfileSynchronizer:new(is_server, lobby_host, self)
+	self._profile_requester = ProfileRequester:new(is_server, self, self.profile_synchronizer)
+
+	Managers.mechanism:set_profile_synchronizer(self.profile_synchronizer)
+
 	local voip_params = {
 		is_server = is_server,
 		my_peer_id = my_peer_id,
@@ -48,6 +51,14 @@ NetworkServer.init = function (self, player_manager, lobby_host, initial_level, 
 	self.voip = Voip:new(voip_params)
 	self._reserved_slots = {}
 	self.wanted_profile_index = wanted_profile_index
+	local profile = SPProfiles[self.wanted_profile_index]
+
+	if profile then
+		local hero_name = profile.display_name
+		local hero_attributes = Managers.backend:get_interface("hero_attributes")
+		self.wanted_career_index = hero_attributes:get(hero_name, "career") or 1
+	end
+
 	local server_name = nil
 
 	if DEDICATED_SERVER then
@@ -67,8 +78,6 @@ NetworkServer.init = function (self, player_manager, lobby_host, initial_level, 
 	if DEDICATED_SERVER then
 		self._eac_authorized_written_to_lobby_data = ""
 	end
-
-	rawset(_G, "server", self)
 end
 
 NetworkServer.eac_server = function (self)
@@ -99,11 +108,20 @@ end
 
 NetworkServer.rpc_notify_connected = function (self, sender)
 	if sender == self.my_peer_id then
-		local profile_index = nil
+		local profile_index, career_index = nil
 		local level_settings = self.level_key and LevelSettings[self.level_key]
 		profile_index = (not level_settings or level_settings.game_mode ~= "tutorial" or self.wanted_profile_index) and (wanted_profile_index or self.profile_synchronizer:get_first_free_profile())
 
-		self.peer_state_machines[sender].rpc_notify_lobby_joined(profile_index)
+		if profile_index == self.wanted_profile_index then
+			career_index = Development.parameter("wanted_career_index") or self.wanted_career_index
+		else
+			local profile = SPProfiles[profile_index]
+			local hero_name = profile.display_name
+			local hero_attributes = Managers.backend:get_interface("hero_attributes")
+			career_index = hero_attributes:get(hero_name, "career") or 1
+		end
+
+		self.peer_state_machines[sender].rpc_notify_lobby_joined(profile_index, career_index)
 	end
 end
 
@@ -160,7 +178,6 @@ end
 
 NetworkServer.set_current_level = function (self, level_key)
 	network_printf("Current level key %s", level_key)
-	self.level_transition_handler:generate_level_seed()
 
 	self.level_key = level_key
 end
@@ -179,6 +196,14 @@ NetworkServer.on_game_entered = function (self, game_network_manager)
 
 		self.peer_state_machines[self.my_peer_id].rpc_is_ingame()
 	end
+end
+
+NetworkServer.request_profile = function (self, local_player_id, profile_name, career_name)
+	self._profile_requester:request_profile(Network.peer_id(), local_player_id, profile_name, career_name)
+end
+
+NetworkServer.profile_requester = function (self)
+	return self._profile_requester
 end
 
 NetworkServer.rpc_is_ingame = function (self, sender)
@@ -245,6 +270,10 @@ NetworkServer.destroy = function (self)
 
 	self.voip = nil
 
+	self._profile_requester:destroy()
+
+	self._profile_requester = nil
+
 	self.profile_synchronizer:destroy()
 
 	self.profile_synchronizer = nil
@@ -265,6 +294,7 @@ NetworkServer.register_rpcs = function (self, network_event_delegate, network_tr
 	self.network_event_delegate = network_event_delegate
 
 	self.profile_synchronizer:register_rpcs(network_event_delegate, network_transmit)
+	self._profile_requester:register_rpcs(network_event_delegate, network_transmit)
 
 	self.network_transmit = network_transmit
 
@@ -299,6 +329,7 @@ end
 
 NetworkServer.unregister_rpcs = function (self)
 	self.voip:unregister_rpcs()
+	self._profile_requester:unregister_rpcs()
 
 	if self.network_event_delegate then
 		self.network_event_delegate:unregister(self)
@@ -385,7 +416,7 @@ NetworkServer.rpc_client_connection_state = function (self, sender, peer_id, pee
 	return
 end
 
-NetworkServer.rpc_notify_lobby_joined = function (self, sender, wanted_profile_index, clan_tag)
+NetworkServer.rpc_notify_lobby_joined = function (self, sender, wanted_profile_index, wanted_career_index, clan_tag)
 	network_printf("Peer %s has sent rpc_notify_lobby_joined", tostring(sender))
 
 	local peer_state_machine = self.peer_state_machines[sender]
@@ -394,7 +425,7 @@ NetworkServer.rpc_notify_lobby_joined = function (self, sender, wanted_profile_i
 		network_printf("RPC.rpc_connection_failed(sender, NetworkLookup.connection_fails.no_peer_data_on_join)", "rpc_notify_lobby_joined")
 		RPC.rpc_connection_failed(sender, NetworkLookup.connection_fails.no_peer_data_on_join)
 	else
-		peer_state_machine.rpc_notify_lobby_joined(wanted_profile_index, clan_tag)
+		peer_state_machine.rpc_notify_lobby_joined(wanted_profile_index, wanted_career_index, clan_tag)
 
 		if sender ~= self.my_peer_id then
 			self:_add_peer_to_eac(sender)
@@ -459,6 +490,7 @@ NetworkServer.game_object_sync_done = function (self, peer_id)
 end
 
 NetworkServer.update = function (self, dt)
+	self._profile_requester:update(dt)
 	self.profile_synchronizer:update()
 
 	local connection_handler = self.connection_handler
@@ -568,6 +600,10 @@ NetworkServer.update = function (self, dt)
 		end
 
 		if peers_ingame < 2 then
+			host_to_migrate_to = nil
+		end
+
+		if Managers.weave:get_active_weave() ~= nil then
 			host_to_migrate_to = nil
 		end
 
@@ -832,10 +868,11 @@ NetworkServer.rpc_clear_peer_state = function (self, sender)
 	end
 
 	for _, player in pairs(players_by_peer) do
-		local profile_index = self.profile_synchronizer:profile_by_peer(sender, player:local_player_id())
+		local local_player_id = player:local_player_id()
+		local profile_index, career_index = self.profile_synchronizer:profile_by_peer(sender, local_player_id)
 
 		if profile_index then
-			self.profile_synchronizer:clear_ownership(profile_index)
+			self.profile_synchronizer:unassign_peer_to_profile(sender, local_player_id, profile_index, career_index)
 		end
 	end
 end
@@ -892,7 +929,7 @@ NetworkServer.player_is_joining = function (self, peer_id)
 		return false
 	end
 
-	local joining = peer_state_machine.current_state == PeerStates.Connecting or peer_state_machine.current_state == PeerStates.Loading or peer_state_machine.current_state == PeerStates.LoadingProfilePackages or peer_state_machine.current_state == PeerStates.WaitingForEnterGame or peer_state_machine.current_state == PeerStates.WaitingForGameObjectSync or peer_state_machine.current_state == PeerStates.SpawningPlayer
+	local joining = peer_state_machine.current_state == PeerStates.Connecting or peer_state_machine.current_state == PeerStates.Loading or peer_state_machine.current_state == PeerStates.LoadingProfilePackages or peer_state_machine.current_state == PeerStates.WaitingForEnterGame or peer_state_machine.current_state == PeerStates.WaitingForGameObjectSync
 
 	return joining
 end
@@ -928,7 +965,7 @@ NetworkServer.are_all_peers_ready = function (self)
 	for peer_id, peer_state_machine in pairs(peer_state_machines) do
 		local state_name = peer_state_machine.current_state.state_name
 
-		if state_name ~= "WaitingForPlayers" and state_name ~= "InGame" and state_name ~= "SpawningPlayer" and state_name ~= "Disconnected" then
+		if state_name ~= "WaitingForPlayers" and state_name ~= "InGame" and state_name ~= "Disconnected" then
 			return false
 		end
 	end
@@ -951,6 +988,24 @@ NetworkServer.all_client_peers_disconnected = function (self)
 	return true
 end
 
+NetworkServer.waiting_to_enter_game = function (self)
+	if DEDICATED_SERVER then
+		return true
+	end
+
+	local peer_state_machine = self.peer_state_machines[self.my_peer_id]
+
+	if not peer_state_machine then
+		return false
+	end
+
+	if peer_state_machine.current_state.state_name == "WaitingForEnterGame" then
+		return true
+	end
+
+	return false
+end
+
 NetworkServer.disconnected = function (self)
 	local peer_state_machines = self.peer_state_machines
 	local my_peer_id = self.my_peer_id
@@ -966,6 +1021,15 @@ NetworkServer.disconnected = function (self)
 	end
 
 	return false
+end
+
+NetworkServer.wanted_profile = function (self, peer_id, local_player_id)
+	local peer_state_machine = self.peer_state_machines[peer_id]
+	local state_data = peer_state_machine.state_data
+	local wanted_profile_index = state_data.wanted_profile_index
+	local wanted_career_index = state_data.wanted_career_index
+
+	return wanted_profile_index, wanted_career_index
 end
 
 return

@@ -206,6 +206,8 @@ DebugManager.update = function (self, dt, t)
 		func(dt, t)
 	end
 
+	self:_clear_debug_draws()
+
 	self._in_free_flight = in_free_flight
 
 	if not in_free_flight then
@@ -223,6 +225,13 @@ DebugManager.update = function (self, dt, t)
 	end
 
 	self:_update_paused_game(controller, dt)
+end
+
+DebugManager._clear_debug_draws = function (self)
+	if DebugKeyHandler.key_pressed("x", "clear quickdraw", "ai debugger", nil, "FreeFlight") then
+		QuickDrawerStay:reset()
+		Debug.reset_sticky_world_texts()
+	end
 end
 
 DebugManager.register_update = function (self, name, func)

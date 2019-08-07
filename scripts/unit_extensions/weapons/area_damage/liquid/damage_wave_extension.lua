@@ -1,6 +1,5 @@
 DamageWaveExtension = class(DamageWaveExtension)
 local unit_alive = Unit.alive
-local player_and_bot_units = PLAYER_AND_BOT_UNITS
 local position_lookup = POSITION_LOOKUP
 local impact_hit_units = {}
 
@@ -12,6 +11,7 @@ DamageWaveExtension.init = function (self, extension_init_context, unit, extensi
 	self.game = Managers.state.network:game()
 	self.unit = unit
 	self.source_unit = extension_init_data.source_unit
+	self._source_side = Managers.state.side.side_by_unit[self.source_unit]
 	self.displaced_units = {}
 	self.nav_world = ai_system:nav_world()
 	self.network_manager = Managers.state.network
@@ -538,7 +538,7 @@ DamageWaveExtension.update = function (self, unit, input, dt, context, t)
 		local player_push_data = self.template.player_push_data
 
 		if player_push_data then
-			AiUtils.push_intersecting_players(unit, self.displaced_units, player_push_data, t, dt, self.on_hit_by_wave, self)
+			AiUtils.push_intersecting_players(unit, self.source_unit, self.displaced_units, player_push_data, t, dt, self.on_hit_by_wave, self)
 		end
 
 		self:wavefront_impact(t, position, self.wavefront_radius, self.template.ai_push_data, self.unit, wave_dir)
@@ -552,7 +552,7 @@ DamageWaveExtension.update = function (self, unit, input, dt, context, t)
 		local player_push_data = self.template.player_push_data
 
 		if player_push_data then
-			AiUtils.push_intersecting_players(unit, self.displaced_units, player_push_data, t, dt, self.on_hit_by_wave, self)
+			AiUtils.push_intersecting_players(unit, self.source_unit, self.displaced_units, player_push_data, t, dt, self.on_hit_by_wave, self)
 		end
 	elseif self.linger_time < t then
 		Managers.state.unit_spawner:mark_for_deletion(unit)
@@ -643,10 +643,11 @@ DamageWaveExtension.update_blob_overlaps = function (self)
 	local last_blob_position = Vector3(last_blob[1], last_blob[2], last_blob[3])
 
 	if self.apply_buff_to_player then
+		local enemy_player_and_bot_units = self._source_side.ENEMY_PLAYER_AND_BOT_UNITS
 		local wave_radius = self.wave_width
 
-		for i = 1, #player_and_bot_units, 1 do
-			local target_unit = player_and_bot_units[i]
+		for i = 1, #enemy_player_and_bot_units, 1 do
+			local target_unit = enemy_player_and_bot_units[i]
 
 			self:check_overlap(unit, target_unit, wave_radius, first_blob_position, last_blob_position, buff_system, num_blobs)
 		end

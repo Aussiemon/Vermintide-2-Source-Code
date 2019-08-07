@@ -272,18 +272,27 @@ BTBotShootAction._calculate_aim_speed = function (self, self_unit, dt, current_y
 	return new_yaw_speed, lerped_pitch_speed
 end
 
-BTBotShootAction._may_attack = function (self, enemy_unit, shoot_blackboard, range_squared, t)
-	local ai_extension = ScriptUnit.has_extension(enemy_unit, "ai_system")
+BTBotShootAction._may_attack = function (self, unit, enemy_unit, shoot_blackboard, range_squared, t)
+	local bb = BLACKBOARDS[enemy_unit]
 
-	if not ai_extension then
+	if not bb then
 		return false
 	end
 
-	local bb = ai_extension:blackboard()
+	if not DamageUtils.is_enemy(unit, enemy_unit) then
+		return false
+	end
+
 	local charging = shoot_blackboard.charging_shot
 	local sufficiently_charged = not shoot_blackboard.minimum_charge_time or (not shoot_blackboard.always_charge_before_firing and not charging) or (charging and shoot_blackboard.minimum_charge_time <= t - shoot_blackboard.charge_start_time)
 	local max_range_squared = (charging and shoot_blackboard.max_range_squared_charged) or shoot_blackboard.max_range_squared
-	local may_fire = sufficiently_charged and not bb.hesitating and not bb.in_alerted_state and not shoot_blackboard.obstructed and range_squared < max_range_squared
+	local may_fire = nil
+
+	if bb.is_ai then
+		may_fire = sufficiently_charged and not bb.hesitating and not bb.in_alerted_state and not shoot_blackboard.obstructed and range_squared < max_range_squared
+	else
+		may_fire = sufficiently_charged and not shoot_blackboard.obstructed and range_squared < max_range_squared
+	end
 
 	return may_fire
 end
@@ -331,7 +340,7 @@ BTBotShootAction._aim = function (self, unit, blackboard, dt, t)
 
 	input_ext:set_aim_rotation(actual_aim_rotation)
 
-	if self:_aim_good_enough(dt, t, shoot_bb, yaw_offset, pitch_offset) and self:_may_attack(target_unit, shoot_bb, range_squared, t) then
+	if self:_aim_good_enough(dt, t, shoot_bb, yaw_offset, pitch_offset) and self:_may_attack(unit, target_unit, shoot_bb, range_squared, t) then
 		self:_fire_shot(shoot_bb, action_data, input_ext, t)
 	end
 

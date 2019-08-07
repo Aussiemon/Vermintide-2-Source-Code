@@ -3399,7 +3399,7 @@ UIWidgets.create_background = function (scenegraph_id, size, background_texture,
 	return widget
 end
 
-UIWidgets.create_frame = function (scenegraph_id, size, frame_style, layer)
+UIWidgets.create_frame = function (scenegraph_id, size, frame_style, layer, color, frame_margins)
 	local frame_settings = (frame_style and UIFrameSettings[frame_style]) or UIFrameSettings.menu_frame_02
 	local widget = {
 		element = {}
@@ -3416,9 +3416,10 @@ UIWidgets.create_frame = function (scenegraph_id, size, frame_style, layer)
 	}
 	local style = {
 		frame = {
+			frame_margins = frame_margins,
 			texture_size = frame_settings.texture_size,
 			texture_sizes = frame_settings.texture_sizes,
-			color = {
+			color = color or {
 				255,
 				255,
 				255,
@@ -3444,7 +3445,7 @@ UIWidgets.create_frame = function (scenegraph_id, size, frame_style, layer)
 	return widget
 end
 
-UIWidgets.create_rect_with_outer_frame = function (scenegraph_id, size, frame_style, layer, color)
+UIWidgets.create_rect_with_outer_frame = function (scenegraph_id, size, frame_style, layer, color, frame_color)
 	color = color or {
 		255,
 		255,
@@ -3476,7 +3477,7 @@ UIWidgets.create_rect_with_outer_frame = function (scenegraph_id, size, frame_st
 	}
 	local style = {
 		frame = {
-			color = color,
+			color = frame_color or color,
 			size = frame_size,
 			texture_size = frame_settings.texture_size,
 			texture_sizes = frame_settings.texture_sizes,
@@ -6909,7 +6910,10 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 				{
 					texture_id = "frame",
 					style_id = "frame",
-					pass_type = "texture_frame"
+					pass_type = "texture_frame",
+					content_check_function = function (content)
+						return content.draw_frame
+					end
 				},
 				{
 					style_id = "background",
@@ -6988,8 +6992,9 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 			}
 		},
 		content = {
-			glass = "button_glass_02",
+			draw_frame = true,
 			hover_glow = "button_state_default",
+			glass = "button_glass_02",
 			background_fade = "button_bg_fade",
 			side_detail = {
 				uvs = {
@@ -7916,7 +7921,7 @@ UIWidgets.create_default_icon_tabs = function (scenegraph_id, size, amount)
 	return widget
 end
 
-UIWidgets.create_default_checkbox_button = function (scenegraph_id, size, text, font_size, tooltip_info)
+UIWidgets.create_default_checkbox_button = function (scenegraph_id, size, text, font_size, tooltip_info, draw_tooltip_above)
 	local background_texture = "button_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local widget = {
@@ -8101,13 +8106,23 @@ UIWidgets.create_default_checkbox_button = function (scenegraph_id, size, text, 
 		passes[#passes + 1] = {
 			pass_type = "additional_option_tooltip",
 			content_id = hotspot_name,
-			style_id = background_name,
+			style_id = tooltip_name,
 			additional_option_id = tooltip_name,
 			content_check_function = function (content)
 				return content.is_hover
 			end
 		}
 		hotspot_content[tooltip_name] = tooltip_info
+		style[tooltip_name] = {
+			grow_downwards = false,
+			vertical_alignment = "bottom",
+			horizontal_alignment = "left",
+			offset = {
+				(draw_tooltip_above and size[1]) or 0,
+				(draw_tooltip_above and size[2]) or 0,
+				0
+			}
+		}
 	end
 
 	local text_name = "text"
@@ -10651,10 +10666,12 @@ UIWidgets.create_play_button = function (scenegraph_id, size, text, font_size, d
 				font_type = "hell_shark",
 				font_size = font_size or 24,
 				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				default_text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				select_text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
 					0,
 					0,
-					7
+					9
 				},
 				size = {
 					size[1],
@@ -10668,16 +10685,12 @@ UIWidgets.create_play_button = function (scenegraph_id, size, text, font_size, d
 				vertical_alignment = "center",
 				font_type = "hell_shark",
 				font_size = font_size or 24,
-				text_color = {
-					255,
-					68,
-					68,
-					68
-				},
+				text_color = Colors.get_color_table_with_alpha("gray", 255),
+				default_text_color = Colors.get_color_table_with_alpha("gray", 255),
 				offset = {
 					0,
 					0,
-					7
+					9
 				},
 				size = {
 					size[1],
@@ -10695,7 +10708,7 @@ UIWidgets.create_play_button = function (scenegraph_id, size, text, font_size, d
 				offset = {
 					2,
 					-2,
-					6
+					8
 				},
 				size = {
 					size[1],
@@ -10714,7 +10727,7 @@ UIWidgets.create_play_button = function (scenegraph_id, size, text, font_size, d
 				offset = {
 					0,
 					0,
-					7
+					8
 				},
 				size = {
 					size[1],
@@ -10799,7 +10812,7 @@ UIWidgets.create_play_button = function (scenegraph_id, size, text, font_size, d
 				offset = {
 					0,
 					size[2] / 2 - 36,
-					8
+					9
 				},
 				size = {
 					88,
@@ -10816,7 +10829,7 @@ UIWidgets.create_play_button = function (scenegraph_id, size, text, font_size, d
 				offset = {
 					size[1] - 88,
 					size[2] / 2 - 36,
-					8
+					9
 				},
 				size = {
 					88,
@@ -10826,14 +10839,14 @@ UIWidgets.create_play_button = function (scenegraph_id, size, text, font_size, d
 			side_detail_left_disabled = {
 				color = {
 					255,
-					100,
-					100,
-					100
+					200,
+					200,
+					200
 				},
 				offset = {
 					0,
 					size[2] / 2 - 36,
-					8
+					9
 				},
 				size = {
 					88,
@@ -10843,14 +10856,14 @@ UIWidgets.create_play_button = function (scenegraph_id, size, text, font_size, d
 			side_detail_right_disabled = {
 				color = {
 					255,
-					100,
-					100,
-					100
+					200,
+					200,
+					200
 				},
 				offset = {
 					size[1] - 88,
 					size[2] / 2 - 36,
-					8
+					9
 				},
 				size = {
 					88,
@@ -10867,7 +10880,7 @@ UIWidgets.create_play_button = function (scenegraph_id, size, text, font_size, d
 				offset = {
 					0,
 					size[2] / 2 - side_detail_glow_size[2] / 2,
-					9
+					10
 				},
 				size = {
 					side_detail_glow_size[1],
@@ -10884,7 +10897,7 @@ UIWidgets.create_play_button = function (scenegraph_id, size, text, font_size, d
 				offset = {
 					size[1] - side_detail_glow_size[1],
 					size[2] / 2 - side_detail_glow_size[2] / 2,
-					9
+					10
 				},
 				size = {
 					side_detail_glow_size[1],
@@ -11129,7 +11142,24 @@ UIWidgets.create_stepper = function (scenegraph_id, size, frame_name, background
 				{
 					style_id = "setting_text",
 					pass_type = "text",
-					text_id = "setting_text"
+					text_id = "setting_text",
+					content_check_function = function (content)
+						local button_hotspot_left = content.button_hotspot_left
+						local button_hotspot_right = content.button_hotspot_right
+
+						return not button_hotspot_left.disable_button and not button_hotspot_right.disable_button
+					end
+				},
+				{
+					style_id = "setting_text_disabled",
+					pass_type = "text",
+					text_id = "setting_text",
+					content_check_function = function (content)
+						local button_hotspot_left = content.button_hotspot_left
+						local button_hotspot_right = content.button_hotspot_right
+
+						return button_hotspot_left.disable_button and button_hotspot_right.disable_button
+					end
 				},
 				{
 					style_id = "left_frame",
@@ -11347,6 +11377,21 @@ UIWidgets.create_stepper = function (scenegraph_id, size, frame_name, background
 				dynamic_font = true,
 				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				offset = {
+					0,
+					0,
+					4
+				}
+			},
+			setting_text_disabled = {
+				font_size = 22,
+				word_wrap = true,
+				pixel_perfect = true,
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				dynamic_font = true,
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("gray", 128),
 				offset = {
 					0,
 					0,
@@ -11573,13 +11618,31 @@ UIWidgets.create_stepper = function (scenegraph_id, size, frame_name, background
 end
 
 UIWidgets.create_title_and_tooltip = function (scenegraph_id, size, text, tooltip_text, text_style, tooltip_style)
+	local text_style_disabled = nil
+
+	if text_style then
+		text_style_disabled = table.clone(text_style)
+		text_style_disabled.text_color = Colors.get_color_table_with_alpha("gray", 128)
+	end
+
 	return {
 		element = {
 			passes = {
 				{
 					style_id = "text",
 					pass_type = "text",
-					text_id = "text"
+					text_id = "text",
+					content_check_function = function (ui_content)
+						return not ui_content.disabled
+					end
+				},
+				{
+					style_id = "text_disabled",
+					pass_type = "text",
+					text_id = "text",
+					content_check_function = function (ui_content)
+						return ui_content.disabled
+					end
 				},
 				{
 					pass_type = "hotspot",
@@ -11593,7 +11656,7 @@ UIWidgets.create_title_and_tooltip = function (scenegraph_id, size, text, toolti
 					pass_type = "tooltip_text",
 					text_id = "tooltip_text",
 					content_check_function = function (ui_content)
-						return ui_content.tooltip_hotspot.is_hover
+						return not ui_content.disabled and ui_content.tooltip_hotspot.is_hover
 					end
 				}
 			}
@@ -11613,6 +11676,14 @@ UIWidgets.create_title_and_tooltip = function (scenegraph_id, size, text, toolti
 				word_wrap = true,
 				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("white", 255)
+			},
+			text_disabled = text_style_disabled or {
+				vertical_alignment = "center",
+				font_size = 20,
+				horizontal_alignment = "left",
+				word_wrap = true,
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("gray", 128)
 			},
 			tooltip_text = tooltip_style or {
 				font_size = 24,
@@ -12471,6 +12542,7 @@ end
 
 UIWidgets.create_portrait_frame = function (scenegraph_id, frame_settings_name, level_text, scale, retained_mode, portrait_texture)
 	scale = scale or 1
+	local frame_settings_name = frame_settings_name or "default"
 	local frame_settings = UIPlayerPortraitFrameSettings[frame_settings_name]
 	local default_color = {
 		255,
@@ -15174,6 +15246,581 @@ UIWidgets.create_layout_button = function (scenegraph_id, texture, hover_texture
 			0
 		},
 		scenegraph_id = scenegraph_id
+	}
+end
+
+UIWidgets.create_weave_equipment_button = function (scenegraph_id)
+	return {
+		element = {
+			passes = {
+				{
+					pass_type = "hotspot",
+					content_id = "button_hotspot"
+				},
+				{
+					pass_type = "texture",
+					style_id = "texture_background",
+					texture_id = "texture_background"
+				},
+				{
+					pass_type = "texture",
+					style_id = "texture_icon",
+					texture_id = "texture_icon"
+				},
+				{
+					pass_type = "texture",
+					style_id = "texture_hover",
+					texture_id = "texture_hover"
+				},
+				{
+					pass_type = "texture",
+					style_id = "texture_highlight",
+					texture_id = "texture_highlight",
+					content_check_function = function (content)
+						return content.highlighted
+					end
+				}
+			}
+		},
+		content = {
+			texture_hover = "button_round_highlight",
+			texture_background = "button_round_bg",
+			highlighted = false,
+			texture_highlight = "tutorial_overlay_round",
+			texture_icon = "icon_switch",
+			button_hotspot = {
+				allow_multi_hover = false
+			}
+		},
+		style = {
+			texture_background = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					74,
+					74
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			},
+			texture_icon = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					50,
+					45
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				default_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				hover_color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					3
+				}
+			},
+			texture_hover = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					96,
+					96
+				},
+				color = {
+					0,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					2
+				}
+			},
+			texture_highlight = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					96,
+					96
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					1
+				}
+			}
+		},
+		offset = {
+			0,
+			0,
+			0
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
+
+UIWidgets.create_athanor_upgrade_button = function (scenegraph_id, size, icon, text, font_size, disable_with_gamepad)
+	local icon_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(icon)
+	local icon_size = icon_settings.size
+	local loading_icon = "athanor_icon_loading"
+	local loading_icon_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(loading_icon)
+	local loading_icon_size = loading_icon_settings.size
+
+	return {
+		element = {
+			passes = {
+				{
+					style_id = "button_hotspot",
+					pass_type = "hotspot",
+					content_id = "button_hotspot"
+				},
+				{
+					style_id = "tooltip",
+					additional_option_id = "tooltip",
+					pass_type = "additional_option_tooltip",
+					content_passes = {
+						"weave_progression_slot_titles"
+					},
+					content_check_function = function (content)
+						return content.tooltip and content.button_hotspot.is_hover
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "price_icon",
+					texture_id = "price_icon",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return not button_hotspot.disable_button
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "price_icon_disabled",
+					texture_id = "price_icon",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return button_hotspot.disable_button
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "background",
+					texture_id = "background"
+				},
+				{
+					pass_type = "texture",
+					style_id = "icon",
+					texture_id = "icon",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return content.icon and not button_hotspot.disable_button and not content.upgrading
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "icon_disabled",
+					texture_id = "icon",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return button_hotspot.disable_button and content.icon and not content.upgrading
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "hover_glow",
+					texture_id = "hover_glow"
+				},
+				{
+					pass_type = "texture",
+					style_id = "texture_highlight",
+					texture_id = "texture_highlight",
+					content_check_function = function (content)
+						return content.highlighted
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "clicked_rect",
+					texture_id = "overlay"
+				},
+				{
+					pass_type = "texture",
+					style_id = "disabled_rect",
+					texture_id = "overlay",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return button_hotspot.disable_button
+					end
+				},
+				{
+					style_id = "title_text",
+					pass_type = "text",
+					text_id = "title_text",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return not button_hotspot.disable_button
+					end
+				},
+				{
+					style_id = "title_text_disabled",
+					pass_type = "text",
+					text_id = "title_text",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return button_hotspot.disable_button
+					end
+				},
+				{
+					style_id = "title_text_shadow",
+					pass_type = "text",
+					text_id = "title_text"
+				},
+				{
+					style_id = "loading_icon",
+					texture_id = "loading_icon",
+					pass_type = "rotated_texture",
+					content_check_function = function (content)
+						return content.upgrading
+					end,
+					content_change_function = function (content, style, _, dt)
+						local progress = style.progress or 0
+						progress = (progress + dt) % 1
+						local angle = math.pow(2, math.smoothstep(progress, 0, 1)) * math.pi * 2
+						style.angle = angle
+						style.progress = progress
+					end
+				}
+			}
+		},
+		content = {
+			price_icon = "icon_crafting_essence_small",
+			hover_glow = "athanor_button_upgrade_highlight",
+			overlay = "athanor_button_upgrade_overlay",
+			highlighted = false,
+			background = "athanor_button_upgrade",
+			texture_highlight = "tutorial_overlay_round",
+			icon = icon,
+			loading_icon = loading_icon,
+			button_hotspot = {},
+			title_text = text or "n/a",
+			disable_with_gamepad = disable_with_gamepad
+		},
+		style = {
+			tooltip = {
+				vertical_alignment = "top",
+				horizontal_alignment = "center",
+				grow_downwards = false,
+				max_width = 325,
+				offset = {
+					0,
+					-10,
+					0
+				}
+			},
+			button_hotspot = {
+				size = {
+					size[1] - 80,
+					size[2] - 50
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					30,
+					25,
+					0
+				}
+			},
+			icon = {
+				vertical_alignment = "center",
+				horizontal_alignment = "left",
+				texture_size = {
+					icon_size[1],
+					icon_size[2]
+				},
+				color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				default_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				select_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					45,
+					2,
+					6
+				}
+			},
+			loading_icon = {
+				vertical_alignment = "center",
+				horizontal_alignment = "left",
+				angle = 0,
+				pivot = {
+					loading_icon_size[1] / 2,
+					loading_icon_size[2] / 2
+				},
+				texture_size = {
+					loading_icon_size[1],
+					loading_icon_size[2]
+				},
+				color = {
+					255,
+					80,
+					80,
+					80
+				},
+				offset = {
+					42,
+					0,
+					6
+				}
+			},
+			icon_disabled = {
+				vertical_alignment = "center",
+				horizontal_alignment = "left",
+				texture_size = {
+					icon_size[1],
+					icon_size[2]
+				},
+				color = {
+					255,
+					80,
+					80,
+					80
+				},
+				offset = {
+					45,
+					2,
+					6
+				}
+			},
+			price_icon = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					32,
+					32
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					6
+				}
+			},
+			price_icon_disabled = {
+				vertical_alignment = "center",
+				saturated = true,
+				horizontal_alignment = "center",
+				texture_size = {
+					32,
+					32
+				},
+				color = {
+					255,
+					120,
+					120,
+					120
+				},
+				offset = {
+					0,
+					0,
+					6
+				}
+			},
+			background = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			},
+			hover_glow = {
+				color = {
+					0,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					3
+				}
+			},
+			texture_highlight = {
+				vertical_alignment = "center",
+				horizontal_alignment = "left",
+				texture_size = {
+					size[2] - 30,
+					size[2] - 30
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					18,
+					0,
+					7
+				}
+			},
+			clicked_rect = {
+				color = {
+					0,
+					0,
+					0,
+					0
+				},
+				offset = {
+					0,
+					0,
+					7
+				}
+			},
+			disabled_rect = {
+				color = {
+					150,
+					20,
+					20,
+					20
+				},
+				offset = {
+					0,
+					0,
+					1
+				}
+			},
+			title_text = {
+				upper_case = false,
+				word_wrap = true,
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				dynamic_font_size = true,
+				font_type = "hell_shark",
+				font_size = font_size or 24,
+				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				default_text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				select_text_color = Colors.get_color_table_with_alpha("white", 255),
+				size = {
+					size[1] - 40,
+					size[2]
+				},
+				default_offset = {
+					20,
+					0,
+					6
+				},
+				offset = {
+					20,
+					0,
+					6
+				}
+			},
+			title_text_disabled = {
+				upper_case = false,
+				word_wrap = true,
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				dynamic_font_size = true,
+				font_type = "hell_shark",
+				font_size = font_size or 24,
+				text_color = Colors.get_color_table_with_alpha("gray", 255),
+				default_text_color = Colors.get_color_table_with_alpha("gray", 255),
+				size = {
+					size[1] - 40,
+					size[2]
+				},
+				default_offset = {
+					20,
+					0,
+					6
+				},
+				offset = {
+					20,
+					0,
+					6
+				}
+			},
+			title_text_shadow = {
+				upper_case = false,
+				word_wrap = true,
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				dynamic_font_size = true,
+				font_type = "hell_shark",
+				font_size = font_size or 24,
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				default_text_color = Colors.get_color_table_with_alpha("black", 255),
+				size = {
+					size[1] - 40,
+					size[2]
+				},
+				default_offset = {
+					22,
+					-2,
+					5
+				},
+				offset = {
+					22,
+					-2,
+					5
+				}
+			}
+		},
+		scenegraph_id = scenegraph_id,
+		offset = {
+			0,
+			0,
+			0
+		}
 	}
 end
 

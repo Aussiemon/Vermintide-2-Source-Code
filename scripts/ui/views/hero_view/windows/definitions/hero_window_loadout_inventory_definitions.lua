@@ -531,61 +531,6 @@ local function create_vertical_window_divider(scenegraph_id, size)
 	return widget
 end
 
-local category_settings = {
-	{
-		wield = true,
-		name = "melee",
-		item_filter = "slot_type == melee",
-		hero_specific_filter = true,
-		display_name = Localize("inventory_screen_melee_weapon_title"),
-		item_types = {
-			"melee"
-		},
-		icon = UISettings.slot_icons.melee
-	},
-	{
-		wield = true,
-		name = "ranged",
-		item_filter = "slot_type == ranged",
-		hero_specific_filter = true,
-		display_name = Localize("inventory_screen_ranged_weapon_title"),
-		item_types = {
-			"ranged"
-		},
-		icon = UISettings.slot_icons.ranged
-	},
-	{
-		name = "necklace",
-		item_filter = "slot_type == necklace",
-		hero_specific_filter = true,
-		display_name = Localize("inventory_screen_necklace_title"),
-		item_types = {
-			"necklace"
-		},
-		icon = UISettings.slot_icons.necklace
-	},
-	{
-		name = "ring",
-		item_filter = "slot_type == ring",
-		hero_specific_filter = true,
-		display_name = Localize("inventory_screen_ring_title"),
-		item_types = {
-			"ring"
-		},
-		icon = UISettings.slot_icons.ring
-	},
-	{
-		name = "trinket",
-		item_filter = "slot_type == trinket",
-		hero_specific_filter = true,
-		display_name = Localize("inventory_screen_trinket_title"),
-		item_types = {
-			"trinket"
-		},
-		icon = UISettings.slot_icons.trinket
-	}
-}
-local num_tabs = #category_settings
 local widgets = {
 	item_grid = UIWidgets.create_grid("item_grid", scenegraph_definition.item_grid.size, 7, 5, 16, 10, false),
 	item_tabs_divider = create_window_divider("item_tabs_divider", scenegraph_definition.item_tabs_divider.size),
@@ -684,7 +629,6 @@ local animation_definitions = {
 
 return {
 	widgets = widgets,
-	category_settings = category_settings,
 	scenegraph_definition = scenegraph_definition,
 	animation_definitions = animation_definitions,
 	generic_input_actions = generic_input_actions

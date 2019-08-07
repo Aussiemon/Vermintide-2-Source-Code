@@ -10,24 +10,8 @@ end
 
 ActionCareerWEWaywatcher.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
 	ActionCareerWEWaywatcher.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level, action_init_data)
-
-	local owner_unit = self.owner_unit
-	local talent_extension = self.talent_extension
-
-	if talent_extension:has_talent("kerillian_waywatcher_activated_ability_heal", "wood_elf", true) then
-		local network_manager = Managers.state.network
-		local network_transmit = network_manager.network_transmit
-		local unit_id = network_manager:unit_game_object_id(owner_unit)
-		local heal_type_id = NetworkLookup.heal_types.career_skill
-
-		network_transmit:send_rpc_server("rpc_request_heal", unit_id, 50, heal_type_id)
-	end
-
-	if talent_extension:has_talent("kerillian_waywatcher_activated_ability_restore_ammo", "wood_elf", true) then
-		self:_restore_ammo()
-	end
-
 	self:_play_vo()
+	self.career_extension:start_activated_ability_cooldown()
 
 	local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
 
@@ -37,10 +21,6 @@ end
 ActionCareerWEWaywatcher.finish = function (self, reason)
 	ActionCareerWEWaywatcher.super.finish(self, reason)
 	self.inventory_extension:wield_previous_non_level_slot()
-
-	if self.state == "shot" then
-		self.career_extension:start_activated_ability_cooldown()
-	end
 end
 
 ActionCareerWEWaywatcher._play_vo = function (self)
@@ -62,7 +42,7 @@ ActionCareerWEWaywatcher._restore_ammo = function (self)
 	local left_hand_ammo_extension = ScriptUnit.has_extension(left_unit_1p, "ammo_system")
 	local ammo_extension = right_hand_ammo_extension or left_hand_ammo_extension
 	local ammo_bonus_fraction = 0.2
-	local ammo_amount = math.max(math.round(ammo_extension:get_max_ammo() * ammo_bonus_fraction), 1)
+	local ammo_amount = math.max(math.round(ammo_extension:max_ammo() * ammo_bonus_fraction), 1)
 
 	if ammo_extension then
 		ammo_extension:add_ammo_to_reserve(ammo_amount)

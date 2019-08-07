@@ -144,6 +144,8 @@ T.update_movement = function (data, t, dt)
 			extension:update_script_driven_movement(unit, dt, t, calculate_fall_velocity)
 		elseif state == "animation_driven" then
 			extension:update_animation_driven_movement(unit, dt, t)
+		elseif state == "animation_driven_entrance_and_exit_no_mover" then
+			extension:update_animation_driven_movement_entrance_and_exit_no_mover(unit, dt, t)
 		elseif state == "animation_driven_with_rotation_no_mover" then
 			extension:update_animation_driven_movement_with_rotation_no_mover(unit, dt, t)
 		elseif state == "linked_movement" then

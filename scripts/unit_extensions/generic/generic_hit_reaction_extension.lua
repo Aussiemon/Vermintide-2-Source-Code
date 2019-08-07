@@ -406,7 +406,7 @@ GenericHitReactionExtension._is_dismembering_allowed = function (self, parameter
 		return false
 	end
 
-	return true
+	return BloodSettings.dismemberment.enabled
 end
 
 local FLOW_EVENTS = {}
@@ -476,12 +476,6 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 			end
 
 			has_flow_event = true
-
-			if ScriptUnit.has_extension(unit, "projectile_linker_system") then
-				local projectile_linker_system = Managers.state.entity:system("projectile_linker_system")
-
-				projectile_linker_system:clear_linked_projectiles(unit)
-			end
 		end
 	end
 
@@ -557,10 +551,12 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 	local husk_hit_effect_name = effect_template.husk_hit_effect_name
 	local hit_effect = nil
 
-	if husk_hit_effect_name and Unit.alive(attacker_unit) and (not NetworkUnit.is_network_unit(attacker_unit) or NetworkUnit.is_husk_unit(attacker_unit)) then
-		hit_effect = husk_hit_effect_name
-	elseif hit_effect_name then
-		hit_effect = hit_effect_name
+	if BloodSettings.hit_effects.enabled then
+		if husk_hit_effect_name and Unit.alive(attacker_unit) and (not NetworkUnit.is_network_unit(attacker_unit) or NetworkUnit.is_husk_unit(attacker_unit)) then
+			hit_effect = husk_hit_effect_name
+		elseif hit_effect_name then
+			hit_effect = hit_effect_name
+		end
 	end
 
 	local damage_amount = effect_biggest_hit[DamageDataIndex.DAMAGE_AMOUNT]
@@ -612,7 +608,9 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 		map_function(hit_effect, play_effect, world, hit_direction, impact_position)
 	end
 
-	if effect_template.push then
+	local should_push = (BloodSettings.ragdoll_push.enabled or not death_has_started) and effect_template.push
+
+	if should_push then
 		local push_actors = breed_data.hit_zones[hit_zone] and breed_data.hit_zones[hit_zone].push_actors
 
 		if push_actors then

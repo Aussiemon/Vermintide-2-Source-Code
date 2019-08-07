@@ -125,11 +125,11 @@ StartGameWindowTwitchLogin._handle_input = function (self, dt, t)
 				frame_widget_content.twitch_name, frame_widget_content.caret_index = KeystrokeHelper.parse_strokes(frame_widget_content.twitch_name, frame_widget_content.caret_index, "insert", keystrokes)
 				local input_service = self.parent:window_input_service()
 
-				if input_service:get("execute_login", true) then
+				if input_service:get("execute_chat_input", true) then
 					frame_widget_content.text_field_active = false
 					local user_name = string.gsub(frame_widget_content.twitch_name, " ", "")
 
-					Managers.twitch:connect(user_name, callback(self, "cb_connection_error_callback"), callback(self, "cb_connection_success_callback"))
+					Managers.twitch:connect(user_name, callback(Managers.twitch, "cb_connection_error_callback"), callback(self, "cb_connection_success_callback"))
 				end
 			end
 		end
@@ -151,7 +151,7 @@ StartGameWindowTwitchLogin._handle_input = function (self, dt, t)
 					user_name = string.gsub(frame_widget_content.twitch_name, " ", "")
 				end
 
-				Managers.twitch:connect(user_name, callback(self, "cb_connection_error_callback"), callback(self, "cb_connection_success_callback"))
+				Managers.twitch:connect(user_name, callback(Managers.twitch, "cb_connection_error_callback"), callback(self, "cb_connection_success_callback"))
 				self:_play_sound("Play_hud_select")
 			end
 		else
@@ -191,10 +191,6 @@ StartGameWindowTwitchLogin._update_game_options = function (self, dt, t)
 		self.parent:enable_widget(1, "game_option_3", true)
 		self.parent:enable_widget(1, "game_option_5", true)
 	end
-end
-
-StartGameWindowTwitchLogin.cb_connection_error_callback = function (self, message)
-	self._error_popup_id = Managers.popup:queue_popup(message, Localize("popup_header_error_twitch"), "ok", Localize("popup_choice_ok"))
 end
 
 StartGameWindowTwitchLogin.cb_connection_success_callback = function (self, user_data)

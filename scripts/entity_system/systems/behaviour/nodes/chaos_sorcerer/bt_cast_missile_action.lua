@@ -146,7 +146,7 @@ BTCastMissileAction.launch_projectile = function (self, blackboard, action, init
 			owner_unit = owner_unit
 		},
 		area_damage_system = {
-			area_damage_template = "area_dot_damage",
+			area_damage_template = "sorcerer_area_dot_damage",
 			invisible_unit = false,
 			area_ai_random_death_template = "area_poison_ai_random_death",
 			damage_players = true,

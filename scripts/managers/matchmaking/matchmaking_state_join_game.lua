@@ -27,21 +27,26 @@ MatchmakingStateJoinGame.on_enter = function (self, state_context)
 	self._join_lobby_data = state_context.join_lobby_data
 	self._lobby_data.selected_level_key = self._join_lobby_data.selected_level_key
 	self._lobby_data.difficulty = self._join_lobby_data.difficulty
-	local matchmaking_manager = self._matchmaking_manager
-	local hero_index, hero_name = self:_current_hero()
 
-	fassert(hero_index, "no hero index? this is wrong")
+	if Managers.mechanism:current_mechanism_name() == "adventure" then
+		local matchmaking_manager = self._matchmaking_manager
+		local hero_index, hero_name = self:_current_hero()
 
-	if matchmaking_manager:hero_available_in_lobby_data(hero_index, self._lobby_data) then
-		local hero = SPProfiles[hero_index]
-		self._selected_hero_name = hero_name
+		fassert(hero_index, "no hero index? this is wrong")
 
-		self:_request_profile_from_host(hero_index)
+		if matchmaking_manager:hero_available_in_lobby_data(hero_index, self._lobby_data) then
+			local hero = SPProfiles[hero_index]
+			self._selected_hero_name = hero_name
+
+			self:_request_profile_from_host(hero_index)
+		else
+			self._show_popup = true
+		end
+
+		self._matchmaking_manager:send_system_chat_message("matchmaking_status_aquiring_profiles")
 	else
-		self._show_popup = true
+		self:_set_state_to_start_lobby()
 	end
-
-	self._matchmaking_manager:send_system_chat_message("matchmaking_status_aquiring_profiles")
 
 	self._update_lobby_data_timer = 0
 end
@@ -82,6 +87,10 @@ MatchmakingStateJoinGame.update = function (self, dt, t)
 		self._matchmaking_manager:cancel_matchmaking()
 
 		return nil
+	elseif not Managers.state.network then
+		self._matchmaking_manager:cancel_matchmaking()
+
+		return nil
 	end
 
 	if self._exit_to_search_game then
@@ -118,7 +127,19 @@ MatchmakingStateJoinGame.update = function (self, dt, t)
 		else
 			mm_printf_force("Abort for other reason")
 
-			return MatchmakingStateSearchGame, self.state_context
+			local lobby = Managers.state.network:lobby()
+
+			if lobby then
+				Managers.party:set_leader(lobby:lobby_host())
+			end
+
+			local game_mode = self.search_config.game_mode
+
+			if game_mode == "weave_find_group" then
+				return MatchmakingStateSearchForWeaveGroup, self.state_context
+			else
+				return MatchmakingStateSearchGame, self.state_context
+			end
 		end
 	end
 
@@ -187,9 +208,6 @@ MatchmakingStateJoinGame._handle_popup_result = function (self, result, t)
 		local player = Managers.player:local_player(1)
 		local reason = (self._popup_join_lobby_handler.cancel_timer <= 0 and "timed_out") or "cancelled"
 		local time_taken = (self._selected_hero_at_t and self._selected_hero_at_t - self._hero_popup_at_t) or 0
-
-		Managers.telemetry.events:ui_matchmaking_select_player(player, selected_hero_name, reason, time_taken)
-
 		local lobby_id = self.lobby_client:id()
 		local is_bad_connection = false
 
@@ -343,8 +361,6 @@ MatchmakingStateJoinGame.rpc_matchmaking_request_profile_reply = function (self,
 
 	local player = Managers.player:local_player(1)
 	local time_taken = (self._selected_hero_at_t and self._selected_hero_at_t - self._hero_popup_at_t) or 0
-
-	Managers.telemetry.events:ui_matchmaking_select_player(player, selected_hero_name, reason, time_taken)
 end
 
 MatchmakingStateJoinGame._current_hero = function (self)

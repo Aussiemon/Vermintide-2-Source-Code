@@ -9,7 +9,6 @@ require("scripts/network/network_transmit")
 
 StateTitleScreenInitNetwork = class(StateTitleScreenInitNetwork)
 StateTitleScreenInitNetwork.NAME = "StateTitleScreenInitNetwork"
-StateTitleScreenInitNetwork.lobby_port_increment = 0
 
 StateTitleScreenInitNetwork.on_enter = function (self, params)
 	print("[Gamestate] Enter Substate StateTitleScreenInitNetwork")
@@ -26,20 +25,15 @@ StateTitleScreenInitNetwork._init_network = function (self)
 
 	Development.set_parameter("auto_join", nil)
 
-	local development_port = script_data.server_port or GameSettingsDevelopment.network_port
-	development_port = development_port + StateTitleScreenInitNetwork.lobby_port_increment
-	StateTitleScreenInitNetwork.lobby_port_increment = StateTitleScreenInitNetwork.lobby_port_increment + 1
-	local lobby_port = (LEVEL_EDITOR_TEST and GameSettingsDevelopment.editor_lobby_port) or development_port
-	self._network_options = {
-		project_hash = "bulldozer",
-		max_members = 4,
-		config_file_name = "global",
-		lobby_port = lobby_port
-	}
+	local increment_lobby_port = true
+
+	Managers.lobby:setup_network_options(increment_lobby_port)
+
+	local network_options = Managers.lobby:network_options()
 
 	if not rawget(_G, "LobbyInternal") or not LobbyInternal.network_initialized() then
 		require("scripts/network/lobby_xbox_live")
-		LobbyInternal.init_client(self._network_options)
+		LobbyInternal.init_client(network_options)
 	end
 
 	self._network_state = "_create_session"
@@ -70,9 +64,13 @@ StateTitleScreenInitNetwork._create_session = function (self)
 	self._network_event_delegate = NetworkEventDelegate:new()
 
 	self._level_transition_handler:register_rpcs(self._network_event_delegate)
+	Managers.mechanism:register_rpcs(self._network_event_delegate)
+	Managers.party:register_rpcs(self._network_event_delegate)
+
+	local network_options = Managers.lobby:network_options()
 
 	if loading_context.join_lobby_data then
-		self._lobby_client = LobbyClient:new(self._network_options, loading_context.join_lobby_data)
+		self._lobby_client = LobbyClient:new(network_options, loading_context.join_lobby_data)
 		loading_context.join_lobby_data = nil
 		self._network_state = "_update_lobby_client"
 	elseif auto_join_setting then
@@ -86,13 +84,13 @@ StateTitleScreenInitNetwork._create_session = function (self)
 
 		assert(unique_server_name, "No unique_server_name in %%appdata%%\\Roaming\\Fatshark\\Bulldozer\\user_settings.config")
 
-		self._lobby_finder = LobbyFinder:new(self._network_options, nil, true)
+		self._lobby_finder = LobbyFinder:new(network_options, nil, true)
 		self._network_state = "_update_lobby_join"
 	else
 		assert(not loading_context.profile_synchronizer)
 		assert(not loading_context.network_server)
 
-		self._lobby_host = LobbyHost:new(self._network_options)
+		self._lobby_host = LobbyHost:new(network_options)
 		self._network_state = "_creating_session_host"
 	end
 end
@@ -206,9 +204,11 @@ StateTitleScreenInitNetwork._update_lobby_join = function (self, dt, t)
 		local auto_join = lobby.unique_server_name == Development.parameter("unique_server_name")
 
 		if lobby.valid and auto_join then
+			local network_options = Managers.lobby:network_options()
+
 			self._level_transition_handler:load_level(lobby.level_key)
 
-			self._lobby_client = LobbyClient:new(self.network_options, lobby)
+			self._lobby_client = LobbyClient:new(network_options, lobby)
 			self._lobby_finder = nil
 			self._network_state = "_update_lobby_client"
 
@@ -273,7 +273,8 @@ StateTitleScreenInitNetwork._next_state = function (self)
 			end
 
 			self._profile_synchronizer = nil
-			self._lobby_host = LobbyHost:new(self._network_options)
+			local network_options = Managers.lobby:network_options()
+			self._lobby_host = LobbyHost:new(network_options)
 			self._network_state = "_creating_session_host"
 		elseif result == "continue" then
 			self._popup_id = nil
@@ -311,6 +312,14 @@ end
 StateTitleScreenInitNetwork.on_exit = function (self, application_shutdown)
 	if self._level_transition_handler then
 		self._level_transition_handler:unregister_rpcs()
+	end
+
+	if Managers.mechanism then
+		Managers.mechanism:unregister_rpcs()
+	end
+
+	if Managers.party then
+		Managers.party:unregister_rpcs()
 	end
 
 	if application_shutdown then

@@ -3,6 +3,7 @@ require("scripts/ui/ui_renderer")
 require("scripts/ui/ui_elements")
 require("scripts/ui/ui_element")
 require("scripts/ui/ui_widgets")
+require("scripts/ui/ui_widgets_weaves")
 require("scripts/ui/views/widget_definitions")
 require("scripts/ui/views/ingame_view")
 require("scripts/ui/views/ingame_hud")
@@ -25,6 +26,18 @@ require("scripts/ui/views/console_friends_view")
 require("scripts/ui/views/friends_ui_component")
 require("scripts/ui/motd/motd_popup_ui")
 require("scripts/ui/text_popup/text_popup_ui")
+require("scripts/ui/weave_tutorial/weave_ui_onboarding_tutorial")
+require("scripts/ui/dlc_upsell/upsell_popup_handler")
+
+for _, dlc in pairs(DLCSettings) do
+	local views = dlc.views
+
+	if views then
+		for _, view in ipairs(views) do
+			dofile(view)
+		end
+	end
+end
 
 local rpcs = {}
 local settings = require("scripts/ui/views/ingame_ui_settings")
@@ -79,6 +92,8 @@ IngameUI.init = function (self, ingame_ui_context)
 	self:setup_views(ingame_ui_context)
 
 	self.end_screen = EndScreenUI:new(ingame_ui_context)
+	self.weave_onboarding = WeaveUIOnboardingTutorial:new(ingame_ui_context)
+	self.upsell_popup_handler = UpsellPopupHandler:new(ingame_ui_context)
 	self.text_popup_ui = TextPopupUI:new(ingame_ui_context)
 	self.motd_ui = MOTDPopupUI:new(ingame_ui_context)
 	self.motd_loading = false
@@ -102,6 +117,8 @@ IngameUI.init = function (self, ingame_ui_context)
 	Managers.chat:set_input_manager(input_manager)
 	Managers.rcon:set_input_manager(input_manager)
 
+	local network_handler = ingame_ui_context.network_server or ingame_ui_context.network_client
+	self._profile_requester = network_handler:profile_requester()
 	self.telemetry_time_view_enter = 0
 	self.ingame_ui_context = ingame_ui_context
 	local event_manager = Managers.state.event
@@ -244,7 +261,50 @@ IngameUI.destroy = function (self)
 		Managers.popup:cancel_popup(self.popup_id)
 	end
 
+	if self.weave_onboarding then
+		self.weave_onboarding:destroy()
+
+		self.weave_onboarding = nil
+	end
+
+	if self.upsell_popup_handler then
+		self.upsell_popup_handler:destroy()
+
+		self.upsell_popup_handler = nil
+	end
+
 	printf("[IngameUI] destroy")
+end
+
+IngameUI.weaves_requirements_fulfilled = function (self)
+	if script_data.unlock_all_levels then
+		return true
+	end
+
+	local player_manager = Managers.player
+	local statistics_db = player_manager:statistics_db()
+	local player = player_manager:local_player()
+	local stats_id = player:stats_id()
+
+	for _, level_key in pairs(MainGameLevels) do
+		local level_settings = LevelSettings[level_key]
+
+		if level_settings.game_mode == "adventure" and statistics_db:get_persistent_stat(stats_id, "completed_levels", level_key) < 1 then
+			return false
+		end
+	end
+
+	local scorpion_dlc_levels = GameActs.act_scorpion
+
+	for _, level_key in pairs(scorpion_dlc_levels) do
+		local level_settings = LevelSettings[level_key]
+
+		if level_settings.game_mode == "adventure" and statistics_db:get_persistent_stat(stats_id, "completed_levels", level_key) < 1 then
+			return false
+		end
+	end
+
+	return true
 end
 
 IngameUI.handle_menu_hotkeys = function (self, dt, input_service, hotkeys_enabled, menu_active)
@@ -267,63 +327,78 @@ IngameUI.handle_menu_hotkeys = function (self, dt, input_service, hotkeys_enable
 	local is_game_matchmaking = Managers.matchmaking:is_game_matchmaking()
 
 	for input, mapping_data in pairs(hotkey_mapping) do
-		if not current_view or current_view == mapping_data.view then
-			if current_view then
+		if current_view then
+			local matching_view = current_view == mapping_data.view
+
+			if matching_view then
 				local active_view = views[current_view]
 				local active_input_service = active_view:input_service()
 
 				if not active_view:transitioning() and active_input_service:get(input) then
-					local hotkey_allowed = active_view.hotkey_allowed and active_view:hotkey_allowed(input, mapping_data)
-					hotkey_allowed = hotkey_allowed ~= false
+					local transition_params = self.transition_params
+					local menu_state_name = transition_params and transition_params.menu_state_name
+					local menu_sub_state_name = transition_params and transition_params.menu_sub_state_name
+					local matching_state = menu_state_name == mapping_data.transition_state
+					local matching_sub_state = menu_sub_state_name == mapping_data.transition_sub_state
 
-					if hotkey_allowed then
-						local return_to_game = not menu_active
+					if matching_state and matching_sub_state then
+						local hotkey_allowed = active_view.hotkey_allowed and active_view:hotkey_allowed(input, mapping_data)
+						hotkey_allowed = hotkey_allowed ~= false
 
-						views[current_view]:exit(return_to_game)
+						if hotkey_allowed then
+							local return_to_game = not menu_active
 
-						break
-					end
-				end
-			else
-				local disable_when_matchmaking = mapping_data.disable_when_matchmaking
-				local disable_when_matchmaking_ready = mapping_data.disable_when_matchmaking_ready
-				local transition_not_allowed = (player_ready_for_game and disable_when_matchmaking_ready) or (is_game_matchmaking and disable_when_matchmaking)
-				local new_view = views[mapping_data.view]
-				local can_interact_flag = mapping_data.can_interact_flag
-				local can_interact_func = mapping_data.can_interact_func
-
-				if input_service:get(input) then
-					local can_interact = true
-
-					if can_interact_flag and not new_view[can_interact_flag] then
-						can_interact = false
-					end
-
-					if can_interact and can_interact_func and not self[can_interact_func](self) then
-						can_interact = false
-					end
-
-					if can_interact then
-						if transition_not_allowed then
-							local error_message = mapping_data.error_message
-
-							if error_message then
-								self:add_local_system_message(error_message)
-							end
+							views[current_view]:exit(return_to_game)
 
 							break
 						end
+					end
+				end
+			end
+		else
+			local disable_when_matchmaking = mapping_data.disable_when_matchmaking
+			local disable_when_matchmaking_ready = mapping_data.disable_when_matchmaking_ready
+			local transition_not_allowed = (player_ready_for_game and disable_when_matchmaking_ready) or (is_game_matchmaking and disable_when_matchmaking)
+			local new_view = views[mapping_data.view]
+			local can_interact_flag = mapping_data.can_interact_flag
+			local can_interact_func = mapping_data.can_interact_func
+			local required_dlc = mapping_data.required_dlc
 
-						local transition = (menu_active and mapping_data.in_transition_menu) or mapping_data.in_transition
-						local transition_params = {
-							menu_state_name = mapping_data.transition_state,
-							menu_sub_state_name = mapping_data.transition_sub_state
-						}
+			if input_service:get(input) then
+				local can_interact = true
 
-						self:transition_with_fade(transition, transition_params)
+				if can_interact_flag and not new_view[can_interact_flag] then
+					can_interact = false
+				end
+
+				if can_interact and can_interact_func and not self[can_interact_func](self) then
+					can_interact = false
+				end
+
+				if can_interact and required_dlc and not Managers.unlock:is_dlc_unlocked(required_dlc) then
+					can_interact = false
+				end
+
+				if can_interact then
+					if transition_not_allowed then
+						local error_message = mapping_data.error_message
+
+						if error_message then
+							self:add_local_system_message(error_message)
+						end
 
 						break
 					end
+
+					local transition = (menu_active and mapping_data.in_transition_menu) or mapping_data.in_transition
+					local transition_params = {
+						menu_state_name = mapping_data.transition_state,
+						menu_sub_state_name = mapping_data.transition_sub_state
+					}
+
+					self:transition_with_fade(transition, transition_params)
+
+					break
 				end
 			end
 		end
@@ -358,10 +433,12 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 		self:update_map_enable_state()
 	end
 
-	local respawning = self._respawning
+	if self._respawning then
+		local done = self:_update_respawning()
 
-	if respawning then
-		self:update_respawning()
+		if done then
+			self._respawning = nil
+		end
 	end
 
 	if self.popup_id then
@@ -400,13 +477,27 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 				self.motd_loading = true
 			end
 		end
+
+		if self.weave_onboarding then
+			self.weave_onboarding:update(dt, t)
+		end
+
+		if self.upsell_popup_handler then
+			self.upsell_popup_handler:update(dt, t)
+		end
 	end
 
 	if not disable_ingame_ui then
+		local disable_toggle_menu = false
+
 		if self.current_view then
 			local current_view = self.current_view
 
 			views[current_view]:update(dt, t)
+
+			if views[current_view].disable_toggle_menu then
+				disable_toggle_menu = views[current_view]:disable_toggle_menu()
+			end
 		end
 
 		local gdc_build = Development.parameter("gdc")
@@ -414,7 +505,7 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 		local player_list_active = ingame_player_list_ui and ingame_player_list_ui:is_active()
 		local fade_active = Managers.transition:in_fade_active()
 
-		if not player_list_active and not self:pending_transition() and not fade_active and not self:cutscene_active() and not end_screen_active and not self.menu_active and not self.leave_game and not self.return_to_title_screen and not gdc_build and not self:unavailable_hero_popup_active() and input_service:get("toggle_menu", true) then
+		if not player_list_active and not disable_toggle_menu and not self:pending_transition() and not fade_active and not self:cutscene_active() and not end_screen_active and not self.menu_active and not self.leave_game and not self.return_to_title_screen and not gdc_build and not self:unavailable_hero_popup_active() and input_service:get("toggle_menu", true) then
 			local use_gamepad_layout = PLATFORM == "ps4" or PLATFORM == "xb1" or Managers.input:is_device_active("gamepad") or UISettings.use_gamepad_menu_layout
 
 			if use_gamepad_layout then
@@ -570,7 +661,7 @@ IngameUI._menu_blocking_information = function (self, input_service, end_of_leve
 	local mission_vote_active = mission_voting_ui and mission_voting_ui:is_active()
 	local cutscene_system = self.cutscene_system
 	local unavailable_hero_popup_active = self:unavailable_hero_popup_active()
-	local in_view = self.menu_active or (end_of_level_ui and end_of_level_ui:enable_chat()) or self.current_view ~= nil
+	local in_view = self.menu_active or (end_of_level_ui and end_of_level_ui:enable_chat()) or (self.current_view ~= nil and not self.views[self.current_view].normal_chat)
 	local active_cutscene = cutscene_system.active_camera and not cutscene_system.ingame_hud_enabled
 
 	if self.current_view then
@@ -718,7 +809,6 @@ IngameUI._post_handle_transition = function (self)
 		self.last_transition_name = self.new_transition
 	end
 
-	self.transition_params = nil
 	self.new_transition_old_view = nil
 	self.new_transition = nil
 end
@@ -850,8 +940,8 @@ IngameUI.suspend_active_view = function (self)
 	end
 end
 
-IngameUI.activate_end_screen_ui = function (self, game_won, checkpoint_available, level_key, previous_completed_difficulty_index)
-	self.end_screen:on_enter(game_won, checkpoint_available, level_key, previous_completed_difficulty_index)
+IngameUI.activate_end_screen_ui = function (self, screen_name, screen_config)
+	self.end_screen:on_enter(screen_name, screen_config)
 end
 
 IngameUI.deactivate_end_screen_ui = function (self)
@@ -1067,55 +1157,24 @@ IngameUI.unavailable_hero_popup_active = function (self)
 end
 
 IngameUI.respawn = function (self)
-	local player = Managers.player:player_from_peer_id(self.peer_id)
-	local player_unit = player.player_unit
+	local peer_id = self.peer_id
+	local local_player_id = self.local_player_id
+	local profile_index, career_index = self.profile_synchronizer:profile_by_peer(peer_id, local_player_id)
+	local profile_name, career_name = hero_and_career_name_from_index(profile_index, career_index)
 
-	if player_unit then
-		local position = Unit.world_position(player_unit, 0)
-		local rotation = Unit.world_rotation(player_unit, 0)
+	self._profile_requester:request_profile(peer_id, local_player_id, profile_name, career_name)
 
-		player:set_spawn_position_rotation(position, rotation)
-
-		self._despawning_player_unit = player.player_unit
-
-		Managers.state.spawn:delayed_despawn(player)
-
-		self._respawning = true
-	end
+	self._respawning = true
 end
 
-IngameUI.update_respawning = function (self)
-	if self._despawning_player_unit then
-		if not Unit.alive(self._despawning_player_unit) then
-			local profile_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
+IngameUI._update_respawning = function (self)
+	local result = self._profile_requester:result()
 
-			self.profile_synchronizer:request_select_profile(profile_index, self.local_player_id)
-
-			self._despawning_player_unit = nil
-
-			if self.is_server then
-				Managers.state.network.network_server:peer_despawned_player(self.peer_id)
-			end
-		end
-
-		return
+	if result ~= nil then
+		return true
 	end
 
-	local result, result_local_player_id = self.profile_synchronizer:profile_request_result()
-
-	fassert(not result or self.local_player_id == result_local_player_id, "Local player id mismatch between ui and request.")
-
-	if result then
-		self._respawning = nil
-
-		self.profile_synchronizer:clear_profile_request_result()
-
-		if self.is_server then
-			Managers.state.network.network_server:peer_respawn_player(self.peer_id)
-		else
-			Managers.state.network.network_transmit:send_rpc_server("rpc_client_respawn_player")
-		end
-	end
+	return false
 end
 
 IngameUI._cancel_popup = function (self)

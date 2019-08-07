@@ -50,7 +50,7 @@ BTNode.init = function (self, identifier, parent, condition_name, enter_hook_nam
 end
 
 BTNode.condition = function (self, blackboard)
-	return CONDITIONS[self._condition_name](blackboard, self._tree_node.condition_args)
+	return CONDITIONS[self._condition_name](blackboard, self._tree_node.condition_args, self._tree_node.action_data)
 end
 
 BTNode.id = function (self)

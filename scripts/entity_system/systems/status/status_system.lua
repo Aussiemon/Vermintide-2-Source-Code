@@ -6,6 +6,8 @@ local RPCS = {
 	"rpc_status_change_int",
 	"rpc_status_change_int_and_unit",
 	"rpc_set_catapulted",
+	"rpc_leap_start",
+	"rpc_leap_finished",
 	"rpc_set_blocking",
 	"rpc_player_blocked_attack",
 	"rpc_set_wounded",
@@ -17,6 +19,17 @@ local RPCS = {
 local extensions = {
 	"GenericStatusExtension"
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local files = dlc.status_extensions
+
+	if files then
+		for _, file in ipairs(files) do
+			local extension_name = require(file)
+			extensions[#extensions + 1] = extension_name
+		end
+	end
+end
 
 StatusSystem.init = function (self, entity_system_creation_context, system_name)
 	StatusSystem.super.init(self, entity_system_creation_context, system_name, extensions)
@@ -108,6 +121,7 @@ StatusSystem.rpc_status_change_bool = function (self, sender, status_id, status_
 	elseif status == "ready_for_assisted_respawn" then
 		local flavour_unit = Level.unit_by_index(level, other_object_id)
 
+		Managers.state.game_mode:player_respawned(status_ext.unit)
 		status_ext:set_ready_for_assisted_respawn(status_bool, flavour_unit)
 	elseif status == "assisted_respawning" then
 		status_ext:set_assisted_respawning(status_bool, other_unit)
@@ -139,6 +153,10 @@ StatusSystem.rpc_status_change_bool = function (self, sender, status_id, status_
 		status_ext:set_in_end_zone(status_bool)
 	elseif status == "in_liquid" then
 		status_ext:set_in_liquid(status_bool, other_unit)
+	elseif status == "charged" then
+		local t = Managers.time:time("game")
+
+		status_ext:set_charged(status_bool, t)
 	else
 		fassert(false, "Unhandled status %s", tostring(status))
 	end
@@ -226,6 +244,30 @@ StatusSystem.rpc_set_catapulted = function (self, sender, unit_id, catapulted, v
 	if Managers.player.is_server then
 		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_set_catapulted", sender, unit_id, catapulted, velocity)
 	end
+end
+
+StatusSystem.rpc_leap_start = function (self, sender, unit_id)
+	local unit = self.unit_storage:unit(unit_id)
+
+	if not unit or not Unit.alive(unit) then
+		return
+	end
+
+	local status_extension = ScriptUnit.extension(unit, "status_system")
+
+	status_extension:leap_start(unit)
+end
+
+StatusSystem.rpc_leap_finished = function (self, sender, unit_id)
+	local unit = self.unit_storage:unit(unit_id)
+
+	if not unit or not Unit.alive(unit) then
+		return
+	end
+
+	local status_extension = ScriptUnit.extension(unit, "status_system")
+
+	status_extension:leap_finished(unit)
 end
 
 StatusSystem.rpc_set_blocking = function (self, sender, game_object_id, blocking)

@@ -58,11 +58,6 @@ Application.platform = function ()
 	error("Trying to use Application.platform(), use global variable PLATFORM instead.")
 end
 
-if not PROFILER_SCOPES_INITED then
-	local ProfilerScopes = {}
-	PROFILER_SCOPES_INITED = true
-end
-
 GLOBAL_FRAME_INDEX = GLOBAL_FRAME_INDEX or 0
 script_data = script_data or {
 	settings = Application.settings(),
@@ -79,7 +74,8 @@ if LEVEL_EDITOR_TEST then
 		"resource_packages/pickups",
 		"resource_packages/decals",
 		"resource_packages/levels/ui_loot_preview",
-		"resource_packages/levels/ui_end_screen"
+		"resource_packages/levels/ui_end_screen",
+		"resource_packages/levels/ui_end_screen_victory"
 	}
 elseif PLATFORM == "ps4" then
 	GlobalResources = GlobalResources or {
@@ -97,6 +93,7 @@ elseif PLATFORM == "ps4" then
 		"resource_packages/decals",
 		"resource_packages/levels/ui_loot_preview",
 		"resource_packages/levels/ui_end_screen",
+		"resource_packages/levels/ui_end_screen_victory",
 		"resource_packages/ingame",
 		"resource_packages/pickups",
 		"resource_packages/projection_decals",
@@ -118,6 +115,7 @@ elseif PLATFORM == "xb1" then
 		"resource_packages/decals",
 		"resource_packages/levels/ui_loot_preview",
 		"resource_packages/levels/ui_end_screen",
+		"resource_packages/levels/ui_end_screen_victory",
 		"resource_packages/ingame",
 		"resource_packages/pickups",
 		"resource_packages/projection_decals",
@@ -140,6 +138,7 @@ else
 		"resource_packages/decals",
 		"resource_packages/levels/ui_loot_preview",
 		"resource_packages/levels/ui_end_screen",
+		"resource_packages/levels/ui_end_screen_victory",
 		"resource_packages/ingame",
 		"resource_packages/pickups",
 		"resource_packages/projection_decals"

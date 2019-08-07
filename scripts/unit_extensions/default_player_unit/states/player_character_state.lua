@@ -15,6 +15,7 @@ PlayerCharacterState.init = function (self, character_state_init_context, name)
 	self.is_server = Managers.player.is_server
 	self.temp_params = {}
 	self.buff_extension = ScriptUnit.extension(unit, "buff_system")
+	self.talent_extension = ScriptUnit.extension(unit, "talent_system")
 	self.input_extension = ScriptUnit.extension(unit, "input_system")
 	self.interactor_extension = ScriptUnit.extension(unit, "interactor_system")
 	self.inventory_extension = ScriptUnit.extension(unit, "inventory_system")

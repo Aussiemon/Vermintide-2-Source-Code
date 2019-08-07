@@ -10,7 +10,8 @@ local RPCS = {
 	"rpc_add_equipment_limited_item",
 	"rpc_wield_equipment",
 	"rpc_destroy_slot",
-	"rpc_add_equipment_buffs"
+	"rpc_add_equipment_buffs",
+	"rpc_add_inventory_slot_item"
 }
 local extensions = {
 	"SimpleHuskInventoryExtension",
@@ -30,6 +31,20 @@ InventorySystem.init = function (self, entity_system_creation_context, system_na
 	self.profile_synchronizer = entity_system_creation_context.profile_synchronizer
 	self.num_grimoires = 0
 	self.num_side_objectives = 0
+	local sides_to_update = {}
+	local sides = Managers.state.side:sides()
+	local j = 1
+
+	for i = 1, #sides, 1 do
+		local side = sides[i]
+
+		if side.using_grims_and_tomes then
+			sides_to_update[j] = side
+			j = j + 1
+		end
+	end
+
+	self.sides_to_update = sides_to_update
 end
 
 local function add_grimoire()
@@ -76,28 +91,26 @@ InventorySystem.update = function (self, context, t)
 	InventorySystem.super.update(self, context, t)
 
 	if self.is_server then
-		self.num_grimoires = self:update_mission_inventory_item("slot_potion", "wpn_grimoire_01", self.num_grimoires, add_grimoire, remove_grimoire)
-		self.num_side_objectives = self:update_mission_inventory_item("slot_healthkit", "wpn_side_objective_tome_01", self.num_side_objectives, add_side_objective, remove_side_objective)
+		local sides = self.sides_to_update
+
+		for i = 1, #sides, 1 do
+			local side = sides[i]
+			local units = side.PLAYER_AND_BOT_UNITS
+			self.num_grimoires = self:update_mission_inventory_item(units, "slot_potion", "wpn_grimoire_01", self.num_grimoires, add_grimoire, remove_grimoire)
+			self.num_side_objectives = self:update_mission_inventory_item(units, "slot_healthkit", "wpn_side_objective_tome_01", self.num_side_objectives, add_side_objective, remove_side_objective)
+		end
 	end
 end
 
-InventorySystem.update_mission_inventory_item = function (self, slot_name, item_name, previous_num_items, add_func, remove_func)
-	local player_and_bot_units = PLAYER_AND_BOT_UNITS
-	local num_player_and_bots = #player_and_bot_units
+InventorySystem.update_mission_inventory_item = function (self, units, slot_name, item_name, previous_num_items, add_func, remove_func)
 	local num_items = 0
 
-	for i = 1, num_player_and_bots, 1 do
-		local unit = player_and_bot_units[i]
+	for i = 1, #units, 1 do
+		local unit = units[i]
 		local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
-		local slot_data = inventory_extension:get_slot_data(slot_name)
 
-		if slot_data then
-			local item_data = slot_data.item_data
-			local name = item_data.name
-
-			if name == item_name then
-				num_items = num_items + 1
-			end
+		if inventory_extension:has_inventory_item(slot_name, item_name) then
+			num_items = num_items + 1
 		end
 	end
 
@@ -244,6 +257,23 @@ InventorySystem.rpc_add_equipment = function (self, sender, go_id, slot_id, item
 	local inventory = ScriptUnit.extension(unit, "inventory_system")
 
 	inventory:add_equipment(slot_name, item_name, skin_name)
+end
+
+InventorySystem.rpc_add_inventory_slot_item = function (self, sender, go_id, slot_id, item_name_id, weapon_skin_id)
+	local unit = self.unit_storage:unit(go_id)
+	local slot_name = NetworkLookup.equipment_slots[slot_id]
+	local item_name = NetworkLookup.item_names[item_name_id]
+	local item_data = ItemMasterList[item_name]
+	local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
+
+	inventory_extension:destroy_slot(slot_name)
+	inventory_extension:add_equipment(slot_name, item_data)
+
+	if self.is_server then
+		self.network_transmit:send_rpc_clients("rpc_add_equipment", go_id, slot_id, item_name_id, weapon_skin_id)
+	else
+		self.network_transmit:send_rpc_server("rpc_add_equipment", go_id, slot_id, item_name_id, weapon_skin_id)
+	end
 end
 
 InventorySystem.rpc_add_equipment_buffs = function (self, sender, go_id, slot_id, buff_1_id, buff_data_type_1_id, value_1, buff_2_id, buff_data_type_2_id, value_2, buff_3_id, buff_data_type_3_id, value_3, buff_4_id, buff_data_type_4_id, value_4)

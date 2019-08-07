@@ -27,9 +27,15 @@ PayloadExtension.init = function (self, extension_init_context, unit, extension_
 	}
 	self._stop_command_given = false
 	self._activated = true
+	self._started = false
 	local wheel_diameter = Unit.get_data(unit, "wheel_diameter") / 10
 	local wheel_circumference = wheel_diameter * math.pi
 	self._anim_speed = 30 / FRAMES / wheel_circumference
+	self._anim_group = "wheels"
+
+	if Unit.has_data(unit, "wheel_anim_group") then
+		self._anim_group = Unit.get_data(unit, "wheel_anim_group")
+	end
 end
 
 PayloadExtension.activate = function (self)
@@ -263,9 +269,11 @@ PayloadExtension.update = function (self, unit, input, dt, context, t)
 		self._state = "stopped"
 
 		Unit.flow_event(unit, "lua_stopped")
-	elseif self._state ~= "moving" and math.abs(new_speed) > 0 then
-		if self._previous_status == "start" then
+	elseif self._state ~= "moving" and EPSILON <= math.abs(new_speed) then
+		if not self._started then
 			Unit.flow_event(unit, "lua_start")
+
+			self._started = true
 		end
 
 		self._state = "moving"
@@ -278,7 +286,7 @@ PayloadExtension.update = function (self, unit, input, dt, context, t)
 	self._previous_status = status
 	self._previous_spline_index = current_spline_index
 
-	Unit.set_simple_animation_speed(self._unit, new_speed / self._anim_speed, "wheels")
+	Unit.set_simple_animation_speed(self._unit, new_speed / self._anim_speed, self._anim_group)
 	Unit.set_local_position(unit, 0, movement:current_position())
 
 	local dir = movement:current_tangent_direction()
@@ -316,7 +324,8 @@ end
 local PLAYERS_IN_PROXIMITY = {}
 
 PayloadExtension._players_in_proximity = function (self)
-	local player_units = PLAYER_UNITS
+	local side = Managers.state.side:get_side_from_name("heroes")
+	local player_units = side.PLAYER_UNITS
 	local num_player_units = #player_units
 	local positions = POSITION_LOOKUP
 	local payload_position = Unit.world_position(self._unit, 0)

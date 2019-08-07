@@ -272,6 +272,27 @@ UIFrameSettings = {
 			}
 		}
 	},
+	menu_frame_12_gold = {
+		texture = "menu_frame_12_gold",
+		texture_size = {
+			64,
+			64
+		},
+		texture_sizes = {
+			corner = {
+				11,
+				11
+			},
+			vertical = {
+				5,
+				1
+			},
+			horizontal = {
+				1,
+				5
+			}
+		}
+	},
 	menu_frame_15 = {
 		texture = "menu_frame_15",
 		texture_size = {
@@ -296,8 +317,8 @@ UIFrameSettings = {
 	menu_frame_16 = {
 		texture = "menu_frame_16",
 		texture_size = {
-			138,
-			138
+			9,
+			9
 		},
 		texture_sizes = {
 			corner = {
@@ -311,6 +332,27 @@ UIFrameSettings = {
 			horizontal = {
 				1,
 				64
+			}
+		}
+	},
+	menu_frame_17 = {
+		texture = "menu_frame_17",
+		texture_size = {
+			9,
+			9
+		},
+		texture_sizes = {
+			corner = {
+				4,
+				4
+			},
+			vertical = {
+				4,
+				4
+			},
+			horizontal = {
+				4,
+				4
 			}
 		}
 	},

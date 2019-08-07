@@ -33,11 +33,30 @@ BTBlockedAction.enter = function (self, unit, blackboard, t)
 
 		shield_extension:set_is_blocking(false)
 	end
+
+	blackboard.move_state = "stagger"
+	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
+
+	ai_slot_system:do_slot_search(unit, false)
+	ai_slot_system:ai_unit_blocked_attack(unit)
+
+	local difficulty_duration = action.difficulty_duration
+
+	if difficulty_duration then
+		local difficulty = Managers.state.difficulty:get_difficulty()
+		local leave_blocked_t = difficulty_duration[difficulty]
+
+		if leave_blocked_t then
+			blackboard.leave_blocked_at_t = t + Math.random_range(leave_blocked_t[1], leave_blocked_t[2])
+		end
+	end
 end
 
 BTBlockedAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.blocked = nil
+	blackboard.anim_cb_blocked_cooldown = nil
 	blackboard.stagger_hit_wall = nil
+	blackboard.leave_blocked_at_t = nil
 
 	if blackboard.stagger and blackboard.stagger < 3 then
 		blackboard.stagger = 3
@@ -64,6 +83,10 @@ BTBlockedAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	local navigation_extension = blackboard.navigation_extension
 
 	navigation_extension:set_enabled(true)
+
+	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
+
+	ai_slot_system:do_slot_search(unit, true)
 end
 
 BTBlockedAction.run = function (self, unit, blackboard, t, dt)
@@ -93,6 +116,10 @@ BTBlockedAction.run = function (self, unit, blackboard, t, dt)
 				blackboard.stagger_hit_wall = true
 			end
 		end
+	end
+
+	if blackboard.anim_cb_blocked_cooldown and blackboard.leave_blocked_at_t and blackboard.leave_blocked_at_t < t then
+		return "done"
 	end
 
 	return "running"

@@ -45,12 +45,26 @@ SimpleInventoryExtension.init = function (self, extension_init_context, unit, ex
 	self._backend_items = Managers.backend:get_interface("items")
 end
 
+SimpleInventoryExtension.get_weapon_unit = function (self)
+	local equipment = self._equipment
+	local weapon_unit = equipment.left_hand_wielded_unit or equipment.right_hand_wielded_unit
+
+	return weapon_unit
+end
+
+SimpleInventoryExtension.get_all_weapon_unit = function (self)
+	local equipment = self._equipment
+
+	return equipment.left_hand_wielded_unit, equipment.right_hand_wielded_unit
+end
+
 SimpleInventoryExtension.extensions_ready = function (self, world, unit)
 	local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 	self.first_person_extension = first_person_extension
 	self._first_person_unit = first_person_extension:get_first_person_unit()
 	self.buff_extension = ScriptUnit.extension(unit, "buff_system")
 	self.career_extension = ScriptUnit.extension(unit, "career_system")
+	self.talent_extension = ScriptUnit.extension(unit, "talent_system")
 	local equipment = self._equipment
 	local profile = self._profile
 	local unit_1p = self._first_person_unit
@@ -59,7 +73,8 @@ SimpleInventoryExtension.extensions_ready = function (self, world, unit)
 	self:add_equipment_by_category("weapon_slots")
 	self:add_equipment_by_category("enemy_weapon_slots")
 
-	self.initial_inventory.slot_career_skill_weapon = self.career_extension:career_skill_weapon_name()
+	local weapon_index = self.talent_extension:get_talent_weapon_index()
+	self.initial_inventory.slot_career_skill_weapon = self.career_extension:career_skill_weapon_name(weapon_index)
 
 	self:add_equipment_by_category("career_skill_weapon_slots")
 	Unit.set_data(self._first_person_unit, "equipment", self._equipment)
@@ -87,6 +102,18 @@ SimpleInventoryExtension.extensions_ready = function (self, world, unit)
 	end
 
 	self._equipment.wielded_slot = profile.default_wielded_slot
+end
+
+SimpleInventoryExtension.update_career_skill_weapon_slot = function (self, world, unit)
+	local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+	self._first_person_unit = first_person_extension:get_first_person_unit()
+	self.career_extension = ScriptUnit.extension(unit, "career_system")
+	self.talent_extension = ScriptUnit.extension(unit, "talent_system")
+	local weapon_index = self.talent_extension:get_talent_weapon_index()
+	self.initial_inventory.slot_career_skill_weapon = self.career_extension:career_skill_weapon_name(weapon_index)
+
+	self:add_equipment_by_category("career_skill_weapon_slots")
+	Unit.set_data(self._first_person_unit, "equipment", self._equipment)
 end
 
 SimpleInventoryExtension.game_object_initialized = function (self, unit, unit_go_id)
@@ -122,6 +149,9 @@ SimpleInventoryExtension.game_object_initialized = function (self, unit, unit_go
 	else
 		network_manager.network_transmit:send_rpc_server("rpc_wield_equipment", unit_go_id, slot_id)
 	end
+
+	local blackboard = BLACKBOARDS[unit]
+	blackboard.weapon_unit = self:get_weapon_unit()
 end
 
 SimpleInventoryExtension._send_rpc_add_equipment_buffs = function (self, unit_go_id, slot_id, item_id, backend_id)
@@ -170,7 +200,7 @@ SimpleInventoryExtension._send_rpc_add_equipment_buffs = function (self, unit_go
 	end
 end
 
-SimpleInventoryExtension.override_career_skill_item_template = function (self, item_data)
+SimpleInventoryExtension._override_career_skill_item_template = function (self, item_data)
 	local override_item_template = nil
 	local slot_to_use = item_data.slot_to_use
 
@@ -178,12 +208,12 @@ SimpleInventoryExtension.override_career_skill_item_template = function (self, i
 		local equipment = self._equipment
 		local slots = equipment.slots
 		local override_slot_data = slots[slot_to_use]
-		local override_item_template = override_slot_data.item_template
+		local slot_override_item_template = override_slot_data.item_template
 		local item_template = BackendUtils.get_item_template(item_data)
-		item_template.left_hand_attachment_node_linking = override_item_template.left_hand_attachment_node_linking
-		item_template.right_hand_attachment_node_linking = override_item_template.right_hand_attachment_node_linking
-		item_template.wield_anim = override_item_template.wield_anim
-		item_template.wield_anim_no_ammo = override_item_template.wield_anim_no_ammo
+		item_template.left_hand_attachment_node_linking = slot_override_item_template.left_hand_attachment_node_linking
+		item_template.right_hand_attachment_node_linking = slot_override_item_template.right_hand_attachment_node_linking
+		item_template.wield_anim = slot_override_item_template.wield_anim
+		item_template.wield_anim_no_ammo = slot_override_item_template.wield_anim_no_ammo
 		override_item_template = item_template
 	end
 
@@ -273,8 +303,8 @@ SimpleInventoryExtension._update_resync_loadout = function (self)
 	end
 
 	if self.resync_loadout_needed then
-		for _, equipment_to_spawn in ipairs(self._items_to_spawn) do
-			self.resync_ids[#self.resync_ids + 1] = self:resync_loadout(equipment_to_spawn)
+		for _, resynced_equipment_to_spawn in ipairs(self._items_to_spawn) do
+			self.resync_ids[#self.resync_ids + 1] = self:_resync_loadout(resynced_equipment_to_spawn)
 		end
 
 		self.resync_loadout_needed = false
@@ -404,7 +434,6 @@ end
 
 SimpleInventoryExtension._despawn_attached_units = function (self)
 	local attached_units = self._attached_units
-	local world = self._world
 
 	for index, attached_unit in pairs(attached_units) do
 		Managers.state.unit_spawner:mark_for_deletion(attached_unit)
@@ -477,6 +506,19 @@ SimpleInventoryExtension.apply_buffs = function (self, buffs_by_buffer, reason, 
 	end
 end
 
+SimpleInventoryExtension.has_inventory_item = function (self, slot_name, item_name)
+	local slot_data = self:get_slot_data(slot_name)
+
+	if slot_data then
+		local item_data = slot_data.item_data
+		local name = item_data.name
+
+		return name == item_name
+	end
+
+	return false
+end
+
 SimpleInventoryExtension.add_equipment = function (self, slot_name, item_data, unit_template, extra_extension_data, ammo_percent)
 	local world = self._world
 	local equipment = self._equipment
@@ -484,17 +526,26 @@ SimpleInventoryExtension.add_equipment = function (self, slot_name, item_data, u
 	local unit_3p = self._unit
 	local is_bot = self.is_bot
 	local override_item_units = nil
-	local override_item_template = self:override_career_skill_item_template(item_data)
+	local override_item_template = self:_override_career_skill_item_template(item_data)
 
 	if item_data.slot_to_use then
 		local other_slot_slot_data = self._equipment.slots[item_data.slot_to_use]
-		override_item_units = BackendUtils.get_item_units(other_slot_slot_data.item_data)
+		override_item_units = BackendUtils.get_item_units(item_data)
+		local other_slot_item_units = BackendUtils.get_item_units(other_slot_slot_data.item_data)
+
+		for key, _ in pairs(item_data.item_units_to_replace) do
+			if other_slot_item_units[key] then
+				override_item_units[key] = other_slot_item_units[key]
+			end
+		end
 	end
 
 	local slot_equipment_data = GearUtils.create_equipment(world, slot_name, item_data, unit_1p, unit_3p, is_bot, unit_template, extra_extension_data, ammo_percent, override_item_template, override_item_units)
 	slot_equipment_data.master_item = item_data
 	equipment.slots[slot_name] = slot_equipment_data
 	self.recently_acquired_list[slot_name] = slot_equipment_data
+
+	CosmeticUtils.update_cosmetic_slot(self.player, slot_name, item_data.name, slot_equipment_data.skin)
 end
 
 SimpleInventoryExtension.show_first_person_inventory_lights = function (self, show)
@@ -531,24 +582,10 @@ SimpleInventoryExtension.show_first_person_inventory = function (self, show)
 			Unit.set_unit_visibility(right_hand_wielded_unit, show)
 		end
 
-		local right_hand_ammo_unit_1p = self._equipment.right_hand_ammo_unit_1p
-
-		if right_hand_ammo_unit_1p then
-			Unit.set_unit_visibility(right_hand_ammo_unit_1p, show)
-		end
-
 		if show then
 			Unit.flow_event(right_hand_wielded_unit, "lua_wield")
-
-			if right_hand_ammo_unit_1p then
-				Unit.flow_event(right_hand_ammo_unit_1p, "lua_wield")
-			end
 		else
 			Unit.flow_event(right_hand_wielded_unit, "lua_unwield")
-
-			if right_hand_ammo_unit_1p then
-				Unit.flow_event(right_hand_ammo_unit_1p, "lua_unwield")
-			end
 		end
 	end
 
@@ -561,27 +598,14 @@ SimpleInventoryExtension.show_first_person_inventory = function (self, show)
 			Unit.set_unit_visibility(left_hand_wielded_unit, show)
 		end
 
-		local left_hand_ammo_unit_1p = self._equipment.left_hand_ammo_unit_1p
-
-		if left_hand_ammo_unit_1p then
-			Unit.set_unit_visibility(left_hand_ammo_unit_1p, show)
-		end
-
 		if show then
 			Unit.flow_event(left_hand_wielded_unit, "lua_wield")
-
-			if left_hand_ammo_unit_1p then
-				Unit.flow_event(left_hand_ammo_unit_1p, "lua_wield")
-			end
 		else
 			Unit.flow_event(left_hand_wielded_unit, "lua_unwield")
-
-			if left_hand_ammo_unit_1p then
-				Unit.flow_event(left_hand_ammo_unit_1p, "lua_unwield")
-			end
 		end
 	end
 
+	self:show_first_person_ammo(show)
 	self:_despawn_attached_units()
 
 	local equipment = self._equipment
@@ -606,6 +630,40 @@ SimpleInventoryExtension.show_first_person_inventory = function (self, show)
 		Unit.flow_event(self._first_person_unit, "lua_wield")
 	else
 		Unit.flow_event(self._first_person_unit, "lua_unwield")
+	end
+end
+
+SimpleInventoryExtension.show_first_person_ammo = function (self, show)
+	local equipment = self._equipment
+	local right_hand_wielded_unit = equipment.right_hand_wielded_unit
+	local left_hand_wielded_unit = equipment.left_hand_wielded_unit
+
+	if right_hand_wielded_unit and Unit.alive(right_hand_wielded_unit) then
+		local right_hand_ammo_unit_1p = equipment.right_hand_ammo_unit_1p
+
+		if right_hand_ammo_unit_1p then
+			Unit.set_unit_visibility(right_hand_ammo_unit_1p, show)
+
+			if show then
+				Unit.flow_event(right_hand_ammo_unit_1p, "lua_wield")
+			else
+				Unit.flow_event(right_hand_ammo_unit_1p, "lua_unwield")
+			end
+		end
+	end
+
+	if left_hand_wielded_unit and Unit.alive(left_hand_wielded_unit) then
+		local left_hand_ammo_unit_1p = equipment.left_hand_ammo_unit_1p
+
+		if left_hand_ammo_unit_1p then
+			Unit.set_unit_visibility(left_hand_ammo_unit_1p, show)
+
+			if show then
+				Unit.flow_event(left_hand_ammo_unit_1p, "lua_wield")
+			else
+				Unit.flow_event(left_hand_ammo_unit_1p, "lua_unwield")
+			end
+		end
 	end
 end
 
@@ -759,9 +817,33 @@ SimpleInventoryExtension.current_ammo_status = function (self, slot_name)
 
 		if ammo_extension then
 			local remaining_ammo = ammo_extension:total_remaining_ammo()
-			local max_ammo = ammo_extension:get_max_ammo()
+			local max_ammo = ammo_extension:max_ammo()
 
 			return remaining_ammo, max_ammo
+		end
+	end
+end
+
+SimpleInventoryExtension.current_ammo_kind = function (self, slot_name)
+	local slot_data = self._equipment.slots[slot_name]
+
+	if not slot_data then
+		return
+	end
+
+	local item_data = slot_data.item_data
+	local item_template = slot_data.item_template or BackendUtils.get_item_template(item_data)
+	local ammo_data = item_template.ammo_data
+
+	if ammo_data then
+		local right_unit = slot_data.right_unit_1p
+		local left_unit = slot_data.left_unit_1p
+		local ammo_extension = GearUtils.get_ammo_extension(right_unit, left_unit)
+
+		if ammo_extension then
+			local ammo_kind = ammo_extension:ammo_kind()
+
+			return ammo_kind
 		end
 	end
 end
@@ -769,7 +851,10 @@ end
 SimpleInventoryExtension.add_ammo_from_pickup = function (self, pickup_settings)
 	local equipment = self._equipment
 	local slots = equipment.slots
+	local refill_percentage = pickup_settings.refill_percentage
 	local refill_amount = pickup_settings.refill_amount
+
+	fassert(not refill_percentage or not refill_amount, "ammo pickups has to contain either refill_percentage or refill_amount, not both")
 
 	for slot_name, slot_data in pairs(slots) do
 		local item_data = slot_data.item_data
@@ -777,15 +862,15 @@ SimpleInventoryExtension.add_ammo_from_pickup = function (self, pickup_settings)
 		local ammo_data = item_template.ammo_data
 
 		if ammo_data and not ammo_data.ignore_ammo_pickup then
-			self:_add_ammo_to_slot(slot_name, slot_data, refill_amount)
+			self:_add_ammo_to_slot(slot_name, slot_data, refill_percentage, refill_amount)
 		end
 	end
 end
 
-SimpleInventoryExtension._add_ammo_to_slot = function (self, slot_name, slot_data, amount)
+SimpleInventoryExtension._add_ammo_to_slot = function (self, slot_name, slot_data, refill_percentage, refill_amount)
 	local left_hand_unit = slot_data.left_unit_1p
 	local right_hand_unit = slot_data.right_unit_1p
-	local ammo_extension, refill_amount = nil
+	local ammo_extension = nil
 
 	if left_hand_unit and ScriptUnit.has_extension(left_hand_unit, "ammo_system") then
 		ammo_extension = ScriptUnit.extension(left_hand_unit, "ammo_system")
@@ -801,21 +886,24 @@ SimpleInventoryExtension._add_ammo_to_slot = function (self, slot_name, slot_dat
 		return
 	end
 
-	local max_ammo = ammo_extension:get_max_ammo()
-	local refill_amount = nil
+	local max_ammo = ammo_extension:max_ammo()
 
-	if amount then
-		refill_amount = max_ammo * amount
+	if refill_percentage then
+		refill_amount = max_ammo * refill_percentage
 	end
 
 	ammo_extension:add_ammo(refill_amount)
 
-	local should_reload_now = ammo_extension.reload_on_ammo_pickup or ammo_extension:ammo_count() == 0
+	local should_reload_now = ammo_extension:reload_on_ammo_pickup() or ammo_extension:ammo_count() == 0
 
 	if should_reload_now and self._equipment.wielded_slot == slot_name and ammo_extension:can_reload() then
 		local play_reload_animation = true
 
 		ammo_extension:start_reload(play_reload_animation)
+
+		if ammo_extension:reload_on_ammo_pickup() then
+			CharacterStateHelper.stop_weapon_actions(self, "reload")
+		end
 	end
 end
 
@@ -873,7 +961,7 @@ SimpleInventoryExtension.get_item_data = function (self, slot_name)
 	return item_data
 end
 
-SimpleInventoryExtension.resync_loadout = function (self, equipment_to_spawn)
+SimpleInventoryExtension._resync_loadout = function (self, equipment_to_spawn)
 	if not equipment_to_spawn then
 		return
 	end
@@ -889,9 +977,7 @@ end
 SimpleInventoryExtension.create_equipment_in_slot = function (self, slot_id, backend_id)
 	local item_data = BackendUtils.get_item_from_masterlist(backend_id)
 	local slot_data = self._equipment.slots[slot_id]
-	local item_template = slot_data.item_template or BackendUtils.get_item_template(item_data)
 	local weapon_already_equiped = slot_data.item_data == item_data
-	local item_name = item_data.name
 	local item_units = BackendUtils.get_item_units(item_data)
 
 	if weapon_already_equiped then
@@ -905,7 +991,8 @@ SimpleInventoryExtension.create_equipment_in_slot = function (self, slot_id, bac
 		item_data = item_data,
 		skin = item_units.skin
 	}
-	local career_skill_weapon_name = self.career_extension:career_skill_weapon_name()
+	local weapon_index = self.talent_extension:get_talent_weapon_index()
+	local career_skill_weapon_name = self.career_extension:career_skill_weapon_name(weapon_index)
 
 	if career_skill_weapon_name then
 		local career_item_data = rawget(ItemMasterList, career_skill_weapon_name)
@@ -967,18 +1054,38 @@ local slots_to_check = {
 	slot_melee = true
 }
 
-SimpleInventoryExtension.has_ammo_consuming_weapon_equipped = function (self)
+SimpleInventoryExtension.has_ammo_consuming_weapon_equipped = function (self, ammo_type)
 	local equipment = self._equipment
 	local inventory_slots = equipment.slots
+	local has_ammo_weapon = false
 
 	for slot_name, slot_data in pairs(inventory_slots) do
 		if slots_to_check[slot_name] then
 			local left_hand_unit = slot_data.left_unit_1p
-			local right_hand_unit = slot_data.right_unit_1p
+			local left_hand_ammo_extension = left_hand_unit and ScriptUnit.has_extension(left_hand_unit, "ammo_system")
 
-			if (left_hand_unit and ScriptUnit.has_extension(left_hand_unit, "ammo_system")) or (right_hand_unit and ScriptUnit.has_extension(right_hand_unit, "ammo_system")) then
-				return true
+			if left_hand_ammo_extension then
+				if ammo_type then
+					has_ammo_weapon = left_hand_ammo_extension:ammo_type() == ammo_type
+				else
+					has_ammo_weapon = true
+				end
 			end
+
+			local right_hand_unit = slot_data.right_unit_1p
+			local right_hand_ammo_extension = right_hand_unit and ScriptUnit.has_extension(right_hand_unit, "ammo_system")
+
+			if right_hand_ammo_extension then
+				if ammo_type then
+					has_ammo_weapon = right_hand_ammo_extension:ammo_type() == ammo_type
+				else
+					has_ammo_weapon = true
+				end
+			end
+		end
+
+		if has_ammo_weapon then
+			return true
 		end
 	end
 
@@ -1325,9 +1432,6 @@ SimpleInventoryExtension._wield_slot = function (self, equipment, slot_data, uni
 	end
 
 	if Unit.animation_has_variable(unit_1p, "profile_index") then
-		local player_manager = Managers.player
-		local player = player_manager:local_player(1)
-		local profile_index = player:profile_index()
 		local variable_index = Unit.animation_find_variable(unit_1p, "profile_index")
 
 		Unit.animation_set_variable(unit_1p, variable_index, career_index)
@@ -1336,13 +1440,20 @@ SimpleInventoryExtension._wield_slot = function (self, equipment, slot_data, uni
 	local item_template = BackendUtils.get_item_template(item_data)
 	local wield_anim = item_template.wield_anim
 
-	Unit.animation_event(unit_3p, wield_anim)
+	if not script_data.disable_third_person_weapon_animation_events then
+		Unit.animation_event(unit_3p, wield_anim)
+	end
 
 	if slot_data.right_unit_1p or slot_data.left_unit_1p then
 		equipment.right_hand_wielded_unit = slot_data.right_unit_1p
 		equipment.right_hand_ammo_unit_1p = slot_data.right_ammo_unit_1p
 		equipment.left_hand_wielded_unit = slot_data.left_unit_1p
 		equipment.left_hand_ammo_unit_1p = slot_data.left_ammo_unit_1p
+		local blackboard = BLACKBOARDS[self._unit]
+
+		if blackboard then
+			blackboard.weapon_unit = self:get_weapon_unit()
+		end
 
 		if equipment.right_hand_wielded_unit then
 			Unit.flow_event(equipment.right_hand_wielded_unit, "lua_wield")
@@ -1360,14 +1471,23 @@ SimpleInventoryExtension._wield_slot = function (self, equipment, slot_data, uni
 			Unit.flow_event(equipment.left_hand_ammo_unit_1p, "lua_wield")
 		end
 
+		local play_wield_animation = true
+
 		if ScriptUnit.has_extension(equipment.right_hand_wielded_unit, "ammo_system") then
 			local ammo_extension = ScriptUnit.extension(equipment.right_hand_wielded_unit, "ammo_system")
 
 			if ammo_extension:can_reload() and ammo_extension:ammo_count() == 0 then
 				wield_anim = item_template.wield_anim_not_loaded or wield_anim
-				local play_reload_animation = ammo_extension.play_reload_anim_on_wield_reload
+				local play_reload_animation = ammo_extension:play_reload_anim_on_wield_reload()
+				local has_wield_reload_anim = ammo_extension:has_wield_reload_anim()
+				local override_wield_anim = nil
 
-				ammo_extension:start_reload(play_reload_animation)
+				if has_wield_reload_anim then
+					override_wield_anim = wield_anim
+					play_wield_animation = not play_reload_animation
+				end
+
+				ammo_extension:start_reload(play_reload_animation, nil, override_wield_anim)
 			elseif ammo_extension:total_remaining_ammo() == 0 then
 				wield_anim = item_template.wield_anim_no_ammo or wield_anim
 			end
@@ -1378,15 +1498,24 @@ SimpleInventoryExtension._wield_slot = function (self, equipment, slot_data, uni
 
 			if ammo_extension:can_reload() and ammo_extension:ammo_count() == 0 then
 				wield_anim = item_template.wield_anim_not_loaded or wield_anim
-				local play_reload_animation = ammo_extension.play_reload_anim_on_wield_reload
+				local play_reload_animation = ammo_extension:play_reload_anim_on_wield_reload()
+				local has_wield_reload_anim = ammo_extension:has_wield_reload_anim()
+				local override_wield_anim = nil
 
-				ammo_extension:start_reload(play_reload_animation)
+				if has_wield_reload_anim then
+					override_wield_anim = wield_anim
+					play_wield_animation = not play_reload_animation
+				end
+
+				ammo_extension:start_reload(play_reload_animation, nil, override_wield_anim)
 			elseif ammo_extension:total_remaining_ammo() == 0 then
 				wield_anim = item_template.wield_anim_no_ammo or wield_anim
 			end
 		end
 
-		Unit.animation_event(unit_1p, wield_anim)
+		if play_wield_animation then
+			Unit.animation_event(unit_1p, wield_anim)
+		end
 
 		if slot_data.right_unit_1p then
 			if Unit.has_visibility_group(slot_data.right_unit_1p, "normal") then

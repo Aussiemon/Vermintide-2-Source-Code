@@ -445,28 +445,36 @@ StartGameWindowPanelConsole._handle_gamepad_activity = function (self)
 end
 
 StartGameWindowPanelConsole._event_disable_function = function (self)
+	local on_enter_sub_state = self.parent.parent:on_enter_sub_state()
+	local is_weave_menu = on_enter_sub_state == "weave"
 	local is_connected = Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected())
 
-	return is_connected and not Managers.twitch:game_mode_supported("event")
+	return is_weave_menu or (is_connected and not Managers.twitch:game_mode_supported("event"))
 end
 
 StartGameWindowPanelConsole._adventure_disable_function = function (self)
+	local on_enter_sub_state = self.parent.parent:on_enter_sub_state()
+	local is_weave_menu = on_enter_sub_state == "weave"
 	local is_connected = Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected())
 
-	return is_connected and not Managers.twitch:game_mode_supported("adventure")
+	return is_weave_menu or (is_connected and not Managers.twitch:game_mode_supported("adventure"))
 end
 
 StartGameWindowPanelConsole._custom_game_disable_function = function (self)
+	local on_enter_sub_state = self.parent.parent:on_enter_sub_state()
+	local is_weave_menu = on_enter_sub_state == "weave"
 	local is_connected = Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected())
 
-	return is_connected and not Managers.twitch:game_mode_supported("custom")
+	return is_weave_menu or (is_connected and not Managers.twitch:game_mode_supported("custom"))
 end
 
 StartGameWindowPanelConsole._heroic_deed_disable_function = function (self)
+	local on_enter_sub_state = self.parent.parent:on_enter_sub_state()
+	local is_weave_menu = on_enter_sub_state == "weave"
 	local is_connected = Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected())
 	local running_beta = script_data.use_beta_overlay
 
-	return (is_connected and not Managers.twitch:game_mode_supported("deed")) or running_beta
+	return is_weave_menu or (is_connected and not Managers.twitch:game_mode_supported("deed")) or running_beta
 end
 
 StartGameWindowPanelConsole._lobby_browser_disable_function = function (self)
@@ -475,11 +483,21 @@ StartGameWindowPanelConsole._lobby_browser_disable_function = function (self)
 	return is_connected and not Managers.twitch:game_mode_supported("lobby_browser")
 end
 
+StartGameWindowPanelConsole._weave_disable_function = function (self)
+	local on_enter_sub_state = self.parent.parent:on_enter_sub_state()
+	local is_weave_menu = on_enter_sub_state == "weave"
+	local is_connected = Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected())
+
+	return not is_weave_menu or (is_connected and not Managers.twitch:game_mode_supported("weave"))
+end
+
 StartGameWindowPanelConsole._streaming_disable_function = function (self)
+	local on_enter_sub_state = self.parent.parent:on_enter_sub_state()
+	local is_weave_menu = on_enter_sub_state == "weave"
 	local twitch_enabled = GameSettingsDevelopment.twitch_enabled
 	local is_offline = Managers.account:offline_mode()
 
-	return not twitch_enabled or is_offline
+	return is_weave_menu or not twitch_enabled or is_offline
 end
 
 StartGameWindowPanelConsole._animate_title_entry = function (self, widget, dt)

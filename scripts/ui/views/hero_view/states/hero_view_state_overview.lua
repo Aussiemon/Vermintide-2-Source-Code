@@ -818,7 +818,7 @@ HeroViewStateOverview.get_selected_cosmetic_slot_index = function (self)
 	return self._selected_cosmetic_slot_index or 1
 end
 
-HeroViewStateOverview._set_loadout_item = function (self, item, strict_slot_type)
+HeroViewStateOverview._set_loadout_item = function (self, item, strict_slot_name)
 	local hero_name = self.hero_name
 	local career_index = self.career_index
 	local player_manager = self.player_manager
@@ -839,16 +839,23 @@ HeroViewStateOverview._set_loadout_item = function (self, item, strict_slot_type
 
 	local backend_id = item.backend_id
 	local item_data = item.data
-	local slot_type = strict_slot_type or item_data.slot_type
-	local slot = self:_get_slot_by_type(slot_type)
+	local slot, slot_type = nil
+
+	if strict_slot_name then
+		slot = InventorySettings.slots_by_name[strict_slot_name]
+		slot_type = slot.type
+	else
+		slot_type = item_data.slot_type
+		slot = self:_get_slot_by_type(slot_type)
+	end
+
 	local slot_name = slot.name
 	local profile_index = FindProfileIndex(hero_name)
 	local profile = SPProfiles[profile_index]
 	local career_data = profile.careers[career_index]
 	local career_name = career_data.name
-	local backend_items = Managers.backend:get_interface("items")
 
-	backend_items:set_loadout_item(backend_id, career_name, slot_name)
+	BackendUtils.set_loadout_item(backend_id, career_name, slot_name)
 
 	if slot_type == "melee" or slot_type == "ranged" then
 		inventory_extension:create_equipment_in_slot(slot_name, backend_id)
@@ -911,9 +918,7 @@ HeroViewStateOverview.unequip_item_in_slot = function (self, slot_type)
 		return false
 	end
 
-	local backend_items = Managers.backend:get_interface("items")
-
-	backend_items:set_loadout_item(nil, career_name, slot_name)
+	BackendUtils.set_loadout_item(nil, career_name, slot_name)
 
 	self.loadout_sync_id = self.loadout_sync_id + 1
 	self.inventory_sync_id = self.inventory_sync_id + 1

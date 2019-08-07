@@ -1,5 +1,6 @@
 local heroes = {
 	name = "achv_menu_heroes_category_title",
+	present_progression = true,
 	entries = {
 		"unlock_first_talent_point",
 		"unlock_all_talent_points",
@@ -19,6 +20,7 @@ local heroes = {
 				"achievement_markus_level_2",
 				"achievement_markus_level_3",
 				"level_thirty_empire_soldier",
+				"scorpion_markus_reach_level_35",
 				"complete_all_helmgart_levels_recruit_es_mercenary",
 				"complete_all_helmgart_levels_veteran_es_mercenary",
 				"complete_all_helmgart_levels_champion_es_mercenary",
@@ -44,6 +46,7 @@ local heroes = {
 				"achievement_bardin_level_2",
 				"achievement_bardin_level_3",
 				"level_thirty_dwarf_ranger",
+				"scorpion_bardin_reach_level_35",
 				"complete_all_helmgart_levels_recruit_dr_ranger",
 				"complete_all_helmgart_levels_veteran_dr_ranger",
 				"complete_all_helmgart_levels_champion_dr_ranger",
@@ -69,6 +72,7 @@ local heroes = {
 				"achievement_kerillian_level_2",
 				"achievement_kerillian_level_3",
 				"level_thirty_wood_elf",
+				"scorpion_kerillian_reach_level_35",
 				"complete_all_helmgart_levels_recruit_we_waywatcher",
 				"complete_all_helmgart_levels_veteran_we_waywatcher",
 				"complete_all_helmgart_levels_champion_we_waywatcher",
@@ -94,6 +98,7 @@ local heroes = {
 				"achievement_victor_level_2",
 				"achievement_victor_level_3",
 				"level_thirty_witch_hunter",
+				"scorpion_victor_reach_level_35",
 				"complete_all_helmgart_levels_recruit_wh_captain",
 				"complete_all_helmgart_levels_veteran_wh_captain",
 				"complete_all_helmgart_levels_champion_wh_captain",
@@ -119,6 +124,7 @@ local heroes = {
 				"achievement_sienna_level_2",
 				"achievement_sienna_level_3",
 				"level_thirty_bright_wizard",
+				"scorpion_sienna_reach_level_35",
 				"complete_all_helmgart_levels_recruit_bw_adept",
 				"complete_all_helmgart_levels_veteran_bw_adept",
 				"complete_all_helmgart_levels_champion_bw_adept",
@@ -140,15 +146,18 @@ local heroes = {
 }
 local levels = {
 	name = "achv_menu_levels_category_title",
+	present_progression = true,
 	entries = {
 		"complete_all_helmgart_levels_recruit",
 		"complete_all_helmgart_levels_veteran",
 		"complete_all_helmgart_levels_champion",
 		"complete_all_helmgart_levels_legend",
+		"scorpion_complete_all_helmgart_levels_cataclysm",
 		"complete_bogenhafen_recruit",
 		"complete_bogenhafen_veteran",
 		"complete_bogenhafen_champion",
-		"complete_bogenhafen_legend"
+		"complete_bogenhafen_legend",
+		"scorpion_complete_bogenhafen_cataclysm"
 	},
 	categories = {
 		{
@@ -157,12 +166,16 @@ local levels = {
 			entries = {
 				"complete_tutorial",
 				"complete_act_one",
+				"scorpion_complete_helmgart_act_one_cataclysm",
 				"complete_act_two",
+				"scorpion_complete_helmgart_act_two_cataclysm",
 				"complete_act_three",
+				"scorpion_complete_helmgart_act_three_cataclysm",
 				"complete_skittergate_recruit",
 				"complete_skittergate_veteran",
 				"complete_skittergate_champion",
 				"complete_skittergate_legend",
+				"scorpion_complete_skittergate_cataclysm",
 				"kill_bodvarr_burblespew_recruit",
 				"kill_bodvarr_burblespew_veteran",
 				"kill_bodvarr_burblespew_champion",
@@ -184,7 +197,20 @@ local levels = {
 				"skaven_stronghold_skarrik_kill_skaven",
 				"ussingen_no_event_barrels",
 				"skittergate_deathrattler_rasknitt_timed",
-				"complete_all_helmgart_level_achievements"
+				"complete_all_helmgart_level_achievements",
+				"elven_ruins_align_leylines_timed_cata",
+				"farmlands_rescue_prisoners_timed_cata",
+				"military_kill_chaos_warriors_in_event_cata",
+				"ground_zero_burblespew_tornado_enemies_cata",
+				"fort_kill_enemies_cannonball_cata",
+				"nurgle_player_showered_in_pus_cata",
+				"bell_destroy_bell_flee_timed_cata",
+				"catacombs_stay_inside_ritual_pool_cata",
+				"mines_kill_final_troll_timed_cata",
+				"warcamp_bodvarr_charge_warriors_cata",
+				"skaven_stronghold_skarrik_kill_skaven_cata",
+				"ussingen_no_event_barrels_cata",
+				"skittergate_deathrattler_rasknitt_timed_cata"
 			}
 		},
 		{
@@ -216,6 +242,7 @@ local levels = {
 }
 local crafting = {
 	name = "achv_menu_crafting_category_title",
+	present_progression = true,
 	entries = {
 		"craft_item",
 		"craft_fifty_items",
@@ -225,6 +252,7 @@ local crafting = {
 }
 local items = {
 	name = "achv_menu_items_category_title",
+	present_progression = true,
 	entries = {
 		"equip_common_quality",
 		"equip_rare_quality",
@@ -236,6 +264,7 @@ local items = {
 }
 local deeds = {
 	name = "achv_menu_deeds_category_title",
+	present_progression = true,
 	entries = {
 		"complete_deeds_1",
 		"complete_deeds_2",
@@ -249,6 +278,7 @@ local deeds = {
 }
 local enemies = {
 	name = "achv_menu_enemies_category_title",
+	present_progression = true,
 	entries = {
 		"skaven_warpfire_thrower_1",
 		"skaven_warpfire_thrower_2",
@@ -282,6 +312,12 @@ local enemies = {
 		"helmgart_lord_1"
 	}
 }
+local weaves = {
+	name = "achv_menu_weaves_category_title",
+	present_progression = false,
+	entries = {},
+	categories = {}
+}
 
 for _, dlc in pairs(DLCSettings) do
 	local achievement_outline = dlc.achievement_outline
@@ -302,6 +338,8 @@ for _, dlc in pairs(DLCSettings) do
 				category = crafting
 			elseif category_name == "deeds" then
 				category = deeds
+			elseif category_name == "weaves" then
+				category = weaves
 			else
 				category = {}
 			end
@@ -351,7 +389,8 @@ local achievements = {
 		enemies,
 		items,
 		crafting,
-		deeds
+		deeds,
+		weaves
 	}
 }
 

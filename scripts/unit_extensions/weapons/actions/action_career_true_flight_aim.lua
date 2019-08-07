@@ -6,6 +6,21 @@ ActionCareerTrueFlightAim.init = function (self, world, item_name, is_server, ow
 	self.inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
 end
 
+ActionCareerTrueFlightAim.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
+	ActionCareerTrueFlightAim.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level, action_init_data)
+
+	local init_flow_event = self.current_action.init_flow_event
+
+	if init_flow_event then
+		Unit.flow_event(self.owner_unit, init_flow_event)
+		Unit.flow_event(self.first_person_unit, init_flow_event)
+	end
+
+	local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
+
+	inventory_extension:check_and_drop_pickups("career_ability")
+end
+
 ActionCareerTrueFlightAim.finish = function (self, reason)
 	local chain_action_data = ActionCareerTrueFlightAim.super.finish(self, reason)
 

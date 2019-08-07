@@ -7,6 +7,7 @@ weapon_template.actions = {
 			aim_assist_ramp_decay_delay = 0.1,
 			anim_end_event = "attack_finished",
 			kind = "melee_start",
+			attack_hold_input = "action_one_hold",
 			aim_assist_max_ramp_multiplier = 0.4,
 			aim_assist_ramp_multiplier = 0.2,
 			anim_event = "attack_swing_charge_left_diagonal",
@@ -523,7 +524,6 @@ weapon_template.actions = {
 			kind = "push_stagger",
 			no_damage_impact_sound_event = "Play_weapon_fire_torch_armour_hit",
 			attack_template = "basic_sweep_push",
-			hit_time = 0.1,
 			damage_profile_outer = "light_push",
 			weapon_action_hand = "right",
 			push_angle = 100,
@@ -766,7 +766,17 @@ weapon_template.buffs = {
 		external_optional_multiplier = 1
 	}
 }
+local shadow_torch = table.clone(weapon_template)
+shadow_torch.actions.action_three.default.projectile_info.projectile_unit_name = "units/weapons/player/pup_shadow_torch/pup_shadow_torch"
+shadow_torch.actions.action_three.default.projectile_info.pickup_name = "shadow_torch"
+shadow_torch.actions.action_wield.default.projectile_info.projectile_unit_name = "units/weapons/player/pup_shadow_torch/pup_shadow_torch"
+shadow_torch.actions.action_wield.default.projectile_info.pickup_name = "shadow_torch"
+shadow_torch.actions.action_dropped.default.projectile_info.projectile_unit_name = "units/weapons/player/pup_shadow_torch/pup_shadow_torch"
+shadow_torch.actions.action_dropped.default.projectile_info.pickup_name = "shadow_torch"
+shadow_torch.right_hand_unit = "units/weapons/player/wpn_shadow_torch/wpn_shadow_torch"
+shadow_torch.pickup_data.pickup_name = "shadow_torch"
 
 return {
-	torch = table.clone(weapon_template)
+	torch = table.clone(weapon_template),
+	shadow_torch = table.clone(shadow_torch)
 }

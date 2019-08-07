@@ -24,7 +24,15 @@ local mutators_to_add = {
 	"high_intensity",
 	"wave_of_plague_monks",
 	"wave_of_berzerkers",
-	"night_mode"
+	"night_mode",
+	"life",
+	"metal",
+	"heavens",
+	"light",
+	"shadow",
+	"fire",
+	"death",
+	"beasts"
 }
 
 for _, dlc in pairs(DLCSettings) do

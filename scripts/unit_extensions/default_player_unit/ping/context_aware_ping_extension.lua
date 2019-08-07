@@ -190,9 +190,10 @@ ContextAwarePingExtension._check_raycast = function (self, unit)
 								utility = 1 / (x_offset * y_offset)
 							end
 
+							local is_enemy = has_breed and Managers.state.side:is_enemy(self._unit, hit_unit)
 							local is_incapacitated_player = status_ext and status_ext:is_disabled()
 
-							if (is_pickup or (is_alive and (has_breed or is_incapacitated_player))) and not darkness_system:is_in_darkness(hit_position) and best_ping_utility < utility then
+							if (is_pickup or (is_alive and (is_enemy or is_incapacitated_player))) and not darkness_system:is_in_darkness(hit_position) and best_ping_utility < utility then
 								ping_unit = hit_unit
 								ping_unit_distance = distance
 								best_ping_utility = utility

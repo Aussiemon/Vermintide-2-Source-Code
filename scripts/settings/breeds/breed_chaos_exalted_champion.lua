@@ -19,51 +19,52 @@ local pushed_data = {
 }
 local breed_data = {
 	is_bot_threat = true,
-	is_bot_aid_threat = true,
-	walk_speed = 2,
 	bots_should_flank = true,
+	walk_speed = 2,
+	proximity_system_check = true,
 	poison_resistance = 100,
+	has_inventory = true,
 	aoe_radius = 0.4,
 	aoe_height = 1.7,
-	navigation_spline_distance_to_borders = 1,
-	proximity_system_check = true,
+	line_of_sight_distance_sq = 400,
 	disable_crowd_dispersion = true,
 	exchange_order = 2,
 	animation_sync_rpc = "rpc_sync_anim_state_7",
 	bot_hitbox_radius_approximation = 0.8,
 	behavior = "chaos_exalted_champion_warcamp",
 	run_speed = 6.109090909090908,
-	use_avoidance = false,
-	target_selection = "pick_rat_ogre_target_with_weights",
+	race = "chaos",
+	is_bot_aid_threat = true,
 	death_sound_event = "Play_enemy_vce_chaos_warrior_die",
-	headshot_coop_stamina_fatigue_type = "headshot_special",
+	slot_template = "chaos_large_elite",
 	bot_opportunity_target_melee_range = 7,
-	threat_value = 12,
+	headshot_coop_stamina_fatigue_type = "headshot_special",
 	default_inventory_template = "exalted_axe",
-	server_controlled_health_bar = true,
+	threat_value = 12,
 	dialogue_source_name = "chaos_exalted_champion_warcamp",
+	server_controlled_health_bar = true,
 	boss_staggers = true,
 	primary_armor_category = 6,
-	bone_lod_level = 0,
 	radius = 1,
 	use_slot_type = "large",
 	boss = true,
 	hit_mass_count = 20,
-	smart_object_template = "chaos_warrior",
-	sync_full_rotation = false,
-	race = "chaos",
+	bone_lod_level = 0,
+	use_avoidance = false,
 	disable_second_hit_ragdoll = true,
 	death_reaction = "ai_default",
 	armor_category = 2,
 	angry_run_speed = 6,
+	sync_full_rotation = false,
 	use_big_boy_turning = false,
 	use_navigation_path_splines = true,
+	smart_object_template = "chaos_warrior",
 	smart_targeting_width = 0.2,
 	perception_continuous = "perception_continuous_rat_ogre",
 	initial_is_passive = false,
-	boost_curve_multiplier_override = 1,
+	boost_curve_multiplier_override = 1.5,
 	bot_melee_aim_node = "j_spine1",
-	has_inventory = true,
+	target_selection = "pick_rat_ogre_target_with_weights",
 	no_stagger_duration = true,
 	awards_positive_reinforcement_message = true,
 	aim_template = "chaos_warrior",
@@ -75,7 +76,6 @@ local breed_data = {
 	hit_effect_template = "HitEffectsChaosExaltedChampion",
 	smart_targeting_height_multiplier = 3,
 	unit_template = "ai_unit_chaos_exalted_champion",
-	difficulty_kill_achievement = "kill_chaos_exalted_champion_difficulty_rank",
 	leave_walk_distance = 2.5,
 	perception = "perception_rat_ogre",
 	player_locomotion_constrain_radius = 1.2,
@@ -112,13 +112,7 @@ local breed_data = {
 		1.2,
 		1.2
 	},
-	max_health = {
-		500,
-		500,
-		900,
-		1200,
-		1800
-	},
+	max_health = BreedTweaks.max_health.exalted_champion,
 	bloodlust_health = BreedTweaks.bloodlust_health.monster,
 	debug_color = {
 		255,
@@ -134,10 +128,6 @@ local breed_data = {
 		head = "headshot"
 	},
 	hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
 		head = {
 			prio = 1,
 			actors = {
@@ -161,7 +151,7 @@ local breed_data = {
 			}
 		},
 		torso = {
-			prio = 3,
+			prio = 2,
 			actors = {
 				"c_spine",
 				"c_hips",
@@ -176,7 +166,7 @@ local breed_data = {
 			}
 		},
 		left_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftarm",
 				"c_leftforearm",
@@ -190,7 +180,7 @@ local breed_data = {
 			}
 		},
 		right_arm = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightarm",
 				"c_rightforearm",
@@ -204,7 +194,7 @@ local breed_data = {
 			}
 		},
 		left_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_leftupleg",
 				"c_leftleg",
@@ -217,7 +207,7 @@ local breed_data = {
 			}
 		},
 		right_leg = {
-			prio = 4,
+			prio = 3,
 			actors = {
 				"c_rightupleg",
 				"c_rightleg",
@@ -228,6 +218,10 @@ local breed_data = {
 				"j_rightfoot",
 				"j_hips"
 			}
+		},
+		full = {
+			prio = 4,
+			actors = {}
 		},
 		afro = {
 			prio = 5,
@@ -285,9 +279,11 @@ local breed_data = {
 
 		return stagger, duration, length
 	end,
+	difficulty_kill_achievements = {
+		"kill_chaos_exalted_champion_difficulty_rank",
+		"kill_chaos_exalted_champion_scorpion_hardest"
+	},
 	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone, t, damage_source)
-		local blackboard = BLACKBOARDS[unit]
-
 		if not Unit.alive(killer_unit) then
 			return
 		end
@@ -310,13 +306,7 @@ local breed_data_norsca = {
 	run_on_update = AiBreedSnippets.on_chaos_exalted_champion_norsca_update,
 	run_on_death = AiBreedSnippets.on_chaos_exalted_champion_norsca_death,
 	run_on_despawn = AiBreedSnippets.on_chaos_exalted_champion_despawn,
-	max_health = {
-		400,
-		400,
-		600,
-		800,
-		1200
-	}
+	max_health = BreedTweaks.max_health.norsca_champion
 }
 
 for key, value in pairs(breed_data) do
@@ -368,12 +358,14 @@ local action_data = {
 		return_speed = 45,
 		rotation_time = 2,
 		hit_react_type = "heavy",
+		close_attack_damage = 10,
 		fatigue_type = "blocked_sv_cleave",
 		arrival_linger_time = 0.25,
 		throw_animation = "throw_weapon",
 		damage_type = "cutting",
 		stop_sound_id = "Stop_enemy_champion_axe",
 		impact_sound_id = "Play_enemy_champion_axe_impact",
+		damage = 20,
 		pull_sound_id = "Play_enemy_champion_pull_axe",
 		target_dodged_radius = 0.25,
 		use_close_attack = false,
@@ -385,42 +377,15 @@ local action_data = {
 		running_sound_id = "Play_enemy_champion_throw_axe",
 		push_speed = 10,
 		considerations = UtilityConsiderations.chaos_exalted_champion_throw_attack,
-		close_attack_damage = {
-			10,
-			12,
-			15
-		},
-		damage = {
-			20,
-			10,
-			5
-		},
 		difficulty_damage = {
-			easy = {
-				8,
-				5,
-				10
-			},
-			normal = {
-				8,
-				10,
-				15
-			},
-			hard = {
-				16,
-				15,
-				20
-			},
-			harder = {
-				25,
-				20,
-				25
-			},
-			hardest = {
-				30,
-				25,
-				30
-			}
+			harder = 25,
+			hard = 16,
+			normal = 8,
+			hardest = 30,
+			cataclysm = 40,
+			cataclysm_3 = 75,
+			cataclysm_2 = 50,
+			easy = 8
 		}
 	},
 	intro_idle = {
@@ -453,7 +418,6 @@ local action_data = {
 	spawn_allies = {
 		has_ward = false,
 		run_to_spawn_speed = 7,
-		defensive_mode_duration = 30,
 		stay_still = false,
 		stinger_name = "enemy_horde_chaos_stinger",
 		move_anim = "move_fwd",
@@ -462,17 +426,27 @@ local action_data = {
 		duration = 2,
 		find_spawn_points = true,
 		spawn = "warcamp_boss_event_defensive_hard",
+		defensive_mode_duration = {
+			30,
+			30,
+			30,
+			25,
+			20,
+			12,
+			12,
+			12
+		},
 		animation = {
 			"idle_defence_2"
 		},
 		difficulty_spawn = {
 			harder = "warcamp_boss_event_defensive",
-			normal = "warcamp_boss_event_defensive",
 			hard = "warcamp_boss_event_defensive",
-			survival_hard = "warcamp_boss_event_defensive",
-			survival_harder = "warcamp_boss_event_defensive",
+			normal = "warcamp_boss_event_defensive",
 			hardest = "warcamp_boss_event_defensive",
-			survival_hardest = "warcamp_boss_event_defensive",
+			cataclysm = "warcamp_boss_event_defensive",
+			cataclysm_3 = "warcamp_boss_event_defensive",
+			cataclysm_2 = "warcamp_boss_event_defensive",
 			easy = "warcamp_boss_event_defensive"
 		},
 		start_anims = {
@@ -521,6 +495,7 @@ local action_data = {
 		damage_type = "cutting",
 		bot_threat_start_time = 1,
 		range = 3.8,
+		damage = 15,
 		knocked_down_attack_threshold = 0.6,
 		reset_attack_animation_speed = 2.5,
 		action_weight = 1,
@@ -538,37 +513,15 @@ local action_data = {
 		knocked_down_attack_anim = {
 			"attack_downed"
 		},
-		damage = {
-			15,
-			15,
-			10
-		},
 		difficulty_damage = {
-			easy = {
-				15,
-				15,
-				10
-			},
-			normal = {
-				15,
-				10,
-				8
-			},
-			hard = {
-				20,
-				15,
-				10
-			},
-			harder = {
-				30,
-				20,
-				15
-			},
-			hardest = {
-				50,
-				35,
-				20
-			}
+			harder = 30,
+			hard = 20,
+			normal = 15,
+			hardest = 50,
+			cataclysm = 75,
+			cataclysm_3 = 100,
+			cataclysm_2 = 100,
+			easy = 10
 		},
 		ignore_staggers = {
 			{
@@ -595,7 +548,8 @@ local action_data = {
 		},
 		reset_attack_animations = {
 			"attack_special_reset"
-		}
+		},
+		attack_finished_duration = BreedTweaks.attack_finished_duration.chaos_elite
 	},
 	special_attack_sweep = {
 		knocked_down_attack_threshold = 0.6,
@@ -611,6 +565,7 @@ local action_data = {
 		damage_type = "cutting",
 		offset_up = 0,
 		step_attack_target_speed_away_override = 2,
+		damage = 15,
 		player_push_speed = 10,
 		reset_attack_animation_speed = 1.2,
 		action_weight = 1,
@@ -631,52 +586,15 @@ local action_data = {
 		knocked_down_attack_anim = {
 			"attack_downed"
 		},
-		damage = {
-			15,
-			10,
-			5
-		},
 		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				10,
-				5,
-				2
-			},
-			hard = {
-				15,
-				10,
-				5
-			},
-			survival_hard = {
-				25,
-				15,
-				10
-			},
-			harder = {
-				25,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				40,
-				30,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
+			harder = 25,
+			hard = 15,
+			normal = 10,
+			hardest = 40,
+			cataclysm = 50,
+			cataclysm_3 = 100,
+			cataclysm_2 = 75,
+			easy = 5
 		},
 		ignore_staggers = {
 			false,
@@ -688,7 +606,8 @@ local action_data = {
 		},
 		reset_attack_animations = {
 			"attack_right_reset"
-		}
+		},
+		attack_finished_duration = BreedTweaks.attack_finished_duration.chaos_elite
 	},
 	special_attack_aoe = {
 		offset_forward = -4,
@@ -703,58 +622,22 @@ local action_data = {
 		offset_up = -0.6,
 		attack_anim = "attack_pushback_swing",
 		offset_right = 0,
+		damage = 20,
 		player_push_speed = 20,
 		action_weight = 4,
 		shove_speed = 10,
 		player_push_speed_blocked = 15,
 		ignore_abort_on_blocked_attack = true,
 		considerations = UtilityConsiderations.chaos_exalted_aoe,
-		damage = {
-			20,
-			10,
-			5
-		},
 		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				10,
-				5,
-				2
-			},
-			hard = {
-				15,
-				10,
-				5
-			},
-			survival_hard = {
-				25,
-				15,
-				10
-			},
-			harder = {
-				25,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				30,
-				25,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
+			harder = 25,
+			hard = 15,
+			normal = 10,
+			hardest = 30,
+			cataclysm = 40,
+			cataclysm_3 = 75,
+			cataclysm_2 = 50,
+			easy = 5
 		},
 		ignore_staggers = {
 			true,
@@ -778,58 +661,22 @@ local action_data = {
 		offset_up = -0.5,
 		attack_anim = "attack_pushback_swing",
 		offset_right = 0,
+		damage = 20,
 		player_push_speed = 20,
 		action_weight = 4,
 		shove_speed = 10,
 		player_push_speed_blocked = 15,
 		ignore_abort_on_blocked_attack = true,
 		considerations = UtilityConsiderations.chaos_exalted_defensive_aoe,
-		damage = {
-			20,
-			10,
-			5
-		},
 		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				10,
-				5,
-				2
-			},
-			hard = {
-				15,
-				10,
-				5
-			},
-			survival_hard = {
-				25,
-				15,
-				10
-			},
-			harder = {
-				25,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				30,
-				25,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
+			harder = 25,
+			hard = 15,
+			normal = 10,
+			hardest = 30,
+			cataclysm = 40,
+			cataclysm_3 = 75,
+			cataclysm_2 = 50,
+			easy = 15
 		},
 		ignore_staggers = {
 			true,
@@ -855,57 +702,21 @@ local action_data = {
 		offset_up = -0.5,
 		attack_anim = "attack_pushback_swing",
 		offset_right = 0,
+		damage = 20,
 		player_push_speed = 20,
 		action_weight = 4,
 		shove_speed = 10,
 		player_push_speed_blocked = 15,
 		ignore_abort_on_blocked_attack = true,
-		damage = {
-			20,
-			10,
-			5
-		},
 		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				10,
-				5,
-				2
-			},
-			hard = {
-				15,
-				10,
-				5
-			},
-			survival_hard = {
-				25,
-				15,
-				10
-			},
-			harder = {
-				25,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				30,
-				25,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
+			harder = 25,
+			hard = 15,
+			normal = 10,
+			hardest = 30,
+			cataclysm = 40,
+			cataclysm_3 = 75,
+			cataclysm_2 = 50,
+			easy = 5
 		},
 		ignore_staggers = {
 			true,
@@ -932,6 +743,7 @@ local action_data = {
 		damage_type = "cutting",
 		attack_anim = "attack_pounce",
 		range = 4,
+		damage = 5,
 		knocked_down_attack_threshold = 0.6,
 		reset_attack_animation_speed = 1.3,
 		action_weight = 1.2,
@@ -941,52 +753,15 @@ local action_data = {
 		knocked_down_attack_anim = {
 			"attack_downed"
 		},
-		damage = {
-			5,
-			3,
-			2
-		},
 		difficulty_damage = {
-			easy = {
-				5,
-				3,
-				2
-			},
-			normal = {
-				7,
-				5,
-				3
-			},
-			hard = {
-				10,
-				7,
-				5
-			},
-			survival_hard = {
-				10,
-				7,
-				5
-			},
-			harder = {
-				15,
-				10,
-				7
-			},
-			survival_harder = {
-				15,
-				10,
-				7
-			},
-			hardest = {
-				20,
-				15,
-				10
-			},
-			survival_hardest = {
-				20,
-				15,
-				10
-			}
+			harder = 15,
+			hard = 10,
+			normal = 7,
+			hardest = 20,
+			cataclysm = 30,
+			cataclysm_3 = 50,
+			cataclysm_2 = 40,
+			easy = 5
 		},
 		ignore_staggers = {
 			true,
@@ -995,7 +770,8 @@ local action_data = {
 			true,
 			true,
 			false
-		}
+		},
+		attack_finished_duration = BreedTweaks.attack_finished_duration.chaos_elite
 	},
 	special_attack_kick = {
 		offset_up = 0,
@@ -1011,6 +787,7 @@ local action_data = {
 		damage_type = "cutting",
 		attack_anim = "attack_push_2",
 		range = 4,
+		damage = 5,
 		knocked_down_attack_threshold = 0.6,
 		reset_attack_animation_speed = 1.3,
 		action_weight = 1.35,
@@ -1020,52 +797,15 @@ local action_data = {
 		knocked_down_attack_anim = {
 			"attack_downed"
 		},
-		damage = {
-			5,
-			3,
-			2
-		},
 		difficulty_damage = {
-			easy = {
-				5,
-				3,
-				2
-			},
-			normal = {
-				7,
-				5,
-				3
-			},
-			hard = {
-				10,
-				7,
-				5
-			},
-			survival_hard = {
-				10,
-				7,
-				5
-			},
-			harder = {
-				15,
-				10,
-				7
-			},
-			survival_harder = {
-				15,
-				10,
-				7
-			},
-			hardest = {
-				20,
-				15,
-				10
-			},
-			survival_hardest = {
-				20,
-				15,
-				10
-			}
+			harder = 15,
+			hard = 10,
+			normal = 7,
+			hardest = 20,
+			cataclysm = 30,
+			cataclysm_3 = 50,
+			cataclysm_2 = 40,
+			easy = 5
 		},
 		ignore_staggers = {
 			true,
@@ -1074,7 +814,8 @@ local action_data = {
 			true,
 			true,
 			false
-		}
+		},
+		attack_finished_duration = BreedTweaks.attack_finished_duration.chaos_elite
 	},
 	special_attack_launch_defensive = {
 		offset_up = 0,
@@ -1090,6 +831,7 @@ local action_data = {
 		damage_type = "cutting",
 		attack_anim = "attack_pounce",
 		range = 4,
+		damage = 5,
 		knocked_down_attack_threshold = 0.6,
 		reset_attack_animation_speed = 1.3,
 		action_weight = 1.2,
@@ -1099,52 +841,15 @@ local action_data = {
 		knocked_down_attack_anim = {
 			"attack_downed"
 		},
-		damage = {
-			5,
-			3,
-			2
-		},
 		difficulty_damage = {
-			easy = {
-				5,
-				3,
-				2
-			},
-			normal = {
-				7,
-				5,
-				3
-			},
-			hard = {
-				10,
-				7,
-				5
-			},
-			survival_hard = {
-				10,
-				7,
-				5
-			},
-			harder = {
-				15,
-				10,
-				7
-			},
-			survival_harder = {
-				15,
-				10,
-				7
-			},
-			hardest = {
-				20,
-				15,
-				10
-			},
-			survival_hardest = {
-				20,
-				15,
-				10
-			}
+			harder = 15,
+			hard = 10,
+			normal = 7,
+			hardest = 20,
+			cataclysm = 30,
+			cataclysm_3 = 50,
+			cataclysm_2 = 40,
+			easy = 5
 		},
 		ignore_staggers = {
 			true,
@@ -1153,7 +858,8 @@ local action_data = {
 			true,
 			true,
 			false
-		}
+		},
+		attack_finished_duration = BreedTweaks.attack_finished_duration.chaos_elite
 	},
 	transform = {
 		transfer_health_percentage = true,
@@ -1162,6 +868,7 @@ local action_data = {
 	},
 	charge = {
 		damage_type = "cutting",
+		damage = 20,
 		fatigue_type = "blocked_slam",
 		action_weight = 3,
 		ignore_ai_damage = true,
@@ -1235,77 +942,46 @@ local action_data = {
 					}
 				},
 				hit_ai_func = function (unit, blackboard, hit_unit, action, attack)
-					local stat_name = "exalted_champion_charge_chaos_warrior"
-					local current_difficulty = Managers.state.difficulty:get_difficulty()
-					local allowed_difficulties = QuestSettings.allowed_difficulties[stat_name]
-					local allowed_difficulty = allowed_difficulties[current_difficulty]
+					local stat_names = {
+						"exalted_champion_charge_chaos_warrior",
+						"exalted_champion_charge_chaos_warrior_cata"
+					}
 
-					if allowed_difficulty and not blackboard.hit_warrior_challenge_completed then
-						local hit_unit_blackboard = BLACKBOARDS[hit_unit]
-						local is_chaos_warrior = hit_unit_blackboard.breed.name == "chaos_warrior"
-						local num_times_hit_chaos_warrior = blackboard.num_times_hit_chaos_warrior
+					for i = 1, #stat_names, 1 do
+						local current_difficulty = Managers.state.difficulty:get_difficulty()
+						local allowed_difficulties = QuestSettings.allowed_difficulties[stat_names[i]]
+						local allowed_difficulty = allowed_difficulties[current_difficulty]
 
-						if is_chaos_warrior then
-							blackboard.num_times_hit_chaos_warrior = num_times_hit_chaos_warrior + 1
-						end
+						if allowed_difficulty and not blackboard.hit_warrior_challenge_completed then
+							local hit_unit_blackboard = BLACKBOARDS[hit_unit]
+							local is_chaos_warrior = hit_unit_blackboard.breed.name == "chaos_warrior"
+							local num_times_hit_chaos_warrior = blackboard.num_times_hit_chaos_warrior
 
-						if QuestSettings.exalted_champion_charge_chaos_warrior <= blackboard.num_times_hit_chaos_warrior then
-							local statistics_db = Managers.player:statistics_db()
+							if is_chaos_warrior then
+								blackboard.num_times_hit_chaos_warrior = num_times_hit_chaos_warrior + 1
+							end
 
-							statistics_db:increment_stat_and_sync_to_clients(stat_name)
+							if QuestSettings.exalted_champion_charge_chaos_warrior <= blackboard.num_times_hit_chaos_warrior then
+								local statistics_db = Managers.player:statistics_db()
 
-							blackboard.hit_warrior_challenge_completed = true
+								statistics_db:increment_stat_and_sync_to_clients(stat_names[i])
+
+								blackboard.hit_warrior_challenge_completed = true
+							end
 						end
 					end
 				end
 			}
 		},
-		damage = {
-			20,
-			10,
-			5
-		},
 		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				10,
-				5,
-				2
-			},
-			hard = {
-				15,
-				10,
-				5
-			},
-			survival_hard = {
-				25,
-				15,
-				10
-			},
-			harder = {
-				25,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				30,
-				25,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
+			harder = 25,
+			hard = 15,
+			normal = 10,
+			hardest = 30,
+			cataclysm = 40,
+			cataclysm_3 = 75,
+			cataclysm_2 = 50,
+			easy = 15
 		},
 		ignore_staggers = {
 			true,
@@ -1320,14 +996,10 @@ local action_data = {
 	},
 	smash_door = {
 		unblockable = true,
+		damage = 3,
 		damage_type = "cutting",
 		move_anim = "move_fwd",
-		attack_anim = "attack_pounce",
-		damage = {
-			3,
-			3,
-			3
-		}
+		attack_anim = "attack_pounce"
 	},
 	stagger = {
 		custom_enter_function = function (unit, blackboard, t, action)
@@ -1441,6 +1113,26 @@ local action_data = {
 				right = {
 					"stagger_right_downed"
 				}
+			},
+			{
+				fwd = {
+					"stagger_fwd"
+				},
+				bwd = {
+					"stagger_bwd"
+				},
+				left = {
+					"stagger_left"
+				},
+				right = {
+					"stagger_right"
+				}
+			},
+			{
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
 			},
 			{
 				fwd = {

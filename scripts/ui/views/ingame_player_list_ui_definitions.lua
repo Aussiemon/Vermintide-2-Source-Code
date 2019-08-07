@@ -907,7 +907,7 @@ local widget_definitions = {
 }
 local specific_widget_definitions = {
 	input_description_text = UIWidgets.create_simple_text("player_list_show_mouse_description", "player_list_input_description", nil, nil, input_description_style),
-	private_checkbox = UIWidgets.create_checkbox_widget("start_game_window_private_game", "", "private_checkbox", private_checkbox_offset, nil, "Privacy_option_disabled_when_using_twitch"),
+	private_checkbox = UIWidgets.create_checkbox_widget("start_game_window_private_game", "", "private_checkbox", private_checkbox_offset, nil),
 	background = {
 		scenegraph_id = "screen",
 		element = UIElements.SimpleTexture,

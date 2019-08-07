@@ -1,4 +1,3 @@
-local player_and_bot_units = PLAYER_AND_BOT_UNITS
 VolumeFilters = VolumeFilters or {}
 GenericVolumeTemplates = GenericVolumeTemplates or {}
 GenericVolumeTemplates.functions = {

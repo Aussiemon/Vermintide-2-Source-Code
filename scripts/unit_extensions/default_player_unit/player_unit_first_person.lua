@@ -1,15 +1,17 @@
 PlayerUnitFirstPerson = class(PlayerUnitFirstPerson)
 script_data.disable_aim_lead_rig_motion = script_data.disable_aim_lead_rig_motion or Development.parameter("disable_aim_lead_rig_motion") or true
+local unit_alive = Unit.alive
 
 PlayerUnitFirstPerson.init = function (self, extension_init_context, unit, extension_init_data)
 	self.world = extension_init_context.world
 	self.unit = unit
+	self._nav_world = Managers.state.entity:system("ai_system"):nav_world()
 	local profile = extension_init_data.profile
 	local skin_name = extension_init_data.skin_name
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
 	local career_index = hero_attributes:get(profile.display_name, "career") or 1
 	local first_person_attachment = Cosmetics[skin_name].first_person_attachment or profile.first_person_attachment
-	local unit_name = profile.base_units.first_person
+	local unit_name = Cosmetics[skin_name].first_person or profile.base_units.first_person
 	local attachment_unit_name = first_person_attachment.unit
 	local attachment_node_linking = first_person_attachment.attachment_node_linking
 	local unit_spawner = Managers.state.unit_spawner
@@ -134,6 +136,26 @@ PlayerUnitFirstPerson.update = function (self, unit, input, dt, context, t)
 
 	if self._first_person_units_visibility_timer and self._first_person_units_visibility_timer <= t then
 		self:toggle_first_person_units_visibility(self._first_person_units_visibility_reason)
+	end
+
+	if self._want_to_show_first_person_ammo ~= nil then
+		local can_show = self._show_first_person_units
+		local want_to_show = self._want_to_show_first_person_ammo
+
+		if can_show and want_to_show then
+			self.inventory_extension:show_first_person_inventory(true)
+
+			self._want_to_show_first_person_ammo = nil
+		elseif can_show and not want_to_show then
+			self.inventory_extension:show_first_person_inventory(false)
+
+			self._want_to_show_first_person_ammo = nil
+		elseif not can_show and want_to_show then
+		elseif not can_show and not want_to_show then
+			self.inventory_extension:show_first_person_inventory(false)
+
+			self._want_to_show_first_person_ammo = nil
+		end
 	end
 
 	if script_data.attract_mode_spectate and self.first_person_mode then
@@ -521,12 +543,14 @@ PlayerUnitFirstPerson.set_first_person_mode = function (self, active, override)
 
 			if self.first_person_mode ~= active then
 				Unit.flow_event(self.unit, "lua_exit_third_person_camera")
+				Unit.flow_event(self.first_person_unit, "lua_exit_third_person_camera")
 			end
 		else
 			self:hide_weapons("third_person_mode", true)
 
 			if self.first_person_mode ~= active then
 				Unit.flow_event(self.unit, "lua_enter_third_person_camera")
+				Unit.flow_event(self.first_person_unit, "lua_enter_third_person_camera")
 			end
 		end
 
@@ -644,6 +668,14 @@ PlayerUnitFirstPerson.unhide_weapons = function (self, reason)
 
 	if table.is_empty(self.hide_weapon_lights_reasons) then
 		self.inventory_extension:show_first_person_inventory_lights(true)
+	end
+end
+
+PlayerUnitFirstPerson.show_first_person_ammo = function (self, show)
+	if self._show_first_person_units then
+		self.inventory_extension:show_first_person_ammo(show)
+	else
+		self._want_to_show_first_person_ammo = show
 	end
 end
 

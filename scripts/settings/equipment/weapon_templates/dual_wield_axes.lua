@@ -19,6 +19,7 @@ weapon_template.actions = {
 			kind = "melee_start",
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_charge_left",
+			attack_hold_input = "action_one_hold",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
@@ -1271,7 +1272,6 @@ weapon_template.actions = {
 			anim_end_event = "attack_finished",
 			outer_push_angle = 180,
 			kind = "push_stagger",
-			hit_time = 0.1,
 			damage_profile_outer = "light_push",
 			weapon_action_hand = "right",
 			push_angle = 100,

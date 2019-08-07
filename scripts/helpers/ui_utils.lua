@@ -31,8 +31,59 @@ UIUtils.get_talent_description = function (talent_data)
 	return text
 end
 
-UIUtils.get_property_description = function (property_name, lerp_value)
-	local property_data = WeaponProperties.properties[property_name]
+UIUtils.get_weave_property_description = function (property_name, property_data, mastery_costs, optional_amount)
+	local description_text = Localize(property_data.display_name)
+	local description_values = property_data.description_values
+	local num_costs = #mastery_costs
+	local text = ""
+
+	if description_values then
+		local data = description_values[1]
+		local value_type = data.value_type
+		local max_value = data.value
+		local amount = optional_amount or 1
+		local display_value = max_value / num_costs * amount
+
+		if value_type == "percent" then
+			display_value = math.abs(100 * display_value)
+		elseif value_type == "baked_percent" then
+			display_value = math.abs(100 * (display_value - 1))
+		end
+
+		text = string.format(description_text, display_value)
+	else
+		text = description_text
+	end
+
+	return text
+end
+
+UIUtils.get_weave_property_value_text = function (property_name, property_data, mastery_costs, amount)
+	local description_values = property_data.description_values
+	local num_costs = #mastery_costs
+	local text = "n/a"
+
+	if description_values then
+		local data = description_values[1]
+		local value_type = data.value_type
+		local max_value = data.value
+		local display_value = max_value / num_costs
+		display_value = display_value * (amount or 1)
+
+		if value_type == "percent" then
+			text = math.abs(100 * display_value) .. "%"
+		elseif value_type == "baked_percent" then
+			text = math.abs(100 * (display_value - 1)) .. "%"
+		else
+			text = display_value
+		end
+	end
+
+	return text
+end
+
+UIUtils.get_property_description = function (property_name, lerp_value, optional_property_data)
+	local property_data = optional_property_data or WeaponProperties.properties[property_name]
 	local description_text = Localize(property_data.display_name)
 	local description_values = property_data.description_values
 	local text = nil
@@ -80,8 +131,8 @@ UIUtils.get_property_description = function (property_name, lerp_value)
 	return text, advanced_description
 end
 
-UIUtils.get_trait_description = function (trait_name)
-	local trait_data = WeaponTraits.traits[trait_name]
+UIUtils.get_trait_description = function (trait_name, optional_trait_data)
+	local trait_data = optional_trait_data or WeaponTraits.traits[trait_name]
 	local description_text = Localize(trait_data.advanced_description)
 	local description_values = trait_data.description_values
 	local text = nil
@@ -156,6 +207,10 @@ end
 
 UIUtils.presentable_hero_power_level = function (power_level)
 	return math.max(0, math.floor(power_level - PowerLevelFromLevelSettings.starting_power_level))
+end
+
+UIUtils.presentable_hero_power_level_weaves = function (power_level)
+	return math.max(0, math.floor(power_level - PowerLevelFromMagicLevel.starting_power_level))
 end
 
 UIUtils.get_item_tooltip_value = function (unit, item, stat_descriptor)
@@ -270,6 +325,32 @@ UIUtils.get_text_width = function (ui_renderer, text_style, text, ui_style_globa
 	local text_width, text_height, min = UIRenderer.text_size(ui_renderer, text, font[1], scaled_font_size)
 
 	return text_width
+end
+
+UIUtils.is_button_pressed = function (widget)
+	if not widget then
+		return false
+	end
+
+	local content = widget.content
+	local hotspot = content.button_hotspot or content.hotspot
+
+	if hotspot.on_release then
+		hotspot.on_release = false
+
+		return true
+	end
+end
+
+UIUtils.is_button_hover_enter = function (widget)
+	if not widget then
+		return false
+	end
+
+	local content = widget.content
+	local hotspot = content.button_hotspot or content.hotspot
+
+	return hotspot.on_hover_enter
 end
 
 return

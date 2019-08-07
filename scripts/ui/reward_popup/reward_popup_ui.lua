@@ -206,7 +206,10 @@ RewardPopupUI.start_presentation_animation = function (self, animation_name, wid
 	return animation_key
 end
 
-RewardPopupUI._get_widget_by_type = function (self, widget_type, value)
+RewardPopupUI._setup_entry_widget = function (self, entry_data, index)
+	local value = entry_data.value
+	local widget_type = entry_data.widget_type
+	local ignore_height = entry_data.ignore_height
 	local widget_definitions = definitions.widget_definitions
 	local widget = UIWidget.init(widget_definitions[widget_type])
 	local scenegraph_id = widget.scenegraph_id
@@ -237,8 +240,10 @@ RewardPopupUI._get_widget_by_type = function (self, widget_type, value)
 		local style = widget.style.texture_id
 		local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(value)
 		local texture_size = texture_settings.size
+		widget_size = style.texture_size
 		widget_size[1] = texture_size[1]
 		widget_size[2] = texture_size[2]
+		style.offset[3] = index
 		widget_height = widget_size[2] / 2
 	elseif widget_type == "career" then
 		local career_settings = CareerSettings[value]
@@ -269,7 +274,7 @@ RewardPopupUI._get_widget_by_type = function (self, widget_type, value)
 		widget_height = 0
 	end
 
-	return widget, widget_height
+	return widget, (ignore_height and 0) or widget_height
 end
 
 RewardPopupUI._setup_presentation = function (self, presentation_data)
@@ -299,12 +304,12 @@ RewardPopupUI._setup_presentation = function (self, presentation_data)
 			index = i,
 			widgets_data = widgets_data
 		}
-		local total_widgets_height = 0
+		local highest_height = 0
 
 		for j, presentation_entry in ipairs(presentation_entries) do
+			local widget, height = self:_setup_entry_widget(presentation_entry, j)
 			local value = presentation_entry.value
 			local widget_type = presentation_entry.widget_type
-			local widget, height = self:_get_widget_by_type(widget_type, value)
 			widgets_data[j] = {
 				alpha_multiplier = 0,
 				widget = widget,
@@ -312,24 +317,29 @@ RewardPopupUI._setup_presentation = function (self, presentation_data)
 				value = value,
 				widget_type = widget_type
 			}
-			total_widgets_height = total_widgets_height + height
+
+			if highest_height < height then
+				highest_height = height
+			end
 		end
 
-		data.total_widgets_height = total_widgets_height
+		data.highest_height = highest_height
 		entries[i] = data
 
-		if min_height < total_widgets_height then
-			min_height = total_widgets_height
+		if min_height < highest_height then
+			min_height = highest_height
 		end
 	end
+
+	print("min_height", min_height)
 
 	scenegraph_definition.background_center.size[2] = min_height + spacing
 
 	return animation_data
 end
 
-RewardPopupUI._align_presentation_widgets = function (self, widgets_data, total_widgets_height)
-	local start_height_position = total_widgets_height / 2
+RewardPopupUI._align_presentation_widgets = function (self, widgets_data, highest_height)
+	local start_height_position = highest_height / 2
 	local ui_scenegraph = self.ui_scenegraph
 
 	for _, data in ipairs(widgets_data) do
@@ -425,13 +435,13 @@ RewardPopupUI._update_presentation_animation = function (self, dt)
 				end
 
 				local widgets_data = entry.widgets_data
-				local total_widgets_height = entry.total_widgets_height
+				local highest_height = entry.highest_height
 				local animations_played = entry.animations_played
 				local animation_play_index = animations_played + 1
 				local animation_to_play = animations_list[animation_play_index]
 
 				if animations_played == 0 then
-					self:_align_presentation_widgets(widgets_data, total_widgets_height)
+					self:_align_presentation_widgets(widgets_data, highest_height)
 				end
 
 				animation_key = self:start_presentation_animation(animation_to_play, widgets_data)
