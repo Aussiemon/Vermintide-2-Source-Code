@@ -1565,9 +1565,16 @@ StateIngame._check_exit = function (self, t)
 			end
 
 			local is_private = self._lobby_client:lobby_data("is_private")
-			local game_mode_key = self._lobby_client:lobby_data("game_mode") or "n/a"
+			local game_mode_key = nil
+
+			if PLATFORM == "ps4" then
+				game_mode_key = self._lobby_client:lobby_data("game_mode") or "n/a"
+			else
+				game_mode_key = self._lobby_client:lobby_data("game_mode") or NetworkLookup.game_modes["n/a"]
+			end
+
 			host_migration_info.lobby_data = {
-				game_mode = (PLATFORM == "ps4" and game_mode_key) or NetworkLookup.game_modes[game_mode_key],
+				game_mode = game_mode_key,
 				is_private = is_private,
 				difficulty = difficulty
 			}
@@ -1579,11 +1586,18 @@ StateIngame._check_exit = function (self, t)
 		elseif exit_type == "leave_game_server" then
 			local loading_context = self.parent.loading_context
 			local is_private = self._lobby_client:lobby_data("is_private")
-			local game_mode_key = self._lobby_client:lobby_data("game_mode") or "n/a"
+			local game_mode_key = nil
+
+			if PLATFORM == "ps4" then
+				game_mode_key = self._lobby_client:lobby_data("game_mode") or "n/a"
+			else
+				game_mode_key = self._lobby_client:lobby_data("game_mode") or NetworkLookup.game_modes["n/a"]
+			end
+
 			loading_context.host_migration_info = {
 				host_to_migrate_to = loading_context.leave_game_server_data,
 				lobby_data = {
-					game_mode = (PLATFORM == "ps4" and game_mode_key) or NetworkLookup.game_modes[game_mode_key],
+					game_mode = game_mode_key,
 					is_private = is_private,
 					difficulty = difficulty
 				}
