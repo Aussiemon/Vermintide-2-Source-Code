@@ -931,24 +931,29 @@ UnitFramesHandler.update = function (self, dt, t)
 		end
 	end
 
-	self:_handle_resolution_modified()
+	if self._update_resolution_modified then
+		self:resolution_modified()
+	end
+
 	self:_draw(dt)
 end
 
-UnitFramesHandler._handle_resolution_modified = function (self)
+UnitFramesHandler.resolution_modified = function (self)
 	if not self._is_visible then
+		self._update_resolution_modified = true
+
 		return
 	end
 
-	if RESOLUTION_LOOKUP.modified then
-		local unit_frames = self._unit_frames
+	local unit_frames = self._unit_frames
 
-		for i = 1, #unit_frames, 1 do
-			local unit_frame = unit_frames[i]
+	for i = 1, #unit_frames, 1 do
+		local unit_frame = unit_frames[i]
 
-			unit_frame.widget:on_resolution_modified()
-		end
+		unit_frame.widget:on_resolution_modified()
 	end
+
+	self._update_resolution_modified = nil
 end
 
 UnitFramesHandler._draw = function (self, dt)

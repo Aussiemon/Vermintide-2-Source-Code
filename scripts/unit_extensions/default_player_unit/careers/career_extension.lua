@@ -99,6 +99,7 @@ end
 
 CareerExtension.update = function (self, unit, input, dt, context, t)
 	local abilities = self._abilities
+	local was_ready = abilities[1].is_ready
 
 	for i = 1, self._num_abilities, 1 do
 		local ability = abilities[i]
@@ -130,7 +131,9 @@ CareerExtension.update = function (self, unit, input, dt, context, t)
 		end
 	end
 
-	if not abilities[1].is_ready then
+	local is_ready = abilities[1].is_ready
+
+	if not was_ready or not is_ready then
 		self:_update_game_object_field(unit)
 	end
 end

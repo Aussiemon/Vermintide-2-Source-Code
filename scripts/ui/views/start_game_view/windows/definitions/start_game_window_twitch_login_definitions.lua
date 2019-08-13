@@ -524,7 +524,7 @@ local function create_window(scenegraph_id, size)
 				26
 			},
 			caret_offset = {
-				-11,
+				-8,
 				-4,
 				4
 			},

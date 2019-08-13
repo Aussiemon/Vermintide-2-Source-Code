@@ -137,6 +137,7 @@ IngameHud.update = function (self, dt, t)
 	local components_array = self._components_array
 	local use_custom_hud_scale = UISettings.use_custom_hud_scale
 	local hud_scale_applied = false
+	local resolution_modified = RESOLUTION_LOOKUP.modified
 
 	for i = 1, #components_array, 1 do
 		local component = components_array[i]
@@ -146,6 +147,10 @@ IngameHud.update = function (self, dt, t)
 			hud_scale_applied = true
 
 			self:_apply_hud_scale()
+		end
+
+		if resolution_modified and component.resolution_modified then
+			component:resolution_modified()
 		end
 
 		if component.update and currently_visible_components[component_name] then

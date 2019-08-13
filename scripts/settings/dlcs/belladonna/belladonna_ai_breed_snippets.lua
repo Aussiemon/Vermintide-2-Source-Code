@@ -139,7 +139,6 @@ AiBreedSnippets.on_beastmen_standard_bearer_spawn = function (unit, blackboard)
 
 		local num_columns = 3
 		local rot = Unit.local_rotation(unit, 0)
-		local max_attempts = 8
 		local conflict_director = Managers.state.conflict
 		local nav_world = conflict_director.nav_world
 		local bearer_position = Unit.world_position(unit, 0)
@@ -152,28 +151,25 @@ AiBreedSnippets.on_beastmen_standard_bearer_spawn = function (unit, blackboard)
 			"beastmen_ungor"
 		}
 		local num_to_spawn = #spawn_list
+		local above = 1
+		local below = 1
 
 		for i = 1, num_to_spawn, 1 do
 			local spawn_pos = nil
+			local offset = Vector3(-num_columns / 2 + i % num_columns, -num_columns / 2 + math.floor(i / num_columns), 0)
+			local spawn_pos = bearer_position + offset * 2
+			local spawn_pos_on_navmesh = LocomotionUtils.pos_on_mesh(nav_world, spawn_pos, above, below)
+			local breed = Breeds[spawn_list[i]]
 
-			for j = 1, max_attempts, 1 do
-				local offset = nil
+			if spawn_pos_on_navmesh then
+				conflict_director:spawn_queued_unit(breed, Vector3Box(spawn_pos_on_navmesh), QuaternionBox(rot), "hidden_spawn", nil, "horde_hidden")
+			else
+				local horizontal = 1
+				local distance_from_border = 0.1
+				local clamped_position = GwNavQueries.inside_position_from_outside_position(nav_world, spawn_pos, above, below, horizontal, distance_from_border)
+				clamped_position = clamped_position or POSITION_LOOKUP[unit]
 
-				if j == 1 then
-					offset = Vector3(-num_columns / 2 + i % num_columns, -num_columns / 2 + math.floor(i / num_columns), 0)
-				else
-					offset = Vector3(4 * math.random() - 2, 4 * math.random() - 2, 0)
-				end
-
-				spawn_pos = LocomotionUtils.pos_on_mesh(nav_world, bearer_position + offset * 2)
-
-				if spawn_pos then
-					local breed = Breeds[spawn_list[i]]
-
-					conflict_director:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(rot), "hidden_spawn", nil, "horde_hidden")
-
-					break
-				end
+				conflict_director:spawn_queued_unit(breed, Vector3Box(clamped_position), QuaternionBox(rot), "hidden_spawn", nil, "horde_hidden")
 			end
 		end
 	end

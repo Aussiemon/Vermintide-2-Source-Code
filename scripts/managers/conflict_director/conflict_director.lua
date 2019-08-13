@@ -2975,7 +2975,7 @@ ConflictDirector.ai_nav_groups_ready = function (self, level_seed)
 	self.horde_spawner = HordeSpawner:new(self._world, self.level_analysis.cover_points_broadphase)
 	local insert_bosses = self.spawn_zone_baker:loaded_spawn_zones_available()
 
-	if insert_bosses then
+	if insert_bosses and CurrentBossSettings and not CurrentBossSettings.disabled then
 		self.level_analysis:generate_boss_paths()
 	end
 

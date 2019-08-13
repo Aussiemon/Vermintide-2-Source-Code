@@ -222,17 +222,19 @@ TalentExtension.has_talent_perk = function (self, perk)
 end
 
 TalentExtension.get_talent_names = function (self)
-	local talent_ids = self:_get_talent_ids()
 	local talent_names = {}
 	local talent_interface = Managers.backend:get_talents_interface()
-	local career_name = self._career_name
-	local talent_tree = talent_interface:get_talent_tree(career_name)
+	local talent_tree = talent_interface:get_talent_tree(self._career_name)
+	local talents = talent_interface:get_talents(self._career_name)
 
-	for row, column in pairs(talent_ids) do
-		if column == 0 or not talent_tree then
-			talent_names[#talent_names + 1] = "none"
-		else
-			talent_names[#talent_names + 1] = talent_tree[row][column]
+	if talents then
+		for row, column in pairs(talents) do
+			if column == 0 or not talent_tree then
+				talent_names[#talent_names + 1] = "none"
+			else
+				local talent_name = talent_tree[row][column]
+				talent_names[#talent_names + 1] = talent_name
+			end
 		end
 	end
 

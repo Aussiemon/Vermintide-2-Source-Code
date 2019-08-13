@@ -481,8 +481,9 @@ BuffExtension.remove_buff = function (self, id)
 		if buff.id == id or (buff.parent_id and buff.parent_id == id) then
 			self:_remove_sub_buff(buff, i, buff_extension_function_params)
 
-			num_buffs = num_buffs - 1
-			num_buffs_removed = num_buffs_removed + 1
+			local new_buff_count = #buffs
+			num_buffs_removed = num_buffs_removed + num_buffs - new_buff_count
+			num_buffs = new_buff_count
 		else
 			i = i + 1
 		end
@@ -510,7 +511,7 @@ BuffExtension._remove_sub_buff = function (self, buff, index, buff_extension_fun
 
 	local buff_to_remove = template.buff_to_add
 
-	if buff_to_remove then
+	if buff_to_remove and remove_buff_func ~= "add_buff" then
 		for i, buff in ipairs(self._buffs) do
 			local buff_type = buff.buff_type
 

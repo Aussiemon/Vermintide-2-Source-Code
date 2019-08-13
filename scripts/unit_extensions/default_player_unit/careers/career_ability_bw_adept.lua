@@ -122,7 +122,11 @@ CareerAbilityBWAdept.update = function (self, unit, input, dt, context, t)
 		end
 
 		if landing_position then
-			self._last_valid_landing_position = Vector3Box(landing_position)
+			if self._last_valid_landing_position then
+				self._last_valid_landing_position:store(landing_position)
+			else
+				self._last_valid_landing_position = Vector3Box(landing_position)
+			end
 		end
 
 		if not self._last_valid_landing_position then
@@ -213,9 +217,12 @@ CareerAbilityBWAdept._stop_priming = function (self)
 	end
 
 	self._is_priming = false
+	self._last_valid_landing_position = nil
 end
 
 CareerAbilityBWAdept._run_ability = function (self)
+	local landing_position = self._last_valid_landing_position:unbox()
+
 	self:_stop_priming()
 
 	if not self._locomotion_extension:is_on_ground() then
@@ -232,7 +239,6 @@ CareerAbilityBWAdept._run_ability = function (self)
 	local status_extension = self._status_extension
 	local talent_extension = self._talent_extension
 	local locomotion_extension = self._locomotion_extension
-	local landing_position = self._last_valid_landing_position:unbox()
 	local physics_world = World.get_data(world, "physics_world")
 	local direction, speed, hit_pos = get_leap_data(physics_world, POSITION_LOOKUP[owner_unit], landing_position)
 

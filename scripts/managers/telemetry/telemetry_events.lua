@@ -43,6 +43,15 @@ TelemetryEvents.game_started = function (self, data)
 	self.manager:register_event("game_started", params)
 end
 
+TelemetryEvents.weave_activated = function (self, wind, tier)
+	table.clear(params)
+
+	params.wind = wind
+	params.tier = tier
+
+	self.manager:register_event("weave_activated", params)
+end
+
 TelemetryEvents.round_started = function (self)
 	table.clear(params)
 	self.manager:register_event("round_started", params)

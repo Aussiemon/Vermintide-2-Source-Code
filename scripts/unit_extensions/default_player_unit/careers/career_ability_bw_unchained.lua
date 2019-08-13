@@ -195,12 +195,25 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 
 	DamageUtils.create_explosion(self._world, owner_unit, position, rotation, explosion_template, scale, damage_source, is_server, is_husk, owner_unit, career_power_level, false)
 	career_extension:start_activated_ability_cooldown()
-	CharacterStateHelper.play_animation_event(owner_unit, "unchained_ability_explosion")
+
+	local inventory_extension = ScriptUnit.has_extension(owner_unit, "inventory_system")
+	local lh_weapon_unit, rh_weapon_unit = inventory_extension:get_all_weapon_unit()
+	local lh_weapon_extension = lh_weapon_unit and ScriptUnit.has_extension(lh_weapon_unit, "weapon_system")
+	local rh_weapon_extension = rh_weapon_unit and ScriptUnit.has_extension(rh_weapon_unit, "weapon_system")
+	local has_action = lh_weapon_extension and lh_weapon_extension:has_current_action()
+	has_action = has_action or (rh_weapon_extension and rh_weapon_extension:has_current_action())
+
+	if not has_action then
+		CharacterStateHelper.play_animation_event(owner_unit, "unchained_ability_explosion")
+	end
 
 	if (is_server and bot_player) or local_player then
 		local first_person_extension = self._first_person_extension
 
-		first_person_extension:animation_event("unchained_ability_explosion")
+		if not has_action then
+			first_person_extension:animation_event("unchained_ability_explosion")
+		end
+
 		first_person_extension:play_hud_sound_event("Play_career_ability_unchained_fire")
 		first_person_extension:play_remote_unit_sound_event("Play_career_ability_unchained_fire", owner_unit, 0)
 	end

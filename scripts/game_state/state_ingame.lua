@@ -1565,7 +1565,9 @@ StateIngame._check_exit = function (self, t)
 			end
 
 			local is_private = self._lobby_client:lobby_data("is_private")
+			local game_mode_key = self._lobby_client:lobby_data("game_mode") or "n/a"
 			host_migration_info.lobby_data = {
+				game_mode = (PLATFORM == "ps4" and game_mode_key) or NetworkLookup.game_modes[game_mode_key],
 				is_private = is_private,
 				difficulty = difficulty
 			}
@@ -1577,9 +1579,11 @@ StateIngame._check_exit = function (self, t)
 		elseif exit_type == "leave_game_server" then
 			local loading_context = self.parent.loading_context
 			local is_private = self._lobby_client:lobby_data("is_private")
+			local game_mode_key = self._lobby_client:lobby_data("game_mode") or "n/a"
 			loading_context.host_migration_info = {
 				host_to_migrate_to = loading_context.leave_game_server_data,
 				lobby_data = {
+					game_mode = (PLATFORM == "ps4" and game_mode_key) or NetworkLookup.game_modes[game_mode_key],
 					is_private = is_private,
 					difficulty = difficulty
 				}

@@ -125,6 +125,15 @@ InteractionDefinitions.weave_leaderboard_access.client.stop = function (world, i
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
+		local dlc_name = "scorpion"
+		local has_dlc = Managers.unlock:is_dlc_unlocked(dlc_name)
+
+		if not has_dlc then
+			Managers.state.event:trigger("ui_dlc_upsell", dlc_name)
+
+			return
+		end
+
 		local fulfill_requirements_for_leaderboard = InteractionDefinitions._fulfill_requirements_for_weave()
 
 		if fulfill_requirements_for_leaderboard then

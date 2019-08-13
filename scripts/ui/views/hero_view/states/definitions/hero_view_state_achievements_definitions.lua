@@ -310,7 +310,7 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			0
+			1
 		}
 	},
 	category_scrollbar = {
@@ -2626,7 +2626,7 @@ for i = 1, 8, 1 do
 		position = {
 			(first_entry and -15) or 0,
 			(first_entry and -20) or -(tab_size[2] + tab_list_entry_spacing),
-			3
+			0
 		}
 	}
 	scenegraph_definition[scenegraph_list_id] = {

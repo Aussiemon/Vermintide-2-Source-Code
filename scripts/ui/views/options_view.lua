@@ -648,7 +648,10 @@ OptionsView._setup_input_functions = function (self)
 			end
 		end,
 		text_link = function (widget, input_source, dt)
-			if widget.content.hotspot.on_release then
+			local content = widget.content
+
+			if content.hotspot.on_release or content.controller_input_pressed then
+				content.controller_input_pressed = nil
 				local url = widget.content.url
 
 				if url then

@@ -441,6 +441,7 @@ local components = {
 		class_name = "SubtitleGui",
 		filename = "scripts/ui/views/subtitle_gui",
 		visibility_groups = {
+			"cutscene",
 			"realism",
 			"dead",
 			"alive"

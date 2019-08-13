@@ -299,63 +299,66 @@ HeroWindowTalents._populate_talents_by_hero = function (self, initialize)
 
 	for i = 1, NumTalentRows, 1 do
 		local widget = widgets_by_name["talent_row_" .. i]
-		local content = widget.content
-		local style = widget.style
-		local selected_column = talents[i]
-		local no_talent_selected = not selected_column or selected_column == 0
-		local unlock_name = "talent_point_" .. i
-		local talent_unlock_level = TalentUnlockLevels[unlock_name]
-		local row_unlocked = ProgressionUnlocks.is_unlocked(unlock_name, self.hero_level)
-		local level_text_color = (row_unlocked and Colors.get_color_table_with_alpha("green", 255)) or Colors.get_color_table_with_alpha("red", 255)
-		content.level_text = tostring(talent_unlock_level)
-		style.level_text.text_color = level_text_color
 
-		if row_unlocked and not no_talent_selected then
-			local animations = widget.animations
+		if widget then
+			local content = widget.content
+			local style = widget.style
+			local selected_column = talents[i]
+			local no_talent_selected = not selected_column or selected_column == 0
+			local unlock_name = "talent_point_" .. i
+			local talent_unlock_level = TalentUnlockLevels[unlock_name]
+			local row_unlocked = ProgressionUnlocks.is_unlocked(unlock_name, self.hero_level)
+			local level_text_color = (row_unlocked and Colors.get_color_table_with_alpha("green", 255)) or Colors.get_color_table_with_alpha("red", 255)
+			content.level_text = tostring(talent_unlock_level)
+			style.level_text.text_color = level_text_color
 
-			table.clear(animations)
-		end
+			if row_unlocked and not no_talent_selected then
+				local animations = widget.animations
 
-		local glow_frame_style = style.glow_frame
-		glow_frame_style.color[1] = 0
-
-		if initialize and row_unlocked and no_talent_selected then
-			local anim = self:_animate_pulse(glow_frame_style.color, 1, 255, 100, 2)
-
-			UIWidget.animate(widget, anim)
-		end
-
-		for j = 1, NumTalentColumns, 1 do
-
-			-- Decompilation error in this vicinity:
-			local is_selected = selected_column == j
-			local talent_name = tree[i][j]
-			local id = TalentIDLookup[talent_name].talent_id
-			local talent_data = all_talents[id]
-			local name_suffix = "_" .. tostring(j)
-			local icon_name = "icon" .. name_suffix
-			local hotspot_name = "hotspot" .. name_suffix
-			local title_text_name = "title_text" .. name_suffix
-			local background_glow_name = "background_glow" .. name_suffix
-			local hotspot = content[hotspot_name]
-
-			if is_selected or (no_talent_selected and row_unlocked) then
-				style[icon_name].saturated = false
-			else
-				style[icon_name].saturated = true
+				table.clear(animations)
 			end
 
-			content[icon_name] = (talent_data and talent_data.icon) or "icons_placeholder"
-			content[title_text_name] = (talent_data and Localize(talent_data.name)) or "Undefined"
-			hotspot.is_selected = is_selected
-			hotspot.talent = talent_data
-			hotspot.talent_id = id
-			hotspot.disabled = not row_unlocked
+			local glow_frame_style = style.glow_frame
+			glow_frame_style.color[1] = 0
 
-			if row_unlocked then
-				style[background_glow_name].saturated = false
-			else
-				style[background_glow_name].saturated = true
+			if initialize and row_unlocked and no_talent_selected then
+				local anim = self:_animate_pulse(glow_frame_style.color, 1, 255, 100, 2)
+
+				UIWidget.animate(widget, anim)
+			end
+
+			for j = 1, NumTalentColumns, 1 do
+
+				-- Decompilation error in this vicinity:
+				local is_selected = selected_column == j
+				local talent_name = tree[i][j]
+				local id = TalentIDLookup[talent_name].talent_id
+				local talent_data = all_talents[id]
+				local name_suffix = "_" .. tostring(j)
+				local icon_name = "icon" .. name_suffix
+				local hotspot_name = "hotspot" .. name_suffix
+				local title_text_name = "title_text" .. name_suffix
+				local background_glow_name = "background_glow" .. name_suffix
+				local hotspot = content[hotspot_name]
+
+				if is_selected or (no_talent_selected and row_unlocked) then
+					style[icon_name].saturated = false
+				else
+					style[icon_name].saturated = true
+				end
+
+				content[icon_name] = (talent_data and talent_data.icon) or "icons_placeholder"
+				content[title_text_name] = (talent_data and Localize(talent_data.name)) or "Undefined"
+				hotspot.is_selected = is_selected
+				hotspot.talent = talent_data
+				hotspot.talent_id = id
+				hotspot.disabled = not row_unlocked
+
+				if row_unlocked then
+					style[background_glow_name].saturated = false
+				else
+					style[background_glow_name].saturated = true
+				end
 			end
 		end
 	end
@@ -366,18 +369,21 @@ HeroWindowTalents._clear_talents = function (self)
 
 	for i = 1, NumTalentRows, 1 do
 		local widget = widgets_by_name["talent_row_" .. i]
-		local content = widget.content
-		local style = widget.style
 
-		for j = 1, NumTalentColumns, 1 do
-			local name_suffix = "_" .. tostring(j)
-			local icon_name = "icon" .. name_suffix
-			local hotspot_name = "hotspot" .. name_suffix
-			local title_text_name = "title_text" .. name_suffix
-			content[icon_name] = "icons_placeholder"
-			content[title_text_name] = "Undefined"
-			content[hotspot_name].is_selected = false
-			content[hotspot_name].disabled = true
+		if widget then
+			local content = widget.content
+			local style = widget.style
+
+			for j = 1, NumTalentColumns, 1 do
+				local name_suffix = "_" .. tostring(j)
+				local icon_name = "icon" .. name_suffix
+				local hotspot_name = "hotspot" .. name_suffix
+				local title_text_name = "title_text" .. name_suffix
+				content[icon_name] = "icons_placeholder"
+				content[title_text_name] = "Undefined"
+				content[hotspot_name].is_selected = false
+				content[hotspot_name].disabled = true
+			end
 		end
 	end
 end
@@ -387,15 +393,18 @@ HeroWindowTalents._is_talent_pressed = function (self)
 
 	for i = 1, NumTalentRows, 1 do
 		local widget = widgets_by_name["talent_row_" .. i]
-		local content = widget.content
 
-		for j = 1, NumTalentColumns, 1 do
-			local name_suffix = "_" .. tostring(j)
-			local hotspot_name = "hotspot" .. name_suffix
-			local hotspot = content[hotspot_name]
+		if widget then
+			local content = widget.content
 
-			if hotspot.on_pressed and not hotspot.disabled and not hotspot.is_selected then
-				return i, j
+			for j = 1, NumTalentColumns, 1 do
+				local name_suffix = "_" .. tostring(j)
+				local hotspot_name = "hotspot" .. name_suffix
+				local hotspot = content[hotspot_name]
+
+				if hotspot.on_pressed and not hotspot.disabled and not hotspot.is_selected then
+					return i, j
+				end
 			end
 		end
 	end
@@ -406,15 +415,18 @@ HeroWindowTalents._is_talent_hovered = function (self)
 
 	for i = 1, NumTalentRows, 1 do
 		local widget = widgets_by_name["talent_row_" .. i]
-		local content = widget.content
 
-		for j = 1, NumTalentColumns, 1 do
-			local name_suffix = "_" .. tostring(j)
-			local hotspot_name = "hotspot" .. name_suffix
-			local hotspot = content[hotspot_name]
+		if widget then
+			local content = widget.content
 
-			if hotspot.on_hover_enter and not hotspot.disabled then
-				return i, j
+			for j = 1, NumTalentColumns, 1 do
+				local name_suffix = "_" .. tostring(j)
+				local hotspot_name = "hotspot" .. name_suffix
+				local hotspot = content[hotspot_name]
+
+				if hotspot.on_hover_enter and not hotspot.disabled then
+					return i, j
+				end
 			end
 		end
 	end
@@ -425,15 +437,18 @@ HeroWindowTalents._is_disabled_talent_hovered = function (self)
 
 	for i = 1, NumTalentRows, 1 do
 		local widget = widgets_by_name["talent_row_" .. i]
-		local content = widget.content
 
-		for j = 1, NumTalentColumns, 1 do
-			local name_suffix = "_" .. tostring(j)
-			local hotspot_name = "hotspot" .. name_suffix
-			local hotspot = content[hotspot_name]
+		if widget then
+			local content = widget.content
 
-			if hotspot.on_hover_enter and hotspot.disabled then
-				return i, j
+			for j = 1, NumTalentColumns, 1 do
+				local name_suffix = "_" .. tostring(j)
+				local hotspot_name = "hotspot" .. name_suffix
+				local hotspot = content[hotspot_name]
+
+				if hotspot.on_hover_enter and hotspot.disabled then
+					return i, j
+				end
 			end
 		end
 	end

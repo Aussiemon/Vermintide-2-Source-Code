@@ -352,6 +352,13 @@ WeaveManager._set_active_weave = function (self, weave_name)
 	self._active_weave_name = weave_name
 end
 
+WeaveManager._report_telemetry = function (self)
+	local wind = self:get_active_wind()
+	local tier = self:get_weave_tier()
+
+	Managers.telemetry.events:weave_activated(wind, tier)
+end
+
 WeaveManager._set_active_objective = function (self, objective_index)
 	self._active_objective_index = objective_index
 end
@@ -524,6 +531,7 @@ WeaveManager.start_objective = function (self)
 	self._objective_ui_mission_name = "objective"
 
 	Managers.state.event:trigger("weave_objective_synced")
+	self:_report_telemetry()
 end
 
 WeaveManager.player_damaged = function (self, damage_amount)

@@ -1,4 +1,5 @@
 ThornMutatorExtension = class(ThornMutatorExtension)
+local DESPAWN_ANIM_TIME = 1
 
 ThornMutatorExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.spawn_time = extension_init_data.spawn_animation_time or 0
@@ -60,10 +61,16 @@ ThornMutatorExtension.update = function (self, unit, input, dt, context, t)
 
 				network_manager.network_transmit:send_rpc_clients("rpc_thorn_bush_trigger_despawn", unit_id)
 				self:despawn()
+
+				self._despawn_done_time = t + DESPAWN_ANIM_TIME
 			end
 
 			self._life_timer = life_timer
 		end
+	end
+
+	if self._is_server then
+		self:_check_for_deletion(t)
 	end
 end
 
@@ -81,6 +88,14 @@ ThornMutatorExtension.despawn = function (self)
 	local extension = ScriptUnit.extension(self._unit, "area_damage_system")
 
 	extension:enable(false)
+end
+
+ThornMutatorExtension._check_for_deletion = function (self, t)
+	local despawn_done = self._despawn_done_time and self._despawn_done_time < t
+
+	if despawn_done then
+		Managers.state.unit_spawner:mark_for_deletion(self._unit)
+	end
 end
 
 return

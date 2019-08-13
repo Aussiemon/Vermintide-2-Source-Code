@@ -11,10 +11,10 @@ local health_step_multipliers = {
 }
 local stagger_step_multipliers = {
 	1,
-	1,
+	0.85,
+	1.25,
 	1.7,
-	2.75,
-	2.75,
+	1.7,
 	2.75,
 	3.5,
 	3.5
@@ -124,7 +124,10 @@ local function steps(value, step_multipliers)
 	local value_steps = {}
 
 	for i = 1, 8, 1 do
-		value_steps[i] = value * step_multipliers[i]
+		local raw_value = value * step_multipliers[i]
+		local decimal = raw_value % 1
+		local rounded_decimal = math.round(decimal * 4) * 0.25
+		value_steps[i] = math.floor(raw_value) + rounded_decimal
 	end
 
 	return value_steps
@@ -165,17 +168,17 @@ BreedTweaks.max_health = {
 	stormfiend_boss = health_steps(600, boss_health_step_multipliers)
 }
 BreedTweaks.diff_stagger_resist = {
-	slave_rat = steps(1.25, stagger_step_multipliers),
+	slave_rat = steps(1, stagger_step_multipliers),
 	fanatic = steps(1.4, stagger_step_multipliers),
 	ungor = steps(1.3, stagger_step_multipliers),
 	clan_rat = steps(2.1, stagger_step_multipliers),
 	gor = steps(2.4, stagger_step_multipliers),
 	marauder = steps(2.65, stagger_step_multipliers),
-	stormvermin = steps(2.5, stagger_step_multipliers),
+	stormvermin = steps(2.25, stagger_step_multipliers),
 	bestigor = steps(3.25, stagger_step_multipliers),
 	raider = steps(3, stagger_step_multipliers),
 	warrior = steps(4.8, stagger_step_multipliers),
-	berzerker = steps(3.7, stagger_step_multipliers),
+	berzerker = steps(2.7, stagger_step_multipliers),
 	plague_monk = steps(3, stagger_step_multipliers),
 	packmaster = steps(4, stagger_step_multipliers),
 	ratling_gunner = steps(2.5, stagger_step_multipliers),

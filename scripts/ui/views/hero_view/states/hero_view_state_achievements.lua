@@ -7,7 +7,6 @@ local summary_widget_definitions = definitions.summary_widgets
 local quest_widget_definitions = definitions.quest_widgets
 local achievement_widget_definitions = definitions.achievement_widgets
 local category_tab_widget_definitions = definitions.category_tab_widgets
-local category_tab_widget_definitions = definitions.category_tab_widgets
 local quest_entry_definition = definitions.quest_entry_definition
 local achievement_entry_definition = definitions.achievement_entry_definition
 local scenegraph_definition = definitions.scenegraph_definition

@@ -442,8 +442,8 @@ ProcFunctions = {
 		local target_number = params[7]
 		local breed = AiUtils.unit_breed(hit_unit)
 
-		if Unit.alive(player_unit) and breed and (buff_type == "MELEE_1H" or buff_type == "MELEE_2H") and damage_amount > 0 and target_number and target_number > 1 and target_number <= max_targets then
-			local heal_amount = 0.5
+		if Unit.alive(player_unit) and breed and (buff_type == "MELEE_1H" or buff_type == "MELEE_2H") and damage_amount > 0 and target_number and target_number <= max_targets then
+			local heal_amount = 0.75
 
 			if target_number == 1 then
 				heal_amount = heal_amount / 2

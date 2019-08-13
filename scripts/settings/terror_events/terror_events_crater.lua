@@ -54,7 +54,7 @@ local horde_sound_settings = {
 		}
 	}
 }
-local HARDEST = 5
+local HARDER = 4
 local terror_event_blueprints = {
 	crater_no_horde = {
 		{
@@ -98,7 +98,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 60,
+			duration = 40,
 			condition = function (t)
 				return count_event_breed("beastmen_gor") < 1 and count_breed("beastmen_ungor") < 1
 			end
@@ -561,7 +561,7 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "beastmen_minotaur",
 			spawner_id = "event_minotaur",
-			difficulty_requirement = HARDEST
+			difficulty_requirement = HARDER
 		},
 		{
 			"continue_when",

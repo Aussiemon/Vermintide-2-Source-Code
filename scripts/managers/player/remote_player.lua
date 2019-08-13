@@ -155,7 +155,11 @@ RemotePlayer.name = function (self)
 				local clan_tag_id = GameSession.game_object_field(game, game_object_id, "clan_tag")
 
 				if clan_tag_id and clan_tag_id ~= "0" then
-					clan_tag = tostring(Clans.clan_tag(clan_tag_id)) .. "|"
+					local clan_tag_string = tostring(Clans.clan_tag(clan_tag_id))
+
+					if clan_tag_string ~= "" then
+						clan_tag = clan_tag_string .. "|"
+					end
 				end
 			end
 

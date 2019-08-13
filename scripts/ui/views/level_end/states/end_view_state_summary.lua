@@ -60,7 +60,14 @@ EndViewStateSummary.on_enter = function (self, params)
 	self:_setup_essence_presentation()
 
 	self._progress_data = self:_get_total_experience_progress_data(start_experience, start_experience_pool)
-	local current_level, extra_levels = self:_set_current_experience(start_experience, true)
+	local start_level = ExperienceSettings.get_level(start_experience)
+	local current_experience = start_experience + start_experience_pool
+
+	if start_level < ExperienceSettings.max_level then
+		current_experience = start_experience
+	end
+
+	local current_level, extra_levels = self:_set_current_experience(current_experience)
 	self._current_level = current_level
 	self._extra_levels = extra_levels
 	self._experience_presentation_completed = nil
@@ -213,7 +220,7 @@ EndViewStateSummary._update_animations = function (self, dt)
 		local max_level = ExperienceSettings.max_level
 		local level = nil
 
-		if self._current_level <= max_level then
+		if self._current_level < max_level then
 			level = self._current_level
 		else
 			level = self._current_level + (self._extra_levels or 0)
@@ -413,14 +420,22 @@ end
 
 EndViewStateSummary._get_total_experience_progress_data = function (self, start_experience, start_experience_pool)
 	local start_level, start_progress = ExperienceSettings.get_level(start_experience)
+	local start_extra_level, start_extra_level_progress = ExperienceSettings.get_extra_level(start_experience_pool)
 	local hero_name = self._hero_name
 	local end_experience = ExperienceSettings.get_experience(hero_name)
 	local end_level, end_progress = ExperienceSettings.get_level(end_experience)
 	local end_experience_pool = ExperienceSettings.get_experience_pool(hero_name)
-	local total_start_level = start_level
-	local total_end_level = end_level
-	local progress_length = (total_end_level - total_start_level + end_progress) - start_progress
+	local end_extra_level, end_extra_levels_progress = ExperienceSettings.get_extra_level(end_experience_pool)
+	local total_start_level = start_level + start_extra_level
+	local total_end_level = end_level + end_extra_level
+	local progress_length = total_end_level - total_start_level + end_progress - start_progress + end_extra_levels_progress - start_extra_level_progress
 	local experience_gained = end_experience - start_experience + end_experience_pool - start_experience_pool
+
+	if start_level == ExperienceSettings.max_level then
+		start_experience = start_experience + start_experience_pool
+		start_progress = start_extra_level_progress
+	end
+
 	local min_time = UISettings.summary_screen.bar_progress_min_time
 	local max_time = UISettings.summary_screen.bar_progress_max_time
 	local time_multiplier = UISettings.summary_screen.bar_progress_experience_time_multiplier
@@ -461,8 +476,13 @@ EndViewStateSummary._animate_experience_bar = function (self, dt, displaying_rew
 	local current_experience_to_add = math.floor(experience_to_add * smoothstep_progress)
 	local presentation_experience = math.floor(current_experience + current_experience_to_add)
 	local level_reached, extra_levels = self:_set_current_experience(presentation_experience)
+	local has_reached_level = level_reached ~= self._current_level
 
-	if level_reached ~= self._current_level or extra_levels ~= self._extra_levels then
+	if self._extra_levels ~= nil then
+		has_reached_level = has_reached_level or extra_levels ~= self._extra_levels
+	end
+
+	if has_reached_level then
 		self._current_level = level_reached
 		self._extra_levels = extra_levels
 
@@ -482,9 +502,15 @@ EndViewStateSummary._animate_experience_bar = function (self, dt, displaying_rew
 	end
 end
 
-EndViewStateSummary._set_current_experience = function (self, current_experience, initialize)
-	local level, progress, experience_into_level = ExperienceSettings.get_level(current_experience)
+EndViewStateSummary._set_current_experience = function (self, current_experience)
+	local level, progress = ExperienceSettings.get_level(current_experience)
 	local extra_levels = 0
+
+	if level == ExperienceSettings.max_level then
+		local overflow_pool = current_experience - ExperienceSettings.max_experience
+		extra_levels, progress = ExperienceSettings.get_extra_level(overflow_pool)
+	end
+
 	local next_level = math.clamp(level + 1, 0, ExperienceSettings.max_level)
 
 	if (self._current_level and self._current_level < level) or (self._extra_levels and self._extra_levels < extra_levels) then

@@ -163,7 +163,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "credits_game_writer",
+			text = "credits_creative_consultant",
 			localized = true,
 			type = "title"
 		},
@@ -309,7 +309,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Ricardas Dukauskas",
+			text = "Ri\u010dardas Dukauskas",
 			type = "person"
 		},
 		{
@@ -1238,6 +1238,313 @@ local Credits = {
 		},
 		{
 			text = "Chetan C",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "header"
+		},
+		{
+			text = " ",
+			type = "header"
+		},
+		{
+			text = "credits_thanks",
+			localized = true,
+			type = "header"
+		},
+		{
+			text = "Nathaniel Blue",
+			type = "person"
+		},
+		{
+			text = "Chris Charla",
+			type = "person"
+		},
+		{
+			text = "Jonas Lundberg",
+			type = "person"
+		},
+		{
+			text = "Gustaf Ström",
+			type = "person"
+		},
+		{
+			text = "10 Chambers",
+			type = "person"
+		},
+		{
+			text = "Ervin Li",
+			type = "person"
+		},
+		{
+			text = "Kai Chan",
+			type = "person"
+		},
+		{
+			text = "Erik Blomberg",
+			type = "person"
+		},
+		{
+			text = "Harry Höglund",
+			type = "person"
+		},
+		{
+			text = "Elias Wahlund",
+			type = "person"
+		},
+		{
+			text = "Lelle",
+			type = "person"
+		},
+		{
+			text = "Molle",
+			type = "person"
+		},
+		{
+			text = "Maximilian 'Mulleboy' Delic",
+			type = "person"
+		},
+		{
+			text = "Emily Drameus",
+			type = "person"
+		},
+		{
+			text = "George Bain",
+			type = "person"
+		},
+		{
+			text = "Antoine Cohade",
+			type = "person"
+		},
+		{
+			text = "Charles Revillon",
+			type = "person"
+		},
+		{
+			text = "Luke Valentine",
+			type = "person"
+		},
+		{
+			text = "Ilkka Koho",
+			type = "person"
+		},
+		{
+			text = "Phil Scott",
+			type = "person"
+		},
+		{
+			text = "Xeddan",
+			type = "person"
+		},
+		{
+			text = "Kostas",
+			type = "person"
+		},
+		{
+			text = "Jsat",
+			type = "person"
+		},
+		{
+			text = "SneakyPanda",
+			type = "person"
+		},
+		{
+			text = "ThoughtA",
+			type = "person"
+		},
+		{
+			text = "Miles Peterson (Krindi)",
+			type = "person"
+		},
+		{
+			text = "SoftClub",
+			type = "person"
+		},
+		{
+			text = "Osquars",
+			type = "person"
+		},
+		{
+			text = "CCD Robin",
+			type = "person"
+		},
+		{
+			text = "CS1",
+			type = "person"
+		},
+		{
+			text = "MuffinMonster",
+			type = "person"
+		},
+		{
+			text = "AgainPyromancer",
+			type = "person"
+		},
+		{
+			text = "Eruyome",
+			type = "person"
+		},
+		{
+			text = "Henry Cowell Redwoods State Park",
+			type = "person"
+		},
+		{
+			text = "Bram Eulaers",
+			type = "person"
+		},
+		{
+			text = "Guillaume Aldebert",
+			type = "person"
+		},
+		{
+			text = "Kiara J. Lee",
+			type = "person"
+		},
+		{
+			text = "Simon Viklund",
+			type = "person"
+		},
+		{
+			text = "Peter Jemstedt",
+			type = "person"
+		},
+		{
+			text = "Staffan Gynnemo",
+			type = "person"
+		},
+		{
+			text = "Sofia",
+			type = "person"
+		},
+		{
+			text = "Rafael Boruta",
+			type = "person"
+		},
+		{
+			text = "Fabian Hårdberg",
+			type = "person"
+		},
+		{
+			text = "Niklas Ängelid",
+			type = "person"
+		},
+		{
+			text = "Erik Bystedt",
+			type = "person"
+		},
+		{
+			text = "Joel Boqvist",
+			type = "person"
+		},
+		{
+			text = "Anders Wickenberg",
+			type = "person"
+		},
+		{
+			text = "Jan Verhagen",
+			type = "person"
+		},
+		{
+			text = "Johan Marmén",
+			type = "person"
+		},
+		{
+			text = "Mira Olofsson",
+			type = "person"
+		},
+		{
+			text = "Jakob Sthillert",
+			type = "person"
+		},
+		{
+			text = "Martin Wennberg",
+			type = "person"
+		},
+		{
+			text = "Anette Wennberg",
+			type = "person"
+		},
+		{
+			text = "Janiv Adolfsson Mann",
+			type = "person"
+		},
+		{
+			text = "Pernilla Granfeldt",
+			type = "person"
+		},
+		{
+			text = "Linda Helin",
+			type = "person"
+		},
+		{
+			text = "Johan Åsberg",
+			type = "person"
+		},
+		{
+			text = "Rockelstad Slott",
+			type = "person"
+		},
+		{
+			text = "August Berglund",
+			type = "person"
+		},
+		{
+			text = "Niclas Hjälm",
+			type = "person"
+		},
+		{
+			text = "Fredrik Hujber",
+			type = "person"
+		},
+		{
+			text = "Emil Hagelin",
+			type = "person"
+		},
+		{
+			text = "Bingdong Qu",
+			type = "person"
+		},
+		{
+			text = "Dexter Warhammar Stormdal",
+			type = "person"
+		},
+		{
+			text = "Louie Warhammar Stormdal",
+			type = "person"
+		},
+		{
+			text = "Andy Law",
+			type = "person"
+		},
+		{
+			text = "Dominic McDowall",
+			type = "person"
+		},
+		{
+			text = "Cubicle7",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_family",
+			localized = true,
+			type = "person"
+		},
+		{
+			text = "credits_fans",
+			localized = true,
+			type = "person"
+		},
+		{
+			text = "&",
+			type = "person"
+		},
+		{
+			text = "Games Workshop",
 			type = "person"
 		},
 		{

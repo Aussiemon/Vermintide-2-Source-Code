@@ -123,8 +123,10 @@ end
 
 ExperienceSettings.get_extra_level = function (experience_pool)
 	local extra_level = math.floor(experience_pool / experience_for_extra_levels)
+	local progress = experience_pool % experience_for_extra_levels
+	local progress_ratio = progress / experience_for_extra_levels
 
-	return extra_level
+	return extra_level, progress_ratio
 end
 
 ExperienceSettings.get_total_experience_required_for_level = function (level)

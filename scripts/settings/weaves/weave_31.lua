@@ -20,10 +20,10 @@ return {
 					{
 						kill_enemies = {
 							score_multiplier = {
-								hardest = 0.13,
-								cataclysm_3 = 0.091,
-								cataclysm_2 = 0.0975,
-								normal = 0.2
+								hardest = 0.4,
+								cataclysm_3 = 0.27999999999999997,
+								cataclysm_2 = 0.30000000000000004,
+								normal = 0.5
 							}
 						},
 						weave_explosive_barrel_socket_007 = {
@@ -37,10 +37,10 @@ return {
 					{
 						kill_enemies = {
 							score_multiplier = {
-								hardest = 0.13,
-								cataclysm_3 = 0.091,
-								cataclysm_2 = 0.0975,
-								normal = 0.2
+								hardest = 0.4,
+								cataclysm_3 = 0.27999999999999997,
+								cataclysm_2 = 0.30000000000000004,
+								normal = 0.5
 							}
 						},
 						weave_explosive_barrel_socket_004 = {
@@ -54,10 +54,10 @@ return {
 					{
 						kill_enemies = {
 							score_multiplier = {
-								hardest = 0.13,
-								cataclysm_3 = 0.091,
-								cataclysm_2 = 0.0975,
-								normal = 0.2
+								hardest = 0.4,
+								cataclysm_3 = 0.27999999999999997,
+								cataclysm_2 = 0.30000000000000004,
+								normal = 0.5
 							}
 						},
 						weave_explosive_barrel_socket_002 = {

@@ -5009,13 +5009,26 @@ SettingsWidgetTypeTemplate = {
 		}
 	},
 	text_link = {
-		input_function = function ()
-			return
+		input_function = function (widget, input_service)
+			local content = widget.content
+			content.controller_input_pressed = nil
+
+			if input_service:get("confirm") then
+				content.controller_input_pressed = true
+
+				return true
+			end
 		end,
 		input_description = {
 			name = "title",
 			gamepad_support = true,
-			actions = {}
+			actions = {
+				{
+					input_action = "confirm",
+					priority = 3,
+					description_text = "input_description_open"
+				}
+			}
 		}
 	},
 	gamepad_layout = {

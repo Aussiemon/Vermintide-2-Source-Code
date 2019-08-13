@@ -589,7 +589,7 @@ local function do_stagger_calculation(stagger_table, breed, blackboard, attacker
 		end
 	end
 
-	if breed.boss_staggers and (stagger < 6 or stagger == 9) then
+	if (breed.boss_staggers and (stagger < 6 or stagger == 9)) or (breed.small_boss_staggers and stagger == 9) then
 		stagger = 0
 	end
 

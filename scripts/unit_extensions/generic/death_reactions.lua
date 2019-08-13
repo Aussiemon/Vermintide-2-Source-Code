@@ -667,20 +667,23 @@ end
 
 local function ungor_archer_kill_minotaur_challenge(attacker)
 	local hit_unit_blackboard = BLACKBOARDS[attacker]
-	local breed_name = hit_unit_blackboard.breed and hit_unit_blackboard.breed.name
 
-	if breed_name ~= "beastmen_ungor_archer" then
-		return
+	if hit_unit_blackboard then
+		local breed_name = hit_unit_blackboard.breed and hit_unit_blackboard.breed.name
+
+		if breed_name ~= "beastmen_ungor_archer" then
+			return
+		end
+
+		local stat_name = "scorpion_kill_archers_kill_minotaur"
+		local stat_name_index = NetworkLookup.statistics[stat_name]
+		local statistics_db = Managers.player:statistics_db()
+		local local_player = Managers.player:local_player()
+		local stats_id = local_player:stats_id()
+
+		statistics_db:increment_stat(stats_id, stat_name)
+		Managers.state.network.network_transmit:send_rpc_clients("rpc_increment_stat", stat_name_index)
 	end
-
-	local stat_name = "scorpion_kill_archers_kill_minotaur"
-	local stat_name_index = NetworkLookup.statistics[stat_name]
-	local statistics_db = Managers.player:statistics_db()
-	local local_player = Managers.player:local_player()
-	local stats_id = local_player:stats_id()
-
-	statistics_db:increment_stat(stats_id, stat_name)
-	Managers.state.network.network_transmit:send_rpc_clients("rpc_increment_stat", stat_name_index)
 end
 
 local function gors_killed_by_warpfire_challenge()

@@ -260,8 +260,10 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 			players_session_score = players_session_score,
 			game_won = game_won,
 			game_mode_key = Managers.state.game_mode:game_mode_key(),
-			difficulty = Managers.state.difficulty:get_difficulty()
+			difficulty = Managers.state.difficulty:get_difficulty(),
+			weave_personal_best_achieved = self._weave_personal_best_achieved
 		}
+		self._weave_personal_best_achieved = nil
 
 		if not self._booted_eac_untrusted then
 			local level, start_experience, start_experience_pool = self.rewards:get_level_start()
@@ -513,13 +515,45 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 	elseif game_won then
 		print("Game won")
 
+		local is_final_weave_objective = is_final_objective and game_mode_key == "weave"
+
+		if is_final_weave_objective then
+			local weave_manager = Managers.weave
+			local weave_tier = weave_manager:get_weave_tier()
+			local score = weave_manager:get_score()
+			local num_players = weave_manager:get_num_players()
+			local stat_prefix = "weave_score_weave_"
+			local stat_suffix = "_" .. num_players .. "_players"
+			local weave_templates = WeaveSettings.templates_ordered
+			local num_weave_templates = #weave_templates
+			local personal_best = false
+
+			for i = num_weave_templates, weave_tier, -1 do
+				local stat_name = stat_prefix .. i .. stat_suffix
+				local previous_score = statistics_db:get_persistent_stat(stats_id, "season_1", stat_name)
+				local has_previous_score = previous_score and previous_score > 0
+
+				if weave_tier == i then
+					if (has_previous_score and previous_score < score) or not has_previous_score then
+						personal_best = true
+
+						break
+					end
+				elseif has_previous_score then
+					break
+				end
+			end
+
+			self._weave_personal_best_achieved = personal_best
+		end
+
 		if self._is_in_event_game_mode then
 			StatisticsUtil.register_played_weekly_event_level(statistics_db, player, level_key, difficulty_key)
 		end
 
 		StatisticsUtil.register_complete_level(statistics_db)
 
-		if is_final_objective and game_mode_key == "weave" then
+		if is_final_weave_objective then
 			weave_won_count = StatisticsUtil.register_weave_complete(statistics_db, player)
 		end
 

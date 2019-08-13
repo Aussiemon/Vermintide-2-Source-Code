@@ -927,7 +927,7 @@ StartGameWindowLobbyBrowserConsole._valid_lobby = function (self, lobby_data)
 			end
 
 			if difficulty_settings.dlc_requirement then
-				required_dlc[difficulty_settings.dlc_requirement] = true
+				required_dlcs[difficulty_settings.dlc_requirement] = true
 			end
 		end
 

@@ -2029,6 +2029,10 @@ BuffFunctionTemplates.functions = {
 		end
 	end,
 	activate_buff_stacks_based_on_clip_size = function (unit, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
 		if Unit.alive(unit) then
 			local buff_extension = ScriptUnit.extension(unit, "buff_system")
 			local template = buff.template
@@ -2073,6 +2077,29 @@ BuffFunctionTemplates.functions = {
 						buff_system:remove_server_controlled_buff(unit, buff_id)
 					end
 				end
+			end
+		end
+	end,
+	remove_buff_stacks_based_on_clip_size = function (unit, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		if Unit.alive(unit) then
+			local template = buff.template
+			local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+			local buff_system = Managers.state.entity:system("buff_system")
+			local buff_to_add = template.buff_to_add
+			local buff_stack_ids = buff.stack_ids
+
+			if buff_extension:has_buff_type(buff_to_add) and buff_stack_ids then
+				for i = 1, #buff_stack_ids, 1 do
+					local buff_id = buff_stack_ids[i]
+
+					buff_system:remove_server_controlled_buff(unit, buff_id)
+				end
+
+				buff.stack_ids = nil
 			end
 		end
 	end,

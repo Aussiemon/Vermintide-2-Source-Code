@@ -854,7 +854,7 @@ local scenegraph_definition = {
 		parent = "screen_center",
 		horizontal_alignment = "center",
 		size = {
-			675,
+			600,
 			50
 		},
 		position = {
@@ -865,13 +865,14 @@ local scenegraph_definition = {
 	}
 }
 local upgrade_title_style = {
-	font_size = 52,
+	word_wrap = true,
 	upper_case = true,
 	localize = false,
 	use_shadow = false,
-	word_wrap = true,
+	font_size = 52,
 	horizontal_alignment = "center",
 	vertical_alignment = "bottom",
+	dynamic_font_size = true,
 	font_type = "hell_shark_header",
 	text_color = {
 		180,

@@ -456,6 +456,8 @@ local function lobby_level_display_name(lobby_data)
 
 	if level == "n/a" then
 		level = nil
+	elseif level == "default_start_level" then
+		level = LevelSettings[level]
 	end
 
 	local game_mode_index = tonumber(lobby_data.game_mode)
@@ -520,7 +522,7 @@ function level_is_locked(lobby_data)
 		return false
 	end
 
-	local level_setting = LevelSettings[lobby_data.level_key]
+	local level_setting = LevelSettings[level]
 	local in_inn = level_setting.hub_level
 
 	if in_inn then
@@ -534,9 +536,14 @@ function level_is_locked(lobby_data)
 	local game_mode_index = tonumber(lobby_data.game_mode)
 	local game_mode_names = table.clone(NetworkLookup.game_modes)
 	local game_mode = game_mode_names[game_mode_index]
+	local game_mode_settings = game_mode and GameModeSettings[game_mode]
+
+	if game_mode_settings and game_mode_settings.extra_requirements_function and not game_mode_settings.extra_requirements_function() then
+		return true
+	end
 
 	if game_mode == "weave" then
-		local ignore_dlc_check = true
+		local ignore_dlc_check = false
 		local weave_name = lobby_data.weave_name
 		local weave_unlocked = LevelUnlockUtils.weave_unlocked(statistics_db, player_stats_id, weave_name, ignore_dlc_check)
 
@@ -578,6 +585,22 @@ function difficulty_is_locked(lobby_data)
 
 	if not difficulty or not level_key then
 		return false
+	end
+
+	if difficulty then
+		local difficulty_settings = DifficultySettings[difficulty]
+
+		if difficulty_settings.extra_requirement_name then
+			local extra_requirement = ExtraDifficultyRequirements[difficulty_settings.extra_requirement_name]
+
+			if not Development.parameter("unlock_all_difficulties") and not extra_requirement.requirement_function() then
+				return true
+			end
+		end
+
+		if difficulty_settings.dlc_requirement and not Managers.unlock:is_dlc_unlocked(difficulty_settings.dlc_requirement) then
+			return true
+		end
 	end
 
 	local profile_name = player:profile_display_name()

@@ -147,10 +147,16 @@ HeroWindowCharacterInfo._update_experience_presentation = function (self)
 	local experience = ExperienceSettings.get_experience(self.hero_name)
 	local level, progress = ExperienceSettings.get_level(experience)
 	local experience_pool = ExperienceSettings.get_experience_pool(self.hero_name)
-	local extra_levels = ExperienceSettings.get_extra_level(experience_pool)
+	local extra_levels, extra_levels_progress = ExperienceSettings.get_extra_level(experience_pool)
 	local experience_bar_default_size = scenegraph_definition.experience_bar.size
 	local experience_bar_size = self.ui_scenegraph.experience_bar.size
-	experience_bar_size[1] = math.ceil(experience_bar_default_size[1] * progress)
+
+	if progress > 0 then
+		experience_bar_size[1] = math.ceil(experience_bar_default_size[1] * progress)
+	elseif extra_levels_progress > 0 then
+		experience_bar_size[1] = math.ceil(experience_bar_default_size[1] * extra_levels_progress)
+	end
+
 	local text = Localize("level") .. " " .. tostring(level)
 
 	if extra_levels and extra_levels > 0 then

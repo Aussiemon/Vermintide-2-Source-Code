@@ -728,7 +728,8 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				buff_to_add = "victor_bountyhunter_power_level_on_clip_size_buff",
-				update_func = "activate_buff_stacks_based_on_clip_size"
+				update_func = "activate_buff_stacks_based_on_clip_size",
+				remove_buff_func = "remove_buff_stacks_based_on_clip_size"
 			}
 		}
 	},

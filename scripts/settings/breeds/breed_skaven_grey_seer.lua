@@ -1,11 +1,11 @@
 local breed_data = {
 	walk_speed = 5,
 	has_inventory = false,
-	use_avoidance = false,
+	boss_staggers = false,
 	run_speed = 5,
 	awards_positive_reinforcement_message = true,
-	boss_staggers = false,
 	animation_sync_rpc = "rpc_sync_anim_state_8",
+	behavior = "grey_seer",
 	unit_template = "ai_unit_grey_seer",
 	target_selection = "pick_rat_ogre_target_with_weights",
 	exchange_order = 1,
@@ -13,7 +13,7 @@ local breed_data = {
 	stagger_count_reset_time = 5,
 	lord_damage_reduction = true,
 	poison_resistance = 100,
-	override_mover_move_distance = 0.7,
+	smart_targeting_width = 0.6,
 	armored_on_no_damage = true,
 	armor_category = 1,
 	bot_hitbox_radius_approximation = 0.8,
@@ -28,16 +28,17 @@ local breed_data = {
 	radius = 1,
 	smart_object_template = "stormfiend",
 	boss = true,
-	dialogue_source_name = "skaven_grey_seer",
+	small_boss_staggers = true,
 	race = "skaven",
-	behavior = "grey_seer",
 	proximity_system_check = true,
 	death_reaction = "ai_default",
 	perception = "perception_rat_ogre",
 	player_locomotion_constrain_radius = 0.7,
+	use_avoidance = false,
 	teleport_sound_event = "Play_emitter_grey_seer_lightning_bolt_hit",
+	dialogue_source_name = "skaven_grey_seer",
 	far_off_despawn_immunity = true,
-	smart_targeting_width = 0.6,
+	override_mover_move_distance = 0.7,
 	perception_continuous = "perception_continuous_rat_ogre",
 	initial_is_passive = false,
 	base_unit = "units/beings/enemies/skaven_grey_seer/chr_skaven_grey_seer",
@@ -664,34 +665,10 @@ local action_data = {
 				}
 			},
 			{
-				fwd = {
-					"stagger_fwd",
-					"stagger_fwd_2",
-					"stagger_fwd_3",
-					"stagger_fwd_4"
-				},
-				bwd = {
-					"stagger_bwd",
-					"stagger_bwd_2",
-					"stagger_bwd_3",
-					"stagger_bwd_4",
-					"stagger_bwd_5"
-				},
-				left = {
-					"stagger_left",
-					"stagger_left_2",
-					"stagger_left_3",
-					"stagger_left_4"
-				},
-				right = {
-					"stagger_right",
-					"stagger_right_2",
-					"stagger_right_3",
-					"stagger_right_4"
-				},
-				dwn = {
-					"stun_down"
-				}
+				fwd = {},
+				bwd = {},
+				left = {},
+				right = {}
 			}
 		}
 	}
