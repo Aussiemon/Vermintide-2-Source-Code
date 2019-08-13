@@ -1,6 +1,6 @@
 FPSReporter = class(FPSReporter)
 FPSReporter.NAME = "FPSReporter"
-local FPS_REPORT_PERIOD = 10
+local FPS_REPORT_PERIOD = 20
 
 FPSReporter.init = function (self)
 	self._num_frames = 1

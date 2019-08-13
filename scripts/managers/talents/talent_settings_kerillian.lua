@@ -794,7 +794,7 @@ TalentBuffTemplates.wood_elf = {
 				event_buff = true,
 				event = "on_hit",
 				perk = "ninja_healing",
-				bonus = 1.5,
+				bonus = 2,
 				buff_func = ProcFunctions.heal_finesse_damage_on_melee
 			}
 		}
@@ -1546,6 +1546,7 @@ Talents.wood_elf = {
 		description = "kerillian_maidenguard_max_health_desc",
 		name = "kerillian_maidenguard_max_health",
 		num_ranks = 1,
+		buffer = "server",
 		icon = "kerillian_maidenguard_max_stamina",
 		description_values = {
 			{

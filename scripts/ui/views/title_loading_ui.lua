@@ -815,6 +815,13 @@ first_time_video = {
 	sound_stop = "Stop_vermintide_2_prologue_intro",
 	subtitle_template_settings = first_time_video_subtitle_settings
 }
+wom_intro_video = {
+	video_name = "video/vermintide_2_wom_intro",
+	sound_start = "cinematic_intro_wom",
+	scenegraph_id = "splash_video",
+	material_name = "vermintide_2_wom_intro",
+	sound_stop = "stop_cinematic_intro_wom"
+}
 
 local function get_slider_progress(min, max, value)
 	local range = max - min
@@ -892,6 +899,10 @@ TitleLoadingUI = class(TitleLoadingUI)
 
 TitleLoadingUI.init = function (self, world, params, force_done)
 	Framerate.set_low_power()
+
+	if not params.is_prologue then
+		first_time_video = wom_intro_video
+	end
 
 	self.render_settings = {
 		snap_pixel_positions = true

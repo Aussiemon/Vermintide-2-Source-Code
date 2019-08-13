@@ -7,11 +7,7 @@ TelemetrySettings = {
 		interval = 600,
 		endpoint = "https://naot0wazba.execute-api.eu-north-1.amazonaws.com/prod/stream"
 	},
-	blacklist = {
-		"ai_died",
-		"player_jumped",
-		"fatigue_gained"
-	},
+	blacklist = {},
 	collect_memory = BUILD ~= "release" and Development.parameter("telemetry-collect-memory"),
 	send = BUILD == "release" or Development.parameter("telemetry-force-send"),
 	use_session_survey = Development.parameter("use-session-survey")

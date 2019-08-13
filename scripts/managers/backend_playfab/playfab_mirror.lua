@@ -1,5 +1,22 @@
 require("scripts/managers/backend_playfab/playfab_request_queue")
 
+local CAREER_ID_LOOKUP = {
+	"dr_ranger",
+	"dr_slayer",
+	"dr_ironbreaker",
+	"we_waywatcher",
+	"we_shade",
+	"we_maidenguard",
+	"es_huntsman",
+	"es_mercenary",
+	"es_knight",
+	"bw_adept",
+	"bw_scholar",
+	"bw_unchained",
+	"wh_captain",
+	"wh_bountyhunter",
+	"wh_zealot"
+}
 REDUCTION_INTERVAL = 80
 DELAY_MULTIPLIER = 5
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
@@ -399,6 +416,20 @@ end
 
 PlayFabMirror.fix_inventory_data_2_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+	local function_result = result.FunctionResult
+	local new_magic_level = function_result and function_result.new_magic_level
+
+	if new_magic_level then
+		local progress_json = self._read_only_data.weaves_career_progress
+		local weaves_career_progress = cjson.decode(progress_json)
+
+		for i = 1, #CAREER_ID_LOOKUP, 1 do
+			local career_name = CAREER_ID_LOOKUP[i]
+			weaves_career_progress[career_name].magic_level = new_magic_level
+		end
+
+		self._read_only_data.weaves_career_progress = cjson.encode(weaves_career_progress)
+	end
 
 	self:_request_read_only_data()
 end

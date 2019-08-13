@@ -257,15 +257,26 @@ end
 BuffSystem.remove_server_controlled_buff = function (self, unit, server_buff_id)
 	fassert(self.is_server, "[BuffSystem]: Only the server can explicitly remove server controlled buffs!")
 
-	local buff_extension = ScriptUnit.extension(unit, "buff_system")
-	local id = self.server_controlled_buffs[unit][server_buff_id].local_buff_id
-	local num_buffs_removed = buff_extension:remove_buff(id)
-	self.server_controlled_buffs[unit][server_buff_id] = nil
-	self.free_server_buff_ids[#self.free_server_buff_ids + 1] = server_buff_id
-	local network_manager = self.network_manager
-	local unit_object_id = network_manager:game_object_or_level_id(unit)
+	local num_buffs_removed = 0
 
-	network_manager.network_transmit:send_rpc_clients("rpc_remove_server_controlled_buff", unit_object_id, server_buff_id)
+	if unit and server_buff_id then
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local server_buffs = self.server_controlled_buffs
+		local unit_server_buffs = server_buffs and server_buffs[unit]
+
+		if unit_server_buffs then
+			local unit_server_buff_table = unit_server_buffs[server_buff_id]
+			local id = unit_server_buff_table and unit_server_buff_table.local_buff_id
+			num_buffs_removed = id and buff_extension:remove_buff(id)
+			unit_server_buffs[server_buff_id] = nil
+		end
+
+		self.free_server_buff_ids[#self.free_server_buff_ids + 1] = server_buff_id
+		local network_manager = self.network_manager
+		local unit_object_id = network_manager:game_object_or_level_id(unit)
+
+		network_manager.network_transmit:send_rpc_clients("rpc_remove_server_controlled_buff", unit_object_id, server_buff_id)
+	end
 
 	return num_buffs_removed
 end

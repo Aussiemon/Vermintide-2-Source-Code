@@ -87,6 +87,7 @@ ScriptBackendPlayFab.login_request_cb = function (self, result)
 	local playfab_id = result.PlayFabId
 
 	Crashify.print_property("playfab_id", playfab_id)
+	self:_update_telemetry_blacklist(result)
 
 	if result.NewlyCreated or not read_only_data.account_set_up then
 		self:_set_up_initial_account()
@@ -97,6 +98,17 @@ ScriptBackendPlayFab.login_request_cb = function (self, result)
 	end
 
 	self._signed_in = true
+end
+
+ScriptBackendPlayFab._update_telemetry_blacklist = function (self)
+	local title_data = self._signin_result.InfoResultPayload.TitleData
+	local blacklisted_events = title_data.telemetry_blacklisted_events
+
+	if blacklisted_events then
+		TelemetrySettings.blacklist = cjson.decode(blacklisted_events)
+
+		Managers.telemetry:reload_settings()
+	end
 end
 
 ScriptBackendPlayFab._validate_version = function (self)

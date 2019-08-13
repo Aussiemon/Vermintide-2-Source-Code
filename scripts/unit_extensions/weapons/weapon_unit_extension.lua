@@ -516,7 +516,7 @@ WeaponUnitExtension.anim_end_event = function (self, reason, current_action_sett
 	local go_id = Managers.state.unit_storage:go_id(self.owner_unit)
 	local event = current_action_settings.anim_end_event
 	local anim_end_event_condition_func = current_action_settings.anim_end_event_condition_func
-	local do_event = (not anim_end_event_condition_func and true) or anim_end_event_condition_func(self.owner_unit, reason)
+	local do_event = (not anim_end_event_condition_func and true) or anim_end_event_condition_func(self.owner_unit, reason, self.ammo_extension)
 
 	if event and do_event then
 		local event_id = NetworkLookup.anims[event]

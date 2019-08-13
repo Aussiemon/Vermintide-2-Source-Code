@@ -15,7 +15,9 @@ settings.husk_lookup = {
 }
 settings.anim_lookup = {
 	"throw_charge",
-	"throw_charge_cancel"
+	"throw_charge_cancel",
+	"to_ammo",
+	"to_noammo"
 }
 settings.material_effect_mappings_file_names = {
 	"scripts/settings/material_effect_mappings_anvil"

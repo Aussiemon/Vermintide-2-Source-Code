@@ -34,16 +34,27 @@ TelemetryManager.create = function ()
 end
 
 TelemetryManager.init = function (self)
-	self:reset()
-
 	self.events = TelemetryEvents:new(self)
 	self.rpc_listener = TelemetryRPCListener:new(self.events)
 	self._heartbeat = TelemetryHeartbeat:new()
+
+	self:reset()
+	self:reload_settings()
 end
 
 TelemetryManager.reset = function (self)
 	self._events_json = {}
 	self._current_tick = 0
+end
+
+TelemetryManager.reload_settings = function (self)
+	if DEBUG then
+		printf("[TelemetryManager] Refreshing settings")
+	end
+
+	self._title_id = TelemetrySettings.title_id
+	self._endpoint = TelemetrySettings.endpoint
+	self._blacklisted_events = table.set(TelemetrySettings.blacklist or {})
 end
 
 TelemetryManager.update = function (self, dt, t)
@@ -52,11 +63,10 @@ TelemetryManager.update = function (self, dt, t)
 	self._heartbeat:update(dt, t)
 end
 
-local BLACKLIST = table.set(TelemetrySettings.blacklist or {})
 local event_entry = {}
 
 TelemetryManager.register_event = function (self, event_type, event_params)
-	if BLACKLIST[event_type] then
+	if self._blacklisted_events[event_type] then
 		if DEBUG then
 			printf("[TelemetryManager] Blacklisted event '%s'", event_type)
 		end
@@ -93,22 +103,21 @@ TelemetryManager.send = function (self)
 		printf("[TelemetryManager] Sending session data")
 	end
 
-	local url = TelemetrySettings.endpoint
 	local payload = "[" .. table.concat(self._events_json, ", \n") .. "]"
 
 	if PLATFORM == "win32" then
 		local headers = {
-			string.format("title_id: %s", TelemetrySettings.title_id)
+			string.format("title_id: %s", self._title_id)
 		}
 
-		Managers.curl:post(url, payload, headers, callback(self, "cb_send"))
+		Managers.curl:post(self._endpoint, payload, headers, callback(self, "cb_send"))
 	else
 		local headers = {
 			"title_id",
-			TelemetrySettings.title_id
+			self._title_id
 		}
 
-		Managers.rest_transport:post(url, payload, headers, callback(self, "cb_send"))
+		Managers.rest_transport:post(self._endpoint, payload, headers, callback(self, "cb_send"))
 	end
 end
 

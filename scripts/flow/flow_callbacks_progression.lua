@@ -238,8 +238,12 @@ local function get_presistent_stat_from_peer_id(peer_id, ...)
 	local player_manager = Managers.player
 	local statistics_db = player_manager:statistics_db()
 	local player = player_manager:player(peer_id, 1)
-	local stats_id = player:stats_id()
-	local stat_value = statistics_db:get_persistent_stat(stats_id, ...)
+	local stat_value = nil
+
+	if player then
+		local stats_id = player:stats_id()
+		stat_value = statistics_db:get_persistent_stat(stats_id, ...)
+	end
 
 	return stat_value
 end

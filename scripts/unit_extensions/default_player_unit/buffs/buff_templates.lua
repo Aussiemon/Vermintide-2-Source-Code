@@ -1483,10 +1483,11 @@ ProcFunctions = {
 		local player_unit = player.player_unit
 		local hit_unit = params[1]
 		local attack_type = params[2]
+		local target_number = params[4]
 		local hit_unit_buff_extension = ScriptUnit.has_extension(hit_unit, "buff_system")
 		local player_unit_buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 
-		if hit_unit_buff_extension:has_buff_type("consecutive_shot_debuff") and attack_type ~= "aoe" then
+		if hit_unit_buff_extension:has_buff_type("consecutive_shot_debuff") and target_number == 1 then
 			player_unit_buff_extension:add_buff("consecutive_shot_buff")
 		end
 
@@ -1746,11 +1747,11 @@ ProcFunctions = {
 				buff_name = "bardin_slayer_passive_increased_max_stacks"
 			end
 
-			if talent_extension:has_talent("bardin_slayer_passive_movement_speed", "dwarf_ranger", true) then
-				buff_extension:add_buff("bardin_slayer_passive_movement_speed")
-			end
-
 			buff_system:add_buff(player_unit, buff_name, player_unit, false)
+
+			if talent_extension:has_talent("bardin_slayer_passive_movement_speed", "dwarf_ranger", true) then
+				buff_system:add_buff(player_unit, "bardin_slayer_passive_movement_speed", player_unit, false)
+			end
 
 			if talent_extension:has_talent("bardin_slayer_passive_cooldown_reduction_on_max_stacks", "dwarf_ranger", true) then
 				local num_stacks = buff_extension:num_buff_type(buff_name)

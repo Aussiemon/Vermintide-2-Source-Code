@@ -237,13 +237,20 @@ StateLoading._setup_first_time_ui = function (self)
 	local loading_context = self.parent.loading_context
 
 	if (loading_context.first_time or loading_context.gamma_correct or loading_context.play_trailer) and not GameSettingsDevelopment.disable_intro_trailer then
+		local level_name = (Boot.loading_context and Boot.loading_context.level_key) or LevelSettings.default_start_level
 		local auto_skip = nil
 		local params = {}
+
+		if loading_context.level_transition_handler then
+			local next_level_key = loading_context.level_transition_handler:get_next_level_key()
+			params.is_prologue = next_level_key == "prologue"
+		else
+			params.is_prologue = false
+		end
+
 		local platform = PLATFORM
 
 		if platform == "win32" then
-			local level_name = (Boot.loading_context and Boot.loading_context.level_key) or LevelSettings.default_start_level
-
 			if Development.parameter("attract_mode") then
 				level_name = BenchmarkSettings.auto_host_level or level_name
 			end
@@ -260,7 +267,6 @@ StateLoading._setup_first_time_ui = function (self)
 			params.gamma = not save_data.gamma_corrected
 			params.trailer = Application.user_setting("play_intro_cinematic")
 		elseif platform == "ps4" or platform == "xb1" then
-			local level_name = (Boot.loading_context and Boot.loading_context.level_key) or LevelSettings.default_start_level
 			level_name = check_bool_string(Development.parameter("auto_host_level")) or level_name
 			auto_skip = level_name ~= LevelSettings.default_start_level
 			auto_skip = loading_context.join_lobby_data or Development.parameter("auto_join") or auto_skip or Development.parameter("skip_splash")

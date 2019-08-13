@@ -212,7 +212,13 @@ RespawnHandler.update = function (self, dt, t, slots)
 		if all_synced and data.health_state == "dead" and data.ready_for_respawn and status.peer_id then
 			local data_respawn_unit = data.respawn_unit
 			local respawn_unit = self:get_respawn_unit()
-			local respawn_unit_to_use = data_respawn_unit or respawn_unit
+			local respawn_unit_to_use = nil
+
+			if data_respawn_unit and Unit.alive(data_respawn_unit) then
+				respawn_unit_to_use = data_respawn_unit
+			else
+				respawn_unit_to_use = respawn_unit
+			end
 
 			if respawn_unit_to_use then
 				local respawn_unit_id = Managers.state.network:level_object_id(respawn_unit_to_use)

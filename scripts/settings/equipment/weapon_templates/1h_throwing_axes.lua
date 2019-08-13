@@ -5,21 +5,25 @@ local weapon_template = weapon_template or {}
 weapon_template.actions = {
 	action_one = {
 		default = {
-			ammo_usage = 1,
-			charge_value = "arrow_hit",
+			anim_end_event = "to_noammo",
 			kind = "thrown_projectile",
-			anim_event_no_ammo_left = "attack_shoot_last",
+			charge_value = "arrow_hit",
 			weapon_action_hand = "right",
 			apply_recoil = true,
+			ammo_usage = 1,
 			aim_assist_max_ramp_multiplier = 0.8,
 			aim_assist_ramp_decay_delay = 0.3,
-			anim_event_last_ammo = "attack_shoot_last",
 			fire_time = 0.4,
 			speed = 3500,
 			aim_assist_ramp_multiplier = 0.4,
 			anim_event = "attack_throw",
 			no_out_of_ammo_vo = true,
 			total_time = 0.85,
+			anim_end_event_condition_func = function (unit, end_reason, ammo_extension)
+				print(end_reason, ammo_extension:ammo_count() == 0)
+
+				return ammo_extension:ammo_count() == 0 and end_reason ~= "reload"
+			end,
 			buff_data = {
 				{
 					start_time = 0,
@@ -94,13 +98,12 @@ weapon_template.actions = {
 		},
 		throw_charged = {
 			reset_aim_on_attack = true,
+			anim_end_event = "to_noammo",
 			kind = "thrown_projectile",
-			anim_event_no_ammo_left = "attack_shoot_last",
 			charge_value = "zoomed_arrow_hit",
-			attack_template = "arrow_sniper_1",
 			weapon_action_hand = "right",
+			attack_template = "arrow_sniper_1",
 			apply_recoil = true,
-			anim_event_last_ammo = "attack_shoot_last",
 			minimum_hold_time = 0.4,
 			ammo_usage = 1,
 			fire_time = 0.2,
@@ -110,6 +113,9 @@ weapon_template.actions = {
 			no_out_of_ammo_vo = true,
 			scale_total_time_on_mastercrafted = true,
 			total_time = 0.85,
+			anim_end_event_condition_func = function (unit, end_reason, ammo_extension)
+				return ammo_extension:ammo_count() == 0
+			end,
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
@@ -372,10 +378,12 @@ weapon_template.default_spread_template = "throwing_axe"
 weapon_template.right_hand_unit = "units/weapons/player/wpn_dw_thrown_axe_01_t1/wpn_dw_thrown_axe_01_t1"
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.right
 weapon_template.display_unit = "units/weapons/weapon_display/display_1h_weapon"
-weapon_template.wield_anim_no_ammo = "to_throw_noammo"
+weapon_template.wield_anim_not_loaded = "to_throwing_axe_noammo"
 weapon_template.wield_anim = "to_throwing_axe"
-weapon_template.pickup_reload_event_1p = "to_ammo"
+weapon_template.wield_anim_no_ammo = "to_throwing_axe_noammo"
 weapon_template.crosshair_style = "projectile"
+weapon_template.no_ammo_reload_event = "to_ammo"
+weapon_template.reload_event = "to_ammo"
 weapon_template.buff_type = "RANGED"
 weapon_template.weapon_type = "THROWING_AXE"
 weapon_template.default_projectile_action = weapon_template.actions.action_one.default

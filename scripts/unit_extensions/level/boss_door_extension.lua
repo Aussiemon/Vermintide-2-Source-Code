@@ -4,6 +4,7 @@ local NAVMESH_UPDATE_DELAY = 3
 local flow_event_by_breed = {
 	chaos_troll = "lua_closed_troll",
 	chaos_spawn = "lua_closed_stormfiend",
+	beastmen_minotaur = "lua_closed_stormfiend",
 	skaven_rat_ogre = "lua_closed_stormfiend",
 	skaven_stormfiend = "lua_closed_stormfiend"
 }

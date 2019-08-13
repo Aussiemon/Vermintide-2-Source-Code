@@ -833,21 +833,23 @@ InteractionDefinitions.pickup_object = {
 						local local_player_unit = local_player.player_unit
 						local buff_extension = ScriptUnit.has_extension(local_player_unit, "buff_system")
 
-						buff_extension:trigger_procs("on_bardin_consumable_picked_up_any_player")
+						if buff_extension then
+							buff_extension:trigger_procs("on_bardin_consumable_picked_up_any_player")
 
-						for i = 1, num_players_and_bots, 1 do
-							local player_unit = player_and_bot_units[i]
+							for i = 1, num_players_and_bots, 1 do
+								local player_unit = player_and_bot_units[i]
 
-							if Unit.alive(player_unit) then
-								local player_manager = Managers.player
-								local owner_player = player_manager:owner(player_unit)
+								if Unit.alive(player_unit) then
+									local player_manager = Managers.player
+									local owner_player = player_manager:owner(player_unit)
 
-								if not LEVEL_EDITOR_TEST and player_manager.is_server then
-									local peer_id = owner_player:network_id()
-									local local_player_id = owner_player:local_player_id()
-									local event_id = NetworkLookup.proc_events.on_bardin_consumable_picked_up_any_player
+									if not LEVEL_EDITOR_TEST and player_manager.is_server then
+										local peer_id = owner_player:network_id()
+										local local_player_id = owner_player:local_player_id()
+										local event_id = NetworkLookup.proc_events.on_bardin_consumable_picked_up_any_player
 
-									Managers.state.network.network_transmit:send_rpc_clients("rpc_proc_event", peer_id, local_player_id, event_id)
+										Managers.state.network.network_transmit:send_rpc_clients("rpc_proc_event", peer_id, local_player_id, event_id)
+									end
 								end
 							end
 						end

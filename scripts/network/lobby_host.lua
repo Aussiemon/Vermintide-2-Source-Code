@@ -110,6 +110,12 @@ LobbyHost.update = function (self, dt)
 			local peer_id = members_left[i]
 
 			LobbyInternal.remove_ping_peer(peer_id)
+
+			local my_peer_id = self.peer_id
+
+			if peer_id == my_peer_id then
+				self._lost_connection_to_lobby = true
+			end
 		end
 	end
 end
@@ -178,6 +184,10 @@ end
 
 LobbyHost.get_stored_lobby_data = function (self)
 	return self.lobby_data_table
+end
+
+LobbyHost.lost_connection_to_lobby = function (self)
+	return self._lost_connection_to_lobby
 end
 
 LobbyHost.members = function (self)

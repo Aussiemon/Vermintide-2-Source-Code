@@ -580,6 +580,24 @@ BackendInterfaceWeavesPlayFab.upgrade_career_magic_level = function (self, caree
 	request_queue:enqueue(request, callback(self, "upgrade_career_magic_level_cb", external_cb), true)
 end
 
+local CAREER_ID_LOOKUP = {
+	"dr_ranger",
+	"dr_slayer",
+	"dr_ironbreaker",
+	"we_waywatcher",
+	"we_shade",
+	"we_maidenguard",
+	"es_huntsman",
+	"es_mercenary",
+	"es_knight",
+	"bw_adept",
+	"bw_scholar",
+	"bw_unchained",
+	"wh_captain",
+	"wh_bountyhunter",
+	"wh_zealot"
+}
+
 BackendInterfaceWeavesPlayFab.upgrade_career_magic_level_cb = function (self, external_cb, result)
 	local function_result = result.FunctionResult
 	local error_message = function_result.error_message
@@ -597,8 +615,18 @@ BackendInterfaceWeavesPlayFab.upgrade_career_magic_level_cb = function (self, ex
 	local career_name = function_result.career_name
 	local new_magic_level = function_result.new_magic_level
 	local new_essence = function_result.new_essence
-	local progress = self._career_progress[career_name]
-	progress.magic_level = new_magic_level
+	local upgrade_all_career_magic_levels = function_result.upgrade_all_career_magic_levels
+
+	if upgrade_all_career_magic_levels then
+		for i = 1, #CAREER_ID_LOOKUP, 1 do
+			local name = CAREER_ID_LOOKUP[i]
+			local progress = self._career_progress[name]
+			progress.magic_level = new_magic_level
+		end
+	else
+		local progress = self._career_progress[career_name]
+		progress.magic_level = new_magic_level
+	end
 
 	self._backend_mirror:set_essence(new_essence)
 

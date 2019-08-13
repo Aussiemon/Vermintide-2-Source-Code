@@ -2987,7 +2987,7 @@ DamageUtils.server_apply_hit = function (t, attacker_unit, target_unit, hit_zone
 
 		if buff_extension then
 			if (buff_extension:has_buff_perk("victor_witchhunter_bleed_on_critical_hit") and (damage_profile.charge_value == "light_attack" or damage_profile.charge_value == "heavy_attack")) or (buff_extension:has_buff_perk("kerillian_critical_bleed_dot") and damage_profile.charge_value == "projectile") then
-				damage_profile.dot_template_name = "weapon_bleed_dot_test"
+				damage_profile.dot_template_name = "weapon_bleed_dot_dagger"
 				remove_dot_template = true
 			end
 

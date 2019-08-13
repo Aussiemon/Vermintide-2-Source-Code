@@ -1164,6 +1164,17 @@ StateIngame._check_exit = function (self, t)
 
 			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
 			Managers.transition:show_loading_icon()
+		elseif self._lobby_host and self._lobby_host:lost_connection_to_lobby() then
+			print("host lost connection to lobby!")
+
+			self.exit_type = "lobby_state_failed"
+
+			if network_manager:in_game_session() then
+				network_manager:leave_game()
+			end
+
+			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
+			Managers.transition:show_loading_icon()
 		elseif not connected_to_network then
 			self.exit_type = "lobby_state_failed"
 
@@ -1775,7 +1786,13 @@ StateIngame.on_exit = function (self, application_shutdown)
 	end
 
 	if TelemetrySettings.send then
-		Managers.telemetry:send()
+		local game_mode_key = Managers.state.game_mode:game_mode_key()
+
+		if game_mode_key == "inn" then
+			print("[StateIngame] Skipped uploading telemetry data for the inn level")
+		else
+			Managers.telemetry:send()
+		end
 	else
 		printf("[StateIngame] Skipped uploading telemetry data")
 	end

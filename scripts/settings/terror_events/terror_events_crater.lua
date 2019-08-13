@@ -54,7 +54,7 @@ local horde_sound_settings = {
 		}
 	}
 }
-local HARDER = 4
+local HARD = 3
 local terror_event_blueprints = {
 	crater_no_horde = {
 		{
@@ -286,10 +286,6 @@ local terror_event_blueprints = {
 			composition_type = "event_medium_beastmen"
 		},
 		{
-			"delay",
-			duration = 13
-		},
-		{
 			"continue_when",
 			duration = 45,
 			condition = function (t)
@@ -312,10 +308,6 @@ local terror_event_blueprints = {
 			limit_spawners = 4,
 			spawner_id = "crater_end_event",
 			composition_type = "event_small_beastmen"
-		},
-		{
-			"delay",
-			duration = 13
 		},
 		{
 			"flow_event",
@@ -356,10 +348,6 @@ local terror_event_blueprints = {
 			composition_type = "event_medium_beastmen"
 		},
 		{
-			"delay",
-			duration = 12
-		},
-		{
 			"continue_when",
 			duration = 45,
 			condition = function (t)
@@ -382,10 +370,6 @@ local terror_event_blueprints = {
 			limit_spawners = 4,
 			spawner_id = "crater_end_event",
 			composition_type = "event_small_beastmen"
-		},
-		{
-			"delay",
-			duration = 12
 		},
 		{
 			"flow_event",
@@ -426,10 +410,6 @@ local terror_event_blueprints = {
 			composition_type = "event_small_beastmen"
 		},
 		{
-			"delay",
-			duration = 10
-		},
-		{
 			"continue_when",
 			duration = 60,
 			condition = function (t)
@@ -452,10 +432,6 @@ local terror_event_blueprints = {
 			limit_spawners = 4,
 			spawner_id = "crater_end_event",
 			composition_type = "event_small_beastmen"
-		},
-		{
-			"delay",
-			duration = 10
 		},
 		{
 			"continue_when",
@@ -492,10 +468,6 @@ local terror_event_blueprints = {
 			composition_type = "event_medium_beastmen"
 		},
 		{
-			"delay",
-			duration = 8
-		},
-		{
 			"continue_when",
 			duration = 45,
 			condition = function (t)
@@ -518,10 +490,6 @@ local terror_event_blueprints = {
 			limit_spawners = 4,
 			spawner_id = "crater_end_event",
 			composition_type = "event_medium_beastmen"
-		},
-		{
-			"delay",
-			duration = 8
 		},
 		{
 			"flow_event",
@@ -561,7 +529,7 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			breed_name = "beastmen_minotaur",
 			spawner_id = "event_minotaur",
-			difficulty_requirement = HARDER
+			difficulty_requirement = HARD
 		},
 		{
 			"continue_when",
