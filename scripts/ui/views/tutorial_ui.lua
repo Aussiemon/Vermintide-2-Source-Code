@@ -152,7 +152,7 @@ TutorialUI.get_player_first_person_extension = function (self)
 	else
 		local peer_id = self.peer_id
 		local my_player = self.player_manager:player_from_peer_id(peer_id)
-		local player_unit = my_player.player_unit
+		local player_unit = my_player and my_player.player_unit
 
 		if player_unit and ScriptUnit.has_extension(player_unit, "first_person_system") then
 			local first_person_extension = ScriptUnit.extension(player_unit, "first_person_system")
@@ -196,7 +196,7 @@ TutorialUI.update = function (self, dt, t)
 
 	local peer_id = self.peer_id
 	local my_player = self.player_manager:player_from_peer_id(peer_id)
-	local player_unit = my_player.player_unit
+	local player_unit = my_player and my_player.player_unit
 
 	if not player_unit then
 		return
@@ -252,7 +252,7 @@ TutorialUI.post_update = function (self, dt, t)
 	local ui_renderer = self.ui_renderer
 	local peer_id = self.peer_id
 	local my_player = self.player_manager:player_from_peer_id(peer_id)
-	local player_unit = my_player.player_unit
+	local player_unit = my_player and my_player.player_unit
 
 	if not player_unit then
 		return

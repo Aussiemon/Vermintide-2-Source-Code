@@ -12,9 +12,19 @@ local health_step_multipliers = {
 local stagger_step_multipliers = {
 	1,
 	0.85,
-	1.25,
+	1.4,
+	2.25,
+	2.25,
+	2.25,
+	3.5,
+	3.5
+}
+local elite_stagger_step_multipliers = {
+	1,
+	1,
 	1.7,
-	1.7,
+	2.75,
+	2.75,
 	2.75,
 	3.5,
 	3.5
@@ -174,29 +184,29 @@ BreedTweaks.diff_stagger_resist = {
 	clan_rat = steps(2.1, stagger_step_multipliers),
 	gor = steps(2.4, stagger_step_multipliers),
 	marauder = steps(2.65, stagger_step_multipliers),
-	stormvermin = steps(2.25, stagger_step_multipliers),
-	bestigor = steps(3.25, stagger_step_multipliers),
-	raider = steps(3, stagger_step_multipliers),
-	warrior = steps(4.8, stagger_step_multipliers),
-	berzerker = steps(2.7, stagger_step_multipliers),
-	plague_monk = steps(3, stagger_step_multipliers),
-	packmaster = steps(4, stagger_step_multipliers),
-	ratling_gunner = steps(2.5, stagger_step_multipliers),
-	sorcerer = steps(2.7, stagger_step_multipliers)
+	stormvermin = steps(2.25, elite_stagger_step_multipliers),
+	bestigor = steps(3.25, elite_stagger_step_multipliers),
+	raider = steps(3, elite_stagger_step_multipliers),
+	warrior = steps(4.8, elite_stagger_step_multipliers),
+	berzerker = steps(2.7, elite_stagger_step_multipliers),
+	plague_monk = steps(3, elite_stagger_step_multipliers),
+	packmaster = steps(4, elite_stagger_step_multipliers),
+	ratling_gunner = steps(2.5, elite_stagger_step_multipliers),
+	sorcerer = steps(2.7, elite_stagger_step_multipliers)
 }
 BreedTweaks.stagger_reduction = {
-	marauder = steps(0.6, stagger_step_multipliers),
-	gor = steps(0.4, stagger_step_multipliers),
-	stormvermin = steps(1, stagger_step_multipliers),
-	raider = steps(0.9, stagger_step_multipliers),
-	warrior = steps(1.8, stagger_step_multipliers),
-	bestigor = steps(1, stagger_step_multipliers),
-	berzerker = steps(0.75, stagger_step_multipliers),
-	plague_monk = steps(1.35, stagger_step_multipliers),
-	sorcerer = steps(2, stagger_step_multipliers),
-	packmaster = steps(2, stagger_step_multipliers),
-	ratling_gunner = steps(1, stagger_step_multipliers),
-	stormvermin_warlord = steps(1.35, stagger_step_multipliers)
+	marauder = steps(0.2, stagger_step_multipliers),
+	gor = steps(0.1, stagger_step_multipliers),
+	stormvermin = steps(1, elite_stagger_step_multipliers),
+	raider = steps(0.9, elite_stagger_step_multipliers),
+	warrior = steps(1.8, elite_stagger_step_multipliers),
+	bestigor = steps(1, elite_stagger_step_multipliers),
+	berzerker = steps(0.75, elite_stagger_step_multipliers),
+	plague_monk = steps(1.35, elite_stagger_step_multipliers),
+	sorcerer = steps(2, elite_stagger_step_multipliers),
+	packmaster = steps(2, elite_stagger_step_multipliers),
+	ratling_gunner = steps(1, elite_stagger_step_multipliers),
+	stormvermin_warlord = steps(1.35, elite_stagger_step_multipliers)
 }
 BreedTweaks.stagger_duration = {
 	slave_rat = {
@@ -1486,21 +1496,21 @@ BreedTweaks.diminishing_damage_and_cooldown = {
 				damage = 2.5,
 				cooldown = {
 					0,
-					0.25
+					0.1
 				}
 			},
 			{
 				damage = 2,
 				cooldown = {
 					0,
-					0.25
+					0.1
 				}
 			},
 			{
 				damage = 2,
 				cooldown = {
 					0,
-					0.25
+					0.1
 				}
 			},
 			{
@@ -1680,21 +1690,21 @@ BreedTweaks.diminishing_damage_and_cooldown = {
 		},
 		normal = {
 			{
-				damage = 1,
+				damage = 2,
 				cooldown = {
 					1.75,
 					2.25
 				}
 			},
 			{
-				damage = 1,
+				damage = 2,
 				cooldown = {
 					1.75,
 					2.25
 				}
 			},
 			{
-				damage = 1,
+				damage = 1.5,
 				cooldown = {
 					2,
 					2.5
@@ -1745,21 +1755,21 @@ BreedTweaks.diminishing_damage_and_cooldown = {
 		},
 		hard = {
 			{
-				damage = 1,
+				damage = 2,
 				cooldown = {
 					1.5,
 					2
 				}
 			},
 			{
-				damage = 1,
+				damage = 2,
 				cooldown = {
 					1.5,
 					2
 				}
 			},
 			{
-				damage = 1,
+				damage = 1.5,
 				cooldown = {
 					1.75,
 					2.25
@@ -1940,66 +1950,66 @@ BreedTweaks.diminishing_damage_and_cooldown = {
 		},
 		cataclysm = {
 			{
-				damage = 2,
+				damage = 2.5,
 				cooldown = {
-					1,
-					1.5
+					0,
+					0.25
 				}
 			},
 			{
 				damage = 2,
 				cooldown = {
-					1,
-					1.5
+					0,
+					0.25
 				}
 			},
 			{
-				damage = 1.5,
+				damage = 2,
 				cooldown = {
-					1,
-					1.5
+					0,
+					0.25
 				}
 			},
 			{
-				damage = 1,
+				damage = 1.8,
 				cooldown = {
-					1.25,
-					1.75
+					0,
+					0.3
 				}
 			},
 			{
-				damage = 1,
+				damage = 1.6,
 				cooldown = {
-					1.5,
-					2
+					0,
+					0.35
 				}
 			},
 			{
-				damage = 1,
+				damage = 1.4,
 				cooldown = {
-					1.75,
-					2.25
+					0,
+					0.4
 				}
 			},
 			{
-				damage = 1,
+				damage = 1.2,
 				cooldown = {
-					2,
-					2.5
-				}
-			},
-			{
-				damage = 1,
-				cooldown = {
-					2.25,
-					3.25
+					0,
+					0.45
 				}
 			},
 			{
 				damage = 1,
 				cooldown = {
-					2.5,
-					3.5
+					0,
+					0.5
+				}
+			},
+			{
+				damage = 1,
+				cooldown = {
+					0,
+					0.5
 				}
 			}
 		},
@@ -2007,64 +2017,64 @@ BreedTweaks.diminishing_damage_and_cooldown = {
 			{
 				damage = 2.5,
 				cooldown = {
-					0.5,
-					1
+					0,
+					0.25
 				}
 			},
 			{
 				damage = 2,
 				cooldown = {
-					0.5,
-					1
+					0,
+					0.25
 				}
 			},
 			{
-				damage = 1.5,
+				damage = 2,
 				cooldown = {
-					0.5,
-					1
+					0,
+					0.25
 				}
 			},
 			{
-				damage = 1,
+				damage = 1.8,
 				cooldown = {
-					0.5,
-					1
+					0,
+					0.3
 				}
 			},
 			{
-				damage = 1,
+				damage = 1.6,
 				cooldown = {
-					0.6,
-					1.1
+					0,
+					0.35
 				}
 			},
 			{
-				damage = 1,
+				damage = 1.4,
 				cooldown = {
-					0.7,
-					1.2
+					0,
+					0.4
 				}
 			},
 			{
-				damage = 1,
+				damage = 1.2,
 				cooldown = {
-					0.8,
-					1.3
-				}
-			},
-			{
-				damage = 1,
-				cooldown = {
-					0.9,
-					1.4
+					0,
+					0.45
 				}
 			},
 			{
 				damage = 1,
 				cooldown = {
-					1,
-					1.5
+					0,
+					0.5
+				}
+			},
+			{
+				damage = 1,
+				cooldown = {
+					0,
+					0.5
 				}
 			}
 		},
@@ -2462,66 +2472,66 @@ BreedTweaks.diminishing_damage_and_cooldown = {
 		},
 		cataclysm = {
 			{
-				damage = 2,
+				damage = 2.5,
 				cooldown = {
-					1,
-					1.5
+					0,
+					0.25
 				}
 			},
 			{
 				damage = 2,
 				cooldown = {
-					1,
-					1.5
+					0,
+					0.25
 				}
 			},
 			{
-				damage = 1.5,
+				damage = 2,
 				cooldown = {
-					1,
-					1.5
+					0,
+					0.25
 				}
 			},
 			{
-				damage = 1,
+				damage = 1.8,
 				cooldown = {
-					1.25,
-					1.75
+					0,
+					0.3
 				}
 			},
 			{
-				damage = 1,
+				damage = 1.6,
 				cooldown = {
-					1.5,
-					2
+					0,
+					0.35
 				}
 			},
 			{
-				damage = 1,
+				damage = 1.4,
 				cooldown = {
-					1.75,
-					2.25
+					0,
+					0.4
 				}
 			},
 			{
-				damage = 1,
+				damage = 1.2,
 				cooldown = {
-					2,
-					2.5
-				}
-			},
-			{
-				damage = 1,
-				cooldown = {
-					2.25,
-					3.25
+					0,
+					0.45
 				}
 			},
 			{
 				damage = 1,
 				cooldown = {
-					2.5,
-					3.5
+					0,
+					0.5
+				}
+			},
+			{
+				damage = 1,
+				cooldown = {
+					0,
+					0.5
 				}
 			}
 		},
@@ -2529,64 +2539,64 @@ BreedTweaks.diminishing_damage_and_cooldown = {
 			{
 				damage = 2.5,
 				cooldown = {
-					0.5,
-					1
+					0,
+					0.25
 				}
 			},
 			{
 				damage = 2,
 				cooldown = {
-					0.5,
-					1
+					0,
+					0.25
 				}
 			},
 			{
-				damage = 1.5,
+				damage = 2,
 				cooldown = {
-					0.5,
-					1
+					0,
+					0.25
 				}
 			},
 			{
-				damage = 1,
+				damage = 1.8,
 				cooldown = {
-					0.5,
-					1
+					0,
+					0.3
 				}
 			},
 			{
-				damage = 1,
+				damage = 1.6,
 				cooldown = {
-					0.6,
-					1.1
+					0,
+					0.35
 				}
 			},
 			{
-				damage = 1,
+				damage = 1.4,
 				cooldown = {
-					0.7,
-					1.2
+					0,
+					0.4
 				}
 			},
 			{
-				damage = 1,
+				damage = 1.2,
 				cooldown = {
-					0.8,
-					1.3
-				}
-			},
-			{
-				damage = 1,
-				cooldown = {
-					0.9,
-					1.4
+					0,
+					0.45
 				}
 			},
 			{
 				damage = 1,
 				cooldown = {
-					1,
-					1.5
+					0,
+					0.5
+				}
+			},
+			{
+				damage = 1,
+				cooldown = {
+					0,
+					0.5
 				}
 			}
 		},
