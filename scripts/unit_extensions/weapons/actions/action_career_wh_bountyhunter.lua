@@ -30,10 +30,6 @@ ActionCareerWHBountyhunter.client_owner_start_action = function (self, new_actio
 
 	career_extension:start_activated_ability_cooldown()
 
-	if talent_extension:has_talent("victor_bountyhunter_activated_ability_reset_cooldown_on_stacks") then
-		career_extension:set_activated_ability_cooldown_paused()
-	end
-
 	local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
 
 	inventory_extension:check_and_drop_pickups("career_ability")

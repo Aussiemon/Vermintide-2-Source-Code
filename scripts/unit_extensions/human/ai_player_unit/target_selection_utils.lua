@@ -1421,6 +1421,7 @@ end
 PerceptionUtils.pick_corruptor_target = function (unit, blackboard, breed)
 	local side = blackboard.side
 	local PLAYER_AND_BOT_UNITS = side.ENEMY_PLAYER_AND_BOT_UNITS
+	local VALID_TARGETS = side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS
 	local PLAYER_AND_BOT_POSITIONS = side.ENEMY_PLAYER_AND_BOT_POSITIONS
 	local is_of_interest_to_corruptor = AiUtils.is_of_interest_to_corruptor
 	local pos = POSITION_LOOKUP[unit]
@@ -1429,7 +1430,7 @@ PerceptionUtils.pick_corruptor_target = function (unit, blackboard, breed)
 	local closest_distance_score = math.huge
 
 	for k, player_unit in ipairs(PLAYER_AND_BOT_UNITS) do
-		if is_of_interest_to_corruptor(unit, player_unit) then
+		if VALID_TARGETS[player_unit] and is_of_interest_to_corruptor(unit, player_unit) then
 			local enemy_pos = PLAYER_AND_BOT_POSITIONS[k]
 			local dist_sq = Vector3.distance_squared(pos, enemy_pos)
 			local score = dist_sq

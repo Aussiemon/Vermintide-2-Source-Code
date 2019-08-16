@@ -275,27 +275,30 @@ PlayerManager.remove_player = function (self, peer_id, local_player_id)
 
 	local unique_id = self:_unique_id(peer_id, local_player_id)
 	local player = self._players[unique_id]
-	local owned_units = player.owned_units
 
-	for unit, _ in pairs(owned_units) do
-		self:relinquish_unit_ownership(unit)
+	if player then
+		local owned_units = player.owned_units
+
+		for unit, _ in pairs(owned_units) do
+			self:relinquish_unit_ownership(unit)
+		end
+
+		self._players[unique_id] = nil
+		self._human_players[unique_id] = nil
+		local peer_table = self._players_by_peer[peer_id]
+		peer_table[local_player_id] = nil
+
+		if table.is_empty(peer_table) then
+			self._players_by_peer[peer_id] = nil
+		end
+
+		if player:is_player_controlled() then
+			self._num_human_players = self._num_human_players - 1
+		end
+
+		self._statistics_db:unregister(player:stats_id())
+		player:destroy()
 	end
-
-	self._players[unique_id] = nil
-	self._human_players[unique_id] = nil
-	local peer_table = self._players_by_peer[peer_id]
-	peer_table[local_player_id] = nil
-
-	if table.is_empty(peer_table) then
-		self._players_by_peer[peer_id] = nil
-	end
-
-	if player:is_player_controlled() then
-		self._num_human_players = self._num_human_players - 1
-	end
-
-	self._statistics_db:unregister(player:stats_id())
-	player:destroy()
 end
 
 PlayerManager.player = function (self, peer_id, local_player_id)

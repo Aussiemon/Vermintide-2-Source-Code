@@ -923,7 +923,7 @@ if razerchroma_defined then
 		setup = "cb_razer_chroma_setup",
 		saved_value = "cb_razer_chroma_saved_value",
 		callback = "cb_razer_chroma",
-		tooltip_text = "tooltip_alien_fx",
+		tooltip_text = "tooltip_razer_chroma",
 		widget_type = "stepper"
 	}
 end

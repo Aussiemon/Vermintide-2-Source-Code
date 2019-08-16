@@ -142,11 +142,6 @@ CareerAbilityWHCaptain._run_ability = function (self, new_initial_speed)
 	CharacterStateHelper.play_animation_event(owner_unit, "witch_hunter_active_ability")
 
 	local radius = 10
-
-	if talent_extension:has_talent("victor_witchhunter_activated_ability_radius", "witch_hunter", true) then
-		radius = 15
-	end
-
 	local position = POSITION_LOOKUP[owner_unit]
 
 	if not talent_extension:has_talent("victor_witchhunter_activated_ability_guaranteed_crit_self_buff") then

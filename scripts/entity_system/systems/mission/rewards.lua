@@ -79,10 +79,8 @@ Rewards._mission_results = function (self, game_won)
 	local difficulty = difficulty_manager:get_difficulty()
 	local difficulty_rank = difficulty_manager:get_difficulty_rank()
 
-	if game_mode_key == "survival" then
-		self:_add_missions_from_mission_system(mission_results, 1, 1)
-	elseif game_mode_key == "weave" then
-		if game_won then
+	if game_won then
+		if game_mode_key == "weave" then
 			local difficulty_settings = difficulty_manager:get_difficulty_settings()
 			local weave_settings = difficulty_settings.weave_settings
 			local experience_reward = weave_settings.experience_reward_on_complete
@@ -90,16 +88,45 @@ Rewards._mission_results = function (self, game_won)
 				text = "end_screen_mission_completed",
 				experience = experience_reward * self:experience_multiplier()
 			}
-		end
-	elseif game_won then
-		self:_add_missions_from_mission_system(mission_results, difficulty_rank)
+		else
+			self:_add_missions_from_mission_system(mission_results, difficulty_rank)
 
-		local mission_complete_reward = {
-			text = "mission_completed_" .. difficulty,
-			experience = EXPERIENCE_REWARD * self:experience_multiplier()
+			local mission_complete_reward = {
+				text = "mission_completed_" .. difficulty,
+				experience = EXPERIENCE_REWARD * self:experience_multiplier()
+			}
+
+			table.insert(mission_results, 1, mission_complete_reward)
+		end
+	elseif game_mode_key == "weave" then
+		local difficulty_settings = difficulty_manager:get_difficulty_settings()
+		local weave_settings = difficulty_settings.weave_settings
+		local experience_reward = weave_settings.experience_reward_on_complete
+		local mission_system = Managers.state.entity:system("mission_system")
+		local percentages_completed = mission_system:percentages_completed()
+		local best_completed_distance = 0
+
+		for _, completed_distance in pairs(percentages_completed) do
+			if best_completed_distance < completed_distance then
+				best_completed_distance = completed_distance
+			end
+		end
+
+		local current_level_settings = LevelHelper:current_level_settings()
+		local disable_percentage_completed = current_level_settings and current_level_settings.disable_percentage_completed
+
+		if disable_percentage_completed then
+			best_completed_distance = 0
+		else
+			best_completed_distance = math.clamp(best_completed_distance, 0, 1)
+		end
+
+		local mission_failed_reward = {
+			text = "mission_failed",
+			experience = experience_reward * self:experience_multiplier() * best_completed_distance
 		}
 
-		table.insert(mission_results, 1, mission_complete_reward)
+		table.insert(mission_results, 1, mission_failed_reward)
 	else
 		local mission_system = Managers.state.entity:system("mission_system")
 		local percentages_completed = mission_system:percentages_completed()
@@ -114,8 +141,10 @@ Rewards._mission_results = function (self, game_won)
 		local current_level_settings = LevelHelper:current_level_settings()
 		local disable_percentage_completed = current_level_settings and current_level_settings.disable_percentage_completed
 
-		if difficulty_rank <= 2 and not disable_percentage_completed then
-			best_completed_distance = math.clamp(best_completed_distance, 0.25, 1)
+		if disable_percentage_completed then
+			best_completed_distance = 0
+		else
+			best_completed_distance = math.clamp(best_completed_distance, 0, 1)
 		end
 
 		local mission_failed_reward = {

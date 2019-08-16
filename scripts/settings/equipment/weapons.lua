@@ -129,7 +129,7 @@ Dots = {
 			attacker_unit_buff_extension:trigger_procs("on_enemy_ignited", dot_template_name, damage_profile, target_index, target_unit, hit_zone_name, damage_source, is_critical_strike)
 		end
 
-		add_dot(dot_template_name, target_unit, attacker_unit, damage_source, power_level)
+		add_dot_network_synced(dot_template_name, target_unit, attacker_unit, damage_source, power_level)
 
 		return true
 	end,

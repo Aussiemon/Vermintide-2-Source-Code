@@ -31,6 +31,10 @@ ScoreboardHelper.scoreboard_topic_stats = {
 			{
 				"kills_per_breed",
 				"chaos_raider"
+			},
+			{
+				"kills_per_breed",
+				"beastmen_bestigor"
 			}
 		},
 		sort_function = function (a, b)
@@ -68,6 +72,10 @@ ScoreboardHelper.scoreboard_topic_stats = {
 			{
 				"kills_per_breed",
 				"chaos_vortex_sorcerer"
+			},
+			{
+				"kills_per_breed",
+				"beastmen_standard_bearer"
 			}
 		},
 		sort_function = function (a, b)
@@ -133,6 +141,10 @@ ScoreboardHelper.scoreboard_topic_stats = {
 			{
 				"damage_dealt_per_breed",
 				"chaos_troll"
+			},
+			{
+				"damage_dealt_per_breed",
+				"beastmen_minotaur"
 			}
 		},
 		sort_function = function (a, b)

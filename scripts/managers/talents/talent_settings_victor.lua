@@ -116,11 +116,15 @@ local buff_tweak_data = {
 		multiplier = -0.01
 	},
 	victor_bountyhunter_activated_ability_reset_cooldown_on_stacks = {
-		multiplier = 0.04
+		multiplier = 0.02
 	},
 	victor_bountyhunter_activated_ability_reset_cooldown_on_stacks_buff = {
 		max_stacks = 25,
-		multiplier = 0.04
+		multiplier = 0.02
+	},
+	victor_bountyhunter_activated_ability_passive_cooldown_reduction = {
+		cooldown = 10,
+		multiplier = 0.15
 	},
 	victor_bountyhunter_activated_ability_shotgun = {
 		required_target_number = 4,
@@ -838,12 +842,18 @@ TalentBuffTemplates.witch_hunter = {
 	victor_bountyhunter_activated_ability_reset_cooldown_on_stacks = {
 		buffs = {
 			{
-				perk = "cooldown_reduction_override",
-				event_buff = true,
 				event = "on_kill",
-				remove_buff_func = "unpause_activated_ability",
-				apply_buff_func = "pause_activated_ability",
+				event_buff = true,
 				buff_func = ProcFunctions.victor_bountyhunter_reduce_activated_ability_cooldown_ignore_paused_on_kill
+			}
+		}
+	},
+	victor_bountyhunter_activated_ability_passive_cooldown_reduction = {
+		buffs = {
+			{
+				event = "on_critical_hit",
+				event_buff = true,
+				buff_func = ProcFunctions.victor_bountyhunter_reduce_activated_ability_cooldown_on_passive_crit
 			}
 		}
 	},
@@ -1846,18 +1856,22 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "victor_bountyhunter_activated_ability_reset_cooldown_on_stacks_desc",
+		description = "victor_bountyhunter_activated_ability_reset_cooldown_on_stacks_2_desc",
 		name = "victor_bountyhunter_activated_ability_reset_cooldown_on_stacks",
 		num_ranks = 1,
 		icon = "victor_bountyhunter_activated_ability_reset_cooldown_on_stacks",
 		description_values = {
 			{
-				value = buff_tweak_data.victor_bountyhunter_activated_ability_reset_cooldown_on_stacks_buff.max_stacks
+				value_type = "percent",
+				value = buff_tweak_data.victor_bountyhunter_activated_ability_passive_cooldown_reduction.multiplier
+			},
+			{
+				value = buff_tweak_data.victor_bountyhunter_activated_ability_passive_cooldown_reduction.cooldown
 			}
 		},
 		requirements = {},
 		buffs = {
-			"victor_bountyhunter_activated_ability_reset_cooldown_on_stacks"
+			"victor_bountyhunter_activated_ability_passive_cooldown_reduction"
 		},
 		buff_data = {}
 	},

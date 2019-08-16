@@ -2407,6 +2407,30 @@ ProcFunctions = {
 			end
 		end
 	end,
+	victor_bountyhunter_reduce_activated_ability_cooldown_on_passive_crit = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local t = Managers.time:time("game")
+
+			if not buff.cooldown or buff.cooldown < t then
+				local attack_type = params[2]
+
+				if attack_type ~= "light_attack" and attack_type ~= "heavy_attack" then
+					local career_extension = ScriptUnit.extension(player_unit, "career_system")
+
+					if career_extension then
+						local template = buff.template
+						local cooldown = template.cooldown
+
+						career_extension:reduce_activated_ability_cooldown_percent(buff.multiplier, nil)
+
+						buff.cooldown = t + cooldown
+					end
+				end
+			end
+		end
+	end,
 	victor_bounty_hunter_reduce_activated_ability_cooldown_railgun = function (player, buff, params)
 		local player_unit = player.player_unit
 
@@ -4099,7 +4123,7 @@ BuffTemplates = {
 				name = "linesman_unbalance",
 				perk = "linesman_stagger_damage",
 				max_stacks = 1,
-				display_multiplier = 0.2
+				display_multiplier = 0.4
 			}
 		}
 	},

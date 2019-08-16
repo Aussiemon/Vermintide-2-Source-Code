@@ -42,6 +42,29 @@ function flow_callback_last_level_played_was_weave(params)
 	return flow_return_table
 end
 
+function flow_callback_ui_onboarding_tutorial_completed(params)
+	local completed = false
+	local player_manager = Managers.player
+
+	if player_manager then
+		local statistics_db = player_manager:statistics_db()
+		local local_player = player_manager:local_player()
+
+		if statistics_db and local_player then
+			local tutorial = params.tutorial_name and WeaveUITutorials[params.tutorial_name]
+
+			if tutorial then
+				local ui_onboarding_state = WeaveOnboardingUtils.get_ui_onboarding_state(statistics_db, local_player:stats_id())
+				completed = WeaveOnboardingUtils.tutorial_completed(ui_onboarding_state, tutorial)
+			end
+		end
+	end
+
+	flow_return_table.completed = completed
+
+	return flow_return_table
+end
+
 function flow_callback_get_completed_game_difficulty(params)
 	local player_manager = Managers.player
 	local statistics_db = player_manager:statistics_db()

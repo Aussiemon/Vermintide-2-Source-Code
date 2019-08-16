@@ -29,8 +29,8 @@ LevelSettings.crater = {
 				potions = 8,
 				grenades = 8,
 				healing = {
-					first_aid_kit = 4,
-					healing_draught = 6
+					first_aid_kit = 5,
+					healing_draught = 8
 				},
 				level_events = {
 					explosive_barrel = 4,
@@ -40,7 +40,7 @@ LevelSettings.crater = {
 			secondary = {
 				ammo = 4,
 				grenades = 2,
-				healing = 2,
+				healing = 3,
 				potions = 4
 			}
 		},
@@ -51,8 +51,8 @@ LevelSettings.crater = {
 				potions = 8,
 				grenades = 6,
 				healing = {
-					first_aid_kit = 4,
-					healing_draught = 6
+					first_aid_kit = 5,
+					healing_draught = 8
 				},
 				level_events = {
 					explosive_barrel = 3,
@@ -62,7 +62,7 @@ LevelSettings.crater = {
 			secondary = {
 				ammo = 4,
 				grenades = 2,
-				healing = 2,
+				healing = 3,
 				potions = 4
 			}
 		}
