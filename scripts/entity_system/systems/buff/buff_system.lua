@@ -196,9 +196,10 @@ end
 
 local params = {}
 
-BuffSystem._add_buff_helper_function = function (self, unit, template_name, attacker_unit, server_buff_id)
+BuffSystem._add_buff_helper_function = function (self, unit, template_name, attacker_unit, server_buff_id, power_level)
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
 	params.attacker_unit = attacker_unit
+	params.power_level = power_level
 
 	if server_buff_id > 0 then
 		if not self.server_controlled_buffs[unit] then
@@ -227,7 +228,7 @@ BuffSystem._add_buff_helper_function = function (self, unit, template_name, atta
 	end
 end
 
-BuffSystem.add_buff = function (self, unit, template_name, attacker_unit, is_server_controlled)
+BuffSystem.add_buff = function (self, unit, template_name, attacker_unit, is_server_controlled, power_level)
 	if not ScriptUnit.has_extension(unit, "buff_system") then
 		return
 	end
@@ -237,7 +238,7 @@ BuffSystem.add_buff = function (self, unit, template_name, attacker_unit, is_ser
 	local server_buff_id = (is_server_controlled and self:_next_free_server_buff_id()) or 0
 
 	if ScriptUnit.has_extension(unit, "buff_system") then
-		self:_add_buff_helper_function(unit, template_name, attacker_unit, server_buff_id)
+		self:_add_buff_helper_function(unit, template_name, attacker_unit, server_buff_id, power_level)
 	end
 
 	local network_manager = self.network_manager

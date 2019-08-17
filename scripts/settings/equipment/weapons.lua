@@ -62,7 +62,7 @@ local function add_dot_network_synced(dot_template_name, hit_unit, attacker_unit
 	if ScriptUnit.has_extension(hit_unit, "buff_system") then
 		local buff_system = Managers.state.entity:system("buff_system")
 
-		buff_system:add_buff(hit_unit, dot_template_name, attacker_unit, false)
+		buff_system:add_buff(hit_unit, dot_template_name, attacker_unit, false, power_level)
 	end
 end
 
