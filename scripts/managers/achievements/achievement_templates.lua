@@ -3133,6 +3133,7 @@ for _, career_name in ipairs(hero_careers) do
 			for _, level in ipairs(UnlockableLevels) do
 				wins = wins + statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career_name, level, "harder")
 				wins = wins + statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career_name, level, "hardest")
+				wins = wins + statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career_name, level, "cataclysm")
 			end
 
 			return wins >= 100
@@ -3143,6 +3144,7 @@ for _, career_name in ipairs(hero_careers) do
 			for _, level in ipairs(UnlockableLevels) do
 				wins = wins + statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career_name, level, "harder")
 				wins = wins + statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career_name, level, "hardest")
+				wins = wins + statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career_name, level, "cataclysm")
 			end
 
 			if wins > 100 then

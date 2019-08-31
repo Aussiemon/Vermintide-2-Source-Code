@@ -231,20 +231,43 @@ AdventureMechanism.get_state = function (self)
 	return self._state
 end
 
+local TEMP_LOBBY_DATA = {}
+
 AdventureMechanism.profile_available_for_peer = function (self, profile_synchronizer, peer_id, local_player_id, profile_name, career_name)
 	local profile_index = FindProfileIndex(profile_name)
 	local owners = profile_synchronizer:owners(profile_index)
+	local local_player = Managers.player:local_player()
+	local is_server = local_player.is_server
+
+	if is_server then
+		local reserver_peer_id, local_player_id = profile_synchronizer:profile_reserver_peer_id(profile_index)
+
+		if reserver_peer_id and reserver_peer_id ~= peer_id then
+			return false
+		end
+	else
+		table.clear(TEMP_LOBBY_DATA)
+
+		local base_name = "player_slot_"
+		local lobby = Managers.state.network:lobby()
+
+		for _, idx in pairs(ProfilePriority) do
+			local key = base_name .. idx
+			TEMP_LOBBY_DATA[key] = lobby:lobby_data(key)
+		end
+
+		if not Managers.matchmaking:hero_available_in_lobby_data(profile_index, TEMP_LOBBY_DATA) then
+			return false
+		end
+	end
+
 	local has_owners = next(owners)
 
-	if not has_owners then
-		return true
+	if has_owners and not profile_synchronizer:is_only_owner(peer_id, local_player_id, profile_index) then
+		return false
 	end
 
-	if profile_synchronizer:is_only_owner(peer_id, local_player_id, profile_index) then
-		return true
-	end
-
-	return false
+	return true
 end
 
 return

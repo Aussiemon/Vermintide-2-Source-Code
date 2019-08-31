@@ -281,6 +281,12 @@ IngameUI.weaves_requirements_fulfilled = function (self)
 		return true
 	end
 
+	local twitch_connection = Managers.twitch and (Managers.twitch:is_connected() or Managers.twitch:is_activated())
+
+	if twitch_connection then
+		return false
+	end
+
 	local player_manager = Managers.player
 	local statistics_db = player_manager:statistics_db()
 	local player = player_manager:local_player()

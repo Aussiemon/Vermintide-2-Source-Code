@@ -1116,7 +1116,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Olof Jönsson (Marauders, Skaven",
+			text = "Olof Jönsson (Marauders, Skaven)",
 			type = "person"
 		},
 		{

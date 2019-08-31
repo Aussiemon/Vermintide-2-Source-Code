@@ -47,7 +47,8 @@ WeaveTutorialPopupUI._create_ui_elements = function (self)
 	end
 
 	self.widgets_by_name = widgets_by_name
-	self.ok_button = widgets_by_name.ok_button
+	self.button_1 = widgets_by_name.button_1
+	self.button_2 = widgets_by_name.button_2
 	self.title_text = widgets_by_name.title_text
 	self.sub_title_text = widgets_by_name.sub_title_text
 	self.body_text = UIWidget.init(body_definitions.body_text)
@@ -56,22 +57,24 @@ WeaveTutorialPopupUI._create_ui_elements = function (self)
 	self.title_start_y = UISceneGraph.get_world_position(ui_scenegraph, "title")[2]
 	self.sub_title_start_y = UISceneGraph.get_world_position(ui_scenegraph, "sub_title")[2]
 	self.body_start_y = UISceneGraph.get_world_position(ui_scenegraph, "body")[2]
-	self.button_height = scenegraph_definition.ok_button.position[2] + scenegraph_definition.ok_button.size[2]
+	self.button_height = scenegraph_definition.button_1.position[2] + scenegraph_definition.button_1.size[2]
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
 end
 
-WeaveTutorialPopupUI.show = function (self, title, sub_title, body)
+WeaveTutorialPopupUI.show = function (self, title, sub_title, body, optional_button_2, optional_button_2_func)
 	if self.is_visible then
 		print("WeaveTutorialPopupUI is already visible")
 
 		return
 	end
 
+	self._optional_button_2_func = optional_button_2_func
+
 	self:start_transition_animation("on_show", "transition_enter")
-	self:populate_message(title, sub_title, body)
+	self:populate_message(title, sub_title, body, optional_button_2)
 
 	self.is_visible = true
 
@@ -93,7 +96,8 @@ WeaveTutorialPopupUI.destroy = function (self)
 
 	self.widgets = nil
 	self.widgets_by_name = nil
-	self.ok_button = nil
+	self.button_1 = nil
+	self.button_2 = nil
 	self.title_text = nil
 	self.sub_title_text = nil
 	self.body_text = nil
@@ -107,7 +111,14 @@ WeaveTutorialPopupUI.update = function (self, dt)
 
 	local input_service = self.input_manager:get_service("weave_tutorial")
 
-	if UIUtils.is_button_pressed(self.ok_button) or input_service:get("toggle_menu", true) or input_service:get("confirm_press", true) then
+	if UIUtils.is_button_pressed(self.button_1) or input_service:get("toggle_menu", true) or input_service:get("confirm_press", true) then
+		self:hide()
+
+		return
+	end
+
+	if self._optional_button_2_func and (UIUtils.is_button_pressed(self.button_2) or input_service:get("special_1_press", true)) then
+		self:_optional_button_2_func()
 		self:hide()
 
 		return
@@ -131,7 +142,8 @@ WeaveTutorialPopupUI._update_animations = function (self, dt)
 		end
 	end
 
-	UIWidgetUtils.animate_default_button(self.ok_button, dt)
+	UIWidgetUtils.animate_default_button(self.button_1, dt)
+	UIWidgetUtils.animate_default_button(self.button_2, dt)
 end
 
 WeaveTutorialPopupUI._draw = function (self, dt, input_service)
@@ -154,13 +166,22 @@ WeaveTutorialPopupUI._draw = function (self, dt, input_service)
 	end
 end
 
-WeaveTutorialPopupUI.populate_message = function (self, title_text, sub_title_text, body_text)
+WeaveTutorialPopupUI.populate_message = function (self, title_text, sub_title_text, body_text, optional_button_2)
 	local title = self.title_text.content
 	title.text = title_text or ""
 	title.visible = title_text ~= nil
 	local sub_title = self.sub_title_text.content
 	sub_title.text = sub_title_text or ""
 	sub_title.visible = sub_title_text ~= nil
+	local button_2 = self.button_2
+
+	if optional_button_2 then
+		button_2.content.visible = true
+		button_2.content.title_text = Localize(optional_button_2)
+	else
+		button_2.content.visible = false
+	end
+
 	self.body_paragraphs = self:break_paragraphs(Localize(body_text))
 
 	self:resize_to_fit()
@@ -205,6 +226,17 @@ WeaveTutorialPopupUI.resize_to_fit = function (self)
 	body_text_def.position[2] = (sub_title_visible and original_body_pos[2]) or original_subtitle_pos[2]
 	local base_window_height = self:calculate_base_window_height()
 	window_def.size[2] = body_height + base_window_height
+	local button_1 = self.button_1
+	local button_2 = self.button_2
+
+	if button_2.content.visible then
+		local spacing = 20
+		local button_size = scenegraph_definition.button_1.size
+		button_1.offset[1] = button_size[1] * 0.5 + spacing
+		button_2.offset[1] = -button_size[1] * 0.5 - spacing
+	else
+		button_1.offset[1] = 0
+	end
 end
 
 WeaveTutorialPopupUI.calculate_base_window_height = function (self)

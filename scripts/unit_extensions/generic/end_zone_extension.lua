@@ -483,7 +483,7 @@ EndZoneExtension._end_mission_check = function (self, dt, t)
 					local status_extension = ScriptUnit.extension(player_unit, "status_system")
 
 					if distance_squared > self.waystone_size^2 then
-						if not status_extension:is_disabled() then
+						if not status_extension:is_disabled_non_temporarily() then
 							all_inside = false
 							players_outside_portal[#players_outside_portal] = player_unit
 						end

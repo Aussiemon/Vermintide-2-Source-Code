@@ -127,7 +127,8 @@ end
 
 DarknessSystem._update_player_unit_darkness = function (self, dt, t)
 	for unit, data in pairs(self._player_unit_darkness_data) do
-		local pos = POSITION_LOOKUP[unit] + Vector3(0, 0, 1)
+		local unit_position = POSITION_LOOKUP[unit] or Unit.world_position(unit, 0)
+		local pos = unit_position + Vector3(0, 0, 1)
 		local in_darkness = self:is_in_darkness_volume(pos)
 		local light_value = nil
 

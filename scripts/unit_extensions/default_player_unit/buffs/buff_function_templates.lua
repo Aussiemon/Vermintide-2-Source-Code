@@ -3248,7 +3248,7 @@ BuffFunctionTemplates.functions = {
 			Unit.flow_event(unit, "vfx_career_ability_start")
 		end
 
-		if is_server() then
+		if is_local(unit) or (is_server() and is_bot(unit)) then
 			local status_extension = ScriptUnit.has_extension(unit, "status_system")
 
 			if status_extension then
@@ -3276,11 +3276,6 @@ BuffFunctionTemplates.functions = {
 					local status_extension = ScriptUnit.extension(unit, "status_system")
 
 					status_extension:set_is_dodging(false)
-
-					local network_manager = Managers.state.network
-					local unit_id = network_manager:unit_game_object_id(unit)
-
-					network_manager.network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.dodging, false, unit_id, 0)
 				end
 			end
 

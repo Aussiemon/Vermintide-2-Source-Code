@@ -472,6 +472,12 @@ PeerStates.Disconnected = {
 		profile_synchronizer:peer_left_session(peer_id)
 		Managers.party:server_peer_left_session(peer_id)
 		server.connection_handler:disconnect_peers(peer_id)
+
+		local is_client = peer_id ~= Network.peer_id()
+
+		if is_client then
+			Managers.mechanism:client_left(peer_id)
+		end
 	end,
 	update = function (self, dt)
 		return

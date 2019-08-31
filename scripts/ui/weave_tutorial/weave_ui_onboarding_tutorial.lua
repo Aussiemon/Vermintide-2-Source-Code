@@ -104,8 +104,10 @@ WeaveUIOnboardingTutorial.show_tutorial = function (self, tutorial_data)
 		local title = tutorial_data.popup_title
 		local sub_title = tutorial_data.popup_sub_title
 		local body = tutorial_data.popup_body
+		local optional_button_2 = tutorial_data.optional_button_2
+		local optional_button_2_func = tutorial_data.optional_button_2_func
 
-		self.tutorial_popup:show(title, sub_title, body)
+		self.tutorial_popup:show(title, sub_title, body, optional_button_2, optional_button_2_func)
 		self:set_completed(tutorial_data)
 	end
 end

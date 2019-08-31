@@ -72,5 +72,19 @@ WeaveUITutorials.requirements_not_met = {
 	popup_title = "menu_weave_area_locked_title",
 	popup_body = "menu_weave_area_locked_body"
 }
+WeaveUITutorials.twitch_not_supported_for_weaves = {
+	optional_button_2 = "input_description_disconnect",
+	ui_onboarding_bit = 0,
+	popup_title = "menu_weave_play_title",
+	onboarding_step = 0,
+	popup_body = "menu_weave_area_locked_twitch_body",
+	optional_button_2_func = function (self)
+		local twitch_connection = Managers.twitch and (Managers.twitch:is_connected() or Managers.twitch:is_activated())
+
+		if twitch_connection then
+			Managers.twitch:disconnect()
+		end
+	end
+}
 
 return

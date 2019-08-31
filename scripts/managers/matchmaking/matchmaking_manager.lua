@@ -1260,7 +1260,7 @@ MatchmakingManager.rpc_matchmaking_request_join_lobby = function (self, sender, 
 	local matchmaking = self.lobby:lobby_data("matchmaking")
 	local lobby_game_mode_id = self.lobby:lobby_data("game_mode")
 	local lobby_game_mode_index = tonumber(lobby_game_mode_id)
-	local lobby_game_mode = NetworkLookup.game_modes[lobby_game_mode_index]
+	local lobby_game_mode = (PLATFORM == "ps4" and lobby_game_mode_id) or (lobby_game_mode_index and NetworkLookup.game_modes[lobby_game_mode_index]) or "n/a"
 	local lobby_difficulty = self.lobby:lobby_data("difficulty")
 	local is_friend = false
 

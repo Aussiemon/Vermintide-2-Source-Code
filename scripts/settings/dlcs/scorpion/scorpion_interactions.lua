@@ -52,6 +52,14 @@ InteractionDefinitions.weave_level_select_access.client.stop = function (world, 
 			return
 		end
 
+		local twitch_connection = Managers.twitch and (Managers.twitch:is_connected() or Managers.twitch:is_activated())
+
+		if twitch_connection then
+			Managers.state.event:trigger("weave_tutorial_message", WeaveUITutorials.twitch_not_supported_for_weaves)
+
+			return
+		end
+
 		local fulfill_requirements_for_weave_levels = InteractionDefinitions._fulfill_requirements_for_weave()
 
 		if fulfill_requirements_for_weave_levels then
@@ -69,10 +77,7 @@ InteractionDefinitions.weave_level_select_access.client.stop = function (world, 
 end
 
 InteractionDefinitions.weave_level_select_access.client.can_interact = function (interactor_unit, interactable_unit, data, config)
-	local twitch_connection = Managers.twitch and (Managers.twitch:is_connected() or Managers.twitch:is_activated())
-	local fulfill = not twitch_connection
-
-	return fulfill
+	return true
 end
 
 InteractionDefinitions.weave_level_select_access.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)

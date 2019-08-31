@@ -105,7 +105,9 @@ GameModeBase._remove_bot_instant = function (self, bot_player)
 
 	local status = Managers.party:get_player_status(peer_id, local_player_id)
 
-	Managers.party:remove_peer_from_party(peer_id, local_player_id, status.party_id)
+	if status.party_id then
+		Managers.party:remove_peer_from_party(peer_id, local_player_id, status.party_id)
+	end
 end
 
 GameModeBase._remove_bot_update_safe = function (self, bot_player)

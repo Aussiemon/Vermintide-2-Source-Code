@@ -563,7 +563,11 @@ AimTemplates.chaos_marauder = {
 
 					if target_unit_id > 0 then
 						local target_unit = unit_storage:unit(target_unit_id)
-						local target_distance = target_unit and Vector3.distance(POSITION_LOOKUP[unit], POSITION_LOOKUP[target_unit])
+
+						if target_unit then
+							local target_distance = Vector3.distance(POSITION_LOOKUP[unit], POSITION_LOOKUP[target_unit] or Unit.world_position(target_unit, 0))
+						end
+
 						local head_constraint_target = data.head_constraint_target
 						data.lerp_aiming_disabled = true
 						local has_head_index = target_unit and Unit.has_node(target_unit, "j_head")

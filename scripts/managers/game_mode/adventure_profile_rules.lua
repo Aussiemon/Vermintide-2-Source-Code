@@ -19,7 +19,7 @@ AdventureProfileRules._owner_is_bot = function (self, peer_id, local_player_id)
 	return true
 end
 
-AdventureProfileRules._profile_available = function (self, profile_index, career_index)
+AdventureProfileRules._profile_available = function (self, profile_index, career_index, peer_id, local_player_id)
 	local owners = self._profile_synchronizer:owners(profile_index)
 
 	for _, owner_table in ipairs(owners) do
@@ -31,10 +31,16 @@ AdventureProfileRules._profile_available = function (self, profile_index, career
 		end
 	end
 
+	local reserver_peer_id, local_player_id = self._profile_synchronizer:profile_reserver_peer_id(profile_index)
+
+	if reserver_peer_id and reserver_peer_id ~= peer_id then
+		return false
+	end
+
 	return true
 end
 
-AdventureProfileRules._get_first_free_profile = function (self)
+AdventureProfileRules._get_first_free_profile = function (self, peer_id, local_player_id)
 	local player_manager = Managers.player
 	local profile_synchronizer = self._profile_synchronizer
 	local hero_profiles = PROFILES_BY_AFFILIATION.heroes
@@ -43,7 +49,7 @@ AdventureProfileRules._get_first_free_profile = function (self)
 		local profile_index = FindProfileIndex(profile_name)
 		local career_index = 1
 
-		if self:_profile_available(profile_index, career_index) then
+		if self:_profile_available(profile_index, career_index, peer_id, local_player_id) then
 			return profile_index, career_index
 		end
 	end
@@ -75,16 +81,16 @@ AdventureProfileRules.handle_profile_delegation_for_joining_player = function (s
 
 	if not current_profile_index then
 		local wanted_profile_index, wanted_career_index = self._network_server:wanted_profile(peer_id, local_player_id)
-		local can_use_wanted_profile = wanted_profile_index and wanted_career_index and self:_profile_available(wanted_profile_index, wanted_career_index)
+		local can_use_wanted_profile = wanted_profile_index and wanted_career_index and self:_profile_available(wanted_profile_index, wanted_career_index, peer_id, local_player_id)
 
 		if can_use_wanted_profile then
 			new_career_index = wanted_career_index
 			new_profile_index = wanted_profile_index
 		else
-			new_profile_index, new_career_index = self:_get_first_free_profile()
+			new_profile_index, new_career_index = self:_get_first_free_profile(peer_id, local_player_id)
 		end
 	elseif not self:_is_only_owner(peer_id, local_player_id, current_profile_index, current_career_index) then
-		new_profile_index, new_career_index = self:_get_first_free_profile()
+		new_profile_index, new_career_index = self:_get_first_free_profile(peer_id, local_player_id)
 	end
 
 	if new_profile_index and new_career_index then

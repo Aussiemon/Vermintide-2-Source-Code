@@ -53,7 +53,7 @@ TargetOverrideExtension.taunt = function (self, radius, duration, stagger, taunt
 end
 
 TargetOverrideExtension.update = function (self, unit, input, dt, context, t)
-	local position = POSITION_LOOKUP[unit]
+	local position = POSITION_LOOKUP[unit] or Unit.world_position(unit, 0)
 	local radius = OVERRIDE_RADIUS
 	local result_table = self._result_table
 	local override_time = t + OVERRIDE_LIFETIME

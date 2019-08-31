@@ -230,6 +230,10 @@ ProfileSynchronizer.owners = function (self, profile_index)
 	return self._profile_owners[profile_index]
 end
 
+ProfileSynchronizer.profile_reserver_peer_id = function (self, profile_index)
+	return self._slot_allocator:owner(profile_index)
+end
+
 ProfileSynchronizer.hot_join_sync = function (self, peer_id, local_ids)
 	local profile_owners = self._profile_owners
 	local network_transmit = self._network_transmit

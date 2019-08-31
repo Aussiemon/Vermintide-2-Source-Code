@@ -347,10 +347,11 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 	end
 
 	local current_hot_cs = DebugScreen.filtered_console_settings[DebugScreen.hot_id]
+	local setting_search_string, option_search_string = DebugScreen.search_string:match("([^.]*).?(.*)")
 
-	if DebugScreen.search_active and DebugScreen.search_string ~= "" then
+	if DebugScreen.search_active and setting_search_string ~= "" then
 		filtered_console_settings = {}
-		local search_string = string.gsub(DebugScreen.search_string, "[_ ]", "")
+		local search_string = string.gsub(setting_search_string, "[_ ]", "")
 
 		for i = 1, #DebugScreen.console_settings, 1 do
 			local cs = DebugScreen.console_settings[i]
@@ -374,6 +375,37 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 	end
 
 	DebugScreen.filtered_console_settings = filtered_console_settings
+	local filtered_option_ids = {}
+
+	if DebugScreen.active_id ~= nil then
+		if DebugScreen.search_active and option_search_string ~= "" then
+			local hot_id = DebugScreen.hot_id
+			local cs_current = filtered_console_settings[hot_id]
+			local search_string = string.gsub(option_search_string, "[_ ]", "")
+
+			for j = 1, #cs_current.options, 1 do
+				local option = cs_current.options[j]
+				local option_name = tostring(option)
+				local current_item = option_name:lower()
+				current_item = string.gsub(current_item, "[_ ]", "")
+
+				if current_item:find(search_string, 1, true) ~= nil then
+					filtered_option_ids[#filtered_option_ids + 1] = j
+				end
+			end
+
+			if not table.contains(filtered_option_ids, cs_current.hot_id) and #filtered_option_ids > 0 then
+				cs_current.hot_id = filtered_option_ids[1]
+			end
+		else
+			local hot_id = DebugScreen.hot_id
+			local cs_current = filtered_console_settings[hot_id]
+
+			for i = 1, #cs_current.options, 1 do
+				filtered_option_ids[i] = i
+			end
+		end
+	end
 
 	if input_service:get("up_key") and DebugScreen.hold_to_move_timer < t then
 		if DebugScreen.is_holding then
@@ -417,11 +449,12 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 			end
 		else
 			local cs = filtered_console_settings[DebugScreen.active_id]
+			local num_filtered_options = #filtered_option_ids
+			local current_filtered_id = table.find(filtered_option_ids, cs.hot_id)
 
-			if cs.hot_id == 1 then
-				cs.hot_id = #cs.options
-			else
-				cs.hot_id = cs.hot_id - 1
+			if current_filtered_id then
+				local next_filtered_id = ((current_filtered_id + num_filtered_options) - 2) % num_filtered_options + 1
+				cs.hot_id = filtered_option_ids[next_filtered_id]
 			end
 		end
 	end
@@ -468,11 +501,12 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 			end
 		else
 			local cs = filtered_console_settings[DebugScreen.active_id]
+			local num_filtered_options = #filtered_option_ids
+			local current_filtered_id = table.find(filtered_option_ids, cs.hot_id)
 
-			if cs.hot_id == #cs.options then
-				cs.hot_id = 1
-			else
-				cs.hot_id = cs.hot_id + 1
+			if current_filtered_id then
+				local next_filtered_id = current_filtered_id % num_filtered_options + 1
+				cs.hot_id = filtered_option_ids[next_filtered_id]
 			end
 		end
 	end
@@ -516,9 +550,10 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 
 	if DebugScreen.active_id ~= nil then
 		local cs = filtered_console_settings[DebugScreen.active_id]
+		local current_filtered_id = table.find(filtered_option_ids, cs.hot_id)
 
-		if cs.hot_id > 5 then
-			wanted_y_offset = wanted_y_offset + (cs.hot_id - 5) * (font_size + 2)
+		if current_filtered_id and current_filtered_id > 5 then
+			wanted_y_offset = wanted_y_offset + (current_filtered_id - 5) * (font_size + 2)
 		end
 	end
 
@@ -619,10 +654,11 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 				pos_y = pos_y - (font_size + 2)
 			end
 
-			for j = 1, #cs.options, 1 do
-				local option = cs.options[j]
-				local is_hot_sub = j == cs.hot_id
-				local is_selected_sub = j == cs.selected_id
+			for j = 1, #filtered_option_ids, 1 do
+				local current_option_index = filtered_option_ids[j]
+				local option = cs.options[current_option_index]
+				local is_hot_sub = current_option_index == cs.hot_id
+				local is_selected_sub = current_option_index == cs.selected_id
 				local text_sub = tostring(option)
 
 				if is_hot_sub then
@@ -637,7 +673,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 					Gui.text(gui, text_sub, font_mtrl, font_size, font, Vector3(option_x, pos_y, base_text_layer), text_color_active)
 				elseif is_hot_sub then
 					if (input_service:get("right_key") or (input_service:has("exclusive_right_key") and input_service:get("exclusive_right_key"))) and not opened_this_frame then
-						update_option(cs, j)
+						update_option(cs, current_option_index)
 
 						if current_selected_option_position then
 							DebugScreen.text_effects[#DebugScreen.text_effects + 1] = {
@@ -984,7 +1020,10 @@ DebugScreen.update_search = function (input_manager, input_service, gui, t, dt)
 		local stroke = keystrokes[i]
 
 		if type(stroke) == "string" then
-			DebugScreen.active_id = nil
+			if stroke:find(".", 1, true) == nil and DebugScreen.search_string:find(".", 1, true) == nil then
+				DebugScreen.active_id = nil
+			end
+
 			DebugScreen.search_string = DebugScreen.search_string .. string.lower(stroke)
 		elseif stroke == Keyboard.BACKSPACE and #DebugScreen.search_string > 0 then
 			local string_length = string.len(DebugScreen.search_string)

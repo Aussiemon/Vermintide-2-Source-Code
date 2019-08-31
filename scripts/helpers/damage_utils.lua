@@ -2024,7 +2024,7 @@ end
 DamageUtils.check_distance = function (action, blackboard, attacking_unit, target_unit)
 	local breed = blackboard.breed
 	local pos_attacker = POSITION_LOOKUP[attacking_unit]
-	local pos_target = POSITION_LOOKUP[target_unit]
+	local pos_target = POSITION_LOOKUP[target_unit] or Unit.world_position(target_unit, 0)
 	local to_target = pos_target - pos_attacker
 	local current_action = blackboard.action
 	local player_radius = 1

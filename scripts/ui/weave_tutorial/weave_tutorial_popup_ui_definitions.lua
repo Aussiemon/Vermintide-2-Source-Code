@@ -114,7 +114,21 @@ local scenegraph_definition = {
 			8
 		}
 	},
-	ok_button = {
+	button_1 = {
+		vertical_alignment = "bottom",
+		parent = "window",
+		horizontal_alignment = "center",
+		position = {
+			0,
+			-20,
+			10
+		},
+		size = {
+			160,
+			50
+		}
+	},
+	button_2 = {
 		vertical_alignment = "bottom",
 		parent = "window",
 		horizontal_alignment = "center",
@@ -244,7 +258,8 @@ local widget_definitions = {
 	}),
 	title_text = UIWidgets.create_simple_text("", "title", nil, nil, title_text_style),
 	sub_title_text = UIWidgets.create_simple_text("", "sub_title", nil, nil, sub_title_text_style),
-	ok_button = create_button("ok_button", scenegraph_definition.ok_button.size, Localize("menu_weave_tutorial_popup_confirm_button"))
+	button_1 = create_button("button_1", scenegraph_definition.button_1.size, Localize("menu_weave_tutorial_popup_confirm_button")),
+	button_2 = create_button("button_2", scenegraph_definition.button_2.size, "")
 }
 local body_definitions = {
 	body_text = UIWidgets.create_simple_text("", "body", nil, nil, body_text_style),

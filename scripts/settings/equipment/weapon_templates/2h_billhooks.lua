@@ -864,38 +864,28 @@ weapon_template.actions = {
 			damage_window_start = 0.23,
 			push_radius = 3,
 			anim_end_event = "attack_finished",
-			kind = "sweep",
+			range_mod = 1.35,
+			headshot_multiplier = 1.5,
 			first_person_hit_anim = "attack_hit_pull",
 			sweep_z_offset = 0.1,
 			width_mod = 20,
-			headshot_multiplier = 1.5,
-			hit_shield_stop_anim = "attack_hit",
 			damage_window_end = 0.33,
+			hit_shield_stop_anim = "attack_hit",
 			hit_effect = "melee_hit_axes_2h",
-			range_mod = 1.35,
+			kind = "sweep",
+			additional_critical_strike_chance = 0,
 			hit_time = 0.2,
 			impact_sound_event = "Play_weapon_billhook_grab",
-			additional_critical_strike_chance = 0,
-			use_precision_sweep = true,
 			damage_profile = "light_slashing_smiter_pull",
-			dedicated_target_range = 4.8,
+			use_precision_sweep = true,
 			no_damage_impact_sound_event = "stab_hit_armour",
+			dedicated_target_range = 4.8,
 			weapon_up_offset_mod = 0.25,
 			anim_event = "attack_swing_down",
 			height_mod = 4,
 			total_time = 1.5,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
-			end,
-			condition_func = function (attacker_unit, input_extension)
-				local status_extension = ScriptUnit.extension(attacker_unit, "status_system")
-
-				return not status_extension:fatigued()
-			end,
-			chain_condition_func = function (attacker_unit, input_extension)
-				local status_extension = ScriptUnit.extension(attacker_unit, "status_system")
-
-				return not status_extension:fatigued()
 			end,
 			anim_time_scale = time_mod * 1.4,
 			buff_data = {

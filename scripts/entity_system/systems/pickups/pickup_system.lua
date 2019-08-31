@@ -899,7 +899,7 @@ PickupSystem.event_delete_limited_owned_pickups = function (self, peer_id)
 
 			table.clear(pickup_units)
 		end
-	else
+	elseif Managers.state.network:in_game_session() then
 		self.network_transmit:send_rpc_server("rpc_delete_limited_owned_pickups", peer_id)
 	end
 end

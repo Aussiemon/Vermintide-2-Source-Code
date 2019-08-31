@@ -1708,6 +1708,10 @@ GenericStatusExtension.is_disabled = function (self)
 	return self:is_dead() or self:is_pounced_down() or self:is_knocked_down() or self:is_grabbed_by_pack_master() or self:get_is_ledge_hanging() or self:is_hanging_from_hook() or self:is_ready_for_assisted_respawn() or self:is_grabbed_by_tentacle() or self:is_grabbed_by_chaos_spawn() or self:is_in_vortex() or self:is_grabbed_by_corruptor() or self:is_overpowered()
 end
 
+GenericStatusExtension.is_disabled_non_temporarily = function (self)
+	return self:is_dead() or self:is_pounced_down() or self:is_knocked_down() or self:is_grabbed_by_pack_master() or self:get_is_ledge_hanging() or self:is_hanging_from_hook() or self:is_ready_for_assisted_respawn() or self:is_grabbed_by_tentacle() or self:is_grabbed_by_corruptor() or self:is_overpowered()
+end
+
 GenericStatusExtension.is_valid_vortex_target = function (self)
 	return not self:is_dead() and not self:is_pounced_down() and not self:is_knocked_down() and not self:is_grabbed_by_pack_master() and not self:get_is_ledge_hanging() and not self:is_hanging_from_hook() and not self:is_ready_for_assisted_respawn() and not self:is_grabbed_by_tentacle() and not self:is_grabbed_by_chaos_spawn() and not self:is_in_end_zone()
 end

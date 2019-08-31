@@ -1436,7 +1436,10 @@ NetworkLookup.sound_events = {
 	"Play_enemy_beastmen_standar_destroy",
 	"Play_enemy_beastmen_standar_taking_damage",
 	"Play_prop_magic_barrel_socket",
-	"Play_prop_magic_barrel_explosion"
+	"Play_prop_magic_barrel_explosion",
+	"Play_enemy_vce_chaos_warrior_attack_player_back",
+	"Play_plague_monk_attack_player_back_vce",
+	"Play_stormvermin_attack_player_back_vce"
 }
 
 for _, dlc in pairs(DLCSettings) do

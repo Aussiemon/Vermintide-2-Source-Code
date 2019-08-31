@@ -85,6 +85,20 @@ BTComboAttackAction.enter = function (self, unit, blackboard, t)
 		DialogueSystem:trigger_general_unit_event(unit, action.start_sound_event)
 	end
 
+	local target_unit_slot_extension = ScriptUnit.has_extension(target_unit, "ai_slot_system")
+
+	if blackboard.attack_token and target_status_extension then
+		local is_flanking = AiUtils.unit_is_flanking_player(unit, target_unit)
+		local breed = blackboard.breed
+		local should_backstab = breed.use_backstab_vo and is_flanking and target_unit_slot_extension and target_unit_slot_extension.num_occupied_slots <= 5
+
+		if should_backstab then
+			DialogueSystem:trigger_backstab(target_unit, unit, blackboard)
+
+			blackboard.backstab_attack_trigger = true
+		end
+	end
+
 	AiUtils.add_attack_intensity(target_unit, action, blackboard)
 	self:_start_attack(unit, blackboard, t, action, "attack_1")
 end
@@ -210,6 +224,7 @@ BTComboAttackAction.leave = function (self, unit, blackboard, t, reason, destroy
 	blackboard.anim_cb_move_stop = nil
 	blackboard.action = nil
 	blackboard.attack_token = nil
+	blackboard.backstab_attack_trigger = nil
 
 	if reason == "aborted" then
 		combo.aborted = true
@@ -338,6 +353,14 @@ BTComboAttackAction._follow = function (self, dt, t, unit, blackboard, current_a
 end
 
 BTComboAttackAction.attack_success = function (self, unit, blackboard)
+	local breed = blackboard.breed
+
+	if breed.use_backstab_vo and blackboard.backstab_attack_trigger then
+		DialogueSystem:trigger_backstab_hit(blackboard.target_unit, unit)
+
+		blackboard.backstab_attack_trigger = false
+	end
+
 	blackboard.combo_attack_data.successful_hit = true
 end
 
