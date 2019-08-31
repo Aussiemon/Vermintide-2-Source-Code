@@ -1889,7 +1889,7 @@ Talents.empire_soldier = {
 		description = "markus_knight_passive_power_increase_desc",
 		name = "markus_knight_passive_power_increase",
 		num_ranks = 1,
-		buffer = "server",
+		buffer = "both",
 		icon = "markus_knight_passive_power_increase",
 		description_values = {
 			{

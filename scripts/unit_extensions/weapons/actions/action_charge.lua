@@ -39,9 +39,11 @@ ActionCharge.client_owner_start_action = function (self, new_action, t)
 		self.venting_overcharge = true
 	end
 
+	self.fully_charged_triggered = false
 	self.total_overcharge_added = 0
 	self.remove_overcharge_on_interrupt = new_action.remove_overcharge_on_interrupt
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+	self.buff_extension = buff_extension
 	self.charge_level = 0
 	self.charge_time = buff_extension:apply_buffs_to_value(new_action.charge_time, "reduced_ranged_charge_time")
 	self.charge_complete_time = self.charge_time + t
@@ -144,6 +146,12 @@ ActionCharge.client_owner_post_update = function (self, dt, t, world, can_damage
 		self._max_charge = true
 
 		Unit.flow_event(self.first_person_unit, "lua_max_charge")
+
+		if not self.fully_charged_triggered then
+			self.buff_extension:trigger_procs("on_full_charge")
+
+			self.fully_charged_triggered = true
+		end
 	end
 
 	local overcharge_extension = self.overcharge_extension
@@ -289,6 +297,7 @@ ActionCharge.finish = function (self, reason)
 	local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
 
 	inventory_extension:set_loaded_projectile_override(nil)
+	self.buff_extension:trigger_procs("on_charge_finished")
 
 	return {
 		charge_level = self.charge_level

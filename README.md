@@ -1,10 +1,11 @@
 # Vermintide 2 Source Code
 
-Versions 'Closed-Beta Phase 2' to 2.0.6.1 and Associated Bundles
+Versions 'Closed-Beta Phase 2' to 2.0.7 and Associated Bundles
 -------------------------------------------------------------
 
 Date      |  Patch  | Notes
 --------: | :-----: | :--------------
+8-21-19   |  2.0.7  | .Patch_007
 8-16-19   |  2.0.6.1  | .Patch_006
 8-15-19   |  2.0.6  | .Patch_005
 8-14-19   |  2.0.5  | .Patch_004

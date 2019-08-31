@@ -477,33 +477,10 @@ local action_data = {
 		}
 	},
 	target_rage = {
+		rage_anim = "change_target_fwd",
+		rotation_speed = 5,
 		change_target_fwd_close_dist = 15,
-		rage_time = 1.75,
-		start_anims_name = {
-			bwd = "change_target_bwd",
-			fwd = "change_target_fwd",
-			left = "change_target_left",
-			right = "change_target_right"
-		},
-		start_anims_data = {
-			change_target_fwd = {},
-			change_target_bwd = {
-				dir = -1,
-				rad = math.pi
-			},
-			change_target_left = {
-				dir = 1,
-				rad = math.pi / 2
-			},
-			change_target_right = {
-				dir = -1,
-				rad = math.pi / 2
-			}
-		},
-		change_target_fwd_close_anims = {
-			"roar",
-			"roar_2"
-		}
+		rage_time = 0.55
 	},
 	charge_attack = {
 		slow_down_speed = 3,

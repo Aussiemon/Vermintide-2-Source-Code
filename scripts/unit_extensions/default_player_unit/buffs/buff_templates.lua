@@ -73,6 +73,7 @@ StatBuffApplicationMethods = {
 	flat_power_level = "stacking_bonus",
 	power_level = "stacking_multiplier",
 	shield_break_proc = "proc",
+	full_charge_boost = "stacking_multiplier",
 	dummy_stagger = "stacking_bonus",
 	coop_stamina = "proc",
 	power_level_ranged = "stacking_multiplier",
@@ -177,6 +178,8 @@ ProcEvents = {
 	"on_critical_action",
 	"on_spell_used",
 	"on_grenade_use",
+	"on_full_charge",
+	"on_charge_finished",
 	"on_gromril_armour_removed"
 }
 local buff_params = {}
@@ -2556,7 +2559,7 @@ ProcFunctions = {
 				local template = buff.template
 				local cooldown_removed = template.cooldown_reduction
 
-				career_extension:reduce_activated_ability_cooldown(cooldown_removed)
+				career_extension:reduce_activated_ability_cooldown_percent(cooldown_removed)
 			end
 		end
 	end,
@@ -3615,11 +3618,11 @@ BuffTemplates = {
 			{
 				damage_profile = "bleed_maidenguard",
 				name = "weapon bleed dot maidenguard",
-				duration = 3,
+				duration = 4,
 				perk = "bleeding",
 				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
-				time_between_dot_damages = 1,
+				time_between_dot_damages = 0.25,
 				hit_zone = "neck",
 				max_stacks = 1,
 				update_func = "apply_dot_damage"
@@ -3658,7 +3661,7 @@ BuffTemplates = {
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
 				perk = "burning",
-				time_between_dot_damages = 0.1,
+				time_between_dot_damages = 0.75,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage"
@@ -3676,7 +3679,7 @@ BuffTemplates = {
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
 				perk = "burning",
-				time_between_dot_damages = 0.1,
+				time_between_dot_damages = 0.75,
 				damage_type = "burninating",
 				max_stacks = 1,
 				update_func = "apply_dot_damage"

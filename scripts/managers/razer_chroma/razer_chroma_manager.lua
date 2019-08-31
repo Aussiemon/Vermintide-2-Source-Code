@@ -181,7 +181,11 @@ RazerChromaManager.play_animation = function (self, chroma, loop, action)
 
 	local chroma_settings = RazerChromaSettings[chroma]
 
-	fassert(chroma_settings, "No chroma '" .. chroma .. "' exists")
+	if not chroma_settings then
+		Application.warning("[RazerChromaManager] No chroma '" .. chroma .. "' exists")
+
+		return
+	end
 
 	loop = loop or false
 	action = action or RAZER_ADD_ANIMATION_TYPE.QUEUE

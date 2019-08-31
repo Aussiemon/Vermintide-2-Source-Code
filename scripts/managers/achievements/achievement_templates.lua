@@ -2637,7 +2637,7 @@ AchievementTemplates.achievements.unlock_all_talent_points = {
 		}
 
 		for _, hero in ipairs(heroes) do
-			if ProgressionUnlocks.get_num_talent_points(hero) == 5 then
+			if ProgressionUnlocks.get_num_talent_points(hero) == 6 then
 				return true
 			end
 		end

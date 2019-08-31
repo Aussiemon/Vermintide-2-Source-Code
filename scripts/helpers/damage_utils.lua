@@ -1737,7 +1737,7 @@ DamageUtils.apply_buffs_to_damage = function (current_damage, attacked_unit, att
 						local talent_extension = ScriptUnit.has_extension(unit, "talent_system")
 
 						if talent_extension and talent_extension:has_talent("sienna_unchained_burning_enemies_reduced_damage") then
-							damage = buff_extension:apply_buffs_to_value(damage, "damage_taken_burning_enemy")
+							damage = damage * (1 + BuffTemplates.sienna_unchained_burning_enemies_reduced_damage.buffs[1].multiplier)
 
 							break
 						end
@@ -2951,13 +2951,10 @@ DamageUtils.stagger_ai = function (t, damage_profile, target_index, power_level,
 		if attacker_buff_extension then
 			local item_data = rawget(ItemMasterList, damage_source)
 			local weapon_template_name = item_data and item_data.template
+			local weapon_template = weapon_template_name and Weapons[weapon_template_name]
+			local buff_type = (weapon_template and weapon_template.buff_type) or nil
 
-			if weapon_template_name then
-				local weapon_template = Weapons[weapon_template_name]
-				local buff_type = weapon_template.buff_type
-
-				attacker_buff_extension:trigger_procs("on_stagger", target_unit, damage_profile, attacker_unit, stagger_type, stagger_duration, stagger_value, buff_type, target_index)
-			end
+			attacker_buff_extension:trigger_procs("on_stagger", target_unit, damage_profile, attacker_unit, stagger_type, stagger_duration, stagger_value, buff_type, target_index)
 		end
 	end
 end
@@ -3000,7 +2997,7 @@ DamageUtils.server_apply_hit = function (t, attacker_unit, target_unit, hit_zone
 		local added_dot = nil
 
 		if not damage_profile.require_damage_for_dot or attack_power_level ~= 0 then
-			added_dot = DamageUtils.apply_dot(damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike)
+			added_dot = DamageUtils.apply_dot(damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, nil)
 		end
 
 		if added_dot and remove_dot_template then
@@ -3057,9 +3054,16 @@ DamageUtils.server_apply_hit = function (t, attacker_unit, target_unit, hit_zone
 	end
 end
 
-DamageUtils.apply_dot = function (damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike)
+DamageUtils.apply_dot = function (damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, explosion_template)
 	local target_settings = (damage_profile.targets and damage_profile.targets[target_index]) or damage_profile.default_target
-	local dot_template_name = target_settings.dot_template_name or damage_profile.dot_template_name
+	local explosion = explosion_template and explosion_template.explosion
+	local explosion_template_dot = nil
+
+	if explosion then
+		explosion_template_dot = explosion and explosion.dot_template_name
+	end
+
+	local dot_template_name = target_settings.dot_template_name or damage_profile.dot_template_name or explosion_template_dot
 	local dot_type = DotTypeLookup[dot_template_name]
 	local applied_dot = false
 

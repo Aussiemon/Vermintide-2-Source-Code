@@ -32,9 +32,13 @@ ActionAim.client_owner_start_action = function (self, new_action, t)
 	local owner_unit = self.owner_unit
 	self.current_action = new_action
 	self.zoom_condition_function = new_action.zoom_condition_function
+	local charge_time = new_action.charge_time or 0
+	self.charge_time_trigger = charge_time + t
 	self.played_aim_sound = false
 	self.heavy_aim_flow_done = false
+	self.fully_charged_triggered = false
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+	self.buff_extension = buff_extension
 	local aim_sound_delay = scale_delay_value(new_action, new_action.aim_sound_delay or 0, owner_unit, buff_extension)
 	local aim_zoom_delay = scale_delay_value(new_action, new_action.aim_zoom_delay or 0, owner_unit, buff_extension)
 	local heavy_aim_flow_delay = scale_delay_value(new_action, new_action.heavy_aim_flow_delay or 0, owner_unit, buff_extension)
@@ -172,6 +176,12 @@ ActionAim.client_owner_post_update = function (self, dt, t, world, can_damage)
 
 		self.heavy_aim_flow_done = true
 	end
+
+	if self.charge_time_trigger < t and not self.fully_charged_triggered then
+		self.fully_charged_triggered = true
+
+		self.buff_extension:trigger_procs("on_full_charge")
+	end
 end
 
 ActionAim.finish = function (self, reason)
@@ -225,6 +235,7 @@ ActionAim.finish = function (self, reason)
 	local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
 
 	inventory_extension:set_loaded_projectile_override(nil)
+	self.buff_extension:trigger_procs("on_charge_finished")
 	self:_stop_charge_sound()
 end
 

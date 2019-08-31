@@ -222,6 +222,12 @@ ActionChargedProjectile._shoot = function (self, t)
 	local sub_action_name = lookup_data.sub_action_name
 	local charge_level = self.charge_level
 	local scale = math.round(math.max(charge_level, 0) * 100)
+	local full_charge_boost = self.owner_buff_extension:has_buff_perk("full_charge_boost")
+
+	if full_charge_boost and self.charge_level >= 1 then
+		self.power_level = self.owner_buff_extension:apply_buffs_to_value(self.power_level, "full_charge_boost")
+	end
+
 	local projectile_power_level = ActionUtils.scale_charged_projectile_power_level(self.power_level, current_action, self.charge_level)
 
 	ActionUtils.spawn_player_projectile(owner_unit, position, rotation, scale, angle, target_vector, speed, item_name, item_template_name, action_name, sub_action_name, self._is_critical_strike, projectile_power_level, gaze_settings)

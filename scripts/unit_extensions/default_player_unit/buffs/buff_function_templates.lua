@@ -2273,14 +2273,6 @@ BuffFunctionTemplates.functions = {
 		local buff_system = Managers.state.entity:system("buff_system")
 		local power_talent = talent_extension:has_talent("markus_knight_passive_power_increase")
 
-		if power_talent then
-			local owner_buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
-
-			if not owner_buff_extension:has_buff_type("markus_knight_passive_power_increase_buff") then
-				buff_system:add_buff(owner_unit, "markus_knight_passive_power_increase_buff", owner_unit, true)
-			end
-		end
-
 		for i = 1, num_units, 1 do
 			local unit = player_and_bot_units[i]
 

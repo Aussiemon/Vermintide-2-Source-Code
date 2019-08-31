@@ -45,6 +45,11 @@ ActionFlamethrower.client_owner_start_action = function (self, new_action, t, ch
 	end
 
 	self.max_flame_time = slot5
+	local full_charge_boost = self.buff_extension:has_buff_perk("full_charge_boost")
+
+	if full_charge_boost and self.charge_level >= 1 then
+		self.power_level = self.buff_extension:apply_buffs_to_value(self.power_level, "full_charge_boost")
+	end
 
 	if chain_action_data and chain_action_data.charge_level and self.charge_level and self.charge_level >= 1 then
 		self.buff_extension:trigger_procs("on_full_charge_action", new_action, t, chain_action_data)

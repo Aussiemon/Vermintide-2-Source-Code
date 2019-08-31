@@ -19,6 +19,12 @@ ActionGeiser.client_owner_start_action = function (self, new_action, t, chain_ac
 	local charge_value = chain_action_data.charge_value
 	self.charge_value = charge_value
 	self.power_level = ActionUtils.scale_geiser_power_level(power_level, charge_value)
+	local full_charge_boost = buff_extension:has_buff_perk("full_charge_boost")
+
+	if full_charge_boost and self.charge_value >= 1 then
+		self.power_level = buff_extension:apply_buffs_to_value(self.power_level, "full_charge_boost")
+	end
+
 	self.owner_buff_extension = buff_extension
 	self.state = "waiting_to_shoot"
 	self.time_to_shoot = t + (new_action.fire_time or 0)

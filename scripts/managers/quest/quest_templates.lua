@@ -147,14 +147,16 @@ local daily_kill_bosses_mappings = {
 	{
 		kills_per_breed = {
 			chaos_troll = true,
-			skaven_rat_ogre = true,
 			chaos_spawn = true,
+			beastmen_minotaur = true,
+			skaven_rat_ogre = true,
 			skaven_stormfiend = true
 		},
 		kill_assists_per_breed = {
 			chaos_troll = true,
-			skaven_rat_ogre = true,
 			chaos_spawn = true,
+			beastmen_minotaur = true,
+			skaven_rat_ogre = true,
 			skaven_stormfiend = true
 		}
 	}
@@ -1156,14 +1158,16 @@ local weekly_kill_bosses_mappings = {
 	{
 		kills_per_breed = {
 			chaos_troll = true,
-			skaven_rat_ogre = true,
 			chaos_spawn = true,
+			beastmen_minotaur = true,
+			skaven_rat_ogre = true,
 			skaven_stormfiend = true
 		},
 		kill_assists_per_breed = {
 			chaos_troll = true,
-			skaven_rat_ogre = true,
 			chaos_spawn = true,
+			beastmen_minotaur = true,
+			skaven_rat_ogre = true,
 			skaven_stormfiend = true
 		}
 	}

@@ -92,7 +92,7 @@ local buff_tweak_data = {
 	sienna_adept_vanguard = {},
 	sienna_adept_bloodlust = {},
 	sienna_adept_conqueror = {},
-	sienna_adept_power_level_on_full_charge_buff = {
+	sienna_adept_power_level_on_full_charge = {
 		multiplier = 0.5
 	},
 	sienna_adept_attack_speed_on_enemies_hit = {
@@ -584,9 +584,11 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_adept_power_level_on_full_charge = {
 		buffs = {
 			{
-				event = "on_full_charge_action",
 				buff_to_add = "sienna_adept_power_level_on_full_charge_buff",
+				stat_buff = "full_charge_boost",
 				event_buff = true,
+				event = "on_full_charge",
+				perk = "full_charge_boost",
 				buff_func = ProcFunctions.add_buff
 			}
 		}
@@ -594,12 +596,12 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_adept_power_level_on_full_charge_buff = {
 		buffs = {
 			{
-				stat_buff = "power_level_ranged",
-				event = "on_start_action",
+				event = "on_charge_finished",
+				max_stacks = 1,
 				event_buff = true,
 				remove_on_proc = true,
 				icon = "sienna_adept_power_level_on_full_charge",
-				max_stacks = 1,
+				priority_buff = true,
 				buff_func = ProcFunctions.dummy_function
 			}
 		}
@@ -1420,13 +1422,12 @@ Talents.bright_wizard = {
 		description = "sienna_adept_power_level_on_full_charge_desc",
 		name = "sienna_adept_power_level_on_full_charge",
 		num_ranks = 1,
-		buffer = "both",
 		icon = "sienna_adept_power_level_on_full_charge",
 		requirements = {},
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.sienna_adept_power_level_on_full_charge_buff.multiplier
+				value = buff_tweak_data.sienna_adept_power_level_on_full_charge.multiplier
 			}
 		},
 		buffs = {

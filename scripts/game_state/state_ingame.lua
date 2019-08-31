@@ -131,6 +131,7 @@ StateIngame.on_enter = function (self)
 	self._onclose_popup_id = nil
 	self._onclose_called = false
 	self._quit_game = false
+	self._gm_event_end_conditions_met = false
 
 	Managers.light_fx:set_lightfx_color_scheme((self.is_in_inn and "inn_level") or "ingame")
 
@@ -1764,6 +1765,11 @@ end
 
 StateIngame.on_exit = function (self, application_shutdown)
 	UPDATE_POSITION_LOOKUP()
+
+	if self.is_in_inn and not self._gm_event_end_conditions_met and not application_shutdown then
+		Managers.backend:commit()
+	end
+
 	self._camera_carrier:destroy()
 
 	self._camera_carrier = nil
@@ -2037,18 +2043,35 @@ end
 StateIngame.on_close = function (self)
 	if self.network_server and self.network_server:num_active_peers() > 1 and not Development.parameter("disable_exit_popup_warning") then
 		if self._onclose_called then
-			self._quit_game = true
+			if self.is_in_inn then
+				self:_commit_playfab_stats()
+			end
 		else
 			self._onclose_called = true
 
 			Managers.chat.chat_gui:hide_chat()
 			Managers.chat.chat_gui:unblock_input()
 		end
-	else
-		self._quit_game = true
+	elseif self.is_in_inn then
+		self:_commit_playfab_stats()
 	end
 
 	return false
+end
+
+StateIngame._commit_playfab_stats = function (self)
+	local backend_manager = Managers.backend
+
+	local function callback(status)
+		self._quit_game = true
+	end
+
+	if backend_manager:is_local() then
+		backend_manager:commit(true)
+		callback()
+	else
+		backend_manager:commit(true, callback)
+	end
 end
 
 StateIngame._check_and_add_end_game_telemetry = function (self, application_shutdown)
@@ -2338,6 +2361,8 @@ end
 StateIngame.gm_event_end_conditions_met = function (self, reason, checkpoint_available, percentages_completed)
 	LevelHelper:flow_event(self.world, "gm_event_end_conditions_met")
 
+	self._gm_event_end_conditions_met = true
+
 	if self.is_server then
 		Managers.state.voting:set_vote_kick_enabled(false)
 	end
@@ -2417,7 +2442,9 @@ StateIngame._handle_onclose_warning_result = function (self)
 		local popup_result = Managers.popup:query_result(self._onclose_popup_id)
 
 		if popup_result == "end_game" then
-			self._quit_game = true
+			if self.is_in_inn then
+				self:_commit_playfab_stats()
+			end
 		elseif popup_result == "cancel_popup" then
 			self._onclose_popup_id = nil
 			self._onclose_called = false

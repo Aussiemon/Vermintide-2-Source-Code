@@ -208,20 +208,22 @@ CharacterStateHelper.update_soft_collision_movement = function (first_person_ext
 	local rotation = Unit.local_rotation(unit, 0)
 	local player_units = side.PLAYER_UNITS
 
-	for index, player_unit in pairs(player_units) do
-		if player_unit ~= unit and StatusUtils.use_soft_collision(player_unit) then
-			local distance = own_position - POSITION_LOOKUP[player_unit]
-			local height_diference = math.abs(Vector3.z(distance))
+	if Unit.alive(unit) then
+		for index, player_unit in pairs(player_units) do
+			if player_unit ~= unit and Unit.alive(player_unit) and StatusUtils.use_soft_collision(player_unit) then
+				local distance = own_position - POSITION_LOOKUP[player_unit]
+				local height_diference = math.abs(Vector3.z(distance))
 
-			Vector3.set_z(distance, 0)
+				Vector3.set_z(distance, 0)
 
-			local length = Vector3.length(distance)
+				local length = Vector3.length(distance)
 
-			if height_diference <= movement_settings_table.soft_collision.max_height_diference and length <= movement_settings_table.soft_collision.max_distance then
-				local direction = Vector3.normalize(distance)
-				local speed = 1 / (length + movement_settings_table.soft_collision.speed_modifier)
-				speed = speed * speed
-				final_velocity = final_velocity + direction * speed
+				if height_diference <= movement_settings_table.soft_collision.max_height_diference and length <= movement_settings_table.soft_collision.max_distance then
+					local direction = Vector3.normalize(distance)
+					local speed = 1 / (length + movement_settings_table.soft_collision.speed_modifier)
+					speed = speed * speed
+					final_velocity = final_velocity + direction * speed
+				end
 			end
 		end
 	end

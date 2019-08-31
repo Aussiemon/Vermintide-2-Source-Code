@@ -17,9 +17,11 @@ ActionGeiserTargeting.client_owner_start_action = function (self, new_action, t)
 	local owner_unit = self.owner_unit
 	self.overcharge_timer = 0
 	self.current_action = new_action
+	self.fully_charged_triggered = false
 	local effect_name = new_action.particle_effect
 	local effect_id = NetworkLookup.effects[effect_name]
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+	self.buff_extension = buff_extension
 	self.targeting_effect_id = World.create_particles(world, effect_name, Vector3.zero())
 	self.targeting_variable_id = World.find_particles_variable(world, effect_name, "charge_radius")
 	self.charge_time = buff_extension:apply_buffs_to_value(new_action.charge_time, "reduced_ranged_charge_time")
@@ -178,6 +180,13 @@ ActionGeiserTargeting.client_owner_post_update = function (self, dt, t, world, c
 	self.position:store(position)
 
 	self.charge_value = math.min(math.max(t - time_to_shoot, 0) / self.charge_time, 1)
+
+	if self.charge_value >= 1 and not self.fully_charged_triggered then
+		self.fully_charged_triggered = true
+
+		self.buff_extension:trigger_procs("on_full_charge")
+	end
+
 	local min_radius = self.min_radius
 	local max_radius = self.max_radius
 	local radius = math.min(max_radius, (max_radius - min_radius) * self.charge_value + min_radius)
@@ -239,6 +248,7 @@ ActionGeiserTargeting.finish = function (self, reason, data)
 	end
 
 	self:_stop_charge_sound()
+	self.buff_extension:trigger_procs("on_charge_finished")
 
 	return chain_action_data
 end

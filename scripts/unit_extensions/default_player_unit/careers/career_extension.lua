@@ -324,7 +324,7 @@ end
 CareerExtension.has_ranged_boost = function (self)
 	local buff_extension = self._buff_extension
 	local has_murder_hobo_buff = buff_extension:has_buff_type("markus_huntsman_activated_ability") or buff_extension:has_buff_type("markus_huntsman_activated_ability_duration")
-	local has_ranger_buff = buff_extension:has_buff_type("bardin_ranger_activated_ability") or buff_extension:has_buff_type("bardin_ranger_activated_ability_duration")
+	local has_ranger_buff = buff_extension:has_buff_type("bardin_ranger_activated_ability") or buff_extension:has_buff_type("bardin_ranger_activated_ability_duration") or buff_extension:has_buff_type("bardin_ranger_activated_ability_stealth_outside_of_smoke")
 	local multiplier = (has_murder_hobo_buff and 1.5) or (has_ranger_buff and 1) or 0
 
 	return has_murder_hobo_buff or has_ranger_buff, multiplier

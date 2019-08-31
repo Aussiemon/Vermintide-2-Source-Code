@@ -70,7 +70,7 @@ ActionPotion.finish = function (self, reason)
 	local buff_template_name_id = NetworkLookup.buff_templates[buff_template]
 	local owner_unit_id = network_manager:unit_game_object_id(owner_unit)
 
-	Managers.razer_chroma:play_animation(buff_template, false, RAZER_ADD_ANIMATION_TYPE.REPLACE)
+	Managers.razer_chroma:play_animation(current_action.buff_template, false, RAZER_ADD_ANIMATION_TYPE.REPLACE)
 
 	if not buff_extension:has_buff_type("trait_ring_all_potions") and not buff_extension:has_buff_type("weave_trait_ring_all_potions") then
 		for i = 1, num_targets, 1 do

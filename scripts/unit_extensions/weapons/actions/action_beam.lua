@@ -310,16 +310,21 @@ ActionBeam._stop_fx = function (self)
 end
 
 ActionBeam._stop_client_vfx = function (self)
-	local go_id = self.unit_id
+	local network_manager = Managers.state.network
+	local game = network_manager:game()
 
-	if self.is_server or LEVEL_EDITOR_TEST then
-		self.network_transmit:send_rpc_clients("rpc_end_beam", go_id)
+	if game then
+		local go_id = self.unit_id
 
-		if self.owner_player.bot_player then
-			self.network_transmit:queue_local_rpc("rpc_end_beam", go_id)
+		if self.is_server or LEVEL_EDITOR_TEST then
+			self.network_transmit:send_rpc_clients("rpc_end_beam", go_id)
+
+			if self.owner_player.bot_player then
+				self.network_transmit:queue_local_rpc("rpc_end_beam", go_id)
+			end
+		else
+			self.network_transmit:send_rpc_server("rpc_end_beam", go_id)
 		end
-	else
-		self.network_transmit:send_rpc_server("rpc_end_beam", go_id)
 	end
 end
 

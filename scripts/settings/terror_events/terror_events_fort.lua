@@ -165,8 +165,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 8,
-			difficulty_requirement = HARDER
+			duration = 8
 		},
 		{
 			"event_horde",
@@ -184,8 +183,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 8,
-			difficulty_requirement = HARDEST
+			duration = 8
 		},
 		{
 			"event_horde",
@@ -234,8 +232,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 10,
-			difficulty_requirement = HARDEST
+			duration = 10
 		},
 		{
 			"flow_event",

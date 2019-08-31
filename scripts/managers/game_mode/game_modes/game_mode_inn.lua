@@ -224,10 +224,15 @@ end
 
 GameModeInn._should_show_tutorial = function (self)
 	local player = self._player_manager:local_player(1)
-	local stats_id = player:stats_id()
-	local tutorial_step = self._statistics_db:get_persistent_stat(stats_id, "scorpion_onboarding_step")
 
-	return tutorial_step > 0 and tutorial_step < 10, tutorial_step
+	if player then
+		local stats_id = player:stats_id()
+		local tutorial_step = self._statistics_db:get_persistent_stat(stats_id, "scorpion_onboarding_step")
+
+		return tutorial_step > 0 and tutorial_step < 10, tutorial_step
+	end
+
+	return false
 end
 
 GameModeInn._state_tutorial = function (self, tutorial_step)

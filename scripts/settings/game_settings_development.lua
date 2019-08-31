@@ -99,6 +99,7 @@ if settings.steam or Development.parameter("force_steam") then
 		end
 
 		if not DEDICATED_SERVER and not Steam.owns_app(app_id) then
+			Crashify.print_exception("Game Settings", "Vermintide 2. You need to own game to play it.")
 			Application.quit_with_message("Vermintide 2. You need to own game to play it.")
 		end
 
@@ -115,6 +116,7 @@ if settings.steam or Development.parameter("force_steam") then
 			GameSettingsDevelopment.backend_settings = BackendSettings.beta_steam_playfab
 		end
 	else
+		Crashify.print_exception("Game Settings", "Vermintide 2. You need to have the Steam Client running to play the game.")
 		Application.quit_with_message("Vermintide 2. You need to have the Steam Client running to play the game.")
 	end
 elseif BUILD == "dev" or BUILD == "debug" then

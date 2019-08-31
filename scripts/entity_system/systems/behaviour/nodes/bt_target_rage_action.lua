@@ -32,7 +32,7 @@ BTTargetRageAction.enter = function (self, unit, blackboard, t)
 	end
 
 	local target_pos = POSITION_LOOKUP[blackboard.target_unit]
-	local rage_anim = AiAnimUtils.get_start_move_animation(unit, target_pos, start_anims)
+	local rage_anim = action.rage_anim or AiAnimUtils.get_start_move_animation(unit, target_pos, start_anims)
 
 	if rage_anim == nil then
 		blackboard.anim_locked = 0
@@ -40,11 +40,21 @@ BTTargetRageAction.enter = function (self, unit, blackboard, t)
 		return
 	end
 
-	local anim_driven = rage_anim ~= start_anims.fwd
-	blackboard.attack_anim_driven = anim_driven
+	local anim_driven = false
+
+	if start_anims then
+		anim_driven = rage_anim ~= start_anims.fwd
+		blackboard.attack_anim_driven = anim_driven
+	end
+
 	local locomotion_extension = blackboard.locomotion_extension
 
 	locomotion_extension:use_lerp_rotation(not anim_driven)
+
+	if action.rotation_speed then
+		locomotion_extension:set_rotation_speed(action.rotation_speed)
+	end
+
 	LocomotionUtils.set_animation_driven_movement(unit, anim_driven, false, false)
 
 	if anim_driven then
@@ -75,6 +85,7 @@ BTTargetRageAction.leave = function (self, unit, blackboard, t, reason, destroy)
 
 	if not destroy then
 		blackboard.locomotion_extension:use_lerp_rotation(true)
+		blackboard.locomotion_extension:set_rotation_speed(nil)
 		LocomotionUtils.set_animation_driven_movement(unit, false)
 	end
 end

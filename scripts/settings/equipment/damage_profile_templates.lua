@@ -3086,7 +3086,7 @@ DamageProfileTemplates.flamethrower_spray = {
 		attack_armor_power_modifer = {
 			1,
 			1,
-			1,
+			1.5,
 			1,
 			1,
 			0.25

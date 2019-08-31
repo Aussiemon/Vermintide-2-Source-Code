@@ -70,7 +70,7 @@ local buff_tweak_data = {
 		multiplier = 1.15
 	},
 	kerillian_maidenguard_passive_increased_stamina = {
-		bonus = 0.3
+		bonus = 1
 	},
 	kerillian_maidenguard_passive_damage_reduction = {
 		multiplier = -0.2

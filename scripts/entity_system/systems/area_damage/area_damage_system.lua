@@ -195,7 +195,7 @@ AreaDamageSystem.add_aoe_damage_target = function (self, hit_unit, attacker_unit
 
 		self:_damage_unit(aoe_damage_data)
 
-		aoe_damage_ring_buffer.size = size - 1
+		size = size - 1
 		aoe_damage_ring_buffer.read_index = read_index % max_size + 1
 	end
 
@@ -223,7 +223,8 @@ AreaDamageSystem.add_aoe_damage_target = function (self, hit_unit, attacker_unit
 	aoe_damage_data.explosion_template_name = explosion_template_name
 	aoe_damage_data.is_critical_strike = is_critical_strike
 	aoe_damage_data.allow_critical_proc = allow_critical_proc
-	aoe_damage_ring_buffer.size = size + 1
+	size = size + 1
+	aoe_damage_ring_buffer.size = size
 	aoe_damage_ring_buffer.write_index = write_index % max_size + 1
 end
 
@@ -375,7 +376,7 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 			explosion_data.on_death_func(hit_unit)
 		end
 
-		DamageUtils.apply_dot(damage_profile, target_index, full_power_level, hit_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike)
+		DamageUtils.apply_dot(damage_profile, target_index, full_power_level, hit_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, explosion_template)
 
 		if push_speed and DamageUtils.is_player_unit(hit_unit) then
 			local status_extension = ScriptUnit.extension(hit_unit, "status_system")
