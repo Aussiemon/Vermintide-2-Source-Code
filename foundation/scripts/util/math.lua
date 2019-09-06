@@ -179,6 +179,45 @@ math.point_is_inside_2d_triangle = function (pos, p1, p2, p3)
 	end
 end
 
+math.point_is_inside_view = function (pos, view_position, view_rotation, vertical_fov_rad, horizontal_fov_rad)
+	local camera_forward = Quaternion.forward(view_rotation)
+	local to_pos_dir = Vector3.normalize(pos - view_position)
+	local dot = Vector3.dot(to_pos_dir, camera_forward)
+	local is_infront = dot > 0
+
+	if is_infront then
+		local camera_right = Quaternion.right(view_rotation)
+		local camera_up = Quaternion.up(view_rotation)
+		local c_x = Vector3.dot(to_pos_dir, camera_right)
+		local c_y = dot
+		local c_z = Vector3.dot(to_pos_dir, camera_up)
+		local dot_xy = c_y
+		local c_to_pos_dir_length_xy = math.sqrt(c_x * c_x + c_y * c_y)
+
+		if c_to_pos_dir_length_xy == 0 then
+			return false
+		end
+
+		local cos_xy = dot_xy / c_to_pos_dir_length_xy
+		local yaw = math.acos(cos_xy)
+
+		if yaw <= horizontal_fov_rad / 2 then
+			local dot_uz = c_to_pos_dir_length_xy
+			local to_pos_dir_length_uz = math.sqrt(c_to_pos_dir_length_xy * c_to_pos_dir_length_xy + c_z * c_z)
+			local cos_uz = dot_uz / to_pos_dir_length_uz
+			local pitch = math.acos(cos_uz)
+
+			if pitch <= vertical_fov_rad / 2 then
+				return true
+			end
+
+			return false
+		end
+	end
+
+	return false
+end
+
 math.cartesian_to_polar = function (x, y)
 	fassert(x ~= 0 and y ~= 0, "Can't convert a zero vector to polar coordinates")
 

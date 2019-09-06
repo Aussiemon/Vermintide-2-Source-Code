@@ -12,6 +12,8 @@ local unit_animation_event = Unit.animation_event
 local unit_has_animation_event = Unit.has_animation_event
 local unit_has_animation_state_machine = Unit.has_animation_state_machine
 local actor_node = Actor.node
+local action_hitbox_vertical_fov = math.degrees_to_radians(120)
+local action_hitbox_horizontal_fov = math.degrees_to_radians(115.55)
 
 local function weapon_printf(...)
 	if script_data.debug_weapons then
@@ -527,19 +529,23 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 	local range_mod = (current_action.range_mod and current_action.range_mod * SweepRangeMod) or SweepRangeMod
 	local width_mod = (current_action.width_mod and current_action.width_mod * SweepWidthMod) or 20 * SweepWidthMod
 	local height_mod = (current_action.height_mod and current_action.height_mod * SweepHeigthMod) or 4 * SweepHeigthMod
+	local range_mod_add = current_action.range_mod_add or 0
 
 	if global_is_inside_inn then
 		range_mod = 0.65 * range_mod
 		width_mod = width_mod / 4
 	end
 
-	weapon_half_length = weapon_half_length * range_mod
+	weapon_half_length = weapon_half_length * range_mod + range_mod_add / 2
 	weapon_half_extents.x = weapon_half_extents.x * width_mod
 	weapon_half_extents.y = weapon_half_extents.y * height_mod
+	weapon_half_extents.z = weapon_half_length
 	local weapon_rot = current_rotation
 	local position_start = position_previous + weapon_up_dir_previous * weapon_half_length
 	local position_end = (position_previous + current_rot_up * weapon_half_length * 2) - Quaternion.up(rotation_previous) * weapon_half_length
-	local max_num_hits = 5
+	local max_num_hits1 = 5
+	local max_num_hits2 = 20
+	local max_num_hits3 = 5
 	local attack_direction = calculate_attack_direction(current_action, weapon_rot)
 	local owner_player = Managers.player:owner(owner_unit)
 	local weapon_cross_section = Vector3(weapon_half_extents.x, weapon_half_extents.y, 0.0001)
@@ -550,9 +556,9 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 		PhysicsWorld.start_reusing_sweep_tables()
 	end
 
-	local sweep_results1 = PhysicsWorld.linear_obb_sweep(physics_world, position_previous, position_previous + weapon_up_dir_previous * weapon_half_length * 2, weapon_cross_section, rotation_previous, max_num_hits, "collision_filter", collision_filter, "report_initial_overlap")
-	local sweep_results2 = PhysicsWorld.linear_obb_sweep(physics_world, position_start, position_end, weapon_half_extents, rotation_previous, max_num_hits, "collision_filter", collision_filter, "report_initial_overlap")
-	local sweep_results3 = PhysicsWorld.linear_obb_sweep(physics_world, position_previous + current_rot_up * weapon_half_length, position_current + current_rot_up * weapon_half_length, weapon_half_extents, rotation_current, max_num_hits, "collision_filter", collision_filter, "report_initial_overlap")
+	local sweep_results1 = PhysicsWorld.linear_obb_sweep(physics_world, position_previous, position_previous + weapon_up_dir_previous * weapon_half_length * 2, weapon_cross_section, rotation_previous, max_num_hits1, "collision_filter", collision_filter, "report_initial_overlap")
+	local sweep_results2 = PhysicsWorld.linear_obb_sweep(physics_world, position_start, position_end, weapon_half_extents, rotation_previous, max_num_hits2, "collision_filter", collision_filter, "report_initial_overlap")
+	local sweep_results3 = PhysicsWorld.linear_obb_sweep(physics_world, position_previous + current_rot_up * weapon_half_length, position_current + current_rot_up * weapon_half_length, weapon_half_extents, rotation_current, max_num_hits3, "collision_filter", collision_filter, "report_initial_overlap")
 	local num_results1 = 0
 	local num_results2 = 0
 	local num_results3 = 0
@@ -574,6 +580,8 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 			for j = 1, num_results1, 1 do
 				if SWEEP_RESULTS[j].actor == this_actor then
 					found = true
+
+					break
 				end
 			end
 
@@ -593,6 +601,8 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 			for j = 1, num_results1 + num_results2, 1 do
 				if SWEEP_RESULTS[j].actor == this_actor then
 					found = true
+
+					break
 				end
 			end
 
@@ -655,6 +665,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 
 	local side = Managers.state.side.side_by_unit[owner_unit]
 	local enemy_units_lookup = side.enemy_units_lookup
+	local view_position, view_rotation = first_person_extension:camera_position_rotation()
 
 	for i = 1, number_of_results_this_frame, 1 do
 		local has_potential_result = self._last_potential_hit_result_has_result
@@ -704,7 +715,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 			hit_unit, hit_actor = ActionUtils.redirect_shield_hit(hit_unit, hit_actor)
 			local breed = AiUtils.unit_breed(hit_unit)
 			local is_dodging = false
-			local in_view = first_person_extension:is_within_default_view(hit_position)
+			local in_view = first_person_extension:is_within_custom_view(hit_position, view_position, view_rotation, action_hitbox_vertical_fov, action_hitbox_horizontal_fov)
 			local is_character = breed ~= nil
 			local hit_self = hit_unit == owner_unit
 			local is_friendly_fire = not enemy_units_lookup[hit_unit]
@@ -839,7 +850,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 
 						local blood_position = Vector3(result.position.x, result.position.y, result.position.z + self._down_offset)
 
-						Managers.state.blood:add_enemy_blood(blood_position, hit_normal, result.actor)
+						Managers.state.blood:add_enemy_blood(blood_position, hit_unit, target_health_extension)
 					end
 
 					if buff_result ~= "killing_blow" then

@@ -893,6 +893,7 @@ TalentBuffTemplates.wood_elf = {
 			{
 				remove_buff_func = "remove_movement_buff",
 				dormant = true,
+				refresh_durations = true,
 				max_stacks = 1,
 				icon = "kerillian_waywatcher_movement_speed_on_special_kill",
 				apply_buff_func = "apply_movement_buff",

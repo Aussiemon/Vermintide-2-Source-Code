@@ -169,6 +169,13 @@ PlayerBotUnitFirstPerson.current_camera_position = function (self)
 	return Unit.local_position(self.first_person_unit, 0)
 end
 
+PlayerBotUnitFirstPerson.camera_position_rotation = function (self)
+	local camera_position = Unit.local_position(self.first_person_unit, 0)
+	local camera_rotation = Unit.local_rotation(self.first_person_unit, 0)
+
+	return camera_position, camera_rotation
+end
+
 PlayerBotUnitFirstPerson.set_rotation = function (self, new_rotation)
 	Unit.set_local_rotation(self.first_person_unit, 0, new_rotation)
 	Unit.set_local_rotation(self.unit, 0, new_rotation)
@@ -256,6 +263,10 @@ PlayerBotUnitFirstPerson.reset_aim_assist_multiplier = function (self)
 end
 
 PlayerBotUnitFirstPerson.is_in_view = function (self, position)
+	return true
+end
+
+PlayerBotUnitFirstPerson.is_within_custom_view = function (self, position, camera_position, camera_rotation, vertical_fov_rad, horizontal_fov_rad)
 	return true
 end
 

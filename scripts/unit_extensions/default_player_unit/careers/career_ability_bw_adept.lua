@@ -1,37 +1,4 @@
 CareerAbilityBWAdept = class(CareerAbilityBWAdept)
-
-local function ballistic_raycast(physics_world, max_steps, max_time, position, velocity, gravity, collision_filter)
-	local time_step = max_time / max_steps
-
-	for i = 1, max_steps, 1 do
-		local new_position = position + velocity * time_step
-		local delta = new_position - position
-		local direction = Vector3.normalize(delta)
-		local distance = Vector3.length(delta)
-		local result, hit_position, _, normal, _ = PhysicsWorld.immediate_raycast(physics_world, position, direction, distance, "closest", "collision_filter", collision_filter)
-
-		if result then
-			if Vector3.dot(normal, Vector3.up()) < 0.95 then
-				local step_back_distance = 1.5
-				local step_back = Vector3.normalize(hit_position - position) * step_back_distance
-				local step_back_position = hit_position - step_back
-				local new_result, new_hit_position, _, _, _ = PhysicsWorld.immediate_raycast(physics_world, step_back_position, Vector3.down(), 10, "closest", "collision_filter", collision_filter)
-
-				if new_result then
-					return true, new_hit_position
-				end
-			end
-
-			return true, hit_position
-		end
-
-		velocity = velocity + gravity * time_step
-		position = new_position
-	end
-
-	return false, position
-end
-
 local EPSILON = 0.01
 local SEGMENT_LIST = {}
 
@@ -90,6 +57,8 @@ end
 CareerAbilityBWAdept.destroy = function (self)
 	return
 end
+
+local PROFILER_NAME = "career_ability_bw_adept"
 
 CareerAbilityBWAdept.update = function (self, unit, input, dt, context, t)
 	local input_extension = self._input_extension
@@ -176,7 +145,7 @@ CareerAbilityBWAdept._update_priming = function (self, dt, t)
 	local player_position = first_person_extension:current_position()
 	local player_rotation = first_person_extension:current_rotation()
 	local collision_filter = "filter_adept_teleport"
-	local min_pitch = math.degrees_to_radians(22.5)
+	local min_pitch = math.degrees_to_radians(45)
 	local max_pitch = math.degrees_to_radians(12.5)
 	local yaw = Quaternion.yaw(player_rotation)
 	local pitch = math.clamp(Quaternion.pitch(player_rotation), -min_pitch, max_pitch)
@@ -192,13 +161,10 @@ CareerAbilityBWAdept._update_priming = function (self, dt, t)
 	end
 
 	local velocity = raycast_direction * speed
-	local max_time = 10
-	local max_steps = 30
 	local gravity = Vector3(0, 0, -11)
-	local _, landing_position = ballistic_raycast(physics_world, max_steps, max_time, player_position, velocity, gravity, collision_filter)
-	local fits_at_landing_pos = Unit.mover_fits_at(self._owner_unit, "standing", landing_position)
+	local good_landing_position, landing_position = WeaponHelper:ground_target(physics_world, self._owner_unit, player_position, velocity, gravity, collision_filter)
 
-	if not fits_at_landing_pos then
+	if not good_landing_position then
 		landing_position = nil
 	end
 

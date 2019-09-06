@@ -222,6 +222,12 @@ PlayerInputExtension.reset_release_input = function (self)
 	return true
 end
 
+PlayerInputExtension.force_release_input = function (self, input)
+	self.has_released_input[input] = true
+
+	return true
+end
+
 PlayerInputExtension.reset_release_input_with_delay = function (self, delay)
 	self._release_input_delay = (self._release_input_delay and self._release_input_delay + delay) or delay
 end
@@ -299,6 +305,8 @@ PlayerInputExtension.clear_input_buffer = function (self, clear_from_wield)
 end
 
 PlayerInputExtension.add_buffer = function (self, input_key, doubleclick_window, is_melee_slot)
+	print(input_key, doubleclick_window, is_melee_slot)
+
 	if input_key == "action_one_hold" or (input_key ~= "action_two_hold" and self.priority_input[self.buffer_key] and not self.priority_input[input_key]) then
 		return
 	elseif input_key == "action_two_hold" then
@@ -308,6 +316,8 @@ PlayerInputExtension.add_buffer = function (self, input_key, doubleclick_window,
 	local value = self.input_service:get(input_key)
 
 	if value then
+		print("val")
+
 		if self.priority_input[input_key] then
 			self.input_buffer_timer = 1
 			self.input_buffer = value
@@ -315,6 +325,8 @@ PlayerInputExtension.add_buffer = function (self, input_key, doubleclick_window,
 		else
 			self.new_input_buffer_timer = 0.6
 			self.new_input_buffer = value
+
+			print("double")
 
 			if self.buffer_key and self.buffer_key ~= input_key and (not action_one_variants[self.buffer_key] or not action_one_variants[input_key]) then
 				self.new_buffer_key_doubleclick_window = 0

@@ -143,7 +143,7 @@ SubtitleGui.update = function (self, dt)
 	local playing_dialogues = self.playing_dialogues
 
 	for unit, dialogue in pairs(playing_dialogues) do
-		if not Unit.alive(unit) then
+		if not Unit.alive(unit) or not AiUtils.unit_alive(unit) then
 			playing_dialogues[unit] = nil
 
 			self:_remove_subtitle(unit)

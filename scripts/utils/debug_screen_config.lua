@@ -730,6 +730,12 @@ Features that make player mechanics nicer to work with.
 		category = "Player mechanics"
 	},
 	{
+		description = "Enables ground targetting.",
+		is_boolean = true,
+		setting_name = "debug_ground_target",
+		category = "Player mechanics"
+	},
+	{
 		description = "Logs a ton of stuff, and adds a debug arrow to the knee... err.. screen.",
 		is_boolean = true,
 		setting_name = "camera_debug",

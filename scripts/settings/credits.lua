@@ -309,7 +309,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Ri\u010dardas Dukauskas",
+			text = "Ricardas Dukauskas",
 			type = "person"
 		},
 		{
@@ -3027,7 +3027,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Olof Jönsson (Marauders, Skaven",
+			text = "Olof Jönsson (Marauders, Skaven)",
 			type = "person"
 		},
 		{

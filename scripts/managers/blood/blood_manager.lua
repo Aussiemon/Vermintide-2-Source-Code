@@ -355,33 +355,28 @@ BloodManager.add_weapon_blood = function (self, attacker, damage_type)
 	end
 end
 
-BloodManager.add_enemy_blood = function (self, position, normal, actor)
-	if BloodSettings.enemy_blood.enabled then
-		local unit = Actor.unit(actor)
-		local damage_ext = ScriptUnit.has_extension(unit, "health_system") and ScriptUnit.extension(unit, "health_system")
+BloodManager.add_enemy_blood = function (self, position, unit, damage_ext)
+	if BloodSettings.enemy_blood.enabled and unit and damage_ext and damage_ext:is_alive() then
+		local enemy_base_pos = Unit.local_position(unit, 0)
+		local _, extents = Unit.box(unit)
+		local height = extents[3] * 0.5
+		local distance = math.max(extents[1], extents[2]) * 0.5
+		local enemy_pos = enemy_base_pos + Vector3(0, 0, height)
+		local real_position = enemy_pos + Vector3.normalize(position - enemy_pos) * distance
+		local pose = Unit.local_pose(unit, 0)
+		local inv_world = Matrix4x4.inverse(pose)
+		local normal = Vector3.normalize(position - enemy_pos)
+		local tangent = Vector3.cross(normal, Vector3.up())
+		local t_position = Matrix4x4.transform(inv_world, real_position)
+		local t_normal = Vector3.normalize(Matrix4x4.transform_without_translation(inv_world, normal))
+		local t_tangent = Vector3.normalize(Matrix4x4.transform_without_translation(inv_world, tangent))
+		t_position = Color(t_position[1], t_position[2], t_position[3], 1)
+		t_normal = Color(t_normal[1], t_normal[2], t_normal[3], 0)
+		t_tangent = Color(t_tangent[1], t_tangent[2], t_tangent[3], 0)
 
-		if damage_ext and damage_ext:is_alive() then
-			local enemy_base_pos = Unit.local_position(unit, 0)
-			local _, extents = Unit.box(unit)
-			local height = extents[3] * 0.5
-			local distance = math.max(extents[1], extents[2]) * 0.5
-			local enemy_pos = enemy_base_pos + Vector3(0, 0, height)
-			local real_position = enemy_pos + Vector3.normalize(position - enemy_pos) * distance
-			local pose = Unit.local_pose(unit, 0)
-			local inv_world = Matrix4x4.inverse(pose)
-			normal = Vector3.normalize(position - enemy_pos)
-			local tangent = Vector3.cross(normal, Vector3.up())
-			local t_position = Matrix4x4.transform(inv_world, real_position)
-			local t_normal = Vector3.normalize(Matrix4x4.transform_without_translation(inv_world, normal))
-			local t_tangent = Vector3.normalize(Matrix4x4.transform_without_translation(inv_world, tangent))
-			t_position = Color(t_position[1], t_position[2], t_position[3], 1)
-			t_normal = Color(t_normal[1], t_normal[2], t_normal[3], 0)
-			t_tangent = Color(t_tangent[1], t_tangent[2], t_tangent[3], 0)
-
-			Unit.set_vector4_for_materials(unit, "hit_position", t_position)
-			Unit.set_vector4_for_materials(unit, "hit_normal", t_normal)
-			Unit.set_vector4_for_materials(unit, "hit_tangent", t_tangent)
-		end
+		Unit.set_vector4_for_materials(unit, "hit_position", t_position)
+		Unit.set_vector4_for_materials(unit, "hit_normal", t_normal)
+		Unit.set_vector4_for_materials(unit, "hit_tangent", t_tangent)
 	end
 end
 

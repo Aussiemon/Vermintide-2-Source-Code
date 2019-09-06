@@ -37,6 +37,7 @@ weapon_template.actions = {
 					sub_action = "heavy_attack_left",
 					start_time = 0.45,
 					action = "action_one",
+					force_release_input = "action_one_hold",
 					input = "action_one_release"
 				},
 				{
@@ -86,6 +87,7 @@ weapon_template.actions = {
 					sub_action = "heavy_attack_tank",
 					start_time = 0.45,
 					action = "action_one",
+					force_release_input = "action_one_hold",
 					input = "action_one_release"
 				},
 				{
@@ -147,6 +149,7 @@ weapon_template.actions = {
 					sub_action = "heavy_attack_tank",
 					start_time = 0.5,
 					action = "action_one",
+					force_release_input = "action_one_hold",
 					input = "action_one_release"
 				},
 				{
@@ -208,6 +211,7 @@ weapon_template.actions = {
 					sub_action = "heavy_attack_tank",
 					start_time = 0.45,
 					action = "action_one",
+					force_release_input = "action_one_hold",
 					input = "action_one_release"
 				},
 				{
@@ -263,6 +267,7 @@ weapon_template.actions = {
 					sub_action = "heavy_attack_tank",
 					start_time = 0.45,
 					action = "action_one",
+					force_release_input = "action_one_hold",
 					input = "action_one_release"
 				},
 				{
@@ -336,7 +341,7 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_one",
 					release_required = "action_one_hold",
-					end_time = 0.75,
+					doubleclick_window = 0,
 					input = "action_one"
 				},
 				{
@@ -344,18 +349,12 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_one",
 					release_required = "action_one_hold",
-					end_time = 0.75,
+					doubleclick_window = 0,
 					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.75,
-					action = "action_one",
-					input = "action_one"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.6,
+					start_time = 0.5,
 					action = "action_two",
 					input = "action_two_hold"
 				},
@@ -363,7 +362,7 @@ weapon_template.actions = {
 					sub_action = "default",
 					start_time = 0,
 					action = "action_two",
-					end_time = 0.3,
+					end_time = 0.15,
 					input = "action_two_hold"
 				},
 				{
@@ -397,7 +396,7 @@ weapon_template.actions = {
 			anim_end_event = "attack_finished",
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			dedicated_target_range = 2.8,
-			weapon_up_offset_mod = 0.25,
+			range_mod_add = 0.25,
 			anim_event = "attack_swing_heavy_stab",
 			hit_stop_anim = "attack_hit",
 			total_time = 1.5,
@@ -425,6 +424,7 @@ weapon_template.actions = {
 					start_time = 0.55,
 					action = "action_one",
 					release_required = "action_one_hold",
+					doubleclick_window = 0,
 					input = "action_one"
 				},
 				{
@@ -432,13 +432,8 @@ weapon_template.actions = {
 					start_time = 0.55,
 					action = "action_one",
 					release_required = "action_one_hold",
+					doubleclick_window = 0,
 					input = "action_one_hold"
-				},
-				{
-					sub_action = "default_last_1",
-					start_time = 1,
-					action = "action_one",
-					input = "action_one"
 				},
 				{
 					sub_action = "default",
@@ -450,7 +445,7 @@ weapon_template.actions = {
 					sub_action = "default",
 					start_time = 0,
 					action = "action_two",
-					end_time = 0.1,
+					end_time = 0.15,
 					input = "action_two_hold"
 				},
 				{
@@ -484,7 +479,7 @@ weapon_template.actions = {
 			anim_end_event = "attack_finished",
 			aim_assist_ramp_decay_delay = 0.1,
 			dedicated_target_range = 2.8,
-			weapon_up_offset_mod = 0.25,
+			range_mod_add = 0.25,
 			uninterruptible = true,
 			anim_event = "attack_swing_right",
 			height_mod = 5,
@@ -512,8 +507,17 @@ weapon_template.actions = {
 					sub_action = "default_last_1",
 					start_time = 0.4,
 					action = "action_one",
-					end_time = 1.5,
+					release_required = "action_one_hold",
+					end_time = 1.1,
 					input = "action_one"
+				},
+				{
+					sub_action = "default_last_1",
+					start_time = 0.4,
+					action = "action_one",
+					release_required = "action_one_hold",
+					end_time = 1.1,
+					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
@@ -584,7 +588,8 @@ weapon_template.actions = {
 					sub_action = "default_last_2",
 					start_time = 0.65,
 					action = "action_one",
-					end_time = 1.8,
+					release_required = "action_one_hold",
+					end_time = 1.35,
 					input = "action_one"
 				},
 				{
@@ -592,24 +597,31 @@ weapon_template.actions = {
 					start_time = 0.65,
 					action = "action_one",
 					release_required = "action_one_hold",
-					end_time = 1.8,
+					end_time = 1.35,
 					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 1.8,
+					start_time = 1.3,
 					action = "action_one",
 					input = "action_one"
 				},
 				{
 					sub_action = "default",
-					start_time = 0,
+					start_time = 0.5,
 					action = "action_two",
 					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.4,
+					start_time = 0,
+					action = "action_two",
+					end_time = 0.15,
+					input = "action_two_hold"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
 				}
@@ -637,7 +649,7 @@ weapon_template.actions = {
 			aim_assist_ramp_decay_delay = 0.1,
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 2.8,
-			weapon_up_offset_mod = 0.25,
+			range_mod_add = 0.25,
 			uninterruptible = true,
 			anim_event = "attack_swing_stab_lh",
 			height_mod = 5,
@@ -665,33 +677,35 @@ weapon_template.actions = {
 					sub_action = "default_right",
 					start_time = 0.5,
 					action = "action_one",
-					end_time = 1,
+					release_required = "action_one_hold",
+					end_time = 1.2,
 					input = "action_one"
 				},
 				{
 					sub_action = "default_right",
 					start_time = 0.5,
 					action = "action_one",
-					end_time = 1,
+					release_required = "action_one_hold",
+					end_time = 1.2,
 					input = "action_one_hold"
 				},
 				{
-					sub_action = "default_right",
-					start_time = 1,
-					action = "action_one",
-					end_time = 1.8,
-					input = "action_one"
-				},
-				{
 					sub_action = "default",
-					start_time = 1.8,
+					start_time = 1.1,
 					action = "action_one",
 					input = "action_one"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.55,
+					start_time = 0.5,
 					action = "action_two",
+					input = "action_two_hold"
+				},
+				{
+					sub_action = "default",
+					start_time = 0,
+					action = "action_two",
+					end_time = 0.2,
 					input = "action_two_hold"
 				},
 				{
@@ -721,7 +735,7 @@ weapon_template.actions = {
 			aim_assist_ramp_decay_delay = 0.1,
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 2.8,
-			weapon_up_offset_mod = 0.25,
+			range_mod_add = 0.25,
 			uninterruptible = true,
 			anim_event = "attack_swing_stab_lh",
 			height_mod = 5,
@@ -749,26 +763,35 @@ weapon_template.actions = {
 					sub_action = "default_left",
 					start_time = 0.425,
 					action = "action_one",
-					end_time = 1.5,
+					release_required = "action_one_hold",
+					end_time = 1.125,
 					input = "action_one"
 				},
 				{
 					sub_action = "default_left",
 					start_time = 0.425,
 					action = "action_one",
-					end_time = 1.5,
+					release_required = "action_one_hold",
+					end_time = 1.125,
 					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 1.45,
+					start_time = 1,
 					action = "action_one",
 					input = "action_one"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.4,
+					start_time = 0.425,
 					action = "action_two",
+					input = "action_two_hold"
+				},
+				{
+					sub_action = "default",
+					start_time = 0,
+					action = "action_two",
+					end_time = 0.2,
 					input = "action_two_hold"
 				},
 				{
@@ -780,7 +803,7 @@ weapon_template.actions = {
 			}
 		},
 		light_attack_stab_2 = {
-			damage_window_start = 0.2,
+			damage_window_start = 0.18,
 			hit_armor_anim = "attack_hit",
 			range_mod = 1.35,
 			kind = "sweep",
@@ -793,12 +816,12 @@ weapon_template.actions = {
 			hit_effect = "melee_hit_sword_1h",
 			aim_assist_ramp_multiplier = 0.5,
 			aim_assist_max_ramp_multiplier = 0.8,
-			damage_window_end = 0.3,
+			damage_window_end = 0.23,
 			impact_sound_event = "stab_hit",
 			aim_assist_ramp_decay_delay = 0.1,
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 2.8,
-			weapon_up_offset_mod = 0.25,
+			range_mod_add = 0.25,
 			uninterruptible = true,
 			anim_event = "attack_swing_stab_02",
 			height_mod = 5,
@@ -826,20 +849,14 @@ weapon_template.actions = {
 					sub_action = "default",
 					start_time = 0.45,
 					action = "action_one",
-					end_time = 1,
-					input = "action_one"
+					release_required = "action_one_hold",
+					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
 					start_time = 0.45,
 					action = "action_one",
-					end_time = 1,
-					input = "action_one_hold"
-				},
-				{
-					sub_action = "default",
-					start_time = 1,
-					action = "action_one",
+					release_required = "action_one_hold",
 					input = "action_one"
 				},
 				{
@@ -900,14 +917,14 @@ weapon_template.actions = {
 					sub_action = "default",
 					start_time = 0.45,
 					action = "action_one",
-					release_required = "action_one_hold",
-					end_time = 1.8,
+					release_required = "action_two_hold",
 					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 1.8,
+					start_time = 0.45,
 					action = "action_one",
+					release_required = "action_two_hold",
 					input = "action_one"
 				},
 				{
@@ -956,6 +973,14 @@ weapon_template.actions = {
 				}
 			},
 			allowed_chain_actions = {
+				{
+					sub_action = "default",
+					start_time = 0.25,
+					action = "action_one",
+					release_required = "action_two_hold",
+					doubleclick_window = 0,
+					input = "action_one"
+				},
 				{
 					sub_action = "default",
 					start_time = 0.25,

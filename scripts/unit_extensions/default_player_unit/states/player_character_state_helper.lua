@@ -800,7 +800,7 @@ CharacterStateHelper.get_current_action_data = function (left_hand_weapon_extens
 end
 
 CharacterStateHelper._check_chain_action = function (wield_input, action_data, item_template, current_action_extension, input_extension, inventory_extension, unit, t, ammo_extension)
-	local new_action, new_sub_action, send_buffer, clear_buffer = nil
+	local new_action, new_sub_action, send_buffer, clear_buffer, force_release_input = nil
 	local release_required = action_data.release_required
 	local input_extra_requirement = true
 
@@ -871,8 +871,9 @@ CharacterStateHelper._check_chain_action = function (wield_input, action_data, i
 				if action_settings and not condition_failed and not cooldown then
 					send_buffer = action_data.send_buffer
 					clear_buffer = action_data.clear_buffer
+					force_release_input = action_data.force_release_input
 
-					return true, new_action, new_sub_action, wield_input, send_buffer, clear_buffer
+					return true, new_action, new_sub_action, wield_input, send_buffer, clear_buffer, force_release_input
 				end
 			end
 		end
@@ -889,7 +890,7 @@ local career_chain_action = {
 }
 
 CharacterStateHelper._get_chain_action_data = function (item_template, current_action_extension, current_action_settings, input_extension, inventory_extension, unit, t, ammo_extension)
-	local done, new_action, new_sub_action, wield_input, send_buffer, clear_buffer = nil
+	local done, new_action, new_sub_action, wield_input, send_buffer, clear_buffer, force_release_input = nil
 	local career_extension = ScriptUnit.has_extension(unit, "career_system")
 
 	if career_extension then
@@ -904,7 +905,7 @@ CharacterStateHelper._get_chain_action_data = function (item_template, current_a
 			if action_name and action_name ~= current_action_name then
 				local action_data = career_chain_action
 				action_data.action = action_name
-				done, new_action, new_sub_action, wield_input, send_buffer, clear_buffer = CharacterStateHelper._check_chain_action(wield_input, action_data, item_template, current_action_extension, input_extension, inventory_extension, unit, t, ammo_extension)
+				done, new_action, new_sub_action, wield_input, send_buffer, clear_buffer, force_release_input = CharacterStateHelper._check_chain_action(wield_input, action_data, item_template, current_action_extension, input_extension, inventory_extension, unit, t, ammo_extension)
 
 				if done then
 					break
@@ -918,7 +919,7 @@ CharacterStateHelper._get_chain_action_data = function (item_template, current_a
 
 		for i = 1, #chain_actions, 1 do
 			local action_data = chain_actions[i]
-			done, new_action, new_sub_action, wield_input, send_buffer, clear_buffer = CharacterStateHelper._check_chain_action(wield_input, action_data, item_template, current_action_extension, input_extension, inventory_extension, unit, t, ammo_extension)
+			done, new_action, new_sub_action, wield_input, send_buffer, clear_buffer, force_release_input = CharacterStateHelper._check_chain_action(wield_input, action_data, item_template, current_action_extension, input_extension, inventory_extension, unit, t, ammo_extension)
 
 			if done then
 				break
@@ -936,7 +937,7 @@ CharacterStateHelper._get_chain_action_data = function (item_template, current_a
 		end
 	end
 
-	return new_action, new_sub_action, wield_input
+	return new_action, new_sub_action, wield_input, force_release_input
 end
 
 local function validate_action(unit, action_name, sub_action_name, action_settings, input_extension, inventory_extension, only_check_condition, ammo_extension, current_action_extension, t)
@@ -989,7 +990,7 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 		return
 	end
 
-	local new_action, new_sub_action, current_action_settings, current_action_extension, current_action_hand = nil
+	local new_action, new_sub_action, wield_input, force_release_input, current_action_settings, current_action_extension, current_action_hand = nil
 	current_action_settings, current_action_extension, current_action_hand = CharacterStateHelper.get_current_action_data(left_hand_weapon_extension, right_hand_weapon_extension)
 	local item_template = BackendUtils.get_item_template(item_data)
 	local recent_damage_type, recent_hit_react_type = health_extension:recently_damaged()
@@ -1064,7 +1065,7 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 	local next_action_init_data = nil
 
 	if current_action_settings then
-		new_action, new_sub_action = CharacterStateHelper._get_chain_action_data(item_template, current_action_extension, current_action_settings, input_extension, inventory_extension, unit, t, ammo_extension)
+		new_action, new_sub_action, wield_input, force_release_input = CharacterStateHelper._get_chain_action_data(item_template, current_action_extension, current_action_settings, input_extension, inventory_extension, unit, t, ammo_extension)
 
 		if not new_action then
 			if current_action_settings.allow_hold_toggle and input_extension.toggle_alternate_attack then
@@ -1214,6 +1215,10 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 		end
 
 		right_hand_weapon_extension:start_action(new_action, new_sub_action, item_template.actions, t, power_level, next_action_init_data)
+
+		if force_release_input then
+			input_extension:force_release_input(force_release_input)
+		end
 	end
 end
 

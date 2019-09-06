@@ -64,20 +64,12 @@ AdventureSpawning._assign_data_to_slot = function (self, slot, data)
 	end
 
 	if not data.position or not data.rotation then
-		print("No position and/or rotation in data table when filling spawn slot")
-		table.dump(data)
-		Crashify.print_exception("AdventureSpawning", "no position and/or rotation in data table")
-
 		local box_pos, box_rot = self:get_spawn_point()
 		data.position = box_pos
 		data.rotation = box_rot
 	end
 
 	if not data.ammo then
-		print("No ammo in data table when filling spawn slot")
-		table.dump(data)
-		Crashify.print_exception("AdventureSpawning", "no ammo in data table")
-
 		data.ammo = {
 			slot_ranged = 1,
 			slot_melee = 1
@@ -85,10 +77,6 @@ AdventureSpawning._assign_data_to_slot = function (self, slot, data)
 	end
 
 	if not data.consumables then
-		print("No consumables in data table when filling spawn slot")
-		table.dump(data)
-		Crashify.print_exception("AdventureSpawning", "no consumables in data table")
-
 		local settings = Managers.state.difficulty:get_difficulty_settings()
 		local game_mode_settings = Managers.state.game_mode:settings()
 		local consumables = {}
@@ -325,7 +313,8 @@ AdventureSpawning._spawn_player = function (self, status)
 	local ammo = data.ammo
 	local ammo_melee_percent_int = math.floor(ammo.slot_melee * 100)
 	local ammo_ranged_percent_int = math.floor(ammo.slot_ranged * 100)
-	local ability_cooldown_percent_int = math.floor(data.ability_cooldown_percentage * 100)
+	local ability_cooldown_perentage = data.ability_cooldown_percentage or 1
+	local ability_cooldown_percent_int = math.floor(ability_cooldown_perentage * 100)
 	local session = Managers.state.network:game()
 
 	if session then

@@ -350,4 +350,64 @@ WeaponHelper.debug_draw_trajectory_hit = function (self, position, hit_target, d
 	drawer:sphere(position, 0.1, color)
 end
 
+local GROUND_TARGET_MAX_STEPS = 30
+local GROUND_TARGET_MAX_TIME = 10
+
+WeaponHelper.ground_target = function (self, physics_world, fitting_unit, origin, velocity, gravity, collision_filter)
+	local time_step = GROUND_TARGET_MAX_TIME / GROUND_TARGET_MAX_STEPS
+	local position = origin
+	local unit_fit_offset_vector = Vector3(0, 0, 0.1)
+
+	for i = 1, GROUND_TARGET_MAX_STEPS, 1 do
+		local new_position = position + velocity * time_step
+		local delta = new_position - position
+		local direction = Vector3.normalize(delta)
+		local distance = Vector3.length(delta)
+		local result, hit_position, _, normal, _ = PhysicsWorld.immediate_raycast(physics_world, position, direction, distance, "closest", "collision_filter", collision_filter)
+
+		if result then
+			local good_landing = true
+			local hit_wall = Vector3.dot(normal, Vector3.up()) < 0.95
+
+			if not hit_wall then
+				local fits_at_landing_pos, fitted_position = Unit.mover_fits_at(fitting_unit, "standing", hit_position + unit_fit_offset_vector, 1)
+
+				if fits_at_landing_pos then
+					hit_position = fitted_position
+				else
+					good_landing = false
+				end
+			end
+
+			if hit_wall or not good_landing then
+				for j = 1, GROUND_TARGET_MAX_STEPS, 1 do
+					local step_back_distance = (j == 1 and 0.5) or 1
+					local step_back = Vector3.normalize(hit_position - origin) * step_back_distance
+					local step_back_position = hit_position - step_back
+					local new_result, new_hit_position, _, _, _ = PhysicsWorld.immediate_raycast(physics_world, step_back_position, Vector3.down(), 10, "closest", "collision_filter", collision_filter)
+
+					if new_result then
+						local fits_at_landing_pos, fitted_position = Unit.mover_fits_at(fitting_unit, "standing", new_hit_position + unit_fit_offset_vector, 1)
+
+						if fits_at_landing_pos then
+							new_hit_position = fitted_position
+
+							return true, new_hit_position
+						else
+							hit_position = step_back_position
+						end
+					end
+				end
+			end
+
+			return true, hit_position
+		end
+
+		velocity = velocity + gravity * time_step
+		position = new_position
+	end
+
+	return false, position
+end
+
 return

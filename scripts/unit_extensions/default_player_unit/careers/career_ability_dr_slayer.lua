@@ -1,41 +1,5 @@
 CareerAbilityDRSlayer = class(CareerAbilityDRSlayer)
 local MIN_DISTANCE_FOR_LEAP = 2
-
-local function ballistic_raycast(physics_world, max_steps, max_time, position, velocity, gravity, collision_filter)
-	local time_step = max_time / max_steps
-	local blocked = false
-
-	for i = 1, max_steps, 1 do
-		local new_position = position + velocity * time_step
-		local delta = new_position - position
-		local direction = Vector3.normalize(delta)
-		local distance = Vector3.length(delta)
-		local result, hit_position, _, normal, _ = PhysicsWorld.immediate_raycast(physics_world, position, direction, distance, "closest", "collision_filter", collision_filter)
-		local volume_blocked, _, _, _, _ = PhysicsWorld.immediate_raycast(physics_world, position, direction, distance, "closest", "collision_filter", "filter_leap_blocker")
-		blocked = blocked or volume_blocked
-
-		if result then
-			if Vector3.dot(normal, Vector3.up()) < 0.95 then
-				local step_back_distance = 1.5
-				local step_back = Vector3.normalize(hit_position - position) * step_back_distance
-				local step_back_position = hit_position - step_back
-				local new_result, new_hit_position, _, _, _ = PhysicsWorld.immediate_raycast(physics_world, step_back_position, Vector3.down(), 10, "closest", "collision_filter", collision_filter)
-
-				if new_result then
-					return true, blocked, new_hit_position
-				end
-			end
-
-			return true, blocked, hit_position
-		end
-
-		velocity = velocity + gravity * time_step
-		position = new_position
-	end
-
-	return false, blocked, position
-end
-
 local segment_list = {}
 
 local function get_leap_data(physics_world, own_position, target_position)
@@ -197,25 +161,21 @@ CareerAbilityDRSlayer._update_priming = function (self)
 	end
 
 	local velocity = raycast_direction * speed
-	local max_time = 10
-	local max_steps = 30
 	local gravity = Vector3(0, 0, -11)
-	local result, volume_blocked, new_landing_position = ballistic_raycast(physics_world, max_steps, max_time, player_position, velocity, gravity, collision_filter)
+	local result, new_landing_position = WeaponHelper:ground_target(physics_world, self._owner_unit, player_position, velocity, gravity, collision_filter)
 	local leap_distance = nil
 
 	if result then
 		leap_distance = Vector3.length(new_landing_position - player_position)
 
-		if new_landing_position and leap_distance <= 0.1 then
-			new_landing_position = nil
-		end
-
-		if effect_id and not volume_blocked and new_landing_position then
+		if effect_id and new_landing_position then
 			World.move_particles(world, effect_id, new_landing_position)
 		end
+	else
+		new_landing_position = nil
 	end
 
-	return result, not volume_blocked and new_landing_position, leap_distance
+	return result, new_landing_position, leap_distance
 end
 
 CareerAbilityDRSlayer._stop_priming = function (self)
@@ -300,11 +260,10 @@ CareerAbilityDRSlayer._do_stomp = function (self, t)
 	local local_player = self._local_player
 	local career_extension = self._career_extension
 	local talent_extension = self._talent_extension
-	local has_impact_damage_buff = talent_extension:has_talent("bardin_slayer_activated_ability_impact_damage")
 	local rotation = Quaternion.identity()
-	local explosion_template = (has_impact_damage_buff and "bardin_slayer_activated_ability_landing_stagger_impact") or "bardin_slayer_activated_ability_landing_stagger"
+	local explosion_template = "bardin_slayer_activated_ability_landing_stagger"
 	local scale = 1
-	local career_power_level = career_extension:get_career_power_level() * ((has_impact_damage_buff and 2) or 1)
+	local career_power_level = career_extension:get_career_power_level()
 	local area_damage_system = Managers.state.entity:system("area_damage_system")
 	local position = POSITION_LOOKUP[owner_unit]
 

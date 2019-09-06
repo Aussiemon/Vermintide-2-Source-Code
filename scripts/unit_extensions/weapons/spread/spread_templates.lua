@@ -528,16 +528,16 @@ SpreadTemplates = {
 				max_pitch = 0.25
 			},
 			zoomed_moving = {
-				max_yaw = 1.5,
-				max_pitch = 1.5
+				max_yaw = 0.75,
+				max_pitch = 0.75
 			},
 			zoomed_crouch_still = {
 				max_yaw = 1.5,
 				max_pitch = 1.5
 			},
 			zoomed_crouch_moving = {
-				max_yaw = 3.5,
-				max_pitch = 3.5
+				max_yaw = 2,
+				max_pitch = 2
 			}
 		},
 		immediate = {

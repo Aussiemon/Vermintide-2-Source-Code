@@ -1782,6 +1782,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 		self.hero_stats_updated = true
 	end
 
+	self._fps_reporter:report()
 	self:_check_and_add_end_game_telemetry(application_shutdown)
 
 	if TelemetrySettings.collect_memory then

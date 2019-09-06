@@ -108,12 +108,12 @@ BuffExtension.add_buff = function (self, template_name, params)
 	for i, sub_buff_template in ipairs(buffs) do
 		repeat
 			local duration = sub_buff_template.duration
+			local stacks = 0
 			local max_stacks = sub_buff_template.max_stacks
 			local end_time = duration and start_time + duration
 
 			if max_stacks then
 				local has_max_stacks = false
-				local stacks = 0
 
 				for j = 1, #self._buffs, 1 do
 					local existing_buff = self._buffs[j]

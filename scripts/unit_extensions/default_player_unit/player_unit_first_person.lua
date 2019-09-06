@@ -387,51 +387,31 @@ PlayerUnitFirstPerson.is_in_view = function (self, position)
 	Managers.state.camera:is_in_view(viewport_name, position)
 end
 
-PlayerUnitFirstPerson.is_within_default_view = function (self, position)
+PlayerUnitFirstPerson.is_infront = function (self, position, cos_angle_limit)
 	local player = Managers.player:owner(self.unit)
 	local viewport_name = player.viewport_name
 	local viewport = ScriptWorld.viewport(self.world, viewport_name)
 	local camera = ScriptViewport.camera(viewport)
 	local camera_position = ScriptCamera.position(camera)
 	local camera_rotation = ScriptCamera.rotation(camera)
-	local camera_forward = Quaternion.forward(camera_rotation)
+	local camera_forward = Vector3.normalize(Quaternion.forward(camera_rotation))
 	local to_pos_dir = Vector3.normalize(position - camera_position)
 	local dot = Vector3.dot(to_pos_dir, camera_forward)
-	local is_infront = dot > 0
+	local is_infront = dot > (cos_angle_limit or 0)
 
-	if is_infront then
-		local base_vertical_fov_rad = (CameraSettings.first_person._node.vertical_fov * math.pi) / 180
-		local base_horizontal_fov_rad = base_vertical_fov_rad * 1.7777777777777777
-		local camera_right = Quaternion.right(camera_rotation)
-		local camera_up = Quaternion.up(camera_rotation)
-		local c_x = Vector3.dot(to_pos_dir, camera_right)
-		local c_y = dot
-		local c_z = Vector3.dot(to_pos_dir, camera_up)
-		local dot_xy = c_y
-		local c_to_pos_dir_length_xy = math.sqrt(c_x * c_x + c_y * c_y)
+	return is_infront
+end
 
-		if c_to_pos_dir_length_xy == 0 then
-			return false
-		end
+PlayerUnitFirstPerson.is_within_custom_view = function (self, position, camera_position, camera_rotation, vertical_fov_rad, horizontal_fov_rad)
+	return math.point_is_inside_view(position, camera_position, camera_rotation, vertical_fov_rad, horizontal_fov_rad)
+end
 
-		local cos_xy = dot_xy / c_to_pos_dir_length_xy
-		local yaw = math.acos(cos_xy)
+PlayerUnitFirstPerson.is_within_default_view = function (self, position)
+	local camera_position, camera_rotation = self:camera_position_rotation()
+	local base_vertical_fov_rad = (CameraSettings.first_person._node.vertical_fov * math.pi) / 180
+	local base_horizontal_fov_rad = base_vertical_fov_rad * 1.7777777777777777
 
-		if yaw <= base_horizontal_fov_rad / 2 then
-			local dot_uz = c_to_pos_dir_length_xy
-			local to_pos_dir_length_uz = math.sqrt(c_to_pos_dir_length_xy * c_to_pos_dir_length_xy + c_z * c_z)
-			local cos_uz = dot_uz / to_pos_dir_length_uz
-			local pitch = math.acos(cos_uz)
-
-			if pitch <= base_vertical_fov_rad / 2 then
-				return true
-			end
-
-			return false
-		end
-	end
-
-	return false
+	return math.point_is_inside_view(position, camera_position, camera_rotation, base_vertical_fov_rad, base_horizontal_fov_rad)
 end
 
 PlayerUnitFirstPerson.apply_recoil = function (self, factor)
@@ -489,6 +469,17 @@ end
 
 PlayerUnitFirstPerson.current_position = function (self)
 	return Unit.local_position(self.first_person_unit, 0)
+end
+
+PlayerUnitFirstPerson.camera_position_rotation = function (self)
+	local player = Managers.player:owner(self.unit)
+	local viewport_name = player.viewport_name
+	local viewport = ScriptWorld.viewport(self.world, viewport_name)
+	local camera = ScriptViewport.camera(viewport)
+	local camera_position = ScriptCamera.position(camera)
+	local camera_rotation = ScriptCamera.rotation(camera)
+
+	return camera_position, camera_rotation
 end
 
 PlayerUnitFirstPerson.set_wanted_player_height = function (self, state, t, time_to_change)

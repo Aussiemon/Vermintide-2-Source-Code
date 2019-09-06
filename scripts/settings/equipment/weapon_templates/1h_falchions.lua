@@ -31,6 +31,7 @@ weapon_template.actions = {
 					sub_action = "heavy_attack",
 					start_time = 0.6,
 					action = "action_one",
+					force_release_input = "action_one_hold",
 					input = "action_one_release"
 				},
 				{
@@ -86,6 +87,7 @@ weapon_template.actions = {
 					sub_action = "heavy_attack_2",
 					start_time = 0.6,
 					action = "action_one",
+					force_release_input = "action_one_hold",
 					input = "action_one_release"
 				},
 				{
@@ -141,6 +143,7 @@ weapon_template.actions = {
 					sub_action = "heavy_attack",
 					start_time = 0.6,
 					action = "action_one",
+					force_release_input = "action_one_hold",
 					input = "action_one_release"
 				},
 				{
@@ -260,16 +263,26 @@ weapon_template.actions = {
 					sub_action = "default_right",
 					start_time = 0.4,
 					action = "action_one",
+					doubleclick_window = 0,
 					release_required = "action_one_hold",
+					end_time = 1.05,
 					input = "action_one"
 				},
 				{
 					sub_action = "default_right",
 					start_time = 0.4,
 					action = "action_one",
+					doubleclick_window = 0,
 					release_required = "action_one_hold",
 					end_time = 1.05,
 					input = "action_one_hold"
+				},
+				{
+					sub_action = "default",
+					start_time = 1.05,
+					action = "action_one",
+					doubleclick_window = 0,
+					input = "action_one"
 				},
 				{
 					sub_action = "default",
@@ -325,16 +338,26 @@ weapon_template.actions = {
 					sub_action = "default",
 					start_time = 0.45,
 					action = "action_one",
+					doubleclick_window = 0,
 					release_required = "action_one_hold",
+					end_time = 1.05,
 					input = "action_one"
 				},
 				{
-					sub_action = "default_left",
-					start_time = 0.5,
+					sub_action = "default",
+					start_time = 0.45,
 					action = "action_one",
+					doubleclick_window = 0,
 					release_required = "action_one_hold",
 					end_time = 1.05,
 					input = "action_one_hold"
+				},
+				{
+					sub_action = "default",
+					start_time = 1.05,
+					action = "action_one",
+					doubleclick_window = 0,
+					input = "action_one"
 				},
 				{
 					sub_action = "default",
@@ -397,8 +420,17 @@ weapon_template.actions = {
 					sub_action = "default_right",
 					start_time = 0.6,
 					action = "action_one",
+					release_required = "action_one_hold",
 					end_time = 1.25,
 					input = "action_one"
+				},
+				{
+					sub_action = "default_right",
+					start_time = 0.6,
+					action = "action_one",
+					release_required = "action_one_hold",
+					end_time = 1.25,
+					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
@@ -464,14 +496,15 @@ weapon_template.actions = {
 					sub_action = "default",
 					start_time = 0.75,
 					action = "action_one",
-					end_time = 1.25,
+					release_required = "action_one_hold",
 					input = "action_one"
 				},
 				{
 					sub_action = "default",
-					start_time = 1.25,
+					start_time = 0.75,
 					action = "action_one",
-					input = "action_one"
+					release_required = "action_one_hold",
+					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
@@ -531,8 +564,17 @@ weapon_template.actions = {
 					sub_action = "default_down",
 					start_time = 0.6,
 					action = "action_one",
+					release_required = "action_one_hold",
 					end_time = 1.25,
 					input = "action_one"
+				},
+				{
+					sub_action = "default_down",
+					start_time = 0.6,
+					action = "action_one",
+					release_required = "action_one_hold",
+					end_time = 1.25,
+					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
@@ -596,14 +638,15 @@ weapon_template.actions = {
 					sub_action = "default",
 					start_time = 0.6,
 					action = "action_one",
-					end_time = 1.25,
+					release_required = "action_one_hold",
 					input = "action_one"
 				},
 				{
 					sub_action = "default",
-					start_time = 1.25,
+					start_time = 0.6,
 					action = "action_one",
-					input = "action_one"
+					release_required = "action_one_hold",
+					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
@@ -663,8 +706,15 @@ weapon_template.actions = {
 					sub_action = "default",
 					start_time = 0.75,
 					action = "action_one",
-					release_required = "action_one_hold",
+					release_required = "action_two_hold",
 					input = "action_one"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.75,
+					action = "action_one",
+					release_required = "action_two_hold",
+					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
@@ -719,6 +769,13 @@ weapon_template.actions = {
 					action = "action_one",
 					release_required = "action_two_hold",
 					input = "action_one"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.25,
+					action = "action_one",
+					release_required = "action_two_hold",
+					input = "action_one_hold"
 				},
 				{
 					sub_action = "light_attack_bopp",

@@ -131,29 +131,6 @@ local function is_within_damage_window(current_time_in_action, action, owner_uni
 	return after_start and before_end
 end
 
-local function is_within_a_chain_window(current_time_in_action, action, owner_unit)
-	local chain_time_scale = action.anim_time_scale or 1
-	chain_time_scale = ActionUtils.apply_attack_speed_buff(chain_time_scale, owner_unit)
-	chain_time_scale = ActionUtils.apply_charge_speed_buff_chain_window(chain_time_scale, owner_unit, action)
-	local allowed_chain_actions = action.allowed_chain_actions
-	local num_chain_actions = #allowed_chain_actions
-
-	for i = 1, num_chain_actions, 1 do
-		local chain_info = allowed_chain_actions[i]
-		local start_time = chain_info.start_time or 0
-		local end_time = chain_info.end_time or math.huge
-		local modified_start_time = start_time / chain_time_scale
-		local after_start = current_time_in_action > modified_start_time
-		local before_end = current_time_in_action < end_time
-
-		if after_start and before_end then
-			return true
-		end
-	end
-
-	return false
-end
-
 WeaponUnitExtension = class(WeaponUnitExtension)
 
 WeaponUnitExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -390,14 +367,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 		end
 
 		if current_action_settings.enter_function then
-			local minimum_hold_time = current_action_settings.minimum_hold_time or 0
-
-			if minimum_hold_time > 0 then
-				local buffed_minimum_hold_time = ActionUtils.apply_attack_speed_buff(minimum_hold_time, self.owner_unit)
-				buffed_minimum_hold_time = ActionUtils.apply_charge_speed_buff_chain_window(buffed_minimum_hold_time, self.owner_unit, current_action_settings)
-				minimum_hold_time = minimum_hold_time * minimum_hold_time / buffed_minimum_hold_time
-			end
-
+			local minimum_hold_time = self:get_scaled_min_hold_time(current_action_settings)
 			local input_extension = ScriptUnit.extension(owner_unit, "input_system")
 			local remaining_time = (self.action_time_started + minimum_hold_time) - t
 
@@ -630,6 +600,29 @@ WeaponUnitExtension.time_to_next_chain_action = function (self, next_chain_actio
 	return start_time - current_time_in_action
 end
 
+WeaponUnitExtension.get_scaled_min_hold_time = function (self, action)
+	local minimum_hold_time = action.minimum_hold_time
+
+	if not minimum_hold_time then
+		return 0
+	end
+
+	local buff_extension = ScriptUnit.extension(self.owner_unit, "buff_system")
+	local scaled_min_hold_time = minimum_hold_time
+
+	if buff_extension then
+		scaled_min_hold_time = buff_extension:apply_buffs_to_value(scaled_min_hold_time, "reload_speed")
+
+		if scaled_min_hold_time > 0 then
+			local buffed_minimum_hold_time = ActionUtils.apply_attack_speed_buff(scaled_min_hold_time, self.owner_unit)
+			buffed_minimum_hold_time = ActionUtils.apply_charge_speed_buff_chain_window(buffed_minimum_hold_time, self.owner_unit, action)
+			scaled_min_hold_time = scaled_min_hold_time * scaled_min_hold_time / buffed_minimum_hold_time
+		end
+	end
+
+	return scaled_min_hold_time
+end
+
 WeaponUnitExtension.can_stop_hold_action = function (self, t)
 	local current_time_in_action = t - self.action_time_started
 	local current_action_settings = self.current_action_settings
@@ -639,19 +632,9 @@ WeaponUnitExtension.can_stop_hold_action = function (self, t)
 		return true
 	end
 
-	local buff_extension = ScriptUnit.extension(self.owner_unit, "buff_system")
+	local scaled_minimum_hold_time = self:get_scaled_min_hold_time(current_action_settings)
 
-	if buff_extension then
-		minimum_hold_time = buff_extension:apply_buffs_to_value(minimum_hold_time, "reload_speed")
-
-		if minimum_hold_time > 0 then
-			local buffed_minimum_hold_time = ActionUtils.apply_attack_speed_buff(minimum_hold_time, self.owner_unit)
-			buffed_minimum_hold_time = ActionUtils.apply_charge_speed_buff_chain_window(buffed_minimum_hold_time, self.owner_unit, current_action_settings)
-			minimum_hold_time = minimum_hold_time * minimum_hold_time / buffed_minimum_hold_time
-		end
-	end
-
-	return current_time_in_action > minimum_hold_time
+	return scaled_minimum_hold_time < current_time_in_action
 end
 
 WeaponUnitExtension.get_action_cooldown = function (self, action)

@@ -24508,6 +24508,12 @@ return function ()
 				"slot_melee"
 			},
 			{
+				"global_context",
+				"dwarf_ranger",
+				OP.EQ,
+				1
+			},
+			{
 				"user_memory",
 				"times_killed_rat_ogre",
 				OP.NEQ,

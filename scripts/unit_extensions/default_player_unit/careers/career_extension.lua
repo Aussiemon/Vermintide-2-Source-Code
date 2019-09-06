@@ -271,7 +271,7 @@ CareerExtension.current_ability_cooldown_percentage = function (self, ability_id
 	local game = network_manager:game()
 	local go_id = Managers.state.unit_storage:go_id(self._unit)
 
-	return GameSession.game_object_field(game, go_id, "ability_percentage") or 1
+	return GameSession.game_object_field(game, go_id, "ability_percentage")
 end
 
 CareerExtension.get_max_ability_cooldown = function (self, ability_id)
