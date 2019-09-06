@@ -470,18 +470,42 @@ weapon_template.actions = {
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default_right",
-					start_time = 0.6,
+					sub_action = "default_last",
+					start_time = 0.5,
 					action = "action_one",
 					release_required = "action_two_hold",
+					end_time = 0.6,
 					input = "action_one"
 				},
 				{
 					sub_action = "default_last",
+					start_time = 0.5,
+					action = "action_one",
+					release_required = "action_two_hold",
+					end_time = 0.6,
+					input = "action_one_hold"
+				},
+				{
+					sub_action = "default_right",
 					start_time = 0.6,
 					action = "action_one",
 					release_required = "action_two_hold",
+					end_time = 1.8,
+					input = "action_one"
+				},
+				{
+					sub_action = "default_right",
+					start_time = 0.6,
+					action = "action_one",
+					release_required = "action_two_hold",
+					end_time = 1.8,
 					input = "action_one_hold"
+				},
+				{
+					sub_action = "default",
+					start_time = 1.8,
+					action = "action_one",
+					input = "action_one"
 				},
 				{
 					sub_action = "default",

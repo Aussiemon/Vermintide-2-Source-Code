@@ -365,8 +365,10 @@ AdventureSpawning.force_update_spawn_positions = function (self, safe_position, 
 	for i = 1, #saved_game_mode_data, 1 do
 		local data = saved_game_mode_data[i]
 
-		data.position:store(safe_position)
-		data.rotation:store(safe_rotation)
+		if data.position and data.rotation then
+			data.position:store(safe_position)
+			data.rotation:store(safe_rotation)
+		end
 	end
 end
 
