@@ -17,7 +17,10 @@ end
 TelemetryHeartbeat._send = function (self)
 	local payload = cjson.encode({
 		type = "heartbeat",
-		title_id = TelemetrySettings.title_id
+		title_id = TelemetrySettings.title_id,
+		params = {
+			content_revision = script_data.settings.content_revision
+		}
 	})
 
 	if TelemetrySettings.send then

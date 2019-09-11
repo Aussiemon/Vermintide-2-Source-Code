@@ -324,20 +324,20 @@ SpreadTemplates = {
 	bounty_hunter_handgun = {
 		continuous = {
 			still = {
-				max_yaw = 0.8,
-				max_pitch = 0.8
+				max_yaw = 0,
+				max_pitch = 0
 			},
 			moving = {
 				max_yaw = 1,
 				max_pitch = 1
 			},
 			crouch_still = {
-				max_yaw = 0.6,
-				max_pitch = 0.6
+				max_yaw = 0,
+				max_pitch = 0
 			},
 			crouch_moving = {
-				max_yaw = 1.5,
-				max_pitch = 1.5
+				max_yaw = 0.8,
+				max_pitch = 0.8
 			},
 			zoomed_still = {
 				max_yaw = 0.8,

@@ -162,6 +162,7 @@ BTStormVerminAttackAction.leave = function (self, unit, blackboard, t, reason, d
 	blackboard.reset_attack = nil
 	blackboard.reset_attack_animation_locked = nil
 	blackboard.reset_attack_delay = nil
+	blackboard.past_damage_in_attack = nil
 	local action = blackboard.action
 	local reset_stagger_count = action.reset_stagger_count
 
@@ -323,6 +324,7 @@ local debug_drawer_info = {
 
 BTStormVerminAttackAction.anim_cb_damage = function (self, unit, blackboard)
 	local action = blackboard.action
+	blackboard.past_damage_in_attack = true
 	local world = Unit.world(unit)
 	local pw = World.get_data(world, "physics_world")
 	local range = action.range

@@ -115,4 +115,12 @@ TargetHealthExtension.get_health_regen = function (self)
 	return self._health_regen
 end
 
+TargetHealthExtension.client_predicted_is_alive = function (self)
+	return not self:is_dead()
+end
+
+TargetHealthExtension.apply_client_predicted_damage = function (self, predicted_damage)
+	return
+end
+
 return

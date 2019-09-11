@@ -163,42 +163,29 @@ ProjectileTrueFlightLocomotionExtension.update = function (self, unit, input, dt
 		self:_do_forced_impact(unit, current_position)
 	end
 
+	local template = TrueFlightTemplates[self.true_flight_template_name]
 	local target = self.target_unit
-	local has_good_target = false
-	local can_see_target = false
-
-	if self.position_target then
-		can_see_target = true
-	elseif target and Unit.alive(target) and ScriptUnit.has_extension(target, "health_system") then
-		local health_extension = ScriptUnit.extension(target, "health_system")
-
-		if health_extension:is_alive() and not self.hit_units[target] then
-			has_good_target = true
-
-			if self:_legitimate_target_func(target, current_position) then
-				can_see_target = true
-			end
-		end
-	end
-
+	local has_good_target, can_see_target = self:_check_target_valid(target, current_position, template)
 	local new_position = nil
 
-	if can_see_target then
-		new_position = self:_update_towards_target_func(current_position, t, dt)
-	elseif not has_good_target then
+	if not has_good_target then
 		if not self.target_players and target and Unit.alive(target) and ScriptUnit.has_extension(target, "outline_system") then
 			local target_outline_extension = ScriptUnit.extension(target, "outline_system")
 
 			target_outline_extension.set_method("never")
-		end
 
-		local template = TrueFlightTemplates[self.true_flight_template_name]
-		local max_on_target_time = template.max_on_target_time or 0.75
-		local seek = self.on_target_time < max_on_target_time
-		local position, new_target = self:update_seeking_target(current_position, dt, t, seek)
-		new_position = position
-		self.target_unit = new_target
-	else
+			local max_on_target_time = template.max_on_target_time or 0.75
+			local seek = self.on_target_time < max_on_target_time
+			local position, new_target = self:update_seeking_target(current_position, dt, t, seek)
+			new_position = position
+			self.target_unit = new_target
+			has_good_target, can_see_target = self:_check_target_valid(new_target, current_position, template)
+		end
+	end
+
+	if can_see_target then
+		new_position = self:_update_towards_target_func(current_position, t, dt)
+	elseif has_good_target then
 		local position, _ = self:update_seeking_target(current_position, dt, t, false)
 		new_position = position
 	end
@@ -245,6 +232,29 @@ ProjectileTrueFlightLocomotionExtension.update = function (self, unit, input, dt
 
 	self.radians = math.degrees_to_radians(ActionUtils.pitch_from_rotation(rotation))
 	self.moved = true
+end
+
+ProjectileTrueFlightLocomotionExtension._check_target_valid = function (self, target, current_position, template)
+	local can_see_target = false
+	local has_good_target = false
+
+	if self.position_target then
+		can_see_target = true
+	elseif target and Unit.alive(target) and ScriptUnit.has_extension(target, "health_system") then
+		local health_extension = ScriptUnit.extension(target, "health_system")
+
+		if health_extension:is_alive() and not self.hit_units[target] then
+			has_good_target = true
+
+			if self:_legitimate_target_func(target, current_position) then
+				can_see_target = true
+			elseif template.retarget_on_miss then
+				has_good_target = false
+			end
+		end
+	end
+
+	return has_good_target, can_see_target
 end
 
 ProjectileTrueFlightLocomotionExtension.set_projectile_state = function (self, state_id)
@@ -409,6 +419,12 @@ ProjectileTrueFlightLocomotionExtension.update_towards_target = function (self, 
 	local target_position = get_target_head_node_position(target_unit, self.target_node)
 	local required_velocity = target_position - position
 	local distance = Vector3.length(required_velocity)
+	local speed = self.speed * speed_multiplier
+
+	if distance < speed * dt then
+		return target_position
+	end
+
 	local wanted_direction = Vector3.normalize(required_velocity)
 	local current_rotation = Quaternion.look(current_direction)
 	local wanted_rotation = Quaternion.look(wanted_direction)
@@ -418,7 +434,6 @@ ProjectileTrueFlightLocomotionExtension.update_towards_target = function (self, 
 	local lerp_value = math.min(dt * lerp_modifier * 100, 0.75)
 	local new_rotation = Quaternion.lerp(current_rotation, wanted_rotation, lerp_value)
 	local new_direction = Quaternion.forward(new_rotation)
-	local speed = self.speed * speed_multiplier
 	local new_position = position + new_direction * speed * dt
 	local create_bot_threat = template.create_bot_threat
 
@@ -540,21 +555,13 @@ ProjectileTrueFlightLocomotionExtension.find_broadphase_target = function (self,
 	local ai_units_n = nil
 
 	if self.target_position then
-		QuickDrawerStay:sphere(position, 0.3, Color(0, 255, 0))
-
 		ai_units_n = AiUtils.broadphase_query(self.target_position:unbox(), broadphase_radius, ai_units)
 	else
 		local current_direction = self.current_direction:unbox()
-
-		QuickDrawerStay:sphere(position, 0.2, Color(255, 0, 0))
-		QuickDrawerStay:sphere(position + current_direction * 10, 4, Color(0, 255, 0))
-
 		ai_units_n = AiUtils.broadphase_query(position + current_direction * 10, broadphase_radius, ai_units)
 
 		if ai_units_n <= 0 then
 			ai_units_n = AiUtils.broadphase_query(position + current_direction * 20, broadphase_radius * 2, ai_units)
-
-			QuickDrawerStay:sphere(position + current_direction * 20, 10, Color(100, 255, 0))
 		end
 	end
 
@@ -796,6 +803,7 @@ end
 
 ProjectileTrueFlightLocomotionExtension.notify_hit_enemy = function (self, hit_unit)
 	self.hit_units[hit_unit] = true
+	self.raycast_timer = 0
 end
 
 ProjectileTrueFlightLocomotionExtension.update_bot_threat = function (self, target_unit, distance)

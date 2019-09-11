@@ -143,7 +143,7 @@ DamageProfileTemplates.light_slashing_linesman_elf.armor_modifier = "armor_modif
 
 new_template("light_slashing_linesman_dual", "_medium", nil, "heavy_attack")
 
-DamageProfileTemplates.light_slashing_linesman_dual_medium.melee_boost_override = 4
+DamageProfileTemplates.light_slashing_linesman_dual_medium.melee_boost_override = 3.5
 DamageProfileTemplates.light_slashing_linesman_dual_medium.armor_modifier = "armor_modifier_linesman_dual_M"
 DamageProfileTemplates.light_slashing_linesman_dual_medium.targets = "targets_linesman_dual_M"
 DamageProfileTemplates.light_slashing_linesman_dual_medium.critical_strike = "critical_strike_linesman_dual_M"
@@ -464,7 +464,7 @@ new_template("light_slashing_smiter_stab", nil, "light_slashing_smiter_stab_dual
 DamageProfileTemplates.light_slashing_smiter_stab_dual.armor_modifier = "armor_modifier_stab_smiter_M_1h"
 DamageProfileTemplates.light_slashing_smiter_stab_dual.targets = "targets_stab_dual_smiter_L"
 DamageProfileTemplates.light_slashing_smiter_stab_dual.critical_strike = "critical_strike_stab_smiter_M_1h"
-DamageProfileTemplates.light_slashing_smiter_stab_dual.melee_boost_override = 3.5
+DamageProfileTemplates.light_slashing_smiter_stab_dual.melee_boost_override = 4
 DamageProfileTemplates.heavy_slashing_smiter_stab = {
 	armor_modifier = "armor_modifier_stab_smiter_H",
 	critical_strike = "critical_strike_stab_smiter_H",

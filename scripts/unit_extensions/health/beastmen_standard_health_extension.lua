@@ -16,6 +16,10 @@ BeastmenStandardHealthExtension.destroy = function (self)
 	self.blackboard = nil
 end
 
+BeastmenStandardHealthExtension.apply_client_predicted_damage = function (self, predicted_damage)
+	return
+end
+
 BeastmenStandardHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
 	if damage_source_name == "suicide" then
 		BeastmenStandardHealthExtension.super.add_damage(self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)

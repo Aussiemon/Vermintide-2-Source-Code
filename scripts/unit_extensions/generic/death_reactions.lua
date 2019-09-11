@@ -646,8 +646,9 @@ local function kill_minotaur_under_oak_challenge(player, unit)
 		local level_key = Managers.state.game_mode:level_key()
 		local current_level_name = LevelSettings[level_key].display_name
 		local oak_level = LevelSettings.farmlands.display_name
+		local oak_weave_level = "dlc_scorpion_field"
 
-		if current_level_name ~= oak_level then
+		if current_level_name ~= oak_level and current_level_name ~= oak_weave_level then
 			return
 		end
 

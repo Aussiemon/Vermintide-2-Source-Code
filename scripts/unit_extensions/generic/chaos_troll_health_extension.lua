@@ -97,6 +97,10 @@ ChaosTrollHealthExtension._should_die = function (self)
 	return self.state == "wounded" and self.health <= self.damage
 end
 
+ChaosTrollHealthExtension.apply_client_predicted_damage = function (self, predicted_damage)
+	return
+end
+
 ChaosTrollHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
 	ChaosTrollHealthExtension.super.add_damage(self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
 

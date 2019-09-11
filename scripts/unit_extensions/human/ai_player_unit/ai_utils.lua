@@ -575,6 +575,17 @@ AiUtils.unit_alive = function (unit)
 	return is_alive
 end
 
+AiUtils.client_predicted_unit_alive = function (unit)
+	if not unit_alive(unit) then
+		return false
+	end
+
+	local health_extension = ScriptUnit.has_extension(unit, "health_system")
+	local is_predicted_alive = health_extension and health_extension:client_predicted_is_alive()
+
+	return is_predicted_alive
+end
+
 AiUtils.unit_invincible = function (unit)
 	if not ALIVE[unit] then
 		return false

@@ -67,4 +67,12 @@ LureHealthExtension.has_assist_shield = function (self)
 	return false
 end
 
+LureHealthExtension.client_predicted_is_alive = function (self)
+	return self:is_alive()
+end
+
+LureHealthExtension.apply_client_predicted_damage = function (self, predicted_damage)
+	return
+end
+
 return

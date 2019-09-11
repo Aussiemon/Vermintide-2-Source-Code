@@ -309,7 +309,7 @@ BTBotMeleeAction._is_attacking_me = function (self, self_unit, enemy_unit)
 	local action = bb.action
 	local unblockable = action and action.unblockable
 
-	return not unblockable and bb.attacking_target == self_unit and not bb.attack_success
+	return not unblockable and bb.attacking_target == self_unit and not bb.past_damage_in_attack
 end
 
 BTBotMeleeAction._is_targeting_me = function (self, self_unit, enemy_unit)

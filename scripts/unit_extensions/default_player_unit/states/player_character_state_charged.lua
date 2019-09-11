@@ -85,6 +85,11 @@ PlayerCharacterStateCharged.on_exit = function (self, unit, input, dt, context, 
 	end
 
 	self.status_extension:set_charged(false)
+
+	if CharacterStateHelper.is_block_broken(self.status_extension) then
+		self.status_extension:set_block_broken(false)
+	end
+
 	print("-----Exit charged")
 end
 

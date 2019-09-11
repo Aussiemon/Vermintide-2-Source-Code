@@ -45,16 +45,18 @@ GenericHealthExtension.init = function (self, extension_init_context, unit, exte
 	end
 
 	self.dead = false
+	self.predicted_dead = false
 	self.state = "alive"
 	self.damage = extension_init_data.damage or 0
-	self._recent_damage_type = nil
-	self._recent_hit_react_type = nil
-	self._damage_cap_per_hit = extension_init_data.damage_cap_per_hit or Unit.get_data(unit, "damage_cap_per_hit") or health
+	self.predicted_damage = 0
 	self.last_damage_data = {}
 
 	self:set_max_health(health)
 
 	self.unmodified_max_health = self.health
+	self._recent_damage_type = nil
+	self._recent_hit_react_type = nil
+	self._damage_cap_per_hit = extension_init_data.damage_cap_per_hit or Unit.get_data(unit, "damage_cap_per_hit") or self.health
 end
 
 GenericHealthExtension.destroy = function (self)
@@ -72,7 +74,9 @@ end
 GenericHealthExtension.reset = function (self)
 	self.state = "alive"
 	self.dead = false
+	self.predicted_dead = false
 	self.damage = 0
+	self.predicted_damage = 0
 	self._recent_damage_type = nil
 	self._recent_hit_react_type = nil
 
@@ -117,6 +121,10 @@ end
 
 GenericHealthExtension.is_alive = function (self)
 	return not self.dead
+end
+
+GenericHealthExtension.client_predicted_is_alive = function (self)
+	return self:is_alive() and not self.predicted_dead
 end
 
 GenericHealthExtension.current_health_percent = function (self)
@@ -200,6 +208,18 @@ GenericHealthExtension._should_die = function (self)
 	return self.health <= self.damage
 end
 
+GenericHealthExtension.apply_client_predicted_damage = function (self, predicted_damage)
+	fassert(not self.is_server, "This should only be used for the clients!")
+
+	if not self:get_is_invincible() then
+		local damage_mod = math.min(predicted_damage, self._damage_cap_per_hit)
+		self.predicted_damage = self.predicted_damage + damage_mod
+		self.predicted_dead = self.health <= self.damage + self.predicted_damage
+	else
+		self.predicted_dead = false
+	end
+end
+
 GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 	local unit = self.unit
 	local network_manager = Managers.state.network
@@ -243,7 +263,9 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 	end
 
 	if not self:get_is_invincible() and not self.dead then
-		self.damage = self.damage + math.min(damage_amount, self._damage_cap_per_hit)
+		local damage_mod = math.min(damage_amount, self._damage_cap_per_hit)
+		self.damage = self.damage + damage_mod
+		self.predicted_damage = math.max(self.predicted_damage - damage_mod, 0)
 
 		if self:_should_die() and (self.is_server or not unit_id) then
 			local death_system = Managers.state.entity:system("death_system")

@@ -63,6 +63,10 @@ local dot_hit_types = {
 	arrow_poison_dot = true
 }
 
+TrainingDummyHealthExtension.apply_client_predicted_damage = function (self, predicted_damage)
+	return
+end
+
 TrainingDummyHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 	local unit = self.unit
 	local network_manager = Managers.state.network

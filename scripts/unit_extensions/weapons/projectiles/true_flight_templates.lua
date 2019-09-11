@@ -1,6 +1,6 @@
 TrueFlightTemplates = TrueFlightTemplates or {}
 TrueFlightTemplates.active_ability_kerillian_way_watcher = {
-	broadphase_radius = 7.5,
+	retarget_on_miss = true,
 	forward_search_distance_to_find_target = 5,
 	target_node = "c_head",
 	target_tracking_check_func = "update_towards_target",
@@ -8,6 +8,7 @@ TrueFlightTemplates.active_ability_kerillian_way_watcher = {
 	dot_threshold = 1,
 	lerp_squared_distance_threshold = 625,
 	speed_multiplier = 0.01,
+	broadphase_radius = 7.5,
 	find_target_func = "find_closest_highest_value_target",
 	life_time_factor = 0.6,
 	time_between_raycasts = 0.05,
@@ -15,7 +16,7 @@ TrueFlightTemplates.active_ability_kerillian_way_watcher = {
 	max_on_target_time = math.huge
 }
 TrueFlightTemplates.active_ability_sienna_scholar = {
-	time_between_raycasts = 0.05,
+	retarget_on_miss = true,
 	dot_threshold = 1,
 	forward_search_distance_to_find_target = 5,
 	target_node = "c_head",
@@ -23,6 +24,7 @@ TrueFlightTemplates.active_ability_sienna_scholar = {
 	legitimate_target_func = "legitimate_target_keep_target",
 	broadphase_radius = 7.5,
 	speed_multiplier = 0.01,
+	time_between_raycasts = 0.05,
 	find_target_func = "find_closest_highest_value_target",
 	life_time_factor = 0.6,
 	lerp_distance_threshold = 625,
@@ -162,9 +164,11 @@ TrueFlightTemplates.sorcerer_slow_bomb_missile = {
 	end
 }
 TrueFlightTemplates.sorcerer_vortex_dummy_missile = {
-	target_players = true,
 	speed_multiplier = 1,
+	time_between_raycasts = 0.05,
 	target_tracking_check_func = "update_towards_position_target",
+	target_players = true,
+	broadphase_radius = 7.5,
 	lerp_modifier_func = function (distance, height, t)
 		local max_radius = math.clamp(112.5 / (height + 0.01)^2, 0.25, 40)
 		local denominator = max_radius - 0.5 * max_radius * math.abs(math.sin(0.5 * t))

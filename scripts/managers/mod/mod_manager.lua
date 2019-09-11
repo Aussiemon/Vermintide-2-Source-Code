@@ -59,8 +59,10 @@ ModManager.init = function (self, boot_gui)
 	if HAS_STEAM then
 		if in_modded_realm then
 			Presence.set_presence("status", "Modded Realm")
+			Crashify.print_property("realm", "modded")
 		else
 			Presence.set_presence("status", "Official Realm")
+			Crashify.print_property("realm", "official")
 		end
 	end
 
@@ -259,8 +261,6 @@ ModManager._load_mod = function (self, index)
 	end
 
 	if mod then
-		Crashify.print_property("modded", true)
-
 		local id = mod.id
 		local handle = mod.handle
 
@@ -269,6 +269,7 @@ ModManager._load_mod = function (self, index)
 		local info = Mod.info(handle)
 
 		self:print("spew", "<mod info> \n%s\n<\\mod info>", info)
+		Crashify.print_property("modded", true)
 
 		local data_file, info_error = loadstring(info)
 
@@ -345,7 +346,8 @@ ModManager._build_mod_table = function (self, mod_handles)
 
 			parsed_mods[handle] = true
 		else
-			self:print("error", "Trying to load mod with steam id %s, not in downloaded list", id)
+			add_mod(nil, id, false, mod_data.name, mod_data.version, i)
+			self:print("warning", "Skipping unsanctioned mod %s (id = %s)", mod_data.name, id)
 		end
 	end
 

@@ -187,7 +187,7 @@ Projectiles.victor_bounty_hunter = {
 	gravity_settings = "bounty_hunter_shot",
 	impact_type = "sphere_sweep",
 	trajectory_template_name = "throw_trajectory",
-	radius = 0.15,
+	radius = 0.05,
 	projectile_units_template = "bullet_temp"
 }
 Projectiles.victor_bounty_hunter = table.clone(Projectiles.victor_bounty_hunter) or table.clone(Projectiles.default)

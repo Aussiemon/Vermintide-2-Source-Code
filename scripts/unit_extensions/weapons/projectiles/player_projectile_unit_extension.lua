@@ -398,12 +398,13 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 	local owner = self._owner_player
 	local owner_unit = self._owner_unit
 	local action = self._current_action
+	local is_server = self._is_server
 	local node = Actor.node(hit_actor)
 	local hit_zone = breed.hit_zones_lookup[node]
 	local hit_zone_name = action.projectile_info.forced_hitzone or hit_zone.name
 	local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
 	local attack_direction = hit_direction
-	local was_alive = AiUtils.unit_alive(hit_unit)
+	local was_alive = (is_server and AiUtils.unit_alive(hit_unit)) or AiUtils.client_predicted_unit_alive(hit_unit)
 
 	if was_alive then
 		self._num_targets_hit = self._num_targets_hit + 1
@@ -415,7 +416,6 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 	local attack_template = AttackTemplates[target_settings.attack_template]
 	local attacker_unit_id = network_manager:unit_game_object_id(owner_unit)
 	local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
-	local is_server = self._is_server
 	local shield_blocked = false
 	local trueflight_blocking = target_settings.trueflight_blocking
 
@@ -437,11 +437,8 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 		local action_mass_override = action.hit_mass_count
 		local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
 		local hit_mass_total = (shield_blocked and ((breed.hit_mass_counts_block and breed.hit_mass_counts_block[difficulty_rank]) or breed.hit_mass_count_block)) or (breed.hit_mass_counts and breed.hit_mass_counts[difficulty_rank]) or breed.hit_mass_count or 1
-		self.ignore_mass_and_armour = self._num_bounces > 0
 
-		if self.ignore_mass_and_armour then
-			hit_mass_total = 0
-		elseif action_mass_override and action_mass_override[breed.name] then
+		if action_mass_override and action_mass_override[breed.name] then
 			local mass_cost_multiplier = action_mass_override[breed.name]
 			hit_mass_total = hit_mass_total * (mass_cost_multiplier or 1)
 		end
@@ -459,10 +456,20 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 	local damage_source_id = NetworkLookup.damage_sources[damage_source]
 	local damage_profile_id = self._impact_damage_profile_id
 	local weapon_system = self._weapon_system
+	local predicted_damage = DamageUtils.calculate_damage(DamageOutput, hit_unit, owner_unit, hit_zone_name, power_level, BoostCurves[target_settings.boost_curve_type], ranged_boost_curve_multiplier, is_critical_strike, damage_profile, actual_target_index, nil, damage_source)
+
+	if not is_server then
+		local target_health_extension = Unit.alive(hit_unit) and ScriptUnit.has_extension(hit_unit, "health_system")
+
+		if target_health_extension then
+			local networked_damage = DamageUtils.networkify_damage(predicted_damage)
+
+			target_health_extension:apply_client_predicted_damage(networked_damage)
+		end
+	end
 
 	weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", actual_target_index, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", ranged_boost_curve_multiplier, "is_critical_strike", is_critical_strike)
 
-	local predicted_damage = DamageUtils.calculate_damage(DamageOutput, hit_unit, owner_unit, hit_zone_name, power_level, BoostCurves[target_settings.boost_curve_type], ranged_boost_curve_multiplier, is_critical_strike, damage_profile, actual_target_index, nil, damage_source)
 	local no_damage = predicted_damage <= 0
 
 	if was_alive and no_damage then
