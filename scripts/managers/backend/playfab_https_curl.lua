@@ -65,6 +65,11 @@ local function on_error(request_data, result, id, error_override)
 		local request_cb = request_data.request_cb
 		local options = request_data.options
 		local request = json.decode(body)
+
+		if not request.FunctionParameter then
+			request.FunctionParameter = {}
+		end
+
 		request.FunctionParameter.retry = true
 		request.FunctionParameter.final_retry = request_data.retries + 1 == MAX_RETRIES
 		body = json.encode(request)
