@@ -43,7 +43,8 @@ local function on_error(request_data, result, id, error_override)
 	local retry = table.contains(retry_codes, error_code)
 
 	if not retry then
-		local logs = result.data.Logs
+		local data = result.data
+		local logs = data and data.Logs
 
 		if logs then
 			for i = 1, #logs, 1 do
