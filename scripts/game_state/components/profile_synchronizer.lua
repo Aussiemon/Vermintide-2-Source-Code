@@ -174,6 +174,12 @@ ProfileSynchronizer._assign_peer_to_profile = function (self, peer_id, local_pla
 	fassert(profile_index)
 	printf("Assigning peer(%s:%s) to profile(%s) career(%s)", peer_id, local_player_id, profile_index, career_index)
 
+	local requested_profiles = Managers.matchmaking:get_requested_profiles()
+
+	if requested_profiles[peer_id] and not requested_profiles[peer_id] == profile_index then
+		Crashify.print_exception("Matchmaking", "Client received different profile than the one originally requested")
+	end
+
 	local previous_profile_index, previous_career_index = self:profile_by_peer(peer_id, local_player_id)
 
 	if previous_profile_index then

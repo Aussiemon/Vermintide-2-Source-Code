@@ -40,12 +40,35 @@ local function on_error(request_data, result, id, error_override)
 		error_code = result.errorCode
 	end
 
-	if table.contains(retry_codes, error_code) and request_data.retries < MAX_RETRIES then
+	local retry = table.contains(retry_codes, error_code)
+
+	if not retry then
+		local logs = result.data.Logs
+
+		if logs then
+			for i = 1, #logs, 1 do
+				local log = logs[i]
+
+				if log.Message == "RetriableError" then
+					retry = true
+
+					break
+				end
+			end
+		end
+	end
+
+	if retry and request_data.retries < MAX_RETRIES then
 		local url = request_data.url
 		local body = request_data.body
 		local headers = request_data.headers
 		local request_cb = request_data.request_cb
 		local options = request_data.options
+		local request = json.decode(body)
+		request.FunctionParameter.retry = true
+		request.FunctionParameter.final_retry = request_data.retries + 1 == MAX_RETRIES
+		body = json.encode(request)
+		headers[4] = "content-length: " .. tostring(string.len(body))
 
 		Managers.curl:post(url, body, headers, request_cb, id, options)
 

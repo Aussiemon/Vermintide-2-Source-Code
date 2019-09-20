@@ -118,6 +118,7 @@ MatchmakingManager.init = function (self, params)
 	self._power_level_timer = 0
 	self.party_owned_dlcs = {}
 	self._level_weights = {}
+	self.requested_profiles = {}
 	self._quick_game = params.quick_game
 	self.handshaker_host = MatchmakingHandshakerHost:new(self.network_transmit)
 
@@ -1336,7 +1337,15 @@ MatchmakingManager.rpc_matchmaking_request_profile = function (self, sender, cli
 		self:update_profiles_data_on_clients()
 	end
 
+	if reply then
+		self.requested_profiles[sender] = profile
+	end
+
 	self.network_transmit:send_rpc("rpc_matchmaking_request_profile_reply", sender, client_cookie, host_cookie, profile, reply)
+end
+
+MatchmakingManager.get_requested_profiles = function (self)
+	return self.requested_profiles
 end
 
 MatchmakingManager.current_state = function (self)

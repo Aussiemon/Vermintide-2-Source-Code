@@ -723,7 +723,9 @@ TwitchVoteUI._sorted_player_list = function (self)
 	local players = {}
 
 	for peer_id, player in pairs(human_and_bot_players) do
-		table.insert(players, player)
+		if player:profile_index() then
+			table.insert(players, player)
+		end
 	end
 
 	local function sort_by_profile_index(player_a, player_b)
