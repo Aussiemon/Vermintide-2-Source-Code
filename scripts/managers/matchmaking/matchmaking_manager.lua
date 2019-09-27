@@ -1419,7 +1419,7 @@ MatchmakingManager.lobby_match = function (self, lobby_data, act_key, level_key,
 		return false, "players own lobby"
 	end
 
-	if lobby_data.twitch_enabled then
+	if lobby_data.twitch_enabled == "true" then
 		return false, "twitch_mode"
 	end
 
