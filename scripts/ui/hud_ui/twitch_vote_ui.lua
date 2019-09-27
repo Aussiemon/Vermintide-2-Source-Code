@@ -108,7 +108,6 @@ TwitchVoteUI.start_standard_vote = function (self, vote_template_a_name, vote_te
 	local vote_template_b = TwitchVoteTemplates[vote_template_b_name]
 
 	fassert(vote_template_b, "[TwitchVoteUI] Could not find any vote template for %s", vote_template_b_name)
-	print("added vote")
 
 	local vote_data = Managers.twitch:get_vote_data(vote_key)
 	local vote = {
@@ -625,14 +624,14 @@ TwitchVoteUI._show_standard_vote = function (self)
 	local vote_icon_a_widget = self._widgets.vote_icon_a
 	local texture_a = vote_template_a.texture_id
 	local texture_a_size = vote_template_a.texture_size
-	local use_frame_texture_a = vote_template_a.use_frame_texture or false
+	local use_frame_texture_a = true
 	self._ui_scenegraph.vote_icon_a.size = texture_a_size
 	self._ui_scenegraph.vote_icon_a.position[1] = -texture_a_size[1] - vote_icon_padding
 	vote_icon_a_widget.content.texture_id = texture_a
 	local vote_icon_b_widget = self._widgets.vote_icon_b
 	local texture_b = vote_template_b.texture_id
 	local texture_b_size = vote_template_b.texture_size
-	local use_frame_texture_b = vote_template_b.use_frame_texture or false
+	local use_frame_texture_b = true
 	self._ui_scenegraph.vote_icon_b.size = texture_b_size
 	self._ui_scenegraph.vote_icon_b.position[1] = texture_b_size[1] + vote_icon_padding
 	vote_icon_b_widget.content.texture_id = texture_b
@@ -711,11 +710,19 @@ TwitchVoteUI._show_standard_vote_result = function (self)
 	local texture_size = winning_template.texture_size
 	self._ui_scenegraph.sv_result_icon.size = texture_size
 	result_icon_widget.content.texture_id = texture
-	local use_frame_texture = winning_template.use_frame_texture or false
+	local use_frame_texture = true
 	self._widgets.result_icon_rect.content.visible = use_frame_texture
 	local result_text_widget = self._widgets.result_text
 	local text = winning_template.text
 	result_text_widget.content.text = text
+	local result_description_text_widget = self._widgets.result_description_text
+
+	if winning_template.description then
+		local description_text = winning_template.description
+		result_description_text_widget.content.text = description_text
+	else
+		result_description_text_widget.content.visible = false
+	end
 end
 
 TwitchVoteUI._sorted_player_list = function (self)

@@ -142,14 +142,9 @@ AiBreedSnippets.on_beastmen_standard_bearer_spawn = function (unit, blackboard)
 		local conflict_director = Managers.state.conflict
 		local nav_world = conflict_director.nav_world
 		local bearer_position = Unit.world_position(unit, 0)
-		local spawn_list = {
-			"beastmen_gor",
-			"beastmen_gor",
-			"beastmen_ungor",
-			"beastmen_gor",
-			"beastmen_gor",
-			"beastmen_ungor"
-		}
+		local difficulty_manager = Managers.state.difficulty
+		local difficulty = difficulty_manager:get_difficulty()
+		local spawn_list = BreedTweaks.standard_bearer_spawn_list[difficulty]
 		local num_to_spawn = #spawn_list
 		local above = 1
 		local below = 1

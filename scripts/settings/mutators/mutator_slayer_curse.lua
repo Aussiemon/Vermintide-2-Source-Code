@@ -71,5 +71,22 @@ return {
 		data.template.add_buff(unit_data.buffs, data.buff_system, killer_unit)
 
 		unit_data.next_decay = Managers.time:time("game") + data.template.decay_start
+	end,
+	server_stop_function = function (context, data, is_destroy)
+		local template = data.template
+		local player_units = data.player_units
+
+		if not is_destroy then
+			for unit, unit_data in pairs(player_units) do
+				local buffs = unit_data.buffs
+				local num_buffs = #buffs
+
+				for i = 1, num_buffs, 1 do
+					template.remove_buff(buffs, data.buff_system, unit)
+				end
+
+				player_units[unit] = nil
+			end
+		end
 	end
 }

@@ -41,6 +41,12 @@ TwitchManager.init = function (self)
 	TwitchSettings.default_downtime = Application.user_setting("twitch_time_between_votes")
 	TwitchSettings.default_vote_time = Application.user_setting("twitch_vote_time")
 	TwitchSettings.difficulty = Application.user_setting("twitch_difficulty")
+	local disable_positive_votes_setting = Application.user_setting("twitch_disable_positive_votes")
+	TwitchSettings.disable_giving_items = disable_positive_votes_setting == TwitchSettings.positive_vote_options.disable_giving_items or disable_positive_votes_setting == TwitchSettings.positive_vote_options.disable_positive_votes
+	TwitchSettings.disable_positive_votes = disable_positive_votes_setting == TwitchSettings.positive_vote_options.disable_positive_votes
+	TwitchSettings.disable_mutators = Application.user_setting("twitch_disable_mutators")
+	TwitchSettings.spawn_amount_multiplier = math.min(Application.user_setting("twitch_spawn_amount"), 3)
+	TwitchSettings.mutator_duration_multiplier = math.min(Application.user_setting("twitch_mutator_duration"), 3)
 	self._debug_vote_timer = 0.25
 end
 
@@ -790,7 +796,8 @@ TwitchManager._handle_results = function (self, vote_results)
 		end
 	end
 
-	local vote_template_name = vote_results.vote_templates[best_option_index]
+	local override_template_name = nil
+	local vote_template_name = override_template_name or vote_results.vote_templates[best_option_index]
 	vote_results.winning_template_name = vote_template_name
 
 	if not Development.parameter("twitch_disable_result") then
@@ -949,7 +956,7 @@ TwitchManager._update_debug_voting = function (self, dt)
 	local vote_type = current_vote.vote_type
 
 	if vote_type == "standard_vote" then
-		local debug_result = math.random(2)
+		local debug_result = (script_data.twitch_mode_force_vote_template and 1) or math.random(2)
 		message_index = debug_messages[debug_result]
 	else
 		local debug_result = math.random(5)
@@ -1049,7 +1056,7 @@ TwitchGameMode._check_breed_package_loading = function (self, wanted_template, p
 	local replacement_breed_name = nil
 
 	if not breed_processed[wanted_breed_name] then
-		request_success, replacement_breed_name = package_loader:request_breed(wanted_breed_name)
+		request_success = package_loader:request_breed(wanted_breed_name)
 	end
 
 	if request_success then
@@ -1058,6 +1065,26 @@ TwitchGameMode._check_breed_package_loading = function (self, wanted_template, p
 		self._parent.locked_breed_packages[wanted_breed_name] = true
 
 		return wanted_template
+	else
+		local replacement_breeds = {}
+
+		for breed_name, _ in pairs(breed_processed) do
+			replacement_breeds[#replacement_breeds + 1] = breed_name
+		end
+
+		table.shuffle(replacement_breeds)
+
+		local templates = (is_boss and TwitchBossesSpawnBreedNamesLookup) or (is_special and TwitchSpecialsSpawnBreedNamesLookup)
+
+		for i = 1, #replacement_breeds, 1 do
+			local breed_name = replacement_breeds[i]
+
+			if templates[breed_name] then
+				replacement_breed_name = breed_name
+
+				break
+			end
+		end
 	end
 
 	local use_boss_equivalent = is_boss and previous_template and previous_template.breed_name == replacement_breed_name
@@ -1101,6 +1128,7 @@ TwitchGameMode._check_breed_package_loading = function (self, wanted_template, p
 
 	if not override_template then
 		self:_clear_used_votes(true)
+		print("BREED PACKAGE LOADING FAILED")
 
 		return self:_check_breed_package_loading(wanted_template, previous_template)
 	end
@@ -1115,7 +1143,7 @@ TwitchGameMode._get_next_vote = function (self)
 	local used_vote_templates = self._used_vote_templates
 	local best_template = nil
 
-	if TwitchSettings.cutoff_for_guaranteed_positive_vote <= funds then
+	if TwitchSettings.cutoff_for_guaranteed_positive_vote <= funds and not TwitchSettings.disable_positive_votes then
 		local templates = table.clone(TwitchPositiveVoteTemplatesLookup)
 
 		table.shuffle(templates)
@@ -1127,12 +1155,16 @@ TwitchGameMode._get_next_vote = function (self)
 
 			if not used_vote_templates[template_name] then
 				local template = TwitchVoteTemplates[template_name]
-				local cost = template.cost
-				local diff = funds - cost
+				local is_allowed = not template.condition_func or template.condition_func()
 
-				if best_diff < diff then
-					best_template = template
-					best_diff = diff
+				if is_allowed then
+					local cost = template.cost
+					local diff = funds - cost
+
+					if best_diff < diff then
+						best_template = template
+						best_diff = diff
+					end
 				end
 			end
 		end
@@ -1148,12 +1180,16 @@ TwitchGameMode._get_next_vote = function (self)
 
 			if not used_vote_templates[template_name] then
 				local template = TwitchVoteTemplates[template_name]
-				local cost = template.cost
-				local diff = funds + cost
+				local is_allowed = not template.condition_func or template.condition_func()
 
-				if best_diff > diff then
-					best_template = template
-					best_diff = diff
+				if is_allowed then
+					local cost = template.cost
+					local diff = funds + cost
+
+					if best_diff > diff then
+						best_template = template
+						best_diff = diff
+					end
 				end
 			end
 		end
@@ -1169,7 +1205,11 @@ TwitchGameMode._get_next_vote = function (self)
 
 			if not used_vote_templates[template_name] then
 				local template = TwitchVoteTemplates[template_name]
-				best_template = template
+				local is_allowed = not template.condition_func or template.condition_func()
+
+				if is_allowed then
+					best_template = template
+				end
 			end
 		end
 	end
@@ -1194,12 +1234,9 @@ TwitchGameMode._next_multiple_choice_vote = function (self, template)
 end
 
 TwitchGameMode._next_standard_vote = function (self, template_a)
-	local funds = self._funds
 	local used_vote_templates = self._used_vote_templates
 	local template_a_name = template_a.name
 	local cost_a = template_a.cost
-	local sign = math.sign(cost_a)
-	local inverted_sign = (sign > 0 and -1) or 1
 	local templates = table.clone(TwitchStandardVoteTemplatesLookup)
 
 	table.shuffle(templates)
@@ -1212,15 +1249,19 @@ TwitchGameMode._next_standard_vote = function (self, template_a)
 
 		if template_a_name ~= template_b_name and not used_vote_templates[template_b_name] then
 			local template_b = TwitchVoteTemplates[template_b_name]
-			local invalid_matchup = template_a.boss and not template_b.boss and not template_b.boss_equivalent
+			local is_allowed = not template_b.condition_func or template_b.condition_func()
 
-			if not invalid_matchup then
-				local cost_b = template_b.cost
-				local vote_cost_diff = math.abs(cost_a - cost_b)
+			if is_allowed then
+				local invalid_matchup = template_a.boss and not template_b.boss and not template_b.boss_equivalent
 
-				if vote_cost_diff <= TwitchSettings.max_a_b_vote_cost_diff and vote_cost_diff < best_diff then
-					best_template = template_b
-					best_diff = vote_cost_diff
+				if not invalid_matchup then
+					local cost_b = template_b.cost
+					local vote_cost_diff = math.abs(cost_a - cost_b)
+
+					if vote_cost_diff <= TwitchSettings.max_a_b_vote_cost_diff and vote_cost_diff < best_diff then
+						best_template = template_b
+						best_diff = vote_cost_diff
+					end
 				end
 			end
 		end

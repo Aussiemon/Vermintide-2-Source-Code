@@ -381,13 +381,13 @@ BreedTweaks.hit_mass_counts = {
 }
 BreedTweaks.difficulty_damage = {
 	beastmen_roamer_attack = {
-		harder = 18,
-		hard = 14,
-		normal = 8,
-		hardest = 25,
-		cataclysm = 30,
-		cataclysm_3 = 30,
-		cataclysm_2 = 30,
+		harder = 16,
+		hard = 10,
+		normal = 7,
+		hardest = 22,
+		cataclysm = 27,
+		cataclysm_3 = 27,
+		cataclysm_2 = 27,
 		easy = 5
 	},
 	beastmen_headbutt_attack = {
@@ -2665,6 +2665,51 @@ BreedTweaks.diminishing_damage_and_cooldown = {
 				}
 			}
 		}
+	}
+}
+BreedTweaks.standard_bearer_spawn_list = {
+	easy = {
+		"beastmen_ungor",
+		"beastmen_ungor"
+	},
+	normal = {
+		"beastmen_ungor",
+		"beastmen_ungor"
+	},
+	hard = {
+		"beastmen_gor",
+		"beastmen_ungor",
+		"beastmen_ungor"
+	},
+	harder = {
+		"beastmen_gor",
+		"beastmen_gor",
+		"beastmen_ungor",
+		"beastmen_ungor"
+	},
+	hardest = {
+		"beastmen_gor",
+		"beastmen_gor",
+		"beastmen_gor",
+		"beastmen_ungor"
+	},
+	cataclysm = {
+		"beastmen_gor",
+		"beastmen_gor",
+		"beastmen_gor",
+		"beastmen_gor"
+	},
+	cataclysm_2 = {
+		"beastmen_gor",
+		"beastmen_gor",
+		"beastmen_gor",
+		"beastmen_gor"
+	},
+	cataclysm_3 = {
+		"beastmen_gor",
+		"beastmen_gor",
+		"beastmen_gor",
+		"beastmen_gor"
 	}
 }
 

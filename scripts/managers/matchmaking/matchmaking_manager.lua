@@ -1419,6 +1419,10 @@ MatchmakingManager.lobby_match = function (self, lobby_data, act_key, level_key,
 		return false, "players own lobby"
 	end
 
+	if lobby_data.twitch_enabled then
+		return false, "twitch_mode"
+	end
+
 	local valid_lobby = lobby_data.matchmaking ~= "false" and lobby_data.valid
 
 	if not valid_lobby then

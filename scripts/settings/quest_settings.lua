@@ -1,12 +1,12 @@
 QuestSettings = {
 	elven_ruins_speed_event = 30,
 	farmlands_speed_event = 60,
-	bell_speed_event = 75,
+	bell_speed_event = 85,
 	mines_speed_event = 15,
 	skittergate_speed_event = 20,
 	elven_ruins_speed_event_cata = 30,
 	farmlands_speed_event_cata = 60,
-	bell_speed_event_cata = 75,
+	bell_speed_event_cata = 85,
 	mines_speed_event_cata = 15,
 	skittergate_speed_event_cata = 20,
 	exalted_champion_charge_chaos_warrior = 5,
@@ -34,7 +34,7 @@ QuestSettings = {
 	num_enemies_killed_by_warpfire = 10,
 	num_enemies_killed_by_poison = 10,
 	corruptor_killed_at_teleport_time = 2,
-	standard_bearer_alive_seconds = 20,
+	standard_bearer_alive_seconds = 120,
 	num_gors_killed_by_warpfire = 3,
 	bladestorm_duration = 120,
 	daily_complete_quickplay_missions = 3,
@@ -316,6 +316,26 @@ QuestSettings.stat_mappings = {
 		"weekly_quest_6_stat_1",
 		"weekly_quest_6_stat_2",
 		"weekly_quest_6_stat_3"
+	},
+	weekly_quest_7 = {
+		"weekly_quest_7_stat_1",
+		"weekly_quest_7_stat_2",
+		"weekly_quest_7_stat_3"
+	},
+	weekly_quest_8 = {
+		"weekly_quest_8_stat_1",
+		"weekly_quest_8_stat_2",
+		"weekly_quest_8_stat_3"
+	},
+	weekly_quest_9 = {
+		"weekly_quest_9_stat_1",
+		"weekly_quest_9_stat_2",
+		"weekly_quest_9_stat_3"
+	},
+	weekly_quest_10 = {
+		"weekly_quest_10_stat_1",
+		"weekly_quest_10_stat_2",
+		"weekly_quest_10_stat_3"
 	}
 }
 

@@ -1,6 +1,6 @@
 TwitchSettings = TwitchSettings or {
-	cutoff_for_guaranteed_negative_vote = -300,
 	initial_downtime = 60,
+	cutoff_for_guaranteed_negative_vote = -300,
 	starting_funds = 0,
 	max_diff = 200,
 	max_a_b_vote_cost_diff = 100,
@@ -23,15 +23,16 @@ TwitchSettings = TwitchSettings or {
 		adventure = true,
 		lobby_browser = true,
 		event = true,
-		weave = true,
 		custom = true
-	}
+	},
+	positive_vote_options = table.enum("enable_positive_votes", "disable_giving_items", "disable_positive_votes")
 }
 TwitchVoteTemplates = {}
 
 require("scripts/settings/twitch_vote_templates_buffs")
 require("scripts/settings/twitch_vote_templates_items")
 require("scripts/settings/twitch_vote_templates_spawning")
+require("scripts/settings/twitch_vote_templates_mutators")
 
 local TEMP_TABLE = {}
 local min_diff = math.huge

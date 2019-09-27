@@ -253,9 +253,9 @@ for name, template in pairs(mutator_settings) do
 	end
 
 	if template.server_stop_function then
-		local function stop_function(context, data)
+		local function stop_function(context, data, is_destroy)
 			default_stop_function_server(context, data)
-			template.server_stop_function(context, data)
+			template.server_stop_function(context, data, is_destroy)
 		end
 
 		template.server.stop_function = stop_function
@@ -374,9 +374,9 @@ for name, template in pairs(mutator_settings) do
 	end
 
 	if template.client_stop_function then
-		local function stop_function(context, data)
+		local function stop_function(context, data, is_destroy)
 			default_stop_function_client(context, data)
-			template.client_stop_function(context, data)
+			template.client_stop_function(context, data, is_destroy)
 		end
 
 		template.client.stop_function = stop_function

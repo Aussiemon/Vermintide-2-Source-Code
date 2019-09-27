@@ -1,5 +1,4 @@
 MixerSettings = MixerSettings or {
-	cutoff_for_guaranteed_negative_vote = -300,
 	initial_downtime = 60,
 	default_draw_vote = "twitch_vote_draw",
 	default_downtime = 30,
@@ -7,6 +6,7 @@ MixerSettings = MixerSettings or {
 	default_vote_time = 45,
 	max_diff = 200,
 	max_a_b_vote_cost_diff = 100,
+	cutoff_for_guaranteed_negative_vote = -300,
 	difficulty = 50,
 	cutoff_for_guaranteed_positive_vote = 300,
 	profile_index_to_letter_lookup = {
@@ -45,13 +45,15 @@ MixerSettings = MixerSettings or {
 	},
 	supported_game_modes = {
 		twitch = true
-	}
+	},
+	positive_vote_options = table.enum("enable_positive_votes", "disable_giving_items", "disable_positive_votes")
 }
 TwitchVoteTemplates = TwitchVoteTemplates or {}
 
 require("scripts/settings/twitch_vote_templates_buffs")
 require("scripts/settings/twitch_vote_templates_items")
 require("scripts/settings/twitch_vote_templates_spawning")
+require("scripts/settings/twitch_vote_templates_mutators")
 
 local TEMP_TABLE = {}
 local min_diff = math.huge

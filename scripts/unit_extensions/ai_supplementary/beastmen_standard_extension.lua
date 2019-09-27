@@ -19,7 +19,11 @@ BeastmenStandardExtension.init = function (self, extension_init_context, unit, e
 	self.affected_units_effects = {}
 	self.ai_units_broadphase_result = {}
 	self.ai_units_inside = {}
-	self.standard_data = {}
+	self.standard_data = {
+		challenge_time = t + QuestSettings.standard_bearer_alive_seconds,
+		is_server = self.is_server,
+		standard_bearer_unit = self.standard_bearer_unit
+	}
 
 	if self.is_server then
 		self.astar_check_frequency = standard_template.astar_check_frequency or 15

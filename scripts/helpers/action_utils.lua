@@ -49,8 +49,8 @@ ActionUtils.get_target_armor = function (hit_zone_name, breed, dummy_unit_armor)
 			target_unit_primary_armor_attack = target_pritority_unit_armor.attack
 			target_unit_primary_armor_impact = target_pritority_unit_armor.impact
 		else
-			target_unit_primary_armor_attack = breed.primary_armor_category
-			target_unit_primary_armor_impact = breed.primary_armor_category
+			target_unit_primary_armor_attack = target_pritority_unit_armor
+			target_unit_primary_armor_impact = target_pritority_unit_armor
 		end
 	elseif breed then
 		target_unit_armor_attack = breed.armor_category

@@ -1894,25 +1894,45 @@ InventoryConfigurations = {
 			item_categories.beastmen_ungor_outfit_baked
 		}
 	},
+	beastmen_ungor_bow = {
+		enemy_hit_sound = "spear",
+		anim_state_event = "to_bow",
+		items = {
+			item_categories.bow,
+			item_categories.beastmen_ungor_outfit_head,
+			item_categories.beastmen_ungor_outfit_r_arm,
+			item_categories.beastmen_ungor_outfit_l_arm,
+			item_categories.beastmen_ungor_outfit_neck
+		}
+	},
+	opt_beastmen_ungor_bow = {
+		enemy_hit_sound = "spear",
+		anim_state_event = "to_bow",
+		items = {
+			item_categories.bow,
+			item_categories.beastmen_ungor_outfit_head,
+			item_categories.beastmen_ungor_outfit_baked
+		}
+	},
+	beastmen_ungor_just_add_spear = {
+		enemy_hit_sound = "spear",
+		anim_state_event = "to_halberd",
+		items = {
+			item_categories.beastmen_ungor_spear
+		}
+	},
 	beastmen_ungor_archer_bow_and_spear = {
 		enemy_hit_sound = "spear",
 		multiple_configurations = {
 			"beastmen_ungor_bow",
-			"beastmen_ungor_spear"
+			"beastmen_ungor_just_add_spear"
 		}
 	},
 	opt_beastmen_ungor_archer_bow_and_spear = {
 		enemy_hit_sound = "spear",
 		multiple_configurations = {
-			"beastmen_ungor_bow",
-			"opt_beastmen_ungor_spear"
-		}
-	},
-	beastmen_ungor_bow = {
-		enemy_hit_sound = "spear",
-		anim_state_event = "to_bow",
-		items = {
-			item_categories.bow
+			"opt_beastmen_ungor_bow",
+			"beastmen_ungor_just_add_spear"
 		}
 	},
 	beastmen_gor_1h = {

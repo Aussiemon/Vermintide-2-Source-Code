@@ -6939,6 +6939,34 @@ Features that make player mechanics nicer to work with.
 		end
 	},
 	{
+		description = "Lists all Twitch Mode Vote Templates with functionality to activate them.",
+		setting_name = "Force Twitch Mode Vote Template",
+		category = "Items",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			for key, _ in pairs(TwitchVoteTemplates) do
+				options[#options + 1] = key
+			end
+
+			options[#options + 1] = "clear_votes"
+
+			table.sort(options)
+		end,
+		func = function (options, index)
+			local forced_templates = script_data.debug_activated_mutators or {}
+			local key = options[index]
+
+			if key == "clear_votes" then
+				script_data.twitch_mode_force_vote_template = nil
+			else
+				local vote_template = TwitchVoteTemplates[key]
+				script_data.twitch_mode_force_vote_template = vote_template
+			end
+		end
+	},
+	{
 		description = "Show all paintings etc. You have to reload the inn for the setting to take effect.",
 		is_boolean = true,
 		setting_name = "debug_keep_decorations",

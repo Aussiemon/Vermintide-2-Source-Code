@@ -66,7 +66,7 @@ local breed_data = {
 	opt_default_inventory_template = "opt_beastmen_ungor_archer_bow_and_spear",
 	patrol_passive_perception = "perception_regular",
 	vortexable = true,
-	base_unit = "units/beings/enemies/beastmen_ungor/chr_beastmen_ungor",
+	base_unit = "units/beings/enemies/beastmen_ungor_archer/chr_beastmen_ungor_archer",
 	enter_walk_distance = 2.5,
 	perception_exceptions = {
 		poison_well = true,
@@ -408,16 +408,26 @@ local action_data = {
 		aim_animation = "aim",
 		dodge_window = 0.5,
 		projectile_speed = 35,
-		leader_fire_volley_dialogue_event = "fire_in_group",
 		cooldown = -1,
 		shoot_animation = "shoot",
+		leader_fire_volley_dialogue_event = "fire_in_group",
 		action_weight = 200,
 		projectile_gravity = 11.82,
 		light_weight_projectile_template_name = "ungor_archer",
-		shoot_cooldown = 1.5,
+		shoot_cooldown = 2,
 		considerations = UtilityConsiderations.beastmen_ungor_archer_fire_projectile,
 		aim_cooldown = {
 			0.5,
+			1.5
+		},
+		difficulty_hit_chance = {
+			0.3,
+			0.4,
+			0.5,
+			0.6,
+			0.7,
+			0.8,
+			0.9,
 			1
 		}
 	},

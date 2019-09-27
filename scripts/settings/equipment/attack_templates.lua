@@ -716,6 +716,10 @@ AttackTemplates = {
 		sound_type = "medium",
 		damage_type = "buff"
 	},
+	death_explosion = {
+		stagger_value = 1,
+		damage_type = "death_explosion"
+	},
 	blade_storm = {
 		sound_type = "light",
 		damage_type = "blade_storm"

@@ -591,6 +591,18 @@ settings.unit_gib_settings = {
 	}
 }
 settings.unit_gib_settings.beastmen_ungor_archer = table.create_copy(settings.unit_gib_settings.beastmen_ungor_archer, settings.unit_gib_settings.beastmen_ungor)
+settings.unit_gib_settings.beastmen_ungor_archer.parts.head.gib_unit = "units/beings/enemies/beastmen_ungor_archer/gibs/beastmen_ungor_archer_gib_neck"
+settings.unit_gib_settings.beastmen_ungor_archer.parts.head.stump_unit = "units/beings/enemies/beastmen_ungor_archer/gibs/beastmen_ungor_archer_stump_neck"
+settings.unit_gib_settings.beastmen_ungor_archer.parts.left_arm.gib_unit = "units/beings/enemies/beastmen_ungor_archer/gibs/beastmen_ungor_archer_gib_l_arm"
+settings.unit_gib_settings.beastmen_ungor_archer.parts.left_arm.stump_unit = "units/beings/enemies/beastmen_ungor_archer/gibs/beastmen_ungor_archer_stump_l_arm"
+settings.unit_gib_settings.beastmen_ungor_archer.parts.left_leg.gib_unit = "units/beings/enemies/beastmen_ungor_archer/gibs/beastmen_ungor_archer_gib_l_leg"
+settings.unit_gib_settings.beastmen_ungor_archer.parts.left_leg.stump_unit = "units/beings/enemies/beastmen_ungor_archer/gibs/beastmen_ungor_archer_stump_l_leg"
+settings.unit_gib_settings.beastmen_ungor_archer.parts.right_arm.gib_unit = "units/beings/enemies/beastmen_ungor_archer/gibs/beastmen_ungor_archer_gib_r_arm"
+settings.unit_gib_settings.beastmen_ungor_archer.parts.right_arm.stump_unit = "units/beings/enemies/beastmen_ungor_archer/gibs/beastmen_ungor_archer_stump_r_arm"
+settings.unit_gib_settings.beastmen_ungor_archer.parts.right_leg.gib_unit = "units/beings/enemies/beastmen_ungor_archer/gibs/beastmen_ungor_archer_gib_r_leg"
+settings.unit_gib_settings.beastmen_ungor_archer.parts.right_leg.stump_unit = "units/beings/enemies/beastmen_ungor_archer/gibs/beastmen_ungor_archer_stump_r_leg"
+settings.unit_gib_settings.beastmen_ungor_archer.parts.upperbody.gib_unit = "units/beings/enemies/beastmen_ungor_archer/gibs/beastmen_ungor_archer_gib_upperbody"
+settings.unit_gib_settings.beastmen_ungor_archer.parts.upperbody.stump_unit = "units/beings/enemies/beastmen_ungor_archer/gibs/beastmen_ungor_archer_stump_upperbody"
 settings.unit_gib_settings.beastmen_bestigor = table.create_copy(settings.unit_gib_settings.beastmen_bestigor, settings.unit_gib_settings.beastmen_gor)
 settings.unit_gib_settings.beastmen_bestigor.parts.head.gib_unit = "units/beings/enemies/beastmen_bestigor/gibs/beastmen_bestigor_gib_head"
 settings.unit_gib_settings.beastmen_bestigor.parts.left_arm.gib_unit = "units/beings/enemies/beastmen_bestigor/gibs/beastmen_bestigor_gib_l_arm"

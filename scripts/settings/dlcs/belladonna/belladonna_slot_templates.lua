@@ -2,7 +2,7 @@ return {
 	normal = {
 		beastmen_horde = {
 			prioritize_queued_units_on_death = true,
-			slot_type = "skirmish",
+			slot_type = "normal",
 			avoid_slots_behind_overwhelmed_target = true,
 			restricted_queue_distance = true,
 			min_wait_queue_distance = 3.5
@@ -24,7 +24,7 @@ return {
 	hard = {
 		beastmen_horde = {
 			prioritize_queued_units_on_death = true,
-			slot_type = "skirmish",
+			slot_type = "normal",
 			avoid_slots_behind_overwhelmed_target = true,
 			restricted_queue_distance = true,
 			min_wait_queue_distance = 3.5
@@ -46,7 +46,7 @@ return {
 	harder = {
 		beastmen_horde = {
 			prioritize_queued_units_on_death = true,
-			slot_type = "skirmish",
+			slot_type = "normal",
 			avoid_slots_behind_overwhelmed_target = true,
 			restricted_queue_distance = true,
 			min_wait_queue_distance = 3.5
@@ -68,7 +68,7 @@ return {
 	hardest = {
 		beastmen_horde = {
 			prioritize_queued_units_on_death = true,
-			slot_type = "skirmish",
+			slot_type = "normal",
 			avoid_slots_behind_overwhelmed_target = true,
 			restricted_queue_distance = true,
 			min_wait_queue_distance = 3.5
@@ -90,7 +90,7 @@ return {
 	cataclysm = {
 		beastmen_horde = {
 			prioritize_queued_units_on_death = true,
-			slot_type = "skirmish",
+			slot_type = "normal",
 			avoid_slots_behind_overwhelmed_target = true,
 			restricted_queue_distance = true,
 			min_wait_queue_distance = 3.5
@@ -112,7 +112,7 @@ return {
 	cataclysm_2 = {
 		beastmen_horde = {
 			prioritize_queued_units_on_death = true,
-			slot_type = "skirmish",
+			slot_type = "normal",
 			avoid_slots_behind_overwhelmed_target = true,
 			restricted_queue_distance = true,
 			min_wait_queue_distance = 3.5
@@ -134,7 +134,7 @@ return {
 	cataclysm_3 = {
 		beastmen_horde = {
 			prioritize_queued_units_on_death = true,
-			slot_type = "skirmish",
+			slot_type = "normal",
 			avoid_slots_behind_overwhelmed_target = true,
 			restricted_queue_distance = true,
 			min_wait_queue_distance = 3.5

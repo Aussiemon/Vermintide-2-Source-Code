@@ -1089,6 +1089,23 @@ ExplosionTemplates.fire_bomb = {
 		}
 	}
 }
+ExplosionTemplates.twitch_pulse_explosion = {
+	explosion = {
+		no_prop_damage = true,
+		radius = 10,
+		no_friendly_fire = true,
+		max_damage_radius = 3,
+		damage_type = "grenade",
+		damage_type_glance = "grenade_glance",
+		always_hurt_players = false,
+		alert_enemies_radius = 15,
+		alert_enemies = true,
+		sound_event_name = "Play_mutator_ticking_bomb_explosion",
+		damage_profile = "ability_push",
+		power_level = 600,
+		effect_name = "fx/chr_kruber_shockwave"
+	}
+}
 
 for _, dlc in pairs(DLCSettings) do
 	local explosion_templates = dlc.explosion_templates

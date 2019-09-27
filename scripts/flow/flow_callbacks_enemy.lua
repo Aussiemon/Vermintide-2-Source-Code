@@ -588,7 +588,7 @@ local function enemy_dismember(params, spawn_gib)
 		end
 	end
 
-	if BloodSettings.enemy_blood.enabled then
+	if BloodSettings == nil or BloodSettings.enemy_blood.enabled then
 		node_id = Unit.node(stump_unit, "a_vfx")
 
 		if gibsettings.vfx ~= nil then
@@ -740,7 +740,7 @@ function enemy_explode(params)
 		end
 	end
 
-	if BloodSettings.enemy_blood.enabled and explodesettings.vfx_align_node ~= nil then
+	if (BloodSettings == nil or BloodSettings.enemy_blood.enabled) and explodesettings.vfx_align_node ~= nil then
 		local node_id = Unit.node(unit, explodesettings.vfx_align_node)
 
 		if explodesettings.vfx ~= nil then
@@ -788,7 +788,7 @@ function enemy_explode(params)
 end
 
 function flow_callback_enemy_gib(params)
-	if BloodSettings.dismemberment.enabled then
+	if BloodSettings == nil or BloodSettings.dismemberment.enabled then
 		enemy_dismember(params, true)
 	end
 
@@ -796,7 +796,7 @@ function flow_callback_enemy_gib(params)
 end
 
 function flow_callback_enemy_pulp(params)
-	if BloodSettings.dismemberment.enabled then
+	if BloodSettings == nil or BloodSettings.dismemberment.enabled then
 		enemy_dismember(params, false)
 	end
 
@@ -804,7 +804,7 @@ function flow_callback_enemy_pulp(params)
 end
 
 function flow_callback_enemy_explode(params)
-	if BloodSettings.dismemberment.enabled then
+	if BloodSettings == nil or BloodSettings.dismemberment.enabled then
 		enemy_explode(params)
 	end
 

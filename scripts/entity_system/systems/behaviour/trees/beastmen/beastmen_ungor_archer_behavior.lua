@@ -28,11 +28,6 @@ local UNGOR_ARCHER_MELEE_COMBAT = {
 		action_data = ACTIONS.follow
 	},
 	{
-		"BTDodgeBackAction",
-		name = "dodge_back",
-		action_data = ACTIONS.dodge_back
-	},
-	{
 		"BTAttackAction",
 		name = "running_attack",
 		condition = "ask_target_before_attacking",

@@ -45,9 +45,9 @@ local breed_data = {
 	smart_targeting_width = 0.2,
 	is_bot_aid_threat = true,
 	behavior = "standard_bearer",
-	proximity_system_check = true,
 	bone_lod_level = 1,
 	bots_should_flank = true,
+	proximity_system_check = true,
 	defensive_threshold_distance = 7,
 	has_inventory = true,
 	run_speed = 4.8,
@@ -126,10 +126,22 @@ local breed_data = {
 	run_on_despawn = AiBreedSnippets.on_beastmen_standard_bearer_death,
 	run_on_update = AiBreedSnippets.on_beastmen_standard_bearer_update,
 	hitzone_armor_categories = {
-		head = 5
+		head = {
+			attack = 5,
+			impact = 2
+		},
+		neck = {
+			attack = 5,
+			impact = 2
+		}
 	},
 	hitzone_multiplier_types = {
-		head = "headshot"
+		head = "headshot",
+		neck = "headshot"
+	},
+	hitzone_primary_armor_categories = {
+		head = 5,
+		neck = 5
 	},
 	hit_zones = {
 		head = {

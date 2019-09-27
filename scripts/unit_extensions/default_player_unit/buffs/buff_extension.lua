@@ -264,6 +264,10 @@ BuffExtension.add_buff = function (self, template_name, params)
 				power_level = params.power_level
 			end
 
+			if sub_buff_template.duration_modifier_func then
+				duration = sub_buff_template:duration_modifier_func(duration)
+			end
+
 			buff.bonus = bonus
 			buff.multiplier = multiplier
 			buff.proc_chance = proc_chance

@@ -11,6 +11,10 @@ return {
 		data.apply_movement_debuff_after_t = 5
 		data.player_bomb_data = {}
 		data.hero_side = Managers.state.side:get_side_from_name("heroes")
+
+		if data.activated_by_twitch then
+			data.template.server_players_left_safe_zone(context, data)
+		end
 	end,
 	server_players_left_safe_zone = function (context, data)
 		data.has_left_safe_zone = true

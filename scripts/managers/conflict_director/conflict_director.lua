@@ -2794,6 +2794,23 @@ ConflictDirector.spawn_one = function (self, breed, optional_pos, group_data, op
 	local side = self._hero_side
 	local player_positions = side.PLAYER_POSITIONS
 	local center_pos = player_positions[1]
+
+	if not center_pos then
+		for i = 1, #player_positions, 1 do
+			local pos = player_positions[i]
+
+			if pos then
+				center_pos = pos
+
+				break
+			end
+		end
+	end
+
+	if not center_pos then
+		return
+	end
+
 	local spawn_pos = optional_pos or ConflictUtils.get_spawn_pos_on_circle(self.nav_world, center_pos, 20, 8, 30)
 
 	if spawn_pos then

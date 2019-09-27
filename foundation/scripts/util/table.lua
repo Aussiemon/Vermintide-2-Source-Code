@@ -560,4 +560,23 @@ table.swap_delete = function (t, index)
 	t[table_length] = nil
 end
 
+local _enum_index_metatable = {
+	__index = function (_, k)
+		return error("Don't know `" .. tostring(k) .. "` for enum.")
+	end
+}
+
+table.enum = function (...)
+	local t = {}
+
+	for i = 1, select("#", ...), 1 do
+		local v = select(i, ...)
+		t[v] = v
+	end
+
+	setmetatable(t, _enum_index_metatable)
+
+	return t
+end
+
 return

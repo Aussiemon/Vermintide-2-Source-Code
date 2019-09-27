@@ -241,10 +241,11 @@ local components = {
 		filename = "scripts/ui/hud_ui/twitch_vote_ui",
 		visibility_groups = {
 			"realism",
-			"alive"
+			"alive",
+			"dead"
 		},
 		validation_function = function (context, is_in_inn)
-			local use_twitch_ui = Managers.twitch and not is_in_inn and context.network_lobby:lobby_data("twitch_enabled") == "true"
+			local use_twitch_ui = true
 
 			return use_twitch_ui
 		end

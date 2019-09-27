@@ -32,7 +32,8 @@ local mutators_to_add = {
 	"shadow",
 	"fire",
 	"death",
-	"beasts"
+	"beasts",
+	"twitch_darkness"
 }
 
 for _, dlc in pairs(DLCSettings) do

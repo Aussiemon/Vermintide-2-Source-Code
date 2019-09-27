@@ -113,5 +113,20 @@ return {
 		end
 
 		unit_data.add_debuff_at_t = Managers.time:time("game") + template.debuff_start_time
+	end,
+	server_stop_function = function (context, data, is_destroy)
+		local player_units = data.player_units
+
+		for unit, unit_data in pairs(player_units) do
+			if Unit.alive(unit) then
+				local buff_extension = ScriptUnit.extension(unit, "buff_system")
+				local has_debuff = buff_extension:has_buff_type(data.debuff_name)
+				local template = data.template
+
+				if has_debuff then
+					template.remove_buff(unit_data.buffs, data.buff_system, unit, data.debuff_name)
+				end
+			end
+		end
 	end
 }

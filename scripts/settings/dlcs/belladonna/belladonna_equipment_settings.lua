@@ -14,7 +14,8 @@ settings.light_weight_projectiles = {
 		damage_profile = "ungor_archer_arrow",
 		spread = degrees_to_radians(0.05),
 		dodge_spread = degrees_to_radians(4),
-		first_shot_spread = degrees_to_radians(6),
+		first_shot_spread = degrees_to_radians(8),
+		miss_spread = degrees_to_radians(4),
 		attack_power_level = {
 			20,
 			40,

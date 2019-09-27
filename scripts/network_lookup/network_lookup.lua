@@ -1563,6 +1563,8 @@ NetworkLookup.ai_inventory = {
 	"beastmen_standard_bearer_dual_setup",
 	"beastmen_ungor_bow",
 	"beastmen_ungor_archer_bow_and_spear",
+	"opt_beastmen_ungor_bow",
+	"beastmen_ungor_just_add_spear",
 	"opt_beastmen_ungor_archer_bow_and_spear",
 	"beastmen_minotaur_dual_axes"
 }
@@ -1806,7 +1808,8 @@ NetworkLookup.statistics = {
 	"scorpion_bestigor_charge_chaos_warrior",
 	"scorpion_kill_minotaur_farmlands_oak",
 	"scorpion_kill_archers_kill_minotaur",
-	"scorpion_slay_gors_warpfire_damage"
+	"scorpion_slay_gors_warpfire_damage",
+	"scorpion_keep_standard_bearer_alive"
 }
 
 for _, dlc in pairs(DLCSettings) do

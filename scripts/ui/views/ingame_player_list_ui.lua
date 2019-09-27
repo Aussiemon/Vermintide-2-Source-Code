@@ -145,8 +145,9 @@ IngamePlayerListUI.create_ui_elements = function (self)
 	self.input_description_text_widget = UIWidget.init(specific_widget_definitions.input_description_text)
 	self.background = UIWidget.init(specific_widget_definitions.background)
 	self.private_checkbox_widget = UIWidget.init(specific_widget_definitions.private_checkbox)
+	local twitch_connection = Managers.twitch and (Managers.twitch:is_connected() or Managers.twitch:is_activated())
 
-	if Managers.state.game_mode:game_mode_key() == "weave" then
+	if Managers.state.game_mode:game_mode_key() == "weave" or twitch_connection then
 		local content = self.private_checkbox_widget.content
 		content.is_disabled = true
 	end
@@ -757,6 +758,7 @@ IngamePlayerListUI.update = function (self, dt)
 				local map_save_data = self.map_save_data
 				map_save_data.private_enabled = not is_private
 
+				print("privat: ", map_save_data.private_enabled)
 				WwiseWorld.trigger_event(self.wwise_world, "Play_hud_select")
 				self:set_privacy_enabled(map_save_data.private_enabled, true)
 

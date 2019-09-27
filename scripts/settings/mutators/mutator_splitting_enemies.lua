@@ -4,36 +4,40 @@ return {
 	icon = "mutator_icon_splitting_enemies",
 	server_start_function = function (context, data)
 		data.breed_tier_list = {
-			chaos_marauder = "chaos_fanatic",
-			skaven_plague_monk = "skaven_clan_rat",
-			skaven_ratling_gunner = "skaven_storm_vermin_commander",
-			skaven_warpfire_thrower = "skaven_plague_monk",
-			skaven_poison_wind_globadier = "skaven_plague_monk",
-			skaven_clan_rat_with_shield = "skaven_slave",
-			chaos_berzerker = "chaos_marauder",
-			skaven_gutter_runner = "skaven_storm_vermin_commander",
-			chaos_marauder_with_shield = "chaos_fanatic",
+			beastmen_standard_bearer = "beastmen_bestigor",
 			chaos_raider = "chaos_marauder",
-			chaos_vortex_sorcerer = "chaos_berzerker",
-			skaven_pack_master = "skaven_storm_vermin_commander",
-			chaos_spawn_exalted_champion_norsca = "chaos_warrior",
+			chaos_marauder_with_shield = "chaos_fanatic",
+			beastmen_bestigor = "beastmen_gor",
+			skaven_storm_vermin_warlord = "skaven_storm_vermin_with_shield",
+			skaven_clan_rat_with_shield = "skaven_slave",
+			skaven_poison_wind_globadier = "skaven_plague_monk",
+			skaven_gutter_runner = "skaven_storm_vermin_commander",
+			chaos_berzerker = "chaos_marauder",
+			beastmen_minotaur = "beastmen_standard_bearer",
+			skaven_plague_monk = "skaven_clan_rat",
+			chaos_marauder = "chaos_fanatic",
+			skaven_stormfiend_boss = "skaven_ratling_gunner",
 			skaven_clan_rat = "skaven_slave",
 			skaven_stormfiend = "skaven_warpfire_thrower",
-			chaos_exalted_champion_norsca = "chaos_warrior",
-			skaven_storm_vermin_warlord = "skaven_storm_vermin_with_shield",
 			chaos_exalted_sorcerer = "chaos_vortex_sorcerer",
-			chaos_warrior = "chaos_raider",
-			chaos_exalted_champion_warcamp = "chaos_warrior",
 			skaven_rat_ogre = "skaven_pack_master",
-			skaven_explosive_loot_rat = "skaven_clan_rat",
-			skaven_stormfiend_boss = "skaven_ratling_gunner",
 			chaos_troll = "chaos_warrior",
 			chaos_spawn = "chaos_warrior",
 			chaos_corruptor_sorcerer = "chaos_raider",
-			skaven_grey_seer = "skaven_loot_rat",
-			skaven_storm_vermin_commander = "skaven_clan_rat",
+			chaos_vortex_sorcerer = "chaos_berzerker",
 			skaven_storm_vermin = "skaven_clan_rat",
+			beastmen_gor = "beastmen_ungor",
 			skaven_storm_vermin_with_shield = "skaven_clan_rat",
+			chaos_exalted_champion_warcamp = "chaos_warrior",
+			skaven_warpfire_thrower = "skaven_plague_monk",
+			chaos_exalted_champion_norsca = "chaos_warrior",
+			skaven_pack_master = "skaven_storm_vermin_commander",
+			chaos_spawn_exalted_champion_norsca = "chaos_warrior",
+			skaven_grey_seer = "skaven_loot_rat",
+			chaos_warrior = "chaos_raider",
+			skaven_explosive_loot_rat = "skaven_clan_rat",
+			skaven_storm_vermin_commander = "skaven_clan_rat",
+			skaven_ratling_gunner = "skaven_storm_vermin_commander",
 			skaven_loot_rat = {
 				"skaven_clan_rat",
 				"skaven_storm_vermin_commander",
@@ -42,13 +46,15 @@ return {
 			}
 		}
 		data.breed_explosion_templates = {
-			skaven_storm_vermin_commander = "generic_mutator_explosion_medium",
-			chaos_raider = "generic_mutator_explosion_medium",
 			chaos_exalted_champion_warcamp = "generic_mutator_explosion_medium",
+			chaos_raider = "generic_mutator_explosion_medium",
 			skaven_plague_monk = "generic_mutator_explosion_medium",
+			beastmen_bestigor = "generic_mutator_explosion_medium",
 			skaven_storm_vermin_warlord = "generic_mutator_explosion_medium",
+			skaven_stormfiend_boss = "generic_mutator_explosion_large",
 			skaven_grey_seer = "generic_mutator_explosion_medium",
 			chaos_exalted_champion_norsca = "generic_mutator_explosion_medium",
+			beastmen_minotaur = "generic_mutator_explosion_large",
 			chaos_spawn_exalted_champion_norsca = "generic_mutator_explosion_large",
 			skaven_stormfiend = "generic_mutator_explosion_large",
 			chaos_exalted_sorcerer = "generic_mutator_explosion_medium",
@@ -56,7 +62,7 @@ return {
 			skaven_rat_ogre = "generic_mutator_explosion_large",
 			chaos_troll = "generic_mutator_explosion_large",
 			chaos_spawn = "generic_mutator_explosion_large",
-			skaven_stormfiend_boss = "generic_mutator_explosion_large",
+			skaven_storm_vermin_commander = "generic_mutator_explosion_medium",
 			skaven_storm_vermin = "generic_mutator_explosion_medium",
 			skaven_storm_vermin_with_shield = "generic_mutator_explosion_medium"
 		}
@@ -89,7 +95,7 @@ return {
 					spawned_func = data.cb_enemy_spawned_function
 				}
 
-				Managers.state.conflict:spawn_queued_unit(breed, position_box, rotation_box, spawn_category, nil, nil, optional_data)
+				Managers.state.conflict:spawn_queued_unit(breed, position_box, rotation_box, spawn_category, nil, "terror_event", optional_data)
 
 				delete_index = i
 

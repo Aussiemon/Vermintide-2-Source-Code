@@ -1,7 +1,7 @@
 BeastmenStandardTemplates = {
 	invincibility_standard = {
 		buff_template_name = "invincibility_standard",
-		radius = 25,
+		radius = 20,
 		astar_check_frequency = 10,
 		apply_buff_to_ai = true,
 		vfx_picked_up_standard = "fx/chr_beastmen_standard_bearer_end_02",
@@ -10,7 +10,7 @@ BeastmenStandardTemplates = {
 	},
 	healing_standard = {
 		apply_buff_to_player = false,
-		radius = 25,
+		radius = 15,
 		sfx_taking_damage = "Play_enemy_beastmen_standar_taking_damage",
 		apply_buff_to_ai = true,
 		sfx_destroyed = "Play_enemy_beastmen_standar_destroy",
@@ -21,7 +21,24 @@ BeastmenStandardTemplates = {
 		sfx_loop_stop = "Stop_enemy_beastmen_standar_spell_loop",
 		vfx_picked_up_standard = "fx/chr_beastmen_standard_bearer_end_02",
 		sfx_loop = "Play_enemy_standard_bearer_place_standar",
-		ai_buff_vfx_name = "fx/chr_beastmen_standard_bearer_buff_01"
+		ai_buff_vfx_name = "fx/chr_beastmen_standard_bearer_buff_01",
+		custom_update_func = function (template, data, t, dt, unit, units_inside)
+			if data.is_server and not data.challenge_done and data.challenge_time < t and AiUtils.unit_alive(data.standard_bearer_unit) then
+				local stat_name = "scorpion_keep_standard_bearer_alive"
+				local stat_name_index = NetworkLookup.statistics[stat_name]
+				local statistics_db = Managers.player:statistics_db()
+				local local_player = Managers.player:local_player()
+
+				if local_player then
+					local stats_id = local_player:stats_id()
+
+					statistics_db:increment_stat(stats_id, stat_name)
+					Managers.state.network.network_transmit:send_rpc_clients("rpc_increment_stat", stat_name_index)
+				end
+
+				data.challenge_done = true
+			end
+		end
 	},
 	horde_standard = {
 		sfx_loop_stop = "Stop_enemy_beastmen_standar_spell_loop",

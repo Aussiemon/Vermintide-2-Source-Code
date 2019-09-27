@@ -4017,6 +4017,35 @@ DamageProfileTemplates.heavens_lightning_strike = {
 		}
 	}
 }
+DamageProfileTemplates.death_explosion = {
+	charge_value = "grenade",
+	is_explosion = true,
+	no_stagger_damage_reduction_ranged = true,
+	armor_modifier = {
+		attack = {
+			1.5,
+			1,
+			1.5,
+			0.75,
+			1.2
+		},
+		impact = {
+			1.5,
+			1,
+			1.5,
+			0.75,
+			1.2
+		}
+	},
+	default_target = {
+		damage_type = "death_explosion",
+		attack_template = "death_explosion",
+		power_distribution = {
+			attack = 0.75,
+			impact = 0.75
+		}
+	}
+}
 DamageProfileTemplates.warpfire_thrower_explosion = {
 	charge_value = "grenade",
 	is_explosion = true,
@@ -4254,7 +4283,7 @@ DamageProfileTemplates.burning_dot.default_target.armor_modifier = {
 		3,
 		1,
 		1,
-		0
+		0.5
 	},
 	impact = {
 		1,
@@ -4281,7 +4310,7 @@ DamageProfileTemplates.burning_dot_firegrenade.default_target.armor_modifier = {
 		2,
 		1,
 		1,
-		0
+		0.5
 	},
 	impact = {
 		1,
@@ -4308,7 +4337,7 @@ DamageProfileTemplates.beam_burning_dot.default_target.armor_modifier = {
 		4,
 		1,
 		1,
-		0
+		0.5
 	},
 	impact = {
 		1,
@@ -4335,7 +4364,7 @@ DamageProfileTemplates.flamethrower_burning_dot.default_target.armor_modifier = 
 		3,
 		1,
 		1,
-		0
+		0.5
 	},
 	impact = {
 		1,
@@ -4354,6 +4383,31 @@ DamageProfileTemplates.mutator_player_dot = table.clone(DamageProfileTemplates.d
 DamageProfileTemplates.mutator_player_dot.no_stagger = true
 DamageProfileTemplates.mutator_player_dot.no_stagger_damage_reduction_ranged = true
 DamageProfileTemplates.mutator_player_dot.default_target.damage_type = "wounded_dot"
+DamageProfileTemplates.bloodlust_debuff = table.clone(DamageProfileTemplates.mutator_player_dot)
+DamageProfileTemplates.bloodlust_debuff.no_stagger = true
+DamageProfileTemplates.bloodlust_debuff.default_target.damage_type = "wounded_dot"
+DamageProfileTemplates.bloodlust_debuff.default_target.armor_modifier = {
+	attack = {
+		1,
+		0.25,
+		3,
+		2,
+		1,
+		0
+	},
+	impact = {
+		1,
+		0,
+		0,
+		1,
+		1,
+		0
+	}
+}
+DamageProfileTemplates.bloodlust_debuff.default_target.power_distribution = {
+	attack = 0.5,
+	impact = 0.075
+}
 DamageProfileTemplates.corpse_explosion_default = {
 	charge_value = "n/a",
 	no_stagger_damage_reduction_ranged = true,

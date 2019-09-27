@@ -2823,7 +2823,7 @@ BuffTemplates = {
 		buffs = {
 			{
 				apply_buff_func = "apply_movement_buff",
-				multiplier = 1.25,
+				multiplier = 1.5,
 				name = "movement",
 				icon = "potion_buff_02",
 				refresh_durations = true,
@@ -2835,7 +2835,7 @@ BuffTemplates = {
 				}
 			},
 			{
-				multiplier = 0.25,
+				multiplier = 0.5,
 				name = "attack speed buff",
 				stat_buff = "attack_speed",
 				refresh_durations = true,
@@ -2848,7 +2848,7 @@ BuffTemplates = {
 		buffs = {
 			{
 				name = "cooldown reduction buff",
-				multiplier = 2.5,
+				multiplier = 5,
 				stat_buff = "cooldown_regen",
 				duration = 60,
 				max_stacks = 1,
@@ -7304,6 +7304,224 @@ BuffTemplates = {
 			{
 				stat_buff = "total_ammo",
 				multiplier = -0.5
+			}
+		}
+	},
+	twitch_mutator_buff_splitting_enemies = {
+		buffs = {
+			{
+				icon = "mutator_icon_splitting_enemies",
+				duration = 30,
+				name = "twitch_mutator_buff_splitting_enemies",
+				duration_modifier_func = function (buff_template, duration)
+					return duration * TwitchSettings.mutator_duration_multiplier
+				end
+			}
+		}
+	},
+	twitch_mutator_buff_leash = {
+		buffs = {
+			{
+				icon = "mutator_icon_leash",
+				duration = 30,
+				name = "twitch_mutator_buff_leash",
+				duration_modifier_func = function (buff_template, duration)
+					return duration * TwitchSettings.mutator_duration_multiplier
+				end
+			}
+		}
+	},
+	twitch_mutator_buff_slayers_curse = {
+		buffs = {
+			{
+				icon = "mutator_icon_slayer_curse",
+				duration = 30,
+				name = "twitch_mutator_buff_slayers_curse",
+				duration_modifier_func = function (buff_template, duration)
+					return duration * TwitchSettings.mutator_duration_multiplier
+				end
+			}
+		}
+	},
+	twitch_mutator_buff_shared_health_pool = {
+		buffs = {
+			{
+				icon = "icon_deed_normal_01",
+				duration = 30,
+				name = "twitch_mutator_buff_shared_health_pool",
+				duration_modifier_func = function (buff_template, duration)
+					return duration * TwitchSettings.mutator_duration_multiplier
+				end
+			}
+		}
+	},
+	twitch_mutator_buff_bloodlust = {
+		buffs = {
+			{
+				icon = "bardin_slayer_activated_ability",
+				duration = 30,
+				name = "twitch_mutator_buff_bloodlust",
+				duration_modifier_func = function (buff_template, duration)
+					return duration * TwitchSettings.mutator_duration_multiplier
+				end
+			}
+		}
+	},
+	twitch_mutator_buff_ticking_bomb = {
+		buffs = {
+			{
+				icon = "mutator_icon_ticking_bomb",
+				duration = 30,
+				name = "twitch_mutator_buff_ticking_bomb",
+				duration_modifier_func = function (buff_template, duration)
+					return duration * TwitchSettings.mutator_duration_multiplier
+				end
+			}
+		}
+	},
+	bloodlust = {
+		buffs = {
+			{
+				icon = "bardin_slayer_activated_ability",
+				name = "bardin_slayer_frenzy",
+				stat_buff = "attack_speed",
+				multiplier = 0.15,
+				max_stacks = 3,
+				duration = 6,
+				refresh_durations = true
+			},
+			{
+				apply_buff_func = "apply_movement_buff",
+				multiplier = 1.2,
+				duration = 6,
+				refresh_durations = true,
+				max_stacks = 3,
+				remove_buff_func = "remove_movement_buff",
+				path_to_movement_setting_to_modify = {
+					"move_speed"
+				}
+			}
+		}
+	},
+	bloodlust_debuff = {
+		buffs = {
+			{
+				update_func = "apply_dot_damage",
+				name = "bloodlust_debuff",
+				time_between_dot_damages = 1,
+				icon = "troll_vomit_debuff",
+				damage_profile = "bloodlust_debuff",
+				remove_buff_func = "remove_dot_damage",
+				apply_buff_func = "start_dot_damage",
+				dormant = true
+			}
+		}
+	},
+	twitch_vote_buff_root = {
+		buffs = {
+			{
+				icon = "troll_vomit_debuff",
+				multiplier = 0.001,
+				update_func = "update_action_lerp_movement_buff",
+				name = "twitch_vote_buff_root",
+				remove_buff_func = "remove_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				perk = "root",
+				remove_buff_name = "planted_return_to_normal_movement",
+				lerp_time = 0.1,
+				duration = 10,
+				path_to_movement_setting_to_modify = {
+					"move_speed"
+				}
+			}
+		}
+	},
+	twitch_vote_buff_fatigue_loss = {
+		buffs = {
+			{
+				multiplier = -1,
+				name = "twitch_vote_buff_fatigue_loss",
+				stat_buff = "fatigue_regen",
+				duration = 15,
+				max_stacks = 1,
+				refresh_durations = true,
+				icon = "troll_vomit_debuff"
+			}
+		}
+	},
+	twitch_vote_buff_hemmoraghe = {
+		buffs = {
+			{
+				update_func = "update_speed_scaled_dot_buff",
+				name = "twitch_vote_buff_hemmoraghe",
+				damage = 3,
+				icon = "troll_vomit_debuff",
+				remove_buff_func = "remove_speed_scaled_dot_buff",
+				apply_buff_func = "apply_speed_scaled_dot_buff",
+				damage_frequency = 0.25,
+				damage_type = "bleed",
+				duration = 15
+			}
+		}
+	},
+	twitch_vote_buff_invisibility = {
+		buffs = {
+			{
+				update_func = "update_twitch_invisibility_buff",
+				name = "twitch_vote_buff_invisibility",
+				duration = 20,
+				icon = "kerillian_shade_passive_improved",
+				remove_buff_func = "remove_twitch_invisibility_buff",
+				apply_buff_func = "apply_twitch_invisibility_buff"
+			}
+		}
+	},
+	twitch_vote_buff_critical_strikes = {
+		buffs = {
+			{
+				duration = 20,
+				name = "twitch_vote_buff_critical_strikes",
+				refresh_durations = true,
+				icon = "victor_bountyhunter_passive",
+				max_stacks = 1,
+				perk = "guaranteed_crit"
+			}
+		}
+	},
+	twitch_vote_buff_infinite_bombs = {
+		buffs = {
+			{
+				update_func = "update_twitch_infinite_bombs",
+				name = "twitch_vote_buff_invisibility",
+				duration = 10,
+				icon = "bardin_ranger_increased_melee_damage_on_no_ammo",
+				remove_buff_func = "remove_twitch_infinite_bombs",
+				apply_buff_func = "apply_twitch_infinite_bombs"
+			}
+		}
+	},
+	twitch_vote_buff_invincibility = {
+		activation_effect = "fx/screenspace_potion_03",
+		deactivation_sound = "hud_gameplay_stance_deactivate",
+		activation_sound = "hud_gameplay_stance_tank_activate",
+		buffs = {
+			{
+				icon = "victor_zealot_passive_invulnerability",
+				duration = 10,
+				max_stacks = 1,
+				remove_buff_func = "remove_twitch_invincibility",
+				apply_buff_func = "apply_twitch_invincibility"
+			}
+		}
+	},
+	twitch_vote_buff_pulsating_waves = {
+		buffs = {
+			{
+				update_func = "update_twitch_pulsating_waves",
+				name = "twitch_vote_buff_pulsating_waves",
+				icon = "markus_mercenary_increased_damage_on_enemy_proximity",
+				duration = 15,
+				apply_buff_func = "apply_twitch_pulsating_waves"
 			}
 		}
 	}

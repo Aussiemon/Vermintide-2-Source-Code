@@ -521,7 +521,7 @@ settings.bt_conditions = {
 		return has_move_and_place_standard_position
 	end,
 	ungor_archer_enter_melee_combat = function (blackboard)
-		return blackboard.confirmed_player_sighting and unit_alive(blackboard.target_unit) and (blackboard.has_switched_weapons or (blackboard.target_dist and blackboard.target_dist < 10))
+		return blackboard.confirmed_player_sighting and unit_alive(blackboard.target_unit) and (blackboard.has_switched_weapons or (blackboard.target_dist and blackboard.target_dist < 5))
 	end,
 	bestigor_at_smartobject = function (blackboard)
 		local in_charge_action = blackboard.charge_state ~= nil

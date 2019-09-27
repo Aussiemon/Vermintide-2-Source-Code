@@ -3667,6 +3667,157 @@ BuffFunctionTemplates.functions = {
 	remove_volume_movement_buff = function (unit, buff, params)
 		local movement_settings = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 		movement_settings.move_speed = movement_settings.move_speed / params.multiplier
+	end,
+	apply_speed_scaled_dot_buff = function (unit, buff, params)
+		if is_local(unit) then
+			buff.next_damage_t = 0
+		end
+	end,
+	update_speed_scaled_dot_buff = function (unit, buff, params)
+		if is_local(unit) then
+			local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
+			local flat_velocity = Vector3.flat(locomotion_extension:current_velocity())
+			local length = Vector3.length(flat_velocity)
+
+			if length > 0.5 and buff.next_damage_t < params.t then
+				local health_extension = ScriptUnit.extension(unit, "health_system")
+
+				if health_extension:is_alive() then
+					local template = buff.template
+					local damage_type = template.damage_type
+					local damage = template.damage
+
+					DamageUtils.add_damage_network(unit, unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), "buff")
+
+					buff.next_damage_t = params.t + template.damage_frequency
+				end
+			end
+		end
+	end,
+	remove_speed_scaled_dot_buff = function (unit, buff, params)
+		if is_local(unit) then
+		end
+	end,
+	apply_twitch_invisibility_buff = function (unit, buff, params)
+		if is_local(unit) or (is_server() and is_bot(unit)) then
+			local status_extension = ScriptUnit.extension(unit, "status_system")
+
+			status_extension:set_invisible(true)
+			status_extension:set_noclip(true)
+		end
+
+		if is_local(unit) then
+			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+
+			first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_enter")
+			first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_loop")
+
+			MOOD_BLACKBOARD.skill_shade = true
+		end
+	end,
+	update_twitch_invisibility_buff = function (unit, buff, params)
+		return
+	end,
+	remove_twitch_invisibility_buff = function (unit, buff, params)
+		if is_local(unit) or (is_server() and is_bot(unit)) then
+			local status_extension = ScriptUnit.extension(unit, "status_system")
+
+			status_extension:set_invisible(false)
+			status_extension:set_noclip(false)
+
+			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+
+			first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_exit")
+			first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
+
+			MOOD_BLACKBOARD.skill_shade = false
+		end
+	end,
+	apply_twitch_infinite_bombs = function (unit, buff, params)
+		return
+	end,
+	update_twitch_infinite_bombs = function (unit, buff, params)
+		if is_local(unit) then
+			local network_manager = Managers.state.network
+			local network_transmit = network_manager.network_transmit
+			local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
+			local career_extension = ScriptUnit.extension(unit, "career_system")
+			local pickup_settings = AllPickups.frag_grenade_t1
+			local slot_name = pickup_settings.slot_name
+			local item_name = pickup_settings.item_name
+			local slot_data = inventory_extension:get_slot_data(slot_name)
+			local item_data = slot_data and slot_data.item_data
+
+			if not slot_data or item_data.name ~= item_name then
+				local extra_extension_init_data = {}
+				local item_data = ItemMasterList[item_name]
+
+				if slot_data then
+					inventory_extension:destroy_slot(slot_name)
+					inventory_extension:add_equipment(slot_name, item_data, nil, extra_extension_init_data)
+				else
+					inventory_extension:add_equipment(slot_name, item_data, nil, extra_extension_init_data)
+				end
+
+				local go_id = Managers.state.unit_storage:go_id(unit)
+				local slot_id = NetworkLookup.equipment_slots[slot_name]
+				local item_id = NetworkLookup.item_names[item_name]
+				local weapon_skin_id = NetworkLookup.weapon_skins["n/a"]
+
+				if is_server() then
+					network_transmit:send_rpc_clients("rpc_add_equipment", go_id, slot_id, item_id, weapon_skin_id)
+				else
+					network_transmit:send_rpc_server("rpc_add_equipment", go_id, slot_id, item_id, weapon_skin_id)
+				end
+
+				local wielded_slot_name = inventory_extension:get_wielded_slot_name()
+
+				if wielded_slot_name == slot_name then
+					CharacterStateHelper.stop_weapon_actions(inventory_extension, "picked_up_object")
+					CharacterStateHelper.stop_career_abilities(career_extension, "picked_up_object")
+					inventory_extension:wield(slot_name)
+				end
+			end
+		end
+	end,
+	remove_twitch_infinite_bombs = function (unit, buff, params)
+		return
+	end,
+	apply_twitch_invincibility = function (unit, buff, params)
+		if is_server() and Unit.alive(unit) then
+			local health_extension = ScriptUnit.extension(unit, "health_system")
+			health_extension.is_invincible = true
+		end
+	end,
+	remove_twitch_invincibility = function (unit, buff, params)
+		if is_server() and Unit.alive(unit) then
+			local health_extension = ScriptUnit.extension(unit, "health_system")
+			health_extension.is_invincible = false
+		end
+	end,
+	apply_twitch_pulsating_waves = function (unit, buff, params)
+		buff.next_pulse_t = params.t
+	end,
+	update_twitch_pulsating_waves = function (unit, buff, params, world)
+		if is_server() and Unit.alive(unit) then
+			local t = params.t
+
+			if buff.next_pulse_t < t then
+				local damage_source = "grenade_frag_01"
+				local explosion_template = ExplosionTemplates.twitch_pulse_explosion
+				local explosion_position = POSITION_LOOKUP[unit]
+
+				DamageUtils.create_explosion(world, unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, unit, false)
+
+				local attacker_unit_id = Managers.state.unit_storage:go_id(unit)
+				local explosion_template_id = NetworkLookup.explosion_templates[explosion_template.name]
+				local damage_source_id = NetworkLookup.damage_sources[damage_source]
+
+				Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false)
+
+				buff.next_pulse_t = t + 2
+			end
+		end
 	end
 }
 

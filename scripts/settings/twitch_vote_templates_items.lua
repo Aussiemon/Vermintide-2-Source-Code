@@ -4,7 +4,7 @@ local function debug_print(message, ...)
 	end
 end
 
-local function default_validation_func(vote_data)
+local function default_condition_func(vote_data)
 	local players = Managers.player:human_and_bot_players()
 	local validation_data = vote_data.validation_data
 
@@ -123,13 +123,16 @@ TwitchVoteTemplates = TwitchVoteTemplates or {}
 TwitchVoteTemplates.twitch_give_first_aid_kit = {
 	cost = -100,
 	use_frame_texture = true,
-	texture_id = "twitch_icon_first_aid_kit",
+	texture_id = "twitch_icon_medical_supplies",
 	multiple_choice = true,
 	text = "twitch_give_first_aid_kit_one",
 	texture_size = {
 		70,
 		70
 	},
+	condition_func = function ()
+		return not TwitchSettings.disable_giving_items and not TwitchSettings.disable_positive_votes
+	end,
 	on_success = function (is_server, vote_index)
 		local selected_display_name = SPProfiles[vote_index].display_name
 		local players = Managers.player:human_and_bot_players()
@@ -163,6 +166,9 @@ TwitchVoteTemplates.twitch_give_healing_draught = {
 		70,
 		70
 	},
+	condition_func = function ()
+		return not TwitchSettings.disable_giving_items and not TwitchSettings.disable_positive_votes
+	end,
 	on_success = function (is_server, vote_index)
 		local selected_display_name = SPProfiles[vote_index].display_name
 		local players = Managers.player:human_and_bot_players()
@@ -189,13 +195,16 @@ TwitchVoteTemplates.twitch_give_healing_draught = {
 TwitchVoteTemplates.twitch_give_damage_boost_potion = {
 	cost = -50,
 	use_frame_texture = true,
-	texture_id = "potion_buff_01",
+	texture_id = "twitch_icon_potion_of_strength",
 	multiple_choice = true,
 	text = "twitch_give_damage_boost_potion_one",
 	texture_size = {
 		70,
 		70
 	},
+	condition_func = function ()
+		return not TwitchSettings.disable_giving_items and not TwitchSettings.disable_positive_votes
+	end,
 	on_success = function (is_server, vote_index)
 		local selected_display_name = SPProfiles[vote_index].display_name
 		local players = Managers.player:human_and_bot_players()
@@ -222,13 +231,16 @@ TwitchVoteTemplates.twitch_give_damage_boost_potion = {
 TwitchVoteTemplates.twitch_give_speed_boost_potion = {
 	cost = -50,
 	use_frame_texture = true,
-	texture_id = "potion_buff_02",
+	texture_id = "twitch_icon_potion_of_speed",
 	multiple_choice = true,
 	text = "twitch_give_speed_boost_potion_one",
 	texture_size = {
 		70,
 		70
 	},
+	condition_func = function ()
+		return not TwitchSettings.disable_giving_items and not TwitchSettings.disable_positive_votes
+	end,
 	on_success = function (is_server, vote_index)
 		local selected_display_name = SPProfiles[vote_index].display_name
 		local players = Managers.player:human_and_bot_players()
@@ -255,13 +267,16 @@ TwitchVoteTemplates.twitch_give_speed_boost_potion = {
 TwitchVoteTemplates.twitch_give_cooldown_reduction_potion = {
 	cost = -50,
 	use_frame_texture = true,
-	texture_id = "potion_buff_03",
+	texture_id = "twitch_icon_potion_of_concentration",
 	multiple_choice = true,
 	text = "twitch_give_cooldown_reduction_potion_one",
 	texture_size = {
 		70,
 		70
 	},
+	condition_func = function ()
+		return not TwitchSettings.disable_giving_items and not TwitchSettings.disable_positive_votes
+	end,
 	on_success = function (is_server, vote_index)
 		local selected_display_name = SPProfiles[vote_index].display_name
 		local players = Managers.player:human_and_bot_players()
@@ -288,13 +303,16 @@ TwitchVoteTemplates.twitch_give_cooldown_reduction_potion = {
 TwitchVoteTemplates.twitch_give_frag_grenade_t1 = {
 	cost = -100,
 	use_frame_texture = true,
-	texture_id = "twitch_icon_frag_grenade",
+	texture_id = "twitch_icon_bomb",
 	multiple_choice = true,
 	text = "twitch_give_frag_grenade_t1_one",
 	texture_size = {
 		70,
 		70
 	},
+	condition_func = function ()
+		return not TwitchSettings.disable_giving_items and not TwitchSettings.disable_positive_votes
+	end,
 	on_success = function (is_server, vote_index)
 		local selected_display_name = SPProfiles[vote_index].display_name
 		local players = Managers.player:human_and_bot_players()
@@ -321,13 +339,16 @@ TwitchVoteTemplates.twitch_give_frag_grenade_t1 = {
 TwitchVoteTemplates.twitch_give_fire_grenade_t1 = {
 	cost = -100,
 	use_frame_texture = true,
-	texture_id = "twitch_icon_fire_grenade",
+	texture_id = "twitch_icon_incediary_bomb",
 	multiple_choice = true,
 	text = "twitch_give_fire_grenade_t1_one",
 	texture_size = {
 		70,
 		70
 	},
+	condition_func = function ()
+		return not TwitchSettings.disable_giving_items and not TwitchSettings.disable_positive_votes
+	end,
 	on_success = function (is_server, vote_index)
 		local selected_display_name = SPProfiles[vote_index].display_name
 		local players = Managers.player:human_and_bot_players()

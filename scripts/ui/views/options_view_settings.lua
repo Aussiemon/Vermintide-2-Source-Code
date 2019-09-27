@@ -833,6 +833,74 @@ local gameplay_settings_definition = {
 		widget_type = "drop_down"
 	},
 	{
+		setting_name = "twitch_spawn_amount",
+		widget_type = "stepper",
+		options = {
+			{
+				value = 1,
+				text = Localize("percent_100")
+			},
+			{
+				value = 1.5,
+				text = Localize("percent_150")
+			},
+			{
+				value = 2,
+				text = Localize("percent_200")
+			}
+		}
+	},
+	{
+		setting_name = "twitch_disable_positive_votes",
+		widget_type = "stepper",
+		options = {
+			{
+				text = Localize("twitch_enable_positive_votes"),
+				value = TwitchSettings.positive_vote_options.enable_positive_votes
+			},
+			{
+				text = Localize("twitch_disable_giving_items"),
+				value = TwitchSettings.positive_vote_options.disable_giving_items
+			},
+			{
+				text = Localize("twitch_disable_positive_votes"),
+				value = TwitchSettings.positive_vote_options.disable_positive_votes
+			}
+		}
+	},
+	{
+		setting_name = "twitch_disable_mutators",
+		widget_type = "stepper",
+		options = {
+			{
+				value = true,
+				text = Localize("menu_settings_on")
+			},
+			{
+				value = false,
+				text = Localize("menu_settings_off")
+			}
+		}
+	},
+	{
+		setting_name = "twitch_mutator_duration",
+		widget_type = "stepper",
+		options = {
+			{
+				value = 1,
+				text = Localize("percent_100")
+			},
+			{
+				value = 1.5,
+				text = Localize("percent_150")
+			},
+			{
+				value = 2,
+				text = Localize("percent_200")
+			}
+		}
+	},
+	{
 		size_y = 30,
 		widget_type = "empty"
 	},

@@ -111,12 +111,6 @@ local breed_data = {
 		left_arm = 2,
 		aux = 2
 	},
-	hitzone_primary_armor_categories = {
-		head = 6,
-		right_arm = 6,
-		left_arm = 6,
-		aux = 6
-	},
 	hit_zones = {
 		head = {
 			prio = 1,

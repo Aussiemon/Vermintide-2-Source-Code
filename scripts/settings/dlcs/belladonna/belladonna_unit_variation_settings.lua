@@ -83,6 +83,8 @@ settings.unit_variation_settings.beastmen_common_tattoo.materials_enabled_from_s
 	"tattoo_tint"
 }
 settings.unit_variation_settings.beastmen_gor = table.create_copy(settings.unit_variation_settings.beastmen_gor, settings.unit_variation_settings.beastmen_common_tattoo)
+settings.unit_variation_settings.beastmen_gor.material_variations.tattoo_tint.min = 0
+settings.unit_variation_settings.beastmen_gor.material_variations.tattoo_tint.max = 15
 settings.unit_variation_settings.beastmen_ungor = table.create_copy(settings.unit_variation_settings.beastmen_ungor, settings.unit_variation_settings.beastmen_common)
 settings.unit_variation_settings.beastmen_ungor.material_variations.skin_tint.materials = {
 	"mtr_skin",
@@ -92,7 +94,42 @@ settings.unit_variation_settings.beastmen_ungor.material_variations.skin_tint.ma
 	"mtr_head_02",
 	"mtr_head_03"
 }
+settings.unit_variation_settings.beastmen_ungor.material_variations.skin_tint.min = 0
+settings.unit_variation_settings.beastmen_ungor.material_variations.skin_tint.max = 15
+settings.unit_variation_settings.beastmen_ungor.material_variations.cloth_tint.min = 0
+settings.unit_variation_settings.beastmen_ungor.material_variations.cloth_tint.max = 15
 settings.unit_variation_settings.beastmen_ungor_archer = table.create_copy(settings.unit_variation_settings.beastmen_ungor_archer, settings.unit_variation_settings.beastmen_ungor)
+settings.unit_variation_settings.beastmen_ungor_archer.material_variations.skin_tint.min = 16
+settings.unit_variation_settings.beastmen_ungor_archer.material_variations.skin_tint.max = 31
+settings.unit_variation_settings.beastmen_ungor_archer.material_variations.cloth_tint.min = 16
+settings.unit_variation_settings.beastmen_ungor_archer.material_variations.cloth_tint.max = 31
+settings.unit_variation_settings.beastmen_ungor_archer.material_variations.tattoo = {
+	min = 0,
+	max = 3,
+	materials = {
+		"mtr_skin"
+	},
+	variables = {
+		"tattoo_style"
+	}
+}
+settings.unit_variation_settings.beastmen_ungor_archer.material_variations.tattoo_tint = {
+	min = 16,
+	max = 31,
+	materials = {
+		"mtr_skin"
+	},
+	variables = {
+		"tattoo_color_variation"
+	}
+}
+settings.unit_variation_settings.beastmen_ungor_archer.materials_enabled_from_start = {
+	"skin_tint",
+	"horn_tint",
+	"cloth_tint",
+	"tattoo",
+	"tattoo_tint"
+}
 settings.unit_variation_settings.beastmen_bestigor = table.create_copy(settings.unit_variation_settings.beastmen_bestigor, settings.unit_variation_settings.beastmen_common_tattoo)
 settings.unit_variation_settings.beastmen_bestigor.material_variations.cloth_tint_set_1 = {
 	min = 2,

@@ -227,7 +227,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"set_freeze_condition",
-			max_active_enemies = 100
+			max_active_enemies = 80
 		},
 		{
 			"set_master_event_running",
@@ -253,7 +253,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 30,
+			duration = 55,
 			condition = function (t)
 				return count_event_breed("beastmen_gor") < 4 and count_breed("beastmen_ungor") < 4
 			end
@@ -269,7 +269,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"set_freeze_condition",
-			max_active_enemies = 100
+			max_active_enemies = 80
 		},
 		{
 			"set_master_event_running",
@@ -286,8 +286,12 @@ local terror_event_blueprints = {
 			composition_type = "event_medium_beastmen"
 		},
 		{
+			"delay",
+			duration = 5
+		},
+		{
 			"continue_when",
-			duration = 45,
+			duration = 30,
 			condition = function (t)
 				return num_spawned_enemies() < 8
 			end
@@ -310,14 +314,10 @@ local terror_event_blueprints = {
 			composition_type = "event_small_beastmen"
 		},
 		{
-			"flow_event",
-			flow_event_name = "crater_end_event_wave_01_repeat"
-		},
-		{
 			"continue_when",
 			duration = 180,
 			condition = function (t)
-				return num_alive_standards() < 1
+				return num_alive_standards() < 1 and count_event_breed("beastmen_gor") < 5 and count_event_breed("beastmen_ungor") < 5
 			end
 		},
 		{
@@ -331,7 +331,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"set_freeze_condition",
-			max_active_enemies = 100
+			max_active_enemies = 80
 		},
 		{
 			"set_master_event_running",
@@ -345,11 +345,15 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 4,
 			spawner_id = "crater_end_event",
-			composition_type = "event_medium_beastmen"
+			composition_type = "event_large_beastmen"
+		},
+		{
+			"delay",
+			duration = 5
 		},
 		{
 			"continue_when",
-			duration = 45,
+			duration = 30,
 			condition = function (t)
 				return num_spawned_enemies() < 6
 			end
@@ -369,17 +373,13 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 4,
 			spawner_id = "crater_end_event",
-			composition_type = "event_small_beastmen"
-		},
-		{
-			"flow_event",
-			flow_event_name = "crater_end_event_wave_02_repeat"
+			composition_type = "event_medium_beastmen"
 		},
 		{
 			"continue_when",
 			duration = 180,
 			condition = function (t)
-				return num_alive_standards() < 1
+				return num_alive_standards() < 1 and count_event_breed("beastmen_gor") < 5 and count_event_breed("beastmen_ungor") < 5
 			end
 		},
 		{
@@ -393,7 +393,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"set_freeze_condition",
-			max_active_enemies = 100
+			max_active_enemies = 80
 		},
 		{
 			"set_master_event_running",
@@ -407,11 +407,15 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 4,
 			spawner_id = "crater_end_event",
-			composition_type = "event_small_beastmen"
+			composition_type = "event_medium_beastmen"
+		},
+		{
+			"delay",
+			duration = 5
 		},
 		{
 			"continue_when",
-			duration = 60,
+			duration = 45,
 			condition = function (t)
 				return num_spawned_enemies() < 5
 			end
@@ -437,7 +441,7 @@ local terror_event_blueprints = {
 			"continue_when",
 			duration = 180,
 			condition = function (t)
-				return num_alive_standards() < 1
+				return num_alive_standards() < 1 and count_event_breed("beastmen_gor") < 5 and count_event_breed("beastmen_ungor") < 5
 			end
 		},
 		{
@@ -451,7 +455,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"set_freeze_condition",
-			max_active_enemies = 100
+			max_active_enemies = 80
 		},
 		{
 			"set_master_event_running",
@@ -465,11 +469,15 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 4,
 			spawner_id = "crater_end_event",
-			composition_type = "event_medium_beastmen"
+			composition_type = "event_large_beastmen"
+		},
+		{
+			"delay",
+			duration = 5
 		},
 		{
 			"continue_when",
-			duration = 45,
+			duration = 30,
 			condition = function (t)
 				return num_spawned_enemies() < 8
 			end
@@ -499,7 +507,7 @@ local terror_event_blueprints = {
 			"continue_when",
 			duration = 180,
 			condition = function (t)
-				return num_alive_standards() < 1
+				return num_alive_standards() < 1 and count_event_breed("beastmen_gor") < 5 and count_event_breed("beastmen_ungor") < 5
 			end
 		},
 		{

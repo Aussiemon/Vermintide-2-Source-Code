@@ -2167,6 +2167,48 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 		end
 	end
 
+	local twitch_disable_positive_votes = user_settings.twitch_disable_positive_votes
+
+	if twitch_disable_positive_votes then
+		if PLATFORM == "xb1" then
+			MixerSettings.disable_giving_items = twitch_disable_positive_votes == MixerSettings.positive_vote_options.disable_giving_items or twitch_disable_positive_votes == MixerSettings.positive_vote_options.disable_positive_votes
+			MixerSettings.disable_positive_votes = twitch_disable_positive_votes == MixerSettings.positive_vote_options.disable_positive_votes
+		else
+			TwitchSettings.disable_giving_items = twitch_disable_positive_votes == TwitchSettings.positive_vote_options.disable_giving_items or twitch_disable_positive_votes == TwitchSettings.positive_vote_options.disable_positive_votes
+			TwitchSettings.disable_positive_votes = twitch_disable_positive_votes == TwitchSettings.positive_vote_options.disable_positive_votes
+		end
+	end
+
+	local twitch_disable_mutators = user_settings.twitch_disable_mutators
+
+	if twitch_disable_mutators ~= nil then
+		if PLATFORM == "xb1" then
+			MixerSettings.disable_mutators = twitch_disable_mutators
+		else
+			TwitchSettings.disable_mutators = twitch_disable_mutators
+		end
+	end
+
+	local twitch_spawn_amount = user_settings.twitch_spawn_amount
+
+	if twitch_spawn_amount then
+		if PLATFORM == "xb1" then
+			MixerSettings.spawn_amount_multiplier = twitch_spawn_amount
+		else
+			TwitchSettings.spawn_amount_multiplier = twitch_spawn_amount
+		end
+	end
+
+	local twitch_mutator_duration = user_settings.twitch_mutator_duration
+
+	if twitch_mutator_duration then
+		if PLATFORM == "xb1" then
+			MixerSettings.mutator_duration_multiplier = twitch_mutator_duration
+		else
+			TwitchSettings.mutator_duration_multiplier = twitch_mutator_duration
+		end
+	end
+
 	local use_razer_chroma = user_settings.use_razer_chroma
 
 	if use_razer_chroma then
@@ -10396,6 +10438,10 @@ end
 OptionsView.cb_twitch_vote_time_setup = function (self)
 	local options = {
 		{
+			text = "15",
+			value = 15
+		},
+		{
 			text = "30",
 			value = 30
 		},
@@ -10475,6 +10521,14 @@ end
 
 OptionsView.cb_twitch_time_between_votes_setup = function (self)
 	local options = {
+		{
+			text = "5",
+			value = 5
+		},
+		{
+			text = "15",
+			value = 15
+		},
 		{
 			text = "30",
 			value = 30

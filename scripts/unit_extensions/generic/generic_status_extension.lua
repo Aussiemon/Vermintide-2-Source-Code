@@ -1982,7 +1982,10 @@ GenericStatusExtension.is_overpowered = function (self)
 end
 
 GenericStatusExtension.can_dodge = function (self, t)
-	return self.my_dodge_cd < t
+	local buff_extension = self.buff_extension
+	local rooted = buff_extension:has_buff_perk("root")
+
+	return self.my_dodge_cd < t and not rooted
 end
 
 GenericStatusExtension.set_dodge_cd = function (self, t, dodge_cd)

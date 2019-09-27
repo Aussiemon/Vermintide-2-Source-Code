@@ -46,6 +46,10 @@ BTFireProjectileAction.enter = function (self, unit, blackboard, t)
 	blackboard.attacking_target = blackboard.volley_target_unit or blackboard.target_unit
 	local target_unit_status_extension = ScriptUnit.has_extension(blackboard.attacking_target, "status_system")
 	blackboard.target_unit_status_extension = target_unit_status_extension
+	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+	local event_data = FrameTable.alloc_table()
+
+	dialogue_input:trigger_networked_dialogue_event(blackboard.action.leader_fire_volley_dialogue_event, event_data)
 end
 
 BTFireProjectileAction._check_for_volley_attack = function (self, blackboard, unit, t)
@@ -102,11 +106,6 @@ BTFireProjectileAction._check_for_volley_attack = function (self, blackboard, un
 			blackboard.volley_target_unit = target_unit
 			blackboard.fire_volley_at_t = longest_fire_time + Math.random_range(0.15, 0.3)
 			local audio_system = Managers.state.entity:system("audio_system")
-			local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
-			local event_data = FrameTable.alloc_table()
-
-			dialogue_input:trigger_networked_dialogue_event(blackboard.action.leader_fire_volley_dialogue_event, event_data)
-
 			local group_volley_sound = blackboard.action.group_volley_sound
 			local center_position = group_position / num_nearby_archers
 
@@ -266,23 +265,37 @@ BTFireProjectileAction._fire_projectile = function (self, unit, blackboard, dt)
 		return false
 	end
 
-	local collision_filter = "filter_enemy_player_afro_ray_projectile"
-	local flat_speed = Vector3.length(Vector3.flat(velocity))
 	local light_weight_projectile_template_name = action.light_weight_projectile_template_name
 	local light_weight_projectile_template = LightWeightProjectiles[light_weight_projectile_template_name]
-	local normalized_direction = Vector3.normalize(velocity)
+	local collision_filter = "filter_enemy_player_afro_ray_projectile"
+	local difficulty_hit_chance = action.difficulty_hit_chance
+	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+	local power_level = light_weight_projectile_template.attack_power_level[difficulty_rank]
 	local target_is_dodging = blackboard.target_is_dodging
 	local first_shot_spread = not blackboard.fired_first_shot and light_weight_projectile_template.first_shot_spread
+	local hit = true
+
+	if difficulty_rank and difficulty_hit_chance then
+		local hit_chance = difficulty_hit_chance[difficulty_rank]
+		hit = math.random() <= hit_chance
+
+		if not hit or first_shot_spread then
+			local collision_filter_miss = "filter_enemy_player_afro_ray_projectile_no_hitbox"
+			collision_filter = collision_filter_miss
+		end
+	end
+
+	local flat_speed = Vector3.length(Vector3.flat(velocity))
+	local normalized_direction = Vector3.normalize(velocity)
 	local spread = light_weight_projectile_template.spread
 	local dodge_spread = light_weight_projectile_template.dodge_spread
 	local spread_angle = Math.random() * (first_shot_spread or (target_is_dodging and dodge_spread) or spread)
+	spread_angle = (hit and spread_angle) or light_weight_projectile_template.miss_spread or 0
 	local pitch = Quaternion(Vector3.right(), spread_angle)
-	local roll = Quaternion(Vector3.forward(), Math.random() * TWO_PI)
+	local roll = Quaternion(Vector3.forward(), (Math.random() - 0.5) * PI)
 	local dir_rot = Quaternion.look(normalized_direction, Vector3.up())
 	local spread_rot = Quaternion.multiply(Quaternion.multiply(dir_rot, roll), pitch)
 	local spread_direction = Quaternion.forward(spread_rot)
-	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-	local power_level = light_weight_projectile_template.attack_power_level[difficulty_rank]
 	local action_data = {
 		power_level = power_level,
 		damage_profile = light_weight_projectile_template.damage_profile,

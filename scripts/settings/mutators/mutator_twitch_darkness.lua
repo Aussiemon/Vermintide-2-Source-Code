@@ -27,9 +27,6 @@ return {
 					network_angular_velocity = network_angular_velocity
 				}
 			}
-
-			print("Spawning torch at ", player_unit, " at position ", position)
-
 			local unit_name = "units/weapons/player/pup_torch/pup_torch"
 			local unit_template_name = "pickup_torch_unit"
 
@@ -41,41 +38,18 @@ return {
 	client_start_function = function (context, data)
 		local world = Managers.world:world("level_world")
 
-		LevelHelper:flow_event(world, "mutator_darkness")
+		LevelHelper:flow_event(world, "enable_twitch_darkness")
 
 		local darkness_system = Managers.state.entity:system("darkness_system")
 
 		darkness_system:set_global_darkness(true)
 		darkness_system:set_player_light_intensity(0.15)
-
-		local level_settings = LevelHelper:current_level_settings()
-
-		if not level_settings.camera_backlight then
-			local player_manager = Managers.player
-			local local_player = player_manager:local_player()
-			local camera_unit = local_player.camera_follow_unit
-			local light = Unit.light(camera_unit, "light")
-
-			if light then
-				local backlight_settings = {
-					intensity = 0.015,
-					start_falloff = 0,
-					end_falloff = 5,
-					color = Vector3(0.9, 0.7, 0.6)
-				}
-
-				Light.set_color(light, backlight_settings.color)
-				Light.set_intensity(light, backlight_settings.intensity)
-				Light.set_falloff_start(light, backlight_settings.start_falloff)
-				Light.set_falloff_end(light, backlight_settings.end_falloff)
-			end
-		end
 	end,
 	client_stop_function = function (context, data, is_destroy)
 		local world = Managers.world:world("level_world")
 
-		if not is_destroy then
-			LevelHelper:flow_event(world, "disable_darkness")
+		if world and not is_destroy then
+			LevelHelper:flow_event(world, "disable_twitch_darkness")
 
 			local darkness_system = Managers.state.entity:system("darkness_system")
 

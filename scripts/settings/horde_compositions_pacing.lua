@@ -383,8 +383,8 @@ HordeCompositionsPacing = {
 			breeds = {
 				"beastmen_gor",
 				{
-					12,
-					14
+					9,
+					10
 				},
 				"beastmen_ungor",
 				{
@@ -399,8 +399,8 @@ HordeCompositionsPacing = {
 			breeds = {
 				"beastmen_gor",
 				{
-					7,
-					9
+					5,
+					7
 				},
 				"beastmen_ungor",
 				{
@@ -418,8 +418,8 @@ HordeCompositionsPacing = {
 			breeds = {
 				"beastmen_gor",
 				{
-					16,
-					18
+					12,
+					14
 				},
 				"beastmen_ungor",
 				{
@@ -434,8 +434,8 @@ HordeCompositionsPacing = {
 			breeds = {
 				"beastmen_gor",
 				{
-					12,
-					14
+					9,
+					11
 				},
 				"beastmen_ungor",
 				{
@@ -453,8 +453,8 @@ HordeCompositionsPacing = {
 			breeds = {
 				"beastmen_gor",
 				{
-					20,
-					22
+					15,
+					16
 				},
 				"beastmen_ungor",
 				{
@@ -472,8 +472,8 @@ HordeCompositionsPacing = {
 			breeds = {
 				"beastmen_gor",
 				{
-					20,
-					22
+					15,
+					16
 				},
 				"beastmen_ungor",
 				{

@@ -229,7 +229,7 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 
 			outline_system:outline_unit(unit, extension.flag, channel, false, extension.apply_method, false)
 
-			extension.flag = extension.previous_flag
+			extension.flag = extension.previous_flag or "outline_unit"
 			extension.reapply = true
 		end
 
@@ -389,6 +389,7 @@ OutlineSystem.update = function (self, context, t)
 
 			local is_pinged = extension.pinged
 			local method = (is_pinged and extension.pinged_method) or extension.method
+			slot15 = extension.flag or true
 
 			if self[method](self, unit, extension) then
 				if not extension.outlined or extension.new_color or extension.reapply then

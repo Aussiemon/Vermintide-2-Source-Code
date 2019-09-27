@@ -2,6 +2,7 @@ local settings = DLCSettings.belladonna
 settings.husk_lookup = {
 	"units/beings/enemies/beastmen_gor/chr_beastmen_gor",
 	"units/beings/enemies/beastmen_ungor/chr_beastmen_ungor",
+	"units/beings/enemies/beastmen_ungor_archer/chr_beastmen_ungor_archer",
 	"units/beings/enemies/beastmen_bestigor/chr_beastmen_bestigor",
 	"units/beings/enemies/beastmen_standard_bearer/chr_beastmen_standard_bearer",
 	"units/weapons/enemy/wpn_bm_standard_01/wpn_bm_standard_01_placed",

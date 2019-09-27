@@ -335,6 +335,20 @@ local scenegraph_definition = {
 			1
 		}
 	},
+	result_description_text = {
+		vertical_alignment = "center",
+		parent = "result_area",
+		horizontal_alignment = "center",
+		size = {
+			800,
+			30
+		},
+		position = {
+			0,
+			-150,
+			1
+		}
+	},
 	winner_name = {
 		vertical_alignment = "center",
 		parent = "result_area",
@@ -834,6 +848,9 @@ local vote_text_style = {
 local result_text_style = table.clone(vote_text_style)
 result_text_style.font_size = 24
 result_text_style.text_color = Colors.get_color_table_with_alpha("twitch", 255)
+local result_text_description_style = table.clone(vote_text_style)
+result_text_description_style.font_size = 20
+result_text_description_style.text_color = Colors.get_color_table_with_alpha("white", 255)
 local winner_text_style = table.clone(vote_text_style)
 winner_text_style.localize = false
 winner_text_style.font_size = 24
@@ -1130,7 +1147,8 @@ return {
 			twitch_icon_small = UIWidgets.create_simple_texture(streaming_icon, "svr_twitch_icon_small"),
 			result_icon_rect = UIWidgets.create_simple_texture("item_frame", "sv_result_icon_rect"),
 			result_icon = UIWidgets.create_simple_texture("markus_mercenary_crit_chance", "sv_result_icon"),
-			result_text = UIWidgets.create_simple_text("default_result_text", "sv_result_text", nil, nil, result_text_style)
+			result_text = UIWidgets.create_simple_text("default_result_text", "sv_result_text", nil, nil, result_text_style),
+			result_description_text = UIWidgets.create_simple_text("", "result_description_text", nil, nil, result_text_description_style)
 		}
 	}
 }

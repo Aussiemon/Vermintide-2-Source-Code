@@ -31,11 +31,7 @@ MutatorHandler.init = function (self, mutators, is_server, has_local_client, wor
 	self._mutators = {}
 
 	if is_server and mutators then
-		for i = 1, #mutators, 1 do
-			local name = mutators[i]
-
-			self:_server_initialize_mutator(name, active_mutators, mutator_context)
-		end
+		self:initialize_mutators(mutators)
 	end
 end
 
@@ -55,6 +51,17 @@ MutatorHandler.destroy = function (self)
 	self._active_mutators = nil
 end
 
+MutatorHandler.initialize_mutators = function (self, mutators)
+	local active_mutators = self._active_mutators
+	local mutator_context = self._mutator_context
+
+	for i = 1, #mutators, 1 do
+		local name = mutators[i]
+
+		self:_server_initialize_mutator(name, active_mutators, mutator_context)
+	end
+end
+
 MutatorHandler.activate_mutators = function (self)
 	if self._is_server then
 		local mutator_context = self._mutator_context
@@ -64,6 +71,20 @@ MutatorHandler.activate_mutators = function (self)
 		for name, data in pairs(mutators) do
 			self:_activate_mutator(name, active_mutators, mutator_context, data)
 		end
+	end
+end
+
+MutatorHandler.activate_mutator = function (self, name, optional_duration, optional_flag)
+	if self._is_server then
+		local mutator_context = self._mutator_context
+		local active_mutators = self._active_mutators
+		local data = self._mutators[name]
+
+		if optional_flag then
+			data[optional_flag] = true
+		end
+
+		self:_activate_mutator(name, active_mutators, mutator_context, data, optional_duration)
 	end
 end
 
@@ -112,6 +133,10 @@ MutatorHandler.update = function (self, dt, t)
 
 		if self._has_local_client and template.client.update then
 			template.client.update(mutator_context, mutator_data, dt, t)
+		end
+
+		if mutator_data.deactivate_at_t and mutator_data.deactivate_at_t < t then
+			self:_deactivate_mutator(name, active_mutators, mutator_context)
 		end
 	end
 end
@@ -356,7 +381,7 @@ MutatorHandler._server_initialize_mutator = function (self, name, active_mutator
 	self._mutators[name] = mutator_data
 end
 
-MutatorHandler._activate_mutator = function (self, name, active_mutators, mutator_context, mutator_data)
+MutatorHandler._activate_mutator = function (self, name, active_mutators, mutator_context, mutator_data, optional_duration)
 	fassert(active_mutators[name] == nil, "Can't have multiple of same mutator running at the same time (%s)", name)
 	fassert(MutatorTemplates[name], "No such template (%s)", name)
 
@@ -381,6 +406,11 @@ MutatorHandler._activate_mutator = function (self, name, active_mutators, mutato
 		end
 	end
 
+	if optional_duration then
+		local t = Managers.time:time("game")
+		mutator_data.deactivate_at_t = t + optional_duration
+	end
+
 	active_mutators[name] = mutator_data
 
 	if self._is_server then
@@ -400,7 +430,7 @@ MutatorHandler._deactivate_mutator = function (self, name, active_mutators, muta
 		local server_template = template.server
 
 		if server_template.stop_function then
-			server_template.stop_function(mutator_context, mutator_data)
+			server_template.stop_function(mutator_context, mutator_data, is_destroy)
 		end
 	end
 
@@ -408,11 +438,12 @@ MutatorHandler._deactivate_mutator = function (self, name, active_mutators, muta
 		local client_template = template.client
 
 		if client_template.stop_function then
-			client_template.stop_function(mutator_context, mutator_data)
+			client_template.stop_function(mutator_context, mutator_data, is_destroy)
 		end
 	end
 
 	active_mutators[name] = nil
+	self._mutators[name] = nil
 
 	if self._is_server and not is_destroy then
 		local mutator_id = NetworkLookup.mutator_templates[name]
