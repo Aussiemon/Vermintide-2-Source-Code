@@ -2205,8 +2205,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pes_level_bogenhafen_slum_story_twelve_0300",
-		response = "pes_level_bogenhafen_slum_story_twelve_0300",
+		name = "pes_level_bogenhafen_slum_story_twelve_03",
+		response = "pes_level_bogenhafen_slum_story_twelve_03",
 		criterias = {
 			{
 				"query_context",
@@ -2259,6 +2259,25 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_slum_story_four_02"
+			}
+		},
+		pes_level_bogenhafen_slum_story_twelve_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_slum",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_level_bogenhafen_slum_story_twelve_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_level_bogenhafen_slum_story_twelve_03"
 			}
 		},
 		pwe_level_bogenhafen_slum_story_seven_02 = {
@@ -2470,25 +2489,6 @@ return function ()
 				[1.0] = "pes_level_bogenhafen_slum_story_one_02"
 			}
 		},
-		pwe_level_bogenhafen_slum_story_eleven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_slum",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_bogenhafen_slum_story_eleven_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_bogenhafen_slum_story_eleven_01"
-			}
-		},
 		pwh_level_bogenhafen_slum_story_twelve_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -2698,23 +2698,23 @@ return function ()
 				[1.0] = "pwe_level_bogenhafen_slum_story_eleven_02"
 			}
 		},
-		pes_level_bogenhafen_slum_story_twelve_0300 = {
+		pwe_level_bogenhafen_slum_story_eleven_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_dlc_bogenhafen_slum",
 			category = "story_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_level_bogenhafen_slum_story_twelve_0300"
+				[1.0] = "pwe_level_bogenhafen_slum_story_eleven_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pes_level_bogenhafen_slum_story_twelve_0300"
+				[1.0] = "pwe_level_bogenhafen_slum_story_eleven_01"
 			}
 		},
 		pwe_level_bogenhafen_slum_story_six_02 = {

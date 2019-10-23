@@ -404,6 +404,46 @@ local weave_level_settings = {
 			}
 		}
 	},
+	hold = {
+		display_name = "dlc_scorpion_hold",
+		player_aux_bus_name = "environment_reverb_outside",
+		ambient_sound_event = "silent_default_world_sound",
+		environment_state = "exterior",
+		package_name = "resource_packages/levels/dlcs/scorpion/hold",
+		loading_ui_package_name = "loading_screen_24",
+		dlc_name = "scorpion",
+		waystone_type = 3,
+		level_image = "level_image_any",
+		override_file_ending = "dlc_scorpion_hold",
+		game_mode = "weave",
+		knocked_down_setting = "knocked_down",
+		level_name = "levels/honduras_dlcs/scorpion/hold/world",
+		source_aux_bus_name = "environment_reverb_outside_source",
+		level_particle_effects = {},
+		level_screen_effects = {},
+		locations = {},
+		map_settings = {
+			area = "world",
+			icon = "level_location_dlc_icon_01"
+		},
+		pickup_settings = {
+			default = {
+				primary = {
+					ammo = 4,
+					potions = 4,
+					grenades = 4,
+					healing = {
+						first_aid_kit = 2,
+						healing_draught = 2
+					},
+					level_events = {
+						explosive_barrel = 2,
+						lamp_oil = 2
+					}
+				}
+			}
+		}
+	},
 	arena_void = {
 		display_name = "dlc_scorpion_arena_void",
 		player_aux_bus_name = "environment_reverb_outside",
@@ -501,6 +541,129 @@ local weave_level_settings = {
 		game_mode = "weave",
 		knocked_down_setting = "knocked_down",
 		level_name = "levels/honduras_dlcs/scorpion/arena_temple/world",
+		source_aux_bus_name = "environment_reverb_outside_source",
+		level_particle_effects = {},
+		level_screen_effects = {},
+		locations = {},
+		map_settings = {
+			area = "world",
+			icon = "level_location_dlc_icon_01"
+		},
+		pickup_settings = {
+			default = {
+				primary = {
+					ammo = 4,
+					potions = 4,
+					grenades = 4,
+					healing = {
+						first_aid_kit = 2,
+						healing_draught = 2
+					},
+					level_events = {
+						explosive_barrel = 2,
+						lamp_oil = 2
+					}
+				}
+			}
+		}
+	},
+	arena_pillars = {
+		display_name = "dlc_scorpion_arena_pillars",
+		player_aux_bus_name = "environment_reverb_outside",
+		ambient_sound_event = "silent_default_world_sound",
+		environment_state = "exterior",
+		is_arena = true,
+		package_name = "resource_packages/levels/dlcs/scorpion/arena_pillars",
+		loading_ui_package_name = "loading_screen_24",
+		dlc_name = "scorpion",
+		waystone_type = 3,
+		level_image = "level_image_any",
+		override_file_ending = "dlc_scorpion_arena_pillars",
+		game_mode = "weave",
+		knocked_down_setting = "knocked_down",
+		level_name = "levels/honduras_dlcs/scorpion/arena_pillars/world",
+		source_aux_bus_name = "environment_reverb_outside_source",
+		level_particle_effects = {},
+		level_screen_effects = {},
+		locations = {},
+		map_settings = {
+			area = "world",
+			icon = "level_location_dlc_icon_01"
+		},
+		pickup_settings = {
+			default = {
+				primary = {
+					ammo = 4,
+					potions = 4,
+					grenades = 4,
+					healing = {
+						first_aid_kit = 2,
+						healing_draught = 2
+					},
+					level_events = {
+						explosive_barrel = 2,
+						lamp_oil = 2
+					}
+				}
+			}
+		}
+	},
+	arena_town_square = {
+		display_name = "dlc_scorpion_arena_town_square",
+		player_aux_bus_name = "environment_reverb_outside",
+		ambient_sound_event = "silent_default_world_sound",
+		environment_state = "exterior",
+		is_arena = true,
+		package_name = "resource_packages/levels/dlcs/scorpion/arena_town_square",
+		loading_ui_package_name = "loading_screen_24",
+		dlc_name = "scorpion",
+		waystone_type = 3,
+		level_image = "level_image_any",
+		override_file_ending = "dlc_scorpion_arena_town_square",
+		game_mode = "weave",
+		knocked_down_setting = "knocked_down",
+		level_name = "levels/honduras_dlcs/scorpion/arena_town_square/world",
+		source_aux_bus_name = "environment_reverb_outside_source",
+		level_particle_effects = {},
+		level_screen_effects = {},
+		locations = {},
+		map_settings = {
+			area = "world",
+			icon = "level_location_dlc_icon_01"
+		},
+		pickup_settings = {
+			default = {
+				primary = {
+					ammo = 4,
+					potions = 4,
+					grenades = 4,
+					healing = {
+						first_aid_kit = 2,
+						healing_draught = 2
+					},
+					level_events = {
+						explosive_barrel = 2,
+						lamp_oil = 2
+					}
+				}
+			}
+		}
+	},
+	arena_snow = {
+		level_image = "level_image_any",
+		display_name = "dlc_scorpion_arena_snow",
+		player_aux_bus_name = "environment_reverb_outside",
+		ambient_sound_event = "silent_default_world_sound",
+		environment_state = "exterior",
+		package_name = "resource_packages/levels/dlcs/scorpion/arena_snow",
+		loading_ui_package_name = "loading_screen_24",
+		dlc_name = "scorpion",
+		ignore_zone_conflict_settings = true,
+		waystone_type = 3,
+		override_file_ending = "dlc_scorpion_arena_snow",
+		game_mode = "weave",
+		knocked_down_setting = "knocked_down",
+		level_name = "levels/honduras_dlcs/scorpion/arena_snow/world",
 		source_aux_bus_name = "environment_reverb_outside_source",
 		level_particle_effects = {},
 		level_screen_effects = {},
